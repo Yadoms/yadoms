@@ -173,11 +173,11 @@ SectionParameterHandler.prototype.applyScript = function () {
       if ($.isFunction(value.applyScript))
          value.applyScript();
    });
-}
+};
 
 SectionParameterHandler.prototype.locateInDOM = function () {
    return $("div#" + this.uuid);
-}
+};
 
 /**
  * Get the param name

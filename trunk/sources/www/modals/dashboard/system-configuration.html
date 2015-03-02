@@ -14,6 +14,8 @@
 </div>
 
 <script>
+   var fakePassword = createUUID();
+
    function initializeSystemConfigurationDashboard() {
       var $modalBody = $("div#dashboard-system-configuration .form-group");
       $modalBody.empty();
@@ -41,8 +43,69 @@
             var timezoneParameter = new EnumParameterHandler(i18nContext, ConfigurationManager.items.system.timezone, {"values" : timezones, "defaultValue" : systemConfiguration[ConfigurationManager.items.system.timezone].defaultValue}, systemConfiguration[ConfigurationManager.items.system.timezone].value);
 
             //*************
-            //advanced parameters
+            //Basic Authentication parameters
+            var basicAuth = systemConfiguration[ConfigurationManager.items.system.basicAuthentication].value;
+
+            //we affect a fake password if there is already one to help password modification detection
+            var passwordToDisplay = "";
+            if (basicAuth.password != "") {
+               passwordToDisplay = fakePassword;
+            }
+
+            var basicAuthDefaultValue = systemConfiguration[ConfigurationManager.items.system.basicAuthentication].defaultValue;
+
             var value = {};
+            value.checkbox = basicAuth.active;
+            var basicAuthenticationSectionParameters = new SectionParameterHandler(i18nContext,
+                                                  ConfigurationManager.items.system.basicAuthentication,
+                                                  {
+                                                     "enableWithCheckBox" : true,
+                                                     "enableWithCheckBoxDefaultValue" : basicAuthDefaultValue.active
+                                                  },
+                                                  value);
+
+            //*************
+            //user authentication
+            var userAuthenticationParameter = new StringParameterHandler(i18nContext,
+                                                   ConfigurationManager.items.system.basicAuthenticationUser,
+                                                   {
+                                                      "defaultValue": basicAuthDefaultValue.user,
+                                                      "required" : "true"
+                                                   },
+                                                   basicAuth.user);
+
+            //*************
+            //user authentication
+            var passwordAuthenticationParameter = new StringParameterHandler(i18nContext,
+                                                  ConfigurationManager.items.system.basicAuthenticationPassword,
+                                                  {
+                                                     "defaultValue": basicAuthDefaultValue.password,
+                                                     "required" : "true",
+                                                     "encrypted" : "true",
+                                                     "decryptable" : "false"
+                                                  },
+                                                   passwordToDisplay);
+
+            //*************
+            //user authentication
+            var password2AuthenticationParameter = new StringParameterHandler(i18nContext,
+                                                  ConfigurationManager.items.system.basicAuthenticationPassword2,
+                                                  {
+                                                     "defaultValue": basicAuthDefaultValue.password,
+                                                     "required" : "true",
+                                                     "encrypted" : "true",
+                                                     "decryptable" : "false",
+                                                     "mustMatchTo" : passwordAuthenticationParameter.uuid
+                                                  },
+                                                   passwordToDisplay);
+
+            basicAuthenticationSectionParameters.configurationHandlers.push(userAuthenticationParameter);
+            basicAuthenticationSectionParameters.configurationHandlers.push(passwordAuthenticationParameter);
+            basicAuthenticationSectionParameters.configurationHandlers.push(password2AuthenticationParameter);
+
+            //*************
+            //advanced parameters
+            value = {};
             value.checkbox = systemConfiguration[ConfigurationManager.items.system.advancedParameters].value;
             var advancedSectionParameters = new SectionParameterHandler(i18nContext,
                                                    ConfigurationManager.items.system.advancedParameters,
@@ -66,6 +129,7 @@
             //and add it to the gui
             $modalBody.append(languageParameter.getDOMObject());
             $modalBody.append(timezoneParameter.getDOMObject());
+            $modalBody.append(basicAuthenticationSectionParameters.getDOMObject());
             $modalBody.append(advancedSectionParameters.getDOMObject());
 
             //we finish controls instantiation
@@ -73,6 +137,8 @@
                languageParameter.applyScript();
             if ($.isFunction(timezoneParameter.applyScript))
                timezoneParameter.applyScript();
+            if ($.isFunction(basicAuthenticationSectionParameters.applyScript))
+               basicAuthenticationSectionParameters.applyScript();
             if ($.isFunction(advancedSectionParameters.applyScript))
                advancedSectionParameters.applyScript();
 
@@ -90,6 +156,7 @@
                   console.debug("End of system Configuration");
 
                   var errorOccurred = false;
+                  var pageHasToBeReloaded = false;
 
                   //we save current configuration
                   //*************
@@ -112,6 +179,49 @@
                   systemConfiguration[ConfigurationManager.items.system.timezone].value = timezoneParameter.getCurrentConfiguration();
 
                   if (!ConfigurationManager.updateToServerSync(systemConfiguration[ConfigurationManager.items.system.timezone])) {
+                     errorOccurred = true;
+                  }
+
+                  //*************
+                  //basic authentication
+                  var value = {};
+
+                  value.active = basicAuthenticationSectionParameters.getCurrentConfiguration().checkbox;
+
+                  //if we activate / deactivate the authentication we must reload the page
+                  if (value.active != basicAuth.active)
+                     pageHasToBeReloaded = true;
+
+                  if (value.active) {
+                     //the authentication method is active
+                     value.user = userAuthenticationParameter.getCurrentConfiguration();
+
+                     if (value.user != basicAuth.user)
+                        pageHasToBeReloaded = true;
+
+                     //we check for password modification
+                     var newPass = passwordAuthenticationParameter.getCurrentConfiguration();
+                     if (newPass != $.md5(fakePassword)) {
+                        //the password has been changed
+                        value.password = newPass;
+                        //we has to reload the page
+                        pageHasToBeReloaded = true;
+                     }
+                     else {
+                        //we set the previous one
+                        value.password = basicAuth.password;
+                     }
+                  }
+                  else {
+                     //the authentication method is inactive
+                     value.user = userAuthenticationParameter.getCurrentConfiguration();
+                     //we clear the password for the next re-activation
+                     value.password = "";
+                  }
+
+                  systemConfiguration[ConfigurationManager.items.system.basicAuthentication].value = value;
+
+                  if (!ConfigurationManager.updateToServerSync(systemConfiguration[ConfigurationManager.items.system.basicAuthentication])) {
                      errorOccurred = true;
                   }
 
@@ -147,6 +257,10 @@
                   else {
                      //we show that configuration has been successfully saved
                      notifySuccess($.t("modals.dashboard.sub-windows.system-configuration.configurationSaved"));
+                  }
+
+                  if (pageHasToBeReloaded) {
+                     window.location.reload();
                   }
                },
                filter: function() {
@@ -184,6 +298,13 @@
                           //timezone
                           systemConfiguration[ConfigurationManager.items.system.timezone].value = systemConfiguration[ConfigurationManager.items.system.timezone].defaultValue;
                           if (!ConfigurationManager.updateToServerSync(systemConfiguration[ConfigurationManager.items.system.timezone])) {
+                             errorOccurred = true;
+                          }
+
+                          //*************
+                          //basic authentication
+                          systemConfiguration[ConfigurationManager.items.system.basicAuthentication].value = systemConfiguration[ConfigurationManager.items.system.basicAuthentication].defaultValue;
+                          if (!ConfigurationManager.updateToServerSync(systemConfiguration[ConfigurationManager.items.system.basicAuthentication])) {
                              errorOccurred = true;
                           }
 

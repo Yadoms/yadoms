@@ -219,6 +219,23 @@
                      "name" : "Timezone",
                      "description" : "Define your timezone."
                   },
+                  "basicAuthentication" : {
+                     "name" : "Authentication",
+                     "description" : "Use authentification method to get access to Yadoms."
+                  },
+                  "basicAuthenticationUser" : {
+                     "name" : "User",
+                     "description" : "User name to athenticate"
+                  },
+                  "basicAuthenticationPassword" : {
+                     "name" : "Password",
+                     "description" : "User password to athenticate"
+                  },
+                  "basicAuthenticationPassword2" : {
+                     "name" : "Password verification",
+                     "description" : "Password repetition to prevent mistake",
+                     "matchToErrorMessage" : "The two passwords don't match"
+                  },
                   "advancedParameters" : {
                      "name" : "Advanced parameters",
                      "description" : "Define advanced parameters. This section is for advanced users only."

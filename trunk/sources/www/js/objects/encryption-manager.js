@@ -31,6 +31,8 @@ EncryptionManager.xorEncryptDecrypt = function(stringToEncrypt, key) {
  * @return	The encrypted string (base64)
  */
 EncryptionManager.encryptBase64 = function(toEncrypt, key) {
+	if (isNullOrUndefined(toEncrypt))
+		toEncrypt = "";
 	var cypher = EncryptionManager.xorEncryptDecrypt(toEncrypt, key);
 	return btoa(cypher);
 }			
@@ -42,5 +44,7 @@ EncryptionManager.encryptBase64 = function(toEncrypt, key) {
  * @return	The decrypted string
  */
 EncryptionManager.decryptBase64 = function(toDecrypt, key) {
+	if (isNullOrUndefined(toDecrypt))
+		toDecrypt = "";
 	return EncryptionManager.xorEncryptDecrypt(atob(toDecrypt), key);
 }
