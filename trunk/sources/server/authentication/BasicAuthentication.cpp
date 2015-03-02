@@ -79,10 +79,10 @@ namespace authentication {
                //check if notification is a newAcquisition
                if (m_notificationCenter->isNotificationTypeOf< boost::shared_ptr<notifications::CConfigurationUpdatedNotification> >(this))
                {
-                  YADOMS_LOG(information) << "Authentication settings have changes, reload them";
                   boost::shared_ptr<notifications::CConfigurationUpdatedNotification> configurationUpdated = m_notificationCenter->getNotificationData< boost::shared_ptr<notifications::CConfigurationUpdatedNotification> >(this);
                   if (boost::iequals(configurationUpdated->getSection(), m_configurationSection) && boost::iequals(configurationUpdated->getName(), m_configurationName))
                   {
+                     YADOMS_LOG(information) << "Authentication settings have changes, reload them";
                      updateConfiguration();
                   }
                }
@@ -126,7 +126,10 @@ namespace authentication {
                         Poco::URI::decode(val.get<std::string>(m_configurationUser), m_currentAuthenticationUsername);
                         Poco::URI::decode(val.get<std::string>(m_configurationPassword), m_currentAuthenticationPassword);
                      }
-                     YADOMS_LOG(warning) << "The configuration system.basic_authentication do not contain 'username' and 'password' settings";
+                     else
+                     {
+                        YADOMS_LOG(warning) << "The configuration system.basicAuthentication do not contain 'user' and 'password' settings";
+                     }
                   }
                   catch (std::exception & ex)
                   {
@@ -138,6 +141,7 @@ namespace authentication {
       }
       catch (std::exception & ex)
       {
+         YADOMS_LOG(warning) << "Can not find configuration item : system.basicAuthentication, disable authentication";
          m_isAuthenticationActive = false;
          m_currentAuthenticationUsername = shared::CStringExtension::EmptyString;
          m_currentAuthenticationPassword = shared::CStringExtension::EmptyString;
