@@ -4,6 +4,7 @@
 #include <shared/StringExtension.h>
 #include "notifications/ConfigurationUpdatedNotification.h"
 #include <Poco/URI.h>
+#include <Poco/MD5Engine.h>
 
 namespace authentication {
 
@@ -48,7 +49,11 @@ namespace authentication {
 
          try
          {
-            return boost::iequals(username, m_currentAuthenticationUsername) && boost::equals(password, m_currentAuthenticationPassword);
+            Poco::MD5Engine md5;
+            md5.update(password);
+            std::string cypherPassword(Poco::DigestEngine::digestToHex(md5.digest()));
+
+            return boost::iequals(username, m_currentAuthenticationUsername) && boost::equals(cypherPassword, m_currentAuthenticationPassword);
          }
          catch (std::exception & ex)
          {

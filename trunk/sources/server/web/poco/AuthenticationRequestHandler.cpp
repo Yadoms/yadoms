@@ -8,8 +8,8 @@
 
 namespace web { namespace poco {
 
-      CAuthenticationRequestHandler::CAuthenticationRequestHandler(boost::shared_ptr<authentication::IAuthentication> authenticator, boost::shared_ptr<Poco::Net::HTTPRequestHandler> baseRequestHandler)
-         :m_authenticator(authenticator), m_baseRequestHandler(baseRequestHandler)
+      CAuthenticationRequestHandler::CAuthenticationRequestHandler(boost::shared_ptr<authentication::IAuthentication> authenticator, boost::shared_ptr<Poco::Net::HTTPRequestHandler> baseRequestHandler, bool allowAuthentication)
+         :m_authenticator(authenticator), m_baseRequestHandler(baseRequestHandler), m_bAllowAuthentication(allowAuthentication)
       {
 
       }
@@ -26,10 +26,20 @@ namespace web { namespace poco {
             //check if request contains credentials
             if (!request.hasCredentials())
             {
-               //there are no credentials data in request, return unauthorized http (401)
-               response.requireAuthentication("Yadoms");
-               response.setContentLength(0);
-               response.send();
+               if (m_bAllowAuthentication)
+               {
+                  //there are no credentials data in request, return unauthorized http (401)
+                  response.requireAuthentication("Yadoms");
+                  response.setContentLength(0);
+                  response.send();
+               }
+               else
+               {
+                  //there are no credentials data in request, return forbidden (403) because this http handler do not allow authentication
+                  response.setStatusAndReason(Poco::Net::HTTPResponse::HTTPStatus::HTTP_FORBIDDEN, "Please login first");
+                  response.setContentLength(0);
+                  response.send();
+               }
             }
             else
             {

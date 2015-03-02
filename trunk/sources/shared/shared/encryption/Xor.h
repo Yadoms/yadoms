@@ -11,6 +11,20 @@ namespace shared { namespace encryption {
    {
    public:
       //--------------------------------------------------------------
+      /// \brief	Encrypt a string using XOR algorithm, with a base64 pass (using internal encryption key)
+      /// \param [in] toEncrypt  The string to encrypt
+      /// \return	The encrypted string (base64)
+      //--------------------------------------------------------------
+      static std::string encryptBase64(const std::string & toEncrypt);
+      
+      //--------------------------------------------------------------
+      /// \brief	Decrypt a base64 string using XOR algorithm  (using internal encryption key)
+      /// \param [in] toDecrypt  The base64 string to decrypt
+      /// \return	The decrypted string
+      //--------------------------------------------------------------
+      static std::string decryptBase64(const std::string & toDecrypt); 
+      
+      //--------------------------------------------------------------
       /// \brief	Encrypt a string using XOR algorithm, with a base64 pass
       /// \param [in] toEncrypt  The string to encrypt
       /// \param [in] key        The encryption key
@@ -35,6 +49,10 @@ namespace shared { namespace encryption {
       //--------------------------------------------------------------
       static std::string encryptDecrypt(const std::string & toEncryptOrDecrypt, const std::string & key);
 
+      //--------------------------------------------------------------
+      /// \brief	The internal encryption key
+      //--------------------------------------------------------------
+      static const std::string InternalKey;
    };
 
 } // namespace encryption
