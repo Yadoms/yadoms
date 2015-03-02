@@ -34,6 +34,6 @@ std::string CSmsDialerConfiguration::getPhonePIN() const
       return shared::CStringExtension::EmptyString;
 
    // Uncrypt PIN code
-   return shared::encryption::CXor::decryptBase64(m_data.get<std::string>("PINCode.content.PIN"), "2m72fgEQ");
+   return shared::encryption::CXor::decryptBase64(m_data.get<std::string>("PINCode.content.PIN"));
 }
 
