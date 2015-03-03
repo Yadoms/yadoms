@@ -4,9 +4,11 @@
 #include <shared/Log.h>
 #include "RunnerException.hpp"
 #include "PythonObject.h"
+#include "PythonBorrowedObject.h"
 #include <shared/DataContainer.h>
 #include "ScriptLoader.h"
 #include "SubInterpreter.h"
+#include "swigpyrun.h"  // Generated file (at pre-build-step)
 
 
 CRunner::CRunner(const std::string& scriptPath, const shared::CDataContainer& scriptConfiguration)
@@ -31,18 +33,19 @@ void CRunner::run(shared::script::yScriptApi::IYScriptApi& context)
       CScriptLoader loader(m_scriptPath);
       loader.load();
 
-      // Pass context to script entry point (yMain) as arg
-      //TODO ça fait crasher l'interpréteur au deuxième lancement du script
-      //CPythonObject pyApiObject(PyCapsule_New(static_cast<void *>(&context), "yadoms.scriptApi", NULL));
-      //if (pyApiObject.isNull())
-      //   throw CRunnerException("Unable to pass context to script");
-      //PyModule_AddObject(loader.module().get(), "yApi", pyApiObject.get());
-
       // Run the script
       m_isStopping = false;
-      CPythonObject pyReturnValue(PyObject_CallObject(loader.yMain().get(), NULL));
-      if (pyReturnValue.isNull() && !m_isStopping)
+      CPythonObject pyContext(SWIG_NewPointerObj(&context, SWIG_TypeQuery("shared::script::yScriptApi::IYScriptApi *"), 0));
+      CPythonObject tuple(PyTuple_New(1));
+      Py_XINCREF(*pyContext); // Increment pyContext reference count, because PyTuple_SetItem steals the reference
+      if (PyTuple_SetItem(*tuple, 0, *pyContext))
+         PyErr_Print();
+      CPythonObject ymainFunction(PyObject_GetAttrString(loader.module().get(), "yMain"));
+      if (ymainFunction.isNull() || PyCallable_Check(*ymainFunction) == 0)
          throw CRunnerException("Script exited with error");
+      CPythonObject pyReturnValue2(PyObject_CallObject(*ymainFunction, *tuple));
+      if (pyReturnValue2.isNull())
+         PyErr_Print();
 
       YADOMS_LOG(information) << m_scriptPath << " : script exited";
    }

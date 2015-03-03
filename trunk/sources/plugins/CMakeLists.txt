@@ -1,4 +1,4 @@
-#This file automatically search and add all plugin found from all subdirectories
+#This file automatically search and add all plugins found from all subdirectories
 
 #This macro list all subdirectories
 MACRO(SUBDIRLIST result curdir)

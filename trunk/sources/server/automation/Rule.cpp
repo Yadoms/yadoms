@@ -43,6 +43,7 @@ void CRule::doWork()
       // Loop on the script
       do
       {
+         m_runner.reset();
          m_runner = m_scriptFactory->createScriptRunner(scriptProperties);
          m_runner->run(*context);
          boost::this_thread::interruption_point();

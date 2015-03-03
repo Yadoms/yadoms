@@ -34,8 +34,8 @@
 %include stl.i
 
 /* Add method documentation */
+/* Can not use Doxygen comments from the C++ code, because "autodoc" is a Python specificity */
 /* TODO à compléter */
 %feature("autodoc", "Read the last known state of the keyword (empty if no known state). State returned as string.") readKeyword;
 
 %include <shared/script/yScriptApi/IYScriptApi.h>
-

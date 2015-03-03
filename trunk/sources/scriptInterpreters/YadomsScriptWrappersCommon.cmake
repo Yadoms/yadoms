@@ -1,5 +1,7 @@
 # Macros for setting up a script wrapper for yScriptApi
 #
+# Note that we use SWIG to generate wrappers.
+# CMake macro for SWIG generates a target called _yScriptApiWrapper
 
 INCLUDE(${SWIG_USE_FILE})
    

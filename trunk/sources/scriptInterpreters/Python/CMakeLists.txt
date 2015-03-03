@@ -78,6 +78,12 @@ if(PYTHONLIBS_FOUND)
    #SCRIPT_INTERPRETER_POST_BUILD_COPY_DIRECTORY(python directoryToCopy)
    
    #########################################
+   ## Add pre-build step to generate swigpyrun.h file
+   #########################################
+   add_custom_command(TARGET python PRE_BUILD
+      COMMAND ${SWIG_EXECUTABLE} -python -external-runtime ${CMAKE_CURRENT_SOURCE_DIR}/swigpyrun.h)
+   
+   #########################################
    ## Generate the associated yScriptApi wrapper
    #########################################
    add_subdirectory(yScriptApiWrapper)

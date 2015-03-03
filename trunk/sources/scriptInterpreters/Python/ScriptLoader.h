@@ -41,6 +41,11 @@ private:
    /// \brief	yMain function Python object
    //--------------------------------------------------------------
    CPythonObject m_pyMainFunction;
+
+   //--------------------------------------------------------------
+   /// \brief	Wrapper file
+   //--------------------------------------------------------------
+   static const boost::filesystem::path WrapperModuleFile;
 };
 
 
