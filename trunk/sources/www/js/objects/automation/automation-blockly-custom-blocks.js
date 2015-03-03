@@ -808,7 +808,6 @@ Blockly.FieldDropdown.prototype.refresh = function(data, tryToSelectValue) {
  * @type {{init: Function}}
  */
 Blockly.Blocks['yadoms_keyword_value'] = {
-    unitsInputName : "units",
     pluginDropDownName : "Plugin",
     deviceDropDownName : "Device",
     keywordDropDownName : "Keyword",
@@ -826,18 +825,8 @@ Blockly.Blocks['yadoms_keyword_value'] = {
                 thisBlock.changeOutput("null"); //any type allowed
             else
                 thisBlock.changeOutput(keywordType);
-            thisBlock.updateUnit(Blockly.Yadoms.data.keywords[keyword]);
             Blockly.Yadoms.UpdateBlockColour_(thisBlock, keywordType);
         }, this.pluginDropDownName, this.deviceDropDownName, this.keywordDropDownName);
-    },
-    updateUnit : function(keyword) {
-        var unitsExist = this.getInput(this.unitsInputName);
-        if(unitsExist)
-            this.removeInput(this.unitsInputName);
-
-        if(!isNullOrUndefined(keyword) && !isNullOrUndefinedOrEmpty(keyword.units) ) {
-            this.appendDummyInput(this.unitsInputName).appendField(keyword.units);
-        }
     }
 };
 
@@ -1045,6 +1034,7 @@ Blockly.Blocks['yadoms_logic_compare_is_mutator'] = {
  * @type {{init: Function}}
  */
 Blockly.Blocks['yadoms_logic_compare_is'] = {
+    unitsInputName : "units",
     init: function() {
         this.setHelpUrl('http://www.example.com/');
         this.setColour(210);
@@ -1104,6 +1094,19 @@ Blockly.Blocks['yadoms_logic_compare_is'] = {
         //apply operator update
         thisBlock.updateOperator(null);
 
+        /**
+         * Update the block unit
+         * @param keyword The selected keyword
+         */
+        this.updateUnit = function(keyword) {
+            var unitsExist = thisBlock.getInput(this.unitsInputName);
+            if(unitsExist)
+                thisBlock.removeInput(thisBlock.unitsInputName);
+
+            if(!isNullOrUndefined(keyword) && !isNullOrUndefinedOrEmpty(keyword.units) ) {
+                thisBlock.appendDummyInput(thisBlock.unitsInputName).appendField(keyword.units);
+            }
+        };
 
         /**
          * Method which make type checks when one of connector changes
@@ -1119,20 +1122,35 @@ Blockly.Blocks['yadoms_logic_compare_is'] = {
             var blockA = inputValueA.connection.targetBlock();
             var blockB = inputValueB.connection.targetBlock();
 
+            var keywordValue = undefined;
+            var deviceValue = undefined;
+            var pluginValue = undefined;
+            if(blockA && blockA.type == "yadoms_keyword_value") {
+                keywordValue = blockA.getSelectedKeyword();
+                deviceValue = blockA.getSelectedDevice();
+                pluginValue = blockA.getSelectedPlugin();
+            }
+            if(blockB && blockB.type == "yadoms_keyword_value") {
+                keywordValue = blockB.getSelectedKeyword();
+                deviceValue = blockB.getSelectedDevice();
+                pluginValue = blockB.getSelectedPlugin();
+            }
+
             //update yadoms_enumeration if any
             if (blockA && blockB) {
                 if(blockA.type == "yadoms_keyword_value" && blockB.type == "yadoms_enumeration") {
-                    var keywordValue = blockA.getSelectedKeyword();
-                    var deviceValue = blockA.getSelectedDevice();
-                    var pluginValue = blockA.getSelectedPlugin();
                     blockB.updateEnumeration(keywordValue, deviceValue, pluginValue);
                 } else if(blockB.type == "yadoms_keyword_value" && blockA.type == "yadoms_enumeration") {
-                    var keywordValue = blockB.getSelectedKeyword();
-                    var deviceValue = blockB.getSelectedDevice();
-                    var pluginValue = blockB.getSelectedPlugin();
                     blockA.updateEnumeration(keywordValue, deviceValue, pluginValue);
                 }
             }
+
+            //update units
+            if(keywordValue != undefined)
+                thisBlock.updateUnit(Blockly.Yadoms.data.keywords[keywordValue]);
+            else
+                thisBlock.updateUnit(undefined);
+
 
             //update checks
             if (blockA) {
@@ -1302,6 +1320,7 @@ Blockly.Python['yadoms_logic_compare_is'] = function(block) {
  * @type {{init: Function}}
  */
 Blockly.Blocks['yadoms_logic_compare_become'] = {
+    unitsInputName : "units",
     init: function() {
         this.setHelpUrl('http://www.example.com/');
         this.setColour(210);
@@ -1357,6 +1376,20 @@ Blockly.Blocks['yadoms_logic_compare_become'] = {
         thisBlock.updateOperator(null);
 
         /**
+         * Update the block unit
+         * @param keyword The selected keyword
+         */
+        this.updateUnit = function(keyword) {
+            var unitsExist = thisBlock.getInput(this.unitsInputName);
+            if(unitsExist)
+                thisBlock.removeInput(thisBlock.unitsInputName);
+
+            if(!isNullOrUndefined(keyword) && !isNullOrUndefinedOrEmpty(keyword.units) ) {
+                thisBlock.appendDummyInput(thisBlock.unitsInputName).appendField(keyword.units);
+            }
+        };
+
+        /**
          * Method which make type checks when one of connector changes
          */
         this.onchange = function() {
@@ -1370,20 +1403,34 @@ Blockly.Blocks['yadoms_logic_compare_become'] = {
             var blockA = inputValueA.connection.targetBlock();
             var blockB = inputValueB.connection.targetBlock();
 
+            var keywordValue = undefined;
+            var deviceValue = undefined;
+            var pluginValue = undefined;
+            if(blockA && blockA.type == "yadoms_keyword_value") {
+                keywordValue = blockA.getSelectedKeyword();
+                deviceValue = blockA.getSelectedDevice();
+                pluginValue = blockA.getSelectedPlugin();
+            }
+            if(blockB && blockB.type == "yadoms_keyword_value") {
+                keywordValue = blockB.getSelectedKeyword();
+                deviceValue = blockB.getSelectedDevice();
+                pluginValue = blockB.getSelectedPlugin();
+            }
+
             //update yadoms_enumeration if any
             if (blockA && blockB) {
                 if(blockA.type == "yadoms_keyword_value" && blockB.type == "yadoms_enumeration") {
-                    var keywordValue = blockA.getSelectedKeyword();
-                    var deviceValue = blockA.getSelectedDevice();
-                    var pluginValue = blockA.getSelectedPlugin();
                     blockB.updateEnumeration(keywordValue, deviceValue, pluginValue);
                 } else if(blockB.type == "yadoms_keyword_value" && blockA.type == "yadoms_enumeration") {
-                    var keywordValue = blockB.getSelectedKeyword();
-                    var deviceValue = blockB.getSelectedDevice();
-                    var pluginValue = blockB.getSelectedPlugin();
                     blockA.updateEnumeration(keywordValue, deviceValue, pluginValue);
                 }
             }
+
+            //update units
+            if(keywordValue != undefined)
+                thisBlock.updateUnit(Blockly.Yadoms.data.keywords[keywordValue]);
+            else
+                thisBlock.updateUnit(undefined);
 
             //update checks
             if (blockA) {
