@@ -51,7 +51,7 @@ namespace startupOptions
          { return m_widgetsPath.get(); }
       virtual bool getDebugFlag() const
          { return m_debugFlag; }
-      virtual virtual bool getNoPasswordFlag() const
+      virtual bool getNoPasswordFlag() const
          { return m_noPasswordFlag; }
       // [END] IStartupOptions implementation
       //--------------------------------------------------------------

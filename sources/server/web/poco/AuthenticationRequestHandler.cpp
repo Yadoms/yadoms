@@ -8,7 +8,7 @@
 
 namespace web { namespace poco {
 
-      CAuthenticationRequestHandler::CAuthenticationRequestHandler(boost::shared_ptr<authentication::IAuthentication> authenticator, boost::shared_ptr<Poco::Net::HTTPRequestHandler> baseRequestHandler, bool allowAuthentication)
+      CAuthenticationRequestHandler::CAuthenticationRequestHandler(boost::shared_ptr<authentication::IAuthentication> authenticator, boost::shared_ptr<HTTPRequestHandler> baseRequestHandler, bool allowAuthentication)
          :m_authenticator(authenticator), m_baseRequestHandler(baseRequestHandler), m_bAllowAuthentication(allowAuthentication)
       {
 
@@ -36,7 +36,7 @@ namespace web { namespace poco {
                else
                {
                   //there are no credentials data in request, return forbidden (403) because this http handler do not allow authentication
-                  response.setStatusAndReason(Poco::Net::HTTPResponse::HTTPStatus::HTTP_FORBIDDEN, "Please login first");
+                  response.setStatusAndReason(Poco::Net::HTTPResponse::HTTP_FORBIDDEN, "Please login first");
                   response.setContentLength(0);
                   response.send();
                }
