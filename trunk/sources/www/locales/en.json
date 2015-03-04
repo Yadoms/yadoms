@@ -360,12 +360,57 @@
       }
    },
    "blockly" : {
-     "catLogic" : "Logic",
-     "catLoops" : "Loops",
-     "catMath" : "Math",
-     "catText" : "Text",
-     "catLists" : "Lists",
-     "catColour" : "Colour"
+     "toolbox" : {
+       "catLogic": "Logic",
+       "catLoops": "Loops",
+       "catMath": "Math",
+       "catText": "Text",
+       "catLists": "Lists",
+       "catColour": "Colour"
+     },
+     "global" : {
+       "durationUnits": {
+         "seconds": "seconds",
+         "minutes": "minutes",
+         "hours": "hours",
+         "days" : "days"
+       }
+     },
+     "blocks" : {
+       "yadoms_sleep" : {
+         "title" : "Sleep"
+       },
+       "yadoms_log" : {
+         "title" : "Log",
+         "logLevel" : {
+           "debug" : "debug",
+           "info" : "information",
+           "warning" : "warning",
+           "error" : "error",
+           "fatal" : "fatal"
+         }
+       },
+       "yadoms_enumeration" : {
+         "title" : "Enumeration"
+       },
+       "yadoms_logic_compare_become" : {
+         "title": "Become"
+       },
+       "yadoms_logic_compare_is" : {
+         "title": "Is",
+         "for" : {
+           "title" : "For",
+           "title_long" :"For (duration)"
+         },
+         "at" : {
+           "title" : "At",
+           "title_long" :"At (time)"
+         }
+       },
+       "yadoms_affect_keyword" : {
+         "title" : "Set"
+       }
+     }
    },
    "objects" : {
       "pluginInstance" : {

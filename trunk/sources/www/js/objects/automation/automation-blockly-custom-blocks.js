@@ -145,12 +145,12 @@ Blockly.Yadoms.LoadDataForBlocklyCustomBlocks_ = function () {
  */
 Blockly.Yadoms.CreateToolbox_ = function() {
 
-    var catLogic = $.t("blockly.catLogic");
-    var catLoops = $.t("blockly.catLoops");
-    var catMath = $.t("blockly.catMath");
-    var catText = $.t("blockly.catText");
-    var catLists = $.t("blockly.catLists");
-    var catColour = $.t("blockly.catColour");
+    var catLogic = $.t("blockly.toolbox.catLogic");
+    var catLoops = $.t("blockly.toolbox.catLoops");
+    var catMath = $.t("blockly.toolbox.catMath");
+    var catText = $.t("blockly.toolbox.catText");
+    var catLists = $.t("blockly.toolbox.catLists");
+    var catColour = $.t("blockly.toolbox.catColour");
 
     var toolbox = '<xml>';
     toolbox += '  <category name="Yadoms">';
@@ -161,6 +161,13 @@ Blockly.Yadoms.CreateToolbox_ = function() {
     toolbox += '    <block type="yadoms_enumeration"></block>';
     toolbox += '    <block type="yadoms_logic_compare_become"></block>';
     toolbox += '    <block type="yadoms_logic_compare_is"></block>';
+    toolbox += '    <block type="yadoms_sleep">';
+    toolbox += '        <value name="Time">';
+    toolbox += '           <block type="math_number">';
+    toolbox += '              <field name="NUM">10</field>';
+    toolbox += '           </block>';
+    toolbox += '        </value>';
+    toolbox += '    </block>';
     toolbox += '    <block type="yadoms_log">';
     toolbox += '        <value name="LogContent">';
     toolbox += '           <block type="text">';
@@ -752,16 +759,12 @@ Blockly.Yadoms.GetResult = function(callback) {
 };
 
 
-
-
-
-
-
 /**
  * Dropdown refresh method
  * The function update the dropdown values, select the first one and call the change handler
  * -> Main blockly hack (not using only public memebers)
- * @param data
+ * @param data The new dropdown values
+ * @param tryToSelectValue The value of new values to select
  */
 Blockly.FieldDropdown.prototype.refresh = function(data, tryToSelectValue) {
     if(data != undefined && data.length >0) {
@@ -838,8 +841,24 @@ Blockly.Blocks['yadoms_keyword_value'] = {
  * @return {*[]}
  */
 Blockly.Python['yadoms_keyword_value'] = function(block) {
+    var readCommand = 'yadoms.readKeyword(' + dropdown_keyword + ')';
+
     var dropdown_keyword = block.getSelectedKeyword();
-    var code = 'yadoms.readKeyword(' + dropdown_keyword + ')';
+    var keyword = Blockly.Yadoms.data.keywords[dropdown_keyword];
+    var code = "";
+
+    switch(keyword.type) {
+        case 'numeric':
+            code = 'float(' + readCommand + ')';
+            break;
+        case 'boolean' :
+            code = 'bool(' + readCommand + ')';
+            break;
+        default:
+            code = readCommand;
+            break;
+    }
+
     return [code, Blockly.Python.ORDER_ATOMIC];
 };
 
@@ -865,7 +884,7 @@ Blockly.Blocks['yadoms_affect_keyword'] = {
       this.setColour(0);
 
       this.appendDummyInput()
-          .appendField("Set");
+          .appendField($.t("blockly.blocks.yadoms_affect_keyword.title"));
       var thisBlock = this;
 
       Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection(this, true, ["numeric", "string", "bool", "nodata", "enum"], function (keyword, keywordType) {
@@ -972,7 +991,7 @@ Blockly.Blocks['yadoms_affect_keyword'] = {
 /**
  * Define the python generation function for yadoms_affect_keyword block
  * @param block The block
- * @return {*[]}
+ * @return {string}
  */
 Blockly.Python['yadoms_affect_keyword'] = function(block) {
     var dropdown_keyword = block.getSelectedKeyword();
@@ -994,7 +1013,7 @@ Blockly.Blocks['yadoms_logic_compare_is_mutator_for'] = {
         this.setPreviousStatement(true, "null");
         this.setNextStatement(false, "null");
         this.setTooltip('');
-        this.appendDummyInput().appendField("For (duration)");
+        this.appendDummyInput().appendField($.t("blockly.blocks.yadoms_logic_compare_is.for.title_long"));
         //noinspection JSValidateTypes
         this.contextMenu = false;
     }
@@ -1009,7 +1028,7 @@ Blockly.Blocks['yadoms_logic_compare_is_mutator_at'] = {
         this.setPreviousStatement(true, "null");
         this.setNextStatement(false, "null");
         this.setTooltip('');
-        this.appendDummyInput().appendField("At (time)");
+        this.appendDummyInput().appendField($.t("blockly.blocks.yadoms_logic_compare_is.at.title_long"));
         //noinspection JSValidateTypes
         this.contextMenu = false;
     }
@@ -1021,7 +1040,7 @@ Blockly.Blocks['yadoms_logic_compare_is_mutator'] = {
     init: function() {
         this.setColour(Blockly.Blocks.logic.HUE);
         this.appendDummyInput()
-            .appendField("Is");
+            .appendField($.t("blockly.blocks.yadoms_logic_compare_is.title"));
         this.appendStatementInput('STACK');
         //noinspection JSValidateTypes
         this.contextMenu = false;
@@ -1039,7 +1058,7 @@ Blockly.Blocks['yadoms_logic_compare_is'] = {
         this.setHelpUrl('http://www.example.com/');
         this.setColour(210);
         this.appendDummyInput()
-            .appendField("Is");
+            .appendField($.t("blockly.blocks.yadoms_logic_compare_is.title"));
         this.appendValueInput("A");
         this.appendValueInput("B").appendField(new Blockly.FieldDropdown([['=', 'EQ']]), "OP");
         this.setInputsInline(true);
@@ -1213,19 +1232,19 @@ Blockly.Blocks['yadoms_logic_compare_is'] = {
         this.isAtMutator = false;
 
         var durationUnitsEnum =[
-            ['heures', 'H'],
-            ['minutes', 'M'],
-            ['secondes', 'S'],
-            ['jours', 'D']
+            [$.t("blockly.global.durationUnits.seconds"), 'S'],
+            [$.t("blockly.global.durationUnits.minutes"), 'M'],
+            [$.t("blockly.global.durationUnits.hours"), 'H'],
+            [$.t("blockly.global.durationUnits.days"), 'D']
         ];
 
         if(forMutator) {
-            this.appendDummyInput("duration_text").appendField("For");
+            this.appendDummyInput("duration_text").appendField($.t("blockly.blocks.yadoms_logic_compare_is.for.title"));
             this.appendValueInput("duration").setCheck("Number");
             this.appendDummyInput("duration_unit").appendField(new Blockly.FieldDropdown(durationUnitsEnum), "durationUnit");
             this.isForMutator = true;
         } else if(atMutator) {
-            this.appendDummyInput("at_text").appendField("At");
+            this.appendDummyInput("at_text").appendField($.t("blockly.blocks.yadoms_logic_compare_is.at.title"));
             this.appendDummyInput("at")
                 .appendTitle(new Blockly.FieldTextInput('00:00', function(text) {
                     if (text.match(/^([01]?[0-9]|2[0-3]):[0-5][0-9]/))
@@ -1325,7 +1344,7 @@ Blockly.Blocks['yadoms_logic_compare_become'] = {
         this.setHelpUrl('http://www.example.com/');
         this.setColour(210);
         this.appendDummyInput()
-            .appendField("Become");
+            .appendField($.t("blockly.blocks.yadoms_logic_compare_become.title"));
         this.appendValueInput("A");
         this.appendValueInput("B").appendField(new Blockly.FieldDropdown([['=', 'EQ']]), "OP");
         this.setInputsInline(true);
@@ -1489,7 +1508,7 @@ Blockly.Blocks['yadoms_enumeration'] = {
     enumerationDropDownName : "enumerationList",
     currentEnumerationTypeName : "",
     init: function() {
-        var enumDropDown = new Blockly.FieldDropdown([["enumeration", "enumeration"]]);
+        var enumDropDown = new Blockly.FieldDropdown([[$.t("blockly.blocks.yadoms_enumeration.title"), "enumeration"]]);
 
         this.setHelpUrl('http://www.example.com/');
         this.setColour(20);
@@ -1566,8 +1585,8 @@ Blockly.Blocks['yadoms_log'] = {
         this.setColour(160);
         this.appendValueInput("LogContent")
             .setCheck("String")
-            .appendField("Log")
-            .appendField(new Blockly.FieldDropdown([["debug", "debug"], ["info", "info"], ["warning", "warning"], ["error", "error"], ["fatal", "fatal"]]), "LogLevel");
+            .appendField( $.t("blockly.blocks.yadoms_log.title") )
+            .appendField(new Blockly.FieldDropdown([[$.t("blockly.blocks.yadoms_log.logLevel.debug"), "debug"], [$.t("blockly.blocks.yadoms_log.logLevel.info"), "info"], [$.t("blockly.blocks.yadoms_log.logLevel.warning"), "warning"], [$.t("blockly.blocks.yadoms_log.logLevel.error"), "error"], [$.t("blockly.blocks.yadoms_log.logLevel.fatal"), "fatal"]]), "LogLevel");
         this.setPreviousStatement(true, "null");
         this.setNextStatement(true, "null");
         this.setTooltip('');
@@ -1579,15 +1598,70 @@ Blockly.Blocks['yadoms_log'] = {
  * @param block The block
   */
 Blockly.Python['yadoms_log'] = function(block) {
-    var value_name = Blockly.Python.valueToCode(block, 'LogContent', Blockly.Python.ORDER_ATOMIC) || '\'\'';;
+    var value_name = Blockly.Python.valueToCode(block, 'LogContent', Blockly.Python.ORDER_ATOMIC) || '\'\'';
     var dropdown_loglevel = Blockly.Python.quote_(block.getFieldValue('LogLevel'));
     return 'yadoms.log(' + dropdown_loglevel + ',' + value_name + ')\n';
 };
 
 
+/**
+ * Define the yadoms_sleep block (allow current rule to sleep)
+ * @param block The block
+ * @return {*[]}
+ */
+Blockly.Blocks['yadoms_sleep'] = {
+    init: function() {
+
+        var durationUnitsEnum =[
+            [$.t("blockly.global.durationUnits.seconds"), 'S'],
+            [$.t("blockly.global.durationUnits.minutes"), 'M'],
+            [$.t("blockly.global.durationUnits.hours"), 'H'],
+            [$.t("blockly.global.durationUnits.days"), 'D']
+        ];
+
+        this.setHelpUrl('http://www.example.com/');
+        this.setColour(20);
+        this.appendValueInput("Time")
+            .setCheck("Number")
+            .appendField( $.t("blockly.blocks.yadoms_sleep.title") );
+        this.appendDummyInput()
+            .appendField(new Blockly.FieldDropdown(durationUnitsEnum), "timeUnit");
+        this.setInputsInline(true);
+        this.setPreviousStatement(true, "null");
+        this.setNextStatement(true, "null");
+        this.setTooltip('');
+    }
+};
 
 
 
+/**
+ * Define the python generation function for yadoms_sleep block
+ * @param block The block
+ */
+Blockly.Python['yadoms_sleep'] = function(block) {
+    var value_time = Blockly.JavaScript.valueToCode(block, 'Time', Blockly.JavaScript.ORDER_ATOMIC);
+    var dropdown_name = block.getFieldValue('timeUnit');
+
+    var valueInSeconds = value_time;
+    switch(dropdown_name)
+    {
+        case 'D':
+            valueInSeconds = value_time * 60 * 60 * 24;
+            break;
+        case 'H':
+            valueInSeconds = value_time * 60 * 60;
+            break;
+        case 'M':
+            valueInSeconds = value_time * 60;
+            break;
+        case 'S':
+            valueInSeconds = value_time;
+            break;
+    }
+
+    return 'time.sleep(' + valueInSeconds + ')';
+};
 
 
 
