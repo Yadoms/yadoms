@@ -139,7 +139,7 @@ namespace authentication {
             }
          }
       }
-      catch (std::exception & ex)
+      catch (std::exception &)
       {
          YADOMS_LOG(warning) << "Can not find configuration item : system.basicAuthentication, disable authentication";
          m_isAuthenticationActive = false;
