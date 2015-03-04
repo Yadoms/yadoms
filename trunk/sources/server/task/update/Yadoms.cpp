@@ -38,11 +38,11 @@ namespace task { namespace update {
 
          std::string baseUrl = "http://10.10.109.26/files/NHI/yadoms.com";
 
-         //TODO : recuperer plateforme dynamiquement
+         //TODO : recuperer plateforme dynamiquement (cf POCO)
          std::string platform = "windows";
 
          std::ostringstream lastVersion;
-         tools::web::CFileDownloader::downloadFile(baseUrl + "/" + platform + "/lastversion.json.txt",
+         tools::web::CFileDownloader::downloadFile(baseUrl + "/" + platform + "/lastversion.json",
                                                    lastVersion, 
                                                    boost::bind(&CYadoms::onDownloadReportProgress, this, _1, _2));
          std::string data = lastVersion.str();
@@ -64,7 +64,7 @@ namespace task { namespace update {
             pFunctor(0.0f, "Downloading package");
             std::string fileToDownload = lv.get<std::string>("yadoms.information.softwarePackage");
             
-            //TODO : get temp folder from a global system provider
+            //TODO : get temp folder from a global system provider (cf POCO)
             boost::filesystem::path tempFolder("tmp/");
             //TODO : this part must be managed by the global folder before returning it
             if (!boost::filesystem::exists(tempFolder))

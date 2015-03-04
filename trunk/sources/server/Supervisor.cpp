@@ -69,8 +69,7 @@ void CSupervisor::doWork()
       taskManager->start();
 
       // Create the Plugin manager
-      boost::shared_ptr<pluginSystem::CManager> pluginManager(new pluginSystem::CManager(
-         m_startupOptions.getPluginsPath(), pDataProvider, dal, m_EventHandler, kPluginManagerEvent, m_stopHandler));
+      boost::shared_ptr<pluginSystem::CManager> pluginManager(new pluginSystem::CManager(pDataProvider, dal, m_EventHandler, kPluginManagerEvent, m_stopHandler));
 
       // Start the plugin gateway
       boost::shared_ptr<communication::CPluginGateway> pluginGateway(new communication::CPluginGateway(pDataProvider, dal->getAcquisitionHistorizer(), pluginManager));
@@ -89,7 +88,6 @@ void CSupervisor::doWork()
 
       web::poco::CWebServer webServer(webServerIp, webServerPort, webServerPath, "/rest/", "/ws", notificationCenter);
       webServer.getConfigurator()->configureAuthentication(boost::shared_ptr<authentication::IAuthentication>(new authentication::CBasicAuthentication(dal->getConfigurationManager(), notificationCenter, m_startupOptions.getNoPasswordFlag())));
-      webServer.getConfigurator()->websiteHandlerAddAlias("plugins", m_startupOptions.getPluginsPath());
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPlugin(pDataProvider, pluginManager, *pluginGateway)));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CDevice(pDataProvider, *pluginGateway)));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPage(pDataProvider)));

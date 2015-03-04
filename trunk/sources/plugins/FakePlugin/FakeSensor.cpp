@@ -83,6 +83,7 @@ void CFakeSensor::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) co
    context->historizeData(m_deviceName, m_batteryLevel);
    context->historizeData(m_deviceName, m_rssi        );
    context->historizeData(m_deviceName, m_dateTime    );
+   context->historizeData(m_deviceName, m_current);
 }
 
 const std::string& CFakeSensor::getDeviceName() const

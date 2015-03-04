@@ -25,10 +25,6 @@ void CLoader::buildOptionsDescription()
       "set log level, accepted values are : none, fatal, critical, error, warning, notice, information, debug, trace")
       ("databaseFile,D", po::value<std::string>(&m_databaseFile)->default_value("yadoms.db3"),
       "use a specific dataBase file")
-      ("pluginsPath,P", po::value<CMustExistPathOption>(&m_PluginsPath)->default_value(CMustExistPathOption("plugins")),
-      "use a specific path for plugins")
-      ("widgetsPath,W", po::value<CMustExistPathOption>(&m_widgetsPath)->default_value(CMustExistPathOption("widgets")),
-      "use a specific path to widgets path")
       ("debug", po::bool_switch(&m_debugFlag)->default_value(false), "activate the debug mode (log files are separated by thread)")
       ("noPassword", po::bool_switch(&m_noPasswordFlag)->default_value(false), "Skip password authentication for this instance")
       ;

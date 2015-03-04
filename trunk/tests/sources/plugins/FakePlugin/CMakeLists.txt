@@ -7,6 +7,8 @@ IF(NOT DISABLE_TEST_FAKEPLUGIN)
       shared/shared/plugin/yPluginApi/historization/Historizers.h
       shared/shared/plugin/yPluginApi/historization/Counter.cpp
       shared/shared/plugin/yPluginApi/historization/Counter.h
+      shared/shared/plugin/yPluginApi/historization/Current.cpp
+      shared/shared/plugin/yPluginApi/historization/Current.h
       shared/shared/plugin/yPluginApi/historization/Curtain.cpp
       shared/shared/plugin/yPluginApi/historization/Curtain.h
       shared/shared/plugin/yPluginApi/historization/DateTime.cpp
@@ -20,6 +22,17 @@ IF(NOT DISABLE_TEST_FAKEPLUGIN)
       shared/shared/plugin/yPluginApi/historization/Switch.h
       shared/shared/plugin/yPluginApi/historization/Temperature.cpp
       shared/shared/plugin/yPluginApi/historization/Temperature.h
+      
+      shared/shared/plugin/yPluginApi/historization/typeInfo/ITypeInfo.h
+      shared/shared/plugin/yPluginApi/historization/typeInfo/EmptyTypeInfo.h
+      shared/shared/plugin/yPluginApi/historization/typeInfo/EmptyTypeInfo.cpp
+      shared/shared/plugin/yPluginApi/historization/typeInfo/IntTypeInfo.h
+      shared/shared/plugin/yPluginApi/historization/typeInfo/IntTypeInfo.cpp
+      shared/shared/plugin/yPluginApi/historization/typeInfo/DoubleTypeInfo.h
+      shared/shared/plugin/yPluginApi/historization/typeInfo/DoubleTypeInfo.cpp
+      shared/shared/plugin/yPluginApi/historization/typeInfo/StringTypeInfo.h
+      shared/shared/plugin/yPluginApi/historization/typeInfo/StringTypeInfo.cpp
+      shared/shared/plugin/yPluginApi/historization/typeInfo/EnumTypeInfo.hpp   
    
       shared/shared/DataContainer.h
       shared/shared/DataContainer.cpp

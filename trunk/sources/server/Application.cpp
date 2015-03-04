@@ -46,8 +46,8 @@ int CApplication::run()
       YADOMS_LOG(information) << "\tWeb server ip = " << m_startupOptions->getWebServerIPAddress();
       YADOMS_LOG(information) << "\tWeb server path = " << m_startupOptions->getWebServerInitialPath();
       YADOMS_LOG(information) << "\tdb path = " << m_startupOptions->getDatabaseFile();
-      YADOMS_LOG(information) << "\tplugins path = " << m_startupOptions->getPluginsPath();
-      YADOMS_LOG(information) << "\twidgets path = " << m_startupOptions->getWidgetsPath();
+      if (m_startupOptions->getNoPasswordFlag())
+         YADOMS_LOG(information) << "\tnoPassword = true";
       YADOMS_LOG(information) << "********************************************************************";
 
       startupOptions::IStartupOptions & opt = *m_startupOptions.get();
