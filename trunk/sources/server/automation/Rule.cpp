@@ -7,10 +7,10 @@ namespace automation
 {
 
 CRule::CRule(boost::shared_ptr<const database::entities::CRule> ruleData,
-   boost::shared_ptr<script::IFactory> scriptFactory, boost::shared_ptr<IRuleErrorHandler> ruleErrorHandler)
+   boost::shared_ptr<script::IFactory> scriptFactory, boost::shared_ptr<IRuleStateHandler> ruleStateHandler)
    :m_ruleData(ruleData),
    m_scriptFactory(scriptFactory),
-   m_ruleErrorHandler(ruleErrorHandler)
+   m_ruleStateHandler(ruleStateHandler)
 {
 }
 
@@ -49,15 +49,15 @@ void CRule::doWork()
          boost::this_thread::interruption_point();
       } while (m_runner->isOk());
 
-      m_ruleErrorHandler->signalRuleError(m_ruleData->Id(), (boost::format("%1% exit with error : %2%") % m_ruleData->Name() % m_runner->error()).str());
+      m_ruleStateHandler->signalRuleError(m_ruleData->Id(), (boost::format("%1% exit with error : %2%") % m_ruleData->Name() % m_runner->error()).str());
    }
    catch (shared::exception::CInvalidParameter& e)
    {
-      m_ruleErrorHandler->signalRuleError(m_ruleData->Id(), (boost::format("%1% : Unable to do action : %2%") % m_ruleData->Name() % e.what()).str());
+      m_ruleStateHandler->signalRuleError(m_ruleData->Id(), (boost::format("%1% : Unable to do action : %2%") % m_ruleData->Name() % e.what()).str());
    }
    catch (boost::thread_interrupted&)
    {
-      m_ruleErrorHandler->signalNormalRuleStop(m_ruleData->Id());
+      m_ruleStateHandler->signalNormalRuleStop(m_ruleData->Id());
    }
 }
 

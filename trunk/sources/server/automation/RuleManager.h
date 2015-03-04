@@ -1,7 +1,7 @@
 #pragma once
 #include "IRuleManager.h"
 #include "IRule.h"
-#include "IRuleErrorHandler.h"
+#include "IRuleStateHandler.h"
 #include "script/IFactory.h"
 #include "database/IRuleRequester.h"
 #include "../communication/ISendMessageAsync.h"
@@ -24,10 +24,13 @@ namespace automation
       ///\param[in] notificationCenter Notification center, used to get notified on keyword state changes
       ///\param[in] dbAcquisitionRequester  Database acquisition requester
       ///\param[in] eventLoggerRequester  Event logger requester
+      ///\param[in] supervisor     the supervisor event handler
+      ///\param[in] ruleManagerEventId    The ID to use to send events to supervisor
       //-----------------------------------------------------
       CRuleManager(boost::shared_ptr<database::IRuleRequester> dbRequester, boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
          boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter, boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
-         boost::shared_ptr<database::IEventLoggerRequester> eventLoggerRequester);
+         boost::shared_ptr<database::IEventLoggerRequester> eventLoggerRequester,
+         boost::shared_ptr<shared::event::CEventHandler> supervisor, int ruleManagerEventId);
 
       //-----------------------------------------------------
       ///\brief               Destructor
@@ -44,6 +47,7 @@ namespace automation
       virtual void updateRuleCode(int id, const std::string& code);
       virtual void deleteRule(int id);
       virtual void restartRule(int id);
+      virtual void signalEvent(const CManagerEvent& event);
       // [END] IRuleManager Implementation
 
    protected:
@@ -52,11 +56,6 @@ namespace automation
       ///\brief               Start all rules
       //-----------------------------------------------------
       void startAllRules();
-
-      //-----------------------------------------------------
-      ///\brief               Stop all rules
-      //-----------------------------------------------------
-      void stopAllRules();
 
       //-----------------------------------------------------
       ///\brief               Start a rule from configured rule data
@@ -88,9 +87,9 @@ namespace automation
       std::map<int, boost::shared_ptr<IRule> > m_startedRules;
 
       //-----------------------------------------------------
-      ///\brief               The rule error handler
+      ///\brief               The rule state handler
       //-----------------------------------------------------
-      boost::shared_ptr<IRuleErrorHandler> m_ruleErrorHandler;
+      boost::shared_ptr<IRuleStateHandler> m_ruleStateHandler;
    };
 	
 } // namespace automation	

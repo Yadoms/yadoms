@@ -187,11 +187,8 @@ namespace web { namespace rest { namespace service {
          ruleData->fillFromContent(requestContent);
 
          // Check for supported modifications
-         if (ruleData->Id.isDefined())
-         {
-            BOOST_ASSERT(false); // rule Id is not modifiable
+         if (ruleData->Id.isDefined() && ruleData->Id != ruleId)
             throw CRuleException("Rule Id is not modifiable");
-         }
 
          ruleData->Id = ruleId;
          m_rulesManager->updateRule(ruleData);
