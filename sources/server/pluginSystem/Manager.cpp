@@ -19,14 +19,15 @@
 namespace pluginSystem
 {
 
+   const boost::filesystem::path CManager::m_pluginPath = boost::filesystem::path("plugins");
+
 CManager::CManager(
-   const std::string& initialDir,
    boost::shared_ptr<database::IDataProvider> dataProvider,
    boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
    boost::shared_ptr<shared::event::CEventHandler> supervisor,
    int pluginManagerEventId,
    IApplicationStopHandler& applicationStopHandler)
-   :m_dataProvider(dataProvider), m_pluginDBTable(dataProvider->getPluginRequester()), m_pluginPath(initialDir),
+   :m_dataProvider(dataProvider), m_pluginDBTable(dataProvider->getPluginRequester()),
 #ifdef _DEBUG
    m_qualifier(new CDummyQualifier()),
 #else

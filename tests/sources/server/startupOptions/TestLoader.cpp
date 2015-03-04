@@ -66,8 +66,6 @@ private:
    const std::string m_configFile;
 };
 
-static const std::string testNewPluginPath = "newPluginPath";
-static const std::string testNewWidgetsPath = "newWidgetsPath";
 static const std::string testNewWebServerPath = "newNewWebServerPath";
 static const std::string testFalsePath = "FalsePath";
 
@@ -83,10 +81,10 @@ BOOST_AUTO_TEST_CASE(Initialisation_Test)
    BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "information");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
-   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
 }
 
 //--------------------------------------------------------------
@@ -125,10 +123,10 @@ BOOST_AUTO_TEST_CASE(Different_Port_p_Initialisation)
    BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "information");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)2000);
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
-   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
 }
 
 //--------------------------------------------------------------
@@ -145,10 +143,10 @@ BOOST_AUTO_TEST_CASE(Different_Port_port_Initialisation)
    BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "information");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)2000);
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
-   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
 }
 
 //--------------------------------------------------------------
@@ -165,10 +163,10 @@ BOOST_AUTO_TEST_CASE(Different_Port_por_Initialisation)
    BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "information");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)2000);
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
-   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
 }
 
 //--------------------------------------------------------------
@@ -210,10 +208,10 @@ BOOST_AUTO_TEST_CASE(Different_Database_databaseFile_Initialisation)
    BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "information");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "toto.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
-   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
 }
 
 //--------------------------------------------------------------
@@ -230,10 +228,10 @@ BOOST_AUTO_TEST_CASE(Different_Database_d_Initialisation)
    BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "information");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "toto.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
-   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
 }
 
 //--------------------------------------------------------------
@@ -250,10 +248,10 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_trace_Initialisation)
    BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "trace");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
-   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
 }
 
 //--------------------------------------------------------------
@@ -270,10 +268,10 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_debug_Initialisation)
    BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "debug");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
-   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
 }
 
 //--------------------------------------------------------------
@@ -290,10 +288,10 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_info_Initialisation)
    BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "information");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
-   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
 }
 
 //--------------------------------------------------------------
@@ -310,10 +308,10 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_warning_Initialisation)
    BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "warning");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
-   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
 }
 
 //--------------------------------------------------------------
@@ -330,10 +328,10 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_error_Initialisation)
    BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "error");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
-   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
 }
 
 //--------------------------------------------------------------
@@ -350,10 +348,10 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_fatal_Initialisation)
    BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "fatal");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
-   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
 }
 
 
@@ -371,10 +369,10 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_notice_Initialisation)
    BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "notice");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
-   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
 }
 
 //--------------------------------------------------------------
@@ -391,10 +389,10 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_critical_Initialisation)
    BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "critical");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
-   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
 }
 
 //--------------------------------------------------------------
@@ -439,10 +437,10 @@ BOOST_AUTO_TEST_CASE(Unknow_option_NoError)
    BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "information");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
-   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
 }
 
 //--------------------------------------------------------------
@@ -459,10 +457,10 @@ BOOST_AUTO_TEST_CASE(Different_IP_i_Initialisation)
    BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "information");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
-   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "192.168.1.1");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
 }
 
 //--------------------------------------------------------------
@@ -479,10 +477,10 @@ BOOST_AUTO_TEST_CASE(Different_IP_webServerIp_Initialisation)
    BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "information");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
-   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "192.168.1.1");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
 }
 
 //--------------------------------------------------------------
@@ -524,10 +522,10 @@ BOOST_AUTO_TEST_CASE(Different_WebServer_w_Initialisation)
    BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "information");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
-   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), testNewWebServerPath);
+   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
 }
 
 //--------------------------------------------------------------
@@ -545,10 +543,10 @@ BOOST_AUTO_TEST_CASE(Different_WebServer_webServerPath_Initialisation)
    BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "information");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
-   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), testNewWebServerPath);
+   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
 }
 
 //--------------------------------------------------------------
@@ -561,103 +559,6 @@ BOOST_AUTO_TEST_CASE(Different_WebServer_webServerPath_WrongPath)
 	CTestPath webServerPath(testNewWebServerPath);
    const char *argv[] = {"./TestLoader","--webServerPath",testFalsePath.c_str()};
 
-   BOOST_REQUIRE_EXCEPTION(startupOptions::CLoader StartupOptions (3, argv), startupOptions::CLoaderException, ValidateLoaderExceptionIsError);
-}
-
-//--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with the argument -P
-/// \result         No Error - the plugins path is changed
-//--------------------------------------------------------------
-
-BOOST_AUTO_TEST_CASE(Different_PluginsPath_h_Initialisation)
-{
-   CTestPath pluginPath(testNewPluginPath);
-   const char *argv[] = {"./TestLoader","-P",testNewPluginPath.c_str()};
-
-   startupOptions::CLoader StartupOptions (3, argv);
-
-   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "information");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
-   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),testNewPluginPath);
-   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
-}
-
-//--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with the argument --pluginsPath
-/// \result         No Error - the plugins path is changed
-//--------------------------------------------------------------
-
-BOOST_AUTO_TEST_CASE(Different_PluginsPath_PluginsPath_Initialisation)
-{
-   CTestPath pluginPath(testNewPluginPath);
-   const char *argv[] = {"./TestLoader","--pluginsPath",testNewPluginPath.c_str()};
-
-   startupOptions::CLoader StartupOptions (3, argv);
-
-   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "information");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
-   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),testNewPluginPath);
-   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
-}
-
-//--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with the argument --widgetsPath
-/// \result         No Error - the widgets path is changed
-//--------------------------------------------------------------
-
-BOOST_AUTO_TEST_CASE(Different_WidgetPath_WidgetPath_Initialisation)
-{
-   CTestPath widgetsPath(testNewWidgetsPath);
-   const char *argv[] = {"./TestLoader","--widgetsPath",testNewWidgetsPath.c_str()};
-
-   startupOptions::CLoader StartupOptions (3, argv);
-
-   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "information");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
-   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
-   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),testNewWidgetsPath);
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
-}
-
-//--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with the argument --widgetsPath and a wrong Path
-/// \result         Raise a Exception
-//--------------------------------------------------------------
-
-BOOST_AUTO_TEST_CASE(Different_WidgetPath_False_Path_Initialisation)
-{
-	// Create the path with testNewWidgetsPath
-   CTestPath widgetsPath(testNewWidgetsPath);
-
-   // Argument with the false path
-   const char *argv[] = {"./TestLoader","--widgetsPath",testFalsePath.c_str()};
-
-   //An exception should be throw !
-   BOOST_REQUIRE_EXCEPTION(startupOptions::CLoader StartupOptions (3, argv), startupOptions::CLoaderException, ValidateLoaderExceptionIsError);
-}
-
-//--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with the argument --pluginsPath and a wrong Path
-/// \result         Raise a Exception
-//--------------------------------------------------------------
-
-BOOST_AUTO_TEST_CASE(Different_PluginPath_False_Path_Initialisation)
-{
-	// Create the path with testNewWidgetsPath
-   CTestPath pluginPath(testNewPluginPath);
-
-   // Argument with the false path
-   const char *argv[] = {"./TestLoader","--pluginsPath",testFalsePath.c_str()};
-
-   //An exception should be throw !
    BOOST_REQUIRE_EXCEPTION(startupOptions::CLoader StartupOptions (3, argv), startupOptions::CLoaderException, ValidateLoaderExceptionIsError);
 }
 
@@ -676,10 +577,10 @@ BOOST_AUTO_TEST_CASE(Config_File_Port_Number)
    BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "information");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8085);
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
-   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
 }
 
 //--------------------------------------------------------------
@@ -697,10 +598,10 @@ BOOST_AUTO_TEST_CASE(Config_File_Port_Number_Error1)
    BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "information");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
-   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
 
    // There should no have exception !
    BOOST_REQUIRE_NO_THROW( startupOptions::CLoader StartupOptions (0, NULL) );
@@ -721,54 +622,10 @@ BOOST_AUTO_TEST_CASE(Config_File_database_file)
    BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "information");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "AnOtherFile.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
-   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
-}
-
-//--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with the argument PluginsPath in configuration file
-/// \result         No Error - the plugins path is changed
-//--------------------------------------------------------------
-
-BOOST_AUTO_TEST_CASE(Config_File_PluginsPath)
-{
-   CTestConfigFile config;
-   config.writeSettings("pluginsPath", testNewPluginPath);
-   CTestPath pluginPath(testNewPluginPath);
-
-   startupOptions::CLoader StartupOptions (0, NULL);
-
-   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "information");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
-   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),testNewPluginPath);
-   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
-}
-
-//--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with the argument widgetsPath in configuration file
-/// \result         No Error - the widgets path is changed
-//--------------------------------------------------------------
-
-BOOST_AUTO_TEST_CASE(Config_File_WidgetsPath)
-{
-   CTestPath widgetsPath(testNewWidgetsPath);
-   CTestConfigFile config;
-   config.writeSettings("widgetsPath", testNewWidgetsPath);
-
-   startupOptions::CLoader StartupOptions (0, NULL);
-
-   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "information");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
-   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
-   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),testNewWidgetsPath);
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
 }
 
 //--------------------------------------------------------------
@@ -786,10 +643,10 @@ BOOST_AUTO_TEST_CASE(Config_File_getWebServerIPAddress)
    BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "information");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
-   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "192.168.1.1");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
 }
 
 //--------------------------------------------------------------
@@ -808,10 +665,10 @@ BOOST_AUTO_TEST_CASE(Config_File_webServerPath)
    BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "information");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
-   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), testNewWebServerPath);
+   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
 }
 
 //--------------------------------------------------------------
@@ -829,10 +686,10 @@ BOOST_AUTO_TEST_CASE(Config_File_Log)
    BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "warning");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
-   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
 }
 
 //--------------------------------------------------------------
@@ -842,28 +699,26 @@ BOOST_AUTO_TEST_CASE(Config_File_Log)
 
 BOOST_AUTO_TEST_CASE(Config_File_All_Options1)
 {
-   CTestPath pluginsPath(testNewPluginPath);
-   CTestPath widgetsPath(testNewWidgetsPath);
    CTestPath webServerPath(testNewWebServerPath);
 
    CTestConfigFile config;
    config.writeSettings("logLevel"            , "warning");
    config.writeSettings("port"                , "8085");
    config.writeSettings("databaseFile"        , "test.db3");
-   config.writeSettings("pluginsPath"         , testNewPluginPath);
-   config.writeSettings("widgetsPath"         , testNewWidgetsPath);
    config.writeSettings("webServerIp"         , "192.168.1.2");
    config.writeSettings("webServerPath"       , testNewWebServerPath);
+   config.writeSettings("debug"               , "true");
+   config.writeSettings("noPassword"          , "true");
 
    startupOptions::CLoader StartupOptions (0, NULL);
 
    BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "warning");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8085);
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "test.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),testNewPluginPath);
-   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),testNewWidgetsPath);
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "192.168.1.2");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), testNewWebServerPath);
+   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), true);
+   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), true);
 }
 
 //--------------------------------------------------------------
@@ -873,31 +728,27 @@ BOOST_AUTO_TEST_CASE(Config_File_All_Options1)
 
 BOOST_AUTO_TEST_CASE(All_Options1)
 {
-   CTestPath pluginsPath(testNewPluginPath);
-   CTestPath widgetsPath(testNewWidgetsPath);
    CTestPath webServerPath(testNewWebServerPath);
 
    const char *argv[] =
    {
       "./TestLoader",
-      "--widgetsPath",testNewWidgetsPath.c_str(),
       "--port","8085",
       "--databaseFile","test.db3",
-      "--pluginsPath",testNewPluginPath.c_str(),
       "--webServerIp","192.168.1.3",
       "--webServerPath",testNewWebServerPath.c_str(),
       "--logLevel","warning"
    };
 
-   startupOptions::CLoader StartupOptions (15, argv);
+   startupOptions::CLoader StartupOptions (11, argv);
 
    BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "warning");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8085);
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "test.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),testNewPluginPath);
-   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),testNewWidgetsPath);
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "192.168.1.3");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), testNewWebServerPath);
+   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
 }
 
 //--------------------------------------------------------------
@@ -907,8 +758,6 @@ BOOST_AUTO_TEST_CASE(All_Options1)
 
 BOOST_AUTO_TEST_CASE(All_Options2)
 {
-   CTestPath pluginsPath(testNewPluginPath);
-   CTestPath widgetsPath(testNewWidgetsPath);
    CTestPath webServerPath(testNewWebServerPath);
 
    const char *argv[] =
@@ -916,22 +765,20 @@ BOOST_AUTO_TEST_CASE(All_Options2)
       "./TestLoader",
       "-p","8085",
       "-D","test.db3",
-      "-P",testNewPluginPath.c_str(),
-      "-W",testNewWidgetsPath.c_str(),
       "-i","192.168.1.3",
       "-l","warning",
       "-w",testNewWebServerPath.c_str()
    };
 
-   startupOptions::CLoader StartupOptions (15, argv);
+   startupOptions::CLoader StartupOptions (11, argv);
 
    BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "warning");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8085);
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "test.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),testNewPluginPath);
-   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),testNewWidgetsPath);
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "192.168.1.3");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(),testNewWebServerPath);
+   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
 }
 
 //--------------------------------------------------------------

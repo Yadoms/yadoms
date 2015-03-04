@@ -89,12 +89,13 @@ BOOST_AUTO_TEST_CASE(DeviceDeclaration)
    sensor.declareDevice(context);
 
    // Check keywords declaration
-   BOOST_CHECK_EQUAL(context->getKeywords().size(), (unsigned int)5);
+   BOOST_CHECK_EQUAL(context->getKeywords().size(), (unsigned int)6);
    ckeckKeyword(context, "temp1", sensorId, yApi::CStandardCapacities::Temperature);
    ckeckKeyword(context, "temp2", sensorId, yApi::CStandardCapacities::Temperature);
    ckeckKeyword(context, "Battery", sensorId, yApi::CStandardCapacities::BatteryLevel);
    ckeckKeyword(context, "rssi", sensorId, yApi::CStandardCapacities::Rssi);
    ckeckKeyword(context, "dateTime", sensorId, yApi::CStandardCapacities::DateTime);
+   ckeckKeyword(context, "current", sensorId, yApi::CStandardCapacities::Current);
 }
 
 const CDefaultYPluginApiMock::Data& readLastData(boost::shared_ptr<CDefaultYPluginApiMock> context, const std::string& keyword)
@@ -123,7 +124,7 @@ BOOST_AUTO_TEST_CASE(Historization)
 
    sensor.historizeData(context);
 
-   BOOST_CHECK_EQUAL(context->getData().size(), (unsigned int)5);
+   BOOST_CHECK_EQUAL(context->getData().size(), (unsigned int)6);
    BOOST_CHECK_EQUAL(readLastData(context, "temp1").m_device, sensorId);
    BOOST_CHECK_EQUAL(boost::lexical_cast<double>(readLastData(context, "temp1").m_value), 25.0);
    BOOST_CHECK_EQUAL(readLastData(context, "temp2").m_device, sensorId);
@@ -132,6 +133,8 @@ BOOST_AUTO_TEST_CASE(Historization)
    BOOST_CHECK_EQUAL(boost::lexical_cast<int>(readLastData(context, "Battery").m_value), 100);
    BOOST_CHECK_EQUAL(readLastData(context, "rssi").m_device, sensorId);
    BOOST_CHECK_EQUAL(boost::lexical_cast<int>(readLastData(context, "rssi").m_value), 50);
+   BOOST_CHECK_EQUAL(readLastData(context, "current").m_device, sensorId);
+   BOOST_CHECK_EQUAL(boost::lexical_cast<double>(readLastData(context, "current").m_value), 2.0);
    BOOST_CHECK_EQUAL(readLastData(context, "dateTime").m_device, sensorId);
    boost::posix_time::ptime readLastTime = boost::posix_time::time_from_string(readLastData(context, "dateTime").m_value);
    boost::posix_time::ptime now = boost::posix_time::microsec_clock::local_time();
@@ -141,7 +144,7 @@ BOOST_AUTO_TEST_CASE(Historization)
    sensor.read();
    sensor.historizeData(context);
 
-   BOOST_CHECK_EQUAL(context->getData().size(), (unsigned int)10);
+   BOOST_CHECK_EQUAL(context->getData().size(), (unsigned int)12);
    BOOST_CHECK_EQUAL(readLastData(context, "temp1").m_device, sensorId);
    BOOST_CHECK_GE(boost::lexical_cast<double>(readLastData(context, "temp1").m_value), 24.0);
    BOOST_CHECK_LE(boost::lexical_cast<double>(readLastData(context, "temp1").m_value), 26.0);
@@ -152,6 +155,7 @@ BOOST_AUTO_TEST_CASE(Historization)
    BOOST_CHECK_EQUAL(boost::lexical_cast<int>(readLastData(context, "Battery").m_value), 99);
    BOOST_CHECK_EQUAL(readLastData(context, "rssi").m_device, sensorId);
    BOOST_CHECK_EQUAL(boost::lexical_cast<int>(readLastData(context, "rssi").m_value), 50);
+   BOOST_CHECK_EQUAL(readLastData(context, "current").m_device, sensorId);
    BOOST_CHECK_EQUAL(readLastData(context, "dateTime").m_device, sensorId);
    readLastTime = boost::posix_time::time_from_string(readLastData(context, "dateTime").m_value);
    now = boost::posix_time::microsec_clock::local_time();

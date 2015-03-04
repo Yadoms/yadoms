@@ -45,10 +45,6 @@ namespace startupOptions
          { return m_webServerInitialPath.get(); }
       virtual const std::string& getDatabaseFile() const
          { return m_databaseFile; }
-      virtual const std::string& getPluginsPath() const
-         { return m_PluginsPath.get(); }
-      virtual const std::string& getWidgetsPath() const
-         { return m_widgetsPath.get(); }
       virtual bool getDebugFlag() const
          { return m_debugFlag; }
       virtual bool getNoPasswordFlag() const
@@ -75,8 +71,6 @@ namespace startupOptions
       CValidIpAddressOption m_webServerIPAddress;
       CMustExistPathOption m_webServerInitialPath;
       std::string m_databaseFile;
-      CMustExistPathOption m_PluginsPath;
-      CMustExistPathOption m_widgetsPath;
       bool m_debugFlag;
       bool m_noPasswordFlag;
    };

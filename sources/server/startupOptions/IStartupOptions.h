@@ -46,20 +46,6 @@ namespace startupOptions
       virtual const std::string& getDatabaseFile() const = 0;
 
       //--------------------------------------------------------------
-      /// \brief	    Get the path of the plugins
-      /// \return     Plugins directory (absolute)
-      /// \note       If explicitly provided, path must exist
-      //--------------------------------------------------------------
-      virtual const std::string& getPluginsPath() const = 0;
-
-      //--------------------------------------------------------------
-      /// \brief	    Get the path of the widgets
-      /// \return     Widgets directory (absolute)
-      /// \note       If explicitly provided, path must exist
-      //--------------------------------------------------------------
-      virtual const std::string& getWidgetsPath() const = 0;
-
-      //--------------------------------------------------------------
       /// \brief	    Get the debug flag
       /// \return     flag indicating if debug mode is activated
       //--------------------------------------------------------------
