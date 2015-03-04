@@ -56,6 +56,24 @@ SCRIPT_API_WRAPPER_SOURCES(python ${PYTHON_WRAPPER_SOURCES})
 SCRIPT_API_WRAPPER_INCLDIR(${PYTHON_WRAPPER_INCLDIR})
 SCRIPT_API_WRAPPER_LINK(${PYTHON_WRAPPER_LINK})
 
+
+##################################################################################################
+## COTIRE
+##################################################################################################
+if(COTIRE_USE)
+   
+   if(COTIRE_USE_UNITY)
+      set_target_properties(_yScriptApiWrapper PROPERTIES COTIRE_ADD_UNITY_BUILD TRUE)
+   else()
+      set_target_properties(_yScriptApiWrapper PROPERTIES COTIRE_ADD_UNITY_BUILD FALSE)
+   endif()
+   
+   cotire(_yScriptApiWrapper)
+   
+endif()	
+   
+
+
 #########################################
 ## Add post-build step to deploy Swig-generated file
 #########################################
@@ -63,7 +81,7 @@ add_custom_command(TARGET _yScriptApiWrapper POST_BUILD
    COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_BINARY_DIR}/yScriptApiWrapper.py $<TARGET_FILE_DIR:_yScriptApiWrapper>/yScriptApiWrapper.py)
 if(COTIRE_USE)
    if(COTIRE_USE_UNITY)
-      add_custom_command(TARGET _yScriptApiWrapper POST_BUILD
+      add_custom_command(TARGET _yScriptApiWrapper_unity POST_BUILD
          COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_BINARY_DIR}/yScriptApiWrapper.py $<TARGET_FILE_DIR:_yScriptApiWrapper_unity>/yScriptApiWrapper.py)
   endif()	
 endif()
