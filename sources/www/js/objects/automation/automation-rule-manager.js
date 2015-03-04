@@ -146,7 +146,7 @@ AutomationRuleManager.updateToServer = function(rule, callback) {
          }
          //it's okay
          //we update our information from the server
-         rule = DeviceManager.factory(data.data);
+         rule = AutomationRuleManager.factory(data.data);
 
          //we call the callback with true as a ok result
          if ($.isFunction(callback))

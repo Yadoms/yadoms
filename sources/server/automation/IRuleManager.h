@@ -1,5 +1,6 @@
 #pragma once
 #include "../database/entities/Entities.h"
+#include "ManagerEvent.h"
 
 namespace automation
 {
@@ -79,6 +80,12 @@ namespace automation
       /// \throw CRuleException           If error starting rule
       //--------------------------------------------------------------
       virtual void restartRule(int id) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief           Signal an asynchronous event on plugin manager
+      /// \param [in] event   Event data
+      //--------------------------------------------------------------
+      virtual void signalEvent(const CManagerEvent& event) = 0;
    };
 	
 } // namespace automation	

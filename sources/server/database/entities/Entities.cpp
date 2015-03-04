@@ -29,6 +29,7 @@ namespace database { namespace entities {
 
 
    DECLARE_ENUM_IMPLEMENTATION(ESystemEventCode,
+      ((RuleFailed))
       ((ThreadFailed))
       ((TaskFailed))
       ((PluginDisabled))

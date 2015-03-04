@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "RuleManager.h"
-#include "RuleErrorHandler.h"
+#include "RuleStateHandler.h"
 #include "database/IRuleRequester.h"
 #include "Rule.h"
 #include "script/Factory.h"
@@ -12,18 +12,18 @@ namespace automation
 {
 
 CRuleManager::CRuleManager(boost::shared_ptr<database::IRuleRequester> dbRequester, boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
-         boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter, boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
-         boost::shared_ptr<database::IEventLoggerRequester> eventLoggerRequester)
+   boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter, boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
+   boost::shared_ptr<database::IEventLoggerRequester> eventLoggerRequester,
+   boost::shared_ptr<shared::event::CEventHandler> supervisor, int ruleManagerEventId)
    :m_dbRequester(dbRequester),
    m_scriptFactory(new script::CFactory("scriptInterpreters", pluginGateway, notificationCenter, dbAcquisitionRequester)),
-   m_ruleErrorHandler(new CRuleErrorHandler(dbRequester, eventLoggerRequester))
+   m_ruleStateHandler(new CRuleStateHandler(dbRequester, eventLoggerRequester, supervisor, ruleManagerEventId))
 {
    startAllRules();
 }
 
 CRuleManager::~CRuleManager()
 {
-   stopAllRules();
 }
 
 void CRuleManager::startAllRules()
@@ -49,13 +49,7 @@ void CRuleManager::startAllRules()
    }
 
    if (error)
-      m_ruleErrorHandler->signalRulesStartError("One or more automation rules failed to start, check automation rules page for details");
-}
-
-void CRuleManager::stopAllRules()
-{
-   // Free all rules (will stop rules)
-   m_startedRules.clear();
+      m_ruleStateHandler->signalRulesStartError("One or more automation rules failed to start, check automation rules page for details");
 }
 
 std::vector<std::string> CRuleManager::getAvailableInterpreters()
@@ -75,28 +69,28 @@ void CRuleManager::startRule(int ruleId)
       if (m_startedRules.find(ruleData->Id()) != m_startedRules.end())
          return;  // Rule already started
 
-      m_ruleErrorHandler->signalRuleStart(ruleId);
+      m_ruleStateHandler->signalRuleStart(ruleId);
 
-      boost::shared_ptr<IRule> newRule(new CRule(ruleData, m_scriptFactory, m_ruleErrorHandler));
+      boost::shared_ptr<IRule> newRule(new CRule(ruleData, m_scriptFactory, m_ruleStateHandler));
       m_startedRules[ruleId] = newRule;
       newRule->start();
    }
    catch(shared::exception::CEmptyResult& e)
    {
       const std::string& error((boost::format("Invalid rule %1%, element not found in database : %2%") % ruleId % e.what()).str());
-      m_ruleErrorHandler->signalRuleError(ruleId, error);
+      m_ruleStateHandler->signalRuleError(ruleId, error);
       throw CRuleException(error);
    }
    catch(shared::exception::CInvalidParameter& e)
    {
       const std::string& error((boost::format("Invalid rule %1% configuration, invalid parameter : %2%") % ruleId % e.what()).str());
-      m_ruleErrorHandler->signalRuleError(ruleId, error);
+      m_ruleStateHandler->signalRuleError(ruleId, error);
       throw CRuleException(error);
    }
    catch(shared::exception::COutOfRange& e)
    {
       const std::string& error((boost::format("Invalid rule %1% configuration, out of range : %2%") % ruleId % e.what()).str());
-      m_ruleErrorHandler->signalRuleError(ruleId, error);
+      m_ruleStateHandler->signalRuleError(ruleId, error);
       throw CRuleException(error);
    }
 }
@@ -211,8 +205,38 @@ void CRuleManager::deleteRule(int id)
 
 void CRuleManager::restartRule(int id)
 {
+   if (m_startedRules.find(id) != m_startedRules.end())
+      throw CRuleException((boost::format("Rule %1% already started") % id).str());
+
+   boost::shared_ptr<const database::entities::CRule> ruleData(m_dbRequester->getRule(id));
+   if (ruleData->State() != database::entities::ERuleState::kErrorValue)
+      throw CRuleException((boost::format("Rule %1% not in error state, can not be restarted") % id).str());
+
    startRule(id);
 }
+
+void CRuleManager::signalEvent(const CManagerEvent& event)
+{
+   switch (event.getSubEventId())
+   {
+   case CManagerEvent::kRuleAbnormalStopped:
+   {
+      // The rule has stopped in a non-conventional way (probably crashed)
+
+      // First perform the full stop
+      stopRule(event.getRuleId());
+
+      break;
+   }
+   default:
+   {
+      YADOMS_LOG(error) << "Unknown message id";
+      BOOST_ASSERT(false);
+      break;
+   }
+   }
+}
+
 
 } // namespace automation	
 	

@@ -19,6 +19,8 @@ CScriptLoader::~CScriptLoader()
 
 void CScriptLoader::load()
 {
+   PyErr_Clear();
+
    // Check script path
    if (!m_scriptFile->exists())
       throw CRunnerException((boost::format("script file %1% doesn't exist") % m_scriptFile->pathName()).str());

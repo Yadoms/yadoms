@@ -1,22 +1,25 @@
 #include "stdafx.h"
 #include <shared/shared/event/Now.h>
 #include <shared/Log.h>
-#include "RuleErrorHandler.h"
+#include "RuleStateHandler.h"
 #include "RuleException.hpp"
+#include "ManagerEvent.h"
 
 namespace automation
 {
 
-CRuleErrorHandler::CRuleErrorHandler(boost::shared_ptr<database::IRuleRequester> ruleRequester, boost::shared_ptr<database::IEventLoggerRequester> eventLoggerRequester)
-   :m_ruleRequester(ruleRequester), m_eventLoggerRequester(eventLoggerRequester)
+CRuleStateHandler::CRuleStateHandler(boost::shared_ptr<database::IRuleRequester> dbRequester,
+   boost::shared_ptr<database::IEventLoggerRequester> eventLoggerRequester,
+   boost::shared_ptr<shared::event::CEventHandler> supervisor, int ruleManagerEventId)
+   :m_ruleRequester(dbRequester), m_eventLoggerRequester(eventLoggerRequester), m_supervisor(supervisor), m_ruleManagerEventId(ruleManagerEventId)
 {
 }
 
-CRuleErrorHandler::~CRuleErrorHandler()
+CRuleStateHandler::~CRuleStateHandler()
 {
 }
 
-void CRuleErrorHandler::signalRuleStart(int ruleId)
+void CRuleStateHandler::signalRuleStart(int ruleId)
 {
    // Record event
    boost::shared_ptr<database::entities::CRule> ruleData(new database::entities::CRule);
@@ -29,7 +32,7 @@ void CRuleErrorHandler::signalRuleStart(int ruleId)
    YADOMS_LOG(information) << "Start rule #" << ruleId;
 }
 
-void CRuleErrorHandler::signalNormalRuleStop(int ruleId)
+void CRuleStateHandler::signalNormalRuleStop(int ruleId)
 {
    // Record event
    boost::shared_ptr<database::entities::CRule> ruleData(new database::entities::CRule);
@@ -42,7 +45,7 @@ void CRuleErrorHandler::signalNormalRuleStop(int ruleId)
    YADOMS_LOG(information) << "Stop rule #" << ruleId;
 }
 
-void CRuleErrorHandler::signalRuleError(int ruleId, const std::string& error)
+void CRuleStateHandler::signalRuleError(int ruleId, const std::string& error)
 {
    // Record error
    boost::shared_ptr<database::entities::CRule> ruleData(new database::entities::CRule);
@@ -54,10 +57,14 @@ void CRuleErrorHandler::signalRuleError(int ruleId, const std::string& error)
 
    // Signal error
    YADOMS_LOG(error) << error;
-   m_eventLoggerRequester->addEvent(database::entities::ESystemEventCode::kRuleFailedValue, ruleData->Name(), error);
+   m_eventLoggerRequester->addEvent(database::entities::ESystemEventCode::kRuleFailedValue, m_ruleRequester->getRule(ruleId)->Name(), error);
+
+   // Signal the abnormal stop to asynchronously remove from list
+   CManagerEvent event(CManagerEvent::kRuleAbnormalStopped, ruleId);
+   m_supervisor->postEvent<CManagerEvent>(m_ruleManagerEventId, event);
 }
 
-void CRuleErrorHandler::signalRulesStartError(const std::string& error)
+void CRuleStateHandler::signalRulesStartError(const std::string& error)
 {
    // Signal error
    YADOMS_LOG(error) << error;

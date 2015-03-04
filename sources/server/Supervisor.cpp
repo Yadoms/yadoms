@@ -79,7 +79,8 @@ void CSupervisor::doWork()
 
       // Start automation rules manager
       boost::shared_ptr<automation::IRuleManager> automationRulesManager(new automation::CRuleManager(
-         pDataProvider->getRuleRequester(), pluginGateway, notificationCenter, pDataProvider->getAcquisitionRequester(), pDataProvider->getEventLoggerRequester()));
+         pDataProvider->getRuleRequester(), pluginGateway, notificationCenter, pDataProvider->getAcquisitionRequester(), pDataProvider->getEventLoggerRequester(),
+         m_EventHandler, kRuleManagerEvent));
 
       // Start Web server
       const std::string & webServerIp = m_startupOptions.getWebServerIPAddress();
@@ -119,6 +120,10 @@ void CSupervisor::doWork()
 
          case kPluginManagerEvent:
             pluginManager->signalEvent(m_EventHandler->getEventData<pluginSystem::CManagerEvent>());
+            break;
+
+         case kRuleManagerEvent:
+            automationRulesManager->signalEvent(m_EventHandler->getEventData<automation::CManagerEvent>());
             break;
 
          case kSystemEvent:

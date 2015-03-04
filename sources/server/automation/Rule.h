@@ -3,7 +3,7 @@
 #include "RuleThread.h"
 #include "script/IFactory.h"
 #include "../database/sqlite/requesters/Rule.h"
-#include <server/automation/IRuleErrorHandler.h>
+#include "IRuleStateHandler.h"
 
 namespace automation
 {
@@ -17,10 +17,10 @@ namespace automation
       ///\brief               Constructor
       ///\param[in] ruleData   Rule data (ID, name, conditions, actions...)
       ///\param[in] scriptFactory The script factory
-      ///\param[in] ruleErrorHandler The rule error handler
+      ///\param[in] ruleStateHandler The rule state handler
       //-----------------------------------------------------
       CRule(boost::shared_ptr<const database::entities::CRule> ruleData,
-         boost::shared_ptr<script::IFactory> scriptFactory, boost::shared_ptr<IRuleErrorHandler> ruleErrorHandler);
+         boost::shared_ptr<script::IFactory> scriptFactory, boost::shared_ptr<IRuleStateHandler> ruleStateHandler);
 
       //-----------------------------------------------------
       ///\brief               Destructor
@@ -59,9 +59,9 @@ namespace automation
       boost::shared_ptr<shared::script::IRunner> m_runner;
 
       //-----------------------------------------------------
-      ///\brief               The rule error handler
+      ///\brief               The rule state handler
       //-----------------------------------------------------
-      boost::shared_ptr<IRuleErrorHandler> m_ruleErrorHandler;
+      boost::shared_ptr<IRuleStateHandler> m_ruleStateHandler;
    };
 	
 } // namespace automation	

@@ -3,15 +3,15 @@
 namespace automation
 {
    //-----------------------------------------------------
-   ///\brief The rules error management interface
+   ///\brief The rules state management interface
    //-----------------------------------------------------
-   class IRuleErrorHandler
+   class IRuleStateHandler
    {
    public:
       //-----------------------------------------------------
       ///\brief               Destructor
       //-----------------------------------------------------
-      virtual ~IRuleErrorHandler() {}
+      virtual ~IRuleStateHandler() {}
 
       //-----------------------------------------------------
       ///\brief               Signal the start of the rule
