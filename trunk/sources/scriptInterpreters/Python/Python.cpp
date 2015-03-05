@@ -6,7 +6,7 @@
 #include <shared/Log.h>
 #include "PythonObject.h"
 #include "Runner.h"
-#include "RunnerException.hpp"
+#include "PythonException.hpp"
 #include "ScriptLoader.h"
 #include "ScriptFile.h"
 #include "SubInterpreter.h"
