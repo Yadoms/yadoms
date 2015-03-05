@@ -94,7 +94,7 @@ namespace automation { namespace script
       ///\brief               List of loaded interpreters
       ///\details key is the library file name (without path and extension)
       //-----------------------------------------------------
-      std::map<std::string, boost::shared_ptr<IInterpreterLibrary> > m_LoadedInterpreters;
+      std::map<std::string, boost::shared_ptr<IInterpreterLibrary> > m_loadedInterpreters;
    };
 
 } } // namespace automation::script

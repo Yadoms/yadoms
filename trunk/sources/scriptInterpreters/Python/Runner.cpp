@@ -2,7 +2,7 @@
 #include "Runner.h"
 #include "PythonLibInclude.h"
 #include <shared/Log.h>
-#include "RunnerException.hpp"
+#include "PythonException.hpp"
 #include "PythonObject.h"
 #include "PythonBorrowedObject.h"
 #include <shared/DataContainer.h>
@@ -39,17 +39,17 @@ void CRunner::run(shared::script::yScriptApi::IYScriptApi& context)
       CPythonObject tuple(PyTuple_New(1));
       Py_XINCREF(*pyContext); // Increment pyContext reference count, because PyTuple_SetItem steals the reference
       if (PyTuple_SetItem(*tuple, 0, *pyContext))
-         PyErr_Print();
+         throw CPythonException("Unable to create context");
       CPythonObject ymainFunction(PyObject_GetAttrString(loader.module().get(), "yMain"));
       if (ymainFunction.isNull() || PyCallable_Check(*ymainFunction) == 0)
-         throw CRunnerException("Script exited with error");
-      CPythonObject pyReturnValue2(PyObject_CallObject(*ymainFunction, *tuple));
-      if (pyReturnValue2.isNull())
-         PyErr_Print();
+         throw CPythonException("Script exited with error");
+      CPythonObject pyReturnValue(PyObject_CallObject(*ymainFunction, *tuple));
+      if (pyReturnValue.isNull())
+         throw CPythonException("Script yMain function returned with error");
 
       YADOMS_LOG(information) << m_scriptPath << " : script exited";
    }
-   catch(CRunnerException& e)
+   catch(CPythonException& e)
    {
       YADOMS_LOG(error) << m_scriptPath << " : error running script, " << e.what();
       m_lastError = e.what();

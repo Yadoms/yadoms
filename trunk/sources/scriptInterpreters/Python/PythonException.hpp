@@ -4,15 +4,15 @@
 #include "PythonBorrowedObject.h"
 
 //--------------------------------------------------------------
-/// \class Exception for Python script runner
+/// \class Exception raised by Python error
 //--------------------------------------------------------------
-class CRunnerException : public shared::exception::CException
+class CPythonException : public shared::exception::CException
 {
 public:
    //--------------------------------------------------------------
    /// \brief	                        Constructor
    //--------------------------------------------------------------
-   CRunnerException(const std::string& message)
+   CPythonException(const std::string& message)
       :CException(message)
    {
       CPythonBorrowedObject pyError(PyErr_Occurred());
@@ -39,7 +39,7 @@ public:
    //--------------------------------------------------------------
    /// \brief      Destructor
    //--------------------------------------------------------------
-   virtual ~CRunnerException() throw()
+   virtual ~CPythonException() throw()
    {
    }
 };
