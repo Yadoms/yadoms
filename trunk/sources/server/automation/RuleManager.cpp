@@ -157,13 +157,16 @@ void CRuleManager::updateRule(boost::shared_ptr<const database::entities::CRule>
 
    m_dbRequester->updateRule(ruleData);
 
-   if (ruleData->Enabled() ^ (m_startedRules.find(ruleData->Id()) != m_startedRules.end()))
+   if (ruleData->Enabled.isDefined())
    {
-      // Enable/disable state changed, apply it
-      if (ruleData->Enabled())
-         startRule(ruleData->Id());
-      else
-         stopRule(ruleData->Id());
+      if (ruleData->Enabled() ^ (m_startedRules.find(ruleData->Id()) != m_startedRules.end()))
+      {
+         // Enable/disable state changed, apply it
+         if (ruleData->Enabled())
+            startRule(ruleData->Id());
+         else
+            stopRule(ruleData->Id());
+      }
    }
 }
 
