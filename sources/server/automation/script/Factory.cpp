@@ -36,13 +36,13 @@ void CFactory::loadInterpreters()
       interpreterDirectory != interpreterDirectories.end(); ++interpreterDirectory)
    {
       std::string interperterKeyName = interpreterDirectory->filename().string();
-      if (m_LoadedInterpreters.find(interperterKeyName) == m_LoadedInterpreters.end())
+      if (m_loadedInterpreters.find(interperterKeyName) == m_loadedInterpreters.end())
       {
          // Not already loaded
          try
          {
             boost::shared_ptr<IInterpreterLibrary> library(new CInterpreterLibrary(toLibraryPath(interpreterDirectory->filename().string())));
-            m_LoadedInterpreters[interperterKeyName] = library;
+            m_loadedInterpreters[interperterKeyName] = library;
          }
          catch (shared::exception::CInvalidParameter& e)
          {
@@ -98,8 +98,8 @@ std::vector<std::string> CFactory::getAvailableInterpreters()
    loadInterpreters();
 
    // Now find corresponding interpreter
-   for (std::map<std::string, boost::shared_ptr<IInterpreterLibrary> >::const_iterator itInterpreter = m_LoadedInterpreters.begin();
-      itInterpreter != m_LoadedInterpreters.end(); ++itInterpreter)
+   for (std::map<std::string, boost::shared_ptr<IInterpreterLibrary> >::const_iterator itInterpreter = m_loadedInterpreters.begin();
+      itInterpreter != m_loadedInterpreters.end(); ++itInterpreter)
    {
       boost::shared_ptr<shared::script::IInterpreter> interpreter(itInterpreter->second->getInterpreter());
       interpreters.push_back(interpreter->name());
@@ -107,6 +107,28 @@ std::vector<std::string> CFactory::getAvailableInterpreters()
 
    return interpreters;
 }
+
+boost::shared_ptr<shared::script::IInterpreter> CFactory::getAssociatedInterpreter(const std::string& interpreterName)
+{
+   // Update loaded interpreters list if necessary
+   loadInterpreters();
+
+   // Now find corresponding interpreter (warning interpreter name is the name returned by the interpreter, not the map key, which is the interpreter filename)
+   for (std::map<std::string, boost::shared_ptr<IInterpreterLibrary> >::const_iterator itInterpreter = m_loadedInterpreters.begin(); itInterpreter != m_loadedInterpreters.end(); ++itInterpreter)
+   {
+      boost::shared_ptr<shared::script::IInterpreter> interpreter(itInterpreter->second->getInterpreter());
+      if (interpreter->name() == interpreterName)
+      {
+         if (!interpreter->isAvailable())
+            throw CInterpreterNotFound(interpreterName);
+
+         return interpreter;
+      }
+   }
+
+   throw CInterpreterNotFound(interpreterName);
+}
+
 
 boost::shared_ptr<IProperties> CFactory::createScriptProperties(boost::shared_ptr<const database::entities::CRule> ruleData)
 {
@@ -177,24 +199,6 @@ boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> CFactory::createScrip
    boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> context(
       new CYScriptApiImplementation(m_pluginGateway, m_notificationCenter, m_dbAcquisitionRequester));
    return context;
-}
-
-
-boost::shared_ptr<shared::script::IInterpreter> CFactory::getAssociatedInterpreter(const std::string& interpreterName)
-{
-   // Update loaded interpreters list if necessary
-   loadInterpreters();
-
-   // Now find corresponding interpreter
-   std::map<std::string, boost::shared_ptr<IInterpreterLibrary> >::const_iterator itInterpreter = m_LoadedInterpreters.find(interpreterName);
-   if (itInterpreter == m_LoadedInterpreters.end())
-      throw CInterpreterNotFound(interpreterName);
-
-   boost::shared_ptr<shared::script::IInterpreter> interpreter(itInterpreter->second->getInterpreter());
-   if (!interpreter->isAvailable())
-      throw CInterpreterNotFound(interpreterName);
-   
-   return interpreter;
 }
 
 } } // namespace automation::script

@@ -24,6 +24,7 @@ if(PYTHONLIBS_FOUND)
       Python.cpp
       PythonBorrowedObject.h
       PythonBorrowedObject.cpp
+      PythonException.hpp
       PythonObject.h
       PythonObject.cpp
       PythonLibInclude.h
@@ -35,7 +36,6 @@ if(PYTHONLIBS_FOUND)
       ScriptLoader.cpp
       SubInterpreter.h
       SubInterpreter.cpp
-      RunnerException.hpp
    )
 
    #########################################
