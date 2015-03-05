@@ -43,6 +43,7 @@ namespace pluginSystem
       /// \param [in]   applicationStopHandler  The object used to request application stop
       //--------------------------------------------------------------
       CManager(
+         const std::string & initialDir,
          boost::shared_ptr<database::IDataProvider> dataProvider,
          boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
          boost::shared_ptr<shared::event::CEventHandler> supervisor,
@@ -250,7 +251,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief			Plugin path
       //--------------------------------------------------------------
-      static const boost::filesystem::path m_pluginPath;
+      boost::filesystem::path m_pluginPath;
 
       //--------------------------------------------------------------
       /// \brief			Plugin qualifier

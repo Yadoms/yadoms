@@ -43,13 +43,15 @@ CSupervisor::~CSupervisor()
 void CSupervisor::doWork()
 {
    YADOMS_LOG_CONFIGURE("Supervisor");
-   YADOMS_LOG(information) << "Supervisor is starting";   
+   YADOMS_LOG(information) << "Supervisor is starting";
 
    boost::shared_ptr<database::IDataProvider> pDataProvider;
    try
    {
+      const std::string pluginsPath = "plugins";
+
       //create the system information
-	  boost::shared_ptr<CRunningInformation> systemInformation(new CRunningInformation());
+      boost::shared_ptr<CRunningInformation> systemInformation(new CRunningInformation());
 
       //create the notification center
       boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter(new shared::notification::CNotificationCenter);
@@ -69,7 +71,7 @@ void CSupervisor::doWork()
       taskManager->start();
 
       // Create the Plugin manager
-      boost::shared_ptr<pluginSystem::CManager> pluginManager(new pluginSystem::CManager(pDataProvider, dal, m_EventHandler, kPluginManagerEvent, m_stopHandler));
+      boost::shared_ptr<pluginSystem::CManager> pluginManager(new pluginSystem::CManager(pluginsPath, pDataProvider, dal, m_EventHandler, kPluginManagerEvent, m_stopHandler));
 
       // Start the plugin gateway
       boost::shared_ptr<communication::CPluginGateway> pluginGateway(new communication::CPluginGateway(pDataProvider, dal->getAcquisitionHistorizer(), pluginManager));
@@ -88,6 +90,7 @@ void CSupervisor::doWork()
       const std::string & webServerPath = m_startupOptions.getWebServerInitialPath();
 
       web::poco::CWebServer webServer(webServerIp, webServerPort, webServerPath, "/rest/", "/ws", notificationCenter);
+      webServer.getConfigurator()->websiteHandlerAddAlias("plugins", pluginsPath);
       webServer.getConfigurator()->configureAuthentication(boost::shared_ptr<authentication::IAuthentication>(new authentication::CBasicAuthentication(dal->getConfigurationManager(), notificationCenter, m_startupOptions.getNoPasswordFlag())));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPlugin(pDataProvider, pluginManager, *pluginGateway)));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CDevice(pDataProvider, *pluginGateway)));
@@ -110,9 +113,9 @@ void CSupervisor::doWork()
       // Main loop
       YADOMS_LOG(information) << "Supervisor is running...";
       bool running = true;
-      while(running)
+      while (running)
       {
-         switch(m_EventHandler->waitForEvents())
+         switch (m_EventHandler->waitForEvents())
          {
          case kStopRequested:
             running = false;
@@ -143,7 +146,7 @@ void CSupervisor::doWork()
       automationRulesManager.reset();
 
       //stop all plugins
-      if(pluginManager.get() != NULL)
+      if (pluginManager.get() != NULL)
          pluginManager->stop();
 
       //stop web server
@@ -160,13 +163,13 @@ void CSupervisor::doWork()
    catch (std::exception& e)
    {
       YADOMS_LOG(error) << "Supervisor : unhandled exception " << e.what();
-      if(pDataProvider)
+      if (pDataProvider)
          pDataProvider->getEventLoggerRequester()->addEvent(database::entities::ESystemEventCode::kYadomsCrash, "yadoms", e.what());
    }
    catch (...)
    {
       YADOMS_LOG(error) << "Supervisor : unhandled exception.";
-      if(pDataProvider)
+      if (pDataProvider)
          pDataProvider->getEventLoggerRequester()->addEvent(database::entities::ESystemEventCode::kYadomsCrash, "yadoms", "unknwon error");
    }
 }
