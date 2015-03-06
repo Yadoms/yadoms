@@ -157,7 +157,7 @@ void CRuleManager::updateRule(boost::shared_ptr<const database::entities::CRule>
 
    m_dbRequester->updateRule(ruleData);
 
-   if (ruleData->Enabled.isDefined())
+   if (ruleData->Enabled.isDefined() && m_dbRequester->getRule(ruleData->Id)->State() != database::entities::ERuleState::kErrorValue)
    {
       if (ruleData->Enabled() ^ (m_startedRules.find(ruleData->Id()) != m_startedRules.end()))
       {
