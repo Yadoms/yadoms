@@ -5,6 +5,7 @@
 #include "database/IPluginEventLoggerRequester.h"
 #include "database/IDeviceRequester.h"
 #include "database/IKeywordRequester.h"
+#include "database/IRecipientRequester.h"
 #include "database/IAcquisitionRequester.h"
 #include "dataAccessLayer/IAcquisitionHistorizer.h"
 #include "dataAccessLayer/IDeviceManager.h"
@@ -27,6 +28,7 @@ namespace pluginSystem
       /// \param [in]   pluginEventLoggerRequester the plugin event logger requester
       /// \param [in]   deviceManager            the device manager
       /// \param [in]   keywordRequester           the keyword requester
+      /// \param [in]   recipientRequester         the recipient requester
       /// \param [in]   acquisitionRequester       the acquisition requester
       //-----------------------------------------------------
       CYPluginApiImplementation(boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformations,
@@ -35,6 +37,7 @@ namespace pluginSystem
          boost::shared_ptr<database::IPluginEventLoggerRequester> pluginEventLoggerRequester,
          boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
          boost::shared_ptr<database::IKeywordRequester> keywordRequester,
+         boost::shared_ptr<database::IRecipientRequester> recipientRequester,
          boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester,
          boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer);
       
@@ -50,6 +53,8 @@ namespace pluginSystem
       virtual bool keywordExists(const std::string& device, const std::string& keyword) const;
       virtual bool keywordExists(const std::string& device, const shared::plugin::yPluginApi::historization::IHistorizable& keyword) const;
       virtual void declareKeyword(const std::string& device, const shared::plugin::yPluginApi::historization::IHistorizable& keyword, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer);
+      virtual std::string getRecipientValue(int recipientId, const std::string& fieldName) const;
+      virtual int findRecipient(const std::string& fieldName, const std::string& expectedFieldValue) const;
       virtual void historizeData(const std::string& device, const shared::plugin::yPluginApi::historization::IHistorizable& data);
       virtual void historizeData(const std::string& device, std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > & dataVect);
       virtual const shared::plugin::information::IInformation& getInformation() const;
@@ -115,6 +120,11 @@ namespace pluginSystem
       /// \brief			The keyword requester
       //--------------------------------------------------------------
       boost::shared_ptr<database::IKeywordRequester> m_keywordRequester;
+
+      //--------------------------------------------------------------
+      /// \brief			The recipient requester
+      //--------------------------------------------------------------
+      boost::shared_ptr<database::IRecipientRequester> m_recipientRequester;
 
       //--------------------------------------------------------------
       /// \brief			The Acquisition requester

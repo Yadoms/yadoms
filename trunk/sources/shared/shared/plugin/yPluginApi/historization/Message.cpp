@@ -3,6 +3,7 @@
 #include "../StandardValues.h"
 #include <shared/exception/InvalidParameter.hpp>
 #include <shared/DataContainer.h>
+#include <shared/StringExtension.h>
 
 
 namespace shared { namespace plugin { namespace yPluginApi { namespace historization
@@ -34,41 +35,32 @@ const EKeywordAccessMode& CMessage::getAccessMode() const
 
 void CMessage::set(const std::string& yadomsCommand)
 {
-   CDataContainer command(yadomsCommand);
-   m_from = command.get<std::string>("to");
-   m_to = command.get<std::string>("from");
-   m_body = command.get<std::string>("body");
+   m_content.reset(new CMessageFormatter(yadomsCommand));
 }
 
-void CMessage::set(const std::string& from, const std::string& to, const std::string& body)
+void CMessage::set(int from, int to, const std::string& body)
 {
-   m_from = from;
-   m_to = to;
-   m_body = body;
+   m_content.reset(new CMessageFormatter(from, to, body));
 }
 
 std::string CMessage::formatValue() const
 {
-   CDataContainer yadomsCommand;
-   yadomsCommand.set("to", to());
-   yadomsCommand.set("from", from());
-   yadomsCommand.set("body", body());
-   return yadomsCommand.serialize();
+   return !m_content ? std::string() : m_content->formatValue();
 }
 
-const std::string& CMessage::from() const
+int CMessage::from() const
 {
-   return m_from;
+   return !m_content ? 0 : m_content->from();
 }
 
-const std::string& CMessage::to() const
+int CMessage::to() const
 {
-   return m_to;
+   return !m_content ? 0 : m_content->to();
 }
 
 const std::string& CMessage::body() const
 {
-   return m_body;
+   return !m_content ? CStringExtension::EmptyString : m_content->body();
 }
 
 const EMeasureType& CMessage::getMeasureType() const

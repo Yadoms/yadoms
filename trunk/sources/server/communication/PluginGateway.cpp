@@ -24,21 +24,20 @@ namespace communication {
 
    void CPluginGateway::sendCommandAsync(int keywordId, const std::string& body)
    {
-      // Find the device ID associated to keyword
-      int deviceId = m_dataProvider->getKeywordRequester()->getKeyword(keywordId)->DeviceId;
+      boost::shared_ptr<database::entities::CKeyword> keyword = m_dataProvider->getKeywordRequester()->getKeyword(keywordId);
+      boost::shared_ptr<database::entities::CDevice> device = m_dataProvider->getDeviceRequester()->getDevice(keyword->DeviceId);
 
       // Create the command
-      boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command(new pluginSystem::CDeviceCommand(m_dataProvider->getDeviceRequester()->getDevice(deviceId)->Name,
-         m_dataProvider->getKeywordRequester()->getKeyword(keywordId)->Name, body));
+      boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command(new pluginSystem::CDeviceCommand(device->Name, keyword->Name, body));
 
       // Dispatch command to the right plugin
-      m_pluginManager->postCommand(m_dataProvider->getDeviceRequester()->getDevice(deviceId)->PluginId, command);
+      m_pluginManager->postCommand(device->PluginId, command);
 
       // Historize the command
       m_acquisitionHistorizer->saveData(keywordId, command->getHistorizableObject());
    }
 
-   void CPluginGateway::sendManuallyDeviceCreationRequest(int pluginId, const shared::plugin::yPluginApi::IManuallyDeviceCreationData & data, communication::callback::ISynchronousCallback<std::string> & callback)
+   void CPluginGateway::sendManuallyDeviceCreationRequest(int pluginId, const shared::plugin::yPluginApi::IManuallyDeviceCreationData & data, callback::ISynchronousCallback<std::string> & callback)
    {
       // Create the request
       boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request(new pluginSystem::CManuallyDeviceCreationRequest(data, callback));
@@ -47,7 +46,7 @@ namespace communication {
       m_pluginManager->postManuallyDeviceCreationRequest(pluginId, request);
    }
 
-   void CPluginGateway::sendBindingQueryRequest(int pluginId, const shared::plugin::yPluginApi::IBindingQueryData & data, communication::callback::ISynchronousCallback< shared::CDataContainer > & callback)
+   void CPluginGateway::sendBindingQueryRequest(int pluginId, const shared::plugin::yPluginApi::IBindingQueryData & data, callback::ISynchronousCallback<shared::CDataContainer> & callback)
 	{
 		// Create the request
       boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> request(new pluginSystem::CBindingQueryRequest(data, callback));

@@ -43,6 +43,15 @@ namespace database {
       virtual boost::shared_ptr<entities::CRecipient> getRecipient(const std::string & firstName, const std::string & lastName) = 0;
       
       //--------------------------------------------------------------
+      ///\brief                           Find a recipient from a specific field value
+      ///\param [in] fieldName            The field name ("phone", "email", etc...) where searching
+      ///\param [in] expectedFieldValue   The expected field value
+      ///\return                          The first found recipient ID containing this field with this value
+      ///\throw shared::exception::CEmptyResult if no recipient found
+      //--------------------------------------------------------------
+      virtual boost::shared_ptr<entities::CRecipient> findRecipient(const std::string& fieldName, const std::string& expectedFieldValue) = 0;
+
+      //--------------------------------------------------------------
       /// \brief                    Check is a recipient exists
       /// \param [in] firstName     Recipient first name
       /// \param [in] lastName      Recipient last name

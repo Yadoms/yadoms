@@ -1,50 +1,34 @@
 #pragma once
 #include <shared/Export.h>
 #include "IHistorizable.h"
-#include "MessageFormatter.h"
 
 namespace shared { namespace plugin { namespace yPluginApi { namespace historization
 {
    //-----------------------------------------------------
-   ///\brief A message historizable object
+   ///\brief The message formatter
    //-----------------------------------------------------
-   class YADOMS_SHARED_EXPORT CMessage : public IHistorizable
+   class YADOMS_SHARED_EXPORT CMessageFormatter
    {
    public:
       //-----------------------------------------------------
-      ///\brief                     Constructor
-      ///\param[in] keywordName     Yadoms keyword name
-      ///\param[in] accessMode      Access mode
-      //-----------------------------------------------------
-      CMessage(const std::string& keywordName, const EKeywordAccessMode& accessMode);
-
-      //-----------------------------------------------------
-      ///\brief                     Destructor
-      //-----------------------------------------------------
-      virtual ~CMessage();
-
-      // IHistorizable implementation
-      virtual const std::string& getKeyword() const;
-      virtual const CStandardCapacity& getCapacity() const;
-      virtual const EKeywordAccessMode& getAccessMode() const;
-      virtual std::string formatValue() const;
-      virtual const EMeasureType& getMeasureType() const;
-      // [END] IHistorizable implementation;
-
-      //-----------------------------------------------------
-      ///\brief                     Set value from Yadoms command
-      ///\param[in] yadomsCommand   Yadoms command
-      ///\throw                     shared::exception::CInvalidParameter or COutOfRange if fail to parse command
-      //-----------------------------------------------------
-      void set(const std::string& yadomsCommand);
-
-      //-----------------------------------------------------
-      ///\brief                     Set value from on/off state
+      ///\brief                     Constructor, from individual parameters
       ///\param[in] from            Sender recipient ID
       ///\param[in] to              Receiver recipient ID
       ///\param[in] body            Message content
       //-----------------------------------------------------
-      void set(int from, int to, const std::string& body);
+      CMessageFormatter(int from, int to, const std::string& body);
+
+      //-----------------------------------------------------
+      ///\brief                     Constructor, from Yadoms command
+      ///\param[in] yadomsCommand   Yadoms command
+      ///\throw                     shared::exception::CInvalidParameter or COutOfRange if fail to parse command
+      //-----------------------------------------------------
+      CMessageFormatter(const std::string& yadomsCommand);
+
+      //-----------------------------------------------------
+      ///\brief                     Destructor
+      //-----------------------------------------------------
+      virtual ~CMessageFormatter();
 
       //-----------------------------------------------------
       ///\brief               Get the sender value
@@ -64,24 +48,28 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       //-----------------------------------------------------
       const std::string& body() const;
 
+      //-----------------------------------------------------
+      ///\brief                     Format value to Yadoms format
+      ///\return                    Formatted data
+      //-----------------------------------------------------
+      virtual std::string formatValue() const;
+
    private:
       //-----------------------------------------------------
-      ///\brief                     The keyword name
+      ///\brief               The sender value
       //-----------------------------------------------------
-      const std::string m_keywordName;
+      int m_from;
 
       //-----------------------------------------------------
-      ///\brief                     The access mode
+      ///\brief               The recipient value
       //-----------------------------------------------------
-      const EKeywordAccessMode& m_accessMode;
+      int m_to;
 
       //-----------------------------------------------------
-      ///\brief                     The message content
+      ///\brief               The body value
       //-----------------------------------------------------
-      boost::shared_ptr<CMessageFormatter> m_content;
+      std::string m_body;
    };
-
-
 
 } } } } // namespace shared::plugin::yPluginApi::historization
 

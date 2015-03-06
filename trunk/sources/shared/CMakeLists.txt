@@ -137,6 +137,8 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/historization/Load.h
    shared/plugin/yPluginApi/historization/Message.cpp
    shared/plugin/yPluginApi/historization/Message.h
+   shared/plugin/yPluginApi/historization/MessageFormatter.cpp
+   shared/plugin/yPluginApi/historization/MessageFormatter.h
    shared/plugin/yPluginApi/historization/MeasureType.cpp
    shared/plugin/yPluginApi/historization/MeasureType.h
    shared/plugin/yPluginApi/historization/Power.cpp

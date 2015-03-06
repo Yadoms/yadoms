@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "SmsDialer.h"
 #include <shared/Log.h>
+#include <shared/exception/EmptyResult.hpp>
 #include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/plugin/yPluginApi/historization/Dimmable.h>
 #include <shared/plugin/yPluginApi/historization/Message.h>
@@ -259,7 +260,7 @@ void CSmsDialer::onSendSmsRequest(boost::shared_ptr<yApi::IYPluginApi> context, 
    try
    {
       m_messageKeyword.set(sendSmsRequest);
-      boost::shared_ptr<ISms> sms(new CSms(m_messageKeyword.to(), m_messageKeyword.body()));
+      boost::shared_ptr<ISms> sms(new CSms(getRecipientPhone(context, m_messageKeyword.to()), m_messageKeyword.body()));
       m_phone->send(sms);
       notifyAck(true);
    }
@@ -289,13 +290,48 @@ void CSmsDialer::processIncommingSMS(boost::shared_ptr<yApi::IYPluginApi> contex
          YADOMS_LOG(debug) << "SMS received from " << (*it)->getNumber() << " : " << (*it)->getContent();
 
          // Send SMS to Yadoms
-         m_messageKeyword.set((*it)->getNumber(), shared::CStringExtension::EmptyString, (*it)->getContent());
-         context->historizeData(m_device, m_messageKeyword);
+         try
+         {
+            m_messageKeyword.set(findRecipient(context, (*it)->getNumber()), 0, (*it)->getContent());
+            context->historizeData(m_device, m_messageKeyword);
+         }
+         catch (shared::exception::CInvalidParameter& e)
+         {
+            YADOMS_LOG(error) << "Phone number is unknown " << e.what();
+         }
       }
    }
 }
 
-void CSmsDialer::notifyAck(bool /*ok*/) const
+void CSmsDialer::notifyAck(bool ok) const
 {
-   // Command acknowledges are not actually supported (see https://trello.com/c/Yd8N8v3J)
+   // Command acknowledges are not actually supported (see https://trello.com/c/Yd8N8v3J), just log
+   if (ok)
+      YADOMS_LOG(information) << "SMS successfully sent";
+   else
+      YADOMS_LOG(warning) << "Error sending SMS";
+}
+
+std::string CSmsDialer::getRecipientPhone(boost::shared_ptr<yApi::IYPluginApi> context, int recipientId) const
+{
+   try
+   {
+      return context->getRecipientValue(recipientId, "phone");
+   }
+   catch (shared::exception::CEmptyResult& e)
+   {
+      throw shared::exception::CInvalidParameter(std::string("Recipient not found, or phone field not found for recipient : ") + e.what());
+   }
+}
+
+int CSmsDialer::findRecipient(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& phoneNumber) const
+{
+   try
+   {
+      return context->findRecipient("phone", phoneNumber);
+   }
+   catch (shared::exception::CEmptyResult& e)
+   {
+      throw shared::exception::CInvalidParameter(std::string("Recipient not found, or phone field not found for recipient") + e.what());
+   }   
 }
