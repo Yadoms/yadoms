@@ -14,13 +14,14 @@ CInstance::CInstance(
    boost::shared_ptr<database::IPluginEventLoggerRequester> pluginEventLoggerRequester,
    boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
    boost::shared_ptr<database::IKeywordRequester> keywordRequester,
+   boost::shared_ptr<database::IRecipientRequester> recipientRequester,
    boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester,
    boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer,
    const boost::shared_ptr<IQualifier> qualifier,
    boost::shared_ptr<shared::event::CEventHandler> supervisor,
    int pluginManagerEventId)
     : CThreadBase(pluginData->Name()), m_pPlugin(plugin), m_qualifier(qualifier), m_supervisor(supervisor), m_pluginManagerEventId(pluginManagerEventId),
-    m_context(new CYPluginApiImplementation(plugin->getInformation(), m_pPlugin->getLibraryPath(), pluginData, pluginEventLoggerRequester, deviceManager, keywordRequester, acquisitionRequester, acquisitionHistorizer))
+    m_context(new CYPluginApiImplementation(plugin->getInformation(), m_pPlugin->getLibraryPath(), pluginData, pluginEventLoggerRequester, deviceManager, keywordRequester, recipientRequester, acquisitionRequester, acquisitionHistorizer))
 {
 	BOOST_ASSERT(m_pPlugin);
    m_pPluginInstance.reset(m_pPlugin->construct());

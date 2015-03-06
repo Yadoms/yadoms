@@ -15,10 +15,12 @@ CYPluginApiImplementation::CYPluginApiImplementation(
    boost::shared_ptr<database::IPluginEventLoggerRequester> pluginEventLoggerRequester,
    boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
    boost::shared_ptr<database::IKeywordRequester> keywordRequester,
+   boost::shared_ptr<database::IRecipientRequester> recipientRequester,
    boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester,
    boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer)
    :m_informations(pluginInformations), m_libraryPath(libraryPath),  m_pluginData(pluginData), m_pluginEventLoggerRequester(pluginEventLoggerRequester),
-   m_deviceManager(deviceManager), m_keywordRequester(keywordRequester), m_acquisitionRequester(acquisitionRequester), m_acquisitionHistorizer(acquisitionHistorizer)
+   m_deviceManager(deviceManager), m_keywordRequester(keywordRequester), m_recipientRequester(recipientRequester), m_acquisitionRequester(acquisitionRequester),
+   m_acquisitionHistorizer(acquisitionHistorizer)
 {
 
 }
@@ -84,6 +86,25 @@ void CYPluginApiImplementation::declareKeyword(const std::string& device, const 
 {
    declareCustomKeyword(device, keyword.getKeyword(), keyword.getCapacity().getName(), keyword.getAccessMode(), keyword.getCapacity().getType(), keyword.getCapacity().getUnit(), keyword.getMeasureType(), keyword.getTypeInfo(), details);
 }
+
+std::string CYPluginApiImplementation::getRecipientValue(int recipientId, const std::string& fieldName) const
+{
+   boost::shared_ptr<const database::entities::CRecipient> recipient = m_recipientRequester->getRecipient(recipientId);
+
+   for (std::vector<boost::shared_ptr<database::entities::CRecipientField> >::const_iterator itField = recipient->Fields().begin(); itField != recipient->Fields().end(); ++itField)
+   {
+      if ((*itField)->FieldName == fieldName)
+         return (*itField)->Value;
+   }
+
+   throw shared::exception::CEmptyResult((boost::format("Cannot retrieve field %1% for recipient Id %2% in database") % fieldName % recipientId).str());
+}
+
+int CYPluginApiImplementation::findRecipient(const std::string& fieldName, const std::string& expectedFieldValue) const
+{
+   return m_recipientRequester->findRecipient(fieldName, expectedFieldValue)->Id;
+}
+
 
 void CYPluginApiImplementation::historizeData(const std::string& device, const shared::plugin::yPluginApi::historization::IHistorizable& data)
 {

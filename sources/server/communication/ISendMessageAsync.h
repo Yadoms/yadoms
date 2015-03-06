@@ -24,6 +24,7 @@ namespace communication {
       ///\brief                     Send a command
       ///\param [in] keywordId      Target keyword Id
       ///\param [in] body           The command body to send
+      ///\throw shared::exception::CEmptyResult if keywordId not found
       //----------------------------------------------
       virtual void sendCommandAsync(int keywordId, const std::string & body) = 0;
 

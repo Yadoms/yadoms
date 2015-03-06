@@ -1,5 +1,9 @@
 #include "stdafx.h"
 #include "YScriptApiImplementation.h"
+#include "../pluginSystem/DeviceCommand.h"
+#include <shared/plugin/yPluginApi/historization/MessageFormatter.h>
+#include <shared/Log.h>
+#include <shared/exception/EmptyResult.hpp>
 
 namespace automation { namespace script
 {
@@ -37,12 +41,20 @@ std::pair<int, std::string> CYScriptApiImplementation::waitForEvents(std::vector
 
 void CYScriptApiImplementation::writeKeyword(int keywordId, const std::string& newState)
 {
-   m_pluginGateway->sendCommandAsync(keywordId, newState);
+   try
+   {
+      m_pluginGateway->sendCommandAsync(keywordId, newState);
+   }
+   catch (shared::exception::CEmptyResult& e)
+   {
+      YADOMS_LOG(error) << "Unable to write keyword : " << e.what();
+   }
 }
 
 void CYScriptApiImplementation::sendNotification(int keywordId, int recipientId, const std::string& message)
 {
-   //TODO
+   shared::plugin::yPluginApi::historization::CMessageFormatter body(0, recipientId, message);
+   m_pluginGateway->sendCommandAsync(keywordId, body.formatValue());
 }
 
 } } // namespace automation::script

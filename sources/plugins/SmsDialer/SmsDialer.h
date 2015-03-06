@@ -71,6 +71,24 @@ protected:
    //--------------------------------------------------------------
    void notifyAck(bool ok) const;
 
+   //--------------------------------------------------------------
+   /// \brief	                     Get the phone number associated to recipient Id
+   /// \param [in] context          Plugin execution context (Yadoms API)
+   /// \param [in] recipientId      The recipient ID
+   /// \return                      The phone number
+   /// \throw shared::exception::CInvalidParameter if recipient ID not found
+   //--------------------------------------------------------------
+   std::string getRecipientPhone(boost::shared_ptr<yApi::IYPluginApi> context, int recipientId) const;
+
+   //--------------------------------------------------------------
+   /// \brief	                     Find the recipient with this phone number
+   /// \param [in] context          Plugin execution context (Yadoms API)
+   /// \param [in] phoneNumber      The phone number
+   /// \return                      The recipient ID of the recipient found
+   /// \throw shared::exception::CInvalidParameter if no recipient found for this phone number
+   //--------------------------------------------------------------
+   int findRecipient(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& phoneNumber) const;
+
 private:
    //--------------------------------------------------------------
    /// \brief	The device name

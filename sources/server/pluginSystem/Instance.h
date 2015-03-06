@@ -37,6 +37,7 @@ namespace pluginSystem
       /// \param [in]   pluginEventLoggerRequester the plugin event logger requester
       /// \param [in]   deviceRequester            the device requester
       /// \param [in]   keywordRequester           the keyword requester
+      /// \param [in]   recipientRequester         the recipient requester
       /// \param [in]   acquisitionRequester       the acquisition requester
       /// \param [in]   qualifier                  the plugin qualifier
       /// \param [in]   supervisor                 the supervisor event handler
@@ -46,6 +47,7 @@ namespace pluginSystem
          boost::shared_ptr<database::IPluginEventLoggerRequester> pluginEventLoggerRequester,
          boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
          boost::shared_ptr<database::IKeywordRequester> keywordRequester,
+         boost::shared_ptr<database::IRecipientRequester> recipientRequester,
          boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester,
          boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer,
          const boost::shared_ptr<IQualifier> qualifier,

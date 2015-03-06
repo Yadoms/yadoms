@@ -176,6 +176,13 @@ namespace database {  namespace sqlite { namespace requesters {
       throw shared::exception::CEmptyResult(sEx);
    }
 
+   boost::shared_ptr<entities::CRecipient> CRecipient::findRecipient(const std::string& fieldName, const std::string& expectedFieldValue)
+   {
+      //TODO_HELP_JMD ! Je veux retrouver le recipient qui contient un field dont le nom est fieldName et que la valeur de ce field soit expectedFieldValue
+      throw shared::exception::CNotImplemented("CRecipient::findRecipient");
+   }
+
+
    bool CRecipient::exists(const std::string & firstName, const std::string & lastName)
    {
       CQuery qSelect;
