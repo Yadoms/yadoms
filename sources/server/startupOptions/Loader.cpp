@@ -31,7 +31,7 @@ void CLoader::buildOptionsDescription()
 }
 
 CLoader::CLoader(int argc, const char* const argv[])
-   :m_optionsDescription("Allowed options"), m_webServerPortNumber(0), m_debugFlag(false)
+   :m_optionsDescription("Allowed options"), m_webServerPortNumber(0), m_debugFlag(false), m_noPasswordFlag(false)
 {
    buildOptionsDescription();
 
