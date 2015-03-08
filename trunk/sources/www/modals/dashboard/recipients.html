@@ -153,18 +153,19 @@
     */
    function addNewRecipient() {
       return function() {
+          debugger;
          //create an empty recipient
-         var emptyRecipient = new Recipient(undefined, "", "", []);
-
-         //show the recipient configuration modal
-         configureRecipientInternal(emptyRecipient, function (filledRecipient) {
-            //on validation success, add the completed recipient to server
-            RecipientManager.addToServer(filledRecipient, function(result, recipientAddedToServer){
-               //on server operation success, add the recipient to the dashboard table
-               if(result)
-                  addRecipientToDom(recipientAddedToServer);
-            });
-         });
+         RecipientManager.createEmptyRecipient(function(emptyRecipient) {
+             //show the recipient configuration modal
+             configureRecipientInternal(emptyRecipient, function (filledRecipient) {
+                 //on validation success, add the completed recipient to server
+                 RecipientManager.addToServer(filledRecipient, function(result, recipientAddedToServer){
+                     //on server operation success, add the recipient to the dashboard table
+                     if(result)
+                         addRecipientToDom(recipientAddedToServer);
+                 });
+             });
+         }, true);
       };
    }
 
