@@ -50,7 +50,23 @@
 				 "defaultValue": "true"
 			  }
 		  }
-		}  		
+		},
+      "Forecast3Days":
+      {
+         "name": "Forecast3Days",
+         "description": "Prévision météorologiques pour les 3 prochaines journées",
+         "type" : "section",
+         "content":
+         {	  
+			  "Forecast3Days":
+			  {
+				 "name": "",
+				 "description": "",
+				 "type": "bool",
+				 "defaultValue": "true"
+			  }
+		  }
+		}		
       }	  
    }
 }

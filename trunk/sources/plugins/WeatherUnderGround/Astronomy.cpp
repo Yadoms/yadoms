@@ -5,16 +5,24 @@
 
 CAstronomy::CAstronomy(boost::shared_ptr<yApi::IYPluginApi> context, const IWUConfiguration& WUConfiguration, const std::string & PluginName, const std::string & Prefix):
            m_Localisation         ( WUConfiguration.getLocalisation() ),
+		   m_PluginName           ( PluginName ),
            PercentIlluminatedMoon ( PluginName, Prefix + "PercentIllumitedMoon" ),
            AgeOfMoon              ( PluginName, Prefix + "AgeOfMoon" )
 {	
 	m_URL.clear();
 	m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/astronomy/q/" << m_Localisation << ".json";
 
-   if (WUConfiguration.IsAstronomyEnabled())
+   try 
    {
-	   PercentIlluminatedMoon.Initialize ( context );
-	   AgeOfMoon.Initialize              ( context );
+	   if (WUConfiguration.IsAstronomyEnabled())
+	   {
+		   PercentIlluminatedMoon.Initialize ( context );
+		   AgeOfMoon.Initialize              ( context );
+	   }
+   }
+   catch (...)
+   {
+	   YADOMS_LOG(warning) << "Configuration or initialization error of Astronomy module"  << std::endl;
    }
 }
 

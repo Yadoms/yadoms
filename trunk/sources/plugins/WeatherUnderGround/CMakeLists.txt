@@ -9,6 +9,8 @@ include("../YadomsPluginsCommon.cmake")
 set(WUNDERGROUND_SOURCES
    Astronomy.cpp
    Astronomy.h
+   Forecast3Days.cpp
+   Forecast3Days.h
    IWUConfiguration.h
    WeatherUnderground.h
    WeatherUnderground.cpp
@@ -18,13 +20,15 @@ set(WUNDERGROUND_SOURCES
    WUConfiguration.h
    stdafx.h
    stdafx.cpp
-   Keywords/IKeyword.h
    Keywords/Barometric.h
    Keywords/Barometric.cpp
    Keywords/Duration.h
-   Keywords/Duration.cpp   
+   Keywords/Duration.cpp
+   Keywords/Forecast.h
+   Keywords/Forecast.cpp   
    Keywords/Humidity.h
    Keywords/Humidity.cpp
+   Keywords/IKeyword.h   
    Keywords/Load.h
    Keywords/Load.cpp
    Keywords/Rain.h
@@ -41,9 +45,14 @@ set(WUNDERGROUND_SOURCES
    Keywords/WindDirection.cpp
    Keywords/WindSpeed.h
    Keywords/WindSpeed.cpp
+   specificHistorizers/ForecastHistorizer.h
+   specificHistorizers/ForecastHistorizer.cpp
+   specificHistorizers/ForecastFormatter.h
+   specificHistorizers/ForecastFormatter.cpp
 )
 
 source_group(Keywords Keywords/*.*)
+source_group(specificHistorizers specificHistorizers/*.*)
 
 #########################################
 ## Place here all additional include directories

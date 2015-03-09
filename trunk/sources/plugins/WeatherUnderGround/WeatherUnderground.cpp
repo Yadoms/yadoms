@@ -5,6 +5,7 @@
 #include <shared/plugin/ImplementationHelper.h>
 #include "WeatherConditions.h"
 #include "Astronomy.h"
+#include "Forecast3Days.h"
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -23,7 +24,8 @@ CWeatherUnderground::~CWeatherUnderground()
 enum
 {
    kEvtTimerRefreshWeatherConditions = yApi::IYPluginApi::kPluginFirstEventId,   // Always start from shared::event::CEventHandler::kUserFirstId
-   kEvtTimerRefreshAstronomy
+   kEvtTimerRefreshAstronomy,
+   kEvtTimerRefreshForecast3Days
 };
 
 void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
@@ -45,6 +47,11 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
       // Timer used to read periodically the Weather information
 	  context->getEventHandler().createTimer(kEvtTimerRefreshAstronomy      , shared::event::CEventTimer::kPeriodic, boost::posix_time::hours(12));
 
+	  // Event to be sent immediately for the first value
+      context->getEventHandler().createTimer(kEvtTimerRefreshForecast3Days      , shared::event::CEventTimer::kOneShot , boost::posix_time::seconds(0));
+      // Timer used to read periodically the Weather information
+	  context->getEventHandler().createTimer(kEvtTimerRefreshForecast3Days      , shared::event::CEventTimer::kPeriodic, boost::posix_time::hours(6));
+
 	   if (!context->deviceExists(m_deviceName))
 	   {
 		  std::string m_URL = "www.wunderground.com/";
@@ -53,7 +60,8 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 	   }
 
 	  CWeatherConditions m_WeatherConditionsRequester( context, m_configuration, m_deviceName, "conditions.");
-	  CAstronomy m_AstronomyRequester( context, m_configuration, m_deviceName, "astronomy.");
+	  CAstronomy m_AstronomyRequester                ( context, m_configuration, m_deviceName, "astronomy.");
+	  CForecast3Days m_Forecast3Days                 ( context, m_configuration, m_deviceName, "forecast.3days.");
 
       // the main loop
       YADOMS_LOG(debug) << "CWeatherUnderground plugin is running...";
@@ -81,6 +89,15 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 
 			      break;
             }
+		 case kEvtTimerRefreshForecast3Days:
+            {
+			      YADOMS_LOG(debug) << "Refresh Forecast 3 Days Information";
+
+			      m_Forecast3Days.Request( context );
+			      m_Forecast3Days.Parse  ( context, m_configuration );
+
+			      break;
+            }
          case yApi::IYPluginApi::kEventUpdateConfiguration:
             {
                onUpdateConfiguration(context, context->getEventHandler().getEventData<shared::CDataContainer>());
@@ -94,6 +111,9 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 
 			      m_AstronomyRequester.Request( context );
 			      m_AstronomyRequester.Parse  ( context, m_configuration );
+
+			      m_Forecast3Days.Request( context );
+			      m_Forecast3Days.Parse  ( context, m_configuration );
 
                break;
             }
