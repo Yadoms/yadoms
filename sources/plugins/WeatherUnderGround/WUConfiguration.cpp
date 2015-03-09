@@ -44,3 +44,8 @@ bool CWUConfiguration::IsAstronomyEnabled (void ) const
 {
 	return m_data.get<bool>("Astronomy.content.Astronomy");
 }
+
+bool CWUConfiguration::IsForecast3DaysEnabled (void ) const
+{
+	return m_data.get<bool>("Forecast3Days.content.Forecast3Days");
+}

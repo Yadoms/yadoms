@@ -27,25 +27,32 @@ CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> cont
 	m_URL.clear();
 	m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/conditions/q/" << m_Localisation << ".json";
 
-   if (WUConfiguration.IsStandardInformationEnabled())
+   try
    {
-      m_Temp.Initialize                ( context );
-      m_Pressure.Initialize            ( context );
-      m_Humidity.Initialize            ( context );
-      m_Visibility.Initialize          ( context );
-      m_UV.Initialize                  ( context );
-      m_DewPoint.Initialize            ( context );
-      m_Rain_1hr.Initialize            ( context );
-      m_WeatherConditionUrl.Initialize ( context );
-   }
+	   if (WUConfiguration.IsStandardInformationEnabled())
+	   {
+		  m_Temp.Initialize                ( context );
+		  m_Pressure.Initialize            ( context );
+		  m_Humidity.Initialize            ( context );
+		  m_Visibility.Initialize          ( context );
+		  m_UV.Initialize                  ( context );
+		  m_DewPoint.Initialize            ( context );
+		  m_Rain_1hr.Initialize            ( context );
+		  m_WeatherConditionUrl.Initialize ( context );
+	   }
 
-   if (WUConfiguration.IsWindEnabled())
+	   if (WUConfiguration.IsWindEnabled())
+	   {
+		   m_WindDirection.Initialize      ( context );
+		   m_WindAverageSpeed.Initialize   ( context );
+		   m_WindMaxSpeed.Initialize       ( context );
+		   m_FeelsLike.Initialize          ( context );
+		   m_Windchill.Initialize          ( context );
+	   }
+   }
+   catch (...)
    {
-	   m_WindDirection.Initialize      ( context );
-	   m_WindAverageSpeed.Initialize   ( context );
-	   m_WindMaxSpeed.Initialize       ( context );
-	   m_FeelsLike.Initialize          ( context );
-	   m_Windchill.Initialize          ( context );
+      YADOMS_LOG(warning) << "Configuration or initialization error of Weather condition module"  << std::endl;
    }
 }
 

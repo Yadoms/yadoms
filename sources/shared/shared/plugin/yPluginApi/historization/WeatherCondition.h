@@ -18,7 +18,9 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
 	  ((Storm))
 	  ((Fog))
 	  ((Night_Clear))
-	  ((Night_MostlyCloudy))
+	  ((Night_Cloudy))
+	  ((Night_Rain))
+	  ((Night_Snow))
    );
 
    //-----------------------------------------------------

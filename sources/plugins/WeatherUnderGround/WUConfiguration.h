@@ -27,6 +27,7 @@ public:
    virtual bool IsWindEnabled (void) const;
    virtual bool IsStandardInformationEnabled (void ) const;
    virtual bool IsAstronomyEnabled (void ) const;
+   virtual bool IsForecast3DaysEnabled (void ) const;
    // [END] IWUConfiguration implementation
 
 private:

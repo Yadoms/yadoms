@@ -13,6 +13,10 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
 	  ((Sleet))
 	  ((Storm))
 	  ((Fog))
+	  ((Night_Clear))
+	  ((Night_Cloudy))
+	  ((Night_Rain))
+	  ((Night_Snow))
    );
 
 

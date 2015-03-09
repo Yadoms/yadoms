@@ -44,13 +44,20 @@ void CWeatherIcon::SetValue( const shared::CDataContainer & ValueContainer, cons
 	  ("fog", yApi::historization::EWeatherCondition::kFog)
 	  ("hazy", yApi::historization::EWeatherCondition::kFog)
 	  ("hazy", yApi::historization::EWeatherCondition::kFog)
-      ("partlysunny", yApi::historization::EWeatherCondition::kPartlySunny);
+      ("partlysunny", yApi::historization::EWeatherCondition::kPartlySunny)
+	  ("nt_chancerain", yApi::historization::EWeatherCondition::kNight_Rain)
+	  ("nt_clear", yApi::historization::EWeatherCondition::kNight_Clear)
+	  ("nt_cloudy", yApi::historization::EWeatherCondition::kNight_Cloudy)
+	  ("nt_mostlycloudy", yApi::historization::EWeatherCondition::kNight_Cloudy)
+	  ("nt_partlycloudy", yApi::historization::EWeatherCondition::kNight_Cloudy)
+	  ("nt_snow", yApi::historization::EWeatherCondition::kNight_Snow);
 
       EnumValuesNames::const_iterator it = EEnumTypeNames.find( ValueContainer.get<std::string>( filter ) );
       if (it != EEnumTypeNames.end())
 	  {
          m_weathercondition->set( (yApi::historization::EWeatherCondition)(it->second) );
 
+         //TODO : Mettre la valeur en clair
 		 YADOMS_LOG(debug) << m_weathercondition->getKeyword() << "=" << m_weathercondition->get();
 	  }
 	  else

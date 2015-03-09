@@ -59,6 +59,22 @@
 				 "defaultValue": "true"
 			  }
 		  }
-		}  		
+		},
+      "Forecast3Days":
+      {
+         "name": "Forecast3Days",
+         "description": "Summary of the weather for the next 3 days",
+         "type" : "section",
+         "content":
+         {	  
+			  "Forecast3Days":
+			  {
+				 "name": "",
+				 "description": "",
+				 "type": "bool",
+				 "defaultValue": "true"
+			  }
+		  }
+		}		
       }
 }
