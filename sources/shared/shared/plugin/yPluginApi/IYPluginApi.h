@@ -175,13 +175,12 @@ namespace shared { namespace plugin { namespace yPluginApi
       virtual std::string getRecipientValue(int recipientId, const std::string& fieldName) const = 0;
 
       //-----------------------------------------------------
-      ///\brief Find a recipient from a specific field value
+      ///\brief Find recipients from a specific field value
       ///\param    [in]    fieldName         The field name ("phone", "email", etc...) where searching
       ///\param    [in]    expectedFieldValue The expected field value
-      ///\return                             The first found recipient ID containing this field with this value
-      ///\throw shared::exception::CEmptyResult if no recipient found
+      ///\return                             A list containing found recipient IDs, where this expectedFieldValue was found for fieldName
       //-----------------------------------------------------
-      virtual int findRecipient(const std::string& fieldName, const std::string& expectedFieldValue) const = 0;
+      virtual std::vector<int> findRecipientsFromField(const std::string& fieldName, const std::string& expectedFieldValue) const = 0;
 
 
 

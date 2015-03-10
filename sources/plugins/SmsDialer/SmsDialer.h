@@ -84,10 +84,10 @@ protected:
    /// \brief	                     Find the recipient with this phone number
    /// \param [in] context          Plugin execution context (Yadoms API)
    /// \param [in] phoneNumber      The phone number
-   /// \return                      The recipient ID of the recipient found
+   /// \return                      The recipient ID of the recipient found (or the first one if several recipients found)
    /// \throw shared::exception::CInvalidParameter if no recipient found for this phone number
    //--------------------------------------------------------------
-   int findRecipient(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& phoneNumber) const;
+   int findRecipientByPhone(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& phoneNumber) const;
 
 private:
    //--------------------------------------------------------------

@@ -176,7 +176,7 @@ namespace database { namespace sqlite { namespace requesters {
 		throw shared::exception::CEmptyResult(sEx);
 	}
 
-	boost::shared_ptr<entities::CRecipient> CRecipient::findRecipient(const std::string& fieldName, const std::string& expectedFieldValue)
+	std::vector<boost::shared_ptr<entities::CRecipient> > CRecipient::findRecipientsFromField(const std::string& fieldName, const std::string& expectedFieldValue)
 	{
 		CQuery qSelect, qubQuery;
 		qubQuery.Select(CRecipientFieldTable::getIdRecipientColumnName()).
@@ -194,20 +194,11 @@ namespace database { namespace sqlite { namespace requesters {
 		//read all recipients
 		std::vector<boost::shared_ptr<database::entities::CRecipient> > recipients = adapter.getResults();
 
-		if (recipients.empty())
-		{
-			std::string sEx = (boost::format("Cannot retrieve any recipient with %1% = %2% in database") % fieldName % expectedFieldValue).str();
-			throw shared::exception::CEmptyResult(sEx);
-		}
+      //for each one, read its fields (not contained in recipient table)
+      for (std::vector<boost::shared_ptr<database::entities::CRecipient> >::iterator i = recipients.begin(); i != recipients.end(); ++i)
+         ReadRecipientFields(*i);
 
-		if (recipients.size() > 1)
-		{
-			std::string sEx = (boost::format("Find %1% recipients with %2% = %3% in database") % recipients.size() % fieldName % expectedFieldValue).str();
-			throw shared::exception::COutOfRange(sEx);
-		}
-		//only one recipient in resultset, read fields and return it
-		ReadRecipientFields(recipients[0]);
-		return recipients[0];
+		return recipients;
 	}
 
 

@@ -46,10 +46,9 @@ namespace database {
       ///\brief                           Find a recipient from a specific field value
       ///\param [in] fieldName            The field name ("phone", "email", etc...) where searching
       ///\param [in] expectedFieldValue   The expected field value
-      ///\return                          The first found recipient ID containing this field with this value
-      ///\throw shared::exception::CEmptyResult if no recipient found
+      ///\return                          The found recipients containing this field with this value
       //--------------------------------------------------------------
-      virtual boost::shared_ptr<entities::CRecipient> findRecipient(const std::string& fieldName, const std::string& expectedFieldValue) = 0;
+      virtual std::vector<boost::shared_ptr<entities::CRecipient> > findRecipientsFromField(const std::string& fieldName, const std::string& expectedFieldValue) = 0;//TODO doit plutôt retourner une liste de récipients
 
       //--------------------------------------------------------------
       /// \brief                    Check is a recipient exists
