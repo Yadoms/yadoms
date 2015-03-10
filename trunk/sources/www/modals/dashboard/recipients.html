@@ -24,7 +24,7 @@
       $("#btn-add-new-recipient").unbind("click").bind("click", addNewRecipient());
 
       //get all recipients from server and add them to dom
-      RecipientManager.list(function(recipientList) {
+      RecipientManager.getAll(function(recipientList) {
          //foreach result we append a <tr>
          $.each(recipientList, function(index, value) {
             addRecipientToDom(value);
@@ -155,17 +155,16 @@
       return function() {
           debugger;
          //create an empty recipient
-         RecipientManager.createEmptyRecipient(function(emptyRecipient) {
-             //show the recipient configuration modal
-             configureRecipientInternal(emptyRecipient, function (filledRecipient) {
-                 //on validation success, add the completed recipient to server
-                 RecipientManager.addToServer(filledRecipient, function(result, recipientAddedToServer){
-                     //on server operation success, add the recipient to the dashboard table
-                     if(result)
-                         addRecipientToDom(recipientAddedToServer);
-                 });
-             });
-         }, true);
+         var emptyRecipient = RecipientManager.createEmptyRecipient();
+         //show the recipient configuration modal
+         configureRecipientInternal(emptyRecipient, function (filledRecipient) {
+            //on validation success, add the completed recipient to server
+            RecipientManager.addToServer(filledRecipient, function(result, recipientAddedToServer){
+               //on server operation success, add the recipient to the dashboard table
+               if(result)
+                  addRecipientToDom(recipientAddedToServer);
+            });
+         });
       };
    }
 

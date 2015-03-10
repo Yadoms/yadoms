@@ -32,9 +32,8 @@ PluginManager.get = function (callback, sync) {
    assert($.isFunction(callback), "callback must be a function");
 
    var async = true;
-
-   if (!isNullOrUndefined(sync))
-      async = sync;
+   if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
+      async = !sync;
 
    $.ajax({
       dataType: "json",
@@ -52,7 +51,7 @@ PluginManager.get = function (callback, sync) {
        var result = [];
           $.each(data.data.plugins, function(index, value) {
              result.push(PluginManager.factory(value));
-          })
+          });
 
        callback(result);
     })
@@ -66,10 +65,6 @@ PluginManager.get = function (callback, sync) {
 PluginManager.getWithPackage = function (callback, sync) {
    assert($.isFunction(callback), "callback must be a function");
 
-   var async = true;
-   if (!isNullOrUndefined(sync))
-      async = sync;
-
    PluginManager.get( function(allPlugins) {
 
       $.each(allPlugins, function(index, plugin) {
@@ -78,7 +73,7 @@ PluginManager.getWithPackage = function (callback, sync) {
 
       callback(allPlugins);
 
-   } , async);
+   } , sync);
 
 };
 

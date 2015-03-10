@@ -114,25 +114,25 @@ Blockly.Yadoms.LoadDataForBlocklyCustomBlocks_ = function () {
         $.each(list, function (key, plugin) {
             result.plugins[plugin.id] = plugin;
         });
-    }, false);
+    }, true);
 
     DeviceManager.getAll(function (list) {
         $.each(list, function (deviceKey, device) {
             result.devices[device.id] = device;
         });
-    }, false);
+    }, true);
 
     KeywordManager.getAll(function (list) {
         $.each(list, function (keywordKey, keyword) {
             result.keywords[keyword.id] = keyword;
         });
-    }, false);
+    }, true);
 
-    RecipientManager.list(function (list) {
+    RecipientManager.getAll(function (list) {
         $.each(list, function (recipientKey, recipient) {
             result.recipients[recipient.id] = recipient;
         });
-    }, false);
+    }, true);
 
     return result;
 };

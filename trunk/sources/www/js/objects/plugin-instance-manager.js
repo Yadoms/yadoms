@@ -26,9 +26,8 @@ PluginInstanceManager.get = function (pluginInstanceId, callback, sync) {
    assert($.isFunction(callback), "callback must be a function");
 
    var async = true;
-
-   if (!isNullOrUndefined(sync))
-      async = sync;
+   if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
+      async = !sync;
 
    $.ajax({
       dataType: "json",
@@ -57,8 +56,8 @@ PluginInstanceManager.getAll = function (callback, sync) {
 
    var async = true;
 
-   if (!isNullOrUndefined(sync))
-      async = sync;
+   if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
+      async = !sync;
 
    $.ajax({
       dataType: "json",

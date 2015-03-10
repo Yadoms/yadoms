@@ -12,15 +12,19 @@ function RecipientManager() {
 /**
  * Create a new recipient (from server data only)
  * @param json Json data from server
+ * @param allAvailableFields
  * @returns {Recipient} a recipient object
  */
-RecipientManager.factory = function (json) {
+RecipientManager.factory = function (json, allAvailableFields) {
     assert(!isNullOrUndefined(json), "json must be defined");
     assert(!isNullOrUndefined(json.id), "json.id must be defined");
     assert(!isNullOrUndefined(json.firstName), "json.firstName must be defined");
     assert(!isNullOrUndefined(json.lastName), "json.lastName must be defined");
     assert(!isNullOrUndefined(json.fields), "json.fields must be defined");
-    return new Recipient(json.id, decodeURIComponent(json.firstName), decodeURIComponent(json.lastName), json.fields);
+
+    var r = new Recipient(json.id, decodeURIComponent(json.firstName), decodeURIComponent(json.lastName), json.fields);
+    RecipientManager.completeRecipientWithAllFields_(r, allAvailableFields);
+    return r;
 };
 
 /**
@@ -34,8 +38,8 @@ RecipientManager.get = function (recipientId, callback, sync) {
     assert($.isFunction(callback), "callback must be a function");
 
     var async = true;
-    if (!isNullOrUndefined(sync))
-        async = sync;
+    if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
+        async = !sync;
 
     $.ajax({
         type: "GET",
@@ -57,6 +61,17 @@ RecipientManager.get = function (recipientId, callback, sync) {
         });
 };
 
+
+/**
+ * Create an empty recipient (with all fields empty)
+ */
+RecipientManager.createEmptyRecipient = function () {
+    var emptyRecipient = new Recipient(undefined, "", "", []);
+    RecipientManager.completeRecipientWithAllFields_(emptyRecipient);
+    return emptyRecipient;
+};
+
+
 /**
  * Get all the fields available (both system and plugins)
  * @param callback The callback for the result
@@ -68,35 +83,37 @@ RecipientManager.getAllPluginFields_ = function (callback, sync) {
     PluginManager.getWithPackage(callback, sync);
 };
 
+
 /**
- * Create an empty recipient (with all fields empty)
- * @param callback The callback for the result
- * @param sync True to get the result synchronously, false asynchronously
+ * Complete a recipient with fields
+ * @param recipientToComplete The recipient to complete
+ * @param allAvailableFields The list of all available fields (if undefined, request it from server)
+ * @private
  */
-RecipientManager.createEmptyRecipient = function (callback, sync) {
-    assert($.isFunction(callback), "callback must be defined");
-
-    var emptyRecipient = new Recipient(undefined, "", "", []);
-
-    //we start by requesting all pugin fields
-    RecipientManager.getAllPluginFields_(function (allPlugin) {
-        emptyRecipient.mergeFields(allPlugin);
-        callback(emptyRecipient);
-    }, sync);
+RecipientManager.completeRecipientWithAllFields_ = function(recipientToComplete, allAvailableFields) {
+    if(!isNullOrUndefined(allAvailableFields)) {
+        recipientToComplete.mergeFields(allAvailableFields);
+    } else {
+        //we start by requesting all plugin fields
+        RecipientManager.getAllPluginFields_(function (allPlugin) {
+            recipientToComplete.mergeFields(allPlugin);
+        }, true);
+    }
 
 };
+
 
 /**
  * Get the list of all recipients
  * @param callback The callback for the result
  * @param sync True to get the result synchronously, false asynchronously
  */
-RecipientManager.list = function (callback, sync) {
+RecipientManager.getAll = function (callback, sync) {
     assert($.isFunction(callback), "callback must be defined");
 
     var async = true;
-    if (!isNullOrUndefined(sync))
-        async = sync;
+    if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
+        async = !sync;
 
     //we start by requesting all pugin fields
     RecipientManager.getAllPluginFields_(function (allPlugin) {
@@ -117,9 +134,7 @@ RecipientManager.list = function (callback, sync) {
 
                 var recipientList = [];
                 $.each(data.data.recipient, function (index, value) {
-                    var r2 = RecipientManager.factory(value);
-                    r2.mergeFields(allPlugin);
-                    recipientList.push(r2);
+                    recipientList.push(RecipientManager.factory(value, allPlugin));
                 });
 
                 if ($.isFunction(callback))
@@ -144,8 +159,8 @@ RecipientManager.deleteFromServer = function (recipientToDelete, callback, sync)
     assert(!isNullOrUndefined(recipientToDelete), "recipient must be defined");
     assert($.isFunction(callback), "callback must be defined");
     var async = true;
-    if (!isNullOrUndefined(sync))
-        async = sync;
+    if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
+        async = !sync;
 
     $.ajax({
         type: "DELETE",
@@ -178,8 +193,8 @@ RecipientManager.updateToServer = function (recipientToUpdate, callback, sync) {
     assert($.isFunction(callback), "callback must be defined");
 
     var async = true;
-    if (!isNullOrUndefined(sync))
-        async = sync;
+    if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
+        async = !sync;
     $.ajax({
         type: "PUT",
         url: "/rest/recipient/" + recipientToUpdate.id,
@@ -224,8 +239,8 @@ RecipientManager.addToServer = function (recipientToAdd, callback, sync) {
     assert($.isFunction(callback), "callback must be defined");
 
     var async = true;
-    if (!isNullOrUndefined(sync))
-        async = sync;
+    if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
+        async = !sync;
 
     $.ajax({
         type: "POST",
