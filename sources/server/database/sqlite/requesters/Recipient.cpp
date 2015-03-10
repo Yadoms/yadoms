@@ -23,7 +23,7 @@ namespace database { namespace sqlite { namespace requesters {
 	// IRecipientRequester implementation
 	boost::shared_ptr<entities::CRecipient> CRecipient::addRecipient(const entities::CRecipient & recipient)
 	{
-		if (recipient.FirstName.isDefined() && recipient.LastName.isDefined())
+	   if (recipient.FirstName.isDefined() && recipient.LastName.isDefined())
 		{
 			//check recipient do not already exists
 			if (exists(recipient.FirstName(), recipient.LastName()))
@@ -57,22 +57,16 @@ namespace database { namespace sqlite { namespace requesters {
 				WriteRecipientFields(insertedRecipientId, recipient.Fields());
 				return getRecipient(insertedRecipientId);
 			}
-			else
-			{
-				throw shared::exception::CEmptyResult("Cannot retrieve inserted Recipient");
-			}
+		   throw shared::exception::CEmptyResult("Cannot retrieve inserted Recipient");
 		}
-		else
-		{
-			throw shared::exception::CEmptyResult("Cannot add recipient without first and last name");
-		}
+	   throw shared::exception::CEmptyResult("Cannot add recipient without first and last name");
 	}
 
-	boost::shared_ptr<entities::CRecipient> CRecipient::updateRecipient(const entities::CRecipient & recipient)
-	{
-		if (recipient.Id.isDefined())
+         boost::shared_ptr<entities::CRecipient> CRecipient::updateRecipient(const entities::CRecipient & recipient)
+         {
+            if (recipient.Id.isDefined())
 		{
-			if (recipient.FirstName.isDefined() && recipient.LastName.isDefined())
+		   if (recipient.FirstName.isDefined() && recipient.LastName.isDefined())
 			{
 				CQuery qInsert;
 				qInsert.InsertOrReplaceInto(CRecipientTable::getTableName(), CRecipientTable::getIdColumnName(), CRecipientTable::getFirstNameColumnName(), CRecipientTable::getLastNameColumnName()).
@@ -89,18 +83,12 @@ namespace database { namespace sqlite { namespace requesters {
 				//read fully the recipient
 				return getRecipient(recipient.FirstName(), recipient.LastName());
 			}
-			else
-			{
-				throw shared::exception::CEmptyResult("The recipient first and last name msut be defined");
-			}
+		   throw shared::exception::CEmptyResult("The recipient first and last name msut be defined");
 		}
-		else
-		{
-			throw shared::exception::CEmptyResult("The recipient id must be defined");
-		}
-	}
+            throw shared::exception::CEmptyResult("The recipient id must be defined");
+         }
 
-	std::vector<boost::shared_ptr<entities::CRecipient> > CRecipient::getRecipients()
+         std::vector<boost::shared_ptr<entities::CRecipient> > CRecipient::getRecipients()
 	{
 		CQuery qSelect;
 		qSelect.Select().
@@ -109,13 +97,13 @@ namespace database { namespace sqlite { namespace requesters {
 			CRecipientTable::getLastNameColumnName(), CQUERY_ORDER_ASC);
 
 		adapters::CRecipientAdapter adapter;
-		m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CRecipient> >(&adapter, qSelect);
+		m_databaseRequester->queryEntities<boost::shared_ptr<entities::CRecipient> >(&adapter, qSelect);
 
 		//read all recipients
-		std::vector<boost::shared_ptr<database::entities::CRecipient> > recipients = adapter.getResults();
+		std::vector<boost::shared_ptr<entities::CRecipient> > recipients = adapter.getResults();
 
 		//for each one, read its fields (not contained in recipient table)
-		for (std::vector<boost::shared_ptr<database::entities::CRecipient> >::iterator i = recipients.begin(); i != recipients.end(); ++i)
+		for (std::vector<boost::shared_ptr<entities::CRecipient> >::iterator i = recipients.begin(); i != recipients.end(); ++i)
 			ReadRecipientFields(*i);
 
 		return recipients;
@@ -132,14 +120,14 @@ namespace database { namespace sqlite { namespace requesters {
 			CRecipientTable::getLastNameColumnName(), CQUERY_ORDER_ASC);
 
 		adapters::CRecipientAdapter adapter;
-		m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CRecipient> >(&adapter, qSelect);
+		m_databaseRequester->queryEntities<boost::shared_ptr<entities::CRecipient> >(&adapter, qSelect);
 
 		//read all recipients
-		std::vector<boost::shared_ptr<database::entities::CRecipient> > recipients = adapter.getResults();
+		std::vector<boost::shared_ptr<entities::CRecipient> > recipients = adapter.getResults();
 
 		if (recipients.size() >= 1)
 		{
-			boost::shared_ptr<database::entities::CRecipient> result = recipients[0];
+			boost::shared_ptr<entities::CRecipient> result = recipients[0];
 			ReadRecipientFields(result);
 			return result;
 		}
@@ -160,14 +148,14 @@ namespace database { namespace sqlite { namespace requesters {
 			CRecipientTable::getLastNameColumnName(), CQUERY_ORDER_ASC);
 
 		adapters::CRecipientAdapter adapter;
-		m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CRecipient> >(&adapter, qSelect);
+		m_databaseRequester->queryEntities<boost::shared_ptr<entities::CRecipient> >(&adapter, qSelect);
 
 		//read all recipients
-		std::vector<boost::shared_ptr<database::entities::CRecipient> > recipients = adapter.getResults();
+		std::vector<boost::shared_ptr<entities::CRecipient> > recipients = adapter.getResults();
 
 		if (recipients.size() >= 1)
 		{
-			boost::shared_ptr<database::entities::CRecipient> result = recipients[0];
+			boost::shared_ptr<entities::CRecipient> result = recipients[0];
 			ReadRecipientFields(result);
 			return result;
 		}
@@ -189,13 +177,13 @@ namespace database { namespace sqlite { namespace requesters {
 			Where(CRecipientTable::getIdColumnName(), CQUERY_OP_IN, qubQuery);
 
 		adapters::CRecipientAdapter adapter;
-		m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CRecipient> >(&adapter, qSelect);
+		m_databaseRequester->queryEntities<boost::shared_ptr<entities::CRecipient> >(&adapter, qSelect);
 
 		//read all recipients
-		std::vector<boost::shared_ptr<database::entities::CRecipient> > recipients = adapter.getResults();
+		std::vector<boost::shared_ptr<entities::CRecipient> > recipients = adapter.getResults();
 
       //for each one, read its fields (not contained in recipient table)
-      for (std::vector<boost::shared_ptr<database::entities::CRecipient> >::iterator i = recipients.begin(); i != recipients.end(); ++i)
+      for (std::vector<boost::shared_ptr<entities::CRecipient> >::iterator i = recipients.begin(); i != recipients.end(); ++i)
          ReadRecipientFields(*i);
 
 		return recipients;
@@ -254,7 +242,7 @@ namespace database { namespace sqlite { namespace requesters {
 	}
 	// [END] IRecipientRequester implementation
 
-	void CRecipient::ReadRecipientFields(boost::shared_ptr<database::entities::CRecipient> & recipientToComplete)
+	void CRecipient::ReadRecipientFields(boost::shared_ptr<entities::CRecipient> & recipientToComplete)
 	{
 		CQuery qSelect;
 		qSelect.Select().
@@ -262,18 +250,18 @@ namespace database { namespace sqlite { namespace requesters {
 			Where(CRecipientFieldTable::getIdRecipientColumnName(), CQUERY_OP_EQUAL, recipientToComplete->Id());
 
 		adapters::CRecipientFieldAdapter adapter;
-		m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CRecipientField> >(&adapter, qSelect);
+		m_databaseRequester->queryEntities<boost::shared_ptr<entities::CRecipientField> >(&adapter, qSelect);
 
 		recipientToComplete->Fields().clear();
 
-		std::vector< boost::shared_ptr<database::entities::CRecipientField> > fields = adapter.getResults();
-		for (std::vector< boost::shared_ptr<database::entities::CRecipientField> >::iterator i = fields.begin(); i != fields.end(); ++i)
+		std::vector< boost::shared_ptr<entities::CRecipientField> > fields = adapter.getResults();
+		for (std::vector< boost::shared_ptr<entities::CRecipientField> >::iterator i = fields.begin(); i != fields.end(); ++i)
 		{
 			recipientToComplete->Fields().push_back(*i);
 		}
 	}
 
-	void CRecipient::WriteRecipientFields(const int recipientId, const std::vector< boost::shared_ptr<database::entities::CRecipientField> > & fields)
+	void CRecipient::WriteRecipientFields(const int recipientId, const std::vector< boost::shared_ptr<entities::CRecipientField> > & fields)
 	{
 		//remove all existing fields
 		CQuery removeFields;
@@ -282,7 +270,7 @@ namespace database { namespace sqlite { namespace requesters {
 		m_databaseRequester->queryStatement(removeFields);
 
 		//insert fields
-		for (std::vector< boost::shared_ptr<database::entities::CRecipientField> >::const_iterator i = fields.begin(); i != fields.end(); ++i)
+		for (std::vector< boost::shared_ptr<entities::CRecipientField> >::const_iterator i = fields.begin(); i != fields.end(); ++i)
 		{
 			if ((*i)->Value.isDefined() && !(*i)->Value().empty())
 			{
@@ -300,6 +288,49 @@ namespace database { namespace sqlite { namespace requesters {
 			}
 		}
 	}
+
+   bool CRecipient::fieldExists(const std::string& fieldName, const std::string& pluginName) const
+	{
+      CQuery qSelect;
+      qSelect.SelectCount().
+         From(CRecipientFieldTable::getTableName()).
+         Where(CRecipientFieldTable::getFieldNameColumnName(), CQUERY_OP_EQUAL, fieldName).
+         And(CRecipientFieldTable::getPluginNameColumnName(), CQUERY_OP_EQUAL, pluginName);
+
+      int count = m_databaseRequester->queryCount(qSelect);
+      return count != 0;
+   }
+
+   boost::shared_ptr<entities::CRecipientField> CRecipient::createField(const entities::CRecipientField& field)
+   {
+      if (!field.FieldName.isDefined() || !field.PluginName.isDefined())
+         throw shared::exception::CEmptyResult("Cannot add recipient field without name and plugin name");
+
+      //check field do not already exists
+      if (fieldExists(field.FieldName(), field.PluginName()))
+         throw shared::exception::CInvalidParameter((boost::format("Fail to insert recipient field %1% (already exists)") % field.FieldName()).str());
+
+      //insert field
+      CQuery qInsert;
+      qInsert.InsertInto(CRecipientFieldTable::getTableName(), CRecipientFieldTable::getFieldNameColumnName(), CRecipientFieldTable::getPluginNameColumnName()).
+         Values(field.FieldName(), field.PluginName());
+      if (m_databaseRequester->queryStatement(qInsert) <= 0)
+         throw shared::exception::CEmptyResult("Fail to insert recipient field");
+
+      //retreive inserted field
+      CQuery qSelect;
+      qSelect.Select().
+         From(CRecipientFieldTable::getTableName()).
+         Where(CRecipientFieldTable::getFieldNameColumnName(), CQUERY_OP_EQUAL, field.FieldName()).
+         And(CRecipientFieldTable::getPluginNameColumnName(), CQUERY_OP_EQUAL, field.PluginName());
+
+      adapters::CRecipientFieldAdapter adapter;
+      m_databaseRequester->queryEntities<boost::shared_ptr<entities::CRecipientField> >(&adapter, qSelect);
+      if (adapter.getResults().size() != 1)
+         throw shared::exception::CEmptyResult("Fail to insert recipient field : cannot retrieve inserted field");
+
+      return adapter.getResults()[0];
+   }
 
 } //namespace requesters
 } //namespace sqlite

@@ -182,6 +182,21 @@ namespace shared { namespace plugin { namespace yPluginApi
       //-----------------------------------------------------
       virtual std::vector<int> findRecipientsFromField(const std::string& fieldName, const std::string& expectedFieldValue) const = 0;
 
+      //--------------------------------------------------------------
+      /// \brief                    Check if a field exists
+      /// \param [in] fieldName     The field name
+      /// \return                   true if field exists
+      //--------------------------------------------------------------
+      virtual bool recipientFieldExists(const std::string& fieldName) const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief                    Create a new recipient field
+      /// \param [in] fieldName     The field name
+      /// \param [in] checkRegex    The regex used to check user entries for this field // TODO : conservé ?
+      /// \throw                    shared::exception::CEmptyResult if fails
+      //--------------------------------------------------------------
+      virtual void createRecipientField(const std::string& fieldName, const std::string& checkRegex) = 0;
+
 
 
       //----------------------------------------------------------------------------------------------------------------
