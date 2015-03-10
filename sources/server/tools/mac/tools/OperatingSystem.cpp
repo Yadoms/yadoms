@@ -3,14 +3,13 @@
 #include <shared/Log.h>
 #include <CoreServices/CoreServices.h>
 #include <Carbon/Carbon.h>
+#include <Poco/Environment.h>
 
 namespace tools {
 
-   const std::string COperatingSystem::m_name = "Mac OSX";
-
    const std::string & COperatingSystem::getName()
    {
-      return m_name;
+      return Poco::Environment::osName();
    }
 
    OSStatus SendAppleEventToSystemProcess(AEEventID EventToSend)

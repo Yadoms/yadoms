@@ -129,6 +129,7 @@ SET ( POCO_LIBS
 	PocoFoundation
 	PocoNet
 	PocoUtil
+   PocoZip
 )
 
 include(FindPoco.cmake)
