@@ -6,12 +6,6 @@ namespace tools {
    {
    public:
       //--------------------------------------------------------------
-      /// \brief	                  Get OS name
-      /// \return                   OS name
-      //--------------------------------------------------------------
-      static const std::string & getName();
-      
-      //--------------------------------------------------------------
       /// \brief	                  Shutdown the system
       /// \param[in] andRestart     Shutdown and restart if true
       /// \return                   true if success

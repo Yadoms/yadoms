@@ -7,11 +7,6 @@
 
 namespace tools {
 
-   const std::string & COperatingSystem::getName()
-   {
-      return Poco::Environment::osName();
-   }
-
    OSStatus SendAppleEventToSystemProcess(AEEventID EventToSend)
    {
       AEAddressDesc targetDesc;

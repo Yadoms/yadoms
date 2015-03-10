@@ -34,7 +34,7 @@ public:
    /// \brief		                     get the operating system name (windows, linux,....)
    /// \return  	                     the operating system name
    //-----------------------------------------------------------------------------
-   const std::string & getOperatingSystemName() const;
+   const std::string getOperatingSystemName() const;
    
 private:
    //-----------------------------------------------------------------------------

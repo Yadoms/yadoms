@@ -5,12 +5,6 @@
 #include <Poco/Environment.h>
 
 namespace tools {
-
-   const std::string & COperatingSystem::getName()
-   {
-      return Poco::Environment::osName();
-   }
-
    bool COperatingSystem::shutdown(bool andRestart)
    {
       sync();

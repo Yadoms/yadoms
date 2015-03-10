@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "RunningInformation.h"
 #include "tools/OperatingSystem.h"
+#include <Poco/Environment.h>
 
 CRunningInformation::CRunningInformation()
    :m_startupDateTime(boost::posix_time::second_clock::universal_time()),
@@ -25,7 +26,8 @@ const tools::CVersion  & CRunningInformation::getSoftwareVersion() const
 }   
 
 
-const std::string & CRunningInformation::getOperatingSystemName() const
+const std::string CRunningInformation::getOperatingSystemName() const
 {
-   return tools::COperatingSystem::getName();
+   //do not return references
+   return (boost::format("%1% %2% %3%") % Poco::Environment::osDisplayName() % Poco::Environment::osVersion()).str();
 }
