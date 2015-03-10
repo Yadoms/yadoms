@@ -24,9 +24,9 @@ DeviceManager.get = function (deviceId, callback, sync) {
    assert($.isFunction(callback), "callback must be a function");
 
    var async = true;
+   if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
+      async = !sync;
 
-   if (!isNullOrUndefined(sync))
-      async = sync;
    $.ajax({
       dataType: "json",
       url: "rest/device/" + deviceId,
@@ -48,8 +48,8 @@ DeviceManager.getAll = function (callback, sync) {
     assert(!isNullOrUndefined(callback), "callback must be defined");
 
     var async = true;
-    if (!isNullOrUndefined(sync))
-        async = sync;
+    if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
+        async = !sync;
 
     $.ajax({
         dataType: "json",
@@ -80,8 +80,8 @@ DeviceManager.getAllByInstanceId = function(pluginInstanceId, callback, sync) {
    assert(!isNullOrUndefined(callback), "callback must be defined");
 
    var async = true;
-   if (!isNullOrUndefined(sync))
-      async = sync;
+   if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
+      async = !sync;
 
    $.ajax({
       dataType: "json",
@@ -147,8 +147,8 @@ DeviceManager.getKeywordsByDeviceId = function(deviceId, callback, sync) {
    assert(!isNullOrUndefined(callback), "callback must be defined");
 
       var async = true;
-      if (!isNullOrUndefined(sync))
-         async = sync;
+      if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
+         async = !sync;
 
       //we ask for the keywords of current device
       $.ajax({

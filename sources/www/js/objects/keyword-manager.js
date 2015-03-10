@@ -62,9 +62,8 @@ KeywordManager.get = function (keywordId, callback, sync) {
    assert($.isFunction(callback), "callback must be a function");
 
    var async = true;
-
-   if (!isNullOrUndefined(sync))
-      async = sync;
+   if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
+      async = !sync;
 
    $.ajax({
       dataType: "json",
@@ -87,8 +86,8 @@ KeywordManager.getAll = function (callback, sync) {
     assert(!isNullOrUndefined(callback), "callback must be defined");
 
     var async = true;
-    if (!isNullOrUndefined(sync))
-        async = sync;
+    if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
+        async = !sync;
 
     $.ajax({
         dataType: "json",
