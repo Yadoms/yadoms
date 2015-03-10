@@ -292,7 +292,7 @@ void CSmsDialer::processIncommingSMS(boost::shared_ptr<yApi::IYPluginApi> contex
          // Send SMS to Yadoms
          try
          {
-            m_messageKeyword.set(findRecipient(context, (*it)->getNumber()), 0, (*it)->getContent());
+            m_messageKeyword.set(findRecipientByPhone(context, (*it)->getNumber()), 0, (*it)->getContent());
             context->historizeData(m_device, m_messageKeyword);
          }
          catch (shared::exception::CInvalidParameter& e)
@@ -324,14 +324,15 @@ std::string CSmsDialer::getRecipientPhone(boost::shared_ptr<yApi::IYPluginApi> c
    }
 }
 
-int CSmsDialer::findRecipient(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& phoneNumber) const
+int CSmsDialer::findRecipientByPhone(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& phoneNumber) const
 {
-   try
-   {
-      return context->findRecipient("phone", phoneNumber);
-   }
-   catch (shared::exception::CEmptyResult& e)
-   {
-      throw shared::exception::CInvalidParameter(std::string("Recipient not found, or phone field not found for recipient") + e.what());
-   }   
+   std::vector<int> recipients = context->findRecipientsFromField("phone", phoneNumber);
+
+   if (recipients.empty())
+      throw shared::exception::CInvalidParameter((boost::format("Recipient with phone number %1% not found in database") % phoneNumber).str());
+
+   if (recipients.size() > 1)
+      YADOMS_LOG(warning) << "Several recipients with phone number " << phoneNumber << " were found in database, select the first one, Id=" << recipients[0];
+
+   return recipients[0];
 }

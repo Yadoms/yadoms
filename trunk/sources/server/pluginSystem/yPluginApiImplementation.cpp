@@ -100,9 +100,15 @@ std::string CYPluginApiImplementation::getRecipientValue(int recipientId, const 
    throw shared::exception::CEmptyResult((boost::format("Cannot retrieve field %1% for recipient Id %2% in database") % fieldName % recipientId).str());
 }
 
-int CYPluginApiImplementation::findRecipient(const std::string& fieldName, const std::string& expectedFieldValue) const
+std::vector<int> CYPluginApiImplementation::findRecipientsFromField(const std::string& fieldName, const std::string& expectedFieldValue) const
 {
-   return m_recipientRequester->findRecipient(fieldName, expectedFieldValue)->Id;
+   std::vector<boost::shared_ptr<database::entities::CRecipient> > recipients = m_recipientRequester->findRecipientsFromField(fieldName, expectedFieldValue);
+   std::vector<int> recipientIds;
+
+   for (std::vector<boost::shared_ptr<database::entities::CRecipient> >::const_iterator itRecipient = recipients.begin(); itRecipient != recipients.end(); ++itRecipient)
+      recipientIds.push_back((*itRecipient)->Id);
+
+   return recipientIds;
 }
 
 
