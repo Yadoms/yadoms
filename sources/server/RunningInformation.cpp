@@ -29,5 +29,5 @@ const tools::CVersion  & CRunningInformation::getSoftwareVersion() const
 const std::string CRunningInformation::getOperatingSystemName() const
 {
    //do not return references
-   return (boost::format("%1% %2% %3%") % Poco::Environment::osDisplayName() % Poco::Environment::osVersion()).str();
+   return (boost::format("%1% %2%") % Poco::Environment::osDisplayName() % Poco::Environment::osVersion()).str();
 }
