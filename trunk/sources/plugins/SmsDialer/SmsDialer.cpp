@@ -13,6 +13,10 @@
 IMPLEMENT_PLUGIN(CSmsDialer)
 
 
+const std::string CSmsDialer::m_phoneFieldName("phone");
+const std::string CSmsDialer::m_internationalPhoneNumberMatchRegex("\\+(9[976]\\d|8[987530]\\d|6[987]\\d|5[90]\\d|42\\d|3[875]\\d|2[98654321]\\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\\d{1,14}$");
+
+
 CSmsDialer::CSmsDialer()
    :m_messageKeyword("message", yApi::EKeywordAccessMode::kGetSet), m_powerKeyword("power")
 {
@@ -39,6 +43,10 @@ void CSmsDialer::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
       // Create the phone instance
       m_phone = CSmsDialerFactory::constructPhone(m_configuration);
 
+      // Create the recipient field "phone" in Yadoms database
+      if (!context->recipientFieldExists(m_phoneFieldName))
+         context->createRecipientField(m_phoneFieldName, m_internationalPhoneNumberMatchRegex);
+
       // the main loop
       YADOMS_LOG(debug) << "CSmsDialer is running...";
 
@@ -62,7 +70,7 @@ void CSmsDialer::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
          {
             processConnectedState(context);
          }
-      };
+      }
    }
    catch (boost::thread_interrupted&)
    {
@@ -316,7 +324,7 @@ std::string CSmsDialer::getRecipientPhone(boost::shared_ptr<yApi::IYPluginApi> c
 {
    try
    {
-      return context->getRecipientValue(recipientId, "phone");
+      return context->getRecipientValue(recipientId, m_phoneFieldName);
    }
    catch (shared::exception::CEmptyResult& e)
    {
@@ -326,7 +334,7 @@ std::string CSmsDialer::getRecipientPhone(boost::shared_ptr<yApi::IYPluginApi> c
 
 int CSmsDialer::findRecipientByPhone(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& phoneNumber) const
 {
-   std::vector<int> recipients = context->findRecipientsFromField("phone", phoneNumber);
+   std::vector<int> recipients = context->findRecipientsFromField(m_phoneFieldName, phoneNumber);
 
    if (recipients.empty())
       throw shared::exception::CInvalidParameter((boost::format("Recipient with phone number %1% not found in database") % phoneNumber).str());

@@ -43,14 +43,6 @@ namespace database {
       virtual boost::shared_ptr<entities::CRecipient> getRecipient(const std::string & firstName, const std::string & lastName) = 0;
       
       //--------------------------------------------------------------
-      ///\brief                           Find a recipient from a specific field value
-      ///\param [in] fieldName            The field name ("phone", "email", etc...) where searching
-      ///\param [in] expectedFieldValue   The expected field value
-      ///\return                          The found recipients containing this field with this value
-      //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<entities::CRecipient> > findRecipientsFromField(const std::string& fieldName, const std::string& expectedFieldValue) = 0;//TODO doit plutôt retourner une liste de récipients
-
-      //--------------------------------------------------------------
       /// \brief                    Check is a recipient exists
       /// \param [in] firstName     Recipient first name
       /// \param [in] lastName      Recipient last name
@@ -59,7 +51,7 @@ namespace database {
       virtual bool exists(const std::string & firstName, const std::string & lastName) = 0;
 
       //--------------------------------------------------------------
-      /// \brief                    Check is a recipient exists
+      /// \brief                    Check if a recipient exists
       /// \param [in] id            Recipient id
       /// \return                   true if recipient exists
       //--------------------------------------------------------------
@@ -76,6 +68,30 @@ namespace database {
       /// \brief           Remove all recipients
       //--------------------------------------------------------------
       virtual void removeAllRecipients() = 0;
+
+      //--------------------------------------------------------------
+      /// \brief                    Check if a field exists
+      /// \param [in] fieldName     The field name
+      /// \param [in] pluginName    The plugin name (user/creator of the field)
+      /// \return                   true if field exists
+      //--------------------------------------------------------------
+      virtual bool fieldExists(const std::string& fieldName, const std::string& pluginName) const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief                    Create a new field
+      /// \param [in] field         The field data
+      /// \return                   The created field
+      /// \throw                    shared::exception::CEmptyResult if fails
+      //--------------------------------------------------------------
+      virtual boost::shared_ptr<entities::CRecipientField> createField(const entities::CRecipientField& field) = 0;
+
+      //--------------------------------------------------------------
+      ///\brief                           Find a recipient from a specific field value
+      ///\param [in] fieldName            The field name ("phone", "email", etc...) where searching
+      ///\param [in] expectedFieldValue   The expected field value
+      ///\return                          The found recipients containing this field with this value
+      //--------------------------------------------------------------
+      virtual std::vector<boost::shared_ptr<entities::CRecipient> > findRecipientsFromField(const std::string& fieldName, const std::string& expectedFieldValue) = 0;//TODO doit plutôt retourner une liste de récipients
 
       //--------------------------------------------------------------
       /// \brief       Destructor

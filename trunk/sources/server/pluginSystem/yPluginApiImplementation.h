@@ -55,6 +55,8 @@ namespace pluginSystem
       virtual void declareKeyword(const std::string& device, const shared::plugin::yPluginApi::historization::IHistorizable& keyword, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer);
       virtual std::string getRecipientValue(int recipientId, const std::string& fieldName) const;
       virtual std::vector<int> findRecipientsFromField(const std::string& fieldName, const std::string& expectedFieldValue) const;
+      virtual bool recipientFieldExists(const std::string& fieldName) const;
+      virtual void createRecipientField(const std::string& fieldName, const std::string& checkRegex);
       virtual void historizeData(const std::string& device, const shared::plugin::yPluginApi::historization::IHistorizable& data);
       virtual void historizeData(const std::string& device, std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > & dataVect);
       virtual const shared::plugin::information::IInformation& getInformation() const;
