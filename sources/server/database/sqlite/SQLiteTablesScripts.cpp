@@ -122,11 +122,12 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(Rule, "CREATE TABLE Rule                   
                                            (  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,                      \
                                              name TEXT NOT NULL,                                                  \
                                              description TEXT,                                                    \
-                                             type TEXT NOT NULL,                                                  \
+                                             interpreter TEXT NOT NULL,                                           \
+                                             editor TEXT NOT NULL,                                                \
                                              model TEXT,                                                          \
                                              content TEXT,                                                        \
                                              configuration TEXT,                                                  \
-                                             enabled INTEGER DEFAULT 1,                                            \
+                                             enabled INTEGER DEFAULT 1,                                           \
                                              state TEXT NOT NULL default 'Stopped',                               \
                                              errorMessage TEXT,                                                   \
                                              startDate TEXT,                                                      \

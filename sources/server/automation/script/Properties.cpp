@@ -5,7 +5,7 @@ namespace automation { namespace script
 {
 
 CProperties::CProperties(boost::shared_ptr<const database::entities::CRule> ruleData)
-   :m_interpreterName(ruleData->Type()),
+   :m_interpreterName(ruleData->Interpreter()),
    m_modelBased(!ruleData->Model().empty()),
    m_scriptPath(buildScriptPath(ruleData)),
    m_configuration(ruleData->Configuration())

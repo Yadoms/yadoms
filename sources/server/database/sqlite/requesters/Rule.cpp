@@ -57,10 +57,11 @@ namespace database { namespace sqlite { namespace requesters {
    {
       CQuery qInsert;
 
-      qInsert.InsertInto(CRuleTable::getTableName(), CRuleTable::getNameColumnName(), CRuleTable::getDescriptionColumnName(), CRuleTable::getTypeColumnName(), CRuleTable::getModelColumnName(), CRuleTable::getContentColumnName(), CRuleTable::getConfigurationColumnName(), CRuleTable::getStateColumnName()).
+      qInsert.InsertInto(CRuleTable::getTableName(), CRuleTable::getNameColumnName(), CRuleTable::getDescriptionColumnName(), CRuleTable::getInterpreterColumnName(), CRuleTable::getEditorColumnName(), CRuleTable::getModelColumnName(), CRuleTable::getContentColumnName(), CRuleTable::getConfigurationColumnName(), CRuleTable::getStateColumnName()).
          Values(ruleData->Name(), 
          ruleData->Description(),
-         ruleData->Type(),
+         ruleData->Interpreter(),
+         ruleData->Editor(),
          ruleData->Model(),
          ruleData->Content(),
          ruleData->Configuration(),
@@ -153,7 +154,29 @@ namespace database { namespace sqlite { namespace requesters {
          if(m_databaseRequester->queryStatement(qUpdate) <= 0)
             throw CDatabaseException("Failed to update description");
       }
-      
+
+      //update interpreter
+      if(ruleData->Interpreter.isDefined())
+      {
+         qUpdate.Clear().Update(CRuleTable::getTableName()).
+         Set(CRuleTable::getInterpreterColumnName(), ruleData->Interpreter()).
+         Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, ruleData->Id());
+
+         if(m_databaseRequester->queryStatement(qUpdate) <= 0)
+            throw CDatabaseException("Failed to update interpreter");
+      }
+
+      //update editor
+      if (ruleData->Editor.isDefined())
+      {
+         qUpdate.Clear().Update(CRuleTable::getTableName()).
+            Set(CRuleTable::getEditorColumnName(), ruleData->Editor()).
+            Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, ruleData->Id());
+
+         if (m_databaseRequester->queryStatement(qUpdate) <= 0)
+            throw CDatabaseException("Failed to update editor");
+      }
+
       //update content
       if(ruleData->Content.isDefined())
       {
