@@ -42,7 +42,8 @@
       $modalBody.i18n();
 
       //validation form
-      $modalBody.find("input,select,textarea").jqBootstrapValidation({
+      //erase previous jqBootstrapValidation
+      $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy").jqBootstrapValidation({
          preventSubmit: true,
          submitError: function($form, event, errors) {
             console.warn("Unable to validate form: " + errors);
@@ -53,8 +54,6 @@
 
             console.debug("End of Keyword Configuration : " + JSON.stringify(keyword));
 
-            $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy");
-            $modalBody.empty();
             $("div#configure-keyword-modal").modal("hide");
             callback();
          },
@@ -66,5 +65,6 @@
 
       //we display the modal
       $('div#configure-keyword-modal').modal();
+
    }
 </script>

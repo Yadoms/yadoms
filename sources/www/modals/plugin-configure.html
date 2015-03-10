@@ -46,7 +46,8 @@
       $modalBody.i18n();
 
       //validation form
-      $modalBody.find("input,select,textarea").jqBootstrapValidation({
+      //erase previous jqBootstrapValidation
+      $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy").jqBootstrapValidation({
          preventSubmit: true,
          submitError: function($form, event, errors) {
             console.warn("Unable to validate form: " + errors);
@@ -58,8 +59,6 @@
 
             console.debug("End of Plugin Configuration : " + JSON.stringify(pluginInstance));
 
-            $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy");
-            $modalBody.empty();
             $("div#configure-plugin-modal").modal("hide");
             callback();
          },

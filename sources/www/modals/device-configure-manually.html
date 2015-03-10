@@ -45,7 +45,8 @@
       $modalBody.i18n();
 
       //validation form
-      $modalBody.find("input,select,textarea").jqBootstrapValidation({
+      //erase previous jqBootstrapValidation
+      $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy").jqBootstrapValidation({
          preventSubmit: true,
          submitError: function($form, event, errors) {
             console.warn("Unable to validate form: " + errors);
@@ -56,10 +57,6 @@
             var deviceName = friendlyNameParameter.getCurrentConfiguration();
             var configuration = configMgr.getCurrentConfiguration();
 
-            console.debug("End of Manually Device Configuration");
-
-            $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy");
-            $modalBody.empty();
             $("div#configure-manually-device-modal").modal("hide");
             callback(deviceName, configuration);
          },
@@ -71,5 +68,6 @@
 
       //we display the modal
       $('div#configure-manually-device-modal').modal();
+
    }
 </script>
