@@ -17,9 +17,6 @@ namespace tools {
       /// \return                   true if success
       //--------------------------------------------------------------
       static bool shutdown(bool andRestart = false);//TODO faire pour linux
-
-   private:
-      static const std::string m_name;
    };
 
 } //namespace tools

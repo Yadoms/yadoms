@@ -7,6 +7,10 @@
 #include <boost/functional/hash.hpp>
 #include <shared/encryption/md5.h>
 #include <fstream>
+#include <Poco/String.h>
+#include "RunningInformation.h"
+#include <Poco/Zip/Decompress.h>
+#include <Poco/Delegate.h>
 
 namespace task { namespace update {
 
@@ -30,16 +34,15 @@ namespace task { namespace update {
       YADOMS_LOG(information) << "Downloading " << filename << ": " << progression << "%";
    }
 
-   bool CYadoms::doWork(TaskProgressFunc pFunctor)
+   bool CYadoms::doWork(TaskProgressFunc progressCallback)
    {
       try
       {
-         pFunctor(0.0f, "Checking for a new update");
+         progressCallback(0.0f, "Checking for a new update");
 
-         std::string baseUrl = "http://10.10.109.26/files/NHI/yadoms.com";
+         std::string baseUrl = "http://www.yadoms.com/download";
 
-         //TODO : recuperer plateforme dynamiquement (cf POCO)
-         std::string platform = "windows";
+         std::string platform = Poco::toLower(CRunningInformation().getOperatingSystemName());
 
          std::ostringstream lastVersion;
          tools::web::CFileDownloader::downloadFile(baseUrl + "/" + platform + "/lastversion.json",
@@ -50,23 +53,24 @@ namespace task { namespace update {
 
          std::string versionAsString = lv.get<std::string>("yadoms.information.version");
          tools::CVersion availableVersion(versionAsString);
-         //tools::CVersion currentVersion = CSystem().getSoftwareVersion();
-         //TODO : recuperer la version du soft en utilisant CSystem
-         tools::CVersion currentVersion(1, 0, 0, 0);
+         tools::CVersion currentVersion = CRunningInformation().getSoftwareVersion();
 
          if (availableVersion <= currentVersion)
          {
-            pFunctor(100.0f, "System is up to date");
+            progressCallback(100.0f, "System is up to date");
          }
          else
          {
-            pFunctor(0.0f, "A new update is available");
-            pFunctor(0.0f, "Downloading package");
+            progressCallback(0.0f, "A new update is available");
+            progressCallback(0.0f, "Downloading package");
             std::string fileToDownload = lv.get<std::string>("yadoms.information.softwarePackage");
             
-            //TODO : get temp folder from a global system provider (cf POCO)
-            boost::filesystem::path tempFolder("tmp/");
-            //TODO : this part must be managed by the global folder before returning it
+            //get temp folder from a global system provider
+            Poco::Path p(Poco::Path::temp());
+            p.pushDirectory("yadoms");
+            boost::filesystem::path tempFolder(p.toString());
+            
+            //this part must be managed by the global folder before returning it
             if (!boost::filesystem::exists(tempFolder))
             {
                boost::filesystem::create_directory(tempFolder);
@@ -84,7 +88,7 @@ namespace task { namespace update {
 
             if (!boost::filesystem::exists(packageLocalFilePath))
             {
-               pFunctor(100.0f, "Error during downloading package");
+               progressCallback(100.0f, "Error during downloading package");
                return false;
             }
             
@@ -98,32 +102,49 @@ namespace task { namespace update {
 
             if (!boost::iequals(md5HashCalculated, md5HashExcpected))
             {
-               pFunctor(100.0f, "Error during downloading package");
+               progressCallback(100.0f, "Error during downloading package");
                return false;
             }
 
-            pFunctor(50.0f, "Package " + fileToDownload + "successfully downloaded");
+            progressCallback(50.0f, "Package " + fileToDownload + "successfully downloaded");
             
             //verification of the extension
             std::string extension = boost::filesystem::extension(packageLocalFilePath);
             if ((!boost::iequals(extension, "zip")) && (!boost::iequals(extension, "tar.gz")))
             {
-               pFunctor(100.0f, "Invalid extension package: " + fileToDownload);
+               progressCallback(100.0f, "Invalid extension package: " + fileToDownload);
                return false;
             }
 
             //extract zip package
-            pFunctor(50.0f, "Extracting package " + fileToDownload);
+            progressCallback(50.0f, "Extracting package " + fileToDownload);
 
             //pour l'instant on prend ce qu'il y a dans temp sans faire l'extraction en attendant poco
+            Poco::Path extractPath(p);
+            extractPath.pushDirectory("extract");
+            
+            std::ifstream inp(packageLocalFilePath.string().c_str(), std::ios::binary);
+            
+            // decompress to current working dir
+            Poco::Zip::Decompress dec(inp, Poco::Path());
+            // if an error happens invoke the ZipTest::onDecompressError method
+            m_unzipError = false;
+            dec.EError += Poco::Delegate<CYadoms, std::pair<const Poco::Zip::ZipLocalFileHeader, const std::string> >(this, &CYadoms::onDecompressError);
+            dec.decompressAllFiles();
+            dec.EError -= Poco::Delegate<CYadoms, std::pair<const Poco::Zip::ZipLocalFileHeader, const std::string> >(this, &CYadoms::onDecompressError);
+
+            if (m_unzipError)
+            {
+               //TODO : send error message
+            }
 
             //run updater
-            pFunctor(90.0f, "Running updater");
+            progressCallback(90.0f, "Running updater");
 
             //attente de poco
 
             //exit yadoms
-            pFunctor(90.0f, "Exiting Yadoms");
+            progressCallback(90.0f, "Exiting Yadoms");
 
             //demande de fermeture de l'application
          }
@@ -137,6 +158,13 @@ namespace task { namespace update {
 
       return false;
    }
+
+   void CYadoms::onDecompressError(const void* pSender, std::pair<const Poco::Zip::ZipLocalFileHeader, const std::string>& info)
+   {
+      m_unzipError = true;
+      m_unzipErrorMessage = info.first.getFileName() + " : " + info.second;
+   }
+
 
 } //namespace update
 } //namespace task

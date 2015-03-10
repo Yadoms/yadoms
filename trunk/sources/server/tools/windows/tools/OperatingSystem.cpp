@@ -1,14 +1,13 @@
 #include "stdafx.h"
 #include "OperatingSystem.h"
 #include <windows.h>
+#include <Poco/Environment.h>
 
 namespace tools {
 
-   const std::string COperatingSystem::m_name = "Windows";
-
    const std::string & COperatingSystem::getName()
    {
-      return m_name;
+      return Poco::Environment::osName();
    }
 
    bool COperatingSystem::shutdown(bool andRestart)
