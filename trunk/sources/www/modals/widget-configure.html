@@ -37,7 +37,8 @@
       $modalBody.i18n();
 
       //validation form
-      $modalBody.find("input,select,textarea").jqBootstrapValidation({
+      //erase previous jqBootstrapValidation
+      $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy").jqBootstrapValidation({
          preventSubmit: true,
          submitError: function($form, event, errors) {
             console.warn("Unable to validate form: " + errors);
@@ -48,8 +49,7 @@
 
             //we clear the current id
             widgetToConfigure = undefined;
-            $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy");
-            $modalBody.empty();
+
             $("div#configure-widget-modal").modal("hide");
 
             callback();
@@ -62,6 +62,7 @@
 
       //we display the modal
       $('div#configure-widget-modal').modal();
+
    }
 
    $('div#configure-widget-modal').on('shown.bs.modal', function () {

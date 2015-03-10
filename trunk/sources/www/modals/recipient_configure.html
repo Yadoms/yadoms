@@ -104,7 +104,8 @@
       $modalBody.i18n();
 
       //validation form
-      $modalBody.find("input,select,textarea").jqBootstrapValidation({
+      //erase previous jqBootstrapValidation
+      $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy").jqBootstrapValidation({
          preventSubmit: true,
          submitError: function($form, event, errors) {
             console.warn("Unable to validate form: " + errors);
@@ -129,8 +130,6 @@
 
             console.debug("End of recipient configuration");
 
-            $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy");
-            $modalBody.empty();
             $("div#recipient-configure-modal").modal("hide");
             callback(completedRecipient);
          },
@@ -142,5 +141,6 @@
 
       //we display the modal
       $('div#recipient-configure-modal').modal();
+
    }
 </script>

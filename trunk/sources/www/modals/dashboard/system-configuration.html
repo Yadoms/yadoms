@@ -146,7 +146,8 @@
             $modalBody.i18n();
 
             //validation form
-            $modalBody.find("input,select,textarea").jqBootstrapValidation({
+            //erase previous jqBootstrapValidation
+            $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy").jqBootstrapValidation({
                preventSubmit: true,
                submitError: function($form, event, errors) {
                   console.warn("Unable to validate form: " + errors);
