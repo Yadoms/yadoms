@@ -25,7 +25,7 @@ function Recipient(id, firstName, lastName, fields) {
  */
 Recipient.prototype.toString = function() {
     return this.firstName + " " + this.lastName;
-}
+};
 
 /**
  * Convert the recipient to JSON format
@@ -56,7 +56,6 @@ Recipient.systemFields = {
  * @param allPlugins
  */
 Recipient.prototype.mergeFields = function (allPlugins) {
-
    var self = this;
 
    var definedFields = [];
@@ -68,21 +67,20 @@ Recipient.prototype.mergeFields = function (allPlugins) {
 
    //add system fields
    for(var systemField in Recipient.systemFields) {
-
-      //create a new field
-      var currentField = {
-         fieldName : systemField,
-         pluginName : "system",
-         name :  $.t("objects.recipient.fields." + systemField + ".name" ),
-         description :  $.t("objects.recipient.fields." + systemField + ".description" ),
-         regexErrorMessage :  $.t("objects.recipient.fields." + systemField + ".regexErrorMessage" ),
-         verificationRegex : Recipient.systemFields[systemField],
-         value : ""
-      };
+       var currentField = {
+           fieldName: systemField,
+           pluginName: "system",
+           pluginDefaultDisplayName : "system",
+           name: $.t("objects.recipient.fields." + systemField + ".name"),
+           description: $.t("objects.recipient.fields." + systemField + ".description"),
+           regexErrorMessage: $.t("objects.recipient.fields." + systemField + ".regexErrorMessage"),
+           verificationRegex: Recipient.systemFields[systemField],
+           value: ""
+       };
 
       //search the field value in definedFields (search if the recipient is already configured for this field)
       $.each(definedFields, function(index, field) {
-         if(field.pluginName.toUpperCase() == "system".toUpperCase() && field.fieldName.toUpperCase() == systemField.toUpperCase()) {
+         if(field.pluginName.toLowerCase() == "system" && field.fieldName.toUpperCase() == systemField.toUpperCase()) {
             //the field match an already saved one, just reuse the value
             currentField.value = field.value;
          }
@@ -94,21 +92,16 @@ Recipient.prototype.mergeFields = function (allPlugins) {
 
 
    //add plugin fields
-
    $.each(allPlugins, function(index, plugin) {
       //for each recipient fields in the plugin
       var recipientFieldsFromPlugin = plugin.getRecipientFields();
       for(var recipientField in recipientFieldsFromPlugin) {
 
-         var currentField = {
-            name : recipientFieldsFromPlugin[recipientField].name,
-            description : recipientFieldsFromPlugin[recipientField].description,
-            verificationRegex : recipientFieldsFromPlugin[recipientField].verificationRegex,
-            regexErrorMessage : recipientFieldsFromPlugin[recipientField].regexErrorMessage
-         }
+         //make a copy of the object
+         var currentField = $.extend(true, {}, recipientFieldsFromPlugin[recipientField]);
 
          //force the field value to empty string
-         currentField.value = "";
+         currentField.value = currentField.defaultValue;
 
          //search the field value in definedFields (search if the recipient is already configured for this field)
          $.each(definedFields, function(index, field) {
@@ -120,10 +113,12 @@ Recipient.prototype.mergeFields = function (allPlugins) {
 
          currentField.fieldName = recipientField;
          currentField.pluginName = plugin.name;
+         currentField.pluginDefaultDisplayName = plugin.package.name;
 
          self.fields.push(currentField);
       }
-   })
+   });
+
 
 };
 

@@ -33,6 +33,7 @@
      */
     function askPluginTypes(callback)
     {
+       //TODO : use pluginManager.get
        assert($.isFunction(callback), "callback must be defined");
        $.getJSON("rest/plugin/")
                .done(requestPluginTypesDone(callback))

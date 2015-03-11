@@ -117,6 +117,39 @@
     "qrcode": {
       "title": "QR Code de Yadoms",
       "text": "Voici le QRCode de Yadoms. Vous pouvez le flasher avec votre téléphone pour accéder à Yadoms de partout."
+    },
+     "recipient_configure" : {
+       "title" : "Edition d'un destinataire",
+       "firstName" : {
+         "name": "Prénom",
+         "description": "Le prénom du destinataire",
+         "regexErrorMessage": ""
+       },
+       "lastName" : {
+         "name": "Nom",
+         "description": "Le nom du destinataire",
+         "regexErrorMessage": ""
+       },
+       "pluginSection" : {
+         "name" : "Champs additionnels pour le plugin ",
+         "description" : ""
+       }
+     }
+  },
+  "objects" : {
+    "recipient" : {
+      "errorGettingRecipientList" : "Une erreur est apparue lors du listing des destinataires",
+      "fields" : {
+        "email": {
+          "name": "Email",
+          "description": "L'adresse email du destinataire",
+          "regexErrorMessage": "Doit correspondre à une adresse email valide"
+        },
+        "mobile": {
+          "name": "Mobile",
+          "description": "Le numéro de téléphone mobile du destinataire"
+        }
+      }
     }
   },
   "widgets": {
