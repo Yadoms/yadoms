@@ -1,6 +1,0 @@
-# This file contains user specific configuration
-# It may contains some directory definitions
-
-#define LibUDEV ROOT (remove first # to uncomment line)
-#set(LIBUDEV_ROOT "/home/jeanmichel/Bureau/Dev/raspberry/libudev")
-

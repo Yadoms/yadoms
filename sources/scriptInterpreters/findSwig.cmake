@@ -11,7 +11,6 @@
 # Otherwise, use the path
 #
 
-include (CMakeListsUserConfig.txt OPTIONAL)
 include (SelectLibraryConfigurations)
 
 if (SWIG_ROOT)

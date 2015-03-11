@@ -1,6 +1,0 @@
-# This file contains user specific configuration
-# It may contains some directory definitions
-
-#define Swig ROOT
-##### use only absolute path , and do not use anti slash : only '/' ######
-set(SWIG_ROOT "/Path/to/swig")

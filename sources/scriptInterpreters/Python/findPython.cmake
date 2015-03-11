@@ -11,10 +11,13 @@
 # Otherwise, use the cmake-provided find_package
 #
 
-include (CMakeListsUserConfig.txt OPTIONAL)
 include (SelectLibraryConfigurations)
 
 string(REPLACE "." "" PYTHON_REQUIRED_VERSION_NO_DOT ${PYTHON_REQUIRED_VERSION})
+
+if (PYTHON_USE_PKGCONFIG)
+   set (USE_PKGCONFIG ON)
+endif ()
 
 # find_package seems to not work correctly under Windows, so use CMakeListsUserConfig.txt to get Python path
 if (PYTHON_ROOT)
