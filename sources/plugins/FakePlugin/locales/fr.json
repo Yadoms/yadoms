@@ -49,5 +49,21 @@
       "left" : "Gauche",
       "right" : "Droite"
     }
-  }   
+  },
+  "recipientFields" : {
+    "address": {
+      "name": "Adresse",
+      "description": "L'adresse du destinataire",
+      "regexErrorMessage": ""
+    },
+    "zipcode": {
+      "name": "Code postal",
+      "description": "Le code postal du destinataire",
+      "regexErrorMessage": "La saisie ne correspond pas à un code postal valide"
+    },
+    "mms" : {
+      "name" : "Reception MMS",
+      "description" : "Indique si le destinataire peut recevoir des MMS"
+    }
+  }
 }

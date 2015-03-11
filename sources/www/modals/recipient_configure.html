@@ -51,13 +51,11 @@
       var recipientConfigurationFields = [];
 
       var sections = {};
-
-
       $.each(recipient.fields, function (index, field) {
 
          if(field.pluginName == "system") {
 
-            var valueParameter = new StringParameterHandler("objects.recipient.fields.", field.fieldName, {required:"false", regex: field.verificationRegex}, field.value);
+            var valueParameter = new StringParameterHandler("objects.recipient.fields.", field.fieldName, field, field.value);
             //keep the field
             valueParameter.field = field;
             recipientConfigurationFields.push(valueParameter);
@@ -70,16 +68,15 @@
 
          }
          else {
-
             //create or retrieve section for the plugin
             if(sections[field.pluginName] == undefined) {
                sections[field.pluginName] = new SectionParameterHandler("[prepend]modals.recipient_configure.","pluginSection",
                        {
-                          name : $.t(field.pluginName + ":name")
+                          name : $.t(field.pluginName + ":name", { "defaultValue" :  field.pluginDefaultDisplayName })
                        });
             }
 
-            var valueParameter = new StringParameterHandler(field.pluginName + ":recipientFields.", field.fieldName, {required:"false", regex: field.verificationRegex}, field.value);
+            var valueParameter = ConfigurationHelper.createParameterHandler(field.pluginName + ":recipientFields.", field.fieldName, field, field.value);
             //keep the field
             valueParameter.field = field;
             recipientConfigurationFields.push(valueParameter);
@@ -88,11 +85,11 @@
          }
       });
 
-      for(var sec in sections) {
-         $modalBody.append(sections[sec].getDOMObject());
-         if ($.isFunction(sections[sec].applyScript))
-                 sections[sec].applyScript();
-      }
+      $.each(sections, function(index, sec) {
+         $modalBody.append(sec.getDOMObject());
+         if ($.isFunction(sec.applyScript))
+            sec.applyScript();
+      });
 
       $.each(recipientConfigurationFields, function(index, f) {
          //we finish instantiation
