@@ -22,8 +22,8 @@
          "name" : "Phone",
          "description" : "Device used to send SMS",
          "type" : "device",
-         "expectedCapacity" : "message",
-         "expectedKeywordAccess" : "set"
+         "expectedCapacity" : ["message"],
+         "expectedKeywordAccess" : "getset"
       }
    }
 }
