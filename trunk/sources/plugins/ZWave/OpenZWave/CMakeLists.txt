@@ -14,9 +14,6 @@
 #########################################
 set(OPENZWAVE_DIR_NAME openzwave-1.2.919 )
 
-# User specific configuration
-include(CMakeListsUserConfig.txt OPTIONAL)
-
 
 #########################################
 ## Main sources

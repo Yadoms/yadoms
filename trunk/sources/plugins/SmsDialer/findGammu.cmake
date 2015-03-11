@@ -4,13 +4,16 @@
 #  GAMMU_INCLUDE_DIRS, where to find gammu.h
 #  GAMMU_LIBRARIES, where to find libraries needed to build with Gammu
 
-include (CMakeListsUserConfig.txt OPTIONAL)
 include (SelectLibraryConfigurations)
 
 if(GAMMU_INCLUDE_DIRS AND GAMMU_LIBRARIES)
     # Already in cache
     set(Gammu_FIND_QUIETLY TRUE)
 endif(GAMMU_INCLUDE_DIRS AND GAMMU_LIBRARIES)
+
+if (GAMMU_USE_PKGCONFIG)
+   set (USE_PKGCONFIG ON)
+endif ()
 
 if(MSVC)
    # Use GAMMU_ROOT defined in CMakeListsUserConfig.txt

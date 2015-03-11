@@ -5,6 +5,11 @@ SET(CMAKE_SYSTEM_VERSION 1)
 SET(CMAKE_CROSSCOMPILING True)
 set(CMAKE_COMPILER_IS_RASPBERRY_CROSS_COMPILER ON)
 
+# cross compiler tools
+set(CC_RPI_GCC ${CC_RPI_ROOT}/bin/arm-linux-gnueabihf-gcc)
+set(CC_RPI_GXX ${CC_RPI_ROOT}/bin/arm-linux-gnueabihf-g++)
+set(CC_RPI_LIBS ${CC_RPI_ROOT}/arm-linux-gnueabihf/libc/usr/lib/arm-linux-gnueabihf/)
+
 # specify the cross compiler
 SET(CMAKE_C_COMPILER   ${CC_RPI_GCC})
 SET(CMAKE_CXX_COMPILER ${CC_RPI_GXX})
