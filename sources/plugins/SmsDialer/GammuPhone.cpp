@@ -216,7 +216,7 @@ boost::shared_ptr<std::vector<boost::shared_ptr<ISms> > > CGammuPhone::getIncomi
    default:
       {
          // Error
-         YADOMS_LOG(error) << "Error getting SMS status : " << gammuError;
+         YADOMS_LOG(error) << "Error getting SMS status : " << GSM_ErrorString(gammuError);
          return noSms;
       }
    }

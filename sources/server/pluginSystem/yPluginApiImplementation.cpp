@@ -116,16 +116,6 @@ bool CYPluginApiImplementation::recipientFieldExists(const std::string& fieldNam
    return m_recipientRequester->fieldExists(fieldName, getInformation().getName());
 }
 
-void CYPluginApiImplementation::createRecipientField(const std::string& fieldName, const std::string& checkRegex)
-{
-   database::entities::CRecipientField field;
-   field.FieldName = fieldName;
-   field.PluginName = getInformation().getName();
-   //TODO à conserver ?   field.checkRegex = checkRegex;
-
-   m_recipientRequester->createField(field);
-}
-
 
 
 void CYPluginApiImplementation::historizeData(const std::string& device, const shared::plugin::yPluginApi::historization::IHistorizable& data)

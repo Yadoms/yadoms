@@ -14,9 +14,10 @@
    {
       "Serial Port":
       {
+         "type" : "enum",
          "name": "Serial port",
          "description": "The serial port connected to the phone",
-         "type": "serialPort"
+         "values" : {"__Binding__" : {"type" : "system", "query" : "serialPorts"}}
       },
       "Protocol":
       {

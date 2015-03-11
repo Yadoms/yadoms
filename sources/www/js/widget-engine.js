@@ -230,9 +230,9 @@ function periodicUpdateTask() {
                gravity = "error";
             }
 
-            var translation = "eventLogger." + event.code;
-            notify(DateTimeFormatter.isoDateToString(event.date) + " " +
-               $.t(translation, {"who" : event.who, "what" : event.what}), gravity);
+            var translation = "eventLogger." + eventLogger.code;
+            notify(DateTimeFormatter.isoDateToString(eventLogger.date) + " " +
+               $.t(translation, {"who" : eventLogger.who, "what" : eventLogger.what}), gravity);
 
             //we update the lastEvent Id Read
             LastEventLogId = value.id;

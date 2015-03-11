@@ -129,11 +129,6 @@ private:
    /// \brief	    Recipient field used to retrieve phone number from a recipient
    //--------------------------------------------------------------
    static const std::string m_phoneFieldName;
-
-   //--------------------------------------------------------------
-   /// \brief	    The regex validating an phone number in international format
-   //--------------------------------------------------------------
-   static const std::string m_internationalPhoneNumberMatchRegex;
 };
 
 

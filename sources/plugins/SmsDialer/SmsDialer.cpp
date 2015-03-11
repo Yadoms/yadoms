@@ -13,8 +13,7 @@
 IMPLEMENT_PLUGIN(CSmsDialer)
 
 
-const std::string CSmsDialer::m_phoneFieldName("phone");
-const std::string CSmsDialer::m_internationalPhoneNumberMatchRegex("\\+(9[976]\\d|8[987530]\\d|6[987]\\d|5[90]\\d|42\\d|3[875]\\d|2[98654321]\\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\\d{1,14}$");
+const std::string CSmsDialer::m_phoneFieldName("mobile");
 
 
 CSmsDialer::CSmsDialer()
@@ -42,10 +41,6 @@ void CSmsDialer::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 
       // Create the phone instance
       m_phone = CSmsDialerFactory::constructPhone(m_configuration);
-
-      // Create the recipient field "phone" in Yadoms database
-      if (!context->recipientFieldExists(m_phoneFieldName))
-         context->createRecipientField(m_phoneFieldName, m_internationalPhoneNumberMatchRegex);
 
       // the main loop
       YADOMS_LOG(debug) << "CSmsDialer is running...";
@@ -275,7 +270,6 @@ void CSmsDialer::onSendSmsRequest(boost::shared_ptr<yApi::IYPluginApi> context, 
    catch (shared::exception::CInvalidParameter& e)
    {
       YADOMS_LOG(error) << "Invalid SMS sending request \"" << sendSmsRequest << "\" : " << e.what();
-      BOOST_ASSERT_MSG(false, "Invalid SMS sending request");
       notifyAck(false);
       return;
    }
