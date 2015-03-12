@@ -9,12 +9,13 @@
 }
 
 .to {
-   width: 20%;
-   line-height: 2em;
+   width: 30%;
+   height: 34px;
+   margin: 5px;
 }
 
 .body {
-    width: 60%;
+   width: 40%;
    line-height: 2em;
 }
 
