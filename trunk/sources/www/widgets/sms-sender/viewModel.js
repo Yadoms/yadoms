@@ -1,3 +1,5 @@
+//TODO renommer le widget complet ?
+//TODO mettre à jour le contenu du select (champ "to") lorsque la liste des récipients change
 widgetViewModelCtor =
 
 /**
@@ -5,22 +7,41 @@ widgetViewModelCtor =
  * @constructor
  */
 function SmsSenderViewModel() {
-   //observable data
-   this.to = ko.observable();
-   this.body = ko.observable();
-   
+   var self = this;
+
    //widget identifier
    this.widget = null;
 
+   //observable data
+   this.body = ko.observable();
    this.smsSenderText = ko.observable();
+   self.toSelected = ko.observable();
+   
+   //a recipient associated to a select entry
+   var recipientTuple = function(data) {
+      var self = this;
+      self.id = ko.observable(data.id);
+      self.name = ko.observable(data.name);
+   };
+
+   //populate "to" select
+   this.toList = ko.computed(function() {      
+      var recipientTuples = new Array();
+      RecipientManager.getAll(function (list) {
+         $.each(list, function (recipientKey, recipient) {
+            recipientTuples.push(new recipientTuple({id: recipient.id, name: (recipient.firstName + " " + recipient.lastName)}));
+         });
+      }, true);
+      return recipientTuples;
+   }, this);
 
    this.send = function() {
       // Check that widget is configured, and to/body data are valid
-      if ((!isNullOrUndefined(this.widget.configuration.device)) && (this.to()) && (this.body())) {
-
+      if ((!isNullOrUndefined(this.widget.configuration.device)) && (this.toSelected()) && (this.body())) {
+         
          var sms = new Object();
-         sms.to = this.to();
-         sms.content = this.body();
+         sms.to = self.toSelected();
+         sms.body = this.body();
          sms.acknowledgment = 'true';
       
          $.ajax({
@@ -47,6 +68,7 @@ function SmsSenderViewModel() {
     */
    this.initialize = function(widget) {
       this.widget = widget;
+      var self = this;
    };
 
    this.configurationChanged = function() {
@@ -86,13 +108,7 @@ function SmsSenderViewModel() {
     * @param device
     */
    this.dispatch = function(device, data) {
-      var self = this;
-      if ((this.widget.configuration !== undefined) && (this.widget.configuration.device !== undefined)) {
-         if (device == this.widget.configuration.device) {
-            //it is the good device
-            self.send(data.value);
-         }
-      }
+      /* Nothing to do here, this widget doesn't display data */
    };
 
    this.getDevicesToListen = function() {
