@@ -4,6 +4,7 @@
 #include <shared/plugin/yPluginApi/historization/MessageFormatter.h>
 #include <shared/Log.h>
 #include <shared/exception/EmptyResult.hpp>
+#include "GeneralInfo.h"
 
 namespace automation { namespace script
 {
@@ -14,7 +15,8 @@ CYScriptApiImplementation::CYScriptApiImplementation(
    boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester)
    :m_pluginGateway(pluginGateway),
    m_notificationCenter(notificationCenter),
-   m_dbAcquisitionRequester(dbAcquisitionRequester)
+   m_dbAcquisitionRequester(dbAcquisitionRequester),
+   m_generalInfo(new CGeneralInfo)
 {
 }
 
@@ -24,19 +26,48 @@ CYScriptApiImplementation::~CYScriptApiImplementation()
 
 std::string CYScriptApiImplementation::readKeyword(int keywordId) const
 {
-   return m_dbAcquisitionRequester->getKeywordLastData(keywordId)->Value;
+   try
+   {
+      return m_dbAcquisitionRequester->getKeywordLastData(keywordId)->Value;
+   }
+   catch(shared::exception::CEmptyResult& e)
+   {
+      YADOMS_LOG(warning) << "readKeyword, ID#" << keywordId << " not found : " << e.what();
+      return std::string();      
+   }
+   catch(...) // Must catch all exceptions to not crash script interpreter
+   {
+      YADOMS_LOG(error) << "readKeyword, unknown exception, please report to Yadoms team";
+      return std::string();      
+   }
 }
 
 std::string CYScriptApiImplementation::waitForEvent(int keywordId, const std::string& timeout) const
 {
-   //TODO
-   return std::string();
+   try
+   {
+      //TODO
+      return std::string();
+   }
+   catch(...) // Must catch all exceptions to not crash script interpreter
+   {
+      YADOMS_LOG(error) << "waitForEvent, unknown exception, please report to Yadoms team";
+      return std::string();      
+   }
 }
 
 std::pair<int, std::string> CYScriptApiImplementation::waitForEvents(std::vector<int> keywordIdList, const std::string& timeout) const
 {
-   //TODO
-   return std::pair<int, std::string>();
+   try
+   {
+      //TODO
+      return std::pair<int, std::string>();
+   }
+   catch(...) // Must catch all exceptions to not crash script interpreter
+   {
+      YADOMS_LOG(error) << "waitForEvents, unknown exception, please report to Yadoms team";
+      return std::pair<int, std::string>();
+   }
 }
 
 void CYScriptApiImplementation::writeKeyword(int keywordId, const std::string& newState)
@@ -49,13 +80,38 @@ void CYScriptApiImplementation::writeKeyword(int keywordId, const std::string& n
    {
       YADOMS_LOG(error) << "Unable to write keyword : " << e.what();
    }
+   catch(...) // Must catch all exceptions to not crash script interpreter
+   {
+      YADOMS_LOG(error) << "writeKeyword, unknown exception, please report to Yadoms team";
+   }
 }
 
 void CYScriptApiImplementation::sendNotification(int keywordId, int recipientId, const std::string& message)
 {
-   shared::plugin::yPluginApi::historization::CMessageFormatter body(0, recipientId, message);
-   m_pluginGateway->sendCommandAsync(keywordId, body.formatValue());
+   try
+   {
+      shared::plugin::yPluginApi::historization::CMessageFormatter body(0, recipientId, message);
+      m_pluginGateway->sendCommandAsync(keywordId, body.formatValue());
+   }
+   catch(...) // Must catch all exceptions to not crash script interpreter
+   {
+      YADOMS_LOG(error) << "sendNotification, unknown exception, please report to Yadoms team";
+   }
 }
+
+std::string CYScriptApiImplementation::getInfo(const std::string& key) const
+{
+   try
+   {
+      return m_generalInfo->get(key);
+   }
+   catch(...) // Must catch all exceptions to not crash script interpreter
+   {
+      YADOMS_LOG(error) << "getInfo, unknown exception, please report to Yadoms team";
+      return std::string();
+   }
+}
+
 
 } } // namespace automation::script
 	

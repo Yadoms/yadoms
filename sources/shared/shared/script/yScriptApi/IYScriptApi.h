@@ -54,6 +54,16 @@ namespace shared { namespace script { namespace yScriptApi
       ///\note Do nothing if keyword or recipient is not found or not writtable
       //-----------------------------------------------------
       virtual void sendNotification(int keywordId, int recipientId, const std::string& message) = 0;
+
+      //-----------------------------------------------------
+      ///\brief Get general informations
+      ///\param[in] key Information key
+      ///\return Information as string (empty string if not found)
+      ///\details : Supported value :
+      ///    - sunrise : get sunrise hour : returns hour in the day (as double encoded in string)
+      ///    - sunset : get sunset hour : returns hour in the day (as double encoded in string)
+      //-----------------------------------------------------
+      virtual std::string getInfo(const std::string& key) const = 0;
    };
 	
 } } } // namespace shared::script::yScriptApi

@@ -292,15 +292,20 @@ namespace web { namespace rest { namespace service {
       }
       catch (CRuleException& e)
       {
-         return CResult::GenerateError(std::string("Fail to restart rule : ") + e.what());
+         std::string err = std::string("Fail to restart rule : ") + e.what();
+         YADOMS_LOG(error) << err;
+         return CResult::GenerateError(err);
       }
       catch(std::exception &ex)
       {
+         YADOMS_LOG(error) << ex.what();
          return CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return CResult::GenerateError("unknown exception in restarting a rule");
+         std::string err ("unknown exception in restarting a rule");
+         YADOMS_LOG(error) << err;
+         return CResult::GenerateError(err);
       }
    }
 

@@ -59,10 +59,10 @@ namespace pluginSystem
       virtual void historizeData(const std::string& device, const shared::plugin::yPluginApi::historization::IHistorizable& data);
       virtual void historizeData(const std::string& device, std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > & dataVect);
       virtual const shared::plugin::information::IInformation& getInformation() const;
+      virtual const boost::filesystem::path getPluginPath() const;
       virtual shared::CDataContainer getConfiguration() const;
       virtual void recordPluginEvent(PluginEventSeverity severity, const std::string & message);
       virtual shared::event::CEventHandler & getEventHandler();
-      virtual const boost::filesystem::path getPluginPath() const;
       // [END] IYPluginApi implementation 
       
       //-----------------------------------------------------

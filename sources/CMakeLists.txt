@@ -291,14 +291,23 @@ set(YADOMS_SRC
 	server/automation/RuleThread.h
 	server/automation/RuleThread.cpp
    
+	server/automation/script/DayLight.h
+	server/automation/script/DayLight.cpp
 	server/automation/script/Factory.h
 	server/automation/script/Factory.cpp
+	server/automation/script/GeneralInfo.h
+	server/automation/script/GeneralInfo.cpp
+	server/automation/script/IDayLight.h
 	server/automation/script/IFactory.h
+	server/automation/script/ILocation.h
+	server/automation/script/IGeneralInfo.h
 	server/automation/script/IInterpreterLibrary.h
    server/automation/script/InterpreterNotFound.hpp
 	server/automation/script/InterpreterLibrary.h
 	server/automation/script/InterpreterLibrary.cpp
 	server/automation/script/IProperties.h
+	server/automation/script/Location.h
+	server/automation/script/Location.cpp
 	server/automation/script/Properties.h
 	server/automation/script/Properties.cpp
 	server/automation/script/YScriptApiImplementation.h
