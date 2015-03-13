@@ -8,6 +8,7 @@
 #include <shared/notification/NotificationCenter.h>
 #include "database/IAcquisitionRequester.h"
 #include "../database/IEventLoggerRequester.h"
+#include "../dataAccessLayer/IConfigurationManager.h"
 
 namespace automation
 {
@@ -23,14 +24,15 @@ namespace automation
       ///\param[in] pluginGateway Plugin access to do actions on plugins
       ///\param[in] notificationCenter Notification center, used to get notified on keyword state changes
       ///\param[in] dbAcquisitionRequester  Database acquisition requester
+      ///\param[in] configurationManager  Configuration manager (to gain access to Yadoms configuration from rules scripts)
       ///\param[in] eventLoggerRequester  Event logger requester
       ///\param[in] supervisor     the supervisor event handler
       ///\param[in] ruleManagerEventId    The ID to use to send events to supervisor
       //-----------------------------------------------------
       CRuleManager(boost::shared_ptr<database::IRuleRequester> dbRequester, boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
          boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter, boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
-         boost::shared_ptr<database::IEventLoggerRequester> eventLoggerRequester,
-         boost::shared_ptr<shared::event::CEventHandler> supervisor, int ruleManagerEventId);
+         boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
+         boost::shared_ptr<database::IEventLoggerRequester> eventLoggerRequester, boost::shared_ptr<shared::event::CEventHandler> supervisor, int ruleManagerEventId);
 
       //-----------------------------------------------------
       ///\brief               Destructor

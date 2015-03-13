@@ -11,12 +11,13 @@ namespace automation { namespace script
 
 CYScriptApiImplementation::CYScriptApiImplementation(
    boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
+   boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
    boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter,
    boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester)
    :m_pluginGateway(pluginGateway),
    m_notificationCenter(notificationCenter),
    m_dbAcquisitionRequester(dbAcquisitionRequester),
-   m_generalInfo(new CGeneralInfo)
+   m_generalInfo(new CGeneralInfo(configurationManager))
 {
 }
 

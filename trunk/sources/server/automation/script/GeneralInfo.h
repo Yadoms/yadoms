@@ -3,6 +3,7 @@
 #include "IDayLight.h"
 #include "ILocation.h"
 #include <shared/enumeration/EnumHelpers.hpp>
+#include "../../dataAccessLayer/IConfigurationManager.h"
 
 namespace automation { namespace script
 {
@@ -30,8 +31,9 @@ namespace automation { namespace script
    public:
       //-----------------------------------------------------
       ///\brief               Constructor
+      ///\param[in] configurationManager  Configuration manager (to gain access to Yadoms configuration from rules scripts)
       //-----------------------------------------------------
-      CGeneralInfo();
+      CGeneralInfo(boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager);
 
       //-----------------------------------------------------
       ///\brief               Destructor
