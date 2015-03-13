@@ -8,7 +8,7 @@
 #include <shared/event/Now.h>
 #include <shared/exception/InvalidParameter.hpp>
 #include <Poco/Timezone.h>
-
+#include <boost/math/constants/constants.hpp>
 
 namespace automation { namespace script
 {
@@ -23,7 +23,7 @@ namespace automation { namespace script
    /* Some conversion factors between radians and degrees */
 
 #ifndef PI
-#define PI        3.1415926535897932384 //TODO voir si on peut utiliser boost::math::constants::pi()
+#define PI        boost::math::constants::pi<double>()
 #endif
 
 #define RADEG     ( 180.0 / PI )
