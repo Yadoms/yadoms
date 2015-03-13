@@ -4,6 +4,7 @@
 #include "Location.h"
 #include <shared/Log.h>
 #include <shared/exception/InvalidParameter.hpp>
+#include <shared/exception/EmptyResult.hpp>
 
 namespace automation { namespace script
 {
@@ -21,8 +22,8 @@ DECLARE_ENUM_IMPLEMENTATION(EInfo,
    ((ConnectedGuiClientsCount))
 )
 
-CGeneralInfo::CGeneralInfo()
-   :m_location(new CLocation), m_dayLight(new CDayLight(m_location))
+CGeneralInfo::CGeneralInfo(boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager)
+   :m_location(new CLocation(configurationManager)), m_dayLight(new CDayLight(m_location))
 {
 }
 
@@ -51,6 +52,11 @@ std::string CGeneralInfo::get(const std::string& key) const
    catch (shared::exception::COutOfRange& e)
    {
       YADOMS_LOG(warning) << "Getting general information : key " << key << " not found : " << e.what();
+      return std::string();
+   }
+   catch (shared::exception::CEmptyResult& e)
+   {
+      YADOMS_LOG(warning) << "Getting general information : key " << key << " is empty : " << e.what();
       return std::string();
    }
    catch (shared::exception::CInvalidParameter& e)

@@ -297,11 +297,14 @@ set(YADOMS_SRC
 	server/automation/script/Factory.cpp
 	server/automation/script/GeneralInfo.h
 	server/automation/script/GeneralInfo.cpp
+	server/automation/script/IAutoLocation.h
 	server/automation/script/IDayLight.h
 	server/automation/script/IFactory.h
 	server/automation/script/ILocation.h
 	server/automation/script/IGeneralInfo.h
 	server/automation/script/IInterpreterLibrary.h
+	server/automation/script/IpApiAutoLocation.h
+	server/automation/script/IpApiAutoLocation.cpp
    server/automation/script/InterpreterNotFound.hpp
 	server/automation/script/InterpreterLibrary.h
 	server/automation/script/InterpreterLibrary.cpp

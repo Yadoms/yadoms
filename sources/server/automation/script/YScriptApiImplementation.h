@@ -1,6 +1,7 @@
 #pragma once
 #include <shared/script/yScriptApi/IYScriptApi.h>
 #include "../../database/IAcquisitionRequester.h"
+#include "../../dataAccessLayer/IConfigurationManager.h"
 #include "../../communication/ISendMessageAsync.h"
 #include <shared/notification/NotificationCenter.h>
 #include "IGeneralInfo.h"
@@ -16,10 +17,12 @@ namespace automation { namespace script
       //-----------------------------------------------------
       ///\brief               Constructor
       ///\param[in] pluginGateway Plugin access to do actions on plugins
+      ///\param[in] configurationManager  Configuration manager (to gain access to Yadoms configuration from rules scripts)
       ///\param[in] notificationCenter Notification center, used to get notified on keyword state changes
       ///\param[in] dbAcquisitionRequester  Database acquisition requester
       //-----------------------------------------------------
       CYScriptApiImplementation(boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
+         boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
          boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter,
          boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester);
 

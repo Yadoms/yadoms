@@ -4,6 +4,7 @@
 #include "../../database/IAcquisitionRequester.h"
 #include "../../communication/ISendMessageAsync.h"
 #include <shared/notification/NotificationCenter.h>
+#include "../../dataAccessLayer/IConfigurationManager.h"
 
 namespace automation { namespace script
 {
@@ -17,11 +18,13 @@ namespace automation { namespace script
       ///\brief               Constructor
       ///\param[in] interpretersPath Path where are located interpreters
       ///\param[in] pluginGateway Plugin access to do actions on plugins
+      ///\param[in] configurationManager  Configuration manager (to gain access to Yadoms configuration from rules scripts)
       ///\param[in] notificationCenter Notification center, used to get notified on keyword state changes
       ///\param[in] dbAcquisitionRequester  Database acquisition requester
       //-----------------------------------------------------
       CFactory(const std::string& interpretersPath,
          boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
+         boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
          boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter,
          boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester);
 
@@ -79,6 +82,11 @@ namespace automation { namespace script
       ///\brief               The plugin access (to send commands to plugins)
       //-----------------------------------------------------
       boost::shared_ptr<communication::ISendMessageAsync> m_pluginGateway;
+
+      //-----------------------------------------------------
+      ///\brief               The Yadoms configuration manager access
+      //-----------------------------------------------------
+      boost::shared_ptr<dataAccessLayer::IConfigurationManager> m_configurationManager;
 
       //-----------------------------------------------------
       ///\brief               The notification center
