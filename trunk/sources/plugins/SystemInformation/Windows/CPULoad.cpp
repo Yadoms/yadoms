@@ -7,20 +7,35 @@
 #include <pdh.h>
 #include <pdhmsg.h>
 
+
 #pragma comment(lib, "pdh.lib")
 
 //Error Messages could be obtained with this function:
 // http://msdn.microsoft.com/en-us/library/aa373046%28VS.85%29.aspx
+// https://msdn.microsoft.com/en-us/library/windows/desktop/ms724451(v=vs.85).aspx
 
 CCPULoad::CCPULoad(const std::string & device)
    :m_device(device), m_keyword("CPULoad"), m_InitializeOk(false)
 {
-   Initialize();
+   try
+   {
+      m_InitializeOk = false;
+      Initialize();
+   }
+   catch (shared::exception::CException& e)
+	{
+      YADOMS_LOG(error) << "Error initializing CPULoad Keyword : "<< m_keyword.getKeyword() << "Error :" << e.what();
+	}
 }
 
 void CCPULoad::Initialize()
 {
    PDH_STATUS Status;
+   char ProcessorTimeString[256];
+   CHAR ProcessorObjectName[256];
+   CHAR CounterPath[256];
+   
+   DWORD nsize = sizeof(ProcessorTimeString);
 
    // Create the Query
    Status = PdhOpenQuery(NULL, NULL, &m_cpuQuery);
@@ -30,35 +45,58 @@ void CCPULoad::Initialize()
       std::stringstream Message; 
       Message << "PdhOpenQuery failed with status:"; 
       Message << std::hex << GetLastError();
-      m_InitializeOk = false;
       throw shared::exception::CException ( Message.str() );
    }
 
-   // Add the selected counter to the query
-#if (_WIN32_WINDOWS >= 0x0600 || _WIN32_WINNT >= 0x0600 || (defined(NTDDI_VERSION) && NTDDI_VERSION >= NTDDI_VISTA))
-   Status = PdhAddEnglishCounter(m_cpuQuery, TEXT("\\Processor(_Total)\\% Processor Time") , NULL, &m_cpuTotal);
+   Status = PdhLookupPerfNameByIndex( NULL,0x06,ProcessorTimeString, &nsize);
 
    if (Status != ERROR_SUCCESS) 
    {
       std::stringstream Message; 
-      Message << "PdhAddEnglishCounter failed with status:"; 
-      Message << std::hex << GetLastError();
-      m_InitializeOk = false;
+      Message << "PdhLookupPerfNameByIndex failed with status:"; 
+      Message << std::hex <<  GetLastError();
       throw shared::exception::CException ( Message.str() );
    }
-#else
 
-   Status = PdhAddCounter(m_cpuQuery, TEXT("\\Processor(_Total)\\% Processor Time") , NULL, &m_cpuTotal);
+   nsize = sizeof(ProcessorObjectName);
+   Status = PdhLookupPerfNameByIndex(NULL, 238, ProcessorObjectName, &nsize);  // Processor object
+
+   if (Status != ERROR_SUCCESS) 
+   {
+      std::stringstream Message; 
+      Message << "PdhLookupPerfNameByIndex failed with status:"; 
+      Message << std::hex <<  GetLastError();
+      throw shared::exception::CException ( Message.str() );
+   }
+
+   PDH_COUNTER_PATH_ELEMENTS pcpe = {0};
+   pcpe.szObjectName = ProcessorObjectName;
+   pcpe.szInstanceName = "_Total"; // This parameter is identical for all languages
+
+   pcpe.szCounterName = ProcessorTimeString;
+   nsize = sizeof( CounterPath );
+
+   // Create the path of the counter
+   Status = PdhMakeCounterPath(&pcpe, CounterPath, &nsize, 0);
+
+   if (Status != ERROR_SUCCESS) 
+   {
+      std::stringstream Message; 
+      Message << "PdhMakeCounterPath failed with status:"; 
+      Message << std::hex <<  GetLastError();
+      throw shared::exception::CException ( Message.str() );
+   }
+
+   // Add the selected counter to the query
+   Status = PdhAddCounter(m_cpuQuery, TEXT(CounterPath) , NULL, &m_cpuTotal);
 
    if (Status != ERROR_SUCCESS) 
    {
       std::stringstream Message; 
       Message << "PdhAddCounter failed with status:"; 
       Message << std::hex <<  GetLastError();
-      m_InitializeOk = false;
       throw shared::exception::CException ( Message.str() );
    }
-#endif
 
    Status = PdhCollectQueryData(m_cpuQuery);
    if (Status != ERROR_SUCCESS) 
@@ -66,7 +104,6 @@ void CCPULoad::Initialize()
       std::stringstream Message; 
       Message << "PdhCollectQueryData failed with status:"; 
       Message << std::hex << GetLastError();
-      m_InitializeOk = false;
       throw shared::exception::CException ( Message.str() );
    }
 
@@ -153,5 +190,3 @@ void CCPULoad::read()
       YADOMS_LOG(trace) << m_device << " is desactivated";
    }
 }
-
-
