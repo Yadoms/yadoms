@@ -15,10 +15,23 @@ namespace sqlite {
    {
    }
 
+   std::string CQueryValue::replace(const std::string& s, const std::string& from, const std::string& to)
+   {
+      std::string out = s;
+      for(size_t pos = 0; (pos = out.find(from, pos)) != std::string::npos; pos += to.size())
+         out.replace(pos, from.size(), to);
+      return out;
+   }
+
+   std::string CQueryValue::normalize(const std::string & value)
+   {
+      return replace(value, std::string("\'"), std::string("\'\'"));
+   }
+
    CQueryValue::CQueryValue(const std::string & value, bool secure /*= true*/) 
    { 
       if(secure)
-         initialize("'" + value + "'");
+         initialize("'" + normalize(value) + "'");
       else
          initialize(value);
    }
