@@ -161,6 +161,11 @@ const shared::plugin::information::IInformation& CYPluginApiImplementation::getI
    return *m_informations;
 }
 
+const boost::filesystem::path CYPluginApiImplementation::getPluginPath() const
+{
+   return m_libraryPath;
+}
+
 shared::CDataContainer CYPluginApiImplementation::getConfiguration() const
 {
    return m_pluginData->Configuration;
@@ -191,11 +196,6 @@ shared::event::CEventHandler & CYPluginApiImplementation::getEventHandler()
 int CYPluginApiImplementation::getPluginId() const
 {
    return m_pluginData->Id;
-}
-	
-const boost::filesystem::path CYPluginApiImplementation::getPluginPath() const
-{
-   return m_libraryPath;
 }
 
 } // namespace pluginSystem	

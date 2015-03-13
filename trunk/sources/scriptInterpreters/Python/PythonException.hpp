@@ -1,6 +1,7 @@
 #pragma once
 
 #include <shared/exception/Exception.hpp>
+#include "PythonObject.h"
 #include "PythonBorrowedObject.h"
 
 //--------------------------------------------------------------
@@ -23,17 +24,29 @@ public:
       PyObject* pyErrorMessage = NULL;
       PyObject* pyTraceBack = NULL;
       PyErr_Fetch(&pyErrorType, &pyErrorMessage, &pyTraceBack);
+      PyErr_Clear();
 
-      Py_ssize_t nbMessages = PyTuple_Size(pyErrorMessage);
-      if (nbMessages > 0)
-         m_message += " : ";
-      for (Py_ssize_t i=0; i<nbMessages; ++i)
+      if (pyErrorType)
       {
-         CPythonBorrowedObject message(PyTuple_GetItem(pyErrorMessage, i));
-         if (message.isNull() || PyString_AsString(*message) == NULL)
-            continue;
-         m_message += std::string(PyString_AsString(*message)) + "\n";
+         CPythonObject type(PyObject_Str(pyErrorType));
+         m_message += PyString_AsString(*type);
       }
+      if (pyErrorMessage)
+      {
+         CPythonObject message(PyObject_Str(pyErrorMessage));
+         m_message += ": ";
+         m_message += PyString_AsString(*message);
+      }
+      if (pyTraceBack)
+      {
+         CPythonObject traceBack(PyObject_Str(pyTraceBack));
+         m_message += ", ";
+         m_message += PyString_AsString(*traceBack);
+      }
+
+      Py_XDECREF(pyErrorType);
+      Py_XDECREF(pyErrorMessage);
+      Py_XDECREF(pyTraceBack);
    }
 
    //--------------------------------------------------------------

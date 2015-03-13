@@ -225,7 +225,7 @@ namespace database { namespace sqlite { namespace requesters {
       if(ruleData->ErrorMessage.isDefined())
       {
          qUpdate.Clear().Update(CRuleTable::getTableName()).
-            Set(CRuleTable::getErrorMessageColumnName(), ruleData->ErrorMessage()).
+            Set(CRuleTable::getErrorMessageColumnName(), ruleData->ErrorMessage()). /*TOFIX_SG : Le message contient des ', ce qui lève une exception à l'insert */
          Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, ruleData->Id());
 
          if(m_databaseRequester->queryStatement(qUpdate) <= 0)
