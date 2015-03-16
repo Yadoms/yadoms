@@ -12,7 +12,7 @@ namespace shared
    class YADOMS_SHARED_EXPORT CHttpMethods
    {
    public:
-      static shared::CDataContainer SendGetRequest(const std::string & url);
+      static CDataContainer SendGetRequest(const std::string & url);
    };
 
 } // namespace shared

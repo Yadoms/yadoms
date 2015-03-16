@@ -11,7 +11,7 @@
 
 namespace shared
 {
-   shared::CDataContainer CHttpMethods::SendGetRequest(const std::string & url)
+   CDataContainer CHttpMethods::SendGetRequest(const std::string & url)
    {
       try
       {
@@ -30,14 +30,12 @@ namespace shared
                std::string content;
                if (response.hasContentLength())
                {
-                  content.resize((unsigned int)response.getContentLength());
-                  rs.read((char*)content.c_str(), response.getContentLength());
-						return shared::CDataContainer(content);
+                  content.resize(static_cast<unsigned int>(response.getContentLength()));
+                  rs.read(const_cast<char*>(content.c_str()), response.getContentLength());
+						return CDataContainer(content);
                }
-               else
-               {
-                  //do nothing, request content may be empty
-               }
+
+               //do nothing, request content may be empty
             }
             else
             {
@@ -48,15 +46,15 @@ namespace shared
          {
             std::string message = (boost::format("Invalid HTTP result : %1%") % response.getReason()).str();
             YADOMS_LOG(error) << message;
-            throw shared::exception::CException(message);
+            throw exception::CException(message);
          }
       }
       catch (Poco::Exception& e) 
       {
          std::string message = (boost::format("Fail to send get http request : %1%") % e.message()).str();
          YADOMS_LOG(error) << message;
-         throw shared::exception::CException(message);
+         throw exception::CException(message);
       }
-      return shared::CDataContainer();
+      return CDataContainer();
    }
 } // namespace shared

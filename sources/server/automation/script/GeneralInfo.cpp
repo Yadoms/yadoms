@@ -41,11 +41,11 @@ std::string CGeneralInfo::get(const std::string& key) const
       EInfo info(key);
       switch(info)
       {
-      case EInfo::kSunriseValue: return boost::lexical_cast<std::string>(m_dayLight->sunriseTime());
-      case EInfo::kSunsetValue: return boost::lexical_cast<std::string>(m_dayLight->sunsetTime());
-      case EInfo::kLatitudeValue: return boost::lexical_cast<std::string>(m_location->latitude());
-      case EInfo::kLongitudeValue: return boost::lexical_cast<std::string>(m_location->longitude());
-      case EInfo::kAltitudeValue: return boost::lexical_cast<std::string>(m_location->altitude());
+      case EInfo::kSunriseValue: return toString(m_dayLight->sunriseTime());//TODO revoir les boost::lexical_cast pour qu'ils utilisent un format standard (la , n'est pas supportée par Python)
+      case EInfo::kSunsetValue: return toString(m_dayLight->sunsetTime());
+      case EInfo::kLatitudeValue: return toString(m_location->latitude());
+      case EInfo::kLongitudeValue: return toString(m_location->longitude());
+      case EInfo::kAltitudeValue: return toString(m_location->altitude());
       case EInfo::kYadomsServerOSValue: return m_runningInformation->getOperatingSystemName();
       case EInfo::kYadomsServerVersionValue: return m_runningInformation->getSoftwareVersion().toString();
       default:
