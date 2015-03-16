@@ -19,7 +19,6 @@ DECLARE_ENUM_IMPLEMENTATION(EInfo,
 
    ((YadomsServerOS))
    ((YadomsServerVersion))
-   ((ConnectedGuiClientsCount))
 )
 
 CGeneralInfo::CGeneralInfo(
@@ -49,7 +48,6 @@ std::string CGeneralInfo::get(const std::string& key) const
       case EInfo::kAltitudeValue: return boost::lexical_cast<std::string>(m_location->altitude());
       case EInfo::kYadomsServerOSValue: return m_runningInformation->getOperatingSystemName();
       case EInfo::kYadomsServerVersionValue: return m_runningInformation->getSoftwareVersion().toString();
-         //TODO implémenter les autres valeurs
       default:
          YADOMS_LOG(error) << "Getting general information : key " << key << " not suported (even defined)";
          return std::string();
