@@ -34,7 +34,6 @@ protected:
    /// \brief	    Initialization
    //--------------------------------------------------------------
    void Initialize();
-   //CHAR* GetProcModuleName();
 
 private:
    //--------------------------------------------------------------

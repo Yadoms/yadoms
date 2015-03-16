@@ -23,13 +23,14 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       ///\param[in] yadomsCommand   Yadoms command
       ///\throw                     shared::exception::CInvalidParameter or COutOfRange if fail to parse command
       //-----------------------------------------------------
-      void AddNewDay(
-		        const std::string& WeatherCondition, 
-	            const std::string& TempMax, 
+      void AddPeriod(
+		      const std::string& WeatherCondition, 
+	         const std::string& TempMax, 
 				const std::string& TempMin,
 				const std::string& MaxWind,
 				const std::string& AveWind,
-				const std::string& AveHumidity
+				const std::string& AveHumidity,
+            const std::string& RainDay
 				);
 
 	  void Finalize();
@@ -55,7 +56,9 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       //-----------------------------------------------------
       ///\brief               The vector of all period
       //-----------------------------------------------------
-	  std::vector<CDataContainer> Periods;
+	   std::vector<CDataContainer> Periods;
+
+      int m_period;
    };
 
 } } } } // namespace shared::plugin::yPluginApi::historization

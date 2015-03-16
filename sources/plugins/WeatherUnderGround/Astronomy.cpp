@@ -20,7 +20,7 @@ CAstronomy::CAstronomy(boost::shared_ptr<yApi::IYPluginApi> context, const IWUCo
 		   AgeOfMoon.Initialize              ( context );
 	   }
    }
-   catch (...)
+   catch (...) //TODO : To change !!
    {
 	   YADOMS_LOG(warning) << "Configuration or initialization error of Astronomy module"  << std::endl;
    }
@@ -45,7 +45,7 @@ void CAstronomy::Request( boost::shared_ptr<yApi::IYPluginApi> context )
 	{
 		YADOMS_LOG(warning) << "No Information from web Site !"  << std::endl;
 	}
-	catch (...)
+	catch (...) //TODO : To change !!
 	{
 	}
 }

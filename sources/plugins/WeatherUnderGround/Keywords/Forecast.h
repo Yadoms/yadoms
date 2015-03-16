@@ -37,21 +37,23 @@ namespace yApi = shared::plugin::yPluginApi;
       //-----------------------------------------------------
       ///\brief                      Add a new day with all integrated parameter
       ///\param[in] WeatherCondition The weather condition
-	  ///\param[in] TempMax          The maximal temperature of the day
-	  ///\param[in] TempMin          The minimum temperature of the day
-	  ///\param[in] MaxWind          The maximum wind speed of the day
-	  ///\param[in] AveWind          The average wind speed of the day
-	  ///\param[in] AveHumidity      The average humidity of the day
+	   ///\param[in] TempMax          The maximal temperature of the day
+	   ///\param[in] TempMin          The minimum temperature of the day
+	   ///\param[in] MaxWind          The maximum wind speed of the day
+	   ///\param[in] AveWind          The average wind speed of the day
+	   ///\param[in] AveHumidity      The average humidity of the day
+      ///\param[in] RainDay          The quantity of rain in the day
       ///\throw                      shared::exception::CInvalidParameter or COutOfRange if fail to parse command
       //-----------------------------------------------------
-      void AddNewDay(const shared::CDataContainer & ValueContainer, 
-	                 const std::string& filterWeatherCondition,
-	                 const std::string& filterTempMax, 
-					 const std::string& filterTempMin,
-					 const std::string& filterMaxWind,
-					 const std::string& filterAveWind,
-					 const std::string& filterAveHumidity
-					 );
+      void AddPeriod(const shared::CDataContainer & ValueContainer, 
+	                  const std::string& filterWeatherCondition,
+	                  const std::string& filterTempMax, 
+					      const std::string& filterTempMin,
+					      const std::string& filterMaxWind,
+					      const std::string& filterAveWind,
+					      const std::string& filterAveHumidity,
+                     const std::string& RainDay
+					     );
 
       // ICapacities implementation
 	  virtual void DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const;
