@@ -1,38 +1,34 @@
 #pragma once
 
-#include "IRunningInformation.h"
+#include "tools/Version.h"
 
 //-----------------------------------------------------------------------------
-/// \class   Class which handle information about server system
+/// \class   Interface on server system informations
 //-----------------------------------------------------------------------------
-class CRunningInformation : public IRunningInformation
+class IRunningInformation
 {
 public:
    //-----------------------------------------------------------------------------
-   /// \brief		                     Constructor
-   //-----------------------------------------------------------------------------
-   CRunningInformation();
-
-   //-----------------------------------------------------------------------------
    /// \brief		                     Destructor
    //-----------------------------------------------------------------------------
-   virtual ~CRunningInformation();
+   virtual ~IRunningInformation() {}
 
-   // IRunningInformation implementation
-   virtual const boost::posix_time::ptime  & getStartupDateTime() const;
-   virtual const tools::CVersion  & getSoftwareVersion() const;
-   virtual const std::string getOperatingSystemName() const;
-   // [END] IRunningInformation implementation
-   
-private:
    //-----------------------------------------------------------------------------
-   /// \brief		                     Yadoms startup date/time
+   /// \brief		                     get the startup date/time
+   /// \return  	                     the startup date/time
    //-----------------------------------------------------------------------------
-   boost::posix_time::ptime   m_startupDateTime;
+   virtual const boost::posix_time::ptime  & getStartupDateTime() const = 0;
    
    //-----------------------------------------------------------------------------
-   /// \brief		                     Yadoms version
+   /// \brief		                     get the software version
+   /// \return  	                     the software version
    //-----------------------------------------------------------------------------
-   tools::CVersion   m_softwareVersion;
+   virtual const tools::CVersion  & getSoftwareVersion() const = 0;
+
+   //-----------------------------------------------------------------------------
+   /// \brief		                     get the operating system name (windows, linux,....)
+   /// \return  	                     the operating system name
+   //-----------------------------------------------------------------------------
+   virtual const std::string getOperatingSystemName() const = 0;
 };
 

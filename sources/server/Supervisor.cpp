@@ -51,7 +51,7 @@ void CSupervisor::doWork()
       const std::string pluginsPath = "plugins";
 
       //create the system information
-      boost::shared_ptr<CRunningInformation> systemInformation(new CRunningInformation());
+      boost::shared_ptr<IRunningInformation> systemInformation(new CRunningInformation());
 
       //create the notification center
       boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter(new shared::notification::CNotificationCenter);
@@ -82,6 +82,7 @@ void CSupervisor::doWork()
       // Start automation rules manager
       boost::shared_ptr<automation::IRuleManager> automationRulesManager(new automation::CRuleManager(
          pDataProvider->getRuleRequester(), pluginGateway, notificationCenter, pDataProvider->getAcquisitionRequester(), dal->getConfigurationManager(),
+         systemInformation,
          pDataProvider->getEventLoggerRequester(), m_EventHandler, kRuleManagerEvent));
 
       // Start Web server

@@ -3,14 +3,14 @@
 #include "IRestService.h"
 #include "database/IDataProvider.h"
 #include "web/rest/RestDispatcher.h"
-#include "RunningInformation.h"
+#include "IRunningInformation.h"
 
 namespace web { namespace rest { namespace service {
 
    class CSystem : public IRestService
    {
    public:
-	  CSystem(boost::shared_ptr<CRunningInformation> runningInformation);
+	  CSystem(boost::shared_ptr<IRunningInformation> runningInformation);
       virtual ~CSystem();
 
    public:
@@ -31,7 +31,7 @@ namespace web { namespace rest { namespace service {
    private:
       static std::string m_restKeyword;
 
-	  boost::shared_ptr<CRunningInformation> m_runningInformation;
+	  boost::shared_ptr<IRunningInformation> m_runningInformation;
    };
 
 

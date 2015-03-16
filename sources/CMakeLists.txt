@@ -169,6 +169,7 @@ set(YADOMS_SRC
 	server/Application.h
 	server/Application.cpp
 	
+	server/IRunningInformation.h
 	server/Supervisor.cpp
 	server/Supervisor.h
 	server/RunningInformation.cpp

@@ -20,11 +20,13 @@ namespace automation { namespace script
       ///\param[in] configurationManager  Configuration manager (to gain access to Yadoms configuration from rules scripts)
       ///\param[in] notificationCenter Notification center, used to get notified on keyword state changes
       ///\param[in] dbAcquisitionRequester  Database acquisition requester
+      ///\param[in] generalInfo  Database acquisition requester
       //-----------------------------------------------------
       CYScriptApiImplementation(boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
          boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
          boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter,
-         boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester);
+         boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
+         boost::shared_ptr<IGeneralInfo> generalInfo);
 
       //-----------------------------------------------------
       ///\brief               Destructor

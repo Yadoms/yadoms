@@ -4,7 +4,6 @@
 #include <shared/plugin/yPluginApi/historization/MessageFormatter.h>
 #include <shared/Log.h>
 #include <shared/exception/EmptyResult.hpp>
-#include "GeneralInfo.h"
 
 namespace automation { namespace script
 {
@@ -13,11 +12,12 @@ CYScriptApiImplementation::CYScriptApiImplementation(
    boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
    boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
    boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter,
-   boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester)
+   boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
+   boost::shared_ptr<IGeneralInfo> generalInfo)
    :m_pluginGateway(pluginGateway),
    m_notificationCenter(notificationCenter),
    m_dbAcquisitionRequester(dbAcquisitionRequester),
-   m_generalInfo(new CGeneralInfo(configurationManager))
+   m_generalInfo(generalInfo)
 {
 }
 

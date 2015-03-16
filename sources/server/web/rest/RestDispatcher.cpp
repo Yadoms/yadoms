@@ -103,7 +103,7 @@ namespace web { namespace rest {
 
    shared::CDataContainer CRestDispatcher::dispath(const std::string & requestType, const std::vector<std::string> & url, const std::string & requestContent)
    {
-      //check the te requestType has some functions
+      //check that requestType has some functions
       if(m_handledFunctions.find(requestType) != m_handledFunctions.end())
       {
          //browse all patterns and check if it match to given url
