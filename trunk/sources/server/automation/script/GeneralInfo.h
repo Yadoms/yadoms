@@ -21,7 +21,6 @@ namespace automation { namespace script
 
       ((YadomsServerOS))
       ((YadomsServerVersion))
-      ((ConnectedGuiClientsCount))
    )
 
    //-----------------------------------------------------
