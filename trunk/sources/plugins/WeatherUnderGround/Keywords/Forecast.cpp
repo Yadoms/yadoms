@@ -27,22 +27,24 @@ void CForecast::DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) 
 	context->declareKeyword(m_PluginName, *m_forecast);
 }
 
-void CForecast::AddNewDay(const shared::CDataContainer & ValueContainer, 
-	                    const std::string& filterWeatherCondition,
-	                    const std::string& filterTempMax, 
-					    const std::string& filterTempMin,
-					    const std::string& filterMaxWind,
-					    const std::string& filterAveWind,
-					    const std::string& filterAveHumidity
-					   )
+void CForecast::AddPeriod(const shared::CDataContainer & ValueContainer, 
+	                       const std::string& filterWeatherCondition,
+	                       const std::string& filterTempMax, 
+					           const std::string& filterTempMin,
+					           const std::string& filterMaxWind,
+					           const std::string& filterAveWind,
+					           const std::string& filterAveHumidity,
+                          const std::string& RainDay
+					           )
 {
-	m_forecast->AddNewDay(
-		                   ValueContainer.get<std::string>( filterWeatherCondition ),
+	m_forecast->AddPeriod(
+		               ValueContainer.get<std::string>( filterWeatherCondition ),
 						   ValueContainer.get<std::string>( filterTempMax ),
 						   ValueContainer.get<std::string>( filterTempMin ),
 						   ValueContainer.get<std::string>( filterMaxWind ),
 						   ValueContainer.get<std::string>( filterAveWind ),
-						   ValueContainer.get<std::string>( filterAveHumidity )
+						   ValueContainer.get<std::string>( filterAveHumidity ),
+                     ValueContainer.get<std::string>( RainDay )
 		                 );
 
 	YADOMS_LOG(debug) << "Forecast Update !";

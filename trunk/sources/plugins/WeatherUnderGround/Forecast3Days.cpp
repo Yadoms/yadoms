@@ -40,6 +40,7 @@ void CForecast3Days::Request( boost::shared_ptr<yApi::IYPluginApi> context )
 	try
 	{
 	   m_data = m_webServer.SendGetRequest( m_URL.str() );
+      m_data.printToLog();
 	}
 	catch (shared::exception::CException)
 	{
@@ -65,25 +66,15 @@ void CForecast3Days::Parse( boost::shared_ptr<yApi::IYPluginApi> context, const 
 
 			if (WUConfiguration.IsForecast3DaysEnabled())
 			{
-				std::vector< shared::CDataContainer > result = m_data.get< std::vector<shared::CDataContainer> >("forecast.txt_forecast.forecastday");
+				std::vector< shared::CDataContainer > result = m_data.get< std::vector<shared::CDataContainer> >("forecast.simpleforecast.forecastday");
+            std::vector< shared::CDataContainer >::iterator i;
 
-				std::vector< shared::CDataContainer >::iterator i;
-				int counter = 0;
-
-				//TODO : A supprimer je pense, comme il faut !
 				for(i=result.begin(); i!=result.end(); ++i)
-                {
-					++counter;
+            {
+					m_Forecast.AddPeriod(*i, "icon", "high.celsius", "low.celsius", "maxwind.kph", "avewind.kph", "avehumidity","qpf_allday.mm");
 				}
 
-				result = m_data.get< std::vector<shared::CDataContainer> >("forecast.simpleforecast.forecastday");
-
-				counter = 0;
-				for(i=result.begin(); i!=result.end(); ++i)
-                {
-					m_Forecast.AddNewDay(*i, "icon", "high.celsius", "low.celsius", "maxwind.kph", "avewind.kph", "avehumidity");
-					KeywordList.push_back (m_Forecast.GetHistorizable());
-				}
+            KeywordList.push_back (m_Forecast.GetHistorizable());
 			}
 
 			context->historizeData(m_PluginName, KeywordList);

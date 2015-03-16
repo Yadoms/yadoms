@@ -32,16 +32,17 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
 	   return m_accessMode;
 	}
 
-	void CForecastHistorizer::AddNewDay(
-		             const std::string& WeatherCondition, 
-	                 const std::string& TempMax, 
+	void CForecastHistorizer::AddPeriod(
+		          const std::string& WeatherCondition, 
+	             const std::string& TempMax, 
 					 const std::string& TempMin,
 					 const std::string& MaxWind,
 					 const std::string& AveWind,
-					 const std::string& AveHumidity
+					 const std::string& AveHumidity,
+                const std::string& RainDay
 					 )
 	{
-		m_content->AddNewDay( WeatherCondition, TempMax, TempMin, MaxWind, AveWind, AveHumidity );
+		m_content->AddPeriod( WeatherCondition, TempMax, TempMin, MaxWind, AveWind, AveHumidity, RainDay );
 	}
 
 	std::string CForecastHistorizer::formatValue() const
