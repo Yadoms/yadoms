@@ -39,6 +39,11 @@ namespace automation
 
    private:
       //-----------------------------------------------------
+      ///\brief               Minimum rule duration
+      //-----------------------------------------------------
+      static const boost::chrono::milliseconds m_MinRuleDuration;
+
+      //-----------------------------------------------------
       ///\brief               Rule data
       //-----------------------------------------------------
       boost::shared_ptr<const database::entities::CRule> m_ruleData;
