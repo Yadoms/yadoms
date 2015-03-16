@@ -11,7 +11,7 @@ namespace web { namespace rest { namespace service {
 
    std::string CSystem::m_restKeyword= std::string("system");
 
-   CSystem::CSystem(boost::shared_ptr<CRunningInformation> runningInformation)
+   CSystem::CSystem(boost::shared_ptr<IRunningInformation> runningInformation)
       :m_runningInformation(runningInformation)
    {
       
@@ -43,15 +43,14 @@ namespace web { namespace rest { namespace service {
 
          if (boost::iequals(query, "SerialPorts"))
             return getSerialPorts();
-         else if (boost::iequals(query, "NetworkInterfaces"))
+         if (boost::iequals(query, "NetworkInterfaces"))
             return getNetworkInterfaces(true);
-         else if (boost::iequals(query, "NetworkInterfacesWithoutLoopback"))
+         if (boost::iequals(query, "NetworkInterfacesWithoutLoopback"))
             return getNetworkInterfaces(false);
-         else
-            return web::rest::CResult::GenerateError("unsupported binding query : " + query);
+         return CResult::GenerateError("unsupported binding query : " + query);
       }
 
-      return web::rest::CResult::GenerateError("Cannot retreive url parameters");
+      return CResult::GenerateError("Cannot retreive url parameters");
    }
 
    shared::CDataContainer CSystem::getSerialPorts()
@@ -66,15 +65,15 @@ namespace web { namespace rest { namespace service {
             result2.set(i->first, i->second, 0x00); //in case of key contains a dot, just ensure the full key is taken into account
          }
 
-         return web::rest::CResult::GenerateSuccess(result2);
+         return CResult::GenerateSuccess(result2);
       }
       catch(std::exception &ex)
       {
-         return web::rest::CResult::GenerateError(ex);
+         return CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::CResult::GenerateError("unknown exception in retreiving all serial ports");
+         return CResult::GenerateError("unknown exception in retreiving all serial ports");
       }
    }
 
@@ -89,15 +88,15 @@ namespace web { namespace rest { namespace service {
             if (includeLoopback || (!includeLoopback && !nit->address().isLoopback()))
                result.set(nit->name(), (boost::format("%1% (%2%)") % nit->displayName() % nit->address().toString()).str(), 0x00); //in case of key contains a dot, just ensure the full key is taken into account
          }
-         return web::rest::CResult::GenerateSuccess(result);
+         return CResult::GenerateSuccess(result);
       }
       catch (std::exception &ex)
       {
-         return web::rest::CResult::GenerateError(ex);
+         return CResult::GenerateError(ex);
       }
       catch (...)
       {
-         return web::rest::CResult::GenerateError("unknown exception in retreiving all serial ports");
+         return CResult::GenerateError("unknown exception in retreiving all serial ports");
       }
    }
    
@@ -106,19 +105,18 @@ namespace web { namespace rest { namespace service {
       try
       {
          shared::CDataContainer result;
-
-		 result.set("runningPlatform", m_runningInformation->getOperatingSystemName());
-		 result.set("yadomsVersion", m_runningInformation->getSoftwareVersion().toString());
-		 result.set("startupTime", m_runningInformation->getStartupDateTime());
-         return web::rest::CResult::GenerateSuccess(result);
+         result.set("runningPlatform", m_runningInformation->getOperatingSystemName());
+         result.set("yadomsVersion", m_runningInformation->getSoftwareVersion().toString());
+         result.set("startupTime", m_runningInformation->getStartupDateTime());
+         return CResult::GenerateSuccess(result);
       }
       catch (std::exception &ex)
       {
-         return web::rest::CResult::GenerateError(ex);
+         return CResult::GenerateError(ex);
       }
       catch (...)
       {
-         return web::rest::CResult::GenerateError("unknown exception in retreiving system information");
+         return CResult::GenerateError("unknown exception in retreiving system information");
       }
    }
 

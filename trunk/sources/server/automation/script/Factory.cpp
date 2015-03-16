@@ -8,6 +8,7 @@
 #include <shared/DynamicLibrary.h>
 #include "InterpreterLibrary.h"
 #include "YScriptApiImplementation.h"
+#include "GeneralInfo.h"
 #include "Properties.h"
 
 namespace automation { namespace script
@@ -17,12 +18,14 @@ CFactory::CFactory(const std::string& interpretersPath,
       boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
       boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
       boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter,
-      boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester)
+      boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
+      boost::shared_ptr<IRunningInformation> runningInformation)
    :m_interpretersPath(interpretersPath),
    m_pluginGateway(pluginGateway),
    m_configurationManager(configurationManager),
    m_notificationCenter(notificationCenter),
-   m_dbAcquisitionRequester(dbAcquisitionRequester)
+   m_dbAcquisitionRequester(dbAcquisitionRequester),
+   m_generalInfo(new CGeneralInfo(configurationManager, runningInformation))
 {
 }
 
@@ -199,7 +202,7 @@ boost::shared_ptr<shared::script::IRunner> CFactory::createScriptRunner(boost::s
 boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> CFactory::createScriptContext()
 {
    boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> context(
-      new CYScriptApiImplementation(m_pluginGateway, m_configurationManager, m_notificationCenter, m_dbAcquisitionRequester));
+      new CYScriptApiImplementation(m_pluginGateway, m_configurationManager, m_notificationCenter, m_dbAcquisitionRequester, m_generalInfo));
    return context;
 }
 
