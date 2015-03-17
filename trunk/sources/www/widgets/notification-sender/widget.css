@@ -1,10 +1,10 @@
-.smsSenderWidget {
+.notificationSenderWidget {
     width: 100%;
     text-align: center;
     margin: auto;
 }
 
-.sendSmsText{
+.sendNotificationText{
     text-align: left;
 }
 
