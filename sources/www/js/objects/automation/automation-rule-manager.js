@@ -10,7 +10,7 @@ function AutomationRuleManager(){}
 
 AutomationRuleManager.factory = function(json) {
    assert(!isNullOrUndefined(json), "json must be defined");
-   return new AutomationRule(json.id, decodeURIComponent(json.name), decodeURIComponent(json.description), json.type, json.model, json.content, decodeURIComponent(json.code), json.configuration, json.enabled);
+   return new AutomationRule(json.id, decodeURIComponent(json.name), decodeURIComponent(json.description), json.interpreter, json.editor, json.model, json.content, json.configuration, json.enabled, json.state, json.errorMessage, json.startDate, json.stopDate);
 };
 
 AutomationRuleManager.createToServer = function(rule, callback) {
@@ -21,12 +21,12 @@ AutomationRuleManager.createToServer = function(rule, callback) {
       url: "/rest/automation/rule",
       data: JSON.stringify({  name: encodeURIComponent(rule.name),
                               description: encodeURIComponent(rule.description),
-                              type: rule.type,
+                              interpreter: rule.interpreter,
+                              editor: rule.editor,
                               model: rule.model,
                               content: rule.content,
                               configuration: rule.configuration,
-                              enabled: rule.enabled,
-                              code : encodeURIComponent(rule.code)
+                              enabled: rule.enabled
                            }),
       contentType: "application/json; charset=utf-8",
       dataType: "json"
