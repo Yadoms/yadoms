@@ -42,7 +42,7 @@ namespace shared { namespace notification{
       //-----------------------------------------------------------------------------
       /// \brief		                     The event handler
       //-----------------------------------------------------------------------------
-      shared::event::CEventHandler m_eventHandler;
+      event::CEventHandler m_eventHandler;
 
       //-----------------------------------------------------------------------------
       /// \brief		                     Indicate if this observer is already waiting for event

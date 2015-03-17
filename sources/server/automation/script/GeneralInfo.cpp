@@ -41,7 +41,7 @@ std::string CGeneralInfo::get(const std::string& key) const
       EInfo info(key);
       switch(info)
       {
-      case EInfo::kSunriseValue: return toString(m_dayLight->sunriseTime());//TODO revoir les boost::lexical_cast pour qu'ils utilisent un format standard (la , n'est pas supportée par Python)
+      case EInfo::kSunriseValue: return toString(m_dayLight->sunriseTime());
       case EInfo::kSunsetValue: return toString(m_dayLight->sunsetTime());
       case EInfo::kLatitudeValue: return toString(m_location->latitude());
       case EInfo::kLongitudeValue: return toString(m_location->longitude());

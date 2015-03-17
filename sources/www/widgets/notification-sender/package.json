@@ -1,8 +1,8 @@
 {
-   "type": "sms-sender",
+   "type": "notification-sender",
    "version": "0.1",
    "author": "yadoms team",
-   "url" : "http://www.yadoms.com/wiki/widgets/sms-sender.html",
+   "url" : "http://www.yadoms.com/wiki/widgets/notification-sender.html",
    "dimensions": {
       "min": {
          "x": 3,
@@ -19,8 +19,8 @@
    },
    "configurationSchema": {
       "device" : {
-         "name" : "Phone",
-         "description" : "Device used to send SMS",
+         "name" : "Device",
+         "description" : "Device used to send notification",
          "type" : "device",
          "expectedCapacity" : ["message"],
          "expectedKeywordAccess" : "getset"
