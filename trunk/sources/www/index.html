@@ -171,7 +171,12 @@
    <script src="js/objects/automation/automation-blockly-custom-blocks.js"></script>
    <script src="js/objects/automation/automation-rule-manager.js"></script>
    <script src="js/objects/automation/automation-rule.js"></script>
-   <script src="js/objects/automation/automation-language.js"></script>
+   <script src="js/objects/automation/automation-interpreter.js"></script>
+   <script src="js/objects/automation/automation-interpreter-manager.js"></script>
+   <script src="js/objects/automation/i-automation-rule-editor.js"></script>
+   <script src="js/objects/automation/automation-editor-code.js"></script>
+   <script src="js/objects/automation/automation-editor-blockly.js"></script>
+   <script src="js/objects/automation/automation-editor-factory.js"></script>
 
    <script src="libs/ace/js/src-min/ace.js"></script>
    <script src="libs/ace/js/src-min/ext-language_tools.js"></script>
@@ -218,8 +223,7 @@
       modals.deviceAddManually = new LazyLoaderManager("modals/device-add-manually.html");
       modals.deviceConfigureManually = new LazyLoaderManager("modals/device-configure-manually.html");
       modals.automationRuleNew = new LazyLoaderManager("modals/automation-rule-new.html");
-      modals.automationRuleEditBlockly = new LazyLoaderManager("modals/automation-rule-edit-blockly.html");
-      modals.automationRuleEditCode = new LazyLoaderManager("modals/automation-rule-edit-code.html");
+      modals.automationRuleEdit = new LazyLoaderManager("modals/automation-rule-edit.html");
       modals.recipientConfigure = new LazyLoaderManager("modals/recipient_configure.html");
 
       //we start i18n engine

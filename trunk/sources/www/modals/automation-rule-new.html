@@ -8,12 +8,8 @@
                    <h4 class="modal-title" data-i18n="modals.new-automation-rule.title"></h4>
               </div>
               <div class="modal-body form-group">
-                   <h4 data-i18n="modals.new-automation-rule.newRule"></h4>
-                   <span data-i18n="modals.new-automation-rule.choose-language"></span>
-                   <div class="language-btns"></div>
-                   <h4 data-i18n="modals.new-automation-rule.from-model"></h4>
-                   <span data-i18n="modals.new-automation-rule.choose-model"></span>
-                   <div class="models-btns"></div>
+                   <span data-i18n="modals.new-automation-rule.choose-editor"></span>
+                   <div class="editor-btns"></div>
               </div>
               <div class="modal-footer">
                  <div class="form-actions">
@@ -31,56 +27,23 @@
 
       var $modalBody = $("div#automation-rule-new-modal .modal-body");
 
-      //TODO V2 : request languages
-      var languageList = [];
-      languageList.push(new AutomationLanguage("python",
-                                                      "#!/usr/bin/env python\n#author          :enter your name here\n#date            :\n#version         :0.1 Alpha\n#notes           :\n#==================================================\n"));
-
       //we create buttons to select language
-      var $area = $modalBody.find("div.language-btns");
-
+      var $area = $modalBody.find("div.editor-btns");
       $area.empty();
+debugger;
+      //we get interpreter list
+      AutomationInterpreterManager.getAll(function (interpreters) {
+         //we can create the list of editors from the list of interpreters
+         AutomationEditorFactory.createList(interpreters, function (editors) {
+            $.each(editors, function (key, value) {
+               $area.append("<button class=\"btn btn-primary btn-lg btn-editor-choice\" type=\"button\" id=\"" + value.getUuid()  + "\">" +
+                              "<span class=\"" + value.getClassIcon() + "\"></span>&nbsp;&nbsp;" +
+                                 $.t("modals.dashboard.sub-windows.automation-center.editors." + value.getName() + ".name") +
+                            "</button>");
 
-      $area.append("<button class=\"btn btn-primary btn-lg btn-blockly\" type=\"button\">" +
-      "<span class=\"fa fa-puzzle-piece\"></span>&nbsp;&nbsp;" +
-      BlocklyName + "</button>");
-      //we manage the click event
-      $area.find("button.btn-blockly").unbind("click").bind("click", newEmptyBlockly());
-
-      $.each(languageList, function (key, value) {
-         $area.append("<button language=\"" + value.name + "\" class=\"btn btn-primary btn-lg btn-language\" type=\"button\">" +
-         "<span class=\"fa fa-code\"></span>&nbsp;&nbsp;" +
-         value.name + "</button>");
-
-         var $btn = $("button.btn-language[language='" + value.name + "']");
-
-         //we manage the click event
-         $area.find("button.btn-language").unbind("click").bind("click", newEmptyFile(value));
-      });
-
-      //TODO V2 : request models
-      var modelList = [];
-      modelList.push({"name" : "If Then", "description" : "Simple If Then rule model", "language" : BlocklyName, "content" : "<xml>if then</xml>"});
-      modelList.push({"name" : "If Then Else", "description" : "Full If Then Else rule model", "language" : BlocklyName, "content" : "<xml>if then else</xml>"});
-
-      $area = $modalBody.find("div.models-btns");
-      $area.empty();
-
-      $.each(modelList, function (key, value) {
-         var btn = "<button content=\"" + value.content + "\" class=\"btn btn-primary btn-lg btn-model\" type=\"button\">" +
-                     "<div>" +
-                        "<h3>" + value.name + "</h3>" +
-                        "<h4>" + value.description + "</h4>" +
-                     "</div>";
-         if (value.language == BlocklyName)
-            btn +=   "<h5 class=\"pull-right language\"><span class=\"fa fa-puzzle-piece\"></span>&nbsp;&nbsp;";
-         else
-            btn +=   "<h5 class=\"pull-right language\"><span class=\"fa fa-code\"></span>&nbsp;&nbsp;";
-
-         btn +=         value.language + "</h5>" +
-                   "</button>";
-
-         $area.append(btn);
+               $area.find("button#" + value.getUuid()).unbind("click").bind("click", newAutomationRuleButtonClicked(value));
+            });
+         });
       });
 
       //i18n
@@ -90,38 +53,19 @@
       $("div#automation-rule-new-modal").modal();
    }
 
-   function newEmptyFile(language) {
-      return function (object) {
+   function newAutomationRuleButtonClicked(editor) {
+      return function() {
          //we create the empty rule and go to edition
-         var r = new AutomationRule(-1, "", "", language.name, "", "", language.newFileTemplate, "", true);
-         modals.automationRuleEditCode.load(function () {
-            showEditionAutomationRuleWithCode(r, function () {
+         //TODO : manage empty script template from interpreter
+         var r = new AutomationRule(-1, "", "", editor.getActiveSupportedInterpreters()[0].name, editor.getName(),
+                                    "", "template", "", true);
+         modals.automationRuleEdit.load(function () {
+            showEditionAutomationRule(r, editor, function () {
+debugger;
                AutomationRuleManager.createToServer(r);
-            });
-         });
-      }
-   }
-
-   /**
-    * Create a new empty rule with Blockly editor
-    * @return {Function}
-    */
-   function newEmptyBlockly() {
-      return function () {
-         //we create the empty rule and go to edition
-         var r = new AutomationRule(-1, "", "", BlocklyName, "", "", "", "", true);
-         modals.automationRuleEditBlockly.load(function () {
-            showEditionAutomationRuleWithBlockly(r, function () {
-               AutomationRuleManager.createToServer(r, function(result) {
-                  //if it's okay
-                  if (result) {
-                     notifySuccess($.t("modals.dashboard.sub-windows.automation-center.ruleSuccessfullyCreated"));
-                  }
-               });
             });
             $("div#automation-rule-new-modal").modal("hide");
          });
-      }
+      };
    }
-
 </script>

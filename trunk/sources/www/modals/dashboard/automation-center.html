@@ -131,7 +131,7 @@
          else {
             //we show the IDE GUI
             //we ask for configuration modal async
-            modals.automationRuleEditCode.load(function () {
+            modals.automationRuleEdit.load(function () {
                showEditionAutomationRuleWithCode(rule, function () {
                   AutomationRuleManager.updateToServer(rule, function (result) {
                      updateDOMAutomationRule(rule);

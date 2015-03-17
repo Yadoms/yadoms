@@ -152,15 +152,17 @@
 	  },
       "new-automation-rule" : {
          "title" : "Automation rule creation",
-         "newRule" : "New empty rule",
-         "choose-language" : "Select a language to create an empty rule",
-         "from-model" : "New rule from model",
-         "choose-model" : "Or select a model to create a predefined rule",
+         "newRule" : "Create a new rule",
+         "choose-editor" : "Select an editor to create a new rule",
          "blockly" : "Blockly language",
          "python" : "Python language"
       },
       "edit-automation-rule" : {
          "title" : "Automation rule edition",
+         "interpreter-rule" : {
+            "name" : "Interpreter",
+            "description" : "Interpreter of the rule"
+         },
          "name-rule" : {
             "name" : "Name",
             "description" : "Name of the rule"
@@ -331,8 +333,13 @@
                "delete" : "Delete the rule",
                "confirmDeletion" : "This action will delete the rule __name__. Continue anyway ?",
                "ruleSuccessfullyCreated" : "Rule successfully created",
-               "blockly" : {
-                  "new" : "Create a new rule with Blockly"
+               "editors" : {
+                  "code" : {
+                     "name" : "Code"
+                  },
+                  "blockly" : {
+                     "name" : "Blockly"
+                  }
                }
             },
             "update" : {

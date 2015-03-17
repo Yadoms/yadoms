@@ -1,6 +1,6 @@
 <!--Edit automation Rule Code Modal -->
-<div class="modal fade" id="edit-automation-rule-modal-code" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog edit-automation-rule-modal-code">
+<div class="modal fade" id="edit-automation-rule-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog edit-automation-rule-modal">
         <div class="modal-content">
            <form class="form-horizontal" novalidate >
               <div class="modal-header">
@@ -14,7 +14,7 @@
               <div class="modal-footer">
                  <div class="form-actions">
                     <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="common.cancel"></button>
-                    <button type="submit" id="btn-confirm-configure-rule-code" class="btn btn-primary" data-i18n="common.ok"></button>
+                    <button type="submit" id="btn-confirm-configure-rule" class="btn btn-primary" data-i18n="common.ok"></button>
                  </div>
               </div>
            </form>
@@ -23,25 +23,37 @@
 </div>
 
 <script>
-   function showEditionAutomationRuleWithCode(rule, callback) {
+   function showEditionAutomationRule(rule, editor, callback) {
       assert(!isNullOrUndefined(rule), "rule must be defined");
+      assert(!isNullOrUndefined(editor), "editor must be defined");
       assert($.isFunction(callback), "callback must be defined");
 debugger;
-      var $modalBody = $("div#edit-automation-rule-modal-code .modal-body");
+      var i18nContext = "modals.edit-automation-rule.";
+
+      var $modalBody = $("div#edit-automation-rule-modal .modal-body");
 
       $modalBody.find("#automation-rule-editor").empty().removeClass();
 
       var $modalConfiguration = $modalBody.find("#automation-rule-configuration");
       $modalConfiguration.empty();
 
-      //we append the text section
-      var nameParameter = new StringParameterHandler("modals.edit-automation-rule.", "name-rule", {required:"true"}, rule.name);
+      var interpreterList = [];
+      $.each(editor.getActiveSupportedInterpreters(), function (key, value) {
+         interpreterList.push(value.name);
+      });
+      var interpreterParameter = new EnumParameterHandler(i18nContext, "interpreter-rule", {"values" : interpreterList}, rule.interpreter);
+      $modalConfiguration.append(interpreterParameter.getDOMObject());
+      //we finish interpreterParameter instantiation
+      if ($.isFunction(interpreterParameter.applyScript))
+         interpreterParameter.applyScript();
+
+      var nameParameter = new StringParameterHandler(i18nContext, "name-rule", {required:"true"}, rule.name);
       $modalConfiguration.append(nameParameter.getDOMObject());
       //we finish nameParameter instantiation
       if ($.isFunction(nameParameter.applyScript))
          nameParameter.applyScript();
 
-      var descriptionParameter = new StringParameterHandler("modals.edit-automation-rule.", "description-rule", {required:"true"}, rule.description);
+      var descriptionParameter = new StringParameterHandler(i18nContext, "description-rule", {required:"true"}, rule.description);
       $modalConfiguration.append(descriptionParameter.getDOMObject());
       //we finish descriptionParameter instantiation
       if ($.isFunction(descriptionParameter.applyScript))
@@ -52,17 +64,17 @@ debugger;
       editor.setTheme("ace/theme/chrome");
 
       //editor.setTheme("ace/theme/monokai");
-      editor.getSession().setMode("ace/mode/" + rule.type);
+      editor.getSession().setMode("ace/mode/" + rule.interpreter);
       editor.setOptions({
          enableBasicAutocompletion: true,
          enableSnippets: true,
          displayIndentGuides: true,
          highlightSelectedWord: true
-
       });
 
       //we add the .code and go to the end of code
-      editor.setValue(decodeURIComponent(rule.code));
+      //TODO : get code
+      //editor.setValue(decodeURIComponent(rule.code));
       editor.gotoLine(editor.session.getLength());
 
       //validation form
@@ -75,7 +87,8 @@ debugger;
             event.preventDefault();
             rule.name = nameParameter.getCurrentConfiguration();
             rule.description = descriptionParameter.getCurrentConfiguration();
-            rule.code = encodeURIComponent(editor.getValue());
+            //TODO : manage code modification
+            //rule.code = encodeURIComponent(editor.getValue());
             console.debug("End of Automation rule edition : " + JSON.stringify(rule));
 
             $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy");
@@ -95,6 +108,6 @@ debugger;
       $modalBody.i18n();
 
       //we display the modal
-      $('div#edit-automation-rule-modal-code').modal();
+      $('div#edit-automation-rule-modal').modal();
    }
 </script>
