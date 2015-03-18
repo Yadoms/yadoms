@@ -29,8 +29,7 @@ void CRule::start()
 
 void CRule::stop()
 {
-   if (!!m_runner)
-      m_runner->stop();
+   m_runner.reset();
    m_thread->stop();
    m_thread.reset();
 }

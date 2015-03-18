@@ -9,8 +9,8 @@
 namespace shared { namespace plugin { namespace yPluginApi { namespace historization
 {
 
-CMessage::CMessage(const std::string& keywordName, const EKeywordAccessMode& accessMode)
-   :m_keywordName(keywordName), m_accessMode(accessMode)
+CMessage::CMessage(const std::string& keywordName, const std::string& associatedRecipientField, const EKeywordAccessMode& accessMode)
+   :m_keywordName(keywordName), m_associatedRecipientField(associatedRecipientField), m_accessMode(accessMode)
 {
 }
 
@@ -67,6 +67,13 @@ const EMeasureType& CMessage::getMeasureType() const
 {
    static const EMeasureType MeasureType(EMeasureType::kAbsolute);
    return MeasureType;
+}
+
+CDataContainer CMessage::getTypeInfo() const
+{
+   CDataContainer info;
+   info.set("associatedRecipientField", m_associatedRecipientField);
+   return info;
 }
 
 } } } } // namespace shared::plugin::yPluginApi::historization

@@ -19,6 +19,7 @@ CRunner::CRunner(const std::string& scriptPath, const shared::CDataContainer& sc
 
 CRunner::~CRunner()
 {
+   stop();
 }
 
 void CRunner::run(shared::script::yScriptApi::IYScriptApi& context)
@@ -46,7 +47,7 @@ void CRunner::run(shared::script::yScriptApi::IYScriptApi& context)
          throw CPythonException("Script exited with error");
       CConsoleRedirector stdoutRedirector(tuple);
       CPythonObject pyReturnValue(PyObject_CallObject(*ymainFunction, *tuple));
-      if (pyReturnValue.isNull())
+      if (pyReturnValue.isNull())//TOFIX : erreur déclarée lors de l'arrêt de Yadoms, c'est crade car du coup la règle n'est pas redémarrée avec Yadoms
          throw CPythonException("Script yMain function returned with error");
 
       YADOMS_LOG(information) << m_scriptPath << " : script exited";
@@ -61,7 +62,8 @@ void CRunner::run(shared::script::yScriptApi::IYScriptApi& context)
 void CRunner::stop()
 {
    m_isStopping = true;
-   PyErr_SetInterrupt();   
+   PyErr_SetInterrupt();
+   boost::this_thread::sleep(boost::posix_time::seconds(10));//TODO virer
 }
 
 bool CRunner::isOk() const

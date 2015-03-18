@@ -33,6 +33,12 @@ namespace automation { namespace script
       virtual std::string scriptPath() const = 0;
 
       //-----------------------------------------------------
+      ///\brief               Get the path of the log file associated with this script
+      ///\return              The log file path
+      //-----------------------------------------------------
+      virtual std::string logPath() const = 0;
+
+      //-----------------------------------------------------
       ///\brief               Get the rule configuration, if any (only able for model-based rules
       ///\return              The configuration (can be empty)
       //-----------------------------------------------------

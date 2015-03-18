@@ -5,13 +5,13 @@
 namespace shared { namespace plugin { namespace yPluginApi { namespace historization
 {
    
-   const shared::plugin::yPluginApi::CStandardCapacity& ForecastCapacity = shared::plugin::yPluginApi::CStandardCapacity("Forecast", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
+   const CStandardCapacity& ForecastCapacity = CStandardCapacity("Forecast", CStandardUnits::NoUnits, EKeywordDataType::kNoData);
 
    
-   CForecastHistorizer::CForecastHistorizer(const std::string& keywordName, const shared::plugin::yPluginApi::EKeywordAccessMode& accessMode)
+   CForecastHistorizer::CForecastHistorizer(const std::string& keywordName, const EKeywordAccessMode& accessMode)
    :m_keywordName(keywordName), m_accessMode(accessMode)
    {
-	   m_content.reset(new shared::plugin::yPluginApi::historization::CForecastFormatter());
+	   m_content.reset(new CForecastFormatter());
    }
 
    CForecastHistorizer::~CForecastHistorizer()
@@ -22,12 +22,12 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
 	   return m_keywordName;
 	}
 
-	const shared::plugin::yPluginApi::CStandardCapacity& CForecastHistorizer::getCapacity() const
+	const CStandardCapacity& CForecastHistorizer::getCapacity() const
 	{
 	   return ForecastCapacity;
 	}
 	
-	const shared::plugin::yPluginApi::EKeywordAccessMode& CForecastHistorizer::getAccessMode() const
+	const EKeywordAccessMode& CForecastHistorizer::getAccessMode() const
 	{
 	   return m_accessMode;
 	}
@@ -51,11 +51,16 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
 	   return !m_content ? std::string() : m_content->formatValue();
 	}
 
-	const shared::plugin::yPluginApi::historization::EMeasureType& CForecastHistorizer::getMeasureType() const
+	const EMeasureType& CForecastHistorizer::getMeasureType() const
 	{
-	   static const shared::plugin::yPluginApi::historization::EMeasureType MeasureType(shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute);
+	   static const EMeasureType MeasureType(EMeasureType::kAbsolute);
 	   return MeasureType;
 	}	
+
+   CDataContainer CForecastHistorizer::getTypeInfo() const
+   {
+      return CDataContainer();
+   }
 	
 } } } } // namespace shared::plugin::yPluginApi::historization
 

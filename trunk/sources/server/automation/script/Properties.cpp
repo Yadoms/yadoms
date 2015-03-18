@@ -8,6 +8,7 @@ CProperties::CProperties(boost::shared_ptr<const database::entities::CRule> rule
    :m_interpreterName(ruleData->Interpreter()),
    m_modelBased(!ruleData->Model().empty()),
    m_scriptPath(buildScriptPath(ruleData)),
+   m_logPath(buildLogPath()),
    m_configuration(ruleData->Configuration())
 {
 }
@@ -34,6 +35,12 @@ std::string CProperties::buildScriptPath(boost::shared_ptr<const database::entit
    return scriptPath.string();
 }
 
+std::string CProperties::buildLogPath() const
+{
+   boost::filesystem::path logPath = m_scriptPath / boost::filesystem::path("log.txt");
+   return logPath.string();
+}
+
 bool CProperties::isModelBased() const
 {
    return m_modelBased;
@@ -47,6 +54,11 @@ std::string CProperties::interpreterName() const
 std::string CProperties::scriptPath() const
 {
    return m_scriptPath;
+}
+
+std::string CProperties::logPath() const
+{
+   return m_logPath;
 }
 
 const shared::CDataContainer& CProperties::configuration() const

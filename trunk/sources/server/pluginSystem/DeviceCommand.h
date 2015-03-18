@@ -29,6 +29,7 @@ namespace pluginSystem
       virtual const std::string& getBody() const;
       virtual const std::string toString() const;
       virtual const shared::plugin::yPluginApi::historization::IHistorizable& getHistorizableObject() const;
+      virtual shared::CDataContainer getTypeInfo() const;
       // [END] IDeviceCommand implementation
 
    private:

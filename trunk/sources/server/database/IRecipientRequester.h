@@ -87,11 +87,24 @@ namespace database {
 
       //--------------------------------------------------------------
       ///\brief                           Find a recipient from a specific field value
-      ///\param [in] fieldName            The field name ("phone", "email", etc...) where searching
+      ///\param [in] fieldName            The field name ("mobile", "email", etc...) where searching
       ///\param [in] expectedFieldValue   The expected field value
       ///\return                          The found recipients containing this field with this value
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<entities::CRecipient> > findRecipientsFromField(const std::string& fieldName, const std::string& expectedFieldValue) = 0;//TODO doit plutôt retourner une liste de récipients
+      virtual std::vector<boost::shared_ptr<entities::CRecipient> > findRecipientsFromField(const std::string& fieldName, const std::string& expectedFieldValue) = 0;
+
+      //--------------------------------------------------------------
+      ///\brief                           Get all existing fields
+      ///\return                          The fields list
+      //--------------------------------------------------------------
+      virtual std::vector<boost::shared_ptr<entities::CRecipientField> > getFields() = 0;
+
+      //--------------------------------------------------------------
+      ///\brief                           Get all the fields with specific name
+      ///\param [in] fieldName            The field name ("mobile", "email", etc...)
+      ///\return                          A fields list
+      //--------------------------------------------------------------
+      virtual std::vector<boost::shared_ptr<entities::CRecipientField> > getFieldsByName(const std::string& fieldName) = 0;
 
       //--------------------------------------------------------------
       /// \brief       Destructor

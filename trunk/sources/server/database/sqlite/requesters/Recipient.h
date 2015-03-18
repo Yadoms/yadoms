@@ -40,6 +40,8 @@ namespace database { namespace sqlite {
          virtual bool fieldExists(const std::string& fieldName, const std::string& pluginName) const;
          virtual boost::shared_ptr<entities::CRecipientField> createField(const entities::CRecipientField& field);
          virtual std::vector<boost::shared_ptr<entities::CRecipient> > findRecipientsFromField(const std::string& fieldName, const std::string& expectedFieldValue);
+         virtual std::vector<boost::shared_ptr<entities::CRecipientField> > getFields();
+         virtual std::vector<boost::shared_ptr<entities::CRecipientField> > getFieldsByName(const std::string& fieldName);
          // [END] IRecipientRequester implementation
 
       private:

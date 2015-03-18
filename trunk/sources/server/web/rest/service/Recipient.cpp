@@ -3,10 +3,12 @@
 #include <shared/exception/NotImplemented.hpp>
 #include "web/rest/RestDispatcherHelpers.hpp"
 #include "web/rest/Result.h"
+#include <Poco/URI.h>
 
 namespace web { namespace rest { namespace service {
 
    std::string CRecipient::m_restKeyword = std::string("recipient");
+   std::string CRecipient::m_restFieldKeyword = std::string("field");
 
    CRecipient::CRecipient(boost::shared_ptr<database::IDataProvider> dataProvider)
       :m_dataProvider(dataProvider)
@@ -31,6 +33,9 @@ namespace web { namespace rest { namespace service {
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*"), CRecipient::removeOneRecipient, CRecipient::transactionalMethod);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword), CRecipient::addRecipient, CRecipient::transactionalMethod);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*"), CRecipient::updateRecipient, CRecipient::transactionalMethod);
+
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)(m_restFieldKeyword), CRecipient::getAllRecipientFields);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)(m_restFieldKeyword)("*"), CRecipient::getAllRecipientsByField);
    }
 
 
@@ -66,16 +71,26 @@ namespace web { namespace rest { namespace service {
 
    shared::CDataContainer CRecipient::getOneRecipient(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
-      if(parameters.size()>1)
-      {
-         int recipientId = boost::lexical_cast<int>(parameters[1]);
-         boost::shared_ptr< database::entities::CRecipient > recipient = m_dataProvider->getRecipientRequester()->getRecipient(recipientId);
-         return web::rest::CResult::GenerateSuccess(recipient);
-      }
-      else
-      {
-         return web::rest::CResult::GenerateError("Invalid parameter count (need id of the recipient in url)");
-      }
+      if(parameters.size() <= 1)
+         return CResult::GenerateError("Invalid parameter count (need id of the recipient in url)");
+
+      int recipientId = boost::lexical_cast<int>(parameters[1]);
+      boost::shared_ptr< database::entities::CRecipient > recipient = m_dataProvider->getRecipientRequester()->getRecipient(recipientId);
+      return CResult::GenerateSuccess(recipient);
+   }
+
+   shared::CDataContainer CRecipient::getAllRecipientsByField(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   {
+      if(parameters.size() != 3)
+         return CResult::GenerateError("Invalid parameter count (need name of the field in url)");
+
+      std::string fieldName;
+      Poco::URI::decode(parameters[2], fieldName);
+
+      std::vector< boost::shared_ptr<database::entities::CRecipientField> > fields = m_dataProvider->getRecipientRequester()->getFieldsByName(fieldName);
+      shared::CDataContainer collection;
+      collection.set(m_restFieldKeyword, fields);
+      return CResult::GenerateSuccess(collection);
    }
 
    shared::CDataContainer CRecipient::getAllRecipients(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
@@ -83,6 +98,14 @@ namespace web { namespace rest { namespace service {
       std::vector< boost::shared_ptr<database::entities::CRecipient> > dvList = m_dataProvider->getRecipientRequester()->getRecipients();
       shared::CDataContainer collection;
       collection.set(getRestKeyword(), dvList);
+      return CResult::GenerateSuccess(collection);
+   }
+
+   shared::CDataContainer CRecipient::getAllRecipientFields(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   {
+      std::vector< boost::shared_ptr<database::entities::CRecipientField> > dvList = m_dataProvider->getRecipientRequester()->getFields();
+      shared::CDataContainer collection;
+      collection.set(m_restFieldKeyword, dvList);
       return CResult::GenerateSuccess(collection);
    }
 
@@ -107,34 +130,30 @@ namespace web { namespace rest { namespace service {
    
    shared::CDataContainer CRecipient::updateRecipient(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
-      if (parameters.size()>1)
+      if (parameters.size() <= 1)
+         return CResult::GenerateError("Invalid parameter count (need id of the recipient to update in url)");
+
+      int recipientId = boost::lexical_cast<int>(parameters[1]);
+      try
       {
-         int recipientId = boost::lexical_cast<int>(parameters[1]);
-         try
-         {
-            database::entities::CRecipient toUpdate;
+         database::entities::CRecipient toUpdate;
 
-            requestContent.printToLog();
+         requestContent.printToLog();
 
-            toUpdate.fillFromContent(requestContent);
-            if (!toUpdate.Id.isDefined() || toUpdate.Id() != recipientId)
-               return CResult::GenerateError("The recipient id in url do not match request content recipient id");
+         toUpdate.fillFromContent(requestContent);
+         if (!toUpdate.Id.isDefined() || toUpdate.Id() != recipientId)
+            return CResult::GenerateError("The recipient id in url do not match request content recipient id");
 
-            boost::shared_ptr<database::entities::CRecipient> recipientFound = m_dataProvider->getRecipientRequester()->updateRecipient(toUpdate);
-            return CResult::GenerateSuccess(recipientFound);
-         }
-         catch (std::exception &ex)
-         {
-            return CResult::GenerateError(ex);
-         }
-         catch (...)
-         {
-            return CResult::GenerateError("unknown exception in creating a new recipient");
-         }
+         boost::shared_ptr<database::entities::CRecipient> recipientFound = m_dataProvider->getRecipientRequester()->updateRecipient(toUpdate);
+         return CResult::GenerateSuccess(recipientFound);
       }
-      else
+      catch (std::exception &ex)
       {
-         return web::rest::CResult::GenerateError("Invalid parameter count (need id of the recipient to update in url)");
+         return CResult::GenerateError(ex);
+      }
+      catch (...)
+      {
+         return CResult::GenerateError("unknown exception in creating a new recipient");
       }
    }
 

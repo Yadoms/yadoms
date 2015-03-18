@@ -143,6 +143,7 @@ void CYScriptApiImplementation::fail(const std::string& errorMessage)
 {
    try
    {
+      //TODO
       YADOMS_LOG(error) << "Script signaled a failure : " << errorMessage;
    }
    catch(...) // Must catch all exceptions to not crash script interpreter

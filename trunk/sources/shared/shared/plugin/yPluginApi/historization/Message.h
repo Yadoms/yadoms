@@ -14,9 +14,10 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       //-----------------------------------------------------
       ///\brief                     Constructor
       ///\param[in] keywordName     Yadoms keyword name
+      ///\param[in] associatedRecipientField The associated recipient field name ("mobile", "email", etc...)
       ///\param[in] accessMode      Access mode
       //-----------------------------------------------------
-      CMessage(const std::string& keywordName, const EKeywordAccessMode& accessMode);
+      CMessage(const std::string& keywordName, const std::string& associatedRecipientField, const EKeywordAccessMode& accessMode);
 
       //-----------------------------------------------------
       ///\brief                     Destructor
@@ -29,6 +30,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       virtual const EKeywordAccessMode& getAccessMode() const;
       virtual std::string formatValue() const;
       virtual const EMeasureType& getMeasureType() const;
+      virtual CDataContainer getTypeInfo() const;
       // [END] IHistorizable implementation;
 
       //-----------------------------------------------------
@@ -69,6 +71,11 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       ///\brief                     The keyword name
       //-----------------------------------------------------
       const std::string m_keywordName;
+
+      //-----------------------------------------------------
+      ///\brief                     The associated recipient field name
+      //-----------------------------------------------------
+      const std::string m_associatedRecipientField;
 
       //-----------------------------------------------------
       ///\brief                     The access mode

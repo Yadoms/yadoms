@@ -27,6 +27,24 @@ RecipientManager.factory = function (json, allAvailableFields) {
     return r;
 };
 
+
+/**
+ * Create a new recipient field (from server data only)
+ * @param json Json data from server
+ * @returns {RecipientField} a recipient field object
+ */
+RecipientManager.factoryField = function (json) {
+    assert(!isNullOrUndefined(json), "json must be defined");
+    assert(!isNullOrUndefined(json.idRecipient), "json.idRecipient must be defined");
+    assert(!isNullOrUndefined(json.pluginName), "json.pluginName must be defined");
+    assert(!isNullOrUndefined(json.fieldName), "json.fieldName must be defined");
+    assert(!isNullOrUndefined(json.value), "json.value must be defined");
+
+    var r = new RecipientField(json.idRecipient, decodeURIComponent(json.pluginName), decodeURIComponent(json.fieldName), decodeURIComponent(json.value));
+    return r;
+};
+
+
 /**
  * Get a recipient from the server by Id
  * @param recipientId The Id to find
@@ -115,7 +133,7 @@ RecipientManager.getAll = function (callback, sync) {
     if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
         async = !sync;
 
-    //we start by requesting all pugin fields
+    //we start by requesting all plugin fields
     RecipientManager.getAllPluginFields_(function (allPlugin) {
 
         $.ajax({
@@ -147,6 +165,52 @@ RecipientManager.getAll = function (callback, sync) {
 
     }, sync);
 
+};
+
+/**
+ * Get the list of recipients containing a specific field
+ * @param field The field to search for
+ * @param callback The callback for the result
+ * @param sync True to get the result synchronously, false asynchronously
+ */
+RecipientManager.getByField = function (field, callback, sync) {
+   assert($.isFunction(callback), "callback must be defined");
+   assert(!isNullOrUndefined(field), "field must be defined");
+
+   var async = true;
+   if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
+      async = !sync;
+
+   $.ajax({
+      type: "GET",
+      url: "/rest/recipient/field/" + field,
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+      async: async
+   })
+      .done(function (data) {
+         //we parse the json answer
+         if (data.result != "true") {
+            notifyError($.t("objects.generic.errorGetting", {objectName: "Recipient fields with name = " + field}), JSON.stringify(data));
+            return;
+         }
+
+         var recipientFieldList = [];
+         $.each(data.data.field, function (index, value) {
+            recipientFieldList.push(RecipientManager.factoryField(value));
+         });
+
+         //we call the callback with true as a ok result
+         if ($.isFunction(callback))
+            callback(recipientFieldList);
+         
+      })
+      .fail(function () {
+         notifyError($.t("objects.generic.errorGetting", {objectName: "Recipient fields with name = " + field}));
+         //launch callback with false as ko result
+         if ($.isFunction(callback))
+            callback(null);
+      });
 };
 
 /**

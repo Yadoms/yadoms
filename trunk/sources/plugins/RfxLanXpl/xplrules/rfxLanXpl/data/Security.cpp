@@ -119,28 +119,16 @@ namespace xplrules { namespace rfxLanXpl { namespace data {
       return m_delay;
    }
    
-
-
    const shared::plugin::yPluginApi::historization::EMeasureType& CSecurity::getMeasureType() const
    {
       static const shared::plugin::yPluginApi::historization::EMeasureType MeasureType(shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute);
       return MeasureType;
    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+   shared::CDataContainer CSecurity::getTypeInfo() const
+   {
+      return shared::CDataContainer();
+   }
 
 } } } // namespace xplrules::rfxLanXpl::data
 

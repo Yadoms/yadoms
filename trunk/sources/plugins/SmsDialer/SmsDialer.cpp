@@ -17,7 +17,7 @@ const std::string CSmsDialer::m_phoneFieldName("mobile");
 
 
 CSmsDialer::CSmsDialer()
-   :m_messageKeyword("message", yApi::EKeywordAccessMode::kGetSet), m_powerKeyword("power")
+   :m_messageKeyword("message", m_phoneFieldName, yApi::EKeywordAccessMode::kGetSet), m_powerKeyword("power")
 {
 }
 
