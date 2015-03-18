@@ -40,4 +40,9 @@ const shared::plugin::yPluginApi::historization::IHistorizable& CDeviceCommand::
    return m_historizableObject;
 }
 
+shared::CDataContainer CDeviceCommand::getTypeInfo() const
+{
+   return shared::CDataContainer();
+}
+
 } // namespace pluginSystem	

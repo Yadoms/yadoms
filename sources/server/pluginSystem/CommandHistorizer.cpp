@@ -42,4 +42,9 @@ namespace pluginSystem
       return MeasureType;
    }
 
+   shared::CDataContainer CCommandHistorizer::getTypeInfo() const
+   {
+      return shared::CDataContainer();
+   }
+
 } // namespace pluginSystem	

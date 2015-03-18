@@ -26,6 +26,7 @@ namespace pluginSystem
       virtual const shared::plugin::yPluginApi::EKeywordAccessMode& getAccessMode() const;
       virtual std::string formatValue() const;
       virtual const shared::plugin::yPluginApi::historization::EMeasureType& getMeasureType() const;
+      virtual shared::CDataContainer getTypeInfo() const;
       // [END] IHistorizable implementation
 
    private:

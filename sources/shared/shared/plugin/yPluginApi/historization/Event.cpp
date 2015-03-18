@@ -45,5 +45,10 @@ const EMeasureType& CEvent::getMeasureType() const
    return MeasureType;
 }
 
+CDataContainer CEvent::getTypeInfo() const
+{
+   return CDataContainer();
+}
+
 } } } } // namespace shared::plugin::yPluginApi::historization
 

@@ -32,6 +32,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       virtual const EKeywordAccessMode& getAccessMode() const;
       virtual std::string formatValue() const;
       virtual const EMeasureType& getMeasureType() const;
+      virtual CDataContainer getTypeInfo() const;
       // [END] IHistorizable implementation
 
       //-----------------------------------------------------

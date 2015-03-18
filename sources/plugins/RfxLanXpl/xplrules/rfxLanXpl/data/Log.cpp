@@ -81,22 +81,11 @@ namespace xplrules { namespace rfxLanXpl { namespace data {
       static const shared::plugin::yPluginApi::historization::EMeasureType MeasureType(shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute);
       return MeasureType;
    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+   
+   shared::CDataContainer CLog::getTypeInfo() const
+   {
+      return shared::CDataContainer();
+   }
 
 
 } } } // namespace xplrules::rfxLanXpl::data

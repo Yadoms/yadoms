@@ -76,7 +76,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
          return m_measureType;
       }
 
-	   virtual shared::CDataContainer getTypeInfo() const
+	   virtual CDataContainer getTypeInfo() const
 	   { 
          //if not defined, use empty result
          if (m_typeInfo.empty())
@@ -109,7 +109,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       ///\brief                     Get the value
       ///\return                    The value
       //-----------------------------------------------------
-      virtual const T get() const
+      virtual T get() const
       {
          return m_value;
       }
@@ -128,7 +128,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       ///\brief                     Explicit operator
       ///\return                    The value
       //-----------------------------------------------------
-      T const operator() () const
+      T operator() () const
       {
          return get();
       }
@@ -176,7 +176,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       //-----------------------------------------------------
       ///\brief               The type information
       //-----------------------------------------------------
-      shared::CDataContainer m_typeInfo;
+      CDataContainer m_typeInfo;
 
 	  //-----------------------------------------------------
 	  ///\brief     Helpers to uniformise access to simple value and enum values
@@ -188,9 +188,9 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
 		  {
            return boost::lexical_cast<TData>(value);
 		  }
-        static shared::CDataContainer createDefaultTypeInfo()
+        static CDataContainer createDefaultTypeInfo()
 		  {
-           return shared::CDataContainer();
+           return CDataContainer();
 		  }
 	  };
 
@@ -201,7 +201,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
 		  {
            return TData(value);
 		  }
-        static shared::CDataContainer createDefaultTypeInfo()
+        static CDataContainer createDefaultTypeInfo()
         {
            typeInfo::CEnumTypeInfo< TData > ti;
            return ti.serialize();
@@ -216,9 +216,9 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
 		  {
            return TData(boost::posix_time::from_iso_string(value));
 		  }
-        static shared::CDataContainer createDefaultTypeInfo()
+        static CDataContainer createDefaultTypeInfo()
         {
-           return shared::CDataContainer();
+           return CDataContainer();
         }
 	  };
    };

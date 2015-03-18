@@ -76,5 +76,10 @@ const EMeasureType& CDimmable::getMeasureType() const
    return m_measureType;
 }
 
+CDataContainer CDimmable::getTypeInfo() const
+{
+   return CDataContainer();
+}
+
 } } } } // namespace shared::plugin::yPluginApi::historization
 

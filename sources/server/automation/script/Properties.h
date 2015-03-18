@@ -26,6 +26,7 @@ namespace automation { namespace script
       virtual std::string interpreterName() const;
       virtual bool isModelBased() const;
       virtual std::string scriptPath() const;
+      virtual std::string logPath() const;
       virtual const shared::CDataContainer& configuration() const;
       // [END] IProperties Implementation
 
@@ -35,6 +36,13 @@ namespace automation { namespace script
       ///\return              The script path
       //-----------------------------------------------------
       std::string buildScriptPath(boost::shared_ptr<const database::entities::CRule> ruleData);
+      
+      //-----------------------------------------------------
+      ///\brief               Build the log Path from the rule data
+      ///\return              The script path
+      ///\note Script path must be build before to call this method
+      //-----------------------------------------------------
+      std::string buildLogPath() const;
 
    private:
       //-----------------------------------------------------
@@ -51,6 +59,11 @@ namespace automation { namespace script
       ///\brief               The script path
       //-----------------------------------------------------
       const std::string m_scriptPath;
+
+      //-----------------------------------------------------
+      ///\brief               The log file path
+      //-----------------------------------------------------
+      const std::string m_logPath;
 
       //-----------------------------------------------------
       ///\brief               The configuration

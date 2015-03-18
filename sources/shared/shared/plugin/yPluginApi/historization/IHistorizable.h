@@ -51,7 +51,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       ///\brief                     The type information
       ///\return                    Type information
       //-----------------------------------------------------
-	  virtual shared::CDataContainer getTypeInfo() const { return shared::CDataContainer(); }
+	  virtual CDataContainer getTypeInfo() const = 0;
    };
 
 } } } } // namespace shared::plugin::yPluginApi::historization
