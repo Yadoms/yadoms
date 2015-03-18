@@ -8,6 +8,7 @@
 #include <shared/DataContainer.h>
 #include "ScriptLoader.h"
 #include "SubInterpreter.h"
+#include "ConsoleRedirector.h"
 #include "swigpyrun.h"  // Generated file (at pre-build-step)
 
 
@@ -43,6 +44,7 @@ void CRunner::run(shared::script::yScriptApi::IYScriptApi& context)
       CPythonObject ymainFunction(PyObject_GetAttrString(loader.module().get(), "yMain"));
       if (ymainFunction.isNull() || PyCallable_Check(*ymainFunction) == 0)
          throw CPythonException("Script exited with error");
+      CConsoleRedirector stdoutRedirector(tuple);
       CPythonObject pyReturnValue(PyObject_CallObject(*ymainFunction, *tuple));
       if (pyReturnValue.isNull())
          throw CPythonException("Script yMain function returned with error");
