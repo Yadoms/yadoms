@@ -14,6 +14,8 @@ if(PYTHONLIBS_FOUND)
    set(PYTHON_SOURCES
       stdafx.h
       stdafx.cpp
+      ConsoleRedirector.h
+      ConsoleRedirector.cpp
       IInitializer.h
       Initializer.h
       Initializer.cpp

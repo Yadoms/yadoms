@@ -113,6 +113,44 @@ std::string CYScriptApiImplementation::getInfo(const std::string& key) const
    }
 }
 
+void CYScriptApiImplementation::log(const std::string& message)
+   {
+   try
+   {
+      // TODO ajouter dans le fichier de log du script
+      YADOMS_LOG(information) << message;
+   }
+   catch(...) // Must catch all exceptions to not crash script interpreter
+   {
+      YADOMS_LOG(error) << "log, unknown exception, please report to Yadoms team";
+   }
+}
+
+void CYScriptApiImplementation::logError(const std::string& message)
+   {
+   try
+   {
+      // TODO ajouter dans le fichier de log du script
+      YADOMS_LOG(error) << message;
+   }
+   catch(...) // Must catch all exceptions to not crash script interpreter
+   {
+      YADOMS_LOG(error) << "log, unknown exception, please report to Yadoms team";
+   }
+}
+
+void CYScriptApiImplementation::fail(const std::string& errorMessage)
+{
+   try
+   {
+      YADOMS_LOG(error) << "Script signaled a failure : " << errorMessage;
+   }
+   catch(...) // Must catch all exceptions to not crash script interpreter
+   {
+      YADOMS_LOG(error) << "fail, unknown exception, please report to Yadoms team";
+   }
+}
+
 
 } } // namespace automation::script
 	

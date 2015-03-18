@@ -10,7 +10,7 @@
 %}
 
 %begin %{
-/* Add some Hack to build in debug version with Pyhton release library, when using STL */
+/* Add some Hack to build in debug version with Python release library, when using STL */
 /* More informations here : https://github.com/swig/swig/issues/325 */
 #if defined(_DEBUG) && defined(SWIG_PYTHON_INTERPRETER_NO_DEBUG)
 #include <basetsd.h>

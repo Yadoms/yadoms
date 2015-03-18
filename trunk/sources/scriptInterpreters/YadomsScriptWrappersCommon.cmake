@@ -8,6 +8,7 @@ INCLUDE(${SWIG_USE_FILE})
 
 MACRO(SCRIPT_API_WRAPPER_SOURCES targetLanguage)
    include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${SHARED_INCL_DIR})
+   SET(SWIG_MODULE_yScriptApiWrapper_EXTRA_DEPS ${SHARED_COMMON_INCL_DIR}/shared/script/yScriptApi/IYScriptApi.h)
    SWIG_ADD_MODULE(yScriptApiWrapper ${targetLanguage} ${ARGN})
 
    IF(MSVC OR XCODE)
