@@ -29,10 +29,10 @@ IApplicationStopHandler::EStopMode CApplicationStopHandler::stopMode() const
    return m_stopMode;
 }
 
-void CApplicationStopHandler::requestToStop(EStopMode stopMode)
+void CApplicationStopHandler::requestToStop(EStopMode stopMode) const
 {
-   m_stopMode = stopMode;
-   StopRequested = true;
+   //m_stopMode = stopMode;
+   //StopRequested = true;
 }
 
 void CApplicationStopHandler::doWork()

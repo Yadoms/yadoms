@@ -1,27 +1,12 @@
 #include "stdafx.h"
-#include <boost/test/unit_test.hpp>
 
-// Includes needed to compile tested classes
-#include "../../../../sources/server/startupOptions/Loader.h"
+
+#include <boost/test/unit_test.hpp>
 
 // Includes needed to compile the test
 #include "../../testCommon/fileSystem.h"
 
-BOOST_AUTO_TEST_SUITE(TestLoader)
 
-
-//--------------------------------------------------------------
-/// \brief	    This function is needed to check the correct exception
-//--------------------------------------------------------------
-
-bool ValidateLoaderExceptionIsError(startupOptions::CLoaderException exception)
-{
-   return exception.isError();
-}
-bool ValidateLoaderExceptionIsHelp(startupOptions::CLoaderException exception)
-{
-   return !exception.isError();
-}
 
 class CTestPath
 {
@@ -56,9 +41,9 @@ public:
       // Clean-up
       testCommon::filesystem::RemoveFile(m_configFile, false);
    }
-   void writeSettings (std::string setting, std::string value)
+   void writeSettings(std::string setting, std::string value)
    {
-      std::ofstream file(m_configFile.c_str(), std::ios_base::out | std::ios_base::app );
+      std::ofstream file(m_configFile.c_str(), std::ios_base::out | std::ios_base::app);
       file << setting << " = " << value << "\n";
       file.close();
    }
@@ -69,334 +54,413 @@ private:
 static const std::string testNewWebServerPath = "newNewWebServerPath";
 static const std::string testFalsePath = "FalsePath";
 
+
+
+// Includes needed to compile tested classes
+#include "../../../../sources/server/startupOptions/Loader.h"
+
+#include <Poco/Util/Application.h>
+#include <Poco/Util/OptionProcessor.h>
+#include <Poco/Util/Validator.h>
+#include <Poco/Util/LayeredConfiguration.h>
+#include <Poco/Util/AbstractConfiguration.h>
+#include <Poco/Util/SystemConfiguration.h>
+#include <Poco/Util/MapConfiguration.h>
+#include <Poco/Util/OptionException.h>
+
+BOOST_AUTO_TEST_SUITE(TestLoader)
+
+
+class CStartupOptionMokeup
+{
+public:
+   CStartupOptionMokeup(int argc, char *argv[], bool unixStyle)
+      :m_options(m_config)
+   {
+      m_config.add(new Poco::Util::SystemConfiguration, Poco::Util::Application::PRIO_SYSTEM, false, false);
+      m_config.add(new Poco::Util::MapConfiguration, Poco::Util::Application::PRIO_APPLICATION, true, false);
+
+      Poco::Util::OptionSet os;
+      m_options.defineOptions(os);
+      Poco::Util::OptionProcessor processor(os);
+      processor.setUnixStyle(unixStyle);
+      for (int i = 0; i < argc; ++i)
+      {
+         std::string name;
+         std::string value;
+         if (processor.process(argv[i], name, value))
+         {
+            if (!name.empty()) // "--" option to end options processing or deferred argument
+            {
+               handleOption(os, name, value);
+            }
+         }
+      }
+      processor.checkRequired();
+   }
+
+public:
+   startupOptions::CStartupOptions & options() { return m_options; }
+   Poco::Util::AbstractConfiguration & config() { return m_config; }
+
+private:
+   void handleOption(Poco::Util::OptionSet & os, const std::string& name, const std::string& value)
+   {
+      const Poco::Util::Option& option = os.getOption(name);
+      if (option.validator())
+      {
+         option.validator()->validate(option, value);
+      }
+      if (!option.binding().empty())
+      {
+         m_config.setString(std::string(option.binding()), std::string(value));
+      }
+      if (option.callback())
+      {
+         option.callback()->invoke(name, value);
+      }
+   }
+
+
+   startupOptions::CStartupOptions m_options;
+
+   class CMyConf : public Poco::Util::LayeredConfiguration
+   {
+   public:
+      CMyConf() {}
+
+      virtual ~CMyConf() {}
+   };
+   
+   CMyConf m_config;
+};
+
+
 //--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with no argument
+/// \brief	    Test CStartupOptionMokeup with no argument
 /// \result         No Error
 //--------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(Initialisation_Test)
 {
-   startupOptions::CLoader StartupOptions (0, NULL);
+   CStartupOptionMokeup loader(0, NULL, true);
 
-   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "information");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
-   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
-   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
-   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information");
+   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), (unsigned int)8080);
+   BOOST_CHECK_EQUAL(loader.options().getDatabaseFile(), "yadoms.db3");
+   BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0");
+   BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(loader.options().getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(loader.options().getNoPasswordFlag(), false);
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with the help resquested "--help"
+/// \brief	    Test CStartupOptionMokeup with the help resquested "--help"
 /// \result         CLoaderException exception expected
 //--------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(helpRequest)
 {
-   const char *argv[] = { "./TestLoader", "--help" };
-   BOOST_CHECK_EXCEPTION(startupOptions::CLoader StartupOptions(2, argv), startupOptions::CLoaderException, ValidateLoaderExceptionIsHelp);
+   char *argv[] = { "./TestLoader", "-help" };
+ //  BOOST_CHECK_THROW(CStartupOptionMokeup app(2, argv), std::exception);
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with the help resquested (short form) "-h"
+/// \brief	    Test CStartupOptionMokeup with the help resquested (short form) "-h"
 /// \result         CLoaderException exception expected
 //--------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(helpRequestShort)
 {
-   const char *argv[] = { "./TestLoader", "-h" };
-   BOOST_CHECK_EXCEPTION(startupOptions::CLoader StartupOptions(2, argv), startupOptions::CLoaderException, ValidateLoaderExceptionIsHelp);
+   char *argv[] = { "./TestLoader", "-h" };
+ //  BOOST_CHECK_THROW(CStartupOptionMokeup app(2, argv), std::exception);
 }
 
-//--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with the change of the port with -p
-/// \result         No Error - port number change
-//--------------------------------------------------------------
+
 
 BOOST_AUTO_TEST_CASE(Different_Port_p_Initialisation)
-{ 
-   const char *argv[] = {"./TestLoader","-p","2000"};
+{
+   char *argv[] = { "./TestLoader", "-port:2000" };
 
-   startupOptions::CLoader StartupOptions (3, argv);
+   CStartupOptionMokeup loader(2, argv, true);
 
-   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "information");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)2000);
-   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
-   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
-   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information");
+   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), (unsigned int)2000);
+   BOOST_CHECK_EQUAL(loader.options().getDatabaseFile(), "yadoms.db3");
+   BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0");
+   BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(loader.options().getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(loader.options().getNoPasswordFlag(), false);
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with the change of the port with --port
+/// \brief	    Test CStartupOptionMokeup with the change of the port with --port
 /// \result         No Error - port number change
 //--------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(Different_Port_port_Initialisation)
 {
-   const char *argv[] = {"./TestLoader","--port","2000"};
+   char *argv[] = { "./TestLoader", "--port", "2000" };
 
-   startupOptions::CLoader StartupOptions (3, argv);
+   CStartupOptionMokeup app(3, argv, true);
 
-   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "information");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)2000);
-   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
-   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
-   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(app.options().getLogLevel(), "information");
+   BOOST_CHECK_EQUAL(app.options().getWebServerPortNumber(), (unsigned int)2000);
+   BOOST_CHECK_EQUAL(app.options().getDatabaseFile(), "yadoms.db3");
+   BOOST_CHECK_EQUAL(app.options().getWebServerIPAddress(), "0.0.0.0");
+   BOOST_CHECK_EQUAL(app.options().getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(app.options().getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(app.options().getNoPasswordFlag(), false);
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with an argument error : --por
+/// \brief	    Test CStartupOptionMokeup with an argument error : --por
 /// \result         No Error, syntax accepted since no ambiguity with other option - port number change
 //--------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(Different_Port_por_Initialisation)
 {
-   const char *argv[] = {"./TestLoader","--por","2000"};
+   char *argv[] = { "./TestLoader", "--por", "2000" };
 
-   startupOptions::CLoader StartupOptions (3, argv);
+   CStartupOptionMokeup app(3, argv, true);
 
-   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "information");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)2000);
-   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
-   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
-   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(app.options().getLogLevel(), "information");
+   BOOST_CHECK_EQUAL(app.options().getWebServerPortNumber(), (unsigned int)2000);
+   BOOST_CHECK_EQUAL(app.options().getDatabaseFile(), "yadoms.db3");
+   BOOST_CHECK_EQUAL(app.options().getWebServerIPAddress(), "0.0.0.0");
+   BOOST_CHECK_EQUAL(app.options().getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(app.options().getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(app.options().getNoPasswordFlag(), false);
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with an argument error : --webServer
+/// \brief	    Test CStartupOptionMokeup with an argument error : --webServer
 /// \result         Error : Raise an Exception (ambigous webServerIp or webServerPath ?)
 //--------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(Port_Initialisation_Error1)
 {
-   const char *argv[] = {"./TestLoader", "--webServer", "192.168.1.1"};
+   char *argv[] = { "./TestLoader", "--webServer", "192.168.1.1" };
 
-   BOOST_REQUIRE_EXCEPTION(startupOptions::CLoader StartupOptions (3, argv), startupOptions::CLoaderException, ValidateLoaderExceptionIsError);
+   BOOST_CHECK_THROW(CStartupOptionMokeup app(3, argv, true), Poco::Exception);
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with an argument error : -port
+/// \brief	    Test CStartupOptionMokeup with an argument error : -port
 /// \result         Error : Raise an Exception
 //--------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(Port_Initialisation_Error2)
 {
-   const char *argv[] = {"./TestLoader","-port","2000"};
+   char *argv[] = { "./TestLoader", "-port", "2000" };
 
    //Test the exception, and if this one is the correct one !
-   BOOST_REQUIRE_EXCEPTION(startupOptions::CLoader StartupOptions (3, argv), startupOptions::CLoaderException, ValidateLoaderExceptionIsError);
+   BOOST_CHECK_THROW(CStartupOptionMokeup app(3, argv, true), Poco::Exception);
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with the argument --databaseFile
+/// \brief	    Test CStartupOptionMokeup with the argument --databaseFile
 /// \result         No Error - database name change
 //--------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(Different_Database_databaseFile_Initialisation)
 {
-   const char *argv[] = {"./TestLoader","--databaseFile","toto.db3"};
+   char *argv[] = { "./TestLoader", "--databaseFile:toto.db3"  };
 
-   startupOptions::CLoader StartupOptions (3, argv);
+   CStartupOptionMokeup app(2, argv, true);
 
-   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "information");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
-   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "toto.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
-   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
-   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(app.options().getLogLevel(), "information");
+   BOOST_CHECK_EQUAL(app.options().getWebServerPortNumber(), (unsigned int)8080);
+   BOOST_CHECK_EQUAL(app.options().getDatabaseFile(), "toto.db3");
+   BOOST_CHECK_EQUAL(app.options().getWebServerIPAddress(), "0.0.0.0");
+   BOOST_CHECK_EQUAL(app.options().getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(app.options().getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(app.options().getNoPasswordFlag(), false);
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with the argument -d
+/// \brief	    Test CStartupOptionMokeup with the argument -d
 /// \result         No Error - database name change
 //--------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(Different_Database_d_Initialisation)
 {
-   const char *argv[] = {"./TestLoader","-D","toto.db3"};
+   char *argv[] = { "./TestLoader", "-Dtoto.db3" };
 
-   startupOptions::CLoader StartupOptions (3, argv);
+   CStartupOptionMokeup app(2, argv, true);
 
-   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "information");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
-   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "toto.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
-   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
-   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(app.options().getLogLevel(), "information");
+   BOOST_CHECK_EQUAL(app.options().getWebServerPortNumber(), (unsigned int)8080);
+   BOOST_CHECK_EQUAL(app.options().getDatabaseFile(), "toto.db3");
+   BOOST_CHECK_EQUAL(app.options().getWebServerIPAddress(), "0.0.0.0");
+   BOOST_CHECK_EQUAL(app.options().getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(app.options().getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(app.options().getNoPasswordFlag(), false);
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with the argument -l
+/// \brief	    Test CStartupOptionMokeup with the argument -l
 /// \result         No Error - logs change to trace
 //--------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(Different_Log_l_trace_Initialisation)
 {
-   const char *argv[] = {"./TestLoader","-l","trace"};
+   char *argv[] = { "./TestLoader", "-ltrace" };
 
-   startupOptions::CLoader StartupOptions (3, argv);
+   CStartupOptionMokeup app(2, argv, true);
 
-   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "trace");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
-   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
-   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
-   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(app.options().getLogLevel(), "trace");
+   BOOST_CHECK_EQUAL(app.options().getWebServerPortNumber(), (unsigned int)8080);
+   BOOST_CHECK_EQUAL(app.options().getDatabaseFile(), "yadoms.db3");
+   BOOST_CHECK_EQUAL(app.options().getWebServerIPAddress(), "0.0.0.0");
+   BOOST_CHECK_EQUAL(app.options().getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(app.options().getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(app.options().getNoPasswordFlag(), false);
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with the argument -l
+/// \brief	    Test CStartupOptionMokeup with the argument -l
 /// \result         No Error - logs change to debug
 //--------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(Different_Log_l_debug_Initialisation)
 {
-   const char *argv[] = {"./TestLoader","-l","debug"};
+   char *argv[] = { "./TestLoader", "-ldebug" };
 
-   startupOptions::CLoader StartupOptions (3, argv);
+   CStartupOptionMokeup app(2, argv, true);
 
-   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "debug");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
-   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
-   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
-   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(app.options().getLogLevel(), "debug");
+   BOOST_CHECK_EQUAL(app.options().getWebServerPortNumber(), (unsigned int)8080);
+   BOOST_CHECK_EQUAL(app.options().getDatabaseFile(), "yadoms.db3");
+   BOOST_CHECK_EQUAL(app.options().getWebServerIPAddress(), "0.0.0.0");
+   BOOST_CHECK_EQUAL(app.options().getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(app.options().getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(app.options().getNoPasswordFlag(), false);
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with the argument -l
+/// \brief	    Test CStartupOptionMokeup with the argument -l
 /// \result         No Error - logs change to info
 //--------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(Different_Log_l_info_Initialisation)
 {
-   const char *argv[] = {"./TestLoader","-l","information"};
+   char *argv[] = { "./TestLoader", "-linformation"};
 
-   startupOptions::CLoader StartupOptions (3, argv);
+   CStartupOptionMokeup app(2, argv, true);
 
-   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "information");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
-   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
-   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
-   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(app.options().getLogLevel(), "information");
+   BOOST_CHECK_EQUAL(app.options().getWebServerPortNumber(), (unsigned int)8080);
+   BOOST_CHECK_EQUAL(app.options().getDatabaseFile(), "yadoms.db3");
+   BOOST_CHECK_EQUAL(app.options().getWebServerIPAddress(), "0.0.0.0");
+   BOOST_CHECK_EQUAL(app.options().getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(app.options().getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(app.options().getNoPasswordFlag(), false);
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with the argument -l
+/// \brief	    Test CStartupOptionMokeup with the argument -l
 /// \result         No Error - logs change to warning
 //--------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(Different_Log_l_warning_Initialisation)
 {
-   const char *argv[] = {"./TestLoader","-l","warning"};
+   char *argv[] = { "./TestLoader", "-lwarning" };
 
-   startupOptions::CLoader StartupOptions (3, argv);
+   CStartupOptionMokeup app(2, argv, true);
 
-   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "warning");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
-   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
-   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
-   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(app.options().getLogLevel(), "warning");
+   BOOST_CHECK_EQUAL(app.options().getWebServerPortNumber(), (unsigned int)8080);
+   BOOST_CHECK_EQUAL(app.options().getDatabaseFile(), "yadoms.db3");
+   BOOST_CHECK_EQUAL(app.options().getWebServerIPAddress(), "0.0.0.0");
+   BOOST_CHECK_EQUAL(app.options().getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(app.options().getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(app.options().getNoPasswordFlag(), false);
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with the argument -l
+/// \brief	    Test CStartupOptionMokeup with the argument -l
 /// \result         No Error - logs change to error
 //--------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(Different_Log_l_error_Initialisation)
 {
-   const char *argv[] = {"./TestLoader","-l","error"};
+   char *argv[] = { "./TestLoader", "-lerror" };
 
-   startupOptions::CLoader StartupOptions (3, argv);
+   CStartupOptionMokeup app(2, argv, true);
 
-   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "error");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
-   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
-   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
-   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(app.options().getLogLevel(), "error");
+   BOOST_CHECK_EQUAL(app.options().getWebServerPortNumber(), (unsigned int)8080);
+   BOOST_CHECK_EQUAL(app.options().getDatabaseFile(), "yadoms.db3");
+   BOOST_CHECK_EQUAL(app.options().getWebServerIPAddress(), "0.0.0.0");
+   BOOST_CHECK_EQUAL(app.options().getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(app.options().getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(app.options().getNoPasswordFlag(), false);
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with the argument -l
+/// \brief	    Test CStartupOptionMokeup with the argument -l
 /// \result         No Error - logs change to fatal
 //--------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(Different_Log_l_fatal_Initialisation)
 {
-   const char *argv[] = {"./TestLoader","-l","fatal"};
+   char *argv[] = { "./TestLoader", "-lfatal" };
 
-   startupOptions::CLoader StartupOptions (3, argv);
+   CStartupOptionMokeup app(2, argv, true);
 
-   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "fatal");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
-   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
-   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
-   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(app.options().getLogLevel(), "fatal");
+   BOOST_CHECK_EQUAL(app.options().getWebServerPortNumber(), (unsigned int)8080);
+   BOOST_CHECK_EQUAL(app.options().getDatabaseFile(), "yadoms.db3");
+   BOOST_CHECK_EQUAL(app.options().getWebServerIPAddress(), "0.0.0.0");
+   BOOST_CHECK_EQUAL(app.options().getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(app.options().getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(app.options().getNoPasswordFlag(), false);
 }
 
 
 //--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with the argument -l
+/// \brief	    Test CStartupOptionMokeup with the argument -l
 /// \result         No Error - logs change to notice
 //--------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(Different_Log_l_notice_Initialisation)
 {
-   const char *argv[] = {"./TestLoader","-l","notice"};
+   char *argv[] = { "./TestLoader", "-lnotice" };
 
-   startupOptions::CLoader StartupOptions (3, argv);
+   CStartupOptionMokeup app(2, argv, true);
 
-   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "notice");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
-   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
-   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
-   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(app.options().getLogLevel(), "notice");
+   BOOST_CHECK_EQUAL(app.options().getWebServerPortNumber(), (unsigned int)8080);
+   BOOST_CHECK_EQUAL(app.options().getDatabaseFile(), "yadoms.db3");
+   BOOST_CHECK_EQUAL(app.options().getWebServerIPAddress(), "0.0.0.0");
+   BOOST_CHECK_EQUAL(app.options().getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(app.options().getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(app.options().getNoPasswordFlag(), false);
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with the argument -l
+/// \brief	    Test CStartupOptionMokeup with the argument -l
 /// \result         No Error - logs change to notice
 //--------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(Different_Log_l_critical_Initialisation)
 {
-   const char *argv[] = {"./TestLoader","-l","critical"};
+   char *argv[] = { "./TestLoader", "-lcritical" };
 
-   startupOptions::CLoader StartupOptions (3, argv);
+   CStartupOptionMokeup app(2, argv, true);
 
-   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "critical");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
-   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
-   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
-   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(app.options().getLogLevel(), "critical");
+   BOOST_CHECK_EQUAL(app.options().getWebServerPortNumber(), (unsigned int)8080);
+   BOOST_CHECK_EQUAL(app.options().getDatabaseFile(), "yadoms.db3");
+   BOOST_CHECK_EQUAL(app.options().getWebServerIPAddress(), "0.0.0.0");
+   BOOST_CHECK_EQUAL(app.options().getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(app.options().getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(app.options().getNoPasswordFlag(), false);
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with all logger levels
+/// \brief	    Test CStartupOptionMokeup with all logger levels
 /// \result         No error, no exception
 //--------------------------------------------------------------
 
@@ -405,324 +469,166 @@ BOOST_AUTO_TEST_CASE(All_Loggerlevels)
    static const std::set<std::string> levels = boost::assign::list_of("none")("fatal")("critical")("error")("warning")("notice")("information")("debug")("trace");
    for (std::set<std::string>::const_iterator it = levels.begin(); it != levels.end(); ++it)
    {
-      const char *argv[] = {"./TestLoader","-l", it->c_str()};
-      startupOptions::CLoader StartupOptions (3, argv);
-      BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), *it);
+      std::string opt("-l");
+      opt += *it;
+      char *argv[] = { "./TestLoader", (char*)opt.c_str() };
+      CStartupOptionMokeup app(2, argv, true);
+      BOOST_CHECK_EQUAL(app.options().getLogLevel(), *it);
    }
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with a faulty log argument -l
+/// \brief	    Test CStartupOptionMokeup with a faulty log argument -l
 /// \result         Raise an exception
 //--------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(Unknow_Log_l_Error1)
 {
-   const char *argv[] = {"./TestLoader","-l","toto"};
-
-   BOOST_REQUIRE_EXCEPTION(startupOptions::CLoader StartupOptions (3, argv), startupOptions::CLoaderException, ValidateLoaderExceptionIsError);
+   char *argv[] = { "./TestLoader", "-ltoto" };
+   BOOST_CHECK_THROW(CStartupOptionMokeup app(2, argv, true), Poco::Util::InvalidArgumentException);
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with a faulty argument entry
-/// \result         No Error - option is ignored
+/// \brief	    Test CStartupOptionMokeup with a faulty argument entry
+/// \result         Exception is raised
 //--------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(Unknow_option_NoError)
 {
-   const char *argv[] = {"./TestLoader","-a","info"};
-
-   startupOptions::CLoader StartupOptions (3, argv);
-
-   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "information");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
-   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
-   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
-   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
+   char *argv[] = { "./TestLoader", "-ainfo" };
+   BOOST_CHECK_THROW(CStartupOptionMokeup app(2, argv, true), Poco::Util::UnknownOptionException);
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with the argument -i
+/// \brief	    Test CStartupOptionMokeup with the argument -i
 /// \result         No Error - the adresse IP is changed
 //--------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(Different_IP_i_Initialisation)
 {
-   const char *argv[] = {"./TestLoader","-i","192.168.1.1"};
+   char *argv[] = { "./TestLoader", "-i192.168.1.1" };
 
-   startupOptions::CLoader StartupOptions (3, argv);
+   CStartupOptionMokeup app(2, argv, true);
 
-   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "information");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
-   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "192.168.1.1");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
-   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
-   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(app.options().getLogLevel(), "information");
+   BOOST_CHECK_EQUAL(app.options().getWebServerPortNumber(), (unsigned int)8080);
+   BOOST_CHECK_EQUAL(app.options().getDatabaseFile(), "yadoms.db3");
+   BOOST_CHECK_EQUAL(app.options().getWebServerIPAddress(), "192.168.1.1");
+   BOOST_CHECK_EQUAL(app.options().getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(app.options().getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(app.options().getNoPasswordFlag(), false);
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with the argument -i
+/// \brief	    Test CStartupOptionMokeup with the argument -i
 /// \result         No Error - the adresse IP is changed
 //--------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(Different_IP_webServerIp_Initialisation)
 {
-   const char *argv[] = {"./TestLoader","--webServerIp","192.168.1.1"};
+   char *argv[] = { "./TestLoader", "--webServerIp:192.168.1.1" };
 
-   startupOptions::CLoader StartupOptions (3, argv);
+   CStartupOptionMokeup app(2, argv, true);
 
-   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "information");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
-   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "192.168.1.1");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
-   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
-   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(app.options().getLogLevel(), "information");
+   BOOST_CHECK_EQUAL(app.options().getWebServerPortNumber(), (unsigned int)8080);
+   BOOST_CHECK_EQUAL(app.options().getDatabaseFile(), "yadoms.db3");
+   BOOST_CHECK_EQUAL(app.options().getWebServerIPAddress(), "192.168.1.1");
+   BOOST_CHECK_EQUAL(app.options().getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(app.options().getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(app.options().getNoPasswordFlag(), false);
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with the wrong argument -webServe
+/// \brief	    Test CStartupOptionMokeup with the wrong argument -webServe
 /// \result         Raise a Exception
 //--------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(Different_IP_webServerIp_Error1)
 {
-   const char *argv[] = {"./TestLoader","--webServe","192.168.1.1"};
+   char *argv[] = { "./TestLoader", "--webServe:192.168.1.1" };
 
-   BOOST_REQUIRE_EXCEPTION(startupOptions::CLoader StartupOptions (3, argv), startupOptions::CLoaderException, ValidateLoaderExceptionIsError);
+   BOOST_CHECK_THROW(CStartupOptionMokeup app(2, argv, true), Poco::Exception);
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with a malform IP address (not complete)
+/// \brief	    Test CStartupOptionMokeup with a malform IP address (not complete)
 /// \result         Raise a Exception
 //--------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(Different_IP_webServerIp_Error2)
 {
-   const char *argv[] = {"./TestLoader","-i","192.168.1."};
+   char *argv[] = { "./TestLoader", "-i:192.168.1." };
 
-   BOOST_REQUIRE_EXCEPTION(startupOptions::CLoader StartupOptions (3, argv), startupOptions::CLoaderException, ValidateLoaderExceptionIsError);
+   BOOST_CHECK_THROW(CStartupOptionMokeup app(2, argv, true), Poco::Exception);
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with the argument -w
+/// \brief	    Test CStartupOptionMokeup with the argument -w
 /// \result         No Error - the website address is changed
 //--------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(Different_WebServer_w_Initialisation)
 {
    CTestPath webServerPath(testNewWebServerPath);
-   const char *argv[] = {"./TestLoader","-w",testNewWebServerPath.c_str()};
+   std::string arg = "-w";
+   arg += testNewWebServerPath;
 
-   startupOptions::CLoader StartupOptions (3, argv);
+   char *argv[] = { "./TestLoader", (char*)arg.c_str() };
 
-   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "information");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
-   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), testNewWebServerPath);
-   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
-   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
+   CStartupOptionMokeup app(2, argv, true);
+
+   BOOST_CHECK_EQUAL(app.options().getLogLevel(), "information");
+   BOOST_CHECK_EQUAL(app.options().getWebServerPortNumber(), (unsigned int)8080);
+   BOOST_CHECK_EQUAL(app.options().getDatabaseFile(), "yadoms.db3");
+   BOOST_CHECK_EQUAL(app.options().getWebServerIPAddress(), "0.0.0.0");
+   BOOST_CHECK_EQUAL(app.options().getWebServerInitialPath(), testNewWebServerPath);
+   BOOST_CHECK_EQUAL(app.options().getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(app.options().getNoPasswordFlag(), false);
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with the argument --webServerPath
+/// \brief	    Test CStartupOptionMokeup with the argument --webServerPath
 /// \result         No Error - the website address is changed
 //--------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(Different_WebServer_webServerPath_Initialisation)
 {
    CTestPath webServerPath(testNewWebServerPath);
-   const char *argv[] = {"./TestLoader","--webServerPath",testNewWebServerPath.c_str()};
+   std::string arg = "--webServerPath:";
+   arg += testNewWebServerPath;
+   char *argv[] = { "./TestLoader", (char*)arg.c_str() };
+   
+   CStartupOptionMokeup app(2, argv, true);
 
-   startupOptions::CLoader StartupOptions (3, argv);
-
-   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "information");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
-   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), testNewWebServerPath);
-   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
-   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(app.options().getLogLevel(), "information");
+   BOOST_CHECK_EQUAL(app.options().getWebServerPortNumber(), (unsigned int)8080);
+   BOOST_CHECK_EQUAL(app.options().getDatabaseFile(), "yadoms.db3");
+   BOOST_CHECK_EQUAL(app.options().getWebServerIPAddress(), "0.0.0.0");
+   BOOST_CHECK_EQUAL(app.options().getWebServerInitialPath(), testNewWebServerPath);
+   BOOST_CHECK_EQUAL(app.options().getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(app.options().getNoPasswordFlag(), false);
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with the argument --webServerPath with a wrong Path
+/// \brief	    Test CStartupOptionMokeup with the argument --webServerPath with a wrong Path
 /// \result         Raise a Exception
 //--------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(Different_WebServer_webServerPath_WrongPath)
 {
-	CTestPath webServerPath(testNewWebServerPath);
-   const char *argv[] = {"./TestLoader","--webServerPath",testFalsePath.c_str()};
-
-   BOOST_REQUIRE_EXCEPTION(startupOptions::CLoader StartupOptions (3, argv), startupOptions::CLoaderException, ValidateLoaderExceptionIsError);
-}
-
-//--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with the argument port in configuration file
-/// \result         No Error - the port number is changed
-//--------------------------------------------------------------
-
-BOOST_AUTO_TEST_CASE(Config_File_Port_Number)
-{
-   CTestConfigFile config;
-   config.writeSettings("port", "8085");
-
-   startupOptions::CLoader StartupOptions (0, NULL);
-
-   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "information");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8085);
-   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
-   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
-   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
-}
-
-//--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with the argument port in configuration file
-/// \result         No Error - the port number is not changed - No Exception
-//--------------------------------------------------------------
-
-BOOST_AUTO_TEST_CASE(Config_File_Port_Number_Error1)
-{
-   CTestConfigFile config;
-   config.writeSettings("portable", "8085");
-
-   startupOptions::CLoader StartupOptions (0, NULL);
-
-   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "information");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
-   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
-   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
-   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
-
-   // There should no have exception !
-   BOOST_REQUIRE_NO_THROW( startupOptions::CLoader StartupOptions (0, NULL) );
-}
-
-//--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with the argument databaseFile in configuration file
-/// \result         No Error - the database file name is changed
-//--------------------------------------------------------------
-
-BOOST_AUTO_TEST_CASE(Config_File_database_file)
-{
-   CTestConfigFile config;
-   config.writeSettings("databaseFile", "AnOtherFile.db3");
-
-   startupOptions::CLoader StartupOptions (0, NULL);
-
-   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "information");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
-   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "AnOtherFile.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
-   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
-   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
-}
-
-//--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with the argument webServerIp in configuration file
-/// \result         No Error - the web Server IP address is changed
-//--------------------------------------------------------------
-
-BOOST_AUTO_TEST_CASE(Config_File_getWebServerIPAddress)
-{
-   CTestConfigFile config;
-   config.writeSettings("webServerIp", "192.168.1.1");
-
-   startupOptions::CLoader StartupOptions (0, NULL);
-
-   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "information");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
-   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "192.168.1.1");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
-   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
-   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
-}
-
-//--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with the argument webServerIp in configuration file
-/// \result         No Error - the web Server path is changed
-//--------------------------------------------------------------
-
-BOOST_AUTO_TEST_CASE(Config_File_webServerPath)
-{
-   CTestPath webServerPath(testNewWebServerPath);
-   CTestConfigFile config;
-   config.writeSettings("webServerPath", testNewWebServerPath);
-
-   startupOptions::CLoader StartupOptions (0, NULL);
-
-   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "information");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
-   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), testNewWebServerPath);
-   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
-   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
-}
-
-//--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with the argument webServerIp in configuration file
-/// \result         No Error - the log level is changed
-//--------------------------------------------------------------
-
-BOOST_AUTO_TEST_CASE(Config_File_Log)
-{
-   CTestConfigFile config;
-   config.writeSettings("logLevel", "warning");
-
-   startupOptions::CLoader StartupOptions (0, NULL);
-
-   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "warning");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
-   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
-   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
-   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
-}
-
-//--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with the all arguments
-/// \result         No Error - all options are changed
-//--------------------------------------------------------------
-
-BOOST_AUTO_TEST_CASE(Config_File_All_Options1)
-{
    CTestPath webServerPath(testNewWebServerPath);
 
-   CTestConfigFile config;
-   config.writeSettings("logLevel"            , "warning");
-   config.writeSettings("port"                , "8085");
-   config.writeSettings("databaseFile"        , "test.db3");
-   config.writeSettings("webServerIp"         , "192.168.1.2");
-   config.writeSettings("webServerPath"       , testNewWebServerPath);
-   config.writeSettings("debug"               , "true");
-   config.writeSettings("noPassword"          , "true");
+   std::string arg = "--webServerPath:";
+   arg += testFalsePath;
+   
+   char *argv[] = { "./TestLoader", (char*)arg.c_str() };
 
-   startupOptions::CLoader StartupOptions (0, NULL);
-
-   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "warning");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8085);
-   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "test.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "192.168.1.2");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), testNewWebServerPath);
-   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), true);
-   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), true);
+   BOOST_CHECK_THROW(CStartupOptionMokeup app(2, argv, true), Poco::Exception);
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with the all arguments with argc/argv
+/// \brief	    Test CStartupOptionMokeup with the all arguments with argc/argv
 /// \result         No Error - all options are changed
 //--------------------------------------------------------------
 
@@ -730,29 +636,29 @@ BOOST_AUTO_TEST_CASE(All_Options1)
 {
    CTestPath webServerPath(testNewWebServerPath);
 
-   const char *argv[] =
+   char *argv[] =
    {
       "./TestLoader",
-      "--port","8085",
-      "--databaseFile","test.db3",
-      "--webServerIp","192.168.1.3",
-      "--webServerPath",testNewWebServerPath.c_str(),
-      "--logLevel","warning"
+      "--port", "8085",
+      "--databaseFile", "test.db3",
+      "--webServerIp", "192.168.1.3",
+      "--webServerPath", (char*)testNewWebServerPath.c_str(),
+      "--logLevel", "warning"
    };
 
-   startupOptions::CLoader StartupOptions (11, argv);
+   CStartupOptionMokeup app(11, argv, true);
 
-   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "warning");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8085);
-   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "test.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "192.168.1.3");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), testNewWebServerPath);
-   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
-   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(app.options().getLogLevel(), "warning");
+   BOOST_CHECK_EQUAL(app.options().getWebServerPortNumber(), (unsigned int)8085);
+   BOOST_CHECK_EQUAL(app.options().getDatabaseFile(), "test.db3");
+   BOOST_CHECK_EQUAL(app.options().getWebServerIPAddress(), "192.168.1.3");
+   BOOST_CHECK_EQUAL(app.options().getWebServerInitialPath(), testNewWebServerPath);
+   BOOST_CHECK_EQUAL(app.options().getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(app.options().getNoPasswordFlag(), false);
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with the all arguments (low profile) by argc/argv
+/// \brief	    Test CStartupOptionMokeup with the all arguments (low profile) by argc/argv
 /// \result         No Error - all options are changed
 //--------------------------------------------------------------
 
@@ -760,37 +666,40 @@ BOOST_AUTO_TEST_CASE(All_Options2)
 {
    CTestPath webServerPath(testNewWebServerPath);
 
-   const char *argv[] =
+   std::string arg = "-w:";
+   arg += testNewWebServerPath;
+
+   char *argv[] =
    {
       "./TestLoader",
-      "-p","8085",
-      "-D","test.db3",
-      "-i","192.168.1.3",
-      "-l","warning",
-      "-w",testNewWebServerPath.c_str()
+      "-p8085",
+      "-Dtest.db3",
+      "-i192.168.1.3",
+      "-lwarning",
+      (char*)arg.c_str()
    };
 
-   startupOptions::CLoader StartupOptions (11, argv);
+   CStartupOptionMokeup app(6, argv, true);
 
-   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), "warning");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8085);
-   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "test.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "192.168.1.3");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(),testNewWebServerPath);
-   BOOST_CHECK_EQUAL(StartupOptions.getDebugFlag(), false);
-   BOOST_CHECK_EQUAL(StartupOptions.getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(app.options().getLogLevel(), "warning");
+   BOOST_CHECK_EQUAL(app.options().getWebServerPortNumber(), (unsigned int)8085);
+   BOOST_CHECK_EQUAL(app.options().getDatabaseFile(), "test.db3");
+   BOOST_CHECK_EQUAL(app.options().getWebServerIPAddress(), "192.168.1.3");
+   BOOST_CHECK_EQUAL(app.options().getWebServerInitialPath(), testNewWebServerPath);
+   BOOST_CHECK_EQUAL(app.options().getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(app.options().getNoPasswordFlag(), false);
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with the parameter -p without value
+/// \brief	    Test CStartupOptionMokeup with the parameter -p without value
 /// \result         No Error - No Exception thrown
 //--------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(Parameter_Missing_No_Exception)
-{ 
-   const char *argv[] = {"./TestLoader","-p"};
+{
+   char *argv[] = { "./TestLoader", "-p" };
 
-   BOOST_REQUIRE_EXCEPTION(startupOptions::CLoader StartupOptions (2, argv), startupOptions::CLoaderException, ValidateLoaderExceptionIsError);
+   BOOST_CHECK_THROW(CStartupOptionMokeup app(2, argv, true), Poco::Exception);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

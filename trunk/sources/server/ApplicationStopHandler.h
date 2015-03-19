@@ -32,7 +32,7 @@ public:
    EStopMode stopMode() const;
 
    // IApplicationStopHandler implementation
-   virtual void requestToStop(EStopMode stopMode);
+   virtual void requestToStop(EStopMode stopMode) const;
    // [END] IApplicationStopHandler implementation
 
 private:

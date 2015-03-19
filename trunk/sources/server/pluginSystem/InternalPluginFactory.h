@@ -25,7 +25,7 @@ namespace pluginSystem
       /// \param [in]   applicationStopHandler  The object used to request application stop
       /// \throw      CInvalidPluginException if plugin is not recognized
       //--------------------------------------------------------------
-      CInternalPluginFactory(IApplicationStopHandler& applicationStopHandler);
+      CInternalPluginFactory(const IApplicationStopHandler& applicationStopHandler);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
@@ -44,7 +44,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief			The object used to request application stop
       //--------------------------------------------------------------
-      IApplicationStopHandler& m_applicationStopHandler;
+      const IApplicationStopHandler& m_applicationStopHandler;
    };
 
 } // namespace pluginSystem

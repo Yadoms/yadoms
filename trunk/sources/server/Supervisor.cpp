@@ -30,9 +30,10 @@
 #include "dataAccessLayer/DataAccessLayer.h"
 #include <shared/notification/NotificationCenter.h>
 #include "automation/RuleManager.h"
+#include <Poco/Util/ServerApplication.h>
 
-CSupervisor::CSupervisor(const startupOptions::IStartupOptions& startupOptions)
-   :m_EventHandler(new shared::event::CEventHandler), m_stopHandler(m_EventHandler, kStopRequested), m_startupOptions(startupOptions)
+CSupervisor::CSupervisor(const startupOptions::IStartupOptions& startupOptions, const IApplicationStopHandler & stopHandler)
+   : m_EventHandler(new shared::event::CEventHandler), m_stopHandler(stopHandler), m_startupOptions(startupOptions)
 {
 }
 
@@ -40,7 +41,8 @@ CSupervisor::~CSupervisor()
 {
 }
 
-void CSupervisor::doWork()
+
+void CSupervisor::run()
 {
    YADOMS_LOG_CONFIGURE("Supervisor");
    YADOMS_LOG(information) << "Supervisor is starting";
@@ -156,10 +158,6 @@ void CSupervisor::doWork()
       YADOMS_LOG(information) << "Supervisor is stopped";
 
       pDataProvider->getEventLoggerRequester()->addEvent(database::entities::ESystemEventCode::kStopped, "yadoms", shared::CStringExtension::EmptyString);
-
-      //if the application need to notify its stop (mainly in case of service)
-      if (m_callbackAfterStopped)
-         m_callbackAfterStopped();
    }
    catch (std::exception& e)
    {
@@ -173,15 +171,12 @@ void CSupervisor::doWork()
       if (pDataProvider)
          pDataProvider->getEventLoggerRequester()->addEvent(database::entities::ESystemEventCode::kYadomsCrash, "yadoms", "unknwon error");
    }
+
+   Poco::Util::ServerApplication::terminate();
 }
 
-void CSupervisor::requestToStop(boost::function<void()> & callbackAfterStopped)
+void CSupervisor::requestToStop()
 {
-   m_callbackAfterStopped = callbackAfterStopped;
    m_EventHandler->postEvent(kStopRequested);
 }
 
-IApplicationStopHandler::EStopMode CSupervisor::stopMode() const
-{
-   return m_stopHandler.stopMode();
-}
