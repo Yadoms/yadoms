@@ -170,8 +170,6 @@ set(YADOMS_SRC
 	
 	server/Application.h
 	server/Application.cpp
-	server/ApplicationStopHandler.h
-	server/ApplicationStopHandler.cpp
 	server/ErrorHandler.h
 	server/ErrorHandler.cpp
 	server/IRunningInformation.h

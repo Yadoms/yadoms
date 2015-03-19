@@ -172,6 +172,7 @@ void CSupervisor::run()
          pDataProvider->getEventLoggerRequester()->addEvent(database::entities::ESystemEventCode::kYadomsCrash, "yadoms", "unknwon error");
    }
 
+   //when supervisor ends, ask a friendly termination to the application
    Poco::Util::ServerApplication::terminate();
 }
 
