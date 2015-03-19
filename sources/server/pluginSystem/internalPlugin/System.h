@@ -18,7 +18,7 @@ namespace pluginSystem { namespace internalPlugin {
          /// \brief	Constructor
          /// \param [in]   applicationStopHandler  The object used to request application stop
          //--------------------------------------------------------------
-         CSystem(IApplicationStopHandler& applicationStopHandler);
+         CSystem(const IApplicationStopHandler& applicationStopHandler);
 
          //--------------------------------------------------------------
          /// \brief	Destructor
@@ -33,7 +33,7 @@ namespace pluginSystem { namespace internalPlugin {
          //--------------------------------------------------------------
          /// \brief			The object used to request application stop
          //--------------------------------------------------------------
-         IApplicationStopHandler& m_applicationStopHandler;
+         const IApplicationStopHandler& m_applicationStopHandler;
       };
 
 

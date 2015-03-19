@@ -48,7 +48,7 @@ namespace pluginSystem
          boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
          boost::shared_ptr<shared::event::CEventHandler> supervisor,
          int pluginManagerEventId,
-         IApplicationStopHandler& applicationStopHandler);
+         const IApplicationStopHandler& applicationStopHandler);
 
       //--------------------------------------------------------------
       /// \brief			Initialization, used for the 2-steps construction
@@ -276,7 +276,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief			The object used to request application stop
       //--------------------------------------------------------------
-      IApplicationStopHandler& m_applicationStopHandler;
+      const IApplicationStopHandler& m_applicationStopHandler;
    };
 
 } // namespace pluginSystem

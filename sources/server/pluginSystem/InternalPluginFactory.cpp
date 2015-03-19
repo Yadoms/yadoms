@@ -7,7 +7,7 @@
 
 namespace pluginSystem
 {
-   CInternalPluginFactory::CInternalPluginFactory(IApplicationStopHandler& applicationStopHandler)
+   CInternalPluginFactory::CInternalPluginFactory(const IApplicationStopHandler& applicationStopHandler)
       :m_libraryPath("internalPlugin/yadoms.plugin"), m_applicationStopHandler(applicationStopHandler)
    {
    }
