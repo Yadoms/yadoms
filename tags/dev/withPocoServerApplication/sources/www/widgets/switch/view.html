@@ -1,0 +1,20 @@
+<script type="text/html" id="switch-template">
+   <link href="widgets/switch/widget.css" rel="stylesheet">
+   <div class="strut"></div>
+   <div class="switchWidget" >
+      <span class="switchWidgetText" data-bind="text: switchText, css: { hidden: showDeviceName() == false}"></span>
+      <div class="btn-group btn-toggle hidden" data-bind="css: { hidden: kind() != 'horizontalInverter'}">
+         <button class="btn btn-lg btn-default" data-bind="css: { active: command() == 0, 'btn-primary': command() == 1, 'btn-default': command() != 1 }, event: {click: function() {commandClick(1)}}">1</button>
+         <button class="btn btn-lg btn-primary active" data-bind="css: { active: command() == 0, 'btn-primary': command() == 0, 'btn-default': command() != 0 }, event: {click: function() {commandClick(0)}}">0</button>
+      </div>
+      <div class="btn-group-vertical btn-toggle hidden" data-bind="css: { hidden: kind() != 'verticalInverter'}">
+         <button class="btn btn-lg btn-default" data-bind="css: { active: command() == 1, 'btn-primary': command() == 1, 'btn-default': command() != 1 }, event: {click: function() {commandClick(1)}}"><span class="glyphicon glyphicon-chevron-up"></span></button>
+         <button class="btn btn-lg btn-primary active" data-bind="css: { active: command() == 0, 'btn-primary': command() == 0, 'btn-default': command() != 0 }, event: {click: function() {commandClick(0)}}"><span class="glyphicon glyphicon-chevron-down"></span></button>
+      </div>
+      <div class="btn-group btn-toggle hidden" data-bind="css: { hidden: kind() != 'pushButton'}" >
+         <button class="btn btn-lg btn-primary" data-bind="event: {click: function() {commandClick(1)}}">
+            <span class="" data-bind="attr: {class: icon()}"></span>
+         </button>
+      </div>
+   </div>
+</script>

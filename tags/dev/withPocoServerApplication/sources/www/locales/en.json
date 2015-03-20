@@ -1,0 +1,509 @@
+{
+   "common" : {
+      "ok" : "Ok",
+      "confirm" : "Confirm",
+      "close" : "Close",
+      "cancel" : "Cancel",
+      "yes" : "Yes",
+      "no" : "No",
+      "apply" : "Apply",
+      "add" : "Add",
+      "resetToDefault" : "Reset to default",
+      "goBack" : "Go Back",
+      "enabled" : "Enabled",
+      "disabled" : "Disabled"
+   },
+   "mainPage" : {
+      "menu" : {
+         "dashboard" : "Dashboard",
+         "checkForUpdate" : "Check for Update",
+         "restart" : "Restart",
+         "shutdown" : "Shutdown",
+         "charts" : "Display Charts",
+         "customization" : "Enter customization mode"
+      },
+      "actions" : {
+         "loadingPages" : "Loading Pages ...",
+         "loadingWidgetsOfPage" : "Loading widgets of __pageName__ page ...",
+         "firstRunConfiguration" : "First run configuration"
+      },
+      "customization" : {
+         "addNewPage" : "Add a new page",
+         "addNewWidget" : "Add a new widget",
+         "moveToLeft" : "Move to left",
+         "moveToRight" : "Move to right",
+         "rename" : "Rename",
+         "delete" : "Delete"
+      },
+      "errors" : {
+         "unableToAddWidgetWithoutPage" : "You must have at least one page to add widget",
+         "unableToGetEventLog" : "Unable to get event log",
+         "errorDuringSavingPagePosition" : "Error during saving page position",
+         "unableToGetPages" : "Unable to get pages",
+         "errorDuringRequestingWidgets" : "Error during requesting widgets",
+         "errorDuringRequestingNewLogEvents" : "Error during requesting new logs events",
+         "youHaveBeenDisconnectedFromTheServerOrItHasGoneOffline" : "You have been disconnected from the server or it has gone offline",
+         "errorDuringRequestingDeviceLastData" : "Error during requesting device last data",
+         "errorSavingCustomization" : "Error saving customization",
+         "errorMakingFirstConfiguration" : "Error making first configuration"
+      },
+      "notifications" : {
+         "connectionToServerHasBeenRestored" : "Connection to server has been restored"
+      }
+   },
+   "404Page" : {
+      "title" : "Page Not Found - Error 404",
+      "line1" : "Sorry, but the page you are looking for has not been found. Try checking URL for errors.",
+      "line2" : "You will be automatically redirected to Yadoms home page in __count__ second or press button below.",
+      "line2_plural" : "You will be automatically redirected to Yadoms home page in __count__ seconds or press button below.",
+      "goingToHome" : "Going to home ...",
+      "takeMeHome" : "Take Me Home"
+   },
+   "modals" : {
+      "add-widget" : {
+         "title" : "Add a new widget",
+         "getMore" : "Get More widgets",
+         "add" : "Add",
+         "goBack" : "Go back",
+         "errorDuringCreatingWidget" : "Error during creating widget",
+         "widgetSuccessfullyCreated" : "Widget successfully created",
+         "unableToCreateWidgetOfType" : "Unable to create widget of type __widgetType__",
+         "descriptionHeader" : "Description:",
+         "versionHeader" : "Version:",
+         "authorHeader" : "Author:"
+      },
+      "configure-widget" : {
+         "title" : "Widget configuration",
+         "errorDuringGettingDeviceList" : "Error during getting device list",
+         "errorDuringGettingDeviceListMatchCapacity" : "Error during getting device list that match capacity __expectedCapacityAccess__ __expectedCapacity__",
+         "errorDuringGettingDeviceListMatchCapacityType" : "Error during getting device list that match capacity type __expectedCapacityAccess__ __expectedCapacityType__",
+         "errorDuringGettingKeywordList" : "Error during getting keyword list",
+         "errorDuringGettingKeywordListMatchCapacity" : "Error during getting keyword list that match capacity __expectedCapacityAccess__ __expectedCapacity__",
+         "errorDuringGettingSerialPortList" : "Error during getting serial port list"
+      },
+      "delete-widget" : {
+         "title" : "Delete widget confirmation",
+         "text" : "This operation will delete widget __widgetType__. Continue anyway ?",
+         "widgetSuccessfullyDeleted" : "Widget successfully deleted",
+         "errorDuringDeletingWidget" : "Error during deleting widget",
+         "errorDuringDeletingWidgetNamed" : "Error during deleting widget of type __widgetType__"
+      },
+      "delete-page" : {
+         "title" : "Delete page confirmation",
+         "text" : "This operation will delete page __pageName__ and all of its widgets. Continue anyway ?",
+         "pageSuccessfullyDeleted" : "Page successfully deleted",
+         "errorDuringDeletingPage" : "Error during deleting page",
+         "errorDuringDeletingPageNamed" : "Error during deleting page __pageName__"
+      },
+      "modify-page" : {
+         "renamePageTitle" : "Rename Page",
+         "renamePageValidationButton" : "Rename",
+         "createNewPageTitle" : "Create a new Page",
+         "createNewPageValidationButton" : "Create",
+         "errorDuringModifyingPage" : "Error during modifying page",
+         "errorDuringModifyingPageNamed" : "Error during modifying page __pageName__",
+         "errorDuringCreatingPage" : "Error during creating page",
+         "errorDuringCreatingPageNamed" : "Error during creating page __pageName__",
+         "placeholder" : "Enter Page name"
+      },
+      "add-plugin" : {
+         "title" : "Add a new plugin",
+         "getMore" : "Get More plugins",
+         "pluginType" : "Plugin type",
+         "errorDuringGettingPluginTypes" : "Error during requesting plugin types"
+      },
+      "add-manually-device" : {
+         "title" : "Add a new device",
+         "attachedPlugin" : "Attached plugin",
+         "errorDuringGettingPluginTypes" : "Error during requesting plugin types"
+      },
+      "configure-plugin" : {
+         "title" : "Plugin configuration",
+         "name-configuration" : {
+            "name" : "Name",
+            "description" : "Friendly name of your plugin",
+            "regexErrorMessage" : "The name of the plugin must contains at least one character"
+         },
+         "pluginSuccessfullyCreated" : "Plugin successfully created"
+      },
+      "configure-device" : {
+         "title" : "Device configuration",
+         "friendlyName-configuration" : {
+            "name" : "Name",
+            "description" : "Friendly name of your device",
+            "regexErrorMessage" : "The name of the device must contains at least one character"
+         }
+      },
+      "configure-keyword" : {
+         "title" : "Keyword configuration",
+         "friendlyName-configuration" : {
+            "name" : "Name",
+            "description" : "Friendly name of your keyword",
+            "regexErrorMessage" : "The name of the keyword must contains at least one character"
+         }
+      },
+  	   "configure-manually-device" : {
+         "title" : "Add a new device",
+         "friendlyName-configuration" : {
+            "name" : "Name",
+            "description" : "Friendly name of your device",
+            "regexErrorMessage" : "The name of the device must contains at least one character"
+         }		 
+	  },
+      "new-automation-rule" : {
+         "title" : "Automation rule creation",
+         "newRule" : "Create a new rule",
+         "choose-editor" : "Select an editor to create a new rule",
+         "blockly" : "Blockly language",
+         "python" : "Python language"
+      },
+      "edit-automation-rule" : {
+         "title" : "Automation rule edition",
+         "interpreter-rule" : {
+            "name" : "Interpreter",
+            "description" : "Interpreter of the rule"
+         },
+         "name-rule" : {
+            "name" : "Name",
+            "description" : "Name of the rule"
+         },
+         "description-rule" : {
+            "name" : "Description",
+            "description" : "Description of the rule"
+         }
+      },
+      "qrcode" : {
+         "title" : "QR Code de Yadoms",
+         "text" : "Here is the QRCode of Yadoms. You can now flash it with your phone to access Yadoms everywhere."
+      },
+      "recipient_configure" : {
+         "title" : "Edit a recipient",
+         "firstName" : {
+            "name": "First name",
+            "description": "The recipient first name",
+            "regexErrorMessage": ""
+         },
+         "lastName" : {
+            "name": "Last name",
+            "description": "The recipient last name",
+            "regexErrorMessage": ""
+         },
+         "pluginSection" : {
+            "name" : "Fields for plugin ",
+            "description" : ""
+         }
+      },
+      "dashboard" : {
+         "title" : "Dashboard",
+         "sub-windows" : {
+            "summary" : {
+               "title" : "Summary",
+               "information" : "Information",
+               "connectedUser" : "Connected user",
+               "platform" : "Platform",
+               "softwareVersion" : "Software Version",
+               "databaseVersion" : "Database Version",
+               "startedFrom" : "Started from",
+               "errorRequestingDatabaseVersion" : "Error requesting Database Version",
+               "errorRequestingSystemInformation" : "Error requesting System information"
+            },
+            "user-management" : {
+               "title" : "User management"
+            },
+            "system-configuration" : {
+               "title" : "System configuration",
+               "configuration-items" : {
+                  "language" : {
+                     "name" : "Default Language",
+                     "description" : "Define the language used by default for every users."
+                  },
+                  "timezone" : {
+                     "name" : "Timezone",
+                     "description" : "Define your timezone."
+                  },
+                  "basicAuthentication" : {
+                     "name" : "Authentication",
+                     "description" : "Use authentification method to get access to Yadoms."
+                  },
+                  "basicAuthenticationUser" : {
+                     "name" : "User",
+                     "description" : "User name to athenticate"
+                  },
+                  "basicAuthenticationPassword" : {
+                     "name" : "Password",
+                     "description" : "User password to athenticate"
+                  },
+                  "basicAuthenticationPassword2" : {
+                     "name" : "Password verification",
+                     "description" : "Password repetition to prevent mistake",
+                     "matchToErrorMessage" : "The two passwords don't match"
+                  },
+                  "advancedParameters" : {
+                     "name" : "Advanced parameters",
+                     "description" : "Define advanced parameters. This section is for advanced users only."
+                  },
+                  "developerMode" : {
+                     "name" : "Developer mode",
+                     "description" : "The developer mode add information in parts of the software to help development of plugins and widgets."
+                  },
+                  "dateFormatString" : {
+                     "name" : "Date Format String",
+                     "description" : "You can change date format string using momnt.js syntax (ie \"LLL\" or \"'MMMM Do YYYY, h:mm:ss a\")"
+                  }
+               },
+               "confirmResetToDefault" : "This operation will restore all default configuration. Continue ?",
+               "configurationSaved" : "System configuration successfully saved",
+               "defaultConfigurationRestored" : "Default configuration restored",
+               "errorDuringSavingConfiguration" : "An error has occurred during saving system configuration"
+            },
+            "user-configuration" : {
+               "title" : "User configuration"
+            },
+            "plugins" : {
+               "title" : "Plugins",
+               "pluginInstanceListDescription" : "Here is the list of all plugins. You can create new plugins, manage and delete currents.",
+               "new" : "Create a new plugin",
+               "table" : {
+                  "name" : "Name",
+                  "status" : "Status",
+                  "launchAtStartup" : "Launch At Startup",
+                  "type" : "Plugin type",
+                  "actions" : "Actions"
+               },
+               "enableDisable" : "Enable / Disable the plugin",
+               "startStop" : "Start / Stop the plugin",
+               "running" : "Running",
+               "stopped" : "Stopped",
+               "configure" : "Configure the plugin",
+               "delete" : "Delete the plugin",
+               "errorGettingPluginList" : "An error has occurred acquiring plugin list",
+               "confirmPluginDeletion" : "This action will delete the plugin __pluginName__. Continue anyway ?"
+            },
+            "recipients" : {
+               "title" : "Recipients",
+               "recipientListDescription" : "Here is the list of all recipients. You can create new recipients, manage and delete currents.",
+               "new" : "Create a new recipient",
+               "edit" : "Edit the recipient",
+               "delete" : "Delete the recipient",
+               "confirmRecipientDeletion" : "This action will delete the recipient __firstName__ __lastName__. Continue anyway ?",
+               "table" : {
+                  "firstName" : "First name",
+                  "lastName" : "Last name",
+                  "actions" : "Actions"
+               }
+            },
+            "addons" : {
+               "title" : "Addons"
+            },
+            "devices" : {
+               "title" : "Devices",
+               "deviceListDescription" : "Here is the list of all devices. You can manage your devices from here.",
+               "new" : "Create a new device",
+               "table" : {
+                  "name" : "Name",
+                  "attachedTo" : "Attached to plugin",
+                  "model" : "Model",
+                  "actions" : "Actions"
+               },
+               "details" : {
+                  "table" : {
+                     "name" : "Keyword name",
+                     "units" : "Units",
+                     "actions" : "Actions"
+                  }
+               },
+               "configure" : "Configure the device",
+               "delete" : "Delete the device",
+               "confirmDeviceDeletion" : "This action will delete the device __deviceName__ and all of its data. Continue anyway ?",
+               "errorGettingDeviceList" : "An error has occurred acquiring device list",
+               "errorGettingDeviceDetailsList" : "An error has occurred acquiring device details list"
+            },
+            "automation-center" : {
+               "title" : "Automation center",
+               "description" : "You can create or modify your automatisation rules of Yadoms",
+               "new" : "Create a new rule",
+               "table" : {
+                  "enabled" : "Enabled",
+                  "name" : "Name",
+                  "description" : "Description",
+                  "actions" : "Actions"
+               },
+               "enableDisable" : "Enable / Disable the rule",
+               "edit" : "Edit the rule",
+               "delete" : "Delete the rule",
+               "confirmDeletion" : "This action will delete the rule __name__. Continue anyway ?",
+               "ruleSuccessfullyCreated" : "Rule successfully created",
+               "editors" : {
+                  "code" : {
+                     "name" : "Code"
+                  },
+                  "blockly" : {
+                     "name" : "Blockly"
+                  }
+               }
+            },
+            "update" : {
+               "title" : "Update"
+            },
+            "about" : {
+               "title" : "About"
+            }
+         },
+         "unableToLoadSubWindow" : "Unable to load sub window __subWindowPath__"
+      },
+      "confirmation" : {
+         "title" : "Confirmation"
+      }
+   },
+   "configuration" : {
+      "validationForm" : {
+         "incorrectValue" : "Incorrect value",
+         "onlyIntegerNumberAllowed" : "Only integer number are allowed",
+         "onlyNumberAllowed" : "Only numbers are allowed",
+         "maxValueExceeded" : "The value can't be higher than __maxValue__",
+         "minValueExceeded" : "The value can't be lower than __minValue__",
+         "minNumberItemsRequired" : "the list must have at least __minValue__ items",
+         "maxNumberItemsAllowed" : "the list can't have more than __maxValue__ items"
+      }
+   },
+   "blockly" : {
+     "toolbox" : {
+       "catLogic": "Logic",
+       "catLoops": "Loops",
+       "catMath": "Math",
+       "catText": "Text",
+       "catLists": "Lists",
+       "catColour": "Colour"
+     },
+     "global" : {
+       "durationUnits": {
+         "seconds": "seconds",
+         "minutes": "minutes",
+         "hours": "hours",
+         "days" : "days"
+       }
+     },
+     "blocks" : {
+       "yadoms_sleep" : {
+         "title" : "Sleep"
+       },
+       "yadoms_log" : {
+         "title" : "Log",
+         "logLevel" : {
+           "debug" : "debug",
+           "info" : "information",
+           "warning" : "warning",
+           "error" : "error",
+           "fatal" : "fatal"
+         }
+       },
+       "yadoms_enumeration" : {
+         "title" : "Enumeration"
+       },
+       "yadoms_logic_compare_become" : {
+         "title": "Become"
+       },
+       "yadoms_logic_compare_is" : {
+         "title": "Is",
+         "for" : {
+           "title" : "For",
+           "title_long" :"For (duration)"
+         },
+         "at" : {
+           "title" : "At",
+           "title_long" :"At (time)"
+         }
+       },
+       "yadoms_affect_keyword" : {
+         "title" : "Set"
+       }
+     }
+   },
+   "objects" : {
+      "pluginInstance" : {
+         "errorGettingStatus" : "An error has occurred getting status of plugin __pluginName__",
+         "errorStarting" : "An error has occurred starting __pluginName__",
+         "errorStopping" : "An error has occurred stopping __pluginName__",
+         "errorCreating" : "An error has occurred creating __pluginName__",
+         "errorCreatingManuallyDevice" : "An error has occurred creating __deviceName__",
+         "errorDeleting" : "An error has occurred deleting __pluginName__",
+         "errorGettingPackage" : "An error has occurred get package of __pluginName__",
+         "errorUpdating" : "An error has occurred updating __pluginName__",
+         "errorGettingManuallyDeviceCreation" : "An error has occurred getting plugin instance that handle manually device creation",
+         "errorApplyingBinding" : "An error has occurred applying binding"
+      },
+      "plugin" : {
+         "errorListing" : "An errors occurs while listing plugins"
+      },
+      "deviceManager" : {
+         "errorGettingAttachedPlugin" : "An error has occurred getting plugin package of device __deviceName__",
+         "errorGettingDeviceDetails" : "An error has occurred getting device details of __deviceName__",
+         "errorDeleting" : "An error has occurred deleting __deviceName__",
+         "errorCreating" : "An error has occurred creating __deviceName__",
+         "errorUpdating" : "An error has occurred updating __deviceName__"
+      },
+      "lazyLoaderManager" : {
+         "unableToLoadModal" : "Unable to load modal __modalPath__"
+      },
+      "widgetManager" : {
+         "errorDuringModifyingWidget" : "Error during modifying widget",
+         "exceptionDuringCallConfigurationChanged" : "The widget __widgetType__ has generated an exception during call configurationChanged()",
+         "errorDuringModifyingWidgetNamed" : "Error during modifying widget of type __widgetType__",
+         "unableToGetWidgets" : "Unable to get Widgets",
+         "partOfWidgetIsMissing" : "Unable to get part of __widgetName__ widget. Widgets of this type have been deactivated.",
+         "widgetHasGeneratedAnExceptionDuringCallingMethod" : "The widget __widgetName__ has generated an exception calling __methodName__()",
+         "errorDuringGettingDeviceInformation" : "Error during getting device information"
+      },
+      "widgetPackageManager" : {
+         "incorrectPackage" : "Incorrect package",
+         "errorDuringGettingPackages" : "Error during requesting widget packages"
+      },
+      "pageManager" : {
+         "errorDuringGettingPages" : "Error during requesting pages"
+      },
+      "ConfigurationManager" : {
+         "errorDuringGettingSystemConfiguration" : "Error during getting configuration"
+      },
+      "recipient" : {
+         "errorGettingRecipientList" : "An error has occurred acquiring recipient list",
+         "fields" : {
+            "email": {
+               "name": "Email (system)",
+               "description": "Recipient email (system)",
+               "regexErrorMessage": "It must match a valid email address"
+            },
+            "mobile": {
+               "name": "Mobile phone (system)",
+               "description": "The mobile phone number of the recipient (system)",
+               "regexErrorMessage": ""
+            }
+         }
+      },
+      "generic" : {
+         "errorUpdating" : "An error has occurred updating __objectName__",
+         "errorDeleting" : "An error has occurred deleting __objectName__",
+         "errorCreating" : "An error has occurred creating __objectName__",
+         "errorLoading" : "An error has occurred loading __objectName__",
+         "errorGetting" : "An error has occurred getting __objectName__"
+      }
+   },
+   "eventLogger" : {
+      "defaultCode" : "Unknown event : __what__ generated by $t(system.__who__)",
+      "started" : "$t(system.__who__) has started",
+      "stopped" : "$t(system.__who__) has stopped",
+      "updated" : "The $t(system.__who__) has been updated",
+      "yadomsCrash" : "yadoms has crashed",
+      "pluginCrash" : "__who__ has been crashed",
+      "taskFailed" : "The $t(system.__who__) task has been crashed"
+   },
+   "system" : {
+      "yadoms" : "yadoms",
+      "databaseBackup" : "Database backup",
+      "pluginUpdate" : "Plugin update",
+      "yadomsUpdate" : "Yadoms update"
+   },
+   "initialization" : {
+      "homePage" : "Home Page"
+   },
+   "inProgress" : "Development in progress ..."
+}

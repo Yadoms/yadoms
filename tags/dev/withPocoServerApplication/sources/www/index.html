@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Yet Another DOMotic System">
+    <meta name="author" content="yadoms team">
+    <link rel="shortcut icon" href="assets/ico/favicon.png">
+
+    <title>Yadoms</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="libs/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="css/bootstrap-non-responsive.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="css/yadoms.css" rel="stylesheet">
+	 <link href="libs/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="css/gridster.css" rel="stylesheet">
+    <link href="css/widget.css" rel="stylesheet">
+
+    <link href="libs/bootstrap-colorpicker-master/css/bootstrap-colorpicker.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="libs/bootstrap-iconpicker-1.4.0/css/bootstrap-iconpicker.min.css"/>
+
+    <!-- Gridster includes -->
+    <link href="libs/gridster/css/jquery.gridster.css" rel="stylesheet">
+  </head>
+
+  <body>
+  <!-- Fixed navbar -->
+  <div class="navbar navbar-default navbar-static-top" role="navigation">
+      <div class="container">
+          <div class="row" id="mainNavBar">
+              <div class="col-md-12">
+                  <div class="navbar-header">
+                     <img src="img/icon_256.png" class="img-responsive pull-left application-logo"/>
+                     <a class="navbar-brand" href="#">Yadoms</a>
+                     <!--<label class="label label-default">v 0.7</label>-->
+                  </div>
+                  <div class="">
+                      <ul class="nav navbar-nav">
+                         <li class="dropdown">
+                              <a class="dropdown-toggle" data-toggle="dropdown"><i class="caret"></i></a>
+                              <ul class="dropdown-menu">
+                                  <li><a href="#" id="btn-show-dashboard"><i class="fa fa-cog iconMenuItem"></i><span data-i18n="mainPage.menu.dashboard"></span></a></li>
+                              </ul>
+                          </li>
+                          <!--<li><button class="btn btn-default customization-item hidden" id="btn-add-page"><i class="fa fa-file-o"></i><span class="hidden-xs">&nbsp;&nbsp;</span><span class="hidden-xs" data-i18n="mainPage.customization.addNewPage"></span></button></li>-->
+                          <!--<li><button class="btn btn-default customization-item hidden" id="btn-add-widget"><i class="fa fa-puzzle-piece"></i><span class="hidden-xs">&nbsp;&nbsp;</span><span class="hidden-xs" data-i18n="mainPage.customization.addNewWidget"></span></button></li>-->
+                      </ul>
+                      <ul class="nav navbar-nav navbar-right">
+                          <li><a href="#" class="customization-item hidden" id="btn-add-widget" data-i18n="[title]mainPage.customization.addNewWidget"><i class="fa fa-puzzle-piece"></i></a></li>
+                          <li><a href="#" class="" id="chartButton" data-i18n="[title]mainPage.menu.charts"><i class="fa fa-bar-chart-o"></i></a></li>
+                          <li><a href="#" class="" id="customizeButton" data-i18n="[title]mainPage.menu.customization"><i class="fa fa-wrench"></i></a></li>
+                      </ul>
+                      </div>
+                  </div>
+              </div>
+          <div class="row">
+              <div class="col-md-12">
+                  <div class="nav navbar-nav" id = "pageMenu">
+                      <ul class="nav nav-pills nav-justified page-tabs">
+                         <!-- Nav pills of pages will be inserted here -->
+                         <li class="active customization-item hidden" id="btn-add-page">
+                            <a class="btn btn-primary" type="button">
+                               <span><i class="glyphicon glyphicon-file"></i></span>
+                            </a>
+                         </li>
+                      </ul>
+                  </div>
+              </div>
+          </div>
+      </div><!--/.nav-collapse -->
+  </div>
+
+  <div id="tabContainer">
+      <div class="tab-content">
+          <!-- Gridster tabs will be inserted here -->
+      </div>
+      <footer class="footer">
+         <button class="btn btn-primary" id="btn-show-qrcode"><i class="fa fa-qrcode"></i></button>
+         <label class="label label-default">&copy; Yadoms 2014</label>
+      </footer>
+  </div>
+
+   <!-- Bootstrap core JavaScript
+   ================================================== -->
+   <!-- Placed at the end of the document so the pages load faster -->
+   <script src="libs/jquery/js/jquery-1.11.0.min.js"></script>
+   <script src="libs/bootstrap/js/bootstrap.js"></script>
+
+   <!-- Gridster includes -->
+   <script src="libs/gridster/js/jquery.gridster.js"></script>
+
+   <script src="libs/transit/js/jquery.transit.min.js"></script>
+   <script src="libs/knockout/js/knockout-3.0.0.js"></script>
+
+   <script src="libs/i18next/js/i18next-1.7.2.js"></script>
+   <script src="libs/lazyload/js/lazyload.js"></script>
+
+   <script src="libs/moment.js/js/moment-with-langs.min.js"></script>
+   <script src="libs/moment.js/js/moment-timezone.min.js"></script>
+   <script src="libs/moment.js/js/moment-timezone-data.min.js"></script>
+   <script src="libs/jsTimezoneDetect/js/jstz-1.0.4.min.js"></script>
+
+   <!--<script src="libs/web-socket-js/js/web_socket.js"></script>-->
+   <!--<script src="libs/web-socket-js/js/swfobject.js"></script>
+   // Set URL of your WebSocketMain.swf here:
+   WEB_SOCKET_SWF_LOCATION = "libs/web-socket-js/swf/WebSocketMain.swf";-->
+
+   <script src="js/iso-language-codes.js"></script>
+   <script src="js/utility.js"></script>
+   <script src="js/objects/page.js"></script>
+   <script src="js/objects/widget.js"></script>
+   <script src="js/objects/widget-package.js"></script>
+   <script src="js/objects/page-manager.js"></script>
+   <script src="js/objects/lazy-loader-manager.js"></script>
+   <script src="js/objects/plugin-instance.js"></script>
+   <script src="js/objects/plugin-instance-manager.js"></script>
+   <script src="js/objects/device.js"></script>
+   <script src="js/objects/device-manager.js"></script>
+   <script src="js/objects/encryption-manager.js"></script>
+   <script src="js/objects/widget-manager.js"></script>
+   <script src="js/objects/widget-package-manager.js"></script>
+   <script src="js/objects/configuration-manager.js"></script>
+   <script src="js/objects/configuration-item.js"></script>
+   <script src="js/objects/keyword.js"></script>
+   <script src="js/objects/keyword-manager.js"></script>
+   <script src="js/objects/acquisition.js"></script>
+   <script src="js/objects/acquisition-manager.js"></script>
+   <script src="js/objects/recipient.js"></script>
+   <script src="js/objects/recipient-field.js"></script>
+   <script src="js/objects/recipient-manager.js"></script>
+   <script src="js/objects/plugin.js"></script>
+   <script src="js/objects/plugin-manager.js"></script>
+
+   <script src="libs/jqBootstrapValidation/js/jqBootstrapValidation.js"></script>
+
+   <script src="js/objects/configuration/configuration-helper.js"></script>
+   <script src="js/objects/configuration/configuration-control-manager.js"></script>
+   <script src="js/objects/configuration/int-parameter-handler.js"></script>
+   <script src="js/objects/configuration/decimal-parameter-handler.js"></script>
+   <script src="js/objects/configuration/enum-parameter-handler.js"></script>
+   <script src="js/objects/configuration/string-parameter-handler.js"></script>
+   <script src="js/objects/configuration/bool-parameter-handler.js"></script>
+   <script src="js/objects/configuration/section-parameter-handler.js"></script>
+   <script src="js/objects/configuration/device-parameter-handler.js"></script>
+   <script src="js/objects/configuration/radio-section-parameter-handler.js"></script>
+   <script src="js/objects/configuration/color-parameter-handler.js"></script>
+   <script src="js/objects/configuration/icon-parameter-handler.js"></script>
+   <script src="js/objects/configuration/list-parameter-handler.js"></script>
+
+   <script src="js/objects/event-logger.js"></script>
+
+   <script src="js/widget-engine.js"></script>
+   <script src="js/widget-customization.js"></script>
+
+   <script src="js/objects/date-time.js"></script>
+
+   <script type="text/javascript" src="libs/noty/js/packaged/jquery.noty.packaged.js"></script>
+
+   <script src="libs/highstock/js/highstock.js"></script>
+   <script src="libs/highstock/js/highcharts-more.js"></script>
+   <!--<script src="libs/highstock/js/modules/exporting.js"></script>-->
+
+   <script src="libs/bootstrap-colorpicker-master/js/bootstrap-colorpicker.min.js"></script>
+   <script src="libs/bootstrap-iconpicker-1.4.0/js/bootstrap-iconpicker.min.js"></script>
+
+   <script src="libs/blockly/js/blockly_compressed.js"></script>
+   <script src="libs/blockly/js/blocks_compressed.js"></script>
+   <script src="libs/blockly/js/python_compressed.js"></script>
+   <script src="js/objects/automation/automation-blockly-custom-blocks.js"></script>
+   <script src="js/objects/automation/automation-rule-manager.js"></script>
+   <script src="js/objects/automation/automation-rule.js"></script>
+   <script src="js/objects/automation/automation-interpreter.js"></script>
+   <script src="js/objects/automation/automation-interpreter-manager.js"></script>
+   <script src="js/objects/automation/i-automation-rule-editor.js"></script>
+   <script src="js/objects/automation/automation-editor-code.js"></script>
+   <script src="js/objects/automation/automation-editor-blockly.js"></script>
+   <script src="js/objects/automation/automation-editor-factory.js"></script>
+
+   <script src="libs/ace/js/src-min/ace.js"></script>
+   <script src="libs/ace/js/src-min/ext-language_tools.js"></script>
+
+   <script src="libs/jquery-MD5/js/jquery.md5.js"></script>
+
+   <div id="templates" class="hidden"></div>
+
+	<script type="text/javascript">
+
+   //base configuration
+   $.ajaxSetup({ contentType: "application/json; charset=utf-8"});
+
+   var systemConfiguration = [];
+
+   //TODO - Passer les variables suivantes en variable de conf
+   var numberOfColumns = 9;
+   var gridWidth = 100;
+   var gridMargin = 5;
+   var longPressDelayToEnterInCustomizationMode = 500;
+   var UpdateInterval = 5000;
+   var UpdateIntervalWithWebSocketDisabled = 1000;
+   var UpdateIntervalInOfflineMode = 10000;
+
+   var modals = {};
+
+    /**
+    * On page loaded
+    */
+   $(document).ready(function() {
+      //we define all the modals to lazy load
+      modals.widgetAdd = new LazyLoaderManager("modals/widget-add.html");
+      modals.widgetConfiguration = new LazyLoaderManager("modals/widget-configure.html");
+      modals.widgetDelete = new LazyLoaderManager("modals/widget-delete.html");
+      modals.pageDelete = new LazyLoaderManager("modals/page-delete.html");
+      modals.pageConfigure = new LazyLoaderManager("modals/page-configure.html");
+      modals.qrCode = new LazyLoaderManager("modals/qrcode.html");
+      modals.mainDashboard = new LazyLoaderManager("modals/main-dashboard.html");
+      modals.confirmation = new LazyLoaderManager("modals/confirmation.html");
+      modals.pluginAdd = new LazyLoaderManager("modals/plugin-add.html");
+      modals.pluginConfigure = new LazyLoaderManager("modals/plugin-configure.html");
+      modals.deviceConfigure = new LazyLoaderManager("modals/device-configure.html");
+      modals.keywordConfigure = new LazyLoaderManager("modals/keyword-configure.html");
+      modals.deviceAddManually = new LazyLoaderManager("modals/device-add-manually.html");
+      modals.deviceConfigureManually = new LazyLoaderManager("modals/device-configure-manually.html");
+      modals.automationRuleNew = new LazyLoaderManager("modals/automation-rule-new.html");
+      modals.automationRuleEdit = new LazyLoaderManager("modals/automation-rule-edit.html");
+      modals.recipientConfigure = new LazyLoaderManager("modals/recipient_configure.html");
+
+      //we start i18n engine
+      var option = { resGetPath: "locales/__lng__.json", fallbackLng:"en", useDataAttrOptions: true};
+      i18n.init(option, function() {
+         //$("html").i18n();
+
+         //we get install/firstStart key to have information if firstStart has already been done
+         ConfigurationManager.get(ConfigurationManager.items.installSection, ConfigurationManager.items.install.firstStart,
+            function(result) {
+               var firstStart = true;
+               //we don't need to set default values
+               if ((!isNullOrUndefined(result)) && (!parseBool(result.value)))
+                  firstStart = false;
+
+               if (firstStart) {
+                  //we make the first start configuration
+                  notifyInformation($.t("mainPage.actions.firstRunConfiguration"));
+                  var navigatorLanguage = window.navigator.userLanguage || window.navigator.language;
+                  var navigatorTimezone = jstz.determine().name();
+                  //update configuration with these values
+                  var item = ConfigurationManager.createToServerSync(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.language, navigatorLanguage, "", "language used by default");
+                  if (!isNullOrUndefined(item)) {
+                     console.info("Language detected : " + navigatorLanguage);
+
+                     item = ConfigurationManager.createToServerSync(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.timezone, navigatorTimezone);
+                     if (!isNullOrUndefined(item)) {
+                        console.info("Timezone detected : " + navigatorTimezone);
+
+                        item = ConfigurationManager.createToServerSync(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.advancedParameters, false);
+                        if (!isNullOrUndefined(item)) {
+                           console.info("Advanced parameters : false");
+
+                           item = ConfigurationManager.createToServerSync(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.dateFormatString, "LLL");
+                           if (!isNullOrUndefined(item)) {
+                              console.info("Date Format String : " + "LLL");
+
+                              var basicAuth = {"active":false, "user":"admin", "password":""};
+                              item = ConfigurationManager.createToServerSync(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.basicAuthentication, JSON.stringify(basicAuth));
+                              if (!isNullOrUndefined(item)) {
+                                 console.info("Basic authentication : " + JSON.stringify(basicAuth));
+
+                                 //we save the fact that first start configuration has been made
+                                 var firstStep = ConfigurationManager.createToServerSync(ConfigurationManager.items.installSection, ConfigurationManager.items.install.firstStart, "false", "true", "First start of Web app has been done");
+                                 if (!isNullOrUndefined(firstStep)) {
+                                    //we check for page. If there is no page, we create a new one automatically
+                                    PageManager.getAll(function () {
+                                       if (PageManager.pages.length == 0) {
+                                          console.info("Creating a default page");
+                                          PageManager.createPage($.t("initialization.homePage"), 0, function (p) {
+                                             PageManager.ensureOnePageIsSelected();
+                                          });
+                                       }
+                                       //we can start app
+                                       main();
+                                    });
+
+                                 }
+                              }
+                           }
+                        }
+                     }
+                  }
+               }
+               else {
+                  //we start app normally
+                  main();
+               }
+            }
+         );
+      });
+
+      /**
+      * Callback of the click on the show qr code button
+      * Make lazy loading of the qrcode modal
+      */
+      $("#btn-show-qrcode").click(function() {
+         modals.qrCode.load(function() {$('#qrcode-modal').modal();});
+      });
+
+      $("#btn-show-dashboard").click(function() {
+         modals.mainDashboard.load(function() {
+            $('#main-dashboard-modal').modal();
+            $('#main-dashboard-modal').off('hidden.bs.modal').on('hidden.bs.modal', function () {
+
+               //clear the bootstrap validation when modal is hidden (handle submit and cancel behaviors)
+               $('#main-dashboard-modal').find("input,select,textarea").jqBootstrapValidation("destroy");
+
+               clearInterval(periodicDashboardTask);
+            });
+         });
+      });
+
+      /**
+      * Exit customization pressed esc key
+      */
+      $(document).keyup(function(e) {
+         //escape key
+         if (e.keyCode == 27) {
+            if (customization) {
+               exitCustomization();
+            }
+         }
+         return false;
+         });
+   });
+
+   function main() {
+      //we get configuration
+      ConfigurationManager.getSection(ConfigurationManager.items.systemSection,
+              function(result) {
+                 if (!isNullOrUndefined(result)) {
+                    systemConfiguration = result;
+
+                    //we set the right language
+                    i18n.setLng(systemConfiguration[ConfigurationManager.items.system.language].value, function() {
+                       $("html").i18n();
+                       moment.lang(systemConfiguration[ConfigurationManager.items.system.language].value);
+
+                       initializeWebSocketEngine(function () {
+                          //web socket opened
+                          initializeWidgetEngine();
+                       });
+                    });
+                 }
+              });
+   }
+
+	</script>
+  </body>
+</html>
+
