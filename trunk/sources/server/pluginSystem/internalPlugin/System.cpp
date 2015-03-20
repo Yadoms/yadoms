@@ -5,13 +5,13 @@
 #include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/Exception.hpp>
 #include <shared/plugin/yPluginApi/historization/Historizers.h>
-
+#include "IApplicationStopHandler.h"
+#include <shared/ServiceLocator.h>
 
 namespace pluginSystem {
    namespace internalPlugin {
 
-   CSystem::CSystem(IApplicationStopHandler& applicationStopHandler)
-      :m_applicationStopHandler(applicationStopHandler)
+   CSystem::CSystem()
    {
    }
 
@@ -44,6 +44,12 @@ namespace pluginSystem {
          if (!context->keywordExists("system", keywordRestart.getKeyword()))
             context->declareKeyword("system", keywordRestart);
 
+         boost::shared_ptr<IApplicationStopHandler> applicationStopHandler = shared::CServiceLocator::instance().get<IApplicationStopHandler>();
+         if (!applicationStopHandler)
+         {
+            YADOMS_LOG(error) << "Fail to retreive ApplicationStopHandler from service locator";
+         }
+
          while (1)
          {
             // Wait for an event
@@ -57,12 +63,12 @@ namespace pluginSystem {
                   if (boost::iequals(command->getKeyword(), keywordShutdown.getKeyword()))
                   {
                      YADOMS_LOG(information) << "Shutdown the system";
-                     m_applicationStopHandler.requestToStop(IApplicationStopHandler::kStopSystem);
+                     applicationStopHandler->requestToStop(IApplicationStopHandler::kStopSystem);
                   }
                   else if (boost::iequals(command->getKeyword(), keywordRestart.getKeyword()))
                   {
                      YADOMS_LOG(information) << "Restart the system";
-                     m_applicationStopHandler.requestToStop(IApplicationStopHandler::kRestartSystem);
+                     applicationStopHandler->requestToStop(IApplicationStopHandler::kRestartSystem);
                   }
                   else
                   {

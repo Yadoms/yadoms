@@ -38,7 +38,7 @@ namespace task { namespace update {
    {
       try
       {
-         progressCallback(0.0f, "Checking for a new update");
+         progressCallback(true, 0.0f, "Checking for a new update");
 
          std::string baseUrl = "http://www.yadoms.com/download";
 
@@ -57,12 +57,12 @@ namespace task { namespace update {
 
          if (availableVersion <= currentVersion)
          {
-            progressCallback(100.0f, "System is up to date");
+            progressCallback(true, 100.0f, "System is up to date");
          }
          else
          {
-            progressCallback(0.0f, "A new update is available");
-            progressCallback(0.0f, "Downloading package");
+            progressCallback(true, 0.0f, "A new update is available");
+            progressCallback(true, 0.0f, "Downloading package");
             std::string fileToDownload = lv.get<std::string>("yadoms.information.softwarePackage");
             
             //get temp folder from a global system provider
@@ -88,7 +88,7 @@ namespace task { namespace update {
 
             if (!boost::filesystem::exists(packageLocalFilePath))
             {
-               progressCallback(100.0f, "Error during downloading package");
+               progressCallback(false, 100.0f, "Error during downloading package");
                return false;
             }
             
@@ -102,22 +102,22 @@ namespace task { namespace update {
 
             if (!boost::iequals(md5HashCalculated, md5HashExcpected))
             {
-               progressCallback(100.0f, "Error during downloading package");
+               progressCallback(false, 100.0f, "Error during downloading package (invalid checksum)");
                return false;
             }
 
-            progressCallback(50.0f, "Package " + fileToDownload + "successfully downloaded");
+            progressCallback(true, 50.0f, "Package " + fileToDownload + "successfully downloaded");
             
             //verification of the extension
             std::string extension = boost::filesystem::extension(packageLocalFilePath);
             if ((!boost::iequals(extension, "zip")) && (!boost::iequals(extension, "tar.gz")))
             {
-               progressCallback(100.0f, "Invalid extension package: " + fileToDownload);
+               progressCallback(false, 100.0f, "Invalid extension package: " + fileToDownload);
                return false;
             }
 
             //extract zip package
-            progressCallback(50.0f, "Extracting package " + fileToDownload);
+            progressCallback(true, 50.0f, "Extracting package " + fileToDownload);
 
             //pour l'instant on prend ce qu'il y a dans temp sans faire l'extraction en attendant poco
             Poco::Path extractPath(p);
@@ -135,16 +135,17 @@ namespace task { namespace update {
 
             if (m_unzipError)
             {
-               //TODO : send error message
+               progressCallback(false, 100.0f, "Fail to uncompress pakcgae");
+               return false;
             }
 
             //run updater
-            progressCallback(90.0f, "Running updater");
+            progressCallback(true, 90.0f, "Running updater");
 
             //attente de poco
 
             //exit yadoms
-            progressCallback(90.0f, "Exiting Yadoms");
+            progressCallback(true, 90.0f, "Exiting Yadoms");
 
             //demande de fermeture de l'application
          }

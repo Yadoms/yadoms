@@ -1,7 +1,7 @@
 #pragma once
 #include <shared/plugin/IPlugin.h>
 #include <shared/plugin/information/IInformation.h>
-#include "IApplicationStopHandler.h"
+
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -16,9 +16,8 @@ namespace pluginSystem { namespace internalPlugin {
       public:
          //--------------------------------------------------------------
          /// \brief	Constructor
-         /// \param [in]   applicationStopHandler  The object used to request application stop
          //--------------------------------------------------------------
-         CSystem(IApplicationStopHandler& applicationStopHandler);
+         CSystem();
 
          //--------------------------------------------------------------
          /// \brief	Destructor
@@ -28,12 +27,6 @@ namespace pluginSystem { namespace internalPlugin {
          // IPlugin implementation
          virtual void doWork(boost::shared_ptr<yApi::IYPluginApi> context);
          // [END] IPlugin implementation
-
-      private:
-         //--------------------------------------------------------------
-         /// \brief			The object used to request application stop
-         //--------------------------------------------------------------
-         IApplicationStopHandler& m_applicationStopHandler;
       };
 
 

@@ -24,15 +24,14 @@ CManager::CManager(
    boost::shared_ptr<database::IDataProvider> dataProvider,
    boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
    boost::shared_ptr<shared::event::CEventHandler> supervisor,
-   int pluginManagerEventId,
-   IApplicationStopHandler& applicationStopHandler)
+   int pluginManagerEventId)
    :m_dataProvider(dataProvider), m_pluginDBTable(dataProvider->getPluginRequester()), m_pluginPath(initialDir),
 #ifdef _DEBUG
    m_qualifier(new CDummyQualifier()),
 #else
    m_qualifier(new CQualifier(dataProvider->getPluginEventLoggerRequester(), dataProvider->getEventLoggerRequester())),
 #endif
-   m_supervisor(supervisor), m_pluginManagerEventId(pluginManagerEventId), m_dataAccessLayer(dataAccessLayer), m_applicationStopHandler(applicationStopHandler)
+   m_supervisor(supervisor), m_pluginManagerEventId(pluginManagerEventId), m_dataAccessLayer(dataAccessLayer)
 {
    BOOST_ASSERT(m_dataProvider);
 }
@@ -407,7 +406,7 @@ void CManager::startInternalPlugin()
 
 
       // Load the plugin
-      boost::shared_ptr<IFactory> plugin(new CInternalPluginFactory(m_applicationStopHandler));
+      boost::shared_ptr<IFactory> plugin(new CInternalPluginFactory());
 
       // Create instance
       BOOST_ASSERT(plugin); // Plugin not loaded
