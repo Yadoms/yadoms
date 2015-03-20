@@ -29,7 +29,7 @@ namespace task { namespace update {
       for(int i=1; i<=10; ++i)
       {
          boost::this_thread::sleep(boost::posix_time::seconds(1)); 
-         pFunctor(i*10.0f, "");
+         pFunctor(true, i*10.0f, "");
       }
 
       YADOMS_LOG(information) << "End of updating plugin";
