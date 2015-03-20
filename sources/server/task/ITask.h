@@ -19,7 +19,7 @@ namespace task {
       //---------------------------------
       ///\brief Define a function prototype for updating a task progress
       //---------------------------------
-      typedef boost::function2<void, boost::optional< float > , std::string > TaskProgressFunc;
+      typedef boost::function3<void, bool, float, std::string> TaskProgressFunc;
 
       //------------------------------
       ///\brief Get the task name

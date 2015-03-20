@@ -26,6 +26,9 @@ set(SHARED_LIB_SRC
 	shared/DataContainer.h
 	shared/DataContainer.cpp
    
+   shared/ServiceLocator.h
+   shared/ServiceLocator.cpp
+   
    shared/communication/AsyncSerialPort.h
    shared/communication/AsyncSerialPort.cpp
    shared/communication/AsyncTcpClient.h

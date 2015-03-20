@@ -15,7 +15,6 @@
 #include <shared/StringExtension.h>
 #include <shared/event/EventHandler.hpp>
 #include "dataAccessLayer/IDataAccessLayer.h"
-#include "IApplicationStopHandler.h"
 #include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
 
 namespace pluginSystem
@@ -47,8 +46,7 @@ namespace pluginSystem
          boost::shared_ptr<database::IDataProvider> dataProvider,
          boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
          boost::shared_ptr<shared::event::CEventHandler> supervisor,
-         int pluginManagerEventId,
-         IApplicationStopHandler& applicationStopHandler);
+         int pluginManagerEventId);
 
       //--------------------------------------------------------------
       /// \brief			Initialization, used for the 2-steps construction
@@ -272,11 +270,6 @@ namespace pluginSystem
       /// \brief			Data access layer
       //--------------------------------------------------------------
       boost::shared_ptr<dataAccessLayer::IDataAccessLayer> m_dataAccessLayer;
-
-      //--------------------------------------------------------------
-      /// \brief			The object used to request application stop
-      //--------------------------------------------------------------
-      IApplicationStopHandler& m_applicationStopHandler;
    };
 
 } // namespace pluginSystem

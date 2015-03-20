@@ -57,7 +57,7 @@ private:
    //-----------------------------------------------------------------------------
    /// \brief		                     The stop handler
    //-----------------------------------------------------------------------------
-   CApplicationStopHandler m_stopHandler;
+   boost::shared_ptr<CApplicationStopHandler> m_stopHandler;
 
    //-----------------------------------------------------------------------------
    /// \brief		                     Yadoms startup options

@@ -30,9 +30,10 @@
 #include "dataAccessLayer/DataAccessLayer.h"
 #include <shared/notification/NotificationCenter.h>
 #include "automation/RuleManager.h"
+#include <shared/ServiceLocator.h>
 
 CSupervisor::CSupervisor(const startupOptions::IStartupOptions& startupOptions)
-   :m_EventHandler(new shared::event::CEventHandler), m_stopHandler(m_EventHandler, kStopRequested), m_startupOptions(startupOptions)
+   :m_EventHandler(new shared::event::CEventHandler), m_stopHandler(new CApplicationStopHandler(m_EventHandler, kStopRequested)), m_startupOptions(startupOptions)
 {
 }
 
@@ -66,12 +67,17 @@ void CSupervisor::doWork()
       //create the data access layer
       boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dal(new dataAccessLayer::CDataAccessLayer(pDataProvider, notificationCenter));
 
+      //register objects in service locator
+      shared::CServiceLocator::instance().push<database::IDataProvider>(pDataProvider);
+      shared::CServiceLocator::instance().push<dataAccessLayer::IDataAccessLayer>(dal);
+      shared::CServiceLocator::instance().push<IApplicationStopHandler>(m_stopHandler);
+
       // Start Task manager
       boost::shared_ptr<task::CScheduler> taskManager(new task::CScheduler(m_EventHandler, kSystemEvent));
       taskManager->start();
 
       // Create the Plugin manager
-      boost::shared_ptr<pluginSystem::CManager> pluginManager(new pluginSystem::CManager(pluginsPath, pDataProvider, dal, m_EventHandler, kPluginManagerEvent, m_stopHandler));
+      boost::shared_ptr<pluginSystem::CManager> pluginManager(new pluginSystem::CManager(pluginsPath, pDataProvider, dal, m_EventHandler, kPluginManagerEvent));
 
       // Start the plugin gateway
       boost::shared_ptr<communication::CPluginGateway> pluginGateway(new communication::CPluginGateway(pDataProvider, dal->getAcquisitionHistorizer(), pluginManager));
@@ -183,5 +189,5 @@ void CSupervisor::requestToStop(boost::function<void()> & callbackAfterStopped)
 
 IApplicationStopHandler::EStopMode CSupervisor::stopMode() const
 {
-   return m_stopHandler.stopMode();
+   return m_stopHandler->stopMode();
 }
