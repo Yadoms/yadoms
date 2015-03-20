@@ -3,6 +3,7 @@
 #include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/InvalidParameter.hpp>
 #include <shared/Log.h>
+#include <boost/lexical_cast.hpp>
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -55,8 +56,8 @@ void CForecast::AddPeriod(const shared::CDataContainer & ValueContainer,
 		               ValueContainer.get<std::string>( filterWeatherCondition ),
 						   ValueContainer.get<std::string>( filterTempMax ),
 						   ValueContainer.get<std::string>( filterTempMin ),
-						   ValueContainer.get<std::string>( filterMaxWind ),
-						   ValueContainer.get<std::string>( filterAveWind ),
+						   boost::lexical_cast<std::string>(ValueContainer.get<double>( filterMaxWind ) / 3.6), // Transform from Km/h -> m/s
+						   boost::lexical_cast<std::string>(ValueContainer.get<double>( filterAveWind ) / 3.6), // Transform from Km/h -> m/s
 						   ValueContainer.get<std::string>( filterAveHumidity ),
                      ValueContainer.get<std::string>( RainDay )
 		                 );
