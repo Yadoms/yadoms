@@ -55,6 +55,12 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
 				);
 
       //-----------------------------------------------------
+      ///\brief                     Clear all periods
+      //-----------------------------------------------------
+
+      void ClearAllPeriods( void );
+
+      //-----------------------------------------------------
       ///\brief                     Destructor
       //-----------------------------------------------------
       virtual ~CForecastFormatter();

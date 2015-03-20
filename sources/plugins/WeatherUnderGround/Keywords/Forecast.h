@@ -64,6 +64,12 @@ namespace yApi = shared::plugin::yPluginApi;
                      const std::string& RainDay
 					     );
 
+      //-----------------------------------------------------
+      ///\brief                      Clear All Periods
+      //-----------------------------------------------------
+
+      void ClearAllPeriods( void );
+
       // ICapacities implementation
 	  virtual void DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const;
       virtual void Initialize( boost::shared_ptr<yApi::IYPluginApi> context ) const;

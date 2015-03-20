@@ -65,6 +65,11 @@ void CForecast::AddPeriod(const shared::CDataContainer & ValueContainer,
 	YADOMS_LOG(debug) << "Forecast Update !";
 }
 
+void CForecast::ClearAllPeriods( void )
+{
+   m_forecast->ClearAllPeriods();
+}
+
 boost::shared_ptr<yApi::historization::IHistorizable> CForecast::GetHistorizable() const
 {
 	return m_forecast;

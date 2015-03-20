@@ -3,7 +3,8 @@
    <table>
    <tr data-bind="foreach: period">
    <td> <img data-bind="attr:{ src: WeatherIcon }" alt="phases" height="30" width="30">
-                      <div >
+                      <div data-bind="text: TimeDate"></div>
+					  <div >
 					       <span data-bind="text: TempMin"></span>/<span data-bind="text: TempMax"></span>
 					  </div> 
 					  <div data-bind="text: MaxWind"></div>
