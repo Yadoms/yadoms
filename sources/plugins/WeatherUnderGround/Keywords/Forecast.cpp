@@ -7,8 +7,8 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-CForecast::CForecast( std::string PluginName, std::string KeyWordName )
-   :m_PluginName ( PluginName ), m_forecast( new yApi::historization::CForecastHistorizer(KeyWordName, yApi::EKeywordAccessMode::kGetSet) )
+CForecast::CForecast( std::string PluginName, std::string KeyWordName, const std::string& Period )
+   :m_PluginName ( PluginName ), m_forecast( new yApi::historization::CForecastHistorizer(KeyWordName, yApi::EKeywordAccessMode::kGetSet, Period) )
 {}
 
 void CForecast::Initialize( boost::shared_ptr<yApi::IYPluginApi> context ) const
@@ -27,7 +27,18 @@ void CForecast::DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) 
 	context->declareKeyword(m_PluginName, *m_forecast);
 }
 
+void CForecast::AddUnit(
+            const std::string& UnitName,
+            const std::string& UnitValue
+   )
+{
+   m_forecast->AddUnit ( UnitName, UnitValue );
+}
+
 void CForecast::AddPeriod(const shared::CDataContainer & ValueContainer, 
+                          const std::string& filterYear,
+                          const std::string& filterMonth,
+                          const std::string& filterDay,
 	                       const std::string& filterWeatherCondition,
 	                       const std::string& filterTempMax, 
 					           const std::string& filterTempMin,
@@ -38,6 +49,9 @@ void CForecast::AddPeriod(const shared::CDataContainer & ValueContainer,
 					           )
 {
 	m_forecast->AddPeriod(
+                     ValueContainer.get<std::string>( filterYear ),
+                     ValueContainer.get<std::string>( filterMonth ),
+                     ValueContainer.get<std::string>( filterDay ),
 		               ValueContainer.get<std::string>( filterWeatherCondition ),
 						   ValueContainer.get<std::string>( filterTempMax ),
 						   ValueContainer.get<std::string>( filterTempMin ),

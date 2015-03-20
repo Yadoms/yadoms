@@ -78,9 +78,6 @@ private:
    //--------------------------------------------------------------
    /// \brief	    Keywords
    //--------------------------------------------------------------
-   //boost::shared_ptr<CWeatherIcon> m_WeatherConditionPeriod[8];
-   //boost::shared_ptr<CTemp>        m_tempMax[4];
-   //boost::shared_ptr<CTemp>        m_tempMin[4];
    CForecast    m_Forecast;
 };
 

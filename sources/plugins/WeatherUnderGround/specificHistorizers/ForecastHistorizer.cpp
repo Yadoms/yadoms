@@ -8,10 +8,10 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
    const CStandardCapacity& ForecastCapacity = CStandardCapacity("Forecast", CStandardUnits::NoUnits, EKeywordDataType::kNoData);
 
    
-   CForecastHistorizer::CForecastHistorizer(const std::string& keywordName, const EKeywordAccessMode& accessMode)
+   CForecastHistorizer::CForecastHistorizer(const std::string& keywordName, const EKeywordAccessMode& accessMode, const std::string & Period)
    :m_keywordName(keywordName), m_accessMode(accessMode)
    {
-	   m_content.reset(new CForecastFormatter());
+	   m_content.reset(new CForecastFormatter( Period ));
    }
 
    CForecastHistorizer::~CForecastHistorizer()
@@ -32,7 +32,18 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
 	   return m_accessMode;
 	}
 
+void CForecastHistorizer::AddUnit(
+            const std::string& UnitName,
+            const std::string& UnitValue
+   )
+{
+   m_content->AddUnit ( UnitName, UnitValue );
+}
+
 	void CForecastHistorizer::AddPeriod(
+                const std::string& Year,
+                const std::string& Month,
+                const std::string& Day,
 		          const std::string& WeatherCondition, 
 	             const std::string& TempMax, 
 					 const std::string& TempMin,
@@ -42,12 +53,11 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
                 const std::string& RainDay
 					 )
 	{
-		m_content->AddPeriod( WeatherCondition, TempMax, TempMin, MaxWind, AveWind, AveHumidity, RainDay );
+		m_content->AddPeriod( Year, Month, Day, WeatherCondition, TempMax, TempMin, MaxWind, AveWind, AveHumidity, RainDay );
 	}
 
 	std::string CForecastHistorizer::formatValue() const
 	{
-	   m_content->Finalize();
 	   return !m_content ? std::string() : m_content->formatValue();
 	}
 

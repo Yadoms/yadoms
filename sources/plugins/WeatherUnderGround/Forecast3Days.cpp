@@ -5,8 +5,9 @@
 
 CForecast3Days::CForecast3Days(boost::shared_ptr<yApi::IYPluginApi> context, const IWUConfiguration& WUConfiguration, std::string PluginName, const std::string Prefix):
            m_Localisation              ( WUConfiguration.getLocalisation() ),
-		   m_PluginName                ( PluginName ),
-		   m_Forecast                  ( PluginName, "Forecast3Days")
+		     m_PluginName                ( PluginName ),
+           //TODO : Le faire à partir d'un helper pour le Day. Aujourd'hui Day et Hour à insérer dedans
+		     m_Forecast                  ( PluginName, "Forecast3Days","Day")
 {	
 	m_URL.clear();
 	m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/forecast/q/" << m_Localisation << ".json";
@@ -18,7 +19,24 @@ CForecast3Days::CForecast3Days(boost::shared_ptr<yApi::IYPluginApi> context, con
 	   if (WUConfiguration.IsForecast3DaysEnabled())
 	   {
 			m_Forecast.Initialize ( context );
-	   }
+
+         m_Forecast.AddUnit (
+                             shared::plugin::yPluginApi::CStandardCapacities::Temperature.getName(),
+                             shared::plugin::yPluginApi::CStandardCapacities::Temperature.getUnit() 
+                             );
+         m_Forecast.AddUnit (
+                             shared::plugin::yPluginApi::CStandardCapacities::Speed.getName(),
+                             shared::plugin::yPluginApi::CStandardCapacities::Speed.getUnit() 
+                             );
+         m_Forecast.AddUnit (
+                             shared::plugin::yPluginApi::CStandardCapacities::Humidity.getName(),
+                             shared::plugin::yPluginApi::CStandardCapacities::Humidity.getUnit() 
+                             );
+         m_Forecast.AddUnit (
+                             shared::plugin::yPluginApi::CStandardCapacities::Rain.getName(),
+                             shared::plugin::yPluginApi::CStandardCapacities::Rain.getUnit() 
+                             );
+      }
    }
    	catch (...)
 	{
@@ -71,7 +89,18 @@ void CForecast3Days::Parse( boost::shared_ptr<yApi::IYPluginApi> context, const 
 
 				for(i=result.begin(); i!=result.end(); ++i)
             {
-					m_Forecast.AddPeriod(*i, "icon", "high.celsius", "low.celsius", "maxwind.kph", "avewind.kph", "avehumidity","qpf_allday.mm");
+					m_Forecast.AddPeriod(*i,
+                                    "date.year",
+                                    "date.month",
+                                    "date.day",
+                                    "icon", 
+                                    "high.celsius", 
+                                    "low.celsius", 
+                                    "maxwind.kph", 
+                                    "avewind.kph", 
+                                    "avehumidity",
+                                    "qpf_allday.mm"
+                                    );
 				}
 
             KeywordList.push_back (m_Forecast.GetHistorizable());
