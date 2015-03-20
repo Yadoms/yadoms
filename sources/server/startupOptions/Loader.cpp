@@ -1,111 +1,153 @@
 #include "stdafx.h"
 #include "Loader.h"
-#include <Poco/Util/Option.h>
-#include <Poco/Util/OptionSet.h>
-#include <Poco/Util/IntValidator.h>
-#include <Poco/Util/RegExpValidator.h>
-#include "MustExistPathValidator.h"
+#include "InvalidOptionException.hpp"
 
 namespace startupOptions
 {
-   CStartupOptions::CStartupOptions(Poco::Util::AbstractConfiguration & configContainer)
-      :m_configContainer(configContainer)
+
+namespace po = boost::program_options;
+
+// The optional configuration file name
+const std::string CLoader::OptionalConfigFile("yadoms.cfg");
+
+// Options
+void CLoader::buildOptionsDescription()
+{
+   m_optionsDescription.add_options()
+      ("help,h", "produce help message")
+      ("port,p", po::value<unsigned int>(&m_webServerPortNumber)->default_value(8080),
+      "set the web server port number")
+      ("webServerIp,i", po::value<CValidIpAddressOption>(&m_webServerIPAddress)->default_value(CValidIpAddressOption("0.0.0.0")),
+      "use a specific web server ip address. Use 0.0.0.0 to accepts connections via all interfaces. ")
+      ("webServerPath,w", po::value<CMustExistPathOption>(&m_webServerInitialPath)->default_value(CMustExistPathOption("www")),
+      "use a specific path for web server")
+      ("logLevel,l", po::value<CExpectedLoggerLevels>(&m_logLevel)->default_value(CExpectedLoggerLevels("information")),
+      "set log level, accepted values are : none, fatal, critical, error, warning, notice, information, debug, trace")
+      ("databaseFile,D", po::value<std::string>(&m_databaseFile)->default_value("yadoms.db3"),
+      "use a specific dataBase file")
+      ("debug", po::bool_switch(&m_debugFlag)->default_value(false), "activate the debug mode (log files are separated by thread)")
+      ("noPassword", po::bool_switch(&m_noPasswordFlag)->default_value(false), "Skip password authentication for this instance")
+      ;
+}
+
+CLoader::CLoader(int argc, const char* const argv[])
+   :m_optionsDescription("Allowed options"), m_webServerPortNumber(0), m_debugFlag(false), m_noPasswordFlag(false)
+{
+   buildOptionsDescription();
+
+   try
    {
+      // Load configuration from command line and complete with config file (second data read don't overwrite first)
+      // allow unregistered options (dont throw, just ignore them)
+      po::variables_map vm;
+      po::parsed_options parsed = po::command_line_parser(argc, argv).options(m_optionsDescription).allow_unregistered().run();
+      po::store(parsed, vm);
+      if (boost::filesystem::exists(OptionalConfigFile))
+         po::store(po::parse_config_file<char>(OptionalConfigFile.c_str(), m_optionsDescription, true), vm);
+      po::notify(vm);
 
+      if (vm.count("help"))
+         throw CLoaderException(m_optionsDescription);
    }
-
-   CStartupOptions::~CStartupOptions()
+   catch(po::ambiguous_option& e)
    {
-
+      throw CLoaderException(m_optionsDescription, e.what());
    }
-
-   void CStartupOptions::defineOptions(Poco::Util::OptionSet& options)
+   catch(po::unknown_option& e)
    {
-
-      options.addOption(
-         Poco::Util::Option("port", "p", "set the web server port number")
-         .required(false)
-         .repeatable(false)
-         .argument("port")
-         .validator(new Poco::Util::IntValidator(1, 65535))
-         .binding("server.port", &m_configContainer));
-
-      options.addOption(
-         Poco::Util::Option("webServerIp", "i", "Use a specific web server ip address. Use 0.0.0.0 to accepts connections via all interfaces.")
-         .required(false)
-         .repeatable(false)
-         .argument("ip")
-         .validator(new Poco::Util::RegExpValidator("^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$"))
-         .binding("server.ip", &m_configContainer));
-
-      options.addOption(
-         Poco::Util::Option("webServerPath", "w", "Use a specific path for web server")
-         .required(false)
-         .repeatable(false)
-         .argument("www")
-         .validator(new CMustExistPathValidator())
-         .binding("server.www", &m_configContainer));
-
-      options.addOption(
-         Poco::Util::Option("logLevel", "l", "set log level, accepted values are : none, fatal, critical, error, warning, notice, information, debug, trace")
-         .required(false)
-         .repeatable(false)
-         .argument("level")
-         .validator(new Poco::Util::RegExpValidator("^\\b(none|trace|debug|notice|information|warning|error|fatal|critical)\\b$"))
-         .binding("server.logLevel", &m_configContainer));
-
-      options.addOption(
-         Poco::Util::Option("databaseFile", "D", "Use a specific dataBase file")
-         .required(false)
-         .repeatable(false)
-         .argument("file")
-         .binding("server.databasePath", &m_configContainer));
-
-      options.addOption(
-         Poco::Util::Option("debug", "d", "Activate the debug mode (log files are separated by thread)")
-         .required(false)
-         .repeatable(false)
-         .noArgument()
-         .binding("server.debug", &m_configContainer));
-
-      options.addOption(
-         Poco::Util::Option("noPassword", "d", "Skip password authentication for this instance")
-         .required(false)
-         .repeatable(false)
-         .noArgument()
-         .binding("server.noPassword", &m_configContainer));
+      throw CLoaderException(m_optionsDescription, e.what());
    }
-
-   const std::string CStartupOptions::getLogLevel() const
+   catch(po::validation_error& e)
    {
-      return m_configContainer.getString("server.logLevel", "information");
+      throw CLoaderException(m_optionsDescription, e.what());
    }
+   catch(po::invalid_command_line_syntax& e)
+   {
+      throw CLoaderException(m_optionsDescription, e.what());
+   }
+}
 
-   unsigned int CStartupOptions::getWebServerPortNumber() const
-   {
-      return m_configContainer.getInt("server.port", 8080);
-   }
+CLoader::~CLoader()
+{
+}
 
-   const std::string CStartupOptions::getWebServerIPAddress() const
-   {
-      return m_configContainer.getString("server.ip", "0.0.0.0");
-   }
 
-   const std::string CStartupOptions::getWebServerInitialPath() const
-   {
-      return m_configContainer.getString("server.www", "www");
-   }
-   const std::string CStartupOptions::getDatabaseFile() const
-   {
-      return m_configContainer.getString("server.databasePath", "yadoms.db3");
-   }
-   bool CStartupOptions::getDebugFlag() const
-   {
-      return m_configContainer.getBool("server.debug", false);
-   }
-   bool CStartupOptions::getNoPasswordFlag() const
-   {
-      return m_configContainer.getBool("server.noPassword", false);
-   }
+// Validate provided path
+void validate(boost::any& v,
+   const std::vector<std::string>& values,
+   CMustExistPathOption*, int)
+{
+   po::validators::check_first_occurrence(v);
+
+   // Extract the first string from 'values'. If there is more than
+   // one string, it's an error, and exception will be thrown.
+   const std::string& path = po::validators::get_single_string(values);
+
+   // Check if path exist
+   if (CMustExistPathOption::validate(path))
+      v = boost::any(CMustExistPathOption(path));
+   else
+      throw CInvalidOptionException(path, "invalid path");
+}
+
+// Needed for implementation of po::value::default_value()
+std::ostream& operator<<(std::ostream& stream, const CMustExistPathOption& pathOption)
+{
+   stream << pathOption.get();
+   stream.flush();
+   return stream;
+}
+
+// Validate provided logger level
+void validate(boost::any& v,
+   const std::vector<std::string>& values,
+   CExpectedLoggerLevels*, int)
+{
+   po::validators::check_first_occurrence(v);
+
+   // Extract the first string from 'values'. If there is more than
+   // one string, it's an error, and exception will be thrown.
+   const std::string& loggerLevel = po::validators::get_single_string(values);
+
+   // Check if path exist
+   if (CExpectedLoggerLevels::validate(loggerLevel))
+      v = boost::any(CExpectedLoggerLevels(loggerLevel));
+   else
+      throw CInvalidOptionException(loggerLevel, "invalid logger level");
+}
+
+// Needed for implementation of po::value::default_value()
+std::ostream& operator<<(std::ostream& stream, const CExpectedLoggerLevels& loggerLevelOption)
+{
+   stream << loggerLevelOption.get();
+   stream.flush();
+   return stream;
+}
+
+// Validate provided ip address
+void validate(boost::any& v,
+   const std::vector<std::string>& values,
+   CValidIpAddressOption*, int)
+{
+   po::validators::check_first_occurrence(v);
+
+   // Extract the first string from 'values'. If there is more than
+   // one string, it's an error, and exception will be thrown.
+   const std::string& ipAddress = po::validators::get_single_string(values);
+
+   // Check if IP address is well formed (if not, CInvalidIpAddressException exception is raised)
+   if (CValidIpAddressOption::validate(ipAddress))
+      v = boost::any(CValidIpAddressOption(ipAddress));
+   else
+      throw CInvalidOptionException(ipAddress, "invalid ip address");
+}
+
+// Needed for implementation of po::value::default_value()
+std::ostream& operator<<(std::ostream& stream, const CValidIpAddressOption& ipAddressOption)
+{
+   stream << ipAddressOption.get();
+   stream.flush();
+   return stream;
+}
 
 } // namespace startupOptions

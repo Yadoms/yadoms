@@ -1,72 +1,76 @@
+//
+// System signals handler
+//
 #pragma once
 
+#include <csignal>
 #include <shared/event/EventHandler.hpp>
-#include "ApplicationStopHandler.h"
-#include "startupOptions/IStartupOptions.h"
+#include "IApplicationStopHandler.h"
 
 //-----------------------------------------------------------------------------
-/// \class              Yadoms supervisor
+/// \class              Application stop handler
 //-----------------------------------------------------------------------------
-class CSupervisor
+class CApplicationStopHandler : public IApplicationStopHandler
 {
-private:
-   //--------------------------------------------------------------
-   /// \brief	Event IDs
-   //--------------------------------------------------------------
-   enum
-   {
-      kStopRequested = shared::event::kUserFirstId,   // Yadoms stop was required
-      kPluginManagerEvent,                            // Event from plugin manager
-      kRuleManagerEvent,                              // Event from automation rules manager
-      kSystemEvent,                                   // Event from system
-   };
-
 public:
    //-----------------------------------------------------------------------------
    /// \brief		                     Constructor
-   /// \param[in] startupOptions       Yadoms startup options
+   /// \param[in] targetEventHandler   Event handler to notify
+   /// \param[in] eventId              Event ID to send when stop occurs
    //-----------------------------------------------------------------------------
-   CSupervisor(const startupOptions::IStartupOptions& startupOptions);
+   CApplicationStopHandler(boost::shared_ptr<shared::event::CEventHandler> targetEventHandler, int eventId);
 
    //-----------------------------------------------------------------------------
    /// \brief		                     Destructor
    //-----------------------------------------------------------------------------
-   virtual ~CSupervisor();
+   ~CApplicationStopHandler();
 
    //-----------------------------------------------------------------------------
-   /// \brief		                     The main method (blocking, returns at Yadoms exit)
+   /// \brief		                     Returns the stop mode
+   /// \return                         Stop mode (only significative after request to stop)
    //-----------------------------------------------------------------------------
-   void doWork();
+   EStopMode stopMode() const;
 
-   //-----------------------------------------------------------------------------
-   /// \brief		                     Stop the supervisor
-   //-----------------------------------------------------------------------------
-   void requestToStop(boost::function<void()> & callbackAfterStopped);
-
-   //-----------------------------------------------------------------------------
-   /// \brief		                     Get the requested stop mode
-   //-----------------------------------------------------------------------------
-   IApplicationStopHandler::EStopMode stopMode() const;
+   // IApplicationStopHandler implementation
+   virtual void requestToStop(EStopMode stopMode);
+   // [END] IApplicationStopHandler implementation
 
 private:
    //-----------------------------------------------------------------------------
-   /// \brief		                     The supervisor event handler
+   /// \brief		                     Internal interruption handler
+   /// \param[in] signal               Signal source of interruption
    //-----------------------------------------------------------------------------
-   boost::shared_ptr<shared::event::CEventHandler> m_EventHandler;
+   static void handleInternal(int signal);
 
    //-----------------------------------------------------------------------------
-   /// \brief		                     The stop handler
+   /// \brief		                     The main m_thread method
    //-----------------------------------------------------------------------------
-   CApplicationStopHandler m_stopHandler;
+   void doWork();
+
+private:
+   //-----------------------------------------------------------------------------
+   /// \brief		                     Event handler to notify
+   //-----------------------------------------------------------------------------
+   boost::shared_ptr<shared::event::CEventHandler> m_targetEventHandler;
 
    //-----------------------------------------------------------------------------
-   /// \brief		                     Yadoms startup options
+   /// \brief		                     Event ID to send when stop occurs
    //-----------------------------------------------------------------------------
-   const startupOptions::IStartupOptions& m_startupOptions;
+   int m_eventId;
 
    //-----------------------------------------------------------------------------
-   /// \brief		                     Stopped callback
+   /// \brief		                     The requested stop mode
    //-----------------------------------------------------------------------------
-   boost::function<void()> m_callbackAfterStopped;
+   EStopMode m_stopMode;
+
+   //-----------------------------------------------------------------------------
+   /// \brief		                     The thread waiting for system signals
+   //-----------------------------------------------------------------------------
+   boost::shared_ptr<boost::thread> m_thread;
+
+
+   //-----------------------------------------------------------------------------
+   /// \brief		                     The flag used between interruption and thread
+   //-----------------------------------------------------------------------------
+   static volatile sig_atomic_t StopRequested;
 };
-

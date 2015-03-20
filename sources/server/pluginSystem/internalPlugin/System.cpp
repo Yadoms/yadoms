@@ -10,7 +10,7 @@
 namespace pluginSystem {
    namespace internalPlugin {
 
-   CSystem::CSystem(const IApplicationStopHandler& applicationStopHandler)
+   CSystem::CSystem(IApplicationStopHandler& applicationStopHandler)
       :m_applicationStopHandler(applicationStopHandler)
    {
    }

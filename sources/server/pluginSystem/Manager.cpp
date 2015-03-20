@@ -25,7 +25,7 @@ CManager::CManager(
    boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
    boost::shared_ptr<shared::event::CEventHandler> supervisor,
    int pluginManagerEventId,
-   const IApplicationStopHandler& applicationStopHandler)
+   IApplicationStopHandler& applicationStopHandler)
    :m_dataProvider(dataProvider), m_pluginDBTable(dataProvider->getPluginRequester()), m_pluginPath(initialDir),
 #ifdef _DEBUG
    m_qualifier(new CDummyQualifier()),

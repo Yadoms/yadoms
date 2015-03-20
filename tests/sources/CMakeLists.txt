@@ -128,8 +128,6 @@ SET ( POCO_LIBS
 	PocoNet
 	PocoUtil
 	PocoXML
-   PocoJSON
-   PocoZip
 )
 
 include(${YADOMS_PATH}/FindPoco.cmake)

@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "fileSystem.h"
 #include <boost/test/unit_test.hpp>
+#include "fileSystem.h"
 
 namespace testCommon
 {
