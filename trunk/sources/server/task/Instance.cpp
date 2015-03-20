@@ -62,7 +62,7 @@ namespace task {
       return m_creationDate;
    }
 
-   void CInstance::OnTaskProgressUpdated(boost::optional<float> progression, std::string message)
+   void CInstance::OnTaskProgressUpdated(bool isRunning, float progression, std::string message)
    {
       m_currentProgression = progression;
       m_currentMessage = message;
@@ -83,7 +83,7 @@ namespace task {
          m_eventHandler->postEvent(m_eventCode, CTaskEvent(m_guid));
 
          // Execute task code
-         if (m_task->doWork(boost::bind(&CInstance::OnTaskProgressUpdated, this, _1, _2)))
+         if (m_task->doWork(boost::bind(&CInstance::OnTaskProgressUpdated, this, _1, _2, _3)))
          {
             m_currentStatus = ITask::kSuccess;
          }

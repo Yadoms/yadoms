@@ -64,7 +64,7 @@ namespace task {
       ///\param [in] progression : the actual progression or NULL if not supported by the task
       ///\param [in] message : the actual message provided by the task
       //---------------------------------
-      void OnTaskProgressUpdated(boost::optional<float> progression, std::string message);
+      void OnTaskProgressUpdated(bool isRunning, float progression, std::string message);
 
       //--------------------------------------------------------------
       /// \brief			The current task instance progression
