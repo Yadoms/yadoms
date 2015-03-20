@@ -42,12 +42,12 @@ function ForecastViewModel() {
 		 
 		 console.debug( "objet reçu %o",obj );
 		 
-		 while(self.period.length > 0) 
-            self.period.pop();
+		 self.period.removeAll();
 		 
 		 $.each(obj.forecast, function (i, object) 
 		 {
-		    self.period.push({ WeatherCondition: obj.forecast[i].WeatherCondition, 
+		    self.period.push({ WeatherCondition: obj.forecast[i].WeatherCondition,
+			                   TimeDate: obj.forecast[i].Day + '/' + obj.forecast[i].Month,
 			                   TempMax: obj.forecast[i].TempMax + obj.Units.temperature,
 							   TempMin: obj.forecast[i].TempMin + obj.Units.temperature,
 							   MaxWind: parseFloat(obj.forecast[i].MaxWind,10).toFixed(2) + obj.Units.speed,

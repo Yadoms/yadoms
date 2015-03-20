@@ -49,6 +49,11 @@ void CForecastFormatter::AddPeriod(
 	m_Periods.push_back( Temp );
 }
 
+void CForecastFormatter::ClearAllPeriods( void )
+{
+   m_Periods.clear();
+}
+
 CForecastFormatter::~CForecastFormatter()
 {
 }

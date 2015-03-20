@@ -71,6 +71,12 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
                      const std::string& RainDay
 					 );
 
+      //-----------------------------------------------------
+      ///\brief                     Clear All periods
+      //-----------------------------------------------------
+
+      void ClearAllPeriods( void );
+
    private:
       //-----------------------------------------------------
       ///\brief                     The keyword name

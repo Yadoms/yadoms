@@ -56,6 +56,11 @@ void CForecastHistorizer::AddUnit(
 		m_content->AddPeriod( Year, Month, Day, WeatherCondition, TempMax, TempMin, MaxWind, AveWind, AveHumidity, RainDay );
 	}
 
+   void CForecastHistorizer::ClearAllPeriods( void )
+   {
+      m_content->ClearAllPeriods();
+   }
+
 	std::string CForecastHistorizer::formatValue() const
 	{
 	   return !m_content ? std::string() : m_content->formatValue();
