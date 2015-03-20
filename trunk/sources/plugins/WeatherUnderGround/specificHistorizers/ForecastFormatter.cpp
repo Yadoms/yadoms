@@ -7,12 +7,23 @@
 namespace shared { namespace plugin { namespace yPluginApi { namespace historization
 {
 
-CForecastFormatter::CForecastFormatter()
+CForecastFormatter::CForecastFormatter( const std::string & Period )
 {
-   m_period = 0;
+   m_PeriodString = Period;
+}
+
+void CForecastFormatter::AddUnit(
+            const std::string& UnitName,
+            const std::string& UnitValue
+   )
+{
+   m_Units.set ( UnitName, UnitValue );
 }
 
 void CForecastFormatter::AddPeriod(
+            const std::string& Year,
+            const std::string& Month,
+            const std::string& Day,
 		      const std::string& WeatherCondition, 
 	         const std::string& TempMax, 
 				const std::string& TempMin,
@@ -24,6 +35,9 @@ void CForecastFormatter::AddPeriod(
 {
 	CDataContainer Temp;
 
+   Temp.set ("Year", Year);
+   Temp.set ("Month", Month);
+   Temp.set ("Day", Day);
 	Temp.set ("WeatherCondition", WeatherCondition);
 	Temp.set ("TempMax", TempMax);
 	Temp.set ("TempMin", TempMin);
@@ -31,17 +45,8 @@ void CForecastFormatter::AddPeriod(
 	Temp.set ("AveWind", AveWind);
 	Temp.set ("AveHumidity", AveHumidity);
    Temp.set ("RainDay", RainDay);
-   Temp.set ("Period", m_period);
 
-	Periods.push_back( Temp );
-
-   m_period++;
-}
-
-void CForecastFormatter::Finalize()
-{
-   m_ForecastFrame.set ("PeriodUnit", "Day" );
-   m_ForecastFrame.set ("forecast", Periods);
+	m_Periods.push_back( Temp );
 }
 
 CForecastFormatter::~CForecastFormatter()
@@ -50,8 +55,18 @@ CForecastFormatter::~CForecastFormatter()
 
 std::string CForecastFormatter::formatValue() const
 {
-   m_ForecastFrame.printToLog();
-    return m_ForecastFrame.serialize();
+   CDataContainer Temp;
+
+   Temp.set ("Units", m_Units);
+
+   //TODO : Si c'est vide, il faut envoyer une erreur
+   if (!m_PeriodString.empty())
+      Temp.set ("PeriodUnit", m_PeriodString );
+   
+   Temp.set ("forecast", m_Periods);
+
+   Temp.printToLog();
+   return Temp.serialize();
 }
 
 } } } } // namespace shared::plugin::yPluginApi::historization

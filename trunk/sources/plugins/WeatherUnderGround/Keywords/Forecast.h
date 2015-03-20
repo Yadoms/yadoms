@@ -13,30 +13,36 @@ namespace yApi = shared::plugin::yPluginApi;
    {
    public:
       //--------------------------------------------------------------
-      /// \brief	                      Constructor
-      /// \param[in] context              Yadoms APi context
+      /// \brief	                        Constructor
 	   /// \param[in] PluginName           The name of the plugin
-	  /// \param[in] KeyWordName          The keyword name
+	   /// \param[in] KeyWordName          The keyword name
+      /// \param[in] Period               The Period Type ( "Day", "Hour" )
       /// \note                           Use this constructor initialising the keyword for this plugin
       //--------------------------------------------------------------
-      CForecast( std::string PluginName, std::string KeyWordName );
+      CForecast( std::string PluginName, std::string KeyWordName, const std::string& Period );
 
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
       virtual ~CForecast();
 
-      //--------------------------------------------------------------
-      /// \brief	                      Set the value from the container
-      /// \param[in] ValueContainer       The container where the value is stored
-	   /// \param[in] filter               The name of the information into the container
-      /// \note                           Use this constructor initialising the keyword for this plugin
-      //--------------------------------------------------------------
-	  void SetValue( const shared::CDataContainer & ValueContainer, const std::string & filter );
+      //-----------------------------------------------------
+      ///\brief                      Add a new unit to be send to the widget
+      ///\param[in] UnitName         The Unit Name
+	   ///\param[in] UnitValue        The Unit Value
+      //-----------------------------------------------------
+
+      void AddUnit(
+            const std::string& UnitName,
+            const std::string& UnitValue
+         );
 
       //-----------------------------------------------------
       ///\brief                      Add a new day with all integrated parameter
-      ///\param[in] WeatherCondition The weather condition
+      ///\param[in] Year             The Year of the period
+      ///\param[in] Month            The Month of the period
+      ///\param[in] Day              The Day of the period
+      ///\param[in] WeatherCondition The weather condition of the day
 	   ///\param[in] TempMax          The maximal temperature of the day
 	   ///\param[in] TempMin          The minimum temperature of the day
 	   ///\param[in] MaxWind          The maximum wind speed of the day
@@ -46,6 +52,9 @@ namespace yApi = shared::plugin::yPluginApi;
       ///\throw                      shared::exception::CInvalidParameter or COutOfRange if fail to parse command
       //-----------------------------------------------------
       void AddPeriod(const shared::CDataContainer & ValueContainer, 
+                     const std::string& filterYear,
+                     const std::string& filterMonth,
+                     const std::string& filterDay,
 	                  const std::string& filterWeatherCondition,
 	                  const std::string& filterTempMax, 
 					      const std::string& filterTempMin,

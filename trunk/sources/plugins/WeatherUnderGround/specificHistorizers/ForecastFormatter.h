@@ -16,14 +16,35 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       ///\param[in] to              Receiver recipient ID
       ///\param[in] body            Message content
       //-----------------------------------------------------
-      CForecastFormatter();
+      CForecastFormatter( const std::string & Period );
 
       //-----------------------------------------------------
-      ///\brief                     Constructor, from Yadoms command
-      ///\param[in] yadomsCommand   Yadoms command
-      ///\throw                     shared::exception::CInvalidParameter or COutOfRange if fail to parse command
+      ///\brief                      Add a new unit to be send to the widget
+      ///\param[in] UnitName         The Unit Name
+	   ///\param[in] UnitValue        The Unit Value
+      //-----------------------------------------------------
+
+      void AddUnit(
+            const std::string& UnitName,
+            const std::string& UnitValue
+         );
+
+      //-----------------------------------------------------
+      ///\brief                      Add a new period with all integrated parameter
+      ///\param[in] Year             The Year of the period
+      ///\param[in] Month            The Month of the period
+      ///\param[in] Day              The Day of the period
+      ///\param[in] WeatherCondition The weather condition
+	   ///\param[in] TempMax          The maximal temperature of the day
+	   ///\param[in] TempMin          The minimum temperature of the day
+	   ///\param[in] MaxWind          The maximum wind speed of the day
+	   ///\param[in] AveWind          The average wind speed of the day
+	   ///\param[in] AveHumidity      The average humidity of the day
       //-----------------------------------------------------
       void AddPeriod(
+            const std::string& Year,
+            const std::string& Month,
+            const std::string& Day,
 		      const std::string& WeatherCondition, 
 	         const std::string& TempMax, 
 				const std::string& TempMin,
@@ -32,8 +53,6 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
 				const std::string& AveHumidity,
             const std::string& RainDay
 				);
-
-	  void Finalize();
 
       //-----------------------------------------------------
       ///\brief                     Destructor
@@ -56,10 +75,17 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       //-----------------------------------------------------
       ///\brief               The vector of all period
       //-----------------------------------------------------
-	   std::vector<CDataContainer> Periods;
+	   std::vector<CDataContainer> m_Periods;
 
-      int m_period;
+      //-----------------------------------------------------
+      ///\brief               L'ensemble des unités
+      //-----------------------------------------------------
+      CDataContainer m_Units;
+
+      //-----------------------------------------------------
+      ///\brief               The period string
+      //-----------------------------------------------------
+      std::string m_PeriodString;
    };
 
 } } } } // namespace shared::plugin::yPluginApi::historization
-
