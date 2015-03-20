@@ -25,5 +25,5 @@ public:
    /// \param[in] targetEventHandler   Event handler to notify
    /// \param[in] eventId              Event ID to send when stop occurs
    //-----------------------------------------------------------------------------
-   virtual void requestToStop(EStopMode stopMode) const = 0;
+   virtual void requestToStop(EStopMode stopMode) = 0;
 };

@@ -4,11 +4,12 @@
 #pragma once
 
 #include "IStartupOptions.h"
-#include <Poco/Util/OptionSet.h>
-#include <Poco/Util/AbstractConfiguration.h>
+#include "LoaderException.hpp"
+#include "LoaderCustomValidators.hpp"
 
 namespace startupOptions
 {
+
    //--------------------------------------------------------------
    /// \class Default application options loader
    /// This loader get each option from :
@@ -16,43 +17,62 @@ namespace startupOptions
    /// - in config file, if not provided
    /// - the default value
    //--------------------------------------------------------------
-   class CStartupOptions : public IStartupOptions
+   class CLoader : public IStartupOptions
    {
    public:
       //--------------------------------------------------------------
-      /// \brief                          Constructor
-      /// \param [in]   configContainer   The configuration container
+      /// \brief	            Constructor
+      /// \param[in]  argc    Main argc parameter (from command line)
+      /// \param[in]  argv    Main argv parameter (from command line)
+      /// \throw              CLoaderException
       //--------------------------------------------------------------
-      CStartupOptions(Poco::Util::AbstractConfiguration & configContainer);
+      CLoader(int argc, const char* const argv[]);
 
       //--------------------------------------------------------------
-      /// \brief	   Destructor
+      /// \brief	    Destructor
       //--------------------------------------------------------------
-      virtual ~CStartupOptions();
-
-      //--------------------------------------------------------------
-      /// \brief	   Define StartupOptions
-      //--------------------------------------------------------------
-      void defineOptions(Poco::Util::OptionSet& options);
+      virtual ~CLoader();
 
       //--------------------------------------------------------------
       // IStartupOptions implementation (see IStartupOptions declaration for details)
-      virtual const std::string getLogLevel() const;
-      virtual unsigned int getWebServerPortNumber() const;
-      virtual const std::string getWebServerIPAddress() const;
-      virtual const std::string getWebServerInitialPath() const;
-      virtual const std::string getDatabaseFile() const;
-      virtual bool getDebugFlag() const;
-      virtual bool getNoPasswordFlag() const;
+      virtual const std::string & getLogLevel() const
+         { return m_logLevel.get(); }
+      virtual unsigned int getWebServerPortNumber() const
+         { return m_webServerPortNumber; }
+      virtual const std::string& getWebServerIPAddress() const
+         { return m_webServerIPAddress.get(); }
+      virtual const std::string& getWebServerInitialPath() const
+         { return m_webServerInitialPath.get(); }
+      virtual const std::string& getDatabaseFile() const
+         { return m_databaseFile; }
+      virtual bool getDebugFlag() const
+         { return m_debugFlag; }
+      virtual bool getNoPasswordFlag() const
+         { return m_noPasswordFlag; }
       // [END] IStartupOptions implementation
       //--------------------------------------------------------------
 
+
    private:
       //--------------------------------------------------------------
-      /// \brief	   Reference for the configuration container
+      /// \brief	            Build the supported options list
       //--------------------------------------------------------------
-      Poco::Util::AbstractConfiguration & m_configContainer;
-   };
+      void buildOptionsDescription();
 
+   private:
+      static const std::string OptionalConfigFile;
+
+      // Options description
+      boost::program_options::options_description m_optionsDescription;
+
+      // Options data
+      CExpectedLoggerLevels m_logLevel;
+      unsigned int m_webServerPortNumber;
+      CValidIpAddressOption m_webServerIPAddress;
+      CMustExistPathOption m_webServerInitialPath;
+      std::string m_databaseFile;
+      bool m_debugFlag;
+      bool m_noPasswordFlag;
+   };
 
 } // namespace startupOptions

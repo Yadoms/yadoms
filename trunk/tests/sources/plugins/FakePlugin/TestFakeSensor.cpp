@@ -55,20 +55,6 @@ public:
    virtual shared::CDataContainer getConfiguration() const { return m_defaultConfiguration; }
    virtual void recordPluginEvent(PluginEventSeverity severity, const std::string & message) {}
    virtual const boost::filesystem::path getPluginPath() const { return boost::filesystem::initial_path<boost::filesystem::path>(); }
-
-
-   //-----------------------------------------------------
-   ///\brief Get a field value for a recipient ID
-   ///\param    [in]    recipientId       The recipient ID containing the field
-   ///\param    [in]    fieldName         The expected field ("phone", "email", etc...)
-   ///\return                             The field value for specified recipient ID
-   ///\throw shared::exception::CEmptyResult if recipient ID not found or field not found in recipient
-   //-----------------------------------------------------
-   virtual std::string getRecipientValue(int recipientId, const std::string& fieldName) const { return shared::CStringExtension::EmptyString; }
-   virtual std::vector<int> findRecipientsFromField(const std::string& fieldName, const std::string& expectedFieldValue) const { return m_recipients; }
-   virtual bool recipientFieldExists(const std::string& fieldName) const { return true; }
-   virtual void createRecipientField(const std::string& fieldName, const std::string& checkRegex) {}
-
    // [END] IYPluginApi implementation
 
    const std::map<std::string, Device>& getDevices() const { return m_devices; }
@@ -81,7 +67,6 @@ protected:
    std::map<std::string, Device> m_devices;
    std::map<std::string, Keyword> m_keywords;
    std::vector<Data> m_data;
-   std::vector<int> m_recipients;
 };
 
 void ckeckKeyword(boost::shared_ptr<CDefaultYPluginApiMock> context, const std::string& keyword, const std::string& device, const yApi::CStandardCapacity& capacity)
