@@ -1,0 +1,16 @@
+<script type="text/html" id="forecast-template">
+   <link href="widgets/forecast/widget.css" rel="stylesheet">
+   <table>
+   <tr data-bind="foreach: period">
+   <td> <img data-bind="attr:{ src: WeatherIcon }" alt="phases" height="30" width="30">
+                      <div >
+					       <span data-bind="text: TempMin"></span>/<span data-bind="text: TempMax"></span>
+					  </div> 
+					  <div data-bind="text: MaxWind"></div>
+					  <div data-bind="text: AveWind"></div>
+					  <div data-bind="text: AveHumidity"></div>
+					  <div data-bind="text: RainDay"></div>
+   </td>
+   </tr>
+   </table>
+</script>

@@ -1,0 +1,10 @@
+{
+   "name": "Prévision Météo",
+   "description": "Ce widget permet d'afficher les prévision météorologiques pour les prochains jours",
+   "configurationSchema" : {
+      "text" : {
+         "name" : "Prévision",
+         "description" : "Prévision météorologiques pour les prochains jours"
+      }
+   }
+}

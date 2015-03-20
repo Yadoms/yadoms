@@ -1,0 +1,29 @@
+{
+   "type": "forecast",
+   "version": "0.1",
+   "author": "yadoms team",
+   "url" : "http://www.yadoms.com/wiki/widgets/forecast.html",
+   "dimensions": {
+      "min": {
+         "x": 3,
+         "y": 3
+      },
+      "max": {
+         "x": 3,
+         "y": 3
+      },
+      "default": {
+         "x": 3,
+         "y": 3
+      }
+   },
+   "configurationSchema": {
+      "device" : {
+         "name" : "forecast",
+         "description" : "The forecast for next days",
+         "type" : "device",
+         "expectedCapacity" : ["Forecast"],
+         "expectedKeywordAccess" : "get"
+      }
+   }
+}
