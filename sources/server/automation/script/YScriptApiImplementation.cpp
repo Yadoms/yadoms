@@ -9,12 +9,14 @@ namespace automation { namespace script
 {
 
 CYScriptApiImplementation::CYScriptApiImplementation(
+   boost::shared_ptr<ILogger> ruleLogger,
    boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
    boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
    boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter,
    boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
    boost::shared_ptr<IGeneralInfo> generalInfo)
-   :m_pluginGateway(pluginGateway),
+   :m_ruleLogger(ruleLogger),
+   m_pluginGateway(pluginGateway),
    m_notificationCenter(notificationCenter),
    m_dbAcquisitionRequester(dbAcquisitionRequester),
    m_generalInfo(generalInfo)
@@ -117,7 +119,7 @@ void CYScriptApiImplementation::log(const std::string& message)
    {
    try
    {
-      // TODO ajouter dans le fichier de log du script
+      m_ruleLogger->logInformation(message);
       YADOMS_LOG(information) << message;
    }
    catch(...) // Must catch all exceptions to not crash script interpreter
@@ -130,7 +132,7 @@ void CYScriptApiImplementation::logError(const std::string& message)
    {
    try
    {
-      // TODO ajouter dans le fichier de log du script
+      m_ruleLogger->logError(message);
       YADOMS_LOG(error) << message;
    }
    catch(...) // Must catch all exceptions to not crash script interpreter
