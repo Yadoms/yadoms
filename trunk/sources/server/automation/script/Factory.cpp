@@ -10,6 +10,7 @@
 #include "YScriptApiImplementation.h"
 #include "GeneralInfo.h"
 #include "Properties.h"
+#include "PocoLogger.h"
 
 namespace automation { namespace script
 {
@@ -199,10 +200,16 @@ boost::shared_ptr<shared::script::IRunner> CFactory::createScriptRunner(boost::s
    }
 }
 
-boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> CFactory::createScriptContext()
+boost::shared_ptr<ILogger> CFactory::createScriptLogger(const std::string& scriptPath)
+{
+   boost::shared_ptr<ILogger> logger(new CPocoLogger(scriptPath));
+   return logger;
+}
+
+boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> CFactory::createScriptContext(boost::shared_ptr<ILogger> scriptLogger)
 {
    boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> context(
-      new CYScriptApiImplementation(m_pluginGateway, m_configurationManager, m_notificationCenter, m_dbAcquisitionRequester, m_generalInfo));
+      new CYScriptApiImplementation(scriptLogger, m_pluginGateway, m_configurationManager, m_notificationCenter, m_dbAcquisitionRequester, m_generalInfo));
    return context;
 }
 

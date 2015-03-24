@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Runner.h"
-#include "PythonLibInclude.h"
 #include <shared/Log.h>
 #include "PythonException.hpp"
 #include "PythonObject.h"
@@ -19,7 +18,7 @@ CRunner::CRunner(const std::string& scriptPath, const shared::CDataContainer& sc
 
 CRunner::~CRunner()
 {
-   stop();
+   interrupt();
 }
 
 void CRunner::run(shared::script::yScriptApi::IYScriptApi& context)
@@ -36,7 +35,6 @@ void CRunner::run(shared::script::yScriptApi::IYScriptApi& context)
       loader.load();
 
       // Run the script
-      m_isStopping = false;
       CPythonObject pyContext(SWIG_NewPointerObj(&context, SWIG_TypeQuery("shared::script::yScriptApi::IYScriptApi *"), 0));
       CPythonObject tuple(PyTuple_New(1));
       Py_XINCREF(*pyContext); // Increment pyContext reference count, because PyTuple_SetItem steals the reference
@@ -47,23 +45,35 @@ void CRunner::run(shared::script::yScriptApi::IYScriptApi& context)
          throw CPythonException("Script exited with error");
       CConsoleRedirector stdoutRedirector(tuple);
       CPythonObject pyReturnValue(PyObject_CallObject(*ymainFunction, *tuple));
-      if (pyReturnValue.isNull())//TOFIX : erreur déclarée lors de l'arrêt de Yadoms, c'est crade car du coup la règle n'est pas redémarrée avec Yadoms
-         throw CPythonException("Script yMain function returned with error");
+
+      // If errno = 4 (interrupt function call), it's because of stopping Yadoms (Python is catching CTRL-C),
+      // so don't throw a CPythonException, or rule will be set to error state, and not started again at next Yadoms startup.
+      if (pyReturnValue.isNull())
+      {
+         if (!isPythonError(PyExc_IOError, 4))
+            throw CPythonException("Script yMain function returned with error");
+
+         // We are here because because receive a CTRL-C. So Yadoms will end, 
+         // just wait that thread stop is required
+         YADOMS_LOG(information) << m_scriptPath << " : script exited";
+         boost::this_thread::sleep_for(boost::chrono::seconds(10000)); // Should throw boost::thread_interrupted
+         YADOMS_LOG(error) << m_scriptPath << " : timeout waiting for stop rule thread";
+      }
 
       YADOMS_LOG(information) << m_scriptPath << " : script exited";
    }
    catch(CPythonException& e)
    {
-      YADOMS_LOG(error) << m_scriptPath << " : error running script, " << e.what();
+      std::string error(std::string(" : error running script, ") + e.what());
+      YADOMS_LOG(error) << m_scriptPath << error;
+      context.logError(error);
       m_lastError = e.what();
    }
 }
 
-void CRunner::stop()
+void CRunner::interrupt()
 {
-   m_isStopping = true;
    PyErr_SetInterrupt();
-   boost::this_thread::sleep(boost::posix_time::seconds(10));//TODO virer
 }
 
 bool CRunner::isOk() const
@@ -74,4 +84,26 @@ bool CRunner::isOk() const
 std::string CRunner::error() const
 {
    return m_lastError;
+}
+
+bool CRunner::isPythonError(PyObject* pyException, int pyErrorCode) const
+{
+   if (!PyErr_Occurred())
+      return false;
+   
+   if (!PyErr_ExceptionMatches(pyException))
+      return false;
+
+   PyObject* pyErrorType = NULL;
+   PyObject* pyErrorMessage = NULL;
+   PyObject* pyTraceBack = NULL;
+   PyErr_Fetch(&pyErrorType, &pyErrorMessage, &pyTraceBack);
+
+   // First item of the pyErrorMessage tuple is errno
+   CPythonBorrowedObject item(PyTuple_GetItem(pyErrorMessage, 0));
+   long errCode = PyInt_AsLong(*item);
+
+   PyErr_Restore(pyErrorType, pyErrorMessage, pyTraceBack);
+
+   return errCode == pyErrorCode;
 }

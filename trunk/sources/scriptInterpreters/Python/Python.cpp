@@ -63,5 +63,3 @@ boost::shared_ptr<shared::script::IRunner> CPython::createRunner(const std::stri
    boost::shared_ptr<shared::script::IRunner> runner(new CRunner(scriptPath, scriptConfiguration));
    return runner;
 }
-
-//TODO détourner la console

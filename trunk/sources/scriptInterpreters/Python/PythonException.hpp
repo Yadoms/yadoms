@@ -24,7 +24,6 @@ public:
       PyObject* pyErrorMessage = NULL;
       PyObject* pyTraceBack = NULL;
       PyErr_Fetch(&pyErrorType, &pyErrorMessage, &pyTraceBack);
-      PyErr_Clear();
 
       if (pyErrorType)
       {

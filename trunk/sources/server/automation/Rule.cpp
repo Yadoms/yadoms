@@ -29,7 +29,7 @@ void CRule::start()
 
 void CRule::stop()
 {
-   m_runner.reset();
+   m_runner->interrupt();
    m_thread->stop();
    m_thread.reset();
 }
@@ -39,7 +39,8 @@ void CRule::doWork()
    try
    {
       boost::shared_ptr<script::IProperties> scriptProperties = m_scriptFactory->createScriptProperties(m_ruleData);
-      boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> context = m_scriptFactory->createScriptContext();
+      boost::shared_ptr<script::ILogger> scriptLogger = m_scriptFactory->createScriptLogger(scriptProperties->scriptPath());
+      boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> context = m_scriptFactory->createScriptContext(scriptLogger);
 
       // Loop on the script.
       // If a rule takes less than m_MinRuleDuration, wait for the competing duration so that a rule
@@ -60,6 +61,7 @@ void CRule::doWork()
             boost::this_thread::sleep_for(m_MinRuleDuration - ruleDuration);
 
          boost::this_thread::interruption_point();
+
       } while (m_runner->isOk());
 
       m_ruleStateHandler->signalRuleError(m_ruleData->Id(), (boost::format("%1% exit with error : %2%") % m_ruleData->Name() % m_runner->error()).str());

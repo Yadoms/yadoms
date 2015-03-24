@@ -4,7 +4,6 @@
 #include "../database/IEventLoggerRequester.h"
 #include <shared/shared/event/EventHandler.hpp>
 
-//TODO utile ?
 namespace automation
 {
    //-----------------------------------------------------

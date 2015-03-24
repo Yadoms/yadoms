@@ -21,9 +21,9 @@ namespace shared { namespace script
       virtual void run(yScriptApi::IYScriptApi& context) = 0;
 
       //-----------------------------------------------------
-      ///\brief               Stop a runnning script
+      ///\brief               Asynchronous stop of a runnning script
       //-----------------------------------------------------
-      virtual void stop() = 0;
+      virtual void interrupt() = 0;
 
       //-----------------------------------------------------
       ///\brief               Check if last script execution was OK
