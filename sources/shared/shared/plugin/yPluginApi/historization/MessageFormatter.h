@@ -1,13 +1,13 @@
 #pragma once
 #include <shared/Export.h>
-#include "IHistorizable.h"
+#include "IMessageFormatter.h"
 
 namespace shared { namespace plugin { namespace yPluginApi { namespace historization
 {
    //-----------------------------------------------------
    ///\brief The message formatter
    //-----------------------------------------------------
-   class YADOMS_SHARED_EXPORT CMessageFormatter
+   class YADOMS_SHARED_EXPORT CMessageFormatter : public IMessageFormatter
    {
    public:
       //-----------------------------------------------------
@@ -30,29 +30,12 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       //-----------------------------------------------------
       virtual ~CMessageFormatter();
 
-      //-----------------------------------------------------
-      ///\brief               Get the sender value
-      ///\return              The sender value
-      //-----------------------------------------------------
-      int from() const;
-
-      //-----------------------------------------------------
-      ///\brief               Get the recipient value
-      ///\return              The recipient value
-      //-----------------------------------------------------
-      int to() const;
-
-      //-----------------------------------------------------
-      ///\brief               Get the body value
-      ///\return              The body value
-      //-----------------------------------------------------
-      const std::string& body() const;
-
-      //-----------------------------------------------------
-      ///\brief                     Format value to Yadoms format
-      ///\return                    Formatted data
-      //-----------------------------------------------------
+      // IMessageFormatter implementation
+      virtual int from() const;
+      virtual int to() const;
+      virtual const std::string& body() const;
       virtual std::string formatValue() const;
+      // [END] IMessageFormatter implementation
 
    private:
       //-----------------------------------------------------

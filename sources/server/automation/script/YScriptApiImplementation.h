@@ -27,7 +27,7 @@ namespace automation { namespace script
       CYScriptApiImplementation(boost::shared_ptr<ILogger> ruleLogger,
          boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
          boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
-         boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter,
+         boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter,//TODO utile ?
          boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
          boost::shared_ptr<IGeneralInfo> generalInfo);
 

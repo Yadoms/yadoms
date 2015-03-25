@@ -15,7 +15,7 @@ namespace shared
    
    boost::shared_ptr<logInternal::ILogStream> CLog::logStream()
    {
-      return boost::shared_ptr<logInternal::ILogStream>(new logInternal::CLogStreamEnhanced(CLog::m_logger));
+      return boost::shared_ptr<logInternal::ILogStream>(new logInternal::CLogStreamEnhanced(m_logger));
    }
 
    void CLog::setThreadName(const std::string & name)

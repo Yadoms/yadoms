@@ -35,6 +35,7 @@
 CSupervisor::CSupervisor(const startupOptions::IStartupOptions& startupOptions)
    :m_EventHandler(new shared::event::CEventHandler), m_stopHandler(new CApplicationStopHandler(m_EventHandler, kStopRequested)), m_startupOptions(startupOptions)
 {
+   shared::CServiceLocator::instance().push<IApplicationStopHandler>(m_stopHandler);
 }
 
 CSupervisor::~CSupervisor()
@@ -60,17 +61,12 @@ void CSupervisor::doWork()
       //start database system
       pDataProvider.reset(new database::sqlite::CSQLiteDataProvider(m_startupOptions.getDatabaseFile()));
       if (!pDataProvider->load())
-      {
          throw shared::exception::CException("Fail to load database");
-      }
+      shared::CServiceLocator::instance().push<database::IDataProvider>(pDataProvider);
 
       //create the data access layer
       boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dal(new dataAccessLayer::CDataAccessLayer(pDataProvider, notificationCenter));
-
-      //register objects in service locator
-      shared::CServiceLocator::instance().push<database::IDataProvider>(pDataProvider);
       shared::CServiceLocator::instance().push<dataAccessLayer::IDataAccessLayer>(dal);
-      shared::CServiceLocator::instance().push<IApplicationStopHandler>(m_stopHandler);
 
       // Start Task manager
       boost::shared_ptr<task::CScheduler> taskManager(new task::CScheduler(m_EventHandler, kSystemEvent));
@@ -88,8 +84,7 @@ void CSupervisor::doWork()
       // Start automation rules manager
       boost::shared_ptr<automation::IRuleManager> automationRulesManager(new automation::CRuleManager(
          pDataProvider->getRuleRequester(), pluginGateway, notificationCenter, pDataProvider->getAcquisitionRequester(), dal->getConfigurationManager(),
-         systemInformation,
-         pDataProvider->getEventLoggerRequester(), m_EventHandler, kRuleManagerEvent));
+         systemInformation, pDataProvider->getEventLoggerRequester(), m_EventHandler, kRuleManagerEvent));
 
       // Start Web server
       const std::string & webServerIp = m_startupOptions.getWebServerIPAddress();

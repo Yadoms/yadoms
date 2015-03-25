@@ -1,7 +1,7 @@
 #pragma once
 #include <shared/Export.h>
 #include "IHistorizable.h"
-#include "MessageFormatter.h"
+#include "IMessageFormatter.h"
 
 namespace shared { namespace plugin { namespace yPluginApi { namespace historization
 {
@@ -85,7 +85,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       //-----------------------------------------------------
       ///\brief                     The message content
       //-----------------------------------------------------
-      boost::shared_ptr<CMessageFormatter> m_content;
+      boost::shared_ptr<IMessageFormatter> m_content;
    };
 
 

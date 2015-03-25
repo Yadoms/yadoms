@@ -35,11 +35,11 @@ namespace pluginSystem
    public:
       //--------------------------------------------------------------
       /// \brief			Constructor (protected, use newManager to create instance)
-      /// \param [in]   initialDir initial plugins search directory
+      /// \param [in]   initialDir              Initial plugins search directory
       /// \param [in]   dataProvider            Database link
-      /// \param [in]   supervisor     the supervisor event handler
+      /// \param [in]   dataAccessLayer         The database access layer
+      /// \param [in]   supervisor              The supervisor event handler
       /// \param [in]   pluginManagerEventId    The ID to use to send events to supervisor
-      /// \param [in]   applicationStopHandler  The object used to request application stop
       //--------------------------------------------------------------
       CManager(
          const std::string & initialDir,

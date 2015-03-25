@@ -33,7 +33,6 @@ CManager::CManager(
 #endif
    m_supervisor(supervisor), m_pluginManagerEventId(pluginManagerEventId), m_dataAccessLayer(dataAccessLayer)
 {
-   BOOST_ASSERT(m_dataProvider);
 }
 
 CManager::~CManager()

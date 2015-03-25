@@ -1,6 +1,7 @@
 #pragma once
 
 #include <shared/Export.h>
+#include "exception/NullReference.hpp"
 
 namespace shared { 
 
@@ -59,10 +60,12 @@ namespace shared {
       //--------------------------------------------------------------
       /// \brief		   Get the first object which implements TInterface
       /// \template     TInterface   The interface/class to search for implementation
+      /// \param[in] noThrow Don't throw if object not found (return empty object)
       /// \return       The found object, or null shared_ptr if not found
+      /// \throw exception::CNullReference if object not found and noThrow == false
       //--------------------------------------------------------------
       template<class TInterface>
-      inline boost::shared_ptr<TInterface> get();
+      inline boost::shared_ptr<TInterface> get(bool noThrow = false);
       
       //--------------------------------------------------------------
       /// \brief		   Get all objects which implements TInterface
@@ -98,15 +101,18 @@ namespace shared {
    }   
 
    template<class TInterface>
-   inline boost::shared_ptr<TInterface> CServiceLocator::get()
+   inline boost::shared_ptr<TInterface> CServiceLocator::get(bool noThrow)
    {
       ServiceContainer::iterator i = m_content.find(typeid(TInterface).hash_code());
-      if (i != m_content.end())
+      if (i == m_content.end() || i->second.size() == 0)
       {
-         if (i->second.size()>0)
-            return boost::any_cast< boost::shared_ptr<TInterface> >(i->second[0]);
+         if (noThrow)
+            return boost::shared_ptr<TInterface>();
+
+         throw exception::CNullReference(typeid(TInterface).name());
       }
-      return boost::shared_ptr<TInterface>();
+
+      return boost::any_cast< boost::shared_ptr<TInterface> >(i->second[0]);
    }
 
    template<class TInterface>

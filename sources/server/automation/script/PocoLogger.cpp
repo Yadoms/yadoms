@@ -16,7 +16,7 @@ CPocoLogger::CPocoLogger(const std::string& scriptPath)
 {
    // Configure the logger
    Poco::AutoPtr<Poco::PatternFormatter> patternFormatter(new Poco::PatternFormatter);
-   patternFormatter->setProperty("pattern", "%H:%M:%S : %T : [%p] : %t");
+   patternFormatter->setProperty("pattern", "%Y/%m/%d %H:%M:%S [%p] : %t");
 
    Poco::AutoPtr<Poco::SimpleFileChannel> fileChannel(new Poco::SimpleFileChannel);
    fileChannel->setProperty("path", scriptPath + "/yadomsScript.log");
@@ -28,7 +28,7 @@ CPocoLogger::CPocoLogger(const std::string& scriptPath)
    m_pocoLogger.setChannel(formattingChannel);
 
    // Force log level to not depend on the general logger
-   m_pocoLogger.setLevel(Poco::Message::Priority::PRIO_TRACE);
+   m_pocoLogger.setLevel(Poco::Message::PRIO_TRACE);
 }
 
 CPocoLogger::~CPocoLogger()

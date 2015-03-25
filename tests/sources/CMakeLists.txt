@@ -180,6 +180,10 @@ source_group(shared\\xpl shared/xpl/*.*)
 
 source_group(server server/*.*)
 source_group(server\\automation server/automation/*.*)
+source_group(server\\database server/database/*.*)
+source_group(server\\pluginSystem server/pluginSystem/*.*)
+source_group(server\\pluginSystem\\information server/pluginSystem/information/*.*)
+source_group(server\\pluginSystem\\internalPlugin server/pluginSystem/internalPlugin/*.*)
 source_group(server\\startupOptions server/startupOptions/*.*)
 source_group(server\\tools server/tools/*.*)
 
