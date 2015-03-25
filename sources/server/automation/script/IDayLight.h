@@ -15,15 +15,15 @@ namespace automation { namespace script
 
       //-----------------------------------------------------
       ///\brief               Compute sunrise time
-      ///\return Sunrise hour
+      ///\return Sunrise hour (ISO 8601)
       //-----------------------------------------------------
-      virtual double sunriseTime() const = 0;
+      virtual std::string sunriseTime() const = 0;
 
       //-----------------------------------------------------
       ///\brief               Compute sunset time
-      ///\return Sunset hour
+      ///\return Sunset hour (ISO 8601)
       //-----------------------------------------------------
-      virtual double sunsetTime() const = 0;
+      virtual std::string sunsetTime() const = 0;
    };
 
 } } // namespace automation::script
