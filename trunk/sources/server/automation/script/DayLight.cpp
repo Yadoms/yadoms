@@ -4,11 +4,14 @@
 #include "stdafx.h"
 #include "DayLight.h"
 #include <shared/Log.h>
-#include <math.h>
 #include <shared/event/Now.h>
 #include <shared/exception/InvalidParameter.hpp>
+#include <Poco/DateTime.h>
+#include <Poco/DateTimeFormat.h>
+#include <Poco/DateTimeFormatter.h>
 #include <Poco/Timezone.h>
 #include <boost/math/constants/constants.hpp>
+#include <boost/math/special_functions/round.hpp>
 
 namespace automation { namespace script
 {
@@ -407,27 +410,29 @@ CDayLight::~CDayLight()
 {         
 }
 
-double CDayLight::toLocalTime(double utcTime) const
+std::string CDayLight::toIso(double utcTime) const
 {
-   return utcTime + (Poco::Timezone::tzd() / 3600);
+   Poco::DateTime now;
+   Poco::DateTime dt(now.year(), now.month(), now.day(), boost::math::iround(utcTime), boost::math::iround(utcTime * 60) % 60);
+   return Poco::DateTimeFormatter::format(dt, Poco::DateTimeFormat::ISO8601_FORMAT, Poco::Timezone::tzd());
 }
 
-double CDayLight::sunEventTime(bool sunrise) const
+std::string CDayLight::sunEventTime(bool sunrise) const
 {
-   boost::posix_time::ptime::date_type now(shared::event::now().date());
+   Poco::DateTime now;
    double rise, set;
    if (sun_rise_set(now.year(), now.month(), now.day(), m_location->longitude(), m_location->latitude(), &rise, &set) != 0)
       throw shared::exception::CInvalidParameter("Unable to compute sunrise time");
 
-   return toLocalTime(sunrise ? rise : set);
+   return toIso(sunrise ? rise : set);
 }
 
-double CDayLight::sunriseTime() const
+std::string CDayLight::sunriseTime() const
 {
    return sunEventTime(true);
 }
 
-double CDayLight::sunsetTime() const
+std::string CDayLight::sunsetTime() const
 {
    return sunEventTime(false);
 }

@@ -23,23 +23,23 @@ namespace automation { namespace script
 
    protected:
       // IDayLight Implementation
-      virtual double sunriseTime() const;
-      virtual double sunsetTime() const;
+      virtual std::string sunriseTime() const;
+      virtual std::string sunsetTime() const;
       // [END] IDayLight Implementation
 
       //-----------------------------------------------------
-      ///\brief               Convert utcTime to localTime
+      ///\brief               Convert time to Iso representation
       ///\param[in] utcTime   UTC Time (in hours)
-      ///\return local time (in hours)
+      ///\return Time ISO representation
       //-----------------------------------------------------
-      double toLocalTime(double utcTime) const;
+      std::string toIso(double utcTime) const;
 
       //-----------------------------------------------------
       ///\brief               Sun event computation adapter
       ///\param[in] sunrise   true to compute sunrise, false to compute sunset
       ///\return sunrise/sunset hour in the day
       //-----------------------------------------------------
-      double sunEventTime(bool sunrise) const;
+      std::string sunEventTime(bool sunrise) const;
 
    private:
       //-----------------------------------------------------
