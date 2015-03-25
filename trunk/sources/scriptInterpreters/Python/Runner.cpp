@@ -30,6 +30,8 @@ void CRunner::run(shared::script::yScriptApi::IYScriptApi& context)
       // Create sub-interpreter (needed for thread context)
       CSubInterpreter interpreter;
 
+      context.log("#### START ####");
+
       // Load script file
       CScriptLoader loader(m_scriptPath);
       loader.load();
@@ -55,11 +57,13 @@ void CRunner::run(shared::script::yScriptApi::IYScriptApi& context)
 
          // We are here because because receive a CTRL-C. So Yadoms will end, 
          // just wait that thread stop is required
+         context.log("#### END ####");
          YADOMS_LOG(information) << m_scriptPath << " : script exited";
          boost::this_thread::sleep_for(boost::chrono::seconds(10000)); // Should throw boost::thread_interrupted
          YADOMS_LOG(error) << m_scriptPath << " : timeout waiting for stop rule thread";
       }
 
+      context.log("#### END ####");
       YADOMS_LOG(information) << m_scriptPath << " : script exited";
    }
    catch(CPythonException& e)
@@ -67,6 +71,7 @@ void CRunner::run(shared::script::yScriptApi::IYScriptApi& context)
       std::string error(std::string(" : error running script, ") + e.what());
       YADOMS_LOG(error) << m_scriptPath << error;
       context.logError(error);
+      context.log("#### END ####");
       m_lastError = e.what();
    }
 }

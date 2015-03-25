@@ -14,8 +14,6 @@ IF(NOT DISABLE_TEST_FAKEPLUGIN)
       shared/shared/plugin/yPluginApi/historization/DateTime.cpp
       shared/shared/plugin/yPluginApi/historization/DateTime.h
       shared/shared/plugin/yPluginApi/historization/IHistorizable.h
-      shared/shared/plugin/yPluginApi/historization/Message.cpp
-      shared/shared/plugin/yPluginApi/historization/Message.h
       shared/shared/plugin/yPluginApi/historization/Rssi.cpp
       shared/shared/plugin/yPluginApi/historization/Rssi.h
       shared/shared/plugin/yPluginApi/historization/Switch.cpp

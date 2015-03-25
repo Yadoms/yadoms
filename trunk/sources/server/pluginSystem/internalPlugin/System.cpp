@@ -5,7 +5,7 @@
 #include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/Exception.hpp>
 #include <shared/plugin/yPluginApi/historization/Historizers.h>
-#include "IApplicationStopHandler.h"
+#include "../../IApplicationStopHandler.h"
 #include <shared/ServiceLocator.h>
 
 namespace pluginSystem {
@@ -45,10 +45,6 @@ namespace pluginSystem {
             context->declareKeyword("system", keywordRestart);
 
          boost::shared_ptr<IApplicationStopHandler> applicationStopHandler = shared::CServiceLocator::instance().get<IApplicationStopHandler>();
-         if (!applicationStopHandler)
-         {
-            YADOMS_LOG(error) << "Fail to retreive ApplicationStopHandler from service locator";
-         }
 
          while (1)
          {

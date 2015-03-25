@@ -4,6 +4,7 @@
 #include <shared/exception/InvalidParameter.hpp>
 #include <shared/DataContainer.h>
 #include <shared/StringExtension.h>
+#include "MessageFormatter.h"
 
 
 namespace shared { namespace plugin { namespace yPluginApi { namespace historization

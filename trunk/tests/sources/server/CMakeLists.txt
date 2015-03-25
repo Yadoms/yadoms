@@ -5,6 +5,7 @@
 add_subdirectory(startupOptions)
 add_subdirectory(database)
 add_subdirectory(tools)
+add_subdirectory(pluginSystem)
 
 
 

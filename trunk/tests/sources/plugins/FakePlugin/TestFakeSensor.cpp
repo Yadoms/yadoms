@@ -48,13 +48,16 @@ public:
    virtual bool keywordExists(const std::string& device, const yApi::historization::IHistorizable& keyword) const { return false; }
    virtual void declareKeyword(const std::string& device, const yApi::historization::IHistorizable& keyword, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer)
    { Keyword kw = { device, keyword.getKeyword(), keyword.getCapacity(), details }; m_keywords[keyword.getKeyword()] = kw; }
+   virtual std::string getRecipientValue(int recipientId, const std::string& fieldName) const { return std::string(); }
+   virtual std::vector<int> findRecipientsFromField(const std::string& fieldName, const std::string& expectedFieldValue) const { return std::vector<int>(); }
+   virtual bool recipientFieldExists(const std::string& fieldName) const { return false; }
    virtual void historizeData(const std::string& device, const yApi::historization::IHistorizable& keyword)
    { Data data = {device, keyword.getKeyword(), keyword.getCapacity(), keyword.formatValue() }; m_data.push_back(data); }
    virtual void historizeData(const std::string& device, std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > & dataVect) {  /* Not implemented */ }
    virtual const shared::plugin::information::IInformation& getInformation() const { return m_defaultInformation; }
+   virtual const boost::filesystem::path getPluginPath() const { return boost::filesystem::initial_path<boost::filesystem::path>(); }
    virtual shared::CDataContainer getConfiguration() const { return m_defaultConfiguration; }
    virtual void recordPluginEvent(PluginEventSeverity severity, const std::string & message) {}
-   virtual const boost::filesystem::path getPluginPath() const { return boost::filesystem::initial_path<boost::filesystem::path>(); }
    // [END] IYPluginApi implementation
 
    const std::map<std::string, Device>& getDevices() const { return m_devices; }

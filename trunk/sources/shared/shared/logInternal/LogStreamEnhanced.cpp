@@ -25,7 +25,7 @@ namespace shared {
 				Poco::Message msg;
 				msg.setText(m_buffer.str());
 				msg.setPriority(m_currentPriority);
-				msg.setThread(shared::CLog::getCurrentThreadName());
+				msg.setThread(CLog::getCurrentThreadName());
 				m_internalLogger.log(msg);
 			}
       }
