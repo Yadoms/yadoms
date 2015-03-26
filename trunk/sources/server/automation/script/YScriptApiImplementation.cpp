@@ -141,20 +141,6 @@ void CYScriptApiImplementation::logError(const std::string& message)
    }
 }
 
-void CYScriptApiImplementation::fail(const std::string& errorMessage)
-{
-   try
-   {
-      //TODO
-      YADOMS_LOG(error) << "Script signaled a failure : " << errorMessage;
-   }
-   catch(...) // Must catch all exceptions to not crash script interpreter
-   {
-      YADOMS_LOG(error) << "fail, unknown exception, please report to Yadoms team";
-   }
-}
-
-
 } } // namespace automation::script
 	
 	

@@ -45,7 +45,6 @@ namespace automation { namespace script
       virtual std::string getInfo(const std::string& key) const;
       virtual void log(const std::string& message);
       virtual void logError(const std::string& message);
-      virtual void fail(const std::string& errorMessage);
       // [END] shared::script::yScriptApi::IYScriptApi implementation
 
    private:
