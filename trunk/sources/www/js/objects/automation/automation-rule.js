@@ -28,6 +28,8 @@ function AutomationRule(id, name, description, interpreter, editor, model, conte
    this.errorMessage = errorMessage;
    this.startDate = startDate;
    this.stopDate = stopDate;
+   this.code = "";
+   this.codeHasBeenDownloaded = false;
 }
 
 AutomationRule.prototype.toJSON = function () {

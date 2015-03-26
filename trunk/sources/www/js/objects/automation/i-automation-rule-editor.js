@@ -38,7 +38,7 @@ IAutomationRuleEditor.prototype.getName = function() {
 /**
  * Obtain DOM structure to insert in editor's page
  */
-IAutomationRuleEditor.prototype.getDOMObject = function() {
+IAutomationRuleEditor.prototype.getDOMStructure = function() {
    assert(false, "getDOMObject() of IAutomationRuleEditor must be implemented in derived class");
 };
 
@@ -49,7 +49,6 @@ IAutomationRuleEditor.prototype.applyScript = function() {
    assert(false, "applyScript() of IAutomationRuleEditor must be implemented in derived class");
 };
 
-//noinspection JSUnusedLocalSymbols
 /**
  * Permit to set the active rule to edit
  * @param rule
@@ -59,15 +58,24 @@ IAutomationRuleEditor.prototype.setRule = function(rule) {
 };
 
 /**
+ * Permit to update the current rule with editor content
+ */
+IAutomationRuleEditor.prototype.updateRule = function() {
+   assert(false, "updateRule() of IAutomationRuleEditor must be implemented in derived class");
+};
+
+
+/**
+ * Permit to change the interpreter
+ * @param newInterpreter
+ */
+IAutomationRuleEditor.prototype.setInterpreter = function(newInterpreter) {
+   assert(false, "setRule() of IAutomationRuleEditor must be implemented in derived class");
+};
+
+/**
  * Permit to the object to run a custom validator engine
  */
 IAutomationRuleEditor.prototype.validate = function() {
    assert(false, "validate() of IAutomationRuleEditor must be implemented in derived class");
-};
-
-/**
- * Get the current rule after edition
- */
-IAutomationRuleEditor.prototype.getRule = function() {
-   assert(false, "getRule() of IAutomationRuleEditor must be implemented in derived class");
 };

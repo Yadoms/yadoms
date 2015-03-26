@@ -212,8 +212,11 @@ Fix dropdown menus hidden by bootstrap modal
     white-space: normal;
 }
 
-#automation-rule-editor {
+.code-ide {
+    margin-top: 15px;
+}
+
+.code-editor {
     height: 300px;
     border: 1px #ccc solid;
-    margin-top: 15px;
 }

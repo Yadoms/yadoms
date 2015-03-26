@@ -60,11 +60,13 @@ debugger;
          var r = new AutomationRule(-1, "", "", editor.getActiveSupportedInterpreters()[0].name, editor.getName(),
                                     "", "template", "", true);
          modals.automationRuleEdit.load(function () {
+            //we hide the current modal
+            $("div#automation-rule-new-modal").modal("hide");
             showEditionAutomationRule(r, editor, function () {
 debugger;
                AutomationRuleManager.createToServer(r);
             });
-            $("div#automation-rule-new-modal").modal("hide");
+
          });
       };
    }
