@@ -164,7 +164,8 @@ namespace task {
 
          //create the argument list
          Poco::Process::Args args;
-         args.push_back(runningInformation->getExecutablePath().parent_path().string());
+         Poco::Path p(runningInformation->getExecutablePath());
+         args.push_back(p.parent().toString());
 
          //run updater script
          Poco::ProcessHandle handle = Poco::Process::launch(executablePath.toString(), args);

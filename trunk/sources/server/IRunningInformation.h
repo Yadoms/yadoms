@@ -35,6 +35,6 @@ public:
    /// \brief		                     get the full executable path
    /// \return  	                     the full executable path (path + filename)
    //-----------------------------------------------------------------------------
-   virtual const boost::filesystem::path getExecutablePath() const = 0;
+   virtual const std::string & getExecutablePath() const = 0;
 };
 

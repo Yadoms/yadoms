@@ -1,48 +1,96 @@
 #include "stdafx.h"
 #include "Application.h"
 #include "logConfiguration/LogConfiguration.h"
-#include "startupOptions/Loader.h"
+
+#include <Poco/Util/Option.h>
+#include <Poco/Util/OptionSet.h>
+#include <Poco/Util/HelpFormatter.h>
+#include <Poco/ErrorHandler.h>
+#include <Poco/NestedDiagnosticContext.h>
+
+#include <Poco/Task.h>
+#include <Poco/TaskManager.h>
 #include <shared/Log.h>
-#include <tools/OperatingSystem.h>
-#include <shared/ServiceLocator.h>
+
+#include "Supervisor.h"
+#include <csignal>
+#include "ErrorHandler.h"
+#include "startupOptions/Loader.h"
+#include "ApplicationStopHandler.h"
 #include "RunningInformation.h"
+#include <shared/ServiceLocator.h>
 
-CApplication::CApplication()
+//define the main entry point
+POCO_SERVER_MAIN(CYadomsServer)
+
+CYadomsServer::CYadomsServer()
+:m_helpRequested(false), 
+m_startupOptions(new startupOptions::CStartupOptions(config())), 
+m_stopHandler(new CApplicationStopHandler())
 {
+   //define unixstyle for command line parsing
+   //so in Windows platform we use --option and -o for options (instead of /option)
+   setUnixOptions(true);
 }
-   
 
-CApplication::~CApplication()
+CYadomsServer::~CYadomsServer()
 {
-   if (!!m_supervisor)
-   {
-      switch(m_supervisor->stopMode())
-      {
-      case IApplicationStopHandler::kStopSystem: tools::COperatingSystem::shutdown(false); break;
-      case IApplicationStopHandler::kRestartSystem: tools::COperatingSystem::shutdown(true); break;
-      default: break;
-      }
-   }
+
 }
-   
-void CApplication::configure(int argc, char ** argv)
+
+
+void CYadomsServer::initialize(Application& self)
 {
-   //find the working dir (= path to exe)
-   boost::filesystem::path full_path(boost::filesystem::initial_path<boost::filesystem::path>());
-   full_path = boost::filesystem::system_complete(boost::filesystem::path(argv[0]));
-
-   m_runningInformation.reset(new CRunningInformation(full_path));
-   shared::CServiceLocator::instance().push<IRunningInformation>(m_runningInformation);
-
-   m_startupOptions.reset(new startupOptions::CLoader(argc, argv));
+   loadConfiguration(); // load default configuration files, if present
+   Poco::Util::ServerApplication::initialize(self);
 
    logConfiguration::CLogConfiguration::configure(m_startupOptions->getLogLevel());
 }
 
-int CApplication::run()
+void CYadomsServer::uninitialize()
 {
-  try
+   logger().information("shutting down");
+   ServerApplication::uninitialize();
+}
+
+void CYadomsServer::defineOptions(Poco::Util::OptionSet& options)
+{
+   //configure Poco::Application options
+   ServerApplication::defineOptions(options);
+   
+   //manage only help option
+   options.addOption(
+      Poco::Util::Option("help", "h", "display help information on command line arguments")
+      .required(false)
+      .repeatable(false)
+      .callback(Poco::Util::OptionCallback<CYadomsServer>(this, &CYadomsServer::handleHelp)));
+   
+   //configure startup yadoms options
+   m_startupOptions->defineOptions(options);
+}
+
+void CYadomsServer::handleHelp(const std::string& name, const std::string& value)
+{
+   m_helpRequested = true;
+   displayHelp();
+   stopOptionsProcessing();
+}
+
+void CYadomsServer::displayHelp()
+{
+   Poco::Util::HelpFormatter helpFormatter(options());
+   helpFormatter.setCommand(commandName());
+   helpFormatter.setUsage("OPTIONS");
+   helpFormatter.setHeader("Yadoms command line usage");
+   helpFormatter.format(std::cout);
+}
+
+int CYadomsServer::main(const Poco::Util::Application::ArgVec& args)
+{
+   if (!m_helpRequested)
    {
+      std::string executablePath = config().getString("application.path");
+      m_runningInformation.reset(new CRunningInformation(executablePath));
 
       YADOMS_LOG_CONFIGURE("Main");
 
@@ -59,31 +107,27 @@ int CApplication::run()
          YADOMS_LOG(information) << "\tnoPassword = true";
       YADOMS_LOG(information) << "********************************************************************";
 
-      startupOptions::IStartupOptions & opt = *m_startupOptions.get();
+      //register Services in serviceLocator
+      shared::CServiceLocator::instance().push<IApplicationStopHandler>(m_stopHandler);
+      shared::CServiceLocator::instance().push<startupOptions::IStartupOptions>(m_startupOptions);
+      shared::CServiceLocator::instance().push<IRunningInformation>(m_runningInformation);
 
-      m_supervisor.reset(new CSupervisor(opt));
+      
+      //configure the Poco ErrorHandler
+      CErrorHandler eh;
+      Poco::ErrorHandler* pOldEH = Poco::ErrorHandler::set(&eh);
 
-      // The main job
-      m_supervisor->doWork();
+      CSupervisor supervisor;
+      Poco::Thread thread("Supervisor");
+      thread.start(supervisor);
+      waitForTerminationRequest();
 
-      YADOMS_LOG(information) << "Yadoms is stopped ";
+      supervisor.requestToStop();
+      thread.join();
+
+      //restore Poco ErrorHandler
+      Poco::ErrorHandler::set(pOldEH);
    }
-   catch(...)
-   {
-      //dual logging in case logger fails/throws
-      std::cout << "An unhandled exception occurred. Yadoms is now stopped" << std::endl;
-      YADOMS_LOG(fatal) << "An unhandled exception occurred. Yadoms is now stopped";
-      BOOST_ASSERT_MSG(false, "Yadoms exited with error, see console for details");
-   }
-
-   return 0;
-}
-
-void CApplication::stop(boost::function<void()> & callbackAfterStopped)
-{
-   if (m_supervisor)
-   {
-      m_supervisor->requestToStop(callbackAfterStopped);
-   }
+   return Poco::Util::Application::EXIT_OK;
 }
 
