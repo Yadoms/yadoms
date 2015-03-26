@@ -18,6 +18,7 @@ AutomationEditorCode.getSupportedInterpreters = function() {
 function AutomationEditorCode(interpreters) {
    var self = this;
    self.uuid = createUUID();
+   self.editorUuid = createUUID();
 
    //we compare interpreters and getSupportedInterpreters() static method to keep only active supported interpreters
    this.activeSupportedInterpreters = [];
@@ -46,16 +47,25 @@ AutomationEditorCode.prototype.getUuid = function() {
 /**
  * Obtain DOM structure to insert in editor's page
  */
-AutomationEditorCode.prototype.getDOMObject = function() {
-   return ("<div id=\"" + this.uuid + "\"></div>");
+AutomationEditorCode.prototype.getDOMStructure = function() {
+   return ("<div id=\"" + this.uuid + "\" class=\"code-ide\">" +
+               "<div class=\"btn-group\" role=\"group\">" +
+                  "<button type=\"button\" class=\"btn btn-default btn-insert-keyword btn-sm\">" +
+                     "<span data-i18n=\"modals.dashboard.sub-windows.automation-center.editors.code.insertKeywordId\"></span>&nbsp;" +
+                     "<span class=\"caret\"></span>" +
+                  "</button>" +
+               "</div>" +
+               "<div id=\"" + this.editorUuid + "\" class=\"code-editor\"></div>" +
+            "</div>");
 };
 
 /**
  * Permit to execute javascript action after inserting DOM structure in the page
  */
 AutomationEditorCode.prototype.applyScript = function() {
+debugger;
    ace.require("ace/ext/language_tools");
-   this.editor = ace.edit("automation-rule-editor");
+   this.editor = ace.edit(this.editorUuid);
    this.editor.setTheme("ace/theme/chrome");
 
    this.editor.setOptions({
@@ -64,6 +74,10 @@ AutomationEditorCode.prototype.applyScript = function() {
       displayIndentGuides: true,
       highlightSelectedWord: true
    });
+
+   //we manage the insert keyword Id button
+   $insertKeywordId = $("div#getUuid .btn-insert-keyword");
+   //TODO : fill the button
 };
 
 /**
@@ -72,10 +86,25 @@ AutomationEditorCode.prototype.applyScript = function() {
  */
 AutomationEditorCode.prototype.setRule = function(rule) {
    //we add the .code and go to the end of code
-   this.rule = rule;
-   this.editor.getSession().setMode("ace/mode/" + rule.type);
-   this.editor.setValue(decodeURIComponent(rule.code));
-   this.editor.gotoLine(editor.session.getLength());
+   var self = this;
+   self.rule = rule;
+   self.editor.getSession().setMode("ace/mode/" + self.rule.interpreter);
+
+   //we get the code only if the rule exist server side
+   if (rule.id != -1) {
+      AutomationRuleManager.getCode(self.rule, function () {
+         self.editor.setValue(rule.code);
+      }, true);
+   }
+};
+
+/**
+ * Permit to update the current rule with editor content
+ */
+AutomationEditorCode.prototype.updateRule = function() {
+   var self = this;
+   self.rule.content = "";
+   self.rule.code = self.editor.getValue();
 };
 
 /**
@@ -86,11 +115,21 @@ AutomationEditorCode.prototype.validate = function() {
 };
 
 /**
- * Get the current rule after edition
+ * Permit to change the interpreter
+ * @param newInterpreter
  */
-AutomationEditorCode.prototype.getRule = function() {
-   this.rule.code = this.editor.getValue();
-   return this.rule;
+AutomationEditorCode.prototype.setInterpreter = function(newInterpreter) {
+   var found = false;
+   $.each(AutomationEditorCode.getSupportedInterpreters(), function (key, value) {
+      if (value == newInterpreter)
+         found = true;
+   });
+
+   if (found) {
+      //we change the current interpreter
+      this.rule.interpreter = newInterpreter;
+      this.editor.getSession().setMode("ace/mode/" + this.rule.interpreter);
+   }
 };
 
 /**

@@ -26,7 +26,8 @@ AutomationRuleManager.createToServer = function(rule, callback) {
                               model: rule.model,
                               content: rule.content,
                               configuration: rule.configuration,
-                              enabled: rule.enabled
+                              enabled: rule.enabled,
+                              code: rule.code
                            }),
       contentType: "application/json; charset=utf-8",
       dataType: "json"
@@ -174,4 +175,87 @@ AutomationRuleManager.enable = function(rule, callback) {
    debugger;
    rule.enabled = true;
    AutomationRuleManager.updateToServer(rule, callback);
+};
+
+/**
+ * Obtain the code of the rule
+ * @param rule
+ * @param callback
+ * @param sync
+ */
+AutomationRuleManager.getCode = function(rule, callback, sync) {
+   assert(!isNullOrUndefined(rule), "rule must be defined");
+   assert($.isFunction(callback), "callback must be a function");
+
+   var async = true;
+   if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
+      async = !sync;
+
+   $.ajax({
+      dataType: "json",
+      url: "rest/automation/rule/" + rule.id + "/code",
+      async: async
+   })
+       .done(function( data ) {
+          //we parse the json answer
+          if (data.result != "true")
+          {
+             notifyError($.t("objects.generic.errorGetting", {objectName : "automation code rule"}), JSON.stringify(data));
+             return;
+          }
+
+          rule.code = decodeURIComponent(data.data.code);
+          rule.codeHasBeenDownloaded = true;
+
+          callback();
+       })
+       .fail(function() {notifyError($.t("objects.generic.errorGetting", {objectName : "automation code rule"}));});
+};
+
+/**
+ * Update the code of the rule
+ * @param rule
+ * @param code
+ * @param callback
+ * @param sync
+ */
+AutomationRuleManager.updateCode = function(rule, callback, sync) {
+   assert(!isNullOrUndefined(rule), "rule must be defined");
+   assert($.isFunction(callback), "callback must be a function");
+
+   var async = true;
+   if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
+      async = !sync;
+
+   $.ajax({
+      type: "PUT",
+      url: "rest/automation/rule/" + rule.id + "/code",
+      data: JSON.stringify({"code" : encodeURIComponent(rule.code)}),
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+      async: async
+   })
+       .done(function(data) {
+          //we parse the json answer
+          if (data.result != "true")
+          {
+             notifyError($.t("objects.generic.errorUpdating", {objectName : rule.name}), JSON.stringify(data));
+             //launch callback with false as ko result
+             if ($.isFunction(callback))
+                callback(false);
+             return;
+          }
+          //it's okay
+
+          rule.code = decodeURIComponent(data.data.code);
+          //we call the callback with true as a ok result
+          if ($.isFunction(callback))
+             callback(true);
+       })
+       .fail(function() {
+          notifyError($.t("objects.generic.errorUpdating", {objectName : rule.name}));
+          //launch callback with false as ko result
+          if ($.isFunction(callback))
+             callback(false);
+       });
 };

@@ -45,7 +45,7 @@ AutomationEditorBlockly.prototype.getUuid = function() {
 /**
  * Obtain DOM structure to insert in editor's page
  */
-AutomationEditorBlockly.prototype.getDOMObject = function() {
+AutomationEditorBlockly.prototype.getDOMStructure = function() {
    return ("<div id=\"" + this.uuid + "\"></div>");
 };
 
@@ -53,16 +53,7 @@ AutomationEditorBlockly.prototype.getDOMObject = function() {
  * Permit to execute javascript action after inserting DOM structure in the page
  */
 AutomationEditorBlockly.prototype.applyScript = function() {
-   ace.require("ace/ext/language_tools");
-   this.editor = ace.edit("automation-rule-editor");
-   this.editor.setTheme("ace/theme/chrome");
-
-   this.editor.setOptions({
-      enableBasicAutocompletion: true,
-      enableSnippets: true,
-      displayIndentGuides: true,
-      highlightSelectedWord: true
-   });
+   //TODO
 };
 
 /**
@@ -72,24 +63,40 @@ AutomationEditorBlockly.prototype.applyScript = function() {
 AutomationEditorBlockly.prototype.setRule = function(rule) {
    //we add the .code and go to the end of code
    this.rule = rule;
-   this.editor.getSession().setMode("ace/mode/" + rule.type);
-   this.editor.setValue(decodeURIComponent(rule.code));
-   this.editor.gotoLine(editor.session.getLength());
+   //TODO
+};
+
+/**
+ * Permit to update the current rule with editor content
+ */
+AutomationEditorBlockly.prototype.updateRule = function() {
+   //TODO
+   rule.content = "";
+   rule.code = "";
 };
 
 /**
  * Permit to the object to run a custom validator engine
  */
 AutomationEditorBlockly.prototype.validate = function() {
+   //TODO
    return true;
 };
 
 /**
- * Get the current rule after edition
+ * Permit to change the interpreter
+ * @param newInterpreter
  */
-AutomationEditorBlockly.prototype.getRule = function() {
-   this.rule.code = this.editor.getValue();
-   return this.rule;
+AutomationEditorBlockly.prototype.setInterpreter = function(newInterpreter) {
+   var found = false;
+   $.each(AutomationEditorBlockly.getSupportedInterpreters(), function (key, value) {
+      if (value == newInterpreter)
+         found = true;
+   });
+
+   if (found) {
+      this.activeSupportedInterpreters = newInterpreter;
+   }
 };
 
 /**

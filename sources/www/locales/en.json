@@ -153,9 +153,7 @@
       "new-automation-rule" : {
          "title" : "Automation rule creation",
          "newRule" : "Create a new rule",
-         "choose-editor" : "Select an editor to create a new rule",
-         "blockly" : "Blockly language",
-         "python" : "Python language"
+         "choose-editor" : "Select an editor to create a new rule"
       },
       "edit-automation-rule" : {
          "title" : "Automation rule edition",
@@ -335,7 +333,8 @@
                "ruleSuccessfullyCreated" : "Rule successfully created",
                "editors" : {
                   "code" : {
-                     "name" : "Code"
+                     "name" : "Code",
+                     "insertKeywordId" : "Insert keyword Id"
                   },
                   "blockly" : {
                      "name" : "Blockly"
