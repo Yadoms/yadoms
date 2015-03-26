@@ -109,7 +109,7 @@ namespace web { namespace rest { namespace service {
          result.set("runningPlatform", m_runningInformation->getOperatingSystemName());
          result.set("yadomsVersion", m_runningInformation->getSoftwareVersion().toString());
          result.set("startupTime", m_runningInformation->getStartupDateTime());
-         result.set("executablePath", m_runningInformation->getExecutablePath().string());
+         result.set("executablePath", m_runningInformation->getExecutablePath());
          return CResult::GenerateSuccess(result);
       }
       catch (std::exception &ex)

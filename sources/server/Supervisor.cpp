@@ -31,9 +31,10 @@
 #include <shared/notification/NotificationCenter.h>
 #include "automation/RuleManager.h"
 #include <shared/ServiceLocator.h>
+#include <Poco/Util/ServerApplication.h>
 
-CSupervisor::CSupervisor(const startupOptions::IStartupOptions& startupOptions)
-   :m_EventHandler(new shared::event::CEventHandler), m_stopHandler(new CApplicationStopHandler(m_EventHandler, kStopRequested)), m_startupOptions(startupOptions)
+CSupervisor::CSupervisor()
+   :m_EventHandler(new shared::event::CEventHandler)
 {
 }
 
@@ -41,11 +42,13 @@ CSupervisor::~CSupervisor()
 {
 }
 
-void CSupervisor::doWork()
+
+void CSupervisor::run()
 {
    YADOMS_LOG_CONFIGURE("Supervisor");
    YADOMS_LOG(information) << "Supervisor is starting";
 
+   bool stopIsRequested = false;
    boost::shared_ptr<database::IDataProvider> pDataProvider;
    try
    {
@@ -54,8 +57,11 @@ void CSupervisor::doWork()
       //create the notification center
       boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter(new shared::notification::CNotificationCenter);
 
+      //retreive startup options
+      boost::shared_ptr<startupOptions::IStartupOptions> startupOptions = shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>();
+
       //start database system
-      pDataProvider.reset(new database::sqlite::CSQLiteDataProvider(m_startupOptions.getDatabaseFile()));
+      pDataProvider.reset(new database::sqlite::CSQLiteDataProvider(startupOptions->getDatabaseFile()));
       if (!pDataProvider->load())
       {
          throw shared::exception::CException("Fail to load database");
@@ -63,9 +69,6 @@ void CSupervisor::doWork()
 
       //create the data access layer
       boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dal(new dataAccessLayer::CDataAccessLayer(pDataProvider, notificationCenter));
-
-      //register objects in service locator
-      shared::CServiceLocator::instance().push<IApplicationStopHandler>(m_stopHandler);
 
       // Start Task manager
       boost::shared_ptr<task::CScheduler> taskManager(new task::CScheduler(m_EventHandler, kSystemEvent));
@@ -86,13 +89,13 @@ void CSupervisor::doWork()
          pDataProvider->getEventLoggerRequester(), m_EventHandler, kRuleManagerEvent));
 
       // Start Web server
-      const std::string & webServerIp = m_startupOptions.getWebServerIPAddress();
-      const std::string webServerPort = boost::lexical_cast<std::string>(m_startupOptions.getWebServerPortNumber());
-      const std::string & webServerPath = m_startupOptions.getWebServerInitialPath();
+      const std::string & webServerIp = startupOptions->getWebServerIPAddress();
+      const std::string webServerPort = boost::lexical_cast<std::string>(startupOptions->getWebServerPortNumber());
+      const std::string & webServerPath = startupOptions->getWebServerInitialPath();
 
       web::poco::CWebServer webServer(webServerIp, webServerPort, webServerPath, "/rest/", "/ws", notificationCenter);
       webServer.getConfigurator()->websiteHandlerAddAlias("plugins", pluginsPath);
-      webServer.getConfigurator()->configureAuthentication(boost::shared_ptr<authentication::IAuthentication>(new authentication::CBasicAuthentication(dal->getConfigurationManager(), notificationCenter, m_startupOptions.getNoPasswordFlag())));
+      webServer.getConfigurator()->configureAuthentication(boost::shared_ptr<authentication::IAuthentication>(new authentication::CBasicAuthentication(dal->getConfigurationManager(), notificationCenter, startupOptions->getNoPasswordFlag())));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPlugin(pDataProvider, pluginManager, *pluginGateway)));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CDevice(pDataProvider, *pluginGateway)));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPage(pDataProvider)));
@@ -113,13 +116,12 @@ void CSupervisor::doWork()
 
       // Main loop
       YADOMS_LOG(information) << "Supervisor is running...";
-      bool running = true;
-      while (running)
+      while (!stopIsRequested)
       {
          switch (m_EventHandler->waitForEvents())
          {
          case kStopRequested:
-            running = false;
+            stopIsRequested = true;
             break;
 
          case kPluginManagerEvent:
@@ -156,10 +158,6 @@ void CSupervisor::doWork()
       YADOMS_LOG(information) << "Supervisor is stopped";
 
       pDataProvider->getEventLoggerRequester()->addEvent(database::entities::ESystemEventCode::kStopped, "yadoms", shared::CStringExtension::EmptyString);
-
-      //if the application need to notify its stop (mainly in case of service)
-      if (m_callbackAfterStopped)
-         m_callbackAfterStopped();
    }
    catch (std::exception& e)
    {
@@ -173,15 +171,18 @@ void CSupervisor::doWork()
       if (pDataProvider)
          pDataProvider->getEventLoggerRequester()->addEvent(database::entities::ESystemEventCode::kYadomsCrash, "yadoms", "unknwon error");
    }
+
+   //if stop is not asked (exception, bug,...) then ask application to terminate
+   if (!stopIsRequested)
+   {
+      boost::shared_ptr<IApplicationStopHandler> stopHandler = shared::CServiceLocator::instance().get<IApplicationStopHandler>();
+      if (stopHandler)
+         stopHandler->requestToStop(IApplicationStopHandler::kYadomsOnly);
+   }
 }
 
-void CSupervisor::requestToStop(boost::function<void()> & callbackAfterStopped)
+void CSupervisor::requestToStop()
 {
-   m_callbackAfterStopped = callbackAfterStopped;
    m_EventHandler->postEvent(kStopRequested);
 }
 
-IApplicationStopHandler::EStopMode CSupervisor::stopMode() const
-{
-   return m_stopHandler->stopMode();
-}

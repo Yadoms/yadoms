@@ -12,7 +12,7 @@ public:
    /// \brief		      Constructor
    /// \param [in] path The executable path
    //-----------------------------------------------------------------------------
-   CRunningInformation(boost::filesystem::path & path);
+   CRunningInformation(const std::string & path);
 
    //-----------------------------------------------------------------------------
    /// \brief		                     Destructor
@@ -23,7 +23,7 @@ public:
    virtual const boost::posix_time::ptime  & getStartupDateTime() const;
    virtual const tools::CVersion  & getSoftwareVersion() const;
    virtual const std::string getOperatingSystemName() const;
-   virtual const boost::filesystem::path getExecutablePath() const;
+   virtual const std::string & getExecutablePath() const;
    // [END] IRunningInformation implementation
    
 private:
@@ -40,6 +40,6 @@ private:
    //-----------------------------------------------------------------------------
    /// \brief		                     Yadoms executable path
    //-----------------------------------------------------------------------------
-   boost::filesystem::path m_executablePath;
+   std::string m_executablePath;
 };
 

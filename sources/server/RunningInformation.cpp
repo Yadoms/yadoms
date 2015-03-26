@@ -4,7 +4,7 @@
 #include <Poco/Environment.h>
 #include <shared/Log.h>
 
-CRunningInformation::CRunningInformation(boost::filesystem::path & path)
+CRunningInformation::CRunningInformation(const std::string & path)
    :m_startupDateTime(boost::posix_time::second_clock::universal_time()),
    m_softwareVersion(1, 0, 0, 0), m_executablePath(path)
 {
@@ -33,7 +33,7 @@ const std::string CRunningInformation::getOperatingSystemName() const
    return (boost::format("%1% %2%") % Poco::Environment::osDisplayName() % Poco::Environment::osVersion()).str();
 }
 
-const boost::filesystem::path CRunningInformation::getExecutablePath() const
+const std::string & CRunningInformation::getExecutablePath() const
 {
    return m_executablePath;
 }
