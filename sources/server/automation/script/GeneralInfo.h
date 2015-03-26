@@ -32,11 +32,8 @@ namespace automation { namespace script
       //-----------------------------------------------------
       ///\brief               Constructor
       ///\param[in] configurationManager  Configuration manager (to gain access to Yadoms configuration from rules scripts)
-      ///\param[in] runningInformation  Running information provider
       //-----------------------------------------------------
-      CGeneralInfo(
-         boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
-         boost::shared_ptr<IRunningInformation> runningInformation);
+      CGeneralInfo(boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager);
 
       //-----------------------------------------------------
       ///\brief               Destructor

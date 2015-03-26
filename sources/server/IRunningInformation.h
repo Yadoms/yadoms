@@ -30,5 +30,11 @@ public:
    /// \return  	                     the operating system name
    //-----------------------------------------------------------------------------
    virtual const std::string getOperatingSystemName() const = 0;
+
+   //-----------------------------------------------------------------------------
+   /// \brief		                     get the full executable path
+   /// \return  	                     the full executable path (path + filename)
+   //-----------------------------------------------------------------------------
+   virtual const boost::filesystem::path getExecutablePath() const = 0;
 };
 

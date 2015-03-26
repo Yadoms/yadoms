@@ -4,6 +4,8 @@
 #include "startupOptions/Loader.h"
 #include <shared/Log.h>
 #include <tools/OperatingSystem.h>
+#include <shared/ServiceLocator.h>
+#include "RunningInformation.h"
 
 CApplication::CApplication()
 {
@@ -25,6 +27,13 @@ CApplication::~CApplication()
    
 void CApplication::configure(int argc, char ** argv)
 {
+   //find the working dir (= path to exe)
+   boost::filesystem::path full_path(boost::filesystem::initial_path<boost::filesystem::path>());
+   full_path = boost::filesystem::system_complete(boost::filesystem::path(argv[0]));
+
+   m_runningInformation.reset(new CRunningInformation(full_path));
+   shared::CServiceLocator::instance().push<IRunningInformation>(m_runningInformation);
+
    m_startupOptions.reset(new startupOptions::CLoader(argc, argv));
 
    logConfiguration::CLogConfiguration::configure(m_startupOptions->getLogLevel());

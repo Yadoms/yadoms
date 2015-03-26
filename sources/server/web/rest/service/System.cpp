@@ -6,13 +6,14 @@
 #include "web/rest/Result.h"
 #include <shared/Peripherals.h>
 #include <Poco/Net/NetworkInterface.h>
+#include <shared/ServiceLocator.h>
 
 namespace web { namespace rest { namespace service {
 
    std::string CSystem::m_restKeyword= std::string("system");
 
-   CSystem::CSystem(boost::shared_ptr<IRunningInformation> runningInformation)
-      :m_runningInformation(runningInformation)
+   CSystem::CSystem()
+      :m_runningInformation(shared::CServiceLocator::instance().get<IRunningInformation>())
    {
       
    }
@@ -108,6 +109,7 @@ namespace web { namespace rest { namespace service {
          result.set("runningPlatform", m_runningInformation->getOperatingSystemName());
          result.set("yadomsVersion", m_runningInformation->getSoftwareVersion().toString());
          result.set("startupTime", m_runningInformation->getStartupDateTime());
+         result.set("executablePath", m_runningInformation->getExecutablePath().string());
          return CResult::GenerateSuccess(result);
       }
       catch (std::exception &ex)

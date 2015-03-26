@@ -45,7 +45,8 @@ namespace tools
       //clear current version info
       m_versionInfo.clear();
       //copy parameter version to current
-      std::copy(rhs.m_versionInfo.begin(), rhs.m_versionInfo.end(), m_versionInfo.begin());
+      for (std::vector<int>::const_iterator i = rhs.m_versionInfo.begin(); i != rhs.m_versionInfo.end(); ++i)
+         m_versionInfo.push_back(*i);
    }
 
    CVersion::~CVersion()

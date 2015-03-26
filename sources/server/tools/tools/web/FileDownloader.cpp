@@ -38,7 +38,8 @@ namespace tools { namespace web {
             std::ostream request_stream(&request);
             request_stream << "GET " << uri.getUriPath() << uri.getUriFile() << " HTTP/1.0\r\n";
             request_stream << "Host: " << uri.getUriDomain() << "\r\n";
-            request_stream << "Accept: */*\r\n";
+            request_stream << "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\n";
+            request_stream << "User-Agent: yadoms\r\n";
             request_stream << "Connection: close\r\n\r\n";
 
             // Send the request.
@@ -112,8 +113,14 @@ namespace tools { namespace web {
             while (boost::asio::read(socket, response, boost::asio::transfer_at_least(50000), error))
             {
                //if an error occurs during download, then stop
-               if (error != boost::asio::error::eof)
+               if (error != boost::asio::error::eof && error.value() != 0)
+               {
+                  YADOMS_LOG(error) << error.message();
+                  YADOMS_LOG(error) << error.category().name();
+                  YADOMS_LOG(error) << error.value();
+
                   throw boost::system::system_error(error);
+               }
 
                //get the size of the read part
                currentReadSize += response.size();
@@ -146,7 +153,7 @@ namespace tools { namespace web {
       }
       catch (std::exception& e)
       {
-         YADOMS_LOG(error) << "Fail to downloaad file : " << e.what() << "\n";
+         YADOMS_LOG(error) << "Fail to download file : " << e.what() << "\n";
          throw;
       }      
    }
