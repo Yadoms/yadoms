@@ -19,14 +19,13 @@ CFactory::CFactory(const std::string& interpretersPath,
       boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
       boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
       boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter,
-      boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
-      boost::shared_ptr<IRunningInformation> runningInformation)
+      boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester)
    :m_interpretersPath(interpretersPath),
    m_pluginGateway(pluginGateway),
    m_configurationManager(configurationManager),
    m_notificationCenter(notificationCenter),
    m_dbAcquisitionRequester(dbAcquisitionRequester),
-   m_generalInfo(new CGeneralInfo(configurationManager, runningInformation))
+   m_generalInfo(new CGeneralInfo(configurationManager))
 {
 }
 

@@ -35,7 +35,6 @@
 CSupervisor::CSupervisor(const startupOptions::IStartupOptions& startupOptions)
    :m_EventHandler(new shared::event::CEventHandler), m_stopHandler(new CApplicationStopHandler(m_EventHandler, kStopRequested)), m_startupOptions(startupOptions)
 {
-   shared::CServiceLocator::instance().push<IApplicationStopHandler>(m_stopHandler);
 }
 
 CSupervisor::~CSupervisor()
@@ -52,21 +51,21 @@ void CSupervisor::doWork()
    {
       const std::string pluginsPath = "plugins";
 
-      //create the system information
-      boost::shared_ptr<IRunningInformation> systemInformation(new CRunningInformation());
-
       //create the notification center
       boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter(new shared::notification::CNotificationCenter);
 
       //start database system
       pDataProvider.reset(new database::sqlite::CSQLiteDataProvider(m_startupOptions.getDatabaseFile()));
       if (!pDataProvider->load())
+      {
          throw shared::exception::CException("Fail to load database");
-      shared::CServiceLocator::instance().push<database::IDataProvider>(pDataProvider);
+      }
 
       //create the data access layer
       boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dal(new dataAccessLayer::CDataAccessLayer(pDataProvider, notificationCenter));
-      shared::CServiceLocator::instance().push<dataAccessLayer::IDataAccessLayer>(dal);
+
+      //register objects in service locator
+      shared::CServiceLocator::instance().push<IApplicationStopHandler>(m_stopHandler);
 
       // Start Task manager
       boost::shared_ptr<task::CScheduler> taskManager(new task::CScheduler(m_EventHandler, kSystemEvent));
@@ -84,7 +83,7 @@ void CSupervisor::doWork()
       // Start automation rules manager
       boost::shared_ptr<automation::IRuleManager> automationRulesManager(new automation::CRuleManager(
          pDataProvider->getRuleRequester(), pluginGateway, notificationCenter, pDataProvider->getAcquisitionRequester(), dal->getConfigurationManager(),
-         systemInformation, pDataProvider->getEventLoggerRequester(), m_EventHandler, kRuleManagerEvent));
+         pDataProvider->getEventLoggerRequester(), m_EventHandler, kRuleManagerEvent));
 
       // Start Web server
       const std::string & webServerIp = m_startupOptions.getWebServerIPAddress();
@@ -101,7 +100,7 @@ void CSupervisor::doWork()
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CConfiguration(dal->getConfigurationManager())));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPluginEventLogger(pDataProvider)));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CEventLogger(pDataProvider)));
-      webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CSystem(systemInformation)));
+      webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CSystem()));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CAcquisition(pDataProvider)));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CAutomationRule(pDataProvider, automationRulesManager)));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CTask(taskManager)));

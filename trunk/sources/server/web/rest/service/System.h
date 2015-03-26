@@ -10,7 +10,7 @@ namespace web { namespace rest { namespace service {
    class CSystem : public IRestService
    {
    public:
-	  CSystem(boost::shared_ptr<IRunningInformation> runningInformation);
+	  CSystem();
       virtual ~CSystem();
 
    public:

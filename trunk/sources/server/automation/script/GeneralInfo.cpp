@@ -5,6 +5,7 @@
 #include <shared/Log.h>
 #include <shared/exception/InvalidParameter.hpp>
 #include <shared/exception/EmptyResult.hpp>
+#include <shared/ServiceLocator.h>
 
 namespace automation { namespace script
 {
@@ -21,12 +22,10 @@ DECLARE_ENUM_IMPLEMENTATION(EInfo,
    ((YadomsServerVersion))
 )
 
-CGeneralInfo::CGeneralInfo(
-   boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
-   boost::shared_ptr<IRunningInformation> runningInformation)
+CGeneralInfo::CGeneralInfo(boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager)
    :m_location(new CLocation(configurationManager)),
    m_dayLight(new CDayLight(m_location)),
-   m_runningInformation(runningInformation)
+   m_runningInformation(shared::CServiceLocator::instance().get<IRunningInformation>())
 {
 }
 

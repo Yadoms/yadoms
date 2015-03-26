@@ -5,7 +5,6 @@
 #include "../../communication/ISendMessageAsync.h"
 #include <shared/notification/NotificationCenter.h>
 #include "../../dataAccessLayer/IConfigurationManager.h"
-#include "../../IRunningInformation.h"
 #include "IGeneralInfo.h"
 
 namespace automation { namespace script
@@ -23,14 +22,12 @@ namespace automation { namespace script
       ///\param[in] configurationManager  Configuration manager (to gain access to Yadoms configuration from rules scripts)
       ///\param[in] notificationCenter Notification center, used to get notified on keyword state changes
       ///\param[in] dbAcquisitionRequester  Database acquisition requester
-      ///\param[in] runningInformation  Running information provider
       //-----------------------------------------------------
       CFactory(const std::string& interpretersPath,
          boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
          boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
          boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter,
-         boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
-         boost::shared_ptr<IRunningInformation> runningInformation);
+         boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester);
 
       //-----------------------------------------------------
       ///\brief               Destructor

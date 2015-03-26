@@ -9,9 +9,10 @@ class CRunningInformation : public IRunningInformation
 {
 public:
    //-----------------------------------------------------------------------------
-   /// \brief		                     Constructor
+   /// \brief		      Constructor
+   /// \param [in] path The executable path
    //-----------------------------------------------------------------------------
-   CRunningInformation();
+   CRunningInformation(boost::filesystem::path & path);
 
    //-----------------------------------------------------------------------------
    /// \brief		                     Destructor
@@ -22,6 +23,7 @@ public:
    virtual const boost::posix_time::ptime  & getStartupDateTime() const;
    virtual const tools::CVersion  & getSoftwareVersion() const;
    virtual const std::string getOperatingSystemName() const;
+   virtual const boost::filesystem::path getExecutablePath() const;
    // [END] IRunningInformation implementation
    
 private:
@@ -34,5 +36,10 @@ private:
    /// \brief		                     Yadoms version
    //-----------------------------------------------------------------------------
    tools::CVersion   m_softwareVersion;
+
+   //-----------------------------------------------------------------------------
+   /// \brief		                     Yadoms executable path
+   //-----------------------------------------------------------------------------
+   boost::filesystem::path m_executablePath;
 };
 

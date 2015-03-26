@@ -2,6 +2,7 @@
 #include "tools/IApplication.h"
 #include "Supervisor.h"
 #include "startupOptions/IStartupOptions.h"
+#include "IRunningInformation.h"
 
 //-----------------------------
 ///\brief Yadoms application
@@ -27,4 +28,5 @@ public:
 private:
    boost::shared_ptr<CSupervisor> m_supervisor;
    boost::shared_ptr<startupOptions::IStartupOptions> m_startupOptions;
+   boost::shared_ptr<IRunningInformation> m_runningInformation;
 };
