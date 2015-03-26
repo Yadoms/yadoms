@@ -55,8 +55,8 @@ void CRunner::run(shared::script::yScriptApi::IYScriptApi& context)
          if (!isPythonError(PyExc_IOError, 4))
             throw CPythonException("Script yMain function returned with error");
 
-         // We are here because because receive a CTRL-C. So Yadoms will end, 
-         // just wait that thread stop is required
+         // We are here because because receive a CTRL-C (Python catch CTRL-C as the main application...).
+         // So Yadoms will end, just wait that thread stop is required
          context.log("#### END ####");
          YADOMS_LOG(information) << m_scriptPath << " : script exited";
          boost::this_thread::sleep_for(boost::chrono::seconds(10000)); // Should throw boost::thread_interrupted
