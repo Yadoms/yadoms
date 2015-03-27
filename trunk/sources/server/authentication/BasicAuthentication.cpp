@@ -15,7 +15,7 @@ namespace authentication {
    const std::string CBasicAuthentication::m_configurationPassword("password");
 
    CBasicAuthentication::CBasicAuthentication(boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager, boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter, bool skipPasswordCheck)
-      :m_configurationManager(configurationManager), m_notificationCenter(notificationCenter), m_skipPasswordCheck(skipPasswordCheck), m_monitorConfigurationUpdates(this, &CBasicAuthentication::monitorConfigurationUpdate)
+      :m_configurationManager(configurationManager), m_notificationCenter(notificationCenter), m_monitorConfigurationUpdates(this, &CBasicAuthentication::monitorConfigurationUpdate), m_skipPasswordCheck(skipPasswordCheck)
    {
       if (!m_skipPasswordCheck)
       {

@@ -130,7 +130,7 @@ SET ( POCO_LIBS
    PocoJSON
 	PocoNet
 	PocoUtil
-   PocoXml
+   PocoXML
    PocoZip
 )
 
