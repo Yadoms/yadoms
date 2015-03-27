@@ -5,7 +5,6 @@
 #include "startupOptions/IStartupOptions.h"
 #include <Poco/Thread.h>
 #include <Poco/Runnable.h>
-#include "IApplicationStopHandler.h"
 
 //-----------------------------------------------------------------------------
 /// \class              Yadoms supervisor
@@ -26,10 +25,12 @@ private:
 
 public:
    //-----------------------------------------------------------------------------
-   /// \brief		                     Constructor
-   /// \param[in] startupOptions       Yadoms startup options
+   /// \brief		                        Constructor
+   /// \param[in] applicationEventHandler Application event handler
+   /// \param[in] applicationStopCode     Code for application notification
    //-----------------------------------------------------------------------------
-   CSupervisor();
+   CSupervisor(boost::shared_ptr<shared::event::CEventHandler> applicationEventHandler, const int applicationStopCode);
+
 
    //-----------------------------------------------------------------------------
    /// \brief		                     Destructor
@@ -42,7 +43,7 @@ public:
    virtual void run();
 
    //-----------------------------------------------------------------------------
-   /// \brief		                     Stop the supervisor
+   /// \brief  Ask the supervisor to stop
    //-----------------------------------------------------------------------------
    void requestToStop();
 
@@ -51,5 +52,17 @@ private:
    /// \brief		                     The supervisor event handler
    //-----------------------------------------------------------------------------
    boost::shared_ptr<shared::event::CEventHandler> m_EventHandler;
+
+   //-----------------------------
+   ///\brief Event handler for application
+   //-----------------------------
+   boost::shared_ptr<shared::event::CEventHandler> m_applicationEventHandler;
+
+   //-----------------------------
+   ///\brief Event code used to notify application that supervisor ends
+   //-----------------------------
+   const int m_applicationStopCode;
+
+
 };
 

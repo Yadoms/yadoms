@@ -170,6 +170,7 @@ set(YADOMS_SRC
 	
 	server/Application.h
 	server/Application.cpp
+	server/IApplicationStopHandler.h
 	server/ApplicationStopHandler.h
 	server/ApplicationStopHandler.cpp
 	server/ErrorHandler.h
@@ -423,6 +424,7 @@ source_group(server\\web\\ws  server/web/ws/*.*)
 # Tools
 set(YADOMS_SRC ${YADOMS_SRC}
 	server/tools/tools/IApplication.h
+	server/tools/tools/IOperatingSystemIntegration.h
 	server/tools/tools/Version.h
 	server/tools/tools/Version.cpp
 	server/tools/tools/web/FileDownloader.h
@@ -438,18 +440,28 @@ IF(WIN32)
 		# Add here server/tools/windows/tools/ sources
 		server/tools/windows/tools/OperatingSystem.h
 		server/tools/windows/tools/OperatingSystem.cpp
+		server/tools/windows/tools/OperatingSystemIntegration.h
+		server/tools/windows/tools/OperatingSystemIntegration.cpp
+		server/tools/windows/tools/ConsoleControlHandler.h
+		server/tools/windows/tools/ConsoleControlHandler.cpp
+		server/tools/windows/tools/ServiceControlHandler.h
+		server/tools/windows/tools/ServiceControlHandler.cpp
 	)	
 ELSEIF(APPLE)
 	set(YADOMS_SRC ${YADOMS_SRC}
 		# Add here server/tools/mac/tools/ sources
 		server/tools/mac/tools/OperatingSystem.h
 		server/tools/mac/tools/OperatingSystem.cpp
+		server/tools/mac/tools/OperatingSystemIntegration.h
+		server/tools/mac/tools/OperatingSystemIntegration.cpp
 	)	
 ELSE()
 	set(YADOMS_SRC ${YADOMS_SRC}
 		# Add here server/tools/linux/tools/ sources
 		server/tools/linux/tools/OperatingSystem.h
 		server/tools/linux/tools/OperatingSystem.cpp
+		server/tools/linux/tools/OperatingSystemIntegration.h
+		server/tools/linux/tools/OperatingSystemIntegration.cpp
 	)	
 ENDIF()
 

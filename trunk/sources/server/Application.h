@@ -2,8 +2,9 @@
 #include <Poco/Util/ServerApplication.h>
 #include <Poco/Util/OptionSet.h>
 #include "startupOptions/Loader.h"
-#include "IApplicationStopHandler.h"
 #include "IRunningInformation.h"
+#include "ApplicationStopHandler.h"
+#include <shared/event/EventHandler.hpp>
 
 //-----------------------------
 ///\brief Yadoms application
@@ -41,12 +42,27 @@ private:
    boost::shared_ptr<startupOptions::CStartupOptions> m_startupOptions;
    
    //-----------------------------
-   ///\brief Stop handler
-   //-----------------------------
-   boost::shared_ptr<IApplicationStopHandler> m_stopHandler; 
-   
-   //-----------------------------
-   ///\brief Stop handler
+   ///\brief Running information
    //-----------------------------
    boost::shared_ptr<IRunningInformation> m_runningInformation;
+
+   //-----------------------------
+   ///\brief Stop handler
+   //-----------------------------
+   boost::shared_ptr<CApplicationStopHandler> m_stopHandler;
+
+
+   //-----------------------------
+   ///\brief Event handler used by supervisor
+   //-----------------------------
+   boost::shared_ptr<shared::event::CEventHandler> m_eventHandler;
+
+   //-----------------------------
+   ///\brief Event code
+   //-----------------------------
+   enum
+   {
+      kSupervisorIsStopped = shared::event::kUserFirstId,
+      kTerminationRequested
+   };
 };

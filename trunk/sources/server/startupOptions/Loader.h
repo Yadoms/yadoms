@@ -45,6 +45,7 @@ namespace startupOptions
       virtual const std::string getPluginsPath() const;
       virtual bool getDebugFlag() const;
       virtual bool getNoPasswordFlag() const;
+      virtual bool getIsRunningAsService() const;
       // [END] IStartupOptions implementation
       //--------------------------------------------------------------
 

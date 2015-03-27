@@ -32,9 +32,11 @@
 #include "automation/RuleManager.h"
 #include <shared/ServiceLocator.h>
 #include <Poco/Util/ServerApplication.h>
+#include <tools/OperatingSystem.h>
 
-CSupervisor::CSupervisor()
-   :m_EventHandler(new shared::event::CEventHandler)
+
+CSupervisor::CSupervisor(boost::shared_ptr<shared::event::CEventHandler> applicationEventHandler, const int applicationStopCode)
+   :m_EventHandler(new shared::event::CEventHandler), m_applicationEventHandler(applicationEventHandler), m_applicationStopCode(applicationStopCode)
 {
 }
 
@@ -148,6 +150,10 @@ void CSupervisor::run()
       //stop the automation rules
       automationRulesManager.reset();
 
+      //stop task manager
+      if (taskManager)
+         taskManager->stop();
+
       //stop all plugins
       if (pluginManager.get() != NULL)
          pluginManager->stop();
@@ -172,17 +178,13 @@ void CSupervisor::run()
          pDataProvider->getEventLoggerRequester()->addEvent(database::entities::ESystemEventCode::kYadomsCrash, "yadoms", "unknwon error");
    }
 
-   //if stop is not asked (exception, bug,...) then ask application to terminate
-   if (!stopIsRequested)
-   {
-      boost::shared_ptr<IApplicationStopHandler> stopHandler = shared::CServiceLocator::instance().get<IApplicationStopHandler>();
-      if (stopHandler)
-         stopHandler->requestToStop(IApplicationStopHandler::kYadomsOnly);
-   }
+   //notify application that supervisor ends
+   if (m_applicationEventHandler)
+      m_applicationEventHandler->postEvent(m_applicationStopCode);
 }
 
 void CSupervisor::requestToStop()
 {
-   m_EventHandler->postEvent(kStopRequested);
+   if (m_EventHandler)
+      m_EventHandler->postEvent(kStopRequested);
 }
-

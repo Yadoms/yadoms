@@ -112,4 +112,9 @@ namespace startupOptions
    {
       return m_configContainer.getString("server.pluginsPath", "plugins");
    }
+
+   bool CStartupOptions::getIsRunningAsService() const
+   {
+      return m_configContainer.getBool("application.runAsService", false);
+   }
 } // namespace startupOptions

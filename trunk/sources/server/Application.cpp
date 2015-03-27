@@ -19,14 +19,15 @@
 #include "ApplicationStopHandler.h"
 #include "RunningInformation.h"
 #include <shared/ServiceLocator.h>
+#include "tools/OperatingSystemIntegration.h"
 
 //define the main entry point
 POCO_SERVER_MAIN(CYadomsServer)
 
 CYadomsServer::CYadomsServer()
 :m_helpRequested(false), 
-m_startupOptions(new startupOptions::CStartupOptions(config())), 
-m_stopHandler(new CApplicationStopHandler())
+m_startupOptions(new startupOptions::CStartupOptions(config())),
+m_eventHandler(new shared::event::CEventHandler())
 {
    //define unixstyle for command line parsing
    //so in Windows platform we use --option and -o for options (instead of /option)
@@ -44,12 +45,15 @@ void CYadomsServer::initialize(Application& self)
    loadConfiguration(); // load default configuration files, if present
    Poco::Util::ServerApplication::initialize(self);
 
+   boost::filesystem::path workingDir(config().getString("application.path"));
+   boost::filesystem::current_path(workingDir.parent_path());
+
    logConfiguration::CLogConfiguration::configure(m_startupOptions->getLogLevel());
 }
 
 void CYadomsServer::uninitialize()
 {
-   logger().information("shutting down");
+   YADOMS_LOG(information) << "Yadoms is shutting down";
    ServerApplication::uninitialize();
 }
 
@@ -79,6 +83,7 @@ void CYadomsServer::handleHelp(const std::string& name, const std::string& value
 void CYadomsServer::displayHelp()
 {
    Poco::Util::HelpFormatter helpFormatter(options());
+   helpFormatter.setUnixStyle(true);
    helpFormatter.setCommand(commandName());
    helpFormatter.setUsage("OPTIONS");
    helpFormatter.setHeader("Yadoms command line usage");
@@ -91,6 +96,8 @@ int CYadomsServer::main(const Poco::Util::Application::ArgVec& args)
    {
       std::string executablePath = config().getString("application.path");
       m_runningInformation.reset(new CRunningInformation(executablePath));
+
+
 
       YADOMS_LOG_CONFIGURE("Main");
 
@@ -108,7 +115,6 @@ int CYadomsServer::main(const Poco::Util::Application::ArgVec& args)
       YADOMS_LOG(information) << "********************************************************************";
 
       //register Services in serviceLocator
-      shared::CServiceLocator::instance().push<IApplicationStopHandler>(m_stopHandler);
       shared::CServiceLocator::instance().push<startupOptions::IStartupOptions>(m_startupOptions);
       shared::CServiceLocator::instance().push<IRunningInformation>(m_runningInformation);
 
@@ -117,13 +123,41 @@ int CYadomsServer::main(const Poco::Util::Application::ArgVec& args)
       CErrorHandler eh;
       Poco::ErrorHandler* pOldEH = Poco::ErrorHandler::set(&eh);
 
-      CSupervisor supervisor;
-      Poco::Thread thread("Supervisor");
-      thread.start(supervisor);
-      waitForTerminationRequest();
+      //configure stop handler
+      m_stopHandler.reset(new CApplicationStopHandler(m_eventHandler, kTerminationRequested));
+      shared::CServiceLocator::instance().push<IApplicationStopHandler>(m_stopHandler);
 
-      supervisor.requestToStop();
-      thread.join();
+      tools::COperatingSystemIntegration integration;
+      integration.configure();
+
+      //create supervisor
+      CSupervisor supervisor(m_eventHandler, kSupervisorIsStopped);
+      Poco::Thread supervisorThread("Supervisor");
+      supervisorThread.start(supervisor);
+
+      bool stillRunning = true;
+      while (stillRunning)
+      {
+         //configure console and ctrl+c handlers
+         switch (m_eventHandler->waitForEvents())
+         {
+         case kTerminationRequested:
+            //this event is launch by application stop handler
+            //then just ask supervisor to stop and follow termination process
+            supervisor.requestToStop();
+            break;
+         case kSupervisorIsStopped:
+            stillRunning = false;
+            break;
+         default:
+            break;
+         }
+      }
+      supervisorThread.join();
+
+      //notify listeners
+      if (m_stopHandler)
+         m_stopHandler->NotifyApplicationEnds();
 
       //restore Poco ErrorHandler
       Poco::ErrorHandler::set(pOldEH);
