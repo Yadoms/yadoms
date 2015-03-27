@@ -62,7 +62,13 @@ namespace startupOptions
       /// \brief	    Get the no password flag
       /// \return     flag indicating if password check is disabled for this instance
       //--------------------------------------------------------------
-      virtual bool getNoPasswordFlag() const = 0;
+      virtual bool getNoPasswordFlag() const = 0;     
+      
+      //--------------------------------------------------------------
+      /// \brief	    Indicate if yadoms is runnings as a service
+      /// \return     true if yadoms is runnings as a service
+      //--------------------------------------------------------------
+      virtual bool getIsRunningAsService() const = 0;
    };
 
 } // namespace startupOptions

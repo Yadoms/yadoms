@@ -3,6 +3,8 @@
 //
 #pragma once
 
+#include <shared/event/EventHandler.hpp>
+
 //-----------------------------------------------------------------------------
 /// \class              Application stop handler
 //-----------------------------------------------------------------------------
@@ -25,5 +27,11 @@ public:
    /// \param[in] targetEventHandler   Event handler to notify
    /// \param[in] eventId              Event ID to send when stop occurs
    //-----------------------------------------------------------------------------
-   virtual void requestToStop(EStopMode stopMode) const = 0;
+   virtual void requestToStop(EStopMode stopMode) = 0;
+
+   //-----------------------------------------------------------------------------
+   /// \brief		                     Register a callback used when app is about to end
+   /// \param[in] callbackAfterStopped Callback
+   //-----------------------------------------------------------------------------
+   virtual void registerForAppEnds(boost::shared_ptr<shared::event::CEventHandler> & handler, const int code) = 0;
 };
