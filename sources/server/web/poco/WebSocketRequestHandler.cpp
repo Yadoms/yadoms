@@ -48,9 +48,6 @@ void CWebSocketRequestHandler::handleRequest(Poco::Net::HTTPServerRequest& reque
       // Subscribe to new acquisitions depends on filters set by GUI
       typedef notification::CObserverSubscriber<notification::acquisition::INotifier, notification::acquisition::IObserver> AcquisitionSubscriber;
       std::vector<boost::shared_ptr<AcquisitionSubscriber> > acquisitionsSubscribers;
-      // While no filter is set by GUI, all acquisitions must be sent //TODO enlever ce comportement lorsque les filtres seront fonctionnels
-      boost::shared_ptr<notification::acquisition::IObserver> acquisitionObserver(new notification::acquisition::CObserverAsEvent(eventHandler, kNewAcquisition, notification::acquisition::IObserver::kAll, true));
-      acquisitionsSubscribers.push_back(boost::make_shared<AcquisitionSubscriber>(m_notificationCenter->acquisitionNotifier(), acquisitionObserver));
 
       // Subscribe to new device notifications
       boost::shared_ptr<notification::newDevice::IObserver> newDeviceObserver(new notification::newDevice::CObserverAsEvent(eventHandler, kNewDevice));
