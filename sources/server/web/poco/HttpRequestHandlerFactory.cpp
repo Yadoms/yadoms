@@ -23,7 +23,7 @@
 namespace web { namespace poco {
 
 
-   CHttpRequestHandlerFactory::CHttpRequestHandlerFactory(boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter)
+   CHttpRequestHandlerFactory::CHttpRequestHandlerFactory(boost::shared_ptr<notification::INotificationCenter> notificationCenter)
       :m_notificationCenter(notificationCenter)
    {
    }

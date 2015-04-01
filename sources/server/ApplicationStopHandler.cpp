@@ -60,7 +60,7 @@ void CApplicationStopHandler::NotifyApplicationEnds()
          if (i->first)
             i->first->postEvent(i->second);
       }
-      catch (std::exception & ex)
+      catch (std::exception&)
       {
 
       }

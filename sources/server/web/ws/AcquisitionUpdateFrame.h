@@ -2,7 +2,6 @@
 
 #include "FrameBase.h"
 #include "database/entities/Entities.h"
-#include "notifications/NewAcquisitionNotification.h"
 
 
 namespace web { namespace ws {
@@ -15,15 +14,13 @@ namespace web { namespace ws {
    public:
       //-----------------------------
       ///\brief Constructor
-      ///\param [in]    content     The acquisition to send to GUI
+      ///\param[in] acquisition     The acquisition to send to GUI
+      ///\param[in] dailySummary    The new daily summary
+      ///\param[in] hourlySummary   The new hourly summary
       //-----------------------------
-      CAcquisitionUpdateFrame(const database::entities::CAcquisition & content);
-
-      //-----------------------------
-      ///\brief Constructor
-      ///\param [in]    content     The acquisition to send to GUI (shared_ptr)
-      //-----------------------------
-      CAcquisitionUpdateFrame(boost::shared_ptr<notifications::CNewAcquisitionNotification> notificationData);
+      CAcquisitionUpdateFrame(const database::entities::CAcquisition& acquisition,
+         boost::shared_ptr<const database::entities::CAcquisitionSummary> dailySummary = boost::shared_ptr<const database::entities::CAcquisitionSummary>(),
+         boost::shared_ptr<const database::entities::CAcquisitionSummary> hourlySummary = boost::shared_ptr<const database::entities::CAcquisitionSummary>());
 
       //-----------------------------
       ///\brief Destructor
@@ -34,15 +31,15 @@ namespace web { namespace ws {
       //-----------------------------
       ///\bruef The acquisition field name
       //-----------------------------
-      static const std::string m_acquition;
+      static const std::string m_acquisition;
       //-----------------------------
       ///\bruef The acquisition SUMMARY DAY field name
       //-----------------------------
-      static const std::string m_acquitionDay;
+      static const std::string m_acquisitionDay;
       //-----------------------------
       ///\bruef The acquisition SUMMARY HOUR name
       //-----------------------------
-      static const std::string m_acquitionHour;
+      static const std::string m_acquisitionHour;
    };
 
 } //namespace ws

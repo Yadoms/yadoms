@@ -1,6 +1,5 @@
 #pragma once
 #include "Instance.h"
-#include "IInstance.h"
 #include "FinishedInstance.h"
 #include "ITask.h"
 #include <shared/event/EventHandler.hpp>

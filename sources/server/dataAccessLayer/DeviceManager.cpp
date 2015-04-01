@@ -1,11 +1,10 @@
 #include "stdafx.h"
 #include "DeviceManager.h"
-#include "notifications/NewDeviceNotification.h"
 
 namespace dataAccessLayer {
 
-      CDeviceManager::CDeviceManager(boost::shared_ptr< database::IDeviceRequester > deviceRequester, boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter)
-         :m_deviceRequester(deviceRequester), m_notificationCenter(notificationCenter)
+      CDeviceManager::CDeviceManager(boost::shared_ptr< database::IDeviceRequester > deviceRequester, boost::shared_ptr<notification::newDevice::INotifier> notifier)
+         :m_deviceRequester(deviceRequester), m_notifier(notifier)
       {
       }
    
@@ -49,15 +48,7 @@ namespace dataAccessLayer {
          boost::shared_ptr<database::entities::CDevice> result = m_deviceRequester->createDevice(pluginId, name, friendlyName, model, details);
 
          //post notification
-         try
-         {
-            boost::shared_ptr< notifications::CNewDeviceNotification > notificationData(new notifications::CNewDeviceNotification(result));
-            m_notificationCenter->postNotification(notificationData);
-         }
-         catch (shared::exception::CException & ex)
-         {
-            YADOMS_LOG(error) << "Fail to retreive new acquisition : " << ex.what();
-         }
+         m_notifier->post(result);
 
          return result;
       }    

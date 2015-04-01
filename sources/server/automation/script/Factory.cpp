@@ -18,7 +18,7 @@ namespace automation { namespace script
 CFactory::CFactory(const std::string& interpretersPath,
       boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
       boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
-      boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter,
+      boost::shared_ptr<notification::INotificationCenter> notificationCenter,
       boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester)
    :m_interpretersPath(interpretersPath),
    m_pluginGateway(pluginGateway),
@@ -208,7 +208,7 @@ boost::shared_ptr<ILogger> CFactory::createScriptLogger(const std::string& scrip
 boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> CFactory::createScriptContext(boost::shared_ptr<ILogger> scriptLogger)
 {
    boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> context(
-      new CYScriptApiImplementation(scriptLogger, m_pluginGateway, m_configurationManager, m_notificationCenter, m_dbAcquisitionRequester, m_generalInfo));
+      new CYScriptApiImplementation(scriptLogger, m_pluginGateway, m_configurationManager, m_notificationCenter->acquisitionNotifier(), m_dbAcquisitionRequester, m_generalInfo));
    return context;
 }
 

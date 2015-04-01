@@ -40,7 +40,7 @@ namespace web { namespace ws {
       return m_typeFieldName; 
    }
 
-   const std::string CFrameBase::serialize()
+   const std::string CFrameBase::serialize() const
    {
       return m_internalContainer.serialize();
    }

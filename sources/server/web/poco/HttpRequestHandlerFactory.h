@@ -2,7 +2,7 @@
 
 #include <Poco/Net/HTTPServer.h>
 #include "web/IWebServerConfigurator.h"
-#include <shared/notification/NotificationCenter.h>
+#include "../../notification/INotificationCenter.h"
 
 namespace web { namespace poco {
 
@@ -16,7 +16,7 @@ namespace web { namespace poco {
       ///\brief Constructor
       /// \param[in]    notificationCenter The notification center
       //==============================================
-      CHttpRequestHandlerFactory(boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter);
+      CHttpRequestHandlerFactory(boost::shared_ptr<notification::INotificationCenter> notificationCenter);
 
       //==============================================
       ///\brief Destructor
@@ -27,7 +27,7 @@ namespace web { namespace poco {
       virtual void websiteHandlerConfigure(const std::string & doc_root);
       virtual void websiteHandlerAddAlias(const std::string & alias, const std::string & path);
       virtual void restHandlerConfigure(const std::string & restKeywordBase);
-      virtual void restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService> restService);
+      virtual void restHandlerRegisterService(boost::shared_ptr<rest::service::IRestService> restService);
       virtual void webSocketConfigure(const std::string & webSocketKeyword);
       virtual void configureAuthentication(boost::shared_ptr<authentication::IAuthentication> authenticator);
       // [END] IWebServerConfigurator implementation
@@ -40,9 +40,9 @@ namespace web { namespace poco {
       std::string m_configDocRoot;
       std::string m_restKeywordBase;
       std::string m_webSocketKeyword;
-      std::vector< boost::shared_ptr<web::rest::service::IRestService> > m_restService;
+      std::vector< boost::shared_ptr<rest::service::IRestService> > m_restService;
       std::map<std::string, std::string> m_alias;
-      boost::shared_ptr<shared::notification::CNotificationCenter> m_notificationCenter;
+      boost::shared_ptr<notification::INotificationCenter> m_notificationCenter;
       boost::shared_ptr<authentication::IAuthentication> m_authenticator;
    };
 

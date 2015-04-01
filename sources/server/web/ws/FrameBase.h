@@ -37,7 +37,7 @@ namespace web {   namespace ws {
          ///\brief Constructor
          ///\param [in]  type    The type of frame
          //-----------------------------
-         CFrameBase(const CFrameBase::EFrameType & type);
+         CFrameBase(const EFrameType & type);
 
 
       public:
@@ -49,7 +49,7 @@ namespace web {   namespace ws {
          //-----------------------------
          ///\brief Serialize the frame
          //-----------------------------
-         const std::string serialize();
+         const std::string serialize() const;
 
          //-----------------------------
          ///\brief Get the type field name

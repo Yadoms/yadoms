@@ -13,14 +13,13 @@
 #include <Poco/Net/WebSocket.h>
 #include <Poco/Net/NetException.h>
 #include "MimeType.h"
-#include <shared/notification/NotificationCenter.h>
 
 
 
 namespace web { namespace poco {
 
 
-   CWebServer::CWebServer(const std::string & address, const std::string & port, const std::string & doc_root, const std::string & restKeywordBase, const std::string & webSocketKeywordBase, boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter)
+   CWebServer::CWebServer(const std::string & address, const std::string & port, const std::string & doc_root, const std::string & restKeywordBase, const std::string & webSocketKeywordBase, boost::shared_ptr<notification::INotificationCenter> notificationCenter)
       :m_httpRequestHandlerFactory(new CHttpRequestHandlerFactory(notificationCenter))
    {
       //configure the factory

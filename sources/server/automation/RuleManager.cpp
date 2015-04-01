@@ -12,7 +12,7 @@ namespace automation
 {
 
 CRuleManager::CRuleManager(boost::shared_ptr<database::IRuleRequester> dbRequester, boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
-   boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter, boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
+   boost::shared_ptr<notification::INotificationCenter> notificationCenter, boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
    boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
    boost::shared_ptr<database::IEventLoggerRequester> eventLoggerRequester, boost::shared_ptr<shared::event::CEventHandler> supervisor, int ruleManagerEventId)
    :m_dbRequester(dbRequester),

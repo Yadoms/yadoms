@@ -3,7 +3,6 @@
 #include <shared/ThreadBase.h>
 #include "ITask.h"
 #include <shared/event/EventHandler.hpp>
-#include <shared/notification/NotificationCenter.h>
 #include "IInstance.h"
 #include "TaskStatus.h"
 

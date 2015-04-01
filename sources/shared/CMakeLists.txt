@@ -183,11 +183,6 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/historization/typeInfo/StringTypeInfo.h
    shared/plugin/yPluginApi/historization/typeInfo/StringTypeInfo.cpp
    shared/plugin/yPluginApi/historization/typeInfo/EnumTypeInfo.hpp
-   
-	shared/notification/NotificationCenter.h
-	shared/notification/NotificationCenter.cpp
-	shared/notification/NotificationObserver.h
-	shared/notification/NotificationObserver.cpp
 
 	shared/serialization/IDataSerializable.h
 	shared/serialization/IDataFileSerializable.h

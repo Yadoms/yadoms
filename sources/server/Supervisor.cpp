@@ -28,7 +28,7 @@
 #include "communication/PluginGateway.h"
 #include "RunningInformation.h"
 #include "dataAccessLayer/DataAccessLayer.h"
-#include <shared/notification/NotificationCenter.h>
+#include "notification/NotificationCenter.h"
 #include "automation/RuleManager.h"
 #include <shared/ServiceLocator.h>
 #include <Poco/Util/ServerApplication.h>
@@ -57,8 +57,8 @@ void CSupervisor::run()
       const std::string pluginsPath = "plugins";
 
       //create the notification center
-      boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter(new shared::notification::CNotificationCenter);
-      shared::CServiceLocator::instance().push<shared::notification::CNotificationCenter>(notificationCenter);      
+      boost::shared_ptr<notification::INotificationCenter> notificationCenter(new notification::CNotificationCenter);   
+      shared::CServiceLocator::instance().push<notification::INotificationCenter>(notificationCenter);
 
       //retreive startup options
       boost::shared_ptr<startupOptions::IStartupOptions> startupOptions = shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>();
@@ -98,7 +98,7 @@ void CSupervisor::run()
 
       web::poco::CWebServer webServer(webServerIp, webServerPort, webServerPath, "/rest/", "/ws", notificationCenter);
       webServer.getConfigurator()->websiteHandlerAddAlias("plugins", pluginsPath);
-      webServer.getConfigurator()->configureAuthentication(boost::shared_ptr<authentication::IAuthentication>(new authentication::CBasicAuthentication(dal->getConfigurationManager(), notificationCenter, startupOptions->getNoPasswordFlag())));
+      webServer.getConfigurator()->configureAuthentication(boost::shared_ptr<authentication::IAuthentication>(new authentication::CBasicAuthentication(dal->getConfigurationManager(), notificationCenter->configurationUpdateNotifier(), startupOptions->getNoPasswordFlag())));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPlugin(pDataProvider, pluginManager, *pluginGateway)));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CDevice(pDataProvider, *pluginGateway)));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPage(pDataProvider)));

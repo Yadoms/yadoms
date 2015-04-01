@@ -1,7 +1,7 @@
 #pragma once
 #include "IConfigurationManager.h"
 #include "database/IConfigurationRequester.h"
-#include <shared/notification/NotificationCenter.h>
+#include "notification/configurationUpdate/INotifier.h"
 
 namespace dataAccessLayer {
 
@@ -11,9 +11,9 @@ namespace dataAccessLayer {
       //--------------------------------------------------------------
       /// \brief                                Constructor
       /// \param [in] configurationRequester    The configuration requester
-      /// \param [in] notificationCenter        The notification center
+      /// \param [in] notifier                  The notifier
       //--------------------------------------------------------------
-      CConfigurationManager(boost::shared_ptr< database::IConfigurationRequester > configurationRequester, boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter);
+      CConfigurationManager(boost::shared_ptr< database::IConfigurationRequester > configurationRequester, boost::shared_ptr<notification::configurationUpdate::INotifier> notifier);
    
       //--------------------------------------------------------------
       /// \brief       Destructor
@@ -43,9 +43,9 @@ namespace dataAccessLayer {
       boost::shared_ptr< database::IConfigurationRequester > m_configurationRequester;
 
       //--------------------------------------------------------------
-      /// \brief           The notification center
+      /// \brief           The notifier
       //--------------------------------------------------------------
-      boost::shared_ptr<shared::notification::CNotificationCenter> m_notificationCenter;
+      boost::shared_ptr<notification::configurationUpdate::INotifier> m_notifier;
    };
  
 } //namespace dataAccessLayer 

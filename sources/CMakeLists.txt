@@ -170,17 +170,105 @@ set(YADOMS_SRC
 	
 	server/Application.h
 	server/Application.cpp
-	server/IApplicationStopHandler.h
 	server/ApplicationStopHandler.h
 	server/ApplicationStopHandler.cpp
 	server/ErrorHandler.h
 	server/ErrorHandler.cpp
-	
+	server/IApplicationStopHandler.h
 	server/IRunningInformation.h
 	server/RunningInformation.cpp
-	server/RunningInformation.h
+	server/RunningInformation.h	
 	server/Supervisor.cpp
 	server/Supervisor.h
+
+   server/authentication/IAuthentication.h
+   server/authentication/BasicAuthentication.h
+   server/authentication/BasicAuthentication.cpp
+   
+	server/automation/IRule.h
+	server/automation/IRuleThreadHandler.h
+	server/automation/IRuleStateHandler.h
+	server/automation/IRuleManager.h
+	server/automation/ManagerEvent.h
+	server/automation/Rule.h
+	server/automation/Rule.cpp
+	server/automation/RuleException.hpp
+	server/automation/RuleStateHandler.h
+	server/automation/RuleStateHandler.cpp
+	server/automation/RuleManager.h
+	server/automation/RuleManager.cpp
+	server/automation/RuleThread.h
+	server/automation/RuleThread.cpp
+   
+	server/automation/script/DayLight.h
+	server/automation/script/DayLight.cpp
+	server/automation/script/Factory.h
+	server/automation/script/Factory.cpp
+	server/automation/script/GeneralInfo.h
+	server/automation/script/GeneralInfo.cpp
+	server/automation/script/IAutoLocation.h
+	server/automation/script/IDayLight.h
+	server/automation/script/IFactory.h
+	server/automation/script/ILocation.h
+	server/automation/script/ILogger.h
+	server/automation/script/IGeneralInfo.h
+	server/automation/script/IInterpreterLibrary.h
+	server/automation/script/IpApiAutoLocation.h
+	server/automation/script/IpApiAutoLocation.cpp
+   server/automation/script/InterpreterNotFound.hpp
+	server/automation/script/InterpreterLibrary.h
+	server/automation/script/InterpreterLibrary.cpp
+	server/automation/script/IProperties.h
+	server/automation/script/Location.h
+	server/automation/script/Location.cpp
+	server/automation/script/PocoLogger.h
+	server/automation/script/PocoLogger.cpp
+	server/automation/script/Properties.h
+	server/automation/script/Properties.cpp
+	server/automation/script/YScriptApiImplementation.h
+	server/automation/script/YScriptApiImplementation.cpp
+
+	server/communication/ISendMessageAsync.h
+ 	server/communication/PluginGateway.h
+ 	server/communication/PluginGateway.cpp	
+ 	server/communication/callback/CallbackRequest.h
+ 	server/communication/callback/SynchronousCallback.h
+ 	server/communication/callback/CallbackException.hpp
+   server/communication/callback/ICallbackRequest.h
+ 	server/communication/callback/ISynchronousCallback.h
+
+	server/dataAccessLayer/DataAccessLayer.h
+	server/dataAccessLayer/DataAccessLayer.cpp
+	server/dataAccessLayer/IDataAccessLayer.h
+	server/dataAccessLayer/AcquisitionHistorizer.h
+	server/dataAccessLayer/AcquisitionHistorizer.cpp
+	server/dataAccessLayer/IAcquisitionHistorizer.h
+	server/dataAccessLayer/DeviceManager.h
+	server/dataAccessLayer/DeviceManager.cpp
+	server/dataAccessLayer/IDeviceManager.h
+	server/dataAccessLayer/ConfigurationManager.h
+	server/dataAccessLayer/ConfigurationManager.cpp
+	server/dataAccessLayer/IConfigurationManager.h
+	
+	server/database/DatabaseException.hpp
+	server/database/IConfigurationRequester.h
+	server/database/IAcquisitionRequester.h
+	server/database/IDataProvider.h
+	server/database/IDataBackup.h
+	server/database/IDeviceRequester.h
+	server/database/IEventLoggerRequester.h
+	server/database/IRuleRequester.h
+	server/database/IKeywordRequester.h
+	server/database/IPageRequester.h
+	server/database/IPluginEventLoggerRequester.h
+	server/database/IPluginRequester.h
+	server/database/IRecipientRequester.h
+	server/database/ITransactionalProvider.h
+	server/database/IWidgetRequester.h
+
+	server/database/entities/Entities.h
+	server/database/entities/Entities.cpp
+	server/database/entities/EntityHelpers.hpp
   
    server/logConfiguration/LogConfiguration.h
    server/logConfiguration/LogConfiguration.cpp   
@@ -229,97 +317,68 @@ set(YADOMS_SRC
 	server/pluginSystem/ManuallyDeviceCreationRequest.h
 	server/pluginSystem/ManuallyDeviceCreationRequest.cpp
   
+	server/notification/INotificationCenter.h
+	server/notification/notificationCenter.h
+	server/notification/notificationCenter.cpp
+	server/notification/observerSubscriber.hpp
+
+	server/notification/acquisition/observer.h
+	server/notification/acquisition/observer.cpp
+	server/notification/acquisition/observerAsEvent.h
+	server/notification/acquisition/observerAsEvent.cpp
+	server/notification/acquisition/notifier.h
+	server/notification/acquisition/notifier.cpp
+   server/notification/acquisition/IObserver.h
+   server/notification/acquisition/INotifier.h
+
+   server/notification/configurationUpdate/observer.h
+   server/notification/configurationUpdate/observer.cpp
+   server/notification/configurationUpdate/notifier.h
+   server/notification/configurationUpdate/notifier.cpp
+   server/notification/configurationUpdate/IObserver.h
+   server/notification/configurationUpdate/INotifier.h
+
+   server/notification/newDevice/INotifier.h
+   server/notification/newDevice/IObserver.h
+	server/notification/newDevice/notifier.h
+	server/notification/newDevice/notifier.cpp
+	server/notification/newDevice/observerAsEvent.h
+	server/notification/newDevice/observerAsEvent.cpp
+
+   server/notification/taskProgression/INotifier.h
+   server/notification/taskProgression/IObserver.h
+	server/notification/taskProgression/notifier.h
+	server/notification/taskProgression/notifier.cpp
+	server/notification/taskProgression/observerAsEvent.h
+	server/notification/taskProgression/observerAsEvent.cpp
+   
 	server/startupOptions/IStartupOptions.h
 	server/startupOptions/Loader.h
 	server/startupOptions/Loader.cpp
 	server/startupOptions/MustExistPathValidator.h
 	server/startupOptions/MustExistPathValidator.cpp
-   
-	server/notifications/NewAcquisitionNotification.h
-	server/notifications/NewDeviceNotification.h
-	server/notifications/ConfigurationUpdatedNotification.h
-	server/notifications/TaskProgressionNotification.h
 	
-	server/dataAccessLayer/DataAccessLayer.h
-	server/dataAccessLayer/DataAccessLayer.cpp
-	server/dataAccessLayer/IDataAccessLayer.h
-	server/dataAccessLayer/AcquisitionHistorizer.h
-	server/dataAccessLayer/AcquisitionHistorizer.cpp
-	server/dataAccessLayer/IAcquisitionHistorizer.h
-	server/dataAccessLayer/DeviceManager.h
-	server/dataAccessLayer/DeviceManager.cpp
-	server/dataAccessLayer/IDeviceManager.h
-	server/dataAccessLayer/ConfigurationManager.h
-	server/dataAccessLayer/ConfigurationManager.cpp
-	server/dataAccessLayer/IConfigurationManager.h
-	
-	server/database/DatabaseException.hpp
-	server/database/IConfigurationRequester.h
-	server/database/IAcquisitionRequester.h
-	server/database/IDataProvider.h
-	server/database/IDataBackup.h
-	server/database/IDeviceRequester.h
-	server/database/IEventLoggerRequester.h
-	server/database/IRuleRequester.h
-	server/database/IKeywordRequester.h
-	server/database/IPageRequester.h
-	server/database/IPluginEventLoggerRequester.h
-	server/database/IPluginRequester.h
-	server/database/IRecipientRequester.h
-	server/database/ITransactionalProvider.h
-	server/database/IWidgetRequester.h
-
-	server/database/entities/Entities.h
-	server/database/entities/Entities.cpp
-	server/database/entities/EntityHelpers.hpp
-
-   server/authentication/IAuthentication.h
-   server/authentication/BasicAuthentication.h
-   server/authentication/BasicAuthentication.cpp
-
-   
-	server/automation/IRule.h
-	server/automation/IRuleThreadHandler.h
-	server/automation/IRuleStateHandler.h
-	server/automation/IRuleManager.h
-	server/automation/ManagerEvent.h
-	server/automation/Rule.h
-	server/automation/Rule.cpp
-	server/automation/RuleException.hpp
-	server/automation/RuleStateHandler.h
-	server/automation/RuleStateHandler.cpp
-	server/automation/RuleManager.h
-	server/automation/RuleManager.cpp
-	server/automation/RuleThread.h
-	server/automation/RuleThread.cpp
-   
-	server/automation/script/DayLight.h
-	server/automation/script/DayLight.cpp
-	server/automation/script/Factory.h
-	server/automation/script/Factory.cpp
-	server/automation/script/GeneralInfo.h
-	server/automation/script/GeneralInfo.cpp
-	server/automation/script/IAutoLocation.h
-	server/automation/script/IDayLight.h
-	server/automation/script/IFactory.h
-	server/automation/script/ILocation.h
-	server/automation/script/ILogger.h
-	server/automation/script/IGeneralInfo.h
-	server/automation/script/IInterpreterLibrary.h
-	server/automation/script/IpApiAutoLocation.h
-	server/automation/script/IpApiAutoLocation.cpp
-   server/automation/script/InterpreterNotFound.hpp
-	server/automation/script/InterpreterLibrary.h
-	server/automation/script/InterpreterLibrary.cpp
-	server/automation/script/IProperties.h
-	server/automation/script/Location.h
-	server/automation/script/Location.cpp
-	server/automation/script/PocoLogger.h
-	server/automation/script/PocoLogger.cpp
-	server/automation/script/Properties.h
-	server/automation/script/Properties.cpp
-	server/automation/script/YScriptApiImplementation.h
-	server/automation/script/YScriptApiImplementation.cpp
+	server/task/FinishedInstance.h
+	server/task/FinishedInstance.cpp
+	server/task/IInstance.h
+	server/task/Instance.h
+	server/task/Instance.cpp
+	server/task/ITask.h
+	server/task/IUnique.h
+	server/task/Scheduler.h
+	server/task/Scheduler.cpp
+	server/task/TaskEvent.h
+	server/task/TaskEvent.cpp
+	server/task/TaskFactory.h
+	server/task/TaskFactory.cpp
+	server/task/TaskStatus.h
+	server/task/TaskStatus.cpp
+	server/task/update/Plugin.h
+	server/task/update/Plugin.cpp
+	server/task/update/Yadoms.h
+	server/task/update/Yadoms.cpp
+	server/task/backup/Database.h
+	server/task/backup/Database.cpp
    
 	server/web/IRestHandler.h
 	server/web/IWebServer.h
@@ -363,43 +422,13 @@ set(YADOMS_SRC
 	server/web/ws/AcquisitionUpdateFrame.cpp
 	server/web/ws/NewDeviceFrame.h
 	server/web/ws/NewDeviceFrame.cpp
-	server/web/ws/TaskUpdateNotificationFrame.h
-	server/web/ws/TaskUpdateNotificationFrame.cpp
 	server/web/ws/FrameBase.h
 	server/web/ws/FrameBase.cpp
 	server/web/ws/FrameFactory.h
 	server/web/ws/FrameFactory.cpp
-	
-	server/task/FinishedInstance.h
-	server/task/FinishedInstance.cpp
-	server/task/IInstance.h
-	server/task/Instance.h
-	server/task/Instance.cpp
-	server/task/ITask.h
-	server/task/IUnique.h
-	server/task/Scheduler.h
-	server/task/Scheduler.cpp
-	server/task/TaskEvent.h
-	server/task/TaskEvent.cpp
-	server/task/TaskFactory.h
-	server/task/TaskFactory.cpp
-	server/task/TaskStatus.h
-	server/task/TaskStatus.cpp
-	server/task/update/Plugin.h
-	server/task/update/Plugin.cpp
-	server/task/update/Yadoms.h
-	server/task/update/Yadoms.cpp
-	server/task/backup/Database.h
-	server/task/backup/Database.cpp
+	server/web/ws/TaskUpdateNotificationFrame.h
+	server/web/ws/TaskUpdateNotificationFrame.cpp
 
-	server/communication/ISendMessageAsync.h
- 	server/communication/PluginGateway.h
- 	server/communication/PluginGateway.cpp	
- 	server/communication/callback/CallbackRequest.h
- 	server/communication/callback/SynchronousCallback.h
- 	server/communication/callback/CallbackException.hpp
-   server/communication/callback/ICallbackRequest.h
- 	server/communication/callback/ISynchronousCallback.h
 )
 
 # Project folders
@@ -413,7 +442,10 @@ source_group(server\\dataAccessLayer  server/dataAccessLayer/*.*)
 source_group(server\\database  server/database/*.*)
 source_group(server\\database\\entities  server/database/entities/*.*)
 source_group(server\\logConfiguration  server/logConfiguration/*.*)
-source_group(server\\notifications  server/notifications/*.*)
+source_group(server\\notification  server/notification/*.*)
+source_group(server\\notification\\acquisition  server/notification/acquisition/*.*)
+source_group(server\\notification\\configurationUpdate  server/notification/configurationUpdate/*.*)
+source_group(server\\notification\\newDevice  server/notification/newDevice/*.*)
 source_group(server\\pluginSystem server/pluginSystem/*.* )
 source_group(server\\pluginSystem\\internalPlugin server/pluginSystem/internalPlugin/*.* )
 source_group(server\\startupOptions  server/startupOptions/*.*)
