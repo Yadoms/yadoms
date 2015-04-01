@@ -13,53 +13,6 @@ var LastEventLogId = null;
 
 var failGetEventCounter = 0;
 
-var webSocket = null;
-
-function initializeWebSocketEngine(callback) {
-
-   if (!isNullOrUndefined(webSocket))
-      webSocket.close();
-
-   //we check if websocket are handled
-   if(window.MozWebSocket) {
-      window.WebSocket = window.MozWebSocket;
-   }
-   if(window.WebSocket) {
-      webSocket = new WebSocket('ws://' + window.location.host + '/ws');
-
-      webSocket.onopen = function() {
-         console.debug('Web socket opened');
-         if ($.isFunction(callback))
-         callback();
-      };
-
-      webSocket.onmessage = function(e) {
-         if (!isNullOrUndefined(e)) {
-            var websocketData = JSON.parse(e.data);
-            if (!isNullOrUndefined(websocketData)) {
-               switch (websocketData.type.toLowerCase()) {
-                  case "acquisitionupdate":
-                     var acq = AcquisitionManager.factory(websocketData.data.acquisition);
-                     dispatchToWidgets(acq);
-                     break;
-                  case "devicenew":
-                     break;
-               }
-
-
-            }
-         }
-      };
-
-      webSocket.onclose = function() {
-         console.debug('Web socket closed');
-      };
-   }
-   else {
-      console.debug("Web socket unhandled");
-   }
-}
-
 function initializeWidgetEngine() {
 
    /**
@@ -106,7 +59,7 @@ function initializeWidgetEngine() {
 
                //we can start the periodic update
                serverIsOnline = true;
-               if (isNullOrUndefined(webSocket))
+               if (!WebSocketEngine.isActive())
                   widgetUpdateInterval = setInterval(periodicUpdateTask, UpdateIntervalWithWebSocketDisabled);
                else
                   widgetUpdateInterval = setInterval(periodicUpdateTask, UpdateInterval);
@@ -193,15 +146,20 @@ function periodicUpdateTask() {
             }
             //we change the interval period to the normal one
             clearInterval(widgetUpdateInterval);
-            if (isNullOrUndefined(webSocket))
+            if (!WebSocketEngine.isActive())
                widgetUpdateInterval = setInterval(periodicUpdateTask, UpdateIntervalWithWebSocketDisabled);
             else
                widgetUpdateInterval = setInterval(periodicUpdateTask, UpdateInterval);
 
             //we reinitialize the websocket
-            initializeWebSocketEngine(function() {
+
+            WebSocketEngine.initializeWebSocketEngine(function() {
                //web socket opened
 
+               WebSocketEngine.onAcquisitionUpdated = function(websocketData){
+                  var acq = AcquisitionManager.factory(websocketData.data.acquisition);
+                  dispatchToWidgets(acq);
+               };
                //Maybe there is a lot of time between the turn off of the server and the turn on, so we must ask all widget
                //data to be sure that all information displayed are fresh
                updateWidgetsPolling();
@@ -239,7 +197,7 @@ function periodicUpdateTask() {
          });
 
          //we ask for widget's devices if web sockets are unsupported
-         if (isNullOrUndefined(webSocket))
+         if (!WebSocketEngine.isActive())
             updateWidgetsPolling();
      })
      .fail(function() {
@@ -293,7 +251,7 @@ function dispatchToWidgets(acq) {
 
 function updateWebSocketFilter() {
    console.log("updateWebSocketFilter()");
-   if (!isNullOrUndefined(webSocket)) {
+   if (WebSocketEngine.isActive()) {
       var page = PageManager.getCurrentPage();
       if (page == null)
          return;
@@ -313,7 +271,7 @@ function updateWebSocketFilter() {
          }
       });
 
-      webSocket.send(JSON.stringify({"type" : "acquisitionFilter", "data" : collection}));
+      WebSocketEngine.updateAcquisitionFilter(collection);
    }
 }
 

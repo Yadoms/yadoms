@@ -8,14 +8,6 @@ namespace task {
    class ITask
    {
    public:
-
-      enum EStatus
-      {
-         kStarted,
-         kSuccess,
-         kFail
-      };
-
       //---------------------------------
       ///\brief Define a function prototype for updating a task progress
       //---------------------------------

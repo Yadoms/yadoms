@@ -13,7 +13,7 @@ namespace task {
       //------------------------------------------
       ///\brief   Constructor
       //------------------------------------------
-      CFinishedInstance(const std::string & guid, const std::string & name, ITask::EStatus status, boost::optional< float > progression, const std::string & message, const boost::posix_time::ptime & creationDate);
+      CFinishedInstance(const std::string & guid, const std::string & name, ETaskStatus status, boost::optional< float > progression, const std::string & message, const boost::posix_time::ptime & creationDate);
 
       //------------------------------------------
       ///\brief   Destructor
@@ -39,7 +39,7 @@ namespace task {
       //------------------------------------------
       ///\brief   Obtain Status
       //------------------------------------------
-      virtual ITask::EStatus getStatus() const;
+      virtual ETaskStatus getStatus() const;
       
       //---------------------------------
       ///\brief Get the current name of the task
@@ -76,7 +76,7 @@ namespace task {
       //------------------------------------------
       ///\brief   The status of the task
       //------------------------------------------
-      ITask::EStatus m_status;
+      ETaskStatus m_status;
 
       //------------------------------------------
       ///\brief   The creation date

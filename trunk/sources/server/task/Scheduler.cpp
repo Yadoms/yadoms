@@ -46,7 +46,7 @@ namespace task {
 
                   switch (i->getStatus())
                   {
-                  case ITask::kStarted:
+                  case ETaskStatus::kStartedValue:
                   {
                      //the task has started
                      database::entities::CEventLogger entry;
@@ -56,8 +56,8 @@ namespace task {
                      break;
                   }
 
-                  case ITask::kSuccess:
-                  case ITask::kFail:
+                  case ETaskStatus::kSuccessValue:
+                  case ETaskStatus::kFailValue:
                   {
                      //we need to take the mutex
                      boost::lock_guard<boost::mutex> lock(m_mapsMutex);

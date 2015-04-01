@@ -109,7 +109,7 @@ namespace web { namespace rest { namespace service {
    shared::CDataContainer CTask::serialize(boost::shared_ptr<task::IInstance> instance) const
    {
       shared::CDataContainer container;
-      container.set("guid", instance->getGuid());
+      container.set("uuid", instance->getGuid());
       container.set("name", instance->getName());
       container.set("progression", instance->getProgression());
       container.set("message", instance->getMessage());
