@@ -5,6 +5,7 @@
 #include <shared/event/EventHandler.hpp>
 #include <shared/notification/NotificationCenter.h>
 #include "IInstance.h"
+#include "TaskStatus.h"
 
 namespace task {
 
@@ -47,7 +48,7 @@ namespace task {
       //------------------------------------------
       ///\brief   Obtain Status
       //------------------------------------------
-      virtual ITask::EStatus getStatus() const;
+      virtual ETaskStatus getStatus() const;
 
       //---------------------------------
       ///\brief Get the current name of the task
@@ -108,7 +109,7 @@ namespace task {
       //------------------------------------------
       ///\brief   The status of the task
       //------------------------------------------
-      ITask::EStatus m_currentStatus;
+      ETaskStatus m_currentStatus;
 
       //------------------------------------------
       ///\brief   The creation date

@@ -383,6 +383,8 @@ set(YADOMS_SRC
 	server/task/TaskEvent.cpp
 	server/task/TaskFactory.h
 	server/task/TaskFactory.cpp
+	server/task/TaskStatus.h
+	server/task/TaskStatus.cpp
 	server/task/update/Plugin.h
 	server/task/update/Plugin.cpp
 	server/task/update/Yadoms.h

@@ -342,7 +342,8 @@
                }
             },
             "update" : {
-               "title" : "Update"
+               "title" : "Update",
+               "new" : "Check for update"
             },
             "about" : {
                "title" : "About"

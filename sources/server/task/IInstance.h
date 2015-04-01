@@ -1,5 +1,6 @@
 #pragma once
 #include "ITask.h"
+#include "TaskStatus.h"
 
 namespace task {
 
@@ -32,7 +33,7 @@ namespace task {
       //------------------------------------------
       ///\brief   Obtain Status
       //------------------------------------------
-      virtual ITask::EStatus getStatus() const = 0;
+      virtual ETaskStatus getStatus() const = 0;
 
       //---------------------------------
       ///\brief Get the current name of the task

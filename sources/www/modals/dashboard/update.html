@@ -1,4 +1,23 @@
 <div id="dashboard-update">
    <h1 class="page-header" data-i18n="modals.dashboard.sub-windows.update.title"></h1>
-   <h2 class="sub-header"  data-i18n="inProgress"></h2>
+
+   <button id="btn-check-for-update" type="button" class="btn btn-success dashboard-btn-new"><span class="fa fa fa-external-link"></span>&nbsp;&nbsp;<span data-i18n="modals.dashboard.sub-windows.update.new"></span></button>
+
+   <div id="taskUpdatedContent"></div>
 </div>
+
+<script>
+
+   $("#btn-check-for-update").unbind("click").bind("click", function() {
+      TaskManager.createTask(TaskManager.knownTaskType.yadomsUpdate, function(task) {
+         console.log("Task created");
+      });
+   } );
+
+   WebSocketEngine.onTaskUpdated = function(taskUpdated) {
+      if(!isNullOrUndefined(taskUpdated)) {
+         $("#taskUpdatedContent").append("Task :" + taskUpdated.name + " Status:" + taskUpdated.state + " Progression" + taskUpdated.progression + " Message : " + taskUpdated.message + "<br/>");
+      }
+   };
+
+</script>
