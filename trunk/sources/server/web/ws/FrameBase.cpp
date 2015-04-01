@@ -10,6 +10,7 @@ namespace web { namespace ws {
       ((AcquisitionFilter))
       ((AcquisitionUpdate))
       ((DeviceNew))
+      ((TaskUpdateNotification))
    );
 
 

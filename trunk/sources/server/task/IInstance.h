@@ -1,4 +1,5 @@
 #pragma once
+#include "ITask.h"
 
 namespace task {
 

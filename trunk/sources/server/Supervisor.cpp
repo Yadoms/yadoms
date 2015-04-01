@@ -58,6 +58,7 @@ void CSupervisor::run()
 
       //create the notification center
       boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter(new shared::notification::CNotificationCenter);
+      shared::CServiceLocator::instance().push<shared::notification::CNotificationCenter>(notificationCenter);      
 
       //retreive startup options
       boost::shared_ptr<startupOptions::IStartupOptions> startupOptions = shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>();

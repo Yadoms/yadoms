@@ -6,10 +6,13 @@
 #include <shared/notification/NotificationCenter.h>
 
 #include "notifications/NewAcquisitionNotification.h"
+#include "notifications/TaskProgressionNotification.h"
+
 #include "web/ws/FrameFactory.h"
 #include "web/ws/AcquisitionFilterFrame.h"
 #include "web/ws/AcquisitionUpdateFrame.h"
 #include "web/ws/NewDeviceFrame.h"
+#include "web/ws/TaskUpdateNotificationFrame.h"
 
 #include "WebSocketClient.h"
 
@@ -37,7 +40,7 @@ void CWebSocketRequestHandler::handleRequest(Poco::Net::HTTPServerRequest& reque
       
       enum { kNotifFromWsClient = shared::notification::CNotificationCenter::kUserFirstId };
       CWebSocketClient client(request, response, observer, kNotifFromWsClient);
-
+      client.start();
       bool clientSeemConnected = true;
 
       while (clientSeemConnected)
@@ -87,6 +90,16 @@ void CWebSocketRequestHandler::handleRequest(Poco::Net::HTTPServerRequest& reque
                boost::shared_ptr<notifications::CNewDeviceNotification> newDevice = m_notificationCenter->getNotificationData< boost::shared_ptr<notifications::CNewDeviceNotification> >(this);
 
                ws::CNewDeviceFrame toSend(newDevice);
+               dataString = toSend.serialize();
+               somethingToSend = true;
+            }
+
+            //check if notification is a taskUpdate
+            else if (m_notificationCenter->isNotificationTypeOf< boost::shared_ptr<notifications::CTaskProgressionNotification> >(this))
+            {
+               boost::shared_ptr<notifications::CTaskProgressionNotification> taskNotification = m_notificationCenter->getNotificationData< boost::shared_ptr<notifications::CTaskProgressionNotification> >(this);
+
+               ws::CTaskUpdateNotificationFrame toSend(taskNotification);
                dataString = toSend.serialize();
                somethingToSend = true;
             }
