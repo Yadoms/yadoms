@@ -4,9 +4,8 @@
 #include "TaskEvent.h"
 #include <shared/Log.h>
 #include "database/entities/Entities.h"
-#include "notifications/TaskProgressionNotification.h"
 #include <shared/ServiceLocator.h>
-#include <shared/notification/NotificationCenter.h>
+#include "../notification/INotificationCenter.h"
 
 namespace task {
 
@@ -74,27 +73,12 @@ namespace task {
       else
          YADOMS_LOG(information) << m_task->getName() << " report progression none with message " << m_currentMessage;
 
-      boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter = shared::CServiceLocator::instance().get<shared::notification::CNotificationCenter>();
+      // Post notification
+      boost::shared_ptr<notification::INotificationCenter> notificationCenter = shared::CServiceLocator::instance().get<notification::INotificationCenter>();
       if (notificationCenter)
-      {
-         
-         //post notification
-         try
-         {
-            boost::shared_ptr< notifications::CTaskProgressionNotification > notificationData(new notifications::CTaskProgressionNotification(shared_from_this()));
-            notificationCenter->postNotification(notificationData);
-         }
-         catch (shared::exception::CException & ex)
-         {
-            YADOMS_LOG(error) << "Fail to notify progression : " << ex.what();
-         }  
-         catch (std::exception & ex)
-         {
-            YADOMS_LOG(error) << "Fail to notify progression : " << ex.what();
-         }
-      }
-
+         notificationCenter->taskProgressionNotifier()->post(shared_from_this());
    }
+
    void CInstance::doWork()
    {
       BOOST_ASSERT(m_task);

@@ -2,8 +2,8 @@
 
 #include <Poco/Net/HTTPServerRequest.h>
 #include <Poco/Net/HTTPServerResponse.h>
-#include <shared/notification/NotificationObserver.h>
 #include <shared/ThreadBase.h>
+#include <shared/event/EventHandler.hpp>
 #include <Poco/Net/WebSocket.h>
 
 namespace web { namespace poco {
@@ -11,7 +11,7 @@ namespace web { namespace poco {
 class CWebSocketClient : public shared::CThreadBase
 {
 public:
-   CWebSocketClient(Poco::Net::HTTPServerRequest& request, Poco::Net::HTTPServerResponse& response, boost::shared_ptr<shared::notification::CNotificationObserver> observer, const int observerEvent);
+   CWebSocketClient(Poco::Net::HTTPServerRequest& request, Poco::Net::HTTPServerResponse& response, shared::event::CEventHandler& eventHandler, int eventId);
    
    virtual ~CWebSocketClient();
 
@@ -22,8 +22,8 @@ private:
    void doWork();
    // [END] CThreadBase Implementation
 
-   boost::shared_ptr<shared::notification::CNotificationObserver> m_observer;
-   int m_observerEvent;
+   shared::event::CEventHandler& m_eventHandler;
+   int m_eventId;
    Poco::Net::WebSocket m_socket;
    Poco::Net::HTTPServerResponse& m_response;
 };

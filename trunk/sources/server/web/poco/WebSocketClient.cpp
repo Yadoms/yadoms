@@ -7,8 +7,8 @@
 namespace web { namespace poco {
 
 
-   CWebSocketClient::CWebSocketClient(Poco::Net::HTTPServerRequest& request, Poco::Net::HTTPServerResponse& response, boost::shared_ptr<shared::notification::CNotificationObserver> observer, const int observerEvent)
-      :CThreadBase("WebSocketClient"), m_observer(observer), m_observerEvent(observerEvent), m_socket(request, response), m_response(response)
+   CWebSocketClient::CWebSocketClient(Poco::Net::HTTPServerRequest& request, Poco::Net::HTTPServerResponse& response, shared::event::CEventHandler& eventHandler, int eventId)
+      :CThreadBase("WebSocketClient"), m_eventHandler(eventHandler), m_eventId(eventId), m_socket(request, response), m_response(response)
    {
 
    }
@@ -37,11 +37,9 @@ namespace web { namespace poco {
             if (n > 0)
             {
                std::string bufferString(buffer);
-               boost::shared_ptr<web::ws::CFrameBase> parsedFrame = web::ws::CFrameFactory::tryParse(bufferString);
+               boost::shared_ptr<ws::CFrameBase> parsedFrame = ws::CFrameFactory::tryParse(bufferString);
                if (parsedFrame)
-               {
-                  m_observer->postNotification(m_observerEvent, parsedFrame);
-               }
+                  m_eventHandler.postEvent(m_eventId, parsedFrame);
             }
          }
       }
@@ -53,9 +51,7 @@ namespace web { namespace poco {
          case Poco::Net::WebSocket::WS_ERR_HANDSHAKE_UNSUPPORTED_VERSION:
             m_response.set("Sec-WebSocket-Version", Poco::Net::WebSocket::WEBSOCKET_VERSION);
             // fallthrough
-         case Poco::Net::WebSocket::WS_ERR_NO_HANDSHAKE:
-         case Poco::Net::WebSocket::WS_ERR_HANDSHAKE_NO_VERSION:
-         case Poco::Net::WebSocket::WS_ERR_HANDSHAKE_NO_KEY:
+         default:
             m_response.setStatusAndReason(Poco::Net::HTTPResponse::HTTP_BAD_REQUEST);
             m_response.setContentLength(0);
             m_response.send();

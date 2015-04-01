@@ -5,11 +5,12 @@
 #include "script/IFactory.h"
 #include "database/IRuleRequester.h"
 #include "../communication/ISendMessageAsync.h"
-#include <shared/notification/NotificationCenter.h>
+#include "notification/INotificationCenter.h"
 #include "database/IAcquisitionRequester.h"
 #include "../database/IEventLoggerRequester.h"
 #include "../dataAccessLayer/IConfigurationManager.h"
 #include "../IRunningInformation.h"
+#include <shared/event/EventHandler.hpp>
 
 namespace automation
 {
@@ -31,7 +32,7 @@ namespace automation
       ///\param[in] ruleManagerEventId    The ID to use to send events to supervisor
       //-----------------------------------------------------
       CRuleManager(boost::shared_ptr<database::IRuleRequester> dbRequester, boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
-         boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter, boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
+         boost::shared_ptr<notification::INotificationCenter> notificationCenter, boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
          boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
          boost::shared_ptr<database::IEventLoggerRequester> eventLoggerRequester, boost::shared_ptr<shared::event::CEventHandler> supervisor, int ruleManagerEventId);
 

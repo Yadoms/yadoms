@@ -6,10 +6,10 @@
 
 namespace dataAccessLayer {
 
-   CDataAccessLayer::CDataAccessLayer(boost::shared_ptr<database::IDataProvider> pDataProvider, boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter)
-      :m_deviceManager(new CDeviceManager(pDataProvider->getDeviceRequester(), notificationCenter)),
-      m_acquisitionHistorizer(new CAcquisitionHistorizer(pDataProvider, notificationCenter)),
-      m_configurationManager(new CConfigurationManager(pDataProvider->getConfigurationRequester(), notificationCenter))
+   CDataAccessLayer::CDataAccessLayer(boost::shared_ptr<database::IDataProvider> pDataProvider, boost::shared_ptr<notification::INotificationCenter> notificationCenter)
+      :m_deviceManager(new CDeviceManager(pDataProvider->getDeviceRequester(), notificationCenter->newDeviceNotifier())),
+      m_acquisitionHistorizer(new CAcquisitionHistorizer(pDataProvider, notificationCenter->acquisitionNotifier())),
+      m_configurationManager(new CConfigurationManager(pDataProvider->getConfigurationRequester(), notificationCenter->configurationUpdateNotifier()))
    {
    }
    

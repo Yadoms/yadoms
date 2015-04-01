@@ -1,7 +1,7 @@
 #pragma once
 #include "IAuthentication.h"
 #include "dataAccessLayer/IConfigurationManager.h"
-#include <shared/notification/NotificationCenter.h>
+#include "../notification/configurationUpdate/INotifier.h"
 #include "database/entities/Entities.h"
 #include "Poco/Activity.h"
 
@@ -16,10 +16,10 @@ namespace authentication {
       //-------------------------------------
       ///\brief Constructor
       ///\param [in]    configurationManager    Configuration manager
-      ///\param [in]    notificationCenter      Notification center
+      ///\param [in]    notifier                Notifier for configuration updates
       ///\param [in]    m_skipPasswordCheck     If true the password will never be checked
       //-------------------------------------
-      CBasicAuthentication(boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager, boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter, bool skipPasswordCheck);
+      CBasicAuthentication(boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager, boost::shared_ptr<notification::configurationUpdate::INotifier> notifier, bool skipPasswordCheck);
       
       //-------------------------------------
       ///\brief Destructor
@@ -49,9 +49,9 @@ namespace authentication {
       boost::shared_ptr<dataAccessLayer::IConfigurationManager> m_configurationManager;
 
       //--------------------------------------------------------------
-      /// \brief           The notification center
+      /// \brief           The notifier for configuration updates
       //--------------------------------------------------------------
-      boost::shared_ptr<shared::notification::CNotificationCenter> m_notificationCenter;
+      boost::shared_ptr<notification::configurationUpdate::INotifier> m_notifier;
 
       //--------------------------------------------------------------
       /// \brief           The current configuration active state

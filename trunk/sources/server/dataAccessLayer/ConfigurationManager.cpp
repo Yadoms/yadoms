@@ -1,12 +1,11 @@
 #include "stdafx.h"
 #include "ConfigurationManager.h"
-#include "notifications/ConfigurationUpdatedNotification.h"
 #include <shared/Log.h>
 
 namespace dataAccessLayer {
 
-      CConfigurationManager::CConfigurationManager(boost::shared_ptr< database::IConfigurationRequester > configurationRequester, boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter)
-         :m_configurationRequester(configurationRequester), m_notificationCenter(notificationCenter)
+      CConfigurationManager::CConfigurationManager(boost::shared_ptr<database::IConfigurationRequester> configurationRequester, boost::shared_ptr<notification::configurationUpdate::INotifier> notifier)
+         :m_configurationRequester(configurationRequester), m_notifier(notifier)
       {
       }
    
@@ -19,8 +18,10 @@ namespace dataAccessLayer {
          //post notification
          try
          {
-            boost::shared_ptr< notifications::CConfigurationUpdatedNotification > notificationData(new notifications::CConfigurationUpdatedNotification(section, name));
-            m_notificationCenter->postNotification(notificationData);
+            boost::shared_ptr<database::entities::CConfiguration> notificationData(new database::entities::CConfiguration);
+            notificationData->Section = section;
+            notificationData->Name = name;
+            m_notifier->post(notificationData);
          }
          catch (shared::exception::CException & ex)
          {

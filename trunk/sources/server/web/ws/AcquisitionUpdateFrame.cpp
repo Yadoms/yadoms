@@ -3,29 +3,23 @@
 
 namespace web { namespace ws {
 
-   const std::string CAcquisitionUpdateFrame::m_acquition = "acquisition";
-   const std::string CAcquisitionUpdateFrame::m_acquitionDay = "summaryDay";
-   const std::string CAcquisitionUpdateFrame::m_acquitionHour = "summaryHour";
+   const std::string CAcquisitionUpdateFrame::m_acquisition = "acquisition";
+   const std::string CAcquisitionUpdateFrame::m_acquisitionDay = "summaryDay";
+   const std::string CAcquisitionUpdateFrame::m_acquisitionHour = "summaryHour";
 
 
-   CAcquisitionUpdateFrame::CAcquisitionUpdateFrame(const database::entities::CAcquisition & content)
-      :CFrameBase(CFrameBase::EFrameType::kAcquisitionUpdate)
-   {
-      m_internalContainer.set(CFrameBase::m_dataFieldName, content);
-   }
-   
-
-   CAcquisitionUpdateFrame::CAcquisitionUpdateFrame(boost::shared_ptr<notifications::CNewAcquisitionNotification> notificationData)
-      :CFrameBase(CFrameBase::EFrameType::kAcquisitionUpdate)
+   CAcquisitionUpdateFrame::CAcquisitionUpdateFrame(const database::entities::CAcquisition & acquisition,
+      boost::shared_ptr<const database::entities::CAcquisitionSummary> dailySummary,
+      boost::shared_ptr<const database::entities::CAcquisitionSummary> hourlySummary)
+      :CFrameBase(EFrameType::kAcquisitionUpdate)
    {
       shared::CDataContainer local;
-      local.set(m_acquition, notificationData->getAcquisition());
-      if (notificationData->getSummaryDay())
-         local.set(m_acquitionDay, notificationData->getSummaryDay());
-      if (notificationData->getSummaryHour())
-         local.set(m_acquitionHour, notificationData->getSummaryHour());
-
-      m_internalContainer.set(CFrameBase::m_dataFieldName, local);
+      local.set(m_acquisition, acquisition);
+      if (!!dailySummary)
+         local.set(m_acquisitionDay, dailySummary);
+      if (!!hourlySummary)
+         local.set(m_acquisitionHour, hourlySummary);
+      m_internalContainer.set(m_dataFieldName, local);
    }
    
    CAcquisitionUpdateFrame::~CAcquisitionUpdateFrame()

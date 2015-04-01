@@ -10,21 +10,17 @@ namespace web { namespace ws {
    const std::string CTaskUpdateNotificationFrame::m_taskMessage = "message";
    
 
-      
-   CTaskUpdateNotificationFrame::CTaskUpdateNotificationFrame(boost::shared_ptr<notifications::CTaskProgressionNotification> notificationData)
-      :CFrameBase(CFrameBase::EFrameType::kTaskUpdateNotification)
+   CTaskUpdateNotificationFrame::CTaskUpdateNotificationFrame(const task::IInstance& taskProgression)
+      :CFrameBase(EFrameType::kTaskUpdateNotification)
    {
-      if (notificationData && notificationData->getTaskInstance())
-      {
-         m_internalContainer.set(m_taskName, notificationData->getTaskInstance()->getName());
-         m_internalContainer.set(m_taskGuid, notificationData->getTaskInstance()->getGuid());
-         m_internalContainer.set(m_taskState, notificationData->getTaskInstance()->getStatus());
-         if (notificationData->getTaskInstance()->getProgression() != NULL)
-            m_internalContainer.set(m_taskProgression, notificationData->getTaskInstance()->getProgression().value());
-         m_internalContainer.set(m_taskMessage, notificationData->getTaskInstance()->getMessage());
-      }
+      m_internalContainer.set(m_taskName, taskProgression.getName());
+      m_internalContainer.set(m_taskGuid, taskProgression.getGuid());
+      m_internalContainer.set(m_taskState, taskProgression.getStatus());
+      if (taskProgression.getProgression() != NULL)
+         m_internalContainer.set(m_taskProgression, taskProgression.getProgression().value());
+      m_internalContainer.set(m_taskMessage, taskProgression.getMessage());
    }
-   
+
    CTaskUpdateNotificationFrame::~CTaskUpdateNotificationFrame()
    {
 

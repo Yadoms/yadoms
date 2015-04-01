@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "YScriptApiImplementation.h"
 #include "../pluginSystem/DeviceCommand.h"
+#include "../../notification/acquisition/observer.h"
+#include "../../notification/observerSubscriber.hpp"
 #include <shared/plugin/yPluginApi/historization/MessageFormatter.h>
 #include <shared/Log.h>
 #include <shared/exception/EmptyResult.hpp>
@@ -12,12 +14,12 @@ CYScriptApiImplementation::CYScriptApiImplementation(
    boost::shared_ptr<ILogger> ruleLogger,
    boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
    boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
-   boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter,
+   boost::shared_ptr<notification::acquisition::INotifier> acquisitionNotifier,
    boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
    boost::shared_ptr<IGeneralInfo> generalInfo)
    :m_ruleLogger(ruleLogger),
    m_pluginGateway(pluginGateway),
-   m_notificationCenter(notificationCenter),
+   m_acquisitionNotifier(acquisitionNotifier),
    m_dbAcquisitionRequester(dbAcquisitionRequester),
    m_generalInfo(generalInfo)
 {
@@ -49,8 +51,14 @@ std::string CYScriptApiImplementation::waitForEvent(int keywordId, const std::st
 {
    try
    {
-      //TODO
-      return std::string();
+      boost::shared_ptr<notification::acquisition::CObserver> observer(new notification::acquisition::CObserver(keywordId));
+      notification::CObserverSubscriber<notification::acquisition::INotifier, notification::acquisition::IObserver> subscriber(m_acquisitionNotifier, observer);
+
+      boost::shared_ptr<const database::entities::CAcquisition> newAcquisition = observer->wait(timeout.empty() ? boost::date_time::pos_infin : boost::posix_time::duration_from_string(timeout));
+      if (!newAcquisition)
+         return std::string();
+
+      return newAcquisition->Value;
    }
    catch(...) // Must catch all exceptions to not crash script interpreter
    {

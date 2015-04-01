@@ -1,13 +1,13 @@
 #include "stdafx.h"
+#include <shared/Log.h>
 #include "AcquisitionHistorizer.h"
-#include "notifications/NewAcquisitionNotification.h"
 #include "database/ITransactionalProvider.h"
 
 namespace dataAccessLayer {
 
 	CAcquisitionHistorizer::CAcquisitionHistorizer(boost::shared_ptr<database::IDataProvider> dataProvider,
-		boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter)
-		:m_dataProvider(dataProvider), m_notificationCenter(notificationCenter)
+		boost::shared_ptr<notification::acquisition::INotifier> notifier)
+		:m_dataProvider(dataProvider), m_notifier(notifier)
 	{
 	}
 
@@ -87,15 +87,7 @@ namespace dataAccessLayer {
 		database::IAcquisitionRequester::LastSummaryData summaryData = m_dataProvider->getAcquisitionRequester()->saveSummaryData(keywordId, dataTime);
 
 		//post notification
-		try
-		{
-			boost::shared_ptr< notifications::CNewAcquisitionNotification > notificationData(new notifications::CNewAcquisitionNotification(acq, summaryData.get<0>(), summaryData.get<1>()));
-			m_notificationCenter->postNotification(notificationData);
-		}
-		catch (shared::exception::CException & ex)
-		{
-			YADOMS_LOG(error) << "Fail to retreive new acquisition : " << ex.what();
-		}
+      m_notifier->post(acq, summaryData.get<0>(), summaryData.get<1>());
 	}
 
 

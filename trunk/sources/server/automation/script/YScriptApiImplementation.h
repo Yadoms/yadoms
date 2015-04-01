@@ -3,7 +3,7 @@
 #include "../../database/IAcquisitionRequester.h"
 #include "../../dataAccessLayer/IConfigurationManager.h"
 #include "../../communication/ISendMessageAsync.h"
-#include <shared/notification/NotificationCenter.h>
+#include "../../notification/acquisition/INotifier.h"
 #include "IGeneralInfo.h"
 #include "ILogger.h"
 
@@ -20,14 +20,14 @@ namespace automation { namespace script
       ///\param[in] ruleLogger Logger to use for script logging
       ///\param[in] pluginGateway Plugin access to do actions on plugins
       ///\param[in] configurationManager  Configuration manager (to gain access to Yadoms configuration from rules scripts)
-      ///\param[in] notificationCenter Notification center, used to get notified on keyword state changes
+      ///\param[in] acquisitionNotifier Acquisition notifier, used to be notified on new acquisitions on keywords
       ///\param[in] dbAcquisitionRequester  Database acquisition requester
       ///\param[in] generalInfo  Database acquisition requester
       //-----------------------------------------------------
       CYScriptApiImplementation(boost::shared_ptr<ILogger> ruleLogger,
          boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
          boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
-         boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter,//TODO utile ?
+         boost::shared_ptr<notification::acquisition::INotifier> acquisitionNotifier,
          boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
          boost::shared_ptr<IGeneralInfo> generalInfo);
 
@@ -59,9 +59,9 @@ namespace automation { namespace script
       boost::shared_ptr<communication::ISendMessageAsync> m_pluginGateway;
 
       //-----------------------------------------------------
-      ///\brief               The notification center
+      ///\brief               The acquisition notifier
       //-----------------------------------------------------
-      boost::shared_ptr<shared::notification::CNotificationCenter> m_notificationCenter;
+      boost::shared_ptr<notification::acquisition::INotifier> m_acquisitionNotifier;
 
       //-----------------------------------------------------
       ///\brief               Database acquisition requester
