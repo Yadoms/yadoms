@@ -238,6 +238,7 @@ set(YADOMS_SRC
 	server/notifications/NewAcquisitionNotification.h
 	server/notifications/NewDeviceNotification.h
 	server/notifications/ConfigurationUpdatedNotification.h
+	server/notifications/TaskProgressionNotification.h
 	
 	server/dataAccessLayer/DataAccessLayer.h
 	server/dataAccessLayer/DataAccessLayer.cpp
@@ -362,6 +363,8 @@ set(YADOMS_SRC
 	server/web/ws/AcquisitionUpdateFrame.cpp
 	server/web/ws/NewDeviceFrame.h
 	server/web/ws/NewDeviceFrame.cpp
+	server/web/ws/TaskUpdateNotificationFrame.h
+	server/web/ws/TaskUpdateNotificationFrame.cpp
 	server/web/ws/FrameBase.h
 	server/web/ws/FrameBase.cpp
 	server/web/ws/FrameFactory.h

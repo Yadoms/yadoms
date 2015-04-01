@@ -4,6 +4,9 @@
 #include "TaskEvent.h"
 #include <shared/Log.h>
 #include "database/entities/Entities.h"
+#include "notifications/TaskProgressionNotification.h"
+#include <shared/ServiceLocator.h>
+#include <shared/notification/NotificationCenter.h>
 
 namespace task {
 
@@ -62,7 +65,7 @@ namespace task {
       return m_creationDate;
    }
 
-   void CInstance::OnTaskProgressUpdated(bool isRunning, float progression, std::string message)
+   void CInstance::OnTaskProgressUpdated(bool isRunning, boost::optional<float> progression, std::string message)
    {
       m_currentProgression = progression;
       m_currentMessage = message;
@@ -70,6 +73,27 @@ namespace task {
          YADOMS_LOG(information) << m_task->getName() << " report progression " << m_currentProgression.get() << " with message " << m_currentMessage;
       else
          YADOMS_LOG(information) << m_task->getName() << " report progression none with message " << m_currentMessage;
+
+      boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter = shared::CServiceLocator::instance().get<shared::notification::CNotificationCenter>();
+      if (notificationCenter)
+      {
+         
+         //post notification
+         try
+         {
+            boost::shared_ptr< notifications::CTaskProgressionNotification > notificationData(new notifications::CTaskProgressionNotification(shared_from_this()));
+            notificationCenter->postNotification(notificationData);
+         }
+         catch (shared::exception::CException & ex)
+         {
+            YADOMS_LOG(error) << "Fail to notify progression : " << ex.what();
+         }  
+         catch (std::exception & ex)
+         {
+            YADOMS_LOG(error) << "Fail to notify progression : " << ex.what();
+         }
+      }
+
    }
    void CInstance::doWork()
    {

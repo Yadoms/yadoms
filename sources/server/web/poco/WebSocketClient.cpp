@@ -28,7 +28,7 @@ namespace web { namespace poco {
       try
       {
          //if some data are available, then read them and answer
-         while (m_socket.available() > 0)
+         while (m_socket.available() >= 0 && !this->isStopping())
          {
             int flags = 0;
             char buffer[2048] = { 0 };

@@ -3,6 +3,7 @@
 #include <shared/ThreadBase.h>
 #include "ITask.h"
 #include <shared/event/EventHandler.hpp>
+#include <shared/notification/NotificationCenter.h>
 #include "IInstance.h"
 
 namespace task {
@@ -10,7 +11,7 @@ namespace task {
    //------------------------------
    ///\brief Class which handle one task
    //------------------------------
-   class CInstance : public shared::CThreadBase, public IInstance
+   class CInstance : public shared::CThreadBase, public IInstance, public boost::enable_shared_from_this<CInstance>
    {
    public:
       //------------------------------
@@ -61,10 +62,11 @@ namespace task {
    private:
       //---------------------------------
       ///\brief Static method which reports progress
-      ///\param [in] progression : the actual progression or NULL if not supported by the task
-      ///\param [in] message : the actual message provided by the task
+      ///\param [in] isRunning : the actual task is still running (false in case of task error)
+      ///\param [in] progression : the actual progression or NULL(boost::optional) if not supported by the task 
+      ///\param [in] message : the actual message provided by the task or NULL(boost::optional)
       //---------------------------------
-      void OnTaskProgressUpdated(bool isRunning, float progression, std::string message);
+      void OnTaskProgressUpdated(bool isRunning, boost::optional<float> progression, std::string message);
 
       //--------------------------------------------------------------
       /// \brief			The current task instance progression
@@ -112,7 +114,6 @@ namespace task {
       ///\brief   The creation date
       //------------------------------------------
       boost::posix_time::ptime m_creationDate;
-
    };
 
 } //namespace task
