@@ -393,7 +393,7 @@ widgetViewModelCtor =
          var self = this;
          try {
             $.each(self.widget.configuration.devices, function (index, device) {
-               if (searchedDevice == device) {
+               if (searchedDevice == device.content.source) {
                   //we've found the device
                   self.chart.get(self.seriesUuid[index]).addPoint([data.date.valueOf(), parseFloat(data.value)]);
                }
@@ -404,6 +404,7 @@ widgetViewModelCtor =
       };
 
       this.getDevicesToListen = function() {
+         var self = this;
          var result = [];
 
          try {
