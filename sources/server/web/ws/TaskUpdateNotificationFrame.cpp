@@ -17,7 +17,7 @@ namespace web { namespace ws {
       m_internalContainer.set(m_taskGuid, taskProgression.getGuid());
       m_internalContainer.set(m_taskState, taskProgression.getStatus());
       if (taskProgression.getProgression() != NULL)
-         m_internalContainer.set(m_taskProgression, taskProgression.getProgression().value());
+         m_internalContainer.set(m_taskProgression, *taskProgression.getProgression());
       m_internalContainer.set(m_taskMessage, taskProgression.getMessage());
    }
 
