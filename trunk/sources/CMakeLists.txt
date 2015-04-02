@@ -614,6 +614,24 @@ IF(USE_POCO_WEBSERVER)
 	source_group(server\\web\\poco  server/web/poco/*.*)
 ENDIF()
 
+
+
+
+##################################################################################################
+## Resources
+##################################################################################################
+if(WIN32)
+   # If we build for windows systems, we also include the resource file
+   # containing the manifest, icon and other resources
+   set(YADOMS_SRC ${YADOMS_SRC} 
+      resources/windows/yadoms.rc
+      resources/windows/resource.h
+   )
+   source_group(resources resources/windows/*.*)
+endif(WIN32)
+
+
+
 #define YADOMS output
 add_executable(yadoms ${YADOMS_SRC})
 
