@@ -22,7 +22,8 @@ namespace logConfiguration
    void CLogConfigurationImpl::configure(const std::string & logLevel)
    {
       //make pattern
-      m_patternFormatter->setProperty("pattern", "%H:%M:%S : %T : [%p] : %t");
+      m_patternFormatter->setProperty("pattern", "(%z) %H:%M:%S : %T : [%p] : %t");
+      m_patternFormatter->setProperty("times", "local"); //use local datetime
 
       m_formattingConsoleChannel.assign(new Poco::FormattingChannel(m_patternFormatter, m_consoleChannel));
       
