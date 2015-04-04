@@ -18,18 +18,11 @@
       }
    },
    "configurationSchema": {
-      "text" : {
-         "name" : "moon age",
-         "description" : "the age of the moon in day",
-         "type" : "device",
-         "expectedCapacity" : ["duration"],
-         "expectedKeywordAccess" : "get"
-      },
       "device" : {
-         "name" : "Illuminated surface of the moon",
-         "description" : "Illuminated surface of the moon in percent",
+         "name" : "Moon Information",
+         "description" : "Illuminated surface of the moon, Day of the moon",
          "type" : "device",
-         "expectedCapacity" : ["load"],
+         "expectedCapacity" : ["Moon"],
          "expectedKeywordAccess" : "get"
       }
    }

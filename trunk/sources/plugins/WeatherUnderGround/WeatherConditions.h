@@ -50,6 +50,11 @@ public:
    void OnUpdate( const IWUConfiguration& WUConfiguration );
 
    //--------------------------------------------------------------
+   /// \brief	  Return the conditions city name
+   //--------------------------------------------------------------
+   std::string GetCityName ();
+
+   //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
    virtual ~CWeatherConditions();
@@ -60,6 +65,11 @@ private:
    /// \brief	    Your Location to received custom information from the web site
    //--------------------------------------------------------------
    std::string m_Localisation;
+
+   //--------------------------------------------------------------
+   /// \brief	    Your Location to received custom information from the web site
+   //--------------------------------------------------------------
+   std::string m_CountryOrState;
 
    //--------------------------------------------------------------
    /// \brief	    The Plugin Name
@@ -81,6 +91,11 @@ private:
    //--------------------------------------------------------------
    shared::CHttpMethods m_webServer;
  
+   //--------------------------------------------------------------
+   /// \brief	    The name of the city (country ? state ?)
+   //--------------------------------------------------------------
+   std::string m_CityConditions;
+
    //--------------------------------------------------------------
    /// \brief	    Keywords
    //--------------------------------------------------------------

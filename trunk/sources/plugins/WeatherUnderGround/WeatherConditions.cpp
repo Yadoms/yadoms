@@ -3,12 +3,10 @@
 #include <shared/Log.h>
 #include <shared/exception/Exception.hpp>
 
-//JMB//
-#include <boost/timer/timer.hpp>
-
 CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> context, const IWUConfiguration& WUConfiguration, const std::string & PluginName, const std::string & Prefix):
            m_Localisation        ( WUConfiguration.getLocalisation() ),
-		   m_PluginName          ( PluginName),
+           m_CountryOrState      ( WUConfiguration.getCountryOrState() ),
+		     m_PluginName          ( PluginName),
            m_Temp                ( PluginName, Prefix + "temperature" ),
            m_Pressure            ( PluginName, Prefix + "pressure" ),
            m_Humidity            ( PluginName, Prefix + "Humidity" ),
@@ -18,17 +16,21 @@ CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> cont
            m_Rain_1hr            ( PluginName , Prefix + "Rain_1hr"),
            m_WeatherConditionUrl ( PluginName, Prefix + "WeatherCondition" ),
            m_WindDirection       ( PluginName, Prefix ),
-		   m_WindAverageSpeed    ( PluginName, Prefix ),
-		   m_WindMaxSpeed        ( PluginName, Prefix ),
+           m_WindAverageSpeed    ( PluginName, Prefix ),
+           m_WindMaxSpeed        ( PluginName, Prefix ),
            m_FeelsLike           ( PluginName, Prefix + "FeelsLike" ),
            m_Windchill           ( PluginName, Prefix + "Windchill" )
 
-{	
-	m_URL.clear();
-	m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/conditions/q/" << m_Localisation << ".json";
-
+{
    try
    {
+      //Delete space between sub-names
+      std::string temp_localisation = m_Localisation;
+      temp_localisation.erase(std::remove_if(temp_localisation.begin(), temp_localisation.end(), std::isspace), temp_localisation.end());
+
+	   m_URL.str("");
+	   m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/conditions/q/" << m_CountryOrState << "/" << temp_localisation << ".json";
+
 	   if (WUConfiguration.IsStandardInformationEnabled())
 	   {
 		  m_Temp.Initialize                ( context );
@@ -50,17 +52,33 @@ CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> cont
 		   m_Windchill.Initialize          ( context );
 	   }
    }
-   catch (...)
+   catch (shared::exception::CException e)
    {
-      YADOMS_LOG(warning) << "Configuration or initialization error of Weather condition module"  << std::endl;
+      YADOMS_LOG(warning) << "Configuration or initialization error of Weather condition module :" << e.what() << std::endl;
    }
 }
 
 void CWeatherConditions::OnUpdate( const IWUConfiguration& WUConfiguration )
 {
-   m_Localisation = WUConfiguration.getLocalisation();
-	m_URL.clear();
-	m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/conditions/q/" << m_Localisation << ".json";
+   try
+   {
+      //read the localisation
+      m_Localisation = WUConfiguration.getLocalisation();
+
+      //read the country or State code
+      m_CountryOrState = WUConfiguration.getCountryOrState();
+
+      //Delete space between sub-names
+      std::string temp_localisation = m_Localisation;
+      temp_localisation.erase(std::remove_if(temp_localisation.begin(), temp_localisation.end(), std::isspace), temp_localisation.end());
+
+	   m_URL.str("");
+	   m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/conditions/q/" << m_CountryOrState << "/" << temp_localisation << ".json";
+   }
+   catch (shared::exception::CException e)
+	{
+		YADOMS_LOG(warning) << e.what()  << std::endl;
+	}
 }
 
 void CWeatherConditions::Request( boost::shared_ptr<yApi::IYPluginApi> context )
@@ -69,15 +87,19 @@ void CWeatherConditions::Request( boost::shared_ptr<yApi::IYPluginApi> context )
 	{
 	   m_data = m_webServer.SendGetRequest( m_URL.str() );
 
+      m_CityConditions = m_data.get<std::string>("current_observation.observation_location.city");
+
 	   YADOMS_LOG(information) << "Observation location :" << m_data.get<std::string>("current_observation.observation_location.full");
 	}
-	catch (shared::exception::CException)
+	catch (shared::exception::CException e)
 	{
-		YADOMS_LOG(warning) << "No Information from web Site !"  << std::endl;
+		YADOMS_LOG(warning) << e.what()  << std::endl;
 	}
-	catch (...)
-	{
-	}
+}
+
+std::string CWeatherConditions::GetCityName ()
+{
+   return m_CityConditions;
 }
 
 void CWeatherConditions::Parse( boost::shared_ptr<yApi::IYPluginApi> context, const IWUConfiguration& WUConfiguration )
@@ -142,8 +164,9 @@ void CWeatherConditions::Parse( boost::shared_ptr<yApi::IYPluginApi> context, co
 			context->historizeData(m_PluginName, KeywordList);
 		}
 	}
-	catch (...)
+	catch (shared::exception::CException e)
 	{
+      YADOMS_LOG(warning) << e.what()  << std::endl;
 	}
 }
 

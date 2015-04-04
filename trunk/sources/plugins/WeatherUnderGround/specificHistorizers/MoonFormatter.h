@@ -1,14 +1,13 @@
 #pragma once
 #include <shared/Export.h>
 #include <shared/plugin/yPluginApi/historization/IHistorizable.h>
-#include "ForecastHelpers.h"
 
 namespace shared { namespace plugin { namespace yPluginApi { namespace historization
 {
    //-----------------------------------------------------
    ///\brief The message formatter
    //-----------------------------------------------------
-   class /*YADOMS_SHARED_EXPORT*/ CForecastFormatter
+   class /*YADOMS_SHARED_EXPORT*/ CMoonFormatter
    {
    public:
       //-----------------------------------------------------
@@ -17,7 +16,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       ///\param[in] to              Receiver recipient ID
       ///\param[in] body            Message content
       //-----------------------------------------------------
-      CForecastFormatter( const EPeriod & Period );
+      CMoonFormatter( void );
 
       //-----------------------------------------------------
       ///\brief                      Add a new unit to be send to the widget
@@ -34,37 +33,16 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       ///\brief                      Add a new period with all integrated parameter
       ///\param[in] Year             The Year of the period
       ///\param[in] Month            The Month of the period
-      ///\param[in] Day              The Day of the period
-      ///\param[in] WeatherCondition The weather condition
-	   ///\param[in] TempMax          The maximal temperature of the day
-	   ///\param[in] TempMin          The minimum temperature of the day
-	   ///\param[in] MaxWind          The maximum wind speed of the day
-	   ///\param[in] AveWind          The average wind speed of the day
-	   ///\param[in] AveHumidity      The average humidity of the day
       //-----------------------------------------------------
-      void AddPeriod(
-            const std::string& Year,
-            const std::string& Month,
-            const std::string& Day,
-		      const std::string& WeatherCondition, 
-	         const std::string& TempMax, 
-				const std::string& TempMin,
-				const std::string& MaxWind,
-				const std::string& AveWind,
-				const std::string& AveHumidity,
-            const std::string& RainDay
-				);
-
-      //-----------------------------------------------------
-      ///\brief                     Clear all periods
-      //-----------------------------------------------------
-
-      void ClearAllPeriods( void );
+      void SetParameters(
+            const std::string& IlluminatedMoon,
+            const std::string& DayofMoon
+            );
 
       //-----------------------------------------------------
       ///\brief                     Destructor
       //-----------------------------------------------------
-      virtual ~CForecastFormatter();
+      virtual ~CMoonFormatter();
 
       //-----------------------------------------------------
       ///\brief                     Format value to Yadoms format
@@ -72,34 +50,15 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       //-----------------------------------------------------
       virtual std::string formatValue() const;
 
-      void SetCityName ( const std::string CityName );
-
    private:
-
-      //--------------------------------------------------------------
-      /// \brief	    Your Location to received custom information from the web site
-      //--------------------------------------------------------------
-      std::string m_Localisation;
-
-      //-----------------------------------------------------
-      ///\brief               The body value
-      //-----------------------------------------------------
-      CDataContainer m_ForecastFrame;
-
-      //-----------------------------------------------------
-      ///\brief               The vector of all period
-      //-----------------------------------------------------
-	   std::vector<CDataContainer> m_Periods;
+ 
+      std::string m_IlluminatedMoon;
+      std::string m_DayOfMoon;
 
       //-----------------------------------------------------
       ///\brief               L'ensemble des unités
       //-----------------------------------------------------
       CDataContainer m_Units;
-
-      //-----------------------------------------------------
-      ///\brief               The period string
-      //-----------------------------------------------------
-      std::string m_PeriodString;
    };
 
 } } } } // namespace shared::plugin::yPluginApi::historization

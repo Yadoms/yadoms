@@ -5,6 +5,7 @@
 #include "WUConfiguration.h"
 #include "Keywords/Load.h"
 #include "Keywords/Duration.h"
+#include "Keywords/Moon.h"
 
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -55,6 +56,11 @@ private:
    std::string m_Localisation;
 
    //--------------------------------------------------------------
+   /// \brief	    Your Location to received custom information from the web site
+   //--------------------------------------------------------------
+   std::string m_CountryOrState;
+
+   //--------------------------------------------------------------
    /// \brief	    The Plugin Name
    //--------------------------------------------------------------
    std::string m_PluginName;
@@ -77,7 +83,6 @@ private:
    //--------------------------------------------------------------
    /// \brief	    Keywords
    //--------------------------------------------------------------
-   CLoad     PercentIlluminatedMoon;
-   CDuration AgeOfMoon;
+   CMoon     m_MoonCharacteristics;
 };
 

@@ -31,6 +31,20 @@ public:
    virtual std::string getLocalisation() const = 0;
 
    //--------------------------------------------------------------
+   /// \brief	    Get the Country from the configuration
+   /// \return     The Country String
+   //--------------------------------------------------------------
+
+   virtual std::string getCountryOrState() const = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	    Get the State from the configuration
+   /// \return     The State String
+   //--------------------------------------------------------------
+
+   virtual std::string getState() const = 0;
+
+   //--------------------------------------------------------------
    /// \brief	    Get options enabled from the configuration
    //--------------------------------------------------------------
 
@@ -39,4 +53,3 @@ public:
    virtual bool IsAstronomyEnabled (void ) const = 0;
    virtual bool IsForecast3DaysEnabled (void ) const = 0;
 };
-

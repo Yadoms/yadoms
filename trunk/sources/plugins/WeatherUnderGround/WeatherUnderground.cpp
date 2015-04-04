@@ -61,7 +61,7 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 
 	  CWeatherConditions m_WeatherConditionsRequester( context, m_configuration, m_deviceName, "conditions.");
 	  CAstronomy m_AstronomyRequester                ( context, m_configuration, m_deviceName, "astronomy.");
-	  CForecast3Days m_Forecast3Days                 ( context, m_configuration, m_deviceName, "forecast.3days.");
+     CForecast3Days m_Forecast3Days                 ( context, m_configuration, m_deviceName, "forecast.3days.");
 
       // the main loop
       YADOMS_LOG(debug) << "CWeatherUnderground plugin is running...";
@@ -80,7 +80,7 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 
                break;
             }
-		 case kEvtTimerRefreshAstronomy:
+		   case kEvtTimerRefreshAstronomy:
             {
 			      YADOMS_LOG(debug) << "Refresh Astronomy Information";
 
@@ -94,6 +94,7 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 			      YADOMS_LOG(debug) << "Refresh Forecast 3 Days Information";
 
 			      m_Forecast3Days.Request( context );
+               m_Forecast3Days.SetCityName ( m_WeatherConditionsRequester.GetCityName());
 			      m_Forecast3Days.Parse  ( context, m_configuration );
 
 			      break;
@@ -112,9 +113,15 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 			      m_AstronomyRequester.Request( context );
 			      m_AstronomyRequester.Parse  ( context, m_configuration );
 
+               m_Forecast3Days.SetCityName ( m_WeatherConditionsRequester.GetCityName());
 			      m_Forecast3Days.Request( context );
 			      m_Forecast3Days.Parse  ( context, m_configuration );
 
+               break;
+            }
+         case yApi::IYPluginApi::kBindingQuery:
+            {
+               //TODO : Remplir pour une demande Internet sur la liste des pays
                break;
             }
 

@@ -4,7 +4,7 @@
 #include <shared/plugin/yPluginApi/StandardCapacity.h>
 #include <shared/plugin/yPluginApi/historization/MeasureType.h>
 #include <shared/plugin/yPluginApi/KeywordAccessMode.h>
-#include "ForecastFormatter.h"
+#include "MoonFormatter.h"
 
 namespace shared { namespace plugin { namespace yPluginApi { namespace historization
 {
@@ -12,21 +12,21 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
    //-----------------------------------------------------
    ///\brief A remote pc code historizable object
    //-----------------------------------------------------
-   class CForecastHistorizer : public IHistorizable
+   class CMoonHistorizer : public IHistorizable
    {
    public:
       //-----------------------------------------------------
       ///\brief                     Constructor
       ///\param[in] keywordName     Yadoms keyword name
       //-----------------------------------------------------
-      CForecastHistorizer(const std::string& keywordName, 
-                          const EKeywordAccessMode& accessMode, 
-                          const EPeriod& Period);
+      CMoonHistorizer(const std::string& keywordName, 
+                      const EKeywordAccessMode& accessMode
+                          );
 
       //-----------------------------------------------------
       ///\brief                     Destructor
       //-----------------------------------------------------
-      virtual ~CForecastHistorizer();
+      virtual ~CMoonHistorizer();
 	  
       // IHistorizable implementation
       virtual const std::string& getKeyword() const;
@@ -51,34 +51,11 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       //-----------------------------------------------------
       ///\brief                      Add a new period with all integrated parameter
       ///\param[in] Year             The Year of the period
-      ///\param[in] Month            The Month of the period
-      ///\param[in] Day              The Day of the period
-      ///\param[in] WeatherCondition The weather condition
-	   ///\param[in] TempMax          The maximal temperature of the day
-	   ///\param[in] TempMin          The minimum temperature of the day
-	   ///\param[in] MaxWind          The maximum wind speed of the day
-	   ///\param[in] AveWind          The average wind speed of the day
-	   ///\param[in] AveHumidity      The average humidity of the day
       //-----------------------------------------------------
-      void AddPeriod(
-                     const std::string& Year,
-                     const std::string& Month,
-                     const std::string& Day,
-                     const std::string& WeatherCondition,
-	                  const std::string& TempMax, 
-					      const std::string& TempMin,
-					      const std::string& MaxWind,
-					      const std::string& AveWind,
-					      const std::string& AveHumidity,
-                     const std::string& RainDay
-					 );
-
-      //-----------------------------------------------------
-      ///\brief                     Clear All periods
-      //-----------------------------------------------------
-      void ClearAllPeriods( void );
-
-      void SetCityName ( const std::string CityName );
+      void SetParameters(
+            const std::string& IlluminatedMoon,
+            const std::string& DayofMoon
+				);
 
    private:
       //-----------------------------------------------------
@@ -94,7 +71,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       //-----------------------------------------------------
       ///\brief                     The message content
       //-----------------------------------------------------
-      boost::shared_ptr<CForecastFormatter> m_content;
+      boost::shared_ptr<CMoonFormatter> m_content;
 	  
    };
 } } } } // namespace shared::plugin::yPluginApi::historization

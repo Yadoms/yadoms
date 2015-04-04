@@ -1,3 +1,4 @@
+//TODO : Faire un specific historizer pour l'astronomy, et le mettre aussi du côté du widget. Supprimer les historizer actuels
 #include "stdafx.h"
 #include "Astronomy.h"
 #include <shared/Log.h>
@@ -5,34 +6,49 @@
 
 CAstronomy::CAstronomy(boost::shared_ptr<yApi::IYPluginApi> context, const IWUConfiguration& WUConfiguration, const std::string & PluginName, const std::string & Prefix):
            m_Localisation         ( WUConfiguration.getLocalisation() ),
-		   m_PluginName           ( PluginName ),
-           PercentIlluminatedMoon ( PluginName, Prefix + "PercentIllumitedMoon" ),
-           AgeOfMoon              ( PluginName, Prefix + "AgeOfMoon" )
-{	
-	m_URL.clear();
-	m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/astronomy/q/" << m_Localisation << ".json";
+           m_CountryOrState       ( WUConfiguration.getCountryOrState() ),
+		     m_PluginName           ( PluginName ),
+           m_MoonCharacteristics  ( PluginName, Prefix + "Moon" )
+{
+   //Delete space between sub-names
+   std::string temp_localisation = m_Localisation;
+   temp_localisation.erase(std::remove_if(temp_localisation.begin(), temp_localisation.end(), std::isspace), temp_localisation.end());
+
+	m_URL.str("");
+	m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/astronomy/q/" << m_CountryOrState << "/" << temp_localisation << ".json";
 
    try 
    {
 	   if (WUConfiguration.IsAstronomyEnabled())
 	   {
-		   PercentIlluminatedMoon.Initialize ( context );
-		   AgeOfMoon.Initialize              ( context );
+         m_MoonCharacteristics.Initialize  ( context );
+
+         m_MoonCharacteristics.AddUnit(
+                                          shared::plugin::yPluginApi::CStandardCapacities::Load.getName(),
+                                          shared::plugin::yPluginApi::CStandardCapacities::Load.getUnit() 
+                                      );
 	   }
    }
-   catch (...) //TODO : To change !!
+   catch (shared::exception::CException e)
    {
-	   YADOMS_LOG(warning) << "Configuration or initialization error of Astronomy module"  << std::endl;
+	   YADOMS_LOG(warning) << "Configuration or initialization error of Astronomy module :" << e.what() << std::endl;
    }
 }
 
 void CAstronomy::OnUpdate( const IWUConfiguration& WUConfiguration )
 {
-    m_Localisation = WUConfiguration.getLocalisation();
-	
-	m_URL.clear();
+   m_Localisation = WUConfiguration.getLocalisation();
 
-	m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/astronomy/q/" << m_Localisation << ".json";
+   //read the country or State code
+   m_CountryOrState = WUConfiguration.getCountryOrState();
+
+   //Delete space between sub-names
+   std::string temp_localisation = m_Localisation;
+   temp_localisation.erase(std::remove_if(temp_localisation.begin(), temp_localisation.end(), std::isspace), temp_localisation.end());
+	
+	m_URL.str("");
+
+	m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/astronomy/q/" << m_CountryOrState << "/" << temp_localisation << ".json";
 }
 
 void CAstronomy::Request( boost::shared_ptr<yApi::IYPluginApi> context )
@@ -41,12 +57,9 @@ void CAstronomy::Request( boost::shared_ptr<yApi::IYPluginApi> context )
 	{
 	   m_data = m_webServer.SendGetRequest( m_URL.str() );
 	}
-	catch (shared::exception::CException)
+	catch (shared::exception::CException e)
 	{
-		YADOMS_LOG(warning) << "No Information from web Site !"  << std::endl;
-	}
-	catch (...) //TODO : To change !!
-	{
+      YADOMS_LOG(warning) << e.what()  << std::endl;
 	}
 }
 
@@ -66,18 +79,19 @@ void CAstronomy::Parse( boost::shared_ptr<yApi::IYPluginApi> context, const IWUC
 
 			if (WUConfiguration.IsAstronomyEnabled())
 			{
-				PercentIlluminatedMoon.SetValue      ( m_data, "moon_phase.percentIlluminated" );
-				KeywordList.push_back                (PercentIlluminatedMoon.GetHistorizable());
+            m_MoonCharacteristics.SetParameters  (m_data,
+                                                  "moon_phase.percentIlluminated",
+                                                  "moon_phase.ageOfMoon" );
 
-				AgeOfMoon.SetValue                   ( m_data, "moon_phase.ageOfMoon" );
-				KeywordList.push_back                (AgeOfMoon.GetHistorizable());
+            KeywordList.push_back                (m_MoonCharacteristics.GetHistorizable());
 			}
 
 			context->historizeData(m_PluginName, KeywordList);
 		}
 	}
-	catch (...)
+	catch (shared::exception::CException e)
 	{
+      YADOMS_LOG(warning) << e.what() << std::endl;
 	}
 }
 

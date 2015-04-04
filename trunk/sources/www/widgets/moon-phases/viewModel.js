@@ -27,10 +27,15 @@ ko.extenders.numeric = function(target, precision) {
    return result;
 };
 
+function twoDigit(number) {
+  var twodigit = number >= 10 ? number : "0"+number.toString();
+  return twodigit;
+}
+
 widgetViewModelCtor =
 
 /**
- * Create a Smiley ViewModel
+ * Create a MoonPhases ViewModel
  * @constructor
  */
 function MoonPhasesViewModel() {
@@ -38,7 +43,7 @@ function MoonPhasesViewModel() {
    //observable data
    this.data = ko.observable(0).extend({ numeric: 1 });
    
-   //JMB : Essai avec la lune - Pour le moment en fixe
+   //Default value - This value is overwrite after
    this.photoName = ko.observable("widgets/moon-phases/images/moon01.png");
 
    self.unit = "%";
@@ -64,31 +69,28 @@ function MoonPhasesViewModel() {
     */
    this.dispatch = function(device, data) {
       var self = this;
-
+	  
       if (device == self.widget.configuration.device) 
       {
-         self.data(data.value);
-      }
-      if (device == self.widget.configuration.text) 
-      {
-         //It's a time (Ex:264:00:00). We split it 
-         var res = data.value.split(":");
-        
+		 var obj = jQuery.parseJSON( data.value );
+		 self.data ( parseInt( obj.IlluminatedMoon ) );
+		 var res = obj.DayOfMoon;	
+		
          //Hours are used to calculate the image number
-         self.photoName ( "widgets/moon-phases/images/moon" + parseInt(res[0])/24 + ".png" );
-         console.debug( self.photoName );
+         self.photoName ( "widgets/moon-phases/images/moon" + (parseInt(res)-1) + ".png" );
       }
-   };
+   }
+   
+   this.configurationChanged = function() {
+      var self = this;
+  }	 
 
    this.getDevicesToListen = function() {
       var result = [];
 
-      //Add the pourcentage value
+      //Add the moon keyword
       result.push(this.widget.configuration.device);
-
-      //Add the day value
-      result.push(this.widget.configuration.text);
-      return result;
+	  
+	  return result;
    }
-
 };

@@ -7,16 +7,16 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
    DECLARE_ENUM_IMPLEMENTATION(EWeatherCondition,
       ((Cloudy))
       ((Snow))
-	  ((PartlySunny))
-	  ((Sunny))
-	  ((Rain))
-	  ((Sleet))
-	  ((Storm))
-	  ((Fog))
-	  ((Night_Clear))
-	  ((Night_Cloudy))
-	  ((Night_Rain))
-	  ((Night_Snow))
+	   ((PartlySunny))
+	   ((Sunny))
+	   ((Rain))
+	   ((Sleet))
+	   ((Storm))
+	   ((Fog))
+	   ((Night_Clear))
+	   ((Night_Cloudy))
+	   ((Night_Rain))
+	   ((Night_Snow))
    );
 
 

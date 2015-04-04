@@ -3,17 +3,25 @@
 #include <shared/Log.h>
 #include <shared/exception/Exception.hpp>
 
-CForecast3Days::CForecast3Days(boost::shared_ptr<yApi::IYPluginApi> context, const IWUConfiguration& WUConfiguration, std::string PluginName, const std::string Prefix):
+CForecast3Days::CForecast3Days(boost::shared_ptr<yApi::IYPluginApi> context, 
+                               const IWUConfiguration& WUConfiguration, 
+                               std::string PluginName, 
+                               const std::string Prefix
+                               ):
            m_Localisation              ( WUConfiguration.getLocalisation() ),
+           m_CountryOrState            ( WUConfiguration.getCountryOrState() ),
 		     m_PluginName                ( PluginName ),
-           //TODO : Le faire à partir d'un helper pour le Day. Aujourd'hui Day et Hour à insérer dedans
-		     m_Forecast                  ( PluginName, "Forecast3Days","Day")
-{	
-	m_URL.clear();
-	m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/forecast/q/" << m_Localisation << ".json";
+           //TODO : Ecrire autrement le EPeriod::kDay
+		     m_Forecast                  ( PluginName, "Forecast3Days",EPeriod::kDay)
+{
+   //Delete space between sub-names
+   std::string temp_localisation = m_Localisation;
+   temp_localisation.erase(std::remove_if(temp_localisation.begin(), temp_localisation.end(), std::isspace), temp_localisation.end());
+
+	m_URL.str("");
+	m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/forecast/q/" << m_CountryOrState << "/" << temp_localisation << ".json";
 
 	//Initialization
-
    try
    {
 	   if (WUConfiguration.IsForecast3DaysEnabled())
@@ -38,19 +46,28 @@ CForecast3Days::CForecast3Days(boost::shared_ptr<yApi::IYPluginApi> context, con
                              );
       }
    }
-   	catch (...)
+   catch (shared::exception::CException e)
 	{
-		YADOMS_LOG(warning) << "Configuration or initialization error of Forecast 3 Days module"  << std::endl;
+		YADOMS_LOG(warning) << "Configuration or initialization error of Forecast 3 Days module :" << e.what()  << std::endl;
 	}
 }
 
 void CForecast3Days::OnUpdate( const IWUConfiguration& WUConfiguration )
 {
-    m_Localisation = WUConfiguration.getLocalisation();
+   //read the localisation
+   m_Localisation = WUConfiguration.getLocalisation();
 	
-	m_URL.clear();
+   //read the country or State code
+   m_CountryOrState = WUConfiguration.getCountryOrState();
 
-	m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/forecast/q/" << m_Localisation << ".json";
+   //Delete space between sub-names
+   std::string temp_localisation = m_Localisation;
+   temp_localisation.erase(std::remove_if(temp_localisation.begin(), temp_localisation.end(), std::isspace), temp_localisation.end());
+
+
+	m_URL.str("");
+
+	m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/forecast/q/" << m_CountryOrState << "/" << temp_localisation << ".json";
 }
 
 void CForecast3Days::Request( boost::shared_ptr<yApi::IYPluginApi> context )
@@ -58,14 +75,11 @@ void CForecast3Days::Request( boost::shared_ptr<yApi::IYPluginApi> context )
 	try
 	{
 	   m_data = m_webServer.SendGetRequest( m_URL.str() );
-      m_data.printToLog();
 	}
-	catch (shared::exception::CException)
+	catch (shared::exception::CException e)
 	{
-		YADOMS_LOG(warning) << "No Information from web Site !"  << std::endl;
+		YADOMS_LOG(warning) << e.what() << std::endl;
 	}
-	catch (...)
-	{}
 }
 
 void CForecast3Days::Parse( boost::shared_ptr<yApi::IYPluginApi> context, const IWUConfiguration& WUConfiguration )
@@ -104,20 +118,20 @@ void CForecast3Days::Parse( boost::shared_ptr<yApi::IYPluginApi> context, const 
                                     "qpf_allday.mm"
                                     );
 				}
-
             KeywordList.push_back (m_Forecast.GetHistorizable());
 			}
-
 			context->historizeData(m_PluginName, KeywordList);
 		}
 	}
-	catch (shared::exception::CException)
+	catch (shared::exception::CException e)
 	{
-		YADOMS_LOG(warning) << "Error during the parsing of the element !"  << std::endl;
+      YADOMS_LOG(warning) << "Error during the parsing of the element ! : " << e.what() << std::endl;
 	}
-	catch (...)
-	{
-	}
+}
+
+void CForecast3Days::SetCityName ( const std::string CityName )
+{
+   m_Forecast.SetCityName ( CityName );
 }
 
 CForecast3Days::~CForecast3Days()

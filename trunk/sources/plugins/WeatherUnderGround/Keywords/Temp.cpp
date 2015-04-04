@@ -28,9 +28,15 @@ void CTemp::DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) cons
 
 void CTemp::SetValue( const shared::CDataContainer & ValueContainer, const std::string & filter)
 {
-	m_temperature->set(ValueContainer.get<double>( filter ));
-
-	YADOMS_LOG(debug) << m_temperature->getKeyword() << "=" << m_temperature->get() << "°C";
+   if (ValueContainer.get<std::string>( filter ) == "NA")
+   {
+      YADOMS_LOG(debug) << m_temperature->getKeyword() << "NA => Value not registered";
+   }
+   else
+   {
+	   m_temperature->set(ValueContainer.get<double>( filter ));
+	   YADOMS_LOG(debug) << m_temperature->getKeyword() << "=" << m_temperature->get() << "°C";
+   }
 }
 
 boost::shared_ptr<yApi::historization::IHistorizable> CTemp::GetHistorizable() const
