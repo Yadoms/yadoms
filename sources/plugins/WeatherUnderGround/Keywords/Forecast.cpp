@@ -8,8 +8,8 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-CForecast::CForecast( std::string PluginName, std::string KeyWordName, const std::string& Period )
-   :m_PluginName ( PluginName ), m_forecast( new yApi::historization::CForecastHistorizer(KeyWordName, yApi::EKeywordAccessMode::kGetSet, Period) )
+CForecast::CForecast( std::string PluginName, std::string KeyWordName, const EPeriod& Period )
+   :m_PluginName ( PluginName ), m_forecast( new yApi::historization::CForecastHistorizer(KeyWordName, yApi::EKeywordAccessMode::kGetSet, Period ) )
 {}
 
 void CForecast::Initialize( boost::shared_ptr<yApi::IYPluginApi> context ) const
@@ -68,6 +68,11 @@ void CForecast::AddPeriod(const shared::CDataContainer & ValueContainer,
 void CForecast::ClearAllPeriods( void )
 {
    m_forecast->ClearAllPeriods();
+}
+
+void CForecast::SetCityName ( const std::string CityName )
+{
+   m_forecast->SetCityName ( CityName );
 }
 
 boost::shared_ptr<yApi::historization::IHistorizable> CForecast::GetHistorizable() const

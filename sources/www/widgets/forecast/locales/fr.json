@@ -2,9 +2,33 @@
    "name": "Prévision Météo",
    "description": "Ce widget permet d'afficher les prévision météorologiques pour les prochains jours",
    "configurationSchema" : {
-      "text" : {
+      "device" : {
          "name" : "Prévision",
          "description" : "Prévision météorologiques pour les prochains jours"
-      }
+      },
+      "Information":
+      {
+         "name": "Prévision Météo",
+         "description": "Les prévisions peuvent être sélectionnée individuellement:",
+         "content":
+         {	  
+			  "MaxWind":
+			  {
+				 "name": "La vitesse maximale du vent"
+			  },
+			  "AveWind":
+			  {
+				 "name": "La vitesse moyenne du vent"
+			  },
+			  "AveHumidity":
+			  {
+				 "name": "L'humidité moyenne"
+			  },
+			  "RainDay":
+			  {
+				 "name": "Les chutes de pluie"
+			  }			  
+		  }
+		}	  
    }
 }

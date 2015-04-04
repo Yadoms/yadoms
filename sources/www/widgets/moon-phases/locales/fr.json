@@ -2,13 +2,9 @@
    "name": "phase lune",
    "description": "Ce widget permet d'afficher les phases de la lune",
    "configurationSchema" : {
-      "text" : {
-         "name" : "Age de la lune",
-         "description" : "Age de la lune en jour"
-      },
       "device" : {
-         "name" : "Surface de la lune illuminée",
-         "description" : "Pourcentage de la surface illuminée de la lune"
+         "name" : "Caractéristique de la Lune",
+         "description" : "Pourcentage de la surface illuminée de la lune et jour de la lune"
       }
    }
 }

@@ -1,13 +1,7 @@
-/*.strut {
-   display:inline-block;
-   vertical-align:middle;
-}*/
-/*We allow to these elements to be vertical aligned*/
-
+/*TODO : revérifier l'ensemble*/
 /*Empty element to manage vertical alignment*/
 .strut {
    height:100px;
-   background:black;
    width:100px;
    vertical-align:middle;
    text-align: middle;
@@ -18,20 +12,17 @@
     line-height:normal ;
     position: relative;
     float:left;
-    background:black;
-    color:white;
+    color:black;
 }
 
 .moonPhasesWidgetUnit {
     float:left;
     padding-top: 5px;
-    background:black;
-    color:white;
+    color:black;
 }
 
 .moonPhasesWidgetValueArea {
     margin: 0 auto;
     display: table;
-    background:black;
-    color:white;
+    color:black;
 }

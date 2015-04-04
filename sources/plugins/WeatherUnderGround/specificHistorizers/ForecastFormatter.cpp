@@ -7,9 +7,9 @@
 namespace shared { namespace plugin { namespace yPluginApi { namespace historization
 {
 
-CForecastFormatter::CForecastFormatter( const std::string & Period )
+CForecastFormatter::CForecastFormatter( const EPeriod & Period )
 {
-   m_PeriodString = Period;
+   m_PeriodString = EPeriodEnum[Period];
 }
 
 void CForecastFormatter::AddUnit(
@@ -54,9 +54,13 @@ void CForecastFormatter::ClearAllPeriods( void )
    m_Periods.clear();
 }
 
-CForecastFormatter::~CForecastFormatter()
+void CForecastFormatter::SetCityName ( const std::string CityName )
 {
+   m_Localisation = CityName;
 }
+
+CForecastFormatter::~CForecastFormatter()
+{}
 
 std::string CForecastFormatter::formatValue() const
 {
@@ -68,9 +72,9 @@ std::string CForecastFormatter::formatValue() const
    if (!m_PeriodString.empty())
       Temp.set ("PeriodUnit", m_PeriodString );
    
+   Temp.set ("city", m_Localisation);
    Temp.set ("forecast", m_Periods);
 
-   Temp.printToLog();
    return Temp.serialize();
 }
 

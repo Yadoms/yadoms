@@ -37,6 +37,25 @@ std::string CWUConfiguration::getLocalisation() const
    return m_data.get<std::string>("Localisation");
 }
 
+std::string CWUConfiguration::getCountryOrState() const
+{
+   std::string country = m_data.get<std::string>("Country");
+
+   if ( country == "US" )
+   {
+      country = getState();
+      //TODO : Faire une vrai Exception
+      if ( country == "NA" ) throw;
+   }
+
+   return country;
+}
+
+std::string CWUConfiguration::getState() const
+{
+   return m_data.get<std::string>("State");
+}
+
 bool CWUConfiguration::IsWindEnabled (void) const                 {return m_isWindEnabled;}
 bool CWUConfiguration::IsStandardInformationEnabled (void ) const {return m_isStandardInformationEnabled;}
 

@@ -1,16 +1,18 @@
 <script type="text/html" id="forecast-template">
    <link href="widgets/forecast/widget.css" rel="stylesheet">
+   <span data-bind="text: city"></span>
    <table>
    <tr data-bind="foreach: period">
-   <td> <img data-bind="attr:{ src: WeatherIcon }" alt="phases" height="30" width="30">
+   <td> 
                       <div data-bind="text: TimeDate"></div>
+                      <img data-bind="attr:{ src: WeatherIcon }" alt="phases" height="30" width="30">
 					  <div >
 					       <span data-bind="text: TempMin"></span>/<span data-bind="text: TempMax"></span>
 					  </div> 
-					  <div data-bind="text: MaxWind"></div>
-					  <div data-bind="text: AveWind"></div>
-					  <div data-bind="text: AveHumidity"></div>
-					  <div data-bind="text: RainDay"></div>
+					  <div data-bind="visible: $root.MaxWindVisible(),text: MaxWind"></div>
+					  <div data-bind="visible: $root.AveWindVisible(),text: AveWind"></div>
+					  <div data-bind="visible: $root.AveHumidityVisible(),text: AveHumidity"></div>
+					  <div data-bind="visible: $root.RainDayVisible(),text: RainDay"></div>
    </td>
    </tr>
    </table>

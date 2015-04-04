@@ -31,6 +31,8 @@ set(WUNDERGROUND_SOURCES
    Keywords/IKeyword.h   
    Keywords/Load.h
    Keywords/Load.cpp
+   Keywords/Moon.h
+   Keywords/Moon.cpp
    Keywords/Rain.h
    Keywords/Rain.cpp
    Keywords/Temp.h
@@ -49,6 +51,10 @@ set(WUNDERGROUND_SOURCES
    specificHistorizers/ForecastHistorizer.cpp
    specificHistorizers/ForecastFormatter.h
    specificHistorizers/ForecastFormatter.cpp
+   specificHistorizers/MoonFormatter.h
+   specificHistorizers/MoonFormatter.cpp
+   specificHistorizers/MoonHistorizer.h
+   specificHistorizers/MoonHistorizer.cpp
 )
 
 source_group(Keywords Keywords/*.*)

@@ -20,8 +20,13 @@ public:
    /// \brief	  Constructor
    /// \param[in] context          pointer to the API
    /// \param[in] WUConfiguration  The Configuration of the module
+   /// \param[in] PluginName       The Name of the module
+   /// \param[in] Prefix           Prefix Name used eventually to subname Keywords
    //--------------------------------------------------------------
-   CForecast3Days(boost::shared_ptr<yApi::IYPluginApi> context, const IWUConfiguration& WUConfiguration, std::string PluginName, const std::string Prefix);
+   CForecast3Days(boost::shared_ptr<yApi::IYPluginApi> context, 
+                  const IWUConfiguration& WUConfiguration, 
+                  std::string PluginName, 
+                  const std::string Prefix);
 
    //--------------------------------------------------------------
    /// \brief	  Send the request and receive the response from the web site
@@ -43,6 +48,8 @@ public:
    //--------------------------------------------------------------
    void OnUpdate( const IWUConfiguration& WUConfiguration );
 
+   void SetCityName ( const std::string CityName );
+
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
@@ -54,6 +61,11 @@ private:
    /// \brief	    Your Location to received custom information from the web site
    //--------------------------------------------------------------
    std::string m_Localisation;
+
+   //--------------------------------------------------------------
+   /// \brief	    Your Location to received custom information from the web site
+   //--------------------------------------------------------------
+   std::string m_CountryOrState;
 
    //--------------------------------------------------------------
    /// \brief	    The Plugin Name

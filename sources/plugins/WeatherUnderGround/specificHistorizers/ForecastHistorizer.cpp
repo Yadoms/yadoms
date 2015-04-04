@@ -8,7 +8,9 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
    const CStandardCapacity& ForecastCapacity = CStandardCapacity("Forecast", CStandardUnits::NoUnits, EKeywordDataType::kNoData);
 
    
-   CForecastHistorizer::CForecastHistorizer(const std::string& keywordName, const EKeywordAccessMode& accessMode, const std::string & Period)
+   CForecastHistorizer::CForecastHistorizer(const std::string& keywordName, 
+                                            const EKeywordAccessMode& accessMode, 
+                                            const EPeriod& Period)
    :m_keywordName(keywordName), m_accessMode(accessMode)
    {
 	   m_content.reset(new CForecastFormatter( Period ));
@@ -77,5 +79,10 @@ void CForecastHistorizer::AddUnit(
       return CDataContainer();
    }
 	
+void CForecastHistorizer::SetCityName ( const std::string CityName )
+{
+   m_content->SetCityName ( CityName );
+}
+
 } } } } // namespace shared::plugin::yPluginApi::historization
 
