@@ -47,6 +47,8 @@ set(WUNDERGROUND_SOURCES
    Keywords/WindDirection.cpp
    Keywords/WindSpeed.h
    Keywords/WindSpeed.cpp
+   specificHistorizers/ForecastHelpers.h
+   specificHistorizers/ForecastHelpers.cpp
    specificHistorizers/ForecastHistorizer.h
    specificHistorizers/ForecastHistorizer.cpp
    specificHistorizers/ForecastFormatter.h
