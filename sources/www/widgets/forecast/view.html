@@ -4,15 +4,18 @@
    <table>
    <tr data-bind="foreach: period">
    <td> 
-                      <div data-bind="text: TimeDate"></div>
-                      <img data-bind="attr:{ src: WeatherIcon }" alt="phases" height="30" width="30">
-					  <div >
-					       <span data-bind="text: TempMin"></span>/<span data-bind="text: TempMax"></span>
+                      <div data-bind="text: TimeDate" align="center" style="width:65px"></div>
+                      <img data-bind="attr:{ src: WeatherIcon }" alt="phases" height="40" width="40" align="center">
+					  <div data-bind="visible: $root.MinTempVisible()" align="center">
+					       <span data-bind="text: TempMin" style="color:blue"></span>
 					  </div> 
-					  <div data-bind="visible: $root.MaxWindVisible(),text: MaxWind"></div>
-					  <div data-bind="visible: $root.AveWindVisible(),text: AveWind"></div>
-					  <div data-bind="visible: $root.AveHumidityVisible(),text: AveHumidity"></div>
-					  <div data-bind="visible: $root.RainDayVisible(),text: RainDay"></div>
+					  <div data-bind="visible: $root.MaxTempVisible()" align="center">
+					       <span data-bind="text: TempMax" style="color:red"></span>
+					  </div> 
+					  <div data-bind="visible: $root.MaxWindVisible(),text: MaxWind" align="center"></div>
+					  <div data-bind="visible: $root.AveWindVisible(),text: AveWind" align="center"></div>
+					  <div data-bind="visible: $root.AveHumidityVisible(),text: AveHumidity" align="center"></div>
+					  <div data-bind="visible: $root.RainDayVisible(),text: RainDay" align="center"></div>
    </td>
    </tr>
    </table>

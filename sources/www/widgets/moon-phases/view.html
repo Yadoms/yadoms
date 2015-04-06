@@ -2,11 +2,9 @@
    <link href="widgets/moon-phases/widget.css" rel="stylesheet">
    <table>
    <tr>
-   <td class="strut"> <img data-bind="attr:{ src: photoName }" alt="phases" height="80" width="80"> 
-   </td>
-   <td class="strut">
-      <div class="moonPhasesWidgetData" data-bind="text: data"></div>
-      <div class="moonPhasesWidgetUnit" data-bind="text: unit"></div>   
+   <td> <div class="strut" data-bind="style:{ 'background-image': photoName, 'height': WidgetHeight, 'width':WidgetWidth}" alt="phases"> 
+	   <div class="moonPhasesWidgetData" data-bind="text: data"></div>
+      </div>
    </td>
    </tr>
    </table>

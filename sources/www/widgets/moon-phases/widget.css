@@ -1,28 +1,22 @@
 /*TODO : revérifier l'ensemble*/
-/*Empty element to manage vertical alignment*/
 .strut {
-   height:100px;
-   width:100px;
    vertical-align:middle;
-   text-align: middle;
+   text-align: center;  
+   background-size: 100% 100%; 
+   background-repeat: no-repeat;
+   display: table;
+   margin: 0 auto;
+   display:table-cell;	
 }
 
 .moonPhasesWidgetData {
     font-size : 1.5em;
     line-height:normal ;
     position: relative;
-    float:left;
-    color:black;
-}
-
-.moonPhasesWidgetUnit {
-    float:left;
-    padding-top: 5px;
-    color:black;
-}
-
-.moonPhasesWidgetValueArea {
+    float:center;
+    color:white;
+    vertical-align:middle;
+    text-align: center;	
+    width: 50%;
     margin: 0 auto;
-    display: table;
-    color:black;
 }

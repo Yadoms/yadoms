@@ -370,14 +370,14 @@
 			  }
 		  }
 		},
-      "Forecast3Days":
+      "Forecast10Days":
       {
-         "name": "Forecast3Days",
-         "description": "Summary of the weather for the next 3 days",
+         "name": "Forecast10Days",
+         "description": "Summary of the weather for the next 10 days",
          "type" : "section",
          "content":
          {	  
-			  "Forecast3Days":
+			  "Forecast10Days":
 			  {
 				 "name": "",
 				 "description": "",

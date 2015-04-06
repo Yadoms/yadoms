@@ -1,6 +1,3 @@
-//TODO : Faire un affichage partiel suivant la taille du module et le nombre d'éléments affichés.
-//TODO : Voir quoi faire avec obj.Units.speed
-
 function Convertmstokmh( value ){
 return value*3.6;
 }
@@ -18,13 +15,21 @@ function ForecastViewModel() {
    this.city = ko.observable("");
    
    //Default value - This value is overwrite after
-   this.period = ko.observableArray();
-	 
-   this.MaxWindVisible = ko.observable( true );
-   this.AveWindVisible = ko.observable( true );
-   this.AveHumidityVisible = ko.observable( true );
-   this.RainDayVisible = ko.observable( true );
+   this.period     = ko.observableArray();
+   
+   //Definition of the temporary array
+   this.TempPeriod = new Array();
 
+   this.MaxTempVisible = ko.observable    ( true );
+   this.MinTempVisible = ko.observable    ( true );
+   this.MaxWindVisible = ko.observable    ( true );
+   this.AveWindVisible = ko.observable    ( true );
+   this.AveHumidityVisible = ko.observable( true );
+   this.RainDayVisible = ko.observable    ( true );
+
+   //Nombre of day to be displayed
+   this.DayNbre = ko.observable ( 12 );
+   
    /**
     * Widget identifier
     */
@@ -55,25 +60,35 @@ function ForecastViewModel() {
 		 
 		 console.debug( "objet reçu %o",obj );
 		 
+		 //We only keep the city name
 		 var res = obj.city.split(",");
-		 
 		 self.city ( res[0] );
+		 
+		 //We delete all information already keep in.
 		 self.period.removeAll();
 		 
-		 $.each(obj.forecast, function (i, object) 
+		 self.DayNbre ( obj.forecast.length );
+		 
+		 //Copy of all object into the temporary array
+		 $.each(obj.forecast, function (i, object)
 		 {
-		    self.period.push({ WeatherCondition: obj.forecast[i].WeatherCondition,
-			                   TimeDate: obj.forecast[i].Day + '/' + obj.forecast[i].Month,
-			                   TempMax: obj.forecast[i].TempMax + obj.Units.temperature,
-							   TempMin: obj.forecast[i].TempMin + obj.Units.temperature,
-							   MaxWind: Convertmstokmh(parseFloat(obj.forecast[i].MaxWind,10)) + " km/h", 
-							   AveWind: Convertmstokmh(parseFloat(obj.forecast[i].AveWind,10)) + " km/h",
-							   AveHumidity: obj.forecast[i].AveHumidity + obj.Units.humidity,
-							   RainDay: obj.forecast[i].RainDay + obj.Units.rain,
-							   WeatherIcon: "widgets/forecast/images/Icons1/" + obj.forecast[i].WeatherCondition + ".png"
-							 });
-         }
+
+				self.TempPeriod.push({ WeatherCondition: obj.forecast[i].WeatherCondition,
+									   TimeDate: obj.forecast[i].Day + '/' + obj.forecast[i].Month,
+									   TempMax: obj.forecast[i].TempMax + obj.Units.temperature.substring(0, obj.Units.temperature.length - 1),
+									   TempMin: obj.forecast[i].TempMin + obj.Units.temperature.substring(0, obj.Units.temperature.length - 1),
+									   MaxWind: Convertmstokmh(parseFloat(obj.forecast[i].MaxWind,10)) + "km/h", 
+									   AveWind: Convertmstokmh(parseFloat(obj.forecast[i].AveWind,10)) + "km/h",
+									   AveHumidity: obj.forecast[i].AveHumidity + obj.Units.humidity,
+									   RainDay: obj.forecast[i].RainDay + obj.Units.rain,
+									   WeatherIcon: "widgets/forecast/images/Icons1/" + obj.forecast[i].WeatherCondition + ".png"
+									 });
+
+         }	 
          );
+		 
+		 //Copy all the necessary into the ko variable
+		 self.period ( self.TempPeriod.slice ( 0, self.DayNbre() ));
       }
    };
 
@@ -84,17 +99,84 @@ function ForecastViewModel() {
 		return;	  
 	 
 	 try{
-	    self.MaxWindVisible ( self.widget.configuration.Information.content.MaxWind );
-	    self.AveWindVisible ( self.widget.configuration.Information.content.AveWind );
+	    self.MaxWindVisible     ( self.widget.configuration.Information.content.MaxWind );
+	    self.AveWindVisible     ( self.widget.configuration.Information.content.AveWind );
 	    self.AveHumidityVisible ( self.widget.configuration.Information.content.AveHumidity );
-   	    self.RainDayVisible ( self.widget.configuration.Information.content.RainDay );
+   	    self.RainDayVisible     ( self.widget.configuration.Information.content.RainDay );
 	 }
 	 catch(err) {
 	    console.debug( err.message );
 	 }
    }
  
-   this.resized = function() {
+   this.resized = function() 
+   {
+       var self = this;
+   
+	   if (this.widget.height() <= 200) 
+	   {
+	         //In one case : we keep only the icon
+	         self.MaxTempVisible     ( false );
+			 self.MinTempVisible     ( false );
+			 self.RainDayVisible     ( false );
+			 self.AveHumidityVisible ( false );
+			 self.AveWindVisible     ( false );
+			 self.MaxWindVisible     ( false );
+	   }
+	   else
+	   {
+	         //In two cases : we enable automatically temperature. All others information are read from the configuration
+	         self.MaxTempVisible     ( true );
+			 self.MinTempVisible     ( true );	   
+			 self.RainDayVisible     ( self.widget.configuration.Information.content.RainDay );
+			 self.AveHumidityVisible ( self.widget.configuration.Information.content.AveHumidity );
+			 self.AveWindVisible     ( self.widget.configuration.Information.content.AveWind );
+			 self.MaxWindVisible     ( self.widget.configuration.Information.content.MaxWind );	   
+	   }
+	   
+	   // if length = 2 cases -> 2 days
+	   if (this.widget.width() <= 200)
+	   {
+	      self.DayNbre ( 1 );
+		  self.period.removeAll();
+		  
+		  self.period ( self.TempPeriod.slice ( 0, self.DayNbre() ));
+	   }
+	   else if (this.widget.width() <= 300) // if length = 3 cases -> 4 days
+	   {
+	      self.DayNbre ( 3 );
+		  self.period.removeAll();
+		  
+		  self.period ( self.TempPeriod.slice ( 0, self.DayNbre() ));
+	   }
+	   else if (this.widget.width() <= 400) // if length = 4 cases -> 6 days
+	   {
+	      self.DayNbre ( 5 );
+		  self.period.removeAll();
+		  
+		  self.period ( self.TempPeriod.slice ( 0, self.DayNbre() ));
+	   }
+	   else if (this.widget.width() <= 500) // if length = 5 cases -> 8 days
+	   {
+	      self.DayNbre ( 6 );
+		  self.period.removeAll();
+		  
+		  self.period ( self.TempPeriod.slice ( 0, self.DayNbre() ));
+	   }
+	   else if (this.widget.width() <= 600) // if length = 6 cases -> 8 days
+	   {
+	      self.DayNbre ( 8 );
+		  self.period.removeAll();
+		  
+		  self.period ( self.TempPeriod.slice ( 0, self.DayNbre() ));
+	   }		   
+	   else  // Otherwise 10 days
+	   {
+	      self.DayNbre ( 10 );
+		  self.period.removeAll();
+		  
+		  self.period ( self.TempPeriod.slice ( 0, self.DayNbre() ));	   
+	   }
    };
  
    this.getDevicesToListen = function() {

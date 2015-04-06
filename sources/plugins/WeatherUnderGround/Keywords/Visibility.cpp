@@ -23,10 +23,16 @@ CVisibility::~CVisibility()
 
 void CVisibility::SetValue( const shared::CDataContainer & ValueContainer, const std::string & filter)
 {
-	// x 1000 -> The visibility from the web site is in kilometer
-	m_visibility->set(ValueContainer.get<double>( filter ) * 1000 );
-
-	YADOMS_LOG(debug) << m_visibility->getKeyword() << "=" << m_visibility->get() << "m";
+   if (ValueContainer.get<std::string>( filter ) == "N/A")
+   {
+      YADOMS_LOG(information) << m_visibility->getKeyword() << " : N/A => Value not registered";
+   }
+   else
+   {
+      // x 1000 -> The visibility from the web site is in kilometer
+	   m_visibility->set(ValueContainer.get<double>( filter ) * 1000 );
+	   YADOMS_LOG(debug) << m_visibility->getKeyword() << "=" << m_visibility->get() << "m";
+   }
 }
 
 void CVisibility::DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const
