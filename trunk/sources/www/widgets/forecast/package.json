@@ -5,8 +5,8 @@
    "url" : "http://www.yadoms.com/wiki/widgets/forecast.html",
    "dimensions": {
       "min": {
-         "x": 3,
-         "y": 2
+         "x": 1,
+         "y": 1
       },
       "max": {
          "x": 6,

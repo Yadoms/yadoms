@@ -5,15 +5,15 @@
    "url" : "http://www.yadoms.com/wiki/widgets/moon-phases.html",
    "dimensions": {
       "min": {
-         "x": 2,
+         "x": 1,
          "y": 1
       },
       "max": {
          "x": 2,
-         "y": 1
+         "y": 2
       },
       "default": {
-         "x": 2,
+         "x": 1,
          "y": 1
       }
    },

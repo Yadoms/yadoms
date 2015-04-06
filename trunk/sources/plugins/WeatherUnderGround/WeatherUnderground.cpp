@@ -5,7 +5,7 @@
 #include <shared/plugin/ImplementationHelper.h>
 #include "WeatherConditions.h"
 #include "Astronomy.h"
-#include "Forecast3Days.h"
+#include "ForecastDays.h"
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -25,7 +25,7 @@ enum
 {
    kEvtTimerRefreshWeatherConditions = yApi::IYPluginApi::kPluginFirstEventId,   // Always start from shared::event::CEventHandler::kUserFirstId
    kEvtTimerRefreshAstronomy,
-   kEvtTimerRefreshForecast3Days
+   kEvtTimerRefreshForecast10Days
 };
 
 void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
@@ -37,20 +37,20 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
       // Load configuration values (provided by database)
       m_configuration.initializeWith(context->getConfiguration());
 
-	  // Event to be sent immediately for the first value
+	   // Event to be sent immediately for the first value
       context->getEventHandler().createTimer(kEvtTimerRefreshWeatherConditions      , shared::event::CEventTimer::kOneShot , boost::posix_time::seconds(0));
       // Timer used to read periodically the Weather information
       context->getEventHandler().createTimer(kEvtTimerRefreshWeatherConditions      , shared::event::CEventTimer::kPeriodic, boost::posix_time::minutes(15));
 
-	  // Event to be sent immediately for the first value
+	   // Event to be sent immediately for the first value
       context->getEventHandler().createTimer(kEvtTimerRefreshAstronomy      , shared::event::CEventTimer::kOneShot , boost::posix_time::seconds(0));
       // Timer used to read periodically the Weather information
-	  context->getEventHandler().createTimer(kEvtTimerRefreshAstronomy      , shared::event::CEventTimer::kPeriodic, boost::posix_time::hours(12));
+	   context->getEventHandler().createTimer(kEvtTimerRefreshAstronomy      , shared::event::CEventTimer::kPeriodic, boost::posix_time::hours(12));
 
-	  // Event to be sent immediately for the first value
-      context->getEventHandler().createTimer(kEvtTimerRefreshForecast3Days      , shared::event::CEventTimer::kOneShot , boost::posix_time::seconds(0));
+	   // Event to be sent immediately for the first value
+      context->getEventHandler().createTimer(kEvtTimerRefreshForecast10Days      , shared::event::CEventTimer::kOneShot , boost::posix_time::seconds(0));
       // Timer used to read periodically the Weather information
-	  context->getEventHandler().createTimer(kEvtTimerRefreshForecast3Days      , shared::event::CEventTimer::kPeriodic, boost::posix_time::hours(6));
+	   context->getEventHandler().createTimer(kEvtTimerRefreshForecast10Days      , shared::event::CEventTimer::kPeriodic, boost::posix_time::hours(6));
 
 	   if (!context->deviceExists(m_deviceName))
 	   {
@@ -59,9 +59,9 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 		  context->declareDevice(m_deviceName, m_URL);
 	   }
 
-	  CWeatherConditions m_WeatherConditionsRequester( context, m_configuration, m_deviceName, "conditions.");
-	  CAstronomy m_AstronomyRequester                ( context, m_configuration, m_deviceName, "astronomy.");
-     CForecast3Days m_Forecast3Days                 ( context, m_configuration, m_deviceName, "forecast.3days.");
+	   CWeatherConditions m_WeatherConditionsRequester( context, m_configuration, m_deviceName, "conditions.");
+	   CAstronomy m_AstronomyRequester                ( context, m_configuration, m_deviceName, "astronomy.");
+      CForecastDays m_Forecast10Days                 ( context, m_configuration, m_deviceName, "forecast10day");
 
       // the main loop
       YADOMS_LOG(debug) << "CWeatherUnderground plugin is running...";
@@ -89,13 +89,13 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 
 			      break;
             }
-		 case kEvtTimerRefreshForecast3Days:
+		 case kEvtTimerRefreshForecast10Days:
             {
-			      YADOMS_LOG(debug) << "Refresh Forecast 3 Days Information";
+			      YADOMS_LOG(debug) << "Refresh Forecast 10 Days Information";
 
-			      m_Forecast3Days.Request( context );
-               m_Forecast3Days.SetCityName ( m_WeatherConditionsRequester.GetCityName());
-			      m_Forecast3Days.Parse  ( context, m_configuration );
+			      m_Forecast10Days.Request( context );
+               m_Forecast10Days.SetCityName ( m_WeatherConditionsRequester.GetCityName());
+			      m_Forecast10Days.Parse  ( context, m_configuration );
 
 			      break;
             }
@@ -113,9 +113,9 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 			      m_AstronomyRequester.Request( context );
 			      m_AstronomyRequester.Parse  ( context, m_configuration );
 
-               m_Forecast3Days.SetCityName ( m_WeatherConditionsRequester.GetCityName());
-			      m_Forecast3Days.Request( context );
-			      m_Forecast3Days.Parse  ( context, m_configuration );
+               m_Forecast10Days.SetCityName ( m_WeatherConditionsRequester.GetCityName());
+			      m_Forecast10Days.Request( context );
+			      m_Forecast10Days.Parse  ( context, m_configuration );
 
                break;
             }

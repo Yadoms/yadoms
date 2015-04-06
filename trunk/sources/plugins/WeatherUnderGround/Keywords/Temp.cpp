@@ -30,7 +30,7 @@ void CTemp::SetValue( const shared::CDataContainer & ValueContainer, const std::
 {
    if (ValueContainer.get<std::string>( filter ) == "NA")
    {
-      YADOMS_LOG(debug) << m_temperature->getKeyword() << "NA => Value not registered";
+      YADOMS_LOG(information) << m_temperature->getKeyword() << " : NA => Value not registered";
    }
    else
    {

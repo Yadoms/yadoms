@@ -1,9 +1,9 @@
 #include "stdafx.h"
-#include "Forecast3Days.h"
+#include "ForecastDays.h"
 #include <shared/Log.h>
 #include <shared/exception/Exception.hpp>
 
-CForecast3Days::CForecast3Days(boost::shared_ptr<yApi::IYPluginApi> context, 
+CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> context, 
                                const IWUConfiguration& WUConfiguration, 
                                std::string PluginName, 
                                const std::string Prefix
@@ -12,19 +12,20 @@ CForecast3Days::CForecast3Days(boost::shared_ptr<yApi::IYPluginApi> context,
            m_CountryOrState            ( WUConfiguration.getCountryOrState() ),
 		     m_PluginName                ( PluginName ),
            //TODO : Ecrire autrement le EPeriod::kDay
-		     m_Forecast                  ( PluginName, "Forecast3Days",EPeriod::kDay)
+		     m_Forecast                  ( PluginName, Prefix, EPeriod::kDay),
+           m_Prefix                    ( Prefix )
 {
    //Delete space between sub-names
    std::string temp_localisation = m_Localisation;
    temp_localisation.erase(std::remove_if(temp_localisation.begin(), temp_localisation.end(), std::isspace), temp_localisation.end());
 
 	m_URL.str("");
-	m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/forecast/q/" << m_CountryOrState << "/" << temp_localisation << ".json";
+	m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/" << m_Prefix << "/q/" << m_CountryOrState << "/" << temp_localisation << ".json";
 
 	//Initialization
    try
    {
-	   if (WUConfiguration.IsForecast3DaysEnabled())
+	   if (WUConfiguration.IsForecast10DaysEnabled())
 	   {
 			m_Forecast.Initialize ( context );
 
@@ -52,7 +53,7 @@ CForecast3Days::CForecast3Days(boost::shared_ptr<yApi::IYPluginApi> context,
 	}
 }
 
-void CForecast3Days::OnUpdate( const IWUConfiguration& WUConfiguration )
+void CForecastDays::OnUpdate( const IWUConfiguration& WUConfiguration )
 {
    //read the localisation
    m_Localisation = WUConfiguration.getLocalisation();
@@ -67,10 +68,10 @@ void CForecast3Days::OnUpdate( const IWUConfiguration& WUConfiguration )
 
 	m_URL.str("");
 
-	m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/forecast/q/" << m_CountryOrState << "/" << temp_localisation << ".json";
+	m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/" << m_Prefix << "/q/" << m_CountryOrState << "/" << temp_localisation << ".json";
 }
 
-void CForecast3Days::Request( boost::shared_ptr<yApi::IYPluginApi> context )
+void CForecastDays::Request( boost::shared_ptr<yApi::IYPluginApi> context )
 {
 	try
 	{
@@ -82,7 +83,7 @@ void CForecast3Days::Request( boost::shared_ptr<yApi::IYPluginApi> context )
 	}
 }
 
-void CForecast3Days::Parse( boost::shared_ptr<yApi::IYPluginApi> context, const IWUConfiguration& WUConfiguration )
+void CForecastDays::Parse( boost::shared_ptr<yApi::IYPluginApi> context, const IWUConfiguration& WUConfiguration )
 {
 	try
 	{
@@ -96,7 +97,7 @@ void CForecast3Days::Parse( boost::shared_ptr<yApi::IYPluginApi> context, const 
 		{
 			std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > KeywordList;
 
-			if (WUConfiguration.IsForecast3DaysEnabled())
+			if (WUConfiguration.IsForecast10DaysEnabled())
 			{
 				std::vector< shared::CDataContainer > result = m_data.get< std::vector<shared::CDataContainer> >("forecast.simpleforecast.forecastday");
             std::vector< shared::CDataContainer >::iterator i;
@@ -129,10 +130,10 @@ void CForecast3Days::Parse( boost::shared_ptr<yApi::IYPluginApi> context, const 
 	}
 }
 
-void CForecast3Days::SetCityName ( const std::string CityName )
+void CForecastDays::SetCityName ( const std::string CityName )
 {
    m_Forecast.SetCityName ( CityName );
 }
 
-CForecast3Days::~CForecast3Days()
+CForecastDays::~CForecastDays()
 {}

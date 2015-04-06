@@ -9,8 +9,8 @@ include("../YadomsPluginsCommon.cmake")
 set(WUNDERGROUND_SOURCES
    Astronomy.cpp
    Astronomy.h
-   Forecast3Days.cpp
-   Forecast3Days.h
+   ForecastDays.cpp
+   ForecastDays.h
    IWUConfiguration.h
    WeatherUnderground.h
    WeatherUnderground.cpp

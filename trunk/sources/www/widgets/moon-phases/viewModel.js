@@ -41,12 +41,15 @@ widgetViewModelCtor =
 function MoonPhasesViewModel() {
 
    //observable data
-   this.data = ko.observable(0).extend({ numeric: 1 });
+   //this.data = ko.observable(0).extend({ numeric: 1 });
+   this.data = ko.observable("");
+   this.WidgetHeight = ko.observable ("100px");
+   this.WidgetWidth  = ko.observable ("100px");
    
    //Default value - This value is overwrite after
    this.photoName = ko.observable("widgets/moon-phases/images/moon01.png");
 
-   self.unit = "%";
+   //self.unit = "%";
 
    /**
     * Widget identifier
@@ -73,18 +76,36 @@ function MoonPhasesViewModel() {
       if (device == self.widget.configuration.device) 
       {
 		 var obj = jQuery.parseJSON( data.value );
-		 self.data ( parseInt( obj.IlluminatedMoon ) );
+		 self.data ( parseInt( obj.IlluminatedMoon ) + "%" );
 		 var res = obj.DayOfMoon;	
 		
          //Hours are used to calculate the image number
-         self.photoName ( "widgets/moon-phases/images/moon" + (parseInt(res)-1) + ".png" );
+         self.photoName ( "url(widgets/moon-phases/images/moon" + (parseInt(res)-1) + ".png)" );
       }
    }
    
-   this.configurationChanged = function() {
+   this.configurationChanged = function() 
+   {
       var self = this;
-  }	 
+   };
 
+   this.resized = function() 
+   {
+       var self = this;
+	   
+	   //The size is x2 only when the widget is square
+	   if (this.widget.height() <= 250 && this.widget.height() >= 150 && this.widget.width() <= 250 & this.widget.width() >= 150)
+	   {
+	      self.WidgetHeight ("200px");
+		  self.WidgetWidth  ("200px");
+	   }
+	   else
+	   {
+	      self.WidgetHeight ("100px");
+		  self.WidgetWidth  ("100px");	   
+	   }
+   };	   
+  
    this.getDevicesToListen = function() {
       var result = [];
 

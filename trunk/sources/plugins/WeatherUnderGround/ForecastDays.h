@@ -10,10 +10,10 @@
 namespace yApi = shared::plugin::yPluginApi;
 
 //--------------------------------------------------------------
-/// \brief	Astronomy Module
-/// \note   This class consist of the traitment of the astronomy information from the web site
+/// \brief	Forecast X Days Module
+/// \note   This class consist of the traitment of the forecast information during X days from the web site
 //--------------------------------------------------------------
-class CForecast3Days
+class CForecastDays
 {
 public:
    //--------------------------------------------------------------
@@ -23,7 +23,7 @@ public:
    /// \param[in] PluginName       The Name of the module
    /// \param[in] Prefix           Prefix Name used eventually to subname Keywords
    //--------------------------------------------------------------
-   CForecast3Days(boost::shared_ptr<yApi::IYPluginApi> context, 
+   CForecastDays(boost::shared_ptr<yApi::IYPluginApi> context, 
                   const IWUConfiguration& WUConfiguration, 
                   std::string PluginName, 
                   const std::string Prefix);
@@ -48,12 +48,17 @@ public:
    //--------------------------------------------------------------
    void OnUpdate( const IWUConfiguration& WUConfiguration );
 
+   //--------------------------------------------------------------
+   /// \brief	  Set the city Name
+   /// \param[in] WUConfiguration    The Plugin configuration
+   //--------------------------------------------------------------
+
    void SetCityName ( const std::string CityName );
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
-   virtual ~CForecast3Days();
+   virtual ~CForecastDays();
 
 private:
 
@@ -66,6 +71,11 @@ private:
    /// \brief	    Your Location to received custom information from the web site
    //--------------------------------------------------------------
    std::string m_CountryOrState;
+
+   //--------------------------------------------------------------
+   /// \brief	    url code between 3 or 10 days
+   //--------------------------------------------------------------
+   std::string m_Prefix;
 
    //--------------------------------------------------------------
    /// \brief	    The Plugin Name
