@@ -22,7 +22,7 @@ AutomationRuleManager.createToServer = function(rule, callback) {
       data: JSON.stringify({  name: encodeURIComponent(rule.name),
                               description: encodeURIComponent(rule.description),
                               interpreter: rule.interpreter,
-                              editor: rule.editor,
+                              editor: rule.editorName,
                               model: rule.model,
                               content: rule.content,
                               configuration: rule.configuration,
@@ -47,7 +47,7 @@ AutomationRuleManager.createToServer = function(rule, callback) {
          rule = AutomationRuleManager.factory(data.data);
 
          if ($.isFunction(callback))
-            callback(true);
+            callback(rule);
       })
       .fail(function() {
          notifyError($.t("objects.generic.errorCreating", {objectName : rule.name}));
@@ -100,8 +100,6 @@ AutomationRuleManager.getOne = function (ruleId, callback) {
 
 AutomationRuleManager.deleteFromServer = function(rule, callback) {
    assert(!isNullOrUndefined(rule), "rule must be defined");
-   //TODO : test
-   debugger;
 
    $.ajax({
       type: "DELETE",
@@ -125,8 +123,6 @@ AutomationRuleManager.deleteFromServer = function(rule, callback) {
 
 AutomationRuleManager.updateToServer = function(rule, callback) {
    assert(!isNullOrUndefined(rule), "rule must be defined");
-   //TODO : test
-   debugger;
 
    $.ajax({
       type: "PUT",

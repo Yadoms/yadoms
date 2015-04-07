@@ -74,7 +74,7 @@ Recipient.prototype.mergeFields = function (allPlugins) {
            name: $.t("objects.recipient.fields." + systemField + ".name"),
            description: $.t("objects.recipient.fields." + systemField + ".description"),
            regexErrorMessage: $.t("objects.recipient.fields." + systemField + ".regexErrorMessage"),
-           verificationRegex: Recipient.systemFields[systemField],
+           regex: Recipient.systemFields[systemField],
            value: ""
        };
 

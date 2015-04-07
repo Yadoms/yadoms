@@ -23,9 +23,8 @@
 </div>
 
 <script>
-   function showEditionAutomationRule(rule, editor, callback) {
+   function showEditionAutomationRule(rule, callback) {
       assert(!isNullOrUndefined(rule), "rule must be defined");
-      assert(!isNullOrUndefined(editor), "editor must be defined");
       assert($.isFunction(callback), "callback must be defined");
 
       var i18nContext = "modals.edit-automation-rule.";
@@ -39,7 +38,7 @@
       $modalConfiguration.empty();
 
       var interpreterList = [];
-      $.each(editor.getActiveSupportedInterpreters(), function (key, value) {
+      $.each(rule.editor.getActiveSupportedInterpreters(), function (key, value) {
          interpreterList.push(value.name);
       });
 
@@ -52,7 +51,7 @@
       //we must listen changed event of the interpreterList
       interpreterParameter.locateInDOM().change(function () {
          //we notify the editor that the interpreter has changed
-         editor.setInterpreter(interpreterParameter.getCurrentConfiguration());
+         rule.editor.setInterpreter(interpreterParameter.getCurrentConfiguration());
       });
 
       var nameParameter = new StringParameterHandler(i18nContext, "name-rule", {required:"true"}, rule.name);
@@ -67,11 +66,11 @@
       if ($.isFunction(descriptionParameter.applyScript))
          descriptionParameter.applyScript();
 
-      $editorSlot.append(editor.getDOMStructure());
-      editor.applyScript();
+      $editorSlot.append(rule.editor.getDOMStructure());
+      rule.editor.applyScript();
 
       //we set the rule to edit to the editor
-      editor.setRule(rule);
+      rule.editor.setRule(rule);
 
       //validation form
       $modalBody.find("input,select,textarea").jqBootstrapValidation({
@@ -80,18 +79,16 @@
             console.warn("Unable to validate form: " + errors);
          },
          submitSuccess: function($form, event) {
- debugger;
-            event.preventDefault();
+             event.preventDefault();
             rule.name = nameParameter.getCurrentConfiguration();
             rule.description = descriptionParameter.getCurrentConfiguration();
-            editor.updateRule();
+            rule.editor.updateRule();
 
             console.debug("End of Automation rule edition : " + JSON.stringify(rule));
 
             $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy");
-            $modalBody.empty();
             //we hide the current window and the wizard if opened previously
-            $("div#edit-automation-rule-modal-code").modal("hide");
+            $("div#edit-automation-rule-modal").modal("hide");
 
             callback();
          },
