@@ -115,29 +115,32 @@
    function editAutomationRule(rule) {
       //rule represent the automation rule concerned
       return function() {
-         //the gui to show depend on the language
-         if (rule.type == BlocklyName) {
-            //we show the Blockly GUI
-            //we ask for configuration modal async
-            modals.automationRuleEditBlockly.load(function () {
-               showEditionAutomationRuleWithBlockly(rule, function () {
-                  AutomationRuleManager.updateToServer(rule, function (result) {
-                     updateDOMAutomationRule(rule);
-                  });
-               });
-            });
-         }
-         else {
-            //we show the IDE GUI
-            //we ask for configuration modal async
+         rule.downloadEditor(function () {
             modals.automationRuleEdit.load(function () {
-               showEditionAutomationRuleWithCode(rule, function () {
-                  AutomationRuleManager.updateToServer(rule, function (result) {
-                     updateDOMAutomationRule(rule);
+               showEditionAutomationRule(rule, function () {
+                  //we ask for automation rule update
+                  AutomationRuleManager.updateToServer(rule, function(updateOk) {
+                     //if it's okay
+                     if (!updateOk) {
+                        notifyError($.t("objects.generic.errorUpdating", {objectName : "automation rule"}));
+                        return;
+                     }
+
+                     //we update the code
+                     AutomationRuleManager.updateCode(rule, function (codeUpdateOk) {
+                        if (!codeUpdateOk) {
+                           notifyError($.t("objects.generic.errorUpdating", {objectName: "automation rule"}));
+                           return;
+                        }
+
+                        notifySuccess($.t("modals.dashboard.sub-windows.automation-center.ruleSuccessfullyUpdated"));
+                        //we refresh the gui
+                        updateDOMAutomationRule(rule);
+                     });
                   });
                });
             });
-         }
+         });
       }
    }
 
@@ -165,7 +168,7 @@
 
    function periodicDashboardAutomationCenterTask() {
       //periodically we check the enable of each rule
-      //TODO : manage rul:e getting all and not one by one
+      //TODO : manage rule getting all and not one by one
       if (serverIsOnline) {
          $.each(automationRuleInstanceList, function(index, value) {
             //we ask async for the enable
@@ -188,21 +191,40 @@
    }
 
    function addNewAutomationRule() {
-      modals.automationRuleNew.load(function() {
-         //we launch new rule GUI
-         showNewAutomationRule(function() {
-            //we ask for automation rule creation
-            AutomationRuleManager.createToServer(rule, function(result) {
-               //if it's okay
-               if (result) {
-                  notifySuccess($.t("modals.dashboard.sub-windows.automation-center.ruleSuccessfullyCreated"));
-                  //we add it to gui
-                  automationRuleInstanceList.push(rule);
-                  addAutomationRuleToDom(rule);
-               }
+      AutomationEditorManager.getAll(function (editors) {
+         modals.automationRuleNew.load(function() {
+            //we launch new rule GUI
+            showNewAutomationRule(editors, function(rule) {
+               rule.downloadEditor(function() {
+                  modals.automationRuleEdit.load(function () {
+                     showEditionAutomationRule(rule, function () {
+                        //we ask for automation rule creation
+                        AutomationRuleManager.createToServer(rule, function(newRule) {
+                           //if it's okay
+                           if (!newRule) {
+                              notifyError($.t("objects.generic.errorCreating", {objectName: "automation rule"}));
+                              return;
+                           }
+
+                           //we update the code
+                           AutomationRuleManager.updateCode(rule, function (codeUpdateOk) {
+                              if (!codeUpdateOk) {
+                                 notifyError($.t("objects.generic.errorUpdating", {objectName: "automation rule"}));
+                                 return;
+                              }
+
+                              notifySuccess($.t("modals.dashboard.sub-windows.automation-center.ruleSuccessfullyCreated"));
+                              //we add it to gui
+                              automationRuleInstanceList.push(newRule);
+                              addAutomationRuleToDom(rule);
+                           });
+                        });
+                     });
+                  });
+               });
             });
          });
       });
-   }
+   };
 
 </script>

@@ -22,28 +22,22 @@
 </div>
 
 <script>
-   function showNewAutomationRule(callback) {
+   function showNewAutomationRule(editors, callback) {
       assert($.isFunction(callback), "callback must be defined");
 
       var $modalBody = $("div#automation-rule-new-modal .modal-body");
-
       //we create buttons to select language
       var $area = $modalBody.find("div.editor-btns");
       $area.empty();
-debugger;
-      //we get interpreter list
-      AutomationInterpreterManager.getAll(function (interpreters) {
-         //we can create the list of editors from the list of interpreters
-         AutomationEditorFactory.createList(interpreters, function (editors) {
-            $.each(editors, function (key, value) {
-               $area.append("<button class=\"btn btn-primary btn-lg btn-editor-choice\" type=\"button\" id=\"" + value.getUuid()  + "\">" +
-                              "<span class=\"" + value.getClassIcon() + "\"></span>&nbsp;&nbsp;" +
-                                 $.t("modals.dashboard.sub-windows.automation-center.editors." + value.getName() + ".name") +
-                            "</button>");
 
-               $area.find("button#" + value.getUuid()).unbind("click").bind("click", newAutomationRuleButtonClicked(value));
-            });
-         });
+      $.each(editors, function (key, value) {
+         var tempUuid = createUUID();
+         $area.append("<button class=\"btn btn-primary btn-lg btn-editor-choice\" type=\"button\" id=\"" + tempUuid  + "\">" +
+                        "<span class=\"" + value.getClassIcon() + "\"></span>&nbsp;&nbsp;" +
+                           $.t("modals.dashboard.sub-windows.automation-center.editors." + value.getName() + ".name") +
+                      "</button>");
+
+         $area.find("button#" + tempUuid).bind("click", newAutomationRuleButtonClicked(value, callback));
       });
 
       //i18n
@@ -53,21 +47,16 @@ debugger;
       $("div#automation-rule-new-modal").modal();
    }
 
-   function newAutomationRuleButtonClicked(editor) {
+   function newAutomationRuleButtonClicked(editor, callback) {
       return function() {
          //we create the empty rule and go to edition
          //TODO : manage empty script template from interpreter
          var r = new AutomationRule(-1, "", "", editor.getActiveSupportedInterpreters()[0].name, editor.getName(),
                                     "", "template", "", true);
-         modals.automationRuleEdit.load(function () {
-            //we hide the current modal
-            $("div#automation-rule-new-modal").modal("hide");
-            showEditionAutomationRule(r, editor, function () {
-debugger;
-               AutomationRuleManager.createToServer(r);
-            });
+         //we hide the current modal
+         $("div#automation-rule-new-modal").modal("hide");
 
-         });
+         callback(r);
       };
    }
 </script>

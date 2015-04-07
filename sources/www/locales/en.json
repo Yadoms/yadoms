@@ -331,10 +331,12 @@
                "delete" : "Delete the rule",
                "confirmDeletion" : "This action will delete the rule __name__. Continue anyway ?",
                "ruleSuccessfullyCreated" : "Rule successfully created",
+               "ruleSuccessfullyUpdated" : "Rule successfully updated",
                "editors" : {
                   "code" : {
                      "name" : "Code",
-                     "insertKeywordId" : "Insert keyword Id"
+                     "insertKeywordId" : "Insert keyword Id",
+                     "insertRecipientId" : "Insert recipient Id"
                   },
                   "blockly" : {
                      "name" : "Blockly"
@@ -480,6 +482,7 @@
          }
       },
       "generic" : {
+         "errorEditing" : "An error has occurred editing __objectName__",
          "errorUpdating" : "An error has occurred updating __objectName__",
          "errorDeleting" : "An error has occurred deleting __objectName__",
          "errorCreating" : "An error has occurred creating __objectName__",

@@ -54,7 +54,6 @@
       $.each(recipient.fields, function (index, field) {
 
          if(field.pluginName == "system") {
-
             var valueParameter = new StringParameterHandler("objects.recipient.fields.", field.fieldName, field, field.value);
             //keep the field
             valueParameter.field = field;
