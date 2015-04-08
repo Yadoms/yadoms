@@ -138,45 +138,30 @@ function ForecastViewModel() {
 	   if (this.widget.width() <= 200)
 	   {
 	      self.DayNbre ( 1 );
-		  self.period.removeAll();
-		  
-		  self.period ( self.TempPeriod.slice ( 0, self.DayNbre() ));
 	   }
 	   else if (this.widget.width() <= 300) // if length = 3 cases -> 4 days
 	   {
 	      self.DayNbre ( 3 );
-		  self.period.removeAll();
-		  
-		  self.period ( self.TempPeriod.slice ( 0, self.DayNbre() ));
 	   }
 	   else if (this.widget.width() <= 400) // if length = 4 cases -> 6 days
 	   {
 	      self.DayNbre ( 5 );
-		  self.period.removeAll();
-		  
-		  self.period ( self.TempPeriod.slice ( 0, self.DayNbre() ));
 	   }
 	   else if (this.widget.width() <= 500) // if length = 5 cases -> 8 days
 	   {
 	      self.DayNbre ( 6 );
-		  self.period.removeAll();
-		  
-		  self.period ( self.TempPeriod.slice ( 0, self.DayNbre() ));
 	   }
 	   else if (this.widget.width() <= 600) // if length = 6 cases -> 8 days
 	   {
 	      self.DayNbre ( 8 );
-		  self.period.removeAll();
-		  
-		  self.period ( self.TempPeriod.slice ( 0, self.DayNbre() ));
 	   }		   
 	   else  // Otherwise 10 days
 	   {
-	      self.DayNbre ( 10 );
-		  self.period.removeAll();
-		  
-		  self.period ( self.TempPeriod.slice ( 0, self.DayNbre() ));	   
+	      self.DayNbre ( 10 );   
 	   }
+	   
+	  self.period.removeAll();
+	  self.period ( self.TempPeriod.slice ( 0, self.DayNbre() ));		   
    };
  
    this.getDevicesToListen = function() {

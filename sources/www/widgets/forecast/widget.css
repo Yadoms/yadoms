@@ -1,7 +1,4 @@
-.hiddenstruct {
-   display:none;
-}
-
-.visiblestruct {
-   display:inline;
+.centerimage {
+   margin:0 auto;
+   display: table;
 }
