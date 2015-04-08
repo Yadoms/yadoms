@@ -5,7 +5,7 @@
    <tr data-bind="foreach: period">
    <td> 
                       <div data-bind="text: TimeDate" align="center" style="width:65px"></div>
-                      <img data-bind="attr:{ src: WeatherIcon }" alt="phases" height="40" width="40" align="center">
+                      <div class="centerimage"> <img data-bind="attr:{ src: WeatherIcon }" alt="phases" height="40" width="40"></div>
 					  <div data-bind="visible: $root.MinTempVisible()" align="center">
 					       <span data-bind="text: TempMin" style="color:blue"></span>
 					  </div> 
