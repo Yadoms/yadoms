@@ -4,7 +4,13 @@
 #include <shared/exception/Exception.hpp>
 
 CYadomsCPULoad::CYadomsCPULoad(const std::string & device)
-   :m_device(device), m_keyword("YadomsCPULoad"), m_lastCPU(0), m_lastSysCPU(0), m_lastUserCPU(0), m_numProcessors(0), m_InitializeOk(false)
+   :m_device(device), 
+    m_keyword(new yApi::historization::CLoad("YadomsCPULoad")), 
+	m_lastCPU(0), 
+	m_lastSysCPU(0), 
+	m_lastUserCPU(0), 
+	m_numProcessors(0), 
+	m_InitializeOk(false)
 {
    Initialize();
 }
@@ -43,9 +49,9 @@ void CYadomsCPULoad::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> contex
 {
    if (m_InitializeOk)
    {
-      if (!context->keywordExists( m_device, m_keyword.getKeyword()))
+      if (!context->keywordExists( m_device, m_keyword->getKeyword()))
       {
-         context->declareKeyword(m_device, m_keyword);
+         context->declareKeyword(m_device, *m_keyword);
       }
    }
 }
@@ -56,7 +62,7 @@ void CYadomsCPULoad::historizeData(boost::shared_ptr<yApi::IYPluginApi> context)
 
    if (m_InitializeOk)
    {
-      context->historizeData(m_device, m_keyword);
+      context->historizeData(m_device, *m_keyword);
    }
 }
 
@@ -86,11 +92,16 @@ void CYadomsCPULoad::read()
       m_lastUserCPU = user;
       m_lastSysCPU = sys;
 
-      m_keyword.set((float)(percent * 100));
-      YADOMS_LOG(debug) << "WindowsSystemInformation plugin :  Yadoms CPU Load : " << m_keyword.formatValue();
+      m_keyword->set((float)(percent * 100));
+      YADOMS_LOG(debug) << "WindowsSystemInformation plugin :  Yadoms CPU Load : " << m_keyword->formatValue();
    }
    else
    {
       YADOMS_LOG(trace) << m_device << " is desactivated";
    }
+}
+
+boost::shared_ptr<yApi::historization::IHistorizable> CYadomsCPULoad::GetHistorizable() const
+{
+	return m_keyword;
 }

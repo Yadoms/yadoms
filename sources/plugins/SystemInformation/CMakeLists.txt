@@ -8,9 +8,16 @@ set(SYSTEMINFORMATION_PLUGIN_SOURCES
 	stdafx.h
 	stdafx.cpp
 	ILoad.h
+        ISIConfiguration.h
+        SIConfiguration.h
+        SIConfiguration.cpp
 	SystemInformation.h
-	SystemInformation.cpp 
+	SystemInformation.cpp
+        specificHistorizers/Byte.cpp
+        specificHistorizers/Byte.h
 	)
+
+        source_group(specificHistorizers specificHistorizers/*.*)
 
 IF (WIN32)
     set(SYSTEMINFORMATION_PLUGIN_SOURCES ${SYSTEMINFORMATION_PLUGIN_SOURCES}
@@ -23,10 +30,14 @@ IF (WIN32)
 	Windows/DiskUsage.cpp
 	Windows/MemoryLoad.h
 	Windows/MemoryLoad.cpp
+	Windows/RAMProcessMemory.h
+	Windows/RAMProcessMemory.cpp
 	Windows/SystemFactory.h
 	Windows/SystemFactory.cpp
+	Windows/VirtualProcessMemory.h
+	Windows/VirtualProcessMemory.cpp
 	Windows/YadomsCPULoad.h
-	Windows/YadomsCPULoad.cpp	
+	Windows/YadomsCPULoad.cpp
 	)
 	
 	source_group(Windows Windows/*.*)

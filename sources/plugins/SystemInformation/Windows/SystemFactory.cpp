@@ -6,14 +6,19 @@
 #include <shared/Log.h>
 
 CSystemFactory::CSystemFactory(boost::shared_ptr<yApi::IYPluginApi> context, const std::string & device):
-   m_MemoryLoad    (device),
-   m_CPULoad       (device),
-   m_YadomsCPULoad (device)
+   m_MemoryLoad           (device),
+   m_CPULoad              (device),
+   m_YadomsCPULoad        (device),
+   m_RAMProcessMemory     (device),
+   m_VirtualProcessMemory (device),
+   m_PluginName           (device)
 {
       // Keywords declaration, if needed
-      m_MemoryLoad.declareKeywords(context);
-      m_CPULoad.declareKeywords(context);
-      m_YadomsCPULoad.declareKeywords(context);
+      m_MemoryLoad.declareKeywords           (context);
+      m_CPULoad.declareKeywords              (context);
+      m_YadomsCPULoad.declareKeywords        (context);
+      m_RAMProcessMemory.declareKeywords     (context);
+	  m_VirtualProcessMemory.declareKeywords (context);
 
 	  // As disk list can change (add a disk), update it each time Yadoms starts
 
@@ -35,28 +40,44 @@ CSystemFactory::~CSystemFactory()
 {
 }
 
-void CSystemFactory::OnSpeedUpdate ( boost::shared_ptr<yApi::IYPluginApi> context )
+void CSystemFactory::OnSpeedUpdate ( boost::shared_ptr<yApi::IYPluginApi> context , const ISIConfiguration& configuration)
 {
-    YADOMS_LOG(debug) << "WindowsSystem plugin :  Read CPU Loads";
+    YADOMS_LOG(debug) << "WindowsSystem plugin : Speed Updates";
+
+	std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > KeywordList;
 
     m_CPULoad.read();
     m_YadomsCPULoad.read();
+    m_RAMProcessMemory.read();
+	m_VirtualProcessMemory.read();
 
-    m_CPULoad.historizeData(context);
-    m_YadomsCPULoad.historizeData(context);
+	KeywordList.push_back (m_CPULoad.GetHistorizable());
+	KeywordList.push_back (m_YadomsCPULoad.GetHistorizable());
+
+	if (configuration.IsAdvancedEnabled())
+	{
+		KeywordList.push_back (m_RAMProcessMemory.GetHistorizable());
+		KeywordList.push_back (m_VirtualProcessMemory.GetHistorizable());
+	}
+
+	context->historizeData(m_PluginName, KeywordList);
 }
  
-void CSystemFactory::OnSlowUpdate ( boost::shared_ptr<yApi::IYPluginApi> context )
+void CSystemFactory::OnSlowUpdate ( boost::shared_ptr<yApi::IYPluginApi> context , const ISIConfiguration& configuration)
 {
-	YADOMS_LOG(debug) << "WindowsSystem plugin :  Read Memory and disk Usages";
+	YADOMS_LOG(debug) << "WindowsSystem plugin :  Slow Updates";
+
+	std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > KeywordList;
 
     m_MemoryLoad.read();
-    m_MemoryLoad.historizeData(context);
+
+	KeywordList.push_back ( m_MemoryLoad.GetHistorizable() );
 
     for(std::vector<CDiskUsage>::iterator disksListIterator=DiskUsageList.begin(); disksListIterator!=DiskUsageList.end(); ++disksListIterator)
     {
         disksListIterator->read();
-        disksListIterator->historizeData(context);
+		KeywordList.push_back ( disksListIterator->GetHistorizable() );
     }
-}
 
+	context->historizeData(m_PluginName, KeywordList);
+}

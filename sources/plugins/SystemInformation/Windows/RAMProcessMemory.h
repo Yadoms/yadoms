@@ -2,28 +2,29 @@
 
 #include "../ILoad.h"
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
+#include "../specificHistorizers/Byte.h"
 
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
 //--------------------------------------------------------------
-/// \brief	Memory Load of the Windows System
-/// \note   return the memory load for Windows Operating System
+/// \brief	Memory of the current process in RAM
+/// \note   return the memory used in RAM by the current process
 //--------------------------------------------------------------
-class CMemoryLoad : public ILoad
+class CRAMProcessMemory : public ILoad
 {
 public:
    //--------------------------------------------------------------
    /// \brief	    Constructor
    /// \param[in] device    The device
    //--------------------------------------------------------------
-   CMemoryLoad(const std::string & device);
+   CRAMProcessMemory(const std::string & device);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
-   virtual ~CMemoryLoad();
+   virtual ~CRAMProcessMemory();
 
    // ILoad Implementation
    virtual void declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context);
@@ -41,6 +42,6 @@ private:
    //--------------------------------------------------------------
    /// \brief	    Keyword
    //--------------------------------------------------------------
-   boost::shared_ptr<yApi::historization::CLoad> m_keyword;
+   boost::shared_ptr<yApi::historization::CByte> m_keyword;
 };
 
