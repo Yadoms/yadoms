@@ -33,5 +33,7 @@ public:
    /// \param[in] context  yPluginApi context to which historize data
    //--------------------------------------------------------------
    virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const = 0;
+
+   virtual boost::shared_ptr<yApi::historization::IHistorizable> GetHistorizable() const = 0;
 };
 

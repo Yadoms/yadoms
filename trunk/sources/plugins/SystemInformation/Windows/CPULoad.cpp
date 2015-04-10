@@ -15,7 +15,9 @@
 // https://msdn.microsoft.com/en-us/library/windows/desktop/ms724451(v=vs.85).aspx
 
 CCPULoad::CCPULoad(const std::string & device)
-   :m_device(device), m_keyword("CPULoad"), m_InitializeOk(false)
+   :m_device(device), 
+    m_keyword( new yApi::historization::CLoad("CPULoad") ), 
+	m_InitializeOk(false)
 {
    try
    {
@@ -24,7 +26,7 @@ CCPULoad::CCPULoad(const std::string & device)
    }
    catch (shared::exception::CException& e)
 	{
-      YADOMS_LOG(error) << "Error initializing CPULoad Keyword : "<< m_keyword.getKeyword() << "Error :" << e.what();
+      YADOMS_LOG(error) << "Error initializing CPULoad Keyword : "<< m_keyword->getKeyword() << "Error :" << e.what();
 	}
 }
 
@@ -133,9 +135,9 @@ void CCPULoad::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    if (m_InitializeOk)
    {
-      if (!context->keywordExists( m_device, m_keyword.getKeyword()))
+      if (!context->keywordExists( m_device, m_keyword->getKeyword()))
       {
-         context->declareKeyword(m_device, m_keyword);
+         context->declareKeyword(m_device, *m_keyword);
       }
    }
 }
@@ -145,7 +147,7 @@ void CCPULoad::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
    BOOST_ASSERT_MSG(!!context, "context must be defined");
 
    if (m_InitializeOk)
-      context->historizeData(m_device, m_keyword);
+      context->historizeData(m_device, *m_keyword);
 }
 
 void CCPULoad::read()
@@ -182,11 +184,16 @@ void CCPULoad::read()
          throw shared::exception::CException ( Message.str() );
       }
 
-      m_keyword.set((float)counterVal.doubleValue);
-      YADOMS_LOG(debug) << "WindowsSystemInformation plugin :  CPU Load : " << m_keyword.formatValue();
+      m_keyword->set((float)counterVal.doubleValue);
+      YADOMS_LOG(debug) << "WindowsSystemInformation plugin :  CPU Load : " << m_keyword->formatValue();
    }
    else
    {
       YADOMS_LOG(trace) << m_device << " is desactivated";
    }
+}
+
+boost::shared_ptr<yApi::historization::IHistorizable> CCPULoad::GetHistorizable() const
+{
+	return m_keyword;
 }

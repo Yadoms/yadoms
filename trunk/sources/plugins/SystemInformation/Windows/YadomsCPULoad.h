@@ -29,6 +29,7 @@ public:
    virtual void declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context);
    virtual void read();
    virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const;
+   virtual boost::shared_ptr<yApi::historization::IHistorizable> GetHistorizable() const;
    // [END] ILoad Implementation
 
 protected:
@@ -61,7 +62,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	    Keyword string
    //--------------------------------------------------------------
-   yApi::historization::CLoad m_keyword;
+   boost::shared_ptr<yApi::historization::CLoad> m_keyword;
 
    //--------------------------------------------------------------
    /// \brief	    Initialization ok

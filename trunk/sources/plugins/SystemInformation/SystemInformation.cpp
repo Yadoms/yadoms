@@ -31,6 +31,8 @@ void CSystemInformation::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
    {
       YADOMS_LOG(debug) << "SystemInformation is starting...";
 
+	  m_configuration.initializeWith(context->getConfiguration());
+
       // Device declaration, if needed
       if (!context->deviceExists(m_deviceName))
       {
@@ -59,13 +61,18 @@ void CSystemInformation::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
          {
          case kEvtTimerRefreshCPULoad:
             {
-			   Factory.OnSpeedUpdate (context);
+			   Factory.OnSpeedUpdate ( context, m_configuration );
 
                break;
             }
          case kEvtTimerRefreshDiskAndMemory:
             {
-			   Factory.OnSlowUpdate (context);
+			   Factory.OnSlowUpdate ( context, m_configuration );
+               break;
+            }
+         case yApi::IYPluginApi::kEventUpdateConfiguration:
+            {
+               onUpdateConfiguration(context, context->getEventHandler().getEventData<shared::CDataContainer>());
                break;
             }
          default:
@@ -85,3 +92,12 @@ void CSystemInformation::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
    }
 }
 
+void CSystemInformation::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> context, const shared::CDataContainer& newConfigurationData)
+{
+   // Configuration was updated
+   YADOMS_LOG(debug) << "Configuration was updated...";
+   BOOST_ASSERT(!newConfigurationData.empty());  // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
+
+   // Update configuration
+   m_configuration.initializeWith(newConfigurationData);
+}
