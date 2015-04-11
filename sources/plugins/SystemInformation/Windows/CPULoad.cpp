@@ -17,7 +17,7 @@
 CCPULoad::CCPULoad(const std::string & device)
    :m_device(device), 
     m_keyword( new yApi::historization::CLoad("CPULoad") ), 
-	m_InitializeOk(false)
+    m_InitializeOk(false)
 {
    try
    {

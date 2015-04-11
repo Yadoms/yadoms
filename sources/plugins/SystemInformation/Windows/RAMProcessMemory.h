@@ -2,7 +2,7 @@
 
 #include "../ILoad.h"
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
-#include "../specificHistorizers/Byte.h"
+#include "../specificHistorizers/KByte.h"
 
 
 // Shortcut to yPluginApi namespace
@@ -42,6 +42,6 @@ private:
    //--------------------------------------------------------------
    /// \brief	    Keyword
    //--------------------------------------------------------------
-   boost::shared_ptr<yApi::historization::CByte> m_keyword;
+   boost::shared_ptr<yApi::historization::CKByte> m_keyword;
 };
 

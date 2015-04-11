@@ -17,7 +17,8 @@ CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> context,
 {
    //Delete space between sub-names
    std::string temp_localisation = m_Localisation;
-   temp_localisation.erase(std::remove_if(temp_localisation.begin(), temp_localisation.end(), std::isspace), temp_localisation.end());
+//TODO: Linux std::remove_if n'existe pas
+   //temp_localisation.erase(std::remove_if(temp_localisation.begin(), temp_localisation.end(), std::isspace), temp_localisation.end());
 
 	m_URL.str("");
 	m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/" << m_Prefix << "/q/" << m_CountryOrState << "/" << temp_localisation << ".json";
@@ -63,7 +64,8 @@ void CForecastDays::OnUpdate( const IWUConfiguration& WUConfiguration )
 
    //Delete space between sub-names
    std::string temp_localisation = m_Localisation;
-   temp_localisation.erase(std::remove_if(temp_localisation.begin(), temp_localisation.end(), std::isspace), temp_localisation.end());
+//TODO: Linux std::remove_if n'existe pas
+   //temp_localisation.erase(std::remove_if(temp_localisation.begin(), temp_localisation.end(), std::isspace), temp_localisation.end());
 
 
 	m_URL.str("");

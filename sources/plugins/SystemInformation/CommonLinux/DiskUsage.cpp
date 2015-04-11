@@ -8,9 +8,10 @@
 #include <boost/lexical_cast.hpp>
 
 CDiskUsage::CDiskUsage(const std::string & device, const std::string & driveName, const std::string & keywordName)
-   :m_device(device), m_driveName(driveName), m_keyword(keywordName)
-{
-}
+   :m_device(device), 
+    m_driveName(driveName), 
+    m_keyword( new yApi::historization::CLoad(keywordName) )
+{}
 
 CDiskUsage::~CDiskUsage()
 {}
@@ -18,14 +19,14 @@ CDiskUsage::~CDiskUsage()
 void CDiskUsage::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    // Declare associated keywords (= values managed by this device)
-   context->declareKeyword(m_device, m_keyword);
+   context->declareKeyword(m_device, *m_keyword);
 }
 
 void CDiskUsage::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    BOOST_ASSERT_MSG(context, "context must be defined");
 
-   context->historizeData(m_device, m_keyword);
+   context->historizeData(m_device, *m_keyword);
 }
 
 std::vector<std::string> CDiskUsage::ExecuteCommandAndReturn(const std::string &szCommand)
@@ -69,9 +70,14 @@ void CDiskUsage::read()
              long long numblock    = boost::lexical_cast<long long>(match[2]);
              long long availblocks = boost::lexical_cast<long long>(match[4]);
 			 
-             m_keyword.set ((numblock - availblocks)/double(numblock)*100);
-             YADOMS_LOG(debug) << "Disk Name :  " << m_driveName << " Disk Usage : " << m_keyword.formatValue();			 
+             m_keyword->set ((numblock - availblocks)/double(numblock)*100);
+             YADOMS_LOG(debug) << "Disk Name :  " << m_driveName << " Disk Usage : " << m_keyword->formatValue();			 
          }
        }
    }
+}
+
+boost::shared_ptr<yApi::historization::IHistorizable> CDiskUsage::GetHistorizable() const
+{
+	return m_keyword;
 }

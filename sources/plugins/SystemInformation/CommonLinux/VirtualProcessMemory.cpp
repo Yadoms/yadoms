@@ -4,8 +4,6 @@
 #include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/plugin/yPluginApi/StandardUnits.h>
 #include <shared/Log.h>
-#include "windows.h"
-#include "psapi.h"
 
 CVirtualProcessMemory::CVirtualProcessMemory(const std::string & device)
    :m_device(device), 
@@ -30,20 +28,35 @@ void CVirtualProcessMemory::historizeData(boost::shared_ptr<yApi::IYPluginApi> c
    context->historizeData(m_device, *m_keyword);
 }
 
+int CVirtualProcessMemory::parseLine(char* line)
+{
+   int i = strlen(line);
+   while (*line < '0' || *line > '9') line++;
+   line[i-3] = '\0';
+   i = atoi(line);
+   return i;
+}
+
 void CVirtualProcessMemory::read()
 {
+   FILE* file = fopen("/proc/self/status", "r");
+   int result = -1;
+   char line[128];
 
-   PROCESS_MEMORY_COUNTERS_EX pmc;
 
-   if (!GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc)))
+   while (fgets(line, 128, file) != NULL)
    {
-      std::stringstream Message;
-      Message << "Fail to read Windows virtual process memory size :";
-      Message << GetLastError();
-      throw shared::exception::CException ( Message.str() );
-   }
-   
-   m_keyword->set( pmc.PrivateUsage );
+      if (strncmp(line, "VmSize:", 7) == 0)
+      {
+	 result = parseLine(line);
+	 break;
+      }
+    }
+    fclose(file);
+
+   //Note: this value is in KB!
+   m_keyword->set( result );
+
    YADOMS_LOG(debug) << "Virtual Memory for Current Process : " << m_keyword->formatValue();
 }
 

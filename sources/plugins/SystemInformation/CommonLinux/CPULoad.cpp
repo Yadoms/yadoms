@@ -9,7 +9,8 @@
 #include <boost/lexical_cast.hpp>
 
 CCPULoad::CCPULoad(const std::string & device)
-   :m_device(device), m_keyword("CPULoad")
+   :m_device(device), 
+    m_keyword( new yApi::historization::CLoad("CPULoad") )
 {
    ReadFromFile ( &m_lastTotalUser, &m_lastTotalUserLow, &m_lastTotalSys, &m_lastTotalIdle);
 }
@@ -21,9 +22,9 @@ CCPULoad::~CCPULoad()
 void CCPULoad::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    // Declare associated keywords (= values managed by this device)
-   if (!context->keywordExists( m_device, m_keyword.getKeyword()))
+   if (!context->keywordExists( m_device, m_keyword->getKeyword()))
    {
-      context->declareKeyword(m_device, m_keyword);
+      context->declareKeyword(m_device, *m_keyword);
    }
 }
 
@@ -31,7 +32,7 @@ void CCPULoad::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    BOOST_ASSERT_MSG(!!context, "context must be defined");
 
-   context->historizeData(m_device, m_keyword);
+   context->historizeData(m_device, *m_keyword);
 }
 
 void CCPULoad::ReadFromFile(unsigned long long *dtotalUser,
@@ -81,11 +82,16 @@ void CCPULoad::read()
       percent /= total;
       percent *= 100;
 
-      m_keyword.set (percent);
-      YADOMS_LOG(debug) << "CPU Load : " << m_keyword.formatValue();
+      m_keyword->set (percent);
+      YADOMS_LOG(debug) << "CPU Load : " << m_keyword->formatValue();
     }
     m_lastTotalUser = totalUser;
     m_lastTotalUserLow = totalUserLow;
     m_lastTotalSys = totalSys;
     m_lastTotalIdle = totalIdle;
+}
+
+boost::shared_ptr<yApi::historization::IHistorizable> CCPULoad::GetHistorizable() const
+{
+	return m_keyword;
 }

@@ -6,7 +6,7 @@
 CDiskUsage::CDiskUsage(const std::string & device, const std::string & keywordName, const std::string & driveName)
    :m_device(device), 
     m_keyword( new yApi::historization::CLoad(keywordName) ), 
-	m_driveName(driveName)
+    m_driveName(driveName)
 {}
 
 CDiskUsage::~CDiskUsage()

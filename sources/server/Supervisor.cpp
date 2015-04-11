@@ -28,7 +28,7 @@
 #include "communication/PluginGateway.h"
 #include "RunningInformation.h"
 #include "dataAccessLayer/DataAccessLayer.h"
-#include "notification/NotificationCenter.h"
+#include "notification/notificationCenter.h"
 #include "automation/RuleManager.h"
 #include <shared/ServiceLocator.h>
 #include <Poco/Util/ServerApplication.h>

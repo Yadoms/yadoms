@@ -1,5 +1,5 @@
 #pragma once
-#include "../../database/entities/entities.h"
+#include "../../database/entities/Entities.h"
 
 namespace notification { namespace acquisition
 {
