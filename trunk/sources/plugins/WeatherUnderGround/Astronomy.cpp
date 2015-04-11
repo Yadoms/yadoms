@@ -1,18 +1,39 @@
-//TODO : Faire un specific historizer pour l'astronomy, et le mettre aussi du côté du widget. Supprimer les historizer actuels
 #include "stdafx.h"
 #include "Astronomy.h"
 #include <shared/Log.h>
 #include <shared/exception/Exception.hpp>
 
+/*
+static inline std::string &trimAll(std::string &s)
+{   
+    if(s.size() == 0)
+    {
+        return s;
+    }
+
+    int val = 0;
+    for (int cur = 0; cur < s.size(); cur++)
+    {
+        if(s[cur] != ' ' && std::isalnum(s[cur]))
+        {
+            s[val] = s[cur];
+            val++;
+        }
+    }
+    s.resize(val);
+    return s;
+}*/
+
 CAstronomy::CAstronomy(boost::shared_ptr<yApi::IYPluginApi> context, const IWUConfiguration& WUConfiguration, const std::string & PluginName, const std::string & Prefix):
            m_Localisation         ( WUConfiguration.getLocalisation() ),
            m_CountryOrState       ( WUConfiguration.getCountryOrState() ),
-		     m_PluginName           ( PluginName ),
+           m_PluginName           ( PluginName ),
            m_MoonCharacteristics  ( PluginName, Prefix + "Moon" )
 {
    //Delete space between sub-names
    std::string temp_localisation = m_Localisation;
-   temp_localisation.erase(std::remove_if(temp_localisation.begin(), temp_localisation.end(), std::isspace), temp_localisation.end());
+//TODO: Linux std::remove_if n'existe pas
+//   temp_localisation.erase(std::remove_if(temp_localisation.begin(), temp_localisation.end(), std::isspace), temp_localisation.end());
 
 	m_URL.str("");
 	m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/astronomy/q/" << m_CountryOrState << "/" << temp_localisation << ".json";
@@ -44,7 +65,8 @@ void CAstronomy::OnUpdate( const IWUConfiguration& WUConfiguration )
 
    //Delete space between sub-names
    std::string temp_localisation = m_Localisation;
-   temp_localisation.erase(std::remove_if(temp_localisation.begin(), temp_localisation.end(), std::isspace), temp_localisation.end());
+//TODO: Linux std::remove_if n'existe pas
+   //temp_localisation.erase(std::remove_if(temp_localisation.begin(), temp_localisation.end(), std::isspace), temp_localisation.end());
 	
 	m_URL.str("");
 

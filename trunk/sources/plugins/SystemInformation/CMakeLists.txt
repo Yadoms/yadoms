@@ -15,6 +15,8 @@ set(SYSTEMINFORMATION_PLUGIN_SOURCES
 	SystemInformation.cpp
         specificHistorizers/Byte.cpp
         specificHistorizers/Byte.h
+        specificHistorizers/KByte.cpp
+        specificHistorizers/KByte.h
 	)
 
         source_group(specificHistorizers specificHistorizers/*.*)
@@ -55,8 +57,12 @@ IF (UNIX AND NOT APPLE)
 	CommonLinux/DiskUsage.cpp
 	CommonLinux/MemoryLoad.h
 	CommonLinux/MemoryLoad.cpp	
+	CommonLinux/RAMProcessMemory.h
+	CommonLinux/RAMProcessMemory.cpp
+	CommonLinux/VirtualProcessMemory.h
+	CommonLinux/VirtualProcessMemory.cpp
 	CommonLinux/YadomsCPULoad.h
-	CommonLinux/YadomsCPULoad.cpp	
+	CommonLinux/YadomsCPULoad.cpp
 	)
 	
 	source_group(CommonLinux CommonLinux/*.*)

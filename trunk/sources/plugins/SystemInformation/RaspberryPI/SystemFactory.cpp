@@ -5,17 +5,26 @@
 #include <shared/plugin/yPluginApi/StandardUnits.h>
 #include <shared/Log.h>
 
-CSystemFactory::CSystemFactory(boost::shared_ptr<yApi::IYPluginApi> context, const std::string & device):
-   m_MemoryLoad        (device),
-   m_CPULoad           (device),
-   m_YadomsCPULoad     (device),
-   m_TemperatureSensor (device)
+CSystemFactory::CSystemFactory(boost::shared_ptr<yApi::IYPluginApi> context, const std::string & device, const ISIConfiguration& configuration):
+   m_PluginName           (device),
+   m_MemoryLoad           (device),
+   m_CPULoad              (device),
+   m_YadomsCPULoad        (device),
+   m_TemperatureSensor    (device),
+   m_RAMProcessMemory     (device),
+   m_VirtualProcessMemory (device)
 {
       // Keywords declaration, if needed
-      m_MemoryLoad.declareKeywords(context);
-      m_CPULoad.declareKeywords(context);
-      m_YadomsCPULoad.declareKeywords(context);
-      m_TemperatureSensor.declareKeywords(context);
+      m_MemoryLoad.declareKeywords           (context);
+      m_CPULoad.declareKeywords              (context);
+      m_YadomsCPULoad.declareKeywords        (context);
+      m_TemperatureSensor.declareKeywords    (context);
+
+      if (configuration.IsAdvancedEnabled())
+      {
+         m_RAMProcessMemory.declareKeywords     (context);
+         m_VirtualProcessMemory.declareKeywords (context);
+      }
 
       // As disk list can change (add a disk), update it each time Yadoms starts
 
@@ -37,31 +46,56 @@ CSystemFactory::CSystemFactory(boost::shared_ptr<yApi::IYPluginApi> context, con
 CSystemFactory::~CSystemFactory()
 {}
 
-void CSystemFactory::OnSpeedUpdate ( boost::shared_ptr<yApi::IYPluginApi> context )
+void CSystemFactory::OnSpeedUpdate ( boost::shared_ptr<yApi::IYPluginApi> context , const ISIConfiguration& configuration)
 {
-    YADOMS_LOG(debug) << "System plugin :  Read CPU Loads";
+    std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > KeywordList;
+
+    YADOMS_LOG(debug) << "Speed reads";
 
     m_CPULoad.read();
     m_YadomsCPULoad.read();
 
-    m_CPULoad.historizeData(context);
-    m_YadomsCPULoad.historizeData(context);
+    KeywordList.push_back (m_CPULoad.GetHistorizable());
+    KeywordList.push_back (m_YadomsCPULoad.GetHistorizable());
+
+    if (configuration.IsAdvancedEnabled())
+    {
+       m_RAMProcessMemory.read();
+       m_VirtualProcessMemory.read();
+
+       KeywordList.push_back (m_RAMProcessMemory.GetHistorizable());
+       KeywordList.push_back (m_VirtualProcessMemory.GetHistorizable());
+    }
+
+    context->historizeData(m_PluginName, KeywordList);
 }
  
-void CSystemFactory::OnSlowUpdate ( boost::shared_ptr<yApi::IYPluginApi> context )
+void CSystemFactory::OnSlowUpdate ( boost::shared_ptr<yApi::IYPluginApi> context , const ISIConfiguration& configuration)
 {
-	YADOMS_LOG(debug) << "System plugin :  Read Memory and disk Usages";
+    std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > KeywordList;
+
+    YADOMS_LOG(debug) << "Slow reads";
 
     m_MemoryLoad.read();
-    m_MemoryLoad.historizeData(context);
+    KeywordList.push_back ( m_MemoryLoad.GetHistorizable() );
 
     m_TemperatureSensor.read();
-    m_TemperatureSensor.historizeData(context);
+    KeywordList.push_back ( m_TemperatureSensor.GetHistorizable() );
 
     for(std::vector<boost::shared_ptr<CDiskUsage> >::iterator disksListIterator=m_DiskUsageList.begin(); disksListIterator!=m_DiskUsageList.end(); ++disksListIterator)
     {
         (*disksListIterator)->read();
-        (*disksListIterator)->historizeData(context);
+        KeywordList.push_back ( (*disksListIterator)->GetHistorizable() );
     }
+
+    context->historizeData(m_PluginName, KeywordList);
 }
 
+void CSystemFactory::OnConfigurationUpdate ( const ISIConfiguration& configuration )
+{
+      if (configuration.IsAdvancedEnabled())
+      {
+         m_RAMProcessMemory.declareKeywords     (context);
+         m_VirtualProcessMemory.declareKeywords (context);
+      }
+}

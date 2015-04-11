@@ -31,7 +31,7 @@ void CSystemInformation::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
    {
       YADOMS_LOG(debug) << "SystemInformation is starting...";
 
-	  m_configuration.initializeWith(context->getConfiguration());
+      m_configuration.initializeWith(context->getConfiguration());
 
       // Device declaration, if needed
       if (!context->deviceExists(m_deviceName))
@@ -39,7 +39,7 @@ void CSystemInformation::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
          context->declareDevice(m_deviceName, "SystemInformation");
       }
 
-      CSystemFactory Factory (context, m_deviceName);
+      CSystemFactory Factory (context, m_deviceName, m_configuration);
 
       // Event to be sent immediately for the first value
       context->getEventHandler().createTimer(kEvtTimerRefreshCPULoad      , shared::event::CEventTimer::kOneShot , boost::posix_time::seconds(0));
@@ -73,6 +73,7 @@ void CSystemInformation::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
          case yApi::IYPluginApi::kEventUpdateConfiguration:
             {
                onUpdateConfiguration(context, context->getEventHandler().getEventData<shared::CDataContainer>());
+               Factory.OnConfigurationUpdate (context, m_configuration );
                break;
             }
          default:

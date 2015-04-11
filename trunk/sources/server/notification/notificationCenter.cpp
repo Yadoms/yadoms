@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "NotificationCenter.h"
+#include "notificationCenter.h"
 #include "acquisition/notifier.h"
 #include "newDevice/notifier.h"
 #include "configurationUpdate/notifier.h"

@@ -11,7 +11,8 @@
 namespace yApi = shared::plugin::yPluginApi;
 
 CMemoryLoad::CMemoryLoad(const std::string & device)
-   :m_device(device), m_keyword("MemoryLoad")
+   :m_device(device), 
+    m_keyword( new yApi::historization::CLoad("MemoryLoad"))
 {}
 
 CMemoryLoad::~CMemoryLoad()
@@ -19,9 +20,9 @@ CMemoryLoad::~CMemoryLoad()
 
 void CMemoryLoad::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context)
 {
-   if (!context->keywordExists( m_device, m_keyword.getKeyword()))
+   if (!context->keywordExists( m_device, m_keyword->getKeyword()))
    {
-      context->declareKeyword(m_device, m_keyword);
+      context->declareKeyword(m_device, *m_keyword);
    }
 }
 
@@ -29,7 +30,7 @@ void CMemoryLoad::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) co
 {
    BOOST_ASSERT_MSG(!!context, "context must be defined");
 
-   context->historizeData(m_device, m_keyword);
+   context->historizeData(m_device, *m_keyword);
 }
 
 void CMemoryLoad::read()
@@ -53,9 +54,13 @@ void CMemoryLoad::read()
 
    //TODO: Cette méthode renvoie une valeur supérieure à ce que me renvoie le moniteur système d'Ubuntu ... A vérifier. Domoticz donne la meme chose. A vérifier avec une autre fonction mémoire en ligne de commande.
 
-   m_keyword.set( virtualMemUsed*100/double(totalVirtualMem));
+   m_keyword->set( virtualMemUsed*100/double(totalVirtualMem));
 
-   YADOMS_LOG(debug) << "Memory Load : " << m_keyword.formatValue();
+   YADOMS_LOG(debug) << "Memory Load : " << m_keyword->formatValue();
 }
 
+boost::shared_ptr<yApi::historization::IHistorizable> CMemoryLoad::GetHistorizable() const
+{
+	return m_keyword;
+}
 

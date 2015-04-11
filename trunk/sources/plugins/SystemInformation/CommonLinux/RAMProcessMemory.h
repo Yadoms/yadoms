@@ -9,22 +9,22 @@
 namespace yApi = shared::plugin::yPluginApi;
 
 //--------------------------------------------------------------
-/// \brief	Virtual Memory of the current process
-/// \note   return the virtual memory used by the current process
+/// \brief	Memory of the current process in RAM
+/// \note   return the memory used in RAM by the current process
 //--------------------------------------------------------------
-class CVirtualProcessMemory : public ILoad
+class CRAMProcessMemory : public ILoad
 {
 public:
    //--------------------------------------------------------------
    /// \brief	    Constructor
    /// \param[in] device    The device
    //--------------------------------------------------------------
-   CVirtualProcessMemory(const std::string & device);
+   CRAMProcessMemory(const std::string & device);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
-   virtual ~CVirtualProcessMemory();
+   virtual ~CRAMProcessMemory();
 
    // ILoad Implementation
    virtual void declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context);
@@ -34,6 +34,9 @@ public:
    // [END] ILoad Implementation
 
 private:
+
+   int parseLine(char* line);
+
    //--------------------------------------------------------------
    /// \brief	    Device name
    //--------------------------------------------------------------

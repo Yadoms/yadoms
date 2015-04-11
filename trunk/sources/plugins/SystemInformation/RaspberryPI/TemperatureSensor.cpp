@@ -5,20 +5,19 @@
 #include <fstream>
 
 CTemperatureSensor::CTemperatureSensor(const std::string & deviceId)
-   :m_device(deviceId), m_keyword("Temp")
-{
-}
+   :m_device(deviceId), 
+    m_keyword(new yApi::historization::CTemperature("Temp"))
+{}
 
 CTemperatureSensor::~CTemperatureSensor()
-{
-}
+{}
 
 void CTemperatureSensor::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    // Declare associated keywords (= values managed by this device)
-   if (!context->keywordExists( m_device, m_keyword.getKeyword()))
+   if (!context->keywordExists( m_device, m_keyword->getKeyword()))
    { 
-      context->declareKeyword(m_device, m_keyword);
+      context->declareKeyword(m_device, *m_keyword);
    }
 }
 
@@ -26,9 +25,13 @@ void CTemperatureSensor::historizeData(boost::shared_ptr<yApi::IYPluginApi> cont
 {
    BOOST_ASSERT_MSG(context, "context must be defined");
 
-   context->historizeData(m_device, m_keyword);
+   context->historizeData(m_device, *m_keyword);
 }
 
+boost::shared_ptr<yApi::historization::IHistorizable> CTemperatureSensor::GetHistorizable() const
+{
+	return m_keyword;
+}
 
 void CTemperatureSensor::read()
 {
@@ -46,7 +49,8 @@ void CTemperatureSensor::read()
       }
       temperatureFile.close();
 
-      m_keyword.set( atof(readValue.c_str()) / 1000.0 );
+      m_keyword->set( atof(readValue.c_str()) / 1000.0 );
+      YADOMS_LOG(debug) << "CPU Temp : " << m_keyword->formatValue();
    }
    catch(std::exception & ex)
    {

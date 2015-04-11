@@ -6,11 +6,11 @@
 CYadomsCPULoad::CYadomsCPULoad(const std::string & device)
    :m_device(device), 
     m_keyword(new yApi::historization::CLoad("YadomsCPULoad")), 
-	m_lastCPU(0), 
-	m_lastSysCPU(0), 
-	m_lastUserCPU(0), 
-	m_numProcessors(0), 
-	m_InitializeOk(false)
+    m_lastCPU(0), 
+    m_lastSysCPU(0), 
+    m_lastUserCPU(0), 
+    m_numProcessors(0), 
+    m_InitializeOk(false)
 {
    Initialize();
 }

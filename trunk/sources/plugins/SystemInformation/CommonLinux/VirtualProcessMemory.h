@@ -34,6 +34,9 @@ public:
    // [END] ILoad Implementation
 
 private:
+
+   int parseLine(char* line);
+
    //--------------------------------------------------------------
    /// \brief	    Device name
    //--------------------------------------------------------------
