@@ -5,6 +5,9 @@ SET(CMAKE_SYSTEM_VERSION 1)
 SET(CMAKE_CROSSCOMPILING True)
 set(CMAKE_COMPILER_IS_RASPBERRY_CROSS_COMPILER ON)
 
+# User specific configuration
+include(CMakeListsUserConfig.txt OPTIONAL)
+
 # cross compiler tools
 set(CC_RPI_GCC ${CC_RPI_ROOT}/bin/arm-linux-gnueabihf-gcc)
 set(CC_RPI_GXX ${CC_RPI_ROOT}/bin/arm-linux-gnueabihf-g++)
