@@ -91,7 +91,7 @@ void CSystemFactory::OnSlowUpdate ( boost::shared_ptr<yApi::IYPluginApi> context
     context->historizeData(m_PluginName, KeywordList);
 }
 
-void CSystemFactory::OnConfigurationUpdate ( const ISIConfiguration& configuration )
+void CSystemFactory::OnConfigurationUpdate ( boost::shared_ptr<yApi::IYPluginApi> context, const ISIConfiguration& configuration )
 {
       if (configuration.IsAdvancedEnabled())
       {
