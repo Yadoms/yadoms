@@ -32,7 +32,7 @@ void CVirtualProcessMemory::historizeData(boost::shared_ptr<yApi::IYPluginApi> c
 
 void CVirtualProcessMemory::read()
 {
-
+   //TODO: Peut-être eventuellement effectué avec les compteurs
    PROCESS_MEMORY_COUNTERS_EX pmc;
 
    if (!GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc)))
@@ -43,7 +43,7 @@ void CVirtualProcessMemory::read()
       throw shared::exception::CException ( Message.str() );
    }
    
-   m_keyword->set( pmc.PrivateUsage );
+   m_keyword->set( pmc.PrivateUsage / 1000 );
    YADOMS_LOG(debug) << "Virtual Memory for Current Process : " << m_keyword->formatValue();
 }
 

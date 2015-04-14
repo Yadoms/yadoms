@@ -8,7 +8,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
    //-----------------------------------------------------
    ///\brief A temperature historizable object
    //-----------------------------------------------------
-   class CByte : public CSingleHistorizableData<long long>
+   class CByte : public CSingleHistorizableData<long>
    {
    public:
       //-----------------------------------------------------

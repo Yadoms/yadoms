@@ -2,7 +2,7 @@
 #include "ForecastFormatter.h"
 #include <shared/exception/InvalidParameter.hpp>
 #include <shared/DataContainer.h>
-
+#include <shared/Log.h>
 
 namespace shared { namespace plugin { namespace yPluginApi { namespace historization
 {
@@ -24,29 +24,29 @@ void CForecastFormatter::AddPeriod(
             const std::string& Year,
             const std::string& Month,
             const std::string& Day,
-		      const std::string& WeatherCondition, 
-	         const std::string& TempMax, 
-				const std::string& TempMin,
-				const std::string& MaxWind,
-				const std::string& AveWind,
-				const std::string& AveHumidity,
+            const std::string& WeatherCondition, 
+            const std::string& TempMax, 
+            const std::string& TempMin,
+            const std::string& MaxWind,
+            const std::string& AveWind,
+            const std::string& AveHumidity,
             const std::string& RainDay
 				)
 {
-	CDataContainer Temp;
+   CDataContainer Temp;
 
    Temp.set ("Year", Year);
    Temp.set ("Month", Month);
    Temp.set ("Day", Day);
-	Temp.set ("WeatherCondition", WeatherCondition);
-	Temp.set ("TempMax", TempMax);
-	Temp.set ("TempMin", TempMin);
-	Temp.set ("MaxWind", MaxWind);
-	Temp.set ("AveWind", AveWind);
-	Temp.set ("AveHumidity", AveHumidity);
+   Temp.set ("WeatherCondition", WeatherCondition);
+   Temp.set ("TempMax", TempMax);
+   Temp.set ("TempMin", TempMin);
+   Temp.set ("MaxWind", MaxWind);
+   Temp.set ("AveWind", AveWind);
+   Temp.set ("AveHumidity", AveHumidity);
    Temp.set ("RainDay", RainDay);
 
-	m_Periods.push_back( Temp );
+   m_Periods.push_back( Temp );
 }
 
 void CForecastFormatter::ClearAllPeriods( void )
