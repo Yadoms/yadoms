@@ -7,6 +7,8 @@
 #include <sys/types.h>
 #include <shared/Log.h>
 
+#define LINUX_SYSINFO_LOADS_SCALE 65536
+
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -47,7 +49,7 @@ void CMemoryLoad::read()
    totalVirtualMem += memInfo.totalswap;
    totalVirtualMem *= memInfo.mem_unit;
 
-   long long virtualMemUsed = memInfo.totalram - memInfo.freeram;
+   long long virtualMemUsed = ((memInfo.totalram + memInfo.totalswap) - (memInfo.freeram + memInfo.freeswap))*memInfo.mem_unit;
 
    YADOMS_LOG(debug) << "Mémoire virtuelle utilisée :" << virtualMemUsed;
    YADOMS_LOG(debug) << "Mémoire virtuelle totale   :" << totalVirtualMem;

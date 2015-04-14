@@ -75,8 +75,8 @@ function ForecastViewModel() {
 
 				self.TempPeriod.push({ WeatherCondition: obj.forecast[i].WeatherCondition,
 									   TimeDate: obj.forecast[i].Day + '/' + obj.forecast[i].Month,
-									   TempMax: obj.forecast[i].TempMax + obj.Units.temperature.substring(0, obj.Units.temperature.length - 1),
-									   TempMin: obj.forecast[i].TempMin + obj.Units.temperature.substring(0, obj.Units.temperature.length - 1),
+									   TempMax: obj.forecast[i].TempMax + "\u00B0", // Un caractère parasite est généré par boost::write_json sous Ubuntu \u00B0 = ° obj.Units.temperature.substring(0, obj.Units.temperature.length - 1),
+									   TempMin: obj.forecast[i].TempMin + "\u00B0", //obj.Units.temperature.substring(0, obj.Units.temperature.length - 1),
 									   MaxWind: Convertmstokmh(parseFloat(obj.forecast[i].MaxWind,10)) + "km/h", 
 									   AveWind: Convertmstokmh(parseFloat(obj.forecast[i].AveWind,10)) + "km/h",
 									   AveHumidity: obj.forecast[i].AveHumidity + obj.Units.humidity,

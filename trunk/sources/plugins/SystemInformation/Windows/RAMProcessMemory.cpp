@@ -32,7 +32,7 @@ void CRAMProcessMemory::historizeData(boost::shared_ptr<yApi::IYPluginApi> conte
 
 void CRAMProcessMemory::read()
 {
-
+   //TODO: Peut-être eventuellement effectué avec les compteurs
    PROCESS_MEMORY_COUNTERS pmc;
 
    if (!GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc)))
@@ -43,7 +43,7 @@ void CRAMProcessMemory::read()
       throw shared::exception::CException ( Message.str() );
    }
    
-   m_keyword->set( pmc.WorkingSetSize );
+   m_keyword->set( pmc.WorkingSetSize / 1000 );
    YADOMS_LOG(debug) << "WindowsSystemInformation plugin :  RAM Memory Current Process : " << m_keyword->formatValue();
 }
 

@@ -9,7 +9,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
    const CStandardCapacity& ByteCapacity = CStandardCapacity("Byte", ByteUnit, EKeywordDataType::kNumeric);
 
    CByte::CByte(const std::string& keywordName, const EKeywordAccessMode& accessMode, const EMeasureType& measureType, typeInfo::CIntTypeInfo & additionalInfo)
-      :CSingleHistorizableData<long long>(keywordName, ByteCapacity, accessMode, 0, measureType, additionalInfo)
+      :CSingleHistorizableData<long>(keywordName, ByteCapacity, accessMode, 0, measureType, additionalInfo)
    {}
 
    CByte::~CByte()

@@ -10,10 +10,10 @@ CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> context,
                                ):
            m_Localisation              ( WUConfiguration.getLocalisation() ),
            m_CountryOrState            ( WUConfiguration.getCountryOrState() ),
-		     m_PluginName                ( PluginName ),
+           m_Prefix                    ( Prefix ),
+           m_PluginName                ( PluginName ),
            //TODO : Ecrire autrement le EPeriod::kDay
-		     m_Forecast                  ( PluginName, Prefix, EPeriod::kDay),
-           m_Prefix                    ( Prefix )
+           m_Forecast                  ( PluginName, Prefix, EPeriod::kDay)
 {
    //Delete space between sub-names
    std::string temp_localisation = m_Localisation;
@@ -49,9 +49,9 @@ CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> context,
       }
    }
    catch (shared::exception::CException e)
-	{
-		YADOMS_LOG(warning) << "Configuration or initialization error of Forecast 3 Days module :" << e.what()  << std::endl;
-	}
+   {
+      YADOMS_LOG(warning) << "Configuration or initialization error of Forecast 3 Days module :" << e.what()  << std::endl;
+   }
 }
 
 void CForecastDays::OnUpdate( const IWUConfiguration& WUConfiguration )
