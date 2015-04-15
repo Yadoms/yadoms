@@ -33,7 +33,7 @@ public:
 
    void OnSpeedUpdate ( boost::shared_ptr<yApi::IYPluginApi> context, const ISIConfiguration& configuration );
    void OnSlowUpdate  ( boost::shared_ptr<yApi::IYPluginApi> context, const ISIConfiguration& configuration );
-   void OnConfigurationUpdate ( const ISIConfiguration& configuration );
+   void OnConfigurationUpdate ( boost::shared_ptr<yApi::IYPluginApi> context, const ISIConfiguration& configuration );
 
 private:
 

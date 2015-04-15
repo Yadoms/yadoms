@@ -119,11 +119,6 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 
                break;
             }
-         case yApi::IYPluginApi::kBindingQuery:
-            {
-               //TODO : Remplir pour une demande Internet sur la liste des pays
-               break;
-            }
 
          default:
             {
