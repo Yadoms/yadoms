@@ -59,8 +59,8 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 		  context->declareDevice(m_deviceName, m_URL);
 	   }
 
-	   CWeatherConditions m_WeatherConditionsRequester( context, m_configuration, m_deviceName, "conditions.");
-	   CAstronomy m_AstronomyRequester                ( context, m_configuration, m_deviceName, "astronomy.");
+      CWeatherConditions m_WeatherConditionsRequester( context, m_configuration, m_deviceName, "conditions.");
+      CAstronomy m_AstronomyRequester                ( context, m_configuration, m_deviceName, "astronomy.");
       CForecastDays m_Forecast10Days                 ( context, m_configuration, m_deviceName, "forecast10day");
 
       // the main loop
@@ -94,7 +94,7 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 			      YADOMS_LOG(debug) << "Refresh Forecast 10 Days Information";
 
 			      m_Forecast10Days.Request( context );
-               m_Forecast10Days.SetCityName ( m_WeatherConditionsRequester.GetCityName());
+                  m_Forecast10Days.SetCityName ( m_WeatherConditionsRequester.GetCityName() );
 			      m_Forecast10Days.Parse  ( context, m_configuration );
 
 			      break;
@@ -103,19 +103,19 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
             {
                onUpdateConfiguration(context, context->getEventHandler().getEventData<shared::CDataContainer>());
 
-			      m_WeatherConditionsRequester.OnUpdate ( m_configuration );
+               m_WeatherConditionsRequester.OnUpdate ( m_configuration );
 			   
-			      m_WeatherConditionsRequester.Request( context );
-			      m_WeatherConditionsRequester.Parse  ( context, m_configuration );
+               m_WeatherConditionsRequester.Request( context );
+               m_WeatherConditionsRequester.Parse  ( context, m_configuration );
 
-			      m_AstronomyRequester.OnUpdate ( m_configuration );
+               m_AstronomyRequester.OnUpdate ( m_configuration );
 
-			      m_AstronomyRequester.Request( context );
-			      m_AstronomyRequester.Parse  ( context, m_configuration );
+               m_AstronomyRequester.Request( context );
+               m_AstronomyRequester.Parse  ( context, m_configuration );
 
                m_Forecast10Days.SetCityName ( m_WeatherConditionsRequester.GetCityName());
-			      m_Forecast10Days.Request( context );
-			      m_Forecast10Days.Parse  ( context, m_configuration );
+               m_Forecast10Days.Request( context );
+               m_Forecast10Days.Parse  ( context, m_configuration );
 
                break;
             }

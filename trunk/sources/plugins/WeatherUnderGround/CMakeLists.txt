@@ -12,14 +12,17 @@ set(WUNDERGROUND_SOURCES
    ForecastDays.cpp
    ForecastDays.h
    IWUConfiguration.h
+   NoStateException.hpp
+   stdafx.h
+   stdafx.cpp
    WeatherUnderground.h
    WeatherUnderground.cpp
+   WeatherUndergroundHelpers.h
+   WeatherUndergroundHelpers.cpp
    WeatherConditions.cpp
    WeatherConditions.h
    WUConfiguration.cpp
    WUConfiguration.h
-   stdafx.h
-   stdafx.cpp
    Keywords/Barometric.h
    Keywords/Barometric.cpp
    Keywords/Duration.h

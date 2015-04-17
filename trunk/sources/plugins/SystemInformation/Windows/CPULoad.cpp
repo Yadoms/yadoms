@@ -46,28 +46,28 @@ void CCPULoad::Initialize()
    {
       std::stringstream Message; 
       Message << "PdhOpenQuery failed with status:"; 
-      Message << std::hex << GetLastError();
+      Message << std::hex << Status;
       throw shared::exception::CException ( Message.str() );
    }
 
-   Status = PdhLookupPerfNameByIndex( NULL,0x06,ProcessorTimeString, &nsize);
+   Status = PdhLookupPerfNameByIndex( NULL,0x06,ProcessorTimeString, &nsize); // 
 
    if (Status != ERROR_SUCCESS) 
    {
       std::stringstream Message; 
       Message << "PdhLookupPerfNameByIndex failed with status:"; 
-      Message << std::hex <<  GetLastError();
+      Message << std::hex <<  Status;
       throw shared::exception::CException ( Message.str() );
    }
 
    nsize = sizeof(ProcessorObjectName);
-   Status = PdhLookupPerfNameByIndex(NULL, 238, ProcessorObjectName, &nsize);  // Processor object
+   Status = PdhLookupPerfNameByIndex(NULL, 238, ProcessorObjectName, &nsize);  // Processus object
 
    if (Status != ERROR_SUCCESS) 
    {
       std::stringstream Message; 
       Message << "PdhLookupPerfNameByIndex failed with status:"; 
-      Message << std::hex <<  GetLastError();
+      Message << std::hex <<  Status;
       throw shared::exception::CException ( Message.str() );
    }
 
@@ -85,7 +85,7 @@ void CCPULoad::Initialize()
    {
       std::stringstream Message; 
       Message << "PdhMakeCounterPath failed with status:"; 
-      Message << std::hex <<  GetLastError();
+      Message << std::hex <<  Status;
       throw shared::exception::CException ( Message.str() );
    }
 
@@ -96,7 +96,7 @@ void CCPULoad::Initialize()
    {
       std::stringstream Message; 
       Message << "PdhAddCounter failed with status:"; 
-      Message << std::hex <<  GetLastError();
+      Message << std::hex <<  Status;
       throw shared::exception::CException ( Message.str() );
    }
 
@@ -105,7 +105,7 @@ void CCPULoad::Initialize()
    {
       std::stringstream Message; 
       Message << "PdhCollectQueryData failed with status:"; 
-      Message << std::hex << GetLastError();
+      Message << std::hex << Status;
       throw shared::exception::CException ( Message.str() );
    }
 
@@ -185,7 +185,7 @@ void CCPULoad::read()
       }
 
       m_keyword->set((float)counterVal.doubleValue);
-      YADOMS_LOG(debug) << "WindowsSystemInformation plugin :  CPU Load : " << m_keyword->formatValue();
+      YADOMS_LOG(debug) << "CPU Load : " << m_keyword->formatValue();
    }
    else
    {

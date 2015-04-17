@@ -24,7 +24,7 @@ public:
    /// \param[in] Prefix           Prefix Name used eventually to subname Keywords
    //--------------------------------------------------------------
    CForecastDays(boost::shared_ptr<yApi::IYPluginApi> context, 
-                  const IWUConfiguration& WUConfiguration, 
+                  IWUConfiguration& WUConfiguration, 
                   std::string PluginName, 
                   const std::string Prefix);
 
@@ -46,7 +46,7 @@ public:
    /// \brief	  Update the configuration when something change from the HMI
    /// \param[in] WUConfiguration    The Plugin configuration
    //--------------------------------------------------------------
-   void OnUpdate( const IWUConfiguration& WUConfiguration );
+   void OnUpdate( IWUConfiguration& WUConfiguration );
 
    //--------------------------------------------------------------
    /// \brief	  Set the city Name
