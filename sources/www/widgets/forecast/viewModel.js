@@ -27,8 +27,8 @@ function ForecastViewModel() {
    this.AveHumidityVisible = ko.observable( true );
    this.RainDayVisible = ko.observable    ( true );
 
-   //Nombre of day to be displayed
-   this.DayNbre = ko.observable ( 12 );
+   //Nbre of day to be displayed
+   this.DayNbre = ko.observable ( 10 );
    
    /**
     * Widget identifier
@@ -55,7 +55,7 @@ function ForecastViewModel() {
       var self = this;
 
       if (device == self.widget.configuration.device) 
-      {
+      {  
 		 var obj = jQuery.parseJSON( data.value );
 		 
 		 console.debug( "objet reçu %o",obj );
@@ -72,7 +72,6 @@ function ForecastViewModel() {
 		 //Copy of all object into the temporary array
 		 $.each(obj.forecast, function (i, object)
 		 {
-
 				self.TempPeriod.push({ WeatherCondition: obj.forecast[i].WeatherCondition,
 									   TimeDate: obj.forecast[i].Day + '/' + obj.forecast[i].Month,
 									   TempMax: obj.forecast[i].TempMax + "\u00B0", // Un caractère parasite est généré par boost::write_json sous Ubuntu \u00B0 = ° obj.Units.temperature.substring(0, obj.Units.temperature.length - 1),
@@ -83,13 +82,14 @@ function ForecastViewModel() {
 									   RainDay: obj.forecast[i].RainDay + obj.Units.rain,
 									   WeatherIcon: "widgets/forecast/images/Icons1/" + obj.forecast[i].WeatherCondition + ".png"
 									 });
-
          }	 
          );
 		 
-		 //Copy all the necessary into the ko variable
-		 self.period ( self.TempPeriod.slice ( 0, self.DayNbre() ));
+		 //Resize the widget and display the elements automatically
+		 self.resized ();
       }
+	  
+	  this.configurationChanged ();
    };
 
    this.configurationChanged = function() {
@@ -98,13 +98,15 @@ function ForecastViewModel() {
 	 if ((isNullOrUndefined(self.widget)) || (isNullOrUndefinedOrEmpty(self.widget.configuration)))
 		return;	  
 	 
-	 try{
-	    self.MaxWindVisible     ( self.widget.configuration.Information.content.MaxWind );
-	    self.AveWindVisible     ( self.widget.configuration.Information.content.AveWind );
-	    self.AveHumidityVisible ( self.widget.configuration.Information.content.AveHumidity );
-   	    self.RainDayVisible     ( self.widget.configuration.Information.content.RainDay );
+	 try
+	 {
+	    self.MaxWindVisible     ( parseBool( self.widget.configuration.Information.content.MaxWind ));
+	    self.AveWindVisible     ( parseBool( self.widget.configuration.Information.content.AveWind ));
+	    self.AveHumidityVisible ( parseBool( self.widget.configuration.Information.content.AveHumidity ));
+   	    self.RainDayVisible     ( parseBool( self.widget.configuration.Information.content.RainDay ));
 	 }
-	 catch(err) {
+	 catch(err) 
+	 {
 	    console.debug( err.message );
 	 }
    }
@@ -125,33 +127,33 @@ function ForecastViewModel() {
 	   }
 	   else
 	   {
-	         //In two cases : we enable automatically temperature. All others information are read from the configuration
+	         //In two cases : we enable automatically temperatures. All others information are read from the configuration
 	         self.MaxTempVisible     ( true );
 			 self.MinTempVisible     ( true );	   
-			 self.RainDayVisible     ( self.widget.configuration.Information.content.RainDay );
-			 self.AveHumidityVisible ( self.widget.configuration.Information.content.AveHumidity );
-			 self.AveWindVisible     ( self.widget.configuration.Information.content.AveWind );
-			 self.MaxWindVisible     ( self.widget.configuration.Information.content.MaxWind );	   
+			 self.RainDayVisible     ( parseBool (self.widget.configuration.Information.content.RainDay ));
+			 self.AveHumidityVisible ( parseBool (self.widget.configuration.Information.content.AveHumidity ));
+			 self.AveWindVisible     ( parseBool (self.widget.configuration.Information.content.AveWind ));
+			 self.MaxWindVisible     ( parseBool (self.widget.configuration.Information.content.MaxWind ));
 	   }
 	   
 	   // if length = 2 cases -> 2 days
-	   if (this.widget.width() <= 200)
+	   if (self.widget.width() <= 200)
 	   {
 	      self.DayNbre ( 1 );
 	   }
-	   else if (this.widget.width() <= 300) // if length = 3 cases -> 4 days
+	   else if (self.widget.width() <= 300) // if length = 3 cases -> 3 days
 	   {
 	      self.DayNbre ( 3 );
 	   }
-	   else if (this.widget.width() <= 400) // if length = 4 cases -> 6 days
+	   else if (self.widget.width() <= 400) // if length = 4 cases -> 5 days
 	   {
 	      self.DayNbre ( 5 );
 	   }
-	   else if (this.widget.width() <= 500) // if length = 5 cases -> 8 days
+	   else if (self.widget.width() <= 500) // if length = 5 cases -> 6 days
 	   {
 	      self.DayNbre ( 6 );
 	   }
-	   else if (this.widget.width() <= 600) // if length = 6 cases -> 8 days
+	   else if (self.widget.width() <= 600) // if length = 6 cases -> 8 days
 	   {
 	      self.DayNbre ( 8 );
 	   }		   

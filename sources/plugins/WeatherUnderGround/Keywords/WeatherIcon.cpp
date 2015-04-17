@@ -39,7 +39,7 @@ void CWeatherIcon::SetValue( const shared::CDataContainer & ValueContainer, cons
 	  ("chancerain", yApi::historization::EWeatherCondition::kRain)
 	  ("sleet", yApi::historization::EWeatherCondition::kSleet)
 	  ("chancesleet", yApi::historization::EWeatherCondition::kSleet)
-	  ("tstorm", yApi::historization::EWeatherCondition::kStorm)
+	  ("tstorms", yApi::historization::EWeatherCondition::kStorm)
 	  ("chancestorm", yApi::historization::EWeatherCondition::kStorm)
 	  ("fog", yApi::historization::EWeatherCondition::kFog)
 	  ("hazy", yApi::historization::EWeatherCondition::kFog)
@@ -57,11 +57,10 @@ void CWeatherIcon::SetValue( const shared::CDataContainer & ValueContainer, cons
 	  {
          m_weathercondition->set( (yApi::historization::EWeatherCondition)(it->second) );
 
-         //TODO : Mettre la valeur en clair
 		 YADOMS_LOG(debug) << m_weathercondition->getKeyword() << "=" << m_weathercondition->get();
 	  }
 	  else
-		  throw;
+		  throw; //TODO : Emettre une vrai Exception
 }
 
 void CWeatherIcon::DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const

@@ -6,12 +6,11 @@
 #include"NoStateException.hpp"
 
 CWUConfiguration::CWUConfiguration() :
+	     m_Localisation   (""),
          m_CountryOrState (""),
-	     m_Localisation   ("")
-{
-   m_isWindEnabled = false;
-   m_isStandardInformationEnabled = false;
-}
+		 m_isWindEnabled  ( false ),
+		 m_isStandardInformationEnabled (false )
+{}
 
 CWUConfiguration::~CWUConfiguration()
 {}
