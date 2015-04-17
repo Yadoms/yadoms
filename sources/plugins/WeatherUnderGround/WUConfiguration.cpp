@@ -2,8 +2,12 @@
 #include "WUConfiguration.h"
 #include <shared/StringExtension.h>
 #include <shared/Log.h>
+#include "WeatherUndergroundHelpers.h"
+#include"NoStateException.hpp"
 
-CWUConfiguration::CWUConfiguration()
+CWUConfiguration::CWUConfiguration() :
+         m_CountryOrState (""),
+	     m_Localisation   ("")
 {
    m_isWindEnabled = false;
    m_isStandardInformationEnabled = false;
@@ -18,7 +22,7 @@ void CWUConfiguration::initializeWith(const shared::CDataContainer &data)
 
    try
    {
-	   m_isWindEnabled        = m_data.get<bool>("Information.content.Wind");
+	   m_isWindEnabled                = m_data.get<bool>("Information.content.Wind");
 	   m_isStandardInformationEnabled = m_data.get<bool>("Information.content.Standard");
    }
 	catch (boost::thread_interrupted&)
@@ -32,23 +36,39 @@ std::string CWUConfiguration::getAPIKey() const
    return m_data.get<std::string>("APIKey");
 }
 
-std::string CWUConfiguration::getLocalisation() const
+std::string CWUConfiguration::getLocalisation()
 {
-   return m_data.get<std::string>("Localisation");
-}
-
-std::string CWUConfiguration::getCountryOrState() const
-{
-   std::string country = m_data.get<std::string>("Country");
-
-   if ( country == "US" )
+   try
    {
-      country = getState();
-      //TODO : Faire une vrai Exception
-      if ( country == "NA" ) throw;
+      m_Localisation = m_data.get<std::string>("Localisation");
+   }
+   catch (shared::exception::CException e)
+   {
+	   YADOMS_LOG(warning) << e.what() << std::endl;
    }
 
-   return country;
+   //Delete space between sub-names
+   return trimAll( m_Localisation );
+}
+
+std::string CWUConfiguration::getCountryOrState()
+{
+   try
+   {
+      m_CountryOrState = m_data.get<std::string>("Country");
+
+      if ( m_CountryOrState == "US" )
+      {
+         m_CountryOrState = getState();
+         if ( m_CountryOrState == "NA" ) 
+		     throw CNoStateException ("No State configured for United States of America");
+      }
+   }
+   catch (shared::exception::CException e)
+   {
+	   YADOMS_LOG(warning) << e.what() << std::endl;
+   }
+   return m_CountryOrState;
 }
 
 std::string CWUConfiguration::getState() const

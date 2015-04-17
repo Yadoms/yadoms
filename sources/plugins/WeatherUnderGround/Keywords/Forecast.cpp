@@ -40,12 +40,12 @@ void CForecast::AddPeriod(const shared::CDataContainer & ValueContainer,
                           const std::string& filterYear,
                           const std::string& filterMonth,
                           const std::string& filterDay,
-	                       const std::string& filterWeatherCondition,
-	                       const std::string& filterTempMax, 
-					           const std::string& filterTempMin,
-					           const std::string& filterMaxWind,
-					           const std::string& filterAveWind,
-					           const std::string& filterAveHumidity,
+                          const std::string& filterWeatherCondition,
+                          const std::string& filterTempMax, 
+                          const std::string& filterTempMin,
+                          const std::string& filterMaxWind,
+                          const std::string& filterAveWind,
+                          const std::string& filterAveHumidity,
                           const std::string& RainDay
 					           )
 {
@@ -53,16 +53,14 @@ void CForecast::AddPeriod(const shared::CDataContainer & ValueContainer,
                      ValueContainer.get<std::string>( filterYear ),
                      ValueContainer.get<std::string>( filterMonth ),
                      ValueContainer.get<std::string>( filterDay ),
-		               ValueContainer.get<std::string>( filterWeatherCondition ),
-						   ValueContainer.get<std::string>( filterTempMax ),
-						   ValueContainer.get<std::string>( filterTempMin ),
-						   boost::lexical_cast<std::string>(ValueContainer.get<double>( filterMaxWind ) / 3.6), // Transform from Km/h -> m/s
-						   boost::lexical_cast<std::string>(ValueContainer.get<double>( filterAveWind ) / 3.6), // Transform from Km/h -> m/s
-						   ValueContainer.get<std::string>( filterAveHumidity ),
+                     ValueContainer.get<std::string>( filterWeatherCondition ),
+                     ValueContainer.get<std::string>( filterTempMax ),
+                     ValueContainer.get<std::string>( filterTempMin ),
+                     boost::lexical_cast<std::string>(ValueContainer.get<double>( filterMaxWind ) / 3.6), // Transform from Km/h -> m/s
+                     boost::lexical_cast<std::string>(ValueContainer.get<double>( filterAveWind ) / 3.6), // Transform from Km/h -> m/s
+                     ValueContainer.get<std::string>( filterAveHumidity ),
                      ValueContainer.get<std::string>( RainDay )
 		                 );
-
-	YADOMS_LOG(debug) << "Forecast Update !";
 }
 
 void CForecast::ClearAllPeriods( void )

@@ -4,7 +4,7 @@
 #include <shared/exception/Exception.hpp>
 
 CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> context, 
-                               const IWUConfiguration& WUConfiguration, 
+                               IWUConfiguration& WUConfiguration, 
                                std::string PluginName, 
                                const std::string Prefix
                                ):
@@ -15,13 +15,8 @@ CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> context,
            //TODO : Ecrire autrement le EPeriod::kDay
            m_Forecast                  ( PluginName, Prefix, EPeriod::kDay)
 {
-   //Delete space between sub-names
-   std::string temp_localisation = m_Localisation;
-//TODO: Linux std::remove_if n'existe pas
-   //temp_localisation.erase(std::remove_if(temp_localisation.begin(), temp_localisation.end(), std::isspace), temp_localisation.end());
-
 	m_URL.str("");
-	m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/" << m_Prefix << "/q/" << m_CountryOrState << "/" << temp_localisation << ".json";
+	m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/" << m_Prefix << "/q/" << m_CountryOrState << "/" << m_Localisation << ".json";
 
 	//Initialization
    try
@@ -54,7 +49,7 @@ CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> context,
    }
 }
 
-void CForecastDays::OnUpdate( const IWUConfiguration& WUConfiguration )
+void CForecastDays::OnUpdate( IWUConfiguration& WUConfiguration )
 {
    //read the localisation
    m_Localisation = WUConfiguration.getLocalisation();
@@ -62,15 +57,9 @@ void CForecastDays::OnUpdate( const IWUConfiguration& WUConfiguration )
    //read the country or State code
    m_CountryOrState = WUConfiguration.getCountryOrState();
 
-   //Delete space between sub-names
-   std::string temp_localisation = m_Localisation;
-//TODO: Linux std::remove_if n'existe pas
-   //temp_localisation.erase(std::remove_if(temp_localisation.begin(), temp_localisation.end(), std::isspace), temp_localisation.end());
-
-
 	m_URL.str("");
 
-	m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/" << m_Prefix << "/q/" << m_CountryOrState << "/" << temp_localisation << ".json";
+	m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/" << m_Prefix << "/q/" << m_CountryOrState << "/" << m_Localisation << ".json";
 }
 
 void CForecastDays::Request( boost::shared_ptr<yApi::IYPluginApi> context )
@@ -81,7 +70,7 @@ void CForecastDays::Request( boost::shared_ptr<yApi::IYPluginApi> context )
 	}
 	catch (shared::exception::CException e)
 	{
-		YADOMS_LOG(warning) << e.what() << std::endl;
+		YADOMS_LOG(warning) << "Forecast 10 days :"  << e.what() << std::endl;
 	}
 }
 
@@ -101,13 +90,13 @@ void CForecastDays::Parse( boost::shared_ptr<yApi::IYPluginApi> context, const I
 
 			if (WUConfiguration.IsForecast10DaysEnabled())
 			{
-				std::vector< shared::CDataContainer > result = m_data.get< std::vector<shared::CDataContainer> >("forecast.simpleforecast.forecastday");
-            std::vector< shared::CDataContainer >::iterator i;
+               std::vector< shared::CDataContainer > result = m_data.get< std::vector<shared::CDataContainer> >("forecast.simpleforecast.forecastday");
+               std::vector< shared::CDataContainer >::iterator i;
 
-            m_Forecast.ClearAllPeriods();
+               m_Forecast.ClearAllPeriods();
 
-				for(i=result.begin(); i!=result.end(); ++i)
-            {
+               for(i=result.begin(); i!=result.end(); ++i)
+               {
 					m_Forecast.AddPeriod(*i,
                                     "date.year",
                                     "date.month",
@@ -120,10 +109,12 @@ void CForecastDays::Parse( boost::shared_ptr<yApi::IYPluginApi> context, const I
                                     "avehumidity",
                                     "qpf_allday.mm"
                                     );
-				}
-            KeywordList.push_back (m_Forecast.GetHistorizable());
+               }
+               KeywordList.push_back (m_Forecast.GetHistorizable());
 			}
 			context->historizeData(m_PluginName, KeywordList);
+
+			YADOMS_LOG(debug) << "Forecast Updated !";
 		}
 	}
 	catch (shared::exception::CException e)

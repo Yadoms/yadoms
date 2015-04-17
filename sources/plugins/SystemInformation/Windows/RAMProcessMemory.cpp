@@ -44,7 +44,7 @@ void CRAMProcessMemory::read()
    }
    
    m_keyword->set( pmc.WorkingSetSize / 1000 );
-   YADOMS_LOG(debug) << "WindowsSystemInformation plugin :  RAM Memory Current Process : " << m_keyword->formatValue();
+   YADOMS_LOG(debug) << "RAM Memory Current Process : " << m_keyword->formatValue();
 }
 
 boost::shared_ptr<yApi::historization::IHistorizable> CRAMProcessMemory::GetHistorizable() const

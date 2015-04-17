@@ -93,7 +93,7 @@ void CYadomsCPULoad::read()
       m_lastSysCPU = sys;
 
       m_keyword->set((float)(percent * 100));
-      YADOMS_LOG(debug) << "WindowsSystemInformation plugin :  Yadoms CPU Load : " << m_keyword->formatValue();
+      YADOMS_LOG(debug) << "Yadoms CPU Load : " << m_keyword->formatValue();
    }
    else
    {

@@ -28,14 +28,14 @@ public:
    /// \brief	    Get the Localisation from the configuration
    /// \return     The Localisation String
    //--------------------------------------------------------------
-   virtual std::string getLocalisation() const = 0;
+   virtual std::string getLocalisation() = 0;
 
    //--------------------------------------------------------------
    /// \brief	    Get the Country from the configuration
    /// \return     The Country String
    //--------------------------------------------------------------
 
-   virtual std::string getCountryOrState() const = 0;
+   virtual std::string getCountryOrState() = 0;
 
    //--------------------------------------------------------------
    /// \brief	    Get the State from the configuration

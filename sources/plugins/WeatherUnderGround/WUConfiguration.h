@@ -23,8 +23,8 @@ public:
    // IWUConfiguration implementation
    virtual void initializeWith(const shared::CDataContainer &data);
    virtual std::string getAPIKey() const;
-   virtual std::string getLocalisation() const;
-   virtual std::string getCountryOrState() const;
+   virtual std::string getLocalisation();
+   virtual std::string getCountryOrState();
    virtual std::string getState() const;
    virtual bool IsWindEnabled (void) const;
    virtual bool IsStandardInformationEnabled (void ) const;
@@ -37,6 +37,16 @@ private:
    /// \brief	    Configuration raw data
    //--------------------------------------------------------------
    shared::CDataContainer m_data;
+
+   //--------------------------------------------------------------
+   /// \brief	    The localisation entrered in the configuration of the module
+   //--------------------------------------------------------------
+   std::string m_Localisation;
+
+   //--------------------------------------------------------------
+   /// \brief	    The country or the american state code
+   //--------------------------------------------------------------
+   std::string m_CountryOrState;
 
    //--------------------------------------------------------------
    /// \brief	    State of each option
