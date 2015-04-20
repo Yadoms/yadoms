@@ -43,12 +43,6 @@
    }
 
    function addAutomationRuleToDom(rule) {
-      var actionsBtns = "<div class=\"btn-group\">\n" +
-              "<button type=\"button\" class=\"btn btn-enableDisable\" data-i18n=\"[title]modals.dashboard.sub-windows.automation-center.enableDisable\"><span class=\"glyphicon glyphicon-off\"></span></button>\n" +
-              "<button type=\"button\" class=\"btn btn-primary btn-edit\" data-i18n=\"[title]modals.dashboard.sub-windows.automation-center.edit\"><span class=\"glyphicon glyphicon-pencil\"></span></button>\n" +
-              "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.automation-center.delete\"><span class=\"glyphicon glyphicon-trash\"></span></button>\n" +
-              "</div>";
-
       //we add it to the DOM
       var $ruleList = $("table#automation-rule-list");
 
@@ -56,14 +50,18 @@
                            "<td class=\"automation-rule-enabled\">" +
                               "<span class=\"label label-success label-status\"></span>" +
                            "</td>" +
-                           "<td class=\"automation-rule-name\"></td>" +
-                           "<td class=\"automation-rule-description\"></td>" +
-                           "<td class=\"automation-rule-actions\"></td></tr>");
+                           "<td class=\"automation-rule-name\"></td>\n" +
+                           "<td class=\"automation-rule-description\"></td>\n" +
+                           "<td class=\"automation-rule-actions\">\n" +
+                              "<div class=\"btn-group\">\n" +
+                              "<button type=\"button\" class=\"btn btn-enableDisable\" data-i18n=\"[title]modals.dashboard.sub-windows.automation-center.enableDisable\"><span class=\"glyphicon glyphicon-off\"></span></button>\n" +
+                              "<button type=\"button\" class=\"btn btn-primary btn-edit\" data-i18n=\"[title]modals.dashboard.sub-windows.automation-center.edit\"><span class=\"glyphicon glyphicon-pencil\"></span></button>\n" +
+                              "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.automation-center.delete\"><span class=\"glyphicon glyphicon-trash\"></span></button>\n" +
+                              "</div>\n" +
+                           "</td>\n" +
+                        "</tr>\n");
 
       var $ruleRow = getAutomationRuleDomRow(rule);
-
-      //we add actions to the plugin
-      $ruleRow.find("td.automation-rule-actions").append(actionsBtns);
 
       //we bind event on the different actions
       $ruleRow.find("button.btn-enableDisable").unbind('click').bind('click', enableDisableAutomationRule(rule));
@@ -75,7 +73,6 @@
 
    function updateDOMAutomationRule(rule) {
       assert(!isNullOrUndefined(rule), "rule must be defined");
-
       var $ruleRow = getAutomationRuleDomRow(rule);
 
       //we fill the data

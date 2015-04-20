@@ -497,7 +497,8 @@
       "updated" : "The $t(system.__who__) has been updated",
       "yadomsCrash" : "yadoms has crashed",
       "pluginCrash" : "__who__ has been crashed",
-      "taskFailed" : "The $t(system.__who__) task has been crashed"
+      "taskFailed" : "The $t(system.__who__) task has been crashed",
+      "ruleFailed" : "The automation rule __who__ has failed : __what__"
    },
    "system" : {
       "yadoms" : "yadoms",

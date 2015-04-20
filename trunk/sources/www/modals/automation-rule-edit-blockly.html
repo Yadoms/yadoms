@@ -53,7 +53,7 @@
 
 
       //validation form (only on configuration part, blockly is validated after this one)
-      $modalConfiguration.find("input,select,textarea").jqBootstrapValidation({
+      $modalConfiguration.find("input,select,textarea").jqBootstrapValidation("destroy").jqBootstrapValidation({
          preventSubmit: true,
          submitError: function($form, event, errors) {
             console.warn("Unable to validate form: " + errors);
@@ -78,8 +78,6 @@
                      console.log("------------------> END");
                   });
 
-                  $modalConfiguration.find("input,select,textarea").jqBootstrapValidation("destroy");
-                  $modalConfiguration.empty();
                   $modalBody.empty();
 
                   $('div#edit-automation-rule-modal-blockly').modal("hide");

@@ -60,7 +60,7 @@
       if ($.isFunction(nameParameter.applyScript))
          nameParameter.applyScript();
 
-      var descriptionParameter = new StringParameterHandler(i18nContext, "description-rule", rule.description);
+      var descriptionParameter = new StringParameterHandler(i18nContext, "description-rule", {}, rule.description);
       $modalConfiguration.append(descriptionParameter.getDOMObject());
       //we finish descriptionParameter instantiation
       if ($.isFunction(descriptionParameter.applyScript))
@@ -72,8 +72,13 @@
       //we set the rule to edit to the editor
       rule.editor.setRule(rule);
 
+      $("div#edit-automation-rule-modal").on("shown.bs.modal", function () {
+debugger;
+         rule.editor.onModalShown($modalConfiguration);
+      });
+
       //validation form
-      $modalBody.find("input,select,textarea").jqBootstrapValidation({
+      $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy").jqBootstrapValidation({
          preventSubmit: true,
          submitError: function($form, event, errors) {
             console.warn("Unable to validate form: " + errors);
@@ -86,7 +91,6 @@
 
             console.debug("End of Automation rule edition : " + JSON.stringify(rule));
 
-            $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy");
             //we hide the current window and the wizard if opened previously
             $("div#edit-automation-rule-modal").modal("hide");
 

@@ -418,7 +418,7 @@ CCurtain::ECommand::ECommand()
 //
 /// \brief Macro used to get the enum name string FALSE BRANCH
 //
-#define DECLARE_NAME_OR_STRINGIZE_FALSE_BRANCH(_seq)  boost::algorithm::to_lower_copy( std::string(BOOST_PP_STRINGIZE( ENUM_EXTRACT_NAME_RAW(_seq))) )
+#define DECLARE_NAME_OR_STRINGIZE_FALSE_BRANCH(_seq)  std::string(BOOST_PP_STRINGIZE( ENUM_EXTRACT_NAME_RAW(_seq)))
 
 //
 /// \brief Macro used to get the enum name string (either specified, or generated automatically)
