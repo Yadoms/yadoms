@@ -93,7 +93,7 @@ AutomationEditorCode.prototype.applyScript = function() {
    });
 
    //we manage the insert keyword Id button
-   $insertKeywordId = $("div#" + this.getUuid() + " div.btn-insert-keyword");
+   var $insertKeywordId = $("div#" + this.getUuid() + " div.btn-insert-keyword");
 
    //we get all plugins
    PluginInstanceManager.getAll(function (list) {
@@ -170,8 +170,17 @@ AutomationEditorCode.prototype.setRule = function(rule) {
    if (rule.id != -1) {
       AutomationRuleManager.getCode(self.rule, function () {
          self.editor.setValue(rule.code);
+         self.editor.gotoLine(0, 0, false);
       }, true);
    }
+};
+
+/**
+ * Permit to fire an event when the modal is shown
+ * @param rule
+ */
+AutomationEditorCode.prototype.onModalShown = function($modal) {
+   //nothing to do
 };
 
 /**

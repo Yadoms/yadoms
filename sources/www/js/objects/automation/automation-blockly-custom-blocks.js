@@ -735,15 +735,18 @@ Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function(thisBlock, can
 
 /**
  * Get the blockly result (xml, python)
+ * @param language Output langugae (python, dart, js, ...)
  * @param callback A callback to receive results (xml, python)
  * @constructor
  */
-Blockly.Yadoms.GetResult = function(callback) {
+Blockly.Yadoms.GetResult = function(language, callback) {
     assert(!isNullOrUndefined(callback), "callback must be defined");
 
     //get xml code
     var xmlDomString = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
     var xmlString = Blockly.Xml.domToText(xmlDomString);
+
+    //TODO : manage languages
 
     //get python code
     var pythonCode = Blockly.Python.workspaceToCode();

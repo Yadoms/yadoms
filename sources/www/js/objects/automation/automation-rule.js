@@ -67,4 +67,7 @@ AutomationRule.prototype.downloadEditor = function (callback) {
          callback();
       });
    }
+   else {
+      callback();
+   }
 };

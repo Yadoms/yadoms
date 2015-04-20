@@ -58,6 +58,14 @@ IAutomationRuleEditor.prototype.setRule = function(rule) {
 };
 
 /**
+ * Permit to fire an event when the modal is shown
+ * @param rule
+ */
+IAutomationRuleEditor.prototype.onModalShown = function($modal) {
+   assert(false, "onModalShown() of IAutomationRuleEditor must be implemented in derived class");
+};
+
+/**
  * Permit to update the current rule with editor content
  */
 IAutomationRuleEditor.prototype.updateRule = function() {

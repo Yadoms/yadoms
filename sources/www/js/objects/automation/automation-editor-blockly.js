@@ -53,7 +53,6 @@ AutomationEditorBlockly.prototype.getDOMStructure = function() {
  * Permit to execute javascript action after inserting DOM structure in the page
  */
 AutomationEditorBlockly.prototype.applyScript = function() {
-   //TODO
 };
 
 /**
@@ -63,24 +62,67 @@ AutomationEditorBlockly.prototype.applyScript = function() {
 AutomationEditorBlockly.prototype.setRule = function(rule) {
    //we add the .code and go to the end of code
    this.rule = rule;
-   //TODO
+};
+
+/**
+ * Permit to fire an event when the modal is shown
+ * @param rule
+ */
+AutomationEditorBlockly.prototype.onModalShown = function($modal) {
+   var self = this;
+   debugger;
+   var $mainDiv = $("div#" + this.getUuid());
+
+   //fix input field
+   $(document).off('focusin.modal');
+   debugger;
+   //load content
+   //TODO : check if rule exist
+   var content = decodeURIComponent(self.rule.content);
+
+   //to make the blockly works twice, we remove completely the dom element on re-create it
+   /*var $mainDiv = $("div#" + this.getUuid());
+    if(!isNullOrUndefined($mainDiv))
+    $mainDiv.remove();
+*/
+   $mainDiv.empty().removeClass();
+   $mainDiv.append("<div class=\"blockly-container\"></div>");
+
+   //load blockly
+   Blockly.Yadoms.Initialize($mainDiv.find("div.blockly-container")[0], content, 1);
 };
 
 /**
  * Permit to update the current rule with editor content
  */
 AutomationEditorBlockly.prototype.updateRule = function() {
-   //TODO
-   rule.content = "";
-   rule.code = "";
+   var self = this;
+   self.rule.content = "";
+   self.rule.code = "";
+
+   Blockly.Yadoms.GetResult(self.rule.interpreter.toLowerCase(), function(xmlString,code){
+      self.rule.content = encodeURIComponent(xmlString);
+      self.rule.code = encodeURIComponent(code);
+
+      console.log("------------------> START");
+      console.log(code);
+      console.log("------------------> END");
+   });
+
 };
 
 /**
  * Permit to the object to run a custom validator engine
  */
 AutomationEditorBlockly.prototype.validate = function() {
-   //TODO
-   return true;
+   var result = false;
+   Blockly.Validation.validateMainWorkspace(function(isValid, msg) {
+      if(!isValid) {
+         console.warn("Fail to validate blockly : " + msg);
+      }
+      result = isValid;
+   });
+   return result;
 };
 
 /**
@@ -95,7 +137,7 @@ AutomationEditorBlockly.prototype.setInterpreter = function(newInterpreter) {
    });
 
    if (found) {
-      this.activeSupportedInterpreters = newInterpreter;
+      this.rule.interpreter = newInterpreter;
    }
 };
 
