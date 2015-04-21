@@ -19,8 +19,8 @@
 namespace web { namespace poco {
 
 
-   CWebServer::CWebServer(const std::string & address, const std::string & port, const std::string & doc_root, const std::string & restKeywordBase, const std::string & webSocketKeywordBase, boost::shared_ptr<notification::INotificationCenter> notificationCenter)
-      :m_httpRequestHandlerFactory(new CHttpRequestHandlerFactory(notificationCenter))
+   CWebServer::CWebServer(const std::string & address, const std::string & port, const std::string & doc_root, const std::string & restKeywordBase, const std::string & webSocketKeywordBase)
+      :m_httpRequestHandlerFactory(new CHttpRequestHandlerFactory())
    {
       //configure the factory
       m_httpRequestHandlerFactory->websiteHandlerConfigure(doc_root);

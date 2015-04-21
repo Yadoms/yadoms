@@ -28,7 +28,7 @@
 #include "communication/PluginGateway.h"
 #include "RunningInformation.h"
 #include "dataAccessLayer/DataAccessLayer.h"
-#include "notification/notificationCenter.h"
+#include "notification/NotificationCenter.h"
 #include "automation/RuleManager.h"
 #include <shared/ServiceLocator.h>
 #include <Poco/Util/ServerApplication.h>
@@ -57,8 +57,8 @@ void CSupervisor::run()
       const std::string pluginsPath = "plugins";
 
       //create the notification center
-      boost::shared_ptr<notification::INotificationCenter> notificationCenter(new notification::CNotificationCenter);   
-      shared::CServiceLocator::instance().push<notification::INotificationCenter>(notificationCenter);
+      boost::shared_ptr<notification::CNotificationCenter> notificationCenter(new notification::CNotificationCenter);   
+      shared::CServiceLocator::instance().push<notification::CNotificationCenter>(notificationCenter);
 
       //retreive startup options
       boost::shared_ptr<startupOptions::IStartupOptions> startupOptions = shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>();
@@ -71,7 +71,7 @@ void CSupervisor::run()
       }
 
       //create the data access layer
-      boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dal(new dataAccessLayer::CDataAccessLayer(pDataProvider, notificationCenter));
+      boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dal(new dataAccessLayer::CDataAccessLayer(pDataProvider));
 
       // Start Task manager
       boost::shared_ptr<task::CScheduler> taskManager(new task::CScheduler(m_EventHandler, kSystemEvent));
@@ -88,7 +88,7 @@ void CSupervisor::run()
 
       // Start automation rules manager
       boost::shared_ptr<automation::IRuleManager> automationRulesManager(new automation::CRuleManager(
-         pDataProvider->getRuleRequester(), pluginGateway, notificationCenter, pDataProvider->getAcquisitionRequester(), dal->getConfigurationManager(),
+         pDataProvider->getRuleRequester(), pluginGateway, pDataProvider->getAcquisitionRequester(), dal->getConfigurationManager(),
          pDataProvider->getEventLoggerRequester(), m_EventHandler, kRuleManagerEvent));
 
       // Start Web server
@@ -96,9 +96,9 @@ void CSupervisor::run()
       const std::string webServerPort = boost::lexical_cast<std::string>(startupOptions->getWebServerPortNumber());
       const std::string & webServerPath = startupOptions->getWebServerInitialPath();
 
-      web::poco::CWebServer webServer(webServerIp, webServerPort, webServerPath, "/rest/", "/ws", notificationCenter);
+      web::poco::CWebServer webServer(webServerIp, webServerPort, webServerPath, "/rest/", "/ws");
       webServer.getConfigurator()->websiteHandlerAddAlias("plugins", pluginsPath);
-      webServer.getConfigurator()->configureAuthentication(boost::shared_ptr<authentication::IAuthentication>(new authentication::CBasicAuthentication(dal->getConfigurationManager(), notificationCenter->configurationUpdateNotifier(), startupOptions->getNoPasswordFlag())));
+      webServer.getConfigurator()->configureAuthentication(boost::shared_ptr<authentication::IAuthentication>(new authentication::CBasicAuthentication(dal->getConfigurationManager(), startupOptions->getNoPasswordFlag())));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPlugin(pDataProvider, pluginManager, *pluginGateway)));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CDevice(pDataProvider, *pluginGateway)));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPage(pDataProvider)));

@@ -3,16 +3,15 @@
 #include <Poco/Net/HTTPRequestHandler.h>
 #include <Poco/Net/HTTPServerRequest.h>
 #include <Poco/Net/HTTPServerResponse.h>
-#include "../../notification/INotificationCenter.h"
 #include "WebSocketClient.h"
-#include "../web/ws/FrameBase.h"
+#include "web/ws/FrameBase.h"
 
 namespace web { namespace poco {
 
    class CWebSocketRequestHandler : public Poco::Net::HTTPRequestHandler
    {
    public:
-      CWebSocketRequestHandler(boost::shared_ptr<notification::INotificationCenter> notificationCenter);
+      CWebSocketRequestHandler();
       virtual ~CWebSocketRequestHandler();
 
       void handleRequest(Poco::Net::HTTPServerRequest& request, Poco::Net::HTTPServerResponse& response);
@@ -24,12 +23,6 @@ namespace web { namespace poco {
       /// \return true is sending OK, false if connection lost
       //--------------------------------------------------------------
       bool send(CWebSocketClient& client, const ws::CFrameBase& toSend) const;
-
-   private:
-      //--------------------------------------------------------------
-      /// \brief           The notification center
-      //--------------------------------------------------------------
-      boost::shared_ptr<notification::INotificationCenter> m_notificationCenter;
    };
 
 

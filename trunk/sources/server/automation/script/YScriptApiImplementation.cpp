@@ -1,8 +1,12 @@
 #include "stdafx.h"
 #include "YScriptApiImplementation.h"
 #include "../pluginSystem/DeviceCommand.h"
-#include "../../notification/acquisition/observer.h"
-#include "../../notification/observerSubscriber.hpp"
+
+#include "notification/action/SelfEventAction.hpp"
+#include "notification/acquisition/Observer.hpp"
+#include "notification/NotificationCenter.h"
+#include <shared/ServiceLocator.h>
+
 #include <shared/plugin/yPluginApi/historization/MessageFormatter.h>
 #include <shared/Log.h>
 #include <shared/exception/EmptyResult.hpp>
@@ -14,12 +18,10 @@ CYScriptApiImplementation::CYScriptApiImplementation(
    boost::shared_ptr<ILogger> ruleLogger,
    boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
    boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
-   boost::shared_ptr<notification::acquisition::INotifier> acquisitionNotifier,
    boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
    boost::shared_ptr<IGeneralInfo> generalInfo)
    :m_ruleLogger(ruleLogger),
    m_pluginGateway(pluginGateway),
-   m_acquisitionNotifier(acquisitionNotifier),
    m_dbAcquisitionRequester(dbAcquisitionRequester),
    m_generalInfo(generalInfo)
 {
@@ -51,20 +53,39 @@ std::string CYScriptApiImplementation::waitForEvent(int keywordId, const std::st
 {
    try
    {
-      boost::shared_ptr<notification::acquisition::CObserver> observer(new notification::acquisition::CObserver(keywordId));
-      notification::CObserverSubscriber<notification::acquisition::INotifier, notification::acquisition::IObserver> subscriber(m_acquisitionNotifier, observer);
 
-      boost::shared_ptr<const database::entities::CAcquisition> newAcquisition = observer->wait(timeout.empty() ? boost::date_time::pos_infin : boost::posix_time::duration_from_string(timeout));
-      if (!newAcquisition)
-         return std::string();
+      boost::shared_ptr<notification::CNotificationCenter> nc = shared::CServiceLocator::instance().get<notification::CNotificationCenter>();
+      if (nc)
+      {
+         //create the action (= what to do when notification is observed)
+         boost::shared_ptr< notification::action::CSelfEventAction<notification::acquisition::CNotification> > selfAction(new notification::action::CSelfEventAction<notification::acquisition::CNotification>());
+         
+         //create the acquisition observer
+         boost::shared_ptr<notification::acquisition::CObserver > observer(new notification::acquisition::CObserver(selfAction));
 
-      return newAcquisition->Value;
+         //configure the keyword id filter
+         observer->addKeywordIdFilter(keywordId);
+
+         //regsiter the observer
+         nc->subscribeObserver(observer);
+
+         //wait for acquisition notification
+         boost::shared_ptr<notification::acquisition::CNotification> newAcquisition = selfAction->wait(timeout.empty() ? boost::date_time::pos_infin : boost::posix_time::duration_from_string(timeout));
+
+         //unsubscribe the observer
+         nc->unsubscribeObserver(observer);
+
+         if (!newAcquisition)
+            return std::string();
+
+         return newAcquisition->getAcquisition()->Value;
+      }
    }
    catch(...) // Must catch all exceptions to not crash script interpreter
    {
       YADOMS_LOG(error) << "waitForEvent, unknown exception, please report to Yadoms team";
-      return std::string();      
    }
+   return std::string();
 }
 
 std::pair<int, std::string> CYScriptApiImplementation::waitForEvents(std::vector<int> keywordIdList, const std::string& timeout) const

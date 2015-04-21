@@ -1,11 +1,12 @@
 #include "stdafx.h"
 #include "ConfigurationManager.h"
 #include <shared/Log.h>
+#include "notification/Helpers.hpp"
 
 namespace dataAccessLayer {
 
-      CConfigurationManager::CConfigurationManager(boost::shared_ptr<database::IConfigurationRequester> configurationRequester, boost::shared_ptr<notification::configurationUpdate::INotifier> notifier)
-         :m_configurationRequester(configurationRequester), m_notifier(notifier)
+      CConfigurationManager::CConfigurationManager(boost::shared_ptr<database::IConfigurationRequester> configurationRequester)
+         :m_configurationRequester(configurationRequester)
       {
       }
    
@@ -21,7 +22,8 @@ namespace dataAccessLayer {
             boost::shared_ptr<database::entities::CConfiguration> notificationData(new database::entities::CConfiguration);
             notificationData->Section = section;
             notificationData->Name = name;
-            m_notifier->post(notificationData);
+
+            notification::CHelpers::postChangeNotification(notificationData, notification::change::EChangeType::kUpdate);
          }
          catch (shared::exception::CException & ex)
          {

@@ -1,7 +1,6 @@
 #pragma once
 #include "IDataAccessLayer.h"
 #include "database/IDataProvider.h"
-#include "../notification/INotificationCenter.h"
 
 namespace dataAccessLayer {
 
@@ -11,9 +10,8 @@ namespace dataAccessLayer {
       //--------------------------------------------------------------
       /// \brief        Constructor
       /// \param[in]    pDataProvider  The data provider (internal data access)
-      /// \param[in]    notificationCenter The notification center
       //--------------------------------------------------------------
-      CDataAccessLayer(boost::shared_ptr<database::IDataProvider> pDataProvider, boost::shared_ptr<notification::INotificationCenter> notificationCenter);
+      CDataAccessLayer(boost::shared_ptr<database::IDataProvider> pDataProvider);
       
       //--------------------------------------------------------------
       /// \brief       Destructor

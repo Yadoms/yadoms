@@ -3,11 +3,13 @@
 #include "AcquisitionHistorizer.h"
 #include "database/ITransactionalProvider.h"
 
+#include "notification/acquisition/Notification.hpp"
+#include "notification/Helpers.hpp"
+
 namespace dataAccessLayer {
 
-	CAcquisitionHistorizer::CAcquisitionHistorizer(boost::shared_ptr<database::IDataProvider> dataProvider,
-		boost::shared_ptr<notification::acquisition::INotifier> notifier)
-		:m_dataProvider(dataProvider), m_notifier(notifier)
+	CAcquisitionHistorizer::CAcquisitionHistorizer(boost::shared_ptr<database::IDataProvider> dataProvider)
+		:m_dataProvider(dataProvider)
 	{
 	}
 
@@ -76,7 +78,7 @@ namespace dataAccessLayer {
 
 	void CAcquisitionHistorizer::saveData(const int keywordId, const shared::plugin::yPluginApi::historization::IHistorizable & data, boost::posix_time::ptime & dataTime)
 	{
-		boost::shared_ptr<const database::entities::CAcquisition> acq;
+		boost::shared_ptr<database::entities::CAcquisition> acq;
 
 		//save data
 		if (data.getMeasureType() == shared::plugin::yPluginApi::historization::EMeasureType::kIncrement)
@@ -86,8 +88,10 @@ namespace dataAccessLayer {
 
 		database::IAcquisitionRequester::LastSummaryData summaryData = m_dataProvider->getAcquisitionRequester()->saveSummaryData(keywordId, dataTime);
 
-		//post notification
-      m_notifier->post(acq, summaryData.get<0>(), summaryData.get<1>());
+
+      //post notification
+      boost::shared_ptr<notification::acquisition::CNotification> notificationData(new notification::acquisition::CNotification(acq, summaryData.get<0>(), summaryData.get<1>()));
+      notification::CHelpers::postNotification(notificationData);
 	}
 
 

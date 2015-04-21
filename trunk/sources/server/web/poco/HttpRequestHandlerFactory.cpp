@@ -23,8 +23,7 @@
 namespace web { namespace poco {
 
 
-   CHttpRequestHandlerFactory::CHttpRequestHandlerFactory(boost::shared_ptr<notification::INotificationCenter> notificationCenter)
-      :m_notificationCenter(notificationCenter)
+   CHttpRequestHandlerFactory::CHttpRequestHandlerFactory()
    {
    }
 
@@ -67,7 +66,7 @@ namespace web { namespace poco {
    {
       if (boost::istarts_with(request.getURI(), m_webSocketKeyword))
       {
-         CWebSocketRequestHandler * realRequesHandler = new CWebSocketRequestHandler(m_notificationCenter);
+         CWebSocketRequestHandler * realRequesHandler = new CWebSocketRequestHandler();
          if (m_authenticator)
             return new CAuthenticationRequestHandler(m_authenticator, boost::shared_ptr<Poco::Net::HTTPRequestHandler>(realRequesHandler), false);
          return realRequesHandler;

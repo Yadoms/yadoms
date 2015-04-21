@@ -1,9 +1,9 @@
 #pragma once
 #include "IAuthentication.h"
 #include "dataAccessLayer/IConfigurationManager.h"
-#include "../notification/configurationUpdate/INotifier.h"
+#include "notification/IObserver.h"
 #include "database/entities/Entities.h"
-#include "Poco/Activity.h"
+
 
 namespace authentication {
 
@@ -19,7 +19,7 @@ namespace authentication {
       ///\param [in]    notifier                Notifier for configuration updates
       ///\param [in]    m_skipPasswordCheck     If true the password will never be checked
       //-------------------------------------
-      CBasicAuthentication(boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager, boost::shared_ptr<notification::configurationUpdate::INotifier> notifier, bool skipPasswordCheck);
+      CBasicAuthentication(boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager, bool skipPasswordCheck);
       
       //-------------------------------------
       ///\brief Destructor
@@ -34,9 +34,9 @@ namespace authentication {
       
    private:
       //--------------------------------------------------------------
-      /// \brief  Function which wait for configration updates
+      /// \brief  Function called when the configuration has been updated
       //--------------------------------------------------------------
-      void monitorConfigurationUpdate();
+      void onConfigurationUpdated(boost::shared_ptr<database::entities::CConfiguration> newConfiguration);
 
       //--------------------------------------------------------------
       /// \brief  Function which read authentication settings from database
@@ -49,9 +49,9 @@ namespace authentication {
       boost::shared_ptr<dataAccessLayer::IConfigurationManager> m_configurationManager;
 
       //--------------------------------------------------------------
-      /// \brief           The notifier for configuration updates
+      /// \brief           The notification observer
       //--------------------------------------------------------------
-      boost::shared_ptr<notification::configurationUpdate::INotifier> m_notifier;
+      boost::shared_ptr<notification::IObserver> m_observer;
 
       //--------------------------------------------------------------
       /// \brief           The current configuration active state
@@ -72,11 +72,6 @@ namespace authentication {
       /// \brief	   Mutex protecting the m_currentConfiguration
       //--------------------------------------------------------------
       mutable boost::mutex m_configurationMutex;
-
-      //--------------------------------------------------------------
-      /// \brief	   Thread which check for configuration updates
-      //--------------------------------------------------------------
-      Poco::Activity<CBasicAuthentication> m_monitorConfigurationUpdates;
 
       //--------------------------------------------------------------
       /// \brief	   Indicate if password check is skipped for current yadoms instance

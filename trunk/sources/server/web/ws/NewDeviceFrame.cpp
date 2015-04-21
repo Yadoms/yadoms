@@ -6,7 +6,7 @@ namespace web { namespace ws {
    const std::string CNewDeviceFrame::m_device = "device";
    
       
-   CNewDeviceFrame::CNewDeviceFrame(const database::entities::CDevice& content)
+   CNewDeviceFrame::CNewDeviceFrame(boost::shared_ptr<const database::entities::CDevice> content)
       :CFrameBase(EFrameType::kDeviceNew)
    {
       shared::CDataContainer local;
