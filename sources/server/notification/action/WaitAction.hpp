@@ -10,13 +10,13 @@ namespace notification { namespace action {
    ///\template T The notification content type
    //-----------------------------
    template<class T>
-   class CSelfEventAction : public CEventAction< T >
+   class CWaitAction : public CEventAction< T >
    {
    public:
       //-----------------------------
       ///\brief Constructor
       //-----------------------------
-      CSelfEventAction()
+      CWaitAction()
          :CEventAction< T >(m_eventHandler, shared::event::kUserFirstId)
       {
       }
@@ -24,7 +24,7 @@ namespace notification { namespace action {
       //-----------------------------
       ///\brief Destructor
       //-----------------------------
-      virtual ~CSelfEventAction()
+      virtual ~CWaitAction()
       {
       }
 

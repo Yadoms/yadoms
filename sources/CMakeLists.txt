@@ -326,7 +326,7 @@ set(YADOMS_SRC
 	server/notification/action/IAction.h
 	server/notification/action/EventAction.hpp
 	server/notification/action/FunctionPointerAction.hpp
-	server/notification/action/SelfEventAction.hpp
+	server/notification/action/WaitAction.hpp
    
 	server/notification/basic/Observer.hpp
 	server/notification/basic/Notification.hpp
