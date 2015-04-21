@@ -22,21 +22,21 @@ namespace shared { namespace script { namespace yScriptApi
       virtual std::string readKeyword(int keywordId) const = 0;
 
       //-----------------------------------------------------
-      ///\brief Wait for events on a keyword
+      ///\brief Wait for a new acquisition on a keyword
       ///\param[in] keywordId The keyword ID to watch
       ///\param[in] timeout Timeout of wait. Format is "hh:mm:ss.xxx". No timeout if empty (default).
       ///\return newState The keyword new state (empty if timeout)
       //-----------------------------------------------------
-      virtual std::string waitForEvent(int keywordId, const std::string& timeout = std::string()) const = 0;
+      virtual std::string waitForAcquisition(int keywordId, const std::string& timeout = std::string()) const = 0;
 
       //-----------------------------------------------------
-      ///\brief Wait for events on a keywords list
+      ///\brief Wait for a new acquisition from a keywords list
       ///\param[in] keywordIdList The keyword IDs list to watch
       ///\param[in] timeout Timeout of wait. Format is "hh:mm:ss.xxx". No timeout if empty (default).
       ///\return Pair of <keywordId, keywordNewState> for the received event. Timeout if keywordId == kTimeout.
       //-----------------------------------------------------
       enum { kTimeout = -1 };
-      virtual std::pair<int, std::string> waitForEvents(std::vector<int> keywordIdList, const std::string& timeout = std::string()) const = 0;
+      virtual std::pair<int, std::string> waitForAcquisitions(std::vector<int> keywordIdList, const std::string& timeout = std::string()) const = 0;
 
       //-----------------------------------------------------
       ///\brief Change state of keyword

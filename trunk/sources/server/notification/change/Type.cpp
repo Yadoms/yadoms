@@ -1,5 +1,4 @@
-#pragma once
-
+#include "stdafx.h"
 #include "Type.h"
 
 namespace notification { namespace change {
