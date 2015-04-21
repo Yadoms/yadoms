@@ -345,16 +345,6 @@ namespace notification {
          notificationCenter->subscribeObserver(changeObserver);
          return changeObserver;
       }
-
-      //-----------------------------
-      ///\brief Interal structure used by shared_ptr to disable pointer deletion (specific use case)
-      //-----------------------------
-      struct null_deleter
-      {
-         void operator()(void const *) const
-         {
-         }
-      };
    };
 
 
