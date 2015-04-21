@@ -1,9 +1,8 @@
 #pragma once
 #include <shared/script/yScriptApi/IYScriptApi.h>
-#include "../../database/IAcquisitionRequester.h"
-#include "../../dataAccessLayer/IConfigurationManager.h"
-#include "../../communication/ISendMessageAsync.h"
-#include "../../notification/acquisition/INotifier.h"
+#include "database/IAcquisitionRequester.h"
+#include "dataAccessLayer/IConfigurationManager.h"
+#include "communication/ISendMessageAsync.h"
 #include "IGeneralInfo.h"
 #include "ILogger.h"
 
@@ -27,7 +26,6 @@ namespace automation { namespace script
       CYScriptApiImplementation(boost::shared_ptr<ILogger> ruleLogger,
          boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
          boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
-         boost::shared_ptr<notification::acquisition::INotifier> acquisitionNotifier,
          boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
          boost::shared_ptr<IGeneralInfo> generalInfo);
 
@@ -57,11 +55,6 @@ namespace automation { namespace script
       ///\brief               The plugin access (to send commands to plugins)
       //-----------------------------------------------------
       boost::shared_ptr<communication::ISendMessageAsync> m_pluginGateway;
-
-      //-----------------------------------------------------
-      ///\brief               The acquisition notifier
-      //-----------------------------------------------------
-      boost::shared_ptr<notification::acquisition::INotifier> m_acquisitionNotifier;
 
       //-----------------------------------------------------
       ///\brief               Database acquisition requester

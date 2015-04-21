@@ -4,8 +4,9 @@
 #include <shared/StringExtension.h>
 #include <Poco/URI.h>
 #include <Poco/MD5Engine.h>
-#include "../notification/configurationUpdate/observer.h"
-#include "../notification/observerSubscriber.hpp"
+
+
+#include "notification/Helpers.hpp"
 
 namespace authentication {
 
@@ -15,25 +16,23 @@ namespace authentication {
    const std::string CBasicAuthentication::m_configurationUser("user");
    const std::string CBasicAuthentication::m_configurationPassword("password");
 
-   CBasicAuthentication::CBasicAuthentication(boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager, boost::shared_ptr<notification::configurationUpdate::INotifier> notifier, bool skipPasswordCheck)
-      :m_configurationManager(configurationManager), m_notifier(notifier), m_monitorConfigurationUpdates(this, &CBasicAuthentication::monitorConfigurationUpdate), m_skipPasswordCheck(skipPasswordCheck)
+   CBasicAuthentication::CBasicAuthentication(boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager, bool skipPasswordCheck)
+      :m_configurationManager(configurationManager), m_skipPasswordCheck(skipPasswordCheck)
    {
       if (!m_skipPasswordCheck)
       {
          //read configuration from database
          updateConfiguration();
 
-         //start the configuration updates monitoring
-         m_monitorConfigurationUpdates.start();
+         m_observer = notification::CHelpers::subscribeBasicObserver<database::entities::CConfiguration>(boost::bind(&CBasicAuthentication::onConfigurationUpdated, this, _1));
       }
    }
 
    CBasicAuthentication::~CBasicAuthentication()
    {
-      if (!m_skipPasswordCheck)
+      if (!m_skipPasswordCheck && m_observer)
       {
-         m_monitorConfigurationUpdates.stop(); // request stop
-         m_monitorConfigurationUpdates.wait(); // wait until activity actually stops
+         notification::CHelpers::unsubscribeObserver(m_observer);
       }
    }
 
@@ -64,22 +63,15 @@ namespace authentication {
       return true;
    }
 
-   void CBasicAuthentication::monitorConfigurationUpdate()
+   void CBasicAuthentication::onConfigurationUpdated(boost::shared_ptr<database::entities::CConfiguration> newConfiguration)
    {
-      boost::shared_ptr<notification::configurationUpdate::CObserver> observer(new notification::configurationUpdate::CObserver());
-      notification::CObserverSubscriber<notification::configurationUpdate::INotifier, notification::configurationUpdate::IObserver> subscriber(m_notifier, observer);
-
-      while (!m_monitorConfigurationUpdates.isStopped())
+      if (newConfiguration && boost::iequals(newConfiguration->Section(), m_configurationSection) && boost::iequals(newConfiguration->Name(), m_configurationName))
       {
-         boost::shared_ptr<const database::entities::CConfiguration> newConfiguration = observer->wait(boost::posix_time::milliseconds(300));
-         if (newConfiguration && boost::iequals(newConfiguration->Section(), m_configurationSection) && boost::iequals(newConfiguration->Name(), m_configurationName))
-         {
-            YADOMS_LOG(information) << "Authentication settings have changes, reload them";
-            updateConfiguration();            
-         }
+         YADOMS_LOG(information) << "Authentication settings have changes, reload them";
+         updateConfiguration();
       }
    }
-
+   
    void CBasicAuthentication::updateConfiguration()
    {
       boost::lock_guard<boost::mutex> lock(m_configurationMutex);

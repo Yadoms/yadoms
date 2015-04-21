@@ -143,9 +143,9 @@ const ECurtainCommand  ECurtainCommand ::kStop( ECurtainCommand ::kStopValue );
 const ECurtainCommand  ECurtainCommand ::kOpen( ECurtainCommand ::kOpenValue );
 const ECurtainCommand  ECurtainCommand ::kClose( ECurtainCommand ::kCloseValue );
 
-const std::string ECurtainCommand::StopString = boost::algorithm::to_lower_copy( std::string("Stop") );
-const std::string ECurtainCommand::OpenString = boost::algorithm::to_lower_copy( std::string("Open") );
-const std::string ECurtainCommand::CloseString = boost::algorithm::to_lower_copy( std::string("Close") );
+const std::string ECurtainCommand::StopString = std::string("Stop");
+const std::string ECurtainCommand::OpenString = std::string("Open");
+const std::string ECurtainCommand::CloseString = std::string("Close");
 
 ECurtainCommand::ECurtainCommand() : m_value( kStop )
 {
@@ -294,7 +294,7 @@ return false;
 //////////////////////////////////////////
 //same as above, with container class specifier
 
-const std::string CCurtain::ECommand::StopString = boost::algorithm::to_lower_copy( std::string("Stop") );
+const std::string CCurtain::ECommand::StopString = std::string("Stop");
 
 CCurtain::ECommand::ECommand()
 : m_value( kStop )

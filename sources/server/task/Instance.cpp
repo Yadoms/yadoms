@@ -5,7 +5,7 @@
 #include <shared/Log.h>
 #include "database/entities/Entities.h"
 #include <shared/ServiceLocator.h>
-#include "../notification/INotificationCenter.h"
+#include "notification/Helpers.hpp"
 
 namespace task {
 
@@ -74,9 +74,7 @@ namespace task {
          YADOMS_LOG(information) << m_task->getName() << " report progression none with message " << m_currentMessage;
 
       // Post notification
-      boost::shared_ptr<notification::INotificationCenter> notificationCenter = shared::CServiceLocator::instance().get<notification::INotificationCenter>();
-      if (notificationCenter)
-         notificationCenter->taskProgressionNotifier()->post(shared_from_this());
+      notification::CHelpers::postNotification(shared_from_this());
    }
 
    void CInstance::doWork()

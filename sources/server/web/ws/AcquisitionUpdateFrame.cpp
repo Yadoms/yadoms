@@ -3,22 +3,22 @@
 
 namespace web { namespace ws {
 
-   const std::string CAcquisitionUpdateFrame::m_acquisition = "acquisition";
-   const std::string CAcquisitionUpdateFrame::m_acquisitionDay = "summaryDay";
-   const std::string CAcquisitionUpdateFrame::m_acquisitionHour = "summaryHour";
+   const std::string CAcquisitionUpdateFrame::m_acquisitionString = "acquisition";
+   const std::string CAcquisitionUpdateFrame::m_acquisitionDayString = "summaryDay";
+   const std::string CAcquisitionUpdateFrame::m_acquisitionHourString = "summaryHour";
 
 
-   CAcquisitionUpdateFrame::CAcquisitionUpdateFrame(const database::entities::CAcquisition & acquisition,
+   CAcquisitionUpdateFrame::CAcquisitionUpdateFrame(boost::shared_ptr<const database::entities::CAcquisition> acquisition,
       boost::shared_ptr<const database::entities::CAcquisitionSummary> dailySummary,
       boost::shared_ptr<const database::entities::CAcquisitionSummary> hourlySummary)
       :CFrameBase(EFrameType::kAcquisitionUpdate)
    {
       shared::CDataContainer local;
-      local.set(m_acquisition, acquisition);
+      local.set(m_acquisitionString, acquisition);
       if (!!dailySummary)
-         local.set(m_acquisitionDay, dailySummary);
+         local.set(m_acquisitionDayString, dailySummary);
       if (!!hourlySummary)
-         local.set(m_acquisitionHour, hourlySummary);
+         local.set(m_acquisitionHourString, hourlySummary);
       m_internalContainer.set(m_dataFieldName, local);
    }
    

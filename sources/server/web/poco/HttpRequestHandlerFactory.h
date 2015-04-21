@@ -2,7 +2,6 @@
 
 #include <Poco/Net/HTTPServer.h>
 #include "web/IWebServerConfigurator.h"
-#include "../../notification/INotificationCenter.h"
 
 namespace web { namespace poco {
 
@@ -16,7 +15,7 @@ namespace web { namespace poco {
       ///\brief Constructor
       /// \param[in]    notificationCenter The notification center
       //==============================================
-      CHttpRequestHandlerFactory(boost::shared_ptr<notification::INotificationCenter> notificationCenter);
+      CHttpRequestHandlerFactory();
 
       //==============================================
       ///\brief Destructor
@@ -42,7 +41,6 @@ namespace web { namespace poco {
       std::string m_webSocketKeyword;
       std::vector< boost::shared_ptr<rest::service::IRestService> > m_restService;
       std::map<std::string, std::string> m_alias;
-      boost::shared_ptr<notification::INotificationCenter> m_notificationCenter;
       boost::shared_ptr<authentication::IAuthentication> m_authenticator;
    };
 

@@ -3,7 +3,7 @@
 #include "IInterpreterLibrary.h"
 #include "../../database/IAcquisitionRequester.h"
 #include "../../communication/ISendMessageAsync.h"
-#include "notification/INotificationCenter.h"
+#include "notification/NotificationCenter.h"
 #include "../../dataAccessLayer/IConfigurationManager.h"
 #include "IGeneralInfo.h"
 
@@ -26,7 +26,6 @@ namespace automation { namespace script
       CFactory(const std::string& interpretersPath,
          boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
          boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
-         boost::shared_ptr<notification::INotificationCenter> notificationCenter,
          boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester);
 
       //-----------------------------------------------------
@@ -89,11 +88,6 @@ namespace automation { namespace script
       ///\brief               The Yadoms configuration manager access
       //-----------------------------------------------------
       boost::shared_ptr<dataAccessLayer::IConfigurationManager> m_configurationManager;
-
-      //-----------------------------------------------------
-      ///\brief               The notification center
-      //-----------------------------------------------------
-      boost::shared_ptr<notification::INotificationCenter> m_notificationCenter;
 
       //-----------------------------------------------------
       ///\brief               Database acquisition requester

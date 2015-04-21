@@ -4,11 +4,7 @@
 #include <shared/Log.h>
 #include <shared/DataContainer.h>
 #include <shared/event/EventHandler.hpp>
-
-#include "../../notification/acquisition/observerAsEvent.h"
-#include "../../notification/newDevice/observerAsEvent.h"
-#include "../../notification/taskProgression/observerAsEvent.h"
-#include "../../notification/observerSubscriber.hpp"
+#include <shared/ServiceLocator.h>
 
 #include "web/ws/FrameFactory.h"
 #include "web/ws/AcquisitionFilterFrame.h"
@@ -16,11 +12,15 @@
 #include "web/ws/NewDeviceFrame.h"
 #include "web/ws/TaskUpdateNotificationFrame.h"
 
+#include "notification/acquisition/Observer.hpp"
+#include "notification/change/Observer.hpp"
+#include "notification/basic/Observer.hpp"
+#include "notification/Helpers.hpp"
+#include "notification/action/EventAction.hpp"
 
 namespace web { namespace poco {
 
-CWebSocketRequestHandler::CWebSocketRequestHandler(boost::shared_ptr<notification::INotificationCenter> notificationCenter)
-   :m_notificationCenter(notificationCenter)
+CWebSocketRequestHandler::CWebSocketRequestHandler()
 {
 }
 
@@ -31,7 +31,13 @@ CWebSocketRequestHandler::~CWebSocketRequestHandler()
 
 void CWebSocketRequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request, Poco::Net::HTTPServerResponse& response)
 {
-   //for each request (each time a new ws connexion is made
+   //TODO : notification : refaire les enregistrements
+
+   boost::shared_ptr< notification::IObserver > newDeviceObserver;
+   boost::shared_ptr< notification::IObserver > newProgressionObserver;
+   boost::shared_ptr< notification::acquisition::CObserver > newAcquisitionObserver;
+
+   //for each request (each time a new ws connexion is made)
    //then just create a websocket server and wait infinite (until client ends)
    try
    {
@@ -45,18 +51,18 @@ void CWebSocketRequestHandler::handleRequest(Poco::Net::HTTPServerRequest& reque
       };
       shared::event::CEventHandler eventHandler;
 
+
       // Subscribe to new acquisitions depends on filters set by GUI
-      typedef notification::CObserverSubscriber<notification::acquisition::INotifier, notification::acquisition::IObserver> AcquisitionSubscriber;
-      std::vector<boost::shared_ptr<AcquisitionSubscriber> > acquisitionsSubscribers;
+      boost::shared_ptr< notification::action::CEventAction< notification::acquisition::CNotification > > acquisitionAction(new notification::action::CEventAction<notification::acquisition::CNotification>(eventHandler, kNewAcquisition));
+      newAcquisitionObserver.reset(new notification::acquisition::CObserver(acquisitionAction));
+      notification::CHelpers::subscribeCustomObserver(newAcquisitionObserver);
 
       // Subscribe to new device notifications
-      boost::shared_ptr<notification::newDevice::IObserver> newDeviceObserver(new notification::newDevice::CObserverAsEvent(eventHandler, kNewDevice));
-      notification::CObserverSubscriber<notification::newDevice::INotifier, notification::newDevice::IObserver> newDeviceSubscriber(m_notificationCenter->newDeviceNotifier(), newDeviceObserver);
-      
+      newDeviceObserver = notification::CHelpers::subscribeChangeObserver< database::entities::CDevice >(notification::change::EChangeType::kCreate, eventHandler, kNewDevice);
+
       // Subscribe to task progression notifications
-      boost::shared_ptr<notification::taskProgression::IObserver> taskProgressionObserver(new notification::taskProgression::CObserverAsEvent(eventHandler, kTaskProgression));
-      notification::CObserverSubscriber<notification::taskProgression::INotifier, notification::taskProgression::IObserver> taskProgressionSubscriber(m_notificationCenter->taskProgressionNotifier(), taskProgressionObserver);
-      
+      newProgressionObserver = notification::CHelpers::subscribeBasicObserver< task::IInstance >(eventHandler, kTaskProgression);
+
       // The web scoket client
       CWebSocketClient client(request, response, eventHandler, kNotifFromWsClient);
       client.start();
@@ -73,23 +79,7 @@ void CWebSocketRequestHandler::handleRequest(Poco::Net::HTTPServerRequest& reque
             {
             case ws::CFrameBase::EFrameType::kAcquisitionFilterValue:
                boost::shared_ptr<ws::CAcquisitionFilterFrame> parsedFrameAsqFilter = boost::dynamic_pointer_cast<ws::CAcquisitionFilterFrame>(parsedFrame);
-               std::vector<int> keywordsToListen = parsedFrameAsqFilter->getFilter();
-               acquisitionsSubscribers.clear();
-               if (keywordsToListen.empty())
-               {
-                  // No filter, so send all acquisitions
-                  boost::shared_ptr<notification::acquisition::IObserver> acquisitionObserver(new notification::acquisition::CObserverAsEvent(eventHandler, kNewAcquisition, notification::acquisition::IObserver::kAll, true));
-                  acquisitionsSubscribers.push_back(boost::make_shared<AcquisitionSubscriber>(m_notificationCenter->acquisitionNotifier(), acquisitionObserver));
-               }
-               else
-               {
-                  // Filter is present, send only needed acquisitions
-                  for (std::vector<int>::const_iterator it = keywordsToListen.begin(); it != keywordsToListen.end(); ++it)
-                  {
-                     boost::shared_ptr<notification::acquisition::IObserver> acquisitionObserver(new notification::acquisition::CObserverAsEvent(eventHandler, kNewAcquisition, *it, true));
-                     acquisitionsSubscribers.push_back(boost::make_shared<AcquisitionSubscriber>(m_notificationCenter->acquisitionNotifier(), acquisitionObserver));
-                  }
-               }
+               newAcquisitionObserver->resetKeywordIdFilter(parsedFrameAsqFilter->getFilter());
                break;
             }
 
@@ -98,43 +88,24 @@ void CWebSocketRequestHandler::handleRequest(Poco::Net::HTTPServerRequest& reque
 
          case kNewAcquisition:
          {
-            typedef boost::shared_ptr<const database::entities::CAcquisition> SingleAcquisition;
-            typedef boost::tuple<SingleAcquisition,
-                  boost::shared_ptr<const database::entities::CAcquisitionSummary>,
-                  boost::shared_ptr<const database::entities::CAcquisitionSummary> > FullAcquisition;
-
-            SingleAcquisition acquisition;
-            boost::shared_ptr<const database::entities::CAcquisitionSummary> dailySummary;
-            boost::shared_ptr<const database::entities::CAcquisitionSummary> hourlySummary;
-
-            if (eventHandler.isEventType<SingleAcquisition>())
-               acquisition = eventHandler.getEventData<SingleAcquisition>();
-            else if (eventHandler.isEventType<FullAcquisition>())
-               boost::tie(acquisition, dailySummary, hourlySummary) = eventHandler.getEventData<FullAcquisition>();
-            else
-            {
-               YADOMS_LOG(error) << "CWebSocketRequestHandler::handleRequest : Invalid type for acquisition event";
-               break;
-            }
-
-            clientSeemConnected = send(client, ws::CAcquisitionUpdateFrame(*acquisition, dailySummary, hourlySummary));
-
+            boost::shared_ptr<notification::acquisition::CNotification> notif = eventHandler.getEventData< boost::shared_ptr<notification::acquisition::CNotification> >();
+            clientSeemConnected = send(client, ws::CAcquisitionUpdateFrame(notif->getAcquisition(), notif->getDailyAcquisition(), notif->getHourlyAcquisition()));
             break;
          }
 
          case kNewDevice:
          {
             boost::shared_ptr<const database::entities::CDevice> newDevice = eventHandler.getEventData<boost::shared_ptr<const database::entities::CDevice> >();
-            clientSeemConnected = send(client, ws::CNewDeviceFrame(*newDevice));
+            clientSeemConnected = send(client, ws::CNewDeviceFrame(newDevice));
             break;
          }
 
          case kTaskProgression:
-            {
-               boost::shared_ptr<const task::IInstance> taskProgression = eventHandler.getEventData<boost::shared_ptr<const task::IInstance> >();
-               clientSeemConnected = send(client, ws::CTaskUpdateNotificationFrame(*taskProgression));
-               break;
-            }
+         {
+            boost::shared_ptr<const task::IInstance> taskProgression = eventHandler.getEventData<boost::shared_ptr<const task::IInstance> >();
+            clientSeemConnected = send(client, ws::CTaskUpdateNotificationFrame(taskProgression));
+            break;
+         }
 
          default:
             YADOMS_LOG(error) << "Unknown message id";
@@ -150,6 +121,15 @@ void CWebSocketRequestHandler::handleRequest(Poco::Net::HTTPServerRequest& reque
    {
       YADOMS_LOG(error) << "Websocket request handler unknown exception";
    }
+
+   //unsubscribe observers
+   if (newDeviceObserver)
+      notification::CHelpers::unsubscribeObserver(newDeviceObserver);
+   if (newProgressionObserver)
+      notification::CHelpers::unsubscribeObserver(newProgressionObserver);
+   if (newAcquisitionObserver)
+      notification::CHelpers::unsubscribeObserver(newAcquisitionObserver);
+
 }
 
 bool CWebSocketRequestHandler::send(CWebSocketClient& client, const ws::CFrameBase& toSend) const

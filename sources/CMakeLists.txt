@@ -317,40 +317,28 @@ set(YADOMS_SRC
 	server/pluginSystem/ManuallyDeviceCreationRequest.h
 	server/pluginSystem/ManuallyDeviceCreationRequest.cpp
   
-	server/notification/INotificationCenter.h
-	server/notification/notificationCenter.h
-	server/notification/notificationCenter.cpp
-	server/notification/observerSubscriber.hpp
+	server/notification/NotificationCenter.h
+	server/notification/NotificationCenter.cpp
+	server/notification/Helpers.hpp
+	server/notification/INotification.h
+	server/notification/IObserver.h
+	
+	server/notification/action/IAction.h
+	server/notification/action/EventAction.hpp
+	server/notification/action/FunctionPointerAction.hpp
+	server/notification/action/SelfEventAction.hpp
+   
+	server/notification/basic/Observer.hpp
+	server/notification/basic/Notification.hpp
+   
+	server/notification/change/Observer.hpp
+	server/notification/change/Notification.hpp
+	server/notification/change/Type.h
+	server/notification/change/Type.cpp
 
-	server/notification/acquisition/observer.h
-	server/notification/acquisition/observer.cpp
-	server/notification/acquisition/observerAsEvent.h
-	server/notification/acquisition/observerAsEvent.cpp
-	server/notification/acquisition/notifier.h
-	server/notification/acquisition/notifier.cpp
-   server/notification/acquisition/IObserver.h
-   server/notification/acquisition/INotifier.h
-
-   server/notification/configurationUpdate/observer.h
-   server/notification/configurationUpdate/observer.cpp
-   server/notification/configurationUpdate/notifier.h
-   server/notification/configurationUpdate/notifier.cpp
-   server/notification/configurationUpdate/IObserver.h
-   server/notification/configurationUpdate/INotifier.h
-
-   server/notification/newDevice/INotifier.h
-   server/notification/newDevice/IObserver.h
-	server/notification/newDevice/notifier.h
-	server/notification/newDevice/notifier.cpp
-	server/notification/newDevice/observerAsEvent.h
-	server/notification/newDevice/observerAsEvent.cpp
-
-   server/notification/taskProgression/INotifier.h
-   server/notification/taskProgression/IObserver.h
-	server/notification/taskProgression/notifier.h
-	server/notification/taskProgression/notifier.cpp
-	server/notification/taskProgression/observerAsEvent.h
-	server/notification/taskProgression/observerAsEvent.cpp
+	server/notification/acquisition/Observer.hpp
+	server/notification/acquisition/Notification.hpp
+   
    
 	server/startupOptions/IStartupOptions.h
 	server/startupOptions/Loader.h
@@ -443,9 +431,10 @@ source_group(server\\database  server/database/*.*)
 source_group(server\\database\\entities  server/database/entities/*.*)
 source_group(server\\logConfiguration  server/logConfiguration/*.*)
 source_group(server\\notification  server/notification/*.*)
+source_group(server\\notification\\action  server/notification/action/*.*)
+source_group(server\\notification\\basic  server/notification/basic/*.*)
+source_group(server\\notification\\change  server/notification/change/*.*)
 source_group(server\\notification\\acquisition  server/notification/acquisition/*.*)
-source_group(server\\notification\\configurationUpdate  server/notification/configurationUpdate/*.*)
-source_group(server\\notification\\newDevice  server/notification/newDevice/*.*)
 source_group(server\\pluginSystem server/pluginSystem/*.* )
 source_group(server\\pluginSystem\\internalPlugin server/pluginSystem/internalPlugin/*.* )
 source_group(server\\startupOptions  server/startupOptions/*.*)

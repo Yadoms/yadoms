@@ -1,7 +1,6 @@
 #pragma once
 #include "IDeviceManager.h"
 #include "database/IDeviceRequester.h"
-#include "notification/newDevice/INotifier.h"
 
 namespace dataAccessLayer {
 
@@ -11,9 +10,8 @@ namespace dataAccessLayer {
       //--------------------------------------------------------------
       /// \brief                          Constructor
       /// \param [in] deviceRequester     The device requester
-      /// \param [in] notificationCenter  The notification center
       //--------------------------------------------------------------
-      CDeviceManager(boost::shared_ptr<database::IDeviceRequester> deviceRequester, boost::shared_ptr<notification::newDevice::INotifier> notifier);
+      CDeviceManager(boost::shared_ptr<database::IDeviceRequester> deviceRequester);
    
       //--------------------------------------------------------------
       /// \brief       Destructor
@@ -115,11 +113,6 @@ namespace dataAccessLayer {
       /// \brief           The real data requester
       //--------------------------------------------------------------
       boost::shared_ptr<database::IDeviceRequester> m_deviceRequester;
-
-      //--------------------------------------------------------------
-      /// \brief           The new device notifier
-      //--------------------------------------------------------------
-      boost::shared_ptr<notification::newDevice::INotifier> m_notifier;
    };
  
 } //namespace dataAccessLayer 

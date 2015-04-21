@@ -1,10 +1,11 @@
 #include "stdafx.h"
 #include "DeviceManager.h"
+#include "notification/Helpers.hpp"
 
 namespace dataAccessLayer {
 
-      CDeviceManager::CDeviceManager(boost::shared_ptr< database::IDeviceRequester > deviceRequester, boost::shared_ptr<notification::newDevice::INotifier> notifier)
-         :m_deviceRequester(deviceRequester), m_notifier(notifier)
+      CDeviceManager::CDeviceManager(boost::shared_ptr< database::IDeviceRequester > deviceRequester)
+         :m_deviceRequester(deviceRequester)
       {
       }
    
@@ -48,8 +49,7 @@ namespace dataAccessLayer {
          boost::shared_ptr<database::entities::CDevice> result = m_deviceRequester->createDevice(pluginId, name, friendlyName, model, details);
 
          //post notification
-         m_notifier->post(result);
-
+         notification::CHelpers::postChangeNotification(result, notification::change::EChangeType::kCreate);
          return result;
       }    
 

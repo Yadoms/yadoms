@@ -18,7 +18,7 @@ namespace web { namespace ws {
       ///\param[in] dailySummary    The new daily summary
       ///\param[in] hourlySummary   The new hourly summary
       //-----------------------------
-      CAcquisitionUpdateFrame(const database::entities::CAcquisition& acquisition,
+      CAcquisitionUpdateFrame(boost::shared_ptr<const database::entities::CAcquisition> acquisition,
          boost::shared_ptr<const database::entities::CAcquisitionSummary> dailySummary = boost::shared_ptr<const database::entities::CAcquisitionSummary>(),
          boost::shared_ptr<const database::entities::CAcquisitionSummary> hourlySummary = boost::shared_ptr<const database::entities::CAcquisitionSummary>());
 
@@ -31,15 +31,15 @@ namespace web { namespace ws {
       //-----------------------------
       ///\bruef The acquisition field name
       //-----------------------------
-      static const std::string m_acquisition;
+      static const std::string m_acquisitionString;
       //-----------------------------
       ///\bruef The acquisition SUMMARY DAY field name
       //-----------------------------
-      static const std::string m_acquisitionDay;
+      static const std::string m_acquisitionDayString;
       //-----------------------------
       ///\bruef The acquisition SUMMARY HOUR name
       //-----------------------------
-      static const std::string m_acquisitionHour;
+      static const std::string m_acquisitionHourString;
    };
 
 } //namespace ws
