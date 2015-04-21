@@ -36,7 +36,7 @@ namespace shared { namespace script { namespace yScriptApi
       ///\return Pair of <keywordId, keywordNewState> for the received event. Timeout if keywordId == kTimeout.
       //-----------------------------------------------------
       enum { kTimeout = -1 };
-      virtual std::pair<int, std::string> waitForAcquisitions(std::vector<int> keywordIdList, const std::string& timeout = std::string()) const = 0;
+      virtual std::pair<int, std::string> waitForAcquisitions(const std::vector<int> keywordIdList, const std::string& timeout = std::string()) const = 0;
 
       //-----------------------------------------------------
       ///\brief Change state of keyword
