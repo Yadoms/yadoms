@@ -58,7 +58,10 @@ namespace notification {
          for (i = m_observers.begin(); i != m_observers.end(); ++i)
          {
             if (*i == observer)
+            {
                m_observers.erase(i);
+               return;
+            }
          }
       }
       else

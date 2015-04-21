@@ -68,7 +68,7 @@ namespace notification {
    /// Sample usage 7 : unsubscribe observer (matching sample 3, 4, 5 and 6)
    ///
    ///      //DO always remove observers
-   ///      notification::CHelpers::unsubscribeBasicObserver(observer);
+   ///      notification::CHelpers::unsubscribeObserver(observer);
    //-----------------------------
    class CHelpers
    {
@@ -289,6 +289,34 @@ namespace notification {
 
          notificationCenter->subscribeObserver(observer);
       }
+      
+      //-----------------------------
+      ///\brief Helper class to subscribe and auto-unsubscribe a custom observer
+      //-----------------------------
+      class CCustomSubscriber
+      {
+      public:
+         //-----------------------------
+         ///\brief                           Constructor
+         ///\param [in] observer             The observer to subscribe
+         ///\param [in] notificationCenter   The notification center (if not specified, it tries to get the service located NotificationCenter)
+         //-----------------------------
+         CCustomSubscriber(boost::shared_ptr<IObserver> observer, boost::shared_ptr< CNotificationCenter > notificationCenter = boost::shared_ptr< CNotificationCenter >())
+            :m_observer(observer), m_notificationCenter(notificationCenter)
+         {
+            subscribeCustomObserver(m_observer, m_notificationCenter);
+         }
+         //-----------------------------
+         ///\brief                           Destructor
+         //-----------------------------
+         virtual ~CCustomSubscriber()
+         {
+            unsubscribeObserver(m_observer, m_notificationCenter);
+         }
+      private:
+         boost::shared_ptr<IObserver> m_observer;
+         boost::shared_ptr< CNotificationCenter > m_notificationCenter;
+      };
 
    private:
       //-----------------------------
