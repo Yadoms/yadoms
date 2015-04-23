@@ -3,7 +3,6 @@
 #include "IAsyncPort.h"
 #include "IReceiveBufferHandler.h"
 
-//TODO since not needed for the moment, this class was not tested.
 namespace shared { namespace communication {
 
    //--------------------------------------------------------------
