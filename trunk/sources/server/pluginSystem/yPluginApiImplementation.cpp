@@ -91,11 +91,15 @@ std::string CYPluginApiImplementation::getRecipientValue(int recipientId, const 
 {
    boost::shared_ptr<const database::entities::CRecipient> recipient = m_recipientRequester->getRecipient(recipientId);
 
+   // Search for from plugin fields
    for (std::vector<boost::shared_ptr<database::entities::CRecipientField> >::const_iterator itField = recipient->Fields().begin(); itField != recipient->Fields().end(); ++itField)
-   {
-      if ((*itField)->FieldName == fieldName)
+      if ((*itField)->PluginName == m_pluginData->Name && (*itField)->FieldName == fieldName)
          return (*itField)->Value;
-   }
+
+   // If not found from plugin fields, looking for general fields
+   for (std::vector<boost::shared_ptr<database::entities::CRecipientField> >::const_iterator itField = recipient->Fields().begin(); itField != recipient->Fields().end(); ++itField)
+      if ((*itField)->PluginName == "system" && (*itField)->FieldName == fieldName)
+         return (*itField)->Value;
 
    throw shared::exception::CEmptyResult((boost::format("Cannot retrieve field %1% for recipient Id %2% in database") % fieldName % recipientId).str());
 }
