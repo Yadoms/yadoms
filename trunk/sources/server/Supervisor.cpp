@@ -51,7 +51,7 @@ void CSupervisor::run()
    YADOMS_LOG(information) << "Supervisor is starting";
 
    bool stopIsRequested = false;
-   boost::shared_ptr<database::IDataProvider> pDataProvider;
+   boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dal;
    try
    {
       const std::string pluginsPath = "plugins";
@@ -64,14 +64,14 @@ void CSupervisor::run()
       boost::shared_ptr<startupOptions::IStartupOptions> startupOptions = shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>();
 
       //start database system
-      pDataProvider.reset(new database::sqlite::CSQLiteDataProvider(startupOptions->getDatabaseFile()));
+      boost::shared_ptr<database::IDataProvider> pDataProvider(new database::sqlite::CSQLiteDataProvider(startupOptions->getDatabaseFile()));
       if (!pDataProvider->load())
       {
          throw shared::exception::CException("Fail to load database");
       }
 
       //create the data access layer
-      boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dal(new dataAccessLayer::CDataAccessLayer(pDataProvider));
+      dal.reset(new dataAccessLayer::CDataAccessLayer(pDataProvider));
 
       // Start Task manager
       boost::shared_ptr<task::CScheduler> taskManager(new task::CScheduler(m_EventHandler, kSystemEvent));
@@ -89,7 +89,7 @@ void CSupervisor::run()
       // Start automation rules manager
       boost::shared_ptr<automation::IRuleManager> automationRulesManager(new automation::CRuleManager(
          pDataProvider->getRuleRequester(), pluginGateway, pDataProvider->getAcquisitionRequester(), dal->getConfigurationManager(),
-         pDataProvider->getEventLoggerRequester(), m_EventHandler, kRuleManagerEvent));
+         dal->getEventLogger(), m_EventHandler, kRuleManagerEvent));
 
       // Start Web server
       const std::string & webServerIp = startupOptions->getWebServerIPAddress();
@@ -105,7 +105,7 @@ void CSupervisor::run()
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CWidget(pDataProvider, webServerPath)));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CConfiguration(dal->getConfigurationManager())));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPluginEventLogger(pDataProvider)));
-      webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CEventLogger(pDataProvider)));
+      webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CEventLogger(dal->getEventLogger())));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CSystem()));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CAcquisition(pDataProvider)));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CAutomationRule(pDataProvider, automationRulesManager)));
@@ -115,7 +115,7 @@ void CSupervisor::run()
       webServer.start();
 
       // Register to event logger started event
-      pDataProvider->getEventLoggerRequester()->addEvent(database::entities::ESystemEventCode::kStarted, "yadoms", shared::CStringExtension::EmptyString);
+      dal->getEventLogger()->addEvent(database::entities::ESystemEventCode::kStarted, "yadoms", shared::CStringExtension::EmptyString);
 
       // Main loop
       YADOMS_LOG(information) << "Supervisor is running...";
@@ -136,7 +136,7 @@ void CSupervisor::run()
             break;
 
          case kSystemEvent:
-            pDataProvider->getEventLoggerRequester()->addEvent(m_EventHandler->getEventData<database::entities::CEventLogger>());
+            dal->getEventLogger()->addEvent(m_EventHandler->getEventData<database::entities::CEventLogger>());
             break;
 
          default:
@@ -164,19 +164,19 @@ void CSupervisor::run()
 
       YADOMS_LOG(information) << "Supervisor is stopped";
 
-      pDataProvider->getEventLoggerRequester()->addEvent(database::entities::ESystemEventCode::kStopped, "yadoms", shared::CStringExtension::EmptyString);
+      dal->getEventLogger()->addEvent(database::entities::ESystemEventCode::kStopped, "yadoms", shared::CStringExtension::EmptyString);
    }
    catch (std::exception& e)
    {
       YADOMS_LOG(error) << "Supervisor : unhandled exception " << e.what();
-      if (pDataProvider)
-         pDataProvider->getEventLoggerRequester()->addEvent(database::entities::ESystemEventCode::kYadomsCrash, "yadoms", e.what());
+      if (dal && dal->getEventLogger())
+         dal->getEventLogger()->addEvent(database::entities::ESystemEventCode::kYadomsCrash, "yadoms", e.what());
    }
    catch (...)
    {
       YADOMS_LOG(error) << "Supervisor : unhandled exception.";
-      if (pDataProvider)
-         pDataProvider->getEventLoggerRequester()->addEvent(database::entities::ESystemEventCode::kYadomsCrash, "yadoms", "unknwon error");
+      if (dal && dal->getEventLogger())
+         dal->getEventLogger()->addEvent(database::entities::ESystemEventCode::kYadomsCrash, "yadoms", "unknwon error");
    }
 
    //notify application that supervisor ends

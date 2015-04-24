@@ -1,7 +1,7 @@
 #pragma once
 #include "IRuleStateHandler.h"
 #include "database/IRuleRequester.h"
-#include "../database/IEventLoggerRequester.h"
+#include "dataAccessLayer/IEventLogger.h"
 #include <shared/shared/event/EventHandler.hpp>
 
 namespace automation
@@ -15,12 +15,12 @@ namespace automation
       //-----------------------------------------------------
       ///\brief               Constructor
       ///\param[in] dbRequester  Database requester
-      ///\param[in] eventLoggerRequester  Event logger requester
+      ///\param[in] eventLogger  Main event logger
       ///\param[in] supervisor     the supervisor event handler
       ///\param[in] ruleManagerEventId    The ID to use to send events to supervisor
       //-----------------------------------------------------
       CRuleStateHandler(boost::shared_ptr<database::IRuleRequester> dbRequester,
-         boost::shared_ptr<database::IEventLoggerRequester> eventLoggerRequester,
+         boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger,
          boost::shared_ptr<shared::event::CEventHandler> supervisor, int ruleManagerEventId);
 
       //-----------------------------------------------------
@@ -44,7 +44,7 @@ namespace automation
       //-----------------------------------------------------
       ///\brief               The event logger
       //-----------------------------------------------------
-      boost::shared_ptr<database::IEventLoggerRequester> m_eventLoggerRequester;
+      boost::shared_ptr<dataAccessLayer::IEventLogger> m_eventLogger;
 
       //--------------------------------------------------------------
       /// \brief			The supervisor event handler

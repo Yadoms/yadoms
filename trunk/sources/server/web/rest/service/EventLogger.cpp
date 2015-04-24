@@ -6,7 +6,7 @@
 
 namespace web { namespace rest { namespace service {
 
-   CEventLogger::CEventLogger(boost::shared_ptr<database::IDataProvider> dataProvider)
+   CEventLogger::CEventLogger(boost::shared_ptr<dataAccessLayer::IEventLogger> dataProvider)
       :m_dataProvider(dataProvider), m_restKeyword("EventLogger")
    {
    }
@@ -34,7 +34,7 @@ namespace web { namespace rest { namespace service {
    {
       try
       {
-         std::vector< boost::shared_ptr<database::entities::CEventLogger> > dvList = m_dataProvider->getEventLoggerRequester()->getEvents();
+         std::vector< boost::shared_ptr<database::entities::CEventLogger> > dvList = m_dataProvider->getEvents();
          shared::CDataContainer collection;
          collection.set(getRestKeyword(), dvList);
          return CResult::GenerateSuccess(collection);
@@ -57,7 +57,7 @@ namespace web { namespace rest { namespace service {
    {
       try
       {
-         boost::shared_ptr<database::entities::CEventLogger> lastEvent = m_dataProvider->getEventLoggerRequester()->getLastEvent();
+         boost::shared_ptr<database::entities::CEventLogger> lastEvent = m_dataProvider->getLastEvent();
          return CResult::GenerateSuccess(lastEvent);
       }
       catch(std::exception &ex)
@@ -77,7 +77,7 @@ namespace web { namespace rest { namespace service {
          if(parameters.size()>2)
          {
             int eventIdFrom = boost::lexical_cast<int>(parameters[2]);
-            std::vector< boost::shared_ptr<database::entities::CEventLogger> > eventList = m_dataProvider->getEventLoggerRequester()->getEventsFrom(eventIdFrom);
+            std::vector< boost::shared_ptr<database::entities::CEventLogger> > eventList = m_dataProvider->getEventsFrom(eventIdFrom);
             shared::CDataContainer collection;
             collection.set(getRestKeyword(), eventList);
             return CResult::GenerateSuccess(collection);
@@ -92,7 +92,6 @@ namespace web { namespace rest { namespace service {
       {
          return CResult::GenerateError("unknown exception in reading events");
       }
-
    }
 
    shared::CDataContainer CEventLogger::getEventsRange(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
@@ -103,7 +102,7 @@ namespace web { namespace rest { namespace service {
          {
             int offset = boost::lexical_cast<int>(parameters[2]);
             int count = boost::lexical_cast<int>(parameters[3]);
-            std::vector< boost::shared_ptr<database::entities::CEventLogger> > eventList = m_dataProvider->getEventLoggerRequester()->getEventsRange(offset, count);
+            std::vector< boost::shared_ptr<database::entities::CEventLogger> > eventList = m_dataProvider->getEventsRange(offset, count);
             shared::CDataContainer collection;
             collection.set(getRestKeyword(), eventList);
             return CResult::GenerateSuccess(collection);
@@ -131,7 +130,7 @@ namespace web { namespace rest { namespace service {
       {
          database::entities::CEventLogger entityToAdd;
          entityToAdd.fillFromContent(requestContent);
-         m_dataProvider->getEventLoggerRequester()->addEvent(entityToAdd);
+         m_dataProvider->addEvent(entityToAdd);
          return CResult::GenerateSuccess();
       }
       catch(std::exception &ex)
