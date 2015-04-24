@@ -7,30 +7,30 @@
 
 #include "IQualifier.h"
 #include "database/IPluginEventLoggerRequester.h"
-#include "database/IEventLoggerRequester.h"
+#include "../dataAccessLayer/IEventLogger.h"
 #include "IdentityForQualifier.h"
 
 namespace pluginSystem
 {
 
    //--------------------------------------------------------------
-   /// \brief	this class is used to quality a plugin
+   /// \brief	This basic qualifier only record plugin events in database
    //--------------------------------------------------------------
-   class CQualifier : public IQualifier
+   class CBasicQualifier : public IQualifier
    {
    public:
       //--------------------------------------------------------------
       /// \brief	Constructor
-      /// \param[in] pluginLogger   Main logger database requester
-      /// \param[in] mainLogger     Plugin logger database requester
+      /// \param[in] pluginLogger   Plugin logger database requester
+      /// \param[in] mainLogger     Main logger
       //--------------------------------------------------------------
-      CQualifier(boost::shared_ptr<database::IPluginEventLoggerRequester> pluginLogger,
-         boost::shared_ptr<database::IEventLoggerRequester> mainLogger);
+      CBasicQualifier(boost::shared_ptr<database::IPluginEventLoggerRequester> pluginLogger,
+         boost::shared_ptr<dataAccessLayer::IEventLogger> mainLogger);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
-      virtual ~CQualifier();
+      virtual ~CBasicQualifier();
 
       // IQualifier implementation
       virtual void signalLoad(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation);
@@ -51,40 +51,6 @@ namespace pluginSystem
          database::entities::EEventType eventType, const std::string& reason = shared::CStringExtension::EmptyString);
 
       //--------------------------------------------------------------
-      /// \brief	               Make corresponding quality indicator obsolete in cache
-      /// \param[in] identity    Plugin identity
-      //--------------------------------------------------------------
-      void obsoleteQualityIndicatorCache(const CIdentityForQualifier& identity);
-
-      //--------------------------------------------------------------
-      /// \brief	               compute quality indicator of a plugin
-      /// \param[in] identity    Plugin identity
-      /// \return                Computed quality, from 0(lower) to 100(best)
-      //--------------------------------------------------------------
-      int computeQuality(const CIdentityForQualifier& identity) const;
-
-   private:
-      //--------------------------------------------------------------
-      /// \brief	Safety threshold : a plugin with a quality upper or equal to
-      ///         this threshold, is considered as safe.
-      //--------------------------------------------------------------
-      static const int m_SafetyThreshold;
-
-      //--------------------------------------------------------------
-      /// \brief	Cache of quality indicators
-      ///         Key is plugin identity
-      ///         Value is quality indicator
-      ///         Need specific comparator
-      //--------------------------------------------------------------
-      typedef std::map<CIdentityForQualifier, int, CPluginIdentityCompare> QualityIndicatorsCache;
-      QualityIndicatorsCache m_qualityIndicatorsCache;
-
-      //--------------------------------------------------------------
-      /// \brief	Quality indicators Cache mutex
-      //--------------------------------------------------------------
-      boost::mutex m_qualityIndicatorsCacheMutex;
-
-      //--------------------------------------------------------------
       /// \brief	Plugin logger access
       //--------------------------------------------------------------
       boost::shared_ptr<database::IPluginEventLoggerRequester> m_pluginLogger;
@@ -92,7 +58,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief	Main logger access
       //--------------------------------------------------------------
-      boost::shared_ptr<database::IEventLoggerRequester> m_mainLogger;
+      boost::shared_ptr<dataAccessLayer::IEventLogger> m_mainLogger;
    };
 
 } // namespace pluginSystem

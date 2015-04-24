@@ -11,7 +11,6 @@
 #include "database/IDataProvider.h"
 #include "database/IPluginRequester.h"
 #include "database/IPluginEventLoggerRequester.h"
-#include "database/IEventLoggerRequester.h"
 #include <shared/StringExtension.h>
 #include <shared/event/EventHandler.hpp>
 #include "dataAccessLayer/IDataAccessLayer.h"

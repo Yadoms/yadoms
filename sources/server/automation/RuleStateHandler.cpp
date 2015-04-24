@@ -9,9 +9,9 @@ namespace automation
 {
 
 CRuleStateHandler::CRuleStateHandler(boost::shared_ptr<database::IRuleRequester> dbRequester,
-   boost::shared_ptr<database::IEventLoggerRequester> eventLoggerRequester,
+   boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger,
    boost::shared_ptr<shared::event::CEventHandler> supervisor, int ruleManagerEventId)
-   :m_ruleRequester(dbRequester), m_eventLoggerRequester(eventLoggerRequester), m_supervisor(supervisor), m_ruleManagerEventId(ruleManagerEventId)
+   :m_ruleRequester(dbRequester), m_eventLogger(eventLogger), m_supervisor(supervisor), m_ruleManagerEventId(ruleManagerEventId)
 {
 }
 
@@ -57,7 +57,7 @@ void CRuleStateHandler::signalRuleError(int ruleId, const std::string& error)
 
    // Signal error
    YADOMS_LOG(error) << error;
-   m_eventLoggerRequester->addEvent(database::entities::ESystemEventCode::kRuleFailedValue, m_ruleRequester->getRule(ruleId)->Name(), error);
+   m_eventLogger->addEvent(database::entities::ESystemEventCode::kRuleFailedValue, m_ruleRequester->getRule(ruleId)->Name(), error);
 
    // Signal the abnormal stop to asynchronously remove from list
    CManagerEvent event(CManagerEvent::kRuleAbnormalStopped, ruleId);
@@ -68,7 +68,7 @@ void CRuleStateHandler::signalRulesStartError(const std::string& error)
 {
    // Signal error
    YADOMS_LOG(error) << error;
-   m_eventLoggerRequester->addEvent(database::entities::ESystemEventCode::kRuleFailedValue, "Automation rules", error);
+   m_eventLogger->addEvent(database::entities::ESystemEventCode::kRuleFailedValue, "Automation rules", error);
 }
 
 } // namespace automation	

@@ -2,13 +2,14 @@
 
 #include "IRestService.h"
 #include "database/IDataProvider.h"
+#include "dataAccessLayer/IEventLogger.h"
 
 namespace web { namespace rest { namespace service {
 
    class CEventLogger : public IRestService
    {
    public:
-      CEventLogger(boost::shared_ptr<database::IDataProvider> dataProvider);
+      CEventLogger(boost::shared_ptr<dataAccessLayer::IEventLogger> dataProvider);
       virtual ~CEventLogger();
 
    public:
@@ -45,7 +46,7 @@ namespace web { namespace rest { namespace service {
       shared::CDataContainer addEvent(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  
 
    private:
-      boost::shared_ptr<database::IDataProvider> m_dataProvider;
+      boost::shared_ptr<dataAccessLayer::IEventLogger> m_dataProvider;
       std::string m_restKeyword;
    };
 

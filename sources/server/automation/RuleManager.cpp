@@ -14,10 +14,10 @@ namespace automation
 CRuleManager::CRuleManager(boost::shared_ptr<database::IRuleRequester> dbRequester, boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
    boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
    boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
-   boost::shared_ptr<database::IEventLoggerRequester> eventLoggerRequester, boost::shared_ptr<shared::event::CEventHandler> supervisor, int ruleManagerEventId)
+   boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger, boost::shared_ptr<shared::event::CEventHandler> supervisor, int ruleManagerEventId)
    :m_dbRequester(dbRequester),
    m_scriptFactory(new script::CFactory("scriptInterpreters", pluginGateway, configurationManager, dbAcquisitionRequester)),
-   m_ruleStateHandler(new CRuleStateHandler(dbRequester, eventLoggerRequester, supervisor, ruleManagerEventId))
+   m_ruleStateHandler(new CRuleStateHandler(dbRequester, eventLogger, supervisor, ruleManagerEventId))
 {
    startAllRules();
 }

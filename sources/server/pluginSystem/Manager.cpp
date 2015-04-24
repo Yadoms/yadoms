@@ -2,14 +2,15 @@
 #include "Manager.h"
 #include "Instance.h"
 #ifdef _DEBUG
-#include "DummyQualifier.h"
+#include "BasicQualifier.h"
 #else
-#include "Qualifier.h"
+#include "IndicatorQualifier.h"
 #endif
 #include <shared/DynamicLibrary.h>
 #include <shared/exception/InvalidParameter.hpp>
 #include <shared/exception/NotSupported.hpp>
 #include <shared/exception/EmptyResult.hpp>
+#include <shared/ServiceLocator.h>
 
 #include "ExternalPluginFactory.h"
 #include "InternalPluginFactory.h"
@@ -27,9 +28,9 @@ CManager::CManager(
    int pluginManagerEventId)
    :m_dataProvider(dataProvider), m_pluginDBTable(dataProvider->getPluginRequester()), m_pluginPath(initialDir),
 #ifdef _DEBUG
-   m_qualifier(new CDummyQualifier()),
+   m_qualifier(new CBasicQualifier(dataProvider->getPluginEventLoggerRequester(), dataAccessLayer->getEventLogger())),
 #else
-   m_qualifier(new CQualifier(dataProvider->getPluginEventLoggerRequester(), dataProvider->getEventLoggerRequester())),
+   m_qualifier(new CIndicatorQualifier(dataProvider->getPluginEventLoggerRequester(), dataAccessLayer->getEventLogger())),
 #endif
    m_supervisor(supervisor), m_pluginManagerEventId(pluginManagerEventId), m_dataAccessLayer(dataAccessLayer)
 {
@@ -315,7 +316,7 @@ void CManager::signalEvent(const CManagerEvent& event)
             m_pluginDBTable->disableAutoStartForAllPluginInstances(event.getPluginInformation()->getName());
 
             // Log this event in the main event logger
-            m_dataProvider->getEventLoggerRequester()->addEvent(database::entities::ESystemEventCode::kPluginDisabled,
+            m_dataAccessLayer->getEventLogger()->addEvent(database::entities::ESystemEventCode::kPluginDisabled,
                event.getPluginInformation()->getIdentity(),
                "Plugin " + event.getPluginInformation()->getIdentity() + " was evaluated as not safe and will not start automatically anymore.");
          }

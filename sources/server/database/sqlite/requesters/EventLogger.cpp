@@ -49,14 +49,6 @@ namespace database { namespace sqlite { namespace requesters {
       throw shared::exception::CEmptyResult("Cannot retrieve inserted ");
    }
 
-   int CEventLogger::addEvent(const entities::CEventLogger & logEntry)
-   {
-      if(!logEntry.Code.isDefined())
-         throw shared::exception::CInvalidParameter("The event code must be filled");      
-
-      return addEvent(logEntry.Code(), logEntry.Who(), logEntry.What());
-   }
-
 
    std::vector<boost::shared_ptr<entities::CEventLogger> > CEventLogger::getEvents()
    {
@@ -68,6 +60,21 @@ namespace database { namespace sqlite { namespace requesters {
       adapters::CEventLoggerAdapter adapter;
       m_databaseRequester->queryEntities<boost::shared_ptr<entities::CEventLogger> >(&adapter, qSelect);
       return adapter.getResults();
+   }
+
+   boost::shared_ptr<entities::CEventLogger>  CEventLogger::getEvent(const int eventId)
+   {
+      CQuery qSelect;
+      qSelect. Select().
+         From(CEventLoggerTable::getTableName()).
+         Where(CEventLoggerTable::getIdColumnName(), CQUERY_OP_EQUAL, eventId).
+         Limit(1);
+
+      adapters::CEventLoggerAdapter adapter;
+      m_databaseRequester->queryEntities<boost::shared_ptr<entities::CEventLogger> >(&adapter, qSelect);
+      if(adapter.getResults().empty())
+         return boost::shared_ptr<entities::CEventLogger>(); 
+      return adapter.getResults()[0];
    }
 
    boost::shared_ptr<entities::CEventLogger>  CEventLogger::getLastEvent()

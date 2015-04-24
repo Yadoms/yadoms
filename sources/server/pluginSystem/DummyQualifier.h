@@ -7,7 +7,6 @@
 
 #include "IQualifier.h"
 #include "database/IPluginEventLoggerRequester.h"
-#include "database/IEventLoggerRequester.h"
 #include "IdentityForQualifier.h"
 
 namespace pluginSystem

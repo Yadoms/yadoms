@@ -246,6 +246,9 @@ set(YADOMS_SRC
 	server/dataAccessLayer/DeviceManager.h
 	server/dataAccessLayer/DeviceManager.cpp
 	server/dataAccessLayer/IDeviceManager.h
+	server/dataAccessLayer/EventLogger.h
+	server/dataAccessLayer/EventLogger.cpp
+	server/dataAccessLayer/IEventLogger.h
 	server/dataAccessLayer/ConfigurationManager.h
 	server/dataAccessLayer/ConfigurationManager.cpp
 	server/dataAccessLayer/IConfigurationManager.h
@@ -276,6 +279,8 @@ set(YADOMS_SRC
    server/logConfiguration/LogConfigurationImpl.cpp
    server/logConfiguration/LogConfigurationException.h
    
+	server/pluginSystem/BasicQualifier.h
+	server/pluginSystem/BasicQualifier.cpp
    server/pluginSystem/CommandHistorizer.cpp
    server/pluginSystem/CommandHistorizer.h
    server/pluginSystem/DeviceCommand.cpp
@@ -284,6 +289,8 @@ set(YADOMS_SRC
 	server/pluginSystem/DummyQualifier.cpp
 	server/pluginSystem/IdentityForQualifier.cpp
 	server/pluginSystem/IdentityForQualifier.h
+	server/pluginSystem/IndicatorQualifier.h
+	server/pluginSystem/IndicatorQualifier.cpp
 	server/pluginSystem/Information.cpp
 	server/pluginSystem/Information.h
 	server/pluginSystem/Instance.h
@@ -306,8 +313,6 @@ set(YADOMS_SRC
    server/pluginSystem/BindingQueryRequest.h
    server/pluginSystem/ManuallyDeviceCreationTestData.cpp
    server/pluginSystem/ManuallyDeviceCreationTestData.h
-	server/pluginSystem/Qualifier.h
-	server/pluginSystem/Qualifier.cpp
    server/pluginSystem/yPluginApiImplementation.h
    server/pluginSystem/yPluginApiImplementation.cpp
 	server/pluginSystem/internalPlugin/System.h
@@ -408,12 +413,14 @@ set(YADOMS_SRC
 	server/web/ws/AcquisitionFilterFrame.cpp
 	server/web/ws/AcquisitionUpdateFrame.h
 	server/web/ws/AcquisitionUpdateFrame.cpp
-	server/web/ws/NewDeviceFrame.h
-	server/web/ws/NewDeviceFrame.cpp
 	server/web/ws/FrameBase.h
 	server/web/ws/FrameBase.cpp
 	server/web/ws/FrameFactory.h
 	server/web/ws/FrameFactory.cpp
+	server/web/ws/LogEventFrame.h
+	server/web/ws/LogEventFrame.cpp
+	server/web/ws/NewDeviceFrame.h
+	server/web/ws/NewDeviceFrame.cpp
 	server/web/ws/TaskUpdateNotificationFrame.h
 	server/web/ws/TaskUpdateNotificationFrame.cpp
 
