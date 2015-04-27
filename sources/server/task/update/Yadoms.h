@@ -5,6 +5,7 @@
 #include "IRunningInformation.h"
 #include <shared/DataContainer.h>
 #include <Poco/URI.h>
+#include "update/source/Yadoms.h"
 
 namespace task { namespace update {
 
@@ -16,8 +17,10 @@ namespace task { namespace update {
    public:
       //------------------------------------------
       ///\brief   Constructor
+      ///\param [in] updateSource   The update source
+      ///\param [in] onlyCheckForUpdate   If true will perform a check for update; if false will perform a complete update
       //------------------------------------------
-      CYadoms();
+      CYadoms(boost::shared_ptr<::update::source::CYadoms> updateSource, bool onlyCheckForUpdate); // "::update" is needed to avoid confusion with task::update namespace
 
       //------------------------------------------
       ///\brief   Destructor
@@ -68,6 +71,17 @@ namespace task { namespace update {
       ///\brief   The base URL for downloading files
       //------------------------------------------
       static Poco::URI m_baseDownloadUri;
+
+      //------------------------------------------
+      ///\brief   The update source
+      /// "::update" is needed to avoid confusion with task::update namespace
+      //------------------------------------------
+      boost::shared_ptr<::update::source::CYadoms> m_updateSource;
+
+      //------------------------------------------
+      ///\brief   Indicate if check for update is required (true) or a full update (false)
+      //------------------------------------------
+      bool m_onlyCheckForUpdate;
    };
 
 } //namespace update

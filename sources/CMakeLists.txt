@@ -368,10 +368,32 @@ set(YADOMS_SRC
 	server/task/TaskStatus.cpp
 	server/task/update/Plugin.h
 	server/task/update/Plugin.cpp
+	server/task/update/Widget.h
+	server/task/update/Widget.cpp
 	server/task/update/Yadoms.h
 	server/task/update/Yadoms.cpp
 	server/task/backup/Database.h
 	server/task/backup/Database.cpp
+   
+   
+   server/update/UpdateManager.h
+   server/update/UpdateManager.cpp
+   server/update/UpdateType.h
+   server/update/UpdateType.cpp
+   server/update/source/IUpdateSource.h
+   server/update/source/Plugin.h
+   server/update/source/Plugin.cpp
+   server/update/source/Widget.h
+   server/update/source/Widget.cpp
+   server/update/source/Yadoms.h
+   server/update/source/Yadoms.cpp
+   server/update/worker/IWorker.h
+   server/update/worker/Plugin.h
+   server/update/worker/Plugin.cpp
+   server/update/worker/Widget.h
+   server/update/worker/Widget.cpp
+   server/update/worker/Yadoms.h
+   server/update/worker/Yadoms.cpp
    
 	server/web/IRestHandler.h
 	server/web/IWebServer.h
@@ -406,6 +428,8 @@ set(YADOMS_SRC
 	server/web/rest/service/Recipient.cpp
 	server/web/rest/service/Task.h
 	server/web/rest/service/Task.cpp
+	server/web/rest/service/Update.h
+	server/web/rest/service/Update.cpp
 	server/web/rest/service/Widget.h
 	server/web/rest/service/Widget.cpp
 	
@@ -448,6 +472,9 @@ source_group(server\\startupOptions  server/startupOptions/*.*)
 source_group(server\\task  server/task/*.*)
 source_group(server\\task\\update  server/task/update/*.*)
 source_group(server\\task\\backup  server/task/backup/*.*)
+source_group(server\\update  server/update/*.*)
+source_group(server\\update\\source  server/update/source/*.*)
+source_group(server\\update\\worker  server/update/worker/*.*)
 source_group(server\\web  server/web/*.*)
 source_group(server\\web\\rest  server/web/rest/*.*)
 source_group(server\\web\\rest\\json  server/web/rest/json/*.*)

@@ -54,7 +54,6 @@ void CSupervisor::run()
    boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dal;
    try
    {
-      const std::string pluginsPath = "plugins";
 
       //create the notification center
       boost::shared_ptr<notification::CNotificationCenter> notificationCenter(new notification::CNotificationCenter);   
@@ -78,6 +77,7 @@ void CSupervisor::run()
       taskManager->start();
 
       // Create the Plugin manager
+      const std::string pluginsPath = startupOptions->getPluginsPath();
       boost::shared_ptr<pluginSystem::CManager> pluginManager(new pluginSystem::CManager(pluginsPath, pDataProvider, dal, m_EventHandler, kPluginManagerEvent));
 
       // Start the plugin gateway

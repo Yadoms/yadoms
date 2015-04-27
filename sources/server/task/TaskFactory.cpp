@@ -16,8 +16,8 @@ namespace task {
 
    boost::shared_ptr<ITask> CTaskFactory::createTask(const std::string & type)
    {
-      if (boost::iequals(type, "system.yadomsUpdate"))
-         return boost::shared_ptr<ITask>(new update::CYadoms());
+      //if (boost::iequals(type, "system.yadomsUpdate"))
+      //   return boost::shared_ptr<ITask>(new update::CYadoms());
       
       throw shared::exception::CException("Can't create a task unsing type: " + type);
       //TODO : create other task creation

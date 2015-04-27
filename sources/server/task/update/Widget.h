@@ -1,13 +1,13 @@
 #pragma once
 #include "task/ITask.h"
-#include "update/source/Plugin.h"
+#include "update/source/Widget.h"
 
 namespace task { namespace update {
 
    //------------------------------------------
    ///\brief   Plugin update task. The aim si to update a plugin
    //-----------------------------------------
-   class CPlugin : public ITask
+   class CWidget : public ITask
    {
    public:
       //------------------------------------------
@@ -15,12 +15,12 @@ namespace task { namespace update {
       ///\param [in] updateSource   The update source
       ///\param [in] onlyCheckForUpdate   If true will perform a check for update; if false will perform a complete update
       //------------------------------------------
-      CPlugin(boost::shared_ptr<::update::source::CPlugin> updateSource, bool onlyCheckForUpdate); // "::update" is needed to avoid confusion with task::update namespace
+      CWidget(boost::shared_ptr<::update::source::CWidget> updateSource, bool onlyCheckForUpdate); // "::update" is needed to avoid confusion with task::update namespace
 
       //------------------------------------------
       ///\brief   Destructor
       //------------------------------------------
-      virtual ~CPlugin();
+      virtual ~CWidget();
 
    public:
       // ITask implementation
@@ -38,7 +38,7 @@ namespace task { namespace update {
       ///\brief   The update source
       /// "::update" is needed to avoid confusion with task::update namespace
       //------------------------------------------
-      boost::shared_ptr<::update::source::CPlugin> m_updateSource;
+      boost::shared_ptr<::update::source::CWidget> m_updateSource;
 
       //------------------------------------------
       ///\brief   Indicate if check for update is required (true) or a full update (false)
