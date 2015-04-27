@@ -1,31 +1,30 @@
 #include "stdafx.h"
-
 #include <shared/Log.h>
 #include "task/ITask.h"
+#include "Widget.h"
 
-#include "Plugin.h"
 namespace task { namespace update {
 
-   std::string CPlugin::m_taskName = "system.pluginUpdate";
+   std::string CWidget::m_taskName = "system.widgetUpdate";
 
-   CPlugin::CPlugin(boost::shared_ptr<::update::source::CPlugin> updateSource, bool onlyCheckForUpdate)
+   CWidget::CWidget(boost::shared_ptr<::update::source::CWidget> updateSource, bool onlyCheckForUpdate)
       :m_updateSource(updateSource), m_onlyCheckForUpdate(onlyCheckForUpdate)
    {
    }
 
-   CPlugin::~CPlugin()
+   CWidget::~CWidget()
    {
    }
 
-   const std::string & CPlugin::getName()
+   const std::string & CWidget::getName()
    {
       return m_taskName;
    }
 
-   bool CPlugin::doWork(TaskProgressFunc pFunctor)
+   bool CWidget::doWork(TaskProgressFunc pFunctor)
    {
 
-      YADOMS_LOG(information) << "Start updating plugin...";
+      YADOMS_LOG(information) << "Start updating widget...";
 
       for(int i=1; i<=10; ++i)
       {
@@ -33,7 +32,7 @@ namespace task { namespace update {
          pFunctor(true, i*10.0f, "");
       }
 
-      YADOMS_LOG(information) << "End of updating plugin";
+      YADOMS_LOG(information) << "End of updating widget";
       return true;
    }
 
