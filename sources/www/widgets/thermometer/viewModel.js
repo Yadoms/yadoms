@@ -66,12 +66,11 @@ function ThermometerViewModel()
    };
    
    /**
-    * Dispatch the data to the viewModel
-    * @deviceId device identifier which make the values
-    * @param data data to dispatch
-    * @param deviceId
+    * New acquisition handler
+    * @param searchedDevice Device on which new acquisition was received
+    * @param data Acquisition data
     */
-   this.dispatch = function(device, data) 
+   this.onNewAcquisition = function(device, data) 
    {
       var self = this;	  
 	  
@@ -204,7 +203,7 @@ function ThermometerViewModel()
 	   }
    };	   
   
-   this.getDevicesToListen = function() 
+   this.getDevicesForAcquisitions = function() 
    {
       var result = [];
 

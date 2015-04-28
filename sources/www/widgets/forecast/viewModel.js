@@ -46,12 +46,11 @@ function ForecastViewModel() {
    };
    
    /**
-    * Dispatch the data to the viewModel
-    * @deviceId device identifier which make the values
-    * @param data data to dispatch
-    * @param deviceId
+    * New acquisition handler
+    * @param device Device on which new acquisition was received
+    * @param data Acquisition data
     */
-   this.dispatch = function(device, data) {
+   this.onNewAcquisition = function(device, data) {
       var self = this;
 
       if (device == self.widget.configuration.device) 
@@ -166,7 +165,7 @@ function ForecastViewModel() {
 	  self.period ( self.TempPeriod.slice ( 0, self.DayNbre() ));		   
    };
  
-   this.getDevicesToListen = function() {
+   this.getDevicesForAcquisitions = function() {
       var result = [];
 
       //Add the keyword Forecast
