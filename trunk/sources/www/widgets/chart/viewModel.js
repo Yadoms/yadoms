@@ -384,12 +384,11 @@ widgetViewModelCtor =
       };
 
       /**
-       * Dispatch the data to the viewModel
-       * @deviceId device identifier which make the values
-       * @param data data to dispatch
-       * @param device
+       * New acquisition handler
+       * @param searchedDevice Device on which new acquisition was received
+       * @param data Acquisition data
        */
-      this.dispatch = function(searchedDevice, data) {
+      this.onNewAcquisition = function(searchedDevice, data) {
          var self = this;
          try {
             $.each(self.widget.configuration.devices, function (index, device) {
@@ -403,7 +402,7 @@ widgetViewModelCtor =
          }
       };
 
-      this.getDevicesToListen = function() {
+      this.getDevicesForAcquisitions = function() {
          var self = this;
          var result = [];
 

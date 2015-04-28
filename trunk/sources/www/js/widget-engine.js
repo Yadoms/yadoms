@@ -232,17 +232,17 @@ function dispatchToWidgets(acq) {
 
    $.each(page.widgets, function(widgetIndex, widget) {
       //we ask which devices are needed for this widget instance
-      if (!isNullOrUndefined(widget.viewModel.getDevicesToListen)) {
-         var list = widget.viewModel.getDevicesToListen();
+      if (!isNullOrUndefined(widget.viewModel.getDevicesForAcquisitions)) {
+         var list = widget.viewModel.getDevicesForAcquisitions();
          $.each(list, function(deviceIndex, device) {
             if (!isNullOrUndefined(device.keywordId)) {
                //foreach device we ask for last values
                if (device.keywordId == acq.keywordId) {
-                  console.debug("Dispatch : " + JSON.stringify(acq));
+                  console.debug("onNewAcquisition : " + JSON.stringify(acq));
 
-                  //we dispatch the device to the widget if the widget support the method
-                  if (widget.viewModel.dispatch !== undefined)
-                        widget.viewModel.dispatch(device, acq);
+                  //we signal the new acquisition to the widget if the widget support the method
+                  if (widget.viewModel.onNewAcquisition !== undefined)
+                        widget.viewModel.onNewAcquisition(device, acq);
                }
             }
          });
@@ -262,8 +262,8 @@ function updateWebSocketFilter() {
       //we build the collection of keywordId to ask
       $.each(page.widgets, function(widgetIndex, widget) {
          //we ask which devices are needed for this widget instance
-         if (!isNullOrUndefined(widget.viewModel.getDevicesToListen)) {
-            var list = widget.viewModel.getDevicesToListen();
+         if (!isNullOrUndefined(widget.viewModel.getDevicesForAcquisitions)) {
+            var list = widget.viewModel.getDevicesForAcquisitions();
             $.each(list, function(deviceIndex, device) {
                if (!isNullOrUndefined(device.keywordId)) {
                   collection.push(device.keywordId);
@@ -289,8 +289,8 @@ function updateWidgetsPolling() {
 }
 
 function updateWidgetPolling(widget) {
-   if (!isNullOrUndefined(widget.viewModel.getDevicesToListen)) {
-      var list = widget.viewModel.getDevicesToListen();
+   if (!isNullOrUndefined(widget.viewModel.getDevicesForAcquisitions)) {
+      var list = widget.viewModel.getDevicesForAcquisitions();
       $.each(list, function(deviceIndex, device) {
          if ((!isNullOrUndefined(device.deviceId)) && (!isNullOrUndefined(device.keywordId))) {
             //foreach device we ask for last values
@@ -303,13 +303,13 @@ function updateWidgetPolling(widget) {
                      return;
                   }
 
-                  console.debug("Dispatch : " + JSON.stringify(data.data));
+                  console.debug("onNewAcquisition : " + JSON.stringify(data.data));
 
                   var acq = AcquisitionManager.factory(data.data);
 
-                  //we dispatch the device to the widget if the widget support the method
-                  if (widget.viewModel.dispatch !== undefined)
-                     widget.viewModel.dispatch(device, acq);
+                  //we signal the new acquisition to the widget if the widget support the method
+                  if (widget.viewModel.onNewAcquisition !== undefined)
+                     widget.viewModel.onNewAcquisition(device, acq);
                });
             //we don't need to manage the fail because the server is online
             //it happens that server is offline but it will be shown next time by the first check

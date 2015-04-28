@@ -62,7 +62,7 @@ function ClockViewModel() {
 
    };
 
-   this.getDevicesToListen = function() {
+   this.getDevicesForAcquisitions = function() {
       //we are not linked to any device
       return [];
    }
