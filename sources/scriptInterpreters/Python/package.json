@@ -1,0 +1,10 @@
+{
+  "name": "Python",
+  "description": "Python 2.7.x rules interpreter",
+  "version": "0.1",
+  "releaseType": "beta",
+  "author": "yadoms-team",
+  "url": "http://sourceforge.net/projects/yadoms/",
+  "supportedPlatforms": "all",
+  "codeTemplate": ""
+}

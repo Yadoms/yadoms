@@ -76,8 +76,9 @@ if(PYTHONLIBS_FOUND)
    ## Post-build commands
    ## Copy files to build directory
    #########################################
-   #SCRIPT_INTERPRETER_POST_BUILD_COPY_FILE(python fileToCopy)
-   #SCRIPT_INTERPRETER_POST_BUILD_COPY_DIRECTORY(python directoryToCopy)
+   SCRIPT_INTERPRETER_POST_BUILD_COPY_FILE(python package.json)
+   SCRIPT_INTERPRETER_POST_BUILD_COPY_FILE(python icon.png)
+   SCRIPT_INTERPRETER_POST_BUILD_COPY_DIRECTORY(python locales)
    
    #########################################
    ## Add pre-build step to generate swigpyrun.h file
