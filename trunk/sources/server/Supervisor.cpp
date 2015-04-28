@@ -98,6 +98,7 @@ void CSupervisor::run()
 
       web::poco::CWebServer webServer(webServerIp, webServerPort, webServerPath, "/rest/", "/ws");
       webServer.getConfigurator()->websiteHandlerAddAlias("plugins", pluginsPath);
+      webServer.getConfigurator()->websiteHandlerAddAlias("scriptInterpreters", "scriptInterpreters");
       webServer.getConfigurator()->configureAuthentication(boost::shared_ptr<authentication::IAuthentication>(new authentication::CBasicAuthentication(dal->getConfigurationManager(), startupOptions->getNoPasswordFlag())));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPlugin(pDataProvider, pluginManager, *pluginGateway)));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CDevice(pDataProvider, *pluginGateway)));

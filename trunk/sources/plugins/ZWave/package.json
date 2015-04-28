@@ -5,7 +5,7 @@
    "releaseType": "beta",
    "author": "yadoms-team",
    "url": "http://sourceforge.net/projects/yadoms/",
-   "SupportedPlatforms": "all",
+   "supportedPlatforms": "all",
    "configurationSchema": 
    {
       "Serial Port" :
