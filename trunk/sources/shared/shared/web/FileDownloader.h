@@ -1,13 +1,16 @@
 #pragma once
 
-#include "Uri.h"
+#include <shared/DataContainer.h>
+#include <Poco/URI.h>
+#include <Poco/Path.h>
+#include <shared/Export.h>
 
-namespace tools { namespace web { 
+namespace shared { namespace web { 
 
    //---------------------------------
    ///\brief Utility (static) class for downloading files
    //---------------------------------
-   class CFileDownloader
+   class YADOMS_SHARED_EXPORT CFileDownloader
    {
    private:
       //---------------------------------
@@ -58,8 +61,30 @@ namespace tools { namespace web {
       ///\throw   boost::system::system_error : if download fails
       ///\throw   shared::exception::CException : if url is not valid
       //---------------------------------
-      static int downloadFile(const CUri & uri, std::ostream & output, ProgressFunc reporter);
+      static int downloadFile(const Poco::URI & uri, std::ostream & output, ProgressFunc reporter);
+
+
+      //---------------------------------
+      ///\brief Download a JSON file (in memory)
+      ///\param [in] jsonPath : the JSON file to read
+      ///\param [in] reporter : a function pointer for reporting progress (can be used with CFileDownloader::reportProgressToLog)
+      ///\return A DataContainer which handles the JSON content
+      //---------------------------------
+      static shared::CDataContainer downloadInMemoryJsonFile(const Poco::URI & jsonPath, ProgressFunc reporter);
+
+      //---------------------------------
+      ///\brief Download a file and check MD5 hash
+      ///\param [in] toDownload        The URI to download
+      ///\param [in] location          The file download location (file will be created)
+      ///\param [in] md5HashExpected   The expected file MD5 hash
+      ///\param [in] reporter          A function pointer for reporting progress (can be used with CFileDownloader::reportProgressToLog)
+      ///\return The downloaded location
+      ///\throw   boost::system::system_error : if download fails
+      ///\throw   shared::exception::CException : if url is not valid
+      ///\throw   shared::exception::CException : if md5 hash is not valid
+      //---------------------------------
+      static Poco::Path downloadFileAndVerify(const Poco::URI & toDownload, const Poco::Path & location, const std::string & md5HashExpected, ProgressFunc reporter);
    };
 
 } //namespace web
-} //namespace tools
+} //namespace shared

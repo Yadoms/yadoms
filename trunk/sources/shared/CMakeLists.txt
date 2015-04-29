@@ -47,6 +47,9 @@ set(SHARED_LIB_SRC
    shared/communication/IReceiveBufferHandler.h
    shared/communication/PortException.hpp
 	
+	shared/compression/Extract.h
+	shared/compression/Extract.cpp
+
 	shared/encryption/Xor.h
 	shared/encryption/Xor.cpp
 	shared/encryption/Base64.h
@@ -196,6 +199,13 @@ set(SHARED_LIB_SRC
 
 	shared/tools/Random.h
 	shared/tools/Random.cpp
+
+	shared/web/FileDownloader.h
+	shared/web/FileDownloader.cpp
+	shared/web/UriHelpers.h
+	shared/web/UriHelpers.cpp
+	shared/web/exception/InvalidHash.hpp
+	shared/web/exception/DownloadFailed.hpp
 )
 
 #Append platform specific files
@@ -248,6 +258,7 @@ ENDIF()
 
 # Define project folders
 source_group(communication shared/communication/*.*)
+source_group(compression shared/shared/compression/*.* )	
 source_group(encryption shared/shared/encryption/*.* )	
 source_group(enumeration shared/shared/enumeration/*.* )	
 source_group(event shared/event/*.*)
@@ -264,6 +275,8 @@ source_group(serialization shared/shared/serialization/*.* )
 source_group(script shared/shared/script/*.* )	
 source_group(script\\yScriptApi shared/shared/script/yScriptApi/*.* )	
 source_group(tools shared/shared/tools/*.* )	
+source_group(web shared/shared/web/*.* )	
+source_group(web\\exception shared/shared/web/exception/*.* )	
 
 source_group(platformSpecific\\windows shared/windows/shared/*.*)
 source_group(platformSpecific\\linux shared/linux/shared/*.*)

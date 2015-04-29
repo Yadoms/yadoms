@@ -9,8 +9,8 @@
 <script>
 
    $("#btn-check-for-update").unbind("click").bind("click", function() {
-      TaskManager.createTask(TaskManager.knownTaskType.yadomsUpdate, function(task) {
-         console.log("Task created");
+      UpdateManager.updateYadoms(function(){
+         console.log("Update ask to server");
       });
    } );
 

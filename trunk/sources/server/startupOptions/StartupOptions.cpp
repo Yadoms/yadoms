@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Loader.h"
+#include "StartupOptions.h"
 #include <Poco/Util/Option.h>
 #include <Poco/Util/OptionSet.h>
 #include <Poco/Util/IntValidator.h>
@@ -113,8 +113,18 @@ namespace startupOptions
       return m_configContainer.getString("server.pluginsPath", "plugins");
    }
 
+   const std::string CStartupOptions::getScriptInterpretersPath() const
+   {
+      return m_configContainer.getString("server.scriptInterpretersPath", "scriptInterpreters");
+   }
+
    bool CStartupOptions::getIsRunningAsService() const
    {
       return m_configContainer.getBool("application.runAsService", false);
+   }
+
+   const std::string CStartupOptions::getUpdateSiteUri() const
+   {
+      return m_configContainer.getString("server.updateSite", "http://www.yadoms.com/downloads/update/");
    }
 } // namespace startupOptions

@@ -32,7 +32,7 @@ CWebSocketRequestHandler::~CWebSocketRequestHandler()
 
 void CWebSocketRequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request, Poco::Net::HTTPServerResponse& response)
 {
-   //TODO : notification : refaire les enregistrements
+   YADOMS_LOG(information) << "New websocket client";
 
    std::vector<boost::shared_ptr<notification::IObserver> > observers;
 
