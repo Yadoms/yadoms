@@ -50,7 +50,14 @@ namespace startupOptions
       /// \return     The plugin path
       /// \note       If not exist, it returns "plugins"
       //--------------------------------------------------------------
-      virtual const std::string getPluginsPath() const = 0;
+      virtual const std::string getPluginsPath() const = 0;    
+      
+      //--------------------------------------------------------------
+      /// \brief	    Get the script interpreters path
+      /// \return     The script interpreters path
+      /// \note       If not exist, it returns "scriptInterpreters"
+      //--------------------------------------------------------------
+      virtual const std::string getScriptInterpretersPath() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Get the debug flag
@@ -69,6 +76,13 @@ namespace startupOptions
       /// \return     true if yadoms is runnings as a service
       //--------------------------------------------------------------
       virtual bool getIsRunningAsService() const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief	    Get the update site URI
+      /// \return     The update site URI
+      /// \note       If not exist, it returns "http://www.yadoms.com/downloads/update/"
+      //--------------------------------------------------------------
+      virtual const std::string getUpdateSiteUri() const = 0;
    };
 
 } // namespace startupOptions

@@ -9,7 +9,7 @@
 #include <shared/exception/OutOfRange.hpp>
 #include "database/sqlite/SQLiteDatabaseTables.h"
 #include "database/sqlite/Query.h"
-#include "tools/tools/web/UriSinglePatternValidator.h"
+#include <Poco/URI.h>
 
 namespace database { namespace sqlite { namespace requesters { 
 
@@ -38,12 +38,25 @@ namespace database { namespace sqlite { namespace requesters {
    // IKeywordRequester implementation
    void CKeyword::addKeyword(const entities::CKeyword& newKeyword)
    {
-      //validate keyword and capacity names
-      if(!tools::web::CUriSinglePatternValidator::isValid(newKeyword.CapacityName()))
-         throw shared::exception::COutOfRange("The capacity name do not match naming rules");
-      if (!tools::web::CUriSinglePatternValidator::isValid(newKeyword.Name()))
-         throw shared::exception::COutOfRange("The keyword name do not match naming rules");
-      
+      //validate keyword and capacity names; they must match URI pattern
+      try
+      {
+         Poco::URI checkCapacity(newKeyword.CapacityName());
+      }
+      catch (Poco::SyntaxException & ex)
+      {
+         throw shared::exception::COutOfRange("The capacity name do not match naming rules : " + ex.displayText());
+      }
+
+      try
+      {
+         Poco::URI checkKeyword(newKeyword.Name());
+      }
+      catch (Poco::SyntaxException & ex)
+      {
+         throw shared::exception::COutOfRange("The keyword name do not match naming rules : " + ex.displayText());
+      }
+
 
 
       CQuery qSelect;

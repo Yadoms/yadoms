@@ -1,9 +1,6 @@
 #pragma once
 
 #include <shared/event/EventHandler.hpp>
-#include "ApplicationStopHandler.h"
-#include "startupOptions/IStartupOptions.h"
-#include <Poco/Thread.h>
 #include <Poco/Runnable.h>
 
 //-----------------------------------------------------------------------------

@@ -19,9 +19,9 @@
 #include "web/rest/service/System.h"
 #include "web/rest/service/Task.h"
 #include "web/rest/service/Recipient.h"
+#include "web/rest/service/Update.h"
 #include <shared/ThreadBase.h>
 #include <shared/Peripherals.h>
-#include "tools/web/FileDownloader.h"
 #include "task/Scheduler.h"
 #include "task/update/Plugin.h"
 #include "task/backup/Database.h"
@@ -33,7 +33,7 @@
 #include <shared/ServiceLocator.h>
 #include <Poco/Util/ServerApplication.h>
 #include <tools/OperatingSystem.h>
-
+#include "startupOptions/IStartupOptions.h"
 
 CSupervisor::CSupervisor(boost::shared_ptr<shared::event::CEventHandler> applicationEventHandler, const int applicationStopCode)
    :m_EventHandler(new shared::event::CEventHandler), m_applicationEventHandler(applicationEventHandler), m_applicationStopCode(applicationStopCode)
@@ -76,6 +76,9 @@ void CSupervisor::run()
       boost::shared_ptr<task::CScheduler> taskManager(new task::CScheduler(m_EventHandler, kSystemEvent));
       taskManager->start();
 
+      // Create the update manager
+      boost::shared_ptr<update::CUpdateManager> updateManager(new update::CUpdateManager(taskManager));
+         
       // Create the Plugin manager
       const std::string pluginsPath = startupOptions->getPluginsPath();
       boost::shared_ptr<pluginSystem::CManager> pluginManager(new pluginSystem::CManager(pluginsPath, pDataProvider, dal, m_EventHandler, kPluginManagerEvent));
@@ -95,10 +98,11 @@ void CSupervisor::run()
       const std::string & webServerIp = startupOptions->getWebServerIPAddress();
       const std::string webServerPort = boost::lexical_cast<std::string>(startupOptions->getWebServerPortNumber());
       const std::string & webServerPath = startupOptions->getWebServerInitialPath();
+      const std::string scriptInterpretersPath = startupOptions->getScriptInterpretersPath();
 
       web::poco::CWebServer webServer(webServerIp, webServerPort, webServerPath, "/rest/", "/ws");
       webServer.getConfigurator()->websiteHandlerAddAlias("plugins", pluginsPath);
-      webServer.getConfigurator()->websiteHandlerAddAlias("scriptInterpreters", "scriptInterpreters");
+      webServer.getConfigurator()->websiteHandlerAddAlias("scriptInterpreters", scriptInterpretersPath);
       webServer.getConfigurator()->configureAuthentication(boost::shared_ptr<authentication::IAuthentication>(new authentication::CBasicAuthentication(dal->getConfigurationManager(), startupOptions->getNoPasswordFlag())));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPlugin(pDataProvider, pluginManager, *pluginGateway)));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CDevice(pDataProvider, *pluginGateway)));
@@ -112,6 +116,7 @@ void CSupervisor::run()
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CAutomationRule(pDataProvider, automationRulesManager)));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CTask(taskManager)));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CRecipient(pDataProvider)));
+      webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CUpdate(updateManager)));
 
       webServer.start();
 

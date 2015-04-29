@@ -346,8 +346,8 @@ set(YADOMS_SRC
    
    
 	server/startupOptions/IStartupOptions.h
-	server/startupOptions/Loader.h
-	server/startupOptions/Loader.cpp
+	server/startupOptions/StartupOptions.h
+	server/startupOptions/StartupOptions.cpp
 	server/startupOptions/MustExistPathValidator.h
 	server/startupOptions/MustExistPathValidator.cpp
 	
@@ -380,6 +380,8 @@ set(YADOMS_SRC
    server/update/UpdateManager.cpp
    server/update/UpdateType.h
    server/update/UpdateType.cpp
+   server/update/info/UpdateSite.h
+   server/update/info/UpdateSite.cpp
    server/update/source/IUpdateSource.h
    server/update/source/Plugin.h
    server/update/source/Plugin.cpp
@@ -473,6 +475,7 @@ source_group(server\\task  server/task/*.*)
 source_group(server\\task\\update  server/task/update/*.*)
 source_group(server\\task\\backup  server/task/backup/*.*)
 source_group(server\\update  server/update/*.*)
+source_group(server\\update\\info  server/update/info/*.*)
 source_group(server\\update\\source  server/update/source/*.*)
 source_group(server\\update\\worker  server/update/worker/*.*)
 source_group(server\\web  server/web/*.*)
@@ -487,12 +490,6 @@ set(YADOMS_SRC ${YADOMS_SRC}
 	server/tools/tools/IOperatingSystemIntegration.h
 	server/tools/tools/Version.h
 	server/tools/tools/Version.cpp
-	server/tools/tools/web/FileDownloader.h
-	server/tools/tools/web/FileDownloader.cpp
-	server/tools/tools/web/Uri.h
-	server/tools/tools/web/Uri.cpp
-	server/tools/tools/web/UriSinglePatternValidator.h
-	server/tools/tools/web/UriSinglePatternValidator.cpp
 )
 
 IF(WIN32)
@@ -537,7 +534,6 @@ ELSE()
 ENDIF()
 
 source_group(server\\tools tools/*.*)
-source_group(server\\tools\\web tools/web/*.*)
 source_group(server\\tools\\platformSpecific\\windows server/tools/windows/tools/*.*)
 source_group(server\\tools\\platformSpecific\\windows\\service server/tools/windows/tools/service/*.*)
 source_group(server\\tools\\platformSpecific\\linux server/tools/linux/tools/*.*)

@@ -1,21 +1,14 @@
 #include "stdafx.h"
 #include "Application.h"
 #include "logConfiguration/LogConfiguration.h"
+#include <shared/Log.h>
 
 #include <Poco/Util/Option.h>
 #include <Poco/Util/OptionSet.h>
 #include <Poco/Util/HelpFormatter.h>
-#include <Poco/ErrorHandler.h>
-#include <Poco/NestedDiagnosticContext.h>
-
-#include <Poco/Task.h>
-#include <Poco/TaskManager.h>
-#include <shared/Log.h>
 
 #include "Supervisor.h"
-#include <csignal>
 #include "ErrorHandler.h"
-#include "startupOptions/Loader.h"
 #include "ApplicationStopHandler.h"
 #include "RunningInformation.h"
 #include <shared/ServiceLocator.h>

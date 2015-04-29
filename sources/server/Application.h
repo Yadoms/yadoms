@@ -1,7 +1,7 @@
 #pragma once
 #include <Poco/Util/ServerApplication.h>
 #include <Poco/Util/OptionSet.h>
-#include "startupOptions/Loader.h"
+#include "startupOptions/StartupOptions.h"
 #include "IRunningInformation.h"
 #include "ApplicationStopHandler.h"
 #include <shared/event/EventHandler.hpp>
