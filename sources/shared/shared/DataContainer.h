@@ -11,6 +11,7 @@
 #include <boost/type_traits/is_enum.hpp>
 #include "Field.hpp"
 #include <boost/make_shared.hpp>
+#include "StringExtension.h"
 namespace shared
 {
    //--------------------------------------------------------------
@@ -227,7 +228,7 @@ namespace shared
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
       template<class T>
-      inline T get(const std::string& parameterName, const char pathChar = '.') const; 
+      inline T get(const std::string& parameterName = shared::CStringExtension::EmptyString, const char pathChar = '.') const; 
       
       //--------------------------------------------------------------
       /// \brief	    Get parameter value
@@ -288,7 +289,7 @@ namespace shared
       /// \throw      shared::exception::COutOfRange if parameter can not be converted
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
-      const char* get(const std::string & parameterName, const char pathChar = '.');
+      const char* get(const std::string & parameterName = shared::CStringExtension::EmptyString, const char pathChar = '.');
 
       //--------------------------------------------------------------
       /// \brief	    Get parameter value
@@ -297,7 +298,7 @@ namespace shared
       /// \throw      shared::exception::COutOfRange if parameter can not be converted
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
-      const char* get(const char* parameterName, const char pathChar = '.');
+      const char* get(const char* parameterName = "", const char pathChar = '.');
 
       //--------------------------------------------------------------
       //
@@ -369,7 +370,7 @@ namespace shared
       /// \throw      shared::exception::COutOfRange if parameter can not be converted
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
-      bool containsChild(const std::string& parameterName, const char pathChar = '.') const;
+      bool containsChild(const std::string& parameterName = shared::CStringExtension::EmptyString, const char pathChar = '.') const;
 
       //--------------------------------------------------------------
       /// \brief	    Check if a node is terminal value
@@ -379,7 +380,7 @@ namespace shared
       /// \throw      shared::exception::COutOfRange if parameter can not be converted
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
-      bool containsValue(const std::string& parameterName, const char pathChar = '.') const;
+      bool containsValue(const std::string& parameterName = shared::CStringExtension::EmptyString, const char pathChar = '.') const;
 
       //--------------------------------------------------------------
       /// \brief		Equality operator
