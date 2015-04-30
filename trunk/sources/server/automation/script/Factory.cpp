@@ -11,6 +11,9 @@
 #include "GeneralInfo.h"
 #include "Properties.h"
 #include "PocoLogger.h"
+#include "tools/SupportedPlatformsChecker.h"
+#include "startupOptions/IStartupOptions.h"
+#include "shared/ServiceLocator.h"
 
 namespace automation { namespace script
 {
@@ -42,10 +45,15 @@ void CFactory::loadInterpreters()
       if (m_loadedInterpreters.find(interperterKeyName) == m_loadedInterpreters.end())
       {
          // Not already loaded
+
+         // Check if compatible with current platform
          try
          {
-            boost::shared_ptr<IInterpreterLibrary> library(new CInterpreterLibrary(toLibraryPath(interpreterDirectory->filename().string())));
-            m_loadedInterpreters[interperterKeyName] = library;
+            if (isInterpreterCompatibleWithPlatform(interperterKeyName))
+            {
+               boost::shared_ptr<IInterpreterLibrary> library(new CInterpreterLibrary(toLibraryPath(interpreterDirectory->filename().string())));
+               m_loadedInterpreters[interperterKeyName] = library;
+            }
          }
          catch (shared::exception::CInvalidParameter& e)
          {
@@ -53,6 +61,25 @@ void CFactory::loadInterpreters()
          }
       }
    }
+}
+
+bool CFactory::isInterpreterCompatibleWithPlatform(const std::string& interpreterName) const
+{
+   shared::CDataContainer container;
+   try
+   {
+      boost::shared_ptr<startupOptions::IStartupOptions> startupOptions = shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>();
+      const boost::filesystem::path interpreterPath(startupOptions->getScriptInterpretersPath());
+      boost::filesystem::path packageFile;
+      packageFile = interpreterPath / interpreterName / "package.json";
+      container.deserializeFromFile(packageFile.string());
+   }
+   catch (shared::exception::CException& e)
+   {
+      throw shared::exception::CInvalidParameter(std::string("Error reading package.json : ") + e.what());   	
+   }
+
+   return tools::CSupportedPlatformsChecker::isSupported(container.get<shared::CDataContainer>("supportedPlatforms"));
 }
 
 boost::filesystem::path CFactory::toLibraryPath(const std::string& interpreterName) const
