@@ -112,3 +112,24 @@ KeywordManager.getAll = function (callback, sync) {
         });
 
 };
+
+/**
+ * Allow to send a command
+ */
+KeywordManager.sendCommand = function(keywordId, data) {
+   $.ajax({
+      type: "POST",
+      url: "/rest/device/keyword/" + keywordId + "/command",
+      data: data,
+      contentType: "application/text; charset=utf-8",
+      dataType: "json"
+   })
+       .done(function(data) {
+          //we parse the json answer
+          if (data.result != "true")
+          {
+             notifyError($.t("objects.widget.errorSendingCommand"), JSON.stringify(data));
+          }
+       })
+       .fail(function() {notifyError($.t("objects.widget.errorSendingCommand")); });
+};
