@@ -488,6 +488,8 @@ source_group(server\\web\\ws  server/web/ws/*.*)
 set(YADOMS_SRC ${YADOMS_SRC}
 	server/tools/tools/IApplication.h
 	server/tools/tools/IOperatingSystemIntegration.h
+	server/tools/tools/SupportedPlatformsChecker.h
+	server/tools/tools/SupportedPlatformsChecker.cpp
 	server/tools/tools/Version.h
 	server/tools/tools/Version.cpp
 )

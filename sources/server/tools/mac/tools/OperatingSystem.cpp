@@ -68,5 +68,17 @@ namespace tools {
          return false;
       }
    }
+
+   std::string COperatingSystem::getName()
+   {
+      return "mac";
+   }
+   
+   CVersion COperatingSystem::getVersion()
+   {
+      // Poco::Environment::osVersion() already returns version like "10.4.0"
+      CVersion version(Poco::Environment::osVersion());
+      return version;
+   }
    
 } //namespace tools

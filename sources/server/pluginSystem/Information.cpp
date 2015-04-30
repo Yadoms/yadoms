@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "Information.h"
-#include <shared/exception/InvalidParameter.hpp>
+#include <shared/exception/NotImplemented.hpp>
 #include <shared/StringExtension.h>
-#include <shared/DataContainer.h>
 #include <boost/regex.hpp>
+#include "tools/SupportedPlatformsChecker.h"
 
 namespace pluginSystem
 {
@@ -19,7 +19,7 @@ static const ReleaseTypeValuesNameList ReleaseTypeValuesNames = boost::assign::m
 
 
 CInformation::CInformation(const boost::filesystem::path& pluginPath)
-   :m_path(pluginPath)
+   :m_path(pluginPath), m_isSupportedOnThisPlatform(true)
 {
    shared::CDataContainer container;
    try
@@ -68,19 +68,27 @@ CInformation::CInformation(const boost::filesystem::path& pluginPath)
       if (m_author.empty())
          throw shared::exception::CInvalidParameter("Error reading package.json : plugin author can not be empty");
 
-      if (container.exists("url"))
+      if (container.containsValue("url"))
          m_url = container.get<std::string>("url");   // No check on URL
       else
          m_url = shared::CStringExtension::EmptyString;
 
 
-      if (container.exists("supportManuallyDeviceCreation"))
+      if (container.containsValue("supportedPlatforms") || container.containsChild("supportedPlatforms"))
+         m_isSupportedOnThisPlatform = tools::CSupportedPlatformsChecker::isSupported(container.get<shared::CDataContainer>("supportedPlatforms"));
+      else
+         m_isSupportedOnThisPlatform = true;
+
+
+      if (container.containsValue("supportManuallyDeviceCreation"))
          m_supportManuallyCreatedDevice = container.get<bool>("supportManuallyDeviceCreation");  
       else
          m_supportManuallyCreatedDevice = false;
    }
    catch (shared::exception::CException & e)
    {
+      // Set plugin as not supported
+      m_isSupportedOnThisPlatform = false;
       throw shared::exception::CInvalidParameter(std::string("Error reading package.json : data not found : ") + e.what());
    }
 }
@@ -148,7 +156,12 @@ std::string CInformation::toString() const
    return formatedInformations.str();
 }
 
-const bool CInformation::getSupportManuallyCreatedDevice() const
+bool CInformation::isSupportedOnThisPlatform() const
+{
+   return m_isSupportedOnThisPlatform;
+}
+
+bool CInformation::getSupportManuallyCreatedDevice() const
 {
    return m_supportManuallyCreatedDevice;
 }

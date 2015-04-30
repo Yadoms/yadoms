@@ -1,6 +1,7 @@
 #pragma once
 
 #include <shared/plugin/information/IInformation.h>
+#include <shared/DataContainer.h>
 
 namespace pluginSystem
 {
@@ -26,9 +27,10 @@ namespace pluginSystem
       virtual const shared::plugin::information::EReleaseType getReleaseType() const;
       virtual const std::string& getAuthor() const;
       virtual const std::string& getUrl() const;
-      virtual std::string toString() const;
       virtual std::string getIdentity() const;
-      virtual const bool getSupportManuallyCreatedDevice() const;
+      virtual std::string toString() const;
+      virtual bool isSupportedOnThisPlatform() const;
+      virtual bool getSupportManuallyCreatedDevice() const;
       // [END] shared::plugin::IInformation implementation
 
       //--------------------------------------------------------------
@@ -82,6 +84,11 @@ namespace pluginSystem
       /// \brief	    true if the plugin support manually created devices
       //--------------------------------------------------------------
       bool m_supportManuallyCreatedDevice;
+      
+      //--------------------------------------------------------------
+      /// \brief	    Flag indicating if plugin is supported on this platform
+      //--------------------------------------------------------------
+      bool m_isSupportedOnThisPlatform;
    };
 
 } // namespace pluginSystem
