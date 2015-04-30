@@ -242,6 +242,48 @@ BOOST_AUTO_TEST_CASE(Serialization)
 }
 
 
+BOOST_AUTO_TEST_CASE(CheckExistance)
+{
+
+   const std::string defaultConf("{"
+      "\"BoolParameter\": \"true\","
+      "\"DecimalParameter\": \"18.4\","
+      "\"EnumParameter\": \"12\","
+      "\"EnumAsStringParameter\": \"EnumValue1\","
+      "\"IntParameter\": \"42\","
+      "\"Serial port\": \"tty0\","
+      "\"StringParameter\": \"Yadoms is so powerful !\","
+      "\"DateTimeParameter\": \"20140702T113500\","
+      "\"MySection\": {"
+      "\"SubIntParameter\": \"123\","
+      "\"SubStringParameter\": \"Just a string parameter in the sub-section\""
+      "}"
+      "}");
+
+   shared::CDataContainer cfg(defaultConf);
+
+   //check path existance
+   BOOST_CHECK_EQUAL(cfg.exists("BoolParameter"), true);
+   BOOST_CHECK_EQUAL(cfg.exists("MySection"), true);
+   BOOST_CHECK_EQUAL(cfg.exists("MySection.SubIntParameter"), true);
+
+   BOOST_CHECK_EQUAL(cfg.exists("SubIntParameter"), false);
+   BOOST_CHECK_EQUAL(cfg.exists("MySection2"), false);
+   BOOST_CHECK_EQUAL(cfg.exists("String Parameter"), false);
+
+   //check child existance
+   BOOST_CHECK_EQUAL(cfg.containsChild("MySection"), true);
+   BOOST_CHECK_EQUAL(cfg.containsChild("BoolParameter"), false);
+   BOOST_CHECK_EQUAL(cfg.containsChild("MySection.SubIntParameter"), false);
+
+   //check value existance
+   BOOST_CHECK_EQUAL(cfg.containsValue("MySection"), false);
+   BOOST_CHECK_EQUAL(cfg.containsValue("BoolParameter"), true);
+   BOOST_CHECK_EQUAL(cfg.containsValue("MySection.SubIntParameter"), true);
+
+}
+
+
 class CTestClass : public shared::IDataContainable
 {
 public:
@@ -392,7 +434,7 @@ BOOST_AUTO_TEST_CASE(Path)
    //no path using separator 0x00
    dc.set("secD.secE.valC", fi, 0x00);
    BOOST_CHECK_EQUAL(dc.get<int>("secD.secE.valC", 0x00), fi());
-   BOOST_CHECK_EQUAL(dc.hasValue("secD.secE.valC"), false);
+   BOOST_CHECK_EQUAL(dc.exists("secD.secE.valC"), false);
    BOOST_CHECK_THROW(dc.get<int>("secD.secE.valC"), std::exception);
    BOOST_CHECK_THROW(dc.get<shared::CDataContainer>("secD"), std::exception);
 

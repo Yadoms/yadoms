@@ -15,7 +15,7 @@ ENDIF()
 # List subdirectories here
 add_subdirectory(communication)
 add_subdirectory(event)
-add_subdirectory(notification)
+#add_subdirectory(notification)
 
 
 

@@ -305,7 +305,7 @@ void CRfxLanXpl::OnSendDeviceCommand(boost::shared_ptr<const yApi::IDeviceComman
          std::string source = details.get<std::string>("source");
 
          shared::CDataContainer innerDetails = shared::CDataContainer::EmptyContainer;
-         if(details.hasValue("innerDetails"))
+         if(details.exists("innerDetails"))
             innerDetails = details.get<shared::CDataContainer>("innerDetails");
 
          if (m_deviceManager->isHandled(source))

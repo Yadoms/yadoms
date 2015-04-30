@@ -185,7 +185,7 @@
 ///       write the deserialize() part for one field
 //-------------------------------------------------------
 #define DECLARE_ENTITY_FILL_FIELD_CONTENT(r, _classname, elem)                                                                                                    \
-    if(initialData.hasValue(ENTITY_FIELD_SERIALIZATION_IDENTIFIER(elem)))                                                                                         \
+    if(initialData.exists(ENTITY_FIELD_SERIALIZATION_IDENTIFIER(elem)))                                                                                         \
       ENTITY_FIELD_NAME(elem) = initialData.get< ENTITY_FIELD_TYPE(elem) >(ENTITY_FIELD_SERIALIZATION_IDENTIFIER(elem));
 
 

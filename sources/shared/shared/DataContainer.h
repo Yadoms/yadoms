@@ -354,13 +354,32 @@ namespace shared
       //--------------------------------------------------------------
 
       //--------------------------------------------------------------
-      /// \brief	    Check if parameter value is present
+      /// \brief	    Check if parameter is present
       /// \param [in] parameterName    Name of the parameter
       /// \param [in] pathChar         The character used for path separator (default is '.' : standard path, can be 0x00 to disable path, or any char '/', ... )
       /// \return     true if parameter found
       //--------------------------------------------------------------
-      bool hasValue(const std::string& parameterName, const char pathChar = '.') const;
+      bool exists(const std::string& parameterName, const char pathChar = '.') const;
 
+      //--------------------------------------------------------------
+      /// \brief	    Check if a node contains at least a child
+      /// \param [in] parameterName    Name of the parameter
+      /// \param [in] pathChar         The path spearator to use (default is '.')
+      /// \return     true if the parameter contains child (CDataContainer), false if it is a termination node with data
+      /// \throw      shared::exception::COutOfRange if parameter can not be converted
+      /// \throw      shared::exception::CInvalidParameter if parameter is not found
+      //--------------------------------------------------------------
+      bool containsChild(const std::string& parameterName, const char pathChar = '.') const;
+
+      //--------------------------------------------------------------
+      /// \brief	    Check if a node is terminal value
+      /// \param [in] parameterName    Name of the parameter
+      /// \param [in] pathChar         The path spearator to use (default is '.')
+      /// \return     true if the path contains only single value, false if it is contains a subtree
+      /// \throw      shared::exception::COutOfRange if parameter can not be converted
+      /// \throw      shared::exception::CInvalidParameter if parameter is not found
+      //--------------------------------------------------------------
+      bool containsValue(const std::string& parameterName, const char pathChar = '.') const;
 
       //--------------------------------------------------------------
       /// \brief		Equality operator
@@ -1018,7 +1037,7 @@ namespace shared
    template<class T>
    inline T CDataContainer::getWithDefault(const std::string& parameterName, const T & defaultValue, const char pathChar) const
    {
-      if (!hasValue(parameterName, pathChar))
+      if (!exists(parameterName, pathChar))
          return defaultValue;
       return get<T>(parameterName, pathChar);
    }

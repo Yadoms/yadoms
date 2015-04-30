@@ -397,7 +397,7 @@ namespace web { namespace rest { namespace service {
          {
             int pluginId = boost::lexical_cast<int>(parameters[1]);
 
-            if (!requestContent.hasValue("name") || !requestContent.hasValue("configuration"))
+            if (!requestContent.exists("name") || !requestContent.exists("configuration"))
                return CResult::GenerateError("invalid request content. There must be a name and a configuration field");
 
             try
