@@ -304,13 +304,19 @@ BOOST_AUTO_TEST_CASE(CurrentNodeTests)
    shared::CDataContainer testPf(testPlatformContent);
 
    //subnode test
+   BOOST_CHECK_EQUAL(testPf.exists("supportedPlatforms"), true);
    shared::CDataContainer supportedPf = testPf.get<shared::CDataContainer>("supportedPlatforms");
+   BOOST_CHECK_EQUAL(supportedPf.containsChild(), true);
+   BOOST_CHECK_EQUAL(supportedPf.containsValue(), false);
    BOOST_CHECK_EQUAL(supportedPf.get<std::string>(), ""); //it do not contains value, only childs
    BOOST_CHECK_EQUAL(supportedPf.get<std::string>("mac"), "none");
    BOOST_CHECK_EQUAL(supportedPf.get<std::string>("raspberry"), "all");
 
    //value test
+   BOOST_CHECK_EQUAL(testPf.exists("supportedPlatforms2"), true);
    shared::CDataContainer supportedPf2 = testPf.get<shared::CDataContainer>("supportedPlatforms2");
+   BOOST_CHECK_EQUAL(supportedPf2.containsChild(), false);
+   BOOST_CHECK_EQUAL(supportedPf2.containsValue(), true);
    BOOST_CHECK_EQUAL(supportedPf2.get<std::string>(), "all");
 
 }
