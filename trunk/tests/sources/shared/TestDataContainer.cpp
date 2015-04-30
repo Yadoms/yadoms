@@ -263,6 +263,7 @@ BOOST_AUTO_TEST_CASE(CheckExistance)
    shared::CDataContainer cfg(defaultConf);
 
    //check path existance
+   BOOST_CHECK_EQUAL(cfg.exists(""), true);
    BOOST_CHECK_EQUAL(cfg.exists("BoolParameter"), true);
    BOOST_CHECK_EQUAL(cfg.exists("MySection"), true);
    BOOST_CHECK_EQUAL(cfg.exists("MySection.SubIntParameter"), true);
@@ -272,17 +273,47 @@ BOOST_AUTO_TEST_CASE(CheckExistance)
    BOOST_CHECK_EQUAL(cfg.exists("String Parameter"), false);
 
    //check child existance
+   BOOST_CHECK_EQUAL(cfg.containsChild(""), true);
    BOOST_CHECK_EQUAL(cfg.containsChild("MySection"), true);
    BOOST_CHECK_EQUAL(cfg.containsChild("BoolParameter"), false);
    BOOST_CHECK_EQUAL(cfg.containsChild("MySection.SubIntParameter"), false);
 
    //check value existance
+   BOOST_CHECK_EQUAL(cfg.containsValue(""), false);
    BOOST_CHECK_EQUAL(cfg.containsValue("MySection"), false);
    BOOST_CHECK_EQUAL(cfg.containsValue("BoolParameter"), true);
    BOOST_CHECK_EQUAL(cfg.containsValue("MySection.SubIntParameter"), true);
 
+
+   
 }
 
+BOOST_AUTO_TEST_CASE(CurrentNodeTests)
+{
+
+   const std::string testPlatformContent("{"
+      "\"supportedPlatforms\": {"
+      "\"mac\" : \"none\","
+      "\"windows\" : { \"from\":\"3.1\" },"
+      "\"raspberry\" : \"all\","
+      "\"others\" : \"supported\""
+      "}, "
+      "\"supportedPlatforms2\":\"all\""
+      "}");
+
+   shared::CDataContainer testPf(testPlatformContent);
+
+   //subnode test
+   shared::CDataContainer supportedPf = testPf.get<shared::CDataContainer>("supportedPlatforms");
+   BOOST_CHECK_EQUAL(supportedPf.get<std::string>(), ""); //it do not contains value, only childs
+   BOOST_CHECK_EQUAL(supportedPf.get<std::string>("mac"), "none");
+   BOOST_CHECK_EQUAL(supportedPf.get<std::string>("raspberry"), "all");
+
+   //value test
+   shared::CDataContainer supportedPf2 = testPf.get<shared::CDataContainer>("supportedPlatforms2");
+   BOOST_CHECK_EQUAL(supportedPf2.get<std::string>(), "all");
+
+}
 
 class CTestClass : public shared::IDataContainable
 {
