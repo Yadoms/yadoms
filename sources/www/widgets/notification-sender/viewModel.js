@@ -43,21 +43,7 @@ function NotificationSenderViewModel() {
          notification.body = self.body();
          notification.acknowledgment = 'true';
       
-         $.ajax({
-            type: "POST",
-            url: "/rest/device/keyword/" + self.widget.configuration.device.keywordId + "/command",
-            data: JSON.stringify(notification),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json"
-         })
-            .done(function(data) {
-               //we parse the json answer
-               if (data.result != "true")
-               {
-                  notifyError($.t("notification-sender:errorDuringSending"), JSON.stringify(data));
-               }
-            })
-            .fail(function() {notifyError($.t("notification-sender:errorDuringSending")); });
+         KeywordManager.sendCommand(this.widget.configuration.device.keywordId, JSON.stringify(notification));
       }
    };
 

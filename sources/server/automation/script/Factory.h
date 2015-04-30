@@ -49,6 +49,14 @@ namespace automation { namespace script
       ///\brief               Load the interpreters
       //-----------------------------------------------------
       void loadInterpreters();
+      
+      //-----------------------------------------------------
+      /// \brief              Check platform compatibility for interpreter
+      /// \param[in] interpreterName Interpreter name (ie "python")
+      /// \return true if compatible, false if not
+      /// \throw shared::exception::CInvalidParameter if fails to determine compatibility
+      //-----------------------------------------------------
+      bool isInterpreterCompatibleWithPlatform(const std::string& interpreterName) const;
 
       //--------------------------------------------------------------
       /// \brief        Return full path of interpreter library, from interpreter name
