@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "OperatingSystem.h"
 #include <windows.h>
+#include <shared/exception/Exception.hpp>
 
 namespace tools {
 
@@ -38,6 +39,23 @@ namespace tools {
          ExitWindowsEx (exitWindowsFlags, 0);
 
       return success;
+   }
+
+   std::string COperatingSystem::getName()
+   {
+      return "windows";
+   }
+   
+   CVersion COperatingSystem::getVersion()
+   {
+      OSVERSIONINFO osvi;
+      ZeroMemory(&osvi, sizeof(OSVERSIONINFO));
+      osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+      if (GetVersionEx(&osvi) == 0)
+         throw shared::exception::CException("Unable to get OS version");
+
+      CVersion version(osvi.dwMajorVersion, osvi.dwMinorVersion, osvi.dwBuildNumber);
+      return version;
    }
    
 } //namespace tools

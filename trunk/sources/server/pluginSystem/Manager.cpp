@@ -174,7 +174,11 @@ void CManager::buildAvailablePluginList()
          if (m_loadedPlugins.find(pluginName) != m_loadedPlugins.end())
             m_availablePlugins[pluginName] = m_loadedPlugins[pluginName]->getInformation();
          else
-            m_availablePlugins[pluginName] = CExternalPluginFactory::getInformation(toPath(pluginName));
+         {
+            boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation = CExternalPluginFactory::getInformation(toPath(pluginName));
+            if (pluginInformation->isSupportedOnThisPlatform())
+               m_availablePlugins[pluginName] = pluginInformation;
+         }
 
          YADOMS_LOG(information) << "Plugin " << pluginName << " successfully loaded";
       }

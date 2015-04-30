@@ -80,9 +80,16 @@ namespace shared { namespace plugin { namespace information
 
 
       //--------------------------------------------------------------
+      /// \brief	    Check if plugin is supported on this platform
+      /// \return     true if supported, false if not
+      //--------------------------------------------------------------
+      virtual bool isSupportedOnThisPlatform() const = 0;
+
+
+      //--------------------------------------------------------------
       /// \brief	    indicates if the plugin supports manually created devices
       /// \return     true if the plugin supports manually created devices
       //--------------------------------------------------------------
-      virtual const bool getSupportManuallyCreatedDevice() const = 0;
+      virtual bool getSupportManuallyCreatedDevice() const = 0;
    };
 } } } // namespace shared::plugin::information

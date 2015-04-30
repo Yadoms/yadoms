@@ -82,22 +82,19 @@ namespace tools
    int CVersion::compare(CVersion const& rhs) const
    {
       int result = 0;
-      for (unsigned int i = 0; i<m_versionInfo.size(); i++)
+      for (unsigned int i = 0; i < m_versionInfo.size() && i < rhs.m_versionInfo.size(); i++)
       {
-         if (rhs.m_versionInfo.size() >= i)
+         if (m_versionInfo[i] == rhs.m_versionInfo[i])
+            result = 0;
+         else if (m_versionInfo[i] > rhs.m_versionInfo[i])
          {
-            if (m_versionInfo[i] == rhs.m_versionInfo[i])
-               result = 0;
-            else if (m_versionInfo[i] > rhs.m_versionInfo[i])
-            {
-               result = 1;
-               break;
-            }
-            else
-            {
-               result = -1;
-               break;
-            }
+            result = 1;
+            break;
+         }
+         else
+         {
+            result = -1;
+            break;
          }
       }
 

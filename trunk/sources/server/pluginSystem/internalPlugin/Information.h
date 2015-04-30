@@ -27,7 +27,8 @@ namespace pluginSystem {   namespace internalPlugin {
       virtual const std::string& getUrl() const;
       virtual std::string toString() const;
       virtual std::string getIdentity() const;
-      virtual const bool getSupportManuallyCreatedDevice() const;
+      virtual bool isSupportedOnThisPlatform() const;
+      virtual bool getSupportManuallyCreatedDevice() const;
       // [END] shared::plugin::IInformation implementation
 
    private:

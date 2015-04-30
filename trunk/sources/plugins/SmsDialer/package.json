@@ -8,7 +8,7 @@
    "supportedPlatforms":
    {
       "mac": "none",
-      "others": "include"
+      "others": "supported"
    },
    "configurationSchema":
    {

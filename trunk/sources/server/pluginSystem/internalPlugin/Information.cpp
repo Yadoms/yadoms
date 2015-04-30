@@ -53,6 +53,10 @@ namespace pluginSystem {   namespace internalPlugin {
       return formatedInformations.str();
    }
 
+   bool CInformation::isSupportedOnThisPlatform() const
+   {
+      return true;
+   }
 
    std::string CInformation::toString() const
    {
@@ -66,7 +70,7 @@ namespace pluginSystem {   namespace internalPlugin {
       return formatedInformations.str();
    }
 
-   const bool CInformation::getSupportManuallyCreatedDevice() const
+   bool CInformation::getSupportManuallyCreatedDevice() const
    {
       return false;
    }
