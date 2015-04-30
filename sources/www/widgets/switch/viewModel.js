@@ -28,21 +28,7 @@ widgetViewModelCtor =
                case "event": cmd = 1; break;
                default: cmd = newState; break;
             }
-            $.ajax({
-               type: "POST",
-               url: "/rest/device/keyword/" + this.widget.configuration.device.keywordId + "/command",
-               data: cmd.toString(),
-               contentType: "application/text; charset=utf-8",
-               dataType: "json"
-            })
-               .done(function(data) {
-                  //we parse the json answer
-                  if (data.result != "true")
-                  {
-                     notifyError($.t("switch:errorDuringSendingCommand"), JSON.stringify(data));
-                  }
-               })
-               .fail(function() {notifyError($.t("switch:errorDuringSendingCommand")); });
+            KeywordManager.sendCommand(this.widget.configuration.device.keywordId, cmd.toString());
          }
       };
 

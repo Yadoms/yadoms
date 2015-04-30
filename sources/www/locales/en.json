@@ -485,6 +485,9 @@
          "errorUpdating" : "An error has occurred updating  __objectName__",
          "errorChecking" : "An error has occurred checking for update of  __objectName__"
       },
+	  "widget" : {
+        "errorSendingCommand" : "Error during sending command"
+      },
       "generic" : {
          "errorEditing" : "An error has occurred editing __objectName__",
          "errorUpdating" : "An error has occurred updating __objectName__",
