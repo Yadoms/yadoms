@@ -99,12 +99,22 @@
          getAutomationRuleDomRow(rule).find("button.btn-enableDisable").prop('disabled', true);
          if (rule.enabled) {
             //we ask for disable
-            AutomationRuleManager.disable(rule, function() { getAutomationRuleDomRow(rule).find("button.btn-enableDisable").prop('disabled', false);});
+            AutomationRuleManager.disable(rule, function(updatedRule) {
+               if (updatedRule) {
+                  getAutomationRuleDomRow(updatedRule).find("button.btn-enableDisable").prop('disabled', false);
+                  updateDOMAutomationRule(updatedRule);
+               }
+            });
          }
          else
          {
             //we ask for enable
-            AutomationRuleManager.enable(rule, function() { getAutomationRuleDomRow(rule).find("button.btn-enableDisable").prop('disabled', false);});
+            AutomationRuleManager.enable(rule, function(updatedRule) {
+               if (updatedRule) {
+                  getAutomationRuleDomRow(updatedRule).find("button.btn-enableDisable").prop('disabled', false);
+                  updateDOMAutomationRule(updatedRule);
+               }
+            });
          }
       }
    }
@@ -116,15 +126,15 @@
             modals.automationRuleEdit.load(function () {
                showEditionAutomationRule(rule, function () {
                   //we ask for automation rule update
-                  AutomationRuleManager.updateToServer(rule, function(updateOk) {
+                  AutomationRuleManager.updateToServer(rule, function(ruleUpdated) {
                      //if it's okay
-                     if (!updateOk) {
+                     if (!ruleUpdated) {
                         notifyError($.t("objects.generic.errorUpdating", {objectName : "automation rule"}));
                         return;
                      }
 
                      //we update the code
-                     AutomationRuleManager.updateCode(rule, function (codeUpdateOk) {
+                     AutomationRuleManager.updateCode(ruleUpdated, function (codeUpdateOk) {
                         if (!codeUpdateOk) {
                            notifyError($.t("objects.generic.errorUpdating", {objectName: "automation rule"}));
                            return;
@@ -132,7 +142,7 @@
 
                         notifySuccess($.t("modals.dashboard.sub-windows.automation-center.ruleSuccessfullyUpdated"));
                         //we refresh the gui
-                        updateDOMAutomationRule(rule);
+                        updateDOMAutomationRule(ruleUpdated);
                      });
                   });
                });
@@ -203,18 +213,10 @@
                               return;
                            }
 
-                           //we update the code
-                           AutomationRuleManager.updateCode(rule, function (codeUpdateOk) {
-                              if (!codeUpdateOk) {
-                                 notifyError($.t("objects.generic.errorUpdating", {objectName: "automation rule"}));
-                                 return;
-                              }
-
-                              notifySuccess($.t("modals.dashboard.sub-windows.automation-center.ruleSuccessfullyCreated"));
-                              //we add it to gui
-                              automationRuleInstanceList.push(newRule);
-                              addAutomationRuleToDom(rule);
-                           });
+                           notifySuccess($.t("modals.dashboard.sub-windows.automation-center.ruleSuccessfullyCreated"));
+                           //we add it to gui
+                           automationRuleInstanceList.push(newRule);
+                           addAutomationRuleToDom(newRule);
                         });
                      });
                   });

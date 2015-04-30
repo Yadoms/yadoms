@@ -72,7 +72,6 @@
                      rule.name = nameParameter.getCurrentConfiguration();
                      rule.description = descriptionParameter.getCurrentConfiguration();
 
-                     debugger;
                      console.log("------------------> START");
                      console.log(pythonCode);
                      console.log("------------------> END");
@@ -98,8 +97,6 @@
       $('div#edit-automation-rule-modal-blockly').on("shown.bs.modal", function () {
          //fix input field
          $(document).off('focusin.modal');
-
-         debugger;
 
          //load content
          var content = decodeURIComponent(rule.content);

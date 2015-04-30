@@ -33,32 +33,7 @@
      */
     function askPluginTypes(callback)
     {
-       //TODO : use pluginManager.get
-       assert($.isFunction(callback), "callback must be defined");
-       $.getJSON("rest/plugin/")
-               .done(requestPluginTypesDone(callback))
-               .fail(function() {
-                  notifyError($.t("modals.add-plugin.errorDuringGettingPluginTypes"));
-                  callback(null);
-               });
-    }
-
-    /**
-     * Callback of the request plugin types
-     * @returns {Function}
-     */
-    function requestPluginTypesDone(callback)
-    {
-       assert($.isFunction(callback), "callback must be defined");
-       return function( data ) {
-          //we parse the json answer
-          if (data.result != "true")
-          {
-             notifyError($.t("modals.add-plugin.errorDuringGettingPluginTypes"), JSON.stringify(data));
-             callback(null);
-             return;
-          }
-
+       PluginManager.get(function (list) {
           $("select#pluginTypeList").empty();
 
           $.each(data.data.plugins, function(index, value) {
@@ -78,7 +53,7 @@
 
           //we display the modal
           $('div#new-plugin-modal').modal();
-       };
+       });
     }
 
 </script>

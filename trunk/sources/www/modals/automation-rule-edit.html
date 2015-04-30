@@ -72,8 +72,7 @@
       //we set the rule to edit to the editor
       rule.editor.setRule(rule);
 
-      $("div#edit-automation-rule-modal").on("shown.bs.modal", function () {
-debugger;
+      $("div#edit-automation-rule-modal").off("shown.bs.modal").on("shown.bs.modal", function () {
          rule.editor.onModalShown($modalConfiguration);
       });
 
@@ -84,17 +83,19 @@ debugger;
             console.warn("Unable to validate form: " + errors);
          },
          submitSuccess: function($form, event) {
-             event.preventDefault();
-            rule.name = nameParameter.getCurrentConfiguration();
-            rule.description = descriptionParameter.getCurrentConfiguration();
-            rule.editor.updateRule();
+            event.preventDefault();
+            if (rule.editor.validate()) {
+               rule.name = nameParameter.getCurrentConfiguration();
+               rule.description = descriptionParameter.getCurrentConfiguration();
+               rule.editor.updateRule();
 
-            console.debug("End of Automation rule edition : " + JSON.stringify(rule));
+               console.debug("End of Automation rule edition : " + JSON.stringify(rule));
 
-            //we hide the current window and the wizard if opened previously
-            $("div#edit-automation-rule-modal").modal("hide");
+               //we hide the current window and the wizard if opened previously
+               $("div#edit-automation-rule-modal").modal("hide");
 
-            callback();
+               callback();
+            }
          },
          filter: function() {
             //we check only control that have class enable-validation and are visible

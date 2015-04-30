@@ -70,12 +70,11 @@ AutomationEditorBlockly.prototype.setRule = function(rule) {
  */
 AutomationEditorBlockly.prototype.onModalShown = function($modal) {
    var self = this;
-   debugger;
    var $mainDiv = $("div#" + this.getUuid());
 
    //fix input field
    $(document).off('focusin.modal');
-   debugger;
+
    //load content
    //TODO : check if rule exist
    var content = decodeURIComponent(self.rule.content);
