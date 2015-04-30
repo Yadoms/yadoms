@@ -10,12 +10,11 @@ function AutomationRuleManager(){}
 
 AutomationRuleManager.factory = function(json) {
    assert(!isNullOrUndefined(json), "json must be defined");
-   return new AutomationRule(json.id, decodeURIComponent(json.name), decodeURIComponent(json.description), json.interpreter, json.editor, json.model, json.content, json.configuration, json.enabled, json.state, json.errorMessage, json.startDate, json.stopDate);
+   return new AutomationRule(json.id, decodeURIComponent(json.name), decodeURIComponent(json.description), json.interpreter, json.editor, json.model, json.content, json.configuration, parseBool(json.enabled), json.state, json.errorMessage, json.startDate, json.stopDate);
 };
 
 AutomationRuleManager.createToServer = function(rule, callback) {
    assert(!isNullOrUndefined(rule), "rule must be defined");
-
    $.ajax({
       type: "POST",
       url: "/rest/automation/rule",
@@ -44,10 +43,11 @@ AutomationRuleManager.createToServer = function(rule, callback) {
          }
 
          //we update our information from the server
-         rule = AutomationRuleManager.factory(data.data);
-
+         var newRule = AutomationRuleManager.factory(data.data);
+         //we copy other items
+         newRule.code = rule.code;
          if ($.isFunction(callback))
-            callback(rule);
+            callback(newRule);
       })
       .fail(function() {
          notifyError($.t("objects.generic.errorCreating", {objectName : rule.name}));
@@ -59,9 +59,6 @@ AutomationRuleManager.createToServer = function(rule, callback) {
 
 AutomationRuleManager.get = function (callback) {
    assert($.isFunction(callback), "callback must be a function");
-   //TODO : test
-   //debugger;
-
    $.getJSON("rest/automation/rule")
       .done(function( data ) {
          //we parse the json answer
@@ -143,11 +140,12 @@ AutomationRuleManager.updateToServer = function(rule, callback) {
          }
          //it's okay
          //we update our information from the server
-         rule = AutomationRuleManager.factory(data.data);
-
-         //we call the callback with true as a ok result
+         var newRule = AutomationRuleManager.factory(data.data);
+         //we copy other items
+         newRule.code = rule.code;
          if ($.isFunction(callback))
-            callback(true);
+            callback(newRule);
+
       })
       .fail(function() {
          notifyError($.t("objects.generic.errorUpdating", {objectName : rule.name}));
@@ -159,16 +157,12 @@ AutomationRuleManager.updateToServer = function(rule, callback) {
 
 AutomationRuleManager.disable = function(rule, callback) {
    assert(!isNullOrUndefined(rule), "rule must be defined");
-   //TODO : test
-   debugger;
    rule.enabled = false;
    AutomationRuleManager.updateToServer(rule, callback);
 };
 
 AutomationRuleManager.enable = function(rule, callback) {
    assert(!isNullOrUndefined(rule), "rule must be defined");
-   //TODO : test
-   debugger;
    rule.enabled = true;
    AutomationRuleManager.updateToServer(rule, callback);
 };

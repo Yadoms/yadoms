@@ -753,9 +753,12 @@ Blockly.Yadoms.GetResult = function(language, callback) {
 
     var pythonCodeIndented = Blockly.Python.prefixLines(pythonCode, '\t');
 
-    var completedPythonCode = '# yMain is the script entry point, called by Yadoms' + '\n';
-    completedPythonCode +="def yMain():" + '\n';
-    completedPythonCode += '\t' + "print 'Script started'" + '\n';
+    var completedPythonCode = '# yMain is the script entry point, called by Yadoms\n';
+    completedPythonCode += 'import time\n';
+    completedPythonCode += 'import yScriptApiWrapper\n';
+    completedPythonCode += 'import dateutil.parser\n';
+    completedPythonCode +='def yMain(yApi):\n';
+    completedPythonCode += "\tprint ('Script started')\n";
     completedPythonCode += pythonCodeIndented;
 
     callback(xmlString, completedPythonCode);
