@@ -128,6 +128,7 @@ public:
 
    // IApplicationStopHandler implementation
    virtual void requestToStop(EStopMode stopMode) { m_lastStopRequest=stopMode; }
+   virtual void registerForAppEnds(boost::shared_ptr<shared::event::CEventHandler> & handler, const int code) {};
    // [END] IApplicationStopHandler implementation
 
    EStopMode getLastStopRequest() { return m_lastStopRequest; }

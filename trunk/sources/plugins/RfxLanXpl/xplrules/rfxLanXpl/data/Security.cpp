@@ -51,13 +51,13 @@ namespace xplrules { namespace rfxLanXpl { namespace data {
       shared::CDataContainer command(yadomsCommand);
       m_command = command.get<ECommands>("command");
       
-      if(command.hasValue("tamper"))
+      if(command.exists("tamper"))
          m_tamper = command.get<bool>("tamper");
 
-      if(command.hasValue("lowBattery"))
+      if (command.exists("lowBattery"))
          m_lowBattery = command.get<bool>("lowBattery");
 
-      if(command.hasValue("delay"))
+      if (command.exists("delay"))
          m_delay = command.get<int>("delay");
    }
    

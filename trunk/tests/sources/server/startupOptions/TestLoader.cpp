@@ -57,7 +57,7 @@ static const std::string testFalsePath = "FalsePath";
 
 
 // Includes needed to compile tested classes
-#include "../../../../sources/server/startupOptions/Loader.h"
+#include "../../../../sources/server/startupOptions/StartupOptions.h"
 
 #include <Poco/Util/Application.h>
 #include <Poco/Util/OptionProcessor.h>

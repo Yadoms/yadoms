@@ -75,13 +75,45 @@ namespace shared
    }
 
 
-   bool CDataContainer::hasValue(const std::string& parameterName, const char pathChar) const
+   bool CDataContainer::exists(const std::string& parameterName, const char pathChar) const
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
       boost::optional<const boost::property_tree::ptree&> value = m_tree.get_child_optional(generatePath(parameterName, pathChar));
       return !!value;
    }
+
+
+   bool CDataContainer::containsChild(const std::string& parameterName, const char pathChar) const
+   {
+      boost::lock_guard<boost::mutex> lock(m_treeMutex);
+
+      boost::optional<const boost::property_tree::ptree&> value = m_tree.get_child_optional(generatePath(parameterName, pathChar));
+      if (!!value)
+      {
+         return !value->empty() && value->data().empty();
+      }
+      else
+      {
+         return false;
+      }
+   }
+
+   bool CDataContainer::containsValue(const std::string& parameterName, const char pathChar) const
+   {
+      boost::lock_guard<boost::mutex> lock(m_treeMutex);
+
+      boost::optional<const boost::property_tree::ptree&> value = m_tree.get_child_optional(generatePath(parameterName, pathChar));
+      if (!!value)
+      {
+         return value->empty() && !value->data().empty();
+      }
+      else
+      {
+         return false;
+      }
+   }
+
 
    std::string CDataContainer::serialize() const
    {

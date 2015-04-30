@@ -68,13 +68,13 @@ CInformation::CInformation(const boost::filesystem::path& pluginPath)
       if (m_author.empty())
          throw shared::exception::CInvalidParameter("Error reading package.json : plugin author can not be empty");
 
-      if (container.hasValue("url"))
+      if (container.exists("url"))
          m_url = container.get<std::string>("url");   // No check on URL
       else
          m_url = shared::CStringExtension::EmptyString;
 
 
-      if (container.hasValue("supportManuallyDeviceCreation"))
+      if (container.exists("supportManuallyDeviceCreation"))
          m_supportManuallyCreatedDevice = container.get<bool>("supportManuallyDeviceCreation");  
       else
          m_supportManuallyCreatedDevice = false;

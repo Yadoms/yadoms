@@ -89,12 +89,12 @@ namespace authentication {
             if (!confValueString.empty())
             {
                shared::CDataContainer val(confValueString);
-               if (val.hasValue(m_configurationActive) && val.get<bool>(m_configurationActive))
+               if (val.exists(m_configurationActive) && val.get<bool>(m_configurationActive))
                {
                   m_isAuthenticationActive = true;
                   try
                   {
-                     if (val.hasValue(m_configurationUser) && val.hasValue(m_configurationPassword))
+                     if (val.exists(m_configurationUser) && val.exists(m_configurationPassword))
                      {
                         Poco::URI::decode(val.get<std::string>(m_configurationUser), m_currentAuthenticationUsername);
                         Poco::URI::decode(val.get<std::string>(m_configurationPassword), m_currentAuthenticationPassword);
