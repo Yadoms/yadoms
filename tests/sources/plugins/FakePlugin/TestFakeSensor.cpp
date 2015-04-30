@@ -24,7 +24,8 @@ public:
    virtual const std::string& getUrl() const { static const std::string str("www.somewhere.inthegalaxy"); return str; }
    virtual std::string getIdentity() const { std::ostringstream formatedInformations; formatedInformations << getName() << " v" << getVersion() << "[" << boost::lexical_cast<std::string>(getReleaseType()) << "]"; return formatedInformations.str(); }
    virtual std::string toString() const { std::ostringstream formatedInformations; formatedInformations << getIdentity() << " by " << getAuthor() << " (" << getUrl() << ")"; return formatedInformations.str(); }
-   virtual const bool getSupportManuallyCreatedDevice() const { return false; }
+   virtual bool getSupportManuallyCreatedDevice() const { return false; }
+   virtual bool isSupportedOnThisPlatform() const { return true; }
    // [END] shared::plugin::IInformation implementation
 };
 

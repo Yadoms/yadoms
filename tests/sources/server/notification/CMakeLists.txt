@@ -1,10 +1,10 @@
 
 IF(NOT DISABLE_TEST_SHARED_NOTIFICATION)
    ADD_YADOMS_SOURCES(
-      shared/shared/notification/NotificationObserver.h
-      shared/shared/notification/NotificationObserver.cpp
-      shared/shared/notification/NotificationCenter.h
-      shared/shared/notification/NotificationCenter.cpp
+      server/notification/NotificationCenter.h
+      server/notification/NotificationCenter.cpp
+      server/notification/change/Type.h
+      server/notification/change/Type.cpp
       shared/shared/event/Event.hpp
       shared/shared/event/EventBase.hpp
       shared/shared/event/EventHandler.hpp
