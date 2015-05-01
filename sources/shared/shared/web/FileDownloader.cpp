@@ -8,6 +8,7 @@
 #include "exception/InvalidHash.hpp"
 #include "exception/DownloadFailed.hpp"
 #include <Poco/File.h>
+#include <fstream>
 
 using boost::asio::ip::tcp;
 
@@ -171,7 +172,7 @@ namespace shared { namespace web {
    Poco::Path CFileDownloader::downloadFileAndVerify(const Poco::URI & toDownload, const Poco::Path & location, const std::string & md5HashExpected, ProgressFunc reporter)
    {
       //create stream
-      std::ofstream packageLocalFileStream(location.toString(), std::ios::binary);
+      std::ofstream packageLocalFileStream(location.toString().c_str(), std::ios::binary);
 
       //download file
       int fileSize = downloadFile(toDownload.toString(), packageLocalFileStream, reporter);

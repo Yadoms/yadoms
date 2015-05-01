@@ -4,6 +4,7 @@
 #include <sys/reboot.h>
 #include <Poco/Environment.h>
 #include <Poco/StringTokenizer.h>
+#include <shared/exception/Exception.hpp>
 
 namespace tools {
    bool COperatingSystem::shutdown(bool andRestart)
@@ -24,8 +25,20 @@ namespace tools {
       if (tokenizer.count() < 3)
          throw shared::exception::CException("Unable to get OS version");
 
-      CVersion version(tokenizer[0], tokenizer[1], tokenizer[2]);
-      return version;
+      try
+      {
+         int major = boost::lexical_cast<int>(tokenizer[0]);
+         int minor = boost::lexical_cast<int>(tokenizer[1]);
+         int buildNumber = boost::lexical_cast<int>(tokenizer[2]);
+         CVersion version(major, minor, buildNumber);
+         return version;         
+      }
+      catch(...)
+      {
+         throw shared::exception::CException("Unable to parse OS version");
+      }
+      
+
    }
    
 } //namespace tools

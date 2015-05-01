@@ -211,7 +211,7 @@ namespace notification {
          if (functor)
          {
             //create the action
-            boost::shared_ptr< action::IAction > observerAction(new action::CFunctionPointerNotifier(functor));
+            boost::shared_ptr< action::IAction< N > > observerAction(new action::CFunctionPointerNotifier< N >(functor));
 
             return subscribeChangeObserver< N >(changeType, observerAction, notificationCenter);
          }

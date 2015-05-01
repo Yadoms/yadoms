@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "DynamicLibrary.h"
 #include <dlfcn.h>
-#include <boost/function.hpp>
-#include <boost/log/trivial.hpp>
 #include "../../shared/Log.h"
 #include "../../shared/exception/InvalidParameter.hpp"
 

@@ -70,8 +70,10 @@ set(GAMMU_USE_PKGCONFIG ON)
 ##### Script interpreters ######
 #
 # Script interpreters needs Swig (needed for all script interpreters)
+# if swig is installed on system (make install), just define SWIG_ROOT to ""
+# else specify the path containing the swig executable
 #set(SWIG_ROOT "/Path/to/swig")
-
+set(SWIG_ROOT "")
 
 
 ##### Python interpreter ######

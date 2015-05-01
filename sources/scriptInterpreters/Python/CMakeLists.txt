@@ -38,6 +38,7 @@ if(PYTHONLIBS_FOUND)
       ScriptLoader.cpp
       SubInterpreter.h
       SubInterpreter.cpp
+	  swigpyrun.h
    )
 
    #########################################
@@ -82,10 +83,14 @@ if(PYTHONLIBS_FOUND)
    
    #########################################
    ## Add pre-build step to generate swigpyrun.h file
+   ##
+   ## Do not use PRE_BUILD option because it is working only with VisualStudio
+   ## To make it work, just define a custom_command, and place 
+   ## the output filename into the target sources to make it generated at build time
    #########################################
-   add_custom_command(TARGET python PRE_BUILD
-      COMMAND ${SWIG_EXECUTABLE} -python -external-runtime ${CMAKE_CURRENT_SOURCE_DIR}/swigpyrun.h)
-   
+   add_custom_command(OUTPUT swigpyrun.h 
+	  COMMAND ${SWIG_EXECUTABLE} -python -external-runtime ${CMAKE_CURRENT_SOURCE_DIR}/swigpyrun.h)
+	  
    #########################################
    ## Generate the associated yScriptApi wrapper
    #########################################
