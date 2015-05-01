@@ -54,6 +54,7 @@ SET(SUFFIX_FOR_LIBRARY_PATH
  lib/Linux/ARM
  lib/Darwin/x86_64
  lib/Linux/armv6l
+ lib/Linux/armv7l
 )
 
 
