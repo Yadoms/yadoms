@@ -2,6 +2,7 @@
 
 #include "../IObserver.h"
 #include "../action/IAction.h"
+#include "Notification.hpp"
 
 namespace notification { namespace basic {
       
@@ -32,7 +33,7 @@ namespace notification { namespace basic {
       void observe(const boost::shared_ptr< INotification > n)
       {
          //check notification is good type
-         boost::shared_ptr< basic::CNotification<T> > notif = boost::dynamic_pointer_cast< basic::CNotification<T> >(n);
+         boost::shared_ptr< CNotification<T> > notif = boost::dynamic_pointer_cast< CNotification<T> >(n);
          if (notif && m_action)
          {
             //do notification

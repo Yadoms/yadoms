@@ -37,7 +37,7 @@ namespace tools
       ///\return     true if supported, false if not
       ///\throw CInvalidParameter if fail to parse node
       //---------------------------------------------
-      static bool CSupportedPlatformsChecker::isVersionSupported(const shared::CDataContainer& supportedPlatformsVersionNode);
+      static bool isVersionSupported(const shared::CDataContainer& supportedPlatformsVersionNode);
    };
 
 } // namespace tools
