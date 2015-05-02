@@ -22,8 +22,7 @@
       PluginInstanceManager.getPluginInstanceHandleManuallyDeviceCreation(function(list) {
          if (list.length > 0) {
             //there is at least one plugin instance that handle this button
-            $("#btn-add-new-device").removeClass("disabled");
-            $("#btn-add-new-device").unbind("click").bind("click", addNewDevice);
+            $("#btn-add-new-device").removeClass("disabled").unbind("click").bind("click", addNewDevice);
          }
       });
 
@@ -37,23 +36,16 @@
       //we clear pluginInstance array
       deviceList = [];
 
-      //we dynamically ask for devices
-      $.getJSON("/rest/device")
-           .done(function (data) {
-              //we parse the json answer
-              if (data.result != "true")
-              {
-                 notifyError($.t("modals.dashboard.sub-windows.devices.errorGettingDeviceList"), JSON.stringify(data));
-                 return;
-              }
-              //foreach result we append a <tr>
-              $.each(data.data.device, function(index, value) {
-                 var dev = DeviceManager.factory(value);
-                 deviceList.push(dev);
-                 addDeviceToDom(dev);
-              });
-           })
-           .fail(function() {notifyError($.t("modals.dashboard.sub-windows.devices.errorGettingDeviceList"), JSON.stringify(data));});
+       //we clear pluginInstance array
+       deviceList = [];
+
+       DeviceManager.getAll(function(allDevices) {
+           deviceList = allDevices;
+           //foreach result we append a <tr>
+           $.each(allDevices, function(index, value) {
+               addDeviceToDom(value);
+           });
+       });
    }
 
    function getDeviceDomRow(device) {
@@ -102,7 +94,7 @@
       DeviceManager.getAttachedPlugin(device, function() {
          var $deviceRow = getDeviceDomRow(device);
          var iconName;
-         if (device.attachedPlugin.category != PluginInstanceManager.systemCategory) {
+         if (!device.isSystemCategory()) {
             iconName = "plugins/" + device.attachedPlugin.type + "/icon.png";
          }
          else {
@@ -190,7 +182,7 @@
                     "</table>" +
                     "</td></tr>");
 
-            $deviceDetailsTable = $("table#keyword-list");
+            var $deviceDetailsTable = $("table#keyword-list");
             $deviceDetailsTable.i18n();
 
             DeviceManager.getKeywords(device, function() {
@@ -212,7 +204,7 @@
                   $keywordRow.find("td.keyword-actions").append(actionsBtns);
 
                   //we prevent from renaming keywords on system devices
-                  if ((!isNullOrUndefined(device.attachedPlugin)) && (device.attachedPlugin.category == PluginInstanceManager.systemCategory)) {
+                  if ((!isNullOrUndefined(device.attachedPlugin)) && (device.isSystemCategory())) {
                      $keywordRow.find("button.btn-configure").addClass("disabled");
                   }
                   else {

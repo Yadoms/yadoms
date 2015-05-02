@@ -8,8 +8,18 @@
  */
 function PluginInstanceManager(){}
 
-PluginInstanceManager.systemCategory = "system";
+/**
+ * The system category string
+ * @type {string}
+ * @private
+ */
+PluginInstanceManager._systemCategory = "system";
 
+/**
+ * Create a plugin instance object from server JSON
+ * @param json The json data provided by server
+ * @returns {PluginInstance} The created instance
+ */
 PluginInstanceManager.factory = function(json) {
    assert(!isNullOrUndefined(json), "json must be defined");
    assert(!isNullOrUndefined(json.id), "json.id must be defined");
@@ -21,6 +31,20 @@ PluginInstanceManager.factory = function(json) {
    return new PluginInstance(json.id, decodeURIComponent(json.name), json.type, json.configuration, json.autoStart, json.category);
 };
 
+/**
+ * Tells if a plugin instance is system category
+ * @returns {boolean}
+ */
+PluginInstanceManager.isSystemCategory = function(pluginInstance) {
+    return pluginInstance.category.toLowerCase()== PluginInstanceManager._systemCategory.toLowerCase();
+};
+
+/**
+ * Get a plugin instance using its ID
+ * @param pluginInstanceId The plugin instance id to get
+ * @param callback The callback used to return the plugin instance found
+ * @param sync true to get result synchronously
+ */
 PluginInstanceManager.get = function (pluginInstanceId, callback, sync) {
    assert(!isNullOrUndefined(pluginInstanceId), "pluginInstanceId must be defined");
    assert($.isFunction(callback), "callback must be a function");
@@ -84,10 +108,15 @@ PluginInstanceManager.getAll = function (callback, sync) {
        });
 };
 
+/**
+ * Get the pluginInstance status
+ * @param pluginInstance
+ * @param callback
+ */
 PluginInstanceManager.getStatus = function(pluginInstance, callback) {
    assert(!isNullOrUndefined(pluginInstance), "pluginInstance must be defined");
    //we ask for the status of current pluginInstance only on non system plugins
-   if (pluginInstance.category != PluginInstanceManager.systemCategory) {
+   if (!pluginInstance.isSystemCategory()) {
       $.getJSON("/rest/plugin/" + pluginInstance.id + "/status/")
          .done(function(data) {
             //we parse the json answer
@@ -114,15 +143,27 @@ PluginInstanceManager.getStatus = function(pluginInstance, callback) {
    }
 };
 
-PluginInstanceManager.start = function(pluginInstance, callback) {
+/**
+ * Start a plugin instance
+ * @param pluginInstance The plugin instance to start
+ * @param callback The callback for the result
+ * @param sync True to wait for result, false (or undefined) to work asynchronously
+ */
+PluginInstanceManager.start = function(pluginInstance, callback, sync) {
    assert(!isNullOrUndefined(pluginInstance), "pluginInstance must be defined");
+
+    var async = true;
+    if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
+        async = !sync;
+
    //we can't start system plugins
-   if (pluginInstance.category != PluginInstanceManager.systemCategory) {
+   if (!pluginInstance.isSystemCategory()) {
       $.ajax({
          type: "PUT",
          url: "/rest/plugin/" + pluginInstance.id + "/start",
          contentType: "application/json; charset=utf-8",
-         dataType: "json"
+         dataType: "json",
+         async: async
       })
          .done(function(data) {
             //we parse the json answer
@@ -138,15 +179,27 @@ PluginInstanceManager.start = function(pluginInstance, callback) {
    }
 };
 
-PluginInstanceManager.stop = function(pluginInstance, callback) {
+/**
+ * Stop a plugin instance
+ * @param pluginInstance The plugin instance to stop
+ * @param callback The callback for the result
+ * @param sync True to wait for result, false (or undefined) to work asynchronously
+ */
+PluginInstanceManager.stop = function(pluginInstance, callback, sync) {
    assert(!isNullOrUndefined(pluginInstance), "pluginInstance must be defined");
+
+    var async = true;
+    if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
+        async = !sync;
+
    //we can't stop system plugins
-   if (pluginInstance.category != PluginInstanceManager.systemCategory) {
+   if (!pluginInstance.isSystemCategory()) {
       $.ajax({
          type: "PUT",
          url: "/rest/plugin/" + pluginInstance.id + "/stop",
          contentType: "application/json; charset=utf-8",
-         dataType: "json"
+         dataType: "json",
+         async: async
       })
          .done(function(data) {
             //we parse the json answer
@@ -163,16 +216,27 @@ PluginInstanceManager.stop = function(pluginInstance, callback) {
    }
 };
 
-PluginInstanceManager.deleteFromServer = function(pluginInstance, callback) {
+/**
+ * Delete a plugin instance
+ * @param pluginInstance The plugin instance to delete
+ * @param callback The callback for the result
+ * @param sync True to wait for result, false (or undefined) to work asynchronously
+ */
+PluginInstanceManager.deleteFromServer = function(pluginInstance, callback, sync) {
    assert(!isNullOrUndefined(pluginInstance), "pluginInstance must be defined");
 
+    var async = true;
+    if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
+        async = !sync;
+
    //we can't delete system plugins
-   if (pluginInstance.category != PluginInstanceManager.systemCategory) {
+   if (!pluginInstance.isSystemCategory()) {
       $.ajax({
          type: "DELETE",
          url: "/rest/plugin/" + pluginInstance.id,
          contentType: "application/json; charset=utf-8",
-         dataType: "json"
+         dataType: "json",
+          async: async
       })
          .done(function(data) {
             //we parse the json answer
@@ -189,17 +253,28 @@ PluginInstanceManager.deleteFromServer = function(pluginInstance, callback) {
    }
 };
 
-PluginInstanceManager.createToServer = function(pluginInstance, callback) {
+/**
+ * Create a plugin instance to server
+ * @param {object} pluginInstance The plugin instance to create to server
+ * @param {function({boolean})} callback The callback for the result
+ * @param {boolean} sync True to wait for result, false (or undefined) to work asynchronously
+ */
+PluginInstanceManager.createToServer = function(pluginInstance, callback, sync) {
    assert(!isNullOrUndefined(pluginInstance), "pluginInstance must be defined");
 
+    var async = true;
+    if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
+        async = !sync;
+
    //we can't create system plugins
-   if (pluginInstance.category != PluginInstanceManager.systemCategory) {
+   if (!pluginInstance.isSystemCategory()) {
       $.ajax({
          type: "POST",
          url: "/rest/plugin",
          data: JSON.stringify({ name: pluginInstance.name, type: pluginInstance.type, configuration: pluginInstance.configuration, autoStart: pluginInstance.autoStart}),
          contentType: "application/json; charset=utf-8",
-         dataType: "json"
+         dataType: "json",
+          async: async
       })
          .done(function(data) {
             //we parse the json answer
@@ -231,17 +306,28 @@ PluginInstanceManager.createToServer = function(pluginInstance, callback) {
    }
 };
 
-PluginInstanceManager.updateToServer = function(pluginInstance, callback) {
+/**
+ * Update a plugin instance to server
+ * @param pluginInstance The plugin instance to update
+ * @param {function({boolean})} callback The callback for the result
+ * @param {boolean} sync True to wait for result, false (or undefined) to work asynchronously
+ */
+PluginInstanceManager.updateToServer = function(pluginInstance, callback, sync) {
    assert(!isNullOrUndefined(pluginInstance), "pluginInstance must be defined");
 
+    var async = true;
+    if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
+        async = !sync;
+
    //we can't update system plugins
-   if (pluginInstance.category != PluginInstanceManager.systemCategory) {
+   if (!pluginInstance.isSystemCategory()) {
       $.ajax({
          type: "PUT",
          url: "/rest/plugin/" + pluginInstance.id,
          data: JSON.stringify(pluginInstance),
          contentType: "application/json; charset=utf-8",
-         dataType: "json"
+         dataType: "json",
+          async: async
       })
          .done(function(data) {
             //we parse the json answer
@@ -251,16 +337,17 @@ PluginInstanceManager.updateToServer = function(pluginInstance, callback) {
                //launch callback with false as ko result
                if ($.isFunction(callback))
                   callback(false);
-               return;
             }
-            //it's okay
-            //we update our information from the server
-            pluginInstance = PluginInstanceManager.factory(data.data);
+            else {
+                //it's okay
+                //we update our information from the server
+                pluginInstance = PluginInstanceManager.factory(data.data);
 
-            //we call the callback with true as a ok result
-            if ($.isFunction(callback))
-               callback(true);
-         })
+                //we call the callback with true as a ok result
+                if ($.isFunction(callback))
+                   callback(true);
+            }
+          })
          .fail(function() {
             notifyError($.t("objects.pluginInstance.errorUpdating", {pluginName : pluginInstance.name}));
             //launch callback with false as ko result
@@ -270,11 +357,16 @@ PluginInstanceManager.updateToServer = function(pluginInstance, callback) {
    }
 };
 
+/**
+ * Download a plugin package for an instance (asynchronously)
+ * @param pluginInstance The plugin instance
+ * @param callback The callback for receiving the plugin package
+ */
 PluginInstanceManager.downloadPackage = function(pluginInstance, callback) {
    assert(!isNullOrUndefined(pluginInstance), "pluginInstance must be defined");
 
    //we can't download package from system plugins
-   if (pluginInstance.category != PluginInstanceManager.systemCategory) {
+   if (!pluginInstance.isSystemCategory()) {
       $.getJSON( "plugins/" + pluginInstance.type + "/package.json")
          .done(function (data) {
 
@@ -294,7 +386,10 @@ PluginInstanceManager.downloadPackage = function(pluginInstance, callback) {
    }
 };
 
-
+/**
+ * Get all plugin instances which supports manually created device
+ * @param callback The callback for results
+ */
 PluginInstanceManager.getPluginInstanceHandleManuallyDeviceCreation = function(callback) {
    assert($.isFunction(callback), "callback must be defined");
 
@@ -307,33 +402,48 @@ PluginInstanceManager.getPluginInstanceHandleManuallyDeviceCreation = function(c
             return;
          }
          var pluginInstanceList = [];
-         
-         $.each(data.data.plugin, function(index, value) {
-            var pi = PluginInstanceManager.factory(value);
-            //we don't show system plugins to user
-            if (pi.category != PluginInstanceManager.systemCategory) {
-               pluginInstanceList.push(pi);
-            }
-         });
+
+           if(!isNullOrUndefined(data.data.plugin)) {
+               $.each(data.data.plugin, function (index, value) {
+                   var pi = PluginInstanceManager.factory(value);
+                   //we don't show system plugins to user
+                   if (!pi.isSystemCategory()) {
+                       pluginInstanceList.push(pi);
+                   }
+               });
+           }
          callback(pluginInstanceList);
       })
       .fail(function() {
          notifyError($.t("modals.pluginInstance.errorGettingManuallyDeviceCreation"));
          callback(null);
       });
-}
+};
 
-PluginInstanceManager.createManuallyDevice = function(pluginInstance, deviceName, deviceConfiguration, callback) {
+/**
+ * Create a device manually
+ * @param pluginInstance The plugin instance
+ * @param deviceName The device name
+ * @param deviceConfiguration The device configuration
+ * @param {function()} callback The callback when operation ends
+ * @param {boolean} sync True to wait for result, false (or undefined) to work asynchronously
+ */
+PluginInstanceManager.createManuallyDevice = function(pluginInstance, deviceName, deviceConfiguration, callback, sync) {
    assert($.isFunction(callback), "callback must be defined");
 
+    var async = true;
+    if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
+        async = !sync;
+
    //we can't ask for manually creation of a device from system plugins
-   if (pluginInstance.category != PluginInstanceManager.systemCategory) {
+   if (!pluginInstance.isSystemCategory()) {
       $.ajax({
          type: "POST",
          url: "/rest/plugin/" + pluginInstance.id + "/createDevice",
          data: JSON.stringify({ name: deviceName, configuration: deviceConfiguration}),
          contentType: "application/json; charset=utf-8",
-         dataType: "json"
+         dataType: "json",
+          async: async
       })
          .done(function(data) {
             //we parse the json answer
@@ -348,4 +458,4 @@ PluginInstanceManager.createManuallyDevice = function(pluginInstance, deviceName
             notifyError($.t("objects.pluginInstance.errorCreatingManuallyDevice", {deviceName : deviceName}));
          });
    }
-}
+};
