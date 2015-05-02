@@ -491,11 +491,11 @@ Blockly.Yadoms.DeviceHasKeywordMatching_ = function(device, canWrite, allowedKey
  */
 Blockly.Yadoms.KeywordMatching_ = function(keyword, canWrite, allowedKeywordTypes) {
     //filter on readonly
-    if(canWrite && keyword.accessMode != "getset") {
+    if(canWrite && !keyword.isWritable()) {
         return false;
     }
     if(allowedKeywordTypes != null && allowedKeywordTypes != undefined) {
-        return $.inArray(keyword.type, allowedKeywordTypes) != -1;
+        return $.inArray(keyword.type.toLowerCase(), allowedKeywordTypes) != -1;
     }
     return true;
 };
