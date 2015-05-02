@@ -3,7 +3,7 @@
  */
 
 /**
- * Ctor which does nothing because it is used as a static class
+ * Constructor which does nothing because it is used as a static class
  * @constructor
  */
 function PluginInstanceManager(){}
@@ -88,7 +88,12 @@ PluginInstanceManager.getAll = function (callback, sync) {
       url: "rest/plugin/instance",
       async: async
    })
-       .done(function( data ) {
+       .done(
+       /**
+        * Receive result from server
+        * @param {{result:string}, {data: {plugin : object}}} data
+        */
+       function( data ) {
           //we parse the json answer
           if (data.result != "true")
           {
@@ -256,7 +261,7 @@ PluginInstanceManager.deleteFromServer = function(pluginInstance, callback, sync
 /**
  * Create a plugin instance to server
  * @param {object} pluginInstance The plugin instance to create to server
- * @param {function({boolean})} callback The callback for the result
+ * @param {function(boolean)} callback The callback for the result
  * @param {boolean} sync True to wait for result, false (or undefined) to work asynchronously
  */
 PluginInstanceManager.createToServer = function(pluginInstance, callback, sync) {
@@ -309,7 +314,7 @@ PluginInstanceManager.createToServer = function(pluginInstance, callback, sync) 
 /**
  * Update a plugin instance to server
  * @param pluginInstance The plugin instance to update
- * @param {function({boolean})} callback The callback for the result
+ * @param {function(boolean)} callback The callback for the result
  * @param {boolean} sync True to wait for result, false (or undefined) to work asynchronously
  */
 PluginInstanceManager.updateToServer = function(pluginInstance, callback, sync) {

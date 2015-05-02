@@ -34,8 +34,6 @@ function DeviceParameterHandler(i18nContext, paramName, content, currentValue) {
    this.i18nContext = i18nContext;
    this.content = content;
 
-   var self = this;
-
    if (!isNullOrUndefined(content.expectedKeywordType)) {
       //we look for a type
       this.expectedKeywordType = content.expectedKeywordType;
@@ -95,7 +93,6 @@ function populateDeviceList(handler) {
 
 /**
  * Apply script after DOM object has been added to the page
- * @returns {none}
  */
 DeviceParameterHandler.prototype.applyScript = function () {
 
@@ -263,7 +260,7 @@ DeviceParameterHandler.prototype.applyScript = function () {
             .fail(function() {notifyError($.t("modals.configure-widget.errorDuringGettingDeviceList"));});
          break;
    }
-}
+};
 
 /**
  * Get the DOM Object to insert

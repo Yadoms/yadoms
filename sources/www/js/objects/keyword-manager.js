@@ -80,7 +80,7 @@ KeywordManager.get = function (keywordId, callback, sync) {
       callback(KeywordManager.factory(data.data));
    })
    .fail(function() {notifyError($.t("objects.generic.errorGetting", {objectName : "Keyword with Id = " + keywordId}));});
-}
+};
 
 KeywordManager.getAll = function (callback, sync) {
     assert(!isNullOrUndefined(callback), "callback must be defined");

@@ -6,7 +6,7 @@
  * Create an int parameter handler
  * @param i18nContext
  * @param paramName
- * @param content
+ * @param {{minimumValue:string}, {maximumValue:string}, {defaultValue:string}, {name:string}, {description:string}} content
  * @param currentValue
  * @constructor
  */
@@ -15,7 +15,7 @@ function IntParameterHandler(i18nContext, paramName, content, currentValue) {
    assert(paramName !== undefined, "paramName must be defined");
    assert(content !== undefined, "content must be defined");
 
-   //if value is setted we use it else we use the default value else we use 0
+   //if value is set we use it else we use the default value else we use 0
    this.value = parseInt(currentValue);
 
    if (isNaN(this.value)) {
@@ -82,7 +82,7 @@ IntParameterHandler.prototype.getDOMObject = function () {
 
 IntParameterHandler.prototype.locateInDOM = function () {
    return $("input#" + this.uuid);
-}
+};
 
 /**
  * Get the param name

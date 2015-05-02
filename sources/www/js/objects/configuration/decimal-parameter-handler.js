@@ -6,8 +6,8 @@
  * Create a decimal parameter handler
  * @param i18nContext
  * @param paramName
- * @param content
- * @param currentValue
+ * @param {{minimumValue:string}, {maximumValue:string}, {precision:string}, {defaultValue:string}, {name:string}, {description:string}} content
+ * @param  currentValue
  * @constructor
  */
 function DecimalParameterHandler(i18nContext, paramName, content, currentValue) {
@@ -89,7 +89,7 @@ DecimalParameterHandler.prototype.getDOMObject = function () {
 
 DecimalParameterHandler.prototype.locateInDOM = function () {
    return $("input#" + this.uuid);
-}
+};
 
 /**
  * Get the param name
@@ -99,9 +99,10 @@ DecimalParameterHandler.prototype.getParamName = function() {
   return this.paramName;
 };
 
+
 /**
  * Get the current configuration in the form
- * @returns {double}
+ * @returns {*}
  */
 DecimalParameterHandler.prototype.getCurrentConfiguration = function () {
    //we allow "," and "."

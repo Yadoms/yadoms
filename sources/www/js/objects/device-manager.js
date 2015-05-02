@@ -3,7 +3,7 @@
  */
 
 /**
- * Ctor which does nothing because it is used as a static class
+ * Constructor which does nothing because it is used as a static class
  * @constructor
  */
 function DeviceManager(){}
@@ -42,7 +42,7 @@ DeviceManager.get = function (deviceId, callback, sync) {
          callback(DeviceManager.factory(data.data));
       })
       .fail(function() {notifyError($.t("objects.generic.errorGetting", {objectName : "Device with Id = " + deviceId}));});
-}
+};
 
 DeviceManager.getAll = function (callback, sync) {
     assert(!isNullOrUndefined(callback), "callback must be defined");
@@ -55,7 +55,12 @@ DeviceManager.getAll = function (callback, sync) {
         dataType: "json",
         url: "/rest/device",
         async: async
-    }).done(function (data) {
+    }).done(
+        /**
+         * Receive result from server
+         * @param {{result:string}, {data: {device : object}}} data
+         */
+        function (data) {
         //we parse the json answer
         if (data.result != "true") {
             notifyError($.t("objects.generic.errorGetting", {objectName: "all devices"}), JSON.stringify(data));
@@ -119,7 +124,7 @@ DeviceManager.getAllByInstance = function(pluginInstance, callback, sync) {
    else {
       callback(pluginInstance.devices);
    }
-}
+};
 
 DeviceManager.getAttachedPlugin = function(device, callback) {
    assert(!isNullOrUndefined(device), "device must be defined");

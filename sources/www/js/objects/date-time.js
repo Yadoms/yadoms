@@ -31,14 +31,15 @@ DateTimeFormatter.isoDateToString = function (isoDate) {
 
 /**
  * Display date given in parameter
- * @param isoDate date to display
  * @returns {string}
+ * @param date
+ * @param optionalFormat
  */
-DateTimeFormatter.dateToString = function (date, optionnalFormat) {
+DateTimeFormatter.dateToString = function (date, optionalFormat) {
 
    var d = moment.utc(date);
    assert(d.isValid(), "Date given " + date + " is not valid");
-   var format = optionnalFormat;
+   var format = optionalFormat;
    if (!format)
       format = systemConfiguration[ConfigurationManager.items.system.dateFormatString].value;
 

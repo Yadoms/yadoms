@@ -125,7 +125,7 @@ StringParameterHandler.prototype.getDOMObject = function () {
 
 StringParameterHandler.prototype.locateInDOM = function () {
    return $("input#" + this.uuid);
-}
+};
 
 /**
  * Get the param name

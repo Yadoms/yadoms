@@ -4,7 +4,7 @@
 
 
 /**
- * Ctor which does nothing because it is used as a static class
+ * Constructor which does nothing because it is used as a static class
  * @constructor
  */
 function TaskManager(){}

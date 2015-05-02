@@ -46,7 +46,7 @@ WidgetManager.getFromGridsterElement = function($gridsterElement) {
    var pageId = $gridsterElement.attr("page-id");
    var widgetId = $gridsterElement.attr("widget-id");
    return WidgetManager.get(pageId, widgetId);
-}
+};
 
 WidgetManager.getWidgetOfPageFromServer = function(page, callback) {
    assert(page !== undefined, "page must be defined");
@@ -80,7 +80,7 @@ WidgetManager.getWidgetOfPageFromServer = function(page, callback) {
             callback(null);
          return null;
       });
-}
+};
 
 WidgetManager.getViewFromServerSync = function(widget) {
    assert(!isNullOrUndefined(widget), "widget must be defined");
@@ -96,7 +96,7 @@ WidgetManager.getViewFromServerSync = function(widget) {
    });
 
    return view;
-}
+};
 
 WidgetManager.getViewModelFromServerSync = function(widget) {
    assert(!isNullOrUndefined(widget), "widget must be defined");
@@ -111,7 +111,7 @@ WidgetManager.getViewModelFromServerSync = function(widget) {
    //if the ajax method works ok the widgetViewModelCtor is set
 
    return widgetViewModelCtor;
-}
+};
 
 WidgetManager.updateToServer = function(widget, callback) {
     assert(!isNullOrUndefined(widget), "widget must be defined");
@@ -130,36 +130,32 @@ WidgetManager.updateToServer = function(widget, callback) {
             notifyError($.t("objects.widgetManager.errorDuringModifyingWidget"), JSON.stringify(data));
             if ($.isFunction(callback))
                 callback(false);
-            return;
+        } else {
+
+            //we notify that configuration has changed
+            try {
+                WidgetManager.updateWidgetConfiguration(widget);
+
+                //we ask for a refresh of widget data
+                updateWidgetPolling(widget);
+
+                if ($.isFunction(callback))
+                    callback(true);
+            }
+            catch (e) {
+                notifyWarning($.t("objects.widgetManager.exceptionDuringCallConfigurationChanged", {"widgetType": widget.type}));
+                console.warn(e);
+                if ($.isFunction(callback))
+                    callback(false);
+            }
         }
-
-        //we notify that configuration has changed
-        try
-        {
-            WidgetManager.updateWidgetConfiguration(widget);
-
-            //we ask for a refresh of widget data
-            updateWidgetPolling(widget);
-
-            if ($.isFunction(callback))
-                callback(true);
-        }
-        catch (e)
-        {
-            notifyWarning($.t("objects.widgetManager.exceptionDuringCallConfigurationChanged", {"widgetType" : widget.type}));
-            console.warn(e);
-            if ($.isFunction(callback))
-                callback(false);
-            return;
-        }
-
         })
-        .fail(function(widgetType) { return function() {
+        .fail(function() { return function() {
             notifyError($.t("objects.widgetManager.errorDuringModifyingWidgetNamed", {"widgetType" : widget.type}));
             if ($.isFunction(callback))
                 callback(false);
         };}(widget.type));
-}
+};
 
 WidgetManager.updateWidgetConfiguration = function(widget) {
    try
@@ -173,7 +169,7 @@ WidgetManager.updateWidgetConfiguration = function(widget) {
       notifyWarning($.t("objects.widgetManager.widgetHasGeneratedAnExceptionDuringCallingMethod", {widgetName : widget.type, methodName : 'configurationChanged'}));
       console.warn(e);
    }
-}
+};
 
 WidgetManager.consolidate = function(widget, widgetPackage) {
    assert(!isNullOrUndefined(widget), "widget must be defined");
@@ -183,7 +179,7 @@ WidgetManager.consolidate = function(widget, widgetPackage) {
    //noinspection JSPotentiallyInvalidConstructorUsage
    widget.viewModel = new widgetPackage.viewModelCtor();
    widget.package = widgetPackage.packageInformation;
-}
+};
 
 
 WidgetManager.loadWidget = function(widget, pageWhereToAdd) {
@@ -223,7 +219,7 @@ WidgetManager.loadWidget = function(widget, pageWhereToAdd) {
    else {
       WidgetManager.loadAsDowngraded(widget, pageWhereToAdd);
    }
-}
+};
 
 WidgetManager.loadAsDowngraded = function(widget, pageWhereToAdd) {
    assert(!isNullOrUndefined(widget), "widget must be defined");
@@ -268,7 +264,7 @@ WidgetManager.loadAsDowngraded = function(widget, pageWhereToAdd) {
       //we add the widget to the collection
       pageWhereToAdd.addWidget(widget);
    }
-}
+};
 
 WidgetManager.addToDom = function(widget) {
    assert(!isNullOrUndefined(widget), "widget must be defined");
@@ -358,12 +354,12 @@ WidgetManager.addToDom = function(widget) {
 
    //we ask for widget refresh data
    updateWidgetPolling(widget);
-}
+};
 
 /**
  * Create a new graphic Widget and add it to the corresponding gridster
  * @param widget widget to add
- * @returns {gridster}
+ * @returns {object}
  */
 WidgetManager.createGridsterWidget = function(widget) {
    assert(widget !== undefined, "widget must be defined");
@@ -386,10 +382,10 @@ WidgetManager.createGridsterWidget = function(widget) {
    domWidget +=    "<span class=\"btn-delete-widget\"><i class=\"glyphicon glyphicon-trash\"></i></span>\n" +
       "</div>\n" +
       "<div id=\"widget-" + widget.id + "\" class=\"widgetDiv\" data-bind=\"template: { name: '" + type + "-template' }\"/>\n" +
-      "</li>\n"
+      "</li>\n";
 
    var item = page.gridster.add_widget(domWidget, widget.sizeX, widget.sizeY, widget.positionX, widget.positionY);
 
    item.i18n();
    return item;
-}
+};

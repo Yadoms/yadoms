@@ -52,7 +52,7 @@ BoolParameterHandler.prototype.getDOMObject = function () {
 
 BoolParameterHandler.prototype.locateInDOM = function () {
    return $("input#" + this.uuid);
-}
+};
 
 /**
  * Get the param name

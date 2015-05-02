@@ -44,7 +44,7 @@ Page.prototype.addWidget = function(widget) {
 
 /**
  * Override JSON.stringify method in order to send only database columns
- * @returns {string}
+ * @returns {{id: *, name: string, pageOrder: *}}
  */
 Page.prototype.toJSON = function () {
    return {

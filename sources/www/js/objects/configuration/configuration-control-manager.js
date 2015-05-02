@@ -4,19 +4,22 @@
 
 /**
  * Creates an instance of LazyLoaderManager
+ * @param configurationSchema
+ * @param currentConfiguration
+ * @param i18nNamespace
  * @param $domContainer
  * @constructor
  */
-function ConfigurationControlManager(configurationSchema, currentconfiguration, i18nNamespace, $domContainer) {
+function ConfigurationControlManager(configurationSchema, currentConfiguration, i18nNamespace, $domContainer) {
    assert(configurationSchema !== undefined, "configurationSchema must contain widget or plugin object");
    assert(i18nNamespace !== undefined, "i18nNamespace must contain widget or plugin object");
    assert($domContainer !== undefined, "$domContainer must be defined");
 
-   if (!currentconfiguration)
-      currentconfiguration = {};
+   if (!currentConfiguration)
+       currentConfiguration = {};
 
    this.configurationSchema = configurationSchema;
-   this.configurationValues = currentconfiguration;
+   this.configurationValues = currentConfiguration;
    this.configurationHandlers = [];
 
    var self = this;
@@ -53,7 +56,6 @@ ConfigurationControlManager.prototype.getDOMObject = function () {
 
 /**
  * Apply script after DOM object has been added to the page
- * @returns {}
  */
 ConfigurationControlManager.prototype.applyScript = function () {
    //we apply script in each children
@@ -61,7 +63,7 @@ ConfigurationControlManager.prototype.applyScript = function () {
       if ($.isFunction(value.applyScript))
          value.applyScript();
    });
-}
+};
 
 /**
  * Get the current configuration in the form

@@ -48,7 +48,7 @@ PageManager.getAll = function(callback) {
             callback();
       })
       .fail(function() {notifyError($.t("objects.PageManager.errorDuringGettingPages"));});
-}
+};
 
 /**
  * Get Page with its id in the page. return null if it's not exist
@@ -207,7 +207,7 @@ PageManager.addToDom = function (page) {
       return tabClick($(e.currentTarget).parent().attr("page-id")); } );
 
    //we listen click event on add new widget
-   page.$tab.find('button.add-widget').bind('click', function (e) {
+   page.$tab.find('button.add-widget').bind('click', function () {
       modals.widgetAdd.load(function() {askWidgetPackages();});
    } );
 
@@ -238,7 +238,7 @@ PageManager.addToDom = function (page) {
    //we listen for click event with no code inside to help event transmission until exit customization
    page.$tab.bind('click', function (e) {
    } );
-}
+};
 
 PageManager.movePage = function(page, direction) {
    assert(!isNullOrUndefined(page), "pageToMove must be defined");
@@ -310,7 +310,7 @@ PageManager.movePage = function(page, direction) {
       })
       .fail(function() {notifyError($.t("mainPage.errors.errorDuringSavingPagePosition"));});
    }
-}
+};
 
 PageManager.ensureOnePageIsSelected = function() {
    //if there is no page selected we select the first one
@@ -319,7 +319,7 @@ PageManager.ensureOnePageIsSelected = function() {
       if (PageManager.pages.length > 0)
          PageManager.pages[0].$tab.find("a").trigger("click");
    }
-}
+};
 
 /**
  * Return the current displayed page
@@ -330,4 +330,4 @@ PageManager.getCurrentPage = function() {
    if (isNullOrUndefined(pageId))
       return null;
    return PageManager.getPage(pageId);
-}
+};

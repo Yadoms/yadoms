@@ -119,7 +119,7 @@ RadioSectionParameterHandler.prototype.getDOMObject = function () {
 
 RadioSectionParameterHandler.prototype.locateInDOM = function () {
    return $("div#" + this.radioGroupUuid);
-}
+};
 
 /**
  * Get the param name
@@ -131,7 +131,6 @@ RadioSectionParameterHandler.prototype.getParamName = function() {
 
 /**
  * Apply script after DOM object has been added to the page
- * @returns {}
  */
 RadioSectionParameterHandler.prototype.applyScript = function () {
    var self = this;
@@ -156,7 +155,7 @@ RadioSectionParameterHandler.prototype.applyScript = function () {
       if ($.isFunction(value.applyScript))
          value.applyScript();
    });
-}
+};
 
 /**
  * Get the current configuration in the form

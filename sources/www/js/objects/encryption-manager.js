@@ -15,36 +15,36 @@ EncryptionManager.key = "2m72fgEQ";
  * Encrypt or decrypt a string using XOR algorithm
  * @param stringToEncrypt 	The string to encrypt or decrypt
  * @param key 				The encryption/decryption key
- * @returns The encrypted/decrypted string
+ * @returns {string} The encrypted/decrypted string
  */
 EncryptionManager.xorEncryptDecrypt = function(stringToEncrypt, key) {
     var output = "";
 	for (var i = 0; i < stringToEncrypt.length; i++)
 		output+= String.fromCharCode(stringToEncrypt.charCodeAt(i) ^ key.charCodeAt(i % key.length));
 	return output;
-}
+};
 
 /**
  * Encrypt a string using XOR algorithm, with a base64 pass
  * @param toEncrypt  The string to encrypt
  * @param key        The encryption key
- * @return	The encrypted string (base64)
+ * @return	{string} The encrypted string (base64)
  */
 EncryptionManager.encryptBase64 = function(toEncrypt, key) {
 	if (isNullOrUndefined(toEncrypt))
 		toEncrypt = "";
 	var cypher = EncryptionManager.xorEncryptDecrypt(toEncrypt, key);
 	return btoa(cypher);
-}			
+};
 
 /**
  * Decrypt a base64 string using XOR algorithm
  * @param toDecrypt  The base64 string to decrypt
  * @param key        The decryption key
- * @return	The decrypted string
+ * @return	{string} The decrypted string
  */
 EncryptionManager.decryptBase64 = function(toDecrypt, key) {
 	if (isNullOrUndefined(toDecrypt))
 		toDecrypt = "";
 	return EncryptionManager.xorEncryptDecrypt(atob(toDecrypt), key);
-}
+};

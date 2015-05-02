@@ -2,9 +2,13 @@
 
 /**
  * Creates an instance of Page
- * @param id database id of the page
+ * @param section
  * @param name name of the page
- * @param pageOrder
+ * @param value
+ * @param defaultValue
+ * @param description
+ * @param securityAccess
+ * @param lastModificationDate
  * @constructor
  */
 function ConfigurationItem(section, name, value, defaultValue, description, securityAccess, lastModificationDate) {
