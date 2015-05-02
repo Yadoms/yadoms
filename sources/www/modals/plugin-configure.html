@@ -37,7 +37,7 @@
          nameParameter.applyScript();
 
       //we apply binding on configuration if necessary
-      var bindedConfigurationSchema = pluginInstance.getBindedPackageConfigurationSchema();
+      var bindedConfigurationSchema = pluginInstance.getBoundPackageConfigurationSchema();
 
       //we append classic configuration
       var configMgr = new ConfigurationControlManager(bindedConfigurationSchema, pluginInstance.configuration, pluginInstance.type, $modalBody);

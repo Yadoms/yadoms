@@ -24,32 +24,22 @@
 
       $("#btn-add-new-plugin").unbind("click").bind("click", addNewPlugin);
 
-      //we dynamically ask for plugins
-      //TODO : Use PluginIsntanceManager.getAll() instead
-      $.getJSON("/rest/plugin/instance")
-         .done(function (data) {
-            //we parse the json answer
-            if (data.result != "true")
-            {
-               notifyError($.t("modals.dashboard.sub-windows.plugins.errorGettingPluginList"), JSON.stringify(data));
-               return;
+      //we dynamically ask for plugins (async)
+      PluginInstanceManager.getAll(function(allInstances){
+         //foreach result we append a <tr>
+         $.each(allInstances, function(index, value) {
+            pluginInstanceList.push(value);
+            //we don't show system plugins to user
+            if (!value.isSystemCategory()) {
+               addPluginInstanceToDom(value);
             }
-            //foreach result we append a <tr>
-            $.each(data.data.plugin, function(index, value) {
-               var pi = PluginInstanceManager.factory(value);
-               pluginInstanceList.push(pi);
-               //we don't show system plugins to user
-               if (pi.category != PluginInstanceManager.systemCategory) {
-                  addPluginInstanceToDom(pi);
-               }
-            });
+         });
 
-            //we use the periodic task of the dashboard
-            clearInterval(periodicDashboardTask);
-            periodicDashboardTask = setInterval(periodicDashboardPluginTask, 1000);
-            periodicDashboardPluginTask();
-         })
-         .fail(function() {notifyError($.t("modals.dashboard.sub-windows.plugins.errorGettingPluginList"), JSON.stringify(data));});
+         //we use the periodic task of the dashboard
+         clearInterval(periodicDashboardTask);
+         periodicDashboardTask = setInterval(periodicDashboardPluginTask, 1000);
+         periodicDashboardPluginTask();
+      }, false);
    }
 
    function getPluginDomRow(pluginInstance) {

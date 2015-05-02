@@ -35,27 +35,49 @@ PluginInstance.prototype.toJSON = function () {
    };
 };
 
-PluginInstance.prototype.getBindedPackageConfigurationSchema = function() {
+/**
+ * Tells if current instance is system category
+ * @returns {boolean}
+ */
+PluginInstance.prototype.isSystemCategory = function() {
+    return PluginInstanceManager.isSystemCategory(this);
+};
+
+/**
+ * Get the bound package configuration schema
+ * @returns {*} The configuration schema or undefined
+ */
+PluginInstance.prototype.getBoundPackageConfigurationSchema = function() {
    if (!isNullOrUndefined(this.package)) {
       var tmp = this.package.configurationSchema;
       return this.applyBindingPrivate(tmp, ["system"]);
    }
-}
+   return undefined;
+};
 
-PluginInstance.prototype.getBindedManuallyDeviceCreationConfigurationSchema = function() {
+/**
+ *  Get the bound manually device creation configuration schema
+ * @returns {*}
+ */
+PluginInstance.prototype.getBoundManuallyDeviceCreationConfigurationSchema = function() {
    if (!isNullOrUndefined(this.package)) {
       var tmp = this.package.manuallyDeviceCreationConfigurationSchema;
       return this.applyBindingPrivate(tmp, ["plugin", "system"]);
    }
-}
+   return undefined;
+};
 
+/**
+ * Apply binding
+ * @param item The configuration item
+ * @param allowedTypes Allowed types for this item
+ * @returns {*}
+ */
 PluginInstance.prototype.applyBindingPrivate = function(item, allowedTypes) {
    assert(!isNullOrUndefined(item), "item must be defined");
    assert(!isNullOrUndefined(allowedTypes), "allowedTypes must be defined");
    var self = this;
    for (var key in item) {
-      console.log("parcours de " + key);
-
       if ($.isPlainObject(item[key])) {
          if (!isNullOrUndefined(item[key].__Binding__)) {
             //we've got binding
@@ -71,7 +93,7 @@ PluginInstance.prototype.applyBindingPrivate = function(item, allowedTypes) {
             {
                case "system":
 
-                  //we ask synchronously the binded value
+                  //we ask synchronously the bound value
                   $.ajax({
                      dataType: "json",
                      url: "/rest/system/binding/" + item[key].__Binding__.query,
@@ -118,4 +140,4 @@ PluginInstance.prototype.applyBindingPrivate = function(item, allowedTypes) {
       }
    }
    return item;
-}
+};
