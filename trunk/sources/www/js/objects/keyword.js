@@ -41,3 +41,11 @@ Keyword.prototype.toJSON = function () {
       typeInfo : this.typeInfo
    };
 };
+
+/**
+ * Check if the keyword is writable
+ * @returns {boolean}
+ */
+Keyword.prototype.isWritable = function() {
+  return this.accessMode.toLowerCase() == "getset";
+};
