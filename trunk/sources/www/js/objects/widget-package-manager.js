@@ -55,8 +55,8 @@ WidgetPackageManager.getAll = function(callback) {
             callback();
       })
       .fail(function() {notifyError($.t("objects.widgetPackageManager.errorDuringGettingPackages"));});
-}
+};
 
 WidgetPackageManager.packageExists = function(packageName) {
    return (!isNullOrUndefined(WidgetPackageManager.widgetPackages[packageName]));
-}
+};

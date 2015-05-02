@@ -65,7 +65,7 @@ EnumParameterHandler.prototype.getDOMObject = function () {
 EnumParameterHandler.prototype.setValues = function (values) {
    this.values = values;
    this.updateValues();
-}
+};
 
 EnumParameterHandler.prototype.updateValues = function () {
    var self = this;
@@ -88,7 +88,7 @@ EnumParameterHandler.prototype.applyScript = function () {
 
 EnumParameterHandler.prototype.locateInDOM = function () {
    return $("select#" + this.uuid);
-}
+};
 
 /**
  * Get the param name

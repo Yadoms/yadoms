@@ -51,15 +51,18 @@ ColorParameterHandler.prototype.getDOMObject = function () {
 
 /**
  * Apply script after DOM object has been added to the page
- * @returns {}
  */
 ColorParameterHandler.prototype.applyScript = function () {
    $("div#" + this.uuid).colorpicker();
-}
+};
 
+/**
+ * Locate parameter in dom
+ * @returns {*|jQuery|HTMLElement}
+ */
 ColorParameterHandler.prototype.locateInDOM = function () {
    return $("div#" + this.uuid);
-}
+};
 
 /**
  * Get the param name
@@ -74,7 +77,6 @@ ColorParameterHandler.prototype.getParamName = function() {
  * @returns {string}
  */
 ColorParameterHandler.prototype.getCurrentConfiguration = function () {
-   var val = $("div#" + this.uuid + " > input").val();
-   this.value = val;
+   this.value = $("div#" + this.uuid + " > input").val();
    return this.value;
 };

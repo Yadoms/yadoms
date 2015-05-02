@@ -136,7 +136,6 @@ SectionParameterHandler.prototype.getDOMObject = function () {
 
 /**
  * Apply script after DOM object has been added to the page
- * @returns {}
  */
 SectionParameterHandler.prototype.applyScript = function () {
    var self = this;

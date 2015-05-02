@@ -49,15 +49,14 @@ IconParameterHandler.prototype.getDOMObject = function () {
 
 /**
  * Apply script after DOM object has been added to the page
- * @returns {}
  */
 IconParameterHandler.prototype.applyScript = function () {
    $("button#" + this.uuid).iconpicker();
-}
+};
 
 IconParameterHandler.prototype.locateInDOM = function () {
    return $("button#" + this.uuid);
-}
+};
 
 /**
  * Get the param name
@@ -72,7 +71,6 @@ IconParameterHandler.prototype.getParamName = function() {
  * @returns {string}
  */
 IconParameterHandler.prototype.getCurrentConfiguration = function () {
-   var val = $("button#" + this.uuid + " > input").val();
-   this.value = val;
+   this.value = $("button#" + this.uuid + " > input").val();
    return this.value;
 };

@@ -8,8 +8,6 @@
  * @param paramName
  * @param content
  * @param currentValue
- * @param radioButtonSectionName
- * @param radioSectionActive
  * @constructor
  */
 function ListParameterHandler(i18nContext, paramName, content, currentValue) {
@@ -129,17 +127,16 @@ ListParameterHandler.prototype.createItemLine = function(item) {
                       "</div>" +
                    "</div>";
    return itemLine;
-}
+};
 
 ListParameterHandler.prototype.updateItemNumberVerificator = function() {
    //we get the number of item in the list and set it into a textbox to ensure form validation
    var count = $("div#" + this.uuid).find("div.list-item-line").length;
    $("input#" + this.itemNumberTextBoxUuid).val(count);
-}
+};
 
 /**
  * Apply script after DOM object has been added to the page
- * @returns {}
  */
 ListParameterHandler.prototype.applyScript = function () {
    var self = this;
@@ -178,7 +175,7 @@ ListParameterHandler.prototype.applyScript = function () {
    });
 
    $("div#" + self.uuid).i18n();
-}
+};
 
 ListParameterHandler.prototype.getPosFromSiblings = function(item) {
    var i = -1;
@@ -188,7 +185,7 @@ ListParameterHandler.prototype.getPosFromSiblings = function(item) {
       c = c.prev();
    }
    return i;
-}
+};
 
 ListParameterHandler.prototype.duplicateLine = function() {
    var self = this;
@@ -252,7 +249,7 @@ ListParameterHandler.prototype.deleteLine = function() {
 
 ListParameterHandler.prototype.locateInDOM = function () {
    return $("div#" + this.uuid);
-}
+};
 
 /**
  * Get the param name

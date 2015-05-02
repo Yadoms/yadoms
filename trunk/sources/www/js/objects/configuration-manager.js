@@ -69,7 +69,7 @@ ConfigurationManager.getSection = function(section, callback) {
          notifyError($.t("objects.ConfigurationManager.errorDuringGettingSystemConfiguration"));
          callback(null);
       });
-}
+};
 
 ConfigurationManager.get = function(configurationSection, configurationName, callback) {
    assert(!isNullOrUndefined(configurationSection), "configurationSection must be defined");

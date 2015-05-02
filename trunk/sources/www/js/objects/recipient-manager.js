@@ -40,8 +40,7 @@ RecipientManager.factoryField = function (json) {
     assert(!isNullOrUndefined(json.fieldName), "json.fieldName must be defined");
     assert(!isNullOrUndefined(json.value), "json.value must be defined");
 
-    var r = new RecipientField(json.idRecipient, decodeURIComponent(json.pluginName), decodeURIComponent(json.fieldName), decodeURIComponent(json.value));
-    return r;
+    return new RecipientField(json.idRecipient, decodeURIComponent(json.pluginName), decodeURIComponent(json.fieldName), decodeURIComponent(json.value));
 };
 
 
@@ -143,7 +142,12 @@ RecipientManager.getAll = function (callback, sync) {
             dataType: "json",
             async: async
         })
-            .done(function (data) {
+            .done(
+            /**
+             * Receive result from server
+             * @param {{result:string}, {data: {recipient : object}}} data
+             */
+            function (data) {
                 //we parse the json answer
                 if (data.result != "true") {
                     notifyError($.t("objects.recipient.errorGettingList"), JSON.stringify(data));
