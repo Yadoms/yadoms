@@ -36,7 +36,7 @@
        PluginManager.get(function (list) {
           $("select#pluginTypeList").empty();
 
-          $.each(data.data.plugins, function(index, value) {
+          $.each(list, function(index, value) {
              //foreach plugin-type
              $("select#pluginTypeList").append("<option>" + value.name + "</option>");
           });
