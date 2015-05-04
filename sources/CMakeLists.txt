@@ -87,7 +87,6 @@ set(BOOST_LIBS
 	chrono 
 	program_options
 	regex
-        timer
 )
 
 # search boost libs
