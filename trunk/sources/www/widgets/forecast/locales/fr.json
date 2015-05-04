@@ -12,18 +12,14 @@
          "description": "Les prévisions peuvent être sélectionnée individuellement:",
          "content":
          {	  
-			  "MaxWind":
-			  {
-				 "name": "La vitesse maximale du vent"
-			  },
 			  "AveWind":
 			  {
 				 "name": "La vitesse moyenne du vent"
 			  },
-			  "AveHumidity":
+			  "MaxWind":
 			  {
-				 "name": "L'humidité moyenne"
-			  },
+				 "name": "La vitesse maximale du vent"
+			  },			  
 			  "RainDay":
 			  {
 				 "name": "Les chutes de pluie"
