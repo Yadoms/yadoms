@@ -29,8 +29,10 @@ void CForecastFormatter::AddPeriod(
             const std::string& TempMin,
             const std::string& MaxWind,
             const std::string& AveWind,
+			const std::string& AveWindDegrees,
             const std::string& AveHumidity,
-            const std::string& RainDay
+            const std::string& RainDay,
+			const std::string& SnowDay
 				)
 {
    CDataContainer Temp;
@@ -43,8 +45,10 @@ void CForecastFormatter::AddPeriod(
    Temp.set ("TempMin", TempMin);
    Temp.set ("MaxWind", MaxWind);
    Temp.set ("AveWind", AveWind);
+   Temp.set ("AveWindDegrees", AveWindDegrees);
    Temp.set ("AveHumidity", AveHumidity);
    Temp.set ("RainDay", RainDay);
+   Temp.set ("SnowDay", SnowDay);
 
    m_Periods.push_back( Temp );
 }

@@ -29,9 +29,9 @@ namespace shared { namespace plugin { namespace yPluginApi
 	  static const std::string& Second;               // s
       static const std::string& Uv;                   // UV
       static const std::string& Volt;                 // V
+	  static const std::string& VoltAmpere;           // VA
       static const std::string& Watt;                 // W
       static const std::string& WattPerHour;          // Wh
    };
 
 } } } // namespace shared::plugin::yPluginApi
-

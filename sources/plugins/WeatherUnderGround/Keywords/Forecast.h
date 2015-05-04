@@ -56,13 +56,15 @@ namespace yApi = shared::plugin::yPluginApi;
                      const std::string& filterYear,
                      const std::string& filterMonth,
                      const std::string& filterDay,
-	                  const std::string& filterWeatherCondition,
-	                  const std::string& filterTempMax, 
-					      const std::string& filterTempMin,
-					      const std::string& filterMaxWind,
-					      const std::string& filterAveWind,
-					      const std::string& filterAveHumidity,
-                     const std::string& RainDay
+	                 const std::string& filterWeatherCondition,
+	                 const std::string& filterTempMax, 
+                     const std::string& filterTempMin,
+                     const std::string& filterMaxWind,
+                     const std::string& filterAveWind,
+					 const std::string& filterAveWindDegrees,
+                     const std::string& filterAveHumidity,
+                     const std::string& RainDay,
+					 const std::string& filterSnowDay
 					     );
 
       //-----------------------------------------------------

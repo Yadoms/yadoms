@@ -15,6 +15,7 @@ namespace shared { namespace plugin { namespace yPluginApi {
       //--------------------------------------------------------------
       //                                                    capacity name      |        unit           |          description
       //                                                  ----------------------------------------------------------------------------------------------
+      static const CStandardCapacity & ApparentPower;     // apparentpower     | Volt Ampere           | Apparent Voltage
       static const CStandardCapacity & ArmingAlarm;       // armingAlarm       | -                     | Alarme arming status (disarmed, armedAtHome, armedAway...)
       static const CStandardCapacity & BatteryLevel;      // batteryLevel      | percent               | Battery level capacity
       static const CStandardCapacity & CameraMove;        // cameraMove        |  -                    | Camera movements
@@ -25,7 +26,7 @@ namespace shared { namespace plugin { namespace yPluginApi {
       static const CStandardCapacity & Dimmable;          // dimmable          | none                  | A value from 0-100 (0 is off, 100 is on)
       static const CStandardCapacity & Direction;         // direction         | degrees               | Direction (for compass, wind direction)
       static const CStandardCapacity & Distance;          // length            | meter                 | A distance, in meter	  
-	   static const CStandardCapacity & Duration;          // duration          | s                     | A Duration in second
+      static const CStandardCapacity & Duration;          // duration          | s                     | A Duration in second
       static const CStandardCapacity & Energy;            // energy            | Watt/hour             | Energy measure
       static const CStandardCapacity & Event;             // event             |  -                    | Just an event (no associated data)
       static const CStandardCapacity & Frequency;         // frequency         | Hertz                 | Frequency
@@ -44,7 +45,7 @@ namespace shared { namespace plugin { namespace yPluginApi {
       static const CStandardCapacity & UpDownStop;        // upDownStop        | -                     | Used for device accepting orders Up, Down Stop
       static const CStandardCapacity & Uv;                // uv                | uv                    | UV index
       static const CStandardCapacity & Voltage;           // voltage           | Volt                  | Voltage
-	   static const CStandardCapacity & WeatherCondition;   // weatherCondition  | -                     | Weather Condition (Cloudy, Snow, PartlySunny, Sunny, Rain, Sleet, Storm, Fog)
+      static const CStandardCapacity & WeatherCondition;  // weatherCondition  | -                     | Weather Condition (Cloudy, Snow, PartlySunny, Sunny, Rain, Sleet, Storm, Fog)
       static const CStandardCapacity & Weight;            // weight            | Kg                    | Weight
    };
 
