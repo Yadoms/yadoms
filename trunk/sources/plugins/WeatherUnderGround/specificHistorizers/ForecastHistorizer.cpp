@@ -51,11 +51,13 @@ void CForecastHistorizer::AddUnit(
 					 const std::string& TempMin,
 					 const std::string& MaxWind,
 					 const std::string& AveWind,
+					 const std::string& AveWindDegrees,
 					 const std::string& AveHumidity,
-                const std::string& RainDay
+                const std::string& RainDay,
+				const std::string& SnowDay
 					 )
 	{
-		m_content->AddPeriod( Year, Month, Day, WeatherCondition, TempMax, TempMin, MaxWind, AveWind, AveHumidity, RainDay );
+		m_content->AddPeriod( Year, Month, Day, WeatherCondition, TempMax, TempMin, MaxWind, AveWind,AveWindDegrees, AveHumidity, RainDay, SnowDay );
 	}
 
    void CForecastHistorizer::ClearAllPeriods( void )

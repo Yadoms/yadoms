@@ -2,6 +2,7 @@
 #include "WeatherIcon.h"
 #include <shared/Log.h>
 #include <shared/plugin/yPluginApi/StandardCapacities.h>
+#include "KeywordException.hpp"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -52,15 +53,22 @@ void CWeatherIcon::SetValue( const shared::CDataContainer & ValueContainer, cons
 	  ("nt_partlycloudy", yApi::historization::EWeatherCondition::kNight_Cloudy)
 	  ("nt_snow", yApi::historization::EWeatherCondition::kNight_Snow);
 
-      EnumValuesNames::const_iterator it = EEnumTypeNames.find( ValueContainer.get<std::string>( filter ) );
-      if (it != EEnumTypeNames.end())
-	  {
-         m_weathercondition->set( (yApi::historization::EWeatherCondition)(it->second) );
+    try
+	{
+        EnumValuesNames::const_iterator it = EEnumTypeNames.find( ValueContainer.get<std::string>( filter ) );
+        if (it != EEnumTypeNames.end())
+	    {
+           m_weathercondition->set( (yApi::historization::EWeatherCondition)(it->second) );
 
-		 YADOMS_LOG(debug) << m_weathercondition->getKeyword() << "=" << m_weathercondition->get();
-	  }
-	  else
-		  throw; //TODO : Emettre une vrai Exception
+		   YADOMS_LOG(debug) << m_weathercondition->getKeyword() << "=" << m_weathercondition->get();
+	    }
+	    else
+		   throw CKeywordException ("Keyword Weather Icon cound not be set");
+	}
+    catch (shared::exception::CException e)
+	{
+		YADOMS_LOG(warning) << e.what() << std::endl;
+	}
 }
 
 void CWeatherIcon::DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const

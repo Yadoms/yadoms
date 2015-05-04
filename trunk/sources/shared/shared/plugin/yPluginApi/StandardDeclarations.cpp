@@ -27,6 +27,7 @@ namespace shared { namespace plugin { namespace yPluginApi {
    const std::string& CStandardUnits::Second("s");
    const std::string& CStandardUnits::Uv("UV");
    const std::string& CStandardUnits::Volt("V");
+   const std::string& CStandardUnits::VoltAmpere("VA");
    const std::string& CStandardUnits::Watt("W");
    const std::string& CStandardUnits::WattPerHour("Wh");
 
@@ -36,7 +37,8 @@ namespace shared { namespace plugin { namespace yPluginApi {
    const std::string& CStandardValues::Open("open");
    const std::string& CStandardValues::Close("close");
    const std::string& CStandardValues::Stop("stop");
-   
+ 
+   const CStandardCapacity& CStandardCapacities::ApparentPower = CStandardCapacity("apparentpower", CStandardUnits::VoltAmpere, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::ArmingAlarm = CStandardCapacity("armingAlarm", CStandardUnits::NoUnits, EKeywordDataType::kNoData);
    const CStandardCapacity& CStandardCapacities::BatteryLevel = CStandardCapacity("batteryLevel", CStandardUnits::Percent, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::CameraMove = CStandardCapacity("cameraMove", CStandardUnits::NoUnits, EKeywordDataType::kNoData);
@@ -59,8 +61,8 @@ namespace shared { namespace plugin { namespace yPluginApi {
    const CStandardCapacity& CStandardCapacities::Pressure = CStandardCapacity("pressure", CStandardUnits::hectoPascal, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Rain = CStandardCapacity("rain", CStandardUnits::Millimeter, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::RainRate = CStandardCapacity("rainrate", CStandardUnits::MillimeterPerSecond, EKeywordDataType::kNumeric);
-	const CStandardCapacity& CStandardCapacities::Rssi = CStandardCapacity("rssi", CStandardUnits::Percent, EKeywordDataType::kNumeric);
-	const CStandardCapacity& CStandardCapacities::Speed = CStandardCapacity("speed", CStandardUnits::MetersPerSecond, EKeywordDataType::kNumeric);
+   const CStandardCapacity& CStandardCapacities::Rssi = CStandardCapacity("rssi", CStandardUnits::Percent, EKeywordDataType::kNumeric);
+   const CStandardCapacity& CStandardCapacities::Speed = CStandardCapacity("speed", CStandardUnits::MetersPerSecond, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Switch = CStandardCapacity("switch", CStandardUnits::NoUnits, EKeywordDataType::kBool);
    const CStandardCapacity& CStandardCapacities::Temperature = CStandardCapacity("temperature", CStandardUnits::DegreesCelcius, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::UpDownStop = CStandardCapacity("upDownStop", CStandardUnits::NoUnits, EKeywordDataType::kNoData);

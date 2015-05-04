@@ -51,8 +51,10 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
 				const std::string& TempMin,
 				const std::string& MaxWind,
 				const std::string& AveWind,
+				const std::string& AveWindDegrees,
 				const std::string& AveHumidity,
-            const std::string& RainDay
+            const std::string& RainDay,
+			const std::string& SnowDay
 				);
 
       //-----------------------------------------------------

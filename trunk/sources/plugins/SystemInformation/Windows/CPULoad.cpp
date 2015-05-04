@@ -21,7 +21,6 @@ CCPULoad::CCPULoad(const std::string & device)
 {
    try
    {
-      m_InitializeOk = false;
       Initialize();
    }
    catch (shared::exception::CException& e)
@@ -54,6 +53,7 @@ void CCPULoad::Initialize()
 
    if (Status != ERROR_SUCCESS) 
    {
+	  YADOMS_LOG(debug) << "ProcessorTimeString: " << ProcessorTimeString;
       std::stringstream Message; 
       Message << "PdhLookupPerfNameByIndex failed with status:"; 
       Message << std::hex <<  Status;
@@ -65,6 +65,7 @@ void CCPULoad::Initialize()
 
    if (Status != ERROR_SUCCESS) 
    {
+	  YADOMS_LOG(debug) << "ProcessorObjectName: " << ProcessorObjectName;
       std::stringstream Message; 
       Message << "PdhLookupPerfNameByIndex failed with status:"; 
       Message << std::hex <<  Status;
@@ -83,6 +84,7 @@ void CCPULoad::Initialize()
 
    if (Status != ERROR_SUCCESS) 
    {
+	  YADOMS_LOG(debug) << "CounterPath: " << CounterPath;
       std::stringstream Message; 
       Message << "PdhMakeCounterPath failed with status:"; 
       Message << std::hex <<  Status;

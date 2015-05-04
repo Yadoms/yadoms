@@ -31,7 +31,8 @@ set(WUNDERGROUND_SOURCES
    Keywords/Forecast.cpp   
    Keywords/Humidity.h
    Keywords/Humidity.cpp
-   Keywords/IKeyword.h   
+   Keywords/IKeyword.h 
+   Keywords/KeywordException.hpp
    Keywords/Load.h
    Keywords/Load.cpp
    Keywords/Moon.h

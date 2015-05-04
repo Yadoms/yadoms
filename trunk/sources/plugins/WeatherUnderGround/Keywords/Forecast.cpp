@@ -45,8 +45,10 @@ void CForecast::AddPeriod(const shared::CDataContainer & ValueContainer,
                           const std::string& filterTempMin,
                           const std::string& filterMaxWind,
                           const std::string& filterAveWind,
+						  const std::string& filterAveWindDegrees,
                           const std::string& filterAveHumidity,
-                          const std::string& RainDay
+                          const std::string& filterRainDay,
+						  const std::string& filterSnowDay
 					           )
 {
 	m_forecast->AddPeriod(
@@ -56,10 +58,12 @@ void CForecast::AddPeriod(const shared::CDataContainer & ValueContainer,
                      ValueContainer.get<std::string>( filterWeatherCondition ),
                      ValueContainer.get<std::string>( filterTempMax ),
                      ValueContainer.get<std::string>( filterTempMin ),
-                     boost::lexical_cast<std::string>(ValueContainer.get<double>( filterMaxWind ) / 3.6), // Transform from Km/h -> m/s
-                     boost::lexical_cast<std::string>(ValueContainer.get<double>( filterAveWind ) / 3.6), // Transform from Km/h -> m/s
+                     boost::lexical_cast<std::string>(ValueContainer.get<double>( filterMaxWind ) / 3.6 ), // Transform from Km/h -> m/s
+                     boost::lexical_cast<std::string>(ValueContainer.get<double>( filterAveWind ) / 3.6 ), // Transform from Km/h -> m/s
+					 ValueContainer.get<std::string>( filterAveWindDegrees ),
                      ValueContainer.get<std::string>( filterAveHumidity ),
-                     ValueContainer.get<std::string>( RainDay )
+                     ValueContainer.get<std::string>( filterRainDay ),
+					 boost::lexical_cast<std::string>(ValueContainer.get<double>( filterSnowDay ) * 10 ) // Transform from cm -> mm
 		                 );
 }
 

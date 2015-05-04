@@ -1,4 +1,5 @@
 #pragma once
+#include "ApparentPower.h"
 #include "ArmingAlarm.h"
 #include "BatteryLevel.h"
 #include "CameraMove.h"

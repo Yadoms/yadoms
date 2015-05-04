@@ -158,7 +158,7 @@ void CWeatherConditions::Parse( boost::shared_ptr<yApi::IYPluginApi> context, co
 	}
 	catch (shared::exception::CException e)
 	{
-      YADOMS_LOG(warning) << e.what()  << std::endl;
+      YADOMS_LOG(warning) << e.what() << std::endl;
 	}
 }
 

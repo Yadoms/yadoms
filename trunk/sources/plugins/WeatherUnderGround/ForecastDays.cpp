@@ -105,9 +105,11 @@ void CForecastDays::Parse( boost::shared_ptr<yApi::IYPluginApi> context, const I
                                     "high.celsius", 
                                     "low.celsius", 
                                     "maxwind.kph", 
-                                    "avewind.kph", 
+                                    "avewind.kph",
+									"avewind.degrees",
                                     "avehumidity",
-                                    "qpf_allday.mm"
+                                    "qpf_allday.mm",
+									"snow_allday.cm"
                                     );
                }
                KeywordList.push_back (m_Forecast.GetHistorizable());

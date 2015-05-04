@@ -4,27 +4,27 @@
 ## Sources
 ########################
 set(SHARED_LIB_SRC
-	stdafx.cpp
-	stdafx.h
+   stdafx.cpp
+   stdafx.h
 
- 	shared/Log.h
-	shared/Log.cpp
+   shared/Log.h
+   shared/Log.cpp
 	
    shared/logInternal/ILogStream.h
    shared/logInternal/LogStreamEnhanced.h
-	shared/logInternal/LogStreamEnhanced.cpp	
+   shared/logInternal/LogStreamEnhanced.cpp	
 
-	shared/ThreadBase.cpp
-	shared/ThreadBase.h
+   shared/ThreadBase.cpp
+   shared/ThreadBase.h
 
-	shared/StringExtension.h
-	shared/StringExtension.cpp	
+   shared/StringExtension.h
+   shared/StringExtension.cpp	
 	
-	shared/Field.hpp
+   shared/Field.hpp
 
-	shared/IDataContainable.h
-	shared/DataContainer.h
-	shared/DataContainer.cpp
+   shared/IDataContainable.h
+   shared/DataContainer.h
+   shared/DataContainer.cpp
    
    shared/ServiceLocator.h
    shared/ServiceLocator.cpp
@@ -56,60 +56,62 @@ set(SHARED_LIB_SRC
 	shared/encryption/Base64.cpp
 	shared/encryption/md5.h
 	
-	shared/enumeration/IExtendedEnum.h
-	shared/enumeration/EnumHelpers.hpp
+   shared/enumeration/IExtendedEnum.h
+   shared/enumeration/EnumHelpers.hpp
 	
-	shared/event/Event.hpp
-	shared/event/EventBase.hpp
-	shared/event/EventHandler.hpp
-	shared/event/EventTimer.cpp
-	shared/event/EventTimer.h
-	shared/event/EventTimePoint.cpp
-	shared/event/EventTimePoint.h
-	shared/event/ITimeEvent.h
-	shared/event/Now.h
-	shared/event/Now.cpp
+   shared/event/Event.hpp
+   shared/event/EventBase.hpp
+   shared/event/EventHandler.hpp
+   shared/event/EventTimer.cpp
+   shared/event/EventTimer.h
+   shared/event/EventTimePoint.cpp
+   shared/event/EventTimePoint.h
+   shared/event/ITimeEvent.h
+   shared/event/Now.h
+   shared/event/Now.cpp
 
- 	shared/exception/BadConversion.hpp
-	shared/exception/EmptyResult.hpp
-	shared/exception/Exception.hpp
-	shared/exception/InvalidParameter.hpp
-	shared/exception/OutOfRange.hpp
-	shared/exception/NotImplemented.hpp
-	shared/exception/NotSupported.hpp
-	shared/exception/NullReference.hpp
+   shared/exception/BadConversion.hpp
+   shared/exception/EmptyResult.hpp
+   shared/exception/Exception.hpp
+   shared/exception/InvalidParameter.hpp
+   shared/exception/OutOfRange.hpp
+   shared/exception/NotImplemented.hpp
+   shared/exception/NotSupported.hpp
+   shared/exception/NullReference.hpp
    
-	shared/http/HttpMethods.h
-	shared/http/HttpMethods.cpp
+   shared/http/HttpMethods.h
+   shared/http/HttpMethods.cpp
 
-	shared/plugin/ImplementationHelper.h
-	shared/plugin/IPlugin.h
+   shared/plugin/ImplementationHelper.h
+   shared/plugin/IPlugin.h
 	
-	shared/plugin/information/IInformation.h
+   shared/plugin/information/IInformation.h
 
    shared/plugin/yPluginApi/commonIncludes.h
    shared/plugin/yPluginApi/IDeviceCommand.h
-	shared/plugin/yPluginApi/IManuallyDeviceCreationData.h
-	shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h
-	shared/plugin/yPluginApi/IBindingQueryData.h
-	shared/plugin/yPluginApi/IBindingQueryRequest.h
-	shared/plugin/yPluginApi/IManuallyDeviceCreationTestData.h
-	shared/plugin/yPluginApi/IYPluginApi.h
-	shared/plugin/yPluginApi/KeywordAccessMode.h
-	shared/plugin/yPluginApi/KeywordAccessMode.cpp
-	shared/plugin/yPluginApi/KeywordDataType.h
-	shared/plugin/yPluginApi/KeywordDataType.cpp
-	shared/plugin/yPluginApi/StandardUnits.h
-	shared/plugin/yPluginApi/StandardCapacities.h
-	shared/plugin/yPluginApi/StandardValues.h
-	shared/plugin/yPluginApi/StandardDeclarations.cpp
-	shared/plugin/yPluginApi/StandardCapacity.h
-	shared/plugin/yPluginApi/StandardCapacity.cpp
+   shared/plugin/yPluginApi/IManuallyDeviceCreationData.h
+   shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h
+   shared/plugin/yPluginApi/IBindingQueryData.h
+   shared/plugin/yPluginApi/IBindingQueryRequest.h
+   shared/plugin/yPluginApi/IManuallyDeviceCreationTestData.h
+   shared/plugin/yPluginApi/IYPluginApi.h
+   shared/plugin/yPluginApi/KeywordAccessMode.h
+   shared/plugin/yPluginApi/KeywordAccessMode.cpp
+   shared/plugin/yPluginApi/KeywordDataType.h
+   shared/plugin/yPluginApi/KeywordDataType.cpp
+   shared/plugin/yPluginApi/StandardUnits.h
+   shared/plugin/yPluginApi/StandardCapacities.h
+   shared/plugin/yPluginApi/StandardValues.h
+   shared/plugin/yPluginApi/StandardDeclarations.cpp
+   shared/plugin/yPluginApi/StandardCapacity.h
+   shared/plugin/yPluginApi/StandardCapacity.cpp
 
    shared/plugin/yPluginApi/historization/IHistorizable.h
    shared/plugin/yPluginApi/historization/SingleHistorizableData.hpp
    shared/plugin/yPluginApi/historization/BatteryLevel.cpp
    shared/plugin/yPluginApi/historization/BatteryLevel.h
+   shared/plugin/yPluginApi/historization/ApparentPower.cpp
+   shared/plugin/yPluginApi/historization/ApparentPower.h
    shared/plugin/yPluginApi/historization/ArmingAlarm.cpp
    shared/plugin/yPluginApi/historization/ArmingAlarm.h
    shared/plugin/yPluginApi/historization/Historizers.h
@@ -187,18 +189,18 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/historization/typeInfo/StringTypeInfo.cpp
    shared/plugin/yPluginApi/historization/typeInfo/EnumTypeInfo.hpp
 
-	shared/serialization/IDataSerializable.h
-	shared/serialization/IDataFileSerializable.h
+   shared/serialization/IDataSerializable.h
+   shared/serialization/IDataFileSerializable.h
 
    shared/script/ImplementationHelper.h
-	shared/script/IInterpreter.h
-	shared/script/IRunner.h
+   shared/script/IInterpreter.h
+   shared/script/IRunner.h
 
    shared/script/yScriptApi/commonIncludes.h
- 	shared/script/yScriptApi/IYScriptApi.h
+   shared/script/yScriptApi/IYScriptApi.h
 
-	shared/tools/Random.h
-	shared/tools/Random.cpp
+   shared/tools/Random.h
+   shared/tools/Random.cpp
 
 	shared/web/FileDownloader.h
 	shared/web/FileDownloader.cpp
