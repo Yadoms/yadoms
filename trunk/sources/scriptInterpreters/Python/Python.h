@@ -24,7 +24,7 @@ public:
    virtual bool isAvailable() const;
    virtual std::string loadScriptContent(const std::string& scriptPath) const;
    virtual void saveScriptContent(const std::string& scriptPath, const std::string& content) const;
-   virtual boost::shared_ptr<shared::script::IRunner> createRunner(const std::string& scriptPath, const shared::CDataContainer& scriptConfiguration) const;
+   virtual boost::shared_ptr<shared::script::IRunner> createRunner(const std::string& scriptPath, const shared::CDataContainer& scriptConfiguration, const std::string& interpreterPath) const;
   // [END] IInterpreter implementation
 
 private:

@@ -12,10 +12,11 @@ public:
    //--------------------------------------------------------------
    /// \brief	Constructor
    ///\param[in] scriptPath   Script path (without name)
+   ///\param[in] interpreterPath       The interpreter path
    ///\param[in] scriptConfiguration   Configuration of the script (optional)
    /// \throw CRunnerException if unable to load script
    //--------------------------------------------------------------
-   CRunner(const std::string& scriptPath, const shared::CDataContainer& scriptConfiguration = shared::CDataContainer());
+   CRunner(const std::string& scriptPath, const std::string& interpreterPath, const shared::CDataContainer& scriptConfiguration = shared::CDataContainer());
 
    //--------------------------------------------------------------
    /// \brief	Destructor
@@ -48,6 +49,11 @@ private:
    ///\brief   Configuration of the script
    //--------------------------------------------------------------
    const shared::CDataContainer m_scriptConfiguration;
+   
+   //--------------------------------------------------------------
+   ///\brief   Interpreter path
+   //--------------------------------------------------------------
+   const std::string m_interpreterPath;
 
    //--------------------------------------------------------------
    ///\brief   Last error message (empty if no error)

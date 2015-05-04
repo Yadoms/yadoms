@@ -6,10 +6,9 @@
 #include "ScriptFile.h"
 
 
-const boost::filesystem::path CScriptLoader::WrapperModuleFile("scriptInterpreters/python/_yScriptApiWrapper.pyd");
-
-CScriptLoader::CScriptLoader(const std::string& scriptPath)
-   :m_scriptFile(new CScriptFile(scriptPath))
+CScriptLoader::CScriptLoader(const std::string& scriptPath, const std::string& interpreterPath)
+   :m_scriptFile(new CScriptFile(scriptPath)),
+   m_interpreterPath(interpreterPath)
 {
 }
 
@@ -31,7 +30,7 @@ void CScriptLoader::load()
       throw CPythonException((boost::format("unable to get sys.path object for %1%") % m_scriptFile->pathName()).str());
    CPythonObject scriptAbsolutePath(PyString_FromString(m_scriptFile->abslouteParentPath().string().c_str()));
    PyList_Append(*sysPathObject, *scriptAbsolutePath);
-   CPythonObject wrapperAbsolutePath(PyString_FromString(boost::filesystem::absolute(WrapperModuleFile).parent_path().string().c_str()));
+   CPythonObject wrapperAbsolutePath(PyString_FromString(boost::filesystem::absolute(m_interpreterPath).string().c_str()));
    PyList_Append(*sysPathObject, *wrapperAbsolutePath);
 
    // Convert script path as Python string
