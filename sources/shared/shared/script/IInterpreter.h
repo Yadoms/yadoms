@@ -47,9 +47,10 @@ namespace shared { namespace script
       ///\brief                  Create a script runner with associated file
       ///\param[in] scriptPath   Script path (without name)
       ///\param[in] scriptConfiguration   Configuration of the script
+      ///\param[in] interpreterPath       The interpreter path
       ///\return                 The created script instance
       //-----------------------------------------------------
-      virtual boost::shared_ptr<IRunner> createRunner(const std::string& scriptPath, const CDataContainer& scriptConfiguration) const = 0;
+      virtual boost::shared_ptr<IRunner> createRunner(const std::string& scriptPath, const CDataContainer& scriptConfiguration, const std::string& interpreterPath) const = 0;
    };
 	
 } } // namespace shared::script

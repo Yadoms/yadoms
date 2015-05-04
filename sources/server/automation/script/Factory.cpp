@@ -12,8 +12,6 @@
 #include "Properties.h"
 #include "PocoLogger.h"
 #include "tools/SupportedPlatformsChecker.h"
-#include "startupOptions/IStartupOptions.h"
-#include "shared/ServiceLocator.h"
 
 namespace automation { namespace script
 {
@@ -68,10 +66,8 @@ bool CFactory::isInterpreterCompatibleWithPlatform(const std::string& interprete
    shared::CDataContainer container;
    try
    {
-      boost::shared_ptr<startupOptions::IStartupOptions> startupOptions = shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>();
-      const boost::filesystem::path interpreterPath(startupOptions->getScriptInterpretersPath());
       boost::filesystem::path packageFile;
-      packageFile = interpreterPath / interpreterName / "package.json";
+      packageFile = m_interpretersPath / interpreterName / "package.json";
       container.deserializeFromFile(packageFile.string());
    }
    catch (shared::exception::CException& e)
@@ -210,7 +206,10 @@ boost::shared_ptr<shared::script::IRunner> CFactory::createScriptRunner(boost::s
    {
       boost::shared_ptr<shared::script::IInterpreter> scriptInterpreter = getAssociatedInterpreter(scriptProperties->interpreterName());
 
-      return scriptInterpreter->createRunner(scriptProperties->scriptPath(), scriptProperties->configuration());
+      boost::filesystem::path interpreterPath;
+      interpreterPath = m_interpretersPath / scriptProperties->interpreterName();
+
+      return scriptInterpreter->createRunner(scriptProperties->scriptPath(), scriptProperties->configuration(), interpreterPath.string());
    }
    catch (CInterpreterNotFound& e)
    {

@@ -10,10 +10,11 @@ class CScriptLoader : public IScriptLoader
 public:
    //--------------------------------------------------------------
    /// \brief	Constructor
-   ///\param[in] scriptPath   Script path (without name)
+   /// \param[in] scriptPath   Script path (without name)
+   /// \param[in] interpreterPath       The interpreter path
    /// \throw CRunnerException if unable to load script
    //--------------------------------------------------------------
-   CScriptLoader(const std::string& scriptPath);
+   CScriptLoader(const std::string& scriptPath, const std::string& interpreterPath);
 
    //--------------------------------------------------------------
    /// \brief	Destructor
@@ -43,9 +44,9 @@ private:
    CPythonObject m_pyMainFunction;
 
    //--------------------------------------------------------------
-   /// \brief	Wrapper file
+   /// \brief	Interpreter path
    //--------------------------------------------------------------
-   static const boost::filesystem::path WrapperModuleFile;
+   const boost::filesystem::path m_interpreterPath;
 };
 
 

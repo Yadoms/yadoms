@@ -58,8 +58,8 @@ void CPython::saveScriptContent(const std::string& scriptPath, const std::string
    file.write(content);
 }
 
-boost::shared_ptr<shared::script::IRunner> CPython::createRunner(const std::string& scriptPath, const shared::CDataContainer& scriptConfiguration) const
+boost::shared_ptr<shared::script::IRunner> CPython::createRunner(const std::string& scriptPath, const shared::CDataContainer& scriptConfiguration, const std::string& interpreterPath) const
 {
-   boost::shared_ptr<shared::script::IRunner> runner(new CRunner(scriptPath, scriptConfiguration));
+   boost::shared_ptr<shared::script::IRunner> runner(new CRunner(scriptPath, interpreterPath, scriptConfiguration));
    return runner;
 }

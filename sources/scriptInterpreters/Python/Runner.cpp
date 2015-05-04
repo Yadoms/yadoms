@@ -11,8 +11,8 @@
 #include "swigpyrun.h"  // Generated file (at pre-build-step)
 
 
-CRunner::CRunner(const std::string& scriptPath, const shared::CDataContainer& scriptConfiguration)
-   :m_scriptPath(scriptPath), m_scriptConfiguration(scriptConfiguration)
+CRunner::CRunner(const std::string& scriptPath, const std::string& interpreterPath, const shared::CDataContainer& scriptConfiguration)
+   :m_scriptPath(scriptPath), m_scriptConfiguration(scriptConfiguration), m_interpreterPath(interpreterPath)
 {
 }
 
@@ -33,7 +33,7 @@ void CRunner::run(shared::script::yScriptApi::IYScriptApi& context)
       context.log("#### START ####");
 
       // Load script file
-      CScriptLoader loader(m_scriptPath);
+      CScriptLoader loader(m_scriptPath, m_interpreterPath);
       loader.load();
 
       // Run the script
