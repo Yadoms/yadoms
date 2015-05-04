@@ -2,3 +2,14 @@
    margin:0 auto;
    display: table;
 }
+
+.centerimageCity {
+   margin:0 auto;
+   display: table;
+   font-weight: bold;
+}
+
+.cases {
+   font-family: "Georgia";
+   font-size: "14px";
+}

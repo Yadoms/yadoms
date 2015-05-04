@@ -24,12 +24,14 @@ function ForecastViewModel() {
    this.MinTempVisible = ko.observable    ( true );
    this.MaxWindVisible = ko.observable    ( true );
    this.AveWindVisible = ko.observable    ( true );
-   this.AveHumidityVisible = ko.observable( true );
    this.RainDayVisible = ko.observable    ( true );
-
+   
    //Nbre of day to be displayed
    this.DayNbre = ko.observable ( 10 );
    
+   //Height of the widget.
+   this.height = 0; 
+      
    /**
     * Widget identifier
     */
@@ -46,49 +48,137 @@ function ForecastViewModel() {
    };
    
    /**
+    * Draw in circle the speed and the direction of the wind
+    * @data device identifier which make the values
+    * @WindPosition Direction from the Wind
+    * @WindSpeed    Speed of the Wind
+    */   
+   
+	this.canvasload = function( data, WindPosition, WindSpeed ) 
+	{		
+		var self = this;
+		
+		//get a reference to the canvas
+		var ctx = $( "#" + data ).get(0).getContext("2d");
+		
+		// Refresh the canvas, clear all existing information
+		ctx.clearRect(0, 0, 40, 40 );
+		
+		ctx.fillStyle = "rgb(0,0,0)"; // black
+		 
+		//draw a circle
+		ctx.beginPath();
+				 
+		ctx.arc(20, 20, 17, 0, Math.PI*2, true); 		
+		ctx.closePath();
+		
+		ctx.lineWidth = 1;
+		ctx.strokeStyle = '#000000';
+		ctx.stroke();		
+		
+		ctx.font="14px Georgia";
+		
+		//write the text at the same position as the height of the column
+		ctx.fillText( WindSpeed ,20 - ( 7 * String(WindSpeed).match(/\d/g).length ) /2 , 23);
+		ctx.stroke();
+		
+		//triangle of the direction
+		ctx.beginPath();
+		ctx.moveTo(20 - 12 * Math.sin ( Math.PI/180 * parseInt(WindPosition) )     , 20 - 12 * Math.cos ( Math.PI/180 * parseInt(WindPosition) ));
+		ctx.lineTo(20 - 20 * Math.sin ( Math.PI/180 * (parseInt(WindPosition)+10) ), 20 - 20 * Math.cos ( Math.PI/180 * (parseInt(WindPosition)+10) ));
+		ctx.lineTo(20 - 20 * Math.sin ( Math.PI/180 * (parseInt(WindPosition)-10) ), 20 - 20 * Math.cos ( Math.PI/180 * (parseInt(WindPosition)-10) ));
+		ctx.closePath();
+		ctx.fill();
+		ctx.stroke();
+	};
+   
+   this.RainCanvasLoad = function( data, RainValue )
+	{
+		var self = this;
+			
+		//get a reference to the canvas
+		var ctx = $( "#" + data ).get(0).getContext("2d");
+		
+		// Refresh the canvas, clear all existing information
+		ctx.clearRect(0, 0, 40, 40 );
+	
+		ctx.fillStyle = "rgb(116,208,241)"; // blue Azur clair
+		
+		if ( RainValue < 40 )
+			position_y = 40 - parseInt( RainValue );
+		else
+			position_y = 0;
+		
+		ctx.fillRect(0, position_y , 40, 40);
+		ctx.stroke();
+
+		ctx.fillStyle = "rgb(0,0,255)"; // black
+		
+		//TODO : Voir pour récupérer la valeur de la classe font-family et font size tout simplement !
+		ctx.font="14px Georgia";
+		
+		//write the text at the same position as the height of the column
+		ctx.fillText( RainValue ,20 - ( 7 * String(RainValue).match(/\d/g).length ) /2 , 23);
+		ctx.stroke();
+	};
+   
+   /**
     * New acquisition handler
     * @param device Device on which new acquisition was received
     * @param data Acquisition data
     */
    this.onNewAcquisition = function(device, data) {
       var self = this;
-
+	  
       if (device == self.widget.configuration.device) 
       {  
 		 var obj = jQuery.parseJSON( data.value );
-		 
-		 console.debug( "objet reçu %o",obj );
 		 
 		 //We only keep the city name
 		 var res = obj.city.split(",");
 		 self.city ( res[0] );
 		 
 		 //We delete all information already keep in.
-		 self.period.removeAll();
+		 while( self.TempPeriod.length > 0 ) 
+		 {
+            self.TempPeriod.pop();
+         }
 		 
 		 self.DayNbre ( obj.forecast.length );
 		 
 		 //Copy of all object into the temporary array
 		 $.each(obj.forecast, function (i, object)
 		 {
+			    // create the name for each div where wind canvas will be attached
+			    var elementID = 'widget-' + self.widget.id + '-column-' + i;
+				
+				// create the name for each div where rain canvas will be attached
+				var RainElementID = 'widget-' + self.widget.id + '-rain-' + i;
+
+				// create the name for each div where rain canvas will be attached
+				var SnowElementID = 'widget-' + self.widget.id + '-snow-' + i;
+				
 				self.TempPeriod.push({ WeatherCondition: obj.forecast[i].WeatherCondition,
-									   TimeDate: obj.forecast[i].Day + '/' + obj.forecast[i].Month,
+									   TimeDate: moment( obj.forecast[i].Day + "-" + obj.forecast[i].Month, "DD-MM").format('LL') ,//obj.forecast[i].Day + '/' + obj.forecast[i].Month,
 									   TempMax: obj.forecast[i].TempMax + "\u00B0", // Un caractère parasite est généré par boost::write_json sous Ubuntu \u00B0 = ° obj.Units.temperature.substring(0, obj.Units.temperature.length - 1),
 									   TempMin: obj.forecast[i].TempMin + "\u00B0", //obj.Units.temperature.substring(0, obj.Units.temperature.length - 1),
-									   MaxWind: Convertmstokmh(parseFloat(obj.forecast[i].MaxWind,10)) + "km/h", 
-									   AveWind: Convertmstokmh(parseFloat(obj.forecast[i].AveWind,10)) + "km/h",
-									   AveHumidity: obj.forecast[i].AveHumidity + obj.Units.humidity,
-									   RainDay: obj.forecast[i].RainDay + obj.Units.rain,
+									   MaxWind: Convertmstokmh(parseFloat(obj.forecast[i].MaxWind,10)), 
+									   AveWind: Convertmstokmh(parseFloat(obj.forecast[i].AveWind,10)),
+									   AveWindDegrees: obj.forecast[i].AveWindDegrees,
+									   WindCanvasId: elementID,
+									   //AveHumidity: obj.forecast[i].AveHumidity + obj.Units.humidity,
+									   RainCanvasId: RainElementID,
+									   //SnowCanvasId: SnowElementID,
+									   RainDay: obj.forecast[i].RainDay, 
+									   //SnowDay: obj.forecast[i].SnowDay, 
 									   WeatherIcon: "widgets/forecast/images/Icons1/" + obj.forecast[i].WeatherCondition + ".png"
 									 });
-         }	 
+         } 
          );
-		 
+
 		 //Resize the widget and display the elements automatically
 		 self.resized ();
       }
-	  
-	  this.configurationChanged ();
    };
 
    this.configurationChanged = function() {
@@ -99,10 +189,11 @@ function ForecastViewModel() {
 	 
 	 try
 	 {
+        self.MaxTempVisible     ( true );
+        self.MinTempVisible     ( true );			 
 	    self.MaxWindVisible     ( parseBool( self.widget.configuration.Information.content.MaxWind ));
 	    self.AveWindVisible     ( parseBool( self.widget.configuration.Information.content.AveWind ));
-	    self.AveHumidityVisible ( parseBool( self.widget.configuration.Information.content.AveHumidity ));
-   	    self.RainDayVisible     ( parseBool( self.widget.configuration.Information.content.RainDay ));
+   	    self.RainDayVisible     ( parseBool( self.widget.configuration.Information.content.RainDay ));	
 	 }
 	 catch(err) 
 	 {
@@ -114,25 +205,51 @@ function ForecastViewModel() {
    {
        var self = this;
    
-	   if (this.widget.height() <= 200) 
+	   if (self.widget.height() <= 150) 
 	   {
 	         //In one case : we keep only the icon
 	         self.MaxTempVisible     ( false );
 			 self.MinTempVisible     ( false );
 			 self.RainDayVisible     ( false );
-			 self.AveHumidityVisible ( false );
 			 self.AveWindVisible     ( false );
 			 self.MaxWindVisible     ( false );
 	   }
-	   else
-	   {
+	   else if ( (self.widget.height() <= 220) && (self.widget.height() > 190) )
+	   {   
+		     self.height = 20; // Location 
+		     self.height = self.height + 20; // Size of the day
+		     self.height = self.height + 40; //Size of the icon of the day
+			 
 	         //In two cases : we enable automatically temperatures. All others information are read from the configuration
 	         self.MaxTempVisible     ( true );
-			 self.MinTempVisible     ( true );	   
-			 self.RainDayVisible     ( parseBool (self.widget.configuration.Information.content.RainDay ));
-			 self.AveHumidityVisible ( parseBool (self.widget.configuration.Information.content.AveHumidity ));
+			 self.height = self.height + 20; //Size of the maximum temperature
+			 self.MinTempVisible     ( true );
+			 self.height = self.height + 20; //Size of the minimum temperature
+
 			 self.AveWindVisible     ( parseBool (self.widget.configuration.Information.content.AveWind ));
+			 if (self.AveWindVisible() )
+			    self.height = self.height + 40; //Size of the Wind Canvas
+			 
 			 self.MaxWindVisible     ( parseBool (self.widget.configuration.Information.content.MaxWind ));
+			 if (self.MaxWindVisible() )
+			    self.height = self.height + 20; //Size of the Maximum Wind
+			 
+			 if ( ((self.height + 40) <= 200) && parseBool (self.widget.configuration.Information.content.RainDay ) ) 
+			 {
+			    self.RainDayVisible     ( true );
+			    self.height = self.height + 40; //Size of the rain canvas
+			 }
+			 else
+			    self.RainDayVisible ( false );
+	   }
+	   else if ( (self.SizePainted != 3) && (self.widget.height() > 220) )
+	   {
+	         //In three cases : we enable automatically temperatures. All others information are read from the configuration
+			self.MaxTempVisible     ( true );
+			self.MinTempVisible     ( true );			 
+			self.MaxWindVisible     ( parseBool( self.widget.configuration.Information.content.MaxWind ));
+			self.AveWindVisible     ( parseBool( self.widget.configuration.Information.content.AveWind ));
+			self.RainDayVisible     ( parseBool( self.widget.configuration.Information.content.RainDay ));
 	   }
 	   
 	   // if length = 2 cases -> 2 days
@@ -156,13 +273,13 @@ function ForecastViewModel() {
 	   {
 	      self.DayNbre ( 8 );
 	   }		   
-	   else  // Otherwise 10 days
+	   else if (self.DayNbre() != 10)  // Otherwise 10 days
 	   {
-	      self.DayNbre ( 10 );   
+	      self.DayNbre ( 10 );
 	   }
 	   
 	  self.period.removeAll();
-	  self.period ( self.TempPeriod.slice ( 0, self.DayNbre() ));		   
+	  self.period ( self.TempPeriod.slice ( 0, self.DayNbre() ));
    };
  
    this.getDevicesForAcquisitions = function() {
