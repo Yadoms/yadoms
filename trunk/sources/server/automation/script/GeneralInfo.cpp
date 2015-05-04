@@ -5,6 +5,7 @@
 #include <shared/Log.h>
 #include <shared/exception/InvalidParameter.hpp>
 #include <shared/exception/EmptyResult.hpp>
+#include <shared/StringExtension.h>
 #include <shared/ServiceLocator.h>
 
 namespace automation { namespace script
@@ -42,9 +43,9 @@ std::string CGeneralInfo::get(const std::string& key) const
       {
       case EInfo::kSunriseValue: return m_dayLight->sunriseTime();
       case EInfo::kSunsetValue: return m_dayLight->sunsetTime();
-      case EInfo::kLatitudeValue: return toString(m_location->latitude());
-      case EInfo::kLongitudeValue: return toString(m_location->longitude());
-      case EInfo::kAltitudeValue: return toString(m_location->altitude());
+      case EInfo::kLatitudeValue: return shared::CStringExtension::cultureInvariantToString(m_location->latitude());
+      case EInfo::kLongitudeValue: return shared::CStringExtension::cultureInvariantToString(m_location->longitude());
+      case EInfo::kAltitudeValue: return shared::CStringExtension::cultureInvariantToString(m_location->altitude());
       case EInfo::kYadomsServerOSValue: return m_runningInformation->getOperatingSystemName();
       case EInfo::kYadomsServerVersionValue: return m_runningInformation->getSoftwareVersion().toString();
       default:

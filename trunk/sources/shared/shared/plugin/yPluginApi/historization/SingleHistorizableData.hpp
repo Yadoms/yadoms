@@ -6,6 +6,7 @@
 #include "typeInfo/EnumTypeInfo.hpp"
 #include "typeInfo/EmptyTypeInfo.h"
 #include <shared/exception/InvalidParameter.hpp>
+#include <shared/StringExtension.h>
 
 namespace shared { namespace plugin { namespace yPluginApi { namespace historization
 {
@@ -63,7 +64,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       
       virtual std::string formatValue() const
       {
-         return boost::lexical_cast<std::string>(m_value);
+         return CStringExtension::cultureInvariantToString(m_value);
       }
 
       virtual const EKeywordAccessMode& getAccessMode() const

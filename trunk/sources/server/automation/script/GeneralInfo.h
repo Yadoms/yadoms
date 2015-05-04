@@ -45,21 +45,6 @@ namespace automation { namespace script
       virtual std::string get(const std::string& key) const;
       // [END] IGeneralInfo Implementation
 
-
-      //-----------------------------------------------------
-      ///\brief               To string converter : used to convert data to string, locale-independently
-      ///\param[in] value     Value to convert
-      ///\return              Converted value, using the C locale
-      //-----------------------------------------------------
-      template<typename T>
-      std::string toString(const T& value) const
-      {
-         std::ostringstream ss;
-         ss.imbue(std::locale::classic()); // Use the C locale 
-         ss << value;
-         return ss.str();
-      }
-
    private:
       //-----------------------------------------------------
       ///\brief               Location helper
