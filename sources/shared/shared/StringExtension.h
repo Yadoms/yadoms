@@ -107,7 +107,13 @@ namespace shared
       static inline T parse(const char * value);
   
 
-
+      //
+      /// \brief               To string converter : used to convert data to string, locale-independently
+      /// \param[in] value     Value to convert
+      /// \return              Converted value, using the C locale
+      //
+      template<typename T>
+      static inline std::string cultureInvariantToString(const T& value);
    };
 
    /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -191,6 +197,20 @@ namespace shared
       bool result;
       iss >> std::boolalpha >> result;      
       return result;
-   }   
+   }
+
+   //
+   /// \brief               To string converter : used to convert data to string, locale-independently
+   /// \param[in] value     Value to convert
+   /// \return              Converted value, using the C locale
+   //
+   template<typename T>
+   inline std::string CStringExtension::cultureInvariantToString(const T& value)
+   {
+      std::ostringstream ss;
+      ss.imbue(std::locale::classic()); // Use the C locale 
+      ss << value;
+      return ss.str();
+   }
 
 } // namespace shared
