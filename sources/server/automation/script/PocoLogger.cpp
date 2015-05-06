@@ -32,7 +32,8 @@ CPocoLogger::CPocoLogger(const std::string& scriptPath)
 }
 
 CPocoLogger::~CPocoLogger()
-{         
+{
+   Poco::Logger::destroy(m_pocoLogger.name());
 }
 
 void CPocoLogger::logInformation(const std::string& message)
