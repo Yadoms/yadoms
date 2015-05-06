@@ -4,6 +4,7 @@
 #include <shared/plugin/IPlugin.h>
 #include <shared/plugin/information/IInformation.h>
 #include <shared/Log.h>
+#include <shared/DynamicLibrary.h>
 
 namespace pluginSystem
 {
@@ -25,7 +26,7 @@ CInstance::CInstance(
 {
 	BOOST_ASSERT(m_pPlugin);
    m_pPluginInstance.reset(m_pPlugin->construct());
-   
+
    start();
 }
 
@@ -77,7 +78,7 @@ void CInstance::doWork()
    }
 
    YADOMS_LOG(information) << m_context->getInformation().getName() << " is stopped";
-   
+
    // Signal the abnormal stop
    CManagerEvent event(CManagerEvent::kPluginInstanceAbnormalStopped, m_context->getPluginId(), m_pPlugin->getInformation(), isStopping());
    m_supervisor->postEvent<CManagerEvent>(m_pluginManagerEventId, event);
@@ -113,7 +114,7 @@ void CInstance::updateConfiguration(const shared::CDataContainer & newConfigurat
 
 std::string CInstance::getPluginName() const
 {
-   return m_pPlugin->getLibraryPath().stem().string();
+   return shared::CDynamicLibrary::ToLibName(m_pPlugin->getLibraryPath().string());
 }
 
 } // namespace pluginSystem
