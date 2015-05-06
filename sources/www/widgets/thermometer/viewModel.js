@@ -42,7 +42,6 @@ function ThermometerViewModel()
    this.WidgetHeight = 100;
    this.WidgetWidth  = 100;
    
-   var elementID = 'canvas' + $('canvas').length; // Unique ID
    var isSmall = true;
 	 
    /**
@@ -58,6 +57,8 @@ function ThermometerViewModel()
    this.initialize = function(widget) 
    {
       this.widget = widget;
+	  
+	  var elementID = "widget-thermometer-" + this.widget.id; // Unique ID
 	  
 	  // Initialisation of a unique canvas associated to this widget
 	   	$('<canvas />').attr({
@@ -76,17 +77,23 @@ function ThermometerViewModel()
 	  
       if (device == self.widget.configuration.device) 
 	  {
-         //it is the good device
-         self.data(data.value);
-		 
-		 //refresh the canvas
-         self.refresh();
+		  if ( data.value != self.data() ) // refresh only when it's necessary.
+		  {
+			 //it is the good device
+			 self.data(data.value);
+			 
+			 //refresh the canvas
+			 self.refresh();
+		  }
       }
-   }
+   };
    
    this.refresh = function()
    {
+	   
 	   var self = this;
+	
+	    var elementID = "widget-thermometer-" + this.widget.id; // Unique ID
 	
 		//get a reference to the canvas
 		var ctx = $( "#" + elementID ).get(0).getContext("2d");
@@ -159,12 +166,14 @@ function ThermometerViewModel()
 		//write the text at the same position as the height of the column
 		ctx.fillText(self.data() + "°",self.WidgetWidth / 2 + 15*self.WidgetWidth / 100, initial_position_y );
 		  		  
-		base_image = new Image();
-		base_image.src = 'widgets/thermometer/thermometer.png';
-		base_image.onload = function()
+		thermometer_image = new Image();
+		thermometer_image.id = elementID + "-image";
+		thermometer_image.src = 'widgets/thermometer/thermometer.png';
+		
+		thermometer_image.onload = function()
 		{
-		   ctx.drawImage( base_image, 0, 0, self.WidgetWidth, self.WidgetHeight );
-		}	   
+		   ctx.drawImage( thermometer_image, 0, 0, self.WidgetWidth, self.WidgetHeight );
+		}
    }
    
    this.configurationChanged = function() 
@@ -189,6 +198,14 @@ function ThermometerViewModel()
 			   isSmall = false;
 		   }
 	   }
+	   else if (this.widget.height() <= 250 && this.widget.height() >= 150 && this.widget.width() <= 80 && this.widget.width() >= 110 )
+	   {
+		   self.WidgetWidth  = 100;
+		   self.WidgetHeight = 200;
+		   
+		   //To be painted only one time
+		   self.refresh();
+	   }	   
 	   else
 	   {
 		   self.WidgetWidth  = 100;
