@@ -68,7 +68,8 @@ function SectionParameterHandler(i18nContext, paramName, content, currentValue, 
 
          var newI18nContext = i18nContext + self.paramName + ".content.";
          var handler = ConfigurationHelper.createParameterHandler(newI18nContext, key, value, v);
-         self.configurationHandlers.push(handler);
+         if (!isNullOrUndefined(handler))
+            self.configurationHandlers.push(handler);
       });
    }
 }

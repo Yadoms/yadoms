@@ -31,7 +31,8 @@ function ConfigurationControlManager(configurationSchema, currentConfiguration, 
    $.each(self.configurationSchema, function (key, value) {
       var currentValue = self.configurationValues[key];
       var handler = ConfigurationHelper.createParameterHandler(i18nContext, key, value, currentValue);
-      self.configurationHandlers.push(handler);
+      if (!isNullOrUndefined(handler))
+         self.configurationHandlers.push(handler);
    });
 
    $domContainer.append(this.getDOMObject());
