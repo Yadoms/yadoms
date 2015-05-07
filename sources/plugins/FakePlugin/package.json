@@ -61,7 +61,19 @@
           "defaultValue": "Sub-sections make configuration very powerful !"
         }
       }
-    }
+    },
+    "ConditionalParameter": {
+      "name": "A conditional parameter",
+      "description": "This parameter is shown depending on a condition, evaluated by the server. In this case, it is shown only if server is running under Windows.",
+      "type": "string",
+      "defaultValue": "If you see it, Yadoms is running under Windows.",
+      "show": {
+        "__Binding__": {
+          "type": "system",
+          "query": "platformIsWindows"
+        }
+      }      
+    }    
   },
   "supportManuallyDeviceCreation": "true",
   "manuallyDeviceCreationConfigurationSchema": {

@@ -4,6 +4,7 @@
 #include "web/rest/RestDispatcherHelpers.hpp"
 #include "web/rest/RestDispatcher.h"
 #include "web/rest/Result.h"
+#include "tools/OperatingSystem.h"
 #include <shared/Peripherals.h>
 #include <Poco/Net/NetworkInterface.h>
 #include <shared/ServiceLocator.h>
@@ -15,7 +16,6 @@ namespace web { namespace rest { namespace service {
    CSystem::CSystem()
       :m_runningInformation(shared::CServiceLocator::instance().get<IRunningInformation>())
    {
-      
    }
 
 
@@ -48,6 +48,12 @@ namespace web { namespace rest { namespace service {
             return getNetworkInterfaces(true);
          if (boost::iequals(query, "NetworkInterfacesWithoutLoopback"))
             return getNetworkInterfaces(false);
+         if (boost::iequals(query, "platformIsWindows"))
+            return platformIs("windows");
+         if (boost::iequals(query, "platformIsLinux"))
+            return platformIs("linux");
+         if (boost::iequals(query, "platformIsMac"))
+            return platformIs("mac");
          return CResult::GenerateError("unsupported binding query : " + query);
       }
 
@@ -110,6 +116,24 @@ namespace web { namespace rest { namespace service {
          result.set("yadomsVersion", m_runningInformation->getSoftwareVersion().toString());
          result.set("startupTime", m_runningInformation->getStartupDateTime());
          result.set("executablePath", m_runningInformation->getExecutablePath());
+         return CResult::GenerateSuccess(result);
+      }
+      catch (std::exception &ex)
+      {
+         return CResult::GenerateError(ex);
+      }
+      catch (...)
+      {
+         return CResult::GenerateError("unknown exception in retreiving system information");
+      }
+   }
+
+   shared::CDataContainer CSystem::platformIs(const std::string& refPlatform) const
+   {
+      try
+      {
+         shared::CDataContainer result;
+         result.set("result", tools::COperatingSystem::getName() == refPlatform);
          return CResult::GenerateSuccess(result);
       }
       catch (std::exception &ex)

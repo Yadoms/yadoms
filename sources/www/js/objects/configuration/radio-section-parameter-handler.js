@@ -60,14 +60,16 @@ function RadioSectionParameterHandler(i18nContext, paramName, content, currentVa
       if (self.configurationValues.activeSection == key)
          radioActive = true;
 
-	  var handler;
-	  if (value.type.toLowerCase() == "section") {
-		 handler = new SectionParameterHandler(newI18nContext, key, value, v, self.radioGroupUuid, radioActive);
-	  }
-	  else
-	  {
-	     handler = new RadioSectionParameterHandler(newI18nContext, key, value, v, self.radioGroupUuid, radioActive);
-	  }
+      if (value.show !== undefined && value.show.result === "false")
+         return;
+      
+	   var handler;
+	   if (value.type.toLowerCase() == "section") {
+         handler = new SectionParameterHandler(newI18nContext, key, value, v, self.radioGroupUuid, radioActive);
+      }
+      else {
+         handler = new RadioSectionParameterHandler(newI18nContext, key, value, v, self.radioGroupUuid, radioActive);
+      }
       
       self.configurationHandlers.push(handler);
    });

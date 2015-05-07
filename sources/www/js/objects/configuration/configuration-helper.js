@@ -53,6 +53,9 @@ ConfigurationHelper.createParameterHandler = function (i18nContext, paramName, c
    assert(content !== undefined, "content must be defined in " + paramName + " parameter");
    assert(content.type !== undefined, "type field must be found in " + paramName + " parameter");
    assert(i18nContext !== undefined, "i18nContext must contain path of i18n " + paramName + " parameter");
+   
+   if (content.show !== undefined && content.show.result === "false")
+      return null;
 
    switch (content.type.toLowerCase()) {
       case "int" :

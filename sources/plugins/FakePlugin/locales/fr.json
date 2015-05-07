@@ -39,7 +39,12 @@
                "description" : "Un exemple de paramètre chaîne dans une section"
             }
          }
-      }
+      },
+      "ConditionalParameter": {
+        "name": "Un paramètre conditionnel",
+        "description": "Ce paramètre n'est affiché que si une condition, validée par le serveur, est remplie. Dans ce cas présent, il n'est affiché que si le serveur est exécuté sous Windows.",
+        "type": "string"
+      }  
    },
   "enumerations" : {
     "EFakeControllerValues" : {
