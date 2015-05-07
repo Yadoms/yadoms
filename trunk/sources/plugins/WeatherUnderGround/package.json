@@ -5,6 +5,7 @@
    "releaseType": "beta",
    "author": "Yadoms team",
    "url": "http://sourceforge.net/projects/yadoms/",
+   "credits": "",
    "supportedPlatforms": "all",
    "supportManuallyDeviceCreation": "false",
    "configurationSchema":

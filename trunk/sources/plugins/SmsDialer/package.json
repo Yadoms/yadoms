@@ -5,6 +5,7 @@
    "releaseType": "beta",
    "author": "Sébastien Gallou",
    "url": "http://sourceforge.net/projects/yadoms/",
+   "credits": "",
    "supportedPlatforms":
    {
       "mac": "none",
