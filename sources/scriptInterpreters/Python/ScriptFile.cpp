@@ -57,6 +57,6 @@ std::string CScriptFile::read() const
 
 void CScriptFile::write(const std::string& content) const
 {
-   std::ofstream file(m_scriptFile.string().c_str());
+   std::ofstream file(m_scriptFile.string().c_str(), std::ios::out | std::ios::binary);
    file << content;
 }

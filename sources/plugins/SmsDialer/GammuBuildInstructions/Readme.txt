@@ -18,7 +18,7 @@ CMake must be installed.
 mc smsd-event.mc -r {Your_path_to_gammu}/smsd -h {Your_path_to_gammu}/smsd
 5.3 - Do the same for "gammu-smsd" project
 6 - Build the solution (for the Debug and Release configurations)
-7 - After Gammu is built, don't forget to set it's path in smsDialer (in your CMakeListsUserConfig.txt file).
+7 - After Gammu is built, don't forget to set it's path in CMakeListsUserConfig.txt file.
 
 ------------------------------------------------
 - Linux (Ubuntu) :
@@ -31,7 +31,7 @@ mc smsd-event.mc -r {Your_path_to_gammu}/smsd -h {Your_path_to_gammu}/smsd
    cmake .. -DBUILD_SHARED_LIBS=ON
 4 - build Gammu :
    make
-5 - After Gammu is built, don't forget to set it's path in smsDialer (in your CMakeListsUserConfig.txt file, and set USE_PKGCONFIG to OFF)).
+5 - After Gammu is built, don't forget to set it's path in CMakeListsUserConfig.txt file and set USE_PKGCONFIG to OFF.
 
 ------------------------------------------------
 - RaspberryPi (cross-compilation on Ubuntu)

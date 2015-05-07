@@ -44,7 +44,7 @@ SET(COTIRE_USE_UNITY ON)
 ##### Plugin ZWave ######
 #
 # Plugin ZWave needs LibUDev
-#set(LIBUDEV_ROOT "/path/to/boost/libudev")
+#set(LIBUDEV_ROOT "/path/to/libudev")
 
 
 
