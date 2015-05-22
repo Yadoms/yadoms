@@ -173,6 +173,18 @@ namespace pluginSystem
       //--------------------------------------------------------------
       void postBindingQueryRequest(int id, boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> & request);
 
+      //--------------------------------------------------------------
+      /// \brief                 Start all instances matching the plugin name
+      /// \param [in] pluginName The plugin name
+      //--------------------------------------------------------------
+      void startAllInstancesOfPlugin(const std::string& pluginName);
+
+      //--------------------------------------------------------------
+      /// \brief                 Stop all instances matching the plugin name
+      /// \param [in] pluginName The plugin name
+      //--------------------------------------------------------------
+      void stopAllInstancesOfPlugin(const std::string& pluginName);
+
    private:
       //--------------------------------------------------------------
       /// \brief        Returns all plugin directories installed

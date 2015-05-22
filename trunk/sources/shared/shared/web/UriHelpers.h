@@ -17,6 +17,17 @@ namespace shared { namespace web {
       ///\param [in] pathToAppend   The path part to append
       //---------------------------------
       static void appendPath(Poco::URI & uri, const std::string & pathToAppend);
+
+      //---------------------------------
+      ///\brief Get the filename from an URI
+      ///\param [in] uri            The URI 
+      ///\return The filename if found
+      ///
+      /// example:
+      ///   "http://www.yadoms.com/download/package.zip" -> "package.zip"
+      ///   "http://www.yadoms.com/download" -> ""
+      //---------------------------------
+      static std::string getFile(Poco::URI & uri);
    };
 
 } //namespace web

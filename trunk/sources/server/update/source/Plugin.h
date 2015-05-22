@@ -10,7 +10,7 @@ namespace update {
          //---------------------------------------------
          ///\brief   Constructor
          //---------------------------------------------
-         CPlugin();
+         CPlugin(const std::string & pluginName, const tools::CVersion & installedVersion);
 
          //---------------------------------------------
          ///\brief   Destructor
@@ -18,11 +18,15 @@ namespace update {
          virtual ~CPlugin();
 
          // IUpdateSource implementation 
-         virtual const std::string getUpdateLocation() const;
-         virtual const tools::CVersion getInstalledVersion() const;
          virtual const EUpdateType getUpdateType() const;
          // [END] - IUpdateSource implementation 
 
+         const std::string & getPluginName() const;
+         const tools::CVersion & getInstalledVersion() const;
+
+      private:
+         std::string m_pluginName;
+         tools::CVersion m_installedVersion;
       };
 
    } // namespace source

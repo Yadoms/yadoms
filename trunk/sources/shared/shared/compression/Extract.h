@@ -25,7 +25,12 @@ namespace shared { namespace compression {
       //--------------------------------------------------------------
       /// \brief	Extract an archive next to its location
       //--------------------------------------------------------------   
-      Poco::Path here(Poco::Path & downloadedPackage);
+      Poco::Path here(Poco::Path & downloadedPackage);  
+      
+      //--------------------------------------------------------------
+      /// \brief	Extract an archive into a directory
+      //--------------------------------------------------------------   
+      Poco::Path to(Poco::Path & downloadedPackage, Poco::Path extractPath);
       
    private:
       //------------------------------------------

@@ -1,39 +1,68 @@
 #pragma once
-#include "IWorker.h"
 #include "../source/Plugin.h"
+#include <Poco/Path.h>
 
 namespace update {
    namespace worker {
 
-      class CPlugin : public IWorker
+      class CPlugin
       {
       public:
+         //---------------------------------
+         ///\brief Define a function prototype for updating the worker progress
+         //---------------------------------
+         typedef boost::function3<void, bool, boost::optional<float>, std::string > WorkerProgressFunc;
+
          //---------------------------------------------
          ///\brief   Constructor
-         ///\param [in] source               The update source
+         ///\param [in] progressCallback The progress callback
          //---------------------------------------------
-         CPlugin(boost::shared_ptr<update::source::CPlugin> source);
+         CPlugin(WorkerProgressFunc progressCallback);
 
          //---------------------------------------------
          ///\brief   Destructor
          //---------------------------------------------
          virtual ~CPlugin();
 
-         // IWorker implementation 
-         void checkForUpdateAsync(WorkerProgressFunc callback);
-         void updateAsync(WorkerProgressFunc callback);
-         // [END] - IWorker implementation 
+         
+         //---------------------------------------------
+         ///\brief   Install a new plugin
+         ///\param [in] downloadUrl The plugin package url
+         //---------------------------------------------
+         void install(const std::string & downloadUrl);
+
+         //---------------------------------------------
+         ///\brief   Update a plugin
+         ///\param [in] pluginName  The plugin name
+         ///\param [in] downloadUrl The plugin package url
+         //---------------------------------------------
+         void update(const std::string & pluginName, const std::string & downloadUrl);
+
+         //---------------------------------------------
+         ///\brief   Remove a plugin
+         ///\param [in] pluginName  The plugin name
+         //---------------------------------------------
+         void remove(const std::string & pluginName);
 
       private:
          //---------------------------------------------
-         ///\brief   Update source
+         ///\brief   Download a package
+         ///\param [in] downloadUrl  The downloaded package URL
+         ///\return The package local path
          //---------------------------------------------
-         boost::shared_ptr<update::source::CPlugin> m_source;
+         Poco::Path downloadPackage(const std::string & downloadUrl);
 
          //---------------------------------------------
-         ///\brief   Only check or update
+         ///\brief   Deploy a package to plugin folder
+         ///\param [in] downloadedPackage  The downloaded package
+         ///\return The plugin directory
          //---------------------------------------------
-         bool m_onlyCheckForUpdate;
+         Poco::Path deployPackage(Poco::Path downloadedPackage);
+
+         //---------------------------------------------
+         ///\brief   The progress callback
+         //---------------------------------------------
+         WorkerProgressFunc m_progressCallback;
       };
 
    } // namespace worker

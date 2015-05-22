@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "UpdateSite.h"
 #include <shared/web/UriHelpers.h>
+#include <shared/web/FileDownloader.h>
+#include <Poco/Environment.h>
 
 namespace update { namespace info {
 
@@ -9,7 +11,7 @@ namespace update { namespace info {
    std::string CUpdateSite::m_widgetsLastVersionFilename("package.json");
    std::string CUpdateSite::m_distantWindowsFolder("windows");
    std::string CUpdateSite::m_distantLinuxFolder("linux");
-   std::string CUpdateSite::m_distantMacOSXFolder("mac");
+   std::string CUpdateSite::m_distantMacOSXFolder("darwin");
    std::string CUpdateSite::m_distantRaspberryPIFolder("raspberrypi");
    std::string CUpdateSite::m_distantYadomsBaseFolder("yadoms");
    std::string CUpdateSite::m_distantPluginsBaseFolder("plugins");
@@ -119,4 +121,39 @@ namespace update { namespace info {
       }
       return platform;
    }
+
+
+
+   shared::CDataContainer CUpdateSite::getAllPluginVersions(const std::string & displayLanguage)
+   {
+      Poco::URI base(m_startupOptions->getUpdateSiteUri());
+      shared::web::CUriHelpers::appendPath(base, "plugins.php");
+      
+      base.addQueryParameter("os", Poco::Environment::osName());
+      base.addQueryParameter("arch", Poco::Environment::osArchitecture());
+      base.addQueryParameter("lang", displayLanguage);
+
+      shared::CDataContainer lastVersionInformation = shared::web::CFileDownloader::downloadInMemoryJsonFile(base, boost::bind(&shared::web::CFileDownloader::reportProgressToLog, _1, _2));
+       
+      if (lastVersionInformation.containsValue("result"))
+      {
+         bool isQuerySuccessful = lastVersionInformation.get<bool>("result");
+         if (isQuerySuccessful)
+         {
+            return lastVersionInformation.get< shared::CDataContainer >("data.plugins");
+         }
+         else
+         {
+            throw shared::exception::CException("Error in getting versions of available plugins. " + lastVersionInformation.get<std::string>("message"));
+         }
+
+      }
+      else
+      {
+         throw shared::exception::CException("Error in getting versions of available plugins. Fail to get data from " + base.toString());
+      }
+
+      throw shared::exception::CException("Error in getting versions of available plugins.");
+   }
+
 } } // namespace update::info

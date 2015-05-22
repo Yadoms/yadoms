@@ -39,7 +39,7 @@ namespace shared { namespace web {
          // allow us to treat all data up until the EOF as the content.
          boost::asio::streambuf request;
          std::ostream request_stream(&request);
-         request_stream << "GET " << uri.getPath() << " HTTP/1.0\r\n";
+         request_stream << "GET " << uri.getPathAndQuery() << " HTTP/1.0\r\n";
          request_stream << "Host: " << uri.getHost() << ":" << uri.getPort() << "\r\n";
          request_stream << "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\n";
          request_stream << "User-Agent: yadoms\r\n";
@@ -161,7 +161,7 @@ namespace shared { namespace web {
    {
       std::ostringstream lastVersion;
 
-      int fileSize = downloadFile(jsonPath.toString(), lastVersion, reporter);
+      int fileSize = downloadFile(jsonPath, lastVersion, reporter);
       if (fileSize == 0)
       {
          throw exception::CDownloadFailed(jsonPath.toString(), "File size is 0");
@@ -169,7 +169,7 @@ namespace shared { namespace web {
       return shared::CDataContainer(lastVersion.str());
    }
 
-   Poco::Path CFileDownloader::downloadFileAndVerify(const Poco::URI & toDownload, const Poco::Path & location, const std::string & md5HashExpected, ProgressFunc reporter)
+   Poco::Path CFileDownloader::downloadFile(const Poco::URI & toDownload, const Poco::Path & location, ProgressFunc reporter)
    {
       //create stream
       std::ofstream packageLocalFileStream(location.toString().c_str(), std::ios::binary);
@@ -187,17 +187,25 @@ namespace shared { namespace web {
             throw exception::CDownloadFailed(toDownload.toString(), "Local downloaded file do not exists");
       }
 
+      return location;
+   }
+
+   Poco::Path CFileDownloader::downloadFileAndVerify(const Poco::URI & toDownload, const Poco::Path & location, const std::string & md5HashExpected, ProgressFunc reporter)
+   {
+      Poco::Path result = downloadFile(toDownload, location, reporter);
+
       //we re-read the file and compute the md5 (the md5 can be generated online using ie http://onlinemd5.com/)
       std::string md5HashCalculated = shared::encryption::CMD5().digestFile(location.toString().c_str());
       if (!boost::iequals(md5HashCalculated, md5HashExpected))
       {
          //fail to verify checksum
          //remove file
+         Poco::File packageFile(location);
          packageFile.remove();
          throw exception::CInvalidHash(location, md5HashExpected, md5HashCalculated);
       }
 
-      return location;
+      return result;
    }
 
 } //namespace web

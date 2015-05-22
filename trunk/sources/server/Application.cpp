@@ -48,6 +48,10 @@ void CYadomsServer::uninitialize()
 {
    YADOMS_LOG(information) << "Yadoms is shutting down";
    ServerApplication::uninitialize();
+
+   //notify listeners that application ends (mostly used for application control handler (service and control) managers
+   if (m_stopHandler)
+      m_stopHandler->NotifyApplicationEnds();
 }
 
 void CYadomsServer::defineOptions(Poco::Util::OptionSet& options)
@@ -111,7 +115,6 @@ int CYadomsServer::main(const Poco::Util::Application::ArgVec& args)
       shared::CServiceLocator::instance().push<startupOptions::IStartupOptions>(m_startupOptions);
       shared::CServiceLocator::instance().push<IRunningInformation>(m_runningInformation);
 
-      
       //configure the Poco ErrorHandler
       CErrorHandler eh;
       Poco::ErrorHandler* pOldEH = Poco::ErrorHandler::set(&eh);
@@ -147,10 +150,6 @@ int CYadomsServer::main(const Poco::Util::Application::ArgVec& args)
          }
       }
       supervisorThread.join();
-
-      //notify listeners
-      if (m_stopHandler)
-         m_stopHandler->NotifyApplicationEnds();
 
       //restore Poco ErrorHandler
       Poco::ErrorHandler::set(pOldEH);

@@ -5,7 +5,8 @@
 namespace update {
    namespace source {
 
-      CPlugin::CPlugin()
+      CPlugin::CPlugin(const std::string & pluginName, const tools::CVersion & installedVersion)
+         :m_pluginName(pluginName), m_installedVersion(installedVersion)
       {
 
       }
@@ -15,20 +16,21 @@ namespace update {
 
       }
 
-      const std::string CPlugin::getUpdateLocation() const
-      {
-         return "plugin";
-      }
-
-      const tools::CVersion CPlugin::getInstalledVersion() const
-      {
-         return tools::CVersion();
-      }
-
       const EUpdateType CPlugin::getUpdateType() const
       {
          return EUpdateType::kPlugin;
       }
+
+      const std::string & CPlugin::getPluginName() const
+      {
+         return m_pluginName;
+      }
+
+      const tools::CVersion & CPlugin::getInstalledVersion() const
+      {
+         return m_installedVersion;
+      }
+
 
    } // namespace source
 } // namespace update

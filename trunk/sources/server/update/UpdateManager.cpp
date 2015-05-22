@@ -7,6 +7,9 @@
 
 #include "task/update/Yadoms.h"
 #include "task/update/Plugin.h"
+#include "task/update/PluginInstall.h"
+#include "task/update/PluginRemove.h"
+#include "task/update/PluginUpdate.h"
 #include "task/update/Widget.h"
 
 #include "source/Yadoms.h"
@@ -44,13 +47,35 @@ namespace update
    }
 
 
+
+   void CUpdateManager::updatePluginAsync(const std::string & pluginName, const std::string & downloadUrl)
+   {
+      boost::shared_ptr<task::ITask> task(new task::update::CPluginUpdate(pluginName, downloadUrl));
+      startTask(task);
+   }
+  
+   void CUpdateManager::installPluginAsync(const std::string & downloadUrl)
+   {
+      boost::shared_ptr<task::ITask> task(new task::update::CPluginInstall(downloadUrl));
+      startTask(task);
+   }
+
+   void CUpdateManager::removePluginAsync(const std::string & pluginName)
+   {
+      boost::shared_ptr<task::ITask> task(new task::update::CPluginRemove(pluginName));
+      startTask(task);
+   }
+
+
+
+
    bool CUpdateManager::checkForUpdateAsync(boost::shared_ptr<source::IUpdateSource> source)
    {
       bool result = false;
 
       if (source)
       {
-         YADOMS_LOG(information) << "Check for update (async) " << source->getUpdateType() << " " << source->getInstalledVersion().toString();
+         YADOMS_LOG(information) << "Check for update (async) " << source->getUpdateType() ;
 
          boost::shared_ptr<task::ITask> task;
 
@@ -85,7 +110,7 @@ namespace update
 
       if (source)
       {
-         YADOMS_LOG(information) << "Update (async) " << source->getUpdateType() << " " << source->getInstalledVersion().toString();
+         YADOMS_LOG(information) << "Update (async) " << source->getUpdateType();
 
          boost::shared_ptr<task::ITask> task;
 
