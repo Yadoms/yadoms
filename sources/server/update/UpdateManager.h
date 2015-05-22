@@ -21,6 +21,30 @@ namespace update
       //-----------------------------------------------------------------------------   
       virtual ~CUpdateManager();
 
+
+      //-----------------------------------------------------------------------------
+      /// \brief  Update a plugin (async process)
+      /// \param [in]   pluginName        The plugin name to update
+      /// \param [in]   downloadUrl       The plugin package download url
+      //-----------------------------------------------------------------------------   
+      void updatePluginAsync(const std::string & pluginName, const std::string & downloadUrl);
+
+      //-----------------------------------------------------------------------------
+      /// \brief  Install a plugin (async process)
+      /// \param [in]   downloadUrl       The plugin package download url
+      //-----------------------------------------------------------------------------   
+      void installPluginAsync(const std::string & downloadUrl);
+
+      //-----------------------------------------------------------------------------
+      /// \brief  Remove a plugin (async process)
+      /// \param [in]   pluginName       The plugin name to remove
+      //-----------------------------------------------------------------------------   
+      void removePluginAsync(const std::string & pluginName);
+
+
+
+
+
       //-----------------------------------------------------------------------------
       /// \brief  Start a check for update (asynchronous; check for update result is provided by webservice)
       /// \param [in]   source        The source to check for update

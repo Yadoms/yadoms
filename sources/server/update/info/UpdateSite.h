@@ -3,6 +3,7 @@
 #include "startupOptions/IStartupOptions.h"
 #include "IRunningInformation.h"
 #include <Poco/URI.h>
+#include <shared/DataContainer.h>
 
 namespace update { namespace info {
 
@@ -74,6 +75,15 @@ namespace update { namespace info {
       /// i.e. : http://www.yadoms.com/downloads/update/widgets/meteo/package2.0.0.0.zip
       //---------------------------------------------
       Poco::URI getWidgetPackageUri(const std::string & widgetName, const std::string & packageName);
+
+
+
+      //---------------------------------------------
+      ///\brief   Get all the available versions for a plugin
+      ///\param [in] displayLanguage The language used for display
+      ///\return the list of plugin version
+      //---------------------------------------------
+      shared::CDataContainer getAllPluginVersions(const std::string & displayLanguage);
 
    private:
       //---------------------------------------------

@@ -19,14 +19,19 @@ namespace shared { namespace compression {
    
    Poco::Path CExtract::here(Poco::Path & downloadedPackage)
    {
+      //pour l'instant on prend ce qu'il y a dans temp sans faire l'extraction en attendant poco
+      Poco::Path extractPath(downloadedPackage.parent());
+      extractPath.pushDirectory(downloadedPackage.getBaseName());
+
+      return to(downloadedPackage, extractPath);
+   }
+
+   Poco::Path CExtract::to(Poco::Path & downloadedPackage, Poco::Path extractPath)
+   {
       //verification of the extension
       std::string extension = downloadedPackage.getExtension();
       if ((!boost::iends_with(extension, "zip")) && (!boost::iends_with(extension, "tar.gz")))
          throw exception::CNotSupported("Invalid extension package : " + downloadedPackage.toString() + ". Only zip or tar.gz supported. " + extension);
-
-      //pour l'instant on prend ce qu'il y a dans temp sans faire l'extraction en attendant poco
-      Poco::Path extractPath(downloadedPackage.parent());
-      extractPath.pushDirectory(downloadedPackage.getBaseName());
 
       Poco::FileStream inp(downloadedPackage.toString(), std::ios::binary);
 
@@ -53,7 +58,7 @@ namespace shared { namespace compression {
       if (toDelete.exists())
          toDelete.remove();
 
-      return extractPath;      
+      return extractPath;
    }
 
    void CExtract::onDecompressError(const void* pSender, std::pair<const Poco::Zip::ZipLocalFileHeader, const std::string>& info)

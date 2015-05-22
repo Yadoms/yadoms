@@ -368,6 +368,12 @@ set(YADOMS_SRC
 	server/task/TaskStatus.cpp
 	server/task/update/Plugin.h
 	server/task/update/Plugin.cpp
+	server/task/update/PluginInstall.h
+	server/task/update/PluginInstall.cpp
+	server/task/update/PluginRemove.h
+	server/task/update/PluginRemove.cpp
+	server/task/update/PluginUpdate.h
+	server/task/update/PluginUpdate.cpp
 	server/task/update/Widget.h
 	server/task/update/Widget.cpp
 	server/task/update/Yadoms.h
@@ -492,6 +498,8 @@ set(YADOMS_SRC ${YADOMS_SRC}
 	server/tools/tools/SupportedPlatformsChecker.cpp
 	server/tools/tools/Version.h
 	server/tools/tools/Version.cpp
+	server/tools/tools/FileSystem.h
+	server/tools/tools/FileSystem.cpp
 )
 
 IF(WIN32)

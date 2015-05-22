@@ -16,16 +16,6 @@ namespace update {
 
       }
       
-      const std::string CYadoms::getUpdateLocation() const
-      {
-         return shared::CServiceLocator::instance().get<IRunningInformation>()->getExecutablePath();
-      }
-
-      const tools::CVersion CYadoms::getInstalledVersion() const
-      {
-         return shared::CServiceLocator::instance().get<IRunningInformation>()->getSoftwareVersion();
-      }
-
       const EUpdateType CYadoms::getUpdateType() const
       {
          return EUpdateType::kYadoms;

@@ -84,6 +84,17 @@ namespace shared { namespace web {
       ///\throw   shared::exception::CException : if md5 hash is not valid
       //---------------------------------
       static Poco::Path downloadFileAndVerify(const Poco::URI & toDownload, const Poco::Path & location, const std::string & md5HashExpected, ProgressFunc reporter);
+
+      //---------------------------------
+      ///\brief Download a file
+      ///\param [in] toDownload        The URI to download
+      ///\param [in] location          The file download location (file will be created)
+      ///\param [in] reporter          A function pointer for reporting progress (can be used with CFileDownloader::reportProgressToLog)
+      ///\return The downloaded location
+      ///\throw   boost::system::system_error : if download fails
+      ///\throw   shared::exception::CException : if url is not valid
+      //---------------------------------
+      static Poco::Path downloadFile(const Poco::URI & toDownload, const Poco::Path & location, ProgressFunc reporter);
    };
 
 } //namespace web

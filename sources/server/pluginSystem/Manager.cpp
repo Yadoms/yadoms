@@ -291,6 +291,39 @@ void CManager::updateInstance(const database::entities::CPlugin& newData)
    }
 }
 
+
+void CManager::startAllInstancesOfPlugin(const std::string& pluginName)
+{
+   std::vector<boost::shared_ptr<database::entities::CPlugin> > allInstances = getInstanceList();
+
+   std::vector<boost::shared_ptr<database::entities::CPlugin> >::iterator i;
+   for (i = allInstances.begin(); i != allInstances.end(); ++i)
+   {
+      if (boost::iequals((*i)->Type(), pluginName))
+      {
+         if ((*i)->AutoStart())
+         {
+            startInstance((*i)->Id());
+         }
+      }
+   }
+}
+
+void CManager::stopAllInstancesOfPlugin(const std::string& pluginName)
+{
+   for (PluginInstanceMap::iterator i = m_runningInstances.begin(); i != m_runningInstances.end(); ++i)
+   {
+      if (i->second)
+      {
+         if (boost::iequals(i->second->getPluginName(), pluginName))
+         {
+            stopInstance(i->first);
+         }
+      }
+   }
+}
+
+
 void CManager::signalEvent(const CManagerEvent& event)
 {
    switch(event.getSubEventId())

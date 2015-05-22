@@ -15,16 +15,6 @@ namespace update {
 
       }
 
-      const std::string CWidget::getUpdateLocation() const
-      {
-         return "widget";
-      }
-
-      const tools::CVersion CWidget::getInstalledVersion() const
-      {
-         return tools::CVersion();
-      }
-
       const EUpdateType CWidget::getUpdateType() const
       {
          return EUpdateType::kWidget;

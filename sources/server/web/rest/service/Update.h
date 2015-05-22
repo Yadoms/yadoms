@@ -59,6 +59,38 @@ namespace web { namespace rest { namespace service {
       shared::CDataContainer forPlugin(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
 
       //-----------------------------------------------------------------------------
+      /// \brief  Get the list of all available plugins from the server
+      /// \param [in]   parameters        The url parameters
+      /// \param [in]   requestContent    The url content
+      /// \return the request result
+      //-----------------------------------------------------------------------------         
+      shared::CDataContainer availablePlugins(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+
+      //-----------------------------------------------------------------------------
+      /// \brief  Update a plugin to another version (upgrade or downgrade)
+      /// \param [in]   parameters        The url parameters
+      /// \param [in]   requestContent    The url content
+      /// \return the request result
+      //-----------------------------------------------------------------------------         
+      shared::CDataContainer updatePlugin(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+
+      //-----------------------------------------------------------------------------
+      /// \brief  Install a new plugin
+      /// \param [in]   parameters        The url parameters
+      /// \param [in]   requestContent    The url content
+      /// \return the request result
+      //-----------------------------------------------------------------------------         
+      shared::CDataContainer installPlugin(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+
+      //-----------------------------------------------------------------------------
+      /// \brief  Remove a plugin
+      /// \param [in]   parameters        The url parameters
+      /// \param [in]   requestContent    The url content
+      /// \return the request result
+      //-----------------------------------------------------------------------------         
+      shared::CDataContainer removePlugin(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+
+      //-----------------------------------------------------------------------------
       /// \brief  Do an update or check for update for a widget
       /// \param [in]   parameters        The url parameters
       /// \param [in]   requestContent    The url content
