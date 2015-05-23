@@ -1,0 +1,20 @@
+{
+   "name": "TeleInfo_USB",
+   "description": "Cartelectronic - EDF power meter information (see http://www.cartelectronic.fr/)",
+   "version": "0.1",
+   "releaseType": "beta",
+   "author": "Jean-Michel BERHAULT",
+   "url": "http://sourceforge.net/projects/yadoms/",
+   "SupportedPlatforms": "all",
+   "supportManuallyDeviceCreation": "false",
+   "configurationSchema":
+   {
+      "SerialPort" :
+      {
+         "type" : "enum",
+         "name" : "Serial port",
+         "description" : "The serial port connected to the teleinfo USB reader",
+		 "values" : {"__Binding__" : {"type" : "system", "query" : "serialPorts"}}
+	 }
+   }
+}
