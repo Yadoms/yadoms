@@ -367,7 +367,7 @@ namespace xplrules { namespace rfxLanXpl {
          if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeEnergy))
          {
             boost::shared_ptr< shared::plugin::yPluginApi::historization::CEnergy > energy(new shared::plugin::yPluginApi::historization::CEnergy(m_keywordTypeEnergy));
-            energy->set(boost::lexical_cast<double>(msg.getBodyValue(m_keywordCurrent)) * 1000.0); //in xpl messgae data is in kW, convert to W
+            energy->set(boost::lexical_cast<unsigned long>(msg.getBodyValue(m_keywordCurrent)) * 1000); //in xpl messgae data is in kW, convert to W
             data.push_back(energy);
          }
          

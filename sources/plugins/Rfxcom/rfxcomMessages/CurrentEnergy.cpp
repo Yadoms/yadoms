@@ -25,10 +25,10 @@ CCurrentEnergy::CCurrentEnergy(boost::shared_ptr<yApi::IYPluginApi> context, con
    if (rbuf.CURRENT_ENERGY.count == 0)
    {
       m_totalPowerAvailable = true;
-      double totalPower = (double) (rbuf.CURRENT_ENERGY.total3 << 24 | rbuf.CURRENT_ENERGY.total4 << 16 | rbuf.CURRENT_ENERGY.total5 << 8 | rbuf.CURRENT_ENERGY.total6);
+      unsigned long totalPower = (unsigned long) (rbuf.CURRENT_ENERGY.total3 << 24 | rbuf.CURRENT_ENERGY.total4 << 16 | rbuf.CURRENT_ENERGY.total5 << 8 | rbuf.CURRENT_ENERGY.total6);
       totalPower += rbuf.CURRENT_ENERGY.total2 * 2 ^ 32;
       totalPower += rbuf.CURRENT_ENERGY.total1 * 2 ^ 40;
-      m_totalPower.set(totalPower / 223.666);
+      m_totalPower.set((unsigned long) (totalPower / 223.666));
    }
 
    m_batteryLevel.set(NormalizeBatteryLevel(rbuf.CURRENT_ENERGY.battery_level));
