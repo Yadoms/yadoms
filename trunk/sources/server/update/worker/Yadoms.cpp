@@ -10,7 +10,6 @@
 #include <fstream>
 #include <Poco/String.h>
 #include "RunningInformation.h"
-#include <Poco/Zip/Decompress.h>
 #include <Poco/Delegate.h>
 #include <shared/ServiceLocator.h>
 #include <Poco/Process.h>
@@ -21,12 +20,12 @@
 
 #include "update/info/UpdateSite.h"
 #include <shared/compression/Extract.h>
+#include "tools/FileSystem.h"
 
 namespace update {
    namespace worker {
 
-      CYadoms::CYadoms(boost::shared_ptr<update::source::CYadoms> source)
-         :m_source(source)
+      CYadoms::CYadoms()
       {
 
       }
@@ -36,7 +35,7 @@ namespace update {
 
       }
       
-      void CYadoms::checkForUpdateAsync(WorkerProgressFunc progressCallback)
+      void CYadoms::checkForUpdate(WorkerProgressFunc progressCallback)
       {
          progressCallback(true, 0.0f, "Checking for a new update");
 
@@ -49,10 +48,10 @@ namespace update {
          //////////////////////////////////////////////////////////
          // STEP1 : download lastVersion.json file
          //////////////////////////////////////////////////////////
-         shared::CDataContainer lastVersionInformation = shared::web::CFileDownloader::downloadInMemoryJsonFile(updateSite.getYadomsLastVersionUri(), boost::bind(&CYadoms::onDownloadReportProgress, this, _1, _2));
+         shared::CDataContainer versionToUpdate = shared::web::CFileDownloader::downloadInMemoryJsonFile(updateSite.getYadomsLastVersionUri(), boost::bind(&shared::web::CFileDownloader::reportProgressToLog, _1, _2));
 
          //check for update
-         tools::CVersion availableVersion(lastVersionInformation.get<std::string>("yadoms.information.version"));
+         tools::CVersion availableVersion(versionToUpdate.get<std::string>("yadoms.information.version"));
          tools::CVersion currentVersion = runningInformation->getSoftwareVersion();
 
          if (availableVersion <= currentVersion)
@@ -69,7 +68,7 @@ namespace update {
       
 
 
-      void CYadoms::updateAsync(WorkerProgressFunc progressCallback)
+      void CYadoms::update(shared::CDataContainer & versionToUpdate, WorkerProgressFunc progressCallback)
       {
          progressCallback(true, 0.0f, "Checking for a new update");
 
@@ -79,93 +78,60 @@ namespace update {
 
          update::info::CUpdateSite updateSite(startupOptions, runningInformation);
 
+
+         progressCallback(true, 0.0f, "A new update is available");
+
          //////////////////////////////////////////////////////////
-         // STEP1 : download lastVersion.json file
+         // STEP2 : download package file
          //////////////////////////////////////////////////////////
-         shared::CDataContainer lastVersionInformation = shared::web::CFileDownloader::downloadInMemoryJsonFile(updateSite.getYadomsLastVersionUri(), boost::bind(&CYadoms::onDownloadReportProgress, this, _1, _2));
+         Poco::Path tempFolder = tools::CFileSystem::getTemporaryFolder();
 
-         //check for update
-         tools::CVersion availableVersion(lastVersionInformation.get<std::string>("yadoms.information.version"));
-         tools::CVersion currentVersion = runningInformation->getSoftwareVersion();
+         YADOMS_LOG(information) << "Temporary update folder :" << tempFolder.toString();
 
-         if (availableVersion <= currentVersion)
-         {
-            progressCallback(true, 100.0f, "System is up to date");
-         }
-         else
-         {
-            progressCallback(true, 0.0f, "A new update is available");
+         //if versionToUpdate do not contains valid version information; get last version from UpdateSite
+         if (!versionToUpdate.containsValue("yadoms.information.version"))
+            versionToUpdate = shared::web::CFileDownloader::downloadInMemoryJsonFile(updateSite.getYadomsLastVersionUri(), boost::bind(&shared::web::CFileDownloader::reportProgressToLog, _1, _2));
 
-            //////////////////////////////////////////////////////////
-            // STEP2 : download package file
-            //////////////////////////////////////////////////////////
-            Poco::Path tempFolder = getTemporaryFolder();
-            YADOMS_LOG(information) << "Temporary update folder :" << tempFolder.toString();
+         std::string packageName = versionToUpdate.get<std::string>("yadoms.information.softwarePackage");
+         std::string md5HashExpected = versionToUpdate.get<std::string>("yadoms.information.md5Hash");
 
-            std::string packageName = lastVersionInformation.get<std::string>("yadoms.information.softwarePackage");
-            std::string md5HashExpected = lastVersionInformation.get<std::string>("yadoms.information.md5Hash");
+         //determine local path
+         Poco::Path downloadedPackage(tempFolder);
+         downloadedPackage.setFileName(packageName);
 
-            //determine local path
-            Poco::Path downloadedPackage(tempFolder);
-            downloadedPackage.setFileName(packageName);
+         progressCallback(true, 0.0f, "Downloading package");
+         shared::web::CFileDownloader::downloadFileAndVerify(updateSite.getYadomsPackageUri(packageName), downloadedPackage, md5HashExpected, boost::bind(&shared::web::CFileDownloader::reportProgressToLog, _1, _2));
+         progressCallback(true, 50.0f, "Package " + packageName + " successfully downloaded");
 
-            progressCallback(true, 0.0f, "Downloading package");
-            shared::web::CFileDownloader::downloadFileAndVerify(updateSite.getYadomsPackageUri(packageName), downloadedPackage, md5HashExpected, boost::bind(&CYadoms::onDownloadReportProgress, this, _1, _2));
-            progressCallback(true, 50.0f, "Package " + packageName + " successfully downloaded");
+         //////////////////////////////////////////////////////////
+         // STEP3 : extract package
+         //////////////////////////////////////////////////////////
 
-            //////////////////////////////////////////////////////////
-            // STEP3 : extract package
-            //////////////////////////////////////////////////////////
+         progressCallback(true, 50.0f, "Extracting package " + packageName);
+         shared::compression::CExtract unZipper;
+         Poco::Path extractedPackageLocation = unZipper.here(downloadedPackage);
 
-            progressCallback(true, 50.0f, "Extracting package " + packageName);
-            shared::compression::CExtract unZipper;
-            Poco::Path extractedPackageLocation = unZipper.here(downloadedPackage);
-
-            //////////////////////////////////////////////////////////
-            // STEP4 : run updater command
-            //////////////////////////////////////////////////////////
-            progressCallback(true, 90.0f, "Running updater");
-            std::string commandToRun = lastVersionInformation.get<std::string>("yadoms.information.commandToRun");
-            step4RunUpdaterProcess(extractedPackageLocation, commandToRun, runningInformation);
+         //////////////////////////////////////////////////////////
+         // STEP4 : run updater command
+         //////////////////////////////////////////////////////////
+         progressCallback(true, 90.0f, "Running updater");
+         std::string commandToRun = versionToUpdate.get<std::string>("yadoms.information.commandToRun");
+         step4RunUpdaterProcess(extractedPackageLocation, commandToRun, runningInformation);
             
-            //////////////////////////////////////////////////////////
-            // STEP5 : exit yadoms
-            //////////////////////////////////////////////////////////
+         //////////////////////////////////////////////////////////
+         // STEP5 : exit yadoms
+         //////////////////////////////////////////////////////////
 
-            //exit yadoms
-            progressCallback(true, 90.0f, "Exiting Yadoms");
+         //exit yadoms
+         progressCallback(true, 90.0f, "Exiting Yadoms");
 
-            //demande de fermeture de l'application
-            boost::shared_ptr<IApplicationStopHandler> stopHandler = shared::CServiceLocator::instance().get<IApplicationStopHandler>();
-            if (stopHandler)
-               stopHandler->requestToStop(IApplicationStopHandler::kYadomsOnly);
-         }
+         //demande de fermeture de l'application
+         boost::shared_ptr<IApplicationStopHandler> stopHandler = shared::CServiceLocator::instance().get<IApplicationStopHandler>();
+         if (stopHandler)
+            stopHandler->requestToStop(IApplicationStopHandler::kYadomsOnly);
       }
 
 
-      void CYadoms::onDownloadReportProgress(const std::string & filename, float progression)
-      {
-         YADOMS_LOG(information) << "Downloading " << filename << ": " << progression << "%";
-      }
-
-      Poco::Path CYadoms::getTemporaryFolder()
-      {
-         //get the computer temp folder
-         Poco::Path p(Poco::Path::temp());
-
-         //append directory yadoms
-         p.pushDirectory("yadoms");
-
-         //remove directory if exists
-         Poco::File f(p);
-         if (f.exists())
-            f.remove(true);
-
-         //create directories
-         f.createDirectories();
-
-         return p;
-      }
 
 
       void CYadoms::step4RunUpdaterProcess(Poco::Path & extractedPackageLocation, const std::string & commandtoRun, boost::shared_ptr<IRunningInformation> & runningInformation)

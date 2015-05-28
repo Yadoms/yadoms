@@ -1,6 +1,5 @@
 #pragma once
 #include "task/ITask.h"
-#include "update/source/Plugin.h"
 
 namespace task { namespace update {
 

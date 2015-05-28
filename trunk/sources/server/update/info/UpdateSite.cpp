@@ -156,4 +156,34 @@ namespace update { namespace info {
       throw shared::exception::CException("Error in getting versions of available plugins.");
    }
 
+
+   shared::CDataContainer CUpdateSite::getAllWidgetsVersions(const std::string & displayLanguage)
+   {
+      Poco::URI base(m_startupOptions->getUpdateSiteUri());
+      shared::web::CUriHelpers::appendPath(base, "widgets.php");
+
+      base.addQueryParameter("lang", displayLanguage);
+
+      shared::CDataContainer lastVersionInformation = shared::web::CFileDownloader::downloadInMemoryJsonFile(base, boost::bind(&shared::web::CFileDownloader::reportProgressToLog, _1, _2));
+
+      if (lastVersionInformation.containsValue("result"))
+      {
+         bool isQuerySuccessful = lastVersionInformation.get<bool>("result");
+         if (isQuerySuccessful)
+         {
+            return lastVersionInformation.get< shared::CDataContainer >("data.widgets");
+         }
+         else
+         {
+            throw shared::exception::CException("Error in getting versions of available widgets. " + lastVersionInformation.get<std::string>("message"));
+         }
+
+      }
+      else
+      {
+         throw shared::exception::CException("Error in getting versions of available widgets. Fail to get data from " + base.toString());
+      }
+
+      throw shared::exception::CException("Error in getting versions of available widgets.");
+   }
 } } // namespace update::info

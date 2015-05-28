@@ -85,6 +85,13 @@ namespace update { namespace info {
       //---------------------------------------------
       shared::CDataContainer getAllPluginVersions(const std::string & displayLanguage);
 
+      //---------------------------------------------
+      ///\brief   Get all the available versions for widgets
+      ///\param [in] displayLanguage The language used for display
+      ///\return the list of widgets version
+      //---------------------------------------------
+      shared::CDataContainer getAllWidgetsVersions(const std::string & displayLanguage);
+
    private:
       //---------------------------------------------
       ///\brief   Give the Yadoms URI base for current platform

@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "ITask.h"
-#include "update/Yadoms.h"
 #include "TaskFactory.h"
 #include "shared/exception/Exception.hpp"
 

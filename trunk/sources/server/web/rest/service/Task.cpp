@@ -5,8 +5,8 @@
 #include "web/rest/Result.h"
 #include "task/IInstance.h"
 #include "task/Scheduler.h"
-#include "task/TaskFactory.h"
 #include "task/ITask.h"
+#include "task/TaskFactory.h"
 
 namespace web { namespace rest { namespace service {
 

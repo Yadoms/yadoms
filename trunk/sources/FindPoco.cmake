@@ -252,17 +252,22 @@ MACRO(POST_BUILD_COPY_POCO target)
 	
       MESSAGE(STATUS "Add Poco libraries to be copied as postbuild")
       FOREACH (POCOLIBRARY ${POCO_LIBS_DEBUG})
-            #create post build command
+            #create post build command for DEBUG libs
+            #if current config is DEBUG then "copy file"
+            #else just "echo file"
             add_custom_command(TARGET ${target} POST_BUILD        	
-               COMMAND ${CMAKE_COMMAND} -E copy_if_different  	
-                  "${POCOLIBRARY}"     							
+               COMMAND ${CMAKE_COMMAND} -E $<$<CONFIG:debug>:copy_if_different>$<$<NOT:$<CONFIG:debug>>:echo>  	
+                  "$<$<CONFIG:debug>:${POCOLIBRARY}>"
                   $<TARGET_FILE_DIR:${target}>)   				
       ENDFOREACH(POCOLIBRARY)
 		
-      FOREACH (POCOLIBRARY ${POCO_LIBS_RELEASE})
+      FOREACH (POCOLIBRARY ${POCO_LIBS_OPTIMIZED})
+            #create post build command for OPTIMIZED/RELEASE libs
+            #if current config is DEBUG then just "echo file"
+            #else "copy file"
             add_custom_command(TARGET ${target} POST_BUILD        	
-               COMMAND ${CMAKE_COMMAND} -E copy_if_different  	
-                  "${POCOLIBRARY}"     							
+               COMMAND ${CMAKE_COMMAND} -E $<$<CONFIG:debug>:echo>$<$<NOT:$<CONFIG:debug>>:copy_if_different>  	
+                  "$<$<NOT:$<CONFIG:debug>>:${POCOLIBRARY}>"
                   $<TARGET_FILE_DIR:${target}>)   				
       ENDFOREACH(POCOLIBRARY)		
    endif()		

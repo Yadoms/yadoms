@@ -4,22 +4,21 @@
 namespace task { namespace update {
 
    //------------------------------------------
-   ///\brief   Plugin update task. The aim si to update an existing plugin
+   ///\brief   Widget install task. The aim si to install a new widget
    //-----------------------------------------
-   class CPluginUpdate : public ITask
+   class CWidgetInstall : public ITask
    {
    public:
       //------------------------------------------
       ///\brief   Constructor
-      ///\param [in] pluginName     The plugin name to update
       ///\param [in] downloadUrl    The download url
       //------------------------------------------
-      CPluginUpdate(const std::string & pluginName, const std::string & downloadUrl);
+      CWidgetInstall(const std::string & downloadUrl);
 
       //------------------------------------------
       ///\brief   Destructor
       //------------------------------------------
-      virtual ~CPluginUpdate();
+      virtual ~CWidgetInstall();
 
    public:
       // ITask implementation
@@ -34,16 +33,10 @@ namespace task { namespace update {
       static std::string m_taskName;
 
       //------------------------------------------
-      ///\brief   The plugin name
-      //------------------------------------------
-      std::string m_pluginName;
-
-      //------------------------------------------
       ///\brief   The download url
       //------------------------------------------
       std::string m_downloadUrl;
    };
-
 
 } //namespace update
 } //namespace task

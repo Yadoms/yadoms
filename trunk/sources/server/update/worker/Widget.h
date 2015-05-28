@@ -1,34 +1,52 @@
 #pragma once
-#include "IWorker.h"
-#include "../source/Widget.h"
 
 namespace update {
    namespace worker {
 
-      class CWidget : public IWorker
+      class CWidget
       {
       public:
+         //---------------------------------
+         ///\brief Define a function prototype for updating the worker progress
+         //---------------------------------
+         typedef boost::function3<void, bool, boost::optional<float>, std::string > WorkerProgressFunc;
+
          //---------------------------------------------
          ///\brief   Constructor
-         ///\param [in] source               The update source
+         ///\param [in] progressCallback The progress callback
          //---------------------------------------------
-         CWidget(boost::shared_ptr<update::source::CWidget> source);
+         CWidget(WorkerProgressFunc progressCallback);
 
          //---------------------------------------------
          ///\brief   Destructor
          //---------------------------------------------
          virtual ~CWidget();
 
-         // IWorker implementation 
-         void checkForUpdateAsync(WorkerProgressFunc callback);
-         void updateAsync(WorkerProgressFunc callback);
-         // [END] - IWorker implementation 
+         //---------------------------------------------
+         ///\brief   Install a new widget
+         ///\param [in] downloadUrl The plugin package url
+         //---------------------------------------------
+         void install(const std::string & downloadUrl);
+
+         //---------------------------------------------
+         ///\brief   Update a widget
+         ///\param [in] widgetName  The widget name
+         ///\param [in] downloadUrl The widget package url
+         //---------------------------------------------
+         void update(const std::string & widgetName, const std::string & downloadUrl);
+
+         //---------------------------------------------
+         ///\brief   Remove a widget
+         ///\param [in] widgetName  The widget name
+         //---------------------------------------------
+         void remove(const std::string & widgetName);
 
       private:
+
          //---------------------------------------------
-         ///\brief   Update source
+         ///\brief   The progress callback
          //---------------------------------------------
-         boost::shared_ptr<update::source::CWidget> m_source;
+         WorkerProgressFunc m_progressCallback;
       };
 
    } // namespace worker

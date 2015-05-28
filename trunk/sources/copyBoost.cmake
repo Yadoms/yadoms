@@ -43,11 +43,13 @@ MACRO(POST_BUILD_COPY_BOOST_LIBRARIES target)
       endif()
    ENDFOREACH(BOOSTLIBRARY)
 
-
+   
+  
+   
    #Take each boost lib file, find its dll and add it to a post build command
    if(NOT Boost_USE_STATIC_LIBS)
       MESSAGE(STATUS "Add boost libraries to be copied as postbuild")
-      #todo : choose debug/optimized mode
+      #Generate post build command for debug boost libs
       FOREACH (BOOSTLIBRARY ${BOOST_LIBS_DEBUG})
 
          #construct the dll/so fil path
@@ -67,17 +69,48 @@ MACRO(POST_BUILD_COPY_BOOST_LIBRARIES target)
          
          #check existance
          if(EXISTS ${LIBFILE})
-            MESSAGE(STATUS "    Library file : ${LIBFILE}")
-               
             #create post build command
             add_custom_command(TARGET ${target} POST_BUILD        	# Adds a post-build event to ${target}
-               COMMAND ${CMAKE_COMMAND} -E copy_if_different  	# which executes "cmake - E copy_if_different..."
-                  "${LIBFILE}"     							# <--this is in-file
+               COMMAND ${CMAKE_COMMAND} -E $<$<CONFIG:debug>:copy_if_different>$<$<NOT:$<CONFIG:debug>>:echo>  	# which executes "cmake - E copy_if_different..."
+                  "$<$<CONFIG:debug>:${LIBFILE}>"     							# <--this is in-file
                   $<TARGET_FILE_DIR:${target}>)   				# <--this is out-file path
          else()
-            MESSAGE("    Library file not found : ${LIBFILE}")
+            MESSAGE("    Library DEBUG file not found : ${LIBFILE}")
          endif()
       ENDFOREACH(BOOSTLIBRARY)
+      
+      #Generate post build command for NON debug boost libs
+      FOREACH (BOOSTLIBRARY ${BOOST_LIBS_OPTIMIZED})
+
+         #construct the dll/so fil path
+         get_filename_component(UTF_BASE_NAME ${BOOSTLIBRARY} NAME_WE)
+         get_filename_component(UTF_PATH ${BOOSTLIBRARY} PATH)
+      
+         if(WIN32)
+            #windows
+            set(LIBFILE ${UTF_PATH}/${UTF_BASE_NAME}.dll)
+         elseif(APPLE)
+            #mac
+            set(LIBFILE ${UTF_PATH}/${UTF_BASE_NAME}.dylib)
+         else()
+            #linux
+            set(LIBFILE ${UTF_PATH}/${UTF_BASE_NAME}.so)
+         endif()
+         
+         #check existance
+         if(EXISTS ${LIBFILE})
+            #create post build command
+            add_custom_command(TARGET ${target} POST_BUILD        	# Adds a post-build event to ${target}
+               COMMAND ${CMAKE_COMMAND} -E $<$<CONFIG:debug>:echo>$<$<NOT:$<CONFIG:debug>>:copy_if_different>  	# which executes "cmake - E copy_if_different..."
+                  "$<$<NOT:$<CONFIG:debug>>:${LIBFILE}>"     							# <--this is in-file
+                  $<TARGET_FILE_DIR:${target}>)   				# <--this is out-file path
+         else()
+            MESSAGE("    Library DEBUG file not found : ${LIBFILE}")
+         endif()
+      ENDFOREACH(BOOSTLIBRARY)
+      
+      
+
    endif()		
 
 ENDMACRO()

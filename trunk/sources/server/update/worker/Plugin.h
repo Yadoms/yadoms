@@ -1,5 +1,4 @@
 #pragma once
-#include "../source/Plugin.h"
 #include <Poco/Path.h>
 
 namespace update {

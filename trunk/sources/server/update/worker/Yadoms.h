@@ -1,6 +1,4 @@
 #pragma once
-#include "IWorker.h"
-#include "../source/Yadoms.h"
 #include "IRunningInformation.h"
 #include <shared/DataContainer.h>
 #include <Poco/Zip/ZipLocalFileHeader.h>
@@ -12,14 +10,18 @@ namespace update {
       //---------------------------------------------
       ///\brief   Class which checkForUpdate or Update Yadoms software
       //---------------------------------------------
-      class CYadoms : public IWorker
+      class CYadoms
       {
       public:
+         //---------------------------------
+         ///\brief Define a function prototype for updating the worker progress
+         //---------------------------------
+         typedef boost::function3<void, bool, boost::optional<float>, std::string > WorkerProgressFunc;
+
          //---------------------------------------------
          ///\brief   Constructor
-         ///\param [in] source               The update source
          //---------------------------------------------
-         CYadoms(boost::shared_ptr<update::source::CYadoms> source);
+         CYadoms();
 
          //---------------------------------------------
          ///\brief   Destructor
@@ -27,21 +29,14 @@ namespace update {
          virtual ~CYadoms();
 
          // IWorker implementation 
-         void checkForUpdateAsync(WorkerProgressFunc callback);
-         void updateAsync(WorkerProgressFunc callback);
+         void checkForUpdate(WorkerProgressFunc callback);
+         void update(shared::CDataContainer & versionInfo, WorkerProgressFunc callback);
          // [END] - IWorker implementation 
          
 
       private:
-         void onDownloadReportProgress(const std::string & filename, float progression);
-         Poco::Path getTemporaryFolder();
-         
+        
          void step4RunUpdaterProcess(Poco::Path & extractedPackageLocation, const std::string & commandtoRun, boost::shared_ptr<IRunningInformation> & runningInfo);
-
-         //---------------------------------------------
-         ///\brief   Update source
-         //---------------------------------------------
-         boost::shared_ptr<source::CYadoms> m_source;
       };
 
    } // namespace worker

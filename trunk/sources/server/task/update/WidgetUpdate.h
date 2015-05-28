@@ -1,26 +1,25 @@
 #pragma once
 #include "task/ITask.h"
-#include "update/source/Plugin.h"
 
 namespace task { namespace update {
 
    //------------------------------------------
-   ///\brief   Plugin update task. The aim si to update a plugin
+   ///\brief   Widget update task. The aim si to update an existing widget
    //-----------------------------------------
-   class CPlugin : public ITask
+   class CWidgetUpdate : public ITask
    {
    public:
       //------------------------------------------
       ///\brief   Constructor
-      ///\param [in] updateSource   The update source
-      ///\param [in] onlyCheckForUpdate   If true will perform a check for update; if false will perform a complete update
+      ///\param [in] widgetName     The widget name to update
+      ///\param [in] downloadUrl    The download url
       //------------------------------------------
-      CPlugin(boost::shared_ptr<::update::source::CPlugin> updateSource, bool onlyCheckForUpdate); // "::update" is needed to avoid confusion with task::update namespace
+      CWidgetUpdate(const std::string & widgetName, const std::string & downloadUrl);
 
       //------------------------------------------
       ///\brief   Destructor
       //------------------------------------------
-      virtual ~CPlugin();
+      virtual ~CWidgetUpdate();
 
    public:
       // ITask implementation
@@ -35,16 +34,16 @@ namespace task { namespace update {
       static std::string m_taskName;
 
       //------------------------------------------
-      ///\brief   The update source
-      /// "::update" is needed to avoid confusion with task::update namespace
+      ///\brief   The widget name
       //------------------------------------------
-      boost::shared_ptr<::update::source::CPlugin> m_updateSource;
+      std::string m_widgetName;
 
       //------------------------------------------
-      ///\brief   Indicate if check for update is required (true) or a full update (false)
+      ///\brief   The download url
       //------------------------------------------
-      bool m_onlyCheckForUpdate;
+      std::string m_downloadUrl;
    };
+
 
 } //namespace update
 } //namespace task
