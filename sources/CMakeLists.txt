@@ -366,18 +366,22 @@ set(YADOMS_SRC
 	server/task/TaskFactory.cpp
 	server/task/TaskStatus.h
 	server/task/TaskStatus.cpp
-	server/task/update/Plugin.h
-	server/task/update/Plugin.cpp
 	server/task/update/PluginInstall.h
 	server/task/update/PluginInstall.cpp
 	server/task/update/PluginRemove.h
 	server/task/update/PluginRemove.cpp
 	server/task/update/PluginUpdate.h
 	server/task/update/PluginUpdate.cpp
-	server/task/update/Widget.h
-	server/task/update/Widget.cpp
-	server/task/update/Yadoms.h
-	server/task/update/Yadoms.cpp
+	server/task/update/WidgetInstall.h
+	server/task/update/WidgetInstall.cpp
+	server/task/update/WidgetRemove.h
+	server/task/update/WidgetRemove.cpp
+	server/task/update/WidgetUpdate.h
+	server/task/update/WidgetUpdate.cpp
+	server/task/update/YadomsCheck.h
+	server/task/update/YadomsCheck.cpp
+	server/task/update/YadomsUpdate.h
+	server/task/update/YadomsUpdate.cpp
 	server/task/backup/Database.h
 	server/task/backup/Database.cpp
    
@@ -388,14 +392,6 @@ set(YADOMS_SRC
    server/update/UpdateType.cpp
    server/update/info/UpdateSite.h
    server/update/info/UpdateSite.cpp
-   server/update/source/IUpdateSource.h
-   server/update/source/Plugin.h
-   server/update/source/Plugin.cpp
-   server/update/source/Widget.h
-   server/update/source/Widget.cpp
-   server/update/source/Yadoms.h
-   server/update/source/Yadoms.cpp
-   server/update/worker/IWorker.h
    server/update/worker/Plugin.h
    server/update/worker/Plugin.cpp
    server/update/worker/Widget.h
@@ -482,7 +478,6 @@ source_group(server\\task\\update  server/task/update/*.*)
 source_group(server\\task\\backup  server/task/backup/*.*)
 source_group(server\\update  server/update/*.*)
 source_group(server\\update\\info  server/update/info/*.*)
-source_group(server\\update\\source  server/update/source/*.*)
 source_group(server\\update\\worker  server/update/worker/*.*)
 source_group(server\\web  server/web/*.*)
 source_group(server\\web\\rest  server/web/rest/*.*)

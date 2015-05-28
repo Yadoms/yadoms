@@ -5,8 +5,8 @@
 namespace update {
    namespace worker {
 
-      CWidget::CWidget(boost::shared_ptr<update::source::CWidget> source)
-         :m_source(source)
+      CWidget::CWidget(WorkerProgressFunc progressCallback)
+         :m_progressCallback(progressCallback)
       {
 
       }
@@ -16,15 +16,21 @@ namespace update {
 
       }
 
-      void CWidget::checkForUpdateAsync(WorkerProgressFunc callback)
+      void CWidget::install(const std::string & downloadUrl)
       {
 
       }
 
-      void CWidget::updateAsync(WorkerProgressFunc callback)
+      void CWidget::update(const std::string & widgetName, const std::string & downloadUrl)
       {
 
       }
+
+      void CWidget::remove(const std::string & widgetName)
+      {
+
+      }
+
 
    } // namespace worker
 } // namespace update

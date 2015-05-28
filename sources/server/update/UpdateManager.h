@@ -1,6 +1,6 @@
 #pragma once
-#include "source/IUpdateSource.h"
 #include "task/Scheduler.h"
+#include <shared/DataContainer.h>
 
 namespace update
 {
@@ -41,22 +41,35 @@ namespace update
       //-----------------------------------------------------------------------------   
       void removePluginAsync(const std::string & pluginName);
 
-
-
-
+      //-----------------------------------------------------------------------------
+      /// \brief  Update a widget (async process)
+      /// \param [in]   widgetName        The widget name to update
+      /// \param [in]   downloadUrl       The widget package download url
+      //-----------------------------------------------------------------------------   
+      void updateWidgetAsync(const std::string & widgetName, const std::string & downloadUrl);
 
       //-----------------------------------------------------------------------------
-      /// \brief  Start a check for update (asynchronous; check for update result is provided by webservice)
-      /// \param [in]   source        The source to check for update
-      /// \return The check for update result (true if async request is made)
+      /// \brief  Install a widget (async process)
+      /// \param [in]   downloadUrl       The widget package download url
       //-----------------------------------------------------------------------------   
-      bool checkForUpdateAsync(boost::shared_ptr<source::IUpdateSource> source);
+      void installWidgetAsync(const std::string & downloadUrl);
+
       //-----------------------------------------------------------------------------
-      /// \brief  Start an update (asynchronous; update result is provided by webservice)
-      /// \param [in]   source        The source to update
-      /// \return The update result (true if async request is made)
+      /// \brief  Remove a widget (async process)
+      /// \param [in]   widgetName       The widget name to remove
       //-----------------------------------------------------------------------------   
-      bool updateAsync(boost::shared_ptr<source::IUpdateSource> source);
+      void removeWidgetAsync(const std::string & widgetName);
+      
+      //-----------------------------------------------------------------------------
+      /// \brief  Start a check for update for Yadoms (asynchronous; check for update result is provided by webservice)
+      //-----------------------------------------------------------------------------   
+      void checkForYadomsUpdateAsync();
+
+      //-----------------------------------------------------------------------------
+      /// \brief  Start an update of Yadoms (asynchronous; update result is provided by webservice)
+      /// \param [in]   versionToInstall        The yadoms lastVersion.json to install (can be lastVersion.json, or any other one)
+      //-----------------------------------------------------------------------------   
+      void updateYadomsAsync(const shared::CDataContainer & versionToInstall);
 
    private:
       //-----------------------------------------------------------------------------

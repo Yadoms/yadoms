@@ -43,20 +43,67 @@ namespace web { namespace rest { namespace service {
       )
 
       //-----------------------------------------------------------------------------
-      /// \brief  Do an update or check for update for Yadoms
+      /// \brief  Check if there is a newer version available 
       /// \param [in]   parameters        The url parameters
       /// \param [in]   requestContent    The url content
       /// \return the request result
       //-----------------------------------------------------------------------------         
-      shared::CDataContainer forYadoms(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer checkForYadomsUpdate(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
 
       //-----------------------------------------------------------------------------
-      /// \brief  Do an update or check for update for a plugin
+      /// \brief  Update Yadoms to another version (upgrade or downgrade)
       /// \param [in]   parameters        The url parameters
       /// \param [in]   requestContent    The url content
       /// \return the request result
       //-----------------------------------------------------------------------------         
-      shared::CDataContainer forPlugin(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer updateYadoms(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      
+      //-----------------------------------------------------------------------------
+      /// \brief  Update Yadoms to last version
+      /// \param [in]   parameters        The url parameters
+      /// \param [in]   requestContent    The url content
+      /// \return the request result
+      //-----------------------------------------------------------------------------         
+      shared::CDataContainer updateYadomsToLastVersion(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+
+
+
+
+      //-----------------------------------------------------------------------------
+      /// \brief  Get the list of all available widgets from the server
+      /// \param [in]   parameters        The url parameters
+      /// \param [in]   requestContent    The url content
+      /// \return the request result
+      //-----------------------------------------------------------------------------         
+      shared::CDataContainer availableWidgets(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+
+      //-----------------------------------------------------------------------------
+      /// \brief  Update a widget to another version (upgrade or downgrade)
+      /// \param [in]   parameters        The url parameters
+      /// \param [in]   requestContent    The url content
+      /// \return the request result
+      //-----------------------------------------------------------------------------   
+      shared::CDataContainer updateWidget(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+
+      //-----------------------------------------------------------------------------
+      /// \brief  Install a new widget
+      /// \param [in]   parameters        The url parameters
+      /// \param [in]   requestContent    The url content
+      /// \return the request result
+      //-----------------------------------------------------------------------------    
+      shared::CDataContainer installWidget(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+
+      //-----------------------------------------------------------------------------
+      /// \brief  Remove a widget
+      /// \param [in]   parameters        The url parameters
+      /// \param [in]   requestContent    The url content
+      /// \return the request result
+      //-----------------------------------------------------------------------------   
+      shared::CDataContainer removeWidget(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+
+
+
+
 
       //-----------------------------------------------------------------------------
       /// \brief  Get the list of all available plugins from the server
@@ -90,22 +137,7 @@ namespace web { namespace rest { namespace service {
       //-----------------------------------------------------------------------------         
       shared::CDataContainer removePlugin(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
 
-      //-----------------------------------------------------------------------------
-      /// \brief  Do an update or check for update for a widget
-      /// \param [in]   parameters        The url parameters
-      /// \param [in]   requestContent    The url content
-      /// \return the request result
-      //-----------------------------------------------------------------------------         
-      shared::CDataContainer forWidget(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
-   
-      //-----------------------------------------------------------------------------
-      /// \brief  Post an update or check for update
-      /// \param [in]   source        The object source to update
-      /// \param [in]   whatToDo      The object source to update
-      /// \return the request result
-      //-----------------------------------------------------------------------------  
-      shared::CDataContainer postRequest(boost::shared_ptr<update::source::IUpdateSource> source, const std::string whatToDo);
-
+     
       //-----------------------------------------------------------------------------
       /// \brief  The update manager
       //-----------------------------------------------------------------------------         

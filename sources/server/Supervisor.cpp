@@ -23,7 +23,6 @@
 #include <shared/ThreadBase.h>
 #include <shared/Peripherals.h>
 #include "task/Scheduler.h"
-#include "task/update/Plugin.h"
 #include "task/backup/Database.h"
 #include "communication/PluginGateway.h"
 #include "RunningInformation.h"
@@ -163,6 +162,7 @@ void CSupervisor::run()
          taskManager->stop();
 
       //stop all plugins
+      shared::CServiceLocator::instance().remove<pluginSystem::CManager>(pluginManager);
       if (pluginManager.get() != NULL)
          pluginManager->stop();
 
