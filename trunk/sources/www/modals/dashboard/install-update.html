@@ -1,0 +1,81 @@
+<div id="dashboard-install-update">
+   <h1 class="page-header"><span class="fa fa-download">&nbsp;<span data-i18n="modals.dashboard.sub-windows.install-update.title"></span></span></h1>
+   <span data-i18n="modals.dashboard.sub-windows.install-update.description"></span><br>
+
+   <h2>
+      <span data-i18n="modals.dashboard.sub-windows.install-update.yadoms.title"></span>
+      &nbsp;
+      <button id="btn-update-yadoms" type="button" class="btn btn-success disabled">
+         <span class="fa fa-download"></span>&nbsp;&nbsp;<span data-i18n="modals.dashboard.sub-windows.install-update.yadoms.update"></span>
+      </button>
+   </h2>
+
+   <table id="plugin-install-update-list" class="table table-bordered dashboard-list">
+      <tr>
+         <td data-i18n="modals.dashboard.sub-windows.install-update.yadoms.currentVersion" class="active"></td>
+         <td class="current-version"><em>v1.12 Beta</em></td>
+      </tr>
+      <tr>
+         <td data-i18n="modals.dashboard.sub-windows.install-update.yadoms.availableVersion" class="active"></td>
+         <td class="available-version"><em>v1.14 Beta</em></td>
+      </tr>
+   </table>
+
+   <h2 data-i18n="modals.dashboard.sub-windows.install-update.plugins.title"></h2>
+
+   <table id="plugin-install-update-list" class="table table-bordered table-striped dashboard-list">
+      <tr>
+         <td data-i18n="modals.dashboard.sub-windows.install-update.generic.name"></td>
+         <td data-i18n="modals.dashboard.sub-windows.install-update.generic.icon"></td>
+         <td data-i18n="modals.dashboard.sub-windows.install-update.generic.description"></td>
+         <td data-i18n="modals.dashboard.sub-windows.install-update.generic.actualVersion"></td>
+         <td data-i18n="modals.dashboard.sub-windows.install-update.generic.availableVersion"></td>
+         <td data-i18n="modals.dashboard.sub-windows.install-update.generic.actions"></td>
+      </tr>
+      <!-- plugins will be listed here-->
+   </table>
+
+   <h2 data-i18n="modals.dashboard.sub-windows.install-update.widgets.title"></h2>
+
+   <table id="widget-install-update-list" class="table table-bordered table-striped dashboard-list">
+      <tr>
+         <td data-i18n="modals.dashboard.sub-windows.install-update.generic.name"></td>
+         <td data-i18n="modals.dashboard.sub-windows.install-update.generic.icon"></td>
+         <td data-i18n="modals.dashboard.sub-windows.install-update.generic.description"></td>
+         <td data-i18n="modals.dashboard.sub-windows.install-update.generic.actualVersion"></td>
+         <td data-i18n="modals.dashboard.sub-windows.install-update.generic.availableVersion"></td>
+         <td data-i18n="modals.dashboard.sub-windows.install-update.generic.actions"></td>
+      </tr>
+      <!-- widgets will be listed here-->
+   </table>
+
+   <h2 data-i18n="modals.dashboard.sub-windows.install-update.script-interpreters.title"></h2>
+
+   <table id="script-interpreters-install-update-list" class="table table-bordered table-striped dashboard-list">
+      <tr>
+         <td data-i18n="modals.dashboard.sub-windows.install-update.generic.name"></td>
+         <td data-i18n="modals.dashboard.sub-windows.install-update.generic.icon"></td>
+         <td data-i18n="modals.dashboard.sub-windows.install-update.generic.description"></td>
+         <td data-i18n="modals.dashboard.sub-windows.install-update.generic.actualVersion"></td>
+         <td data-i18n="modals.dashboard.sub-windows.install-update.generic.availableVersion"></td>
+         <td data-i18n="modals.dashboard.sub-windows.install-update.generic.actions"></td>
+      </tr>
+      <!-- script interpreters will be listed here-->
+   </table>
+</div>
+
+<script>
+
+   $("#btn-check-for-update").unbind("click").bind("click", function() {
+      UpdateManager.updateYadoms(function(){
+         console.log("Update ask to server");
+      });
+   } );
+
+   WebSocketEngine.onTaskUpdated = function(taskUpdated) {
+      if(!isNullOrUndefined(taskUpdated)) {
+         $("#taskUpdatedContent").append("Task :" + taskUpdated.name + " Status:" + taskUpdated.state + " Progression" + taskUpdated.progression + " Message : " + taskUpdated.message + "<br/>");
+      }
+   };
+
+</script>
