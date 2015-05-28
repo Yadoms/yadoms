@@ -290,9 +290,6 @@
                   "actions" : "Actions"
                }
             },
-            "addons" : {
-               "title" : "Addons"
-            },
             "devices" : {
                "title" : "Devices",
                "deviceListDescription" : "Here is the list of all devices. You can manage your devices from here.",
@@ -343,9 +340,35 @@
                   }
                }
             },
-            "update" : {
-               "title" : "Update",
-               "new" : "Check for update"
+            "install-update" : {
+               "title" : "Install & Update",
+               "description" : "This section allow you to install or update all parts of the software",
+               "yadoms" : {
+                  "title" : "Yadoms update",
+                  "currentVersion" : "Current version",
+                  "availableVersion" : "Available version",
+                  "update" : "Update Yadoms"
+               },
+               "generic" : {
+                  "name" : "Name",
+                  "icon" : "Icon",
+                  "description" : "Description",
+                  "actualVersion" : "Actual version",
+                  "availableVersion" : "Available version",
+                  "actions" : "Actions",
+                  "update" : "Update",
+                  "install" : "Install",
+                  "uninstall" : "Uninstall"
+               },
+               "plugins" : {
+                  "title" : "Plugins"
+               },
+               "widgets" : {
+                  "title" : "Widgets"
+               },
+               "script-interpreters" : {
+                  "title" : "Widgets"
+               }
             },
             "about" : {
                "title" : "About"
