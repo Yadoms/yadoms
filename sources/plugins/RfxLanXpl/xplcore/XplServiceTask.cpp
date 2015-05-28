@@ -109,18 +109,20 @@ namespace xplcore
       //(take the ip from the interface and get an used port between 49152 and 65535 according to xpl documentation)
       boost::random::mt19937 gen;
       boost::random::uniform_int_distribution<> dist(49152, 65535);
-      m_localEndPoint = Poco::Net::SocketAddress(networkInterface.address(), (Poco::UInt16)dist(gen)); //cast allowed because value is in [49152, 65535]
+
+      //because our socket only supports ipv4; we need to get the first ipv4 address
+      const Poco::Net::IPAddress & firstIpV4Addr = networkInterface.firstAddress(Poco::Net::IPAddress::Family::IPv4);
+      m_localEndPoint = Poco::Net::SocketAddress(firstIpV4Addr, (Poco::UInt16)dist(gen)); //cast allowed because value is in [49152, 65535]
 
       //the remote interface is just a broadcast one on xpl port
       m_remoteEndPoint = Poco::Net::SocketAddress(Poco::Net::IPAddress::broadcast(), CXplHelper::XplProtocolPort);
 
       //we configure the socket
+      YADOMS_LOG(debug) << "CXplService : Remote EndPoint: " << m_remoteEndPoint.toString() << " on port : " << m_remoteEndPoint.port();
+      YADOMS_LOG(debug) << "CXplService : Try to bind local endPoint: " << m_localEndPoint.toString() << " on port : " << m_localEndPoint.port();
       m_socket.setReuseAddress(true);
       m_socket.setBroadcast(true);
       m_socket.bind(m_localEndPoint, true);
-
-      YADOMS_LOG(debug) << "CXplService : Local EndPoint: " << m_localEndPoint.toString() << " on port : " << m_localEndPoint.port();
-      YADOMS_LOG(debug) << "CXplService : Remote EndPoint: " << m_remoteEndPoint.toString() << " on port : " << m_remoteEndPoint.port();
    }
 
 
