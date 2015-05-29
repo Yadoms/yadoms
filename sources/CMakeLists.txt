@@ -79,13 +79,12 @@ add_definitions( -DBOOST_SPIRIT_THREADSAFE )
 
 # define all needed boost libraries
 set(BOOST_LIBS 
-    atomic
+   atomic
 	system 
 	filesystem 
 	thread 
 	date_time 
 	chrono 
-	program_options
 	regex
 )
 
@@ -372,6 +371,12 @@ set(YADOMS_SRC
 	server/task/update/PluginRemove.cpp
 	server/task/update/PluginUpdate.h
 	server/task/update/PluginUpdate.cpp
+	server/task/update/ScriptInterpreterInstall.h
+	server/task/update/ScriptInterpreterInstall.cpp
+	server/task/update/ScriptInterpreterRemove.h
+	server/task/update/ScriptInterpreterRemove.cpp
+	server/task/update/ScriptInterpreterUpdate.h
+	server/task/update/ScriptInterpreterUpdate.cpp
 	server/task/update/WidgetInstall.h
 	server/task/update/WidgetInstall.cpp
 	server/task/update/WidgetRemove.h
@@ -394,10 +399,14 @@ set(YADOMS_SRC
    server/update/info/UpdateSite.cpp
    server/update/worker/Plugin.h
    server/update/worker/Plugin.cpp
+   server/update/worker/ScriptInterpreter.h
+   server/update/worker/ScriptInterpreter.cpp
    server/update/worker/Widget.h
    server/update/worker/Widget.cpp
    server/update/worker/Yadoms.h
    server/update/worker/Yadoms.cpp
+   server/update/worker/WorkerTools.h
+   server/update/worker/WorkerTools.cpp
    
 	server/web/IRestHandler.h
 	server/web/IWebServer.h

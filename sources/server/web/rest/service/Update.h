@@ -138,6 +138,40 @@ namespace web { namespace rest { namespace service {
       shared::CDataContainer removePlugin(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
 
      
+
+      //-----------------------------------------------------------------------------
+      /// \brief  Get the list of all available scriptInterpreters from the server
+      /// \param [in]   parameters        The url parameters
+      /// \param [in]   requestContent    The url content
+      /// \return the request result
+      //-----------------------------------------------------------------------------         
+      shared::CDataContainer availableScriptInterpreters(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+
+      //-----------------------------------------------------------------------------
+      /// \brief  Update a scriptInterpreter to another version (upgrade or downgrade)
+      /// \param [in]   parameters        The url parameters
+      /// \param [in]   requestContent    The url content
+      /// \return the request result
+      //-----------------------------------------------------------------------------         
+      shared::CDataContainer updateScriptInterpreter(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+
+      //-----------------------------------------------------------------------------
+      /// \brief  Install a new scriptInterpreter
+      /// \param [in]   parameters        The url parameters
+      /// \param [in]   requestContent    The url content
+      /// \return the request result
+      //-----------------------------------------------------------------------------         
+      shared::CDataContainer installScriptInterpreter(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+
+      //-----------------------------------------------------------------------------
+      /// \brief  Remove a scriptInterpreter
+      /// \param [in]   parameters        The url parameters
+      /// \param [in]   requestContent    The url content
+      /// \return the request result
+      //-----------------------------------------------------------------------------         
+      shared::CDataContainer removeScriptInterpreter(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+
+
       //-----------------------------------------------------------------------------
       /// \brief  The update manager
       //-----------------------------------------------------------------------------         

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "AcBasic.h"
 #include <shared/tools/Random.h>
 #include <shared/plugin/yPluginApi/StandardCapacities.h>
@@ -37,7 +37,7 @@ namespace xplrules { namespace rfxLanXpl {
    const CDeviceIdentifier CAcBasic::getDeviceAddressFromMessage(xplcore::CXplMessage & msg)
    {
       std::string deviceId = msg.getBodyValue(m_keywordAddress) + "-" + msg.getBodyValue(m_keywordUnit);
-      std::string commercialName = "ANSLUT, Chacon, DI.O, KlikAanKlikUit, NEXA, Proove, Intertechno, Düwi, HomeEasy UK/EU";
+      std::string commercialName = "ANSLUT, Chacon, DI.O, KlikAanKlikUit, NEXA, Proove, Intertechno, DÃ¼wi, HomeEasy UK/EU";
       return CDeviceIdentifier(deviceId, commercialName, m_protocol, m_protocol);
    }
 
@@ -165,7 +165,7 @@ namespace xplrules { namespace rfxLanXpl {
    const CDeviceContainer CAcBasic::generateDeviceParameters(shared::CDataContainer & configuration) const
    {
       std::string deviceId = configuration.get<std::string>("deviceAddress");
-      std::string commercialName = "ANSLUT, Chacon, DI.O, KlikAanKlikUit, NEXA, Proove, Intertechno, Düwi, HomeEasy UK/EU";
+      std::string commercialName = "ANSLUT, Chacon, DI.O, KlikAanKlikUit, NEXA, Proove, Intertechno, DÃ¼wi, HomeEasy UK/EU";
       
       xplrules::CDeviceIdentifier device(deviceId, commercialName, m_protocol, m_protocol);
 

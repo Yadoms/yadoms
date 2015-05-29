@@ -60,6 +60,26 @@ namespace update
       //-----------------------------------------------------------------------------   
       void removeWidgetAsync(const std::string & widgetName);
       
+
+      //-----------------------------------------------------------------------------
+      /// \brief  Update a scriptInterpreter (async process)
+      /// \param [in]   scriptInterpreterName        The scriptInterpreter name to update
+      /// \param [in]   downloadUrl       The scriptInterpreter package download url
+      //-----------------------------------------------------------------------------   
+      void updateScriptInterpreterAsync(const std::string & scriptInterpreterName, const std::string & downloadUrl);
+
+      //-----------------------------------------------------------------------------
+      /// \brief  Install a scriptInterpreter (async process)
+      /// \param [in]   downloadUrl       The scriptInterpreter package download url
+      //-----------------------------------------------------------------------------   
+      void installScriptInterpreterAsync(const std::string & downloadUrl);
+
+      //-----------------------------------------------------------------------------
+      /// \brief  Remove a scriptInterpreter (async process)
+      /// \param [in]   scriptInterpreterName       The scriptInterpreter name to remove
+      //-----------------------------------------------------------------------------   
+      void removeScriptInterpreterAsync(const std::string & scriptInterpreterName);
+
       //-----------------------------------------------------------------------------
       /// \brief  Start a check for update for Yadoms (asynchronous; check for update result is provided by webservice)
       //-----------------------------------------------------------------------------   

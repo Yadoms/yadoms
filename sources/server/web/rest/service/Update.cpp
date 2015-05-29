@@ -46,6 +46,11 @@ namespace web { namespace rest { namespace service {
       REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("plugin")("update")("*"), CUpdate::updatePlugin);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("plugin")("install"), CUpdate::installPlugin);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("plugin")("remove")("*"), CUpdate::removePlugin);
+
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET" , (m_restKeyword)("scriptInterpreter")("list")("*"), CUpdate::availableScriptInterpreters);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("scriptInterpreter")("update")("*"), CUpdate::updateScriptInterpreter);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("scriptInterpreter")("install"), CUpdate::installScriptInterpreter);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("scriptInterpreter")("remove")("*"), CUpdate::removeScriptInterpreter);
    }
 
    shared::CDataContainer CUpdate::checkForYadomsUpdate(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
@@ -154,26 +159,6 @@ namespace web { namespace rest { namespace service {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
    shared::CDataContainer CUpdate::availableWidgets(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       std::string lang = "";
@@ -247,6 +232,91 @@ namespace web { namespace rest { namespace service {
          return web::rest::CResult::GenerateError("Not enougth parameters in url /rest/widget/remove/**widgetName**");
       }
    }
+
+
+
+
+
+
+
+
+
+   shared::CDataContainer CUpdate::availableScriptInterpreters(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   {
+      std::string lang = "";
+
+      if (parameters.size()>2)
+         lang = parameters[3];
+
+      //make some initializations
+      boost::shared_ptr<IRunningInformation> runningInformation(shared::CServiceLocator::instance().get<IRunningInformation>());
+      boost::shared_ptr<startupOptions::IStartupOptions> startupOptions(shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>());
+
+      //ask site info
+      update::info::CUpdateSite updateSite(startupOptions, runningInformation);
+      return CResult::GenerateSuccess(updateSite.getAllScriptInterpreterVersions(lang));
+   }
+
+
+
+   shared::CDataContainer CUpdate::updateScriptInterpreter(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   {
+      //the request url should contain the scriptInterpreterName
+      //the request content should contain the downloadURL
+      if (parameters.size() > 2)
+      {
+         std::string scriptInterpreterName = parameters[3];
+
+         if (requestContent.containsValue("downloadUrl"))
+         {
+            std::string downloadUrl = requestContent.get<std::string>("downloadUrl");
+            m_updateManager->updateScriptInterpreterAsync(scriptInterpreterName, downloadUrl);
+            return web::rest::CResult::GenerateSuccess("Update a scriptInterpreter in progess");
+         }
+         else
+         {
+            return web::rest::CResult::GenerateError("The request should contains the downloadURL.");
+         }
+      }
+      else
+      {
+         return web::rest::CResult::GenerateError("Not enougth parameters in url /rest/scriptInterpreter/update/**scriptInterpreterName**");
+      }
+   }
+
+
+   shared::CDataContainer CUpdate::installScriptInterpreter(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   {
+      //the request content should contain the downloadURL
+      if (requestContent.containsValue("downloadUrl"))
+      {
+         std::string downloadUrl = requestContent.get<std::string>("downloadUrl");
+         m_updateManager->installScriptInterpreterAsync(downloadUrl);
+         return web::rest::CResult::GenerateSuccess("Installation of a scriptInterpreter in progess");
+      }
+      else
+      {
+         return web::rest::CResult::GenerateError("The request should contains the downloadURL.");
+      }
+   }
+
+   shared::CDataContainer CUpdate::removeScriptInterpreter(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   {
+      //the request url should contain the scriptInterpreterName
+      if (parameters.size() > 2)
+      {
+         std::string scriptInterpreterName = parameters[3];
+         m_updateManager->removeScriptInterpreterAsync(scriptInterpreterName);
+         return web::rest::CResult::GenerateSuccess("Remove a scriptInterpreter in progess");
+      }
+      else
+      {
+         return web::rest::CResult::GenerateError("Not enougth parameters in url /rest/scriptInterpreter/remove/**scriptInterpreterName**");
+      }
+   }
+
+
+
 
 
 } //namespace service
