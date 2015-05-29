@@ -92,6 +92,12 @@ namespace update { namespace info {
       //---------------------------------------------
       shared::CDataContainer getAllWidgetsVersions(const std::string & displayLanguage);
 
+      //---------------------------------------------
+      ///\brief   Get all the available versions for a scriptInterpreter
+      ///\param [in] displayLanguage The language used for display
+      ///\return the list of scriptInterpreter version
+      //---------------------------------------------
+      shared::CDataContainer getAllScriptInterpreterVersions(const std::string & displayLanguage);
    private:
       //---------------------------------------------
       ///\brief   Give the Yadoms URI base for current platform

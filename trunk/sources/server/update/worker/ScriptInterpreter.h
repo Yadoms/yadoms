@@ -4,7 +4,7 @@
 namespace update {
    namespace worker {
 
-      class CPlugin
+      class CScriptInterpreter
       {
       public:
          //---------------------------------
@@ -16,32 +16,32 @@ namespace update {
          ///\brief   Constructor
          ///\param [in] progressCallback The progress callback
          //---------------------------------------------
-         CPlugin(WorkerProgressFunc progressCallback);
+         CScriptInterpreter(WorkerProgressFunc progressCallback);
 
          //---------------------------------------------
          ///\brief   Destructor
          //---------------------------------------------
-         virtual ~CPlugin();
+         virtual ~CScriptInterpreter();
 
          
          //---------------------------------------------
-         ///\brief   Install a new plugin
-         ///\param [in] downloadUrl The plugin package url
+         ///\brief   Install a new scriptInterpreter
+         ///\param [in] downloadUrl The scriptInterpreter package url
          //---------------------------------------------
          void install(const std::string & downloadUrl);
 
          //---------------------------------------------
-         ///\brief   Update a plugin
-         ///\param [in] pluginName  The plugin name
-         ///\param [in] downloadUrl The plugin package url
+         ///\brief   Update a scriptInterpreter
+         ///\param [in] scriptInterpreterName  The scriptInterpreter name
+         ///\param [in] downloadUrl The scriptInterpreter package url
          //---------------------------------------------
-         void update(const std::string & pluginName, const std::string & downloadUrl);
+         void update(const std::string & scriptInterpreterName, const std::string & downloadUrl);
 
          //---------------------------------------------
-         ///\brief   Remove a plugin
-         ///\param [in] pluginName  The plugin name
+         ///\brief   Remove a scriptInterpreter
+         ///\param [in] scriptInterpreterName  The scriptInterpreter name
          //---------------------------------------------
-         void remove(const std::string & pluginName);
+         void remove(const std::string & scriptInterpreterName);
 
       private:
          //---------------------------------------------

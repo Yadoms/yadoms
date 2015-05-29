@@ -13,7 +13,9 @@
 #include "task/update/WidgetInstall.h"
 #include "task/update/WidgetRemove.h"
 #include "task/update/WidgetUpdate.h"
-
+#include "task/update/ScriptInterpreterInstall.h"
+#include "task/update/ScriptInterpreterRemove.h"
+#include "task/update/ScriptInterpreterUpdate.h"
 namespace update
 {
    CUpdateManager::CUpdateManager(boost::shared_ptr<task::CScheduler> & taskScheduler)
@@ -63,6 +65,7 @@ namespace update
       boost::shared_ptr<task::ITask> task(new task::update::CPluginRemove(pluginName));
       startTask(task);
    }
+
    void CUpdateManager::updateWidgetAsync(const std::string & widgetName, const std::string & downloadUrl)
    {
       boost::shared_ptr<task::ITask> task(new task::update::CWidgetUpdate(widgetName, downloadUrl));
@@ -81,6 +84,24 @@ namespace update
       startTask(task);
    }
 
+
+   void CUpdateManager::updateScriptInterpreterAsync(const std::string & scriptInterpreterName, const std::string & downloadUrl)
+   {
+      boost::shared_ptr<task::ITask> task(new task::update::CScriptInterpreterUpdate(scriptInterpreterName, downloadUrl));
+      startTask(task);
+   }
+
+   void CUpdateManager::installScriptInterpreterAsync(const std::string & downloadUrl)
+   {
+      boost::shared_ptr<task::ITask> task(new task::update::CScriptInterpreterInstall(downloadUrl));
+      startTask(task);
+   }
+
+   void CUpdateManager::removeScriptInterpreterAsync(const std::string & scriptInterpreterName)
+   {
+      boost::shared_ptr<task::ITask> task(new task::update::CScriptInterpreterRemove(scriptInterpreterName));
+      startTask(task);
+   }
 
    void CUpdateManager::checkForYadomsUpdateAsync()
    {

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Plugin.h"
+#include "ScriptInterpreter.h"
 #include <shared/Log.h>
 
 #include <shared/ServiceLocator.h>
@@ -9,27 +9,25 @@
 #include "WorkerTools.h"
 #include <Poco/File.h>
 
-#include "pluginSystem/Manager.h"
-
 namespace update {
    namespace worker {
 
-      CPlugin::CPlugin(WorkerProgressFunc progressCallback)
+      CScriptInterpreter::CScriptInterpreter(WorkerProgressFunc progressCallback)
          :m_progressCallback(progressCallback)
       {
 
       }
 
 
-      CPlugin::~CPlugin()
+      CScriptInterpreter::~CScriptInterpreter()
       {
 
       }
 
 
-      void CPlugin::install(const std::string & downloadUrl)
+      void CScriptInterpreter::install(const std::string & downloadUrl)
       {
-         m_progressCallback(true, 0.0f, "Installing new plugin from " + downloadUrl);
+         m_progressCallback(true, 0.0f, "Installing new scriptInterpreter from " + downloadUrl);
 
          /////////////////////////////////////////////
          //1. download package
@@ -47,14 +45,13 @@ namespace update {
             try
             {
                m_progressCallback(true, 50.0f, "Deploy package " + downloadedPackage.toString());
-               Poco::Path pluginPath = CWorkerTools::deployPluginPackage(downloadedPackage);
-               m_progressCallback(true, 90.0f, "Plugin deployed with success");
+               Poco::Path scriptInterpreterPath = CWorkerTools::deployScriptInterpreterPackage(downloadedPackage);
+               m_progressCallback(true, 90.0f, "ScriptInterpreter deployed with success");
 
-               m_progressCallback(true, 90.0f, "Refresh plugin list");
-               boost::shared_ptr<pluginSystem::CManager> pluginManager = shared::CServiceLocator::instance().get<pluginSystem::CManager>();
-               if (pluginManager)
-                  pluginManager->updatePluginList();
-               m_progressCallback(true, 100.0f, "Plugin installed with success");
+               m_progressCallback(true, 90.0f, "Refresh scriptInterpreter list");
+               //TODO : force refresh of script interpreters
+
+               m_progressCallback(true, 100.0f, "ScriptInterpreter installed with success");
             }
             catch (std::exception & ex)
             {
@@ -74,12 +71,12 @@ namespace update {
             //fail to download package
             m_progressCallback(false, 100.0f, std::string("Fail to download package : ") + ex.what());
          }
-  
+
       }
 
-      void CPlugin::update(const std::string & pluginName, const std::string & downloadUrl)
+      void CScriptInterpreter::update(const std::string & scriptInterpreterName, const std::string & downloadUrl)
       {
-         m_progressCallback(true, 0.0f, "Updating plugin " + pluginName + " from " + downloadUrl);
+         m_progressCallback(true, 0.0f, "Updating scriptInterpreter " + scriptInterpreterName + " from " + downloadUrl);
          /////////////////////////////////////////////
          //1. download package
          /////////////////////////////////////////////
@@ -91,11 +88,10 @@ namespace update {
             m_progressCallback(true, 50.0f, "Package downloaded with success");
 
             /////////////////////////////////////////////
-            //2. stop any instance
+            //2. stop any rule
             /////////////////////////////////////////////
-            boost::shared_ptr<pluginSystem::CManager> pluginManager = shared::CServiceLocator::instance().get<pluginSystem::CManager>();
-            if (pluginManager)
-               pluginManager->stopAllInstancesOfPlugin(pluginName);
+
+            //TODO : stop all rules using this scriptInterpreter
 
             /////////////////////////////////////////////
             //3. deploy package
@@ -103,13 +99,14 @@ namespace update {
             try
             {
                m_progressCallback(true, 50.0f, "Deploy package " + downloadedPackage.toString());
-               Poco::Path pluginPath = CWorkerTools::deployPluginPackage(downloadedPackage);
-               m_progressCallback(true, 90.0f, "Plugin deployed with success");
+               Poco::Path scriptInterpreterPath = CWorkerTools::deployScriptInterpreterPackage(downloadedPackage);
+               m_progressCallback(true, 90.0f, "ScriptInterpreter deployed with success");
 
-               m_progressCallback(true, 90.0f, "Start instances");
-               if (pluginManager)
-                  pluginManager->startAllInstancesOfPlugin(pluginName);
-               m_progressCallback(true, 100.0f, "Plugin updated with success");
+               m_progressCallback(true, 90.0f, "Start rules");
+
+               //TODO : start all rules using this scriptInterpreter
+
+               m_progressCallback(true, 100.0f, "ScriptInterpreter updated with success");
             }
             catch (std::exception & ex)
             {
@@ -131,40 +128,38 @@ namespace update {
          }
       }
 
-      void CPlugin::remove(const std::string & pluginName)
+      void CScriptInterpreter::remove(const std::string & scriptInterpreterName)
       {
-         m_progressCallback(true, 0.0f, "Removing plugin " + pluginName);
+         m_progressCallback(true, 0.0f, "Removing scriptInterpreter " + scriptInterpreterName);
 
          try
-            {
+         {
             /////////////////////////////////////////////
             //1. stop any instance
             /////////////////////////////////////////////
-            boost::shared_ptr<pluginSystem::CManager> pluginManager = shared::CServiceLocator::instance().get<pluginSystem::CManager>();
-            if (pluginManager)
-               pluginManager->stopAllInstancesOfPlugin(pluginName);
+
+            //TODO : stop all rules using this scriptInterpreter
 
             /////////////////////////////////////////////
-            //2. remove plugin folder
+            //2. remove scriptInterpreter folder
             /////////////////////////////////////////////
             boost::shared_ptr<startupOptions::IStartupOptions> startupOptions = shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>();
-            Poco::Path pluginPath(startupOptions->getPluginsPath());
-            pluginPath.append(pluginName);
+            Poco::Path scriptInterpreterPath(startupOptions->getScriptInterpretersPath());
+            scriptInterpreterPath.append(scriptInterpreterName);
 
-            Poco::File toDelete(pluginPath);
+            Poco::File toDelete(scriptInterpreterPath);
             if (toDelete.exists())
                toDelete.remove(true);
 
             /////////////////////////////////////////////
-            //3. update plugin manager
+            //3. update scriptInterpreter manager
             /////////////////////////////////////////////
-            if (pluginManager)
-               pluginManager->updatePluginList();
+            //TODO : update scriptInterpreter list
          }
          catch (std::exception & ex)
          {
             //fail to download package
-            m_progressCallback(false, 100.0f, std::string("Fail to delete plugin : ") + pluginName + " : " + ex.what());
+            m_progressCallback(false, 100.0f, std::string("Fail to delete scriptInterpreter : ") + scriptInterpreterName + " : " + ex.what());
          }
       }
 

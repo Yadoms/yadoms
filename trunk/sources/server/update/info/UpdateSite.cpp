@@ -157,6 +157,39 @@ namespace update { namespace info {
    }
 
 
+   shared::CDataContainer CUpdateSite::getAllScriptInterpreterVersions(const std::string & displayLanguage)
+   {
+      Poco::URI base(m_startupOptions->getUpdateSiteUri());
+      shared::web::CUriHelpers::appendPath(base, "scriptInterpreters.php");
+      
+      base.addQueryParameter("os", Poco::Environment::osName());
+      base.addQueryParameter("arch", Poco::Environment::osArchitecture());
+      base.addQueryParameter("lang", displayLanguage);
+
+      shared::CDataContainer lastVersionInformation = shared::web::CFileDownloader::downloadInMemoryJsonFile(base, boost::bind(&shared::web::CFileDownloader::reportProgressToLog, _1, _2));
+       
+      if (lastVersionInformation.containsValue("result"))
+      {
+         bool isQuerySuccessful = lastVersionInformation.get<bool>("result");
+         if (isQuerySuccessful)
+         {
+            return lastVersionInformation.get< shared::CDataContainer >("data.scriptInterpreters");
+         }
+         else
+         {
+            throw shared::exception::CException("Error in getting versions of available scriptInterpreters. " + lastVersionInformation.get<std::string>("message"));
+         }
+
+      }
+      else
+      {
+         throw shared::exception::CException("Error in getting versions of available scriptInterpreters. Fail to get data from " + base.toString());
+      }
+
+      throw shared::exception::CException("Error in getting versions of available scriptInterpreters.");
+   }
+
+
    shared::CDataContainer CUpdateSite::getAllWidgetsVersions(const std::string & displayLanguage)
    {
       Poco::URI base(m_startupOptions->getUpdateSiteUri());
