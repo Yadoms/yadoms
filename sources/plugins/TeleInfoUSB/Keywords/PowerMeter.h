@@ -20,6 +20,10 @@ namespace yApi = shared::plugin::yPluginApi;
       //--------------------------------------------------------------
       CPowerMeter( boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName,std::string KeyWordName );
 
+      //--------------------------------------------------------------
+      /// \brief	                      Set the value of the keyword
+      /// \param[in] Value                The new value
+      //--------------------------------------------------------------
 	  void SetValue ( long Value );
 
       //--------------------------------------------------------------

@@ -2,13 +2,14 @@
 
 #include "IKeyword.h"
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
+#include "../specificHistorizer/Period.h"
 
 namespace yApi = shared::plugin::yPluginApi;
 
    //--------------------------------------------------------------
    /// \brief	The Load class
    //--------------------------------------------------------------
-   class CApparentPowerMeter : public IKeyword
+   class CRunningPeriod : public IKeyword
    {
    public:
       //--------------------------------------------------------------
@@ -18,19 +19,18 @@ namespace yApi = shared::plugin::yPluginApi;
 	  /// \param[in] KeyWordName          The keyword name
       /// \note                           Use this constructor initialising the keyword for this plugin
       //--------------------------------------------------------------
-      CApparentPowerMeter( boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName,std::string KeyWordName );
+      CRunningPeriod( boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName,std::string KeyWordName );
 
       //--------------------------------------------------------------
       /// \brief	                      Set the value of the keyword
       /// \param[in] Value                The new value
       //--------------------------------------------------------------
-
-	  void SetValue ( double Value );
+	  void SetValue ( std::string& Value );
 
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
-      virtual ~CApparentPowerMeter();
+      virtual ~CRunningPeriod();
 
       // IKeyword implementation
 	  virtual boost::shared_ptr<yApi::historization::IHistorizable> GetHistorizable() const;
@@ -45,7 +45,12 @@ namespace yApi = shared::plugin::yPluginApi;
       std::string m_PluginName;
 
       //--------------------------------------------------------------
-      /// \brief	The apparent power (VA)
+      /// \brief	The period type
       //--------------------------------------------------------------
-      boost::shared_ptr<yApi::historization::CApparentPower> m_apparentpower;
+      boost::shared_ptr<teleInfoUSB::specificHistorizers::CPeriod> m_runningPeriod;
+
+      //--------------------------------------------------------------
+      /// \brief	The map of returned value to the IHM
+      //--------------------------------------------------------------
+	  typedef std::map<std::string, unsigned int> EnumPeriod;
    };

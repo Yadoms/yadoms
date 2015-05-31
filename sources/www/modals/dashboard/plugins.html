@@ -67,7 +67,7 @@
       //we add it to the DOM
       var $pluginInstanceList = $("table#plugin-instance-list");
 
-      $pluginInstanceList.append("<tr plugin-id=\"" + pi.id + "\"><td class=\"plugin-name\"></td><td class=\"plugin-type\"></td><td class=\"plugin-status\"></td><td class=\"plugin-autoStart\"></td><td class=\"plugin-actions\"></td></tr>");
+      $pluginInstanceList.append("<tr plugin-id=\"" + pi.id + "\"><td class=\"plugin-name\"></td><td class=\"plugin-type\" align=\"left\"></td><td class=\"plugin-status\"></td><td class=\"plugin-autoStart\"></td><td class=\"plugin-actions\"></td></tr>");
 
       var $pluginInstanceRow = getPluginDomRow(pi);
       //we fill the data
