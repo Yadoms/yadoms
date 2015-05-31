@@ -2,22 +2,6 @@
 
 #include <shared/communication/Buffer.hpp>
 
-/*
-typedef struct _teleinfoData {
-unsigned char len;
-unsigned char type;
-unsigned char subtype;
-char optTariff[4];
-unsigned long powerusage1;   // normal tariff at power Usage in Wh
-unsigned long powerusage2;   // low tariff at power Usage in Wh
-unsigned long currentPowerSubscribe; //in A
-char currentTariffPeriod[4];
-unsigned long instantCurrentPowerUsage; //in A
-unsigned long maximalCurrentPowerUsage; //in A
-unsigned long apparentPower;   //in VA
-} TeleinfoData;
-*/
-
 #define TELEINFO_BAUD_RATE         1200
 #define TELEINFO_PARITY            boost::asio::serial_port_base::parity::even
 #define TELEINFO_CARACTER_SIZE     7
@@ -60,7 +44,6 @@ unsigned long apparentPower;   //in VA
 #define TE_IINST "IINST"//instant current power usage
 #define TE_IMAX "IMAX"//maximal current power usage
 #define TE_PAPP "PAPP"//apparent power
-//TODO : A ajouter
 #define TE_HHPHC "HHPHC" // Change between LowCost to normal cost period 1 car (LowCost or TEMPO)
 #define TE_DEMAIN "DEMAIN" // Color of the next day
 #define TE_ADPS "ADPS" // Warning of threshold overrun Ampère
@@ -100,7 +83,3 @@ typedef struct _tMatch
 typedef std::map<std::string, unsigned int> EnumValuesTypes;
 
 static const int readBufferSize = 1028;
-
-typedef union tRBUF {
-	unsigned char msg[ readBufferSize ];
-}RBUF;

@@ -20,7 +20,7 @@ CEnergy::CEnergy(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf,
 
    m_instantPower.set(rbuf.ENERGY.instant1 << 24 | rbuf.ENERGY.instant2 << 16 | rbuf.ENERGY.instant3 << 8 | rbuf.ENERGY.instant4);
 
-   unsigned long totalPower = (unsigned long) (rbuf.ENERGY.total3 << 24 | rbuf.ENERGY.total4 << 16 | rbuf.ENERGY.total5 << 8 | rbuf.ENERGY.total6);
+   long totalPower = (long) (rbuf.ENERGY.total3 << 24 | rbuf.ENERGY.total4 << 16 | rbuf.ENERGY.total5 << 8 | rbuf.ENERGY.total6);
    totalPower += rbuf.ENERGY.total2 * 2 ^ 32;
    totalPower += rbuf.ENERGY.total1 * 2 ^ 40;
    m_totalPower.set(totalPower / 223.666);

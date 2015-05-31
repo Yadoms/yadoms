@@ -8,7 +8,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
    //-----------------------------------------------------
    ///\brief A energy historizable object
    //-----------------------------------------------------
-   class YADOMS_SHARED_EXPORT CEnergy : public CSingleHistorizableData<unsigned long>
+   class YADOMS_SHARED_EXPORT CEnergy : public CSingleHistorizableData<long>
    {
    public:
       //-----------------------------------------------------
@@ -25,7 +25,4 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       virtual ~CEnergy();
    };
 
-
-
 } } } } // namespace shared::plugin::yPluginApi::historization
-

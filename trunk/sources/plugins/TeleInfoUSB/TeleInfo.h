@@ -4,7 +4,6 @@
 #include <shared/communication/IAsyncPort.h>
 #include <shared/communication/BufferLogger.h>
 #include "Transceiver.h"
-#include "TransceiverStatus.h"
 
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yPluginApi;

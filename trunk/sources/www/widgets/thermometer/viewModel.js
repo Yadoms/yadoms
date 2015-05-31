@@ -90,7 +90,6 @@ function ThermometerViewModel()
    
    this.refresh = function()
    {
-	   
 	   var self = this;
 	
 	    var elementID = "widget-thermometer-" + this.widget.id; // Unique ID
@@ -119,16 +118,17 @@ function ThermometerViewModel()
 		// Value for the physical representation
 		var POS_Y_MIN = 10 * self.WidgetHeight / 100;
 		var POS_Y_MAX = 60 * self.WidgetHeight / 100;		
-		var POS_Y_BALL = 74 * self.WidgetHeight / 100;
+		var POS_Y_BALL = 84 * self.WidgetHeight / 100;
+		var POS_CENTER_BALL = 86 * self.WidgetHeight / 100;
 		
         ctx.fillStyle = "rgb(" + Math.round(255 - ( TEMP_MAX - self.data())* 255/90) + ",0," + Math.round( 255 - ( self.data() - TEMP_MIN ) * 255/90 ) + ")"
 		 
 		//draw a circle
 		ctx.beginPath();
-		         // position x               position y                      diameter
-		ctx.arc(self.WidgetWidth / 2, 81 * self.WidgetHeight / 100, 8 * self.WidgetHeight / 100, 0, Math.PI*2, true); 
+		         // position x         position y             diameter
+		ctx.arc(self.WidgetWidth / 2, POS_CENTER_BALL , 8 * self.WidgetWidth / 100, 0, Math.PI*2, true); 
 		ctx.closePath();
-		ctx.fill();		
+		ctx.fill();
 		
 		var initial_position_y = POS_Y_MAX;
 		var lenght_column = POS_Y_BALL - initial_position_y;		
@@ -165,15 +165,24 @@ function ThermometerViewModel()
    
 		//write the text at the same position as the height of the column
 		ctx.fillText(self.data() + "°",self.WidgetWidth / 2 + 15*self.WidgetWidth / 100, initial_position_y );
-		  		  
-		thermometer_image = new Image();
-		thermometer_image.id = elementID + "-image";
-		thermometer_image.src = 'widgets/thermometer/thermometer.png';
+		  
+        // Draw the thermometer
+		//draw a circle
+		ctx.beginPath();
 		
-		thermometer_image.onload = function()
-		{
-		   ctx.drawImage( thermometer_image, 0, 0, self.WidgetWidth, self.WidgetHeight );
-		}
+		//black color
+        ctx.fillStyle = "rgb(0,0,0)";
+		ctx.lineWidth = 3;		
+		
+		//bubble
+		         // position x        position y             diameter
+		ctx.arc(self.WidgetWidth / 2, POS_CENTER_BALL, 12 * self.WidgetWidth / 100, Math.PI*1.3, Math.PI*1.7, true);
+		
+		//top
+		ctx.arc(self.WidgetWidth / 2, 10 * self.WidgetWidth / 100, 7 * self.WidgetWidth / 100, Math.PI*2, Math.PI*1, true);
+		
+		ctx.closePath();
+		ctx.stroke();
    }
    
    this.configurationChanged = function() 
@@ -191,17 +200,29 @@ function ThermometerViewModel()
 		   self.WidgetWidth  = 200;
 		   self.WidgetHeight = 200;
 		   
-		   //To be painted only one time
-		   if ( isSmall == true )
-		   {
-			   self.refresh();
-			   isSmall = false;
-		   }
+		   self.refresh();
+		   isSmall = false;
 	   }
-	   else if (this.widget.height() <= 250 && this.widget.height() >= 150 && this.widget.width() <= 80 && this.widget.width() >= 110 )
+	   else if (this.widget.height() <= 250 && this.widget.height() >= 150 && this.widget.width() >= 80 && this.widget.width() <= 110 )
 	   {
 		   self.WidgetWidth  = 100;
 		   self.WidgetHeight = 200;
+		   
+		   //To be painted only one time
+		   self.refresh();
+	   }	   
+	   else if (this.widget.height() <= 350 && this.widget.height() >= 250 && this.widget.width() >= 80 && this.widget.width() <= 110 )
+	   {
+		   self.WidgetWidth  = 100;
+		   self.WidgetHeight = 300;
+		   
+		   //To be painted only one time
+		   self.refresh();
+	   }  
+	   else if (this.widget.height() <= 350 && this.widget.height() >= 250 && this.widget.width() >= 180 && this.widget.width() <= 210 )
+	   {
+		   self.WidgetWidth  = 200;
+		   self.WidgetHeight = 300;
 		   
 		   //To be painted only one time
 		   self.refresh();
@@ -211,12 +232,8 @@ function ThermometerViewModel()
 		   self.WidgetWidth  = 100;
 		   self.WidgetHeight = 100;
 		   
-		   //To be painted only one time
-		   if ( isSmall == false )
-		   {
-			   self.refresh();
-			   isSmall = true;
-		   }
+		   self.refresh();
+		   isSmall = true;
 	   }
    };	   
   

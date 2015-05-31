@@ -25,18 +25,26 @@ set(CARTELECTRONIC_TELEINFO_USB_SOURCES
    TeleInfotrxHelpers.h
    Transceiver.h
    Transceiver.cpp
-   TransceiverStatus.h
-   TransceiverStatus.cpp
    Keywords/ApparentPowerMeter.cpp
    Keywords/ApparentPowerMeter.h
    Keywords/CurrentMeter.cpp
    Keywords/CurrentMeter.h
+   Keywords/ForecastTomorrow.cpp
+   Keywords/ForecastTomorrow.h
    Keywords/IKeyword.h
+   Keywords/KeywordException.hpp
    Keywords/PowerMeter.cpp
    Keywords/PowerMeter.h
+   Keywords/RunningPeriod.cpp
+   Keywords/RunningPeriod.h
+   specificHistorizer/Color.h
+   specificHistorizer/Color.cpp   
+   specificHistorizer/Period.h
+   specificHistorizer/Period.cpp
 )
 
 source_group(Keywords Keywords/*.*)
+source_group(specificHistorizer specificHistorizer/*.*)
 
 #########################################
 ## Place here all additional include directories

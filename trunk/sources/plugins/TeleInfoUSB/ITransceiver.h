@@ -23,8 +23,7 @@ public:
    /// \param [in] context          Plugin execution context (Yadoms API)
    /// \param [in] data             Data received
    //--------------------------------------------------------------
-   //TODO
    virtual void decodeTeleInfoMessage(boost::shared_ptr<yApi::IYPluginApi> context, 
 	                                  std::string & PluginName,
-                                      const shared::communication::CByteBuffer& data) const = 0;
+                                      const shared::communication::CByteBuffer& data) = 0;
 };
