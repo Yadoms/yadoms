@@ -22,7 +22,7 @@
                            <li id="btn-dashboard-devices" class=""><a href="#"><span class="fa fa-tasks"></span>&nbsp;<span data-i18n="modals.dashboard.sub-windows.devices.title"></span></a></li>
                            <li id="btn-dashboard-automatisation" class=""><a href="#"><span class="fa fa-code-fork"></span>&nbsp;<span data-i18n="modals.dashboard.sub-windows.automation-center.title"></span></a></li>
                            <li id="btn-dashboard-recipients" class=""><a href="#"><span class="fa fa-envelope"></span>&nbsp;<span data-i18n="modals.dashboard.sub-windows.recipients.title"></span></a></li>
-                           <li id="btn-dashboard-install-update" class=""><a href="#"><span class="fa fa-download"></span>&nbsp;<span data-i18n="modals.dashboard.sub-windows.install-update.title"></span></a></li>
+                           <li id="btn-dashboard-install-update" class=""><a href="#"><span class="glyphicon glyphicon-save"></span>&nbsp;<span data-i18n="modals.dashboard.sub-windows.install-update.title"></span></a></li>
                            <li id="btn-dashboard-about" class=""><a href="#" data-i18n="modals.dashboard.sub-windows.about.title"></a></li>
                         </ul>
                      </div>
@@ -141,7 +141,7 @@
 
    $("#btn-dashboard-install-update").click(function() {
       clearInterval(periodicDashboardTask);
-      asyncLoad("modals/dashboard/install-update.html");
+      asyncLoad("modals/dashboard/install-update.html", function() { initializeInstallUpdateDashboard(); });
       setBtnActive(this.id);
    });
 

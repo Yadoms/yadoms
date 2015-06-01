@@ -511,13 +511,17 @@
 	  "widget" : {
         "errorSendingCommand" : "Error during sending command"
       },
+      "update-information" : {
+         "errorListingPlugin" : "Error during getting server plugin list"
+      },
       "generic" : {
          "errorEditing" : "An error has occurred editing __objectName__",
          "errorUpdating" : "An error has occurred updating __objectName__",
          "errorDeleting" : "An error has occurred deleting __objectName__",
          "errorCreating" : "An error has occurred creating __objectName__",
          "errorLoading" : "An error has occurred loading __objectName__",
-         "errorGetting" : "An error has occurred getting __objectName__"
+         "errorGetting" : "An error has occurred getting __objectName__",
+         "retrievingData" : "Retrieving data ..."
       }
    },
    "eventLogger" : {
