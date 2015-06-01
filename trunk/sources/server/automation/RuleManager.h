@@ -50,6 +50,9 @@ namespace automation
       virtual void deleteRule(int id);
       virtual void restartRule(int id);
       virtual void signalEvent(const CManagerEvent& event);
+      virtual void startAllRulesMatchingInterpreter(const std::string & interpreterName);
+      virtual void stopAllRulesMatchingInterpreter(const std::string & interpreterName);
+      virtual void deleteAllRulesMatchingInterpreter(const std::string & interpreterName);
       // [END] IRuleManager Implementation
 
    protected:

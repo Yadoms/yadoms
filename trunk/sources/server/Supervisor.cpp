@@ -93,6 +93,7 @@ void CSupervisor::run()
       boost::shared_ptr<automation::IRuleManager> automationRulesManager(new automation::CRuleManager(
          pDataProvider->getRuleRequester(), pluginGateway, pDataProvider->getAcquisitionRequester(), dal->getConfigurationManager(),
          dal->getEventLogger(), m_EventHandler, kRuleManagerEvent));
+      shared::CServiceLocator::instance().push<automation::IRuleManager>(automationRulesManager);
 
       // Start Web server
       const std::string & webServerIp = startupOptions->getWebServerIPAddress();
@@ -155,6 +156,7 @@ void CSupervisor::run()
       YADOMS_LOG(information) << "Supervisor is stopping...";
 
       //stop the automation rules
+      shared::CServiceLocator::instance().remove<automation::IRuleManager>(automationRulesManager);
       automationRulesManager.reset();
 
       //stop task manager

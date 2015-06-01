@@ -86,6 +86,24 @@ namespace automation
       /// \param [in] event   Event data
       //--------------------------------------------------------------
       virtual void signalEvent(const CManagerEvent& event) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief                          Start all rules using a script interpreter
+      /// \param[in] interpreterName      The script interpreter name
+      //--------------------------------------------------------------
+      virtual void startAllRulesMatchingInterpreter(const std::string & interpreterName) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief                          Stop all rules using a script interpreter
+      /// \param[in] interpreterName      The script interpreter name
+      //--------------------------------------------------------------
+      virtual void stopAllRulesMatchingInterpreter(const std::string & interpreterName) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief                          Delete all rules using a script interpreter
+      /// \param[in] interpreterName      The script interpreter name
+      //--------------------------------------------------------------
+      virtual void deleteAllRulesMatchingInterpreter(const std::string & interpreterName) = 0;
    };
 	
 } // namespace automation	

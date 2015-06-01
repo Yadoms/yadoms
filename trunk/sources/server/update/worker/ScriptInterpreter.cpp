@@ -9,6 +9,8 @@
 #include "WorkerTools.h"
 #include <Poco/File.h>
 
+#include "automation/IRuleManager.h"
+
 namespace update {
    namespace worker {
 
@@ -49,7 +51,11 @@ namespace update {
                m_progressCallback(true, 90.0f, "ScriptInterpreter deployed with success");
 
                m_progressCallback(true, 90.0f, "Refresh scriptInterpreter list");
-               //TODO : force refresh of script interpreters
+
+               //force refresh of script interpreters
+               boost::shared_ptr<automation::IRuleManager> automationRuleManager = shared::CServiceLocator::instance().get<automation::IRuleManager>();
+               if (automationRuleManager)
+                  automationRuleManager->getAvailableInterpreters(); //as seen in comments, refresh interpreters list
 
                m_progressCallback(true, 100.0f, "ScriptInterpreter installed with success");
             }
@@ -91,7 +97,10 @@ namespace update {
             //2. stop any rule
             /////////////////////////////////////////////
 
-            //TODO : stop all rules using this scriptInterpreter
+            //stop all rules using this scriptInterpreter
+            boost::shared_ptr<automation::IRuleManager> automationRuleManager = shared::CServiceLocator::instance().get<automation::IRuleManager>();
+            if (automationRuleManager)
+               automationRuleManager->stopAllRulesMatchingInterpreter(scriptInterpreterName);
 
             /////////////////////////////////////////////
             //3. deploy package
@@ -104,7 +113,9 @@ namespace update {
 
                m_progressCallback(true, 90.0f, "Start rules");
 
-               //TODO : start all rules using this scriptInterpreter
+               //start all rules using this scriptInterpreter
+               if (automationRuleManager)
+                  automationRuleManager->startAllRulesMatchingInterpreter(scriptInterpreterName);
 
                m_progressCallback(true, 100.0f, "ScriptInterpreter updated with success");
             }
@@ -138,7 +149,13 @@ namespace update {
             //1. stop any instance
             /////////////////////////////////////////////
 
-            //TODO : stop all rules using this scriptInterpreter
+            //stop all rules using this scriptInterpreter
+            boost::shared_ptr<automation::IRuleManager> automationRuleManager = shared::CServiceLocator::instance().get<automation::IRuleManager>();
+            if (automationRuleManager)
+            {
+               automationRuleManager->stopAllRulesMatchingInterpreter(scriptInterpreterName);
+               automationRuleManager->deleteAllRulesMatchingInterpreter(scriptInterpreterName);
+            }
 
             /////////////////////////////////////////////
             //2. remove scriptInterpreter folder
@@ -155,6 +172,8 @@ namespace update {
             //3. update scriptInterpreter manager
             /////////////////////////////////////////////
             //TODO : update scriptInterpreter list
+            if (automationRuleManager)
+               automationRuleManager->getAvailableInterpreters(); //as seen in comments, refresh interpreters list
          }
          catch (std::exception & ex)
          {
