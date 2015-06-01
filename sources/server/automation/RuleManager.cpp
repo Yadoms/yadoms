@@ -7,6 +7,7 @@
 #include <shared/exception/EmptyResult.hpp>
 #include <shared/Log.h>
 #include "RuleException.hpp"
+#include <shared/exception/NotImplemented.hpp>
 
 namespace automation
 {
@@ -239,6 +240,25 @@ void CRuleManager::signalEvent(const CManagerEvent& event)
    }
    }
 }
+
+void CRuleManager::startAllRulesMatchingInterpreter(const std::string & interpreterName)
+{
+   //TODO : à implémenter
+   throw shared::exception::CNotImplemented("startAllRulesMatchingInterpreter");
+}
+
+void CRuleManager::stopAllRulesMatchingInterpreter(const std::string & interpreterName)
+{
+   //TODO : à implémenter
+   throw shared::exception::CNotImplemented("stopAllRulesMatchingInterpreter");
+}
+
+void CRuleManager::deleteAllRulesMatchingInterpreter(const std::string & interpreterName)
+{
+   //TODO : à implémenter
+   throw shared::exception::CNotImplemented("deleteAllRulesMatchingInterpreter");
+}
+
 
 
 } // namespace automation	
