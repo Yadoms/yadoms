@@ -4,7 +4,6 @@
 #include "database/entities/Entities.h"
 #include "../../server/task/IInstance.h"
 
-
 namespace web { namespace ws {
 
    //-----------------------------
@@ -48,7 +47,12 @@ namespace web { namespace ws {
       //-----------------------------
       ///\brief The task message
       //-----------------------------
-      static const std::string m_taskMessage;
+      static const std::string m_taskMessage;     
+      
+      //-----------------------------
+      ///\brief The task custom data
+      //-----------------------------
+      static const std::string m_taskData;
 
    };
 

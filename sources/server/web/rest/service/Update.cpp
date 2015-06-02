@@ -55,8 +55,8 @@ namespace web { namespace rest { namespace service {
 
    shared::CDataContainer CUpdate::checkForYadomsUpdate(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
-      m_updateManager->checkForYadomsUpdateAsync();
-      return web::rest::CResult::GenerateSuccess("Check for Yadoms update in progress");
+      std::string taskId = m_updateManager->checkForYadomsUpdateAsync();
+      return web::rest::CResult::GenerateSuccess(taskId);
    }   
    
    shared::CDataContainer CUpdate::updateYadoms(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
@@ -64,8 +64,10 @@ namespace web { namespace rest { namespace service {
       if (requestContent.containsChild("versionData"))
       {
          shared::CDataContainer versionData = requestContent.get<shared::CDataContainer>("versionData");
-         m_updateManager->updateYadomsAsync(versionData);
-         return web::rest::CResult::GenerateSuccess("Updating Yadoms in progress");
+         std::string taskId = m_updateManager->updateYadomsAsync(versionData);
+         shared::CDataContainer result;
+         result.set("taskId", taskId);
+         return web::rest::CResult::GenerateSuccess(result);
       }
       else
       {
@@ -76,8 +78,10 @@ namespace web { namespace rest { namespace service {
    
    shared::CDataContainer CUpdate::updateYadomsToLastVersion(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
-      m_updateManager->updateYadomsAsync(shared::CDataContainer::EmptyContainer);
-      return web::rest::CResult::GenerateSuccess("Updating Yadoms in progress");
+      std::string taskId = m_updateManager->updateYadomsAsync(shared::CDataContainer::EmptyContainer);
+      shared::CDataContainer result;
+      result.set("taskId", taskId);
+      return web::rest::CResult::GenerateSuccess(result);
    }
 
    
@@ -112,8 +116,10 @@ namespace web { namespace rest { namespace service {
          if (requestContent.containsValue("downloadUrl"))
          {
             std::string downloadUrl = requestContent.get<std::string>("downloadUrl");
-            m_updateManager->updatePluginAsync(pluginName, downloadUrl);
-            return web::rest::CResult::GenerateSuccess("Update a plugin in progess");
+            std::string taskId = m_updateManager->updatePluginAsync(pluginName, downloadUrl);
+            shared::CDataContainer result;
+            result.set("taskId", taskId);
+            return web::rest::CResult::GenerateSuccess(result);
          }
          else
          {
@@ -133,8 +139,10 @@ namespace web { namespace rest { namespace service {
       if (requestContent.containsValue("downloadUrl"))
       {
          std::string downloadUrl = requestContent.get<std::string>("downloadUrl");
-         m_updateManager->installPluginAsync(downloadUrl);
-         return web::rest::CResult::GenerateSuccess("Installation of a plugin in progess");
+         std::string taskId = m_updateManager->installPluginAsync(downloadUrl);
+         shared::CDataContainer result;
+         result.set("taskId", taskId);
+         return web::rest::CResult::GenerateSuccess(result);
       }
       else
       {
@@ -148,8 +156,10 @@ namespace web { namespace rest { namespace service {
       if (parameters.size() > 2)
       {
          std::string pluginName = parameters[3];
-         m_updateManager->removePluginAsync(pluginName);
-         return web::rest::CResult::GenerateSuccess("Remove a plugin in progess");
+         std::string taskId = m_updateManager->removePluginAsync(pluginName);
+         shared::CDataContainer result;
+         result.set("taskId", taskId);
+         return web::rest::CResult::GenerateSuccess(result);
       }
       else
       {
@@ -188,8 +198,10 @@ namespace web { namespace rest { namespace service {
          if (requestContent.containsValue("downloadUrl"))
          {
             std::string downloadUrl = requestContent.get<std::string>("downloadUrl");
-            m_updateManager->updateWidgetAsync(widgetName, downloadUrl);
-            return web::rest::CResult::GenerateSuccess("Update a widget in progess");
+            std::string taskId = m_updateManager->updateWidgetAsync(widgetName, downloadUrl);
+            shared::CDataContainer result;
+            result.set("taskId", taskId);
+            return web::rest::CResult::GenerateSuccess(result);
          }
          else
          {
@@ -209,8 +221,10 @@ namespace web { namespace rest { namespace service {
       if (requestContent.containsValue("downloadUrl"))
       {
          std::string downloadUrl = requestContent.get<std::string>("downloadUrl");
-         m_updateManager->installWidgetAsync(downloadUrl);
-         return web::rest::CResult::GenerateSuccess("Installation of a widget in progess");
+         std::string taskId = m_updateManager->installWidgetAsync(downloadUrl);
+         shared::CDataContainer result;
+         result.set("taskId", taskId);
+         return web::rest::CResult::GenerateSuccess(result);
       }
       else
       {
@@ -224,8 +238,10 @@ namespace web { namespace rest { namespace service {
       if (parameters.size() > 2)
       {
          std::string widgetName = parameters[3];
-         m_updateManager->removeWidgetAsync(widgetName);
-         return web::rest::CResult::GenerateSuccess("Remove a widget in progess");
+         std::string taskId = m_updateManager->removeWidgetAsync(widgetName);
+         shared::CDataContainer result;
+         result.set("taskId", taskId);
+         return web::rest::CResult::GenerateSuccess(result);
       }
       else
       {
@@ -270,8 +286,10 @@ namespace web { namespace rest { namespace service {
          if (requestContent.containsValue("downloadUrl"))
          {
             std::string downloadUrl = requestContent.get<std::string>("downloadUrl");
-            m_updateManager->updateScriptInterpreterAsync(scriptInterpreterName, downloadUrl);
-            return web::rest::CResult::GenerateSuccess("Update a scriptInterpreter in progess");
+            std::string taskId = m_updateManager->updateScriptInterpreterAsync(scriptInterpreterName, downloadUrl);
+            shared::CDataContainer result;
+            result.set("taskId", taskId);
+            return web::rest::CResult::GenerateSuccess(result);
          }
          else
          {
@@ -291,8 +309,10 @@ namespace web { namespace rest { namespace service {
       if (requestContent.containsValue("downloadUrl"))
       {
          std::string downloadUrl = requestContent.get<std::string>("downloadUrl");
-         m_updateManager->installScriptInterpreterAsync(downloadUrl);
-         return web::rest::CResult::GenerateSuccess("Installation of a scriptInterpreter in progess");
+         std::string taskId = m_updateManager->installScriptInterpreterAsync(downloadUrl);
+         shared::CDataContainer result;
+         result.set("taskId", taskId);
+         return web::rest::CResult::GenerateSuccess(result);
       }
       else
       {
@@ -306,8 +326,10 @@ namespace web { namespace rest { namespace service {
       if (parameters.size() > 2)
       {
          std::string scriptInterpreterName = parameters[3];
-         m_updateManager->removeScriptInterpreterAsync(scriptInterpreterName);
-         return web::rest::CResult::GenerateSuccess("Remove a scriptInterpreter in progess");
+         std::string taskId = m_updateManager->removeScriptInterpreterAsync(scriptInterpreterName);
+         shared::CDataContainer result;
+         result.set("taskId", taskId);
+         return web::rest::CResult::GenerateSuccess(result);
       }
       else
       {

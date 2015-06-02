@@ -40,6 +40,11 @@ namespace task {
       //---------------------------------
       virtual std::string getName() const = 0;
 
+      //-------------------------------------
+      /// \brief	Obtain the task custom data
+      //-------------------------------------
+      virtual shared::CDataContainer getTaskData() const = 0;
+
       //---------------------------------
       ///\brief Get the creation date of the task
       //---------------------------------

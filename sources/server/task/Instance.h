@@ -25,39 +25,19 @@ namespace task {
       virtual ~CInstance();
 
       //---------------------------------
-      ///\brief Get the unique identifier of the instance
-      //---------------------------------
-      virtual std::string getGuid() const;
-
-      //---------------------------------
       ///\brief Get the current task
       //---------------------------------
       boost::shared_ptr<ITask> getTask();
 
-      //---------------------------------
-      ///\brief Get the current progression
-      //---------------------------------
+      // IInstance implementation
+      virtual std::string getGuid() const;
       virtual boost::optional<float> getProgression() const;
-
-      //---------------------------------
-      ///\brief Get the current message
-      //---------------------------------
       virtual std::string getMessage() const;
-
-      //------------------------------------------
-      ///\brief   Obtain Status
-      //------------------------------------------
       virtual ETaskStatus getStatus() const;
-
-      //---------------------------------
-      ///\brief Get the current name of the task
-      //---------------------------------
+      virtual shared::CDataContainer getTaskData() const;
       virtual std::string getName() const;
-
-      //---------------------------------
-      ///\brief Get the creation date of the task
-      //---------------------------------
       virtual boost::posix_time::ptime getCreationDate() const;
+      // [END] - IInstance implementation
 
    private:
       //---------------------------------
@@ -65,8 +45,9 @@ namespace task {
       ///\param [in] isRunning : the actual task is still running (false in case of task error)
       ///\param [in] progression : the actual progression or NULL(boost::optional) if not supported by the task 
       ///\param [in] message : the actual message provided by the task or NULL(boost::optional)
+      ///\param [in] taskData : some free data provided by task implementation
       //---------------------------------
-      void OnTaskProgressUpdated(bool isRunning, boost::optional<float> progression, std::string message);
+      void OnTaskProgressUpdated(bool isRunning, boost::optional<float> progression, std::string message, shared::CDataContainer taskData);
 
       //--------------------------------------------------------------
       /// \brief			The current task instance progression
@@ -78,6 +59,10 @@ namespace task {
       //--------------------------------------------------------------
       std::string m_currentMessage;
 
+      //--------------------------------------------------------------
+      /// \brief			The current task custom data
+      //--------------------------------------------------------------
+      shared::CDataContainer m_taskData;
    protected:
       //--------------------------------------------------------------
       /// \brief			The main instance work
