@@ -44,36 +44,7 @@ namespace update { namespace info {
    }
 
 
-
-   Poco::URI CUpdateSite::getPluginLastVersionUri(const std::string & pluginName)
-   {
-      Poco::URI result = getPluginBaseUri(pluginName);
-      shared::web::CUriHelpers::appendPath(result, m_pluginsLastVersionFilename);
-      return result;
-   }
-
-   Poco::URI CUpdateSite::getPluginPackageUri(const std::string & pluginName, const std::string & packageName)
-   {
-      Poco::URI result = getPluginBaseUri(pluginName);
-      shared::web::CUriHelpers::appendPath(result, packageName);
-      return result;
-   }
-
-   Poco::URI CUpdateSite::getWidgetLastVersionUri(const std::string & widgetName)
-   {
-      Poco::URI result = getWidgetBaseUri(widgetName);
-      shared::web::CUriHelpers::appendPath(result, m_widgetsLastVersionFilename);
-      return result;
-   }
-
-   Poco::URI CUpdateSite::getWidgetPackageUri(const std::string & widgetName, const std::string & packageName)
-   {
-      Poco::URI result = getWidgetBaseUri(widgetName);
-      shared::web::CUriHelpers::appendPath(result, packageName);
-      return result;
-   }
-
-
+   
      
 
    Poco::URI CUpdateSite::getYadomsBaseUri()
@@ -81,23 +52,6 @@ namespace update { namespace info {
       Poco::URI base(m_startupOptions->getUpdateSiteUri());
       shared::web::CUriHelpers::appendPath(base, m_distantYadomsBaseFolder);
       shared::web::CUriHelpers::appendPath(base, m_currentPlatform);
-      return base;
-   }
-
-   Poco::URI CUpdateSite::getPluginBaseUri(const std::string & pluginName)
-   {
-      Poco::URI base(m_startupOptions->getUpdateSiteUri());
-      shared::web::CUriHelpers::appendPath(base, m_distantPluginsBaseFolder);
-      shared::web::CUriHelpers::appendPath(base, pluginName);
-      shared::web::CUriHelpers::appendPath(base, m_currentPlatform);
-      return base;
-   }
-
-   Poco::URI CUpdateSite::getWidgetBaseUri(const std::string & widgetName)
-   {
-      Poco::URI base(m_startupOptions->getUpdateSiteUri());
-      shared::web::CUriHelpers::appendPath(base, m_distantWidgetBaseFolder);
-      shared::web::CUriHelpers::appendPath(base, widgetName);
       return base;
    }
 

@@ -86,6 +86,8 @@ set(SHARED_LIB_SRC
    shared/plugin/IPlugin.h
 	
    shared/plugin/information/IInformation.h
+   shared/plugin/information/ReleaseType.h
+   shared/plugin/information/ReleaseType.cpp
 
    shared/plugin/yPluginApi/commonIncludes.h
    shared/plugin/yPluginApi/IDeviceCommand.h

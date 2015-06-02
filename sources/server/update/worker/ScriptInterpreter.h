@@ -1,5 +1,6 @@
 #pragma once
 #include <Poco/Path.h>
+#include <shared/DataContainer.h>
 
 namespace update {
    namespace worker {
@@ -10,7 +11,7 @@ namespace update {
          //---------------------------------
          ///\brief Define a function prototype for updating the worker progress
          //---------------------------------
-         typedef boost::function3<void, bool, boost::optional<float>, std::string > WorkerProgressFunc;
+         typedef boost::function4<void, bool, boost::optional<float>, std::string, shared::CDataContainer > WorkerProgressFunc;
 
          //---------------------------------------------
          ///\brief   Constructor

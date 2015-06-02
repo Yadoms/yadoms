@@ -49,7 +49,7 @@ namespace database {   namespace sqlite {  namespace adapters {
       ((EventDate)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time()))
       ((PluginName)(std::string)(""))
       ((PluginVersion)(std::string)(""))
-      ((PluginRelease)(shared::plugin::information::EReleaseType)(shared::plugin::information::kStable)(int))
+      ((PluginRelease)(shared::plugin::information::EReleaseType)(shared::plugin::information::EReleaseType::kStable)(int))
       ((EventType)(database::entities::EEventType)(database::entities::EEventType::kUnload)(std::string))
       ((Message)(std::string)(""))
    );

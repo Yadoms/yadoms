@@ -29,7 +29,7 @@ namespace update {
 
       void CPlugin::install(const std::string & downloadUrl)
       {
-         m_progressCallback(true, 0.0f, "Installing new plugin from " + downloadUrl);
+         m_progressCallback(true, 0.0f, "Installing new plugin from " + downloadUrl, shared::CDataContainer::EmptyContainer);
 
          /////////////////////////////////////////////
          //1. download package
@@ -37,29 +37,29 @@ namespace update {
          try
          {
 
-            m_progressCallback(true, 0.0f, "Downloading package");
+            m_progressCallback(true, 0.0f, "Downloading package", shared::CDataContainer::EmptyContainer);
             Poco::Path downloadedPackage = CWorkerTools::downloadPackage(downloadUrl);
-            m_progressCallback(true, 50.0f, "Package downloaded with success");
+            m_progressCallback(true, 50.0f, "Package downloaded with success", shared::CDataContainer::EmptyContainer);
 
             /////////////////////////////////////////////
             //2. deploy package
             /////////////////////////////////////////////
             try
             {
-               m_progressCallback(true, 50.0f, "Deploy package " + downloadedPackage.toString());
+               m_progressCallback(true, 50.0f, "Deploy package " + downloadedPackage.toString(), shared::CDataContainer::EmptyContainer);
                Poco::Path pluginPath = CWorkerTools::deployPluginPackage(downloadedPackage);
-               m_progressCallback(true, 90.0f, "Plugin deployed with success");
+               m_progressCallback(true, 90.0f, "Plugin deployed with success", shared::CDataContainer::EmptyContainer);
 
-               m_progressCallback(true, 90.0f, "Refresh plugin list");
+               m_progressCallback(true, 90.0f, "Refresh plugin list", shared::CDataContainer::EmptyContainer);
                boost::shared_ptr<pluginSystem::CManager> pluginManager = shared::CServiceLocator::instance().get<pluginSystem::CManager>();
                if (pluginManager)
                   pluginManager->updatePluginList();
-               m_progressCallback(true, 100.0f, "Plugin installed with success");
+               m_progressCallback(true, 100.0f, "Plugin installed with success", shared::CDataContainer::EmptyContainer);
             }
             catch (std::exception & ex)
             {
                //fail to extract package file
-               m_progressCallback(false, 100.0f, std::string("Fail to deploy package : ") + ex.what());
+               m_progressCallback(false, 100.0f, std::string("Fail to deploy package : ") + ex.what(), shared::CDataContainer::EmptyContainer);
             }
 
 
@@ -72,23 +72,23 @@ namespace update {
          catch (std::exception & ex)
          {
             //fail to download package
-            m_progressCallback(false, 100.0f, std::string("Fail to download package : ") + ex.what());
+            m_progressCallback(false, 100.0f, std::string("Fail to download package : ") + ex.what(), shared::CDataContainer::EmptyContainer);
          }
   
       }
 
       void CPlugin::update(const std::string & pluginName, const std::string & downloadUrl)
       {
-         m_progressCallback(true, 0.0f, "Updating plugin " + pluginName + " from " + downloadUrl);
+         m_progressCallback(true, 0.0f, "Updating plugin " + pluginName + " from " + downloadUrl, shared::CDataContainer::EmptyContainer);
          /////////////////////////////////////////////
          //1. download package
          /////////////////////////////////////////////
          try
          {
 
-            m_progressCallback(true, 0.0f, "Downloading package");
+            m_progressCallback(true, 0.0f, "Downloading package", shared::CDataContainer::EmptyContainer);
             Poco::Path downloadedPackage = CWorkerTools::downloadPackage(downloadUrl);
-            m_progressCallback(true, 50.0f, "Package downloaded with success");
+            m_progressCallback(true, 50.0f, "Package downloaded with success", shared::CDataContainer::EmptyContainer);
 
             /////////////////////////////////////////////
             //2. stop any instance
@@ -102,19 +102,19 @@ namespace update {
             /////////////////////////////////////////////
             try
             {
-               m_progressCallback(true, 50.0f, "Deploy package " + downloadedPackage.toString());
+               m_progressCallback(true, 50.0f, "Deploy package " + downloadedPackage.toString(), shared::CDataContainer::EmptyContainer);
                Poco::Path pluginPath = CWorkerTools::deployPluginPackage(downloadedPackage);
-               m_progressCallback(true, 90.0f, "Plugin deployed with success");
+               m_progressCallback(true, 90.0f, "Plugin deployed with success", shared::CDataContainer::EmptyContainer);
 
-               m_progressCallback(true, 90.0f, "Start instances");
+               m_progressCallback(true, 90.0f, "Start instances", shared::CDataContainer::EmptyContainer);
                if (pluginManager)
                   pluginManager->startAllInstancesOfPlugin(pluginName);
-               m_progressCallback(true, 100.0f, "Plugin updated with success");
+               m_progressCallback(true, 100.0f, "Plugin updated with success", shared::CDataContainer::EmptyContainer);
             }
             catch (std::exception & ex)
             {
                //fail to extract package file
-               m_progressCallback(false, 100.0f, std::string("Fail to deploy package : ") + ex.what());
+               m_progressCallback(false, 100.0f, std::string("Fail to deploy package : ") + ex.what(), shared::CDataContainer::EmptyContainer);
             }
 
 
@@ -127,13 +127,13 @@ namespace update {
          catch (std::exception & ex)
          {
             //fail to download package
-            m_progressCallback(false, 100.0f, std::string("Fail to download package : ") + ex.what());
+            m_progressCallback(false, 100.0f, std::string("Fail to download package : ") + ex.what(), shared::CDataContainer::EmptyContainer);
          }
       }
 
       void CPlugin::remove(const std::string & pluginName)
       {
-         m_progressCallback(true, 0.0f, "Removing plugin " + pluginName);
+         m_progressCallback(true, 0.0f, "Removing plugin " + pluginName, shared::CDataContainer::EmptyContainer);
 
          try
             {
@@ -164,7 +164,7 @@ namespace update {
          catch (std::exception & ex)
          {
             //fail to download package
-            m_progressCallback(false, 100.0f, std::string("Fail to delete plugin : ") + pluginName + " : " + ex.what());
+            m_progressCallback(false, 100.0f, std::string("Fail to delete plugin : ") + pluginName + " : " + ex.what(), shared::CDataContainer::EmptyContainer);
          }
       }
 

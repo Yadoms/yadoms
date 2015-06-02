@@ -4,7 +4,7 @@
 namespace pluginSystem {   namespace internalPlugin {
 
    CInformation::CInformation()
-      :m_name("system"), m_description("system"), m_version("1.0"), m_releaseType(shared::plugin::information::kStable), 
+      :m_name("system"), m_description("system"), m_version("1.0"), m_releaseType(shared::plugin::information::EReleaseType::kStable), 
       m_author("Yadoms team"), m_url("http://www.yadoms.com")
    {
    }

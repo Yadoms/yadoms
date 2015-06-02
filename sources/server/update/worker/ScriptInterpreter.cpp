@@ -29,7 +29,7 @@ namespace update {
 
       void CScriptInterpreter::install(const std::string & downloadUrl)
       {
-         m_progressCallback(true, 0.0f, "Installing new scriptInterpreter from " + downloadUrl);
+         m_progressCallback(true, 0.0f, "Installing new scriptInterpreter from " + downloadUrl, shared::CDataContainer::EmptyContainer);
 
          /////////////////////////////////////////////
          //1. download package
@@ -37,32 +37,32 @@ namespace update {
          try
          {
 
-            m_progressCallback(true, 0.0f, "Downloading package");
+            m_progressCallback(true, 0.0f, "Downloading package", shared::CDataContainer::EmptyContainer);
             Poco::Path downloadedPackage = CWorkerTools::downloadPackage(downloadUrl);
-            m_progressCallback(true, 50.0f, "Package downloaded with success");
+            m_progressCallback(true, 50.0f, "Package downloaded with success", shared::CDataContainer::EmptyContainer);
 
             /////////////////////////////////////////////
             //2. deploy package
             /////////////////////////////////////////////
             try
             {
-               m_progressCallback(true, 50.0f, "Deploy package " + downloadedPackage.toString());
+               m_progressCallback(true, 50.0f, "Deploy package " + downloadedPackage.toString(), shared::CDataContainer::EmptyContainer);
                Poco::Path scriptInterpreterPath = CWorkerTools::deployScriptInterpreterPackage(downloadedPackage);
-               m_progressCallback(true, 90.0f, "ScriptInterpreter deployed with success");
+               m_progressCallback(true, 90.0f, "ScriptInterpreter deployed with success", shared::CDataContainer::EmptyContainer);
 
-               m_progressCallback(true, 90.0f, "Refresh scriptInterpreter list");
+               m_progressCallback(true, 90.0f, "Refresh scriptInterpreter list", shared::CDataContainer::EmptyContainer);
 
                //force refresh of script interpreters
                boost::shared_ptr<automation::IRuleManager> automationRuleManager = shared::CServiceLocator::instance().get<automation::IRuleManager>();
                if (automationRuleManager)
                   automationRuleManager->getAvailableInterpreters(); //as seen in comments, refresh interpreters list
 
-               m_progressCallback(true, 100.0f, "ScriptInterpreter installed with success");
+               m_progressCallback(true, 100.0f, "ScriptInterpreter installed with success", shared::CDataContainer::EmptyContainer);
             }
             catch (std::exception & ex)
             {
                //fail to extract package file
-               m_progressCallback(false, 100.0f, std::string("Fail to deploy package : ") + ex.what());
+               m_progressCallback(false, 100.0f, std::string("Fail to deploy package : ") + ex.what(), shared::CDataContainer::EmptyContainer);
             }
 
 
@@ -75,23 +75,23 @@ namespace update {
          catch (std::exception & ex)
          {
             //fail to download package
-            m_progressCallback(false, 100.0f, std::string("Fail to download package : ") + ex.what());
+            m_progressCallback(false, 100.0f, std::string("Fail to download package : ") + ex.what(), shared::CDataContainer::EmptyContainer);
          }
 
       }
 
       void CScriptInterpreter::update(const std::string & scriptInterpreterName, const std::string & downloadUrl)
       {
-         m_progressCallback(true, 0.0f, "Updating scriptInterpreter " + scriptInterpreterName + " from " + downloadUrl);
+         m_progressCallback(true, 0.0f, "Updating scriptInterpreter " + scriptInterpreterName + " from " + downloadUrl, shared::CDataContainer::EmptyContainer);
          /////////////////////////////////////////////
          //1. download package
          /////////////////////////////////////////////
          try
          {
 
-            m_progressCallback(true, 0.0f, "Downloading package");
+            m_progressCallback(true, 0.0f, "Downloading package", shared::CDataContainer::EmptyContainer);
             Poco::Path downloadedPackage = CWorkerTools::downloadPackage(downloadUrl);
-            m_progressCallback(true, 50.0f, "Package downloaded with success");
+            m_progressCallback(true, 50.0f, "Package downloaded with success", shared::CDataContainer::EmptyContainer);
 
             /////////////////////////////////////////////
             //2. stop any rule
@@ -107,22 +107,22 @@ namespace update {
             /////////////////////////////////////////////
             try
             {
-               m_progressCallback(true, 50.0f, "Deploy package " + downloadedPackage.toString());
+               m_progressCallback(true, 50.0f, "Deploy package " + downloadedPackage.toString(), shared::CDataContainer::EmptyContainer);
                Poco::Path scriptInterpreterPath = CWorkerTools::deployScriptInterpreterPackage(downloadedPackage);
-               m_progressCallback(true, 90.0f, "ScriptInterpreter deployed with success");
+               m_progressCallback(true, 90.0f, "ScriptInterpreter deployed with success", shared::CDataContainer::EmptyContainer);
 
-               m_progressCallback(true, 90.0f, "Start rules");
+               m_progressCallback(true, 90.0f, "Start rules", shared::CDataContainer::EmptyContainer);
 
                //start all rules using this scriptInterpreter
                if (automationRuleManager)
                   automationRuleManager->startAllRulesMatchingInterpreter(scriptInterpreterName);
 
-               m_progressCallback(true, 100.0f, "ScriptInterpreter updated with success");
+               m_progressCallback(true, 100.0f, "ScriptInterpreter updated with success", shared::CDataContainer::EmptyContainer);
             }
             catch (std::exception & ex)
             {
                //fail to extract package file
-               m_progressCallback(false, 100.0f, std::string("Fail to deploy package : ") + ex.what());
+               m_progressCallback(false, 100.0f, std::string("Fail to deploy package : ") + ex.what(), shared::CDataContainer::EmptyContainer);
             }
 
 
@@ -135,13 +135,13 @@ namespace update {
          catch (std::exception & ex)
          {
             //fail to download package
-            m_progressCallback(false, 100.0f, std::string("Fail to download package : ") + ex.what());
+            m_progressCallback(false, 100.0f, std::string("Fail to download package : ") + ex.what(), shared::CDataContainer::EmptyContainer);
          }
       }
 
       void CScriptInterpreter::remove(const std::string & scriptInterpreterName)
       {
-         m_progressCallback(true, 0.0f, "Removing scriptInterpreter " + scriptInterpreterName);
+         m_progressCallback(true, 0.0f, "Removing scriptInterpreter " + scriptInterpreterName, shared::CDataContainer::EmptyContainer);
 
          try
          {
@@ -178,7 +178,7 @@ namespace update {
          catch (std::exception & ex)
          {
             //fail to download package
-            m_progressCallback(false, 100.0f, std::string("Fail to delete scriptInterpreter : ") + scriptInterpreterName + " : " + ex.what());
+            m_progressCallback(false, 100.0f, std::string("Fail to delete scriptInterpreter : ") + scriptInterpreterName + " : " + ex.what(), shared::CDataContainer::EmptyContainer);
          }
       }
 

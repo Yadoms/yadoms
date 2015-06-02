@@ -32,7 +32,7 @@ namespace task { namespace backup {
       float progression = (float)(total - remaining)*(float)100.0 / (float)total;
 
       if(m_reportRealProgress)
-         m_reportRealProgress(true, progression, message);
+         m_reportRealProgress(true, progression, message, shared::CDataContainer::EmptyContainer);
    }
 
    bool CDatabase::doWork(TaskProgressFunc pFunctor)

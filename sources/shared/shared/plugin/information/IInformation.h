@@ -1,19 +1,10 @@
 #pragma once
 
 #include <string>
+#include "ReleaseType.h"
 
 namespace shared { namespace plugin { namespace information
 {
-   //--------------------------------------------------------------
-   /// \brief		Enum for plugin release state
-   //--------------------------------------------------------------
-   enum EReleaseType
-   {
-      kStable = 0,   /// \brief		plugin is stable
-      kTesting,      /// \brief		plugin is in testing phase
-      kBeta          /// \brief		plugin is in beta state
-   };
-
    //--------------------------------------------------------------
    /// \brief		Interface for information about plugins
    //--------------------------------------------------------------
