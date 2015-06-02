@@ -13,9 +13,9 @@ namespace pluginSystem
 //--------------------------------------------------------------
 typedef std::map<std::string, shared::plugin::information::EReleaseType> ReleaseTypeValuesNameList;
 static const ReleaseTypeValuesNameList ReleaseTypeValuesNames = boost::assign::map_list_of
-   ("stable"   , shared::plugin::information::kStable)
-   ("testing"  , shared::plugin::information::kTesting)
-   ("beta"     , shared::plugin::information::kBeta);
+   ("stable"   , shared::plugin::information::EReleaseType::kStable)
+   ("testing"  , shared::plugin::information::EReleaseType::kTesting)
+   ("beta"     , shared::plugin::information::EReleaseType::kBeta);
 
 
 CInformation::CInformation(const boost::filesystem::path& pluginPath)
@@ -49,20 +49,7 @@ CInformation::CInformation(const boost::filesystem::path& pluginPath)
       if (m_version.empty() || !regex_match(m_version, boost::regex("\\d+.\\d+")))
          throw shared::exception::CInvalidParameter("Error reading package.json : plugin version doesn't match expected format (x.x)");
 
-	  ReleaseTypeValuesNameList::const_iterator it = ReleaseTypeValuesNames.find(container.get<std::string>("releaseType"));
-      if (it == ReleaseTypeValuesNames.end())
-      {
-         std::string expectedValues;
-         for (it = ReleaseTypeValuesNames.begin() ; it != ReleaseTypeValuesNames.end() ; ++ it)
-         {
-            expectedValues += it->first;
-            ReleaseTypeValuesNameList::const_iterator it2 = it;
-            if ((++it2) != ReleaseTypeValuesNames.end())
-               expectedValues += ", ";
-         }
-         throw shared::exception::CInvalidParameter("Error reading package.json : plugin release type doesn't match expected values (" + expectedValues + ")");
-      }
-      m_releaseType = (shared::plugin::information::EReleaseType)(it->second);
+      m_releaseType = container.get<shared::plugin::information::EReleaseType>("releaseType");
 
 	  m_author = container.get<std::string>("author");
       if (m_author.empty())
@@ -130,16 +117,9 @@ const std::string& CInformation::getUrl() const
 std::string CInformation::getIdentity() const
 {
    std::ostringstream formatedInformations;
-
-   std::string releaseType;
-   for (ReleaseTypeValuesNameList::const_iterator it = ReleaseTypeValuesNames.begin() ; it != ReleaseTypeValuesNames.end() ; ++ it)
-      if (it->second == m_releaseType)
-         releaseType = it->first;
-
    formatedInformations << m_name;
    formatedInformations << " v" << m_version;
-   formatedInformations << "[" << releaseType << "]";
-
+   formatedInformations << "[" << m_releaseType << "]";
    return formatedInformations.str();
 }
 

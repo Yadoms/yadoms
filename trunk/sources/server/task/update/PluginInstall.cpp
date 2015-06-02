@@ -27,7 +27,7 @@ namespace task { namespace update {
       YADOMS_LOG(information) << "Start installing plugin...";
 
       //adapt the progress callback (signature are same; but could change in future, so an adaptation is better)
-      ::update::worker::CPlugin::WorkerProgressFunc adapter = boost::bind(pFunctor, _1, _2, _3);
+      ::update::worker::CPlugin::WorkerProgressFunc adapter = boost::bind(pFunctor, _1, _2, _3, _4);
 
       ::update::worker::CPlugin worker(adapter);
       worker.install(m_downloadUrl);

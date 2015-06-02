@@ -40,44 +40,6 @@ namespace update { namespace info {
       //---------------------------------------------
       Poco::URI getYadomsPackageUri(const std::string & packageName);
 
-
-      //---------------------------------------------
-      ///\brief   Give a plugin package.json URI
-      ///\param [in] pluginName The plugin name (ie: fakePlugin)
-      ///\return the plugin package.json URI : 
-      /// i.e. : http://www.yadoms.com/downloads/update/plugins/fakePlugin/windows/package.json
-      //---------------------------------------------
-      Poco::URI getPluginLastVersionUri(const std::string & pluginName);
-
-      //---------------------------------------------
-      ///\brief   Give a plugin package URI
-      ///\param [in] pluginName The plugin name (ie: fakePlugin)
-      ///\param [in] packageName The package name (ie: package2.0.0.0.zip)
-      ///\return the plugin package URI
-      /// i.e. : http://www.yadoms.com/downloads/update/plugins/fakePlugin/windows/package2.0.0.0.zip
-      //---------------------------------------------
-      Poco::URI getPluginPackageUri(const std::string & pluginName, const std::string & packageName);    
-      
-      
-      //---------------------------------------------
-      ///\brief   Give a widget package.json URI
-      ///\param [in] widgetName The widget name (ie: meteo)
-      ///\return the widget package.json URI : 
-      /// i.e. : http://www.yadoms.com/downloads/update/widgets/meteo/package.json
-      //---------------------------------------------
-      Poco::URI getWidgetLastVersionUri(const std::string & widgetName);
-
-      //---------------------------------------------
-      ///\brief   Give a widget package URI
-      ///\param [in] widgetName The widget name (ie: meteo)
-      ///\param [in] packageName The package name (ie: package2.0.0.0.zip)
-      ///\return the widget package URI
-      /// i.e. : http://www.yadoms.com/downloads/update/widgets/meteo/package2.0.0.0.zip
-      //---------------------------------------------
-      Poco::URI getWidgetPackageUri(const std::string & widgetName, const std::string & packageName);
-
-
-
       //---------------------------------------------
       ///\brief   Get all the available versions for a plugin
       ///\param [in] displayLanguage The language used for display
@@ -98,6 +60,7 @@ namespace update { namespace info {
       ///\return the list of scriptInterpreter version
       //---------------------------------------------
       shared::CDataContainer getAllScriptInterpreterVersions(const std::string & displayLanguage);
+
    private:
       //---------------------------------------------
       ///\brief   Give the Yadoms URI base for current platform
@@ -106,22 +69,6 @@ namespace update { namespace info {
       //---------------------------------------------
       Poco::URI getYadomsBaseUri();   
       
-      //---------------------------------------------
-      ///\brief   Give the plugin URI base for current platform
-      ///\param [in] pluginName The plugin name (ie: fakePlugin)
-      ///\return the Yadoms URI base for current platform
-      /// i.e. : http://www.yadoms.com/downloads/update/plugins/fakePlugin/windows
-      //---------------------------------------------
-      Poco::URI getPluginBaseUri(const std::string & pluginName);    
-      
-      //---------------------------------------------
-      ///\brief   Give the widget URI base (common for all platforms)
-      ///\param [in] widgetName The widget name (ie: meteo)
-      ///\return the widget URI base (common for all platforms)
-      /// i.e. : http://www.yadoms.com/downloads/update/widget/meteo
-      //---------------------------------------------
-      Poco::URI getWidgetBaseUri(const std::string & widgetName);
-
       //---------------------------------------------
       ///\brief   Give the platform folder
       ///\param [in] runningInformation The running information (provide the running platform)

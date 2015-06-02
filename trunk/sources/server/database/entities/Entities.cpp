@@ -95,7 +95,7 @@ namespace database { namespace entities {
       ((EventDate)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time())("eventDate"))
       ((PluginName)(std::string)("")("pluginName"))
       ((PluginVersion)(std::string)("")("pluginVersion"))
-      ((PluginRelease)(shared::plugin::information::EReleaseType)(shared::plugin::information::kStable)("pluginRelease"))
+      ((PluginRelease)(shared::plugin::information::EReleaseType)(shared::plugin::information::EReleaseType::kStable)("pluginRelease"))
       ((EventType)(database::entities::EEventType)(database::entities::EEventType::kUnload)("eventType"))
       ((Message)(std::string)("")("message"))
       );

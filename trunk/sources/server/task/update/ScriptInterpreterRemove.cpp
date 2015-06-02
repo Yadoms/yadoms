@@ -27,7 +27,7 @@ namespace task { namespace update {
       YADOMS_LOG(information) << "Start removing scriptInterpreter...";
 
       //adapt the progress callback (signature are same; but could change in future, so an adaptation is better)
-      ::update::worker::CScriptInterpreter::WorkerProgressFunc adapter = boost::bind(pFunctor, _1, _2, _3);
+      ::update::worker::CScriptInterpreter::WorkerProgressFunc adapter = boost::bind(pFunctor, _1, _2, _3, _4);
 
       ::update::worker::CScriptInterpreter worker(adapter);
       worker.remove(m_scriptInterpreterName);

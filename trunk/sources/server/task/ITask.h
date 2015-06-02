@@ -1,5 +1,7 @@
 #pragma once
 
+#include <shared/DataContainer.h>
+
 namespace task {
 
    //------------------------------
@@ -10,8 +12,15 @@ namespace task {
    public:
       //---------------------------------
       ///\brief Define a function prototype for updating a task progress
+      //
+      // The function:
+      //    -> return : void
+      //    -> param 1 : bool                      : tells if the task if still active (true: running/sucess, false : stopped/error)
+      //    -> param 2 : float                     : the task progression (as percent)
+      //    -> param 3 : std::string               : the task step message (should be i18n messages)
+      //    -> param 4 : dashared::CDataContainerta: Some free data provided by task implementation (specific for each task)
       //---------------------------------
-      typedef boost::function3<void, bool, boost::optional<float>, std::string > TaskProgressFunc;
+      typedef boost::function4<void, bool, boost::optional<float>, std::string, shared::CDataContainer > TaskProgressFunc;
 
       //------------------------------
       ///\brief Get the task name

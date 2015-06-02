@@ -29,7 +29,7 @@ namespace task {
             ::update::worker::CYadoms worker;
 
             //adapt the progress callback (signature are same; but could change in future, so an adaptation is better)
-            ::update::worker::CYadoms::WorkerProgressFunc adapter = boost::bind(progressCallback, _1, _2, _3);
+            ::update::worker::CYadoms::WorkerProgressFunc adapter = boost::bind(progressCallback, _1, _2, _3, _4);
 
             worker.update(m_versionToUpdate, adapter);
             return true;
@@ -37,7 +37,7 @@ namespace task {
          catch (std::exception & e)
          {
             YADOMS_LOG(error) << "Error in yadoms update task " << e.what();
-            progressCallback(false, 100.0f, e.what());
+            progressCallback(false, 100.0f, e.what(), shared::CDataContainer::EmptyContainer);
          }
          return false;
       }
