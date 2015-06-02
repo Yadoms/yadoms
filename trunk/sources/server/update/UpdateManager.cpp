@@ -28,16 +28,16 @@ namespace update
 
    }
 
-   bool CUpdateManager::startTask(boost::shared_ptr<task::ITask> task)
+   bool CUpdateManager::startTask(boost::shared_ptr<task::ITask> task, std::string & taskUid)
    {
       bool result = false;
       if (task)
       {
-         std::string taskUid;
          result = m_taskScheduler->runTask(task, taskUid);
-
          if (result)
-            YADOMS_LOG(information) << "Check for update task started : " << taskUid;
+            YADOMS_LOG(information) << "Task : " << task->getName() << " successfully started. TaskId = " << taskUid;
+         else
+            YADOMS_LOG(error) << "Task : " << task->getName() << " fail to start";
       }
       else
       {
@@ -46,73 +46,80 @@ namespace update
       return result;
    }
 
+   const std::string CUpdateManager::startTask(boost::shared_ptr<task::ITask> task)
+   {
+      std::string taskId = "";
+      if (startTask(task, taskId))
+         return taskId;
+      throw shared::exception::CException("Fail to start task");
+   }
 
 
-   void CUpdateManager::updatePluginAsync(const std::string & pluginName, const std::string & downloadUrl)
+   const std::string CUpdateManager::updatePluginAsync(const std::string & pluginName, const std::string & downloadUrl)
    {
       boost::shared_ptr<task::ITask> task(new task::update::CPluginUpdate(pluginName, downloadUrl));
-      startTask(task);
+      return startTask(task);
    }
   
-   void CUpdateManager::installPluginAsync(const std::string & downloadUrl)
+   const std::string CUpdateManager::installPluginAsync(const std::string & downloadUrl)
    {
       boost::shared_ptr<task::ITask> task(new task::update::CPluginInstall(downloadUrl));
-      startTask(task);
+      return startTask(task);
    }
 
-   void CUpdateManager::removePluginAsync(const std::string & pluginName)
+   const std::string CUpdateManager::removePluginAsync(const std::string & pluginName)
    {
       boost::shared_ptr<task::ITask> task(new task::update::CPluginRemove(pluginName));
-      startTask(task);
+      return startTask(task);
    }
 
-   void CUpdateManager::updateWidgetAsync(const std::string & widgetName, const std::string & downloadUrl)
+   const std::string CUpdateManager::updateWidgetAsync(const std::string & widgetName, const std::string & downloadUrl)
    {
       boost::shared_ptr<task::ITask> task(new task::update::CWidgetUpdate(widgetName, downloadUrl));
-      startTask(task);
+      return startTask(task);
    }
   
-   void CUpdateManager::installWidgetAsync(const std::string & downloadUrl)
+   const std::string CUpdateManager::installWidgetAsync(const std::string & downloadUrl)
    {
       boost::shared_ptr<task::ITask> task(new task::update::CWidgetInstall(downloadUrl));
-      startTask(task);
+      return startTask(task);
    }
 
-   void CUpdateManager::removeWidgetAsync(const std::string & widgetName)
+   const std::string CUpdateManager::removeWidgetAsync(const std::string & widgetName)
    {
       boost::shared_ptr<task::ITask> task(new task::update::CWidgetRemove(widgetName));
-      startTask(task);
+      return startTask(task);
    }
 
 
-   void CUpdateManager::updateScriptInterpreterAsync(const std::string & scriptInterpreterName, const std::string & downloadUrl)
+   const std::string CUpdateManager::updateScriptInterpreterAsync(const std::string & scriptInterpreterName, const std::string & downloadUrl)
    {
       boost::shared_ptr<task::ITask> task(new task::update::CScriptInterpreterUpdate(scriptInterpreterName, downloadUrl));
-      startTask(task);
+      return startTask(task);
    }
 
-   void CUpdateManager::installScriptInterpreterAsync(const std::string & downloadUrl)
+   const std::string CUpdateManager::installScriptInterpreterAsync(const std::string & downloadUrl)
    {
       boost::shared_ptr<task::ITask> task(new task::update::CScriptInterpreterInstall(downloadUrl));
-      startTask(task);
+      return startTask(task);
    }
 
-   void CUpdateManager::removeScriptInterpreterAsync(const std::string & scriptInterpreterName)
+   const std::string CUpdateManager::removeScriptInterpreterAsync(const std::string & scriptInterpreterName)
    {
       boost::shared_ptr<task::ITask> task(new task::update::CScriptInterpreterRemove(scriptInterpreterName));
-      startTask(task);
+      return startTask(task);
    }
 
-   void CUpdateManager::checkForYadomsUpdateAsync()
+   const std::string CUpdateManager::checkForYadomsUpdateAsync()
    {
       boost::shared_ptr<task::ITask> task(new task::update::CYadomsCheck());
-      startTask(task);
+      return startTask(task);
    }
 
-   void CUpdateManager::updateYadomsAsync(const shared::CDataContainer & versionToInstall)
+   const std::string CUpdateManager::updateYadomsAsync(const shared::CDataContainer & versionToInstall)
    {
       boost::shared_ptr<task::ITask> task(new task::update::CYadomsUpdate(versionToInstall));
-      startTask(task);
+      return startTask(task);
    }
 
    

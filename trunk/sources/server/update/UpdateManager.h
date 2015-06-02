@@ -26,78 +26,98 @@ namespace update
       /// \brief  Update a plugin (async process)
       /// \param [in]   pluginName        The plugin name to update
       /// \param [in]   downloadUrl       The plugin package download url
+      /// \return  The task unique id
       //-----------------------------------------------------------------------------   
-      void updatePluginAsync(const std::string & pluginName, const std::string & downloadUrl);
+      const std::string updatePluginAsync(const std::string & pluginName, const std::string & downloadUrl);
 
       //-----------------------------------------------------------------------------
       /// \brief  Install a plugin (async process)
       /// \param [in]   downloadUrl       The plugin package download url
+      /// \return  The task unique id
       //-----------------------------------------------------------------------------   
-      void installPluginAsync(const std::string & downloadUrl);
+      const std::string installPluginAsync(const std::string & downloadUrl);
 
       //-----------------------------------------------------------------------------
       /// \brief  Remove a plugin (async process)
       /// \param [in]   pluginName       The plugin name to remove
+      /// \return  The task unique id
       //-----------------------------------------------------------------------------   
-      void removePluginAsync(const std::string & pluginName);
+      const std::string removePluginAsync(const std::string & pluginName);
 
       //-----------------------------------------------------------------------------
       /// \brief  Update a widget (async process)
       /// \param [in]   widgetName        The widget name to update
       /// \param [in]   downloadUrl       The widget package download url
+      /// \return  The task unique id
       //-----------------------------------------------------------------------------   
-      void updateWidgetAsync(const std::string & widgetName, const std::string & downloadUrl);
+      const std::string updateWidgetAsync(const std::string & widgetName, const std::string & downloadUrl);
 
       //-----------------------------------------------------------------------------
       /// \brief  Install a widget (async process)
       /// \param [in]   downloadUrl       The widget package download url
+      /// \return  The task unique id
       //-----------------------------------------------------------------------------   
-      void installWidgetAsync(const std::string & downloadUrl);
+      const std::string installWidgetAsync(const std::string & downloadUrl);
 
       //-----------------------------------------------------------------------------
       /// \brief  Remove a widget (async process)
       /// \param [in]   widgetName       The widget name to remove
+      /// \return  The task unique id
       //-----------------------------------------------------------------------------   
-      void removeWidgetAsync(const std::string & widgetName);
+      const std::string removeWidgetAsync(const std::string & widgetName);
       
 
       //-----------------------------------------------------------------------------
       /// \brief  Update a scriptInterpreter (async process)
       /// \param [in]   scriptInterpreterName        The scriptInterpreter name to update
       /// \param [in]   downloadUrl       The scriptInterpreter package download url
+      /// \return  The task unique id
       //-----------------------------------------------------------------------------   
-      void updateScriptInterpreterAsync(const std::string & scriptInterpreterName, const std::string & downloadUrl);
+      const std::string updateScriptInterpreterAsync(const std::string & scriptInterpreterName, const std::string & downloadUrl);
 
       //-----------------------------------------------------------------------------
       /// \brief  Install a scriptInterpreter (async process)
       /// \param [in]   downloadUrl       The scriptInterpreter package download url
+      /// \return  The task unique id
       //-----------------------------------------------------------------------------   
-      void installScriptInterpreterAsync(const std::string & downloadUrl);
+      const std::string installScriptInterpreterAsync(const std::string & downloadUrl);
 
       //-----------------------------------------------------------------------------
       /// \brief  Remove a scriptInterpreter (async process)
       /// \param [in]   scriptInterpreterName       The scriptInterpreter name to remove
+      /// \return  The task unique id
       //-----------------------------------------------------------------------------   
-      void removeScriptInterpreterAsync(const std::string & scriptInterpreterName);
+      const std::string removeScriptInterpreterAsync(const std::string & scriptInterpreterName);
 
       //-----------------------------------------------------------------------------
       /// \brief  Start a check for update for Yadoms (asynchronous; check for update result is provided by webservice)
+      /// \return  The task unique id
       //-----------------------------------------------------------------------------   
-      void checkForYadomsUpdateAsync();
+      const std::string checkForYadomsUpdateAsync();
 
       //-----------------------------------------------------------------------------
       /// \brief  Start an update of Yadoms (asynchronous; update result is provided by webservice)
       /// \param [in]   versionToInstall        The yadoms lastVersion.json to install (can be lastVersion.json, or any other one)
+      /// \return  The task unique id
       //-----------------------------------------------------------------------------   
-      void updateYadomsAsync(const shared::CDataContainer & versionToInstall);
+      const std::string updateYadomsAsync(const shared::CDataContainer & versionToInstall);
 
    private:
       //-----------------------------------------------------------------------------
       /// \brief  Start a task
       /// \param [in]   task        The task to start
+      /// \param [out]  taskUid     The task identifier created if sucessfully started
       /// \return result (true/false)
       //-----------------------------------------------------------------------------   
-      bool startTask(boost::shared_ptr<task::ITask> task);
+      bool startTask(boost::shared_ptr<task::ITask> task, std::string & taskUid); 
+      
+      //-----------------------------------------------------------------------------
+      /// \brief  Start a task
+      /// \param [in]   task        The task to start
+      /// \return The task identifier created if sucessfully started
+      /// \throw shared::exception::CException if task launch fails
+      //-----------------------------------------------------------------------------   
+      const std::string startTask(boost::shared_ptr<task::ITask> task);
 
    private:
       //-----------------------------------------------------------------------------

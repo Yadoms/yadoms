@@ -59,12 +59,17 @@ namespace task {
       return m_task->getName();
    }
 
+   shared::CDataContainer CInstance::getTaskData() const
+   {
+      return m_taskData;
+   }
+
    boost::posix_time::ptime CInstance::getCreationDate() const
    {
       return m_creationDate;
    }
 
-   void CInstance::OnTaskProgressUpdated(bool isRunning, boost::optional<float> progression, std::string message)
+   void CInstance::OnTaskProgressUpdated(bool isRunning, boost::optional<float> progression, std::string message, shared::CDataContainer)
    {
       m_currentProgression = progression;
       m_currentMessage = message;
@@ -89,7 +94,7 @@ namespace task {
          m_eventHandler->postEvent(m_eventCode, CTaskEvent(m_guid));
 
          // Execute task code
-         if (m_task->doWork(boost::bind(&CInstance::OnTaskProgressUpdated, this, _1, _2, _3)))
+         if (m_task->doWork(boost::bind(&CInstance::OnTaskProgressUpdated, this, _1, _2, _3, _4)))
          {
             m_currentStatus = ETaskStatus::kSuccess;
          }
