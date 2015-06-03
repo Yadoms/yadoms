@@ -30,7 +30,7 @@ AcquisitionManager.getLastValue = function (keywordId, callback, sync) {
 
    $.ajax({
       dataType: "json",
-      url: "/rest/acquisition/keyword/" + keywordId  + "/lastdata"
+      url: "/rest/acquisition/keyword/" + keywordId  + "/lastdata",
       async: async
    })
    .done(function( data ) {
