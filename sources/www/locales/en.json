@@ -43,7 +43,6 @@
          "errorDuringRequestingWidgets" : "Error during requesting widgets",
          "errorDuringRequestingNewLogEvents" : "Error during requesting new logs events",
          "youHaveBeenDisconnectedFromTheServerOrItHasGoneOffline" : "You have been disconnected from the server or it has gone offline",
-         "errorDuringRequestingDeviceLastData" : "Error during requesting device last data",
          "errorSavingCustomization" : "Error saving customization",
          "errorMakingFirstConfiguration" : "Error making first configuration"
       },

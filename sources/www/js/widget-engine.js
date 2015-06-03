@@ -294,25 +294,11 @@ function updateWidgetPolling(widget) {
       $.each(list, function(deviceIndex, device) {
          if ((!isNullOrUndefined(device.deviceId)) && (!isNullOrUndefined(device.keywordId))) {
             //foreach device we ask for last values
-            $.getJSON("/rest/acquisition/keyword/" + device.keywordId  + "/lastdata")
-               .done(function(data) {
-                  //we parse the json answer
-                  if (data.result != "true")
-                  {
-                     notifyError($.t("mainPage.errors.errorDuringRequestingDeviceLastData"), JSON.stringify(data));
-                     return;
-                  }
-
-                  console.debug("onNewAcquisition : " + JSON.stringify(data.data));
-
-                  var acq = AcquisitionManager.factory(data.data);
-
-                  //we signal the new acquisition to the widget if the widget support the method
-                  if (widget.viewModel.onNewAcquisition !== undefined)
-                     widget.viewModel.onNewAcquisition(device, acq);
-               });
-            //we don't need to manage the fail because the server is online
-            //it happens that server is offline but it will be shown next time by the first check
+            AcquisitionManager.getLastValue(device.keywordId, function (acquisition) {
+				//we signal the new acquisition to the widget if the widget support the method
+                if (widget.viewModel.onNewAcquisition !== undefined)
+					widget.viewModel.onNewAcquisition(device, acquisition);
+			});
          }
       });
    }
