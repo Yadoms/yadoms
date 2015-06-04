@@ -15,6 +15,7 @@
 
 <script>
    var deviceList = [];
+   var periodicDashboardDevicesTaskCounter = 0;
 
    function initializeDeviceDashboard() {
 
@@ -27,6 +28,10 @@
       });
 
       refreshDeviceList();
+	  
+	 //we use the periodic task of the dashboard
+	 clearInterval(periodicDashboardTask);
+	 periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
    }
 
    function refreshDeviceList() {
@@ -35,9 +40,6 @@
 
       //we clear pluginInstance array
       deviceList = [];
-
-       //we clear pluginInstance array
-       deviceList = [];
 
        DeviceManager.getAll(function(allDevices) {
            deviceList = allDevices;
@@ -142,9 +144,10 @@
                   var i = deviceList.indexOf(device);
                   if(i != -1) {
                      deviceList.splice(i, 1);
+					 
+					  //we remove device from dom
+					  getDeviceDomRow(device).remove();					 
                   }
-                  //we remove device from dom
-                  getDeviceDomRow(device).remove();
                });
             });
          });
@@ -175,7 +178,9 @@
                     "<table id=\"keyword-list\" class=\"table table-bordered table-striped\">" +
                     "<tr>" +
                         "<td data-i18n=\"modals.dashboard.sub-windows.devices.details.table.name\" class=\"col-md-2\"></td>" +
+						"<td data-i18n=\"modals.dashboard.sub-windows.devices.details.table.value\" class=\"col-md-2\"></td>" +
                         "<td data-i18n=\"modals.dashboard.sub-windows.devices.details.table.units\" class=\"col-md-2\"></td>" +
+						"<td data-i18n=\"modals.dashboard.sub-windows.devices.details.table.update\" class=\"col-md-2\"></td>" +
                         "<td data-i18n=\"modals.dashboard.sub-windows.devices.details.table.actions\" class=\"col-md-2\"></td>" +
                     "</tr>" +
                      <!-- keywords will be listed here-->
@@ -191,26 +196,46 @@
                        "</div>";
 
                $.each(device.keywords, function (index, keyword) {
-                  $deviceDetailsTable.append("<tr keyword-id=\"" + keyword.id + "\"><td class=\"keyword-friendlyName vert-align\"></td><td class=\"keyword-units vert-align\"></td><td class=\"keyword-actions vert-align\"></td></tr>");
-                  var $keywordRow = getKeywordDomRow(keyword);
-                  //we fill the data
-                  var friendlyName = "<span>" + decodeURIComponent(keyword.friendlyName) + "</span>";
-                  var units = "<span>" + keyword.units + "</span>";
+                  $deviceDetailsTable.append("<tr keyword-id=\"" + keyword.id + "\"><td class=\"keyword-friendlyName vert-align\"></td><td class=\"keyword-value vert-align\"><td class=\"keyword-units vert-align\"><td class=\"keyword-update vert-align\"></td><td class=\"keyword-actions vert-align\"></td></tr>");
+				  
+				  var KeywordValue = null;
+				  var LastStateValue = null;
+				  
+				  AcquisitionManager.getLastValue(keyword.id, function (acquisition) {
+					  
+					  //Check if the value is a JSON string. In this case this value should not be show
+					  var jsonString = $.parseJSON(acquisition.value);
+					  if (jsonString != null && typeof jsonString != 'object')
+					  {
+						// not json
+						KeywordValue = "<span>" + acquisition.value + "</span>";
+					  }
 
-                  $keywordRow.find("td.keyword-friendlyName").html(friendlyName);
-                  $keywordRow.find("td.keyword-units").html(units);
+					  LastStateValue = "<span>" + moment(DateTimeFormatter.isoDateToDate(acquisition.date)._d.getTime()).format('LLL') + "</span>";
+					   
+					  var $keywordRow = getKeywordDomRow(keyword);
+					  //we fill the data
+					  var friendlyName = "<span>" + decodeURIComponent(keyword.friendlyName) + "</span>";
+					  var units = "<span>" + keyword.units + "</span>";
 
-                  //we add actions to the keyword
-                  $keywordRow.find("td.keyword-actions").append(actionsBtns);
+					  $keywordRow.find("td.keyword-friendlyName").html(friendlyName);
+					  $keywordRow.find("td.keyword-units").html(units);
+					  
+					  $keywordRow.find("td.keyword-value").html( KeywordValue );
+					  $keywordRow.find("td.keyword-update").html( LastStateValue );
 
-                  //we prevent from renaming keywords on system devices
-                  if ((!isNullOrUndefined(device.attachedPlugin)) && (device.attachedPlugin.isSystemCategory())) {
-                     $keywordRow.find("button.btn-configure").addClass("disabled");
-                  }
-                  else {
-                     //we bind event on the different actions
-                     $keywordRow.find("button.btn-configure").unbind('click').bind('click', configureKeyword(keyword));
-                  }
+					  //we add actions to the keyword
+					  $keywordRow.find("td.keyword-actions").append(actionsBtns);
+
+					  //we prevent from renaming keywords on system devices
+					  if ((!isNullOrUndefined(device.attachedPlugin)) && (device.attachedPlugin.isSystemCategory())) {
+						 $keywordRow.find("button.btn-configure").addClass("disabled");
+					  }
+					  else {
+						 //we bind event on the different actions
+						 $keywordRow.find("button.btn-configure").unbind('click').bind('click', configureKeyword(keyword));
+					  }	
+                   });
                });
             });
          }
@@ -256,5 +281,79 @@
          });
       });
    }
+   
+   function periodicDashboardDevicesTask() {
+      //periodically we check the status of each plugin
+      if (serverIsOnline) 
+	  {
+	       $.each(deviceList, function(index, value) {
+ 
+            var selectedClass = "info";
+			var $deviceRow = getDeviceDomRow(value);		
+			
+            var $deviceDetailsTable = $("table#keyword-list");
+            $deviceDetailsTable.i18n();				
+			
+			if ($deviceRow.hasClass(selectedClass)) {
+			$.each(value.keywords, function (index, keyword) {
+			    
+				AcquisitionManager.getLastValue(keyword.id, function (acquisition) {
+					  
+					var $keywordRow = getKeywordDomRow(keyword);
+					
+					//This keyword is new -> Create the line and fill units and friendly Name
+					if ($keywordRow == undefined)
+					{
+					   $deviceDetailsTable.append("<tr keyword-id=\"" + keyword.id + "\"><td class=\"keyword-friendlyName vert-align\"></td><td class=\"keyword-value vert-align\"><td class=\"keyword-units vert-align\"><td class=\"keyword-update vert-align\"></td><td class=\"keyword-actions vert-align\"></td></tr>");
+					   $keywordRow = getKeywordDomRow(keyword);
+					   
+					   var $keywordRow = getKeywordDomRow(keyword);
+					   //we fill the data
+					   var friendlyName = "<span>" + decodeURIComponent(keyword.friendlyName) + "</span>";
+					   var units = "<span>" + keyword.units + "</span>";
+
+					   $keywordRow.find("td.keyword-friendlyName").html(friendlyName);
+					   $keywordRow.find("td.keyword-units").html(units);					   
+					}					  
+					  
+					  //Check if the value is a JSON string. In this case this value should not be show
+					  var jsonString = $.parseJSON(acquisition.value);
+					  if (jsonString != null && typeof jsonString != 'object')
+					  {
+						// not json
+						KeywordValue = "<span>" + acquisition.value + "</span>";
+					  }
+
+					  LastStateValue = "<span>" + moment(DateTimeFormatter.isoDateToDate(acquisition.date)._d.getTime()).format('LLL') + "</span>";
+					  
+					  $keywordRow.find("td.keyword-value").html( KeywordValue );
+					  $keywordRow.find("td.keyword-update").html( LastStateValue );
+				   });
+				});
+			}
+           });
+           
+		   //Check for new devices
+		   
+		   DeviceManager.getAll(function(allDevices) {
+		   
+		      //Only if the number of devices is different, we check which one
+		      if (deviceList.length != allDevices.length)
+			  {
+			     //foreach result we append a <tr>
+			     $.each(allDevices, function(index, value) 
+				 {
+				     var i = deviceList.indexOf(value);
+					 
+					 // If not in the list, we add to the list, and to the dom
+                     if(i == -1) {
+					   deviceList.push ( value );
+                       addDeviceToDom  ( value );
+                     }
+			     });
+			  }
+		   });
+      }
+   }   
    
 </script>
