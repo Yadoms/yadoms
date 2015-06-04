@@ -302,7 +302,9 @@
                "details" : {
                   "table" : {
                      "name" : "Keyword name",
+					 "value" : "Value",
                      "units" : "Units",
+					 "update" : "Last state",
                      "actions" : "Actions"
                   }
                },
