@@ -22,7 +22,7 @@ namespace xplrules { namespace rfxLanXpl { namespace data {
    const shared::plugin::yPluginApi::CStandardCapacity& SecurityCapacity = shared::plugin::yPluginApi::CStandardCapacity("security", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
    CSecurity::CSecurity(const std::string& keywordName, const shared::plugin::yPluginApi::EKeywordAccessMode& accessMode)
-      :m_keywordName(keywordName), m_accessMode(accessMode)
+      :m_keywordName(keywordName), m_accessMode(accessMode), m_command(CSecurity::ECommands::kAlert)
    {
    }
 

@@ -49,7 +49,6 @@ void CSupervisor::run()
    YADOMS_LOG_CONFIGURE("Supervisor");
    YADOMS_LOG(information) << "Supervisor is starting";
 
-   bool stopIsRequested = false;
    boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dal;
    try
    {
@@ -126,6 +125,7 @@ void CSupervisor::run()
 
       // Main loop
       YADOMS_LOG(information) << "Supervisor is running...";
+      bool stopIsRequested = false;
       while (!stopIsRequested)
       {
          switch (m_EventHandler->waitForEvents())

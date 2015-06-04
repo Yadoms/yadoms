@@ -74,7 +74,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       //-----------------------------------------------------
       virtual std::string formatValue() const;
 
-      void SetCityName ( const std::string CityName );
+      void SetCityName ( const std::string & CityName );
 
    private:
 

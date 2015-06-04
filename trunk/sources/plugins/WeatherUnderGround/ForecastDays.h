@@ -26,7 +26,7 @@ public:
    CForecastDays(boost::shared_ptr<yApi::IYPluginApi> context, 
                   IWUConfiguration& WUConfiguration, 
                   std::string PluginName, 
-                  const std::string Prefix);
+                  const std::string & Prefix);
 
    //--------------------------------------------------------------
    /// \brief	  Send the request and receive the response from the web site
@@ -53,7 +53,7 @@ public:
    /// \param[in] WUConfiguration    The Plugin configuration
    //--------------------------------------------------------------
 
-   void SetCityName ( const std::string CityName );
+   void SetCityName ( const std::string & CityName );
 
    //--------------------------------------------------------------
    /// \brief	    Destructor

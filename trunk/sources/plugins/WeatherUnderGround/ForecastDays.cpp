@@ -6,7 +6,7 @@
 CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> context, 
                                IWUConfiguration& WUConfiguration, 
                                std::string PluginName, 
-                               const std::string Prefix
+                               const std::string & Prefix
                                ):
            m_Localisation              ( WUConfiguration.getLocalisation() ),
            m_CountryOrState            ( WUConfiguration.getCountryOrState() ),
@@ -125,7 +125,7 @@ void CForecastDays::Parse( boost::shared_ptr<yApi::IYPluginApi> context, const I
 	}
 }
 
-void CForecastDays::SetCityName ( const std::string CityName )
+void CForecastDays::SetCityName ( const std::string & CityName )
 {
    m_Forecast.SetCityName ( CityName );
 }
