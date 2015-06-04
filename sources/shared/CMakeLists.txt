@@ -57,6 +57,7 @@ set(SHARED_LIB_SRC
 	shared/encryption/md5.h
 	
    shared/enumeration/IExtendedEnum.h
+   shared/enumeration/ExtendedEnumHelpers.cpp
    shared/enumeration/EnumHelpers.hpp
 	
    shared/event/Event.hpp

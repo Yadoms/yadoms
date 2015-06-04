@@ -53,7 +53,18 @@ namespace shared {	namespace enumeration {
 		virtual ~IExtendedEnum()
 		{
 		}
-	};
+   };
+
+
+   //--------------------------------------------------------------
+   /// \brief Overload the << operator of std::ostream
+   ///        The aim is to use a specific behavior when using IExtendedEnum with std::ostream
+   ///         Without this overload, "std::ostream << IExtendedEnum" add the int value of std::ostream
+   ///         With it, the string value is used
+   //--------------------------------------------------------------
+   YADOMS_SHARED_EXPORT std::ostream& operator << (std::ostream& stream, const IExtendedEnum& enumValue);
 
 } //namespace enumeration
 } //namespace shared
+
+
