@@ -106,8 +106,6 @@ namespace update { namespace info {
       {
          throw shared::exception::CException("Error in getting versions of available plugins. Fail to get data from " + base.toString());
       }
-
-      throw shared::exception::CException("Error in getting versions of available plugins.");
    }
 
 
@@ -139,8 +137,6 @@ namespace update { namespace info {
       {
          throw shared::exception::CException("Error in getting versions of available scriptInterpreters. Fail to get data from " + base.toString());
       }
-
-      throw shared::exception::CException("Error in getting versions of available scriptInterpreters.");
    }
 
 
@@ -170,7 +166,5 @@ namespace update { namespace info {
       {
          throw shared::exception::CException("Error in getting versions of available widgets. Fail to get data from " + base.toString());
       }
-
-      throw shared::exception::CException("Error in getting versions of available widgets.");
    }
 } } // namespace update::info

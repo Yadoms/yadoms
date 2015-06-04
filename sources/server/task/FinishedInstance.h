@@ -13,7 +13,7 @@ namespace task {
       //------------------------------------------
       ///\brief   Constructor
       //------------------------------------------
-      CFinishedInstance(const std::string & guid, const std::string & name, ETaskStatus status, boost::optional< float > progression, const std::string & message, const shared::CDataContainer data, const boost::posix_time::ptime & creationDate);
+      CFinishedInstance(const std::string & guid, const std::string & name, ETaskStatus status, boost::optional< float > progression, const std::string & message, const shared::CDataContainer & data, const boost::posix_time::ptime & creationDate);
 
       //------------------------------------------
       ///\brief   Destructor

@@ -14,7 +14,7 @@ namespace xplrules { namespace rfxLanXpl { namespace data {
 
 
    CLog::CLog(const std::string& keywordName, const shared::plugin::yPluginApi::EKeywordAccessMode& accessMode)
-      :m_keywordName(keywordName), m_accessMode(accessMode)
+      :m_keywordName(keywordName), m_accessMode(accessMode), m_level(ELogLevel::kInf)
    {
    }
 

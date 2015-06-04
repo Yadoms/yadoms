@@ -58,7 +58,7 @@ void CForecastFormatter::ClearAllPeriods( void )
    m_Periods.clear();
 }
 
-void CForecastFormatter::SetCityName ( const std::string CityName )
+void CForecastFormatter::SetCityName ( const std::string & CityName )
 {
    m_Localisation = CityName;
 }

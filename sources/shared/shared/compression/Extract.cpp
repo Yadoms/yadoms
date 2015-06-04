@@ -10,6 +10,7 @@
 namespace shared { namespace compression { 
 
    CExtract::CExtract()
+   :m_unzipError(false)
    {
    }
    
