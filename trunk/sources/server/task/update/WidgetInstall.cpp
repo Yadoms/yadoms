@@ -27,9 +27,7 @@ namespace task { namespace update {
       YADOMS_LOG(information) << "Start installing widget...";
 
       //adapt the progress callback (signature are same; but could change in future, so an adaptation is better)
-      ::update::worker::CWidget::WorkerProgressFunc adapter = boost::bind(pFunctor, _1, _2, _3, _4);
-
-      ::update::worker::CWidget worker(adapter);
+      ::update::worker::CWidget worker(boost::bind(pFunctor, _1, _2, _3, _4));
       worker.install(m_downloadUrl);
 
       YADOMS_LOG(information) << "End of installing widget";

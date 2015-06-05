@@ -21,9 +21,17 @@ namespace update {
    namespace worker {
 
       
-
+      Poco::Path CWorkerTools::downloadPackage(const std::string & downloadUrl, WorkerProgressFunc callback, const std::string & function, float min, float max)
+      {
+         return downloadPackage(downloadUrl, boost::bind(&CWorkerTools::reportDownloadProgress, _1, _2, callback, function, min, max));
+      }
 
       Poco::Path CWorkerTools::downloadPackage(const std::string & downloadUrl)
+      {
+         return downloadPackage(downloadUrl, boost::bind(&shared::web::CFileDownloader::reportProgressToLog, _1, _2));
+      }
+
+      Poco::Path CWorkerTools::downloadPackage(const std::string & downloadUrl, shared::web::CFileDownloader::ProgressFunc progressReporter)
       {
          //determine the filename to download
          Poco::URI toDownload(downloadUrl);
@@ -35,11 +43,11 @@ namespace update {
          Poco::Path downloadedPackage(tools::CFileSystem::getTemporaryFolder());
          downloadedPackage.setFileName(packageName);
 
-         shared::web::CFileDownloader::downloadFile(toDownload, downloadedPackage, boost::bind(&shared::web::CFileDownloader::reportProgressToLog, _1, _2));
+         shared::web::CFileDownloader::downloadFile(toDownload, downloadedPackage, progressReporter);
          return downloadedPackage;
       }
 
-      
+
       Poco::Path CWorkerTools::deployPackage(Poco::Path downloadedPackage, const std::string & outputDirectory)
       {
          /*
@@ -95,7 +103,7 @@ namespace update {
                else
                {
                   //rename random plugin folder to good plugin name
-                  Poco::File realPluginFolderInfo(packageJsonPath.toString());
+                  Poco::File realPluginFolderInfo(tempPluginFolder.toString());
                   realPluginFolderInfo.renameTo(realPluginFolder.toString());
                   
                }
@@ -160,5 +168,17 @@ namespace update {
       {
          return deployPackage(downloadedPackage, getScriptInterpreterBasePath());
       }
+
+      void CWorkerTools::reportDownloadProgress(const std::string & file, float progress, WorkerProgressFunc callback, const std::string & function, float min, float max)
+      {
+         shared::CDataContainer callbackData;
+         callbackData.set("file", file);
+         callbackData.set("progress", progress);
+         //progress is the progression of pure download (from 0 to 100)
+         //so the download progress, will update the task progression between min and max
+         float fullProgression = min + (((max - min) / 100.0) * progress);
+         callback(true, fullProgression, function, callbackData);
+      }
+
    } // namespace worker
 } // namespace update

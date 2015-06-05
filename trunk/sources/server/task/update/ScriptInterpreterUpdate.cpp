@@ -26,9 +26,7 @@ namespace task { namespace update {
       YADOMS_LOG(information) << "Start updating scriptInterpreter...";
 
       //adapt the progress callback (signature are same; but could change in future, so an adaptation is better)
-      ::update::worker::CScriptInterpreter::WorkerProgressFunc adapter = boost::bind(pFunctor, _1, _2, _3, _4);
-
-      ::update::worker::CScriptInterpreter worker(adapter);
+      ::update::worker::CScriptInterpreter worker(boost::bind(pFunctor, _1, _2, _3, _4));
       worker.update(m_scriptInterpreterName, m_downloadUrl);
 
       YADOMS_LOG(information) << "End of updating scriptInterpreter";

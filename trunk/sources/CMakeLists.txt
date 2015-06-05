@@ -272,6 +272,9 @@ set(YADOMS_SRC
 	server/database/entities/Entities.cpp
 	server/database/entities/EntityHelpers.hpp
   
+   server/i18n/ClientStrings.h
+   server/i18n/ClientStrings.cpp
+   
    server/logConfiguration/LogConfiguration.h
    server/logConfiguration/LogConfiguration.cpp   
    server/logConfiguration/LogConfigurationImpl.h
@@ -473,6 +476,7 @@ source_group(server\\communication\\callback  server/communication/callback/*.*)
 source_group(server\\dataAccessLayer  server/dataAccessLayer/*.*)
 source_group(server\\database  server/database/*.*)
 source_group(server\\database\\entities  server/database/entities/*.*)
+source_group(server\\i18n  server/i18n/*.*)
 source_group(server\\logConfiguration  server/logConfiguration/*.*)
 source_group(server\\notification  server/notification/*.*)
 source_group(server\\notification\\action  server/notification/action/*.*)
