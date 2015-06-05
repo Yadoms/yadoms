@@ -1,12 +1,24 @@
 #pragma once
 
-//--------------------------------------------------------------
-/// \brief	An example of an enum type of parameter
-//--------------------------------------------------------------
-enum EPeriod
-{
-   kDay = 0,
-   kHour = 1
-};
+#include <shared/enumeration/EnumHelpers.hpp>
+#include <shared/plugin/yPluginApi/historization/SingleHistorizableData.hpp>
 
-extern const std::string EPeriodEnum[sizeof(EPeriod)];
+namespace weatherunderground { namespace helper
+{
+
+//-----------------------------------------------------
+///\brief  All periods
+//-----------------------------------------------------   
+DECLARE_ENUM_HEADER(EPeriod,
+    ((Day))
+    ((Hour))
+);
+
+//--------------------------------------------------------------
+/// \brief	The map of returned icons from the web site
+//--------------------------------------------------------------
+typedef std::map<std::string, unsigned int> EnumValuesNames;
+
+extern const EnumValuesNames EEnumTypeNames;
+
+}}

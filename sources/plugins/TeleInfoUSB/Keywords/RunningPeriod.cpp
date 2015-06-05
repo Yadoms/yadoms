@@ -38,7 +38,7 @@ void CRunningPeriod::SetValue( std::string& Value )
         EnumPeriod::const_iterator it = EEnumPeriod.find( Value );
         if (it != EEnumPeriod.end())
 	    {
-           m_runningPeriod->set( (it->second) );
+           m_runningPeriod->set( (teleInfoUSB::specificHistorizers::EPeriod)(it->second) );
 
 		   YADOMS_LOG(debug) << m_runningPeriod->getKeyword() << "=" << m_runningPeriod->get();
 	    } 

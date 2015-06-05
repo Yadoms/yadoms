@@ -21,7 +21,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       //-----------------------------------------------------
       CForecastHistorizer(const std::string& keywordName, 
                           const EKeywordAccessMode& accessMode, 
-                          const EPeriod& Period);
+                          const weatherunderground::helper::EPeriod& Period);
 
       //-----------------------------------------------------
       ///\brief                     Destructor

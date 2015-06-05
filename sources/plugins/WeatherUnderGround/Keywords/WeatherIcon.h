@@ -2,6 +2,7 @@
 
 #include "IKeyword.h"
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
+#include "../specificHistorizers/ForecastHelpers.h"
 
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -55,5 +56,5 @@ namespace yApi = shared::plugin::yPluginApi;
       //--------------------------------------------------------------
       /// \brief	The map of returned icons from the web site
       //--------------------------------------------------------------
-	  typedef std::map<std::string, unsigned int> EnumValuesNames;
+	  //typedef std::map<std::string, unsigned int> EnumValuesNames;
    };

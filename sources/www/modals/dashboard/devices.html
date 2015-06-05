@@ -286,6 +286,26 @@
       //periodically we check the status of each plugin
       if (serverIsOnline) 
 	  {
+		   //Check for new devices
+		   DeviceManager.getAll(function(allDevices) {
+		   
+		      //Only if the number of devices is different, we check which one
+		      if (deviceList.length != allDevices.length)
+			  {
+			     //foreach result we append a <tr>
+			     $.each(allDevices, function(index, value) 
+				 {
+				     var i = deviceList.indexOf(value);
+					 
+					 // If not in the list, we add to the list, and to the dom
+                     if(i == -1) {
+					   deviceList.push ( value );
+                       addDeviceToDom  ( value );
+                     }
+			     });
+			  }
+		   });	  
+	  
 	       $.each(deviceList, function(index, value) {
  
             var selectedClass = "info";
@@ -332,27 +352,6 @@
 				});
 			}
            });
-           
-		   //Check for new devices
-		   
-		   DeviceManager.getAll(function(allDevices) {
-		   
-		      //Only if the number of devices is different, we check which one
-		      if (deviceList.length != allDevices.length)
-			  {
-			     //foreach result we append a <tr>
-			     $.each(allDevices, function(index, value) 
-				 {
-				     var i = deviceList.indexOf(value);
-					 
-					 // If not in the list, we add to the list, and to the dom
-                     if(i == -1) {
-					   deviceList.push ( value );
-                       addDeviceToDom  ( value );
-                     }
-			     });
-			  }
-		   });
       }
    }   
    
