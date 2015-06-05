@@ -17,7 +17,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       ///\param[in] to              Receiver recipient ID
       ///\param[in] body            Message content
       //-----------------------------------------------------
-      CForecastFormatter( const EPeriod & Period );
+      CForecastFormatter( const weatherunderground::helper::EPeriod & Period );
 
       //-----------------------------------------------------
       ///\brief                      Add a new unit to be send to the widget

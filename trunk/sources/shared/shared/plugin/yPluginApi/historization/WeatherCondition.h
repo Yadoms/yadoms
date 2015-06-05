@@ -11,10 +11,13 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
    DECLARE_ENUM_HEADER_SHARED(EWeatherCondition, YADOMS_SHARED_EXPORT,
       ((Cloudy))
       ((Snow))
+      ((ChanceSnow))
 	   ((PartlySunny))
 	   ((Sunny))
+	   ((ChanceRain))
 	   ((Rain))
 	   ((Sleet))
+	   ((ChanceStorm))
 	   ((Storm))
 	   ((Fog))
 	   ((Night_Clear))

@@ -19,8 +19,7 @@ namespace yApi = shared::plugin::yPluginApi;
       /// \param[in] Period               The Period Type ( "Day", "Hour" )
       /// \note                           Use this constructor initialising the keyword for this plugin
       //--------------------------------------------------------------
-      //CForecast( std::string PluginName, std::string KeyWordName, const std::string& Period );
-      CForecast( std::string PluginName, std::string KeyWordName, const EPeriod& Period );
+      CForecast( std::string PluginName, std::string KeyWordName, const weatherunderground::helper::EPeriod& Period );
 
       //--------------------------------------------------------------
       /// \brief	Destructor

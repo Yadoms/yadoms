@@ -1,14 +1,16 @@
 #include "stdafx.h"
 #include "Forecast.h"
 #include <shared/plugin/yPluginApi/StandardCapacities.h>
+#include "WeatherIcon.h"
 #include <shared/exception/InvalidParameter.hpp>
 #include <shared/Log.h>
 #include <boost/lexical_cast.hpp>
+#include "KeywordException.hpp"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-CForecast::CForecast( std::string PluginName, std::string KeyWordName, const EPeriod& Period )
+CForecast::CForecast( std::string PluginName, std::string KeyWordName, const weatherunderground::helper::EPeriod& Period )
    :m_PluginName ( PluginName ), m_forecast( new yApi::historization::CForecastHistorizer(KeyWordName, yApi::EKeywordAccessMode::kGetSet, Period ) )
 {}
 
@@ -51,15 +53,25 @@ void CForecast::AddPeriod(const shared::CDataContainer & ValueContainer,
 						  const std::string& filterSnowDay
 					           )
 {
+	std::string WeatherIconTemp;
+
+    weatherunderground::helper::EnumValuesNames::const_iterator it = weatherunderground::helper::EEnumTypeNames.find( ValueContainer.get<std::string>( filterWeatherCondition ) );
+    if (it != weatherunderground::helper::EEnumTypeNames.end())
+	{
+        WeatherIconTemp = (yApi::historization::EWeatherCondition)(it->second);
+	}
+	else
+		throw CKeywordException ("Value " + ValueContainer.get<std::string>( filterWeatherCondition ) + " could not be set");
+
 	m_forecast->AddPeriod(
                      ValueContainer.get<std::string>( filterYear ),
                      ValueContainer.get<std::string>( filterMonth ),
                      ValueContainer.get<std::string>( filterDay ),
-                     ValueContainer.get<std::string>( filterWeatherCondition ),
+                     WeatherIconTemp,
                      ValueContainer.get<std::string>( filterTempMax ),
                      ValueContainer.get<std::string>( filterTempMin ),
-                     boost::lexical_cast<std::string>(ValueContainer.get<double>( filterMaxWind ) / 3.6 ), // Transform from Km/h -> m/s
-                     boost::lexical_cast<std::string>(ValueContainer.get<double>( filterAveWind ) / 3.6 ), // Transform from Km/h -> m/s
+                     boost::lexical_cast<std::string>( ValueContainer.get<double>( filterMaxWind ) / 3.6 ), // Transform from Km/h -> m/s
+                     boost::lexical_cast<std::string>( ValueContainer.get<double>( filterAveWind ) / 3.6 ), // Transform from Km/h -> m/s
 					 ValueContainer.get<std::string>( filterAveWindDegrees ),
                      ValueContainer.get<std::string>( filterAveHumidity ),
                      ValueContainer.get<std::string>( filterRainDay ),

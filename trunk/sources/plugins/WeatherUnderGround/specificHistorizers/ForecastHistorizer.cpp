@@ -10,7 +10,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
    
    CForecastHistorizer::CForecastHistorizer(const std::string& keywordName, 
                                             const EKeywordAccessMode& accessMode, 
-                                            const EPeriod& Period)
+                                            const weatherunderground::helper::EPeriod& Period)
    :m_keywordName(keywordName), m_accessMode(accessMode)
    {
 	   m_content.reset(new CForecastFormatter( Period ));

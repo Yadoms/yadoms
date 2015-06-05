@@ -12,8 +12,7 @@ CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> context,
            m_CountryOrState            ( WUConfiguration.getCountryOrState() ),
            m_Prefix                    ( Prefix ),
            m_PluginName                ( PluginName ),
-           //TODO : Ecrire autrement le EPeriod::kDay
-           m_Forecast                  ( PluginName, Prefix, EPeriod::kDay)
+           m_Forecast                  ( PluginName, Prefix, weatherunderground::helper::EPeriod::kDay)
 {
 	m_URL.str("");
 	m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/" << m_Prefix << "/q/" << m_CountryOrState << "/" << m_Localisation << ".json";
@@ -97,6 +96,7 @@ void CForecastDays::Parse( boost::shared_ptr<yApi::IYPluginApi> context, const I
 
                for(i=result.begin(); i!=result.end(); ++i)
                {
+				   //TODO : Bien renvoyé le ENUM de WeatherIcon dans la trame. Il faut modifier le nom des icones également !
 					m_Forecast.AddPeriod(*i,
                                     "date.year",
                                     "date.month",

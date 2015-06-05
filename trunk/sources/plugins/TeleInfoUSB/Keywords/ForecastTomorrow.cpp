@@ -30,7 +30,7 @@ void CForecastTomorrow::SetValue( std::string& Value )
         EnumColorMap::const_iterator it = EEnumColorMap.find( Value );
         if (it != EEnumColorMap.end())
 	    {
-           m_forecastPeriod->set( (it->second) );
+			m_forecastPeriod->set( (teleInfoUSB::specificHistorizers::EColor)(it->second) );
 
 		   YADOMS_LOG(debug) << m_forecastPeriod->getKeyword() << "=" << m_forecastPeriod->get();
 	    } 
