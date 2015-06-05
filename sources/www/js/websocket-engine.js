@@ -81,6 +81,7 @@ WebSocketEngine.initializeWebSocketEngine = function(callback) {
                             if($.isFunction(WebSocketEngine.onTaskUpdated)) {
                                 WebSocketEngine.onTaskUpdated(websocketData);
                             }
+                            console.log("TaskUpdateNotification : " + JSON.stringify(websocketData));
                             break;
                     }
 

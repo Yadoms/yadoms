@@ -113,8 +113,11 @@ void CWebSocketRequestHandler::handleRequest(Poco::Net::HTTPServerRequest& reque
 
          case kTaskProgression:
          {
-            boost::shared_ptr<const task::IInstance> taskProgression = eventHandler.getEventData<boost::shared_ptr<const task::IInstance> >();
+            YADOMS_LOG(information) << "################# TASK PROGRESSION ################# n1";
+            boost::shared_ptr<task::IInstance> taskProgression = eventHandler.getEventData<boost::shared_ptr<task::IInstance> >();
+            YADOMS_LOG(information) << "################# TASK PROGRESSION ################# n2";
             clientSeemConnected = send(client, ws::CTaskUpdateNotificationFrame(taskProgression));
+            YADOMS_LOG(information) << "################# TASK PROGRESSION ################# n3";
             break;
          }
 
@@ -128,6 +131,10 @@ void CWebSocketRequestHandler::handleRequest(Poco::Net::HTTPServerRequest& reque
    {
       YADOMS_LOG(error) << "Websocket request handler exception : " << ex.what();
    }
+   catch (std::exception & ex)
+   {
+      YADOMS_LOG(error) << "Websocket request handler std exception : " << ex.what();
+   }  
    catch (...)
    {
       YADOMS_LOG(error) << "Websocket request handler unknown exception";

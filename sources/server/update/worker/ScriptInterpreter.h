@@ -1,6 +1,6 @@
 #pragma once
 #include <Poco/Path.h>
-#include <shared/DataContainer.h>
+#include "WorkerTools.h"
 
 namespace update {
    namespace worker {
@@ -8,16 +8,12 @@ namespace update {
       class CScriptInterpreter
       {
       public:
-         //---------------------------------
-         ///\brief Define a function prototype for updating the worker progress
-         //---------------------------------
-         typedef boost::function4<void, bool, boost::optional<float>, std::string, shared::CDataContainer > WorkerProgressFunc;
 
          //---------------------------------------------
          ///\brief   Constructor
          ///\param [in] progressCallback The progress callback
          //---------------------------------------------
-         CScriptInterpreter(WorkerProgressFunc progressCallback);
+         CScriptInterpreter(CWorkerTools::WorkerProgressFunc progressCallback);
 
          //---------------------------------------------
          ///\brief   Destructor
@@ -48,7 +44,7 @@ namespace update {
          //---------------------------------------------
          ///\brief   The progress callback
          //---------------------------------------------
-         WorkerProgressFunc m_progressCallback;
+         CWorkerTools::WorkerProgressFunc m_progressCallback;
       };
 
    } // namespace worker

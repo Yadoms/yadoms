@@ -79,7 +79,8 @@ namespace task {
          YADOMS_LOG(information) << m_task->getName() << " report progression none with message " << m_currentMessage;
 
       // Post notification
-      notification::CHelpers::postNotification(shared_from_this());
+      boost::shared_ptr<IInstance> obj(shared_from_this());
+      notification::CHelpers::postNotification(obj);
    }
 
    void CInstance::doWork()
