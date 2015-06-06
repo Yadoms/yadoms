@@ -9,7 +9,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
 
 CForecastFormatter::CForecastFormatter( const weatherunderground::helper::EPeriod & Period )
 {
-	m_PeriodString = Period;
+	m_PeriodString = Period.toString();
 }
 
 void CForecastFormatter::AddUnit(

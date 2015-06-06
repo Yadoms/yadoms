@@ -17,9 +17,9 @@ CForecast::CForecast( std::string PluginName, std::string KeyWordName, const wea
 void CForecast::Initialize( boost::shared_ptr<yApi::IYPluginApi> context ) const
 {
    if (!context->keywordExists( m_PluginName, m_forecast->getKeyword()))
-	{
+   {
       DeclareKeywords ( context );
-	}
+   }
 }
 
 CForecast::~CForecast()
@@ -27,7 +27,7 @@ CForecast::~CForecast()
 
 void CForecast::DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const
 {
-	context->declareKeyword(m_PluginName, *m_forecast);
+   context->declareKeyword(m_PluginName, *m_forecast);
 }
 
 void CForecast::AddUnit(
@@ -47,21 +47,21 @@ void CForecast::AddPeriod(const shared::CDataContainer & ValueContainer,
                           const std::string& filterTempMin,
                           const std::string& filterMaxWind,
                           const std::string& filterAveWind,
-						  const std::string& filterAveWindDegrees,
+                          const std::string& filterAveWindDegrees,
                           const std::string& filterAveHumidity,
                           const std::string& filterRainDay,
-						  const std::string& filterSnowDay
-					           )
+                          const std::string& filterSnowDay
+			 )
 {
 	std::string WeatherIconTemp;
 
     weatherunderground::helper::EnumValuesNames::const_iterator it = weatherunderground::helper::EEnumTypeNames.find( ValueContainer.get<std::string>( filterWeatherCondition ) );
     if (it != weatherunderground::helper::EEnumTypeNames.end())
-	{
-        WeatherIconTemp = (yApi::historization::EWeatherCondition)(it->second);
-	}
-	else
-		throw CKeywordException ("Value " + ValueContainer.get<std::string>( filterWeatherCondition ) + " could not be set");
+    {
+        WeatherIconTemp = ((yApi::historization::EWeatherCondition)(it->second)).toString();
+    }
+    else
+	throw CKeywordException ("Value " + ValueContainer.get<std::string>( filterWeatherCondition ) + " could not be set");
 
 	m_forecast->AddPeriod(
                      ValueContainer.get<std::string>( filterYear ),
@@ -72,10 +72,10 @@ void CForecast::AddPeriod(const shared::CDataContainer & ValueContainer,
                      ValueContainer.get<std::string>( filterTempMin ),
                      boost::lexical_cast<std::string>( ValueContainer.get<double>( filterMaxWind ) / 3.6 ), // Transform from Km/h -> m/s
                      boost::lexical_cast<std::string>( ValueContainer.get<double>( filterAveWind ) / 3.6 ), // Transform from Km/h -> m/s
-					 ValueContainer.get<std::string>( filterAveWindDegrees ),
+                     ValueContainer.get<std::string>( filterAveWindDegrees ),
                      ValueContainer.get<std::string>( filterAveHumidity ),
                      ValueContainer.get<std::string>( filterRainDay ),
-					 boost::lexical_cast<std::string>(ValueContainer.get<double>( filterSnowDay ) * 10 ) // Transform from cm -> mm
+                     boost::lexical_cast<std::string>(ValueContainer.get<double>( filterSnowDay ) * 10 ) // Transform from cm -> mm
 		                 );
 }
 
@@ -91,5 +91,5 @@ void CForecast::SetCityName ( const std::string CityName )
 
 boost::shared_ptr<yApi::historization::IHistorizable> CForecast::GetHistorizable() const
 {
-	return m_forecast;
+   return m_forecast;
 }
