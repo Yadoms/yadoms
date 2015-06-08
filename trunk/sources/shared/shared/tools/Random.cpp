@@ -2,6 +2,8 @@
 #include "Random.h"
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_int_distribution.hpp>
+#include <Poco/UUID.h>
+#include <Poco/UUIDGenerator.h>
 
 namespace shared {
    namespace tools {
@@ -37,5 +39,13 @@ namespace shared {
 		{
 			return generate(includeZero ? 0 : 1, (int)pow(2.0, n) - 1);
 		}
+
+
+      std::string CRandom::generateUUID()
+      {
+         Poco::UUIDGenerator& generator = Poco::UUIDGenerator::defaultGenerator();
+         Poco::UUID uuid(generator.createRandom());
+         return uuid.toString();
+      }
    } // namespace tools 
 } // namespace shared
