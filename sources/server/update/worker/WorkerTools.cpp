@@ -1,11 +1,11 @@
 #include "stdafx.h"
 #include "WorkerTools.h"
 
-#include <Poco/UUID.h>
-#include <Poco/UUIDGenerator.h>
+
 #include <Poco/File.h>
 #include <Poco/URI.h>
 
+#include <shared/Log.h>
 #include <shared/DataContainer.h>
 #include "tools/FileSystem.h"
 #include <shared/web/UriHelpers.h>
@@ -15,6 +15,8 @@
 #include "startupOptions/IStartupOptions.h"
 
 #include <shared/ServiceLocator.h>
+#include <shared/tools/Random.h>
+
 
 
 namespace update {
@@ -59,11 +61,8 @@ namespace update {
          */
 
          //determine a random folder name (the folder name is the plugin name; but it it not known here)
-         Poco::UUIDGenerator& generator = Poco::UUIDGenerator::defaultGenerator();
-         Poco::UUID uuid(generator.createRandom());
-
          Poco::Path tempPluginFolder(outputDirectory);
-         tempPluginFolder.append(uuid.toString());
+         tempPluginFolder.append(shared::tools::CRandom::generateUUID());
 
          //extract to random pluginName location
          shared::compression::CExtract unZipper;
@@ -89,32 +88,29 @@ namespace update {
                realPluginFolder.append(pluginName);
 
                //if plugin directory already exists; copy files; else just rename
-               Poco::File targetPluginDir(realPluginFolder.toString());
-               if (targetPluginDir.exists())
+               if (tools::CFileSystem::exists(realPluginFolder))
                {
                   //replace all files
-                  targetPluginDir.copyTo(realPluginFolder.toString());
+                  tools::CFileSystem::copyDirectoryContentTo(tempPluginFolder, realPluginFolder);
 
                   //delete folder tempPluginFolder
-                  Poco::File toDelete(tempPluginFolder.toString());
-                  if (toDelete.exists())
-                     toDelete.remove(true);
+                  tools::CFileSystem::remove(tempPluginFolder, true);
                }
                else
                {
                   //rename random plugin folder to good plugin name
-                  Poco::File realPluginFolderInfo(tempPluginFolder.toString());
-                  realPluginFolderInfo.renameTo(realPluginFolder.toString());
-                  
+                  tools::CFileSystem::rename(tempPluginFolder, realPluginFolder);
                }
                return realPluginFolder;
+            }
+            catch (Poco::FileException & fileException)
+            {
+               YADOMS_LOG(error) << "Operation fail :" << fileException.displayText();
             }
             catch (std::exception & ex)
             {
                //delete folder tempPluginFolder
-               Poco::File toDelete(tempPluginFolder.toString());
-               if (toDelete.exists())
-                  toDelete.remove(true);
+               tools::CFileSystem::remove(tempPluginFolder, true);
 
                throw ex;
             }
@@ -122,10 +118,7 @@ namespace update {
          catch (std::exception & ex)
          {
             //delete folder tempPluginFolder
-            Poco::File toDelete(tempPluginFolder.toString());
-            if (toDelete.exists())
-               toDelete.remove(true);
-
+            tools::CFileSystem::remove(tempPluginFolder, true);
             throw ex;
          }
       }

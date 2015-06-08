@@ -39,6 +39,12 @@ namespace shared { namespace tools {
 		///\return a random integer ni the range [ (0 or 1) ; 2^n]
 		//---------------------------------------------
 		static unsigned int generateNbBits(int n, bool includeZero = false);
+
+      //---------------------------------------------
+      ///\brief Generate a random UUID string  : ie. : "3695d8ab-05d9-4ad0-8d74-61225df7139b"
+      ///\return a random UUID string
+      //---------------------------------------------
+      static std::string generateUUID();
    };
 
 } // namespace tools 
