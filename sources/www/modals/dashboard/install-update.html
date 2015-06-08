@@ -2,6 +2,17 @@
    <h1 class="page-header"><span class="glyphicon glyphicon-save">&nbsp;<span data-i18n="modals.dashboard.sub-windows.install-update.title"></span></span></h1>
    <span data-i18n="modals.dashboard.sub-windows.install-update.description"></span><br>
 
+   <div class="row">
+      <div class="col-md-6 pull-right">
+         <span data-i18n="modals.dashboard.sub-windows.install-update.releaseTypeChoice"></span>
+         <select class="form-control cb-release-type">
+            <option value="stable" data-i18n="modals.dashboard.sub-windows.install-update.releaseType.stable"></option>
+            <option value="testing" data-i18n="modals.dashboard.sub-windows.install-update.releaseType.testing"></option>
+            <option value="beta" data-i18n="modals.dashboard.sub-windows.install-update.releaseType.beta"></option>
+         </select>
+      </div>
+   </div>
+
    <h2>
       <span data-i18n="modals.dashboard.sub-windows.install-update.yadoms.title"></span>
       &nbsp;
@@ -26,15 +37,14 @@
    <table id="plugin-install-update-list" class="table table-bordered table-striped dashboard-list">
       <tr>
          <td data-i18n="modals.dashboard.sub-windows.install-update.generic.name"></td>
-         <td data-i18n="modals.dashboard.sub-windows.install-update.generic.icon"></td>
+         <td class="col-md-1" data-i18n="modals.dashboard.sub-windows.install-update.generic.icon"></td>
          <td data-i18n="modals.dashboard.sub-windows.install-update.generic.description"></td>
-         <td data-i18n="modals.dashboard.sub-windows.install-update.generic.actualVersion"></td>
-         <td data-i18n="modals.dashboard.sub-windows.install-update.generic.availableVersion"></td>
-         <td data-i18n="modals.dashboard.sub-windows.install-update.generic.actions"></td>
+         <td class = "col-md-2" data-i18n="modals.dashboard.sub-windows.install-update.generic.actualVersion"></td>
+         <td class = "col-md-2" data-i18n="modals.dashboard.sub-windows.install-update.generic.availableVersion"></td>
+         <td class="install-update-action-row col-md-3" data-i18n="modals.dashboard.sub-windows.install-update.generic.actions"></td>
       </tr>
       <!-- plugins will be listed here-->
       <tr colspan="6" data-i18n="objects.generic.retrievingData"></tr>
-
       </tr>
    </table>
 
@@ -47,7 +57,7 @@
          <td data-i18n="modals.dashboard.sub-windows.install-update.generic.description"></td>
          <td data-i18n="modals.dashboard.sub-windows.install-update.generic.actualVersion"></td>
          <td data-i18n="modals.dashboard.sub-windows.install-update.generic.availableVersion"></td>
-         <td data-i18n="modals.dashboard.sub-windows.install-update.generic.actions"></td>
+         <td class="install-update-action-row" data-i18n="modals.dashboard.sub-windows.install-update.generic.actions"></td>
       </tr>
       <!-- widgets will be listed here-->
       <tr colspan="6" data-i18n="objects.generic.retrievingData"></tr>
@@ -62,7 +72,7 @@
          <td data-i18n="modals.dashboard.sub-windows.install-update.generic.description"></td>
          <td data-i18n="modals.dashboard.sub-windows.install-update.generic.actualVersion"></td>
          <td data-i18n="modals.dashboard.sub-windows.install-update.generic.availableVersion"></td>
-         <td data-i18n="modals.dashboard.sub-windows.install-update.generic.actions"></td>
+         <td class="install-update-action-row" data-i18n="modals.dashboard.sub-windows.install-update.generic.actions"></td>
       </tr>
       <!-- script interpreters will be listed here-->
       <tr colspan="6" data-i18n="objects.generic.retrievingData"></tr>
@@ -72,9 +82,49 @@
 <script>
 
    var pluginList;
-   var wantedVersion = ["beta", "testing", "stable"];
+   var wantedVersion = [/*"beta", "testing", */"stable"];
+
+   var $cbReleaseType = $("div#dashboard-install-update select.cb-release-type");
+
 
    function initializeInstallUpdateDashboard() {
+
+      //we listen for change of release type list
+      $cbReleaseType.unbind("change").bind("change", function() {
+         $cbReleaseType.addClass("disabled");
+         //we get the new list depend on the release type selected
+
+         updateReleaseType();
+         //we can re-ask the update of the list
+         fillPluginList();
+      });
+
+      updateReleaseType();
+      fillPluginList();
+   }
+
+   /**
+    * Permit to update wantedVersion array from the combo box release type
+    */
+   function updateReleaseType() {
+      switch ($cbReleaseType.val().toLowerCase()) {
+         case "beta" :
+            wantedVersion = ["beta", "testing", "stable"];
+            break;
+         case "testing" :
+            wantedVersion = ["testing", "stable"];
+            break;
+         default:
+         case "stable" :
+            wantedVersion = ["stable"];
+            break;
+      }
+   }
+
+   /**
+    * This function fill the plugin list from the server elements
+    */
+   function fillPluginList() {
       //we remove all rows except header
       $("table#plugin-install-update-list").find("tr:gt(0)").remove();
 
@@ -110,6 +160,7 @@
 
                   if (!itemFound) {
                      //we add the new item available only on the server
+                     var canAddOnThePage = false;
                      var newItem = {};
                      //generic informations
                      newItem.name = serverValue[0].name;
@@ -122,16 +173,17 @@
                      newItem.serverVersions = [];
                      //we browse all version of that item
                      $.each(serverValue, function(versionIndex, versionValue) {
-                        //if this releasetype is wanted we add it to the arrays of version for this item
-                        if ($.inArray(versionValue.version.toLowerCase(), wantedVersion)) {
-                           var item = {};
-                           item.downloadUrl = versionValue.downloadUrl;
-                           item.version = versionValue.version;
-                           item.releaseType = versionValue.releaseType;
-                           newItem.serverVersions.push(item);
-                        }
+                        var item = {};
+                        item.downloadUrl = versionValue.downloadUrl;
+                        item.version = versionValue.version;
+                        item.releaseType = versionValue.releaseType;
+                        newItem.serverVersions.push(item);
+                        //we need only one release type available in tthe wanted array to can see the whole line
+                        if ($.inArray(item.releaseType.toLowerCase(), wantedVersion) > -1)
+                           canAddOnThePage = true;
                      });
-                     localList.push(newItem);
+                     if (canAddOnThePage)
+                        localList.push(newItem);
                   }
                });
             }
@@ -141,29 +193,144 @@
             //we display the result
             $.each(pluginList, function(localIndex, localValue) {
                localValue.uid = createUUID();
-               createInstallUpdateItemLine(localValue)
+               createInstallUpdateItemLine(localValue);
+               //we set the visibility to the allowed buttons
+               updateLine(localValue);
             });
+
+            //we enable the release type list
+            $cbReleaseType.removeClass("disabled");
          });
       });
    }
 
    function createInstallUpdateItemLine(item) {
       var actionsBtns = "<div class=\"btn-group\">\n";
-debugger;
       var s = "<tr id=\"" + item.uid + "\">" +
                   "<td><span>" + item.name + "</span></td>" +
                   "<td><img src=\"" + (item.iconUrl?item.iconUrl:"plugins/" + item.name + "/icon.png") + "\" class=\"img-thumbnail plugin-icon\"></td>" +
                   "<td><span>" + item.description + "</span></td>" +
-                  "<td><em>" + (item.version?item.version:"") + " " + (item.releaseType?item.releaseType:"") + "</em></td>" +
-                  "<td><em>" + (item.serverVersions?item.serverVersions[0].version + " " + item.serverVersions[0].releaseType:"") + "</em></td>" +
+                  "<td><em class=\"local-version\"></em></td>" +
+                  "<td><em class=\"latest-version\"></em></td>" +
                   "<td>" +
                      "<div class=\"btn-group\">" +
-                        "<button type=\"button\" class=\"btn btn-update\" data-i18n=\"[title]modals.dashboard.sub-windows.install-update.generic.update\"><span class=\"glyphicon glyphicon-save\"></span></button>" +
-                       "<button type=\"button\" class=\"btn btn-primary btn-install\" data-i18n=\"[title]modals.dashboard.sub-windows.install-update.generic.install\"><span class=\"glyphicon glyphicon-saved\"></span></button>" +
+                       "<div class=\"btn-group btn-install\">" +
+                           "<button type=\"button\" class=\"btn main-btn btn-primary\">" +
+                              "<span class=\"glyphicon glyphicon-save \"></span>" +
+                              "<span class=\"latest-version\"></span>" +
+                           "</button>" +
+                           "<button type=\"button\" class=\"btn dropdown-toggle btn-expand btn-primary\" data-toggle=\"dropdown\" aria-expanded=\"false\">" +
+                              "<span class= \"caret\"></span>" +
+                              "<span class=\"sr-only\">Toggle Dropdown</span>" +
+                           "</button>" +
+                           "<ul class=\"dropdown-menu versions\" role=\"menu\">" +
+                           "</ul>" +
+                        "</div>" +
                        "<button type=\"button\" class=\"btn btn-danger btn-uninstall\" data-i18n=\"[title]modals.dashboard.sub-windows.install-update.generic.uninstall\"><span class=\"glyphicon glyphicon-trash\"></span></button>" +
-                      "</div>" +
+                     "</div>" +
                   "</td>" +
               "</tr>";
+
       $("table#plugin-install-update-list").append(s);
    }
+
+   function updateLine(item) {
+      var $line = $("tr#" + item.uid);
+
+      var uninstallAllowed = false;
+      var installUpdateAllowed = false;
+      var canChooseVersion = false;
+
+      var availableVersions = [];
+
+      if (!isNullOrUndefined(item.serverVersions)) {
+         //we create a list of all version available to update based on the type of the version and the list of available version different from the local one
+         $.each(item.serverVersions, function (index, value) {
+            if (!matchVersion(item, value)) {
+               //if this releasetype is wanted we add it to the arrays of version for this item
+               if ($.inArray(value.releaseType.toLowerCase(), wantedVersion) > -1) {
+                  availableVersions.push(value);
+               }
+            }
+         });
+      }
+
+      if (!isNullOrUndefined(item.version)) {
+         //the plugin is already installed so the button is used to update
+         $line.find("div.btn-install button.main-btn").attr("data-i18n", "[title]modals.dashboard.sub-windows.install-update.generic.install");
+
+         //the component is already installed so we can uninstall it
+         uninstallAllowed = true;
+
+         //we can display the local version
+         $line.find("em.local-version").text(versionToString(item));
+      }
+      else {
+         $line.find("div.btn-install button.main-btn").attr("data-i18n", "[title]modals.dashboard.sub-windows.install-update.generic.update");
+      }
+
+      if (availableVersions.length > 0) {
+         if (availableVersions.length > 1) {
+            //there is different versions visible
+            canChooseVersion = true;
+         }
+
+         installUpdateAllowed = true;
+
+         //we create a combo that have all available versions for install or update
+         $cbVersion = $line.find("ul.versions");
+         $cbVersion.empty();
+         availableVersions.sort(function (a, b) { return b.version - a.version; });
+
+         $.each(availableVersions, function(index, value) {
+
+            $cbVersion.append("<li downloadUrl=\"" + value.downloadUrl + "\"><a href=\"#\"><em>" + versionToString(value) + "</em></a></li>");
+         });
+
+         $line.find("ul.latest-version").text(versionToString(availableVersions[0]));
+
+         //we can display the latest version
+         $line.find("em.latest-version").text(versionToString(availableVersions[0]));
+      }
+      else {
+         //there is no interesting new version
+         $line.find("button.btn-expand").addClass("disabled");
+      }
+
+      if (uninstallAllowed)
+         $line.find("button.btn-uninstall").removeClass("disabled");
+      else
+         $line.find("button.btn-uninstall").addClass("disabled");
+
+      if (installUpdateAllowed) {
+         $line.find("div.btn-install button.main-btn").removeClass("disabled");
+         //if the user can choose version we enable the list
+         if (canChooseVersion)
+            $line.find("div.btn-install button.btn-expand").removeClass("disabled");
+         else
+            $line.find("div.btn-install button.btn-expand").addClass("disabled");
+      }
+      else {
+         $line.find("div.btn-install button.main-btn").addClass("disabled");
+         $line.find("div.btn-install button.btn-expand").addClass("disabled");
+      }
+
+
+   }
+
+   function matchVersion(version1, version2) {
+      return ((version1.version == version2.version) && (version1.releaseType.toLowerCase() == version2.releaseType.toLowerCase()))
+   }
+
+   /**
+    * Convert the version and the release type to a string
+    * @param version
+    * @returns {string}
+    */
+   function versionToString(version) {
+      if ((isNullOrUndefined(version.version)) || (isNullOrUndefined(version.releaseType)))
+         return "";
+      return "v " + version.version + " " + version.releaseType.toLowerCase();
+   }
+
 </script>
