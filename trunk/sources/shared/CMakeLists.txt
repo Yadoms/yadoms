@@ -144,6 +144,8 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/historization/Frequency.h
    shared/plugin/yPluginApi/historization/Humidity.cpp
    shared/plugin/yPluginApi/historization/Humidity.h
+   shared/plugin/yPluginApi/historization/Illumination.cpp
+   shared/plugin/yPluginApi/historization/Illumination.h
    shared/plugin/yPluginApi/historization/Load.cpp
    shared/plugin/yPluginApi/historization/Load.h
    shared/plugin/yPluginApi/historization/Message.cpp
