@@ -1,0 +1,12 @@
+﻿{
+   "description": "Support du protocole 1-wire (utilise le service OWFS). Avant utilisation, vérifier que OWFS est correctement installé et configuré sur votre serveur Yadoms.",
+   "configurationSchema": ""
+   {
+	  "OwfsMountPoint":
+	  {
+		 "name": "Point de montage OWFS",
+		 "description": "Indiquer ici le point de montage du système de fichier virtuel créé sur votre serveur Yadoms par OWFS. Ce point de montage est indiqué dans le fichier owfs.conf (généralement /mnt/1wire)."
+	  }
+	}   
+}
+

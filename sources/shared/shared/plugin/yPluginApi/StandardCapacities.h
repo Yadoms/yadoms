@@ -31,6 +31,7 @@ namespace shared { namespace plugin { namespace yPluginApi {
       static const CStandardCapacity & Event;             // event             |  -                    | Just an event (no associated data)
       static const CStandardCapacity & Frequency;         // frequency         | Hertz                 | Frequency
       static const CStandardCapacity & Humidity;          // humidity          | percent               | Humidity
+      static const CStandardCapacity & Illumination;      // illumination      | lux                   | Illumination (lux)
       static const CStandardCapacity & Load;              // load              | percent               | Load (%)
       static const CStandardCapacity & Message;           // message           |  -                    | A message (contains "from", "to" and "body" fields)
       static const CStandardCapacity & Power;             // power             | Watt                  | Power

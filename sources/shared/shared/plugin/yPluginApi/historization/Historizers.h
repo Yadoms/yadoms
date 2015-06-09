@@ -15,6 +15,7 @@
 #include "Event.h"
 #include "Frequency.h"
 #include "Humidity.h"
+#include "Illumination.h"
 #include "Load.h"
 #include "Message.h"
 #include "Power.h"

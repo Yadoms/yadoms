@@ -1,29 +1,28 @@
 #pragma once
 #include <shared/Export.h>
 #include "SingleHistorizableData.hpp"
-#include "typeInfo/IntTypeInfo.h"
+#include "typeInfo/DoubleTypeInfo.h"
 
 namespace shared { namespace plugin { namespace yPluginApi { namespace historization
 {   
    //-----------------------------------------------------
-   ///\brief A temperature historizable object
+   ///\brief A Illumination(Lux) historizable object
    //-----------------------------------------------------
-   class YADOMS_SHARED_EXPORT CCounter : public CSingleHistorizableData<long long>
+   class YADOMS_SHARED_EXPORT CIllumination : public CSingleHistorizableData<double>
    {
    public:
       //-----------------------------------------------------
       ///\brief                     Constructor
       ///\param[in] keywordName     Yadoms keyword name
       ///\param[in] accessMode      The access mode
-      ///\param[in] measureType     To be used as increment counter (values will be added to current database value) or totalizer
+      ///\param[in] measureType     The measure type (normally kAbsolute)
       //-----------------------------------------------------
-      CCounter(const std::string& keywordName, const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGet, const EMeasureType& measureType = EMeasureType::kCumulative, typeInfo::CIntTypeInfo & additionalInfo = typeInfo::CIntTypeInfo::Empty);
+      CIllumination(const std::string& keywordName, const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGet, const EMeasureType& measureType = EMeasureType::kAbsolute, typeInfo::CDoubleTypeInfo & additionalInfo = typeInfo::CDoubleTypeInfo::Empty);
 
       //-----------------------------------------------------
       ///\brief                     Destructor
       //-----------------------------------------------------
-      virtual ~CCounter();
-
+      virtual ~CIllumination();
    };
 
 

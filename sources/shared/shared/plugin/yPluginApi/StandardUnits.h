@@ -21,6 +21,7 @@ namespace shared { namespace plugin { namespace yPluginApi
       static const std::string& hectoPascal;          // hPa
       static const std::string& Hertz;                // Hz
       static const std::string& Kg;                   // kg
+      static const std::string& Lux;                  // lux
       static const std::string& Meter;                // m
       static const std::string& MetersPerSecond;      // m/s
       static const std::string& Millimeter;           // mm

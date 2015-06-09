@@ -1,0 +1,24 @@
+{
+   "name": "OneWire",
+   "description": "Support of the 1-wire protocol, using OWFS service. Before use, check that OWFS is well installed and configured on your Yadoms server.",
+   "version": "1.0",
+   "releaseType": "beta",
+   "author": "YADOMS Team",
+   "url": "http://sourceforge.net/projects/yadoms/",
+   "credits": "",
+   "supportedPlatforms":"linux",
+   "configurationSchema": {
+      "OwfsMountPoint": {
+         "name": "OWFS mount point",
+         "description": "The OWFS mount point on Yadoms server. See your owfs.conf file (generally set to /mnt/1wire).",
+         "type": "string",
+         "defaultValue": "/mnt/1wire",
+         "show": {
+           "__Binding__": {
+             "type": "system",
+             "query": "platformIsLinux"
+           }
+         }  
+      }
+   }
+}
