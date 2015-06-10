@@ -10,7 +10,7 @@ if [ -z "$1" ]
 then
 	echo "Which choice would you like?"
 	echo " -> Generate a linux makefile (m)"
-	echo " -> Generate a Codeblock project (c)"
+	echo " -> Generate a Codeblocks project (c)"
 	echo " -> Generate Eclpise CDT4 project files (e)"
 	read choice
 else
@@ -26,8 +26,8 @@ case "$choice" in
 	;;
 
     c)
-	# cmake for codeblock
-	cmake  -G "CodeBlocks - Unix Makefiles" ../sources
+	# cmake for codeblocks
+	cmake  -G "CodeBlocks - Unix Makefiles" -D CMAKE_BUILD_TYPE=Debug ../sources
 	;;
 	
     e)
