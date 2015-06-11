@@ -6,6 +6,9 @@
 #include "database/entities/Entities.h"
 #include <shared/ServiceLocator.h>
 #include "notification/Helpers.hpp"
+#include <shared/StringExtension.h>
+#include <shared/DataContainer.h>
+#include "i18n/ClientStrings.h"
 
 namespace task {
 
@@ -95,6 +98,8 @@ namespace task {
          m_currentStatus = ETaskStatus::kStarted;
          m_eventHandler->postEvent(m_eventCode, CTaskEvent(m_guid));
 
+         OnTaskProgressUpdated(true, 0, i18n::CClientStrings::TaskStarted, shared::CDataContainer::EmptyContainer);
+
          // Execute task code
          if (m_task->doWork(boost::bind(&CInstance::OnTaskProgressUpdated, this, _1, _2, _3, _4)))
          {
@@ -105,9 +110,10 @@ namespace task {
             m_currentStatus = ETaskStatus::kFail;
          }
          
+         OnTaskProgressUpdated(false, 100.0, i18n::CClientStrings::TaskEnd, shared::CDataContainer::EmptyContainer);
+
          //task event stopped
          m_eventHandler->postEvent(m_eventCode, CTaskEvent(m_guid));
-
       }
       catch (boost::thread_interrupted&)
       {
@@ -116,6 +122,9 @@ namespace task {
          YADOMS_LOG(error) << m_task->getName() << " didn't catch boost::thread_interrupted.";
          m_currentStatus = ETaskStatus::kFail;
          m_currentMessage = "thread_interrupted not catched";
+
+         OnTaskProgressUpdated(false, 100.0, i18n::CClientStrings::TaskInterrupted, shared::CDataContainer::EmptyContainer);
+
          m_eventHandler->postEvent(m_eventCode, CTaskEvent(m_guid));
       }
       catch (std::exception& e)
@@ -124,8 +133,12 @@ namespace task {
          YADOMS_LOG(error) << m_task->getName() << " crashed in doWork with exception : " << e.what();
          m_currentStatus = ETaskStatus::kFail;
          m_currentMessage = e.what();
-         m_eventHandler->postEvent(m_eventCode, CTaskEvent(m_guid));
 
+         shared::CDataContainer data;
+         data.set("exception", e.what());
+         OnTaskProgressUpdated(false, 100.0, i18n::CClientStrings::TaskCrashed, data);
+
+         m_eventHandler->postEvent(m_eventCode, CTaskEvent(m_guid));
       }
       catch (...)
       {
@@ -134,6 +147,8 @@ namespace task {
          m_currentStatus = ETaskStatus::kFail;
          m_currentMessage = "unknown exception not catched";
          m_eventHandler->postEvent(m_eventCode, CTaskEvent(m_guid));
+
+         OnTaskProgressUpdated(false, 100.0, i18n::CClientStrings::TaskUnkownError, shared::CDataContainer::EmptyContainer);
       }
    }
    

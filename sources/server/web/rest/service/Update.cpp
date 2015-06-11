@@ -37,12 +37,12 @@ namespace web { namespace rest { namespace service {
       REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("yadoms")("update"), CUpdate::updateYadoms);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("yadoms")("update")("last"), CUpdate::updateYadomsToLastVersion);
       
-      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("widget")("list")("*"), CUpdate::availableWidgets);
-      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("widget")("update")("*"), CUpdate::updateWidget);
-      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("widget")("install"), CUpdate::installWidget);
-      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("widget")("remove")("*"), CUpdate::removeWidget);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("widget")("list")("*"), CUpdate::availableWidgets);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("widget")("update")("*"), CUpdate::updateWidget);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("widget")("install"), CUpdate::installWidget);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("widget")("remove")("*"), CUpdate::removeWidget);
 
-      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("plugin")("list")("*"), CUpdate::availablePlugins);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("plugin")("list")("*"), CUpdate::availablePlugins);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("plugin")("update")("*"), CUpdate::updatePlugin);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("plugin")("install"), CUpdate::installPlugin);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("plugin")("remove")("*"), CUpdate::removePlugin);

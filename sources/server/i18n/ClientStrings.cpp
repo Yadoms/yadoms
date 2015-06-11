@@ -46,6 +46,12 @@ namespace i18n
    std::string CClientStrings::UpdateYadomsExit                             = "update.yadoms.exit";
 
 
+   std::string CClientStrings::TaskInterrupted                              = "task.interrupted";
+   std::string CClientStrings::TaskCrashed                                  = "task.crash";
+   std::string CClientStrings::TaskUnkownError                              = "task.unknownError";
+   std::string CClientStrings::TaskEnd                                      = "task.end";
+   std::string CClientStrings::TaskStarted                                  = "task.started";
+
 
   
 } // namespace i18n
