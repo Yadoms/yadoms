@@ -2,6 +2,7 @@
 #include <Poco/Path.h>
 #include <shared/DataContainer.h>
 #include <shared/web/FileDownloader.h>
+#include <shared/enumeration/EnumHelpers.hpp>
 
 namespace update {
    namespace worker {
@@ -9,6 +10,20 @@ namespace update {
       class CWorkerTools
       {
       public:
+
+         //-----------------------------------------------------
+         ///\brief   The update type
+         ///\note    Used by IUpdateSource to provide the update type
+         ///<         - kSuccess : the update task is done with success
+         ///<         - kFail : the update task failed
+         ///<         - kRunning : the update task is running
+         //-----------------------------------------------------
+         DECLARE_ENUM_HEADER(EUpdateState,
+            ((Success)(0))
+            ((Fail)(1))
+            ((Running)(2))
+         )
+
          //---------------------------------
          ///\brief Define a function prototype for updating the worker progress
          //---------------------------------

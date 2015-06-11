@@ -34,6 +34,7 @@ namespace update {
 
          shared::CDataContainer callbackData;
          callbackData.set("downloadUrl", downloadUrl);
+         callbackData.set("state", CWorkerTools::EUpdateState::kRunning);
 
          m_progressCallback(true, 0.0f, i18n::CClientStrings::UpdatePluginInstall, shared::CDataContainer::EmptyContainer);
 
@@ -53,27 +54,29 @@ namespace update {
             try
             {
                YADOMS_LOG(information) << "Deploy package " << downloadedPackage.toString();
-               m_progressCallback(true, 50.0f, i18n::CClientStrings::UpdatePluginDeploy, shared::CDataContainer::EmptyContainer);
+               m_progressCallback(true, 50.0f, i18n::CClientStrings::UpdatePluginDeploy, callbackData);
                Poco::Path pluginPath = CWorkerTools::deployPluginPackage(downloadedPackage);
                YADOMS_LOG(information) << "Plugin deployed with success";
 
 
                YADOMS_LOG(information) << "Refresh plugin list";
 
-               m_progressCallback(true, 90.0f, i18n::CClientStrings::UpdatePluginFinalize, shared::CDataContainer::EmptyContainer);
+               m_progressCallback(true, 90.0f, i18n::CClientStrings::UpdatePluginFinalize, callbackData);
                boost::shared_ptr<pluginSystem::CManager> pluginManager = shared::CServiceLocator::instance().get<pluginSystem::CManager>();
                if (pluginManager)
                   pluginManager->updatePluginList();
 
                YADOMS_LOG(information) << "Plugin installed with success";
 
-               m_progressCallback(true, 100.0f, i18n::CClientStrings::UpdatePluginSuccess, shared::CDataContainer::EmptyContainer);
+               callbackData.set("state", CWorkerTools::EUpdateState::kSuccess);
+               m_progressCallback(true, 100.0f, i18n::CClientStrings::UpdatePluginSuccess, callbackData);
             }
             catch (std::exception & ex)
             {
                //fail to extract package file
                YADOMS_LOG(error) << "Fail to deploy package : " << ex.what();
 
+               callbackData.set("state", CWorkerTools::EUpdateState::kFail);
                callbackData.set("exception", ex.what());
                m_progressCallback(false, 100.0f, i18n::CClientStrings::UpdatePluginDeployFailed, callbackData);
             }
@@ -89,6 +92,7 @@ namespace update {
          {
             //fail to download package
             YADOMS_LOG(error) << "Fail to download package : " << ex.what();
+            callbackData.set("state", CWorkerTools::EUpdateState::kFail);
             callbackData.set("exception", ex.what());
             m_progressCallback(false, 100.0f, i18n::CClientStrings::UpdatePluginDownloadFailed, callbackData);
          }
@@ -102,6 +106,7 @@ namespace update {
          shared::CDataContainer callbackData;
          callbackData.set("pluginName", pluginName);
          callbackData.set("downloadUrl", downloadUrl);
+         callbackData.set("state", CWorkerTools::EUpdateState::kRunning);
 
          m_progressCallback(true, 0.0f, i18n::CClientStrings::UpdatePluginUpdate, callbackData);
          /////////////////////////////////////////////
@@ -138,12 +143,14 @@ namespace update {
                   pluginManager->startAllInstancesOfPlugin(pluginName);
 
                YADOMS_LOG(information) << "Plugin installed with success";
+               callbackData.set("state", CWorkerTools::EUpdateState::kSuccess);
                m_progressCallback(true, 100.0f, i18n::CClientStrings::UpdatePluginSuccess, callbackData);
             }
             catch (std::exception & ex)
             {
                //fail to extract package file
                YADOMS_LOG(error) << "Fail to deploy package : " << ex.what();
+               callbackData.set("state", CWorkerTools::EUpdateState::kFail);
                callbackData.set("exception", ex.what());
                m_progressCallback(false, 100.0f, i18n::CClientStrings::UpdatePluginDeployFailed, callbackData);
             }
@@ -159,6 +166,7 @@ namespace update {
          {
             //fail to download package
             YADOMS_LOG(error) << "Fail to download package : " << ex.what();
+            callbackData.set("state", CWorkerTools::EUpdateState::kFail);
             callbackData.set("exception", ex.what());
             m_progressCallback(false, 100.0f, i18n::CClientStrings::UpdatePluginDownloadFailed, callbackData);
          }
@@ -170,6 +178,7 @@ namespace update {
 
          shared::CDataContainer callbackData;
          callbackData.set("pluginName", pluginName);
+         callbackData.set("state", CWorkerTools::EUpdateState::kRunning);
 
          m_progressCallback(true, 0.0f, i18n::CClientStrings::UpdatePluginRemove, callbackData);
 
@@ -199,12 +208,14 @@ namespace update {
             if (pluginManager)
                pluginManager->updatePluginList();
 
+            callbackData.set("state", CWorkerTools::EUpdateState::kSuccess);
             m_progressCallback(true, 100.0f, i18n::CClientStrings::UpdatePluginSuccess, callbackData);
          }
          catch (std::exception & ex)
          {
             //fail to remove package
             YADOMS_LOG(error) << "Fail to delete plugin : " << pluginName << " : " << ex.what();
+            callbackData.set("state", CWorkerTools::EUpdateState::kFail);
             callbackData.set("exception", ex.what());
             m_progressCallback(false, 100.0f, i18n::CClientStrings::UpdatePluginRemoveFailed, callbackData);
          }
