@@ -32,6 +32,8 @@ namespace update {
       {
          YADOMS_LOG(information) << "Installing new plugin from " << downloadUrl;
 
+         shared::CDataContainer callbackData;
+         callbackData.set("downloadUrl", downloadUrl);
 
          m_progressCallback(true, 0.0f, i18n::CClientStrings::UpdatePluginInstall, shared::CDataContainer::EmptyContainer);
 
@@ -41,9 +43,6 @@ namespace update {
          try
          {
             YADOMS_LOG(information) << "Downloading package";
-
-            shared::CDataContainer callbackData;
-            callbackData.set("downloadUrl", downloadUrl);
             m_progressCallback(true, 0.0f, i18n::CClientStrings::UpdatePluginDownload, callbackData);
             Poco::Path downloadedPackage = CWorkerTools::downloadPackage(downloadUrl, m_progressCallback, i18n::CClientStrings::UpdatePluginDownload, 0.0, 50.0);
             YADOMS_LOG(information) << "Downloading package with sucess";
@@ -74,7 +73,9 @@ namespace update {
             {
                //fail to extract package file
                YADOMS_LOG(error) << "Fail to deploy package : " << ex.what();
-               m_progressCallback(false, 100.0f, i18n::CClientStrings::UpdatePluginDeployFailed, shared::CDataContainer::EmptyContainer);
+
+               callbackData.set("exception", ex.what());
+               m_progressCallback(false, 100.0f, i18n::CClientStrings::UpdatePluginDeployFailed, callbackData);
             }
 
 
@@ -88,7 +89,8 @@ namespace update {
          {
             //fail to download package
             YADOMS_LOG(error) << "Fail to download package : " << ex.what();
-            m_progressCallback(false, 100.0f, i18n::CClientStrings::UpdatePluginDownloadFailed, shared::CDataContainer::EmptyContainer);
+            callbackData.set("exception", ex.what());
+            m_progressCallback(false, 100.0f, i18n::CClientStrings::UpdatePluginDownloadFailed, callbackData);
          }
   
       }
@@ -142,6 +144,7 @@ namespace update {
             {
                //fail to extract package file
                YADOMS_LOG(error) << "Fail to deploy package : " << ex.what();
+               callbackData.set("exception", ex.what());
                m_progressCallback(false, 100.0f, i18n::CClientStrings::UpdatePluginDeployFailed, callbackData);
             }
 
@@ -156,6 +159,7 @@ namespace update {
          {
             //fail to download package
             YADOMS_LOG(error) << "Fail to download package : " << ex.what();
+            callbackData.set("exception", ex.what());
             m_progressCallback(false, 100.0f, i18n::CClientStrings::UpdatePluginDownloadFailed, callbackData);
          }
       }
@@ -201,6 +205,7 @@ namespace update {
          {
             //fail to remove package
             YADOMS_LOG(error) << "Fail to delete plugin : " << pluginName << " : " << ex.what();
+            callbackData.set("exception", ex.what());
             m_progressCallback(false, 100.0f, i18n::CClientStrings::UpdatePluginRemoveFailed, callbackData);
          }
       }

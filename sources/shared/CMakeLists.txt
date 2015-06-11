@@ -75,10 +75,11 @@ set(SHARED_LIB_SRC
    shared/exception/EmptyResult.hpp
    shared/exception/Exception.hpp
    shared/exception/InvalidParameter.hpp
-   shared/exception/OutOfRange.hpp
    shared/exception/NotImplemented.hpp
    shared/exception/NotSupported.hpp
    shared/exception/NullReference.hpp
+   shared/exception/OutOfRange.hpp
+   shared/exception/Parse.hpp
    
    shared/http/HttpMethods.h
    shared/http/HttpMethods.cpp

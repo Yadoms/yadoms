@@ -16,7 +16,7 @@
 
 #include <shared/ServiceLocator.h>
 #include <shared/tools/Random.h>
-
+#include <shared/exception/Parse.hpp>
 
 
 namespace update {
@@ -106,20 +106,20 @@ namespace update {
             catch (Poco::FileException & fileException)
             {
                YADOMS_LOG(error) << "Operation fail :" << fileException.displayText();
+               throw fileException;
             }
             catch (std::exception & ex)
             {
                //delete folder tempPluginFolder
                tools::CFileSystem::remove(tempPluginFolder, true);
-
-               throw ex;
+               throw;
             }
          }
          catch (std::exception & ex)
          {
             //delete folder tempPluginFolder
             tools::CFileSystem::remove(tempPluginFolder, true);
-            throw ex;
+            throw;
          }
       }
       

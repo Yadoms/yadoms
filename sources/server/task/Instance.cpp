@@ -69,10 +69,11 @@ namespace task {
       return m_creationDate;
    }
 
-   void CInstance::OnTaskProgressUpdated(bool isRunning, boost::optional<float> progression, std::string message, shared::CDataContainer)
+   void CInstance::OnTaskProgressUpdated(bool isRunning, boost::optional<float> progression, std::string message, shared::CDataContainer data)
    {
       m_currentProgression = progression;
       m_currentMessage = message;
+      m_taskData = data;
       if (m_currentProgression)
          YADOMS_LOG(information) << m_task->getName() << " report progression " << m_currentProgression.get() << " with message " << m_currentMessage;
       else

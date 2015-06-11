@@ -2,7 +2,7 @@
 #include "DataContainer.h"
 #include "Log.h"
 #include <boost/property_tree/json_parser.hpp>
-
+#include <shared/exception/Parse.hpp>
 
 namespace shared
 {
@@ -163,7 +163,8 @@ namespace shared
       }
       catch (boost::property_tree::json_parser::json_parser_error& e)
       {
-         throw exception::CException(e.what());
+         std::string message = (boost::format("Cannot parse file %1% as JSON : %2%") % file % e.what()).str();
+         throw exception::CParse(message);
       }
    }
 
