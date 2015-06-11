@@ -59,7 +59,12 @@ UpdateInformationManager.getPluginList = function(callback, sync) {
          //value is a list of all version available
          result[index] = [];
          $.each(value, function(versionIndex, versionValue) {
-            result[index].push(UpdateInformationManager.factory(versionValue));
+            try {
+               result[index].push(UpdateInformationManager.factory(versionValue));
+            }
+            catch (e) {
+               console.error(e);
+            }
          });
       });
 
@@ -91,17 +96,86 @@ UpdateInformationManager.installPlugin = function(downloadUrl, callback, sync) {
           //we parse the json answer
           if (data.result != "true")
           {
-             notifyError($.t("objects.update-information.errorListingPlugin"), JSON.stringify(data));
+             notifyError($.t("objects.generic.errorInstalling", {objectName : "plugin"}), JSON.stringify(data));
              return;
           }
 
-          callback();
+          //we launch the callback with the task id
+          callback(data.data.taskId);
        })
        .fail(function() {
-          notifyError($.t("objects.update-information.errorListingPlugin"));
+          notifyError($.t("objects.generic.errorInstalling", {objectName : "plugin"}));
        });
 };
 
+UpdateInformationManager.updatePlugin = function(pluginName, downloadUrl, callback, sync) {
+   assert(!isNullOrUndefined(pluginName), "pluginName must be defined");
+   assert(!isNullOrUndefined(downloadUrl), "downloadUrl must be defined");
+   assert($.isFunction(callback), "callback must be a function");
+
+   var async = true;
+   if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
+      async = !sync;
+
+   $.ajax({
+      dataType: "json",
+      url: "rest/update/plugin/update/" + pluginName,
+      async: async,
+      data: JSON.stringify({"downloadUrl" : downloadUrl}),
+      type: "POST",
+      contentType: "application/json; charset=utf-8"
+   })
+       .done(function( data ) {
+          //we parse the json answer
+          if (data.result != "true")
+          {
+             notifyError($.t("objects.generic.errorUpdating", {objectName : "plugin"}), JSON.stringify(data));
+             return;
+          }
+
+          callback(data.data.taskId);
+       })
+       .fail(function() {
+          notifyError($.t("objects.generic.errorUpdating", {objectName : "plugin"}));
+       });
+};
+
+/**
+ * Permit to remove the plugin from the system
+ * @param pluginName
+ * @param callback
+ * @param sync
+ */
+UpdateInformationManager.removePlugin = function(pluginName, callback, sync) {
+   assert(!isNullOrUndefined(pluginName), "pluginName must be defined");
+   assert($.isFunction(callback), "callback must be a function");
+
+   var async = true;
+   if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
+      async = !sync;
+
+   $.ajax({
+      dataType: "json",
+      url: "rest/update/plugin/remove/" + pluginName,
+      async: async,
+      data: JSON.stringify({"downloadUrl" : downloadUrl}),
+      type: "POST",
+      contentType: "application/json; charset=utf-8"
+   })
+       .done(function( data ) {
+          //we parse the json answer
+          if (data.result != "true")
+          {
+             notifyError($.t("objects.generic.errorUpdating", {objectName : "plugin"}), JSON.stringify(data));
+             return;
+          }
+
+          callback(data.data.taskId);
+       })
+       .fail(function() {
+          notifyError($.t("objects.generic.errorUpdating", {objectName : "plugin"}));
+       });
+};
 
 /**
  *
@@ -109,6 +183,5 @@ UpdateInformationManager.installPlugin = function(downloadUrl, callback, sync) {
  */
 function UpdateInformationManager()
 {
-
 }
 
