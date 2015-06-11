@@ -113,11 +113,8 @@ void CWebSocketRequestHandler::handleRequest(Poco::Net::HTTPServerRequest& reque
 
          case kTaskProgression:
          {
-            YADOMS_LOG(information) << "################# TASK PROGRESSION ################# n1";
             boost::shared_ptr<task::IInstance> taskProgression = eventHandler.getEventData<boost::shared_ptr<task::IInstance> >();
-            YADOMS_LOG(information) << "################# TASK PROGRESSION ################# n2";
             clientSeemConnected = send(client, ws::CTaskUpdateNotificationFrame(taskProgression));
-            YADOMS_LOG(information) << "################# TASK PROGRESSION ################# n3";
             break;
          }
 
