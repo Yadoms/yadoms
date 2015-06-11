@@ -48,6 +48,13 @@ namespace i18n
       static std::string UpdateYadomsRunUpdate;
       static std::string UpdateYadomsRunUpdateFailed;
       static std::string UpdateYadomsExit;
+
+
+      static std::string TaskInterrupted;
+      static std::string TaskCrashed;
+      static std::string TaskUnkownError;
+      static std::string TaskEnd;
+      static std::string TaskStarted;
    };
    
 } // namespace i18n
