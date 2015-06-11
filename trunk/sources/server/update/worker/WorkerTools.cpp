@@ -22,7 +22,15 @@
 namespace update {
    namespace worker {
 
-      
+      //nested enum with specific strings
+      DECLARE_ENUM_IMPLEMENTATION_NESTED(CWorkerTools::EUpdateState, EUpdateState,
+         ((Success))
+         ((Fail))
+         ((Running))
+      );
+
+
+
       Poco::Path CWorkerTools::downloadPackage(const std::string & downloadUrl, WorkerProgressFunc callback, const std::string & function, float min, float max)
       {
          return downloadPackage(downloadUrl, boost::bind(&CWorkerTools::reportDownloadProgress, _1, _2, callback, function, min, max));

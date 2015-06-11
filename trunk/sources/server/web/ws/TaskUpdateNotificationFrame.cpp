@@ -5,7 +5,7 @@ namespace web { namespace ws {
 
    const std::string CTaskUpdateNotificationFrame::m_taskName = "name";
    const std::string CTaskUpdateNotificationFrame::m_taskGuid = "uuid";
-   const std::string CTaskUpdateNotificationFrame::m_taskState = "state";
+   const std::string CTaskUpdateNotificationFrame::m_taskState = "taskState";
    const std::string CTaskUpdateNotificationFrame::m_taskProgression = "progression";
    const std::string CTaskUpdateNotificationFrame::m_taskMessage = "message";
    const std::string CTaskUpdateNotificationFrame::m_taskData = "data";
