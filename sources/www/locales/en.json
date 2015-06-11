@@ -365,7 +365,13 @@
                   "actions" : "Actions",
                   "update" : "Update",
                   "install" : "Install",
-                  "uninstall" : "Uninstall"
+                  "uninstall" : "Uninstall",
+                  "confirmUpdateTitle" : "Confirm update",
+                  "confirmUpdate" : "Update __objectName__ to version __version__ ?",
+                  "confirmInstallTitle" : "Confirm install",
+                  "confirmInstall" : "Install __objectName__ to version __version__ ?",
+                  "confirmRemoveTitle" : "Confirm uninstall",
+                  "confirmRemove" : "Uninstall __objectName__ ?"
                },
                "plugins" : {
                   "title" : "Plugins"
@@ -528,6 +534,8 @@
          "errorCreating" : "An error has occurred creating __objectName__",
          "errorLoading" : "An error has occurred loading __objectName__",
          "errorGetting" : "An error has occurred getting __objectName__",
+         "errorInstalling" : "An error has occurred installing __objectName__",
+         "errorUninstalling" : "An error has occurred uninstalling __objectName__",
          "retrievingData" : "Retrieving data ..."
       }
    },
