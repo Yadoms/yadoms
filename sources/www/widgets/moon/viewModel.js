@@ -1,10 +1,10 @@
 widgetViewModelCtor =
 
 /**
- * Create a MoonPhases ViewModel
+ * Create a Moon ViewModel
  * @constructor
  */
-function MoonPhasesViewModel() {
+function MoonViewModel() {
 
    //observable data
    this.data = ko.observable("");
@@ -15,7 +15,7 @@ function MoonPhasesViewModel() {
    this.WidgetWidth  = 100;   
    
    //Default value - This value is overwrite after
-   this.photoName = ko.observable("widgets/moon-phases/images/moon01.png");
+   this.photoName = ko.observable("widgets/moon/images/new.png");
 
    /**
     * Widget identifier
@@ -54,9 +54,44 @@ function MoonPhasesViewModel() {
 		 
 		 elementID = "widget-moon-" + this.widget.id;
 		 
-        //Hours are used to calculate the image number
-        self.photoName ( "widgets/moon-phases/images/moon" + (parseInt(res)-1) + ".png" );			 
+		 console.log ( res );
 		 
+		 if (parseInt( obj.IlluminatedMoon ) <= 5)
+		 {
+			 self.photoName ( "widgets/moon/images/new.png" );
+		 }
+		 else if ( ( parseInt( obj.IlluminatedMoon ) > 5 ) && ( parseInt( obj.IlluminatedMoon ) <= 40 ))
+		 {
+			 if (parseInt(res) < 15)
+				 self.photoName ( "widgets/moon/images/firstcrescent.png" );
+			 else
+				 self.photoName ( "widgets/moon/images/lastcrescent.png" ); 
+		 }
+		 else if ( ( parseInt( obj.IlluminatedMoon ) > 40 ) && ( parseInt( obj.IlluminatedMoon ) <= 60 ))
+		 {
+			 if (parseInt(res) < 15)
+				 self.photoName ( "widgets/moon/images/firstquarter.png" );
+			 else
+				 self.photoName ( "widgets/moon/images/lastquarter.png" ); 
+		 }
+		 else if ( ( parseInt( obj.IlluminatedMoon ) > 60 ) && ( parseInt( obj.IlluminatedMoon ) <= 90 ))
+		 {
+			 if (parseInt(res) < 15)
+				 self.photoName ( "widgets/moon/images/waninggibbous1.png" );
+			 else
+				 self.photoName ( "widgets/moon/images/waninggibbous2.png" ); 
+		 }
+         else
+             self.photoName ( "widgets/moon/images/full.png" ); 			 
+		 		 
+		 self.RefreshImage( );
+      }
+   }
+   
+   this.RefreshImage = function( )
+   {
+	   var self = this;
+	   
 		//get a reference to the canvas
 		var ctx = $( "#" + elementID ).get(0).getContext("2d");
 		
@@ -72,15 +107,24 @@ function MoonPhasesViewModel() {
 		base_image.src = self.photoName();
 		
 		base_image.onload = function()
-		{
-		   ctx.drawImage( base_image, 0, 0, self.WidgetWidth, self.WidgetHeight );
-           
-		   ctx.font="20px Georgia";
-		   ctx.fillStyle = "rgb(255,255,255)";
-		   //write the text at the same position as the height of the column
-		   ctx.fillText(self.data() ,self.WidgetWidth / 2 - ( 10 * String(self.data()).match(/\d/g).length ), self.WidgetHeight / 2 );
-		}  		
-      }
+		{;
+		   ctx.drawImage( base_image,100,100,300,300, 0, 0, self.WidgetWidth, self.WidgetHeight );
+
+           ctx.fillStyle = "rgb(0,0,0)";		   
+		  
+		   if (self.WidgetHeight ==200)
+		   {
+		      ctx.font="20px Georgia";
+			  //write the text at the same position as the height of the column
+		      ctx.fillText(self.data() ,self.WidgetWidth / 2 - ( 7 * String(self.data()).match(/\d/g).length ), self.WidgetHeight / 6 );
+		   }
+		  else
+		  {
+			  ctx.font="12px Georgia";
+			  //write the text at the same position as the height of the column
+		      ctx.fillText(self.data() ,self.WidgetWidth / 2 - ( 4 * String(self.data()).match(/\d/g).length ), self.WidgetHeight / 6 );
+		  }
+		}	   
    }
    
    this.configurationChanged = function() 
@@ -103,6 +147,8 @@ function MoonPhasesViewModel() {
 	      self.WidgetHeight = 100;
 		  self.WidgetWidth = 100;	  
 	   }
+
+		self.RefreshImage();   
    };	   
   
    this.getDevicesForAcquisitions = function() {
