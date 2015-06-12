@@ -53,9 +53,6 @@ void COneWire::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
          {
          case kEvtTimerNetworkRefresh:
          {
-            // Scan 1-wire network for all devices
-            std::map<std::string, boost::shared_ptr<device::IDevice> > foundDevices = m_engine->scanNetwork();
-
             // Scan 1-wire network for new devices and update our network image
             updateNetwork(devices, m_engine->scanNetwork());
 
@@ -125,7 +122,8 @@ void COneWire::onCommand(std::map<std::string, boost::shared_ptr<device::IDevice
    std::map<std::string, boost::shared_ptr<device::IDevice> >::iterator device = devices.find(command->getTargetDevice());
    if (device == devices.end())
    {
-      YADOMS_LOG(warning) << "Device " << command->getTargetDevice() << "not found on the 1-wire network";
+      YADOMS_LOG(warning) << "Device " << command->getTargetDevice() << " not found on the 1-wire network";
+      return;
    }
 
    device->second->set(command->getKeyword(), command->getBody());
@@ -135,7 +133,7 @@ void COneWire::updateNetwork(std::map<std::string, boost::shared_ptr<device::IDe
 {
    for (std::map<std::string, boost::shared_ptr<device::IDevice> >::const_iterator foundDevice = foundDevices.begin(); foundDevice != foundDevices.end(); ++foundDevice)
    {
-      if (devices.find(foundDevice->first) != devices.end())
+      if (devices.find(foundDevice->first) == devices.end())
       {
          // New device
          // First, add it to main list

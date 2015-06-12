@@ -6,7 +6,10 @@
    "author": "YADOMS Team",
    "url": "http://sourceforge.net/projects/yadoms/",
    "credits": "",
-   "supportedPlatforms":"linux",
+   "supportedPlatforms": {
+      "linux": "supported",
+      "others": "unsupported"
+   },
    "configurationSchema": {
       "OwfsMountPoint": {
          "name": "OWFS mount point",
