@@ -41,7 +41,7 @@
 
 namespace owfs {
 
-static const boost::filesystem::path OwfsBaseDir("/mnt/1wire/cached");
+static const boost::filesystem::path OwfsBaseDir("/mnt/1wire");
 
 
 CEngine::CEngine(boost::shared_ptr<yApi::IYPluginApi> context, boost::shared_ptr<const IConfiguration> configuration)
@@ -73,15 +73,14 @@ void CEngine::scanNetworkNode(const boost::filesystem::path& nodePath, std::map<
 {
    try
    {
-      boost::filesystem::path node(nodePath);
-      if (!boost::filesystem::exists(node))
+      if (!boost::filesystem::exists(nodePath))
          return;
 
-      if (!boost::filesystem::is_directory(node))
+      if (!boost::filesystem::is_directory(nodePath))
          return;
 
       static const boost::filesystem::directory_iterator endDirectoryIterator;
-      for (boost::filesystem::directory_iterator dir(node); dir != endDirectoryIterator; ++dir)
+      for (boost::filesystem::directory_iterator dir(nodePath); dir != endDirectoryIterator; ++dir)
       {
          // Check dir
          if (!isValidDir(*dir))
@@ -91,7 +90,7 @@ void CEngine::scanNetworkNode(const boost::filesystem::path& nodePath, std::map<
          try
          {
             boost::shared_ptr<device::IDevice> device(createDevice(*dir));
-            devices[device->ident()->id()] = device;
+            devices[device->ident()->deviceName()] = device;
 
             // If device is a hub, scan for all hub connected devices (recursively)
             if (device->ident()->family() == kMicrolanCoupler)
@@ -135,7 +134,7 @@ bool CEngine::isValidDir(const boost::filesystem::path& path) const
 
 boost::shared_ptr<device::IDevice> CEngine::createDevice(const boost::filesystem::path& devicePath) const
 {
-   const std::string& filename = devicePath.filename().string();
+   const std::string filename = devicePath.filename().string();
 
    // OWFS device name format, see http://owfs.org/uploads/owfs.1.html#sect30
    // OWFS must be configured to use the default format ff.iiiiiiiiiiii, with :
@@ -146,7 +145,7 @@ boost::shared_ptr<device::IDevice> CEngine::createDevice(const boost::filesystem
    EOneWireFamily family = ToFamily(filename.substr(0, 2));
 
    // Device Id (6 chars after '.')
-   std::string id = filename.substr(3, 3 + 6 * 2);
+   std::string id = filename.substr(3, 6 * 2);
    // OWFS give us the device ID inverted, so reinvert it
    char c;
    for (int i = 0; i<6 / 2; i++)

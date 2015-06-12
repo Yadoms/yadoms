@@ -22,7 +22,7 @@ public:
 
    //--------------------------------------------------------------
    /// \brief Scan 1-wire network to list connected devices
-   /// \return Connected devices list
+   /// \return Connected devices list (map key is full device name "ff-iiiiiiiiiiii")
    //--------------------------------------------------------------
    virtual std::map<std::string, boost::shared_ptr<device::IDevice> > scanNetwork() const = 0;
 };

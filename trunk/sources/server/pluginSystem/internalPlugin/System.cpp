@@ -30,8 +30,8 @@ namespace pluginSystem {
          YADOMS_LOG(debug) << "System is running...";
 
          // Declare all device/keywords
-			yApi::historization::CEvent keywordShutdown("shutdown");
-			yApi::historization::CEvent keywordRestart("restart");
+         yApi::historization::CEvent keywordShutdown("shutdown");
+         yApi::historization::CEvent keywordRestart("restart");
 
          // Device creation if needed
          if (!context->deviceExists("system"))

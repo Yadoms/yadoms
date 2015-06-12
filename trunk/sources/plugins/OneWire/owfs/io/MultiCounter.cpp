@@ -25,7 +25,9 @@ int CMultiCounter::read(unsigned char unit) const
 
    readValue = read("counters.", unit);
    if (!readValue.empty())
-      return 0;
+      return boost::lexical_cast<int>(readValue);
+
+   return 0;
 }
 
 std::string CMultiCounter::read(const std::string& filenamePrefix, unsigned char unit) const
