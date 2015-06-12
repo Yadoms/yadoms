@@ -69,6 +69,9 @@ MACRO(POST_BUILD_COPY_BOOST_LIBRARIES target)
          
          #check existance
          if(EXISTS ${LIBFILE})
+			#add it to found libs
+			SET(BOOST_FOUND_DEBUG_BINS ${BOOST_FOUND_DEBUG_BINS} ${LIBFILE})
+
             #create post build command
             add_custom_command(TARGET ${target} POST_BUILD        	# Adds a post-build event to ${target}
                COMMAND ${CMAKE_COMMAND} -E $<$<CONFIG:debug>:copy_if_different>$<$<NOT:$<CONFIG:debug>>:echo>  	# which executes "cmake - E copy_if_different..."
@@ -99,6 +102,9 @@ MACRO(POST_BUILD_COPY_BOOST_LIBRARIES target)
          
          #check existance
          if(EXISTS ${LIBFILE})
+			#add it to found libs
+			SET(BOOST_FOUND_RELEASE_BINS ${BOOST_FOUND_RELEASE_BINS} ${LIBFILE})
+			
             #create post build command
             add_custom_command(TARGET ${target} POST_BUILD        	# Adds a post-build event to ${target}
                COMMAND ${CMAKE_COMMAND} -E $<$<CONFIG:debug>:echo>$<$<NOT:$<CONFIG:debug>>:copy_if_different>  	# which executes "cmake - E copy_if_different..."

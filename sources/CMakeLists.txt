@@ -48,6 +48,8 @@ include(copyBoost.cmake)
 ## Project output configuration
 ##################################################################################################
 
+SET(INSTALL_BINDIR "bin")
+
 #define outputs
 set(youroutputdirectory ${PROJECT_SOURCE_DIR}/../builds)
 
@@ -767,3 +769,75 @@ if(COTIRE_USE)
 	endif()	
 endif()
       
+##################################################################################################
+## CPACK
+##################################################################################################
+set(CMAKE_INSTALL_DEFAULT_COMPONENT_NAME "YadomsCore")
+
+#set yadoms executable to be copied in bindir
+install(TARGETS yadoms RUNTIME DESTINATION ${INSTALL_BINDIR})
+   
+#set boost/debug libs to be copied in bindir
+FOREACH (BOOSTLIBRARY ${BOOST_FOUND_DEBUG_BINS})
+	install(FILES ${BOOSTLIBRARY} CONFIGURATIONS Debug RUNTIME DESTINATION ${INSTALL_BINDIR})
+ENDFOREACH(BOOSTLIBRARY)
+
+#set boost/release libs to be copied in bindir
+FOREACH (BOOSTLIBRARY ${BOOST_FOUND_RELEASE_BINS})
+	install(FILES ${BOOSTLIBRARY} CONFIGURATIONS Release;RelWithDebInfo;MinSizeRel RUNTIME DESTINATION ${INSTALL_BINDIR})
+ENDFOREACH(BOOSTLIBRARY)
+
+#set poco/debug libs to be copied in bindir
+FOREACH (POCOLIBRARY ${Poco_FOUND_DEBUG_BINS})
+	install(FILES ${POCOLIBRARY} CONFIGURATIONS Debug RUNTIME DESTINATION ${INSTALL_BINDIR})
+ENDFOREACH(POCOLIBRARY)
+
+#set poco/release libs to be copied in bindir
+FOREACH (POCOLIBRARY ${Poco_FOUND_RELEASE_BINS})
+	install(FILES ${POCOLIBRARY} CONFIGURATIONS Release;RelWithDebInfo;MinSizeRel RUNTIME DESTINATION ${INSTALL_BINDIR})
+ENDFOREACH(POCOLIBRARY)
+
+#add www directory
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/www DESTINATION ${INSTALL_BINDIR})
+
+
+#indicate that debug distribution are allowed (so required debug components are copied in debug mode)
+SET(CMAKE_INSTALL_DEBUG_LIBRARIES ON)
+SET(CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION ${INSTALL_BINDIR})
+INCLUDE(InstallRequiredSystemLibraries)
+
+
+SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Yadoms")
+SET(CPACK_PACKAGE_VENDOR "Yadoms")
+SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/..\\\\distribution\\\\ReadMe.txt")
+SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/..\\\\distribution\\\\Copyright.txt")
+SET(CPACK_PACKAGE_VERSION_MAJOR "1")
+SET(CPACK_PACKAGE_VERSION_MINOR "3")
+SET(CPACK_PACKAGE_VERSION_PATCH "2")
+SET(CPACK_PACKAGE_INSTALL_DIRECTORY "Yadoms")
+# There is a bug in NSI that does not handle full unix paths properly. Make
+# sure there is at least one set of four (4) backlasshes.
+SET(CPACK_PACKAGE_ICON "${CMAKE_CURRENT_SOURCE_DIR}/..\\\\distribution\\\\Yadoms.bmp")
+
+IF(WIN32 AND NOT UNIX)
+
+	# Custom target for packaging.
+	if(USE_NSIS)
+	  set(CPACK_GENERATOR "NSIS")
+      SET(CPACK_NSIS_INSTALLED_ICON_NAME "yadoms.exe")
+	  SET(CPACK_NSIS_DISPLAY_NAME "Yadoms")
+	  SET(CPACK_NSIS_HELP_LINK "http:\\\\\\\\www.yadoms.com")
+	  SET(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\www.yadoms.com")
+	  SET(CPACK_NSIS_CONTACT "contact@yadoms.com")
+	  SET(CPACK_NSIS_MODIFY_PATH ON)
+	else(USE_NSIS)
+	  set(CPACK_GENERATOR "ZIP")
+	endif(USE_NSIS)
+
+ELSE(WIN32 AND NOT UNIX)
+  SET(CPACK_STRIP_FILES "Yadoms")
+  SET(CPACK_SOURCE_STRIP_FILES "")
+ENDIF(WIN32 AND NOT UNIX)
+SET(CPACK_PACKAGE_EXECUTABLES "Yadoms" "Yadoms")
+
+INCLUDE(CPack)

@@ -119,6 +119,7 @@ namespace update {
             catch (std::exception & ex)
             {
                //delete folder tempPluginFolder
+               YADOMS_LOG(error) << "Operation fail (std::exception):" << ex.what();
                tools::CFileSystem::remove(tempPluginFolder, true);
                throw;
             }
@@ -126,6 +127,7 @@ namespace update {
          catch (std::exception & ex)
          {
             //delete folder tempPluginFolder
+            YADOMS_LOG(error) << "Operation fail (read json):" << ex.what();
             tools::CFileSystem::remove(tempPluginFolder, true);
             throw;
          }
@@ -177,7 +179,7 @@ namespace update {
          callbackData.set("progress", progress);
          //progress is the progression of pure download (from 0 to 100)
          //so the download progress, will update the task progression between min and max
-         float fullProgression = min + (((max - min) / 100.0) * progress);
+         float fullProgression = min + (((max - min) / 100.0f) * progress);
          callback(true, fullProgression, function, callbackData);
       }
 
