@@ -1,8 +1,8 @@
 {
-   "type": "moon-phases",
+   "type": "moon",
    "version": "0.1",
    "author": "yadoms team",
-   "url" : "http://www.yadoms.com/wiki/widgets/moon-phases.html",
+   "url" : "http://www.yadoms.com/wiki/widgets/moon.html",
    "credits": "",
    "dimensions": {
       "min": {

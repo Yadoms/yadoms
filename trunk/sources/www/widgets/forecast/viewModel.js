@@ -178,6 +178,9 @@ function ForecastViewModel() {
 
 		 //Resize the widget and display the elements automatically
 		 self.resized ();
+		 
+		 //Send an information to the HMI
+    	 notifyInformation($.t("Forecast updated !", {objectName : device.friendlyName}));
       }
    };
 

@@ -1,5 +1,5 @@
 {
-   "name": "phase lune",
+   "name": "lune",
    "description": "Ce widget permet d'afficher les phases de la lune",
    "configurationSchema" : {
       "device" : {
