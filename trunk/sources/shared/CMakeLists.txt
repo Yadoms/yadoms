@@ -323,6 +323,8 @@ endif()
 
 
 
+install(TARGETS yadoms-shared 
+		LIBRARY RUNTIME DESTINATION ${INSTALL_BINDIR})
 
 
 

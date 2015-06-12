@@ -21,6 +21,9 @@ ENDMACRO()
 MACRO(PLUGIN_LINK _targetName)
 	target_link_libraries(${_targetName} yadoms-shared ${LIBS} ${CMAKE_DL_LIBS} ${ARGN})
 	
+	install(TARGETS ${_targetName} 
+		LIBRARY DESTINATION ${INSTALL_BINDIR}/plugins/${_targetName}
+		COMPONENT  plugins)
 		
 	if(COTIRE_USE)
 		set_target_properties(${_targetName} PROPERTIES COTIRE_CXX_PREFIX_HEADER_INIT "stdafx.h")
@@ -41,6 +44,10 @@ MACRO(PLUGIN_LINK _targetName)
 ENDMACRO()
 
 MACRO(PLUGIN_POST_BUILD_COPY_FILE _targetName _resource)
+   install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/${_resource} 
+			DESTINATION ${INSTALL_BINDIR}/plugins/${_targetName}/${_resource} 
+			COMPONENT  plugins)
+
    add_custom_command(TARGET ${_targetName} POST_BUILD
       COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/${_resource} $<TARGET_FILE_DIR:${_targetName}>/${_resource})
    if(COTIRE_USE)
@@ -52,6 +59,10 @@ MACRO(PLUGIN_POST_BUILD_COPY_FILE _targetName _resource)
 ENDMACRO()
 
 MACRO(PLUGIN_POST_BUILD_COPY_DIRECTORY _targetName _resource)
+   install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${_resource} 
+			DESTINATION ${INSTALL_BINDIR}/plugins/${_targetName}/${_resource} 
+			COMPONENT  plugins)
+
    add_custom_command(TARGET ${_targetName} POST_BUILD
       COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/${_resource} $<TARGET_FILE_DIR:${_targetName}>/${_resource})
 	  

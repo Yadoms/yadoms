@@ -95,3 +95,6 @@ set(PYTHON_USE_SOURCES OFF)
 #set(PYTHON_ROOT "/path/to/Python27")
 
 
+##### CPACK ######
+#For Windows, it activate making installation package with NSIS; else it use classic ZIP
+#set(USE_NSIS ON)
