@@ -44,11 +44,17 @@ include(compilers.cmake)
 include(copyBoost.cmake)
 
 
+
+##################################################################################################
+## CPack installation preconfiguration
+##################################################################################################
+SET(INSTALL_BINDIR "bin")
+set(CMAKE_INSTALL_DEFAULT_COMPONENT_NAME "YadomsCore")
+
+
 ##################################################################################################
 ## Project output configuration
 ##################################################################################################
-
-SET(INSTALL_BINDIR "bin")
 
 #define outputs
 set(youroutputdirectory ${PROJECT_SOURCE_DIR}/../builds)
@@ -772,7 +778,7 @@ endif()
 ##################################################################################################
 ## CPACK
 ##################################################################################################
-set(CMAKE_INSTALL_DEFAULT_COMPONENT_NAME "YadomsCore")
+
 
 #set yadoms executable to be copied in bindir
 install(TARGETS yadoms RUNTIME DESTINATION ${INSTALL_BINDIR})
@@ -812,24 +818,37 @@ SET(CPACK_PACKAGE_VENDOR "Yadoms")
 SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/..\\\\distribution\\\\ReadMe.txt")
 SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/..\\\\distribution\\\\Copyright.txt")
 SET(CPACK_PACKAGE_VERSION_MAJOR "1")
-SET(CPACK_PACKAGE_VERSION_MINOR "3")
-SET(CPACK_PACKAGE_VERSION_PATCH "2")
+SET(CPACK_PACKAGE_VERSION_MINOR "0")
+SET(CPACK_PACKAGE_VERSION_PATCH "0")
 SET(CPACK_PACKAGE_INSTALL_DIRECTORY "Yadoms")
 # There is a bug in NSI that does not handle full unix paths properly. Make
 # sure there is at least one set of four (4) backlasshes.
 SET(CPACK_PACKAGE_ICON "${CMAKE_CURRENT_SOURCE_DIR}/..\\\\distribution\\\\Yadoms.bmp")
+
 
 IF(WIN32 AND NOT UNIX)
 
 	# Custom target for packaging.
 	if(USE_NSIS)
 	  set(CPACK_GENERATOR "NSIS")
-      SET(CPACK_NSIS_INSTALLED_ICON_NAME "yadoms.exe")
+	  
+	  set(CPACK_NSIS_PLUGINS_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/../distribution/NSIS/extensions")
+	  set(CPACK_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../distribution/NSIS")
+      SET(CPACK_NSIS_INSTALLED_ICON_NAME "${INSTALL_BINDIR}\\\\yadoms.exe")
+      SET(CPACK_NSIS_MUI_ICON "${CMAKE_CURRENT_SOURCE_DIR}/..\\\\distribution\\\\yadoms.ico")
+      SET(CPACK_NSIS_MUI_UNIICON "${CMAKE_CURRENT_SOURCE_DIR}/..\\\\distribution\\\\yadoms.ico")
 	  SET(CPACK_NSIS_DISPLAY_NAME "Yadoms")
 	  SET(CPACK_NSIS_HELP_LINK "http:\\\\\\\\www.yadoms.com")
 	  SET(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\www.yadoms.com")
 	  SET(CPACK_NSIS_CONTACT "contact@yadoms.com")
 	  SET(CPACK_NSIS_MODIFY_PATH ON)
+	  
+	  #défini les permissions pour le répertoire d'install pour tous les utilisateurs
+	  #pour l'utilisateur TOUT LE MONDE (identifié par (S-1-1-0) )
+	  set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS
+	  	"AccessControl::GrantOnFile  \\\"$INSTDIR\\\" \\\"(S-1-1)\\\" \\\"FullAccess\\\"
+		 AccessControl::GrantOnFile  \\\"$INSTDIR\\\" \\\"(S-1-1-0)\\\" \\\"FullAccess\\\""
+	  )
 	else(USE_NSIS)
 	  set(CPACK_GENERATOR "ZIP")
 	endif(USE_NSIS)

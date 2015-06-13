@@ -44,8 +44,11 @@ MACRO(SCRIPT_INTERPRETER_LINK _targetName)
 ENDMACRO()
 
 MACRO(SCRIPT_INTERPRETER_POST_BUILD_COPY_FILE _targetName _resource)
+
+   get_filename_component(_resourcePath ${_resource}  DIRECTORY)
+
    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/${_resource} 
-			DESTINATION ${INSTALL_BINDIR}/scriptInterpreters/${_targetName}/${_resource} 
+			DESTINATION ${INSTALL_BINDIR}/scriptInterpreters/${_targetName}/${_resourcePath}
 			COMPONENT  scriptInterpreters)
 
    add_custom_command(TARGET ${_targetName} POST_BUILD
@@ -60,7 +63,7 @@ ENDMACRO()
 
 MACRO(SCRIPT_INTERPRETER_POST_BUILD_COPY_DIRECTORY _targetName _resource)
    install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${_resource} 
-			DESTINATION ${INSTALL_BINDIR}/scriptInterpreters/${_targetName}/${_resource} 
+			DESTINATION ${INSTALL_BINDIR}/scriptInterpreters/${_targetName}
 			COMPONENT  scriptInterpreters)
 
    add_custom_command(TARGET ${_targetName} POST_BUILD
