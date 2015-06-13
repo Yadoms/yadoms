@@ -815,15 +815,15 @@ INCLUDE(InstallRequiredSystemLibraries)
 
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Yadoms")
 SET(CPACK_PACKAGE_VENDOR "Yadoms")
-SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/..\\\\distribution\\\\ReadMe.txt")
-SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/..\\\\distribution\\\\Copyright.txt")
+SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/../distribution/Readme.txt")
+SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/../distribution/Copyright.txt")
 SET(CPACK_PACKAGE_VERSION_MAJOR "1")
 SET(CPACK_PACKAGE_VERSION_MINOR "0")
 SET(CPACK_PACKAGE_VERSION_PATCH "0")
 SET(CPACK_PACKAGE_INSTALL_DIRECTORY "Yadoms")
 # There is a bug in NSI that does not handle full unix paths properly. Make
 # sure there is at least one set of four (4) backlasshes.
-SET(CPACK_PACKAGE_ICON "${CMAKE_CURRENT_SOURCE_DIR}/..\\\\distribution\\\\Yadoms.bmp")
+SET(CPACK_PACKAGE_ICON "${CMAKE_CURRENT_SOURCE_DIR}/../distribution/Yadoms.bmp")
 
 
 IF(WIN32 AND NOT UNIX)
