@@ -44,10 +44,13 @@ MACRO(PLUGIN_LINK _targetName)
 ENDMACRO()
 
 MACRO(PLUGIN_POST_BUILD_COPY_FILE _targetName _resource)
-   install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/${_resource} 
-			DESTINATION ${INSTALL_BINDIR}/plugins/${_targetName}/${_resource} 
-			COMPONENT  plugins)
 
+   get_filename_component(_resourcePath ${_resource}  DIRECTORY)
+   
+   install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/${_resource} 
+			DESTINATION ${INSTALL_BINDIR}/plugins/${_targetName}/${_resourcePath}
+			COMPONENT  plugins)
+			
    add_custom_command(TARGET ${_targetName} POST_BUILD
       COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/${_resource} $<TARGET_FILE_DIR:${_targetName}>/${_resource})
    if(COTIRE_USE)
@@ -60,7 +63,7 @@ ENDMACRO()
 
 MACRO(PLUGIN_POST_BUILD_COPY_DIRECTORY _targetName _resource)
    install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${_resource} 
-			DESTINATION ${INSTALL_BINDIR}/plugins/${_targetName}/${_resource} 
+			DESTINATION ${INSTALL_BINDIR}/plugins/${_targetName}
 			COMPONENT  plugins)
 
    add_custom_command(TARGET ${_targetName} POST_BUILD
