@@ -1,0 +1,14 @@
+{
+    "name": "console",
+    "description": "A console to enter a value",
+    "configurationSchema" : {
+      "device" : {
+         "name" : "Console device",
+         "description" : "Device to drive"
+      },
+      "showDeviceName" : {
+         "name" : "Show device name",
+         "description" : "Determine if you want to see the device name on the widget"
+      }
+   }
+}

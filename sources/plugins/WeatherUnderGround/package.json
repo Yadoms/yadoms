@@ -331,61 +331,41 @@
 		"WY": "Wyoming"
          },
          "defaultValue": "NA"
-      },	  
-      "Information":
-      {
-         "name": "Weather Conditions",
-         "description": "Information about local weather conditions could be selected individually below:",
-         "type" : "section",
-         "content":
-         {	  
-			  "Standard":
-			  {
-				 "name": "Temperature, DewPoint, Pressure, Humidity, Visibility, UV, Rain in 1 hour",
-				 "description": "",
-				 "type": "bool",
-				 "defaultValue": "true"
-			  },
-			  "Wind":
-			  {
-				 "name": "Wind, Wind Chill and Feels Like",
-				 "description": "Direction, average speed and max speed",
-				 "type": "bool",
-				 "defaultValue": "true"
-			  }
-		  }
-		},
-      "Astronomy":
-      {
-         "name": "Astronomy",
-         "description": "Information about the moon phases",
-         "type" : "section",
-         "content":
-         {	  
-			  "Astronomy":
-			  {
-				 "name": "",
-				 "description": "",
-				 "type": "bool",
-				 "defaultValue": "true"
-			  }
-		  }
-		},
-      "Forecast10Days":
-      {
-         "name": "Forecast10Days",
-         "description": "Summary of the weather for the next 10 days",
-         "type" : "section",
-         "content":
-         {	  
-			  "Forecast10Days":
-			  {
-				 "name": "",
-				 "description": "",
-				 "type": "bool",
-				 "defaultValue": "true"
-			  }
-		  }
-		}		
-      }
+      },
+	  "LiveConditions":
+	  {
+		 "name": "Live Condition",
+		 "description": "Information about local weather conditions",
+		 "type": "bool",
+		 "defaultValue": "true"
+	  },
+	  "IndividualKeywordsLiveConditions":
+	  {
+		 "name": "Individual Parameters of Live Condition",
+		 "description": "All informations could be individually stored into the database, and used in Yadoms",
+		 "type": "bool",
+		 "defaultValue": "false"
+	  },
+	  "Astronomy":
+	  {
+		 "name": " Moon information",
+		 "description": "",
+		 "type": "bool",
+		 "defaultValue": "false"
+	  },
+	  "Forecast10Days":
+	  {
+		 "name": "Forecast",
+		 "description": "Summary of the weather for the next 10 days",
+		 "type": "bool",
+		 "defaultValue": "true"
+	  },
+	  "IndividualRainKeywordsForecast10days":
+	  {
+		 "name": "Rain Forecast",
+		 "description": "Individual rain forecast parameters for 3 next days could be used in Yadoms",
+		 "type": "bool",
+		 "defaultValue": "false"
+	  }	
+   }
 }

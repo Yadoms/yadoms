@@ -26,8 +26,9 @@ public:
    virtual std::string getLocalisation();
    virtual std::string getCountryOrState();
    virtual std::string getState() const;
-   virtual bool IsWindEnabled (void) const;
-   virtual bool IsStandardInformationEnabled (void ) const;
+   virtual bool IsConditionsIndividualKeywordsEnabled (void ) const;
+   virtual bool IsLiveConditionsEnabled (void ) const;
+   virtual bool IsRainIndividualKeywordsEnabled (void ) const;
    virtual bool IsAstronomyEnabled (void ) const;
    virtual bool IsForecast10DaysEnabled (void ) const;
    // [END] IWUConfiguration implementation

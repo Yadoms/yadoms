@@ -13,13 +13,14 @@ CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> cont
            m_Visibility          ( PluginName, Prefix + "Visibility" ),
            m_UV                  ( PluginName, Prefix + "UV" ),
            m_DewPoint            ( PluginName, Prefix + "DewPoint"),
-           m_Rain_1hr            ( PluginName , Prefix + "Rain_1hr"),
+           m_Rain_1hr            ( PluginName, Prefix + "Rain_1hr"),
            m_WeatherConditionUrl ( PluginName, Prefix + "WeatherCondition" ),
-           m_WindDirection       ( PluginName, Prefix ),
-           m_WindAverageSpeed    ( PluginName, Prefix ),
-           m_WindMaxSpeed        ( PluginName, Prefix ),
+           m_WindDirection       ( PluginName, Prefix + "WindDirection" ),
+           m_WindAverageSpeed    ( PluginName, Prefix + "windAverageSpeed"),
+           m_WindMaxSpeed        ( PluginName, Prefix + "windMaxSpeed"),
            m_FeelsLike           ( PluginName, Prefix + "FeelsLike" ),
-           m_Windchill           ( PluginName, Prefix + "Windchill" )
+           m_Windchill           ( PluginName, Prefix + "Windchill" ),
+		   m_LiveConditions      ( PluginName, "LiveConditions")
 
 {
    try
@@ -27,7 +28,7 @@ CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> cont
 	   m_URL.str("");
 	   m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/conditions/q/" << m_CountryOrState << "/" << m_Localisation << ".json";
 
-	   if (WUConfiguration.IsStandardInformationEnabled())
+	   if (WUConfiguration.IsConditionsIndividualKeywordsEnabled())
 	   {
 		  m_Temp.Initialize                ( context );
 		  m_Pressure.Initialize            ( context );
@@ -37,15 +38,33 @@ CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> cont
 		  m_DewPoint.Initialize            ( context );
 		  m_Rain_1hr.Initialize            ( context );
 		  m_WeatherConditionUrl.Initialize ( context );
-	   }
+		  m_WindDirection.Initialize       ( context );
+		  m_WindAverageSpeed.Initialize    ( context );
+		  m_WindMaxSpeed.Initialize        ( context );
+		  m_FeelsLike.Initialize           ( context );
+		  m_Windchill.Initialize           ( context );
+		}
 
-	   if (WUConfiguration.IsWindEnabled())
+	   if (WUConfiguration.IsLiveConditionsEnabled())
 	   {
-		   m_WindDirection.Initialize      ( context );
-		   m_WindAverageSpeed.Initialize   ( context );
-		   m_WindMaxSpeed.Initialize       ( context );
-		   m_FeelsLike.Initialize          ( context );
-		   m_Windchill.Initialize          ( context );
+		   m_LiveConditions.Initialize      ( context );
+
+			m_LiveConditions.AddUnit (
+								shared::plugin::yPluginApi::CStandardCapacities::Temperature.getName(),
+								shared::plugin::yPluginApi::CStandardCapacities::Temperature.getUnit() 
+								);
+			m_LiveConditions.AddUnit (
+								shared::plugin::yPluginApi::CStandardCapacities::Speed.getName(),
+								shared::plugin::yPluginApi::CStandardCapacities::Speed.getUnit() 
+								);
+			m_LiveConditions.AddUnit (
+								shared::plugin::yPluginApi::CStandardCapacities::Humidity.getName(),
+								shared::plugin::yPluginApi::CStandardCapacities::Humidity.getUnit() 
+								);
+			m_LiveConditions.AddUnit (
+								shared::plugin::yPluginApi::CStandardCapacities::Rain.getName(),
+								shared::plugin::yPluginApi::CStandardCapacities::Rain.getUnit() 
+								);
 	   }
    }
    catch (shared::exception::CException e)
@@ -54,10 +73,34 @@ CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> cont
    }
 }
 
-void CWeatherConditions::OnUpdate( IWUConfiguration& WUConfiguration )
+void CWeatherConditions::OnUpdate( boost::shared_ptr<yApi::IYPluginApi> context, IWUConfiguration& WUConfiguration )
 {
    try
    {
+	   if (WUConfiguration.IsConditionsIndividualKeywordsEnabled())
+	   {
+		  m_Temp.Initialize                ( context );
+		  m_Pressure.Initialize            ( context );
+		  m_Humidity.Initialize            ( context );
+		  m_Visibility.Initialize          ( context );
+		  m_UV.Initialize                  ( context );
+		  m_DewPoint.Initialize            ( context );
+		  m_Rain_1hr.Initialize            ( context );
+		  m_WeatherConditionUrl.Initialize ( context );
+		  m_WindDirection.Initialize       ( context );
+		  m_WindAverageSpeed.Initialize    ( context );
+		  m_WindMaxSpeed.Initialize        ( context );
+		  m_FeelsLike.Initialize           ( context );
+		  m_Windchill.Initialize           ( context );
+		}
+
+	   if (WUConfiguration.IsLiveConditionsEnabled())
+	   {
+		   m_LiveConditions.Initialize      ( context );
+
+		   //TODO : Faire une fonction pour lire s'il y a des unités pour rajouter les unités ici
+	   }
+
       //read the localisation
       m_Localisation = WUConfiguration.getLocalisation();
 
@@ -108,7 +151,7 @@ void CWeatherConditions::Parse( boost::shared_ptr<yApi::IYPluginApi> context, co
 		{
 			std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > KeywordList;
 
-			if (WUConfiguration.IsStandardInformationEnabled())
+			if (WUConfiguration.IsConditionsIndividualKeywordsEnabled())
 			{
 				m_Temp.SetValue          ( m_data, "current_observation.temp_c" );
 				KeywordList.push_back    ( m_Temp.GetHistorizable() );
@@ -133,10 +176,7 @@ void CWeatherConditions::Parse( boost::shared_ptr<yApi::IYPluginApi> context, co
 
 				m_WeatherConditionUrl.SetValue ( m_data, "current_observation.icon");
 				KeywordList.push_back          ( m_WeatherConditionUrl.GetHistorizable() );
-			}
 
-			if (WUConfiguration.IsWindEnabled())
-			{
 			    m_WindDirection.SetValue           ( m_data, "current_observation.wind_degrees");
 			    KeywordList.push_back              ( m_WindDirection.GetHistorizable() );
 
@@ -152,7 +192,28 @@ void CWeatherConditions::Parse( boost::shared_ptr<yApi::IYPluginApi> context, co
 			    m_Windchill.SetValue               ( m_data, "current_observation.windchill_c" );
 			    KeywordList.push_back              ( m_Windchill.GetHistorizable() );
 			}
-		   
+
+			if (WUConfiguration.IsLiveConditionsEnabled())
+			{
+				m_LiveConditions.SetPeriod (m_data,
+												"current_observation.local_time_rfc822", 
+												"current_observation.icon",
+												"current_observation.temp_c",
+												"current_observation.pressure_mb",
+												"current_observation.visibility_km",
+												"current_observation.UV",
+												"current_observation.dewpoint_c",
+												"current_observation.wind_gust_kph",
+												"current_observation.wind_kph",
+												"current_observation.wind_degrees",
+												"current_observation.relative_humidity",
+												"current_observation.precip_today_metric",
+												"current_observation.feelslike_c",
+												"current_observation.windchill_c"
+												);
+					KeywordList.push_back          ( m_LiveConditions.GetHistorizable() );
+			}
+
 			context->historizeData(m_PluginName, KeywordList);
 		}
 	}

@@ -2,37 +2,28 @@
 
 #include "IKeyword.h"
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
-#include "../specificHistorizers/ForecastHistorizer.h"
+#include "../specificHistorizers/ConditionHistorizer.h"
 
 namespace yApi = shared::plugin::yPluginApi;
 
    //--------------------------------------------------------------
    /// \brief	The Forecast class
    //--------------------------------------------------------------
-   class CForecast : public IKeyword
+   class CCondition : public IKeyword
    {
    public:
       //--------------------------------------------------------------
       /// \brief	                        Constructor
       /// \param[in] PluginName           The name of the plugin
       /// \param[in] KeyWordName          The keyword name
-      /// \param[in] Period               The Period Type ( "Day", "Hour" )
-      /// \note                           Use this constructor initialising the keyword for this plugin
-      //--------------------------------------------------------------
-      CForecast( std::string PluginName, std::string KeyWordName, const weatherunderground::helper::EPeriod& Period );
-
-      //--------------------------------------------------------------
-      /// \brief	                        Constructor
-      /// \param[in] PluginName           The name of the plugin
-      /// \param[in] KeyWordName          The keyword name
       /// \note                           Use this constructor initialising the keyword for this plugin. This function is used for conditions.
       //--------------------------------------------------------------
-      CForecast( std::string PluginName, std::string KeyWordName );
+      CCondition( std::string PluginName, std::string KeyWordName );
 
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
-      virtual ~CForecast();
+      virtual ~CCondition();
 
       //-----------------------------------------------------
       ///\brief                      Add a new unit to be send to the widget
@@ -59,26 +50,22 @@ namespace yApi = shared::plugin::yPluginApi;
       ///\param[in] RainDay          The quantity of rain in the day
       ///\throw                      shared::exception::CInvalidParameter or COutOfRange if fail to parse command
       //-----------------------------------------------------
-      void AddPeriod(const shared::CDataContainer & ValueContainer, 
-                     const std::string& filterYear,
-                     const std::string& filterMonth,
-                     const std::string& filterDay,
+      void SetPeriod(const shared::CDataContainer & ValueContainer, 
+                     const std::string& filterTime,
 	                 const std::string& filterWeatherCondition,
-	                 const std::string& filterTempMax, 
-                     const std::string& filterTempMin,
+	                 const std::string& filterTemp, 
+					 const std::string& filterPressure,
+					 const std::string& filterVisibility,
+					 const std::string& filterUV,
+					 const std::string& filterDewPoint,
                      const std::string& filterMaxWind,
                      const std::string& filterAveWind,
 					 const std::string& filterAveWindDegrees,
                      const std::string& filterAveHumidity,
-                     const std::string& RainDay,
-					 const std::string& filterSnowDay
+                     const std::string& filterRainDay,
+					 const std::string& filterFeelslike,
+					 const std::string& filterWindChill
 					     );
-
-      //-----------------------------------------------------
-      ///\brief                      Clear All Periods
-      //-----------------------------------------------------
-
-      void ClearAllPeriods( void );
 
       // ICapacities implementation
 	  virtual void DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const;
@@ -99,5 +86,5 @@ namespace yApi = shared::plugin::yPluginApi;
       //--------------------------------------------------------------
       /// \brief	The pressure (hPa)
       //--------------------------------------------------------------
-      boost::shared_ptr<yApi::historization::CForecastHistorizer> m_forecast;
+      boost::shared_ptr<yApi::historization::CConditionHistorizer> m_condition;
    };

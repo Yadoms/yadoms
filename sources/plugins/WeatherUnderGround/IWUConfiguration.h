@@ -48,8 +48,9 @@ public:
    /// \brief	    Get options enabled from the configuration
    //--------------------------------------------------------------
 
-   virtual bool IsWindEnabled (void) const = 0;
-   virtual bool IsStandardInformationEnabled (void ) const = 0;
+   virtual bool IsLiveConditionsEnabled (void ) const = 0;
+   virtual bool IsConditionsIndividualKeywordsEnabled (void ) const = 0;
+   virtual bool IsRainIndividualKeywordsEnabled (void ) const = 0;
    virtual bool IsAstronomyEnabled (void ) const = 0;
    virtual bool IsForecast10DaysEnabled (void ) const = 0;
 };

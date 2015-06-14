@@ -1,11 +1,13 @@
 #pragma once
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
+#include "WeatherUndergroundHelpers.h"
 #include <shared/DataContainer.h>
 #include <shared/http/HttpMethods.h>
 #include "WUConfiguration.h"
 #include "Keywords/WeatherIcon.h"
 #include "Keywords/Temp.h"
 #include "Keywords/Forecast.h"
+#include "Keywords/Rain.h"
 
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -101,5 +103,10 @@ private:
    /// \brief	    Keywords
    //--------------------------------------------------------------
    CForecast    m_Forecast;
+
+   //--------------------------------------------------------------
+   /// \brief	    Tab of rain keywords for 3 next days
+   //--------------------------------------------------------------
+   boost::shared_ptr<CRain>        m_Forecast_Rain[NB_RAIN_FORECAST_DAY];
 };
 

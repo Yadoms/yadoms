@@ -6,9 +6,9 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-CWindDirection::CWindDirection( std::string PluginName, std::string Prefix ):
+CWindDirection::CWindDirection( std::string PluginName, std::string Name ):
    m_PluginName ( PluginName ),
-   m_windDirection( new yApi::historization::CDirection(Prefix + "WindDirection"))
+   m_windDirection( new yApi::historization::CDirection( Name ))
 {}
 
 void CWindDirection::Initialize( boost::shared_ptr<yApi::IYPluginApi> context ) const

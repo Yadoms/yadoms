@@ -10,6 +10,7 @@ namespace weatherunderground { namespace helper
 ///\brief  All periods
 //-----------------------------------------------------   
 DECLARE_ENUM_HEADER(EPeriod,
+    ((NoPeriod))
     ((Day))
     ((Hour))
 );

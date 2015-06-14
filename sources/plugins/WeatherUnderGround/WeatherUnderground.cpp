@@ -38,19 +38,19 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
       m_configuration.initializeWith(context->getConfiguration());
 
 	   // Event to be sent immediately for the first value
-      context->getEventHandler().createTimer(kEvtTimerRefreshWeatherConditions      , shared::event::CEventTimer::kOneShot , boost::posix_time::seconds(0));
+      context->getEventHandler().createTimer(kEvtTimerRefreshWeatherConditions , shared::event::CEventTimer::kOneShot , boost::posix_time::seconds(0));
       // Timer used to read periodically the Weather information
-      context->getEventHandler().createTimer(kEvtTimerRefreshWeatherConditions      , shared::event::CEventTimer::kPeriodic, boost::posix_time::minutes(15));
+      context->getEventHandler().createTimer(kEvtTimerRefreshWeatherConditions , shared::event::CEventTimer::kPeriodic, boost::posix_time::minutes(15));
 
 	   // Event to be sent immediately for the first value
-      context->getEventHandler().createTimer(kEvtTimerRefreshAstronomy      , shared::event::CEventTimer::kOneShot , boost::posix_time::seconds(0));
+      context->getEventHandler().createTimer(kEvtTimerRefreshAstronomy         , shared::event::CEventTimer::kOneShot , boost::posix_time::seconds(0));
       // Timer used to read periodically the Weather information
-	   context->getEventHandler().createTimer(kEvtTimerRefreshAstronomy      , shared::event::CEventTimer::kPeriodic, boost::posix_time::hours(12));
+	   context->getEventHandler().createTimer(kEvtTimerRefreshAstronomy        , shared::event::CEventTimer::kPeriodic, boost::posix_time::hours(9));
 
 	   // Event to be sent immediately for the first value
-      context->getEventHandler().createTimer(kEvtTimerRefreshForecast10Days      , shared::event::CEventTimer::kOneShot , boost::posix_time::seconds(0));
+      context->getEventHandler().createTimer(kEvtTimerRefreshForecast10Days    , shared::event::CEventTimer::kOneShot , boost::posix_time::seconds(0));
       // Timer used to read periodically the Weather information
-	   context->getEventHandler().createTimer(kEvtTimerRefreshForecast10Days      , shared::event::CEventTimer::kPeriodic, boost::posix_time::hours(6));
+	   context->getEventHandler().createTimer(kEvtTimerRefreshForecast10Days   , shared::event::CEventTimer::kPeriodic, boost::posix_time::hours(3));
 
 	   if (!context->deviceExists(m_deviceName))
 	   {
@@ -61,7 +61,7 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 
       CWeatherConditions m_WeatherConditionsRequester( context, m_configuration, m_deviceName, "conditions.");
       CAstronomy m_AstronomyRequester                ( context, m_configuration, m_deviceName, "astronomy.");
-      CForecastDays m_Forecast10Days                 ( context, m_configuration, m_deviceName, "forecast10day");
+      CForecastDays m_Forecast10Days                 ( context, m_configuration, m_deviceName, "forecast.");
 
       // the main loop
       YADOMS_LOG(debug) << "CWeatherUnderground plugin is running...";
@@ -103,7 +103,7 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
             {
                onUpdateConfiguration(context, context->getEventHandler().getEventData<shared::CDataContainer>());
 
-               m_WeatherConditionsRequester.OnUpdate ( m_configuration );
+               m_WeatherConditionsRequester.OnUpdate ( context, m_configuration );
 			   
                m_WeatherConditionsRequester.Request( context );
                m_WeatherConditionsRequester.Parse  ( context, m_configuration );

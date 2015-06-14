@@ -15,10 +15,10 @@ namespace yApi = shared::plugin::yPluginApi;
       /// \brief	                      Constructor
       /// \param[in] context              Yadoms APi context
       /// \param[in] PluginName           The name of the plugin
-	  /// \param[in] Prefix               The Prefexi before the keyword name
+	  /// \param[in] Name                 The keyword name
       /// \note                           Use this constructor initialising the keyword for this plugin
       //--------------------------------------------------------------
-      CWindDirection( std::string PluginName, std::string Prefix );
+      CWindDirection( std::string PluginName, std::string Name );
 
 	  //--------------------------------------------------------------
      /// \brief	                         Set the value from the container
