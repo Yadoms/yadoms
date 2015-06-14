@@ -11,26 +11,26 @@ namespace shared { namespace plugin { namespace yPluginApi {
    ///        this trick is used to fix the "static initialization order fiasco"
    //----------------------------------------------------
 
-   const std::string& CStandardUnits::NoUnits(CStringExtension::EmptyString);
-   const std::string& CStandardUnits::Ampere("A");
-   const std::string& CStandardUnits::Degrees("°");
-   const std::string& CStandardUnits::DegreesCelcius("°C");
-   const std::string& CStandardUnits::DegreesFarenheit("°F");
-   const std::string& CStandardUnits::hectoPascal("hPa");
-   const std::string& CStandardUnits::Hertz("Hz");
-   const std::string& CStandardUnits::Kg("Kg");
-   const std::string& CStandardUnits::Lux("lux");
-   const std::string& CStandardUnits::Meter("m");
-   const std::string& CStandardUnits::MetersPerSecond("m/s");
-   const std::string& CStandardUnits::Millimeter("mm");
-   const std::string& CStandardUnits::MillimeterPerSecond("mm/s");
-   const std::string& CStandardUnits::Percent("%");
-   const std::string& CStandardUnits::Second("s");
-   const std::string& CStandardUnits::Uv("UV");
-   const std::string& CStandardUnits::Volt("V");
-   const std::string& CStandardUnits::VoltAmpere("VA");
-   const std::string& CStandardUnits::Watt("W");
-   const std::string& CStandardUnits::WattPerHour("Wh");
+   const std::string& CStandardUnits::NoUnits("data.units.noUnit");
+   const std::string& CStandardUnits::Ampere("data.units.ampere");
+   const std::string& CStandardUnits::Degrees("data.units.degrees");
+   const std::string& CStandardUnits::DegreesCelcius("data.units.degreesCelcius");
+   const std::string& CStandardUnits::DegreesFarenheit("data.units.degreesFarenheit");
+   const std::string& CStandardUnits::hectoPascal("data.units.hectoPascal");
+   const std::string& CStandardUnits::Hertz("data.units.hertz");
+   const std::string& CStandardUnits::Kg("data.units.kg");
+   const std::string& CStandardUnits::Lux("data.units.lux");
+   const std::string& CStandardUnits::Meter("data.units.meter");
+   const std::string& CStandardUnits::MetersPerSecond("data.units.metersPerSecond");
+   const std::string& CStandardUnits::Millimeter("data.units.millimeter");
+   const std::string& CStandardUnits::MillimeterPerSecond("data.units.millimeterPerSecond");
+   const std::string& CStandardUnits::Percent("data.units.percent");
+   const std::string& CStandardUnits::Second("data.units.second");
+   const std::string& CStandardUnits::Uv("data.units.uv");
+   const std::string& CStandardUnits::Volt("data.units.volt");
+   const std::string& CStandardUnits::VoltAmpere("data.units.voltAmpere");
+   const std::string& CStandardUnits::Watt("data.units.watt");
+   const std::string& CStandardUnits::WattPerHour("data.units.wattPerHour");
 
    const std::string& CStandardValues::On("on");
    const std::string& CStandardValues::Off("off");

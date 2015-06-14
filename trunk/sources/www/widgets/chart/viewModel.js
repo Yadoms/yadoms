@@ -366,7 +366,7 @@ widgetViewModelCtor =
                            var serie = self.chart.get(self.seriesUuid[index]);
                            //we save the unit in the serie
                            if (serie) {
-                              serie.units = keyword.units;
+                              serie.units = $.t(keyword.units);
                               serie.name = keyword.friendlyName;
                            }
                         });
