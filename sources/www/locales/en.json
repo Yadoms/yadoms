@@ -1,4 +1,4 @@
-{
+﻿{
    "common" : {
       "ok" : "Ok",
       "confirm" : "Confirm",
@@ -558,5 +558,29 @@
    "initialization" : {
       "homePage" : "Home Page"
    },
-   "inProgress" : "Development in progress ..."
+   "inProgress" : "Development in progress ...",
+   "data" : {
+      "units" : {
+         "noUnit" : "",
+         "ampere" : "A",
+         "degrees" : "°",
+         "degreesCelcius" : "°C",
+         "degreesFarenheit" : "°F",
+         "hectoPascal" : "hPa",
+         "hertz" : "Hz",
+         "kg" : "Kg",
+         "lux" : "lux",
+         "meter" : "m",
+         "metersPerSecond" : "m/s",
+         "millimeter" : "mm",
+         "millimeterPerSecond" : "mm/s",
+         "percent" : "%",
+         "second" : "s",
+         "uv" : "UV",
+         "volt" : "V",
+         "voltAmpere" : "VA",
+         "watt" : "W",
+         "wattPerHour" : "Wh"
+      }
+   }
 }
