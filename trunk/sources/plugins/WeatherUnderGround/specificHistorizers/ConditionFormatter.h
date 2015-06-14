@@ -8,19 +8,18 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
    //-----------------------------------------------------
    ///\brief The message formatter
    //-----------------------------------------------------
-   class CForecastFormatter
+   class CConditionFormatter
    {
    public:
       //-----------------------------------------------------
       ///\brief                     Constructor, from individual parameters
-      ///\param[in] Period          The period time between messages
       //-----------------------------------------------------
-      CForecastFormatter( const weatherunderground::helper::EPeriod & Period );
+      CConditionFormatter( void );
 
       //-----------------------------------------------------
       ///\brief                      Add a new unit to be send to the widget
       ///\param[in] UnitName         The Unit Name
-	  ///\param[in] UnitValue        The Unit Value
+	  //\param[in] UnitValue        The Unit Value
       //-----------------------------------------------------
 
       void AddUnit(
@@ -29,42 +28,42 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
          );
 
       //-----------------------------------------------------
-      ///\brief                      Add a new period with all integrated parameter
-      ///\param[in] Year             The Year of the period
-      ///\param[in] Month            The Month of the period
-      ///\param[in] Day              The Day of the period
+      ///\brief                      Set the period with all integrated parameter
+      ///\param[in] Time             The Time of the period
       ///\param[in] WeatherCondition The weather condition
-	   ///\param[in] TempMax          The maximal temperature of the day
-	   ///\param[in] TempMin          The minimum temperature of the day
-	   ///\param[in] MaxWind          The maximum wind speed of the day
-	   ///\param[in] AveWind          The average wind speed of the day
-	   ///\param[in] AveHumidity      The average humidity of the day
+	  ///\param[in] Temp            The temperature of the day
+	  ///\param[in] Pressure        The pressure of the day
+	  ///\param[in] Visibility      The Visibility
+	  ///\param[in] UV              The UV
+	  ///\param[in] DewPoint        The DewPoint
+	  ///\param[in] MaxWind         The maximum wind speed of the day
+	  ///\param[in] AveWind         The average wind speed of the day
+	  ///\param[in] Humidity        The average humidity of the day
+	  ///\param[in] RainDay         The rain precipitation of the day
+	  ///\param[in] Feelslike       The feelslike temperature of the day
+	  ///\param[in] WindChill       The windChill temperature of the day
       //-----------------------------------------------------
-      void AddPeriod(
-            const std::string& Year,
-            const std::string& Month,
-            const std::string& Day,
-		      const std::string& WeatherCondition, 
-	         const std::string& TempMax, 
-				const std::string& TempMin,
-				const std::string& MaxWind,
-				const std::string& AveWind,
-				const std::string& AveWindDegrees,
-				const std::string& AveHumidity,
+      void SetPeriod(
+            const std::string& Time,
+		    const std::string& WeatherCondition, 
+	        const std::string& Temp, 
+			const std::string& Pressure,
+			const std::string& Visibility,
+			const std::string& UV,
+			const std::string& DewPoint,
+			const std::string& MaxWind,
+			const std::string& AveWind,
+			const std::string& AveWindDegrees,
+			const std::string& Humidity,
             const std::string& RainDay,
-			const std::string& SnowDay
+			const std::string& Feelslike,
+			const std::string& WindChill
 				);
-
-      //-----------------------------------------------------
-      ///\brief                     Clear all periods
-      //-----------------------------------------------------
-
-      void ClearAllPeriods( void );
 
       //-----------------------------------------------------
       ///\brief                     Destructor
       //-----------------------------------------------------
-      virtual ~CForecastFormatter();
+      virtual ~CConditionFormatter();
 
       //-----------------------------------------------------
       ///\brief                     Format value to Yadoms format
@@ -72,6 +71,10 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       //-----------------------------------------------------
       virtual std::string formatValue() const;
 
+      //-----------------------------------------------------
+      ///\brief                     Format value to Yadoms format
+      ///\parameter [in]            The city name of the forecast
+      //-----------------------------------------------------
       void SetCityName ( const std::string & CityName );
 
    private:
@@ -84,22 +87,12 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       //-----------------------------------------------------
       ///\brief               The body value
       //-----------------------------------------------------
-      CDataContainer m_ForecastFrame;
-
-      //-----------------------------------------------------
-      ///\brief               The vector of all period
-      //-----------------------------------------------------
-	   std::vector<CDataContainer> m_Periods;
+      CDataContainer m_ConditionFrame;
 
       //-----------------------------------------------------
       ///\brief               L'ensemble des unités
       //-----------------------------------------------------
       CDataContainer m_Units;
-
-      //-----------------------------------------------------
-      ///\brief               The period string
-      //-----------------------------------------------------
-      std::string m_PeriodString;
    };
 
 } } } } // namespace shared::plugin::yPluginApi::historization

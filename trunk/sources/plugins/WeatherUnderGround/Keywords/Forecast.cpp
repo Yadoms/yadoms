@@ -11,7 +11,7 @@
 namespace yApi = shared::plugin::yPluginApi;
 
 CForecast::CForecast( std::string PluginName, std::string KeyWordName, const weatherunderground::helper::EPeriod& Period )
-   :m_PluginName ( PluginName ), m_forecast( new yApi::historization::CForecastHistorizer(KeyWordName, yApi::EKeywordAccessMode::kGetSet, Period ) )
+   :m_PluginName ( PluginName ), m_forecast( new yApi::historization::CForecastHistorizer(KeyWordName, yApi::EKeywordAccessMode::kGet, Period ) )
 {}
 
 void CForecast::Initialize( boost::shared_ptr<yApi::IYPluginApi> context ) const

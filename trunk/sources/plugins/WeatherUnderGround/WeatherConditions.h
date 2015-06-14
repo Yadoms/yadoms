@@ -12,6 +12,7 @@
 #include "Keywords/WeatherIcon.h"
 #include "Keywords/WindDirection.h"
 #include "Keywords/WindSpeed.h"
+#include "Keywords/Condition.h"
 
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -45,9 +46,10 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	  Update the configuration when something change from the HMI
+   /// \param[in] context            pointer to the API
    /// \param[in] WUConfiguration    The Plugin configuration
    //--------------------------------------------------------------
-   void OnUpdate( IWUConfiguration& WUConfiguration );
+   void OnUpdate( boost::shared_ptr<yApi::IYPluginApi> context, IWUConfiguration& WUConfiguration );
 
    //--------------------------------------------------------------
    /// \brief	  Return the conditions city name
@@ -112,5 +114,6 @@ private:
    CWindSpeed  m_WindMaxSpeed;
    CTemp        m_FeelsLike;
    CTemp        m_Windchill;
+   CCondition   m_LiveConditions;
 };
 

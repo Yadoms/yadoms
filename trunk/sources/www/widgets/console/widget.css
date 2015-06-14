@@ -1,0 +1,16 @@
+.consoleWidgetText {
+   display:table-cell;
+}
+
+.consoleWidgetData {
+    font-size : 3em;
+	text-align: center;
+	font-weight: bold;
+}
+
+.consoleWidgetValueArea {
+	width:150px;
+	height:150px;
+    display:table-cell;
+	vertical-align:middle;	
+}

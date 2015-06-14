@@ -6,9 +6,9 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-CWindSpeed::CWindSpeed( std::string PluginName, std::string Prefix ):
+CWindSpeed::CWindSpeed( std::string PluginName, std::string Name ):
    m_PluginName ( PluginName ),
-   m_windSpeed( new yApi::historization::CSpeed(Prefix + "windAverageSpeed"))
+   m_windSpeed( new yApi::historization::CSpeed( Name ))
 {}
 
 void CWindSpeed::Initialize( boost::shared_ptr<yApi::IYPluginApi> context ) const

@@ -4,7 +4,7 @@
 #include <shared/plugin/yPluginApi/StandardCapacity.h>
 #include <shared/plugin/yPluginApi/historization/MeasureType.h>
 #include <shared/plugin/yPluginApi/KeywordAccessMode.h>
-#include "ForecastFormatter.h"
+#include "ConditionFormatter.h"
 
 namespace shared { namespace plugin { namespace yPluginApi { namespace historization
 {
@@ -12,7 +12,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
    //-----------------------------------------------------
    ///\brief A remote pc code historizable object
    //-----------------------------------------------------
-   class CForecastHistorizer : public IHistorizable
+   class CConditionHistorizer : public IHistorizable
    {
    public:
       //-----------------------------------------------------
@@ -21,14 +21,13 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       ///\param[in] accessMode   Access Type of the keyword
       ///\param[in] Period       Period time between each element
       //-----------------------------------------------------
-      CForecastHistorizer(const std::string& keywordName, 
-                          const EKeywordAccessMode& accessMode, 
-                          const weatherunderground::helper::EPeriod& Period);
+      CConditionHistorizer(const std::string& keywordName, 
+                          const EKeywordAccessMode& accessMode);
 
       //-----------------------------------------------------
       ///\brief                     Destructor
       //-----------------------------------------------------
-      virtual ~CForecastHistorizer();
+      virtual ~CConditionHistorizer();
 	  
       // IHistorizable implementation
       virtual const std::string& getKeyword() const;
@@ -52,36 +51,41 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
 
       //-----------------------------------------------------
       ///\brief                      Add a new period with all integrated parameter
-      ///\param[in] Year             The Year of the period
-      ///\param[in] Month            The Month of the period
-      ///\param[in] Day              The Day of the period
+      ///\param[in] Time             The Time of the period
       ///\param[in] WeatherCondition The weather condition
-	   ///\param[in] TempMax          The maximal temperature of the day
-	   ///\param[in] TempMin          The minimum temperature of the day
-	   ///\param[in] MaxWind          The maximum wind speed of the day
-	   ///\param[in] AveWind          The average wind speed of the day
-	   ///\param[in] AveHumidity      The average humidity of the day
+	  ///\param[in] Temp
+	  ///\param[in] Pressure
+	  ///\param[in] Visibility
+	  ///\param[in] UV
+	  ///\param[in] DewPoint
+	  ///\param[in] MaxWind
+	  ///\param[in] AveWind
+	  ///\param[in] AveWindDegrees
+	  ///\param[in] Humidity
+	  ///\param[in] RainDay
+	  ///\param[in] Feelslike
+	  ///\param[in] WindChill
       //-----------------------------------------------------
-      void AddPeriod(
-                     const std::string& Year,
-                     const std::string& Month,
-                     const std::string& Day,
-                     const std::string& WeatherCondition,
-	                  const std::string& TempMax, 
-					      const std::string& TempMin,
-					      const std::string& MaxWind,
-					      const std::string& AveWind,
-						  const std::string& AveWindDegrees,
-					      const std::string& AveHumidity,
-                     const std::string& RainDay,
-					 const std::string& SnowDay
+      void SetPeriod(
+		const std::string& Time,
+		const std::string& WeatherCondition, 
+		const std::string& Temp, 
+		const std::string& Pressure,
+		const std::string& Visibility,
+		const std::string& UV,
+		const std::string& DewPoint,
+		const std::string& MaxWind,
+		const std::string& AveWind,
+		const std::string& AveWindDegrees,
+		const std::string& Humidity,
+		const std::string& RainDay,
+		const std::string& Feelslike,
+		const std::string& WindChill
 					 );
 
       //-----------------------------------------------------
-      ///\brief                     Clear All periods
+      ///\brief                     Set the city name
       //-----------------------------------------------------
-      void ClearAllPeriods( void );
-
       void SetCityName ( const std::string CityName );
 
    private:
@@ -98,7 +102,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       //-----------------------------------------------------
       ///\brief                     The message content
       //-----------------------------------------------------
-      boost::shared_ptr<CForecastFormatter> m_content;
+      boost::shared_ptr<CConditionFormatter> m_content;
 	  
    };
 } } } } // namespace shared::plugin::yPluginApi::historization

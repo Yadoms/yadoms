@@ -10,6 +10,7 @@ namespace weatherunderground { namespace helper
 // Definition of the period type of frame to be sent to the HMI
 
 DECLARE_ENUM_IMPLEMENTATION(EPeriod,
+      ((NoPeriod))
       ((Day))
       ((Hour))
 );

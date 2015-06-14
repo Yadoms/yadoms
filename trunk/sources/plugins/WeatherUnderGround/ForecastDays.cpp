@@ -20,9 +20,11 @@ CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> context,
 	//Initialization
    try
    {
+	   int counter = 0;
+
 	   if (WUConfiguration.IsForecast10DaysEnabled())
 	   {
-			m_Forecast.Initialize ( context );
+         m_Forecast.Initialize ( context );
 
          m_Forecast.AddUnit (
                              shared::plugin::yPluginApi::CStandardCapacities::Temperature.getName(),
@@ -40,6 +42,17 @@ CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> context,
                              shared::plugin::yPluginApi::CStandardCapacities::Rain.getName(),
                              shared::plugin::yPluginApi::CStandardCapacities::Rain.getUnit() 
                              );
+
+		 if (WUConfiguration.IsRainIndividualKeywordsEnabled() )
+		 {
+			 for (counter = 0; counter < 3; counter++)
+			 {
+				 std::stringstream TempString; 
+				 TempString << Prefix << "Rain_Day_" << counter;
+				 m_Forecast_Rain[counter].reset (new CRain( PluginName, TempString.str() ));
+				 m_Forecast_Rain[counter]->Initialize ( context );
+			 }
+		 }
       }
    }
    catch (shared::exception::CException e)
@@ -94,9 +107,10 @@ void CForecastDays::Parse( boost::shared_ptr<yApi::IYPluginApi> context, const I
 
                m_Forecast.ClearAllPeriods();
 
+			   char counter = 0;
+
                for(i=result.begin(); i!=result.end(); ++i)
                {
-				   //TODO : Bien renvoyé le ENUM de WeatherIcon dans la trame. Il faut modifier le nom des icones également !
 					m_Forecast.AddPeriod(*i,
                                     "date.year",
                                     "date.month",
@@ -111,6 +125,16 @@ void CForecastDays::Parse( boost::shared_ptr<yApi::IYPluginApi> context, const I
                                     "qpf_allday.mm",
 									"snow_allday.cm"
                                     );
+
+					if (WUConfiguration.IsRainIndividualKeywordsEnabled())
+					{
+						if ( counter < NB_RAIN_FORECAST_DAY )
+						{
+				  		   m_Forecast_Rain[counter]->SetValue ( *i,"qpf_allday.mm" );
+						   KeywordList.push_back (m_Forecast_Rain[counter]->GetHistorizable());
+						}
+					    ++counter;
+					}
                }
                KeywordList.push_back (m_Forecast.GetHistorizable());
 			}

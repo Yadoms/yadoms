@@ -16,13 +16,10 @@ CWUConfiguration::~CWUConfiguration()
 {}
 
 void CWUConfiguration::initializeWith(const shared::CDataContainer &data)
-{
-   m_data.initializeWith(data);
-
+{   
    try
    {
-	   m_isWindEnabled                = m_data.get<bool>("Information.content.Wind");
-	   m_isStandardInformationEnabled = m_data.get<bool>("Information.content.Standard");
+	   m_data.initializeWith(data);
    }
 	catch (boost::thread_interrupted&)
 	{
@@ -75,15 +72,27 @@ std::string CWUConfiguration::getState() const
    return m_data.get<std::string>("State");
 }
 
-bool CWUConfiguration::IsWindEnabled (void) const                 {return m_isWindEnabled;}
-bool CWUConfiguration::IsStandardInformationEnabled (void ) const {return m_isStandardInformationEnabled;}
+bool CWUConfiguration::IsLiveConditionsEnabled (void ) const
+{
+	return m_data.get<bool>("LiveConditions");
+}
 
 bool CWUConfiguration::IsAstronomyEnabled (void ) const
 {
-	return m_data.get<bool>("Astronomy.content.Astronomy");
+	return m_data.get<bool>("Astronomy");
 }
 
 bool CWUConfiguration::IsForecast10DaysEnabled (void ) const
 {
-	return m_data.get<bool>("Forecast10Days.content.Forecast10Days");
+	return m_data.get<bool>("Forecast10Days");
+}
+
+bool CWUConfiguration::IsConditionsIndividualKeywordsEnabled (void ) const
+{
+	return m_data.get<bool>("IndividualKeywordsLiveConditions");
+}
+
+bool CWUConfiguration::IsRainIndividualKeywordsEnabled (void ) const
+{
+	return m_data.get<bool>("IndividualRainKeywordsForecast10days");
 }

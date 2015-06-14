@@ -25,6 +25,8 @@ set(WUNDERGROUND_SOURCES
    WUConfiguration.h
    Keywords/Barometric.h
    Keywords/Barometric.cpp
+   Keywords/Condition.h
+   Keywords/Condition.cpp   
    Keywords/Duration.h
    Keywords/Duration.cpp
    Keywords/Forecast.h
@@ -51,6 +53,10 @@ set(WUNDERGROUND_SOURCES
    Keywords/WindDirection.cpp
    Keywords/WindSpeed.h
    Keywords/WindSpeed.cpp
+   specificHistorizers/ConditionHistorizer.h
+   specificHistorizers/ConditionHistorizer.cpp
+   specificHistorizers/ConditionFormatter.h
+   specificHistorizers/ConditionFormatter.cpp   
    specificHistorizers/ForecastHelpers.h
    specificHistorizers/ForecastHelpers.cpp
    specificHistorizers/ForecastHistorizer.h

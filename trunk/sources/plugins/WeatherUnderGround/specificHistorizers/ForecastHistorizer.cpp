@@ -7,7 +7,6 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
    
    const CStandardCapacity& ForecastCapacity = CStandardCapacity("Forecast", CStandardUnits::NoUnits, EKeywordDataType::kNoData);
 
-   
    CForecastHistorizer::CForecastHistorizer(const std::string& keywordName, 
                                             const EKeywordAccessMode& accessMode, 
                                             const weatherunderground::helper::EPeriod& Period)

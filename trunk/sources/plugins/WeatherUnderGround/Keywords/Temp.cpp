@@ -7,7 +7,7 @@
 namespace yApi = shared::plugin::yPluginApi;
 
 CTemp::CTemp( std::string PluginName ,std::string KeyWordName )
-   :m_PluginName ( PluginName ), m_temperature( new yApi::historization::CTemperature(KeyWordName) )
+   :m_PluginName ( PluginName ), m_temperature( new yApi::historization::CTemperature(KeyWordName, yApi::EKeywordAccessMode::kGet) )
 {}
 
 void CTemp::Initialize( boost::shared_ptr<yApi::IYPluginApi> context ) const

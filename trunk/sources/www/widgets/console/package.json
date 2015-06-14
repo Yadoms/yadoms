@@ -1,0 +1,42 @@
+{
+   "type": "console",
+   "version": "0.1",
+   "author": "yadoms team",
+   "url" : "http://www.yadoms.com/wiki/widgets/console.html",
+   "credits": "",
+   "dimensions": {
+      "min": {
+         "x": 2,
+         "y": 2
+      },
+      "max": {
+         "x": 2,
+         "y": 2
+      },
+      "default": {
+         "x": 2,
+         "y": 2
+      }
+   },
+   "configurationSchema": {
+      "device" : {
+         "name" : "Switch device",
+         "description" : "Device to drive",
+         "type" : "device",
+         "expectedKeywordType" : "numeric",
+         "expectedKeywordAccess" : "getset"
+      },
+      "showDeviceName" : {
+         "name" : "Show device name",
+         "description" : "Determine if you want to see the device name on the widget",
+         "type" : "bool",
+         "defaultValue" : "true"
+      },
+      "StepValue" : {
+         "type" : "decimal",
+         "name" : "Step",
+         "description" : "Set the incremental step",
+         "defaultValue" : "0.2"
+       }	  
+   }
+}
