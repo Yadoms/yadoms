@@ -24,3 +24,7 @@ FOREACH(subdir ${SUBDIRS})
 	ENDIF()
 ENDFOREACH()
 
+#share the plugin list with main cmake script
+set(PLUGINLIST
+   ${PLUGINLIST}
+   PARENT_SCOPE)
