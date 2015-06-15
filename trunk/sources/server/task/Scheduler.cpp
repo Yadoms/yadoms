@@ -64,7 +64,7 @@ namespace task {
 
                      //the task has finished
                      //we create a finishedInstance container
-                     m_finishedTasks.insert(std::make_pair(i->getGuid(), boost::shared_ptr<CFinishedInstance>(new CFinishedInstance(i->getGuid(), i->getName(), i->getStatus(), i->getProgression(), i->getMessage(), i->getTaskData(), i->getCreationDate()))));
+                     m_finishedTasks.insert(std::make_pair(i->getGuid(), boost::shared_ptr<CFinishedInstance>(new CFinishedInstance(i->getGuid(), i->getName(), i->getStatus(), i->getProgression(), i->getMessage(), i->getExceptionMessage(), i->getTaskData(), i->getCreationDate()))));
 
                      //we remove the actual instance from the dictionnary
                      m_runningTasks.erase(i->getGuid());

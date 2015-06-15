@@ -24,7 +24,7 @@ namespace task { namespace backup {
    public:
       // ITask implementation
       virtual const std::string & getName();
-      virtual bool doWork(TaskProgressFunc pFunctor);
+      virtual void doWork(TaskProgressFunc pFunctor);
       // [END] ITask implementation
 
    private:

@@ -21,16 +21,6 @@
 
 namespace update {
    namespace worker {
-
-      //nested enum with specific strings
-      DECLARE_ENUM_IMPLEMENTATION_NESTED(CWorkerTools::EUpdateState, EUpdateState,
-         ((Success))
-         ((Fail))
-         ((Running))
-      );
-
-
-
       Poco::Path CWorkerTools::downloadPackage(const std::string & downloadUrl, WorkerProgressFunc callback, const std::string & function, float min, float max)
       {
          return downloadPackage(downloadUrl, boost::bind(&CWorkerTools::reportDownloadProgress, _1, _2, callback, function, min, max));
@@ -180,7 +170,7 @@ namespace update {
          //progress is the progression of pure download (from 0 to 100)
          //so the download progress, will update the task progression between min and max
          float fullProgression = min + (((max - min) / 100.0f) * progress);
-         callback(true, fullProgression, function, callbackData);
+         callback(true, fullProgression, function, shared::CStringExtension::EmptyString, callbackData);
       }
 
    } // namespace worker

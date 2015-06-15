@@ -16,7 +16,7 @@ namespace update {
          //---------------------------------
          ///\brief Define a function prototype for updating the worker progress
          //---------------------------------
-         typedef boost::function4<void, bool, boost::optional<float>, std::string, shared::CDataContainer > WorkerProgressFunc;
+         typedef boost::function5<void, bool, boost::optional<float>, std::string, std::string, shared::CDataContainer > WorkerProgressFunc;
 
          //---------------------------------------------
          ///\brief   Constructor

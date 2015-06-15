@@ -5,8 +5,8 @@
 
 namespace task {
 
-   CFinishedInstance::CFinishedInstance(const std::string & guid, const std::string & name, ETaskStatus status, boost::optional< float > progression, const std::string & message, const shared::CDataContainer & data, const boost::posix_time::ptime & creationDate)
-      : m_name(name), m_guid(guid), m_progression(progression), m_status(status), m_message(message), m_data(data), m_creationDate(creationDate)
+   CFinishedInstance::CFinishedInstance(const std::string & guid, const std::string & name, ETaskStatus status, boost::optional< float > progression, const std::string & message, const std::string & messageException, const shared::CDataContainer & data, const boost::posix_time::ptime & creationDate)
+      : m_name(name), m_guid(guid), m_progression(progression), m_status(status), m_message(message), m_messageException(messageException), m_data(data), m_creationDate(creationDate)
    {
    }
 
@@ -22,6 +22,11 @@ namespace task {
    std::string CFinishedInstance::getMessage() const
    {
       return m_message;
+   }
+
+   std::string CFinishedInstance::getExceptionMessage() const
+   {
+      return m_messageException;
    }
 
    shared::CDataContainer CFinishedInstance::getTaskData() const

@@ -21,16 +21,11 @@ namespace task { namespace update {
       return m_taskName;
    }
 
-   bool CWidgetUpdate::doWork(TaskProgressFunc pFunctor)
+   void CWidgetUpdate::doWork(TaskProgressFunc pFunctor)
    {
-      YADOMS_LOG(information) << "Start updating widget...";
-
       //adapt the progress callback (signature are same; but could change in future, so an adaptation is better)
-      ::update::worker::CWidget worker(boost::bind(pFunctor, _1, _2, _3, _4));
+      ::update::worker::CWidget worker(boost::bind(pFunctor, _1, _2, _3, _4, _5));
       worker.update(m_widgetName, m_downloadUrl);
-
-      YADOMS_LOG(information) << "End of updating widget";
-      return true;
    }
 
 } //namespace update

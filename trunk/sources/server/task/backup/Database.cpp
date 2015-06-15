@@ -32,33 +32,13 @@ namespace task { namespace backup {
       float progression = (float)(total - remaining)*(float)100.0 / (float)total;
 
       if(m_reportRealProgress)
-         m_reportRealProgress(true, progression, message, shared::CDataContainer::EmptyContainer);
+         m_reportRealProgress(true, progression, message, shared::CStringExtension::EmptyString, shared::CDataContainer::EmptyContainer);
    }
 
-   bool CDatabase::doWork(TaskProgressFunc pFunctor)
+   void CDatabase::doWork(TaskProgressFunc pFunctor)
    {
-      try
-      {
-         m_reportRealProgress = pFunctor;
-
-         YADOMS_LOG(information) << "Start backup...";
-
-         YADOMS_LOG(information) << "Backup data to :" << m_backupLocation;
-
-         m_dataBackupInterface->backupData(m_backupLocation, boost::bind(&CDatabase::OnProgressionUpdatedInternal, this, _1, _2, _3));
-
-         YADOMS_LOG(information) << "End of backup";
-         return true;
-      }
-      catch(shared::exception::CException & ex)
-      {
-         YADOMS_LOG(error) << "Fail to backup database : " << ex.what();
-      }
-      catch(...)
-      {
-         YADOMS_LOG(error) << "Fail to backup database : unknow exception";
-      }
-      return false;
+      m_reportRealProgress = pFunctor;
+      m_dataBackupInterface->backupData(m_backupLocation, boost::bind(&CDatabase::OnProgressionUpdatedInternal, this, _1, _2, _3));
    }
 
 } //namespace backup

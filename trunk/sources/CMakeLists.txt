@@ -50,7 +50,6 @@ include(copyBoost.cmake)
 ##################################################################################################
 set(INSTALL_BINDIR "bin")
 set(CMAKE_INSTALL_DEFAULT_COMPONENT_NAME "YadomsCore")
-set(PLUGINLIST "")
 
 ##################################################################################################
 ## Project output configuration
@@ -816,7 +815,7 @@ SET(CMAKE_INSTALL_DEBUG_LIBRARIES ON)
 SET(CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION ${INSTALL_BINDIR})
 INCLUDE(InstallRequiredSystemLibraries)
 
-set(CPACK_COMPONENT_YADOMSCORE_DISPLAY_NAME "Server")
+set(CPACK_COMPONENT_YADOMSCORE_DISPLAY_NAME "Yadoms Server")
 set(CPACK_COMPONENT_YADOMSCORE_REQUIRED ON)
 set(CPACK_COMPONENT_YADOMSCORE_DESCRIPTION "Yadoms core server software components.")
 

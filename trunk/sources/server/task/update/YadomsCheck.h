@@ -27,7 +27,7 @@ namespace task { namespace update {
    public:
       // ITask implementation
       virtual const std::string & getName();
-      bool doWork(TaskProgressFunc pFunctor);
+      void doWork(TaskProgressFunc pFunctor);
       // ITask implementation
      
    private:

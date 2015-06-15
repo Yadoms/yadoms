@@ -10,24 +10,10 @@ namespace update {
       class CWorkerTools
       {
       public:
-
-         //-----------------------------------------------------
-         ///\brief   The update type
-         ///\note    Used by IUpdateSource to provide the update type
-         ///<         - kSuccess : the update task is done with success
-         ///<         - kFail : the update task failed
-         ///<         - kRunning : the update task is running
-         //-----------------------------------------------------
-         DECLARE_ENUM_HEADER(EUpdateState,
-            ((Success)(0))
-            ((Fail)(1))
-            ((Running)(2))
-         )
-
          //---------------------------------
          ///\brief Define a function prototype for updating the worker progress
          //---------------------------------
-         typedef boost::function4<void, bool, boost::optional<float>, std::string, shared::CDataContainer > WorkerProgressFunc;
+         typedef boost::function5<void, bool, boost::optional<float>, std::string, std::string, shared::CDataContainer > WorkerProgressFunc;
 
          //---------------------------------------------
          ///\brief   Download a package

@@ -37,7 +37,7 @@ namespace update {
       
       void CYadoms::checkForUpdate(WorkerProgressFunc progressCallback)
       {
-         progressCallback(true, 0.0f, "Checking for a new update", shared::CDataContainer::EmptyContainer);
+         progressCallback(true, 0.0f, "Checking for a new update", shared::CStringExtension::EmptyString, shared::CDataContainer::EmptyContainer);
 
          //make some initializations
          boost::shared_ptr<IRunningInformation> runningInformation(shared::CServiceLocator::instance().get<IRunningInformation>());
@@ -56,11 +56,11 @@ namespace update {
 
          if (availableVersion <= currentVersion)
          {
-            progressCallback(true, 100.0f, "System is up to date", shared::CDataContainer::EmptyContainer);
+            progressCallback(true, 100.0f, "System is up to date", shared::CStringExtension::EmptyString, shared::CDataContainer::EmptyContainer);
          }
          else
          {
-            progressCallback(true, 100.0f, "A new update is available", shared::CDataContainer::EmptyContainer);
+            progressCallback(true, 100.0f, "A new update is available", shared::CStringExtension::EmptyString, shared::CDataContainer::EmptyContainer);
          }
       }
 
@@ -70,7 +70,7 @@ namespace update {
 
       void CYadoms::update(shared::CDataContainer & versionToUpdate, WorkerProgressFunc progressCallback)
       {
-         progressCallback(true, 0.0f, "Checking for a new update", shared::CDataContainer::EmptyContainer);
+         progressCallback(true, 0.0f, "Checking for a new update", shared::CStringExtension::EmptyString, shared::CDataContainer::EmptyContainer);
 
          //make some initializations
          boost::shared_ptr<IRunningInformation> runningInformation(shared::CServiceLocator::instance().get<IRunningInformation>());
@@ -79,7 +79,7 @@ namespace update {
          update::info::CUpdateSite updateSite(startupOptions, runningInformation);
 
 
-         progressCallback(true, 0.0f, "A new update is available", shared::CDataContainer::EmptyContainer);
+         progressCallback(true, 0.0f, "A new update is available", shared::CStringExtension::EmptyString, shared::CDataContainer::EmptyContainer);
 
          //////////////////////////////////////////////////////////
          // STEP2 : download package file
@@ -99,22 +99,22 @@ namespace update {
          Poco::Path downloadedPackage(tempFolder);
          downloadedPackage.setFileName(packageName);
 
-         progressCallback(true, 0.0f, "Downloading package", shared::CDataContainer::EmptyContainer);
+         progressCallback(true, 0.0f, "Downloading package", shared::CStringExtension::EmptyString, shared::CDataContainer::EmptyContainer);
          shared::web::CFileDownloader::downloadFileAndVerify(updateSite.getYadomsPackageUri(packageName), downloadedPackage, md5HashExpected, boost::bind(&shared::web::CFileDownloader::reportProgressToLog, _1, _2));
-         progressCallback(true, 50.0f, "Package " + packageName + " successfully downloaded", shared::CDataContainer::EmptyContainer);
+         progressCallback(true, 50.0f, "Package " + packageName + " successfully downloaded", shared::CStringExtension::EmptyString, shared::CDataContainer::EmptyContainer);
 
          //////////////////////////////////////////////////////////
          // STEP3 : extract package
          //////////////////////////////////////////////////////////
 
-         progressCallback(true, 50.0f, "Extracting package " + packageName, shared::CDataContainer::EmptyContainer);
+         progressCallback(true, 50.0f, "Extracting package " + packageName, shared::CStringExtension::EmptyString, shared::CDataContainer::EmptyContainer);
          shared::compression::CExtract unZipper;
          Poco::Path extractedPackageLocation = unZipper.here(downloadedPackage);
 
          //////////////////////////////////////////////////////////
          // STEP4 : run updater command
          //////////////////////////////////////////////////////////
-         progressCallback(true, 90.0f, "Running updater", shared::CDataContainer::EmptyContainer);
+         progressCallback(true, 90.0f, "Running updater", shared::CStringExtension::EmptyString, shared::CDataContainer::EmptyContainer);
          std::string commandToRun = versionToUpdate.get<std::string>("yadoms.information.commandToRun");
          step4RunUpdaterProcess(extractedPackageLocation, commandToRun, runningInformation);
             
@@ -123,7 +123,7 @@ namespace update {
          //////////////////////////////////////////////////////////
 
          //exit yadoms
-         progressCallback(true, 90.0f, "Exiting Yadoms", shared::CDataContainer::EmptyContainer);
+         progressCallback(true, 90.0f, "Exiting Yadoms", shared::CStringExtension::EmptyString, shared::CDataContainer::EmptyContainer);
 
          //demande de fermeture de l'application
          boost::shared_ptr<IApplicationStopHandler> stopHandler = shared::CServiceLocator::instance().get<IApplicationStopHandler>();
