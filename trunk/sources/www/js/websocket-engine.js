@@ -30,12 +30,6 @@ WebSocketEngine.isActive = function() {
 WebSocketEngine.onAcquisitionUpdated = null;
 
 /**
- * Event used when a task update is received from the server
- * @type {function({data: (String|Blob|ArrayBuffer|Object)})}
- */
-WebSocketEngine.onTaskUpdated = null;
-
-/**
  * Update the acquisition filter
  * @param keywordCollectionToFilter The collection of keyword id to filter
  */
@@ -78,9 +72,7 @@ WebSocketEngine.initializeWebSocketEngine = function(callback) {
                         case "devicenew":
                             break;
                         case "taskupdatenotification":
-                            if($.isFunction(WebSocketEngine.onTaskUpdated)) {
-                                WebSocketEngine.onTaskUpdated(websocketData);
-                            }
+                            $(document).trigger("taskupdatenotification." + websocketData.uuid, websocketData);
                             console.log("TaskUpdateNotification : " + JSON.stringify(websocketData));
                             break;
                     }

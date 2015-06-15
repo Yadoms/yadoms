@@ -198,6 +198,8 @@
             //we display the result
             $.each(pluginList, function(localIndex, localValue) {
                localValue.uid = createUUID();
+               //the actual plugin does nothing
+               localValue.processing = false;
                createInstallUpdateItemLine(localValue);
                //we set the visibility to the allowed buttons
                updateLine(localValue);
@@ -218,7 +220,7 @@
                   "<td><em class=\"local-version\"></em></td>" +
                   "<td><em class=\"latest-version\"></em></td>" +
                   "<td>" +
-                     "<div class=\"btn-group\">" +
+                     "<div class=\"action-buttons btn-group\">" +
                        "<div class=\"btn-group btn-install\">" +
                            "<button type=\"button\" class=\"btn main-btn btn-primary\">" +
                               "<span class=\"glyphicon glyphicon-save \"></span>" +
@@ -233,113 +235,150 @@
                         "</div>" +
                        "<button type=\"button\" class=\"btn btn-danger btn-uninstall\" data-i18n=\"[title]modals.dashboard.sub-windows.install-update.generic.uninstall\"><span class=\"glyphicon glyphicon-trash\"></span></button>" +
                      "</div>" +
+                     "<div class=\"action-progression\">" +
+                        "<div class=\"progress\">" +
+                           "<div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" style=\"width: 0%\">" +
+                              "<span class=\"hidden\">60% Complete</span>" +
+                           "</div>" +
+                           "<span class=\"message\"></span>" +
+                        "<div>" +
+                      "</div>" +
                   "</td>" +
               "</tr>";
 
       $("table#plugin-install-update-list").append(s);
+   }
 
+   function getLineFromItem(item) {
+      return $("table#plugin-install-update-list").find("tr#" + item.uid);
    }
 
    function updateLine(item) {
-      var $line = $("table#plugin-install-update-list").find("tr#" + item.uid);
+      var $line = getLineFromItem(item);
 
-      var uninstallAllowed = false;
-      var installUpdateAllowed = false;
-      var canChooseVersion = false;
-
-      var availableVersions = [];
-
-      if (!isNullOrUndefined(item.serverVersions)) {
-         //we create a list of all version available to update based on the type of the version and the list of available version different from the local one
-         $.each(item.serverVersions, function (index, value) {
-            if (!matchVersion(item, value)) {
-               //if this releasetype is wanted we add it to the arrays of version for this item
-               if ($.inArray(value.releaseType.toLowerCase(), wantedVersion) > -1) {
-                  availableVersions.push(value);
-               }
-            }
-         });
-      }
-
+      //we manage general information
       if (!isNullOrUndefined(item.version)) {
-         //the plugin is already installed so the button is used to update
-         $line.find("div.btn-install button.main-btn").attr("data-i18n", "[title]modals.dashboard.sub-windows.install-update.generic.install");
-
-         //the component is already installed so we can uninstall it
-         uninstallAllowed = true;
-
          //we can display the local version
          $line.find("em.local-version").text(versionToString(item));
       }
       else {
-         $line.find("div.btn-install button.main-btn").attr("data-i18n", "[title]modals.dashboard.sub-windows.install-update.generic.update");
+         $line.find("em.local-version").text("");
       }
 
-      if (availableVersions.length > 0) {
-         if (availableVersions.length > 1) {
-            //there is different versions visible
-            canChooseVersion = true;
-         }
-
-         installUpdateAllowed = true;
-
-         //we create a combo that have all available versions for install or update
-         $cbVersion = $line.find("ul.versions");
-         $cbVersion.empty();
-         availableVersions.sort(function (a, b) { return b.version - a.version; });
-
-         $.each(availableVersions, function(index, value) {
-
-            $cbVersion.append("<li downloadUrl=\"" + value.downloadUrl + "\"><a href=\"#\"><em>" + versionToString(value) + "</em></a></li>");
-            //we manage the click event on each version
-            if (!isNullOrUndefined(item.version)) {
-               //the item is already ionstalled, we ask an update
-               $line.find("button.main-btn").unbind('click').bind('click', askForPluginUpdate(item, value));
-            }
-            else {
-               //the item isn't installed so we make a new install
-               $line.find("button.main-btn").unbind('click').bind('click', askForPluginInstall(item, value));
-            }
-
-         });
-
-         $line.find("ul.latest-version").text(versionToString(availableVersions[0]));
-
+      if ((!isNullOrUndefined(availableVersions)) && (availableVersions.length > 0)) {
          //we can display the latest version
          $line.find("em.latest-version").text(versionToString(availableVersions[0]));
       }
       else {
-         //there is no interesting new version
-         $line.find("button.btn-expand").addClass("disabled");
+         $line.find("em.latest-version").text("");
       }
 
-      if (uninstallAllowed)
-         $line.find("button.btn-uninstall").removeClass("disabled");
-      else
-         $line.find("button.btn-uninstall").addClass("disabled");
+      if (!item.processing) {
+         //no action in progress we show action buttons
 
-      if (installUpdateAllowed) {
-         $line.find("div.btn-install button.main-btn").removeClass("disabled");
-         //if the user can choose version we enable the list
-         if (canChooseVersion)
-            $line.find("div.btn-install button.btn-expand").removeClass("disabled");
+         $line.find("div.action-buttons").removeClass("hidden");
+         $line.find("div.action-progression").addClass("hidden");
+
+         //we manage actions buttons
+         var uninstallAllowed = false;
+         var installUpdateAllowed = false;
+         var canChooseVersion = false;
+
+         var availableVersions = [];
+
+         if (!isNullOrUndefined(item.serverVersions)) {
+            //we create a list of all version available to update based on the type of the version and the list of available version different from the local one
+            $.each(item.serverVersions, function (index, value) {
+               if (!matchVersion(item, value)) {
+                  //if this releasetype is wanted we add it to the arrays of version for this item
+                  if ($.inArray(value.releaseType.toLowerCase(), wantedVersion) > -1) {
+                     availableVersions.push(value);
+                  }
+               }
+            });
+         }
+
+         if (!isNullOrUndefined(item.version)) {
+            //the plugin is already installed so the button is used to update
+            $line.find("div.btn-install button.main-btn").attr("data-i18n", "[title]modals.dashboard.sub-windows.install-update.generic.install");
+
+            //the component is already installed so we can uninstall it
+            uninstallAllowed = true;
+         }
+         else {
+            $line.find("div.btn-install button.main-btn").attr("data-i18n", "[title]modals.dashboard.sub-windows.install-update.generic.update");
+         }
+
+         if (availableVersions.length > 0) {
+            if (availableVersions.length > 1) {
+               //there is different versions visible
+               canChooseVersion = true;
+            }
+
+            installUpdateAllowed = true;
+
+            //we create a combo that have all available versions for install or update
+            $cbVersion = $line.find("ul.versions");
+            $cbVersion.empty();
+            availableVersions.sort(function (a, b) { return b.version - a.version; });
+
+            $.each(availableVersions, function(index, value) {
+
+               $cbVersion.append("<li downloadUrl=\"" + value.downloadUrl + "\"><a href=\"#\"><em>" + versionToString(value) + "</em></a></li>");
+               //we manage the click event on each version
+               if (!isNullOrUndefined(item.version)) {
+                  //the item is already ionstalled, we ask an update
+                  $cbVersion.find("li").last().unbind('click').bind('click', askForPluginUpdate(item, value));
+               }
+               else {
+                  //the item isn't installed so we make a new install
+                  $cbVersion.find("li").last().unbind('click').bind('click', askForPluginInstall(item, value));
+               }
+            });
+
+            $line.find("ul.latest-version").text(versionToString(availableVersions[0]));
+
+            //we can display the latest version
+            $line.find("em.latest-version").text(versionToString(availableVersions[0]));
+         }
+         else {
+            //there is no interesting new version
+            $line.find("button.btn-expand").addClass("disabled");
+         }
+
+         if (uninstallAllowed)
+            $line.find("button.btn-uninstall").removeClass("disabled");
          else
-            $line.find("div.btn-install button.btn-expand").addClass("disabled");
-      }
-      else {
-         $line.find("div.btn-install button.main-btn").addClass("disabled");
-         $line.find("div.btn-install button.btn-expand").addClass("disabled");
-      }
+            $line.find("button.btn-uninstall").addClass("disabled");
 
-      //we manage click events
-      if (!isNullOrUndefined(item.version)) {
-         //the item is already installed, we ask an update
-         $line.find("button.main-btn").unbind('click').bind('click', askForPluginUpdate(item, availableVersions[0]));
-         $line.find("button.btn-uninstall").unbind('click').bind('click', askForPluginRemove(item));
+         if (installUpdateAllowed) {
+            $line.find("div.btn-install button.main-btn").removeClass("disabled");
+            //if the user can choose version we enable the list
+            if (canChooseVersion)
+               $line.find("div.btn-install button.btn-expand").removeClass("disabled");
+            else
+               $line.find("div.btn-install button.btn-expand").addClass("disabled");
+         }
+         else {
+            $line.find("div.btn-install button.main-btn").addClass("disabled");
+            $line.find("div.btn-install button.btn-expand").addClass("disabled");
+         }
+
+         //we manage click events
+         if (!isNullOrUndefined(item.version)) {
+            //the item is already installed, we ask an update
+            $line.find("button.main-btn").unbind('click').bind('click', askForPluginUpdate(item, availableVersions[0]));
+            $line.find("button.btn-uninstall").unbind('click').bind('click', askForPluginRemove(item));
+         }
+         else {
+            //the item isn't installed so we make a new install
+            $line.find("button.main-btn").unbind('click').bind('click', askForPluginInstall(item, availableVersions[0]));
+         }
       }
       else {
-         //the item isn't installed so we make a new install
-         $line.find("button.main-btn").unbind('click').bind('click', askForPluginInstall(item, availableVersions[0]));
+         //an action is in progress we show progression
+         $line.find("div.action-buttons").addClass("hidden");
+         $line.find("div.action-progression").removeClass("hidden");
       }
    }
 
@@ -356,7 +395,34 @@
                        //the user has confirmed the action
                        UpdateInformationManager.installPlugin(updateInformation.downloadUrl, function (taskId) {
                           console.debug("TaskId : " + taskId);
-                          //TODO : manage taskId and websocket
+                          //we listen for websocket event
+                          $(document).on("taskupdatenotification." + taskId, function (e, taskUpdateInformation) {
+                             debugger;
+                             var $line = getLineFromItem(item);
+                             $line.find("div.progress-bar").css("width", taskUpdateInformation.progression + "%");
+                             $line.find("span.message").text($.t("webSockets." + taskUpdateInformation.message));
+
+                             var taskFinished = false;
+                             //we manage the end of the task
+                             if (taskUpdateInformation.taskState.toLowerCase() == "fail") {
+                                console.error("Unable to install plugin : " + taskUpdateInformation.exception);
+                                taskFinished = true;
+                             }
+
+                             if (taskUpdateInformation.taskState.toLowerCase() == "success") {
+                                taskFinished = true;
+                             }
+
+                             if (taskFinished) {
+                                //we remove the progress information and restore buttons
+                                item.processing = false;
+                                updateLine(item);
+                             }
+
+                          });
+                          //we hide the buttons and show the progression
+                          item.processing = true;
+                          updateLine(item);
                        });
                     });
          });
