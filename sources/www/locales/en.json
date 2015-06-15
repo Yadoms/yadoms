@@ -549,6 +549,22 @@
       "taskFailed" : "The $t(system.__who__) task has been crashed",
       "ruleFailed" : "The automation rule __who__ has failed : __what__"
    },
+   "webSockets" : {
+      "update" : {
+         "plugin" : {
+            "install" : "Installing plugin ...",
+            "update" : "Updating plugin ...",
+            "remove" : "Removing plugin ...",
+            "removeFailed" : "Remove plugin failed",
+            "download" : "Downloading plugin ...",
+            "downloadFailed" : "Download plugin failed",
+            "deploy" : "Delpoying plugin ...",
+            "deployFailed" : "Deploy plugin failed",
+            "finalize" : "Finalizing ...",
+            "success" : "Success"
+         }
+      }
+   },
    "system" : {
       "yadoms" : "yadoms",
       "databaseBackup" : "Database backup",
