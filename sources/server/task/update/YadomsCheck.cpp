@@ -21,23 +21,10 @@ namespace task {
          return m_taskName;
       }
 
-      bool CYadomsCheck::doWork(TaskProgressFunc progressCallback)
+      void CYadomsCheck::doWork(TaskProgressFunc progressCallback)
       {
-         try
-         {
-            ::update::worker::CYadoms worker;
-
-            //adapt the progress callback (signature are same; but could change in future, so an adaptation is better)
-            ::update::worker::CYadoms::WorkerProgressFunc adapter = boost::bind(progressCallback, _1, _2, _3, _4);
-            worker.checkForUpdate(adapter);
-            return true;
-         }
-         catch (std::exception & e)
-         {
-            YADOMS_LOG(error) << "Error in yadoms check for update task " << e.what();
-            progressCallback(false, 100.0f, e.what(), shared::CDataContainer::EmptyContainer);
-         }
-         return false;
+         ::update::worker::CYadoms worker;
+         worker.checkForUpdate(boost::bind(progressCallback, _1, _2, _3, _4, _5));
       }
 
    } //namespace update

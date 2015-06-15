@@ -26,7 +26,7 @@ namespace update {
          shared::CDataContainer callbackData;
          callbackData.set("downloadUrl", downloadUrl);
 
-         m_progressCallback(true, 0.0f, i18n::CClientStrings::UpdateWidgetInstall, callbackData);
+         m_progressCallback(true, 0.0f, i18n::CClientStrings::UpdateWidgetInstall, shared::CStringExtension::EmptyString, callbackData);
          /////////////////////////////////////////////
          //1. download package
          /////////////////////////////////////////////
@@ -34,7 +34,7 @@ namespace update {
          {
             YADOMS_LOG(information) << "Downloading widget package";
 
-            m_progressCallback(true, 0.0f, i18n::CClientStrings::UpdateWidgetDownload, callbackData);
+            m_progressCallback(true, 0.0f, i18n::CClientStrings::UpdateWidgetDownload, shared::CStringExtension::EmptyString, callbackData);
             Poco::Path downloadedPackage = CWorkerTools::downloadPackage(downloadUrl, m_progressCallback, i18n::CClientStrings::UpdateWidgetDownload, 0.0, 90.0);
             YADOMS_LOG(information) << "Downloading widget package with sucess";
 
@@ -45,17 +45,16 @@ namespace update {
             try
             {
                YADOMS_LOG(information) << "Deploy widget package " << downloadedPackage.toString();
-               m_progressCallback(true, 90.0f, i18n::CClientStrings::UpdateWidgetDeploy, callbackData);
+               m_progressCallback(true, 90.0f, i18n::CClientStrings::UpdateWidgetDeploy, shared::CStringExtension::EmptyString, callbackData);
                Poco::Path widgetPath = CWorkerTools::deployWidgetPackage(downloadedPackage);
                YADOMS_LOG(information) << "Widget deployed with success";
-               m_progressCallback(true, 100.0f, i18n::CClientStrings::UpdateWidgetSuccess, shared::CDataContainer::EmptyContainer);
+               m_progressCallback(true, 100.0f, i18n::CClientStrings::UpdateWidgetSuccess, shared::CStringExtension::EmptyString, shared::CDataContainer::EmptyContainer);
             }
             catch (std::exception & ex)
             {
                //fail to extract package file
                YADOMS_LOG(error) << "Fail to deploy widget package : " << ex.what();
-               callbackData.set("exception", ex.what());
-               m_progressCallback(false, 100.0f, i18n::CClientStrings::UpdateWidgetDeployFailed, callbackData);
+               m_progressCallback(false, 100.0f, i18n::CClientStrings::UpdateWidgetDeployFailed, ex.what(), callbackData);
             }
 
 
@@ -69,8 +68,7 @@ namespace update {
          {
             //fail to download package
             YADOMS_LOG(error) << "Fail to download pwidget ackage : " << ex.what();
-            callbackData.set("exception", ex.what());
-            m_progressCallback(false, 100.0f, i18n::CClientStrings::UpdateWidgetDownloadFailed, callbackData);
+            m_progressCallback(false, 100.0f, i18n::CClientStrings::UpdateWidgetDownloadFailed, ex.what(), callbackData);
          }
       }
 
@@ -84,14 +82,14 @@ namespace update {
          callbackData.set("widgetName", widgetName);
          callbackData.set("downloadUrl", downloadUrl);
 
-         m_progressCallback(true, 0.0f, i18n::CClientStrings::UpdateWidgetUpdate, callbackData);
+         m_progressCallback(true, 0.0f, i18n::CClientStrings::UpdateWidgetUpdate, shared::CStringExtension::EmptyString, callbackData);
          /////////////////////////////////////////////
          //1. download package
          /////////////////////////////////////////////
          try
          {
             YADOMS_LOG(information) << "Downloading widget package";
-            m_progressCallback(true, 0.0f, i18n::CClientStrings::UpdateWidgetDownload, callbackData);
+            m_progressCallback(true, 0.0f, i18n::CClientStrings::UpdateWidgetDownload, shared::CStringExtension::EmptyString, callbackData);
             Poco::Path downloadedPackage = CWorkerTools::downloadPackage(downloadUrl, m_progressCallback, i18n::CClientStrings::UpdateWidgetDownload, 0.0, 90.0);
             YADOMS_LOG(information) << "Downloading widget package with sucess";
 
@@ -102,25 +100,24 @@ namespace update {
             /////////////////////////////////////////////
             try
             {
-               m_progressCallback(true, 50.0f, i18n::CClientStrings::UpdatePluginDeploy, callbackData);
+               m_progressCallback(true, 50.0f, i18n::CClientStrings::UpdatePluginDeploy, shared::CStringExtension::EmptyString, callbackData);
                Poco::Path pluginPath = CWorkerTools::deployPluginPackage(downloadedPackage);
                YADOMS_LOG(information) << "Plugin deployed with success";
 
 
 
                YADOMS_LOG(information) << "Deploy widget package " << downloadedPackage.toString();
-               m_progressCallback(true, 90.0f, i18n::CClientStrings::UpdateWidgetDeploy, callbackData);
+               m_progressCallback(true, 90.0f, i18n::CClientStrings::UpdateWidgetDeploy, shared::CStringExtension::EmptyString, callbackData);
                Poco::Path widgetPath = CWorkerTools::deployWidgetPackage(downloadedPackage);
 
                YADOMS_LOG(information) << "Widget installed with success";
-               m_progressCallback(true, 100.0f, i18n::CClientStrings::UpdateWidgetSuccess, callbackData);
+               m_progressCallback(true, 100.0f, i18n::CClientStrings::UpdateWidgetSuccess, shared::CStringExtension::EmptyString, callbackData);
             }
             catch (std::exception & ex)
             {
                //fail to extract package file
                YADOMS_LOG(error) << "Fail to deploy widget package : " << ex.what();
-               callbackData.set("exception", ex.what());
-               m_progressCallback(false, 100.0f, i18n::CClientStrings::UpdateWidgetDeployFailed, callbackData);
+                m_progressCallback(false, 100.0f, i18n::CClientStrings::UpdateWidgetDeployFailed, ex.what(), callbackData);
             }
 
 
@@ -134,8 +131,7 @@ namespace update {
          {
             //fail to download package
             YADOMS_LOG(error) << "Fail to download pwidget ackage : " << ex.what();
-            callbackData.set("exception", ex.what());
-            m_progressCallback(false, 100.0f, i18n::CClientStrings::UpdateWidgetDownloadFailed, callbackData);
+            m_progressCallback(false, 100.0f, i18n::CClientStrings::UpdateWidgetDownloadFailed, ex.what(), callbackData);
          }
       }
 
@@ -146,7 +142,7 @@ namespace update {
          shared::CDataContainer callbackData;
          callbackData.set("widgetName", widgetName);
 
-         m_progressCallback(true, 0.0f, i18n::CClientStrings::UpdateWidgetRemove, callbackData);
+         m_progressCallback(true, 0.0f, i18n::CClientStrings::UpdateWidgetRemove, shared::CStringExtension::EmptyString, callbackData);
 
 
          try
@@ -161,14 +157,13 @@ namespace update {
             if (toDelete.exists())
                toDelete.remove(true);
 
-            m_progressCallback(true, 100.0f, i18n::CClientStrings::UpdateWidgetSuccess, callbackData);
+            m_progressCallback(true, 100.0f, i18n::CClientStrings::UpdateWidgetSuccess, shared::CStringExtension::EmptyString, callbackData);
          }
          catch (std::exception & ex)
          {
             //fail to remove package
             YADOMS_LOG(error) << "Fail to delete widget : " << widgetName << " : " << ex.what();
-            callbackData.set("exception", ex.what());
-            m_progressCallback(false, 100.0f, i18n::CClientStrings::UpdateWidgetRemoveFailed, callbackData);
+            m_progressCallback(false, 100.0f, i18n::CClientStrings::UpdateWidgetRemoveFailed, ex.what(), callbackData);
          }
       }
 

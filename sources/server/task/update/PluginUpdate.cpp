@@ -21,16 +21,11 @@ namespace task { namespace update {
       return m_taskName;
    }
 
-   bool CPluginUpdate::doWork(TaskProgressFunc pFunctor)
+   void CPluginUpdate::doWork(TaskProgressFunc pFunctor)
    {
-      YADOMS_LOG(information) << "Start updating plugin...";
-
       //adapt the progress callback (signature are same; but could change in future, so an adaptation is better)
-      ::update::worker::CPlugin worker(boost::bind(pFunctor, _1, _2, _3, _4));
+      ::update::worker::CPlugin worker(boost::bind(pFunctor, _1, _2, _3, _4, _5));
       worker.update(m_pluginName, m_downloadUrl);
-
-      YADOMS_LOG(information) << "End of updating plugin";
-      return true;
    }
 
 } //namespace update

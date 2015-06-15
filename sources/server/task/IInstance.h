@@ -28,7 +28,12 @@ namespace task {
       //---------------------------------
       ///\brief Get the current message
       //---------------------------------
-      virtual std::string getMessage() const = 0;
+      virtual std::string getMessage() const = 0;   
+      
+      //---------------------------------
+      ///\brief Get the current exception message
+      //---------------------------------
+      virtual std::string getExceptionMessage() const = 0;
 
       //------------------------------------------
       ///\brief   Obtain Status

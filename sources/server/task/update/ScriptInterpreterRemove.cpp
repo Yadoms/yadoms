@@ -22,16 +22,11 @@ namespace task { namespace update {
       return m_taskName;
    }
 
-   bool CScriptInterpreterRemove::doWork(TaskProgressFunc pFunctor)
+   void CScriptInterpreterRemove::doWork(TaskProgressFunc pFunctor)
    {
-      YADOMS_LOG(information) << "Start removing scriptInterpreter...";
-
       //adapt the progress callback (signature are same; but could change in future, so an adaptation is better)
-      ::update::worker::CScriptInterpreter worker(boost::bind(pFunctor, _1, _2, _3, _4));
+      ::update::worker::CScriptInterpreter worker(boost::bind(pFunctor, _1, _2, _3, _4, _5));
       worker.remove(m_scriptInterpreterName);
-
-      YADOMS_LOG(information) << "End of removing scriptInterpreter";
-      return true;
    }
 
 } //namespace update

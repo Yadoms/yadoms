@@ -8,6 +8,7 @@ namespace web { namespace ws {
    const std::string CTaskUpdateNotificationFrame::m_taskState = "taskState";
    const std::string CTaskUpdateNotificationFrame::m_taskProgression = "progression";
    const std::string CTaskUpdateNotificationFrame::m_taskMessage = "message";
+   const std::string CTaskUpdateNotificationFrame::m_taskException = "exception";
    const std::string CTaskUpdateNotificationFrame::m_taskData = "data";
    
 
@@ -20,6 +21,7 @@ namespace web { namespace ws {
       if (taskProgression->getProgression())
          m_internalContainer.set(m_taskProgression, *taskProgression->getProgression());
       m_internalContainer.set(m_taskMessage, taskProgression->getMessage());
+      m_internalContainer.set(m_taskException, taskProgression->getExceptionMessage());
       m_internalContainer.set(m_taskData, taskProgression->getTaskData());
    }
 

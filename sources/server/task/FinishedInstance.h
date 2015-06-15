@@ -13,7 +13,7 @@ namespace task {
       //------------------------------------------
       ///\brief   Constructor
       //------------------------------------------
-      CFinishedInstance(const std::string & guid, const std::string & name, ETaskStatus status, boost::optional< float > progression, const std::string & message, const shared::CDataContainer & data, const boost::posix_time::ptime & creationDate);
+      CFinishedInstance(const std::string & guid, const std::string & name, ETaskStatus status, boost::optional< float > progression, const std::string & message, const std::string & messageException, const shared::CDataContainer & data, const boost::posix_time::ptime & creationDate);
 
       //------------------------------------------
       ///\brief   Destructor
@@ -25,6 +25,7 @@ namespace task {
       virtual std::string getGuid() const;
       virtual boost::optional<float> getProgression() const;
       virtual std::string getMessage() const;
+      virtual std::string getExceptionMessage() const;
       virtual ETaskStatus getStatus() const;
       virtual shared::CDataContainer getTaskData() const;
       virtual std::string getName() const;
@@ -56,7 +57,12 @@ namespace task {
       //--------------------------------------------------------------
       /// \brief			The current message given by the task
       //--------------------------------------------------------------
-      std::string m_message;
+      std::string m_message;    
+      
+      //--------------------------------------------------------------
+      /// \brief			The current message exception given by the task
+      //--------------------------------------------------------------
+      std::string m_messageException;
 
       //------------------------------------------
       ///\brief   The task data

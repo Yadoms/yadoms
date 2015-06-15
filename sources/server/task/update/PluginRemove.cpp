@@ -22,16 +22,11 @@ namespace task { namespace update {
       return m_taskName;
    }
 
-   bool CPluginRemove::doWork(TaskProgressFunc pFunctor)
+   void CPluginRemove::doWork(TaskProgressFunc pFunctor)
    {
-      YADOMS_LOG(information) << "Start removing plugin...";
-
       //adapt the progress callback (signature are same; but could change in future, so an adaptation is better)
-      ::update::worker::CPlugin worker(boost::bind(pFunctor, _1, _2, _3, _4));
+      ::update::worker::CPlugin worker(boost::bind(pFunctor, _1, _2, _3, _4, _5));
       worker.remove(m_pluginName);
-
-      YADOMS_LOG(information) << "End of removing plugin";
-      return true;
    }
 
 } //namespace update

@@ -47,7 +47,12 @@ namespace web { namespace ws {
       //-----------------------------
       ///\brief The task message
       //-----------------------------
-      static const std::string m_taskMessage;     
+      static const std::string m_taskMessage; 
+      
+      //-----------------------------
+      ///\brief The task exception
+      //-----------------------------
+      static const std::string m_taskException;
       
       //-----------------------------
       ///\brief The task custom data
