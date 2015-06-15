@@ -48,9 +48,9 @@ include(copyBoost.cmake)
 ##################################################################################################
 ## CPack installation preconfiguration
 ##################################################################################################
-SET(INSTALL_BINDIR "bin")
+set(INSTALL_BINDIR "bin")
 set(CMAKE_INSTALL_DEFAULT_COMPONENT_NAME "YadomsCore")
-
+set(PLUGINLIST "")
 
 ##################################################################################################
 ## Project output configuration
@@ -703,6 +703,7 @@ ELSE()
 ENDIF()
 
 
+
 ##################################################################################################
 ## Plugins
 ##################################################################################################
@@ -717,6 +718,7 @@ add_subdirectory(plugins)
 
 #include Script interpreters CMake file
 add_subdirectory(scriptInterpreters)
+
 
 
 ##################################################################################################
@@ -807,11 +809,16 @@ ENDFOREACH(POCOLIBRARY)
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/www DESTINATION ${INSTALL_BINDIR})
 
 
+
+
 #indicate that debug distribution are allowed (so required debug components are copied in debug mode)
 SET(CMAKE_INSTALL_DEBUG_LIBRARIES ON)
 SET(CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION ${INSTALL_BINDIR})
 INCLUDE(InstallRequiredSystemLibraries)
 
+set(CPACK_COMPONENT_YADOMSCORE_DISPLAY_NAME "Server")
+set(CPACK_COMPONENT_YADOMSCORE_REQUIRED ON)
+set(CPACK_COMPONENT_YADOMSCORE_DESCRIPTION "Yadoms core server software components.")
 
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Yadoms")
 SET(CPACK_PACKAGE_VENDOR "Yadoms")
@@ -821,10 +828,25 @@ SET(CPACK_PACKAGE_VERSION_MAJOR "1")
 SET(CPACK_PACKAGE_VERSION_MINOR "0")
 SET(CPACK_PACKAGE_VERSION_PATCH "0")
 SET(CPACK_PACKAGE_INSTALL_DIRECTORY "Yadoms")
-# There is a bug in NSI that does not handle full unix paths properly. Make
-# sure there is at least one set of four (4) backlasshes.
-SET(CPACK_PACKAGE_ICON "${CMAKE_CURRENT_SOURCE_DIR}/../distribution/Yadoms.bmp")
 
+set(CPACK_COMPONENTS_ALL_IN_ONE_PACKAGE 0)
+
+   
+#configure the plugin to be grouped in plugins sub components
+FOREACH (PLUGIN ${PLUGINLIST})
+   string(TOUPPER ${PLUGIN} _pluginNameUpperCase)
+   set(CPACK_COMPONENT_${_pluginNameUpperCase}_GROUP "Plugins")
+ENDFOREACH(PLUGIN)
+set(CPACK_COMPONENT_GROUP_PLUGINS_DISPLAY_NAME  "Plugins")
+set(CPACK_COMPONENT_GROUP_PLUGINS_DESCRIPTION  "All the plugins which control hardware components")
+
+#configure the plugin to be grouped in plugins sub components
+FOREACH (SCRIPTINTERPRETER ${SCRIPTINTERPRETERSLIST})
+   string(TOUPPER ${SCRIPTINTERPRETER} _scriptInterpreterNameUpperCase)
+   set(CPACK_COMPONENT_${_scriptInterpreterNameUpperCase}_GROUP "ScriptInterpreters")
+ENDFOREACH(SCRIPTINTERPRETER)
+set(CPACK_COMPONENT_GROUP_SCRIPTINTERPRETERS_DISPLAY_NAME  "Script interpreters")
+set(CPACK_COMPONENT_GROUP_SCRIPTINTERPRETERS_DESCRIPTION  "All the script interpreters (allow to run custom scripts)")
 
 IF(WIN32 AND NOT UNIX)
 
@@ -832,6 +854,10 @@ IF(WIN32 AND NOT UNIX)
 	if(USE_NSIS)
 	  set(CPACK_GENERATOR "NSIS")
 	  
+     # There is a bug in NSI that does not handle full unix paths properly. Make
+      # sure there is at least one set of four (4) backlasshes.
+      SET(CPACK_PACKAGE_ICON "${CMAKE_CURRENT_SOURCE_DIR}/../distribution\\\\Yadoms.bmp")
+
 	  set(CPACK_NSIS_PLUGINS_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/../distribution/NSIS/extensions")
 	  set(CPACK_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../distribution/NSIS")
       SET(CPACK_NSIS_INSTALLED_ICON_NAME "${INSTALL_BINDIR}\\\\yadoms.exe")

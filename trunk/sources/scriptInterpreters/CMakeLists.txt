@@ -28,6 +28,10 @@ if(SWIG_FOUND)
       ENDIF()
    ENDFOREACH()
 
+   set(SCRIPTINTERPRETERSLIST
+      ${SCRIPTINTERPRETERSLIST}
+      PARENT_SCOPE)   
+   
 else()
    message("SWIG not found : no script interpreter will be available")
 endif()
