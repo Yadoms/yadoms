@@ -1,6 +1,6 @@
 {
    "name": "OneWire",
-   "description": "Support of the 1-wire protocol, using OWFS service. Before use, check that OWFS is well installed and configured on your Yadoms server.",
+   "description": "Support of the 1-wire protocol.",
    "version": "1.0",
    "releaseType": "beta",
    "author": "YADOMS Team",
@@ -11,17 +11,44 @@
       "others": "unsupported"
    },
    "configurationSchema": {
-      "OwfsMountPoint": {
-         "name": "OWFS mount point",
-         "description": "The OWFS mount point on Yadoms server. See your owfs.conf file (generally set to /mnt/1wire).",
-         "type": "string",
-         "defaultValue": "/mnt/1wire",
+      "linuxMode": {
+         "type": "radioSection",
+         "name": "Hardware mode",
+         "description": "Choose the hardware used to connect to the 1-wire network",
          "show": {
-           "__Binding__": {
-             "type": "system",
-             "query": "platformIsLinux"
-           }
-         }  
+            "__Binding__": {
+               "type": "system",
+               "query": "platformIsLinux"
+            }
+         },
+         "content" : {
+            "owfs" : {
+                "type" : "section",
+                "name" : "USB/serial adapter",
+                "description" : "Use a 1-wire USB or serial adapter. This mode use OWFS (see http://owfs.org for more information). This mode supports many devices, but need an adapter supported by OWFS. OWFS must be correctly configured (see Yadoms wiki page for how to configure OWFS).",
+                "content" : {
+                  "mountPoint" : {
+                     "type" : "string",
+                     "name" : "OWFS mount point",
+                     "description" : "The OWFS mount point on Yadoms server. See your owfs.conf file (generally set to /mnt/1wire).",
+                     "defaultValue": "/mnt/1wire"
+                  }
+               }
+            },
+            "kernel" : {
+                "type" : "section",
+                "name" : "GPIO direct connection",
+                "description" : "1-wire devices are directly connected to a GPIO pin. This mode requires no adapter, but is only suitable for a very small network. Only a few devices are supported (see Yadoms wiki pages for more information).",
+                "content" : {
+                  "mountPoint" : {
+                     "type" : "string",
+                     "name" : "Mount point",
+                     "description" : "The mount point on Yadoms server (generally set to /sys/bus/w1/devices).",
+                     "defaultValue": "/sys/bus/w1/devices"
+                  }
+               }
+            }
+         }
       }
    }
 }

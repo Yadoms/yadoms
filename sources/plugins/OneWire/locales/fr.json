@@ -1,12 +1,32 @@
 ﻿{
-   "description": "Support du protocole 1-wire (utilise le service OWFS). Avant utilisation, vérifier que OWFS est correctement installé et configuré sur votre serveur Yadoms.",
-   "configurationSchema": ""
-   {
-	  "OwfsMountPoint":
-	  {
-		 "name": "Point de montage OWFS",
-		 "description": "Indiquer ici le point de montage du système de fichier virtuel créé sur votre serveur Yadoms par OWFS. Ce point de montage est indiqué dans le fichier owfs.conf (généralement /mnt/1wire)."
-	  }
+   "description": "Support du protocole 1-wire.",
+   "configurationSchema": {
+	   "linuxMode": {
+		   "name": "Matériel",
+		   "description": "Choisissez la méthode de connection du serveur Yadoms au réseau 1-wire.",
+         "content": {
+            "owfs": {
+               "name" : "Adaptateur USB/serie",
+               "description" : "Utilisation d'un adaptateur USB ou série. Ce mode utilise OWFS (voir http://owfs.org pour plus d'informations). Ce mode supporte la plupart des devices 1-wire, mais nécessite un adaptateur supporté par OWFS. OWFS doit également être correctement configuré sur le serveur (voir le wiki de Yadoms pour la configuration d'OWFS).",
+               "content" : {
+                  "mountPoint" : {
+                     "name" : "Point de montage OWFS",
+                     "description" : "Le point de montage d'OWFS sur le serveur Yadoms. Doit correspondre à la valeur indiquée dans le fichier owfs.conf (généralement /mnt/1wire)."
+                  }
+               }               
+            },
+            "kernel" : {
+                "name" : "Connection directe sur broche d'entrée-sortie",
+                "description" : "Les composants 1-wire peuvent être connectés directement sur une broche d'entrée-sortie du système. Ce mode ne requiert aucun adaptateur, mais n'est adapté qu'aux petits réseaux. De plus, peu de composants sont supportés par ce mode (voir le wiki Yadoms pour plus d'informations).",
+                "content" : {
+                  "mountPoint" : {
+                     "name" : "Point de montage",
+                     "description" : "Le point de montage sur le serveur Yadoms (généralement /sys/bus/w1/devices)."
+                  }
+               }
+            }
+         }       
+	   }
 	}   
 }
 

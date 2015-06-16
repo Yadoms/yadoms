@@ -100,7 +100,7 @@ void CEngine::scanNetworkNode(const boost::filesystem::path& nodePath, std::map<
                scanNetworkNode(nodePath / boost::filesystem::path("aux"), devices);
             }
          }
-         catch (shared::exception::CInvalidParameter& ex)
+         catch (shared::exception::CInvalidParameter&)
          {
             YADOMS_LOG(warning) << "1-Wire, Device family " << dir->path().filename().string().substr(0, 2) << " is not actually supported";
          }

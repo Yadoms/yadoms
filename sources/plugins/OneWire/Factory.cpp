@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Factory.h"
 #include "owfs/Engine.h"
+#include "kernel/Engine.h"
 
 
 CFactory::CFactory()

@@ -17,6 +17,7 @@ set(ONEWIRE_PLUGIN_SOURCES
    Configuration.cpp
    OneWire.h
    OneWire.cpp
+   OneWireException.hpp
    
    device/4kEepromWithPio.h
    device/4kEepromWithPio.cpp
@@ -70,6 +71,18 @@ set(ONEWIRE_PLUGIN_SOURCES
    ioInterfaces/ITemperatureIo.h
    ioInterfaces/IVoltage.h
    
+   kernel/Engine.h
+   kernel/Engine.cpp
+   
+   kernel/io/Common.h
+   kernel/io/Common.cpp
+   kernel/io/8ChannelAddressableSwitch.h
+   kernel/io/8ChannelAddressableSwitch.cpp
+   kernel/io/DualChannelAddressableSwitch.h
+   kernel/io/DualChannelAddressableSwitch.cpp
+   kernel/io/HighPrecisionDigitalThermometer.h
+   kernel/io/HighPrecisionDigitalThermometer.cpp
+   
    owfs/Engine.h
    owfs/Engine.cpp
    
@@ -105,6 +118,8 @@ set(ONEWIRE_PLUGIN_SOURCES
 
 	source_group(ioInterfaces ioInterfaces/*.*)
 	source_group(device device/*.*)
+	source_group(kernel kernel/*.*)
+	source_group(kernel\\io kernel/io/*.*)
 	source_group(owfs owfs/*.*)
 	source_group(owfs\\io owfs/io/*.*)
 	

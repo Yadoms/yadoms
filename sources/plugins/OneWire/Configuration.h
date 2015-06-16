@@ -23,6 +23,7 @@ public:
    // IConfiguration implementation
    virtual void initializeWith(const shared::CDataContainer &data);
    virtual const boost::filesystem::path& getOwfsMountPoint() const;
+   virtual const boost::filesystem::path& getKernelMountPoint() const;
    // [END] IConfiguration implementation
 
 private:
@@ -35,4 +36,9 @@ private:
    /// \brief	    OWFS mount point
    //--------------------------------------------------------------
    boost::filesystem::path m_owfsMountPoint;
+
+   //--------------------------------------------------------------
+   /// \brief	    Kernel mount point
+   //--------------------------------------------------------------
+   boost::filesystem::path m_kernelMountPoint;
 };
