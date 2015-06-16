@@ -21,5 +21,10 @@ public:
    //--------------------------------------------------------------
    /// \brief	    Get the OWFS mount point
    //--------------------------------------------------------------
-   virtual const boost::filesystem::path& getOwfsMountPoint () const = 0;
+   virtual const boost::filesystem::path& getOwfsMountPoint() const = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	    Get the kernel mode mount point
+   //--------------------------------------------------------------
+   virtual const boost::filesystem::path& getKernelMountPoint() const = 0;
 };

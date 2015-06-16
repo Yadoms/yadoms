@@ -58,9 +58,13 @@ namespace web { namespace poco {
             break;
          }
       }
+      catch (Poco::IOException& exc)
+      {
+         YADOMS_LOG(warning) << "Websocket request handler Poco::IOException : " << exc.what();
+      }
       catch (shared::exception::CException & ex)
       {
-         YADOMS_LOG(error) << "Websocket request handler exception : " << ex.what();
+         YADOMS_LOG(warning) << "Websocket request handler exception : " << ex.what();
       }
       catch (...)
       {
