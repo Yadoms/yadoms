@@ -21,7 +21,7 @@ namespace pluginSystem
       /// \param[in]  plugin              Plugin name
       //--------------------------------------------------------------
       CInvalidPluginException(const std::string& plugin)
-         :CException(std::string("Invalid plugin found " + plugin).c_str())
+         :CException(std::string("Invalid plugin found ") + plugin)
       {
       }
 
