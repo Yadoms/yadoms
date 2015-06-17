@@ -74,6 +74,7 @@ set(SHARED_LIB_SRC
    shared/exception/BadConversion.hpp
    shared/exception/EmptyResult.hpp
    shared/exception/Exception.hpp
+   shared/exception/Extract.hpp
    shared/exception/InvalidParameter.hpp
    shared/exception/NotImplemented.hpp
    shared/exception/NotSupported.hpp

@@ -17,6 +17,7 @@
 #include <shared/ServiceLocator.h>
 #include <shared/tools/Random.h>
 #include <shared/exception/Parse.hpp>
+#include <shared/exception/Extract.hpp>
 
 
 namespace update {
@@ -84,65 +85,75 @@ namespace update {
          Poco::Path tempPluginFolder(outputDirectory);
          tempPluginFolder.append(shared::tools::CRandom::generateUUID());
 
-         //extract to random pluginName location
-         shared::compression::CExtract unZipper;
-         unZipper.to(downloadedPackage, tempPluginFolder);
-
          try
          {
-            //read package.json file and get the pluginname
-            Poco::Path packageJsonPath(tempPluginFolder.toString());
-            packageJsonPath.append("package.json");
-
-            shared::CDataContainer packageJson;
-            std::string packageJsonPathString = packageJsonPath.toString();
-            packageJson.deserializeFromFile(packageJsonPathString);
-
-            //retreive the plugin name
-            std::string pluginName = packageJson.get<std::string>("name");
-
+            //extract to random pluginName location
+            shared::compression::CExtract unZipper;
+            unZipper.to(downloadedPackage, tempPluginFolder);
 
             try
             {
-               Poco::Path realPluginFolder(outputDirectory);
-               realPluginFolder.append(pluginName);
+               //read package.json file and get the pluginname
+               Poco::Path packageJsonPath(tempPluginFolder.toString());
+               packageJsonPath.append("package.json");
 
-               //if plugin directory already exists; copy files; else just rename
-               if (tools::CFileSystem::exists(realPluginFolder))
+               shared::CDataContainer packageJson;
+               std::string packageJsonPathString = packageJsonPath.toString();
+               packageJson.deserializeFromFile(packageJsonPathString);
+
+               //retreive the plugin name
+               std::string pluginName = packageJson.get<std::string>("name");
+
+
+               try
                {
-                  //replace all files
-                  tools::CFileSystem::copyDirectoryContentTo(tempPluginFolder, realPluginFolder);
+                  Poco::Path realPluginFolder(outputDirectory);
+                  realPluginFolder.append(pluginName);
 
+                  //if plugin directory already exists; copy files; else just rename
+                  if (tools::CFileSystem::exists(realPluginFolder))
+                  {
+                     //replace all files
+                     tools::CFileSystem::copyDirectoryContentTo(tempPluginFolder, realPluginFolder);
+
+                     //delete folder tempPluginFolder
+                     tools::CFileSystem::remove(tempPluginFolder, true);
+                  }
+                  else
+                  {
+                     //rename random plugin folder to good plugin name
+                     tools::CFileSystem::rename(tempPluginFolder, realPluginFolder);
+                  }
+                  return realPluginFolder;
+               }
+               catch (Poco::FileException & fileException)
+               {
+                  YADOMS_LOG(error) << "Operation fail :" << fileException.displayText();
+                  throw fileException;
+               }
+               catch (std::exception & ex)
+               {
                   //delete folder tempPluginFolder
+                  YADOMS_LOG(error) << "Operation fail (std::exception):" << ex.what();
                   tools::CFileSystem::remove(tempPluginFolder, true);
+                  throw;
                }
-               else
-               {
-                  //rename random plugin folder to good plugin name
-                  tools::CFileSystem::rename(tempPluginFolder, realPluginFolder);
-               }
-               return realPluginFolder;
-            }
-            catch (Poco::FileException & fileException)
-            {
-               YADOMS_LOG(error) << "Operation fail :" << fileException.displayText();
-               throw fileException;
             }
             catch (std::exception & ex)
             {
                //delete folder tempPluginFolder
-               YADOMS_LOG(error) << "Operation fail (std::exception):" << ex.what();
+               YADOMS_LOG(error) << "Operation fail (read json):" << ex.what();
                tools::CFileSystem::remove(tempPluginFolder, true);
                throw;
             }
          }
-         catch (std::exception & ex)
+         catch (shared::exception::CExtract & ex)
          {
-            //delete folder tempPluginFolder
-            YADOMS_LOG(error) << "Operation fail (read json):" << ex.what();
+            YADOMS_LOG(error) << "Cannot extract package :" << ex.what();
             tools::CFileSystem::remove(tempPluginFolder, true);
             throw;
          }
+
       }
       
       std::string CWorkerTools::getWidgetBasePath()

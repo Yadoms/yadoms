@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Extract.h"
 #include "shared/exception/NotSupported.hpp"
+#include "shared/exception/Extract.hpp"
 
 #include <Poco/File.h>
 #include <Poco/FileStream.h>
@@ -46,18 +47,8 @@ namespace shared { namespace compression {
       inp.close();
       if (m_unzipError)
       {
-         //fail to unzip
-         //ensure folder is removed
-         Poco::File toDelete(extractPath);
-         if (toDelete.exists() && extractPath.isDirectory())
-            toDelete.remove(true);
-         throw shared::exception::CException("Fail to uncompress package");
+         throw shared::exception::CExtract("Fail to uncompress package : " + m_unzipErrorMessage);
       }
-
-      //extraction done with success, now delete downloaded file
-      Poco::File toDelete(downloadedPackage);
-      if (toDelete.exists())
-         toDelete.remove();
 
       return extractPath;
    }
