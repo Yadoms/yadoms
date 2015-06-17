@@ -362,6 +362,8 @@ set(YADOMS_SRC
 	
 	server/task/FinishedInstance.h
 	server/task/FinishedInstance.cpp
+   server/task/GenericTask.h
+   server/task/GenericTask.cpp
 	server/task/IInstance.h
 	server/task/Instance.h
 	server/task/Instance.cpp
@@ -375,28 +377,6 @@ set(YADOMS_SRC
 	server/task/TaskFactory.cpp
 	server/task/TaskStatus.h
 	server/task/TaskStatus.cpp
-	server/task/update/PluginInstall.h
-	server/task/update/PluginInstall.cpp
-	server/task/update/PluginRemove.h
-	server/task/update/PluginRemove.cpp
-	server/task/update/PluginUpdate.h
-	server/task/update/PluginUpdate.cpp
-	server/task/update/ScriptInterpreterInstall.h
-	server/task/update/ScriptInterpreterInstall.cpp
-	server/task/update/ScriptInterpreterRemove.h
-	server/task/update/ScriptInterpreterRemove.cpp
-	server/task/update/ScriptInterpreterUpdate.h
-	server/task/update/ScriptInterpreterUpdate.cpp
-	server/task/update/WidgetInstall.h
-	server/task/update/WidgetInstall.cpp
-	server/task/update/WidgetRemove.h
-	server/task/update/WidgetRemove.cpp
-	server/task/update/WidgetUpdate.h
-	server/task/update/WidgetUpdate.cpp
-	server/task/update/YadomsCheck.h
-	server/task/update/YadomsCheck.cpp
-	server/task/update/YadomsUpdate.h
-	server/task/update/YadomsUpdate.cpp
 	server/task/backup/Database.h
 	server/task/backup/Database.cpp
    
@@ -494,7 +474,6 @@ source_group(server\\pluginSystem server/pluginSystem/*.* )
 source_group(server\\pluginSystem\\internalPlugin server/pluginSystem/internalPlugin/*.* )
 source_group(server\\startupOptions  server/startupOptions/*.*)
 source_group(server\\task  server/task/*.*)
-source_group(server\\task\\update  server/task/update/*.*)
 source_group(server\\task\\backup  server/task/backup/*.*)
 source_group(server\\update  server/update/*.*)
 source_group(server\\update\\info  server/update/info/*.*)

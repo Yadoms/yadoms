@@ -26,6 +26,11 @@ namespace update {
          return downloadPackage(downloadUrl, boost::bind(&CWorkerTools::reportDownloadProgress, _1, _2, callback, function, min, max));
       }
 
+      Poco::Path CWorkerTools::downloadPackageAndVerify(const std::string & downloadUrl, const std::string & md5Hash, WorkerProgressFunc callback, const std::string & function, float min, float max)
+      {
+         return downloadPackageAndVerify(downloadUrl, md5Hash, boost::bind(&CWorkerTools::reportDownloadProgress, _1, _2, callback, function, min, max));
+      }
+
       Poco::Path CWorkerTools::downloadPackage(const std::string & downloadUrl)
       {
          return downloadPackage(downloadUrl, boost::bind(&shared::web::CFileDownloader::reportProgressToLog, _1, _2));
@@ -44,6 +49,23 @@ namespace update {
          downloadedPackage.setFileName(packageName);
 
          shared::web::CFileDownloader::downloadFile(toDownload, downloadedPackage, progressReporter);
+         return downloadedPackage;
+      }
+
+
+      Poco::Path CWorkerTools::downloadPackageAndVerify(const std::string & downloadUrl, const std::string & md5Hash, shared::web::CFileDownloader::ProgressFunc progressReporter)
+      {
+         //determine the filename to download
+         Poco::URI toDownload(downloadUrl);
+         std::string packageName = shared::web::CUriHelpers::getFile(toDownload);
+         if (packageName.empty())
+            packageName = "temp.zip";
+
+         //determine local path
+         Poco::Path downloadedPackage(tools::CFileSystem::getTemporaryFolder());
+         downloadedPackage.setFileName(packageName);
+
+         shared::web::CFileDownloader::downloadFileAndVerify(toDownload, downloadedPackage, md5Hash, progressReporter);
          return downloadedPackage;
       }
 

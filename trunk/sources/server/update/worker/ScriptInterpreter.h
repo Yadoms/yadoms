@@ -8,43 +8,27 @@ namespace update {
       class CScriptInterpreter
       {
       public:
+         //---------------------------------------------
+         ///\brief                        Install a new scriptInterpreter
+         ///\param [in] progressCallback  The progress callback
+         ///\param [in] downloadUrl       The scriptInterpreter package url
+         //---------------------------------------------
+         static void install(CWorkerTools::WorkerProgressFunc progressCallback, const std::string & downloadUrl);
 
          //---------------------------------------------
-         ///\brief   Constructor
-         ///\param [in] progressCallback The progress callback
+         ///\brief                              Update a scriptInterpreter
+         ///\param [in] progressCallback        The progress callback
+         ///\param [in] scriptInterpreterName   The scriptInterpreter name
+         ///\param [in] downloadUrl             The scriptInterpreter package url
          //---------------------------------------------
-         CScriptInterpreter(CWorkerTools::WorkerProgressFunc progressCallback);
+         static void update(CWorkerTools::WorkerProgressFunc progressCallback, const std::string & scriptInterpreterName, const std::string & downloadUrl);
 
          //---------------------------------------------
-         ///\brief   Destructor
+         ///\brief                              Remove a scriptInterpreter
+         ///\param [in] progressCallback        The progress callback
+         ///\param [in] scriptInterpreterName   The scriptInterpreter name
          //---------------------------------------------
-         virtual ~CScriptInterpreter();
-
-         
-         //---------------------------------------------
-         ///\brief   Install a new scriptInterpreter
-         ///\param [in] downloadUrl The scriptInterpreter package url
-         //---------------------------------------------
-         void install(const std::string & downloadUrl);
-
-         //---------------------------------------------
-         ///\brief   Update a scriptInterpreter
-         ///\param [in] scriptInterpreterName  The scriptInterpreter name
-         ///\param [in] downloadUrl The scriptInterpreter package url
-         //---------------------------------------------
-         void update(const std::string & scriptInterpreterName, const std::string & downloadUrl);
-
-         //---------------------------------------------
-         ///\brief   Remove a scriptInterpreter
-         ///\param [in] scriptInterpreterName  The scriptInterpreter name
-         //---------------------------------------------
-         void remove(const std::string & scriptInterpreterName);
-
-      private:
-         //---------------------------------------------
-         ///\brief   The progress callback
-         //---------------------------------------------
-         CWorkerTools::WorkerProgressFunc m_progressCallback;
+         static void remove(CWorkerTools::WorkerProgressFunc progressCallback, const std::string & scriptInterpreterName);
       };
 
    } // namespace worker

@@ -27,6 +27,18 @@ namespace update {
          static Poco::Path downloadPackage(const std::string & downloadUrl, WorkerProgressFunc callback, const std::string & function, float min, float max);
          
          //---------------------------------------------
+         ///\brief   Download a package
+         ///\param [in] downloadUrl The downloaded package URL
+         ///\param [in] md5Hash     The expected md5hash
+         ///\param [in] callback    The callback to use
+         ///\param [in] function    The i18n string to send to callback (ex: update.plugin.download)
+         ///\param [in] min         The global progression when download start
+         ///\param [in] max         The global progression when download ends
+         ///\return The package local path
+         //---------------------------------------------
+         static Poco::Path downloadPackageAndVerify(const std::string & downloadUrl, const std::string & md5Hash, WorkerProgressFunc callback, const std::string & function, float min, float max);
+         
+         //---------------------------------------------
          ///\brief   Download a package (report progress to log)
          ///\param [in] downloadUrl  The downloaded package URL
          ///\return The package local path
@@ -39,7 +51,16 @@ namespace update {
          ///\param [in] progressReporter  The progress report callback
          ///\return The package local path
          //---------------------------------------------
-         static Poco::Path downloadPackage(const std::string & downloadUrl, shared::web::CFileDownloader::ProgressFunc progressReporter);
+         static Poco::Path downloadPackage(const std::string & downloadUrl, shared::web::CFileDownloader::ProgressFunc progressReporter);  
+         
+         //---------------------------------------------
+         ///\brief   Download a package
+         ///\param [in] downloadUrl       The downloaded package URL
+         ///\param [in] md5Hash           The expected md5 hash
+         ///\param [in] progressReporter  The progress report callback
+         ///\return The package local path
+         //---------------------------------------------
+         static Poco::Path downloadPackageAndVerify(const std::string & downloadUrl, const std::string & md5Hash, shared::web::CFileDownloader::ProgressFunc progressReporter);
 
          //---------------------------------------------
          ///\brief   Deploy a package

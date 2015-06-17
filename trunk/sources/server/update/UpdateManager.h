@@ -89,6 +89,7 @@ namespace update
       //-----------------------------------------------------------------------------   
       const std::string removeScriptInterpreterAsync(const std::string & scriptInterpreterName);
 
+
       //-----------------------------------------------------------------------------
       /// \brief  Start a check for update for Yadoms (asynchronous; check for update result is provided by webservice)
       /// \return  The task unique id
@@ -103,6 +104,19 @@ namespace update
       const std::string updateYadomsAsync(const shared::CDataContainer & versionToInstall);
 
    private:
+      //-----------------------------------------------------------------------------
+      /// \brief  Worker for checking for Yadoms update
+      /// \param [in]   progressCallback        The callback to use for reporting progression
+      //-----------------------------------------------------------------------------   
+      void checkForYadomsUpdateTaskWorker(task::ITask::TaskProgressFunc progressCallback);
+
+      //-----------------------------------------------------------------------------
+      /// \brief  Worker for updating Yadoms
+      /// \param [in]   progressCallback        The callback to use for reporting progression
+      /// \param [in]   versionToInstall        The version to install (dont use reference but copy)
+      //-----------------------------------------------------------------------------   
+      void updateYadomsTaskWorker(task::ITask::TaskProgressFunc progressCallback, shared::CDataContainer versionToInstall);
+      
       //-----------------------------------------------------------------------------
       /// \brief  Start a task
       /// \param [in]   task        The task to start

@@ -1,8 +1,7 @@
 #pragma once
 #include "IRunningInformation.h"
-#include <shared/DataContainer.h>
-#include <Poco/Zip/ZipLocalFileHeader.h>
-#include <Poco/URI.h>
+#include <Poco/Path.h>
+#include "WorkerTools.h"
 
 namespace update {
    namespace worker {
@@ -13,30 +12,28 @@ namespace update {
       class CYadoms
       {
       public:
-         //---------------------------------
-         ///\brief Define a function prototype for updating the worker progress
-         //---------------------------------
-         typedef boost::function5<void, bool, boost::optional<float>, std::string, std::string, shared::CDataContainer > WorkerProgressFunc;
-
          //---------------------------------------------
-         ///\brief   Constructor
+         ///\brief   Check for update
+         ///\param [in] progressCallback The progress callback
          //---------------------------------------------
-         CYadoms();
-
+         static void checkForUpdate(CWorkerTools::WorkerProgressFunc progressCallback);
+         
          //---------------------------------------------
-         ///\brief   Destructor
+         ///\brief   Update Yadoms to another version
+         ///\param [in] progressCallback The progress callback
+         ///\param [in] versionInfo    The version information to use (can be upgrade or downgrade)
          //---------------------------------------------
-         virtual ~CYadoms();
-
-         // IWorker implementation 
-         void checkForUpdate(WorkerProgressFunc callback);
-         void update(shared::CDataContainer & versionInfo, WorkerProgressFunc callback);
-         // [END] - IWorker implementation 
+         static void update(CWorkerTools::WorkerProgressFunc progressCallback, const shared::CDataContainer & versionInfo);
          
 
       private:
-        
-         void step4RunUpdaterProcess(Poco::Path & extractedPackageLocation, const std::string & commandtoRun, boost::shared_ptr<IRunningInformation> & runningInfo);
+         //---------------------------------------------
+         ///\brief   Run the updater script
+         ///\param [in] extractedPackageLocation    The location of the package extraction
+         ///\param [in] commandtoRun                The script command to run
+         ///\param [in] runningInfo                 The current yadoms running information
+         //---------------------------------------------
+         static void step4RunUpdaterProcess(Poco::Path & extractedPackageLocation, const std::string & commandtoRun, boost::shared_ptr<IRunningInformation> & runningInfo);
       };
 
    } // namespace worker

@@ -10,41 +10,26 @@ namespace update {
       {
       public:
          //---------------------------------------------
-         ///\brief   Constructor
-         ///\param [in] progressCallback The progress callback
+         ///\brief                        Install a new widget
+         ///\param [in] progressCallback  The progress callback
+         ///\param [in] downloadUrl       The plugin package url
          //---------------------------------------------
-         CWidget(CWorkerTools::WorkerProgressFunc progressCallback);
+         static void install(CWorkerTools::WorkerProgressFunc progressCallback, const std::string & downloadUrl);
 
          //---------------------------------------------
-         ///\brief   Destructor
+         ///\brief                        Update a widget
+         ///\param [in] progressCallback  The progress callback
+         ///\param [in] widgetName        The widget name
+         ///\param [in] downloadUrl       The widget package url
          //---------------------------------------------
-         virtual ~CWidget();
+         static void update(CWorkerTools::WorkerProgressFunc progressCallback, const std::string & widgetName, const std::string & downloadUrl);
 
          //---------------------------------------------
-         ///\brief   Install a new widget
-         ///\param [in] downloadUrl The plugin package url
+         ///\brief                        Remove a widget
+         ///\param [in] progressCallback  The progress callback
+         ///\param [in] widgetName        The widget name
          //---------------------------------------------
-         void install(const std::string & downloadUrl);
-
-         //---------------------------------------------
-         ///\brief   Update a widget
-         ///\param [in] widgetName  The widget name
-         ///\param [in] downloadUrl The widget package url
-         //---------------------------------------------
-         void update(const std::string & widgetName, const std::string & downloadUrl);
-
-         //---------------------------------------------
-         ///\brief   Remove a widget
-         ///\param [in] widgetName  The widget name
-         //---------------------------------------------
-         void remove(const std::string & widgetName);
-
-      private:
-
-         //---------------------------------------------
-         ///\brief   The progress callback
-         //---------------------------------------------
-         CWorkerTools::WorkerProgressFunc m_progressCallback;
+         static void remove(CWorkerTools::WorkerProgressFunc progressCallback, const std::string & widgetName);
       };
 
    } // namespace worker
