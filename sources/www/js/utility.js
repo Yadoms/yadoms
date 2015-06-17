@@ -67,7 +67,7 @@ function notifySuccess(message)
  * @returns {noty}
  */
 function notifyError(message) {
-   return notifyError(message, undefined, undefined);
+   return notifyError(message, undefined);
 }
 
 
@@ -77,7 +77,7 @@ function notifyError(message) {
  * @param errorInfo
  */
 function notifyError(message, errorInfo) {
-   return notifyError(message, errorInfo, undefined);
+   return notifyError(message, errorInfo, false);
 }
 
 /**

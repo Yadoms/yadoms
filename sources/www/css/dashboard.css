@@ -278,3 +278,8 @@ Fix dropdown menus hidden by bootstrap modal
 .recipient-list li {
     min-width:300px;
 }
+
+/*Install update dashboard page*/
+.action-progression .progress {
+    margin-bottom : 0px;
+}

@@ -152,14 +152,17 @@ function periodicUpdateTask() {
                widgetUpdateInterval = setInterval(periodicUpdateTask, UpdateInterval);
 
             //we reinitialize the websocket
-
+debugger;
             WebSocketEngine.initializeWebSocketEngine(function() {
                //web socket opened
-
-               WebSocketEngine.onAcquisitionUpdated = function(websocketData){
+               //we listen acquisitionupdate event
+               debugger;
+               $(document).on("acquisitionupdate", function (e, websocketData) {
+                  debugger;
                   var acq = AcquisitionManager.factory(websocketData.data.acquisition);
                   dispatchToWidgets(acq);
-               };
+               });
+
                //Maybe there is a lot of time between the turn off of the server and the turn on, so we must ask all widget
                //data to be sure that all information displayed are fresh
                updateWidgetsPolling();
@@ -239,10 +242,14 @@ function dispatchToWidgets(acq) {
                //foreach device we ask for last values
                if (device.keywordId == acq.keywordId) {
                   console.debug("onNewAcquisition : " + JSON.stringify(acq));
-
-                  //we signal the new acquisition to the widget if the widget support the method
-                  if (widget.viewModel.onNewAcquisition !== undefined)
+                  try {
+                     //we signal the new acquisition to the widget if the widget support the method
+                     if (widget.viewModel.onNewAcquisition !== undefined)
                         widget.viewModel.onNewAcquisition(device, acq);
+                  }
+                  catch (e) {
+                     console.error(widget.type + " has encouter an error in onNewAcquisition() method:" + e.message);
+                  }
                }
             }
          });
