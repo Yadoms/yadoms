@@ -11,7 +11,7 @@ namespace task {
    //------------------------------
    ///\brief Class which handle one task
    //------------------------------
-   class CInstance : public shared::CThreadBase, public IInstance, public boost::enable_shared_from_this<CInstance>
+   class CInstance : public shared::CThreadBase, public IInstance
    {
    public:
       //------------------------------

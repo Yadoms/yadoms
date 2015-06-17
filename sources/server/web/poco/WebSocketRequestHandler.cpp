@@ -65,7 +65,7 @@ void CWebSocketRequestHandler::handleRequest(Poco::Net::HTTPServerRequest& reque
       observers.push_back(notification::CHelpers::subscribeBasicObserver< database::entities::CEventLogger >(eventHandler, kNewLogEvent));
 
       // Subscribe to task progression notifications
-      observers.push_back(notification::CHelpers::subscribeBasicObserver< task::IInstance >(eventHandler, kTaskProgression));
+      observers.push_back(notification::CHelpers::subscribeBasicObserver< task::CInstanceNotificationData >(eventHandler, kTaskProgression));
 
       // The web scoket client
       CWebSocketClient client(request, response, eventHandler, kNotifFromWsClient);
@@ -113,7 +113,7 @@ void CWebSocketRequestHandler::handleRequest(Poco::Net::HTTPServerRequest& reque
 
          case kTaskProgression:
          {
-            boost::shared_ptr<task::IInstance> taskProgression = eventHandler.getEventData<boost::shared_ptr<task::IInstance> >();
+            boost::shared_ptr<task::CInstanceNotificationData> taskProgression = eventHandler.getEventData<boost::shared_ptr<task::CInstanceNotificationData> >();
             clientSeemConnected = send(client, ws::CTaskUpdateNotificationFrame(taskProgression));
             break;
          }

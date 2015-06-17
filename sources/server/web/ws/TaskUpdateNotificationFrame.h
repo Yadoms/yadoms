@@ -2,7 +2,7 @@
 
 #include "FrameBase.h"
 #include "database/entities/Entities.h"
-#include "../../server/task/IInstance.h"
+#include "server/task/InstanceNotificationData.h"
 
 namespace web { namespace ws {
 
@@ -16,7 +16,7 @@ namespace web { namespace ws {
       ///\brief Constructor
       ///\param [in]    taskProgression     The task progression data
       //-----------------------------
-      CTaskUpdateNotificationFrame(boost::shared_ptr<const task::IInstance> taskProgression);
+      CTaskUpdateNotificationFrame(boost::shared_ptr<task::CInstanceNotificationData> taskProgression);
 
       //-----------------------------
       ///\brief Destructor

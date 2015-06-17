@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "TaskUpdateNotificationFrame.h"
+#include <shared/Log.h>
 
 namespace web { namespace ws {
 
@@ -12,7 +13,7 @@ namespace web { namespace ws {
    const std::string CTaskUpdateNotificationFrame::m_taskData = "data";
    
 
-   CTaskUpdateNotificationFrame::CTaskUpdateNotificationFrame(boost::shared_ptr<const task::IInstance> taskProgression)
+   CTaskUpdateNotificationFrame::CTaskUpdateNotificationFrame(boost::shared_ptr<task::CInstanceNotificationData> taskProgression)
       :CFrameBase(EFrameType::kTaskUpdateNotification)
    {
       m_internalContainer.set(m_taskName, taskProgression->getName());
@@ -23,6 +24,8 @@ namespace web { namespace ws {
       m_internalContainer.set(m_taskMessage, taskProgression->getMessage());
       m_internalContainer.set(m_taskException, taskProgression->getExceptionMessage());
       m_internalContainer.set(m_taskData, taskProgression->getTaskData());
+      
+      YADOMS_LOG(information) << "CTaskUpdateNotificationFrame : " << m_internalContainer.serialize();
    }
 
    CTaskUpdateNotificationFrame::~CTaskUpdateNotificationFrame()
