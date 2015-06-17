@@ -10,6 +10,8 @@
 #include <shared/DataContainer.h>
 #include "i18n/ClientStrings.h"
 
+#include "InstanceNotificationData.h"
+
 namespace task {
 
    //------------------------------
@@ -81,7 +83,14 @@ namespace task {
    {
       if (!isRunning)
          m_currentStatus = ETaskStatus::kFail;
-
+      else
+      {
+         if (progression)
+         {
+            if (progression >= 100.0f)
+               m_currentStatus = ETaskStatus::kSuccess;
+         }
+      }
       m_currentIsRunning = isRunning;
       m_currentProgression = progression;
       m_currentMessage = message;
@@ -94,7 +103,7 @@ namespace task {
          YADOMS_LOG(information) << m_task->getName() << " report progression none with message " << m_currentMessage;
 
       // Post notification
-      boost::shared_ptr<IInstance> obj(shared_from_this());
+      boost::shared_ptr<CInstanceNotificationData> obj(new CInstanceNotificationData(*this));
       notification::CHelpers::postNotification(obj);
    }
 
@@ -115,7 +124,7 @@ namespace task {
          m_task->doWork(boost::bind(&CInstance::OnTaskProgressUpdated, this, _1, _2, _3, _4, _5));
 
          //check if task is still running (modified by callback)
-         if (m_currentIsRunning)
+         if (m_currentIsRunning && m_currentStatus != ETaskStatus::kSuccess)
          {
             m_currentStatus = ETaskStatus::kSuccess;
             OnTaskProgressUpdated(true, 100.0, i18n::CClientStrings::TaskEnd, shared::CStringExtension::EmptyString, shared::CDataContainer::EmptyContainer);

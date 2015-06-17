@@ -367,6 +367,8 @@ set(YADOMS_SRC
 	server/task/IInstance.h
 	server/task/Instance.h
 	server/task/Instance.cpp
+	server/task/InstanceNotificationData.h
+	server/task/InstanceNotificationData.cpp
 	server/task/ITask.h
 	server/task/IUnique.h
 	server/task/Scheduler.h

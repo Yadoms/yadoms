@@ -51,15 +51,20 @@ namespace update {
             tools::CVersion availableVersion(lastVersionInformationFromUpdateSite.get<std::string>("yadoms.information.version"));
             tools::CVersion currentVersion = runningInformation->getSoftwareVersion();
 
+            shared::CDataContainer result;
+            result.set("lastVersion", lastVersionInformationFromUpdateSite);
+
             if (availableVersion <= currentVersion)
             {
                YADOMS_LOG(information) << "System is up to date";
-               progressCallback(true, 100.0f, i18n::CClientStrings::UpdateYadomsUpToDate , shared::CStringExtension::EmptyString, lastVersionInformationFromUpdateSite);
+               result.set("updateAvailable", false);
+               progressCallback(true, 100.0f, i18n::CClientStrings::UpdateYadomsUpToDate, shared::CStringExtension::EmptyString, result);
             }
             else
             {
                YADOMS_LOG(information) << "A new update is available";
-               progressCallback(true, 100.0f, i18n::CClientStrings::UpdateYadomsUpdateAvailable, shared::CStringExtension::EmptyString, lastVersionInformationFromUpdateSite);
+               result.set("updateAvailable", true);
+               progressCallback(true, 100.0f, i18n::CClientStrings::UpdateYadomsUpdateAvailable, shared::CStringExtension::EmptyString, result);
             }
          }
          catch (std::exception & ex)
