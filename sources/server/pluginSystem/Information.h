@@ -6,8 +6,7 @@
 namespace pluginSystem
 {
    //--------------------------------------------------------------
-   /// \brief		Container class for information about plugins
-   /// \note      This class is usually implemented by IMPLEMENT_PLUGIN macro
+   /// \brief		Container class for plugin information
    //--------------------------------------------------------------
    class CInformation : public shared::plugin::information::IInformation
    {

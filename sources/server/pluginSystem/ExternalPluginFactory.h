@@ -70,6 +70,11 @@ namespace pluginSystem
       const boost::filesystem::path m_libraryPath;
 
       //-------------------------------------------------------------
+      /// \brief	    Plugin information
+      //-------------------------------------------------------------
+      boost::shared_ptr<const shared::plugin::information::IInformation> m_information;
+
+      //-------------------------------------------------------------
       /// \brief	    Function pointer to "construct" exported function
       //-------------------------------------------------------------
       boost::function<shared::plugin::IPlugin* ()> m_construct;

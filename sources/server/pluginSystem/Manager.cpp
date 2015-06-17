@@ -185,7 +185,7 @@ void CManager::buildAvailablePluginList()
       catch (CInvalidPluginException& e)
       {
          // Invalid plugin
-         YADOMS_LOG(warning) << e.what() << " found in plugin path but is not a valid plugin";
+         YADOMS_LOG(warning) << e.what() << ", found in plugin path but is not a valid plugin";
       }
    }
 }
@@ -291,38 +291,36 @@ void CManager::updateInstance(const database::entities::CPlugin& newData)
    }
 }
 
-
 void CManager::startAllInstancesOfPlugin(const std::string& pluginName)
 {
+   // Find instances to start
+   std::vector<int> instancesToStart;
    std::vector<boost::shared_ptr<database::entities::CPlugin> > allInstances = getInstanceList();
-
-   std::vector<boost::shared_ptr<database::entities::CPlugin> >::iterator i;
-   for (i = allInstances.begin(); i != allInstances.end(); ++i)
+   for (std::vector<boost::shared_ptr<database::entities::CPlugin> >::const_iterator instance = allInstances.begin(); instance != allInstances.end(); ++instance)
    {
-      if (boost::iequals((*i)->Type(), pluginName))
-      {
-         if ((*i)->AutoStart())
-         {
-            startInstance((*i)->Id());
-         }
-      }
+      if (boost::iequals((*instance)->Type(), pluginName) && (*instance)->AutoStart())
+         instancesToStart.push_back((*instance)->Id());
    }
+
+   // Start all instances of this plugin
+   for (std::vector<int>::const_iterator instanceToStart = instancesToStart.begin(); instanceToStart != instancesToStart.end(); ++instanceToStart)
+      startInstance(*instanceToStart);
 }
 
 void CManager::stopAllInstancesOfPlugin(const std::string& pluginName)
 {
-   for (PluginInstanceMap::iterator i = m_runningInstances.begin(); i != m_runningInstances.end(); ++i)
+   // Find instances to stop
+   std::vector<int> instancesToStop;
+   for (PluginInstanceMap::const_iterator instance = m_runningInstances.begin(); instance != m_runningInstances.end(); ++instance)
    {
-      if (i->second)
-      {
-         if (boost::iequals(i->second->getPluginName(), pluginName))
-         {
-            stopInstance(i->first);
-         }
-      }
+      if (instance->second && boost::iequals(instance->second->getPluginName(), pluginName))
+         instancesToStop.push_back(instance->first);
    }
-}
 
+   // Stop all instances of this plugin
+   for (std::vector<int>::const_iterator instanceToStop = instancesToStop.begin(); instanceToStop != instancesToStop.end(); ++instanceToStop)
+      stopInstance(*instanceToStop);
+}
 
 void CManager::signalEvent(const CManagerEvent& event)
 {

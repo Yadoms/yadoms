@@ -9,7 +9,7 @@ namespace pluginSystem
 {
 
 CExternalPluginFactory::CExternalPluginFactory(const boost::filesystem::path& libraryPath)
-      :m_libraryPath(libraryPath), m_construct(NULL)
+   :m_libraryPath(libraryPath), m_construct(NULL), m_information(getInformation(libraryPath))
 {
    load();
 }
@@ -73,18 +73,7 @@ const boost::filesystem::path& CExternalPluginFactory::getLibraryPath() const
 
 boost::shared_ptr<const shared::plugin::information::IInformation> CExternalPluginFactory::getInformation() const
 {
-   // Because library can be unloaded at any time (so memory will be freed), return a copy of informations
-   try
-   {
-      boost::shared_ptr<shared::plugin::information::IInformation> information(
-         new pluginSystem::CInformation(getLibraryPath().parent_path()));
-      return information;
-   }
-   catch(shared::exception::CException& e)
-   {
-      YADOMS_LOG(error) << "Error getting plugin " << shared::CDynamicLibrary::ToLibName(m_libraryPath.string()) << " information : " << e.what();
-      throw shared::exception::CException("Error getting plugin information");
-   }
+   return m_information;
 }
 
 
@@ -94,8 +83,16 @@ boost::shared_ptr<const shared::plugin::information::IInformation> CExternalPlug
 
 boost::shared_ptr<const shared::plugin::information::IInformation> CExternalPluginFactory::getInformation(const boost::filesystem::path& libraryPath)
 {
-   CExternalPluginFactory plugin(libraryPath);
-   return plugin.getInformation();
+   try
+   {
+      boost::shared_ptr<shared::plugin::information::IInformation> information(boost::make_shared<pluginSystem::CInformation>(libraryPath.parent_path()));
+      return information;
+   }
+   catch (shared::exception::CException& e)
+   {
+      YADOMS_LOG(error) << "Error getting plugin " << shared::CDynamicLibrary::ToLibName(libraryPath.string()) << " information : " << e.what();
+      throw shared::exception::CException("Error getting plugin information");
+   }
 }
 
 } // namespace pluginSystem
