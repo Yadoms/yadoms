@@ -2,20 +2,14 @@
 #include "UpdateManager.h"
 #include <shared/Log.h>
 
-#include "task/ITask.h"
-#include "task/IInstance.h"
+#include "task/GenericTask.h"
 
-#include "task/update/YadomsCheck.h"
-#include "task/update/YadomsUpdate.h"
-#include "task/update/PluginInstall.h"
-#include "task/update/PluginRemove.h"
-#include "task/update/PluginUpdate.h"
-#include "task/update/WidgetInstall.h"
-#include "task/update/WidgetRemove.h"
-#include "task/update/WidgetUpdate.h"
-#include "task/update/ScriptInterpreterInstall.h"
-#include "task/update/ScriptInterpreterRemove.h"
-#include "task/update/ScriptInterpreterUpdate.h"
+#include "worker/Yadoms.h"
+#include "worker/Plugin.h"
+#include "worker/Widget.h"
+#include "worker/ScriptInterpreter.h"
+
+
 namespace update
 {
    CUpdateManager::CUpdateManager(boost::shared_ptr<task::CScheduler> & taskScheduler)
@@ -57,72 +51,82 @@ namespace update
 
    const std::string CUpdateManager::updatePluginAsync(const std::string & pluginName, const std::string & downloadUrl)
    {
-      boost::shared_ptr<task::ITask> task(new task::update::CPluginUpdate(pluginName, downloadUrl));
+      boost::shared_ptr<task::ITask> task(new task::CGenericTask("plugin.update",
+         boost::bind(&worker::CPlugin::update, _1, std::string(pluginName), std::string(downloadUrl)))); //force to copy parameters because references cannot be used in async task
       return startTask(task);
    }
   
    const std::string CUpdateManager::installPluginAsync(const std::string & downloadUrl)
    {
-      boost::shared_ptr<task::ITask> task(new task::update::CPluginInstall(downloadUrl));
+      boost::shared_ptr<task::ITask> task(new task::CGenericTask("plugin.install",
+         boost::bind(&worker::CPlugin::install, _1, std::string(downloadUrl)))); //force to copy parameters because references cannot be used in async task
       return startTask(task);
    }
 
    const std::string CUpdateManager::removePluginAsync(const std::string & pluginName)
    {
-      boost::shared_ptr<task::ITask> task(new task::update::CPluginRemove(pluginName));
+      boost::shared_ptr<task::ITask> task(new task::CGenericTask("plugin.remove",
+         boost::bind(&worker::CPlugin::remove, _1, std::string(pluginName)))); //force to copy parameters because references cannot be used in async task
       return startTask(task);
    }
 
    const std::string CUpdateManager::updateWidgetAsync(const std::string & widgetName, const std::string & downloadUrl)
    {
-      boost::shared_ptr<task::ITask> task(new task::update::CWidgetUpdate(widgetName, downloadUrl));
+      boost::shared_ptr<task::ITask> task(new task::CGenericTask("widget.update",
+         boost::bind(&worker::CWidget::update, _1, std::string(widgetName), std::string(downloadUrl)))); //force to copy parameters because references cannot be used in async task
       return startTask(task);
    }
   
    const std::string CUpdateManager::installWidgetAsync(const std::string & downloadUrl)
    {
-      boost::shared_ptr<task::ITask> task(new task::update::CWidgetInstall(downloadUrl));
+      boost::shared_ptr<task::ITask> task(new task::CGenericTask("widget.install",
+      boost::bind(&worker::CWidget::install, _1, std::string(downloadUrl)))); //force to copy parameters because references cannot be used in async task
       return startTask(task);
    }
 
    const std::string CUpdateManager::removeWidgetAsync(const std::string & widgetName)
    {
-      boost::shared_ptr<task::ITask> task(new task::update::CWidgetRemove(widgetName));
+      boost::shared_ptr<task::ITask> task(new task::CGenericTask("widget.remove",
+      boost::bind(&worker::CWidget::remove, _1, std::string(widgetName)))); //force to copy parameters because references cannot be used in async task
       return startTask(task);
    }
 
 
    const std::string CUpdateManager::updateScriptInterpreterAsync(const std::string & scriptInterpreterName, const std::string & downloadUrl)
    {
-      boost::shared_ptr<task::ITask> task(new task::update::CScriptInterpreterUpdate(scriptInterpreterName, downloadUrl));
+      boost::shared_ptr<task::ITask> task(new task::CGenericTask("scriptInterpreter.update",
+         boost::bind(&worker::CScriptInterpreter::update, _1, std::string(scriptInterpreterName), std::string(downloadUrl)))); //force to copy parameters because references cannot be used in async task
       return startTask(task);
    }
 
    const std::string CUpdateManager::installScriptInterpreterAsync(const std::string & downloadUrl)
    {
-      boost::shared_ptr<task::ITask> task(new task::update::CScriptInterpreterInstall(downloadUrl));
+      boost::shared_ptr<task::ITask> task(new task::CGenericTask("scriptInterpreter.install",
+         boost::bind(&worker::CScriptInterpreter::install, _1, std::string(downloadUrl)))); //force to copy parameters because references cannot be used in async task
       return startTask(task);
    }
 
    const std::string CUpdateManager::removeScriptInterpreterAsync(const std::string & scriptInterpreterName)
    {
-      boost::shared_ptr<task::ITask> task(new task::update::CScriptInterpreterRemove(scriptInterpreterName));
+      boost::shared_ptr<task::ITask> task(new task::CGenericTask("scriptInterpreter.remove",
+         boost::bind(&worker::CScriptInterpreter::install, _1, std::string(scriptInterpreterName)))); //force to copy parameters because references cannot be used in async task
       return startTask(task);
    }
 
    const std::string CUpdateManager::checkForYadomsUpdateAsync()
    {
-      boost::shared_ptr<task::ITask> task(new task::update::CYadomsCheck());
+      boost::shared_ptr<task::ITask> task(new task::CGenericTask("yadoms.checkForUpdate",
+         boost::bind(&worker::CYadoms::checkForUpdate, _1)));
       return startTask(task);
    }
-
+   
    const std::string CUpdateManager::updateYadomsAsync(const shared::CDataContainer & versionToInstall)
    {
-      boost::shared_ptr<task::ITask> task(new task::update::CYadomsUpdate(versionToInstall));
+      boost::shared_ptr<task::ITask> task(new task::CGenericTask("yadoms.update",
+         boost::bind(&worker::CYadoms::update, _1, shared::CDataContainer(versionToInstall)))); //force to copy parameter because the versionToInstall is a reference and cannot be used "as is" in async task
       return startTask(task);
    }
 
-   
 
   
 } // namespace update

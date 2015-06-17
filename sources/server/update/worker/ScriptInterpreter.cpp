@@ -15,23 +15,11 @@
 namespace update {
    namespace worker {
 
-      CScriptInterpreter::CScriptInterpreter(CWorkerTools::WorkerProgressFunc progressCallback)
-         :m_progressCallback(progressCallback)
-      {
 
-      }
-
-
-      CScriptInterpreter::~CScriptInterpreter()
-      {
-
-      }
-
-
-      void CScriptInterpreter::install(const std::string & downloadUrl)
+      void CScriptInterpreter::install(CWorkerTools::WorkerProgressFunc progressCallback, const std::string & downloadUrl)
       {
          YADOMS_LOG(information) << "Installing new scriptInterpreter from " << downloadUrl;
-         m_progressCallback(true, 0.0f, i18n::CClientStrings::UpdateScriptInterpreterInstall, shared::CStringExtension::EmptyString, shared::CDataContainer::EmptyContainer);
+         progressCallback(true, 0.0f, i18n::CClientStrings::UpdateScriptInterpreterInstall, shared::CStringExtension::EmptyString, shared::CDataContainer::EmptyContainer);
 
          shared::CDataContainer callbackData;
          callbackData.set("downloadUrl", downloadUrl);
@@ -41,8 +29,8 @@ namespace update {
          try
          {
             YADOMS_LOG(information) << "Downloading scriptInterpreter package";
-            m_progressCallback(true, 0.0f, i18n::CClientStrings::UpdateScriptInterpreterDownload, shared::CStringExtension::EmptyString, callbackData);
-            Poco::Path downloadedPackage = CWorkerTools::downloadPackage(downloadUrl, m_progressCallback, i18n::CClientStrings::UpdateScriptInterpreterDownload, 0.0, 50.0);
+            progressCallback(true, 0.0f, i18n::CClientStrings::UpdateScriptInterpreterDownload, shared::CStringExtension::EmptyString, callbackData);
+            Poco::Path downloadedPackage = CWorkerTools::downloadPackage(downloadUrl, progressCallback, i18n::CClientStrings::UpdateScriptInterpreterDownload, 0.0, 50.0);
             YADOMS_LOG(information) << "Downloading scriptInterpreter package with sucess";
 
             /////////////////////////////////////////////
@@ -51,13 +39,13 @@ namespace update {
             try
             {
                YADOMS_LOG(information) << "Deploy scriptInterpreter package " << downloadedPackage.toString();
-               m_progressCallback(true, 50.0f, i18n::CClientStrings::UpdateScriptInterpreterDeploy, shared::CStringExtension::EmptyString, callbackData);
+               progressCallback(true, 50.0f, i18n::CClientStrings::UpdateScriptInterpreterDeploy, shared::CStringExtension::EmptyString, callbackData);
                Poco::Path pluginPath = CWorkerTools::deployScriptInterpreterPackage(downloadedPackage);
                YADOMS_LOG(information) << "ScriptInterpreter deployed with success";
 
 
                YADOMS_LOG(information) << "Refresh scriptInterpreter list";
-               m_progressCallback(true, 90.0f, i18n::CClientStrings::UpdateScriptInterpreterFinalize, shared::CStringExtension::EmptyString, callbackData);
+               progressCallback(true, 90.0f, i18n::CClientStrings::UpdateScriptInterpreterFinalize, shared::CStringExtension::EmptyString, callbackData);
 
                //force refresh of script interpreters
                boost::shared_ptr<automation::IRuleManager> automationRuleManager = shared::CServiceLocator::instance().get<automation::IRuleManager>();
@@ -65,14 +53,14 @@ namespace update {
                   automationRuleManager->getAvailableInterpreters(); //as seen in comments, refresh interpreters list
 
                YADOMS_LOG(information) << "ScriptInterpreter installed with success";
-               m_progressCallback(true, 100.0f, i18n::CClientStrings::UpdateScriptInterpreterSuccess, shared::CStringExtension::EmptyString, shared::CDataContainer::EmptyContainer);
+               progressCallback(true, 100.0f, i18n::CClientStrings::UpdateScriptInterpreterSuccess, shared::CStringExtension::EmptyString, shared::CDataContainer::EmptyContainer);
 
             }
             catch (std::exception & ex)
             {
                //fail to extract package file
                YADOMS_LOG(error) << "Fail to deploy scriptInterpreter package : " << ex.what();
-               m_progressCallback(false, 100.0f, i18n::CClientStrings::UpdateScriptInterpreterDeployFailed, ex.what(), callbackData);
+               progressCallback(false, 100.0f, i18n::CClientStrings::UpdateScriptInterpreterDeployFailed, ex.what(), callbackData);
 
             }
 
@@ -87,12 +75,12 @@ namespace update {
          {
             //fail to download package
             YADOMS_LOG(error) << "Fail to download scriptInterpreter package : " << ex.what();
-            m_progressCallback(false, 100.0f, i18n::CClientStrings::UpdateScriptInterpreterDownloadFailed, ex.what(), callbackData);
+            progressCallback(false, 100.0f, i18n::CClientStrings::UpdateScriptInterpreterDownloadFailed, ex.what(), callbackData);
          }
 
       }
 
-      void CScriptInterpreter::update(const std::string & scriptInterpreterName, const std::string & downloadUrl)
+      void CScriptInterpreter::update(CWorkerTools::WorkerProgressFunc progressCallback, const std::string & scriptInterpreterName, const std::string & downloadUrl)
       {
          YADOMS_LOG(information) << "Updating scriptInterpreter " << scriptInterpreterName << " from " << downloadUrl;
 
@@ -100,7 +88,7 @@ namespace update {
          callbackData.set("scriptInterpreterName", scriptInterpreterName);
          callbackData.set("downloadUrl", downloadUrl);
 
-         m_progressCallback(true, 0.0f, i18n::CClientStrings::UpdateScriptInterpreterUpdate, shared::CStringExtension::EmptyString, callbackData);
+         progressCallback(true, 0.0f, i18n::CClientStrings::UpdateScriptInterpreterUpdate, shared::CStringExtension::EmptyString, callbackData);
 
          
          /////////////////////////////////////////////
@@ -109,8 +97,8 @@ namespace update {
          try
          {
             YADOMS_LOG(information) << "Downloading scriptInterpreter package";
-            m_progressCallback(true, 0.0f, i18n::CClientStrings::UpdateScriptInterpreterDownload, shared::CStringExtension::EmptyString, callbackData);
-            Poco::Path downloadedPackage = CWorkerTools::downloadPackage(downloadUrl, m_progressCallback, i18n::CClientStrings::UpdateScriptInterpreterDownload, 0.0, 50.0);
+            progressCallback(true, 0.0f, i18n::CClientStrings::UpdateScriptInterpreterDownload, shared::CStringExtension::EmptyString, callbackData);
+            Poco::Path downloadedPackage = CWorkerTools::downloadPackage(downloadUrl, progressCallback, i18n::CClientStrings::UpdateScriptInterpreterDownload, 0.0, 50.0);
             YADOMS_LOG(information) << "Downloading scriptInterpreter package with sucess";
 
 
@@ -129,28 +117,28 @@ namespace update {
             try
             {
                YADOMS_LOG(information) << "Deploy scriptInterpreter package " << downloadedPackage.toString();
-               m_progressCallback(true, 50.0f, i18n::CClientStrings::UpdateScriptInterpreterDeploy, shared::CStringExtension::EmptyString, callbackData);
+               progressCallback(true, 50.0f, i18n::CClientStrings::UpdateScriptInterpreterDeploy, shared::CStringExtension::EmptyString, callbackData);
                Poco::Path scriptInterpreterPath = CWorkerTools::deployScriptInterpreterPackage(downloadedPackage);
                YADOMS_LOG(information) << "ScriptInterpreter deployed with success";
 
 
                YADOMS_LOG(information) << "Start instances";
-               m_progressCallback(true, 90.0f, i18n::CClientStrings::UpdateScriptInterpreterFinalize, shared::CStringExtension::EmptyString, callbackData);
+               progressCallback(true, 90.0f, i18n::CClientStrings::UpdateScriptInterpreterFinalize, shared::CStringExtension::EmptyString, callbackData);
 
                //start all rules using this scriptInterpreter
                if (automationRuleManager)
                   automationRuleManager->startAllRulesMatchingInterpreter(scriptInterpreterName);
 
-               m_progressCallback(true, 100.0f, "ScriptInterpreter updated with success", shared::CStringExtension::EmptyString, shared::CDataContainer::EmptyContainer);
+               progressCallback(true, 100.0f, "ScriptInterpreter updated with success", shared::CStringExtension::EmptyString, shared::CDataContainer::EmptyContainer);
                YADOMS_LOG(information) << "ScriptInterpreter installed with success";
-               m_progressCallback(true, 100.0f, i18n::CClientStrings::UpdateScriptInterpreterSuccess, shared::CStringExtension::EmptyString, callbackData);
+               progressCallback(true, 100.0f, i18n::CClientStrings::UpdateScriptInterpreterSuccess, shared::CStringExtension::EmptyString, callbackData);
 
             }
             catch (std::exception & ex)
             {
                //fail to extract package file
                YADOMS_LOG(error) << "Fail to deploy scriptInterpreter package : " << ex.what();
-               m_progressCallback(false, 100.0f, i18n::CClientStrings::UpdateScriptInterpreterDeployFailed, ex.what(), callbackData);
+               progressCallback(false, 100.0f, i18n::CClientStrings::UpdateScriptInterpreterDeployFailed, ex.what(), callbackData);
             }
 
 
@@ -164,18 +152,18 @@ namespace update {
          {
             //fail to download package
             YADOMS_LOG(error) << "Fail to download scriptInterpreter package : " << ex.what();
-            m_progressCallback(false, 100.0f, i18n::CClientStrings::UpdateScriptInterpreterDownloadFailed, ex.what(), callbackData);
+            progressCallback(false, 100.0f, i18n::CClientStrings::UpdateScriptInterpreterDownloadFailed, ex.what(), callbackData);
          }
       }
 
-      void CScriptInterpreter::remove(const std::string & scriptInterpreterName)
+      void CScriptInterpreter::remove(CWorkerTools::WorkerProgressFunc progressCallback, const std::string & scriptInterpreterName)
       {
          YADOMS_LOG(information) << "Removing scriptInterpreter " << scriptInterpreterName;
 
          shared::CDataContainer callbackData;
          callbackData.set("scriptInterpreterName", scriptInterpreterName);
 
-         m_progressCallback(true, 0.0f, i18n::CClientStrings::UpdateScriptInterpreterRemove, shared::CStringExtension::EmptyString, callbackData);
+         progressCallback(true, 0.0f, i18n::CClientStrings::UpdateScriptInterpreterRemove, shared::CStringExtension::EmptyString, callbackData);
 
          try
          {
@@ -213,7 +201,7 @@ namespace update {
          {
             //fail to remove package
             YADOMS_LOG(error) << "Fail to delete scriptInterpreter : " << scriptInterpreterName << " : " << ex.what();
-            m_progressCallback(false, 100.0f, i18n::CClientStrings::UpdateScriptInterpreterRemoveFailed, ex.what(), callbackData);
+            progressCallback(false, 100.0f, i18n::CClientStrings::UpdateScriptInterpreterRemoveFailed, ex.what(), callbackData);
          }
       }
 

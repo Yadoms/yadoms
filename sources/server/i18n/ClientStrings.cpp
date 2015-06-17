@@ -36,11 +36,15 @@ namespace i18n
    std::string CClientStrings::UpdateScriptInterpreterSuccess               = "update.scriptInterpreter.success";
    std::string CClientStrings::UpdateScriptInterpreterFinalize              = "update.scriptInterpreter.finalize";
 
+   std::string CClientStrings::UpdateYadomsCheckForUpdate                   = "update.yadoms.checkForUpdate";
+   std::string CClientStrings::UpdateYadomsCheckForUpdateFailed             = "update.yadoms.checkForUpdateFailed";
+   std::string CClientStrings::UpdateYadomsUpdate                           = "update.yadoms.update";
+   std::string CClientStrings::UpdateYadomsUpdateAvailable                  = "update.yadoms.updateAvailable";
    std::string CClientStrings::UpdateYadomsUpToDate                         = "update.yadoms.upToDate";
    std::string CClientStrings::UpdateYadomsDownload                         = "update.yadoms.download";
    std::string CClientStrings::UpdateYadomsDownloadFailed                   = "update.yadoms.downloadFailed";
-   std::string CClientStrings::UpdateYadomsDeploy                           = "update.yadoms.deploy";
-   std::string CClientStrings::UpdateYadomsDeployFailed                     = "update.yadoms.deployFailed";
+   std::string CClientStrings::UpdateYadomsExtract                          = "update.yadoms.extract";
+   std::string CClientStrings::UpdateYadomsExtractFailed                    = "update.yadoms.extractFailed";
    std::string CClientStrings::UpdateYadomsRunUpdate                        = "update.yadoms.runUpdate";
    std::string CClientStrings::UpdateYadomsRunUpdateFailed                  = "update.yadoms.runUpdateFailed";
    std::string CClientStrings::UpdateYadomsExit                             = "update.yadoms.exit";

@@ -9,40 +9,26 @@ namespace update {
       {
       public:
          //---------------------------------------------
-         ///\brief   Constructor
-         ///\param [in] progressCallback The progress callback
+         ///\brief                        Install a new plugin
+         ///\param [in] progressCallback  The progress callback
+         ///\param [in] downloadUrl       The plugin package url
          //---------------------------------------------
-         CPlugin(CWorkerTools::WorkerProgressFunc progressCallback);
+         static void install(CWorkerTools::WorkerProgressFunc progressCallback, const std::string & downloadUrl);
 
          //---------------------------------------------
-         ///\brief   Destructor
+         ///\brief                        Update a plugin
+         ///\param [in] progressCallback  The progress callback
+         ///\param [in] pluginName        The plugin name
+         ///\param [in] downloadUrl       The plugin package url
          //---------------------------------------------
-         virtual ~CPlugin();
+         static void update(CWorkerTools::WorkerProgressFunc progressCallback, const std::string & pluginName, const std::string & downloadUrl);
 
          //---------------------------------------------
-         ///\brief   Install a new plugin
-         ///\param [in] downloadUrl The plugin package url
+         ///\brief                        Remove a plugin
+         ///\param [in] progressCallback  The progress callback
+         ///\param [in] pluginName        The plugin name
          //---------------------------------------------
-         void install(const std::string & downloadUrl);
-
-         //---------------------------------------------
-         ///\brief   Update a plugin
-         ///\param [in] pluginName  The plugin name
-         ///\param [in] downloadUrl The plugin package url
-         //---------------------------------------------
-         void update(const std::string & pluginName, const std::string & downloadUrl);
-
-         //---------------------------------------------
-         ///\brief   Remove a plugin
-         ///\param [in] pluginName  The plugin name
-         //---------------------------------------------
-         void remove(const std::string & pluginName);
-
-      private:
-         //---------------------------------------------
-         ///\brief   The progress callback
-         //---------------------------------------------
-         CWorkerTools::WorkerProgressFunc m_progressCallback;
+         static void remove(CWorkerTools::WorkerProgressFunc progressCallback, const std::string & pluginName);
       };
 
    } // namespace worker
