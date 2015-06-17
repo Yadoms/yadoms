@@ -352,6 +352,13 @@
                        moment.lang(systemConfiguration[ConfigurationManager.items.system.language].value);
 
                        WebSocketEngine.initializeWebSocketEngine(function () {
+                          //we listen acquisitionupdate event
+
+                          $(document).on("acquisitionupdate", function (e, websocketData) {
+                             var acq = AcquisitionManager.factory(websocketData.data.acquisition);
+                             dispatchToWidgets(acq);
+                          });
+
                           //web socket opened
                           initializeWidgetEngine();
                        });

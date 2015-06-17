@@ -162,7 +162,7 @@
                      //we add the new item available only on the server
                      var canAddOnThePage = false;
 
-                     serverValue.sort(function (a, b) { return b.version - a.version; });
+                     serverValue.sort(UpdateInformationManager.compareVersion);
 
                      var newItem = {};
 
@@ -224,7 +224,7 @@
                        "<div class=\"btn-group btn-install\">" +
                            "<button type=\"button\" class=\"btn main-btn btn-primary\">" +
                               "<span class=\"glyphicon glyphicon-save \"></span>" +
-                              "<span class=\"latest-version\"></span>" +
+                              "<span class=\"latest-installable-version\"></span>" +
                            "</button>" +
                            "<button type=\"button\" class=\"btn dropdown-toggle btn-expand btn-primary\" data-toggle=\"dropdown\" aria-expanded=\"false\">" +
                               "<span class= \"caret\"></span>" +
@@ -240,8 +240,8 @@
                            "<div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" style=\"width: 0%\">" +
                               "<span class=\"hidden\">60% Complete</span>" +
                            "</div>" +
-                           "<span class=\"message\"></span>" +
-                        "<div>" +
+                        "</div>" +
+                        "<span class=\"message\"></span>" +
                       "</div>" +
                   "</td>" +
               "</tr>";
@@ -265,14 +265,6 @@
          $line.find("em.local-version").text("");
       }
 
-      if ((!isNullOrUndefined(availableVersions)) && (availableVersions.length > 0)) {
-         //we can display the latest version
-         $line.find("em.latest-version").text(versionToString(availableVersions[0]));
-      }
-      else {
-         $line.find("em.latest-version").text("");
-      }
-
       if (!item.processing) {
          //no action in progress we show action buttons
 
@@ -285,13 +277,26 @@
          var canChooseVersion = false;
 
          var availableVersions = [];
+         var latestVersion = undefined;
 
          if (!isNullOrUndefined(item.serverVersions)) {
             //we create a list of all version available to update based on the type of the version and the list of available version different from the local one
             $.each(item.serverVersions, function (index, value) {
-               if (!matchVersion(item, value)) {
+               if ($.inArray(value.releaseType.toLowerCase(), wantedVersion) > -1) {
+                  //we manage latest vzersion
+                  if (isNullOrUndefined(latestVersion)) {
+                     //latestVersion hasn't defined for the moment we take the first one
+                     latestVersion = value;
+                  }
+                  else {
+                     //we compare the version with the cumulated to take the latest
+                     if (UpdateInformationManager.compareVersion(latestVersion, value) > 0) {
+                        latestVersion = value;
+                     }
+                  }
+
                   //if this releasetype is wanted we add it to the arrays of version for this item
-                  if ($.inArray(value.releaseType.toLowerCase(), wantedVersion) > -1) {
+                  if (!matchVersion(item, value)) {
                      availableVersions.push(value);
                   }
                }
@@ -315,12 +320,13 @@
                canChooseVersion = true;
             }
 
-            installUpdateAllowed = true;
+            //the main install button is allowed only if latest version and current version are different
+            installUpdateAllowed = (UpdateInformationManager.compareVersion(item, latestVersion) != 0);
 
             //we create a combo that have all available versions for install or update
             $cbVersion = $line.find("ul.versions");
             $cbVersion.empty();
-            availableVersions.sort(function (a, b) { return b.version - a.version; });
+            availableVersions.sort(UpdateInformationManager.compareVersion);
 
             $.each(availableVersions, function(index, value) {
 
@@ -336,10 +342,10 @@
                }
             });
 
-            $line.find("ul.latest-version").text(versionToString(availableVersions[0]));
+            $line.find("ul.latest-installable-version").text(versionToString(availableVersions[0]));
 
             //we can display the latest version
-            $line.find("em.latest-version").text(versionToString(availableVersions[0]));
+            $line.find("em.latest-version").text(versionToString(latestVersion));
          }
          else {
             //there is no interesting new version
@@ -353,16 +359,16 @@
 
          if (installUpdateAllowed) {
             $line.find("div.btn-install button.main-btn").removeClass("disabled");
-            //if the user can choose version we enable the list
-            if (canChooseVersion)
-               $line.find("div.btn-install button.btn-expand").removeClass("disabled");
-            else
-               $line.find("div.btn-install button.btn-expand").addClass("disabled");
          }
          else {
             $line.find("div.btn-install button.main-btn").addClass("disabled");
-            $line.find("div.btn-install button.btn-expand").addClass("disabled");
          }
+
+         //if the user can choose version we enable the list
+         if (canChooseVersion)
+            $line.find("div.btn-install button.btn-expand").removeClass("disabled");
+         else
+            $line.find("div.btn-install button.btn-expand").addClass("disabled");
 
          //we manage click events
          if (!isNullOrUndefined(item.version)) {
@@ -393,36 +399,10 @@
                     }),
                     function () {
                        //the user has confirmed the action
+                       var $line = getLineFromItem(item);
+                       $line.find("div.progress-bar").css("width", "0%");
                        UpdateInformationManager.installPlugin(updateInformation.downloadUrl, function (taskId) {
-                          console.debug("TaskId : " + taskId);
-                          //we listen for websocket event
-                          $(document).on("taskupdatenotification." + taskId, function (e, taskUpdateInformation) {
-                             debugger;
-                             var $line = getLineFromItem(item);
-                             $line.find("div.progress-bar").css("width", taskUpdateInformation.progression + "%");
-                             $line.find("span.message").text($.t("webSockets." + taskUpdateInformation.message));
-
-                             var taskFinished = false;
-                             //we manage the end of the task
-                             if (taskUpdateInformation.taskState.toLowerCase() == "fail") {
-                                console.error("Unable to install plugin : " + taskUpdateInformation.exception);
-                                taskFinished = true;
-                             }
-
-                             if (taskUpdateInformation.taskState.toLowerCase() == "success") {
-                                taskFinished = true;
-                             }
-
-                             if (taskFinished) {
-                                //we remove the progress information and restore buttons
-                                item.processing = false;
-                                updateLine(item);
-                             }
-
-                          });
-                          //we hide the buttons and show the progression
-                          item.processing = true;
-                          updateLine(item);
+                          installUpdateRemovePluginCallback(taskId, item, $line);
                        });
                     });
          });
@@ -440,9 +420,10 @@
                     }),
                     function () {
                        //the user has confirmed the action
+                       var $line = getLineFromItem(item);
+                       $line.find("div.progress-bar").css("width", "0%");
                        UpdateInformationManager.updatePlugin(item.name, updateInformation.downloadUrl, function (taskId) {
-                          console.debug("TaskId : " + taskId);
-                          //TODO : manage taskId and websocket
+                          installUpdateRemovePluginCallback(taskId, item, $line);
                        });
                     });
          });
@@ -464,6 +445,39 @@
                     });
          });
       }
+   }
+
+   function installUpdateRemovePluginCallback(taskId, item, $line) {
+      console.debug("TaskId : " + taskId);
+      //we listen for websocket event
+      $(document).on("taskupdatenotification." + taskId, function (e, taskUpdateInformation) {
+         $line.find("div.progress-bar").css("width", taskUpdateInformation.progression + "%");
+         $line.find("span.message").text($.t("webSockets." + taskUpdateInformation.message));
+
+         var taskFinished = false;
+         //we manage the end of the task
+         if (taskUpdateInformation.taskState.toLowerCase() == "fail") {
+            console.error("Unable to install plugin : " + taskUpdateInformation.exception);
+            notifyError($.t("webSockets." + taskUpdateInformation.message));
+            taskFinished = true;
+         }
+
+         if (taskUpdateInformation.taskState.toLowerCase() == "success") {
+            notifySuccess($.t("webSockets." + taskUpdateInformation.message));
+            taskFinished = true;
+         }
+
+         if (taskFinished) {
+            //we remove the progress information and restore buttons
+            item.processing = false;
+            updateLine(item);
+            $line.find("div.progress-bar").css("width", "0%");
+         }
+
+      });
+      //we hide the buttons and show the progression
+      item.processing = true;
+      updateLine(item);
    }
 
    function matchVersion(version1, version2) {

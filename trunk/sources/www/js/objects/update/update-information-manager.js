@@ -178,6 +178,13 @@ UpdateInformationManager.removePlugin = function(pluginName, callback, sync) {
 };
 
 /**
+ * Compare the two UpdateInformationObjects. Return > 0 if item1 is lower, =0 if the same and <0 if item1 is higher
+  */
+UpdateInformationManager.compareVersion = function(item1, item2) {
+   return item2.version - item1.version;
+};
+
+/**
  *
  * @constructor
  */

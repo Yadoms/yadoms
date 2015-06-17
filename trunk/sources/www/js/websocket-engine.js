@@ -65,9 +65,7 @@ WebSocketEngine.initializeWebSocketEngine = function(callback) {
                 if (!isNullOrUndefined(websocketData)) {
                     switch (websocketData.type.toLowerCase()) {
                         case "acquisitionupdate":
-                            if($.isFunction(WebSocketEngine.onAcquisitionUpdated)) {
-                                WebSocketEngine.onAcquisitionUpdated(websocketData);
-                            }
+                            $(document).trigger("acquisitionupdate", websocketData);
                             break;
                         case "devicenew":
                             break;
@@ -76,8 +74,6 @@ WebSocketEngine.initializeWebSocketEngine = function(callback) {
                             console.log("TaskUpdateNotification : " + JSON.stringify(websocketData));
                             break;
                     }
-
-
                 }
             }
         };
