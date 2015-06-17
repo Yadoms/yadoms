@@ -8,15 +8,6 @@
 namespace pluginSystem
 {
 
-//--------------------------------------------------------------
-/// \brief	      Strings associated at shared::plugin::information::EReleaseType values
-//--------------------------------------------------------------
-typedef std::map<std::string, shared::plugin::information::EReleaseType> ReleaseTypeValuesNameList;
-static const ReleaseTypeValuesNameList ReleaseTypeValuesNames = boost::assign::map_list_of
-   ("stable"   , shared::plugin::information::EReleaseType::kStable)
-   ("testing"  , shared::plugin::information::EReleaseType::kTesting)
-   ("beta"     , shared::plugin::information::EReleaseType::kBeta);
-
 
 CInformation::CInformation(const boost::filesystem::path& pluginPath)
    :m_path(pluginPath), m_isSupportedOnThisPlatform(true)
