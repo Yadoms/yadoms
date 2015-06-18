@@ -9,7 +9,7 @@ namespace pluginSystem
 {
 
 CExternalPluginFactory::CExternalPluginFactory(const boost::filesystem::path& libraryPath)
-   :m_libraryPath(libraryPath), m_construct(NULL), m_information(getInformation(libraryPath))
+   :m_libraryPath(libraryPath), m_information(getInformation(libraryPath)), m_construct(NULL)
 {
    load();
 }

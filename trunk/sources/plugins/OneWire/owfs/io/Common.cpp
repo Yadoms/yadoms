@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Common.h"
-#include <fstream>
 
 namespace owfs { namespace io {
 

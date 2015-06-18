@@ -4,3 +4,5 @@
 #include <shared/plugin/yPluginApi/commonIncludes.h>
 
 #include <boost/regex.hpp>
+
+#include <fstream>
