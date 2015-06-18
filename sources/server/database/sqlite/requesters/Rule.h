@@ -28,6 +28,7 @@ namespace database { namespace sqlite {
 
          // IRuleRequester implementation
          virtual std::vector<boost::shared_ptr<entities::CRule> > getRules() const;
+         virtual std::vector<boost::shared_ptr<entities::CRule> > getRules(const std::string & interpreterName) const;
          virtual boost::shared_ptr<entities::CRule> getRule(int ruleId) const;
          virtual int addRule(boost::shared_ptr<const entities::CRule> ruleData);
          virtual void updateRule(boost::shared_ptr<const entities::CRule> ruleData);

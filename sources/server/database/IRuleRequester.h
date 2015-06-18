@@ -17,6 +17,13 @@ namespace database {
       virtual std::vector<boost::shared_ptr<entities::CRule> > getRules() const = 0;
 
       //--------------------------------------------------------------
+      /// \brief           List all rules handled by a spcific interpreter
+      /// \param[in] interpreterName Interpreter name
+      /// \return          List of rules handled by this interpreter
+      //--------------------------------------------------------------
+      virtual std::vector<boost::shared_ptr<entities::CRule> > getRules(const std::string & interpreterName) const = 0;
+
+      //--------------------------------------------------------------
       /// \brief           Get rule informations
       /// \param[in] ruleId Rule ID
       /// \return          Rule information

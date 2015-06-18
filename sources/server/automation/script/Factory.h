@@ -36,6 +36,7 @@ namespace automation { namespace script
    protected:
       // IFactory Implementation
       virtual std::vector<std::string> getAvailableInterpreters();
+      virtual void unloadInterpreter(const std::string& interpreterName);
       virtual boost::shared_ptr<IProperties> createScriptProperties(boost::shared_ptr<const database::entities::CRule> ruleData);
       virtual std::string getScriptFile(boost::shared_ptr<const database::entities::CRule> ruleData);
       virtual void updateScriptFile(boost::shared_ptr<const database::entities::CRule> ruleData, const std::string& code);

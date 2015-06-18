@@ -33,6 +33,18 @@ namespace database { namespace sqlite { namespace requesters {
       return adapter.getResults();
    }
 
+   std::vector<boost::shared_ptr<entities::CRule> > CRule::getRules(const std::string & interpreterName) const
+   {
+      CQuery qSelect;
+      qSelect.Select().
+         From(CRuleTable::getTableName()).
+         Where(CRuleTable::getInterpreterColumnName(), CQUERY_OP_EQUAL, interpreterName);
+
+      adapters::CRuleAdapter adapter;
+      m_databaseRequester->queryEntities<boost::shared_ptr<entities::CRule> >(&adapter, qSelect);
+      return adapter.getResults();
+   }
+
    boost::shared_ptr<entities::CRule> CRule::getRule(int ruleId) const
    {
       adapters::CRuleAdapter adapter;

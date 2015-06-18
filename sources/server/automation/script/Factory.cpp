@@ -134,6 +134,13 @@ std::vector<std::string> CFactory::getAvailableInterpreters()
    return interpreters;
 }
 
+void CFactory::unloadInterpreter(const std::string& interpreterName)
+{
+   std::map<std::string, boost::shared_ptr<IInterpreterLibrary> >::const_iterator interpreter = m_loadedInterpreters.find(interpreterName);
+   if (interpreter != m_loadedInterpreters.end())
+      m_loadedInterpreters.erase(interpreter);
+}
+
 boost::shared_ptr<shared::script::IInterpreter> CFactory::getAssociatedInterpreter(const std::string& interpreterName)
 {
    // Update loaded interpreters list if necessary

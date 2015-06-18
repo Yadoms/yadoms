@@ -63,6 +63,13 @@ namespace automation
       void startAllRules();
 
       //-----------------------------------------------------
+      ///\brief               Start all specified rules
+      ///\param[in] rules     Rules to start
+      ///\return              true if all rules were successfully started
+      //-----------------------------------------------------
+      bool startRules(const std::vector<boost::shared_ptr<database::entities::CRule> >& rules);
+
+      //-----------------------------------------------------
       ///\brief               Start a rule from configured rule data
       ///\param[in] ruleId    The rule ID
       ///\throw CRuleException Error starting rule
