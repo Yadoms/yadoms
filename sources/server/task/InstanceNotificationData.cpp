@@ -4,22 +4,21 @@
 namespace task {
 
    CInstanceNotificationData::CInstanceNotificationData(const IInstance & instance)
-      :m_guid(instance.getGuid()), 
+      :m_guid(instance.getGuid()),
       m_currentProgression(instance.getProgression()),
       m_currentMessage(instance.getMessage()),
       m_currentException(instance.getExceptionMessage()),
       m_currentStatus(instance.getStatus()),
-      m_name(instance.getName()),
       m_taskData(instance.getTaskData()),
+      m_name(instance.getName()),
       m_creationDate(instance.getCreationDate())
-
    {
    }
 
    CInstanceNotificationData::~CInstanceNotificationData()
    {
    }
-   
+
    std::string CInstanceNotificationData::getGuid() const
    {
       return m_guid;
@@ -33,8 +32,8 @@ namespace task {
    std::string CInstanceNotificationData::getMessage() const
    {
       return m_currentMessage;
-   } 
-   
+   }
+
    std::string CInstanceNotificationData::getExceptionMessage() const
    {
       return m_currentException;
@@ -60,5 +59,5 @@ namespace task {
       return m_creationDate;
    }
 
-   
+
 } //namespace task
