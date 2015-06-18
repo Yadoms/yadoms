@@ -31,9 +31,13 @@ void CRuleManager::startAllRules()
 {
    BOOST_ASSERT_MSG(m_startedRules.empty(), "Some rules are already started, are you sure that manager was successfuly stopped ?");
 
-   // Start rules
-   bool error = false;
-   std::vector<boost::shared_ptr<database::entities::CRule> > rules = getRules();
+   if (!startRules(getRules()))
+      m_ruleStateHandler->signalRulesStartError("One or more automation rules failed to start, check automation rules page for details");
+}
+
+bool CRuleManager::startRules(const std::vector<boost::shared_ptr<database::entities::CRule> >& rules)
+{
+   bool allRulesStarted = true;
    for (std::vector<boost::shared_ptr<database::entities::CRule> >::const_iterator it = rules.begin(); it != rules.end(); ++it)
    {
       try
@@ -45,12 +49,11 @@ void CRuleManager::startAllRules()
       catch (CRuleException&)
       {
          YADOMS_LOG(error) << "Unable to start rule " << (*it)->Name() << ", skipped";
-         error = true;
+         allRulesStarted = false;
       }
    }
 
-   if (error)
-      m_ruleStateHandler->signalRulesStartError("One or more automation rules failed to start, check automation rules page for details");
+   return allRulesStarted;
 }
 
 std::vector<std::string> CRuleManager::getAvailableInterpreters()
@@ -243,20 +246,33 @@ void CRuleManager::signalEvent(const CManagerEvent& event)
 
 void CRuleManager::startAllRulesMatchingInterpreter(const std::string & interpreterName)
 {
-   //TODO : à implémenter
-   throw shared::exception::CNotImplemented("startAllRulesMatchingInterpreter");
+   // Start all rules associated with this interpreter (and start-able)
+   if (!startRules(m_dbRequester->getRules(interpreterName)))
+      m_ruleStateHandler->signalRulesStartError("One or more automation rules failed to start, check automation rules page for details");
 }
 
 void CRuleManager::stopAllRulesMatchingInterpreter(const std::string & interpreterName)
 {
-   //TODO : à implémenter
-   throw shared::exception::CNotImplemented("stopAllRulesMatchingInterpreter");
+   // First, stop all running rules associated with this interpreter
+   std::vector<boost::shared_ptr<database::entities::CRule> > interpreterRules = m_dbRequester->getRules(interpreterName);
+   for (std::vector<boost::shared_ptr<database::entities::CRule> >::const_iterator interpreterRule = interpreterRules.begin(); interpreterRule != interpreterRules.end(); ++interpreterRule)
+   {
+      if (m_startedRules.find((*interpreterRule)->Id()) != m_startedRules.end())
+         stopRule((*interpreterRule)->Id());
+   }
+
+   // We can unload the interpreter as it is not used anymore (will be automaticaly re-loaded when needed by a rule)
+   m_scriptFactory->unloadInterpreter(interpreterName);
 }
 
 void CRuleManager::deleteAllRulesMatchingInterpreter(const std::string & interpreterName)
 {
-   //TODO : à implémenter
-   throw shared::exception::CNotImplemented("deleteAllRulesMatchingInterpreter");
+   std::vector<boost::shared_ptr<database::entities::CRule> > interpreterRules = m_dbRequester->getRules(interpreterName);
+   for (std::vector<boost::shared_ptr<database::entities::CRule> >::const_iterator interpreterRule = interpreterRules.begin(); interpreterRule != interpreterRules.end(); ++interpreterRule)
+      deleteRule((*interpreterRule)->Id());
+
+   // We can unload the interpreter as it is not used anymore (will be automaticaly re-loaded when needed by a rule)
+   m_scriptFactory->unloadInterpreter(interpreterName);
 }
 
 

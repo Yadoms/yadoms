@@ -175,7 +175,6 @@ namespace update {
             boost::shared_ptr<automation::IRuleManager> automationRuleManager = shared::CServiceLocator::instance().get<automation::IRuleManager>();
             if (automationRuleManager)
             {
-               automationRuleManager->stopAllRulesMatchingInterpreter(scriptInterpreterName);
                automationRuleManager->deleteAllRulesMatchingInterpreter(scriptInterpreterName);
             }
 

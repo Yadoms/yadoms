@@ -23,6 +23,12 @@ namespace automation { namespace script
       //-----------------------------------------------------
       virtual std::vector<std::string> getAvailableInterpreters() = 0;
 
+      //-----------------------------------------------------
+      ///\brief               Unload an interpreter (do nothing if interpreter not loaded)
+      ///\param[in] interpreterName Interpreter to unload
+      //-----------------------------------------------------
+      virtual void unloadInterpreter(const std::string& interpreterName) = 0;
+
 
       //-----------------------------------------------------
       ///\brief               Create the properties for a script
