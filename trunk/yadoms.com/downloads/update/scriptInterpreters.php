@@ -22,9 +22,9 @@ $os = matchInArray($os, $osMac, "darwin");
 $arch = matchInArray($arch, $archX86, "x86");
 $arch = matchInArray($arch, $archX64, "x64");
 
-//we look for all directories located in /plugins/$os/$arch/
+//we look for all directories located in /scriptInterpreters/$os/$arch/
 	
-$dirName = "plugins/" . $os;
+$dirName = "scriptInterpreters/" . $os;
 
 if (!is_dir($dirName))
 	sendAnswerAndExit(false, "os folder not found : " . $dirName, $answer);
@@ -38,7 +38,7 @@ $dirName .= '/';
 
 try
 {
-	$answer["plugins"] = buildItemList($dirName);
+	$answer["scriptInterpreters"] = buildItemList($dirName);
 }
 catch (Exception $e)
 {
