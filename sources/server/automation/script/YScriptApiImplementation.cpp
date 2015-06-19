@@ -150,7 +150,7 @@ std::string CYScriptApiImplementation::getInfo(const std::string& key) const
 }
 
 void CYScriptApiImplementation::log(const std::string& message)
-   {
+{
    try
    {
       m_ruleLogger->logInformation(message);
@@ -163,7 +163,7 @@ void CYScriptApiImplementation::log(const std::string& message)
 }
 
 void CYScriptApiImplementation::logError(const std::string& message)
-   {
+{
    try
    {
       m_ruleLogger->logError(message);
@@ -172,6 +172,23 @@ void CYScriptApiImplementation::logError(const std::string& message)
    catch(...) // Must catch all exceptions to not crash script interpreter
    {
       YADOMS_LOG(error) << "log, unknown exception, please report to Yadoms team";
+   }
+}
+
+void CYScriptApiImplementation::fail(const std::string& errorMessage)//TODO à virer ?
+{
+   try
+   {
+      std::string message("Script signaled a failure : ");
+      message += errorMessage;
+
+      m_ruleLogger->logError(message);
+      YADOMS_LOG(error) << message;
+      
+   }
+   catch (...) // Must catch all exceptions to not crash script interpreter
+   {
+      YADOMS_LOG(error) << "fail, unknown exception, please report to Yadoms team";
    }
 }
 

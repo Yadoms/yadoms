@@ -17,6 +17,7 @@ namespace automation { namespace script
       //-----------------------------------------------------
       ///\brief               Constructor
       ///\param[in] ruleLogger Logger to use for script logging
+      ///\param[in] interpreterErrorRaiser Interpretor error signaler
       ///\param[in] pluginGateway Plugin access to do actions on plugins
       ///\param[in] configurationManager  Configuration manager (to gain access to Yadoms configuration from rules scripts)
       ///\param[in] acquisitionNotifier Acquisition notifier, used to be notified on new acquisitions on keywords
@@ -43,6 +44,7 @@ namespace automation { namespace script
       virtual std::string getInfo(const std::string& key) const;
       virtual void log(const std::string& message);
       virtual void logError(const std::string& message);
+      virtual void fail(const std::string& errorMessage);
       // [END] shared::script::yScriptApi::IYScriptApi implementation
 
    private:

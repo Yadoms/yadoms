@@ -36,17 +36,18 @@ void CRunner::run(shared::script::yScriptApi::IYScriptApi& context)
       CScriptLoader loader(m_scriptPath, m_interpreterPath);
       loader.load();
 
-      // Run the script
+      // Create the context (instance of yScriptApi)
       CPythonObject pyContext(SWIG_NewPointerObj(&context, SWIG_TypeQuery("shared::script::yScriptApi::IYScriptApi *"), 0));
       CPythonObject tuple(PyTuple_New(1));
       Py_XINCREF(*pyContext); // Increment pyContext reference count, because PyTuple_SetItem steals the reference
       if (PyTuple_SetItem(*tuple, 0, *pyContext))
          throw CPythonException("Unable to create context");
-      CPythonObject ymainFunction(PyObject_GetAttrString(loader.module().get(), "yMain"));
-      if (ymainFunction.isNull() || PyCallable_Check(*ymainFunction) == 0)
-         throw CPythonException("Script exited with error");
+
+      // Redirect console
       CConsoleRedirector stdoutRedirector(tuple);
-      CPythonObject pyReturnValue(PyObject_CallObject(*ymainFunction, *tuple));
+
+      // Run the script
+      CPythonObject pyReturnValue(PyObject_CallObject(*loader.yMain(), *tuple));
 
       // If errno = 4 (interrupt function call), it's because of stopping Yadoms (Python is catching CTRL-C),
       // so don't throw a CPythonException, or rule will be set to error state, and not started again at next Yadoms startup.
@@ -76,9 +77,11 @@ void CRunner::run(shared::script::yScriptApi::IYScriptApi& context)
    }
 }
 
+//TODO  voir aussi pourquoi SWIG_PYTHON_THREADS n'est pas défini. Faut-il appeler SWIG comme ça ?
+// swig -python -threads test.i ...
+
 void CRunner::interrupt()
 {
-   PyErr_SetInterrupt();
 }
 
 bool CRunner::isOk() const

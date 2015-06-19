@@ -7,6 +7,14 @@
 #include <string>
 #include <utility>
 #include <shared/script/yScriptApi/IYScriptApi.h>
+
+#include <iostream>
+
+// Fail method, use to stop a script itself, and declare it in error state
+void fail()
+{
+	SWIG_Python_AddErrorMsg("TEST PyErr_SetInterrupt");
+}
 %}
 
 %begin %{
@@ -39,3 +47,6 @@
 %feature("autodoc", "Read the last known state of the keyword (empty if no known state). State returned as string.") readKeyword;
 
 %include <shared/script/yScriptApi/IYScriptApi.h>
+
+void fail();
+%feature("autodoc", "Stop the current script, and declare it in error state.") fail;

@@ -76,6 +76,12 @@ namespace shared { namespace script { namespace yScriptApi
       ///\param[in] message Message to log
       //-----------------------------------------------------
       virtual void logError(const std::string& message) = 0;
+
+      //-----------------------------------------------------
+      ///\brief Signal that rule raised an error, and stop rule
+      ///\param[in] errorMessage The error reason
+      //-----------------------------------------------------
+      virtual void fail(const std::string& errorMessage) = 0;
    };
 	
 } } } // namespace shared::script::yScriptApi
