@@ -109,6 +109,11 @@ namespace automation { namespace script
       //-----------------------------------------------------
       std::map<std::string, boost::shared_ptr<IInterpreterLibrary> > m_loadedInterpreters;
 
+      //--------------------------------------------------------------
+      /// \brief			      The interpreters map mutex
+      //--------------------------------------------------------------
+      mutable boost::recursive_mutex m_loadedInterpretersMutex;
+
       //-----------------------------------------------------
       ///\brief               General information requester
       //-----------------------------------------------------

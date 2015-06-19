@@ -34,6 +34,8 @@ CFactory::~CFactory()
 
 void CFactory::loadInterpreters()
 {
+   boost::lock_guard<boost::recursive_mutex> lock(m_loadedInterpretersMutex);
+
    std::vector<boost::filesystem::path> interpreterDirectories = findInterpreterDirectories();
 
    for (std::vector<boost::filesystem::path>::const_iterator interpreterDirectory = interpreterDirectories.begin();
@@ -118,6 +120,8 @@ std::vector<boost::filesystem::path> CFactory::findInterpreterDirectories()
 
 std::vector<std::string> CFactory::getAvailableInterpreters() 
 {
+   boost::lock_guard<boost::recursive_mutex> lock(m_loadedInterpretersMutex);
+
    std::vector<std::string> interpreters;
 
    // Update loaded interpreters list if necessary
@@ -136,6 +140,8 @@ std::vector<std::string> CFactory::getAvailableInterpreters()
 
 void CFactory::unloadInterpreter(const std::string& interpreterName)
 {
+   boost::lock_guard<boost::recursive_mutex> lock(m_loadedInterpretersMutex);
+
    std::map<std::string, boost::shared_ptr<IInterpreterLibrary> >::const_iterator interpreter = m_loadedInterpreters.find(interpreterName);
    if (interpreter != m_loadedInterpreters.end())
       m_loadedInterpreters.erase(interpreter);
@@ -143,6 +149,8 @@ void CFactory::unloadInterpreter(const std::string& interpreterName)
 
 boost::shared_ptr<shared::script::IInterpreter> CFactory::getAssociatedInterpreter(const std::string& interpreterName)
 {
+   boost::lock_guard<boost::recursive_mutex> lock(m_loadedInterpretersMutex);
+
    // Update loaded interpreters list if necessary
    loadInterpreters();
 
