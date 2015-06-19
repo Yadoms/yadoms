@@ -39,7 +39,7 @@ bool CConfiguration::isOwfsMode() const
    return m_isOwfsMode;
 }
 
-bool CConfiguration::isKernelMode() const;
+bool CConfiguration::isKernelMode() const
 {
    return m_isKernelMode;
 }
