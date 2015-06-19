@@ -5,7 +5,7 @@
    "releaseType": "beta",
    "author": "YADOMS Team",
    "url": "http://sourceforge.net/projects/yadoms/",
-   "credits": "",
+   "credits": "OWFS 1-Wire File System (http://owfs.org)",
    "supportedPlatforms": {
       "linux": "supported",
       "others": "unsupported"
@@ -24,8 +24,8 @@
          "content" : {
             "owfs" : {
                 "type" : "section",
-                "name" : "USB/serial adapter",
-                "description" : "Use a 1-wire USB or serial adapter. This mode use OWFS (see http://owfs.org for more information). This mode supports many devices, but need an adapter supported by OWFS. OWFS must be correctly configured (see Yadoms wiki page for how to configure OWFS).",
+                "name" : "OWFS mode",
+                "description" : "Recommanded mode. Use OWFS (see http://owfs.org for more information). This mode supports most of 1-wire devices, but needs an adapter supported by OWFS. OWFS must be correctly configured (see Yadoms wiki page for how to configure OWFS).",
                 "content" : {
                   "mountPoint" : {
                      "type" : "string",
@@ -37,8 +37,8 @@
             },
             "kernel" : {
                 "type" : "section",
-                "name" : "GPIO direct connection",
-                "description" : "1-wire devices are directly connected to a GPIO pin. This mode requires no adapter, but is only suitable for a very small network. Only a few devices are supported (see Yadoms wiki pages for more information).",
+                "name" : "Kernel mode",
+                "description" : "Use the kernel native 1-wire support. This mode supports only a few devices (see Yadoms wiki pages for more information). 1-wire devices can be directly connected on a GPIO pin (no adapter required).",
                 "content" : {
                   "mountPoint" : {
                      "type" : "string",

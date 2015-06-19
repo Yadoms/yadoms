@@ -7,24 +7,9 @@
 #include "../device/Identification.h"
 
 // All devices
-//TODO faire le ménage
-#include "../device/4kEepromWithPio.h"
-#include "../device/4kRamWithCounter.h"
 #include "../device/8ChannelAddressableSwitch.h"
-#include "../device/AdressableSwitch.h"
-#include "../device/DigitalPotentiometer.h"
-#include "../device/DualAddressableSwitchPlus1kMemory.h"
 #include "../device/DualChannelAddressableSwitch.h"
-#include "../device/EconoDigitalThermometer.hpp"
-#include "../device/HighPrecisionLiBatteryMonitor.h"
 #include "../device/HighPrecisionDigitalThermometer.hpp"
-#include "../device/MicrolanCoupler.h"
-#include "../device/ProgrammableResolutionDigitalThermometer.hpp"
-#include "../device/QuadAdConverter.h"
-#include "../device/SmartBatteryMonitor.h"
-#include "../device/TemperatureIo.h"
-#include "../device/TemperatureMemory.hpp"
-#include "../device/Thermachron.hpp"
 
 // Io access to devices for kernel mode
 #include "io/8ChannelAddressableSwitch.h"
@@ -34,7 +19,8 @@
 
 namespace kernel {
 
-static const boost::filesystem::path baseDir("/sys/bus/w1/devices");
+//TODO remettre static const boost::filesystem::path baseDir("/sys/bus/w1/devices");
+static const boost::filesystem::path baseDir("~/sys/bus/w1/devices"); //TODO utiliser la conf
 
 
 CEngine::CEngine(boost::shared_ptr<yApi::IYPluginApi> context, boost::shared_ptr<const IConfiguration> configuration)
@@ -135,7 +121,7 @@ boost::shared_ptr<device::IDevice> CEngine::createDevice(EOneWireFamily family, 
    case kHighPrecisionDigitalThermometer:
       device = boost::make_shared<device::CHighPrecisionDigitalThermometer>(family, id, m_context, boost::make_shared<io::CHighPrecisionDigitalThermometer>(devicePath));
       break;
-      
+
    case kDualChannelAddressableSwitch:
       device = boost::make_shared<device::CDualChannelAddressableSwitch>(family, id, m_context, boost::make_shared<io::CDualChannelAddressableSwitch>(devicePath));
       break;

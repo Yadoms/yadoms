@@ -22,6 +22,8 @@ public:
 
    // IConfiguration implementation
    virtual void initializeWith(const shared::CDataContainer &data);
+   virtual bool isOwfsMode() const;
+   virtual bool isKernelMode() const;
    virtual const boost::filesystem::path& getOwfsMountPoint() const;
    virtual const boost::filesystem::path& getKernelMountPoint() const;
    // [END] IConfiguration implementation
@@ -31,6 +33,16 @@ private:
    /// \brief	    Configuration raw data
    //--------------------------------------------------------------
    shared::CDataContainer m_data;
+
+   //--------------------------------------------------------------
+   /// \brief	    OWFS mode
+   //--------------------------------------------------------------
+   bool m_isOwfsMode;
+
+   //--------------------------------------------------------------
+   /// \brief	    Kernel mode
+   //--------------------------------------------------------------
+   bool m_isKernelMode;
 
    //--------------------------------------------------------------
    /// \brief	    OWFS mount point
