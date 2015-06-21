@@ -1,8 +1,8 @@
 {
-   "type": "console",
+   "type": "dimmer",
    "version": "0.1",
    "author": "yadoms team",
-   "url" : "http://www.yadoms.com/wiki/widgets/console.html",
+   "url" : "http://www.yadoms.com/wiki/widgets/dimmer.html",
    "credits": "",
    "dimensions": {
       "min": {
@@ -20,7 +20,7 @@
    },
    "configurationSchema": {
       "device" : {
-         "name" : "Switch device",
+         "name" : "dimmer device",
          "description" : "Device to drive",
          "type" : "device",
          "expectedKeywordType" : "numeric",

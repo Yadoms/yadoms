@@ -98,7 +98,7 @@ void CWeatherConditions::OnUpdate( boost::shared_ptr<yApi::IYPluginApi> context,
 	   {
 		   m_LiveConditions.Initialize      ( context );
 
-		   //TODO : Faire une fonction pour lire s'il y a des unités pour rajouter les unités ici
+		   //TODO : Faire une fonction pour lire s'il y a des unités pour rajouter les unités ici si besoin
 	   }
 
       //read the localisation
@@ -123,6 +123,8 @@ void CWeatherConditions::Request( boost::shared_ptr<yApi::IYPluginApi> context )
 	   m_data = m_webServer.SendGetRequest( m_URL.str() );
 
       m_CityConditions = m_data.get<std::string>("current_observation.observation_location.city");
+
+      m_LiveConditions.SetCityName ( m_CityConditions );
 
 	   YADOMS_LOG(information) << "Observation location :" << m_data.get<std::string>("current_observation.observation_location.full");
 	}
@@ -211,7 +213,7 @@ void CWeatherConditions::Parse( boost::shared_ptr<yApi::IYPluginApi> context, co
 												"current_observation.feelslike_c",
 												"current_observation.windchill_c"
 												);
-					KeywordList.push_back          ( m_LiveConditions.GetHistorizable() );
+				KeywordList.push_back          ( m_LiveConditions.GetHistorizable() );
 			}
 
 			context->historizeData(m_PluginName, KeywordList);

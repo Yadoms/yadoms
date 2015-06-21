@@ -65,6 +65,7 @@ std::string CConditionFormatter::formatValue() const
 
    Temp.set ("Units", m_Units);
    Temp.set ("city", m_Localisation);
+   Temp.set ("Conditions", m_ConditionFrame );
 
    return Temp.serialize();
 }

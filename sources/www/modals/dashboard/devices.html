@@ -223,7 +223,7 @@
 					  var $keywordRow = getKeywordDomRow(keyword);
 					  //we fill the data
 					  var friendlyName = "<span>" + decodeURIComponent(keyword.friendlyName) + "</span>";
-					  var units = "<span>" + keyword.units + "</span>";
+					  var units = "<span>" + $.t(keyword.units) + "</span>";
 
 					  $keywordRow.find("td.keyword-friendlyName").html(friendlyName);
 					  $keywordRow.find("td.keyword-units").html(units);
@@ -337,7 +337,7 @@
 					   var $keywordRow = getKeywordDomRow(keyword);
 					   //we fill the data
 					   var friendlyName = "<span>" + decodeURIComponent(keyword.friendlyName) + "</span>";
-					   var units = "<span>" + keyword.units + "</span>";
+					   var units = "<span>" + $.t(keyword.units) + "</span>";
 
 					   $keywordRow.find("td.keyword-friendlyName").html(friendlyName);
 					   $keywordRow.find("td.keyword-units").html(units);					   

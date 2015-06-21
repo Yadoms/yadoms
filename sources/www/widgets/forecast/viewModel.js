@@ -26,6 +26,9 @@ function ForecastViewModel() {
    this.AveWindVisible = ko.observable    ( true );
    this.RainDayVisible = ko.observable    ( true );
    
+   this.dateformat = "";
+   this.lastUpdate = "";
+   
    //Nbre of day to be displayed
    this.DayNbre = ko.observable ( 10 );
    
@@ -158,19 +161,29 @@ function ForecastViewModel() {
 				// create the name for each div where rain canvas will be attached
 				var SnowElementID = 'widget-' + self.widget.id + '-snow-' + i;
 				
+				var timeString ="";
+				
+				if (self.dateformat == "DateFormat1")
+				{
+					//Ex: Mon. 15
+					timeString = moment( obj.forecast[i].Day + "-" + obj.forecast[i].Month, "DD-MM").format('dddd').substring(0,3) + ". " + obj.forecast[i].Day;
+				}
+				else if (self.dateformat == "DateFormat2")
+				{
+				   timeString = moment( obj.forecast[i].Day + "-" + obj.forecast[i].Month, "DD-MM").format('LL');
+				}else
+				{}
+				
 				self.TempPeriod.push({ WeatherCondition: obj.forecast[i].WeatherCondition,
-									   TimeDate: moment( obj.forecast[i].Day + "-" + obj.forecast[i].Month, "DD-MM").format('LL') ,//obj.forecast[i].Day + '/' + obj.forecast[i].Month,
-									   TempMax: obj.forecast[i].TempMax + "\u00B0", // Un caractère parasite est généré par boost::write_json sous Ubuntu \u00B0 = ° obj.Units.temperature.substring(0, obj.Units.temperature.length - 1),
-									   TempMin: obj.forecast[i].TempMin + "\u00B0", //obj.Units.temperature.substring(0, obj.Units.temperature.length - 1),
+									   TimeDate: timeString,
+									   TempMax: obj.forecast[i].TempMax + $.t(obj.Units.temperature), //  ° obj.Units.temperature.substring(0, obj.Units.temperature.length - 1),
+									   TempMin: obj.forecast[i].TempMin + $.t(obj.Units.temperature), //obj.Units.temperature.substring(0, obj.Units.temperature.length - 1),
 									   MaxWind: Convertmstokmh(parseFloat(obj.forecast[i].MaxWind,10)), 
 									   AveWind: Convertmstokmh(parseFloat(obj.forecast[i].AveWind,10)),
 									   AveWindDegrees: obj.forecast[i].AveWindDegrees,
 									   WindCanvasId: elementID,
-									   //AveHumidity: obj.forecast[i].AveHumidity + obj.Units.humidity,
 									   RainCanvasId: RainElementID,
-									   //SnowCanvasId: SnowElementID,
 									   RainDay: obj.forecast[i].RainDay, 
-									   //SnowDay: obj.forecast[i].SnowDay, 
 									   WeatherIcon: "widgets/forecast/images/Icons1/" + obj.forecast[i].WeatherCondition + ".png"
 									 });
          } 
@@ -179,8 +192,12 @@ function ForecastViewModel() {
 		 //Resize the widget and display the elements automatically
 		 self.resized ();
 		 
-		 //Send an information to the HMI
-    	 notifyInformation($.t("Forecast updated !", {objectName : device.friendlyName}));
+		 //Send update information to the HMI, on if the date is new
+    	 if (self.lastUpdate != data.date._i)
+		 {
+		    notifyInformation($.t("Forecast updated !", {objectName : device.friendlyName}));
+		    self.lastUpdate = data.date._i;
+		 }
       }
    };
 
@@ -196,7 +213,10 @@ function ForecastViewModel() {
         self.MinTempVisible     ( true );			 
 	    self.MaxWindVisible     ( parseBool( self.widget.configuration.Information.content.MaxWind ));
 	    self.AveWindVisible     ( parseBool( self.widget.configuration.Information.content.AveWind ));
-   	    self.RainDayVisible     ( parseBool( self.widget.configuration.Information.content.RainDay ));	
+   	    self.RainDayVisible     ( parseBool( self.widget.configuration.Information.content.RainDay ));
+		
+		//Read the date format
+		self.dateformat = self.widget.configuration.DateFormat;
 	 }
 	 catch(err) 
 	 {

@@ -19,7 +19,7 @@ CApparentPowerMeter::CApparentPowerMeter( boost::shared_ptr<yApi::IYPluginApi> c
 void CApparentPowerMeter::SetValue( double Value )
 {
    m_apparentpower->set( Value );
-   YADOMS_LOG(debug) << m_apparentpower->getKeyword() << "=" << m_apparentpower->get() << m_apparentpower->getCapacity().getUnit();
+   YADOMS_LOG(debug) << m_apparentpower->getKeyword() << "=" << m_apparentpower->get() << "VA";
 }
 
 CApparentPowerMeter::~CApparentPowerMeter()

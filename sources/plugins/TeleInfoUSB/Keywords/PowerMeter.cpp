@@ -19,7 +19,7 @@ CPowerMeter::CPowerMeter( boost::shared_ptr<yApi::IYPluginApi> context, std::str
 void CPowerMeter::SetValue( long Value )
 {
    m_energy->set( Value );
-   YADOMS_LOG(debug) << m_energy->getKeyword() << "=" << m_energy->get() << m_energy->getCapacity().getUnit();
+   YADOMS_LOG(debug) << m_energy->getKeyword() << "=" << m_energy->get() << "W";
 }
 
 CPowerMeter::~CPowerMeter()

@@ -38,7 +38,7 @@ void CDiskUsage::read()
    }
 
    m_keyword->set((1 - (float) FreeSpaceAvailable.QuadPart / TotalSpace.QuadPart) * 100);
-   YADOMS_LOG(debug) << "WindowsSystemInformation plugin :  " << m_driveName << " Disk Usage : " << m_keyword->formatValue();
+   YADOMS_LOG(debug) << m_driveName << " Disk Usage : " << m_keyword->formatValue();
 }
 
 boost::shared_ptr<yApi::historization::IHistorizable> CDiskUsage::GetHistorizable() const

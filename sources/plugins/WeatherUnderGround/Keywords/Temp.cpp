@@ -35,7 +35,7 @@ void CTemp::SetValue( const shared::CDataContainer & ValueContainer, const std::
    else
    {
 	   m_temperature->set(ValueContainer.get<double>( filter ));
-	   YADOMS_LOG(debug) << m_temperature->getKeyword() << "=" << m_temperature->get() << shared::plugin::yPluginApi::CStandardCapacities::Temperature.getUnit();
+	   YADOMS_LOG(debug) << m_temperature->getKeyword() << "=" << m_temperature->get() << "°C";
    }
 }
 
