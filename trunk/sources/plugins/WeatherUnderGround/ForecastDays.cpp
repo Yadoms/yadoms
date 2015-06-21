@@ -12,7 +12,7 @@ CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> context,
            m_CountryOrState            ( WUConfiguration.getCountryOrState() ),
            m_Prefix                    ( Prefix ),
            m_PluginName                ( PluginName ),
-           m_Forecast                  ( PluginName, Prefix, weatherunderground::helper::EPeriod::kDay)
+           m_Forecast                  ( PluginName, "Forecast", weatherunderground::helper::EPeriod::kDay)
 {
 	m_URL.str("");
 	m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/" << m_Prefix << "/q/" << m_CountryOrState << "/" << m_Localisation << ".json";
@@ -72,6 +72,8 @@ void CForecastDays::OnUpdate( IWUConfiguration& WUConfiguration )
 	m_URL.str("");
 
 	m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/" << m_Prefix << "/q/" << m_CountryOrState << "/" << m_Localisation << ".json";
+
+	//TODO : Création du m_Forecast et m_RainForecast si besoin.
 }
 
 void CForecastDays::Request( boost::shared_ptr<yApi::IYPluginApi> context )

@@ -78,8 +78,8 @@ void CCondition::SetPeriod(const shared::CDataContainer & ValueContainer,
                      ValueContainer.get<std::string>( filterAveWindDegrees ),
                      ValueContainer.get<std::string>( filterAveHumidity ),
                      ValueContainer.get<std::string>( filterRainDay ),
-                     boost::lexical_cast<std::string>(filterFeelslike ),
-					 boost::lexical_cast<std::string>(filterWindChill )
+                     ValueContainer.get<std::string>(filterFeelslike ),
+					 ValueContainer.get<std::string>(filterWindChill )
 		                 );
 }
 

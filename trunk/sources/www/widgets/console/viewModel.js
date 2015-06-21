@@ -1,10 +1,10 @@
 widgetViewModelCtor =
 
    /**
-    * Create a Console ViewModel
+    * Create a Dimmer ViewModel
     * @constructor
     */
-      function ConsoleViewModel() {
+      function DimmerViewModel() {
       //observable data
       this.command = ko.observable(1).extend({ numeric: 1 });
 

@@ -24,9 +24,15 @@ CRain::~CRain()
 
 void CRain::SetValue( const shared::CDataContainer & ValueContainer, const std::string & filter)
 {
-	m_rain->set(ValueContainer.get<double>( filter ));
-
-	YADOMS_LOG(debug) << m_rain->getKeyword() << "=" << m_rain->get() << "mm";
+   if (ValueContainer.get<std::string>( filter ) == "--")
+   {
+      YADOMS_LOG(information) << m_rain->getKeyword() << " : '--' => Value not registered";
+   }
+   else
+   {
+	   m_rain->set(ValueContainer.get<double>( filter ));
+	   YADOMS_LOG(debug) << m_rain->getKeyword() << "=" << m_rain->get() << "mm";
+   }
 }
 
 void CRain::DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const

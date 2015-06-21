@@ -1,39 +1,18 @@
 {
-   "name": "interrupteur",
-   "description": "Un widget émulant un interrupteur",
-   "errorDuringSendingCommand" : "Erreur pendant l'envoi de la commande",
+   "name": "variateur",
+   "description": "Un widget permettant de piloter une valeur numérique (Ex: température, ...)",
    "configurationSchema" : {
       "device" : {
-         "name" : "Périphérique interrupteur",
+         "name" : "Périphérique variateur",
          "description" : "Périphérique à piloter"
       },
       "showDeviceName" : {
          "name" : "Affichage du nom",
          "description" : "Permet l'affichage du nom du widget"
       },
-      "kind" : {
-         "name" : "Type d'interrupteur",
-         "description" : "Sélection du type d'interrupteur. Le type d'interrupteur influe sur le mode de fonctionnement du périphérique piloté.",
-         "content" : {
-            "horizontalInverter" : {
-               "name" : "Inverseur horizontal",
-               "description" : "Deux boutons (Marche/Arrêt) présentés horizontalement"
-            },
-            "verticalInverter" : {
-               "name" : "Inverseur vertical",
-               "description" : "Deux boutons (Marche/Arrêt) présentés verticalement"
-            },
-            "pushButton" : {
-               "name" : "Poussoir",
-               "description" : "Un bouton poussoir (envoi des événements ON)",
-               "content" : {
-                  "icon" : {
-                     "name" : "Icône",
-                     "description" : "Choisissez un icône à afficher dans le bouton"
-                  }
-               }
-            }
-         }
-      }
+      "StepValue" : {
+         "name" : "Pas",
+         "description" : "Entrer le pas d'incrément"
+       }	 
    }   
 }

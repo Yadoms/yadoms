@@ -1,14 +1,14 @@
-.consoleWidgetText {
+.dimmerWidgetText {
    display:table-cell;
 }
 
-.consoleWidgetData {
+.dimmerWidgetData {
     font-size : 3em;
 	text-align: center;
 	font-weight: bold;
 }
 
-.consoleWidgetValueArea {
+.dimmerWidgetValueArea {
 	width:150px;
 	height:150px;
     display:table-cell;

@@ -55,6 +55,16 @@
 				 "defaultValue": "true"
 			  }	  
 		  }
+		},
+		"DateFormat": {
+		  "name": "Date Format",
+		  "description": "Choose the date format of the widget",
+		  "type": "enum",
+		  "values": {
+			"DateFormat1": "Short date. Ex: Monday 15",
+			"DateFormat2": "Long date. Ex: June 15, 2015"
+		  },
+		  "defaultValue": "DateFormat1"
 		}
    }
 }

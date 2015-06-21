@@ -19,7 +19,7 @@ CCurrentMeter::CCurrentMeter( boost::shared_ptr<yApi::IYPluginApi> context, std:
 void CCurrentMeter::SetValue( double Value )
 {
    m_current->set( Value );
-   YADOMS_LOG(debug) << m_current->getKeyword() << "=" << m_current->get() << m_current->getCapacity().getUnit();
+   YADOMS_LOG(debug) << m_current->getKeyword() << "=" << m_current->get() << "A";
 }
 
 CCurrentMeter::~CCurrentMeter()
