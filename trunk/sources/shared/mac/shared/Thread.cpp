@@ -6,15 +6,15 @@
 namespace shared
 {
 
-CThreads::CThreads()
+CThread::CThread()
 {
 }
 
-CThreads::~CThreads()
+CThread::~CThread()
 {
 }
 
-void CThreads::killThread(pthread_t hThread)
+void CThread::killThread(pthread_t hThread)
 {
    pthread_kill(hThread, 9);
 }
