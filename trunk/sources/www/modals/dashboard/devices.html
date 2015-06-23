@@ -124,7 +124,9 @@
                   DeviceManager.updateToServer(device, function(result) {
                      //We update the information that can have changed after the configuration
                      var $row = getDeviceDomRow(device);
-                     $row.find("td.device-friendlyName").html(device.friendlyName);
+					 
+					 var friendlyName = "<span class=\"glyphicon glyphicon-chevron-down deploy\">&nbsp;</span><span>" + decodeURIComponent(device.friendlyName) + "</span>";
+                     $row.find("td.device-friendlyName").html( friendlyName );
                   });
                });
          });
