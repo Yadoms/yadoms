@@ -122,27 +122,7 @@ set(ONEWIRE_PLUGIN_SOURCES
 	source_group(kernel\\io kernel/io/*.*)
 	source_group(owfs owfs/*.*)
 	source_group(owfs\\io owfs/io/*.*)
-	
-IF (UNIX AND NOT APPLE)
-   set(ONEWIRE_PLUGIN_SOURCES ${ONEWIRE_PLUGIN_SOURCES}
-      # CommonLinux/CPULoad.h TODO
-      # CommonLinux/CPULoad.cpp
-      # CommonLinux/DisksList.h
-      # CommonLinux/DisksList.cpp
-      # CommonLinux/DiskUsage.h
-      # CommonLinux/DiskUsage.cpp
-      # CommonLinux/MemoryLoad.h
-      # CommonLinux/MemoryLoad.cpp	
-      # CommonLinux/RAMProcessMemory.h
-      # CommonLinux/RAMProcessMemory.cpp
-      # CommonLinux/VirtualProcessMemory.h
-      # CommonLinux/VirtualProcessMemory.cpp
-      # CommonLinux/YadomsCPULoad.h
-      # CommonLinux/YadomsCPULoad.cpp
-      )
-	
-	#TODO source_group(CommonLinux CommonLinux/*.*)
-ENDIF()
+
 
 #########################################
 ## Place here all additional include directories

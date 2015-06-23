@@ -77,9 +77,6 @@ void CRunner::run(shared::script::yScriptApi::IYScriptApi& context)
    }
 }
 
-//TODO  voir aussi pourquoi SWIG_PYTHON_THREADS n'est pas défini. Faut-il appeler SWIG comme ça ?
-// swig -python -threads test.i ...
-
 void CRunner::interrupt()
 {
 }

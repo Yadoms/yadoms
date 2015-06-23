@@ -175,7 +175,7 @@ void CYScriptApiImplementation::logError(const std::string& message)
    }
 }
 
-void CYScriptApiImplementation::fail(const std::string& errorMessage)//TODO à virer ?
+void CYScriptApiImplementation::fail(const std::string& errorMessage)
 {
    try
    {

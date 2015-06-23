@@ -2,6 +2,7 @@
 #include "OneWire.h"
 #include "Factory.h"
 #include "Configuration.h"
+#include "OneWireException.hpp"
 #include <shared/Log.h>
 #include <shared/event/EventTimer.h>
 #include <shared/plugin/ImplementationHelper.h>
@@ -48,42 +49,49 @@ void COneWire::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 
       while (1)
       {
-         // Wait for an event
-         switch (context->getEventHandler().waitForEvents())
+         try
          {
-         case kEvtTimerNetworkRefresh:
-         {
-            // Scan 1-wire network for new devices and update our network image
-            updateNetwork(devices, m_engine->scanNetwork());
-
-            // Now read all devices state and historize data
-            for (std::map<std::string, boost::shared_ptr<device::IDevice> >::const_iterator device = devices.begin(); device != devices.end(); ++device)
+            // Wait for an event
+            switch (context->getEventHandler().waitForEvents())
             {
-               // Set here an interruption point because it can take some time in case of big networks
-               boost::this_thread::interruption_point();
-               device->second->historize();
+            case kEvtTimerNetworkRefresh:
+            {
+               // Scan 1-wire network for new devices and update our network image
+               updateNetwork(devices, m_engine->scanNetwork());
+
+               // Now read all devices state and historize data
+               for (std::map<std::string, boost::shared_ptr<device::IDevice> >::const_iterator device = devices.begin(); device != devices.end(); ++device)
+               {
+                  // Set here an interruption point because it can take some time in case of big networks
+                  boost::this_thread::interruption_point();
+                  device->second->historize();
+               }
+
+               break;
             }
+            case yApi::IYPluginApi::kEventDeviceCommand:
+            {
+               // A command was received from Yadoms
+               boost::shared_ptr<const yApi::IDeviceCommand> command = context->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
+               onCommand(devices, command);
 
-            break;
+               break;
+            }
+            case yApi::IYPluginApi::kEventUpdateConfiguration:
+            {
+               onUpdateConfiguration(context, context->getEventHandler().getEventData<shared::CDataContainer>());
+               break;
+            }
+            default:
+            {
+               YADOMS_LOG(error) << "Unknown message id";
+               break;
+            }
+            }
          }
-         case yApi::IYPluginApi::kEventDeviceCommand:
+         catch (COneWireException& e)
          {
-            // A command was received from Yadoms
-            boost::shared_ptr<const yApi::IDeviceCommand> command = context->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
-            onCommand(devices, command);
-
-            break;
-         }
-         case yApi::IYPluginApi::kEventUpdateConfiguration:
-         {
-            onUpdateConfiguration(context, context->getEventHandler().getEventData<shared::CDataContainer>());
-            break;
-         }
-         default:
-         {
-            YADOMS_LOG(error) << "Unknown message id";
-            break;
-         }
+            YADOMS_LOG(error) << e.what();
          }
       }
    }

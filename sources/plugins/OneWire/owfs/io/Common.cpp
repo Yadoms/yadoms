@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Common.h"
+#include "../../OneWireException.hpp"
 
 namespace owfs { namespace io {
 
@@ -7,7 +8,7 @@ std::string CCommon::read(const boost::filesystem::path& valuePath)
 {
    std::ifstream file(valuePath.string());
    if (!file.good())
-      return std::string();//TODO lever des OneWireReadException sur des erreurs de lecture
+      throw COneWireException("1-wire read : Error opening " + valuePath.string());
 
    std::string sLine;
    getline(file, sLine);
@@ -18,7 +19,7 @@ void CCommon::write(const boost::filesystem::path& valuePath, const std::string&
 {
    std::ofstream file(valuePath.string());
    if (!file.good())
-      return;//TODO lever des OneWireWriteException sur des erreur d'écriture
+      throw COneWireException("1-wire write : Error opening " + valuePath.string());
 
    file << value;
 }
