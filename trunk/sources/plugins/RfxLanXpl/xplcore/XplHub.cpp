@@ -33,10 +33,9 @@ namespace xplcore
       stop();
    }
 
-   bool CXplHub::stop()
+   void CXplHub::stop()
    {
       m_stopHubRequested = true;
-      return true;
    }
 
    void CXplHub::doWork()

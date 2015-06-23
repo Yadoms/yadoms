@@ -64,12 +64,17 @@ private:
    //--------------------------------------------------------------
    /// \brief	The keyword associated with incremental counter
    //--------------------------------------------------------------
-   yApi::historization::CCounter m_incrementCount;
+   boost::shared_ptr<yApi::historization::CCounter> m_incrementCount;
 
    //--------------------------------------------------------------
    /// \brief	The keyword associated with total counter
    //--------------------------------------------------------------
-   yApi::historization::CCounter m_totalCount;
+   boost::shared_ptr<yApi::historization::CCounter> m_totalCount;
+
+   //--------------------------------------------------------------
+   /// \brief	Historizers vector
+   //--------------------------------------------------------------
+   std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > m_historizers;
 
    //--------------------------------------------------------------
    /// \brief	    Random number generator, used to simulate increments

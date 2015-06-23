@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "ThreadBase.h"
+#include <shared/Thread.h>
 #include "Log.h"
 
 namespace shared
@@ -29,23 +30,24 @@ void CThreadBase::start()
    YADOMS_LOG(debug) << "Thread Id=" << m_thread->get_id() << " Name = " << getName();
 }
 
-bool CThreadBase::stop()
+void CThreadBase::stop()
 {
    if (!m_thread)
-      return true;   // Already stopped
+      return;   // Already stopped
 
    YADOMS_LOG(information) << "Stopping thread " << getName();
 
    // Request to stop and wait
    requestToStop();
-   if (!waitForStop(m_stopTimeoutSeconds))
+   if (waitForStop(m_stopTimeoutSeconds))
    {
-      YADOMS_LOG(warning) << "Stopping thread " << getName() << " : timeout";
-      return false;
+      m_thread.reset();
+      return;
    }
 
-   m_thread.reset();
-   return true;
+   // Gracefully stop fails, try to kill
+   YADOMS_LOG(warning) << "Stopping thread " << getName() << " fails : timeout. Force kill.";
+   CThread::killThread(m_thread->native_handle());
 }
 
 void CThreadBase::requestToStop()

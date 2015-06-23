@@ -211,6 +211,7 @@ namespace shared { namespace plugin { namespace yPluginApi
       ///\brief Historize a new data
       ///\param    [in]    device            The device name
       ///\param    [in]    data              The historizable data
+      ///\note If you need to historize several keyword at a time, prefer the historizeData method with vector, for better performances
       //-----------------------------------------------------     
       virtual void historizeData(const std::string& device, const historization::IHistorizable& data) = 0;
 
@@ -219,7 +220,7 @@ namespace shared { namespace plugin { namespace yPluginApi
       ///\param    [in]    device            The device name
       ///\param    [in]    datalist          The list of historizable data
       //-----------------------------------------------------    
-      virtual void historizeData(const std::string& device, std::vector<boost::shared_ptr<historization::IHistorizable> > & dataVect) = 0;
+      virtual void historizeData(const std::string& device, const std::vector<boost::shared_ptr<historization::IHistorizable> > & dataVect) = 0;
 
       //----------------------------------------------------------------------------------------------------------------
       //----------------------------------------------------------------------------------------------------------------

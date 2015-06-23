@@ -18,7 +18,7 @@ namespace xplcore
 
       // CThreadBase override
       virtual void doWork();
-      virtual bool stop();
+      virtual void stop();
       // {END] CThreadBase override
 
    private:

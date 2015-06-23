@@ -37,9 +37,8 @@ namespace shared
 
       //--------------------------------------------------------------
       /// \brief			Stop the thread (blocking)
-      /// \return    	true if thread was successfully stopped, false if timeout
       //--------------------------------------------------------------
-      virtual bool stop();
+      virtual void stop();
 
       //--------------------------------------------------------------
       /// \brief			Wait for end of the the thread (blocking)

@@ -43,7 +43,7 @@ namespace dataAccessLayer {
 		}
 	}
 
-	void CAcquisitionHistorizer::saveData(std::vector<int> keywordIdVect, std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > & dataVect)
+	void CAcquisitionHistorizer::saveData(std::vector<int> keywordIdVect, const std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > & dataVect)
 	{
 		//use ptime as variable, because saveData needs a reference
 		boost::posix_time::ptime currentDate = boost::posix_time::second_clock::universal_time();
