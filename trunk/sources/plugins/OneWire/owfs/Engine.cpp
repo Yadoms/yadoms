@@ -118,12 +118,6 @@ bool CEngine::isValidDir(const boost::filesystem::path& path) const
    if (!boost::filesystem::is_directory(path))
       return false;
 
-   // TODO à virer ?
-   //// Filter system dirs "." and ".."
-   //std::string dirname = de->d_name;
-   //if ((dirname == ".") || (dirname == "..") || (dirname.size()<3))
-   //   return false;
-
    // Check dir name format (must be something like xx.xxxxxxxxxxxx where x is hexa)
    if (!boost::regex_match(path.filename().string(), boost::regex("[[:xdigit:]]{2}.[[:xdigit:]]{12}")))
       return false;

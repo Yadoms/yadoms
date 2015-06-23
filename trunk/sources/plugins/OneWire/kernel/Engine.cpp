@@ -19,9 +19,6 @@
 
 namespace kernel {
 
-//TODO remettre static const boost::filesystem::path baseDir("/sys/bus/w1/devices");
-static const boost::filesystem::path baseDir("~/sys/bus/w1/devices"); //TODO utiliser la conf
-
 
 CEngine::CEngine(boost::shared_ptr<yApi::IYPluginApi> context, boost::shared_ptr<const IConfiguration> configuration)
    :m_context(context), m_configuration(configuration)
@@ -45,7 +42,7 @@ std::map<std::string, boost::shared_ptr<device::IDevice> > CEngine::scanNetwork(
 {
    std::map<std::string, boost::shared_ptr<device::IDevice> > devices;
 
-   boost::filesystem::path slavesFile = baseDir / boost::filesystem::path("w1_bus_master1/w1_master_slaves");
+   boost::filesystem::path slavesFile = m_configuration->getKernelMountPoint() / boost::filesystem::path("w1_bus_master1/w1_master_slaves");
 
    scanNetworkNode(slavesFile, devices);
    return devices;
@@ -92,7 +89,7 @@ boost::shared_ptr<device::IDevice> CEngine::createDevice(const std::string& line
    boost::to_upper(id);
 
    // Device path
-   boost::filesystem::path devicePath = baseDir / line;
+   boost::filesystem::path devicePath = m_configuration->getKernelMountPoint() / line;
 
    return createDevice(family, id, devicePath);
 }
@@ -100,21 +97,6 @@ boost::shared_ptr<device::IDevice> CEngine::createDevice(const std::string& line
 boost::shared_ptr<device::IDevice> CEngine::createDevice(EOneWireFamily family, const std::string& id, const boost::filesystem::path& devicePath) const
 {
    boost::shared_ptr<device::IDevice> device;
-
-   //TODO à virer
-   //switch (family)
-   //{
-   //case high_precision_digital_thermometer:
-   //case dual_channel_addressable_switch:
-   //case _8_channel_addressable_switch:
-   //case programmable_resolution_digital_thermometer:
-   //   m_Devices[device.devid] = new DeviceState(device);
-   //   _log.Log(LOG_STATUS, "1Wire: Added Device: %s", sLine.c_str());
-   //   break;
-   //default: // Device not supported in kernel mode (maybe later...), use OWFS solution.
-   //   _log.Log(LOG_ERROR, "1Wire: Device not yet supported in Kernel mode (Please report!) ID:%s, family: %02X", sLine.c_str(), device.family);
-   //   break;
-   //}
 
    switch (family)
    {
