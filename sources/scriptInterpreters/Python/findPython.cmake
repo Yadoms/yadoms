@@ -15,16 +15,13 @@ include (SelectLibraryConfigurations)
 
 string(REPLACE "." "" PYTHON_REQUIRED_VERSION_NO_DOT ${PYTHON_REQUIRED_VERSION})
 
-if (PYTHON_USE_PKGCONFIG)
-   set (USE_PKGCONFIG ON)
-endif ()
-
 # find_package seems to not work correctly under Windows, so use CMakeListsUserConfig.txt to get Python path
 if (PYTHON_ROOT)
 
-   find_path(PYTHON_INCLUDE_DIRS NAMES python.h PATHS ${PYTHON_ROOT}/include)
+   find_path(PYTHON_INCLUDE_DIRS NAMES Python.h PATHS ${PYTHON_ROOT}/include)
    
-   if(WIN32 AND PYTHON_USE_SOURCES)
+   if(WIN32)
+      if(PYTHON_USE_SOURCES)
    
       find_library(PYTHON_LIBRARY_DEBUG
          NAMES python${PYTHON_REQUIRED_VERSION_NO_DOT}_d
@@ -37,10 +34,16 @@ if (PYTHON_ROOT)
          ${PYTHON_ROOT}/PCbuild
          )
       select_library_configurations(PYTHON)
+         
+      else()
+
+         find_library(PYTHON_LIBRARIES NAMES python${PYTHON_REQUIRED_VERSION_NO_DOT}.lib PATHS ${PYTHON_ROOT}/libs)
+      
+      endif()
       
    else()
 
-      find_library(PYTHON_LIBRARIES NAMES python${PYTHON_REQUIRED_VERSION_NO_DOT}.lib PATHS ${PYTHON_ROOT}/libs)
+      find_library(PYTHON_LIBRARIES NAMES libpython${PYTHON_REQUIRED_VERSION_NO_DOT}.so PATHS ${PYTHON_ROOT}/libs)
    
    endif()
 
