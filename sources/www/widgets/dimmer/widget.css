@@ -1,0 +1,16 @@
+.dimmerWidgetText {
+   display:table-cell;
+}
+
+.dimmerWidgetData {
+    font-size : 3em;
+	text-align: center;
+	font-weight: bold;
+}
+
+.dimmerWidgetValueArea {
+	width:150px;
+	height:150px;
+    display:table-cell;
+	vertical-align:middle;	
+}

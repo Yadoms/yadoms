@@ -1,0 +1,10 @@
+{
+   "name": "Condition Météo",
+   "description": "Ce widget permet d'afficher les conditions météorologiques actuelles",
+   "configurationSchema" : {
+      "device" : {
+         "name" : "Condition Météo",
+         "description" : "Conditions Météorologiques actuelles"
+      }
+   }
+}
