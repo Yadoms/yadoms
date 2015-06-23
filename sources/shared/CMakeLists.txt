@@ -226,10 +226,12 @@ set(SHARED_LIB_SRC
 	windows/shared/Export.h
    windows/shared/FileSystemExtension.h
 	windows/shared/FileSystemExtension.cpp
-	windows/shared/Peripherals.h
-	windows/shared/Peripherals.cpp
 	windows/shared/NetworkHelper.h
 	windows/shared/NetworkHelper.cpp
+	windows/shared/Peripherals.h
+	windows/shared/Peripherals.cpp
+	windows/shared/Thread.h
+	windows/shared/Thread.cpp
 )	
 set(PLATFORM_SPECIFIC_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/windows)
 
@@ -241,10 +243,12 @@ set(SHARED_LIB_SRC
 	mac/shared/Export.h
    mac/shared/FileSystemExtension.h
 	mac/shared/FileSystemExtension.cpp
-	mac/shared/Peripherals.h
-	mac/shared/Peripherals.cpp
 	mac/shared/NetworkHelper.h
 	mac/shared/NetworkHelper.cpp
+	mac/shared/Peripherals.h
+	mac/shared/Peripherals.cpp
+	mac/shared/Thread.h
+	mac/shared/Thread.cpp
 )	
 set(PLATFORM_SPECIFIC_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/mac)
 
@@ -256,10 +260,12 @@ set(SHARED_LIB_SRC
 	linux/shared/Export.h
    linux/shared/FileSystemExtension.h
 	linux/shared/FileSystemExtension.cpp
-	linux/shared/Peripherals.h
-	linux/shared/Peripherals.cpp
 	linux/shared/NetworkHelper.h
 	linux/shared/NetworkHelper.cpp
+	linux/shared/Peripherals.h
+	linux/shared/Peripherals.cpp
+	linux/shared/Thread.h
+	linux/shared/Thread.cpp
 )	
 set(PLATFORM_SPECIFIC_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/linux)
 

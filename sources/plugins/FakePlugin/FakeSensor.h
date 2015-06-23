@@ -64,32 +64,37 @@ private:
    //--------------------------------------------------------------
    /// \brief	The keyword associated with temperature1
    //--------------------------------------------------------------
-   yApi::historization::CTemperature m_temperature1;
+   boost::shared_ptr<yApi::historization::CTemperature> m_temperature1;
 
    //--------------------------------------------------------------
    /// \brief	The keyword associated with temperature1
    //--------------------------------------------------------------
-   yApi::historization::CTemperature m_temperature2;
+   boost::shared_ptr<yApi::historization::CTemperature> m_temperature2;
 
    //--------------------------------------------------------------
    /// \brief	The keyword associated with battery level
    //--------------------------------------------------------------
-   yApi::historization::CBatteryLevel m_batteryLevel;
+   boost::shared_ptr<yApi::historization::CBatteryLevel> m_batteryLevel;
 
    //--------------------------------------------------------------
    /// \brief	The keyword associated with current comsumption
    //--------------------------------------------------------------
-   yApi::historization::CCurrent m_current;
+   boost::shared_ptr<yApi::historization::CCurrent> m_current;
 
    //--------------------------------------------------------------
    /// \brief	The keyword associated with signal strengh
    //--------------------------------------------------------------
-   yApi::historization::CRssi m_rssi;
+   boost::shared_ptr<yApi::historization::CRssi> m_rssi;
 
    //--------------------------------------------------------------
    /// \brief	The keyword associated with date time under string format useful only for demo
    //--------------------------------------------------------------
-   yApi::historization::CDateTime m_dateTime;
+   boost::shared_ptr<yApi::historization::CDateTime> m_dateTime;
+
+   //--------------------------------------------------------------
+   /// \brief	Historizers vector
+   //--------------------------------------------------------------
+   std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > m_historizers;
 
    //--------------------------------------------------------------
    /// \brief	    Random number generator, used to simulate temperature variations

@@ -23,7 +23,7 @@ CEnergy::CEnergy(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf,
    long totalPower = (long) (rbuf.ENERGY.total3 << 24 | rbuf.ENERGY.total4 << 16 | rbuf.ENERGY.total5 << 8 | rbuf.ENERGY.total6);
    totalPower += rbuf.ENERGY.total2 * 2 ^ 32;
    totalPower += rbuf.ENERGY.total1 * 2 ^ 40;
-   m_totalPower.set(totalPower / 223.666);
+   m_totalPower.set(static_cast<long>(totalPower / 223.666));
 
    m_batteryLevel.set(NormalizeBatteryLevel(rbuf.ENERGY.battery_level));
    m_rssi.set(NormalizeRssiLevel(rbuf.ENERGY.rssi));

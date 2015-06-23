@@ -80,6 +80,9 @@ namespace shared { namespace event
       //--------------------------------------------------------------
       int waitForEvents(const boost::posix_time::time_duration& timeout = boost::date_time::pos_infin)
       {
+         // Prior check if thread stopping was requested
+         boost::this_thread::interruption_point();
+
          // Clean last received message data
          m_lastEvent.reset();
 

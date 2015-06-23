@@ -57,7 +57,7 @@ namespace pluginSystem
       virtual std::vector<int> findRecipientsFromField(const std::string& fieldName, const std::string& expectedFieldValue) const;
       virtual bool recipientFieldExists(const std::string& fieldName) const;
       virtual void historizeData(const std::string& device, const shared::plugin::yPluginApi::historization::IHistorizable& data);
-      virtual void historizeData(const std::string& device, std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > & dataVect);
+      virtual void historizeData(const std::string& device, const std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > & dataVect);
       virtual const shared::plugin::information::IInformation& getInformation() const;
       virtual const boost::filesystem::path getPluginPath() const;
       virtual shared::CDataContainer getConfiguration() const;

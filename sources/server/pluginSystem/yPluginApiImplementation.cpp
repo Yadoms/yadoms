@@ -138,19 +138,19 @@ void CYPluginApiImplementation::historizeData(const std::string& device, const s
    }
 }
 
-void CYPluginApiImplementation::historizeData(const std::string& device, std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > & dataVect)
+void CYPluginApiImplementation::historizeData(const std::string& device, const std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > & dataVect)
 {
    try
    {
 	   std::vector<int> keywordIdList;
-	   std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> >::iterator iter;
+	   std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> >::const_iterator iter;
 
       boost::shared_ptr<const database::entities::CDevice> deviceEntity = m_deviceManager->getDevice(getPluginId(), device);
-	  for (iter = dataVect.begin(); iter != dataVect.end(); ++iter)
-	  {
-		  boost::shared_ptr<const database::entities::CKeyword> keywordEntity = m_keywordRequester->getKeyword(deviceEntity->Id, (*iter)->getKeyword());
-		  keywordIdList.push_back (keywordEntity->Id);
-	  }
+      for (iter = dataVect.begin(); iter != dataVect.end(); ++iter)
+      {
+         boost::shared_ptr<const database::entities::CKeyword> keywordEntity = m_keywordRequester->getKeyword(deviceEntity->Id, (*iter)->getKeyword());
+         keywordIdList.push_back(keywordEntity->Id);
+      }
       m_acquisitionHistorizer->saveData(keywordIdList, dataVect);
 
    }

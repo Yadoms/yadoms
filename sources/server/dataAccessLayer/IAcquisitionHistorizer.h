@@ -22,7 +22,7 @@ namespace dataAccessLayer {
       /// \param [in]      keywordId   The list of keyword id
       /// \param [in]      data        The list of data
       //--------------------------------------------------------------
-	  virtual void saveData(std::vector<int> KeywordIdVect, std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > & dataVect) = 0;
+	  virtual void saveData(std::vector<int> KeywordIdVect, const std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > & dataVect) = 0;
 
       //--------------------------------------------------------------
       /// \brief           Save a new data into base
