@@ -1,5 +1,5 @@
 #pragma once
-#include "../../ioInterfaces/IDualAddressableSwitchPlus1kMemory.h"
+#include "ioInterfaces/IDualAddressableSwitchPlus1kMemory.h"
 
 namespace owfs { namespace io {
 

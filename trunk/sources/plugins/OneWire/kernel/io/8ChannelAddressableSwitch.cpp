@@ -2,7 +2,7 @@
 #include "8ChannelAddressableSwitch.h"
 #include "Common.h"
 #include <shared/Log.h>
-#include "../../OneWireException.hpp"//TODO faire ce qu'il faut dans le cmake pour virer les ../../
+#include "OneWireException.hpp"
 
 namespace kernel { namespace io {
 

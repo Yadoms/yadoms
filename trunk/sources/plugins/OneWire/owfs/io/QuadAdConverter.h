@@ -1,5 +1,5 @@
 #pragma once
-#include "../../ioInterfaces/IQuadAdConverter.h"
+#include "ioInterfaces/IQuadAdConverter.h"
 
 namespace owfs { namespace io {
 

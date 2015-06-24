@@ -1,11 +1,11 @@
 #pragma once
-#include "../../ioInterfaces/ISmartBatteryMonitor.h"
-#include "../../ioInterfaces/IIllumination.h"
-#include "../../ioInterfaces/IHumidity.h"
-#include "../../ioInterfaces/IPressure.h"
-#include "../../ioInterfaces/ISingleSwitch.h"
-#include "../../ioInterfaces/ITemperature.h"
-#include "../../ioInterfaces/IVoltage.h"
+#include "ioInterfaces/ISmartBatteryMonitor.h"
+#include "ioInterfaces/IIllumination.h"
+#include "ioInterfaces/IHumidity.h"
+#include "ioInterfaces/IPressure.h"
+#include "ioInterfaces/ISingleSwitch.h"
+#include "ioInterfaces/ITemperature.h"
+#include "ioInterfaces/IVoltage.h"
 
 namespace owfs { namespace io {
 

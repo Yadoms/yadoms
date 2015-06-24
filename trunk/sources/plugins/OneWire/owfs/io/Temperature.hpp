@@ -1,5 +1,5 @@
 #pragma once
-#include "../../ioInterfaces/ITemperature.h"
+#include "ioInterfaces/ITemperature.h"
 #include "SingleReadOnlyData.hpp"
 #include <shared/StringExtension.h>
 

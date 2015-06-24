@@ -1,8 +1,8 @@
 #pragma once
-#include "../../ioInterfaces/IHighPrecisionLiBatteryMonitor.h"
-#include "../../ioInterfaces/ISingleSwitch.h"
-#include "../../ioInterfaces/ITemperature.h"
-#include "../../ioInterfaces/IVoltage.h"
+#include "ioInterfaces/IHighPrecisionLiBatteryMonitor.h"
+#include "ioInterfaces/ISingleSwitch.h"
+#include "ioInterfaces/ITemperature.h"
+#include "ioInterfaces/IVoltage.h"
 
 namespace owfs { namespace io {
 

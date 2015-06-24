@@ -1,5 +1,5 @@
 #pragma once
-#include "../../ioInterfaces/IHumidity.h"
+#include "ioInterfaces/IHumidity.h"
 #include "SingleReadOnlyData.hpp"
 #include <shared/StringExtension.h>
 

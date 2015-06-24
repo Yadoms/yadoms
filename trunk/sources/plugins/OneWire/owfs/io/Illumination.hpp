@@ -1,5 +1,5 @@
 #pragma once
-#include "../../ioInterfaces/IIllumination.h"
+#include "ioInterfaces/IIllumination.h"
 #include "SingleReadOnlyData.hpp"
 #include <shared/StringExtension.h>
 

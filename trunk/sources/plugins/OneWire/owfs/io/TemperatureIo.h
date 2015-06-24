@@ -1,7 +1,7 @@
 #pragma once
-#include "../../ioInterfaces/ITemperatureIo.h"
-#include "../../ioInterfaces/IMultiSwitch.h"
-#include "../../ioInterfaces/ITemperature.h"
+#include "ioInterfaces/ITemperatureIo.h"
+#include "ioInterfaces/IMultiSwitch.h"
+#include "ioInterfaces/ITemperature.h"
 
 namespace owfs { namespace io {
 

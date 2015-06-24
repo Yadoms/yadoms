@@ -1,5 +1,5 @@
 #pragma once
-#include "../../ioInterfaces/IDigitalPotentiometer.h"
+#include "ioInterfaces/IDigitalPotentiometer.h"
 
 namespace owfs { namespace io {
 
