@@ -9,7 +9,7 @@ namespace database {   namespace sqlite {  namespace adapters {
 
    DECLARE_ADAPTER_IMPLEMENTATION(Plugin,
       ((Id)(int)(0))
-      ((Name)(std::string)(""))
+      ((DisplayName)(std::string)(""))
       ((Type)(std::string)(""))
       ((Configuration)(shared::CDataContainer)(shared::CDataContainer()))
       ((AutoStart)(bool)(true))
@@ -36,7 +36,7 @@ namespace database {   namespace sqlite {  namespace adapters {
    DECLARE_ADAPTER_IMPLEMENTATION(Widget,
       ((Id)(int)(0))
       ((IdPage)(int)(0))
-      ((Name)(std::string)(""))
+      ((Type)(std::string)(""))
       ((SizeX)(int)(1))
       ((SizeY)(int)(1))
       ((PositionX)(int)(1))
@@ -129,7 +129,7 @@ namespace database {   namespace sqlite {  namespace adapters {
 
    DECLARE_ADAPTER_IMPLEMENTATION(RecipientField,
       ((IdRecipient)(int)(0))
-		((PluginName)(std::string)(""))
+		((PluginType)(std::string)(""))
 		((FieldName)(std::string)(""))
 		((Value)(std::string)(""))
 	);

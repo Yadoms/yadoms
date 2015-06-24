@@ -1,4 +1,5 @@
 {
+   "type": "ZWave",
    "name": "ZWave",
    "description": "Plugin which handle ZWave protocol.",
    "version": "0.1",

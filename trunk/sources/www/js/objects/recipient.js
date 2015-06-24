@@ -44,10 +44,12 @@ Recipient.prototype.toJSON = function () {
 /**
  * Define the systemFields
  * @type {string[]}
+ *
+ * There is no regex for mobile because too many phone number format.
  */
 Recipient.systemFields = {
    "email": "^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$",
-   "mobile": "\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\d{1,14}$"
+   "mobile": ""
 };
 
 
@@ -69,7 +71,7 @@ Recipient.prototype.mergeFields = function (allPlugins) {
    for(var systemField in Recipient.systemFields) {
        var currentField = {
            fieldName: systemField,
-           pluginName: "system",
+           pluginType: "system",
            pluginDefaultDisplayName : "system",
            name: $.t("objects.recipient.fields." + systemField + ".name"),
            description: $.t("objects.recipient.fields." + systemField + ".description"),
@@ -80,7 +82,7 @@ Recipient.prototype.mergeFields = function (allPlugins) {
 
       //search the field value in definedFields (search if the recipient is already configured for this field)
       $.each(definedFields, function(index, field) {
-         if(field.pluginName.toLowerCase() == "system" && field.fieldName.toUpperCase() == systemField.toUpperCase()) {
+         if(field.pluginType.toLowerCase() == "system" && field.fieldName.toUpperCase() == systemField.toUpperCase()) {
             //the field match an already saved one, just reuse the value
             currentField.value = field.value;
          }
@@ -105,14 +107,14 @@ Recipient.prototype.mergeFields = function (allPlugins) {
 
          //search the field value in definedFields (search if the recipient is already configured for this field)
          $.each(definedFields, function(index, field) {
-            if(field.pluginName.toUpperCase() == plugin.name.toUpperCase() && field.fieldName.toUpperCase() == recipientField.toUpperCase()) {
+            if(field.pluginType.toUpperCase() == plugin.type.toUpperCase() && field.fieldName.toUpperCase() == recipientField.toUpperCase()) {
                //the field match an already saved one, just reuse the value
                currentField.value = field.value;
             }
          });
 
          currentField.fieldName = recipientField;
-         currentField.pluginName = plugin.name;
+         currentField.pluginType = plugin.type;
          currentField.pluginDefaultDisplayName = plugin.package.name;
 
          self.fields.push(currentField);

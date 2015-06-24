@@ -50,7 +50,7 @@ namespace database { namespace entities {
    DECLARE_ENTITY_CLASS_IMPLEMENTATION(
    Plugin,
       ((Id)(int)(0)("id"))
-      ((Name)(std::string)("")("name"))
+      ((DisplayName)(std::string)("")("displayName"))
       ((Type)(std::string)("")("type"))
       ((Configuration)(shared::CDataContainer)(shared::CDataContainer())("configuration"))
       ((AutoStart)(bool)(true)("autoStart"))
@@ -81,7 +81,7 @@ namespace database { namespace entities {
    Widget,
       ((Id)(int)(0)("id"))
       ((IdPage)(int)(0)("idPage"))
-      ((Name)(std::string)("")("name"))
+      ((Type)(std::string)("")("type"))
       ((SizeX)(int)(1)("sizeX"))
       ((SizeY)(int)(1)("sizeY"))
       ((PositionX)(int)(1)("positionX"))
@@ -183,7 +183,7 @@ namespace database { namespace entities {
 	DECLARE_ENTITY_CLASS_IMPLEMENTATION(
       RecipientField,
       ((IdRecipient)(int)(0)("idRecipient"))
-      ((PluginName)(std::string)("")("pluginName"))
+      ((PluginType)(std::string)("")("pluginType"))
 		((FieldName)(std::string)("")("fieldName"))
 		((Value)(std::string)("")("value"))
 	);

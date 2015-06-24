@@ -45,13 +45,13 @@ function Widget(id, idPage, type, sizeX, sizeY, positionX, positionY, configurat
 
 /**
  * Override JSON.stringify method in order to send only database columns
- * @returns {{id: *, idPage: *, name: *, sizeX: *, sizeY: *, positionX: *, positionY: *, configuration: *}}
+ * @returns {{id: *, idPage: *, type: *, sizeX: *, sizeY: *, positionX: *, positionY: *, configuration: *}}
  */
 Widget.prototype.toJSON = function () {
    return { 
 			id : this.id, 
 			idPage: this.idPage, 
-			name: this.type,
+			type: this.type,
 			sizeX: this.sizeX,
 			sizeY: this.sizeY,
 			positionX: this.positionX,

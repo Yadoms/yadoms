@@ -93,12 +93,12 @@ std::string CYPluginApiImplementation::getRecipientValue(int recipientId, const 
 
    // Search for from plugin fields
    for (std::vector<boost::shared_ptr<database::entities::CRecipientField> >::const_iterator itField = recipient->Fields().begin(); itField != recipient->Fields().end(); ++itField)
-      if ((*itField)->PluginName == m_pluginData->Name && (*itField)->FieldName == fieldName)
+      if ((*itField)->PluginType == m_pluginData->Type && (*itField)->FieldName == fieldName)
          return (*itField)->Value;
 
    // If not found from plugin fields, looking for general fields
    for (std::vector<boost::shared_ptr<database::entities::CRecipientField> >::const_iterator itField = recipient->Fields().begin(); itField != recipient->Fields().end(); ++itField)
-      if ((*itField)->PluginName == "system" && (*itField)->FieldName == fieldName)
+      if ((*itField)->PluginType == "system" && (*itField)->FieldName == fieldName)
          return (*itField)->Value;
 
    throw shared::exception::CEmptyResult((boost::format("Cannot retrieve field %1% for recipient Id %2% in database") % fieldName % recipientId).str());
@@ -117,7 +117,7 @@ std::vector<int> CYPluginApiImplementation::findRecipientsFromField(const std::s
 
 bool CYPluginApiImplementation::recipientFieldExists(const std::string& fieldName) const
 {
-   return m_recipientRequester->fieldExists(fieldName, getInformation().getName());
+   return m_recipientRequester->fieldExists(fieldName, getInformation().getType());
 }
 
 
@@ -189,7 +189,7 @@ void CYPluginApiImplementation::recordPluginEvent(PluginEventSeverity severity, 
          break;
       }
    }
-   m_pluginEventLoggerRequester->addEvent(m_informations->getName(), m_informations->getVersion(), m_informations->getReleaseType(), evenType, message);
+   m_pluginEventLoggerRequester->addEvent(m_informations->getType(), m_informations->getVersion(), m_informations->getReleaseType(), evenType, message);
 }
 
 shared::event::CEventHandler & CYPluginApiImplementation::getEventHandler()

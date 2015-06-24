@@ -84,7 +84,7 @@
         $("ul#ul-add-widget").empty();
         for(var index in WidgetPackageManager.widgetPackages) {
              var value = WidgetPackageManager.widgetPackages[index].packageInformation;
-             //if the widget begin with dev-, it's a developper widget use only
+             //if the widget begin with dev-, it's a developer widget use only
              if ((value) && (!value.type.startsWith("dev-"))) {
                 var i18ncontext = value.type + ":";
                 $("ul#ul-add-widget").append(
@@ -113,8 +113,8 @@
 
                     //we fill the details div
                     $detailsDiv.find("img").attr("src", "/widgets/" + value.type + "/preview.png");
-                    $detailsDiv.find("span.widget-name").text($.t(type + ":name"));
-                    $detailsDiv.find("td.widget-description").text($.t(type + ":description"));
+                    $detailsDiv.find("span.widget-name").text($.t(type + ":name", { defaultValue : value.name}));
+                    $detailsDiv.find("td.widget-description").text($.t(type + ":description", { defaultValue : value.description}));
                     $detailsDiv.find("td.widget-version").text(value.version);
                     $detailsDiv.find("td.widget-author").text(value.author);
 
@@ -215,7 +215,7 @@
       $.ajax({
          type: "POST",
          url: "/rest/widget",
-         data: JSON.stringify({ idPage: newWidget.idPage, name: newWidget.type, sizeX: newWidget.sizeX, sizeY: newWidget.sizeY, positionX: newWidget.positionX, positionY: newWidget.positionY, configuration: newWidget.configuration }),
+         data: JSON.stringify({ idPage: newWidget.idPage, type: newWidget.type, sizeX: newWidget.sizeX, sizeY: newWidget.sizeY, positionX: newWidget.positionX, positionY: newWidget.positionY, configuration: newWidget.configuration }),
          contentType: "application/json; charset=utf-8",
          dataType: "json"
       })

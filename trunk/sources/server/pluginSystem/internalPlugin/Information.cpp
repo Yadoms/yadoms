@@ -4,9 +4,15 @@
 namespace pluginSystem {   namespace internalPlugin {
 
    CInformation::CInformation()
-      :m_name("system"), m_description("system"), m_version("1.0"), m_releaseType(shared::plugin::information::EReleaseType::kStable), 
+      :m_type("system"), m_description("system"), m_version("1.0"), m_releaseType(shared::plugin::information::EReleaseType::kStable),
       m_author("Yadoms team"), m_url("http://www.yadoms.com")
    {
+      m_package.set("type", m_type);
+      m_package.set("description", m_description);
+      m_package.set("version", m_version);
+      m_package.set("releaseType", m_releaseType);
+      m_package.set("author", m_author);
+      m_package.set("url", m_url);
    }
 
    CInformation::~CInformation()
@@ -14,9 +20,9 @@ namespace pluginSystem {   namespace internalPlugin {
    }
 
 
-   const std::string& CInformation::getName() const
+   const std::string& CInformation::getType() const
    {
-      return m_name;
+      return m_type;
    }
 
    const std::string& CInformation::getDescription() const
@@ -46,7 +52,7 @@ namespace pluginSystem {   namespace internalPlugin {
    {
       std::ostringstream formatedInformations;
 
-      formatedInformations << getName();
+      formatedInformations << getType();
       formatedInformations << " v" << getVersion();
       formatedInformations << "[stable]";
 
@@ -74,4 +80,10 @@ namespace pluginSystem {   namespace internalPlugin {
    {
       return false;
    }
+
+   shared::CDataContainer CInformation::getPackageJson() const
+   {
+      return m_package;
+   }
+
 }} // namespace pluginSystem::internalPlugin

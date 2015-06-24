@@ -26,6 +26,16 @@ namespace pluginSystem
       }
 
       //--------------------------------------------------------------
+      /// \brief	                        Constructor
+      /// \param[in]  plugin              Plugin name
+      /// \param[in]  message             Message
+      //--------------------------------------------------------------
+      CInvalidPluginException(const std::string& plugin, const std::string& message)
+         :CException((boost::format("Invalid plugin found %1% : %2%") % plugin % message).str())
+      {
+      }
+
+      //--------------------------------------------------------------
       /// \brief      Destructor
       //--------------------------------------------------------------
       virtual ~CInvalidPluginException() throw()

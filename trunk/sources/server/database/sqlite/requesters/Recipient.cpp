@@ -300,11 +300,11 @@ namespace database { namespace sqlite { namespace requesters {
 			{
 				//insert or update value in RecipientFieldsTable
 				CQuery qInsert;
-				qInsert.InsertOrReplaceInto(CRecipientFieldTable::getTableName(), CRecipientFieldTable::getIdRecipientColumnName(), CRecipientFieldTable::getPluginNameColumnName(), CRecipientFieldTable::getFieldNameColumnName(), CRecipientFieldTable::getValueColumnName()).
-					Values(recipientId, (*i)->PluginName(), (*i)->FieldName(), (*i)->Value());
+				qInsert.InsertOrReplaceInto(CRecipientFieldTable::getTableName(), CRecipientFieldTable::getIdRecipientColumnName(), CRecipientFieldTable::getPluginTypeColumnName(), CRecipientFieldTable::getFieldNameColumnName(), CRecipientFieldTable::getValueColumnName()).
+               Values(recipientId, (*i)->PluginType(), (*i)->FieldName(), (*i)->Value());
 
 				if (m_databaseRequester->queryStatement(qInsert) <= 0)
-					throw shared::exception::CEmptyResult("Fail to insert field : " + (*i)->PluginName() + "." + (*i)->FieldName() + " : " + (*i)->Value());
+               throw shared::exception::CEmptyResult("Fail to insert field : " + (*i)->PluginType() + "." + (*i)->FieldName() + " : " + (*i)->Value());
 			}
 			else
 			{
@@ -319,7 +319,7 @@ namespace database { namespace sqlite { namespace requesters {
       qSelect.SelectCount().
          From(CRecipientFieldTable::getTableName()).
          Where(CRecipientFieldTable::getFieldNameColumnName(), CQUERY_OP_EQUAL, fieldName).
-         And(CRecipientFieldTable::getPluginNameColumnName(), CQUERY_OP_EQUAL, pluginName);
+         And(CRecipientFieldTable::getPluginTypeColumnName(), CQUERY_OP_EQUAL, pluginName);
 
       int count = m_databaseRequester->queryCount(qSelect);
       return count != 0;
@@ -327,17 +327,17 @@ namespace database { namespace sqlite { namespace requesters {
 
    boost::shared_ptr<entities::CRecipientField> CRecipient::createField(const entities::CRecipientField& field)
    {
-      if (!field.FieldName.isDefined() || !field.PluginName.isDefined())
+      if (!field.FieldName.isDefined() || !field.PluginType.isDefined())
          throw shared::exception::CEmptyResult("Cannot add recipient field without name and plugin name");
 
       //check field do not already exists
-      if (fieldExists(field.FieldName(), field.PluginName()))
+      if (fieldExists(field.FieldName(), field.PluginType()))
          throw shared::exception::CInvalidParameter((boost::format("Fail to insert recipient field %1% (already exists)") % field.FieldName()).str());
 
       //insert field
       CQuery qInsert;
-      qInsert.InsertInto(CRecipientFieldTable::getTableName(), CRecipientFieldTable::getFieldNameColumnName(), CRecipientFieldTable::getPluginNameColumnName()).
-         Values(field.FieldName(), field.PluginName());
+      qInsert.InsertInto(CRecipientFieldTable::getTableName(), CRecipientFieldTable::getFieldNameColumnName(), CRecipientFieldTable::getPluginTypeColumnName()).
+         Values(field.FieldName(), field.PluginType());
       if (m_databaseRequester->queryStatement(qInsert) <= 0)
          throw shared::exception::CEmptyResult("Fail to insert recipient field");
 
@@ -346,7 +346,7 @@ namespace database { namespace sqlite { namespace requesters {
       qSelect.Select().
          From(CRecipientFieldTable::getTableName()).
          Where(CRecipientFieldTable::getFieldNameColumnName(), CQUERY_OP_EQUAL, field.FieldName()).
-         And(CRecipientFieldTable::getPluginNameColumnName(), CQUERY_OP_EQUAL, field.PluginName());
+         And(CRecipientFieldTable::getPluginTypeColumnName(), CQUERY_OP_EQUAL, field.PluginType());
 
       adapters::CRecipientFieldAdapter adapter;
       m_databaseRequester->queryEntities<boost::shared_ptr<entities::CRecipientField> >(&adapter, qSelect);

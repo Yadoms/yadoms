@@ -1,5 +1,6 @@
 {
-   "name": "megatecUps",
+   "type": "megatecUps",
+   "name": "megatec Ups",
    "description": "Megatec UPS support",
    "version": "0.1",
    "releaseType": "beta",

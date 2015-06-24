@@ -1,4 +1,5 @@
 {
+    "type": "RfxLanXpl",
     "name": "RfxLAN Xpl",
     "description": "Plugin which handle RfxLan with Xpl firmware.",
     "version": "0.1",

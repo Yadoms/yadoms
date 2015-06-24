@@ -40,7 +40,7 @@ void CBasicQualifier::AddEventToDatabase(const boost::shared_ptr<const shared::p
    {
       // Add event into plugin event logger table
       m_pluginLogger->addEvent(
-         pluginInformation->getName(),
+         pluginInformation->getType(),
          pluginInformation->getVersion(),
          pluginInformation->getReleaseType(),
          eventType,

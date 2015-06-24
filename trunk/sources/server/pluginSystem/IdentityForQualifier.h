@@ -32,10 +32,10 @@ namespace pluginSystem
       virtual ~CIdentityForQualifier();
 
       //--------------------------------------------------------------
-      /// \brief	   Name getter
-      /// \return    Plugin name
+      /// \brief	   Type getter
+      /// \return    Plugin type
       //--------------------------------------------------------------
-      const std::string& getName() const;
+      const std::string& getType() const;
 
       //--------------------------------------------------------------
       /// \brief	   Version getter
@@ -50,7 +50,7 @@ namespace pluginSystem
       const shared::plugin::information::EReleaseType getReleaseType() const;
 
    private:
-      const std::string m_name;
+      const std::string m_type;
       const std::string m_version;
       const shared::plugin::information::EReleaseType m_releaseType;
    };

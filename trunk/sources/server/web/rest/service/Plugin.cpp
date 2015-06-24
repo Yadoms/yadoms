@@ -29,6 +29,7 @@ namespace web { namespace rest { namespace service {
    void CPlugin::configureDispatcher(CRestDispatcher & dispatcher)
    {
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CPlugin::getAllAvailablePlugins);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("withPackage"), CPlugin::getAllAvailablePluginsWithPackage);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("instance"), CPlugin::getAllPluginsInstance);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("instance")("handleManuallyDeviceCreation"), CPlugin::getAllPluginsInstanceForManualDeviceCreation);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*"), CPlugin::getOnePlugin);
@@ -149,24 +150,43 @@ namespace web { namespace rest { namespace service {
 
          pluginSystem::CManager::AvalaiblePluginMap::iterator i;
          shared::CDataContainer result;
+         std::vector<std::string> pluginCollection;
+         for(i=pluginList.begin(); i!=pluginList.end(); ++i)
+         {
+            pluginCollection.push_back(i->first);
+         }
+
+         result.set("plugins", pluginCollection);
+         return CResult::GenerateSuccess(result);
+      }
+      catch(std::exception &ex)
+      {
+         return CResult::GenerateError(ex);
+      }
+      catch(...)
+      {
+         return CResult::GenerateError("unknown exception in creating a new plugin instance");
+      }
+   }
+
+   shared::CDataContainer CPlugin::getAllAvailablePluginsWithPackage(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   {
+      try
+      {
+         pluginSystem::CManager::AvalaiblePluginMap pluginList = m_pluginManager->getPluginList();
+
+         pluginSystem::CManager::AvalaiblePluginMap::iterator i;
+         shared::CDataContainer result;
          std::vector<shared::CDataContainer> pluginCollection;
          for(i=pluginList.begin(); i!=pluginList.end(); ++i)
          {
-            shared::CDataContainer thisPluginData;
-            thisPluginData.set("name", i->first);
-            thisPluginData.set("author", i->second->getAuthor());
-            thisPluginData.set("description", i->second->getDescription());
-            thisPluginData.set("nameInformation", i->second->getName());
-            thisPluginData.set("identity", i->second->getIdentity());
-            thisPluginData.set("releaseType", i->second->getReleaseType());
-            thisPluginData.set("url", i->second->getUrl());
-            thisPluginData.set("version", i->second->getVersion());
-            thisPluginData.set("supportManuallyCreatedDevice", i->second->getSupportManuallyCreatedDevice());
-            
-            pluginCollection.push_back(thisPluginData);
+            shared::CDataContainer pluginInfo;
+            pluginInfo.set("type", i->first);
+            pluginInfo.set("package", i->second->getPackageJson());
+            pluginCollection.push_back(pluginInfo);
          }
 
-         result.set< std::vector<shared::CDataContainer> >("plugins", pluginCollection);
+         result.set("plugins", pluginCollection);
          return CResult::GenerateSuccess(result);
       }
       catch(std::exception &ex)

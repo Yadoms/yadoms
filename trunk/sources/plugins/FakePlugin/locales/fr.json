@@ -1,4 +1,5 @@
 ﻿{
+   "name" : "Faux Plugin",
    "description" : "Description en fr",
    "configurationSchema" : {
       "StringParameter" : {

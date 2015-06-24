@@ -2,6 +2,7 @@
 
 #include <string>
 #include "ReleaseType.h"
+#include <shared/DataContainer.h>
 
 namespace shared { namespace plugin { namespace information
 {
@@ -17,10 +18,10 @@ namespace shared { namespace plugin { namespace information
       virtual ~IInformation () { }
 
       //--------------------------------------------------------------
-      /// \brief	    get the plugin Name
-      /// \return     the plugin name
+      /// \brief	    get the plugin type
+      /// \return     the plugin type
       //--------------------------------------------------------------
-      virtual const std::string& getName() const = 0;
+      virtual const std::string& getType() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    get the plugin Description
@@ -82,5 +83,12 @@ namespace shared { namespace plugin { namespace information
       /// \return     true if the plugin supports manually created devices
       //--------------------------------------------------------------
       virtual bool getSupportManuallyCreatedDevice() const = 0;
+
+
+      //--------------------------------------------------------------
+      /// \brief	    Provide the package.json content
+      /// \return     the package.json content
+      //--------------------------------------------------------------
+      virtual shared::CDataContainer getPackageJson() const = 0;
    };
 } } } // namespace shared::plugin::information

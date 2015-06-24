@@ -4,7 +4,8 @@
  * Creates an instance of Plugin
  * @constructor
  */
-function UpdateInformation(name, author, description, releaseType, url, credits, version, downloadUrl, iconUrl) {
+function UpdateInformation(type, name, author, description, releaseType, url, credits, version, downloadUrl, iconUrl) {
+   assert(!isNullOrUndefined(type), "type of a plugin must be defined");
    assert(!isNullOrUndefined(name), "name of a plugin must be defined");
    assert(!isNullOrUndefined(author), "author of a plugin must be defined");
    assert(!isNullOrUndefined(description), "description of plugin");
@@ -13,6 +14,7 @@ function UpdateInformation(name, author, description, releaseType, url, credits,
    assert(!isNullOrUndefined(downloadUrl), "downloadUrl must be defined");
    assert(!isNullOrUndefined(iconUrl), "iconUrl must be defined");
 
+   this.type = type;
    this.name = name;
    this.author = author;
    this.description = description;

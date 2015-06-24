@@ -1,4 +1,5 @@
 ﻿{
+   "name": "Composeur de Sms",
    "description": "Envoi/réception de SMS avec un téléphone mobile. Ce plugin utilise un téléphone mobile compatible (supportant les commandes AT) connecté au système Yadoms pour envoyer/recevoir des SMS. Ce plugin utilise la librairie GAMMU (http://wammu.eu/).",
    "configurationSchema":
    {

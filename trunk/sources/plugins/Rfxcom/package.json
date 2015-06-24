@@ -1,5 +1,6 @@
 {
-   "name": "rfxcom",
+   "type": "rfxcom",
+   "name": "RFXCom",
    "description": "RFXCom radio interface support (see http://rfxcom.com/)",
    "version": "0.1",
    "releaseType": "beta",

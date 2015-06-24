@@ -36,11 +36,11 @@ RecipientManager.factory = function (json, allAvailableFields) {
 RecipientManager.factoryField = function (json) {
     assert(!isNullOrUndefined(json), "json must be defined");
     assert(!isNullOrUndefined(json.idRecipient), "json.idRecipient must be defined");
-    assert(!isNullOrUndefined(json.pluginName), "json.pluginName must be defined");
+    assert(!isNullOrUndefined(json.pluginType), "json.pluginType must be defined");
     assert(!isNullOrUndefined(json.fieldName), "json.fieldName must be defined");
     assert(!isNullOrUndefined(json.value), "json.value must be defined");
 
-    return new RecipientField(json.idRecipient, decodeURIComponent(json.pluginName), decodeURIComponent(json.fieldName), decodeURIComponent(json.value));
+    return new RecipientField(json.idRecipient, decodeURIComponent(json.pluginType), decodeURIComponent(json.fieldName), decodeURIComponent(json.value));
 };
 
 
@@ -97,7 +97,7 @@ RecipientManager.createEmptyRecipient = function () {
  */
 RecipientManager.getAllPluginFields_ = function (callback, sync) {
     assert($.isFunction(callback), "callback must be a function");
-    PluginManager.getWithPackage(callback, sync);
+    PluginManager.get(callback, sync);
 };
 
 

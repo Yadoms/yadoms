@@ -53,7 +53,7 @@
       var sections = {};
       $.each(recipient.fields, function (index, field) {
 
-         if(field.pluginName == "system") {
+         if(field.pluginType == "system") {
             var valueParameter = new StringParameterHandler("objects.recipient.fields.", field.fieldName, field, field.value);
             //keep the field
             valueParameter.field = field;
@@ -68,19 +68,19 @@
          }
          else {
             //create or retrieve section for the plugin
-            if(sections[field.pluginName] == undefined) {
-               sections[field.pluginName] = new SectionParameterHandler("[prepend]modals.recipient_configure.","pluginSection",
+            if(sections[field.pluginType] == undefined) {
+               sections[field.pluginType] = new SectionParameterHandler("[prepend]modals.recipient_configure.","pluginSection",
                        {
-                          name : $.t(field.pluginName + ":name", { "defaultValue" :  field.pluginDefaultDisplayName })
+                          name : $.t(field.pluginType + ":name", { "defaultValue" :  field.pluginDefaultDisplayName })
                        });
             }
 
-            var valueParameter = ConfigurationHelper.createParameterHandler(field.pluginName + ":recipientFields.", field.fieldName, field, field.value);
+            var valueParameter = ConfigurationHelper.createParameterHandler(field.pluginType + ":recipientFields.", field.fieldName, field, field.value);
             //keep the field
             valueParameter.field = field;
             recipientConfigurationFields.push(valueParameter);
 
-            sections[field.pluginName].configurationHandlers.push(valueParameter);
+            sections[field.pluginType].configurationHandlers.push(valueParameter);
          }
       });
 

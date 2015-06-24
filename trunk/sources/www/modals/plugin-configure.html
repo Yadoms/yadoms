@@ -30,7 +30,7 @@
       $modalBody.empty();
 
       //we append the text section
-      var nameParameter = new StringParameterHandler("modals.configure-plugin.", "name-configuration", {required:"true"}, pluginInstance.name);
+      var nameParameter = new StringParameterHandler("modals.configure-plugin.", "name-configuration", {required:"true"}, pluginInstance.displayName);
       $modalBody.append(nameParameter.getDOMObject());
       //we finish friendlyNameParameter instantiation
       if ($.isFunction(nameParameter.applyScript))
@@ -54,7 +54,7 @@
          },
          submitSuccess: function($form, event) {
             event.preventDefault();
-            pluginInstance.name = nameParameter.getCurrentConfiguration();
+            pluginInstance.displayName = nameParameter.getCurrentConfiguration();
             pluginInstance.configuration = configMgr.getCurrentConfiguration();
 
             console.debug("End of Plugin Configuration : " + JSON.stringify(pluginInstance));

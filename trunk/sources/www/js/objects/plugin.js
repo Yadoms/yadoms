@@ -4,60 +4,16 @@
  * Creates an instance of Plugin
  * @constructor
  */
-function Plugin(name, author, description, nameInformation, identity, releaseType, url, version, supportManuallyCreatedDevice) {
-   assert(!isNullOrUndefined(name), "name of a plugin must be defined");
-   assert(!isNullOrUndefined(author), "author of a plugin must be defined");
-   assert(!isNullOrUndefined(description), "description of plugin");
-   assert(!isNullOrUndefined(nameInformation), "Full name of the plugin must be defined");
-   assert(!isNullOrUndefined(identity), "Identity must be defined");
-   assert(!isNullOrUndefined(releaseType), "release type must be defined");
-   assert(!isNullOrUndefined(url), "url must be defined");
-   assert(!isNullOrUndefined(version), "version must be defined");
-   assert(!isNullOrUndefined(supportManuallyCreatedDevice), "supportManuallyCreatedDevice must be defined");
+function Plugin(json) {
+   assert(!isNullOrUndefined(json), "json must be defined");
+   assert(!isNullOrUndefined(json.type), "json.type must be defined");
+   assert(!isNullOrUndefined(json.releaseType), "json.releaseType of a pluginInstance must be defined");
+   assert(!isNullOrUndefined(json.version), "json.version of a pluginInstance must be defined");
 
-   this.name = name;
-   this.author = author;
-   this.description = description;
-   this.nameInformation = nameInformation;
-   this.identity = identity;
-   this.releaseType = releaseType;
-   this.url = url;
-   this.version = version;
-   this.supportManuallyCreatedDevice = supportManuallyCreatedDevice;
+   this.package = json;
+   //the only information we duplicate is the "type" field for lighter code
+   this.type = json.type;
 }
-
-
-Plugin.prototype.downloadPackage= function (callback, sync) {
-   var async = true;
-   if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
-      async = !sync;
-
-   var self = this;
-
-   $.ajax({
-      dataType: "json",
-      url: "plugins/" + this.name + "/package.json",
-      async: async
-   })
-       .done(function (data) {
-
-          self.package = data;
-
-          //we manage i18n
-          i18n.options.resGetPath = 'plugins/__ns__/locales/__lng__.json';
-          i18n.loadNamespace(self.name);
-
-          //we restore the resGetPath
-          i18n.options.resGetPath = "locales/__lng__.json";
-
-          if ($.isFunction(callback))
-             callback();
-
-       })
-       .fail(function () {
-          notifyError($.t("objects.pluginInstance.errorGettingPackage", {pluginName: self.name}));
-       });
-};
 
 Plugin.prototype.getRecipientFields = function() {
 
@@ -66,4 +22,4 @@ Plugin.prototype.getRecipientFields = function() {
          return this.package.recipientFields;
       }
    }
-}
+};

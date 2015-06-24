@@ -44,11 +44,11 @@ namespace xplcore
 
    void CXplService::stop()
    {
-      YADOMS_LOG(debug) << "Ask for serviceTask to end.";
+      YADOMS_LOG(information) << "Ask for serviceTask to end.";
       m_taskManager.cancelAll();
-      YADOMS_LOG(debug) << "Wait for all tasks to end.";
+      YADOMS_LOG(information) << "Wait for all tasks to end.";
       m_taskManager.joinAll();
-      YADOMS_LOG(debug) << "CXplService stopped.";
+      YADOMS_LOG(information) << "CXplService stopped.";
 
       //do not delete m_xplTasks, before taskmanager has already done it
 

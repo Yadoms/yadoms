@@ -1,11 +1,12 @@
 {
+  "type": "python",
   "name": "Python",
   "description": "Python 2.7.x rules interpreter",
   "version": "0.1",
-  "credits": "",
   "releaseType": "beta",
   "author": "yadoms-team",
   "url": "http://sourceforge.net/projects/yadoms/",
+  "credits": "",
   "supportedPlatforms": "all",
   "codeTemplate": ""
 }

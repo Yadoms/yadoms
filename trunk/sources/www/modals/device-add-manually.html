@@ -41,7 +41,7 @@
           $.each(list, function(index, value) {
              var pi = PluginInstanceManager.factory(value);
              //foreach plugin-instance
-             $("select#pluginTypeList").append("<option value=\""+ pi.id + "\">" + pi.name + "</option>");
+             $("select#pluginTypeList").append("<option value=\""+ pi.id + "\">" + pi.displayName + "</option>");
           });
 
           //event click on add plugin button

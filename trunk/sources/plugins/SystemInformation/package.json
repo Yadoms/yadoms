@@ -1,5 +1,6 @@
 {
-   "name": "SystemInformation",
+   "type": "systemInformation",
+   "name": "System Information (en/US)",
    "description": "This plugin provide System information (CPU load, memory load,...)\n",
    "version": "1.0",
    "releaseType": "beta",

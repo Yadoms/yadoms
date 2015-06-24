@@ -1,5 +1,6 @@
 {
-   "name": "Wunderground",
+   "type": "WeatherUnderground",
+   "name": "Weather underground",
    "description": "Wunderground plugin received meteo information for the selected city from the web site",
    "version": "0.1",
    "releaseType": "beta",

@@ -9,7 +9,7 @@ namespace sqlite {
 
    DECLARE_TABLE(Plugin,
       (Id)
-      (Name)
+      (DisplayName)
       (Type)
       (Configuration)
       (AutoStart)
@@ -38,7 +38,7 @@ namespace sqlite {
    DECLARE_TABLE(Widget,
       (Id)
       (IdPage)
-      (Name)
+      (Type)
       (SizeX)
       (SizeY)
       (PositionX)
@@ -126,7 +126,7 @@ namespace sqlite {
    
 	DECLARE_TABLE(RecipientField,
 	   (IdRecipient)
-		(PluginName)
+		(PluginType)
 		(FieldName)
 		(Value)
 	)   

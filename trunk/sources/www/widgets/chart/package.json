@@ -1,9 +1,10 @@
 {
    "type": "chart",
-   "credits": "",
    "version": "0.1",
+   "releaseType": "beta",
    "author": "yadoms team",
    "url" : "http://www.yadoms.com/wiki/widgets/chart.html",
+   "credits": "",
    "dimensions": {
       "min": {
          "x": 2,
