@@ -1,0 +1,42 @@
+#new-widget-carousel .carousel-inner {
+    height: 250px;
+    background: slategray;
+}
+
+#new-widget-carousel .carousel-caption {
+    clear: both;
+    left: auto;
+    bottom: auto;
+    text-align: center;
+    width: 60%;
+}
+
+.carousel-widget-preview {
+    clear: both;
+    left: auto;
+    bottom: auto;
+    text-align: center;
+    margin: 20px auto;
+}
+
+/*Standard battery widget indicator*/
+.battery-widget {
+    position: absolute;
+    width: 20px;
+    height: 10px;
+    top: 0px;
+    right: 0px;
+    background-position: top left;
+    background-repeat: no-repeat;
+    background-image: url('../img/widgets/widget_battery_3.png');
+    background-size: 100%;
+}
+
+/*Standard signal strength widget indicator*/
+.signal-strength-widget {
+    position: absolute;
+    width: 20px;
+    height: 10px;
+    top: 0px;
+    right: 40px;
+}

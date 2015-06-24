@@ -1,0 +1,47 @@
+{
+   "name": "switch",
+   "description": "A widget that provide buttons to make actions",
+   "version": "0.1",
+   "author": "yadoms team",
+   "url" : "http://www.yadoms.com/wiki/widgets/switch.html",
+   "dimensions": {
+      "min": {
+         "x": 1,
+         "y": 1
+      },
+      "max": {
+         "x": 1,
+         "y": 1
+      },
+      "default": {
+         "x": 1,
+         "y": 1
+      }
+   },
+   "configurationSchema": {
+      "device" : {
+         "name" : "Switch device",
+         "description" : "Device to emulate",
+         "type" : "device",
+         "expectedCapacity" : "switch",
+         "expectedKeywordAccess" : "set"
+      },
+      "showDeviceName" : {
+         "name" : "Show device name",
+         "description" : "Determine if you want to see the device name on the widget",
+         "type" : "bool",
+         "defaultValue" : "true"
+      },
+      "kind" : {
+         "type" : "enum",
+         "name" : "Kind of switch",
+         "description" : "Define the kind of switch is defined. Permit to change interactions in function of the kind of switch",
+         "defaultValue" : "simple",
+         "values" : {
+            "simple" : "simple",
+            "blind" : "blind",
+            "ringbell" : "ring bell"
+         }
+      }
+   }
+}

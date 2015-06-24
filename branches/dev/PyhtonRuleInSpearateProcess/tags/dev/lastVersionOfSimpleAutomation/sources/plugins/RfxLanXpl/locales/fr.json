@@ -1,0 +1,15 @@
+﻿{
+    "description": "Plugin qui supporte le RfxLan avec le firmware xpl",
+    "configurationSchema": {
+		"networkInterface" :
+		{
+			"name" : "Interface réseau",
+			"description" : "L'interface réseau connectée au RFXLanXpl"
+		},
+		"XplHub":
+		{
+			"name": "Démarrer un hub Xpl",
+			"description": "Démarre un hub Xpl au lancement du plugin",
+		}
+    }
+}

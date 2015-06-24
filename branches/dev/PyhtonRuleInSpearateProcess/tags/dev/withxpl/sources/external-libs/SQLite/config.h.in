@@ -1,0 +1,11 @@
+#cmakedefine01 SQLITE_ENABLE_RTREE
+#define SQLITE_THREADSAFE @SQLITE_THREADSAFE@
+
+#cmakedefine HAVE_STDINT_H
+#cmakedefine HAVE_INTTYPES_H
+#cmakedefine HAVE_UTIME_H
+
+#cmakedefine HAVE_GMTIME_R
+#cmakedefine01 HAVE_LOCALTIME_R
+#cmakedefine01 HAVE_POSIX_FALLOCATE
+#cmakedefine01 HAVE_USLEEP

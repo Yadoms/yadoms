@@ -1,0 +1,87 @@
+{
+   "type": "gauge",
+   "version": "0.1",
+   "author": "yadoms team",
+   "url" : "http://www.yadoms.com/wiki/widgets/gauge.html",
+   "dimensions": {
+      "min": {
+         "x": 2,
+         "y": 1
+      },
+      "max": {
+         "x": 3,
+         "y": 2
+      },
+      "default": {
+         "x": 2,
+         "y": 1
+      }
+   },
+   "configurationSchema": {
+      "text" : {
+         "name" : "Title",
+         "description" : "Title of this widget",
+         "type" : "string",
+         "defaultValue" : "",
+         "required" : "false"
+      },
+      "device" : {
+         "name" : "Data to display",
+         "description" : "Select the data that you want to display",
+         "type" : "device",
+         "expectedKeywordType" : "numeric",
+         "expectedKeywordAccess" : "get"
+      },
+      "customYAxisMinMax" : {
+         "type" : "section",
+         "name" : "Manually set min and max of the gauge",
+         "description" : "Enabling this section allow you to set the min and max of the gauge. If it is not activated min and max will be set to 0 and 100",
+         "enableWithCheckBox" : "true",
+         "enableWithCheckBoxDefaultValue" : "false",
+         "content" : {
+            "minimumValue" : {
+               "type" : "decimal",
+               "name" : "Minimum value",
+               "description" : "Set the minimum value",
+               "defaultValue" : "0",
+               "precision" : "1"
+            },		 
+            "maximumValue" : {
+               "type" : "decimal",
+               "name" : "Maximum value",
+               "description" : "Set the maximum value",
+               "defaultValue" : "100.0",
+               "precision" : "1"
+            }
+         }
+      },
+      "thresholds" : {
+         "type" : "list",
+         "name" : "thresholds",
+         "description" : "List of thresholds (Maximum: 3)",
+         "nbItemsMin" : "1",
+         "nbItemsMax" : "3",
+         "allowDuplication" : "true",
+         "item" : {
+            "type" : "section",
+            "name" : "threshold",
+            "description" : "This section describe the configuration of a threshold",
+            "content" : {
+				"thresholdValue" : {
+				   "type" : "decimal",
+				   "name" : "threshold",
+				   "description" : "Set the value",
+				   "defaultValue" : "50.0",
+				   "precision" : "1"
+				},
+               "color" : {
+                  "name" : "Color of the threshold",
+                  "description" : "Permit to change the color of the threshold",
+                  "type" : "color",
+                  "defaultValue" : "#55BF3B"
+               }
+            }
+         }
+      }
+	}
+}

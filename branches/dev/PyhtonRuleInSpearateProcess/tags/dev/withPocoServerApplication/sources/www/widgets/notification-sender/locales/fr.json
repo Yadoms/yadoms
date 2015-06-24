@@ -1,0 +1,15 @@
+{
+   "name": "envoi de notification",
+   "description": "Un widget qui permet d'envoyer des notifications",
+   "configurationSchema" : {
+      "device" : {
+         "name" : "Périphérique",
+         "description" : "Périphérique utilisé pour envoyer des notifications"
+      }
+   },
+   "text": "Envoyer une notification",
+   "sendNotificationButton": "Envoyer notification",
+   "message": "Message",
+   "to": "À",
+   "errorDuringSending" : "Echec à l'envoi de la notification"
+}

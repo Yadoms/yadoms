@@ -1,0 +1,12 @@
+<script type="text/html" id="moon-phases-template">
+   <link href="widgets/moon-phases/widget.css" rel="stylesheet">
+   <table>
+   <tr>
+   <td class="strut"> <img src="widgets/moon-phases/Moon_phases_all_L.jpg" alt="phases" height="80" width="80"> </td>
+   <td class="strut">
+      <div class="moonPhasesWidgetData" data-bind="text: data"></div>
+      <div class="moonPhasesWidgetUnit" data-bind="text: unit"></div>
+   </td>
+   </tr>
+   </table>
+</script>

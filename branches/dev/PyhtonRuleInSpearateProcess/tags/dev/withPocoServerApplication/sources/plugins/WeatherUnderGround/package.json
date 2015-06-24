@@ -1,0 +1,80 @@
+{
+   "name": "Wunderground",
+   "description": "Wunderground plugin received meteo information for the selected city from the web site",
+   "version": "0.1",
+   "releaseType": "beta",
+   "author": "Yadoms team",
+   "url": "http://sourceforge.net/projects/yadoms/",
+   "SupportedPlatforms": "all",
+   "supportManuallyDeviceCreation": "false",
+   "configurationSchema":
+   {
+      "APIKey":
+      {
+         "name": "API Key",
+         "description": "the API key received from the web site",
+         "type": "string"
+      },
+      "Localisation":
+      {
+         "name": "Localisation",
+         "description": "Your city name",
+         "type": "string"
+      },
+      "Information":
+      {
+         "name": "Weather Conditions",
+         "description": "Information about local weather conditions could be selected individually below:",
+         "type" : "section",
+         "content":
+         {	  
+			  "Standard":
+			  {
+				 "name": "Temperature, DewPoint, Pressure, Humidity, Visibility, UV, Rain in 1 hour",
+				 "description": "",
+				 "type": "bool",
+				 "defaultValue": "true"
+			  },
+			  "Wind":
+			  {
+				 "name": "Wind, Wind Chill and Feels Like",
+				 "description": "Direction, average speed and max speed",
+				 "type": "bool",
+				 "defaultValue": "true"
+			  }
+		  }
+		},
+      "Astronomy":
+      {
+         "name": "Astronomy",
+         "description": "Information about the moon phases",
+         "type" : "section",
+         "content":
+         {	  
+			  "Astronomy":
+			  {
+				 "name": "",
+				 "description": "",
+				 "type": "bool",
+				 "defaultValue": "true"
+			  }
+		  }
+		},
+      "Forecast3Days":
+      {
+         "name": "Forecast3Days",
+         "description": "Summary of the weather for the next 3 days",
+         "type" : "section",
+         "content":
+         {	  
+			  "Forecast3Days":
+			  {
+				 "name": "",
+				 "description": "",
+				 "type": "bool",
+				 "defaultValue": "true"
+			  }
+		  }
+		}		
+      }
+}

@@ -1,0 +1,15 @@
+{
+   "name": "envoi de sms",
+   "description": "Un widget qui permet d'envoyer des SMS",
+   "configurationSchema" : {
+      "device" : {
+         "name" : "Téléphone",
+         "description" : "Téléphone utilisé pour envoyer des SMS"
+      }
+   },
+   "text": "Envoyer un SMS",
+   "sendSmsButton": "Envoyer SMS",
+   "message": "Message",
+   "to": "À",
+   "errorDuringSending" : "Echec à l'envoi du SMS"
+}

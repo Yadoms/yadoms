@@ -1,0 +1,19 @@
+{
+   "name": "ZWave",
+   "description": "Plugin which handle ZWave protocol.",
+   "version": "0.1",
+   "releaseType": "beta",
+   "author": "yadoms-team",
+   "url": "http://sourceforge.net/projects/yadoms/",
+   "SupportedPlatforms": "all",
+   "configurationSchema": 
+   {
+      "Serial Port" :
+      {
+         "type" : "enum",
+         "name" : "Serial port",
+         "description" : "The serial port connected to the ZWave controller (stick,...)",
+		 "values" : {"__Binding__" : {"type" : "system", "query" : "serialPorts"}}
+      } 
+   }
+}

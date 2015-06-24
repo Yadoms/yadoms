@@ -1,0 +1,125 @@
+<!--Modify page Modal -->
+<div class="modal fade" id="modify-page-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="modify-page-modal-title"></h4>
+            </div>
+            <div class="modal-body">
+               <input id="modify-page-text" type="text" class="form-control" placeholder="Enter Page name" data-i18n="[placeholder]modals.modify-page.placeholder">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="common.cancel">Cancel</button>
+                <button id="btn-confirm-modify-page" type="button" class="btn btn-primary" data-i18n="common.ok">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var pageCurrentlyModified = null;
+
+   /**
+   * Ask for widget packages to the REST server
+   */
+   function showPageModificationModal(pageId) {
+      if (pageId !== undefined)
+      {
+         pageCurrentlyModified = PageManager.getPage(pageId);
+         assert(pageCurrentlyModified != null, "page Id doesn't exit");
+
+         //we are currently modifying a page
+         $("h4#modify-page-modal-title").text($.t("modals.modify-page.renamePageTitle"));
+         $("button#btn-confirm-modify-page").text($.t("modals.modify-page.renamePageValidationButton"));
+         $("input#modify-page-text").val(pageCurrentlyModified.name);
+      }
+      else
+      {
+         //we are currently adding a new page
+         $("h4#modify-page-modal-title").text($.t("modals.modify-page.createNewPageTitle"));
+         $("button#btn-confirm-modify-page").text($.t("modals.modify-page.createNewPageValidationButton"));
+         $("input#modify-page-text").val("");
+      }
+      //we display the modal
+      $('div#modify-page-modal').modal();
+   }
+
+   $('div#modify-page-modal').on('shown.bs.modal', function () {
+      $('input#modify-page-text').focus();
+   });
+
+   /**
+   * Callback to the click of the button to confirm modifying of a page
+   */
+   $("button#btn-confirm-modify-page").click(function () {
+
+      //we close the modify page modal
+      $("div#modify-page-modal").modal("hide");
+      var newPageName= $('input#modify-page-text').val();
+
+      if (pageCurrentlyModified != null) {
+         //we have validated a page modification
+         $.ajax({
+            type: "PUT",
+            url: "/rest/page/" + pageCurrentlyModified.id,
+            data: JSON.stringify({id : pageCurrentlyModified.id, name: encodeURIComponent(newPageName), pageOrder: pageCurrentlyModified.pageOrder}),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json"
+         })
+         .done(function(data) {
+           //we parse the json answer
+           if (data.result != "true")
+           {
+              notifyError($.t("modals.modify-page.errorDuringModifyingPage"), JSON.stringify(data));
+              return;
+           }
+
+           //we modify the page dynamically
+           var newName = decodeURIComponent(data.data.name);
+           pageCurrentlyModified.name = newName;
+           pageCurrentlyModified.$tab.find("a span").text(newName);
+         })
+         .fail(function(pageName) { return function() {$.t("modals.delete-page.errorDuringDeletingPageNamed", {"pageName" : pageName});};}(newPageName))
+         .always(function() {
+            //we clear the current id
+            pageCurrentlyModified = undefined;
+         });
+      }
+      else {
+         //we have validated a page creation
+         //we look for the new pageOrder value
+
+         var lastPageOrder = -1;
+         $.each(PageManager.pages, function (index, currentPage) {
+            lastPageOrder = Math.max(lastPageOrder, currentPage.pageOrder);
+         });
+
+         //we increment the pageOrder for the new page
+         lastPageOrder++;
+
+         $.ajax({
+            type: "POST",
+            url: "/rest/page/",
+            data: JSON.stringify({ name: encodeURIComponent(newPageName), pageOrder: lastPageOrder }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json"
+         })
+         .done(function(data) {
+           //we parse the json answer
+           if (data.result != "true")
+           {
+              notifyError($.t("modals.modify-page.errorDuringCreatingPage"), JSON.stringify(data));
+              return;
+           }
+
+           //we add the page dynamically
+           var p = new Page(data.data.id, decodeURIComponent(data.data.name), data.data.pageOrder);
+           PageManager.addPage(p);
+           PageManager.addToDom(p);
+         })
+         .fail(function(pageName) { return function() {$.t("modals.delete-page.errorDuringCreatingPageNamed", {"pageName" : pageName});};}(newPageName));
+      }
+   });
+
+</script>

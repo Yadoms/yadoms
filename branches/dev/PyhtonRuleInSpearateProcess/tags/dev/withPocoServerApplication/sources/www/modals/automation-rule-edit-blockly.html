@@ -1,0 +1,127 @@
+<!--Edit automation Rule Modal -->
+<div class="modal fade" id="edit-automation-rule-modal-blockly" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog edit-automation-rule-modal-blockly">
+        <div class="modal-content">
+           <form class="form-horizontal" novalidate >
+              <div class="modal-header">
+                   <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                   <h4 class="modal-title" data-i18n="modals.edit-automation-rule.title"></h4>
+              </div>
+              <div class="modal-body">
+                 <div id="automation-rule-blockly-configuration"></div>
+                 <div id="automation-rule-blockly-editor"></div>
+              </div>
+              <div class="modal-footer">
+                 <div class="form-actions">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="common.cancel"></button>
+                    <button type="submit" id="btn-confirm-configure-rule-blockly" class="btn btn-primary" data-i18n="common.ok"></button>
+                 </div>
+              </div>
+           </form>
+        </div>
+    </div>
+</div>
+
+<script>
+   var currentAutomationRuleCondition;
+   var activeAutomationRuleCondition;
+
+
+   function showEditionAutomationRuleWithBlockly(rule, callback) {
+      assert(!isNullOrUndefined(rule), "rule must be defined");
+      assert($.isFunction(callback), "callback must be defined");
+
+      var $modalBody = $("div#edit-automation-rule-modal-blockly .modal-body");
+
+      $modalBody.find("div#automation-rule-blockly-editor").empty().removeClass();
+
+      var $modalConfiguration = $modalBody.find("div#automation-rule-blockly-configuration");
+      $modalConfiguration.empty();
+
+      //we append the text section
+      var nameParameter = new StringParameterHandler("modals.edit-automation-rule.", "name-rule", {required:"true"}, rule.name);
+      $modalConfiguration.append(nameParameter.getDOMObject());
+      //we finish nameParameter instantiation
+      if ($.isFunction(nameParameter.applyScript))
+         nameParameter.applyScript();
+
+      var descriptionParameter = new StringParameterHandler("modals.edit-automation-rule.", "description-rule", {required:"true"}, rule.description);
+      $modalConfiguration.append(descriptionParameter.getDOMObject());
+      //we finish descriptionParameter instantiation
+      if ($.isFunction(descriptionParameter.applyScript))
+         descriptionParameter.applyScript();
+
+
+      //validation form (only on configuration part, blockly is validated after this one)
+      $modalConfiguration.find("input,select,textarea").jqBootstrapValidation({
+         preventSubmit: true,
+         submitError: function($form, event, errors) {
+            console.warn("Unable to validate form: " + errors);
+         },
+         submitSuccess: function($form, event) {
+            event.preventDefault();
+
+            Blockly.Validation.validateMainWorkspace(function(isValid, msg) {
+               if(!isValid) {
+                  console.warn("Fail to validate blockly : " + msg);
+               } else {
+
+                  Blockly.Yadoms.GetResult(function(xmlString,pythonCode){
+                     rule.content = encodeURIComponent(xmlString);
+                     rule.code = encodeURIComponent(pythonCode);
+                     rule.name = nameParameter.getCurrentConfiguration();
+                     rule.description = descriptionParameter.getCurrentConfiguration();
+
+                     debugger;
+                     console.log("------------------> START");
+                     console.log(pythonCode);
+                     console.log("------------------> END");
+                  });
+
+                  $modalConfiguration.find("input,select,textarea").jqBootstrapValidation("destroy");
+                  $modalConfiguration.empty();
+                  $modalBody.empty();
+
+                  $('div#edit-automation-rule-modal-blockly').modal("hide");
+
+                  callback(rule);
+               }
+            });
+
+
+         },
+         filter: function() {
+            //we check only control that have class enable-validation and are visible
+            return $(this).is(".enable-validation") && $(this).is(":visible");
+         }
+      });
+
+       //when modal is shown; inject blockly
+      $('div#edit-automation-rule-modal-blockly').on("shown.bs.modal", function () {
+         //fix input field
+         $(document).off('focusin.modal');
+
+         debugger;
+
+         //load content
+         var content = decodeURIComponent(rule.content);
+
+         //check if modal as already been opened
+         var $a =  $modalBody.find("div#automation-rule-blockly-editor");
+         if(!isNullOrUndefined($a))
+            $a.remove();
+
+         //append new div
+         $modalBody.append(" <div id='automation-rule-blockly-editor'></div> ");
+
+         //load blockly
+         Blockly.Yadoms.Initialize($modalBody.find("div#automation-rule-blockly-editor")[0], content, 1);
+
+         //i18n
+         $modalBody.i18n();
+      });
+
+      //we display the modal
+      $('div#edit-automation-rule-modal-blockly').modal();
+   }
+</script>

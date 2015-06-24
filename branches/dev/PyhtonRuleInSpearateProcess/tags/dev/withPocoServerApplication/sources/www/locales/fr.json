@@ -1,0 +1,191 @@
+{
+   "common" : {
+      "ok" : "Ok",
+      "confirm" : "Confirmer",
+      "close" : "Fermer",
+      "cancel" : "Annuler",
+      "yes" : "Oui",
+      "no" : "Non",
+      "apply" : "Appliquer",
+      "add" : "Ajouter",
+      "resetToDefault" : "Restaurer les valeurs par défaut",
+      "goBack" : "Retour"
+   },
+   "mainPage": {
+    "menu": {
+      "dashboard": "Tableau de bord",
+      "checkForUpdate": "Rechercher une mise à jour",
+      "restart": "Redémarrer",
+      "shutdown": "Eteindre"
+    },
+    "actions": {
+      "loadingPages": "Chargement des pages ...",
+      "loadingWidgetsOfPage": "Chargement des widgets de la page __pageName__ ..."
+    },
+    "customization": {
+      "addNewPage": "Ajouter une nouvelle page",
+      "addNewWidget": "Ajouter un nouveau widget",
+      "moveToLeft": "Déplacer à gauche",
+      "moveToRight": "Déplacer à droite",
+      "rename": "Renommer",
+      "delete": "Supprimer"
+    },
+    "errors": {
+      "unableToAddWidgetWithoutPage": "Vous devez avoir créé au moins une page avant de pouvoir ajouter des widgets",
+      "unableToGetEventLog": "Impossible de récupérer le journal des évènements",
+      "errorDuringRequestingLastEventLog": "Erreur pendant la récupération du dernier évènements serveur",
+      "errorDuringSavingPagePosition": "Erreur pendant la sauvegarde de la position des pages",
+      "unableToGetPages": "Impossible de récupérer les pages",
+      "unableToGetWidgets": "Impossible de récupérer les widgets",
+      "errorDuringRequestingPages": "Erreur pendant la récupération des pages",
+      "errorDuringRequestingWidgets": "Erreur pendant la récupération des widgets",
+      "partOfWidgetIsMissing" : "Impossible d'obtenir une partie du widget __widgetName__. Supprimer toutes les instances ?",
+      "errorDuringRequestingNewLogEvents": "Erreur pendant la demande de nouveaux évènements serveur",
+      "youHaveBeenDisconnectedFromTheServerOrItHasGoneOffline": "Vous avez été déconnecté du serveur ou il est éteint",
+      "errorDuringRequestingDeviceLastData": "Erreur pendant la demande des dernières données",
+      "errorSavingCustomization": "Erreur pendant la sauvegarde de la personnalisation"
+    },
+    "notifications": {
+      "connectionToServerHasBeenRestored": "la connexion au serveur a été rétablie"
+    }
+  },
+   "404Page" : {
+      "title" : "Page introuvable - Erreur 404",
+      "line1" : "Désolé, mais la page que vous recherchez n'a pas été trouvée. Vérifiez s'il n'y a pas d'erreur dans l'URL.",
+      "line2" : "Vous allez être automatiquement redirigé vers la page d'accueil de Yadoms dans __count__ seconde ou appuyez sur le bouton ci-dessous.",
+      "line2_plural" : "Vous allez être automatiquement redirigé vers la page d'accueil de Yadoms dans __count__ secondes ou appuyez sur le bouton ci-dessous.",
+      "goingToHome" : "Retour à l'accueil ...",
+      "takeMeHome" : "Retourner à l'accueil"
+   },
+   "modals": {
+    "add-widget": {
+      "title": "Ajouter un nouveau widget",
+      "getMore": "Obtenir des widgets",
+      "errorDuringGettingPackages": "Erreur lors de la demande des informations des widgets",
+      "errorDuringCreatingWidget": "Erreur pendant la creation du widget",
+      "widgetSuccessfullyCreated": "Widget créé avec succès",
+      "unableToCreateWidgetOfType": "Impossible de créer le widget du type __widgetType__"
+    },
+    "configure-widget": {
+      "title": "Configuration du widget",
+      "errorDuringModifyingWidget": "Erreur pendant la modification de la configuration du widget",
+      "errorDuringModifyingWidgetNamed": "Erreur pendant la modification de la configuration du widget de type __widgetType__"
+    },
+    "delete-widget": {
+      "title": "Confirmation de la suppression du widget",
+      "text": "Cette opération va supprimer le widget de type __widgetType__. Continuer tout de même ?",
+      "widgetSuccessfullyDeleted": "Widget supprimé avec succès",
+      "errorDuringDeletingWidget": "Erreur pendant la suppression du widget",
+      "errorDuringDeletingWidgetNamed": "Erreur pendant la suppression du widget de type __widgetType__"
+    },
+    "delete-page": {
+      "title": "Confirmation de la suppression d'une page",
+      "text": "Cette opération va supprimer la page __pageName__ ainsi que tous les widgets qu'elle contient. Continuer tout de même ?",
+      "pageSuccessfullyDeleted": "Page supprimée avec succès",
+      "errorDuringDeletingPage": "Erreur pendant la suppression de la page",
+      "errorDuringDeletingPageNamed": "Erreur pendant la suppression de la page __pageName__"
+    },
+    "modify-page": {
+      "renamePageTitle": "Renommer une page",
+      "renamePageValidationButton": "Renommer",
+      "createNewPageTitle": "Créer une nouvelle page",
+      "createNewPageValidationButton": "Créer",
+      "errorDuringModifyingPage": "Erreur pendant la modification de la page",
+      "errorDuringModifyingPageNamed": "Erreur pendant la modification de la page __pageName__",
+      "errorDuringCreatingPage": "Erreur pendant la creation de la page",
+      "errorDuringCreatingPageNamed": "Erreur pendant la creation de la page __pageName__",
+      "placeholder": "Saisissez un nom de page"
+    },
+    "configure-plugin" : {
+      "title" : "Configuration du plugin",
+      "name-configuration" : {
+         "name" : "Nom",
+         "description" : "Nom personnalisable du plugin",
+         "regexErrorMessage" : "Le nom du plugin doit contenir au minimum 1 caractère"
+      },
+      "errorDuringCreatingPlugin" : "Erreur pendant la création du plugin",
+      "pluginSuccessfullyCreated" : "Plugin créé avec succès",
+      "errorDuringModifyingPlugin" : "Erreur pendant la modification du plugin"
+    },
+	"configure-manually-device-modal" : {
+         "friendlyName-configuration" : {
+            "name" : "Nom",
+            "description" : "Nom personnalisable du device",
+            "regexErrorMessage" : "Le nom du device doit contenir au minimum 1 caractère"
+         }	
+	},
+    "qrcode": {
+      "title": "QR Code de Yadoms",
+      "text": "Voici le QRCode de Yadoms. Vous pouvez le flasher avec votre téléphone pour accéder à Yadoms de partout."
+    },
+     "recipient_configure" : {
+       "title" : "Edition d'un destinataire",
+       "firstName" : {
+         "name": "Prénom",
+         "description": "Le prénom du destinataire",
+         "regexErrorMessage": ""
+       },
+       "lastName" : {
+         "name": "Nom",
+         "description": "Le nom du destinataire",
+         "regexErrorMessage": ""
+       },
+       "pluginSection" : {
+         "name" : "Champs additionnels pour le plugin ",
+         "description" : ""
+       }
+     }
+  },
+  "objects" : {
+    "recipient" : {
+      "errorGettingRecipientList" : "Une erreur est apparue lors du listing des destinataires",
+      "fields" : {
+        "email": {
+          "name": "Email",
+          "description": "L'adresse email du destinataire",
+          "regexErrorMessage": "Doit correspondre à une adresse email valide"
+        },
+        "mobile": {
+          "name": "Mobile",
+          "description": "Le numéro de téléphone mobile du destinataire"
+        }
+      }
+    }
+  },
+  "widgets": {
+    "configuration": {
+      "validationForm": {
+        "incorrectValue": "Valeur incorrecte",
+        "onlyIntegerNumberAllowed": "Seulement les nombres entiers sont autorisés",
+        "onlyNumberAllowed": "Seulement les nombres sont autorisés",
+        "maxValueExceeded": "La valeur ne peut pas être supérieure à __maxValue__",
+        "minValueExceeded": "La valeur ne peut pas être inférieure à __minValue__"
+      }
+    },
+    "errors": {
+      "widgetHasGeneratedAnExceptionDuringCallingMethod": "Le widget __widgetName__ a généré une exception pendant l'appel à la méthode __methodName__()",
+      "errorDuringGettingDeviceInformation" : "Erreur pendant la recupération d'informations sur le device"
+
+
+    }
+  },
+  "eventLogger": {
+    "defaultCode": "Evènnement inconnu : __what__ généré par $t(system.__who__)",
+    "started": "$t(system.__who__) a démarré",
+    "stopped": "$t(system.__who__) s'est arrêté",
+    "updated": "$t(system.__who__) a été mis à jour",
+    "yadomsCrash": "Yadoms à planté",
+    "pluginCrash": "__who__ à planté",
+    "taskFailed": "La tâche $t(system.__who__) a planté"
+  },
+  "system": {
+    "yadoms": "yadoms",
+    "backup": "Sauvegarde de base de données",
+    "pluginUpdate": "Mise à jour de plugin",
+    "yadomsUpdate": "Mise à jour de yadoms"
+  },
+  "initialization" : {
+      "homePage" : "Accueil"
+  },
+  "inProgress" : "Development in progress ..."
+}

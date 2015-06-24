@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Yet Another DOMotic System">
+    <meta name="author" content="yadoms team">
+    <link rel="shortcut icon" href="assets/ico/favicon.png">
+
+    <title>Yadoms</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="libs/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="css/bootstrap-non-responsive.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="css/yadoms.css" rel="stylesheet">
+	 <link href="libs/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="css/404.css" rel="stylesheet">
+
+    <!-- Gridster includes -->
+    <link href="libs/gridster/css/jquery.gridster.css" rel="stylesheet">
+  </head>
+
+  <body>
+  <!-- Fixed navbar -->
+  <div class="navbar navbar-default navbar-static-top" role="navigation">
+      <div class="container">
+          <div class="row" id="mainNavBar">
+              <div class="col-md-12">
+                  <div class="navbar-header">
+                     <a class="navbar-brand" href="/#">Yadoms</a>
+                     <!--<label class="label label-default">v 0.7</label>-->
+                  </div>
+                  <div class="">
+                      <ul class="nav navbar-nav">
+                         <li class="dropdown">
+                              <a class="dropdown-toggle disabled" data-toggle="dropdown"><i class="caret"></i></a>
+                              <ul class="dropdown-menu disabled">
+                                  <li><a href="#" id="btn-show-dashboard"><i class="fa fa-cog iconMenuItem"></i><span data-i18n="mainPage.menu.dashboard"></span></a></li>
+                              </ul>
+                          </li>
+                          <li><button class="btn btn-default customization-item hidden" id="btn-add-page"><i class="fa fa-file-o"></i><span class="hidden-xs">&nbsp;&nbsp;</span><span class="hidden-xs" data-i18n="mainPage.customization.addNewPage"></span></button></li>
+                          <li><button class="btn btn-default customization-item hidden" id="btn-add-widget"><i class="fa fa-puzzle-piece"></i><span class="hidden-xs">&nbsp;&nbsp;</span><span class="hidden-xs" data-i18n="mainPage.customization.addNewWidget"></span></button></li>
+                      </ul>
+                      <ul class="nav navbar-nav navbar-right">
+                          <li><a href="#" class="disabled" id="chartButton" data-i18n="[title]mainPage.menu.charts"><i class="fa fa-bar-chart-o"></i></a></li>
+                          <li><a href="#" class="disabled" id="customizeButton" data-i18n="[title]mainPage.menu.customization"><i class="fa fa-wrench"></i></a></li>
+                      </ul>
+                      </div>
+                  </div>
+              </div>
+      </div><!--/.nav-collapse -->
+  </div>
+
+  <div id="tabContainer">
+      <div class="center">
+         <div class="">
+            <div>
+               <i class="fa fa-code icon404"></i>
+               <h1 data-i18n="404Page.title"></h1>
+               <br />
+               <p data-i18n="404Page.line1"></p>
+               <p class="line2"></p>
+               <br />
+               <a href="/#" class="btn btn-large btn-info"><i class="fa fa-home"></i>&nbsp;&nbsp;<span data-i18n="404Page.takeMeHome"></span></a>
+            </div>
+         </div>
+      </div>
+      <footer class="footer">
+         <button class="btn btn-primary disabled" id="btn-show-qrcode"><i class="fa fa-qrcode"></i></button>
+         <label class="label label-default">&copy; Yadoms 2014</label>
+      </footer>
+  </div>
+
+   <!-- Bootstrap core JavaScript
+   ================================================== -->
+   <!-- Placed at the end of the document so the pages load faster -->
+   <script src="libs/jquery/js/jquery-1.11.0.min.js"></script>
+   <script src="libs/bootstrap/js/bootstrap.js"></script>
+
+   <script src="libs/i18next/js/i18next-1.7.2.js"></script>
+
+	<script type="text/javascript">
+
+    /**
+    * On page loaded
+    */
+   $(document).ready(function() {
+      var option = { resGetPath: "locales/__lng__.json", fallbackLng:"en", useDataAttrOptions: true};
+      i18n.init(option, function() {
+         $("html").i18n();
+         var timeRemaining = 5;
+         $("p.line2").text($.t("404Page.line2", {count : timeRemaining}));
+
+         setInterval(function() {
+            timeRemaining--;
+            $("p.line2").text($.t("404Page.line2", {count : timeRemaining}));
+            if (timeRemaining <= 0) {
+               //we reload the main page
+               $("p.line2").text($.t("404Page.goingToHome"));
+               $(location).attr('href',"/#");
+            }
+         }, 1000);
+      });
+   });
+	</script>
+  </body>
+</html>

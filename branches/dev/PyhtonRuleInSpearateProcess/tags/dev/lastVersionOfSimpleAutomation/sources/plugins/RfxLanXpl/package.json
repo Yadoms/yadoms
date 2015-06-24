@@ -1,0 +1,466 @@
+{
+    "name": "RfxLAN Xpl",
+    "description": "Plugin which handle RfxLan with Xpl firmware.",
+    "version": "0.1",
+    "releaseType": "beta",
+    "author": "yadoms-team",
+    "url": "http://sourceforge.net/projects/yadoms/",
+    "SupportedPlatforms": "all",
+    "configurationSchema": {
+		"networkInterface" :
+		{
+			"type" : "enum",
+			"name" : "Network interface",
+			"description" : "The network interface connected to the RFXLanXpl",
+			"values" : {"__Binding__" : {"type" : "system", "query" : "NetworkInterfacesWithoutLoopback"}}
+		},
+		"XplHub":
+		{
+			"name": "Start Xpl HUB",
+			"description": "Start an Xpl hub at plugin startup",
+			"type": "bool",
+			"defaultValue": "true"
+		}
+    },
+    "supportManuallyDeviceCreation": "true",
+    "manuallyDeviceCreationConfigurationSchema": {
+        "type": {
+            "name": "Type",
+            "description": "Type of the device",
+            "type": "radioSection",
+            "content": {
+                "ac": {
+                    "type": "section",
+                    "name": "ac",
+                    "description": "AC Basic",
+                    "content": {
+						"deviceAddress" : {
+							"type" : "string",
+							"name" : "Device address",
+							"description" : "Set the device address",
+							"required" : "true"
+						}					
+					}					
+				},
+                "x10": {
+                    "type": "section",
+                    "name": "x10",
+                    "description": "X10",
+                    "content": {
+                        "Protocol": {
+                            "name": "Protocol",
+                            "description": "Protocol of the device",
+                            "type": "radioSection",
+                            "content": {
+                                "proto_x10": {
+                                    "type": "section",
+                                    "name": "x10",
+                                    "description": "standardx10",
+                                    "content": {
+                                        "HouseCode": {
+                                            "name": "HouseCode",
+                                            "description": "The X10housecode",
+                                            "type": "enum",
+                                            "values": {
+                                                "A": "A",
+                                                "B": "B",
+                                                "C": "C",
+                                                "D": "D",
+                                                "E": "E",
+                                                "F": "F",
+                                                "G": "G",
+                                                "H": "H",
+                                                "I": "I",
+                                                "J": "J",
+                                                "K": "K",
+                                                "L": "L",
+                                                "M": "M",
+                                                "N": "N",
+                                                "O": "O",
+                                                "P": "P"
+                                            }
+                                        },
+                                        "UnitCode": {
+                                            "name": "UnitCode",
+                                            "description": "TheX10unitcode",
+                                            "type": "enum",
+                                            "values": {
+                                                "1": "1",
+                                                "2": "2",
+                                                "3": "3",
+                                                "4": "4",
+                                                "5": "5",
+                                                "6": "6",
+                                                "7": "7",
+                                                "8": "8",
+                                                "9": "9",
+                                                "10": "10",
+                                                "11": "11",
+                                                "12": "12",
+                                                "13": "13",
+                                                "14": "14",
+                                                "15": "15",
+                                                "16": "16"
+                                            }
+                                        }
+                                    }
+                                },
+                                "proto_arc": {
+                                    "type": "section",
+                                    "name": "arc",
+                                    "description": "KlikAanKlikUit,Chacon,HomeEasy,DomiaLite,Domia,ByeByeStandBy,ELROAB600,NEXAProoveIntertechnoDuwi",
+                                    "content": {
+                                        "HouseCode": {
+                                            "name": "HouseCode",
+                                            "description": "TheX10housecode",
+                                            "type": "enum",
+                                            "values": {
+                                                "A": "A",
+                                                "B": "B",
+                                                "C": "C",
+                                                "D": "D",
+                                                "E": "E",
+                                                "F": "F",
+                                                "G": "G",
+                                                "H": "H",
+                                                "I": "I",
+                                                "J": "J",
+                                                "K": "K",
+                                                "L": "L",
+                                                "M": "M",
+                                                "N": "N",
+                                                "O": "O",
+                                                "P": "P"
+                                            }
+                                        },
+                                        "UnitCode": {
+                                            "name": "UnitCode",
+                                            "description": "TheX10unitcode",
+                                            "type": "enum",
+                                            "values": {
+                                                "1": "1",
+                                                "2": "2",
+                                                "3": "3",
+                                                "4": "4",
+                                                "5": "5",
+                                                "6": "6",
+                                                "7": "7",
+                                                "8": "8",
+                                                "9": "9",
+                                                "10": "10",
+                                                "11": "11",
+                                                "12": "12",
+                                                "13": "13",
+                                                "14": "14",
+                                                "15": "15",
+                                                "16": "16"
+                                            }
+                                        }
+                                    }
+                                },
+                                "proto_flamingo": {
+                                    "type": "section",
+                                    "name": "flamingo",
+                                    "description": "Flamingo",
+                                    "content": {
+                                        "HouseCode": {
+                                            "name": "HouseCode",
+                                            "description": "TheX10housecode",
+                                            "type": "enum",
+                                            "values": {
+                                                "A": "A",
+                                                "B": "B",
+                                                "C": "C",
+                                                "D": "D",
+                                                "E": "E",
+                                                "F": "F",
+                                                "G": "G",
+                                                "H": "H",
+                                                "I": "I",
+                                                "J": "J",
+                                                "K": "K",
+                                                "L": "L",
+                                                "M": "M",
+                                                "N": "N",
+                                                "O": "O",
+                                                "P": "P"
+                                            }
+                                        },
+                                        "UnitCode": {
+                                            "name": "UnitCode",
+                                            "description": "TheX10unitcode",
+                                            "type": "enum",
+                                            "values": {
+                                                "1": "1",
+                                                "2": "2",
+                                                "3": "3",
+                                                "4": "4",
+                                                "5": "5",
+                                                "6": "6",
+                                                "7": "7",
+                                                "8": "8",
+                                                "9": "9",
+                                                "10": "10",
+                                                "11": "11",
+                                                "12": "12",
+                                                "13": "13",
+                                                "14": "14",
+                                                "15": "15",
+                                                "16": "16"
+                                            }
+                                        }
+                                    }
+                                },
+                                "proto_koppla": {
+                                    "type": "section",
+                                    "name": "koppla",
+                                    "description": "IkeaKoppla",
+                                    "content": {
+                                        "HouseCode": {
+                                            "name": "HouseCode",
+                                            "description": "TheX10housecode",
+                                            "type": "enum",
+                                            "values": {
+                                                "A": "A",
+                                                "B": "B",
+                                                "C": "C",
+                                                "D": "D",
+                                                "E": "E",
+                                                "F": "F",
+                                                "G": "G",
+                                                "H": "H",
+                                                "I": "I",
+                                                "J": "J",
+                                                "K": "K",
+                                                "L": "L",
+                                                "M": "M",
+                                                "N": "N",
+                                                "O": "O",
+                                                "P": "P"
+                                            }
+                                        },
+                                        "UnitCode": {
+                                            "name": "UnitCode",
+                                            "description": "TheX10unitcode",
+                                            "type": "enum",
+                                            "values": {
+                                                "1": "1",
+                                                "2": "2",
+                                                "3": "3",
+                                                "4": "4",
+                                                "5": "5",
+                                                "6": "6",
+                                                "7": "7",
+                                                "8": "8",
+                                                "9": "9",
+                                                "10": "10"
+                                            }
+                                        }
+                                    }
+                                },
+                                "proto_waveman": {
+                                    "type": "section",
+                                    "name": "waveman",
+                                    "description": "Waveman",
+                                    "content": {
+                                        "HouseCode": {
+                                            "name": "HouseCode",
+                                            "description": "TheX10housecode",
+                                            "type": "enum",
+                                            "values": {
+                                                "A": "A",
+                                                "B": "B",
+                                                "C": "C",
+                                                "D": "D",
+                                                "E": "E",
+                                                "F": "F",
+                                                "G": "G",
+                                                "H": "H",
+                                                "I": "I",
+                                                "J": "J",
+                                                "K": "K",
+                                                "L": "L",
+                                                "M": "M",
+                                                "N": "N",
+                                                "O": "O",
+                                                "P": "P"
+                                            }
+                                        },
+                                        "UnitCode": {
+                                            "name": "UnitCode",
+                                            "description": "TheX10unitcode",
+                                            "type": "enum",
+                                            "values": {
+                                                "1": "1",
+                                                "2": "2",
+                                                "3": "3",
+                                                "4": "4",
+                                                "5": "5",
+                                                "6": "6",
+                                                "7": "7",
+                                                "8": "8",
+                                                "9": "9",
+                                                "10": "10",
+                                                "11": "11",
+                                                "12": "12",
+                                                "13": "13",
+                                                "14": "14",
+                                                "15": "15",
+                                                "16": "16"
+                                            }
+                                        }
+                                    }
+                                },
+                                "proto_harrison": {
+                                    "type": "section",
+                                    "name": "Harrison",
+                                    "description": "Harrison",
+                                    "content": {
+                                        "HouseCode": {
+                                            "name": "HouseCode",
+                                            "description": "TheX10housecode",
+                                            "type": "enum",
+                                            "values": {
+                                                "A": "A",
+                                                "B": "B",
+                                                "C": "C",
+                                                "D": "D",
+                                                "E": "E",
+                                                "F": "F",
+                                                "G": "G",
+                                                "H": "H",
+                                                "I": "I",
+                                                "J": "J",
+                                                "K": "K",
+                                                "L": "L",
+                                                "M": "M",
+                                                "N": "N",
+                                                "O": "O",
+                                                "P": "P"
+                                            }
+                                        },
+                                        "UnitCode": {
+                                            "name": "UnitCode",
+                                            "description": "TheX10unitcode",
+                                            "type": "enum",
+                                            "values": {
+                                                "1": "1",
+                                                "2": "2",
+                                                "3": "3",
+                                                "4": "4",
+                                                "5": "5",
+                                                "6": "6",
+                                                "7": "7",
+                                                "8": "8",
+                                                "9": "9",
+                                                "10": "10",
+                                                "11": "11",
+                                                "12": "12",
+                                                "13": "13",
+                                                "14": "14",
+                                                "15": "15",
+                                                "16": "16"
+                                            }
+                                        }
+                                    }
+                                },
+                                "proto_he105": {
+                                    "type": "section",
+                                    "name": "he105",
+                                    "description": "HomeEasyHeaterHE105",
+                                    "content": {
+                                        "HouseCode": {
+                                            "name": "HouseCode",
+                                            "description": "TheX10housecode",
+                                            "type": "enum",
+                                            "values": {
+                                                "A": "A",
+                                                "B": "B"
+                                            }
+                                        },
+                                        "UnitCode": {
+                                            "name": "UnitCode",
+                                            "description": "TheX10unitcode",
+                                            "type": "enum",
+                                            "values": {
+                                                "1": "1",
+                                                "2": "2",
+                                                "3": "3",
+                                                "4": "4",
+                                                "5": "5",
+                                                "6": "6",
+                                                "7": "7",
+                                                "8": "8",
+                                                "9": "9",
+                                                "10": "10",
+                                                "11": "11",
+                                                "12": "12",
+                                                "13": "13",
+                                                "14": "14",
+                                                "15": "15",
+                                                "16": "16"
+                                            }
+                                        }
+                                    }
+                                },
+                                "proto_rts10": {
+                                    "type": "section",
+                                    "name": "Rts10",
+                                    "description": "Rts10",
+                                    "content": {
+                                        "HouseCode": {
+                                            "name": "HouseCode",
+                                            "description": "TheX10housecode",
+                                            "type": "enum",
+                                            "values": {
+                                                "A": "A",
+                                                "B": "B",
+                                                "C": "C",
+                                                "D": "D",
+                                                "E": "E",
+                                                "F": "F",
+                                                "G": "G",
+                                                "H": "H",
+                                                "I": "I",
+                                                "J": "J",
+                                                "K": "K",
+                                                "L": "L",
+                                                "M": "M",
+                                                "N": "N",
+                                                "O": "O",
+                                                "P": "P"
+                                            }
+                                        },
+                                        "UnitCode": {
+                                            "name": "UnitCode",
+                                            "description": "TheX10unitcode",
+                                            "type": "enum",
+                                            "values": {
+                                                "1": "1",
+                                                "2": "2",
+                                                "3": "3",
+                                                "4": "4",
+                                                "5": "5",
+                                                "6": "6",
+                                                "7": "7",
+                                                "8": "8",
+                                                "9": "9",
+                                                "10": "10",
+                                                "11": "11",
+                                                "12": "12",
+                                                "13": "13",
+                                                "14": "14",
+                                                "15": "15",
+                                                "16": "16"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }	
+}

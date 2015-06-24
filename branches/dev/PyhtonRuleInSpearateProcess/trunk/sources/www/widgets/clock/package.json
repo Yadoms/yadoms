@@ -1,0 +1,20 @@
+{
+    "type": "clock",
+    "version": "0.1",
+    "author": "yadoms team",
+    "credits": "",
+    "dimensions": {
+        "min": {
+            "x": 1,
+            "y": 1
+        },
+        "max": {
+            "x": 3,
+            "y": 1
+        },
+        "default": {
+            "x": 1,
+            "y": 1
+        }
+    }
+}

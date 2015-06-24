@@ -1,0 +1,74 @@
+<!--Delete widget Modal -->
+<div class="modal fade" id="delete-widget-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog">
+       <div class="modal-content">
+           <div class="modal-header">
+               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+               <h4 class="modal-title" id="myModalLabel" data-i18n="modals.delete-widget.title">Delete Widget confirmation</h4>
+           </div>
+           <div class="modal-body">
+           </div>
+           <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="common.cancel">Cancel</button>
+              <button id="btn-confirm-delete-widget" type="button" class="btn btn-primary" data-i18n="common.confirm">Confirm</button>
+           </div>
+       </div>
+   </div>
+</div>
+
+<script>
+   var widgetToDelete = null;
+
+   function showDeleteWidgetModal(pageId, widgetId) {
+      assert(pageId !== undefined, "Page Id must be defined");
+      assert(widgetId !== undefined, "Widget Id must be defined");
+
+      var page = pageContainer.getPage(pageId);
+      assert(page != null, "page Id doesn't exit");
+      widgetToDelete = page.getWidget(widgetId);
+      assert(widgetToDelete != null, "widget Id doesn't exit in the page");
+
+      $("div#delete-widget-modal").find("div.modal-body").text($.t("modals.delete-widget.text", { widgetType : widgetToDelete.name}));
+
+      //we display the modal
+      $('div#delete-widget-modal').modal();
+   }
+
+   /**
+    * Callback to the click of the button to confirm deletion of a page
+    */
+   $("button#btn-confirm-delete-widget").click(function () {
+      assert(widgetToDelete !== undefined, "Widget must be defined");
+
+      //we close the new widget modal
+      $("div#delete-widget-modal").modal("hide");
+
+      //we ask for deletion of the widget
+      $.ajax({
+         type: "DELETE",
+         url: "/rest/widget/" + widgetToDelete.id,
+         dataType: "json"
+      })
+      .done(function(data) {
+         //we parse the json answer
+         if (data.result != "true")
+         {
+            notifyError($.t("modals.delete-widget.errorDuringDeletingWidget"), JSON.stringify(data));
+            return;
+         }
+
+         notifySuccess($.t("modals.delete-widget.widgetSuccessfullyDeleted"));
+         //we delete the widget dynamically
+         var page = pageContainer.getPage(widgetToDelete.idPage);
+         assert(page != null, "page Id doesn't exit");
+
+         page.gridster.remove_widget(widgetToDelete.$gridsterWidget);
+         page.widgets.splice($.inArray(widgetToDelete, page.widgets), 1);
+      })
+      .fail(function(widgetName) { return function() {notifyError($.t("modals.delete-page.errorDuringDeletingWidgetNamed", {"widgetType" : widgetName}));};}(widgetToDelete.name))
+      .always(function() {
+        //we clear the current id
+        widgetToDelete = null;
+      });
+   });
+</script>
