@@ -1,9 +1,0 @@
-{
-   "description": "Un widget tout simple qui affiche une valeur numérique d'un périphérique",
-   "configurationSchema" : {
-      "device" : {
-         "name" : "Donnée à afficher",
-         "description" : "Selectionnez ici la donnée que vous souhaitez visualiser"
-      }
-   }
-}

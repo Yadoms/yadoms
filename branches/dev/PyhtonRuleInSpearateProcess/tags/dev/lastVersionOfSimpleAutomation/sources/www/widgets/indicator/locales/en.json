@@ -1,5 +1,0 @@
-{
-    "name": "indicator",
-    "description": "This widget display status of controllable element",
-    "errorDuringGettingDeviceInformation" : "Error during getting device information"
-}

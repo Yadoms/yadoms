@@ -1,2 +1,0 @@
-library taken from branch 
-https://github.com/korengal/jqBootstrapValidation/network
