@@ -96,7 +96,7 @@ set(BOOST_LIBS
 )
 
 # search boost libs
-find_package(Boost COMPONENTS ${BOOST_LIBS} REQUIRED)
+find_package(Boost 1.58.0 EXACT REQUIRED COMPONENTS ${BOOST_LIBS} )
 set(BOOST_INCL_DIR ${Boost_INCLUDE_DIR} ${BOOST_ROOT})
 
 
@@ -140,10 +140,11 @@ SET ( POCO_LIBS
    PocoZip
 )
 
+set( POCO_REQUIRE_EXACT_VERSION "1.6.0")
 include(FindPoco.cmake)
 
 IF(NOT ${Poco_FOUND})
-	message(SEND_ERROR "Unable to find the requested POCO libraries")
+	message(FATAL_ERROR "Unable to find the requested POCO libraries")
 ENDIF()
 
 

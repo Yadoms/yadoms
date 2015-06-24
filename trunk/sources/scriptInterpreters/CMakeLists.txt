@@ -1,5 +1,6 @@
 #This file automatically search and add all script interpreters found from all subdirectories
 
+set(SWIG_VERSION_REQUIRED 3.0.5)
 include(findSwig.cmake)
   
 if(SWIG_FOUND)
