@@ -1,7 +1,9 @@
 {
     "type": "clock",
     "version": "0.1",
+    "releaseType": "beta",
     "author": "yadoms team",
+    "url" : "",
     "credits": "",
     "dimensions": {
         "min": {

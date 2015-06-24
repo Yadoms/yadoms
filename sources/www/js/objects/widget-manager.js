@@ -14,14 +14,14 @@ WidgetManager.factory = function(json) {
    assert(!isNullOrUndefined(json), "json must be defined");
    assert(!isNullOrUndefined(json.id), "json.id must be defined");
    assert(!isNullOrUndefined(json.idPage), "json.idPage must be defined");
-   assert(!isNullOrUndefined(json.name), "json.name must be defined");
+   assert(!isNullOrUndefined(json.type), "json.name must be defined");
    assert(!isNullOrUndefined(json.sizeX), "json.sizeX must be defined");
    assert(!isNullOrUndefined(json.sizeY), "json.sizeY must be defined");
    assert(!isNullOrUndefined(json.positionX), "json.positionX must be defined");
    assert(!isNullOrUndefined(json.positionY), "json.positionY must be defined");
    assert(!isNullOrUndefined(json.configuration), "json.configuration must be defined");
 
-   return new Widget(json.id, json.idPage, json.name, json.sizeX, json.sizeY, json.positionX, json.positionY, json.configuration);
+   return new Widget(json.id, json.idPage, json.type, json.sizeX, json.sizeY, json.positionX, json.positionY, json.configuration);
 };
 
 WidgetManager.get = function(pageId, widgetId) {

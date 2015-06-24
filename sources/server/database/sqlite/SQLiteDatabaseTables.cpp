@@ -8,7 +8,7 @@ namespace sqlite {
 
    DECLARE_TABLE_COLUMN_NAMES(Plugin, "Plugin",
       ((Id)("id"))
-      ((Name)("name"))
+      ((DisplayName)("displayName"))
       ((Type)("type"))
       ((Configuration)("configuration"))
       ((AutoStart)("autoStart"))
@@ -37,7 +37,7 @@ namespace sqlite {
    DECLARE_TABLE_COLUMN_NAMES(Widget,  "Widget",
       ((Id)("id"))
       ((IdPage)("idPage"))
-      ((Name)("name"))
+      ((Type)("type"))
       ((SizeX)("sizeX"))
       ((SizeY)("sizeY"))
       ((PositionX)("positionX"))
@@ -130,7 +130,7 @@ namespace sqlite {
 
    DECLARE_TABLE_COLUMN_NAMES(RecipientField, "RecipientField",
 		((IdRecipient)("idRecipient"))
-		((PluginName)("pluginName"))
+		((PluginType)("pluginType"))
       ((FieldName)("fieldName"))
 		((Value)("value"))
 	)

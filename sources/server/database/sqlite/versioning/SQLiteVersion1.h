@@ -30,6 +30,11 @@
 
             private:
                //-----------------------------------
+               /// \brief     The version (1.0.0.0)
+               //-----------------------------------
+               tools::CVersion m_version;
+
+               //-----------------------------------
                /// \brief     Create the database (when tables are not found)
                ///\param [in] pRequester : database requester object
                //-----------------------------------

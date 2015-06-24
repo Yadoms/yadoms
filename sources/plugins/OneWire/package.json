@@ -1,5 +1,6 @@
 {
-   "name": "OneWire",
+   "type": "OneWire",
+   "name": "One Wire",
    "description": "Support of the 1-wire protocol.",
    "version": "1.0",
    "releaseType": "beta",

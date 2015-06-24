@@ -13,6 +13,7 @@
 
 
             CSQLiteVersion1::CSQLiteVersion1()
+               :m_version(0, 1, 0, 0)
             {
             }
 
@@ -25,7 +26,7 @@
             {
                bool bNeedToCreateOrUpgrade = true;
 
-               if(currentVersion >= tools::CVersion(1,0,0,0))
+               if (currentVersion >= m_version)
                {
                   //not for me, version is correct
 
@@ -55,7 +56,7 @@
                }
                else
                {
-                  //version is lower to 1.0.0.0, then create database
+                  //version is lower to 0.1, then create database
                   bNeedToCreateOrUpgrade = true;
                }
 
@@ -140,7 +141,7 @@
                   //set the database version
                   CQuery qInsert;
                   qInsert.InsertInto(CConfigurationTable::getTableName(), CConfigurationTable::getSectionColumnName(), CConfigurationTable::getNameColumnName(), CConfigurationTable::getValueColumnName(), CConfigurationTable::getDescriptionColumnName()).
-                     Values( "Database", "Version", 1.0, "Database version");
+                     Values("Database", "Version", m_version.toString(), "Database version");
                   pRequester->queryStatement(qInsert);              
                   
                   //set the developer mode
@@ -149,7 +150,7 @@
                   pRequester->queryStatement(qInsert);
 
                   //system plugin
-                  qInsert.Clear().InsertInto(CPluginTable::getTableName(), CPluginTable::getNameColumnName(), CPluginTable::getTypeColumnName(), CPluginTable::getAutoStartColumnName(), CPluginTable::getCategoryColumnName()).
+                  qInsert.Clear().InsertInto(CPluginTable::getTableName(), CPluginTable::getDisplayNameColumnName(), CPluginTable::getTypeColumnName(), CPluginTable::getAutoStartColumnName(), CPluginTable::getCategoryColumnName()).
                      Values("System", "System", true, database::entities::EPluginCategory::kSystem);
                   pRequester->queryStatement(qInsert);
 

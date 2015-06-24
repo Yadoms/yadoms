@@ -25,8 +25,8 @@ namespace database { namespace sqlite { namespace requesters {
    {
       CQuery qInsert;
 
-      qInsert.InsertInto(CPluginTable::getTableName(), CPluginTable::getNameColumnName(), CPluginTable::getTypeColumnName(), CPluginTable::getConfigurationColumnName(), CPluginTable::getAutoStartColumnName() ).
-         Values(newPlugin.Name(), 
+      qInsert.InsertInto(CPluginTable::getTableName(), CPluginTable::getDisplayNameColumnName(), CPluginTable::getTypeColumnName(), CPluginTable::getConfigurationColumnName(), CPluginTable::getAutoStartColumnName() ).
+         Values(newPlugin.DisplayName(),
          newPlugin.Type(),
          newPlugin.Configuration(), 
          newPlugin.AutoStart());
@@ -38,7 +38,7 @@ namespace database { namespace sqlite { namespace requesters {
       CQuery qSelect;
       qSelect. Select(CPluginTable::getIdColumnName()).
          From(CPluginTable::getTableName()).
-         Where(CPluginTable::getNameColumnName(), CQUERY_OP_EQUAL, newPlugin.Name()).
+         Where(CPluginTable::getDisplayNameColumnName(), CQUERY_OP_EQUAL, newPlugin.DisplayName()).
          And(CPluginTable::getTypeColumnName(), CQUERY_OP_EQUAL, newPlugin.Type()).
          OrderBy(CPluginTable::getIdColumnName(), CQUERY_ORDER_DESC);
 
@@ -109,10 +109,10 @@ namespace database { namespace sqlite { namespace requesters {
          throw CDatabaseException("Need an id to update");
 
       //update name
-      if(updatedPluginData.Name.isDefined())
+      if (updatedPluginData.DisplayName.isDefined())
       {
          qUpdate.Clear().Update(CPluginTable::getTableName()).
-         Set(CPluginTable::getNameColumnName(), updatedPluginData.Name()).
+         Set(CPluginTable::getDisplayNameColumnName(), updatedPluginData.DisplayName()).
          Where(CPluginTable::getIdColumnName(), CQUERY_OP_EQUAL, updatedPluginData.Id());
 
          if(m_databaseRequester->queryStatement(qUpdate) <= 0)

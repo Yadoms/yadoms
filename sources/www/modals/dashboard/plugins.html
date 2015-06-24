@@ -4,7 +4,7 @@
    <button id="btn-add-new-plugin" type="button" class="btn btn-success dashboard-btn-new"><span class="fa fa-rocket"></span>&nbsp;&nbsp;<span data-i18n="modals.dashboard.sub-windows.plugins.new"></span></button>
    <table id="plugin-instance-list" class="table table-bordered table-striped dashboard-list">
       <tr>
-         <td data-i18n="modals.dashboard.sub-windows.plugins.table.name"></td>
+         <td data-i18n="modals.dashboard.sub-windows.plugins.table.displayName"></td>
          <td data-i18n="modals.dashboard.sub-windows.plugins.table.type"></td>
          <td data-i18n="modals.dashboard.sub-windows.plugins.table.status"></td>
          <td data-i18n="modals.dashboard.sub-windows.plugins.table.launchAtStartup"></td>
@@ -35,6 +35,8 @@
             }
          });
 
+
+
          //we use the periodic task of the dashboard
          clearInterval(periodicDashboardTask);
          periodicDashboardTask = setInterval(periodicDashboardPluginTask, 1000);
@@ -59,19 +61,19 @@
               "&nbsp;&nbsp;" +
               "<button type=\"button\" class=\"btn btn-startStop\"></button>";*/
 
-      var name = "<span>" + pi.name + "</span>";
+      var name = "<span>" + pi.displayName + "</span>";
 
       var type = "<img src=\"plugins/" + pi.type + "/icon.png\" class=\"img-thumbnail plugin-icon\">&nbsp;&nbsp;" +
-                  "<span>" + pi.type + "</span>";
+                  "<span>" + $.t(pi.type + ":name", {defaultValue:pi.package.name}) + "</span>";
 
       //we add it to the DOM
       var $pluginInstanceList = $("table#plugin-instance-list");
 
-      $pluginInstanceList.append("<tr plugin-id=\"" + pi.id + "\"><td class=\"plugin-name\"></td><td class=\"plugin-type\" align=\"left\"></td><td class=\"plugin-status\"></td><td class=\"plugin-autoStart\"></td><td class=\"plugin-actions\"></td></tr>");
+      $pluginInstanceList.append("<tr plugin-id=\"" + pi.id + "\"><td class=\"plugin-displayName\"></td><td class=\"plugin-type\" align=\"left\"></td><td class=\"plugin-status\"></td><td class=\"plugin-autoStart\"></td><td class=\"plugin-actions\"></td></tr>");
 
       var $pluginInstanceRow = getPluginDomRow(pi);
       //we fill the data
-      $pluginInstanceRow.find("td.plugin-name").html(name);
+      $pluginInstanceRow.find("td.plugin-displayName").html(name);
       $pluginInstanceRow.find("td.plugin-type").html(type);
       $pluginInstanceRow.find("td.plugin-autoStart").html(autoStartCommand);
       $pluginInstanceRow.find("td.plugin-status").html(statusField);
@@ -119,7 +121,7 @@
                   PluginInstanceManager.updateToServer(pi, function(result) {
                      //We update the information that can have changed after the configuration
                      var $row = getPluginDomRow(pi);
-                     $row.find("td.plugin-name").html(pi.name);
+                     $row.find("td.plugin-DisplayName").html(pi.name);
                   });
                });
             });
@@ -131,7 +133,7 @@
       //pi represent the pluginInstance concerned
       return function() {
          modals.confirmation.load(function() {
-            showConfirmModal(btnKind.yesNo, null, $.t("modals.dashboard.sub-windows.plugins.confirmPluginDeletion", {pluginName:pi.name}),
+            showConfirmModal(btnKind.yesNo, null, $.t("modals.dashboard.sub-windows.plugins.confirmPluginDeletion", {pluginName:pi.DisplayName}),
             function () {
                //deletion has been confirmed
                PluginInstanceManager.deleteFromServer(pi, function() {
@@ -189,7 +191,7 @@
    function addNewPlugin() {
       modals.pluginAdd.load(function() {
          askPluginTypes(function(pluginType) {
-            var pi = new PluginInstance(null, "", pluginType, "", 1, "user");
+            var pi = new PluginInstance(null, $.t(pluginType.type + ":name", {defaultValue : pluginType.package.name}), pluginType.type, "", 1, "user");
             //we get package.json
             PluginInstanceManager.downloadPackage(pi, function() {
                //we ask for configuration modal async

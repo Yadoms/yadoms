@@ -139,7 +139,7 @@
                   //we search it on the other list
                   var itemFound = false;
                   $.each(localList, function(localIndex, localValue) {
-                     if (serverValue[0].name.toLowerCase() == localValue.name.toLowerCase()) {
+                     if (serverValue[0].type == localValue.type) {
                         //we've found the item
                         itemFound = true;
                         //we add informations of all version that user wants
@@ -167,10 +167,14 @@
                      var newItem = {};
 
                      //generic informations
-                     newItem.name = serverValue[0].name;
-                     newItem.description = serverValue[0].description;
-                     newItem.author = serverValue[0].author;
-                     newItem.url = serverValue[0].url;
+                     newItem.type = serverValue[0].type;
+
+                     newItem.package = {};
+                     newItem.package.type = serverValue[0].type;
+                     newItem.package.name = serverValue[0].name;
+                     newItem.package.description = serverValue[0].description;
+                     newItem.package.author = serverValue[0].author;
+                     newItem.package.url = serverValue[0].url;
                      newItem.iconUrl = serverValue[0].iconUrl;
 
                      //we add informations of all version that user wants
@@ -197,7 +201,6 @@
             pluginList = localList;
             //we display the result
             $.each(pluginList, function(localIndex, localValue) {
-               localValue.uid = createUUID();
                //the actual plugin does nothing
                localValue.processing = false;
                createInstallUpdateItemLine(localValue);
@@ -213,10 +216,10 @@
 
    function createInstallUpdateItemLine(item) {
       var actionsBtns = "<div class=\"btn-group\">\n";
-      var s = "<tr id=\"" + item.uid + "\">" +
-                  "<td><span>" + item.name + "</span></td>" +
-                  "<td><img src=\"" + (item.iconUrl?item.iconUrl:"plugins/" + item.name + "/icon.png") + "\" class=\"img-thumbnail plugin-icon\"></td>" +
-                  "<td><span>" + item.description + "</span></td>" +
+      var s = "<tr id=\"" + item.type + "\">" +
+                  "<td><span>" + item.package.name + "</span></td>" +
+                  "<td><img src=\"" + (item.iconUrl?item.iconUrl:"plugins/" + item.type + "/icon.png") + "\" class=\"img-thumbnail plugin-icon\"></td>" +
+                  "<td><span>" + item.package.description + "</span></td>" +
                   "<td><em class=\"local-version\"></em></td>" +
                   "<td><em class=\"latest-version\"></em></td>" +
                   "<td>" +
@@ -250,7 +253,7 @@
    }
 
    function getLineFromItem(item) {
-      return $("table#plugin-install-update-list").find("tr#" + item.uid);
+      return $("table#plugin-install-update-list").find("tr#" + item.type);
    }
 
    function updateLine(item) {
@@ -472,6 +475,9 @@
             item.processing = false;
             updateLine(item);
             $line.find("div.progress-bar").css("width", "0%");
+
+            //refresh the list
+            fillPluginList();
          }
 
       });

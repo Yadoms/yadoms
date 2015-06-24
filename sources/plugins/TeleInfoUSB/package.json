@@ -1,5 +1,6 @@
 {
-   "name": "TeleInfo_USB",
+   "type": "teleinfoUSB",
+   "name": "TeleInfo USB",
    "description": "Cartelectronic - EDF power meter information (see http://www.cartelectronic.fr/)",
    "version": "0.1",
    "releaseType": "beta",

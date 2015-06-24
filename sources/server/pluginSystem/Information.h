@@ -20,7 +20,7 @@ namespace pluginSystem
 
       // shared::plugin::IInformation implementation
       virtual ~CInformation();
-      virtual const std::string& getName() const;
+      virtual const std::string& getType() const;
       virtual const std::string& getDescription() const;
       virtual const std::string& getVersion() const;
       virtual const shared::plugin::information::EReleaseType getReleaseType() const;
@@ -30,6 +30,7 @@ namespace pluginSystem
       virtual std::string toString() const;
       virtual bool isSupportedOnThisPlatform() const;
       virtual bool getSupportManuallyCreatedDevice() const;
+      virtual shared::CDataContainer getPackageJson() const;
       // [END] shared::plugin::IInformation implementation
 
       //--------------------------------------------------------------
@@ -40,9 +41,9 @@ namespace pluginSystem
 
    private:
       //--------------------------------------------------------------
-      /// \brief	    plugin name
+      /// \brief	    plugin type
       //--------------------------------------------------------------
-      std::string m_name;
+      std::string m_type;
 
       //--------------------------------------------------------------
       /// \brief      plugin description (i18n multiline string)
@@ -88,6 +89,11 @@ namespace pluginSystem
       /// \brief	    Flag indicating if plugin is supported on this platform
       //--------------------------------------------------------------
       bool m_isSupportedOnThisPlatform;
+
+      //--------------------------------------------------------------
+      /// \brief	    Package.json content
+      //--------------------------------------------------------------
+      shared::CDataContainer m_package;
    };
 
 } // namespace pluginSystem

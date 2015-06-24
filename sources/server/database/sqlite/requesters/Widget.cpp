@@ -27,13 +27,13 @@ namespace database { namespace sqlite { namespace requesters {
       CQuery qInsert;
       if(newWidget.Id() != 0)
       {
-         qInsert. InsertInto(CWidgetTable::getTableName(), CWidgetTable::getIdColumnName(),CWidgetTable::getIdPageColumnName(), CWidgetTable::getNameColumnName(), CWidgetTable::getSizeXColumnName(), CWidgetTable::getSizeYColumnName(), CWidgetTable::getPositionXColumnName(), CWidgetTable::getPositionYColumnName(), CWidgetTable::getConfigurationColumnName()).
-            Values(newWidget.Id(), newWidget.IdPage(), newWidget.Name(), newWidget.SizeX(), newWidget.SizeY(), newWidget.PositionX(), newWidget.PositionY(), newWidget.Configuration());
+         qInsert. InsertInto(CWidgetTable::getTableName(), CWidgetTable::getIdColumnName(),CWidgetTable::getIdPageColumnName(), CWidgetTable::getTypeColumnName(), CWidgetTable::getSizeXColumnName(), CWidgetTable::getSizeYColumnName(), CWidgetTable::getPositionXColumnName(), CWidgetTable::getPositionYColumnName(), CWidgetTable::getConfigurationColumnName()).
+            Values(newWidget.Id(), newWidget.IdPage(), newWidget.Type(), newWidget.SizeX(), newWidget.SizeY(), newWidget.PositionX(), newWidget.PositionY(), newWidget.Configuration());
       }
       else
       {
-         qInsert. InsertInto(CWidgetTable::getTableName(), CWidgetTable::getIdPageColumnName(), CWidgetTable::getNameColumnName(), CWidgetTable::getSizeXColumnName(), CWidgetTable::getSizeYColumnName(), CWidgetTable::getPositionXColumnName(), CWidgetTable::getPositionYColumnName(), CWidgetTable::getConfigurationColumnName()).
-            Values(newWidget.IdPage(), newWidget.Name(), newWidget.SizeX(), newWidget.SizeY(), newWidget.PositionX(), newWidget.PositionY(), newWidget.Configuration());
+         qInsert. InsertInto(CWidgetTable::getTableName(), CWidgetTable::getIdPageColumnName(), CWidgetTable::getTypeColumnName(), CWidgetTable::getSizeXColumnName(), CWidgetTable::getSizeYColumnName(), CWidgetTable::getPositionXColumnName(), CWidgetTable::getPositionYColumnName(), CWidgetTable::getConfigurationColumnName()).
+            Values(newWidget.IdPage(), newWidget.Type(), newWidget.SizeX(), newWidget.SizeY(), newWidget.PositionX(), newWidget.PositionY(), newWidget.Configuration());
       }
       if(m_databaseRequester->queryStatement(qInsert) <= 0)
          throw shared::exception::CEmptyResult("No lines affected");
@@ -42,7 +42,7 @@ namespace database { namespace sqlite { namespace requesters {
       qSelect. Select(CWidgetTable::getIdColumnName()).
          From(CWidgetTable::getTableName()).
          Where(CWidgetTable::getIdPageColumnName(), CQUERY_OP_EQUAL, newWidget.IdPage()).
-         And(CWidgetTable::getNameColumnName(), CQUERY_OP_EQUAL, newWidget.Name()).
+         And(CWidgetTable::getTypeColumnName(), CQUERY_OP_EQUAL, newWidget.Type()).
          And(CWidgetTable::getSizeXColumnName(), CQUERY_OP_EQUAL, newWidget.SizeX()).
          And(CWidgetTable::getSizeYColumnName(), CQUERY_OP_EQUAL, newWidget.SizeY()).
          And(CWidgetTable::getPositionXColumnName(), CQUERY_OP_EQUAL, newWidget.PositionX()).
@@ -155,11 +155,11 @@ namespace database { namespace sqlite { namespace requesters {
          //already exists, just update fields
 
 
-         //update name
-         if(widgetToUpdate.Name.isDefined())
+         //update type
+         if(widgetToUpdate.Type.isDefined())
          {
             qUpdate.Clear().Update(CWidgetTable::getTableName()).
-               Set(CWidgetTable::getNameColumnName(), widgetToUpdate.Name()).
+               Set(CWidgetTable::getTypeColumnName(), widgetToUpdate.Type()).
                Where(CWidgetTable::getIdColumnName(), CQUERY_OP_EQUAL, widgetToUpdate.Id());
 
             if(m_databaseRequester->queryStatement(qUpdate) <= 0)

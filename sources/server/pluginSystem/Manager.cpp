@@ -178,6 +178,8 @@ void CManager::buildAvailablePluginList()
             boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation = CExternalPluginFactory::getInformation(toPath(pluginName));
             if (pluginInformation->isSupportedOnThisPlatform())
                m_availablePlugins[pluginName] = pluginInformation;
+            else
+               YADOMS_LOG(warning) << "Plugin " << pluginName << " found but unsupported on this platform";
          }
 
          YADOMS_LOG(information) << "Plugin " << pluginName << " successfully loaded";
@@ -186,6 +188,16 @@ void CManager::buildAvailablePluginList()
       {
          // Invalid plugin
          YADOMS_LOG(warning) << e.what() << ", found in plugin path but is not a valid plugin";
+      }  
+      catch (shared::exception::CInvalidParameter& e)
+      {
+         // Invalid plugin parameter
+         YADOMS_LOG(warning) << "Invalid plugin parameter : " << e.what();
+      }
+      catch (shared::exception::CException & e)
+      {
+         // Fail to load one plugin
+         YADOMS_LOG(warning) << "Invalid plugin : " << e.what();
       }
    }
 }
@@ -347,8 +359,8 @@ void CManager::signalEvent(const CManagerEvent& event)
          {
             // Not safe anymore. Disable plugin autostart mode (user will just be able to start it manually)
             // Not that this won't stop other instances of this plugin
-            YADOMS_LOG(warning) << " plugin " << event.getPluginInformation()->getName() << " was evaluated as not safe and will not start automatically anymore.";
-            m_pluginDBTable->disableAutoStartForAllPluginInstances(event.getPluginInformation()->getName());
+            YADOMS_LOG(warning) << " plugin " << event.getPluginInformation()->getType() << " was evaluated as not safe and will not start automatically anymore.";
+            m_pluginDBTable->disableAutoStartForAllPluginInstances(event.getPluginInformation()->getType());
 
             // Log this event in the main event logger
             m_dataAccessLayer->getEventLogger()->addEvent(database::entities::ESystemEventCode::kPluginDisabled,

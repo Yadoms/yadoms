@@ -1,5 +1,6 @@
 {
-  "name": "FakePlugin",
+  "type": "fakePlugin",
+  "name": "Fake Plugin",
   "description": "This is just a fake plugin, designed to serve as example to write real plugins. This plugin do nothing useful, just demonstrate how to :\n   - use a configuration\n   - receive a XPL message\n   - send a XPL message\n",
   "version": "0.1",
   "releaseType": "beta",

@@ -9,6 +9,7 @@
  */
 UpdateInformationManager.factory = function(json) {
    assert(!isNullOrUndefined(json), "json must be defined");
+   assert(!isNullOrUndefined(json.type), "json.type must be defined");
    assert(!isNullOrUndefined(json.name), "json.name must be defined");
    assert(!isNullOrUndefined(json.author), "json.author must be defined");
    assert(!isNullOrUndefined(json.description), "json.description must be defined");
@@ -17,7 +18,7 @@ UpdateInformationManager.factory = function(json) {
    assert(!isNullOrUndefined(json.downloadUrl), "json.downloadUrl of a pluginInstance must be defined");
    assert(!isNullOrUndefined(json.iconUrl), "json.iconUrl of a pluginInstance must be defined");
 
-   return new UpdateInformation(decodeURIComponent(json.name),
+   return new UpdateInformation(json.type, decodeURIComponent(json.name),
                      decodeURIComponent(json.author),
                      decodeURIComponent(json.description),
                      decodeURIComponent(json.releaseType),
@@ -108,8 +109,8 @@ UpdateInformationManager.installPlugin = function(downloadUrl, callback, sync) {
        });
 };
 
-UpdateInformationManager.updatePlugin = function(pluginName, downloadUrl, callback, sync) {
-   assert(!isNullOrUndefined(pluginName), "pluginName must be defined");
+UpdateInformationManager.updatePlugin = function(pluginType, downloadUrl, callback, sync) {
+   assert(!isNullOrUndefined(pluginType), "pluginName must be defined");
    assert(!isNullOrUndefined(downloadUrl), "downloadUrl must be defined");
    assert($.isFunction(callback), "callback must be a function");
 
@@ -119,7 +120,7 @@ UpdateInformationManager.updatePlugin = function(pluginName, downloadUrl, callba
 
    $.ajax({
       dataType: "json",
-      url: "rest/update/plugin/update/" + pluginName,
+      url: "rest/update/plugin/update/" + pluginType,
       async: async,
       data: JSON.stringify({"downloadUrl" : downloadUrl}),
       type: "POST",
@@ -146,8 +147,8 @@ UpdateInformationManager.updatePlugin = function(pluginName, downloadUrl, callba
  * @param callback
  * @param sync
  */
-UpdateInformationManager.removePlugin = function(pluginName, callback, sync) {
-   assert(!isNullOrUndefined(pluginName), "pluginName must be defined");
+UpdateInformationManager.removePlugin = function(pluginType, callback, sync) {
+   assert(!isNullOrUndefined(pluginType), "pluginName must be defined");
    assert($.isFunction(callback), "callback must be a function");
 
    var async = true;
@@ -156,7 +157,7 @@ UpdateInformationManager.removePlugin = function(pluginName, callback, sync) {
 
    $.ajax({
       dataType: "json",
-      url: "rest/update/plugin/remove/" + pluginName,
+      url: "rest/update/plugin/remove/" + pluginType,
       async: async,
       data: JSON.stringify({"downloadUrl" : downloadUrl}),
       type: "POST",

@@ -1,5 +1,6 @@
 {
-   "name": "SmsDialer",
+   "type": "smsDialer",
+   "name": "Sms Dialer",
    "description": "Send/receive SMS with a mobile phone. This plugin uses a compatible phone (supporting AT commands) connected to the system where Yadoms run to send/receive SMS. This plugin uses the GAMMU library (http://wammu.eu/).",
    "version": "0.1",
    "releaseType": "beta",

@@ -21,7 +21,7 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(Configuration, " CREATE TABLE Configuration
 
 DECLARE_STATIC_TABLE_CREATION_SCRIPT(Plugin, "CREATE TABLE Plugin                                                 \
                                                 (  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,                 \
-                                                   name TEXT NOT NULL,                                            \
+                                                   displayName TEXT NOT NULL,                                     \
                                                    type TEXT NOT NULL,                                            \
                                                    configuration  TEXT,                                           \
                                                    autoStart  INTEGER DEFAULT 1,                                  \
@@ -40,7 +40,7 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(Page, " CREATE TABLE Page                  
 DECLARE_STATIC_TABLE_CREATION_SCRIPT(Widget, "CREATE TABLE Widget                                                 \
                                                 (  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,                 \
                                                    idPage  INTEGER NOT NULL,                                      \
-                                                   name TEXT NOT NULL,                                            \
+                                                   type TEXT NOT NULL,                                            \
                                                    sizeX  INTEGER DEFAULT 1,                                      \
                                                    sizeY  INTEGER DEFAULT 1,                                      \
                                                    positionX  INTEGER DEFAULT 1,                                  \
@@ -141,10 +141,10 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(Recipient,            "CREATE TABLE Recipie
 
 DECLARE_STATIC_TABLE_CREATION_SCRIPT(RecipientField,       "CREATE TABLE RecipientField									\
                                                             (  idRecipient INTEGER NOT NULL,								\
-                                                               pluginName TEXT NOT NULL,									\
+                                                               pluginType TEXT NOT NULL,									\
                                                                fieldName TEXT NOT NULL,									\
                                                                value TEXT,                                        \
-                                                               PRIMARY KEY (idRecipient, pluginName, fieldName))")
+                                                               PRIMARY KEY (idRecipient, pluginType, fieldName))")
 
 
       } //namespace sqlite

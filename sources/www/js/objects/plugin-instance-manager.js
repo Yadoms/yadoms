@@ -28,7 +28,7 @@ PluginInstanceManager.factory = function(json) {
    assert(!isNullOrUndefined(json.autoStart), "json.autoStart must be defined");
    assert(!isNullOrUndefined(json.category), "json.category of a pluginInstance must be defined");
 
-   return new PluginInstance(json.id, decodeURIComponent(json.name), json.type, json.configuration, json.autoStart, json.category);
+   return new PluginInstance(json.id, decodeURIComponent(json.displayName), json.type, json.configuration, json.autoStart, json.category);
 };
 
 /**
@@ -102,11 +102,19 @@ PluginInstanceManager.getAll = function (callback, sync) {
           }
 
           var result = [];
+          var count = data.data.plugin.length;
+
           $.each(data.data.plugin, function(index, value) {
-             result.push(PluginInstanceManager.factory(value));
+             var pi = PluginInstanceManager.factory(value);
+             PluginInstanceManager.downloadPackage(pi, function() {
+                result.push(pi);
+                count--;
+                if(count<=0) {
+                   callback(result);
+                }
+             });
           });
 
-          callback(result);
        })
        .fail(function() {
           notifyError($.t("objects.generic.errorLoading", {objectName:"plugin instances"}));
@@ -129,7 +137,7 @@ PluginInstanceManager.getStatus = function(pluginInstance, callback) {
             var result = false;
             if (data.result != "true")
             {
-               notifyError($.t("objects.pluginInstance.errorGettingStatus", {pluginName : pluginInstance.name}), JSON.stringify(data));
+               notifyError($.t("objects.pluginInstance.errorGettingStatus", {pluginName : pluginInstance.displayName}), JSON.stringify(data));
                return;
             }
             if (parseBool(data.data.running))
@@ -144,7 +152,7 @@ PluginInstanceManager.getStatus = function(pluginInstance, callback) {
 
             return result;
          })
-         .fail(function() { notifyError($.t("objects.pluginInstance.errorGettingStatus", {pluginName : pluginInstance.name})); });
+         .fail(function() { notifyError($.t("objects.pluginInstance.errorGettingStatus", {pluginName : pluginInstance.displayName})); });
    }
 };
 
@@ -174,13 +182,13 @@ PluginInstanceManager.start = function(pluginInstance, callback, sync) {
             //we parse the json answer
             if (data.result != "true")
             {
-               notifyError($.t("objects.pluginInstance.errorStarting", {pluginName : pluginInstance.name}), JSON.stringify(data));
+               notifyError($.t("objects.pluginInstance.errorStarting", {pluginName : pluginInstance.displayName}), JSON.stringify(data));
                return;
             }
             if ($.isFunction(callback))
                callback();
          })
-         .fail(function() {notifyError($.t("objects.pluginInstance.errorStarting", {pluginName : pluginInstance.name}));});
+         .fail(function() {notifyError($.t("objects.pluginInstance.errorStarting", {pluginName : pluginInstance.displayName}));});
    }
 };
 
@@ -210,14 +218,14 @@ PluginInstanceManager.stop = function(pluginInstance, callback, sync) {
             //we parse the json answer
             if (data.result != "true")
             {
-               notifyError($.t("objects.pluginInstance.errorStopping", {pluginName : pluginInstance.name}), JSON.stringify(data));
+               notifyError($.t("objects.pluginInstance.errorStopping", {pluginName : pluginInstance.displayName}), JSON.stringify(data));
                return;
             }
 
             if ($.isFunction(callback))
                callback();
          })
-         .fail(function() {notifyError($.t("objects.pluginInstance.errorStopping", {pluginName : pluginInstance.name}));});
+         .fail(function() {notifyError($.t("objects.pluginInstance.errorStopping", {pluginName : pluginInstance.displayName}));});
    }
 };
 
@@ -247,14 +255,14 @@ PluginInstanceManager.deleteFromServer = function(pluginInstance, callback, sync
             //we parse the json answer
             if (data.result != "true")
             {
-               notifyError($.t("objects.pluginInstance.errorDeleting", {pluginName : pluginInstance.name}), JSON.stringify(data));
+               notifyError($.t("objects.pluginInstance.errorDeleting", {pluginName : pluginInstance.displayName}), JSON.stringify(data));
                return;
             }
 
             if ($.isFunction(callback))
                callback();
          })
-         .fail(function() {notifyError($.t("objects.pluginInstance.errorDeleting", {pluginName : pluginInstance.name}));});
+         .fail(function() {notifyError($.t("objects.pluginInstance.errorDeleting", {pluginName : pluginInstance.displayName}));});
    }
 };
 
@@ -276,7 +284,7 @@ PluginInstanceManager.createToServer = function(pluginInstance, callback, sync) 
       $.ajax({
          type: "POST",
          url: "/rest/plugin",
-         data: JSON.stringify({ name: pluginInstance.name, type: pluginInstance.type, configuration: pluginInstance.configuration, autoStart: pluginInstance.autoStart}),
+         data: JSON.stringify({ displayName: pluginInstance.displayName, type: pluginInstance.type, configuration: pluginInstance.configuration, autoStart: pluginInstance.autoStart}),
          contentType: "application/json; charset=utf-8",
          dataType: "json",
           async: async
@@ -285,7 +293,7 @@ PluginInstanceManager.createToServer = function(pluginInstance, callback, sync) 
             //we parse the json answer
             if (data.result != "true")
             {
-               notifyError($.t("objects.pluginInstance.errorCreating", {pluginName : pluginInstance.name}), JSON.stringify(data));
+               notifyError($.t("objects.pluginInstance.errorCreating", {pluginName : pluginInstance.displayName}), JSON.stringify(data));
                //launch callback with false as ko result
                if ($.isFunction(callback))
                   callback(false);
@@ -294,7 +302,7 @@ PluginInstanceManager.createToServer = function(pluginInstance, callback, sync) 
 
             //we update our information from the server
             pluginInstance.id = data.data.id;
-            pluginInstance.name = data.data.name;
+            pluginInstance.displayName = decodeURIComponent(data.data.displayName);
             pluginInstance.type = data.data.type;
             pluginInstance.configuration = data.data.configuration;
             pluginInstance.autoStart = parseBool(data.data.autoStart);
@@ -303,7 +311,7 @@ PluginInstanceManager.createToServer = function(pluginInstance, callback, sync) 
                callback(true);
          })
          .fail(function() {
-            notifyError($.t("objects.pluginInstance.errorCreating", {pluginName : pluginInstance.name}));
+            notifyError($.t("objects.pluginInstance.errorCreating", {pluginName : pluginInstance.displayName}));
             //launch callback with false as ko result
             if ($.isFunction(callback))
                callback(false);
@@ -338,7 +346,7 @@ PluginInstanceManager.updateToServer = function(pluginInstance, callback, sync) 
             //we parse the json answer
             if (data.result != "true")
             {
-               notifyError($.t("objects.pluginInstance.errorUpdating", {pluginName : pluginInstance.name}), JSON.stringify(data));
+               notifyError($.t("objects.pluginInstance.errorUpdating", {pluginName : pluginInstance.displayName}), JSON.stringify(data));
                //launch callback with false as ko result
                if ($.isFunction(callback))
                   callback(false);
@@ -354,7 +362,7 @@ PluginInstanceManager.updateToServer = function(pluginInstance, callback, sync) 
             }
           })
          .fail(function() {
-            notifyError($.t("objects.pluginInstance.errorUpdating", {pluginName : pluginInstance.name}));
+            notifyError($.t("objects.pluginInstance.errorUpdating", {pluginName : pluginInstance.displayName}));
             //launch callback with false as ko result
             if ($.isFunction(callback))
                callback(false);
@@ -387,7 +395,14 @@ PluginInstanceManager.downloadPackage = function(pluginInstance, callback) {
             if ($.isFunction(callback))
                callback();
          })
-         .fail(function() {notifyError($.t("objects.pluginInstance.errorGettingPackage", {pluginName : pluginInstance.name}));});
+         .fail(function() {
+             notifyError($.t("objects.pluginInstance.errorGettingPackage", {pluginName : pluginInstance.displayName}));
+             if ($.isFunction(callback))
+                callback();
+          });
+   } else {
+      if ($.isFunction(callback))
+         callback();
    }
 };
 

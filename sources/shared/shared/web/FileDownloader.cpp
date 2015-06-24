@@ -125,15 +125,24 @@ namespace shared { namespace web {
             //write it to stream
             output << &response;
 
-            //update progress if needed (minimum step of 1% to avoid too much calls)
-            //then flush by 1% minimum steps
-            float progress = (currentReadSize*100.0f/(float)contentLength);
-            if(abs(currentprogress - progress) >= 1.0)
+            if (contentLength > 0)
             {
-               currentprogress = progress;
-               reporter(uri.getPath(), currentprogress);
+               //update progress if needed (minimum step of 1% to avoid too much calls)
+               //then flush by 1% minimum steps
+               float progress = (currentReadSize*100.0f / (float)contentLength);
+               if (abs(currentprogress - progress) >= 1.0)
+               {
+                  currentprogress = progress;
+                  reporter(uri.getPath(), currentprogress);
+                  output.flush();
+               }
+            }
+            else
+            {
+               //if content length is not defined (-1), just flush each time
                output.flush();
             }
+            
          }
 
          //check that it ends prematurely

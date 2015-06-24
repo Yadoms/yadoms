@@ -38,7 +38,8 @@
 
           $.each(list, function(index, value) {
              //foreach plugin-type
-             $("select#pluginTypeList").append("<option>" + value.name + "</option>");
+             $("select#pluginTypeList").append("<option value=\"" + value.type + "\">" + $.t(value.type + ":name", {defaultValue : value.package.name}) + "</option>");
+             pluginTypes[value.type] = value;
           });
 
           //event click on add plugin button
@@ -46,10 +47,13 @@
              //we close the new widget modal
              $("div#new-plugin-modal").modal("hide");
 
-             var pluginType = $("select#pluginTypeList").val();
+             var pluginType =  $("select#pluginTypeList").val();
 
-             callback(pluginType);
+             callback(pluginTypes[pluginType]);
           });
+
+          //i18n
+          $("div#new-plugin-modal .modal-body").i18n();
 
           //we display the modal
           $('div#new-plugin-modal').modal();

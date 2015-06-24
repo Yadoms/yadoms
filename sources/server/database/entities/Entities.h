@@ -54,7 +54,7 @@ namespace database { namespace entities {
 
    DECLARE_ENTITY_CLASS_HEADER(Plugin,
       ((Id)(int))
-      ((Name)(std::string))
+      ((DisplayName)(std::string))
       ((Type)(std::string))
       ((Configuration)(shared::CDataContainer))
       ((AutoStart)(bool))
@@ -83,7 +83,7 @@ namespace database { namespace entities {
    DECLARE_ENTITY_CLASS_HEADER(Widget,
       ((Id)(int))
       ((IdPage)(int))
-      ((Name)(std::string))
+      ((Type)(std::string))
       ((SizeX)(int))
       ((SizeY)(int))
       ((PositionX)(int))
@@ -170,7 +170,7 @@ namespace database { namespace entities {
 
    DECLARE_ENTITY_CLASS_HEADER(RecipientField,
 		((IdRecipient)(int))
-		((PluginName)(std::string))
+		((PluginType)(std::string))
 		((FieldName)(std::string))
 		((Value)(std::string))
 	)

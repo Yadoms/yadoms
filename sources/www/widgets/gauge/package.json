@@ -1,8 +1,10 @@
 {
    "type": "gauge",
    "version": "0.1",
+   "releaseType": "beta",
    "author": "yadoms team",
    "url" : "http://www.yadoms.com/wiki/widgets/gauge.html",
+   "credits": "",
    "dimensions": {
       "min": {
          "x": 2,
