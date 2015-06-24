@@ -1,5 +1,5 @@
 #pragma once
-#include "../../ioInterfaces/IVoltage.h"
+#include "ioInterfaces/IVoltage.h"
 #include "SingleReadOnlyData.hpp"
 #include <shared/StringExtension.h>
 

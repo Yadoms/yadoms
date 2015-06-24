@@ -1,5 +1,5 @@
 #pragma once
-#include "../../ioInterfaces/IMultiSwitch.h"
+#include "ioInterfaces/IMultiSwitch.h"
 
 namespace owfs { namespace io {
 

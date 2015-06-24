@@ -129,12 +129,7 @@ set(ONEWIRE_PLUGIN_SOURCES
 ## (by default yadoms-shared and boost are included)
 #########################################
 	
-IF (UNIX AND NOT APPLE)
-   # set(ONEWIRE_PLUGIN_INCLDIR
-	   # ${CMAKE_CURRENT_SOURCE_DIR}/CommonLinux
-           # ${CMAKE_CURRENT_SOURCE_DIR}/Linux
-   # )
-ENDIF()
+set(ONEWIRE_PLUGIN_INCLDIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 #########################################
 ## Always leave these lines to configure plugin correctly

@@ -1,5 +1,5 @@
 #pragma once
-#include "../../ioInterfaces/ISingleSwitch.h"
+#include "ioInterfaces/ISingleSwitch.h"
 
 namespace owfs { namespace io {
 
