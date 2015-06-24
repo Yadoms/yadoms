@@ -1,0 +1,67 @@
+<!--New plugin Modal -->
+<div class="modal fade" id="new-manually-device-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" data-i18n="modals.add-manually-device.title"></h4>
+            </div>
+            <div class="modal-body">
+               <form>
+                  <div class="form-group">
+                     <label for="pluginTypeList" data-i18n="modals.add-manually-device.attachedPlugin"></label>
+                     <select id="pluginTypeList" class="form-control">
+                     </select>
+                  </div>
+               </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="common.cancel"></button>
+                <button id="btn-confirm-add-manually-device" type="button" class="btn btn-primary" data-i18n="common.ok"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    var pluginTypes = [];
+
+    /**
+     * Ask for plugin types to the REST server
+     */
+    function askPluginTypesForManuallyDeviceCreation(callback)
+    {
+       assert($.isFunction(callback), "callback must be defined");
+
+       PluginInstanceManager.getPluginInstanceHandleManuallyDeviceCreation(function(list) {
+
+          $("select#pluginTypeList").empty();
+
+          $.each(list, function(index, value) {
+             var pi = PluginInstanceManager.factory(value);
+             //foreach plugin-instance
+             $("select#pluginTypeList").append("<option value=\""+ pi.id + "\">" + pi.displayName + "</option>");
+          });
+
+          //event click on add plugin button
+          $("button#btn-confirm-add-manually-device").unbind("click").bind("click", function() {
+             //we close the new widget modal
+             $("div#new-manually-device-modal").modal("hide");
+
+             //we get the plugin instance id chosen
+             var pluginId = $("select#pluginTypeList").val();
+
+             //from the id, retreive the plugin instance
+             var instance = $.grep(list, function(e){ return e.id == pluginId; });
+
+             //send found instance
+             callback(instance[0]);
+          });
+
+          //we display the modal
+          $('div#new-manually-device-modal').modal();
+       });
+    }
+
+</script>

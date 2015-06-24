@@ -1,0 +1,31 @@
+{
+   "type": "notification-sender",
+   "version": "0.1",
+   "releaseType": "beta",
+   "author": "yadoms team",
+   "url" : "http://www.yadoms.com/wiki/widgets/notification-sender.html",
+   "credits": "",
+   "dimensions": {
+      "min": {
+         "x": 4,
+         "y": 1
+      },
+      "max": {
+         "x": 6,
+         "y": 1
+      },
+      "default": {
+         "x": 4,
+         "y": 1
+      }
+   },
+   "configurationSchema": {
+      "device" : {
+         "name" : "Device",
+         "description" : "Device used to send notification",
+         "type" : "device",
+         "expectedCapacity" : ["message"],
+         "expectedKeywordAccess" : "getset"
+      }
+   }
+}

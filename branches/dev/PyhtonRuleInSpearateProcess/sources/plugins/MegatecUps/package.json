@@ -1,0 +1,111 @@
+{
+   "type": "megatecUps",
+   "name": "megatec Ups",
+   "description": "Megatec UPS support",
+   "version": "0.1",
+   "releaseType": "beta",
+   "author": "Sébastien Gallou",
+   "url": "http://sourceforge.net/projects/yadoms/",
+   "credits": "",
+   "supportedPlatforms": "all",
+   "configurationSchema":
+   {
+	 "SerialPort" :
+      {
+         "type" : "enum",
+         "name" : "Serial port",
+         "description" : "The (virtual) serial port connected to the UPS",
+		 "values" : {"__Binding__" : {"type" : "system", "query" : "serialPorts"}}
+      },
+     "UpsBeep" :
+     {
+        "type" : "bool",
+        "name" : "UPS beep",
+        "description" : "Use this option to enable/disable UPS alarm when AC power is lost",
+        "defaultValue" : "true"
+     },
+     "PowerFailureManagement" :
+     {
+        "type" : "radioSection",
+        "name" : "Management of AC power failure",
+        "description" : "This option specify how the plugin will notify Yadoms when AC power fails",
+        "content" :
+        {
+           "Immediately" :
+           {
+              "type" : "section",
+              "name" : "Immediately",
+              "description" : "Yadoms is immediately notified when AC power failure is detected"
+           },
+           "Filter" :
+           {
+              "type" : "section",
+              "name" : "Filtered",
+              "description" : "The plugin can delay the notification of Yadoms when AC power is lost. It's useful to filter some short power cuts.",
+              "content" :
+              {
+                 "Delay" :
+                 {
+                    "type" : "int",
+                    "name" : "Power loss delay (seconds)",
+                    "description" : "The delay before notify Yadoms, after power loss detection",
+                    "defaultValue" : "60",
+                    "minimumValue" : "30"
+                 }
+              }
+           },
+           "LowBattery" :
+           {
+              "type" : "section",
+              "name" : "Low battery",
+              "description" : "The plugin can notify Yadoms only when UPS signals that battery is low. It's useful to maintain system alive as much as possible."
+           },
+           "RemainingBattery" :
+           {
+              "type" : "section",
+              "name" : "Remaining battery",
+              "description" : "The plugin can notify Yadoms when UPS battery comes under a predefined threshold",
+              "content" :
+              {
+                 "Threshold" :
+                 {
+                    "type" : "decimal",
+                    "name" : "Threshold (Volts)",
+                    "description" : "When battery comes under this value, the plugin will notify Yadoms that power was lost. Be careful using this method, because a too low threshold can damage the battery. Adapt this value against the battery type, and its nominal voltage.",
+                    "defaultValue" : "12",
+                    "minimumValue" : "10"
+                 }
+              }
+           }
+        }
+     },
+      "UpsShutdownTimers" :
+     {
+        "type" : "section",
+        "name" : "Shut down and restore delays",
+        "description" : "Yadoms sends these timers to UPS at shut down command, to manage how the UPS output is power-cut or power-restored",
+        "content" :
+        {
+           "ShutdownDelay" :
+           {
+              "type" : "decimal",
+              "name" : "Shut down delay (minutes)",
+              "description" : "After receiving command from Yadoms, UPS will wait this delay before shutting down its output. It's useful to let system stop properly.",
+              "defaultValue" : ".3",
+              "minimumValue" : ".2",
+              "maximumValue" : "9",
+              "precision" : "1"
+           },
+           "RestoreDelay" :
+           {
+              "type" : "int",
+              "name" : "Restore delay (minutes)",
+              "description" : "After AC power is recovered, UPS will wait for this delay before to restore power at output.",
+              "defaultValue" : "1",
+              "minimumValue" : "1",
+              "maximumValue" : "9999"
+           }
+        }
+     }
+   }
+}

@@ -1,0 +1,55 @@
+{
+   "type": "OneWire",
+   "name": "One Wire",
+   "description": "Support of the 1-wire protocol.",
+   "version": "1.0",
+   "releaseType": "beta",
+   "author": "YADOMS Team",
+   "url": "http://sourceforge.net/projects/yadoms/",
+   "credits": "OWFS 1-Wire File System (http://owfs.org)",
+   "supportedPlatforms": {
+      "linux": "supported",
+      "others": "unsupported"
+   },
+   "configurationSchema": {
+      "linuxMode": {
+         "type": "radioSection",
+         "name": "Hardware mode",
+         "description": "Choose the hardware used to connect to the 1-wire network",
+         "show": {
+            "__Binding__": {
+               "type": "system",
+               "query": "platformIsLinux"
+            }
+         },
+         "content" : {
+            "owfs" : {
+                "type" : "section",
+                "name" : "OWFS mode",
+                "description" : "Recommanded mode. Use OWFS (see http://owfs.org for more information). This mode supports most of 1-wire devices, but needs an adapter supported by OWFS. OWFS must be correctly configured (see Yadoms wiki page for how to configure OWFS).",
+                "content" : {
+                  "mountPoint" : {
+                     "type" : "string",
+                     "name" : "OWFS mount point",
+                     "description" : "The OWFS mount point on Yadoms server. See your owfs.conf file (generally set to /mnt/1wire).",
+                     "defaultValue": "/mnt/1wire"
+                  }
+               }
+            },
+            "kernel" : {
+                "type" : "section",
+                "name" : "Kernel mode",
+                "description" : "Use the kernel native 1-wire support. This mode supports only a few devices (see Yadoms wiki pages for more information). 1-wire devices can be directly connected on a GPIO pin (no adapter required).",
+                "content" : {
+                  "mountPoint" : {
+                     "type" : "string",
+                     "name" : "Mount point",
+                     "description" : "The mount point on Yadoms server (generally set to /sys/bus/w1/devices).",
+                     "defaultValue": "/sys/bus/w1/devices"
+                  }
+               }
+            }
+         }
+      }
+   }
+}

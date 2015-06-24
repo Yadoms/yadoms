@@ -1,0 +1,63 @@
+<!--New plugin Modal -->
+<div class="modal fade" id="new-plugin-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" data-i18n="modals.add-plugin.title"></h4>
+            </div>
+            <div class="modal-body">
+               <form>
+                  <div class="form-group">
+                     <label for="pluginTypeList" data-i18n="modals.add-plugin.pluginType"></label>
+                     <select id="pluginTypeList" class="form-control">
+                     </select>
+                  </div>
+               </form>
+            </div>
+            <div class="modal-footer">
+                <button id="btn-get-more-plugin" type="button" class="btn btn-primary pull-left" data-i18n="modals.add-plugin.getMore"></button>
+                <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="common.cancel"></button>
+                <button id="btn-confirm-add-plugin" type="button" class="btn btn-primary" data-i18n="common.ok"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    var pluginTypes = [];
+
+    /**
+     * Ask for plugin types to the REST server
+     */
+    function askPluginTypes(callback)
+    {
+       PluginManager.get(function (list) {
+          $("select#pluginTypeList").empty();
+
+          $.each(list, function(index, value) {
+             //foreach plugin-type
+             $("select#pluginTypeList").append("<option value=\"" + value.type + "\">" + $.t(value.type + ":name", {defaultValue : value.package.name}) + "</option>");
+             pluginTypes[value.type] = value;
+          });
+
+          //event click on add plugin button
+          $("button#btn-confirm-add-plugin").unbind("click").bind("click", function() {
+             //we close the new widget modal
+             $("div#new-plugin-modal").modal("hide");
+
+             var pluginType =  $("select#pluginTypeList").val();
+
+             callback(pluginTypes[pluginType]);
+          });
+
+          //i18n
+          $("div#new-plugin-modal .modal-body").i18n();
+
+          //we display the modal
+          $('div#new-plugin-modal').modal();
+       });
+    }
+
+</script>
