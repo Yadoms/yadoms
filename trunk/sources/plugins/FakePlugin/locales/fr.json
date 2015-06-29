@@ -49,11 +49,11 @@
    },
   "enumerations" : {
     "EFakeControllerValues" : {
-      "stop" : "Arreter",
-       "run" : "Avancer",
-       "back" : "Arrière",
-      "left" : "Gauche",
-      "right" : "Droite"
+      "Stop" : "Arreter",
+      "Run" : "Avancer",
+      "Back" : "Arrière",
+      "Left" : "Gauche",
+      "Right" : "Droite"
     }
   },
   "recipientFields" : {

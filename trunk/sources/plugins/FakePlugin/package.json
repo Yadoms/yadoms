@@ -103,11 +103,11 @@
   },
   "enumerations": {
     "EFakeControllerValues": {
-      "stop": "Stop",
-      "run": "Run",
-      "back": "Back",
-      "left": "Turn Left",
-      "right": "Turn Right"
+      "Stop": "Stop",
+      "Run": "Run",
+      "Back": "Back",
+      "Left": "Turn Left",
+      "Right": "Turn Right"
     }
   },
   "recipientFields" : {

@@ -4,7 +4,6 @@
 #include <Poco/SplitterChannel.h>
 #include <Poco/FileChannel.h>
 #include <Poco/AutoPtr.h>
-#include <Poco/LoggingFactory.h>
 #include <Poco/FormattingChannel.h>
 #include <Poco/PatternFormatter.h>
 
