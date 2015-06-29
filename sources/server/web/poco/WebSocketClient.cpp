@@ -25,21 +25,32 @@ namespace web { namespace poco {
 
    void CWebSocketClient::doWork()
    {
+      int flags = 0;
+
       try
       {
          //if some data are available, then read them and answer
          while (m_socket.available() >= 0 && !this->isStopping())
          {
-            int flags = 0;
+
             char buffer[2048] = { 0 };
 
             int n = m_socket.receiveFrame(buffer, sizeof(buffer), flags);
             if (n > 0)
             {
                std::string bufferString(buffer);
+
+               YADOMS_LOG(information) << "Websocket receive data : " << bufferString;
+
+               YADOMS_LOG(information) << "Try parse";
                boost::shared_ptr<ws::CFrameBase> parsedFrame = ws::CFrameFactory::tryParse(bufferString);
+               YADOMS_LOG(information) << "end parse";
                if (parsedFrame)
+               {
+                  YADOMS_LOG(information) << "Parse : " << parsedFrame->serialize();
+                  YADOMS_LOG(information) << "Type : " << parsedFrame->getType();
                   m_eventHandler.postEvent(m_eventId, parsedFrame);
+               }
             }
          }
       }
@@ -60,7 +71,19 @@ namespace web { namespace poco {
       }
       catch (Poco::IOException& exc)
       {
-         YADOMS_LOG(warning) << "Websocket request handler Poco::IOException : " << exc.what();
+         YADOMS_LOG(warning) << "Websocket request handler Poco::IOException : " << exc.displayText();
+      }      
+      catch (Poco::TimeoutException& exc)
+      {
+         YADOMS_LOG(warning) << "Websocket request handler Poco::TimeoutException : " << exc.displayText();
+      }
+      catch (Poco::Net::NetException& exc)
+      {
+         YADOMS_LOG(warning) << "Websocket request handler Poco::NetException : " << exc.displayText();
+      }  
+      catch (Poco::Exception& exc)
+      {
+         YADOMS_LOG(warning) << "Websocket request handler Poco::Exception : " << exc.displayText();
       }
       catch (shared::exception::CException & ex)
       {
