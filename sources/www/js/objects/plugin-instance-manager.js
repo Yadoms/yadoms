@@ -102,19 +102,13 @@ PluginInstanceManager.getAll = function (callback, sync) {
           }
 
           var result = [];
-          var count = data.data.plugin.length;
-
-          $.each(data.data.plugin, function(index, value) {
+          data.data.plugin.forEach(function( value) {
              var pi = PluginInstanceManager.factory(value);
-             PluginInstanceManager.downloadPackage(pi, function() {
-                result.push(pi);
-                count--;
-                if(count<=0) {
-                   callback(result);
-                }
-             });
+             PluginInstanceManager.downloadPackage(pi, undefined, true);
+             result.push(pi);
           });
 
+          callback(result);
        })
        .fail(function() {
           notifyError($.t("objects.generic.errorLoading", {objectName:"plugin instances"}));
@@ -375,13 +369,23 @@ PluginInstanceManager.updateToServer = function(pluginInstance, callback, sync) 
  * @param pluginInstance The plugin instance
  * @param callback The callback for receiving the plugin package
  */
-PluginInstanceManager.downloadPackage = function(pluginInstance, callback) {
+PluginInstanceManager.downloadPackage = function(pluginInstance, callback, sync) {
    assert(!isNullOrUndefined(pluginInstance), "pluginInstance must be defined");
 
    //we can't download package from system plugins
    if (!pluginInstance.isSystemCategory()) {
-      $.getJSON( "plugins/" + pluginInstance.type + "/package.json")
-         .done(function (data) {
+
+       var async = true;
+       if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
+           async = !sync;
+
+       $.ajax({
+           type: "GET",
+           url: "plugins/" + pluginInstance.type + "/package.json",
+           contentType: "application/json; charset=utf-8",
+           dataType: "json",
+           async: async
+       }).done(function (data) {
 
             pluginInstance.package = data;
 

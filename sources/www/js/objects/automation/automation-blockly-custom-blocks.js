@@ -514,7 +514,7 @@ Blockly.Yadoms.LoadPlugins_ = function(canWrite, allowedKeywordTypes) {
     var pluginList = [];
     $.each(Blockly.Yadoms.data.plugins, function(index, plugin) {
         if(Blockly.Yadoms.PluginHasKeywordMatching_(plugin, canWrite, allowedKeywordTypes)) {
-            pluginList.push([plugin.name, plugin.id]);
+            pluginList.push([plugin.displayName, plugin.id]);
         }
     });
     return pluginList;
@@ -962,7 +962,7 @@ Blockly.Blocks['yadoms_affect_keyword'] = {
             this.removeInput(this.unitsInputName);
 
         if(!isNullOrUndefined(keyword) && !isNullOrUndefinedOrEmpty(keyword.units) ) {
-            this.appendDummyInput(this.unitsInputName).appendField(keyword.units);
+            this.appendDummyInput(this.unitsInputName).appendField($.t(keyword.units));
         }
     },
 
@@ -1129,7 +1129,7 @@ Blockly.Blocks['yadoms_logic_compare_is'] = {
                 thisBlock.removeInput(thisBlock.unitsInputName);
 
             if(!isNullOrUndefined(keyword) && !isNullOrUndefinedOrEmpty(keyword.units) ) {
-                thisBlock.appendDummyInput(thisBlock.unitsInputName).appendField(keyword.units);
+                thisBlock.appendDummyInput(thisBlock.unitsInputName).appendField($.t(keyword.units));
             }
         };
 
@@ -1410,7 +1410,7 @@ Blockly.Blocks['yadoms_logic_compare_become'] = {
                 thisBlock.removeInput(thisBlock.unitsInputName);
 
             if(!isNullOrUndefined(keyword) && !isNullOrUndefinedOrEmpty(keyword.units) ) {
-                thisBlock.appendDummyInput(thisBlock.unitsInputName).appendField(keyword.units);
+                thisBlock.appendDummyInput(thisBlock.unitsInputName).appendField($.t(keyword.units));
             }
         };
 
@@ -1543,7 +1543,7 @@ Blockly.Blocks['yadoms_enumeration'] = {
             //check that keyword data is available
             var pluginData = Blockly.Yadoms.data.plugins[pluginValue];
             var keywordData = Blockly.Yadoms.data.keywords[keywordValue];
-            if(!isNullOrUndefined(keywordData) && keywordData.type == "enum") {
+            if(!isNullOrUndefined(keywordData) && keywordData.type.toUpperCase() == "enum".toUpperCase()) {
                 var typeInfo = keywordData.typeInfo;
                 if( !isNullOrUndefined(typeInfo) && !isNullOrUndefined(typeInfo.name) && !isNullOrUndefined(typeInfo.values) ) {
                     if(this.currentEnumerationTypeName != typeInfo.name) {

@@ -2,9 +2,7 @@
 #include "Supervisor.h"
 #include "pluginSystem/Manager.h"
 #include "database/sqlite/SQLiteDataProvider.h"
-#include "database/DatabaseException.hpp"
 #include <shared/Log.h>
-#include <shared/exception/NotSupported.hpp>
 #include "web/poco/WebServer.h"
 #include "authentication/BasicAuthentication.h"
 #include "web/rest/service/Acquisition.h"
@@ -21,17 +19,12 @@
 #include "web/rest/service/Recipient.h"
 #include "web/rest/service/Update.h"
 #include <shared/ThreadBase.h>
-#include <shared/Peripherals.h>
 #include "task/Scheduler.h"
-#include "task/backup/Database.h"
 #include "communication/PluginGateway.h"
-#include "RunningInformation.h"
 #include "dataAccessLayer/DataAccessLayer.h"
 #include "notification/NotificationCenter.h"
 #include "automation/RuleManager.h"
 #include <shared/ServiceLocator.h>
-#include <Poco/Util/ServerApplication.h>
-#include <tools/OperatingSystem.h>
 #include "startupOptions/IStartupOptions.h"
 
 CSupervisor::CSupervisor(boost::shared_ptr<shared::event::CEventHandler> applicationEventHandler, const int applicationStopCode)
