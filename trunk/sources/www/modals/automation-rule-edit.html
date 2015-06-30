@@ -87,6 +87,7 @@
             if (rule.editor.validate()) {
                rule.name = nameParameter.getCurrentConfiguration();
                rule.description = descriptionParameter.getCurrentConfiguration();
+               debugger;
                rule.editor.updateRule();
 
                console.debug("End of Automation rule edition : " + JSON.stringify(rule));

@@ -77,7 +77,7 @@ AutomationEditorBlockly.prototype.onModalShown = function($modal) {
 
    //load content
    //TODO : check if rule exist
-   var content = decodeURIComponent(self.rule.content);
+   var content = self.rule.content;
 
    //to make the blockly works twice, we remove completely the dom element on re-create it
    /*var $mainDiv = $("div#" + this.getUuid());
@@ -100,8 +100,8 @@ AutomationEditorBlockly.prototype.updateRule = function() {
    self.rule.code = "";
 
    Blockly.Yadoms.GetResult(self.rule.interpreter.toLowerCase(), function(xmlString,code){
-      self.rule.content = encodeURIComponent(xmlString);
-      self.rule.code = encodeURIComponent(code);
+      self.rule.content = xmlString;
+      self.rule.code = code;
 
       console.log("------------------> START");
       console.log(code);

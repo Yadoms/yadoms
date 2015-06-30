@@ -152,13 +152,10 @@ function periodicUpdateTask() {
                widgetUpdateInterval = setInterval(periodicUpdateTask, UpdateInterval);
 
             //we reinitialize the websocket
-debugger;
             WebSocketEngine.initializeWebSocketEngine(function() {
                //web socket opened
                //we listen acquisitionupdate event
-               debugger;
                $(document).on("acquisitionupdate", function (e, websocketData) {
-                  debugger;
                   var acq = AcquisitionManager.factory(websocketData.data.acquisition);
                   dispatchToWidgets(acq);
                });

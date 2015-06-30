@@ -22,7 +22,7 @@ function AutomationRule(id, name, description, interpreter, editorName, model, c
    this.editorName = editorName;
    this.editor = null;
    this.model = model;
-   this.content = content;
+   this.content = decodeURIComponent(content);
    this.configuration = configuration;
    this.enabled = enabled;
    this.state = state;
@@ -42,7 +42,7 @@ AutomationRule.prototype.toJSON = function () {
       interpreter: this.interpreter,
       editor: this.editorName,   //we provide only the name of the editor and not the full object
       model: this.model,
-      content: this.content,
+      content: encodeURIComponent(this.content),
       configuration: this.configuration,
       enabled: this.enabled
       //we don't take fields that are filled by the server
