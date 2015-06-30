@@ -649,7 +649,7 @@ Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function(thisBlock, can
     var pList = Blockly.Yadoms.LoadPlugins_(canWrite, allowedKeywordTypes);
     if(pList == null || pList == undefined || pList.length == 0) {
         thisBlock.setDisabled(true);
-        pList = [["invalid" , "invalid"]];
+        pList = [[$.t("blockly.invalid") , "invalid"]];
     }
 
     //create the plugin dropdown
@@ -663,7 +663,7 @@ Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function(thisBlock, can
         var deviceList= Blockly.Yadoms.LoadDevices_(pluginDd.getValue(), canWrite, allowedKeywordTypes);
         if(deviceList == null || deviceList == undefined || deviceList.length == 0) {
             thisBlock.setDisabled(true);
-            deviceList = [["invalid" , "invalid"]];
+            deviceList = [[$.t("blockly.invalid") , "invalid"]];
         }
         return deviceList;
     }, function(device) {
@@ -676,7 +676,7 @@ Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function(thisBlock, can
         var keywordList= Blockly.Yadoms.LoadKeywords_(deviceDd.getValue(), canWrite, allowedKeywordTypes);
         if(keywordList == null || keywordList == undefined || keywordList.length == 0) {
             thisBlock.setDisabled(true);
-            keywordList = [["invalid" , "invalid"]];
+            keywordList = [[$.t("blockly.invalid") , "invalid"]];
         }
         return keywordList;
     }, function(keyword) {
@@ -830,7 +830,7 @@ Blockly.Blocks['yadoms_keyword_value'] = {
         //set custom block parameters
         this.setInputsInline(true);
         this.setOutput(true);
-        this.setTooltip('');
+        this.setTooltip($.t("blockly.blocks.yadoms_keyword_value.tooltip", {defaultValue:''}));
         this.setHelpUrl('http://www.example.com/');
 
         var thisBlock = this;
@@ -892,7 +892,7 @@ Blockly.Blocks['yadoms_affect_keyword'] = {
       this.setInputsInline(true);
       this.setPreviousStatement(true, "null");
       this.setNextStatement(true, "null");
-      this.setTooltip('');
+      this.setTooltip($.t("blockly.blocks.yadoms_affect_keyword.tooltip", {defaultValue:''}));
       this.setColour(0);
 
       this.appendDummyInput()
@@ -1024,7 +1024,7 @@ Blockly.Blocks['yadoms_logic_compare_is_mutator_for'] = {
         this.setInputsInline(true);
         this.setPreviousStatement(true, "null");
         this.setNextStatement(false, "null");
-        this.setTooltip('');
+        this.setTooltip($.t("blockly.blocks.yadoms_logic_compare_is.for.tooltip", {defaultValue:''}));
         this.appendDummyInput().appendField($.t("blockly.blocks.yadoms_logic_compare_is.for.title_long"));
         //noinspection JSValidateTypes
         this.contextMenu = false;
@@ -1039,7 +1039,7 @@ Blockly.Blocks['yadoms_logic_compare_is_mutator_at'] = {
         this.setInputsInline(true);
         this.setPreviousStatement(true, "null");
         this.setNextStatement(false, "null");
-        this.setTooltip('');
+        this.setTooltip($.t("blockly.blocks.yadoms_logic_compare_is.at.tooltip", {defaultValue:''}));
         this.appendDummyInput().appendField($.t("blockly.blocks.yadoms_logic_compare_is.at.title_long"));
         //noinspection JSValidateTypes
         this.contextMenu = false;
@@ -1079,6 +1079,7 @@ Blockly.Blocks['yadoms_logic_compare_is'] = {
         this.setMutator(new Blockly.Mutator(['yadoms_logic_compare_is_mutator_for', 'yadoms_logic_compare_is_mutator_at']));
 
         var thisBlock = this;
+
         this.setTooltip(function() {
             var op = thisBlock.getFieldValue('OP');
             var TOOLTIPS = {
@@ -1089,9 +1090,7 @@ Blockly.Blocks['yadoms_logic_compare_is'] = {
                 'GT': Blockly.Msg.LOGIC_COMPARE_TOOLTIP_GT,
                 'GTE': Blockly.Msg.LOGIC_COMPARE_TOOLTIP_GTE
             };
-
-
-            return TOOLTIPS[op];
+            return $.t("blockly.blocks.yadoms_logic_compare_is.tooltip", {defaultValue:'', operand:TOOLTIPS[op]});
         });
 
 
@@ -1374,8 +1373,7 @@ Blockly.Blocks['yadoms_logic_compare_become'] = {
                 'GTE': Blockly.Msg.LOGIC_COMPARE_TOOLTIP_GTE
             };
 
-
-            return TOOLTIPS[op];
+            return $.t("blockly.blocks.yadoms_logic_compare_become.tooltip", {defaultValue:'', operand:TOOLTIPS[op]});
         });
 
 
@@ -1397,7 +1395,7 @@ Blockly.Blocks['yadoms_logic_compare_become'] = {
                 selectedOperators = Blockly.Yadoms.BooleanOperators_;
             }
 
-            var operatorDropDown = this.getField_("OP");
+            var operatorDropDown = thisBlock.getField_("OP");
             operatorDropDown.menuGenerator_ = selectedOperators;
             operatorDropDown.setValue(selectedOperators[0][1]);
             operatorDropDown.updateTextNode_();
@@ -1527,7 +1525,7 @@ Blockly.Blocks['yadoms_enumeration'] = {
         this.appendDummyInput()
             .appendField(enumDropDown, this.enumerationDropDownName);
         this.setOutput(true, "");
-        this.setTooltip('');
+        this.setTooltip($.t("blockly.blocks.yadoms_enumeration.tooltip", {defaultValue:''}));
 
         this.getSelectedEnumValue = function() {
             return enumDropDown.getValue();
@@ -1599,7 +1597,7 @@ Blockly.Blocks['yadoms_log'] = {
             .appendField( $.t("blockly.blocks.yadoms_log.title") )
         this.setPreviousStatement(true, "null");
         this.setNextStatement(true, "null");
-        this.setTooltip('');
+        this.setTooltip($.t("blockly.blocks.yadoms_log.tooltip", {defaultValue:''}));
     }
 };
 
@@ -1638,7 +1636,8 @@ Blockly.Blocks['yadoms_sleep'] = {
         this.setInputsInline(true);
         this.setPreviousStatement(true, "null");
         this.setNextStatement(true, "null");
-        this.setTooltip('');
+        this.setTooltip($.t("blockly.blocks.yadoms_sleep.tooltip", {defaultValue:''}));
+
     }
 };
 
@@ -1745,19 +1744,19 @@ Blockly.Blocks['yadoms_notification_simple'] = {
         var recipientList = Blockly.Yadoms.LoadRecipients_();
         if(recipientList == null || recipientList == undefined || recipientList.length == 0) {
             this.setDisabled(true);
-            recipientList = [["invalid" , "invalid"]];
+            recipientList = [[$.t("blockly.invalid") , "invalid"]];
         }
 
         this.appendDummyInput()
-            .appendField("Notifier")
+            .appendField($.t("blockly.blocks.yadoms_notification_simple.title"))
             .appendField(new Blockly.FieldDropdown(recipientList), "recipient");
         this.appendValueInput("Message")
             .setCheck("String")
-            .appendField("Message");
+            .appendField($.t("blockly.blocks.yadoms_notification_simple.message"));
         this.setInputsInline(true);
         this.setPreviousStatement(true, "null");
         this.setNextStatement(true, "null");
-        this.setTooltip('');
+        this.setTooltip($.t("blockly.blocks.yadoms_notification_simple.tooltip", {defaultValue:''}));
     }
 };
 
@@ -1775,21 +1774,22 @@ Blockly.Blocks['yadoms_notification_advanced'] = {
         var recipientList = Blockly.Yadoms.LoadRecipients_();
         if(recipientList == null || recipientList == undefined || recipientList.length == 0) {
             this.setDisabled(true);
-            recipientList = [["invalid" , "invalid"]];
+            recipientList = [[$.t("blockly.invalid") , "invalid"]];
         }
         this.appendDummyInput()
-            .appendField("Notifier")
+            .appendField($.t("blockly.blocks.yadoms_notification_advanced.title"))
             .appendField(new Blockly.FieldDropdown(recipientList), "recipient");
         this.appendValueInput("Subject")
             .setCheck("String")
-            .appendField("Sujet");
+            .appendField($.t("blockly.blocks.yadoms_notification_advanced.subject"));
         this.appendValueInput("Message")
             .setCheck("String")
-            .appendField("Message");
+            .appendField($.t("blockly.blocks.yadoms_notification_advanced.message"));
         this.setInputsInline(true);
         this.setPreviousStatement(true, "null");
         this.setNextStatement(true, "null");
-        this.setTooltip('');
+        this.setTooltip($.t("blockly.blocks.yadoms_notification_advanced.tooltip", {defaultValue:''}));
+
     }
 };
 
