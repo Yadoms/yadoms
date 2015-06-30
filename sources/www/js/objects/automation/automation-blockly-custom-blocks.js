@@ -381,6 +381,11 @@ Blockly.Yadoms.CreateToolbox_ = function() {
     return toolbox;
 };
 
+
+
+
+
+
 /**
  * Load the blockly language file
  * @param callback The callback used when load is done
@@ -756,7 +761,7 @@ Blockly.Yadoms.GetResult = function(language, callback) {
     var completedPythonCode = '# yMain is the script entry point, called by Yadoms\n';
     completedPythonCode += 'import time\n';
     completedPythonCode += 'import yScriptApiWrapper\n';
-    completedPythonCode += 'import dateutil.parser\n';
+    completedPythonCode += '\n';
     completedPythonCode +='def yMain(yApi):\n';
     completedPythonCode += "\tprint ('Script started')\n";
     completedPythonCode += pythonCodeIndented;
@@ -847,9 +852,10 @@ Blockly.Blocks['yadoms_keyword_value'] = {
  * @return {*[]}
  */
 Blockly.Python['yadoms_keyword_value'] = function(block) {
-    var readCommand = 'yadoms.readKeyword(' + dropdown_keyword + ')';
 
     var dropdown_keyword = block.getSelectedKeyword();
+    var readCommand = 'yApi.readKeyword(' + dropdown_keyword + ')';
+
     var keyword = Blockly.Yadoms.data.keywords[dropdown_keyword];
     var code = "";
 
@@ -1002,7 +1008,7 @@ Blockly.Blocks['yadoms_affect_keyword'] = {
 Blockly.Python['yadoms_affect_keyword'] = function(block) {
     var dropdown_keyword = block.getSelectedKeyword();
     var value = Blockly.Python.valueToCode(block, block.inputValueName, Blockly.Python.ORDER_RELATIONAL) || '0';
-    return 'yadoms.writeKeyword(' + dropdown_keyword + ',' + value + ')\n';
+    return 'yApi.writeKeyword(' + dropdown_keyword + ', "' + value + '")\n';
 };
 
 
@@ -1590,9 +1596,7 @@ Blockly.Blocks['yadoms_log'] = {
         this.setHelpUrl('http://www.example.com/');
         this.setColour(160);
         this.appendValueInput("LogContent")
-            .setCheck("String")
             .appendField( $.t("blockly.blocks.yadoms_log.title") )
-            .appendField(new Blockly.FieldDropdown([[$.t("blockly.blocks.yadoms_log.logLevel.debug"), "debug"], [$.t("blockly.blocks.yadoms_log.logLevel.info"), "info"], [$.t("blockly.blocks.yadoms_log.logLevel.warning"), "warning"], [$.t("blockly.blocks.yadoms_log.logLevel.error"), "error"], [$.t("blockly.blocks.yadoms_log.logLevel.fatal"), "fatal"]]), "LogLevel");
         this.setPreviousStatement(true, "null");
         this.setNextStatement(true, "null");
         this.setTooltip('');
@@ -1605,8 +1609,7 @@ Blockly.Blocks['yadoms_log'] = {
   */
 Blockly.Python['yadoms_log'] = function(block) {
     var value_name = Blockly.Python.valueToCode(block, 'LogContent', Blockly.Python.ORDER_ATOMIC) || '\'\'';
-    var dropdown_loglevel = Blockly.Python.quote_(block.getFieldValue('LogLevel'));
-    return 'yadoms.log(' + dropdown_loglevel + ',' + value_name + ')\n';
+    return 'print ' + value_name + '\n';
 };
 
 
@@ -1646,7 +1649,7 @@ Blockly.Blocks['yadoms_sleep'] = {
  * @param block The block
  */
 Blockly.Python['yadoms_sleep'] = function(block) {
-    var value_time = Blockly.JavaScript.valueToCode(block, 'Time', Blockly.JavaScript.ORDER_ATOMIC);
+    var value_time = Blockly.Python.valueToCode(block, 'Time', Blockly.Python.ORDER_ATOMIC);
     var dropdown_name = block.getFieldValue('timeUnit');
 
     var valueInSeconds = value_time;
