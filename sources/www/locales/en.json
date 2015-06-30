@@ -413,6 +413,7 @@
        "catLists": "Lists",
        "catColour": "Colour"
      },
+     "invalid" : "invalid",
      "global" : {
        "durationUnits": {
          "seconds": "seconds",
@@ -423,37 +424,52 @@
      },
      "blocks" : {
        "yadoms_sleep" : {
-         "title" : "Sleep"
+         "title" : "Sleep",
+         "tooltip" : "Make the script sleep for a duration"
        },
        "yadoms_log" : {
          "title" : "Log",
-         "logLevel" : {
-           "debug" : "debug",
-           "info" : "information",
-           "warning" : "warning",
-           "error" : "error",
-           "fatal" : "fatal"
-         }
+         "tooltip" : "Write a line to the script log file"
        },
        "yadoms_enumeration" : {
-         "title" : "Enumeration"
+         "title" : "Enumeration",
+         "tooltip" : "Represents an enumeration value (content is updated when linked to an object)"
        },
        "yadoms_logic_compare_become" : {
-         "title": "Become"
+         "title": "Become",
+         "tooltip" : "If a keyword become __operand__ than value"
        },
        "yadoms_logic_compare_is" : {
          "title": "Is",
+         "tooltip" : "If a keyword __operand__ a value",
          "for" : {
            "title" : "For",
-           "title_long" :"For (duration)"
+           "title_long" :"For (duration)",
+           "tooltip" : "If the keyword keep the same value for a duration"
          },
          "at" : {
            "title" : "At",
-           "title_long" :"At (time)"
+           "title_long" :"At (time)",
+           "tooltip" : "If the keyword reached a value at a particular time"
          }
        },
+       "yadoms_keyword_value" : {
+         "tooltip" : "Read the last device value from database"
+       },
        "yadoms_affect_keyword" : {
-         "title" : "Set"
+         "title" : "Set",
+         "tooltip" : "Affect a new value to a keyword"
+       },
+       "yadoms_notification_simple" : {
+         "title" : "Notify",
+         "message" : "Message",
+         "tooltip" : "Send a simple message to a recipient"
+       },
+       "yadoms_notification_advanced" : {
+         "title" : "Notify",
+         "message" : "Message",
+         "subject" : "Subject",
+         "tooltip" : "Send an advanced message to a recipient"
        }
      }
    },

@@ -136,6 +136,75 @@
        }
      }
   },
+  "blockly" : {
+    "toolbox" : {
+      "catLogic": "Logique",
+      "catLoops": "Boucle",
+      "catMath": "Math",
+      "catText": "Texte",
+      "catLists": "Listes",
+      "catColour": "Couleurs"
+    },
+    "invalid" : "Invalide",
+    "global" : {
+      "durationUnits": {
+        "seconds": "secondes",
+        "minutes": "minutes",
+        "hours": "heures",
+        "days" : "jours"
+      }
+    },
+    "blocks" : {
+      "yadoms_sleep" : {
+        "title" : "Sleep",
+        "tooltip" : "Le script passe en pause pendant une durée donnée"
+      },
+      "yadoms_log" : {
+        "title" : "Log",
+        "tooltip" : "Ecrit une ligne dans le fichier de log du script"
+      },
+      "yadoms_enumeration" : {
+        "title" : "Enumération",
+        "tooltip" : "Represente une valeur d'énumération (le contenu est mis à jour lorsque ce bloc est connecté à un objet)"
+      },
+      "yadoms_logic_compare_become" : {
+        "title": "Become",
+        "tooltip" : "Si un keyword devient __operand__ à une valeur"
+      },
+      "yadoms_logic_compare_is" : {
+        "title": "Is",
+        "tooltip" : "Si un keyword est __operand__ qu'une valeur",
+        "for" : {
+          "title" : "For",
+          "title_long" :"For (durée)",
+          "tooltip" : "Si un keyword conserve la condition pendant une durée donnée"
+        },
+        "at" : {
+          "title" : "At",
+          "title_long" :"At (time)",
+          "tooltip" : "Si un keyword possède une condition à une heure donnée"
+        }
+      },
+      "yadoms_keyword_value" : {
+        "tooltip" : "Obtient la dernière valeur du keyword en base de données"
+      },
+      "yadoms_affect_keyword" : {
+        "title" : "Set",
+        "tooltip" : "Défini une nouvelle valeur à un keyword"
+      },
+      "yadoms_notification_simple" : {
+        "title" : "Notifier",
+        "message" : "Message",
+        "tooltip" : "Envoyer un message simple à un destinataire"
+      },
+      "yadoms_notification_advanced" : {
+        "title" : "Notifier",
+        "message" : "Message",
+        "subject" : "Sujet",
+        "tooltip" : "Envoyer un message avancée à un destinataire"
+      }
+    }
+  },
   "objects" : {
     "recipient" : {
       "errorGettingRecipientList" : "Une erreur est apparue lors du listing des destinataires",
