@@ -36,9 +36,6 @@ void CRule::stop()
 
 void CRule::doWork()
 {
-   // Set the thread name into Poco threads map
-   YADOMS_LOG_CONFIGURE(m_thread->getName());
-
    try
    {
       boost::shared_ptr<script::IProperties> scriptProperties = m_scriptFactory->createScriptProperties(m_ruleData);
