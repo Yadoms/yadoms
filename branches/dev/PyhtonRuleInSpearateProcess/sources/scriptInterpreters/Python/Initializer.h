@@ -1,7 +1,7 @@
 #pragma once
 #include "IInitializer.h"
 #include "PythonLibInclude.h"
-
+//TODO classe à virer
 //--------------------------------------------------------------
 /// \brief	Python initializer to support RAII idiom
 //--------------------------------------------------------------

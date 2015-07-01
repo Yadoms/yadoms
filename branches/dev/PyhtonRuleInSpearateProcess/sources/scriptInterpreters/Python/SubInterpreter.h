@@ -1,6 +1,5 @@
 #pragma once
 #include "ISubInterpreter.h"
-#include "PythonLibInclude.h"
 
 //--------------------------------------------------------------
 /// \brief	Python sub-interpreter
@@ -24,7 +23,8 @@ public:
    //--------------------------------------------------------------
    /// \brief	The Python thread state
    //--------------------------------------------------------------
-   PyThreadState* m_pythonThreadState;
+   //TODO
+   //PyThreadState* m_pythonThreadState;
 };
 
 

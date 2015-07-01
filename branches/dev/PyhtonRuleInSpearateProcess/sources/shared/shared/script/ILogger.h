@@ -1,6 +1,6 @@
 #pragma once
 
-namespace automation { namespace script
+namespace shared { namespace script
 {
    //-----------------------------------------------------
    ///\brief The rule logger interface
@@ -14,17 +14,17 @@ namespace automation { namespace script
       virtual ~ILogger() {}
 
       //-----------------------------------------------------
-      ///\brief               Log at information level
-      ///\param[in] message   Message to log
+      ///\brief               Get the out log stream
+      ///\return              The out log stream
       //-----------------------------------------------------
-      virtual void logInformation(const std::string& message) = 0;
+      virtual std::ostream& out() = 0;
 
       //-----------------------------------------------------
-      ///\brief               Log at error level
-      ///\param[in] message   Message to log
+      ///\brief               Get the error log stream
+      ///\return              The error log stream
       //-----------------------------------------------------
-      virtual void logError(const std::string& message) = 0;
+      virtual std::ostream& error() = 0;
    };
 
-} } // namespace automation::script
+} } // namespace shared::script
 

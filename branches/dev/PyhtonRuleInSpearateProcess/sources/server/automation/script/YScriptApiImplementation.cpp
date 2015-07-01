@@ -15,7 +15,7 @@ namespace automation { namespace script
 {
 
 CYScriptApiImplementation::CYScriptApiImplementation(
-   boost::shared_ptr<ILogger> ruleLogger,
+   boost::shared_ptr<shared::script::ILogger> ruleLogger,
    boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
    boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
    boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
@@ -149,32 +149,6 @@ std::string CYScriptApiImplementation::getInfo(const std::string& key) const
    }
 }
 
-void CYScriptApiImplementation::log(const std::string& message)
-{
-   try
-   {
-      m_ruleLogger->logInformation(message);
-      YADOMS_LOG(information) << message;
-   }
-   catch(...) // Must catch all exceptions to not crash script interpreter
-   {
-      YADOMS_LOG(error) << "log, unknown exception, please report to Yadoms team";
-   }
-}
-
-void CYScriptApiImplementation::logError(const std::string& message)
-{
-   try
-   {
-      m_ruleLogger->logError(message);
-      YADOMS_LOG(error) << message;
-   }
-   catch(...) // Must catch all exceptions to not crash script interpreter
-   {
-      YADOMS_LOG(error) << "log, unknown exception, please report to Yadoms team";
-   }
-}
-
 void CYScriptApiImplementation::fail(const std::string& errorMessage)
 {
    try
@@ -182,9 +156,7 @@ void CYScriptApiImplementation::fail(const std::string& errorMessage)
       std::string message("Script signaled a failure : ");
       message += errorMessage;
 
-      m_ruleLogger->logError(message);
-      YADOMS_LOG(error) << message;
-      
+      m_ruleLogger->error() << message;
    }
    catch (...) // Must catch all exceptions to not crash script interpreter
    {

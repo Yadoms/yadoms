@@ -66,18 +66,6 @@ namespace shared { namespace script { namespace yScriptApi
       virtual std::string getInfo(const std::string& key) const = 0;
 
       //-----------------------------------------------------
-      ///\brief Log a information message
-      ///\param[in] message Message to log
-      //-----------------------------------------------------
-      virtual void log(const std::string& message) = 0;
-
-      //-----------------------------------------------------
-      ///\brief Log an error
-      ///\param[in] message Message to log
-      //-----------------------------------------------------
-      virtual void logError(const std::string& message) = 0;
-
-      //-----------------------------------------------------
       ///\brief Signal that rule raised an error, and stop rule
       ///\param[in] errorMessage The error reason
       //-----------------------------------------------------

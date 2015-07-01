@@ -14,30 +14,33 @@ if(PYTHONLIBS_FOUND)
    set(PYTHON_SOURCES
       stdafx.h
       stdafx.cpp
-      ConsoleRedirector.h
-      ConsoleRedirector.cpp
-      IInitializer.h
-      Initializer.h
-      Initializer.cpp
+#TODO virer le fichier      ConsoleRedirector.h
+#TODO virer le fichier      ConsoleRedirector.cpp
+#TODO virer le fichier      IInitializer.h
+#TODO virer le fichier      Initializer.h
+#TODO virer le fichier      Initializer.cpp
+      IPythonExecutable.h
       IScriptFile.h
-      IScriptLoader.h
-      ISubInterpreter.h
+#TODO virer le fichier      IScriptLoader.h
+#TODO virer le fichier      ISubInterpreter.h
       Python.h
       Python.cpp
-      PythonBorrowedObject.h
-      PythonBorrowedObject.cpp
+#TODO virer le fichier      PythonBorrowedObject.h
+#TODO virer le fichier      PythonBorrowedObject.cpp
       PythonException.hpp
-      PythonObject.h
-      PythonObject.cpp
-      PythonLibInclude.h
+      PythonExecutable.h
+      PythonExecutable.cpp
+#TODO virer le fichier      PythonObject.h
+#TODO virer le fichier      PythonObject.cpp
+#TODO virer le fichier      PythonLibInclude.h
       Runner.h
       Runner.cpp
       ScriptFile.h
       ScriptFile.cpp
-      ScriptLoader.h
-      ScriptLoader.cpp
-      SubInterpreter.h
-      SubInterpreter.cpp
+#TODO virer le fichier      ScriptLoader.h
+#TODO virer le fichier      ScriptLoader.cpp
+#TODO virer le fichier      SubInterpreter.h
+#TODO virer le fichier      SubInterpreter.cpp
 	  swigpyrun.h
    )
 
@@ -46,7 +49,7 @@ if(PYTHONLIBS_FOUND)
    ## (by default yadoms-shared and boost are included)
    #########################################
    set(PYTHON_INCLDIR
-      ${PYTHON_INCLUDE_DIRS}
+#TODO virer      ${PYTHON_INCLUDE_DIRS}
    )
 
    #########################################
@@ -54,7 +57,7 @@ if(PYTHONLIBS_FOUND)
    ## (by default yadoms-shared and boost are included)
    #########################################
    set(PYTHON_LINK
-      ${PYTHON_LIBRARIES}
+#TODO virer      ${PYTHON_LIBRARIES}
    )
 
    #########################################
