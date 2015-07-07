@@ -128,23 +128,11 @@ DeviceManager.getAllByInstance = function(pluginInstance, callback, sync) {
 
 DeviceManager.getAttachedPlugin = function(device, callback) {
    assert(!isNullOrUndefined(device), "device must be defined");
-   $.getJSON("/rest/plugin/" + device.pluginId)
-      .done(function(data) {
-         //we parse the json answer
-         if (data.result != "true")
-         {
-            notifyError($.t("objects.deviceManager.errorGettingAttachedPlugin", {deviceName : device.friendlyName}), JSON.stringify(data));
-            return;
-         }
-
-         //we save the attachedPlugin into the object
-         device.attachedPlugin = PluginInstanceManager.factory(data.data);
-
-         if ($.isFunction(callback))
-            callback();
-
-      })
-      .fail(function() { notifyError($.t("objects.deviceManager.errorGettingAttachedPlugin", {deviceName : device.friendlyName})); });
+   assert($.isFunction(callback), "callback must be a function");
+   PluginInstanceManager.get(device.pluginId, function (pluginInstance) {
+      device.attachedPlugin = pluginInstance;
+      callback();
+   });
 };
 
 DeviceManager.getKeywordsByDeviceId = function(deviceId, callback, sync) {

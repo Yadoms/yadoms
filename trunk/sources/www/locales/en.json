@@ -261,7 +261,7 @@
                "pluginInstanceListDescription" : "Here is the list of all plugins. You can create new plugins, manage and delete currents.",
                "new" : "Create a new plugin",
                "table" : {
-                  "name" : "Name",
+                  "displayName" : "Name",
                   "status" : "Status",
                   "launchAtStartup" : "Launch At Startup",
                   "type" : "Plugin type",
@@ -490,7 +490,6 @@
          "errorListing" : "An errors occurs while listing plugins"
       },
       "deviceManager" : {
-         "errorGettingAttachedPlugin" : "An error has occurred getting plugin package of device __deviceName__",
          "errorGettingDeviceDetails" : "An error has occurred getting device details of __deviceName__",
          "errorDeleting" : "An error has occurred deleting __deviceName__",
          "errorCreating" : "An error has occurred creating __deviceName__",

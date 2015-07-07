@@ -12,10 +12,9 @@ function RecipientManager() {
 /**
  * Create a new recipient (from server data only)
  * @param json Json data from server
- * @param allAvailableFields
  * @returns {Recipient} a recipient object
  */
-RecipientManager.factory = function (json, allAvailableFields) {
+RecipientManager.factory = function (json) {
     assert(!isNullOrUndefined(json), "json must be defined");
     assert(!isNullOrUndefined(json.id), "json.id must be defined");
     assert(!isNullOrUndefined(json.firstName), "json.firstName must be defined");
@@ -23,10 +22,9 @@ RecipientManager.factory = function (json, allAvailableFields) {
     assert(!isNullOrUndefined(json.fields), "json.fields must be defined");
 
     var r = new Recipient(json.id, decodeURIComponent(json.firstName), decodeURIComponent(json.lastName), json.fields);
-    RecipientManager.completeRecipientWithAllFields_(r, allAvailableFields);
+    r.mergeFields();
     return r;
 };
-
 
 /**
  * Create a new recipient field (from server data only)
@@ -60,7 +58,7 @@ RecipientManager.get = function (recipientId, callback, sync) {
 
     $.ajax({
         type: "GET",
-        url: "/rest/recipient/" + +recipientId,
+        url: "/rest/recipient/" + recipientId,
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         async: async
@@ -84,41 +82,9 @@ RecipientManager.get = function (recipientId, callback, sync) {
  */
 RecipientManager.createEmptyRecipient = function () {
     var emptyRecipient = new Recipient(undefined, "", "", []);
-    RecipientManager.completeRecipientWithAllFields_(emptyRecipient);
+    emptyRecipient.mergeFields();
     return emptyRecipient;
 };
-
-
-/**
- * Get all the fields available (both system and plugins)
- * @param callback The callback for the result
- * @param sync True to get the result synchronously, false asynchronously
- * @private
- */
-RecipientManager.getAllPluginFields_ = function (callback, sync) {
-    assert($.isFunction(callback), "callback must be a function");
-    PluginManager.get(callback, sync);
-};
-
-
-/**
- * Complete a recipient with fields
- * @param recipientToComplete The recipient to complete
- * @param allAvailableFields The list of all available fields (if undefined, request it from server)
- * @private
- */
-RecipientManager.completeRecipientWithAllFields_ = function(recipientToComplete, allAvailableFields) {
-    if(!isNullOrUndefined(allAvailableFields)) {
-        recipientToComplete.mergeFields(allAvailableFields);
-    } else {
-        //we start by requesting all plugin fields
-        RecipientManager.getAllPluginFields_(function (allPlugin) {
-            recipientToComplete.mergeFields(allPlugin);
-        }, true);
-    }
-
-};
-
 
 /**
  * Get the list of all recipients
@@ -132,43 +98,37 @@ RecipientManager.getAll = function (callback, sync) {
     if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
         async = !sync;
 
-    //we start by requesting all plugin fields
-    RecipientManager.getAllPluginFields_(function (allPlugin) {
+    $.ajax({
+        type: "GET",
+        url: "/rest/recipient",
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        async: async
+    })
+    .done(
+    /**
+     * Receive result from server
+     * @param {{result:string}, {data: {recipient : object}}} data
+     */
+    function (data) {
+        //we parse the json answer
+        if (data.result != "true") {
+            notifyError($.t("objects.recipient.errorGettingList"), JSON.stringify(data));
+            return;
+        }
 
-        $.ajax({
-            type: "GET",
-            url: "/rest/recipient",
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            async: async
-        })
-            .done(
-            /**
-             * Receive result from server
-             * @param {{result:string}, {data: {recipient : object}}} data
-             */
-            function (data) {
-                //we parse the json answer
-                if (data.result != "true") {
-                    notifyError($.t("objects.recipient.errorGettingList"), JSON.stringify(data));
-                    return;
-                }
+        var recipientList = [];
+        $.each(data.data.recipient, function (index, value) {
+            recipientList.push(RecipientManager.factory(value));
+        });
 
-                var recipientList = [];
-                $.each(data.data.recipient, function (index, value) {
-                    recipientList.push(RecipientManager.factory(value, allPlugin));
-                });
-
-                if ($.isFunction(callback))
-                    callback(recipientList);
-            })
-            .fail(function () {
-                notifyError($.t("modals.recipient.errorGettingList"));
-                callback(null);
-            });
-
-    }, sync);
-
+        if ($.isFunction(callback))
+            callback(recipientList);
+    })
+    .fail(function () {
+        notifyError($.t("modals.recipient.errorGettingList"));
+        callback(null);
+    });
 };
 
 /**

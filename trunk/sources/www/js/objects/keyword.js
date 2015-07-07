@@ -24,7 +24,6 @@ function Keyword(id, deviceId, capacityName, accessMode, name, friendlyName, typ
    this.units = units;
    this.details = details;
    this.typeInfo = typeInfo;
-
 }
 
 Keyword.prototype.toJSON = function () {

@@ -3,6 +3,12 @@
  */
 
 /**
+ * This associative array based on plugin Type conains all plugin type information with their package
+ * @type {Array}
+ */
+PluginManager.pluginTypes = [];
+
+/**
  * Factory which create objects from json data
  * @param json The json data
  * @returns {Plugin} List of plugins
@@ -26,7 +32,7 @@ PluginManager.get = function (callback, sync) {
 
    $.ajax({
       dataType: "json",
-      url: "rest/plugin", /*/withPackage*/
+      url: "rest/plugin",
       async: async
    })
     .done(function( data ) {
@@ -37,35 +43,27 @@ PluginManager.get = function (callback, sync) {
        }
 
        //we've got a list of plugin type. For each of one we download the package.json
-       var result = [];
+       PluginManager.pluginTypes = [];
        var pluginCountRemaining =  data.data.plugins.length;
-
 
        i18n.options.resGetPath = 'plugins/__ns__/locales/__lng__.json';
        $.each(data.data.plugins, function(index, pluginType) {
-
            PluginManager.downloadPackage(pluginType, function(package) {
-               result.push(PluginManager.factory(package));
+              PluginManager.pluginTypes[pluginType] = PluginManager.factory(package);
                pluginCountRemaining--;
 
                if(pluginCountRemaining <=0 ) {
-
-
                    //we restore the resGetPath
                    i18n.options.resGetPath = "locales/__lng__.json";
-
-                   callback(result);
+                   callback(PluginManager.pluginTypes);
                }
            });
        });
-
-
     })
     .fail(function() {
        notifyError($.t("objects.plugin.errorListing"));
     });
 };
-
 
 /**
  * Download a plugin package for an instance (asynchronously)
@@ -91,10 +89,6 @@ PluginManager.downloadPackage = function(pluginType, callback, sync) {
             if ($.isFunction(callback))
                 callback(data);
         });
-
-
-
-
     })
     .fail(function() {
         notifyError($.t("objects.pluginInstance.errorGettingPackage", {pluginName : pluginInstance.displayName}));
@@ -103,13 +97,11 @@ PluginManager.downloadPackage = function(pluginType, callback, sync) {
     });
 };
 
-
 /**
  *
  * @constructor
  */
 function PluginManager()
 {
-
 }
 
