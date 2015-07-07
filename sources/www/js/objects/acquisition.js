@@ -14,7 +14,7 @@ function Acquisition(date, keywordId, value) {
    this.value = value;
 }
 
-Keyword.prototype.toJSON = function () {
+Acquisition.prototype.toJSON = function () {
    return {
       date: DateTimeFormatter.dateToIsoDate(this.date),
       keywordId: this.keywordId,

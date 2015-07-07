@@ -314,13 +314,16 @@
 
       $("#btn-show-dashboard").click(function() {
          modals.mainDashboard.load(function() {
-            $('#main-dashboard-modal').modal();
-            $('#main-dashboard-modal').off('hidden.bs.modal').on('hidden.bs.modal', function () {
+            //before showing the dashboard we update many cache informations
+            PluginManager.get(function() {
+               $('#main-dashboard-modal').modal();
+               $('#main-dashboard-modal').off('hidden.bs.modal').on('hidden.bs.modal', function () {
 
-               //clear the bootstrap validation when modal is hidden (handle submit and cancel behaviors)
-               $('#main-dashboard-modal').find("input,select,textarea").jqBootstrapValidation("destroy");
+                  //clear the bootstrap validation when modal is hidden (handle submit and cancel behaviors)
+                  $('#main-dashboard-modal').find("input,select,textarea").jqBootstrapValidation("destroy");
 
-               clearInterval(periodicDashboardTask);
+                  clearInterval(periodicDashboardTask);
+               });
             });
          });
       });

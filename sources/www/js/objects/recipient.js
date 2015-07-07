@@ -57,7 +57,7 @@ Recipient.systemFields = {
  * Merge current recipient data with plugin fields
  * @param allPlugins
  */
-Recipient.prototype.mergeFields = function (allPlugins) {
+Recipient.prototype.mergeFields = function () {
    var self = this;
 
    var definedFields = [];
@@ -91,14 +91,12 @@ Recipient.prototype.mergeFields = function (allPlugins) {
       self.fields.push(currentField);
    }
 
-
-
-   //add plugin fields
-   $.each(allPlugins, function(index, plugin) {
+   //add plugin fields from the cache array
+   Object.keys(PluginManager.pluginTypes).forEach(function(key, index) {
       //for each recipient fields in the plugin
+      var plugin = PluginManager.pluginTypes[key];
       var recipientFieldsFromPlugin = plugin.getRecipientFields();
       for(var recipientField in recipientFieldsFromPlugin) {
-
          //make a copy of the object
          var currentField = $.extend(true, {}, recipientFieldsFromPlugin[recipientField]);
 
@@ -120,7 +118,5 @@ Recipient.prototype.mergeFields = function (allPlugins) {
          self.fields.push(currentField);
       }
    });
-
-
 };
 

@@ -47,6 +47,7 @@
    
    function asyncLoad(subWindowPath, callback) {
       assert(!isNullOrUndefined(subWindowPath), "subWindowPath must be defined");
+
       var animationDuration = 300;
       $container = $("div#main-dashboard-sub-window-content");
       $container.slideUp(animationDuration, function() {
