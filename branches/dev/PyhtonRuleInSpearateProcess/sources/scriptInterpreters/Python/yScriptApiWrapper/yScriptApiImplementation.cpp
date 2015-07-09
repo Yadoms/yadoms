@@ -55,8 +55,18 @@ std::string CYScriptApiImplementation::waitForAcquisition(int keywordId, const s
 
 std::pair<int, std::string> CYScriptApiImplementation::waitForAcquisitions(const std::vector<int> keywordIdList, const std::string& timeout) const
 {
-   //TODO
-   return std::pair<int, std::string>();
+   DebugBreak();
+
+   CReqWaitForAcquisitions request;
+   request.m_keywordIdList = keywordIdList;
+   request.m_timeout = timeout;
+   sendRequest(kReqWaitForAcquisitions, request);
+
+   CAnsWaitForAcquisitions answer;
+   if (!tryReceiveAnswer(kAnsWaitForAcquisitions, answer, timeout.empty() ? boost::date_time::pos_infin : boost::posix_time::duration_from_string(timeout)))
+      return std::pair<int, std::string>();
+
+   return answer.m_returnValue;
 }
 
 void CYScriptApiImplementation::writeKeyword(int keywordId, const std::string& newState)

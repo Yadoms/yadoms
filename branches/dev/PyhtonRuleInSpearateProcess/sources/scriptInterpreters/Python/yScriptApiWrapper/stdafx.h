@@ -14,3 +14,5 @@
 #endif
 
 #include <boost/interprocess/ipc/message_queue.hpp>
+#include <boost/serialization/utility.hpp>
+#include <boost/serialization/vector.hpp>

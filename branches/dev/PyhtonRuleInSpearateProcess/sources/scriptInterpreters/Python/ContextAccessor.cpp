@@ -105,6 +105,16 @@ void CContextAccessor::processMessage(const char* message, size_t messageSize, b
       sendAnswer(kAnsWaitForAcquisition, answer, messageQueue);
       break;
    }
+   case kReqWaitForAcquisitions:
+   {
+      CReqWaitForAcquisitions request;
+      ia >> request;
+
+      CAnsWaitForAcquisitions answer;
+      answer.m_returnValue = m_context.waitForAcquisitions(request.m_keywordIdList, request.m_timeout);
+      sendAnswer(kAnsWaitForAcquisitions, answer, messageQueue);
+      break;
+   }
 
    default:
       throw shared::exception::CInvalidParameter("message");

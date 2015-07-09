@@ -14,6 +14,8 @@
 #endif
 
 #include <boost/interprocess/ipc/message_queue.hpp>
+#include <boost/serialization/utility.hpp>
+#include <boost/serialization/vector.hpp>
 #include <boost/thread/barrier.hpp>
 
 #include <Poco/Environment.h>
