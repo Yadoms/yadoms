@@ -90,7 +90,7 @@ std::string CPythonExecutable::readPythonVersion(const boost::filesystem::path& 
    }
 }
 
-boost::shared_ptr<Poco::ProcessHandle> CPythonExecutable::startModule(const std::string& module, const boost::filesystem::path& absoluteParentPath, boost::shared_ptr<shared::script::ILogger> scriptLogger) const
+boost::shared_ptr<Poco::ProcessHandle> CPythonExecutable::startModule(const std::string& module, const boost::filesystem::path& absoluteParentPath, const std::string& contextAccessorId, boost::shared_ptr<shared::script::ILogger> scriptLogger) const
 {
    try
    {
@@ -98,6 +98,7 @@ boost::shared_ptr<Poco::ProcessHandle> CPythonExecutable::startModule(const std:
 
       Poco::Process::Args args;
       args.push_back(std::string("-m ") + module);
+      args.push_back(contextAccessorId);
 
       Poco::Pipe outPipe, errPipe;
       boost::shared_ptr<Poco::ProcessHandle> process(boost::make_shared<Poco::ProcessHandle>(Poco::Process::launch(command.string(), args, absoluteParentPath.string(), NULL, &outPipe, &errPipe)));

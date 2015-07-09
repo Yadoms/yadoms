@@ -1,22 +1,19 @@
 #pragma once
-//TODO virer #include "PythonObject.h"
 
 //--------------------------------------------------------------
-/// \brief	Python console redirector
+/// \brief	yScriptApi context accessor, used by script to interact with Yadoms
 //--------------------------------------------------------------
-class CConsoleRedirector
+class IContextAccessor
 {
 public:
    //--------------------------------------------------------------
-   /// \brief	Constructor
-   //--------------------------------------------------------------
-   CConsoleRedirector();
-
-   //--------------------------------------------------------------
    /// \brief	Destructor
    //--------------------------------------------------------------
-   virtual ~CConsoleRedirector();
+   virtual ~IContextAccessor() {}
+
+   //--------------------------------------------------------------
+   /// \brief	Get the context accessor ID (unique on full system)
+   /// \return The context accessor ID
+   //--------------------------------------------------------------
+   virtual std::string id() const = 0;
 };
-
-
-

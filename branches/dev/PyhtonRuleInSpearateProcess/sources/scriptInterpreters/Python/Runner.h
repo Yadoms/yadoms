@@ -56,9 +56,10 @@ private:
    boost::shared_ptr<IPythonExecutable> m_executable;
 
    //--------------------------------------------------------------
-   /// \brief	The process of the running script
+   /// \brief	The process of the running script, and its mutex
    //--------------------------------------------------------------
    boost::shared_ptr<Poco::ProcessHandle> m_process;
+   mutable boost::recursive_mutex m_processMutex;
 
    //--------------------------------------------------------------
    ///\brief   Last error message (empty if no error)

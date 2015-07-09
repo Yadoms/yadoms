@@ -28,9 +28,10 @@ public:
    /// \brief	Start a module (in separated process)
    /// \param[in] module The module to start
    /// \param[in] absoluteParentPath The script parent path
+   /// \param[in] contextAccessorId The context accessor ID, used by script to interact with Yadoms
    /// \param[in] scriptLogger The script logger
    /// \return The start process handle (empty if error)
    /// \throw CPythonException if error
    //--------------------------------------------------------------
-   virtual boost::shared_ptr<Poco::ProcessHandle> startModule(const std::string& module, const boost::filesystem::path& absoluteParentPath, boost::shared_ptr<shared::script::ILogger> scriptLogger) const = 0;
+   virtual boost::shared_ptr<Poco::ProcessHandle> startModule(const std::string& module, const boost::filesystem::path& absoluteParentPath, const std::string& contextAccessorId, boost::shared_ptr<shared::script::ILogger> scriptLogger) const = 0;
 };

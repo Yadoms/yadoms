@@ -22,7 +22,7 @@ protected:
    // IPythonExecutable Implementation
    virtual bool found() const;
    virtual std::string version() const;
-   virtual boost::shared_ptr<Poco::ProcessHandle> startModule(const std::string& module, const boost::filesystem::path& absoluteParentPath, boost::shared_ptr<shared::script::ILogger> scriptLogger) const;
+   virtual boost::shared_ptr<Poco::ProcessHandle> startModule(const std::string& module, const boost::filesystem::path& absoluteParentPath, const std::string& contextAccessorId, boost::shared_ptr<shared::script::ILogger> scriptLogger) const;
    // [END] IPythonExecutable Implementation
 
 protected:

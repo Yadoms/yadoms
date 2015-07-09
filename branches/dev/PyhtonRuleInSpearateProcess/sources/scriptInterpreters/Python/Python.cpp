@@ -5,10 +5,7 @@
 #include "Runner.h"
 #include "PythonException.hpp"
 #include "PythonExecutable.h"
-//TODO
-//#include "ScriptLoader.h"
 #include "ScriptFile.h"
-//#include "SubInterpreter.h"
 
 // Declare the script interpreter
 IMPLEMENT_SCRIPT_INTERPRETER(CPython)

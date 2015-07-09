@@ -149,7 +149,7 @@ std::string CYScriptApiImplementation::getInfo(const std::string& key) const
    }
 }
 
-void CYScriptApiImplementation::fail(const std::string& errorMessage)
+void CYScriptApiImplementation::fail(const std::string& errorMessage)//TODO à conserver ?( actuellement géré directement par l'interpréteur)
 {
    try
    {

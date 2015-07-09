@@ -36,6 +36,7 @@ CLogger::CLogger(const std::string& scriptPath)
    // fileFormatterChannel
    Poco::AutoPtr<Poco::PatternFormatter> patternFormatter(new Poco::PatternFormatter);
    patternFormatter->setProperty("pattern", "%Y/%m/%d %H:%M:%S [%p] : %t");
+   patternFormatter->setProperty("times", "local"); //use local datetime
    Poco::AutoPtr<Poco::FormattingChannel> fileFormatterChannel(new Poco::FormattingChannel(patternFormatter, fileChannel));
 
    // yadomsChannel
