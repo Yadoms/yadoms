@@ -90,10 +90,9 @@ private:
    const std::string m_id;
 
    //--------------------------------------------------------------
-   /// \brief	   Condition variable signaling that context is ready
+   /// \brief	   Barrier waiting that context is ready
    //--------------------------------------------------------------
-   mutable boost::recursive_mutex m_readyMutex;
-   boost::condition_variable_any m_readyCondition;
+   mutable boost::barrier m_readyBarrier;
 };
 
 

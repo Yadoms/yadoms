@@ -7,10 +7,10 @@
 const size_t CContextAccessor::m_maxMessages(100);
 
 CContextAccessor::CContextAccessor(shared::script::yScriptApi::IYScriptApi& context)
-   :CThreadBase(createId()), m_context(context), m_id(createId())
+   :CThreadBase(createId()), m_context(context), m_id(createId()), m_readyBarrier(2)
 {
    start();
-   waitForReady();
+   m_readyBarrier.wait();
 }
 
 CContextAccessor::~CContextAccessor()
@@ -29,18 +29,6 @@ std::string CContextAccessor::createId()
    return ss.str();
 }
 
-void CContextAccessor::waitForReady()
-{
-   boost::recursive_mutex::scoped_lock lock(m_readyMutex);
-   m_readyCondition.wait(lock);
-}
-
-void CContextAccessor::setReady()
-{
-   boost::recursive_mutex::scoped_lock lock(m_readyMutex);
-   m_readyCondition.notify_one();
-}
-
 void CContextAccessor::doWork()
 {
    const std::string sendMessageQueueId(m_id + ".toScript");
@@ -53,7 +41,7 @@ void CContextAccessor::doWork()
       boost::interprocess::message_queue sendMessageQueue   (boost::interprocess::create_only, sendMessageQueueId.c_str()   , m_maxMessages, m_messageQueueMessageSize);
       boost::interprocess::message_queue receiveMessageQueue(boost::interprocess::create_only, receiveMessageQueueId.c_str(), m_maxMessages, m_messageQueueMessageSize);
 
-      setReady();
+      m_readyBarrier.wait();
 
       char message[m_messageQueueMessageSize];
       size_t messageSize;
