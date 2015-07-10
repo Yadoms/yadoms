@@ -1,94 +1,27 @@
 #include "stdafx.h"
 #include "Yadoms.h"
-
 #include <shared/Log.h>
-#include <shared/web/FileDownloader.h>
 #include <shared/DataContainer.h>
-#include "tools/Version.h"
-#include <boost/functional/hash.hpp>
-#include <shared/encryption/md5.h>
-#include <fstream>
-#include <Poco/String.h>
 #include "RunningInformation.h"
-#include <Poco/Delegate.h>
 #include <shared/ServiceLocator.h>
 #include <Poco/Process.h>
-#include <Poco/File.h>
-#include <Poco/FileStream.h>
-#include <Poco/URI.h>
 #include "IApplicationStopHandler.h"
-
-#include "update/info/UpdateSite.h"
 #include <shared/compression/Extract.h>
 #include "tools/FileSystem.h"
-
 #include "i18n/ClientStrings.h"
 
 namespace update {
    namespace worker {
 
-     
-
-      void CYadoms::checkForUpdate(CWorkerTools::WorkerProgressFunc progressCallback)
-      {
-         try
-         {
-            //make some initializations
-            boost::shared_ptr<IRunningInformation> runningInformation(shared::CServiceLocator::instance().get<IRunningInformation>());
-            boost::shared_ptr<startupOptions::IStartupOptions> startupOptions(shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>());
-            update::info::CUpdateSite updateSite(startupOptions, runningInformation);
-
-
-            YADOMS_LOG(information) << "Checking for a new update";
-            progressCallback(true, 0.0f, i18n::CClientStrings::UpdateYadomsCheckForUpdate, shared::CStringExtension::EmptyString, shared::CDataContainer::EmptyContainer);
-         
-            //////////////////////////////////////////////////////////
-            // STEP1 : download lastVersion.json file
-            //////////////////////////////////////////////////////////
-            shared::CDataContainer lastVersionInformationFromUpdateSite = shared::web::CFileDownloader::downloadInMemoryJsonFile(updateSite.getYadomsLastVersionUri(), boost::bind(&shared::web::CFileDownloader::reportProgressToLog, _1, _2));
-
-            //check for update
-            tools::CVersion availableVersion(lastVersionInformationFromUpdateSite.get<std::string>("yadoms.information.version"));
-            tools::CVersion currentVersion = runningInformation->getSoftwareVersion();
-
-            shared::CDataContainer result;
-            result.set("lastVersion", lastVersionInformationFromUpdateSite);
-
-            if (availableVersion <= currentVersion)
-            {
-               YADOMS_LOG(information) << "System is up to date";
-               result.set("updateAvailable", false);
-               progressCallback(true, 100.0f, i18n::CClientStrings::UpdateYadomsUpToDate, shared::CStringExtension::EmptyString, result);
-            }
-            else
-            {
-               YADOMS_LOG(information) << "A new update is available";
-               result.set("updateAvailable", true);
-               progressCallback(true, 100.0f, i18n::CClientStrings::UpdateYadomsUpdateAvailable, shared::CStringExtension::EmptyString, result);
-            }
-         }
-         catch (std::exception & ex)
-         {
-            //fail to download package
-            YADOMS_LOG(error) << "Fail to check for update : " << ex.what();
-            progressCallback(false, 100.0f, i18n::CClientStrings::UpdateYadomsCheckForUpdateFailed, ex.what(), shared::CDataContainer::EmptyContainer);
-         }
-      }
-            
-
-
+    
       void CYadoms::update(CWorkerTools::WorkerProgressFunc progressCallback, const shared::CDataContainer & versionToUpdateParam)
       {
          shared::CDataContainer  versionToUpdate = versionToUpdateParam;
 
          //make some initializations
          boost::shared_ptr<IRunningInformation> runningInformation(shared::CServiceLocator::instance().get<IRunningInformation>());
-         boost::shared_ptr<startupOptions::IStartupOptions> startupOptions(shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>());
-
-         update::info::CUpdateSite updateSite(startupOptions, runningInformation);
 
          YADOMS_LOG(information) << "Updating Yadoms : " << versionToUpdate.serialize();
-
 
          progressCallback(true, 0.0f, i18n::CClientStrings::UpdateYadomsUpdate, shared::CStringExtension::EmptyString, versionToUpdate);
 
@@ -99,82 +32,92 @@ namespace update {
 
          YADOMS_LOG(information) << "Temporary update folder :" << tempFolder.toString();
 
-         //if versionToUpdate do not contains valid version information; get last version from UpdateSite
-         if (!versionToUpdate.containsValue("yadoms.information.version"))
-            versionToUpdate = shared::web::CFileDownloader::downloadInMemoryJsonFile(updateSite.getYadomsLastVersionUri(), boost::bind(&shared::web::CFileDownloader::reportProgressToLog, _1, _2));
-
-
-         std::string packageName = versionToUpdate.get<std::string>("yadoms.information.softwarePackage");
-         std::string md5HashExpected = versionToUpdate.get<std::string>("yadoms.information.md5Hash");
-
-         try
+         //check all needed parameters are included
+         if (!versionToUpdate.containsValue("downloadUrl"))
          {
-            YADOMS_LOG(information) << "Downloading package" << updateSite.getYadomsPackageUri(packageName).toString();
-            progressCallback(true, 0.0f, i18n::CClientStrings::UpdateYadomsDownload, shared::CStringExtension::EmptyString, versionToUpdate);
-            Poco::Path downloadedPackage = CWorkerTools::downloadPackageAndVerify(updateSite.getYadomsPackageUri(packageName).toString(), md5HashExpected,  progressCallback, i18n::CClientStrings::UpdateYadomsDownload, 0.0, 50.0);
-            YADOMS_LOG(information) << "Package " << packageName << " successfully downloaded";
+            progressCallback(false, 100.0f, i18n::CClientStrings::UpdateYadomsRunUpdateFailed, "Bad info (downloadUrl) to update to", versionToUpdate);
+         }
+         else if (!versionToUpdate.containsValue("md5Hash"))
+         {
+            progressCallback(false, 100.0f, i18n::CClientStrings::UpdateYadomsRunUpdateFailed, "Bad info (md5Hash) to update to", versionToUpdate);
+         }
+         else if (!versionToUpdate.containsValue("commandToRun"))
+         {
+            progressCallback(false, 100.0f, i18n::CClientStrings::UpdateYadomsRunUpdateFailed, "Bad info (commandToRun) to update to", versionToUpdate);
+         }
+         else
+         {
+            std::string downloadUrl = versionToUpdate.get<std::string>("downloadUrl");
+            std::string md5HashExpected = versionToUpdate.get<std::string>("md5Hash");
 
-            //////////////////////////////////////////////////////////
-            // STEP3 : extract package
-            //////////////////////////////////////////////////////////
             try
             {
-               YADOMS_LOG(information) << "Extracting package " << packageName;
-
-               progressCallback(true, 50.0f, i18n::CClientStrings::UpdateYadomsExtract, shared::CStringExtension::EmptyString, versionToUpdate);
-               shared::compression::CExtract unZipper;
-               Poco::Path extractedPackageLocation = unZipper.here(downloadedPackage);
+               YADOMS_LOG(information) << "Downloading package" << downloadUrl;
+               progressCallback(true, 0.0f, i18n::CClientStrings::UpdateYadomsDownload, shared::CStringExtension::EmptyString, versionToUpdate);
+               Poco::Path downloadedPackage = CWorkerTools::downloadPackageAndVerify(downloadUrl, md5HashExpected, progressCallback, i18n::CClientStrings::UpdateYadomsDownload, 0.0, 50.0);
+               YADOMS_LOG(information) << "Package " << downloadUrl << " successfully downloaded";
 
                //////////////////////////////////////////////////////////
-               // STEP4 : run updater command
+               // STEP3 : extract package
                //////////////////////////////////////////////////////////
                try
                {
-                  YADOMS_LOG(information) << "Running updater";
-                  progressCallback(true, 90.0f, i18n::CClientStrings::UpdateYadomsRunUpdate, shared::CStringExtension::EmptyString, versionToUpdate);
-                  std::string commandToRun = versionToUpdate.get<std::string>("yadoms.information.commandToRun");
-                  step4RunUpdaterProcess(extractedPackageLocation, commandToRun, runningInformation);
+                  YADOMS_LOG(information) << "Extracting downloaded package ";
+
+                  progressCallback(true, 50.0f, i18n::CClientStrings::UpdateYadomsExtract, shared::CStringExtension::EmptyString, versionToUpdate);
+                  shared::compression::CExtract unZipper;
+                  Poco::Path extractedPackageLocation = unZipper.here(downloadedPackage);
 
                   //////////////////////////////////////////////////////////
-                  // STEP5 : exit yadoms
+                  // STEP4 : run updater command
                   //////////////////////////////////////////////////////////
+                  try
+                  {
+                     YADOMS_LOG(information) << "Running updater";
+                     progressCallback(true, 90.0f, i18n::CClientStrings::UpdateYadomsRunUpdate, shared::CStringExtension::EmptyString, versionToUpdate);
+                     std::string commandToRun = versionToUpdate.get<std::string>("commandToRun");
+                     step4RunUpdaterProcess(extractedPackageLocation, commandToRun, runningInformation);
 
-                  //exit yadoms
-                  YADOMS_LOG(information) << "Exiting Yadoms";
-                  progressCallback(true, 100.0f, i18n::CClientStrings::UpdateYadomsExit, shared::CStringExtension::EmptyString, versionToUpdate);
+                     //////////////////////////////////////////////////////////
+                     // STEP5 : exit yadoms
+                     //////////////////////////////////////////////////////////
 
-                  //demande de fermeture de l'application
-                  boost::shared_ptr<IApplicationStopHandler> stopHandler = shared::CServiceLocator::instance().get<IApplicationStopHandler>();
-                  if (stopHandler)
-                     stopHandler->requestToStop(IApplicationStopHandler::kYadomsOnly);
+                     //exit yadoms
+                     YADOMS_LOG(information) << "Exiting Yadoms";
+                     progressCallback(true, 100.0f, i18n::CClientStrings::UpdateYadomsExit, shared::CStringExtension::EmptyString, versionToUpdate);
+
+                     //demande de fermeture de l'application
+                     boost::shared_ptr<IApplicationStopHandler> stopHandler = shared::CServiceLocator::instance().get<IApplicationStopHandler>();
+                     if (stopHandler)
+                        stopHandler->requestToStop(IApplicationStopHandler::kYadomsOnly);
+                  }
+                  catch (std::exception & ex)
+                  {
+                     //fail to run updater
+                     YADOMS_LOG(error) << "Fail to run updater : " << ex.what();
+                     progressCallback(false, 100.0f, i18n::CClientStrings::UpdateYadomsRunUpdateFailed, ex.what(), versionToUpdate);
+
+                     //remove folder
+                     tools::CFileSystem::remove(extractedPackageLocation, true);
+                  }
                }
                catch (std::exception & ex)
                {
-                  //fail to run updater
-                  YADOMS_LOG(error) << "Fail to run updater : " << ex.what();
-                  progressCallback(false, 100.0f, i18n::CClientStrings::UpdateYadomsRunUpdateFailed, ex.what(), versionToUpdate);
-
-                  //remove folder
-                  tools::CFileSystem::remove(extractedPackageLocation, true);
+                  //fail to download package
+                  YADOMS_LOG(error) << "Fail to extract package : " << ex.what();
+                  progressCallback(false, 100.0f, i18n::CClientStrings::UpdateYadomsExtractFailed, ex.what(), versionToUpdate);
                }
+
+               //no more need downloaded zip package
+               tools::CFileSystem::remove(downloadedPackage, false);
             }
             catch (std::exception & ex)
             {
                //fail to download package
-               YADOMS_LOG(error) << "Fail to extract package : " << ex.what();
-               progressCallback(false, 100.0f, i18n::CClientStrings::UpdateYadomsExtractFailed, ex.what(), versionToUpdate);
+               YADOMS_LOG(error) << "Fail to download package : " << ex.what();
+               progressCallback(false, 100.0f, i18n::CClientStrings::UpdateYadomsDownloadFailed, ex.what(), versionToUpdate);
             }
-
-            //no more need downloaded zip package
-            tools::CFileSystem::remove(downloadedPackage, false);
          }
-         catch (std::exception & ex)
-         {
-            //fail to download package
-            YADOMS_LOG(error) << "Fail to download package : " << ex.what();
-            progressCallback(false, 100.0f, i18n::CClientStrings::UpdateYadomsDownloadFailed, ex.what(), versionToUpdate);
-         }
-
          
       }
 

@@ -3,9 +3,7 @@
 #include "web/rest/RestDispatcherHelpers.hpp"
 #include "web/rest/Result.h"
 #include "update/info/UpdateSite.h"
-#include <shared/ServiceLocator.h>
-#include "IRunningInformation.h"
-#include "startupOptions/IStartupOptions.h"
+
 
 namespace web { namespace rest { namespace service {
 
@@ -33,9 +31,8 @@ namespace web { namespace rest { namespace service {
 
    void CUpdate::configureDispatcher(CRestDispatcher & dispatcher)
    {
-      REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("yadoms")("check"), CUpdate::checkForYadomsUpdate);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("yadoms")("list")("*"), CUpdate::availableYadomsVersions);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("yadoms")("update"), CUpdate::updateYadoms);
-      REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("yadoms")("update")("last"), CUpdate::updateYadomsToLastVersion);
       
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("widget")("list")("*"), CUpdate::availableWidgets);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("widget")("update")("*"), CUpdate::updateWidget);
@@ -53,10 +50,15 @@ namespace web { namespace rest { namespace service {
       REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("scriptInterpreter")("remove")("*"), CUpdate::removeScriptInterpreter);
    }
 
-   shared::CDataContainer CUpdate::checkForYadomsUpdate(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   shared::CDataContainer CUpdate::availableYadomsVersions(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
-      std::string taskId = m_updateManager->checkForYadomsUpdateAsync();
-      return web::rest::CResult::GenerateSuccess(taskId);
+      std::string lang = "";
+
+      if (parameters.size()>2)
+         lang = parameters[3];
+
+      //ask site info
+      return CResult::GenerateSuccess(update::info::CUpdateSite::getAllYadomsVersions(lang));
    }   
    
    shared::CDataContainer CUpdate::updateYadoms(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
@@ -76,17 +78,6 @@ namespace web { namespace rest { namespace service {
       }
    }
    
-   shared::CDataContainer CUpdate::updateYadomsToLastVersion(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
-   {
-      std::string taskId = m_updateManager->updateYadomsAsync(shared::CDataContainer::EmptyContainer);
-      shared::CDataContainer result;
-      result.set("taskId", taskId);
-      return web::rest::CResult::GenerateSuccess(result);
-   }
-
-   
-   
-
    shared::CDataContainer CUpdate::availablePlugins(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       std::string lang = "";
@@ -94,13 +85,8 @@ namespace web { namespace rest { namespace service {
       if (parameters.size()>2)
             lang = parameters[3];
 
-      //make some initializations
-      boost::shared_ptr<IRunningInformation> runningInformation(shared::CServiceLocator::instance().get<IRunningInformation>());
-      boost::shared_ptr<startupOptions::IStartupOptions> startupOptions(shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>());
-
       //ask site info
-      update::info::CUpdateSite updateSite(startupOptions, runningInformation);
-      return CResult::GenerateSuccess(updateSite.getAllPluginVersions(lang));
+      return CResult::GenerateSuccess(update::info::CUpdateSite::getAllPluginVersions(lang));
    }
 
 
@@ -176,13 +162,8 @@ namespace web { namespace rest { namespace service {
       if (parameters.size()>2)
          lang = parameters[3];
 
-      //make some initializations
-      boost::shared_ptr<IRunningInformation> runningInformation(shared::CServiceLocator::instance().get<IRunningInformation>());
-      boost::shared_ptr<startupOptions::IStartupOptions> startupOptions(shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>());
-
       //ask site info
-      update::info::CUpdateSite updateSite(startupOptions, runningInformation);
-      return CResult::GenerateSuccess(updateSite.getAllWidgetsVersions(lang));
+      return CResult::GenerateSuccess(update::info::CUpdateSite::getAllWidgetsVersions(lang));
    }
 
 
@@ -264,13 +245,8 @@ namespace web { namespace rest { namespace service {
       if (parameters.size()>2)
          lang = parameters[3];
 
-      //make some initializations
-      boost::shared_ptr<IRunningInformation> runningInformation(shared::CServiceLocator::instance().get<IRunningInformation>());
-      boost::shared_ptr<startupOptions::IStartupOptions> startupOptions(shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>());
-
       //ask site info
-      update::info::CUpdateSite updateSite(startupOptions, runningInformation);
-      return CResult::GenerateSuccess(updateSite.getAllScriptInterpreterVersions(lang));
+      return CResult::GenerateSuccess(update::info::CUpdateSite::getAllScriptInterpreterVersions(lang));
    }
 
 

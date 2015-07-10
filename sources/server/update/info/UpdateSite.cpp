@@ -3,168 +3,90 @@
 #include <shared/web/UriHelpers.h>
 #include <shared/web/FileDownloader.h>
 #include <Poco/Environment.h>
+#include "startupOptions/IStartupOptions.h"
+#include <shared/ServiceLocator.h>
 
 namespace update { namespace info {
 
-   std::string CUpdateSite::m_yadomsLastVersionFilename("lastVersion.json");
-   std::string CUpdateSite::m_pluginsLastVersionFilename("package.json");
-   std::string CUpdateSite::m_widgetsLastVersionFilename("package.json");
-   std::string CUpdateSite::m_distantWindowsFolder("windows");
-   std::string CUpdateSite::m_distantLinuxFolder("linux");
-   std::string CUpdateSite::m_distantMacOSXFolder("darwin");
-   std::string CUpdateSite::m_distantRaspberryPIFolder("raspberrypi");
-   std::string CUpdateSite::m_distantYadomsBaseFolder("yadoms");
-   std::string CUpdateSite::m_distantPluginsBaseFolder("plugins");
-   std::string CUpdateSite::m_distantWidgetBaseFolder("widgets");
+   std::string CUpdateSite::m_distantYadomsListScript("yadoms.php");
+   std::string CUpdateSite::m_distantPluginsListScript("plugins.php");
+   std::string CUpdateSite::m_distantScriptInterpretersListScript("scriptInterpreters.php");
+   std::string CUpdateSite::m_distantWidgetsListScript("widgets.php");
 
-   
-   CUpdateSite::CUpdateSite(boost::shared_ptr<startupOptions::IStartupOptions> & startupOptions, boost::shared_ptr<IRunningInformation> & runningInformation)
-      :m_startupOptions(startupOptions), m_currentPlatform(getPlatformFolder(runningInformation))
+   std::string CUpdateSite::m_distantYadomsScriptResultField("data.yadoms");
+   std::string CUpdateSite::m_distantPluginsScriptResultField("data.plugins");
+   std::string CUpdateSite::m_distantScriptInterpretersScriptResultField("data.scriptInterpreters");
+   std::string CUpdateSite::m_distantWidgetsScriptResultField("data.widgets");
+
+   std::string CUpdateSite::m_distantScriptParamOs("os");
+   std::string CUpdateSite::m_distantScriptParamArch("arch");
+   std::string CUpdateSite::m_distantScriptParamLang("lang");
+
+   std::string CUpdateSite::m_distantScriptResult("result");
+
+   CUpdateSite::CUpdateSite()
    {
 
    }
 
-   CUpdateSite::~CUpdateSite()
+   shared::CDataContainer CUpdateSite::getAllYadomsVersions(const std::string & displayLanguage)
    {
-
+      return callDistantScript(m_distantYadomsListScript, true, displayLanguage, m_distantYadomsScriptResultField);
    }
-
-   Poco::URI CUpdateSite::getYadomsLastVersionUri()
-   {
-      Poco::URI result = getYadomsBaseUri();
-      shared::web::CUriHelpers::appendPath(result, m_yadomsLastVersionFilename);
-      return result;
-   }
-
-   Poco::URI CUpdateSite::getYadomsPackageUri(const std::string & packageName)
-   {
-      Poco::URI result = getYadomsBaseUri();
-      shared::web::CUriHelpers::appendPath(result, packageName);
-      return result;
-   }
-
-
-   
-     
-
-   Poco::URI CUpdateSite::getYadomsBaseUri()
-   {
-      Poco::URI base(m_startupOptions->getUpdateSiteUri());
-      shared::web::CUriHelpers::appendPath(base, m_distantYadomsBaseFolder);
-      shared::web::CUriHelpers::appendPath(base, m_currentPlatform);
-      return base;
-   }
-
-
-   const std::string CUpdateSite::getPlatformFolder(boost::shared_ptr<IRunningInformation> & runningInformation)
-   {
-      std::string osName = runningInformation->getOperatingSystemName();
-
-      //determine the main site folder
-      std::string platform;
-      if (boost::icontains(osName, "win"))
-         platform = m_distantWindowsFolder;
-      if (boost::icontains(osName, "darwin"))
-         platform = m_distantMacOSXFolder;
-      if (boost::icontains(osName, "linux"))
-      {
-         if (boost::icontains(osName, "raspberrypi"))
-            platform = m_distantRaspberryPIFolder;
-         else
-            platform = m_distantLinuxFolder;
-      }
-      return platform;
-   }
-
-
 
    shared::CDataContainer CUpdateSite::getAllPluginVersions(const std::string & displayLanguage)
    {
-      Poco::URI base(m_startupOptions->getUpdateSiteUri());
-      shared::web::CUriHelpers::appendPath(base, "plugins.php");
-      
-      base.addQueryParameter("os", Poco::Environment::osName());
-      base.addQueryParameter("arch", Poco::Environment::osArchitecture());
-      base.addQueryParameter("lang", displayLanguage);
-
-      shared::CDataContainer lastVersionInformation = shared::web::CFileDownloader::downloadInMemoryJsonFile(base, boost::bind(&shared::web::CFileDownloader::reportProgressToLog, _1, _2));
-       
-      if (lastVersionInformation.containsValue("result"))
-      {
-         bool isQuerySuccessful = lastVersionInformation.get<bool>("result");
-         if (isQuerySuccessful)
-         {
-            return lastVersionInformation.get< shared::CDataContainer >("data.plugins");
-         }
-         else
-         {
-            throw shared::exception::CException("Error in getting versions of available plugins. " + lastVersionInformation.get<std::string>("message"));
-         }
-
-      }
-      else
-      {
-         throw shared::exception::CException("Error in getting versions of available plugins. Fail to get data from " + base.toString());
-      }
+      return callDistantScript(m_distantPluginsListScript, true, displayLanguage, m_distantPluginsScriptResultField);
    }
 
 
    shared::CDataContainer CUpdateSite::getAllScriptInterpreterVersions(const std::string & displayLanguage)
    {
-      Poco::URI base(m_startupOptions->getUpdateSiteUri());
-      shared::web::CUriHelpers::appendPath(base, "scriptInterpreters.php");
-      
-      base.addQueryParameter("os", Poco::Environment::osName());
-      base.addQueryParameter("arch", Poco::Environment::osArchitecture());
-      base.addQueryParameter("lang", displayLanguage);
-
-      shared::CDataContainer lastVersionInformation = shared::web::CFileDownloader::downloadInMemoryJsonFile(base, boost::bind(&shared::web::CFileDownloader::reportProgressToLog, _1, _2));
-       
-      if (lastVersionInformation.containsValue("result"))
-      {
-         bool isQuerySuccessful = lastVersionInformation.get<bool>("result");
-         if (isQuerySuccessful)
-         {
-            return lastVersionInformation.get< shared::CDataContainer >("data.scriptInterpreters");
-         }
-         else
-         {
-            throw shared::exception::CException("Error in getting versions of available scriptInterpreters. " + lastVersionInformation.get<std::string>("message"));
-         }
-
-      }
-      else
-      {
-         throw shared::exception::CException("Error in getting versions of available scriptInterpreters. Fail to get data from " + base.toString());
-      }
+      return callDistantScript(m_distantScriptInterpretersListScript, true, displayLanguage, m_distantScriptInterpretersScriptResultField);
    }
 
 
    shared::CDataContainer CUpdateSite::getAllWidgetsVersions(const std::string & displayLanguage)
    {
-      Poco::URI base(m_startupOptions->getUpdateSiteUri());
-      shared::web::CUriHelpers::appendPath(base, "widgets.php");
+      return callDistantScript(m_distantWidgetsListScript, false, displayLanguage, m_distantWidgetsScriptResultField);
+   }
 
-      base.addQueryParameter("lang", displayLanguage);
 
+   shared::CDataContainer CUpdateSite::callDistantScript(const std::string & script, bool includeOsAndArch, const std::string & displayLanguage, const std::string & resultFieldToReturn)
+   {
+      boost::shared_ptr<startupOptions::IStartupOptions> startupOptions(shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>());
+
+      //get the script address
+      Poco::URI base(startupOptions->getUpdateSiteUri());
+      shared::web::CUriHelpers::appendPath(base, script);
+
+      //include script parameters
+      if (includeOsAndArch)
+      {
+         base.addQueryParameter(m_distantScriptParamOs, Poco::Environment::osName());
+         base.addQueryParameter(m_distantScriptParamArch, Poco::Environment::osArchitecture());
+      }
+      base.addQueryParameter(m_distantScriptParamLang, displayLanguage);
+
+      //call script
       shared::CDataContainer lastVersionInformation = shared::web::CFileDownloader::downloadInMemoryJsonFile(base, boost::bind(&shared::web::CFileDownloader::reportProgressToLog, _1, _2));
 
-      if (lastVersionInformation.containsValue("result"))
+      if (lastVersionInformation.containsValue(m_distantScriptResult))
       {
-         bool isQuerySuccessful = lastVersionInformation.get<bool>("result");
+         bool isQuerySuccessful = lastVersionInformation.get<bool>(m_distantScriptResult);
          if (isQuerySuccessful)
          {
-            return lastVersionInformation.get< shared::CDataContainer >("data.widgets");
+            return lastVersionInformation.get< shared::CDataContainer >(resultFieldToReturn);
          }
          else
          {
-            throw shared::exception::CException("Error in getting versions of available widgets. " + lastVersionInformation.get<std::string>("message"));
+            throw shared::exception::CException("Error in calling script : " + lastVersionInformation.get<std::string>("message"));
          }
 
       }
       else
       {
-         throw shared::exception::CException("Error in getting versions of available widgets. Fail to get data from " + base.toString());
+         throw shared::exception::CException("Error in calling script. Fail to get data from " + base.toString());
       }
    }
 } } // namespace update::info

@@ -113,13 +113,6 @@ namespace update
       return startTask(task);
    }
 
-   const std::string CUpdateManager::checkForYadomsUpdateAsync()
-   {
-      boost::shared_ptr<task::ITask> task(new task::CGenericTask("yadoms.checkForUpdate",
-         boost::bind(&worker::CYadoms::checkForUpdate, _1)));
-      return startTask(task);
-   }
-   
    const std::string CUpdateManager::updateYadomsAsync(const shared::CDataContainer & versionToInstall)
    {
       boost::shared_ptr<task::ITask> task(new task::CGenericTask("yadoms.update",

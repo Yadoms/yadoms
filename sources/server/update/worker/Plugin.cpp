@@ -5,6 +5,7 @@
 #include <shared/ServiceLocator.h>
 #include "IApplicationStopHandler.h"
 #include "update/info/UpdateSite.h"
+#include "startupOptions/IStartupOptions.h"
 
 #include "WorkerTools.h"
 #include <Poco/File.h>

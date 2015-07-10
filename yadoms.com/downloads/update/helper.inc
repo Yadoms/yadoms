@@ -179,7 +179,12 @@ function buildItemList($dirName, $lang)
 
 						//TODO : check json var
 						$dir = array();
-						$dir["name"] = $json["name"];
+						$dir["type"] = $json["type"];
+						if($json["name"] != null)
+							$dir["name"] = $json["name"];
+						else
+							$dir["name"] = $json["type"];
+						
 						$dir["description"] = $json["description"];
 						$dir["version"] = $json["version"];
 						$dir["releaseType"] = $json["releaseType"];
@@ -187,6 +192,7 @@ function buildItemList($dirName, $lang)
 						$dir["url"] = $json["url"];
 						$dir["credits"] = $json["credits"];
 						$dir["downloadUrl"] = dirname($_SERVER["SCRIPT_URI"]) . "/" . $zipFile;
+						$dir["md5Hash"] = md5_file($zipFile);
 						
 						//if the icon is present 
 						if (is_file($iconPath))
@@ -208,6 +214,8 @@ function buildItemList($dirName, $lang)
 							$lngJsonFile = json_decode($content, true);
 							if ($lngJsonFile["description"] != null)
 								$dir["description"] = $lngJsonFile["description"];
+							if ($lngJsonFile["name"] != null)
+								$dir["name"] = $lngJsonFile["name"];
 						}
 										
 						array_push($versionList, $dir);
@@ -222,6 +230,88 @@ function buildItemList($dirName, $lang)
 	}
 	return $itemList;
 }
+
+
+function buildItemListForYadoms($dirName, $lang)
+{
+	if (!is_dir($dirName))
+		throw new Exception("folder not found : " . $dirName);
+
+	//everything is ok we can look for all folders, 1 folder -> 1 item
+	$itemDirIterator = opendir($dirName);
+
+	if (!$itemDirIterator)
+		throw new Exception("Unable to open directory " . $dirName);
+
+	$itemList = array();
+		
+	$versionList = array();
+	
+	$iconName = "icon.png";
+	$previewName = "preview.png";
+	
+	//$dirName .= "/";
+	
+	while (($file = readdir($itemDirIterator)) !== false)
+	{
+		if ((is_dir($dirName . $file)) && ($file != ".") && ($file != ".."))
+		{
+			//for each folder we look if there is a package.json file inside
+			$fullPath = $dirName . $file;
+			$packageJsonPath = $fullPath . "/" . "package.json";
+			$jsonFilePresent = is_file($packageJsonPath);
+			$files = glob($fullPath . "/*.zip");
+			if (count($files) >= 1)
+			{
+				$zipFile = $files[0];
+				if (!$jsonFilePresent)
+				{
+					//the package.json is not present we extract it from package.zip
+					//we get zip content
+					$zip = new ZipArchive;
+					$res = $zip->open($zipFile);
+					if ($res === TRUE) 
+					{
+						//we get package.json 
+						$zip->extractTo($fullPath, "package.json");
+						
+						$zip->close(); 
+						
+						//we check if the json file is present again
+						$jsonFilePresent = is_file($packageJsonPath);
+					}
+					else
+					{
+						//echo "unable to open " . $zipFile . "<br/>";
+					}	
+				}
+			}
+			
+			//the file may be extracted or already present
+			if ($jsonFilePresent)
+			{
+				//we can get package.json informations
+				$content = file_get_contents($packageJsonPath);
+				$encoding = mb_detect_encoding($content);
+				$content = iconv($encoding, 'UTF-8', $content);
+				$content = remove_utf8_bom($content);
+				//the language file exist we take useful information
+				$json = json_decode($content, true);
+
+				$dir = $json["yadoms"]["information"];
+				$dir["downloadUrl"] = dirname($_SERVER["SCRIPT_URI"]) . "/" . $zipFile;
+				$dir["md5Hash"] = md5_file($zipFile);
+
+
+				array_push($versionList, $dir);
+				$itemValid = true;
+			}
+		}
+	}
+	
+	return $versionList;
+}
+
 
 //variables initialization
 $osWin = array( "windows", "win");
