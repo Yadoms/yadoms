@@ -13,12 +13,6 @@ namespace update {
       {
       public:
          //---------------------------------------------
-         ///\brief   Check for update
-         ///\param [in] progressCallback The progress callback
-         //---------------------------------------------
-         static void checkForUpdate(CWorkerTools::WorkerProgressFunc progressCallback);
-         
-         //---------------------------------------------
          ///\brief   Update Yadoms to another version
          ///\param [in] progressCallback The progress callback
          ///\param [in] versionInfo    The version information to use (can be upgrade or downgrade)

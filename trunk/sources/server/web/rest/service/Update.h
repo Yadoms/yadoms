@@ -43,12 +43,12 @@ namespace web { namespace rest { namespace service {
       )
 
       //-----------------------------------------------------------------------------
-      /// \brief  Check if there is a newer version available 
+      /// \brief  List all available versions of Yadoms
       /// \param [in]   parameters        The url parameters
       /// \param [in]   requestContent    The url content
       /// \return the request result
       //-----------------------------------------------------------------------------         
-      shared::CDataContainer checkForYadomsUpdate(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer availableYadomsVersions(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
 
       //-----------------------------------------------------------------------------
       /// \brief  Update Yadoms to another version (upgrade or downgrade)

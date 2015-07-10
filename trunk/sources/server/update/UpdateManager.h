@@ -89,13 +89,6 @@ namespace update
       //-----------------------------------------------------------------------------   
       const std::string removeScriptInterpreterAsync(const std::string & scriptInterpreterName);
 
-
-      //-----------------------------------------------------------------------------
-      /// \brief  Start a check for update for Yadoms (asynchronous; check for update result is provided by webservice)
-      /// \return  The task unique id
-      //-----------------------------------------------------------------------------   
-      const std::string checkForYadomsUpdateAsync();
-
       //-----------------------------------------------------------------------------
       /// \brief  Start an update of Yadoms (asynchronous; update result is provided by webservice)
       /// \param [in]   versionToInstall        The yadoms lastVersion.json to install (can be lastVersion.json, or any other one)
