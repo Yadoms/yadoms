@@ -148,7 +148,7 @@ UpdateInformationManager.updatePlugin = function(pluginType, downloadUrl, callba
  * @param sync
  */
 UpdateInformationManager.removePlugin = function(pluginType, callback, sync) {
-   assert(!isNullOrUndefined(pluginType), "pluginName must be defined");
+   assert(!isNullOrUndefined(pluginType), "pluginType must be defined");
    assert($.isFunction(callback), "callback must be a function");
 
    var async = true;
@@ -159,7 +159,6 @@ UpdateInformationManager.removePlugin = function(pluginType, callback, sync) {
       dataType: "json",
       url: "rest/update/plugin/remove/" + pluginType,
       async: async,
-      data: JSON.stringify({"downloadUrl" : downloadUrl}),
       type: "POST",
       contentType: "application/json; charset=utf-8"
    })

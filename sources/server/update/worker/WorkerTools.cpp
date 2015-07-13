@@ -102,7 +102,7 @@ namespace update {
                packageJson.deserializeFromFile(packageJsonPathString);
 
                //retreive the plugin name
-               std::string pluginName = packageJson.get<std::string>("name");
+               std::string pluginName = packageJson.get<std::string>("type");
 
 
                try
