@@ -836,8 +836,8 @@ IF(WIN32 AND NOT UNIX)
 	  set(CPACK_GENERATOR "NSIS")
 	  
      # There is a bug in NSI that does not handle full unix paths properly. Make
-      # sure there is at least one set of four (4) backlasshes.
-      SET(CPACK_PACKAGE_ICON "${CMAKE_CURRENT_SOURCE_DIR}/../distribution\\\\Yadoms.bmp")
+     # sure there is at least one set of four (4) backlasshes.
+     SET(CPACK_PACKAGE_ICON "${CMAKE_CURRENT_SOURCE_DIR}/../distribution\\\\Yadoms.bmp")
 
 	  set(CPACK_NSIS_PLUGINS_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/../distribution/NSIS/extensions")
 	  set(CPACK_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../distribution/NSIS")
@@ -850,6 +850,27 @@ IF(WIN32 AND NOT UNIX)
 	  SET(CPACK_NSIS_CONTACT "contact@yadoms.com")
 	  SET(CPACK_NSIS_MODIFY_PATH ON)
 	  
+     set(CPACK_NSIS_CREATE_ICONS 
+        "SetOutPath $INSTDIR\\\\bin
+         SetShellVarContext all
+         CreateShortCut '\$SMPROGRAMS\$STARTMENU_FOLDER\\\\Yadoms.lnk' '\$INSTDIR\\\\bin\\\\yadoms.exe' '' '\$INSTDIR\\\\bin\\\\yadoms.exe' 0
+         CreateShortCut '\$DESKTOP\\\\Yadoms.lnk' '\$INSTDIR\\\\bin\\\\yadoms.exe' '' '\$INSTDIR\\\\bin\\\\yadoms.exe' 0"
+     )
+     
+     set(CPACK_NSIS_INSTALL_SERVICE
+         "ExecWait '\$INSTDIR\\\\bin\\\\yadoms.exe --registerService --displayName:Yadoms --startup:automatic' $0
+         !insertmacro SERVICE 'start' 'Yadoms' ''"
+     )   
+
+     set(CPACK_NSIS_UNINSTALL_SERVICE
+         "!ifdef UN
+          !undef UN
+          !endif
+	       !define UN 'un.'         
+          !insertmacro SERVICE 'stop' 'Yadoms' ''
+          ExecWait '\$INSTDIR\\\\bin\\\\yadoms.exe --unregisterService' $0"
+     )
+      
 	  #défini les permissions pour le répertoire d'install pour tous les utilisateurs
 	  #pour l'utilisateur TOUT LE MONDE (identifié par (S-1-1-0) )
 	  set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS
