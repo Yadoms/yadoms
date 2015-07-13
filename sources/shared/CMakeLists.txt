@@ -330,10 +330,11 @@ endif()
 
 
 
-install(TARGETS yadoms-shared 
-		ARCHIVE DESTINATION lib
-		LIBRARY DESTINATION ${INSTALL_BINDIR}
-		)
+install(TARGETS yadoms-shared
+         ARCHIVE DESTINATION ${INSTALL_BINDIR}
+         LIBRARY DESTINATION ${INSTALL_BINDIR}
+         RUNTIME DESTINATION ${INSTALL_BINDIR}
+         )
 
 
 
