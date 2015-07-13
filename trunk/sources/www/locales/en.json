@@ -578,7 +578,11 @@
             "finalize" : "Finalizing ...",
             "success" : "Success"
          }
-      }
+      },
+      "task" :
+         {
+            "started" : "Task started"
+         }
    },
    "system" : {
       "yadoms" : "yadoms",
