@@ -89,12 +89,6 @@ namespace update {
             /////////////////////////////////////////////
             try
             {
-               progressCallback(true, 50.0f, i18n::CClientStrings::UpdatePluginDeploy, shared::CStringExtension::EmptyString, callbackData);
-               Poco::Path pluginPath = CWorkerTools::deployPluginPackage(downloadedPackage);
-               YADOMS_LOG(information) << "Plugin deployed with success";
-
-
-
                YADOMS_LOG(information) << "Deploy widget package " << downloadedPackage.toString();
                progressCallback(true, 90.0f, i18n::CClientStrings::UpdateWidgetDeploy, shared::CStringExtension::EmptyString, callbackData);
                Poco::Path widgetPath = CWorkerTools::deployWidgetPackage(downloadedPackage);
