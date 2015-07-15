@@ -83,7 +83,7 @@
 
         $("ul#ul-add-widget").empty();
         for(var index in WidgetPackageManager.widgetPackages) {
-             var value = WidgetPackageManager.widgetPackages[index].packageInformation;
+             var value = WidgetPackageManager.widgetPackages[index].package;
              //if the widget begin with dev-, it's a developer widget use only
              if ((value) && (!value.type.startsWith("dev-"))) {
                 var i18ncontext = value.type + ":";
@@ -101,7 +101,7 @@
         $("button.btn-select-widget").unbind().bind('click', function (e) {
             var type = $(e.currentTarget).attr("widget-type");
             if (!isNullOrUndefined(type)) {
-                var value = WidgetPackageManager.widgetPackages[type].packageInformation;
+                var value = WidgetPackageManager.widgetPackages[type].package;
                 if (!isNullOrUndefined(value)) {
                     //we replace the "Get more" button by the "go back" one
                     $("button#btn-get-more-widget").addClass("hidden");
@@ -136,7 +136,8 @@
        var $detailsDiv = $("div#add-widget-details");
        $detailsDiv.fadeOut();
        //we replace the "go back" button by the "Get more" one
-       $("button#btn-get-more-widget").removeClass("hidden");
+       $("button#btn-get-more-widget").removeClass("hidden");ebstorm
+
        $("button#btn-close-details").addClass("hidden");
     });
 
@@ -163,27 +164,27 @@
        var minX = 1;
        var minY = 1;
 
-       var packageInformation = WidgetPackageManager.widgetPackages[packageName].packageInformation;
+       var package = WidgetPackageManager.widgetPackages[packageName].package;
 
        try {
-          minX = packageInformation.dimensions.min.x;
-          minY = packageInformation.dimensions.min.y;
+          minX = package.dimensions.min.x;
+          minY = package.dimensions.min.y;
        }
        catch(err) {}
 
        var maxX = Infinity;
        var maxY = Infinity;
        try {
-          maxX = packageInformation.dimensions.max.x;
-          maxY = packageInformation.dimensions.max.y;
+          maxX = package.dimensions.max.x;
+          maxY = package.dimensions.max.y;
        }
        catch(err) {}
 
        var defaultX = 1;
        var defaultY = 1;
        try {
-          defaultX = packageInformation.dimensions.default.x;
-          defaultY = packageInformation.dimensions.default.y;
+          defaultX = package.dimensions.default.x;
+          defaultY = package.dimensions.default.y;
        }
        catch(err) {}
 
@@ -193,7 +194,7 @@
        //we create a fake widget to display configuration form
        var newWidget = new Widget(-1, currentPage.id, packageName, sizeX, sizeY, 1, 1, "");
 
-       newWidget.package = packageInformation;
+       newWidget.package = package;
 
        //we load configuration window only if the widget has a configuration
        if (!isNullOrUndefined(newWidget.package.configurationSchema)) {

@@ -380,7 +380,7 @@
                   "title" : "Widgets"
                },
                "script-interpreters" : {
-                  "title" : "Widgets"
+                  "title" : "Script interpreters"
                }
             },
             "about" : {
@@ -540,7 +540,7 @@
         "errorSendingCommand" : "Error during sending command"
       },
       "update-information" : {
-         "errorListingPlugin" : "Error during getting server plugin list"
+         "errorListing" : "Error during getting server list"
       },
       "generic" : {
          "errorEditing" : "An error has occurred editing __objectName__",
@@ -575,6 +575,18 @@
             "downloadFailed" : "Download plugin failed",
             "deploy" : "Delpoying plugin ...",
             "deployFailed" : "Deploy plugin failed",
+            "finalize" : "Finalizing ...",
+            "success" : "Success"
+         },
+         "widget" : {
+            "install" : "Installing widget ...",
+            "update" : "Updating widget ...",
+            "remove" : "Removing widget ...",
+            "removeFailed" : "Remove widget failed",
+            "download" : "Downloading widget ...",
+            "downloadFailed" : "Download widget failed",
+            "deploy" : "Delpoying widget ...",
+            "deployFailed" : "Deploy widget failed",
             "finalize" : "Finalizing ...",
             "success" : "Success"
          }

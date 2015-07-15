@@ -12,7 +12,6 @@ function UpdateInformation(type, name, author, description, releaseType, url, cr
    assert(!isNullOrUndefined(releaseType), "release type must be defined");
    assert(!isNullOrUndefined(version), "version must be defined");
    assert(!isNullOrUndefined(downloadUrl), "downloadUrl must be defined");
-   assert(!isNullOrUndefined(iconUrl), "iconUrl must be defined");
 
    this.type = type;
    this.name = name;

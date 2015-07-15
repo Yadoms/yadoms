@@ -18,5 +18,8 @@ function WidgetPackage() {
    /**
     * Corresponding to package.json data
     */
-   this.packageInformation = null;
+   this.package = null;
+
+   //the only information we duplicate is the "type" field for lighter code
+   this.type = null; //(this.package.type) when defined
 }
