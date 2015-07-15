@@ -178,7 +178,7 @@ WidgetManager.consolidate = function(widget, widgetPackage) {
    //we use to construct the viewModel of the current widget
    //noinspection JSPotentiallyInvalidConstructorUsage
    widget.viewModel = new widgetPackage.viewModelCtor();
-   widget.package = widgetPackage.packageInformation;
+   widget.package = widgetPackage.package;
 };
 
 

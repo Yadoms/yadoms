@@ -14,9 +14,8 @@ UpdateInformationManager.factory = function(json) {
    assert(!isNullOrUndefined(json.author), "json.author must be defined");
    assert(!isNullOrUndefined(json.description), "json.description must be defined");
    assert(!isNullOrUndefined(json.releaseType), "json.releaseType must be defined");
-   assert(!isNullOrUndefined(json.version), "json.version of a pluginInstance must be defined");
-   assert(!isNullOrUndefined(json.downloadUrl), "json.downloadUrl of a pluginInstance must be defined");
-   assert(!isNullOrUndefined(json.iconUrl), "json.iconUrl of a pluginInstance must be defined");
+   assert(!isNullOrUndefined(json.version), "json.version must be defined");
+   assert(!isNullOrUndefined(json.downloadUrl), "json.downloadUrl must be defined");
 
    return new UpdateInformation(json.type, decodeURIComponent(json.name),
                      decodeURIComponent(json.author),
@@ -32,9 +31,11 @@ UpdateInformationManager.factory = function(json) {
 /**
  * Obtain from the server the available plugin list from the yadoms.com web site
  * @param callback
+ * @param objectType : "plugin", "widget", "scriptInterpreter"
  * @param sync
  */
-UpdateInformationManager.getPluginList = function(callback, sync) {
+UpdateInformationManager.getList = function(objectType, callback, sync) {
+   assert(!isNullOrUndefined(objectType), "objectType must be defined");
    assert($.isFunction(callback), "callback must be a function");
 
    var async = true;
@@ -43,14 +44,14 @@ UpdateInformationManager.getPluginList = function(callback, sync) {
 
    $.ajax({
       dataType: "json",
-      url: "rest/update/plugin/list/" + i18n.lng(),
+      url: "rest/update/" + objectType + "/list/" + i18n.lng(),
       async: async
    })
    .done(function( data ) {
       //we parse the json answer
       if (data.result != "true")
       {
-         notifyError($.t("objects.update-information.errorListingPlugin"), JSON.stringify(data));
+         notifyError($.t("objects.update-information.errorListing"), JSON.stringify(data));
          callback(false);
          return;
       }
@@ -72,12 +73,13 @@ UpdateInformationManager.getPluginList = function(callback, sync) {
       callback(result);
    })
    .fail(function() {
-      notifyError($.t("objects.update-information.errorListingPlugin"));
+      notifyError($.t("objects.update-information.errorListing"));
       callback(false);
    });
 };
 
-UpdateInformationManager.installPlugin = function(downloadUrl, callback, sync) {
+UpdateInformationManager.install = function(objectType, downloadUrl, callback, sync) {
+   assert(!isNullOrUndefined(objectType), "objectType must be defined");
    assert(!isNullOrUndefined(downloadUrl), "downloadUrl must be defined");
    assert($.isFunction(callback), "callback must be a function");
 
@@ -87,7 +89,7 @@ UpdateInformationManager.installPlugin = function(downloadUrl, callback, sync) {
 
    $.ajax({
       dataType: "json",
-      url: "rest/update/plugin/install",
+      url: "rest/update/" + objectType + "/install",
       async: async,
       data: JSON.stringify({"downloadUrl" : downloadUrl}),
       type: "POST",
@@ -97,7 +99,7 @@ UpdateInformationManager.installPlugin = function(downloadUrl, callback, sync) {
           //we parse the json answer
           if (data.result != "true")
           {
-             notifyError($.t("objects.generic.errorInstalling", {objectName : "plugin"}), JSON.stringify(data));
+             notifyError($.t("objects.generic.errorInstalling", {objectName : objectType}), JSON.stringify(data));
              return;
           }
 
@@ -105,12 +107,13 @@ UpdateInformationManager.installPlugin = function(downloadUrl, callback, sync) {
           callback(data.data.taskId);
        })
        .fail(function() {
-          notifyError($.t("objects.generic.errorInstalling", {objectName : "plugin"}));
+          notifyError($.t("objects.generic.errorInstalling", {objectName : objectType}));
        });
 };
 
-UpdateInformationManager.updatePlugin = function(pluginType, downloadUrl, callback, sync) {
-   assert(!isNullOrUndefined(pluginType), "pluginName must be defined");
+UpdateInformationManager.update = function(objectType, type, downloadUrl, callback, sync) {
+   assert(!isNullOrUndefined(objectType), "objectType must be defined");
+   assert(!isNullOrUndefined(type), "type must be defined");
    assert(!isNullOrUndefined(downloadUrl), "downloadUrl must be defined");
    assert($.isFunction(callback), "callback must be a function");
 
@@ -120,7 +123,7 @@ UpdateInformationManager.updatePlugin = function(pluginType, downloadUrl, callba
 
    $.ajax({
       dataType: "json",
-      url: "rest/update/plugin/update/" + pluginType,
+      url: "rest/update/" + objectType + "/update/" + type,
       async: async,
       data: JSON.stringify({"downloadUrl" : downloadUrl}),
       type: "POST",
@@ -147,8 +150,9 @@ UpdateInformationManager.updatePlugin = function(pluginType, downloadUrl, callba
  * @param callback
  * @param sync
  */
-UpdateInformationManager.removePlugin = function(pluginType, callback, sync) {
-   assert(!isNullOrUndefined(pluginType), "pluginType must be defined");
+UpdateInformationManager.remove = function(objectType, type, callback, sync) {
+   assert(!isNullOrUndefined(objectType), "objectType must be defined");
+   assert(!isNullOrUndefined(type), "type must be defined");
    assert($.isFunction(callback), "callback must be a function");
 
    var async = true;
@@ -157,7 +161,7 @@ UpdateInformationManager.removePlugin = function(pluginType, callback, sync) {
 
    $.ajax({
       dataType: "json",
-      url: "rest/update/plugin/remove/" + pluginType,
+      url: "rest/update/" + objectType + "/remove/" + type,
       async: async,
       type: "POST",
       contentType: "application/json; charset=utf-8"
@@ -166,14 +170,14 @@ UpdateInformationManager.removePlugin = function(pluginType, callback, sync) {
           //we parse the json answer
           if (data.result != "true")
           {
-             notifyError($.t("objects.generic.errorUpdating", {objectName : "plugin"}), JSON.stringify(data));
+             notifyError($.t("objects.generic.errorUpdating", {objectName : objectType}), JSON.stringify(data));
              return;
           }
 
           callback(data.data.taskId);
        })
        .fail(function() {
-          notifyError($.t("objects.generic.errorUpdating", {objectName : "plugin"}));
+          notifyError($.t("objects.generic.errorUpdating", {objectName : objectType}));
        });
 };
 

@@ -19,7 +19,8 @@ WidgetPackageManager.factory = function(json) {
    assert(!isNullOrUndefined(json.type), "json.type must be defined");
 
    var wp = new WidgetPackage();
-   wp.packageInformation = json;
+   wp.package = json;
+   wp.type = json.type;
 
    //we get i18n data
    i18n.options.resGetPath = 'widgets/__ns__/locales/__lng__.json';

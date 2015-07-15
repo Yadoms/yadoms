@@ -53,11 +53,10 @@
    <table id="widget-install-update-list" class="table table-bordered table-striped dashboard-list">
       <tr>
          <td data-i18n="modals.dashboard.sub-windows.install-update.generic.name"></td>
-         <td data-i18n="modals.dashboard.sub-windows.install-update.generic.icon"></td>
          <td data-i18n="modals.dashboard.sub-windows.install-update.generic.description"></td>
-         <td data-i18n="modals.dashboard.sub-windows.install-update.generic.actualVersion"></td>
-         <td data-i18n="modals.dashboard.sub-windows.install-update.generic.availableVersion"></td>
-         <td class="install-update-action-row" data-i18n="modals.dashboard.sub-windows.install-update.generic.actions"></td>
+         <td class = "col-md-2" data-i18n="modals.dashboard.sub-windows.install-update.generic.actualVersion"></td>
+         <td class = "col-md-2" data-i18n="modals.dashboard.sub-windows.install-update.generic.availableVersion"></td>
+         <td class="install-update-action-row col-md-3" data-i18n="modals.dashboard.sub-windows.install-update.generic.actions"></td>
       </tr>
       <!-- widgets will be listed here-->
       <tr colspan="6" data-i18n="objects.generic.retrievingData"></tr>
@@ -81,7 +80,6 @@
 
 <script>
 
-   var pluginList;
    var wantedVersion = [/*"beta", "testing", */"stable"];
 
    var $cbReleaseType = $("div#dashboard-install-update select.cb-release-type");
@@ -94,13 +92,19 @@
          $cbReleaseType.addClass("disabled");
          //we get the new list depend on the release type selected
 
-         updateReleaseType();
-         //we can re-ask the update of the list
-         fillPluginList();
+         refreshAllData();
       });
 
+      refreshAllData();
+   }
+
+   /**
+    * Ask a refresh of all data in the modal
+    */
+   function refreshAllData() {
       updateReleaseType();
       fillPluginList();
+      fillWidgetList();
    }
 
    /**
@@ -125,101 +129,150 @@
     * This function fill the plugin list from the server elements
     */
    function fillPluginList() {
-      //we remove all rows except header
-      $("table#plugin-install-update-list").find("tr:gt(0)").remove();
-
       //we launch requests
-      debugger;
       PluginManager.get(function(localList) {
-         console.log(localList);
-         UpdateInformationManager.getPluginList(function(serverList) {
-            //we get installed plugin List
-            if (serverList) {
-               //we merge the two lists
-               $.each(serverList, function(serverIndex, serverValue) {
-                  //we search it on the other list
-                  var itemFound = false;
-                  var typeName = serverValue[0].type;
-                  if (!isNullOrUndefined(localList[typeName])) {
-                     //the item exist in a local context
-                     itemFound = true;
-                     //we add informations of all version that user wants
-                     localList[typeName].serverVersions = [];
-                     //we browse all version of that item
-                     $.each(serverValue, function(versionIndex, versionValue) {
-                        //if this releasetype is wanted we add it to the arrays of version for this item
-                        if ($.inArray(versionValue.version.toLowerCase(), wantedVersion)) {
-                           var item = {};
-                           item.downloadUrl = versionValue.downloadUrl;
-                           item.version = versionValue.version;
-                           item.releaseType = versionValue.releaseType;
-                           localList[typeName].serverVersions.push(item);
-                        }
-                     });
-                  }
-
-                  if (!itemFound) {
-                     //we add the new item available only on the server
-                     var canAddOnThePage = false;
-
-                     serverValue.sort(UpdateInformationManager.compareVersion);
-
-                     var newItem = {};
-
-                     //generic informations
-                     newItem.type = serverValue[0].type;
-
-                     newItem.package = {};
-                     newItem.package.type = serverValue[0].type;
-                     newItem.package.name = serverValue[0].name;
-                     newItem.package.description = serverValue[0].description;
-                     newItem.package.author = serverValue[0].author;
-                     newItem.package.url = serverValue[0].url;
-                     newItem.iconUrl = serverValue[0].iconUrl;
-
-                     //we add informations of all version that user wants
-                     newItem.serverVersions = [];
-                     //we browse all version of that item
-                     $.each(serverValue, function(versionIndex, versionValue) {
-                        var item = {};
-                        item.downloadUrl = versionValue.downloadUrl;
-                        item.version = versionValue.version;
-                        item.releaseType = versionValue.releaseType;
-                        newItem.serverVersions.push(item);
-                        //we need only one release type available in tthe wanted array to can see the whole line
-                        if ($.inArray(item.releaseType.toLowerCase(), wantedVersion) > -1)
-                           canAddOnThePage = true;
-                     });
-
-                     if (canAddOnThePage)
-                        localList[serverValue[0].type] = newItem;
-                  }
-               });
-            }
-
-            //we save it
-            pluginList = localList;
-            //we display the result
-            Object.keys(pluginList).forEach(function(localValue, localIndex) {
-               //the actual plugin does nothing
-               pluginList[localValue].processing = false;
-               createInstallUpdateItemLine(pluginList[localValue]);
-               //we set the visibility to the allowed buttons
-               updateLine(pluginList[localValue]);
-            });
-
-            //we enable the release type list
-            $cbReleaseType.removeClass("disabled");
-         });
+         buildList("plugin", localList);
       });
    }
 
-   function createInstallUpdateItemLine(item) {
+   /**
+    * This function fill the widget list from the server elements
+    */
+   function fillWidgetList() {
+      //we launch requests
+      WidgetPackageManager.getAll(function() {
+         buildList("widget", WidgetPackageManager.widgetPackages);
+      });
+   }
+
+   /**
+    * Create the list from the localList
+    */
+   function buildList(objectType, localList) {
+      assert(!isNullOrUndefined(objectType), "objectType must be defined");
+      assert(!isNullOrUndefined(localList), "localList must be defined");
+
+      //we remove all rows except header
+      $("table#" + objectType + "-install-update-list").find("tr:gt(0)").remove();
+
+      UpdateInformationManager.getList(objectType, function(serverList) {
+         //we get installed plugin List
+         if (serverList) {
+            mergeLists(localList, serverList, function (mergedList) {
+               //we sort the list by name
+               mergedList.sort(function(item1, item2) {
+                                    return item2.type > item1.type;
+                                 });
+
+               //we display the result
+               Object.keys(mergedList).forEach(function (localValue, localIndex) {
+                  if (!localValue.startsWith("dev-")) {
+                     //the actual item does nothing
+                     mergedList[localValue].processing = false;
+                     createInstallUpdateItemLine(objectType, mergedList[localValue]);
+                     //we set the visibility to the allowed buttons
+                     updateLine(objectType, mergedList[localValue]);
+                  }
+               });
+            });
+         }
+         //we enable the release type list
+         $cbReleaseType.removeClass("disabled");
+      });
+   }
+
+   /**
+    * Merge the two lists into a new one
+    */
+   function mergeLists(localList, serverList, callback) {
+      assert(!isNullOrUndefined(localList), "localList must be defined");
+      assert(!isNullOrUndefined(serverList), "serverList must be defined");
+      assert($.isFunction(callback), "callback must be a function");
+
+      //we merge the two lists
+      $.each(serverList, function(serverIndex, serverValue) {
+         //we search it on the other list
+         var itemFound = false;
+         var typeName = serverValue[0].type;
+         if (!isNullOrUndefined(localList[typeName])) {
+            //the item exist in a local context
+            itemFound = true;
+            //we add informations of all version that user wants
+            localList[typeName].serverVersions = [];
+            //we browse all version of that item
+            $.each(serverValue, function(versionIndex, versionValue) {
+               //if this releasetype is wanted we add it to the arrays of version for this item
+               if ($.inArray(versionValue.version.toLowerCase(), wantedVersion)) {
+                  var item = {};
+                  item.downloadUrl = versionValue.downloadUrl;
+                  item.version = versionValue.version;
+                  item.releaseType = versionValue.releaseType;
+                  localList[typeName].serverVersions.push(item);
+               }
+            });
+         }
+
+         if (!itemFound) {
+            //we add the new item available only on the server
+            var canAddOnThePage = false;
+
+            serverValue.sort(UpdateInformationManager.compareVersion);
+
+            var newItem = {};
+
+            //generic informations
+            newItem.type = serverValue[0].type;
+
+            newItem.package = {};
+            newItem.package.type = serverValue[0].type;
+            newItem.package.name = serverValue[0].name;
+            newItem.package.description = serverValue[0].description;
+            newItem.package.author = serverValue[0].author;
+            newItem.package.url = serverValue[0].url;
+            newItem.iconUrl = serverValue[0].iconUrl;
+
+            //we add informations of all version that user wants
+            newItem.serverVersions = [];
+            //we browse all version of that item
+            $.each(serverValue, function(versionIndex, versionValue) {
+               var item = {};
+               item.downloadUrl = versionValue.downloadUrl;
+               item.version = versionValue.version;
+               item.releaseType = versionValue.releaseType;
+               newItem.serverVersions.push(item);
+               //we need only one release type available in tthe wanted array to can see the whole line
+               if ($.inArray(item.releaseType.toLowerCase(), wantedVersion) > -1)
+                  canAddOnThePage = true;
+            });
+
+            if (canAddOnThePage)
+               localList[serverValue[0].type] = newItem;
+         }
+      });
+
+      callback(localList);
+   }
+
+   function createInstallUpdateItemLine(objectType, item) {
+      assert(!isNullOrUndefined(objectType), "objectType must be defined");
+      assert(!isNullOrUndefined(item), "item must be defined");
+
       var actionsBtns = "<div class=\"btn-group\">\n";
       var s = "<tr id=\"" + item.type + "\">" +
-                  "<td><span>" + item.package.name + "</span></td>" +
-                  "<td><img src=\"" + (item.iconUrl?item.iconUrl:"plugins/" + item.type + "/icon.png") + "\" class=\"img-thumbnail plugin-icon\"></td>" +
-                  "<td><span>" + item.package.description + "</span></td>" +
+                  "<td><span>" + $.t(item.type + ":name", {defaultValue:item.package.name}) + "</span>" +
+                  "<span class=\"update-available-label hidden label label-warning\">!</span>" +
+                  "</td>";
+
+      //depend on the objectType there is an icon
+      if (objectType == "plugin") {
+         s += "<td><img src=\"" + (item.iconUrl?item.iconUrl:"plugins/" + item.type + "/icon.png") + "\" class=\"img-thumbnail install-update-item-icon\"></td>";
+      }
+
+      if (objectType == "scriptInterpreter") {
+         s += "<td><img src=\"" + (item.iconUrl?item.iconUrl:"scriptInterpreters/" + item.type + "/icon.png") + "\" class=\"img-thumbnail install-update-item-icon\"></td>";
+      }
+
+      s +=        "<td><span>" + $.t(item.type + ":description", {defaultValue:item.package.description}) + "</span></td>" +
                   "<td><em class=\"local-version\"></em></td>" +
                   "<td><em class=\"latest-version\"></em></td>" +
                   "<td>" +
@@ -249,15 +302,27 @@
                   "</td>" +
               "</tr>";
 
-      $("table#plugin-install-update-list").append(s);
+      //we add the line to the right list
+      $("table#" + objectType + "-install-update-list").append(s);
    }
 
-   function getLineFromItem(item) {
-      return $("table#plugin-install-update-list").find("tr#" + item.type);
+   /**
+    * Get the row the DOM form the item and its type
+    */
+   function getLineFromItem(objectType, item) {
+      assert(!isNullOrUndefined(objectType), "objectType must be defined");
+      assert(!isNullOrUndefined(item), "item must be defined");
+      return $("table#" + objectType + "-install-update-list").find("tr#" + item.type);
    }
 
-   function updateLine(item) {
-      var $line = getLineFromItem(item);
+   /**
+    * Update the DOM row form the object
+    */
+   function updateLine(objectType, item) {
+      assert(!isNullOrUndefined(objectType), "objectType must be defined");
+      assert(!isNullOrUndefined(item), "item must be defined");
+
+      var $line = getLineFromItem(objectType, item);
 
       //we manage general information
       if (!isNullOrUndefined(item.package.version)) {
@@ -337,11 +402,11 @@
                //we manage the click event on each version
                if (!isNullOrUndefined(item.package.version)) {
                   //the item is already installed, we ask an update
-                  $cbVersion.find("li").last().unbind('click').bind('click', askForPluginUpdate(item, value));
+                  $cbVersion.find("li").last().unbind('click').bind('click', askForUpdate(objectType, item, value));
                }
                else {
                   //the item isn't installed so we make a new install
-                  $cbVersion.find("li").last().unbind('click').bind('click', askForPluginInstall(item, value));
+                  $cbVersion.find("li").last().unbind('click').bind('click', askForInstall(objectType, item, value));
                }
             });
 
@@ -375,23 +440,43 @@
 
          //we manage click events
          if (!isNullOrUndefined(item.package.version)) {
-            //the item is already installed, we ask an update
-            $line.find("button.main-btn").unbind('click').bind('click', askForPluginUpdate(item, availableVersions[0]));
-            $line.find("button.btn-uninstall").unbind('click').bind('click', askForPluginRemove(item));
+            //the item is already installed, we ask an update if there is some available
+            if (availableVersions.length > 0) {
+               $line.find("button.main-btn").unbind('click').bind('click', askForUpdate(objectType, item, availableVersions[0]));
+            }
+            $line.find("button.btn-uninstall").unbind('click').bind('click', askForRemove(objectType, item));
+
+            //we manage the ! label to show a new version is available
+            if (installUpdateAllowed) {
+               $line.find("span.update-available-label").removeClass("hidden");
+            }
+            else {
+               $line.find("span.update-available-label").addClass("hidden");
+            }
          }
          else {
-            //the item isn't installed so we make a new install
-            $line.find("button.main-btn").unbind('click').bind('click', askForPluginInstall(item, availableVersions[0]));
+            //the item isn't installed so we make a new install if there is some available
+            if (availableVersions.length > 0)
+               $line.find("button.main-btn").unbind('click').bind('click', askForInstall(objectType, item, availableVersions[0]));
+            $line.find("span.update-available-label").addClass("hidden");
          }
       }
       else {
          //an action is in progress we show progression
          $line.find("div.action-buttons").addClass("hidden");
          $line.find("div.action-progression").removeClass("hidden");
+         $line.find("span.update-available-label").addClass("hidden");
       }
    }
 
-   function askForPluginInstall(item, updateInformation) {
+   /**
+    * Ask for a confirmation of a install of an item
+    */
+   function askForInstall(objectType, item, updateInformation) {
+      assert(!isNullOrUndefined(objectType), "objectType must be defined");
+      assert(!isNullOrUndefined(item), "item must be defined");
+      assert(!isNullOrUndefined(updateInformation), "updateInformation must be defined");
+
       return function() {
          modals.confirmation.load(function() {
             showConfirmModal(btnKind.yesNo,
@@ -402,15 +487,22 @@
                     }),
                     function () {
                        //the user has confirmed the action
-                       UpdateInformationManager.installPlugin(updateInformation.downloadUrl, function (taskId) {
-                          installUpdateRemovePluginCallback(taskId, item);
+                       UpdateInformationManager.install(objectType, updateInformation.downloadUrl, function (taskId) {
+                          installUpdateRemoveCallback(objectType, taskId, item);
                        });
                     });
          });
       }
    }
 
-   function askForPluginUpdate(item, updateInformation) {
+   /**
+    * Ask for a confirmation of an update of an item
+    */
+   function askForUpdate(objectType, item, updateInformation) {
+      assert(!isNullOrUndefined(objectType), "objectType must be defined");
+      assert(!isNullOrUndefined(item), "item must be defined");
+      assert(!isNullOrUndefined(updateInformation), "updateInformation must be defined");
+
       return function() {
          modals.confirmation.load(function() {
             showConfirmModal(btnKind.yesNo,
@@ -421,15 +513,21 @@
                     }),
                     function () {
                        //the user has confirmed the action
-                       UpdateInformationManager.updatePlugin(item.type, updateInformation.downloadUrl, function (taskId) {
-                          installUpdateRemovePluginCallback(taskId, item);
+                       UpdateInformationManager.update(objectType, item.type, updateInformation.downloadUrl, function (taskId) {
+                          installUpdateRemoveCallback(objectType, taskId, item);
                        });
                     });
          });
       }
    }
 
-   function askForPluginRemove(item) {
+   /**
+    * Ask for a confirmation of a remove of an item
+    */
+   function askForRemove(objectType, item) {
+      assert(!isNullOrUndefined(objectType), "objectType must be defined");
+      assert(!isNullOrUndefined(item), "item must be defined");
+
       return function() {
          modals.confirmation.load(function() {
             showConfirmModal(btnKind.yesNo,
@@ -437,21 +535,24 @@
                     $.t("modals.dashboard.sub-windows.install-update.generic.confirmRemove", {objectName: $.t(item.type + ":name", {defaultValue:item.package.name})}),
                     function () {
                        //the user has confirmed the action
-                       UpdateInformationManager.removePlugin(item.type, function (taskId) {
-                         installUpdateRemovePluginCallback(taskId, item);
+                       UpdateInformationManager.remove(objectType, item.type, function (taskId) {
+                         installUpdateRemoveCallback(objectType, taskId, item);
                        });
                     });
          });
       }
    }
 
-   function installUpdateRemovePluginCallback(taskId, item) {
-      console.debug("TaskId : " + taskId);
+   function installUpdateRemoveCallback(objectType, taskId, item) {
+      assert(!isNullOrUndefined(objectType), "objectType must be defined");
+      assert(!isNullOrUndefined(taskId), "taskId must be defined");
+      assert(!isNullOrUndefined(item), "item must be defined");
+
       //we initialize the progress bar
-      var $line = getLineFromItem(item);
+      var $line = getLineFromItem(objectType, item);
       $line.find("div.progress-bar").css("width", "0%");
 
-      //we listen for websocket event
+      //we listen for webSocket event
       $(document).on("taskupdatenotification." + taskId, function (e, taskUpdateInformation) {
          $line.find("div.progress-bar").css("width", taskUpdateInformation.progression + "%");
          $line.find("span.message").text($.t("webSockets." + taskUpdateInformation.message));
@@ -459,7 +560,7 @@
          var taskFinished = false;
          //we manage the end of the task
          if (taskUpdateInformation.taskState.toLowerCase() == "fail") {
-            console.error("Unable to install plugin : " + taskUpdateInformation.exception);
+            console.error("Unable to install : " + taskUpdateInformation.exception);
             notifyError($.t("webSockets." + taskUpdateInformation.message));
             taskFinished = true;
          }
@@ -472,17 +573,17 @@
          if (taskFinished) {
             //we remove the progress information and restore buttons
             item.processing = false;
-            updateLine(item);
+            updateLine(objectType, item);
             $line.find("div.progress-bar").css("width", "0%");
 
             //refresh the list
-            fillPluginList();
+            refreshAllData();
          }
 
       });
       //we hide the buttons and show the progression
       item.processing = true;
-      updateLine(item);
+      updateLine(objectType, item);
    }
 
    function matchVersion(version1, version2) {

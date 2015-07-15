@@ -283,3 +283,8 @@ Fix dropdown menus hidden by bootstrap modal
 .action-progression .progress {
     margin-bottom : 0px;
 }
+
+/*! indicator to show a new update available*/
+.update-available-label {
+    margin-left: 5px;
+}
