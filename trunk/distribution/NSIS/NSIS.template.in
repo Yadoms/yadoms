@@ -739,10 +739,27 @@ Section "-Core installation"
 SectionEnd
 
 
+
 ;--------------------------------
 ; Create custom pages
+
+
+;Defines some strings
+LangString TEXT_IO_OPTIONS_TITLE ${LANG_FRENCH} "Options d'installation"
+LangString TEXT_IO_OPTIONS_SUBTITLE ${LANG_FRENCH} "Choisissez les options d'installation de @CPACK_NSIS_PACKAGE_NAME@"
+LangString TEXT_IO_OPTIONS_TITLE ${LANG_ENGLISH} "Install Options"
+LangString TEXT_IO_OPTIONS_SUBTITLE ${LANG_ENGLISH} "Choose options for installing @CPACK_NSIS_PACKAGE_NAME@"
+
+LangString TEXT_IO_OPTIONS_DESKTOP_ICON ${LANG_FRENCH} "Raccourci sur le Bureau"
+LangString TEXT_IO_OPTIONS_DESKTOP_ICON ${LANG_ENGLISH} "Desktop Icon"
+LangString TEXT_IO_OPTIONS_AS_SERVICE ${LANG_FRENCH} "Installer @CPACK_PACKAGE_NAME@ en tant que service Windows"
+LangString TEXT_IO_OPTIONS_AS_SERVICE ${LANG_ENGLISH} "Install @CPACK_PACKAGE_NAME@ as a service"
+
+
 Function InstallOptionsPage
-  !insertmacro MUI_HEADER_TEXT "Install Options" "Choose options for installing @CPACK_NSIS_PACKAGE_NAME@"
+  !insertmacro MUI_HEADER_TEXT $(TEXT_IO_OPTIONS_TITLE) $(TEXT_IO_OPTIONS_SUBTITLE)
+  !insertmacro INSTALLOPTIONS_WRITE "NSIS.InstallOptions.ini" "Field 1" "Text" $(TEXT_IO_OPTIONS_DESKTOP_ICON)
+  !insertmacro INSTALLOPTIONS_WRITE "NSIS.InstallOptions.ini" "Field 2" "Text" $(TEXT_IO_OPTIONS_AS_SERVICE)
   !insertmacro MUI_INSTALLOPTIONS_DISPLAY "NSIS.InstallOptions.ini"
 
 FunctionEnd
