@@ -288,3 +288,20 @@ Fix dropdown menus hidden by bootstrap modal
 .update-available-label {
     margin-left: 5px;
 }
+
+.panel-heading {
+    cursor: pointer;
+}
+
+/* CSS Method for adding Font Awesome Chevron Icons */
+.panel-title:after {
+    /* symbol for "opening" panels */
+    font-family:'FontAwesome';
+    content:"\f077";
+    float: right;
+    color: inherit;
+}
+.panel-heading.collapsed .panel-title:after {
+    /* symbol for "collapsed" panels */
+    content:"\f078";
+}
