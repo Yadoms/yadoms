@@ -55,8 +55,6 @@ std::string CYScriptApiImplementation::waitForAcquisition(int keywordId, const s
 
 std::pair<int, std::string> CYScriptApiImplementation::waitForAcquisitions(const std::vector<int> keywordIdList, const std::string& timeout) const
 {
-   DebugBreak();
-
    CReqWaitForAcquisitions request;
    request.m_keywordIdList = keywordIdList;
    request.m_timeout = timeout;

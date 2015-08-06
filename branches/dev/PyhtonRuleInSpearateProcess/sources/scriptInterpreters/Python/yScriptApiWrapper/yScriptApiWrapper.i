@@ -44,6 +44,10 @@ void fail()
 
 %include stl.i
 
+// Used by IYScriptApi::waitForAcquisitions
+%template() std::vector<int>;
+%template() std::pair<int, std::string>;
+
 /* Add method documentation */
 /* Can not use Doxygen comments from the C++ code, because "autodoc" is a Python specificity */
 /* TODO à compléter */
