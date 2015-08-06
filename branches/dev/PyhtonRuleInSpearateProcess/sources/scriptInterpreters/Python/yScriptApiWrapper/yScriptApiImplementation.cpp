@@ -69,22 +69,30 @@ std::pair<int, std::string> CYScriptApiImplementation::waitForAcquisitions(const
 
 void CYScriptApiImplementation::writeKeyword(int keywordId, const std::string& newState)
 {
-   //TODO
+   CReqWriteKeyword request;
+   request.m_keywordId = keywordId;
+   request.m_newState = newState;
+   sendRequest(kReqWriteKeyword, request);
 }
 
 void CYScriptApiImplementation::sendNotification(int keywordId, int recipientId, const std::string& message)
 {
-   //TODO
+   CReqSendNotification request;
+   request.m_keywordId = keywordId;
+   request.m_recipientId = recipientId;
+   request.m_message = message;
+   sendRequest(kReqSendNotification, request);
 }
 
 std::string CYScriptApiImplementation::getInfo(const std::string& key) const
 {
-   //TODO
-   return std::string();
-}
+   CReqGetInfo request;
+   request.m_key = key;
+   sendRequest(kReqGetInfo, request);
 
-void CYScriptApiImplementation::fail(const std::string& errorMessage)
-{
-   //TODO
+   CAnsGetInfo answer;
+   receiveAnswer(kAnsGetInfo, answer);
+
+   return answer.m_returnValue;
 }
 

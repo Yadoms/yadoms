@@ -42,7 +42,6 @@ namespace automation { namespace script
       virtual void writeKeyword(int keywordId, const std::string& newState);
       virtual void sendNotification(int keywordId, int recipientId, const std::string& message);
       virtual std::string getInfo(const std::string& key) const;
-      virtual void fail(const std::string& errorMessage);
       // [END] shared::script::yScriptApi::IYScriptApi implementation
 
    private:

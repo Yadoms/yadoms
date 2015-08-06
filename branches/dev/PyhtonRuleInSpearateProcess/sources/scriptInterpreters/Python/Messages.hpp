@@ -12,7 +12,9 @@ enum ERequestIdentifier
    kReqReadKeyword = 0,
    kReqWaitForAcquisition,
    kReqWaitForAcquisitions,
-   //TODO compléter
+   kReqWriteKeyword,
+   kReqSendNotification,
+   kReqGetInfo,
 };
 
 //--------------------------------------------------------------
@@ -23,7 +25,7 @@ enum EAnswerIdentifier
    kAnsReadKeyword = 0,
    kAnsWaitForAcquisition,
    kAnsWaitForAcquisitions,
-   //TODO compléter
+   kAnsGetInfo,
 };
 
 //--------------------------------------------------------------
@@ -91,6 +93,92 @@ private:
 };
 
 //--------------------------------------------------------------
+/// \brief The write keyword request
+//--------------------------------------------------------------
+class CReqWriteKeyword
+{
+public:
+   CReqWriteKeyword() {}
+   virtual ~CReqWriteKeyword() {}
+
+   int m_keywordId;
+   std::string m_newState;
+
+private:
+   friend class boost::serialization::access;
+   template<class Archive>
+   void serialize(Archive& ar, const unsigned int version)
+   {
+      ar & m_keywordId;
+      ar & m_newState;
+   }
+};
+
+//--------------------------------------------------------------
+/// \brief The send notification request
+//--------------------------------------------------------------
+class CReqSendNotification
+{
+public:
+   CReqSendNotification() {}
+   virtual ~CReqSendNotification() {}
+
+   int m_keywordId;
+   int m_recipientId;
+   std::string m_message;
+
+private:
+   friend class boost::serialization::access;
+   template<class Archive>
+   void serialize(Archive& ar, const unsigned int version)
+   {
+      ar & m_keywordId;
+      ar & m_recipientId;
+      ar & m_message;
+   }
+};
+
+//--------------------------------------------------------------
+/// \brief The get info request
+//--------------------------------------------------------------
+class CReqGetInfo
+{
+public:
+   CReqGetInfo() {}
+   virtual ~CReqGetInfo() {}
+
+   std::string m_key;
+
+private:
+   friend class boost::serialization::access;
+   template<class Archive>
+   void serialize(Archive& ar, const unsigned int version)
+   {
+      ar & m_key;
+   }
+};
+
+//--------------------------------------------------------------
+/// \brief The fail request
+//--------------------------------------------------------------
+class CReqFail
+{
+public:
+   CReqFail() {}
+   virtual ~CReqFail() {}
+
+   std::string m_errorMessage;
+
+private:
+   friend class boost::serialization::access;
+   template<class Archive>
+   void serialize(Archive& ar, const unsigned int version)
+   {
+      ar & m_errorMessage;
+   }
+};
+
+//--------------------------------------------------------------
 /// \brief The read keyword answer
 //--------------------------------------------------------------
 struct CAnsReadKeyword
@@ -140,6 +228,26 @@ public:
    virtual ~CAnsWaitForAcquisitions() {}
 
    std::pair<int, std::string> m_returnValue;
+
+private:
+   friend class boost::serialization::access;
+   template<class Archive>
+   void serialize(Archive& ar, const unsigned int version)
+   {
+      ar & m_returnValue;
+   }
+};
+
+//--------------------------------------------------------------
+/// \brief The get info answer
+//--------------------------------------------------------------
+struct CAnsGetInfo
+{
+public:
+   CAnsGetInfo() {}
+   virtual ~CAnsGetInfo() {}
+
+   std::string m_returnValue;
 
 private:
    friend class boost::serialization::access;

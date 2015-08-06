@@ -115,6 +115,32 @@ void CContextAccessor::processMessage(const char* message, size_t messageSize, b
       sendAnswer(kAnsWaitForAcquisitions, answer, messageQueue);
       break;
    }
+   case kReqWriteKeyword:
+   {
+      CReqWriteKeyword request;
+      ia >> request;
+      
+      m_context.writeKeyword(request.m_keywordId, request.m_newState);
+      break;
+   }
+   case kReqSendNotification:
+   {
+      CReqSendNotification request;
+      ia >> request;
+      
+      m_context.sendNotification(request.m_keywordId, request.m_recipientId, request.m_message);
+      break;
+   }
+   case kReqGetInfo:
+   {
+      CReqGetInfo request;
+      ia >> request;
+
+      CAnsGetInfo answer;
+      answer.m_returnValue = m_context.getInfo(request.m_key);
+      sendAnswer(kAnsGetInfo, answer, messageQueue);
+      break;
+   }
 
    default:
       throw shared::exception::CInvalidParameter("message");

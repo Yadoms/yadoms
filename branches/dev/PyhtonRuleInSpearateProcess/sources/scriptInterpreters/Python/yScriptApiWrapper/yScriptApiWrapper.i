@@ -12,11 +12,6 @@
 
 #include "yScriptApiInstance.h"
 
-// Fail method, use to stop a script itself, and declare it in error state
-void fail()
-{
-	SWIG_Python_AddErrorMsg("TEST fail");//TODO revoir le message et voir si ça marche !
-}
 %}
 
 
@@ -71,7 +66,4 @@ void fail()
 // yScriptApi instance creation method
 shared::script::yScriptApi::IYScriptApi* createScriptApiInstance(const std::string& yScriptApiAccessorId);
 %feature("autodoc", "Create the yScriptApi instance (need the context accessor ID provided by Yadoms)") createScriptApiInstance;
-
-void fail();
-%feature("autodoc", "Stop the current script, and declare it in error state.") fail;
 
