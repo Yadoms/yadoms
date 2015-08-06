@@ -1,5 +1,9 @@
 <div id="dashboard-install-update">
-   <h1 class="page-header"><span class="glyphicon glyphicon-save">&nbsp;<span data-i18n="modals.dashboard.sub-windows.install-update.title"></span></span></h1>
+   <h1 class="page-header">
+      <span class="glyphicon glyphicon-save"></span>&nbsp;
+      <span data-i18n="modals.dashboard.sub-windows.install-update.title"></span>
+      <i class="making-async-action pull-right fa fa-circle-o-notch fa-spin hidden"></i>
+   </h1>
    <span data-i18n="modals.dashboard.sub-windows.install-update.description"></span><br>
 
    <div class="row">
@@ -13,69 +17,106 @@
       </div>
    </div>
 
-   <h2>
-      <span data-i18n="modals.dashboard.sub-windows.install-update.yadoms.title"></span>
-      &nbsp;
-      <button id="btn-update-yadoms" type="button" class="btn btn-success disabled">
-         <span class="fa fa-download"></span>&nbsp;&nbsp;<span data-i18n="modals.dashboard.sub-windows.install-update.yadoms.update"></span>
-      </button>
-   </h2>
-
-   <table id="software-install-update" class="table table-bordered dashboard-list">
-      <tr>
-         <td data-i18n="modals.dashboard.sub-windows.install-update.yadoms.currentVersion" class="active"></td>
-         <td class="current-version"><em>v1.12 Beta</em></td>
-      </tr>
-      <tr>
-         <td data-i18n="modals.dashboard.sub-windows.install-update.yadoms.availableVersion" class="active"></td>
-         <td class="available-version"><em>v1.14 Beta</em></td>
-      </tr>
-   </table>
-
-   <h2 data-i18n="modals.dashboard.sub-windows.install-update.plugins.title"></h2>
-
-   <table id="plugin-install-update-list" class="table table-bordered table-striped dashboard-list">
-      <tr>
-         <td data-i18n="modals.dashboard.sub-windows.install-update.generic.name"></td>
-         <td class="col-md-1" data-i18n="modals.dashboard.sub-windows.install-update.generic.icon"></td>
-         <td data-i18n="modals.dashboard.sub-windows.install-update.generic.description"></td>
-         <td class = "col-md-2" data-i18n="modals.dashboard.sub-windows.install-update.generic.actualVersion"></td>
-         <td class = "col-md-2" data-i18n="modals.dashboard.sub-windows.install-update.generic.availableVersion"></td>
-         <td class="install-update-action-row col-md-3" data-i18n="modals.dashboard.sub-windows.install-update.generic.actions"></td>
-      </tr>
-      <!-- plugins will be listed here-->
-      <tr colspan="6" data-i18n="objects.generic.retrievingData"></tr>
-      </tr>
-   </table>
-
-   <h2 data-i18n="modals.dashboard.sub-windows.install-update.widgets.title"></h2>
-
-   <table id="widget-install-update-list" class="table table-bordered table-striped dashboard-list">
-      <tr>
-         <td data-i18n="modals.dashboard.sub-windows.install-update.generic.name"></td>
-         <td data-i18n="modals.dashboard.sub-windows.install-update.generic.description"></td>
-         <td class = "col-md-2" data-i18n="modals.dashboard.sub-windows.install-update.generic.actualVersion"></td>
-         <td class = "col-md-2" data-i18n="modals.dashboard.sub-windows.install-update.generic.availableVersion"></td>
-         <td class="install-update-action-row col-md-3" data-i18n="modals.dashboard.sub-windows.install-update.generic.actions"></td>
-      </tr>
-      <!-- widgets will be listed here-->
-      <tr colspan="6" data-i18n="objects.generic.retrievingData"></tr>
-   </table>
-
-   <h2 data-i18n="modals.dashboard.sub-windows.install-update.script-interpreters.title"></h2>
-
-   <table id="script-interpreters-install-update-list" class="table table-bordered table-striped dashboard-list">
-      <tr>
-         <td data-i18n="modals.dashboard.sub-windows.install-update.generic.name"></td>
-         <td data-i18n="modals.dashboard.sub-windows.install-update.generic.icon"></td>
-         <td data-i18n="modals.dashboard.sub-windows.install-update.generic.description"></td>
-         <td data-i18n="modals.dashboard.sub-windows.install-update.generic.actualVersion"></td>
-         <td data-i18n="modals.dashboard.sub-windows.install-update.generic.availableVersion"></td>
-         <td class="install-update-action-row" data-i18n="modals.dashboard.sub-windows.install-update.generic.actions"></td>
-      </tr>
-      <!-- script interpreters will be listed here-->
-      <tr colspan="6" data-i18n="objects.generic.retrievingData"></tr>
-   </table>
+   <div class="panel-group" id="install-update-accordion" role="tablist" aria-multiselectable="true">
+      <!--accordion yadoms update-->
+      <div class="panel panel-default">
+         <div class="panel-heading" role="tab" id="install-update-yadoms-heading-panel" data-toggle="collapse" data-parent="#install-update-accordion" aria-expanded="true" aria-controls="install-update-yadoms-heading-panel" data-target="#install-update-yadoms-panel">
+            <h4 class="panel-title">
+               <span data-i18n="modals.dashboard.sub-windows.install-update.yadoms.title"></span>
+               <span class="update-available-label label label-warning hidden"></span>
+            </h4>
+         </div>
+         <div id="install-update-yadoms-panel" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="install-update-yadoms-heading-panel">
+            <div class="panel-body">
+               <button id="btn-update-yadoms" type="button" class="btn btn-success disabled">
+                  <span class="fa fa-download"></span>&nbsp;&nbsp;<span data-i18n="modals.dashboard.sub-windows.install-update.yadoms.update"></span>
+               </button>
+               <table id="software-install-update" class="table table-bordered dashboard-list">
+                  <tr>
+                     <td data-i18n="modals.dashboard.sub-windows.install-update.yadoms.currentVersion" class="active"></td>
+                     <td class="current-version"><em>v1.12 Beta</em></td>
+                  </tr>
+                  <tr>
+                     <td data-i18n="modals.dashboard.sub-windows.install-update.yadoms.availableVersion" class="active"></td>
+                     <td class="available-version"><em>v1.14 Beta</em></td>
+                  </tr>
+               </table>
+            </div>
+         </div>
+      </div>
+      <!--accordion plugin-->
+      <div class="panel panel-default">
+         <div class="panel-heading collapsed" role="tab" id="install-update-plugin-heading-panel" data-toggle="collapse" data-parent="#install-update-accordion" aria-expanded="true" aria-controls="install-update-plugin-heading-panel" data-target="#install-update-plugin-panel">
+            <h4 class="panel-title">
+               <span data-i18n="modals.dashboard.sub-windows.install-update.plugins.title"></span>
+               <span class="update-available-label label label-as-badge label-success hidden"></span>
+            </h4>
+         </div>
+         <div id="install-update-plugin-panel" class="panel-collapse collapse" role="tabpanel" aria-labelledby="install-update-plugin-heading-panel">
+            <div class="panel-body">
+               <table id="plugin-install-update-list" class="table table-bordered table-striped dashboard-list">
+                  <tr>
+                     <td data-i18n="modals.dashboard.sub-windows.install-update.generic.name"></td>
+                     <td class="col-md-1" data-i18n="modals.dashboard.sub-windows.install-update.generic.icon"></td>
+                     <td data-i18n="modals.dashboard.sub-windows.install-update.generic.description"></td>
+                     <td class = "col-md-2" data-i18n="modals.dashboard.sub-windows.install-update.generic.actualVersion"></td>
+                     <td class = "col-md-2" data-i18n="modals.dashboard.sub-windows.install-update.generic.availableVersion"></td>
+                     <td class="install-update-action-row col-md-3" data-i18n="modals.dashboard.sub-windows.install-update.generic.actions"></td>
+                  </tr>
+                  <!-- plugins will be listed here-->
+                  </tr>
+               </table>
+            </div>
+         </div>
+      </div>
+      <!--accordion widget-->
+      <div class="panel panel-default">
+         <div class="panel-heading collapsed" role="tab" id="install-update-widget-heading-panel" data-toggle="collapse" data-parent="#install-update-accordion" aria-expanded="true" aria-controls="install-update-widget-heading-panel" data-target="#install-update-widget-panel">
+            <h4 class="panel-title">
+               <span data-i18n="modals.dashboard.sub-windows.install-update.widgets.title"></span>
+               <span class="update-available-label label label-as-badge label-success hidden"></span>
+            </h4>
+         </div>
+         <div id="install-update-widget-panel" class="panel-collapse collapse" role="tabpanel" aria-labelledby="install-update-widget-heading-panel">
+            <div class="panel-body">
+                <table id="widget-install-update-list" class="table table-bordered table-striped dashboard-list">
+                  <tr>
+                     <td data-i18n="modals.dashboard.sub-windows.install-update.generic.name"></td>
+                     <td data-i18n="modals.dashboard.sub-windows.install-update.generic.description"></td>
+                     <td class = "col-md-2" data-i18n="modals.dashboard.sub-windows.install-update.generic.actualVersion"></td>
+                     <td class = "col-md-2" data-i18n="modals.dashboard.sub-windows.install-update.generic.availableVersion"></td>
+                     <td class="install-update-action-row col-md-3" data-i18n="modals.dashboard.sub-windows.install-update.generic.actions"></td>
+                  </tr>
+                  <!-- widgets will be listed here-->
+               </table>
+            </div>
+         </div>
+      </div>
+      <!--accordion script interpreters-->
+      <div class="panel panel-default">
+         <div class="panel-heading collapsed" role="tab" id="install-update-script-interpreter-heading-panel" data-toggle="collapse" data-parent="#install-update-accordion" aria-expanded="true" aria-controls="install-update-script-interpreter-heading-panel" data-target="#install-update-script-interpreter-panel">
+            <h4 class="panel-title">
+               <span data-i18n="modals.dashboard.sub-windows.install-update.script-interpreters.title"></span>
+               <span class="update-available-label label label-as-badge label-success hidden">!</span>
+            </h4>
+         </div>
+         <div id="install-update-script-interpreter-panel" class="panel-collapse collapse" role="tabpanel" aria-labelledby="install-update-script-interpreter-heading-panel">
+            <div class="panel-body">
+               <table id="script-interpreters-install-update-list" class="table table-bordered table-striped dashboard-list">
+                  <tr>
+                     <td data-i18n="modals.dashboard.sub-windows.install-update.generic.name"></td>
+                     <td data-i18n="modals.dashboard.sub-windows.install-update.generic.icon"></td>
+                     <td data-i18n="modals.dashboard.sub-windows.install-update.generic.description"></td>
+                     <td data-i18n="modals.dashboard.sub-windows.install-update.generic.actualVersion"></td>
+                     <td data-i18n="modals.dashboard.sub-windows.install-update.generic.availableVersion"></td>
+                     <td class="install-update-action-row" data-i18n="modals.dashboard.sub-windows.install-update.generic.actions"></td>
+                  </tr>
+                  <!-- script interpreters will be listed here-->
+               </table>
+            </div>
+         </div>
+      </div>
+   </div>
 </div>
 
 <script>
@@ -84,6 +125,9 @@
 
    var $cbReleaseType = $("div#dashboard-install-update select.cb-release-type");
 
+   var $asyncActionIndicator = $("div#dashboard-install-update i.making-async-action");
+
+   var loadingFinished = {};
 
    function initializeInstallUpdateDashboard() {
 
@@ -102,6 +146,7 @@
     * Ask a refresh of all data in the modal
     */
    function refreshAllData() {
+      $asyncActionIndicator.removeClass("hidden");
       updateReleaseType();
       fillPluginList();
       fillWidgetList();
@@ -130,8 +175,11 @@
     */
    function fillPluginList() {
       //we launch requests
+      var objectType = "plugin";
+      //we save the information that the load of objectType is in progress
+      loadingFinished[objectType] = false;
       PluginManager.get(function(localList) {
-         buildList("plugin", localList);
+         buildList(objectType, localList);
       });
    }
 
@@ -140,8 +188,11 @@
     */
    function fillWidgetList() {
       //we launch requests
+      var objectType = "widget";
+      //we save the information that the load of objectType is in progress
+      loadingFinished[objectType] = false;
       WidgetPackageManager.getAll(function() {
-         buildList("widget", WidgetPackageManager.widgetPackages);
+         buildList(objectType, WidgetPackageManager.widgetPackages);
       });
    }
 
@@ -174,11 +225,27 @@
                      updateLine(objectType, mergedList[localValue]);
                   }
                });
+               //we indicate that the objectTypeList loading has finished
+               loadingFinished[objectType] = true;
+               updateInstallUpdateActionIndicator();
             });
          }
          //we enable the release type list
          $cbReleaseType.removeClass("disabled");
       });
+   }
+
+   /**
+    * Manage the animated indicator that show an asynchronous action is in progress
+    */
+   function updateInstallUpdateActionIndicator() {
+      //if all loadingFinished items are true we can hide the icon
+      Object.keys(loadingFinished).forEach(function (value, index) {
+         if (!loadingFinished[value])
+            return;
+      });
+      //if we havn't exit before everything is done
+      $asyncActionIndicator.addClass("hidden");
    }
 
    /**
@@ -260,7 +327,7 @@
       var actionsBtns = "<div class=\"btn-group\">\n";
       var s = "<tr id=\"" + item.type + "\">" +
                   "<td><span>" + $.t(item.type + ":name", {defaultValue:item.package.name}) + "</span>" +
-                  "<span class=\"update-available-label hidden label label-warning\">!</span>" +
+                  "<span class=\"update-available-label hidden label label-as-badge label-success\">1</span>" +
                   "</td>";
 
       //depend on the objectType there is an icon
@@ -316,6 +383,22 @@
    }
 
    /**
+    * Update the label that indicate if in the whole section (plugin, widget, ...) there is at least one item that have an update available
+    */
+   function updateHeaderUpdateAvailableLabel(objectType) {
+      var $line = $("div#install-update-" + objectType + "-heading-panel .update-available-label");
+      var updateAvailableLabels = $("table#" + objectType + "-install-update-list span.update-available-label").not(".hidden");
+      if (updateAvailableLabels.length > 0) {
+         //there is at least one item that have an update available
+         $line.removeClass("hidden");
+         $line.text(updateAvailableLabels.length);
+      }
+      else {
+         $line.addClass("hidden");
+      }
+   }
+
+   /**
     * Update the DOM row form the object
     */
    function updateLine(objectType, item) {
@@ -351,7 +434,7 @@
             //we create a list of all version available to update based on the type of the version and the list of available version different from the local one
             $.each(item.serverVersions, function (index, value) {
                if ($.inArray(value.releaseType.toLowerCase(), wantedVersion) > -1) {
-                  //we manage latest vzersion
+                  //we manage latest version
                   if (isNullOrUndefined(latestVersion)) {
                      //latestVersion hasn't defined for the moment we take the first one
                      latestVersion = value;
@@ -370,6 +453,10 @@
                }
             });
          }
+
+         //we can display the latest version
+         $line.find("em.latest-version").text(versionToString(latestVersion));
+
 
          if (!isNullOrUndefined(item.package.version)) {
             //the plugin is already installed so the button is used to update
@@ -409,16 +496,13 @@
                   $cbVersion.find("li").last().unbind('click').bind('click', askForInstall(objectType, item, value));
                }
             });
-
-            $line.find("ul.latest-installable-version").text(versionToString(availableVersions[0]));
-
-            //we can display the latest version
-            $line.find("em.latest-version").text(versionToString(latestVersion));
          }
          else {
             //there is no interesting new version
             $line.find("button.btn-expand").addClass("disabled");
          }
+
+         $line.find("ul.latest-installable-version").text(versionToString(latestVersion));
 
          if (uninstallAllowed)
             $line.find("button.btn-uninstall").removeClass("disabled");
@@ -467,6 +551,8 @@
          $line.find("div.action-progression").removeClass("hidden");
          $line.find("span.update-available-label").addClass("hidden");
       }
+      //we update the header update availble label
+      updateHeaderUpdateAvailableLabel(objectType);
    }
 
    /**
@@ -596,7 +682,7 @@
     * @returns {string}
     */
    function versionToString(version) {
-      if ((isNullOrUndefined(version.version)) || (isNullOrUndefined(version.releaseType)))
+      if ((isNullOrUndefined(version)) || (isNullOrUndefined(version.version)) || (isNullOrUndefined(version.releaseType)))
          return "";
       return "v " + version.version + " " + version.releaseType.toLowerCase();
    }

@@ -31,3 +31,8 @@
     position: absolute;
     float: left;
 }
+
+/*Permit to make label rouded like badge*/
+.label-as-badge {
+    border-radius: 1em;
+}
