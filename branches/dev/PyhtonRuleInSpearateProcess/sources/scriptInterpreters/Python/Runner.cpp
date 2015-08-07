@@ -32,7 +32,7 @@ void CRunner::run(shared::script::yScriptApi::IYScriptApi& context, boost::share
       // Start module
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_processMutex);
-         m_process = m_executable->startModule(m_scriptFile->module(), m_scriptFile->abslouteParentPath(), contextAccessor->id(), scriptLogger);
+         m_process = m_executable->startModule(m_scriptFile, contextAccessor->id(), scriptLogger);
       }
 
       int returnCode = m_process->wait();

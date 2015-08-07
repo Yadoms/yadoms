@@ -91,7 +91,7 @@ std::string CYScriptApiImplementation::getInfo(const std::string& key) const
    sendRequest(kReqGetInfo, request);
 
    CAnsGetInfo answer;
-   receiveAnswer(kAnsGetInfo, answer);
+   receiveAnswer(kAnsGetInfo, answer, boost::posix_time::seconds(30)); // Ehanced timeout for certains long requests
 
    return answer.m_returnValue;
 }

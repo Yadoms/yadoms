@@ -51,7 +51,7 @@ protected:
       }
       catch (boost::interprocess::interprocess_exception& ex)
       {
-         throw std::overflow_error(std::string("yScriptApiWrapper : Error at IYScriptApi method call, ") + ex.what());
+         throw std::overflow_error(std::string("yScriptApiWrapper::sendRequest : Error at IYScriptApi method call, ") + ex.what());
       }
    }
 
@@ -68,7 +68,7 @@ protected:
    void receiveAnswer(EAnswerIdentifier expectedAnswerId, AnswerType& answer, const boost::posix_time::time_duration& timeout = boost::posix_time::time_duration()) const
    {
       if (!tryReceiveAnswer(expectedAnswerId, answer, timeout))
-         throw std::runtime_error("yScriptApiWrapper::readKeyword : Timeout waiting for Yadoms answer");
+         throw std::runtime_error("yScriptApiWrapper::receiveAnswer : Timeout waiting for Yadoms answer");
    }
 
    //--------------------------------------------------------------
@@ -94,7 +94,7 @@ protected:
          return false;
 
       if (messageSize < 1)
-         throw std::runtime_error("yScriptApiWrapper::readKeyword : received Yadoms answer is zero length");
+         throw std::runtime_error("yScriptApiWrapper::tryReceiveAnswer : received Yadoms answer is zero length");
 
       // Unserialize received message
       std::istringstream iss(std::string(message, messageSize), std::ios::binary);
@@ -103,7 +103,7 @@ protected:
       ia >> requestId;
 
       if (requestId != expectedAnswerId)
-         throw std::out_of_range("yScriptApiWrapper::readKeyword : received Yadoms answer is wrong type");
+         throw std::out_of_range("yScriptApiWrapper::tryReceiveAnswer : received Yadoms answer is wrong type");
 
       ia >> answer;
 

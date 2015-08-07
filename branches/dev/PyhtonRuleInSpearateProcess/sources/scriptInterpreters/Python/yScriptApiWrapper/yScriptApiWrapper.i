@@ -67,3 +67,7 @@
 shared::script::yScriptApi::IYScriptApi* createScriptApiInstance(const std::string& yScriptApiAccessorId);
 %feature("autodoc", "Create the yScriptApi instance (need the context accessor ID provided by Yadoms)") createScriptApiInstance;
 
+// yScriptApi instance destruction method
+void deleteScriptApiInstance(shared::script::yScriptApi::IYScriptApi* yApi);
+%feature("autodoc", "Delete the yScriptApi instance") deleteScriptApiInstance;
+

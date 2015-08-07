@@ -4,5 +4,11 @@
 
 shared::script::yScriptApi::IYScriptApi* createScriptApiInstance(const std::string& yScriptApiAccessorId)
 {
-   return new CYScriptApiImplementation(yScriptApiAccessorId); // TODO prévoir le delete
+   return new CYScriptApiImplementation(yScriptApiAccessorId);
+}
+
+
+void deleteScriptApiInstance(shared::script::yScriptApi::IYScriptApi* yApi)
+{
+   delete yApi;
 }
