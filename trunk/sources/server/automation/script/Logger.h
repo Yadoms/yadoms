@@ -1,38 +1,43 @@
 #pragma once
-#include "ILogger.h"
+#include <shared/script/ILogger.h>
 #include <Poco/Logger.h>
+#include <Poco/LogStream.h>
 
 namespace automation { namespace script
 {
    //-----------------------------------------------------
-   ///\brief The rule logger using Poco
+   ///\brief The rule logger
    //-----------------------------------------------------
-   class CPocoLogger : public ILogger
+   class CLogger : public shared::script::ILogger
    {
    public:
       //-----------------------------------------------------
       ///\brief               Constructor
       ///\param[in] scriptPath The script path where to log in
       //-----------------------------------------------------
-      CPocoLogger(const std::string& scriptPath);
+      CLogger(const std::string& scriptPath);
 
       //-----------------------------------------------------
       ///\brief               Destructor
       //-----------------------------------------------------
-      virtual ~CPocoLogger();
+      virtual ~CLogger();
 
    public:
       // ILogger Implementation
-      virtual void logInformation(const std::string& message);
-      virtual void logError(const std::string& message);
+      virtual std::ostream& out();
+      virtual std::ostream& error();
       // [END] ILogger Implementation
 
    private:
-
       //-----------------------------------------------------
-      ///\brief               scriptPath The script path where to log in
+      ///\brief               The Logger
       //-----------------------------------------------------
       Poco::Logger& m_pocoLogger;
+
+      //-----------------------------------------------------
+      ///\brief               The stream associated to logger
+      //-----------------------------------------------------
+      Poco::LogStream m_stream;
    };
 
 } } // namespace automation::script

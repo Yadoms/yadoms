@@ -42,8 +42,8 @@ namespace automation { namespace script
       virtual void updateScriptFile(boost::shared_ptr<const database::entities::CRule> ruleData, const std::string& code);
       virtual void deleteScriptFile(boost::shared_ptr<const database::entities::CRule> ruleData, bool doBackup = true);
       virtual boost::shared_ptr<shared::script::IRunner> createScriptRunner(boost::shared_ptr<const IProperties> scriptProperties);
-      virtual boost::shared_ptr<ILogger> createScriptLogger(const std::string& scriptPath);
-      virtual boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> createScriptContext(boost::shared_ptr<ILogger> scriptLogger);
+      virtual boost::shared_ptr<shared::script::ILogger> createScriptLogger(const std::string& scriptPath);
+      virtual boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> createScriptContext(boost::shared_ptr<shared::script::ILogger> scriptLogger);
       // [END] IFactory Implementation
 
       //-----------------------------------------------------

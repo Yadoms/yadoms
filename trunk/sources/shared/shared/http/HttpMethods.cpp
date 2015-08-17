@@ -51,7 +51,7 @@ namespace shared
       }
       catch (Poco::Exception& e) 
       {
-         std::string message = (boost::format("Fail to send get http request : %1%") % e.message()).str();
+         std::string message = (boost::format("Fail to send get http request \"%1%\" : %2%") % url % e.message()).str();
          YADOMS_LOG(error) << message;
          throw exception::CException(message);
       }

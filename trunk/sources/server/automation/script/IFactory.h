@@ -2,7 +2,7 @@
 #include <shared/script/IRunner.h>
 #include "IProperties.h"
 #include "../../database/sqlite/requesters/Rule.h"
-#include <server/automation/script/ILogger.h>
+#include <shared/script/ILogger.h>
 
 namespace automation { namespace script
 {
@@ -72,14 +72,14 @@ namespace automation { namespace script
       ///\param[in] scriptPath The script path where to log in
       ///\return              A script logger instance
       //-----------------------------------------------------
-      virtual boost::shared_ptr<ILogger> createScriptLogger(const std::string& scriptPath) = 0;
+      virtual boost::shared_ptr<shared::script::ILogger> createScriptLogger(const std::string& scriptPath) = 0;
 
       //-----------------------------------------------------
       ///\brief               Create the script context (IYScriptApi implementation)
       ///\param[in] scriptLogger The logger used for rule
       ///\return              A script context instance
       //-----------------------------------------------------
-      virtual boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> createScriptContext(boost::shared_ptr<ILogger> scriptLogger) = 0;
+      virtual boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> createScriptContext(boost::shared_ptr<shared::script::ILogger> scriptLogger) = 0;
    };
 
 } } // namespace automation::script

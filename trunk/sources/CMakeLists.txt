@@ -93,6 +93,7 @@ set(BOOST_LIBS
 	date_time 
 	chrono 
 	regex
+	serialization
 )
 
 # search boost libs
@@ -217,7 +218,6 @@ set(YADOMS_SRC
 	server/automation/script/IDayLight.h
 	server/automation/script/IFactory.h
 	server/automation/script/ILocation.h
-	server/automation/script/ILogger.h
 	server/automation/script/IGeneralInfo.h
 	server/automation/script/IInterpreterLibrary.h
 	server/automation/script/IpApiAutoLocation.h
@@ -228,8 +228,8 @@ set(YADOMS_SRC
 	server/automation/script/IProperties.h
 	server/automation/script/Location.h
 	server/automation/script/Location.cpp
-	server/automation/script/PocoLogger.h
-	server/automation/script/PocoLogger.cpp
+	server/automation/script/Logger.h
+	server/automation/script/Logger.cpp
 	server/automation/script/Properties.h
 	server/automation/script/Properties.cpp
 	server/automation/script/YScriptApiImplementation.h

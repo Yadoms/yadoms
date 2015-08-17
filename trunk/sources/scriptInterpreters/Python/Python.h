@@ -1,7 +1,7 @@
 #pragma once
+#include "IPythonExecutable.h"
 #include <shared/script/IInterpreter.h>
 #include <shared/DataContainer.h>
-#include "IInitializer.h"
 
 //--------------------------------------------------------------
 /// \brief	Python interpreter
@@ -29,9 +29,9 @@ public:
 
 private:
    //--------------------------------------------------------------
-   /// \brief	The Python interpreter initializer
+   /// \brief	The Python executable accessor
    //--------------------------------------------------------------
-   const boost::shared_ptr<IInitializer> m_initializer;
+   boost::shared_ptr<IPythonExecutable> m_executable;
 };
 
 

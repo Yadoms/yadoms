@@ -1,5 +1,6 @@
 #pragma once
 #include "yScriptApi/IYScriptApi.h"
+#include "ILogger.h"
 
 namespace shared { namespace script
 {
@@ -17,8 +18,9 @@ namespace shared { namespace script
       //-----------------------------------------------------
       ///\brief               Run the script (blocks while script is running)
       ///\param[in] context   IYScriptApi context, use by the script to interact with Yadoms
+      ///\param[in] scriptLogger The logger associated to the rule
       //-----------------------------------------------------
-      virtual void run(yScriptApi::IYScriptApi& context) = 0;
+      virtual void run(yScriptApi::IYScriptApi& context, boost::shared_ptr<ILogger> scriptLogger) = 0;
 
       //-----------------------------------------------------
       ///\brief               Asynchronous stop of a runnning script
