@@ -201,6 +201,7 @@ set(SHARED_LIB_SRC
 
    shared/script/ImplementationHelper.h
    shared/script/IInterpreter.h
+	shared/script/ILogger.h
    shared/script/IRunner.h
 
    shared/script/yScriptApi/commonIncludes.h

@@ -10,7 +10,7 @@
 #include "YScriptApiImplementation.h"
 #include "GeneralInfo.h"
 #include "Properties.h"
-#include "PocoLogger.h"
+#include "Logger.h"
 #include "tools/SupportedPlatformsChecker.h"
 
 namespace automation { namespace script
@@ -57,7 +57,7 @@ void CFactory::loadInterpreters()
          }
          catch (shared::exception::CInvalidParameter& e)
          {
-            YADOMS_LOG(warning) << "Interpreter " << interpreterDirectory->filename().string() << "is not valid and will not be loaded : " << e.what();
+            YADOMS_LOG(warning) << "Interpreter " << interpreterDirectory->filename().string() << " is not valid and will not be loaded : " << e.what();
          }
       }
    }
@@ -238,13 +238,13 @@ boost::shared_ptr<shared::script::IRunner> CFactory::createScriptRunner(boost::s
    }
 }
 
-boost::shared_ptr<ILogger> CFactory::createScriptLogger(const std::string& scriptPath)
+boost::shared_ptr<shared::script::ILogger> CFactory::createScriptLogger(const std::string& scriptPath)
 {
-   boost::shared_ptr<ILogger> logger(new CPocoLogger(scriptPath));
+   boost::shared_ptr<shared::script::ILogger> logger(new CLogger(scriptPath));
    return logger;
 }
 
-boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> CFactory::createScriptContext(boost::shared_ptr<ILogger> scriptLogger)
+boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> CFactory::createScriptContext(boost::shared_ptr<shared::script::ILogger> scriptLogger)
 {
    boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> context(
       new CYScriptApiImplementation(scriptLogger, m_pluginGateway, m_configurationManager, m_dbAcquisitionRequester, m_generalInfo));

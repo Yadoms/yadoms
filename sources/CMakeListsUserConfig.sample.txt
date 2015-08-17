@@ -8,7 +8,7 @@
 
 
 #define Boost ROOT
-set(BOOST_ROOT "/path/to/boost/boost_1_57_0")
+set(BOOST_ROOT "/path/to/boost/boost_1_58_0")
 
 #define Poco ROOT
 set(POCO_ROOT "path/to/poco/poco-1.6.0-all")

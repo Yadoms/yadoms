@@ -10,6 +10,15 @@ set(PYTHON_WRAPPER_SOURCES
 
    stdafx.h
    stdafx.cpp
+   
+	swigpyrun.h
+     
+   ../Messages.hpp
+   PythonLibInclude.h
+   yScriptApiInstance.h
+   yScriptApiInstance.cpp
+   yScriptApiImplementation.h
+   yScriptApiImplementation.cpp
 )
 
 #########################################
@@ -37,10 +46,14 @@ set(PYTHON_WRAPPER_LINK
 #########################################
 ## Place here all additional compiler flags
 #########################################
-# Special workaround for Python under Windows : When using the Windows installer version of Python, the debug library is not provide.
-# We should the use this workaround to make our application build in debug configuration.
+# Special workaround for Python under Windows : When using the Windows installer version of Python, the debug library is not provided.
+# We should use this workaround to make our application build in debug configuration.
 if(WIN32 AND NOT PYTHON_USE_SOURCES)
    add_definitions(-DSWIG_PYTHON_INTERPRETER_NO_DEBUG)
+endif()
+
+if(PYTHON_USE_SOURCES)
+   add_definitions(-DPYTHON_USE_SOURCES)
 endif()
 
 ## Remove some warnings on generated code
@@ -57,6 +70,15 @@ SCRIPT_API_WRAPPER_INCLDIR(${PYTHON_WRAPPER_INCLDIR})
 SCRIPT_API_WRAPPER_LINK(${PYTHON_WRAPPER_LINK})
 
 
+#########################################
+## Add pre-build step to generate swigpyrun.h file
+##
+## Do not use PRE_BUILD option because it is working only with VisualStudio
+## To make it work, just define a custom_command, and place 
+## the output filename into the target sources to make it generated at build time
+#########################################
+add_custom_command(OUTPUT swigpyrun.h 
+  COMMAND ${SWIG_EXECUTABLE} -python -external-runtime ${CMAKE_CURRENT_SOURCE_DIR}/swigpyrun.h)
 
 #########################################
 ## Add post-build step to deploy Swig-generated file

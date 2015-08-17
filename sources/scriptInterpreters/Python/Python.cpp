@@ -1,22 +1,18 @@
 #include "stdafx.h"
 #include "Python.h"
-#include "Initializer.h"
 #include <shared/script/ImplementationHelper.h>
-#include "PythonLibInclude.h"
 #include <shared/Log.h>
-#include "PythonObject.h"
 #include "Runner.h"
 #include "PythonException.hpp"
-#include "ScriptLoader.h"
+#include "PythonExecutable.h"
 #include "ScriptFile.h"
-#include "SubInterpreter.h"
 
 // Declare the script interpreter
 IMPLEMENT_SCRIPT_INTERPRETER(CPython)
 
 
 CPython::CPython()
-   :m_initializer(new CInitializer)
+   :m_executable(boost::make_shared<CPythonExecutable>())
 {
 }
 
@@ -32,15 +28,12 @@ std::string CPython::name() const
 
 bool CPython::isAvailable() const
 {
-   // As Python is staticaly linked, Python library is already loaded.
-   // Just test it asking its version (and check version number).
-   const std::string pythonVersion(Py_GetVersion());
-   if (pythonVersion.empty())
+   if (!m_executable->found())
       return false;
 
-   static const std::string expectedVersion("2.7");
-   size_t versionFoundPosition = pythonVersion.find(expectedVersion);
-   if (versionFoundPosition == std::string::npos || versionFoundPosition != 0)
+   // Now check version
+   static const std::string expectedVersionString("Python 2.7");
+   if (m_executable->version().find(expectedVersionString) == std::string::npos)
       return false;
 
    return true;
@@ -60,6 +53,14 @@ void CPython::saveScriptContent(const std::string& scriptPath, const std::string
 
 boost::shared_ptr<shared::script::IRunner> CPython::createRunner(const std::string& scriptPath, const shared::CDataContainer& scriptConfiguration, const std::string& interpreterPath) const
 {
-   boost::shared_ptr<shared::script::IRunner> runner(new CRunner(scriptPath, interpreterPath, scriptConfiguration));
-   return runner;
+   try
+   {
+      boost::shared_ptr<shared::script::IRunner> runner(new CRunner(scriptPath, interpreterPath, m_executable, scriptConfiguration));
+      return runner;
+   }
+   catch (CPythonException& ex)
+   {
+      YADOMS_LOG(error) << "Unable to create the Python runner object, " << ex.what();
+      return boost::shared_ptr<shared::script::IRunner>();
+   }
 }

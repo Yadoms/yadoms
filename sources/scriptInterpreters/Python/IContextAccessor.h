@@ -1,28 +1,19 @@
 #pragma once
-#include "IInitializer.h"
-#include "PythonLibInclude.h"
 
 //--------------------------------------------------------------
-/// \brief	Python initializer to support RAII idiom
+/// \brief	yScriptApi context accessor, used by script to interact with Yadoms
 //--------------------------------------------------------------
-class CInitializer : public IInitializer
+class IContextAccessor
 {
 public:
    //--------------------------------------------------------------
-   /// \brief	Constructor
-   //--------------------------------------------------------------
-   CInitializer();
-
-   //--------------------------------------------------------------
    /// \brief	Destructor
    //--------------------------------------------------------------
-   virtual ~CInitializer();
+   virtual ~IContextAccessor() {}
 
    //--------------------------------------------------------------
-   /// \brief	The global Python thread state
+   /// \brief	Get the context accessor ID (unique on full system)
+   /// \return The context accessor ID
    //--------------------------------------------------------------
-   PyThreadState* m_globalPythonThreadState;
+   virtual std::string id() const = 0;
 };
-
-
-

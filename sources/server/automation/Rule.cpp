@@ -39,7 +39,7 @@ void CRule::doWork()
    try
    {
       boost::shared_ptr<script::IProperties> scriptProperties = m_scriptFactory->createScriptProperties(m_ruleData);
-      boost::shared_ptr<script::ILogger> scriptLogger = m_scriptFactory->createScriptLogger(scriptProperties->scriptPath());
+      boost::shared_ptr<shared::script::ILogger> scriptLogger = m_scriptFactory->createScriptLogger(scriptProperties->scriptPath());
       boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> context = m_scriptFactory->createScriptContext(scriptLogger);
 
       // Loop on the script.
@@ -52,7 +52,7 @@ void CRule::doWork()
 
          boost::chrono::system_clock::time_point start = boost::chrono::system_clock::now();
 
-         m_runner->run(*context);
+         m_runner->run(*context, scriptLogger);
 
          boost::chrono::system_clock::time_point end = boost::chrono::system_clock::now();
 
@@ -62,7 +62,7 @@ void CRule::doWork()
 
          boost::this_thread::interruption_point();
 
-      } while (m_runner->isOk());
+      } while (m_runner->isOk());// TODO à la demande de Jeanmi, enlever la boucle ? (un script doit passer dans l'état arrêté à la fin)
 
       m_ruleStateHandler->signalRuleError(m_ruleData->Id(), (boost::format("%1% exit with error : %2%") % m_ruleData->Name() % m_runner->error()).str());
    }

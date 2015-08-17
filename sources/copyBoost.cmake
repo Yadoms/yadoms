@@ -52,7 +52,7 @@ MACRO(POST_BUILD_COPY_BOOST_LIBRARIES target)
       #Generate post build command for debug boost libs
       FOREACH (BOOSTLIBRARY ${BOOST_LIBS_DEBUG})
 
-         #construct the dll/so fil path
+         #construct the dll/so file path
          get_filename_component(UTF_BASE_NAME ${BOOSTLIBRARY} NAME_WE)
          get_filename_component(UTF_PATH ${BOOSTLIBRARY} PATH)
       

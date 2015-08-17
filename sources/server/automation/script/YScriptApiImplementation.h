@@ -1,10 +1,10 @@
 #pragma once
 #include <shared/script/yScriptApi/IYScriptApi.h>
+#include <shared/script/ILogger.h>
 #include "database/IAcquisitionRequester.h"
 #include "dataAccessLayer/IConfigurationManager.h"
 #include "communication/ISendMessageAsync.h"
 #include "IGeneralInfo.h"
-#include "ILogger.h"
 
 namespace automation { namespace script
 {
@@ -24,7 +24,7 @@ namespace automation { namespace script
       ///\param[in] dbAcquisitionRequester  Database acquisition requester
       ///\param[in] generalInfo  Database acquisition requester
       //-----------------------------------------------------
-      CYScriptApiImplementation(boost::shared_ptr<ILogger> ruleLogger,
+      CYScriptApiImplementation(boost::shared_ptr<shared::script::ILogger> ruleLogger,
          boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
          boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
          boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
@@ -42,16 +42,13 @@ namespace automation { namespace script
       virtual void writeKeyword(int keywordId, const std::string& newState);
       virtual void sendNotification(int keywordId, int recipientId, const std::string& message);
       virtual std::string getInfo(const std::string& key) const;
-      virtual void log(const std::string& message);
-      virtual void logError(const std::string& message);
-      virtual void fail(const std::string& errorMessage);
       // [END] shared::script::yScriptApi::IYScriptApi implementation
 
    private:
       //-----------------------------------------------------
       ///\brief               The rule logger
       //-----------------------------------------------------
-      boost::shared_ptr<ILogger> m_ruleLogger;
+      boost::shared_ptr<shared::script::ILogger> m_ruleLogger;
 
       //-----------------------------------------------------
       ///\brief               The plugin access (to send commands to plugins)

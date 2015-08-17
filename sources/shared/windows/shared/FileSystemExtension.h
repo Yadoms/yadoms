@@ -68,7 +68,7 @@ namespace shared
       }
 
       //--------------------------------------------------------------
-      /// \brief			Get the current module path.
+      /// \brief			Get the current module path  (drive + path, without filename and ext).
       ///               This code must be executed in the module which the path is required,
       ///               so let it in the header file.
       //--------------------------------------------------------------
