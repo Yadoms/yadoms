@@ -50,9 +50,14 @@ void CContextAccessor::doWork()
       {
          try
          {
-            if (receiveMessageQueue.timed_receive(message, m_messageQueueMessageSize, messageSize, messagePriority, boost::posix_time::ptime(boost::posix_time::second_clock::universal_time() + boost::posix_time::seconds(1)))) // TODO vérfier comment se passe la sortie sur la destruction (arrêt du thread)
-               processMessage(message, messageSize, sendMessageQueue);
+            // boost::interprocess::message_queue::receive is not responding to boost thread interruption, so we need to do some
+            // polling and call boost::this_thread::interruption_point to exit properly
+            bool messageWasReceived = receiveMessageQueue.timed_receive(message, m_messageQueueMessageSize, messageSize, messagePriority,
+               boost::posix_time::ptime(boost::posix_time::second_clock::universal_time() + boost::posix_time::seconds(1)));
             boost::this_thread::interruption_point();
+
+            if (messageWasReceived)
+               processMessage(message, messageSize, sendMessageQueue);
          }
          catch (shared::exception::CInvalidParameter& ex)
          {
@@ -66,8 +71,17 @@ void CContextAccessor::doWork()
    }
    catch (boost::thread_interrupted&)
    {
-      YADOMS_LOG(debug) << "Close message queues";
    }
+   catch (std::exception& ex)
+   {
+      YADOMS_LOG(error) << ex.what();
+   }
+   catch (...)
+   {
+      YADOMS_LOG(error) << "Unknown error";
+   }
+
+   YADOMS_LOG(debug) << "Close message queues";
 }
 
 void CContextAccessor::processMessage(const char* message, size_t messageSize, boost::interprocess::message_queue& messageQueue)

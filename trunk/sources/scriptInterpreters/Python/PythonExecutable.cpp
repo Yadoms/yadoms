@@ -109,8 +109,8 @@ boost::shared_ptr<Poco::ProcessHandle> CPythonExecutable::startModule(boost::sha
 
       Poco::PipeInputStream iOutStr(outPipe);
       Poco::PipeInputStream iErrStr(errPipe);
-      Poco::StreamCopier::copyStream(iOutStr, scriptLogger->out());
-      Poco::StreamCopier::copyStream(iErrStr, scriptLogger->error());
+      Poco::StreamCopier::copyStreamUnbuffered(iOutStr, scriptLogger->out());
+      Poco::StreamCopier::copyStreamUnbuffered(iErrStr, scriptLogger->error());
 
       return process;
    }
