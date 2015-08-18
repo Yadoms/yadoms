@@ -45,8 +45,12 @@
 
 /* Add method documentation */
 /* Can not use Doxygen comments from the C++ code, because "autodoc" is a Python specificity */
-/* TODO à compléter */
-%feature("autodoc", "Read the last known state of the keyword (empty if no known state). State returned as string.") readKeyword;
+%feature("autodoc", "Read the last known state of the keyword. State returned as string (empty if no known state).") readKeyword;
+%feature("autodoc", "Wait for a new acquisition on a keyword, with timeout (format is \"hh:mm:ss.xxx\". No timeout if empty). State returned as string (empty if timeout).") waitForAcquisition;
+%feature("autodoc", "Wait for a new acquisition on a keyword list, with timeout (format is \"hh:mm:ss.xxx\". No timeout if empty). Returned value is a pair of the keyword Id who changed, and its new value. The keyword Id is -1 if timeout.") waitForAcquisitions;
+%feature("autodoc", "Change state of a keyword.") writeKeyword;
+%feature("autodoc", "Send a notification.") sendNotification;
+%feature("autodoc", "Get general informations. Supported values for key are sunrise, sunset, latitude, longitude, altitude, yadomsServerOS, yadomsServerVersion.") getInfo;
 
 /* Add an exception handler to each library method */
 %exception {

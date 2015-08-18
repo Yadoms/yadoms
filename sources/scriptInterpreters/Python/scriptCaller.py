@@ -33,7 +33,11 @@ if __name__ == '__main__':
    # Call script
    sys.path.append(scriptPath)
    script = __import__(scriptModule)
-   script.yMain(yApi)
+   try:
+      script.yMain(yApi)
+   except KeyboardInterrupt:
+      # Disable the keyboard interrupt to be gracefully processed by Yadoms
+      pass
    
    # Delete yScript API instance
    yScriptApiWrapper.deleteScriptApiInstance(yApi)

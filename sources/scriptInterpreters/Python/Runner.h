@@ -36,6 +36,13 @@ protected:
 
 private:
    //--------------------------------------------------------------
+   /// \brief	            Filter some return codes, which are not really errors
+   /// \param[in] code     Return code (from call to Poco::ProcessHandle::wait
+   /// \return             true if it is a real error, false if not
+   //--------------------------------------------------------------
+   bool isError(int code) const;
+
+   //--------------------------------------------------------------
    /// \brief	Script file
    //--------------------------------------------------------------
    boost::shared_ptr<const IScriptFile> m_scriptFile;
