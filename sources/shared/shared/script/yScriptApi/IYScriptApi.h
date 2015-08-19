@@ -64,6 +64,13 @@ namespace shared { namespace script { namespace yScriptApi
       ///    - sunset : get sunset hour : returns hour in the day (as double encoded in string)
       //-----------------------------------------------------
       virtual std::string getInfo(const std::string& key) const = 0;
+
+      //-----------------------------------------------------
+      ///\brief Can be used to prevent a rule for auto-restart
+      ///\param[in] enable true to active auto-restart, false to disable the rule (after the current execution is complete)
+      ///\note : by default, a rule auto-restart at its end
+      //-----------------------------------------------------
+      virtual void ruleEnable(bool enable = true) = 0;
    };
 	
 } } } // namespace shared::script::yScriptApi

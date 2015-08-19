@@ -155,6 +155,14 @@ void CContextAccessor::processMessage(const char* message, size_t messageSize, b
       sendAnswer(kAnsGetInfo, answer, messageQueue);
       break;
    }
+   case kReqRuleEnable:
+   {
+      CReqRuleEnable request;
+      ia >> request;
+
+      m_context.ruleEnable(request.m_enable);
+      break;
+   }
 
    default:
       throw shared::exception::CInvalidParameter("message");

@@ -15,6 +15,7 @@ enum ERequestIdentifier
    kReqWriteKeyword,
    kReqSendNotification,
    kReqGetInfo,
+   kReqRuleEnable,
 };
 
 //--------------------------------------------------------------
@@ -155,6 +156,26 @@ private:
    void serialize(Archive& ar, const unsigned int version)
    {
       ar & m_key;
+   }
+};
+
+//--------------------------------------------------------------
+/// \brief The rule enable request
+//--------------------------------------------------------------
+class CReqRuleEnable
+{
+public:
+   CReqRuleEnable() {}
+   virtual ~CReqRuleEnable() {}
+
+   bool m_enable;
+
+private:
+   friend class boost::serialization::access;
+   template<class Archive>
+   void serialize(Archive& ar, const unsigned int version)
+   {
+      ar & m_enable;
    }
 };
 

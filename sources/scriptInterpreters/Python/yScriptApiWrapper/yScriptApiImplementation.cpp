@@ -96,3 +96,9 @@ std::string CYScriptApiImplementation::getInfo(const std::string& key) const
    return answer.m_returnValue;
 }
 
+void CYScriptApiImplementation::ruleEnable(bool enable)
+{
+   CReqRuleEnable request;
+   request.m_enable = enable;
+   sendRequest(kReqRuleEnable, request);
+}

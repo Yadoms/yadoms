@@ -42,7 +42,14 @@ namespace automation { namespace script
       virtual void writeKeyword(int keywordId, const std::string& newState);
       virtual void sendNotification(int keywordId, int recipientId, const std::string& message);
       virtual std::string getInfo(const std::string& key) const;
+      virtual void ruleEnable(bool enable = true);
       // [END] shared::script::yScriptApi::IYScriptApi implementation
+
+   public: // Public methods, for Yadoms internal usage
+      //-----------------------------------------------------
+      ///\brief               Check if rule is still enabled
+      //-----------------------------------------------------
+      bool ruleEnabled() const;
 
    private:
       //-----------------------------------------------------
@@ -64,6 +71,11 @@ namespace automation { namespace script
       ///\brief               General information requester
       //-----------------------------------------------------
       boost::shared_ptr<IGeneralInfo> m_generalInfo;
+
+      //-----------------------------------------------------
+      ///\brief               Flag set if rule is still enabled (true by default)
+      //-----------------------------------------------------
+      bool m_ruleEnabled;
    };
 
 } } // namespace automation::script

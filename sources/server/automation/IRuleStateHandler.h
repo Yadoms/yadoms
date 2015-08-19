@@ -20,10 +20,16 @@ namespace automation
       virtual void signalRuleStart(int ruleId) = 0;
 
       //-----------------------------------------------------
-      ///\brief               Signal an error on a rule
+      ///\brief               Signal a normal stop on a rule
       ///\param[in] ruleId    The rule ID
       //-----------------------------------------------------
       virtual void signalNormalRuleStop(int ruleId) = 0;
+
+      //-----------------------------------------------------
+      ///\brief               Signal a normal stop on a rule, and disable it
+      ///\param[in] ruleId    The rule ID
+      //-----------------------------------------------------
+      virtual void signalNormalRuleStopAndDisable(int ruleId) = 0;
 
       //-----------------------------------------------------
       ///\brief               Signal an error on a rule

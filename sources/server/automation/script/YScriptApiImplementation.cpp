@@ -23,12 +23,18 @@ CYScriptApiImplementation::CYScriptApiImplementation(
    :m_ruleLogger(ruleLogger),
    m_pluginGateway(pluginGateway),
    m_dbAcquisitionRequester(dbAcquisitionRequester),
-   m_generalInfo(generalInfo)
+   m_generalInfo(generalInfo),
+   m_ruleEnabled(true)
 {
 }
 
 CYScriptApiImplementation::~CYScriptApiImplementation()
 {
+}
+
+bool CYScriptApiImplementation::ruleEnabled() const
+{
+   return m_ruleEnabled;
 }
 
 std::string CYScriptApiImplementation::readKeyword(int keywordId) const
@@ -147,6 +153,12 @@ std::string CYScriptApiImplementation::getInfo(const std::string& key) const
       YADOMS_LOG(error) << "getInfo, unknown exception, please report to Yadoms team";
       return std::string();
    }
+}
+
+
+void CYScriptApiImplementation::ruleEnable(bool enable)
+{
+   m_ruleEnabled = enable;
 }
 
 } } // namespace automation::script
