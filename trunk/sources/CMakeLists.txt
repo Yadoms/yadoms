@@ -219,7 +219,10 @@ set(YADOMS_SRC
 	server/automation/script/IFactory.h
 	server/automation/script/ILocation.h
 	server/automation/script/IGeneralInfo.h
+   server/automation/script/IInternalScriptApiImplementation.h
 	server/automation/script/IInterpreterLibrary.h
+   server/automation/script/InternalScriptApiImplementation.h
+   server/automation/script/InternalScriptApiImplementation.cpp
 	server/automation/script/IpApiAutoLocation.h
 	server/automation/script/IpApiAutoLocation.cpp
    server/automation/script/InterpreterNotFound.hpp

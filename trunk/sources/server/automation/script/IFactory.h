@@ -1,6 +1,7 @@
 #pragma once
 #include <shared/script/IRunner.h>
 #include "IProperties.h"
+#include "IInternalScriptApiImplementation.h"
 #include "../../database/sqlite/requesters/Rule.h"
 #include <shared/script/ILogger.h>
 
@@ -79,7 +80,7 @@ namespace automation { namespace script
       ///\param[in] scriptLogger The logger used for rule
       ///\return              A script context instance
       //-----------------------------------------------------
-      virtual boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> createScriptContext(boost::shared_ptr<shared::script::ILogger> scriptLogger) = 0;
+      virtual boost::shared_ptr<IInternalScriptApiImplementation> createScriptContext(boost::shared_ptr<shared::script::ILogger> scriptLogger) = 0;
    };
 
 } } // namespace automation::script

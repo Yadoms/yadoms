@@ -45,6 +45,20 @@ void CRuleStateHandler::signalNormalRuleStop(int ruleId)
    YADOMS_LOG(information) << "Stop rule #" << ruleId;
 }
 
+void CRuleStateHandler::signalNormalRuleStopAndDisable(int ruleId)
+{
+   // Record event
+   boost::shared_ptr<database::entities::CRule> ruleData(new database::entities::CRule);
+   ruleData->Id = ruleId;
+   ruleData->Enabled = false;
+   ruleData->State = database::entities::ERuleState::kStoppedValue;
+   ruleData->StopDate = shared::event::now();
+   ruleData->ErrorMessage = std::string();
+   m_ruleRequester->updateRule(ruleData);
+
+   YADOMS_LOG(information) << "Stop and disable rule #" << ruleId;
+}
+
 void CRuleStateHandler::signalRuleError(int ruleId, const std::string& error)
 {
    // Record error

@@ -51,6 +51,7 @@
 %feature("autodoc", "Change state of a keyword.") writeKeyword;
 %feature("autodoc", "Send a notification.") sendNotification;
 %feature("autodoc", "Get general informations. Supported values for key are sunrise, sunset, latitude, longitude, altitude, yadomsServerOS, yadomsServerVersion.") getInfo;
+%feature("autodoc", "Can be used to prevent a rule for auto-restart (if set to false).") ruleEnable;
 
 /* Add an exception handler to each library method */
 %exception {

@@ -31,6 +31,7 @@ namespace automation
       // IRuleStateHandler Implementation
       virtual void signalRuleStart(int ruleId);
       virtual void signalNormalRuleStop(int ruleId);
+      virtual void signalNormalRuleStopAndDisable(int ruleId);
       virtual void signalRuleError(int ruleId, const std::string& error);
       virtual void signalRulesStartError(const std::string& error);
       // [END] IRuleStateHandler Implementation

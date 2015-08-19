@@ -7,7 +7,7 @@
 #include <shared/script/IInterpreter.h>
 #include <shared/DynamicLibrary.h>
 #include "InterpreterLibrary.h"
-#include "YScriptApiImplementation.h"
+#include "InternalScriptApiImplementation.h"
 #include "GeneralInfo.h"
 #include "Properties.h"
 #include "Logger.h"
@@ -244,10 +244,10 @@ boost::shared_ptr<shared::script::ILogger> CFactory::createScriptLogger(const st
    return logger;
 }
 
-boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> CFactory::createScriptContext(boost::shared_ptr<shared::script::ILogger> scriptLogger)
+boost::shared_ptr<IInternalScriptApiImplementation> CFactory::createScriptContext(boost::shared_ptr<shared::script::ILogger> scriptLogger)
 {
-   boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> context(
-      new CYScriptApiImplementation(scriptLogger, m_pluginGateway, m_configurationManager, m_dbAcquisitionRequester, m_generalInfo));
+   boost::shared_ptr<IInternalScriptApiImplementation> context(
+      new InternalScriptApiImplementation(scriptLogger, m_pluginGateway, m_configurationManager, m_dbAcquisitionRequester, m_generalInfo));
    return context;
 }
 
