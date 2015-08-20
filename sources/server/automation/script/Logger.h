@@ -15,12 +15,18 @@ namespace automation { namespace script
       ///\brief               Constructor
       ///\param[in] scriptPath The script path where to log in
       //-----------------------------------------------------
-      CLogger(const std::string& scriptPath);
+      CLogger(const boost::filesystem::path& scriptPath);
 
       //-----------------------------------------------------
       ///\brief               Destructor
       //-----------------------------------------------------
       virtual ~CLogger();
+
+      //-----------------------------------------------------
+      ///\brief               Get the full path of the script log file 
+      ///\return              Full path of the script log file
+      //-----------------------------------------------------
+      static boost::filesystem::path logFile(const boost::filesystem::path& scriptPath);
 
    public:
       // ILogger Implementation
@@ -33,6 +39,11 @@ namespace automation { namespace script
       ///\brief               The Logger
       //-----------------------------------------------------
       Poco::Logger& m_pocoLogger;
+
+      //-----------------------------------------------------
+      ///\brief               The main log file
+      //-----------------------------------------------------
+      boost::filesystem::path m_logFile;
 
       //-----------------------------------------------------
       ///\brief               The stream associated to logger
