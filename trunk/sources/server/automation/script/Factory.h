@@ -41,6 +41,7 @@ namespace automation { namespace script
       virtual std::string getScriptFile(boost::shared_ptr<const database::entities::CRule> ruleData);
       virtual void updateScriptFile(boost::shared_ptr<const database::entities::CRule> ruleData, const std::string& code);
       virtual void deleteScriptFile(boost::shared_ptr<const database::entities::CRule> ruleData, bool doBackup = true);
+      virtual std::string getScriptLogFile(boost::shared_ptr<const database::entities::CRule> ruleData);
       virtual boost::shared_ptr<shared::script::IRunner> createScriptRunner(boost::shared_ptr<const IProperties> scriptProperties);
       virtual boost::shared_ptr<shared::script::ILogger> createScriptLogger(const std::string& scriptPath);
       virtual boost::shared_ptr<IInternalScriptApiImplementation> createScriptContext(boost::shared_ptr<shared::script::ILogger> scriptLogger);

@@ -59,6 +59,14 @@ namespace automation { namespace script
       ///\param[in] doBackup  Do a backup if true
       //-----------------------------------------------------
       virtual void deleteScriptFile(boost::shared_ptr<const database::entities::CRule> ruleData, bool doBackup = true) = 0;
+
+      //-----------------------------------------------------
+      ///\brief               Get the script log file
+      ///\param[in] ruleData  The rule raw data
+      ///\return              The rule log file, empty if not available
+      ///\throw CInvalidParameter if rule ID not found
+      //-----------------------------------------------------
+      virtual std::string getScriptLogFile(boost::shared_ptr<const database::entities::CRule> ruleData) = 0;
       
       //-----------------------------------------------------
       ///\brief               Create a script runner

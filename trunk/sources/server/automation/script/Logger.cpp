@@ -12,8 +12,8 @@
 namespace automation { namespace script
 {
 
-CLogger::CLogger(const std::string& scriptPath)
-   :m_pocoLogger(Poco::Logger::get(std::string("Scripts.locals.") + boost::filesystem::path(scriptPath).stem().string())),
+CLogger::CLogger(const boost::filesystem::path& scriptPath)
+   :m_pocoLogger(Poco::Logger::get(std::string("Scripts.locals.") + scriptPath.stem().string())),
    m_stream(m_pocoLogger)
 {
    // Configure the logger
@@ -29,9 +29,7 @@ CLogger::CLogger(const std::string& scriptPath)
 
    // fileChannel
    Poco::AutoPtr<Poco::SimpleFileChannel> fileChannel(new Poco::SimpleFileChannel);
-   fileChannel->setProperty("path", scriptPath + "/yadomsScript.log");
-   fileChannel->setProperty("secondaryPath", scriptPath + "/yadomsScript1.log");
-   fileChannel->setProperty("rotation", "1 M");
+   fileChannel->setProperty("path", logFile(scriptPath).string());
 
    // fileFormatterChannel
    Poco::AutoPtr<Poco::PatternFormatter> patternFormatter(new Poco::PatternFormatter);
@@ -56,6 +54,11 @@ CLogger::CLogger(const std::string& scriptPath)
 CLogger::~CLogger()
 {
    Poco::Logger::destroy(m_pocoLogger.name());
+}
+
+boost::filesystem::path CLogger::logFile(const boost::filesystem::path& scriptPath)
+{
+   return scriptPath / "yadomsScript.log";
 }
 
 std::ostream& CLogger::out()

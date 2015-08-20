@@ -39,7 +39,7 @@ private:
    //--------------------------------------------------------------
    static const std::string ScriptName;         ///< Be careful, in Python, filename is also the Python module name, and modules are globals.
    static const std::string Module;
-   static const std::string PythonExtension;    ///< Standard Pyhton scripts extension
+   static const std::string PythonExtension;    ///< Standard Python scripts extension
    static const std::string ScriptEntryPoint;   ///< Function name of the Python script entry point
 };
 

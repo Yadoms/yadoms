@@ -150,6 +150,25 @@ std::string CRuleManager::getRuleCode(int id) const
    }
 }
 
+std::string CRuleManager::getRuleLog(int id) const
+{
+   try
+   {
+      boost::shared_ptr<database::entities::CRule> ruleData(m_dbRequester->getRule(id));
+      return m_scriptFactory->getScriptLogFile(ruleData);
+   }
+   catch(shared::exception::CEmptyResult& e)
+   {
+      YADOMS_LOG(error) << "Unable to get rule log : " << e.what();
+      return std::string();
+   }
+   catch (shared::exception::CInvalidParameter& e)
+   {
+      YADOMS_LOG(error) << "Unable to get rule log : " << e.what();
+      return std::string();
+   }
+}
+
 void CRuleManager::updateRule(boost::shared_ptr<const database::entities::CRule> ruleData)
 {
    // Check for supported modifications

@@ -215,6 +215,22 @@ void CFactory::deleteScriptFile(boost::shared_ptr<const database::entities::CRul
    }
 }
 
+std::string CFactory::getScriptLogFile(boost::shared_ptr<const database::entities::CRule> ruleData)
+{
+   boost::shared_ptr<IProperties> scriptProperties(createScriptProperties(ruleData));
+   const boost::filesystem::path scriptLogFile(CLogger::logFile(scriptProperties->scriptPath()));
+
+   if (!boost::filesystem::exists(scriptLogFile))
+      throw shared::exception::CInvalidParameter(scriptLogFile.string());
+
+   std::ifstream file(scriptLogFile.string().c_str());
+   if (!file.is_open())
+      throw shared::exception::CInvalidParameter(scriptLogFile.string());
+
+   std::istreambuf_iterator<char> eos;
+   return std::string(std::istreambuf_iterator<char>(file), eos);
+}
+
 boost::shared_ptr<shared::script::IRunner> CFactory::createScriptRunner(boost::shared_ptr<const IProperties> scriptProperties)
 {
    try

@@ -44,6 +44,14 @@ namespace automation
       virtual boost::shared_ptr<database::entities::CRule> getRule(int id) const = 0;
       
       //--------------------------------------------------------------
+      /// \brief           Get the log of the rule
+      /// \param[in] id    Rule Id
+      /// \return          The code of the rule, if available (empty string if not)
+      /// \throw           CEmptyResult if fails
+      //--------------------------------------------------------------
+      virtual std::string getRuleLog(int id) const = 0;
+      
+      //--------------------------------------------------------------
       /// \brief           Get the code of the rule
       /// \param[in] id    Rule Id
       /// \return          The code of the rule, if available (empty string if not)
