@@ -32,8 +32,11 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
 
       // IMessageFormatter implementation
       virtual int from() const;
+      virtual bool isFromProvided() const;
       virtual int to() const;
+      virtual bool isToProvided() const;
       virtual const std::string& body() const;
+      virtual bool isBodyProvided() const;
       virtual std::string formatValue() const;
       // [END] IMessageFormatter implementation
 

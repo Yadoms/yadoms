@@ -49,5 +49,20 @@ const std::string& CMessageFormatter::body() const
    return m_body;
 }
 
+bool CMessageFormatter::isFromProvided() const
+{
+   return m_from != 0;
+}
+
+bool CMessageFormatter::isToProvided() const
+{
+   return m_to != 0;
+}
+
+bool CMessageFormatter::isBodyProvided() const
+{
+   return !m_body.empty();
+}
+
 } } } } // namespace shared::plugin::yPluginApi::historization
 
