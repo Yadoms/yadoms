@@ -13,6 +13,11 @@ set(BOOST_ROOT "/path/to/boost/boost_1_58_0")
 #define Poco ROOT
 set(POCO_ROOT "path/to/poco/poco-1.6.0-all")
 
+#define OpenSSL ROOT
+set(OPENSSL_ROOT_DIR "path/to/openssl")
+
+
+
 #define CC_RPI_ROOT to cross compile for Raspberry PI (from a linux machine)
 #depending on linux machine architecture (32/64), choose from the first or second line
 #set(CC_RPI_ROOT /path/to/raspberry/git/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian)

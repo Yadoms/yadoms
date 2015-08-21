@@ -58,6 +58,13 @@ if(POCO_REQUIRE_EXACT_VERSION)
       message(FATAL_ERROR "Find POCO version : ${POCO_VERSION} and required exactly : ${POCO_REQUIRE_EXACT_VERSION}")
    endif()
 endif()
+if(POCO_REQUIRE_MINIMUM_VERSION)
+   if(NOT "${POCO_VERSION}" VERSION_GREATER "${POCO_REQUIRE_MINIMUM_VERSION}")
+      set(POCO_VERSION_CHECKED_SUCCESS 0)
+      message(FATAL_ERROR "Find POCO version : ${POCO_VERSION} and required at least : ${POCO_REQUIRE_MINIMUM_VERSION}")
+   endif()
+endif()
+
 
 if(POCO_VERSION_CHECKED_SUCCESS)
 
@@ -136,12 +143,21 @@ if(POCO_VERSION_CHECKED_SUCCESS)
      #create the Poco_INCLUDE_DIRS which contains each library include directory
      IF(EXISTS "${Poco_INCLUDE_DIR}")
        FOREACH (POCOLIB ${POCO_LIBS})
-       
+
+         #make specific treatment with PocoNetSSL
+         if(${POCOLIB} STREQUAL "PocoNetSSL")
+            #the directory is not PocoNetSSL but PocoNetSSL_OpenSSL (but library is PocoNetSSL.dll/lib/so)
+            SET(POCOLIB_SUBDIR "${POCOLIB}_OpenSSL")
+         else()
+            SET(POCOLIB_SUBDIR ${POCOLIB})
+         endif()
+
          #include directory for current lib (ensure not starting with Poco
-         SET(POCOLIB_SUBDIR ${POCOLIB})
          string(REGEX REPLACE "^Poco" "" POCOLIB_SUBDIR ${POCOLIB_SUBDIR})
          
          SET(CURRENTINCLUDE_LIB ${Poco_INCLUDE_DIR}/${POCOLIB_SUBDIR}/include)
+         
+         
          IF(EXISTS "${CURRENTINCLUDE_LIB}")
            SET(Poco_INCLUDE_DIRS ${Poco_INCLUDE_DIRS} ${CURRENTINCLUDE_LIB})
          ELSE()
@@ -172,6 +188,7 @@ if(POCO_VERSION_CHECKED_SUCCESS)
            message(FATAL_ERROR "ERROR: cannot find ${POCOLIB} RELEASE library file. Should be : ${CURRENT_RELEASE_LIB}")
          ENDIF()
          
+         set(Poco_FOUND_LIBS_NAME ${Poco_FOUND_LIBS_NAME} ${POCOLIB})
                
          if(NOT POCO_LINK_STATIC)
             #link=shared
@@ -223,7 +240,7 @@ if(POCO_VERSION_CHECKED_SUCCESS)
 
    ENDIF(NOT Poco_FOUND)
 
-   mark_as_advanced(Poco_FOUND, Poco_INCLUDE_DIRS, Poco_FOUND_LIBS, Poco_FOUND_BINS)
+   mark_as_advanced(Poco_FOUND, Poco_INCLUDE_DIRS, Poco_FOUND_LIBS, Poco_FOUND_BINS, Poco_FOUND_LIBS_NAME)
 
 endif(POCO_VERSION_CHECKED_SUCCESS)
 

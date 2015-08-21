@@ -1,0 +1,14 @@
+﻿{
+  "name": "FreeMobile SMS",
+  "description": "Envoyer des SMS via l'api FreeMobile",
+  "recipientFields" : {
+    "userId": {
+      "name": "Login FreeMobile",
+      "description": "Votre identifiant FreeMobile"
+    },
+    "apiKey" : {
+      "name" : "Clé d'identification",
+      "description" : "votre clé d'identification générée automatiquement par le service FreeMobile"
+    }
+  }
+}

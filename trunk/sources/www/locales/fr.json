@@ -194,6 +194,7 @@
       },
       "yadoms_notification_simple" : {
         "title" : "Notifier",
+        "by" : "par",
         "message" : "Message",
         "tooltip" : "Envoyer un message simple à un destinataire"
       },
