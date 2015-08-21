@@ -93,34 +93,34 @@ namespace database { namespace sqlite { namespace requesters {
 
          if(newKeyword.Details.isDefined())
          {
-            CQuery update;
-            update.Update(CKeywordTable::getTableName()).Set(CKeywordTable::getDetailsColumnName(), newKeyword.Details()).
+            CQuery updateDetails;
+            updateDetails.Update(CKeywordTable::getTableName()).Set(CKeywordTable::getDetailsColumnName(), newKeyword.Details()).
                Where(CKeywordTable::getDeviceIdColumnName(),  CQUERY_OP_EQUAL, newKeyword.DeviceId()).
                And(CKeywordTable::getNameColumnName(),  CQUERY_OP_EQUAL, newKeyword.Name());
 
-            if(m_databaseRequester->queryStatement(update) <= 0)
+            if(m_databaseRequester->queryStatement(updateDetails) <= 0)
                throw shared::exception::CEmptyResult("Fail to update Details field");
          } 
          
          if(newKeyword.Units.isDefined())
          {
-            CQuery update;
-            update.Update(CKeywordTable::getTableName()).Set(CKeywordTable::getUnitsColumnName(), newKeyword.Units()).
+            CQuery updateUnits;
+            updateUnits.Update(CKeywordTable::getTableName()).Set(CKeywordTable::getUnitsColumnName(), newKeyword.Units()).
                Where(CKeywordTable::getDeviceIdColumnName(),  CQUERY_OP_EQUAL, newKeyword.DeviceId()).
                And(CKeywordTable::getNameColumnName(),  CQUERY_OP_EQUAL, newKeyword.Name());
 
-            if(m_databaseRequester->queryStatement(update) <= 0)
+            if(m_databaseRequester->queryStatement(updateUnits) <= 0)
                throw shared::exception::CEmptyResult("Fail to update Units field");
          }    
          
 		 if (newKeyword.TypeInfo.isDefined())
          {
-            CQuery update;
-			update.Update(CKeywordTable::getTableName()).Set(CKeywordTable::getTypeInfoColumnName(), newKeyword.TypeInfo()).
+            CQuery updateValues;
+            updateValues.Update(CKeywordTable::getTableName()).Set(CKeywordTable::getTypeInfoColumnName(), newKeyword.TypeInfo()).
                Where(CKeywordTable::getDeviceIdColumnName(),  CQUERY_OP_EQUAL, newKeyword.DeviceId()).
                And(CKeywordTable::getNameColumnName(),  CQUERY_OP_EQUAL, newKeyword.Name());
 
-            if(m_databaseRequester->queryStatement(update) <= 0)
+            if(m_databaseRequester->queryStatement(updateValues) <= 0)
                throw shared::exception::CEmptyResult("Fail to update Values field");
          }
       }

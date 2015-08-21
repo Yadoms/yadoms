@@ -26,6 +26,7 @@ include(CMakeListsUserConfig.txt OPTIONAL)
 
 # Cotire 
 if(COTIRE_USE)
+   set(COTIRE_PCH_MEMORY_SCALING_FACTOR 256)
 	include(cotire.cmake)
 else()
 	include(PrecompiledHeader.cmake)
@@ -125,6 +126,17 @@ if(APPLE)
 endif()
 
 
+###############################################
+# OpenSSL
+#
+###############################################
+FIND_PACKAGE(OpenSSL)
+
+if(NOT ${OPENSSL_FOUND})
+	message("Cannot find opensll, all plugins which requires SSL features will not be loaded")
+   set(OPENSSL_INCLUDE_DIR "")
+endif()
+
 
 ###############################################
 # POCO
@@ -141,13 +153,29 @@ SET ( POCO_LIBS
    PocoZip
 )
 
-set( POCO_REQUIRE_EXACT_VERSION "1.6.0")
+#if openssl is found, just add ssl libraries (PocoCrypto and PocoNetSSL)
+if(${OPENSSL_FOUND})
+	SET ( POCO_LIBS
+      ${POCO_LIBS}
+      PocoCrypto
+      PocoNetSSL
+   )
+endif()
+
+
+set( POCO_REQUIRE_MINIMUM_VERSION "1.6.0")
 include(FindPoco.cmake)
 
 IF(NOT ${Poco_FOUND})
 	message(FATAL_ERROR "Unable to find the requested POCO libraries")
 ENDIF()
 
+if(${OPENSSL_FOUND})
+   list(FIND Poco_FOUND_LIBS_NAME PocoNetSSL PocoNetSSLFoundIndex)
+   if( ${PocoNetSSLFoundIndex} GREATER -1)
+      SET(PocoNetSSLFound true)
+   endif()
+endif()
 
 # define libraries to link with
 set(LIBS ${LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${RT_LIBRARY} ${Poco_FOUND_LIBS})
@@ -718,6 +746,7 @@ set(YADOMS_INCL_DIR
 set(YADOMS_ALL_INCL_DIR
 	${YADOMS_INCL_DIR} 
 	${BOOST_INCL_DIR} 
+	${OPENSSL_INCLUDE_DIR}
 	${Poco_INCLUDE_DIRS}
 )
 
@@ -874,8 +903,8 @@ IF(WIN32 AND NOT UNIX)
           ExecWait '\$INSTDIR\\\\bin\\\\yadoms.exe --unregisterService' $0"
      )
       
-	  #défini les permissions pour le répertoire d'install pour tous les utilisateurs
-	  #pour l'utilisateur TOUT LE MONDE (identifié par (S-1-1-0) )
+	  #d\E9fini les permissions pour le r\E9pertoire d'install pour tous les utilisateurs
+	  #pour l'utilisateur TOUT LE MONDE (identifi\E9 par (S-1-1-0) )
 	  set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS
 	  	"AccessControl::GrantOnFile  \\\"$INSTDIR\\\" \\\"(S-1-1)\\\" \\\"FullAccess\\\"
 		 AccessControl::GrantOnFile  \\\"$INSTDIR\\\" \\\"(S-1-1-0)\\\" \\\"FullAccess\\\""

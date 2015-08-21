@@ -462,6 +462,7 @@
        },
        "yadoms_notification_simple" : {
          "title" : "Notify",
+		 "by" : "by",
          "message" : "Message",
          "tooltip" : "Send a simple message to a recipient"
        },

@@ -69,10 +69,6 @@ namespace web { namespace poco {
             break;
          }
       }
-      catch (Poco::IOException& exc)
-      {
-         YADOMS_LOG(warning) << "Websocket request handler Poco::IOException : " << exc.displayText();
-      }      
       catch (Poco::TimeoutException& exc)
       {
          YADOMS_LOG(warning) << "Websocket request handler Poco::TimeoutException : " << exc.displayText();
@@ -81,6 +77,10 @@ namespace web { namespace poco {
       {
          YADOMS_LOG(warning) << "Websocket request handler Poco::NetException : " << exc.displayText();
       }  
+      catch (Poco::IOException& exc)
+      {
+         YADOMS_LOG(warning) << "Websocket request handler Poco::IOException : " << exc.displayText();
+      }    
       catch (Poco::Exception& exc)
       {
          YADOMS_LOG(warning) << "Websocket request handler Poco::Exception : " << exc.displayText();

@@ -15,7 +15,15 @@ MACRO(PLUGIN_SOURCES _targetName)
 ENDMACRO()
 
 MACRO(PLUGIN_INCLDIR _targetName)
-	set_property( TARGET ${_targetName} PROPERTY INCLUDE_DIRECTORIES ${SHARED_INCL_DIR} ${BOOST_INCL_DIR} ${Poco_INCLUDE_DIRS} ${ARGN})
+
+   #define the list of all include dirs
+   set(PLUGINS_ALL_INCLUDE_DIRS ${SHARED_INCL_DIR} ${BOOST_INCL_DIR}  ${Poco_INCLUDE_DIRS} ${ARGN})
+   #in case of OpenSSL found, just add openssl include dir
+   if(${OPENSSL_FOUND})
+      set(PLUGINS_ALL_INCLUDE_DIRS  ${PLUGINS_ALL_INCLUDE_DIRS} ${OPENSSL_INCLUDE_DIR})
+   endif()
+
+	set_property( TARGET ${_targetName} PROPERTY INCLUDE_DIRECTORIES ${PLUGINS_ALL_INCLUDE_DIRS})
 ENDMACRO()
 
 MACRO(PLUGIN_LINK _targetName)
