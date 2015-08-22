@@ -19,7 +19,7 @@ CTransceiver::~CTransceiver()
 {
 }
 
-void CTransceiver::decodeTeleInfoMessage(boost::shared_ptr<yApi::IYPluginApi> context, 
+void CTransceiver::decodeTeleInfoMessage(boost::shared_ptr<yApi::IYPluginApi> context,
 	                                     std::string & PluginName,
                                          const shared::communication::CByteBuffer& data)
 {
@@ -71,14 +71,15 @@ void CTransceiver::ParseData(boost::shared_ptr<yApi::IYPluginApi> context, std::
 	{
 		const unsigned char c = pData[ii];
 
-		if ((c == 0x0d) || (c == 0x00))
+		if ((c == 0x0a) || (c == 0x00))
 		{
 			ii++;
+			m_bufferpos = 0;
 			continue;
 		}
 
 		m_buffer[m_bufferpos] = c;
-		if (c == 0x0a || m_bufferpos == sizeof(m_buffer) - 1)
+		if (c == 0x0d || m_bufferpos == sizeof(m_buffer) - 1)
 		{
 			// discard newline, close string, parse line and clear it.
 			if (m_bufferpos > 0)
@@ -131,7 +132,7 @@ void CTransceiver::MatchLine( const unsigned char *m_buffer, boost::shared_ptr<y
 
 	if ((strlen((const char*)m_buffer)<1) || (m_buffer[0] == 0x0a))
 		return;
-	
+
 	Match t[22] = {
 	{ 12 }, //TELEINFO_TYPE_ADCO
 	{  4 }, //TELEINFO_TYPE_OPTARIF
@@ -159,6 +160,8 @@ void CTransceiver::MatchLine( const unsigned char *m_buffer, boost::shared_ptr<y
 
 	char value[20] = "";
 	char id[15] = "";
+	long lvalue = 0;
+	bool lvalueIsANumber = false;
 
 	//We get the id --> This function could be adjust for the following
 	unsigned char * pos = (unsigned char *)strchr((char*)m_buffer, ' ');
@@ -179,7 +182,17 @@ void CTransceiver::MatchLine( const unsigned char *m_buffer, boost::shared_ptr<y
 		strncpy(value, (const char*)(&m_buffer[position + 1]), t[it->second].width);
 		value[t[it->second].width] = 0;
 
-		unsigned long ulvalue = (unsigned long)atoi(value);
+		 try
+		 {
+		    lvalue = boost::lexical_cast<long>( value );
+		    lvalueIsANumber = true;
+		 }
+		 catch(std::exception &e)
+		 {
+		    lvalueIsANumber = false;
+		 }
+
+		//long lvalue = atol(value);
 
 		static unsigned char baseCounter           = 0;
 		static unsigned char LowCostCounter        = 0;
@@ -232,121 +245,121 @@ void CTransceiver::MatchLine( const unsigned char *m_buffer, boost::shared_ptr<y
 			}
 			break;
 		case TELEINFO_TYPE_BASE:
-			if ( ulvalue != 0 && baseCounter >= NB_MESSAGES_RECEIVED )
+			if ( lvalueIsANumber && baseCounter >= NB_MESSAGES_RECEIVED )
 			{
-				YADOMS_LOG(debug) << "BASE" << "=" << ulvalue;
+				YADOMS_LOG(debug) << "BASE" << "=" << lvalue;
 				m_Base.reset( new CPowerMeter( context, PluginName, "BaseCounter" ));
-				m_Base->SetValue ( ulvalue );
+				m_Base->SetValue ( lvalue );
 				m_KeywordList.push_back ( m_Base->GetHistorizable() );
 				baseCounter = 0;
 			}
 			++baseCounter;
 			break;
 		case TELEINFO_TYPE_HCHC:
-			if ( ulvalue != 0 && LowCostCounter>=NB_MESSAGES_RECEIVED )
+			if ( lvalueIsANumber && LowCostCounter>=NB_MESSAGES_RECEIVED )
 			{
-				YADOMS_LOG(debug) << "HCHC" << "=" << ulvalue;
+				YADOMS_LOG(debug) << "HCHC" << "=" << lvalue;
 				m_LowCost.reset( new CPowerMeter( context, PluginName, "LowCostCounter" ));
-				m_LowCost->SetValue ( ulvalue );
+				m_LowCost->SetValue ( lvalue );
 				m_KeywordList.push_back ( m_LowCost->GetHistorizable() );
 				LowCostCounter = 0;
 			}
 			++LowCostCounter;
 			break;
 		case TELEINFO_TYPE_HCHP:
-			if ( ulvalue != 0 && NormalCostCounter>=NB_MESSAGES_RECEIVED )
+			if ( lvalueIsANumber && NormalCostCounter>=NB_MESSAGES_RECEIVED )
 			{
-				YADOMS_LOG(debug) << "HCHP" << "=" << ulvalue;
+				YADOMS_LOG(debug) << "HCHP" << "=" << lvalue;
 				m_NormalCost.reset( new CPowerMeter( context, PluginName, "NormalCostCounter" ));
-				m_NormalCost->SetValue ( ulvalue );
+				m_NormalCost->SetValue ( lvalue );
 				m_KeywordList.push_back ( m_NormalCost->GetHistorizable() );
 				NormalCostCounter = 0;
 			}
 			++NormalCostCounter;
 			break;
 		case TELEINFO_TYPE_EJPHPM:
-			if ( ulvalue != 0 && EJPPeakPeriodCounter>=NB_MESSAGES_RECEIVED )
+			if ( lvalueIsANumber && EJPPeakPeriodCounter>=NB_MESSAGES_RECEIVED )
 			{
-				YADOMS_LOG(debug) << "EJPHPM" << "=" << ulvalue;
+				YADOMS_LOG(debug) << "EJPHPM" << "=" << lvalue;
 				m_EJPPeakPeriod.reset( new CPowerMeter( context, PluginName, "EJPPeakPeriod" ));
-				m_EJPPeakPeriod->SetValue ( ulvalue );
+				m_EJPPeakPeriod->SetValue ( lvalue );
 				m_KeywordList.push_back ( m_EJPPeakPeriod->GetHistorizable() );
 				EJPPeakPeriodCounter = 0;
 			}
 			++EJPPeakPeriodCounter;
 			break;
 		case TELEINFO_TYPE_EJPHN:
-			if ( ulvalue != 0 && EJPNormalPeriodCounter>=NB_MESSAGES_RECEIVED )
+			if ( lvalueIsANumber && EJPNormalPeriodCounter>=NB_MESSAGES_RECEIVED )
 			{
-				YADOMS_LOG(debug) << "EJPHPN" << "=" << ulvalue;
+				YADOMS_LOG(debug) << "EJPHPN" << "=" << lvalue;
 				m_EJPNormalPeriod.reset( new CPowerMeter( context, PluginName, "EJPNormalPeriod" ));
-				m_EJPNormalPeriod->SetValue ( ulvalue );
+				m_EJPNormalPeriod->SetValue ( lvalue );
 				m_KeywordList.push_back ( m_EJPNormalPeriod->GetHistorizable() );
 				EJPNormalPeriodCounter = 0;
 			}
 			++EJPNormalPeriodCounter;
 			break;
 		case TELEINFO_TYPE_BBRHCJB:
-			if ( ulvalue != 0 && TempoBlueDaysLowCostCounter>=NB_MESSAGES_RECEIVED )
+			if ( lvalueIsANumber && TempoBlueDaysLowCostCounter>=NB_MESSAGES_RECEIVED )
 			{
-				YADOMS_LOG(debug) << "BBRHCJB" << "=" << ulvalue;
+				YADOMS_LOG(debug) << "BBRHCJB" << "=" << lvalue;
 				m_TempoBlueDaysLowCostPeriod.reset( new CPowerMeter( context, PluginName, "TempoBlueDaysLowCostPeriod" ));
-				m_TempoBlueDaysLowCostPeriod->SetValue ( ulvalue );
+				m_TempoBlueDaysLowCostPeriod->SetValue ( lvalue );
 				m_KeywordList.push_back ( m_TempoBlueDaysLowCostPeriod->GetHistorizable() );
 				TempoBlueDaysLowCostCounter = 0;
 			}
 			++TempoBlueDaysLowCostCounter;
 			break;
 		case TELEINFO_TYPE_BBRHPJB:
-			if ( ulvalue != 0 && TempoBlueDaysNormalCostCounter>=NB_MESSAGES_RECEIVED )
+			if ( lvalueIsANumber && TempoBlueDaysNormalCostCounter>=NB_MESSAGES_RECEIVED )
 			{
-				YADOMS_LOG(debug) << "BBRHPJB" << "=" << ulvalue;
+				YADOMS_LOG(debug) << "BBRHPJB" << "=" << lvalue;
 				m_TempoBlueDaysNormalCostPeriod.reset( new CPowerMeter( context, PluginName, "TempoBlueDaysNormalCostPeriod" ));
-				m_TempoBlueDaysNormalCostPeriod->SetValue ( ulvalue );
+				m_TempoBlueDaysNormalCostPeriod->SetValue ( lvalue );
 				m_KeywordList.push_back ( m_TempoBlueDaysNormalCostPeriod->GetHistorizable() );
 				TempoBlueDaysNormalCostCounter = 0;
 			}
 			++TempoBlueDaysNormalCostCounter;
 			break;
 		case TELEINFO_TYPE_BBRHCJW:
-			if ( ulvalue != 0 && TempoWhiteDaysLowCostCounter>=NB_MESSAGES_RECEIVED )
+			if ( lvalueIsANumber && TempoWhiteDaysLowCostCounter>=NB_MESSAGES_RECEIVED )
 			{
-				YADOMS_LOG(debug) << "BBRHCJW" << "=" << ulvalue;
+				YADOMS_LOG(debug) << "BBRHCJW" << "=" << lvalue;
 				m_TempoWhiteDaysLowCostPeriod.reset( new CPowerMeter( context, PluginName, "TempoWhiteDaysLowCostPeriod" ));
-				m_TempoWhiteDaysLowCostPeriod->SetValue ( ulvalue );
+				m_TempoWhiteDaysLowCostPeriod->SetValue ( lvalue );
 				m_KeywordList.push_back ( m_TempoWhiteDaysLowCostPeriod->GetHistorizable() );
 				TempoWhiteDaysLowCostCounter = 0;
 			}
 			++TempoWhiteDaysLowCostCounter;
 			break;
 		case TELEINFO_TYPE_BBRHPJW:
-			if ( ulvalue != 0 && TempoWhiteDaysNormalCostCounter>=NB_MESSAGES_RECEIVED )
+			if ( lvalueIsANumber && TempoWhiteDaysNormalCostCounter>=NB_MESSAGES_RECEIVED )
 			{
-				YADOMS_LOG(debug) << "BBRHPJW" << "=" << ulvalue;
+				YADOMS_LOG(debug) << "BBRHPJW" << "=" << lvalue;
 				m_TempoWhiteDaysNormalCostPeriod.reset( new CPowerMeter( context, PluginName, "TempoWhiteDaysNormalCostPeriod" ));
-				m_TempoWhiteDaysNormalCostPeriod->SetValue ( ulvalue );
+				m_TempoWhiteDaysNormalCostPeriod->SetValue ( lvalue );
 				m_KeywordList.push_back ( m_TempoWhiteDaysNormalCostPeriod->GetHistorizable() );
 				TempoWhiteDaysNormalCostCounter = 0;
 			}
 			++TempoWhiteDaysNormalCostCounter;
 			break;
 		case TELEINFO_TYPE_BBRHCJR:
-			if ( ulvalue != 0 && TempoRedDaysLowCostCounter>=NB_MESSAGES_RECEIVED )
+			if ( lvalueIsANumber && TempoRedDaysLowCostCounter>=NB_MESSAGES_RECEIVED )
 			{
-				YADOMS_LOG(debug) << "BBRHCJR" << "=" << ulvalue;
+				YADOMS_LOG(debug) << "BBRHCJR" << "=" << lvalue;
 				m_TempoRedDaysLowCostPeriod.reset( new CPowerMeter( context, PluginName, "TempoRedDaysLowCostPeriod" ));
-				m_TempoRedDaysLowCostPeriod->SetValue ( ulvalue );
+				m_TempoRedDaysLowCostPeriod->SetValue ( lvalue );
 				m_KeywordList.push_back ( m_TempoRedDaysLowCostPeriod->GetHistorizable() );
 				TempoRedDaysLowCostCounter = 0;
 			}
 			++TempoRedDaysLowCostCounter;
 			break;
 		case TELEINFO_TYPE_BBRHPJR:
-			if ( ulvalue != 0 && TempoRedDaysNormalCostCounter>=NB_MESSAGES_RECEIVED )
+			if ( lvalueIsANumber && TempoRedDaysNormalCostCounter>=NB_MESSAGES_RECEIVED )
 			{
-				YADOMS_LOG(debug) << "BBRHPJR" << "=" << ulvalue;
+				YADOMS_LOG(debug) << "BBRHPJR" << "=" << lvalue;
 				m_TempoRedDaysNormalCostPeriod.reset( new CPowerMeter( context, PluginName, "TempoRedDaysNormalCostPeriod" ));
-				m_TempoRedDaysNormalCostPeriod->SetValue ( ulvalue );
+				m_TempoRedDaysNormalCostPeriod->SetValue ( lvalue );
 				m_KeywordList.push_back ( m_TempoRedDaysNormalCostPeriod->GetHistorizable() );
 				TempoRedDaysNormalCostCounter = 0;
 			}
@@ -365,33 +378,33 @@ void CTransceiver::MatchLine( const unsigned char *m_buffer, boost::shared_ptr<y
 			++TimePeriodCounter;
 			break;
 		case TELEINFO_TYPE_IINST:
-			if ( ulvalue != 0 && InstantCurrentCounter>=NB_MESSAGES_RECEIVED )
+			if ( lvalueIsANumber && InstantCurrentCounter>=NB_MESSAGES_RECEIVED )
 			{
 				YADOMS_LOG(debug) << "IINST" << "=" << value;
 				m_InstantCurrent.reset( new CCurrentMeter( context, PluginName, "InstantCurrent" ));
-				m_InstantCurrent->SetValue ( ulvalue );
+				m_InstantCurrent->SetValue ( lvalue );
 				m_KeywordList.push_back ( m_InstantCurrent->GetHistorizable() );
 				InstantCurrentCounter = 0;
 			}
 			++InstantCurrentCounter;
 			break;
 		case TELEINFO_TYPE_IMAX:
-			if (ulvalue != 0 && MaxCurrentCounter>= NB_MESSAGES_RECEIVED)
+			if ( lvalueIsANumber && MaxCurrentCounter>= NB_MESSAGES_RECEIVED)
 			{
 				YADOMS_LOG(debug) << "IMAX" << "=" << value;
 				m_MaxCurrent.reset( new CCurrentMeter( context, PluginName, "MaxCurrent" ));
-				m_MaxCurrent->SetValue ( ulvalue );
+				m_MaxCurrent->SetValue ( lvalue );
 				m_KeywordList.push_back ( m_MaxCurrent->GetHistorizable() );
 				MaxCurrentCounter = 0;
 			}
 			++MaxCurrentCounter;
 			break;
 		case TELEINFO_TYPE_PAPP:
-			if ( ulvalue != 0 && ApparentPowerCounter >= NB_MESSAGES_RECEIVED )
+			if ( lvalueIsANumber && ApparentPowerCounter >= NB_MESSAGES_RECEIVED )
 			{
-				YADOMS_LOG(debug) << "PAPP" << "=" << ulvalue;
+				YADOMS_LOG(debug) << "PAPP" << "=" << lvalue;
 				m_ApparentPower.reset( new CApparentPowerMeter( context, PluginName, "ApparentPower" ));
-				m_ApparentPower->SetValue ( ulvalue );
+				m_ApparentPower->SetValue ( lvalue );
 				m_KeywordList.push_back ( m_ApparentPower->GetHistorizable() );
 				ApparentPowerCounter = 0;
 			}
@@ -415,7 +428,7 @@ void CTransceiver::MatchLine( const unsigned char *m_buffer, boost::shared_ptr<y
 			++ForecastPeriodCounter;
 			break;
 
-		case TELEINFO_TYPE_ADPS: // Threshold warning ! If IINST > ISOUSC 
+		case TELEINFO_TYPE_ADPS: // Threshold warning ! If IINST > ISOUSC
 			YADOMS_LOG(information) << "ADPS" << "=" << value;
 			break;
 
