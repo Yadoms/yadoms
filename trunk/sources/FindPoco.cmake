@@ -59,9 +59,13 @@ if(POCO_REQUIRE_EXACT_VERSION)
    endif()
 endif()
 if(POCO_REQUIRE_MINIMUM_VERSION)
-   if(NOT "${POCO_VERSION}" VERSION_GREATER "${POCO_REQUIRE_MINIMUM_VERSION}")
-      set(POCO_VERSION_CHECKED_SUCCESS 0)
-      message(FATAL_ERROR "Find POCO version : ${POCO_VERSION} and required at least : ${POCO_REQUIRE_MINIMUM_VERSION}")
+   #check if version equal to minimum
+   if(NOT "${POCO_VERSION}" VERSION_EQUAL "${POCO_REQUIRE_MINIMUM_VERSION}")
+      #then check if greater
+      if(NOT "${POCO_VERSION}" VERSION_GREATER "${POCO_REQUIRE_MINIMUM_VERSION}")
+         set(POCO_VERSION_CHECKED_SUCCESS 0)
+         message(FATAL_ERROR "Find POCO version : ${POCO_VERSION} and required at least : ${POCO_REQUIRE_MINIMUM_VERSION}")
+      endif()
    endif()
 endif()
 
