@@ -187,12 +187,10 @@ void CTransceiver::MatchLine( const unsigned char *m_buffer, boost::shared_ptr<y
 		    lvalue = boost::lexical_cast<long>( value );
 		    lvalueIsANumber = true;
 		 }
-		 catch(std::exception &e)
+		 catch(...)
 		 {
 		    lvalueIsANumber = false;
 		 }
-
-		//long lvalue = atol(value);
 
 		static unsigned char baseCounter           = 0;
 		static unsigned char LowCostCounter        = 0;

@@ -14,6 +14,8 @@ widgetViewModelCtor =
       this.seriesUuid = [];
       this.rangeAreasUuid = [];
 
+	  this.interval = 0;
+	  
       /**
        * Initialization method
        * @param widget widget class object
@@ -165,7 +167,9 @@ widgetViewModelCtor =
 
       this.refreshData = function(interval) {
          var self = this;
-
+		
+		 self.interval = interval;
+		
          console.log("step 1 " + moment().format("HH:mm:ss'SSS"));
 
          try {
@@ -174,49 +178,60 @@ widgetViewModelCtor =
                self.refreshingData = true;
                //we compute the date from the configuration
                var dateFrom = "";
-               var dateTo = DateTimeFormatter.dateToIsoDate(moment());
+               var dateTo = ""; 
+			   console.log (dateTo);
                var prefixUri = "";
                var timeBetweenTwoConsecutiveValues;
                var isSummaryData;
 
                switch (interval) {
                   case "HOUR" :
-                     dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'hours'));
+				  
+					 //The goal is to ask to the server the elapsed time only. Example : 22h00 -> 22h59mn59s. 
+					 //If you ask 22h00 -> 23h00, the system return also the average for 23h. If 23h is not complete, the value will be wrong.
+				 
+				     dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf('minute').subtract(1, 'seconds'));
+                     dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'hours').startOf('minute'));
                      //we request all data
                      timeBetweenTwoConsecutiveValues = undefined;
                      isSummaryData = false;
                      break;
                   default:
                   case "DAY" :
-                     dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'days'));
+				     dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf('hour').subtract(1, 'seconds'));
+                     dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'days').startOf('hour'));
                      //we request hour summary data
                      prefixUri = "/hour";
                      timeBetweenTwoConsecutiveValues = 1000 * 3600;
                      isSummaryData = true;
                      break;
                   case "WEEK" :
-                     dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'weeks'));
+				     dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf('hour').subtract(1, 'seconds'));
+                     dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'weeks').startOf('hour'));
                      //we request hour summary data
                      prefixUri = "/hour";
                      timeBetweenTwoConsecutiveValues = 1000 * 3600;
                      isSummaryData = true;
                      break;
                   case "MONTH" :
-                     dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'months'));
+				     dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf('day').subtract(1, 'seconds'));
+                     dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'months').startOf('day'));
                      //we request day summary data
                      prefixUri = "/day";
                      timeBetweenTwoConsecutiveValues = 1000 * 3600 * 24;
                      isSummaryData = true;
                      break;
                   case "HALF_YEAR" :
-                     dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(6, 'months'));
+				     dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf('day').subtract(1, 'seconds'));
+                     dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(6, 'months').startOf('day'));
                      //we request day summary data
                      prefixUri = "/day";
                      timeBetweenTwoConsecutiveValues = 1000 * 3600 * 24;
                      isSummaryData = true;
                      break;
                   case "YEAR" :
-                     dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'years'));
+				     dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf('day').subtract(1, 'seconds'));
+                     dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'years').startOf('day'));
                      //we request day summary data
                      prefixUri = "/day";
                      timeBetweenTwoConsecutiveValues = 1000 * 3600 * 24;
@@ -270,6 +285,7 @@ widgetViewModelCtor =
                            $.each(data.data.data, function(index, value) {
                               lastDate = d;
                               d = DateTimeFormatter.isoDateToDate(value.date)._d.getTime();
+
                               var v;
                               if (!isNullOrUndefined(value.key)) {
                                  v = parseFloat(value.key);
@@ -383,6 +399,31 @@ widgetViewModelCtor =
          }
       };
 
+	   this.DisplaySummary = function (index, nb, device, range, Prefix) {
+		     self = this;
+		     console.log ("Display Summary");
+			 
+			 try{
+				 //The goal is to ask to the server the elapsed time only. Example : 22h00 -> 22h59mn59s. 
+				 //If you ask 22h00 -> 23h00, the system return also the average for 23h. If 23h is not complete, the value will be wrong.
+				 
+			 var dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf( Prefix ).subtract(1, 'seconds'));
+			 var dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(nb, range).startOf( Prefix ));
+			 
+			 $.getJSON("rest/acquisition/keyword/" + device.content.source.keywordId +"/"+ Prefix + "/" + dateFrom + "/" + dateTo )
+			 .done(function( data ) 
+			 {
+				 console.log ("Nouvelle valeur moyenne");
+				 self.chart.get(self.seriesUuid[index]).addPoint([DateTimeFormatter.isoDateToDate(data.data.data[0].date)._d.getTime().valueOf(), parseFloat(data.data.data[0].avg)], true, false, true);
+				 console.log ("---");
+			 });
+			 }
+             catch (err) 
+			 {
+                 console.error(err.message);
+             }
+	   };
+	  
       /**
        * New acquisition handler
        * @param searchedDevice Device on which new acquisition was received
@@ -390,11 +431,123 @@ widgetViewModelCtor =
        */
       this.onNewAcquisition = function(searchedDevice, data) {
          var self = this;
+		 var bShift = false;
+		 
          try {
             $.each(self.widget.configuration.devices, function (index, device) {
                if (searchedDevice == device.content.source) {
                   //we've found the device
-                  self.chart.get(self.seriesUuid[index]).addPoint([data.date.valueOf(), parseFloat(data.value)]);
+				  
+				   // Cleaning ranges switch
+				   switch ( self.interval ) 
+				   {
+					  case "HOUR" :
+                         cleanValue = 3600000;
+						 break;
+					  case "DAY" :
+					     cleanValue = 3600000 * 24;
+						 break;
+					  case "WEEK" :
+					     cleanValue = 3600000 * 24 * 7;
+						 break;
+					  case "MONTH" :
+					     cleanValue = 3600000 * 24 * 30;
+						 break;
+					  case "HALF_YEAR" :
+					     cleanValue = 3600000 * 24 * 182;
+						 break;
+					  case "YEAR" :
+					     cleanValue = 3600000 * 24 * 365;
+						 break;
+					  default:
+					     cleanValue = 3600000;
+						 break;					 
+				   }
+				  
+				  var serie = self.chart.get(self.seriesUuid[index]);
+				  
+				  console.log ( serie );
+				  
+				  // Clean points > cleanValue
+				  if (!isNullOrUndefined( serie.points[0] ))
+				  {
+					  while ( (data.date.valueOf() - serie.points[0].x) > cleanValue )
+					  {
+						  serie.removePoint ( 0 );
+					  }
+				  }
+				  
+				  // Add new point depending of the interval
+                   switch ( self.interval ) 
+				   {
+					  case "HOUR" :
+					     self.chart.get(self.seriesUuid[index]).addPoint([data.date.valueOf(), parseFloat(data.value)], true, false, true);
+						 break;
+					  case "DAY" : 
+					  
+					     console.log ( data.date.valueOf() - serie.points[serie.points.length-1].x );
+					  
+				         if ( (data.date.valueOf() - serie.points[serie.points.length-1].x) > 3600000 * 2 )
+						 {
+                            self.DisplaySummary ( index, 1, device, "hours", "hour" );
+						 }					  
+					     break;
+					  case "WEEK" :
+
+					     console.log ( data.date.valueOf() - serie.points[serie.points.length-1].x );
+					  
+				         if ( (data.date.valueOf() - serie.points[serie.points.length-1].x) > 3600000 * 2 )
+						 {
+							 self.DisplaySummary ( index, 1, device, "weeks", "hour" );
+						 }
+						 break;
+					  case "MONTH" :
+					  
+					  	 console.log ( data.date.valueOf() - serie.points[serie.points.length-1].x );
+					  
+				         if ( (data.date.valueOf() - serie.points[serie.points.length-1].x) > 3600000 * 24 * 2 )
+						 {
+							 self.DisplaySummary ( index, 1, device, "months", "day" );
+						 }
+						 break;
+					  case "HALF_YEAR" :
+					  
+					  	 console.log ( data.date.valueOf() - serie.points[serie.points.length-1].x );
+					  
+				         if ( (data.date.valueOf() - serie.points[serie.points.length-1].x) > 3600000 * 24 * 2 )
+						 {
+							 self.DisplaySummary ( index, 6, device, "months", "day" );
+						 }					  
+						 break;
+					  case "YEAR" :
+					  	 console.log ( data.date.valueOf() - serie.points[serie.points.length-1].x );
+					  
+				         if ( (data.date.valueOf() - serie.points[serie.points.length-1].x) > 3600000 * 24 * 2 )
+						 {
+							 self.DisplaySummary ( index, 1, device, "years", "day" );
+						 }					  
+						 break;
+					  default:
+						 break;					 
+				   }
+				   
+				   //Enabling/disabling marker
+				   if (serie.points.length > 50)
+				   {
+					   if (serie.options.marker.enabled)
+					   {
+						  serie.options.marker.enabled = false;
+						  serie.setVisible (true, true);
+					   }
+				   }
+				   else
+				   {
+					   if (!(serie.options.marker.enabled))
+					   {
+						 serie.options.marker.enabled = true;
+						 serie.setVisible ( true, true );
+					   }
+				   }
                }
             });
          }

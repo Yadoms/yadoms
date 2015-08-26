@@ -1,5 +1,5 @@
 /**
- * @license Highstock JS v2.0.3 (2014-07-03)
+ * @license Highstock JS v2.1.8 (2015-08-20)
  *
  * Standalone Highcharts Framework
  *
@@ -15,6 +15,7 @@ var UNDEFINED,
 	emptyArray = [],
 	timers = [],
 	timerId,
+	animSetters = {},
 	Fx;
 
 Math.easeInOutSine = function (t, b, c, d) {
@@ -184,6 +185,7 @@ function augment(obj) {
 
 
 return {
+
 	/**
 	 * Initialize the adapter. This is run once as Highcharts is first run.
 	 */
@@ -292,10 +294,14 @@ return {
 					elem = this.elem,
 					elemelem = elem.element; // if destroyed, it is null
 
+				// Animation setter defined from outside
+				if (animSetters[this.prop]) {
+					animSetters[this.prop](this);
+
 				// Animating a path definition on SVGElement
-				if (paths && elemelem) {
+				} else if (paths && elemelem) {
 					elem.attr('d', pathAnim.step(paths[0], paths[1], this.now, this.toD));
-				
+
 				// Other animations on SVGElement
 				} else if (elem.attr) {
 					if (elemelem) {
@@ -399,7 +405,8 @@ return {
 				end,
 				fx,
 				args,
-				name;
+				name,
+				PX = 'px';
 
 			el.stopAnimation = false; // ready for new
 
@@ -435,12 +442,15 @@ return {
 				} else {
 					start = parseFloat(HighchartsAdapter._getStyle(el, name)) || 0;
 					if (name !== 'opacity') {
-						unit = 'px';
+						unit = PX;
 					}
 				}
 	
 				if (!end) {
-					end = parseFloat(prop[name]);
+					end = prop[name];
+				}
+				if (end.match && end.match(PX)) {
+					end = end.replace(/px/g, ''); // #4351
 				}
 				fx.custom(start, end, unit);
 			}	
@@ -452,6 +462,13 @@ return {
 	 */
 	_getStyle: function (el, prop) {
 		return window.getComputedStyle(el, undefined).getPropertyValue(prop);
+	},
+
+	/**
+	 * Add an animation setter for a specific property
+	 */
+	addAnimSetter: function (prop, fn) {
+		animSetters[prop] = fn;
 	},
 
 	/**
