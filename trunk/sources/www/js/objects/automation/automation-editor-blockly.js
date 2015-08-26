@@ -85,10 +85,10 @@ AutomationEditorBlockly.prototype.onModalShown = function($modal) {
     $mainDiv.remove();
 */
    $mainDiv.empty().removeClass();
-   $mainDiv.append("<div class=\"blockly-container\"></div>");
 
    //load blockly
-   Blockly.Yadoms.Initialize($mainDiv.find("div.blockly-container")[0], content, 1);
+   Blockly.Yadoms.Initialize($mainDiv, content, 1);
+   //Blockly.Yadoms.Initialize($mainDiv.find("div.blockly-container")[0], content, 1);
 };
 
 /**

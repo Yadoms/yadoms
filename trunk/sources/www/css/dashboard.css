@@ -168,6 +168,10 @@ Fix dropdown menus hidden by bootstrap modal
     z-index: 9999 !important;
 }
 
+.blocklyToolboxDiv{
+    z-index: 9999 !important;
+}
+
 .blocklySelectedError>.blocklyPath {
     stroke: #f00;
     stroke-width: 3px;
