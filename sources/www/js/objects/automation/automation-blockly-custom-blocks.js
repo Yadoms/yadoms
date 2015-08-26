@@ -422,9 +422,26 @@ Blockly.Yadoms.LoadLanguageScript_ = function(callback) {
 Blockly.Yadoms.Initialize = function($domTarget, initialContent, maxTopBlocks) {
     Blockly.Yadoms.data = Blockly.Yadoms.LoadDataForBlocklyCustomBlocks_();
 
+    $domTarget.append("<div class=\"blockly-container\"></div>");
+
     Blockly.Yadoms.LoadLanguageScript_(function() {
         //inject blockly dom+js
-        Blockly.inject($domTarget, {toolbox: Blockly.Yadoms.CreateToolbox_()});
+        Blockly.inject($domTarget.find("div.blockly-container")[0],
+            {
+                /*comments: true,
+                disable: true,
+                collapse: true,
+                grid: {
+                    spacing: 25,
+                    length: 3,
+                    colour: '#ccc',
+                    snap: true
+                },
+                readOnly: false,
+                realtime: false,
+                scrollbars: true,*/
+                toolbox: Blockly.Yadoms.CreateToolbox_()
+            });
 
         //create empty script (with fixed condition/action block)
         if(!isNullOrUndefinedOrEmpty(initialContent)) {
@@ -704,8 +721,34 @@ Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function(thisBlock, can
         }
         return deviceList;
     }, function(device) {
-        if(!thisBlock.disabled)
-            keywordDd.refresh(Blockly.Yadoms.LoadKeywords_(device, canWrite, allowedKeywordTypes, allowedKeywordCapacities));
+        if(!thisBlock.disabled) {
+            var keywordList = Blockly.Yadoms.LoadKeywords_(device, canWrite, allowedKeywordTypes, allowedKeywordCapacities);
+            keywordDd.refresh(keywordList);
+
+            /*
+            Dropdown : show policy
+
+                If only one keyword is available
+                Then don't show keyword dropdown
+
+                If only one keyword is available, and only one device available
+                Then don't show keyword and device dropdown
+             */
+
+            //if only one item is available, and if keyword list contains one item, then just hide dropdown
+            if (keywordList.length == 1 && deviceDd.getOptions_().length == 1) {
+                deviceDd.setVisible(false);
+            } else {
+                deviceDd.setVisible(true);
+            }
+
+            //if only one keyword item is available, the just hide keyword dropdown
+            if (keywordList.length == 1) {
+                keywordDd.setVisible(false);
+            } else {
+                keywordDd.setVisible(true);
+            }
+        }
     });
 
 

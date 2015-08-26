@@ -15,7 +15,7 @@
 // This macro also defines the static PluginInformations value that can be used by plugin to get information values
 IMPLEMENT_PLUGIN(CFreeMobileSms)
 
-std::string CFreeMobileSms::m_deviceName("send");
+std::string CFreeMobileSms::m_deviceName("sms");
 std::string CFreeMobileSms::m_keywordName("sms");
 std::string CFreeMobileSms::m_freeMobileApiUrl("https://smsapi.free-mobile.fr/sendmsg?user=%1%&pass=%2%&msg=%3%");
 
