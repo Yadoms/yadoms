@@ -128,7 +128,8 @@ void CTransceiver::MatchLine( const unsigned char *m_buffer, boost::shared_ptr<y
 		( TE_DEMAIN  , TELEINFO_TYPE_DEMAIN) 
 		( TE_HHPHC   , TELEINFO_TYPE_HHPHC )
 		( TE_ADPS    , TELEINFO_TYPE_ADPS )
-		( TE_MOTDETAT, TELEINFO_TYPE_MOTDETAT);
+		( TE_MOTDETAT, TELEINFO_TYPE_MOTDETAT)
+                ;
 
 	if ((strlen((const char*)m_buffer)<1) || (m_buffer[0] == 0x0a))
 		return;
@@ -180,7 +181,7 @@ void CTransceiver::MatchLine( const unsigned char *m_buffer, boost::shared_ptr<y
 			return;
 		position = int(pos - (unsigned char*)m_buffer);
 		strncpy(value, (const char*)(&m_buffer[position + 1]), t[it->second].width);
-		value[t[it->second].width] = 0;
+		value[t[it->second].width] = 0;             
 
 		 try
 		 {
@@ -192,28 +193,28 @@ void CTransceiver::MatchLine( const unsigned char *m_buffer, boost::shared_ptr<y
 		    lvalueIsANumber = false;
 		 }
 
-		static unsigned char baseCounter           = 0;
-		static unsigned char LowCostCounter        = 0;
-		static unsigned char NormalCostCounter     = 0;
-		static unsigned char InstantCurrentCounter = 0;
-		static unsigned char MaxCurrentCounter     = 0;
-		static unsigned char ApparentPowerCounter  = 0;
+		static unsigned char baseCounter           = NB_MESSAGES_RECEIVED;
+		static unsigned char LowCostCounter        = NB_MESSAGES_RECEIVED;
+		static unsigned char NormalCostCounter     = NB_MESSAGES_RECEIVED;
+		static unsigned char InstantCurrentCounter = NB_MESSAGES_RECEIVED;
+		static unsigned char MaxCurrentCounter     = NB_MESSAGES_RECEIVED;
+		static unsigned char ApparentPowerCounter  = NB_MESSAGES_RECEIVED;
 
-		static unsigned char EJPPeakPeriodCounter  = 0;
-		static unsigned char EJPNormalPeriodCounter= 0;
+		static unsigned char EJPPeakPeriodCounter  = NB_MESSAGES_RECEIVED;
+		static unsigned char EJPNormalPeriodCounter= NB_MESSAGES_RECEIVED;
 
-		static unsigned char TempoBlueDaysLowCostCounter  = 0;
-		static unsigned char TempoBlueDaysNormalCostCounter  = 0;
+		static unsigned char TempoBlueDaysLowCostCounter     = NB_MESSAGES_RECEIVED;
+		static unsigned char TempoBlueDaysNormalCostCounter  = NB_MESSAGES_RECEIVED;
 
-		static unsigned char TempoWhiteDaysLowCostCounter  = 0;
-		static unsigned char TempoWhiteDaysNormalCostCounter  = 0;
+		static unsigned char TempoWhiteDaysLowCostCounter    = NB_MESSAGES_RECEIVED;
+		static unsigned char TempoWhiteDaysNormalCostCounter = NB_MESSAGES_RECEIVED;
 
-		static unsigned char TempoRedDaysLowCostCounter  = 0;
-		static unsigned char TempoRedDaysNormalCostCounter  = 0;
+		static unsigned char TempoRedDaysLowCostCounter      = NB_MESSAGES_RECEIVED;
+		static unsigned char TempoRedDaysNormalCostCounter   = NB_MESSAGES_RECEIVED;
 
-		static unsigned char TimePeriodCounter  = 0;
+		static unsigned char TimePeriodCounter  = NB_MESSAGES_RECEIVED;
 
-		static unsigned char ForecastPeriodCounter  = 0;
+		static unsigned char ForecastPeriodCounter  = NB_MESSAGES_RECEIVED;
 
 		static bool ADCORead      = false;
 		static bool OpTarifRead   = false;
