@@ -1,4 +1,6 @@
 .numericDisplayWidgetText {
+	margin: auto;
+	text-align: center;
     font-size : 1.0em;
     line-height:normal ;
     position: relative;
@@ -18,11 +20,12 @@
 }
 
 .numericDisplayWidgetValueArea {
-    margin: 0 auto;
+    margin: auto;
     display: table;
 }
 
 .numericDisplayWidget {
+	margin: auto;
     height: 100px;
     width: 100px;
     text-align: center;

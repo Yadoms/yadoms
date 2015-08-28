@@ -115,8 +115,9 @@ function GaugeViewModel()
 			self.refreshValue ();
 			
 		  //we get the unit of the keyword
-		  KeywordManager.get(self.widget.configuration.device.keywordId, function(keyword) {
-			 self.unit(keyword.units);	  
+		  KeywordManager.get(self.widget.configuration.device.keywordId, function(keyword) 
+		  {
+			 self.unit($.t(keyword.units));	  
 		   });
 		  }
       }
@@ -133,7 +134,7 @@ function GaugeViewModel()
 		if (chart) 
 		{
 			point = chart.series[0].points[0];
-			point.update(self.data() );
+			point.update( self.data() );
 		} 	   
    };
    
@@ -143,14 +144,10 @@ function GaugeViewModel()
 	  
 	 if ((isNullOrUndefined(this.widget)) || (isNullOrUndefinedOrEmpty(this.widget.configuration)))
 		return;
-	  
-      //we get the unit of the keyword
-      KeywordManager.get(self.widget.configuration.device.keywordId, function(keyword) {
-         self.unit(keyword.units);	  
-	   });
 	   
 	   //Read thresholds and colors from the configuration
-	   $.each(self.widget.configuration.thresholds, function (index, threshold) {
+	   $.each(self.widget.configuration.thresholds, function (index, threshold) 
+	   {
 		   console.log ( threshold );
 		   
 		   // The value of the threshold must be between 0 and 1
@@ -158,7 +155,15 @@ function GaugeViewModel()
 		   
 	   });
 	   
-	   self.refresh();
+	  //we get the unit of the keyword
+      KeywordManager.get(self.widget.configuration.device.keywordId, function(keyword) 
+	  {
+         self.unit($.t(keyword.units));
+		 
+		 //The following function should be here, otherwise, the unit, is not up to date
+		 self.refresh();
+		 self.refreshValue ();
+	   });
    };
 
    this.resized = function() 
@@ -249,8 +254,8 @@ function GaugeViewModel()
 					format: '<div style="text-align:center"><span style="font-size:'+ SizeValue +'px;color:' + 
 						((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y:.1f}</span><br/>' +
 						   '<span style="font-size:' + SizeUnit + 'px;color:silver">' + self.unit() + '</span></div>'
-				},
-				tooltip: {
+						   },
+				    tooltip: {
 					valueSuffix: self.unit()
 				}
 			}],

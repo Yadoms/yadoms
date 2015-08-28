@@ -3,9 +3,9 @@
     <div class="numericDisplayWidget">
        <div class="numericDisplayWidgetText" data-bind="text: text">
        </div>
-       <div class="numericDisplayWidgetValueArea">
-          <div class="numericDisplayWidgetData" data-bind="text: data"></div>
-          <div class="numericDisplayWidgetUnit" data-bind="translatedText: unit"></div>
+       <div class="numericDisplayWidgetValueArea" align="center">
+          <span data-bind="text: data, style: fontStyleCSS"></span>
+          <span data-bind="text: unit"></span>
        </div>
-    </div>
+	</div>
 </script>

@@ -359,7 +359,9 @@ widgetViewModelCtor =
                         }
 
                         try {
-                           if (parseBool(self.widget.configuration.customYAxisMinMax.checkbox)) {
+							
+                           if (parseBool(self.widget.configuration.customYAxisMinMax.checkbox))
+						   {
                               //we manage min and max scale y axis
                               var min = parseFloat(self.widget.configuration.customYAxisMinMax.content.minimumValue);
                               var max = parseFloat(self.widget.configuration.customYAxisMinMax.content.maximumValue);
@@ -401,7 +403,6 @@ widgetViewModelCtor =
 
 	   this.DisplaySummary = function (index, nb, device, range, Prefix) {
 		     self = this;
-		     console.log ("Display Summary");
 			 
 			 try{
 				 //The goal is to ask to the server the elapsed time only. Example : 22h00 -> 22h59mn59s. 
@@ -410,12 +411,19 @@ widgetViewModelCtor =
 			 var dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf( Prefix ).subtract(1, 'seconds'));
 			 var dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(nb, range).startOf( Prefix ));
 			 
+
 			 $.getJSON("rest/acquisition/keyword/" + device.content.source.keywordId +"/"+ Prefix + "/" + dateFrom + "/" + dateTo )
 			 .done(function( data ) 
 			 {
-				 console.log ("Nouvelle valeur moyenne");
-				 self.chart.get(self.seriesUuid[index]).addPoint([DateTimeFormatter.isoDateToDate(data.data.data[0].date)._d.getTime().valueOf(), parseFloat(data.data.data[0].avg)], true, false, true);
-				 console.log ("---");
+				 try
+				 {
+				    self.chart.get(self.seriesUuid[index]).addPoint([DateTimeFormatter.isoDateToDate(data.data.data[0].date)._d.getTime().valueOf(), parseFloat(data.data.data[0].avg)], true, false, true);
+				 }
+				 catch (err) 
+				 {
+					 console.error(err.message);
+				 }				 
+				 
 			 });
 			 }
              catch (err) 
@@ -465,8 +473,6 @@ widgetViewModelCtor =
 				   }
 				  
 				  var serie = self.chart.get(self.seriesUuid[index]);
-				  
-				  console.log ( serie );
 				  
 				  // Clean points > cleanValue
 				  if (!isNullOrUndefined( serie.points[0] ))
