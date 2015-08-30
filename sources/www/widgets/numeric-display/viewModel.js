@@ -80,16 +80,21 @@ function NumericDisplayViewModel() {
 			break;
 			break;
 		 case 8:
+			if (self.widget.width() < 120)
+			   self.fontSize ( 20 );
+			else
+				self.fontSize ( 30 );
+			break;
 		 case 9:		 
 			if (self.widget.width() < 120)
-			   self.fontSize ( 22 );
+			   self.fontSize ( 17 );
 			else
 				self.fontSize ( 30 );
 			break;
          case 10:
 		 case 11:
 			if (self.widget.width() < 120)
-			   self.fontSize ( 18 );
+			   self.fontSize ( 15 );
 			else
 				self.fontSize ( 30 );
 			break;
