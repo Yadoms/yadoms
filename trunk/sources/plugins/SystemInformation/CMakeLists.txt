@@ -130,15 +130,15 @@ set(SYSTEMINFORMATION_PLUGIN_LINK
 ## Always leave these lines to configure plugin correctly
 ## even if FAKE_PLUGIN_INCLDIR or FAKE_PLUGIN_LINK are empty
 #########################################
-PLUGIN_SOURCES(systemInformation ${SYSTEMINFORMATION_PLUGIN_SOURCES})
-PLUGIN_INCLDIR(systemInformation ${SYSTEMINFORMATION_PLUGIN_INCLDIR})
-PLUGIN_LINK   (systemInformation ${SYSTEMINFORMATION_PLUGIN_ADDITIONAL_LIB})
+PLUGIN_SOURCES(SystemInformation ${SYSTEMINFORMATION_PLUGIN_SOURCES})
+PLUGIN_INCLDIR(SystemInformation ${SYSTEMINFORMATION_PLUGIN_INCLDIR})
+PLUGIN_LINK   (SystemInformation ${SYSTEMINFORMATION_PLUGIN_ADDITIONAL_LIB})
 
 #########################################
 ## Post-build commands
 ## Copy files to build directory
 ## "package.json" and "icon.png" are needed, but you can add extra-files
 #########################################
-PLUGIN_POST_BUILD_COPY_FILE(systemInformation package.json)
-PLUGIN_POST_BUILD_COPY_FILE(systemInformation icon.png)
-PLUGIN_POST_BUILD_COPY_FILE(systemInformation locales/fr.json)
+PLUGIN_POST_BUILD_COPY_FILE(SystemInformation package.json)
+PLUGIN_POST_BUILD_COPY_FILE(SystemInformation icon.png)
+PLUGIN_POST_BUILD_COPY_FILE(SystemInformation locales/fr.json)
