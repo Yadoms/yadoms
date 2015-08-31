@@ -443,7 +443,7 @@ Blockly.Yadoms.Initialize = function($domTarget, initialContent, maxTopBlocks) {
                 toolbox: Blockly.Yadoms.CreateToolbox_()
             });
 
-        //create empty script (with fixed condition/action block)
+        //load initial content if exists
         if(!isNullOrUndefinedOrEmpty(initialContent)) {
             var xml = Blockly.Xml.textToDom(initialContent);
             Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xml);
@@ -1151,7 +1151,7 @@ Blockly.Blocks['yadoms_logic_compare_is'] = {
         this.appendDummyInput()
             .appendField($.t("blockly.blocks.yadoms_logic_compare_is.title"));
         this.appendValueInput("A");
-        this.appendValueInput("B").appendField(new Blockly.FieldDropdown([['=', 'EQ']]), "OP");
+        this.appendValueInput("B").appendField(new Blockly.FieldDropdown(Blockly.Yadoms.NumberOperators_), "OP");
         this.setInputsInline(true);
         this.setOutput(true, "Boolean");
 
