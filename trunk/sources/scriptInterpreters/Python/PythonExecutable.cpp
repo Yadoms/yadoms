@@ -70,7 +70,7 @@ std::string CPythonExecutable::readPythonVersion(const boost::filesystem::path& 
 {
    try
    {
-      const boost::filesystem::path& command = initialDirectory / "python.exe";
+      const boost::filesystem::path& command = initialDirectory / "python";
 
       Poco::Process::Args args;
       args.push_back("--version");
@@ -95,7 +95,7 @@ boost::shared_ptr<Poco::ProcessHandle> CPythonExecutable::startModule(boost::sha
 {
    try
    {
-      const boost::filesystem::path& command = m_executableDirectory / "python.exe";
+      const boost::filesystem::path& command = m_executableDirectory / "python";
 
       Poco::Process::Args args;
       args.push_back(std::string("scriptCaller.py"));
