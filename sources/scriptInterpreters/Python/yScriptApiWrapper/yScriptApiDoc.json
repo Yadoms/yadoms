@@ -1,0 +1,112 @@
+{
+    "types": {
+        "enum": {
+            "name": "",
+            "values": [
+                "kTimeout"
+            ]
+        }
+    },
+    "methods": {
+        "readKeyword": {
+            "brief": "Read the last known state of the keyword",
+            "params": {
+                "keywordId": {
+                    "direction": "in",
+                    "brief": "The keyword ID we are interesting in"
+                }
+            },
+            "return": "The last known keyword state (empty if no known state)"
+        },
+        "waitForAcquisition": {
+            "brief": "Wait for a new acquisition on a keyword",
+            "params": {
+                "keywordId": {
+                    "direction": "in",
+                    "brief": "The keyword ID to watch"
+                },
+                "timeout": {
+                    "direction": "in",
+                    "brief": "Timeout to wait. Format is \"hh:mm:ss.xxx\". No timeout if empty (default)."
+                }
+            },
+            "return": "The keyword new state (empty if timeout)"
+        },
+        "waitForAcquisitions": {
+            "brief": "Wait for a new acquisition on a keyword list",
+            "params": {
+                "keywordIdList": {
+                    "direction": "in",
+                    "brief": "The keyword IDs list to watch"
+                },
+                "timeout": {
+                    "direction": "in",
+                    "brief": "Timeout to wait. Format is \"hh:mm:ss.xxx\". No timeout if empty (default)."
+                }
+            },
+            "return": "Returned value is a pair of the keyword Id who changed, and its new value. The keyword Id is kTimeout if timeout."
+        },
+        "writeKeyword": {
+            "brief": "Change state of a keyword",
+            "params": {
+                "keywordId": {
+                    "direction": "in",
+                    "brief": "The keyword ID to change state"
+                },
+                "newState": {
+                    "direction": "in",
+                    "brief": "The keyword new state"
+                }
+            },
+            "details": "Do nothing if keyword is not found or not writable"
+        },
+        "sendNotification": {
+            "brief": "Send a notification",
+            "params": {
+                "keywordId": {
+                    "direction": "in",
+                    "brief": "The keyword ID to use to send notification"
+                },
+                "recipientId": {
+                    "direction": "in",
+                    "brief": "The recipient ID"
+                },
+                "message": {
+                    "direction": "in",
+                    "brief": "The message to send"
+                }
+            },
+            "details": "Do nothing if keyword or recipient is not found or not writable"
+        },
+        "getInfo": {
+            "brief": "Get general information",
+            "params": {
+                "key": {
+                    "direction": "in",
+                    "brief": "Information key"
+                }
+            },
+            "return": "Information as string (empty string if not found)",
+            "details": [
+                "Supported value :",
+                "- sunrise : get sunrise hour : returns hour in the day (as double encoded in string)",
+                "- sunset : get sunset hour : returns hour in the day (as double encoded in string)",
+                "- latitude : get latitude : returns latitude configured by user (or approximative latitude if not configured)",
+                "- longitude : get longitude : returns latitude configured by user (or approximative longitude if not configured)",
+                "- altitude : get altitude : returns latitude configured by user (or approximative altitude if not configured)",
+                "- yadomsServerOS : get yadoms server OS : returns a string containing the OS name where Yadoms is running",
+                "- yadomsServerVersion : get yadoms application version : returns a string containing the Yadoms application version"
+            ]
+        },
+        "ruleEnable": {
+            "brief": "Can be used to prevent a rule for auto-restart",
+            "params": {
+                "enable": {
+                    "direction": "in",
+                    "brief": "True to active auto-restart, False to disable the rule (after the current execution is complete)"
+                }
+            },
+            "details": "By default, a rule auto-restart at its end"
+        }
+    }
+}

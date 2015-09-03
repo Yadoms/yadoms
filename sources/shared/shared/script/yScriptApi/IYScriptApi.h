@@ -24,7 +24,7 @@ namespace shared { namespace script { namespace yScriptApi
       //-----------------------------------------------------
       ///\brief Wait for a new acquisition on a keyword
       ///\param[in] keywordId The keyword ID to watch
-      ///\param[in] timeout Timeout of wait. Format is "hh:mm:ss.xxx". No timeout if empty (default).
+      ///\param[in] timeout Timeout to wait. Format is "hh:mm:ss.xxx". No timeout if empty (default).
       ///\return newState The keyword new state (empty if timeout)
       //-----------------------------------------------------
       virtual std::string waitForAcquisition(int keywordId, const std::string& timeout = std::string()) const = 0;
@@ -32,7 +32,7 @@ namespace shared { namespace script { namespace yScriptApi
       //-----------------------------------------------------
       ///\brief Wait for a new acquisition on a keyword list
       ///\param[in] keywordIdList The keyword IDs list to watch
-      ///\param[in] timeout Timeout of wait. Format is "hh:mm:ss.xxx". No timeout if empty (default).
+      ///\param[in] timeout Timeout to wait. Format is "hh:mm:ss.xxx". No timeout if empty (default).
       ///\return Returned value is a pair of the keyword Id who changed, and its new value. The keyword Id is kTimeout if timeout.
       //-----------------------------------------------------
       enum { kTimeout = -1 };//TODO à commenter aussi, et voir si la constante est exportée dans Python
@@ -42,7 +42,7 @@ namespace shared { namespace script { namespace yScriptApi
       ///\brief Change state of a keyword
       ///\param[in] keywordId The keyword ID to change state
       ///\param[in] newState The keyword new state
-      ///\note Do nothing if keyword is not found or not writtable
+      ///\note Do nothing if keyword is not found or not writable
       //-----------------------------------------------------
       virtual void writeKeyword(int keywordId, const std::string& newState) = 0;
 
@@ -51,7 +51,7 @@ namespace shared { namespace script { namespace yScriptApi
       ///\param[in] keywordId The keyword ID to use to send notification
       ///\param[in] recipientId The recipient ID
       ///\param[in] message The message to send
-      ///\note Do nothing if keyword or recipient is not found or not writtable
+      ///\note Do nothing if keyword or recipient is not found or not writable
       //-----------------------------------------------------
       virtual void sendNotification(int keywordId, int recipientId, const std::string& message) = 0;
 
