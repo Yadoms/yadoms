@@ -44,6 +44,7 @@
 %template() std::pair<int, std::string>;
 
 /* Add method documentation */
+/* TODO : virer toutes les lignes "%feature("autodoc"..." lorsqu'elles seront générées */
 /* Can not use Doxygen comments from the C++ code, because "autodoc" is a Python specificity */
 %feature("autodoc", "Read the last known state of the keyword. State returned as string (empty if no known state).") readKeyword;
 %feature("autodoc", "Wait for a new acquisition on a keyword, with timeout (format is \"hh:mm:ss.xxx\". No timeout if empty). State returned as string (empty if timeout).") waitForAcquisition;
