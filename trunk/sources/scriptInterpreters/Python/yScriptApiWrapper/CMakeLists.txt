@@ -81,6 +81,33 @@ add_custom_command(OUTPUT swigpyrun.h
   COMMAND ${SWIG_EXECUTABLE} -python -external-runtime ${CMAKE_CURRENT_SOURCE_DIR}/swigpyrun.h)
 
 #########################################
+## Add pre-build step to generate Python API documentation
+##
+## To generate API documentation, these steps are necessary :
+## - Doxygen the C++ API to XML format :
+##   - inputs are :
+##      - shared/shared/script/yScriptApi/IYScriptApi.h 
+##      - doc/Doxyfile
+##   - outputs are :
+##      - doc/out/IYScriptApiDoc.xml use to generate Python autodoc
+##      - doc/out/html : API documentation in html format
+## - Extract Python documentation from XML using doxy2swig.py
+##   - input is doc/out/IYScriptApiDoc.xml
+##   - output is doc/out/IYScriptApiDoc.i
+##
+## Do not use PRE_BUILD option because it is working only with VisualStudio
+## To make it work, just define a custom_command, and place 
+## the output filename into the target sources to make it generated at build time
+#########################################
+# if(DOXYGEN_FOUND)
+# add_custom_command(OUTPUT doc/out/xml/IYScriptApiDoc.xml
+   # COMMAND ${DOXYGEN_EXECUTABLE}) doc/Doxyfile
+# else()
+   # message("doxygen not found : YScriptApi documentation will not be generated") ## TODO à tester
+# endif()
+  
+
+#########################################
 ## Add post-build step to deploy Swig-generated file
 #########################################
 add_custom_command(TARGET _yScriptApiWrapper POST_BUILD
