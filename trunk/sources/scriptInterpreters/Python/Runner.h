@@ -1,6 +1,6 @@
 #pragma once
 #include "IPythonExecutable.h"
-#include "IScriptfile.h"
+#include "IScriptFile.h"
 #include <shared/script/IRunner.h>
 #include <shared/DataContainer.h>
 
