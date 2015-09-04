@@ -1,4 +1,5 @@
 #pragma once
+#include <shared/script/yScriptApi/IYScriptApi.h>
 
 namespace automation { namespace script
 {
@@ -18,7 +19,7 @@ namespace automation { namespace script
       ///\param[in] key Information key
       ///\return Information as string (empty string if not found)
       //-----------------------------------------------------
-      virtual std::string get(const std::string& key) const = 0;
+      virtual std::string get(shared::script::yScriptApi::IYScriptApi::EInfoKeys key) const = 0;
    };
 
 } } // namespace automation::script

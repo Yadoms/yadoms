@@ -1,5 +1,6 @@
 #pragma once
 
+#include <shared/script/yScriptApi/IYScriptApi.h>
 
 const size_t m_messageQueueMessageSize(1000);
 
@@ -148,7 +149,7 @@ public:
    CReqGetInfo() {}
    virtual ~CReqGetInfo() {}
 
-   std::string m_key;
+   shared::script::yScriptApi::IYScriptApi::EInfoKeys m_key;
 
 private:
    friend class boost::serialization::access;
@@ -278,3 +279,5 @@ private:
       ar & m_returnValue;
    }
 };
+
+//TODO virer tout ce fichier et remplacer par des CDataContainer ?
