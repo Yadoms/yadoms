@@ -426,9 +426,10 @@ Blockly.Yadoms.Initialize = function($domTarget, initialContent, maxTopBlocks) {
 
     Blockly.Yadoms.LoadLanguageScript_(function() {
         //inject blockly dom+js
+
         Blockly.inject($domTarget.find("div.blockly-container")[0],
             {
-                /*comments: true,
+                comments: true,
                 disable: true,
                 collapse: true,
                 grid: {
@@ -439,9 +440,23 @@ Blockly.Yadoms.Initialize = function($domTarget, initialContent, maxTopBlocks) {
                 },
                 readOnly: false,
                 realtime: false,
-                scrollbars: true,*/
-                toolbox: Blockly.Yadoms.CreateToolbox_()
+                scrollbars: true,
+                toolbox: Blockly.Yadoms.CreateToolbox_(),
+                zoom:
+                {enabled: true,
+                    controls: true,
+                    wheel: true,
+                    maxScale: 2,
+                    minScale: .1,
+                    scaleSpeed: 1.1
+                }
             });
+
+        //new version fix
+        //    $('.blocklyToolboxDiv').appendTo($domTarget.find("div.blockly-container"));
+        //    $('.blocklyTooltipDiv').appendTo($domTarget.find("div.blockly-container"));
+        //    $('.blocklyWidgetDiv').appendTo($domTarget.find("div.blockly-container"));
+
 
         //load initial content if exists
         if(!isNullOrUndefinedOrEmpty(initialContent)) {
@@ -914,10 +929,14 @@ Blockly.Blocks['yadoms_keyword_value'] = {
 
         var thisBlock = this;
         Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection(thisBlock, false, ["numeric", "string", "bool", "enum"], undefined, function (keyword, keywordType) {
-            if (keywordType == null || keywordType == undefined)
-                thisBlock.changeOutput("null"); //any type allowed
-            else
-                thisBlock.changeOutput(keywordType);
+
+            var typeToSet = keywordType;
+            if (typeToSet == null || typeToSet == undefined)
+                typeToSet("null"); //any type allowed
+
+            //make it compatible with older blockly version
+            $.isFunction(thisBlock.changeOutput)?thisBlock.changeOutput(typeToSet):thisBlock.setOutput(typeToSet);
+
             Blockly.Yadoms.UpdateBlockColour_(thisBlock, keywordType);
         }, this.pluginDropDownName, this.deviceDropDownName, this.keywordDropDownName);
     }
@@ -1194,7 +1213,7 @@ Blockly.Blocks['yadoms_logic_compare_is'] = {
                 selectedOperators = Blockly.Yadoms.BooleanOperators_;
             }
 
-            var operatorDropDown = this.getField_("OP");
+            var operatorDropDown = $.isFunction(this.getField_)?this.getField_("OP"):this.getField("OP");
             operatorDropDown.menuGenerator_ = selectedOperators;
             operatorDropDown.setValue(selectedOperators[0][1]);
             operatorDropDown.updateTextNode_();
@@ -1474,7 +1493,7 @@ Blockly.Blocks['yadoms_logic_compare_become'] = {
                 selectedOperators = Blockly.Yadoms.BooleanOperators_;
             }
 
-            var operatorDropDown = thisBlock.getField_("OP");
+            var operatorDropDown =$.isFunction(thisBlock.getField_)?thisBlock.getField_("OP"):thisBlock.getField("OP");
             operatorDropDown.menuGenerator_ = selectedOperators;
             operatorDropDown.setValue(selectedOperators[0][1]);
             operatorDropDown.updateTextNode_();
@@ -1631,7 +1650,12 @@ Blockly.Blocks['yadoms_enumeration'] = {
                 if( !isNullOrUndefined(typeInfo) && !isNullOrUndefined(typeInfo.name) && !isNullOrUndefined(typeInfo.values) ) {
                     if(this.currentEnumerationTypeName != typeInfo.name) {
 
-                        this.changeOutput("enum_" + typeInfo.name);
+                        var typeToSet = "enum_" + typeInfo.name;
+
+                        //make it compatible with older blockly version
+                        $.isFunction(this.changeOutput)?this.changeOutput(typeToSet):this.setOutput(typeToSet);
+
+
                         //all is OK, this is a new enum, ask for translation
                         var translatedEnum = [];
                         $.each(typeInfo.values, function (index, value) {
@@ -1640,7 +1664,8 @@ Blockly.Blocks['yadoms_enumeration'] = {
                         });
                         //apply new dropdown list
                         this.currentEnumerationTypeName = typeInfo.name;
-                        var enumDropDown = this.getField_(this.enumerationDropDownName);
+                        var enumDropDown =$.isFunction(this.getField_)?this.getField_(this.enumerationDropDownName):this.getField(this.enumerationDropDownName);
+
                         enumDropDown.refresh(translatedEnum, enumDropDown.getValue());
                     }
                 }
