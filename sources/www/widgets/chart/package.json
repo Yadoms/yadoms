@@ -7,11 +7,11 @@
    "credits": "",
    "dimensions": {
       "min": {
-         "x": 2,
+         "x": 3,
          "y": 1
       },
       "max": {
-         "x": 6,
+         "x": 9,
          "y": 4
       },
       "default": {
@@ -69,7 +69,7 @@
          "name" : "Devices",
          "description" : "List of plotted devices",
          "nbItemsMin" : "1",
-         "nbItemsMax" : "5",
+         "nbItemsMax" : "3",
          "allowDuplication" : "true",
          "item" : {
             "type" : "section",
@@ -94,7 +94,23 @@
                   "name" : "Show range of the value",
                   "description" : "It allows you to show the range min max of the value during the period. It is visible only on period upper than hour",
                   "defaultValue" : "false"
-               }
+               },
+               "ownAxis" : {
+                  "type" : "bool",
+                  "name" : "Hide the axis of this serie",
+                  "description" : "It allows you to hide the axis of a serie, when ranges are equals between series",
+                  "defaultValue" : "false"
+               },
+				"PlotType": {
+				  "name": "Plot Type",
+				  "description": "choose beetween following plot type",
+				  "type": "enum",
+				  "values": {
+					"line": "Spline",
+					"bar": "Bar"
+				  },
+				  "defaultValue": "line"
+				}
             }
          }
       }

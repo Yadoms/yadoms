@@ -141,8 +141,7 @@
   border-radius: 0.2em 0 0 0.2em;
 }
 
-/*JMB : Modification pour affichage de last-child vers nth-child(n+10)*/
-/* A vérifier s'il ne prend pas non plus l'unité, ce que je pense */
+/*JMB*/
 .odometer.odometer-auto-theme .odometer-digit:nth-last-child(-n+4), .odometer.odometer-theme-car .odometer-digit:nth-last-child(-n+4){
   -moz-border-radius: 0 00 0 0;
   -webkit-border-radius: 0 0 0 0;

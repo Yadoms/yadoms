@@ -355,7 +355,7 @@
 	  // JMB
 	  if ( this.options.unit != undefined )
 	  {
-	     var unit_html = '<span class="odometer-unit">' + this.options.unit + '</span>';
+	     var unit_html = '<span class="odometer-unit" style="font-size: 75%;"> ' + this.options.unit + '</span>';
 	     var unit = createFromHTML ( unit_html ); 
 		 this.inside.appendChild(unit);
 	  }
@@ -628,7 +628,7 @@
 	  //JMB
 	  if ( this.options.unit != undefined )
 	  {
-	     var unit_html = '<span class="odometer-unit">' + this.options.unit + '</span>';
+	     var unit_html = '<span class="odometer-unit" style="font-size: 75%;"> ' + this.options.unit + '</span>';
 	     var unit = createFromHTML ( unit_html );
 		 this.inside.appendChild(unit);
 	  }
