@@ -35,7 +35,7 @@ namespace shared { namespace script { namespace yScriptApi
       ///\param[in] timeout Timeout to wait. Format is "hh:mm:ss.xxx". No timeout if empty (default).
       ///\return Returned value is a pair of the keyword Id who changed, and its new value. The keyword Id is kTimeout if timeout.
       //-----------------------------------------------------
-      enum { kTimeout = -1 };//TODO à commenter aussi, et voir si la constante est exportée dans Python
+      enum { kTimeout = -1 };
       virtual std::pair<int, std::string> waitForAcquisitions(const std::vector<int> keywordIdList, const std::string& timeout = std::string()) const = 0;
 
       //-----------------------------------------------------
@@ -51,7 +51,7 @@ namespace shared { namespace script { namespace yScriptApi
       ///\param[in] keywordId The keyword ID to use to send notification
       ///\param[in] recipientId The recipient ID
       ///\param[in] message The message to send
-      ///\note Do nothing if keyword or recipient is not found or not writable
+      ///\note Do nothing if keyword or recipient is not found or not writtable
       //-----------------------------------------------------
       virtual void sendNotification(int keywordId, int recipientId, const std::string& message) = 0;
 
