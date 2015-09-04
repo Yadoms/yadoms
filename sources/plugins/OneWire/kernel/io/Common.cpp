@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Common.h"
 #include <shared/exception/Exception.hpp>
+#include <fstream>
 
 namespace kernel { namespace io {
 

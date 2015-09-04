@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "HighPrecisionDigitalThermometer.h"
 #include <shared/Log.h>
+#include <fstream>
 
 namespace kernel { namespace io {
 
