@@ -29,13 +29,16 @@ widgetViewModelCtor =
 
          this.$chart.highcharts('StockChart', {
             chart: {
+			   type : 'line',
                marginTop: 10
             },
             navigator : {
                adaptToUpdatedData: false,
                enabled : false
             },
-
+			credits: {
+				enabled: false
+			},
             rangeSelector : {
                enabled : false
             },
@@ -78,16 +81,19 @@ widgetViewModelCtor =
                }
             },
 
-            yAxis : {
-               //minRange: 1
+            yAxis : { // Default Axis
             },
 
             plotOptions : {
+			  bar: {
+                pointPadding: 0.2
+              },
+			  
               series : {
                  connectNulls: false
               }
             },
-
+			
             tooltip : {
                useHTML: true,
                enabled : true,
@@ -113,6 +119,18 @@ widgetViewModelCtor =
 
          if (!isNullOrUndefined(this.chart)) {
             this.chart.setSize(this.widget.width(), this.widget.height(), false);
+
+			if ( this.widget.height() == 100 )
+			{
+				//Pas d'affichage de titre pour une case de hauteur
+				this.chart.setTitle({text: null});
+			}
+			else
+			{
+				this.chart.setTitle({text: this.widget.configuration.chartTitle});
+			    this.chart.setTitle({y: this.widget.height() - 15});
+			}
+			
             $(window).trigger("resize");
          }
       };
@@ -124,13 +142,10 @@ widgetViewModelCtor =
          if ((isNullOrUndefined(this.widget)) || (isNullOrUndefinedOrEmpty(this.widget.configuration)))
             return;
 
-         //we update chart title
-         try {
-            this.chart.setTitle({text: this.widget.configuration.chartTitle});
-         }
-         catch(err) {}
-
          var btns = self.widget.$gridsterWidget.find(".nav-btn");
+		 
+	     btns.css("position", "relative");
+		 btns.css("left", "70px");
 
          $.each(btns, function (index, btn) {
             $(btn).unbind("click").bind("click", self.navigatorBtnClick($(btn).attr("level")));
@@ -183,7 +198,7 @@ widgetViewModelCtor =
                var prefixUri = "";
                var timeBetweenTwoConsecutiveValues;
                var isSummaryData;
-
+			   
                switch (interval) {
                   case "HOUR" :
 				  
@@ -239,8 +254,9 @@ widgetViewModelCtor =
                      break;
                }
                console.log("step 2 " + moment().format("HH:mm:ss'SSS"));
-
+			   
                var curvesToLoad = self.widget.configuration.devices.length;
+			   
                //for each plot in the configuration we request for data
                $.each(self.widget.configuration.devices, function (index, device) {
 
@@ -339,17 +355,53 @@ widgetViewModelCtor =
                            color = device.content.color;
                         }
                         catch(err) {}
-
+						
+						   if ( (!parseBool(device.content.ownAxis)) )
+						   {
+					         try{
+								 
+								 function isOdd(num) { return num % 2;}
+								 
+								 if (isOdd(index))
+									 align = 'left';
+								 else
+									 align ='right';
+								 
+								 if (self.chart.get('axis' + self.seriesUuid[index]) == null )
+								 {
+								   self.chart.addAxis({ // new axis
+										id: 'axis' + self.seriesUuid[index], //The same id as the serie with axis at the beginning
+										labels: {
+											align: align,
+											style: {
+												color: color
+											}
+										},
+										opposite: isOdd ( index )
+									});
+								 }
+							  }
+							  catch (err)
+								 {
+									 console.log ( err );
+								 }
+                           }
+						
+						console.log ( device.content.PlotType );
+						
                         //marker of points is enable when there is less than 50 points on the line
                         self.chart.addSeries({id:self.seriesUuid[index],
-                                              data:plot, name:"", marker : { enabled : (plot.length < 50), radius : 3, symbol: "circle"}, color: color});
+                                              data:plot, name:"", marker : { enabled : (plot.length < 50), radius : 3, symbol: "circle"}, color: color , yAxis: 'axis' + self.seriesUuid[index], type: device.content.PlotType }
+											  , false); // Do not redraw immediately
                         console.log("step 6 " + moment().format("HH:mm:ss'SSS"));
+						
                         //we add min and max series
                         if (isSummaryData) {
                            if (parseBool(device.content.rangeArea)) {
 
                               self.chart.addSeries({id:self.rangeAreasUuid[index], type: 'arearange', lineWidth: 0, fillOpacity: 0.3, zIndex: 0,
-                                             data:range, color : color});
+                                             data:range, color : color, yAxis: 'axis' + self.seriesUuid[index], type: device.content.PlotType}
+											 , false); // Do not redraw immediately
 
                               //we add attribute to hide it in legend
                               var serie = self.chart.get(self.rangeAreasUuid[index]);
@@ -360,16 +412,18 @@ widgetViewModelCtor =
 
                         try {
 							
+							var yAxis = self.chart.get( 'axis' + self.seriesUuid[index]);
+							
                            if (parseBool(self.widget.configuration.customYAxisMinMax.checkbox))
 						   {
                               //we manage min and max scale y axis
                               var min = parseFloat(self.widget.configuration.customYAxisMinMax.content.minimumValue);
                               var max = parseFloat(self.widget.configuration.customYAxisMinMax.content.maximumValue);
-                              self.chart.yAxis[0].setExtremes(min, max);
+							  yAxis.setExtremes(min, max);
                            }
                            else {
                               //we cancel previous extremes
-                              self.chart.yAxis[0].setExtremes(null, null);
+							  yAxis.setExtremes(null, null);
                            }
                         }
                         catch (err) {
@@ -382,16 +436,37 @@ widgetViewModelCtor =
                         //we get the unit of the keyword
                         KeywordManager.get(device.content.source.keywordId, function(keyword) {
                            var serie = self.chart.get(self.seriesUuid[index]);
-                           //we save the unit in the serie
-                           if (serie) {
+						   
+                           //we save the unit in the serie and in the yAxis
+                           if (serie ) 
+						   {
                               serie.units = $.t(keyword.units);
                               serie.name = keyword.friendlyName;
+							  
+							  if ( (!parseBool(device.content.ownAxis)) )
+							  {  
+								  yAxis.setTitle({ 
+								                  text: keyword.friendlyName,
+												  style: {
+												       color: color
+											      }
+								  }, true); // Do not redraw immediately ?? Bizarre
+								  
+								  // Change the axis Title
+								  yAxis.update ({ //Set labels //SetOptions
+											labels: {
+												format: '{value} ' + serie.units
+										   }
+								  });
+							  }
                            }
                         });
 
                         console.log("step 9 " + moment().format("HH:mm:ss'SSS"));
                      })
                      .fail(function() {notifyError($.t("chart:errorDuringGettingDeviceData"));});
+					 
+					 self.chart.redraw ( true );
                });
             }
          }
@@ -440,6 +515,8 @@ widgetViewModelCtor =
       this.onNewAcquisition = function(searchedDevice, data) {
          var self = this;
 		 var bShift = false;
+		 
+		 console.log ( self.chart.yAxis );
 		 
          try {
             $.each(self.widget.configuration.devices, function (index, device) {
@@ -542,16 +619,20 @@ widgetViewModelCtor =
 				   {
 					   if (serie.options.marker.enabled)
 					   {
+						  //serie.setVisible (false, true);
 						  serie.options.marker.enabled = false;
-						  serie.setVisible (true, true);
+						  //serie.setVisible (true, true);
+						  self.chart.redraw();
 					   }
 				   }
 				   else
 				   {
 					   if (!(serie.options.marker.enabled))
 					   {
+						 //serie.setVisible (false, true);
 						 serie.options.marker.enabled = true;
-						 serie.setVisible ( true, true );
+						 //serie.setVisible ( true, true );
+						 self.chart.redraw();
 					   }
 				   }
                }
@@ -576,8 +657,6 @@ widgetViewModelCtor =
          }
          catch (err) {
          }
-
          return result;
       };
-
    };

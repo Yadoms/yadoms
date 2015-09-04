@@ -31,7 +31,7 @@
          "name" : "Data to display",
          "description" : "Select the data that you want to display",
          "type" : "device",
-         "expectedCapacity" : ["voltage", "energy","current","power","apparentpower","weight","pressure","load","KByte"],
+         "expectedCapacity" : ["voltage", "energy","current","power","apparentpower","weight","pressure"],
          "expectedKeywordAccess" : "get"
       }
    }

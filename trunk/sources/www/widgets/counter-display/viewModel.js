@@ -31,7 +31,8 @@ function CounterDisplayViewModel() {
   // Initialisation of a unique div associated to this widget
 	var elem = $('<div />').attr({
 	id: elementID,
-	"class":"odometer"
+	"class":"odometer",
+	"align": "center"
 	}).appendTo( "#widget-" + this.widget.id );
 	
 	// For each odometer, initialize with the theme passed in:
@@ -61,14 +62,6 @@ function CounterDisplayViewModel() {
 		 self.odometer.SetUnit( self.unit() );
 		 
 		 self.resizefont();
-/*		 
-		 //Compute the font-size needed.
-		 self.fontSize ( ((self.widget.width() - 9 - ( (self.minimumIntegerDigit / 3) - 1)*8.33) / (self.minimumIntegerDigit + self.unit().length) ) *1.11 );
-		 
-		 //Change the font-size value
-		 var elementID = "widget-counter-" + self.widget.id; // Unique ID
-		 $("div#" + elementID + ".odometer").css({"font-size": self.fontSize() + "px", "margin":"auto", "display": "table"});
-*/
       });
    }
    
