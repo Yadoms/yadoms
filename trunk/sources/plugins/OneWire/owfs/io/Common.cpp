@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Common.h"
 #include "OneWireException.hpp"
+#include <fstream>
 
 namespace owfs { namespace io {
 
