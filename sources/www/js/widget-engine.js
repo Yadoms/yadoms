@@ -276,7 +276,7 @@ function updateWebSocketFilter() {
          }
       });
 
-      WebSocketEngine.updateAcquisitionFilter(collection);
+      WebSocketEngine.updateAcquisitionFilter($.unique(collection));
    }
 }
 
