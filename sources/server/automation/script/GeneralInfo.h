@@ -9,21 +9,6 @@
 namespace automation { namespace script
 {
    //-----------------------------------------------------
-   ///\brief Info type
-   //-----------------------------------------------------
-   DECLARE_ENUM_HEADER(EInfo,
-      ((Sunrise))
-      ((Sunset))
-
-      ((Latitude))
-      ((Longitude))
-      ((Altitude))
-
-      ((YadomsServerOS))
-      ((YadomsServerVersion))
-   )
-
-   //-----------------------------------------------------
    ///\brief The script properties
    //-----------------------------------------------------
    class CGeneralInfo : public IGeneralInfo
@@ -42,7 +27,7 @@ namespace automation { namespace script
 
    protected:
       // IGeneralInfo Implementation
-      virtual std::string get(const std::string& key) const;
+      virtual std::string get(shared::script::yScriptApi::IYScriptApi::EInfoKeys key) const;
       // [END] IGeneralInfo Implementation
 
    private:

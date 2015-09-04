@@ -11,18 +11,6 @@
 namespace automation { namespace script
 {
 
-DECLARE_ENUM_IMPLEMENTATION(EInfo,
-   ((Sunrise))
-   ((Sunset))
-
-   ((Latitude))
-   ((Longitude))
-   ((Altitude))
-
-   ((YadomsServerOS))
-   ((YadomsServerVersion))
-)
-
 CGeneralInfo::CGeneralInfo(boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager)
    :m_location(new CLocation(configurationManager)),
    m_dayLight(new CDayLight(m_location)),
@@ -34,20 +22,19 @@ CGeneralInfo::~CGeneralInfo()
 {         
 }
 
-std::string CGeneralInfo::get(const std::string& key) const
+std::string CGeneralInfo::get(shared::script::yScriptApi::IYScriptApi::EInfoKeys key) const
 {
    try
    {
-      EInfo info(key);
-      switch(info)
+      switch (key)
       {
-      case EInfo::kSunriseValue: return m_dayLight->sunriseTime();
-      case EInfo::kSunsetValue: return m_dayLight->sunsetTime();
-      case EInfo::kLatitudeValue: return shared::CStringExtension::cultureInvariantToString(m_location->latitude());
-      case EInfo::kLongitudeValue: return shared::CStringExtension::cultureInvariantToString(m_location->longitude());
-      case EInfo::kAltitudeValue: return shared::CStringExtension::cultureInvariantToString(m_location->altitude());
-      case EInfo::kYadomsServerOSValue: return m_runningInformation->getOperatingSystemName();
-      case EInfo::kYadomsServerVersionValue: return m_runningInformation->getSoftwareVersion().toString();
+      case shared::script::yScriptApi::IYScriptApi::kSunrise: return m_dayLight->sunriseTime();
+      case shared::script::yScriptApi::IYScriptApi::kSunset: return m_dayLight->sunsetTime();
+      case shared::script::yScriptApi::IYScriptApi::kLatitude: return shared::CStringExtension::cultureInvariantToString(m_location->latitude());
+      case shared::script::yScriptApi::IYScriptApi::kLongitude: return shared::CStringExtension::cultureInvariantToString(m_location->longitude());
+      case shared::script::yScriptApi::IYScriptApi::kAltitude: return shared::CStringExtension::cultureInvariantToString(m_location->altitude());
+      case shared::script::yScriptApi::IYScriptApi::kYadomsServerOS: return m_runningInformation->getOperatingSystemName();
+      case shared::script::yScriptApi::IYScriptApi::kYadomsServerVersion: return m_runningInformation->getSoftwareVersion().toString();
       default:
          YADOMS_LOG(error) << "Getting general information : key " << key << " not suported (even defined)";
          return std::string();

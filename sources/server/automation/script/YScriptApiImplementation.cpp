@@ -142,7 +142,7 @@ void CYScriptApiImplementation::sendNotification(int keywordId, int recipientId,
    }
 }
 
-std::string CYScriptApiImplementation::getInfo(const std::string& key) const
+std::string CYScriptApiImplementation::getInfo(EInfoKeys key) const
 {
    try
    {

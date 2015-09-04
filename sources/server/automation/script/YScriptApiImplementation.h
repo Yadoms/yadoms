@@ -41,7 +41,7 @@ namespace automation { namespace script
       virtual std::pair<int, std::string> waitForAcquisitions(const std::vector<int> keywordIdList, const std::string& timeout) const;
       virtual void writeKeyword(int keywordId, const std::string& newState);
       virtual void sendNotification(int keywordId, int recipientId, const std::string& message);
-      virtual std::string getInfo(const std::string& key) const;
+      virtual std::string getInfo(EInfoKeys key) const;
       virtual void ruleEnable(bool enable = true);
       // [END] shared::script::yScriptApi::IYScriptApi implementation
 

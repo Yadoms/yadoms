@@ -84,7 +84,7 @@ void CYScriptApiImplementation::sendNotification(int keywordId, int recipientId,
    sendRequest(kReqSendNotification, request);
 }
 
-std::string CYScriptApiImplementation::getInfo(const std::string& key) const
+std::string CYScriptApiImplementation::getInfo(EInfoKeys key) const
 {
    CReqGetInfo request;
    request.m_key = key;

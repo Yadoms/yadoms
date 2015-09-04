@@ -56,20 +56,27 @@ namespace shared { namespace script { namespace yScriptApi
       virtual void sendNotification(int keywordId, int recipientId, const std::string& message) = 0;
 
       //-----------------------------------------------------
+      ///\brief Get general information keys
+      //-----------------------------------------------------
+      enum EInfoKeys
+      {
+         kSunrise,               ///< Sunrise hour : returns hour in the day (as double encoded in string)
+         kSunset,                ///< Sunset hour : returns hour in the day (as double encoded in string)
+
+         kLatitude,              ///< Latitude : returns latitude configured by user (or approximative latitude if not configured)
+         kLongitude,             ///< Longitude : returns latitude configured by user (or approximative longitude if not configured)
+         kAltitude,              ///< Altitude : returns latitude configured by user (or approximative altitude if not configured)
+
+         kYadomsServerOS,        ///< Yadoms server OS : returns a string containing the OS name where Yadoms is running
+         kYadomsServerVersion,   ///< Yadoms application version : returns a string containing the Yadoms application version
+      };
+
+      //-----------------------------------------------------
       ///\brief Get general information
       ///\param[in] key Information key
       ///\return Information as string (empty string if not found)
-      ///\details Supported value :
-      ///    - sunrise : get sunrise hour : returns hour in the day (as double encoded in string)
-      ///    - sunset : get sunset hour : returns hour in the day (as double encoded in string)
-      ///    - latitude : get latitude : returns latitude configured by user (or approximative latitude if not configured)
-      ///    - longitude : get longitude : returns latitude configured by user (or approximative longitude if not configured)
-      ///    - altitude : get altitude : returns latitude configured by user (or approximative altitude if not configured)
-      ///    - yadomsServerOS : get yadoms server OS : returns a string containing the OS name where Yadoms is running
-      ///    - yadomsServerVersion : get yadoms application version : returns a string containing the Yadoms application version
       //-----------------------------------------------------
-      //TODO voir si on peut exporter les valeurs supportées sous forme d'enum
-      virtual std::string getInfo(const std::string& key) const = 0;
+      virtual std::string getInfo(EInfoKeys key) const = 0;
 
       //-----------------------------------------------------
       ///\brief Can be used to prevent a rule for auto-restart
