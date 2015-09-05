@@ -106,7 +106,7 @@
 				  "description": "choose beetween following plot type",
 				  "type": "enum",
 				  "values": {
-					"line": "Spline",
+					"line": "line",
 					"bar": "Bar"
 				  },
 				  "defaultValue": "line"

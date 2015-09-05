@@ -13,6 +13,9 @@ widgetViewModelCtor =
 
       this.seriesUuid = [];
       this.rangeAreasUuid = [];
+	  
+	  //Keyword Id List !
+	  this.devicesList = [];
 
 	  this.interval = 0;
 	  
@@ -155,7 +158,7 @@ widgetViewModelCtor =
                $(btn).addClass("btn-primary");
             }
          });
-
+		 
          //we create an uuid for each serie
          $.each(self.widget.configuration.devices, function (index, device) {
             //we update uuid if they don't exist
@@ -164,10 +167,63 @@ widgetViewModelCtor =
             if (isNullOrUndefined(self.rangeAreasUuid[index]))
                self.rangeAreasUuid = createUUID();
          });
+		 
+		  if (self.devicesList.length == 0)
+		  {
+		     self.devicesList = self.widget.configuration.devices.slice(0);
+		  }
+		  else
+		  {
+			  var tempDevicesList = self.widget.configuration.devices.slice(0); 
+			  
+				$.each(self.devicesList, function (index, device) 
+				{
+					var isFound = false;
+					
+					$.each(tempDevicesList, function (index_temp, device_temp) 
+					{	
+						//Si already registered, we remove
+						if ( device.content.source.keywordId == device_temp.content.source.keywordId )
+						{
+						  isFound = true;
+						}
+					});
+					
+					//Si pas trouvé, on vire
+					if (!isFound)
+					{		
+							//we remove last series
+							var serie = self.chart.get(self.seriesUuid[index]);
+							console.log ( serie );
+							
+							if (!isNullOrUndefined(serie))
+							   serie.remove();
 
+							if (parseBool(device.content.rangeArea)) {
+							   var serie = self.chart.get(self.rangeAreasUuid[index]);
+							   if (!isNullOrUndefined(serie))
+								  serie.remove();
+							}
+
+							  //Suppression de l'axe
+							var yAxis = self.chart.get( 'axis' + self.seriesUuid[index]);
+							
+							console.log ( yAxis );
+							
+							if (!isNullOrUndefined(yAxis))
+							{
+								yAxis.remove ();
+							}							
+					}
+				});			  
+			  
+			  //We copy the new list
+			  self.devicesList = tempDevicesList.slice(0);
+		  }
+		 
          //we ask for device information
          this.refreshData(this.widget.configuration.interval, moment());
-      };
+      }; 
 
       this.navigatorBtnClick = function(interval) {
          var self = this;
@@ -205,7 +261,7 @@ widgetViewModelCtor =
 					 //The goal is to ask to the server the elapsed time only. Example : 22h00 -> 22h59mn59s. 
 					 //If you ask 22h00 -> 23h00, the system return also the average for 23h. If 23h is not complete, the value will be wrong.
 				 
-				     dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf('minute').subtract(1, 'seconds'));
+				     dateTo = DateTimeFormatter.dateToIsoDate(moment());
                      dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'hours').startOf('minute'));
                      //we request all data
                      timeBetweenTwoConsecutiveValues = undefined;
@@ -260,8 +316,11 @@ widgetViewModelCtor =
                //for each plot in the configuration we request for data
                $.each(self.widget.configuration.devices, function (index, device) {
 
+			      console.log ( "rest/acquisition/keyword/" + device.content.source.keywordId + prefixUri + "/" + dateFrom + "/" + dateTo );
+			   
                   $.getJSON("rest/acquisition/keyword/" + device.content.source.keywordId + prefixUri + "/" + dateFrom + "/" + dateTo)
                      .done(function( data ) {
+						 console.log ("done :", "rest/acquisition/keyword/" + device.content.source.keywordId + prefixUri + "/" + dateFrom + "/" + dateTo);
                         //we parse the json answer
                         if (data.result != "true")
                         {
@@ -342,7 +401,6 @@ widgetViewModelCtor =
                               if ((lastDate != undefined) && (timeBetweenTwoConsecutiveValues != undefined) &&
                                  (lastDate + timeBetweenTwoConsecutiveValues < d)) {
                                  plot.push([lastDate + 1, null]);
-                                 //range.push([lastDate + 1, null, null]);
                               }
 
                               plot.push([d, v]);
@@ -359,6 +417,8 @@ widgetViewModelCtor =
 						   if ( (!parseBool(device.content.ownAxis)) )
 						   {
 					         try{
+								 
+								 //FIXME : Attention mic/mac avec les index de seriesUuid lorsque l'on supprime une courbe au milieu de la liste
 								 
 								 function isOdd(num) { return num % 2;}
 								 
@@ -391,7 +451,13 @@ widgetViewModelCtor =
 						
                         //marker of points is enable when there is less than 50 points on the line
                         self.chart.addSeries({id:self.seriesUuid[index],
-                                              data:plot, name:"", marker : { enabled : (plot.length < 50), radius : 3, symbol: "circle"}, color: color , yAxis: 'axis' + self.seriesUuid[index], type: device.content.PlotType }
+                                              data:plot, 
+											  name:"", 
+											  marker : { enabled : null, radius : 3, symbol: "circle"}, 
+											  color: color , 
+											  yAxis: 'axis' + self.seriesUuid[index], 
+											  type: device.content.PlotType 
+											  }
 											  , false); // Do not redraw immediately
                         console.log("step 6 " + moment().format("HH:mm:ss'SSS"));
 						
@@ -399,8 +465,18 @@ widgetViewModelCtor =
                         if (isSummaryData) {
                            if (parseBool(device.content.rangeArea)) {
 
-                              self.chart.addSeries({id:self.rangeAreasUuid[index], type: 'arearange', lineWidth: 0, fillOpacity: 0.3, zIndex: 0,
-                                             data:range, color : color, yAxis: 'axis' + self.seriesUuid[index], type: device.content.PlotType}
+                              self.chart.addSeries({id:self.rangeAreasUuid[index], 
+													lineWidth: 0, 
+													fillOpacity: 0.3, 
+													zIndex: 0,
+                                                    data:range, 
+													color : color, 
+													yAxis: 'axis' + self.seriesUuid[index], 
+													type: device.content.PlotType,
+													marker: {
+														enabled: null
+													}
+													}
 											 , false); // Do not redraw immediately
 
                               //we add attribute to hide it in legend
@@ -450,23 +526,22 @@ widgetViewModelCtor =
 												  style: {
 												       color: color
 											      }
-								  }, true); // Do not redraw immediately ?? Bizarre
+								  }, false);
 								  
 								  // Change the axis Title
-								  yAxis.update ({ //Set labels //SetOptions
+								  yAxis.update ({ //Set labels
 											labels: {
 												format: '{value} ' + serie.units
 										   }
-								  });
+								  }, false); 
 							  }
                            }
+						   self.chart.redraw ( true );
                         });
 
                         console.log("step 9 " + moment().format("HH:mm:ss'SSS"));
                      })
                      .fail(function() {notifyError($.t("chart:errorDuringGettingDeviceData"));});
-					 
-					 self.chart.redraw ( true );
                });
             }
          }
@@ -614,27 +689,7 @@ widgetViewModelCtor =
 						 break;					 
 				   }
 				   
-				   //Enabling/disabling marker
-				   if (serie.points.length > 50)
-				   {
-					   if (serie.options.marker.enabled)
-					   {
-						  //serie.setVisible (false, true);
-						  serie.options.marker.enabled = false;
-						  //serie.setVisible (true, true);
-						  self.chart.redraw();
-					   }
-				   }
-				   else
-				   {
-					   if (!(serie.options.marker.enabled))
-					   {
-						 //serie.setVisible (false, true);
-						 serie.options.marker.enabled = true;
-						 //serie.setVisible ( true, true );
-						 self.chart.redraw();
-					   }
-				   }
+				   self.chart.redraw();
                }
             });
          }
@@ -647,6 +702,7 @@ widgetViewModelCtor =
          var result = [];
 
          try {
+			 console.log ("getDevicesForAcquisitions :", self.widget.configuration.devices );
             $.each(self.widget.configuration.devices, function (index, device) {
                try {
                   result.push(device.content.source);
