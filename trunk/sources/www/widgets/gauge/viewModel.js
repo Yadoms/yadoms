@@ -46,6 +46,9 @@ function GaugeViewModel()
         tooltip: {
             enabled: false
         },
+		credits: {
+			enabled: false
+		},		
 
         // the value axis
         yAxis: {
@@ -62,7 +65,9 @@ function GaugeViewModel()
                 y: -70
             },
             labels: {
-				enabled: isSmall,
+				enabled: true,
+				align : "left",
+				x: -5,
                 y: 16
             }
         },
@@ -239,11 +244,6 @@ function GaugeViewModel()
 				title: {
 					enabled : "middle",
 					text: self.widget.configuration.text
-				},
-				
-				// When small size we desactivate labels !
-				labels: {
-					enabled: !isSmall
 				}
 			},
 
@@ -251,9 +251,9 @@ function GaugeViewModel()
 				name: 'Data',
 				data: [1],
 				dataLabels: {
-					format: '<div style="text-align:center"><span style="font-size:'+ SizeValue +'px;color:' + 
-						((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y:.1f}</span><br/>' +
-						   '<span style="font-size:' + SizeUnit + 'px;color:silver">' + self.unit() + '</span></div>'
+					format: '<div style="text-align:center"><span style="text-align:center;font-size:'+ SizeValue +'px;color:' + 
+						((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y:.1f}</span>' +  //<br/>
+						   '<span style="text-align:center;font-size:' + SizeUnit + 'px;color:silver"> ' + self.unit() + '</span></div>'
 						   },
 				    tooltip: {
 					valueSuffix: self.unit()

@@ -105,11 +105,12 @@ widgetViewModelCtor =
                   $.each(this.points, function () {
                      if (!this.series.hideInLegend) {
                         s += "<br/><i style=\"color: " + this.series.color + ";\" class=\"fa fa-circle\"></i>&nbsp;" +
-                              this.series.name + " : " + this.y + " " + this.series.units;
+                              this.series.name + " : " + this.y.toFixed(1) + " " + this.series.units;
                      }
                   });
                   return s;
-               }
+               },
+			   shared : true
             },
 
             series : []
@@ -125,7 +126,7 @@ widgetViewModelCtor =
 
 			if ( this.widget.height() == 100 )
 			{
-				//Pas d'affichage de titre pour une case de hauteur
+				//No display of the title when height = 1 case
 				this.chart.setTitle({text: null});
 			}
 			else
@@ -148,8 +149,8 @@ widgetViewModelCtor =
          var btns = self.widget.$gridsterWidget.find(".nav-btn");
 		 
 	     btns.css("position", "relative");
-		 btns.css("left", "70px");
-
+		 btns.css("left", "100px"); // TODO : Déplacer au milieu  lorsque le graphique est plus grand
+		 
          $.each(btns, function (index, btn) {
             $(btn).unbind("click").bind("click", self.navigatorBtnClick($(btn).attr("level")));
 
@@ -163,10 +164,12 @@ widgetViewModelCtor =
          $.each(self.widget.configuration.devices, function (index, device) {
             //we update uuid if they don't exist
             if (isNullOrUndefined(self.seriesUuid[index]))
-               self.seriesUuid = createUUID();
+               self.seriesUuid[index] = createUUID();
             if (isNullOrUndefined(self.rangeAreasUuid[index]))
-               self.rangeAreasUuid = createUUID();
+               self.rangeAreasUuid[index] = createUUID();
          });
+		 
+		 console.log (self.seriesUuid);
 		 
 		  if (self.devicesList.length == 0)
 		  {
@@ -189,7 +192,6 @@ widgetViewModelCtor =
 						}
 					});
 					
-					//Si pas trouvé, on vire
 					if (!isFound)
 					{		
 							//we remove last series
@@ -205,15 +207,20 @@ widgetViewModelCtor =
 								  serie.remove();
 							}
 
-							  //Suppression de l'axe
-							var yAxis = self.chart.get( 'axis' + self.seriesUuid[index]);
-							
-							console.log ( yAxis );
+							  //Delete the axis
+							var yAxis = self.chart.get( 'axis' + self.seriesUuid[index]);							
 							
 							if (!isNullOrUndefined(yAxis))
 							{
 								yAxis.remove ();
-							}							
+							}
+							
+							// Delele the assign character for serie Uuid and rangesAreasUuid, if defined !
+							if (!isNullOrUndefined(self.seriesUuid[index]) && (index >-1))
+								self.seriesUuid.splice(index,1);
+
+							if (!isNullOrUndefined(self.rangeAreasUuid[index]) && (index >-1))
+								self.rangeAreasUuid.splice(index,1);
 					}
 				});			  
 			  
@@ -418,8 +425,6 @@ widgetViewModelCtor =
 						   {
 					         try{
 								 
-								 //FIXME : Attention mic/mac avec les index de seriesUuid lorsque l'on supprime une courbe au milieu de la liste
-								 
 								 function isOdd(num) { return num % 2;}
 								 
 								 if (isOdd(index))
@@ -447,7 +452,7 @@ widgetViewModelCtor =
 								 }
                            }
 						
-						console.log ( device.content.PlotType );
+						console.log ("plot:", plot );
 						
                         //marker of points is enable when there is less than 50 points on the line
                         self.chart.addSeries({id:self.seriesUuid[index],
@@ -591,7 +596,7 @@ widgetViewModelCtor =
          var self = this;
 		 var bShift = false;
 		 
-		 console.log ( self.chart.yAxis );
+		 
 		 
          try {
             $.each(self.widget.configuration.devices, function (index, device) {
@@ -626,67 +631,73 @@ widgetViewModelCtor =
 				  
 				  var serie = self.chart.get(self.seriesUuid[index]);
 				  
-				  // Clean points > cleanValue
-				  if (!isNullOrUndefined( serie.points[0] ))
+				  console.log ( "serie :" ,serie );
+				  
+				  // If a serie is available
+				  if (!isNullOrUndefined( serie ))
 				  {
-					  while ( (data.date.valueOf() - serie.points[0].x) > cleanValue )
+                      //This line is necessary, otherwise serie.points is empty or null.
+					  serie.setVisible (true);
+					  
+					  // Clean points > cleanValue
+					  while ( (data.date.valueOf() - serie.points[0].x) > cleanValue ) //serie.options.data[0].x
 					  {
 						  serie.removePoint ( 0 );
 					  }
-				  }
 				  
-				  // Add new point depending of the interval
-                   switch ( self.interval ) 
-				   {
-					  case "HOUR" :
-					     self.chart.get(self.seriesUuid[index]).addPoint([data.date.valueOf(), parseFloat(data.value)], true, false, true);
-						 break;
-					  case "DAY" : 
-					  
-					     console.log ( data.date.valueOf() - serie.points[serie.points.length-1].x );
-					  
-				         if ( (data.date.valueOf() - serie.points[serie.points.length-1].x) > 3600000 * 2 )
-						 {
-                            self.DisplaySummary ( index, 1, device, "hours", "hour" );
-						 }					  
-					     break;
-					  case "WEEK" :
+					  // Add new point depending of the interval
+					   switch ( self.interval ) 
+					   {
+						  case "HOUR" :
+							   serie.addPoint([data.date.valueOf(), parseFloat(data.value)], true, false, true);
+							 break;
+						  case "DAY" : 
+						  
+							 console.log ( data.date.valueOf() - serie.points[serie.points.length-1].x );
+						  
+							 if ( (data.date.valueOf() - serie.points[serie.points.length-1].x) > 3600000 * 2 )
+							 {
+								self.DisplaySummary ( index, 1, device, "hours", "hour" );
+							 }					  
+							 break;
+						  case "WEEK" :
 
-					     console.log ( data.date.valueOf() - serie.points[serie.points.length-1].x );
-					  
-				         if ( (data.date.valueOf() - serie.points[serie.points.length-1].x) > 3600000 * 2 )
-						 {
-							 self.DisplaySummary ( index, 1, device, "weeks", "hour" );
-						 }
-						 break;
-					  case "MONTH" :
-					  
-					  	 console.log ( data.date.valueOf() - serie.points[serie.points.length-1].x );
-					  
-				         if ( (data.date.valueOf() - serie.points[serie.points.length-1].x) > 3600000 * 24 * 2 )
-						 {
-							 self.DisplaySummary ( index, 1, device, "months", "day" );
-						 }
-						 break;
-					  case "HALF_YEAR" :
-					  
-					  	 console.log ( data.date.valueOf() - serie.points[serie.points.length-1].x );
-					  
-				         if ( (data.date.valueOf() - serie.points[serie.points.length-1].x) > 3600000 * 24 * 2 )
-						 {
-							 self.DisplaySummary ( index, 6, device, "months", "day" );
-						 }					  
-						 break;
-					  case "YEAR" :
-					  	 console.log ( data.date.valueOf() - serie.points[serie.points.length-1].x );
-					  
-				         if ( (data.date.valueOf() - serie.points[serie.points.length-1].x) > 3600000 * 24 * 2 )
-						 {
-							 self.DisplaySummary ( index, 1, device, "years", "day" );
-						 }					  
-						 break;
-					  default:
-						 break;					 
+							 console.log ( data.date.valueOf() - serie.points[serie.points.length-1].x );
+						  
+							 if ( (data.date.valueOf() - serie.points[serie.points.length-1].x) > 3600000 * 2 )
+							 {
+								 self.DisplaySummary ( index, 1, device, "weeks", "hour" );
+							 }
+							 break;
+						  case "MONTH" :
+						  
+							 console.log ( data.date.valueOf() - serie.points[serie.points.length-1].x );
+						  
+							 if ( (data.date.valueOf() - serie.points[serie.points.length-1].x) > 3600000 * 24 * 2 )
+							 {
+								 self.DisplaySummary ( index, 1, device, "months", "day" );
+							 }
+							 break;
+						  case "HALF_YEAR" :
+						  
+							 console.log ( data.date.valueOf() - serie.points[serie.points.length-1].x );
+						  
+							 if ( (data.date.valueOf() - serie.points[serie.points.length-1].x) > 3600000 * 24 * 2 )
+							 {
+								 self.DisplaySummary ( index, 6, device, "months", "day" );
+							 }					  
+							 break;
+						  case "YEAR" :
+							 console.log ( data.date.valueOf() - serie.points[serie.points.length-1].x );
+						  
+							 if ( (data.date.valueOf() - serie.points[serie.points.length-1].x) > 3600000 * 24 * 2 )
+							 {
+								 self.DisplaySummary ( index, 1, device, "years", "day" );
+							 }					  
+							 break;
+						  default:
+							 break;					 
+					   }
 				   }
 				   
 				   self.chart.redraw();
@@ -694,6 +705,7 @@ widgetViewModelCtor =
             });
          }
          catch (err) {
+			 console.log ( err );
          }
       };
 
