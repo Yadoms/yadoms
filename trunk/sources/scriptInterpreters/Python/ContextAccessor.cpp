@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "ContextAccessor.h"
 #include "MessageQueueRemover.hpp"
-#include <shared/DataContainer.h>
 #include <shared/Log.h>
 #include <shared/exception/InvalidParameter.hpp>
 
