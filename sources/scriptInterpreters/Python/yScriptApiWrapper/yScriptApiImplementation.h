@@ -1,6 +1,7 @@
 #pragma once
 
 #include <shared/script/yScriptApi/IYScriptApi.h>
+#include <shared/DataContainer.h>
 #include "../Messages.hpp"
 
 //-----------------------------------------------------
@@ -33,48 +34,23 @@ public:
 protected:
    //--------------------------------------------------------------
    /// \brief	Send a request
-   /// \template RequestType The type of the request
    /// \param[in] requestId The request message identifier
    /// \param[in] request The request
    //--------------------------------------------------------------
-   template <class RequestType>
-   void sendRequest(ERequestIdentifier requestId, const RequestType& request) const
-   {
-      try
-      {
-         std::ostringstream oss(std::ios::binary);
-         boost::archive::binary_oarchive oa(oss);
-         oa << requestId;
-         oa << request;
-         if (oss.str().size() > m_messageQueueMessageSize)
-            throw std::overflow_error("yScriptApiWrapper::sendRequest : request is too big");
-         m_sendMessageQueue->send(oss.str().c_str(), oss.str().size(), 0);
-      }
-      catch (boost::interprocess::interprocess_exception& ex)
-      {
-         throw std::overflow_error(std::string("yScriptApiWrapper::sendRequest : Error at IYScriptApi method call, ") + ex.what());
-      }
-   }
+   void sendRequest(ERequestIdentifier requestId, const shared::CDataContainer& request) const;
 
    //--------------------------------------------------------------
    /// \brief	Wait for an answer
-   /// \template AnswerType The type of the answer to unserialize
    /// \param[in] expectedAnswerId The expected answer message identifier
    /// \param[out] answer The unserialized answer
    /// \param[in] timeout Duration to wait.
    /// \throw std::runtime_error if message queue error
    /// \throw std::out_of_range if wrong answer message identifier received
    //--------------------------------------------------------------
-   template <class AnswerType>
-   void receiveAnswer(EAnswerIdentifier expectedAnswerId, AnswerType& answer, const boost::posix_time::time_duration& timeout = boost::posix_time::time_duration()) const
-   {
-      if (!tryReceiveAnswer(expectedAnswerId, answer, timeout))
-         throw std::runtime_error("yScriptApiWrapper::receiveAnswer : Timeout waiting for Yadoms answer");
-   }
+   void receiveAnswer(EAnswerIdentifier expectedAnswerId, shared::CDataContainer& answer, const boost::posix_time::time_duration& timeout = boost::posix_time::time_duration()) const;
 
    //--------------------------------------------------------------
    /// \brief	Try to read an answer
-   /// \template AnswerType The type of the answer to unserialize
    /// \param[in] expectedAnswerId The expected answer message identifier
    /// \param[out] answer The unserialized answer
    /// \param[in] timeout Duration to wait.
@@ -82,34 +58,7 @@ protected:
    /// \throw std::runtime_error if message queue error
    /// \throw std::out_of_range if wrong answer message identifier received
    //--------------------------------------------------------------
-   template <class AnswerType>
-   bool tryReceiveAnswer(EAnswerIdentifier expectedAnswerId, AnswerType& answer, const boost::posix_time::time_duration& timeout) const
-   {
-      // Wait answer
-      char message[m_messageQueueMessageSize];
-      size_t messageSize;
-      unsigned int messagePriority;
-
-      // Add a small timeout to let time to Yadoms to answer
-      if (!m_receiveMessageQueue->timed_receive(message, m_messageQueueMessageSize, messageSize, messagePriority, boost::posix_time::second_clock::universal_time() + boost::posix_time::seconds(10) + timeout))
-         return false;
-
-      if (messageSize < 1)
-         throw std::runtime_error("yScriptApiWrapper::tryReceiveAnswer : received Yadoms answer is zero length");
-
-      // Unserialize received message
-      std::istringstream iss(std::string(message, messageSize), std::ios::binary);
-      boost::archive::binary_iarchive ia(iss);
-      EAnswerIdentifier requestId;
-      ia >> requestId;
-
-      if (requestId != expectedAnswerId)
-         throw std::out_of_range("yScriptApiWrapper::tryReceiveAnswer : received Yadoms answer is wrong type");
-
-      ia >> answer;
-
-      return true;
-   }
+   bool tryReceiveAnswer(EAnswerIdentifier expectedAnswerId, shared::CDataContainer& answer, const boost::posix_time::time_duration& timeout) const;
 
 private:
    //-----------------------------------------------------
