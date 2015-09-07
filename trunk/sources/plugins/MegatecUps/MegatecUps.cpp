@@ -18,7 +18,6 @@ enum
    kProtocolErrorRetryTimer,
    kAnswerTimeout,
    kUpsStatusRequestDelay,
-   kPowerFailureNotificationDelay,
 };
 
 
@@ -36,11 +35,12 @@ static const std::locale ProtocolFloatFormatingLocale(std::locale(), new CMegate
 
 
 CMegatecUps::CMegatecUps()
-   :m_protocolErrorCounter(0), m_lastSentBuffer(1), m_answerIsRequired(true), m_firstNotification(true),
-   m_acPowerActive(true), m_lowBatteryFlag(false), m_lowBatteryByLevelFlag(false), m_batteryNominalVoltage(0.0),
+   :m_protocolErrorCounter(0), m_lastSentBuffer(1), m_answerIsRequired(true),
+   m_acPowerActive(true), m_batteryNominalVoltage(0.0),
    m_inputVoltage("inputVoltage"), m_inputfaultVoltage("inputfaultVoltage"), m_outputVoltage("outputVoltage"),
    m_outputLoad("outputLoad"), m_inputFrequency("inputFrequency"), m_batteryVoltage("batteryVoltage"),
-   m_temperature("temperature"), m_acPowerHistorizer("acPowerActive", yApi::EKeywordAccessMode::kGet), m_upsShutdown("UpsShutdown")
+   m_temperature("temperature"), m_acPowerHistorizer("acPowerActive", yApi::EKeywordAccessMode::kGet),
+   m_batteryLowHistorizer("batteryLow", yApi::EKeywordAccessMode::kGet), m_upsShutdown("UpsShutdown")
 {
 }
 
@@ -62,7 +62,6 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
       m_waitForAnswerTimer->stop();
       m_upsStatusRequestTimer = context->getEventHandler().createTimer(kUpsStatusRequestDelay, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(10));
       m_upsStatusRequestTimer->stop();
-      m_filterTimer = context->getEventHandler().createTimer(kPowerFailureNotificationDelay);
 
       // Create the connection
       createConnection(context->getEventHandler());
@@ -139,12 +138,6 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
             {
                // Ask for status
                sendGetStatusCmd();
-               break;
-            }
-         case kPowerFailureNotificationDelay:
-            {
-               if(m_configuration.powerFailureManagement() == IMegatecUpsConfiguration::kFilter)
-                  notifyPowerState(context, false);
                break;
             }
          case kProtocolErrorRetryTimer:
@@ -449,6 +442,9 @@ void CMegatecUps::processReceivedStatus(boost::shared_ptr<yApi::IYPluginApi> con
    bool shutdownActive = status[6] == '1';
    bool beeperOn = status[7] == '1';
 
+   m_batteryLowHistorizer.set(batteryLow);
+   m_acPowerHistorizer.set(!utilityFail);
+
    historizeData(context);
 
    YADOMS_LOG(debug) << "UPS current informations : inputVoltage=" << m_inputVoltage.get() <<
@@ -470,9 +466,6 @@ void CMegatecUps::processReceivedStatus(boost::shared_ptr<yApi::IYPluginApi> con
    // Toggle beep if not in expected state
    if (beeperOn != m_configuration.upsBeepEnable())
       sendToggleBeepCmd();
-
-   // Process AC power status
-   processAcPowerStatus(context, !utilityFail, batteryLow);
 
    // Wait for next status request
    m_upsStatusRequestTimer->start();
@@ -523,20 +516,27 @@ double CMegatecUps::upsStr2Double(const std::string& str)
 
 void CMegatecUps::declareDevice(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& model) const
 {
+   bool needFirstHistorization = false;
+
    if (!context->deviceExists(DeviceName))
    {
       context->declareDevice(DeviceName, model);
+      needFirstHistorization = true;
+   }
 
-      context->declareKeyword(DeviceName, m_inputVoltage);
-      context->declareKeyword(DeviceName, m_inputfaultVoltage);
-      context->declareKeyword(DeviceName, m_outputVoltage);
-      context->declareKeyword(DeviceName, m_outputLoad);
-      context->declareKeyword(DeviceName, m_inputFrequency);
-      context->declareKeyword(DeviceName, m_batteryVoltage);
-      context->declareKeyword(DeviceName, m_temperature);
-      context->declareKeyword(DeviceName, m_acPowerHistorizer);
-      context->declareKeyword(DeviceName, m_upsShutdown);
+   if (!context->keywordExists(DeviceName, m_inputVoltage))          context->declareKeyword(DeviceName, m_inputVoltage);
+   if (!context->keywordExists(DeviceName, m_inputfaultVoltage))     context->declareKeyword(DeviceName, m_inputfaultVoltage);
+   if (!context->keywordExists(DeviceName, m_outputVoltage))         context->declareKeyword(DeviceName, m_outputVoltage);
+   if (!context->keywordExists(DeviceName, m_outputLoad))            context->declareKeyword(DeviceName, m_outputLoad);
+   if (!context->keywordExists(DeviceName, m_inputFrequency))        context->declareKeyword(DeviceName, m_inputFrequency);
+   if (!context->keywordExists(DeviceName, m_batteryVoltage))        context->declareKeyword(DeviceName, m_batteryVoltage);
+   if (!context->keywordExists(DeviceName, m_temperature))           context->declareKeyword(DeviceName, m_temperature);
+   if (!context->keywordExists(DeviceName, m_acPowerHistorizer))     context->declareKeyword(DeviceName, m_acPowerHistorizer);
+   if (!context->keywordExists(DeviceName, m_batteryLowHistorizer))  context->declareKeyword(DeviceName, m_batteryLowHistorizer);
+   if (!context->keywordExists(DeviceName, m_upsShutdown))           context->declareKeyword(DeviceName, m_upsShutdown);
 
+   if (needFirstHistorization)
+   {
       // Force a first historization to let Yadoms know the shutdown state
       context->historizeData(DeviceName, m_upsShutdown);
    }
@@ -551,62 +551,6 @@ void CMegatecUps::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) co
    context->historizeData(DeviceName, m_inputFrequency);
    context->historizeData(DeviceName, m_batteryVoltage);
    context->historizeData(DeviceName, m_temperature);
-}
-
-void CMegatecUps::processAcPowerStatus(boost::shared_ptr<yApi::IYPluginApi> context, bool acPowerActive, bool lowBatteryFlag)
-{
-   switch(m_configuration.powerFailureManagement())
-   {
-   case IMegatecUpsConfiguration::kNotifyImmediately:
-      {
-         if (m_firstNotification || (acPowerActive != m_acPowerActive))
-            notifyPowerState(context, acPowerActive);
-         m_acPowerActive = acPowerActive;
-         break;
-      }
-   case IMegatecUpsConfiguration::kFilter:
-      {
-         if (m_firstNotification)
-            notifyPowerState(context, acPowerActive);
-         if (acPowerActive != m_acPowerActive && !acPowerActive)
-            m_filterTimer->start(boost::posix_time::seconds(m_configuration.powerFailureFilterDelay()));
-         m_acPowerActive = acPowerActive;
-         break;
-      }
-   case IMegatecUpsConfiguration::kLowBattery:
-      {
-         // No mater if AC power is OK or not
-         if (m_firstNotification || (lowBatteryFlag != m_lowBatteryFlag))
-            notifyPowerState(context, !lowBatteryFlag);
-         m_lowBatteryFlag = lowBatteryFlag;
-         break;
-      }
-   case IMegatecUpsConfiguration::kRemainingBattery:
-      {
-         // No mater if AC power is OK or not
-         bool oldLowBatteryByLevelFlag = m_lowBatteryByLevelFlag;
-         getLowBatteryByLevelFlagState(m_lowBatteryByLevelFlag);
-         if (m_firstNotification || (m_lowBatteryByLevelFlag != oldLowBatteryByLevelFlag))
-            notifyPowerState(context, m_lowBatteryByLevelFlag);
-         break;
-      }
-   default:
-      {
-         BOOST_ASSERT_MSG(false, "Unsupported powerFailureManagement value");
-         break;
-      }
-   }
-   m_firstNotification = false;
-}
-
-void CMegatecUps::notifyPowerState(boost::shared_ptr<yApi::IYPluginApi> context, bool powerState)
-{
-   m_acPowerHistorizer.set(powerState);
    context->historizeData(DeviceName, m_acPowerHistorizer);
+   context->historizeData(DeviceName, m_batteryLowHistorizer);
 }
-
-void CMegatecUps::getLowBatteryByLevelFlagState(bool& flag) const
-{
-   flag = (m_batteryVoltage < m_configuration.powerFailureRemainingBatteryThreshold());
-}
-

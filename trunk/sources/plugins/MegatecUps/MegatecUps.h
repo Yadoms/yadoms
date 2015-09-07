@@ -167,27 +167,6 @@ protected:
    //--------------------------------------------------------------
    void historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const;
 
-   //--------------------------------------------------------------
-   /// \brief	                     process AC power status
-   /// \param [in] context          Plugin execution context (Yadoms API)
-   /// \param [in] acPowerActive    AC power current status
-   /// \param [in] lowBatteryFlag   Low battery flag
-   //--------------------------------------------------------------
-   void processAcPowerStatus(boost::shared_ptr<yApi::IYPluginApi> context, bool acPowerActive, bool lowBatteryFlag);
-
-   //--------------------------------------------------------------
-   /// \brief	                     notify Yadoms for current power state
-   /// \param [in] context          Plugin execution context (Yadoms API)
-   /// \param [in] powerState       The power state to send to Yadoms
-   //--------------------------------------------------------------
-   void notifyPowerState(boost::shared_ptr<yApi::IYPluginApi> context, bool powerState);
-
-   //--------------------------------------------------------------
-   /// \brief	                     Evaluate the state of the low battery flag, by measured battery voltage
-   /// \param [out] flag            Flag to be evaluated, can be true, false, or unchanged
-   //--------------------------------------------------------------
-   void getLowBatteryByLevelFlagState(bool& flag) const;
-
 private:
    //--------------------------------------------------------------
    /// \brief	The plugin configuration
@@ -215,11 +194,6 @@ private:
    boost::shared_ptr<shared::event::CEventTimer> m_upsStatusRequestTimer;
 
    //--------------------------------------------------------------
-   /// \brief	The delay before notify Yadoms when AC power is lost
-   //--------------------------------------------------------------
-   boost::shared_ptr<shared::event::CEventTimer> m_filterTimer;
-
-   //--------------------------------------------------------------
    /// \brief	The communication error retry counter
    //--------------------------------------------------------------
    unsigned int m_protocolErrorCounter;
@@ -236,11 +210,6 @@ private:
    bool m_answerIsRequired;
 
    //--------------------------------------------------------------
-   /// \brief	First notification flag
-   //--------------------------------------------------------------
-   bool m_firstNotification;
-
-   //--------------------------------------------------------------
    /// \brief	The device name
    //--------------------------------------------------------------
    static const std::string DeviceName;
@@ -249,16 +218,6 @@ private:
    /// \brief	AC power status
    //--------------------------------------------------------------
    bool m_acPowerActive;
-
-   //--------------------------------------------------------------
-   /// \brief	Flag indicating the low battery state (as signaled by UPS itself)
-   //--------------------------------------------------------------
-   bool m_lowBatteryFlag;
-
-   //--------------------------------------------------------------
-   /// \brief	Flag indicating the low battery state (from measured battery voltage)
-   //--------------------------------------------------------------
-   bool m_lowBatteryByLevelFlag;
 
    //--------------------------------------------------------------
    /// \brief	The battery nominal voltage (V)
@@ -304,6 +263,11 @@ private:
    /// \brief	The AC power state
    //--------------------------------------------------------------
    yApi::historization::CSwitch m_acPowerHistorizer;
+
+   //--------------------------------------------------------------
+   /// \brief	The battery low state
+   //--------------------------------------------------------------
+   yApi::historization::CSwitch m_batteryLowHistorizer;
 
    //--------------------------------------------------------------
    /// \brief	The shutdown device
