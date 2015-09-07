@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ContextAccessor.h"
 #include "MessageQueueRemover.hpp"
+#include <shared/DataContainer.h>
 #include <shared/Log.h>
 #include <shared/exception/InvalidParameter.hpp>
 
@@ -84,83 +85,76 @@ void CContextAccessor::doWork()
    YADOMS_LOG(debug) << "Close message queues";
 }
 
+void CContextAccessor::sendAnswer(EAnswerIdentifier answerId, const shared::CDataContainer& answer, boost::interprocess::message_queue& messageQueue)
+{
+   shared::CDataContainer mainAnswerContainer;
+   mainAnswerContainer.set("type", answerId);
+   mainAnswerContainer.set("content", answer);
+
+   const std::string serializedRequest(mainAnswerContainer.serialize());
+   if (serializedRequest.size() > m_messageQueueMessageSize)
+      throw std::overflow_error("sendRequest : answer is too big");
+   messageQueue.send(serializedRequest.c_str(), serializedRequest.size(), 0);
+}
+
 void CContextAccessor::processMessage(const char* message, size_t messageSize, boost::interprocess::message_queue& messageQueue)
 {
    if (messageSize < 1)
       throw shared::exception::CInvalidParameter("messageSize");
 
-   // Unserialize message id
-   std::istringstream iss(std::string(message, messageSize), std::ios::binary);
-   boost::archive::binary_iarchive ia(iss);
-
-   ERequestIdentifier requestId;
-   ia >> requestId;
+   // Unserialize message
+   shared::CDataContainer mainRequestContainer(std::string(message, messageSize));
+   if (!mainRequestContainer.exists("type") || !mainRequestContainer.exists("content"))
+      throw shared::exception::CInvalidParameter("message"); 
 
    // Process message
-   switch (requestId)
+   shared::CDataContainer request = mainRequestContainer.get<shared::CDataContainer>("content");
+   std::string s = request.serialize();
+   switch (mainRequestContainer.get<ERequestIdentifier>("type"))
    {
    case kReqReadKeyword:
    {
-      CReqReadKeyword request;
-      ia >> request;
-
-      CAnsReadKeyword answer;
-      answer.m_returnValue = m_context.readKeyword(request.m_keywordId);
+      shared::CDataContainer answer;
+      answer.set("returnValue", m_context.readKeyword(request.get<int>("keywordId")));
       sendAnswer(kAnsReadKeyword, answer, messageQueue);
       break;
    }
    case kReqWaitForAcquisition:
    {
-      CReqWaitForAcquisition request;
-      ia >> request;
-
-      CAnsWaitForAcquisition answer;
-      answer.m_returnValue = m_context.waitForAcquisition(request.m_keywordId, request.m_timeout);
+      shared::CDataContainer answer;
+      answer.set("returnValue", m_context.waitForAcquisition(request.get<int>("keywordId"), request.get<std::string>("timeout")));
       sendAnswer(kAnsWaitForAcquisition, answer, messageQueue);
       break;
    }
    case kReqWaitForAcquisitions:
    {
-      CReqWaitForAcquisitions request;
-      ia >> request;
-
-      CAnsWaitForAcquisitions answer;
-      answer.m_returnValue = m_context.waitForAcquisitions(request.m_keywordIdList, request.m_timeout);
+      shared::CDataContainer answer;
+      std::pair<int, std::string> returnValue = m_context.waitForAcquisitions(request.get<std::vector<int> >("keywordIdList"), request.get<std::string>("timeout"));
+      answer.set("key", returnValue.first);
+      answer.set("value", returnValue.second);
       sendAnswer(kAnsWaitForAcquisitions, answer, messageQueue);
       break;
    }
    case kReqWriteKeyword:
    {
-      CReqWriteKeyword request;
-      ia >> request;
-      
-      m_context.writeKeyword(request.m_keywordId, request.m_newState);
+      m_context.writeKeyword(request.get<int>("keywordId"), request.get<std::string>("newState"));
       break;
    }
    case kReqSendNotification:
    {
-      CReqSendNotification request;
-      ia >> request;
-      
-      m_context.sendNotification(request.m_keywordId, request.m_recipientId, request.m_message);
+      m_context.sendNotification(request.get<int>("keywordId"), request.get<int>("recipientId"), request.get<std::string>("message"));
       break;
    }
    case kReqGetInfo:
    {
-      CReqGetInfo request;
-      ia >> request;
-
-      CAnsGetInfo answer;
-      answer.m_returnValue = m_context.getInfo(request.m_key);
+      shared::CDataContainer answer;
+      answer.set("returnValue", m_context.getInfo(request.get<shared::script::yScriptApi::IYScriptApi::EInfoKeys>("key")));
       sendAnswer(kAnsGetInfo, answer, messageQueue);
       break;
    }
    case kReqRuleEnable:
    {
-      CReqRuleEnable request;
-      ia >> request;
-
-      m_context.ruleEnable(request.m_enable);
+      m_context.ruleEnable(request.get<bool>("enable"));
       break;
    }
 

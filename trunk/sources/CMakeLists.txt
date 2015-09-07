@@ -94,7 +94,6 @@ set(BOOST_LIBS
 	date_time 
 	chrono 
 	regex
-	serialization
 )
 
 # search boost libs
