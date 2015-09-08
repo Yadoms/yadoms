@@ -36,8 +36,8 @@
       },
       "customYAxisMinMax" : {
          "type" : "section",
-         "name" : "Manually set min and max of the gauge",
-         "description" : "Enabling this section allow you to set the min and max of the gauge. If it is not activated min and max will be set to 0 and 100",
+         "name" : "Set min and max of the gauge",
+         "description" : "Allow to manually set the min and max of the gauge. If not checked, min and max will be respectively set to 0 and 100",
          "enableWithCheckBox" : "true",
          "enableWithCheckBoxDefaultValue" : "false",
          "content" : {
@@ -58,29 +58,40 @@
          }
       },
       "thresholds" : {
-         "type" : "list",
-         "name" : "thresholds",
-         "description" : "List of thresholds (Maximum: 5)",
-         "nbItemsMin" : "1",
-         "nbItemsMax" : "5",
-         "allowDuplication" : "true",
-         "item" : {
-            "type" : "section",
-            "name" : "threshold",
-            "description" : "This section allow the configuration of thresholds",
-            "content" : {
-				"thresholdValue" : {
-				   "type" : "decimal",
-				   "name" : "threshold",
-				   "description" : "Set the value",
-				   "defaultValue" : "50.0",
-				   "precision" : "1"
-				},
-               "color" : {
-                  "name" : "Color before the threshold",
-                  "description" : "Permit to change the color before the threshold",
-                  "type" : "color",
-                  "defaultValue" : "#55BF3B"
+         "type" : "section",
+         "name" : "Thresholds",
+         "description" : "Change the gauge color depending on data value (5 thresholds max)",
+         "content" : {
+            "defaultColor" : {
+               "type" : "color",
+               "name" : "Default color",
+               "description" : "Set the color when data is lower than first threshold (or when there is no threshold)",
+               "defaultValue" : "#55BF3B"
+            },
+            "addedThresholds" : {
+               "type" : "list",
+               "name" : "Thresholds",
+               "description" : "Change the gauge color depending on data value (5 thresholds max)",
+               "nbItemsMin" : "0",
+               "nbItemsMax" : "5",
+               "allowDuplication" : "true",
+               "item" : {
+                  "type" : "section",
+                  "name" : "threshold",
+                  "description" : "Configure the color to apply to gauge when data becomes greater than threshold",
+                  "content" : {
+                  "thresholdValue" : {
+                     "type" : "decimal",
+                     "name" : "Threshold",
+                     "defaultValue" : "50.0",
+                     "precision" : "1"
+                  },
+                     "color" : {
+                        "name" : "Color",
+                        "type" : "color",
+                        "defaultValue" : "#FF0000"
+                     }
+                  }
                }
             }
          }
