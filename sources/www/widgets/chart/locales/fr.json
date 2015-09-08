@@ -2,19 +2,77 @@
    "name" : "graphique",
    "description": "Un widget qui permet d'afficher un graphe d'historisation de données",
    "configurationSchema" : {
-      "device" : {
-         "name" : "Donnée à afficher",
-         "description" : "Sélectionner la données à afficher dans le graphique"
+      "chartTitle" : {
+         "name" : "Titre du graphique",
+         "description" : "Ce champs représente le titre du graphique."
+      },
+      "interval" : {
+         "name" : "Période d'affichage du graphique",
+         "description" : "Permet de changer la période d'affichage du graphique.",
+         "values" : {
+            "HOUR" : "1 heure",
+            "DAY" : "1 jour",
+            "WEEK" : "1 semaine",
+            "MONTH" : "1 mois",
+            "HALF_YEAR" : "6 mois",
+            "YEAR" : "1 an"
+         }
+      },
+	   "oneAxis" : {
+		  "name" : "1 axe pour toutes les séries de données",
+		  "description" : "Permet de mettre l'ensemble des séries sur un seul et même axe. Cette option permet ainsi de comparer des données à la même échelle."
+	   },	  
+      "customYAxisMinMax" : {
+         "name" : "Applique manuellement une valeur minimum et maximum",
+         "description" : "Activer cette section permet de configurer le minimum et le maximum de la gauge. Si cette option n'est pas activée, le minimum et le maximum seront calculés automatiquement. Cette option est disponible si la précédente est activée.",
+         "content" : {
+            "maximumValue" : {
+               "name" : "Valeur maximale",
+               "description" : "Applique la valeur maximale"
+            },
+            "minimumValue" : {
+               "name" : "Valeur minimale",
+               "description" : "Applique la valeur minimale"
+            }
+         }
+      }, 
+      "devices" : {
+         "name" : "Equipement",
+         "description" : "Liste des équipements",
+         "item" : {
+            "name" : "Courbe",
+            "description" : "Cette section permet de configurer une courbe.",
+            "content" : {
+               "source" : {
+                  "name" : "Données à afficher",
+                  "description" : "Choisir les données de l'équipement à afficher dans le graphique."
+               },
+               "color" : {
+                  "name" : "Couleur de la courbe",
+                  "description" : "Permet de changer la couleur de la courbe."
+               },
+				"PlotType": {
+				  "name": "Type de graphique",
+				  "description": "Choisir le type de graphique",
+				  "type": "enum",
+				  "values": {
+					"line": "ligne",
+					"bar": "Barre",
+					"arearange": "ligne avec min et max"
+				  }
+				}
+            }
+         }
       }
    },
    "errorDuringGettingDeviceData" : "Erreur pendant la recupération de données sur le device",
    "loadingData" : "Chargement des données",
    "navigator" : {
-      "1h" : "1h",
-      "1d" : "1j",
-      "1w" : "1s",
-      "1m" : "1m",
-      "6m" : "6m",
-      "1y" : "1a"
+      "hour" : "1h",
+      "day" : "1j",
+      "week" : "1s",
+      "month" : "1m",
+      "half_month" : "6m",
+      "year" : "1a"
    }
 }

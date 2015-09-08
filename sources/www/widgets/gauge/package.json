@@ -60,14 +60,14 @@
       "thresholds" : {
          "type" : "list",
          "name" : "thresholds",
-         "description" : "List of thresholds (Maximum: 3)",
+         "description" : "List of thresholds (Maximum: 5)",
          "nbItemsMin" : "1",
-         "nbItemsMax" : "3",
+         "nbItemsMax" : "5",
          "allowDuplication" : "true",
          "item" : {
             "type" : "section",
             "name" : "threshold",
-            "description" : "This section describe the configuration of a threshold",
+            "description" : "This section allow the configuration of thresholds",
             "content" : {
 				"thresholdValue" : {
 				   "type" : "decimal",
@@ -77,8 +77,8 @@
 				   "precision" : "1"
 				},
                "color" : {
-                  "name" : "Color of the threshold",
-                  "description" : "Permit to change the color of the threshold",
+                  "name" : "Color before the threshold",
+                  "description" : "Permit to change the color before the threshold",
                   "type" : "color",
                   "defaultValue" : "#55BF3B"
                }
