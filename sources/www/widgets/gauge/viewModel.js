@@ -16,7 +16,7 @@ function GaugeViewModel()
    
    var isSmall = true;
    
-   this.stopsArray = new Array();
+   this.stopsArray = null;
    
    /**
     * Widget identifier
@@ -144,29 +144,27 @@ function GaugeViewModel()
    this.configurationChanged = function() 
    {
       var self = this;
-	  var oldthresholdValue;
 	  
 	 if ((isNullOrUndefined(this.widget)) || (isNullOrUndefinedOrEmpty(this.widget.configuration)))
 		return;
 	   
 	   // Delete all elements in stopArray
-	   while (self.stopsArray.length > 0)
-	      self.stopsArray.pop();
-	   
-	   //Read thresholds and colors from the configuration
-	   $.each(self.widget.configuration.thresholds, function (index, threshold) 
-	   {   
-		   //Add upper limit of the color
-		   if (self.stopsArray.length > 0)
-			   self.stopsArray.push ( [ oldthresholdValue, threshold.content.color ] );
-		   else // If first color, enter 0
-			   self.stopsArray.push ( [ 0 , threshold.content.color ] );
-		   
-		   // The value of the threshold must be between 0 and 1
-		   self.stopsArray.push ( [ threshold.content.thresholdValue / self.widget.configuration.customYAxisMinMax.content.maximumValue - 0.01 , threshold.content.color ] );
-		   
-		   oldthresholdValue = threshold.content.thresholdValue / self.widget.configuration.customYAxisMinMax.content.maximumValue;
-	   });
+      this.stopsArray = new Array();
+      
+      // Defaut color
+      if (self.widget.configuration.thresholds.content.addedThresholds.length == 0)
+      {
+         self.stopsArray.push ( [ 0 , self.widget.configuration.thresholds.content.defaultColor ] );
+	   }
+      else
+      {
+         var ratio = self.widget.configuration.thresholds.content.addedThresholds[0].content.thresholdValue /
+            (self.widget.configuration.customYAxisMinMax.content.maximumValue - self.widget.configuration.customYAxisMinMax.content.minimumValue)
+         self.stopsArray.push ( [ ratio - 0.1 , self.widget.configuration.thresholds.content.defaultColor ] );
+         self.stopsArray.push ( [ ratio + 0.1, self.widget.configuration.thresholds.content.addedThresholds[0].content.color ] );
+         
+         //TODO : ne fonctionne qu'avec un seuil, à généraliser !
+      }
 	   
 	   console.log ( self.stopsArray );
 	   
