@@ -52,11 +52,7 @@ function GaugeViewModel()
 
         // the value axis
         yAxis: {
-/*            stops: [
-                [0.5, '#55BF3B'], // green
-                [0.7, '#DDDF0D'], // yellow
-                [0.75, '#DF5353'] // red
-            ],*/
+//            stops are not defined here
             lineWidth: 0,
             minorTickInterval: null,
             tickPixelInterval: 400,
@@ -115,15 +111,15 @@ function GaugeViewModel()
 		  if ( data.value != self.data() ) // refresh only when it's necessary.
 		  {
 			//it is the good device
-			self.data(data.value);
+			self.data ( data.value );
 
 			self.refreshValue ();
 			
-		  //we get the unit of the keyword
-		  KeywordManager.get(self.widget.configuration.device.keywordId, function(keyword) 
-		  {
-			 self.unit($.t(keyword.units));	  
-		   });
+			  //we get the unit of the keyword
+			  KeywordManager.get(self.widget.configuration.device.keywordId, function(keyword) 
+			  {
+				 self.unit($.t(keyword.units));	  
+			   });
 		  }
       }
    };
@@ -138,6 +134,8 @@ function GaugeViewModel()
 		
 		if (chart) 
 		{
+			console.log ( chart );
+			
 			point = chart.series[0].points[0];
 			point.update( self.data() );
 		} 	   
@@ -146,19 +144,31 @@ function GaugeViewModel()
    this.configurationChanged = function() 
    {
       var self = this;
+	  var oldthresholdValue;
 	  
 	 if ((isNullOrUndefined(this.widget)) || (isNullOrUndefinedOrEmpty(this.widget.configuration)))
 		return;
 	   
+	   // Delete all elements in stopArray
+	   while (self.stopsArray.length > 0)
+	      self.stopsArray.pop();
+	   
 	   //Read thresholds and colors from the configuration
 	   $.each(self.widget.configuration.thresholds, function (index, threshold) 
-	   {
-		   console.log ( threshold );
+	   {   
+		   //Add upper limit of the color
+		   if (self.stopsArray.length > 0)
+			   self.stopsArray.push ( [ oldthresholdValue, threshold.content.color ] );
+		   else // If first color, enter 0
+			   self.stopsArray.push ( [ 0 , threshold.content.color ] );
 		   
 		   // The value of the threshold must be between 0 and 1
-		   self.stopsArray.push ( [ threshold.content.thresholdValue / self.widget.configuration.customYAxisMinMax.content.maximumValue , threshold.content.color ] );
+		   self.stopsArray.push ( [ threshold.content.thresholdValue / self.widget.configuration.customYAxisMinMax.content.maximumValue - 0.01 , threshold.content.color ] );
 		   
+		   oldthresholdValue = threshold.content.thresholdValue / self.widget.configuration.customYAxisMinMax.content.maximumValue;
 	   });
+	   
+	   console.log ( self.stopsArray );
 	   
 	  //we get the unit of the keyword
       KeywordManager.get(self.widget.configuration.device.keywordId, function(keyword) 
@@ -217,11 +227,13 @@ function GaugeViewModel()
 	   {
 	      SizeValue = 12;
 		  SizeUnit  = 8;
+		  TitlePosition = -33;
 	   }
 	   else
 	   {
 	      SizeValue = 24;
-		  SizeUnit  = 12;		   
+		  SizeUnit  = 12;
+          TitlePosition = -70;
 	   }
 	   
 	   var elementID = "widget-gauge-" + self.widget.id; // Unique ID
@@ -243,7 +255,8 @@ function GaugeViewModel()
 				stops: self.stopsArray, // Stops for bar colors with thresholds
 				title: {
 					enabled : "middle",
-					text: self.widget.configuration.text
+					text: self.widget.configuration.text,
+					y: TitlePosition
 				}
 			},
 

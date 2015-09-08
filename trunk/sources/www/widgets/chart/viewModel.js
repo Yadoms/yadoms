@@ -12,7 +12,6 @@ widgetViewModelCtor =
       this.refreshingData = false;
 
       this.seriesUuid = [];
-      this.rangeAreasUuid = [];
 	  
 	  //Keyword Id List !
 	  this.devicesList = [];
@@ -42,7 +41,7 @@ widgetViewModelCtor =
 			credits: {
 				enabled: false
 			},
-            rangeSelector : {
+            rangeSelector : {			
                enabled : false
             },
 
@@ -104,8 +103,16 @@ widgetViewModelCtor =
                   var s = "<b>" + DateTimeFormatter.dateToString(this.x, "llll") + "</b>";
                   $.each(this.points, function () {
                      if (!this.series.hideInLegend) {
-                        s += "<br/><i style=\"color: " + this.series.color + ";\" class=\"fa fa-circle\"></i>&nbsp;" +
-                              this.series.name + " : " + this.y.toFixed(1) + " " + this.series.units;
+						 if (isNullOrUndefined(this.point.low))
+						 { //Standard serie
+                             s += "<br/><i style=\"color: " + this.series.color + ";\" class=\"fa fa-circle\"></i>&nbsp;" +
+                                this.series.name + " : " + this.y.toFixed(1) + " " + this.series.units;
+						 }
+						 else
+						 { //Range Serie
+                             s += "<br/><i style=\"color: " + this.series.color + ";\" class=\"fa fa-circle\"></i>&nbsp;" +
+                                this.series.name + " : " + this.point.low.toFixed(1) + "-" + this.point.high.toFixed(1) + " " + this.series.units;							 
+						 }
                      }
                   });
                   return s;
@@ -153,6 +160,30 @@ widgetViewModelCtor =
 		 
          $.each(btns, function (index, btn) {
             $(btn).unbind("click").bind("click", self.navigatorBtnClick($(btn).attr("level")));
+			
+			switch (index)
+			{
+				case 0:
+				   $(btn)[0].innerText = self.widget.package.navigator.hour;
+				   break;
+				case 1:
+				   $(btn)[0].innerText = self.widget.package.navigator.day;
+				   break;
+				case 2:
+				   $(btn)[0].innerText = self.widget.package.navigator.week;
+				   break;
+				case 3:
+				   $(btn)[0].innerText = self.widget.package.navigator.month;
+				   break;
+				case 4:
+				   $(btn)[0].innerText = self.widget.package.navigator.half_month;
+				   break;
+				case 5:
+				   $(btn)[0].innerText = self.widget.package.navigator.year;
+				   break;
+				default:
+				   break;				   
+			}
 
             //we ensure that the configured interval is selected
             if ($(btn).attr("level") == self.widget.configuration.interval) {
@@ -165,8 +196,6 @@ widgetViewModelCtor =
             //we update uuid if they don't exist
             if (isNullOrUndefined(self.seriesUuid[index]))
                self.seriesUuid[index] = createUUID();
-            if (isNullOrUndefined(self.rangeAreasUuid[index]))
-               self.rangeAreasUuid[index] = createUUID();
          });
 		 
 		 console.log (self.seriesUuid);
@@ -199,28 +228,32 @@ widgetViewModelCtor =
 							console.log ( serie );
 							
 							if (!isNullOrUndefined(serie))
-							   serie.remove();
+							   serie.remove( false );
+						   
+						   //we remove last ranges if any
+						    serie = self.chart.get('range_' + self.seriesUuid[index]);
 
-							if (parseBool(device.content.rangeArea)) {
-							   var serie = self.chart.get(self.rangeAreasUuid[index]);
-							   if (!isNullOrUndefined(serie))
-								  serie.remove();
-							}
+							if (!isNullOrUndefined(serie))
+							   serie.remove( false );
 
 							  //Delete the axis
 							var yAxis = self.chart.get( 'axis' + self.seriesUuid[index]);							
 							
+							//If Unique Axis, we don't delete it !
 							if (!isNullOrUndefined(yAxis))
 							{
-								yAxis.remove ();
+							    if  (
+								    (!(parseBool(self.widget.configuration.oneAxis))) ||
+								    ((index !=0) && (parseBool(self.widget.configuration.oneAxis)))
+									)
+								{	
+									yAxis.remove ( false );
+								}
 							}
 							
 							// Delele the assign character for serie Uuid and rangesAreasUuid, if defined !
 							if (!isNullOrUndefined(self.seriesUuid[index]) && (index >-1))
 								self.seriesUuid.splice(index,1);
-
-							if (!isNullOrUndefined(self.rangeAreasUuid[index]) && (index >-1))
-								self.rangeAreasUuid.splice(index,1);
 					}
 				});			  
 			  
@@ -232,13 +265,37 @@ widgetViewModelCtor =
          this.refreshData(this.widget.configuration.interval, moment());
       }; 
 
+	  this.cleanUpChart = function(serie, time, cleanValue) { 
+	     var self = this;
+		 
+		 var b_sortie = false;
+		 
+		  while ( !b_sortie )
+		  {
+			  if (!isNullOrUndefined( serie.points ))
+			  {
+				  if (!isNullOrUndefined( serie.points[0] ))
+				  {
+					  if ((time.valueOf() - serie.points[0].x) > cleanValue)
+						 serie.removePoint ( 0, true ); // If false, we never delete the point -> infinite loop
+					  else
+						  b_sortie = true;
+				  }
+				  else
+					  b_sortie = true;
+			  }
+			  else
+				  b_sortie = true;
+		  }
+	  }
+	  
       this.navigatorBtnClick = function(interval) {
          var self = this;
          return function (e) {
             //we manage activation
             self.widget.$gridsterWidget.find(".nav-btn[level!='" + interval + "']").addClass("btn-default").removeClass("btn-primary");
             self.widget.$gridsterWidget.find(".nav-btn[level='" + interval + "']").addClass("btn-primary").removeClass("btn-default");
-
+			
             self.refreshData(interval);
          };
       };
@@ -261,7 +318,7 @@ widgetViewModelCtor =
                var prefixUri = "";
                var timeBetweenTwoConsecutiveValues;
                var isSummaryData;
-			   
+	   
                switch (interval) {
                   case "HOUR" :
 				  
@@ -347,16 +404,23 @@ widgetViewModelCtor =
                         //we remove last series
                         var serie = self.chart.get(self.seriesUuid[index]);
                         if (!isNullOrUndefined(serie))
-                           serie.remove();
-
-                        if (parseBool(device.content.rangeArea)) {
-                           var serie = self.chart.get(self.rangeAreasUuid[index]);
-                           if (!isNullOrUndefined(serie))
-                              serie.remove();
-                        }
+                           serie.remove( false );
+					   
+					    //we remove last axis
+					    var yAxis = self.chart.get( 'axis' + self.seriesUuid[index]);							
+							
+						//If Unique Axis, we don't delete it !
+						if (!isNullOrUndefined(yAxis))
+						   yAxis.remove ( false );
+					   
+					    //we remove ranges if any
+                        var serie_range = self.chart.get('range_' + self.seriesUuid[index]);
+                        if (!isNullOrUndefined(serie_range))
+                           serie_range.remove( false );
 
                         //we make the serie
                         var plot = [];
+                        var range = [];						
 
                         var lastDate;
                         var d;
@@ -378,16 +442,16 @@ widgetViewModelCtor =
 
                               //we manage the missing data
                               if ((lastDate != undefined) && (timeBetweenTwoConsecutiveValues != undefined) &&
-                                 (lastDate + timeBetweenTwoConsecutiveValues < d)) {
+                                 (lastDate + timeBetweenTwoConsecutiveValues < d)) {							 
+									
                                  plot.push([lastDate + 1, null]);
                               }
-
-                              plot.push([d, v]);
+							 
+							  plot.push([d, v]);
                            });
                         }
                         else {
                            //it is summarized data so we can get min and max curve
-                           var range = [];
                            var vMin;
                            var vMax;
 
@@ -407,11 +471,17 @@ widgetViewModelCtor =
                               //we manage the missing data
                               if ((lastDate != undefined) && (timeBetweenTwoConsecutiveValues != undefined) &&
                                  (lastDate + timeBetweenTwoConsecutiveValues < d)) {
-                                 plot.push([lastDate + 1, null]);
-                              }
 
-                              plot.push([d, v]);
-                              range.push([d, vMin, vMax]);
+								  if (device.content.PlotType == "arearange")
+									 range.push([d, null, null]);
+
+								  plot.push([d, null]);
+								 }
+							  
+							  if (device.content.PlotType == "arearange")
+							     range.push([d, vMin, vMax]);
+							  
+							   plot.push([d, v]);
                            });
                         }
                         console.log("step 5 " + moment().format("HH:mm:ss'SSS"));
@@ -419,9 +489,14 @@ widgetViewModelCtor =
                         try {
                            color = device.content.color;
                         }
-                        catch(err) {}
+                        catch(err) {
+							console.log ( err );
+						}
 						
-						   if ( (!parseBool(device.content.ownAxis)) )
+						   // We create axis only if each serie have is own axis
+						   if ( !(parseBool(self.widget.configuration.oneAxis) ) || 
+						        ((index == 0) && ( parseBool(self.widget.configuration.oneAxis) ))
+							  )
 						   {
 					         try{
 								 
@@ -452,71 +527,87 @@ widgetViewModelCtor =
 								 }
                            }
 						
-						console.log ("plot:", plot );
+						var yAxisName = "";
 						
-                        //marker of points is enable when there is less than 50 points on the line
-                        self.chart.addSeries({id:self.seriesUuid[index],
-                                              data:plot, 
-											  name:"", 
-											  marker : { enabled : null, radius : 3, symbol: "circle"}, 
-											  color: color , 
-											  yAxis: 'axis' + self.seriesUuid[index], 
-											  type: device.content.PlotType 
-											  }
-											  , false); // Do not redraw immediately
+                           if ( (parseBool(self.widget.configuration.oneAxis) ))
+						   {	
+                               yAxisName = 	'axis' + self.seriesUuid[0];
+							   
+							   //Configure the min/max in this case
+								try {
+									var yAxis = self.chart.get( yAxisName );
+									
+								   if (parseBool( self.widget.configuration.customYAxisMinMax.checkbox) )
+								   {
+									  //we manage min and max scale y axis
+									  var min = parseFloat(self.widget.configuration.customYAxisMinMax.content.minimumValue);
+									  var max = parseFloat(self.widget.configuration.customYAxisMinMax.content.maximumValue);
+									  yAxis.setExtremes(min, max);
+								   }
+								   else {
+									  //we cancel previous extremes
+									  yAxis.setExtremes(null, null);
+								   }
+								}
+								catch (err) {
+								}							   
+							   
+						   }
+						   else{
+							   yAxisName = 	'axis' + self.seriesUuid[index];
+						   }
+						
+                        if (device.content.PlotType == "arearange")
+						{
+							console.log ( range );
+							
+							//Add Line
+							self.chart.addSeries({id:self.seriesUuid[index],
+												  data:plot, 
+												  name:"", 
+												  marker : { enabled : null, radius : 3, symbol: "circle"}, 
+												  color: color , 
+												  yAxis: yAxisName, 
+												  type: 'line'
+												  }
+												  , false); // Do not redraw immediately
+												  
+							//Add Ranges
+							if (isSummaryData) {
+								self.chart.addSeries({id:'range_' + self.seriesUuid[index],
+													  data:range, 
+													  name:"",
+													  linkedTo: self.seriesUuid[index],
+													  color: color , 
+													  yAxis: yAxisName, 
+													  type: device.content.PlotType,
+													  lineWidth: 0,
+													  fillOpacity: 0.3,
+													  zIndex: 0													  
+													  }
+													  , false); // Do not redraw immediately
+							}												  
+						}						  
+						else
+							self.chart.addSeries({id:self.seriesUuid[index],
+												  data:plot, 
+												  name:"", 
+												  marker : { enabled : null, radius : 3, symbol: "circle"}, 
+												  color: color , 
+												  yAxis: yAxisName, 
+												  type: device.content.PlotType 
+												  }
+												  , false); // Do not redraw immediately
+												  
                         console.log("step 6 " + moment().format("HH:mm:ss'SSS"));
-						
-                        //we add min and max series
-                        if (isSummaryData) {
-                           if (parseBool(device.content.rangeArea)) {
-
-                              self.chart.addSeries({id:self.rangeAreasUuid[index], 
-													lineWidth: 0, 
-													fillOpacity: 0.3, 
-													zIndex: 0,
-                                                    data:range, 
-													color : color, 
-													yAxis: 'axis' + self.seriesUuid[index], 
-													type: device.content.PlotType,
-													marker: {
-														enabled: null
-													}
-													}
-											 , false); // Do not redraw immediately
-
-                              //we add attribute to hide it in legend
-                              var serie = self.chart.get(self.rangeAreasUuid[index]);
-                              serie.hideInLegend = true;
-                              console.log("step 7 " + moment().format("HH:mm:ss'SSS"));
-                           }
-                        }
-
-                        try {
-							
-							var yAxis = self.chart.get( 'axis' + self.seriesUuid[index]);
-							
-                           if (parseBool(self.widget.configuration.customYAxisMinMax.checkbox))
-						   {
-                              //we manage min and max scale y axis
-                              var min = parseFloat(self.widget.configuration.customYAxisMinMax.content.minimumValue);
-                              var max = parseFloat(self.widget.configuration.customYAxisMinMax.content.maximumValue);
-							  yAxis.setExtremes(min, max);
-                           }
-                           else {
-                              //we cancel previous extremes
-							  yAxis.setExtremes(null, null);
-                           }
-                        }
-                        catch (err) {
-                        }
-
-                        console.log("step 8 " + moment().format("HH:mm:ss'SSS"));
 
                         self.refreshingData = false;
 
                         //we get the unit of the keyword
                         KeywordManager.get(device.content.source.keywordId, function(keyword) {
+							
                            var serie = self.chart.get(self.seriesUuid[index]);
+						   var yAxis = self.chart.get( 'axis' + self.seriesUuid[index]);
 						   
                            //we save the unit in the serie and in the yAxis
                            if (serie ) 
@@ -524,7 +615,7 @@ widgetViewModelCtor =
                               serie.units = $.t(keyword.units);
                               serie.name = keyword.friendlyName;
 							  
-							  if ( (!parseBool(device.content.ownAxis)) )
+							  if ( (!parseBool(self.widget.configuration.oneAxis)))
 							  {  
 								  yAxis.setTitle({ 
 								                  text: keyword.friendlyName,
@@ -540,7 +631,35 @@ widgetViewModelCtor =
 										   }
 								  }, false); 
 							  }
+ 
+                              //unique Axis
+						      if ((index == 0) && ( parseBool(self.widget.configuration.oneAxis) ))
+							  {
+								  yAxis.setTitle({ 
+								                  text: serie.units//,
+//												  style: {
+//												       color: color
+//											      }
+								  }, false);
+								  
+								  // Change the axis Title
+								  yAxis.update ({ //Set labels
+											labels: {
+												format: '{value} ' + serie.units
+										   }
+								  }, false); 								  
+							  }
                            }
+						   
+						  //Ranges Names
+						  var serie = self.chart.get('range_' + self.seriesUuid[index]);
+						  
+						   if (serie) 
+						   {
+							  serie.units = $.t(keyword.units);
+							  serie.name = keyword.friendlyName + '(Min,Max)';
+						   }
+						   
 						   self.chart.redraw ( true );
                         });
 
@@ -566,13 +685,17 @@ widgetViewModelCtor =
 			 var dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf( Prefix ).subtract(1, 'seconds'));
 			 var dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(nb, range).startOf( Prefix ));
 			 
-
 			 $.getJSON("rest/acquisition/keyword/" + device.content.source.keywordId +"/"+ Prefix + "/" + dateFrom + "/" + dateTo )
 			 .done(function( data ) 
 			 {
 				 try
 				 {
-				    self.chart.get(self.seriesUuid[index]).addPoint([DateTimeFormatter.isoDateToDate(data.data.data[0].date)._d.getTime().valueOf(), parseFloat(data.data.data[0].avg)], true, false, true);
+				    self.chart.get(self.seriesUuid[index]).addPoint([DateTimeFormatter.isoDateToDate(data.data.data[0].date)._d.getTime().valueOf(), parseFloat(data.data.data[0].avg)], true, true, true);
+					
+					//Add also for ranges if any
+					var serie = self.chart.get('range_' + self.seriesUuid[index]);
+					if (serie)
+						serie.addPoint([DateTimeFormatter.isoDateToDate(data.data.data[0].date)._d.getTime().valueOf(), parseFloat(data.data.data[0].min), parseFloat(data.data.data[0].max)], true, true, true);
 				 }
 				 catch (err) 
 				 {
@@ -630,77 +753,59 @@ widgetViewModelCtor =
 				   }
 				  
 				  var serie = self.chart.get(self.seriesUuid[index]);
-				  
-				  console.log ( "serie :" ,serie );
+				  var serie_range = self.chart.get('range_' + self.seriesUuid[index]);
 				  
 				  // If a serie is available
 				  if (!isNullOrUndefined( serie ))
-				  {
-                      //This line is necessary, otherwise serie.points is empty or null.
-					  serie.setVisible (true);
+				  {  
+					  // Clean points > cleanValue for serie
+					  self.cleanUpChart ( serie, data.date, cleanValue );
 					  
-					  // Clean points > cleanValue
-					  while ( (data.date.valueOf() - serie.points[0].x) > cleanValue ) //serie.options.data[0].x
-					  {
-						  serie.removePoint ( 0 );
-					  }
+					  // Clean points > cleanValue for ranges, if any
+					  if (!isNullOrUndefined( serie_range ))							  
+						 self.cleanUpChart ( serie_range, data.date, cleanValue );
 				  
 					  // Add new point depending of the interval
 					   switch ( self.interval ) 
 					   {
 						  case "HOUR" :
-							   serie.addPoint([data.date.valueOf(), parseFloat(data.value)], true, false, true);
+							   serie.addPoint([data.date.valueOf(), parseFloat(data.value)], true, true, true);
+                               //No point for the range
 							 break;
 						  case "DAY" : 
 						  
-							 console.log ( data.date.valueOf() - serie.points[serie.points.length-1].x );
-						  
 							 if ( (data.date.valueOf() - serie.points[serie.points.length-1].x) > 3600000 * 2 )
-							 {
 								self.DisplaySummary ( index, 1, device, "hours", "hour" );
-							 }					  
 							 break;
+							 
 						  case "WEEK" :
-
-							 console.log ( data.date.valueOf() - serie.points[serie.points.length-1].x );
 						  
 							 if ( (data.date.valueOf() - serie.points[serie.points.length-1].x) > 3600000 * 2 )
-							 {
 								 self.DisplaySummary ( index, 1, device, "weeks", "hour" );
-							 }
+							 
 							 break;
 						  case "MONTH" :
 						  
-							 console.log ( data.date.valueOf() - serie.points[serie.points.length-1].x );
-						  
 							 if ( (data.date.valueOf() - serie.points[serie.points.length-1].x) > 3600000 * 24 * 2 )
-							 {
 								 self.DisplaySummary ( index, 1, device, "months", "day" );
-							 }
+
 							 break;
 						  case "HALF_YEAR" :
 						  
-							 console.log ( data.date.valueOf() - serie.points[serie.points.length-1].x );
-						  
 							 if ( (data.date.valueOf() - serie.points[serie.points.length-1].x) > 3600000 * 24 * 2 )
-							 {
 								 self.DisplaySummary ( index, 6, device, "months", "day" );
-							 }					  
+
 							 break;
 						  case "YEAR" :
-							 console.log ( data.date.valueOf() - serie.points[serie.points.length-1].x );
 						  
 							 if ( (data.date.valueOf() - serie.points[serie.points.length-1].x) > 3600000 * 24 * 2 )
-							 {
 								 self.DisplaySummary ( index, 1, device, "years", "day" );
-							 }					  
+
 							 break;
 						  default:
 							 break;					 
 					   }
 				   }
-				   
-				   self.chart.redraw();
                }
             });
          }
@@ -714,7 +819,6 @@ widgetViewModelCtor =
          var result = [];
 
          try {
-			 console.log ("getDevicesForAcquisitions :", self.widget.configuration.devices );
             $.each(self.widget.configuration.devices, function (index, device) {
                try {
                   result.push(device.content.source);

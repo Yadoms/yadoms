@@ -40,11 +40,17 @@
             "YEAR" : "1 year"
          },
          "defaultValue" : "DAY"
-      },
+      },	  
+	   "oneAxis" : {
+		  "type" : "bool",
+		  "name" : "Only one axis for all series",
+		  "description" : "It allows you to create one axis for all series, with this option, series could be compare with the same scale.",
+		  "defaultValue" : "false"
+	   },	  
       "customYAxisMinMax" : {
          "type" : "section",
          "name" : "Manually set min and max of y axis",
-         "description" : "Enabling this section allow you to set the min and max of your chart. If it is not activated min and max will be computed automatically",
+         "description" : "Enabling this section allow you to set the min and max of your chart. If it is not activated min and max will be computed automatically. This section is active only when the option unique axis is selected",
          "enableWithCheckBox" : "true",
          "enableWithCheckBoxDefaultValue" : "false",
          "content" : {
@@ -80,7 +86,7 @@
                   "name" : "Data to display",
                   "description" : "Choose the data of a device to display on the chart",
                   "type" : "device",
-                  "expectedKeywordType" : "numeric",
+                  "expectedKeywordType" : ["numeric","bool"],
                   "expectedKeywordAccess" : "get"
                },
                "color" : {
@@ -89,30 +95,27 @@
                   "type" : "color",
                   "defaultValue" : "#0000FF"
                },
-               "rangeArea" : {
-                  "type" : "bool",
-                  "name" : "Show range of the value",
-                  "description" : "It allows you to show the range min max of the value during the period. It is visible only on period upper than hour",
-                  "defaultValue" : "false"
-               },
-               "ownAxis" : {
-                  "type" : "bool",
-                  "name" : "Hide the axis of this serie",
-                  "description" : "It allows you to hide the axis of a serie, when ranges are equals between series",
-                  "defaultValue" : "false"
-               },
 				"PlotType": {
 				  "name": "Plot Type",
 				  "description": "choose beetween following plot type",
 				  "type": "enum",
 				  "values": {
-					"line": "line",
-					"bar": "Bar"
+					"line": "Line",
+					"bar": "Bar",
+					"arearange": "Line & Range"
 				  },
 				  "defaultValue": "line"
 				}
             }
          }
       }
+   },
+   "navigator" : {
+      "hour" : "1h",
+      "day" : "1d",
+      "week" : "1w",
+      "month" : "1m",
+      "half_month" : "6m",
+      "year" : "1y"
    }
 }
