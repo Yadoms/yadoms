@@ -158,12 +158,18 @@ function GaugeViewModel()
 	   }
       else
       {
-         var ratio = self.widget.configuration.thresholds.content.addedThresholds[0].content.thresholdValue /
-            (self.widget.configuration.customYAxisMinMax.content.maximumValue - self.widget.configuration.customYAxisMinMax.content.minimumValue)
-         self.stopsArray.push ( [ ratio - 0.1 , self.widget.configuration.thresholds.content.defaultColor ] );
-         self.stopsArray.push ( [ ratio + 0.1, self.widget.configuration.thresholds.content.addedThresholds[0].content.color ] );
+         var previousColor = self.widget.configuration.thresholds.content.defaultColor;
          
-         //TODO : ne fonctionne qu'avec un seuil, à généraliser !
+         self.widget.configuration.thresholds.content.addedThresholds.forEach(function(addedThreshold, index)
+         {
+            var thresholdRatio = addedThreshold.content.value /
+               (self.widget.configuration.customYAxisMinMax.content.maximumValue - self.widget.configuration.customYAxisMinMax.content.minimumValue);
+
+            self.stopsArray.push ( [ thresholdRatio - 0.001 , previousColor ] );
+            self.stopsArray.push ( [ thresholdRatio, addedThreshold.content.color ] );
+            
+            previousColor = addedThreshold.content.color;
+         })
       }
 	   
 	   console.log ( self.stopsArray );

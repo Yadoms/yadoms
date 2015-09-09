@@ -80,12 +80,12 @@
                   "name" : "threshold",
                   "description" : "Configure the color to apply to gauge when data becomes greater than threshold",
                   "content" : {
-                  "thresholdValue" : {
-                     "type" : "decimal",
-                     "name" : "Threshold",
-                     "defaultValue" : "50.0",
-                     "precision" : "1"
-                  },
+                     "value" : {
+                        "type" : "decimal",
+                        "name" : "Threshold",
+                        "defaultValue" : "50.0",
+                        "precision" : "1"
+                     },
                      "color" : {
                         "name" : "Color",
                         "type" : "color",
