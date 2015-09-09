@@ -151,25 +151,28 @@ function GaugeViewModel()
 	   // Delete all elements in stopArray
       this.stopsArray = new Array();
       
-      // Defaut color
-      if (self.widget.configuration.thresholds.content.addedThresholds.length == 0)
+      switch (self.widget.configuration.displayMode.activeSection)
       {
-         self.stopsArray.push ( [ 0 , self.widget.configuration.thresholds.content.defaultColor ] );
-	   }
-      else
-      {
-         var previousColor = self.widget.configuration.thresholds.content.defaultColor;
-         
-         self.widget.configuration.thresholds.content.addedThresholds.forEach(function(addedThreshold, index)
-         {
-            var thresholdRatio = addedThreshold.content.value /
-               (self.widget.configuration.customYAxisMinMax.content.maximumValue - self.widget.configuration.customYAxisMinMax.content.minimumValue);
+         case "solidColor":
+            self.stopsArray.push ( [ 0 , self.widget.configuration.displayMode.content.solidColor.content.color ] );
+            break;
+         case "thresholds":
+            var previousColor = self.widget.configuration.displayMode.content.thresholds.content.firstColor;
+            self.widget.configuration.displayMode.content.thresholds.content.addedThresholds.forEach(function(addedThreshold, index)
+            {
+               var thresholdRatio = addedThreshold.content.value /
+                  (self.widget.configuration.customYAxisMinMax.content.maximumValue - self.widget.configuration.customYAxisMinMax.content.minimumValue);
 
-            self.stopsArray.push ( [ thresholdRatio - 0.001 , previousColor ] );
-            self.stopsArray.push ( [ thresholdRatio, addedThreshold.content.color ] );
-            
-            previousColor = addedThreshold.content.color;
-         })
+               self.stopsArray.push ( [ thresholdRatio - 0.001 , previousColor ] );
+               self.stopsArray.push ( [ thresholdRatio, addedThreshold.content.color ] );
+               
+               previousColor = addedThreshold.content.color;
+            })
+            break;
+         case "gradient":
+            self.stopsArray.push ( [ 0, self.widget.configuration.displayMode.content.gradient.content.minColor ] );
+            self.stopsArray.push ( [ 1, self.widget.configuration.displayMode.content.gradient.content.maxColor ] );
+            break;
       }
 	   
 	   console.log ( self.stopsArray );

@@ -57,44 +57,80 @@
             }
          }
       },
-      "thresholds" : {
-         "type" : "section",
-         "name" : "Thresholds",
-         "description" : "Change the gauge color depending on data value (5 thresholds max)",
+      "displayMode" : {
+         "type" : "radioSection",
+         "name" : "Display mode",
+         "description" : "Choose how the gauge should be displayed",
          "content" : {
-            "defaultColor" : {
-               "type" : "color",
-               "name" : "Default color",
-               "description" : "Set the color when data is lower than first threshold (or when there is no threshold)",
-               "defaultValue" : "#55BF3B"
+            "solidColor" : {
+               "type" : "section",
+               "name" : "Solid color",
+               "description" : "One color is used to display value",
+               "content" : {
+                  "color" : {
+                     "type" : "color",
+                     "name" : "Choose the color",
+                     "defaultValue" : "#55BF3B"
+                  }
+               }
             },
-            "addedThresholds" : {
-               "type" : "list",
+            "thresholds" : {
+               "type" : "section",
                "name" : "Thresholds",
                "description" : "Change the gauge color depending on data value (5 thresholds max)",
-               "nbItemsMin" : "0",
-               "nbItemsMax" : "5",
-               "allowDuplication" : "true",
-               "item" : {
-                  "type" : "section",
-                  "name" : "threshold",
-                  "description" : "Configure the color to apply to gauge when data becomes greater than threshold",
-                  "content" : {
-                     "value" : {
-                        "type" : "decimal",
-                        "name" : "Threshold",
-                        "defaultValue" : "50.0",
-                        "precision" : "1"
-                     },
-                     "color" : {
-                        "name" : "Color",
-                        "type" : "color",
-                        "defaultValue" : "#FF0000"
+               "content" : {
+                  "firstColor" : {
+                     "type" : "color",
+                     "name" : "First color",
+                     "description" : "Set the color when data is lower than first threshold",
+                     "defaultValue" : "#55BF3B"
+                  },
+                  "addedThresholds" : {
+                     "type" : "list",
+                     "name" : "Thresholds",
+                     "description" : "Change the gauge color depending on data value (5 thresholds max)",
+                     "nbItemsMin" : "1",
+                     "nbItemsMax" : "5",
+                     "allowDuplication" : "true",
+                     "item" : {
+                        "type" : "section",
+                        "name" : "threshold",
+                        "description" : "Configure the color to apply to gauge when data becomes greater than threshold",
+                        "content" : {
+                           "value" : {
+                              "type" : "decimal",
+                              "name" : "Threshold",
+                              "defaultValue" : "50.0",
+                              "precision" : "1"
+                           },
+                           "color" : {
+                              "name" : "Color",
+                              "type" : "color",
+                              "defaultValue" : "#FF0000"
+                           }
+                        }
                      }
+                  }
+               }
+            },
+            "gradient" : {
+               "type" : "section",
+               "name" : "Gradient",
+               "description" : "Use a gradient from min to max",
+               "content" : {
+                  "minColor" : {
+                     "type" : "color",
+                     "name" : "Color for minimum value",
+                     "defaultValue" : "#55BF3B"
+                  },
+                  "maxColor" : {
+                     "type" : "color",
+                     "name" : "Color for maximum value",
+                     "defaultValue" : "#FF0000"
                   }
                }
             }
          }
       }
-	}
+   }
 }
