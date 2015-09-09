@@ -160,7 +160,7 @@ function GaugeViewModel()
             var previousColor = self.widget.configuration.displayMode.content.thresholds.content.firstColor;
             self.widget.configuration.displayMode.content.thresholds.content.addedThresholds.forEach(function(addedThreshold, index)
             {
-               var thresholdRatio = addedThreshold.content.value /
+               var thresholdRatio = (addedThreshold.content.value - self.widget.configuration.customYAxisMinMax.content.minimumValue) /
                   (self.widget.configuration.customYAxisMinMax.content.maximumValue - self.widget.configuration.customYAxisMinMax.content.minimumValue);
 
                self.stopsArray.push ( [ thresholdRatio - 0.001 , previousColor ] );
