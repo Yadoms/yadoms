@@ -191,15 +191,6 @@ widgetViewModelCtor =
             }
          });
 		 
-         //we create an uuid for each serie
-         $.each(self.widget.configuration.devices, function (index, device) {
-            //we update uuid if they don't exist
-            if (isNullOrUndefined(self.seriesUuid[index]))
-               self.seriesUuid[index] = createUUID();
-         });
-		 
-		 console.log (self.seriesUuid);
-		 
 		  if (self.devicesList.length == 0)
 		  {
 		     self.devicesList = self.widget.configuration.devices.slice(0);
@@ -216,9 +207,7 @@ widgetViewModelCtor =
 					{	
 						//Si already registered, we remove
 						if ( device.content.source.keywordId == device_temp.content.source.keywordId )
-						{
 						  isFound = true;
-						}
 					});
 					
 					if (!isFound)
@@ -251,7 +240,7 @@ widgetViewModelCtor =
 								}
 							}
 							
-							// Delele the assign character for serie Uuid and rangesAreasUuid, if defined !
+							// Delele the assign id for serie if defined !
 							if (!isNullOrUndefined(self.seriesUuid[index]) && (index >-1))
 								self.seriesUuid.splice(index,1);
 					}
@@ -260,6 +249,13 @@ widgetViewModelCtor =
 			  //We copy the new list
 			  self.devicesList = tempDevicesList.slice(0);
 		  }
+		  
+         //we create an uuid for each serie
+         $.each(self.widget.configuration.devices, function (index, device) {
+            //we update uuid if they don't exist
+            if (isNullOrUndefined(self.seriesUuid[index]))
+               self.seriesUuid[index] = createUUID();
+         });		  
 		 
          //we ask for device information
          this.refreshData(this.widget.configuration.interval, moment());
@@ -275,7 +271,7 @@ widgetViewModelCtor =
 			  if (!isNullOrUndefined( serie.points ))
 			  {
 				  if (!isNullOrUndefined( serie.points[0] ))
-				  {
+				  {  
 					  if ((time.valueOf() - serie.points[0].x) > cleanValue)
 						 serie.removePoint ( 0, true ); // If false, we never delete the point -> infinite loop
 					  else
@@ -509,6 +505,10 @@ widgetViewModelCtor =
 								 
 								 if (self.chart.get('axis' + self.seriesUuid[index]) == null )
 								 {
+									 console.log ("Add Axis", 'axis' + self.seriesUuid[index] );
+									 console.log ( self.seriesUuid );
+									 console.log ( index );
+									 
 								   self.chart.addAxis({ // new axis
 										id: 'axis' + self.seriesUuid[index], //The same id as the serie with axis at the beginning
 										labels: {
@@ -518,7 +518,7 @@ widgetViewModelCtor =
 											}
 										},
 										opposite: isOdd ( index )
-									});
+									}, false, false, false);
 								 }
 							  }
 							  catch (err)
@@ -559,7 +559,9 @@ widgetViewModelCtor =
 						
                         if (device.content.PlotType == "arearange")
 						{
-							console.log ( range );
+							console.log ("Search Axis", yAxisName );
+							console.log ( self.chart );
+							console.log ( plot );							
 							
 							//Add Line
 							self.chart.addSeries({id:self.seriesUuid[index],
@@ -568,10 +570,10 @@ widgetViewModelCtor =
 												  marker : { enabled : null, radius : 3, symbol: "circle"}, 
 												  color: color , 
 												  yAxis: yAxisName, 
-												  type: 'line'
+												  type: 'line',
 												  }
-												  , false); // Do not redraw immediately
-												  
+												  , false, false); // Do not redraw immediately
+							
 							//Add Ranges
 							if (isSummaryData) {
 								self.chart.addSeries({id:'range_' + self.seriesUuid[index],
@@ -585,20 +587,31 @@ widgetViewModelCtor =
 													  fillOpacity: 0.3,
 													  zIndex: 0													  
 													  }
-													  , false); // Do not redraw immediately
-							}												  
+													  , false, false); // Do not redraw immediately
+							}
+							
+							console.log ( self.chart );
+							console.log ("addSeries");							
 						}						  
 						else
+						{
+							console.log ("Search Axis", yAxisName );
+							console.log ( self.chart.yAxis );
+							console.log ( plot );
+							
 							self.chart.addSeries({id:self.seriesUuid[index],
 												  data:plot, 
-												  name:"", 
-												  marker : { enabled : null, radius : 3, symbol: "circle"}, 
+												  name: "", 
+												  marker : { enabled : true, radius : 3, symbol: "circle"}, 
 												  color: color , 
 												  yAxis: yAxisName, 
-												  type: device.content.PlotType 
+												  type: device.content.PlotType,
+												  animation : false
 												  }
-												  , false); // Do not redraw immediately
+												  , false, false); // Do not redraw immediately
 												  
+							console.log ("addSeries");
+						}
                         console.log("step 6 " + moment().format("HH:mm:ss'SSS"));
 
                         self.refreshingData = false;
@@ -610,7 +623,7 @@ widgetViewModelCtor =
 						   var yAxis = self.chart.get( 'axis' + self.seriesUuid[index]);
 						   
                            //we save the unit in the serie and in the yAxis
-                           if (serie ) 
+                           if (serie) 
 						   {
                               serie.units = $.t(keyword.units);
                               serie.name = keyword.friendlyName;
@@ -636,11 +649,8 @@ widgetViewModelCtor =
 						      if ((index == 0) && ( parseBool(self.widget.configuration.oneAxis) ))
 							  {
 								  yAxis.setTitle({ 
-								                  text: serie.units//,
-//												  style: {
-//												       color: color
-//											      }
-								  }, false);
+								                  text: serie.units										      
+												  }, false);
 								  
 								  // Change the axis Title
 								  yAxis.update ({ //Set labels
@@ -652,15 +662,16 @@ widgetViewModelCtor =
                            }
 						   
 						  //Ranges Names
-						  var serie = self.chart.get('range_' + self.seriesUuid[index]);
+						  var serie_range = self.chart.get('range_' + self.seriesUuid[index]);
 						  
-						   if (serie) 
+						   if (serie_range) 
 						   {
-							  serie.units = $.t(keyword.units);
-							  serie.name = keyword.friendlyName + '(Min,Max)';
+							  serie_range.units = $.t(keyword.units);
+							  serie_range.name = keyword.friendlyName + '(Min,Max)';
 						   }
 						   
-						   self.chart.redraw ( true );
+						   console.log ("redraw");
+						   self.chart.redraw ( false ); //sans animation
                         });
 
                         console.log("step 9 " + moment().format("HH:mm:ss'SSS"));
@@ -690,12 +701,12 @@ widgetViewModelCtor =
 			 {
 				 try
 				 {
-				    self.chart.get(self.seriesUuid[index]).addPoint([DateTimeFormatter.isoDateToDate(data.data.data[0].date)._d.getTime().valueOf(), parseFloat(data.data.data[0].avg)], true, true, true);
+				    self.chart.get(self.seriesUuid[index]).addPoint([DateTimeFormatter.isoDateToDate(data.data.data[0].date)._d.getTime().valueOf(), parseFloat(data.data.data[0].avg)], true, false, true);
 					
 					//Add also for ranges if any
 					var serie = self.chart.get('range_' + self.seriesUuid[index]);
 					if (serie)
-						serie.addPoint([DateTimeFormatter.isoDateToDate(data.data.data[0].date)._d.getTime().valueOf(), parseFloat(data.data.data[0].min), parseFloat(data.data.data[0].max)], true, true, true);
+						serie.addPoint([DateTimeFormatter.isoDateToDate(data.data.data[0].date)._d.getTime().valueOf(), parseFloat(data.data.data[0].min), parseFloat(data.data.data[0].max)], true, false, true);
 				 }
 				 catch (err) 
 				 {
@@ -769,7 +780,7 @@ widgetViewModelCtor =
 					   switch ( self.interval ) 
 					   {
 						  case "HOUR" :
-							   serie.addPoint([data.date.valueOf(), parseFloat(data.value)], true, true, true);
+							   serie.addPoint([data.date.valueOf(), parseFloat(data.value)], true, false, true);
                                //No point for the range
 							 break;
 						  case "DAY" : 
@@ -824,10 +835,12 @@ widgetViewModelCtor =
                   result.push(device.content.source);
                }
                catch (err) {
+				   console.log ( err );
                }
             });
          }
          catch (err) {
+			 console.log ( err );
          }
          return result;
       };
