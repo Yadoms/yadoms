@@ -41,6 +41,15 @@ namespace database {
       virtual boost::shared_ptr<entities::CKeyword> getKeyword(int keywordId) const = 0;
 
       //--------------------------------------------------------------
+      /// \brief                          Get keywords identified by a friendly name in a device
+      /// \param [in] deviceId            The device where to search
+      /// \param [in] friendlyName        The keyword friendly name
+      /// \return                         The list of found keywords
+      /// \throw                          shared::exception::CEmptyResult if none found
+      //--------------------------------------------------------------
+      virtual std::vector<boost::shared_ptr<entities::CKeyword> > getKeywordIdFromFriendlyName(int deviceId, const std::string friendlyName) const = 0;
+
+      //--------------------------------------------------------------
       /// \brief           List all keywords 
       /// \return          List of registered keywords
       //--------------------------------------------------------------

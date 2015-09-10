@@ -18,12 +18,16 @@ namespace automation { namespace script
       ///\param[in] configurationManager  Configuration manager (to gain access to Yadoms configuration from rules scripts)
       ///\param[in] acquisitionNotifier Acquisition notifier, used to be notified on new acquisitions on keywords
       ///\param[in] dbAcquisitionRequester  Database acquisition requester
+      ///\param[in] dbDeviceRequester  Database device requester
+      ///\param[in] dbKeywordRequester  Database keyword requester
       ///\param[in] generalInfo  Database acquisition requester
       //-----------------------------------------------------
       InternalScriptApiImplementation(boost::shared_ptr<shared::script::ILogger> ruleLogger,
          boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
          boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
          boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
+         boost::shared_ptr<database::IDeviceRequester> dbDeviceRequester,
+         boost::shared_ptr<database::IKeywordRequester> dbKeywordRequester,
          boost::shared_ptr<IGeneralInfo> generalInfo);
 
       //-----------------------------------------------------

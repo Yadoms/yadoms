@@ -2,6 +2,8 @@
 #include "IFactory.h"
 #include "IInterpreterLibrary.h"
 #include "../../database/IAcquisitionRequester.h"
+#include "../../database/IDeviceRequester.h"
+#include "../../database/IKeywordRequester.h"
 #include "../../communication/ISendMessageAsync.h"
 #include "notification/NotificationCenter.h"
 #include "../../dataAccessLayer/IConfigurationManager.h"
@@ -22,11 +24,15 @@ namespace automation { namespace script
       ///\param[in] configurationManager  Configuration manager (to gain access to Yadoms configuration from rules scripts)
       ///\param[in] notificationCenter Notification center, used to get notified on keyword state changes
       ///\param[in] dbAcquisitionRequester  Database acquisition requester
+      ///\param[in] dbDeviceRequester  Database device requester
+      ///\param[in] dbKeywordRequester  Database keyword requester
       //-----------------------------------------------------
       CFactory(const std::string& interpretersPath,
          boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
          boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
-         boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester);
+         boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
+         boost::shared_ptr<database::IDeviceRequester> dbDeviceRequester,
+         boost::shared_ptr<database::IKeywordRequester> dbKeywordRequester);
 
       //-----------------------------------------------------
       ///\brief               Destructor
@@ -103,6 +109,16 @@ namespace automation { namespace script
       ///\brief               Database acquisition requester
       //-----------------------------------------------------
       boost::shared_ptr<database::IAcquisitionRequester> m_dbAcquisitionRequester;
+
+      //-----------------------------------------------------
+      ///\brief               Database device requester
+      //-----------------------------------------------------
+      boost::shared_ptr<database::IDeviceRequester> m_dbDeviceRequester;
+
+      //-----------------------------------------------------
+      ///\brief               Database keyword requester
+      //-----------------------------------------------------
+      boost::shared_ptr<database::IKeywordRequester> m_dbKeywordRequester;
 
       //-----------------------------------------------------
       ///\brief               List of loaded interpreters

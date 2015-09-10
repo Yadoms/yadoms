@@ -82,6 +82,19 @@ bool CYScriptApiImplementation::tryReceiveAnswer(EAnswerIdentifier expectedAnswe
 }
 
 
+int CYScriptApiImplementation::getKeywordId(const std::string& deviceName, const std::string& keywordName) const
+{
+   shared::CDataContainer request;
+   request.set("device", deviceName);
+   request.set("keyword", keywordName);
+   sendRequest(kReqGetKeywordId, request);
+
+   shared::CDataContainer answer;
+   receiveAnswer(kAnsGetKeywordId, answer);
+
+   return answer.get<int>("returnValue");
+}
+
 std::string CYScriptApiImplementation::readKeyword(int keywordId) const
 {
    shared::CDataContainer request;

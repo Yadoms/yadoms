@@ -83,8 +83,8 @@ void CSupervisor::run()
 
       // Start automation rules manager
       boost::shared_ptr<automation::IRuleManager> automationRulesManager(new automation::CRuleManager(
-         pDataProvider->getRuleRequester(), pluginGateway, pDataProvider->getAcquisitionRequester(), dal->getConfigurationManager(),
-         dal->getEventLogger(), m_EventHandler, kRuleManagerEvent));
+         pDataProvider->getRuleRequester(), pluginGateway, pDataProvider->getAcquisitionRequester(), pDataProvider->getDeviceRequester(), pDataProvider->getKeywordRequester(),
+         dal->getConfigurationManager(), dal->getEventLogger(), m_EventHandler, kRuleManagerEvent));
       shared::CServiceLocator::instance().push<automation::IRuleManager>(automationRulesManager);
 
       // Start Web server

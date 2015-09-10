@@ -6,6 +6,8 @@
 #include "../communication/ISendMessageAsync.h"
 #include "notification/NotificationCenter.h"
 #include "database/IAcquisitionRequester.h"
+#include "database/IDeviceRequester.h"
+#include "database/IKeywordRequester.h"
 #include "../dataAccessLayer/IConfigurationManager.h"
 #include "../dataAccessLayer/IEventLogger.h"
 #include "../IRunningInformation.h"
@@ -24,6 +26,8 @@ namespace automation
       ///\param[in] dbRequester  Database requester
       ///\param[in] pluginGateway Plugin access to do actions on plugins
       ///\param[in] dbAcquisitionRequester  Database acquisition requester
+      ///\param[in] dbDeviceRequester  Database device requester
+      ///\param[in] dbKeywordRequester  Database keyword requester
       ///\param[in] configurationManager  Configuration manager (to gain access to Yadoms configuration from rules scripts)
       ///\param[in] eventLogger  Main event logger
       ///\param[in] supervisor     the supervisor event handler
@@ -31,6 +35,8 @@ namespace automation
       //-----------------------------------------------------
       CRuleManager(boost::shared_ptr<database::IRuleRequester> dbRequester, boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
          boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
+         boost::shared_ptr<database::IDeviceRequester> dbDeviceRequester,
+         boost::shared_ptr<database::IKeywordRequester> dbKeywordRequester,
          boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
          boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger, boost::shared_ptr<shared::event::CEventHandler> supervisor, int ruleManagerEventId);
 
