@@ -20,7 +20,7 @@ namespace shared { namespace script { namespace yScriptApi
       ///\param[in] keywordName Keyword name to search for ID
       ///\return The keyword ID (kUnknownKeyword if not found, or kSeveralKeywords if several keywords match for this device name and keyword name)
       //-----------------------------------------------------
-      enum { kUnknownKeyword = -1, kSeveralKeywords };
+      enum { kUnknownKeyword = -1, kSeveralKeywords = -2 };
       virtual int getKeywordId(const std::string& deviceName, const std::string& keywordName) const = 0;
 
       //-----------------------------------------------------
