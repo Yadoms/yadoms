@@ -111,6 +111,13 @@ void CContextAccessor::processMessage(const char* message, size_t messageSize, b
    std::string s = request.serialize();
    switch (mainRequestContainer.get<ERequestIdentifier>("type"))
    {
+   case kReqGetKeywordId:
+   {
+      shared::CDataContainer answer;
+      answer.set("returnValue", m_context.getKeywordId(request.get<std::string>("device"), request.get<std::string>("keyword")));
+      sendAnswer(kAnsGetKeywordId, answer, messageQueue);
+      break;
+   }
    case kReqReadKeyword:
    {
       shared::CDataContainer answer;

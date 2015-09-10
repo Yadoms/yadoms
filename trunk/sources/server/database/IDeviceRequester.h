@@ -41,6 +41,14 @@ namespace database {
       //--------------------------------------------------------------
       virtual boost::shared_ptr<entities::CDevice> getDevice(const int pluginId, const std::string & name) const = 0;
 
+      //--------------------------------------------------------------
+      /// \brief                          Get devices identified by a friendly name.
+      /// \param [in] friendlyName        The device friendly name
+      /// \return                         The list of found devices
+      /// \throw                          shared::exception::CEmptyResult if none found
+      //--------------------------------------------------------------
+      virtual std::vector<boost::shared_ptr<entities::CDevice> > getDevicesIdFromFriendlyName(const std::string friendlyName) const = 0;
+
 
       //--------------------------------------------------------------
       /// \brief                          Get the device list which support a capacity

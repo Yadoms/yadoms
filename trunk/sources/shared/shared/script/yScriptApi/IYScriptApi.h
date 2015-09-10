@@ -15,6 +15,15 @@ namespace shared { namespace script { namespace yScriptApi
       virtual ~IYScriptApi() {}
 
       //-----------------------------------------------------
+      ///\brief Get a keyword ID
+      ///\param[in] deviceName Device name containing the keyword
+      ///\param[in] keywordName Keyword name to search for ID
+      ///\return The keyword ID (kUnknownKeyword if not found, or kSeveralKeywords if several keywords match for this device name and keyword name)
+      //-----------------------------------------------------
+      enum { kUnknownKeyword = -1, kSeveralKeywords };
+      virtual int getKeywordId(const std::string& deviceName, const std::string& keywordName) const = 0;
+
+      //-----------------------------------------------------
       ///\brief Read the last known state of the keyword
       ///\param[in] keywordId The keyword ID we are interesting in
       ///\return The last known keyword state (empty if no known state)

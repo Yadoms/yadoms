@@ -19,10 +19,14 @@ CYScriptApiImplementation::CYScriptApiImplementation(
    boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
    boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
    boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
+   boost::shared_ptr<database::IDeviceRequester> dbDeviceRequester,
+   boost::shared_ptr<database::IKeywordRequester> dbKeywordRequester,
    boost::shared_ptr<IGeneralInfo> generalInfo)
    :m_ruleLogger(ruleLogger),
    m_pluginGateway(pluginGateway),
    m_dbAcquisitionRequester(dbAcquisitionRequester),
+   m_dbDeviceRequester(dbDeviceRequester),
+   m_dbKeywordRequester(dbKeywordRequester),
    m_generalInfo(generalInfo),
    m_ruleEnabled(true)
 {
@@ -35,6 +39,53 @@ CYScriptApiImplementation::~CYScriptApiImplementation()
 bool CYScriptApiImplementation::ruleEnabled() const
 {
    return m_ruleEnabled;
+}
+
+int CYScriptApiImplementation::getKeywordId(const std::string& deviceName, const std::string& keywordName) const
+{
+   try
+   {
+      std::vector<boost::shared_ptr<database::entities::CDevice> > devices = m_dbDeviceRequester->getDevicesIdFromFriendlyName(deviceName);
+      std::vector<boost::shared_ptr<database::entities::CKeyword> > keywords;
+      for (std::vector<boost::shared_ptr<database::entities::CDevice> >::const_iterator device = devices.begin(); device != devices.end(); ++device)
+      {
+         try
+         {
+            std::vector<boost::shared_ptr<database::entities::CKeyword> > deviceKeywords = m_dbKeywordRequester->getKeywordIdFromFriendlyName((*device)->Id, keywordName);
+            keywords.insert(keywords.end(), deviceKeywords.begin(), deviceKeywords.end());
+         }
+         catch (shared::exception::CEmptyResult&)
+         {
+            // Keyword was not found in this device
+            continue;
+         }
+      }
+
+      if (keywords.size() == 0)
+      {
+         YADOMS_LOG(error) << "getKeywordId, keyword " << keywordName << " for device " << deviceName << " not found";
+         return kUnknownKeyword;
+      }
+      else if (keywords.size() == 1)
+      {
+         return keywords[0]->Id;
+      }
+      else
+      {
+         YADOMS_LOG(error) << "getKeywordId, several keywords found for " << keywordName << " for device " << deviceName << " not found";
+         return kSeveralKeywords;
+      }
+   }
+   catch (shared::exception::CEmptyResult&)
+   {
+      YADOMS_LOG(error) << "getKeywordId, keyword " << keywordName << " for device " << deviceName << " not found because device was not found";
+      return kUnknownKeyword;
+   }
+   catch (...) // Must catch all exceptions to not crash script interpreter
+   {
+      YADOMS_LOG(error) << "getKeywordId, unknown exception, please report to Yadoms team";
+      return kUnknownKeyword;
+   }
 }
 
 std::string CYScriptApiImplementation::readKeyword(int keywordId) const

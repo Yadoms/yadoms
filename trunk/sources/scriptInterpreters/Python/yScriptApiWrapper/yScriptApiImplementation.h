@@ -22,6 +22,7 @@ public:
    virtual ~CYScriptApiImplementation();
 
    // shared::script::yScriptApi::IYScriptApi implementation
+   virtual int getKeywordId(const std::string& deviceName, const std::string& keywordName) const;
    virtual std::string readKeyword(int keywordId) const;
    virtual std::string waitForAcquisition(int keywordId, const std::string& timeout = std::string()) const;
    virtual std::pair<int, std::string> waitForAcquisitions(const std::vector<int> keywordIdList, const std::string& timeout) const;

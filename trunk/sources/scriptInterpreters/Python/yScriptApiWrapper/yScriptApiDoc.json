@@ -5,9 +5,30 @@
             "values": [
                 "kTimeout"
             ]
+        },
+        "enum": {
+            "name": "",
+            "values": [
+                "kUnknownKeyword",
+                "kSeveralKeywords"
+            ]
         }
     },
     "methods": {
+        "getKeywordId": {
+            "brief": "Retrieve the keyword ID from its device and keyword friendly names",
+            "params": {
+                "deviceName": {
+                    "direction": "in",
+                    "brief": "Device name containing the keyword"
+                },
+                "keywordName": {
+                    "direction": "in",
+                    "brief": "Keyword name to search for ID"
+                }
+            },
+            "return": "The last known keyword state (empty if no known state)"
+        },
         "readKeyword": {
             "brief": "Read the last known state of the keyword",
             "params": {

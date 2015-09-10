@@ -19,11 +19,15 @@ namespace automation { namespace script
 CFactory::CFactory(const std::string& interpretersPath,
       boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
       boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
-      boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester)
+      boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
+      boost::shared_ptr<database::IDeviceRequester> dbDeviceRequester,
+      boost::shared_ptr<database::IKeywordRequester> dbKeywordRequester)
    :m_interpretersPath(interpretersPath),
    m_pluginGateway(pluginGateway),
    m_configurationManager(configurationManager),
    m_dbAcquisitionRequester(dbAcquisitionRequester),
+   m_dbDeviceRequester(dbDeviceRequester),
+   m_dbKeywordRequester(dbKeywordRequester),
    m_generalInfo(new CGeneralInfo(configurationManager))
 {
 }
@@ -263,7 +267,7 @@ boost::shared_ptr<shared::script::ILogger> CFactory::createScriptLogger(const st
 boost::shared_ptr<IInternalScriptApiImplementation> CFactory::createScriptContext(boost::shared_ptr<shared::script::ILogger> scriptLogger)
 {
    boost::shared_ptr<IInternalScriptApiImplementation> context(
-      new InternalScriptApiImplementation(scriptLogger, m_pluginGateway, m_configurationManager, m_dbAcquisitionRequester, m_generalInfo));
+      new InternalScriptApiImplementation(scriptLogger, m_pluginGateway, m_configurationManager, m_dbAcquisitionRequester, m_dbDeviceRequester, m_dbKeywordRequester, m_generalInfo));
    return context;
 }
 

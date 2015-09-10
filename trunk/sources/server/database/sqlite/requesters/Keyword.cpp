@@ -164,6 +164,19 @@ namespace database { namespace sqlite { namespace requesters {
       return adapter.getResults().at(0);
    }
 
+   std::vector<boost::shared_ptr<entities::CKeyword> > CKeyword::getKeywordIdFromFriendlyName(int deviceId, const std::string friendlyName) const
+   {
+      CQuery qSelect;
+      qSelect.Select().
+         From(CKeywordTable::getTableName()).
+         Where(CKeywordTable::getDeviceIdColumnName(), CQUERY_OP_EQUAL, deviceId).
+         And(CKeywordTable::getFriendlyNameColumnName(), CQUERY_OP_EQUAL, friendlyName);
+
+      adapters::CKeywordAdapter adapter;
+      m_databaseRequester->queryEntities<boost::shared_ptr<entities::CKeyword> >(&adapter, qSelect);
+      return adapter.getResults();
+   }
+
    std::vector<boost::shared_ptr<entities::CKeyword> > CKeyword::getKeywords(int deviceId) const
    {
       adapters::CKeywordAdapter adapter;

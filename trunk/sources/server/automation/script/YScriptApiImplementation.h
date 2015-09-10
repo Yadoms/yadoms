@@ -2,6 +2,8 @@
 #include <shared/script/yScriptApi/IYScriptApi.h>
 #include <shared/script/ILogger.h>
 #include "database/IAcquisitionRequester.h"
+#include "database/IDeviceRequester.h"
+#include "database/IKeywordRequester.h"
 #include "dataAccessLayer/IConfigurationManager.h"
 #include "communication/ISendMessageAsync.h"
 #include "IGeneralInfo.h"
@@ -22,12 +24,16 @@ namespace automation { namespace script
       ///\param[in] configurationManager  Configuration manager (to gain access to Yadoms configuration from rules scripts)
       ///\param[in] acquisitionNotifier Acquisition notifier, used to be notified on new acquisitions on keywords
       ///\param[in] dbAcquisitionRequester  Database acquisition requester
+      ///\param[in] dbDeviceRequester  Database device requester
+      ///\param[in] dbKeywordRequester  Database keyword requester
       ///\param[in] generalInfo  Database acquisition requester
       //-----------------------------------------------------
       CYScriptApiImplementation(boost::shared_ptr<shared::script::ILogger> ruleLogger,
          boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
          boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
          boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
+         boost::shared_ptr<database::IDeviceRequester> dbDeviceRequester,
+         boost::shared_ptr<database::IKeywordRequester> dbKeywordRequester,
          boost::shared_ptr<IGeneralInfo> generalInfo);
 
       //-----------------------------------------------------
@@ -36,6 +42,7 @@ namespace automation { namespace script
       virtual ~CYScriptApiImplementation();
 
       // shared::script::yScriptApi::IYScriptApi implementation
+      virtual int getKeywordId(const std::string& deviceName, const std::string& keywordName) const;
       virtual std::string readKeyword(int keywordId) const;
       virtual std::string waitForAcquisition(int keywordId, const std::string& timeout = std::string()) const;
       virtual std::pair<int, std::string> waitForAcquisitions(const std::vector<int> keywordIdList, const std::string& timeout) const;
@@ -66,6 +73,16 @@ namespace automation { namespace script
       ///\brief               Database acquisition requester
       //-----------------------------------------------------
       boost::shared_ptr<database::IAcquisitionRequester> m_dbAcquisitionRequester;
+
+      //-----------------------------------------------------
+      ///\brief               Database device requester
+      //-----------------------------------------------------
+      boost::shared_ptr<database::IDeviceRequester> m_dbDeviceRequester;
+
+      //-----------------------------------------------------
+      ///\brief               Database keyword requester
+      //-----------------------------------------------------
+      boost::shared_ptr<database::IKeywordRequester> m_dbKeywordRequester;
 
       //-----------------------------------------------------
       ///\brief               General information requester
