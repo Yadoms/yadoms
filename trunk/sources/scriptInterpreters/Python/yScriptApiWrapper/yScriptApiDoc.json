@@ -5,13 +5,6 @@
             "values": [
                 "kTimeout"
             ]
-        },
-        "enum": {
-            "name": "",
-            "values": [
-                "kUnknownKeyword",
-                "kSeveralKeywords"
-            ]
         }
     },
     "methods": {
@@ -27,7 +20,8 @@
                     "brief": "Keyword name to search for ID"
                 }
             },
-            "return": "The last known keyword state (empty if no known state)"
+            "return": "The last known keyword state (empty if no known state)",
+            "throw": "Error if several (some have to be renamed) or none keyword ID found"
         },
         "readKeyword": {
             "brief": "Read the last known state of the keyword",
@@ -37,7 +31,8 @@
                     "brief": "The keyword ID we are interesting in"
                 }
             },
-            "return": "The last known keyword state (empty if no known state)"
+            "return": "The last known keyword state (empty if no known state)",
+            "throw": "Error if keyword not found"
         },
         "waitForAcquisition": {
             "brief": "Wait for a new acquisition on a keyword",
@@ -51,7 +46,8 @@
                     "brief": "Timeout to wait. Format is \"hh:mm:ss.xxx\". No timeout if empty (default)."
                 }
             },
-            "return": "The keyword new state (empty if timeout)"
+            "return": "The keyword new state (empty if timeout)",
+            "throw": "Error if keyword not found"
         },
         "waitForAcquisitions": {
             "brief": "Wait for a new acquisition on a keyword list",
@@ -65,7 +61,8 @@
                     "brief": "Timeout to wait. Format is \"hh:mm:ss.xxx\". No timeout if empty (default)."
                 }
             },
-            "return": "Returned value is a pair of the keyword Id who changed, and its new value. The keyword Id is kTimeout if timeout."
+            "return": "Returned value is a pair of the keyword Id who changed, and its new value. The keyword Id is kTimeout if timeout.",
+            "throw": "Error if at least one keyword was not found"
         },
         "writeKeyword": {
             "brief": "Change state of a keyword",
@@ -79,7 +76,8 @@
                     "brief": "The keyword new state"
                 }
             },
-            "details": "Do nothing if keyword is not found or not writable"
+            "details": "Do nothing if keyword is not found or not writable",
+            "throw": "Error if keyword not found"
         },
         "sendNotification": {
             "brief": "Send a notification",
@@ -97,7 +95,8 @@
                     "brief": "The message to send"
                 }
             },
-            "details": "Do nothing if keyword or recipient is not found or not writable"
+            "details": "Do nothing if keyword or recipient is not found or not writable",
+            "throw": "Error if keyword or recipient not found"
         },
         "getInfo": {
             "brief": "Get general information",
@@ -107,7 +106,8 @@
                     "brief": "Information key"
                 }
             },
-            "return": "Information as string (empty string if not found)",
+            "return": "Information as string (empty string if not found)",,
+            "throw": "Error if key doesn't exist",
             "details": [
                 "Supported value :",
                 "- sunrise : get sunrise hour : returns hour in the day (as double encoded in string)",

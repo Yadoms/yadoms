@@ -92,6 +92,9 @@ int CYScriptApiImplementation::getKeywordId(const std::string& deviceName, const
    shared::CDataContainer answer;
    receiveAnswer(kAnsGetKeywordId, answer);
 
+   if (answer.exists("error"))
+      throw std::out_of_range(std::string("yScriptApiWrapper::getKeywordId, error : ") + answer.get<std::string>("error"));
+
    return answer.get<int>("returnValue");
 }
 
@@ -103,6 +106,9 @@ std::string CYScriptApiImplementation::readKeyword(int keywordId) const
 
    shared::CDataContainer answer;
    receiveAnswer(kAnsReadKeyword, answer);
+
+   if (answer.exists("error"))
+      throw std::out_of_range(std::string("yScriptApiWrapper::readKeyword, error : ") + answer.get<std::string>("error"));
 
    return answer.get<std::string>("returnValue");
 }
@@ -117,6 +123,9 @@ std::string CYScriptApiImplementation::waitForAcquisition(int keywordId, const s
    if (!tryReceiveAnswer(kAnsWaitForAcquisition, answer, timeout.empty() ? boost::date_time::pos_infin : boost::posix_time::duration_from_string(timeout)))
       return std::string();
 
+   if (answer.exists("error"))
+      throw std::out_of_range(std::string("yScriptApiWrapper::waitForAcquisition, error : ") + answer.get<std::string>("error"));
+
    return answer.get<std::string>("returnValue");
 }
 
@@ -130,6 +139,9 @@ std::pair<int, std::string> CYScriptApiImplementation::waitForAcquisitions(const
    if (!tryReceiveAnswer(kAnsWaitForAcquisitions, answer, timeout.empty() ? boost::date_time::pos_infin : boost::posix_time::duration_from_string(timeout)))
       return std::pair<int, std::string>();
 
+   if (answer.exists("error"))
+      throw std::out_of_range(std::string("yScriptApiWrapper::waitForAcquisitions, error : ") + answer.get<std::string>("error"));
+
    return std::make_pair(answer.get<int>("key"), answer.get<std::string>("value"));
 }
 
@@ -139,6 +151,12 @@ void CYScriptApiImplementation::writeKeyword(int keywordId, const std::string& n
    request.set("keywordId", keywordId);
    request.set("newState", newState);
    sendRequest(kReqWriteKeyword, request);
+
+   shared::CDataContainer answer;
+   receiveAnswer(kAnsWriteKeyword, answer);
+
+   if (answer.exists("error"))
+      throw std::out_of_range(std::string("yScriptApiWrapper::writeKeyword, error : ") + answer.get<std::string>("error"));
 }
 
 void CYScriptApiImplementation::sendNotification(int keywordId, int recipientId, const std::string& message)
@@ -148,6 +166,12 @@ void CYScriptApiImplementation::sendNotification(int keywordId, int recipientId,
    request.set("recipientId", recipientId);
    request.set("message", message);
    sendRequest(kReqSendNotification, request);
+
+   shared::CDataContainer answer;
+   receiveAnswer(kAnsSendNotification, answer);
+
+   if (answer.exists("error"))
+      throw std::out_of_range(std::string("yScriptApiWrapper::sendNotification, error : ") + answer.get<std::string>("error"));
 }
 
 std::string CYScriptApiImplementation::getInfo(EInfoKeys key) const
@@ -159,6 +183,9 @@ std::string CYScriptApiImplementation::getInfo(EInfoKeys key) const
    shared::CDataContainer answer;
    receiveAnswer(kAnsGetInfo, answer, boost::posix_time::seconds(30)); // Ehanced timeout for certains long requests
 
+   if (answer.exists("error"))
+      throw std::out_of_range(std::string("yScriptApiWrapper::getInfo, error : ") + answer.get<std::string>("error"));
+
    return answer.get<std::string>("returnValue");
 }
 
@@ -167,4 +194,10 @@ void CYScriptApiImplementation::ruleEnable(bool enable)
    shared::CDataContainer request;
    request.set("enable", enable);
    sendRequest(kReqRuleEnable, request);
+
+   shared::CDataContainer answer;
+   receiveAnswer(kAnsRuleEnable, answer);
+
+   if (answer.exists("error"))
+      throw std::out_of_range(std::string("yScriptApiWrapper::ruleEnable, error : ") + answer.get<std::string>("error"));
 }

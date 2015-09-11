@@ -18,6 +18,13 @@ namespace database {
       virtual bool keywordExists(int deviceId, const std::string& keywordName) const = 0;
 
       //--------------------------------------------------------------
+      /// \brief                          Check if keyword exists
+      /// \param [in] keywordId           the keyword id
+      /// \return                         true if exist, else false
+      //--------------------------------------------------------------
+      virtual bool keywordExists(int keywordId) const = 0;
+
+      //--------------------------------------------------------------
       /// \brief                    Add new keyword
       /// \param [in] newKeywords   New keyword informations
       /// \throw                    shared::exception::CEmptyResult if deviceId is unknown

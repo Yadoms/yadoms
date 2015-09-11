@@ -35,6 +35,19 @@ namespace database { namespace sqlite { namespace requesters {
       return true;
    }
 
+   bool CKeyword::keywordExists(int keywordId) const
+   {
+      try
+      {
+         getKeyword(keywordId);
+      }
+      catch (shared::exception::CEmptyResult&)
+      {
+         return false;
+      }
+      return true;
+   }
+
    // IKeywordRequester implementation
    void CKeyword::addKeyword(const entities::CKeyword& newKeyword)
    {

@@ -10,8 +10,9 @@ InternalScriptApiImplementation::InternalScriptApiImplementation(boost::shared_p
    boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
    boost::shared_ptr<database::IDeviceRequester> dbDeviceRequester,
    boost::shared_ptr<database::IKeywordRequester> dbKeywordRequester,
+   boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester,
    boost::shared_ptr<IGeneralInfo> generalInfo)
-   : m_scriptApi(ruleLogger, pluginGateway, configurationManager, dbAcquisitionRequester, dbDeviceRequester, dbKeywordRequester, generalInfo)
+   : m_scriptApi(ruleLogger, pluginGateway, configurationManager, dbAcquisitionRequester, dbDeviceRequester, dbKeywordRequester, dbRecipientRequester, generalInfo)
 {
 }
 
