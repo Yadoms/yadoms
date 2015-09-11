@@ -4,6 +4,7 @@
 #include "../../database/IAcquisitionRequester.h"
 #include "../../database/IDeviceRequester.h"
 #include "../../database/IKeywordRequester.h"
+#include "../../database/IRecipientRequester.h"
 #include "../../communication/ISendMessageAsync.h"
 #include "notification/NotificationCenter.h"
 #include "../../dataAccessLayer/IConfigurationManager.h"
@@ -26,13 +27,15 @@ namespace automation { namespace script
       ///\param[in] dbAcquisitionRequester  Database acquisition requester
       ///\param[in] dbDeviceRequester  Database device requester
       ///\param[in] dbKeywordRequester  Database keyword requester
+      ///\param[in] dbRecipientRequester  Database recipient requester
       //-----------------------------------------------------
       CFactory(const std::string& interpretersPath,
          boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
          boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
          boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
          boost::shared_ptr<database::IDeviceRequester> dbDeviceRequester,
-         boost::shared_ptr<database::IKeywordRequester> dbKeywordRequester);
+         boost::shared_ptr<database::IKeywordRequester> dbKeywordRequester,
+         boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester);
 
       //-----------------------------------------------------
       ///\brief               Destructor
@@ -119,6 +122,11 @@ namespace automation { namespace script
       ///\brief               Database keyword requester
       //-----------------------------------------------------
       boost::shared_ptr<database::IKeywordRequester> m_dbKeywordRequester;
+
+      //-----------------------------------------------------
+      ///\brief               Database recipient requester
+      //-----------------------------------------------------
+      boost::shared_ptr<database::IRecipientRequester> m_dbRecipientRequester;
 
       //-----------------------------------------------------
       ///\brief               List of loaded interpreters

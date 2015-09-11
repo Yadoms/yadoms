@@ -4,6 +4,7 @@
 #include "database/IAcquisitionRequester.h"
 #include "database/IDeviceRequester.h"
 #include "database/IKeywordRequester.h"
+#include "database/IRecipientRequester.h"
 #include "dataAccessLayer/IConfigurationManager.h"
 #include "communication/ISendMessageAsync.h"
 #include "IGeneralInfo.h"
@@ -26,6 +27,7 @@ namespace automation { namespace script
       ///\param[in] dbAcquisitionRequester  Database acquisition requester
       ///\param[in] dbDeviceRequester  Database device requester
       ///\param[in] dbKeywordRequester  Database keyword requester
+      ///\param[in] dbRecipientRequester  Database recipient requester
       ///\param[in] generalInfo  Database acquisition requester
       //-----------------------------------------------------
       CYScriptApiImplementation(boost::shared_ptr<shared::script::ILogger> ruleLogger,
@@ -34,6 +36,7 @@ namespace automation { namespace script
          boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
          boost::shared_ptr<database::IDeviceRequester> dbDeviceRequester,
          boost::shared_ptr<database::IKeywordRequester> dbKeywordRequester,
+         boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester,
          boost::shared_ptr<IGeneralInfo> generalInfo);
 
       //-----------------------------------------------------
@@ -57,6 +60,20 @@ namespace automation { namespace script
       ///\brief               Check if rule is still enabled
       //-----------------------------------------------------
       bool ruleEnabled() const;
+
+      //-----------------------------------------------------
+      ///\brief               Check if the provided keyword ID exists
+      ///\param[in] keywordId Keyword ID to check
+      ///\throw std::out_of_range if keyword not found
+      //-----------------------------------------------------
+      void assertExistingKeyword(int keywordId) const;
+
+      //-----------------------------------------------------
+      ///\brief               Check if the provided recipient ID exists
+      ///\param[in] recipientId recipient ID to check
+      ///\throw std::out_of_range if recipient not found
+      //-----------------------------------------------------
+      void assertExistingRecipient(int recipientId) const;
 
    private:
       //-----------------------------------------------------
@@ -83,6 +100,11 @@ namespace automation { namespace script
       ///\brief               Database keyword requester
       //-----------------------------------------------------
       boost::shared_ptr<database::IKeywordRequester> m_dbKeywordRequester;
+
+      //-----------------------------------------------------
+      ///\brief               Database recipient requester
+      //-----------------------------------------------------
+      boost::shared_ptr<database::IRecipientRequester> m_dbRecipientRequester;
 
       //-----------------------------------------------------
       ///\brief               General information requester

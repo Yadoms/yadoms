@@ -20,6 +20,7 @@ namespace automation { namespace script
       ///\param[in] dbAcquisitionRequester  Database acquisition requester
       ///\param[in] dbDeviceRequester  Database device requester
       ///\param[in] dbKeywordRequester  Database keyword requester
+      ///\param[in] dbRecipientRequester  Database recipient requester
       ///\param[in] generalInfo  Database acquisition requester
       //-----------------------------------------------------
       InternalScriptApiImplementation(boost::shared_ptr<shared::script::ILogger> ruleLogger,
@@ -28,6 +29,7 @@ namespace automation { namespace script
          boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
          boost::shared_ptr<database::IDeviceRequester> dbDeviceRequester,
          boost::shared_ptr<database::IKeywordRequester> dbKeywordRequester,
+         boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester,
          boost::shared_ptr<IGeneralInfo> generalInfo);
 
       //-----------------------------------------------------

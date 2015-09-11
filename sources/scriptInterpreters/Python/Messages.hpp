@@ -29,5 +29,8 @@ enum EAnswerIdentifier
    kAnsReadKeyword,
    kAnsWaitForAcquisition,
    kAnsWaitForAcquisitions,
+   kAnsWriteKeyword,
+   kAnsSendNotification,
    kAnsGetInfo,
+   kAnsRuleEnable,
 };

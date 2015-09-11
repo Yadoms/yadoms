@@ -19,14 +19,15 @@ namespace shared { namespace script { namespace yScriptApi
       ///\param[in] deviceName Device name containing the keyword
       ///\param[in] keywordName Keyword name to search for ID
       ///\return The keyword ID (kUnknownKeyword if not found, or kSeveralKeywords if several keywords match for this device name and keyword name)
+      ///\throw std::out_of_range if several (some have to be renamed) or none keyword ID found
       //-----------------------------------------------------
-      enum { kUnknownKeyword = -1, kSeveralKeywords = -2 };
       virtual int getKeywordId(const std::string& deviceName, const std::string& keywordName) const = 0;
 
       //-----------------------------------------------------
       ///\brief Read the last known state of the keyword
       ///\param[in] keywordId The keyword ID we are interesting in
       ///\return The last known keyword state (empty if no known state)
+      ///\throw std::out_of_range if keyword not found
       //-----------------------------------------------------
       virtual std::string readKeyword(int keywordId) const = 0;
 
@@ -35,6 +36,7 @@ namespace shared { namespace script { namespace yScriptApi
       ///\param[in] keywordId The keyword ID to watch
       ///\param[in] timeout Timeout to wait. Format is "hh:mm:ss.xxx". No timeout if empty (default).
       ///\return newState The keyword new state (empty if timeout)
+      ///\throw std::out_of_range if keyword not found
       //-----------------------------------------------------
       virtual std::string waitForAcquisition(int keywordId, const std::string& timeout = std::string()) const = 0;
 
@@ -43,6 +45,7 @@ namespace shared { namespace script { namespace yScriptApi
       ///\param[in] keywordIdList The keyword IDs list to watch
       ///\param[in] timeout Timeout to wait. Format is "hh:mm:ss.xxx". No timeout if empty (default).
       ///\return Returned value is a pair of the keyword Id who changed, and its new value. The keyword Id is kTimeout if timeout.
+      ///\throw std::out_of_range if one of the keyword is not found
       //-----------------------------------------------------
       enum { kTimeout = -1 };
       virtual std::pair<int, std::string> waitForAcquisitions(const std::vector<int> keywordIdList, const std::string& timeout = std::string()) const = 0;
@@ -51,6 +54,7 @@ namespace shared { namespace script { namespace yScriptApi
       ///\brief Change state of a keyword
       ///\param[in] keywordId The keyword ID to change state
       ///\param[in] newState The keyword new state
+      ///\throw std::out_of_range if keyword not found
       ///\note Do nothing if keyword is not found or not writable
       //-----------------------------------------------------
       virtual void writeKeyword(int keywordId, const std::string& newState) = 0;
@@ -61,6 +65,7 @@ namespace shared { namespace script { namespace yScriptApi
       ///\param[in] recipientId The recipient ID
       ///\param[in] message The message to send
       ///\note Do nothing if keyword or recipient is not found or not writtable
+      ///\throw std::out_of_range if keyword or recipient not found
       //-----------------------------------------------------
       virtual void sendNotification(int keywordId, int recipientId, const std::string& message) = 0;
 
@@ -84,6 +89,7 @@ namespace shared { namespace script { namespace yScriptApi
       ///\brief Get general information
       ///\param[in] key Information key
       ///\return Information as string (empty string if not found)
+      ///\throw std::out_of_range if key not found
       //-----------------------------------------------------
       virtual std::string getInfo(EInfoKeys key) const = 0;
 

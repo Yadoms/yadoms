@@ -18,6 +18,7 @@ namespace automation { namespace script
       ///\brief Get an information by key
       ///\param[in] key Information key
       ///\return Information as string (empty string if not found)
+      ///\throw COutOfRange if key not found
       //-----------------------------------------------------
       virtual std::string get(shared::script::yScriptApi::IYScriptApi::EInfoKeys key) const = 0;
    };

@@ -29,6 +29,7 @@ namespace database { namespace sqlite {
 
          // IKeywordRequester implementation
          virtual bool keywordExists(int deviceId, const std::string& keywordName) const;
+         virtual bool keywordExists(int keywordId) const;
          virtual void addKeyword(const entities::CKeyword& newKeyword);
          virtual boost::shared_ptr<entities::CKeyword> getKeyword(int deviceId, const std::string & keyword) const;
          virtual boost::shared_ptr<entities::CKeyword> getKeyword(int keywordId) const;

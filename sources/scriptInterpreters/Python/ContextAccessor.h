@@ -46,6 +46,20 @@ protected:
    void processMessage(const char* message, size_t messageSize, boost::interprocess::message_queue& messageQueue);
 
    //--------------------------------------------------------------
+   /// \brief	Process messages
+   /// \param[in] request Received requests
+   /// \param[in] messageQueue Message Queue used for answer
+   //--------------------------------------------------------------
+   void processGetKeywordId       (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
+   void processReadKeyword        (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
+   void processWaitForAcquisition (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
+   void processWaitForAcquisitions(const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
+   void processWriteKeyword       (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
+   void processSendNotification   (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
+   void processGetInfo            (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
+   void processRuleEnable         (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
+
+   //--------------------------------------------------------------
    /// \brief	Send an answer
    /// \param[in] answerId The answer message identifier
    /// \param[in] answer The answer
