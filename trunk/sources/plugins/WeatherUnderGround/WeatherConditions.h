@@ -64,6 +64,15 @@ public:
 private:
 
    //--------------------------------------------------------------
+   /// \brief	  Initialise LiveConditions variables
+   /// \param[in] context    pointer to the API
+   /// \param[in] WUConfiguration    The Plugin configuration
+   //--------------------------------------------------------------
+   void InitializeVariables ( boost::shared_ptr<yApi::IYPluginApi> context, 
+	                               IWUConfiguration& WUConfiguration
+								 );
+
+   //--------------------------------------------------------------
    /// \brief	    Your Location to received custom information from the web site
    //--------------------------------------------------------------
    std::string m_Localisation;

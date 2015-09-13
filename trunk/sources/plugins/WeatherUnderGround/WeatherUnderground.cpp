@@ -113,6 +113,8 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
                m_AstronomyRequester.Request( context );
                m_AstronomyRequester.Parse  ( context, m_configuration );
 
+			   m_Forecast10Days.OnUpdate ( context, m_configuration );
+
                m_Forecast10Days.SetCityName ( m_WeatherConditionsRequester.GetCityName());
                m_Forecast10Days.Request( context );
                m_Forecast10Days.Parse  ( context, m_configuration );

@@ -28,44 +28,7 @@ CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> cont
 	   m_URL.str("");
 	   m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/conditions/q/" << m_CountryOrState << "/" << m_Localisation << ".json";
 
-	   if (WUConfiguration.IsConditionsIndividualKeywordsEnabled())
-	   {
-		  m_Temp.Initialize                ( context );
-		  m_Pressure.Initialize            ( context );
-		  m_Humidity.Initialize            ( context );
-		  m_Visibility.Initialize          ( context );
-		  m_UV.Initialize                  ( context );
-		  m_DewPoint.Initialize            ( context );
-		  m_Rain_1hr.Initialize            ( context );
-		  m_WeatherConditionUrl.Initialize ( context );
-		  m_WindDirection.Initialize       ( context );
-		  m_WindAverageSpeed.Initialize    ( context );
-		  m_WindMaxSpeed.Initialize        ( context );
-		  m_FeelsLike.Initialize           ( context );
-		  m_Windchill.Initialize           ( context );
-		}
-
-	   if (WUConfiguration.IsLiveConditionsEnabled())
-	   {
-		   m_LiveConditions.Initialize      ( context );
-
-			m_LiveConditions.AddUnit (
-								shared::plugin::yPluginApi::CStandardCapacities::Temperature.getName(),
-								shared::plugin::yPluginApi::CStandardCapacities::Temperature.getUnit() 
-								);
-			m_LiveConditions.AddUnit (
-								shared::plugin::yPluginApi::CStandardCapacities::Speed.getName(),
-								shared::plugin::yPluginApi::CStandardCapacities::Speed.getUnit() 
-								);
-			m_LiveConditions.AddUnit (
-								shared::plugin::yPluginApi::CStandardCapacities::Humidity.getName(),
-								shared::plugin::yPluginApi::CStandardCapacities::Humidity.getUnit() 
-								);
-			m_LiveConditions.AddUnit (
-								shared::plugin::yPluginApi::CStandardCapacities::Rain.getName(),
-								shared::plugin::yPluginApi::CStandardCapacities::Rain.getUnit() 
-								);
-	   }
+	   InitializeVariables ( context, WUConfiguration );
    }
    catch (shared::exception::CException e)
    {
@@ -73,10 +36,10 @@ CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> cont
    }
 }
 
-void CWeatherConditions::OnUpdate( boost::shared_ptr<yApi::IYPluginApi> context, IWUConfiguration& WUConfiguration )
+void CWeatherConditions::InitializeVariables ( boost::shared_ptr<yApi::IYPluginApi> context, 
+	                                           IWUConfiguration& WUConfiguration
+								                  )
 {
-   try
-   {
 	   if (WUConfiguration.IsConditionsIndividualKeywordsEnabled())
 	   {
 		  m_Temp.Initialize                ( context );
@@ -94,12 +57,34 @@ void CWeatherConditions::OnUpdate( boost::shared_ptr<yApi::IYPluginApi> context,
 		  m_Windchill.Initialize           ( context );
 		}
 
-	   if (WUConfiguration.IsLiveConditionsEnabled())
-	   {
-		   m_LiveConditions.Initialize      ( context );
+	if (WUConfiguration.IsLiveConditionsEnabled())
+	{
+		m_LiveConditions.Initialize ( context );
 
-		   //TODO : Faire une fonction pour lire s'il y a des unités pour rajouter les unités ici si besoin
-	   }
+		m_LiveConditions.AddUnit (
+							shared::plugin::yPluginApi::CStandardCapacities::Temperature.getName(),
+							shared::plugin::yPluginApi::CStandardCapacities::Temperature.getUnit() 
+							);
+		m_LiveConditions.AddUnit (
+							shared::plugin::yPluginApi::CStandardCapacities::Speed.getName(),
+							shared::plugin::yPluginApi::CStandardCapacities::Speed.getUnit() 
+							);
+		m_LiveConditions.AddUnit (
+							shared::plugin::yPluginApi::CStandardCapacities::Humidity.getName(),
+							shared::plugin::yPluginApi::CStandardCapacities::Humidity.getUnit() 
+							);
+		m_LiveConditions.AddUnit (
+							shared::plugin::yPluginApi::CStandardCapacities::Rain.getName(),
+							shared::plugin::yPluginApi::CStandardCapacities::Rain.getUnit() 
+							);
+	}
+}
+
+void CWeatherConditions::OnUpdate( boost::shared_ptr<yApi::IYPluginApi> context, IWUConfiguration& WUConfiguration )
+{
+   try
+   {
+	   InitializeVariables ( context, WUConfiguration );
 
       //read the localisation
       m_Localisation = WUConfiguration.getLocalisation();

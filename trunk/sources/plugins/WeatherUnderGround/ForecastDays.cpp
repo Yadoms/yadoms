@@ -17,39 +17,44 @@ CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> context,
 	m_URL.str("");
 	m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/" << m_Prefix << "/q/" << m_CountryOrState << "/" << m_Localisation << ".json";
 
+	InitializeForecastDays ( context, WUConfiguration );
+}
+
+void CForecastDays::InitializeForecastDays ( boost::shared_ptr<yApi::IYPluginApi> context, 
+	                                         IWUConfiguration& WUConfiguration
+	                                       )
+{
 	//Initialization
    try
    {
-	   int counter = 0;
-
 	   if (WUConfiguration.IsForecast10DaysEnabled())
 	   {
          m_Forecast.Initialize ( context );
 
-         m_Forecast.AddUnit (
-                             shared::plugin::yPluginApi::CStandardCapacities::Temperature.getName(),
-                             shared::plugin::yPluginApi::CStandardCapacities::Temperature.getUnit() 
-                             );
-         m_Forecast.AddUnit (
-                             shared::plugin::yPluginApi::CStandardCapacities::Speed.getName(),
-                             shared::plugin::yPluginApi::CStandardCapacities::Speed.getUnit() 
-                             );
-         m_Forecast.AddUnit (
-                             shared::plugin::yPluginApi::CStandardCapacities::Humidity.getName(),
-                             shared::plugin::yPluginApi::CStandardCapacities::Humidity.getUnit() 
-                             );
-         m_Forecast.AddUnit (
-                             shared::plugin::yPluginApi::CStandardCapacities::Rain.getName(),
-                             shared::plugin::yPluginApi::CStandardCapacities::Rain.getUnit() 
-                             );
+		m_Forecast.AddUnit (
+							shared::plugin::yPluginApi::CStandardCapacities::Temperature.getName(),
+							shared::plugin::yPluginApi::CStandardCapacities::Temperature.getUnit() 
+							);
+		m_Forecast.AddUnit (
+							shared::plugin::yPluginApi::CStandardCapacities::Speed.getName(),
+							shared::plugin::yPluginApi::CStandardCapacities::Speed.getUnit() 
+							);
+		m_Forecast.AddUnit (
+							shared::plugin::yPluginApi::CStandardCapacities::Humidity.getName(),
+							shared::plugin::yPluginApi::CStandardCapacities::Humidity.getUnit() 
+							);
+		m_Forecast.AddUnit (
+							shared::plugin::yPluginApi::CStandardCapacities::Rain.getName(),
+							shared::plugin::yPluginApi::CStandardCapacities::Rain.getUnit() 
+							);
 
 		 if (WUConfiguration.IsRainIndividualKeywordsEnabled() )
 		 {
-			 for (counter = 0; counter < 3; counter++)
+			 for (int counter = 0; counter < 3; counter++)
 			 {
 				 std::stringstream TempString; 
-				 TempString << Prefix << "Rain_Day_" << counter;
-				 m_Forecast_Rain[counter].reset (new CRain( PluginName, TempString.str() ));
+				 TempString << m_Prefix << "Rain_Day_" << counter;
+				 m_Forecast_Rain[counter].reset (new CRain( m_PluginName, TempString.str() ));
 				 m_Forecast_Rain[counter]->Initialize ( context );
 			 }
 		 }
@@ -61,7 +66,8 @@ CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> context,
    }
 }
 
-void CForecastDays::OnUpdate( IWUConfiguration& WUConfiguration )
+void CForecastDays::OnUpdate(   boost::shared_ptr<yApi::IYPluginApi> context,
+	                            IWUConfiguration& WUConfiguration )
 {
    //read the localisation
    m_Localisation = WUConfiguration.getLocalisation();
@@ -73,7 +79,7 @@ void CForecastDays::OnUpdate( IWUConfiguration& WUConfiguration )
 
 	m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/" << m_Prefix << "/q/" << m_CountryOrState << "/" << m_Localisation << ".json";
 
-	//TODO : Création du m_Forecast et m_RainForecast si besoin.
+	InitializeForecastDays ( context, WUConfiguration );
 }
 
 void CForecastDays::Request( boost::shared_ptr<yApi::IYPluginApi> context )
