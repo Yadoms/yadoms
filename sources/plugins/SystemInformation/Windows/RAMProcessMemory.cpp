@@ -32,7 +32,6 @@ void CRAMProcessMemory::historizeData(boost::shared_ptr<yApi::IYPluginApi> conte
 
 void CRAMProcessMemory::read()
 {
-   //TODO: Peut-être eventuellement effectué avec les compteurs
    PROCESS_MEMORY_COUNTERS pmc;
 
    if (!GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc)))

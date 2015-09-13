@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ForecastFormatter.h"
 #include <shared/exception/InvalidParameter.hpp>
+#include "NoPeriodException.hpp"
 #include <shared/DataContainer.h>
 #include <shared/Log.h>
 
@@ -17,7 +18,14 @@ void CForecastFormatter::AddUnit(
             const std::string& UnitValue
    )
 {
-   m_Units.set ( UnitName, UnitValue );
+	try
+	{
+		m_Units.get ( UnitName );
+	}
+	catch ( shared::exception::CException e )
+	{  // If Exception, we create the unit
+		m_Units.set ( UnitName, UnitValue );
+	}
 }
 
 void CForecastFormatter::AddPeriod(
@@ -72,9 +80,10 @@ std::string CForecastFormatter::formatValue() const
 
    Temp.set ("Units", m_Units);
 
-   //TODO : Si c'est vide, il faut envoyer une erreur
    if (!m_PeriodString.empty())
       Temp.set ("PeriodUnit", m_PeriodString );
+   else
+	   throw CNoPeriodException ("No Period configured !");
    
    Temp.set ("city", m_Localisation);
    Temp.set ("forecast", m_Periods);

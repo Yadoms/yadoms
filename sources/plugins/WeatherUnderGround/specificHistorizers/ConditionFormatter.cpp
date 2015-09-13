@@ -15,7 +15,14 @@ void CConditionFormatter::AddUnit(
             const std::string& UnitValue
    )
 {
-   m_Units.set ( UnitName, UnitValue );
+	try
+	{
+		m_Units.get ( UnitName );
+	}
+	catch ( shared::exception::CException e )
+	{  // If Exception, we create the unit
+		m_Units.set ( UnitName, UnitValue );
+	}
 }
 
 void CConditionFormatter::SetPeriod(

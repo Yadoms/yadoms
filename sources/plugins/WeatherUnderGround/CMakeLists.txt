@@ -67,6 +67,7 @@ set(WUNDERGROUND_SOURCES
    specificHistorizers/MoonFormatter.cpp
    specificHistorizers/MoonHistorizer.h
    specificHistorizers/MoonHistorizer.cpp
+   specificHistorizers/NoPeriodException.hpp
 )
 
 source_group(Keywords Keywords/*.*)

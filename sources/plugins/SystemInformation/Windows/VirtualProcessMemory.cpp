@@ -32,7 +32,6 @@ void CVirtualProcessMemory::historizeData(boost::shared_ptr<yApi::IYPluginApi> c
 
 void CVirtualProcessMemory::read()
 {
-   //TODO: Peut-être eventuellement effectué avec les compteurs
    PROCESS_MEMORY_COUNTERS_EX pmc;
 
    if (!GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc)))

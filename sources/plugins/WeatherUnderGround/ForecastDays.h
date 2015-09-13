@@ -46,15 +46,16 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	  Update the configuration when something change from the HMI
+   /// \param[in] context         pointer to the API
    /// \param[in] WUConfiguration    The Plugin configuration
    //--------------------------------------------------------------
-   void OnUpdate( IWUConfiguration& WUConfiguration );
+   void OnUpdate(  boost::shared_ptr<yApi::IYPluginApi> context, 
+	               IWUConfiguration& WUConfiguration );
 
    //--------------------------------------------------------------
    /// \brief	  Set the city Name
    /// \param[in] WUConfiguration    The Plugin configuration
    //--------------------------------------------------------------
-
    void SetCityName ( const std::string & CityName );
 
    //--------------------------------------------------------------
@@ -63,6 +64,15 @@ public:
    virtual ~CForecastDays();
 
 private:
+
+   //--------------------------------------------------------------
+   /// \brief	  Initialise Forecast 10 Days variables
+   /// \param[in] context    pointer to the API
+   /// \param[in] WUConfiguration    The Plugin configuration
+   //--------------------------------------------------------------
+   void InitializeForecastDays ( boost::shared_ptr<yApi::IYPluginApi> context, 
+	                             IWUConfiguration& WUConfiguration
+								);
 
    //--------------------------------------------------------------
    /// \brief	    Your Location to received custom information from the web site
