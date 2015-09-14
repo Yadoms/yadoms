@@ -276,7 +276,7 @@ function updateWebSocketFilter() {
          }
       });
 
-      WebSocketEngine.updateAcquisitionFilter($.unique(collection));
+      WebSocketEngine.updateAcquisitionFilter(duplicateRemoval(collection));
    }
 }
 
