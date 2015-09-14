@@ -40,11 +40,12 @@ namespace rfxcomMessages
       /// \brief	                        Constructor
       /// \param[in] context              Yadoms APi context
       /// \param[in] rbuf                 The received buffer
+      /// \param[in] rbufSize             Message size, received from Rfxcom
       /// \param[in] seqNumberProvider    The sequence number provider
       /// \note                           Use this constructor for received messages (to historize received data to Yadoms)
       /// \throw                          shared::exception::CInvalidParameter
       //--------------------------------------------------------------
-      CThermostat1(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
+      CThermostat1(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
 
       //--------------------------------------------------------------
       /// \brief	Destructor

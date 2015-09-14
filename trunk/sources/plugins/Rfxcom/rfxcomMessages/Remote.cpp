@@ -28,10 +28,10 @@ CRemote::CRemote(boost::shared_ptr<yApi::IYPluginApi> context, const std::string
    m_subTypeManager->set(command);
 }
 
-CRemote::CRemote(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CRemote::CRemote(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_rssi("rssi")
 {
-   CheckReceivedMessage(rbuf, pTypeRemote, GET_RBUF_STRUCT_SIZE(REMOTE), DONT_CHECK_SEQUENCE_NUMBER);
+   CheckReceivedMessage(rbuf, rbufSize, pTypeRemote, GET_RBUF_STRUCT_SIZE(REMOTE), DONT_CHECK_SEQUENCE_NUMBER);
 
    createSubType(rbuf.REMOTE.subtype);
    m_id = rbuf.REMOTE.id;

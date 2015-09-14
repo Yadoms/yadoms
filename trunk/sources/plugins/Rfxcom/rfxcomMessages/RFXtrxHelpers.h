@@ -26,32 +26,34 @@ extern const RBUF dummyRbufToComputeSizes;
 #define ENCODE_PACKET_LENGTH(packet)((BYTE)GET_RBUF_STRUCT_SIZE(packet) - 1)
 
 // The max size of a message
-extern const std::size_t RFXMESSAGE_maxSize;
+extern const size_t RFXMESSAGE_maxSize;
 
 
 //--------------------------------------------------------------
 /// \brief	                           Basic checks on received message : type, size, sequence number
 /// \param[in] rbuf                    Message received from Rfxcom
+/// \param[in] rbufSize                Message size, received from Rfxcom
 /// \param[in] expectedType            Expected message type (pType) : log and assert if not match
 /// \param[in] expectedSize            Expected message size : log if not match
 /// \param[in] expectedSeqNumber       Expected sequence number : log if not match. Use DONT_CHECK_SEQUENCE_NUMBER to skip this check
-/// \return                            false if one of check fails
+/// \throw shared::exception::CException if one of check fails
 /// \note                              All checks are perform, even if one fails
 //--------------------------------------------------------------
 extern const unsigned int DONT_CHECK_SEQUENCE_NUMBER;
-bool CheckReceivedMessage(const RBUF& rbuf, BYTE expectedType, size_t expectedSize, unsigned int expectedSeqNumber);
+void CheckReceivedMessage(const RBUF& rbuf, size_t rbufSize, BYTE expectedType, size_t expectedSize, unsigned int expectedSeqNumber);
 
 //--------------------------------------------------------------
 /// \brief	                           Basic checks on received message, including subType
 /// \param[in] rbuf                    Message received from Rfxcom
+/// \param[in] rbufSize                Message size, received from Rfxcom
 /// \param[in] expectedType            Expected message type (pType) : log and assert if not match
 /// \param[in] expectedSubType         Expected message subtype (sType) : log if not match
 /// \param[in] expectedSize            Expected message size : log if not match
 /// \param[in] expectedSeqNumber       Expected sequence number : log if not match. Use DONT_CHECK_SEQUENCE_NUMBER to skip this check
-/// \return                            false if one of check fails
+/// \throw shared::exception::CException if one of check fails
 /// \note                              All checks are perform, even if one fails
 //--------------------------------------------------------------
-bool CheckReceivedMessage(const RBUF& rbuf, BYTE expectedType, BYTE expectedSubType, size_t expectedSize, unsigned int expectedSeqNumber);
+void CheckReceivedMessage(const RBUF& rbuf, size_t rbufSize, BYTE expectedType, BYTE expectedSubType, size_t expectedSize, unsigned int expectedSeqNumber);
 
 //--------------------------------------------------------------
 /// \brief	                           Make a send buffer from RBUF structure
@@ -59,7 +61,7 @@ bool CheckReceivedMessage(const RBUF& rbuf, BYTE expectedType, BYTE expectedSubT
 /// \param[in] subStructureSize        RBUF Substructure size
 /// \return                            Buffer
 //--------------------------------------------------------------
-const shared::communication::CByteBuffer toBuffer(const RBUF& rbuf, std::size_t subStructureSize);
+shared::communication::CByteBuffer toBuffer(const RBUF& rbuf, size_t subStructureSize);
 
 //--------------------------------------------------------------
 /// \brief	                           Make a buffer queue from one buffer
@@ -67,7 +69,7 @@ const shared::communication::CByteBuffer toBuffer(const RBUF& rbuf, std::size_t 
 /// \param[in] subStructureSize        RBUF Substructure size
 /// \return                            Buffer queue containing only one buffer
 //--------------------------------------------------------------
-boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > toBufferQueue(const RBUF& rbuf, std::size_t subStructureSize);
+boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > toBufferQueue(const RBUF& rbuf, size_t subStructureSize);
 
 //--------------------------------------------------------------
 /// \brief	                           Normalize battery level

@@ -9,10 +9,10 @@ namespace yApi = shared::plugin::yPluginApi;
 namespace rfxcomMessages
 {
 
-CBarometric::CBarometric(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CBarometric::CBarometric(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_pressure("pressure"), m_batteryLevel("battery"), m_rssi("rssi")
 {
-   CheckReceivedMessage(rbuf, pTypeBARO, GET_RBUF_STRUCT_SIZE(BARO), DONT_CHECK_SEQUENCE_NUMBER);
+   CheckReceivedMessage(rbuf, rbufSize, pTypeBARO, GET_RBUF_STRUCT_SIZE(BARO), DONT_CHECK_SEQUENCE_NUMBER);
 
    m_subType = rbuf.BARO.subtype;
 

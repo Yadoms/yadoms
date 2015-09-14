@@ -66,7 +66,7 @@ CTransceiver::~CTransceiver()
 {
 }
 
-const shared::communication::CByteBuffer CTransceiver::buildResetCmd() const
+shared::communication::CByteBuffer CTransceiver::buildResetCmd() const
 {
    // Raz sequence number
    m_seqNumberProvider->reset();
@@ -83,7 +83,7 @@ const shared::communication::CByteBuffer CTransceiver::buildResetCmd() const
    return toBuffer(request, GET_RBUF_STRUCT_SIZE(ICMND));
 }
 
-const shared::communication::CByteBuffer CTransceiver::buildGetStatusCmd() const
+shared::communication::CByteBuffer CTransceiver::buildGetStatusCmd() const
 {
    RBUF request;
    MEMCLEAR(request.ICMND);   // For better performance, just clear the needed sub-structure of RBUF
@@ -97,7 +97,7 @@ const shared::communication::CByteBuffer CTransceiver::buildGetStatusCmd() const
    return toBuffer(request, GET_RBUF_STRUCT_SIZE(ICMND));
 }
 
-const shared::communication::CByteBuffer CTransceiver::buildSetModeCmd(unsigned char frequency, const IRfxcomConfiguration& configuration) const
+shared::communication::CByteBuffer CTransceiver::buildSetModeCmd(unsigned char frequency, const IRfxcomConfiguration& configuration) const
 {
    RBUF request;
    MEMCLEAR(request.ICMND);   // For better performance, just clear the needed sub-structure of RBUF
@@ -155,63 +155,44 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CTransceiver:
       {
       case pTypeLighting1:
          return rfxcomMessages::CLighting1(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
-         break;
       case pTypeLighting2:
          return rfxcomMessages::CLighting2(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
-         break;
       case pTypeLighting3:
          return rfxcomMessages::CLighting3(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
-         break;
       case pTypeLighting4:
          return rfxcomMessages::CLighting4(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
-         break;
       case pTypeLighting5:
          return rfxcomMessages::CLighting5(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
-         break;
       case pTypeLighting6:
          return rfxcomMessages::CLighting6(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
-         break;
       case pTypeChime:
          return rfxcomMessages::CChime(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
-         break;
       case pTypeCurtain:
          return rfxcomMessages::CCurtain1(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
-         break;
       case pTypeFan:
          return rfxcomMessages::CFan(context, command->getKeyword(), command->getBody(), deviceDetails).encode(m_seqNumberProvider);
-         break;
       case pTypeBlinds:
          return rfxcomMessages::CBlinds1(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
-         break;
       case pTypeRFY:
          return rfxcomMessages::CRfy(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
-         break;
       case pTypeSecurity1:
          return rfxcomMessages::CSecurity1(context, command->getKeyword(), command->getBody(), deviceDetails).encode(m_seqNumberProvider);
-         break;
       case pTypeCamera:
          return rfxcomMessages::CCamera1(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
-         break;
       case pTypeRemote:
          return rfxcomMessages::CRemote(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
-         break;
       case pTypeThermostat1:
          return rfxcomMessages::CThermostat1(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
-         break;
       case pTypeThermostat2:
          return rfxcomMessages::CThermostat2(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
-         break;
       case pTypeThermostat3:
          return rfxcomMessages::CThermostat3(context, command->getKeyword(), command->getBody(), deviceDetails).encode(m_seqNumberProvider);
-         break;
       case pTypeFS20:
          return rfxcomMessages::CFS20(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
-         break;
       default:
          YADOMS_LOG(error) << "Invalid command \"" << command->getBody() << "\" : " << " unknown type " << deviceType;
          BOOST_ASSERT_MSG(false, "Invalid command (unknown type)");
          throw shared::exception::CInvalidParameter(command->getBody());
-         break;
       }
    }
    catch (shared::exception::CException & e)
@@ -224,60 +205,68 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CTransceiver:
 
 boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMessage(boost::shared_ptr<yApi::IYPluginApi> context, const shared::communication::CByteBuffer& data) const
 {
-   const RBUF * const buf = reinterpret_cast<const RBUF* const>(data.begin());
-
-   boost::shared_ptr<rfxcomMessages::IRfxcomMessage> message;
-   switch(buf->RXRESPONSE.packettype)
+   try
    {
-   case pTypeInterfaceMessage    : message.reset(new rfxcomMessages::CTransceiverStatus      (*buf, m_seqNumberProvider)); break;
-   case pTypeRecXmitMessage      : message.reset(new rfxcomMessages::CAck                    (*buf, m_seqNumberProvider)); break;
-   case pTypeRFXMeter            : message.reset(new rfxcomMessages::CRFXMeter               (context, *buf, m_seqNumberProvider)); break;
-   case pTypeLighting1           : message.reset(new rfxcomMessages::CLighting1              (context, *buf, m_seqNumberProvider)); break;
-   case pTypeLighting2           : message.reset(new rfxcomMessages::CLighting2              (context, *buf, m_seqNumberProvider)); break;
-   case pTypeLighting3           : message.reset(new rfxcomMessages::CLighting3              (context, *buf, m_seqNumberProvider)); break;
-   case pTypeLighting4           : message.reset(new rfxcomMessages::CLighting4              (context, *buf, m_seqNumberProvider)); break;
-   case pTypeLighting5           : message.reset(new rfxcomMessages::CLighting5              (context, *buf, m_seqNumberProvider)); break;
-   case pTypeLighting6           : message.reset(new rfxcomMessages::CLighting6              (context, *buf, m_seqNumberProvider)); break;
-   case pTypeChime               : message.reset(new rfxcomMessages::CChime                  (context, *buf, m_seqNumberProvider)); break;
-   case pTypeFan                 : message.reset(new rfxcomMessages::CFan                    (context, *buf, m_seqNumberProvider)); break;
-   case pTypeCurtain             : message.reset(new rfxcomMessages::CCurtain1               (context, *buf, m_seqNumberProvider)); break;
-   case pTypeBlinds              : message.reset(new rfxcomMessages::CBlinds1                (context, *buf, m_seqNumberProvider)); break;
-   case pTypeRFY                 : message.reset(new rfxcomMessages::CRfy                    (context, *buf, m_seqNumberProvider)); break;
-   case pTypeTEMP_RAIN           : message.reset(new rfxcomMessages::CTempRain               (context, *buf, m_seqNumberProvider)); break;
-   case pTypeTEMP                : message.reset(new rfxcomMessages::CTemp                   (context, *buf, m_seqNumberProvider)); break;
-   case pTypeHUM                 : message.reset(new rfxcomMessages::CHumidity               (context, *buf, m_seqNumberProvider)); break;
-   case pTypeTEMP_HUM            : message.reset(new rfxcomMessages::CTempHumidity           (context, *buf, m_seqNumberProvider)); break;
-   case pTypeBARO                : message.reset(new rfxcomMessages::CBarometric             (context, *buf, m_seqNumberProvider)); break;
-   case pTypeTEMP_HUM_BARO       : message.reset(new rfxcomMessages::CTempHumidityBarometric (context, *buf, m_seqNumberProvider)); break;
-   case pTypeRAIN                : message.reset(new rfxcomMessages::CRain                   (context, *buf, m_seqNumberProvider)); break;
-   case pTypeWIND                : message.reset(new rfxcomMessages::CWind                   (context, *buf, m_seqNumberProvider)); break;
-   case pTypeUV                  : message.reset(new rfxcomMessages::CUV                     (context, *buf, m_seqNumberProvider)); break;
-   case pTypeDT                  : message.reset(new rfxcomMessages::CDateTime               (context, *buf, m_seqNumberProvider)); break;
-   case pTypeCURRENT             : message.reset(new rfxcomMessages::CCurrent                (context, *buf, m_seqNumberProvider)); break;
-   case pTypeENERGY              : message.reset(new rfxcomMessages::CEnergy                 (context, *buf, m_seqNumberProvider)); break;
-   case pTypeCURRENTENERGY       : message.reset(new rfxcomMessages::CCurrentEnergy          (context, *buf, m_seqNumberProvider)); break;
-   case pTypePOWER               : message.reset(new rfxcomMessages::CPower                  (context, *buf, m_seqNumberProvider)); break;
-   case pTypeWEIGHT              : message.reset(new rfxcomMessages::CWeight                 (context, *buf, m_seqNumberProvider)); break;
-   case pTypeRFXSensor           : message.reset(new rfxcomMessages::CRFXSensor              (context, *buf, m_seqNumberProvider)); break;
-   case pTypeSecurity1           : message.reset(new rfxcomMessages::CSecurity1              (context, *buf, m_seqNumberProvider)); break;
-   case pTypeCamera              : message.reset(new rfxcomMessages::CCamera1                (context, *buf, m_seqNumberProvider)); break;
-   case pTypeRemote              : message.reset(new rfxcomMessages::CRemote                 (context, *buf, m_seqNumberProvider)); break;
-   case pTypeThermostat1         : message.reset(new rfxcomMessages::CThermostat1            (context, *buf, m_seqNumberProvider)); break;
-   case pTypeThermostat2         : message.reset(new rfxcomMessages::CThermostat2            (context, *buf, m_seqNumberProvider)); break;
-   case pTypeThermostat3         : message.reset(new rfxcomMessages::CThermostat3            (context, *buf, m_seqNumberProvider)); break;
-   case pTypeBBQ                 : message.reset(new rfxcomMessages::CBbq                    (context, *buf, m_seqNumberProvider)); break;
-   case pTypeFS20                : message.reset(new rfxcomMessages::CFS20                   (context, *buf, m_seqNumberProvider)); break;
-   default:
+      const RBUF * const buf = reinterpret_cast<const RBUF* const>(data.begin());
+      const size_t bufSize = data.size();
+
+      boost::shared_ptr<rfxcomMessages::IRfxcomMessage> message;
+      switch (buf->RXRESPONSE.packettype)
       {
-         YADOMS_LOG(error) << "Invalid RfxCom message received, unknown packet type " << std::setfill('0') << std::setw(sizeof(unsigned char) * 2) << std::hex << (int)buf->RXRESPONSE.packettype;
+      case pTypeInterfaceMessage: message.reset(new rfxcomMessages::CTransceiverStatus(*buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeRecXmitMessage: message.reset(new rfxcomMessages::CAck(*buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeRFXMeter: message.reset(new rfxcomMessages::CRFXMeter(context, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeLighting1: message.reset(new rfxcomMessages::CLighting1(context, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeLighting2: message.reset(new rfxcomMessages::CLighting2(context, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeLighting3: message.reset(new rfxcomMessages::CLighting3(context, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeLighting4: message.reset(new rfxcomMessages::CLighting4(context, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeLighting5: message.reset(new rfxcomMessages::CLighting5(context, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeLighting6: message.reset(new rfxcomMessages::CLighting6(context, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeChime: message.reset(new rfxcomMessages::CChime(context, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeFan: message.reset(new rfxcomMessages::CFan(context, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeCurtain: message.reset(new rfxcomMessages::CCurtain1(context, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeBlinds: message.reset(new rfxcomMessages::CBlinds1(context, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeRFY: message.reset(new rfxcomMessages::CRfy(context, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeTEMP_RAIN: message.reset(new rfxcomMessages::CTempRain(context, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeTEMP: message.reset(new rfxcomMessages::CTemp(context, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeHUM: message.reset(new rfxcomMessages::CHumidity(context, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeTEMP_HUM: message.reset(new rfxcomMessages::CTempHumidity(context, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeBARO: message.reset(new rfxcomMessages::CBarometric(context, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeTEMP_HUM_BARO: message.reset(new rfxcomMessages::CTempHumidityBarometric(context, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeRAIN: message.reset(new rfxcomMessages::CRain(context, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeWIND: message.reset(new rfxcomMessages::CWind(context, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeUV: message.reset(new rfxcomMessages::CUV(context, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeDT: message.reset(new rfxcomMessages::CDateTime(context, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeCURRENT: message.reset(new rfxcomMessages::CCurrent(context, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeENERGY: message.reset(new rfxcomMessages::CEnergy(context, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeCURRENTENERGY: message.reset(new rfxcomMessages::CCurrentEnergy(context, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypePOWER: message.reset(new rfxcomMessages::CPower(context, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeWEIGHT: message.reset(new rfxcomMessages::CWeight(context, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeRFXSensor: message.reset(new rfxcomMessages::CRFXSensor(context, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeSecurity1: message.reset(new rfxcomMessages::CSecurity1(context, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeCamera: message.reset(new rfxcomMessages::CCamera1(context, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeRemote: message.reset(new rfxcomMessages::CRemote(context, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeThermostat1: message.reset(new rfxcomMessages::CThermostat1(context, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeThermostat2: message.reset(new rfxcomMessages::CThermostat2(context, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeThermostat3: message.reset(new rfxcomMessages::CThermostat3(context, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeBBQ: message.reset(new rfxcomMessages::CBbq(context, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeFS20: message.reset(new rfxcomMessages::CFS20(context, *buf, bufSize, m_seqNumberProvider)); break;
+      default:
+      {
+         YADOMS_LOG(error) << "Invalid RfxCom message received, unknown packet type " << std::setfill('0') << std::setw(sizeof(unsigned char) * 2) << std::hex << static_cast<int>(buf->RXRESPONSE.packettype);
          break;
       }
+      }
+      return message;
    }
-
-   return message;
+   catch (shared::exception::CException& exception)
+   {
+      YADOMS_LOG(error) << "Invalid RfxCom message received : " << exception.what();
+      return boost::shared_ptr<rfxcomMessages::IRfxcomMessage>();
+   }
 }
 
-const std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYPluginApi> context, const yApi::IManuallyDeviceCreationData& data) const
+std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYPluginApi> context, const yApi::IManuallyDeviceCreationData& data) const
 {
    boost::shared_ptr<rfxcomMessages::IRfxcomMessage> msg;
    try

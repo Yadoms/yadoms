@@ -35,10 +35,10 @@ CThermostat3::CThermostat3(boost::shared_ptr<yApi::IYPluginApi> context, unsigne
    m_subTypeManager->reset();
 }
 
-CThermostat3::CThermostat3(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CThermostat3::CThermostat3(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_rssi("rssi")
 {
-   CheckReceivedMessage(rbuf, pTypeThermostat3, GET_RBUF_STRUCT_SIZE(THERMOSTAT3), DONT_CHECK_SEQUENCE_NUMBER);
+   CheckReceivedMessage(rbuf, rbufSize, pTypeThermostat3, GET_RBUF_STRUCT_SIZE(THERMOSTAT3), DONT_CHECK_SEQUENCE_NUMBER);
 
    m_subType = rbuf.THERMOSTAT3.subtype;
    m_unitCode = rbuf.THERMOSTAT3.unitcode1 << 16 | rbuf.THERMOSTAT3.unitcode2 << 8 | rbuf.THERMOSTAT3.unitcode3;

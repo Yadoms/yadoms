@@ -7,9 +7,9 @@
 namespace rfxcomMessages
 {
 
-CTransceiverStatus::CTransceiverStatus(const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CTransceiverStatus::CTransceiverStatus(const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
 {
-   CheckReceivedMessage(rbuf, pTypeInterfaceMessage, sTypeInterfaceResponse, GET_RBUF_STRUCT_SIZE(IRESPONSE), seqNumberProvider->last());
+   CheckReceivedMessage(rbuf, rbufSize, pTypeInterfaceMessage, sTypeInterfaceResponse, GET_RBUF_STRUCT_SIZE(IRESPONSE), seqNumberProvider->last());
 
    switch (rbuf.IRESPONSE.subtype)
    {

@@ -9,10 +9,10 @@ namespace yApi = shared::plugin::yPluginApi;
 namespace rfxcomMessages
 {
 
-CWeight::CWeight(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CWeight::CWeight(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_weight("weight"), m_batteryLevel("battery"), m_rssi("rssi")
 {
-   CheckReceivedMessage(rbuf, pTypeWEIGHT, GET_RBUF_STRUCT_SIZE(WEIGHT), DONT_CHECK_SEQUENCE_NUMBER);
+   CheckReceivedMessage(rbuf, rbufSize, pTypeWEIGHT, GET_RBUF_STRUCT_SIZE(WEIGHT), DONT_CHECK_SEQUENCE_NUMBER);
 
    m_subType = rbuf.WEIGHT.subtype;
 

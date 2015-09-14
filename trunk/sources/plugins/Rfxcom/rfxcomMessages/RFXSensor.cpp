@@ -10,10 +10,10 @@ namespace yApi = shared::plugin::yPluginApi;
 namespace rfxcomMessages
 {
 
-CRFXSensor::CRFXSensor(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CRFXSensor::CRFXSensor(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_temperature("temperature"), m_temperatureAvailable(false), m_adVoltage("adVoltage"), m_adVoltageAvailable(false), m_voltage("voltage"), m_voltageAvailable(false), m_rssi("rssi")
 {
-   CheckReceivedMessage(rbuf, pTypeRFXSensor, GET_RBUF_STRUCT_SIZE(RFXSENSOR), DONT_CHECK_SEQUENCE_NUMBER);
+   CheckReceivedMessage(rbuf, rbufSize, pTypeRFXSensor, GET_RBUF_STRUCT_SIZE(RFXSENSOR), DONT_CHECK_SEQUENCE_NUMBER);
 
    m_subType = rbuf.RFXSENSOR.subtype;
 

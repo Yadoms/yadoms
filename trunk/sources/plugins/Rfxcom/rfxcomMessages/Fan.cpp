@@ -45,7 +45,7 @@ CFan::CFan(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char subType, 
    Init(context);
 }
 
-CFan::CFan(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CFan::CFan(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_subType(0), m_id(0), m_lightCmd(false), m_light("light"), m_fan("fan")
 {
    // Should not be called (transmitter-only device)
