@@ -6,6 +6,7 @@
 #include <shared/plugin/yPluginApi/StandardUnits.h>
 #include <boost/regex.hpp> 
 #include <boost/lexical_cast.hpp>
+#include "LinuxHelpers.h"
 
 CDiskUsage::CDiskUsage(const std::string & device, const std::string & driveName, const std::string & keywordName)
    :m_device(device), 
@@ -29,30 +30,6 @@ void CDiskUsage::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) con
    context->historizeData(m_device, *m_keyword);
 }
 
-std::vector<std::string> CDiskUsage::ExecuteCommandAndReturn(const std::string &szCommand)
-{
-   std::vector<std::string> ret;
-
-   FILE *fp;
-
-   /* Open the command for reading. */
-
-   fp = popen(szCommand.c_str(), "r");
-
-   if (fp != NULL) 
-   {
-      char path[1035];
-      /* Read the output a line at a time - output it. */
-      while (fgets(path, sizeof(path)-1, fp) != NULL)
-      {
-         ret.push_back(path);
-      }
-      /* close */
-      pclose(fp);
-   }
-   return ret;
-}
-
 void CDiskUsage::read()
 {
    std::vector<std::string> _rlines=ExecuteCommandAndReturn("df");
@@ -69,6 +46,9 @@ void CDiskUsage::read()
          {
              long long numblock    = boost::lexical_cast<long long>(match[2]);
              long long availblocks = boost::lexical_cast<long long>(match[4]);
+
+                YADOMS_LOG(debug) << "numblock    :  " << numblock;
+                YADOMS_LOG(debug) << "availblocks :  " << availblocks;
 			 
              m_keyword->set ((numblock - availblocks)/double(numblock)*100);
              YADOMS_LOG(debug) << "Disk Name :  " << m_driveName << " Disk Usage : " << m_keyword->formatValue();			 
