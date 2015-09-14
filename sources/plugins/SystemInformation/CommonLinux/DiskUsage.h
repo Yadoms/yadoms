@@ -48,8 +48,5 @@ private:
    /// \brief	    Keyword
    //--------------------------------------------------------------
    boost::shared_ptr<yApi::historization::CLoad> m_keyword;
-
-   //TODO : Ecriture à modifier ??
-   std::vector<std::string> ExecuteCommandAndReturn(const std::string &szCommand);
 };
 

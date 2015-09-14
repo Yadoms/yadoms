@@ -69,6 +69,8 @@ IF (UNIX AND NOT APPLE)
 	CommonLinux/VirtualProcessMemory.cpp
 	CommonLinux/YadomsCPULoad.h
 	CommonLinux/YadomsCPULoad.cpp
+        CommonLinux/LinuxHelpers.h
+        CommonLinux/LinuxHelpers.cpp
 	)
 	
 	source_group(CommonLinux CommonLinux/*.*)

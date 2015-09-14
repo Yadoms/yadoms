@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "DisksList.h"
+#include "LinuxHelpers.h"
 #include <shared/Log.h>
 #include <shared/exception/Exception.hpp>
 #include <boost/regex.hpp> 
@@ -33,30 +34,6 @@ CDisksList::CDisksList(void)
 
 CDisksList::~CDisksList()
 {}
-
-std::vector<std::string> CDisksList::ExecuteCommandAndReturn(const std::string &szCommand)
-{
-   std::vector<std::string> ret;
-
-   FILE *fp;
-
-   /* Open the command for reading. */
-
-   fp = popen(szCommand.c_str(), "r");
-
-   if (fp != NULL) 
-   {
-      char path[1035];
-      /* Read the output a line at a time - output it. */
-      while (fgets(path, sizeof(path)-1, fp) != NULL)
-      {
-         ret.push_back(path);
-      }
-      /* close */
-      pclose(fp);
-   }
-   return ret;
-}
 
 
 std::vector<std::string>& CDisksList::getList()
