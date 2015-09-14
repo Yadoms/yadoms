@@ -186,3 +186,18 @@ Array.prototype.insert = function(index) {
       Array.prototype.slice.call(arguments, 1)));
    return this;
 };
+
+/**
+ * Take an array as input and provide another array without duplicated elements
+ * @param {object} arr  The array to treat
+ * @returns {object} The resulting array without duplicates
+ */
+function duplicateRemoval(arr){
+    var newArray = [];
+    for(var i=0, j=arr.length; i<j; i++){
+        if(newArray.indexOf(arr[i]) == -1)
+              newArray.push(arr[i]);  
+    }
+    return newArray;
+}
+
