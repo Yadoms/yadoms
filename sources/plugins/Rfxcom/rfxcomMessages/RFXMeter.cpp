@@ -10,10 +10,10 @@ namespace yApi = shared::plugin::yPluginApi;
 namespace rfxcomMessages
 {
 
-CRFXMeter::CRFXMeter(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CRFXMeter::CRFXMeter(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_counter("counter"), m_rssi("rssi")
 {
-   CheckReceivedMessage(rbuf, pTypeRFXMeter, GET_RBUF_STRUCT_SIZE(RFXMETER), DONT_CHECK_SEQUENCE_NUMBER);
+   CheckReceivedMessage(rbuf, rbufSize, pTypeRFXMeter, GET_RBUF_STRUCT_SIZE(RFXMETER), DONT_CHECK_SEQUENCE_NUMBER);
 
    m_subType = rbuf.RFXMETER.subtype;
 

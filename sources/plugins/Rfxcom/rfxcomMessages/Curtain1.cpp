@@ -35,7 +35,7 @@ CCurtain1::CCurtain1(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char
    Init(context);
 }
 
-CCurtain1::CCurtain1(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CCurtain1::CCurtain1(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_subType(0), m_houseCode(0), m_unitCode(0), m_state("state")
 {
    // Should not be called (transmitter-only device)

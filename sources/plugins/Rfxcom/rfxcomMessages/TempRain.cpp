@@ -9,10 +9,10 @@ namespace yApi = shared::plugin::yPluginApi;
 namespace rfxcomMessages
 {
 
-CTempRain::CTempRain(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CTempRain::CTempRain(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_temperature("temperature"), m_rain("rain", yApi::historization::EMeasureType::kCumulative), m_batteryLevel("battery"), m_rssi("rssi")
 {
-   CheckReceivedMessage(rbuf, pTypeTEMP_RAIN, GET_RBUF_STRUCT_SIZE(TEMP_RAIN), DONT_CHECK_SEQUENCE_NUMBER);
+   CheckReceivedMessage(rbuf, rbufSize, pTypeTEMP_RAIN, GET_RBUF_STRUCT_SIZE(TEMP_RAIN), DONT_CHECK_SEQUENCE_NUMBER);
 
    m_subType = rbuf.TEMP_RAIN.subtype;
 

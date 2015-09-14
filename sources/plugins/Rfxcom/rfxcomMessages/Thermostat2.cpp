@@ -42,10 +42,10 @@ CThermostat2::CThermostat2(boost::shared_ptr<yApi::IYPluginApi> context, unsigne
    Init(context);
 }
 
-CThermostat2::CThermostat2(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CThermostat2::CThermostat2(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_state("state"), m_rssi("rssi")
 {
-   CheckReceivedMessage(rbuf, pTypeThermostat2, GET_RBUF_STRUCT_SIZE(THERMOSTAT2), DONT_CHECK_SEQUENCE_NUMBER);
+   CheckReceivedMessage(rbuf, rbufSize, pTypeThermostat2, GET_RBUF_STRUCT_SIZE(THERMOSTAT2), DONT_CHECK_SEQUENCE_NUMBER);
 
    m_subType = rbuf.THERMOSTAT2.subtype;
    m_unitCode = rbuf.THERMOSTAT2.unitcode;

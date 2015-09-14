@@ -73,7 +73,7 @@ void CRunner::interrupt()
       if (!!m_process)
          Poco::Process::requestTermination(m_process->id());
    }
-   catch (Poco::SystemException&)
+   catch (Poco::NotFoundException&)
    {
       // Nothing to do. This exception occurs when process is already stopped
    }

@@ -40,10 +40,10 @@ CSecurity1::CSecurity1(boost::shared_ptr<yApi::IYPluginApi> context, unsigned ch
    m_subTypeManager->reset();
 }
 
-CSecurity1::CSecurity1(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CSecurity1::CSecurity1(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_rssi("rssi")
 {
-   CheckReceivedMessage(rbuf, pTypeSecurity1, GET_RBUF_STRUCT_SIZE(SECURITY1), DONT_CHECK_SEQUENCE_NUMBER);
+   CheckReceivedMessage(rbuf, rbufSize, pTypeSecurity1, GET_RBUF_STRUCT_SIZE(SECURITY1), DONT_CHECK_SEQUENCE_NUMBER);
 
    createSubType(rbuf.SECURITY1.subtype);
    m_id = (rbuf.SECURITY1.id1 << 8) | rbuf.SECURITY1.id2;

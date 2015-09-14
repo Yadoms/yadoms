@@ -10,11 +10,11 @@ namespace yApi = shared::plugin::yPluginApi;
 namespace rfxcomMessages
 {
 
-CWind::CWind(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CWind::CWind(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_windDirection("windDirection"), m_windAverageSpeed("windAverageSpeed"), m_windMaxSpeed("windMaxSpeed"), m_temperature("temperature"),
    m_chillTemperature("chillTemperature"), m_batteryLevel("battery"), m_rssi("rssi")
 {
-   CheckReceivedMessage(rbuf, pTypeWIND, GET_RBUF_STRUCT_SIZE(WIND), DONT_CHECK_SEQUENCE_NUMBER);
+   CheckReceivedMessage(rbuf, rbufSize, pTypeWIND, GET_RBUF_STRUCT_SIZE(WIND), DONT_CHECK_SEQUENCE_NUMBER);
 
    m_subType = rbuf.WIND.subtype;
 

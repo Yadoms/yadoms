@@ -10,10 +10,10 @@ namespace yApi = shared::plugin::yPluginApi;
 namespace rfxcomMessages
 {
 
-CUV::CUV(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CUV::CUV(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_uv("uv"), m_temperature("temperature"), m_batteryLevel("battery"), m_rssi("rssi")
 {
-   CheckReceivedMessage(rbuf, pTypeUV, GET_RBUF_STRUCT_SIZE(UV), DONT_CHECK_SEQUENCE_NUMBER);
+   CheckReceivedMessage(rbuf, rbufSize, pTypeUV, GET_RBUF_STRUCT_SIZE(UV), DONT_CHECK_SEQUENCE_NUMBER);
 
    m_subType = rbuf.UV.subtype;
 

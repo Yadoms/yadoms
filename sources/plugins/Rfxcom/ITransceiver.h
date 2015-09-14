@@ -22,13 +22,13 @@ public:
    /// \brief	                     Build the RFXCom reset command
    /// \return                      Buffer containing the command
    //--------------------------------------------------------------
-   virtual const shared::communication::CByteBuffer buildResetCmd() const = 0;
+   virtual shared::communication::CByteBuffer buildResetCmd() const = 0;
 
    //--------------------------------------------------------------
    /// \brief	                     Build the RFXCom get status command
    /// \return                      Buffer containing the command
    //--------------------------------------------------------------
-   virtual const shared::communication::CByteBuffer buildGetStatusCmd() const = 0;
+   virtual shared::communication::CByteBuffer buildGetStatusCmd() const = 0;
 
    //--------------------------------------------------------------
    /// \brief	                     Build the RFXCom set mode command
@@ -36,7 +36,7 @@ public:
    /// \param[in] configuration     Protocols activations
    /// \return                      Buffer containing the command
    //--------------------------------------------------------------
-   virtual const shared::communication::CByteBuffer buildSetModeCmd(unsigned char frequency, const IRfxcomConfiguration& configuration) const = 0;
+   virtual shared::communication::CByteBuffer buildSetModeCmd(unsigned char frequency, const IRfxcomConfiguration& configuration) const = 0;
 
    //--------------------------------------------------------------
    /// \brief	                     Build a message to device
@@ -62,5 +62,5 @@ public:
    /// \return                      Name of the created device
    /// \throw CManuallyDeviceCreationError   If error creating device
    //--------------------------------------------------------------
-   virtual const std::string createDeviceManually(boost::shared_ptr<yApi::IYPluginApi> context, const yApi::IManuallyDeviceCreationData& data) const = 0;
+   virtual std::string createDeviceManually(boost::shared_ptr<yApi::IYPluginApi> context, const yApi::IManuallyDeviceCreationData& data) const = 0;
 };

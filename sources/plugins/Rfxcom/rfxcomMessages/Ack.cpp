@@ -6,9 +6,9 @@
 namespace rfxcomMessages
 {
 
-CAck::CAck(const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CAck::CAck(const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
 {
-   CheckReceivedMessage(rbuf, pTypeRecXmitMessage, sTypeTransmitterResponse, GET_RBUF_STRUCT_SIZE(RXRESPONSE), seqNumberProvider->last());
+   CheckReceivedMessage(rbuf, rbufSize, pTypeRecXmitMessage, sTypeTransmitterResponse, GET_RBUF_STRUCT_SIZE(RXRESPONSE), seqNumberProvider->last());
 
    m_ack = rbuf.RXRESPONSE.msg == 0x00;  // Ack is OK if rbuf->RXRESPONSE.msg == 0
 }                         

@@ -26,12 +26,12 @@ public:
    virtual ~CTransceiver();
 
    // ITransceiver implementation
-   virtual const shared::communication::CByteBuffer buildResetCmd() const;
-   virtual const shared::communication::CByteBuffer buildGetStatusCmd() const;
-   virtual const shared::communication::CByteBuffer buildSetModeCmd(unsigned char frequency, const IRfxcomConfiguration& configuration) const;
+   virtual shared::communication::CByteBuffer buildResetCmd() const;
+   virtual shared::communication::CByteBuffer buildGetStatusCmd() const;
+   virtual shared::communication::CByteBuffer buildSetModeCmd(unsigned char frequency, const IRfxcomConfiguration& configuration) const;
    virtual boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> context, boost::shared_ptr<const yApi::IDeviceCommand> command) const;
    virtual boost::shared_ptr<rfxcomMessages::IRfxcomMessage> decodeRfxcomMessage(boost::shared_ptr<yApi::IYPluginApi> context, const shared::communication::CByteBuffer& data) const;
-   virtual const std::string createDeviceManually(boost::shared_ptr<yApi::IYPluginApi> context, const yApi::IManuallyDeviceCreationData& data) const;
+   virtual std::string createDeviceManually(boost::shared_ptr<yApi::IYPluginApi> context, const yApi::IManuallyDeviceCreationData& data) const;
    // [END] ITransceiver implementation
    
 private:

@@ -53,10 +53,10 @@ CLighting1::CLighting1(boost::shared_ptr<yApi::IYPluginApi> context, unsigned ch
    Init(context);
 }
 
-CLighting1::CLighting1(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CLighting1::CLighting1(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_state("state"), m_rssi("rssi")
 {
-   CheckReceivedMessage(rbuf, pTypeLighting1, GET_RBUF_STRUCT_SIZE(LIGHTING1), DONT_CHECK_SEQUENCE_NUMBER);
+   CheckReceivedMessage(rbuf, rbufSize, pTypeLighting1, GET_RBUF_STRUCT_SIZE(LIGHTING1), DONT_CHECK_SEQUENCE_NUMBER);
 
    m_subType = rbuf.LIGHTING1.subtype;
    m_houseCode = rbuf.LIGHTING1.housecode;

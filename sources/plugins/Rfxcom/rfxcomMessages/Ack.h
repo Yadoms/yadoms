@@ -14,8 +14,9 @@ namespace rfxcomMessages
       /// \brief	                           Constructor
       /// \param[in] seqNumberProvider       The sequence number provider
       /// \param[in] rbuf                    Message received from Rfxcom
+      /// \param[in] rbufSize                Message size, received from Rfxcom
       //--------------------------------------------------------------
-      CAck(const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
+      CAck(const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
 
       //--------------------------------------------------------------
       /// \brief	                           Destructor

@@ -28,8 +28,9 @@ namespace rfxcomMessages
       /// \brief	                           Constructor
       /// \param[in] seqNumberProvider       The sequence number provider
       /// \param[in] rbuf                    Status received from Rfxcom
+      /// \param[in] rbufSize                Message size, received from Rfxcom
       //--------------------------------------------------------------
-      CTransceiverStatus(const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
+      CTransceiverStatus(const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
 
       //--------------------------------------------------------------
       /// \brief	                           Destructor
