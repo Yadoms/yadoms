@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "LinuxHelpers.h"
 
 std::vector<std::string> ExecuteCommandAndReturn(const std::string &szCommand)
