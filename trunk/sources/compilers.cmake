@@ -66,6 +66,9 @@ if(CMAKE_COMPILER_IS_GNUCXX)
 	
 	#warning:  typedef ‘value_t’ locally defined but not used [-Wunused-local-typedefs]
 	add_definitions("-Wno-unused-local-typedefs")
+
+
+
 	
 endif()
 
@@ -99,4 +102,7 @@ ENDIF(UNIX AND NOT WIN32)
 if(DEBUG_WITH_GCC)
 	add_definitions(-DDEBUG)
 	add_definitions("-g")
+
+	#allow symbolinfo in output
+	add_definitions("-rdynamic")
 endif()
