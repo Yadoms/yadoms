@@ -1,66 +1,54 @@
 {
-   "type": "switch",
-   "version": "0.1",
-   "releaseType": "beta",
-   "author": "yadoms team",
-   "url" : "http://www.yadoms.com/wiki/widgets/switch.html",
-   "credits": "",
-   "dimensions": {
-      "min": {
-         "x": 1,
-         "y": 1
-      },
-      "max": {
-         "x": 1,
-         "y": 1
-      },
-      "default": {
-         "x": 1,
-         "y": 1
-      }
-   },
-   "configurationSchema": {
-      "device" : {
-         "name" : "Switch device",
-         "description" : "Device to drive",
-         "type" : "device",
-         "expectedCapacity" : ["switch", "dimmable", "event"],
-         "expectedKeywordAccess" : "getset"
-      },
-      "showDeviceName" : {
-         "name" : "Show device name",
-         "description" : "Determine if you want to see the device name on the widget",
-         "type" : "bool",
-         "defaultValue" : "true"
-      },
-      "kind" : {
-         "type" : "radioSection",
-         "name" : "Kind of switch",
-         "description" : "Select the kind of switch to be used. Permit to change interactions in function of the kind of switch.",
-         "content" : {
-            "horizontalInverter" : {
-               "type" : "section",
-               "name" : "Horizontal inverter",
-               "description" : "A horizontal dual-buttons 1/0 switch"
-            },
-            "verticalInverter" : {
-               "type" : "section",
-               "name" : "Vertical inverter",
-               "description" : "A vertical dual-buttons 1/0 switch"
-            },
-            "pushButton" : {
-               "type" : "section",
-               "name" : "Push button",
-               "description" : "A simple push button (only able to send ON events)",
-               "content" : {
-                  "icon" : {
-                     "type" : "icon",
-                     "name" : "Button icon",
-                     "description" : "Choose the icon to display in the button"
-                  }
-               }
-            }
-         }
-      }
-   }
+	"type": "switch",
+	"version": "0.1",
+	"releaseType": "beta",
+	"author": "yadoms team",
+	"url": "http://www.yadoms.com/wiki/widgets/switch.html",
+	"credits": "",
+	"dimensions": {
+		"min": {
+			"x": 1,
+			"y": 1
+		},
+		"max": {
+			"x": 1,
+			"y": 1
+		},
+		"default": {
+			"x": 1,
+			"y": 1
+		}
+	},
+	"configurationSchema": {
+		"device": {
+			"type": "device",
+			"expectedCapacity": ["switch",
+			"dimmable",
+			"event"],
+			"expectedKeywordAccess": "getset"
+		},
+		"showDeviceName": {
+			"type": "bool",
+			"defaultValue": "true"
+		},
+		"kind": {
+			"type": "radioSection",
+			"content": {
+				"horizontalInverter": {
+					"type": "section"
+				},
+				"verticalInverter": {
+					"type": "section"
+				},
+				"pushButton": {
+					"type": "section",
+					"content": {
+						"icon": {
+							"type": "icon"
+						}
+					}
+				}
+			}
+		}
+	}
 }

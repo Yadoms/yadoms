@@ -51,6 +51,6 @@ if(${PocoNetSSLFound})
    #########################################
    PLUGIN_POST_BUILD_COPY_FILE(freeMobileSms package.json)
    PLUGIN_POST_BUILD_COPY_FILE(freeMobileSms icon.png)
-   PLUGIN_POST_BUILD_COPY_FILE(freeMobileSms locales/fr.json)
+   PLUGIN_POST_BUILD_COPY_DIRECTORY(freeMobileSms locales)
    
 endif()

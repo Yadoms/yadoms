@@ -71,4 +71,4 @@ PLUGIN_LINK(teleinfoUSB ${CARTELECTRONIC_TELEINFO_USB_ADDITIONAL_LIB})
 #########################################
 PLUGIN_POST_BUILD_COPY_FILE(teleinfoUSB package.json)
 PLUGIN_POST_BUILD_COPY_FILE(teleinfoUSB icon.png)
-PLUGIN_POST_BUILD_COPY_FILE(teleinfoUSB locales/fr.json)
+PLUGIN_POST_BUILD_COPY_DIRECTORY(teleinfoUSB locales)

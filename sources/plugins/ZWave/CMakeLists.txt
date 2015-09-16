@@ -83,7 +83,7 @@ PLUGIN_LINK(ZWave ${ZWAVE_PLUGIN_ADDITIONAL_LIB})
 #########################################
 PLUGIN_POST_BUILD_COPY_FILE(ZWave package.json)
 PLUGIN_POST_BUILD_COPY_FILE(ZWave icon.png)
-PLUGIN_POST_BUILD_COPY_FILE(ZWave locales/fr.json)
+PLUGIN_POST_BUILD_COPY_DIRECTORY(ZWave locales)
 
 #########################################
 ## Copy configuration files

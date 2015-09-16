@@ -32,10 +32,6 @@ namespace pluginSystem
          if (m_type.empty())
             throw shared::exception::CInvalidParameter("Error reading package.json : plugin type can not be empty");
 
-         m_description = m_package.get<std::string>("description");
-         if (m_description.empty())
-            throw shared::exception::CInvalidParameter("Error reading package.json : plugin description can not be empty");
-
          m_version = m_package.get<std::string>("version");
          if (m_version.empty() || !regex_match(m_version, boost::regex("\\d+.\\d+")))
             throw shared::exception::CInvalidParameter("Error reading package.json : plugin version doesn't match expected format (x.x)");
@@ -86,11 +82,6 @@ namespace pluginSystem
    const std::string& CInformation::getType() const
    {
       return m_type;
-   }
-
-   const std::string& CInformation::getDescription() const
-   {
-      return  m_description;
    }
 
    const std::string& CInformation::getVersion() const
@@ -145,7 +136,7 @@ namespace pluginSystem
       return m_supportManuallyCreatedDevice;
    }
 
-   shared::CDataContainer CInformation::getPackageJson() const
+   shared::CDataContainer CInformation::getPackage() const
    {
       return m_package;
    }

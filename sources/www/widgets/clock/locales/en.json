@@ -1,4 +1,5 @@
 {
-    "name": "clock",
-    "description": "A fully resizable clock",
+	"name": "Clock",
+	"description": "A fully resizable clock",
+	
 }

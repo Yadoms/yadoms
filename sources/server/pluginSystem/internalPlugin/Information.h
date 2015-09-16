@@ -20,7 +20,6 @@ namespace pluginSystem {   namespace internalPlugin {
       // shared::plugin::IInformation implementation
       virtual ~CInformation();
       virtual const std::string& getType() const;
-      virtual const std::string& getDescription() const;
       virtual const std::string& getVersion() const;
       virtual const shared::plugin::information::EReleaseType getReleaseType() const;
       virtual const std::string& getAuthor() const;
@@ -29,12 +28,11 @@ namespace pluginSystem {   namespace internalPlugin {
       virtual std::string getIdentity() const;
       virtual bool isSupportedOnThisPlatform() const;
       virtual bool getSupportManuallyCreatedDevice() const;
-      virtual shared::CDataContainer getPackageJson() const;
+      virtual shared::CDataContainer getPackage() const;
       // [END] shared::plugin::IInformation implementation
 
    private:
       std::string m_type;
-      std::string m_description;
       std::string m_version;
       shared::plugin::information::EReleaseType m_releaseType;
       std::string m_author;

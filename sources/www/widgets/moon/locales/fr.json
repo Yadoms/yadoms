@@ -1,10 +1,10 @@
 {
-   "name": "lune",
-   "description": "Ce widget permet d'afficher les phases de la lune",
-   "configurationSchema" : {
-      "device" : {
-         "name" : "Caractéristique de la Lune",
-         "description" : "Pourcentage de la surface illuminée de la lune et jour de la lune"
-      }
-   }
+	"name": "Lune",
+	"description": "Ce widget permet d'afficher les phases de la lune",
+	"configurationSchema": {
+		"device": {
+			"name": "Equipement",
+			"description": "Equipement fournissant les phases lunaires"
+		}
+	}
 }

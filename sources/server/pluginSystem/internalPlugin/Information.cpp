@@ -4,11 +4,10 @@
 namespace pluginSystem {   namespace internalPlugin {
 
    CInformation::CInformation()
-      :m_type("system"), m_description("system"), m_version("1.0"), m_releaseType(shared::plugin::information::EReleaseType::kStable),
+      :m_type("system"), m_version("1.0"), m_releaseType(shared::plugin::information::EReleaseType::kStable),
       m_author("Yadoms team"), m_url("http://www.yadoms.com")
    {
       m_package.set("type", m_type);
-      m_package.set("description", m_description);
       m_package.set("version", m_version);
       m_package.set("releaseType", m_releaseType);
       m_package.set("author", m_author);
@@ -25,10 +24,6 @@ namespace pluginSystem {   namespace internalPlugin {
       return m_type;
    }
 
-   const std::string& CInformation::getDescription() const
-   {
-      return m_description;
-   }
    const std::string& CInformation::getVersion() const
    {
       return m_version;
@@ -81,7 +76,7 @@ namespace pluginSystem {   namespace internalPlugin {
       return false;
    }
 
-   shared::CDataContainer CInformation::getPackageJson() const
+   shared::CDataContainer CInformation::getPackage() const
    {
       return m_package;
    }

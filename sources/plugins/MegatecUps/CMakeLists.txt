@@ -47,4 +47,4 @@ PLUGIN_LINK(megatecUps ${MEGATECUPS_ADDITIONAL_LIB})
 #########################################
 PLUGIN_POST_BUILD_COPY_FILE(megatecUps package.json)
 PLUGIN_POST_BUILD_COPY_FILE(megatecUps icon.png)
-PLUGIN_POST_BUILD_COPY_FILE(megatecUps locales/fr.json)
+PLUGIN_POST_BUILD_COPY_DIRECTORY(megatecUps locales)

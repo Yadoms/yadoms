@@ -1,41 +1,81 @@
 {
-   "name": "gauge",
-   "description": "Un widget qui affiche une gauge",
-   "configurationSchema" : {
-      "device" : {
-         "name" : "Donnée à afficher",
-         "description" : "Selectionnez ici la donnée que vous souhaitez visualiser"
-      },
-		"customYAxisMinMax" : {
-			 "name" : "Applique manuellement une valeur minimum et maximum",
-			 "description" : "Activer cette section permet de configurer le minimum et le maximum de la gauge. Lorsque cette section n'est pas activée, le minimum et le maximum seront configurés à 0 et 100.",
-			 "content" : {
-				"maximumValue" : {
-				   "name" : "Valeur Maximale",
-				   "description" : "Applique une valeur maximale"
-				   },
-				"minimumValue" : {
-				   "name" : "Valeur Minimale",
-				   "description" : "Applique une valeur minimale"
+	"name": "Jauge",
+	"description": "Un widget qui affiche une jauge",
+	"configurationSchema": {
+		"text": {
+			"name": "Titre",
+			"description": "Titre du widget"
+		},
+		"device": {
+			"name": "Donnée à afficher",
+			"description": "Selectionnez ici la donnée que vous souhaitez visualiser"
+		},
+		"customYAxisMinMax": {
+			"name": "Applique manuellement une valeur minimum et maximum",
+			"description": "Activer cette section permet de configurer le minimum et le maximum de la gauge. Lorsque cette section n'est pas activée, le minimum et le maximum seront configurés à 0 et 100.",
+			"content": {
+				"minimumValue": {
+					"name": "Valeur Minimale",
+					"description": "Applique une valeur minimale"
+				},
+				"maximumValue": {
+					"name": "Valeur Maximale",
+					"description": "Applique une valeur maximale"
 				}
 			}
 		},
-      "thresholds" : {
-         "name" : "Seuils",
-         "description" : "Liste des seuils (Maximum: 5)",
-         "allowDuplication" : "true",
-         "item" : {
-            "description" : "Cette section permet la configuration des seuils de couleurs de la gauge",
-            "content" : {
-				"thresholdValue" : {
-				   "description" : "Valeur du seuil"
+		"displayMode": {
+			"name": "Mode d'affichage",
+			"description": "Réglage du mode d'affichage de la jauge",
+			"content": {
+				"solidColor": {
+					"name": "Couleur unie",
+					"description": "Une couleur pleine est utilisée pour afficher la valeur de la jauge",
+					"content": {
+						"color": {
+							"name": "Choix de la couleur"
+						}
+					}
 				},
-               "color" : {
-                  "name" : "Couleur avant le seuil",
-                  "description" : "Permet de changer la couleur de la gauge avant la valeur atteinte du seuil",
-               }
-            }
-         }
-      }
-   }
+				"thresholds": {
+					"name": "Par seuils",
+					"description": "Changement de la couleur d'affichage suivant la valeur de la jauge",
+					"content": {
+						"firstColor": {
+							"name": "Première couleur",
+							"description": "Couleur appliquée lorsque la valeur est inférieure au premier seuil"
+						},
+						"addedThresholds": {
+							"name": "Seuils",
+							"description": "Changement de la couleur suivant la valeur (5 seuils max)",
+							"item": {
+								"name": "seuil",
+								"description": "Choix de la couleur à appliquer lors que la valeur dépasse le seuil",
+								"content": {
+									"value": {
+										"name": "Seuil"
+									},
+									"color": {
+										"name": "Couleur"
+									}
+								}
+							}
+						}
+					}
+				},
+				"gradient": {
+					"name": "Dégradé",
+					"description": "Couleur dégradée entre le mininimum et le maximum",
+					"content": {
+						"minColor": {
+							"name": "Couleur pour la valeur minimum"
+						},
+						"maxColor": {
+							"name": "Couleur pour la valeur maximum"
+						}
+					}
+				}
+			}
+		}
+	}
 }

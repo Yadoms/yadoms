@@ -1,24 +1,28 @@
 {
-   "name": "thermomètre",
-   "description": "Un widget qui affiche un thermomètre",
-   "configurationSchema" : {
-      "device" : {
-         "name" : "Donnée à afficher",
-         "description" : "Selectionnez ici la donnée que vous souhaitez visualiser"
-      },
-		"customYAxisMinMax" : {
-			 "name" : "Applique manuellement une température minimum et maximum au thermomètre",
-			 "description" : "Activer cette section permet de configurer le minimum et le maximum du thermomètre. Lorsque cette section n'est pas activée, le minimum et le maximum seront configurés à -40°C et 50°C",
-			 "content" : {
-				"maximumValue" : {
-				   "name" : "Temperature Maximale",
-				   "description" : "Applique une temperature maximale"
-				   },
-				"minimumValue" : {
-				   "name" : "Temperature Minimum",
-				   "description" : "Applique une temperature minimale"
+	"name": "thermomètre",
+	"description": "Un widget qui affiche un thermomètre",
+	"configurationSchema": {
+		"text": {
+			"name": "Titre",
+			"description": "Titre du widget"
+		},
+		"device": {
+			"name": "Donnée à afficher",
+			"description": "Selectionnez ici la donnée que vous souhaitez visualiser"
+		},
+		"customYAxisMinMax": {
+			"name": "Applique manuellement une température minimum et maximum au thermomètre",
+			"description": "Activer cette section permet de configurer le minimum et le maximum du thermomètre. Lorsque cette section n'est pas activée, le minimum et le maximum seront configurés à -40°C et 50°C",
+			"content": {
+				"maximumValue": {
+					"name": "Temperature Maximale",
+					"description": "Applique une temperature maximale"
+				},
+				"minimumValue": {
+					"name": "Temperature Minimum",
+					"description": "Applique une temperature minimale"
 				}
 			}
 		}
-   }
+	}
 }

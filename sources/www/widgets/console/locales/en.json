@@ -1,18 +1,18 @@
 {
-    "name": "dimmer",
-    "description": "A widget to control a value",
-    "configurationSchema" : {
-      "device" : {
-         "name" : "dimmer device",
-         "description" : "Device to drive"
-      },
-      "showDeviceName" : {
-         "name" : "Show device name",
-         "description" : "Determine if you want to see the device name on the widget"
-      },
-      "StepValue" : {
-         "name" : "Step",
-         "description" : "Set the incremental step"
-       }	 
-   }
+	"name": "Dimmer",
+	"description": "A widget to control a value",
+	"configurationSchema": {
+		"device": {
+			"name": "dimmer device",
+			"description": "Device to drive"
+		},
+		"showDeviceName": {
+			"name": "Show device name",
+			"description": "Determine if you want to see the device name on the widget"
+		},
+		"StepValue": {
+			"name": "Step",
+			"description": "Set the incremental step"
+		}
+	}
 }

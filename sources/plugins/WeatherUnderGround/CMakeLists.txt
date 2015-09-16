@@ -98,4 +98,4 @@ PLUGIN_LINK(WeatherUnderground ${WUNDERGROUND_ADDITIONAL_LIB})
 #########################################
 PLUGIN_POST_BUILD_COPY_FILE(WeatherUnderground package.json)
 PLUGIN_POST_BUILD_COPY_FILE(WeatherUnderground icon.png)
-PLUGIN_POST_BUILD_COPY_FILE(WeatherUnderground locales/fr.json)
+PLUGIN_POST_BUILD_COPY_DIRECTORY(WeatherUnderground locales)

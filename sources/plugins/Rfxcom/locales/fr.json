@@ -1,4 +1,5 @@
 ﻿{
+   "name": "RFXCom",
    "description": "Support du module radio RFXCom (voir http://rfxcom.com/)",
    "configurationSchema":
    {
@@ -454,7 +455,6 @@
             },
             "trc02_2":
             {
-               "type": "section",
                "name": "TRC02 (3 batt)",
                "content":
                {
@@ -546,7 +546,6 @@
             
             "harrisonCurtain":
             {
-               "type": "section",
                "name": "Harrison Curtain",
                "content":
                {
@@ -717,7 +716,6 @@
             
             "x10SecurityR":
             {
-               "type": "section",
                "name": "X10-security, télécommande",
                "content":
                {
@@ -743,7 +741,6 @@
             },            
             "digimaxShort":
             {
-               "type": "section",
                "name": "Digimax short (no set point)",
                "content":
                {

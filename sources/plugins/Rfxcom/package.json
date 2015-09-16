@@ -1,7 +1,5 @@
 {
    "type": "rfxcom",
-   "name": "RFXCom",
-   "description": "RFXCom radio interface support (see http://rfxcom.com/)",
    "version": "0.1",
    "releaseType": "beta",
    "author": "Sébastien Gallou",
@@ -13,43 +11,39 @@
       "SerialPort" :
       {
          "type" : "enum",
-         "name" : "Serial port",
-         "description" : "The virtual serial port connected to the RFXCom",
-		 "values" : {"__Binding__" : {"type" : "system", "query" : "serialPorts"}}
+		   "values" : {"__Binding__" : {"type" : "system", "query" : "serialPorts"}}
       },
       "Protocols":
       {
           "type" : "section",
-          "name" : "Protocols to listen",
-          "description" : "Supported protocols to listen, see RFXCom manual to configure. Be careful, some protocols are incompatible and must not be selected together.",
           "enableWithCheckBox" : "false",
           "enableWithCheckBoxDefaultValue" : "false",
           "content" :
           {
-             "AE Blyss" : { "type" : "bool", "name" : "AE Blyss", "defaultValue" : "false" },
-             "Rubicson" : { "type" : "bool", "name" : "Rubicson", "defaultValue" : "false" },
-             "FineOffset/Viking" : { "type" : "bool", "name" : "FineOffset/Viking", "defaultValue" : "false" },
-             "Lighting4" : { "type" : "bool", "name" : "Lighting4", "defaultValue" : "false" },
-             "RSL" : { "type" : "bool", "name" : "RSL", "defaultValue" : "false" },
-             "Byron SX" : { "type" : "bool", "name" : "Byron SX", "defaultValue" : "false" },
-             "RFU" : { "type" : "bool", "name" : "RFU", "defaultValue" : "false" },
-             "undecoded messages" : { "type" : "bool", "name" : "undecoded messages", "defaultValue" : "false" },
-             "Mertik" : { "type" : "bool", "name" : "Mertik", "defaultValue" : "false" },
-             "AD LightwaveRF" : { "type" : "bool", "name" : "AD LightwaveRF", "defaultValue" : "false" },
-             "Hideki/UPM" : { "type" : "bool", "name" : "Hideki/UPM", "defaultValue" : "true" },
-             "La Crosse" : { "type" : "bool", "name" : "La Crosse", "defaultValue" : "true" },
-             "FS20" : { "type" : "bool", "name" : "FS20", "defaultValue" : "false" },
-             "ProGuard" : { "type" : "bool", "name" : "ProGuard", "defaultValue" : "false" },
-             "BlindsT0" : { "type" : "bool", "name" : "BlindsT0", "defaultValue" : "false" },
-             "BlindsT1" : { "type" : "bool", "name" : "BlindsT1", "defaultValue" : "false" },
-             "X10" : { "type" : "bool", "name" : "X10", "defaultValue" : "true" },
-             "ARC" : { "type" : "bool", "name" : "ARC", "defaultValue" : "true" },
-             "AC" : { "type" : "bool", "name" : "AC", "defaultValue" : "true" },
-             "HomeEasy EU" : { "type" : "bool", "name" : "HomeEasy EU", "defaultValue" : "true" },
-             "Meiantech" : { "type" : "bool", "name" : "Meiantech", "defaultValue" : "false" },
-             "Oregon Scientific" : { "type" : "bool", "name" : "Oregon Scientific", "defaultValue" : "true" },
-             "ATI" : { "type" : "bool", "name" : "ATI", "defaultValue" : "false" },
-             "Visonic" : { "type" : "bool", "name" : "Visonic", "defaultValue" : "false" }
+             "AE Blyss" : { "type" : "bool", "defaultValue" : "false" },
+             "Rubicson" : { "type" : "bool", "defaultValue" : "false" },
+             "FineOffset/Viking" : { "type" : "bool", "defaultValue" : "false" },
+             "Lighting4" : { "type" : "bool", "defaultValue" : "false" },
+             "RSL" : { "type" : "bool", "defaultValue" : "false" },
+             "Byron SX" : { "type" : "bool", "defaultValue" : "false" },
+             "RFU" : { "type" : "bool", "defaultValue" : "false" },
+             "undecoded messages" : { "type" : "bool", "defaultValue" : "false" },
+             "Mertik" : { "type" : "bool", "defaultValue" : "false" },
+             "AD LightwaveRF" : { "type" : "bool", "defaultValue" : "false" },
+             "Hideki/UPM" : { "type" : "bool", "defaultValue" : "true" },
+             "La Crosse" : { "type" : "bool", "defaultValue" : "true" },
+             "FS20" : { "type" : "bool", "defaultValue" : "false" },
+             "ProGuard" : { "type" : "bool", "defaultValue" : "false" },
+             "BlindsT0" : { "type" : "bool", "defaultValue" : "false" },
+             "BlindsT1" : { "type" : "bool", "defaultValue" : "false" },
+             "X10" : { "type" : "bool", "defaultValue" : "true" },
+             "ARC" : { "type" : "bool", "defaultValue" : "true" },
+             "AC" : { "type" : "bool", "defaultValue" : "true" },
+             "HomeEasy EU" : { "type" : "bool", "defaultValue" : "true" },
+             "Meiantech" : { "type" : "bool", "defaultValue" : "false" },
+             "Oregon Scientific" : { "type" : "bool", "defaultValue" : "true" },
+             "ATI" : { "type" : "bool", "defaultValue" : "false" },
+             "Visonic" : { "type" : "bool", "defaultValue" : "false" }
           }
        }
    },
@@ -58,29 +52,22 @@
    {
       "type":
       {
-         "name": "Type",
-         "description": "Type of the device",
          "type": "radioSection",
          "content":
          {
             "x10":
             {
                "type": "section",
-               "name": "X10 (X10 lighting)",
                "content":
                {
                   "houseCode":
                   {
-                     "name": "House Code",
-                     "description": "The house code (A-P)",
                      "type": "string",
                      "regex" : "[A-P]",
                      "defaultValue": "A"
                   },
                   "unitCode":
                   {
-                     "name": "Unit Code",
-                     "description": "The unit code (1-16)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "16"
@@ -90,21 +77,16 @@
             "arc":
             {
                "type": "section",
-               "name": "ARC",
                "content":
                {
                   "houseCode":
                   {
-                     "name": "House Code",
-                     "description": "The house code (A-P)",
                      "type": "string",
                      "regex" : "[A-P]",
                      "defaultValue": "A"
                   },
                   "unitCode":
                   {
-                     "name": "Unit Code",
-                     "description": "The unit code (1-16)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "16"
@@ -114,21 +96,16 @@
             "ab400d":
             {
                "type": "section",
-               "name": "ELRO AB400D (Flamingo)",
                "content":
                {
                   "houseCode":
                   {
-                     "name": "House Code",
-                     "description": "The house code (A-P)",
                      "type": "string",
                      "regex" : "[A-P]",
                      "defaultValue": "A"
                   },
                   "unitCode":
                   {
-                     "name": "Unit Code",
-                     "description": "The unit code (1-16)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "16"
@@ -138,21 +115,16 @@
             "waveman":
             {
                "type": "section",
-               "name": "Waveman",
                "content":
                {
                   "houseCode":
                   {
-                     "name": "House Code",
-                     "description": "The house code (A-P)",
                      "type": "string",
                      "regex" : "[A-P]",
                      "defaultValue": "A"
                   },
                   "unitCode":
                   {
-                     "name": "Unit Code",
-                     "description": "The unit code (1-16)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "16"
@@ -162,21 +134,16 @@
             "emw200":
             {
                "type": "section",
-               "name": "Chacon EMW200",
                "content":
                {
                   "houseCode":
                   {
-                     "name": "House Code",
-                     "description": "The house code (A-P)",
                      "type": "string",
                      "regex" : "[A-P]",
                      "defaultValue": "A"
                   },
                   "unitCode":
                   {
-                     "name": "Unit Code",
-                     "description": "The unit code (1-16)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "16"
@@ -186,21 +153,16 @@
             "impuls":
             {
                "type": "section",
-               "name": "IMPULS",
                "content":
                {
                   "houseCode":
                   {
-                     "name": "House Code",
-                     "description": "The house code (A-P)",
                      "type": "string",
                      "regex" : "[A-P]",
                      "defaultValue": "A"
                   },
                   "unitCode":
                   {
-                     "name": "Unit Code",
-                     "description": "The unit code (1-16)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "16"
@@ -210,21 +172,16 @@
             "risingSun":
             {
                "type": "section",
-               "name": "RisingSun",
                "content":
                {
                   "houseCode":
                   {
-                     "name": "House Code",
-                     "description": "The house code (A-P)",
                      "type": "string",
                      "regex" : "[A-P]",
                      "defaultValue": "A"
                   },
                   "unitCode":
                   {
-                     "name": "Unit Code",
-                     "description": "The unit code (1-16)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "16"
@@ -234,21 +191,16 @@
             "philips":
             {
                "type": "section",
-               "name": "Philips SBC",
                "content":
                {
                   "houseCode":
                   {
-                     "name": "House Code",
-                     "description": "The house code (A-P)",
                      "type": "string",
                      "regex" : "[A-P]",
                      "defaultValue": "A"
                   },
                   "unitCode":
                   {
-                     "name": "Unit Code",
-                     "description": "The unit code (1-16)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "16"
@@ -258,21 +210,16 @@
             "energenie":
             {
                "type": "section",
-               "name": "Energenie ENER010",
                "content":
                {
                   "houseCode":
                   {
-                     "name": "House Code",
-                     "description": "The house code (A-P)",
                      "type": "string",
                      "regex" : "[A-P]",
                      "defaultValue": "A"
                   },
                   "unitCode":
                   {
-                     "name": "Unit Code",
-                     "description": "The unit code (1-16)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "16"
@@ -282,21 +229,16 @@
             "energenie5":
             {
                "type": "section",
-               "name": "Energenie 5-gang",
                "content":
                {
                   "houseCode":
                   {
-                     "name": "House Code",
-                     "description": "The house code (A-P)",
                      "type": "string",
                      "regex" : "[A-P]",
                      "defaultValue": "A"
                   },
                   "unitCode":
                   {
-                     "name": "Unit Code",
-                     "description": "The unit code (1-16)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "16"
@@ -306,21 +248,16 @@
             "gdr2":
             {
                "type": "section",
-               "name": "COCO GDR2-2000R",
                "content":
                {
                   "houseCode":
                   {
-                     "name": "House Code",
-                     "description": "The house code (A-P)",
                      "type": "string",
                      "regex" : "[A-P]",
                      "defaultValue": "A"
                   },
                   "unitCode":
                   {
-                     "name": "Unit Code",
-                     "description": "The unit code (1-16)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "16"
@@ -331,21 +268,16 @@
             "ac":
             {
                "type": "section",
-               "name": "AC",
                "content":
                {
                   "id":
                   {
-                     "name": "ID",
-                     "description": "The device ID (1-67108863)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "67108863"
                   },
                   "unitCode":
                   {
-                     "name": "Unit Code",
-                     "description": "The unit code (1-16)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "16"
@@ -355,21 +287,16 @@
             "homeEasyEU":
             {
                "type": "section",
-               "name": "HomeEasy EU",
                "content":
                {
                   "id":
                   {
-                     "name": "ID",
-                     "description": "The device ID (1-67108863)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "67108863"
                   },
                   "unitCode":
                   {
-                     "name": "Unit Code",
-                     "description": "The unit code (1-16)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "16"
@@ -379,21 +306,16 @@
             "anslut":
             {
                "type": "section",
-               "name": "ANSLUT",
                "content":
                {
                   "id":
                   {
-                     "name": "ID",
-                     "description": "The device ID (1-67108863)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "67108863"
                   },
                   "unitCode":
                   {
-                     "name": "Unit Code",
-                     "description": "The unit code (1-16)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "16"
@@ -403,21 +325,16 @@
             "kambrookRf3672":
             {
                "type": "section",
-               "name": "Kambrook RF3672 (Australia)",
                "content":
                {
                   "id":
                   {
-                     "name": "ID",
-                     "description": "The device ID (1-16777215)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "16777215"
                   },
                   "unitCode":
                   {
-                     "name": "Unit Code",
-                     "description": "The unit code (1-5)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "5"
@@ -428,21 +345,16 @@
             "koppla":
             {
                "type": "section",
-               "name": "Ikea Koppla",
                "content":
                {
                   "system":
                   {
-                     "name": "System",
-                     "description": "System code (1-16)",
                      "type": "int",
                      "minimumValue": "0",
                      "maximumValue": "16"
                   },
                   "channel":
                   {
-                     "name": "Channel",
-                     "description": "Channel (0-1023)",
                      "type": "int",
                      "minimumValue": "0",
                      "maximumValue": "1023"
@@ -453,13 +365,10 @@
             "pt2262":
             {
                "type": "section",
-               "name": "PT2262 (many remote controls)",
                "content":
                {
                   "id":
                   {
-                     "name": "ID",
-                     "description": "The device ID (0-16777215)",
                      "type": "int",
                      "minimumValue": "0",
                      "maximumValue": "16777215"
@@ -470,21 +379,16 @@
             "lightwaveRf":
             {
                "type": "section",
-               "name": "LightwaveRF (Siemens AD protocol)",
                "content":
                {
                   "id":
                   {
-                     "name": "ID",
-                     "description": "The device ID (1-16777215)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "16777215"
                   },
                   "unitCode":
                   {
-                     "name": "Unit Code",
-                     "description": "The unit code (1-16)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "16"
@@ -494,21 +398,16 @@
             "emw100":
             {
                "type": "section",
-               "name": "EMW100 GAO/Everflourish",
                "content":
                {
                   "id":
                   {
-                     "name": "ID",
-                     "description": "The device ID (1-16383)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "16383"
                   },
                   "unitCode":
                   {
-                     "name": "Unit Code",
-                     "description": "The unit code (1-4)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "4"
@@ -518,21 +417,16 @@
             "bbsb":
             {
                "type": "section",
-               "name": "BBSB new types",
                "content":
                {
                   "id":
                   {
-                     "name": "ID",
-                     "description": "The device ID (1-524287)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "524287"
                   },
                   "unitCode":
                   {
-                     "name": "Unit Code",
-                     "description": "The unit code (1-6)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "6"
@@ -542,13 +436,10 @@
             "mdRemote":
             {
                "type": "section",
-               "name": "MDREMOTE LED dimmer",
                "content":
                {
                   "id":
                   {
-                     "name": "ID",
-                     "description": "The device ID (1-65535)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "65535"
@@ -558,21 +449,16 @@
             "rsl":
             {
                "type": "section",
-               "name": "Conrad RSL2",
                "content":
                {
                   "id":
                   {
-                     "name": "ID",
-                     "description": "The device ID (1-16777215)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "16777215"
                   },
                   "unitCode":
                   {
-                     "name": "Unit Code",
-                     "description": "The unit code (1-16)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "16"
@@ -582,13 +468,10 @@
             "livolo":
             {
                "type": "section",
-               "name": "Livolo",
                "content":
                {
                   "id":
                   {
-                     "name": "ID",
-                     "description": "The device ID (1-65535)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "65535"
@@ -598,13 +481,10 @@
             "trc02":
             {
                "type": "section",
-               "name": "TRC02 (2 batt)",
                "content":
                {
                   "id":
                   {
-                     "name": "ID",
-                     "description": "The device ID (1-16777215)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "16777215"
@@ -614,13 +494,10 @@
             "aoke":
             {
                "type": "section",
-               "name": "Aoke Relay",
                "content":
                {
                   "id":
                   {
-                     "name": "ID",
-                     "description": "The device ID (1-65535)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "65535"
@@ -630,13 +507,10 @@
             "trc02_2":
             {
                "type": "section",
-               "name": "TRC02 (3 batt)",
                "content":
                {
                   "id":
                   {
-                     "name": "ID",
-                     "description": "The device ID (1-32767)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "32767"
@@ -646,21 +520,16 @@
             "eurodomest":
             {
                "type": "section",
-               "name": "Eurodomest",
                "content":
                {
                   "id":
                   {
-                     "name": "ID",
-                     "description": "The device ID (1-524287)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "524287"
                   },
                   "unitCode":
                   {
-                     "name": "Unit Code",
-                     "description": "The unit code (1-4)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "4"
@@ -671,29 +540,22 @@
             "blyss":
             {
                "type": "section",
-               "name": "Blyss",
                "content":
                {
                   "id":
                   {
-                     "name": "ID",
-                     "description": "The device ID (0-65535)",
                      "type": "int",
                      "minimumValue": "0",
                      "maximumValue": "65535"
                   },
                   "groupCode":
                   {
-                     "name": "Group Code",
-                     "description": "The Blyss group code (A-P)",
                      "type": "string",
                      "regex" : "[A-P]",
                      "defaultValue": "A"
                   },
                   "unitCode":
                   {
-                     "name": "Unit Code",
-                     "description": "The Blyss unit code (1-5)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "5"
@@ -704,13 +566,10 @@
             "byronSx":
             {
                "type": "section",
-               "name": "Byron SX",
                "content":
                {
                   "id":
                   {
-                     "name": "ID",
-                     "description": "The device ID (0-65535)",
                      "type": "int",
                      "minimumValue": "0",
                      "maximumValue": "65535"
@@ -720,13 +579,10 @@
             "byronMp001":
             {
                "type": "section",
-               "name": "Byron MP001",
                "content":
                {
                   "id":
                   {
-                     "name": "ID",
-                     "description": "The device ID (DIP switches positions 0=OFF, 1=ON : 000000 to 111111)",
                      "type": "string",
                      "regex" : "[0-1]{6}",
                      "defaultValue": "000000"
@@ -737,13 +593,10 @@
             "siemensSf01":
             {
                "type": "section",
-               "name": "Siemens SF01 (LF959RA50/LF259RB50/LF959RB50 extractor hood)",
                "content":
                {
                   "id":
                   {
-                     "name": "ID",
-                     "description": "The device ID (0-32767)",
                      "type": "int",
                      "minimumValue": "0",
                      "maximumValue": "32767"
@@ -754,21 +607,16 @@
             "harrisonCurtain":
             {
                "type": "section",
-               "name": "Harrison Curtain",
                "content":
                {
                   "houseCode":
                   {
-                     "name": "House Code",
-                     "description": "The house code (A-P)",
                      "type": "string",
                      "regex" : "[A-P]",
                      "defaultValue": "A"
                   },
                   "unitCode":
                   {
-                     "name": "Unit Code",
-                     "description": "The unit code (1-16)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "16"
@@ -779,21 +627,16 @@
             "rollerTrolHastaNew":
             {
                "type": "section",
-               "name": "RollerTrol, Hasta new",
                "content":
                {
                   "id":
                   {
-                     "name": "ID",
-                     "description": "The device ID (0-65535)",
                      "type": "int",
                      "minimumValue": "0",
                      "maximumValue": "65535"
                   },
                   "unitCode":
                   {
-                     "name": "Unit Code",
-                     "description": "The unit code (1-15)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "15"
@@ -803,21 +646,16 @@
             "hastaOld":
             {
                "type": "section",
-               "name": "Hasta old",
                "content":
                {
                   "id":
                   {
-                     "name": "ID",
-                     "description": "The device ID (0-65535)",
                      "type": "int",
                      "minimumValue": "0",
                      "maximumValue": "65535"
                   },
                   "unitCode":
                   {
-                     "name": "Unit Code",
-                     "description": "The unit code (1-15)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "15"
@@ -827,13 +665,10 @@
             "aOkRf01":
             {
                "type": "section",
-               "name": "A-OK RF01",
                "content":
                {
                   "id":
                   {
-                     "name": "ID",
-                     "description": "The device ID (0-16777215)",
                      "type": "int",
                      "minimumValue": "0",
                      "maximumValue": "16777215"
@@ -843,13 +678,10 @@
             "aOkAc114":
             {
                "type": "section",
-               "name": "A-OK AC114",
                "content":
                {
                   "id":
                   {
-                     "name": "ID",
-                     "description": "The device ID (0-16777215)",
                      "type": "int",
                      "minimumValue": "0",
                      "maximumValue": "16777215"
@@ -859,13 +691,10 @@
             "raex":
             {
                "type": "section",
-               "name": "Raex YR1326",
                "content":
                {
                   "id":
                   {
-                     "name": "ID",
-                     "description": "The device ID (0-16777215)",
                      "type": "int",
                      "minimumValue": "0",
                      "maximumValue": "16777215"
@@ -875,13 +704,10 @@
             "mediaMount":
             {
                "type": "section",
-               "name": "Media Mount",
                "content":
                {
                   "id":
                   {
-                     "name": "ID",
-                     "description": "The device ID (0-16777215)",
                      "type": "int",
                      "minimumValue": "0",
                      "maximumValue": "16777215"
@@ -891,21 +717,16 @@
             "dc106":
             {
                "type": "section",
-               "name": "DC106/Rohrmotor24-RMF/Yooda",
                "content":
                {
                   "id":
                   {
-                     "name": "ID",
-                     "description": "The device ID (0-4294967295)",
                      "type": "int",
                      "minimumValue": "0",
                      "maximumValue": "4294967295"
                   },
                   "unitCode":
                   {
-                     "name": "Unit Code",
-                     "description": "The unit code (1-15)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "15"
@@ -915,21 +736,16 @@
             "forest":
             {
                "type": "section",
-               "name": "Forest",
                "content":
                {
                   "id":
                   {
-                     "name": "ID",
-                     "description": "The device ID (0-4294967295)",
                      "type": "int",
                      "minimumValue": "0",
                      "maximumValue": "4294967295"
                   },
                   "unitCode":
                   {
-                     "name": "Unit Code",
-                     "description": "The unit code (1-15)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "15"
@@ -940,21 +756,16 @@
             "rfy":
             {
                "type": "section",
-               "name": "RFY",
                "content":
                {
                   "id":
                   {
-                     "name": "ID",
-                     "description": "The device ID (1-1048575)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "1048575"
                   },
                   "unitCode":
                   {
-                     "name": "Unit Code",
-                     "description": "The unit code (1-4)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "4"
@@ -964,21 +775,16 @@
             "rfyExt":
             {
                "type": "section",
-               "name": "RFY ext",
                "content":
                {
                   "id":
                   {
-                     "name": "ID",
-                     "description": "The device ID (1-1048575)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "1048575"
                   },
                   "unitCode":
                   {
-                     "name": "Unit Code",
-                     "description": "The unit code (0-15)",
                      "type": "int",
                      "minimumValue": "0",
                      "maximumValue": "15"
@@ -989,13 +795,10 @@
             "x10SecurityR":
             {
                "type": "section",
-               "name": "X10 security remote",
                "content":
                {
                   "id":
                   {
-                     "name": "ID",
-                     "description": "The device ID (0-65535)",
                      "type": "int",
                      "minimumValue": "0",
                      "maximumValue": "65535"
@@ -1006,13 +809,10 @@
             "digimax":
             {
                "type": "section",
-               "name": "Digimax, TLX7506",
                "content":
                {
                   "id":
                   {
-                     "name": "ID",
-                     "description": "The device ID (0-65535)",
                      "type": "int",
                      "minimumValue": "0",
                      "maximumValue": "65535"
@@ -1022,13 +822,10 @@
             "digimaxShort":
             {
                "type": "section",
-               "name": "Digimax short (no set point)",
                "content":
                {
                   "id":
                   {
-                     "name": "ID",
-                     "description": "The device ID (0-65535)",
                      "type": "int",
                      "minimumValue": "0",
                      "maximumValue": "65535"
@@ -1039,13 +836,10 @@
             "he105":
             {
                "type": "section",
-               "name": "HE105",
                "content":
                {
                   "unitCode":
                   {
-                     "name": "Unit Code",
-                     "description": "The unit code (0-31)",
                      "type": "int",
                      "minimumValue": "0",
                      "maximumValue": "31"
@@ -1055,13 +849,10 @@
             "rts10":
             {
                "type": "section",
-               "name": "RTS10, RFS10, TLX1206",
                "content":
                {
                   "unitCode":
                   {
-                     "name": "Unit Code",
-                     "description": "The unit code (0-255)",
                      "type": "int",
                      "minimumValue": "0",
                      "maximumValue": "255"
@@ -1072,29 +863,22 @@
             "fs20":
             {
                "type": "section",
-               "name": "FS20",
                "content":
                {
                   "houseCode":
                   {
-                     "name": "House Code",
-                     "description": "The house code (8 numbers from 1-4 : 11111111 to 44444444)",
                      "type": "string",
                      "regex" : "[1-4]{8}",
                      "defaultValue": "11111111"
                   },
                   "groupAddress":
                   {
-                     "name": "Group address",
-                     "description": "The group address (2 numbers from 1-4 : 11 to 44)",
                      "type": "string",
                      "regex" : "[1-4]{2}",
                      "defaultValue": "11"
                   },
                   "subAddress":
                   {
-                     "name": "Sub address",
-                     "description": "The sub-address (2 numbers from 1-4 : 11 to 44)",
                      "type": "string",
                      "regex" : "[1-4]{2}",
                      "defaultValue": "11"
@@ -1104,29 +888,22 @@
             "fht8v":
             {
                "type": "section",
-               "name": "FHT8V valve",
                "content":
                {
                   "houseCode":
                   {
-                     "name": "House Code",
-                     "description": "The house code (8 numbers from 1-4 : 11111111 to 44444444)",
                      "type": "string",
                      "regex" : "[1-4]{8}",
                      "defaultValue": "11111111"
                   },
                   "groupAddress":
                   {
-                     "name": "Group address",
-                     "description": "The group address (2 numbers from 1-4 : 11 to 44)",
                      "type": "string",
                      "regex" : "[1-4]{2}",
                      "defaultValue": "11"
                   },
                   "subAddress":
                   {
-                     "name": "Sub address",
-                     "description": "The sub-address (2 numbers from 1-4 : 11 to 44)",
                      "type": "string",
                      "regex" : "[1-4]{2}",
                      "defaultValue": "11"
@@ -1136,29 +913,22 @@
             "fht80":
             {
                "type": "section",
-               "name": "FHT80 door/window sensor",
                "content":
                {
                   "houseCode":
                   {
-                     "name": "House Code",
-                     "description": "The house code (8 numbers from 1-4 : 11111111 to 44444444)",
                      "type": "string",
                      "regex" : "[1-4]{8}",
                      "defaultValue": "11111111"
                   },
                   "groupAddress":
                   {
-                     "name": "Group address",
-                     "description": "The group address (2 numbers from 1-4 : 11 to 44)",
                      "type": "string",
                      "regex" : "[1-4]{2}",
                      "defaultValue": "11"
                   },
                   "subAddress":
                   {
-                     "name": "Sub address",
-                     "description": "The sub-address (2 numbers from 1-4 : 11 to 44)",
                      "type": "string",
                      "regex" : "[1-4]{2}",
                      "defaultValue": "11"
@@ -1169,13 +939,10 @@
             "g6rH4t1":
             {
                "type": "section",
-               "name": "Mertik G6R-H4T1",
                "content":
                {
                   "unitCode":
                   {
-                     "name": "Unit Code",
-                     "description": "The unit code (0-255)",
                      "type": "int",
                      "minimumValue": "0",
                      "maximumValue": "255"
@@ -1185,13 +952,10 @@
             "g6rH4tb":
             {
                "type": "section",
-               "name": "Mertik G6R-H4TB / G6-H4T / G6R-H4T21-Z22",
                "content":
                {
                   "unitCode":
                   {
-                     "name": "Unit Code",
-                     "description": "The unit code (0-262143)",
                      "type": "int",
                      "minimumValue": "0",
                      "maximumValue": "262143"
@@ -1202,13 +966,10 @@
             "cameraX10Ninja":
             {
                "type": "section",
-               "name": "Camera X10 Ninja",
                "content":
                {
                   "houseCode":
                   {
-                     "name": "House Code",
-                     "description": "The house code (A-P)",
                      "type": "string",
                      "regex" : "[A-P]",
                      "defaultValue": "A"

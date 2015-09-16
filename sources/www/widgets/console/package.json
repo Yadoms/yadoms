@@ -1,43 +1,37 @@
 {
-   "type": "dimmer",
-   "version": "0.1",
-   "releaseType": "beta",
-   "author": "yadoms team",
-   "url" : "http://www.yadoms.com/wiki/widgets/dimmer.html",
-   "credits": "",
-   "dimensions": {
-      "min": {
-         "x": 2,
-         "y": 2
-      },
-      "max": {
-         "x": 2,
-         "y": 2
-      },
-      "default": {
-         "x": 2,
-         "y": 2
-      }
-   },
-   "configurationSchema": {
-      "device" : {
-         "name" : "dimmer device",
-         "description" : "Device to drive",
-         "type" : "device",
-         "expectedKeywordType" : "numeric",
-         "expectedKeywordAccess" : "getset"
-      },
-      "showDeviceName" : {
-         "name" : "Show device name",
-         "description" : "Determine if you want to see the device name on the widget",
-         "type" : "bool",
-         "defaultValue" : "true"
-      },
-      "StepValue" : {
-         "type" : "decimal",
-         "name" : "Step",
-         "description" : "Set the incremental step",
-         "defaultValue" : "0.2"
-       }	  
-   }
+	"type": "dimmer",
+	"version": "0.1",
+	"releaseType": "beta",
+	"author": "yadoms team",
+	"url": "http://www.yadoms.com/wiki/widgets/dimmer.html",
+	"credits": "",
+	"dimensions": {
+		"min": {
+			"x": 2,
+			"y": 2
+		},
+		"max": {
+			"x": 2,
+			"y": 2
+		},
+		"default": {
+			"x": 2,
+			"y": 2
+		}
+	},
+	"configurationSchema": {
+		"device": {
+			"type": "device",
+			"expectedKeywordType": "numeric",
+			"expectedKeywordAccess": "getset"
+		},
+		"showDeviceName": {
+			"type": "bool",
+			"defaultValue": "true"
+		},
+		"StepValue": {
+			"type": "decimal",
+			"defaultValue": "0.2"
+		}
+	}
 }

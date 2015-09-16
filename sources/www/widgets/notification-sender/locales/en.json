@@ -1,15 +1,15 @@
 {
-   "name": "Notification sender",
-   "description": "Widget which send notification",
-   "configurationSchema" : {
-      "device" : {
-         "name" : "Device",
-         "description" : "Device used to send notification"
-      }
-   },
-   "text": "Send a notification",
-   "sendNotificationButton": "Send notification",
-   "message": "Message",
-   "to": "To",
-   "errorDuringSending" : "Fail to send notification"
+	"name": "Notification sender",
+	"description": "Widget which send notification",
+	"configurationSchema": {
+		"device": {
+			"name": "Device",
+			"description": "Device used to send notification"
+		}
+	},
+	"text": "Send a notification",
+	"sendNotificationButton": "Send",
+	"message": "Message",
+	"to": "To",
+	"errorDuringSending": "Fail to send notification"
 }

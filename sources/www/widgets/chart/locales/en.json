@@ -1,14 +1,77 @@
 {
-    "name" : "chart",
-    "description": "A widget that provide a chart to display historized data",
-    "errorDuringGettingDeviceData" : "Error during getting device data",
-    "loadingData" : "Loading data",
-    "navigator" : {
-       "1h" : "1h",
-       "1d" : "1d",
-       "1w" : "1w",
-       "1m" : "1m",
-       "6m" : "6m",
-       "1y" : "1y"
-    }
+	"name": "Chart",
+	"description": "A widget that provide a chart to display historized data",
+	"errorDuringGettingDeviceData": "Error during getting device data",
+	"loadingData": "Loading data",
+	"configurationSchema": {
+		"chartTitle": {
+         "name" : "Chart title",
+         "description" : "This text field represents the title of the chart displayed on the page."
+		},
+		"interval": {
+			"name": "Default interval of the chart",
+			"description": "Used to change the first displayed interval of the chart",
+			"values": {
+				"HOUR": "1 hour",
+				"DAY": "1 day",
+				"WEEK": "1 week",
+				"MONTH": "1 month",
+				"HALF_YEAR": "6 months",
+				"YEAR": "1 year"
+			}
+		},
+		"oneAxis": {
+			"name": "Only one axis for all series",
+			"description": "It allows you to create one axis for all series, with this option, series could be compare with the same scale."
+      },
+		"customYAxisMinMax": {
+			"name": "Manually set min and max of y axis",
+			"description": "Enabling this section allow you to set the min and max of your chart. If it is not activated min and max will be computed automatically. This section is active only when the option unique axis is selected",
+			"content": {
+				"maximumValue": {
+					"name": "Maximum Y axis value",
+					"description": "Set the maximum Y Axis value"
+				},
+				"minimumValue": {
+					"name": "Minimum Y axis value",
+					"description": "Set the minimum Y Axis value"
+				}
+			}
+		},
+		"devices": {
+			"name": "Devices",
+			"description": "List of plotted devices",
+			"item": {
+				"name": "Plot",
+				"description": "This section describe the configuration of a plot",
+				"content": {
+					"source": {
+						"name": "Data to display",
+						"description": "Choose the data of a device to display on the chart"
+					},
+					"color": {
+						"name": "Color of the plot",
+						"description": "Permit to change the color of the plot"
+					},
+					"PlotType": {
+						"name": "Plot Type",
+						"description": "choose beetween following plot type",
+						"values": {
+							"line": "Line",
+							"bar": "Bar",
+							"arearange": "Line & Range"
+						}
+					}
+				}
+			}
+		}
+	},
+	"navigator": {
+		"hour": "1h",
+		"day": "1d",
+		"week": "1w",
+		"month": "1m",
+		"half_month": "6m",
+		"year": "1y"
+	}
 }

@@ -146,4 +146,4 @@ PLUGIN_LINK   (OneWire ${ONEWIRE_PLUGIN_ADDITIONAL_LIB})
 #########################################
 PLUGIN_POST_BUILD_COPY_FILE(OneWire package.json)
 PLUGIN_POST_BUILD_COPY_FILE(OneWire icon.png)
-PLUGIN_POST_BUILD_COPY_FILE(OneWire locales/fr.json)
+PLUGIN_POST_BUILD_COPY_DIRECTORY(OneWire locales)

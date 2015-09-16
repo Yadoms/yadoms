@@ -24,12 +24,6 @@ namespace shared { namespace plugin { namespace information
       virtual const std::string& getType() const = 0;
 
       //--------------------------------------------------------------
-      /// \brief	    get the plugin Description
-      /// \return     the plugin description (can be multiline string)
-      //--------------------------------------------------------------
-      virtual const std::string& getDescription() const = 0;
-
-      //--------------------------------------------------------------
       /// \brief	    get the plugin version
       /// \return     the plugin version
       /// \note       Version : Note that this value must be string-comparable to let Yadoms
@@ -89,6 +83,6 @@ namespace shared { namespace plugin { namespace information
       /// \brief	    Provide the package.json content
       /// \return     the package.json content
       //--------------------------------------------------------------
-      virtual shared::CDataContainer getPackageJson() const = 0;
+      virtual shared::CDataContainer getPackage() const = 0;
    };
 } } } // namespace shared::plugin::information
