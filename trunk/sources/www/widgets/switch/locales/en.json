@@ -1,39 +1,40 @@
 {
-    "name": "switch",
-    "description": "A widget that provide buttons to make actions",
-    "errorDuringGettingDeviceInformation" : "Error during getting device information",
-    "configurationSchema" : {
-      "device" : {
-         "name" : "Switch device",
-         "description" : "Device to drive"
-      },
-      "showDeviceName" : {
-         "name" : "Show device name",
-         "description" : "Determine if you want to see the device name on the widget"
-      },
-      "kind" : {
-         "name" : "Kind of switch",
-         "description" : "Select the kind of switch to be used. Permit to change interactions in function of the kind of switch.",
-         "content" : {
-            "horizontalInverter" : {
-               "name" : "Horizontal inverter",
-               "description" : "A horizontal dual-buttons 1/0 switch"
-            },
-            "verticalInverter" : {
-               "name" : "Vertical inverter",
-               "description" : "A vertical dual-buttons 1/0 switch"
-            },
-            "pushButton" : {
-               "name" : "Push button",
-               "description" : "A simple push button (only able to send ON events)",
-               "content" : {
-                  "icon" : {
-                     "name" : "Button icon",
-                     "description" : "Choose the icon to display in the button"
-                  }
-               }
-            }
-         }
-      }
-   }
+	"name": "Switch",
+	"description": "A widget that provide buttons to make actions",
+	"errorDuringGettingDeviceInformation": "Error during getting device information",
+	"errorDuringSendingCommand": "Error sending command",
+	"configurationSchema": {
+		"device": {
+			"name": "Switch device",
+			"description": "Device to drive"
+		},
+		"showDeviceName": {
+			"name": "Show device name",
+			"description": "Determine if you want to see the device name on the widget"
+		},
+		"kind": {
+			"name": "Kind of switch",
+			"description": "Select the kind of switch to be used. Permit to change interactions in function of the kind of switch.",
+			"content": {
+				"horizontalInverter": {
+					"name": "Horizontal inverter",
+					"description": "A horizontal dual-buttons 1/0 switch"
+				},
+				"verticalInverter": {
+					"name": "Vertical inverter",
+					"description": "A vertical dual-buttons 1/0 switch"
+				},
+				"pushButton": {
+					"name": "Push button",
+					"description": "A simple push button (only able to send ON events)",
+					"content": {
+						"icon": {
+							"name": "Button icon",
+							"description": "Choose the icon to display in the button"
+						}
+					}
+				}
+			}
+		}
+	}
 }

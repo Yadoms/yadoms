@@ -182,7 +182,7 @@ namespace web { namespace rest { namespace service {
          {
             shared::CDataContainer pluginInfo;
             pluginInfo.set("type", i->first);
-            pluginInfo.set("package", i->second->getPackageJson());
+            pluginInfo.set("package", i->second->getPackage());
             pluginCollection.push_back(pluginInfo);
          }
 

@@ -1,4 +1,10 @@
 {
-    "name": "moon",
-    "description": "This widget display phases of the moon"
+	"name": "Moon",
+	"description": "This widget display phases of the moon",
+	"configurationSchema": {
+		"device": {
+			"name": "Device",
+			"description": "Device providing moon phasis"
+		}
+	}
 }

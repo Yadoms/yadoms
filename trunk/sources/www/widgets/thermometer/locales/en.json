@@ -1,4 +1,28 @@
 {
-    "name": "thermometer display",
-    "description": "A simple widget that display a thermal value"
+	"name": "thermometer display",
+	"description": "A simple widget that display a thermal value",
+	"configurationSchema": {
+		"text": {
+			"name": "text to display",
+			"description": "This text is displayed onto the widget"
+		},
+		"device": {
+			"name": "Data to display",
+			"description": "Select the data that you want to display"
+		},
+		"customYAxisMinMax": {
+			"name": "Manually set min and max of the thermometer",
+			"description": "Enabling this section allows you to set the min and max of the thermometer. If it is not activated min and max will be set to -40°C and 50°C",
+			"content": {
+				"maximumValue": {
+					"name": "Maximum temperature value",
+					"description": "Set the maximum temperature value"
+				},
+				"minimumValue": {
+					"name": "Minimum temperature value",
+					"description": "Set the minimum temperature value"
+				}
+			}
+		}
+	}
 }

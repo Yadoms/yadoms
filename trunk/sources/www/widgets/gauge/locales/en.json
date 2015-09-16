@@ -1,4 +1,81 @@
 {
-    "name": "Gauge display",
-    "description": "A simple widget that display a gauge"
+	"name": "Gauge display",
+	"description": "A simple widget that display a gauge",
+	"configurationSchema": {
+		"text": {
+			"name": "Title",
+			"description": "Title of this widget"
+		},
+		"device": {
+			"name": "Data to display",
+			"description": "Select the data that you want to display"
+		},
+		"customYAxisMinMax": {
+			"name": "Set min and max of the gauge",
+			"description": "Allow to manually set the min and max of the gauge. If not checked, min and max will be respectively set to 0 and 100",
+			"content": {
+				"minimumValue": {
+					"name": "Minimum value",
+					"description": "Set the minimum value"
+				},
+				"maximumValue": {
+					"name": "Maximum value",
+					"description": "Set the maximum value"
+				}
+			}
+		},
+		"displayMode": {
+			"name": "Display mode",
+			"description": "Choose how the gauge should be displayed",
+			"content": {
+				"solidColor": {
+					"name": "Solid color",
+					"description": "One color is used to display value",
+					"content": {
+						"color": {
+							"name": "Choose the color"
+						}
+					}
+				},
+				"thresholds": {
+					"name": "Thresholds",
+					"description": "Change the gauge color depending on data value",
+					"content": {
+						"firstColor": {
+							"name": "First color",
+							"description": "Set the color when data is lower than first threshold"
+						},
+						"addedThresholds": {
+							"name": "Thresholds",
+							"description": "Change the gauge color depending on data value (5 thresholds max)",
+							"item": {
+								"name": "threshold",
+								"description": "Configure the color to apply to gauge when data becomes greater than threshold",
+								"content": {
+									"value": {
+										"name": "Threshold"
+									},
+									"color": {
+										"name": "Color"
+									}
+								}
+							}
+						}
+					}
+				},
+				"gradient": {
+					"name": "Gradient",
+					"description": "Use a gradient from min to max",
+					"content": {
+						"minColor": {
+							"name": "Color for minimum value"
+						},
+						"maxColor": {
+							"name": "Color for maximum value"
+						}
+					}
+				}
+			}
+		}
+	}
 }

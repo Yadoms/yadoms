@@ -21,15 +21,11 @@
    },
    "configurationSchema": {
       "text" : {
-         "name" : "text to display",
-         "description" : "This text is displayed onto the widget",
          "type" : "string",
          "defaultValue" : "",
          "required" : "false"
       },
       "device" : {
-         "name" : "Data to display",
-         "description" : "Select the data that you want to display",
          "type" : "device",
          "expectedCapacity" : ["voltage", "energy","current","power","apparentpower","weight","pressure"],
          "expectedKeywordAccess" : "get"

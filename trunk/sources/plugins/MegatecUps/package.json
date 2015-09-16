@@ -1,7 +1,5 @@
 {
 	"type": "megatecUps",
-	"name": "megatec Ups",
-	"description": "Megatec UPS support",
 	"version": "0.1",
 	"releaseType": "beta",
 	"author": "Sébastien Gallou",
@@ -11,8 +9,6 @@
 	"configurationSchema": {
 		"SerialPort": {
 			"type": "enum",
-			"name": "Serial port",
-			"description": "The (virtual) serial port connected to the UPS",
 			"values": {
 				"__Binding__": {
 					"type": "system",
@@ -22,19 +18,13 @@
 		},
 		"UpsBeep": {
 			"type": "bool",
-			"name": "UPS beep",
-			"description": "Use this option to enable/disable UPS alarm when AC power is lost",
 			"defaultValue": "true"
 		},
 		"UpsShutdownTimers": {
 			"type": "section",
-			"name": "Shut down and restore delays",
-			"description": "Yadoms sends these timers to UPS at shut down command, to manage how the UPS output is power-cut or power-restored",
 			"content": {
 				"ShutdownDelay": {
 					"type": "decimal",
-					"name": "Shut down delay (minutes)",
-					"description": "After receiving command from Yadoms, UPS will wait this delay before shutting down its output. It's useful to let system stop properly.",
 					"defaultValue": ".3",
 					"minimumValue": ".2",
 					"maximumValue": "9",
@@ -42,8 +32,6 @@
 				},
 				"RestoreDelay": {
 					"type": "int",
-					"name": "Restore delay (minutes)",
-					"description": "After AC power is recovered, UPS will wait for this delay before to restore power at output.",
 					"defaultValue": "1",
 					"minimumValue": "1",
 					"maximumValue": "9999"

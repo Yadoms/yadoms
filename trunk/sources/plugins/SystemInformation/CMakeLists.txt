@@ -150,6 +150,6 @@ PLUGIN_LINK   (SystemInformation ${SYSTEMINFORMATION_PLUGIN_ADDITIONAL_LIB})
 #########################################
 PLUGIN_POST_BUILD_COPY_FILE(SystemInformation package.json)
 PLUGIN_POST_BUILD_COPY_FILE(SystemInformation icon.png)
-PLUGIN_POST_BUILD_COPY_FILE(SystemInformation locales/fr.json)
+PLUGIN_POST_BUILD_COPY_DIRECTORY(SystemInformation locales)
 
 endif()

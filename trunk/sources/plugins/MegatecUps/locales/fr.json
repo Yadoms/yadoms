@@ -1,5 +1,6 @@
 ﻿{
-	"description": "Support des onduleurs communiquant en protocole Megatec",
+	"name": "Megatec Ups",
+	"description": "Onduleurs communiquant en protocole Megatec",
 	"configurationSchema": {
 		"SerialPort": {
 			"name": "Port série",

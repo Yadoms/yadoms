@@ -1,10 +1,18 @@
 {
-   "name": "Condition Météo",
-   "description": "Ce widget permet d'afficher les conditions météorologiques actuelles",
-   "configurationSchema" : {
-      "device" : {
-         "name" : "Condition Météo",
-         "description" : "Conditions Météorologiques actuelles"
-      }
-   }
+	"name": "Conditions Météo",
+	"description": "Ce widget permet d'afficher les conditions météorologiques actuelles",
+	"configurationSchema": {
+		"device": {
+			"name": "Conditions Météo",
+			"description": "Conditions Météorologiques actuelles"
+		},
+		"DateFormat": {
+			"name": "Date Format",
+			"description": "Choose the date format of the widget",
+			"values": {
+				"DateFormat1": "Short date. Ex: Monday 15",
+				"DateFormat2": "Long date. Ex: June 15, 2015"
+			}
+		}
+	}
 }

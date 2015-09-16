@@ -148,4 +148,4 @@ PLUGIN_LINK(RfxLanXpl ${RFXLANXPL_PLUGIN_ADDITIONAL_LIB})
 #########################################
 PLUGIN_POST_BUILD_COPY_FILE(RfxLanXpl package.json)
 PLUGIN_POST_BUILD_COPY_FILE(RfxLanXpl icon.png)
-PLUGIN_POST_BUILD_COPY_FILE(RfxLanXpl locales/fr.json)
+PLUGIN_POST_BUILD_COPY_DIRECTORY(RfxLanXpl locales)

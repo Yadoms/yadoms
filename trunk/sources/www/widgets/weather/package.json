@@ -1,40 +1,36 @@
 {
-   "type": "weather",
-   "version": "0.1",
-   "author": "yadoms team",
-   "url" : "http://www.yadoms.com/wiki/widgets/weather.html",
-   "credits": "",
-   "dimensions": {
-      "min": {
-         "x": 2,
-         "y": 1
-      },
-      "max": {
-         "x": 3,
-         "y": 2
-      },
-      "default": {
-         "x": 2,
-         "y": 1
-      }
-   },
-   "configurationSchema": {
-      "device" : {
-         "name" : "weather",
-         "description" : "The live conditions of the weather",
-         "type" : "device",
-         "expectedCapacity" : ["Condition"],
-         "expectedKeywordAccess" : "get"
-      },
-	"DateFormat": {
-	  "name": "Date Format",
-	  "description": "Choose the date format of the widget",
-	  "type": "enum",
-	  "values": {
-		"DateFormat1": "Short date. Ex: Monday 15",
-		"DateFormat2": "Long date. Ex: June 15, 2015"
-	  },
-	  "defaultValue": "DateFormat1"
+	"type": "weather",
+	"version": "0.1",
+	"author": "yadoms team",
+	"url": "http://www.yadoms.com/wiki/widgets/weather.html",
+	"credits": "",
+	"dimensions": {
+		"min": {
+			"x": 2,
+			"y": 1
+		},
+		"max": {
+			"x": 3,
+			"y": 2
+		},
+		"default": {
+			"x": 2,
+			"y": 1
+		}
+	},
+	"configurationSchema": {
+		"device": {
+			"type": "device",
+			"expectedCapacity": ["Condition"],
+			"expectedKeywordAccess": "get"
+		},
+		"DateFormat": {
+			"type": "enum",
+			"values": {
+				"DateFormat1": "",
+				"DateFormat2": ""
+			},
+			"defaultValue": "DateFormat1"
+		}
 	}
-   }
 }

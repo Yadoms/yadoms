@@ -1,4 +1,18 @@
 {
-    "name": "weather",
-    "description": "This widget display the live weather"
+	"name": "Weather",
+	"description": "This widget display the live weather",
+	"configurationSchema": {
+		"device": {
+			"name": "Weather",
+			"description": "The live conditions of the weather"
+		},
+		"DateFormat": {
+			"name": "Date Format",
+			"description": "Choose the date format of the widget",
+			"values": {
+				"DateFormat1": "Short date. Ex: Monday 15",
+				"DateFormat2": "Long date. Ex: June 15, 2015"
+			}
+		}
+	}
 }

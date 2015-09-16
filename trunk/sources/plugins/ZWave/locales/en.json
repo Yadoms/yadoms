@@ -1,0 +1,10 @@
+{
+	"name": "Z-Wave",
+	"description": "Plugin which handle Z-Wave protocol.",
+	"configurationSchema": {
+		"Serial Port": {
+			"name": "Serial port",
+			"description": "The serial port connected to the ZWave controller (stick,...)"
+		}
+	}
+}

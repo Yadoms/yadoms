@@ -1,61 +1,51 @@
 {
-   "type": "thermometer",
-   "version": "0.1",
-   "releaseType": "beta",
-   "author": "yadoms team",
-   "url" : "http://www.yadoms.com/wiki/widgets/thermometer.html",
-   "credits": "",
-   "dimensions": {
-      "min": {
-         "x": 1,
-         "y": 1
-      },
-      "max": {
-         "x": 2,
-         "y": 3
-      },
-      "default": {
-         "x": 1,
-         "y": 1
-      }
-   },
-   "configurationSchema": {
-      "text" : {
-         "name" : "text to display",
-         "description" : "This text is displayed onto the widget",
-         "type" : "string",
-         "defaultValue" : "",
-         "required" : "false"
-      },
-      "device" : {
-         "name" : "Data to display",
-         "description" : "Select the data that you want to display",
-         "type" : "device",
-         "expectedCapacity" : ["temperature"],
-         "expectedKeywordAccess" : "get"
-      },
-      "customYAxisMinMax" : {
-         "type" : "section",
-         "name" : "Manually set min and max of the thermometer",
-         "description" : "Enabling this section allow you to set the min and max of the thermometer. If it is not activated min and max will be set to -40°C and 50°C",
-         "enableWithCheckBox" : "true",
-         "enableWithCheckBoxDefaultValue" : "false",
-         "content" : {
-            "maximumValue" : {
-               "type" : "decimal",
-               "name" : "Maximum temperature value",
-               "description" : "Set the maximum temperature value",
-               "defaultValue" : "50.0",
-               "precision" : "1"
-            },
-            "minimumValue" : {
-               "type" : "decimal",
-               "name" : "Minimum temperature value",
-               "description" : "Set the minimum temperature value",
-               "defaultValue" : "-40.0",
-               "precision" : "1"
-            }
-         }
-      }	  
-   }
+	"type": "thermometer",
+	"version": "0.1",
+	"releaseType": "beta",
+	"author": "yadoms team",
+	"url": "http://www.yadoms.com/wiki/widgets/thermometer.html",
+	"credits": "",
+	"dimensions": {
+		"min": {
+			"x": 1,
+			"y": 1
+		},
+		"max": {
+			"x": 2,
+			"y": 3
+		},
+		"default": {
+			"x": 1,
+			"y": 1
+		}
+	},
+	"configurationSchema": {
+		"text": {
+			"type": "string",
+			"defaultValue": "",
+			"required": "false"
+		},
+		"device": {
+			"type": "device",
+			"expectedCapacity": ["temperature"],
+			"expectedKeywordAccess": "get"
+		},
+		"customYAxisMinMax": {
+			"type": "section",
+			"enableWithCheckBox": "true",
+			"enableWithCheckBoxDefaultValue": "false",
+			"content": {
+				"maximumValue": {
+					"type": "decimal",
+					"defaultValue": "50.0",
+					"precision": "1"
+				},
+				"minimumValue": {
+					"type": "decimal",
+					"defaultValue": "-40.0",
+					"precision": "1"
+				}
+			}
+		}
+	}
 }

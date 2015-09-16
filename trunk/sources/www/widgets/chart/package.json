@@ -1,121 +1,100 @@
 {
-   "type": "chart",
-   "version": "0.1",
-   "releaseType": "beta",
-   "author": "yadoms team",
-   "url" : "http://www.yadoms.com/wiki/widgets/chart.html",
-   "credits": "",
-   "dimensions": {
-      "min": {
-         "x": 3,
-         "y": 1
-      },
-      "max": {
-         "x": 9,
-         "y": 4
-      },
-      "default": {
-         "x": 3,
-         "y": 2
-      }
-   },
-   "configurationSchema": {
-      "chartTitle" : {
-         "name" : "Title of the chart",
-         "description" : "This text field represent the title of the chart displayed on the page.",
-         "type" : "string",
-         "defaultValue" : "",
-         "required" : "false"
-      },
-      "interval" : {
-         "name" : "Default interval of the chart",
-         "description" : "Permit to change the first displayed interval of the chart",
-         "type" : "enum",
-         "values" : {
-            "HOUR" : "1 hour",
-            "DAY" : "1 day",
-            "WEEK" : "1 week",
-            "MONTH" : "1 month",
-            "HALF_YEAR" : "6 months",
-            "YEAR" : "1 year"
-         },
-         "defaultValue" : "DAY"
-      },	  
-	   "oneAxis" : {
-		  "type" : "bool",
-		  "name" : "Only one axis for all series",
-		  "description" : "It allows you to create one axis for all series, with this option, series could be compare with the same scale.",
-		  "defaultValue" : "false"
-	   },	  
-      "customYAxisMinMax" : {
-         "type" : "section",
-         "name" : "Manually set min and max of y axis",
-         "description" : "Enabling this section allow you to set the min and max of your chart. If it is not activated min and max will be computed automatically. This section is active only when the option unique axis is selected",
-         "enableWithCheckBox" : "true",
-         "enableWithCheckBoxDefaultValue" : "false",
-         "content" : {
-            "maximumValue" : {
-               "type" : "decimal",
-               "name" : "Maximum Y axis value",
-               "description" : "Set the maximum Y Axis value",
-               "defaultValue" : "0.0",
-               "precision" : "1"
-            },
-            "minimumValue" : {
-               "type" : "decimal",
-               "name" : "Minimum Y axis value",
-               "description" : "Set the minimum Y Axis value",
-               "defaultValue" : "0.0",
-               "precision" : "1"
-            }
-         }
-      },
-      "devices" : {
-         "type" : "list",
-         "name" : "Devices",
-         "description" : "List of plotted devices",
-         "nbItemsMin" : "1",
-         "nbItemsMax" : "3",
-         "allowDuplication" : "true",
-         "item" : {
-            "type" : "section",
-            "name" : "Plot",
-            "description" : "This section describe the configuration of a plot",
-            "content" : {
-               "source" : {
-                  "name" : "Data to display",
-                  "description" : "Choose the data of a device to display on the chart",
-                  "type" : "device",
-                  "expectedKeywordType" : ["numeric","bool"],
-                  "expectedKeywordAccess" : "get"
-               },
-               "color" : {
-                  "name" : "Color of the plot",
-                  "description" : "Permit to change the color of the plot",
-                  "type" : "color",
-                  "defaultValue" : "#0000FF"
-               },
-				"PlotType": {
-				  "name": "Plot Type",
-				  "description": "choose beetween following plot type",
-				  "type": "enum",
-				  "values": {
-					"line": "Line",
-					"bar": "Bar",
-					"arearange": "Line & Range"
-				  },
-				  "defaultValue": "line"
+	"type": "chart",
+	"version": "0.1",
+	"releaseType": "beta",
+	"author": "yadoms team",
+	"url": "http://www.yadoms.com/wiki/widgets/chart.html",
+	"credits": "",
+	"dimensions": {
+		"min": {
+			"x": 3,
+			"y": 1
+		},
+		"max": {
+			"x": 9,
+			"y": 4
+		},
+		"default": {
+			"x": 3,
+			"y": 2
+		}
+	},
+	"configurationSchema": {
+		"chartTitle": {
+			"type": "string",
+			"defaultValue": "",
+			"required": "false"
+		},
+		"interval": {
+			"type": "enum",
+			"values": {
+				"HOUR": "",
+				"DAY": "",
+				"WEEK": "",
+				"MONTH": "",
+				"HALF_YEAR": "",
+				"YEAR": ""
+			},
+			"defaultValue": "DAY"
+		},
+		"oneAxis": {
+			"type": "bool",
+			"defaultValue": "false"
+		},
+		"customYAxisMinMax": {
+			"type": "section",
+			"enableWithCheckBox": "true",
+			"enableWithCheckBoxDefaultValue": "false",
+			"content": {
+				"maximumValue": {
+					"type": "decimal",
+					"defaultValue": "0.0",
+					"precision": "1"
+				},
+				"minimumValue": {
+					"type": "decimal",
+					"defaultValue": "0.0",
+					"precision": "1"
 				}
-            }
-         }
-      }
-   },
-   "navigator" : {
-      "hour" : "1h",
-      "day" : "1d",
-      "week" : "1w",
-      "month" : "1m",
-      "half_month" : "6m",
-      "year" : "1y"
-   }
+			}
+		},
+		"devices": {
+			"type": "list",
+			"nbItemsMin": "1",
+			"nbItemsMax": "3",
+			"allowDuplication": "true",
+			"item": {
+				"type": "section",
+				"content": {
+					"source": {
+						"type": "device",
+						"expectedKeywordType": ["numeric",
+						"bool"],
+						"expectedKeywordAccess": "get"
+					},
+					"color": {
+						"type": "color",
+						"defaultValue": "#0000FF"
+					},
+					"PlotType": {
+						"type": "enum",
+						"values": {
+							"line": "",
+							"bar": "",
+							"arearange": ""
+						},
+						"defaultValue": "line"
+					}
+				}
+			}
+		}
+	},
+	"navigator": {
+		"hour": "",
+		"day": "",
+		"week": "",
+		"month": "",
+		"half_month": "",
+		"year": ""
+	}
 }

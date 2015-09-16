@@ -1,11 +1,19 @@
 {
-   "name": "voyant",
-   "description": "Ce widget permet d'afficher l'état d'elements commandables",
-   "configurationSchema" : {
-      "device" : {
-         "name" : "Périphérique interrupteur",
-         "description" : "Périphérique à afficher"
-      }
-   },
-   "errorDuringGettingDeviceInformation" : "Erreur pendant la recupération d'informations sur le device"
+	"name": "Voyant",
+	"description": "Ce widget permet d'afficher l'état des équipements commandables",
+	"errorDuringGettingDeviceInformation": "Erreur lors de la récupération des informations de l'équipement",
+	"configurationSchema": {
+		"device": {
+			"name": "Périphérique interrupteur",
+			"description": "Périphérique à afficher"
+		},
+		"showDeviceName": {
+			"name": "Affichage du nom du device",
+			"description": "Activation de l'affichage du nom du device"
+		},
+		"icon": {
+			"name": "Icône du voyant",
+			"description": "Sélectionner la représentation du voyant à afficher"
+		}
+	}
 }

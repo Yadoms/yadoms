@@ -1,5 +1,19 @@
 {
-    "name": "indicator",
-    "description": "This widget display status of controllable element",
-    "errorDuringGettingDeviceInformation" : "Error during getting device information"
+	"name": "Indicator",
+	"description": "This widget display status of controllable element",
+	"errorDuringGettingDeviceInformation": "Error during getting device information",
+	"configurationSchema": {
+		"device": {
+			"name": "Switch device",
+			"description": "Device to show"
+		},
+		"showDeviceName": {
+			"name": "Show device name",
+			"description": "Determine if you want to see the device name on the widget"
+		},
+		"icon": {
+			"name": "Icon of the indicator",
+			"description": "Choose the icon to display inside the indicator"
+		}
+	}
 }
