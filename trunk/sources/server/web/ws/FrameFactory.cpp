@@ -23,15 +23,15 @@ namespace web { namespace ws {
       }
       catch (shared::exception::CInvalidParameter&)
       {
-         YADOMS_LOG(warning) << "Fail to parse JSON : " << frameAsString;
+         YADOMS_LOG(debug) << "Fail to parse JSON : " << frameAsString;
       }
       catch (shared::exception::COutOfRange&)
       {
-         YADOMS_LOG(warning) << "Fail to parse frame. Unknown type : " << frameAsString;
+         YADOMS_LOG(debug) << "Fail to parse frame. Unknown type : " << frameAsString;
       }
       catch (std::exception&)
       {
-         YADOMS_LOG(warning) << "Fail to parse frame (unkown error) : " << frameAsString;
+         YADOMS_LOG(debug) << "Fail to parse frame (unkown error) : " << frameAsString;
       }
 
       //if something fail return null

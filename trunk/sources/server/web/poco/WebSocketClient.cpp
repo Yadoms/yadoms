@@ -42,21 +42,23 @@ namespace web { namespace poco {
 
                YADOMS_LOG(information) << "Websocket receive data : " << bufferString;
 
-               YADOMS_LOG(information) << "Try parse";
                boost::shared_ptr<ws::CFrameBase> parsedFrame = ws::CFrameFactory::tryParse(bufferString);
-               YADOMS_LOG(information) << "end parse";
                if (parsedFrame)
                {
-                  YADOMS_LOG(information) << "Parse : " << parsedFrame->serialize();
-                  YADOMS_LOG(information) << "Type : " << parsedFrame->getType();
                   m_eventHandler.postEvent(m_eventId, parsedFrame);
+               }
+               else
+               {
+                  //log as Debug because : user actions in browser may 'kill' websockets connections and provide bad json data (refresh, close page,....)
+                  YADOMS_LOG(debug) << "Fail to parse received data.";
                }
             }
          }
       }
       catch (Poco::Net::WebSocketException& exc)
       {
-         YADOMS_LOG(error) << "Websocket request handler Poco::Net::WebSocketException";
+         //log as Debug because : user actions in browser may 'kill' websockets connections (refresh, close page,....)
+         YADOMS_LOG(debug) << "Websocket request handler Poco::Net::WebSocketException"; 
          switch (exc.code())
          {
          case Poco::Net::WebSocket::WS_ERR_HANDSHAKE_UNSUPPORTED_VERSION:
@@ -71,27 +73,33 @@ namespace web { namespace poco {
       }
       catch (Poco::TimeoutException& exc)
       {
-         YADOMS_LOG(warning) << "Websocket request handler Poco::TimeoutException : " << exc.displayText();
+         //log as Debug because : user actions in browser may 'kill' websockets connections (refresh, close page,....)
+         YADOMS_LOG(debug) << "Websocket request handler Poco::TimeoutException : " << exc.displayText();
       }
       catch (Poco::Net::NetException& exc)
       {
-         YADOMS_LOG(warning) << "Websocket request handler Poco::NetException : " << exc.displayText();
+         //log as Debug because : user actions in browser may 'kill' websockets connections (refresh, close page,....)
+         YADOMS_LOG(debug) << "Websocket request handler Poco::NetException : " << exc.displayText();
       }  
       catch (Poco::IOException& exc)
       {
-         YADOMS_LOG(warning) << "Websocket request handler Poco::IOException : " << exc.displayText();
+         //log as Debug because : user actions in browser may 'kill' websockets connections (refresh, close page,....)
+         YADOMS_LOG(debug) << "Websocket request handler Poco::IOException : " << exc.displayText();
       }    
       catch (Poco::Exception& exc)
       {
-         YADOMS_LOG(warning) << "Websocket request handler Poco::Exception : " << exc.displayText();
+         //log as Debug because : user actions in browser may 'kill' websockets connections (refresh, close page,....)
+         YADOMS_LOG(debug) << "Websocket request handler Poco::Exception : " << exc.displayText();
       }
       catch (shared::exception::CException & ex)
       {
-         YADOMS_LOG(warning) << "Websocket request handler exception : " << ex.what();
+         //log as Debug because : user actions in browser may 'kill' websockets connections (refresh, close page,....)
+         YADOMS_LOG(debug) << "Websocket request handler exception : " << ex.what();
       }
       catch (...)
       {
-         YADOMS_LOG(error) << "Websocket request handler unknown exception";
+         //log as Debug because : user actions in browser may 'kill' websockets connections (refresh, close page,....)
+         YADOMS_LOG(debug) << "Websocket request handler unknown exception";
       }
    }
 
