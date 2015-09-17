@@ -20,6 +20,12 @@ CPython::~CPython()
 {
 }
 
+std::string CPython::type() const
+{
+   static const std::string interpreterName("python");
+   return interpreterName;
+}
+
 std::string CPython::name() const
 {
    static const std::string interpreterName("Python");

@@ -150,6 +150,7 @@
       updateReleaseType();
       fillPluginList();
       fillWidgetList();
+      fillScriptInterpreterList();
    }
 
    /**
@@ -196,6 +197,19 @@
       });
    }
 
+   /**
+    * This function fill the script interpreter list from the server elements
+    */
+   function fillScriptInterpreterList() {
+      //we launch requests
+      var objectType = "script-interpreter";
+      //we save the information that the load of objectType is in progress
+      loadingFinished[objectType] = false;
+      AutomationInterpreterManager.getAllDetailed(function(interpreters) {
+         debugger;
+         buildList(objectType, interpreters);
+      });
+   }
    /**
     * Create the list from the localList
     */

@@ -52,3 +52,33 @@ AutomationInterpreterManager.getAll = function (callback, sync) {
       })
    .fail(function() { notifyError($.t("objects.generic.errorGetting", {objectName : "interpreters"})); });
 };
+
+
+/**
+ * Get all interpreters from database and package.json
+ * @param callback
+ * @param sync : true if function must be blocking (synchronous)
+ */
+AutomationInterpreterManager.getAllDetailed = function (callback, sync) {
+   assert($.isFunction(callback), "callback must be a function");
+
+   AutomationInterpreterManager.getAll(function(interpreterNames) {
+      //for each name we get the package.json file and append it to the associative array
+      var interpreters = {};
+      interpreterNames.forEach(function(value, index) {
+         //this thread will ask for synchronous package.json requests
+         $.ajax({
+            dataType: "json",
+            url: "scriptInterpreters/" + value + "/package.json",
+            async: false
+         })
+          .done(function( data ) {
+                interpreters[value] = data;
+          })
+          .fail(function() {
+             notifyError($.t("objects.generic.errorGetting", {objectName : "scriptInterpreters/" + value + "/package.json"}));
+          });
+      });
+      callback(interpreters);
+   }, sync);
+};
