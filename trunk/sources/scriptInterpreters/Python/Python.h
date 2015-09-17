@@ -21,6 +21,7 @@ public:
 
    // IInterpreter implementation
    virtual std::string name() const;
+   virtual std::string type() const;
    virtual bool isAvailable() const;
    virtual std::string loadScriptContent(const std::string& scriptPath) const;
    virtual void saveScriptContent(const std::string& scriptPath, const std::string& content) const;

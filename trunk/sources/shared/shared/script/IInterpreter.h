@@ -16,6 +16,11 @@ namespace shared { namespace script
       virtual ~IInterpreter() {}
 
       //-----------------------------------------------------
+      ///\brief                  Get interpreter type ("python", "tcl", etc...)
+      //-----------------------------------------------------
+      virtual std::string type() const = 0;
+
+      //-----------------------------------------------------
       ///\brief                  Get interpreter user-friendly name ("Python", "Tcl", etc...)
       //-----------------------------------------------------
       virtual std::string name() const = 0;
