@@ -44,8 +44,7 @@ void CVirtualProcessMemory::read()
    
    long VirtualProcessMemory = pmc.PrivateUsage / 1000;
 
-   if (m_keyword->get() != VirtualProcessMemory )
-      m_keyword->set( VirtualProcessMemory );
+   m_keyword->set( VirtualProcessMemory );
 
    YADOMS_LOG(debug) << "Virtual Memory for Current Process : " << m_keyword->formatValue();
 }
