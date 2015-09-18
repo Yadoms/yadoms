@@ -63,10 +63,18 @@ function SectionParameterHandler(i18nContext, paramName, content, currentValue, 
    if (!isNullOrUndefined(content.content)) {
       $.each(content.content, function (key, value) {
          var v = undefined;
+		 var newI18nContext = undefined;
+		 
          if ((self.configurationValues !== undefined) && (self.configurationValues != null) && (self.configurationValues.content != null) && (self.configurationValues.content != undefined))
             v = self.configurationValues.content[key];
 
-         var newI18nContext = i18nContext + self.paramName + ".content.";
+		if (!isNullOrUndefined(self.paramName)){
+           newI18nContext = i18nContext + self.paramName + ".content.";
+		}
+		else{
+		   newI18nContext = i18nContext + "content.";
+		}
+		 
          var handler = ConfigurationHelper.createParameterHandler(newI18nContext, key, value, v);
          if (!isNullOrUndefined(handler))
             self.configurationHandlers.push(handler);
@@ -98,21 +106,37 @@ SectionParameterHandler.prototype.getDOMObject = function () {
          input +=                "checked ";
       input +=             ">";
    }
-
-   input +=                "<span data-i18n=\"" + this.i18nContext + this.paramName + ".name\" >" +
-                              this.name +
-                           "</span>";
-
+   
+   if (!isNullOrUndefined(this.paramName)){
+	   input +=                "<span data-i18n=\"" + this.i18nContext + this.paramName + ".name\" >" +
+								  this.name +
+							   "</span>";
+   }
+   else{
+	   input +=                "<span data-i18n=\"" + this.i18nContext + "name\" >" +
+								  this.name +
+							   "</span>";
+   }
    //if it's included in a radioSection or in a checkbox section
    if ((this.enableWithCheckBox) || (this.radioButtonSectionName)) {
       input +=          "</label>" +
                      "</div>";
    }
-   input +=       "</div>" +
-                  "<div class=\"configuration-description\" data-i18n=\"" + this.i18nContext + this.paramName + ".description\" >" +
-                     this.description +
-                  "</div>" +
-                  "<div id=\"" + this.uuid + "\" ";
+   
+   if (!isNullOrUndefined(this.paramName)){
+	   input +=       "</div>" +
+					  "<div class=\"configuration-description\" data-i18n=\"" + this.i18nContext + this.paramName + ".description\" >" +
+						 this.description +
+					  "</div>" +
+					  "<div id=\"" + this.uuid + "\" ";
+   }
+   else{
+	   input +=       "</div>" +
+					  "<div class=\"configuration-description\" data-i18n=\"" + this.i18nContext + "description\" >" +
+						 this.description +
+					  "</div>" +
+					  "<div id=\"" + this.uuid + "\" ";	   
+   }
 
    //if checkbox is unchecked or the radio button is unselected
    if (((this.enableWithCheckBox) && (!this.cbValue)) || ((this.radioSectionActive !== undefined) && (!this.radioSectionActive))) {
