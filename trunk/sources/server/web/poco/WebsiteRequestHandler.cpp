@@ -8,10 +8,12 @@
 
 namespace web { namespace poco {
 
-      CWebsiteRequestHandler::CWebsiteRequestHandler(const std::string & documentRoot)
+      CWebsiteRequestHandler::CWebsiteRequestHandler(const std::string & documentRoot, const std::map<std::string, std::string> & alias)
          :m_documentRoot(documentRoot)
       {
-
+         std::map<std::string, std::string>::const_iterator i;
+         for (i = alias.begin(); i != alias.end(); ++i)
+            configureAlias(i->first, i->second);
       }
 
       CWebsiteRequestHandler::~CWebsiteRequestHandler()

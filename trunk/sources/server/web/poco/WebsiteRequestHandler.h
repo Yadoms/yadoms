@@ -14,8 +14,9 @@ namespace web { namespace poco {
       //-------------------------------------
       ///\brief Constructor
       ///\param [in]    documentRoot   The path to website files
+      ///\param [in]    alias          The map of alias <alias, path>
       //-------------------------------------
-      CWebsiteRequestHandler(const std::string & documentRoot);
+      CWebsiteRequestHandler(const std::string & documentRoot, const std::map<std::string, std::string> & alias);
 
       //-------------------------------------
       ///\brief Destructor
