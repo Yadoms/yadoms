@@ -41,8 +41,12 @@ void CRAMProcessMemory::read()
       Message << GetLastError();
       throw shared::exception::CException ( Message.str() );
    }
+
+   long RAMProcessMemory = pmc.WorkingSetSize / 1000;
    
-   m_keyword->set( pmc.WorkingSetSize / 1000 );
+   if (m_keyword->get() != RAMProcessMemory )
+      m_keyword->set( RAMProcessMemory );
+
    YADOMS_LOG(debug) << "RAM Memory Current Process : " << m_keyword->formatValue();
 }
 

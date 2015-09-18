@@ -42,7 +42,11 @@ void CMemoryLoad::read()
       throw shared::exception::CException ( Message.str() );
    }
 
-   m_keyword->set((float(statex.ullTotalPhys - statex.ullAvailPhys)*100 / statex.ullTotalPhys));
+   float MemoryLoad = (float) floor((float(statex.ullTotalPhys - statex.ullAvailPhys)*100 / statex.ullTotalPhys)*10) /10;
+
+   if (m_keyword->get() != MemoryLoad )
+      m_keyword->set( MemoryLoad );
+
    YADOMS_LOG(debug) << "Memory Load : " << m_keyword->formatValue();
 }
 

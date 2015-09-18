@@ -35,6 +35,7 @@ CSystemFactory::CSystemFactory(boost::shared_ptr<yApi::IYPluginApi> context, con
          std::string diskKeywordName = disksListIterator->substr(0, 1) + "_DiskUsage";
          CDiskUsage DiskUsage(device, diskKeywordName, *disksListIterator);
          DiskUsageList.push_back(DiskUsage);
+
          if (!context->keywordExists(device, diskKeywordName))
             DiskUsage.declareKeywords(context);
       }
@@ -58,12 +59,6 @@ void CSystemFactory::OnSpeedUpdate ( boost::shared_ptr<yApi::IYPluginApi> contex
     KeywordList.push_back (m_CPULoad.GetHistorizable());
     KeywordList.push_back (m_YadomsCPULoad.GetHistorizable());
 
-    if (configuration.IsAdvancedEnabled())
-    {
-       KeywordList.push_back (m_RAMProcessMemory.GetHistorizable());
-       KeywordList.push_back (m_VirtualProcessMemory.GetHistorizable());
-    }
-
     context->historizeData(m_PluginName, KeywordList);
 }
  
@@ -77,10 +72,16 @@ void CSystemFactory::OnSlowUpdate ( boost::shared_ptr<yApi::IYPluginApi> context
 
     KeywordList.push_back ( m_MemoryLoad.GetHistorizable() );
 
+    if (configuration.IsAdvancedEnabled())
+    {
+       KeywordList.push_back (m_RAMProcessMemory.GetHistorizable());
+       KeywordList.push_back (m_VirtualProcessMemory.GetHistorizable());
+    }
+
     for(std::vector<CDiskUsage>::iterator disksListIterator=DiskUsageList.begin(); disksListIterator!=DiskUsageList.end(); ++disksListIterator)
     {
         disksListIterator->read();
-	KeywordList.push_back ( disksListIterator->GetHistorizable() );
+	    KeywordList.push_back ( disksListIterator->GetHistorizable() );
     }
 
     context->historizeData(m_PluginName, KeywordList);
