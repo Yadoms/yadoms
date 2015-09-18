@@ -46,7 +46,7 @@ function ListParameterHandler(i18nContext, paramName, content, currentValue) {
       $.each(self.configurationValues, function (key, value) {
 
          var newI18nContext = i18nContext + self.paramName + ".item.";
-         var item = ConfigurationHelper.createParameterHandler(newI18nContext, self.paramName, self.content.item, value);
+         var item = ConfigurationHelper.createParameterHandler(newI18nContext, null/*self.paramName*/, self.content.item, value);
          self.items.push(item);
       });
    }
@@ -143,7 +143,7 @@ ListParameterHandler.prototype.applyScript = function () {
 
    $("button#" + self.addBtnUuid).unbind("click").bind("click", function() {
       var newI18nContext = self.i18nContext + self.paramName + ".item.";
-      var item = ConfigurationHelper.createParameterHandler(newI18nContext, self.paramName, self.content.item, "");
+      var item = ConfigurationHelper.createParameterHandler(newI18nContext, null, self.content.item, "");
       self.items.push(item);
       var itemLine = self.createItemLine(item);
       $("div#" + self.uuid).find("div.list-item-container").append(itemLine);
@@ -203,7 +203,7 @@ ListParameterHandler.prototype.duplicateLine = function() {
       var confToDuplicate = self.items[i].getCurrentConfiguration();
 
       var newI18nContext = self.i18nContext + self.paramName + ".item.";
-      var item = ConfigurationHelper.createParameterHandler(newI18nContext, self.paramName, self.content.item, confToDuplicate);
+      var item = ConfigurationHelper.createParameterHandler(newI18nContext, null, self.content.item, confToDuplicate);
 
       //we insert item in the right place
       self.items.insert(i+1, item);
