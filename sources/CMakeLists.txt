@@ -97,7 +97,7 @@ set(BOOST_LIBS
 )
 
 # search boost libs
-find_package(Boost 1.58.0 EXACT REQUIRED COMPONENTS ${BOOST_LIBS} )
+find_package(Boost 1.59.0 EXACT REQUIRED COMPONENTS ${BOOST_LIBS} )
 set(BOOST_INCL_DIR ${Boost_INCLUDE_DIR} ${BOOST_ROOT})
 
 
@@ -654,7 +654,9 @@ IF(USE_POCO_WEBSERVER)
 		server/web/poco/AuthenticationRequestHandler.h
 		server/web/poco/AuthenticationRequestHandler.cpp
 		server/web/poco/HttpRequestHandlerFactory.h
-		server/web/poco/HttpRequestHandlerFactory.cpp
+		server/web/poco/HttpRequestHandlerFactory.cpp	
+      server/web/poco/HttpRequestHandlerContainer.h
+		server/web/poco/HttpRequestHandlerContainer.cpp
 		server/web/poco/RestRequestHandler.h
 		server/web/poco/RestRequestHandler.cpp
 		server/web/poco/WebsiteRequestHandler.h
