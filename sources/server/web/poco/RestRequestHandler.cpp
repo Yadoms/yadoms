@@ -7,9 +7,13 @@
 namespace web {
    namespace poco {
 
-      CRestRequestHandler::CRestRequestHandler(const std::string & restBaseKeyword)
+      CRestRequestHandler::CRestRequestHandler(const std::string & restBaseKeyword, const std::vector< boost::shared_ptr<rest::service::IRestService> > & services)
          :m_restBaseKeyword(restBaseKeyword)
       {
+         std::vector< boost::shared_ptr<rest::service::IRestService> >::const_iterator i;
+         for (i = services.begin(); i != services.end(); ++i)
+            registerRestService(*i);
+         initialize();
       }
 
       CRestRequestHandler::~CRestRequestHandler()
