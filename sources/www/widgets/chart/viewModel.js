@@ -36,7 +36,6 @@ YadomsPromise.prototype.resolve = function( index ) {
  
    if ( temp  == self.flags.length )
    {
-	  console.log ("this inside", this);
 	  this.callback( self.param );
    }
 };
@@ -218,22 +217,22 @@ widgetViewModelCtor =
 			switch (index)
 			{
 				case 0:
-				   $(btn)[0].innerText = $.t(self.widget.package.navigator.hour);
+				   $(btn).css ("data-i18n", "navigator.hour");
 				   break;
 				case 1:
-				   $(btn)[0].innerText = $.t(self.widget.package.navigator.day);
+				   $(btn).css ("data-i18n", "navigator.day");
 				   break;
 				case 2:
-				   $(btn)[0].innerText = $.t(self.widget.package.navigator.week);
+				   $(btn).css ("data-i18n", "navigator.week");
 				   break;
 				case 3:
-				   $(btn)[0].innerText = $.t(self.widget.package.navigator.month);
+				   $(btn).css ("data-i18n", "navigator.month");
 				   break;
 				case 4:
-				   $(btn)[0].innerText = $.t(self.widget.package.navigator.half_month);
+				   $(btn).css ("data-i18n", "navigator.half_month");
 				   break;
 				case 5:
-				   $(btn)[0].innerText = $.t(self.widget.package.navigator.year);
+				   $(btn).css ("data-i18n", "navigator.year");
 				   break;
 				default:
 				   break;				   
@@ -303,8 +302,6 @@ widgetViewModelCtor =
 			  //We copy the new list
 			  self.devicesList = tempDevicesList.slice(0);
 		  }
-		  
-		  console.log ("this", this);
 		  
 		  self.ChartPromise.Initialization ( self.devicesList.length, this.refreshData.bind(this), this.widget.configuration.interval );
 		  

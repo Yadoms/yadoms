@@ -94,8 +94,7 @@ void CYadomsCPULoad::read()
 
 	  float YadomsCPULoad = (float) floor((percent * 100)*10 + 0.5) /10;
 
-	  if (m_keyword->get() != YadomsCPULoad )
-         m_keyword->set( YadomsCPULoad );
+      m_keyword->set( YadomsCPULoad );
 
       YADOMS_LOG(debug) << "Yadoms CPU Load : " << m_keyword->formatValue();
    }

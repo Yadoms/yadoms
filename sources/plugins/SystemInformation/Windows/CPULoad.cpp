@@ -188,8 +188,7 @@ void CCPULoad::read()
 
 	  float CPULoad = (float) floor(counterVal.doubleValue*10 + 0.5) /10;
 
-	  if (m_keyword->get() != CPULoad )
-         m_keyword->set( CPULoad );
+      m_keyword->set( CPULoad );
 
       YADOMS_LOG(debug) << "CPU Load : " << m_keyword->formatValue();
    }
