@@ -37,7 +37,11 @@ void CDiskUsage::read()
       throw shared::exception::CException ( Message.str() );
    }
 
-   m_keyword->set((1 - (float) FreeSpaceAvailable.QuadPart / TotalSpace.QuadPart) * 100);
+   float DiskUsage = (float) floor((1 - (float) FreeSpaceAvailable.QuadPart / TotalSpace.QuadPart) * 1000) /10;
+
+   if (m_keyword->get() != DiskUsage )
+      m_keyword->set( DiskUsage );
+
    YADOMS_LOG(debug) << m_driveName << " Disk Usage : " << m_keyword->formatValue();
 }
 

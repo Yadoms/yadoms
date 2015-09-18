@@ -42,7 +42,11 @@ void CVirtualProcessMemory::read()
       throw shared::exception::CException ( Message.str() );
    }
    
-   m_keyword->set( pmc.PrivateUsage / 1000 );
+   long VirtualProcessMemory = pmc.PrivateUsage / 1000;
+
+   if (m_keyword->get() != VirtualProcessMemory )
+      m_keyword->set( VirtualProcessMemory );
+
    YADOMS_LOG(debug) << "Virtual Memory for Current Process : " << m_keyword->formatValue();
 }
 

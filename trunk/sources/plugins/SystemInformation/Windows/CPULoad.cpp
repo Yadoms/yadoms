@@ -186,7 +186,11 @@ void CCPULoad::read()
          throw shared::exception::CException ( Message.str() );
       }
 
-      m_keyword->set((float)counterVal.doubleValue);
+	  float CPULoad = (float) floor(counterVal.doubleValue*10 + 0.5) /10;
+
+	  if (m_keyword->get() != CPULoad )
+         m_keyword->set( CPULoad );
+
       YADOMS_LOG(debug) << "CPU Load : " << m_keyword->formatValue();
    }
    else
