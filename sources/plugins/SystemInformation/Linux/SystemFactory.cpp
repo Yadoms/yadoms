@@ -56,15 +56,6 @@ void CSystemFactory::OnSpeedUpdate ( boost::shared_ptr<yApi::IYPluginApi> contex
     KeywordList.push_back (m_CPULoad.GetHistorizable());
     KeywordList.push_back (m_YadomsCPULoad.GetHistorizable());
 
-    if (configuration.IsAdvancedEnabled())
-    {
-       m_RAMProcessMemory.read();
-       m_VirtualProcessMemory.read();
-
-       KeywordList.push_back (m_RAMProcessMemory.GetHistorizable());
-       KeywordList.push_back (m_VirtualProcessMemory.GetHistorizable());
-    }
-
     context->historizeData(m_PluginName, KeywordList);
 }
  
@@ -76,6 +67,15 @@ void CSystemFactory::OnSlowUpdate ( boost::shared_ptr<yApi::IYPluginApi> context
 
     m_MemoryLoad.read();
     KeywordList.push_back ( m_MemoryLoad.GetHistorizable() );
+
+    if (configuration.IsAdvancedEnabled())
+    {
+       m_RAMProcessMemory.read();
+       m_VirtualProcessMemory.read();
+
+       KeywordList.push_back (m_RAMProcessMemory.GetHistorizable());
+       KeywordList.push_back (m_VirtualProcessMemory.GetHistorizable());
+    }
 
     for(std::vector<boost::shared_ptr<CDiskUsage> >::iterator disksListIterator=m_DiskUsageList.begin(); disksListIterator!=m_DiskUsageList.end(); ++disksListIterator)
     {
