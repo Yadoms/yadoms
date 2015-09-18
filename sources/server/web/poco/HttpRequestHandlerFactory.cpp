@@ -19,7 +19,7 @@
 #include "RestRequestHandler.h"
 #include "WebsiteRequestHandler.h"
 #include "AuthenticationRequestHandler.h"
-#include "HTTPRequestHandlerContainer.h"
+#include "HttpRequestHandlerContainer.h"
 
 namespace web { namespace poco {
 
