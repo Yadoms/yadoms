@@ -3,7 +3,8 @@
 #include <Poco/Net/HTTPRequestHandler.h>
 #include <Poco/Net/HTTPServerRequest.h>
 #include <Poco/Net/HTTPServerResponse.h>
-#include "WebSocketClient.h"
+#include <Poco/Net/WebSocket.h>
+
 #include "web/ws/FrameBase.h"
 
 namespace web { namespace poco {
@@ -16,13 +17,14 @@ namespace web { namespace poco {
 
       void handleRequest(Poco::Net::HTTPServerRequest& request, Poco::Net::HTTPServerResponse& response);
       
+   private:
       //--------------------------------------------------------------
       /// \brief           Send data on the webSocket
       /// \param[in] client Web socket client
       /// \param[in] toSend Data to send
       /// \return true is sending OK, false if connection lost
       //--------------------------------------------------------------
-      bool send(CWebSocketClient& client, const ws::CFrameBase& toSend) const;
+      bool send(Poco::Net::WebSocket & webSocket, const ws::CFrameBase& toSend) const;
    };
 
 
