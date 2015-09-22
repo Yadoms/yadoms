@@ -26,8 +26,8 @@ std::string CGeneralInfo::get(shared::script::yScriptApi::IYScriptApi::EInfoKeys
 {
    switch (key)
    {
-   case shared::script::yScriptApi::IYScriptApi::kSunrise: return m_dayLight->sunriseTime();
-   case shared::script::yScriptApi::IYScriptApi::kSunset: return m_dayLight->sunsetTime();
+   case shared::script::yScriptApi::IYScriptApi::kSunrise: return boost::posix_time::to_iso_extended_string(m_dayLight->sunriseTime());
+   case shared::script::yScriptApi::IYScriptApi::kSunset: return boost::posix_time::to_iso_extended_string(m_dayLight->sunsetTime());
    case shared::script::yScriptApi::IYScriptApi::kLatitude: return shared::CStringExtension::cultureInvariantToString(m_location->latitude());
    case shared::script::yScriptApi::IYScriptApi::kLongitude: return shared::CStringExtension::cultureInvariantToString(m_location->longitude());
    case shared::script::yScriptApi::IYScriptApi::kAltitude: return shared::CStringExtension::cultureInvariantToString(m_location->altitude());

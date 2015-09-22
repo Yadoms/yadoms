@@ -26,6 +26,8 @@
 #include "automation/RuleManager.h"
 #include <shared/ServiceLocator.h>
 #include "startupOptions/IStartupOptions.h"
+#include <server/automation/script/DayLight.h>
+#include <server/automation/script/Location.h>
 
 CSupervisor::CSupervisor(boost::shared_ptr<shared::event::CEventHandler> applicationEventHandler, const int applicationStopCode)
    :m_EventHandler(new shared::event::CEventHandler), m_applicationEventHandler(applicationEventHandler), m_applicationStopCode(applicationStopCode)
@@ -72,7 +74,11 @@ void CSupervisor::run()
 
       // Create the Plugin manager
       const std::string pluginsPath = startupOptions->getPluginsPath();
-      boost::shared_ptr<pluginSystem::CManager> pluginManager(new pluginSystem::CManager(pluginsPath, pDataProvider, dal, m_EventHandler, kPluginManagerEvent));
+      boost::shared_ptr<pluginSystem::CManager> pluginManager(new pluginSystem::CManager(
+         pluginsPath, pDataProvider, dal,
+         boost::make_shared<automation::script::CDayLight>(automation::script::CDayLight(
+            boost::make_shared<automation::script::CLocation>(automation::script::CLocation(dal->getConfigurationManager())))),
+         m_EventHandler, kPluginManagerEvent));
       shared::CServiceLocator::instance().push<pluginSystem::CManager>(pluginManager);
 
       // Start the plugin gateway

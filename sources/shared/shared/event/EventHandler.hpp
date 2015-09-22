@@ -5,6 +5,7 @@
 #include "Now.h"
 #include <shared/exception/BadConversion.hpp>
 #include <shared/exception/NullReference.hpp>
+#include <shared/exception/OutOfRange.hpp>
 
 namespace shared { namespace event
 {
@@ -227,13 +228,16 @@ namespace shared { namespace event
       /// \param[in] timePointEventId  Id of the time point event
       /// \param[in] dateTime          date/time when to raise the event, must be in the future
       /// \return     the created time point (see note)
+      /// \throw      exception::out_of_range if dateTime not in the future
       /// \note       Usually, caller don't need to get the time point object as it is owned (and will be destroyed) by the event handler.
       //              Keep a reference on the time point object can be useful if you want to re-use it or differ initialization. In this case,
       //              the event handler won't remove it from it's time events list.
       //--------------------------------------------------------------
       boost::shared_ptr<CEventTimePoint> createTimePoint(int timePointEventId, const boost::posix_time::ptime& dateTime)
       {
-         BOOST_ASSERT(dateTime > now());
+         BOOST_ASSERT(timePointEventId >= kUserFirstId);
+         if (dateTime <= now())
+            throw shared::exception::COutOfRange("CEventHandler::createTimePoint : timePoint not in the future, ignored");
 
          boost::shared_ptr<CEventTimePoint> timePoint(new CEventTimePoint(timePointEventId, dateTime));
          m_timeEvents.push_back(timePoint);

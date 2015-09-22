@@ -5,7 +5,7 @@ namespace automation { namespace script
    //-----------------------------------------------------
    ///\brief The day light interface
    //-----------------------------------------------------
-   class IDayLight
+   class IDayLight //TODO relocaliser dans plugin interne
    {
    public:
       //-----------------------------------------------------
@@ -15,15 +15,15 @@ namespace automation { namespace script
 
       //-----------------------------------------------------
       ///\brief               Compute sunrise time
-      ///\return Sunrise hour (ISO 8601)
+      ///\return Sunrise hour
       //-----------------------------------------------------
-      virtual std::string sunriseTime() const = 0;
+      virtual boost::posix_time::ptime sunriseTime() = 0;
 
       //-----------------------------------------------------
       ///\brief               Compute sunset time
-      ///\return Sunset hour (ISO 8601)
+      ///\return Sunset hour
       //-----------------------------------------------------
-      virtual std::string sunsetTime() const = 0;
+      virtual boost::posix_time::ptime sunsetTime() = 0;
    };
 
 } } // namespace automation::script
