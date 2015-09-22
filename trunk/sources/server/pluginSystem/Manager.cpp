@@ -24,6 +24,7 @@ CManager::CManager(
    const std::string& initialDir,
    boost::shared_ptr<database::IDataProvider> dataProvider,
    boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
+   boost::shared_ptr<automation::script::IDayLight> dayLightProvider,
    boost::shared_ptr<shared::event::CEventHandler> supervisor,
    int pluginManagerEventId)
    :m_dataProvider(dataProvider), m_pluginDBTable(dataProvider->getPluginRequester()), m_pluginPath(initialDir),
@@ -32,7 +33,7 @@ CManager::CManager(
 #else
    m_qualifier(new CIndicatorQualifier(dataProvider->getPluginEventLoggerRequester(), dataAccessLayer->getEventLogger())),
 #endif
-   m_supervisor(supervisor), m_pluginManagerEventId(pluginManagerEventId), m_dataAccessLayer(dataAccessLayer)
+   m_supervisor(supervisor), m_pluginManagerEventId(pluginManagerEventId), m_dataAccessLayer(dataAccessLayer), m_dayLightProvider(dayLightProvider)
 {
 }
 
@@ -453,7 +454,7 @@ void CManager::startInternalPlugin()
 
 
       // Load the plugin
-      boost::shared_ptr<IFactory> plugin(new CInternalPluginFactory());
+      boost::shared_ptr<IFactory> plugin(new CInternalPluginFactory(m_dayLightProvider));
 
       // Create instance
       BOOST_ASSERT(plugin); // Plugin not loaded

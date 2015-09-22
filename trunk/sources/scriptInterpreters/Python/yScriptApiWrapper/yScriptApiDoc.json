@@ -110,8 +110,8 @@
             "throw": "Error if key doesn't exist",
             "details": [
                 "Supported value :",
-                "- sunrise : get sunrise hour : returns hour in the day (as double encoded in string)",
-                "- sunset : get sunset hour : returns hour in the day (as double encoded in string)",
+                "- sunrise : get current day sunrise time as ISO string, ex : \"2015-09-15T05:22:00+02:00\"",
+                "- sunset : get current day sunset time as ISO string, ex : \"2015-09-15T18:03:00+02:00\"",
                 "- latitude : get latitude : returns latitude configured by user (or approximative latitude if not configured)",
                 "- longitude : get longitude : returns latitude configured by user (or approximative longitude if not configured)",
                 "- altitude : get altitude : returns latitude configured by user (or approximative altitude if not configured)",

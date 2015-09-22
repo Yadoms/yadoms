@@ -7,8 +7,8 @@
 
 namespace pluginSystem
 {
-   CInternalPluginFactory::CInternalPluginFactory()
-      :m_libraryPath("internalPlugin/yadoms.plugin")
+   CInternalPluginFactory::CInternalPluginFactory(boost::shared_ptr<automation::script::IDayLight> dayLightProvider)
+      :m_libraryPath("internalPlugin/yadoms.plugin"), m_dayLightProvider(dayLightProvider)
    {
    }
 
@@ -19,7 +19,7 @@ namespace pluginSystem
 
    shared::plugin::IPlugin* CInternalPluginFactory::construct() const
    {
-      return new internalPlugin::CSystem();
+      return new internalPlugin::CSystem(m_dayLightProvider);
    }
 
    const boost::filesystem::path& CInternalPluginFactory::getLibraryPath() const

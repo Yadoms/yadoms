@@ -1,4 +1,4 @@
-// This code come from Paul Schlyter, thanks to him
+// This code comes from Paul Schlyter, thanks to him
 // See http://stjarnhimlen.se/comp/sunriset.c
 
 #include "stdafx.h"
@@ -6,12 +6,10 @@
 #include <shared/Log.h>
 #include <shared/event/Now.h>
 #include <shared/exception/InvalidParameter.hpp>
-#include <Poco/DateTime.h>
-#include <Poco/DateTimeFormat.h>
-#include <Poco/DateTimeFormatter.h>
-#include <Poco/Timezone.h>
 #include <boost/math/constants/constants.hpp>
 #include <boost/math/special_functions/round.hpp>
+#include <boost/date_time/local_time_adjustor.hpp>
+#include <boost/date_time/c_local_time_adjustor.hpp>
 
 namespace automation { namespace script
 {
@@ -401,6 +399,8 @@ namespace automation { namespace script
       return sidtim0;
    }  /* GMST0 */
 
+
+
 CDayLight::CDayLight(boost::shared_ptr<ILocation> location)
    :m_location(location)
 {
@@ -410,29 +410,40 @@ CDayLight::~CDayLight()
 {         
 }
 
-std::string CDayLight::toIso(double utcTime) const
+boost::posix_time::ptime CDayLight::sunEventTime(bool sunrise)
 {
-   Poco::DateTime now;
-   Poco::DateTime dt(now.year(), now.month(), now.day(), boost::math::iround(utcTime), boost::math::iround(utcTime * 60) % 60);
-   return Poco::DateTimeFormatter::format(dt, Poco::DateTimeFormat::ISO8601_FORMAT, Poco::Timezone::tzd());
+   boost::posix_time::ptime now = shared::event::now();
+   if (m_lastCalculationDate.date() != now.date())
+   {
+      m_lastCalculationDate = now;
+
+      // Compute sun events
+      double rise, set;
+      if (sun_rise_set(now.date().year(), now.date().month(), now.date().day(), m_location->longitude(), m_location->latitude(), &rise, &set) != 0)
+         throw shared::exception::CInvalidParameter("Unable to compute sunrise time");
+
+      m_rise = hoursToLocalTime(now.date(), rise);
+      m_set = hoursToLocalTime(now.date(), set);
+   }
+
+   return sunrise ? m_rise : m_set;
 }
 
-std::string CDayLight::sunEventTime(bool sunrise) const
+boost::posix_time::ptime CDayLight::hoursToLocalTime(const boost::gregorian::date& date, double hours)
 {
-   Poco::DateTime now;
-   double rise, set;
-   if (sun_rise_set(now.year(), now.month(), now.day(), m_location->longitude(), m_location->latitude(), &rise, &set) != 0)
-      throw shared::exception::CInvalidParameter("Unable to compute sunrise time");
-
-   return toIso(sunrise ? rise : set);
+   // Use the Os settings to adjust to local time
+   typedef boost::date_time::c_local_adjustor<boost::posix_time::ptime> local_adj;
+   return local_adj::utc_to_local(boost::posix_time::ptime(date,
+      boost::posix_time::hours(boost::math::itrunc(hours)) + boost::posix_time::minutes(boost::math::iround(hours * 60) % 60)));
 }
 
-std::string CDayLight::sunriseTime() const
+
+boost::posix_time::ptime CDayLight::sunriseTime()
 {
    return sunEventTime(true);
 }
 
-std::string CDayLight::sunsetTime() const
+boost::posix_time::ptime CDayLight::sunsetTime()
 {
    return sunEventTime(false);
 }

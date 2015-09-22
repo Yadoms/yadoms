@@ -1,6 +1,7 @@
 #pragma once
 #include <shared/plugin/IPlugin.h>
 #include <shared/plugin/information/IInformation.h>
+#include <server/automation/script/IDayLight.h>
 
 
 // Shortcut to yPluginApi namespace
@@ -16,8 +17,9 @@ namespace pluginSystem { namespace internalPlugin {
       public:
          //--------------------------------------------------------------
          /// \brief	Constructor
+         /// \param[in] dayLightProvider The daylight provider used for sunset, sunrise and daylight keywords
          //--------------------------------------------------------------
-         CSystem();
+         CSystem(boost::shared_ptr<automation::script::IDayLight> dayLightProvider);
 
          //--------------------------------------------------------------
          /// \brief	Destructor
@@ -27,6 +29,20 @@ namespace pluginSystem { namespace internalPlugin {
          // IPlugin implementation
          virtual void doWork(boost::shared_ptr<yApi::IYPluginApi> context);
          // [END] IPlugin implementation
+
+      protected:
+         //--------------------------------------------------------------
+         /// \brief	Create the next daylight events timers
+         /// \param[in] eventHandler Event handler used to create dayligth timers
+         //--------------------------------------------------------------
+         void createDayLightTimers(shared::event::CEventHandler& eventHandler) const;
+
+      private:
+         //--------------------------------------------------------------
+         /// \brief	The daylight provider used for sunset, sunrise and daylight keywords
+         //--------------------------------------------------------------
+         boost::shared_ptr<automation::script::IDayLight> m_dayLightProvider;
+
       };
 
 
