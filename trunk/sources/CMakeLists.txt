@@ -663,8 +663,6 @@ IF(USE_POCO_WEBSERVER)
 		server/web/poco/WebsiteRequestHandler.cpp
 		server/web/poco/WebSocketRequestHandler.h
 		server/web/poco/WebSocketRequestHandler.cpp	
-		server/web/poco/WebSocketClient.h
-		server/web/poco/WebSocketClient.cpp	
 		server/web/poco/MimeType.h
 		server/web/poco/MimeType.cpp	
 	)
