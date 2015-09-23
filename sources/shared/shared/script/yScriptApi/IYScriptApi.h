@@ -74,8 +74,8 @@ namespace shared { namespace script { namespace yScriptApi
       //-----------------------------------------------------
       enum EInfoKeys
       {
-         kSunrise,               ///< Sunrise time : get current day sunrise time as ISO string, ex : kSunset2015-09-15T05:22:00+02:00"
-         kSunset,                ///< Sunset time : get current day sunset time as ISO string, ex : "2015-09-15T18:03:00+02:00"
+         kSunrise,               ///< Sunrise time : get current day sunrise time (format is "HH:MM")
+         kSunset,                ///< Sunset time : get current day sunset time (format is "HH:MM")
 
          kLatitude,              ///< Latitude : returns latitude configured by user (or approximative latitude if not configured)
          kLongitude,             ///< Longitude : returns latitude configured by user (or approximative longitude if not configured)

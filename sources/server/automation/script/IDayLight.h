@@ -5,7 +5,7 @@ namespace automation { namespace script
    //-----------------------------------------------------
    ///\brief The day light interface
    //-----------------------------------------------------
-   class IDayLight //TODO relocaliser dans plugin interne
+   class IDayLight
    {
    public:
       //-----------------------------------------------------

@@ -21,6 +21,13 @@ namespace automation { namespace script
       //-----------------------------------------------------
       virtual ~CDayLight();
 
+      //-----------------------------------------------------
+      ///\brief               Format a sun event time as "HH:MM"
+      ///\param[in] sunEventTime The sun event time to format
+      ///\return Formated time
+      //-----------------------------------------------------
+      static std::string formatSunEventTime(const boost::posix_time::ptime& sunEventTime);
+
    protected:
       // IDayLight Implementation
       virtual boost::posix_time::ptime sunriseTime();
