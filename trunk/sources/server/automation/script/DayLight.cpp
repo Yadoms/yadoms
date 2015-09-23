@@ -448,5 +448,15 @@ boost::posix_time::ptime CDayLight::sunsetTime()
    return sunEventTime(false);
 }
 
+std::string CDayLight::formatSunEventTime(const boost::posix_time::ptime& sunEventTime)
+{
+   std::stringstream stream;
+   boost::posix_time::time_facet* facet(new boost::posix_time::time_facet());
+   facet->format("%H:%M");
+   stream.imbue(std::locale(std::locale::classic(), facet));
+   stream << sunEventTime;
+   return stream.str();
+}
+
 } } // namespace automation::script
 

@@ -34,12 +34,12 @@ namespace automation { namespace script
       //-----------------------------------------------------
       ///\brief               Location helper
       //-----------------------------------------------------
-      boost::shared_ptr<ILocation> m_location;//TODO virer ?
+      boost::shared_ptr<ILocation> m_location;
 
       //-----------------------------------------------------
       ///\brief               Day light helper
       //-----------------------------------------------------
-      boost::shared_ptr<IDayLight> m_dayLight;//TODO virer ?
+      boost::shared_ptr<IDayLight> m_dayLight;
 
       //-----------------------------------------------------
       ///\brief               Running information provider

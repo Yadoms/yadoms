@@ -7,7 +7,7 @@
 #include <shared/plugin/yPluginApi/historization/Historizers.h>
 #include "../../IApplicationStopHandler.h"
 #include <shared/ServiceLocator.h>
-#include <server/automation/script/IDayLight.h>
+#include <server/automation/script/DayLight.h>
 
 namespace pluginSystem {
    namespace internalPlugin {
@@ -39,28 +39,33 @@ namespace pluginSystem {
          YADOMS_LOG(debug) << "System is running...";
 
          // Declare all device/keywords
+         static const std::string& systemDevice("system");
          yApi::historization::CEvent keywordShutdown("shutdown");
          yApi::historization::CEvent keywordRestart("restart");
-         yApi::historization::CSwitch keywordDaylight("daylight", shared::plugin::yPluginApi::EKeywordAccessMode::kGet); // TODO Ajouter KWs pour calcul offsets par rapport au daylight
+         yApi::historization::CSwitch keywordDaylight("daylight", shared::plugin::yPluginApi::EKeywordAccessMode::kGet);
 
          // Device creation if needed
-         if (!context->deviceExists("system"))
-            context->declareDevice("system", "yadoms system");
+         if (!context->deviceExists(systemDevice))
+            context->declareDevice(systemDevice, "yadoms system");
+
+         if (!context->deviceExists(systemDevice))
+            context->declareDevice(systemDevice, "yadoms system");
 
          // Keywords creation if needed
-         if (!context->keywordExists("system", keywordShutdown.getKeyword()))
-            context->declareKeyword("system", keywordShutdown);
+         if (!context->keywordExists(systemDevice, keywordShutdown.getKeyword()))
+            context->declareKeyword(systemDevice, keywordShutdown);
 
-         if (!context->keywordExists("system", keywordRestart.getKeyword()))
-            context->declareKeyword("system", keywordRestart);
+         if (!context->keywordExists(systemDevice, keywordRestart.getKeyword()))
+            context->declareKeyword(systemDevice, keywordRestart);
 
-         if (!context->keywordExists("system", keywordDaylight.getKeyword()))
-            context->declareKeyword("system", keywordDaylight);
+         if (!context->keywordExists(systemDevice, keywordDaylight.getKeyword()))
+            context->declareKeyword(systemDevice, keywordDaylight);
 
          boost::shared_ptr<IApplicationStopHandler> applicationStopHandler = shared::CServiceLocator::instance().get<IApplicationStopHandler>();
 
-         createDayLightTimers(context->getEventHandler());
-         //TODO set keywordDaylight à la bonne valeur
+         // Create daylight timers and set keyword first state
+         keywordDaylight.set(createDayLightTimers(context->getEventHandler()));
+         context->historizeData(systemDevice, keywordDaylight);
 
          while (1)
          {
@@ -92,12 +97,14 @@ namespace pluginSystem {
                {
                   YADOMS_LOG(information) << "Sun is rising. Have a good day !";
                   keywordDaylight.set(true);
+                  context->historizeData(systemDevice, keywordDaylight);
                   break;
                }
                case kEvtTimerForSunset:
                {
                   YADOMS_LOG(information) << "Sun goes down. Have a good night !";
                   keywordDaylight.set(false);
+                  context->historizeData(systemDevice, keywordDaylight);
                   break;
                }
                case kEvtNewDay:
@@ -125,52 +132,44 @@ namespace pluginSystem {
       }
    }
 
-   void CSystem::createDayLightTimers(shared::event::CEventHandler& eventHandler) const
+   bool CSystem::createDayLightTimers(shared::event::CEventHandler& eventHandler) const
    {
       boost::posix_time::ptime now = shared::event::now();
 
-      // TODO mettre dans une fonction pour éviter la répétition ?
-      //TODO réutiliser le time point pour éviter des fuites mémoire si certains sont malgré les précautions prises, posés dans le passé
+      boost::posix_time::ptime sunrise = m_dayLightProvider->sunriseTime();
+      boost::posix_time::ptime sunset = m_dayLightProvider->sunsetTime();
 
-      boost::posix_time::ptime sunrise, sunset;
-      try
-      {
-         // Be careful, createTimePoint also does a comparison to now(), which can be a bit different
-         // (if CPU is heavy loaded for example), and rise an exception if time point is considered in the future.
-         sunrise = m_dayLightProvider->sunriseTime();
-         if (now < sunrise)
-            eventHandler.createTimePoint(kEvtTimerForSunrise, sunrise);
-      }
-      catch (shared::exception::COutOfRange&)
-      {
-         // It can just occur when createDayLightTimers is execute at the exact same time as the createTimePoint.
-         // In this case, immediatly signal event
-         eventHandler.postEvent(kEvtTimerForSunrise);
-      }
+      createSunEventTimer(eventHandler, kEvtTimerForSunrise, now, sunrise);
+      createSunEventTimer(eventHandler, kEvtTimerForSunset, now, sunset);
 
-      try
-      {
-         // Be careful, createTimePoint also does a comparison to now(), which can be a bit different
-         // (if CPU is heavy loaded for example), and rise an exception if time point is considered in the future.
-         sunset = m_dayLightProvider->sunsetTime();
-         if (now < sunset)
-            eventHandler.createTimePoint(kEvtTimerForSunset, sunset);
-      }
-      catch (shared::exception::COutOfRange&)
-      {
-         // It can just occur when createDayLightTimers is execute at the exact same time as the createTimePoint.
-         // In this case, immediatly signal event
-         eventHandler.postEvent(kEvtTimerForSunset);
-      }
 
-      YADOMS_LOG(information) << "Sunrise will be at " << sunrise.time_of_day().hours() << ":" << sunrise.time_of_day().minutes()
-         << " and sunset at " << sunset.time_of_day().hours() << ":" << sunset.time_of_day().minutes();
+      YADOMS_LOG(information) << "Sunrise will be at " << automation::script::CDayLight::formatSunEventTime(sunrise)
+         << " and sunset at " << automation::script::CDayLight::formatSunEventTime(sunset);
 
       // Create another time point to re-compute new sun events on start of next day
-      boost::posix_time::ptime tomorrow(now.date() + boost::gregorian::days(1));
-      eventHandler.createTimePoint(kEvtNewDay, tomorrow);
+      boost::posix_time::ptime tomorrowMidnight(now.date() + boost::gregorian::days(1));
+      eventHandler.createTimePoint(kEvtNewDay, tomorrowMidnight);
+
+      return (now >= sunrise && now < sunset);
    }
 
+   void CSystem::createSunEventTimer(shared::event::CEventHandler& eventHandler, int daylightEventTimerId,
+      const boost::posix_time::ptime& now, const boost::posix_time::ptime& daylightEventTime)
+   {
+      try
+      {
+         // Be careful, createTimePoint also does a comparison to now(), which can be a bit different
+         // (if CPU is heavy loaded for example), and rise an exception if time point is considered in the future.
+         if (now < daylightEventTime)
+            eventHandler.createTimePoint(daylightEventTimerId, daylightEventTime);
+      }
+      catch (shared::exception::COutOfRange&)
+      {
+         // It can just occur when this method is executed at the exact same time as the createTimePoint.
+         // In this case, immediatly signal event
+         eventHandler.postEvent(daylightEventTimerId);
+      }
+   }
 
 
 } } // namespace pluginSystem::internalPlugin

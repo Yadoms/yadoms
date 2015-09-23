@@ -33,9 +33,20 @@ namespace pluginSystem { namespace internalPlugin {
       protected:
          //--------------------------------------------------------------
          /// \brief	Create the next daylight events timers
-         /// \param[in] eventHandler Event handler used to create dayligth timers
+         /// \param[in] eventHandler Event handler used to create daylight timers
+         /// \return the actual daylight state (true is day, false if night)
          //--------------------------------------------------------------
-         void createDayLightTimers(shared::event::CEventHandler& eventHandler) const;
+         bool createDayLightTimers(shared::event::CEventHandler& eventHandler) const;
+
+         //--------------------------------------------------------------
+         /// \brief	Create the next daylight event timer
+         /// \param[in] eventHandler Event handler used to create timer
+         /// \param[in] daylightEventTimerId Event Id to use
+         /// \param[in] now Reference time for now
+         /// \param[in] daylightEventTime Time of the daylight event
+         //--------------------------------------------------------------
+         static void createSunEventTimer(shared::event::CEventHandler& eventHandler, int daylightEventTimerId,
+            const boost::posix_time::ptime& now, const boost::posix_time::ptime& daylightEventTime);
 
       private:
          //--------------------------------------------------------------
