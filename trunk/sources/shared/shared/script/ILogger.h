@@ -14,18 +14,6 @@ namespace shared { namespace script
       //-----------------------------------------------------
       virtual ~ILogger() {}
 
-      ////-----------------------------------------------------
-      /////\brief               Get the out log stream
-      /////\return              The out log stream
-      ////-----------------------------------------------------
-      //virtual Poco::LogStream& out() = 0;//TODO virer
-
-      ////-----------------------------------------------------
-      /////\brief               Get the error log stream
-      /////\return              The error log stream
-      ////-----------------------------------------------------
-      //virtual Poco::LogStream& error() = 0;//TODO virer
-
       //-----------------------------------------------------
       ///\brief               Log the message
       ///\param[in] msg       Message to log
