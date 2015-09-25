@@ -91,31 +91,76 @@ std::string CPythonExecutable::readPythonVersion(const boost::filesystem::path& 
    }
 }
 
-boost::shared_ptr<Poco::ProcessHandle> CPythonExecutable::startModule(boost::shared_ptr<const IScriptFile> scriptFile, const std::string& contextAccessorId, boost::shared_ptr<shared::script::ILogger> scriptLogger) const
+void CPythonExecutable::startModule(boost::shared_ptr<const IScriptFile> scriptFile, const std::string& contextAccessorId, boost::shared_ptr<shared::script::ILogger> scriptLogger)
 {
+   boost::lock_guard<boost::recursive_mutex> lock(m_processMutex);
+
    try
    {
       const boost::filesystem::path& command = m_executableDirectory / "python";
 
       Poco::Process::Args args;
+      args.push_back(std::string("-u")); // Make script outs unbuffered
       args.push_back(std::string("scriptCaller.py"));
       args.push_back(scriptFile->abslouteParentPath().string());
       args.push_back(scriptFile->module());
       args.push_back(contextAccessorId);
 
       Poco::Pipe outPipe, errPipe;
-      boost::shared_ptr<Poco::ProcessHandle> process(boost::make_shared<Poco::ProcessHandle>(
-         Poco::Process::launch(command.string(), args, shared::CFileSystemExtension::getModulePath().string(), NULL, &outPipe, &errPipe)));
+      m_process = boost::make_shared<Poco::ProcessHandle>(
+         Poco::Process::launch(command.string(), args, shared::CFileSystemExtension::getModulePath().string(), NULL, &outPipe, &errPipe));
 
-      Poco::PipeInputStream iOutStr(outPipe);
-      Poco::PipeInputStream iErrStr(errPipe);
-      Poco::StreamCopier::copyStreamUnbuffered(iOutStr, scriptLogger->out());
-      Poco::StreamCopier::copyStreamUnbuffered(iErrStr, scriptLogger->error());
-
-      return process;
+      boost::shared_ptr<Poco::PipeInputStream> moduleStdOut = boost::make_shared<Poco::PipeInputStream>(outPipe);
+      boost::shared_ptr<Poco::PipeInputStream> moduleStdErr = boost::make_shared<Poco::PipeInputStream>(errPipe);
+      //m_StdOutRedirectingThread = boost::make_shared<CStdOutRedirectingThread>("RuleName", moduleStdOut, scriptLogger);//TODO nom de règle
+      //m_StdOutRedirectingThread->start();
+      m_StdOutRedirectingThread = boost::thread(&CPythonExecutable::stdRedirectWorker, this, moduleStdOut, scriptLogger);
+//TODO      m_StdErrRedirectingThread = boost::thread(&CPythonExecutable::stdRedirectWorker, this, moduleStdErr, &scriptLogger->error());
    }
    catch (Poco::Exception& ex)
    {
       throw CPythonException(std::string("Unable to start Python script, ") + ex.what());
    }
+}
+
+void CPythonExecutable::waitForStop()
+{
+   int returnCode = m_process->wait();
+   if (returnCode != 0 && isError(returnCode))
+      throw CPythonException("Script returned with error " + boost::lexical_cast<std::string>(returnCode));
+
+//TODO   m_StdOutRedirectingThread->waitForStop();
+   m_StdOutRedirectingThread.join();
+//TODO   m_StdErrRedirectingThread.join();
+}
+
+void CPythonExecutable::interrupt()
+{
+   try
+   {
+      boost::lock_guard<boost::recursive_mutex> lock(m_processMutex);
+      if (!!m_process)
+         Poco::Process::requestTermination(m_process->id());
+   }
+   catch (Poco::NotFoundException&)
+   {
+      // Nothing to do. This exception occurs when process is already stopped
+   }
+}
+
+bool CPythonExecutable::isError(int code) const
+{
+#if defined WIN32
+   if (static_cast<DWORD>(code) == STATUS_CONTROL_C_EXIT)
+      return false;
+#endif
+   return true;
+}
+
+void CPythonExecutable::stdRedirectWorker(boost::shared_ptr<Poco::PipeInputStream> moduleStdOut, boost::shared_ptr<shared::script::ILogger> scriptLogger)
+{
+   char line[1024];
+   YADOMS_LOG_CONFIGURE("TODO(nom_regle)");
+   while (moduleStdOut->getline(line, sizeof(line)))
+      scriptLogger->log(line);
 }

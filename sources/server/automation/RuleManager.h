@@ -92,6 +92,13 @@ namespace automation
       //-----------------------------------------------------
       void stopRule(int ruleId);
 
+      //-----------------------------------------------------
+      ///\brief               Check if a rule is started
+      ///\param[in] ruleId    The rule ID
+      ///\return              true if started
+      //-----------------------------------------------------
+      bool isRuleStarted(int ruleId);
+
    private:
       //-----------------------------------------------------
       ///\brief               The rule data accessor

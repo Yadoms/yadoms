@@ -1,4 +1,5 @@
 #pragma once
+#include <Poco/LogStream.h>
 
 namespace shared { namespace script
 {
@@ -13,17 +14,23 @@ namespace shared { namespace script
       //-----------------------------------------------------
       virtual ~ILogger() {}
 
-      //-----------------------------------------------------
-      ///\brief               Get the out log stream
-      ///\return              The out log stream
-      //-----------------------------------------------------
-      virtual std::ostream& out() = 0;
+      ////-----------------------------------------------------
+      /////\brief               Get the out log stream
+      /////\return              The out log stream
+      ////-----------------------------------------------------
+      //virtual Poco::LogStream& out() = 0;//TODO virer
+
+      ////-----------------------------------------------------
+      /////\brief               Get the error log stream
+      /////\return              The error log stream
+      ////-----------------------------------------------------
+      //virtual Poco::LogStream& error() = 0;//TODO virer
 
       //-----------------------------------------------------
-      ///\brief               Get the error log stream
-      ///\return              The error log stream
+      ///\brief               Log the message
+      ///\param[in] msg       Message to log
       //-----------------------------------------------------
-      virtual std::ostream& error() = 0;
+      virtual void log(const std::string& msg) = 0;
    };
 
 } } // namespace shared::script

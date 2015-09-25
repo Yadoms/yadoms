@@ -19,7 +19,7 @@ namespace shared {
       CLogStreamEnhanced::~CLogStreamEnhanced()
       {
 			//check logger priority
-			//recommended to create Message only ofr propagated message (performance issue)
+			//recommended to create Message only for propagated message (performance issue)
 			if (m_internalLogger.is(m_currentPriority))
 			{
 				Poco::Message msg;

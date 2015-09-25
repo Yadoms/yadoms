@@ -28,6 +28,7 @@ shared::CDataContainer CLocation::tryAutoLocate() const
 {
    boost::shared_ptr<IAutoLocation> autoLocationService = createAutoLocationService();
    shared::CDataContainer foundLocation = autoLocationService->tryAutoLocate();
+   //TODO en cas d'échec, prendre une position par défaut par rapport au TZ de la machine
    updateLocation(foundLocation);
    return foundLocation;
 }
