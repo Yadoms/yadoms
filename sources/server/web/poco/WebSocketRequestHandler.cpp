@@ -123,14 +123,17 @@ namespace web {
                catch (shared::exception::CException & ex)
                {
                   YADOMS_LOG(error) << "Websocket request handler exception : " << ex.what();
+                  clientSeemConnected = false;
                }
                catch (std::exception & ex)
                {
                   YADOMS_LOG(error) << "Websocket request handler std exception : " << ex.what();
+                  clientSeemConnected = false;
                }
                catch (...)
                {
                   YADOMS_LOG(error) << "Websocket request handler unknown exception";
+                  clientSeemConnected = false;
                }
 
                //listen websocket incoming data
@@ -184,36 +187,43 @@ namespace web {
                      response.send();
                      break;
                   }
+                  clientSeemConnected = false;
                }
                catch (Poco::TimeoutException& exc)
                {
                   //log as Debug because : user actions in browser may 'kill' websockets connections (refresh, close page,....)
                   YADOMS_LOG(debug) << "Websocket request handler Poco::TimeoutException : " << exc.displayText();
+                  clientSeemConnected = false;
                }
                catch (Poco::Net::NetException& exc)
                {
                   //log as Debug because : user actions in browser may 'kill' websockets connections (refresh, close page,....)
                   YADOMS_LOG(debug) << "Websocket request handler Poco::NetException : " << exc.displayText();
+                  clientSeemConnected = false;
                }
                catch (Poco::IOException& exc)
                {
                   //log as Debug because : user actions in browser may 'kill' websockets connections (refresh, close page,....)
                   YADOMS_LOG(debug) << "Websocket request handler Poco::IOException : " << exc.displayText();
+                  clientSeemConnected = false;
                }
                catch (Poco::Exception& exc)
                {
                   //log as Debug because : user actions in browser may 'kill' websockets connections (refresh, close page,....)
                   YADOMS_LOG(debug) << "Websocket request handler Poco::Exception : " << exc.displayText();
+                  clientSeemConnected = false;
                }
                catch (shared::exception::CException & ex)
                {
                   //log as Debug because : user actions in browser may 'kill' websockets connections (refresh, close page,....)
                   YADOMS_LOG(debug) << "Websocket request handler exception : " << ex.what();
+                  clientSeemConnected = false;
                }
                catch (...)
                {
                   //log as Debug because : user actions in browser may 'kill' websockets connections (refresh, close page,....)
                   YADOMS_LOG(debug) << "Websocket request handler unknown exception";
+                  clientSeemConnected = false;
                }
 
             } //while
