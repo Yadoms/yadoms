@@ -73,7 +73,7 @@ void CRuleManager::startRule(int ruleId)
       if (!ruleData->Enabled())
          return;  // Rule not enabled, don't start
 
-      if (m_startedRules.find(ruleData->Id()) != m_startedRules.end())
+      if (isRuleStarted(ruleData->Id()))
          return;  // Rule already started
 
       m_ruleStateHandler->signalRuleStart(ruleId);
@@ -110,6 +110,11 @@ void CRuleManager::stopRule(int ruleId)
       return;
 
    m_startedRules.erase(rule);
+}
+
+bool CRuleManager::isRuleStarted(int ruleId)
+{
+   return m_startedRules.find(ruleId) != m_startedRules.end();
 }
 
 std::vector<boost::shared_ptr<database::entities::CRule> > CRuleManager::getRules() const
@@ -185,7 +190,7 @@ void CRuleManager::updateRule(boost::shared_ptr<const database::entities::CRule>
 
    if (ruleData->Enabled.isDefined() && m_dbRequester->getRule(ruleData->Id)->State() != database::entities::ERuleState::kErrorValue)
    {
-      if (ruleData->Enabled() ^ (m_startedRules.find(ruleData->Id()) != m_startedRules.end()))
+      if (ruleData->Enabled() != isRuleStarted(ruleData->Id))
       {
          // Enable/disable state changed, apply it
          if (ruleData->Enabled())
@@ -199,7 +204,7 @@ void CRuleManager::updateRule(boost::shared_ptr<const database::entities::CRule>
 void CRuleManager::updateRuleCode(int id, const std::string& code)
 {
    // If rule was started, must be stopped to update its configuration
-   if (m_startedRules.find(id) != m_startedRules.end())
+   if (isRuleStarted(id))
       stopRule(id);
 
    // Update script file
@@ -234,7 +239,7 @@ void CRuleManager::deleteRule(int id)
 
 void CRuleManager::restartRule(int id)
 {
-   if (m_startedRules.find(id) != m_startedRules.end())
+   if (isRuleStarted(id))
       throw CRuleException((boost::format("Rule %1% already started") % id).str());
 
    boost::shared_ptr<const database::entities::CRule> ruleData(m_dbRequester->getRule(id));
@@ -279,7 +284,7 @@ void CRuleManager::stopAllRulesMatchingInterpreter(const std::string & interpret
    std::vector<boost::shared_ptr<database::entities::CRule> > interpreterRules = m_dbRequester->getRules(interpreterName);
    for (std::vector<boost::shared_ptr<database::entities::CRule> >::const_iterator interpreterRule = interpreterRules.begin(); interpreterRule != interpreterRules.end(); ++interpreterRule)
    {
-      if (m_startedRules.find((*interpreterRule)->Id()) != m_startedRules.end())
+      if (isRuleStarted((*interpreterRule)->Id()))
          stopRule((*interpreterRule)->Id());
    }
 

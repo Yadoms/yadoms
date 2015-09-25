@@ -30,8 +30,19 @@ public:
    /// \param[in] scriptFile The script file to call
    /// \param[in] contextAccessorId The context accessor ID, used by script to interact with Yadoms
    /// \param[in] scriptLogger The script logger
-   /// \return The start process handle (empty if error)
    /// \throw CPythonException if error
    //--------------------------------------------------------------
-   virtual boost::shared_ptr<Poco::ProcessHandle> startModule(boost::shared_ptr<const IScriptFile> scriptFile, const std::string& contextAccessorId, boost::shared_ptr<shared::script::ILogger> scriptLogger) const = 0;
+   virtual void startModule(boost::shared_ptr<const IScriptFile> scriptFile, const std::string& contextAccessorId, boost::shared_ptr<shared::script::ILogger> scriptLogger) = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	Wait for module stop (blocking)
+   /// \throw CPythonException if error
+   //--------------------------------------------------------------
+   virtual void waitForStop() = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	Ask for module stop
+   /// \throw CPythonException if error
+   //--------------------------------------------------------------
+   virtual void interrupt() = 0;
 };

@@ -36,13 +36,6 @@ protected:
 
 private:
    //--------------------------------------------------------------
-   /// \brief	            Filter some return codes, which are not really errors
-   /// \param[in] code     Return code (from call to Poco::ProcessHandle::wait
-   /// \return             true if it is a real error, false if not
-   //--------------------------------------------------------------
-   bool isError(int code) const;
-
-   //--------------------------------------------------------------
    /// \brief	Script file
    //--------------------------------------------------------------
    boost::shared_ptr<const IScriptFile> m_scriptFile;
@@ -61,12 +54,6 @@ private:
    /// \brief	The Python executable accessor
    //--------------------------------------------------------------
    boost::shared_ptr<IPythonExecutable> m_executable;
-
-   //--------------------------------------------------------------
-   /// \brief	The process of the running script, and its mutex
-   //--------------------------------------------------------------
-   boost::shared_ptr<Poco::ProcessHandle> m_process;
-   mutable boost::recursive_mutex m_processMutex;
 
    //--------------------------------------------------------------
    ///\brief   Last error message (empty if no error)

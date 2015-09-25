@@ -76,8 +76,7 @@ void CSupervisor::run()
       const std::string pluginsPath = startupOptions->getPluginsPath();
       boost::shared_ptr<pluginSystem::CManager> pluginManager(new pluginSystem::CManager(
          pluginsPath, pDataProvider, dal,
-         boost::make_shared<automation::script::CDayLight>(automation::script::CDayLight(
-            boost::make_shared<automation::script::CLocation>(automation::script::CLocation(dal->getConfigurationManager())))),
+         boost::make_shared<automation::script::CDayLight>(boost::make_shared<automation::script::CLocation>(automation::script::CLocation(dal->getConfigurationManager()))),
          m_EventHandler, kPluginManagerEvent));
       shared::CServiceLocator::instance().push<pluginSystem::CManager>(pluginManager);
 
