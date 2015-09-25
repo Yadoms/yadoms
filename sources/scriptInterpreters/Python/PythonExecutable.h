@@ -1,7 +1,5 @@
 #pragma once
 #include "IPythonExecutable.h"
-#include <shared/ThreadBase.h>
-#include <shared/Log.h>//TODO utile ?
 
 //--------------------------------------------------------------
 /// \brief	Python executable
@@ -52,10 +50,12 @@ protected:
 
    //--------------------------------------------------------------
    /// \brief	Thread redirecting standard outputs
+   /// \param[in] ruleName          Rule name used for log identification
    /// \param[in] moduleStdOut      StdOut to redirect
    /// \param[in] targetStream      Target stream
    //--------------------------------------------------------------
-   void stdRedirectWorker(boost::shared_ptr<Poco::PipeInputStream> moduleStdOut, boost::shared_ptr<shared::script::ILogger> scriptLogger);
+   void stdRedirectWorker(const std::string& ruleName,
+      boost::shared_ptr<Poco::PipeInputStream> moduleStdOut, boost::shared_ptr<shared::script::ILogger> scriptLogger);
 
 private:
    //--------------------------------------------------------------
@@ -84,30 +84,8 @@ private:
    //--------------------------------------------------------------
    /// \brief	Thread redirecting standard outputs
    //--------------------------------------------------------------
-   class CStdOutRedirectingThread : public shared::CThreadBase//TODO virer
-   {
-   public:
-      CStdOutRedirectingThread(const std::string& threadName, boost::shared_ptr<Poco::PipeInputStream> moduleStdOut, boost::shared_ptr<shared::script::ILogger> scriptLogger)
-         :shared::CThreadBase(threadName), m_moduleStdOut(moduleStdOut), m_scriptLogger(scriptLogger) {}
-      virtual void doWork()
-      {
-         char line[1024];
-         while (m_moduleStdOut->getline(line, sizeof(line)))
-            m_scriptLogger->log(line);
-         //{
-//            ((boost::shared_ptr<CLogger>)m_scriptLogger)->setThreadName(getName());//TODO virer ce cast
-//            YADOMS_LOG_CONFIGURE(getName());
-            //m_scriptLogger->out() << "out ==> " << line << std::endl;
-            //YADOMS_LOG(information) << "YADOMS_LOG ==> " << line << std::endl;
-         //}
-      }
-   private:
-      boost::shared_ptr<Poco::PipeInputStream> m_moduleStdOut;
-      boost::shared_ptr<shared::script::ILogger> m_scriptLogger;
-   };
-   //boost::shared_ptr<CStdOutRedirectingThread> m_StdOutRedirectingThread;
    boost::thread m_StdOutRedirectingThread;
-//   boost::thread m_StdErrRedirectingThread;
+   boost::thread m_StdErrRedirectingThread;
 };
 
 

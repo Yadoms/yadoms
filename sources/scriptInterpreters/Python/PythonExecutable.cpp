@@ -112,10 +112,8 @@ void CPythonExecutable::startModule(boost::shared_ptr<const IScriptFile> scriptF
 
       boost::shared_ptr<Poco::PipeInputStream> moduleStdOut = boost::make_shared<Poco::PipeInputStream>(outPipe);
       boost::shared_ptr<Poco::PipeInputStream> moduleStdErr = boost::make_shared<Poco::PipeInputStream>(errPipe);
-      //m_StdOutRedirectingThread = boost::make_shared<CStdOutRedirectingThread>("RuleName", moduleStdOut, scriptLogger);//TODO nom de règle
-      //m_StdOutRedirectingThread->start();
-      m_StdOutRedirectingThread = boost::thread(&CPythonExecutable::stdRedirectWorker, this, moduleStdOut, scriptLogger);
-//TODO      m_StdErrRedirectingThread = boost::thread(&CPythonExecutable::stdRedirectWorker, this, moduleStdErr, &scriptLogger->error());
+      m_StdOutRedirectingThread = boost::thread(&CPythonExecutable::stdRedirectWorker, this, scriptFile->module(), moduleStdOut, scriptLogger);
+      m_StdErrRedirectingThread = boost::thread(&CPythonExecutable::stdRedirectWorker, this, scriptFile->module(), moduleStdErr, scriptLogger);
    }
    catch (Poco::Exception& ex)
    {
@@ -129,9 +127,8 @@ void CPythonExecutable::waitForStop()
    if (returnCode != 0 && isError(returnCode))
       throw CPythonException("Script returned with error " + boost::lexical_cast<std::string>(returnCode));
 
-//TODO   m_StdOutRedirectingThread->waitForStop();
    m_StdOutRedirectingThread.join();
-//TODO   m_StdErrRedirectingThread.join();
+   m_StdErrRedirectingThread.join();
 }
 
 void CPythonExecutable::interrupt()
@@ -157,10 +154,11 @@ bool CPythonExecutable::isError(int code) const
    return true;
 }
 
-void CPythonExecutable::stdRedirectWorker(boost::shared_ptr<Poco::PipeInputStream> moduleStdOut, boost::shared_ptr<shared::script::ILogger> scriptLogger)
+void CPythonExecutable::stdRedirectWorker(const std::string& ruleName,
+   boost::shared_ptr<Poco::PipeInputStream> moduleStdOut, boost::shared_ptr<shared::script::ILogger> scriptLogger)
 {
    char line[1024];
-   YADOMS_LOG_CONFIGURE("TODO(nom_regle)");
+   YADOMS_LOG_CONFIGURE(ruleName + " rule");
    while (moduleStdOut->getline(line, sizeof(line)))
       scriptLogger->log(line);
 }
