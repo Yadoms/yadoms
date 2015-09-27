@@ -46,7 +46,7 @@ function ListParameterHandler(i18nContext, paramName, content, currentValue) {
       $.each(self.configurationValues, function (key, value) {
 
          var newI18nContext = i18nContext + self.paramName + ".item.";
-         var item = ConfigurationHelper.createParameterHandler(newI18nContext, null/*self.paramName*/, self.content.item, value);
+         var item = ConfigurationHelper.createParameterHandler(newI18nContext, null, self.content.item, value);
          self.items.push(item);
       });
    }
