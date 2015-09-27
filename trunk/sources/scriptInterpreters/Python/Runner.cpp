@@ -15,7 +15,6 @@ CRunner::CRunner(const std::string& scriptPath, const std::string& interpreterPa
 
 CRunner::~CRunner()
 {
-   interrupt();
 }
 
 void CRunner::run(shared::script::yScriptApi::IYScriptApi& context, boost::shared_ptr<shared::script::ILogger> scriptLogger)
