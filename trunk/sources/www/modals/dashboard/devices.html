@@ -116,7 +116,7 @@
 
    function configureDevice(device) {
       //device represent the device concerned
-      return function() {
+      return function(event) {
          event.stopPropagation();
          //we just ask for the friendly name
          modals.deviceConfigure.load(function() {
@@ -135,7 +135,7 @@
 
    function deleteDevice(device) {
       //device represent the device concerned
-      return function() {
+      return function(event) {
          event.stopPropagation();
          modals.confirmation.load(function() {
             showConfirmModal(btnKind.yesNo, null, $.t("modals.dashboard.sub-windows.devices.confirmDeviceDeletion", {deviceName:device.friendlyName}),
