@@ -312,7 +312,8 @@
 					"delete": "Suppression de l'équipement",
 					"confirmDeviceDeletion": "Confirmez-vous la suppressionde l'équipement __deviceName__ et toutes ses données ?",
 					"errorGettingDeviceList": "Erreur lors de la récupération de la liste des équipements",
-					"errorGettingDeviceDetailsList": "Erreur lors de la récupération des détails de l'équipement"
+					"errorGettingDeviceDetailsList": "Erreur lors de la récupération des détails de l'équipement",
+               "noAcquisition": "Aucune acquisition"
 				},
 				"automation-center": {
 					"title": "Centre d'automatisation",
