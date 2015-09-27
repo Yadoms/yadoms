@@ -74,10 +74,11 @@ EnumParameterHandler.prototype.updateValues = function () {
 
    //we iterate through the values collection
    $.each(self.values, function (key, value) {
-      var line = "<option value=\"" + key + "\" data-i18n=\"" + self.i18nContext + self.paramName + ".values." + key + "\"";
+	   
+      var line = "<option value=\"" + key + "\"";
       if (key == self.value)
          line += " selected";
-      line += " >" + value + "</option>";
+      line += " >" + $.t( self.i18nContext + self.paramName + ".values." + key ) + "</option>";
       $select.append(line);
    });
 };
