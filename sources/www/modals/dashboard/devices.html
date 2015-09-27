@@ -219,7 +219,8 @@
 					     KeywordValue = "<span>" + acquisition.value + "</span>";
 					  } // If catch error, the string is not a JSON String
 
-					  LastStateValue = "<span>" + DateTimeFormatter.isoDateToString(acquisition.date) + "</span>";
+                 var acquisitionDate = isNullOrUndefinedOrEmpty(acquisition.date) ? $.t("modals.dashboard.sub-windows.devices.noAcquisition") : DateTimeFormatter.isoDateToString(acquisition.date);
+					  LastStateValue = "<span>" + acquisitionDate + "</span>";
 					   
 					  var $keywordRow = getKeywordDomRow(keyword);
 					  //we fill the data
@@ -360,7 +361,8 @@
                           KeywordValue = "<span>" + acquisition.value + "</span>";
                        } // If catch error, the string is not a JSON String
 
-                       LastStateValue = "<span>" + DateTimeFormatter.isoDateToString(acquisition.date) + "</span>";
+                       var acquisitionDate = isNullOrUndefinedOrEmpty(acquisition.date) ? $.t("modals.dashboard.sub-windows.devices.noAcquisition") : DateTimeFormatter.isoDateToString(acquisition.date);
+                       LastStateValue = "<span>" + acquisitionDate + "</span>";
 
                        $keywordRow.find("td.keyword-value").html( KeywordValue );
                        $keywordRow.find("td.keyword-update").html( LastStateValue );
