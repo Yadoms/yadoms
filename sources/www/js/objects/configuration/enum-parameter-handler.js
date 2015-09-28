@@ -78,7 +78,14 @@ EnumParameterHandler.prototype.updateValues = function () {
       var line = "<option value=\"" + key + "\"";
       if (key == self.value)
          line += " selected";
-      line += " >" + $.t( self.i18nContext + self.paramName + ".values." + key ) + "</option>";
+	 
+		 if ( i18n.exists( self.i18nContext + self.paramName + ".values." + key ) ){
+			 line += " >" + $.t( self.i18nContext + self.paramName + ".values." + key ) + "</option>";
+		 }
+		 else{ //if the precedent line doesn't exist into the i18n we are in the case of binding. So we have to display the "value"
+			 line += " >" + value + "</option>";
+		 }
+	  
       $select.append(line);
    });
 };
