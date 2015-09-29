@@ -16,7 +16,7 @@ CLocation::CLocation(boost::shared_ptr<dataAccessLayer::IConfigurationManager> c
    shared::CDataContainer location;
    try
    {
-      location = m_configurationManager->getConfiguration("system", "location")->Value;
+      location = m_configurationManager->getConfiguration("system", "location")->Value();
    }
    catch (shared::exception::CEmptyResult&)
    {
@@ -53,7 +53,7 @@ void CLocation::updateLocation(const shared::CDataContainer& location) const
 
 shared::CDataContainer CLocation::getLocation() const
 {
-   return m_configurationManager->getConfiguration("system", "location")->Value;
+   return m_configurationManager->getConfiguration("system", "location")->Value();
 }
 
 double CLocation::latitude() const
