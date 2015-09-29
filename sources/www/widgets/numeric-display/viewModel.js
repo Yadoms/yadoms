@@ -27,7 +27,7 @@ function NumericDisplayViewModel() {
     */   
    
    this.fontStyleCSS = ko.computed(function() {
-	   return {"font-size": this.fontSize() + "px"};
+	   return {"fontSize": this.fontSize() + "px"};
    }, this );
    
    this.configurationChanged = function() {
