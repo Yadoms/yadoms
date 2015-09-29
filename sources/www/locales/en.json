@@ -312,8 +312,8 @@
 					"delete": "Delete the device",
 					"confirmDeviceDeletion": "This action will delete the device __deviceName__ and all of its data. Continue anyway ?",
 					"errorGettingDeviceList": "An error has occurred acquiring device list",
-					"errorGettingDeviceDetailsList": "An error has occurred acquiring device details list"
-               "noAcquisition": "No acquisition"
+					"errorGettingDeviceDetailsList": "An error has occurred acquiring device details list",
+                    "noAcquisition": "No acquisition"
 				},
 				"automation-center": {
 					"title": "Automation center",
