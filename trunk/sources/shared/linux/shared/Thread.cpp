@@ -16,7 +16,8 @@ CThread::~CThread()
 
 void CThread::killThread(pthread_t hThread)
 {
-   pthread_kill(hThread, 9);
+   // I don't know how to kill a thread without killing the process,
+   // so prefer to kill nothing !
 }
 
 } // namespace shared
