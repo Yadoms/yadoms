@@ -4,16 +4,17 @@
 #include <shared/Log.h>
 #include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/Exception.hpp>
+#include <shared/exception/EmptyResult.hpp>
 #include <shared/plugin/yPluginApi/historization/Historizers.h>
 #include "../../IApplicationStopHandler.h"
 #include <shared/ServiceLocator.h>
+#include "automation/script/IObjectFactory.h"
 #include <server/automation/script/DayLight.h>
 
 namespace pluginSystem {
    namespace internalPlugin {
 
-   CSystem::CSystem(boost::shared_ptr<automation::script::IDayLight> dayLightProvider)
-      :m_dayLightProvider(dayLightProvider)
+   CSystem::CSystem()
    {
    }
 
@@ -45,9 +46,6 @@ namespace pluginSystem {
          yApi::historization::CSwitch keywordDaylight("daylight", shared::plugin::yPluginApi::EKeywordAccessMode::kGet);
 
          // Device creation if needed
-         if (!context->deviceExists(systemDevice))
-            context->declareDevice(systemDevice, "yadoms system");
-
          if (!context->deviceExists(systemDevice))
             context->declareDevice(systemDevice, "yadoms system");
 
@@ -136,8 +134,19 @@ namespace pluginSystem {
    {
       boost::posix_time::ptime now = shared::event::now();
 
-      boost::posix_time::ptime sunrise = m_dayLightProvider->sunriseTime();
-      boost::posix_time::ptime sunset = m_dayLightProvider->sunsetTime();
+      boost::shared_ptr<automation::script::IDayLight> dayLightProvider;
+      try
+      {
+         dayLightProvider = shared::CServiceLocator::instance().get<automation::script::IObjectFactory>()->getDayLight();
+      }
+      catch (shared::exception::CEmptyResult&)
+      {
+         YADOMS_LOG(error) << "Sunrise and sunset time are not available (did you provide your location ?)";
+         return false;
+      }
+
+      boost::posix_time::ptime sunrise = dayLightProvider->sunriseTime();
+      boost::posix_time::ptime sunset = dayLightProvider->sunsetTime();
 
       createSunEventTimer(eventHandler, kEvtTimerForSunrise, now, sunrise);
       createSunEventTimer(eventHandler, kEvtTimerForSunset, now, sunset);

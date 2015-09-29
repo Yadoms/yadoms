@@ -4,7 +4,7 @@
 // yadoms-plugin factory
 //
 #pragma once
-#include "Factory.h"
+#include "ILibrary.h"
 #include <shared/DynamicLibrary.h>
 #include <shared/plugin/IPlugin.h>
 #include <shared/plugin/information/IInformation.h>
@@ -16,7 +16,7 @@ namespace pluginSystem
    //--------------------------------------------------------------
    /// \brief	this class is used to load a plugin file library and construct instance
    //--------------------------------------------------------------
-   class CExternalPluginFactory : public shared::CDynamicLibrary, public IFactory
+   class CExternalPluginLibrary : public shared::CDynamicLibrary, public ILibrary
    {
    public:
       //--------------------------------------------------------------
@@ -33,23 +33,23 @@ namespace pluginSystem
       /// \param [in] libraryPath: the plugin path
       /// \throw      CInvalidPluginException if plugin is not recognized
       //--------------------------------------------------------------
-      CExternalPluginFactory(const boost::filesystem::path& libraryPath);
+      CExternalPluginLibrary(const boost::filesystem::path& libraryPath);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
-      virtual ~CExternalPluginFactory();
+      virtual ~CExternalPluginLibrary();
 
-      // IFactory implementation
+      // ILibrary implementation
       virtual shared::plugin::IPlugin* construct() const;
       virtual const boost::filesystem::path& getLibraryPath() const;
       virtual boost::shared_ptr<const shared::plugin::information::IInformation> getInformation() const;
-      // [END] IFactory implementation
+      // [END] ILibrary implementation
 
    private:
       //--------------------------------------------------------------
       /// \brief	Warning remove (clang)    
-      ///         Explicitly tells the compiler that CExternalPluginFactory::load do not attend to override shared::CDynamicLibrary::load
+      ///         Explicitly tells the compiler that CExternalPluginLibrary::load do not attend to override shared::CDynamicLibrary::load
       //--------------------------------------------------------------
       using shared::CDynamicLibrary::load;
       

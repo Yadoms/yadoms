@@ -237,14 +237,13 @@ set(YADOMS_SRC
    
 	server/automation/script/DayLight.h
 	server/automation/script/DayLight.cpp
-	server/automation/script/Factory.h
-	server/automation/script/Factory.cpp
 	server/automation/script/GeneralInfo.h
 	server/automation/script/GeneralInfo.cpp
 	server/automation/script/IAutoLocation.h
 	server/automation/script/IDayLight.h
-	server/automation/script/IFactory.h
 	server/automation/script/ILocation.h
+	server/automation/script/IManager.h
+   server/automation/script/IObjectFactory.h
 	server/automation/script/IGeneralInfo.h
    server/automation/script/IInternalScriptApiImplementation.h
 	server/automation/script/IInterpreterLibrary.h
@@ -260,6 +259,10 @@ set(YADOMS_SRC
 	server/automation/script/Location.cpp
 	server/automation/script/Logger.h
 	server/automation/script/Logger.cpp
+	server/automation/script/Manager.h
+	server/automation/script/Manager.cpp
+   server/automation/script/ObjectFactory.h
+   server/automation/script/ObjectFactory.cpp
 	server/automation/script/Properties.h
 	server/automation/script/Properties.cpp
 	server/automation/script/YScriptApiImplementation.h
@@ -329,6 +332,7 @@ set(YADOMS_SRC
 	server/pluginSystem/DummyQualifier.cpp
 	server/pluginSystem/IdentityForQualifier.cpp
 	server/pluginSystem/IdentityForQualifier.h
+	server/pluginSystem/ILibrary.h
 	server/pluginSystem/IndicatorQualifier.h
 	server/pluginSystem/IndicatorQualifier.cpp
 	server/pluginSystem/Information.cpp
@@ -337,11 +341,10 @@ set(YADOMS_SRC
 	server/pluginSystem/Instance.cpp
 	server/pluginSystem/IQualifier.h
 	server/pluginSystem/InvalidPluginException.hpp
-	server/pluginSystem/Factory.h
-	server/pluginSystem/InternalPluginFactory.h
-	server/pluginSystem/InternalPluginFactory.cpp
-	server/pluginSystem/ExternalPluginFactory.h
-	server/pluginSystem/ExternalPluginFactory.cpp
+	server/pluginSystem/InternalPluginLibrary.h
+	server/pluginSystem/InternalPluginLibrary.cpp
+	server/pluginSystem/ExternalPluginLibrary.h
+	server/pluginSystem/ExternalPluginLibrary.cpp
 	server/pluginSystem/Manager.h
 	server/pluginSystem/Manager.cpp
 	server/pluginSystem/ManagerEvent.h

@@ -1,7 +1,7 @@
 #pragma once
 #include "ILocation.h"
-#include "../../dataAccessLayer/IConfigurationManager.h"
-#include "IAutoLocation.h"
+#include "dataAccessLayer/IConfigurationManager.h"
+#include "IObjectFactory.h"
 
 namespace automation { namespace script
 {
@@ -14,6 +14,7 @@ namespace automation { namespace script
       //-----------------------------------------------------
       ///\brief               Constructor
       ///\param[in] configurationManager  Configuration manager (to gain access to Yadoms configuration from rules scripts)
+      /// \throw shared::exception::CEmptyResult if location is undefined
       //-----------------------------------------------------
       CLocation(boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager);
 
@@ -29,20 +30,14 @@ namespace automation { namespace script
       virtual double altitude() const;
       // [END] ILocation Implementation
 
-
-      //--------------------------------------------------------------
-      /// \brief           Create an auto-location service
-      /// \return the auto-location service created
-      /// \throw shared::exception::CEmptyResult if fails
-      //--------------------------------------------------------------
-      boost::shared_ptr<IAutoLocation> createAutoLocationService() const;
-
+      
       //--------------------------------------------------------------
       /// \brief           Try to auto locate
+      ///\param[in] factory  Object factory
       /// \return the acquired location
       /// \throw shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      shared::CDataContainer tryAutoLocate() const;
+      shared::CDataContainer tryAutoLocate(boost::shared_ptr<IObjectFactory> factory) const;
 
       //--------------------------------------------------------------
       /// \brief           Update the current location in database

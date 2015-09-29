@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "Location.h"
+#include <shared/ServiceLocator.h>
+#include "IObjectFactory.h"
 #include <shared/Log.h>
 #include <shared/exception/EmptyResult.hpp>
 #include "IpApiAutoLocation.h"
@@ -11,24 +13,31 @@ namespace automation { namespace script
 CLocation::CLocation(boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager)
    :m_configurationManager(configurationManager)
 {
+   shared::CDataContainer location;
+   try
+   {
+      location = m_configurationManager->getConfiguration("system", "location")->Value;
+   }
+   catch (shared::exception::CEmptyResult&)
+   {
+      // Not found in database ==> let location empty
+   }
+
+   if (location.empty())
+   {
+      YADOMS_LOG(information) << "Location was not found in database, try to auto-locate...";
+      tryAutoLocate(shared::CServiceLocator::instance().get<IObjectFactory>());// will throw shared::exception::CEmptyResult if unable to autolocate
+   }
 }
 
 CLocation::~CLocation()
 {         
 }
 
-boost::shared_ptr<IAutoLocation> CLocation::createAutoLocationService() const
+shared::CDataContainer CLocation::tryAutoLocate(boost::shared_ptr<IObjectFactory> factory) const
 {
-   // Use ip-api service to try to auto-locate (need an internet connexion)
-   boost::shared_ptr<IAutoLocation> service(new CIpApiAutoLocation);
-   return service;
-}
-
-shared::CDataContainer CLocation::tryAutoLocate() const
-{
-   boost::shared_ptr<IAutoLocation> autoLocationService = createAutoLocationService();
+   boost::shared_ptr<IAutoLocation> autoLocationService = factory->getAutoLocationService();
    shared::CDataContainer foundLocation = autoLocationService->tryAutoLocate();
-   //TODO en cas d'échec, prendre une position par défaut par rapport au TZ de la machine
    updateLocation(foundLocation);
    return foundLocation;
 }
@@ -44,18 +53,7 @@ void CLocation::updateLocation(const shared::CDataContainer& location) const
 
 shared::CDataContainer CLocation::getLocation() const
 {
-   try
-   {
-      const shared::CDataContainer location(m_configurationManager->getConfiguration("system", "location")->Value);
-      if (location.empty())
-         throw shared::exception::CEmptyResult("Location is empty in database");
-      return shared::CDataContainer(location);
-   }
-   catch (shared::exception::CEmptyResult&)
-   {
-      YADOMS_LOG(information) << "Location was not found in database, try to auto-locate...";
-      return tryAutoLocate();
-   }
+   return m_configurationManager->getConfiguration("system", "location")->Value;
 }
 
 double CLocation::latitude() const

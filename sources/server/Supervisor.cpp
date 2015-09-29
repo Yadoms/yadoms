@@ -1,5 +1,6 @@
 ﻿#include "stdafx.h"
 #include "Supervisor.h"
+#include "automation/script/ObjectFactory.h"
 #include "pluginSystem/Manager.h"
 #include "database/sqlite/SQLiteDataProvider.h"
 #include <shared/Log.h>
@@ -26,8 +27,6 @@
 #include "automation/RuleManager.h"
 #include <shared/ServiceLocator.h>
 #include "startupOptions/IStartupOptions.h"
-#include <server/automation/script/DayLight.h>
-#include <server/automation/script/Location.h>
 
 CSupervisor::CSupervisor(boost::shared_ptr<shared::event::CEventHandler> applicationEventHandler, const int applicationStopCode)
    :m_EventHandler(new shared::event::CEventHandler), m_applicationEventHandler(applicationEventHandler), m_applicationStopCode(applicationStopCode)
@@ -47,6 +46,7 @@ void CSupervisor::run()
    boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dal;
    try
    {
+      shared::CServiceLocator::instance().push<automation::script::IObjectFactory>(boost::make_shared<automation::script::ObjectFactory>());
 
       //create the notification center
       boost::shared_ptr<notification::CNotificationCenter> notificationCenter(new notification::CNotificationCenter);
@@ -58,12 +58,11 @@ void CSupervisor::run()
       //start database system
       boost::shared_ptr<database::IDataProvider> pDataProvider(new database::sqlite::CSQLiteDataProvider(startupOptions->getDatabaseFile()));
       if (!pDataProvider->load())
-      {
          throw shared::exception::CException("Fail to load database");
-      }
 
       //create the data access layer
       dal.reset(new dataAccessLayer::CDataAccessLayer(pDataProvider));
+      shared::CServiceLocator::instance().push<dataAccessLayer::IDataAccessLayer>(dal);
 
       // Start Task manager
       boost::shared_ptr<task::CScheduler> taskManager(new task::CScheduler(m_EventHandler, kSystemEvent));
@@ -75,9 +74,7 @@ void CSupervisor::run()
       // Create the Plugin manager
       const std::string pluginsPath = startupOptions->getPluginsPath();
       boost::shared_ptr<pluginSystem::CManager> pluginManager(new pluginSystem::CManager(
-         pluginsPath, pDataProvider, dal,
-         boost::make_shared<automation::script::CDayLight>(boost::make_shared<automation::script::CLocation>(automation::script::CLocation(dal->getConfigurationManager()))),
-         m_EventHandler, kPluginManagerEvent));
+         pluginsPath, pDataProvider, dal, m_EventHandler, kPluginManagerEvent));
       shared::CServiceLocator::instance().push<pluginSystem::CManager>(pluginManager);
 
       // Start the plugin gateway

@@ -10,9 +10,9 @@ namespace automation
 const boost::chrono::milliseconds CRule::m_MinRuleDuration(1000);
 
 CRule::CRule(boost::shared_ptr<const database::entities::CRule> ruleData,
-   boost::shared_ptr<script::IFactory> scriptFactory, boost::shared_ptr<IRuleStateHandler> ruleStateHandler)
+   boost::shared_ptr<script::IManager> scriptManager, boost::shared_ptr<IRuleStateHandler> ruleStateHandler)
    :m_ruleData(ruleData),
-   m_scriptFactory(scriptFactory),
+   m_scriptManager(scriptManager),
    m_ruleStateHandler(ruleStateHandler)
 {
 }
@@ -39,15 +39,15 @@ void CRule::doWork()
 {
    try
    {
-      boost::shared_ptr<script::IProperties> scriptProperties = m_scriptFactory->createScriptProperties(m_ruleData);
-      boost::shared_ptr<shared::script::ILogger> scriptLogger = m_scriptFactory->createScriptLogger(scriptProperties->scriptPath());
-      boost::shared_ptr<script::IInternalScriptApiImplementation> context = m_scriptFactory->createScriptContext(scriptLogger);
+      boost::shared_ptr<script::IProperties> scriptProperties = m_scriptManager->createScriptProperties(m_ruleData);
+      boost::shared_ptr<shared::script::ILogger> scriptLogger = m_scriptManager->createScriptLogger(scriptProperties->scriptPath());
+      boost::shared_ptr<script::IInternalScriptApiImplementation> context = m_scriptManager->createScriptContext(scriptLogger);
 
       // Loop on the script.
       do
       {
          m_runner.reset();
-         m_runner = m_scriptFactory->createScriptRunner(scriptProperties);
+         m_runner = m_scriptManager->createScriptRunner(scriptProperties);
 
          boost::chrono::system_clock::time_point start = boost::chrono::system_clock::now();
 

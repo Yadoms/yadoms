@@ -2,7 +2,7 @@
 #include "IRuleManager.h"
 #include "IRule.h"
 #include "IRuleStateHandler.h"
-#include "script/IFactory.h"
+#include "script/IManager.h"
 #include "../communication/ISendMessageAsync.h"
 #include "notification/NotificationCenter.h"
 #include "database/IAcquisitionRequester.h"
@@ -106,9 +106,9 @@ namespace automation
       boost::shared_ptr<database::IRuleRequester> m_dbRequester;
 
       //-----------------------------------------------------
-      ///\brief               The script  factory
+      ///\brief               The script manager
       //-----------------------------------------------------
-      boost::shared_ptr<script::IFactory> m_scriptFactory;
+      boost::shared_ptr<script::IManager> m_scriptManager;
 
       //-----------------------------------------------------
       ///\brief               The started rules list

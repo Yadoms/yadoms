@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "GeneralInfo.h"
+#include <shared/ServiceLocator.h>
+#include "IObjectFactory.h"
 #include "DayLight.h"
-#include "Location.h"
 #include <shared/Log.h>
 #include <shared/exception/InvalidParameter.hpp>
 #include <shared/exception/EmptyResult.hpp>
@@ -11,10 +12,7 @@
 namespace automation { namespace script
 {
 
-CGeneralInfo::CGeneralInfo(boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager)
-   :m_location(new CLocation(configurationManager)),
-   m_dayLight(new CDayLight(m_location)),
-   m_runningInformation(shared::CServiceLocator::instance().get<IRunningInformation>())
+CGeneralInfo::CGeneralInfo()
 {
 }
 
@@ -24,17 +22,35 @@ CGeneralInfo::~CGeneralInfo()
 
 std::string CGeneralInfo::get(shared::script::yScriptApi::IYScriptApi::EInfoKeys key) const
 {
-   switch (key)
+   try
    {
-   case shared::script::yScriptApi::IYScriptApi::kSunrise: return CDayLight::formatSunEventTime(m_dayLight->sunriseTime());
-   case shared::script::yScriptApi::IYScriptApi::kSunset: return CDayLight::formatSunEventTime(m_dayLight->sunsetTime());
-   case shared::script::yScriptApi::IYScriptApi::kLatitude: return shared::CStringExtension::cultureInvariantToString(m_location->latitude());
-   case shared::script::yScriptApi::IYScriptApi::kLongitude: return shared::CStringExtension::cultureInvariantToString(m_location->longitude());
-   case shared::script::yScriptApi::IYScriptApi::kAltitude: return shared::CStringExtension::cultureInvariantToString(m_location->altitude());
-   case shared::script::yScriptApi::IYScriptApi::kYadomsServerOS: return m_runningInformation->getOperatingSystemName();
-   case shared::script::yScriptApi::IYScriptApi::kYadomsServerVersion: return m_runningInformation->getSoftwareVersion().toString();
-   default:
-      throw shared::exception::COutOfRange((boost::format("Key %1% doesn't exist") % key).str());
+      boost::shared_ptr<IObjectFactory> objectFactory = shared::CServiceLocator::instance().get<IObjectFactory>();
+
+      switch (key)
+      {
+      case shared::script::yScriptApi::IYScriptApi::kSunrise:
+      {
+         try { return CDayLight::formatSunEventTime(objectFactory->getDayLight()->sunriseTime()); }
+         catch (shared::exception::CEmptyResult&) { YADOMS_LOG(error) << "General info, get sunrise : daylight is not available (do you set your location ?)"; return std::string(); }
+      }
+      case shared::script::yScriptApi::IYScriptApi::kSunset:
+      {
+         try { return CDayLight::formatSunEventTime(objectFactory->getDayLight()->sunsetTime()); }
+         catch (shared::exception::CEmptyResult&) { YADOMS_LOG(error) << "General info, get sunset : daylight is not available (do you set your location ?)"; return std::string(); }
+      }
+      case shared::script::yScriptApi::IYScriptApi::kLatitude: return shared::CStringExtension::cultureInvariantToString(objectFactory->getLocation()->latitude());
+      case shared::script::yScriptApi::IYScriptApi::kLongitude: return shared::CStringExtension::cultureInvariantToString(objectFactory->getLocation()->longitude());
+      case shared::script::yScriptApi::IYScriptApi::kAltitude: return shared::CStringExtension::cultureInvariantToString(objectFactory->getLocation()->altitude());
+      case shared::script::yScriptApi::IYScriptApi::kYadomsServerOS: return shared::CServiceLocator::instance().get<IRunningInformation>()->getOperatingSystemName();
+      case shared::script::yScriptApi::IYScriptApi::kYadomsServerVersion: return shared::CServiceLocator::instance().get<IRunningInformation>()->getSoftwareVersion().toString();
+      default:
+         throw shared::exception::COutOfRange((boost::format("Key %1% doesn't exist") % key).str());
+      }
+   }
+   catch (shared::exception::CException& e)
+   {
+      YADOMS_LOG(error) << "General info, get " << key << " returning error : " << e.what();
+      return std::string();
    }
 }
 

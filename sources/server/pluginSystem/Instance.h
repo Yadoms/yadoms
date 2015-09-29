@@ -9,7 +9,7 @@
 #include <shared/event/EventHandler.hpp>
 #include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
 #include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
-#include "Factory.h"
+#include "ILibrary.h"
 #include "ManagerEvent.h"
 #include "IQualifier.h"
 #include "yPluginApiImplementation.h"
@@ -43,7 +43,7 @@ namespace pluginSystem
       /// \param [in]   supervisor                 the supervisor event handler
       /// \param [in]   pluginManagerEventId       The ID to use to send events to supervisor
       //--------------------------------------------------------------
-      CInstance(const boost::shared_ptr<const IFactory> plugin, const boost::shared_ptr<const database::entities::CPlugin> pluginData,
+      CInstance(const boost::shared_ptr<const ILibrary> plugin, const boost::shared_ptr<const database::entities::CPlugin> pluginData,
          boost::shared_ptr<database::IPluginEventLoggerRequester> pluginEventLoggerRequester,
          boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
          boost::shared_ptr<database::IKeywordRequester> keywordRequester,
@@ -98,7 +98,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief			The plugin used for this instance
       //--------------------------------------------------------------
-      const boost::shared_ptr<const IFactory> m_pPlugin;
+      const boost::shared_ptr<const ILibrary> m_pPlugin;
 
       //--------------------------------------------------------------
       /// \brief			The plugin instance

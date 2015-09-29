@@ -1,25 +1,24 @@
 //
-// Factory.h
+// ILibrary.h
 //
-// yadoms-plugin factory
+// yadoms-plugin library
 //
 #pragma once
 
 
 #include <shared/plugin/IPlugin.h>
 #include <shared/plugin/information/IInformation.h>
-#include "InvalidPluginException.hpp"
 
 namespace pluginSystem
 {
 
-   class IFactory 
+   class ILibrary 
    {
    public:
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
-      virtual ~IFactory()
+      virtual ~ILibrary()
       {
       }
 
