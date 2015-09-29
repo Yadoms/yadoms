@@ -3,7 +3,7 @@
 #include "RuleStateHandler.h"
 #include "database/IRuleRequester.h"
 #include "Rule.h"
-#include "script/Factory.h"
+#include "script/Manager.h"
 #include <shared/exception/EmptyResult.hpp>
 #include <shared/Log.h>
 #include "RuleException.hpp"
@@ -20,7 +20,7 @@ CRuleManager::CRuleManager(boost::shared_ptr<database::IRuleRequester> dbRequest
    boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
    boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger, boost::shared_ptr<shared::event::CEventHandler> supervisor, int ruleManagerEventId)
    :m_dbRequester(dbRequester),
-   m_scriptFactory(new script::CFactory("scriptInterpreters", pluginGateway, configurationManager, dbAcquisitionRequester, dbDeviceRequester, dbKeywordRequester, dbRecipientRequester)),
+   m_scriptManager(new script::CManager("scriptInterpreters", pluginGateway, configurationManager, dbAcquisitionRequester, dbDeviceRequester, dbKeywordRequester, dbRecipientRequester)),
    m_ruleStateHandler(new CRuleStateHandler(dbRequester, eventLogger, supervisor, ruleManagerEventId))
 {
    startAllRules();
@@ -61,7 +61,7 @@ bool CRuleManager::startRules(const std::vector<boost::shared_ptr<database::enti
 
 std::vector<std::string> CRuleManager::getAvailableInterpreters()
 {
-   return m_scriptFactory->getAvailableInterpreters();
+   return m_scriptManager->getAvailableInterpreters();
 }
 
 void CRuleManager::startRule(int ruleId)
@@ -78,7 +78,7 @@ void CRuleManager::startRule(int ruleId)
 
       m_ruleStateHandler->signalRuleStart(ruleId);
 
-      boost::shared_ptr<IRule> newRule(new CRule(ruleData, m_scriptFactory, m_ruleStateHandler));
+      boost::shared_ptr<IRule> newRule(new CRule(ruleData, m_scriptManager, m_ruleStateHandler));
       m_startedRules[ruleId] = newRule;
       newRule->start();
    }
@@ -131,7 +131,7 @@ int CRuleManager::createRule(boost::shared_ptr<const database::entities::CRule> 
    boost::shared_ptr<database::entities::CRule> updatedRuleData = m_dbRequester->getRule(ruleId);
 
    // Create script file
-   m_scriptFactory->updateScriptFile(updatedRuleData, code);
+   m_scriptManager->updateScriptFile(updatedRuleData, code);
 
    // Start the rule
    startRule(ruleId);
@@ -149,7 +149,7 @@ std::string CRuleManager::getRuleCode(int id) const
    try
    {
       boost::shared_ptr<database::entities::CRule> ruleData(m_dbRequester->getRule(id));
-      return m_scriptFactory->getScriptFile(ruleData);
+      return m_scriptManager->getScriptFile(ruleData);
    }
    catch(shared::exception::CEmptyResult& e)
    {
@@ -163,7 +163,7 @@ std::string CRuleManager::getRuleLog(int id) const
    try
    {
       boost::shared_ptr<database::entities::CRule> ruleData(m_dbRequester->getRule(id));
-      return m_scriptFactory->getScriptLogFile(ruleData);
+      return m_scriptManager->getScriptLogFile(ruleData);
    }
    catch(shared::exception::CEmptyResult& e)
    {
@@ -209,7 +209,7 @@ void CRuleManager::updateRuleCode(int id, const std::string& code)
 
    // Update script file
    boost::shared_ptr<database::entities::CRule> ruleData(m_dbRequester->getRule(id));
-   m_scriptFactory->updateScriptFile(ruleData, code);
+   m_scriptManager->updateScriptFile(ruleData, code);
 
    // Restart rule
    startRule(id);
@@ -228,7 +228,7 @@ void CRuleManager::deleteRule(int id)
       m_dbRequester->deleteRule(id);
 
       // Remove script file
-      m_scriptFactory->deleteScriptFile(ruleData);
+      m_scriptManager->deleteScriptFile(ruleData);
    }
    catch (shared::exception::CException& e)
    {
@@ -289,7 +289,7 @@ void CRuleManager::stopAllRulesMatchingInterpreter(const std::string & interpret
    }
 
    // We can unload the interpreter as it is not used anymore (will be automaticaly re-loaded when needed by a rule)
-   m_scriptFactory->unloadInterpreter(interpreterName);
+   m_scriptManager->unloadInterpreter(interpreterName);
 }
 
 void CRuleManager::deleteAllRulesMatchingInterpreter(const std::string & interpreterName)
@@ -299,7 +299,7 @@ void CRuleManager::deleteAllRulesMatchingInterpreter(const std::string & interpr
       deleteRule((*interpreterRule)->Id());
 
    // We can unload the interpreter as it is not used anymore (will be automaticaly re-loaded when needed by a rule)
-   m_scriptFactory->unloadInterpreter(interpreterName);
+   m_scriptManager->unloadInterpreter(interpreterName);
 }
 
 

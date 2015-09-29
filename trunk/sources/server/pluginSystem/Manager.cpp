@@ -12,8 +12,8 @@
 #include <shared/exception/EmptyResult.hpp>
 #include <shared/ServiceLocator.h>
 
-#include "ExternalPluginFactory.h"
-#include "InternalPluginFactory.h"
+#include "ExternalPluginLibrary.h"
+#include "InternalPluginLibrary.h"
 
 #include <shared/Log.h>
 
@@ -24,7 +24,6 @@ CManager::CManager(
    const std::string& initialDir,
    boost::shared_ptr<database::IDataProvider> dataProvider,
    boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
-   boost::shared_ptr<automation::script::IDayLight> dayLightProvider,
    boost::shared_ptr<shared::event::CEventHandler> supervisor,
    int pluginManagerEventId)
    :m_dataProvider(dataProvider), m_pluginDBTable(dataProvider->getPluginRequester()), m_pluginPath(initialDir),
@@ -33,7 +32,7 @@ CManager::CManager(
 #else
    m_qualifier(new CIndicatorQualifier(dataProvider->getPluginEventLoggerRequester(), dataAccessLayer->getEventLogger())),
 #endif
-   m_supervisor(supervisor), m_pluginManagerEventId(pluginManagerEventId), m_dataAccessLayer(dataAccessLayer), m_dayLightProvider(dayLightProvider)
+   m_supervisor(supervisor), m_pluginManagerEventId(pluginManagerEventId), m_dataAccessLayer(dataAccessLayer)
 {
 }
 
@@ -107,7 +106,7 @@ std::vector<boost::filesystem::path> CManager::findPluginDirectories()
    return plugins;
 }
 
-boost::shared_ptr<IFactory> CManager::loadPlugin(const std::string& pluginName)
+boost::shared_ptr<ILibrary> CManager::loadPlugin(const std::string& pluginName)
 {
    boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
 
@@ -121,7 +120,7 @@ boost::shared_ptr<IFactory> CManager::loadPlugin(const std::string& pluginName)
       throw CInvalidPluginException(pluginName);   // Invalid plugin
 
    // Load the plugin
-   boost::shared_ptr<IFactory> pNewFactory(new CExternalPluginFactory(toPath(pluginName)));
+   boost::shared_ptr<ILibrary> pNewFactory(new CExternalPluginLibrary(toPath(pluginName)));
    m_loadedPlugins[pluginName] = pNewFactory;
 
    // Signal qualifier that a plugin was loaded
@@ -176,7 +175,7 @@ void CManager::buildAvailablePluginList()
             m_availablePlugins[pluginName] = m_loadedPlugins[pluginName]->getInformation();
          else
          {
-            boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation = CExternalPluginFactory::getInformation(toPath(pluginName));
+            boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation = CExternalPluginLibrary::getInformation(toPath(pluginName));
             if (pluginInformation->isSupportedOnThisPlatform())
                m_availablePlugins[pluginName] = pluginInformation;
             else
@@ -401,7 +400,7 @@ void CManager::startInstance(int id)
       boost::shared_ptr<database::entities::CPlugin> databasePluginInstance(m_pluginDBTable->getInstance(id));
 
       // Load the plugin
-      boost::shared_ptr<IFactory> plugin(loadPlugin(databasePluginInstance->Type()));
+      boost::shared_ptr<ILibrary> plugin(loadPlugin(databasePluginInstance->Type()));
 
       // Create instance
       BOOST_ASSERT(plugin); // Plugin not loaded
@@ -454,7 +453,7 @@ void CManager::startInternalPlugin()
 
 
       // Load the plugin
-      boost::shared_ptr<IFactory> plugin(new CInternalPluginFactory(m_dayLightProvider));
+      boost::shared_ptr<ILibrary> plugin(new CInternalPluginLibrary());
 
       // Create instance
       BOOST_ASSERT(plugin); // Plugin not loaded

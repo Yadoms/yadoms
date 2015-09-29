@@ -10,13 +10,13 @@ namespace automation { namespace script
    //-----------------------------------------------------
    ///\brief The script factory interface
    //-----------------------------------------------------
-   class IFactory
+   class IManager
    {
    public:
       //-----------------------------------------------------
       ///\brief               Destructor
       //-----------------------------------------------------
-      virtual ~IFactory() {}
+      virtual ~IManager() {}
 
       //-----------------------------------------------------
       ///\brief               Get available interpreters (as user-friendly names)

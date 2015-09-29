@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "ExternalPluginFactory.h"
+#include "ExternalPluginLibrary.h"
 #include "pluginSystem/Information.h"
 #include <shared/StringExtension.h>
 #include <shared/exception/Exception.hpp>
@@ -8,18 +8,18 @@
 namespace pluginSystem
 {
 
-CExternalPluginFactory::CExternalPluginFactory(const boost::filesystem::path& libraryPath)
+CExternalPluginLibrary::CExternalPluginLibrary(const boost::filesystem::path& libraryPath)
    :m_libraryPath(libraryPath), m_information(getInformation(libraryPath)), m_construct(NULL)
 {
    load();
 }
 
-CExternalPluginFactory::~CExternalPluginFactory()
+CExternalPluginLibrary::~CExternalPluginLibrary()
 {
    unload();
 }
 
-void CExternalPluginFactory::load()
+void CExternalPluginLibrary::load()
 {
    // Load the plugin library (platform-specific)
    if (!shared::CDynamicLibrary::load(m_libraryPath.string()))
@@ -53,12 +53,12 @@ void CExternalPluginFactory::load()
    YADOMS_LOG(information) << "Plugin loaded : " << getInformation()->toString();
 }
 
-void CExternalPluginFactory::unload()
+void CExternalPluginLibrary::unload()
 {
    shared::CDynamicLibrary::unload();
 }
 
-shared::plugin::IPlugin* CExternalPluginFactory::construct() const
+shared::plugin::IPlugin* CExternalPluginLibrary::construct() const
 {
 	BOOST_ASSERT(m_construct);  // construct can not be called if load was unsuccessfully
    if(m_construct != NULL)
@@ -66,12 +66,12 @@ shared::plugin::IPlugin* CExternalPluginFactory::construct() const
 	return NULL;
 }
 
-const boost::filesystem::path& CExternalPluginFactory::getLibraryPath() const
+const boost::filesystem::path& CExternalPluginLibrary::getLibraryPath() const
 {
    return m_libraryPath;
 }
 
-boost::shared_ptr<const shared::plugin::information::IInformation> CExternalPluginFactory::getInformation() const
+boost::shared_ptr<const shared::plugin::information::IInformation> CExternalPluginLibrary::getInformation() const
 {
    return m_information;
 }
@@ -81,7 +81,7 @@ boost::shared_ptr<const shared::plugin::information::IInformation> CExternalPlug
 /// Static functions
 //-------------------------------------------------------------
 
-boost::shared_ptr<const shared::plugin::information::IInformation> CExternalPluginFactory::getInformation(const boost::filesystem::path& libraryPath)
+boost::shared_ptr<const shared::plugin::information::IInformation> CExternalPluginLibrary::getInformation(const boost::filesystem::path& libraryPath)
 {
    try
    {

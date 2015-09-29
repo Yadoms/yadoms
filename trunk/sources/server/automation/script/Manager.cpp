@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Factory.h"
+#include "Manager.h"
 #include "InterpreterNotFound.hpp"
 #include <shared/Log.h>
 #include <shared/exception/InvalidParameter.hpp>
@@ -16,7 +16,7 @@
 namespace automation { namespace script
 {
 
-CFactory::CFactory(const std::string& interpretersPath,
+CManager::CManager(const std::string& interpretersPath,
       boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
       boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
       boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
@@ -30,15 +30,15 @@ CFactory::CFactory(const std::string& interpretersPath,
    m_dbDeviceRequester(dbDeviceRequester),
    m_dbKeywordRequester(dbKeywordRequester),
    m_dbRecipientRequester(dbRecipientRequester),
-   m_generalInfo(new CGeneralInfo(configurationManager))
+   m_generalInfo(new CGeneralInfo())
 {
 }
 
-CFactory::~CFactory()
+CManager::~CManager()
 {         
 }
 
-void CFactory::loadInterpreters()
+void CManager::loadInterpreters()
 {
    boost::lock_guard<boost::recursive_mutex> lock(m_loadedInterpretersMutex);
 
@@ -69,7 +69,7 @@ void CFactory::loadInterpreters()
    }
 }
 
-bool CFactory::isInterpreterCompatibleWithPlatform(const std::string& interpreterName) const
+bool CManager::isInterpreterCompatibleWithPlatform(const std::string& interpreterName) const
 {
    shared::CDataContainer container;
    try
@@ -86,7 +86,7 @@ bool CFactory::isInterpreterCompatibleWithPlatform(const std::string& interprete
    return tools::CSupportedPlatformsChecker::isSupported(container.get<shared::CDataContainer>("supportedPlatforms"));
 }
 
-boost::filesystem::path CFactory::toLibraryPath(const std::string& interpreterName) const
+boost::filesystem::path CManager::toLibraryPath(const std::string& interpreterName) const
 {
    boost::filesystem::path path(m_interpretersPath);
    path /= interpreterName;
@@ -94,7 +94,7 @@ boost::filesystem::path CFactory::toLibraryPath(const std::string& interpreterNa
    return path;
 }
 
-std::vector<boost::filesystem::path> CFactory::findInterpreterDirectories()
+std::vector<boost::filesystem::path> CManager::findInterpreterDirectories()
 {
    // Look for all subdirectories in m_interpretersPath directory, where it contains library with same name,
    // for example a subdirectory "Python" containing a "Python.dll|so" file
@@ -124,7 +124,7 @@ std::vector<boost::filesystem::path> CFactory::findInterpreterDirectories()
    return interpreters;
 }
 
-std::vector<std::string> CFactory::getAvailableInterpreters() 
+std::vector<std::string> CManager::getAvailableInterpreters() 
 {
    boost::lock_guard<boost::recursive_mutex> lock(m_loadedInterpretersMutex);
 
@@ -144,7 +144,7 @@ std::vector<std::string> CFactory::getAvailableInterpreters()
    return interpreters;
 }
 
-void CFactory::unloadInterpreter(const std::string& interpreterName)
+void CManager::unloadInterpreter(const std::string& interpreterName)
 {
    boost::lock_guard<boost::recursive_mutex> lock(m_loadedInterpretersMutex);
 
@@ -153,7 +153,7 @@ void CFactory::unloadInterpreter(const std::string& interpreterName)
       m_loadedInterpreters.erase(interpreter);
 }
 
-boost::shared_ptr<shared::script::IInterpreter> CFactory::getAssociatedInterpreter(const std::string& interpreterName)
+boost::shared_ptr<shared::script::IInterpreter> CManager::getAssociatedInterpreter(const std::string& interpreterName)
 {
    boost::lock_guard<boost::recursive_mutex> lock(m_loadedInterpretersMutex);
 
@@ -177,13 +177,13 @@ boost::shared_ptr<shared::script::IInterpreter> CFactory::getAssociatedInterpret
 }
 
 
-boost::shared_ptr<IProperties> CFactory::createScriptProperties(boost::shared_ptr<const database::entities::CRule> ruleData)
+boost::shared_ptr<IProperties> CManager::createScriptProperties(boost::shared_ptr<const database::entities::CRule> ruleData)
 {
    boost::shared_ptr<IProperties> properties(new CProperties(ruleData));
    return properties;
 }
 
-std::string CFactory::getScriptFile(boost::shared_ptr<const database::entities::CRule> ruleData)
+std::string CManager::getScriptFile(boost::shared_ptr<const database::entities::CRule> ruleData)
 {
    boost::shared_ptr<IProperties> scriptProperties(createScriptProperties(ruleData));
 
@@ -192,7 +192,7 @@ std::string CFactory::getScriptFile(boost::shared_ptr<const database::entities::
    return scriptInterpreter->loadScriptContent(scriptProperties->scriptPath()); 
 }
 
-void CFactory::updateScriptFile(boost::shared_ptr<const database::entities::CRule> ruleData, const std::string& code)
+void CManager::updateScriptFile(boost::shared_ptr<const database::entities::CRule> ruleData, const std::string& code)
 {
    boost::shared_ptr<IProperties> scriptProperties(createScriptProperties(ruleData));
 
@@ -205,7 +205,7 @@ void CFactory::updateScriptFile(boost::shared_ptr<const database::entities::CRul
    scriptInterpreter->saveScriptContent(scriptProperties->scriptPath(), code);
 }
 
-void CFactory::deleteScriptFile(boost::shared_ptr<const database::entities::CRule> ruleData, bool doBackup)
+void CManager::deleteScriptFile(boost::shared_ptr<const database::entities::CRule> ruleData, bool doBackup)
 {
    boost::shared_ptr<IProperties> scriptProperties(createScriptProperties(ruleData));
 
@@ -221,7 +221,7 @@ void CFactory::deleteScriptFile(boost::shared_ptr<const database::entities::CRul
    }
 }
 
-std::string CFactory::getScriptLogFile(boost::shared_ptr<const database::entities::CRule> ruleData)
+std::string CManager::getScriptLogFile(boost::shared_ptr<const database::entities::CRule> ruleData)
 {
    boost::shared_ptr<IProperties> scriptProperties(createScriptProperties(ruleData));
    const boost::filesystem::path scriptLogFile(CLogger::logFile(scriptProperties->scriptPath()));
@@ -237,7 +237,7 @@ std::string CFactory::getScriptLogFile(boost::shared_ptr<const database::entitie
    return std::string(std::istreambuf_iterator<char>(file), eos);
 }
 
-boost::shared_ptr<shared::script::IRunner> CFactory::createScriptRunner(boost::shared_ptr<const IProperties> scriptProperties)
+boost::shared_ptr<shared::script::IRunner> CManager::createScriptRunner(boost::shared_ptr<const IProperties> scriptProperties)
 {
    try
    {
@@ -260,13 +260,13 @@ boost::shared_ptr<shared::script::IRunner> CFactory::createScriptRunner(boost::s
    }
 }
 
-boost::shared_ptr<shared::script::ILogger> CFactory::createScriptLogger(const std::string& scriptPath)
+boost::shared_ptr<shared::script::ILogger> CManager::createScriptLogger(const std::string& scriptPath)
 {
    boost::shared_ptr<shared::script::ILogger> logger(new CLogger(scriptPath));
    return logger;
 }
 
-boost::shared_ptr<IInternalScriptApiImplementation> CFactory::createScriptContext(boost::shared_ptr<shared::script::ILogger> scriptLogger)
+boost::shared_ptr<IInternalScriptApiImplementation> CManager::createScriptContext(boost::shared_ptr<shared::script::ILogger> scriptLogger)
 {
    boost::shared_ptr<IInternalScriptApiImplementation> context(
       new InternalScriptApiImplementation(scriptLogger, m_pluginGateway, m_configurationManager, m_dbAcquisitionRequester, m_dbDeviceRequester, m_dbKeywordRequester, m_dbRecipientRequester, m_generalInfo));

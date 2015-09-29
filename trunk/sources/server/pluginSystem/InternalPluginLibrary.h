@@ -4,11 +4,10 @@
 // yadoms-plugin factory
 //
 #pragma once
-#include "Factory.h"
+#include "ILibrary.h"
 #include <shared/plugin/IPlugin.h>
 #include <shared/plugin/information/IInformation.h>
 #include "InvalidPluginException.hpp"
-#include <server/automation/script/IDayLight.h>
 
 
 namespace pluginSystem
@@ -18,30 +17,28 @@ namespace pluginSystem
    //--------------------------------------------------------------
    /// \brief	this class is used to load a plugin file library and construct instance
    //--------------------------------------------------------------
-   class CInternalPluginFactory : public IFactory
+   class CInternalPluginLibrary : public ILibrary
    {
    public:
       //--------------------------------------------------------------
       /// \brief	Constructor
-      /// \param[in] dayLightProvider The daylight provider
       /// \throw      CInvalidPluginException if plugin is not recognized
       //--------------------------------------------------------------
-      CInternalPluginFactory(boost::shared_ptr<automation::script::IDayLight> dayLightProvider);
+      CInternalPluginLibrary();
 
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
-      virtual ~CInternalPluginFactory();
+      virtual ~CInternalPluginLibrary();
 
-      // IFactory implementation
+      // ILibrary implementation
       virtual shared::plugin::IPlugin* construct() const;
       virtual const boost::filesystem::path& getLibraryPath() const;
       virtual boost::shared_ptr<const shared::plugin::information::IInformation> getInformation() const;
-      // [END] IFactory implementation
+      // [END] ILibrary implementation
 
    private:
       boost::filesystem::path m_libraryPath;
-      boost::shared_ptr<automation::script::IDayLight> m_dayLightProvider;
    };
 
 } // namespace pluginSystem

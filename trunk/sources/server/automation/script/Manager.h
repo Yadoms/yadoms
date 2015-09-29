@@ -1,5 +1,5 @@
 #pragma once
-#include "IFactory.h"
+#include "IManager.h"
 #include "IInterpreterLibrary.h"
 #include "../../database/IAcquisitionRequester.h"
 #include "../../database/IDeviceRequester.h"
@@ -13,9 +13,9 @@
 namespace automation { namespace script
 {
    //-----------------------------------------------------
-   ///\brief The script runner factory
+   ///\brief The script runner manager
    //-----------------------------------------------------
-   class CFactory : public IFactory
+   class CManager : public IManager
    {
    public:
       //-----------------------------------------------------
@@ -29,7 +29,7 @@ namespace automation { namespace script
       ///\param[in] dbKeywordRequester  Database keyword requester
       ///\param[in] dbRecipientRequester  Database recipient requester
       //-----------------------------------------------------
-      CFactory(const std::string& interpretersPath,
+      CManager(const std::string& interpretersPath,
          boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
          boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
          boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
@@ -40,10 +40,10 @@ namespace automation { namespace script
       //-----------------------------------------------------
       ///\brief               Destructor
       //-----------------------------------------------------
-      virtual ~CFactory();
+      virtual ~CManager();
 
    protected:
-      // IFactory Implementation
+      // IManager Implementation
       virtual std::vector<std::string> getAvailableInterpreters();
       virtual void unloadInterpreter(const std::string& interpreterName);
       virtual boost::shared_ptr<IProperties> createScriptProperties(boost::shared_ptr<const database::entities::CRule> ruleData);
@@ -54,7 +54,7 @@ namespace automation { namespace script
       virtual boost::shared_ptr<shared::script::IRunner> createScriptRunner(boost::shared_ptr<const IProperties> scriptProperties);
       virtual boost::shared_ptr<shared::script::ILogger> createScriptLogger(const std::string& scriptPath);
       virtual boost::shared_ptr<IInternalScriptApiImplementation> createScriptContext(boost::shared_ptr<shared::script::ILogger> scriptLogger);
-      // [END] IFactory Implementation
+      // [END] IManager Implementation
 
       //-----------------------------------------------------
       ///\brief               Load the interpreters

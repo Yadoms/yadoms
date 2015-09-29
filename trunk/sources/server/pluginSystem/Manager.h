@@ -5,7 +5,7 @@
 //
 #pragma once
 
-#include "Factory.h"
+#include "ILibrary.h"
 #include "Instance.h"
 #include "ManagerEvent.h"
 #include "database/IDataProvider.h"
@@ -15,7 +15,6 @@
 #include <shared/event/EventHandler.hpp>
 #include "dataAccessLayer/IDataAccessLayer.h"
 #include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
-#include <server/automation/script/IDayLight.h>
 
 namespace pluginSystem
 {
@@ -38,7 +37,6 @@ namespace pluginSystem
       /// \param [in]   initialDir              Initial plugins search directory
       /// \param [in]   dataProvider            Database link
       /// \param [in]   dataAccessLayer         The database access layer
-      /// \param [in]   dayLightProvider        The daylight provider
       /// \param [in]   supervisor              The supervisor event handler
       /// \param [in]   pluginManagerEventId    The ID to use to send events to supervisor
       //--------------------------------------------------------------
@@ -46,7 +44,6 @@ namespace pluginSystem
          const std::string & initialDir,
          boost::shared_ptr<database::IDataProvider> dataProvider,
          boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
-         boost::shared_ptr<automation::script::IDayLight> dayLightProvider,
          boost::shared_ptr<shared::event::CEventHandler> supervisor,
          int pluginManagerEventId);
 
@@ -208,7 +205,7 @@ namespace pluginSystem
       /// \return       Loaded plugin
       /// \throw        CInvalidPluginException if plugin is not available
       //--------------------------------------------------------------
-      boost::shared_ptr<IFactory> loadPlugin(const std::string& pluginName);
+      boost::shared_ptr<ILibrary> loadPlugin(const std::string& pluginName);
 
       //--------------------------------------------------------------
       /// \brief			Try to unload a plugin if no more used
@@ -241,7 +238,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief			Map of all found factories (key are plugin file names)
       //--------------------------------------------------------------
-      typedef std::map<std::string, boost::shared_ptr<IFactory> > PluginMap;
+      typedef std::map<std::string, boost::shared_ptr<ILibrary> > PluginMap;
       PluginMap m_loadedPlugins;
 
       //--------------------------------------------------------------
@@ -284,11 +281,6 @@ namespace pluginSystem
       /// \brief			Data access layer
       //--------------------------------------------------------------
       boost::shared_ptr<dataAccessLayer::IDataAccessLayer> m_dataAccessLayer;
-
-      //--------------------------------------------------------------
-      /// \brief			Daylight provider
-      //--------------------------------------------------------------
-      boost::shared_ptr<automation::script::IDayLight> m_dayLightProvider;
    };
 
 } // namespace pluginSystem
