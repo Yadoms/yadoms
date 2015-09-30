@@ -117,12 +117,12 @@ ListParameterHandler.prototype.createItemLine = function(item) {
                       "<div class=\"col-md-11\" >" +
                            item.getDOMObject() +
                       "</div>" +
-                      "<div class=\"col-md-1\" >" +
-                         "<div class=\"btn-group-vertical\" role=\"group\">";
+                      "<div class=\"col-md-1\" style =\"padding-right: 0px;\">" + //Fix here a problem with Firefox by fixing the padding-right to 0px.
+                          "<div class=\"btn-group-vertical btn-group-sm\" role=\"group\">";
    if (this.allowDuplication)
-      itemLine +=           "<button class=\"btn btn-primary btn-duplicate\" type=\"button\"><span><i class=\"fa fa-files-o\"></i></span></button>";
+      itemLine +=           "<button class=\"btn btn-primary btn-sm btn-duplicate\" type=\"button\" ><span ><i class=\"fa fa-files-o \"></i></span></button>";
 
-   itemLine +=              "<button class=\"btn btn-danger btn-remove\" type=\"button\"><span><i class=\"fa fa-trash-o\"></i></span></button>" +
+   itemLine +=              "<button class=\"btn btn-danger btn-sm btn-remove\" type=\"button\"><span><i class=\"fa fa-trash-o\"></i></span></button>" +
                          "</div>" +
                       "</div>" +
                    "</div>";
