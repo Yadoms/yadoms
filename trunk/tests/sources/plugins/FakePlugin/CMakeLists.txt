@@ -52,13 +52,13 @@ IF(NOT DISABLE_TEST_FAKEPLUGIN)
 		shared/shared/plugin/yPluginApi/StandardCapacity.cpp
       shared/shared/plugin/yPluginApi/historization/MeasureType.h
       shared/shared/plugin/yPluginApi/historization/MeasureType.cpp
-      plugins/FakePlugin/FakeSensor.h
-      plugins/FakePlugin/FakeSensor.cpp)
+      plugins/dev-FakePlugin/FakeSensor.h
+      plugins/dev-FakePlugin/FakeSensor.cpp)
    ADD_SOURCES(TestFakeSensor.cpp)
    
    ADD_YADOMS_SOURCES(
-      plugins/FakePlugin/FakePluginConfiguration.h
-      plugins/FakePlugin/FakePluginConfiguration.cpp)
+      plugins/dev-FakePlugin/FakePluginConfiguration.h
+      plugins/dev-FakePlugin/FakePluginConfiguration.cpp)
    ADD_SOURCES(TestFakePluginConfiguration.cpp)
    
 ENDIF()

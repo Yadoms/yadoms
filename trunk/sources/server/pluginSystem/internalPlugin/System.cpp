@@ -8,8 +8,8 @@
 #include <shared/plugin/yPluginApi/historization/Historizers.h>
 #include "../../IApplicationStopHandler.h"
 #include <shared/ServiceLocator.h>
-#include "automation/script/IObjectFactory.h"
-#include <server/automation/script/DayLight.h>
+#include "../../automation/script/IObjectFactory.h"
+#include "../../automation/script/DayLight.h"
 
 namespace pluginSystem {
    namespace internalPlugin {

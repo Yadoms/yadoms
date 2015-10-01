@@ -118,12 +118,12 @@ BOOST_AUTO_TEST_CASE(ReadDefaultInformation)
    boost::filesystem::path localPath;
    pluginSystem::CInformation info(localPath);// Test in local directory
 
-   BOOST_CHECK_EQUAL(info.getName(), "FakePackage");
-   BOOST_CHECK_EQUAL(info.getDescription(), "This is just a fake package file, used to test pluginSystem::CInformation class.");
+   BOOST_CHECK_EQUAL(info.getType(), "FakePackage");
    BOOST_CHECK_EQUAL(info.getVersion(), "0.1");
-   BOOST_CHECK_EQUAL(info.getReleaseType(), shared::plugin::information::kBeta);
+   BOOST_CHECK_EQUAL(info.getReleaseType(), shared::plugin::information::EReleaseType::kBetaValue);
    BOOST_CHECK_EQUAL(info.getAuthor(), "yadoms-team");
    BOOST_CHECK_EQUAL(info.getUrl(), "http://sourceforge.net/projects/yadoms/");
+   BOOST_CHECK_EQUAL(info.getIdentity(), "FakePackage v0.1[beta]");
    BOOST_CHECK_EQUAL(info.toString(), "FakePackage v0.1[beta] by yadoms-team (http://sourceforge.net/projects/yadoms/)");
 }
 

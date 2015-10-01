@@ -2,7 +2,7 @@
 #include <boost/test/unit_test.hpp>
 
 // Includes needed to compile tested classes
-#include "../../../../sources/plugins/FakePlugin/FakePluginConfiguration.h"
+#include "../../../../sources/plugins/dev-FakePlugin/FakePluginConfiguration.h"
 
 BOOST_AUTO_TEST_SUITE(TestFakePluginConfiguration)
 
