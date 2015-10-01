@@ -38,6 +38,10 @@ var BlocklyName = "blockly";
 Blockly.Yadoms = function() {
 };
 
+/**
+ * The active blockly workspace
+ */
+Blockly.Yadoms.CurrentWorkspace = null;
 
 /**
  * List of operators for numbers
@@ -427,7 +431,7 @@ Blockly.Yadoms.Initialize = function($domTarget, initialContent, maxTopBlocks) {
     Blockly.Yadoms.LoadLanguageScript_(function() {
         //inject blockly dom+js
 
-        Blockly.inject($domTarget.find("div.blockly-container")[0],
+        Blockly.Yadoms.CurrentWorkspace = Blockly.inject($domTarget.find("div.blockly-container")[0],
             {
                 comments: true,
                 disable: true,
@@ -452,20 +456,14 @@ Blockly.Yadoms.Initialize = function($domTarget, initialContent, maxTopBlocks) {
                 }
             });
 
-        //new version fix
-        //    $('.blocklyToolboxDiv').appendTo($domTarget.find("div.blockly-container"));
-        //    $('.blocklyTooltipDiv').appendTo($domTarget.find("div.blockly-container"));
-        //    $('.blocklyWidgetDiv').appendTo($domTarget.find("div.blockly-container"));
-
-
         //load initial content if exists
         if(!isNullOrUndefinedOrEmpty(initialContent)) {
             var xml = Blockly.Xml.textToDom(initialContent);
-            Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xml);
+            Blockly.Xml.domToWorkspace(Blockly.Yadoms.CurrentWorkspace, xml);
         }
 
         //initialize validation
-        Blockly.Validation.Init(maxTopBlocks);
+        Blockly.Validation.Init(Blockly.Yadoms.CurrentWorkspace, maxTopBlocks);
     });
 };
 
@@ -749,10 +747,27 @@ Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function(thisBlock, can
                 If only one keyword is available, and only one device available
                 Then don't show keyword and device dropdown
              */
-
+             
+             
+             //This code block allow to hide dropdowns when only one item is available.
+             /*
+             var pluginText = pluginDd.getText();
+             var deviceText = deviceDd.getText();
+             var keywordText = keywordDd.getText();
+             
             //if only one item is available, and if keyword list contains one item, then just hide dropdown
             if (keywordList.length == 1 && deviceDd.getOptions_().length == 1) {
                 deviceDd.setVisible(false);
+                
+                //append the device name to the plugin dropdown (only if not the same name)
+                if(deviceText.toLowerCase() != keywordText.toLowerCase() && pluginText.toLowerCase() != deviceText.toLowerCase()) {
+                   pluginDd.setText(pluginText + "(" + deviceText + "." + keywordText + ")" );
+                } else if(deviceText.toLowerCase() != keywordText.toLowerCase() && pluginText.toLowerCase() == deviceText.toLowerCase()) {
+                   pluginDd.setText(pluginText + "(" + keywordText + ")" );
+                } else if(deviceText.toLowerCase() == keywordText.toLowerCase() && pluginText.toLowerCase() != deviceText.toLowerCase()) {
+                   pluginDd.setText(pluginText + "(" + deviceText + ")" );
+                }
+                
             } else {
                 deviceDd.setVisible(true);
             }
@@ -760,9 +775,16 @@ Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function(thisBlock, can
             //if only one keyword item is available, the just hide keyword dropdown
             if (keywordList.length == 1) {
                 keywordDd.setVisible(false);
+                
+                
+                if(deviceText.toLowerCase() != keywordText.toLowerCase()) {
+                   deviceDd.setText(deviceText + "." + keywordText);
+                }
+                
             } else {
                 keywordDd.setVisible(true);
             }
+            */
         }
     });
 
@@ -843,7 +865,7 @@ Blockly.Yadoms.GetResult = function(language, callback) {
     assert(!isNullOrUndefined(callback), "callback must be defined");
 
     //get xml code
-    var xmlDomString = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
+    var xmlDomString = Blockly.Xml.workspaceToDom(Blockly.Yadoms.CurrentWorkspace);
     var xmlString = Blockly.Xml.domToText(xmlDomString);
 
     //TODO : manage languages
@@ -935,8 +957,8 @@ Blockly.Blocks['yadoms_keyword_value'] = {
                 typeToSet("null"); //any type allowed
 
             //make it compatible with older blockly version
-            $.isFunction(thisBlock.changeOutput)?thisBlock.changeOutput(typeToSet):thisBlock.setOutput(typeToSet);
-
+            $.isFunction(thisBlock.changeOutput)?thisBlock.changeOutput(typeToSet):thisBlock.outputConnection.setCheck(typeToSet);
+           
             Blockly.Yadoms.UpdateBlockColour_(thisBlock, keywordType);
         }, this.pluginDropDownName, this.deviceDropDownName, this.keywordDropDownName);
     }
@@ -1423,6 +1445,7 @@ Blockly.Python['yadoms_logic_compare_is'] = function(block) {
         'GT': '>',
         'GTE': '>='
     };
+
     var operator = OPERATORS[block.getFieldValue('OP')];
     var order = Blockly.Python.ORDER_RELATIONAL;
     var argument0 = Blockly.Python.valueToCode(block, 'A', order) || '0';
@@ -1438,6 +1461,7 @@ Blockly.Python['yadoms_logic_compare_is'] = function(block) {
     } else {
         code = argument0 + ' ' + operator + ' ' + argument1;
     }
+
     return [code, order];
 };
 
@@ -1653,7 +1677,7 @@ Blockly.Blocks['yadoms_enumeration'] = {
                         var typeToSet = "enum_" + typeInfo.name;
 
                         //make it compatible with older blockly version
-                        $.isFunction(this.changeOutput)?this.changeOutput(typeToSet):this.setOutput(typeToSet);
+                        $.isFunction(this.changeOutput)?this.changeOutput(typeToSet):this.outputConnection.setCheck(typeToSet);
 
 
                         //all is OK, this is a new enum, ask for translation
@@ -1857,12 +1881,12 @@ Blockly.Blocks['yadoms_notification_simple'] = {
       
       //recipient list is static (do not need to update it on each dropdown click)
       var recipientList = Blockly.Yadoms.LoadRecipients_();
-      thisBlock.recipientDd  = new Blockly.FieldDropdown(recipientList);
-      
       if(recipientList == null || recipientList == undefined || recipientList.length == 0) {
             this.setDisabled(true);
             recipientList = [[$.t("blockly.invalid") , "invalid"]];
         }
+
+      thisBlock.recipientDd  = new Blockly.FieldDropdown(recipientList);
 
         this.appendDummyInput()
             .appendField($.t("blockly.blocks.yadoms_notification_simple.title"))
@@ -2001,14 +2025,15 @@ Blockly.BlockSvg.prototype.removeError = function() {
 
 /**
  * Initialize the workspace to allow validation
+ * @param workspace The workspace to configure
  * @param maxTopBlocks The maximum number of topblocks allowed
  * @constructor
  */
-Blockly.Validation.Init = function(maxTopBlocks) {
+Blockly.Validation.Init = function(workspace, maxTopBlocks) {
     if(maxTopBlocks != undefined && $.isNumeric(maxTopBlocks))
         Blockly.Validation.maxTopBlocks_ = maxTopBlocks;
 
-    Blockly.addChangeListener( function() {
+    workspace.addChangeListener( function() {
         Blockly.Validation.clearInvalidBlocks();
     });
 };
