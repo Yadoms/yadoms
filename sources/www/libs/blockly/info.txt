@@ -1,4 +1,4 @@
-Blockly version officielle du 29-01/2015
+Blockly version pull-request du 29-09/2015 (up to date avec la master)
 
-https://github.com/google/blockly/commit/69294d83445a5d4e428bbc6ac257011179c31e1e
+https://github.com/jano42/blockly/commit/044aaf92ff8a8c097d8945236a35f8d08507c573
 
