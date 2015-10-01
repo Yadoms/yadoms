@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Runner.h"
 #include "ScriptFile.h"
-#include <shared/Log.h>
 #include "PythonException.hpp"
 #include "ContextAccessor.h"
 #include <shared/DataContainer.h>
@@ -37,10 +36,6 @@ void CRunner::run(shared::script::yScriptApi::IYScriptApi& context, boost::share
    }
 
    scriptLogger->log("#### END ####");
-
-   YADOMS_LOG(information) << m_scriptFile->pathName() << " : script exited";
-
-   boost::this_thread::sleep(boost::posix_time::seconds(1));
 }
 
 
