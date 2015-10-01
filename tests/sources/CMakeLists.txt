@@ -84,15 +84,15 @@ add_definitions( -DBOOST_TEST_DYN_LINK )
 
 # define all needed boost libraries
 set(BOOST_LIBS 
+   atomic
 	system 
 	filesystem 
 	thread 
 	date_time 
 	chrono 
-	program_options
-   unit_test_framework 
-	system
 	regex
+   
+   unit_test_framework 
 )
 
 # search boost libs
@@ -166,9 +166,19 @@ set(YADOMS_TESTS_SRC
 include(addSources.cmake)
 
 add_subdirectory(external-libs)
+add_subdirectory(mock)
 add_subdirectory(plugins)
 add_subdirectory(shared)
 add_subdirectory(server)
+
+source_group(plugins plugins/*.*)
+source_group(plugins\\FakePlugin plugins/FakePlugin/*.*)
+source_group(plugins\\Rfxcom plugins/Rfxcom/*.*)
+
+source_group(server server/*.*)
+source_group(server\\automation server/automation/*.*)
+source_group(server\\startupOptions server/startupOptions/*.*)
+source_group(server\\tools server/tools/*.*)
 
 source_group(shared shared/*.*)
 source_group(shared\\event shared/event/*.*)
@@ -180,14 +190,12 @@ source_group(shared\\plugin\\information shared/plugin/information/*.*)
 source_group(shared\\serialization shared/serialization/*.*)
 source_group(shared\\xpl shared/xpl/*.*)
 
-source_group(server server/*.*)
-source_group(server\\automation server/automation/*.*)
-source_group(server\\startupOptions server/startupOptions/*.*)
-source_group(server\\tools server/tools/*.*)
+source_group(mock mock/*.*)
+source_group(mock\\server mock/server/*.*)
+source_group(mock\\server\\pluginSystem mock/server/pluginSystem/*.*)
+source_group(mock\\server\\pluginSystem\\information mock/server/pluginSystem/information/*.*)
+source_group(mock\\shared mock/shared/*.*)
 
-source_group(plugins plugins/*.*)
-source_group(plugins\\FakePlugin plugins/FakePlugin/*.*)
-source_group(plugins\\Rfxcom plugins/Rfxcom/*.*)
 
 source_group(testCommon testCommon/*.*)
 
@@ -202,7 +210,7 @@ add_precompiled_header(yadomsTests stdafx.h)
 ##################################################################################################
 ## Include directories
 ##################################################################################################
-include_directories(${BOOST_INCL_DIR} . mock ${YADOMS_PATH}/shared ${YADOMS_PATH}/server/tools ${Poco_INCLUDE_DIRS})
+include_directories(${BOOST_INCL_DIR} . mock ${YADOMS_PATH}/server ${YADOMS_PATH}/shared ${YADOMS_PATH}/server/tools ${Poco_INCLUDE_DIRS})
 IF(WIN32)
    include_directories(${YADOMS_PATH}/server/tools/windows)
 ELSEIF(APPLE)
