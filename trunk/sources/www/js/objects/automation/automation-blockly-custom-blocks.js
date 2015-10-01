@@ -1228,7 +1228,7 @@ Blockly.Blocks['yadoms_logic_compare_is'] = {
                 selectedOperators = Blockly.Yadoms.BooleanOperators_;
             } else if(newCheck == "Number") {
                 selectedOperators = Blockly.Yadoms.NumberOperators_;
-            } else if(newCheck == "Any") {
+            } else if(newCheck == "Any" || newCheck == null) {
                 selectedOperators = Blockly.Yadoms.NumberOperators_;
             } else {
                 //specific types
@@ -1236,8 +1236,11 @@ Blockly.Blocks['yadoms_logic_compare_is'] = {
             }
 
             var operatorDropDown = $.isFunction(this.getField_)?this.getField_("OP"):this.getField("OP");
+            
+            //before replacing menuGenerator, get value to restore it after menu update
+            var oldValue = operatorDropDown.getValue();
             operatorDropDown.menuGenerator_ = selectedOperators;
-            operatorDropDown.setValue(selectedOperators[0][1]);
+            operatorDropDown.setValue(oldValue || selectedOperators[0][1]);
             operatorDropDown.updateTextNode_();
         };
 
