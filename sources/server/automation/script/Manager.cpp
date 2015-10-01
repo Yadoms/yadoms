@@ -243,10 +243,7 @@ boost::shared_ptr<shared::script::IRunner> CManager::createScriptRunner(boost::s
    {
       boost::shared_ptr<shared::script::IInterpreter> scriptInterpreter = getAssociatedInterpreter(scriptProperties->interpreterName());
 
-      boost::filesystem::path interpreterPath;
-      interpreterPath = m_interpretersPath / scriptProperties->interpreterName();
-
-      return scriptInterpreter->createRunner(scriptProperties->scriptPath(), scriptProperties->configuration(), interpreterPath.string());
+      return scriptInterpreter->createRunner(scriptProperties->scriptPath(), scriptProperties->configuration());
    }
    catch (CInterpreterNotFound& e)
    {

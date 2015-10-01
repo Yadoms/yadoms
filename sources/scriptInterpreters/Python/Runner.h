@@ -13,12 +13,11 @@ public:
    //--------------------------------------------------------------
    /// \brief	Constructor
    ///\param[in] scriptPath   Script path (without name)
-   ///\param[in] interpreterPath       The interpreter path
    ///\param[in] executable            The Python executable access
    ///\param[in] scriptConfiguration   Configuration of the script (optional)
    /// \throw CRunnerException if unable to load script
    //--------------------------------------------------------------
-   CRunner(const std::string& scriptPath, const std::string& interpreterPath, boost::shared_ptr<IPythonExecutable> executable,
+   CRunner(const std::string& scriptPath, boost::shared_ptr<IPythonExecutable> executable,
       const shared::CDataContainer& scriptConfiguration = shared::CDataContainer());
 
    //--------------------------------------------------------------
@@ -44,11 +43,6 @@ private:
    ///\brief   Configuration of the script
    //--------------------------------------------------------------
    const shared::CDataContainer m_scriptConfiguration;
-   
-   //--------------------------------------------------------------
-   ///\brief   Interpreter path
-   //--------------------------------------------------------------
-   const std::string m_interpreterPath;
 
    //--------------------------------------------------------------
    /// \brief	The Python executable accessor

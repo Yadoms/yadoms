@@ -6,9 +6,8 @@
 #include <shared/DataContainer.h>
 
 
-CRunner::CRunner(const std::string& scriptPath, const std::string& interpreterPath,
-   boost::shared_ptr<IPythonExecutable> executable, const shared::CDataContainer& scriptConfiguration)
-   :m_scriptFile(boost::make_shared<CScriptFile>(scriptPath)), m_scriptConfiguration(scriptConfiguration), m_interpreterPath(interpreterPath), m_executable(executable)
+CRunner::CRunner(const std::string& scriptPath, boost::shared_ptr<IPythonExecutable> executable, const shared::CDataContainer& scriptConfiguration)
+   :m_scriptFile(boost::make_shared<CScriptFile>(scriptPath)), m_scriptConfiguration(scriptConfiguration), m_executable(executable)
 {
 }
 
