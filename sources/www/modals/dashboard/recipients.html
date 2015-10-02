@@ -97,7 +97,7 @@
     */
    function deleteRecipient(recipientToDelete) {
       //recipientToDelete represent the recipient concerned
-      return function() {
+      return function(event) {
          modals.confirmation.load(function() {
             showConfirmModal(btnKind.yesNo, null, $.t("modals.dashboard.sub-windows.recipients.confirmRecipientDeletion", {firstName:recipientToDelete.firstName, lastName:recipientToDelete.lastName}),
             function () {
@@ -118,12 +118,12 @@
     * @param recipient The recipient to update
     * @param callback The callback used when operation is finished
     */
-    function configureRecipientInternal(recipient, callback) {
+    function configureRecipientInternal(event, recipient, callback) {
       //recipient represent the recipient concerned
-      event.stopPropagation();
-      modals.recipientConfigure.load(function() {
-         showRecipientConfigurationModal(recipient, callback);
-      });
+	      event.stopPropagation();
+	      modals.recipientConfigure.load(function() {
+		 showRecipientConfigurationModal(recipient, callback);
+	      });
    }
 
 
@@ -134,9 +134,9 @@
     * @returns {Function} The configuration function to call to update a recipient
     */
    function configureRecipient(recipientToConfigure) {
-      return function() {
+      return function(event) {
          //show the recipient configuration modal
-         configureRecipientInternal(recipientToConfigure, function (recipientConfigured) {
+         configureRecipientInternal(event, recipientToConfigure, function (recipientConfigured) {
             //on validation success, update recipient to server
             RecipientManager.updateToServer(recipientConfigured, function(result, recipientUpdated){
                //on server operation success, update recipient table with updated data
@@ -152,11 +152,11 @@
     * @returns {Function} The function which create a recipient and show modal
     */
    function addNewRecipient() {
-      return function() {
+      return function(event) {
          //create an empty recipient
          var emptyRecipient = RecipientManager.createEmptyRecipient();
          //show the recipient configuration modal
-         configureRecipientInternal(emptyRecipient, function (filledRecipient) {
+         configureRecipientInternal(event, emptyRecipient, function (filledRecipient) {
             //on validation success, add the completed recipient to server
             RecipientManager.addToServer(filledRecipient, function(result, recipientAddedToServer){
                //on server operation success, add the recipient to the dashboard table
