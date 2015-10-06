@@ -2,7 +2,6 @@
 #include "Rule.h"
 #include <shared/Log.h>
 #include "script/IProperties.h"
-#include "script/IInternalScriptApiImplementation.h"
 
 namespace automation
 {
@@ -15,6 +14,7 @@ CRule::CRule(boost::shared_ptr<const database::entities::CRule> ruleData,
    m_scriptManager(scriptManager),
    m_ruleStateHandler(ruleStateHandler)
 {
+   start();
 }
 
 CRule::~CRule()
@@ -24,60 +24,24 @@ CRule::~CRule()
 
 void CRule::start()
 {
-   m_thread.reset(new CRuleThread(m_ruleData->Name(), *this));
-   m_thread->start();
+   if (!!m_runner)
+   {
+      YADOMS_LOG(warning) << "Can not start rule " << m_ruleData->Name() << " : already started";
+      return;
+   }
+
+   boost::shared_ptr<script::IProperties> scriptProperties = m_scriptManager->createScriptProperties(m_ruleData);
+   boost::shared_ptr<shared::script::ILogger> scriptLogger = m_scriptManager->createScriptLogger(scriptProperties->scriptPath());
+   boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi = m_scriptManager->createScriptContext(scriptLogger);
+   boost::shared_ptr<shared::script::IStopNotifier> stopNotifier = m_scriptManager->createStopNotifier(m_ruleStateHandler, m_ruleData->Id());
+
+   m_runner = m_scriptManager->createScriptRunner(scriptProperties, scriptLogger, yScriptApi, stopNotifier);
 }
 
 void CRule::stop()
 {
-   m_runner->interrupt();
-   m_thread->stop();
-   m_thread.reset();
-}
-
-void CRule::doWork()
-{
-   try
-   {
-      boost::shared_ptr<script::IProperties> scriptProperties = m_scriptManager->createScriptProperties(m_ruleData);
-      boost::shared_ptr<shared::script::ILogger> scriptLogger = m_scriptManager->createScriptLogger(scriptProperties->scriptPath());
-      boost::shared_ptr<script::IInternalScriptApiImplementation> context = m_scriptManager->createScriptContext(scriptLogger);
-
-      // Loop on the script.
-      do
-      {
-         m_runner.reset();
-         m_runner = m_scriptManager->createScriptRunner(scriptProperties);
-
-         boost::chrono::system_clock::time_point start = boost::chrono::system_clock::now();
-
-         m_runner->run(context->scriptApi(), scriptLogger);
-
-         boost::chrono::system_clock::time_point end = boost::chrono::system_clock::now();
-
-         // If a rule takes less than m_MinRuleDuration, wait for the competing duration so that a rule
-         // can not take 100% CPU.
-         boost::chrono::milliseconds ruleDuration = boost::chrono::duration_cast<boost::chrono::milliseconds>(end - start);
-         if (ruleDuration < m_MinRuleDuration)
-            boost::this_thread::sleep_for(m_MinRuleDuration - ruleDuration);
-
-         boost::this_thread::interruption_point();
-
-      } while (m_runner->isOk() && context->ruleEnabled());
-
-      if (!context->ruleEnabled())
-         m_ruleStateHandler->signalNormalRuleStopAndDisable(m_ruleData->Id());
-      else
-         m_ruleStateHandler->signalRuleError(m_ruleData->Id(), (boost::format("%1% exit with error : %2%") % m_ruleData->Name() % m_runner->error()).str());
-   }
-   catch (shared::exception::CInvalidParameter& e)
-   {
-      m_ruleStateHandler->signalRuleError(m_ruleData->Id(), (boost::format("%1% : Unable to do action : %2%") % m_ruleData->Name() % e.what()).str());
-   }
-   catch (boost::thread_interrupted&)
-   {
-      m_ruleStateHandler->signalNormalRuleStop(m_ruleData->Id());
-   }
+   if (!m_runner)
+      return;
 }
 
 } // namespace automation	

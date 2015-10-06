@@ -557,14 +557,14 @@
 		}
 	},
 	"eventLogger": {
-		"defaultCode": "Evénement inconnu : __what__ généré par $t(system.__who__)",
-		"started": "$t(system.__who__) a démarré",
-		"stopped": "$t(system.__who__) s'est arrêté",
-		"updated": "The $t(system.__who__) a été mise à jour",
-		"yadomsCrash": "yadoms a rencontré une erreur et s'est arrêté",
-		"pluginCrash": "__who__ a rencontré une erreur et s'est arrêté",
-		"taskFailed": "La tâche $t(system.__who__) a rencontré une erreur et s'est arrêtée",
-		"ruleFailed": "La règle d'automatisation __who__ a échoué : __what__"
+		"DefaultCode": "Evénement inconnu : __what__ généré par $t(system.__who__)",
+		"Started": "$t(system.__who__) a démarré",
+		"Stopped": "$t(system.__who__) s'est arrêté",
+		"Updated": "The $t(system.__who__) a été mise à jour",
+		"YadomsCrash": "yadoms a rencontré une erreur et s'est arrêté",
+		"PluginCrash": "__who__ a rencontré une erreur et s'est arrêté",
+		"TaskFailed": "La tâche $t(system.__who__) a rencontré une erreur et s'est arrêtée",
+		"RuleFailed": "La règle d'automatisation __who__ a échoué"
 	},
 	"webSockets": {
 		"update": {

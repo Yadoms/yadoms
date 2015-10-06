@@ -203,6 +203,7 @@ set(SHARED_LIB_SRC
    shared/script/IInterpreter.h
 	shared/script/ILogger.h
    shared/script/IRunner.h
+   shared/script/IStopNotifier.h
 
    shared/script/yScriptApi/commonIncludes.h
    shared/script/yScriptApi/IYScriptApi.h

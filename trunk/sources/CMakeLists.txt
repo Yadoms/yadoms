@@ -232,8 +232,6 @@ set(YADOMS_SRC
 	server/automation/RuleStateHandler.cpp
 	server/automation/RuleManager.h
 	server/automation/RuleManager.cpp
-	server/automation/RuleThread.h
-	server/automation/RuleThread.cpp
    
 	server/automation/script/DayLight.h
 	server/automation/script/DayLight.cpp
@@ -245,10 +243,7 @@ set(YADOMS_SRC
 	server/automation/script/IManager.h
    server/automation/script/IObjectFactory.h
 	server/automation/script/IGeneralInfo.h
-   server/automation/script/IInternalScriptApiImplementation.h
 	server/automation/script/IInterpreterLibrary.h
-   server/automation/script/InternalScriptApiImplementation.h
-   server/automation/script/InternalScriptApiImplementation.cpp
 	server/automation/script/IpApiAutoLocation.h
 	server/automation/script/IpApiAutoLocation.cpp
    server/automation/script/InterpreterNotFound.hpp
@@ -265,6 +260,8 @@ set(YADOMS_SRC
    server/automation/script/ObjectFactory.cpp
 	server/automation/script/Properties.h
 	server/automation/script/Properties.cpp
+   server/automation/script/StopNotifier.h
+   server/automation/script/StopNotifier.cpp
 	server/automation/script/YScriptApiImplementation.h
 	server/automation/script/YScriptApiImplementation.cpp
 

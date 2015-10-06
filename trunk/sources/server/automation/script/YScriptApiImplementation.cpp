@@ -79,17 +79,12 @@ int CYScriptApiImplementation::getKeywordId(const std::string& deviceName, const
    {
       throw std::out_of_range((boost::format("getKeywordId, keyword %1% for device %2% not found because device was not found") % keywordName % deviceName).str());
    }
-   catch (...)
-   {
-      throw std::out_of_range("getKeywordId, unknown exception, please report to Yadoms team");
-   }
 
    if (keywords.size() == 1)
       return keywords[0]->Id;
-   else if (keywords.size() == 0)
+   if (keywords.size() == 0)
       throw std::out_of_range((boost::format("getKeywordId, keyword %1% for device %2% not found") % keywordName % deviceName).str());
-   else
-      throw std::out_of_range((boost::format("getKeywordId, several keywords found for %1% for device %2%. Please rename keywords or device.") % keywordName % deviceName).str());
+   throw std::out_of_range((boost::format("getKeywordId, several keywords found for %1% for device %2%. Please rename keywords or device.") % keywordName % deviceName).str());
 }
 
 std::string CYScriptApiImplementation::readKeyword(int keywordId) const
@@ -104,40 +99,29 @@ std::string CYScriptApiImplementation::readKeyword(int keywordId) const
    {
       return std::string();
    }
-   catch(...)
-   {
-      throw std::out_of_range("readKeyword, unknown exception, please report to Yadoms team");  
-   }
 }
 
 std::string CYScriptApiImplementation::waitForAcquisition(int keywordId, const std::string& timeout) const
 {
    assertExistingKeyword(keywordId);
 
-   try
-   {
-      //create the action (= what to do when notification is observed)
-      boost::shared_ptr<notification::action::CWaitAction<notification::acquisition::CNotification> > waitAction(new notification::action::CWaitAction<notification::acquisition::CNotification>());
+   //create the action (= what to do when notification is observed)
+   boost::shared_ptr<notification::action::CWaitAction<notification::acquisition::CNotification> > waitAction(new notification::action::CWaitAction<notification::acquisition::CNotification>());
          
-      //create the acquisition observer
-      boost::shared_ptr<notification::acquisition::CObserver> observer(new notification::acquisition::CObserver(waitAction));
-      observer->addKeywordIdFilter(keywordId);
+   //create the acquisition observer
+   boost::shared_ptr<notification::acquisition::CObserver> observer(new notification::acquisition::CObserver(waitAction));
+   observer->addKeywordIdFilter(keywordId);
 
-      //regsiter the observer
-      notification::CHelpers::CCustomSubscriber subscriber(observer);
+   //regsiter the observer
+   notification::CHelpers::CCustomSubscriber subscriber(observer);
 
-      //wait for acquisition notification
-      boost::shared_ptr<notification::acquisition::CNotification> newAcquisition = waitAction->wait(timeout.empty() ? boost::date_time::pos_infin : boost::posix_time::duration_from_string(timeout));
+   //wait for acquisition notification
+   boost::shared_ptr<notification::acquisition::CNotification> newAcquisition = waitAction->wait(timeout.empty() ? boost::date_time::pos_infin : boost::posix_time::duration_from_string(timeout));
 
-      if (!newAcquisition)
-         return std::string(); // timeout
+   if (!newAcquisition)
+      return std::string(); // timeout
 
-      return newAcquisition->getAcquisition()->Value;
-   }
-   catch(...)
-   {
-      throw std::out_of_range("waitForEvent, unknown exception, please report to Yadoms team");
-   }
+   return newAcquisition->getAcquisition()->Value;
 }
 
 std::pair<int, std::string> CYScriptApiImplementation::waitForAcquisitions(const std::vector<int> keywordIdList, const std::string& timeout) const
@@ -145,44 +129,29 @@ std::pair<int, std::string> CYScriptApiImplementation::waitForAcquisitions(const
    for (std::vector<int>::const_iterator kwId = keywordIdList.begin(); kwId != keywordIdList.end(); ++ kwId)
       assertExistingKeyword(*kwId);
 
-   try
-   {
-      //create the action (= what to do when notification is observed)
-      boost::shared_ptr<notification::action::CWaitAction<notification::acquisition::CNotification> > waitAction(new notification::action::CWaitAction<notification::acquisition::CNotification>());
+   //create the action (= what to do when notification is observed)
+   boost::shared_ptr<notification::action::CWaitAction<notification::acquisition::CNotification> > waitAction(new notification::action::CWaitAction<notification::acquisition::CNotification>());
          
-      //create the acquisition observer
-      boost::shared_ptr<notification::acquisition::CObserver> observer(new notification::acquisition::CObserver(waitAction));
-      observer->resetKeywordIdFilter(keywordIdList);
+   //create the acquisition observer
+   boost::shared_ptr<notification::acquisition::CObserver> observer(new notification::acquisition::CObserver(waitAction));
+   observer->resetKeywordIdFilter(keywordIdList);
 
-      //regsiter the observer
-      notification::CHelpers::CCustomSubscriber subscriber(observer);
+   //regsiter the observer
+   notification::CHelpers::CCustomSubscriber subscriber(observer);
 
-      //wait for acquisition notification
-      boost::shared_ptr<notification::acquisition::CNotification> newAcquisition = waitAction->wait(timeout.empty() ? boost::date_time::pos_infin : boost::posix_time::duration_from_string(timeout));
+   //wait for acquisition notification
+   boost::shared_ptr<notification::acquisition::CNotification> newAcquisition = waitAction->wait(timeout.empty() ? boost::date_time::pos_infin : boost::posix_time::duration_from_string(timeout));
 
-      if (!newAcquisition)
-         return std::make_pair(kTimeout, std::string());
+   if (!newAcquisition)
+      return std::make_pair(kTimeout, std::string());
 
-      return std::pair<int, std::string>(newAcquisition->getAcquisition()->KeywordId, newAcquisition->getAcquisition()->Value);
-   }
-   catch(...)
-   {
-      throw std::out_of_range("waitForEvents, unknown exception, please report to Yadoms team");
-   }
+   return std::pair<int, std::string>(newAcquisition->getAcquisition()->KeywordId, newAcquisition->getAcquisition()->Value);
 }
 
 void CYScriptApiImplementation::writeKeyword(int keywordId, const std::string& newState)
 {
    assertExistingKeyword(keywordId);
-
-   try
-   {
-      m_pluginGateway->sendCommandAsync(keywordId, newState);
-   }
-   catch(...)
-   {
-      throw std::out_of_range("writeKeyword, unknown exception, please report to Yadoms team");
-   }
+   m_pluginGateway->sendCommandAsync(keywordId, newState);
 }
 
 void CYScriptApiImplementation::sendNotification(int keywordId, int recipientId, const std::string& message)
@@ -190,15 +159,8 @@ void CYScriptApiImplementation::sendNotification(int keywordId, int recipientId,
    assertExistingKeyword(keywordId);
    assertExistingRecipient(recipientId);
 
-   try
-   {
-      shared::plugin::yPluginApi::historization::CMessageFormatter body(0, recipientId, message);
-      m_pluginGateway->sendCommandAsync(keywordId, body.formatValue());
-   }
-   catch(...)
-   {
-      throw std::out_of_range("sendNotification, unknown exception, please report to Yadoms team");
-   }
+   shared::plugin::yPluginApi::historization::CMessageFormatter body(0, recipientId, message);
+   m_pluginGateway->sendCommandAsync(keywordId, body.formatValue());
 }
 
 std::string CYScriptApiImplementation::getInfo(EInfoKeys key) const
@@ -210,10 +172,6 @@ std::string CYScriptApiImplementation::getInfo(EInfoKeys key) const
    catch (shared::exception::COutOfRange& e)
    {
       throw std::out_of_range((boost::format("getInfo(%1%), error %2%") % key % e.what()).str());
-   }
-   catch (...)
-   {
-      throw std::out_of_range("getInfo, unknown exception, please report to Yadoms team");
    }
 }
 

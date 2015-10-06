@@ -5,9 +5,10 @@
 #include <shared/exception/InvalidParameter.hpp>
 #include <shared/exception/OutOfRange.hpp>
 #include <shared/script/IInterpreter.h>
+#include "StopNotifier.h"
 #include <shared/DynamicLibrary.h>
 #include "InterpreterLibrary.h"
-#include "InternalScriptApiImplementation.h"
+#include "YScriptApiImplementation.h"
 #include "GeneralInfo.h"
 #include "Properties.h"
 #include "Logger.h"
@@ -237,13 +238,18 @@ std::string CManager::getScriptLogFile(boost::shared_ptr<const database::entitie
    return std::string(std::istreambuf_iterator<char>(file), eos);
 }
 
-boost::shared_ptr<shared::script::IRunner> CManager::createScriptRunner(boost::shared_ptr<const IProperties> scriptProperties)
+boost::shared_ptr<shared::script::IRunner> CManager::createScriptRunner(
+   boost::shared_ptr<const IProperties> scriptProperties,
+   boost::shared_ptr<shared::script::ILogger> scriptLogger,
+   boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
+   boost::shared_ptr<shared::script::IStopNotifier> stopNotifier)
 {
    try
    {
       boost::shared_ptr<shared::script::IInterpreter> scriptInterpreter = getAssociatedInterpreter(scriptProperties->interpreterName());
 
-      return scriptInterpreter->createRunner(scriptProperties->scriptPath(), scriptProperties->configuration());
+      return scriptInterpreter->createRunner(scriptProperties->scriptPath(),
+         scriptLogger, yScriptApi, stopNotifier, scriptProperties->configuration());
    }
    catch (CInterpreterNotFound& e)
    {
@@ -263,11 +269,16 @@ boost::shared_ptr<shared::script::ILogger> CManager::createScriptLogger(const st
    return logger;
 }
 
-boost::shared_ptr<IInternalScriptApiImplementation> CManager::createScriptContext(boost::shared_ptr<shared::script::ILogger> scriptLogger)
+boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> CManager::createScriptContext(boost::shared_ptr<shared::script::ILogger> scriptLogger)
 {
-   boost::shared_ptr<IInternalScriptApiImplementation> context(
-      new InternalScriptApiImplementation(scriptLogger, m_pluginGateway, m_configurationManager, m_dbAcquisitionRequester, m_dbDeviceRequester, m_dbKeywordRequester, m_dbRecipientRequester, m_generalInfo));
-   return context;
+   boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi(
+      boost::make_shared<CYScriptApiImplementation>(scriptLogger, m_pluginGateway, m_configurationManager, m_dbAcquisitionRequester, m_dbDeviceRequester, m_dbKeywordRequester, m_dbRecipientRequester, m_generalInfo));
+   return yScriptApi;
+}
+
+boost::shared_ptr<shared::script::IStopNotifier> CManager::createStopNotifier(boost::shared_ptr<IRuleStateHandler> ruleStateHandler, int ruleId)
+{
+   return boost::make_shared<StopNotifier>(ruleStateHandler, ruleId);
 }
 
 } } // namespace automation::script

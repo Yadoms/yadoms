@@ -249,10 +249,7 @@ namespace web { namespace rest { namespace service {
 
          // Check for supported modifications
          if (ruleData->Id.isDefined())
-         {
-            BOOST_ASSERT(false); // rule Id is not modifiable
             throw CRuleException("Rule Id is not modifiable");
-         }
 
          std::string code = uriDecode(requestContent.get<std::string>("code"));
          if (code.empty())

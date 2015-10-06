@@ -78,9 +78,8 @@ void CRuleManager::startRule(int ruleId)
 
       m_ruleStateHandler->signalRuleStart(ruleId);
 
-      boost::shared_ptr<IRule> newRule(new CRule(ruleData, m_scriptManager, m_ruleStateHandler));
+      boost::shared_ptr<IRule> newRule(boost::make_shared<CRule>(ruleData, m_scriptManager, m_ruleStateHandler));
       m_startedRules[ruleId] = newRule;
-      newRule->start();
    }
    catch(shared::exception::CEmptyResult& e)
    {
@@ -188,7 +187,7 @@ void CRuleManager::updateRule(boost::shared_ptr<const database::entities::CRule>
 
    m_dbRequester->updateRule(ruleData);
 
-   if (ruleData->Enabled.isDefined() && m_dbRequester->getRule(ruleData->Id)->State() != database::entities::ERuleState::kErrorValue)
+   if (ruleData->Enabled.isDefined())
    {
       if (ruleData->Enabled() != isRuleStarted(ruleData->Id))
       {

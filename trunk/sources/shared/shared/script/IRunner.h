@@ -16,18 +16,6 @@ namespace shared { namespace script
       virtual ~IRunner() {}
 
       //-----------------------------------------------------
-      ///\brief               Run the script (blocks while script is running)
-      ///\param[in] context   IYScriptApi context, use by the script to interact with Yadoms
-      ///\param[in] scriptLogger The logger associated to the rule
-      //-----------------------------------------------------
-      virtual void run(yScriptApi::IYScriptApi& context, boost::shared_ptr<ILogger> scriptLogger) = 0;
-
-      //-----------------------------------------------------
-      ///\brief               Asynchronous stop of a runnning script
-      //-----------------------------------------------------
-      virtual void interrupt() = 0;
-
-      //-----------------------------------------------------
       ///\brief               Check if last script execution was OK
       ///\return              Return the script result (true if no error)
       //-----------------------------------------------------
