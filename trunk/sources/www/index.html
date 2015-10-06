@@ -78,7 +78,7 @@
       </div>
       <footer class="footer">
          <button class="btn btn-primary" id="btn-show-qrcode"><i class="fa fa-qrcode"></i></button>
-         <label class="label label-default">&copy; Yadoms 2014</label>
+         <label id="copyrightLabel" class="label label-default">&copy; Yadoms 2014</label>
       </footer>
   </div>
 
@@ -200,6 +200,8 @@
    //base configuration
    $.ajaxSetup({ contentType: "application/json; charset=utf-8"});
 
+   $("#copyrightLabel").html("&copy; Yadoms " + new Date().getFullYear());
+   
    var systemConfiguration = [];
 
    //TODO - Passer les variables suivantes en variable de conf
