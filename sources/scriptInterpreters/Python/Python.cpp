@@ -57,11 +57,16 @@ void CPython::saveScriptContent(const std::string& scriptPath, const std::string
    file.write(content);
 }
 
-boost::shared_ptr<shared::script::IRunner> CPython::createRunner(const std::string& scriptPath, const shared::CDataContainer& scriptConfiguration) const
+boost::shared_ptr<shared::script::IRunner> CPython::createRunner(
+   const std::string& scriptPath,
+   boost::shared_ptr<shared::script::ILogger> scriptLogger,
+   boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
+   boost::shared_ptr<shared::script::IStopNotifier> stopNotifier,
+   const shared::CDataContainer& scriptConfiguration) const
 {
    try
    {
-      boost::shared_ptr<shared::script::IRunner> runner(new CRunner(scriptPath, m_executable, scriptConfiguration));
+      boost::shared_ptr<shared::script::IRunner> runner(new CRunner(scriptPath, m_executable, scriptLogger, yScriptApi, stopNotifier, scriptConfiguration));
       return runner;
    }
    catch (CPythonException& ex)

@@ -6,8 +6,8 @@
 
 const size_t CContextAccessor::m_maxMessages(100);
 
-CContextAccessor::CContextAccessor(shared::script::yScriptApi::IYScriptApi& context)
-   :CThreadBase(createId()), m_context(context), m_id(createId()), m_readyBarrier(2)
+CContextAccessor::CContextAccessor(boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi)
+   :CThreadBase(createId()), m_scriptApi(yScriptApi), m_id(createId()), m_readyBarrier(2)
 {
    start();
    m_readyBarrier.wait();
@@ -129,7 +129,7 @@ void CContextAccessor::processGetKeywordId(const shared::CDataContainer& request
    shared::CDataContainer answer;
    try
    {
-      answer.set("returnValue", m_context.getKeywordId(request.get<std::string>("device"), request.get<std::string>("keyword")));
+      answer.set("returnValue", m_scriptApi->getKeywordId(request.get<std::string>("device"), request.get<std::string>("keyword")));
    }
    catch (std::out_of_range& ex)
    {
@@ -143,7 +143,7 @@ void CContextAccessor::processReadKeyword(const shared::CDataContainer& request,
    shared::CDataContainer answer;
    try
    {
-      answer.set("returnValue", m_context.readKeyword(request.get<int>("keywordId")));
+      answer.set("returnValue", m_scriptApi->readKeyword(request.get<int>("keywordId")));
    }
    catch (std::out_of_range& ex)
    {
@@ -157,7 +157,7 @@ void CContextAccessor::processWaitForAcquisition(const shared::CDataContainer& r
    shared::CDataContainer answer;
    try
    {
-      answer.set("returnValue", m_context.waitForAcquisition(request.get<int>("keywordId"), request.get<std::string>("timeout")));
+      answer.set("returnValue", m_scriptApi->waitForAcquisition(request.get<int>("keywordId"), request.get<std::string>("timeout")));
    }
    catch (std::out_of_range& ex)
    {
@@ -171,7 +171,7 @@ void CContextAccessor::processWaitForAcquisitions(const shared::CDataContainer& 
    shared::CDataContainer answer;
    try
    {
-      std::pair<int, std::string> returnValue = m_context.waitForAcquisitions(request.get<std::vector<int> >("keywordIdList"), request.get<std::string>("timeout"));
+      std::pair<int, std::string> returnValue = m_scriptApi->waitForAcquisitions(request.get<std::vector<int> >("keywordIdList"), request.get<std::string>("timeout"));
       answer.set("key", returnValue.first);
       answer.set("value", returnValue.second);
    }
@@ -187,7 +187,7 @@ void CContextAccessor::processWriteKeyword(const shared::CDataContainer& request
    shared::CDataContainer answer;
    try
    {
-      m_context.writeKeyword(request.get<int>("keywordId"), request.get<std::string>("newState"));
+      m_scriptApi->writeKeyword(request.get<int>("keywordId"), request.get<std::string>("newState"));
    }
    catch (std::out_of_range& ex)
    {
@@ -201,7 +201,7 @@ void CContextAccessor::processSendNotification(const shared::CDataContainer& req
    shared::CDataContainer answer;
    try
    {
-      m_context.sendNotification(request.get<int>("keywordId"), request.get<int>("recipientId"), request.get<std::string>("message"));
+      m_scriptApi->sendNotification(request.get<int>("keywordId"), request.get<int>("recipientId"), request.get<std::string>("message"));
    }
    catch (std::out_of_range& ex)
    {
@@ -215,7 +215,7 @@ void CContextAccessor::processGetInfo(const shared::CDataContainer& request, boo
    shared::CDataContainer answer;
    try
    {
-      answer.set("returnValue", m_context.getInfo(request.get<shared::script::yScriptApi::IYScriptApi::EInfoKeys>("key")));
+      answer.set("returnValue", m_scriptApi->getInfo(request.get<shared::script::yScriptApi::IYScriptApi::EInfoKeys>("key")));
    }
    catch (std::out_of_range& ex)
    {
@@ -229,7 +229,7 @@ void CContextAccessor::processRuleEnable(const shared::CDataContainer& request, 
    shared::CDataContainer answer;
    try
    {
-      m_context.ruleEnable(request.get<bool>("enable"));
+      m_scriptApi->ruleEnable(request.get<bool>("enable"));
    }
    catch (std::out_of_range& ex)
    {

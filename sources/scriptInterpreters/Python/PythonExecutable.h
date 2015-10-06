@@ -22,8 +22,8 @@ protected:
    virtual bool found() const;
    virtual std::string version() const;
    virtual void startModule(boost::shared_ptr<const IScriptFile> scriptFile, const std::string& contextAccessorId, boost::shared_ptr<shared::script::ILogger> scriptLogger);
-   virtual void waitForStop();
    virtual void interrupt();
+   virtual int waitForStop();
    // [END] IPythonExecutable Implementation
 
 protected:
@@ -40,13 +40,6 @@ protected:
    /// \return string containing the Python version, as returned by Python (probably something like "Python 2.7.9")
    //--------------------------------------------------------------
    static std::string readPythonVersion(const boost::filesystem::path& initialDirectory);
-
-   //--------------------------------------------------------------
-   /// \brief	            Filter some return codes, which are not really errors
-   /// \param[in] code     Return code (from call to Poco::ProcessHandle::wait)
-   /// \return             true if it is a real error, false if not
-   //--------------------------------------------------------------
-   bool isError(int code) const;
 
    //--------------------------------------------------------------
    /// \brief	Thread redirecting standard outputs

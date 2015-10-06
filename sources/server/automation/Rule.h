@@ -1,6 +1,5 @@
 #pragma once
 #include "IRule.h"
-#include "RuleThread.h"
 #include "script/IManager.h"
 #include "../database/sqlite/requesters/Rule.h"
 #include "IRuleStateHandler.h"
@@ -10,7 +9,7 @@ namespace automation
    //-----------------------------------------------------
    ///\brief A rule
    //-----------------------------------------------------
-   class CRule : public IRule, public IRuleThreadHandler
+   class CRule : public IRule
    {
    public:
       //-----------------------------------------------------
@@ -27,15 +26,16 @@ namespace automation
       //-----------------------------------------------------
       virtual ~CRule();
 
-      // IRule Implementation
-      virtual void start();
-      virtual void stop();
-      // [END] IRule Implementation
-
    protected:
-      // IRuleThreadHandler Implementation
-      virtual void doWork();
-      // [END] IRuleThreadHandler Implementation
+      //-----------------------------------------------------
+      ///\brief               Start the rule
+      //-----------------------------------------------------
+      void start();
+
+      //-----------------------------------------------------
+      ///\brief               Stop the rule
+      //-----------------------------------------------------
+      void stop();
 
    private:
       //-----------------------------------------------------
@@ -47,11 +47,6 @@ namespace automation
       ///\brief               Rule data
       //-----------------------------------------------------
       boost::shared_ptr<const database::entities::CRule> m_ruleData;
-
-      //-----------------------------------------------------
-      ///\brief               Rule thread
-      //-----------------------------------------------------
-      boost::shared_ptr<CRuleThread> m_thread;
 
       //-----------------------------------------------------
       ///\brief               The script manager

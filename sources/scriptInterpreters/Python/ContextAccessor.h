@@ -16,7 +16,7 @@ public:
    /// \brief	Constructor
    /// \param[in] context IYScriptApi context instance
    //--------------------------------------------------------------
-   CContextAccessor(shared::script::yScriptApi::IYScriptApi& context);
+   CContextAccessor(boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi);
 
    //--------------------------------------------------------------
    /// \brief	Destructor
@@ -86,7 +86,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	IYScriptApi context instance
    //--------------------------------------------------------------
-   shared::script::yScriptApi::IYScriptApi& m_context;
+   boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> m_scriptApi;
 
    //--------------------------------------------------------------
    /// \brief	Context accessor ID (unique on full system)

@@ -121,37 +121,46 @@ void CPythonExecutable::startModule(boost::shared_ptr<const IScriptFile> scriptF
    }
 }
 
-void CPythonExecutable::waitForStop()
-{
-   int returnCode = m_process->wait();
-   if (returnCode != 0 && isError(returnCode))
-      throw CPythonException("Script returned with error " + boost::lexical_cast<std::string>(returnCode));
-
-   m_StdOutRedirectingThread.join();
-   m_StdErrRedirectingThread.join();
-}
-
 void CPythonExecutable::interrupt()
 {
    try
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_processMutex);
       if (!!m_process)
-         Poco::Process::requestTermination(m_process->id());
+      {
+         Poco::Process::kill(*m_process);
+
+         if (Poco::Process::isRunning(*m_process))
+            m_process->wait();
+      }
    }
    catch (Poco::NotFoundException&)
    {
-      // Nothing to do. This exception occurs when process is already stopped
+      // Nothing to do. This exception can occur when process is already stopped
    }
+   catch (Poco::RuntimeException&)
+   {
+      // Nothing to do. This exception can occur when process is already stopped
+   }
+
+   m_StdOutRedirectingThread.join();
+   m_StdErrRedirectingThread.join();
 }
 
-bool CPythonExecutable::isError(int code) const
+int CPythonExecutable::waitForStop()
 {
-#if defined WIN32
-   if (static_cast<DWORD>(code) == STATUS_CONTROL_C_EXIT)
-      return false;
-#endif
-   return true;
+   if (!m_process)
+      return 0;
+
+   try
+   {
+      return Poco::Process::wait(*m_process);
+   }
+   catch (Poco::SystemException&)
+   {
+      // Process was probably killed (==> stopped by user)
+      return 0;
+   }
 }
 
 void CPythonExecutable::stdRedirectWorker(const std::string& ruleName,

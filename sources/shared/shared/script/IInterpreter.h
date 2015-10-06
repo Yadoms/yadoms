@@ -1,6 +1,7 @@
 #pragma once
 #include "IRunner.h"
 #include <shared/DataContainer.h>
+#include <shared/script/IStopNotifier.h>
 
 namespace shared { namespace script
 {
@@ -50,11 +51,19 @@ namespace shared { namespace script
 
       //-----------------------------------------------------
       ///\brief                  Create a script runner with associated file
-      ///\param[in] scriptPath   Script path (without name)
+      ///\param[in] scriptPath            Script path (without name)
+      ///\param[in] scriptLogger          The rule logger
+      ///\param[in] yScriptApi            The rule context
+      ///\param[in] stopNotifier          The stop notifier
       ///\param[in] scriptConfiguration   Configuration of the script
       ///\return                 The created script instance
       //-----------------------------------------------------
-      virtual boost::shared_ptr<IRunner> createRunner(const std::string& scriptPath, const CDataContainer& scriptConfiguration) const = 0;
+      virtual boost::shared_ptr<IRunner> createRunner(
+         const std::string& scriptPath,
+         boost::shared_ptr<ILogger> scriptLogger,
+         boost::shared_ptr<yScriptApi::IYScriptApi> yScriptApi,
+         boost::shared_ptr<IStopNotifier> stopNotifier,
+         const shared::CDataContainer& scriptConfiguration) const = 0;
    };
 	
 } } // namespace shared::script
