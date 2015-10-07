@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "DayLight.h"
 #include <shared/Log.h>
-#include <shared/event/Now.h>
+#include <shared/currentTime/Provider.h>
 #include <shared/exception/InvalidParameter.hpp>
 #include <boost/math/constants/constants.hpp>
 #include <boost/math/special_functions/round.hpp>
@@ -412,7 +412,7 @@ CDayLight::~CDayLight()
 
 boost::posix_time::ptime CDayLight::sunEventTime(bool sunrise)
 {
-   boost::posix_time::ptime now = shared::event::now();
+   boost::posix_time::ptime now = shared::currentTime::Provider::now();
    if (m_lastCalculationDate.date() != now.date())
    {
       m_lastCalculationDate = now;

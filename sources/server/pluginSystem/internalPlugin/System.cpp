@@ -132,7 +132,7 @@ namespace pluginSystem {
 
    bool CSystem::createDayLightTimers(shared::event::CEventHandler& eventHandler) const
    {
-      boost::posix_time::ptime now = shared::event::now();
+      boost::posix_time::ptime now = shared::currentTime::Provider::now();
 
       boost::shared_ptr<automation::script::IDayLight> dayLightProvider;
       try

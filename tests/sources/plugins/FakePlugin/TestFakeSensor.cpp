@@ -5,13 +5,16 @@
 #include <../../../../sources/shared/shared/plugin/yPluginApi/StandardCapacities.h>
 #include <../../../../sources/shared/shared/plugin/yPluginApi/StandardUnits.h>
 #include <../../../../sources/plugins/dev-FakePlugin/FakeSensor.h>
+#include <../../../../sources/shared/shared/currentTime/Provider.h>
 
 #include "../../mock/server/pluginSystem/information/DefaultInformationMock.hpp"
 #include "../../mock/server/pluginSystem/DefaultYPluginApiMock.hpp"
+#include "../../mock/shared/currentTime/DefaultCurrentTimeMock.hpp"
 
 BOOST_AUTO_TEST_SUITE(TestFakeSensor)
 
 static const std::string sensorId("MySensor");
+static shared::currentTime::Provider timeProvider(boost::make_shared<CDefaultCurrentTimeMock>());
 
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -83,9 +86,7 @@ BOOST_AUTO_TEST_CASE(Historization)
    BOOST_CHECK_EQUAL(boost::lexical_cast<double>(readLastData(context, "current").m_value), 2.0);
    BOOST_CHECK_EQUAL(readLastData(context, "dateTime").m_device, sensorId);
    boost::posix_time::ptime readLastTime = boost::posix_time::time_from_string(readLastData(context, "dateTime").m_value);
-   boost::posix_time::ptime now = boost::posix_time::microsec_clock::local_time();
-   BOOST_CHECK_LE(readLastTime, now); // now-1s < dateTime <= now
-   BOOST_CHECK_GT(readLastTime, now - boost::posix_time::seconds(1));
+   BOOST_CHECK_EQUAL(readLastTime, shared::currentTime::Provider::now());
 
    sensor.read();
    sensor.historizeData(context);
@@ -104,9 +105,7 @@ BOOST_AUTO_TEST_CASE(Historization)
    BOOST_CHECK_EQUAL(readLastData(context, "current").m_device, sensorId);
    BOOST_CHECK_EQUAL(readLastData(context, "dateTime").m_device, sensorId);
    readLastTime = boost::posix_time::time_from_string(readLastData(context, "dateTime").m_value);
-   now = boost::posix_time::microsec_clock::local_time();
-   BOOST_CHECK_LE(readLastTime, now); // now-1s < dateTime <= now
-   BOOST_CHECK_GT(readLastTime, now - boost::posix_time::seconds(1));
+   BOOST_CHECK_EQUAL(readLastTime, shared::currentTime::Provider::now());
 }
 
 BOOST_AUTO_TEST_CASE(BatteryDecrease)

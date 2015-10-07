@@ -50,6 +50,12 @@ set(SHARED_LIB_SRC
 	shared/compression/Extract.h
 	shared/compression/Extract.cpp
 
+   shared/currentTime/ICurrentTime.h
+   shared/currentTime/Local.h
+   shared/currentTime/Local.cpp
+   shared/currentTime/Provider.h
+   shared/currentTime/Provider.cpp
+
 	shared/encryption/Xor.h
 	shared/encryption/Xor.cpp
 	shared/encryption/Base64.h
@@ -68,8 +74,6 @@ set(SHARED_LIB_SRC
    shared/event/EventTimePoint.cpp
    shared/event/EventTimePoint.h
    shared/event/ITimeEvent.h
-   shared/event/Now.h
-   shared/event/Now.cpp
 
    shared/exception/BadConversion.hpp
    shared/exception/EmptyResult.hpp
@@ -276,6 +280,7 @@ ENDIF()
 # Define project folders
 source_group(communication shared/communication/*.*)
 source_group(compression shared/shared/compression/*.* )	
+source_group(currentTime shared/shared/currentTime/*.* )	
 source_group(encryption shared/shared/encryption/*.* )	
 source_group(enumeration shared/shared/enumeration/*.* )	
 source_group(event shared/event/*.*)

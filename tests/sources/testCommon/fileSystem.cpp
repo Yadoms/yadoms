@@ -36,6 +36,14 @@ void filesystem::RemoveFile(std::string file, bool successRequired)
       boost::filesystem::remove(file);
 }
 
+void filesystem::RemoveFile(const boost::filesystem::path& file, bool successRequired)
+{
+   if (successRequired)
+      BOOST_REQUIRE(boost::filesystem::remove(file.string()));
+   else
+      boost::filesystem::remove(file.string());
+}
+
 void filesystem::WriteFile(std::string dir, std::string file)
 {
    WriteFile(dir, file, "some text...");
@@ -47,9 +55,21 @@ void filesystem::WriteFile(std::string dir, std::string file, std::string conten
    if (dir.empty())
       fullPath = file;
    else
+   {
+      boost::filesystem::create_directories(dir);
       fullPath = boost::filesystem::path(dir) / file;
+   }
 
    std::ofstream outfile(fullPath.string().c_str(), std::ios_base::out);
+   outfile << content;
+}
+
+void filesystem::WriteFile(const boost::filesystem::path& file, std::string content)
+{
+   if (!file.parent_path().empty() && !boost::filesystem::exists(file.parent_path()))
+      boost::filesystem::create_directories(file.parent_path());
+
+   std::ofstream outfile(file.string(), std::ios_base::out);
    outfile << content;
 }
 

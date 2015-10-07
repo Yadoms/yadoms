@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "../exception/InvalidParameter.hpp"
-#include "Now.h"
+#include "../currentTime/Provider.h"
 #include "EventTimePoint.h"
 
 namespace shared { namespace event
@@ -21,7 +21,7 @@ CEventTimePoint::~CEventTimePoint()
 
 void CEventTimePoint::set(const boost::posix_time::ptime& dateTime)
 {
-   if (dateTime.is_special() || dateTime <= now())
+   if (dateTime.is_special() || dateTime <= currentTime::Provider::now())
       throw exception::CInvalidParameter("Provided dateTime value is not valid, or not in the future");
    m_dateTime = dateTime;
 }

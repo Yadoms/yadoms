@@ -6,6 +6,7 @@
 #include "../../../../sources/shared/shared/plugin/yPluginApi/IYPluginApi.h"
 #include "../../../../sources/shared/shared/event/EventHandler.hpp"
 #include "../../../../sources/shared/shared/ServiceLocator.h"
+#include "../../../../sources/server/automation/script/IObjectFactory.h"
 #include "../../../../sources/server/pluginSystem/internalPlugin/System.h"
 #include "../../../../sources/server/IApplicationStopHandler.h"
 
@@ -14,6 +15,7 @@
 
 #include "../../../mock/server/pluginSystem/information/DefaultInformationMock.hpp"
 #include "../../../mock/server/pluginSystem/DefaultYPluginApiMock.hpp"
+#include "../../../mock/shared/currentTime/DefaultCurrentTimeMock.hpp"
 
 BOOST_AUTO_TEST_SUITE(TestInternalPlugin)
 
@@ -70,14 +72,49 @@ public:
    virtual ~CStopHandlerMock(){}
 
    // IApplicationStopHandler implementation
-   virtual void requestToStop(EStopMode stopMode) { m_lastStopRequest=stopMode; }
+   virtual void requestToStop(EStopMode stopMode) { m_evtHandler.postEvent(shared::event::kUserFirstId, stopMode); }
    virtual void registerForAppEnds(boost::shared_ptr<shared::event::CEventHandler> & handler, const int code) {};
    // [END] IApplicationStopHandler implementation
 
-   EStopMode getLastStopRequest() { return m_lastStopRequest; }
+   EStopMode waitStopRequest()
+   {
+      BOOST_CHECK_EQUAL(m_evtHandler.waitForEvents(boost::posix_time::seconds(3)), shared::event::kUserFirstId);
+      return m_evtHandler.getEventData<EStopMode>();
+   }
 
 private:
+   shared::event::CEventHandler m_evtHandler;
    EStopMode m_lastStopRequest;
+};
+
+class DayLightMock : public automation::script::IDayLight
+{
+public:
+   ~DayLightMock(){}
+   virtual boost::posix_time::ptime sunriseTime() { return boost::posix_time::ptime(shared::currentTime::Provider::now().date(), boost::posix_time::time_duration(7, 30, 0)); }
+   virtual boost::posix_time::ptime sunsetTime() { return boost::posix_time::ptime(shared::currentTime::Provider::now().date(), boost::posix_time::time_duration(19, 15, 0)); }
+};
+
+class LocationMock : public automation::script::ILocation
+{
+public:
+   ~LocationMock(){}
+   virtual double latitude() const { return 44.9232911; }
+   virtual double longitude() const { return 4.916384; }
+   virtual double altitude() const { return 169.0; }
+};
+
+class AutomationScriptObjectFactoryMock : public automation::script::IObjectFactory
+{
+public:
+   AutomationScriptObjectFactoryMock(boost::shared_ptr<automation::script::IDayLight> dayLight, boost::shared_ptr<automation::script::ILocation> location) :m_dayLight(dayLight), m_location(location){}
+   ~AutomationScriptObjectFactoryMock(){}
+   virtual boost::shared_ptr<automation::script::IAutoLocation> getAutoLocationService() { return boost::shared_ptr<automation::script::IAutoLocation>(); }
+   virtual boost::shared_ptr<automation::script::ILocation> getLocation() { return m_location; }
+   virtual boost::shared_ptr<automation::script::IDayLight> getDayLight() { return m_dayLight; }
+private:
+   boost::shared_ptr<automation::script::IDayLight> m_dayLight;
+   boost::shared_ptr<automation::script::ILocation> m_location;
 };
 
 void ThreadFunction(pluginSystem::internalPlugin::CSystem& systemPlugin, boost::shared_ptr<yApi::IYPluginApi> context)
@@ -87,10 +124,16 @@ void ThreadFunction(pluginSystem::internalPlugin::CSystem& systemPlugin, boost::
 
 BOOST_AUTO_TEST_CASE(Nominal)
 {
+   static shared::currentTime::Provider timeProvider(boost::make_shared<CDefaultCurrentTimeMock>());
+
    pluginSystem::internalPlugin::CSystem systemPlugin;
-   boost::shared_ptr<CDefaultYPluginApiMock> context(new CDefaultYPluginApiMock());
-   boost::shared_ptr<CStopHandlerMock> stopHandler(new CStopHandlerMock());
+   boost::shared_ptr<CDefaultYPluginApiMock> context(boost::make_shared<CDefaultYPluginApiMock>());
+   boost::shared_ptr<CStopHandlerMock> stopHandler(boost::make_shared<CStopHandlerMock>());
    shared::CServiceLocator::instance().push<IApplicationStopHandler>(stopHandler);
+   boost::shared_ptr<automation::script::ILocation> locationProvider(boost::make_shared<LocationMock>());
+   boost::shared_ptr<automation::script::IDayLight> dayLightProvider(boost::make_shared<DayLightMock>());
+   boost::shared_ptr<automation::script::IObjectFactory> automationScriptObjectFactoryMock(boost::make_shared<AutomationScriptObjectFactoryMock>(dayLightProvider, locationProvider));
+   shared::CServiceLocator::instance().push<automation::script::IObjectFactory>(automationScriptObjectFactoryMock);
    
    boost::thread systemPluginThread(ThreadFunction, systemPlugin, context);
    
@@ -99,20 +142,19 @@ BOOST_AUTO_TEST_CASE(Nominal)
    // Check devices/keywords declared by systemPlugin
    BOOST_CHECK(context->getDevices().size() == 1);
    BOOST_CHECK(context->deviceExists("system"));
-   BOOST_CHECK(context->getKeywords().size() == 2);
+   BOOST_CHECK(context->getKeywords().size() == 3);
    BOOST_CHECK(context->keywordExists("system", "shutdown"));
    BOOST_CHECK(context->keywordExists("system", "restart"));
+   BOOST_CHECK(context->keywordExists("system", "daylight"));
 
    // Check commands
-   boost::shared_ptr<const yApi::IDeviceCommand> shutdownCommand(new CCommandMock("system", "shutdown"));
+   boost::shared_ptr<const yApi::IDeviceCommand> shutdownCommand(boost::make_shared<CCommandMock>("system", "shutdown"));
    context->getEventHandler().postEvent(yApi::IYPluginApi::kEventDeviceCommand, shutdownCommand);
-   boost::this_thread::sleep(boost::posix_time::milliseconds(100));
-   BOOST_CHECK_EQUAL(stopHandler->getLastStopRequest(), IApplicationStopHandler::kStopSystem);
+   BOOST_CHECK_EQUAL(stopHandler->waitStopRequest(), IApplicationStopHandler::kStopSystem);
 
-   boost::shared_ptr<const yApi::IDeviceCommand> restartCommand(new CCommandMock("system", "restart"));
+   boost::shared_ptr<const yApi::IDeviceCommand> restartCommand(boost::make_shared<CCommandMock>("system", "restart"));
    context->getEventHandler().postEvent(yApi::IYPluginApi::kEventDeviceCommand, restartCommand);
-   boost::this_thread::sleep(boost::posix_time::milliseconds(100));
-   BOOST_CHECK_EQUAL(stopHandler->getLastStopRequest(), IApplicationStopHandler::kRestartSystem);
+   BOOST_CHECK_EQUAL(stopHandler->waitStopRequest(), IApplicationStopHandler::kRestartSystem);
 
    systemPluginThread.interrupt();
    BOOST_CHECK_EQUAL(systemPluginThread.timed_join(boost::posix_time::milliseconds(100)), true);

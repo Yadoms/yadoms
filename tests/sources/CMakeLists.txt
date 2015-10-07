@@ -195,6 +195,7 @@ source_group(mock\\server mock/server/*.*)
 source_group(mock\\server\\pluginSystem mock/server/pluginSystem/*.*)
 source_group(mock\\server\\pluginSystem\\information mock/server/pluginSystem/information/*.*)
 source_group(mock\\shared mock/shared/*.*)
+source_group(mock\\shared\\currentTime mock/shared/currentTime/*.*)
 
 
 source_group(testCommon testCommon/*.*)

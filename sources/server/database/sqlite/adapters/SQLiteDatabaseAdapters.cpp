@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "SQLiteDatabaseAdapters.h"
 #include "sqlite3.h"
+#include <shared/currentTime/Provider.h>
 #include <shared/Log.h>
 #include "AdapterHelpers.hpp"
 
@@ -23,7 +24,7 @@ namespace database {   namespace sqlite {  namespace adapters {
       ((DefaultValue)(std::string)(""))
       ((Description)(std::string)(""))
       ((SecurityAccess)(database::entities::ESecurityAccess)(database::entities::ESecurityAccess::kNone)(std::string))
-      ((LastModificationDate)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time()))
+      ((LastModificationDate)(boost::posix_time::ptime)(shared::currentTime::Provider::now()))
    );
 
    DECLARE_ADAPTER_IMPLEMENTATION(Page,
@@ -46,7 +47,7 @@ namespace database {   namespace sqlite {  namespace adapters {
 
    DECLARE_ADAPTER_IMPLEMENTATION(PluginEventLogger,
       ((Id)(int)(0))
-      ((EventDate)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time()))
+      ((EventDate)(boost::posix_time::ptime)(shared::currentTime::Provider::now()))
       ((PluginName)(std::string)(""))
       ((PluginVersion)(std::string)(""))
       ((PluginRelease)(shared::plugin::information::EReleaseType)(shared::plugin::information::EReleaseType::kStable)(int))
@@ -56,7 +57,7 @@ namespace database {   namespace sqlite {  namespace adapters {
 
    DECLARE_ADAPTER_IMPLEMENTATION(EventLogger,
       ((Id)(int)(0))
-      ((Date)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time()))
+      ((Date)(boost::posix_time::ptime)(shared::currentTime::Provider::now()))
       ((Code)(database::entities::ESystemEventCode)(database::entities::ESystemEventCode::kDefaultCode)(std::string))
       ((Who)(std::string)(""))
       ((What)(std::string)(""))
@@ -88,14 +89,14 @@ namespace database {   namespace sqlite {  namespace adapters {
 
 
    DECLARE_ADAPTER_IMPLEMENTATION(Acquisition,
-      ((Date)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time()))
+      ((Date)(boost::posix_time::ptime)(shared::currentTime::Provider::now()))
       ((KeywordId)(int)(0))
       ((Value)(std::string)(""))
    );
 
    DECLARE_ADAPTER_IMPLEMENTATION(AcquisitionSummary,
       ((Type)(database::entities::EAcquisitionSummaryType)(database::entities::EAcquisitionSummaryType::kHour)(std::string))
-      ((Date)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time()))
+      ((Date)(boost::posix_time::ptime)(shared::currentTime::Provider::now()))
       ((KeywordId)(int)(0))
       ((Avg)(std::string)(""))
       ((Min)(std::string)(""))
@@ -115,8 +116,8 @@ namespace database {   namespace sqlite {  namespace adapters {
       ((Enabled)(bool)(true))
       ((State)(database::entities::ERuleState)(database::entities::ERuleState::kStopped)(std::string))
       ((ErrorMessage)(std::string)(""))
-      ((StartDate)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time()))
-      ((StopDate)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time()))
+      ((StartDate)(boost::posix_time::ptime)(shared::currentTime::Provider::now()))
+      ((StopDate)(boost::posix_time::ptime)(shared::currentTime::Provider::now()))
    );
 
 

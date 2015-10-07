@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Configuration.h"
+#include <shared/currentTime/Provider.h>
 #include <shared/exception/NotImplemented.hpp>
 #include <shared/exception/EmptyResult.hpp>
 #include "database/sqlite/SQLiteDataProvider.h"
@@ -24,7 +25,7 @@ namespace database { namespace sqlite { namespace requesters {
    // IConfigurationRequester implementation
    void CConfiguration::create(entities::CConfiguration& configurationToCreate)
    {
-      boost::posix_time::ptime insertDate = boost::posix_time::second_clock::universal_time();
+      boost::posix_time::ptime insertDate = shared::currentTime::Provider::now();
       CQuery qInsert;
       qInsert. InsertInto(CConfigurationTable::getTableName(), CConfigurationTable::getSectionColumnName(), CConfigurationTable::getNameColumnName(), CConfigurationTable::getValueColumnName(), CConfigurationTable::getDescriptionColumnName(), CConfigurationTable::getDefaultValueColumnName(), CConfigurationTable::getLastModificationDateColumnName()).
          Values(configurationToCreate.Section(), configurationToCreate.Name(), configurationToCreate.Value(), configurationToCreate.Description(), configurationToCreate.DefaultValue(), insertDate);
@@ -88,7 +89,7 @@ namespace database { namespace sqlite { namespace requesters {
 
    void CConfiguration::updateConfiguration(entities::CConfiguration& configurationToUpdate)
    {
-      boost::posix_time::ptime updateDate = boost::posix_time::second_clock::universal_time();
+      boost::posix_time::ptime updateDate = shared::currentTime::Provider::now();
 
       if (exists(configurationToUpdate.Section(), configurationToUpdate.Name()))
       {

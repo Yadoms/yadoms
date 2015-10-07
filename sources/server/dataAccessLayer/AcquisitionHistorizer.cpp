@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include <shared/Log.h>
+#include <shared/currentTime/Provider.h>
 #include "AcquisitionHistorizer.h"
 #include "database/ITransactionalProvider.h"
 
@@ -16,7 +17,7 @@ namespace dataAccessLayer {
 	void CAcquisitionHistorizer::saveData(const int keywordId, const shared::plugin::yPluginApi::historization::IHistorizable & data)
 	{
 		//use ptime as variable, because saveData needs a reference
-		boost::posix_time::ptime currentDate = boost::posix_time::second_clock::universal_time();
+      boost::posix_time::ptime currentDate = shared::currentTime::Provider::now();
 
 		//get current transactional engine
 		boost::shared_ptr<database::ITransactionalProvider> transactionalEngine = m_dataProvider->getTransactionalEngine();
@@ -46,7 +47,7 @@ namespace dataAccessLayer {
 	void CAcquisitionHistorizer::saveData(std::vector<int> keywordIdVect, const std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > & dataVect)
 	{
 		//use ptime as variable, because saveData needs a reference
-		boost::posix_time::ptime currentDate = boost::posix_time::second_clock::universal_time();
+      boost::posix_time::ptime currentDate = shared::currentTime::Provider::now();
 
 		//get current transactional engine
 		boost::shared_ptr<database::ITransactionalProvider> transactionalEngine = m_dataProvider->getTransactionalEngine();

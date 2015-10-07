@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "PluginEventLogger.h"
+#include <shared/currentTime/Provider.h>
 #include <shared/exception/NotImplemented.hpp>
 #include "database/sqlite/SQLiteDataProvider.h"
 #include "database/sqlite/adapters/SingleValueAdapter.hpp"
@@ -24,7 +25,7 @@ namespace database { namespace sqlite { namespace requesters {
 
    int CPluginEventLogger::addEvent(const std::string & pluginName, const std::string & pluginVersion, const shared::plugin::information::EReleaseType & pluginReleaseType, const entities::EEventType & eventType, const std::string & message /*= CStringExtension::EmptyString*/)
    {
-      boost::posix_time::ptime insertDate = boost::posix_time::second_clock::universal_time();
+      boost::posix_time::ptime insertDate = shared::currentTime::Provider::now();
 
       CQuery qInsert;
       qInsert. InsertInto(CPluginEventLoggerTable::getTableName(), CPluginEventLoggerTable::getPluginNameColumnName(), CPluginEventLoggerTable::getPluginVersionColumnName(), CPluginEventLoggerTable::getPluginReleaseColumnName(), CPluginEventLoggerTable::getEventTypeColumnName(), CPluginEventLoggerTable::getMessageColumnName(), CPluginEventLoggerTable::getEventDateColumnName()).
