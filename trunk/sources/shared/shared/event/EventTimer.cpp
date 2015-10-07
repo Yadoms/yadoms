@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "../exception/InvalidParameter.hpp"
-#include "Now.h"
+#include "../currentTime/Provider.h"
 #include "EventTimer.h"
 
 namespace shared { namespace event
@@ -26,7 +26,7 @@ void CEventTimer::start(const boost::posix_time::time_duration& period)
 
    // If periodic (and not the first time), next start point begins from last start point
    // Else next start point begins from now
-   boost::posix_time::ptime startPoint = (m_periodicity == kPeriodic && m_nextStopPoint != boost::date_time::not_a_date_time) ? m_nextStopPoint : now();
+   boost::posix_time::ptime startPoint = (m_periodicity == kPeriodic && m_nextStopPoint != boost::date_time::not_a_date_time) ? m_nextStopPoint : currentTime::Provider::now();
 
    m_nextStopPoint = startPoint + periodToUse;
 }

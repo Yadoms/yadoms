@@ -2,10 +2,11 @@
 #include "RunningInformation.h"
 #include "tools/OperatingSystem.h"
 #include <Poco/Environment.h>
+#include <shared/currentTime/Provider.h>
 #include <shared/Log.h>
 
 CRunningInformation::CRunningInformation(const std::string & path)
-   :m_startupDateTime(boost::posix_time::second_clock::universal_time()),
+   :m_startupDateTime(shared::currentTime::Provider::now()),
    m_softwareVersion(1, 0, 0, 0), m_executablePath(path)
 {
 }

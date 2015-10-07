@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include <shared/shared/event/Now.h>
 #include <shared/Log.h>
 #include "RuleStateHandler.h"
 #include "RuleException.hpp"
@@ -25,7 +24,7 @@ void CRuleStateHandler::signalRuleStart(int ruleId)
    boost::shared_ptr<database::entities::CRule> ruleData(new database::entities::CRule);
    ruleData->Id = ruleId;
    ruleData->State = database::entities::ERuleState::kRunningValue;
-   ruleData->StartDate = shared::event::now();
+   ruleData->StartDate = shared::currentTime::Provider::now();
    ruleData->ErrorMessage = std::string();
    m_ruleRequester->updateRule(ruleData);
 
@@ -38,7 +37,7 @@ void CRuleStateHandler::signalNormalRuleStop(int ruleId)
    boost::shared_ptr<database::entities::CRule> ruleData(new database::entities::CRule);
    ruleData->Id = ruleId;
    ruleData->State = database::entities::ERuleState::kStoppedValue;
-   ruleData->StopDate = shared::event::now();
+   ruleData->StopDate = shared::currentTime::Provider::now();
    ruleData->ErrorMessage = std::string();
    m_ruleRequester->updateRule(ruleData);
 
@@ -52,7 +51,7 @@ void CRuleStateHandler::signalNormalRuleStopAndDisable(int ruleId)
    ruleData->Id = ruleId;
    ruleData->Enabled = false;
    ruleData->State = database::entities::ERuleState::kStoppedValue;
-   ruleData->StopDate = shared::event::now();
+   ruleData->StopDate = shared::currentTime::Provider::now();
    ruleData->ErrorMessage = std::string();
    m_ruleRequester->updateRule(ruleData);
 
@@ -66,7 +65,7 @@ void CRuleStateHandler::signalRuleError(int ruleId, const std::string& error)
    ruleData->Id = ruleId;
    ruleData->State = database::entities::ERuleState::kErrorValue;
    ruleData->ErrorMessage = error;
-   ruleData->StopDate = shared::event::now();
+   ruleData->StopDate = shared::currentTime::Provider::now();
    m_ruleRequester->updateRule(ruleData);
 
    // Signal error

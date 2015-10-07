@@ -21,7 +21,7 @@ public:
    {
       Device dev = { model, details }; m_devices[device] = dev;
    }
-   virtual bool keywordExists(const std::string& device, const std::string& keyword) const { return false; }
+   virtual bool keywordExists(const std::string& device, const std::string& keyword) const { return m_keywords.find(keyword) != m_keywords.end(); }
    virtual bool keywordExists(const std::string& device, const yApi::historization::IHistorizable& keyword) const { return false; }
    virtual void declareKeyword(const std::string& device, const yApi::historization::IHistorizable& keyword, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer)
    {

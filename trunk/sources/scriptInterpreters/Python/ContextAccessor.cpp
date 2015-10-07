@@ -2,6 +2,7 @@
 #include "ContextAccessor.h"
 #include "MessageQueueRemover.hpp"
 #include <shared/Log.h>
+#include <shared/currentTime/Provider.h>
 #include <shared/exception/InvalidParameter.hpp>
 
 const size_t CContextAccessor::m_maxMessages(100);
@@ -53,7 +54,7 @@ void CContextAccessor::doWork()
             // boost::interprocess::message_queue::receive is not responding to boost thread interruption, so we need to do some
             // polling and call boost::this_thread::interruption_point to exit properly
             bool messageWasReceived = receiveMessageQueue.timed_receive(message, m_messageQueueMessageSize, messageSize, messagePriority,
-               boost::posix_time::ptime(boost::posix_time::second_clock::universal_time() + boost::posix_time::seconds(1)));
+               boost::posix_time::ptime(shared::currentTime::Provider::now() + boost::posix_time::seconds(1)));
             boost::this_thread::interruption_point();
 
             if (messageWasReceived)

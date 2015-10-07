@@ -8,9 +8,10 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/thread.hpp>
 #include "../../../../sources/shared/shared/exception/InvalidParameter.hpp"
-#include "../../../../sources/shared/shared/event/Now.h"
 #include "../../../../sources/shared/shared/event/EventTimePoint.h"
 #include "../../../../sources/shared/shared/event/EventHandler.hpp"
+
+#include "../../mock/shared/currentTime/DefaultCurrentTimeMock.hpp"
 
 BOOST_AUTO_TEST_SUITE(TestTimePoint)
 
@@ -33,7 +34,9 @@ public:
 //--------------------------------------------------------------
 BOOST_AUTO_TEST_CASE(Nominal)
 {
-   const boost::posix_time::ptime timePoint(shared::event::now() + boost::posix_time::seconds(3));
+   static shared::currentTime::Provider timeProvider(boost::make_shared<CDefaultCurrentTimeMock>());
+
+   const boost::posix_time::ptime timePoint(shared::currentTime::Provider::now() + boost::posix_time::seconds(3));
    const int evtId = 123456;
    CEventTimePointAccessProtectedMembers event(evtId, timePoint);
 
@@ -54,7 +57,9 @@ BOOST_AUTO_TEST_CASE(Nominal)
 //--------------------------------------------------------------
 BOOST_AUTO_TEST_CASE(timePointInThePast)
 {
-   const boost::posix_time::ptime timePoint(shared::event::now() - boost::posix_time::seconds(3));
+   static shared::currentTime::Provider timeProvider(boost::make_shared<CDefaultCurrentTimeMock>());
+
+   const boost::posix_time::ptime timePoint(shared::currentTime::Provider::now() - boost::posix_time::seconds(3));
    const int evtId = 123456;
    BOOST_REQUIRE_THROW(shared::event::CEventTimePoint timer(evtId, timePoint), shared::exception::CInvalidParameter);
 }
@@ -65,8 +70,10 @@ BOOST_AUTO_TEST_CASE(timePointInThePast)
 //--------------------------------------------------------------
 BOOST_AUTO_TEST_CASE(NominalWithEventHandler)
 {
+   static shared::currentTime::Provider timeProvider(boost::make_shared<CDefaultCurrentTimeMock>());
+
    shared::event::CEventHandler evtHandler;
-	const boost::posix_time::ptime timePoint(shared::event::now() + boost::posix_time::seconds(1));
+   const boost::posix_time::ptime timePoint(shared::currentTime::Provider::now() + boost::posix_time::seconds(1));
    const int evtId1 = 123456;
 
    evtHandler.createTimePoint( evtId1, timePoint );
@@ -80,15 +87,18 @@ BOOST_AUTO_TEST_CASE(NominalWithEventHandler)
 //--------------------------------------------------------------
 BOOST_AUTO_TEST_CASE(TimePointBeforeAWait)
 {
+   boost::shared_ptr<CDefaultCurrentTimeMock> refTime(boost::make_shared<CDefaultCurrentTimeMock>());
+   static shared::currentTime::Provider timeProvider(refTime);
+
    shared::event::CEventHandler evtHandler;
-	const boost::posix_time::ptime timePoint(shared::event::now() + boost::posix_time::seconds(1));
+   const boost::posix_time::ptime timePoint(shared::currentTime::Provider::now() + boost::posix_time::seconds(1));
    const int evtId1 = 123456;
 
    evtHandler.createTimePoint( evtId1, timePoint );
 
-   boost::this_thread::sleep( boost::posix_time::seconds(2) );
+   refTime->sleep(boost::posix_time::seconds(2));
 
-	BOOST_REQUIRE_EQUAL(evtHandler.waitForEvents(boost::posix_time::seconds(5)), evtId1); // Must be Event
+   BOOST_REQUIRE_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), evtId1); // Must be Event
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -3,6 +3,7 @@
 #include "PythonLibInclude.h"
 #include "swigpyrun.h"
 #include <shared/DataContainer.h>
+#include <shared/currentTime/Provider.h>
 
 
 CYScriptApiImplementation::CYScriptApiImplementation(const std::string& yScriptApiAccessorId)
@@ -60,8 +61,8 @@ bool CYScriptApiImplementation::tryReceiveAnswer(EAnswerIdentifier expectedAnswe
    size_t messageSize;
    unsigned int messagePriority;
 
-   // Add a small timeout to let time to Yadoms to answer
-   if (!m_receiveMessageQueue->timed_receive(message, m_messageQueueMessageSize, messageSize, messagePriority, boost::posix_time::second_clock::universal_time() + boost::posix_time::seconds(10) + timeout))
+   // Add a small timeout to let time Yadoms to answer
+   if (!m_receiveMessageQueue->timed_receive(message, m_messageQueueMessageSize, messageSize, messagePriority, shared::currentTime::Provider::now() + boost::posix_time::seconds(10) + timeout))
       return false;
 
    if (messageSize < 1)

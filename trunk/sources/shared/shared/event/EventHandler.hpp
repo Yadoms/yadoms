@@ -2,7 +2,7 @@
 #include "Event.hpp"
 #include "EventTimer.h"
 #include "EventTimePoint.h"
-#include "Now.h"
+#include <shared/currentTime/Provider.h>
 #include <shared/exception/BadConversion.hpp>
 #include <shared/exception/NullReference.hpp>
 #include <shared/exception/OutOfRange.hpp>
@@ -115,10 +115,10 @@ namespace shared { namespace event
          
          // Have time event or timeout
          boost::shared_ptr<ITimeEvent> closerTimeEvent = getNextTimeEventStopPoint();
-         if (!!closerTimeEvent && (closerTimeEvent->getNextStopPoint() < (now() + timeout)) )
+         if (!!closerTimeEvent && (closerTimeEvent->getNextStopPoint() < (currentTime::Provider::now() + timeout)))
          {
             // Next stop point will be the closer time event
-            if (!m_condition.timed_wait(lock, closerTimeEvent->getNextStopPoint() - now()))
+            if (!m_condition.timed_wait(lock, closerTimeEvent->getNextStopPoint() - currentTime::Provider::now()))
             {
                // No event ==> Signal time event
                signalTimeEvent(closerTimeEvent);
@@ -236,7 +236,7 @@ namespace shared { namespace event
       boost::shared_ptr<CEventTimePoint> createTimePoint(int timePointEventId, const boost::posix_time::ptime& dateTime)
       {
          BOOST_ASSERT(timePointEventId >= kUserFirstId);
-         if (dateTime <= now())
+         if (dateTime <= currentTime::Provider::now())
             throw shared::exception::COutOfRange("CEventHandler::createTimePoint : timePoint not in the future, ignored");
 
          boost::shared_ptr<CEventTimePoint> timePoint(new CEventTimePoint(timePointEventId, dateTime));
@@ -342,7 +342,7 @@ namespace shared { namespace event
             it != m_timeEvents.end() ; ++it)
          {
             boost::posix_time::ptime nextStopPoint = (*it)->getNextStopPoint();
-            if (nextStopPoint != boost::date_time::not_a_date_time && nextStopPoint < now())
+            if (nextStopPoint != boost::date_time::not_a_date_time && nextStopPoint < currentTime::Provider::now())
                signalTimeEvent(*it);   // Elapsed time point, signal it
          }
       }

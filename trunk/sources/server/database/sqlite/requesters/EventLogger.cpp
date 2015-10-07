@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "EventLogger.h"
+#include <shared/currentTime/Provider.h>
 #include <shared/exception/NotImplemented.hpp>
 #include <shared/exception/InvalidParameter.hpp>
 #include "database/sqlite/SQLiteDataProvider.h"
@@ -25,7 +26,7 @@ namespace database { namespace sqlite { namespace requesters {
 
    int CEventLogger::addEvent(const entities::ESystemEventCode & eventCode, const std::string & who, const std::string & what)
    {
-      boost::posix_time::ptime insertDate = boost::posix_time::second_clock::universal_time();
+      boost::posix_time::ptime insertDate = shared::currentTime::Provider::now();
 
       CQuery qInsert;
       qInsert. InsertInto(CEventLoggerTable::getTableName(), CEventLoggerTable::getCodeColumnName(), CEventLoggerTable::getWhoColumnName(), CEventLoggerTable::getWhatColumnName(), CEventLoggerTable::getDateColumnName()).

@@ -11,11 +11,15 @@
 #include "ErrorHandler.h"
 #include "ApplicationStopHandler.h"
 #include "RunningInformation.h"
+#include <shared/currentTime/Provider.h>
+#include <shared/currentTime/Local.h>
 #include <shared/ServiceLocator.h>
 #include "tools/OperatingSystemIntegration.h"
 
 //define the main entry point
 POCO_SERVER_MAIN(CYadomsServer)
+
+shared::currentTime::Provider timeProvider(boost::make_shared<shared::currentTime::Local>());
 
 CYadomsServer::CYadomsServer()
 :m_helpRequested(false), 

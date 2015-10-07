@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Logger.h"
 #include <shared/Log.h>
-#include <shared/event/Now.h>
+#include <shared/currentTime/Provider.h>
 
 
 namespace automation { namespace script
@@ -27,7 +27,7 @@ std::string CLogger::now()
    boost::posix_time::time_facet* facet(new boost::posix_time::time_facet());
    facet->format("%Y/%m/%d %H:%M:%S");
    dateStream.imbue(std::locale(std::locale::classic(), facet));
-   dateStream << shared::event::now();
+   dateStream << shared::currentTime::Provider::now();
    return dateStream.str();
 }
 

@@ -61,7 +61,7 @@ namespace xplcore
 
          while (!isCancelled()) //we don't need locking here - connected is just a boolean
          {
-            if (boost::posix_time::second_clock::universal_time() > m_nextHeartbeatTime)
+            if (shared::currentTime::Provider::now() > m_nextHeartbeatTime)
             {
                //ensure that if not reconfigure, the next time it do not come here
                m_nextHeartbeatTime = boost::posix_time::max_date_time;
@@ -103,7 +103,7 @@ namespace xplcore
    void CXplServiceTask::initializeConnector(Poco::Net::NetworkInterface & networkInterface)
    {
       m_hubHasBeenFound = false;
-      m_startDate = boost::posix_time::second_clock::universal_time();
+      m_startDate = shared::currentTime::Provider::now();
 
       //the localendpoint is determined from the network interface 
       //(take the ip from the interface and get an used port between 49152 and 65535 according to xpl documentation)
@@ -129,8 +129,7 @@ namespace xplcore
 
    void CXplServiceTask::runHeartbeatSequenceIn(const int seconds)
    {
-      boost::posix_time::ptime now = boost::posix_time::second_clock::universal_time();
-      m_nextHeartbeatTime = now + boost::posix_time::seconds(seconds);
+      m_nextHeartbeatTime = shared::currentTime::Provider::now() + boost::posix_time::seconds(seconds);
    }
 
    void CXplServiceTask::heartbeatSequence()
@@ -149,8 +148,7 @@ namespace xplcore
          else
          {
             //the hub havn't been found for the moment
-            boost::posix_time::ptime now = boost::posix_time::second_clock::universal_time();
-            boost::posix_time::time_duration diff = now - m_startDate;
+            boost::posix_time::time_duration diff = shared::currentTime::Provider::now() - m_startDate;
             if (diff.total_seconds() > HubDiscoveryTimeOut)
             {
                //the hub haven't been found in 2 minutes so we send a hbeat every 30 seconds

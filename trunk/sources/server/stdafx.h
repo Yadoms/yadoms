@@ -37,6 +37,7 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/smart_ptr/enable_shared_from_this.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
 
 //dont't include boost/thread.hpp besause it increase build files more than 10MB for nothing and can be too heavy for small targets (raspberry)
 #include <boost/thread/thread.hpp>

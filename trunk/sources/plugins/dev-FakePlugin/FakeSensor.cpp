@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "FakeSensor.h"
+#include <shared/currentTime/Provider.h>
 #include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/StringExtension.h>
 #include <shared/Log.h>
@@ -19,7 +20,7 @@ CFakeSensor::CFakeSensor(const std::string& deviceName)
    m_batteryLevel->set(100);
    m_current->set(2);
    m_rssi->set(50);
-   m_dateTime->set(boost::posix_time::second_clock::local_time());
+   m_dateTime->set(shared::currentTime::Provider::now());
    
    m_historizers.push_back(m_temperature1);
    m_historizers.push_back(m_temperature2);
@@ -74,7 +75,7 @@ void CFakeSensor::read()
       m_batteryLevel->set(m_batteryLevel->get() - 1);
 
    //set the current date time onto m_datetime keyword
-   m_dateTime->set(boost::posix_time::second_clock::local_time());
+   m_dateTime->set(shared::currentTime::Provider::now());
 
    // Generate a random variation on temperature (+/- 0 to 1°)
    offset = static_cast<int>(m_dist(m_gen) - 10.0) / 10.0; // Random offset, value from -1.0 to 1.0

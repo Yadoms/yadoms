@@ -29,6 +29,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/log/common.hpp>
 #include <boost/log/trivial.hpp>
+#include <boost/make_shared.hpp>
 #include <boost/optional.hpp>
 #include <boost/preprocessor.hpp>
 #include <boost/program_options.hpp>

@@ -2,6 +2,7 @@
 #include "ITask.h"
 #include "Instance.h"
 #include "TaskEvent.h"
+#include <shared/currentTime/Provider.h>
 #include <shared/Log.h>
 #include "database/entities/Entities.h"
 #include <shared/ServiceLocator.h>
@@ -20,7 +21,7 @@ namespace task {
    CInstance::CInstance(boost::shared_ptr<ITask> task, boost::shared_ptr<shared::event::CEventHandler> eventHandler, const int eventCode, const std::string & guid)
       : CThreadBase("Task " + task->getName()), m_currentProgression(0.0f), m_currentMessage(""), m_task(task), m_eventHandler(eventHandler), m_eventCode(eventCode), 
       m_guid(guid), m_currentStatus(ETaskStatus::kStarted), 
-      m_creationDate(boost::posix_time::second_clock::universal_time())
+      m_creationDate(shared::currentTime::Provider::now())
    {
       BOOST_ASSERT(m_task);
       start();

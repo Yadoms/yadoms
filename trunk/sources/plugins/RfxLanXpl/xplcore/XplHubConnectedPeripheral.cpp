@@ -5,13 +5,14 @@
 #include "XplException.h"
 #include <shared/Log.h>
 #include <Poco/Net/NetworkInterface.h>
+#include <shared/currentTime/Provider.h>
 
 namespace xplcore
 {
 
 
    CXplHubConnectedPeripheral::CXplHubConnectedPeripheral(Poco::Net::SocketAddress & sender, unsigned short portNumber, int interval, const std::string & debugName)
-      : m_portNumber(portNumber), m_interval(interval), m_lastTimeSeen(boost::posix_time::second_clock::universal_time()), m_debugName(debugName)
+      : m_portNumber(portNumber), m_interval(interval), m_lastTimeSeen(shared::currentTime::Provider::now()), m_debugName(debugName)
    {
       m_socket.setReuseAddress(true);
       m_socket.setBroadcast(true);
@@ -47,7 +48,7 @@ namespace xplcore
 
    void CXplHubConnectedPeripheral::updateLastTimeSeenFromNow()
    {
-      m_lastTimeSeen = boost::posix_time::second_clock::universal_time();
+      m_lastTimeSeen = shared::currentTime::Provider::now();
    }
 
    void CXplHubConnectedPeripheral::updateLastTimeSeen(boost::posix_time::ptime time)
