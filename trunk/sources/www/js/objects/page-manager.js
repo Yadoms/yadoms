@@ -107,32 +107,16 @@ PageManager.addToDom = function (page) {
    var tabIdAsText = "tab-" + page.id;
    //pill creation
 
-   /*var container  = $("div#pageMenu").find("ul").append(
-      "<li class=\"tabPagePills\" page-id=\"" + page.id + "\">" +
-         "<a href=\"#" + tabIdAsText + "\" data-toggle=\"tab\">" +
-         "<span>" + page.name + "</span>" +
-         "<div class=\"pageCustomizationToolbar btn-group btn-group-sm customization-item pull-right hidden\">" +
-         "<button type=\"button\" class=\"btn btn-default move-left-page\" title=\"Move to left\" data-i18n=\"[title]mainPage.customization.moveToLeft\"><i class=\"glyphicon glyphicon-arrow-left\"></i></button>" +
-         "<button type=\"button\" class=\"btn btn-default move-right-page\" title=\"Move to right\" data-i18n=\"[title]mainPage.customization.moveToRight\"><i class=\"glyphicon glyphicon-arrow-right\"></i></button>" +
-         "<button type=\"button\" class=\"btn btn-default rename-page\" title=\"Rename\" data-i18n=\"[title]mainPage.customization.rename\"><i class=\"glyphicon glyphicon-pencil\"></i></button>" +
-         "<button type=\"button\" class=\"btn btn-default delete-page\" title=\"Delete\" data-i18n=\"[title]mainPage.customization.delete\"><i class=\"glyphicon glyphicon-trash\"></i></button>" +
-         "</div>" +
-         "</a>" +
-         "</li>");*/
-
    var container  =  $("<li class=\"tabPagePills\" page-id=\"" + page.id + "\">" +
          "<a href=\"#" + tabIdAsText + "\" data-toggle=\"tab\">" +
-         "<span>" + page.name + "</span>" +
-         "<div class=\"pageCustomizationToolbar btn-group btn-group-sm customization-item pull-right hidden\">" +
-         "<button type=\"button\" class=\"btn btn-default add-widget\" data-i18n=\"[title]mainPage.customization.addNewWidget\"><i class=\"fa fa-puzzle-piece\"></i></button>" +
-         "<button type=\"button\" class=\"btn btn-default move-left-page\" title=\"Move to left\" data-i18n=\"[title]mainPage.customization.moveToLeft\"><i class=\"glyphicon glyphicon-arrow-left\"></i></button>" +
-         "<button type=\"button\" class=\"btn btn-default move-right-page\" title=\"Move to right\" data-i18n=\"[title]mainPage.customization.moveToRight\"><i class=\"glyphicon glyphicon-arrow-right\"></i></button>" +
-         "<button type=\"button\" class=\"btn btn-default rename-page\" title=\"Rename\" data-i18n=\"[title]mainPage.customization.rename\"><i class=\"glyphicon glyphicon-pencil\"></i></button>" +
-         "<button type=\"button\" class=\"btn btn-default delete-page\" title=\"Delete\" data-i18n=\"[title]mainPage.customization.delete\"><i class=\"glyphicon glyphicon-trash\"></i></button>" +
-         "</div>" +
-         //"<div class=\"pageCustomizationToolbar customization-item pull-right hidden\">" +
-         //   "<a href=\"#\" class=\"active\" id=\"\" data-i18n=\"[title]mainPage.menu.customization\"><i class=\"fa fa-wrench\"></i></a>" +
-         //"</div>" +
+            "<span>" + page.name + "</span>" +
+            "<div class=\"customizationToolbar pageCustomizationToolbar customization-item hidden\">" +
+               "<div class=\"customizationButton pageCustomizationButton add-widget\" data-i18n=\"[title]mainPage.customization.addNewWidget\"><i class=\"fa fa-lg fa-puzzle-piece\"></i></div>" +
+               "<div class=\"customizationButton pageCustomizationButton move-left-page\" title=\"Move to left\" data-i18n=\"[title]mainPage.customization.moveToLeft\"><i class=\"fa fa-lg fa-arrow-left\"></i></div>" +
+               "<div class=\"customizationButton pageCustomizationButton move-right-page\" title=\"Move to right\" data-i18n=\"[title]mainPage.customization.moveToRight\"><i class=\"fa fa-lg fa-arrow-right\"></i></div>" +
+               "<div class=\"customizationButton pageCustomizationButton rename-page\" title=\"Rename\" data-i18n=\"[title]mainPage.customization.rename\"><i class=\"fa fa-lg fa-pencil\"></i></div>" +
+               "<div class=\"customizationButton pageCustomizationButton delete-page\" title=\"Delete\" data-i18n=\"[title]mainPage.customization.delete\"><i class=\"fa fa-lg fa-trash-o\"></i></div>" +
+            "</div>" +
          "</a>" +
          "</li>").insertBefore($("li#btn-add-page"));
 
@@ -144,61 +128,28 @@ PageManager.addToDom = function (page) {
    //page creation
    container = $("div#tabContainer").find(".tab-content").append(
       "<div class=\"widgetPage tab-pane active\" id=\"" + tabIdAsText + "\" page-id=\"" + page.id + "\">" +
-         "<div class=\"gridster\">" +
-         "<ul></ul>" +
+         "<div class=\"grid grid-stack\">" +
          "</div>" +
          "</div>");
 
    //we save the content of the page dom node
    page.$content = container.find("div#" + tabIdAsText);
 
-   //gridster creation
-   page.gridster = page.$content.find("ul").gridster({
-      widget_margins: [gridMargin, gridMargin],
-      widget_base_dimensions: [gridWidth, gridWidth],
-      min_cols: numberOfColumns,
-      max_cols: numberOfColumns,
-      resize: {
-         enabled: true,
-         resize: function(e, ui, $widget) {
-            var widgetObject = WidgetManager.getFromGridsterElement($widget);
-            try
-            {
-               if (widgetObject.viewModel.resized !== undefined)
-                  widgetObject.viewModel.resized();
-            }
-            catch (e)
-            {
-               notifyWarning($.t("widgets.errors.widgetHasGeneratedAnExceptionDuringCallingMethod", {widgetName : widget.type, methodName : 'resized'}));
-               console.warn(e);
-            }
-         },
-         stop: function(e, ui, $widget) {
-            var widgetObject = WidgetManager.getFromGridsterElement($widget);
-            try
-            {
-               if (widgetObject.viewModel.resized !== undefined)
-                  widgetObject.viewModel.resized();
-            }
-            catch (e)
-            {
-               notifyWarning($.t("widgets.errors.widgetHasGeneratedAnExceptionDuringCallingMethod", {widgetName : widget.type, methodName : 'resized'}));
-               console.warn(e);
-            }
-         }
-      }
-   }).data('gridster');
+   var options = {
+      width: numberOfColumns,
+      float: true,
+      always_show_resize_handle: true,
+      cell_height: gridWidth,
+      vertical_margin : gridMargin,
+      min_width : 0
+   };
 
-   //we remove the active class of hidden gridster
-   $("div#" + tabIdAsText).removeClass("active");
+   page.$grid =  page.$content.find(".grid-stack");
+   page.grid =  page.$grid.gridstack(options).data('gridstack');
 
-   $("div#" + tabIdAsText + " .gridster").width(numberOfColumns * (gridWidth + gridMargin * 2));
+   page.$grid.on('resizestop', widgetResized);
 
-   //we check if we are in customization we must apply customization on the new page
-   if (customization)
-   {
-      page.$tab.find(".customization-item").removeClass("hidden");
-   }
+   PageManager.enableCustomization(page, customization);
 
    //we initialize page events
 
@@ -207,29 +158,29 @@ PageManager.addToDom = function (page) {
       return tabClick($(e.currentTarget).parent().attr("page-id")); } );
 
    //we listen click event on add new widget
-   page.$tab.find('button.add-widget').bind('click', function () {
+   page.$tab.find('div.add-widget').bind('click', function () {
       modals.widgetAdd.load(function() {askWidgetPackages();});
    } );
 
    //we listen click event on rename click
-   page.$tab.find('button.rename-page').bind('click', function (e) {
+   page.$tab.find('div.rename-page').bind('click', function (e) {
       createOrUpdatePage($(e.currentTarget).parents("li.tabPagePills").attr("page-id")); } );
 
    //we listen click event on rename click
-   page.$tab.find('button.delete-page').bind('click', function (e) {
+   page.$tab.find('div.delete-page').bind('click', function (e) {
       var pageId = $(e.currentTarget).parents("li.tabPagePills").attr("page-id");
       modals.pageDelete.load(function (pageId) {return function() {showDeletePageModal(pageId)}}(pageId));
    } );
 
    //we listen click event on move left click
-   page.$tab.find('button.move-left-page').bind('click', function (e) {
+   page.$tab.find('div.move-left-page').bind('click', function (e) {
       var pageToMove = PageManager.getPage($(e.currentTarget).parents("li.tabPagePills").attr("page-id"));
       assert(!isNullOrUndefined(pageToMove), "page doesn't exist in PageManager");
       PageManager.movePage(pageToMove, "left");
    } );
 
    //we listen click event on move right click
-   page.$tab.find('button.move-right-page').bind('click', function (e) {
+   page.$tab.find('div.move-right-page').bind('click', function (e) {
       var pageToMove = PageManager.getPage($(e.currentTarget).parents("li.tabPagePills").attr("page-id"));
       assert(!isNullOrUndefined(pageToMove), "page doesn't exist in PageManager");
       PageManager.movePage(pageToMove, "right");
@@ -241,7 +192,7 @@ PageManager.addToDom = function (page) {
 };
 
 PageManager.movePage = function(page, direction) {
-   assert(!isNullOrUndefined(page), "pageToMove must be defined");
+   assert(!isNullOrUndefined(page), "page must be defined");
    assert(!isNullOrUndefined(direction), "direction must be defined");
 
    var nearestId = null;
@@ -330,4 +281,33 @@ PageManager.getCurrentPage = function() {
    if (isNullOrUndefined(pageId))
       return null;
    return PageManager.getPage(pageId);
+};
+
+function widgetResized (event, ui) {
+   var grid = this;
+   var $widget = $(event.target);
+   var widgetObject = WidgetManager.getFromGridElement($widget);
+   try
+   {
+      if (widgetObject.viewModel.resized !== undefined)
+         widgetObject.viewModel.resized();
+   }
+   catch (e)
+   {
+      notifyWarning($.t("widgets.errors.widgetHasGeneratedAnExceptionDuringCallingMethod", {widgetName : widgetObject.type, methodName : 'resized'}));
+      console.warn(e);
+   }
+}
+
+/**
+ * Enable or disable customization on widget
+ * @param enable
+ */
+PageManager.enableCustomization = function(page, enable) {
+   assert(!isNullOrUndefined(page), "page must be defined");
+
+   if (enable)
+      $(".customization-item").removeClass("hidden");
+   else
+      $(".customization-item").addClass("hidden");
 };

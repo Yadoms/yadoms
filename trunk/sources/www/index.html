@@ -16,14 +16,14 @@
     <!-- Custom styles for this template -->
     <link href="css/yadoms.css" rel="stylesheet">
 	 <link href="libs/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-    <link href="css/gridster.css" rel="stylesheet">
     <link href="css/widget.css" rel="stylesheet">
 
     <link href="libs/bootstrap-colorpicker-master/css/bootstrap-colorpicker.min.css" rel="stylesheet">
     <link rel="stylesheet" href="libs/bootstrap-iconpicker-1.4.0/css/bootstrap-iconpicker.min.css"/>
 
-    <!-- Gridster includes -->
-    <link href="libs/gridster/css/jquery.gridster.css" rel="stylesheet">
+    <!-- Gridstack includes -->
+    <link rel="stylesheet" href="libs/gridstack/css/gridstack.css"/>
+    <link rel="stylesheet" href="libs/gridstack/css/gridstack-extra.css"/>
   </head>
 
   <body>
@@ -60,9 +60,14 @@
                   <div class="nav navbar-nav" id = "pageMenu">
                       <ul class="nav nav-pills nav-justified page-tabs">
                          <!-- Nav pills of pages will be inserted here -->
-                         <li class="active customization-item hidden" id="btn-add-page">
-                            <a class="btn btn-primary" type="button">
-                               <span><i class="glyphicon glyphicon-file"></i></span>
+                         <li class="customization-item hidden" id="btn-add-page">
+                            <a>
+                               <span>&nbsp;</span>
+                               <div class="customizationToolbar pageCustomizationToolbar">
+                                  <div class="customizationButton pageCustomizationButton" data-i18n="[title]mainPage.customization.addNewPage">
+                                     <i class="fa fa-plus"></i>
+                                  </div>
+                               </div>
                             </a>
                          </li>
                       </ul>
@@ -72,7 +77,7 @@
       </div><!--/.nav-collapse -->
   </div>
 
-  <div id="tabContainer">
+  <div id="tabContainer" class="container">
       <div class="tab-content">
           <!-- Gridster tabs will be inserted here -->
       </div>
@@ -87,9 +92,6 @@
    <!-- Placed at the end of the document so the pages load faster -->
    <script src="libs/jquery/js/jquery-1.11.0.min.js"></script>
    <script src="libs/bootstrap/js/bootstrap.js"></script>
-
-   <!-- Gridster includes -->
-   <script src="libs/gridster/js/jquery.gridster.js"></script>
 
    <script src="libs/transit/js/jquery.transit.min.js"></script>
    <script src="libs/knockout/js/knockout-3.0.0.js"></script>
@@ -193,6 +195,10 @@
 
    <script src="libs/jquery-MD5/js/jquery.md5.js"></script>
 
+   <script src="libs/lodash/lodash.js"></script>
+   <script src="libs/jquery-ui/js/jquery-ui.js"></script>
+   <script src="libs/gridstack/js/gridstack.js"></script>
+
    <div id="templates" class="hidden"></div>
 
 	<script type="text/javascript">
@@ -205,7 +211,7 @@
    var systemConfiguration = [];
 
    //TODO - Passer les variables suivantes en variable de conf
-   var numberOfColumns = 9;
+   var numberOfColumns = 12;
    var gridWidth = 100;
    var gridMargin = 5;
    var longPressDelayToEnterInCustomizationMode = 500;

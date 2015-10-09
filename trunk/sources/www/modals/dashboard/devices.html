@@ -64,8 +64,8 @@
 
    function addDeviceToDom(device) {
       var actionsBtns = "<div class=\"btn-group\">\n" +
-              "<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.configure\"><span class=\"glyphicon glyphicon-pencil\"></span></button>\n" +
-              "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.delete\"><span class=\"glyphicon glyphicon-trash\"></span></button>\n" +
+              "<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.configure\"><span class=\"fa fa-pencil\"></span></button>\n" +
+              "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.delete\"><span class=\"fa fa-trash\"></span></button>\n" +
               "</div>";
 
       var friendlyName = "<span class=\"glyphicon glyphicon-chevron-down deploy\">&nbsp;</span><span>" + decodeURIComponent(device.friendlyName) + "</span>";
@@ -196,7 +196,7 @@
 
             DeviceManager.getKeywords(device, function() {
                var actionsBtns = "<div class=\"btn-group\">\n" +
-                       "<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.configure\"><span class=\"glyphicon glyphicon-pencil\"></span></button>\n" +
+                       "<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.configure\"><span class=\"fa fa-pencil\"></span></button>\n" +
                        "</div>";
 
                $.each(device.keywords, function (index, keyword) {

@@ -36,15 +36,15 @@ WidgetManager.get = function(pageId, widgetId) {
 };
 
 /**
- * Return the widget object attached to gridster element
- * @param $gridsterElement
+ * Return the widget object attached to grid element
+ * @param $gridElement
  * @returns {Widget}
  */
-WidgetManager.getFromGridsterElement = function($gridsterElement) {
-   assert($gridsterElement !== undefined, "$gridsterElement must be defined");
+WidgetManager.getFromGridElement = function($gridElement) {
+   assert($gridElement !== undefined, "$gridElement must be defined");
 
-   var pageId = $gridsterElement.attr("page-id");
-   var widgetId = $gridsterElement.attr("widget-id");
+   var pageId = $gridElement.attr("page-id");
+   var widgetId = $gridElement.attr("widget-id");
    return WidgetManager.get(pageId, widgetId);
 };
 
@@ -270,14 +270,15 @@ WidgetManager.addToDom = function(widget) {
    assert(!isNullOrUndefined(widget), "widget must be defined");
 
    var widgetDivId = "widget-" + widget.id;
-   widget.$gridsterWidget = WidgetManager.createGridsterWidget(widget);
+   widget.$gridWidget = WidgetManager.createGridstackWidget(widget);
    widget.$div = $("div#" + widgetDivId);
 
    //we check if we are in customization we must apply customization on the new item
+   WidgetManager.enableCustomization(widget, customization);
    if (customization)
    {
-      widget.$gridsterWidget.find(".customization-item").removeClass("hidden");
-      widget.$gridsterWidget.addClass("liWidgetCustomization");
+      widget.$gridWidget.find(".customization-item").removeClass("hidden");
+
    }
 
    var page = PageManager.getPage(widget.idPage);
@@ -285,21 +286,10 @@ WidgetManager.addToDom = function(widget) {
 
    //we apply binding to the view
    ko.applyBindings(widget.viewModel, widget.$div[0]);
-   //we add minimum dimension constraint to the gridster widget
-   if ((!isNullOrUndefined(widget.package.dimensions)) && (!isNullOrUndefined(widget.package.dimensions.min)))
-   {
-      //min dimension is set
-      assert((widget.package.dimensions.min.x !== undefined) && (widget.package.dimensions.min.y !== undefined), "You can't set only one axis of the widget minimum dimension");
-      widget.$gridsterWidget.data('coords').grid.min_size_x = widget.package.dimensions.min.x;
-      widget.$gridsterWidget.data('coords').grid.min_size_y = widget.package.dimensions.min.y;
-   }
 
-   if ((!isNullOrUndefined(widget.package.dimensions)) && (!isNullOrUndefined(widget.package.dimensions.max)))
-   {
-      //max dimension is set
-      assert((widget.package.dimensions.max.x !== undefined) && (widget.package.dimensions.max.y !== undefined), "You can't set only one axis of the widget maximum dimension");
-      page.gridster.set_widget_max_size(widget.$gridsterWidget, [widget.package.dimensions.max.x, widget.package.dimensions.max.y]);
-   }
+   widget.$gridWidget.attr("data-gs-x", gridWidth);
+
+
 
    //we initialize the widget
    try
@@ -330,8 +320,8 @@ WidgetManager.addToDom = function(widget) {
    }
 
    //we listen click event on configure click
-   widget.$gridsterWidget.find('span.btn-configure-widget').bind('click', function (e) {
-      var widgetDOMElement = $(e.currentTarget).parents("li.widget");
+   widget.$gridWidget.find('div.btn-configure-widget').bind('click', function (e) {
+      var widgetDOMElement = $(e.currentTarget).parents(".widget");
       var pageId = widgetDOMElement.attr("page-id");
       var widgetId = widgetDOMElement.attr("widget-id");
       modals.widgetConfiguration.load(function (pageId, widgetId) { return function() {
@@ -343,8 +333,8 @@ WidgetManager.addToDom = function(widget) {
    });
 
    //we listen click event on delete click
-   widget.$gridsterWidget.find('span.btn-delete-widget').bind('click', function (e) {
-      var widgetDOMElement = $(e.currentTarget).parents("li.widget");
+   widget.$gridWidget.find('div.btn-delete-widget').bind('click', function (e) {
+      var widgetDOMElement = $(e.currentTarget).parents(".widget");
       var pageId = widgetDOMElement.attr("page-id");
       var widgetId = widgetDOMElement.attr("widget-id");
       modals.widgetDelete.load(function (pageId, widgetId) {return function() {showDeleteWidgetModal(pageId, widgetId)}}(pageId, widgetId));
@@ -357,21 +347,58 @@ WidgetManager.addToDom = function(widget) {
 };
 
 /**
- * Create a new graphic Widget and add it to the corresponding gridster
+ * Enable or disable customization on widget
+ * @param enable
+ */
+WidgetManager.enableCustomization = function(widget, enable) {
+   var page = PageManager.getPage(widget.idPage);
+   assert(!isNullOrUndefined(page), "page doesn't exist in PageManager");
+
+   page.grid.movable(widget.$gridWidget, enable);
+   page.grid.resizable(widget.$gridWidget, enable);
+
+   if (enable)
+      widget.$gridWidget.find(".customization-item").removeClass("hidden");
+   else
+      widget.$gridWidget.find(".customization-item").addClass("hidden");
+};
+
+/**
+ * Create a new graphic Widget and add it to the corresponding gridstack
  * @param widget widget to add
  * @returns {object}
  */
-WidgetManager.createGridsterWidget = function(widget) {
+WidgetManager.createGridstackWidget = function(widget) {
    assert(widget !== undefined, "widget must be defined");
 
    var page = PageManager.getPage(widget.idPage);
    assert(!isNullOrUndefined(page), "page doesn't exist in PageManager");
 
-   var domWidget = "<li class=\"widget\" page-id=\"" + widget.idPage + "\" widget-id=\"" + widget.id +"\">\n" +
-      "<div class=\"widgetCustomizationToolbar customization-item hidden\">\n";
+   var domWidget = "<div class=\"widget\" page-id=\"" + widget.idPage + "\" widget-id=\"" + widget.id +"\"";
+
+   //we add minimum dimension constraint to the grids widget
+   if (!isNullOrUndefined(widget.package.dimensions)) {
+      if (!isNullOrUndefined(widget.package.dimensions.min)) {
+         if (!isNullOrUndefined(widget.package.dimensions.min.x))
+            domWidget += " data-gs-min-width=\"" + widget.package.dimensions.min.x + "\"";
+         if (!isNullOrUndefined(widget.package.dimensions.min.y))
+            domWidget += " data-gs-min-height=\"" + widget.package.dimensions.min.y + "\"";
+      }
+      if (!isNullOrUndefined(widget.package.dimensions.max)) {
+         if (!isNullOrUndefined(widget.package.dimensions.max.x))
+            domWidget += " data-gs-max-width=\"" + widget.package.dimensions.max.x + "\"";
+         if (!isNullOrUndefined(widget.package.dimensions.max.y))
+            domWidget += " data-gs-max-height=\"" + widget.package.dimensions.max.y + "\"";
+      }
+   }
+
+   domWidget += ">\n" +
+       "<div class=\" grid-stack-item-content\">\n" +
+         "<div class=\"widgetCustomizationOverlay customization-item hidden\">\n" +
+            "<div class=\"customizationToolbar widgetCustomizationToolbar\">";
 
    if (!isNullOrUndefined(widget.package.configurationSchema)) {
-      domWidget += "<span class=\"btn-configure-widget\"><i class=\"glyphicon glyphicon-cog\"></i></span>\n";
+      domWidget += "<div class=\"customizationButton widgetCustomizationButton btn-configure-widget\"><i class=\"fa fa-cog\"></i></div>\n";
    }
 
    var type = widget.type;
@@ -379,13 +406,17 @@ WidgetManager.createGridsterWidget = function(widget) {
       type = "dev-deactivated-widget";
    }
 
-   domWidget +=    "<span class=\"btn-delete-widget\"><i class=\"glyphicon glyphicon-trash\"></i></span>\n" +
-      "</div>\n" +
-      "<div id=\"widget-" + widget.id + "\" class=\"widgetDiv\" data-bind=\"template: { name: '" + type + "-template' }\"/>\n" +
-      "</li>\n";
+   domWidget +=    "<div class=\"customizationButton widgetCustomizationButton btn-delete-widget\"><i class=\"fa fa-trash-o\"></i></div>\n" +
+            "</div>\n" +
+       "</div>\n" +
+       "<div id=\"widget-" + widget.id + "\" class=\"widgetDiv \" data-bind=\"template: { name: '" + type + "-template' }\"/>\n" +
+       "</div>\n" +
+   "</div>\n";
 
-   var item = page.gridster.add_widget(domWidget, widget.sizeX, widget.sizeY, widget.positionX, widget.positionY);
+   var item = page.grid.add_widget($(domWidget), widget.positionX, widget.positionY, widget.sizeX, widget.sizeY, false);
 
    item.i18n();
    return item;
 };
+
+

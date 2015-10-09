@@ -39,19 +39,13 @@ body {
     margin-top: 10px;
 }
 
-#tabContainer {
-    margin-left: 20px;
-    margin-right: 20px;
-}
-
-.gridster > ul {
-}
-
 .widget {
    background-color: transparent;
 }
 
-.widget > div{
+.widget .widgetCustomizationOverlay,
+.widget .widgetDiv
+{
     position: absolute;
     left: 0px;
     right: 0px;
@@ -59,45 +53,17 @@ body {
     bottom: 0px;
 }
 
-.widgetDiv {
+.widget .widgetDiv {
    background-color: transparent;
 }
 
-.btn-configure-widget {
-   width: 20px;
-   height: 20px;
-   top: -10px;
-   right:35px;
-   position: absolute;
-   background-color: #428bca;
-   color: white;
-   border-width: 1px;
-   border-color: black;
-   border-style: solid;
-   padding-top: 1px;
-}
-
+.btn-configure-widget,
 .btn-delete-widget {
-   width: 20px;
-   height: 20px;
-   top: -10px;
-   right: 10px;
-   position: absolute;
-   background-color: #428bca;
    color: white;
-   border-width: 1px;
-   border-color: black;
-   border-style: solid;
-   padding-top: 1px;
-   
 }
 
-.widgetCustomizationToolbar{
-    z-index: 18;
-    border-color: darkslategray;
-    border-style: dashed;
-    border-width: 1px;
-    text-align: center;
+.ui-resizable-se {
+   color: #428bca !important;
 }
 
 .customization-item > .btn-group {
@@ -130,12 +96,43 @@ body {
     background-color: #428bca
 }
 
-.pageCustomizationToolbar {
+.customizationToolbar {
    position: absolute;
    right: 0px;
    top: 0px;
+   border-radius: 0 0 0 10px;
+   padding: 2px;
+}
+
+.pageCustomizationToolbar {
    margin-top: 2px;
    margin-right: 2px;
+   background-color: white;
+   cursor: default;
+}
+
+.customizationButton {
+   float: left;
+   margin-left: 4px;
+   margin-right: 4px;
+}
+
+.pageCustomizationButton {
+   color: #428bca;
+}
+
+.widgetCustomizationToolbar {
+   background-color: #428bca;
+}
+
+.widgetCustomizationButton {
+   color: white;
+}
+
+.widgetCustomizationOverlay{
+   z-index: 18;
+   border: 1px dashed #428bca;
+   text-align: center;
 }
 
 .navbar {

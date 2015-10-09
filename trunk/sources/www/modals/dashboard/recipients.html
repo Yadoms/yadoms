@@ -1,7 +1,7 @@
 <div id="dashboard-recipients">
    <h1 class="page-header"><span class="fa fa-envelope"></span>&nbsp;<span data-i18n="modals.dashboard.sub-windows.recipients.title"></span></h1>
    <span data-i18n="modals.dashboard.sub-windows.recipients.recipientsListDescription"></span><br>
-   <button id="btn-add-new-recipient" type="button" class="btn btn-success dashboard-btn-new"><span class="fa fa-rocket"></span>&nbsp;&nbsp;<span data-i18n="modals.dashboard.sub-windows.recipients.new"></span></button>
+   <button id="btn-add-new-recipient" type="button" class="btn btn-success dashboard-btn-new"><span class="fa fa-envelope"></span>&nbsp;&nbsp;<span data-i18n="modals.dashboard.sub-windows.recipients.new"></span></button>
    <table id="recipients-list" class="table table-bordered table-striped dashboard-list">
       <tr>
          <td data-i18n="modals.dashboard.sub-windows.recipients.table.firstName"></td>
@@ -55,8 +55,8 @@
     */
    function updateRecipientDom(recipient) {
       var actionsBtns = "<div class=\"btn-group\">\n" +
-              "<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.recipients.edit\"><span class=\"glyphicon glyphicon-pencil\"></span></button>\n" +
-              "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.recipients.delete\"><span class=\"glyphicon glyphicon-trash\"></span></button>\n" +
+              "<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.recipients.edit\"><span class=\"fa fa-pencil\"></span></button>\n" +
+              "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.recipients.delete\"><span class=\"fa fa-trash\"></span></button>\n" +
               "</div>";
 
       //retrieve the row

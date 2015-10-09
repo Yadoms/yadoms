@@ -62,7 +62,7 @@
          var page = PageManager.getPage(widgetToDelete.idPage);
          assert(page != null, "page Id doesn't exit");
 
-         page.gridster.remove_widget(widgetToDelete.$gridsterWidget);
+         page.grid.remove_widget(widgetToDelete.$gridWidget, true);
          page.widgets.splice($.inArray(widgetToDelete, page.widgets), 1);
       })
       .fail(function(widgetName) { return function() {notifyError($.t("modals.delete-page.errorDuringDeletingWidgetNamed", {"widgetType" : widgetName}));};}(widgetToDelete.name))

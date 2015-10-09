@@ -10,7 +10,7 @@ function DateTimeFormatter() {}
 
 DateTimeFormatter.isoDateToDate = function (isoDate) {
 
-   var d = moment.utc(isoDate, "YYYYMMDD[T]HHmmss");
+   var d = moment(isoDate, "YYYYMMDD[T]HHmmss");
    assert(d.isValid(), "Date given " + isoDate + " is not valid");
    return d;
 };
@@ -24,9 +24,8 @@ DateTimeFormatter.isoDateToString = function (isoDate) {
 
    var d = DateTimeFormatter.isoDateToDate(isoDate);
    var format = systemConfiguration[ConfigurationManager.items.system.dateFormatString].value;
-   var timeZone = systemConfiguration[ConfigurationManager.items.system.timezone].value;
 
-   return d.tz(timeZone).format(format);
+   return d.format(format);
 };
 
 /**
@@ -37,17 +36,15 @@ DateTimeFormatter.isoDateToString = function (isoDate) {
  */
 DateTimeFormatter.dateToString = function (date, optionalFormat) {
 
-   var d = moment.utc(date);
+   var d = moment(date);
    assert(d.isValid(), "Date given " + date + " is not valid");
    var format = optionalFormat;
    if (!format)
       format = systemConfiguration[ConfigurationManager.items.system.dateFormatString].value;
 
-   var timeZone = systemConfiguration[ConfigurationManager.items.system.timezone].value;
-
-   return d.tz(timeZone).format(format);
+   return d.format(format);
 };
 
 DateTimeFormatter.dateToIsoDate = function (date) {
-   return moment(date).utc().format("YYYYMMDD[T]HHmmss");
+   return moment(date).format("YYYYMMDD[T]HHmmss");
 };

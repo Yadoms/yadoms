@@ -15,40 +15,6 @@ var customization = false;
 var waitForRealeaseButtonAfterEnteringCustomization = false;
 
 /**
- * Enable or disable customization on gridster elements
- * @param enable
- */
-function enableGridsterCustomization(enable) {
-   $.each(PageManager.pages, function (index, page) {
-      if (enable) {
-         page.gridster.enable();
-         page.gridster.enable_resize();
-
-         //after foreach widget we hide handle on widget that are not resizable
-         $.each(page.widgets, function (wIndex, widget) {
-            try {
-               if ((widget.package.dimensions.min.x == widget.package.dimensions.max.x) &&
-                  (widget.package.dimensions.min.y == widget.package.dimensions.max.y)) {
-                  //the widget is not resizable
-                  widget.$gridsterWidget.find("span.gs-resize-handle").addClass("hidden");
-               }
-            }
-            catch (err) {
-            }
-
-         });
-      }
-      else {
-         page.gridster.disable();
-         page.gridster.disable_resize();
-      }
-   });
-
-
-
-}
-
-/**
  * Animate the customization wrench button
  */
 function animateCustomizeButton() {
@@ -84,45 +50,54 @@ $("a#customizeButton").click(function() {
 
 function enterCustomization() {
    customization = true;
-   enableGridsterCustomization(true);
+
+   $.each(PageManager.pages, function (index, currentPage) {
+      PageManager.enableCustomization(currentPage, true);
+      $.each(currentPage.widgets, function (index, currentWidget) {
+         WidgetManager.enableCustomization(currentWidget, true);
+      });
+   });
+
    animateCustomizeButton();
-   $(".customization-item").removeClass("hidden");
-   $("li.widget").addClass("liWidgetCustomization");
 }
 
 /**
  * End customization and send all configuration to server
  */
-function exitCustomization() {
+function exitCustomization(saveCustomization) {
+   if (isNullOrUndefined(saveCustomization))
+      saveCustomization = true;
+
    customization = false;
    waitForRealeaseButtonAfterEnteringCustomization = false;
-   enableGridsterCustomization(false);
-   $(".customization-item").addClass("hidden");
-   $("li.widget").removeClass("liWidgetCustomization");
 
    //we save all widgets in each page
    $.each(PageManager.pages, function (index, currentPage) {
+      PageManager.enableCustomization(currentPage, false);
       $.each(currentPage.widgets, function (index, currentWidget) {
-         //we synchronize gridster information into the widget class
-         currentWidget.updateDataFromGridster();
-
+         WidgetManager.enableCustomization(currentWidget, false);
+         currentWidget.updateDataFromGrid();
       });
-      $.ajax({
-         type: "PUT",
-         url: "/rest/page/" + currentPage.id + "/widget",
-         data: JSON.stringify(currentPage.widgets),
-         contentType: "application/json; charset=utf-8",
-         dataType: "json"
-      })
-         .done(function(data) {
-            //we parse the json answer
-            if (data.result != "true")
-            {
-               notifyError($.t("mainPage.errors.errorSavingCustomization"), JSON.stringify(data));
-               console.error(data.message);
-            }
+
+      if (saveCustomization) {
+         $.ajax({
+            type: "PUT",
+            url: "/rest/page/" + currentPage.id + "/widget",
+            data: JSON.stringify(currentPage.widgets),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json"
          })
-         .fail(function() {notifyError($.t("mainPage.errors.errorSavingCustomization"))});
+             .done(function (data) {
+                //we parse the json answer
+                if (data.result != "true") {
+                   notifyError($.t("mainPage.errors.errorSavingCustomization"), JSON.stringify(data));
+                   console.error(data.message);
+                }
+             })
+             .fail(function () {
+                notifyError($.t("mainPage.errors.errorSavingCustomization"))
+             });
+      }
    });
 }
 
