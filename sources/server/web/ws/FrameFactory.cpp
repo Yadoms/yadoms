@@ -11,15 +11,21 @@ namespace web { namespace ws {
       try
       {
          shared::CDataContainer obj(frameAsString);
-         switch (obj.get<CFrameBase::EFrameType>(CFrameBase::getTypeFieldName()))
+         if (obj.containsValue(CFrameBase::getTypeFieldName()))
          {
-         case CFrameBase::EFrameType::kAcquisitionFilterValue:
-            return boost::shared_ptr<CFrameBase>(new CAcquisitionFilterFrame(frameAsString));
+            switch (obj.get<CFrameBase::EFrameType>(CFrameBase::getTypeFieldName()))
+            {
+            case CFrameBase::EFrameType::kAcquisitionFilterValue:
+               return boost::shared_ptr<CFrameBase>(new CAcquisitionFilterFrame(frameAsString));
 
-         default:
-            throw shared::exception::COutOfRange("Unknown type");
+            default:
+               throw shared::exception::COutOfRange("Unknown type");
+            }
          }
-
+         else
+         {
+            YADOMS_LOG(debug) << "Cannot find frame type : " << frameAsString;
+         }
       }
       catch (shared::exception::CInvalidParameter&)
       {

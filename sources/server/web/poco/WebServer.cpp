@@ -13,7 +13,8 @@
 #include <Poco/Net/WebSocket.h>
 #include <Poco/Net/NetException.h>
 #include "MimeType.h"
-
+#include <shared/ServiceLocator.h>
+#include "server/IRunningInformation.h"
 
 
 namespace web { namespace poco {
@@ -27,19 +28,26 @@ namespace web { namespace poco {
       m_httpRequestHandlerFactory->restHandlerConfigure(restKeywordBase);
       m_httpRequestHandlerFactory->webSocketConfigure(webSocketKeywordBase);
 
+      //setup HTTPServer Params (define name and version; to match common http server confifuration)
+      Poco::Net::HTTPServerParams * serverParams = new Poco::Net::HTTPServerParams();
+      serverParams->setServerName("Yadoms");
+      boost::shared_ptr<IRunningInformation> runningInformation(shared::CServiceLocator::instance().get<IRunningInformation>());
+      serverParams->setSoftwareVersion(runningInformation->getSoftwareVersion().toString());
+      serverParams->setKeepAlive(false); //this line fix global catch exception on multiple browser refresh
+
       // set-up a HTTPServer instance
       if (address == "0.0.0.0" || address.empty())
       {
          //in case of "0.0.0.0" or empty , then do not use it, just use port, listen on all interfaces
          Poco::Net::ServerSocket svs(boost::lexical_cast<unsigned short>(port));
-         m_embeddedWebServer.reset(new Poco::Net::HTTPServer(m_httpRequestHandlerFactory, svs, new Poco::Net::HTTPServerParams));
+         m_embeddedWebServer.reset(new Poco::Net::HTTPServer(m_httpRequestHandlerFactory, svs, serverParams));
       }
       else
       {
          //if address is specified, try to use it
          Poco::Net::SocketAddress sa(address, boost::lexical_cast<unsigned short>(port));
          Poco::Net::ServerSocket svs(sa);
-         m_embeddedWebServer.reset(new Poco::Net::HTTPServer(m_httpRequestHandlerFactory, svs, new Poco::Net::HTTPServerParams));
+         m_embeddedWebServer.reset(new Poco::Net::HTTPServer(m_httpRequestHandlerFactory, svs, serverParams));
       }
       
    }
