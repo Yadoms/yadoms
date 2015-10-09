@@ -105,3 +105,8 @@ set(PYTHON_USE_SOURCES OFF)
 ##### CPACK ######
 #For Windows, it activate making installation package with NSIS; else it use classic ZIP
 #set(USE_NSIS ON)
+
+##### LibQuickmail ######
+#
+# Plugin SMSSender needs Libquickmail library
+#set(LIBQUICKMAIL_ROOT "/Path/to/libquickmail")

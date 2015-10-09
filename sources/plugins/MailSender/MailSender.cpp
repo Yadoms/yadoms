@@ -4,6 +4,7 @@
 #include <shared/plugin/yPluginApi/historization/Message.h>
 #include <shared/plugin/ImplementationHelper.h>
 #include <shared/exception/EmptyResult.hpp>
+#include "EmptyParameterException.hpp"
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -103,7 +104,17 @@ void CMailSender::onSendMailRequest(boost::shared_ptr<yApi::IYPluginApi> context
       m_messageKeyword.set(sendMailRequest);
 
       std::string m_UserMail      = m_configuration.SMTPUserAccount();
+
       std::string m_RecipientMail = getRecipientMail( context, m_messageKeyword.to() );
+
+      if (m_configuration.SMTPSenderMail().empty() || 
+          m_configuration.SMTPServerName().empty() ||
+          m_configuration.SMTPUserAccount().empty() ||
+          m_configuration.SMTPUserPassword().empty()
+         )
+      {
+         throw CEmptyParameterException ("Empty Parameter - No sending");
+      }
 
       //initialize mail object
       quickmail_initialize();
@@ -112,7 +123,7 @@ void CMailSender::onSendMailRequest(boost::shared_ptr<yApi::IYPluginApi> context
       quickmail_set_debug_log(mailobj, stdout);
 
       // Set the sender e-mail address
-      quickmail_set_from(mailobj, m_UserMail.c_str() );
+      quickmail_set_from(mailobj, (char*) m_configuration.SMTPSenderMail().c_str() );
 
       // Set the recipient address
       quickmail_add_to  (mailobj, m_RecipientMail.c_str() );
@@ -121,7 +132,7 @@ void CMailSender::onSendMailRequest(boost::shared_ptr<yApi::IYPluginApi> context
       quickmail_set_subject(mailobj, "Yadoms Notification !" );
 
       // Add the body
-      const char* mime_type = "text/plain";
+      const char* mime_type = "text/html";
       quickmail_add_body_memory(mailobj, mime_type, (char*) m_messageKeyword.body().c_str(), m_messageKeyword.body().length(), 0);
 
       // This line is necessary

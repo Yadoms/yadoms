@@ -16,6 +16,7 @@ void CMSConfiguration::initializeWith(const shared::CDataContainer &data)
    {
        m_data.initializeWith(data);
 
+       //TODO : Ce premier dans JSON doit avoir un contrôle de format mail.
        m_SenderMail    = m_data.get<std::string>("Sender");
        m_ServerName    = m_data.get<std::string>("SMTPServer");
        m_ServerPort    = m_data.get<int>("SMTPPort");
