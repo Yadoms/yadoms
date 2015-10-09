@@ -2,7 +2,7 @@
 #include <Poco/ErrorHandler.h>
 
 //-----------------------------
-///\brief SdBs2 global error handler (catch all unhandled exception in Poco application)
+///\brief Poco global error handler (catch all unhandled exception in Poco application)
 //-----------------------------
 class CErrorHandler : public Poco::ErrorHandler
 {
