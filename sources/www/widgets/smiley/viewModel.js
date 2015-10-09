@@ -22,15 +22,17 @@ function SmileyViewModel() {
     * Callback for a resized event
     */
    this.resized = function() {
-      if (this.widget.width() <= 200) {
-         this.widget.$gridsterWidget.find("div.smileyWidget span").css("font-size", "7em");
-      }
-      else if (this.widget.width() <= 300)
-         this.widget.$gridsterWidget.find("div.smileyWidget span").css("font-size", "15em");
-      else if (this.widget.width() <= 400)
-         this.widget.$gridsterWidget.find("div.smileyWidget span").css("font-size", "23em");
+      var minDimension = Math.min(this.widget.width(), this.widget.height());
+      if (minDimension <= 200)
+         this.widget.$gridWidget.find("div.smileyWidget span").css("font-size", "7em");
+      else if (minDimension <= 300)
+         this.widget.$gridWidget.find("div.smileyWidget span").css("font-size", "14em");
+      else if (minDimension <= 400)
+         this.widget.$gridWidget.find("div.smileyWidget span").css("font-size", "15em");
+      else if (minDimension <= 500)
+         this.widget.$gridWidget.find("div.smileyWidget span").css("font-size", "23em");
       else
-         this.widget.$gridsterWidget.find("div.smileyWidget span").css("font-size", "32em");
+         this.widget.$gridWidget.find("div.smileyWidget span").css("font-size", "32em");
    };
 
 

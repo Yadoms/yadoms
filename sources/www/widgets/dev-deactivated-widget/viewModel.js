@@ -18,10 +18,10 @@ function DevDeactivatedWidgetViewModel() {
       this.widget = widget;
 
       if (!isNullOrUndefined(this.widget.requiredType)) {
-         this.widget.$gridsterWidget.find("div.deactivatedWidget span").text($.t("dev-deactivated-widget:deactivatedWithType", {widgetType : this.widget.requiredType}));
+         this.widget.gridWidget.find("div.deactivatedWidget span").text($.t("dev-deactivated-widget:deactivatedWithType", {widgetType : this.widget.requiredType}));
       }
       else {
-         this.widget.$gridsterWidget.find("div.deactivatedWidget span").text($.t("dev-deactivated-widget:deactivated"));
+         this.widget.gridWidget.find("div.deactivatedWidget span").text($.t("dev-deactivated-widget:deactivated"));
       }
    };
 
@@ -30,9 +30,9 @@ function DevDeactivatedWidgetViewModel() {
     */
    this.resized = function() {
       if (this.widget.width() <= 200) {
-         this.widget.$gridsterWidget.find("div.deactivatedWidget span").css("font-size", "1em");
+         this.widget.gridWidget.find("div.deactivatedWidget span").css("font-size", "1em");
       }
       else
-         this.widget.$gridsterWidget.find("div.deactivatedWidget span").css("font-size", "2em");
+         this.widget.gridWidget.find("div.deactivatedWidget span").css("font-size", "2em");
    };
 };

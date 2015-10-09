@@ -206,7 +206,6 @@
       //we save the information that the load of objectType is in progress
       loadingFinished[objectType] = false;
       AutomationInterpreterManager.getAllDetailed(function(interpreters) {
-         debugger;
          buildList(objectType, interpreters);
       });
    }
@@ -370,7 +369,7 @@
                            "<ul class=\"dropdown-menu versions\" role=\"menu\">" +
                            "</ul>" +
                         "</div>" +
-                       "<button type=\"button\" class=\"btn btn-danger btn-uninstall\" data-i18n=\"[title]modals.dashboard.sub-windows.install-update.generic.uninstall\"><span class=\"glyphicon glyphicon-trash\"></span></button>" +
+                       "<button type=\"button\" class=\"btn btn-danger btn-uninstall\" data-i18n=\"[title]modals.dashboard.sub-windows.install-update.generic.uninstall\"><span class=\"fa fa-trash\"></span></button>" +
                      "</div>" +
                      "<div class=\"action-progression\">" +
                         "<div class=\"progress\">" +

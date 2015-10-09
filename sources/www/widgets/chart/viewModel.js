@@ -70,7 +70,7 @@ widgetViewModelCtor =
 		 self.ChartPromise = new YadomsPromise ();
 				 
          // create the chart
-         this.$chart = self.widget.$gridsterWidget.find("div.chartWidgetContainer");
+         this.$chart = self.widget.$gridWidget.find("div.chartWidgetContainer");
 
          this.$chart.highcharts('StockChart', {
             chart: {
@@ -187,7 +187,7 @@ widgetViewModelCtor =
 			}
 			*/			
 
-			 var btns = self.widget.$gridsterWidget.find(".nav-btn");
+			 var btns = self.widget.$gridWidget.find(".nav-btn");
 			 
 			 if (!isNullOrUndefined( btns ))
 			 {
@@ -209,7 +209,7 @@ widgetViewModelCtor =
 		
 		self.interval = this.widget.configuration.interval;
 		 
-		 var btns = self.widget.$gridsterWidget.find(".nav-btn");
+		 var btns = self.widget.$gridWidget.find(".nav-btn");
 		 
          $.each(btns, function (index, btn) {
             $(btn).unbind("click").bind("click", self.navigatorBtnClick($(btn).attr("level")));
@@ -324,9 +324,9 @@ widgetViewModelCtor =
 	  this.cleanUpChart = function(serie, time, cleanValue) { 
 	     var self = this;
 		 
-		 var b_sortie = false;
+		 var ex = false;
 		 
-		  while ( !b_sortie )
+		  while ( !ex )
 		  {
 			  if (!isNullOrUndefined( serie.points ))
 			  {
@@ -335,22 +335,22 @@ widgetViewModelCtor =
 					  if ((time.valueOf() - serie.points[0].x) > cleanValue)
 						 serie.removePoint ( 0, true ); // If false, we never delete the point -> infinite loop
 					  else
-						  b_sortie = true;
+                    ex = true;
 				  }
 				  else
-					  b_sortie = true;
+                 ex = true;
 			  }
 			  else
-				  b_sortie = true;
+              ex = true;
 		  }
-	  }
+	  };
 	  
       this.navigatorBtnClick = function(interval) {
          var self = this;
          return function (e) {
             //we manage activation
-            self.widget.$gridsterWidget.find(".nav-btn[level!='" + interval + "']").addClass("btn-default").removeClass("btn-primary");
-            self.widget.$gridsterWidget.find(".nav-btn[level='" + interval + "']").addClass("btn-primary").removeClass("btn-default");
+            self.widget.$gridWidget.find(".nav-btn[level!='" + interval + "']").addClass("btn-default").removeClass("btn-primary");
+            self.widget.$gridWidget.find(".nav-btn[level='" + interval + "']").addClass("btn-primary").removeClass("btn-default");
 			
             self.refreshData(interval);
          };
@@ -380,10 +380,10 @@ widgetViewModelCtor =
                switch (interval) {
                   case "HOUR" :
 				  
-					 //The goal is to ask to the server the elapsed time only. Example : 22h00 -> 22h59mn59s. 
-					 //If you ask 22h00 -> 23h00, the system return also the average for 23h. If 23h is not complete, the value will be wrong.
+					      //The goal is to ask to the server the elapsed time only. Example : 22h00 -> 22h59mn59s.
+					      //If you ask 22h00 -> 23h00, the system return also the average for 23h. If 23h is not complete, the value will be wrong.
 				 
-				     dateTo = DateTimeFormatter.dateToIsoDate(moment());
+				         dateTo = DateTimeFormatter.dateToIsoDate(moment());
                      dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'hours').startOf('minute'));
                      //we request all data
                      timeBetweenTwoConsecutiveValues = undefined;
@@ -391,7 +391,8 @@ widgetViewModelCtor =
                      break;
                   default:
                   case "DAY" :
-				     dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf('hour').subtract(1, 'seconds'));
+				         debugger;
+                     dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf('hour').subtract(1, 'seconds'));
                      dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'days').startOf('hour'));
                      //we request hour summary data
                      prefixUri = "/hour";
@@ -399,7 +400,7 @@ widgetViewModelCtor =
                      isSummaryData = true;
                      break;
                   case "WEEK" :
-				     dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf('hour').subtract(1, 'seconds'));
+				         dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf('hour').subtract(1, 'seconds'));
                      dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'weeks').startOf('hour'));
                      //we request hour summary data
                      prefixUri = "/hour";
@@ -407,7 +408,7 @@ widgetViewModelCtor =
                      isSummaryData = true;
                      break;
                   case "MONTH" :
-				     dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf('day').subtract(1, 'seconds'));
+				         dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf('day').subtract(1, 'seconds'));
                      dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'months').startOf('day'));
                      //we request day summary data
                      prefixUri = "/day";
@@ -415,7 +416,7 @@ widgetViewModelCtor =
                      isSummaryData = true;
                      break;
                   case "HALF_YEAR" :
-				     dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf('day').subtract(1, 'seconds'));
+				         dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf('day').subtract(1, 'seconds'));
                      dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(6, 'months').startOf('day'));
                      //we request day summary data
                      prefixUri = "/day";
@@ -423,7 +424,7 @@ widgetViewModelCtor =
                      isSummaryData = true;
                      break;
                   case "YEAR" :
-				     dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf('day').subtract(1, 'seconds'));
+				         dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf('day').subtract(1, 'seconds'));
                      dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'years').startOf('day'));
                      //we request day summary data
                      prefixUri = "/day";
@@ -435,15 +436,15 @@ widgetViewModelCtor =
 			   
                var curvesToLoad = self.widget.configuration.devices.length;
 			   
-			   var SeriesPromise = new YadomsPromise ();
-			   SeriesPromise.Initialization ( self.widget.configuration.devices.length, this.finalRefresh.bind(this), null);
+               var SeriesPromise = new YadomsPromise ();
+               SeriesPromise.Initialization ( self.widget.configuration.devices.length, this.finalRefresh.bind(this), null);
 			   
                //for each plot in the configuration we request for data
                $.each(self.widget.configuration.devices, function (index, device) {
 			   
                   $.getJSON("rest/acquisition/keyword/" + device.content.source.keywordId + prefixUri + "/" + dateFrom + "/" + dateTo)
                      .done(function( data ) {
-						 console.log ("done :", "rest/acquisition/keyword/" + device.content.source.keywordId + prefixUri + "/" + dateFrom + "/" + dateTo);
+						      console.log ("done :", "rest/acquisition/keyword/" + device.content.source.keywordId + prefixUri + "/" + dateFrom + "/" + dateTo);
                         //we parse the json answer
                         if (data.result != "true")
                         {

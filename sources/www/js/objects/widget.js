@@ -33,8 +33,8 @@ function Widget(id, idPage, type, sizeX, sizeY, positionX, positionY, configurat
 
    this.viewModel = null;
 
-   //gridster item
-   this.$gridsterWidget = null;
+   //grid item
+   this.$gridWidget = null;
 
    //div where is embed the widget
    this.$div = null;
@@ -63,19 +63,17 @@ Widget.prototype.toJSON = function () {
 /**
  * Synchronize data from grister object and properties of the class
  */
-Widget.prototype.updateDataFromGridster = function() {
-   this.sizeX = this.$gridsterWidget.coords().grid.size_x;
-   this.sizeY = this.$gridsterWidget.coords().grid.size_y;
-   this.positionX = this.$gridsterWidget.coords().grid.col;
-   this.positionY = this.$gridsterWidget.coords().grid.row;
+Widget.prototype.updateDataFromGrid = function() {
+   this.sizeX = this.$gridWidget.attr("data-gs-width");
+   this.sizeY = this.$gridWidget.attr("data-gs-height");
+   this.positionX = this.$gridWidget.attr("data-gs-x");
+   this.positionY = this.$gridWidget.attr("data-gs-y");
 };
 
 Widget.prototype.height = function () {
-   this.updateDataFromGridster();
-   return this.sizeY * gridWidth + (this.sizeY - 1) * (gridMargin * 2);
+   return this.$gridWidget.css("height").replace('px', '');;
 };
 
 Widget.prototype.width = function () {
-   this.updateDataFromGridster();
-   return this.sizeX * gridWidth + (this.sizeX - 1) * (gridMargin * 2);
+   return this.$gridWidget.css("width").replace('px', '');;
 };

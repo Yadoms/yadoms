@@ -39,8 +39,8 @@ function initializeWidgetEngine() {
             PageManager.addToDom(currentPage);
          });
 
-         //we deactivate the customization
-         enableGridsterCustomization(false);
+         //we deactivate the customization without launch save process
+         exitCustomization(false);
 
          //we ensure that one page is selected
          PageManager.ensureOnePageIsSelected();
