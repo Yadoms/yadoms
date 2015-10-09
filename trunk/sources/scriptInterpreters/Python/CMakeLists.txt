@@ -19,6 +19,7 @@ if(PYTHONLIBS_FOUND)
       IContextAccessor.h
       IPythonExecutable.h
       IScriptFile.h
+      IScriptProcess.h
       Messages.hpp
       MessageQueueRemover.hpp
       Python.h
@@ -30,6 +31,8 @@ if(PYTHONLIBS_FOUND)
       Runner.cpp
       ScriptFile.h
       ScriptFile.cpp
+      ScriptProcess.h
+      ScriptProcess.cpp
       
       scriptCaller.py
    )

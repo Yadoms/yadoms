@@ -12,6 +12,11 @@ namespace automation
       ///\brief               Destructor
       //-----------------------------------------------------
       virtual ~IRule() {}
+
+      //-----------------------------------------------------
+      ///\brief               Request to stop rule
+      //-----------------------------------------------------
+      virtual void requestStop() = 0;
    };
 	
 } // namespace automation	

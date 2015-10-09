@@ -4,6 +4,7 @@
 #include "PythonException.hpp"
 #include <shared/DataContainer.h>
 #include "ContextAccessor.h"
+#include "ScriptProcess.h"
 
 
 CRunner::CRunner(const std::string& scriptPath,
@@ -24,12 +25,11 @@ CRunner::CRunner(const std::string& scriptPath,
 
 CRunner::~CRunner()
 {
-   stop();
+   m_monitor.join();
 }
 
 void CRunner::start()
 {
-   m_lastError.clear();
    m_scriptLogger->log("#### START ####");
 
    // Embed IYScriptApi instance
@@ -37,50 +37,34 @@ void CRunner::start()
 
    try
    {
-      m_executable->startModule(m_scriptFile, m_contextAccessor->id(), m_scriptLogger);
+      m_process = boost::make_shared<CScriptProcess>(m_executable, m_scriptFile, m_contextAccessor->id(), m_scriptLogger);
+
+      m_monitor = boost::thread(&CRunner::monitor, m_process, m_stopNotifier, m_scriptLogger);
    }
    catch(CPythonException& e)
    {
       m_scriptLogger->log((boost::format("%1% : error starting script, %2%") % m_scriptFile->pathName() % e.what()).str());
-      m_lastError = e.what();
-      m_stopNotifier->notifyStartError(m_lastError);
+      m_stopNotifier->notifyStartError(e.what());
       m_scriptLogger->log("#### END ####");
    }
-
-   m_monitor = boost::thread(&CRunner::monitor, this, m_stopNotifier);
 }
 
 
-void CRunner::stop()
+void CRunner::requestStop()
 {
-   if (m_executable)
-      m_executable->interrupt();
-
-   m_monitor.join();
+   if (m_process)
+      m_process->interrupt();
 }
 
-bool CRunner::isOk() const
+void CRunner::monitor(
+   boost::shared_ptr<IScriptProcess> process,
+   boost::shared_ptr<shared::script::IStopNotifier> stopNotifier,
+   boost::shared_ptr<shared::script::ILogger> scriptLogger)
 {
-   return m_lastError.empty();
-}
-
-std::string CRunner::error() const
-{
-   return m_lastError;
-}
-
-void CRunner::monitor(boost::shared_ptr<shared::script::IStopNotifier> stopNotifier)
-{
-   if (m_executable->waitForStop() == 0)
-   {
-      m_lastError.clear();
+   if (process->waitForStop() == 0)
       stopNotifier->notifyNormalStop();
-   }
    else
-   {
-      m_lastError = "Error"; // TODO récupérer l'erreur Python
-      stopNotifier->notifyError(m_lastError);
-   }
+      stopNotifier->notifyError("TODO récupérer l'erreur Python");
 
-   m_scriptLogger->log("#### END ####");
+   scriptLogger->log("#### END ####");
 }

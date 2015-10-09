@@ -19,9 +19,9 @@ CRuleManager::CRuleManager(boost::shared_ptr<database::IRuleRequester> dbRequest
    boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester,
    boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
    boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger, boost::shared_ptr<shared::event::CEventHandler> supervisor, int ruleManagerEventId)
-   :m_dbRequester(dbRequester),
-   m_scriptManager(new script::CManager("scriptInterpreters", pluginGateway, configurationManager, dbAcquisitionRequester, dbDeviceRequester, dbKeywordRequester, dbRecipientRequester)),
-   m_ruleStateHandler(new CRuleStateHandler(dbRequester, eventLogger, supervisor, ruleManagerEventId))
+   :m_ruleRequester(dbRequester),
+   m_scriptManager(boost::make_shared<script::CManager>("scriptInterpreters", pluginGateway, configurationManager, dbAcquisitionRequester, dbDeviceRequester, dbKeywordRequester, dbRecipientRequester)),
+   m_ruleStateHandler(boost::make_shared<CRuleStateHandler>(dbRequester, eventLogger, supervisor, ruleManagerEventId))
 {
    startAllRules();
 }
@@ -32,6 +32,7 @@ CRuleManager::~CRuleManager()
 
 void CRuleManager::startAllRules()
 {
+   boost::lock_guard<boost::recursive_mutex> lock(m_startedRulesMutex);
    BOOST_ASSERT_MSG(m_startedRules.empty(), "Some rules are already started, are you sure that manager was successfuly stopped ?");
 
    if (!startRules(getRules()))
@@ -76,8 +77,11 @@ void CRuleManager::startRule(int ruleId)
       if (isRuleStarted(ruleData->Id()))
          return;  // Rule already started
 
-      m_ruleStateHandler->signalRuleStart(ruleId);
+      recordRuleStarted(ruleId);
+      
+      YADOMS_LOG(information) << "Start rule #" << ruleId;
 
+      boost::lock_guard<boost::recursive_mutex> lock(m_startedRulesMutex);
       boost::shared_ptr<IRule> newRule(boost::make_shared<CRule>(ruleData, m_scriptManager, m_ruleStateHandler));
       m_startedRules[ruleId] = newRule;
    }
@@ -103,31 +107,46 @@ void CRuleManager::startRule(int ruleId)
 
 void CRuleManager::stopRule(int ruleId)
 {
+   boost::lock_guard<boost::recursive_mutex> lock(m_startedRulesMutex);
+   std::map<int, boost::shared_ptr<IRule> >::iterator rule = m_startedRules.find(ruleId);
+
+   if (rule == m_startedRules.end())
+      return;
+
+   rule->second->requestStop();
+}
+
+void CRuleManager::onRuleStopped(int ruleId)
+{
+   boost::lock_guard<boost::recursive_mutex> lock(m_startedRulesMutex);
    std::map<int, boost::shared_ptr<IRule> >::iterator rule = m_startedRules.find(ruleId);
 
    if (rule == m_startedRules.end())
       return;
 
    m_startedRules.erase(rule);
+
+   recordRuleStopped(ruleId);
 }
 
 bool CRuleManager::isRuleStarted(int ruleId)
 {
+   boost::lock_guard<boost::recursive_mutex> lock(m_startedRulesMutex);
    return m_startedRules.find(ruleId) != m_startedRules.end();
 }
 
 std::vector<boost::shared_ptr<database::entities::CRule> > CRuleManager::getRules() const
 {
-   return m_dbRequester->getRules();
+   return m_ruleRequester->getRules();
 }
 
 int CRuleManager::createRule(boost::shared_ptr<const database::entities::CRule> ruleData, const std::string& code)
 {
    // Add rule in database
-   int ruleId = m_dbRequester->addRule(ruleData);
+   int ruleId = m_ruleRequester->addRule(ruleData);
 
    // Get the created rule from the id
-   boost::shared_ptr<database::entities::CRule> updatedRuleData = m_dbRequester->getRule(ruleId);
+   boost::shared_ptr<database::entities::CRule> updatedRuleData = m_ruleRequester->getRule(ruleId);
 
    // Create script file
    m_scriptManager->updateScriptFile(updatedRuleData, code);
@@ -140,14 +159,14 @@ int CRuleManager::createRule(boost::shared_ptr<const database::entities::CRule> 
 
 boost::shared_ptr<database::entities::CRule> CRuleManager::getRule(int id) const
 {
-    return m_dbRequester->getRule(id);
+    return m_ruleRequester->getRule(id);
 }
 
 std::string CRuleManager::getRuleCode(int id) const
 {
    try
    {
-      boost::shared_ptr<database::entities::CRule> ruleData(m_dbRequester->getRule(id));
+      boost::shared_ptr<database::entities::CRule> ruleData(m_ruleRequester->getRule(id));
       return m_scriptManager->getScriptFile(ruleData);
    }
    catch(shared::exception::CEmptyResult& e)
@@ -161,7 +180,7 @@ std::string CRuleManager::getRuleLog(int id) const
 {
    try
    {
-      boost::shared_ptr<database::entities::CRule> ruleData(m_dbRequester->getRule(id));
+      boost::shared_ptr<database::entities::CRule> ruleData(m_ruleRequester->getRule(id));
       return m_scriptManager->getScriptLogFile(ruleData);
    }
    catch(shared::exception::CEmptyResult& e)
@@ -185,7 +204,7 @@ void CRuleManager::updateRule(boost::shared_ptr<const database::entities::CRule>
       throw new shared::exception::CException("Update rule : rule ID was not provided");
    }
 
-   m_dbRequester->updateRule(ruleData);
+   m_ruleRequester->updateRule(ruleData);
 
    if (ruleData->Enabled.isDefined())
    {
@@ -203,28 +222,30 @@ void CRuleManager::updateRule(boost::shared_ptr<const database::entities::CRule>
 void CRuleManager::updateRuleCode(int id, const std::string& code)
 {
    // If rule was started, must be stopped to update its configuration
-   if (isRuleStarted(id))
+   bool ruleWasStarted = isRuleStarted(id);
+   if (ruleWasStarted)
       stopRule(id);
 
    // Update script file
-   boost::shared_ptr<database::entities::CRule> ruleData(m_dbRequester->getRule(id));
+   boost::shared_ptr<database::entities::CRule> ruleData(m_ruleRequester->getRule(id));
    m_scriptManager->updateScriptFile(ruleData, code);
 
    // Restart rule
-   startRule(id);
+   if (ruleWasStarted)
+      startRule(id);
 }
 
 void CRuleManager::deleteRule(int id)
 {
    try
    {
-      boost::shared_ptr<database::entities::CRule> ruleData(m_dbRequester->getRule(id));
+      boost::shared_ptr<database::entities::CRule> ruleData(m_ruleRequester->getRule(id));
 
       // Stop the rule
       stopRule(id);
 
       // Remove in database
-      m_dbRequester->deleteRule(id);
+      m_ruleRequester->deleteRule(id);
 
       // Remove script file
       m_scriptManager->deleteScriptFile(ruleData);
@@ -241,7 +262,7 @@ void CRuleManager::restartRule(int id)
    if (isRuleStarted(id))
       throw CRuleException((boost::format("Rule %1% already started") % id).str());
 
-   boost::shared_ptr<const database::entities::CRule> ruleData(m_dbRequester->getRule(id));
+   boost::shared_ptr<const database::entities::CRule> ruleData(m_ruleRequester->getRule(id));
    if (ruleData->State() != database::entities::ERuleState::kErrorValue)
       throw CRuleException((boost::format("Rule %1% not in error state, can not be restarted") % id).str());
 
@@ -251,14 +272,18 @@ void CRuleManager::restartRule(int id)
 void CRuleManager::signalEvent(const CManagerEvent& event)
 {
    switch (event.getSubEventId())
-   {
+   {//TODO y'a de la simplification dans l'air
    case CManagerEvent::kRuleAbnormalStopped:
    {
       // The rule has stopped in a non-conventional way (probably crashed)
 
-      // First perform the full stop
-      stopRule(event.getRuleId());
+      onRuleStopped(event.getRuleId());
 
+      break;
+   }
+   case CManagerEvent::kRuleStopped:
+   {
+      onRuleStopped(event.getRuleId());
       break;
    }
    default:
@@ -273,14 +298,14 @@ void CRuleManager::signalEvent(const CManagerEvent& event)
 void CRuleManager::startAllRulesMatchingInterpreter(const std::string & interpreterName)
 {
    // Start all rules associated with this interpreter (and start-able)
-   if (!startRules(m_dbRequester->getRules(interpreterName)))
+   if (!startRules(m_ruleRequester->getRules(interpreterName)))
       m_ruleStateHandler->signalRulesStartError("One or more automation rules failed to start, check automation rules page for details");
 }
 
 void CRuleManager::stopAllRulesMatchingInterpreter(const std::string & interpreterName)
 {
    // First, stop all running rules associated with this interpreter
-   std::vector<boost::shared_ptr<database::entities::CRule> > interpreterRules = m_dbRequester->getRules(interpreterName);
+   std::vector<boost::shared_ptr<database::entities::CRule> > interpreterRules = m_ruleRequester->getRules(interpreterName);
    for (std::vector<boost::shared_ptr<database::entities::CRule> >::const_iterator interpreterRule = interpreterRules.begin(); interpreterRule != interpreterRules.end(); ++interpreterRule)
    {
       if (isRuleStarted((*interpreterRule)->Id()))
@@ -293,12 +318,32 @@ void CRuleManager::stopAllRulesMatchingInterpreter(const std::string & interpret
 
 void CRuleManager::deleteAllRulesMatchingInterpreter(const std::string & interpreterName)
 {
-   std::vector<boost::shared_ptr<database::entities::CRule> > interpreterRules = m_dbRequester->getRules(interpreterName);
+   std::vector<boost::shared_ptr<database::entities::CRule> > interpreterRules = m_ruleRequester->getRules(interpreterName);
    for (std::vector<boost::shared_ptr<database::entities::CRule> >::const_iterator interpreterRule = interpreterRules.begin(); interpreterRule != interpreterRules.end(); ++interpreterRule)
       deleteRule((*interpreterRule)->Id());
 
    // We can unload the interpreter as it is not used anymore (will be automaticaly re-loaded when needed by a rule)
    m_scriptManager->unloadInterpreter(interpreterName);
+}
+
+void CRuleManager::recordRuleStarted(int ruleId)
+{
+   boost::shared_ptr<database::entities::CRule> ruleData(boost::make_shared<database::entities::CRule>());
+   ruleData->Id = ruleId;
+   ruleData->State = database::entities::ERuleState::kRunningValue;
+   ruleData->StartDate = shared::currentTime::Provider::now();
+   ruleData->ErrorMessage = std::string();
+   m_ruleRequester->updateRule(ruleData);
+}
+
+void CRuleManager::recordRuleStopped(int ruleId)
+{
+   boost::shared_ptr<database::entities::CRule> ruleData(new database::entities::CRule);
+   ruleData->Id = ruleId;
+   ruleData->State = database::entities::ERuleState::kStoppedValue;
+   ruleData->StopDate = shared::currentTime::Provider::now();
+   ruleData->ErrorMessage = std::string();
+   m_ruleRequester->updateRule(ruleData);
 }
 
 

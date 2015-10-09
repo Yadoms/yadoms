@@ -179,7 +179,7 @@ namespace web { namespace rest { namespace service {
    {
       try
       {
-         boost::shared_ptr<database::entities::CRule> ruleData(new database::entities::CRule);
+         boost::shared_ptr<database::entities::CRule> ruleData(boost::make_shared<database::entities::CRule>());
          ruleData->fillFromContent(requestContent);
 
          int idCreated = m_rulesManager->createRule(ruleData, uriDecode(requestContent.get<std::string>("code")));
@@ -209,7 +209,7 @@ namespace web { namespace rest { namespace service {
             throw CRuleException("invalid parameter in URL");
 
          int ruleId = boost::lexical_cast<int>(parameters[2]);
-         boost::shared_ptr<database::entities::CRule> ruleData(new database::entities::CRule);
+         boost::shared_ptr<database::entities::CRule> ruleData(boost::make_shared<database::entities::CRule>());
          ruleData->fillFromContent(requestContent);
 
          // Check for supported modifications
@@ -244,7 +244,7 @@ namespace web { namespace rest { namespace service {
             throw CRuleException("invalid parameter in URL");
 
          int ruleId = boost::lexical_cast<int>(parameters[2]);
-         boost::shared_ptr<database::entities::CRule> ruleData(new database::entities::CRule);
+         boost::shared_ptr<database::entities::CRule> ruleData(boost::make_shared<database::entities::CRule>());
          ruleData->fillFromContent(requestContent);
 
          // Check for supported modifications

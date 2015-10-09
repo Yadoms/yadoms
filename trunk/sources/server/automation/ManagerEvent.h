@@ -13,7 +13,8 @@ namespace automation
       //--------------------------------------------------------------
       enum ESubEventType
       {
-         kRuleAbnormalStopped = 0,      // Rule abnormal stopped
+         kRuleAbnormalStopped = 0,      // Rule abnormal stopped //TODO utile ? Ou alors il faudrait déplacer la maj de la base (ce que fait le ruleStateHandler actuellement) dans le RuleManager
+         kRuleStopped
       };
 
    public:
