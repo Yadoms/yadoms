@@ -66,7 +66,7 @@ boost::shared_ptr<shared::script::IRunner> CPython::createRunner(
 {
    try
    {
-      boost::shared_ptr<shared::script::IRunner> runner(new CRunner(scriptPath, m_executable, scriptLogger, yScriptApi, stopNotifier, scriptConfiguration));
+      boost::shared_ptr<shared::script::IRunner> runner(boost::make_shared<CRunner>(scriptPath, m_executable, scriptLogger, yScriptApi, stopNotifier, scriptConfiguration));
       return runner;
    }
    catch (CPythonException& ex)

@@ -2,8 +2,12 @@
 #include "ContextAccessor.h"
 #include "MessageQueueRemover.hpp"
 #include <shared/Log.h>
-#include <shared/currentTime/Provider.h>
 #include <shared/exception/InvalidParameter.hpp>
+
+//TODO déplacer dans le stdafx.h
+#include <boost/uuid/uuid.hpp>            // uuid class
+#include <boost/uuid/uuid_generators.hpp> // generators
+#include <boost/uuid/uuid_io.hpp>         // streaming operators etc.
 
 const size_t CContextAccessor::m_maxMessages(100);
 
@@ -26,7 +30,7 @@ std::string CContextAccessor::id() const
 std::string CContextAccessor::createId()
 {
    std::stringstream ss;
-   ss << "yPythonScript." << Poco::Process::id() << "." << boost::this_thread::get_id(); // Rule main thread id
+   ss << "yPythonScript." << boost::uuids::random_generator()(); // Rule main thread id
    return ss.str();
 }
 
@@ -53,8 +57,9 @@ void CContextAccessor::doWork()
          {
             // boost::interprocess::message_queue::receive is not responding to boost thread interruption, so we need to do some
             // polling and call boost::this_thread::interruption_point to exit properly
+            // Note that boost::interprocess::message_queue::timed_receive requires universal time to work (can not use shared::currentTime::Provider)
             bool messageWasReceived = receiveMessageQueue.timed_receive(message, m_messageQueueMessageSize, messageSize, messagePriority,
-               boost::posix_time::ptime(shared::currentTime::Provider::now() + boost::posix_time::seconds(1)));
+               boost::posix_time::ptime(boost::posix_time::microsec_clock::universal_time() + boost::posix_time::seconds(1)));
             boost::this_thread::interruption_point();
 
             if (messageWasReceived)

@@ -6,8 +6,6 @@
 namespace automation
 {
 
-const boost::chrono::milliseconds CRule::m_MinRuleDuration(1000);
-
 CRule::CRule(boost::shared_ptr<const database::entities::CRule> ruleData,
    boost::shared_ptr<script::IManager> scriptManager, boost::shared_ptr<IRuleStateHandler> ruleStateHandler)
    :m_ruleData(ruleData),
@@ -19,7 +17,6 @@ CRule::CRule(boost::shared_ptr<const database::entities::CRule> ruleData,
 
 CRule::~CRule()
 {
-   stop();
 }
 
 void CRule::start()
@@ -38,10 +35,9 @@ void CRule::start()
    m_runner = m_scriptManager->createScriptRunner(scriptProperties, scriptLogger, yScriptApi, stopNotifier);
 }
 
-void CRule::stop()
+void CRule::requestStop()
 {
-   if (!m_runner)
-      return;
+   m_runner->requestStop();
 }
 
 } // namespace automation	

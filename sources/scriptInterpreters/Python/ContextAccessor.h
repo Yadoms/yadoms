@@ -91,7 +91,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	Context accessor ID (unique on full system)
    //--------------------------------------------------------------
-   const std::string m_id;
+   std::string m_id;
 
    //--------------------------------------------------------------
    /// \brief	   Barrier waiting that context is ready

@@ -5,6 +5,7 @@
 #include <shared/script/IRunner.h>
 #include <shared/script/IStopNotifier.h>
 #include "IContextAccessor.h"
+#include "IScriptProcess.h"
 
 //--------------------------------------------------------------
 /// \brief	Python initializer interface (RAII support)
@@ -35,27 +36,25 @@ public:
    //--------------------------------------------------------------
    virtual ~CRunner();
 
-protected:
-   // IRunner Implementation
-   virtual bool isOk() const;
-   virtual std::string error() const;
-   // [END] IRunner Implementation
+   // shared::script::IRunner Implementation
+   void requestStop();
+   // [END] shared::script::IRunner Implementation
 
+protected:
    //-----------------------------------------------------
    ///\brief               Start the rule
    //-----------------------------------------------------
    void start();
 
    //-----------------------------------------------------
-   ///\brief               Stop the rule
-   //-----------------------------------------------------
-   void stop();
-
-   //-----------------------------------------------------
    ///\brief               Rule montoring thread function
+   ///\param[in] process      The process to monitor
    ///\param[in] stopNotifier The rule stop notifier
+   ///\param[in] scriptLogger The rule script logger
    //-----------------------------------------------------
-   void monitor(boost::shared_ptr<shared::script::IStopNotifier> stopNotifier);
+   static void monitor(boost::shared_ptr<IScriptProcess> process,
+      boost::shared_ptr<shared::script::IStopNotifier> stopNotifier,
+      boost::shared_ptr<shared::script::ILogger> scriptLogger);
 
 private:
    //--------------------------------------------------------------
@@ -94,9 +93,9 @@ private:
    boost::shared_ptr<IContextAccessor> m_contextAccessor;
 
    //--------------------------------------------------------------
-   ///\brief   Last error message (empty if no error)
+   ///\brief   The process
    //--------------------------------------------------------------
-   std::string m_lastError;
+   boost::shared_ptr<IScriptProcess> m_process;
 
    //--------------------------------------------------------------
    /// \brief	Thread monitoring the rule

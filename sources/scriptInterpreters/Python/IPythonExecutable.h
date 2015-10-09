@@ -26,23 +26,8 @@ public:
    virtual std::string version() const = 0;
 
    //--------------------------------------------------------------
-   /// \brief	Start a module (in separated process)
-   /// \param[in] scriptFile The script file to call
-   /// \param[in] contextAccessorId The context accessor ID, used by script to interact with Yadoms
-   /// \param[in] scriptLogger The script logger
-   /// \throw CPythonException if error
+   /// \brief	Get executable path
+   /// \return the full (relative) Python executable path
    //--------------------------------------------------------------
-   virtual void startModule(boost::shared_ptr<const IScriptFile> scriptFile, const std::string& contextAccessorId, boost::shared_ptr<shared::script::ILogger> scriptLogger) = 0;
-
-   //--------------------------------------------------------------
-   /// \brief	Ask for module stop
-   /// \throw CPythonException if error
-   //--------------------------------------------------------------
-   virtual void interrupt() = 0;
-
-   //--------------------------------------------------------------
-   /// \brief	Wait for module stop (blocking)
-   /// \return Process return code
-   //--------------------------------------------------------------
-   virtual int waitForStop() = 0;
+   virtual boost::filesystem::path path() const = 0;
 };

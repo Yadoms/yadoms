@@ -87,23 +87,41 @@ namespace automation
       void startRule(int ruleId);
 
       //-----------------------------------------------------
-      ///\brief               Stop a rule
-      ///\param[in] ruleId    The rule ID
-      //-----------------------------------------------------
-      void stopRule(int ruleId);
-
-      //-----------------------------------------------------
       ///\brief               Check if a rule is started
       ///\param[in] ruleId    The rule ID
       ///\return              true if started
       //-----------------------------------------------------
       bool isRuleStarted(int ruleId);
 
+      //-----------------------------------------------------
+      ///\brief               Stop a rule
+      ///\param[in] ruleId    The rule ID
+      //-----------------------------------------------------
+      void stopRule(int ruleId);
+
+      //-----------------------------------------------------
+      ///\brief               Called when rule is stopped
+      ///\param[in] ruleId    The rule ID
+      //-----------------------------------------------------
+      void onRuleStopped(int ruleId);
+
+      //-----------------------------------------------------
+      ///\brief               Record rule started in base
+      ///\param[in] ruleId    The rule ID
+      //-----------------------------------------------------
+      void recordRuleStarted(int ruleId);
+
+      //-----------------------------------------------------
+      ///\brief               Record rule stopped in base
+      ///\param[in] ruleId    The rule ID
+      //-----------------------------------------------------
+      void recordRuleStopped(int ruleId);
+
    private:
       //-----------------------------------------------------
       ///\brief               The rule data accessor
       //-----------------------------------------------------
-      boost::shared_ptr<database::IRuleRequester> m_dbRequester;
+      boost::shared_ptr<database::IRuleRequester> m_ruleRequester;
 
       //-----------------------------------------------------
       ///\brief               The script manager
@@ -111,9 +129,10 @@ namespace automation
       boost::shared_ptr<script::IManager> m_scriptManager;
 
       //-----------------------------------------------------
-      ///\brief               The started rules list
+      ///\brief               The started rules list (and its mutex)
       //-----------------------------------------------------
       std::map<int, boost::shared_ptr<IRule> > m_startedRules;
+      mutable boost::recursive_mutex m_startedRulesMutex;
 
       //-----------------------------------------------------
       ///\brief               The rule state handler
