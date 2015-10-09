@@ -71,7 +71,7 @@ namespace shared
       } 
       else
       {
-         YADOMS_LOG(error) << "Fail to load library : " << libraryFile << dlerror();
+         YADOMS_LOG(error) << "Fail to load library : " << libraryFile << " : " << dlerror();
       }
 
       return result;

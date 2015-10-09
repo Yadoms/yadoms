@@ -8,7 +8,7 @@ include (SelectLibraryConfigurations)
 
 if(LIBQUICKMAIL_INCLUDE_DIRS AND LIBQUICKMAIL_LIBRARIES)
     # Already in cache
-    set(Gammu_FIND_QUIETLY TRUE)
+    set(LIBQUICKMAIL_FIND_QUIETLY TRUE)
 endif(LIBQUICKMAIL_INCLUDE_DIRS AND LIBQUICKMAIL_LIBRARIES)
 
 # Use LIBQUICKMAIL_ROOT} defined in CMakeListsUserConfig.txt
