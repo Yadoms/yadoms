@@ -1,0 +1,224 @@
+.hsContainer {
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+}
+.hsContent {
+    max-width: 450px;
+    margin: -150px auto 0 auto;
+    display: table-cell;
+    vertical-align: middle;
+    color: #ebebeb;
+    padding: 0 8%;
+    text-align: center
+}
+.bcg {
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    height: 100%;
+    width: 100%;
+}
+
+body, html {
+	height: 100%;
+	min-height: 100%;
+	background-color: #000000;
+}
+
+.loading {
+	background: url('img/ico_loading.gif') no-repeat center center;
+}
+
+section {
+	/*min-width: 960px;*/
+	opacity: 0;
+}
+
+.loaded section,
+.no-js section {
+	opacity: 1;
+	-webkit-transition: opacity 300ms ease-out;
+	-moz-transition: opacity 300ms ease-out;
+	transition: opacity 300ms ease-out;
+}
+
+/*Header*/
+.application-logo {
+    max-height: 50px;
+    margin-right: 10px;
+    margin-top: 2px;
+}
+
+/*Slide 1*/
+#logo {
+	height: 128px;
+	width:128px;
+	background: url('img/icon_256.png') no-repeat; 
+	background-size: 100%;
+}
+
+#title {
+	font-size: 80px;
+	color:black;
+	vertical-align:middle;
+	margin-left: 25px;
+}
+
+#sub-title {
+	font-size: 60px;
+	color:black;
+	margin-bottom: 40px;
+}
+
+#chevron {
+	font-size: 80px;
+}
+
+#slide-1 .bcg {
+	background-image:url('img/paris.jpg');
+}
+
+/*Slide 2*/
+
+#logoSF {
+	height: 64px;
+	width:64px;
+	background: url('img/sf-footer-logo.png') no-repeat; 
+	background-size: 100%;
+	float: left;
+}
+
+#slide-2 .bcg {
+    background: none;
+    /*background-color: #5cb85c;*/
+    background-color: black;
+    height: 310px;
+    text-align: center
+}
+
+#slide-2 .h2 {
+	color:black;
+}
+
+#slide-2 .small {
+	color: #4C4646;
+}
+
+/* Slide Control your house*/
+#slide-control-house {
+	background-image:url('img/control.jpg');
+	background-position-y:center;
+}
+
+/* Slide Automate your house */
+#slide-automate-house .bcg {
+	background-image:url('img/clock.jpg');
+}
+
+/*Slide Acquire*/
+#slide-acquire .bcg {
+    background: none;
+    background-color: black;
+    height: 500px;
+    text-align: center
+}
+
+#slide-acquire .h2 {
+	color:black;
+}
+
+#slide-acquire .small {
+	color: #4C4646;
+}
+
+#slide-acquire img {
+	margin-right: 25px;
+}
+
+/* Slide Be notified */
+#slide-be-notified {
+	position: relative;
+}
+#slide-be-notified .bcg {
+	background-image:url('img/mobile-phone2.jpg');
+}
+#slide-be-notified .bcg2 {
+    background-image:url('img/mobile-phone2-b.jpg');
+    position: fixed; bottom: 0; left: 0;
+    opacity: 0; z-index: 1
+}
+
+/*Slide data ownership*/
+#slide-data-ownership .bcg {
+    background-position-y:center;
+	background-image:url('img/hands.jpg');
+}
+
+#slide-data-ownership h2 {
+	color:white;
+}
+
+#slide-data-ownership small {
+	color:white;
+}
+
+/*Slide Many Devices*/
+#slide-many-devices .bcg {
+    background: none;
+    background-color: black;
+    height: 650px;
+    text-align: center
+}
+
+#slide-many-devices .h2 {
+	color:black;
+}
+
+#slide-many-devices .small {
+	color: #4C4646;
+}
+
+#slide-many-devices img {
+	margin-top: 50px;
+}
+
+/* Slide Everywhere */
+#slide-everywhere .bcg {
+	background-image:url('img/mac.jpg');
+}
+
+#slide-everywhere .h2 {
+	color:black;
+}
+
+#slide-everywhere .small {
+	color: black;
+}
+
+/* Slide Expand */
+#slide-expand .bcg {
+	background-image:url('img/desk.jpg');
+	background-position-y:center;
+}
+
+/*General*/
+.btn-group-lg > .btn, .btn-xlg {
+    padding: 15px 24px;
+    font-size: 24px;
+    line-height: 1.3333333;
+    border-radius: 6px;
+	margin: 10px;
+}
+
+.inverted-h2 {
+	color:black;
+}
+
+.inverted-h2 small {
+	color: #4C4C4C;
+}	
