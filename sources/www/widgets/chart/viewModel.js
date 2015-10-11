@@ -174,27 +174,28 @@ widgetViewModelCtor =
 
          if (!isNullOrUndefined(this.chart)) {
             this.chart.setSize(this.widget.width(), this.widget.height() - 10, false);
-/* No Title at all
-			if ( this.widget.height() == 100 )
-			{
-				//No display of the title when height = 1 case
-				this.chart.setTitle({text: null});
-			}
-			else
-			{
-				this.chart.setTitle({text: this.widget.configuration.chartTitle});
-			    this.chart.setTitle({y: this.widget.height() - 15});
-			}
-			*/			
 
-			 var btns = self.widget.$gridWidget.find(".nav-btn");
-			 
-			 if (!isNullOrUndefined( btns ))
-			 {
-			    btns.css("position", "relative");
-			    btns.css("left", "100px");
-			    btns.css("top", self.widget.height() - 35 );
-			 }
+		/* No Title at all
+		if ( this.widget.height() == 100 )
+		{
+			//No display of the title when height = 1 case
+			this.chart.setTitle({text: null});
+		}
+		else
+		{
+			this.chart.setTitle({text: this.widget.configuration.chartTitle});
+		    this.chart.setTitle({y: this.widget.height() - 15});
+		}
+		*/			
+
+		 var btns = self.widget.$gridWidget.find(".nav-btn");
+		 
+		 if (!isNullOrUndefined( btns ))
+		 {
+		    btns.css("position", "relative");
+		    btns.css("left", "100px");
+		    btns.css("top", self.widget.height() - 35 );
+		 }
 			
             $(window).trigger("resize");
          }
@@ -250,74 +251,59 @@ widgetViewModelCtor =
 		  }
 		  else
 		  {
-			  var tempDevicesList = self.widget.configuration.devices.slice(0); 
+			var tempDevicesList = self.widget.configuration.devices.slice(0); 
 			  
-				$.each(self.devicesList, function (index, device) 
+			$.each(tempDevicesList, function (index_temp, device_temp) 
+			{		
+				//we remove last series
+				var serie = self.chart.get(self.seriesUuid[index_temp]);
+				//console.log ( serie );
+				
+				if (!isNullOrUndefined(serie))
+				   serie.remove( false );
+			   
+			        //we remove last ranges if any
+			        serie = self.chart.get('range_' + self.seriesUuid[index_temp]);
+
+				if (!isNullOrUndefined(serie))
+				   serie.remove( false );
+
+				//Delete the axis
+				var yAxis = self.chart.get( 'axis' + self.seriesUuid[index_temp]);
+				
+				//If Unique Axis, we don't delete it !
+				if (!isNullOrUndefined(yAxis))
 				{
-					var isFound = false;
-					
-					$.each(tempDevicesList, function (index_temp, device_temp) 
+				    if  (
+					   (!(parseBool(self.widget.configuration.oneAxis))) ||
+					   ((index_temp !=0) && (parseBool(self.widget.configuration.oneAxis)))
+			                )
 					{	
-						//Si already registered, we remove
-						if ( device.content.source.keywordId == device_temp.content.source.keywordId )
-						  isFound = true;
-					});
-					
-					if (!isFound)
-					{		
-							//we remove last series
-							var serie = self.chart.get(self.seriesUuid[index]);
-							console.log ( serie );
-							
-							if (!isNullOrUndefined(serie))
-							   serie.remove( false );
-						   
-						   //we remove last ranges if any
-						    serie = self.chart.get('range_' + self.seriesUuid[index]);
-
-							if (!isNullOrUndefined(serie))
-							   serie.remove( false );
-
-							  //Delete the axis
-							var yAxis = self.chart.get( 'axis' + self.seriesUuid[index]);							
-							
-							//If Unique Axis, we don't delete it !
-							if (!isNullOrUndefined(yAxis))
-							{
-							    if  (
-								    (!(parseBool(self.widget.configuration.oneAxis))) ||
-								    ((index !=0) && (parseBool(self.widget.configuration.oneAxis)))
-									)
-								{	
-									yAxis.remove ( false );
-								}
-							}
-							
-							// Delele the assign id for serie if defined !
-							if (!isNullOrUndefined(self.seriesUuid[index]) && (index >-1))
-								self.seriesUuid.splice(index,1);
+					   yAxis.remove ( false );
 					}
-				});			  
+				}
+			});
+
+                        // flush array
+                        self.seriesUuid = [];		  
 			  
-			  //We copy the new list
-			  self.devicesList = tempDevicesList.slice(0);
+			//We copy the new list
+			self.devicesList = tempDevicesList.slice(0);
 		  }
 		  
-		  self.ChartPromise.Initialization ( self.devicesList.length, this.refreshData.bind(this), this.widget.configuration.interval );
-		  
+	 self.ChartPromise.Initialization ( self.devicesList.length, this.refreshData.bind(this), this.widget.configuration.interval );
+
          //we create an uuid for each serie
          $.each(self.widget.configuration.devices, function (index, device) {
             //we update uuid if they don't exist
             if (isNullOrUndefined(self.seriesUuid[index]))
                self.seriesUuid[index] = createUUID();
 				 
-			   KeywordManager.get(device.content.source.keywordId, function(keyword) {
-							  self.keywordInfo[index] = keyword;
-							  
-							  console.log ( keyword );
-							  
-							  self.ChartPromise.resolve (index);
-							  });
+		   KeywordManager.get(device.content.source.keywordId, function(keyword) {
+			  self.keywordInfo[index] = keyword;
+			  
+			  self.ChartPromise.resolve (index);
+			  });
          });
       };
 	  
@@ -335,13 +321,13 @@ widgetViewModelCtor =
 					  if ((time.valueOf() - serie.points[0].x) > cleanValue)
 						 serie.removePoint ( 0, true ); // If false, we never delete the point -> infinite loop
 					  else
-                    ex = true;
+                                            ex = true;
 				  }
 				  else
-                 ex = true;
+                                    ex = true;
 			  }
 			  else
-              ex = true;
+                             ex = true;
 		  }
 	  };
 	  
@@ -379,11 +365,11 @@ widgetViewModelCtor =
 	   
                switch (interval) {
                   case "HOUR" :
-				  
-					      //The goal is to ask to the server the elapsed time only. Example : 22h00 -> 22h59mn59s.
-					      //If you ask 22h00 -> 23h00, the system return also the average for 23h. If 23h is not complete, the value will be wrong.
+		 
+		     //The goal is to ask to the server the elapsed time only. Example : 22h00 -> 22h59mn59s.
+		     //If you ask 22h00 -> 23h00, the system return also the average for 23h. If 23h is not complete, the value will be wrong.
 				 
-				         dateTo = DateTimeFormatter.dateToIsoDate(moment());
+	             dateTo = DateTimeFormatter.dateToIsoDate(moment());
                      dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'hours').startOf('minute'));
                      //we request all data
                      timeBetweenTwoConsecutiveValues = undefined;
@@ -408,7 +394,7 @@ widgetViewModelCtor =
                      isSummaryData = true;
                      break;
                   case "MONTH" :
-				         dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf('day').subtract(1, 'seconds'));
+		     dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf('day').subtract(1, 'seconds'));
                      dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'months').startOf('day'));
                      //we request day summary data
                      prefixUri = "/day";
@@ -416,7 +402,7 @@ widgetViewModelCtor =
                      isSummaryData = true;
                      break;
                   case "HALF_YEAR" :
-				         dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf('day').subtract(1, 'seconds'));
+		     dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf('day').subtract(1, 'seconds'));
                      dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(6, 'months').startOf('day'));
                      //we request day summary data
                      prefixUri = "/day";
@@ -424,7 +410,7 @@ widgetViewModelCtor =
                      isSummaryData = true;
                      break;
                   case "YEAR" :
-				         dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf('day').subtract(1, 'seconds'));
+		     dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf('day').subtract(1, 'seconds'));
                      dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'years').startOf('day'));
                      //we request day summary data
                      prefixUri = "/day";
@@ -444,7 +430,7 @@ widgetViewModelCtor =
 			   
                   $.getJSON("rest/acquisition/keyword/" + device.content.source.keywordId + prefixUri + "/" + dateFrom + "/" + dateTo)
                      .done(function( data ) {
-						      console.log ("done :", "rest/acquisition/keyword/" + device.content.source.keywordId + prefixUri + "/" + dateFrom + "/" + dateTo);
+			//console.log ("done :", "rest/acquisition/keyword/" + device.content.source.keywordId + prefixUri + "/" + dateFrom + "/" + dateTo);
                         //we parse the json answer
                         if (data.result != "true")
                         {
@@ -457,23 +443,6 @@ widgetViewModelCtor =
                         curvesToLoad--;
                         if (curvesToLoad == 0)
                            self.chart.hideLoading();
-
-                        //we remove last series
-                        var serie = self.chart.get(self.seriesUuid[index]);
-                        if (!isNullOrUndefined(serie))
-                           serie.remove( false );
-					   
-					    //we remove last axis
-					    var yAxis = self.chart.get( 'axis' + self.seriesUuid[index]);							
-							
-						//If Unique Axis, we don't delete it !
-						if (!isNullOrUndefined(yAxis) && index == 0)
-						   yAxis.remove ( false );
-					   
-					    //we remove ranges if any
-                        var serie_range = self.chart.get('range_' + self.seriesUuid[index]);
-                        if (!isNullOrUndefined(serie_range))
-                           serie_range.remove( false );
 
                         //we make the serie
                         var plot = [];
@@ -505,7 +474,7 @@ widgetViewModelCtor =
                                  plot.push([lastDate + 1, null]);
                               }
 							  
-							  // In case of bool, plot the precedent point, to obtain a square
+							  // In case of bool, plot the precedent point, to obtain a square .. Voir si changement de sens d'abord
 /*							  if ( (self.keywordInfo[IndexDevice].type == "Bool") && (plot.length != 0) )
 							  {
 								  var temp;
@@ -560,165 +529,180 @@ widgetViewModelCtor =
                            color = device.content.color;
                         }
                         catch(err) {
-							console.log ( err );
-						}
+			   console.log ( err );
+			}
 						
-						   // We create axis only if each serie have is own axis
-						   if ( !(parseBool(self.widget.configuration.oneAxis) ) || 
-						        ((index == 0) && ( parseBool(self.widget.configuration.oneAxis) ))
-							  )
-						   {
-					         try{
-								 
-								 function isOdd(num) { return num % 2;}
-								 
-								 if (isOdd(index))
-									 align = 'left';
-								 else
-									 align ='right';
-								 
-								 if (self.chart.get('axis' + self.seriesUuid[index]) == null )
-								 {
-									 console.log ("Add Axis", 'axis' + self.seriesUuid[index] );
-									 console.log ( self.seriesUuid );
-									 console.log ( index );
-									 
-									  var unit = $.t(self.keywordInfo[index].units);
-									  
-									  if (unit == undefined)
-                                         unit = "";									 
-									 
-								   self.chart.addAxis({ // new axis
-										id: 'axis' + self.seriesUuid[index], //The same id as the serie with axis at the beginning
-										title:{
-								                  text: self.keywordInfo[index].friendlyName,
-												  style: {
-												       color: color
-											      }
-										      },											  
-										labels: {
-											align: align,
-											format: '{value} ' + unit,
-											style: {
-												color: color
-											}
-										},
-										opposite: isOdd ( index )
-									}, false, false, false);
-								 }
-							  }
-							  catch (err)
-								 {
-									 console.log ( err );
-								 }
+			   // We create axis only if each serie have is own axis
+			   if ( !(parseBool(self.widget.configuration.oneAxis) ) || 
+				((index == 0) && ( parseBool(self.widget.configuration.oneAxis) ))
+				  )
+			   {
+			       try{	 
+					 function isOdd(num) { return num % 2;}
+					 
+					 if (isOdd(index))
+						 align = 'left';
+					 else
+						 align ='right';
+
+                                         //console.log ( self.chart.get('axis' + self.seriesUuid[index]) );
+
+					 if ( isNullOrUndefined(self.chart.get('axis' + self.seriesUuid[index]) ) )
+					 {
+						 //console.log ("Add Axis", 'axis' + self.seriesUuid[index] );
+						 //console.log ( self.seriesUuid );
+						 //console.log ( index );
+						 
+						  var unit = $.t(self.keywordInfo[index].units);
+						  
+						  if (unit == undefined)
+		                                     unit = "";
+						 
+					          self.chart.addAxis({ // new axis
+							id: 'axis' + self.seriesUuid[index], //The same id as the serie with axis at the beginning
+							title:{
+						          text: self.keywordInfo[index].friendlyName,
+									  style: {
+									       color: color
+								      }
+							      },											  
+							labels: {
+								align: align,
+								format: '{value} ' + unit,
+								style: {
+									color: color
+								}
+							},
+							opposite: isOdd ( index )
+						}, false, false, false);
+					 }
+				  }
+				  catch (err)
+					 {
+						 console.log ( err );
+					 }
                            }
 						
-						var yAxisName = "";
+			   var yAxisName = "";
 						
                            if ( (parseBool(self.widget.configuration.oneAxis) ))
 						   {	
-                               yAxisName = 	'axis' + self.seriesUuid[0];
+                               yAxisName = 'axis' + self.seriesUuid[0];
 							   
-							   //Configure the min/max in this case
-								try {
-									var yAxis = self.chart.get( yAxisName );
-									
-									  yAxis.setTitle({ 
-													  text: $.t(self.keywordInfo[index].units)										      
-													  }, false);
-									  
-									  var unit = $.t(self.keywordInfo[index].units);
-									  
-									  if (unit == undefined)
-                                         unit = "";										  
-									  
-									  // Change the axis Title
-									  yAxis.update ({ //Set labels
-												labels: {
-													format: '{value} ' + unit
-											   }
-									  }, false);									
-									
-								   if (parseBool( self.widget.configuration.customYAxisMinMax.checkbox) )
-								   {
-									  //we manage min and max scale y axis
-									  var min = parseFloat(self.widget.configuration.customYAxisMinMax.content.minimumValue);
-									  var max = parseFloat(self.widget.configuration.customYAxisMinMax.content.maximumValue);
-									  yAxis.setExtremes(min, max);
-								   }
-								   else {
-									  //we cancel previous extremes
-									  yAxis.setExtremes(null, null);
-								   }
-								}
-								catch (err) {
-									console.log (err);
-								}
-						   }
-						   else{
-							   yAxisName = 	'axis' + self.seriesUuid[index];
-						   }
+			        //Configure the min/max in this case
+				try {
+					var yAxis = self.chart.get( yAxisName );
+					
+					  yAxis.setTitle({ 
+						  text: $.t(self.keywordInfo[index].units)     
+						  }, false);
+					  
+					  var unit = $.t(self.keywordInfo[index].units);
+					  
+					  if (unit == undefined)
+                                             unit = "";										  
+					  
+					  // Change the axis Title
+					  yAxis.update ({ //Set labels
+								labels: {
+									format: '{value} ' + unit
+							   }
+					  }, false);
+					
+				   if (parseBool( self.widget.configuration.customYAxisMinMax.checkbox) )
+				   {
+					  //we manage min and max scale y axis
+					  var min = parseFloat(self.widget.configuration.customYAxisMinMax.content.minimumValue);
+					  var max = parseFloat(self.widget.configuration.customYAxisMinMax.content.maximumValue);
+					  yAxis.setExtremes(min, max);
+				   }
+				   else {
+					  //we cancel previous extremes
+					  yAxis.setExtremes(null, null);
+				   }
+				}
+				catch (err) {
+					console.log ( err );
+				}
+		   }
+		   else{
+			   yAxisName = 	'axis' + self.seriesUuid[index];
+		   }
 						
                         if (device.content.PlotType == "arearange")
-						{
-/*							
-							console.log ("Search Axis", yAxisName );
-							console.log ( self.chart );
-							console.log ( plot );							
-*/							
-							//Add Line
-							self.chart.addSeries({id:self.seriesUuid[index],
-												  data:plot,
-												  dataGrouping : {enabled : false},
-												  name: self.keywordInfo[index].friendlyName, 
-												  marker : { enabled : null, radius : 2, symbol: "circle"}, 
-												  color: color , 
-												  yAxis: yAxisName,
-												  lineWidth: 2,
-												  type: 'line'
-												  }
-												  , false, false); // Do not redraw immediately
+			{
+                           console.log ( yAxisName );
+                           //var serie = self.chart.get( yAxisName );
+                           //if (!isNullOrUndefined(serie))					
+			   //{	
+				//Add Line
+                                try{
+				self.chart.addSeries({id:self.seriesUuid[index],
+						  data:plot,
+						  dataGrouping : {enabled : false},
+						  name: self.keywordInfo[index].friendlyName, 
+						  marker : { enabled : null, radius : 2, symbol: "circle"}, 
+						  color: color , 
+						  yAxis: yAxisName,
+						  lineWidth: 2,
+						  type: 'line'
+						  }
+						  , false, false); // Do not redraw immediately
 							
-							//Add Ranges
-							if (isSummaryData) {
-								self.chart.addSeries({id:'range_' + self.seriesUuid[index],
-													  data:range,
-                                                      dataGrouping : {enabled : false},											  
-													  name: self.keywordInfo[index].friendlyName + '(Min,Max)',
-													  linkedTo: self.seriesUuid[index],
-													  color: color , 
-													  yAxis: yAxisName, 
-													  type: device.content.PlotType,
-													  lineWidth: 0,
-													  fillOpacity: 0.3,
-													  zIndex: 0												  
-													  }
-													  , false, false); // Do not redraw immediately
+			        //Add Ranges
+				if (isSummaryData) {
+				   self.chart.addSeries({id:'range_' + self.seriesUuid[index],
+						  data:range,
+                                                  dataGrouping : {enabled : false},							  
+						  name: self.keywordInfo[index].friendlyName + '(Min,Max)',
+						  linkedTo: self.seriesUuid[index],
+						  color: color , 
+						  yAxis: yAxisName, 
+						  type: device.content.PlotType,
+						  lineWidth: 0,
+						  fillOpacity: 0.3,
+						  zIndex: 0												  
+						  }
+						  , false, false); // Do not redraw immediately
 													  
-								var serie_range = self.chart.get('range_' + self.seriesUuid[index]);
+				   var serie_range = self.chart.get('range_' + self.seriesUuid[index]);
 								
-								// Add Units for ranges
-								if (serie_range)
-								   serie_range.units = $.t(self.keywordInfo[index].units);
-							}
-						}						  
-						else
-						{
-							self.chart.addSeries({id:self.seriesUuid[index],
-												  data:plot,
-												  dataGrouping : {enabled : false}, 
-												  name: self.keywordInfo[index].friendlyName, 
-												  marker : { enabled : true, radius : 2, symbol: "circle"}, 
-												  color: color , 
-												  yAxis: yAxisName,
-												  lineWidth: 2,
-												  type: device.content.PlotType,
-												  animation : false
-												  }
-												  , false, false); // Do not redraw immediately
-						}
+				   // Add Units for ranges
+				   if (serie_range)
+				      serie_range.units = $.t(self.keywordInfo[index].units);
+				}
+                             }catch( err ){
+                                   console.log ( err );
+				   console.log ("Search Axis", yAxisName );
+				   console.log ( self.chart.get('axis' + self.seriesUuid[index]) );
+                                   console.log ( self.chart.get(yAxisName) );
+                               }
+			}				  
+			else
+			{
+                                try{
+                                console.log ( yAxisName );
+				self.chart.addSeries({id:self.seriesUuid[index],
+									  data:plot,
+									  dataGrouping : {enabled : false}, 
+									  name: self.keywordInfo[index].friendlyName, 
+									  marker : { enabled : true, radius : 2, symbol: "circle"}, 
+									  color: color , 
+									  yAxis: yAxisName,
+									  lineWidth: 2,
+									  type: device.content.PlotType,
+									  animation : false
+									  }
+									  , false, false); // Do not redraw immediately
+                                   }catch (err){
+                                       console.log ( err );
+				       console.log ("Search Axis", yAxisName );
+				       console.log ( self.chart.get('axis' + self.seriesUuid[index]) );
+                                   }
+                                      
+			}
 						
-						var serie = self.chart.get(self.seriesUuid[index]);
+			var serie = self.chart.get(self.seriesUuid[index]);
 						
                         //we save the unit in the serie
                         if (serie)
@@ -741,7 +725,7 @@ widgetViewModelCtor =
 	  this.finalRefresh = function () {
 		  self = this;
 		  
-		  self.chart.redraw ( false ); //sans animation
+		  self.chart.redraw ( false ); //without animation
 	  };
 
 	   this.DisplaySummary = function (index, nb, device, range, Prefix) {
