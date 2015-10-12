@@ -2,7 +2,7 @@
 #include "ScriptProcess.h"
 #include <shared/Log.h>
 #include "PythonException.hpp"
-#include <windows/shared/FileSystemExtension.h>
+#include <shared/FileSystemExtension.h>
 
 
 CScriptProcess::CScriptProcess(
