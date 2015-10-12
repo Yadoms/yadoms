@@ -28,7 +28,7 @@ namespace web { namespace poco {
       m_httpRequestHandlerFactory->restHandlerConfigure(restKeywordBase);
       m_httpRequestHandlerFactory->webSocketConfigure(webSocketKeywordBase);
 
-      //setup HTTPServer Params (define name and version; to match common http server confifuration)
+      //setup HTTPServer Params (define name and version; to match common http server configuration)
       Poco::Net::HTTPServerParams * serverParams = new Poco::Net::HTTPServerParams();
       serverParams->setServerName("Yadoms");
       boost::shared_ptr<IRunningInformation> runningInformation(shared::CServiceLocator::instance().get<IRunningInformation>());
