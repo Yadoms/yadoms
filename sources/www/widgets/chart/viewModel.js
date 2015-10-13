@@ -245,66 +245,18 @@ widgetViewModelCtor =
             }
          });
 		 
-		  if (self.devicesList.length == 0)
-		  {
-		     self.devicesList = self.widget.configuration.devices.slice(0);
-		  }
-		  else
-		  {
-			var tempDevicesList = self.widget.configuration.devices.slice(0); 
-			  
-			$.each(tempDevicesList, function (index_temp, device_temp) 
-			{		
-				//we remove last series
-				var serie = self.chart.get(self.seriesUuid[index_temp]);
-				//console.log ( serie );
-				
-				if (!isNullOrUndefined(serie))
-				   serie.remove( false );
-			   
-			        //we remove last ranges if any
-			        serie = self.chart.get('range_' + self.seriesUuid[index_temp]);
 
-				if (!isNullOrUndefined(serie))
-				   serie.remove( false );
-
-				//Delete the axis
-				var yAxis = self.chart.get( 'axis' + self.seriesUuid[index_temp]);
-				
-				//If Unique Axis, we don't delete it !
-				if (!isNullOrUndefined(yAxis))
-				{
-				    if  (
-					   (!(parseBool(self.widget.configuration.oneAxis))) ||
-					   ((index_temp !=0) && (parseBool(self.widget.configuration.oneAxis)))
-			                )
-					{	
-					   yAxis.remove ( false );
-					}
-				}
-			});
-
-                        // flush array
-                        self.seriesUuid = [];		  
-			  
-			//We copy the new list
-			self.devicesList = tempDevicesList.slice(0);
-		  }
-		  
 	 self.ChartPromise.Initialization ( self.devicesList.length, this.refreshData.bind(this), this.widget.configuration.interval );
 
          //we create an uuid for each serie
          $.each(self.widget.configuration.devices, function (index, device) {
-            //we update uuid if they don't exist
-            if (isNullOrUndefined(self.seriesUuid[index]))
-               self.seriesUuid[index] = createUUID();
 				 
 		   KeywordManager.get(device.content.source.keywordId, function(keyword) {
 			  self.keywordInfo[index] = keyword;
 			  
 			  self.ChartPromise.resolve (index);
 			  });
-         });
+         });		 
       };
 	  
 	  this.cleanUpChart = function(serie, time, cleanValue) { 
@@ -348,7 +300,64 @@ widgetViewModelCtor =
 		 self.interval = interval;
 		 
 		 //we save interval in the chart
-         self.chart.interval = interval;
+         self.chart.interval = interval;		
+		
+		  if (self.devicesList.length == 0)
+		  {
+		     self.devicesList = self.widget.configuration.devices.slice(0);
+		  }
+		  else
+		  {
+			var tempDevicesList = self.widget.configuration.devices.slice(0); 
+			  
+			$.each(tempDevicesList, function (index_temp, device_temp) 
+			{		
+				//we remove last series
+				var serie = self.chart.get(self.seriesUuid[index_temp]);
+				//console.log ( serie );
+				
+				if (!isNullOrUndefined(serie))
+				   serie.remove( false );
+			   
+			        //we remove last ranges if any
+			        serie = self.chart.get('range_' + self.seriesUuid[index_temp]);
+
+				if (!isNullOrUndefined(serie))
+				   serie.remove( false );
+
+				//Delete the axis
+				var yAxis = self.chart.get( 'axis' + self.seriesUuid[index_temp]);
+				
+				//If Unique Axis, we don't delete it !
+				if (!isNullOrUndefined(yAxis))
+				{
+				    if  (
+					   (!(parseBool(self.widget.configuration.oneAxis))) ||
+					   ((index_temp !=0) && (parseBool(self.widget.configuration.oneAxis)))
+			                )
+					{	
+					   yAxis.remove ( false );
+					}
+				}
+			});
+
+            // flush array
+            self.seriesUuid = [];		  
+			  
+			//We copy the new list
+			self.devicesList = tempDevicesList.slice(0);
+		  }
+
+         //we create an uuid for each serie
+         $.each(self.widget.configuration.devices, function (index, device) {
+            //we update uuid if they don't exist
+            if (isNullOrUndefined(self.seriesUuid[index]))
+               self.seriesUuid[index] = createUUID();
+				 
+		   KeywordManager.get(device.content.source.keywordId, function(keyword) {
+			  self.keywordInfo[index] = keyword;
+			  });
+         });
 		
          console.log("step 1 " + moment().format("HH:mm:ss'SSS"));
 
@@ -377,7 +386,6 @@ widgetViewModelCtor =
                      break;
                   default:
                   case "DAY" :
-				         debugger;
                      dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf('hour').subtract(1, 'seconds'));
                      dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'days').startOf('hour'));
                      //we request hour summary data
@@ -386,7 +394,7 @@ widgetViewModelCtor =
                      isSummaryData = true;
                      break;
                   case "WEEK" :
-				         dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf('hour').subtract(1, 'seconds'));
+				     dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf('hour').subtract(1, 'seconds'));
                      dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'weeks').startOf('hour'));
                      //we request hour summary data
                      prefixUri = "/hour";
@@ -430,7 +438,7 @@ widgetViewModelCtor =
 			   
                   $.getJSON("rest/acquisition/keyword/" + device.content.source.keywordId + prefixUri + "/" + dateFrom + "/" + dateTo)
                      .done(function( data ) {
-			//console.log ("done :", "rest/acquisition/keyword/" + device.content.source.keywordId + prefixUri + "/" + dateFrom + "/" + dateTo);
+			            console.log ("done :", "rest/acquisition/keyword/" + device.content.source.keywordId + prefixUri + "/" + dateFrom + "/" + dateTo);
                         //we parse the json answer
                         if (data.result != "true")
                         {
@@ -473,19 +481,24 @@ widgetViewModelCtor =
 									
                                  plot.push([lastDate + 1, null]);
                               }
-							  
+/*							  
 							  // In case of bool, plot the precedent point, to obtain a square .. Voir si changement de sens d'abord
-/*							  if ( (self.keywordInfo[IndexDevice].type == "Bool") && (plot.length != 0) )
+							  if ( (self.keywordInfo[IndexDevice].type == "Bool") && (plot.length != 0) )
 							  {
 								  var temp;
-								  if (v==1) 
-									  temp = 0;
-								  else 
-									  temp = 1;
 								  
-								  plot.push([ d-1, temp ]);
-							  }*/
-							 
+								  // insert a point to create a square.
+								  if ( v != plot[ plot.length - 1] )
+								  {
+									  if (v==1) 
+										  temp = 0;
+									  else 
+										  temp = 1;
+									  
+									  plot.push([ d-1, temp ]);
+								  }
+							  }
+*/							 
 							  plot.push([d, v]);
                            });
                         }
@@ -544,15 +557,9 @@ widgetViewModelCtor =
 						 align = 'left';
 					 else
 						 align ='right';
-
-                                         //console.log ( self.chart.get('axis' + self.seriesUuid[index]) );
-
+					 
 					 if ( isNullOrUndefined(self.chart.get('axis' + self.seriesUuid[index]) ) )
-					 {
-						 //console.log ("Add Axis", 'axis' + self.seriesUuid[index] );
-						 //console.log ( self.seriesUuid );
-						 //console.log ( index );
-						 
+					 { 
 						  var unit = $.t(self.keywordInfo[index].units);
 						  
 						  if (unit == undefined)
@@ -585,12 +592,12 @@ widgetViewModelCtor =
 						
 			   var yAxisName = "";
 						
-                           if ( (parseBool(self.widget.configuration.oneAxis) ))
-						   {	
-                               yAxisName = 'axis' + self.seriesUuid[0];
+			   if ( (parseBool(self.widget.configuration.oneAxis) ))
+			   {	
+				   yAxisName = 'axis' + self.seriesUuid[0];
 							   
 			        //Configure the min/max in this case
-				try {
+				   try {
 					var yAxis = self.chart.get( yAxisName );
 					
 					  yAxis.setTitle({ 
@@ -600,7 +607,7 @@ widgetViewModelCtor =
 					  var unit = $.t(self.keywordInfo[index].units);
 					  
 					  if (unit == undefined)
-                                             unit = "";										  
+                         unit = "";										  
 					  
 					  // Change the axis Title
 					  yAxis.update ({ //Set labels
@@ -632,9 +639,7 @@ widgetViewModelCtor =
                         if (device.content.PlotType == "arearange")
 			{
                            console.log ( yAxisName );
-                           //var serie = self.chart.get( yAxisName );
-                           //if (!isNullOrUndefined(serie))					
-			   //{	
+
 				//Add Line
                                 try{
 				self.chart.addSeries({id:self.seriesUuid[index],
@@ -772,11 +777,13 @@ widgetViewModelCtor =
          var self = this;
 		 var bShift = false;
 
+		 if (self.seriesUuid.length == 0)
+           	return;
+		 
          try {
             $.each(self.widget.configuration.devices, function (index, device) {
                if (searchedDevice == device.content.source) {
                   //we've found the device
-
 				  
 				   // Cleaning ranges switch
 				   switch ( self.interval ) 
@@ -817,7 +824,8 @@ widgetViewModelCtor =
 					  if (!isNullOrUndefined( serie_range ))							  
 						 self.cleanUpChart ( serie_range, data.date, cleanValue );
 				  
-				      console.log ( parseFloat(data.value) );
+				      //console.log ( parseFloat(data.value) );
+					  console.log ( serie );
 				  
 					  // Add new point depending of the interval
 					   switch ( self.interval ) 
@@ -825,17 +833,25 @@ widgetViewModelCtor =
 						  case "HOUR" :
 /*						  
 						       if (self.keywordInfo[index].type == "Bool")
-							   {   var temp;
-								  if (data.value == 1) 
-									  temp = 0;
-								  else 
-									  temp = 1;
+							   {   
+						          var temp;
 								  
-								   serie.addPoint([(data.date - 1).valueOf(), parseFloat( temp )], true, false, true);
-							   }*/
-							   
+								  //Add a point, to create a correct "square". This point is adding only on change value, so we have to check the old value
+								  if ( data.value != serie.points[serie.points.length - 1])
+								  {
+									  if (data.value == 1) 
+										  temp = 0;
+									  else 
+										  temp = 1;
+									  
+									   serie.addPoint([(data.date - 1).valueOf(), parseFloat( temp )], true, false, true);
+								  }
+							   }
+*/						     
+                             console.log ( serie );
+							 
+                             if (!isNullOrUndefined(serie))
 							   serie.addPoint([data.date.valueOf(), parseFloat(data.value)], true, false, true);
-                               //No point for the range
 							 break;
 						  case "DAY" : 
 						  
