@@ -92,6 +92,10 @@ AutomationEditorCode.prototype.applyScript = function() {
       highlightSelectedWord: true
    });
 
+   //we tab size and soft tabs (tabs replaces by spaces)
+   this.editor.getSession().setTabSize(3);
+   this.editor.getSession().setUseSoftTabs(true);
+   
    //we manage the insert keyword Id button
    var $insertKeywordId = $("div#" + this.getUuid() + " div.btn-insert-keyword");
 
