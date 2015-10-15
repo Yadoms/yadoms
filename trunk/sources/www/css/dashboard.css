@@ -317,3 +317,7 @@ Fix dropdown menus hidden by bootstrap modal
     /* symbol for "collapsed" panels */
     content:"\f078";
 }
+
+.dashboard-table-icon {
+    max-height: 60px;
+}

@@ -94,22 +94,22 @@
       </div>
       <!--accordion script interpreters-->
       <div class="panel panel-default">
-         <div class="panel-heading collapsed" role="tab" id="install-update-script-interpreter-heading-panel" data-toggle="collapse" data-parent="#install-update-accordion" aria-expanded="true" aria-controls="install-update-script-interpreter-heading-panel" data-target="#install-update-script-interpreter-panel">
+         <div class="panel-heading collapsed" role="tab" id="install-update-scriptInterpreter-heading-panel" data-toggle="collapse" data-parent="#install-update-accordion" aria-expanded="true" aria-controls="install-update-scriptInterpreter-heading-panel" data-target="#install-update-scriptInterpreter-panel">
             <h4 class="panel-title">
-               <span data-i18n="modals.dashboard.sub-windows.install-update.script-interpreters.title"></span>
+               <span data-i18n="modals.dashboard.sub-windows.install-update.scriptInterpreters.title"></span>
                <span class="update-available-label label label-as-badge label-success hidden">!</span>
             </h4>
          </div>
-         <div id="install-update-script-interpreter-panel" class="panel-collapse collapse" role="tabpanel" aria-labelledby="install-update-script-interpreter-heading-panel">
+         <div id="install-update-scriptInterpreter-panel" class="panel-collapse collapse" role="tabpanel" aria-labelledby="install-update-scriptInterpreter-heading-panel">
             <div class="panel-body">
-               <table id="script-interpreters-install-update-list" class="table table-bordered table-striped dashboard-list">
+               <table id="scriptInterpreter-install-update-list" class="table table-bordered table-striped dashboard-list">
                   <tr>
                      <td data-i18n="modals.dashboard.sub-windows.install-update.generic.name"></td>
-                     <td data-i18n="modals.dashboard.sub-windows.install-update.generic.icon"></td>
+                     <td class="col-md-1" data-i18n="modals.dashboard.sub-windows.install-update.generic.icon"></td>
                      <td data-i18n="modals.dashboard.sub-windows.install-update.generic.description"></td>
-                     <td data-i18n="modals.dashboard.sub-windows.install-update.generic.actualVersion"></td>
-                     <td data-i18n="modals.dashboard.sub-windows.install-update.generic.availableVersion"></td>
-                     <td class="install-update-action-row" data-i18n="modals.dashboard.sub-windows.install-update.generic.actions"></td>
+                     <td class = "col-md-2" data-i18n="modals.dashboard.sub-windows.install-update.generic.actualVersion"></td>
+                     <td class = "col-md-2" data-i18n="modals.dashboard.sub-windows.install-update.generic.availableVersion"></td>
+                     <td class="install-update-action-row col-md-3" data-i18n="modals.dashboard.sub-windows.install-update.generic.actions"></td>
                   </tr>
                   <!-- script interpreters will be listed here-->
                </table>
@@ -127,7 +127,7 @@
 
    var $asyncActionIndicator = $("div#dashboard-install-update i.making-async-action");
 
-   var loadingFinished = {};
+   var promiseCounter = null;
 
    function initializeInstallUpdateDashboard() {
 
@@ -148,6 +148,8 @@
    function refreshAllData() {
       $asyncActionIndicator.removeClass("hidden");
       updateReleaseType();
+
+      promiseCounter = new PromiseCounter(0, updateInstallUpdateActionIndicator);
       fillPluginList();
       fillWidgetList();
       fillScriptInterpreterList();
@@ -178,7 +180,7 @@
       //we launch requests
       var objectType = "plugin";
       //we save the information that the load of objectType is in progress
-      loadingFinished[objectType] = false;
+      promiseCounter.incrementCounter();
       PluginManager.get(function(localList) {
          buildList(objectType, localList);
       });
@@ -191,7 +193,7 @@
       //we launch requests
       var objectType = "widget";
       //we save the information that the load of objectType is in progress
-      loadingFinished[objectType] = false;
+      promiseCounter.incrementCounter();
       WidgetPackageManager.getAll(function() {
          buildList(objectType, WidgetPackageManager.widgetPackages);
       });
@@ -202,9 +204,9 @@
     */
    function fillScriptInterpreterList() {
       //we launch requests
-      var objectType = "script-interpreter";
+      var objectType = "scriptInterpreter";
       //we save the information that the load of objectType is in progress
-      loadingFinished[objectType] = false;
+      promiseCounter.incrementCounter();
       AutomationInterpreterManager.getAllDetailed(function(interpreters) {
          buildList(objectType, interpreters);
       });
@@ -218,29 +220,26 @@
 
       //we remove all rows except header
       $("table#" + objectType + "-install-update-list").find("tr:gt(0)").remove();
-
       UpdateInformationManager.getList(objectType, function(serverList) {
          //we get installed plugin List
-         if (serverList) {
+         if (!isNullOrUndefined(serverList)) {
             mergeLists(localList, serverList, function (mergedList) {
                //we sort the list by name
                mergedList.sort(function(item1, item2) {
                                     return item2.type > item1.type;
                                  });
-
                //we display the result
-               Object.keys(mergedList).forEach(function (localValue, localIndex) {
-                  if (!localValue.startsWith("dev-")) {
+               Object.keys(mergedList).forEach(function (key, localIndex) {
+                  if (!key.startsWith("dev-")) {
                      //the actual item does nothing
-                     mergedList[localValue].processing = false;
-                     createInstallUpdateItemLine(objectType, mergedList[localValue]);
+                     mergedList[key].processing = false;
+                     createInstallUpdateItemLine(objectType, mergedList[key]);
                      //we set the visibility to the allowed buttons
-                     updateLine(objectType, mergedList[localValue]);
+                     updateLine(objectType, mergedList[key]);
                   }
                });
-               //we indicate that the objectTypeList loading has finished
-               loadingFinished[objectType] = true;
-               updateInstallUpdateActionIndicator();
+               //we manage the promise
+               promiseCounter.resolve();
             });
          }
          //we enable the release type list
@@ -252,12 +251,7 @@
     * Manage the animated indicator that show an asynchronous action is in progress
     */
    function updateInstallUpdateActionIndicator() {
-      //if all loadingFinished items are true we can hide the icon
-      Object.keys(loadingFinished).forEach(function (value, index) {
-         if (!loadingFinished[value])
-            return;
-      });
-      //if we havn't exit before everything is done
+      //if all loading is finished we can hide the icon
       $asyncActionIndicator.addClass("hidden");
    }
 
@@ -270,65 +264,67 @@
       assert($.isFunction(callback), "callback must be a function");
 
       //we merge the two lists
-      $.each(serverList, function(serverIndex, serverValue) {
-         //we search it on the other list
-         var itemFound = false;
-         var typeName = serverValue[0].type;
-         if (!isNullOrUndefined(localList[typeName])) {
-            //the item exist in a local context
-            itemFound = true;
-            //we add informations of all version that user wants
-            localList[typeName].serverVersions = [];
-            //we browse all version of that item
-            $.each(serverValue, function(versionIndex, versionValue) {
-               //if this releasetype is wanted we add it to the arrays of version for this item
-               if ($.inArray(versionValue.version.toLowerCase(), wantedVersion)) {
+      if ((serverList instanceof Array) && (serverList.count > 0)) {
+         $.each(serverList, function (serverIndex, serverValue) {
+            //we search it on the other list
+            var itemFound = false;
+            var typeName = serverValue[0].type;
+            if (!isNullOrUndefined(localList[typeName])) {
+               //the item exist in a local context
+               itemFound = true;
+               //we add informations of all version that user wants
+               localList[typeName].serverVersions = [];
+               //we browse all version of that item
+               $.each(serverValue, function (versionIndex, versionValue) {
+                  //if this releasetype is wanted we add it to the arrays of version for this item
+                  if ($.inArray(versionValue.version.toLowerCase(), wantedVersion)) {
+                     var item = {};
+                     item.downloadUrl = versionValue.downloadUrl;
+                     item.version = versionValue.version;
+                     item.releaseType = versionValue.releaseType;
+                     localList[typeName].serverVersions.push(item);
+                  }
+               });
+            }
+
+            if (!itemFound) {
+               //we add the new item available only on the server
+               var canAddOnThePage = false;
+
+               serverValue.sort(UpdateInformationManager.compareVersion);
+
+               var newItem = {};
+
+               //generic informations
+               newItem.type = serverValue[0].type;
+
+               newItem.package = {};
+               newItem.package.type = serverValue[0].type;
+               newItem.package.name = serverValue[0].name;
+               newItem.package.description = serverValue[0].description;
+               newItem.package.author = serverValue[0].author;
+               newItem.package.url = serverValue[0].url;
+               newItem.iconUrl = serverValue[0].iconUrl;
+
+               //we add informations of all version that user wants
+               newItem.serverVersions = [];
+               //we browse all version of that item
+               $.each(serverValue, function (versionIndex, versionValue) {
                   var item = {};
                   item.downloadUrl = versionValue.downloadUrl;
                   item.version = versionValue.version;
                   item.releaseType = versionValue.releaseType;
-                  localList[typeName].serverVersions.push(item);
-               }
-            });
-         }
+                  newItem.serverVersions.push(item);
+                  //we need only one release type available in tthe wanted array to can see the whole line
+                  if ($.inArray(item.releaseType.toLowerCase(), wantedVersion) > -1)
+                     canAddOnThePage = true;
+               });
 
-         if (!itemFound) {
-            //we add the new item available only on the server
-            var canAddOnThePage = false;
-
-            serverValue.sort(UpdateInformationManager.compareVersion);
-
-            var newItem = {};
-
-            //generic informations
-            newItem.type = serverValue[0].type;
-
-            newItem.package = {};
-            newItem.package.type = serverValue[0].type;
-            newItem.package.name = serverValue[0].name;
-            newItem.package.description = serverValue[0].description;
-            newItem.package.author = serverValue[0].author;
-            newItem.package.url = serverValue[0].url;
-            newItem.iconUrl = serverValue[0].iconUrl;
-
-            //we add informations of all version that user wants
-            newItem.serverVersions = [];
-            //we browse all version of that item
-            $.each(serverValue, function(versionIndex, versionValue) {
-               var item = {};
-               item.downloadUrl = versionValue.downloadUrl;
-               item.version = versionValue.version;
-               item.releaseType = versionValue.releaseType;
-               newItem.serverVersions.push(item);
-               //we need only one release type available in tthe wanted array to can see the whole line
-               if ($.inArray(item.releaseType.toLowerCase(), wantedVersion) > -1)
-                  canAddOnThePage = true;
-            });
-
-            if (canAddOnThePage)
-               localList[serverValue[0].type] = newItem;
-         }
-      });
+               if (canAddOnThePage)
+                  localList[serverValue[0].type] = newItem;
+            }
+         });
+      }
 
       callback(localList);
    }
@@ -345,11 +341,11 @@
 
       //depend on the objectType there is an icon
       if (objectType == "plugin") {
-         s += "<td><img src=\"" + (item.iconUrl?item.iconUrl:"plugins/" + item.type + "/icon.png") + "\" class=\"img-thumbnail install-update-item-icon\"></td>";
+         s += "<td><img src=\"" + (item.iconUrl?item.iconUrl:"plugins/" + item.type + "/icon.png") + "\" class=\"img-thumbnail dashboard-table-icon\"></td>";
       }
 
       if (objectType == "scriptInterpreter") {
-         s += "<td><img src=\"" + (item.iconUrl?item.iconUrl:"scriptInterpreters/" + item.type + "/icon.png") + "\" class=\"img-thumbnail install-update-item-icon\"></td>";
+         s += "<td><img src=\"" + (item.iconUrl?item.iconUrl:"scriptInterpreters/" + item.type + "/icon.png") + "\" class=\"img-thumbnail dashboard-table-icon\"></td>";
       }
 
       s +=        "<td><span>" + $.t(item.type + ":description", {defaultValue:item.package.description}) + "</span></td>" +
