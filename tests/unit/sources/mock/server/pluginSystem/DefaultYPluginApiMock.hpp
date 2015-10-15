@@ -1,7 +1,7 @@
 
 
 // Includes needed to compile tested classes
-#include "../../../../../sources/shared/shared/plugin/yPluginApi/IYPluginApi.h"
+#include "../../../../../../sources/shared/shared/plugin/yPluginApi/IYPluginApi.h"
 
 // Moke IYPluginApi
 namespace yApi = shared::plugin::yPluginApi;
