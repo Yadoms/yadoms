@@ -244,7 +244,8 @@ namespace web {
                   //check flag value
                   if (pingpongFlag++ > 2)
                   {
-                     throw shared::exception::CException("WebSocketclient don't answer to ping request");
+                     YADOMS_LOG(debug) << "WebSocketclient don't answer to ping request";
+                     clientSeemConnected = false;
                   }
 
                   //send ping
