@@ -162,7 +162,7 @@ BOOST_AUTO_TEST_CASE(Initialisation_Test)
 BOOST_AUTO_TEST_CASE(helpRequest)
 {
    char *argv[] = { "./TestLoader", "-help" };
- //  BOOST_CHECK_THROW(CStartupOptionMokeup app(2, argv), std::exception);
+   BOOST_CHECK_THROW(CStartupOptionMokeup app(2, argv, true), std::exception);
 }
 
 //--------------------------------------------------------------
@@ -173,7 +173,7 @@ BOOST_AUTO_TEST_CASE(helpRequest)
 BOOST_AUTO_TEST_CASE(helpRequestShort)
 {
    char *argv[] = { "./TestLoader", "-h" };
- //  BOOST_CHECK_THROW(CStartupOptionMokeup app(2, argv), std::exception);
+   BOOST_CHECK_THROW(CStartupOptionMokeup app(2, argv, true), std::exception);
 }
 
 

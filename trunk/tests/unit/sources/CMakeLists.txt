@@ -15,7 +15,7 @@ project (YadomsTests)
 cmake_minimum_required (VERSION 2.8.9)
 
 # The main Yadoms path
-set(YADOMS_PATH ../../sources)
+set(YADOMS_PATH ../../../sources)
 
 
 ##################################################################################################

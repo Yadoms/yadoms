@@ -1,7 +1,7 @@
 
 
 // Includes needed to compile tested classes
-#include "../../../../../../sources/shared/shared/plugin/information/IInformation.h"
+#include "../../../../../../../sources/shared/shared/plugin/information/IInformation.h"
 
 class CDefaultInformationMock : public shared::plugin::information::IInformation
 {
