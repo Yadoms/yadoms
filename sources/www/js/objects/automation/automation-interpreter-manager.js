@@ -45,7 +45,8 @@ AutomationInterpreterManager.getAll = function (callback, sync) {
 
          var interpreters = [];
          data.data.interpreters.forEach(function(value, index) {
-            interpreters.push(AutomationInterpreterManager.factory(value));
+            var interpreter = AutomationInterpreterManager.factory(value);
+            interpreters[interpreter.type] = interpreter;
          });
 
          callback(interpreters);
@@ -62,18 +63,18 @@ AutomationInterpreterManager.getAll = function (callback, sync) {
 AutomationInterpreterManager.getAllDetailed = function (callback, sync) {
    assert($.isFunction(callback), "callback must be a function");
 
-   AutomationInterpreterManager.getAll(function(interpreterNames) {
+   AutomationInterpreterManager.getAll(function(interpreters) {
       //for each name we get the package.json file and append it to the associative array
-      var interpreters = {};
-      interpreterNames.forEach(function(value, index) {
+      Object.keys(interpreters).forEach(function (key, value) {
          //this thread will ask for synchronous package.json requests
+         var value = interpreters[key];
          $.ajax({
             dataType: "json",
-            url: "scriptInterpreters/" + value + "/package.json",
+            url: "scriptInterpreters/" + value.type + "/package.json",
             async: false
          })
           .done(function( data ) {
-                interpreters[value] = data;
+                value.fillDetails(data);
           })
           .fail(function() {
              notifyError($.t("objects.generic.errorGetting", {objectName : "scriptInterpreters/" + value + "/package.json"}));

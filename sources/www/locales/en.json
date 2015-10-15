@@ -380,7 +380,7 @@
 					"widgets": {
 						"title": "Widgets"
 					},
-					"script-interpreters": {
+					"scriptInterpreters": {
 						"title": "Script interpreters"
 					}
 				},
