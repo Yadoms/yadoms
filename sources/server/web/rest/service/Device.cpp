@@ -105,7 +105,7 @@ namespace web { namespace rest { namespace service {
    {
       try
       {
-         if(parameters.size()>2)
+         if(parameters.size()>3)
          {
             shared::plugin::yPluginApi::EKeywordAccessMode cam(parameters[2]);
             //read the capacity name
@@ -133,7 +133,7 @@ namespace web { namespace rest { namespace service {
    {
       try
       {
-         if(parameters.size()>2)
+         if(parameters.size()>3)
          {
             shared::plugin::yPluginApi::EKeywordAccessMode cam(parameters[2]);
             shared::plugin::yPluginApi::EKeywordDataType typ = parameters[3];
@@ -218,7 +218,7 @@ namespace web { namespace rest { namespace service {
    {
       try
       {
-         if(parameters.size()>3)
+         if(parameters.size()>2)
          {
             //get keyword id from URL
             int keywordId = boost::lexical_cast<int>(parameters[2]);
@@ -314,7 +314,7 @@ namespace web { namespace rest { namespace service {
    {
       try
       {
-         if(parameters.size()>=3)
+         if(parameters.size()>2)
          {
             //get keyword id from URL
             int keywordId = boost::lexical_cast<int>(parameters[2]);

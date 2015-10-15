@@ -54,7 +54,7 @@ namespace web { namespace rest { namespace service {
    {
       std::string lang = "";
 
-      if (parameters.size()>2)
+      if (parameters.size()>3)
          lang = parameters[3];
 
       //ask site info
@@ -82,7 +82,7 @@ namespace web { namespace rest { namespace service {
    {
       std::string lang = "";
          
-      if (parameters.size()>2)
+      if (parameters.size()>3)
             lang = parameters[3];
 
       //ask site info
@@ -95,7 +95,7 @@ namespace web { namespace rest { namespace service {
    {
       //the request url should contain the pluginName
       //the request content should contain the downloadURL
-      if (parameters.size() > 2)
+      if (parameters.size() > 3)
       {
          std::string pluginName = parameters[3];
 
@@ -139,7 +139,7 @@ namespace web { namespace rest { namespace service {
    shared::CDataContainer CUpdate::removePlugin(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       //the request url should contain the pluginName
-      if (parameters.size() > 2)
+      if (parameters.size() > 3)
       {
          std::string pluginName = parameters[3];
          std::string taskId = m_updateManager->removePluginAsync(pluginName);
@@ -159,7 +159,7 @@ namespace web { namespace rest { namespace service {
    {
       std::string lang = "";
 
-      if (parameters.size()>2)
+      if (parameters.size()>3)
          lang = parameters[3];
 
       //ask site info
@@ -172,7 +172,7 @@ namespace web { namespace rest { namespace service {
    {
       //the request url should contain the widgetName
       //the request content should contain the downloadURL
-      if (parameters.size() > 2)
+      if (parameters.size() > 3)
       {
          std::string widgetName = parameters[3];
 
@@ -216,7 +216,7 @@ namespace web { namespace rest { namespace service {
    shared::CDataContainer CUpdate::removeWidget(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       //the request url should contain the pluginName
-      if (parameters.size() > 2)
+      if (parameters.size() > 3)
       {
          std::string widgetName = parameters[3];
          std::string taskId = m_updateManager->removeWidgetAsync(widgetName);
@@ -242,7 +242,7 @@ namespace web { namespace rest { namespace service {
    {
       std::string lang = "";
 
-      if (parameters.size()>2)
+      if (parameters.size()>3)
          lang = parameters[3];
 
       //ask site info
@@ -255,7 +255,7 @@ namespace web { namespace rest { namespace service {
    {
       //the request url should contain the scriptInterpreterName
       //the request content should contain the downloadURL
-      if (parameters.size() > 2)
+      if (parameters.size() > 3)
       {
          std::string scriptInterpreterName = parameters[3];
 
@@ -299,7 +299,7 @@ namespace web { namespace rest { namespace service {
    shared::CDataContainer CUpdate::removeScriptInterpreter(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       //the request url should contain the scriptInterpreterName
-      if (parameters.size() > 2)
+      if (parameters.size() > 3)
       {
          std::string scriptInterpreterName = parameters[3];
          std::string taskId = m_updateManager->removeScriptInterpreterAsync(scriptInterpreterName);
