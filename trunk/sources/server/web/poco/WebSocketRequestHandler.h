@@ -24,7 +24,14 @@ namespace web { namespace poco {
       /// \param[in] toSend Data to send
       /// \return true is sending OK, false if connection lost
       //--------------------------------------------------------------
-      bool send(Poco::Net::WebSocket & webSocket, const ws::CFrameBase& toSend) const;
+      bool send(Poco::Net::WebSocket & webSocket, const ws::CFrameBase& toSend) const;    
+      
+      //--------------------------------------------------------------
+      /// \brief           Send PING frame on the webSocket
+      /// \param[in] client Web socket client
+      /// \return true is sending OK, false if connection lost
+      //--------------------------------------------------------------
+      bool sendPing(Poco::Net::WebSocket & webSocket) const;
    };
 
 
