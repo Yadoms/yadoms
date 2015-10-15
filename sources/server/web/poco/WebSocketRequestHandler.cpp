@@ -75,6 +75,8 @@ namespace web {
 
             char buffer[2048] = { 0 };
             int flags = 0;
+            int pingWaitCount = 0;
+            int pingpongFlag = 0;
 
             while (clientSeemConnected)
             {
@@ -144,30 +146,38 @@ namespace web {
                      int n = webSocket.receiveFrame(buffer, sizeof(buffer), flags);
                      if (n > 0)
                      {
-                        std::string bufferString(buffer);
-
-                        YADOMS_LOG(debug) << "Websocket receive data : " << bufferString;
-
-                        boost::shared_ptr<ws::CFrameBase> parsedFrame = ws::CFrameFactory::tryParse(bufferString);
-                        if (parsedFrame)
+                        if ( (flags & Poco::Net::WebSocket::FRAME_OP_PONG) == Poco::Net::WebSocket::FRAME_OP_PONG)
                         {
-                           switch (parsedFrame->getType())
-                           {
-                           case ws::CFrameBase::EFrameType::kAcquisitionFilterValue:
-                           {
-                              boost::shared_ptr<ws::CAcquisitionFilterFrame> parsedFrameAsqFilter = boost::dynamic_pointer_cast<ws::CAcquisitionFilterFrame>(parsedFrame);
-                              newAcquisitionObserver->resetKeywordIdFilter(parsedFrameAsqFilter->getFilter());
-                              break;
-                           }
-                           default:
-                              YADOMS_LOG(debug) << "Unmanaged websocket frame from client";
-                              break;
-                           }
+                           //we receive a pong frame, reset flag
+                           pingpongFlag = 0;
                         }
                         else
                         {
-                           //log as Debug because : user actions in browser may 'kill' websockets connections and provide bad json data (refresh, close page,....)
-                           YADOMS_LOG(debug) << "Fail to parse received data.";
+                           std::string bufferString(buffer);
+
+                           YADOMS_LOG(debug) << "Websocket receive data : " << bufferString;
+
+                           boost::shared_ptr<ws::CFrameBase> parsedFrame = ws::CFrameFactory::tryParse(bufferString);
+                           if (parsedFrame)
+                           {
+                              switch (parsedFrame->getType())
+                              {
+                              case ws::CFrameBase::EFrameType::kAcquisitionFilterValue:
+                              {
+                                 boost::shared_ptr<ws::CAcquisitionFilterFrame> parsedFrameAsqFilter = boost::dynamic_pointer_cast<ws::CAcquisitionFilterFrame>(parsedFrame);
+                                 newAcquisitionObserver->resetKeywordIdFilter(parsedFrameAsqFilter->getFilter());
+                                 break;
+                              }
+                              default:
+                                 YADOMS_LOG(debug) << "Unmanaged websocket frame from client";
+                                 break;
+                              }
+                           }
+                           else
+                           {
+                              //log as Debug because : user actions in browser may 'kill' websockets connections and provide bad json data (refresh, close page,....)
+                              YADOMS_LOG(debug) << "Fail to parse received data.";
+                           }
                         }
                      }
                   }
@@ -226,6 +236,24 @@ namespace web {
                   clientSeemConnected = false;
                }
 
+               //the while take 100ms max (two 50ms timeout)
+               if (pingWaitCount++ >= 20)
+               {
+                  pingWaitCount = 0;
+
+                  //check flag value
+                  if (pingpongFlag++ > 2)
+                  {
+                     throw shared::exception::CException("WebSocketclient don't answer to ping request");
+                  }
+
+                  //send ping
+                  if (!sendPing(webSocket))
+                  {
+                     YADOMS_LOG(warning) << "Fail to send PING frame";
+                  }
+                  
+               }
             } //while
          }
          catch (shared::exception::CException & ex)
@@ -250,6 +278,12 @@ namespace web {
       {
          std::string dataString = toSend.serialize();
          return (webSocket.sendFrame(dataString.c_str(), dataString.length(), Poco::Net::WebSocket::FRAME_TEXT) != 0);
+      }
+
+      bool CWebSocketRequestHandler::sendPing(Poco::Net::WebSocket & webSocket) const
+      {
+         std::string dataString = "Yadoms play PING";
+         return (webSocket.sendFrame(dataString.c_str(), dataString.length(), Poco::Net::WebSocket::FRAME_FLAG_FIN | Poco::Net::WebSocket::FRAME_OP_PING) != 0);
       }
 
    }
