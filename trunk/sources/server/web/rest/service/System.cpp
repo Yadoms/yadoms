@@ -38,7 +38,7 @@ namespace web { namespace rest { namespace service {
 
    shared::CDataContainer CSystem::getBinding(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
-      if (parameters.size() >= 2)
+      if (parameters.size() > 2)
       {
          std::string query = parameters[2];
 

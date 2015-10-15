@@ -413,7 +413,7 @@ namespace web { namespace rest { namespace service {
    {
       try
       {
-         if (parameters.size() >= 2)
+         if (parameters.size() > 1)
          {
             int pluginId = boost::lexical_cast<int>(parameters[1]);
 
@@ -486,7 +486,7 @@ namespace web { namespace rest { namespace service {
 	{
 		try
 		{
-		   if (parameters.size() >= 3)
+		   if (parameters.size() > 3)
 			{
 				int pluginId = boost::lexical_cast<int>(parameters[1]);
 

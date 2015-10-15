@@ -98,7 +98,7 @@ namespace web { namespace rest { namespace service {
    {
       try
       {
-         if(parameters.size()>=3)
+         if(parameters.size()>3)
          {
             int offset = boost::lexical_cast<int>(parameters[2]);
             int count = boost::lexical_cast<int>(parameters[3]);
