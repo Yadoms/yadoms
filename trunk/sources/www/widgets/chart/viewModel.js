@@ -290,6 +290,21 @@ widgetViewModelCtor = function ChartViewModel() {
       };
    };
 
+	this.isBoolVariable = function( index )  {
+		var self = this;
+	   //console.log ("Evaluation bool");
+	   if (self.keywordInfo[index].type == "Bool")
+	   {
+		   //console.log ("bool=true");
+		  return true;
+	   }
+	  else
+	  {
+		  //console.log ("bool=false");							  
+		  return false;
+	  }
+	}      
+   
    this.refreshData = function(interval) {
       var self = this;
 
@@ -377,10 +392,39 @@ widgetViewModelCtor = function ChartViewModel() {
            
             var SeriesPromise = new YadomsPromise();
             SeriesPromise.Initialization(self.widget.configuration.devices.length, this.finalRefresh.bind(this), null);
-
+			
             //for each plot in the configuration we request for data
             $.each(self.widget.configuration.devices, function(index, device) {
 
+			     var DisplayData = true;
+			     //If the device is a bool, you have to modify
+				 if  (self.isBoolVariable(index))
+				 {
+					 switch (interval) {
+                        case "DAY" :
+                        case "WEEK" :
+                        case "MONTH" :						
+					      dateTo = DateTimeFormatter.dateToIsoDate(moment());
+						  DisplayData = true;
+						  break;
+                        case "HALF_YEAR" :
+                        case "YEAR" :
+						  // Display that the range is too large
+                          self.chart.showLoading($.t("chart:RangeTooBroad"));
+                          DisplayData = false;
+                          self.refreshingData = false;						  
+						  break;
+					 }
+					 //we request hour summary data
+					 prefixUri = "";
+					 isSummaryData = false;						 
+				 }
+				 else{
+					 DisplayData = true;
+				 }			
+			
+			   if (DisplayData) {
+			
                $.getJSON("rest/acquisition/keyword/" + device.content.source.keywordId + prefixUri + "/" + dateFrom + "/" + dateTo)
                   .done(function(data) {
                      console.log("done :", "rest/acquisition/keyword/" + device.content.source.keywordId + prefixUri + "/" + dateFrom + "/" + dateTo);
@@ -419,24 +463,7 @@ widgetViewModelCtor = function ChartViewModel() {
 
                               plot.push([lastDate + 1, null]);
                            }
-                           /*							  
-                           							  // In case of bool, plot the precedent point, to obtain a square .. Voir si changement de sens d'abord
-                           							  if ( (self.keywordInfo[IndexDevice].type == "Bool") && (plot.length != 0) )
-                           							  {
-                           								  var temp;
-                           								  
-                           								  // insert a point to create a square.
-                           								  if ( v != plot[ plot.length - 1] )
-                           								  {
-                           									  if (v==1) 
-                           										  temp = 0;
-                           									  else 
-                           										  temp = 1;
-                           									  
-                           									  plot.push([ d-1, temp ]);
-                           								  }
-                           							  }
-                           */
+
                            plot.push([d, v]);
                         });
                      } else {
@@ -532,8 +559,6 @@ widgetViewModelCtor = function ChartViewModel() {
                         console.log('Axis already exists (for index = ' + index + ')');
                      }
                      
-                     
-
                      if ((parseBool(self.widget.configuration.oneAxis))) {
                         //Configure the min/max in this case
                         try {
@@ -552,8 +577,6 @@ widgetViewModelCtor = function ChartViewModel() {
                            console.log(err);
                         }
                      }
-                     
-                     
                      
                      try {
                         if (device.content.PlotType == "arearange") {
@@ -603,7 +626,8 @@ widgetViewModelCtor = function ChartViewModel() {
                                  serie_range.units = $.t(self.keywordInfo[index].units);
                            }
                         } else {
-                           console.log(yAxisName);
+                           console.log(yAxisName);   
+						   
                            self.chart.addSeries({
                               id: self.seriesUuid[index],
                               data: plot,
@@ -619,6 +643,7 @@ widgetViewModelCtor = function ChartViewModel() {
                               color: color,
                               yAxis: yAxisName,
                               lineWidth: 2,
+							  step: self.isBoolVariable(index),
                               type: device.content.PlotType,
                               animation: false
                            }, false, false); // Do not redraw immediately
@@ -639,6 +664,7 @@ widgetViewModelCtor = function ChartViewModel() {
                   .fail(function() {
                      notifyError($.t("chart:errorDuringGettingDeviceData"));
                   });
+			   }
             });
          }
       } catch (err) {
@@ -744,23 +770,6 @@ widgetViewModelCtor = function ChartViewModel() {
                   // Add new point depending of the interval
                   switch (self.interval) {
                      case "HOUR":
-                        /*						  
-                        						       if (self.keywordInfo[index].type == "Bool")
-                        							   {   
-                        						          var temp;
-                        								  
-                        								  //Add a point, to create a correct "square". This point is adding only on change value, so we have to check the old value
-                        								  if ( data.value != serie.points[serie.points.length - 1])
-                        								  {
-                        									  if (data.value == 1) 
-                        										  temp = 0;
-                        									  else 
-                        										  temp = 1;
-                        									  
-                        									   serie.addPoint([(data.date - 1).valueOf(), parseFloat( temp )], true, false, true);
-                        								  }
-                        							   }
-                        */
                         console.log(serie);
 
                         if (!isNullOrUndefined(serie))
