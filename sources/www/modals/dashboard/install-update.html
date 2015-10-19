@@ -150,8 +150,8 @@
       updateReleaseType();
 
       promiseCounter = new PromiseCounter(0, updateInstallUpdateActionIndicator);
-      fillPluginList();
-      fillWidgetList();
+      //fillPluginList();
+      //fillWidgetList();
       fillScriptInterpreterList();
    }
 
@@ -228,6 +228,7 @@
                mergedList.sort(function(item1, item2) {
                                     return item2.type > item1.type;
                                  });
+               debugger;
                //we display the result
                Object.keys(mergedList).forEach(function (key, localIndex) {
                   if (!key.startsWith("dev-")) {

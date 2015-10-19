@@ -230,14 +230,6 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-
-
-
-
-
-
-
-
    shared::CDataContainer CUpdate::availableScriptInterpreters(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       std::string lang = "";
