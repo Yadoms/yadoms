@@ -85,6 +85,7 @@ set(SHARED_LIB_SRC
    shared/exception/NullReference.hpp
    shared/exception/OutOfRange.hpp
    shared/exception/Parse.hpp
+   shared/exception/JSONParse.hpp
    
    shared/http/HttpMethods.h
    shared/http/HttpMethods.cpp
