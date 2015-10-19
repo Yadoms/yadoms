@@ -80,6 +80,11 @@ private:
    /// \brief	Configuration
    //--------------------------------------------------------------
    boost::shared_ptr<const IConfiguration> m_configuration;
+   
+   //--------------------------------------------------------------
+   /// \brief	List of discovered unsupported families
+   //--------------------------------------------------------------
+   std::set<std::string> m_unsupporterFamilies;
 };
 
 } // namespace owfs

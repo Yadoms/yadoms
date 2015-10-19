@@ -42,7 +42,7 @@ void COneWire::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
       std::map<std::string, boost::shared_ptr<device::IDevice> > devices;
 
       // Periodic network refresh
-      context->getEventHandler().createTimer(kEvtTimerNetworkRefresh, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(10));
+      context->getEventHandler().createTimer(kEvtTimerNetworkRefresh, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(5));
 
       // the main loop
       YADOMS_LOG(debug) << "OneWire plugin is running...";

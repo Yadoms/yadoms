@@ -43,7 +43,7 @@ void CDualAddressableSwitchPlus1kMemory::write(unsigned char unit, bool state) c
    filename.append(1, 'A' + unit);
 
    boost::filesystem::path writePath = m_devicePath / boost::filesystem::path(filename);
-   CCommon::write(writePath, state ? "yes" : "no");
+   CCommon::write(writePath, state ? "1" : "0");
 }
 
 } } // namespace owfs::io
