@@ -27,7 +27,7 @@ void CSingleSwitch::write(bool state) const
    std::string filename("PIO");
 
    boost::filesystem::path writePath = m_devicePath / boost::filesystem::path(filename);
-   CCommon::write(writePath, state ? "yes" : "no");
+   CCommon::write(writePath, state ? "1" : "0");
 }
 
 } } // namespace owfs::io

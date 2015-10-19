@@ -41,7 +41,7 @@
 
 namespace owfs {
 
-static const boost::filesystem::path OwfsBaseDir("/mnt/1wire");
+static const boost::filesystem::path OwfsBaseDir("/mnt/1wire/uncached");
 
 
 CEngine::CEngine(boost::shared_ptr<yApi::IYPluginApi> context, boost::shared_ptr<const IConfiguration> configuration)
@@ -102,7 +102,12 @@ void CEngine::scanNetworkNode(const boost::filesystem::path& nodePath, std::map<
          }
          catch (shared::exception::CInvalidParameter&)
          {
-            YADOMS_LOG(warning) << "1-Wire, Device family " << dir->path().filename().string().substr(0, 2) << " is not actually supported";
+			const std::string unsupportedFamily(dir->path().filename().string().substr(0, 2));
+			if (m_unsupporterFamilies.find(unsupportedFamily) == m_unsupporterFamilies.end())
+			{
+			   YADOMS_LOG(warning) << "1-Wire, Device family 0x" << unsupportedFamily << " is not actually supported";
+			   m_unsupporterFamilies.insert(unsupportedFamily);
+			}  
          }
       }
    }
