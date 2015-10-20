@@ -29,7 +29,7 @@ public:
 protected:
    // IEngine implementation
    virtual bool newConfigurationRequireRestart(const shared::CDataContainer& newConfigurationData) const;
-   virtual std::map<std::string, boost::shared_ptr<device::IDevice> > scanNetwork() const;
+   virtual std::map<std::string, boost::shared_ptr<device::IDevice> > scanNetwork();
    // [END] IEngine implementation
 
 
@@ -38,7 +38,7 @@ protected:
    /// \param[in] nodePath The node path to scan
    /// \param[inout] devices The list to complete with found devies
    //--------------------------------------------------------------
-   void scanNetworkNode(const boost::filesystem::path& nodePath, std::map<std::string, boost::shared_ptr<device::IDevice> >& devices) const;
+   void scanNetworkNode(const boost::filesystem::path& nodePath, std::map<std::string, boost::shared_ptr<device::IDevice> >& devices);
 
    //--------------------------------------------------------------
    /// \brief	Check if provided dir is valid
