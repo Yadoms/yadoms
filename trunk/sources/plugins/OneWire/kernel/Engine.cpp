@@ -38,7 +38,7 @@ bool CEngine::newConfigurationRequireRestart(const shared::CDataContainer& newCo
 }
 
 
-std::map<std::string, boost::shared_ptr<device::IDevice> > CEngine::scanNetwork() const
+std::map<std::string, boost::shared_ptr<device::IDevice> > CEngine::scanNetwork()
 {
    std::map<std::string, boost::shared_ptr<device::IDevice> > devices;
 
@@ -48,7 +48,7 @@ std::map<std::string, boost::shared_ptr<device::IDevice> > CEngine::scanNetwork(
    return devices;
 }
 
-void CEngine::scanNetworkNode(const boost::filesystem::path& slavesFile, std::map<std::string, boost::shared_ptr<device::IDevice> >& devices) const
+void CEngine::scanNetworkNode(const boost::filesystem::path& slavesFile, std::map<std::string, boost::shared_ptr<device::IDevice> >& devices)
 {
    try
    {

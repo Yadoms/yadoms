@@ -62,14 +62,14 @@ bool CEngine::newConfigurationRequireRestart(const shared::CDataContainer& newCo
 }
 
 
-std::map<std::string, boost::shared_ptr<device::IDevice> > CEngine::scanNetwork() const
+std::map<std::string, boost::shared_ptr<device::IDevice> > CEngine::scanNetwork()
 {
    std::map<std::string, boost::shared_ptr<device::IDevice> > devices;
    scanNetworkNode(OwfsBaseDir, devices);
    return devices;
 }
 
-void CEngine::scanNetworkNode(const boost::filesystem::path& nodePath, std::map<std::string, boost::shared_ptr<device::IDevice> >& devices) const
+void CEngine::scanNetworkNode(const boost::filesystem::path& nodePath, std::map<std::string, boost::shared_ptr<device::IDevice> >& devices)
 {
    try
    {
@@ -102,12 +102,12 @@ void CEngine::scanNetworkNode(const boost::filesystem::path& nodePath, std::map<
          }
          catch (shared::exception::CInvalidParameter&)
          {
-			const std::string unsupportedFamily(dir->path().filename().string().substr(0, 2));
-			if (m_unsupporterFamilies.find(unsupportedFamily) == m_unsupporterFamilies.end())
-			{
-			   YADOMS_LOG(warning) << "1-Wire, Device family 0x" << unsupportedFamily << " is not actually supported";
-			   m_unsupporterFamilies.insert(unsupportedFamily);
-			}  
+			   const std::string unsupportedFamily(dir->path().filename().string().substr(0, 2));
+			   if (m_unsupporterFamilies.find(unsupportedFamily) == m_unsupporterFamilies.end())
+			   {
+			      YADOMS_LOG(warning) << "1-Wire, Device family 0x" << unsupportedFamily << " is not actually supported";
+			      m_unsupporterFamilies.insert(unsupportedFamily);
+			   }
          }
       }
    }
