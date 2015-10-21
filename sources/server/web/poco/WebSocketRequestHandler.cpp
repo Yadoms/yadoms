@@ -21,6 +21,9 @@
 #include "notification/Helpers.hpp"
 #include "notification/action/EventAction.hpp"
 
+#include <shared/tools/Debug.h>
+
+
 namespace web {
    namespace poco {
 
@@ -36,6 +39,9 @@ namespace web {
       void CWebSocketRequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request, Poco::Net::HTTPServerResponse& response)
       {
          YADOMS_LOG(information) << "New websocket client";
+
+         //log thread ID
+         shared::tools::CDebug::LogThreadId("WebSocketRequestHandler");
 
          std::vector<boost::shared_ptr<notification::IObserver> > observers;
 
