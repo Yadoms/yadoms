@@ -213,6 +213,8 @@ set(SHARED_LIB_SRC
    shared/script/yScriptApi/commonIncludes.h
    shared/script/yScriptApi/IYScriptApi.h
 
+   shared/tools/Debug.h
+   shared/tools/Debug.cpp
    shared/tools/Random.h
    shared/tools/Random.cpp
 

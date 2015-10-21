@@ -2,6 +2,7 @@
 #include "ThreadBase.h"
 #include <shared/Thread.h>
 #include "Log.h"
+#include <shared/tools/Debug.h>
 
 namespace shared
 {
@@ -27,7 +28,8 @@ void CThreadBase::start()
    //start the thread
    m_thread.reset(new boost::thread(boost::bind(&CThreadBase::doWorkInternal, this)));
 
-   YADOMS_LOG(debug) << "Thread Id=" << m_thread->get_id() << " Name = " << getName();
+   //log thread ID
+   shared::tools::CDebug::LogThreadId(getName());
 }
 
 void CThreadBase::stop()

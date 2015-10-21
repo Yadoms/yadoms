@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ApplicationStopHandler.h"
 #include <shared/Log.h>
+#include <shared/tools/Debug.h>
 
 volatile sig_atomic_t CApplicationStopHandler::StopRequested = false;
 
@@ -37,6 +38,10 @@ void CApplicationStopHandler::requestToStop(EStopMode stopMode)
 
 void CApplicationStopHandler::doWork()
 {
+   //log thread ID
+   shared::tools::CDebug::LogThreadId("ApplicationStopHandler");
+
+
    while (!StopRequested)
    {
       boost::this_thread::sleep(boost::posix_time::milliseconds(100));

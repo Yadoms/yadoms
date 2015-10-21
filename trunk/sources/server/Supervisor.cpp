@@ -27,6 +27,7 @@
 #include "automation/RuleManager.h"
 #include <shared/ServiceLocator.h>
 #include "startupOptions/IStartupOptions.h"
+#include <shared/tools/Debug.h>
 
 CSupervisor::CSupervisor(boost::shared_ptr<shared::event::CEventHandler> applicationEventHandler, const int applicationStopCode)
    :m_EventHandler(new shared::event::CEventHandler), m_applicationEventHandler(applicationEventHandler), m_applicationStopCode(applicationStopCode)
@@ -42,6 +43,9 @@ void CSupervisor::run()
 {
    YADOMS_LOG_CONFIGURE("Supervisor");
    YADOMS_LOG(information) << "Supervisor is starting";
+
+   //log thread ID
+   shared::tools::CDebug::LogThreadId("Supervisor");
 
    boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dal;
    try

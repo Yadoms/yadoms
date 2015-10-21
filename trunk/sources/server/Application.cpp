@@ -16,6 +16,8 @@
 #include <shared/ServiceLocator.h>
 #include "tools/OperatingSystemIntegration.h"
 
+#include <shared/Tools/Debug.h>
+
 //define the main entry point
 POCO_SERVER_MAIN(CYadomsServer)
 
@@ -114,6 +116,9 @@ int CYadomsServer::main(const Poco::Util::Application::ArgVec& args)
       if (m_startupOptions->getNoPasswordFlag())
          YADOMS_LOG(information) << "\tnoPassword = true";
       YADOMS_LOG(information) << "********************************************************************";
+
+      //log thread ID
+      shared::tools::CDebug::LogThreadId("Yadoms");
 
       //register Services in serviceLocator
       shared::CServiceLocator::instance().push<startupOptions::IStartupOptions>(m_startupOptions);
