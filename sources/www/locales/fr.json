@@ -454,6 +454,21 @@
 					"tooltip": "Si un keyword possède une condition à une heure donnée"
 				}
 			},
+			"yadoms_wait_for_keywords": {
+				"title": "Attente d'acquisition, stocké dans :",
+				"tooltip": "Attend une nouvelle acquisition d'un ou plusieurs keyword. La valeur du keyword qui a changé est stockée dans la variable keywordNouvelleValeur",
+				"defaultVarName": "keywordNouvelleValeur",
+				"mutator": {
+					"base" : {
+						"title": "Attente d'acquisition",
+						"tooltip": "Attend une nouvelle acquisition d'un ou plusieurs keyword."
+					},
+					"additional" : {
+						"title": "Keyword à observer",
+						"tooltip": "Ajoute un nouveau keyword à observer"
+					}
+				}
+			},
 			"yadoms_keyword_value": {
 				"tooltip": "Obtient la dernière valeur du keyword en base de données"
 			},
