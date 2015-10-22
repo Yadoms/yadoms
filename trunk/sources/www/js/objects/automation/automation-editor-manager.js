@@ -23,10 +23,9 @@ AutomationEditorManager.getAll = function(callback) {
       var interpreterFound = false;
       //Code editor
       $.each(AutomationEditorCode.getSupportedInterpreters(), function (key, value) {
-         $.each(interpreters, function (inputKey, inputValue) {
-            if (value.toLowerCase() ==  inputValue.name.toLowerCase())
-               interpreterFound = true;
-         });
+         if(!isNullOrUndefined(interpreters) && !isNullOrUndefined(interpreters[value.toLowerCase()])) {
+            interpreterFound = true;
+         }            
       });
 
       if (interpreterFound) {
@@ -37,10 +36,9 @@ AutomationEditorManager.getAll = function(callback) {
       interpreterFound = false;
       //Blockly editor
       $.each(AutomationEditorBlockly.getSupportedInterpreters(), function (key, value) {
-         $.each(interpreters, function (inputKey, inputValue) {
-            if (value.toLowerCase() ==  inputValue.name.toLowerCase())
-               interpreterFound = true;
-         });
+         if(!isNullOrUndefined(interpreters) && !isNullOrUndefined(interpreters[value.toLowerCase()])) {
+            interpreterFound = true;
+         }            
       });
 
       if (interpreterFound) {
