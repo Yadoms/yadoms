@@ -16,7 +16,7 @@
 #include <shared/ServiceLocator.h>
 #include "tools/OperatingSystemIntegration.h"
 
-#include <shared/Tools/Debug.h>
+#include <shared/tools/Debug.h>
 
 //define the main entry point
 POCO_SERVER_MAIN(CYadomsServer)
