@@ -454,6 +454,21 @@
 					"tooltip": "If the keyword reached a value at a particular time"
 				}
 			},
+			"yadoms_wait_for_keywords": {
+				"title": "Wait for acquisition in",
+				"tooltip": "Wait for one or more keyword changes. The keyword new value is stored in variable keywordNewValue",
+				"defaultVarName": "keywordNewValue",
+				"mutator": {
+					"base" : {
+						"title": "Wait for acquisition",
+						"tooltip": "Wait for one or more keyword changes"
+					},
+					"additional" : {
+						"title": "Keyword to watch",
+						"tooltip": "Add a new keyword to watch"
+					}
+				}
+			},
 			"yadoms_keyword_value": {
 				"tooltip": "Read the last device value from database"
 			},

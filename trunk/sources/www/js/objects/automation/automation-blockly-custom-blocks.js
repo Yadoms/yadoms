@@ -98,6 +98,8 @@ Blockly.Yadoms.BooleanOperators_ = Blockly.RTL ? [
     ['\u2260', 'NEQ']
 ];
 
+Blockly.Yadoms.CurrentGenerationBlockIsTimed_ = false;
+Blockly.Yadoms.CurrentGenerationBlockTime_ = undefined;
 
 /**
  * Load Yadoms data
@@ -160,6 +162,7 @@ Blockly.Yadoms.CreateToolbox_ = function() {
     toolbox += '  <category name="Yadoms">';
     toolbox += '    <block type="yadoms_keyword_value"></block>';
     toolbox += '    <block type="yadoms_affect_keyword"></block>';
+    toolbox += '    <block type="yadoms_wait_for_keywords"></block>';
     toolbox += '    <block type="yadoms_notification_simple"></block>';
     toolbox += '    <block type="yadoms_enumeration"></block>';
     toolbox += '    <block type="yadoms_logic_compare_become"></block>';
@@ -708,7 +711,7 @@ Blockly.Yadoms.UpdateBlockColour_ = function(self, type) {
  * @param keywordDropDownName The name of the keywords DropDown
  * @constructor
  */
-Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function(thisBlock, canWrite, allowedKeywordTypes, allowedKeywordCapacities, callbackKeywordSelectionChanged, pluginDropDownName, deviceDropDownName, keywordDropDownName) {
+Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function(thisBlock, canWrite, allowedKeywordTypes, allowedKeywordCapacities, callbackKeywordSelectionChanged, pluginDropDownName, deviceDropDownName, keywordDropDownName, inputType, inputName) {
     var pluginDd, deviceDd, keywordDd;
 
 
@@ -844,10 +847,23 @@ Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function(thisBlock, can
         return pluginDd.getValue();
     };
 
-    thisBlock.appendDummyInput("YadomsSelection")
-        .appendField(pluginDd, pluginDropDownName)
-        .appendField(deviceDd, deviceDropDownName)
-        .appendField(keywordDd, keywordDropDownName);
+    var inputNameToUse = inputName;
+    if(isNullOrUndefined(inputName)) {
+       inputNameToUse = "YadomsSelection";
+    }
+    
+    if(inputType == "statement") {
+       thisBlock.appendStatementInput(inputNameToUse)
+           .appendField(pluginDd, pluginDropDownName)
+           .appendField(deviceDd, deviceDropDownName)
+           .appendField(keywordDd, keywordDropDownName);
+    }
+    else {
+       thisBlock.appendDummyInput(inputNameToUse)
+           .appendField(pluginDd, pluginDropDownName)
+           .appendField(deviceDd, deviceDropDownName)
+           .appendField(keywordDd, keywordDropDownName);
+    }
 
     pluginDd.changeHandler_(pluginDd.getValue());
 
@@ -974,8 +990,13 @@ Blockly.Blocks['yadoms_keyword_value'] = {
 Blockly.Python['yadoms_keyword_value'] = function(block) {
 
     var dropdown_keyword = block.getSelectedKeyword();
+    
     var readCommand = 'yApi.readKeyword(' + dropdown_keyword + ')';
 
+    if(Blockly.Yadoms.CurrentGenerationBlockIsTimed_ == true && Blockly.Yadoms.CurrentGenerationBlockTime_ != undefined) {
+       readCommand = 'yApi.readKeywordAt(' + dropdown_keyword + ', "' + Blockly.Yadoms.CurrentGenerationBlockTime_.toISOString() + '")';
+    }
+    
     var keyword = Blockly.Yadoms.data.keywords[dropdown_keyword];
     var code = "";
 
@@ -1193,6 +1214,8 @@ Blockly.Blocks['yadoms_logic_compare_is'] = {
             .appendField($.t("blockly.blocks.yadoms_logic_compare_is.title"));
         this.appendValueInput("A");
         this.appendValueInput("B").appendField(new Blockly.FieldDropdown(Blockly.Yadoms.NumberOperators_), "OP");
+        this.appendDummyInput().appendField(" ", "unit");
+        
         this.setInputsInline(true);
         this.setOutput(true, "Boolean");
 
@@ -1200,6 +1223,13 @@ Blockly.Blocks['yadoms_logic_compare_is'] = {
 
         var thisBlock = this;
 
+        this.durationUnitsEnum =[
+            [$.t("blockly.global.durationUnits.seconds"), 'S'],
+            [$.t("blockly.global.durationUnits.minutes"), 'M'],
+            [$.t("blockly.global.durationUnits.hours"), 'H'],
+            [$.t("blockly.global.durationUnits.days"), 'D']
+        ];
+        
         this.setTooltip(function() {
             var op = thisBlock.getFieldValue('OP');
             var TOOLTIPS = {
@@ -1252,13 +1282,11 @@ Blockly.Blocks['yadoms_logic_compare_is'] = {
          * @param keyword The selected keyword
          */
         this.updateUnit = function(keyword) {
-            var unitsExist = thisBlock.getInput(this.unitsInputName);
-            if(unitsExist)
-                thisBlock.removeInput(thisBlock.unitsInputName);
-
+            thisBlock.setFieldValue(" ", "unit");
             if(!isNullOrUndefined(keyword) && !isNullOrUndefinedOrEmpty(keyword.units) ) {
-                thisBlock.appendDummyInput(thisBlock.unitsInputName).appendField($.t(keyword.units));
+               thisBlock.setFieldValue(" " + $.t(keyword.units), "unit");
             }
+            
         };
 
         /**
@@ -1347,6 +1375,8 @@ Blockly.Blocks['yadoms_logic_compare_is'] = {
         this.updateShape_(forMutator, atMutator);
     },
 
+    
+        
     updateShape_ : function(forMutator, atMutator) {
         // Disconnect all
         if (this.isForMutator) {
@@ -1365,26 +1395,20 @@ Blockly.Blocks['yadoms_logic_compare_is'] = {
         this.isForMutator = false;
         this.isAtMutator = false;
 
-        var durationUnitsEnum =[
-            [$.t("blockly.global.durationUnits.seconds"), 'S'],
-            [$.t("blockly.global.durationUnits.minutes"), 'M'],
-            [$.t("blockly.global.durationUnits.hours"), 'H'],
-            [$.t("blockly.global.durationUnits.days"), 'D']
-        ];
+
 
         if(forMutator) {
             this.appendDummyInput("duration_text").appendField($.t("blockly.blocks.yadoms_logic_compare_is.for.title"));
-            this.appendValueInput("duration").setCheck("Number");
-            this.appendDummyInput("duration_unit").appendField(new Blockly.FieldDropdown(durationUnitsEnum), "durationUnit");
+            this.appendDummyInput("duration").appendField(new Blockly.FieldTextInput('0', Blockly.FieldTextInput.numberValidator), 'duration').appendField(new Blockly.FieldDropdown(this.durationUnitsEnum), "durationUnit");
             this.isForMutator = true;
         } else if(atMutator) {
             this.appendDummyInput("at_text").appendField($.t("blockly.blocks.yadoms_logic_compare_is.at.title"));
             this.appendDummyInput("at")
-                .appendTitle(new Blockly.FieldTextInput('00:00', function(text) {
+                .appendField(new Blockly.FieldTextInput('00:00', function(text) {
                     if (text.match(/^([01]?[0-9]|2[0-3]):[0-5][0-9]/))
                         return text;
                     return "00:00";
-                }), 'TEXT');
+                }), 'at');
             this.isAtMutator = true;
         }
 
@@ -1432,6 +1456,7 @@ Blockly.Blocks['yadoms_logic_compare_is'] = {
 };
 
 
+
 /**
  * Define the python generation function for yadoms_logic_compare_is block
  * @param block The block
@@ -1439,6 +1464,11 @@ Blockly.Blocks['yadoms_logic_compare_is'] = {
  */
 Blockly.Python['yadoms_logic_compare_is'] = function(block) {
 
+    if(block.isForMutator || block.isAtMutator) {
+       if(Blockly.Yadoms.CurrentGenerationBlockIsTimed_)
+          assert(false, "Python : yadoms_logic_compare_is : cannont manage multiple yadoms_logic_compare_is blocks in the same condition");
+    }
+    
     // Comparison operator.
     var OPERATORS = {
         'EQ': '==',
@@ -1451,22 +1481,275 @@ Blockly.Python['yadoms_logic_compare_is'] = function(block) {
 
     var operator = OPERATORS[block.getFieldValue('OP')];
     var order = Blockly.Python.ORDER_RELATIONAL;
-    var argument0 = Blockly.Python.valueToCode(block, 'A', order) || '0';
-    var argument1 = Blockly.Python.valueToCode(block, 'B', order) || '0';
     var code = '';
 
     if(block.isForMutator) {
         //TODO Python yadoms_logic_compare_is : FOR mutation generation not implemented");
-        assert(false, "Python : yadoms_logic_compare_is : FOR mutation generation not implemented");
+        var duration = block.getFieldValue('duration');
+        var durationUnit = block.getFieldValue('durationUnit');
+
+        var timeToCheck;
+        var intervallBetweenChecks;
+         switch(durationUnit)
+         {
+            case 'S':
+               timeToCheck = duration;
+               intervallBetweenChecks = 1; //1 sec
+               break;
+            case 'M':
+               timeToCheck = duration * 60;
+               intervallBetweenChecks = 30; //30 sec
+               break;
+            case 'H':
+               timeToCheck = duration * 60 * 60;
+               intervallBetweenChecks = 120; //2 min
+               break;
+            case 'D':
+               timeToCheck = duration * 60 * 60 * 24;
+               intervallBetweenChecks = 1800; //30 min
+               break;
+         }
+         
+         var startDate = new Date();
+         var endDate = new Date(Date.now() - (timeToCheck*1000));
+         
+         var completeCode = "";
+         Blockly.Yadoms.CurrentGenerationBlockIsTimed_ = true;
+         for(dt = startDate; dt>=endDate; dt = new Date(dt.getTime()-(intervallBetweenChecks*1000)))  { //30sec
+            Blockly.Yadoms.CurrentGenerationBlockTime_ = dt;
+
+            if(completeCode != "")
+               completeCode += " and ";
+            
+            var argument0 = Blockly.Python.valueToCode(block, 'A', order) || '0';
+            var argument1 = Blockly.Python.valueToCode(block, 'B', order) || '0';
+            completeCode += '(' + argument0 + ' ' + operator + ' ' + argument1 + ')';
+         }            
+         Blockly.Yadoms.CurrentGenerationBlockIsTimed_ = false;
+         code =  '(' + completeCode + ')';
+        
     } else if(block.isAtMutator) {
-        //TODO Python yadoms_logic_compare_is : AT mutation generation not implemented");
-        assert(false, "Python : yadoms_logic_compare_is : AT mutation generation not implemented");
+        Blockly.Yadoms.CurrentGenerationBlockIsTimed_ = true;
+        var time = block.getFieldValue('at');
+        Blockly.Yadoms.CurrentGenerationBlockTime_ = new Date();
+        Blockly.Yadoms.CurrentGenerationBlockTime_.setHours(time.split(":")[0]);
+        Blockly.Yadoms.CurrentGenerationBlockTime_.setMinutes(time.split(":")[1]);
+        Blockly.Yadoms.CurrentGenerationBlockTime_.setSeconds(0);
+        Blockly.Yadoms.CurrentGenerationBlockTime_.setMilliseconds(0);
+        
+        var argument0 = Blockly.Python.valueToCode(block, 'A', order) || '0';
+        var argument1 = Blockly.Python.valueToCode(block, 'B', order) || '0';
+        code = argument0 + ' ' + operator + ' ' + argument1;
+        
+        Blockly.Yadoms.CurrentGenerationBlockIsTimed_ = false;
     } else {
+        var argument0 = Blockly.Python.valueToCode(block, 'A', order) || '0';
+        var argument1 = Blockly.Python.valueToCode(block, 'B', order) || '0';
         code = argument0 + ' ' + operator + ' ' + argument1;
     }
 
+    
     return [code, order];
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * Define a condition block which is true when a keyword match a value (not a front value)
+ * @type {{init: Function}}
+ */
+Blockly.Blocks['yadoms_wait_for_keywords'] = {
+   init: function() {
+       this.appendDummyInput()
+           .appendField($.t("blockly.blocks.yadoms_wait_for_keywords.title"))
+           .appendField(new Blockly.FieldVariable($.t("blockly.blocks.yadoms_wait_for_keywords.defaultVarName")), "outVar");
+       this.setPreviousStatement(true, null);
+       this.setNextStatement(true, null);
+       this.setColour(20);
+       this.setTooltip($.t("blockly.blocks.yadoms_wait_for_keywords.tooltip"));
+       this.setHelpUrl('http://www.example.com/');
+       
+       this.setMutator(new Blockly.Mutator(['yadoms_wait_for_keywords_additional']));
+       this.keywordMutatorCount_ = 0;
+       
+      Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection(this, true, ["numeric", "string", "bool", "nodata", "enum"], undefined, function (keyword, keywordType) {
+      }, "pluginDd0", "deviceDd0", "keywordDd0", "statement", "keyword0");
+       
+   },
+   
+   
+    /**
+     * Create XML to represent whether the number of mutator blocks to add
+     * @return {Element} XML storage element.
+     * @this Blockly.Block
+     */
+    mutationToDom: function() {
+         if (!this.keywordMutatorCount_) {
+          return null;
+        }       
+        var container = document.createElement('mutation');
+        container.setAttribute('keywordMutatorCount', this.keywordMutatorCount_);
+        return container;
+    },
+    
+    /**
+     * Parse XML to restore the mutators blocks'.
+     * @param {!Element} xmlElement XML storage element.
+     * @this Blockly.Block
+     */
+    domToMutation: function(xmlElement) {
+      this.keywordMutatorCount_ = parseInt(xmlElement.getAttribute('keywordMutatorCount'), 10) || 0;
+      for (var i = 1; i <= this.keywordMutatorCount_; i++) {
+            Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection(this, true, ["numeric", "string", "bool", "nodata", "enum"], undefined, function (keyword, keywordType) {
+            }, "pluginDd" + this.keywordMutatorCount_, "deviceDd" + this.keywordMutatorCount_, "keywordDd" + this.keywordMutatorCount_, "statement", "keyword" + this.keywordMutatorCount_);
+       }
+    },
+
+      /**
+      * Populate the mutator's dialog with this block's components.
+      * @param {!Blockly.Workspace} workspace Mutator's workspace.
+      * @return {!Blockly.Block} Root block in mutator.
+      * @this Blockly.Block
+      */
+    decompose: function(workspace) {
+        var topBlock = Blockly.Block.obtain(workspace, 'yadoms_wait_for_keywords_base');
+        topBlock.initSvg();
+
+        var connection = topBlock.getInput('STACK').connection;
+        for (var i = 1; i <= this.keywordMutatorCount_; i++) {
+         var additionalBlock = Blockly.Block.obtain(workspace, 'yadoms_wait_for_keywords_additional');
+         additionalBlock.initSvg();
+         connection.connect(additionalBlock.previousConnection);
+         connection = additionalBlock.nextConnection;
+       }
+        return topBlock;
+    },
+    /**
+     * Reconfigure this block based on the mutator dialog's components.
+     * @param {!Blockly.Block} containerBlock Root block in mutator.
+     * @this Blockly.Block
+     */
+    compose: function(containerBlock) {
+       //This method analyse the mutator dialog result, then recreate the real blick
+       //so it takes sur clauseBlock (= mutator topblock stack = all additional keywords)
+       //foreach additional keyword block found, just append needed blocks
+       
+       // Remove any additional keyword (will be created just after)
+       for (var i = this.keywordMutatorCount_; i > 0; i--) {
+         this.removeInput('keyword' + i);
+       }
+       
+       this.keywordMutatorCount_ = 0;
+       // Rebuild the block's optional inputs.
+       var clauseBlock = containerBlock.getInputTargetBlock('STACK');
+       while (clauseBlock) {
+         switch (clauseBlock.type) {
+           case 'yadoms_wait_for_keywords_additional':
+             this.keywordMutatorCount_++;
+            Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection(this, true, ["numeric", "string", "bool", "nodata", "enum"], undefined, function (keyword, keywordType) {
+            }, "pluginDd" + this.keywordMutatorCount_, "deviceDd" + this.keywordMutatorCount_, "keywordDd" + this.keywordMutatorCount_, "statement", "keyword" + this.keywordMutatorCount_);
+             break;
+           default:
+             throw 'Unknown block type.';
+         }
+         clauseBlock = clauseBlock.nextConnection &&
+             clauseBlock.nextConnection.targetBlock();
+       }
+    }
+};
+
+
+Blockly.Blocks['yadoms_wait_for_keywords_base'] = {
+  /**
+   * Mutator block for if container.
+   * @this Blockly.Block
+   */
+  init: function() {
+    this.setColour(20);
+    this.appendDummyInput().appendField($.t("blockly.blocks.yadoms_wait_for_keywords.mutator.base.title"));
+    this.appendStatementInput('STACK');
+    this.setTooltip($.t("blockly.blocks.yadoms_wait_for_keywords.mutator.base.tooltip"));
+    this.contextMenu = false;
+  }
+};
+
+
+Blockly.Blocks['yadoms_wait_for_keywords_additional'] = {
+  /**
+   * Mutator block for if container.
+   * @this Blockly.Block
+   */
+  init: function() {
+    this.setColour(20);
+    this.appendDummyInput().appendField($.t("blockly.blocks.yadoms_wait_for_keywords.mutator.additional.title"));
+    this.setTooltip($.t("blockly.blocks.yadoms_wait_for_keywords.mutator.additional.tooltip"));
+    this.contextMenu = false;
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+  }
+};
+
+
+/**
+ * Define the python generation function for yadoms_wait_for_keywords block
+ * @param block The block
+ * @return {*[]}
+ */
+Blockly.Python['yadoms_wait_for_keywords'] = function(block) {
+
+   //TODO:
+   
+   //list all keyword id in a list
+   //var pair<keyword, value> = waitForAcquisition(listOfKeywords);
+   //if(keyword == 0) {
+   //    do block 0
+   //}
+   //if(keyword == 1) {
+   //    do block 1
+   //}
+   
+    var order = Blockly.Python.ORDER_RELATIONAL;
+    var code = '';
+
+    return [code, order];
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
