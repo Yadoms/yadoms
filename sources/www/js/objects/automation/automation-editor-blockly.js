@@ -21,10 +21,9 @@ function AutomationEditorBlockly(interpreters) {
    //we compare interpreters and getSupportedInterpreters() static method to keep only active supported interpreters
    self.activeSupportedInterpreters = [];
    $.each(AutomationEditorBlockly.getSupportedInterpreters(), function (key, value) {
-      $.each(interpreters, function (inputKey, inputValue) {
-         if (value.toLowerCase() ==  inputValue.name.toLowerCase())
-            self.activeSupportedInterpreters.push(inputValue);
-      });
+      if(!isNullOrUndefined(interpreters) && !isNullOrUndefined(interpreters[value.toLowerCase()])) {
+         self.activeSupportedInterpreters.push(interpreters[value.toLowerCase()]);
+      }
    });
 }
 
