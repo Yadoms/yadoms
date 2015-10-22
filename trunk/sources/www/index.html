@@ -261,15 +261,16 @@
                   //we make the first start configuration
                   notifyInformation($.t("mainPage.actions.firstRunConfiguration"));
                   var navigatorLanguage = window.navigator.userLanguage || window.navigator.language;
-                  var navigatorTimezone = jstz.determine().name();
+                  //var navigatorTimezone = jstz.determine().name();
+				  
                   //update configuration with these values
                   var item = ConfigurationManager.createToServerSync(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.language, navigatorLanguage, "", "language used by default");
                   if (!isNullOrUndefined(item)) {
                      console.info("Language detected : " + navigatorLanguage);
 
-                     item = ConfigurationManager.createToServerSync(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.timezone, navigatorTimezone);
-                     if (!isNullOrUndefined(item)) {
-                        console.info("Timezone detected : " + navigatorTimezone);
+                     //item = ConfigurationManager.createToServerSync(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.timezone, navigatorTimezone);
+                     //if (!isNullOrUndefined(item)) {
+                     //   console.info("Timezone detected : " + navigatorTimezone);
 
                         item = ConfigurationManager.createToServerSync(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.advancedParameters, false);
                         if (!isNullOrUndefined(item)) {

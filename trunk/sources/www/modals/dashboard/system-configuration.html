@@ -35,12 +35,12 @@
             //*************
             //timezone
             //we create timezone selection list
-            var timezones = {};
-            $.each(moment.tz.zones(), function (index, value) {
-               timezones[value.displayName] = value.displayName;
-            });
-
-            var timezoneParameter = new EnumParameterHandler(i18nContext, ConfigurationManager.items.system.timezone, {"values" : timezones, "defaultValue" : systemConfiguration[ConfigurationManager.items.system.timezone].defaultValue}, systemConfiguration[ConfigurationManager.items.system.timezone].value);
+            //var timezones = {};
+            //$.each(moment.tz.zones(), function (index, value) {
+            //   timezones[value.displayName] = value.displayName;
+            //});
+            //
+            //var timezoneParameter = new EnumParameterHandler(i18nContext, ConfigurationManager.items.system.timezone, {"values" : timezones, "defaultValue" : systemConfiguration[ConfigurationManager.items.system.timezone].defaultValue}, systemConfiguration[ConfigurationManager.items.system.timezone].value);
 
             //*************
             //Basic Authentication parameters
@@ -128,15 +128,15 @@
 
             //and add it to the gui
             $modalBody.append(languageParameter.getDOMObject());
-            $modalBody.append(timezoneParameter.getDOMObject());
+            //$modalBody.append(timezoneParameter.getDOMObject());
             $modalBody.append(basicAuthenticationSectionParameters.getDOMObject());
             $modalBody.append(advancedSectionParameters.getDOMObject());
 
             //we finish controls instantiation
             if ($.isFunction(languageParameter.applyScript))
                languageParameter.applyScript();
-            if ($.isFunction(timezoneParameter.applyScript))
-               timezoneParameter.applyScript();
+            //if ($.isFunction(timezoneParameter.applyScript))
+            //   timezoneParameter.applyScript();
             if ($.isFunction(basicAuthenticationSectionParameters.applyScript))
                basicAuthenticationSectionParameters.applyScript();
             if ($.isFunction(advancedSectionParameters.applyScript))
@@ -177,11 +177,11 @@
 
                   //*************
                   //timezone
-                  systemConfiguration[ConfigurationManager.items.system.timezone].value = timezoneParameter.getCurrentConfiguration();
+                  //systemConfiguration[ConfigurationManager.items.system.timezone].value = timezoneParameter.getCurrentConfiguration();
 
-                  if (!ConfigurationManager.updateToServerSync(systemConfiguration[ConfigurationManager.items.system.timezone])) {
-                     errorOccurred = true;
-                  }
+                  //if (!ConfigurationManager.updateToServerSync(systemConfiguration[ConfigurationManager.items.system.timezone])) {
+                  //   errorOccurred = true;
+                  //}
 
                   //*************
                   //basic authentication
@@ -297,10 +297,10 @@
 
                           //*************
                           //timezone
-                          systemConfiguration[ConfigurationManager.items.system.timezone].value = systemConfiguration[ConfigurationManager.items.system.timezone].defaultValue;
-                          if (!ConfigurationManager.updateToServerSync(systemConfiguration[ConfigurationManager.items.system.timezone])) {
-                             errorOccurred = true;
-                          }
+                          //systemConfiguration[ConfigurationManager.items.system.timezone].value = systemConfiguration[ConfigurationManager.items.system.timezone].defaultValue;
+                          //if (!ConfigurationManager.updateToServerSync(systemConfiguration[ConfigurationManager.items.system.timezone])) {
+                          //   errorOccurred = true;
+                          //}
 
                           //*************
                           //basic authentication
