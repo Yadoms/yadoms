@@ -268,43 +268,38 @@
                   if (!isNullOrUndefined(item)) {
                      console.info("Language detected : " + navigatorLanguage);
 
-                     //item = ConfigurationManager.createToServerSync(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.timezone, navigatorTimezone);
-                     //if (!isNullOrUndefined(item)) {
-                     //   console.info("Timezone detected : " + navigatorTimezone);
+					item = ConfigurationManager.createToServerSync(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.advancedParameters, false);
+					if (!isNullOrUndefined(item)) {
+					   console.info("Advanced parameters : false");
 
-                        item = ConfigurationManager.createToServerSync(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.advancedParameters, false);
-                        if (!isNullOrUndefined(item)) {
-                           console.info("Advanced parameters : false");
+					   item = ConfigurationManager.createToServerSync(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.dateFormatString, "LLL");
+					   if (!isNullOrUndefined(item)) {
+						  console.info("Date Format String : " + "LLL");
 
-                           item = ConfigurationManager.createToServerSync(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.dateFormatString, "LLL");
-                           if (!isNullOrUndefined(item)) {
-                              console.info("Date Format String : " + "LLL");
+						  var basicAuth = {"active":false, "user":"admin", "password":""};
+						  item = ConfigurationManager.createToServerSync(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.basicAuthentication, JSON.stringify(basicAuth));
+						  if (!isNullOrUndefined(item)) {
+							 console.info("Basic authentication : " + JSON.stringify(basicAuth));
 
-                              var basicAuth = {"active":false, "user":"admin", "password":""};
-                              item = ConfigurationManager.createToServerSync(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.basicAuthentication, JSON.stringify(basicAuth));
-                              if (!isNullOrUndefined(item)) {
-                                 console.info("Basic authentication : " + JSON.stringify(basicAuth));
+							 //we save the fact that first start configuration has been made
+							 var firstStep = ConfigurationManager.createToServerSync(ConfigurationManager.items.installSection, ConfigurationManager.items.install.firstStart, "false", "true", "First start of Web app has been done");
+							 if (!isNullOrUndefined(firstStep)) {
+								//we check for page. If there is no page, we create a new one automatically
+								PageManager.getAll(function () {
+								   if (PageManager.pages.length == 0) {
+									  console.info("Creating a default page");
+									  PageManager.createPage($.t("initialization.homePage"), 0, function (p) {
+										 PageManager.ensureOnePageIsSelected();
+									  });
+								   }
+								   //we can start app
+								   main();
+								});
 
-                                 //we save the fact that first start configuration has been made
-                                 var firstStep = ConfigurationManager.createToServerSync(ConfigurationManager.items.installSection, ConfigurationManager.items.install.firstStart, "false", "true", "First start of Web app has been done");
-                                 if (!isNullOrUndefined(firstStep)) {
-                                    //we check for page. If there is no page, we create a new one automatically
-                                    PageManager.getAll(function () {
-                                       if (PageManager.pages.length == 0) {
-                                          console.info("Creating a default page");
-                                          PageManager.createPage($.t("initialization.homePage"), 0, function (p) {
-                                             PageManager.ensureOnePageIsSelected();
-                                          });
-                                       }
-                                       //we can start app
-                                       main();
-                                    });
-
-                                 }
-                              }
-                           }
-                        }
-                     }
+							 }
+						  }
+					   }
+					}
                   }
                }
                else {
