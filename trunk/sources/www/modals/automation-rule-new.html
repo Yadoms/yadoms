@@ -33,7 +33,7 @@
       $.each(editors, function (key, value) {
          var tempUuid = createUUID();
          $area.append("<button class=\"btn btn-primary btn-lg btn-editor-choice\" type=\"button\" id=\"" + tempUuid  + "\">" +
-                        "<span class=\"" + value.getClassIcon() + "\"></span>&nbsp;&nbsp;" +
+                        "<span class=\"" + value.getClassIcon() + "\" id=\"" + value.getName() + "\"></span>&nbsp;&nbsp;" +
                            $.t("modals.dashboard.sub-windows.automation-center.editors." + value.getName() + ".name") +
                       "</button>");
 
