@@ -383,6 +383,8 @@ Blockly.Yadoms.CreateToolbox_ = function() {
     toolbox += '     </block>';
     toolbox += '  </category>';
     toolbox += '  <sep></sep>';
+    toolbox += '  <category name="Variables" colour="330" custom="VARIABLE"></category>';
+    toolbox += '  <category name="Functions" colour="290" custom="PROCEDURE"></category>';
     toolbox += '</xml>';
     return toolbox;
 };
@@ -807,7 +809,9 @@ Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function(thisBlock, can
                 yadomsTypeName =  Blockly.Yadoms.data.keywords[keyword].typeInfo.name;
 
             var type = Blockly.Yadoms.GetBlocklyType_(Blockly.Yadoms.data.keywords[keyword].type, yadomsTypeName);
-            callbackKeywordSelectionChanged(keyword, type);
+            if(callbackKeywordSelectionChanged) {
+               callbackKeywordSelectionChanged(keyword, type);
+            }
         }
     });
 
@@ -1572,9 +1576,12 @@ Blockly.Python['yadoms_logic_compare_is'] = function(block) {
  */
 Blockly.Blocks['yadoms_wait_for_keywords'] = {
    init: function() {
+       
+      
        this.appendDummyInput()
            .appendField($.t("blockly.blocks.yadoms_wait_for_keywords.title"))
-           .appendField(new Blockly.FieldVariable($.t("blockly.blocks.yadoms_wait_for_keywords.defaultVarName")), "outVar");
+           .appendField(" ")
+           .appendField(new Blockly.FieldVariable(this.generateVariable_()), "outVar");
        this.setPreviousStatement(true, null);
        this.setNextStatement(true, null);
        this.setColour(20);
@@ -1583,13 +1590,96 @@ Blockly.Blocks['yadoms_wait_for_keywords'] = {
        
        this.setMutator(new Blockly.Mutator(['yadoms_wait_for_keywords_additional']));
        this.keywordMutatorCount_ = 0;
-       
-      Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection(this, true, ["numeric", "string", "bool", "nodata", "enum"], undefined, function (keyword, keywordType) {
-      }, "pluginDd0", "deviceDd0", "keywordDd0", "statement", "keyword0");
-       
+       this.appendKeywordSelectorStatement_(0);
    },
    
+    /**
+     * Append a keyword selection line
+     * @param {Number} no The item number 
+     * @this Blockly.Block
+     * @private
+     */   
+   appendKeywordSelectorStatement_ : function(no) {
+      Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection(this, true, ["numeric", "string", "bool", "nodata", "enum"], undefined, undefined, 
+      "pluginDd" + no, "deviceDd" + no, "keywordDd" + no, "statement", "keyword" + no);
+   },
    
+    /**
+     * Generate a unique variable name
+     * @return {String} The variable name
+     * @this Blockly.Block
+     * @private
+     */   
+   generateVariable_ : function() {
+       //retreive the workspace
+       var workspace;
+       if (this.isInFlyout) {
+         workspace = this.workspace.targetWorkspace;
+       } else {
+          workspace = this.workspace;
+       }     
+
+       //get the default name
+       var name = $.t("blockly.blocks.yadoms_wait_for_keywords.defaultVarName");
+       
+       //if variable is already used anywhere, then append an integer until finding a non used name
+       if(this.isVariableInUse_(workspace, name)) {
+          var offset = 0;
+          while(this.isVariableInUse_(workspace, name + offset)) {
+             offset++;
+          }
+          name += offset;
+       }
+       
+       //rename it to our chosen name
+       Blockly.Variables.renameVariable(name, name, workspace);
+       return name;
+   },
+   
+    /**
+     * Check if a variable if already used
+     * @param {Workspace} workspace The workspace
+     * @param {String} varName The variable name to check
+     * @return {Boolean} true if the variable is already in use in the workspace
+     * @this Blockly.Block
+     * @private
+     */      
+   isVariableInUse_ : function(workspace, varName) {
+       var variableList = Blockly.Variables.allVariables(workspace);
+       var inUse = false;
+       for (var i = 0; i < variableList.length; i++) {
+          if (variableList[i] == varName) {
+             inUse = true;
+             break;
+          }
+       }       
+       return inUse;
+   },
+   
+/**
+   * Return all variables referenced by this block.
+   * @return {!Array.<string>} List of variable names.
+   * @this Blockly.Block
+   */
+  getVars: function() {
+    return [this.getFieldValue('outVar')];
+  },
+  /**
+   * Notification that a variable is renaming.
+   * If the name matches one of this block's variables, rename it.
+   * @param {string} oldName Previous name of variable.
+   * @param {string} newName Renamed variable.
+   * @this Blockly.Block
+   */
+  renameVar: function(oldName, newName) {
+   if(this.getFieldValue('outVar')) {
+     if (Blockly.Names.equals(oldName, this.getFieldValue('outVar'))) {
+       this.setFieldValue(newName, 'outVar');
+     }
+   }
+  },
+  customContextMenu: Blockly.Blocks['controls_for'].customContextMenu,   
+  
     /**
      * Create XML to represent whether the number of mutator blocks to add
      * @return {Element} XML storage element.
@@ -1600,7 +1690,7 @@ Blockly.Blocks['yadoms_wait_for_keywords'] = {
           return null;
         }       
         var container = document.createElement('mutation');
-        container.setAttribute('keywordMutatorCount', this.keywordMutatorCount_);
+        container.setAttribute('keywordMutatorCount'.toLowerCase(), this.keywordMutatorCount_);
         return container;
     },
     
@@ -1610,10 +1700,9 @@ Blockly.Blocks['yadoms_wait_for_keywords'] = {
      * @this Blockly.Block
      */
     domToMutation: function(xmlElement) {
-      this.keywordMutatorCount_ = parseInt(xmlElement.getAttribute('keywordMutatorCount'), 10) || 0;
+      this.keywordMutatorCount_ = parseInt(xmlElement.getAttribute('keywordMutatorCount'.toLowerCase()), 10) || 0;
       for (var i = 1; i <= this.keywordMutatorCount_; i++) {
-            Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection(this, true, ["numeric", "string", "bool", "nodata", "enum"], undefined, function (keyword, keywordType) {
-            }, "pluginDd" + this.keywordMutatorCount_, "deviceDd" + this.keywordMutatorCount_, "keywordDd" + this.keywordMutatorCount_, "statement", "keyword" + this.keywordMutatorCount_);
+         this.appendKeywordSelectorStatement_(i);
        }
     },
 
@@ -1658,8 +1747,7 @@ Blockly.Blocks['yadoms_wait_for_keywords'] = {
          switch (clauseBlock.type) {
            case 'yadoms_wait_for_keywords_additional':
              this.keywordMutatorCount_++;
-            Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection(this, true, ["numeric", "string", "bool", "nodata", "enum"], undefined, function (keyword, keywordType) {
-            }, "pluginDd" + this.keywordMutatorCount_, "deviceDd" + this.keywordMutatorCount_, "keywordDd" + this.keywordMutatorCount_, "statement", "keyword" + this.keywordMutatorCount_);
+             this.appendKeywordSelectorStatement_(this.keywordMutatorCount_);
              break;
            default:
              throw 'Unknown block type.';
@@ -1708,47 +1796,43 @@ Blockly.Blocks['yadoms_wait_for_keywords_additional'] = {
  * @return {*[]}
  */
 Blockly.Python['yadoms_wait_for_keywords'] = function(block) {
-
-   //TODO:
-   
    //list all keyword id in a list
-   //var pair<keyword, value> = waitForAcquisition(listOfKeywords);
-   //if(keyword == 0) {
-   //    do block 0
-   //}
-   //if(keyword == 1) {
-   //    do block 1
-   //}
+   var kwList = "[";
+   for (var i = 0; i <= this.keywordMutatorCount_; i++) {
+      var keyId = block.getFieldValue("keywordDd" + i);
+      kwList += keyId + " ,";
+   }
+   if(kwList[kwList.length-1] == ",") {
+       kwList = kwList.substring(0, kwList.length - 2);
+   }
+   kwList +="]";
    
-    var order = Blockly.Python.ORDER_RELATIONAL;
-    var code = '';
+   //get the output variable
+   var outVar = block.getFieldValue("outVar");
+   
+   //generate the waitForAcquisitions call
+   var code = "keywordId, " + outVar + " = yApi.waitForAcquisitions(" + kwList + ")\n";
 
-    return [code, order];
+   //for each keyword 
+   for (var i = 0; i <= this.keywordMutatorCount_; i++) {
+      //get the keywordId
+      var keyId = block.getFieldValue("keywordDd" + i);
+      
+      //construct the argument (= if/elif condition)
+      var argument = "keywordId == " + keyId;
+      
+      //get the statement to execute in this case 
+      var branch = Blockly.Python.statementToCode(block, "keyword" + i) || Blockly.Python.PASS;
+      
+      //append code
+      if(i == 0) {
+         code += 'if ' + argument + ':\n' + branch;
+      } else {
+         code += 'elif ' + argument + ':\n' + branch;
+      }
+   }
+   return code;
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
