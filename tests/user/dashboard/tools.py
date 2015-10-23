@@ -1,4 +1,4 @@
-import unittest
+﻿import unittest
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -11,7 +11,11 @@ def enterDashboard(browser):
    browser.find_element_by_id("dropDownButton").click()
    browser.find_element_by_id("btn-show-dashboard").click()
 
-   try:
-      element = WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "main-dashboard-modal")))
-   except:
-      assert(False)
+   WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "main-dashboard-modal")))
+
+def selectAutomation(browser):
+   """Select the automation item in dashboard"""
+   
+   browser.find_element_by_id("btn-dashboard-automatisation").click()
+
+   WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "automation-rule-list")))
