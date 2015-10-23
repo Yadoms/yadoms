@@ -2,18 +2,20 @@ This file explains how to execute user tests
 
 
 ==========================
-Dependancies and tools
+Dependencies and tools
 ==========================
 These user tests are based on the Selenium tool (http://www.seleniumhq.org/), used with the Python implementation.
 - Python 2.7 must be installed.
 
-1) Download Python modules :
-Be careful to select version of following modules corresponding to your Python installation (Python version, 32/64 bits, OS...)
-- Selenium : Download the whl file from https://pypi.python.org/pypi/selenium
-- psutil : Download the whl file from https://pypi.python.org/pypi/psutil
+Install Python modules :
 
-2) Install Python modules
-- In a console, and for each module, type :
+1) Easy method
+In a console, type :
+python -m pip install selenium psutil
+   
+2) Alternative method
+If first method doesn't work (behind proxy for example), you can download modules (from the https://pypi.python.org/pypi site) as .whl files, and install manually.
+For each module, type in a console :
 python -m pip install {Path_to_downloaded_file}\{Module_to_install}.whl
 
 
