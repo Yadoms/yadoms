@@ -201,3 +201,30 @@ function duplicateRemoval(arr){
     return newArray;
 }
 
+
+/**
+ * Concatenate to url parts
+ * @param {string} url1 The first part
+ * @param {string} url2 The second part
+ * @return {string} The concatenation of the two parts with managing "/"
+ * @private
+ */
+function concatenateUrl(url1, url2) {
+   if(url1 != undefined & url1.length>0 && url2 != undefined && url2.length>0) {
+
+      //case : no "/" trailing url1 or starting url2
+      //then append "/" between url1 and url2
+      if(url1[url1.length - 1] != "/" && url2[0] != "/") {
+         return url1 + "/" + url2;
+      } 
+      
+      //cas : "/" trailing url1 AND "/" starting url2
+      //remove the url1 trailing slash and append url2
+      if(url1[url1.length - 1] == "/" && url2[0] == "/") {
+         return url1.slice(0, -1) + url2;
+      } 
+   }
+   
+   //default case : append the url
+   return url1 + url2;
+}
