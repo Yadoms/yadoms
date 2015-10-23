@@ -81,7 +81,7 @@ WidgetManager.getWidgetOfPageFromServer = function(page, callback) {
          return null;
       });
 };
-
+/*
 WidgetManager.getViewFromServerSync = function(widget) {
    assert(!isNullOrUndefined(widget), "widget must be defined");
 
@@ -97,7 +97,26 @@ WidgetManager.getViewFromServerSync = function(widget) {
 
    return view;
 };
+*/
+WidgetManager.getViewFromServer = function(widget) {
+   assert(!isNullOrUndefined(widget), "widget must be defined");
 
+   var d = $.Deferred();
+   RestEngine.get("widgets/" + widget.type + "/view.html", undefined, null)
+      .done(function(data) {
+         d.resolve(data);
+      })
+      .fail(function(errorMessage) {
+         console.error("Fail to get view from server : " + errorMessage);
+         d.reject(errorMessage);
+      });
+   
+	return d.promise();
+};
+
+
+
+/*
 WidgetManager.getViewModelFromServerSync = function(widget) {
    assert(!isNullOrUndefined(widget), "widget must be defined");
 
@@ -111,6 +130,24 @@ WidgetManager.getViewModelFromServerSync = function(widget) {
    //if the ajax method works ok the widgetViewModelCtor is set
 
    return widgetViewModelCtor;
+};
+*/
+
+WidgetManager.getViewModelFromServer = function(widget) {
+   assert(!isNullOrUndefined(widget), "widget must be defined");
+
+   widgetViewModelCtor = null;
+   var d = $.Deferred();
+   RestEngine.get("widgets/" + widget.type + "/viewModel.js", undefined, "script")
+      .done(function(data) {
+         d.resolve(widgetViewModelCtor);
+      })
+      .fail(function(errorMessage) {
+         console.error("Fail to get viewModel from server : " + errorMessage);
+         d.reject(errorMessage);
+      });
+   
+	return d.promise();
 };
 
 WidgetManager.updateToServer = function(widget, callback) {
@@ -181,6 +218,18 @@ WidgetManager.consolidate = function(widget, widgetPackage) {
    widget.package = widgetPackage.package;
 };
 
+WidgetManager.loadWidgetFinalize_ = function(pageWhereToAdd, widget, widgetType, downgraded, requiredType) {
+   if(downgraded) {
+      widget.requiredType = requiredType;
+      widget.downgraded = true;
+   }
+   
+   //we finalize the load of the widget
+   WidgetManager.consolidate(widget, WidgetPackageManager.widgetPackages[widgetType]);
+   WidgetManager.addToDom(widget);
+   //we add the widget to the collection
+   pageWhereToAdd.addWidget(widget);
+}
 
 WidgetManager.loadWidget = function(widget, pageWhereToAdd) {
    assert(!isNullOrUndefined(widget), "widget must be defined");
@@ -188,33 +237,40 @@ WidgetManager.loadWidget = function(widget, pageWhereToAdd) {
    if (WidgetPackageManager.packageExists(widget.type)) {
       if (!WidgetPackageManager.widgetPackages[widget.type].viewAnViewModelHaveBeenDownloaded) {
          //we must download all missing information
-         var view = WidgetManager.getViewFromServerSync(widget);
-         if (!isNullOrUndefined(view)) {
-            //we append the view into the page
-            $("div#templates").append(view);
+         WidgetManager.getViewFromServer(widget)
+            .done(function(view) {
+               if (!isNullOrUndefined(view)) {
+                  //we append the view into the page
+                  $("div#templates").append(view);
 
-            var viewModel = WidgetManager.getViewModelFromServerSync(widget);
-            if (!isNullOrUndefined(viewModel)) {
-               WidgetPackageManager.widgetPackages[widget.type].viewModelCtor = viewModel;
-               //all job has been done without error
-               WidgetPackageManager.widgetPackages[widget.type].viewAnViewModelHaveBeenDownloaded = true;
-            }
-            else {
+                  WidgetManager.getViewModelFromServer(widget)
+                     .done(function(viewModel) {
+                        if (!isNullOrUndefined(viewModel)) {
+                           WidgetPackageManager.widgetPackages[widget.type].viewModelCtor = viewModel;
+                           //all job has been done without error
+                           WidgetPackageManager.widgetPackages[widget.type].viewAnViewModelHaveBeenDownloaded = true;
+                        }
+                        else {
+                           WidgetManager.loadAsDowngraded(widget, pageWhereToAdd);
+                           return;
+                        }                        
+                        
+                        WidgetManager.loadWidgetFinalize_(pageWhereToAdd, widget, widget.type);
+                     })            
+                     .fail(function(errorMessage){
+                        WidgetManager.loadAsDowngraded(widget, pageWhereToAdd);
+                     });
+               }
+               else {
+                  WidgetManager.loadAsDowngraded(widget, pageWhereToAdd);
+               }
+            })
+            .fail(function(errorMessage){
                WidgetManager.loadAsDowngraded(widget, pageWhereToAdd);
-               return;
-            }
-         }
-         else {
-            WidgetManager.loadAsDowngraded(widget, pageWhereToAdd);
-            return;
-         }
+            });
+      } else {
+         WidgetManager.loadWidgetFinalize_(pageWhereToAdd,widget, widget.type);
       }
-
-      //we finalize the load of the widget
-      WidgetManager.consolidate(widget, WidgetPackageManager.widgetPackages[widget.type]);
-      WidgetManager.addToDom(widget);
-      //we add the widget to the collection
-      pageWhereToAdd.addWidget(widget);
    }
    else {
       WidgetManager.loadAsDowngraded(widget, pageWhereToAdd);
@@ -234,35 +290,40 @@ WidgetManager.loadAsDowngraded = function(widget, pageWhereToAdd) {
    if (WidgetPackageManager.packageExists(deactivatedWidget.type)) {
       if (!WidgetPackageManager.widgetPackages[deactivatedWidget.type].viewAnViewModelHaveBeenDownloaded) {
          //we must download all missing information
-         var view = WidgetManager.getViewFromServerSync(deactivatedWidget);
-         if (!isNullOrUndefined(view)) {
-            //we append the view into the page
-            $("div#templates").append(view);
+         WidgetManager.getViewFromServer(deactivatedWidget)
+            .done(function(view) {
+               if (!isNullOrUndefined(view)) {
+                  //we append the view into the page
+                  $("div#templates").append(view);
 
-            var viewModel = WidgetManager.getViewModelFromServerSync(deactivatedWidget);
-            if (!isNullOrUndefined(viewModel)) {
-               WidgetPackageManager.widgetPackages[deactivatedWidget.type].viewModelCtor = viewModel;
-               //all job has been done without error
-               WidgetPackageManager.widgetPackages[deactivatedWidget.type].viewAnViewModelHaveBeenDownloaded = true;
-            }
-            else {
-               notifyError($.t("objects.widgetManager.partOfWidgetIsMissing", {widgetName : deactivatedWidget.type}));
-               return;
-            }
-         }
-         else {
-            notifyError($.t("objects.widgetManager.partOfWidgetIsMissing", {widgetName : deactivatedWidget.type}));
-            return;
-         }
+                  WidgetManager.getViewModelFromServer(deactivatedWidget)
+                  .done(function(viewModel) {
+                     if (!isNullOrUndefined(viewModel)) {
+                        WidgetPackageManager.widgetPackages[deactivatedWidget.type].viewModelCtor = viewModel;
+                        //all job has been done without error
+                        WidgetPackageManager.widgetPackages[deactivatedWidget.type].viewAnViewModelHaveBeenDownloaded = true;
+                     }
+                     else {
+                        notifyError($.t("objects.widgetManager.partOfWidgetIsMissing", {widgetName : deactivatedWidget.type}));
+                        return;
+                     }
+                     WidgetManager.loadWidgetFinalize_(pageWhereToAdd, widget, deactivatedWidget.type, true, widget.type);
+                  })
+                  .fail(function(errorMessage) {
+                     notifyError($.t("objects.widgetManager.partOfWidgetIsMissing", {widgetName : deactivatedWidget.type}));
+                  });
+               }
+               else {
+                  notifyError($.t("objects.widgetManager.partOfWidgetIsMissing", {widgetName : deactivatedWidget.type}));
+               }
+            })
+            .fail(function(errorMessage) {
+               WidgetManager.loadWidgetFinalize_(pageWhereToAdd, widget, deactivatedWidget.type, true, widget.type);
+            }) ;
       }
-
-      //we finalize the load of the widget in downgraded mode
-      widget.requiredType = widget.type;
-      widget.downgraded = true;
-      WidgetManager.consolidate(widget, WidgetPackageManager.widgetPackages[deactivatedWidget.type]);
-      WidgetManager.addToDom(widget);
-      //we add the widget to the collection
-      pageWhereToAdd.addWidget(widget);
+      else {
+         WidgetManager.loadWidgetFinalize_(pageWhereToAdd, widget, deactivatedWidget.type, true, widget.type);
+      }
    }
 };
 
