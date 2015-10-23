@@ -1,5 +1,8 @@
 ﻿import subprocess
+import signal
 import time
+import os
+import psutil
 
 def binaryPath():
    """return the server binary path"""
@@ -22,23 +25,20 @@ def scriptsPath():
    
 def start():
    """Start the Yadoms server"""
+   
    # TODO nom de l'exécutable OS-dependant
-   return subprocess.Popen(binaryPath() + "/yadoms.exe", 1)
+   return subprocess.Popen(binaryPath() + "/yadoms.exe")
    
    
 def stop(yadomsProcess):
-   """Stop the Yadoms server"""
+   """Kill Yadoms server with its sup-processes"""
 
-   yadomsProcess.terminate()
+   parent = psutil.Process(yadomsProcess.pid)
+   for child in parent.children(True):
+      os.kill(child.pid, signal.SIGINT)
+   os.kill(parent.pid, signal.SIGINT)
 
-   for it in range(10):
-      if (yadomsProcess.poll() != None):
-         return
-      time.sleep(1)
-      
-   yadomsProcess.kill()
-
-   
+           
 def restart():
    """Restart the Yadoms server"""
    stop()

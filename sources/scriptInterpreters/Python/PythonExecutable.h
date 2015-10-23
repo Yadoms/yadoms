@@ -33,6 +33,14 @@ protected:
    static bool findPythonDirectory(boost::filesystem::path& pythonDirectory);
 
    //--------------------------------------------------------------
+   /// \brief	Check if Python is found in a directory
+   /// \param[in] directory Directory to look for Python (if empty, look in the system path)
+   /// \param[out] pythonDirectory Found Python directory (empty if Python is in the system path). Not filled if not found.
+   /// \return true if Python found in this directory
+   //--------------------------------------------------------------
+   static bool isPythonIn(const boost::filesystem::path& directory, boost::filesystem::path& pythonDirectory);
+
+   //--------------------------------------------------------------
    /// \brief	Read the installed Python version (non-static form)
    /// \param[in] initialDirectory Directory from where to call Python executable
    /// \return string containing the Python version, as returned by Python (probably something like "Python 2.7.9")
