@@ -43,8 +43,11 @@ class CreateRule(unittest.TestCase):
       # Fill rule data
       ruleName = "TestingRule"
       ruleDescription = "This rule is just for testing"
-      ruleCode = ["def yMain(yApi):",
+      ruleCode = ["import time",
+                  "",
+                  "def yMain(yApi):",
                   "   while(True):",
+                  "      time.sleep(5)",
                   "      print 'location = ', yApi.getInfo(yApi.kLatitude)"];
 
       # - Rule configuration
@@ -133,7 +136,7 @@ class CreateRule(unittest.TestCase):
       codeEditorWebElement.send_keys(Keys.ENTER)
       spacesPerIndentation = 3   ## 3 spaces for a tab
       indentationCount = (len(codeLine) - len(codeLine.lstrip(' '))) / spacesPerIndentation
-      if (codeLine[-1] is ':'):
+      if (len(codeLine) > 0 and codeLine[-1] is ':'):
          # Rollback auto-indentation
          indentationCount += 1
       for indent in range(indentationCount):
