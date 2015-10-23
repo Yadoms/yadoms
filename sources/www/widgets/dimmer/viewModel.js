@@ -14,7 +14,7 @@ widgetViewModelCtor =
       this.widget = null;
 
 	  this.step = ko.observable(0.1).extend({ numeric: 1 });
-      this.consoleText = ko.observable("");
+      this.DimmerText = ko.observable("");
 	  
 	  this.unit = ko.observable("");
 
@@ -27,7 +27,7 @@ widgetViewModelCtor =
 			KeywordManager.sendCommand(this.widget.configuration.device.keywordId, this.command().toString());
          }
 		 
-		 this.DisplayValue( this.command().toString() + this.unit() );
+		 this.DisplayValue( this.command().toString() + " " + $.t(this.unit()) );
       };
 
       /**
@@ -60,7 +60,7 @@ widgetViewModelCtor =
          if ((!isNullOrUndefined(self.widget.configuration.device)) && (!isNullOrUndefined(this.widget.configuration.device.deviceId))) {
 			
 			KeywordManager.get (self.widget.configuration.device.keywordId, function (keyword) {	
-			   self.consoleText(decodeURIComponent(keyword.friendlyName));
+			   self.DimmerText(decodeURIComponent(keyword.friendlyName));
             });
          }
       };
@@ -75,7 +75,7 @@ widgetViewModelCtor =
          if ((this.widget.configuration !== undefined) && (this.widget.configuration.device !== undefined)) {
             if (device == this.widget.configuration.device) {
 				self.command( parseFloat(data.value) );
-		        self.DisplayValue( self.command() + self.unit() );
+		        self.DisplayValue( self.command() + " " + $.t(self.unit()) );
             }
          }
       };
