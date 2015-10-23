@@ -33,41 +33,34 @@ boost::filesystem::path CPythonExecutable::path() const
 
 bool CPythonExecutable::findPythonDirectory(boost::filesystem::path& pythonDirectory)
 {
-   boost::filesystem::path pythonInitialDir; // Empty directory to search in system path
-   if (!readPythonVersion(pythonInitialDir).empty())
-   {
-      pythonDirectory = pythonInitialDir;
+   if (isPythonIn(boost::filesystem::path(), pythonDirectory))// Empty directory to search in system path
       return true;
-   }
-   YADOMS_LOG(debug) << "Python executable not found in the path";
 
 #ifdef _WINDOWS
-   // For Windows, search in %ProgramFiles%/python27 and %ProgramFiles(x86)%/python27 too
+   // For Windows, search in c:/python27 first (because it's the default installation path),
+   // then in %ProgramFiles%/python27 and in %ProgramFiles(x86)%/python27
 
-   pythonInitialDir = boost::filesystem::path(Poco::Environment::get("ProgramFiles"));
-   pythonInitialDir = pythonInitialDir / "python27";
-
-   if (!readPythonVersion(pythonInitialDir).empty())
-   {
-      pythonDirectory = pythonInitialDir;
+   if (
+      isPythonIn(boost::filesystem::path("C:") / "python27", pythonDirectory) ||
+      isPythonIn(boost::filesystem::path(Poco::Environment::get("ProgramFiles")) / "python27", pythonDirectory) ||
+      isPythonIn(boost::filesystem::path(Poco::Environment::get("ProgramFiles(x86)")) / "python27", pythonDirectory))
       return true;
-   }
-   YADOMS_LOG(debug) << "Python executable not found in %ProgramFiles%/python27";
-
-
-   pythonInitialDir = boost::filesystem::path(Poco::Environment::get("ProgramFiles(x86)"));
-   pythonInitialDir = pythonInitialDir / "python27";
-
-   if (!readPythonVersion(pythonInitialDir).empty())
-   {
-      pythonDirectory = pythonInitialDir;
-      return true;
-   }
-   YADOMS_LOG(debug) << "Python executable not found in %ProgramFiles(x86)%/python27";
 
 #endif //_WINDOWS
 
    YADOMS_LOG(error) << "Python executable not found";
+   return false;
+}
+
+bool CPythonExecutable::isPythonIn(const boost::filesystem::path& directory, boost::filesystem::path& pythonDirectory)
+{
+   if (!readPythonVersion(directory).empty())
+   {
+      YADOMS_LOG(debug) << "Python executable found in " << (directory.empty() ? "the path" : directory.string());
+      pythonDirectory = directory;
+      return true;
+   }
+   YADOMS_LOG(debug) << "Python executable not found in " << (directory.empty() ? "the path" : directory.string());
    return false;
 }
 
