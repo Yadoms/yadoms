@@ -1,12 +1,15 @@
 import unittest
+import yadomsServer
+import dashboard
 from selenium import webdriver
-import tools
 
 class MenuEntries(unittest.TestCase):
    """Check entries of the dashboard main menu"""
    
    def setUp(self):
+      self.serverProcess = yadomsServer.start()
       self.browser = webdriver.Firefox()
+      self.browser.get("http://127.0.0.1:8080")
 
    def checkMenuEntry(self, entry, expectedEntryId):
       assert entry.get_attribute("id") == expectedEntryId
@@ -15,15 +18,13 @@ class MenuEntries(unittest.TestCase):
       assert entry.is_selected() is False
       
    def test_checkEntries(self):
-      browser = self.browser
-      browser.get("http://127.0.0.1:8080")
-      self.assertIn("Yadoms", browser.title)
+      self.assertIn("Yadoms", self.browser.title)
       
       # Enter dashboard
-      tools.enterDashboard(browser)
+      dashboard.open(self.browser)
    
       # Check summary page
-      dashboard_boutons = browser.find_element_by_id("dashboard-btns")
+      dashboard_boutons = self.browser.find_element_by_id("dashboard-btns")
       menuEntries = dashboard_boutons.find_elements_by_xpath("./child::*")
       assert len(menuEntries) is 8
       self.checkMenuEntry(menuEntries[0], "btn-dashboard-summary")
@@ -37,6 +38,7 @@ class MenuEntries(unittest.TestCase):
       
    def tearDown(self):
       self.browser.close()
+      yadomsServer.stop(self.serverProcess)
 
 if __name__ == "__main__":
    unittest.main()

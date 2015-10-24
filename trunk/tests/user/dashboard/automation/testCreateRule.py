@@ -8,7 +8,8 @@ from selenium.webdriver.common.keys import Keys
 import database
 import scripts
 import yadomsServer
-import dashboard.tools
+import dashboard
+import dashboard.automation
 import time
 
 class CreateRule(unittest.TestCase):
@@ -20,26 +21,18 @@ class CreateRule(unittest.TestCase):
       self.serverProcess = yadomsServer.start()
       self.browser = webdriver.Firefox()
       self.browser.get("http://127.0.0.1:8080")
-      time.sleep(3) # TODO pas trouvé mieux pour l'instant
          
       
    def test_createRule(self):
-      # Enter rules dashboard
-      dashboard.tools.enterDashboard(self.browser)
-      dashboard.tools.selectAutomation(self.browser)
+      # Open rules dashboard
+      dashboard.open(self.browser)
+      dashboard.openAutomation(self.browser)
 
       # Create new rule
-      self.browser.find_element_by_id("btn-add-new-automation-rule").click()
-      editorButtonsContainer = WebDriverWait(self.browser, 10).until(Condition.visibility_of_element_located((By.CLASS_NAME, "editor-btns")))
-      editorButtons = editorButtonsContainer.find_elements_by_xpath("./child::*")
-      codeButtonFound = False
-      for editorButton in editorButtons:
-         if (editorButton.find_element_by_tag_name("span").get_attribute("id") == "code"):
-            editorButton.click()
-            codeButtonFound = True
-            break;
-      assert codeButtonFound
-      
+      dashboard.automation.getCreateRuleButton(self.browser).click()
+      dashboard.automation.waitEditorSelectionModal(self.browser)
+      dashboard.automation.getEditorSelectionButton(self.browser, "code").click()
+
       # Fill rule data
       ruleName = "TestingRule"
       ruleDescription = "This rule is just for testing"
@@ -47,8 +40,8 @@ class CreateRule(unittest.TestCase):
                   "",
                   "def yMain(yApi):",
                   "   while(True):",
-                  "      time.sleep(5)",
-                  "      print 'location = ', yApi.getInfo(yApi.kLatitude)"];
+                  "      print 'location = ', yApi.getInfo(yApi.kLatitude)",
+                  "      time.sleep(5)"];
 
       # - Rule configuration
       ruleConfiguration = WebDriverWait(self.browser, 10).until(Condition.visibility_of_element_located((By.ID, "automation-rule-configuration")))
@@ -96,8 +89,7 @@ class CreateRule(unittest.TestCase):
 
       # - in web client
       rulesTable = WebDriverWait(self.browser, 10).until(Condition.visibility_of_element_located((By.ID, "automation-rule-list")))
-      waiter = WebDriverWait(self.browser, 10)
-      waiter.until(lambda driver: len(rulesTable.find_elements_by_tag_name("tr")) == 2)
+      WebDriverWait(self.browser, 10).until(lambda driver: len(rulesTable.find_elements_by_tag_name("tr")) == 2)
 
       rule = rulesTable.find_elements_by_tag_name("tr")[1]
       ruleDatas = rule.find_elements_by_tag_name("td")
