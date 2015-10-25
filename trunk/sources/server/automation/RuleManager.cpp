@@ -116,7 +116,7 @@ void CRuleManager::stopRule(int ruleId)
    rule->second->requestStop();
 }
 
-void CRuleManager::onRuleStopped(int ruleId)
+void CRuleManager::onRuleStopped(int ruleId, const std::string& error)
 {
    boost::lock_guard<boost::recursive_mutex> lock(m_startedRulesMutex);
    std::map<int, boost::shared_ptr<IRule> >::iterator rule = m_startedRules.find(ruleId);
@@ -126,7 +126,7 @@ void CRuleManager::onRuleStopped(int ruleId)
 
    m_startedRules.erase(rule);
 
-   recordRuleStopped(ruleId);
+   recordRuleStopped(ruleId, error);
 }
 
 bool CRuleManager::isRuleStarted(int ruleId)
@@ -272,13 +272,11 @@ void CRuleManager::restartRule(int id)
 void CRuleManager::signalEvent(const CManagerEvent& event)
 {
    switch (event.getSubEventId())
-   {//TODO y'a de la simplification dans l'air
+   {
    case CManagerEvent::kRuleAbnormalStopped:
    {
       // The rule has stopped in a non-conventional way (probably crashed)
-
-      onRuleStopped(event.getRuleId());
-
+      onRuleStopped(event.getRuleId(), event.getError());
       break;
    }
    case CManagerEvent::kRuleStopped:
@@ -336,13 +334,13 @@ void CRuleManager::recordRuleStarted(int ruleId)
    m_ruleRequester->updateRule(ruleData);
 }
 
-void CRuleManager::recordRuleStopped(int ruleId)
+void CRuleManager::recordRuleStopped(int ruleId, const std::string& error)
 {
    boost::shared_ptr<database::entities::CRule> ruleData(new database::entities::CRule);
    ruleData->Id = ruleId;
    ruleData->State = database::entities::ERuleState::kStoppedValue;
    ruleData->StopDate = shared::currentTime::Provider::now();
-   ruleData->ErrorMessage = std::string();
+   ruleData->ErrorMessage = error;
    m_ruleRequester->updateRule(ruleData);
 }
 

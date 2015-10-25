@@ -18,11 +18,6 @@ namespace automation { namespace script
       m_ruleStateHandler->signalNormalRuleStop(m_ruleId);      
    }
 
-   void StopNotifier::notifyNormalStopAndDisable()
-   {
-      m_ruleStateHandler->signalNormalRuleStopAndDisable(m_ruleId);
-   }
-
    void StopNotifier::notifyError(const std::string& error)
    {
       m_ruleStateHandler->signalRuleError(m_ruleId, error);

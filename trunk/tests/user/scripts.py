@@ -7,6 +7,17 @@ def deleteAll():
 
    if (os.path.isdir(yadomsServer.scriptsPath())):
       shutil.rmtree(yadomsServer.scriptsPath())
+         
+         
+def deploy(scripts):
+   """Deploy scripts into Yadoms runtime path. Scripts are deployed in order"""
+   
+   deleteAll()
+   
+   for index, script in enumerate(scripts):
+      ruleTargetPath = os.path.join(yadomsServer.scriptsPath(), "locals", "rule_" + str(index + 1))
+      os.makedirs(ruleTargetPath)
+      shutil.copyfile(os.path.join("resources", "scripts", script + ".py"), os.path.join(ruleTargetPath, "yadomsScript.py"))
       
       
 def checkLocalRuleById(id, expectedCode):

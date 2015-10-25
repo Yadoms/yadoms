@@ -102,8 +102,9 @@ namespace automation
       //-----------------------------------------------------
       ///\brief               Called when rule is stopped
       ///\param[in] ruleId    The rule ID
+      ///\param[in] error     Error associated to event (empty if not error)
       //-----------------------------------------------------
-      void onRuleStopped(int ruleId);
+      void onRuleStopped(int ruleId, const std::string& error = std::string());
 
       //-----------------------------------------------------
       ///\brief               Record rule started in base
@@ -114,8 +115,9 @@ namespace automation
       //-----------------------------------------------------
       ///\brief               Record rule stopped in base
       ///\param[in] ruleId    The rule ID
+      ///\param[in] error     Error associated to event (empty if not error)
       //-----------------------------------------------------
-      void recordRuleStopped(int ruleId);
+      void recordRuleStopped(int ruleId, const std::string& error = std::string());
 
    private:
       //-----------------------------------------------------

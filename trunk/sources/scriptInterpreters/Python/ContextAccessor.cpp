@@ -4,11 +4,6 @@
 #include <shared/Log.h>
 #include <shared/exception/InvalidParameter.hpp>
 
-//TODO déplacer dans le stdafx.h
-#include <boost/uuid/uuid.hpp>            // uuid class
-#include <boost/uuid/uuid_generators.hpp> // generators
-#include <boost/uuid/uuid_io.hpp>         // streaming operators etc.
-
 const size_t CContextAccessor::m_maxMessages(100);
 
 CContextAccessor::CContextAccessor(boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi)

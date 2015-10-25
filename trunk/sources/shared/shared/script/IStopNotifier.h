@@ -13,16 +13,10 @@ namespace shared { namespace script
       //-----------------------------------------------------
       virtual ~IStopNotifier() {}
 
-      //TODO faire le tri des méthodes utiles
       //-----------------------------------------------------
       ///\brief               Signal a normal stop on a rule
       //-----------------------------------------------------
       virtual void notifyNormalStop() = 0;
-
-      //-----------------------------------------------------
-      ///\brief               Signal a normal stop on a rule, and disable it
-      //-----------------------------------------------------
-      virtual void notifyNormalStopAndDisable() = 0;
 
       //-----------------------------------------------------
       ///\brief               Signal an error on a rule

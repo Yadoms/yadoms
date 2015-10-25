@@ -320,12 +320,17 @@
 					"description": "Gérer, ajouter et supprimer des règles d'automatisation",
 					"new": "Création d'une règle",
 					"table": {
-						"enabled": "Activé",
+						"state": "Etat",
 						"name": "Nom",
 						"description": "Description",
 						"actions": "Actions"
 					},
-					"enableDisable": "Activer / Désactiver la règle",
+					"startStop": "Démarrer / Arrêter la règle",
+               "ruleState": {
+                  "stopped": "Arrêtée",
+                  "running": "En cours",
+                  "error": "Erreur"
+               },
 					"edit": "Modifier la règle",
 					"delete": "Supprimer la règle",
 					"confirmDeletion": "Confirmez-vous la suppression de la règle __name__ ?",

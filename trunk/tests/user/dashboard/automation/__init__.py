@@ -21,6 +21,22 @@ def waitRulesTableHasNRules(browser, rulesNumberExpected):
 def getRuleDatas(rulesTable, ruleNumber):
    rule = rulesTable.find_elements_by_tag_name("tr")[ruleNumber + 1]
    return rule.find_elements_by_tag_name("td")
+   
+def getRuleButtons(rulesDataButtonsCell):
+   buttonsGroup = rulesDataButtonsCell.find_element_by_class_name("btn-group")
+   return buttonsGroup.find_elements_by_xpath("./child::*")
+   
+class RuleState:
+   Stopped, Running, Error = range(3)
+   
+def getRuleState(ruleStateCell):
+   if ("label-warning" in ruleStateCell.find_element_by_class_name("label-status").get_attribute("class")):
+      return RuleState.Stopped
+   if ("label-success" in ruleStateCell.find_element_by_class_name("label-status").get_attribute("class")):
+      return RuleState.Running
+   if ("label-danger" in ruleStateCell.find_element_by_class_name("label-status").get_attribute("class")):
+      return RuleState.Error
+   assert False   
       
       
       
