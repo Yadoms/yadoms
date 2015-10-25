@@ -24,7 +24,6 @@ namespace automation { namespace script
 
       // IStopNotifier Implementation
       virtual void notifyNormalStop();
-      virtual void notifyNormalStopAndDisable();
       virtual void notifyError(const std::string& error);
       virtual void notifyStartError(const std::string& error);
       // [END] IStopNotifier Implementation

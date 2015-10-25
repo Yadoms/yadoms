@@ -18,79 +18,39 @@ CRuleStateHandler::~CRuleStateHandler()
 {
 }
 
-void CRuleStateHandler::signalRuleStart(int ruleId)//TODO virer
-{
-   //// Record event
-   //boost::shared_ptr<database::entities::CRule> ruleData(new database::entities::CRule);
-   //ruleData->Id = ruleId;
-   //ruleData->State = database::entities::ERuleState::kRunningValue;
-   //ruleData->StartDate = shared::currentTime::Provider::now();
-   //ruleData->ErrorMessage = std::string();
-   //m_ruleRequester->updateRule(ruleData);
-
-   //YADOMS_LOG(information) << "Start rule #" << ruleId;
-}
-
 void CRuleStateHandler::signalNormalRuleStop(int ruleId)
 {
-   // Record event
-   //boost::shared_ptr<database::entities::CRule> ruleData(new database::entities::CRule);
-   //ruleData->Id = ruleId;
-   //ruleData->State = database::entities::ERuleState::kStoppedValue;
-   //ruleData->StopDate = shared::currentTime::Provider::now();
-   //ruleData->ErrorMessage = std::string();
-   //m_ruleRequester->updateRule(ruleData);
-
    YADOMS_LOG(information) << "Stop rule #" << ruleId;
 
    // Signal the stop to asynchronously remove from running rules list
-   CManagerEvent event(CManagerEvent::kRuleStopped, ruleId);
-   m_supervisor->postEvent<CManagerEvent>(m_ruleManagerEventId, event);
-}
-
-void CRuleStateHandler::signalNormalRuleStopAndDisable(int ruleId)
-{
-   // Record event
-   //boost::shared_ptr<database::entities::CRule> ruleData(new database::entities::CRule);
-   //ruleData->Id = ruleId;
-   //ruleData->Enabled = false;
-   //ruleData->State = database::entities::ERuleState::kStoppedValue;
-   //ruleData->StopDate = shared::currentTime::Provider::now();
-   //ruleData->ErrorMessage = std::string();
-   //m_ruleRequester->updateRule(ruleData);
-
-   YADOMS_LOG(information) << "Stop and disable rule #" << ruleId;
-
-   // Signal the stop to asynchronously remove from running rules list
-   CManagerEvent event(CManagerEvent::kRuleStopped, ruleId);
-   m_supervisor->postEvent<CManagerEvent>(m_ruleManagerEventId, event);
+   postToSupervisor(CManagerEvent::kRuleStopped, ruleId);
 }
 
 void CRuleStateHandler::signalRuleError(int ruleId, const std::string& error)
 {
-   // Record error
-   //boost::shared_ptr<database::entities::CRule> ruleData(new database::entities::CRule);
-   //ruleData->Id = ruleId;
-   //ruleData->State = database::entities::ERuleState::kErrorValue;
-   //ruleData->ErrorMessage = error;
-   //ruleData->StopDate = shared::currentTime::Provider::now();
-   //m_ruleRequester->updateRule(ruleData);
-
    // Signal error
    YADOMS_LOG(error) << error;
    m_eventLogger->addEvent(database::entities::ESystemEventCode::kRuleFailedValue, m_ruleRequester->getRule(ruleId)->Name(), error);
 
    // Signal the abnormal stop to asynchronously remove from list
-   CManagerEvent event(CManagerEvent::kRuleAbnormalStopped, ruleId);
-   m_supervisor->postEvent<CManagerEvent>(m_ruleManagerEventId, event);
+   postToSupervisor(CManagerEvent::kRuleAbnormalStopped, ruleId, error);
 }
 
-void CRuleStateHandler::signalRulesStartError(const std::string& error)//TODO virer ?
+void CRuleStateHandler::signalRulesStartError(const std::string& error)
 {
    // Signal error
    YADOMS_LOG(error) << error;
    m_eventLogger->addEvent(database::entities::ESystemEventCode::kRuleFailedValue, "Automation rules", error);
+
+   //TODO : à revoir, car il faudrait également enregistrer l'erreur, donc poster au superviseur, mais pour ça il faut l'ID de la règle
 }
+
+void CRuleStateHandler::postToSupervisor(const CManagerEvent::ESubEventType& eventType, int ruleId, const std::string& error) const
+{
+   CManagerEvent event(eventType, ruleId, error);
+   m_supervisor->postEvent<CManagerEvent>(m_ruleManagerEventId, event);
+}
+
 
 } // namespace automation	
 	

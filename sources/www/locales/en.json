@@ -320,12 +320,17 @@
 					"description": "You can create or modify your automatisation rules of Yadoms",
 					"new": "Create a new rule",
 					"table": {
-						"enabled": "Enabled",
+						"state": "State",
 						"name": "Name",
 						"description": "Description",
 						"actions": "Actions"
 					},
-					"enableDisable": "Enable / Disable the rule",
+					"startStop": "Start / Stop the rule",
+               "ruleState": {
+                  "stopped": "Stopped",
+                  "running": "Running",
+                  "error": "Error"
+               },
 					"edit": "Edit the rule",
 					"delete": "Delete the rule",
 					"confirmDeletion": "This action will delete the rule __name__. Continue anyway ?",

@@ -4,10 +4,10 @@
    <button id="btn-add-new-automation-rule" type="button" class="btn btn-success dashboard-btn-new"><span class="fa fa-code-fork"></span>&nbsp;&nbsp;<span data-i18n="modals.dashboard.sub-windows.automation-center.new"></span></button>
    <table id="automation-rule-list" class="table table-bordered table-striped dashboard-list">
       <tr>
-         <td data-i18n="modals.dashboard.sub-windows.automation-center.table.enabled"></td>
          <td data-i18n="modals.dashboard.sub-windows.automation-center.table.name"></td>
          <td data-i18n="modals.dashboard.sub-windows.automation-center.table.description"></td>
          <td data-i18n="modals.dashboard.sub-windows.automation-center.table.actions"></td>
+         <td data-i18n="modals.dashboard.sub-windows.automation-center.table.state"></td>
       </tr>
       <!-- plugin instance will be listed here-->
    </table>
@@ -47,24 +47,24 @@
       var $ruleList = $("table#automation-rule-list");
 
       $ruleList.append("<tr automation-rule-id=\"" + rule.id + "\">" +
-                           "<td class=\"automation-rule-enabled\">" +
-                              "<span class=\"label label-success label-status\"></span>" +
-                           "</td>" +
                            "<td class=\"automation-rule-name\"></td>\n" +
                            "<td class=\"automation-rule-description\"></td>\n" +
                            "<td class=\"automation-rule-actions\">\n" +
                               "<div class=\"btn-group\">\n" +
-                              "<button type=\"button\" class=\"btn btn-enableDisable\" data-i18n=\"[title]modals.dashboard.sub-windows.automation-center.enableDisable\"><span class=\"fa fa-power-off\"></span></button>\n" +
-                              "<button type=\"button\" class=\"btn btn-primary btn-edit\" data-i18n=\"[title]modals.dashboard.sub-windows.automation-center.edit\"><span class=\"fa fa-pencil\"></span></button>\n" +
-                              "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.automation-center.delete\"><span class=\"fa fa-trash-o\"></span></button>\n" +
+                              "<button type=\"button\" class=\"btn btn-enableDisable\" data-i18n=\"[title]modals.dashboard.sub-windows.automation-center.startStop\"></button>\n" +
+                              "<button type=\"button\" class=\"btn btn-edit btn-primary\" data-i18n=\"[title]modals.dashboard.sub-windows.automation-center.edit\"><span class=\"fa fa-pencil\"></span></button>\n" +
+                              "<button type=\"button\" class=\"btn btn-delete btn-danger\" data-i18n=\"[title]modals.dashboard.sub-windows.automation-center.delete\"><span class=\"fa fa-trash-o\"></span></button>\n" +
                               "</div>\n" +
                            "</td>\n" +
+                           "<td class=\"automation-rule-state\">" +
+                              "<span class=\"label label-success label-status\"></span>" +
+                           "</td>" +
                         "</tr>\n");
 
       var $ruleRow = getAutomationRuleDomRow(rule);
 
       //we bind event on the different actions
-      $ruleRow.find("button.btn-enableDisable").unbind('click').bind('click', enableDisableAutomationRule(rule));
+      $ruleRow.find("button.btn-enableDisable").unbind('click').bind('click', startStopAutomationRule(rule));
       $ruleRow.find("button.btn-edit").unbind('click').bind('click', editAutomationRule(rule));
       $ruleRow.find("button.btn-delete").unbind('click').bind('click', deleteAutomationRule(rule));
 
@@ -79,20 +79,26 @@
       $ruleRow.find("td.automation-rule-name").text(rule.name);
       $ruleRow.find("td.automation-rule-description").text(rule.description);
 
-      //we manage the enabled
-      if(rule.enabled) {
-         $ruleRow.find("span.label-status").addClass("label-success").removeClass("label-danger").text($.t("common.enabled"));
-         $ruleRow.find("button.btn-enableDisable").addClass("btn-warning").removeClass("btn-success");
-      }
-      else {
-         $ruleRow.find("span.label-status").addClass("label-danger").removeClass("label-success").text($.t("common.disabled"));
-         $ruleRow.find("button.btn-enableDisable").addClass("btn-success").removeClass("btn-warning");
+      //we manage the state
+      switch (rule.state) {
+         case "Stopped":
+            $ruleRow.find("span.label-status").addClass("label-warning").removeClass("label-danger").removeClass("label-success").text($.t("modals.dashboard.sub-windows.automation-center.ruleState.stopped"));
+            $ruleRow.find("button.btn-enableDisable").addClass("btn-success").removeClass("btn-warning").empty().append("<span class=\"fa fa-play\"></span>");
+            break;
+         case "Running":
+            $ruleRow.find("span.label-status").addClass("label-success").removeClass("label-danger").removeClass("label-warning").text($.t("modals.dashboard.sub-windows.automation-center.ruleState.running"));
+            $ruleRow.find("button.btn-enableDisable").addClass("btn-warning").removeClass("btn-success").empty().append("<span class=\"fa fa-stop\"></span>");;
+            break;
+         case "Error":
+            $ruleRow.find("span.label-status").addClass("label-danger").removeClass("label-success").removeClass("label-warning").text($.t("modals.dashboard.sub-windows.automation-center.ruleState.error"));
+            $ruleRow.find("button.btn-enableDisable").addClass("btn-success").removeClass("btn-warning").empty().append("<span class=\"fa fa-play\"></span>");;
+            break;
       }
 
       $ruleRow.i18n();
    }
 
-   function enableDisableAutomationRule(rule) {
+   function startStopAutomationRule(rule) {
       //rule represent the automation rule concerned
       return function() {
          //we deactivate the button until next status will be acquired to prevent flooding
@@ -182,7 +188,7 @@
             AutomationRuleManager.getOne(value.id, function (updatedRule) {
                var $row = getAutomationRuleDomRow(value);
                if (updatedRule.enabled != value.enabled) {
-                  //we update lebel depending on the enabled field
+                  //we update label depending on the enabled field
                   if(updatedRule.enabled) {
                      $row.find("span.label-status").addClass("label-success").removeClass("label-danger").text($.t("common.enabled"));
                      $row.find("button.btn-startStop").addClass("btn-warning").removeClass("btn-success");

@@ -3,6 +3,7 @@
 #include "database/IRuleRequester.h"
 #include "dataAccessLayer/IEventLogger.h"
 #include <shared/shared/event/EventHandler.hpp>
+#include "ManagerEvent.h"
 
 namespace automation
 {
@@ -29,12 +30,19 @@ namespace automation
       virtual ~CRuleStateHandler();
 
       // IRuleStateHandler Implementation
-      virtual void signalRuleStart(int ruleId);
       virtual void signalNormalRuleStop(int ruleId);
-      virtual void signalNormalRuleStopAndDisable(int ruleId);
       virtual void signalRuleError(int ruleId, const std::string& error);
       virtual void signalRulesStartError(const std::string& error);
       // [END] IRuleStateHandler Implementation
+
+      //-----------------------------------------------------
+      ///\brief               Post event to supervisor
+      ///\param[in] eventType Event type to post to supervisor
+      ///\param[in] ruleId    The rule id
+      ///\param[in] error     The error label, associated to event (empty if no error)
+      //-----------------------------------------------------
+      void postToSupervisor(const CManagerEvent::ESubEventType& eventType, int ruleId, const std::string& error = std::string()) const;
+
 
    private:
       //-----------------------------------------------------

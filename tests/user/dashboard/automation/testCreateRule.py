@@ -64,10 +64,16 @@ class CreateRule(unittest.TestCase):
       ruleDatas = dashboard.automation.getRuleDatas(rulesTable, 0)
          
       assert len(ruleDatas) is 4
-#      assert ruleDatas[0].text is u'Activé'    ## TODO language-dependent
-      assert ruleDatas[1].text == ruleName
-      assert ruleDatas[2].text == ruleDescription
-      ## TODO contrôler bouton
+      assert ruleDatas[0].text == ruleName
+      assert ruleDatas[1].text == ruleDescription
+
+      buttons = dashboard.automation.getRuleButtons(ruleDatas[2])
+      assert len(buttons) is 3
+      assert buttons[0].get_attribute("class") == "btn btn-enableDisable btn-warning"
+      assert buttons[1].get_attribute("class") == "btn btn-edit btn-primary"
+      assert buttons[2].get_attribute("class") == "btn btn-delete btn-danger"
+
+      assert "label-success" in ruleDatas[3].find_element_by_class_name("label-status").get_attribute("class")
       
       
       # - on disk (corresponding script file)
