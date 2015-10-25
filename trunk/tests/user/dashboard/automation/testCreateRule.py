@@ -44,55 +44,25 @@ class CreateRule(unittest.TestCase):
                   "      time.sleep(5)"];
 
       # - Rule configuration
-      ruleConfiguration = WebDriverWait(self.browser, 10).until(Condition.visibility_of_element_located((By.ID, "automation-rule-configuration")))
-      controlGroups = ruleConfiguration.find_elements_by_xpath("./child::*")
-      for controlGroup in controlGroups:
-         label = controlGroup.find_element_by_class_name("configuration-label")
-         control = controlGroup.find_element_by_class_name("configuration-control")
-         
-         controlContents = control.find_elements_by_tag_name("select")
-         if (len(controlContents) == 0):
-            controlContents = control.find_elements_by_tag_name("input")
-         if (len(controlContents) == 0):
-            print ('Unknown control type found')
-            assert False
-            
-         controlContent = controlContents[0]
-       
-         if (controlContent.get_attribute("data-i18n") == '[data-content]modals.edit-automation-rule.interpreter-rule.description'):
-            # Interpreter selection
-            select = Select(controlContent)
-            select.select_by_value('0') # Select Python interpreter
-
-         elif (controlContent.get_attribute("data-i18n") == '[data-content]modals.edit-automation-rule.name-rule.description'):
-            # Rule name
-            controlContent.send_keys(ruleName)
-            
-         elif (controlContent.get_attribute("data-i18n") == '[data-content]modals.edit-automation-rule.description-rule.description'):
-            # Rule description
-            controlContent.send_keys(ruleDescription)
-
-         else:
-            print ('Unknown control found')
-            assert False
-         
+      dashboard.automation.waitEditRuleModal(self.browser)
+      Select(dashboard.automation.getInterpreterSelector(self.browser)).select_by_value('0') # Select Python interpreter
+      dashboard.automation.getRuleName(self.browser).send_keys(ruleName)
+      dashboard.automation.getRuleDescription(self.browser).send_keys(ruleDescription)
          
       # - Rule code
-      ruleEditor = self.browser.find_element_by_class_name("ace_text-input")
-      self.writeCode(ruleCode, ruleEditor)
+      dashboard.automation.getRuleCodeEditor(self.browser).writeCode(ruleCode)
 
 
       # Click OK
-      self.browser.find_element_by_id("btn-confirm-configure-rule").click()
+      dashboard.automation.getConfirmConfigureRuleButton(self.browser).click()
+      
       
       # Check created rule
 
       # - in web client
-      rulesTable = WebDriverWait(self.browser, 10).until(Condition.visibility_of_element_located((By.ID, "automation-rule-list")))
-      WebDriverWait(self.browser, 10).until(lambda driver: len(rulesTable.find_elements_by_tag_name("tr")) == 2)
-
-      rule = rulesTable.find_elements_by_tag_name("tr")[1]
-      ruleDatas = rule.find_elements_by_tag_name("td")
+      rulesTable = dashboard.automation.waitRulesTableHasNRules(self.browser, 1)
+      ruleDatas = dashboard.automation.getRuleDatas(rulesTable, 0)
+         
       assert len(ruleDatas) is 4
 #      assert ruleDatas[0].text is u'Activé'    ## TODO language-dependent
       assert ruleDatas[1].text == ruleName
@@ -104,35 +74,7 @@ class CreateRule(unittest.TestCase):
       scripts.checkLocalRuleById(1, ruleCode)
       
       
-   def writeCode(self, code, codeEditorWebElement):
-      """ Write code into codeEditor """
-   
-      # Need a workaround for Selenium bug #1723 (Left parenthesis don't work, see https://code.google.com/p/selenium/issues/detail?id=1723)
-      for codeLine in code:
-         if ('(' in codeLine):
-            subStrings = codeLine.split("(")
-            for subString in subStrings[:-1]:
-               codeEditorWebElement.send_keys(subString)
-               codeEditorWebElement.send_keys(Keys.SHIFT + "9")
-            codeEditorWebElement.send_keys(subStrings[-1])
-            self.writeCR(codeLine, codeEditorWebElement)
-         else:
-            codeEditorWebElement.send_keys(codeLine)
-            self.writeCR(codeLine, codeEditorWebElement)
-      
-      
-   def writeCR(self, codeLine, codeEditorWebElement):
-      """ Write a CR into codeEditor """
-      """ As code is provided with its indentation, we have to rollback auto-indentation made by ACE editor """
-      
-      codeEditorWebElement.send_keys(Keys.ENTER)
-      spacesPerIndentation = 3   ## 3 spaces for a tab
-      indentationCount = (len(codeLine) - len(codeLine.lstrip(' '))) / spacesPerIndentation
-      if (len(codeLine) > 0 and codeLine[-1] is ':'):
-         # Rollback auto-indentation
-         indentationCount += 1
-      for indent in range(indentationCount):
-         codeEditorWebElement.send_keys(Keys.BACKSPACE)
+
             
       
    def tearDown(self):
