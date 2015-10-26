@@ -26,6 +26,14 @@ def getRuleButtons(rulesDataButtonsCell):
    buttonsGroup = rulesDataButtonsCell.find_element_by_class_name("btn-group")
    return buttonsGroup.find_elements_by_xpath("./child::*")
    
+def getRuleEditButton(ruleNumber):
+   """ Rule button is the second button of the buttons group """
+   ruleDatas = getRuleDatas(rulesTable, ruleNumber)
+   buttons = getRuleButtons(ruleDatas[2])
+   assert "btn-edit" in buttons[1].get_attribute("class")
+   return buttons[1]
+   
+   
 class RuleState:
    Stopped, Running, Error = range(3)
    
