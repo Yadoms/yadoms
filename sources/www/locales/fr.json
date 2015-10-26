@@ -460,7 +460,10 @@
 				}
 			},
 			"yadoms_wait_for_keywords": {
-				"title": "Attente d'acquisition, stocké dans :",
+				"title": "Attente d'une nouvelle acquisition, stockée dans",
+				"case": "Lorsque",
+				"triggered": "change",
+				"do": "Alors faire",
 				"tooltip": "Attend une nouvelle acquisition d'un ou plusieurs keyword. La valeur du keyword qui a changé est stockée dans la variable keywordNouvelleValeur",
 				"defaultVarName": "keywordNouvelleValeur",
 				"mutator": {

@@ -460,7 +460,10 @@
 				}
 			},
 			"yadoms_wait_for_keywords": {
-				"title": "Wait for acquisition in",
+				"title": "Wait for a new acquisition and store value in",
+				"case": "When",
+				"triggered": "is triggered",
+				"do": "Then do ",
 				"tooltip": "Wait for one or more keyword changes. The keyword new value is stored in variable keywordNewValue",
 				"defaultVarName": "keywordNewValue",
 				"mutator": {

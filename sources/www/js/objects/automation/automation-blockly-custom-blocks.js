@@ -856,21 +856,29 @@ Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function(thisBlock, can
        inputNameToUse = "YadomsSelection";
     }
     
+    var result;
     if(inputType == "statement") {
-       thisBlock.appendStatementInput(inputNameToUse)
+       result = thisBlock.appendStatementInput(inputNameToUse)
            .appendField(pluginDd, pluginDropDownName)
            .appendField(deviceDd, deviceDropDownName)
            .appendField(keywordDd, keywordDropDownName);
     }
     else {
-       thisBlock.appendDummyInput(inputNameToUse)
-           .appendField(pluginDd, pluginDropDownName)
-           .appendField(deviceDd, deviceDropDownName)
-           .appendField(keywordDd, keywordDropDownName);
+       if(!isNullOrUndefined(inputType)) {
+          result = inputType
+              .appendField(pluginDd, pluginDropDownName)
+              .appendField(deviceDd, deviceDropDownName)
+              .appendField(keywordDd, keywordDropDownName);
+       } else {
+          result = thisBlock.appendDummyInput(inputNameToUse)
+              .appendField(pluginDd, pluginDropDownName)
+              .appendField(deviceDd, deviceDropDownName)
+              .appendField(keywordDd, keywordDropDownName);
+       }
     }
 
     pluginDd.changeHandler_(pluginDd.getValue());
-
+   return result;
 };
 
 
@@ -1582,6 +1590,7 @@ Blockly.Blocks['yadoms_wait_for_keywords'] = {
            .appendField($.t("blockly.blocks.yadoms_wait_for_keywords.title"))
            .appendField(" ")
            .appendField(new Blockly.FieldVariable(this.generateVariable_()), "outVar");
+           
        this.setPreviousStatement(true, null);
        this.setNextStatement(true, null);
        this.setColour(20);
@@ -1600,8 +1609,18 @@ Blockly.Blocks['yadoms_wait_for_keywords'] = {
      * @private
      */   
    appendKeywordSelectorStatement_ : function(no) {
+
+      var b = this.appendDummyInput("keyword_part1_" + no)
+            .appendField($.t("blockly.blocks.yadoms_wait_for_keywords.case"));
+      
       Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection(this, true, ["numeric", "string", "bool", "nodata", "enum"], undefined, undefined, 
-      "pluginDd" + no, "deviceDd" + no, "keywordDd" + no, "statement", "keyword" + no);
+      "pluginDd" + no, "deviceDd" + no, "keywordDd" + no, b)
+         .appendField($.t("blockly.blocks.yadoms_wait_for_keywords.triggered"));
+      
+      this.appendStatementInput("keyword_part2_" + no)      
+         .appendField("    ")
+         .setAlign(Blockly.ALIGN_RIGHT)
+         .appendField($.t("blockly.blocks.yadoms_wait_for_keywords.do"));
    },
    
     /**
@@ -1737,7 +1756,8 @@ Blockly.Blocks['yadoms_wait_for_keywords'] = {
        
        // Remove any additional keyword (will be created just after)
        for (var i = this.keywordMutatorCount_; i > 0; i--) {
-         this.removeInput('keyword' + i);
+         this.removeInput("keyword_part1_" + i);
+         this.removeInput("keyword_part2_" + i);
        }
        
        this.keywordMutatorCount_ = 0;
