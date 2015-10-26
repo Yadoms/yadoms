@@ -1,48 +1,10 @@
-YadomsPromise = function() {
-   this.flags = [];
-   this.callback = null;
-   this.param = null;
-};
-
-YadomsPromise.prototype.Initialization = function(nb_index, Thecallback, param) {
-   self = this;
-
-   var temp = 0;
-
-   try {
-      //Construct the tab
-      while (temp < nb_index) {
-         self.flags[temp] = false;
-         temp++;
-      }
-
-      self.param = param;
-      self.callback = Thecallback;
-   } catch (err) {
-      console.log(err);
-   }
-};
-
-YadomsPromise.prototype.resolve = function(index) {
-   self = this;
-   self.flags[index] = true;
-
-   var temp = 0;
-
-   while (self.flags[temp] && temp < self.flags.length)
-      temp++;
-
-   if (temp == self.flags.length) {
-      this.callback(self.param);
-   }
-};
-
+widgetViewModelCtor =
 
 /**
  * Create a Chart ViewModel
  * @constructor
  */
-widgetViewModelCtor = function ChartViewModel() {
+      function ChartViewModel() {
 
    //widget identifier
    this.widget = null;
@@ -63,7 +25,7 @@ widgetViewModelCtor = function ChartViewModel() {
       this.widget = widget;
       var self = this;
 
-      self.ChartPromise = new YadomsPromise();
+		 self.ChartPromise = new PromiseCounter ();
 
       // create the chart
       this.$chart = self.widget.$gridWidget.find("div.chartWidgetContainer");
@@ -244,7 +206,7 @@ widgetViewModelCtor = function ChartViewModel() {
       self.devicesList = self.widget.configuration.devices.slice(0);
       
       
-      self.ChartPromise.Initialization(self.devicesList.length, this.refreshData.bind(this), this.widget.configuration.interval);
+      self.ChartPromise.Initialize(self.devicesList.length, this.refreshData.bind(this), this.widget.configuration.interval);
 
       //we create an uuid for each serie
       $.each(self.widget.configuration.devices, function(index, device) {
@@ -390,8 +352,8 @@ widgetViewModelCtor = function ChartViewModel() {
             while (self.chart.yAxis.length > 0)
               self.chart.yAxis[0].remove(false);
            
-            var SeriesPromise = new YadomsPromise();
-            SeriesPromise.Initialization(self.widget.configuration.devices.length, this.finalRefresh.bind(this), null);
+            var SeriesPromise = new PromiseCounter ();
+            SeriesPromise.Initialize ( self.widget.configuration.devices.length, this.finalRefresh.bind(this), null);
 			
             //for each plot in the configuration we request for data
             $.each(self.widget.configuration.devices, function(index, device) {
