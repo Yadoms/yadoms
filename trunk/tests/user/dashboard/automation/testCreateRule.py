@@ -11,6 +11,7 @@ import yadomsServer
 import dashboard
 import dashboard.automation
 import time
+import notification
 
 class CreateRule(unittest.TestCase):
    """Create rule test"""
@@ -59,6 +60,10 @@ class CreateRule(unittest.TestCase):
       
       # Check created rule
 
+      # - notification
+      notification.wait(self.browser, notification.Type.Success, u"Règle créée") # TODO texte à récupérer de l'i18n
+      
+      
       # - in web client
       rulesTable = dashboard.automation.waitRulesTableHasNRules(self.browser, 1)
       ruleDatas = dashboard.automation.getRuleDatas(rulesTable, 0)
@@ -79,9 +84,6 @@ class CreateRule(unittest.TestCase):
       # - on disk (corresponding script file)
       scripts.checkLocalRuleById(1, ruleCode)
       
-      
-
-            
       
    def tearDown(self):
       self.browser.close()
