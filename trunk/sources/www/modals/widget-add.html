@@ -228,15 +228,24 @@
             return;
          }
 
-         //notifySuccess($.t("modals.add-widget.widgetSuccessfullyCreated"));
          //we add the widget dynamically
          var w = WidgetManager.factory(data.data);
-         WidgetManager.loadWidget(w, currentPage);
+         WidgetManager.loadWidget(w, currentPage)
+		 .done(function() {
+		    //we update the filter for the websocket
+			updateWebSocketFilter();
+		 })
+		 .fail(function(errorMessage) {
+			console.error(errorMessage);
+			notifyError($.t("modals.add-widget.unableToCreateWidgetOfType", {"widgetType" : widgetType}))
+		 });
 
-         //we update the filter for the websocket
-         updateWebSocketFilter();
       })
-      .fail(function(widgetType) { return function() {notifyError($.t("modals.add-widget.unableToCreateWidgetOfType", {"widgetType" : widgetType}))}}(newWidget.type));
+      .fail(function(widgetType) { 
+		return function() {
+			notifyError($.t("modals.add-widget.unableToCreateWidgetOfType", {"widgetType" : widgetType}))
+		}();
+	  });
    }
 
 </script>

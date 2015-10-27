@@ -27,7 +27,7 @@ widgetViewModelCtor =
 			KeywordManager.sendCommand(this.widget.configuration.device.keywordId, this.command().toString());
          }
 		 
-		 this.DisplayValue( this.command().toString() + " " + $.t(this.unit()) );
+		 this.DisplayValue( this.command().toString());
       };
 
       /**
@@ -75,7 +75,7 @@ widgetViewModelCtor =
          if ((this.widget.configuration !== undefined) && (this.widget.configuration.device !== undefined)) {
             if (device == this.widget.configuration.device) {
 				self.command( parseFloat(data.value) );
-		        self.DisplayValue( self.command() + " " + $.t(self.unit()) );
+		        self.DisplayValue( self.command() );
             }
          }
       };
