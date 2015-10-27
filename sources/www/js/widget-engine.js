@@ -76,24 +76,29 @@ function requestWidgets(page) {
    //we request widgets for the first page
    var loadWidgetsNotification = notifyInformation($.t("mainPage.actions.loadingWidgetsOfPage", {pageName : page.name}));
 
-   WidgetManager.getWidgetOfPageFromServer(page, function(list) {
+   var d = WidgetManager.getWidgetOfPageFromServer(page)
+   .done(function(list) {
       if (list != null) {
-         //we've got the list of widget
-         $.each(list, function(index, widget) {
-            WidgetManager.loadWidget(widget, page);
+         WidgetManager.loadWidgets(list, page)
+         .done(function() {
+            if (!isNullOrUndefined(loadWidgetsNotification)) {
+               loadWidgetsNotification.close();
+               if (loadWidgetsNotification.showing)
+                  loadWidgetsNotification.$bar.dequeue();
+               loadWidgetsNotification = null;
+            }
+
+            //we update the filter of the websocket
+            updateWebSocketFilter();
+
+         })
+         .fail(function(errorMessage) {
+            console.error(errorMessage);
+            notifyError($.t("objects.widgetManager.loadingWidgetsError"));
          });
-
-         if (!isNullOrUndefined(loadWidgetsNotification)) {
-            loadWidgetsNotification.close();
-            if (loadWidgetsNotification.showing)
-               loadWidgetsNotification.$bar.dequeue();
-            loadWidgetsNotification = null;
-         }
-
-         //we update the filter of the websocket
-         updateWebSocketFilter();
       }
    });
+   return d.promise();
 }
 
 /**
@@ -114,11 +119,16 @@ function tabClick(pageId) {
    //and if it's not loaded for the moment
    if (!page.loaded)
    {
-      requestWidgets(page);
+      requestWidgets(page).done(function() {
+            //we poll all widget data
+            updateWidgetsPolling();
+      });
+   } else {
+      //we poll all widget data
+      updateWidgetsPolling();
    }
 
-   //we poll all widget data
-   updateWidgetsPolling();
+
 }
 
 function periodicUpdateTask() {

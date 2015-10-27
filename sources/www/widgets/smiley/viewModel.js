@@ -1,10 +1,9 @@
-widgetViewModelCtor =
-
 /**
  * Create a Smiley ViewModel
  * @constructor
  */
-function SmileyViewModel() {
+ 
+widgetViewModelCtor = function() {
    /**
     * Widget identifier
     */

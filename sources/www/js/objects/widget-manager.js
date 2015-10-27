@@ -10,6 +10,11 @@ function WidgetManager(){}
 
 WidgetManager.DeactivatedWidgetPackageName = "dev-deactivated-widget";
 
+/**
+ * Create a Widget instance
+ * @param {Object} json The widget content
+ * @returns {Widget}
+ */
 WidgetManager.factory = function(json) {
    assert(!isNullOrUndefined(json), "json must be defined");
    assert(!isNullOrUndefined(json.id), "json.id must be defined");
@@ -24,6 +29,12 @@ WidgetManager.factory = function(json) {
    return new Widget(json.id, json.idPage, json.type, json.sizeX, json.sizeY, json.positionX, json.positionY, json.configuration);
 };
 
+/**
+ * Return the widget from its id and its page id
+ * @param {Number} pageId The page id
+ * @param {Number} widgetId The widget id
+ * @returns {Widget}
+ */
 WidgetManager.get = function(pageId, widgetId) {
     assert(pageId !== undefined, "page Id must be defined");
     assert(widgetId !== undefined, "Widget Id must be defined");
@@ -48,99 +59,88 @@ WidgetManager.getFromGridElement = function($gridElement) {
    return WidgetManager.get(pageId, widgetId);
 };
 
-WidgetManager.getWidgetOfPageFromServer = function(page, callback) {
+/**
+ * Get the list of widgets to add to a page
+ * @param {Page} page The page to request widgets
+ * @returns a promise
+ */
+WidgetManager.getWidgetOfPageFromServer = function(page) {
    assert(page !== undefined, "page must be defined");
 
    //we save the information that the widgets for this page have already been asked
    page.loaded = true;
 
-   $.getJSON("/rest/page/" + page.id + "/widget")
+   var d = new $.Deferred();
+   RestEngine.get("/rest/page/" + page.id + "/widget")
       .done(function(data) {
-         //we parse the json answer
-         if (data.result != "true")
-         {
-            notifyError($.t("objects.widgetManager.unableToGetWidgets"), JSON.stringify(data));
-            if ($.isFunction(callback))
-               callback(null);
-            return null;
-         }
-
          var list = [];
-         $.each(data.data.widget, function(index, value) {
+         $.each(data.widget, function(index, value) {
             list.push(WidgetManager.factory(value));
          });
-
-         if ($.isFunction(callback))
-            callback(list);
-         return list;
+         d.resolve(list);
       })
-      .fail(function() {
-         notifyError($.t("objects.widgetManager.unableToGetWidgets"));
-         if ($.isFunction(callback))
-            callback(null);
-         return null;
+      .fail(function(errorMessage) {
+         console.error("Fail to getWidgetOfPageFromServer from server : " + errorMessage);
+         notifyError($.t("objects.widgetManager.unableToGetWidgets"), errorMessage);
+         d.reject(errorMessage);
       });
+	return d.promise();   
 };
-/*
-WidgetManager.getViewFromServerSync = function(widget) {
-   assert(!isNullOrUndefined(widget), "widget must be defined");
 
-   var view = null;
-
-   $.ajax({
-      url:"widgets/" + widget.type + "/view.html",
-      async:   false
-   })
-   .done(function( data ) {
-      view = data;
-   });
-
-   return view;
-};
-*/
-WidgetManager.getViewFromServer = function(widget) {
-   assert(!isNullOrUndefined(widget), "widget must be defined");
-
-   var d = $.Deferred();
-   RestEngine.get("widgets/" + widget.type + "/view.html", undefined, null)
-      .done(function(data) {
-         d.resolve(data);
+/**
+ * Get a widget view from the server 
+ * @param {String} widgetType The widget typ eto download the view
+ * @returns a promise
+ * @private
+ */
+WidgetManager.getViewFromServer_ = function(widgetType) {
+   assert(!isNullOrUndefined(widgetType), "widgetType must be defined");
+   var d = new $.Deferred();
+   RestEngine.get("widgets/" + widgetType + "/view.html", undefined, "auto")
+      .done(function(view) {
+         if (!isNullOrUndefined(view) && view.match(".*<script.*id=\"" + widgetType + "-template\">.*")) {
+            $("div#templates").append(view);
+            d.resolve();
+         } else {
+            d.reject("Fail to load view.html of widget " + widgetType);
+         }
+         
       })
       .fail(function(errorMessage) {
          console.error("Fail to get view from server : " + errorMessage);
          d.reject(errorMessage);
       });
-   
 	return d.promise();
+
 };
 
 
-
-/*
-WidgetManager.getViewModelFromServerSync = function(widget) {
-   assert(!isNullOrUndefined(widget), "widget must be defined");
-
-   widgetViewModelCtor = null;
-   $.ajax({
-      url: "widgets/" + widget.type + "/viewModel.js",
-      dataType: "script",
-      async:   false
-   });
-
-   //if the ajax method works ok the widgetViewModelCtor is set
-
-   return widgetViewModelCtor;
-};
-*/
-
-WidgetManager.getViewModelFromServer = function(widget) {
-   assert(!isNullOrUndefined(widget), "widget must be defined");
+/**
+ * Get a widget viewModel from the server 
+ * @param {String} widgetType The widget type to download the viewModel
+ * @returns a promise
+ * @private
+ */
+WidgetManager.getViewModelFromServer_ = function(widgetType) {
+   assert(!isNullOrUndefined(widgetType), "widgetType must be defined");
 
    widgetViewModelCtor = null;
-   var d = $.Deferred();
-   RestEngine.get("widgets/" + widget.type + "/viewModel.js", undefined, "script")
-      .done(function(data) {
-         d.resolve(widgetViewModelCtor);
+   var d = new $.Deferred();
+   RestEngine.get("widgets/" + widgetType + "/viewModel.js", undefined, "script")
+      .done(function(viewModel) {
+         if (isNullOrUndefined(widgetViewModelCtor)) {
+            console.error("ViewModel of widget " + widgetType + " do not contains widgetViewModelCtor function");
+            d.reject();
+         } else {
+            WidgetPackageManager.widgetPackages[widgetType].viewModelCtor = widgetViewModelCtor;
+            //all job has been done without error
+            WidgetPackageManager.widgetPackages[widgetType].viewAnViewModelHaveBeenDownloaded = true;
+            
+            //ensure next async call will not use this viewModel
+            widgetViewModelCtor = null;
+            d.resolve();
+         }      
+         
       })
       .fail(function(errorMessage) {
          console.error("Fail to get viewModel from server : " + errorMessage);
@@ -171,7 +171,7 @@ WidgetManager.updateToServer = function(widget, callback) {
 
             //we notify that configuration has changed
             try {
-                WidgetManager.updateWidgetConfiguration(widget);
+                WidgetManager.updateWidgetConfiguration_(widget);
 
                 //we ask for a refresh of widget data
                 updateWidgetPolling(widget);
@@ -194,7 +194,12 @@ WidgetManager.updateToServer = function(widget, callback) {
         };}(widget.type));
 };
 
-WidgetManager.updateWidgetConfiguration = function(widget) {
+/**
+ * Fire a configurationChange event
+ * @param {Widget} widget The widget 
+ * @private
+ */
+WidgetManager.updateWidgetConfiguration_ = function(widget) {
    try
    {
        // Update widget specific tvalues
@@ -208,7 +213,13 @@ WidgetManager.updateWidgetConfiguration = function(widget) {
    }
 };
 
-WidgetManager.consolidate = function(widget, widgetPackage) {
+/**
+ * Instanciate a widget and configure it
+ * @param {Widget} widget The widget to instanciate
+ * @param {Json} widgetPackage The associated widget package
+ * @private
+ */
+WidgetManager.consolidate_ = function(widget, widgetPackage) {
    assert(!isNullOrUndefined(widget), "widget must be defined");
    assert(!isNullOrUndefined(widgetPackage), "widgetPackage must be defined");
 
@@ -218,116 +229,182 @@ WidgetManager.consolidate = function(widget, widgetPackage) {
    widget.package = widgetPackage.package;
 };
 
-WidgetManager.loadWidgetFinalize_ = function(pageWhereToAdd, widget, widgetType, downgraded, requiredType) {
-   if(downgraded) {
-      widget.requiredType = requiredType;
-      widget.downgraded = true;
+
+/**
+ * Load a list of widget and display them on a page
+ * @param {Array of Widget} widgetList The list of widgets to load
+ * @param {Page} pageWhereToAdd The page where to add the widget
+ * @return a promise
+ */
+WidgetManager.loadWidgets = function(widgetList, pageWhereToAdd) {
+   var d = new $.Deferred();
+
+   //make the list of distinct widget type to load
+   var distinctWidgetTypes = [WidgetManager.DeactivatedWidgetPackageName];
+   for(var i=0, j=widgetList.length; i<j; i++){
+      if(distinctWidgetTypes.indexOf(widgetList[i].type) == -1)
+         distinctWidgetTypes.push(widgetList[i].type);  
    }
    
-   //we finalize the load of the widget
-   WidgetManager.consolidate(widget, WidgetPackageManager.widgetPackages[widgetType]);
-   WidgetManager.addToDom(widget);
-   //we add the widget to the collection
-   pageWhereToAdd.addWidget(widget);
-}
+   //for each distinct type to load, download its View and ViewModel
+   var arrayOfDeffered = [];
+   $.each(distinctWidgetTypes, function(index, widgetType) {
+      arrayOfDeffered.push(WidgetManager.downloadWidgetViewAndVieWModel_(widgetType, false /*should not reject to allow loading partially the page (with deactivated widgets)*/));
+   });
+   
+   //When all view/viewModel off all requested types of widgets are loaded, 
+   //then create widgets on page
+   $.when.apply($, arrayOfDeffered)
+      .done(function() {
+         d.resolve();
+         var arrayOfLoadingWidgetDeferred = [];
+         $.each(widgetList, function(index, widget) {
+            arrayOfLoadingWidgetDeferred.push(WidgetManager.loadWidget(widget, pageWhereToAdd));
+         });
+         
+         $.when.apply($, arrayOfLoadingWidgetDeferred)
+         .done(function() {
+            d.resolve();
+         })
+         .fail(function(errorMessage) {
+            d.reject(errorMessage);
+         });
+      })
+      .fail(function(errorMessage) {
+         d.reject(errorMessage);
+      });
+   
+  return d.promise();
+};
 
+/**
+ * Download the view and the viewModel of a widget
+ * @param {String} widgetType The widgetType to load
+ * @param {Boolean} canReject If true then the promise reject on error, else (false or undefined) then the promise is resolved but an error is consoled
+ * @return a promise
+ * @private
+ */
+WidgetManager.downloadWidgetViewAndVieWModel_ = function(widgetType, canReject) {
+   var d = $.Deferred();
+   
+   WidgetManager.getViewFromServer_(widgetType)
+   .done(function() {
+      WidgetManager.getViewModelFromServer_(widgetType)
+      .done(function() {
+         d.resolve();
+      })
+      .fail(function(error) {
+         if(canReject) {
+            d.reject(error);
+         } else {
+            console.error(error);
+            d.resolve();
+         }
+      });
+   })
+   .fail(function(error) {
+      if(canReject) {
+         d.reject(error);
+      } else {
+         console.error(error);
+         d.resolve();
+      }
+   });
+      
+   return d.promise();
+};
+
+
+/**
+ * Load a widget and add it to the page
+ * @param {Widget} widget The widgetType to load
+ * @param {Page} pageWhereToAdd The page where to add the widget
+ * @return a promise
+ * @private
+ */   
 WidgetManager.loadWidget = function(widget, pageWhereToAdd) {
    assert(!isNullOrUndefined(widget), "widget must be defined");
    assert(!isNullOrUndefined(pageWhereToAdd), "pageWhereToAdd must be defined");
-   if (WidgetPackageManager.packageExists(widget.type)) {
-      if (!WidgetPackageManager.widgetPackages[widget.type].viewAnViewModelHaveBeenDownloaded) {
-         //we must download all missing information
-         WidgetManager.getViewFromServer(widget)
-            .done(function(view) {
-               if (!isNullOrUndefined(view)) {
-                  //we append the view into the page
-                  $("div#templates").append(view);
-
-                  WidgetManager.getViewModelFromServer(widget)
-                     .done(function(viewModel) {
-                        if (!isNullOrUndefined(viewModel)) {
-                           WidgetPackageManager.widgetPackages[widget.type].viewModelCtor = viewModel;
-                           //all job has been done without error
-                           WidgetPackageManager.widgetPackages[widget.type].viewAnViewModelHaveBeenDownloaded = true;
-                        }
-                        else {
-                           WidgetManager.loadAsDowngraded(widget, pageWhereToAdd);
-                           return;
-                        }                        
-                        
-                        WidgetManager.loadWidgetFinalize_(pageWhereToAdd, widget, widget.type);
-                     })            
-                     .fail(function(errorMessage){
-                        WidgetManager.loadAsDowngraded(widget, pageWhereToAdd);
-                     });
-               }
-               else {
-                  WidgetManager.loadAsDowngraded(widget, pageWhereToAdd);
-               }
-            })
-            .fail(function(errorMessage){
-               WidgetManager.loadAsDowngraded(widget, pageWhereToAdd);
-            });
+   
+   var d = $.Deferred();
+   
+   if (!WidgetPackageManager.packageExists(widget.type)) {
+      WidgetManager.instanciateDowngradedWidgetToPage_(pageWhereToAdd, widget, "package do not exists"); 
+      d.reject();
+      
+   } else { 
+            
+      if(!WidgetPackageManager.widgetPackages[widget.type].viewAnViewModelHaveBeenDownloaded) {
+         WidgetManager.downloadWidgetViewAndVieWModel_(widget.type, true)
+         .done(function() {
+            WidgetManager.instanciateWidgetToPage_(pageWhereToAdd, widget, widget.type);
+            d.resolve();
+         })
+         .fail(function(errorMessage) {
+            WidgetManager.instanciateDowngradedWidgetToPage_(pageWhereToAdd, widget, errorMessage);      
+            d.reject(errorMessage);
+         });
       } else {
-         WidgetManager.loadWidgetFinalize_(pageWhereToAdd,widget, widget.type);
+         WidgetManager.instanciateWidgetToPage_(pageWhereToAdd, widget, widget.type);
+         d.resolve();
       }
+   
    }
-   else {
-      WidgetManager.loadAsDowngraded(widget, pageWhereToAdd);
-   }
+   return d.promise();
 };
+  
 
-WidgetManager.loadAsDowngraded = function(widget, pageWhereToAdd) {
-   assert(!isNullOrUndefined(widget), "widget must be defined");
-   assert(!isNullOrUndefined(pageWhereToAdd), "pageWhereToAdd must be defined");
-
-   notifyWarning($.t("objects.widgetManager.partOfWidgetIsMissing", {widgetName : widget.type}));
-   //we set downgraded widget info to this widget.
-
-   var deactivatedWidget = {};
-   deactivatedWidget.type = WidgetManager.DeactivatedWidgetPackageName;
-
-   if (WidgetPackageManager.packageExists(deactivatedWidget.type)) {
-      if (!WidgetPackageManager.widgetPackages[deactivatedWidget.type].viewAnViewModelHaveBeenDownloaded) {
-         //we must download all missing information
-         WidgetManager.getViewFromServer(deactivatedWidget)
-            .done(function(view) {
-               if (!isNullOrUndefined(view)) {
-                  //we append the view into the page
-                  $("div#templates").append(view);
-
-                  WidgetManager.getViewModelFromServer(deactivatedWidget)
-                  .done(function(viewModel) {
-                     if (!isNullOrUndefined(viewModel)) {
-                        WidgetPackageManager.widgetPackages[deactivatedWidget.type].viewModelCtor = viewModel;
-                        //all job has been done without error
-                        WidgetPackageManager.widgetPackages[deactivatedWidget.type].viewAnViewModelHaveBeenDownloaded = true;
-                     }
-                     else {
-                        notifyError($.t("objects.widgetManager.partOfWidgetIsMissing", {widgetName : deactivatedWidget.type}));
-                        return;
-                     }
-                     WidgetManager.loadWidgetFinalize_(pageWhereToAdd, widget, deactivatedWidget.type, true, widget.type);
-                  })
-                  .fail(function(errorMessage) {
-                     notifyError($.t("objects.widgetManager.partOfWidgetIsMissing", {widgetName : deactivatedWidget.type}));
-                  });
-               }
-               else {
-                  notifyError($.t("objects.widgetManager.partOfWidgetIsMissing", {widgetName : deactivatedWidget.type}));
-               }
-            })
-            .fail(function(errorMessage) {
-               WidgetManager.loadWidgetFinalize_(pageWhereToAdd, widget, deactivatedWidget.type, true, widget.type);
-            }) ;
-      }
-      else {
-         WidgetManager.loadWidgetFinalize_(pageWhereToAdd, widget, deactivatedWidget.type, true, widget.type);
+/**
+ * Instanciate a widget instance, and add it to page
+ * @param {Page} pageWhereToAdd The page where to add the widget
+ * @param {Widget} widget The widget to load
+ * @param {String} widgetType The widgetType to load
+ * @private
+ */
+WidgetManager.instanciateWidgetToPage_ = function(pageWhereToAdd, widget, widgetType) {
+   try
+   {
+      //we finalize the load of the widget
+      WidgetManager.consolidate_(widget, WidgetPackageManager.widgetPackages[widgetType]);
+      WidgetManager.addToDom_(widget);
+      //we add the widget to the collection
+      pageWhereToAdd.addWidget(widget);
+   }
+   catch(ex)
+   {
+      if(!widget.downgraded) {
+         //load widget as deactivated
+         WidgetManager.instanciateDowngradedWidgetToPage_(pageWhereToAdd, widget, "Exception in loading viewModel : " + ex);
+      } else {
+         console.error("Fail to load deactivated widget");
       }
    }
-};
+}
 
-WidgetManager.addToDom = function(widget) {
+/**
+ * Instanciate a DEACTIVATED widget instance, and add it to page
+ * @param {Page} pageWhereToAdd The page where to add the widget
+ * @param {Widget} widget The widget to load
+ * @param {String} errorMessage An error message
+ * @private
+ */
+WidgetManager.instanciateDowngradedWidgetToPage_ = function(pageWhereToAdd, widget, errorMessage) {
+   console.warn("Fail to load widget " + widget.type + " , then load deactivated model instead." + (errorMessage||""));
+   
+   //flag the widget as downgraded
+   widget.requiredType = widget.type;
+   widget.downgraded = true;
+   
+   //load downgraded widget instead
+   WidgetManager.instanciateWidgetToPage_(pageWhereToAdd, widget, WidgetManager.DeactivatedWidgetPackageName);         
+}
+
+/**
+ * Add a widget to page
+ * @param {Widget} widget The widget to add
+ * @private
+ */
+WidgetManager.addToDom_ = function(widget) {
    assert(!isNullOrUndefined(widget), "widget must be defined");
 
    var widgetDivId = "widget-" + widget.id;
@@ -365,7 +442,7 @@ WidgetManager.addToDom = function(widget) {
    }
 
    //we notify that configuration has changed
-   WidgetManager.updateWidgetConfiguration(widget);
+   WidgetManager.updateWidgetConfiguration_(widget);
 
    //we notify that widget has been resized
    try
@@ -409,7 +486,8 @@ WidgetManager.addToDom = function(widget) {
 
 /**
  * Enable or disable customization on widget
- * @param enable
+ * @param {Widget} widget The widget to update the mode
+ * @param {Boolean} enable If true configure the widget in customization mode, else in normal mode
  */
 WidgetManager.enableCustomization = function(widget, enable) {
    var page = PageManager.getPage(widget.idPage);
@@ -426,8 +504,8 @@ WidgetManager.enableCustomization = function(widget, enable) {
 
 /**
  * Create a new graphic Widget and add it to the corresponding gridstack
- * @param widget widget to add
- * @returns {object}
+ * @param {Widget} widget The widget to add
+ * @returns {object} The gridstack item
  */
 WidgetManager.createGridstackWidget = function(widget) {
    assert(widget !== undefined, "widget must be defined");

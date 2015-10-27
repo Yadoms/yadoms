@@ -62,7 +62,7 @@ RestEngine.delete = function (url, data) {
  * @param {string} url The URL request : "/devices/32"
  * @param {JSON} data The request data
  * @param {bool} sync Indicate if the query is synchronous
- * @param {String} dataType The expected return data type (is specified use value, if undefined use json, if null don't speciy anythin and let $.ajax guess
+ * @param {String} dataType The expected return data type (is specified use value, if undefined use json, if "auto" don't speciy anything and let $.ajax guess
  * @return a promise
  */
 RestEngine.restCall = function(type, url, data, sync, dataType){
@@ -87,13 +87,13 @@ RestEngine.restCall = function(type, url, data, sync, dataType){
 
 
    //manage dataType option
-   //if null => don't define option, let $ajax guess type
-   //if undefined => use "json"
+   //if "auto" => don't define option, let $ajax guess type
+   //if undefined or null => use "json"
    //other => use specified value
-   if(dataType != null) {
+   if (isNullOrUndefined(dataType))
       ajaxOptions.dataType = "json";
-      if (!isNullOrUndefined(dataType))
-         ajaxOptions.dataType = dataType;
+   else if(dataType != "auto") {
+      ajaxOptions.dataType = dataType;
    }
       
       

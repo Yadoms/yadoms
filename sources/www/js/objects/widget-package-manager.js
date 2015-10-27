@@ -33,6 +33,8 @@ WidgetPackageManager.factory = function(json) {
    return wp;
 };
 
+WidgetPackageManager.widgetPackages = [];
+
 WidgetPackageManager.getAll = function(callback) {
    $.getJSON("rest/widget/package")
       .done(function(data) {
@@ -43,6 +45,39 @@ WidgetPackageManager.getAll = function(callback) {
             return;
          }
          //we add it to the package list
+         var newWidgetPackages = [];
+
+         $.each(data.data.package, function(index, value) {
+            try {
+               newWidgetPackages.push(WidgetPackageManager.factory(value));
+            } catch (err) {
+               notifyError($.t("objects.widgetPackageManager.incorrectPackage"), value);
+            }
+         });
+         
+         //
+         $.each(newWidgetPackages, function(index, newPackage) {
+            if(WidgetPackageManager.widgetPackages[newPackage.type]) {
+               //if already exists and newer
+               if(newPackage.version != WidgetPackageManager.widgetPackages[newPackage.type].version) {
+                  WidgetPackageManager.widgetPackages[newPackage.type] = newPackage;
+               } else {
+                  //already exist, same version, so do nothing
+               }
+            } else {
+               //if not exists
+               WidgetPackageManager.widgetPackages[newPackage.type] = newPackage;
+            }
+         });
+         
+         for(var i = WidgetPackageManager.widgetPackages.length; i>0; i--) {
+            if(!newWidgetPackages[ WidgetPackageManager.widgetPackages[i].type ]) {
+               WidgetPackageManager.widgetPackages.slice(-1,1);
+            }
+         }
+
+         
+         /*
          WidgetPackageManager.widgetPackages = [];
 
          $.each(data.data.package, function(index, value) {
@@ -52,6 +87,8 @@ WidgetPackageManager.getAll = function(callback) {
                notifyError($.t("objects.widgetPackageManager.incorrectPackage"), value);
             }
          });
+                  */
+         
          if ($.isFunction(callback))
             callback();
       })
