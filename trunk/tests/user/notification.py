@@ -22,11 +22,11 @@ def isLastNotification(browser, expectedType, expectedText):
    else:
       assert False
       
-   if (expectedType is not type):
+   if (expectedType != type):
       return False
 
    text = notificationContainer.find_element_by_class_name("noty_text")
-   if (expectedText is not text.text):
+   if (expectedText != text.text):
       return False
    return True
 
@@ -34,4 +34,4 @@ def isLastNotification(browser, expectedType, expectedText):
 def wait(browser, expectedType, expectedText):
    """ Wait for an expected notification """
    WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "noty_bottomRight_layout_container")))
-   WebDriverWait(browser, 10).until(lambda driver: isLastNotification(browser, expectedType, expectedText) != True)
+   WebDriverWait(browser, 10).until(lambda driver: isLastNotification(browser, expectedType, expectedText))

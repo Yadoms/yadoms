@@ -1,17 +1,13 @@
 ﻿import unittest
 from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support.ui import Select
-from selenium.webdriver.support import expected_conditions as Condition
-from selenium.webdriver.common.keys import Keys
 import database
 import scripts
 import yadomsServer
 import dashboard
 import dashboard.automation
-import time
 import notification
+import i18n
 
 class CreateRule(unittest.TestCase):
    """Create rule test"""
@@ -21,7 +17,8 @@ class CreateRule(unittest.TestCase):
       scripts.deleteAll()
       self.serverProcess = yadomsServer.start()
       self.browser = webdriver.Firefox()
-      self.browser.get("http://127.0.0.1:8080")
+      yadomsServer.openClient(self.browser)
+
          
       
    def test_createRule(self):
@@ -61,7 +58,7 @@ class CreateRule(unittest.TestCase):
       # Check created rule
 
       # - notification
-      notification.wait(self.browser, notification.Type.Success, u"Règle créée") # TODO texte à récupérer de l'i18n
+      notification.wait(self.browser, notification.Type.Success, i18n.get()["modals"]["dashboard"]["sub-windows"]["automation-center"]["ruleSuccessfullyCreated"])
       
       
       # - in web client

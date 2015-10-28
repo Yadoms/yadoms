@@ -19,29 +19,28 @@ class StartStopRule(unittest.TestCase):
       scripts.deploy(["DisplayLatitude"])
       self.serverProcess = yadomsServer.start()
       self.browser = webdriver.Firefox()
-      self.browser.get("http://127.0.0.1:8080")
+      yadomsServer.openClient(self.browser)
       
       
    def test_startStopRule(self):
       # Open rules dashboard
       dashboard.open(self.browser)
       dashboard.openAutomation(self.browser)
+      ruleNumber = 0
 
       # Get rule table
       rulesTable = dashboard.automation.waitRulesTableHasNRules(self.browser, 1)
-      ruleDatas = dashboard.automation.getRuleDatas(rulesTable, 0)
-      startStopButton = dashboard.automation.getRuleButtons(ruleDatas[2])[0]
-      ruleStateCell = ruleDatas[3]
+      startStopButton = dashboard.automation.getRuleStartStopButton(rulesTable, ruleNumber)
       
-      assert dashboard.automation.getRuleState(ruleStateCell) is dashboard.automation.RuleState.Stopped
+      assert dashboard.automation.getRuleState(rulesTable, ruleNumber) is dashboard.automation.RuleState.Stopped
       
       # Start rule
       startStopButton.click()
-      WebDriverWait(self.browser, 10).until(lambda driver: dashboard.automation.getRuleState(ruleStateCell) is dashboard.automation.RuleState.Running)
+      WebDriverWait(self.browser, 10).until(lambda driver: dashboard.automation.getRuleState(rulesTable, ruleNumber) is dashboard.automation.RuleState.Running)
 
       # Stop rule
       startStopButton.click()
-      WebDriverWait(self.browser, 10).until(lambda driver: dashboard.automation.getRuleState(ruleStateCell) is dashboard.automation.RuleState.Stopped)
+      WebDriverWait(self.browser, 10).until(lambda driver: dashboard.automation.getRuleState(rulesTable, ruleNumber) is dashboard.automation.RuleState.Stopped)
             
       
    def tearDown(self):
