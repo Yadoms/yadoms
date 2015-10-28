@@ -26,18 +26,26 @@ def getRuleButtons(rulesDataButtonsCell):
    buttonsGroup = rulesDataButtonsCell.find_element_by_class_name("btn-group")
    return buttonsGroup.find_elements_by_xpath("./child::*")
    
-def getRuleEditButton(ruleNumber):
+def getRuleEditButton(rulesTable, ruleNumber):
    """ Rule button is the second button of the buttons group """
    ruleDatas = getRuleDatas(rulesTable, ruleNumber)
    buttons = getRuleButtons(ruleDatas[2])
    assert "btn-edit" in buttons[1].get_attribute("class")
    return buttons[1]
    
+def getRuleStartStopButton(rulesTable, ruleNumber):
+   """ Start/Stop button is the first button of the buttons group """
+   ruleDatas = getRuleDatas(rulesTable, ruleNumber)
+   buttons = getRuleButtons(ruleDatas[2])
+   assert "btn-enableDisable" in buttons[0].get_attribute("class")
+   return buttons[0]
+   
    
 class RuleState:
    Stopped, Running, Error = range(3)
    
-def getRuleState(ruleStateCell):
+def getRuleState(rulesTable, ruleNumber):
+   ruleStateCell = getRuleDatas(rulesTable, ruleNumber)[3]
    if ("label-warning" in ruleStateCell.find_element_by_class_name("label-status").get_attribute("class")):
       return RuleState.Stopped
    if ("label-success" in ruleStateCell.find_element_by_class_name("label-status").get_attribute("class")):
