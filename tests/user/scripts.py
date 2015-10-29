@@ -1,13 +1,24 @@
 ﻿import yadomsServer
 import os.path
 import shutil
+import time
 
 def deleteAll():
-   """Remove all existing rules"""
+   """Remove all existing rules (try while 10 seconds if remove fails)"""
 
    if (os.path.isdir(yadomsServer.scriptsPath())):
-      shutil.rmtree(yadomsServer.scriptsPath())
-         
+      tries = 0
+      while True:
+         try:
+            shutil.rmtree(yadomsServer.scriptsPath())
+            return
+         except:
+            time.sleep(1)
+            tries += 1
+            if tries > 10:
+               print "Unable to delete ", yadomsServer.scriptsPath(), " path"
+               raise
+            
          
 def deploy(scripts):
    """Deploy scripts into Yadoms runtime path. Scripts are deployed in order"""

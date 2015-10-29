@@ -58,7 +58,6 @@ namespace automation
       virtual void updateRule(boost::shared_ptr<const database::entities::CRule> ruleData);
       virtual void updateRuleCode(int id, const std::string& code);
       virtual void deleteRule(int id);
-      virtual void restartRule(int id);
       virtual void signalEvent(const CManagerEvent& event);
       virtual void startAllRulesMatchingInterpreter(const std::string & interpreterName);
       virtual void stopAllRulesMatchingInterpreter(const std::string & interpreterName);
@@ -98,6 +97,13 @@ namespace automation
       ///\param[in] ruleId    The rule ID
       //-----------------------------------------------------
       void stopRule(int ruleId);
+
+      //-----------------------------------------------------
+      ///\brief               Stop the rule and wait for stopped
+      ///\param[in] ruleId    The rule ID
+      ///\throw               CRuleException if timeout
+      //-----------------------------------------------------
+      void stopRuleAndWaitForStopped(int ruleId);
 
       //-----------------------------------------------------
       ///\brief               Called when rule is stopped
@@ -140,6 +146,12 @@ namespace automation
       ///\brief               The rule state handler
       //-----------------------------------------------------
       boost::shared_ptr<IRuleStateHandler> m_ruleStateHandler;
+
+      //-----------------------------------------------------
+      ///\brief               The handlers to notify when a rule stop (potentially several handlers for one rule)
+      //-----------------------------------------------------
+      mutable boost::recursive_mutex m_ruleStopNotififersMutex;
+      std::map<int, std::set<boost::shared_ptr<shared::event::CEventHandler> > > m_ruleStopNotififers;
    };
 	
 } // namespace automation	

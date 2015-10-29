@@ -52,7 +52,7 @@ protected:
    ///\param[in] stopNotifier The rule stop notifier
    ///\param[in] scriptLogger The rule script logger
    //-----------------------------------------------------
-   static void monitor(boost::shared_ptr<IScriptProcess> process,
+   static void monitorThreaded(boost::shared_ptr<IScriptProcess> process,
       boost::shared_ptr<shared::script::IStopNotifier> stopNotifier,
       boost::shared_ptr<shared::script::ILogger> scriptLogger);
 

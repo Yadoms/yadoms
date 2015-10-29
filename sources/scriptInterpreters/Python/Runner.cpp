@@ -39,7 +39,7 @@ void CRunner::start()
    {
       m_process = boost::make_shared<CScriptProcess>(m_executable, m_scriptFile, m_contextAccessor->id(), m_scriptLogger);
 
-      m_monitor = boost::thread(&CRunner::monitor, m_process, m_stopNotifier, m_scriptLogger);
+      m_monitor = boost::thread(&CRunner::monitorThreaded, m_process, m_stopNotifier, m_scriptLogger);
    }
    catch(CPythonException& e)
    {
@@ -56,7 +56,7 @@ void CRunner::requestStop()
       m_process->interrupt();
 }
 
-void CRunner::monitor(
+void CRunner::monitorThreaded(
    boost::shared_ptr<IScriptProcess> process,
    boost::shared_ptr<shared::script::IStopNotifier> stopNotifier,
    boost::shared_ptr<shared::script::ILogger> scriptLogger)
