@@ -40,7 +40,6 @@ namespace web { namespace rest { namespace service {
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)(m_restSubKeywordRule)("*")("log"), CAutomationRule::getRuleLog);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)(m_restSubKeywordRule)("*"), CAutomationRule::updateRule, CAutomationRule::transactionalMethod);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)(m_restSubKeywordRule)("*")("code"), CAutomationRule::updateRuleCode, CAutomationRule::transactionalMethod);
-      REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)(m_restSubKeywordRule)("*")("restart"), CAutomationRule::restartRule, CAutomationRule::transactionalMethod);
    }
 
    shared::CDataContainer CAutomationRule::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const std::string & requestContent)
@@ -298,37 +297,6 @@ namespace web { namespace rest { namespace service {
       catch(...)
       {
          return CResult::GenerateError("unknown exception in deleting a rule");
-      }
-   }
-
-
-   shared::CDataContainer CAutomationRule::restartRule(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
-   {
-      try
-      {
-         if (parameters.size() != 4)
-            throw CRuleException("invalid parameter in URL");
-
-         int instanceId = boost::lexical_cast<int>(parameters[2]);
-         m_rulesManager->restartRule(instanceId);
-         return CResult::GenerateSuccess();
-      }
-      catch (CRuleException& e)
-      {
-         std::string err = std::string("Fail to restart rule : ") + e.what();
-         YADOMS_LOG(error) << err;
-         return CResult::GenerateError(err);
-      }
-      catch(std::exception &ex)
-      {
-         YADOMS_LOG(error) << ex.what();
-         return CResult::GenerateError(ex);
-      }
-      catch(...)
-      {
-         std::string err ("unknown exception in restarting a rule");
-         YADOMS_LOG(error) << err;
-         return CResult::GenerateError(err);
       }
    }
 

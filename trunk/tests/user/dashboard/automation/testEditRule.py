@@ -38,6 +38,7 @@ class EditRule(unittest.TestCase):
       # Modify rule description
       ruleNewDescription = "This is the new rule description"
       dashboard.automation.waitEditRuleModal(self.browser)
+      dashboard.automation.getRuleDescription(self.browser).clear()
       dashboard.automation.getRuleDescription(self.browser).send_keys(ruleNewDescription)
       dashboard.automation.getConfirmConfigureRuleButton(self.browser).click()
       
@@ -47,7 +48,7 @@ class EditRule(unittest.TestCase):
       rulesTable = dashboard.automation.waitRulesTableHasNRules(self.browser, 1)
       ruleDatas = dashboard.automation.getRuleDatas(rulesTable, ruleNumber)
       assert ruleDatas[1].text == ruleNewDescription
-      assert "label-success" in ruleDatas[3].find_element_by_class_name("label-status").get_attribute("class")
+      assert dashboard.automation.getRuleState(rulesTable, ruleNumber) is dashboard.automation.RuleState.Stopped
          
       
    def test_editRunningRule(self):
@@ -64,6 +65,7 @@ class EditRule(unittest.TestCase):
       # Modify rule description
       ruleNewDescription = "This is the new rule description"
       dashboard.automation.waitEditRuleModal(self.browser)
+      dashboard.automation.getRuleDescription(self.browser).clear()
       dashboard.automation.getRuleDescription(self.browser).send_keys(ruleNewDescription)
       dashboard.automation.getConfirmConfigureRuleButton(self.browser).click()
       
@@ -73,7 +75,7 @@ class EditRule(unittest.TestCase):
       rulesTable = dashboard.automation.waitRulesTableHasNRules(self.browser, 1)
       ruleDatas = dashboard.automation.getRuleDatas(rulesTable, ruleNumber)
       assert ruleDatas[1].text == ruleNewDescription
-      assert "label-success" in ruleDatas[3].find_element_by_class_name("label-status").get_attribute("class")
+      assert dashboard.automation.getRuleState(rulesTable, ruleNumber) is dashboard.automation.RuleState.Running
       
       
       

@@ -38,13 +38,30 @@ def start():
    return subprocess.Popen(os.path.join(binaryPath(), "yadoms.exe"))
    
    
+def isProcessRunning(pid):  
+   """Check if the process is running"""
+
+   try:
+      os.kill(pid, 0)
+   except OSError as err:
+      if err.errno == errno.ESRCH:
+         return False
+   return True
+    
+   
 def stop(yadomsProcess):
    """Kill Yadoms server with its sup-processes"""
 
    parent = psutil.Process(yadomsProcess.pid)
+   
    for child in parent.children(True):
       os.kill(child.pid, signal.SIGINT)
+      while not isProcessRunning(child.pid):
+         time.sleep(1)
+         
    os.kill(parent.pid, signal.SIGINT)
+   while not isProcessRunning(parent.pid):
+      time.sleep(1)
 
            
 def restart():

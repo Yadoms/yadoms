@@ -34,7 +34,7 @@ def open(browser):
    getDropDownButton(browser).click()
    WebDriverWait(browser, 10).until(lambda browser: isShowDashboardButtonAvailable(browser))
    getShowDashboardButton(browser).click()
-   WebDriverWait(browser, 10).until(Condition.visibility_of(get(browser)))
+   WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "main-dashboard-modal")))
    return get(browser)
 
    

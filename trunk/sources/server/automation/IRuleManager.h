@@ -80,14 +80,6 @@ namespace automation
       /// \throw                          CInvalidParameter if rule id is unknown
       //--------------------------------------------------------------
       virtual void deleteRule(int id) = 0;
-    
-      //--------------------------------------------------------------
-      /// \brief                          Restart a rule
-      /// \param[in] id                   Rule Id to restart
-      /// \note                           Useful if rule is in error state. No effect if already started
-      /// \throw CRuleException           If error starting rule
-      //--------------------------------------------------------------
-      virtual void restartRule(int id) = 0;
 
       //--------------------------------------------------------------
       /// \brief           Signal an asynchronous event on plugin manager

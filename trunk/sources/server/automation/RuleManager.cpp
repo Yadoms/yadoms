@@ -116,17 +116,49 @@ void CRuleManager::stopRule(int ruleId)
    rule->second->requestStop();
 }
 
+void CRuleManager::stopRuleAndWaitForStopped(int ruleId)
+{
+   boost::shared_ptr<shared::event::CEventHandler> waitForStoppedRuleHandler(boost::make_shared<shared::event::CEventHandler>());
+   {
+      boost::lock_guard<boost::recursive_mutex> lock(m_ruleStopNotififersMutex);
+      m_ruleStopNotififers[ruleId].insert(waitForStoppedRuleHandler);
+   }
+
+   // Stop the rule
+   stopRule(ruleId);
+
+   // Wait for rule stopped
+   if (waitForStoppedRuleHandler->waitForEvents(boost::posix_time::seconds(10)) == shared::event::kTimeout)
+      throw CRuleException("Unable to stop rule");
+
+   {
+      boost::lock_guard<boost::recursive_mutex> lock(m_ruleStopNotififersMutex);
+      m_ruleStopNotififers[ruleId].erase(waitForStoppedRuleHandler);
+   }
+}
+
 void CRuleManager::onRuleStopped(int ruleId, const std::string& error)
 {
-   boost::lock_guard<boost::recursive_mutex> lock(m_startedRulesMutex);
-   std::map<int, boost::shared_ptr<IRule> >::iterator rule = m_startedRules.find(ruleId);
+   {
+      boost::lock_guard<boost::recursive_mutex> lock(m_startedRulesMutex);
+      std::map<int, boost::shared_ptr<IRule> >::iterator rule = m_startedRules.find(ruleId);
 
-   if (rule == m_startedRules.end())
-      return;
+      if (rule == m_startedRules.end())
+         return;
 
-   m_startedRules.erase(rule);
+      m_startedRules.erase(rule);
 
-   recordRuleStopped(ruleId, error);
+      recordRuleStopped(ruleId, error);
+   }
+
+   {
+      // Notify all handlers for this rule
+      boost::lock_guard<boost::recursive_mutex> lock(m_ruleStopNotififersMutex);
+      std::map<int, std::set<boost::shared_ptr<shared::event::CEventHandler> > >::const_iterator itEventHandlerSetToNotify = m_ruleStopNotififers.find(ruleId);
+      if (itEventHandlerSetToNotify != m_ruleStopNotififers.end())
+         for (std::set<boost::shared_ptr<shared::event::CEventHandler> >::const_iterator itHandler = itEventHandlerSetToNotify->second.begin(); itHandler != itEventHandlerSetToNotify->second.end(); ++itHandler)
+            (*itHandler)->postEvent(shared::event::kUserFirstId);
+   }
 }
 
 bool CRuleManager::isRuleStarted(int ruleId)
@@ -214,7 +246,7 @@ void CRuleManager::updateRule(boost::shared_ptr<const database::entities::CRule>
          if (ruleData->Enabled())
             startRule(ruleData->Id());
          else
-            stopRule(ruleData->Id());
+            stopRuleAndWaitForStopped(ruleData->Id());
       }
    }
 }
@@ -224,7 +256,7 @@ void CRuleManager::updateRuleCode(int id, const std::string& code)
    // If rule was started, must be stopped to update its configuration
    bool ruleWasStarted = isRuleStarted(id);
    if (ruleWasStarted)
-      stopRule(id);
+      stopRuleAndWaitForStopped(id);
 
    // Update script file
    boost::shared_ptr<database::entities::CRule> ruleData(m_ruleRequester->getRule(id));
@@ -242,7 +274,7 @@ void CRuleManager::deleteRule(int id)
       boost::shared_ptr<database::entities::CRule> ruleData(m_ruleRequester->getRule(id));
 
       // Stop the rule
-      stopRule(id);
+      stopRuleAndWaitForStopped(id);
 
       // Remove in database
       m_ruleRequester->deleteRule(id);
@@ -255,18 +287,6 @@ void CRuleManager::deleteRule(int id)
       YADOMS_LOG(error) << "Unable to delete rule (" << id << ") : " << e.what();
       throw shared::exception::CInvalidParameter(boost::lexical_cast<std::string>(id));
    }
-}
-
-void CRuleManager::restartRule(int id)
-{
-   if (isRuleStarted(id))
-      throw CRuleException((boost::format("Rule %1% already started") % id).str());
-
-   boost::shared_ptr<const database::entities::CRule> ruleData(m_ruleRequester->getRule(id));
-   if (ruleData->State() != database::entities::ERuleState::kErrorValue)
-      throw CRuleException((boost::format("Rule %1% not in error state, can not be restarted") % id).str());
-
-   startRule(id);
 }
 
 void CRuleManager::signalEvent(const CManagerEvent& event)
@@ -307,7 +327,7 @@ void CRuleManager::stopAllRulesMatchingInterpreter(const std::string & interpret
    for (std::vector<boost::shared_ptr<database::entities::CRule> >::const_iterator interpreterRule = interpreterRules.begin(); interpreterRule != interpreterRules.end(); ++interpreterRule)
    {
       if (isRuleStarted((*interpreterRule)->Id()))
-         stopRule((*interpreterRule)->Id());
+         stopRuleAndWaitForStopped((*interpreterRule)->Id());
    }
 
    // We can unload the interpreter as it is not used anymore (will be automaticaly re-loaded when needed by a rule)
