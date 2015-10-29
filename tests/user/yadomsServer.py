@@ -4,13 +4,16 @@ import time
 import os
 import os.path
 import psutil
+import platform
 from selenium.webdriver.support.ui import WebDriverWait
 
 def binaryPath():
    """return the server binary path"""
    
-   # TODO dépend de l'OS
-   return os.path.join("..", "..", "builds", "DEBUG")
+   if (platform.system() == "Windows"):
+      return os.path.join("..", "..", "builds", "DEBUG")
+   else:
+      return os.path.join("..", "..", "builds")
    
    
 def databasePath():
@@ -34,8 +37,10 @@ def wwwLocalesPath():
 def start():
    """Start the Yadoms server"""
    
-   # TODO nom de l'exécutable OS-dependant
-   return subprocess.Popen(os.path.join(binaryPath(), "yadoms.exe"))
+   if (platform.system() == "Windows"):
+      return subprocess.Popen(os.path.join(binaryPath(), "yadoms.exe"))
+   else:
+      return subprocess.Popen(os.path.join(binaryPath(), "yadoms"))
    
    
 def isProcessRunning(pid):  
