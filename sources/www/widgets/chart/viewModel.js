@@ -25,12 +25,9 @@ widgetViewModelCtor =
       this.widget = widget;
       var self = this;
 
-		 self.ChartPromise = new PromiseCounter ();
-
       // create the chart
       this.$chart = self.widget.$gridWidget.find("div.chartWidgetContainer");
 
-      
       this.chartOption = {
          chart: {
             type: 'line',
@@ -206,7 +203,7 @@ widgetViewModelCtor =
       self.devicesList = self.widget.configuration.devices.slice(0);
       
       
-      self.ChartPromise.Initialize(self.devicesList.length, this.refreshData.bind(this), this.widget.configuration.interval);
+	  self.ChartPromise = new PromiseCounter (self.devicesList.length, this.refreshData.bind(this), this.widget.configuration.interval);
 
       //we create an uuid for each serie
       $.each(self.widget.configuration.devices, function(index, device) {
@@ -352,8 +349,7 @@ widgetViewModelCtor =
             while (self.chart.yAxis.length > 0)
               self.chart.yAxis[0].remove(false);
            
-            var SeriesPromise = new PromiseCounter ();
-            SeriesPromise.Initialize ( self.widget.configuration.devices.length, this.finalRefresh.bind(this), null);
+            var SeriesPromise = new PromiseCounter (self.widget.configuration.devices.length, this.finalRefresh.bind(this), null);
 			
             //for each plot in the configuration we request for data
             $.each(self.widget.configuration.devices, function(index, device) {
