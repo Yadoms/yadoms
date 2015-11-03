@@ -8,30 +8,77 @@ class Type:
    Success, Information, Warning, Error = range(4)
    
    
-def isLastNotification(browser, expectedType, expectedText):
-   notificationContainer = browser.find_element_by_id("noty_bottomRight_layout_container")
-
-   if notificationContainer.find_element_by_class_name("noty_type_success"):
-      type = Type.Success
-   elif notificationContainer.find_element_by_class_name("noty_type_information"):
-      type = Type.Information
-   elif notificationContainer.find_element_by_class_name("noty_type_warning"):
-      type = Type.Warning
-   elif notificationContainer.find_element_by_class_name("noty_type_error"):
-      type = Type.Error
+class Notification:
+   def __init__(self, type, text):
+      self.type = type
+      self.text = text
+   
+   def getType(self):
+      return self.type
+   
+   def getText(self):
+      return self.text
+      
+   def __eq__(self, other):
+      """Operator == overload"""
+      return self.type == other.type and self.text == other.text
+      
+   def Contains(self, other):
+      """Similar to == operator but expected text must only be contained in notification text"""
+      return self.type == other.type and other.text in self.text
+      
+      
+def readType(notificationElement):
+   divElement = notificationElement.find_element_by_tag_name("div")
+   if "noty_type_success" in divElement.get_attribute("class"):
+      return Type.Success
+   elif "noty_type_information" in divElement.get_attribute("class"):
+      return Type.Information
+   elif "noty_type_warning" in divElement.get_attribute("class"):
+      return Type.Warning
+   elif "noty_type_error" in divElement.get_attribute("class"):
+      return Type.Error
    else:
       assert False
       
-   if (expectedType != type):
-      return False
-
-   text = notificationContainer.find_element_by_class_name("noty_text")
-   if (expectedText != text.text):
-      return False
-   return True
+      
+def readText(notificationElement):
+   textContainerElement = notificationElement.find_element_by_tag_name("div").find_element_by_tag_name("div").find_element_by_tag_name("span")
+   return textContainerElement.text
+      
+   
+def getCurrentNotifications(browser):
+   """Return a list containing currently displayed notifications"""
+   notificationContainer = browser.find_element_by_id("noty_bottomRight_layout_container")
+   notifications = []
+   if not notificationContainer.is_displayed():
+      return notifications
+   for notificationElement in notificationContainer.find_elements_by_tag_name("li"):
+      notifications.append(Notification(readType(notificationElement), readText(notificationElement)))
+   return notifications
+   
+   
+def isNotification(browser, expectedType, expectedText):
+   for notification in getCurrentNotifications(browser):
+      if Notification(expectedType, expectedText) == notification:
+         return True
+   return False
+   
+   
+def isNotificationContainingText(browser, expectedType, expectedSubText):
+   for notification in getCurrentNotifications(browser):
+      if notification.Contains(Notification(expectedType, expectedSubText)):
+         return True
+   return False
 
 
 def wait(browser, expectedType, expectedText):
    """ Wait for an expected notification """
    WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "noty_bottomRight_layout_container")))
-   WebDriverWait(browser, 10).until(lambda driver: isLastNotification(browser, expectedType, expectedText))
+   WebDriverWait(browser, 10).until(lambda driver: isNotification(browser, expectedType, expectedText))
+
+
+def waitIn(browser, expectedType, expectedSubText):
+   """ Wait for a notification contining expected text"""
+   WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "noty_bottomRight_layout_container")))
+   WebDriverWait(browser, 10).until(lambda driver: isNotificationContainingText(browser, expectedType, expectedSubText))
