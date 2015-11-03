@@ -1,4 +1,5 @@
 ﻿import yadomsServer
+import resources
 import os
 import os.path
 import shutil
@@ -6,8 +7,7 @@ import shutil
 def new():
    """Use a new database (= delete database if exist)"""
 
-   if (os.path.isfile(yadomsServer.databasePath())):
-      os.remove(yadomsServer.databasePath())
+   resources.deleteFile(yadomsServer.databasePath())
 
          
 def withOneStoppedRule():
