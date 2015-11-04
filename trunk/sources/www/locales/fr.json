@@ -336,6 +336,7 @@
 					"confirmDeletion": "Confirmez-vous la suppression de la règle __name__ ?",
 					"ruleSuccessfullyCreated": "Règle créée",
 					"ruleSuccessfullyUpdated": "Règle mise à jour",
+					"ruleDeleted": "Règle supprimée",
 					"editors": {
 						"code": {
 							"name": "Code",
