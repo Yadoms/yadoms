@@ -32,7 +32,7 @@ class StartStopRule(unittest.TestCase):
       rulesTable = dashboard.automation.waitRulesTableHasNRules(self.browser, 1)
       startStopButton = dashboard.automation.getRuleStartStopButton(rulesTable, ruleNumber)
       
-      assert dashboard.automation.getRuleState(rulesTable, ruleNumber) is dashboard.automation.RuleState.Stopped
+      self.assertEqual(dashboard.automation.getRuleState(rulesTable, ruleNumber), dashboard.automation.RuleState.Stopped)
       
       # Start rule
       startStopButton.click()

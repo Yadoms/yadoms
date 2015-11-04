@@ -47,8 +47,8 @@ class EditRule(unittest.TestCase):
       
       rulesTable = dashboard.automation.waitRulesTableHasNRules(self.browser, 1)
       ruleDatas = dashboard.automation.getRuleDatas(rulesTable, ruleNumber)
-      assert ruleDatas[1].text == ruleNewDescription
-      assert dashboard.automation.getRuleState(rulesTable, ruleNumber) is dashboard.automation.RuleState.Stopped
+      self.assertEqual(ruleDatas[1].text, ruleNewDescription)
+      self.assertEqual(dashboard.automation.getRuleState(rulesTable, ruleNumber), dashboard.automation.RuleState.Stopped)
          
       
    def test_editRunningRule(self):
@@ -74,8 +74,8 @@ class EditRule(unittest.TestCase):
       
       rulesTable = dashboard.automation.waitRulesTableHasNRules(self.browser, 1)
       ruleDatas = dashboard.automation.getRuleDatas(rulesTable, ruleNumber)
-      assert ruleDatas[1].text == ruleNewDescription
-      assert dashboard.automation.getRuleState(rulesTable, ruleNumber) is dashboard.automation.RuleState.Running
+      self.assertEqual(ruleDatas[1].text, ruleNewDescription)
+      self.assertEqual(dashboard.automation.getRuleState(rulesTable, ruleNumber), dashboard.automation.RuleState.Running)
       
       
       

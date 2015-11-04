@@ -128,7 +128,7 @@ def getConfigurationItem(browser, configurationPanel, dataI18nString):
          return controlContent
             
    # Not found
-   assert(False)
+   assert False
       
 
 def getInterpreterSelector(browser):
