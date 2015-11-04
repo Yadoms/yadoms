@@ -1,7 +1,8 @@
 ﻿from selenium.webdriver.support import expected_conditions as Condition
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
-
+from selenium.common.exceptions import NoSuchElementException
+import tools
 
    
 class Type:
@@ -49,10 +50,16 @@ def readText(notificationElement):
    
 def getCurrentNotifications(browser):
    """Return a list containing currently displayed notifications"""
-   notificationContainer = browser.find_element_by_id("noty_bottomRight_layout_container")
    notifications = []
+   
+   try:
+      notificationContainer = browser.find_element_by_id("noty_bottomRight_layout_container")
+   except NoSuchElementException:
+      return notifications
+      
    if not notificationContainer.is_displayed():
       return notifications
+      
    for notificationElement in notificationContainer.find_elements_by_tag_name("li"):
       notifications.append(Notification(readType(notificationElement), readText(notificationElement)))
    return notifications
@@ -82,3 +89,8 @@ def waitIn(browser, expectedType, expectedSubText):
    """ Wait for a notification contining expected text"""
    WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "noty_bottomRight_layout_container")))
    WebDriverWait(browser, 10).until(lambda driver: isNotificationContainingText(browser, expectedType, expectedSubText))
+   
+   
+def noNotification(browser, timeout = 5):
+   """ Check that no notification is pushed for the timeout"""
+   return tools.waitUntil(lambda: len(getCurrentNotifications(browser)) != 0, timeout) == False
