@@ -27,7 +27,7 @@ class RemoveRule(unittest.TestCase):
       
       
    def initialConditionsForRemoveStoppedRuleTest(self, rulesTable, ruleNumber):
-      assert dashboard.automation.getRuleState(rulesTable, ruleNumber) is dashboard.automation.RuleState.Stopped
+      self.assertEqual(dashboard.automation.getRuleState(rulesTable, ruleNumber), dashboard.automation.RuleState.Stopped)
    
    def test_removeStoppedRule(self):
       self.doTest_removeRule(lambda rulesTable, ruleNumber: self.initialConditionsForRemoveStoppedRuleTest(rulesTable, ruleNumber))
@@ -35,7 +35,7 @@ class RemoveRule(unittest.TestCase):
       
    def initialConditionsForRemoveRunningRuleTest(self, rulesTable, ruleNumber):
       dashboard.automation.getRuleStartStopButton(rulesTable, ruleNumber)
-      tools.waitUntil(lambda: dashboard.automation.getRuleState(rulesTable, ruleNumber) is dashboard.automation.RuleState.Running)
+      self.assertEqual(tools.waitUntil(lambda: dashboard.automation.getRuleState(rulesTable, ruleNumber), dashboard.automation.RuleState.Running))
    
    def test_removeRunningRule(self):
       self.doTest_removeRule(lambda rulesTable, ruleNumber: self.initialConditionsForRemoveRunningRuleTest(rulesTable, ruleNumber))
@@ -61,7 +61,7 @@ class RemoveRule(unittest.TestCase):
       # Notification expected
       notification.wait(self.browser, notification.Type.Success, i18n.get()["modals"]["dashboard"]["sub-windows"]["automation-center"]["ruleDeleted"])
       # Table should be updated
-      assert tools.waitUntil(lambda: dashboard.automation.getRuleNumberInTable(self.browser, rulesTable) == 0, 5)
+      self.assertTrue(tools.waitUntil(lambda: dashboard.automation.getRuleNumberInTable(self.browser, rulesTable) == 0, 5))
   
       
       
@@ -75,7 +75,7 @@ class RemoveRule(unittest.TestCase):
       rulesTable = dashboard.automation.waitRulesTableHasNRules(self.browser, 1)
       removeButton = dashboard.automation.getRuleRemoveButton(rulesTable, ruleNumber)
       
-      assert dashboard.automation.getRuleState(rulesTable, ruleNumber) is dashboard.automation.RuleState.Stopped
+      self.assertEqual(dashboard.automation.getRuleState(rulesTable, ruleNumber), dashboard.automation.RuleState.Stopped)
       
       # Remove rule
       removeButton.click()
@@ -83,9 +83,9 @@ class RemoveRule(unittest.TestCase):
       dashboard.automation.getRuleRemovingConfirmationModalCancelButton(confirmationModal).click()
       
       # No notification expected
-      assert notification.noNotification(self.browser)
+      self.assertTrue(notification.noNotification(self.browser))
       # No change in rule table    
-      assert dashboard.automation.getRuleNumberInTable(self.browser, rulesTable) is 1
+      self.assertEqual(dashboard.automation.getRuleNumberInTable(self.browser, rulesTable), 1)
       
       
    def tearDown(self):
