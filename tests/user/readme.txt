@@ -23,7 +23,13 @@ python -m pip install {Path_to_downloaded_file}\{Module_to_install}.whl
 ==========================
 Run a test
 ==========================
-- Start the server (yadoms executable)
-- Always start test from the {Yadoms_trunk_path}\tests\user
-- Run it :
+First you need to be into the root of user tests :
+   cd {Yadoms_trunk_path}\tests\user
+   
+   
+To run all tests :
+   python -m unittest discover
+   
+To run tests of a specific module :
    python -m dashboard.automation.testCreateRule
+   
