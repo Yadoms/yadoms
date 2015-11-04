@@ -15,8 +15,11 @@ def waitRulesTable(browser):
 
 def waitRulesTableHasNRules(browser, rulesNumberExpected):
    rulesTable = waitRulesTable(browser)
-   WebDriverWait(browser, 10).until(lambda driver: len(rulesTable.find_elements_by_tag_name("tr")) == (rulesNumberExpected + 1))
+   WebDriverWait(browser, 10).until(lambda driver: getRuleNumberInTable(browser, rulesTable) == rulesNumberExpected)
    return rulesTable
+
+def getRuleNumberInTable(browser, rulesTable):
+   return len(rulesTable.find_elements_by_tag_name("tr")) - 1
    
 def getRuleDatas(rulesTable, ruleNumber):
    rule = rulesTable.find_elements_by_tag_name("tr")[ruleNumber + 1]
@@ -26,19 +29,27 @@ def getRuleButtons(rulesDataButtonsCell):
    buttonsGroup = rulesDataButtonsCell.find_element_by_class_name("btn-group")
    return buttonsGroup.find_elements_by_xpath("./child::*")
    
-def getRuleEditButton(rulesTable, ruleNumber):
-   """ Rule button is the second button of the buttons group """
-   ruleDatas = getRuleDatas(rulesTable, ruleNumber)
-   buttons = getRuleButtons(ruleDatas[2])
-   assert "btn-edit" in buttons[1].get_attribute("class")
-   return buttons[1]
+def getRuleButton(rulesDataButtonsCell, index):
+   buttons = getRuleButtons(rulesDataButtonsCell)
+   return buttons[index]
    
 def getRuleStartStopButton(rulesTable, ruleNumber):
    """ Start/Stop button is the first button of the buttons group """
-   ruleDatas = getRuleDatas(rulesTable, ruleNumber)
-   buttons = getRuleButtons(ruleDatas[2])
-   assert "btn-enableDisable" in buttons[0].get_attribute("class")
-   return buttons[0]
+   button = getRuleButton(getRuleDatas(rulesTable, ruleNumber)[2], 0)
+   assert "btn-enableDisable" in button.get_attribute("class")
+   return button
+   
+def getRuleEditButton(rulesTable, ruleNumber):
+   """ Edit button is the second button of the buttons group """
+   button = getRuleButton(getRuleDatas(rulesTable, ruleNumber)[2], 1)
+   assert "btn-edit" in button.get_attribute("class")
+   return button
+   
+def getRuleRemoveButton(rulesTable, ruleNumber):
+   """ Remove button is the third button of the buttons group """
+   button = getRuleButton(getRuleDatas(rulesTable, ruleNumber)[2], 2)
+   assert "btn-delete" in button.get_attribute("class")
+   return button
    
    
 class RuleState:
@@ -73,7 +84,26 @@ def getEditorSelectionButton(browser, expectedButtonId):
    assert False
 
    
+""" Operations on delete rule confirmation modal """
+
+def waitRuleRemovingConfirmationModal(browser):
+   editorButtonsContainer = WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "confirmation-modal")))
+   return browser.find_element_by_id("confirmation-modal")
+   
+def getRuleRemovingConfirmationModalText(modal):
+   return modal.find_element_by_class_name("modal-body").text
+
+def getRuleRemovingConfirmationModalOkButton(modal):
+   footer = modal.find_element_by_class_name("modal-footer")
+   return footer.find_element_by_class_name("btn-confirm")
+   
+def getRuleRemovingConfirmationModalCancelButton(modal):
+   footer = modal.find_element_by_class_name("modal-footer")
+   return footer.find_element_by_class_name("btn-cancel")
+   
+
 """ Operations on rule edition modal """
+
 def waitEditRuleModal(browser):
    editorButtonsContainer = WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "edit-automation-rule-modal")))
    return browser.find_element_by_id("edit-automation-rule-modal")

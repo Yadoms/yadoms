@@ -336,6 +336,7 @@
 					"confirmDeletion": "This action will delete the rule __name__. Continue anyway ?",
 					"ruleSuccessfullyCreated": "Rule successfully created",
 					"ruleSuccessfullyUpdated": "Rule successfully updated",
+					"ruleDeleted": "Règle supprimée",
 					"editors": {
 						"code": {
 							"name": "Code",
