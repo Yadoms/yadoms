@@ -358,7 +358,7 @@ void CRuleManager::recordRuleStopped(int ruleId, const std::string& error)
 {
    boost::shared_ptr<database::entities::CRule> ruleData(new database::entities::CRule);
    ruleData->Id = ruleId;
-   ruleData->State = database::entities::ERuleState::kStoppedValue;
+   ruleData->State = error.empty() ? database::entities::ERuleState::kStoppedValue : database::entities::ERuleState::kErrorValue;
    ruleData->StopDate = shared::currentTime::Provider::now();
    ruleData->ErrorMessage = error;
    m_ruleRequester->updateRule(ruleData);
