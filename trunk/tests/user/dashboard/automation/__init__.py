@@ -8,6 +8,11 @@ from selenium.webdriver.common.keys import Keys
 
 def getCreateRuleButton(browser):
    return browser.find_element_by_id("btn-add-new-automation-rule")
+   
+def waitNewRuleModal(browser):
+   editorButtonsContainer = WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "automation-rule-new-modal")))
+   return NewRuleModal(browser.find_element_by_id("automation-rule-new-modal"))
+   
       
 def waitRulesTable(browser):
    WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "automation-rule-list")))
@@ -51,6 +56,16 @@ def getRuleRemoveButton(rulesTable, ruleNumber):
    assert "btn-delete" in button.get_attribute("class")
    return button
    
+
+def waitEditRuleModal(browser):
+   editorButtonsContainer = WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "edit-automation-rule-modal")))
+   return EditRuleModal(browser.find_element_by_id("edit-automation-rule-modal"))
+
+def waitRemoveRuleConfirmationModal(browser):
+   editorButtonsContainer = WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "confirmation-modal")))
+   return RemoveRuleConfirmationModal(browser.find_element_by_id("confirmation-modal"))
+   
+   
    
 class RuleState:
    Stopped, Running, Error = range(3)
@@ -64,90 +79,87 @@ def getRuleState(rulesTable, ruleNumber):
    if ("label-danger" in ruleStateCell.find_element_by_class_name("label-status").get_attribute("class")):
       return RuleState.Error
    assert False   
-      
-      
-      
-""" Operations on new rule modal (interpreter selection) """
-
-def waitEditorSelectionModal(browser):
-   editorButtonsContainer = WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "automation-rule-new-modal")))
-   return browser.find_element_by_id("automation-rule-new-modal")
-
-
-def getEditorSelectionButton(browser, expectedButtonId):
-   editorButtonsContainer = WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.CLASS_NAME, "editor-btns")))
-   editorButtons = editorButtonsContainer.find_elements_by_xpath("./child::*")
-   codeButtonFound = False
-   for editorButton in editorButtons:
-      if (editorButton.find_element_by_tag_name("span").get_attribute("id") == expectedButtonId):
-         return editorButton
-   assert False
 
    
-""" Operations on delete rule confirmation modal """
-
-def waitRuleRemovingConfirmationModal(browser):
-   editorButtonsContainer = WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "confirmation-modal")))
-   return browser.find_element_by_id("confirmation-modal")
    
-def getRuleRemovingConfirmationModalText(modal):
-   return modal.find_element_by_class_name("modal-body").text
-
-def getRuleRemovingConfirmationModalOkButton(modal):
-   footer = modal.find_element_by_class_name("modal-footer")
-   return footer.find_element_by_class_name("btn-confirm")
+class NewRuleModal():
+   """ Operations on new rule modal (interpreter selection) """
    
-def getRuleRemovingConfirmationModalCancelButton(modal):
-   footer = modal.find_element_by_class_name("modal-footer")
-   return footer.find_element_by_class_name("btn-cancel")
-   
+   def __init__(self, newRuleModalWebElement):
+       self.__newRuleModalWebElement = newRuleModalWebElement
 
-""" Operations on rule edition modal """
+   def getEditorSelectionButton(self, expectedButtonId):
+      editorButtonsContainer = WebDriverWait(self.__newRuleModalWebElement, 10).until(Condition.visibility_of_element_located((By.CLASS_NAME, "editor-btns")))
+      editorButtons = editorButtonsContainer.find_elements_by_xpath("./child::*")
+      codeButtonFound = False
+      for editorButton in editorButtons:
+         if (editorButton.find_element_by_tag_name("span").get_attribute("id") == expectedButtonId):
+            return editorButton
+      assert False
 
-def waitEditRuleModal(browser):
-   editorButtonsContainer = WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "edit-automation-rule-modal")))
-   return browser.find_element_by_id("edit-automation-rule-modal")
+
    
 
-def waitEditRuleModal(browser):
-   editorButtonsContainer = WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "edit-automation-rule-modal")))
-   return browser.find_element_by_id("edit-automation-rule-modal")
+class RemoveRuleConfirmationModal():
+   """ Operations on delete rule confirmation modal """
    
+   def __init__(self, removeRuleConfirmationModalWebElement):
+       self.__removeRuleConfirmationModalWebElement = removeRuleConfirmationModalWebElement
+   
+   def getRuleRemovingConfirmationModalText(self):
+      return self.__removeRuleConfirmationModalWebElement.find_element_by_class_name("modal-body").text
 
-def getConfigurationItem(browser, configurationPanel, dataI18nString):
-   """ Find a configuration item by its "data-i18n" field """
-   controlGroups = configurationPanel.find_elements_by_class_name("control-group")
-   for controlGroup in controlGroups:
-      control = controlGroup.find_element_by_class_name("configuration-control")
-
-      controlContents = control.find_elements_by_xpath("./child::*")
-      assert len(controlContents) > 0
-      controlContent = controlContents[0] # Can be select, input, etc...
+   def getRuleRemovingConfirmationModalOkButton(self):
+      footer = self.__removeRuleConfirmationModalWebElement.find_element_by_class_name("modal-footer")
+      return footer.find_element_by_class_name("btn-confirm")
       
-      if (controlContent.get_attribute("data-i18n") == dataI18nString):
-         return controlContent
-            
-   # Not found
-   assert False
+   def getRuleRemovingConfirmationModalCancelButton(self):
+      footer = self.__removeRuleConfirmationModalWebElement.find_element_by_class_name("modal-footer")
+      return footer.find_element_by_class_name("btn-cancel")
+   
+
+
+
+class EditRuleModal():
+   """ Operations on rule edition modal """
+   
+   def __init__(self, editRuleModalWebElement):
+       self.__editRuleModalWebElement = editRuleModalWebElement
+
+   def __getConfigurationItem(self, configurationPanel, dataI18nString):
+      """ Find a configuration item by its "data-i18n" field """
+      controlGroups = configurationPanel.find_elements_by_class_name("control-group")
+      for controlGroup in controlGroups:
+         control = controlGroup.find_element_by_class_name("configuration-control")
+
+         controlContents = control.find_elements_by_xpath("./child::*")
+         assert len(controlContents) > 0
+         controlContent = controlContents[0] # Can be select, input, etc...
+         
+         if (controlContent.get_attribute("data-i18n") == dataI18nString):
+            return controlContent
+               
+      # Not found
+      assert False      
+
+   def getInterpreterSelector(self, browser):
+      ruleConfigurationPanel = browser.find_element_by_id("automation-rule-configuration")
+      return self.__getConfigurationItem(ruleConfigurationPanel, "[data-content]modals.edit-automation-rule.interpreter-rule.description")
+
+   def getRuleName(self, browser):
+      ruleConfigurationPanel = browser.find_element_by_id("automation-rule-configuration")
+      return self.__getConfigurationItem(ruleConfigurationPanel, "[data-content]modals.edit-automation-rule.name-rule.description")
+
+   def getRuleDescription(self, browser):
+      ruleConfigurationPanel = browser.find_element_by_id("automation-rule-configuration")
+      return self.__getConfigurationItem(ruleConfigurationPanel, "[data-content]modals.edit-automation-rule.description-rule.description")
+
+   def getRuleCodeEditor(self, browser):
+      return AceCodeEditor(browser.find_element_by_class_name("ace_text-input"))
+         
+   def getConfirmConfigureRuleButton(self, browser):
+      return browser.find_element_by_id("btn-confirm-configure-rule")
       
-
-def getInterpreterSelector(browser):
-   ruleConfigurationPanel = browser.find_element_by_id("automation-rule-configuration")
-   return getConfigurationItem(browser, ruleConfigurationPanel, "[data-content]modals.edit-automation-rule.interpreter-rule.description")
-
-def getRuleName(browser):
-   ruleConfigurationPanel = browser.find_element_by_id("automation-rule-configuration")
-   return getConfigurationItem(browser, ruleConfigurationPanel, "[data-content]modals.edit-automation-rule.name-rule.description")
-
-def getRuleDescription(browser):
-   ruleConfigurationPanel = browser.find_element_by_id("automation-rule-configuration")
-   return getConfigurationItem(browser, ruleConfigurationPanel, "[data-content]modals.edit-automation-rule.description-rule.description")
-
-def getRuleCodeEditor(browser):
-   return AceCodeEditor(browser.find_element_by_class_name("ace_text-input"))
-      
-def getConfirmConfigureRuleButton(browser):
-   return browser.find_element_by_id("btn-confirm-configure-rule")
 
 
 class AceCodeEditor:

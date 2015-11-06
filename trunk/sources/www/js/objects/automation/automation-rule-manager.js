@@ -78,23 +78,6 @@ AutomationRuleManager.get = function (callback) {
       .fail(function() {notifyError($.t("objects.generic.errorGetting", {objectName : "automation rules"}));});
 };
 
-AutomationRuleManager.getOne = function (ruleId, callback) {
-   assert(!isNullOrUndefined(ruleId), "ruleId must be defined");
-   assert($.isFunction(callback), "callback must be a function");
-
-   $.getJSON("rest/automation/rule/" + ruleId)
-      .done(function( data ) {
-         //we parse the json answer
-         if (data.result != "true")
-         {
-            notifyError($.t("objects.generic.errorGetting", {objectName : "automation rules"}), JSON.stringify(data));
-            return;
-         }
-         callback(AutomationRuleManager.factory(data.data));
-      })
-      .fail(function() {notifyError($.t("objects.generic.errorGetting", {objectName : "automation rules"}));});
-}
-
 AutomationRuleManager.deleteFromServer = function(rule, callback) {
    assert(!isNullOrUndefined(rule), "rule must be defined");
 

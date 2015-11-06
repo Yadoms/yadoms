@@ -37,10 +37,10 @@ class EditRule(unittest.TestCase):
       
       # Modify rule description
       ruleNewDescription = "This is the new rule description"
-      dashboard.automation.waitEditRuleModal(self.browser)
-      dashboard.automation.getRuleDescription(self.browser).clear()
-      dashboard.automation.getRuleDescription(self.browser).send_keys(ruleNewDescription)
-      dashboard.automation.getConfirmConfigureRuleButton(self.browser).click()
+      editRuleModal = dashboard.automation.waitEditRuleModal(self.browser)
+      editRuleModal.getRuleDescription(self.browser).clear()
+      editRuleModal.getRuleDescription(self.browser).send_keys(ruleNewDescription)
+      editRuleModal.getConfirmConfigureRuleButton(self.browser).click()
       
       # Check modified rule
       notification.wait(self.browser, notification.Type.Success, i18n.get()["modals"]["dashboard"]["sub-windows"]["automation-center"]["ruleSuccessfullyUpdated"])
@@ -64,10 +64,10 @@ class EditRule(unittest.TestCase):
       
       # Modify rule description
       ruleNewDescription = "This is the new rule description"
-      dashboard.automation.waitEditRuleModal(self.browser)
-      dashboard.automation.getRuleDescription(self.browser).clear()
-      dashboard.automation.getRuleDescription(self.browser).send_keys(ruleNewDescription)
-      dashboard.automation.getConfirmConfigureRuleButton(self.browser).click()
+      editRuleModal = dashboard.automation.waitEditRuleModal(self.browser)
+      editRuleModal.getRuleDescription(self.browser).clear()
+      editRuleModal.getRuleDescription(self.browser).send_keys(ruleNewDescription)
+      editRuleModal.getConfirmConfigureRuleButton(self.browser).click()
       
       # Check modified rule
       notification.wait(self.browser, notification.Type.Success, i18n.get()["modals"]["dashboard"]["sub-windows"]["automation-center"]["ruleSuccessfullyUpdated"])

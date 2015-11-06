@@ -124,12 +124,15 @@ void CRuleManager::stopRuleAndWaitForStopped(int ruleId)
       m_ruleStopNotififers[ruleId].insert(waitForStoppedRuleHandler);
    }
 
-   // Stop the rule
-   stopRule(ruleId);
+   if (isRuleStarted(ruleId))
+   {
+      // Stop the rule
+      stopRule(ruleId);
 
-   // Wait for rule stopped
-   if (waitForStoppedRuleHandler->waitForEvents(boost::posix_time::seconds(10)) == shared::event::kTimeout)
-      throw CRuleException("Unable to stop rule");
+      // Wait for rule stopped
+      if (waitForStoppedRuleHandler->waitForEvents(boost::posix_time::seconds(10)) == shared::event::kTimeout)
+         throw CRuleException("Unable to stop rule");
+   }
 
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_ruleStopNotififersMutex);
@@ -186,7 +189,7 @@ int CRuleManager::createRule(boost::shared_ptr<const database::entities::CRule> 
    // Start the rule
    startRule(ruleId);
 
-   return ruleId;   
+   return ruleId;
 }
 
 boost::shared_ptr<database::entities::CRule> CRuleManager::getRule(int id) const

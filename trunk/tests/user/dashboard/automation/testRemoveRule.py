@@ -34,8 +34,8 @@ class RemoveRule(unittest.TestCase):
       
       
    def initialConditionsForRemoveRunningRuleTest(self, rulesTable, ruleNumber):
-      dashboard.automation.getRuleStartStopButton(rulesTable, ruleNumber)
-      self.assertEqual(tools.waitUntil(lambda: dashboard.automation.getRuleState(rulesTable, ruleNumber), dashboard.automation.RuleState.Running))
+      dashboard.automation.getRuleStartStopButton(rulesTable, ruleNumber).click()
+      self.assertTrue(tools.waitUntil(lambda: dashboard.automation.getRuleState(rulesTable, ruleNumber), dashboard.automation.RuleState.Running))
    
    def test_removeRunningRule(self):
       self.doTest_removeRule(lambda rulesTable, ruleNumber: self.initialConditionsForRemoveRunningRuleTest(rulesTable, ruleNumber))
@@ -55,8 +55,8 @@ class RemoveRule(unittest.TestCase):
       
       # Remove rule
       removeButton.click()
-      confirmationModal = dashboard.automation.waitRuleRemovingConfirmationModal(self.browser)
-      dashboard.automation.getRuleRemovingConfirmationModalOkButton(confirmationModal).click()
+      confirmationModal = dashboard.automation.waitRemoveRuleConfirmationModal(self.browser)
+      confirmationModal.getRuleRemovingConfirmationModalOkButton().click()
       
       # Notification expected
       notification.wait(self.browser, notification.Type.Success, i18n.get()["modals"]["dashboard"]["sub-windows"]["automation-center"]["ruleDeleted"])
@@ -79,8 +79,8 @@ class RemoveRule(unittest.TestCase):
       
       # Remove rule
       removeButton.click()
-      confirmationModal = dashboard.automation.waitRuleRemovingConfirmationModal(self.browser)
-      dashboard.automation.getRuleRemovingConfirmationModalCancelButton(confirmationModal).click()
+      confirmationModal = dashboard.automation.waitRemoveRuleConfirmationModal(self.browser)
+      confirmationModal.getRuleRemovingConfirmationModalCancelButton().click()
       
       # No notification expected
       self.assertTrue(notification.noNotification(self.browser))
