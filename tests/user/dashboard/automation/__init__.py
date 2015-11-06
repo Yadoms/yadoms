@@ -29,30 +29,37 @@ def getRuleNumberInTable(browser, rulesTable):
 def getRuleDatas(rulesTable, ruleNumber):
    rule = rulesTable.find_elements_by_tag_name("tr")[ruleNumber + 1]
    return rule.find_elements_by_tag_name("td")
+
+def getRuleName(rulesTable, ruleNumber):
+   return getRuleDatas(rulesTable, ruleNumber)[0].text
+
+def getRuleDescription(rulesTable, ruleNumber):
+   return getRuleDatas(rulesTable, ruleNumber)[1].text
    
-def getRuleButtons(rulesDataButtonsCell):
+def getRuleButtons(rulesTable, ruleNumber):
+   rulesDataButtonsCell = getRuleDatas(rulesTable, ruleNumber)[2]
    buttonsGroup = rulesDataButtonsCell.find_element_by_class_name("btn-group")
    return buttonsGroup.find_elements_by_xpath("./child::*")
    
-def getRuleButton(rulesDataButtonsCell, index):
-   buttons = getRuleButtons(rulesDataButtonsCell)
+def getRuleButton(rulesTable, ruleNumber, index):
+   buttons = getRuleButtons(rulesTable, ruleNumber)
    return buttons[index]
    
 def getRuleStartStopButton(rulesTable, ruleNumber):
    """ Start/Stop button is the first button of the buttons group """
-   button = getRuleButton(getRuleDatas(rulesTable, ruleNumber)[2], 0)
+   button = getRuleButton(rulesTable, ruleNumber, 0)
    assert "btn-enableDisable" in button.get_attribute("class")
    return button
    
 def getRuleEditButton(rulesTable, ruleNumber):
    """ Edit button is the second button of the buttons group """
-   button = getRuleButton(getRuleDatas(rulesTable, ruleNumber)[2], 1)
+   button = getRuleButton(rulesTable, ruleNumber, 1)
    assert "btn-edit" in button.get_attribute("class")
    return button
    
 def getRuleRemoveButton(rulesTable, ruleNumber):
    """ Remove button is the third button of the buttons group """
-   button = getRuleButton(getRuleDatas(rulesTable, ruleNumber)[2], 2)
+   button = getRuleButton(rulesTable, ruleNumber, 2)
    assert "btn-delete" in button.get_attribute("class")
    return button
    
