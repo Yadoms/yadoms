@@ -112,21 +112,21 @@ class CreateRule(unittest.TestCase):
 
       # Create new rule
       dashboard.automation.getCreateRuleButton(self.browser).click()
-      dashboard.automation.waitEditorSelectionModal(self.browser)
-      dashboard.automation.getEditorSelectionButton(self.browser, "code").click()
+      newRuleModal = dashboard.automation.waitNewRuleModal(self.browser)
+      newRuleModal.getEditorSelectionButton("code").click()
 
       # - Rule configuration
-      dashboard.automation.waitEditRuleModal(self.browser)
-      Select(dashboard.automation.getInterpreterSelector(self.browser)).select_by_value('0') # Select Python interpreter
-      dashboard.automation.getRuleName(self.browser).send_keys(ruleName)
-      dashboard.automation.getRuleDescription(self.browser).send_keys(ruleDescription)
+      editRuleModal = dashboard.automation.waitEditRuleModal(self.browser)
+      Select(editRuleModal.getInterpreterSelector(self.browser)).select_by_value('0') # Select Python interpreter
+      editRuleModal.getRuleName(self.browser).send_keys(ruleName)
+      editRuleModal.getRuleDescription(self.browser).send_keys(ruleDescription)
          
       # - Rule code
-      dashboard.automation.getRuleCodeEditor(self.browser).writeCode(ruleCode)
+      editRuleModal.getRuleCodeEditor(self.browser).writeCode(ruleCode)
 
 
       # Click OK
-      dashboard.automation.getConfirmConfigureRuleButton(self.browser).click()
+      editRuleModal.getConfirmConfigureRuleButton(self.browser).click()
       
       
       # Check created rule

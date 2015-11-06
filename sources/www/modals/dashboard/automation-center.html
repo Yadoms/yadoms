@@ -13,28 +13,21 @@
    </table>
 </div>
 <script>
-   var automationRuleInstanceList = [];
 
    function initializeAutomationCenterDashboard() {
       //we remove all rows except header
       $("table#automation-rule-list").find("tr:gt(0)").remove();
-      //we clear automationRuleInstanceList array
-      automationRuleInstanceList = [];
-
       $("#btn-add-new-automation-rule").unbind("click").bind("click", addNewAutomationRule);
 
       //we dynamically ask for automation-rule
       AutomationRuleManager.get(function (rules) {
-         //foreach result we append a <tr>
          $.each(rules, function(index, value) {
-            automationRuleInstanceList.push(value);
             addAutomationRuleToDom(value);
          });
 
          //we use the periodic task of the dashboard
          clearInterval(periodicDashboardTask);
-         periodicDashboardTask = setInterval(periodicDashboardAutomationCenterTask, 1000);
-         periodicDashboardAutomationCenterTask();
+         periodicDashboardTask = setInterval(periodicDashboardAutomationCenterTask, 2000);
       });
    }
 
@@ -103,7 +96,8 @@
       return function() {
          //we deactivate the button until next status will be acquired to prevent flooding
          getAutomationRuleDomRow(rule).find("button.btn-enableDisable").prop('disabled', true);
-         if (rule.enabled) {
+         debugger;
+         if (getAutomationRuleDomRow(rule).find("span.fa-stop").length == 1) {
             //we ask for disable
             AutomationRuleManager.disable(rule, function(updatedRule) {
                if (updatedRule) {
@@ -165,12 +159,6 @@
             function () {
                //deletion has been confirmed
                AutomationRuleManager.deleteFromServer(rule, function() {
-                  //we remove rule from array
-                  var i = automationRuleInstanceList.indexOf(rule);
-                  if(i != -1) {
-                     automationRuleInstanceList.splice(i, 1);
-                  }
-                  
                   notifySuccess($.t("modals.dashboard.sub-windows.automation-center.ruleDeleted"));
                   //we remove rule from dom
                   getAutomationRuleDomRow(rule).remove();
@@ -181,24 +169,10 @@
    }
 
    function periodicDashboardAutomationCenterTask() {
-      //periodically we check the enable of each rule
-      //TODO : manage rule getting all and not one by one
       if (serverIsOnline) {
-         $.each(automationRuleInstanceList, function(index, value) {
-            //we ask async for the enable
-            AutomationRuleManager.getOne(value.id, function (updatedRule) {
-               var $row = getAutomationRuleDomRow(value);
-               if (updatedRule.enabled != value.enabled) {
-                  //we update label depending on the enabled field
-                  if(updatedRule.enabled) {
-                     $row.find("span.label-status").addClass("label-success").removeClass("label-danger").text($.t("common.enabled"));
-                     $row.find("button.btn-startStop").addClass("btn-warning").removeClass("btn-success");
-                  }
-                  else {
-                     $row.find("span.label-status").addClass("label-danger").removeClass("label-success").text($.t("common.disabled"));
-                     $row.find("button.btn-startStop").addClass("btn-success").removeClass("btn-warning");
-                  }
-               }
+         AutomationRuleManager.get(function (rules) {
+            $.each(rules, function(index, value) {
+               updateDOMAutomationRule(value);
             });
          });
       }
@@ -222,7 +196,6 @@
 
                            notifySuccess($.t("modals.dashboard.sub-windows.automation-center.ruleSuccessfullyCreated"));
                            //we add it to gui
-                           automationRuleInstanceList.push(newRule);
                            addAutomationRuleToDom(newRule);
                         });
                      });
