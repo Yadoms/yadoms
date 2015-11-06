@@ -27,19 +27,20 @@ class CreateRule(unittest.TestCase):
       
       # - in web client
       rulesTable = dashboard.automation.waitRulesTableHasNRules(self.browser, 1)
-      ruleDatas = dashboard.automation.getRuleDatas(rulesTable, 0)
-         
-      self.assertEqual(len(ruleDatas), 4)
-      self.assertEqual(ruleDatas[0].text, ruleName)
-      self.assertEqual(ruleDatas[1].text, ruleDescription)
 
-      buttons = dashboard.automation.getRuleButtons(ruleDatas[2])
+      ruleNumber = 0
+      
+      self.assertEqual(len(dashboard.automation.getRuleDatas(rulesTable, ruleNumber)), 4)
+      self.assertEqual(dashboard.automation.getRuleName(rulesTable, ruleNumber), ruleName)
+      self.assertEqual(dashboard.automation.getRuleDescription(rulesTable, ruleNumber), ruleDescription)
+
+      buttons = dashboard.automation.getRuleButtons(rulesTable, ruleNumber)
       self.assertEqual(len(buttons), 3)
-      self.assertEqual(buttons[0].get_attribute("class"), "btn btn-enableDisable btn-warning")
-      self.assertEqual(buttons[1].get_attribute("class"), "btn btn-edit btn-primary")
-      self.assertEqual(buttons[2].get_attribute("class"), "btn btn-delete btn-danger")
+      self.assertEqual(dashboard.automation.getRuleStartStopButton(rulesTable, ruleNumber).get_attribute("class"), "btn btn-enableDisable btn-warning")
+      self.assertEqual(dashboard.automation.getRuleEditButton(rulesTable, ruleNumber).get_attribute("class"), "btn btn-edit btn-primary")
+      self.assertEqual(dashboard.automation.getRuleRemoveButton(rulesTable, ruleNumber).get_attribute("class"), "btn btn-delete btn-danger")
 
-      self.assertEqual(dashboard.automation.getRuleState(rulesTable, 0), dashboard.automation.RuleState.Running)
+      self.assertEqual(dashboard.automation.getRuleState(rulesTable, ruleNumber), dashboard.automation.RuleState.Running)
       
       
       # - on disk (corresponding script file)
@@ -69,19 +70,20 @@ class CreateRule(unittest.TestCase):
       
       # - in web client
       rulesTable = dashboard.automation.waitRulesTableHasNRules(self.browser, 1)
-      ruleDatas = dashboard.automation.getRuleDatas(rulesTable, 0)
-         
-      self.assertEqual(len(ruleDatas), 4)
-      self.assertEqual(ruleDatas[0].text, ruleName)
-      self.assertEqual(ruleDatas[1].text, ruleDescription)
 
-      buttons = dashboard.automation.getRuleButtons(ruleDatas[2])
-      self.assertEqual(len(buttons), 3)
-      self.assertEqual(buttons[0].get_attribute("class"), "btn btn-enableDisable btn-warning")
-      self.assertEqual(buttons[1].get_attribute("class"), "btn btn-edit btn-primary")
-      self.assertEqual(buttons[2].get_attribute("class"), "btn btn-delete btn-danger")
+      ruleNumber = 0
       
-      self.assertTrue(tools.waitUntil(lambda: dashboard.automation.getRuleState(rulesTable, 0) == dashboard.automation.RuleState.Error))
+      self.assertEqual(len(dashboard.automation.getRuleDatas(rulesTable, ruleNumber)), 4)
+      self.assertEqual(dashboard.automation.getRuleName(rulesTable, ruleNumber), ruleName)
+      self.assertEqual(dashboard.automation.getRuleDescription(rulesTable, ruleNumber), ruleDescription)
+
+      buttons = dashboard.automation.getRuleButtons(rulesTable, ruleNumber)
+      self.assertEqual(len(buttons), 3)
+      self.assertEqual(dashboard.automation.getRuleStartStopButton(rulesTable, ruleNumber).get_attribute("class"), "btn btn-enableDisable btn-success")
+      self.assertEqual(dashboard.automation.getRuleEditButton(rulesTable, ruleNumber).get_attribute("class"), "btn btn-edit btn-primary")
+      self.assertEqual(dashboard.automation.getRuleRemoveButton(rulesTable, ruleNumber).get_attribute("class"), "btn btn-delete btn-danger")
+      
+      self.assertTrue(tools.waitUntil(lambda: dashboard.automation.getRuleState(rulesTable, ruleNumber) == dashboard.automation.RuleState.Error))
       
       #TODO ajouter champ "last error"
       
