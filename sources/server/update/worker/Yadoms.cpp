@@ -85,6 +85,9 @@ namespace update {
                      //exit yadoms
                      YADOMS_LOG(information) << "Exiting Yadoms";
                      progressCallback(true, 100.0f, i18n::CClientStrings::UpdateYadomsExit, shared::CStringExtension::EmptyString, versionToUpdate);
+                     
+                     //sleep 1 sec, to ensure clients receive last notification
+                     boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
 
                      //demande de fermeture de l'application
                      boost::shared_ptr<IApplicationStopHandler> stopHandler = shared::CServiceLocator::instance().get<IApplicationStopHandler>();
