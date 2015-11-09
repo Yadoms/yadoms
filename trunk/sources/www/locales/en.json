@@ -1,4 +1,8 @@
 ﻿{
+  	"core" : {
+		"yadoms" : "yadoms",
+	  	"yadomsInformation" : "Yadoms information"
+  	},
 	"common": {
 		"ok": "Ok",
 		"confirm": "Confirm",
@@ -201,8 +205,7 @@
 					"softwareVersion": "Software Version",
 					"databaseVersion": "Database Version",
 					"startedFrom": "Started from",
-					"errorRequestingDatabaseVersion": "Error requesting Database Version",
-					"errorRequestingSystemInformation": "Error requesting System information"
+					"errorRequestingDatabaseVersion": "Error requesting Database Version"
 				},
 				"user-management": {
 					"title": "User management"
@@ -326,13 +329,13 @@
 						"actions": "Actions"
 					},
 					"startStop": "Start / Stop the rule",
-               "ruleState": {
-                  "stopped": "Stopped",
-                  "running": "Running",
-                  "error": "Error"
-               },
+				    "ruleState": {
+				  	   "stopped": "Stopped",
+				  	   "running": "Running",
+				  	   "error": "Error"
+				    },
 					"edit": "Edit the rule",
-					"delete": "Delete the rule",
+				 	"delete": "Delete the rule",
 					"confirmDeletion": "This action will delete the rule __name__. Continue anyway ?",
 					"ruleSuccessfullyCreated": "Rule successfully created",
 					"ruleSuccessfullyUpdated": "Rule successfully updated",
@@ -361,7 +364,8 @@
 						"title": "Yadoms update",
 						"currentVersion": "Current version",
 						"availableVersion": "Available version",
-						"update": "Update Yadoms"
+						"update": "Update Yadoms",
+					  	"updating":"Yadoms is updating. Please wait ..."
 					},
 					"generic": {
 						"name": "Name",
@@ -615,6 +619,18 @@
 				"deployFailed": "Deploy widget failed",
 				"finalize": "Finalizing ...",
 				"success": "Success"
+			},
+			"scriptInterpreter": {
+			  "install": "Installing script interpreter ...",
+			  "update": "Updating script interpreter ...",
+			  "remove": "Removing script interpreter ...",
+			  "removeFailed": "Remove script interpreter failed",
+			  "download": "Downloading script interpreter ...",
+			  "downloadFailed": "Download script interpreter failed",
+			  "deploy": "Delpoying script interpreter ...",
+			  "deployFailed": "Deploy script interpreter failed",
+			  "finalize": "Finalizing ...",
+			  "success": "Success"
 			}
 		},
 		"task": {

@@ -23,22 +23,50 @@
          <div class="panel-heading" role="tab" id="install-update-yadoms-heading-panel" data-toggle="collapse" data-parent="#install-update-accordion" aria-expanded="true" aria-controls="install-update-yadoms-heading-panel" data-target="#install-update-yadoms-panel">
             <h4 class="panel-title">
                <span data-i18n="modals.dashboard.sub-windows.install-update.yadoms.title"></span>
-               <span class="update-available-label label label-warning hidden"></span>
+               <span class="update-available-label label label-as-badge label-success hidden"></span>
             </h4>
          </div>
          <div id="install-update-yadoms-panel" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="install-update-yadoms-heading-panel">
             <div class="panel-body">
-               <button id="btn-update-yadoms" type="button" class="btn btn-success disabled">
-                  <span class="fa fa-download"></span>&nbsp;&nbsp;<span data-i18n="modals.dashboard.sub-windows.install-update.yadoms.update"></span>
-               </button>
-               <table id="software-install-update" class="table table-bordered dashboard-list">
+               <table id="yadoms-install-update-list" class="table table-bordered table-striped dashboard-list">
                   <tr>
-                     <td data-i18n="modals.dashboard.sub-windows.install-update.yadoms.currentVersion" class="active"></td>
-                     <td class="current-version"><em>v1.12 Beta</em></td>
+                     <td data-i18n="modals.dashboard.sub-windows.install-update.generic.name"></td>
+                     <td class="col-md-1" data-i18n="modals.dashboard.sub-windows.install-update.generic.icon"></td>
+                     <td class = "col-md-2" data-i18n="modals.dashboard.sub-windows.install-update.generic.actualVersion"></td>
+                     <td class = "col-md-2" data-i18n="modals.dashboard.sub-windows.install-update.generic.availableVersion"></td>
+                     <td class="install-update-action-row col-md-3" data-i18n="modals.dashboard.sub-windows.install-update.generic.actions"></td>
                   </tr>
-                  <tr>
-                     <td data-i18n="modals.dashboard.sub-windows.install-update.yadoms.availableVersion" class="active"></td>
-                     <td class="available-version"><em>v1.14 Beta</em></td>
+                  <tr class="yadoms-information">
+                     <td>
+                        <span>Yadoms</span>
+                        <span class="update-available-label hidden label label-as-badge label-success">1</span>
+                     </td>
+                     <td>
+                        <img src="img/icon_256.png" class="img-thumbnail dashboard-table-icon">
+                     </td>
+                     <td>
+                        <em class="local-version">v 0.1 beta</em>
+                     </td>
+                     <td>
+                        <em class="latest-version"></em>
+                     </td>
+                     <td>
+                        <div class="action-buttons btn-group">
+                           <div class="btn-group btn-install">
+                              <button type="button" class="btn main-btn btn-primary disabled" data-i18n="[title]modals.dashboard.sub-windows.install-update.generic.update">
+                                 <span class="glyphicon glyphicon-save "></span>
+                                 <span class="latest-installable-version"></span>
+                              </button>
+                              <button type="button" class="btn dropdown-toggle btn-expand btn-primary disabled" data-toggle="dropdown" aria-expanded="false">
+                                 <span class="caret"></span>
+                                 <span class="sr-only">Toggle Dropdown</span>
+                              </button>
+                              <ul class="dropdown-menu versions" role="menu">
+                                 <!--available versions of yadoms here-->
+                              </ul>
+                           </div>
+                        </div>
+                     </td>
                   </tr>
                </table>
             </div>
@@ -119,6 +147,23 @@
    </div>
 </div>
 
+<div class="modal fade hidden" id="yadoms-updating" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h4 class="modal-title" data-i18n="modals.dashboard.sub-windws.install-update.yadoms.updating"></h4>
+         </div>
+         <div class="modal-body">
+            <h1>
+               <span class="glyphicon glyphicon-save"></span>
+               <span data-i18n="modals.dashboard.sub-windws.install-update.yadoms.updating"></span>
+               <i class="making-async-action pull-right fa fa-circle-o-notch fa-spin"></i>
+            </h1>
+         </div>
+      </div>
+   </div>
+</div>
+
 <script>
 
    var wantedVersion = [/*"beta", "testing", */"stable"];
@@ -150,8 +195,9 @@
       updateReleaseType();
 
       promiseCounter = new PromiseCounter(0, updateInstallUpdateActionIndicator);
-      //fillPluginList();
-      //fillWidgetList();
+      fillYadomsInformation();
+      fillPluginList();
+      fillWidgetList();
       fillScriptInterpreterList();
    }
 
@@ -171,6 +217,200 @@
             wantedVersion = ["stable"];
             break;
       }
+   }
+
+   /**
+    * This function fill the plugin list from the server elements
+    */
+   function fillYadomsInformation() {
+      //we launch requests
+      //we save the information that the load of yadoms is in progress
+      promiseCounter.incrementCounter();
+
+      YadomsUpdateInformationManager.getList()
+         .done(function(list) {
+            if (!isNullOrUndefined(list)) {
+
+               var $line = $("table#yadoms-install-update-list tr.yadoms-information");
+
+               YadomsInformationManager.getList()
+                  .done(function(data) {
+                     //we manage local version
+                     var localInformation = data.yadoms;
+                     $line.find("em.local-version").text(versionToString(localInformation));
+
+debugger;
+                     //we keep only wanted versions type
+                     var serverVersions = [];
+                     var latestVersion = undefined;
+
+                     $.each(list, function (versionIndex, versionValue) {
+                        //if this releasetype is wanted and is not the current version we add it to the arrays of version for this item
+                        if ($.inArray(versionValue.releaseType.toLowerCase(), wantedVersion) > -1) {
+                           if ((!matchVersion(versionValue, localInformation)) &&
+                               (localInformation.version < versionValue.version)) {
+                              serverVersions.push(versionValue);
+                           }
+
+                           //we manage latest version even it lesser than actual or it is actual version
+                           if (isNullOrUndefined(latestVersion)) {
+                              //latestVersion hasn't defined for the moment we take the first one
+                              latestVersion = versionValue;
+                           }
+                           else {
+                              //we compare the version with the cumulated to take the latest
+                              if (UpdateInformationManager.compareVersion(latestVersion, versionValue) > 0) {
+                                 latestVersion = versionValue;
+                              }
+                           }
+                        }
+                     });
+
+                     //we can display the latest version
+                     $line.find("em.latest-version").text(versionToString(latestVersion));
+
+                     //we order the list
+                     serverVersions.sort(UpdateInformationManager.compareVersion);
+                     var canChooseVersion = false;
+                     var installUpdateAllowed = false;
+
+                     if (serverVersions.length > 0) {
+                        if (serverVersions.length > 1) {
+                           //there is different versions visible
+                           canChooseVersion = true;
+                        }
+
+                        //the main install button is allowed only if latest version and current version are different
+                        installUpdateAllowed = (UpdateInformationManager.compareVersion(localInformation, latestVersion) != 0);
+
+                        //we create a combo that have all available versions for install or update
+                        $cbVersion = $line.find("ul.versions");
+                        $cbVersion.empty();
+
+                        $.each(serverVersions, function(index, value) {
+
+                           $cbVersion.append("<li><a href=\"#\"><em>" + versionToString(value) + "</em></a></li>");
+                           //we manage the click event on each version
+                           $cbVersion.find("li").last().unbind('click').bind('click', function() {
+                              modals.confirmation.load(askForYadomsUpdate(value))
+                           });
+                        });
+
+                        if (installUpdateAllowed) {
+                           $line.find("div.btn-install button.main-btn").removeClass("disabled");
+                        }
+                        else {
+                           $line.find("div.btn-install button.main-btn").addClass("disabled");
+                        }
+                     }
+                     else {
+                        //there is no interesting new version
+                        $line.find("button.btn-expand").addClass("disabled");
+                     }
+
+                     if (installUpdateAllowed) {
+                        $line.find("div.btn-install button.main-btn").removeClass("disabled");
+                     }
+                     else {
+                        $line.find("div.btn-install button.main-btn").addClass("disabled");
+                     }
+
+                     //if the user can choose version we enable the list
+                     if (canChooseVersion)
+                        $line.find("div.btn-install button.btn-expand").removeClass("disabled");
+                     else
+                        $line.find("div.btn-install button.btn-expand").addClass("disabled");
+                     //we manage click events
+                     if (serverVersions.length > 0) {
+                        $line.find("button.main-btn").unbind('click').bind('click', askForYadomsUpdate(serverVersions[0]));
+                     }
+
+                     //we manage the ! label to show a new version is available
+                     if (installUpdateAllowed) {
+                        $line.find("span.update-available-label").removeClass("hidden");
+                     }
+                     else {
+                        $line.find("span.update-available-label").addClass("hidden");
+                     }
+
+                     //we update the header update availble label
+                     updateHeaderUpdateAvailableLabel("yadoms");
+                  });
+            }
+         })
+         .always(function() {
+            //we manage the promise
+            promiseCounter.resolve();
+         });
+   }
+
+   function askForYadomsUpdate(version) {
+      return function() {
+         modals.confirmation.load(function() {
+            showConfirmModal(btnKind.yesNo,
+                    $.t("modals.dashboard.sub-windows.install-update.generic.confirmUpdateTitle"),
+                    $.t("modals.dashboard.sub-windows.install-update.generic.confirmUpdate", {
+                       objectName: $.t("core.yadoms"),
+                       version: versionToString(version)
+                    }),
+                    function () {
+                       //the user has confirmed the action
+                       YadomsUpdateInformationManager.update(version)
+                               .done(function (taskId) {
+                                  yadomsUpdateCallback(taskId, version)
+                               });
+                    });
+         });
+      };
+   }
+
+   function yadomsUpdateCallback(taskId, item) {
+      assert(!isNullOrUndefined(taskId), "taskId must be defined");
+      assert(!isNullOrUndefined(item), "item must be defined");
+
+      //we initialize the progress bar
+      var $line = $("table#yadoms-install-update-list tr.yadoms-information");
+      $line.find("div.progress-bar").css("width", "0%");
+
+      //we listen for webSocket event
+      $(document).on("taskupdatenotification." + taskId, function (e, taskUpdateInformation) {
+         $line.find("div.progress-bar").css("width", taskUpdateInformation.progression + "%");
+         $line.find("span.message").text($.t("webSockets." + taskUpdateInformation.message));
+
+         var taskFinished = false;
+         //we manage the end of the task
+         if (taskUpdateInformation.taskState.toLowerCase() == "fail") {
+            console.error("Unable to update Yadoms : " + taskUpdateInformation.exception);
+            notifyError($.t("webSockets." + taskUpdateInformation.message));
+
+            //we remove the progress information and restore buttons
+            item.processing = false;
+            $line.find("div.progress-bar").css("width", "0%");
+
+            //refresh the list
+            refreshAllData();
+         }
+
+         if (taskUpdateInformation.taskState.toLowerCase() == "success") {
+            notifySuccess($.t("webSockets." + taskUpdateInformation.message));
+            taskFinished = true;
+            //we display a non closable modal and wait for yadoms restart
+            waitForUpdateFinished();
+         }
+      });
+      //we hide the buttons and show the progression
+      item.processing = true;
+      $line.find("div.action-buttons").addClass("hidden");
+      $line.find("div.action-progression").removeClass("hidden");
+      $line.find("span.update-available-label").addClass("hidden");
+   }
+
+   function waitForUpdateFinished() {
+      //we don't want ESC close the modal
+      $('div#yadoms-updating').modal({
+         backdrop: 'static',
+         keyboard: false
+      });
    }
 
    /**
@@ -228,7 +468,6 @@
                mergedList.sort(function(item1, item2) {
                                     return item2.type > item1.type;
                                  });
-               debugger;
                //we display the result
                Object.keys(mergedList).forEach(function (key, localIndex) {
                   if (!key.startsWith("dev-")) {
@@ -265,8 +504,10 @@
       assert($.isFunction(callback), "callback must be a function");
 
       //we merge the two lists
-      if ((serverList instanceof Array) && (serverList.count > 0)) {
-         $.each(serverList, function (serverIndex, serverValue) {
+      if (serverList) {
+         Object.keys(serverList).forEach(function (serverKey, serverIndex) {
+            serverValue = serverList[serverKey];
+
             //we search it on the other list
             var itemFound = false;
             var typeName = serverValue[0].type;

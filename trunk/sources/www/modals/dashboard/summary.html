@@ -43,21 +43,13 @@
       })
       .fail(function() { notifyError($.t("dashboard.sub-windows.summary.errorRequestingDatabaseVersion")); });
 
-   $.getJSON("rest/system/information")
+   YadomsInformationManager.getList()
       .done(function(data) {
 
-         //we parse the json answer
-         if (data.result != "true") {
-            notifyError($.t("dashboard.sub-windows.summary.errorRequestingSystemInformation"), JSON.stringify(data));
-            return;
-         }
+         $("td#dashboard-summary-platform").text(data.runningPlatform);
+         $("td#dashboard-summary-software-version").text(data.yadomsVersion);
+         $("td#dashboard-summary-started-from").text(DateTimeFormatter.isoDateToDate(data.startupTime).fromNow());
 
-         $("td#dashboard-summary-platform").text(data.data.runningPlatform);
-         $("td#dashboard-summary-software-version").text(data.data.yadomsVersion);
-         $("td#dashboard-summary-started-from").text(DateTimeFormatter.isoDateToDate(data.data.startupTime).fromNow());
+      });
 
-      })
-      .fail(function() { notifyError($.t("dashboard.sub-windows.summary.errorRequestingDatabaseVersion")); });
-
-   //TODO get other information
 </script>
