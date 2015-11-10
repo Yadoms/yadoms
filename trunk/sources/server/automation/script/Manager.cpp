@@ -188,7 +188,7 @@ std::string CManager::getScriptFile(boost::shared_ptr<const database::entities::
 {
    boost::shared_ptr<IProperties> scriptProperties(createScriptProperties(ruleData));
 
-   // Create the file and put the code in (delegate to the interpreter)
+   // Load the file content (delegated to the interpreter)
    boost::shared_ptr<shared::script::IInterpreter> scriptInterpreter = getAssociatedInterpreter(scriptProperties->interpreterName());
    return scriptInterpreter->loadScriptContent(scriptProperties->scriptPath()); 
 }
@@ -201,7 +201,7 @@ void CManager::updateScriptFile(boost::shared_ptr<const database::entities::CRul
    boost::filesystem::remove_all(scriptProperties->scriptPath());
    boost::filesystem::create_directories(scriptProperties->scriptPath());
 
-   // Create the file and put the code in (delegate to the interpreter)
+   // Create the file and put the code in (delegated to the interpreter)
    boost::shared_ptr<shared::script::IInterpreter> scriptInterpreter = getAssociatedInterpreter(scriptProperties->interpreterName());
    scriptInterpreter->saveScriptContent(scriptProperties->scriptPath(), code);
 }

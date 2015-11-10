@@ -151,7 +151,7 @@ AutomationRuleManager.enable = function(rule, callback) {
 };
 
 /**
- * Obtain the code of the rule
+ * Get the code of the rule
  * @param rule
  * @param callback
  * @param sync
@@ -231,4 +231,36 @@ AutomationRuleManager.updateCode = function(rule, callback, sync) {
           if ($.isFunction(callback))
              callback(false);
        });
+};
+
+/**
+ * Get the log of the rule
+ * @param rule
+ * @param callback
+ * @param sync
+ */
+AutomationRuleManager.getLog = function(rule, callback, sync) {
+   assert(!isNullOrUndefined(rule), "rule must be defined");
+   assert($.isFunction(callback), "callback must be a function");
+
+   var async = true;
+   if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
+      async = !sync;
+
+   $.ajax({
+      dataType: "json",
+      url: "rest/automation/rule/" + rule.id + "/log",
+      async: async
+   })
+       .done(function( data ) {
+          //we parse the json answer
+          if (data.result != "true")
+          {
+             notifyError($.t("objects.generic.errorGetting", {objectName : "automation rule log"}), JSON.stringify(data));
+             return;
+          }
+
+          callback(data.data.log);
+       })
+       .fail(function() {notifyError($.t("objects.generic.errorGetting", {objectName : "automation rule log"}));});
 };
