@@ -1,7 +1,7 @@
 #pragma once
 
 #include "entities/Entities.h"
-
+#include <Poco/DateTime.h>
 
 namespace database { 
 
@@ -37,10 +37,27 @@ namespace database {
       //--------------------------------------------------------------
       /// \brief           Save a new summary data into base
       /// \param [in]      keywordId   The keyword id
+      /// \param [in]      curType     The type of summary data to save
       /// \param [in]      dataTime    The datetime of the data
-      /// \return          The inserted acquisition summary (day, hour)
+      /// \return          The inserted acquisition summary
       //--------------------------------------------------------------
-      virtual LastSummaryData saveSummaryData(const int keywordId, boost::posix_time::ptime & dataTime) = 0;
+      virtual boost::shared_ptr<entities::CAcquisitionSummary> saveSummaryData(const int keywordId, database::entities::EAcquisitionSummaryType curType, boost::posix_time::ptime & dataTime) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief           Get the keywords id which have at least one acquisition between dates
+      /// \param [in]      timeFrom    The time from (inclusive)
+      /// \param [in]      timeTo      The time to (exclusive)
+      /// \param [out]     results     The vector which will contains the keywords id
+      //--------------------------------------------------------------
+      virtual void getKeywordsHavingDate(const boost::posix_time::ptime & timeFrom, const boost::posix_time::ptime & timeTo, std::vector<int> & results) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief           Check if a summary entry already exists
+      /// \param [in]      keywordId   The keyword id
+      /// \param [in]      curType     The type of summary data to check
+      /// \param [in]      date        The datetime of the summary data
+      //--------------------------------------------------------------
+      virtual bool summaryDataExists(const int keywordId, database::entities::EAcquisitionSummaryType curType, boost::posix_time::ptime & date) = 0;
 
       //--------------------------------------------------------------
       /// \brief           Remove all data associated to a keyword
@@ -93,7 +110,7 @@ namespace database {
       /// \throw                 CInvalidParameter if deviceId is unknown
       //--------------------------------------------------------------
       virtual std::vector< boost::shared_ptr<entities::CAcquisitionSummary> > getKeywordDataByHour(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo) = 0;
-      
+
       //--------------------------------------------------------------
       /// \brief                 Get the data (highchart js format) : [[date,value],[date,value],...]
       /// \param [in] keywordId  keywordId Id

@@ -523,8 +523,6 @@ set(YADOMS_SRC ${YADOMS_SRC}
 	server/tools/tools/IOperatingSystemIntegration.h
 	server/tools/tools/SupportedPlatformsChecker.h
 	server/tools/tools/SupportedPlatformsChecker.cpp
-	server/tools/tools/Version.h
-	server/tools/tools/Version.cpp
 	server/tools/tools/FileSystem.h
 	server/tools/tools/FileSystem.cpp
 )
@@ -594,6 +592,8 @@ IF(USE_SQLITE_DATABASE)
 		server/database/sqlite/SQLiteSystemTables.cpp
 		server/database/sqlite/SQLiteDatabaseTablesHelpers.hpp
 		server/database/sqlite/SQLiteTablesScripts.cpp
+      server/database/sqlite/SQLiteSummaryDataTask.h
+      server/database/sqlite/SQLiteSummaryDataTask.cpp      
 		server/database/sqlite/requesters/Plugin.h
 		server/database/sqlite/requesters/Plugin.cpp
 		server/database/sqlite/requesters/Configuration.h
@@ -677,10 +677,26 @@ ENDIF()
 ## Resources
 ##################################################################################################
 if(WIN32)
+
+   ##################################################################################################
+   ## Pre build commands (only visual studio)
+   ##################################################################################################
+   if(MSVC)
+      #update the Windows specific 'yadoms.rc' file which add properties to executable (version, releaseType=
+      #as pre build step (yadoms.rc is modified only if needed, to avoid unjustified build
+      add_custom_command(OUTPUT "${CMAKE_SOURCE_DIR}/resources/windows/yadoms-generated.rc"
+          PRE_BUILD
+          COMMAND ${CMAKE_SOURCE_DIR}/../ideTools/versionPreBuildTool/VersionPreBuildTool/VersionPreBuildTool/bin/Release/VersionPreBuildTool.exe "${CMAKE_SOURCE_DIR}/server/Version.h" "${CMAKE_SOURCE_DIR}/resources/windows/yadoms.rc" "${CMAKE_SOURCE_DIR}/resources/windows/yadoms-generated.rc"
+          MAIN_DEPENDENCY "${CMAKE_SOURCE_DIR}/server/Version.h"
+          DEPENDS "${CMAKE_SOURCE_DIR}/server/Version.h"
+          COMMENT Generating yadoms-generated.rc
+      )
+   endif(MSVC)
+
    # If we build for windows systems, we also include the resource file
    # containing the manifest, icon and other resources
    set(YADOMS_SRC ${YADOMS_SRC} 
-      resources/windows/yadoms.rc
+      resources/windows/yadoms-generated.rc
       resources/windows/resource.h
    )
    source_group(resources resources/windows/*.*)
@@ -755,6 +771,9 @@ set_property( TARGET yadoms PROPERTY INCLUDE_DIRECTORIES ${YADOMS_ALL_INCL_DIR})
 ## Link
 ##################################################################################################
 target_link_libraries(yadoms yadoms-shared ${LIBS} ${CMAKE_DL_LIBS})
+
+
+
 
 ##################################################################################################
 ## Post build commands

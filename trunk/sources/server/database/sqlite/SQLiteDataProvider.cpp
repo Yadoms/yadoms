@@ -12,7 +12,9 @@
 #include <shared/exception/NotSupported.hpp>
 #include "database/sqlite/SQLiteDatabaseTables.h"
 #include "database/sqlite/adapters/SingleValueAdapter.hpp"
-#include "tools/Version.h"
+#include <shared/versioning/Version.h>
+#include "SQLiteSummaryDataTask.h"
+#include <Poco/DateTime.h>
 
 namespace database {
    namespace sqlite {
@@ -65,7 +67,7 @@ namespace database {
                m_databaseRequester.reset(new CSQLiteRequester(m_pDatabaseHandler));
 
                //get the database version
-               tools::CVersion currentVersion;
+               shared::versioning::CVersion currentVersion;
 
                if (databaseFileExists)
                {
@@ -87,7 +89,7 @@ namespace database {
 
                      if (results.size() >= 1)
                      {
-                        currentVersion = tools::CVersion(results[0]);
+                        currentVersion = shared::versioning::CVersion(results[0]);
                      }
                   }
                   catch (std::exception & ex)
@@ -108,6 +110,8 @@ namespace database {
                YADOMS_LOG(information) << "Load database with success";
                result = true;
 
+               //database loaded, start maintenance task
+               initializeMaintenanceTasks();               
             }
          }
          catch (versioning::CSQLiteVersionException & exc)
@@ -127,6 +131,31 @@ namespace database {
          return result;
       }
 
+      void CSQLiteDataProvider::initializeMaintenanceTasks()
+      {
+         //create a task
+         m_maintenanceTask = Poco::Util::TimerTask::Ptr(new CSQLiteSummaryDataTask(this));
+
+         //schedule task now (at app start)
+         m_maintenanceTimer.schedule(m_maintenanceTask,Poco::Timestamp());
+
+         //then schedule it to be run each hour (+1 minute in order to give a small latency for plugins): 00h01, 01h01, 02h01, 03h01, 04h01....
+         Poco::DateTime now;
+         Poco::DateTime firstOccurence(now.year(), now.month(), now.day(), now.hour(), 1);
+         Poco::Timespan oneHourOffset(0, 1, 0, 0, 0);
+         firstOccurence += oneHourOffset;//+1hour
+         Poco::Timespan timeToWaitBeforeFirstOccurrence = firstOccurence - now;
+         
+         YADOMS_LOG(information) << "Summary task will happens @" << firstOccurence.hour() << ":" << firstOccurence.minute();
+         YADOMS_LOG(information) << "Next step in " << timeToWaitBeforeFirstOccurrence.minutes() << " minutes";
+
+         //schedule the timer to launch task each hour +1min
+         //Schedule : now and each hour (1000 * 3600)
+         long msWait = (long)timeToWaitBeforeFirstOccurrence.totalMilliseconds(); //force cast because value is maximum 1hour = 1000*3600 which is less than "long" maximum value
+         long msWaitPeriod = (long)oneHourOffset.totalMilliseconds();//force cast because value is 1 hour = 1000*3600 which is less than "long" maximum value
+
+         m_maintenanceTimer.scheduleAtFixedRate(m_maintenanceTask, msWait, msWaitPeriod);
+      }
 
       void isodate(sqlite3_context *context, int argc, sqlite3_value **argv){
          assert(argc == 1);

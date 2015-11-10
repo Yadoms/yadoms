@@ -21,7 +21,7 @@ namespace pluginSystem {   namespace internalPlugin {
       virtual ~CInformation();
       virtual const std::string& getType() const;
       virtual const std::string& getVersion() const;
-      virtual const shared::plugin::information::EReleaseType getReleaseType() const;
+      virtual const shared::versioning::EReleaseType getReleaseType() const;
       virtual const std::string& getAuthor() const;
       virtual const std::string& getUrl() const;
       virtual std::string toString() const;
@@ -34,7 +34,7 @@ namespace pluginSystem {   namespace internalPlugin {
    private:
       std::string m_type;
       std::string m_version;
-      shared::plugin::information::EReleaseType m_releaseType;
+      shared::versioning::EReleaseType m_releaseType;
       std::string m_author;
       std::string m_url;
       shared::CDataContainer m_package;

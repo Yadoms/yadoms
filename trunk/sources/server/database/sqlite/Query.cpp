@@ -5,6 +5,8 @@
 namespace database { 
    namespace sqlite { 
 
+      CQuery CQuery::EmptyQuery;
+
       CQuery::CQuery()
          :m_queryType(kNotYetDefined)
       {
@@ -344,6 +346,41 @@ namespace database {
          AppendSet(ss, field10, value10);      
          ss << " ";
          return Append(ss); 
+      }
+
+
+      CQuery & CQuery::With(const std::string & tableName1, const CQuery & subQuery1,
+         const std::string & tableName2, const CQuery & subQuery2,
+         const std::string & tableName3, const CQuery & subQuery3,
+         const std::string & tableName4, const CQuery & subQuery4,
+         const std::string & tableName5, const CQuery & subQuery5,
+         const std::string & tableName6, const CQuery & subQuery6,
+         const std::string & tableName7, const CQuery & subQuery7,
+         const std::string & tableName8, const CQuery & subQuery8,
+         const std::string & tableName9, const CQuery & subQuery9,
+         const std::string & tableName10, const CQuery & subQuery10)
+      {
+         std::ostringstream ss;
+         ss << " WITH " << tableName1 << " AS ( " << subQuery1.str() << " ) ";
+         if(!tableName2.empty())
+            ss << ", " << tableName2 << " AS ( " << subQuery2.str() << " ) ";
+         if(!tableName3.empty())
+            ss << ", " << tableName3 << " AS ( " << subQuery3.str() << " ) ";
+         if(!tableName4.empty())
+            ss << ", " << tableName4 << " AS ( " << subQuery4.str() << " ) ";
+         if(!tableName5.empty())
+            ss << ", " << tableName5 << " AS ( " << subQuery5.str() << " ) ";
+         if(!tableName6.empty())
+            ss << ", " << tableName6 << " AS ( " << subQuery6.str() << " ) ";
+         if(!tableName7.empty())
+            ss << ", " << tableName7 << " AS ( " << subQuery7.str() << " ) ";
+         if(!tableName8.empty())
+            ss << ", " << tableName8 << " AS ( " << subQuery8.str() << " ) ";
+         if(!tableName9.empty())
+            ss << ", " << tableName9 << " AS ( " << subQuery9.str() << " ) ";
+         if(!tableName10.empty())
+            ss << ", " << tableName10 << " AS ( " << subQuery10.str() << " ) ";
+         return Append(ss);
       }
 
 

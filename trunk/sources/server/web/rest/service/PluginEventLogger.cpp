@@ -31,7 +31,7 @@ namespace web { namespace rest { namespace service {
    {
       std::string pluginName = "";
       std::string pluginVersion = "";
-      shared::plugin::information::EReleaseType rType = shared::plugin::information::EReleaseType::kStable;
+      shared::versioning::EReleaseType rType = shared::versioning::EReleaseType::kStable;
 
       if(parameters.size()>1)
          pluginName = parameters[1];
@@ -51,7 +51,7 @@ namespace web { namespace rest { namespace service {
       std::string pluginName = "";
       std::string pluginVersion = "";
       boost::posix_time::ptime fromDate;
-      shared::plugin::information::EReleaseType rType = shared::plugin::information::EReleaseType::kStable;
+      shared::versioning::EReleaseType rType = shared::versioning::EReleaseType::kStable;
 
       if(parameters.size()>1)
          pluginName = parameters[1];

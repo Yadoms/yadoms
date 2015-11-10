@@ -1,5 +1,5 @@
 #pragma once
-#include "tools/Version.h"
+#include <shared/versioning/Version.h>
 
 namespace tools {
 
@@ -24,7 +24,7 @@ namespace tools {
       /// \return                   System version
       /// \throw shared::exception::CException if error getting OS version
       //--------------------------------------------------------------
-      static CVersion getVersion();
+      static shared::versioning::CVersion getVersion();
    };
 
 } //namespace tools

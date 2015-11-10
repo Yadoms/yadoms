@@ -1,8 +1,8 @@
 #pragma once
 
 #include <string>
-#include "ReleaseType.h"
 #include <shared/DataContainer.h>
+#include <shared/versioning/ReleaseType.h>
 
 namespace shared { namespace plugin { namespace information
 {
@@ -38,7 +38,7 @@ namespace shared { namespace plugin { namespace information
       /// \brief	    get the plugin release type
       /// \return     the plugin release type
       //--------------------------------------------------------------
-      virtual const EReleaseType getReleaseType() const = 0;
+      virtual const shared::versioning::EReleaseType getReleaseType() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    get the plugin author

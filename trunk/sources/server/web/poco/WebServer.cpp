@@ -32,7 +32,7 @@ namespace web { namespace poco {
       Poco::Net::HTTPServerParams * serverParams = new Poco::Net::HTTPServerParams();
       serverParams->setServerName("Yadoms");
       boost::shared_ptr<IRunningInformation> runningInformation(shared::CServiceLocator::instance().get<IRunningInformation>());
-      serverParams->setSoftwareVersion(runningInformation->getSoftwareVersion().toString());
+      serverParams->setSoftwareVersion(runningInformation->getSoftwareVersion().getVersion().toString());
       serverParams->setKeepAlive(false); //this line fix global catch exception on multiple browser refresh
 
       // set-up a HTTPServer instance

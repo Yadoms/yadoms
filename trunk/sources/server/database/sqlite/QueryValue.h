@@ -3,6 +3,8 @@
 #include <shared/DataContainer.h>
 #include <shared/enumeration/IExtendedEnum.h>
 #include <shared/Field.hpp>
+#include <Poco/DateTime.h>
+#include <Poco/Timestamp.h>
 
 namespace database { 
 namespace sqlite { 
@@ -41,7 +43,19 @@ namespace sqlite {
       /// \brief           Constructor
       /// \param anyValue  a posix time
       //
-      CQueryValue(const boost::posix_time::ptime & anyValue, bool secure = true);
+      CQueryValue(const boost::posix_time::ptime & anyValue, bool secure = true);    
+      
+      //
+      /// \brief           Constructor
+      /// \param anyValue  a Poco::DateTime
+      //
+      CQueryValue(const Poco::DateTime & anyValue, bool secure = true);
+
+      //
+      /// \brief           Constructor
+      /// \param anyValue  a Poco::Timestamp
+      //
+      CQueryValue(const Poco::Timestamp & anyValue, bool secure = true);
 
       //
       /// \brief  Destructor

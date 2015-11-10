@@ -1,8 +1,7 @@
 #pragma once
 #include <shared/enumeration/EnumHelpers.hpp>
 
-namespace shared { namespace plugin { namespace information
-{
+namespace shared {  namespace versioning {
 
    //-----------------------------------------------------
    ///\brief    Enum for plugin release state
@@ -15,7 +14,5 @@ namespace shared { namespace plugin { namespace information
       ((Testing)(1))
       ((Beta)(2))
    )
-	
-} } } // namespace shared::plugin::information
-	
-	
+
+}} // namespace shared::versioning

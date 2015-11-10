@@ -1,6 +1,6 @@
 #pragma once
 
-#include "tools/Version.h"
+#include <shared/versioning/VersionInformation.h>
 
 //-----------------------------------------------------------------------------
 /// \class   Interface on server system informations
@@ -23,7 +23,7 @@ public:
    /// \brief		                     get the software version
    /// \return  	                     the software version
    //-----------------------------------------------------------------------------
-   virtual const tools::CVersion  & getSoftwareVersion() const = 0;
+   virtual const shared::versioning::CVersionInformation  & getSoftwareVersion() const = 0;
 
    //-----------------------------------------------------------------------------
    /// \brief		                     get the operating system name (windows, linux,....)
