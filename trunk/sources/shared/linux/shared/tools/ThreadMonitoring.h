@@ -3,12 +3,14 @@
 //
 #pragma once
 
+#include <Poco/Runnable.h>
+
 namespace shared { namespace tools {
 
    //--------------------------------------------------------------
    /// \brief	this class is used to manage platforms-specific threads functions
    //--------------------------------------------------------------
-   class CThreadMonitoring
+   class CThreadMonitoring : public Poco::Runnable
    {
    public:
       //--------------------------------------------------------------
@@ -24,12 +26,12 @@ namespace shared { namespace tools {
       //--------------------------------------------------------------
       /// \brief			Start the monitoring thread 
       //--------------------------------------------------------------      
-      void start();
+      void run();
       
-      //--------------------------------------------------------------
-      /// \brief			Stop the monitoring thread 
-      //--------------------------------------------------------------      
-      void stop();
+      void addThreadToMonitor(int threadId);
+
+   private:
+      std::vector<int> m_threadIdToMonitor;
    };
 
 }} // namespace shared::tools
