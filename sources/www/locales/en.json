@@ -173,6 +173,9 @@
 				"description": "Description of the rule"
 			}
 		},
+		"show-log-automation-rule": {
+			"title": "Automation rule edition log"
+		},
 		"qrcode": {
 			"title": "QR Code de Yadoms",
 			"text": "Here is the QRCode of Yadoms. You can now flash it with your phone to access Yadoms everywhere."
@@ -337,6 +340,7 @@
 					"edit": "Edit the rule",
 				 	"delete": "Delete the rule",
 					"confirmDeletion": "This action will delete the rule __name__. Continue anyway ?",
+					"log": "View log",
 					"ruleSuccessfullyCreated": "Rule successfully created",
 					"ruleSuccessfullyUpdated": "Rule successfully updated",
 					"ruleDeleted": "Règle supprimée",

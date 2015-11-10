@@ -46,6 +46,7 @@
                               "<div class=\"btn-group\">\n" +
                               "<button type=\"button\" class=\"btn btn-enableDisable\" data-i18n=\"[title]modals.dashboard.sub-windows.automation-center.startStop\"></button>\n" +
                               "<button type=\"button\" class=\"btn btn-edit btn-primary\" data-i18n=\"[title]modals.dashboard.sub-windows.automation-center.edit\"><span class=\"fa fa-pencil\"></span></button>\n" +
+                              "<button type=\"button\" class=\"btn btn-log btn-info\" data-i18n=\"[title]modals.dashboard.sub-windows.automation-center.log\"><span class=\"fa fa-file-text-o\"></span></button>\n" +
                               "<button type=\"button\" class=\"btn btn-delete btn-danger\" data-i18n=\"[title]modals.dashboard.sub-windows.automation-center.delete\"><span class=\"fa fa-trash-o\"></span></button>\n" +
                               "</div>\n" +
                            "</td>\n" +
@@ -59,6 +60,7 @@
       //we bind event on the different actions
       $ruleRow.find("button.btn-enableDisable").unbind('click').bind('click', startStopAutomationRule(rule));
       $ruleRow.find("button.btn-edit").unbind('click').bind('click', editAutomationRule(rule));
+      $ruleRow.find("button.btn-log").unbind('click').bind('click', showLogAutomationRule(rule));
       $ruleRow.find("button.btn-delete").unbind('click').bind('click', deleteAutomationRule(rule));
 
       updateDOMAutomationRule(rule);
@@ -150,6 +152,19 @@
          });
       }
    }
+   
+   function showLogAutomationRule(rule) {
+      //rule represent the automation rule concerned
+      return function() {
+         modals.automationRuleShowLog.load(function () {
+            showLogAutomationRuleModal(rule, function () {
+               AutomationRuleManager.getLog(rule, function (logContent) {
+                  showLogAutomationRuleModalUpdateLog(logContent);
+               });
+            });
+         });
+      }
+   }   
 
    function deleteAutomationRule(rule) {
       //rule represent the automation rule concerned

@@ -1,7 +1,7 @@
-/** @module Device class */
+/** @module AutomationRule class */
 
 /**
- * Creates an instance of Device
+ * Creates an instance of AutomationRule
  * @constructor
  */
 function AutomationRule(id, name, description, interpreter, editorName, model, content, configuration, enabled, state, errorMessage, startDate, stopDate) {

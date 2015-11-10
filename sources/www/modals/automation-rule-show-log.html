@@ -1,0 +1,44 @@
+<!--Show log of automation Rule Modal -->
+<div class="modal fade" id="show-log-automation-rule-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog show-log-automation-rule-modal">
+        <div class="modal-content">
+           <form class="form-horizontal" novalidate >
+              <div class="modal-header">
+                   <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                   <h4 class="modal-title" data-i18n="modals.show-log-automation-rule.title"></h4>
+              </div>
+              <div class="modal-body">
+                 <textarea readonly></textarea>
+              </div>
+              <div class="modal-footer">
+                 <div class="form-actions">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="common.close"></button>
+                 </div>
+              </div>
+           </form>
+        </div>
+    </div>
+</div>
+
+<script>
+   function showLogAutomationRuleModal(rule, getLog) {
+      assert(!isNullOrUndefined(rule), "rule must be defined");
+      assert($.isFunction(getLog), "getLog must be defined");
+      
+      getLog(rule);
+
+      //we display the modal
+      $('div#show-log-automation-rule-modal').modal();
+   }
+   
+   function showLogAutomationRuleModalUpdateLog(logContent) {
+      assert(!isNullOrUndefined(logContent), "logContent must be defined");
+
+      var $modalBody = $("div#show-log-automation-rule-modal .modal-body");
+      var $logSlot = $modalBody.find("textarea");
+      $logSlot.text(decodeURIComponent(logContent));
+
+      //we display the modal
+      $('div#show-log-automation-rule-modal').modal();
+   }
+</script>

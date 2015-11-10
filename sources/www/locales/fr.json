@@ -169,6 +169,9 @@
 				"description": "Description de la règle"
 			}
 		},
+		"show-log-automation-rule": {
+			"title": "Journal d'une règle d'automatisation"
+		},
 		"qrcode": {
 			"title": "QR Code de Yadoms",
 			"text": "Voici le QRCode de Yadoms. Vous pouvez le flasher avec votre téléphone pour accéder à Yadoms de partout."
@@ -334,6 +337,7 @@
 					"edit": "Modifier la règle",
 					"delete": "Supprimer la règle",
 					"confirmDeletion": "Confirmez-vous la suppression de la règle __name__ ?",
+					"log": "Consulter le journal",
 					"ruleSuccessfullyCreated": "Règle créée",
 					"ruleSuccessfullyUpdated": "Règle mise à jour",
 					"ruleDeleted": "Règle supprimée",
