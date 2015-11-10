@@ -28,6 +28,7 @@
 #include <shared/ServiceLocator.h>
 #include "startupOptions/IStartupOptions.h"
 #include <shared/tools/Debug.h>
+#include "Version.h"
 
 CSupervisor::CSupervisor(boost::shared_ptr<shared::event::CEventHandler> applicationEventHandler, const int applicationStopCode)
    :m_EventHandler(new shared::event::CEventHandler), m_applicationEventHandler(applicationEventHandler), m_applicationStopCode(applicationStopCode)
@@ -46,6 +47,7 @@ void CSupervisor::run()
 
    //log thread ID
    shared::tools::CDebug::LogThreadId("Supervisor");
+   shared::tools::CDebug::CreateThreadMonitoring();
 
    boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dal;
    try

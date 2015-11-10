@@ -46,7 +46,7 @@ namespace tools {
       return "windows";
    }
    
-   CVersion COperatingSystem::getVersion()
+   shared::versioning::CVersion COperatingSystem::getVersion()
    {
       OSVERSIONINFO osvi;
       ZeroMemory(&osvi, sizeof(OSVERSIONINFO));
@@ -54,7 +54,7 @@ namespace tools {
       if (GetVersionEx(&osvi) == 0)
          throw shared::exception::CException("Unable to get OS version");
 
-      CVersion version(osvi.dwMajorVersion, osvi.dwMinorVersion, osvi.dwBuildNumber);
+      shared::versioning::CVersion version(osvi.dwMajorVersion, osvi.dwMinorVersion, osvi.dwBuildNumber);
       return version;
    }
    

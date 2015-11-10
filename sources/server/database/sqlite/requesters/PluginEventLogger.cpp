@@ -23,7 +23,7 @@ namespace database { namespace sqlite { namespace requesters {
 
    // IPluginEventLoggerRequester implementation
 
-   int CPluginEventLogger::addEvent(const std::string & pluginName, const std::string & pluginVersion, const shared::plugin::information::EReleaseType & pluginReleaseType, const entities::EEventType & eventType, const std::string & message /*= CStringExtension::EmptyString*/)
+   int CPluginEventLogger::addEvent(const std::string & pluginName, const std::string & pluginVersion, const shared::versioning::EReleaseType & pluginReleaseType, const entities::EEventType & eventType, const std::string & message /*= CStringExtension::EmptyString*/)
    {
       boost::posix_time::ptime insertDate = shared::currentTime::Provider::now();
 
@@ -57,7 +57,7 @@ namespace database { namespace sqlite { namespace requesters {
       return addEvent(pluginLogEntry.PluginName(), pluginLogEntry.PluginVersion(), pluginLogEntry.PluginRelease(), pluginLogEntry.EventType(), pluginLogEntry.Message());
    }
 
-   std::vector<boost::shared_ptr<entities::CPluginEventLogger> > CPluginEventLogger::getPluginEvents(const std::string & pluginName, const std::string & pluginVersion, const shared::plugin::information::EReleaseType & pluginReleaseType)
+   std::vector<boost::shared_ptr<entities::CPluginEventLogger> > CPluginEventLogger::getPluginEvents(const std::string & pluginName, const std::string & pluginVersion, const shared::versioning::EReleaseType & pluginReleaseType)
    {
       CQuery qSelect;
       qSelect. Select().
@@ -73,7 +73,7 @@ namespace database { namespace sqlite { namespace requesters {
    }
 
 
-   std::vector<boost::shared_ptr<entities::CPluginEventLogger> > CPluginEventLogger::getPluginEvents(const std::string & pluginName, const std::string & pluginVersion, const shared::plugin::information::EReleaseType & pluginReleaseType, const boost::posix_time::ptime & fromDate)
+   std::vector<boost::shared_ptr<entities::CPluginEventLogger> > CPluginEventLogger::getPluginEvents(const std::string & pluginName, const std::string & pluginVersion, const shared::versioning::EReleaseType & pluginReleaseType, const boost::posix_time::ptime & fromDate)
    {
       CQuery qSelect;
       qSelect. Select().

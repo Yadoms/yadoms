@@ -15,7 +15,7 @@
 #include "requesters/Recipient.h"
 #include "SQLiteRequester.h"
 #include "sqlite3.h"
-
+#include <Poco/Util/Timer.h>
 
 namespace database { 
 namespace sqlite { 
@@ -69,6 +69,11 @@ namespace sqlite {
       /// \Brief		Configure the SQLite3 engine with some extended functions
       //--------------------------------------------------------------
       void registerExtendedFunctions();
+
+      //--------------------------------------------------------------
+      /// \Brief		Initialize the maintenance tasks
+      //--------------------------------------------------------------
+      void initializeMaintenanceTasks();
 
    private:
       //--------------------------------------------------------------
@@ -125,8 +130,7 @@ namespace sqlite {
       /// \Brief		Recipient requester
       //--------------------------------------------------------------
       boost::shared_ptr<requesters::CRecipient> m_recipientRequester;   
-      
-      
+
       //--------------------------------------------------------------
       /// \Brief		Startup options
       //--------------------------------------------------------------
@@ -141,6 +145,16 @@ namespace sqlite {
       /// \Brief		database requester (for SQL queries)
       //--------------------------------------------------------------
       boost::shared_ptr<CSQLiteRequester> m_databaseRequester;
+
+      //--------------------------------------------------------------
+      /// \Brief		The maintenance timer
+      //--------------------------------------------------------------
+      Poco::Util::Timer m_maintenanceTimer;
+
+      //--------------------------------------------------------------
+      /// \Brief		The maintenance task
+      //--------------------------------------------------------------
+      Poco::Util::TimerTask::Ptr m_maintenanceTask;
    };
    
 

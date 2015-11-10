@@ -4,6 +4,8 @@
 #include <shared/StringExtension.h>
 #include <shared/plugin/information/IInformation.h>
 #include "database/entities/Entities.h"
+#include <Poco/DateTimeParser.h>
+#include <Poco/DateTimeFormat.h>
 
 namespace database { 
 namespace sqlite { 
@@ -114,6 +116,16 @@ namespace adapters {
    inline boost::posix_time::ptime CSQLite3Extension::extractData(sqlite3_stmt * pStatement, int nCol)
    {
       return boost::posix_time::from_iso_string(extractData<std::string>(pStatement, nCol));
+   }  
+   
+   //--------------------------------------------------------------
+   ///\brief  Override method for type = Poco::DateTime (use specific sqlite3 function)
+   //--------------------------------------------------------------
+   template<>
+   inline Poco::DateTime CSQLite3Extension::extractData(sqlite3_stmt * pStatement, int nCol)
+   {
+      int timeZoneDifferential;
+      return Poco::DateTimeParser::parse("%Y%m%dT%H%M%S", extractData<std::string>(pStatement, nCol), timeZoneDifferential);
    }
 
    //--------------------------------------------------------------

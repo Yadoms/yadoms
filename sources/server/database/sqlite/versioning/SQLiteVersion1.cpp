@@ -3,7 +3,7 @@
 #include "database/sqlite/Query.h"
 #include "database/sqlite/adapters/SingleValueAdapter.hpp"
 #include "database/sqlite/SQLiteDatabaseTables.h"
-#include "tools/Version.h"
+#include <shared/versioning/Version.h>
 #include "SQLiteVersionException.h"
 
 
@@ -22,7 +22,7 @@
             }
 
             // ISQLiteVersionUpgrade implementation
-            void CSQLiteVersion1::checkForUpgrade(const boost::shared_ptr<CSQLiteRequester> & pRequester, const tools::CVersion & currentVersion)
+            void CSQLiteVersion1::checkForUpgrade(const boost::shared_ptr<CSQLiteRequester> & pRequester, const shared::versioning::CVersion & currentVersion)
             {
                bool bNeedToCreateOrUpgrade = true;
 

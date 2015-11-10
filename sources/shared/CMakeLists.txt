@@ -94,8 +94,6 @@ set(SHARED_LIB_SRC
    shared/plugin/IPlugin.h
 	
    shared/plugin/information/IInformation.h
-   shared/plugin/information/ReleaseType.h
-   shared/plugin/information/ReleaseType.cpp
 
    shared/plugin/yPluginApi/commonIncludes.h
    shared/plugin/yPluginApi/IDeviceCommand.h
@@ -218,6 +216,13 @@ set(SHARED_LIB_SRC
    shared/tools/Random.h
    shared/tools/Random.cpp
 
+   shared/versioning/ReleaseType.h
+   shared/versioning/ReleaseType.cpp
+   shared/versioning/Version.h
+   shared/versioning/Version.cpp
+   shared/versioning/VersionInformation.h
+   shared/versioning/VersionInformation.cpp
+   
 	shared/web/FileDownloader.h
 	shared/web/FileDownloader.cpp
 	shared/web/UriHelpers.h
@@ -241,6 +246,8 @@ set(SHARED_LIB_SRC
 	windows/shared/Peripherals.cpp
 	windows/shared/Thread.h
 	windows/shared/Thread.cpp
+	windows/shared/tools/ThreadMonitoring.h
+	windows/shared/tools/ThreadMonitoring.cpp
 )	
 set(PLATFORM_SPECIFIC_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/windows)
 
@@ -258,6 +265,8 @@ set(SHARED_LIB_SRC
 	mac/shared/Peripherals.cpp
 	mac/shared/Thread.h
 	mac/shared/Thread.cpp
+	mac/shared/tools/ThreadMonitoring.h
+	mac/shared/tools/ThreadMonitoring.cpp
 )	
 set(PLATFORM_SPECIFIC_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/mac)
 
@@ -275,6 +284,8 @@ set(SHARED_LIB_SRC
 	linux/shared/Peripherals.cpp
 	linux/shared/Thread.h
 	linux/shared/Thread.cpp
+	linux/shared/tools/ThreadMonitoring.h
+	linux/shared/tools/ThreadMonitoring.cpp
 )	
 set(PLATFORM_SPECIFIC_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/linux)
 
@@ -300,6 +311,7 @@ source_group(serialization shared/shared/serialization/*.* )
 source_group(script shared/shared/script/*.* )	
 source_group(script\\yScriptApi shared/shared/script/yScriptApi/*.* )	
 source_group(tools shared/shared/tools/*.* )	
+source_group(versioning shared/shared/versioning/*.* )	
 source_group(web shared/shared/web/*.* )	
 source_group(web\\exception shared/shared/web/exception/*.* )	
 

@@ -30,7 +30,9 @@ namespace database { namespace sqlite {
          // IAcquisitionRequester implementation
          virtual boost::shared_ptr<entities::CAcquisition> saveData(const int keywordId, const std::string & data, boost::posix_time::ptime & dataTime);
          virtual boost::shared_ptr<entities::CAcquisition> incrementData(const int keywordId, const std::string & increment, boost::posix_time::ptime & dataTime);
-         virtual LastSummaryData saveSummaryData(const int keywordId, boost::posix_time::ptime & dataTime);
+         virtual boost::shared_ptr<entities::CAcquisitionSummary> saveSummaryData(const int keywordId, database::entities::EAcquisitionSummaryType curType, boost::posix_time::ptime & dataTime);
+         virtual void getKeywordsHavingDate(const boost::posix_time::ptime & timeFrom, const boost::posix_time::ptime & timeTo, std::vector<int> & results);
+         virtual bool summaryDataExists(const int keywordId, database::entities::EAcquisitionSummaryType curType, boost::posix_time::ptime & date);
          virtual void removeKeywordData(const int keywordId);
          virtual boost::shared_ptr<entities::CAcquisition> getAcquisitionByKeywordAndDate(const int keywordId, boost::posix_time::ptime time);
          virtual boost::shared_ptr<entities::CAcquisition> getKeywordLastData(const int keywordId);
@@ -52,6 +54,15 @@ namespace database { namespace sqlite {
          /// \throw                    CInvalidParameter if deviceId is unknown
          //--------------------------------------------------------------
          std::vector<boost::shared_ptr<entities::CAcquisitionSummary > > getKeywordSummaryDataByType(const entities::EAcquisitionSummaryType & type, int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo);
+         //--------------------------------------------------------------
+         /// \brief                    Get the data  by type (avg, min, max)
+         /// \param [in] keywordId     keywordId Id
+         /// \param [in] timeFrom      The start date (optionnal)
+         /// \param [in] timeTo        The end date (optionnal)
+         /// \return                   CAcquisitionSummary data
+         /// \throw                    CInvalidParameter if deviceId is unknown
+         //--------------------------------------------------------------
+         std::vector<boost::shared_ptr<entities::CAcquisitionSummary > > getKeywordSummaryDataByType(const entities::EAcquisitionSummaryType & type, int keywordId, const Poco::DateTime & timeFrom, const Poco::DateTime & timeTo);
 
          //--------------------------------------------------------------
          /// \brief                    Get the summary data (highchart js format) : [[date,value],[date,value],...] by acquisition type
@@ -63,7 +74,6 @@ namespace database { namespace sqlite {
          /// \throw                    CInvalidParameter if deviceId is unknown
          //--------------------------------------------------------------
          std::string getKeywordHighchartDataByType(const entities::EAcquisitionSummaryType & type, int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo);
-
 
          //--------------------------------------------------------------
          /// \Brief		   Pointer to SQLiteDatabseHandler

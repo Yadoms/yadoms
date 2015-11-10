@@ -1,7 +1,7 @@
 #pragma once
 
 #include "database/sqlite/SQLiteRequester.h"
-#include "tools/Version.h"
+#include <shared/versioning/Version.h>
 
 
    namespace database { 
@@ -25,7 +25,7 @@
                ///\param [in] currentVersion version of the actual database
                ///\throw      CSQLiteVersionException if upgrade failed
                //-------------------------------------------------------------------
-               virtual void checkForUpgrade(const boost::shared_ptr<CSQLiteRequester> & pRequester, const tools::CVersion & currentVersion) =0;
+               virtual void checkForUpgrade(const boost::shared_ptr<CSQLiteRequester> & pRequester, const shared::versioning::CVersion & currentVersion) =0;
             };
 
          } //namespace versioning

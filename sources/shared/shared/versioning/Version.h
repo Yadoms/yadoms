@@ -1,15 +1,14 @@
 #pragma once
+#include <shared/Export.h>
 
-
-namespace tools
-{
+namespace shared { namespace versioning {
 
    //---------------------------------------------
    ///\brief Class which handle and parse versions
    ///       Version format:
    ///         major.minor.build.revision
    //---------------------------------------------
-   class CVersion
+   class YADOMS_SHARED_EXPORT CVersion
    {
    public:
       //---------------------------------------------
@@ -61,7 +60,7 @@ namespace tools
       ///\param [in] rhs the version object to compare
       ///\return  true is current Version is greater or equal to parameter version
       //---------------------------------------------
-      bool operator>=(CVersion const& rhs) const; 
+      bool operator>=(CVersion const& rhs) const;
 
       //---------------------------------------------
       ///\brief Compare if current Version is strictly greater than parameter version
@@ -92,8 +91,6 @@ namespace tools
       int compare(CVersion const& rhs) const;
 
    private:
-   
-
       //---------------------------------------------
       ///\brief Set the version values
       ///\param [in] major       the major version number
@@ -110,4 +107,4 @@ namespace tools
       std::vector<int>    m_versionInfo;
    };
 
-} // namespace tools
+} } // namespace shared::versioning

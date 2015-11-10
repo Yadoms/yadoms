@@ -10,7 +10,7 @@ CIdentityForQualifier::CIdentityForQualifier(const boost::shared_ptr<const share
 {
 }
 
-CIdentityForQualifier::CIdentityForQualifier(const std::string& type, const std::string& version, shared::plugin::information::EReleaseType releaseType)
+CIdentityForQualifier::CIdentityForQualifier(const std::string& type, const std::string& version, shared::versioning::EReleaseType releaseType)
    : m_type(type), m_version(version), m_releaseType(releaseType)
 {
 }
@@ -29,7 +29,7 @@ const std::string& CIdentityForQualifier::getVersion() const
    return m_version;
 }
 
-const shared::plugin::information::EReleaseType CIdentityForQualifier::getReleaseType() const
+const shared::versioning::EReleaseType CIdentityForQualifier::getReleaseType() const
 {
    return m_releaseType;
 }

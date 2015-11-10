@@ -42,7 +42,7 @@ std::string CGeneralInfo::get(shared::script::yScriptApi::IYScriptApi::EInfoKeys
       case shared::script::yScriptApi::IYScriptApi::kLongitude: return shared::CStringExtension::cultureInvariantToString(objectFactory->getLocation()->longitude());
       case shared::script::yScriptApi::IYScriptApi::kAltitude: return shared::CStringExtension::cultureInvariantToString(objectFactory->getLocation()->altitude());
       case shared::script::yScriptApi::IYScriptApi::kYadomsServerOS: return shared::CServiceLocator::instance().get<IRunningInformation>()->getOperatingSystemName();
-      case shared::script::yScriptApi::IYScriptApi::kYadomsServerVersion: return shared::CServiceLocator::instance().get<IRunningInformation>()->getSoftwareVersion().toString();
+      case shared::script::yScriptApi::IYScriptApi::kYadomsServerVersion: return shared::CServiceLocator::instance().get<IRunningInformation>()->getSoftwareVersion().serialize();
       default:
          throw shared::exception::COutOfRange((boost::format("Key %1% doesn't exist") % key).str());
       }

@@ -2,8 +2,7 @@
 #include "Version.h"
 #include <shared/Log.h>
 
-namespace tools
-{
+namespace shared { namespace versioning {
 
    CVersion::CVersion()
    {
@@ -160,4 +159,4 @@ namespace tools
       return versionAsString;
    }
 
-} // namespace tools
+} } // namespace shared::versioning

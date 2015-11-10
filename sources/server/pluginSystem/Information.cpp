@@ -36,7 +36,7 @@ namespace pluginSystem
          if (m_version.empty() || !regex_match(m_version, boost::regex("\\d+.\\d+")))
             throw shared::exception::CInvalidParameter("Error reading package.json : plugin version doesn't match expected format (x.x)");
 
-         m_releaseType = m_package.get<shared::plugin::information::EReleaseType>("releaseType");
+         m_releaseType = m_package.get<shared::versioning::EReleaseType>("releaseType");
 
          m_author = m_package.get<std::string>("author");
          if (m_author.empty())
@@ -89,7 +89,7 @@ namespace pluginSystem
       return  m_version;
    }
 
-   const shared::plugin::information::EReleaseType CInformation::getReleaseType() const
+   const shared::versioning::EReleaseType CInformation::getReleaseType() const
    {
       return m_releaseType;
    }

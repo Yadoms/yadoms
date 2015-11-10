@@ -25,14 +25,14 @@
                virtual ~CSQLiteVersion1();
 
                // ISQLiteVersionUpgrade implementation
-               virtual void checkForUpgrade(const boost::shared_ptr<CSQLiteRequester> & pRequester, const tools::CVersion & currentVersion);
+               virtual void checkForUpgrade(const boost::shared_ptr<CSQLiteRequester> & pRequester, const shared::versioning::CVersion & currentVersion);
                // [END] ISQLiteVersionUpgrade implementation
 
             private:
                //-----------------------------------
                /// \brief     The version (1.0.0.0)
                //-----------------------------------
-               tools::CVersion m_version;
+               shared::versioning::CVersion m_version;
 
                //-----------------------------------
                /// \brief     Create the database (when tables are not found)

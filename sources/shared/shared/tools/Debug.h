@@ -15,6 +15,7 @@ namespace shared { namespace tools {
       //---------------------------------------------
       static void LogThreadId(const std::string & threadName);
 
+      static void CreateThreadMonitoring();
    };
 
 } // namespace tools 

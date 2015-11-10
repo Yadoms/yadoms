@@ -113,7 +113,7 @@ namespace web { namespace rest { namespace service {
       {
          shared::CDataContainer result;
          result.set("runningPlatform", m_runningInformation->getOperatingSystemName());
-         result.set("yadomsVersion", m_runningInformation->getSoftwareVersion().toString());
+         result.set("yadoms", m_runningInformation->getSoftwareVersion().getContainer());
          result.set("startupTime", m_runningInformation->getStartupDateTime());
          result.set("executablePath", m_runningInformation->getExecutablePath());
          return CResult::GenerateSuccess(result);

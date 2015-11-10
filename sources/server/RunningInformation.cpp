@@ -4,10 +4,11 @@
 #include <Poco/Environment.h>
 #include <shared/currentTime/Provider.h>
 #include <shared/Log.h>
+#include "Version.h"
 
 CRunningInformation::CRunningInformation(const std::string & path)
    :m_startupDateTime(shared::currentTime::Provider::now()),
-   m_softwareVersion(1, 0, 0, 0), m_executablePath(path)
+   m_softwareVersion(YadomsVersion, YadomsReleaseType), m_executablePath(path)
 {
 }
 
@@ -22,7 +23,7 @@ const boost::posix_time::ptime  & CRunningInformation::getStartupDateTime() cons
 }
    
 
-const tools::CVersion  & CRunningInformation::getSoftwareVersion() const
+const shared::versioning::CVersionInformation  & CRunningInformation::getSoftwareVersion() const
 {
    return m_softwareVersion;
 }   

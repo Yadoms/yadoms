@@ -22,7 +22,7 @@ namespace pluginSystem
       virtual ~CInformation();
       virtual const std::string& getType() const;
       virtual const std::string& getVersion() const;
-      virtual const shared::plugin::information::EReleaseType getReleaseType() const;
+      virtual const shared::versioning::EReleaseType getReleaseType() const;
       virtual const std::string& getAuthor() const;
       virtual const std::string& getUrl() const;
       virtual std::string getIdentity() const;
@@ -57,7 +57,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief      plugin state
       //--------------------------------------------------------------
-      shared::plugin::information::EReleaseType m_releaseType;
+      shared::versioning::EReleaseType m_releaseType;
 
       //--------------------------------------------------------------
       /// \brief      plugin author

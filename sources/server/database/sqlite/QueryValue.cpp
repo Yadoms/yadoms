@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "QueryValue.h"
-
-
+#include <Poco/DateTimeFormatter.h>
+#include <Poco/DateTimeFormat.h>
 
 namespace database { 
 namespace sqlite { 
@@ -44,6 +44,30 @@ namespace sqlite {
          initialize(boost::posix_time::to_iso_string(anyValue));
    }
 
+
+   
+   CQueryValue::CQueryValue(const Poco::DateTime & anyValue, bool secure)
+   {
+      std::string dateAsString = Poco::DateTimeFormatter::format(anyValue, "%Y%m%dT%H%M%S");
+
+      if (secure)
+         initialize("'" + dateAsString + "'");
+      else
+         initialize(dateAsString);
+
+   }   
+   
+   CQueryValue::CQueryValue(const Poco::Timestamp & anyValue, bool secure)
+   {
+      std::string dateAsString = Poco::DateTimeFormatter::format(anyValue, "%Y%m%dT%H%M%S");
+
+      if (secure)
+         initialize("'" + dateAsString + "'");
+      else
+         initialize(dateAsString);
+   }
+
+   
 
    CQueryValue::CQueryValue(const bool value) 
    { 

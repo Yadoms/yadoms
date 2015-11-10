@@ -443,6 +443,25 @@ namespace database { namespace sqlite {
 
 
       //
+      /// \brief           Append the WITH clause with a subquery 
+      ///                  //WITH tableName AS (subQuery)
+      /// \param  tableName   The table name
+      /// \param  subQuery    the subquery
+      /// \return          A reference to itself to allow method chaining
+      //    
+      CQuery & With( const std::string & tableName1, const CQuery & subQuery1,
+                     const std::string & tableName2  = EMPTY_STR, const CQuery & subQuery2 = CQuery::EmptyQuery,
+                     const std::string & tableName3 = EMPTY_STR, const CQuery & subQuery3 = CQuery::EmptyQuery,
+                     const std::string & tableName4 = EMPTY_STR, const CQuery & subQuery4 = CQuery::EmptyQuery,
+                     const std::string & tableName5 = EMPTY_STR, const CQuery & subQuery5 = CQuery::EmptyQuery,
+                     const std::string & tableName6 = EMPTY_STR, const CQuery & subQuery6 = CQuery::EmptyQuery,
+                     const std::string & tableName7 = EMPTY_STR, const CQuery & subQuery7 = CQuery::EmptyQuery,
+                     const std::string & tableName8 = EMPTY_STR, const CQuery & subQuery8 = CQuery::EmptyQuery,
+                     const std::string & tableName9 = EMPTY_STR, const CQuery & subQuery9 = CQuery::EmptyQuery,
+                     const std::string & tableName10 = EMPTY_STR, const CQuery & subQuery10 = CQuery::EmptyQuery);
+
+
+      //
       /// \brief           create the LIMIT clause
       /// \param  numberOfRowsToReturn    the maximum number of rows to return
       /// \return          A reference to itself to allow method chaining
@@ -559,6 +578,10 @@ namespace database { namespace sqlite {
       //  
       const EQueryType & GetQueryType() const { return m_queryType; }
 
+      //
+      /// \brief  The type of query
+      //
+      static CQuery EmptyQuery;
 
    private:
       //
@@ -628,6 +651,8 @@ namespace database { namespace sqlite {
       /// \return             A reference to itself to allow method chaining
       //
       CQuery & ChangeQueryType(const EQueryType newType, bool changeOnlyIfNeverSet = true);
+
+
    private:
       //
       /// \brief  The query
@@ -639,6 +664,7 @@ namespace database { namespace sqlite {
       /// \brief  The type of query
       //
       EQueryType m_queryType;
+
    };
 
 

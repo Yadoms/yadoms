@@ -24,7 +24,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief	Constructor
       //--------------------------------------------------------------
-      CIdentityForQualifier(const std::string& name, const std::string& version, shared::plugin::information::EReleaseType releaseType);
+      CIdentityForQualifier(const std::string& name, const std::string& version, shared::versioning::EReleaseType releaseType);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
@@ -47,12 +47,12 @@ namespace pluginSystem
       /// \brief	   Release type getter
       /// \return    Plugin release type
       //--------------------------------------------------------------
-      const shared::plugin::information::EReleaseType getReleaseType() const;
+      const shared::versioning::EReleaseType getReleaseType() const;
 
    private:
       const std::string m_type;
       const std::string m_version;
-      const shared::plugin::information::EReleaseType m_releaseType;
+      const shared::versioning::EReleaseType m_releaseType;
    };
 
    //--------------------------------------------------------------

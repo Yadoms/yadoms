@@ -21,7 +21,7 @@ public:
 
    // IRunningInformation implementation
    virtual const boost::posix_time::ptime  & getStartupDateTime() const;
-   virtual const tools::CVersion  & getSoftwareVersion() const;
+   virtual const shared::versioning::CVersionInformation  & getSoftwareVersion() const;
    virtual const std::string getOperatingSystemName() const;
    virtual const std::string & getExecutablePath() const;
    // [END] IRunningInformation implementation
@@ -35,7 +35,7 @@ private:
    //-----------------------------------------------------------------------------
    /// \brief		                     Yadoms version
    //-----------------------------------------------------------------------------
-   tools::CVersion   m_softwareVersion;
+   shared::versioning::CVersionInformation   m_softwareVersion;
 
    //-----------------------------------------------------------------------------
    /// \brief		                     Yadoms executable path

@@ -9,6 +9,7 @@
 #include "database/sqlite/adapters/HighchartValueAdapter.hpp"
 #include "database/sqlite/SQLiteDatabaseTables.h"
 #include "database/sqlite/Query.h"
+#include <Poco/Timestamp.h>
 
 namespace database {  namespace sqlite {  namespace requesters { 
 
@@ -155,7 +156,6 @@ namespace database {  namespace sqlite {  namespace requesters {
    }
 
 
-
    std::vector<boost::shared_ptr<entities::CAcquisitionSummary> > CAcquisition::getKeywordDataByDay(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
    {
       return getKeywordSummaryDataByType(entities::EAcquisitionSummaryType::kDay, keywordId, timeFrom, timeTo);
@@ -201,7 +201,6 @@ namespace database {  namespace sqlite {  namespace requesters {
 
       return adapter.getResults();
    }
-
 
 
 
@@ -272,7 +271,28 @@ namespace database {  namespace sqlite {  namespace requesters {
       return getKeywordHighchartDataByType(entities::EAcquisitionSummaryType::kHour, keywordId, timeFrom, timeTo);
    }
 
-   IAcquisitionRequester::LastSummaryData CAcquisition::saveSummaryData(const int keywordId, boost::posix_time::ptime & dataTime)
+   void CAcquisition::getKeywordsHavingDate(const boost::posix_time::ptime & timeFrom, const boost::posix_time::ptime & timeTo, std::vector<int> & results)
+   {
+      /*
+
+      select distinct keywordId
+      from Acquisition
+      where date >= '20151105T100000'
+      and date < '20151105T110000'
+
+      */
+      CQuery q;
+      q.Select(CQUERY_DISTINCT(CAcquisitionTable::getKeywordIdColumnName()))
+         .From(CAcquisitionTable::getTableName())
+         .Where(CAcquisitionTable::getDateColumnName(), CQUERY_OP_SUP_EQUAL, CQueryValue(timeFrom, false).str())
+         .And(CAcquisitionTable::getDateColumnName(), CQUERY_OP_INF, CQueryValue(timeTo, false).str());
+
+      database::sqlite::adapters::CSingleValueAdapterWithContainer<int> intVectorAdapter(results);
+      m_databaseRequester->queryEntities<int>(&intVectorAdapter, q);
+   }
+
+
+   boost::shared_ptr<entities::CAcquisitionSummary> CAcquisition::saveSummaryData(const int keywordId, database::entities::EAcquisitionSummaryType curType, boost::posix_time::ptime & dataTime)
    {
       /* 
       INSERT OR REPLACE INTO AcquisitionSummary (type, date, keywordId, mean, min, max)
@@ -294,62 +314,70 @@ namespace database {  namespace sqlite {  namespace requesters {
             //hourDateEnd : is the end of the hour (current day) => minutes and seconds set to 59
             //dayDate : is the start of the day : current day, with hour, minte and second set to 0
             //dayDateEnd : is the end of the day : current day, with hour set to 23, minutes and seconds at 59
+            boost::posix_time::ptime fromDate, toDate;
             tm pt_tm = boost::posix_time::to_tm(dataTime);
-            boost::posix_time::ptime hourDate(dataTime.date(), boost::posix_time::hours(pt_tm.tm_hour));
-            boost::posix_time::ptime hourDateEnd(dataTime.date(), boost::posix_time::hours(pt_tm.tm_hour) + boost::posix_time::minutes(59) + boost::posix_time::seconds(59));
-            boost::posix_time::ptime dayDate(dataTime.date());
-            boost::posix_time::ptime dayDateEnd(dataTime.date(), boost::posix_time::hours(23) + boost::posix_time::minutes(59) + boost::posix_time::seconds(59));
+            if (curType == database::entities::EAcquisitionSummaryType::kHour)
+            {
+               fromDate = boost::posix_time::ptime(dataTime.date(), boost::posix_time::hours(pt_tm.tm_hour));
+               toDate = boost::posix_time::ptime(dataTime.date(), boost::posix_time::hours(pt_tm.tm_hour) + boost::posix_time::minutes(59) + boost::posix_time::seconds(59));
+            }
+            else if (curType == database::entities::EAcquisitionSummaryType::kDay)
+            {
+               fromDate = boost::posix_time::ptime(dataTime.date());
+               toDate = boost::posix_time::ptime(dataTime.date(), boost::posix_time::hours(23) + boost::posix_time::minutes(59) + boost::posix_time::seconds(59));
+            }
 
-            //set a variable for the type : hour
-            entities::EAcquisitionSummaryType curType = entities::EAcquisitionSummaryType::kHour;
+            //process the request
             CQuery q;
             q.InsertOrReplaceInto(CAcquisitionSummaryTable::getTableName(), CAcquisitionSummaryTable::getTypeColumnName(), CAcquisitionSummaryTable::getDateColumnName(), CAcquisitionSummaryTable::getKeywordIdColumnName(), CAcquisitionSummaryTable::getAvgColumnName(), CAcquisitionSummaryTable::getMinColumnName(), CAcquisitionSummaryTable::getMaxColumnName()).
-               Select(CQueryValue(curType.toString()).str(), CQueryValue(hourDate).str(), CQueryValue(keywordId).str(), "avg(cast(" + CAcquisitionTable::getValueColumnName() + " as real))", "min(cast(" + CAcquisitionTable::getValueColumnName() + " as real))", "max(cast(" + CAcquisitionTable::getValueColumnName() + " as real))").
+               Select(CQueryValue(curType.toString()).str(), CQueryValue(fromDate).str(), CQueryValue(keywordId).str(), "avg(cast(" + CAcquisitionTable::getValueColumnName() + " as real))", "min(cast(" + CAcquisitionTable::getValueColumnName() + " as real))", "max(cast(" + CAcquisitionTable::getValueColumnName() + " as real))").
                From(CAcquisitionTable::getTableName() + " as acq").
                Where("acq." + CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId).
-               And("acq." + CAcquisitionTable::getDateColumnName(), CQUERY_OP_SUP_EQUAL, hourDate).
-               And("acq." + CAcquisitionTable::getDateColumnName(), CQUERY_OP_INF_EQUAL, hourDateEnd);
+               And("acq." + CAcquisitionTable::getDateColumnName(), CQUERY_OP_SUP_EQUAL, fromDate).
+               And("acq." + CAcquisitionTable::getDateColumnName(), CQUERY_OP_INF_EQUAL, toDate);
 
             if (m_databaseRequester->queryStatement(q) <= 0)
-               throw shared::exception::CEmptyResult("Fail to insert new summary hour data");
+               throw shared::exception::CEmptyResult("Fail to insert new summary " + curType.toString() + " data");
 
-            //set a variable for the type : day
-            curType = entities::EAcquisitionSummaryType::kDay;
-            q.Clear().
-               InsertOrReplaceInto(CAcquisitionSummaryTable::getTableName(), CAcquisitionSummaryTable::getTypeColumnName(), CAcquisitionSummaryTable::getDateColumnName(), CAcquisitionSummaryTable::getKeywordIdColumnName(), CAcquisitionSummaryTable::getAvgColumnName(), CAcquisitionSummaryTable::getMinColumnName(), CAcquisitionSummaryTable::getMaxColumnName()).
-               Select(CQueryValue(curType.toString()).str(), CQueryValue(dayDate).str(), CQueryValue(keywordId).str(), "avg(cast(" + CAcquisitionTable::getValueColumnName() + " as real))", "min(cast(" + CAcquisitionTable::getValueColumnName() + " as real))", "max(cast(" + CAcquisitionTable::getValueColumnName() + " as real))").
-               From(CAcquisitionTable::getTableName() + " as acq").
-               Where("acq." + CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId).
-               And("acq." + CAcquisitionTable::getDateColumnName(), CQUERY_OP_SUP_EQUAL, dayDate).
-               And("acq." + CAcquisitionTable::getDateColumnName(), CQUERY_OP_INF_EQUAL, dayDateEnd);
-
-            if (m_databaseRequester->queryStatement(q) <= 0)
-               throw shared::exception::CEmptyResult("Fail to insert new summary day data");
-
-            //get the last inserted values
-            boost::shared_ptr<entities::CAcquisitionSummary> acqDay;
-            std::vector<boost::shared_ptr<entities::CAcquisitionSummary> > dayData = getKeywordDataByDay(keywordId, dayDate, dayDate);
-            if (dayData.size() > 0)
-            {
-               acqDay = dayData[0];
-            }
-
-            boost::shared_ptr<entities::CAcquisitionSummary> acqHour;
-            std::vector<boost::shared_ptr<entities::CAcquisitionSummary> > hourData = getKeywordDataByHour(keywordId, hourDate, hourDate);
-            if (hourData.size() > 0)
-            {
-               acqHour = hourData[0];
-            }
-            return boost::make_tuple(acqDay, acqHour);
-
+            //get the result
+            std::vector< boost::shared_ptr<entities::CAcquisitionSummary> > all;
+            if (curType == database::entities::EAcquisitionSummaryType::kDay)
+               all = getKeywordDataByDay(keywordId, fromDate, toDate);
+            else 
+               all = getKeywordDataByHour(keywordId, fromDate, toDate);
+            if (!all.empty())
+               return all[0];
          }
          //keyword is not numeric, no data to avg, min and max !
-         return boost::make_tuple(boost::shared_ptr<entities::CAcquisitionSummary>(), boost::shared_ptr<entities::CAcquisitionSummary>());
+         return boost::shared_ptr<entities::CAcquisitionSummary>();
       }
       throw shared::exception::CEmptyResult("The keyword do not exists, cannot add summary data");
    }
 
+   bool CAcquisition::summaryDataExists(const int keywordId, entities::EAcquisitionSummaryType curType, boost::posix_time::ptime & dataTime)
+   {
+      //determine the real date of summary data 
+      boost::posix_time::ptime fromDate;
+      tm pt_tm = boost::posix_time::to_tm(dataTime);
+      if (curType == database::entities::EAcquisitionSummaryType::kHour)
+      {
+         fromDate = boost::posix_time::ptime(dataTime.date(), boost::posix_time::hours(pt_tm.tm_hour));
+      }
+      else if (curType == database::entities::EAcquisitionSummaryType::kDay)
+      {
+         fromDate = boost::posix_time::ptime(dataTime.date());
+      }
 
+      CQuery checkq;
+      checkq.SelectCount().
+         From(CAcquisitionSummaryTable::getTableName()).
+         Where(CAcquisitionSummaryTable::getTypeColumnName(), CQUERY_OP_EQUAL, CQueryValue(curType.toString(), false).str()).
+         And(CAcquisitionSummaryTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, CQueryValue(keywordId, false).str()).
+         And(CAcquisitionSummaryTable::getDateColumnName(), CQUERY_OP_EQUAL, CQueryValue(fromDate, false).str());
+
+      return (m_databaseRequester->queryCount(checkq) > 0);
+   }
+   
    // [END] IAcquisitionRequester implementation
 
 

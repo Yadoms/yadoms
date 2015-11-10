@@ -28,10 +28,10 @@ namespace database { namespace sqlite {
          virtual ~CPluginEventLogger();
 
          // IPluginEventLoggerRequester implementation
-         virtual int addEvent(const std::string & pluginName, const std::string & pluginVersion, const shared::plugin::information::EReleaseType & pluginReleaseType, const entities::EEventType & eventType, const std::string & message = shared::CStringExtension::EmptyString);
+         virtual int addEvent(const std::string & pluginName, const std::string & pluginVersion, const shared::versioning::EReleaseType & pluginReleaseType, const entities::EEventType & eventType, const std::string & message = shared::CStringExtension::EmptyString);
          virtual int addEvent(const entities::CPluginEventLogger & pluginLogEntry);
-         virtual std::vector<boost::shared_ptr<entities::CPluginEventLogger> > getPluginEvents(const std::string & pluginName, const std::string & pluginVersion, const shared::plugin::information::EReleaseType & pluginReleaseType);
-         virtual std::vector<boost::shared_ptr<entities::CPluginEventLogger> > getPluginEvents(const std::string & pluginName, const std::string & pluginVersion, const shared::plugin::information::EReleaseType & pluginReleaseType, const boost::posix_time::ptime & fromDate);
+         virtual std::vector<boost::shared_ptr<entities::CPluginEventLogger> > getPluginEvents(const std::string & pluginName, const std::string & pluginVersion, const shared::versioning::EReleaseType & pluginReleaseType);
+         virtual std::vector<boost::shared_ptr<entities::CPluginEventLogger> > getPluginEvents(const std::string & pluginName, const std::string & pluginVersion, const shared::versioning::EReleaseType & pluginReleaseType, const boost::posix_time::ptime & fromDate);
          // [END] IPluginEventLoggerRequester implementation
 
       private:

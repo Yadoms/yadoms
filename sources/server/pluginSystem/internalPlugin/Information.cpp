@@ -4,7 +4,7 @@
 namespace pluginSystem {   namespace internalPlugin {
 
    CInformation::CInformation()
-      :m_type("system"), m_version("1.0"), m_releaseType(shared::plugin::information::EReleaseType::kStable),
+      :m_type("system"), m_version("1.0"), m_releaseType(shared::versioning::EReleaseType::kStable),
       m_author("Yadoms team"), m_url("http://www.yadoms.com")
    {
       m_package.set("type", m_type);
@@ -28,7 +28,7 @@ namespace pluginSystem {   namespace internalPlugin {
    {
       return m_version;
    }
-   const shared::plugin::information::EReleaseType CInformation::getReleaseType() const
+   const shared::versioning::EReleaseType CInformation::getReleaseType() const
    {
       return m_releaseType;
    }
