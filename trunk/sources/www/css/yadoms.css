@@ -254,3 +254,7 @@ body {
 .table tbody>tr>td.vert-align{
     vertical-align: middle;
 }
+
+.logTextArea{
+    height: 250px;
+}
