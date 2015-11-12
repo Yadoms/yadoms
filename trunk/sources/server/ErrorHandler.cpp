@@ -2,13 +2,9 @@
 #include "ErrorHandler.h"
 #include <Poco/Thread.h>
 #include <shared/Log.h>
-#include <shared/tools/Debug.h>
 
 void CErrorHandler::exception(const Poco::Exception& exc)
 {
-   //log thread ID
-   shared::tools::CDebug::LogThreadId("GlobalCatch");
-
    Poco::Thread * currentThread = Poco::Thread::current();
    if (currentThread != NULL)
    {
@@ -22,9 +18,6 @@ void CErrorHandler::exception(const Poco::Exception& exc)
 
 void CErrorHandler::exception(const std::exception& exc)
 {
-   //log thread ID
-   shared::tools::CDebug::LogThreadId("GlobalCatch");
-
    Poco::Thread * currentThread = Poco::Thread::current();
    if (currentThread != NULL)
    {
@@ -38,9 +31,6 @@ void CErrorHandler::exception(const std::exception& exc)
 
 void CErrorHandler::exception()
 {
-   //log thread ID
-   shared::tools::CDebug::LogThreadId("GlobalCatch");
-
    Poco::Thread * currentThread = Poco::Thread::current();
    if (currentThread != NULL)
    {

@@ -36,7 +36,7 @@ void CRuleManager::startAllRules()
    BOOST_ASSERT_MSG(m_startedRules.empty(), "Some rules are already started, are you sure that manager was successfuly stopped ?");
 
    if (!startRules(getRules()))
-      m_ruleStateHandler->signalRulesStartError("One or more automation rules failed to start, check automation rules page for details");
+      YADOMS_LOG(error) << "One or more automation rules failed to start, check automation rules page for details";
 }
 
 bool CRuleManager::startRules(const std::vector<boost::shared_ptr<database::entities::CRule> >& rules)
@@ -320,7 +320,7 @@ void CRuleManager::startAllRulesMatchingInterpreter(const std::string & interpre
 {
    // Start all rules associated with this interpreter (and start-able)
    if (!startRules(m_ruleRequester->getRules(interpreterName)))
-      m_ruleStateHandler->signalRulesStartError("One or more automation rules failed to start, check automation rules page for details");
+      YADOMS_LOG(error) << "One or more automation rules failed to start, check automation rules page for details";
 }
 
 void CRuleManager::stopAllRulesMatchingInterpreter(const std::string & interpreterName)

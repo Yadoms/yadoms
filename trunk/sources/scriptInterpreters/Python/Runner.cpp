@@ -61,10 +61,10 @@ void CRunner::monitorThreaded(
    boost::shared_ptr<shared::script::IStopNotifier> stopNotifier,
    boost::shared_ptr<shared::script::ILogger> scriptLogger)
 {
+   scriptLogger->log("#### END ####");
+
    if (process->waitForStop() == 0)
       stopNotifier->notifyNormalStop();
    else
       stopNotifier->notifyError("TODO récupérer l'erreur Python");
-
-   scriptLogger->log("#### END ####");
 }

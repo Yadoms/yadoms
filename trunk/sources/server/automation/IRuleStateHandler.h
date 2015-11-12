@@ -28,9 +28,10 @@ namespace automation
 
       //-----------------------------------------------------
       ///\brief               Signal error on starting rules
+      ///\param[in] ruleId    The rule ID
       ///\param[in] error     Error message
       //-----------------------------------------------------
-      virtual void signalRulesStartError(const std::string& error) = 0;
+      virtual void signalRulesStartError(int ruleId, const std::string& error) = 0;
    };
 	
 } // namespace automation	

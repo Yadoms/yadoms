@@ -57,9 +57,15 @@ def getRuleEditButton(rulesTable, ruleNumber):
    assert "btn-edit" in button.get_attribute("class")
    return button
    
-def getRuleRemoveButton(rulesTable, ruleNumber):
-   """ Remove button is the third button of the buttons group """
+def getRuleLogButton(rulesTable, ruleNumber):
+   """ Log button is the third button of the buttons group """
    button = getRuleButton(rulesTable, ruleNumber, 2)
+   assert "btn-edit" in button.get_attribute("class")
+   return button
+   
+def getRuleRemoveButton(rulesTable, ruleNumber):
+   """ Remove button is the 4th button of the buttons group """
+   button = getRuleButton(rulesTable, ruleNumber, 3)
    assert "btn-delete" in button.get_attribute("class")
    return button
    

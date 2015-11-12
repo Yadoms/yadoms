@@ -4,7 +4,6 @@
 #include "web/rest/Result.h"
 #include <Poco/Net/HTTPBasicCredentials.h>
 #include <shared/Log.h>
-#include <shared/tools/Debug.h>
 
 namespace web {
    namespace poco {
@@ -92,9 +91,6 @@ namespace web {
 
       void CRestRequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request, Poco::Net::HTTPServerResponse& response)
       {
-         //log thread ID
-         shared::tools::CDebug::LogThreadId("RestRequestHandler");
-
          std::string answer = manageRestRequests(request);
          response.setContentType("application/json");
          std::ostream& ostr = response.send();

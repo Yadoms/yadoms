@@ -19,6 +19,7 @@ class StartStopRule(unittest.TestCase):
       scripts.deploy(["DisplayLatitude"])
       self.serverProcess = yadomsServer.start()
       self.browser = webdriver.Firefox()
+      self.browser.implicitly_wait(10)
       yadomsServer.openClient(self.browser)
       
       

@@ -36,13 +36,14 @@ void CRuleStateHandler::signalRuleError(int ruleId, const std::string& error)
    postToSupervisor(CManagerEvent::kRuleAbnormalStopped, ruleId, error);
 }
 
-void CRuleStateHandler::signalRulesStartError(const std::string& error)
+void CRuleStateHandler::signalRulesStartError(int ruleId, const std::string& error)
 {
    // Signal error
    YADOMS_LOG(error) << error;
    m_eventLogger->addEvent(database::entities::ESystemEventCode::kRuleFailedValue, "Automation rules", error);
 
-   //TODO : à revoir, car il faudrait également enregistrer l'erreur, donc poster au superviseur, mais pour ça il faut l'ID de la règle
+   // Signal the abnormal stop to asynchronously remove from list
+   postToSupervisor(CManagerEvent::kRuleAbnormalStopped, ruleId, error);
 }
 
 void CRuleStateHandler::postToSupervisor(const CManagerEvent::ESubEventType& eventType, int ruleId, const std::string& error) const
