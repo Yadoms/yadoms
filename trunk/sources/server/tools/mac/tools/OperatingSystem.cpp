@@ -74,10 +74,10 @@ namespace tools {
       return "mac";
    }
    
-   CVersion COperatingSystem::getVersion()
+   shared::versioning::CVersion COperatingSystem::getVersion()
    {
       // Poco::Environment::osVersion() already returns version like "10.4.0"
-      CVersion version(Poco::Environment::osVersion());
+      shared::versioning::CVersion version(Poco::Environment::osVersion());
       return version;
    }
    
