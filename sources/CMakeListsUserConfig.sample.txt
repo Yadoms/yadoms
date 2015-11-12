@@ -108,5 +108,5 @@ set(PYTHON_USE_SOURCES OFF)
 
 ##### LibQuickmail ######
 #
-# Plugin SMSSender needs Libquickmail library
+# Plugin MailSender needs Libquickmail library
 #set(LIBQUICKMAIL_ROOT "/Path/to/libquickmail")

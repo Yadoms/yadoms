@@ -6,7 +6,6 @@ widgetViewModelCtor =
  */
 function NumericDisplayViewModel() {
    //observable data
-   this.text = ko.observable("");
    this.data = ko.observable(0).extend({ numeric: 1 });
    this.unit = ko.observable("");
    this.fontSize = ko.observable (25);
@@ -31,7 +30,6 @@ function NumericDisplayViewModel() {
    }, this );
    
    this.configurationChanged = function() {
-      this.text(this.widget.configuration.text);
 
       var self = this;
 

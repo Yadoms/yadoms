@@ -20,13 +20,14 @@ WidgetManager.factory = function(json) {
    assert(!isNullOrUndefined(json.id), "json.id must be defined");
    assert(!isNullOrUndefined(json.idPage), "json.idPage must be defined");
    assert(!isNullOrUndefined(json.type), "json.name must be defined");
+   assert(!isNullOrUndefined(json.title), "json.title must be defined");
    assert(!isNullOrUndefined(json.sizeX), "json.sizeX must be defined");
    assert(!isNullOrUndefined(json.sizeY), "json.sizeY must be defined");
    assert(!isNullOrUndefined(json.positionX), "json.positionX must be defined");
    assert(!isNullOrUndefined(json.positionY), "json.positionY must be defined");
    assert(!isNullOrUndefined(json.configuration), "json.configuration must be defined");
-
-   return new Widget(json.id, json.idPage, json.type, json.sizeX, json.sizeY, json.positionX, json.positionY, json.configuration);
+   
+   return new Widget(json.id, json.idPage, json.type, json.title, json.sizeX, json.sizeY, json.positionX, json.positionY, json.configuration);
 };
 
 /**
@@ -77,6 +78,7 @@ WidgetManager.getWidgetOfPageFromServer = function(page) {
          $.each(data.widget, function(index, value) {
             list.push(WidgetManager.factory(value));
          });
+		 
          d.resolve(list);
       })
       .fail(function(errorMessage) {
@@ -172,7 +174,7 @@ WidgetManager.updateToServer = function(widget, callback) {
             //we notify that configuration has changed
             try {
                 WidgetManager.updateWidgetConfiguration_(widget);
-
+				
                 //we ask for a refresh of widget data
                 updateWidgetPolling(widget);
 
@@ -201,8 +203,11 @@ WidgetManager.updateToServer = function(widget, callback) {
  */
 WidgetManager.updateWidgetConfiguration_ = function(widget) {
    try
-   {
-       // Update widget specific tvalues
+   {   
+	   //Update the widget title
+	   widget.$gridWidget.find('div.panel-heading').text( widget.title );
+	   
+       // Update widget specific values
       if (!isNullOrUndefined(widget.viewModel.configurationChanged))
          widget.viewModel.configurationChanged();
    }
@@ -238,7 +243,7 @@ WidgetManager.consolidate_ = function(widget, widgetPackage) {
  */
 WidgetManager.loadWidgets = function(widgetList, pageWhereToAdd) {
    var d = new $.Deferred();
-
+   
    //make the list of distinct widget type to load
    var distinctWidgetTypes = [WidgetManager.DeactivatedWidgetPackageName];
    for(var i=0, j=widgetList.length; i<j; i++){
@@ -533,7 +538,7 @@ WidgetManager.createGridstackWidget = function(widget) {
 
    domWidget += ">\n" +
        "<div class=\" grid-stack-item-content\">\n" +
-         "<div class=\"widgetCustomizationOverlay customization-item hidden\">\n" +
+         "<div class=\"widgetCustomizationOverlay customization-item hidden\">\n" + 
             "<div class=\"customizationToolbar widgetCustomizationToolbar\">";
 
    if (!isNullOrUndefined(widget.package.configurationSchema)) {
@@ -544,11 +549,13 @@ WidgetManager.createGridstackWidget = function(widget) {
    if (!isNullOrUndefined(widget.downgraded)) {
       type = "dev-deactivated-widget";
    }
-
+   
    domWidget +=    "<div class=\"customizationButton widgetCustomizationButton btn-delete-widget\"><i class=\"fa fa-trash-o\"></i></div>\n" +
             "</div>\n" +
        "</div>\n" +
-       "<div id=\"widget-" + widget.id + "\" class=\"widgetDiv \" data-bind=\"template: { name: '" + type + "-template' }\"/>\n" +
+	   "<div class=\"panel panel-primary\" style=\"margin-bottom: 0px;\">" +
+	       "<div class=\"panel-heading title-widget\" style=\"padding: 5px 8px;\">" + widget.title + "</div>\n" +
+           "<div class=\"panel-body\" style=\"padding: 0px;\" id=\"widget-" + widget.id + "\"  data-bind=\"template: { name: '" + type + "-template' }\"/>\n" +
        "</div>\n" +
    "</div>\n";
 

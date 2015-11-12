@@ -27,10 +27,6 @@
 			"event"],
 			"expectedKeywordAccess": "getset"
 		},
-		"showDeviceName": {
-			"type": "bool",
-			"defaultValue": "true"
-		},
 		"kind": {
 			"type": "radioSection",
 			"content": {

@@ -6,7 +6,7 @@
 
 CTemperatureSensor::CTemperatureSensor(const std::string & deviceId)
    :m_device(deviceId), 
-    m_keyword(new yApi::historization::CTemperature("Temp"))
+    m_keyword(new yApi::historization::CTemperature("Temperature"))
 {}
 
 CTemperatureSensor::~CTemperatureSensor()

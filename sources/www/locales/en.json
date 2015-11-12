@@ -77,6 +77,10 @@
 		},
 		"configure-widget": {
 			"title": "Widget configuration",
+			"titleName": {
+			     "name" : "Title",
+			     "description" : "Text displayed for the widget"
+				 },
 			"errorDuringGettingDeviceList": "Error during getting device list",
 			"errorDuringGettingDeviceListMatchCapacity": "Error during getting device list that match capacity __expectedCapacityAccess__ __expectedCapacity__",
 			"errorDuringGettingDeviceListMatchCapacityType": "Error during getting device list that match capacity type __expectedCapacityAccess__ __expectedCapacityType__",

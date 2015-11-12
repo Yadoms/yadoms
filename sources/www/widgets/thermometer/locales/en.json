@@ -2,10 +2,6 @@
 	"name": "thermometer display",
 	"description": "A simple widget that display a thermal value",
 	"configurationSchema": {
-		"text": {
-			"name": "text to display",
-			"description": "This text is displayed onto the widget"
-		},
 		"device": {
 			"name": "Data to display",
 			"description": "Select the data that you want to display"

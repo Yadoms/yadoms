@@ -50,7 +50,7 @@ function ClockViewModel() {
       }
       else if (this.widget.width() <= 300) {
          this.dateFontSize("1.0em");
-         this.timeFontSize("5.0em");
+         this.timeFontSize("3.3em");
       }
       else {
          this.dateFontSize("1.5em");

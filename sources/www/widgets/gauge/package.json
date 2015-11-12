@@ -8,7 +8,7 @@
    "dimensions": {
       "min": {
          "x": 2,
-         "y": 1
+         "y": 2
       },
       "max": {
          "x": 3,
@@ -16,15 +16,10 @@
       },
       "default": {
          "x": 2,
-         "y": 1
+         "y": 2
       }
    },
    "configurationSchema": {
-      "text" : {
-         "type" : "string",
-         "defaultValue" : "",
-         "required" : "false"
-      },
       "device" : {
          "type" : "device",
          "expectedKeywordType" : "numeric",

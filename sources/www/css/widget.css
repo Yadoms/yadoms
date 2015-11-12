@@ -19,6 +19,13 @@
     margin: 20px auto;
 }
 
+.title-widget {
+    text-align: center;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
 /*Standard battery widget indicator*/
 .battery-widget {
     position: absolute;

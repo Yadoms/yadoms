@@ -31,6 +31,13 @@
       $modalBody.empty();
       $('div#configure-widget-modal form').unbind("submit");
       
+      //we append the text title section
+      var nameParameter = new StringParameterHandler("modals.configure-widget.", "titleName", {required:"false"}, widgetToConfigure.title);
+      $modalBody.append(nameParameter.getDOMObject());
+      //we finish friendlyNameParameter instantiation
+      if ($.isFunction(nameParameter.applyScript))
+         nameParameter.applyScript();	  
+	  
       var configMgr = new ConfigurationControlManager(widgetToConfigure.package.configurationSchema, widgetToConfigure.configuration, widgetToConfigure.type, $modalBody);
 
       //i18n
@@ -47,6 +54,8 @@
             event.preventDefault();
             widgetToConfigure.configuration = configMgr.getCurrentConfiguration();
 
+			widgetToConfigure.title = $form.find("input")[0].value;
+			
             //we clear the current id
             widgetToConfigure = undefined;
 

@@ -94,7 +94,10 @@ function GaugeViewModel()
 	  // Initialisation of a unique div associated to this widget
 	   	$('<div style="width: 200px; height: 100px; float: left"></div>').attr({
 		id: elementID
-	    }).appendTo( "#widget-" + this.widget.id );	  
+	    }).appendTo( "#widget-" + this.widget.id );
+		
+		//This div is for rounds borders.
+	   	$('<div style="width: 200px; height: 5px; float: left"></div>').appendTo( "#widget-" + this.widget.id );
   };
    
    /**
@@ -197,8 +200,8 @@ function GaugeViewModel()
 	   //The maximum size
 	   if (this.widget.height() <= 220 && this.widget.height() >= 180 && this.widget.width() <= 320 && this.widget.width() >= 280 )
 	   {
-		   self.WidgetWidth  = "300px";
-		   self.WidgetHeight = "200px";
+		   self.WidgetWidth  = "277px";
+		   self.WidgetHeight = "150px";
 		   
 		   //To be painted only one time
 		   if ( isSmall == true )
@@ -210,7 +213,7 @@ function GaugeViewModel()
 	   }
 	   else
 	   {
-		   self.WidgetWidth  = "200px";
+		   self.WidgetWidth  = "193px";
 		   self.WidgetHeight = "100px";
 		   
 		   //To be painted only one time

@@ -5,10 +5,6 @@
     "loadingData": "Loading data",
 	"RangeTooBroad" : "Range is too broad",
     "configurationSchema": {
-        "chartTitle": {
-         "name" : "Chart title",
-         "description" : "This text field represents the title of the chart displayed on the page."
-        },
         "interval": {
             "name": "Default interval of the chart",
             "description": "Used to change the first displayed interval of the chart",

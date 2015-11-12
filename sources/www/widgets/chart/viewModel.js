@@ -45,7 +45,7 @@ widgetViewModelCtor =
          },
 
          title: {
-            text: ''
+            text: null
          },
 
          scrollbar: {
@@ -128,27 +128,14 @@ widgetViewModelCtor =
       var self = this;
 
       if (!isNullOrUndefined(this.chart)) {
-         this.chart.setSize(this.widget.width(), this.widget.height() - 10, false);
-
-         /* No Title at all
-         if ( this.widget.height() == 100 )
-         {
-         	//No display of the title when height = 1 case
-         	this.chart.setTitle({text: null});
-         }
-         else
-         {
-         	this.chart.setTitle({text: this.widget.configuration.chartTitle});
-             this.chart.setTitle({y: this.widget.height() - 15});
-         }
-         */
+         this.chart.setSize(this.widget.width() - 30, this.widget.height() - 20, false);
 
          var btns = self.widget.$gridWidget.find(".nav-btn");
 
          if (!isNullOrUndefined(btns)) {
             btns.css("position", "relative");
-            btns.css("left", "100px");
-            btns.css("top", self.widget.height() - 35);
+            btns.css("left", "55px");
+            btns.css("top", 25 );
          }
 
          $(window).trigger("resize");

@@ -42,6 +42,7 @@ namespace sqlite {
       ((SizeY)("sizeY"))
       ((PositionX)("positionX"))
       ((PositionY)("positionY"))
+      ((Title)("title"))
       ((Configuration)("configuration"))
    )
 

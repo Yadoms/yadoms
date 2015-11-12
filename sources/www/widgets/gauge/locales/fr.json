@@ -2,10 +2,6 @@
 	"name": "Jauge",
 	"description": "Un widget qui affiche une jauge",
 	"configurationSchema": {
-		"text": {
-			"name": "Titre",
-			"description": "Titre du widget"
-		},
 		"device": {
 			"name": "Donnée à afficher",
 			"description": "Selectionnez ici la donnée que vous souhaitez visualiser"

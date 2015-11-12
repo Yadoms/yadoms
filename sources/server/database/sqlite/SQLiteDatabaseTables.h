@@ -43,6 +43,7 @@ namespace sqlite {
       (SizeY)
       (PositionX)
       (PositionY)
+      (Title)
       (Configuration)
    )
 

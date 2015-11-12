@@ -8,10 +8,6 @@
 			"name": "Equipement",
 			"description": "Equipement à piloter"
 		},
-		"showDeviceName": {
-			"name": "Affichage du nom",
-			"description": "Permet l'affichage du nom du widget"
-		},
 		"kind": {
 			"name": "Type d'interrupteur",
 			"description": "Sélection du type d'interrupteur. Le type d'interrupteur influe sur le mode de fonctionnement du périphérique piloté.",

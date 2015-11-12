@@ -20,11 +20,6 @@
 		}
 	},
 	"configurationSchema": {
-		"text": {
-			"type": "string",
-			"defaultValue": "",
-			"required": "false"
-		},
 		"device": {
 			"type": "device",
 			"expectedKeywordType": "numeric",
