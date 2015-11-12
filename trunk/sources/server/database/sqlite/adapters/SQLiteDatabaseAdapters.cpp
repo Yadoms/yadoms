@@ -42,6 +42,7 @@ namespace database {   namespace sqlite {  namespace adapters {
       ((SizeY)(int)(1))
       ((PositionX)(int)(1))
       ((PositionY)(int)(1))
+	  ((Title)(std::string)(""))
       ((Configuration)(shared::CDataContainer)(shared::CDataContainer()))
    );
 

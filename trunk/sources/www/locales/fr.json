@@ -73,6 +73,10 @@
 		},
 		"configure-widget": {
 			"title": "Configuration du widget",
+			"titleName": {
+			     "name" : "Titre",
+			     "description" : "Texte affiché au-dessus du widget"
+				 },			
 			"errorDuringGettingDeviceList": "Error lors de la récupération de la liste des équipements",
 			"errorDuringGettingDeviceListMatchCapacity": "Erreur lors de la récupération de la liste des équipements ayant la capacité __expectedCapacityAccess__ __expectedCapacity__",
 			"errorDuringGettingDeviceListMatchCapacityType": "Erreur lors de la récupération de la liste des équipements ayant la capacité __expectedCapacityAccess__ __expectedCapacityType__",

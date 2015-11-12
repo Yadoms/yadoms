@@ -8,23 +8,18 @@
 	"dimensions": {
 		"min": {
 			"x": 3,
-			"y": 1
+			"y": 3
 		},
 		"max": {
-			"x": 9,
+			"x": 10,
 			"y": 4
 		},
 		"default": {
 			"x": 3,
-			"y": 2
+			"y": 3
 		}
 	},
 	"configurationSchema": {
-		"chartTitle": {
-			"type": "string",
-			"defaultValue": "",
-			"required": "false"
-		},
 		"interval": {
 			"type": "enum",
 			"values": {
@@ -65,8 +60,12 @@
 			"allowDuplication": "true",
 			"item": {
 				"type": "section",
+				"name": "",
+				"description": "",				
 				"content": {
 					"source": {
+						"name": "",
+						"description": "",					
 						"type": "device",
 						"expectedKeywordType": ["numeric",
 						"bool"],

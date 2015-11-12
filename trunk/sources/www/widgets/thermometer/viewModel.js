@@ -10,8 +10,10 @@ function ThermometerViewModel()
    this.data = ko.observable(0).extend({ numeric: 1 });
    
    //simple data
-   this.WidgetHeight = 100;
-   this.WidgetWidth  = 100;
+   
+   // default size
+   this.WidgetHeight = 175;
+   this.WidgetWidth  = 95;
    
    var isSmall = true;
 	 
@@ -125,14 +127,10 @@ function ThermometerViewModel()
 		
 		ctx.fillRect( (self.WidgetWidth / 2) - (3 * self.WidgetWidth / 100), initial_position_y, 6 * self.WidgetWidth / 100, lenght_column );
 
-		if (self.WidgetWidth == 100)
-		{
+		if (self.WidgetWidth <= 100)
 		   ctx.font="12px Georgia";
-		}
-		if (self.WidgetWidth == 200)
-		{
+		else
 		   ctx.font="20px Georgia";
-		}
    
 		//write the text at the same position as the height of the column
 		ctx.fillText(self.data() + "°",self.WidgetWidth / 2 + 15*self.WidgetWidth / 100, initial_position_y );
@@ -176,32 +174,40 @@ function ThermometerViewModel()
 	   }
 	   else if (this.widget.height() <= 250 && this.widget.height() >= 150 && this.widget.width() >= 80 && this.widget.width() <= 110 )
 	   {
-		   self.WidgetWidth  = 100;
-		   self.WidgetHeight = 200;
+		   self.WidgetWidth  = 95;
+		   self.WidgetHeight = 160;
 		   
 		   //To be painted only one time
 		   self.refresh();
 	   }	   
 	   else if (this.widget.height() <= 350 && this.widget.height() >= 250 && this.widget.width() >= 80 && this.widget.width() <= 110 )
 	   {
-		   self.WidgetWidth  = 100;
-		   self.WidgetHeight = 300;
+		   self.WidgetWidth  = 95;
+		   self.WidgetHeight = 250;
 		   
 		   //To be painted only one time
 		   self.refresh();
 	   }  
 	   else if (this.widget.height() <= 350 && this.widget.height() >= 250 && this.widget.width() >= 180 && this.widget.width() <= 210 )
 	   {
-		   self.WidgetWidth  = 200;
-		   self.WidgetHeight = 300;
+		   self.WidgetWidth  = 190;
+		   self.WidgetHeight = 250;
+		   
+		   //To be painted only one time
+		   self.refresh();
+	   }
+	   else if (this.widget.height() <= 450 && this.widget.height() >= 350 && this.widget.width() >= 180 && this.widget.width() <= 210 )
+	   {
+		   self.WidgetWidth  = 190;
+		   self.WidgetHeight = 350;
 		   
 		   //To be painted only one time
 		   self.refresh();
 	   }	   
 	   else
 	   {
-		   self.WidgetWidth  = 100;
-		   self.WidgetHeight = 100;
+		   self.WidgetWidth  = 95;
+		   self.WidgetHeight = 350;
 		   
 		   self.refresh();
 		   isSmall = true;

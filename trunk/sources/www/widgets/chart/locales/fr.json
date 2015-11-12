@@ -5,10 +5,6 @@
 	"loadingData": "Chargement des données",
 	"RangeTooBroad" : "Echelle trop large",
 	"configurationSchema": {
-		"chartTitle": {
-			"name": "Titre du graphique",
-			"description": "Ce champ représente le titre du graphique."
-		},
 		"interval": {
 			"name": "Période d'affichage du graphique",
 			"description": "Permet de changer la période d'affichage du graphique.",

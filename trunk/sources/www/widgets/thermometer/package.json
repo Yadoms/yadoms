@@ -8,23 +8,18 @@
 	"dimensions": {
 		"min": {
 			"x": 1,
-			"y": 1
+			"y": 2
 		},
 		"max": {
 			"x": 2,
-			"y": 3
+			"y": 4
 		},
 		"default": {
 			"x": 1,
-			"y": 1
+			"y": 2
 		}
 	},
 	"configurationSchema": {
-		"text": {
-			"type": "string",
-			"defaultValue": "",
-			"required": "false"
-		},
 		"device": {
 			"type": "device",
 			"expectedCapacity": ["temperature"],

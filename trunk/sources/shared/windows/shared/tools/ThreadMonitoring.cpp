@@ -3,7 +3,7 @@
 #include <Poco/Thread.h>
 #include <Windows.h>
 #include <shared/Log.h>
-#include "Processthreadsapi.h"
+#include "WinBase.h"
 
 namespace shared { namespace tools {
 

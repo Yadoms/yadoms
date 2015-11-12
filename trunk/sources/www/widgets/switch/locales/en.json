@@ -8,10 +8,6 @@
 			"name": "Switch device",
 			"description": "Device to drive"
 		},
-		"showDeviceName": {
-			"name": "Show device name",
-			"description": "Determine if you want to see the device name on the widget"
-		},
 		"kind": {
 			"name": "Kind of switch",
 			"description": "Select the kind of switch to be used. Permit to change interactions in function of the kind of switch.",

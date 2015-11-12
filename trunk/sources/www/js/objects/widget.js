@@ -5,6 +5,7 @@
  * @param id database id of the widget
  * @param idPage database page id of the widget
  * @param type type of the widget
+ * @param title title of the widget
  * @param sizeX x size of the widget
  * @param sizeY y size of the widget
  * @param positionX x position of the widget
@@ -12,10 +13,11 @@
  * @param configuration configuration of the widget
  * @constructor
  */
-function Widget(id, idPage, type, sizeX, sizeY, positionX, positionY, configuration) {
+function Widget(id, idPage, type, title, sizeX, sizeY, positionX, positionY, configuration) {
    assert(id !== undefined, "id of a widget must be defined");
    assert(idPage !== undefined, "idPage of a widget must be defined");
    assert(type !== undefined, "type of a widget must be defined");
+   assert(title !== undefined, "type of a widget must be defined");
    assert(sizeX !== undefined, "sizeX of a widget must be defined");
    assert(sizeY !== undefined, "sizeY of a widget must be defined");
    assert(positionX !== undefined, "positionX of a widget must be defined");
@@ -25,6 +27,7 @@ function Widget(id, idPage, type, sizeX, sizeY, positionX, positionY, configurat
    this.id = id;
    this.idPage = idPage;
    this.type = type;
+   this.title = title;
    this.sizeX = sizeX;
    this.sizeY = sizeY;
    this.positionX = positionX;
@@ -45,13 +48,14 @@ function Widget(id, idPage, type, sizeX, sizeY, positionX, positionY, configurat
 
 /**
  * Override JSON.stringify method in order to send only database columns
- * @returns {{id: *, idPage: *, type: *, sizeX: *, sizeY: *, positionX: *, positionY: *, configuration: *}}
+ * @returns {{id: *, idPage: *, type: *,title: *, sizeX: *, sizeY: *, positionX: *, positionY: *, configuration: *}}
  */
 Widget.prototype.toJSON = function () {
    return { 
 			id : this.id, 
 			idPage: this.idPage, 
 			type: this.type,
+			title: this.title,
 			sizeX: this.sizeX,
 			sizeY: this.sizeY,
 			positionX: this.positionX,
@@ -71,9 +75,13 @@ Widget.prototype.updateDataFromGrid = function() {
 };
 
 Widget.prototype.height = function () {
-   return this.$gridWidget.css("height").replace('px', '');;
+   return this.$gridWidget.css("height").replace('px', '');
 };
 
 Widget.prototype.width = function () {
-   return this.$gridWidget.css("width").replace('px', '');;
+   return this.$gridWidget.css("width").replace('px', '');
+};
+
+Widget.prototype.title = function () {
+   return this.title;
 };

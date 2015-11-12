@@ -192,7 +192,7 @@
        var sizeY  = Math.min(maxY, Math.max(defaultY, minY));
 
        //we create a fake widget to display configuration form
-       var newWidget = new Widget(-1, currentPage.id, packageName, sizeX, sizeY, 1, 1, "");
+       var newWidget = new Widget(-1, currentPage.id, packageName, "", sizeX, sizeY, 1, 1, "");
 
        newWidget.package = package;
 
@@ -216,7 +216,7 @@
       $.ajax({
          type: "POST",
          url: "/rest/widget",
-         data: JSON.stringify({ idPage: newWidget.idPage, type: newWidget.type, sizeX: newWidget.sizeX, sizeY: newWidget.sizeY, positionX: newWidget.positionX, positionY: newWidget.positionY, configuration: newWidget.configuration }),
+         data: JSON.stringify({ idPage: newWidget.idPage, type: newWidget.type, title: newWidget.title, sizeX: newWidget.sizeX, sizeY: newWidget.sizeY, positionX: newWidget.positionX, positionY: newWidget.positionY, configuration: newWidget.configuration }),
          contentType: "application/json; charset=utf-8",
          dataType: "json"
       })

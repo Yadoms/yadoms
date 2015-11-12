@@ -1,17 +1,3 @@
-.numericDisplayWidgetText {
-	margin: auto;
-	display:block-level;
-	text-align: center;
-    font-size : 1.0em;
-    line-height:normal ;
-    position: relative;
-    width: 100%;
-	background-color:#E0E0E0;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    border-radius: 5px;	
-}
-
 .numericDisplayWidgetValueArea {
     margin: auto;
     display: table;

@@ -2,10 +2,6 @@
 	"name": "Gauge display",
 	"description": "A simple widget that display a gauge",
 	"configurationSchema": {
-		"text": {
-			"name": "Title",
-			"description": "Title of this widget"
-		},
 		"device": {
 			"name": "Data to display",
 			"description": "Select the data that you want to display"
