@@ -13,7 +13,7 @@
 
 
             CSQLiteVersion1::CSQLiteVersion1()
-               :m_version(0, 1, 0, 0)
+               :m_version(0, 2, 0, 0) //modify this version to a greater value, to force update of current version
             {
             }
 
@@ -137,7 +137,6 @@
 						if (!pRequester->createTableIfNotExists(CRecipientFieldTable::getTableName(), CRecipientFieldTable::getTableCreationScript()))
                      throw CSQLiteVersionException("Failed to create RecipientFields table");
 
-
                   //set the database version
                   CQuery qInsert;
                   qInsert.InsertInto(CConfigurationTable::getTableName(), CConfigurationTable::getSectionColumnName(), CConfigurationTable::getNameColumnName(), CConfigurationTable::getValueColumnName(), CConfigurationTable::getDescriptionColumnName()).
@@ -156,6 +155,9 @@
 
                   //commit transaction
                   pRequester->transactionCommit();
+
+                  //compact database
+                  pRequester->vacuum();
                }
                catch(CSQLiteVersionException & ex)
                {

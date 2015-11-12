@@ -197,6 +197,13 @@ namespace sqlite {
       queryStatement(CQuery::CustomQuery(indexScript, CQuery::kCreate));
    }
 
+   void CSQLiteRequester::vacuum()
+   {
+      queryStatement(CQuery().Vacuum());
+      
+   }
+
+
 
 } //namespace sqlite
 } //namespace database 
