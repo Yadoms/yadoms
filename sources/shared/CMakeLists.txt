@@ -211,8 +211,6 @@ set(SHARED_LIB_SRC
    shared/script/yScriptApi/commonIncludes.h
    shared/script/yScriptApi/IYScriptApi.h
 
-   shared/tools/Debug.h
-   shared/tools/Debug.cpp
    shared/tools/Random.h
    shared/tools/Random.cpp
 
@@ -246,8 +244,6 @@ set(SHARED_LIB_SRC
 	windows/shared/Peripherals.cpp
 	windows/shared/Thread.h
 	windows/shared/Thread.cpp
-	windows/shared/tools/ThreadMonitoring.h
-	windows/shared/tools/ThreadMonitoring.cpp
 )	
 set(PLATFORM_SPECIFIC_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/windows)
 
@@ -265,8 +261,6 @@ set(SHARED_LIB_SRC
 	mac/shared/Peripherals.cpp
 	mac/shared/Thread.h
 	mac/shared/Thread.cpp
-	mac/shared/tools/ThreadMonitoring.h
-	mac/shared/tools/ThreadMonitoring.cpp
 )	
 set(PLATFORM_SPECIFIC_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/mac)
 
@@ -284,8 +278,6 @@ set(SHARED_LIB_SRC
 	linux/shared/Peripherals.cpp
 	linux/shared/Thread.h
 	linux/shared/Thread.cpp
-	linux/shared/tools/ThreadMonitoring.h
-	linux/shared/tools/ThreadMonitoring.cpp
 )	
 set(PLATFORM_SPECIFIC_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/linux)
 

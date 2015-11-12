@@ -9,6 +9,7 @@ class MenuEntries(unittest.TestCase):
    def setUp(self):
       self.serverProcess = yadomsServer.start()
       self.browser = webdriver.Firefox()
+      self.browser.implicitly_wait(10)
       yadomsServer.openClient(self.browser)
 
    def checkMenuEntry(self, entry, expectedEntryId):

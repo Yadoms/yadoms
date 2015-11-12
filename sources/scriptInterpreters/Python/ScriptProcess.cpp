@@ -99,5 +99,14 @@ void CScriptProcess::stdRedirectWorker(const std::string& ruleName,
    char line[1024];
    YADOMS_LOG_CONFIGURE(ruleName + " rule");
    while (moduleStdOut->getline(line, sizeof(line)))
+   {
+      // Remove EOL characters
+      size_t len = strlen(line);
+      if (len > 1 && line[len - 2] == '\r' && line[len - 1] == '\n')
+         line[len - 2] = 0;
+      else if (len > 0 && (line[len - 1] == '\r' || line[len - 1] == '\n'))
+         line[len - 1] = 0;
+
       scriptLogger->log(line);
+   }
 }

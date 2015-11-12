@@ -25,7 +25,7 @@ namespace automation { namespace script
 
    void StopNotifier::notifyStartError(const std::string& error)
    {
-      m_ruleStateHandler->signalRulesStartError(error);
+      m_ruleStateHandler->signalRulesStartError(m_ruleId, error);
    }
 
 } } // namespace automation::script

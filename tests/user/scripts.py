@@ -2,6 +2,7 @@
 import resources
 import os.path
 import shutil
+import re
 
 def deleteAll():
    """Remove all existing rules"""
@@ -20,7 +21,7 @@ def deploy(scripts):
       shutil.copyfile(os.path.join("resources", "scripts", script + ".py"), os.path.join(ruleTargetPath, "yadomsScript.py"))
       
       
-def checkLocalRuleById(id, expectedCode):
+def checkLocalRuleCodeById(id, expectedCode):
    """Check the local rule for expected code"""
    
    rulePath = os.path.join(yadomsServer.scriptsPath(), "locals", "rule_" + str(id))
@@ -35,3 +36,23 @@ def checkLocalRuleById(id, expectedCode):
          readCode.append(line.rstrip())
          
    assert readCode == expectedCode
+      
+      
+def checkLocalRuleLogById(id, expectedLog):
+   """Check the local rule for expected log"""
+   
+   rulePath = os.path.join(yadomsServer.scriptsPath(), "locals", "rule_" + str(id))
+   if not os.path.isdir(rulePath):
+      return False
+   
+   ruleLogFilePath = os.path.join(rulePath, "yadomsScript.log")
+   if not os.path.isfile(ruleLogFilePath):
+      return False
+   
+   readLog = []
+   with open(ruleLogFilePath, 'r') as ruleFile:
+      for line in ruleFile:
+         # Remove date/time for comparison
+         readLog.append(re.sub("\d{4}\/\d{1,2}\/\d{1,2} \d{2}:\d{2}:\d{2} : ", "", line))
+         
+   return readLog == expectedLog

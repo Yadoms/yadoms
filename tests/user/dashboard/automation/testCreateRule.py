@@ -18,10 +18,11 @@ class CreateRule(unittest.TestCase):
       scripts.deleteAll()
       self.serverProcess = yadomsServer.start()
       self.browser = webdriver.Firefox()
+      self.browser.implicitly_wait(10)
       yadomsServer.openClient(self.browser)
       
 
-   def checkCreateOkRule(self, ruleName, ruleDescription, ruleCode):
+   def checkCreateOkRule(self, ruleName, ruleDescription, ruleCode, ruleLog):
       # - notification
       notification.wait(self.browser, notification.Type.Success, i18n.get()["modals"]["dashboard"]["sub-windows"]["automation-center"]["ruleSuccessfullyCreated"])
       
@@ -35,7 +36,7 @@ class CreateRule(unittest.TestCase):
       self.assertEqual(dashboard.automation.getRuleDescription(rulesTable, ruleNumber), ruleDescription)
 
       buttons = dashboard.automation.getRuleButtons(rulesTable, ruleNumber)
-      self.assertEqual(len(buttons), 3)
+      self.assertEqual(len(buttons), 4)
       self.assertEqual(dashboard.automation.getRuleStartStopButton(rulesTable, ruleNumber).get_attribute("class"), "btn btn-enableDisable btn-warning")
       self.assertEqual(dashboard.automation.getRuleEditButton(rulesTable, ruleNumber).get_attribute("class"), "btn btn-edit btn-primary")
       self.assertEqual(dashboard.automation.getRuleRemoveButton(rulesTable, ruleNumber).get_attribute("class"), "btn btn-delete btn-danger")
@@ -44,26 +45,30 @@ class CreateRule(unittest.TestCase):
       
       
       # - on disk (corresponding script file)
-      scripts.checkLocalRuleById(1, ruleCode)
+      scripts.checkLocalRuleCodeById(1, ruleCode)
+      self.assertTrue(tools.waitUntil(lambda: scripts.checkLocalRuleLogById(1, ruleLog)))
             
             
-   def test_createRule(self):
+   def test_createOkRule(self):
       """Nominal test of creation rule"""
       self.doTest(
          "TestingOkRule",
          "This rule is just for testing",
          ["import time",
-                     "",
-                     "def yMain(yApi):",
-                     "   while(True):",
-                     "      print 'location = ', yApi.getInfo(yApi.kLatitude)",
-                     "      time.sleep(5)"],
-         lambda ruleName, ruleDescription, ruleCode: self.checkCreateOkRule(ruleName, ruleDescription, ruleCode))
+          "",
+          "def yMain(yApi):",
+          "   while(True):",
+          "      print 'Some log entry...'",
+          "      time.sleep(100)"],
+         lambda ruleName, ruleDescription, ruleCode: self.checkCreateOkRule(ruleName, ruleDescription, ruleCode,
+            ['#### START ####\n',
+             '#### END ####\n',
+             'Some log entry...\n']))
             
             
 
 
-   def checkCreateErroneousRule(self, ruleName, ruleDescription, ruleCode):
+   def checkCreateErroneousRule(self, ruleName, ruleDescription, ruleCode, ruleLog):
       # - notifications
       notification.wait(self.browser, notification.Type.Success, i18n.get()["modals"]["dashboard"]["sub-windows"]["automation-center"]["ruleSuccessfullyCreated"])
       notification.waitIn(self.browser, notification.Type.Error, i18n.get()["eventLogger"]["RuleFailed"].replace("__who__", ruleName))
@@ -78,18 +83,16 @@ class CreateRule(unittest.TestCase):
       self.assertEqual(dashboard.automation.getRuleDescription(rulesTable, ruleNumber), ruleDescription)
 
       buttons = dashboard.automation.getRuleButtons(rulesTable, ruleNumber)
-      self.assertEqual(len(buttons), 3)
-      self.assertEqual(dashboard.automation.getRuleStartStopButton(rulesTable, ruleNumber).get_attribute("class"), "btn btn-enableDisable btn-success")
+      self.assertEqual(len(buttons), 4)
+      self.assertEqual(tools.waitUntil(lambda: dashboard.automation.getRuleStartStopButton(rulesTable, ruleNumber).get_attribute("class"), "btn btn-enableDisable btn-success"))
       self.assertEqual(dashboard.automation.getRuleEditButton(rulesTable, ruleNumber).get_attribute("class"), "btn btn-edit btn-primary")
       self.assertEqual(dashboard.automation.getRuleRemoveButton(rulesTable, ruleNumber).get_attribute("class"), "btn btn-delete btn-danger")
       
       self.assertTrue(tools.waitUntil(lambda: dashboard.automation.getRuleState(rulesTable, ruleNumber) == dashboard.automation.RuleState.Error))
       
-      #TODO ajouter champ "last error"
-      
-      
       # - on disk (corresponding script file)
-      scripts.checkLocalRuleById(1, ruleCode)
+      scripts.checkLocalRuleCodeById(1, ruleCode)
+      self.assertTrue(tools.waitUntil(lambda: scripts.checkLocalRuleLogById(1, ruleLog)))
       
       
    def test_createErroneousRule(self):
@@ -98,12 +101,21 @@ class CreateRule(unittest.TestCase):
          "TestingErroneousRule",
          "This rule is just for testing",
          ["import time",
-                     "",
-                     "def yMain(yApi):",
-                     "   while(True)",
-                     "      print 'location = ', yApi.getInfo(yApi.kLatitude)",
-                     "      time.sleep(5)"],
-         lambda ruleName, ruleDescription, ruleCode: self.checkCreateErroneousRule(ruleName, ruleDescription, ruleCode))
+          "",
+          "def yMain(yApi):",
+          "   while(True)",
+          "      print 'Some log entry...'",
+          "      time.sleep(100)"],
+         lambda ruleName, ruleDescription, ruleCode: self.checkCreateErroneousRule(ruleName, ruleDescription, ruleCode,
+            ['#### START ####\n',
+             '#### END ####\n',
+             'Traceback (most recent call last):\n',
+             '  File "scriptCaller.py", line 35, in <module>\n',
+             '    script = __import__(scriptModule)\n',
+             '  File "D:\Projets\Domotique\yadoms-code\\trunk\\builds\\DEBUG\\scripts\\locals\\rule_1\yadomsScript.py", line 4\n',
+             '    while(True)\n',
+             '              ^\n',
+             'SyntaxError: invalid syntax\n']))
 
          
       
