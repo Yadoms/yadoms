@@ -47,7 +47,8 @@ namespace database { namespace sqlite {
          kUpdate,
          kDelete,
          kDrop,
-         kCreate
+         kCreate,
+         kVacuum
       };
    public:
       //
@@ -542,6 +543,13 @@ namespace database { namespace sqlite {
       /// \return             A reference to itself to allow method chaining
       //   
       CQuery & On(const std::string & columnName, const std::string & column2Name);
+
+
+      //
+      /// \brief              Vacuum the dataabse
+      /// \return             A reference to itself to allow method chaining
+      //  
+      CQuery & Vacuum();
 
       //
       /// \brief    get the full query

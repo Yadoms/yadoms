@@ -167,6 +167,11 @@ namespace sqlite {
       //--------------------------------------------------------------
       void createIndex(const std::string & tableName, const std::string & indexScript);
 
+      //--------------------------------------------------------------
+      /// \Brief	      Vacuum the database (compact it)
+      //--------------------------------------------------------------
+      void vacuum();
+
    private:
       //--------------------------------------------------------------
       /// \Brief		database handler

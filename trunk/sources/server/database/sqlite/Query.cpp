@@ -468,7 +468,12 @@ namespace database {
       }
 
 
-
+      CQuery & CQuery::Vacuum()
+      {
+         ChangeQueryType(kVacuum);
+         m_currentQuery = "VACUUM;";
+         return *this;
+      }
 
 
       const std::string & CQuery::str() const
