@@ -18,7 +18,7 @@ namespace tools {
       return "linux";
    }
    
-   CVersion COperatingSystem::getVersion()
+   shared::versioning::CVersion COperatingSystem::getVersion()
    {
       // Poco::Environment::osVersion() returns version like "3.18.7-v7+"
       Poco::StringTokenizer tokenizer(Poco::Environment::osVersion(), ".-+");
@@ -30,7 +30,7 @@ namespace tools {
          int major = boost::lexical_cast<int>(tokenizer[0]);
          int minor = boost::lexical_cast<int>(tokenizer[1]);
          int buildNumber = boost::lexical_cast<int>(tokenizer[2]);
-         CVersion version(major, minor, buildNumber);
+         shared::versioning::CVersion version(major, minor, buildNumber);
          return version;         
       }
       catch(...)
