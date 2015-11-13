@@ -166,7 +166,7 @@ function periodicUpdateTask() {
                //web socket opened
                //we listen acquisitionupdate event
                $(document).on("acquisitionupdate", function (e, websocketData) {
-                  var acq = AcquisitionManager.factory(websocketData.data.acquisition);
+                  var acq = AcquisitionManager.factory(websocketData.data);
                   dispatchToWidgets(acq);
                });
 

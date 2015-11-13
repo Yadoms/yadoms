@@ -12,6 +12,10 @@
 #include <shared/plugin/yPluginApi/KeywordDataType.h>
 #include <shared/currentTime/Provider.h>
 
+#include "notification/acquisition/Notification.hpp"
+#include "notification/summary/Notification.hpp"
+#include "notification/Helpers.hpp"
+
 namespace database { 
 namespace sqlite { 
 
@@ -151,13 +155,16 @@ namespace sqlite {
       boost::posix_time::ptime previousHour = currentHour - oneHour;
 
       std::vector<int> keywordToTreat;
+      std::vector< boost::shared_ptr< database::entities::CAcquisitionSummary> > summaryAcquisitions;
+
       m_databaseProvider->getAcquisitionRequester()->getKeywordsHavingDate(previousHour, currentHour, keywordToTreat);
       for (std::vector<int>::iterator i = keywordToTreat.begin(); i != keywordToTreat.end(); ++i)
       {
          if (!m_databaseProvider->getAcquisitionRequester()->summaryDataExists(*i, database::entities::EAcquisitionSummaryType::kHour, previousHour))
          {
             YADOMS_LOG(information) << "    Computing HOUR : " << *i << " @ " << previousHour;
-            m_databaseProvider->getAcquisitionRequester()->saveSummaryData(*i, database::entities::EAcquisitionSummaryType::kHour, previousHour);
+            boost::shared_ptr< database::entities::CAcquisitionSummary> insertedValue = m_databaseProvider->getAcquisitionRequester()->saveSummaryData(*i, database::entities::EAcquisitionSummaryType::kHour, previousHour);
+            summaryAcquisitions.push_back(insertedValue);
          }
       }
 
@@ -176,15 +183,19 @@ namespace sqlite {
             if (!m_databaseProvider->getAcquisitionRequester()->summaryDataExists(*i, database::entities::EAcquisitionSummaryType::kDay, previousDay))
             {
                YADOMS_LOG(information) << "    Computing DAY : " << *i << " @ " << previousDay;
-               m_databaseProvider->getAcquisitionRequester()->saveSummaryData(*i, database::entities::EAcquisitionSummaryType::kDay, previousDay);
+               boost::shared_ptr< database::entities::CAcquisitionSummary> insertedValue = m_databaseProvider->getAcquisitionRequester()->saveSummaryData(*i, database::entities::EAcquisitionSummaryType::kDay, previousDay);
+               summaryAcquisitions.push_back(insertedValue);
+
             }
          }
       }
 
-
-
-
-
+      //post notification
+      if (!summaryAcquisitions.empty())
+      {
+         boost::shared_ptr<notification::summary::CNotification> notificationData(new notification::summary::CNotification(summaryAcquisitions));
+         notification::CHelpers::postNotification(notificationData);
+      }
    }
 
 

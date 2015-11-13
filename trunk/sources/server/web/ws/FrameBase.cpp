@@ -9,6 +9,7 @@ namespace web { namespace ws {
    DECLARE_ENUM_IMPLEMENTATION_NESTED(CFrameBase::EFrameType, EFrameType,
       ((AcquisitionFilter))
       ((AcquisitionUpdate))
+      ((AcquisitionSummaryUpdate))
       ((DeviceNew))
       ((LogEventNew))
       ((TaskUpdateNotification))
