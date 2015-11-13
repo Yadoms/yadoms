@@ -11,8 +11,8 @@ function MoonViewModel() {
    this.MoonPhasesId = ko.observable ("");
    
    //simple data
-   this.WidgetHeight = 100;
-   this.WidgetWidth  = 100;   
+   this.WidgetHeight = 69;
+   this.WidgetWidth  = 69;   
    
    //Default value - This value is overwrite after
    this.photoName = ko.observable("widgets/moon/images/new.png");
@@ -33,7 +33,7 @@ function MoonViewModel() {
 	  elementID = "widget-moon-" + this.widget.id;
 	  
 	  // Initialisation of a unique canvas associated to this widget
-	  $('<canvas />').attr({
+	  $('<canvas class=\"canvas\" />').attr({
 		id: elementID
 	    }).appendTo( "#widget-" + this.widget.id );  
    };
@@ -112,7 +112,7 @@ function MoonViewModel() {
 
            ctx.fillStyle = "rgb(0,0,0)";		   
 		  
-		   if (self.WidgetHeight ==200)
+		   if (self.WidgetHeight >115)
 		   {
 		      ctx.font="20px Georgia";
 			  //write the text at the same position as the height of the column
@@ -139,13 +139,13 @@ function MoonViewModel() {
 	   //The size is x2 only when the widget is square
 	   if (this.widget.height() <= 250 && this.widget.height() >= 150 && this.widget.width() <= 250 && this.widget.width() >= 150)
 	   {
-	      self.WidgetHeight = 200;
-		  self.WidgetWidth = 200;	  
+	      self.WidgetHeight = 172;
+		  self.WidgetWidth = 172;	  
 	   }
 	   else
 	   {
-	      self.WidgetHeight = 100;
-		  self.WidgetWidth = 100;	  
+	      self.WidgetHeight = 67;
+		  self.WidgetWidth = 67;	  
 	   }
 
 		self.RefreshImage();   

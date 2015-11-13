@@ -3,6 +3,7 @@
     height: 100%;
     text-align: center;
     margin: auto;
+    overflow: hidden;
 }
 
 .chartWidget .btn-group {
@@ -17,5 +18,4 @@
     height: 100%;
     text-align: center;
     margin: auto;
-    position:absolute;
 }

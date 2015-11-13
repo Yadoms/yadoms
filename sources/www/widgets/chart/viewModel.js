@@ -128,7 +128,7 @@ widgetViewModelCtor =
       var self = this;
 
       if (!isNullOrUndefined(this.chart)) {
-         this.chart.setSize(this.widget.width() - 30, this.widget.height() - 20, false);
+         this.chart.setSize(this.widget.width() - 30, this.widget.height() - 40, false);
 
          var btns = self.widget.$gridWidget.find(".nav-btn");
 
