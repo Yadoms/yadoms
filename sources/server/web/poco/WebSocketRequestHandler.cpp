@@ -11,11 +11,13 @@
 #include "web/ws/FrameFactory.h"
 #include "web/ws/AcquisitionFilterFrame.h"
 #include "web/ws/AcquisitionUpdateFrame.h"
+#include "web/ws/AcquisitionSummaryUpdateFrame.h"
 #include "web/ws/LogEventFrame.h"
 #include "web/ws/NewDeviceFrame.h"
 #include "web/ws/TaskUpdateNotificationFrame.h"
 
 #include "notification/acquisition/Observer.hpp"
+#include "notification/summary/Notification.hpp"
 #include "notification/change/Observer.hpp"
 #include "notification/basic/Observer.hpp"
 #include "notification/Helpers.hpp"
@@ -49,6 +51,7 @@ namespace web {
             {
                kNotifFromWsClient = shared::event::kUserFirstId,
                kNewAcquisition,
+               kNewAcquisitionSummary,
                kNewDevice,
                kNewLogEvent,
                kTaskProgression
@@ -59,7 +62,12 @@ namespace web {
             boost::shared_ptr< notification::action::CEventAction< notification::acquisition::CNotification > > acquisitionAction(new notification::action::CEventAction<notification::acquisition::CNotification>(eventHandler, kNewAcquisition));
             boost::shared_ptr< notification::acquisition::CObserver > newAcquisitionObserver(new notification::acquisition::CObserver(acquisitionAction));
             notification::CHelpers::subscribeCustomObserver(newAcquisitionObserver);
-            observers.push_back(newAcquisitionObserver);
+            observers.push_back(newAcquisitionObserver);         
+            
+            boost::shared_ptr< notification::action::CEventAction< notification::summary::CNotification > > acquisitionSummaryAction(new notification::action::CEventAction<notification::summary::CNotification>(eventHandler, kNewAcquisitionSummary));
+            boost::shared_ptr< notification::basic::CObserver<notification::summary::CNotification> > newAcquisitionSummaryObserver(new notification::basic::CObserver<notification::summary::CNotification>(acquisitionSummaryAction));
+            notification::CHelpers::subscribeCustomObserver(newAcquisitionSummaryObserver);
+            observers.push_back(newAcquisitionSummaryObserver);
 
             // Subscribe to new device notifications
             observers.push_back(notification::CHelpers::subscribeChangeObserver< database::entities::CDevice >(notification::change::EChangeType::kCreate, eventHandler, kNewDevice));
@@ -90,7 +98,13 @@ namespace web {
                   case kNewAcquisition:
                   {
                      boost::shared_ptr<notification::acquisition::CNotification> notif = eventHandler.getEventData< boost::shared_ptr<notification::acquisition::CNotification> >();
-                     clientSeemConnected = send(webSocket, ws::CAcquisitionUpdateFrame(notif->getAcquisition(), notif->getDailyAcquisition(), notif->getHourlyAcquisition()));
+                     clientSeemConnected = send(webSocket, ws::CAcquisitionUpdateFrame(notif->getAcquisition()));
+                     break;
+                  }
+                  case kNewAcquisitionSummary:
+                  {
+                     boost::shared_ptr<notification::summary::CNotification> notif = eventHandler.getEventData< boost::shared_ptr<notification::summary::CNotification> >();
+                     clientSeemConnected = send(webSocket, ws::CAcquisitionSummaryUpdateFrame(notif->getAcquisitionSummaries()));
                      break;
                   }
 

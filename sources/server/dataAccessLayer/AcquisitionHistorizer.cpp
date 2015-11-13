@@ -5,6 +5,7 @@
 #include "database/ITransactionalProvider.h"
 
 #include "notification/acquisition/Notification.hpp"
+#include "notification/summary/Notification.hpp"
 #include "notification/Helpers.hpp"
 
 namespace dataAccessLayer {
@@ -89,15 +90,23 @@ namespace dataAccessLayer {
 
       //only update summary data if already exists
       //if not exists it will be created by SQLiteSummaryDataTask
-      boost::shared_ptr<database::entities::CAcquisitionSummary> summaryHour, summaryDay;
+      std::vector< boost::shared_ptr<database::entities::CAcquisitionSummary> > acquisitionSummary;
+
       if(m_dataProvider->getAcquisitionRequester()->summaryDataExists(keywordId, database::entities::EAcquisitionSummaryType::kHour, dataTime))
-         summaryHour = m_dataProvider->getAcquisitionRequester()->saveSummaryData(keywordId, database::entities::EAcquisitionSummaryType::kHour, dataTime);
+         acquisitionSummary.push_back(m_dataProvider->getAcquisitionRequester()->saveSummaryData(keywordId, database::entities::EAcquisitionSummaryType::kHour, dataTime));
       if(m_dataProvider->getAcquisitionRequester()->summaryDataExists(keywordId, database::entities::EAcquisitionSummaryType::kDay, dataTime))
-         summaryDay = m_dataProvider->getAcquisitionRequester()->saveSummaryData(keywordId, database::entities::EAcquisitionSummaryType::kDay, dataTime);
+         acquisitionSummary.push_back(m_dataProvider->getAcquisitionRequester()->saveSummaryData(keywordId, database::entities::EAcquisitionSummaryType::kDay, dataTime));
       
       //post notification
-      boost::shared_ptr<notification::acquisition::CNotification> notificationData(new notification::acquisition::CNotification(acq, summaryHour, summaryDay));
+      boost::shared_ptr<notification::acquisition::CNotification> notificationData(new notification::acquisition::CNotification(acq));
       notification::CHelpers::postNotification(notificationData);
+
+      if (!acquisitionSummary.empty())
+      {
+         boost::shared_ptr<notification::summary::CNotification> notificationDataSummary(new notification::summary::CNotification(acquisitionSummary));
+         notification::CHelpers::postNotification(notificationDataSummary);
+      }
+
 	}
 
 

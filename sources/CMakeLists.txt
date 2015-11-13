@@ -384,6 +384,7 @@ set(YADOMS_SRC
 	server/notification/acquisition/Observer.hpp
 	server/notification/acquisition/Notification.hpp
    
+   server/notification/summary/Notification.hpp
    
 	server/startupOptions/IStartupOptions.h
 	server/startupOptions/StartupOptions.h
@@ -473,6 +474,8 @@ set(YADOMS_SRC
 	server/web/ws/AcquisitionFilterFrame.cpp
 	server/web/ws/AcquisitionUpdateFrame.h
 	server/web/ws/AcquisitionUpdateFrame.cpp
+	server/web/ws/AcquisitionSummaryUpdateFrame.h
+	server/web/ws/AcquisitionSummaryUpdateFrame.cpp
 	server/web/ws/FrameBase.h
 	server/web/ws/FrameBase.cpp
 	server/web/ws/FrameFactory.h
@@ -503,6 +506,7 @@ source_group(server\\notification\\action  server/notification/action/*.*)
 source_group(server\\notification\\basic  server/notification/basic/*.*)
 source_group(server\\notification\\change  server/notification/change/*.*)
 source_group(server\\notification\\acquisition  server/notification/acquisition/*.*)
+source_group(server\\notification\\summary  server/notification/summary/*.*)
 source_group(server\\pluginSystem server/pluginSystem/*.* )
 source_group(server\\pluginSystem\\internalPlugin server/pluginSystem/internalPlugin/*.* )
 source_group(server\\startupOptions  server/startupOptions/*.*)

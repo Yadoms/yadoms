@@ -9,19 +9,25 @@ namespace web { namespace ws {
    //-----------------------------
    ///\brief Frame which can be send to GUI to notify for new acquisitions
    //-----------------------------
-   class CAcquisitionUpdateFrame : public CFrameBase
+   class CAcquisitionSummaryUpdateFrame : public CFrameBase
    {
    public:
       //-----------------------------
       ///\brief Constructor
-      ///\param[in] acquisition     The acquisition to send to GUI
+      ///\param[in] acquisitionSummaries     The acquisition summaries to send to GUI
       //-----------------------------
-      CAcquisitionUpdateFrame(boost::shared_ptr<const database::entities::CAcquisition> acquisition);
+      CAcquisitionSummaryUpdateFrame(const std::vector< boost::shared_ptr<database::entities::CAcquisitionSummary> > & acquisitionSummaries);
 
       //-----------------------------
       ///\brief Destructor
       //-----------------------------
-      virtual ~CAcquisitionUpdateFrame();
+      virtual ~CAcquisitionSummaryUpdateFrame();
+
+   protected:
+      //-----------------------------
+      ///\bruef The acquisition field name
+      //-----------------------------
+      static const std::string m_acquisitionString;
    };
 
 } //namespace ws
