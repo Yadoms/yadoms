@@ -256,5 +256,6 @@ body {
 }
 
 .logTextArea{
-    height: 250px;
+    height: 350px;
+    resize: none;
 }
