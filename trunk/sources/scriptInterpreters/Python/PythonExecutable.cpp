@@ -3,7 +3,7 @@
 #include "PythonException.hpp"
 #include <shared/FileSystemExtension.h>
 #include <shared/Log.h>
-
+#include "PythonExecutablePath.h"
 
 CPythonExecutable::CPythonExecutable()
    :m_executableDirectory(boost::filesystem::path()),
@@ -36,17 +36,16 @@ bool CPythonExecutable::findPythonDirectory(boost::filesystem::path& pythonDirec
    if (isPythonIn(boost::filesystem::path(), pythonDirectory))// Empty directory to search in system path
       return true;
 
-#ifdef _WINDOWS
-   // For Windows, search in c:/python27 first (because it's the default installation path),
-   // then in %ProgramFiles%/python27 and in %ProgramFiles(x86)%/python27
+   //retrevie common path for the system
+   std::vector<boost::filesystem::path> commonPaths;
+   CPythonExecutablePath::getCommonPythonPaths(commonPaths);
 
-   if (
-      isPythonIn(boost::filesystem::path("C:") / "python27", pythonDirectory) ||
-      isPythonIn(boost::filesystem::path(Poco::Environment::get("ProgramFiles")) / "python27", pythonDirectory) ||
-      isPythonIn(boost::filesystem::path(Poco::Environment::get("ProgramFiles(x86)")) / "python27", pythonDirectory))
-      return true;
-
-#endif //_WINDOWS
+   std::vector<boost::filesystem::path>::iterator i;
+   for (i = commonPaths.begin(); i != commonPaths.end(); ++i)
+   {
+      if (isPythonIn(*i, pythonDirectory))
+         return true;
+   }
 
    YADOMS_LOG(error) << "Python executable not found";
    return false;

@@ -37,12 +37,41 @@ if(PYTHONLIBS_FOUND)
       scriptCaller.py
    )
 
+
+   #Append platform specific files
+   IF(WIN32)
+   set(PYTHON_SOURCES	
+      ${PYTHON_SOURCES}
+      platformSpecific/windows/PythonExecutablePath.h
+      platformSpecific/windows/PythonExecutablePath.cpp
+   )	
+   set(PLATFORM_SPECIFIC_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/platformSpecific/windows)
+
+   ELSEIF(APPLE)
+   set(PYTHON_SOURCES	
+      ${PYTHON_SOURCES}
+      platformSpecific/mac/PythonExecutablePath.h
+      platformSpecific/mac/PythonExecutablePath.cpp
+   )	
+   set(PLATFORM_SPECIFIC_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/platformSpecific/mac)
+
+   ELSE()
+   set(PYTHON_SOURCES	
+      ${PYTHON_SOURCES}
+      platformSpecific/linux/PythonExecutablePath.h
+      platformSpecific/linux/PythonExecutablePath.cpp
+   )	
+   set(PLATFORM_SPECIFIC_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/platformSpecific/linux)
+
+   ENDIF()   
+   
+   
    #########################################
    ## Always leave these lines to configure script interpreter correctly
    ## even if PYTHON_INCLDIR or PYTHON_LINK are empty
    #########################################
    SCRIPT_INTERPRETER_SOURCES(python ${PYTHON_SOURCES})
-   SCRIPT_INTERPRETER_INCLDIR(python ${PYTHON_INCLDIR})
+   SCRIPT_INTERPRETER_INCLDIR(python ${PYTHON_INCLDIR} ${PLATFORM_SPECIFIC_INCL_DIR})
    SCRIPT_INTERPRETER_LINK(python ${PYTHON_LINK})
 
    #########################################
