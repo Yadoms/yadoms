@@ -30,6 +30,7 @@ public:
    // IScriptProcess Implementation
    virtual void interrupt();
    virtual int waitForStop();
+   virtual std::string getError() const;
    // [END] IScriptProcess Implementation
 
 protected:
@@ -44,9 +45,10 @@ protected:
    /// \param[in] ruleName          Rule name used for log identification
    /// \param[in] moduleStdOut      StdOut to redirect
    /// \param[in] targetStream      Target stream
+   /// \param[inout] lastError      Last error string
    //--------------------------------------------------------------
    void stdRedirectWorker(const std::string& ruleName,
-      boost::shared_ptr<Poco::PipeInputStream> moduleStdOut, boost::shared_ptr<shared::script::ILogger> scriptLogger);
+      boost::shared_ptr<Poco::PipeInputStream> moduleStdOut, boost::shared_ptr<shared::script::ILogger> scriptLogger, boost::shared_ptr<std::string> lastError);
 
 private:
    //--------------------------------------------------------------
@@ -63,6 +65,11 @@ private:
    /// \brief	The context accessor ID, used by script to interact with Yadoms
    //--------------------------------------------------------------
    const std::string& m_contextAccessorId;
+
+   //--------------------------------------------------------------
+   /// \brief	The last error
+   //--------------------------------------------------------------
+   boost::shared_ptr<std::string> m_lastError;
 
    //--------------------------------------------------------------
    /// \brief	The script logger

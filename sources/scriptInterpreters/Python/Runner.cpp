@@ -66,5 +66,5 @@ void CRunner::monitorThreaded(
    if (process->waitForStop() == 0)
       stopNotifier->notifyNormalStop();
    else
-      stopNotifier->notifyError("TODO récupérer l'erreur Python");
+      stopNotifier->notifyError(process->getError());
 }

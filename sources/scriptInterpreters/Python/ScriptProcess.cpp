@@ -13,6 +13,7 @@ CScriptProcess::CScriptProcess(
    :m_executable(executable),
    m_scriptFile(scriptFile),
    m_contextAccessorId(contextAccessorId),
+   m_lastError(boost::make_shared<std::string>()),
    m_scriptLogger(scriptLogger)
 {
    start();
@@ -42,8 +43,8 @@ void CScriptProcess::start()
 
       boost::shared_ptr<Poco::PipeInputStream> moduleStdOut = boost::make_shared<Poco::PipeInputStream>(outPipe);
       boost::shared_ptr<Poco::PipeInputStream> moduleStdErr = boost::make_shared<Poco::PipeInputStream>(errPipe);
-      m_StdOutRedirectingThread = boost::thread(&CScriptProcess::stdRedirectWorker, this, m_scriptFile->module(), moduleStdOut, m_scriptLogger);
-      m_StdErrRedirectingThread = boost::thread(&CScriptProcess::stdRedirectWorker, this, m_scriptFile->module(), moduleStdErr, m_scriptLogger);
+      m_StdOutRedirectingThread = boost::thread(&CScriptProcess::stdRedirectWorker, this, m_scriptFile->module(), moduleStdOut, m_scriptLogger, boost::shared_ptr<std::string>());
+      m_StdErrRedirectingThread = boost::thread(&CScriptProcess::stdRedirectWorker, this, m_scriptFile->module(), moduleStdErr, m_scriptLogger, m_lastError);
    }
    catch (Poco::Exception& ex)
    {
@@ -79,28 +80,45 @@ void CScriptProcess::interrupt()
 
 int CScriptProcess::waitForStop()
 {
-   if (!m_process)
-      return 0;
+   int returnCode;
 
-   try
+   if (!m_process)
+      returnCode = 0;
+   else
    {
-      return Poco::Process::wait(*m_process);
+      try
+      {
+         returnCode = Poco::Process::wait(*m_process);
+      }
+      catch (Poco::SystemException&)
+      {
+         // Process was probably killed (==> stopped by user)
+         returnCode = 0;
+      }
    }
-   catch (Poco::SystemException&)
-   {
-      // Process was probably killed (==> stopped by user)
-      return 0;
-   }
+
+   m_StdOutRedirectingThread.join();
+   m_StdErrRedirectingThread.join();
+
+   return returnCode;
+}
+
+std::string CScriptProcess::getError() const
+{
+   return *m_lastError;
 }
 
 void CScriptProcess::stdRedirectWorker(const std::string& ruleName,
-   boost::shared_ptr<Poco::PipeInputStream> moduleStdOut, boost::shared_ptr<shared::script::ILogger> scriptLogger)
+   boost::shared_ptr<Poco::PipeInputStream> moduleStdOut, boost::shared_ptr<shared::script::ILogger> scriptLogger, boost::shared_ptr<std::string> lastError)
 {
    char line[1024];
    YADOMS_LOG_CONFIGURE(ruleName + " rule");
    while (moduleStdOut->getline(line, sizeof(line)))
    {
-      // Remove EOL characters
+      if (!!lastError)
+         *lastError += line;
+
+      // Remove EOL characters to log in script logger
       size_t len = strlen(line);
       if (len > 1 && line[len - 2] == '\r' && line[len - 1] == '\n')
          line[len - 2] = 0;
