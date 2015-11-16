@@ -347,9 +347,7 @@
 					"ruleDeleted": "Règle supprimée",
 					"editors": {
 						"code": {
-							"name": "Code",
-							"insertKeywordId": "Insérer une donnée d'équipement",
-							"insertRecipientId": "Insérer un destinataire"
+							"name": "Code"
 						},
 						"blockly": {
 							"name": "Blockly"

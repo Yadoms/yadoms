@@ -48,28 +48,6 @@ AutomationEditorCode.prototype.getUuid = function() {
  */
 AutomationEditorCode.prototype.getDOMStructure = function() {
    return ("<div id=\"" + this.uuid + "\" class=\"code-ide\">" +
-               "<div class=\"btn-group\" role=\"group\">" +
-                  "<div class=\"btn-group\" role=\"group\">" +
-                     "<div class=\"dropdown btn-insert-keyword\">" +
-                        "<a role=\"button\" data-toggle=\"dropdown\" class=\"btn btn-default\" data-target=\"#\">" +
-                           "<span data-i18n=\"modals.dashboard.sub-windows.automation-center.editors.code.insertKeywordId\"></span>&nbsp;" +
-                           "<span class=\"caret\"></span>" +
-                        "</a>" +
-                        "<ul class=\"plugin-list dropdown-menu\" role=\"menu\" aria-labelledby=\"dropdownMenu\">" +
-                        "</ul>" +
-                     "</div>" +
-                  "</div>" +
-                  "<div class=\"btn-group\" role=\"group\">" +
-                     "<div class=\"dropdown btn-insert-recipient\">" +
-                        "<a role=\"button\" data-toggle=\"dropdown\" class=\"btn btn-default\" data-target=\"#\">" +
-                           "<span data-i18n=\"modals.dashboard.sub-windows.automation-center.editors.code.insertRecipientId\"></span>&nbsp;" +
-                           "<span class=\"caret\"></span>" +
-                        "</a>" +
-                        "<ul class=\"recipient-list dropdown-menu\" role=\"menu\" aria-labelledby=\"dropdownMenu\">" +
-                        "</ul>" +
-                     "</div>" +
-                  "</div>" +
-               "</div>" +
                "<div id=\"" + this.editorUuid + "\" class=\"code-editor\"></div>" +
             "</div>");
 };
@@ -94,69 +72,6 @@ AutomationEditorCode.prototype.applyScript = function() {
    //we tab size and soft tabs (tabs replaces by spaces)
    this.editor.getSession().setTabSize(3);
    this.editor.getSession().setUseSoftTabs(true);
-   
-   //we manage the insert keyword Id button
-   var $insertKeywordId = $("div#" + this.getUuid() + " div.btn-insert-keyword");
-
-   //we get all plugins
-   PluginInstanceManager.getAll(function (list) {
-      $.each(list, function (key, plugin) {
-         var $pluginList = $insertKeywordId.find(".plugin-list");
-         $pluginList.append("<li class=\"dropdown-submenu\" id=\"plugin-" + plugin.id + "\">" +
-                              "<a tabindex=\"-1\">" + plugin.name + "</a>" +
-                              "<ul class=\"dropdown-menu\">" +
-                              "</ul>" +
-                           "</li>");
-      });
-   }, true);
-
-   DeviceManager.getAll(function (list) {
-      $.each(list, function (deviceKey, device) {
-         var $deviceList = $insertKeywordId.find("#plugin-" + device.pluginId + " .dropdown-menu");
-         $deviceList.append("<li class=\"dropdown-submenu\" id=\"device-" + device.id + "\">" +
-                              "<a tabindex=\"-1\">" + device.friendlyName + "</a>" +
-                              "<ul class=\"dropdown-menu\">" +
-                              "</ul>" +
-                           "</li>");
-      });
-   }, true);
-
-   KeywordManager.getAll(function (list) {
-      $.each(list, function (keywordKey, keyword) {
-         var $keywordList = $insertKeywordId.find("#device-" + keyword.deviceId + " .dropdown-menu");
-         $keywordList.append("<li id=\"keyword-" + keyword.id + "\">" +
-                              "<a tabindex=\"-1\" class=\"keyword\" keyword-id=\"" + keyword.id + "\">" +
-                                 keyword.friendlyName +
-                                 "<span class=\"pull-right\">(" + keyword.id + ")</span>" +
-                              "</a>" +
-                           "</li>");
-      });
-
-      //we manage click on items
-      $insertKeywordId.find(".keyword").bind("click", function (src) {
-         self.editor.insert($(src.currentTarget).attr("keyword-id"));
-      });
-
-   }, true);
-
-   //we manage recipient list button
-   $insertRecipientId = $("div#" + this.getUuid() + " div.btn-insert-recipient");
-   $insertRecipientList = $insertRecipientId.find("ul.recipient-list");
-   RecipientManager.getAll(function(list) {
-      $.each(list, function (key, recipient) {
-         $insertRecipientList.append("<li>" +
-                                       "<a tabindex=\"-1\" class=\"recipient\" recipient-id=\"" + recipient.id + "\">" +
-                                          recipient.firstName + "&nbsp;" + recipient.lastName +
-                                          "<span class=\"pull-right\">(" + recipient.id + ")</span>" +
-                                       "</a>" +
-                                    "</li>");
-      });
-
-      //we manage click on items
-      $insertRecipientList.find(".recipient").bind("click", function (src) {
-         self.editor.insert($(src.currentTarget).attr("recipient-id"));
-      });
-   }, true);
 };
 
 /**
