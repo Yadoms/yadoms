@@ -20,8 +20,23 @@
                     "brief": "Keyword name to search for ID"
                 }
             },
-            "return": "The last known keyword state (empty if no known state)",
+            "return": "Found keyword ID",
             "throw": "Error if several (some have to be renamed) or none keyword ID found"
+        },
+        "getRecipientId": {
+            "brief": "Retrieve the recipient ID from its first and last names",
+            "params": {
+                "firstName": {
+                    "direction": "in",
+                    "brief": "First name"
+                },
+                "lastName": {
+                    "direction": "in",
+                    "brief": "Last name"
+                }
+            },
+            "return": "Found recipient ID",
+            "throw": "Error if no recipient found"
         },
         "readKeyword": {
             "brief": "Read the last known state of the keyword",

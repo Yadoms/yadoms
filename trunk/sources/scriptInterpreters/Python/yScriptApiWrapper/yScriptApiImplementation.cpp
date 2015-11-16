@@ -99,6 +99,22 @@ int CYScriptApiImplementation::getKeywordId(const std::string& deviceName, const
    return answer.get<int>("returnValue");
 }
 
+int CYScriptApiImplementation::getRecipientId(const std::string& firstName, const std::string& lastName) const
+{
+   shared::CDataContainer request;
+   request.set("firstName", firstName);
+   request.set("lastName", lastName);
+   sendRequest(kReqGetRecipientId, request);
+
+   shared::CDataContainer answer;
+   receiveAnswer(kAnsGetRecipientId, answer);
+
+   if (answer.exists("error"))
+      throw std::out_of_range(std::string("yScriptApiWrapper::getRecipientId, error : ") + answer.get<std::string>("error"));
+
+   return answer.get<int>("returnValue");
+}
+
 std::string CYScriptApiImplementation::readKeyword(int keywordId) const
 {
    shared::CDataContainer request;

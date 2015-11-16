@@ -51,6 +51,7 @@ protected:
    /// \param[in] messageQueue Message Queue used for answer
    //--------------------------------------------------------------
    void processGetKeywordId       (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
+   void processGetRecipientId     (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
    void processReadKeyword        (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
    void processWaitForAcquisition (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
    void processWaitForAcquisitions(const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
