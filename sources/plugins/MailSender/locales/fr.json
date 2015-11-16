@@ -1,32 +1,26 @@
 ﻿{
-   "name": "Envoie Mail",
-   "description": "Ce plugin fourni les informations nécessaires pour envoyer un e-mail",
-   "configurationSchema":
-   {
-	  "Sender":
-	  {      "name": "Mail expéditeur",
-                 "description" : "Cet e-mail remplira le champs 'expéditeur' des e-mails"
-	  },
-	  "SMTPServer":
-	  {
-		 "name": "Serveur SMTP",
-                 "description" : "Nom du serveur SMTP (ex: smtp.gmail.com)"
-	  },
-	  "SMTPPort":
-	  {
-		 "name": "port du serveur SMTP",
-                 "description" : "port du SMTP (ex: 25, 465 or 587)"
-	  },
-	  "User":
-	  {
-		 "name": "Utilisateur",
-                 "description" : ""
-	  },
-	  "Password":
-	  {
-		 "name": "Mot de passe",
-                 "description" : ""
-	  }
-   }   
+	"name": "Envoi d'email",
+	"description": "Ce plugin fourni les informations nécessaires pour envoyer un email",
+	"configurationSchema": {
+		"Sender": {
+			"name": "Adresse email expéditeur",
+			"description": "Cette adresse sera utilisée pour le champ 'expéditeur'"
+		},
+		"SMTPServer": {
+			"name": "Serveur SMTP",
+			"description": "Nom du serveur SMTP (ex: smtp.gmail.com)"
+		},
+		"SMTPPort": {
+			"name": "port du serveur SMTP",
+			"description": "port SMTP (ex: 25, 465 or 587)"
+		},
+		"User": {
+			"name": "Utilisateur",
+			"description": ""
+		},
+		"Password": {
+			"name": "Mot de passe",
+			"description": ""
+		}
+	}
 }
-

@@ -11,7 +11,7 @@
       "Protocols":
       {
           "name" : "Protocoles en écoute",
-          "description" : "Protocoles à écouter, voir le manuel d'utilisation du RFXCom manual. Attention, certains protocols ne sont pas compatible entre eux, et ne doivent pas être activés simultanément.",
+          "description" : "Protocoles à écouter, voir le manuel d'utilisation du RFXCom. Attention, certains protocoles ne sont pas compatibles entre eux, et ne doivent pas être activés simultanément.",
           "content" :
           {
              "AE Blyss" : { "name" : "AE Blyss (Castorama)" },

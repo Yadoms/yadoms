@@ -41,14 +41,14 @@
 			"enableWithCheckBox": "true",
 			"enableWithCheckBoxDefaultValue": "false",
 			"content": {
-				"maximumValue": {
+				"minimumValue": {
 					"type": "decimal",
 					"defaultValue": "0.0",
 					"precision": "1"
 				},
-				"minimumValue": {
+				"maximumValue": {
 					"type": "decimal",
-					"defaultValue": "0.0",
+					"defaultValue": "100.0",
 					"precision": "1"
 				}
 			}

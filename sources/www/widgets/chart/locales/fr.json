@@ -25,13 +25,11 @@
 			"name": "Applique manuellement une valeur minimum et maximum",
 			"description": "Activer cette section permet de configurer le minimum et le maximum de la gauge. Si cette option n'est pas activée, le minimum et le maximum seront calculés automatiquement. Cette option est disponible si la précédente est activée.",
 			"content": {
-				"maximumValue": {
-					"name": "Valeur maximale",
-					"description": "Applique la valeur maximale"
-				},
 				"minimumValue": {
-					"name": "Valeur minimale",
-					"description": "Applique la valeur minimale"
+					"name": "Valeur minimale"
+				},
+				"maximumValue": {
+					"name": "Valeur maximale"
 				}
 			}
 		},
