@@ -23,15 +23,13 @@
       },
         "customYAxisMinMax": {
             "name": "Manually set min and max of y axis",
-            "description": "Enabling this section allow you to set the min and max of your chart. If it is not activated min and max will be computed automatically. This section is active only when the option unique axis is selected",
+            "description": "Enabling this section allow you to set the min and max of the chart Y-axis. If disabled, min and max will be automatically computed. This section is active only when the option unique axis is selected",
             "content": {
-                "maximumValue": {
-                    "name": "Maximum Y axis value",
-                    "description": "Set the maximum Y Axis value"
-                },
                 "minimumValue": {
-                    "name": "Minimum Y axis value",
-                    "description": "Set the minimum Y Axis value"
+                    "name": "Minimum Y axis value"
+                },               
+                "maximumValue": {
+                    "name": "Maximum Y axis value"
                 }
             }
         },
