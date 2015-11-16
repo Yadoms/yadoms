@@ -87,6 +87,21 @@ int CYScriptApiImplementation::getKeywordId(const std::string& deviceName, const
    throw std::out_of_range((boost::format("getKeywordId, several keywords found for %1% for device %2%. Please rename keywords or device.") % keywordName % deviceName).str());
 }
 
+int CYScriptApiImplementation::getRecipientId(const std::string& firstName, const std::string& lastName) const
+{
+   boost::shared_ptr<database::entities::CRecipient> recipients;
+   try
+   {
+      recipients = m_dbRecipientRequester->getRecipient(firstName, lastName);
+   }
+   catch (shared::exception::CEmptyResult&)
+   {
+      throw std::out_of_range((boost::format("getRecipientId, recipient for %1% %2% not found") % firstName % lastName).str());
+   }
+
+   return recipients->Id;
+}
+
 std::string CYScriptApiImplementation::readKeyword(int keywordId) const
 {
    assertExistingKeyword(keywordId);

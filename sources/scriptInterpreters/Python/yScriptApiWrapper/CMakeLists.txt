@@ -19,6 +19,8 @@ set(PYTHON_WRAPPER_SOURCES
    yScriptApiInstance.cpp
    yScriptApiImplementation.h
    yScriptApiImplementation.cpp
+   
+   yScriptApiDoc.json
 )
 
 #########################################

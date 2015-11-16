@@ -109,10 +109,10 @@ void CContextAccessor::processMessage(const char* message, size_t messageSize, b
 
    // Process message
    shared::CDataContainer request = mainRequestContainer.get<shared::CDataContainer>("content");
-   std::string s = request.serialize();
    switch (mainRequestContainer.get<ERequestIdentifier>("type"))
    {
    case kReqGetKeywordId         : processGetKeywordId(request, messageQueue); break;
+   case kReqGetRecipientId       : processGetRecipientId(request, messageQueue); break;
    case kReqReadKeyword          : processReadKeyword(request, messageQueue); break;
    case kReqWaitForAcquisition   : processWaitForAcquisition(request, messageQueue); break;
    case kReqWaitForAcquisitions  : processWaitForAcquisitions(request, messageQueue); break;
@@ -137,6 +137,20 @@ void CContextAccessor::processGetKeywordId(const shared::CDataContainer& request
       answer.set("error", ex.what());
    }
    sendAnswer(kAnsGetKeywordId, answer, messageQueue);
+}
+
+void CContextAccessor::processGetRecipientId(const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue)
+{
+   shared::CDataContainer answer;
+   try
+   {
+      answer.set("returnValue", m_scriptApi->getRecipientId(request.get<std::string>("firstName"), request.get<std::string>("lastName")));
+   }
+   catch (std::out_of_range& ex)
+   {
+      answer.set("error", ex.what());
+   }
+   sendAnswer(kAnsGetRecipientId, answer, messageQueue);
 }
 
 void CContextAccessor::processReadKeyword(const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue)

@@ -11,6 +11,7 @@ const size_t m_messageQueueMessageSize(1000);
 enum ERequestIdentifier
 {
    kReqGetKeywordId = 0,
+   kReqGetRecipientId,
    kReqReadKeyword,
    kReqWaitForAcquisition,
    kReqWaitForAcquisitions,
@@ -26,6 +27,7 @@ enum ERequestIdentifier
 enum EAnswerIdentifier
 {
    kAnsGetKeywordId = 0,
+   kAnsGetRecipientId,
    kAnsReadKeyword,
    kAnsWaitForAcquisition,
    kAnsWaitForAcquisitions,

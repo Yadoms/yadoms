@@ -18,10 +18,19 @@ namespace shared { namespace script { namespace yScriptApi
       ///\brief Get a keyword ID
       ///\param[in] deviceName Device name containing the keyword
       ///\param[in] keywordName Keyword name to search for ID
-      ///\return The keyword ID (kUnknownKeyword if not found, or kSeveralKeywords if several keywords match for this device name and keyword name)
+      ///\return The keyword ID
       ///\throw std::out_of_range if several (some have to be renamed) or none keyword ID found
       //-----------------------------------------------------
       virtual int getKeywordId(const std::string& deviceName, const std::string& keywordName) const = 0;
+
+      //-----------------------------------------------------
+      ///\brief Get a recipient ID
+      ///\param[in] firstName Recipient first name
+      ///\param[in] lastName Recipient last name
+      ///\return The recipient ID
+      ///\throw std::out_of_range if not found
+      //-----------------------------------------------------
+      virtual int getRecipientId(const std::string& firstName, const std::string& lastName) const = 0;
 
       //-----------------------------------------------------
       ///\brief Read the last known state of the keyword
