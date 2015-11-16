@@ -350,9 +350,7 @@
 					"ruleDeleted": "Règle supprimée",
 					"editors": {
 						"code": {
-							"name": "Code",
-							"insertKeywordId": "Insert keyword Id",
-							"insertRecipientId": "Insert recipient Id"
+							"name": "Code"
 						},
 						"blockly": {
 							"name": "Blockly"

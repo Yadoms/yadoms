@@ -56,7 +56,7 @@
                }
                else
                {
-                  //version is lower to 0.1, then create database
+                  //version is lower to requested, then create database
                   bNeedToCreateOrUpgrade = true;
                }
 
