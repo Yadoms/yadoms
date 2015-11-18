@@ -42,6 +42,7 @@ namespace database { namespace sqlite {
          virtual std::string getKeywordHighchartData(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo);
          virtual std::string getKeywordHighchartDataByDay(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo);
          virtual std::string getKeywordHighchartDataByHour(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo);
+         virtual int purgeAcquisitions(boost::posix_time::ptime purgeDate);
          // [END] IAcquisitionRequester implementation
 
       private:

@@ -10,6 +10,7 @@
 #include "database/sqlite/SQLiteDatabaseTables.h"
 #include "database/sqlite/Query.h"
 #include <Poco/Timestamp.h>
+#include <shared/currentTime/Provider.h>
 
 namespace database {  namespace sqlite {  namespace requesters { 
 
@@ -377,7 +378,18 @@ namespace database {  namespace sqlite {  namespace requesters {
 
       return (m_databaseRequester->queryCount(checkq) > 0);
    }
-   
+
+   int CAcquisition::purgeAcquisitions(boost::posix_time::ptime purgeDate)
+   {
+      CQuery q;
+      q.DeleteFrom(CAcquisitionTable::getTableName()).
+         Where(CAcquisitionTable::getDateColumnName(), CQUERY_OP_INF, CQueryValue(purgeDate));
+
+      int count = m_databaseRequester->queryStatement(q);
+      if (count < 0)
+         throw shared::exception::CException("Fail to purge database");
+      return count;
+   }
    // [END] IAcquisitionRequester implementation
 
 

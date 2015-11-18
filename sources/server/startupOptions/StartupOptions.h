@@ -48,6 +48,7 @@ namespace startupOptions
       virtual bool getNoPasswordFlag() const;
       virtual bool getIsRunningAsService() const;
       virtual const std::string getUpdateSiteUri() const;
+      virtual int getDatabaseAcquisitionLifetime() const;
       // [END] IStartupOptions implementation
       //--------------------------------------------------------------
 

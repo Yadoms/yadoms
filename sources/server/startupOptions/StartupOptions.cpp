@@ -21,7 +21,6 @@ namespace startupOptions
 
    void CStartupOptions::defineOptions(Poco::Util::OptionSet& options)
    {
-
       options.addOption(
          Poco::Util::Option("port", "p", "set the web server port number")
          .required(false)
@@ -74,6 +73,14 @@ namespace startupOptions
          .repeatable(false)
          .noArgument()
          .binding("server.noPassword", &m_configContainer));
+
+      options.addOption(
+         Poco::Util::Option("acquisitionLifetime", "a", "Specify the acquisition lifetime in days.")
+         .required(false)
+         .repeatable(false)
+         .argument("acquisitionLifetime")
+         .validator(new Poco::Util::IntValidator(0, 3650)) //from 0 (unlimited), to 10 years
+         .binding("server.acquisitionLifetime", &m_configContainer));
    }
 
    const std::string CStartupOptions::getLogLevel() const
@@ -126,5 +133,10 @@ namespace startupOptions
    const std::string CStartupOptions::getUpdateSiteUri() const
    {
       return m_configContainer.getString("server.updateSite", "http://www.yadoms.com/downloads/update/");
+   }
+
+   int CStartupOptions::getDatabaseAcquisitionLifetime() const
+   {
+      return m_configContainer.getInt("server.acquisitionLifetime", 30);
    }
 } // namespace startupOptions

@@ -24,8 +24,6 @@ namespace web { namespace ws {
       m_internalContainer.set(m_taskMessage, taskProgression->getMessage());
       m_internalContainer.set(m_taskException, taskProgression->getExceptionMessage());
       m_internalContainer.set(m_taskData, taskProgression->getTaskData());
-      
-      YADOMS_LOG(information) << "CTaskUpdateNotificationFrame : " << m_internalContainer.serialize();
    }
 
    CTaskUpdateNotificationFrame::~CTaskUpdateNotificationFrame()

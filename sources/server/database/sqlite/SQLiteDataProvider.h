@@ -75,6 +75,16 @@ namespace sqlite {
       //--------------------------------------------------------------
       void initializeMaintenanceTasks();
 
+      //--------------------------------------------------------------
+      /// \Brief		Initialize the summary computing task
+      //--------------------------------------------------------------
+      void initializeSummaryComputingTask();
+
+      //--------------------------------------------------------------
+      /// \Brief		Initialize the purge task
+      //--------------------------------------------------------------
+      void initializePurgeTask();
+
    private:
       //--------------------------------------------------------------
       /// \Brief		Plugin requester
@@ -152,9 +162,14 @@ namespace sqlite {
       Poco::Util::Timer m_maintenanceTimer;
 
       //--------------------------------------------------------------
-      /// \Brief		The maintenance task
+      /// \Brief		The maintenance summary computing task
       //--------------------------------------------------------------
-      Poco::Util::TimerTask::Ptr m_maintenanceTask;
+      Poco::Util::TimerTask::Ptr m_maintenanceSummaryComputingTask;  
+      
+      //--------------------------------------------------------------
+      /// \Brief		The maintenance purge task
+      //--------------------------------------------------------------
+      Poco::Util::TimerTask::Ptr m_maintenancePurgeTask;
    };
    
 
