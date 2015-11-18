@@ -598,6 +598,8 @@ IF(USE_SQLITE_DATABASE)
 		server/database/sqlite/SQLiteTablesScripts.cpp
       server/database/sqlite/SQLiteSummaryDataTask.h
       server/database/sqlite/SQLiteSummaryDataTask.cpp      
+      server/database/sqlite/SQLitePurgeTask.h
+      server/database/sqlite/SQLitePurgeTask.cpp      
 		server/database/sqlite/requesters/Plugin.h
 		server/database/sqlite/requesters/Plugin.cpp
 		server/database/sqlite/requesters/Configuration.h
@@ -732,7 +734,6 @@ ELSEIF(APPLE)
 ELSE()
 	set(SHARED_INCL_DIR ${SHARED_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/shared/linux)
 ENDIF()
-
 
 
 ##################################################################################################

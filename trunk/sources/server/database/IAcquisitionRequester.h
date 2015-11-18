@@ -142,6 +142,13 @@ namespace database {
       virtual std::string getKeywordHighchartDataByHour(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo) = 0;
 
       //--------------------------------------------------------------
+      /// \brief                 Delete old acquisition
+      /// \param [in] purgeDate  The date of purge (any data prior ro his date will be deleted)
+      /// \return                Number of deleted rows
+      //--------------------------------------------------------------
+      virtual int purgeAcquisitions(boost::posix_time::ptime purgeDate) = 0;
+
+      //--------------------------------------------------------------
       /// \brief       Destructor
       //--------------------------------------------------------------
       virtual ~IAcquisitionRequester()

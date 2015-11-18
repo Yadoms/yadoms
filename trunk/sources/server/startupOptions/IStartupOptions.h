@@ -83,6 +83,12 @@ namespace startupOptions
       /// \note       If not exist, it returns "http://www.yadoms.com/downloads/update/"
       //--------------------------------------------------------------
       virtual const std::string getUpdateSiteUri() const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief	    Get the acquisition lifetime
+      /// \return     The acquisition lifetime
+      //--------------------------------------------------------------
+      virtual int getDatabaseAcquisitionLifetime() const = 0;
    };
 
 } // namespace startupOptions

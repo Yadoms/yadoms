@@ -14,6 +14,7 @@
 #include "database/sqlite/adapters/SingleValueAdapter.hpp"
 #include <shared/versioning/Version.h>
 #include "SQLiteSummaryDataTask.h"
+#include "SQLitePurgeTask.h"
 #include <Poco/DateTime.h>
 
 namespace database {
@@ -133,19 +134,26 @@ namespace database {
 
       void CSQLiteDataProvider::initializeMaintenanceTasks()
       {
-         //create a task
-         m_maintenanceTask = Poco::Util::TimerTask::Ptr(new CSQLiteSummaryDataTask(this));
+         initializeSummaryComputingTask();
+         initializePurgeTask();
+      }
+
+      void CSQLiteDataProvider::initializeSummaryComputingTask()
+      {
+         //create the summary computing task
+         m_maintenanceSummaryComputingTask = Poco::Util::TimerTask::Ptr(new CSQLiteSummaryDataTask(getAcquisitionRequester(), getKeywordRequester()));
 
          //schedule task now (at app start)
-         m_maintenanceTimer.schedule(m_maintenanceTask,Poco::Timestamp());
+         m_maintenanceTimer.schedule(m_maintenanceSummaryComputingTask, Poco::Timestamp());
 
          //then schedule it to be run each hour (+1 minute in order to give a small latency for plugins): 00h01, 01h01, 02h01, 03h01, 04h01....
+         //working with Poco::DateTime because using Poco::Util::Timer class
          Poco::DateTime now;
          Poco::DateTime firstOccurence(now.year(), now.month(), now.day(), now.hour(), 1);
          Poco::Timespan oneHourOffset(0, 1, 0, 0, 0);
          firstOccurence += oneHourOffset;//+1hour
          Poco::Timespan timeToWaitBeforeFirstOccurrence = firstOccurence - now;
-         
+
          YADOMS_LOG(information) << "Summary task will happens @" << firstOccurence.hour() << ":" << firstOccurence.minute();
          YADOMS_LOG(information) << "Next step in " << timeToWaitBeforeFirstOccurrence.minutes() << " minutes";
 
@@ -154,8 +162,31 @@ namespace database {
          long msWait = (long)timeToWaitBeforeFirstOccurrence.totalMilliseconds(); //force cast because value is maximum 1hour = 1000*3600 which is less than "long" maximum value
          long msWaitPeriod = (long)oneHourOffset.totalMilliseconds();//force cast because value is 1 hour = 1000*3600 which is less than "long" maximum value
 
-         m_maintenanceTimer.scheduleAtFixedRate(m_maintenanceTask, msWait, msWaitPeriod);
+         m_maintenanceTimer.scheduleAtFixedRate(m_maintenanceSummaryComputingTask, msWait, msWaitPeriod);
       }
+
+      void CSQLiteDataProvider::initializePurgeTask()
+      {
+         //create the purge task
+         m_maintenancePurgeTask = Poco::Util::TimerTask::Ptr(new CSQLitePurgeTask(getAcquisitionRequester(), m_databaseRequester));
+
+         //schedule task now (at app start)
+         m_maintenanceTimer.schedule(m_maintenancePurgeTask, Poco::Timestamp());
+
+         //schedule task now (at app start)
+         //working with Poco::DateTime because using Poco::Util::Timer class
+         Poco::DateTime now;
+         Poco::DateTime firstPurgeOccurence(now.year(), now.month(), now.day(), now.hour(), 15);
+         Poco::Timespan oneDayOffset(24, 0, 0, 0, 0);
+         firstPurgeOccurence += oneDayOffset;//+1day
+         Poco::Timespan timeToWaitBeforeFirstPurgeOccurrence = firstPurgeOccurence - now;
+
+         long msWait = (long)timeToWaitBeforeFirstPurgeOccurrence.totalMilliseconds(); //force cast because value is maximum 1hour = 1000*3600 which is less than "long" maximum value
+         long msWaitPeriod = (long)oneDayOffset.totalMilliseconds();//force cast because value is 1 hour = 1000*3600 which is less than "long" maximum value
+
+         m_maintenanceTimer.scheduleAtFixedRate(m_maintenancePurgeTask, msWait, msWaitPeriod);
+      }
+
 
       void isodate(sqlite3_context *context, int argc, sqlite3_value **argv){
          assert(argc == 1);
