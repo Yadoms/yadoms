@@ -1,0 +1,41 @@
+
+.center {
+   text-align: left;
+   margin-left: 10px;
+   margin-right: auto;
+   margin-bottom: auto;
+   margin-top: auto;
+}
+
+.level1 {
+   margin-left: 10px;
+   font-style: italic;
+   font-size:30px;
+   font-weight: bold;
+}
+
+.level2 {
+   margin-left: 50px;
+   font-size:20px;
+}
+
+.level3 {
+   margin-left: 50px;
+   font-size:14px;
+}
+
+.level4 {
+   margin-left: 50px;
+   font-size:14px;
+}
+
+.level5 {
+   margin-left: 50px;
+   font-size:14px;
+}
+
+.text {
+   margin-left: 50px;
+   font-style: normal;
+   font-size:12px;
+}

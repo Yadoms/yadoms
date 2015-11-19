@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<!-- This page is used to display some help -->
+<!-- Help content must be downloadable from the Yadoms server -->
+<!-- Help content must be in json format -->
+<!-- The content is displayed as : -->
+<!-- Main level : displayed as big titles if contains children, text otherwise -->
+<!-- Level 2 : displayed as small titles if contains children, text otherwise -->
+<!-- Level 3 : displayed as paragraph title if contains children, text otherwise -->
+<!-- Level 4 : displayed as list title if contains children, text otherwise -->
+<!-- Level 5 : displayed as sub-list title if contains children, text otherwise -->
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Yet Another DOMotic System help page">
+    <meta name="author" content="yadoms team">
+    <link rel="shortcut icon" href="assets/ico/favicon.png">
+
+    <title>Yadoms help page</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="libs/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="css/bootstrap-non-responsive.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="css/yadoms.css" rel="stylesheet">
+	 <link href="libs/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="css/help.css" rel="stylesheet">
+
+    <!-- Gridstack includes -->
+    <link rel="stylesheet" href="libs/gridstack/css/gridstack.css"/>
+    <link rel="stylesheet" href="libs/gridstack/css/gridstack-extra.css"/>
+  </head>
+
+  <body>
+  <!-- Fixed navbar -->
+  <div class="navbar navbar-default navbar-static-top" role="navigation">
+      <div class="container">
+          <div class="row" id="mainNavBar">
+              <div class="col-md-12">
+                  <div class="navbar-header">
+                     <img src="img/icon_256.png" class="img-responsive pull-left application-logo"/>
+                     <a class="navbar-brand" href="#">Yadoms Help</a>
+                  </div>
+              </div>
+           </div>
+      </div><!--/.nav-collapse -->
+  </div>
+
+  <div id="tabContainer">
+      <div class="center">
+         <div id="content">
+         </div>
+      </div>
+      <footer class="footer">
+         <button class="btn btn-primary" id="btn-show-qrcode"><i class="fa fa-qrcode"></i></button>
+         <label id="copyrightLabel" class="label label-default">&copy; Yadoms 2014</label>
+      </footer>
+  </div>
+
+   <!-- Bootstrap core JavaScript
+   ================================================== -->
+   <!-- Placed at the end of the document so the pages load faster -->
+   <script src="libs/jquery/js/jquery-1.11.0.min.js"></script>
+   <script src="libs/bootstrap/js/bootstrap.js"></script>
+
+   <script src="libs/transit/js/jquery.transit.min.js"></script>
+   <script src="libs/knockout/js/knockout-3.0.0.js"></script>
+
+   <script src="libs/i18next/js/i18next-1.7.2.js"></script>
+   <script src="libs/lazyload/js/lazyload.js"></script>
+
+   <script src="libs/moment.js/js/moment-with-langs.min.js"></script>
+   <script src="libs/moment.js/js/moment-timezone.min.js"></script>
+   <script src="libs/moment.js/js/moment-timezone-data.min.js"></script>
+
+   <script src="js/objects/promises.js"></script>
+   <script src="js/knock-out-extenders.js"></script>
+   <script src="js/iso-language-codes.js"></script>
+   <script src="js/utility.js"></script>
+   <script src="js/objects/yadoms-information-manager.js"></script>
+   <script src="js/objects/page-manager.js"></script>
+   <script src="js/objects/lazy-loader-manager.js"></script>
+   <script src="js/objects/encryption-manager.js"></script>
+
+   <script src="libs/jqBootstrapValidation/js/jqBootstrapValidation.js"></script>
+
+   <script src="js/objects/configuration/configuration-helper.js"></script>
+   <script src="js/objects/configuration/configuration-control-manager.js"></script>
+   <script src="js/objects/configuration/int-parameter-handler.js"></script>
+   <script src="js/objects/configuration/decimal-parameter-handler.js"></script>
+   <script src="js/objects/configuration/enum-parameter-handler.js"></script>
+   <script src="js/objects/configuration/string-parameter-handler.js"></script>
+   <script src="js/objects/configuration/bool-parameter-handler.js"></script>
+   <script src="js/objects/configuration/section-parameter-handler.js"></script>
+   <script src="js/objects/configuration/device-parameter-handler.js"></script>
+   <script src="js/objects/configuration/radio-section-parameter-handler.js"></script>
+   <script src="js/objects/configuration/color-parameter-handler.js"></script>
+   <script src="js/objects/configuration/icon-parameter-handler.js"></script>
+   <script src="js/objects/configuration/list-parameter-handler.js"></script>
+
+   <script src="js/objects/event-logger.js"></script>
+
+   <script src="js/rest-engine.js"></script>
+
+   <script src="js/objects/date-time.js"></script>
+   
+   <script src="libs/bootstrap-iconpicker-1.4.0/js/bootstrap-iconpicker.min.js"></script>
+
+   <script src="libs/jquery-MD5/js/jquery.md5.js"></script>
+
+   <script src="libs/lodash/lodash.js"></script>
+   <script src="libs/jquery-ui/js/jquery-ui.js"></script>
+   <script src="libs/gridstack/js/gridstack.js"></script>
+
+   <div id="templates" class="hidden"></div>
+
+	<script type="text/javascript">
+
+   //base configuration
+   $.ajaxSetup({ contentType: "application/json; charset=utf-8"});
+
+   $("#copyrightLabel").html("&copy; Yadoms " + new Date().getFullYear());
+
+   /**
+   * On page loaded
+   */
+   $(document).ready(function() {
+
+      //we start i18n engine
+      var option = { resGetPath: "locales/__lng__.json", fallbackLng:"en", useDataAttrOptions: true};
+      i18n.init(option, function() {
+         loadContent(readUrlParam("helpUrl"), function(content) {
+            container = $("div#tabContainer").find("div#content");
+            processNode(content, container, 1);
+         });
+      });
+
+      /**
+      * Callback of the click on the show qr code button
+      * Make lazy loading of the qrcode modal
+      */
+      $("#btn-show-qrcode").click(function() {
+         modals.qrCode.load(function() {$('#qrcode-modal').modal();});
+      });
+   });
+   
+   function processNode(jsonNode, htmlNode, cssLevel) {
+      if (typeof jsonNode == "object") {
+         for (var jsonElement in jsonNode) {
+            if(!isNullOrUndefined(jsonElement) && jsonNode.hasOwnProperty(jsonElement)){
+               var htmlSubNode = $("<div class=\"level" + cssLevel + "\">" + jsonElement + "</div>");
+               htmlNode.append(htmlSubNode);
+               processNode(jsonNode[jsonElement], htmlSubNode, cssLevel < 5 ? cssLevel + 1 : cssLevel);
+            }
+         }
+      } else {
+         var htmlSubNode = $("<span class=\"text\">" + jsonNode + "</span>");
+         htmlNode.append(htmlSubNode);
+      }
+   }
+   
+   /**
+   * Read a parameter from the URL
+   */
+   function readUrlParam(key) {
+      params = location.search.substring(1).split("&");
+      for (var i=0; i<params.length; i++)
+      {
+         data = params[i].split("=");
+         if ( [data[0]] == key ) {
+            return decodeURIComponent(data[1]);
+         }
+      }
+   }
+   
+   /**
+   * Load the help content
+   * @param helpUrl Help URL to load
+   * @param callback
+   */
+   function loadContent(helpUrl, callback) {
+      assert(!isNullOrUndefined(helpUrl), "helpUrl must be defined");
+      assert($.isFunction(callback), "callback must be a function");
+      
+      $.ajax({
+         dataType: "json",
+         url: helpUrl,
+         async: false
+      })
+      .done(function(content) {
+         callback(content);
+      })
+      .fail(function() {
+         notifyError($.t("objects.generic.errorGetting", {objectName : helpUrl}));
+      });
+   };
+
+	</script>
+  </body>
+</html>
+
