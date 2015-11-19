@@ -47,6 +47,7 @@ namespace sqlite {
          {
             executeCommonPass();
          }
+         YADOMS_LOG(information) << "End of computing summary values";
       }
       catch (std::exception & ex)
       {
@@ -123,8 +124,9 @@ namespace sqlite {
             {
                if (!m_acquisitionRequester->summaryDataExists(i->get()->Id(), database::entities::EAcquisitionSummaryType::kHour, lastData->Date()))
                {
-                  YADOMS_LOG(information) << "    Computing HOUR : " << i->get()->FriendlyName() << " @ " << lastData->Date();
+                  YADOMS_LOG(information) << "    Computing HOUR : " << i->get()->FriendlyName() << " @ " << lastData->Date() << " ...";
                   m_acquisitionRequester->saveSummaryData(i->get()->Id(), database::entities::EAcquisitionSummaryType::kHour, lastData->Date());
+                  YADOMS_LOG(information) << "    Computing HOUR : " << i->get()->FriendlyName() << " @ " << lastData->Date() << " done";
                }
             }
 
@@ -132,8 +134,9 @@ namespace sqlite {
             {
                if (!m_acquisitionRequester->summaryDataExists(i->get()->Id(), database::entities::EAcquisitionSummaryType::kDay, lastData->Date()))
                {
-                  YADOMS_LOG(information) << "    Computing DAY : " << i->get()->FriendlyName() << " @ " << lastData->Date();
+                  YADOMS_LOG(information) << "    Computing DAY : " << i->get()->FriendlyName() << " @ " << lastData->Date() << " ...";
                   m_acquisitionRequester->saveSummaryData(i->get()->Id(), database::entities::EAcquisitionSummaryType::kDay, lastData->Date());
+                  YADOMS_LOG(information) << "    Computing DAY : " << i->get()->FriendlyName() << " @ " << lastData->Date() << " done";
                }
             }
          }
@@ -169,9 +172,10 @@ namespace sqlite {
       {
          if (!m_acquisitionRequester->summaryDataExists(*i, database::entities::EAcquisitionSummaryType::kHour, previousHour))
          {
-            YADOMS_LOG(information) << "    Computing HOUR : " << *i << " @ " << previousHour;
+            YADOMS_LOG(information) << "    Computing HOUR : " << *i << " @ " << previousHour << " ...";
             boost::shared_ptr< database::entities::CAcquisitionSummary> insertedValue = m_acquisitionRequester->saveSummaryData(*i, database::entities::EAcquisitionSummaryType::kHour, previousHour);
             summaryAcquisitions.push_back(insertedValue);
+            YADOMS_LOG(information) << "    Computing HOUR : " << *i << " @ " << previousHour << " done";
          }
       }
 
@@ -189,10 +193,10 @@ namespace sqlite {
          {
             if (!m_acquisitionRequester->summaryDataExists(*i, database::entities::EAcquisitionSummaryType::kDay, previousDay))
             {
-               YADOMS_LOG(information) << "    Computing DAY : " << *i << " @ " << previousDay;
+               YADOMS_LOG(information) << "    Computing DAY : " << *i << " @ " << previousDay << " ...";
                boost::shared_ptr< database::entities::CAcquisitionSummary> insertedValue = m_acquisitionRequester->saveSummaryData(*i, database::entities::EAcquisitionSummaryType::kDay, previousDay);
                summaryAcquisitions.push_back(insertedValue);
-
+               YADOMS_LOG(information) << "    Computing DAY : " << *i << " @ " << previousDay << " done";
             }
          }
       }
