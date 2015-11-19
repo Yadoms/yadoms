@@ -121,12 +121,12 @@
                     "brief": "Information key"
                 }
             },
-            "return": "Information as string (empty string if not found)",,
+            "return": "Information as string (empty string if not found)",
             "throw": "Error if key doesn't exist",
             "details": [
                 "Supported value (don't forget to prefix by 'yApi.') :",
-                "- kSunrise : get current day sunrise time (format is "HH:MM")
-                "- kSunset : get current day sunset time (format is "HH:MM")
+                "- kSunrise : get current day sunrise time (format is 'HH:MM')",
+                "- kSunset : get current day sunset time (format is 'HH:MM')",
                 "- kLatitude : get latitude : returns latitude configured by user (or approximative latitude if not configured)",
                 "- kLongitude : get longitude : returns latitude configured by user (or approximative longitude if not configured)",
                 "- kAltitude : get altitude : returns latitude configured by user (or approximative altitude if not configured)",
