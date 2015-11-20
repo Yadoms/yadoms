@@ -52,11 +52,13 @@ std::string CScriptFile::read() const
       throw shared::exception::CInvalidParameter(m_scriptFile.string());
 
    std::istreambuf_iterator<char> eos;
-   return std::string(std::istreambuf_iterator<char>(file), eos);
+   std::string content(std::istreambuf_iterator<char>(file), eos);
+   return content.erase(0, 3); // Remove UTF-8 BOM
 }
 
 void CScriptFile::write(const std::string& content) const
 {
    std::ofstream file(m_scriptFile.string().c_str(), std::ios::out | std::ios::binary);
+   file << "\xef\xbb\xbf";    // UTF-8 BOM
    file << content;
 }
