@@ -7,6 +7,22 @@
    margin-top: auto;
 }
 
+.level1 > span {
+    background-color: lightgray;
+    padding: 5px;
+    width: 100%;
+    display: block;
+}
+
+.level1 > .level2 {
+	margin-top : 5px;
+}
+
+.level2 > .level3 {
+	margin-top : 5px;
+}
+
+
 .level1 {
    margin-left: 10px;
    font-style: italic;

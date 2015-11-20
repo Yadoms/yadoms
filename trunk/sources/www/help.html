@@ -150,7 +150,11 @@
       if (typeof jsonNode == "object") {
          for (var jsonElement in jsonNode) {
             if(!isNullOrUndefined(jsonElement) && jsonNode.hasOwnProperty(jsonElement)){
-               var htmlSubNode = $("<div class=\"level" + cssLevel + "\">" + jsonElement + "</div>");
+			   var htmlSubNode;
+			   if(cssLevel == 2)
+                  htmlSubNode = $("<div class=\"well level" + cssLevel + "\"><span>" + jsonElement + "</span></div>");
+			   else
+                  htmlSubNode = $("<div class=\"level" + cssLevel + "\"><span>" + jsonElement + "</span></div>");
                htmlNode.append(htmlSubNode);
                processNode(jsonNode[jsonElement], htmlSubNode, cssLevel < 5 ? cssLevel + 1 : cssLevel);
             }
