@@ -33,7 +33,7 @@ Keyword.prototype.toJSON = function () {
       capacityName: this.capacityName,
       accessMode: this.accessMode,
       name: this.name,
-      friendlyName: encodeURIComponent(this.friendlyName),
+      friendlyName: this.friendlyName,
       type: this.type,
       units: this.units,
       details: this.details,

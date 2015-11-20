@@ -28,7 +28,7 @@ function PluginInstance(id, displayName, type, configuration, autoStart, categor
 PluginInstance.prototype.toJSON = function () {
    return {
       id : this.id,
-      displayName: encodeURIComponent(this.displayName),
+      displayName: this.displayName,
       type: this.type,
       configuration: this.configuration,
       autoStart: this.autoStart,

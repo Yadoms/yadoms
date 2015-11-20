@@ -71,7 +71,7 @@ function populateDeviceList(handler) {
           $.each(data.data.device, function(index, value) {
              //we add device only if it is not already in the list
              if ($deviceList.find("option[id=\"" + value.id + "\"]").length == 0) {
-               $deviceList.append("<option value=\"" + value.id + "\">" + decodeURIComponent(value.friendlyName) + "</option>");
+               $deviceList.append("<option value=\"" + value.id + "\">" + value.friendlyName + "</option>");
                //if the new element is those that we are looking for we save the position in the list
                if (value.id == handler.value.deviceId)
                   itemToSelect = $deviceList.find("option").length - 1;
@@ -190,7 +190,7 @@ DeviceParameterHandler.prototype.applyScript = function () {
 
                   $.each(newList, function(index, value) {
                      //foreach keyword
-                     $cbKeywords.append("<option value=\"" + value.id + "\">" + decodeURIComponent(value.friendlyName) + "</option>");
+                     $cbKeywords.append("<option value=\"" + value.id + "\">" + value.friendlyName + "</option>");
 
                      //we restore previously set value only if the deviceId is the same than the last one in the configuration
                      if (handler.value.deviceId == $deviceList.val()) {

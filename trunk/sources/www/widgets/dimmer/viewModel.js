@@ -60,7 +60,7 @@ widgetViewModelCtor =
          if ((!isNullOrUndefined(self.widget.configuration.device)) && (!isNullOrUndefined(this.widget.configuration.device.deviceId))) {
 			
 			KeywordManager.get (self.widget.configuration.device.keywordId, function (keyword) {	
-			   self.DimmerText(decodeURIComponent(keyword.friendlyName));
+			   self.DimmerText(keyword.friendlyName);
             });
          }
       };

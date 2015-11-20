@@ -63,7 +63,7 @@
          $.ajax({
             type: "PUT",
             url: "/rest/page/" + pageCurrentlyModified.id,
-            data: JSON.stringify({id : pageCurrentlyModified.id, name: encodeURIComponent(newPageName), pageOrder: pageCurrentlyModified.pageOrder}),
+            data: JSON.stringify({id : pageCurrentlyModified.id, name: newPageName, pageOrder: pageCurrentlyModified.pageOrder}),
             contentType: "application/json; charset=utf-8",
             dataType: "json"
          })
@@ -76,7 +76,7 @@
            }
 
            //we modify the page dynamically
-           var newName = decodeURIComponent(data.data.name);
+           var newName = data.data.name;
            pageCurrentlyModified.name = newName;
            pageCurrentlyModified.$tab.find("a span").text(newName);
          })

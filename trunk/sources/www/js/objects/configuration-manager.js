@@ -19,7 +19,7 @@ ConfigurationManager.factory = function(json) {
    assert(!isNullOrUndefined(json.lastModificationDate), "json.lastModificationDate must be defined");
 
    return new ConfigurationItem(json.section, json.name, ConfigurationItem.decodeValue(json.value),
-       ConfigurationItem.decodeValue(json.defaultValue), decodeURIComponent(json.description), json.securityAccess, json.lastModificationDate);
+       ConfigurationItem.decodeValue(json.defaultValue), json.description, json.securityAccess, json.lastModificationDate);
 };
 
 //Here is the list of items of system configuration

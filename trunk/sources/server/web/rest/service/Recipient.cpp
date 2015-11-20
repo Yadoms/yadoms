@@ -84,9 +84,7 @@ namespace web { namespace rest { namespace service {
       if(parameters.size() != 3)
          return CResult::GenerateError("Invalid parameter count (need name of the field in url)");
 
-      std::string fieldName;
-      Poco::URI::decode(parameters[2], fieldName);
-
+      std::string fieldName = parameters[2];
       std::vector< boost::shared_ptr<database::entities::CRecipientField> > fields = m_dataProvider->getRecipientRequester()->getFieldsByName(fieldName);
       shared::CDataContainer collection;
       collection.set(m_restFieldKeyword, fields);

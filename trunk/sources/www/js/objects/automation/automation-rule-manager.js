@@ -10,7 +10,7 @@ function AutomationRuleManager(){}
 
 AutomationRuleManager.factory = function(json) {
    assert(!isNullOrUndefined(json), "json must be defined");
-   return new AutomationRule(json.id, decodeURIComponent(json.name), decodeURIComponent(json.description), json.interpreter, json.editor, json.model, json.content, json.configuration, parseBool(json.enabled), json.state, json.errorMessage, json.startDate, json.stopDate);
+   return new AutomationRule(json.id, json.name, json.description, json.interpreter, json.editor, json.model, json.content, json.configuration, parseBool(json.enabled), json.state, json.errorMessage, json.startDate, json.stopDate);
 };
 
 AutomationRuleManager.createToServer = function(rule, callback) {
@@ -18,8 +18,8 @@ AutomationRuleManager.createToServer = function(rule, callback) {
    $.ajax({
       type: "POST",
       url: "/rest/automation/rule",
-      data: JSON.stringify({  name: encodeURIComponent(rule.name),
-                              description: encodeURIComponent(rule.description),
+      data: JSON.stringify({  name: rule.name,
+                              description: rule.description,
                               interpreter: rule.interpreter,
                               editor: rule.editorName,
                               model: rule.model,
@@ -177,7 +177,7 @@ AutomationRuleManager.getCode = function(rule, callback, sync) {
              return;
           }
 
-          rule.code = decodeURIComponent(data.data.code);
+          rule.code = data.data.code;
           rule.codeHasBeenDownloaded = true;
 
           callback();
@@ -203,7 +203,7 @@ AutomationRuleManager.updateCode = function(rule, callback, sync) {
    $.ajax({
       type: "PUT",
       url: "rest/automation/rule/" + rule.id + "/code",
-      data: JSON.stringify({"code" : encodeURIComponent(rule.code)}),
+      data: JSON.stringify({"code" : rule.code}),
       contentType: "application/json; charset=utf-8",
       dataType: "json",
       async: async
@@ -220,7 +220,7 @@ AutomationRuleManager.updateCode = function(rule, callback, sync) {
           }
           //it's okay
 
-          rule.code = decodeURIComponent(data.data.code);
+          rule.code = data.data.code;
           //we call the callback with true as a ok result
           if ($.isFunction(callback))
              callback(true);

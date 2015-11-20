@@ -16,7 +16,7 @@ DeviceManager.factory = function(json) {
    assert(!isNullOrUndefined(json.friendlyName), "json.friendlyName must be defined");
    assert(!isNullOrUndefined(json.model), "json.model must be defined");
 
-   return new Device(json.id, json.pluginId, decodeURIComponent(json.name), decodeURIComponent(json.friendlyName), json.model);
+   return new Device(json.id, json.pluginId, json.name, json.friendlyName, json.model);
 };
 
 DeviceManager.get = function (deviceId, callback, sync) {

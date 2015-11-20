@@ -4,6 +4,7 @@
 #include "web/rest/Result.h"
 #include <Poco/Net/HTTPBasicCredentials.h>
 #include <shared/Log.h>
+#include <Poco/URI.h>
 
 namespace web {
    namespace poco {
@@ -30,6 +31,7 @@ namespace web {
       std::vector<std::string> CRestRequestHandler::parseUrl(const std::string & url)
       {
          std::vector<std::string> strs;
+         std::vector<std::string> results;
          //split on slash or anti slash
          boost::split(strs, url, boost::is_any_of("/\\"), boost::algorithm::token_compress_on);
          //remove empty strings
@@ -43,11 +45,16 @@ namespace web {
             }
             else
             {
+               //each url parameter must be url decoded
+               std::string decodedString;
+               Poco::URI::decode(*i, decodedString);
+               results.push_back(decodedString);
+
                ++i;
             }
          }
 
-         return strs;
+         return results;
       }
 
       std::string CRestRequestHandler::manageRestRequests(Poco::Net::HTTPServerRequest& request)

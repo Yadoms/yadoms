@@ -21,7 +21,7 @@ RecipientManager.factory = function (json) {
     assert(!isNullOrUndefined(json.lastName), "json.lastName must be defined");
     assert(!isNullOrUndefined(json.fields), "json.fields must be defined");
 
-    var r = new Recipient(json.id, decodeURIComponent(json.firstName), decodeURIComponent(json.lastName), json.fields);
+    var r = new Recipient(json.id, json.firstName, json.lastName, json.fields);
     r.mergeFields();
     return r;
 };
@@ -38,7 +38,7 @@ RecipientManager.factoryField = function (json) {
     assert(!isNullOrUndefined(json.fieldName), "json.fieldName must be defined");
     assert(!isNullOrUndefined(json.value), "json.value must be defined");
 
-    return new RecipientField(json.idRecipient, decodeURIComponent(json.pluginType), decodeURIComponent(json.fieldName), decodeURIComponent(json.value));
+    return new RecipientField(json.idRecipient, json.pluginType, json.fieldName, json.value);
 };
 
 

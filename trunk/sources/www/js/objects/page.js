@@ -49,7 +49,7 @@ Page.prototype.addWidget = function(widget) {
 Page.prototype.toJSON = function () {
    return {
       id : this.id,
-      name: encodeURIComponent(this.name),
+      name: this.name,
       pageOrder: this.pageOrder
    };
 };

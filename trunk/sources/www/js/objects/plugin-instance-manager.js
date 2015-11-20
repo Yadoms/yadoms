@@ -28,7 +28,7 @@ PluginInstanceManager.factory = function(json) {
    assert(!isNullOrUndefined(json.autoStart), "json.autoStart must be defined");
    assert(!isNullOrUndefined(json.category), "json.category of a pluginInstance must be defined");
 
-   return new PluginInstance(json.id, decodeURIComponent(json.displayName), json.type, json.configuration, json.autoStart, json.category);
+   return new PluginInstance(json.id, json.displayName, json.type, json.configuration, json.autoStart, json.category);
 };
 
 /**
@@ -296,7 +296,7 @@ PluginInstanceManager.createToServer = function(pluginInstance, callback, sync) 
 
             //we update our information from the server
             pluginInstance.id = data.data.id;
-            pluginInstance.displayName = decodeURIComponent(data.data.displayName);
+            pluginInstance.displayName = data.data.displayName;
             pluginInstance.type = data.data.type;
             pluginInstance.configuration = data.data.configuration;
             pluginInstance.autoStart = parseBool(data.data.autoStart);

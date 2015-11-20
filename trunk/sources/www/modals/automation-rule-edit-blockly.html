@@ -67,8 +67,8 @@
                } else {
 
                   Blockly.Yadoms.GetResult(function(xmlString,pythonCode){
-                     rule.content = encodeURIComponent(xmlString);
-                     rule.code = encodeURIComponent(pythonCode);
+                     rule.content = xmlString;
+                     rule.code = pythonCode;
                      rule.name = nameParameter.getCurrentConfiguration();
                      rule.description = descriptionParameter.getCurrentConfiguration();
 
@@ -99,7 +99,7 @@
          $(document).off('focusin.modal');
 
          //load content
-         var content = decodeURIComponent(rule.content);
+         var content = rule.content;
 
          //check if modal as already been opened
          var $a =  $modalBody.find("div#automation-rule-blockly-editor");

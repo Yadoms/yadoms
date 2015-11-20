@@ -68,7 +68,7 @@
               "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.delete\"><span class=\"fa fa-trash\"></span></button>\n" +
               "</div>";
 
-      var friendlyName = "<span class=\"glyphicon glyphicon-chevron-down deploy\">&nbsp;</span><span>" + decodeURIComponent(device.friendlyName) + "</span>";
+      var friendlyName = "<span class=\"glyphicon glyphicon-chevron-down deploy\">&nbsp;</span><span>" + device.friendlyName + "</span>";
       var model = "<span>" + device.model + "</span>";
 
       //we add it to the DOM
@@ -125,7 +125,7 @@
                      //We update the information that can have changed after the configuration
                      var $row = getDeviceDomRow(device);
 					 
-					 var friendlyName = "<span class=\"glyphicon glyphicon-chevron-down deploy\">&nbsp;</span><span>" + decodeURIComponent(device.friendlyName) + "</span>";
+					 var friendlyName = "<span class=\"glyphicon glyphicon-chevron-down deploy\">&nbsp;</span><span>" + device.friendlyName + "</span>";
                      $row.find("td.device-friendlyName").html( friendlyName );
                   });
                });
@@ -224,7 +224,7 @@
 					   
 					  var $keywordRow = getKeywordDomRow(keyword);
 					  //we fill the data
-					  var friendlyName = "<span>" + decodeURIComponent(keyword.friendlyName) + "</span>";
+					  var friendlyName = "<span>" + keyword.friendlyName + "</span>";
 					  var units = "<span>" + $.t(keyword.units) + "</span>";
 
 					  $keywordRow.find("td.keyword-friendlyName").html(friendlyName);
@@ -336,7 +336,7 @@
 
                         var $keywordRow = getKeywordDomRow(keyword);
                         //we fill the data
-                        var friendlyName = "<span>" + decodeURIComponent(keyword.friendlyName) + "</span>";
+                        var friendlyName = "<span>" + keyword.friendlyName + "</span>";
                         var units = "<span>" + $.t(keyword.units) + "</span>";
 
                         $keywordRow.find("td.keyword-friendlyName").html(friendlyName);

@@ -24,8 +24,8 @@ Device.prototype.toJSON = function () {
    return {
       id : this.id,
       pluginId: this.pluginId,
-      name: encodeURIComponent(this.name),
-      friendlyName: encodeURIComponent(this.friendlyName),
+      name: this.name,
+      friendlyName: this.friendlyName,
       model: this.model
    };
 };
