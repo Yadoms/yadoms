@@ -49,7 +49,7 @@ widgetViewModelCtor =
          try {
             var self = this;
             DeviceManager.get(this.widget.configuration.device.deviceId, function (device) {
-                  self.indicatorText(decodeURIComponent(device.friendlyName));
+                  self.indicatorText(device.friendlyName);
             });
             // Get the capacity of the keyword
             KeywordManager.get(this.widget.configuration.device.keywordId, function(keyword) {

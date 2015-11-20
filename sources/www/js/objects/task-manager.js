@@ -28,7 +28,7 @@ TaskManager.factory = function (json) {
     assert(!isNullOrUndefined(json.name), "json.id must be defined");
     assert(!isNullOrUndefined(json.status), "json.id must be defined");
 
-    return new Task(json.uuid, decodeURIComponent(json.name), json.status, json.creationDate, json.progression, decodeURIComponent(json.message));
+    return new Task(json.uuid, json.name, json.status, json.creationDate, json.progression, json.message);
 };
 
 /**

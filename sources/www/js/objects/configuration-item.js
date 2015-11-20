@@ -35,7 +35,7 @@ ConfigurationItem.prototype.toJSON = function () {
       name: this.name,
       value: ConfigurationItem.encodeValue(this.value),
       defaultValue: ConfigurationItem.encodeValue(this.defaultValue),
-      description: encodeURIComponent(this.description),
+      description: this.description,
       securityAccess: this.securityAccess,
       lastModificationDate: this.lastModificationDate
    };
@@ -55,7 +55,7 @@ ConfigurationItem.encodeValue = function(valueToEncode) {
       return JSON.stringify(valueToEncode);
    }
    else {
-      return encodeURIComponent(valueToEncode);
+      return valueToEncode;
    }
 };
 
@@ -70,7 +70,7 @@ ConfigurationItem.decodeValue = function(valueToDecode) {
       });
    }
    catch (e) {
-      decodedValue = decodeURIComponent(valueToDecode);
+      decodedValue = valueToDecode;
    }
 
    return decodedValue;

@@ -35,8 +35,8 @@ RecipientField.prototype.toString = function() {
 RecipientField.prototype.toJSON = function () {
    return {
       idRecipient : this.idRecipient,
-      pluginType: encodeURIComponent(this.pluginType),
-      fieldName: encodeURIComponent(this.fieldName),
-      value : encodeURIComponent(this.value)
+      pluginType: this.pluginType,
+      fieldName: this.fieldName,
+      value : this.value
    };
 };

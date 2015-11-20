@@ -96,8 +96,8 @@ namespace authentication {
                   {
                      if (val.exists(m_configurationUser) && val.exists(m_configurationPassword))
                      {
-                        Poco::URI::decode(val.get<std::string>(m_configurationUser), m_currentAuthenticationUsername);
-                        Poco::URI::decode(val.get<std::string>(m_configurationPassword), m_currentAuthenticationPassword);
+                        m_currentAuthenticationUsername = val.get<std::string>(m_configurationUser);
+                        m_currentAuthenticationPassword = val.get<std::string>(m_configurationPassword);
                      }
                      else
                      {

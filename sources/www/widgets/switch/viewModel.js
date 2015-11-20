@@ -61,7 +61,7 @@ widgetViewModelCtor =
          if ((!isNullOrUndefined(this.widget.configuration.device)) && (!isNullOrUndefined(this.widget.configuration.device.deviceId))) {
             var self = this;
             DeviceManager.get(this.widget.configuration.device.deviceId, function (device) {
-               self.switchText(decodeURIComponent(device.friendlyName));
+               self.switchText(device.friendlyName);
             });
             // Get the capacity of the keyword
             KeywordManager.get(this.widget.configuration.device.keywordId, function(keyword) {

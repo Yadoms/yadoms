@@ -34,8 +34,8 @@ Recipient.prototype.toString = function() {
 Recipient.prototype.toJSON = function () {
    return {
       id : this.id,
-      firstName: encodeURIComponent(this.firstName),
-      lastName: encodeURIComponent(this.lastName),
+      firstName: this.firstName,
+      lastName: this.lastName,
       fields : this.fields
    };
 };

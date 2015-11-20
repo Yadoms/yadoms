@@ -17,10 +17,10 @@ UpdateInformationManager.factory = function(json) {
    assert(!isNullOrUndefined(json.version), "json.version must be defined");
    assert(!isNullOrUndefined(json.downloadUrl), "json.downloadUrl must be defined");
 
-   return new UpdateInformation(json.type, decodeURIComponent(json.name),
-                     decodeURIComponent(json.author),
-                     decodeURIComponent(json.description),
-                     decodeURIComponent(json.releaseType),
+   return new UpdateInformation(json.type, json.name,
+                     json.author,
+                     json.description,
+                     json.releaseType,
                      (!isNullOrUndefined(json.url)?json.url:""),
                      (!isNullOrUndefined(json.credits)?json.credits:""),
                      json.version,

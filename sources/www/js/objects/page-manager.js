@@ -20,7 +20,7 @@ PageManager.factory = function(json) {
    assert(!isNullOrUndefined(json.name), "json.name must be defined");
    assert(!isNullOrUndefined(json.pageOrder), "json.pageOrder must be defined");
 
-   return new Page(json.id, decodeURIComponent(json.name), json.pageOrder);
+   return new Page(json.id, json.name, json.pageOrder);
 };
 
 PageManager.getAll = function(callback) {
@@ -73,7 +73,7 @@ PageManager.createPage = function(pageName, pageOrder, callback) {
    $.ajax({
       type: "POST",
       url: "/rest/page/",
-      data: JSON.stringify({ name: encodeURIComponent(pageName), pageOrder: pageOrder }),
+      data: JSON.stringify({ name: pageName, pageOrder: pageOrder }),
       contentType: "application/json; charset=utf-8",
       dataType: "json"
    })
