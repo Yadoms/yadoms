@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "PythonExecutablePath.h"
 #include <Poco/Util/WinRegistryKey.h>
-
+#include <Poco/Environment.h>
 
 void CPythonExecutablePath::getCommonPythonPaths(std::vector<boost::filesystem::path> & paths)
 {
