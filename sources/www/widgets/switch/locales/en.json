@@ -4,9 +4,19 @@
 	"errorDuringGettingDeviceInformation": "Error during getting device information",
 	"errorDuringSendingCommand": "Error sending command",
 	"configurationSchema": {
-		"device": {
+		"devices": {
 			"name": "Switch device",
-			"description": "Device to drive"
+			"description": "List of devices to drive",
+			"item": {
+				"name": "",
+				"description": "",
+				"content": {
+					"source": {
+						"name": "Switch device",
+						"description": "device to drive"
+					}
+				}
+            }				
 		},
 		"kind": {
 			"name": "Kind of switch",

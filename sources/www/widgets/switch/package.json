@@ -20,12 +20,25 @@
 		}
 	},
 	"configurationSchema": {
-		"device": {
-			"type": "device",
-			"expectedCapacity": ["switch",
-			"dimmable",
-			"event"],
-			"expectedKeywordAccess": "getset"
+		"devices": {
+			"type": "list",
+			"nbItemsMin": "1",
+			"nbItemsMax": "10",
+			"allowDuplication": "true",
+			"item": {
+				"type": "section",
+				"name": "",
+				"description": "",				
+				"content": {
+					"source": {
+						"name": "",
+						"description": "",					
+						"type": "device",
+						"expectedCapacity": ["switch", "dimmable", "event"],
+						"expectedKeywordAccess": "getset"
+					}
+				}
+			}
 		},
 		"kind": {
 			"type": "radioSection",

@@ -6,7 +6,6 @@ widgetViewModelCtor =
  */
 function CounterDisplayViewModel() {
    //observable data
-   this.text = ko.observable("");
    this.data = ko.observable(0).extend({ numeric: 1 });
    this.unit = ko.observable("");
    this.fontSize = ko.observable (20);
@@ -32,7 +31,7 @@ function CounterDisplayViewModel() {
 	var elem = $('<div />').attr({
 	id: elementID,
 	"class":"odometer",
-	"align": "center"
+	"display":"table"
 	}).appendTo( "#widget-" + this.widget.id );
 	
 	// For each odometer, initialize with the theme passed in:
@@ -48,7 +47,6 @@ function CounterDisplayViewModel() {
    }, this );
    
    this.configurationChanged = function() {
-      this.text(this.widget.configuration.text);
 
       var self = this;
 	  
@@ -92,7 +90,7 @@ function CounterDisplayViewModel() {
 	   self.fontSize ( ((this.widget.width() - 9 - ( (this.minimumIntegerDigit / 3) - 1)*8.33) / (this.minimumIntegerDigit + self.unit().length) ) *1.11 );
 	   
 	   //Change the font-size value
-	   $("div#" + elementID + ".odometer").css({"font-size": self.fontSize() + "px", "margin":"auto", "display": "table"});
+	   $("div#" + elementID + ".odometer").css({"font-size": self.fontSize() + "px", "margin":"auto", "display": "table"}); 
    }
    
    this.resized = function() 

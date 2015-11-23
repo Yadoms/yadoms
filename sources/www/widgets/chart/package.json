@@ -33,24 +33,28 @@
 			"defaultValue": "DAY"
 		},
 		"oneAxis": {
-			"type": "bool",
-			"defaultValue": "false"
-		},
-		"customYAxisMinMax": {
 			"type": "section",
+			"defaultValue": "false",
 			"enableWithCheckBox": "true",
-			"enableWithCheckBoxDefaultValue": "false",
+			"enableWithCheckBoxDefaultValue": "false",			
 			"content": {
-				"minimumValue": {
-					"type": "decimal",
-					"defaultValue": "0.0",
-					"precision": "1"
-				},
-				"maximumValue": {
-					"type": "decimal",
-					"defaultValue": "100.0",
-					"precision": "1"
-				}
+					"customYAxisMinMax": {
+						"type": "section",
+						"enableWithCheckBox": "true",
+						"enableWithCheckBoxDefaultValue": "false",
+						"content": {
+							"minimumValue": {
+								"type": "decimal",
+								"defaultValue": "0.0",
+								"precision": "1"
+							},
+							"maximumValue": {
+								"type": "decimal",
+								"defaultValue": "100.0",
+								"precision": "1"
+							}
+						}
+					}
 			}
 		},
 		"devices": {
@@ -65,7 +69,7 @@
 				"content": {
 					"source": {
 						"name": "",
-						"description": "",					
+						"description": "",
 						"type": "device",
 						"expectedKeywordType": ["numeric",
 						"bool"],
