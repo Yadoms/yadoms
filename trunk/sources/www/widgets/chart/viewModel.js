@@ -509,10 +509,10 @@ widgetViewModelCtor =
                         try {
                            var yAxis = self.chart.get(yAxisName);
 
-                           if (parseBool(self.widget.configuration.customYAxisMinMax.checkbox)) {
+                           if (parseBool(self.widget.configuration.oneAxis.content.customYAxisMinMax.checkbox)) {
                               //we manage min and max scale y axis
-                              var min = parseFloat(self.widget.configuration.customYAxisMinMax.content.minimumValue);
-                              var max = parseFloat(self.widget.configuration.customYAxisMinMax.content.maximumValue);
+                              var min = parseFloat(self.widget.configuration.oneAxis.content.customYAxisMinMax.content.minimumValue);
+                              var max = parseFloat(self.widget.configuration.oneAxis.content.customYAxisMinMax.content.maximumValue);
                               yAxis.setExtremes(min, max);
                            } else {
                               //we cancel previous extremes

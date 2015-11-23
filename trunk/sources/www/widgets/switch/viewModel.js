@@ -13,22 +13,36 @@ widgetViewModelCtor =
 
       this.kind = ko.observable("simple");
       this.icon = ko.observable("");
-
-      this.switchText = ko.observable("");
       
-      this.capacity = null;
+      this.capacity = [];
 
       this.showDeviceName = ko.observable(true);
 
       this.commandClick = function(newState) {
-         if ((!isNullOrUndefined(this.widget.configuration)) && (!isNullOrUndefined(this.widget.configuration.device)) && (!isNullOrUndefined(this.capacity))) {
+		  
+		  self = this;
+		  
+         if ((!isNullOrUndefined(this.widget.configuration)) && (!isNullOrUndefined(this.widget.configuration.devices)) ) {
             var cmd = null;
-            switch (this.capacity) {
-               case "dimmable": cmd = newState == 1 ? 100 : 0; break;
-               case "event": cmd = 1; break;
-               default: cmd = newState; break;
-            }
-            KeywordManager.sendCommand(this.widget.configuration.device.keywordId, cmd.toString());
+			
+			$.each(this.widget.configuration.devices, function(index, device) {
+				
+				console.log ("self.capacity", self.capacity[index] );
+				
+				if (!isNullOrUndefined(self.capacity[index]))
+				{				
+					switch (self.capacity[index]) {
+					   case "dimmable": cmd = newState == 1 ? 100 : 0; break;
+					   case "event": cmd = 1; break;
+					   default: cmd = newState; break;
+					}
+				
+				   KeywordManager.sendCommand( device.content.source.keywordId, cmd.toString() );
+				   
+				   console.log ( "Send Command to ", device.content.source.keywordId );
+				   console.log ( "Send Command :", cmd );
+				}
+			});
          }
       };
 
@@ -41,6 +55,7 @@ widgetViewModelCtor =
       };
 
       this.configurationChanged = function() {
+		  var self = this;
          //we update the kind observable property
 
          if ((isNullOrUndefined(this.widget)) || (isNullOrUndefinedOrEmpty(this.widget.configuration)))
@@ -56,17 +71,22 @@ widgetViewModelCtor =
          if (!isNullOrUndefined(this.widget.configuration.showDeviceName)) {
             this.showDeviceName(parseBool(this.widget.configuration.showDeviceName));
          }
-
+		 
          //we ask for device information
-         if ((!isNullOrUndefined(this.widget.configuration.device)) && (!isNullOrUndefined(this.widget.configuration.device.deviceId))) {
-            var self = this;
-            DeviceManager.get(this.widget.configuration.device.deviceId, function (device) {
-               self.switchText(device.friendlyName);
-            });
-            // Get the capacity of the keyword
-            KeywordManager.get(this.widget.configuration.device.keywordId, function(keyword) {
-               self.capacity = keyword.capacityName;
-            });
+         if ((!isNullOrUndefined(this.widget.configuration.devices)) ) {
+			 
+			$.each(this.widget.configuration.devices, function(index, device) {	
+				
+				console.log (device.content.source);
+				
+				if (!isNullOrUndefined(device.content.source.deviceId))
+				{	
+					// Get the capacity of the keyword
+					KeywordManager.get(device.content.source.keywordId, function(keyword) {
+					   self.capacity[index] = keyword.capacityName;
+					});
+				}
+			});
          }
       };
 

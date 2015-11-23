@@ -20,14 +20,9 @@
       }
    },
    "configurationSchema": {
-      "text" : {
-         "type" : "string",
-         "defaultValue" : "",
-         "required" : "false"
-      },
       "device" : {
          "type" : "device",
-         "expectedCapacity" : ["voltage", "energy","current","power","apparentpower","weight","pressure"],
+         "expectedCapacity" : ["voltage", "energy","current","power","apparentpower","weight","pressure","load"],
          "expectedKeywordAccess" : "get"
       }
    }
