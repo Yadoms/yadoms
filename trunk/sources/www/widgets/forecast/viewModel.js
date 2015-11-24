@@ -65,7 +65,7 @@ function ForecastViewModel() {
 		var ctx = $( "#" + data ).get(0).getContext("2d");
 		
 		// Refresh the canvas, clear all existing information
-		ctx.clearRect(0, 0, 40, 40 );
+		ctx.clearRect(0, 0, 36, 36 );
 		
 		ctx.fillStyle = "rgb(0,0,0)"; // black
 		 
@@ -87,9 +87,9 @@ function ForecastViewModel() {
 		
 		//triangle of the direction
 		ctx.beginPath();
-		ctx.moveTo(20 - 12 * Math.sin ( Math.PI/180 * parseInt(WindPosition) )     , 20 - 12 * Math.cos ( Math.PI/180 * parseInt(WindPosition) ));
-		ctx.lineTo(20 - 20 * Math.sin ( Math.PI/180 * (parseInt(WindPosition)+10) ), 20 - 20 * Math.cos ( Math.PI/180 * (parseInt(WindPosition)+10) ));
-		ctx.lineTo(20 - 20 * Math.sin ( Math.PI/180 * (parseInt(WindPosition)-10) ), 20 - 20 * Math.cos ( Math.PI/180 * (parseInt(WindPosition)-10) ));
+		ctx.moveTo(18 - 11 * Math.sin ( Math.PI/180 * parseInt(WindPosition) )     , 18 - 11 * Math.cos ( Math.PI/180 * parseInt(WindPosition) ));
+		ctx.lineTo(18 - 18 * Math.sin ( Math.PI/180 * (parseInt(WindPosition)+10) ), 18 - 18 * Math.cos ( Math.PI/180 * (parseInt(WindPosition)+10) ));
+		ctx.lineTo(18 - 18 * Math.sin ( Math.PI/180 * (parseInt(WindPosition)-10) ), 18 - 18 * Math.cos ( Math.PI/180 * (parseInt(WindPosition)-10) ));
 		ctx.closePath();
 		ctx.fill();
 		ctx.stroke();
@@ -103,7 +103,7 @@ function ForecastViewModel() {
 		var ctx = $( "#" + data ).get(0).getContext("2d");
 		
 		// Refresh the canvas, clear all existing information
-		ctx.clearRect(0, 0, 40, 40 );
+		ctx.clearRect(0, 0, 40, 45 );
 	
 		ctx.fillStyle = "rgb(116,208,241)"; // blue Azur clair
 		
@@ -112,7 +112,7 @@ function ForecastViewModel() {
 		else
 			position_y = 0;
 		
-		ctx.fillRect(0, position_y , 40, 40);
+		ctx.fillRect(0, position_y , 40, RainValue);
 		ctx.stroke();
 
 		ctx.fillStyle = "rgb(0,0,255)"; // black

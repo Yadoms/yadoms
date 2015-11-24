@@ -23,8 +23,8 @@ function WeatherViewModel() {
    //Height of the widget.
    this.height = 0; 
    
-   this.WidgetWidth  = 200;
-   this.WidgetHeight = 100;
+   this.WidgetWidth  = 180;
+   this.WidgetHeight = 62;
       
    /**
     * Widget identifier
@@ -51,6 +51,7 @@ function WeatherViewModel() {
 		
 		 $("#" + self.WindCanvasId() ).attr('width' , self.WidgetWidth  );
          $("#" + self.WindCanvasId() ).attr('height', self.WidgetHeight );
+		 $("#" + self.WindCanvasId() ).css('overflow', 'hidden' );
    }; 
  
    /**
@@ -113,7 +114,7 @@ function WeatherViewModel() {
 		ctx.fillText(self.Temp(),6*self.WidgetWidth / 10, self.WidgetHeight / 2 );
 		
 		//write the text at the same position as the height of the column
-		ctx.font="20px Georgia";
+		ctx.font="18px Georgia";
 		ctx.fillText(self.city(),(self.WidgetWidth - 50) / 2, 9*self.WidgetHeight / 10 );		
    };
 
@@ -140,18 +141,18 @@ function WeatherViewModel() {
    
 	   if (self.widget.height() <= 120) 
 	   {
-           self.WidgetWidth  = 200;
-		   self.WidgetHeight = 100;
+           self.WidgetWidth  = 180;
+		   self.WidgetHeight = 62;
 	   }
 	   else if ( (self.widget.height() <= 220) && (self.widget.height() > 190) )
 	   { 
-           self.WidgetWidth  = 300;
-		   self.WidgetHeight = 200;			 
+           self.WidgetWidth  = 280;
+		   self.WidgetHeight = 165;
 	   }
 	   else 
 	   {
-           self.WidgetWidth  = 200;
-		   self.WidgetHeight = 100;	       
+           self.WidgetWidth  = 180;
+		   self.WidgetHeight = 62;	       
 	   }	   
 	   
 		self.paint();
