@@ -192,7 +192,7 @@
        var sizeY  = Math.min(maxY, Math.max(defaultY, minY));
 
        //we create a fake widget to display configuration form
-       var newWidget = new Widget(-1, currentPage.id, packageName, "", sizeX, sizeY, 1, 1, "");
+       var newWidget = new Widget(-1, currentPage.id, packageName, "", sizeX, sizeY, 0, 0, "");
 
        newWidget.package = package;
 
@@ -229,6 +229,7 @@
          }
 
          //we add the widget dynamically
+       debugger;
          var w = WidgetManager.factory(data.data);
          WidgetManager.loadWidget(w, currentPage)
 		 .done(function() {
