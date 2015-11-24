@@ -35,15 +35,15 @@ namespace update {
          //check all needed parameters are included
          if (!versionToUpdate.containsValue("downloadUrl"))
          {
-            progressCallback(false, 100.0f, i18n::CClientStrings::UpdateYadomsRunUpdateFailed, "Bad info (downloadUrl) to update to", versionToUpdate);
+            progressCallback(false, 100.0f, i18n::CClientStrings::UpdateYadomsUpdateFailed, "Bad info (downloadUrl) to update to", versionToUpdate);
          }
          else if (!versionToUpdate.containsValue("md5Hash"))
          {
-            progressCallback(false, 100.0f, i18n::CClientStrings::UpdateYadomsRunUpdateFailed, "Bad info (md5Hash) to update to", versionToUpdate);
+            progressCallback(false, 100.0f, i18n::CClientStrings::UpdateYadomsUpdateFailed, "Bad info (md5Hash) to update to", versionToUpdate);
          }
          else if (!versionToUpdate.containsValue("commandToRun"))
          {
-            progressCallback(false, 100.0f, i18n::CClientStrings::UpdateYadomsRunUpdateFailed, "Bad info (commandToRun) to update to", versionToUpdate);
+            progressCallback(false, 100.0f, i18n::CClientStrings::UpdateYadomsUpdateFailed, "Bad info (commandToRun) to update to", versionToUpdate);
          }
          else
          {
@@ -74,7 +74,7 @@ namespace update {
                   try
                   {
                      YADOMS_LOG(information) << "Running updater";
-                     progressCallback(true, 90.0f, i18n::CClientStrings::UpdateYadomsRunUpdate, shared::CStringExtension::EmptyString, versionToUpdate);
+                     progressCallback(true, 90.0f, i18n::CClientStrings::UpdateYadomsDeploy, shared::CStringExtension::EmptyString, versionToUpdate);
                      std::string commandToRun = versionToUpdate.get<std::string>("commandToRun");
                      step4RunUpdaterProcess(extractedPackageLocation, commandToRun, runningInformation);
 
@@ -98,7 +98,7 @@ namespace update {
                   {
                      //fail to run updater
                      YADOMS_LOG(error) << "Fail to run updater : " << ex.what();
-                     progressCallback(false, 100.0f, i18n::CClientStrings::UpdateYadomsRunUpdateFailed, ex.what(), versionToUpdate);
+                     progressCallback(false, 100.0f, i18n::CClientStrings::UpdateYadomsDeployFailed, ex.what(), versionToUpdate);
 
                      //remove folder
                      tools::CFileSystem::remove(extractedPackageLocation, true);
