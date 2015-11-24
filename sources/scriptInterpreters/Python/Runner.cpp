@@ -45,7 +45,6 @@ void CRunner::start()
    {
       m_scriptLogger->log((boost::format("%1% : error starting script, %2%") % m_scriptFile->pathName() % e.what()).str());
       m_stopNotifier->notifyStartError(e.what());
-      m_scriptLogger->log("#### END ####");
    }
 }
 
@@ -61,8 +60,6 @@ void CRunner::monitorThreaded(
    boost::shared_ptr<shared::script::IStopNotifier> stopNotifier,
    boost::shared_ptr<shared::script::ILogger> scriptLogger)
 {
-   scriptLogger->log("#### END ####");
-
    if (process->waitForStop() == 0)
       stopNotifier->notifyNormalStop();
    else
