@@ -6,6 +6,7 @@ widgetViewModelCtor =
     */
       function SwitchViewModel() {
       //observable data
+	  this.state = [];
       this.command = ko.observable(1);
 
       //widget identifier
@@ -27,8 +28,6 @@ widgetViewModelCtor =
 			
 			$.each(this.widget.configuration.devices, function(index, device) {
 				
-				console.log ("self.capacity", self.capacity[index] );
-				
 				if (!isNullOrUndefined(self.capacity[index]))
 				{				
 					switch (self.capacity[index]) {
@@ -38,9 +37,6 @@ widgetViewModelCtor =
 					}
 				
 				   KeywordManager.sendCommand( device.content.source.keywordId, cmd.toString() );
-				   
-				   console.log ( "Send Command to ", device.content.source.keywordId );
-				   console.log ( "Send Command :", cmd );
 				}
 			});
          }
@@ -77,14 +73,16 @@ widgetViewModelCtor =
 			 
 			$.each(this.widget.configuration.devices, function(index, device) {	
 				
-				console.log (device.content.source);
-				
 				if (!isNullOrUndefined(device.content.source.deviceId))
 				{	
 					// Get the capacity of the keyword
 					KeywordManager.get(device.content.source.keywordId, function(keyword) {
 					   self.capacity[index] = keyword.capacityName;
 					});
+					
+					//Initialisation initiale
+					if (isNullOrUndefined(self.state[index]))
+					   self.state[index] = 0;
 				}
 			});
          }
@@ -95,27 +93,54 @@ widgetViewModelCtor =
        * @param searchedDevice Device on which new acquisition was received
        * @param data Acquisition data
        */
-      this.onNewAcquisition = function(device, data) {
+      this.onNewAcquisition = function(deviceReceived, data) {
          var self = this;
-         if ((this.widget.configuration !== undefined) && (this.widget.configuration.device !== undefined)) {
-            if (device == this.widget.configuration.device) {
-               //it is the good device
-               if (this.capacity == "event")
-                  self.command(0);
-               else
-                  // Adapt for dimmable or switch capacities
-                  self.command(parseInt(data.value) != 0 ? "1" : "0");
-            }
+		 
+         if ((this.widget.configuration != undefined) && (this.widget.configuration.devices != undefined)) {
+			 
+			 $.each(this.widget.configuration.devices, function(index, device) {
+				if (deviceReceived == device.content.source) {
+				   //it is the good device
+				   if (self.capacity[index] == "event")
+					  self.state[index] = 0;
+				   else
+				   {
+					   console.log ( self.state );
+					   
+					  // Adapt for dimmable or switch capacities
+				      if ( parseInt(data.value) != 0 )
+						  self.state[index] = 1;
+					  else
+						  self.state[index] = 0;
+				   }
+				}
+			 });
+			 
+			 self.evaluateCommand();
          }
       };
 
+	  this.evaluateCommand = function ( ) {
+		  var self = this;
+		  var average = 0;
+		  
+		  $.each(this.state, function(index, state) {
+			  average = average + state;
+		  });
+		  
+		  average = average / this.state.length;
+		  
+		  self.command ( average );
+	  }
+	  
       this.getDevicesForAcquisitions = function() {
          var result = [];
 
-         if ((!isNullOrUndefined(this.widget.configuration)) && (!isNullOrUndefined(this.widget.configuration.device))) {
-            result.push(this.widget.configuration.device);
+         if ((!isNullOrUndefined(this.widget.configuration)) && (!isNullOrUndefined(this.widget.configuration.devices))) {
+			 $.each(this.widget.configuration.devices, function(index, device){
+                 result.push( device.content.source );
+		     });
          }
          return result;
       }
-
    };
