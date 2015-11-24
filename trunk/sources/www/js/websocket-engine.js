@@ -37,6 +37,15 @@ WebSocketEngine.updateAcquisitionFilter = function(keywordCollectionToFilter) {
     WebSocketEngine.webSocket_.send(JSON.stringify({"type" : "acquisitionFilter", "data" : keywordCollectionToFilter}));
 };
 
+
+/**
+ * Make a ping of the server
+ * @param keywordCollectionToFilter The collection of keyword id to filter
+ */
+WebSocketEngine.sendIsServerAlive = function () {
+    WebSocketEngine.webSocket_.send(JSON.stringify({ "type": "isAlive"}));
+};
+
 /**
  * Initialize the websocket engine
  * @param {function} callback The callback for result
@@ -72,6 +81,9 @@ WebSocketEngine.initializeWebSocketEngine = function(callback) {
                         case "taskupdatenotification":
                             $(document).trigger("taskupdatenotification." + websocketData.uuid, websocketData);
                             console.log("TaskUpdateNotification : " + JSON.stringify(websocketData));
+                            break;
+                        case "isAlive":
+                            $(document).trigger("isAlive");
                             break;
                     }
                 }

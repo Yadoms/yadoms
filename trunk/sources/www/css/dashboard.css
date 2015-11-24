@@ -305,6 +305,23 @@ Fix dropdown menus hidden by bootstrap modal
     margin-left: 5px;
 }
 
+/*Yadoms updating blocking splash screen*/
+#yadoms-updating-splash {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    height: 100%;
+    width: 100%;
+    z-index: 10000;
+    background-color: white;
+    padding: 30px;
+    text-align: center;
+}
+
+#yadoms-updating-splash .progress {
+    margin-top: 20px;
+}
+
 .panel-heading {
     cursor: pointer;
 }

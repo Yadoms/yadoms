@@ -19,17 +19,14 @@ YadomsInformationManager.getList = function() {
       //we parse the json answer
       if (data.result != "true")
       {
-         notifyError($.t("objects.generic.errorGetting", {objectName : $.t("core.yadomsInformation")}, JSON.stringify(data)));
+         notifyError($.t("objects.generic.errorGetting", {objectName : $.t("core.yadoms.information")}, JSON.stringify(data)));
          d.reject();
       } else {
-         //TODO : remove after REST completion wait for JMD
-         var yadoms = {version : data.data.yadomsVersion, releaseType : "stable"};
-         data.data.yadoms = yadoms;
          d.resolve(data.data);
       }
    })
    .fail(function() {
-          notifyError($.t("objects.generic.errorGetting", {objectName : $.t("core.yadomsInformation")}));
+          notifyError($.t("objects.generic.errorGetting", {objectName : $.t("core.yadoms.information")}));
       d.reject();
    });
 

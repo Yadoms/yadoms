@@ -40,6 +40,11 @@ namespace web { namespace poco {
       {
          //in case of "0.0.0.0" or empty , then do not use it, just use port, listen on all interfaces
          Poco::Net::ServerSocket svs(boost::lexical_cast<unsigned short>(port));
+         bool a = false;
+         int b = 0;
+         svs.getLinger(a, b);
+         YADOMS_LOG(information) << "getLinger on_off: " << a << " time : " << b;
+         svs.setLinger(true, 2);
          m_embeddedWebServer.reset(new Poco::Net::HTTPServer(m_httpRequestHandlerFactory, svs, serverParams));
       }
       else
