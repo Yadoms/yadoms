@@ -40,8 +40,8 @@ YadomsUpdateInformationManager.update = function(yadomsUpdateInformation) {
 
    $.ajax({
       dataType: "json",
-      url: "rest/update/yadoms/",
-      data: JSON.stringify(yadomsUpdateInformation),
+      url: "rest/update/yadoms/update/",
+      data: JSON.stringify({ "versionData": yadomsUpdateInformation }),
       type: "POST",
       contentType: "application/json; charset=utf-8"
    })
@@ -60,6 +60,8 @@ YadomsUpdateInformationManager.update = function(yadomsUpdateInformation) {
           notifyError($.t("objects.generic.errorUpdating", {objectName : "yadoms"}));
           d.reject();
        });
+
+   return d.promise();
 };
 
 /**
