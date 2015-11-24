@@ -1,7 +1,7 @@
 <div id="dashboard-automation-center">
    <h1 class="page-header"><span class="fa fa-code-fork"></span>&nbsp;<span data-i18n="modals.dashboard.sub-windows.automation-center.title"></span></h1>
    <span data-i18n="modals.dashboard.sub-windows.automation-center.description"></span><br>
-   <button id="btn-add-new-automation-rule" type="button" class="btn btn-success dashboard-btn-new"><span class="fa fa-code-fork"></span>&nbsp;&nbsp;<span data-i18n="modals.dashboard.sub-windows.automation-center.new"></span></button>
+   <button id="btn-add-new-automation-rule" type="button" class="btn btn-success dashboard-btn-new" disabled><span class="fa fa-code-fork"></span>&nbsp;&nbsp;<span data-i18n="modals.dashboard.sub-windows.automation-center.new"></span></button>
    <table id="automation-rule-list" class="table table-bordered table-striped dashboard-list">
       <tr>
          <td data-i18n="modals.dashboard.sub-windows.automation-center.table.name"></td>
@@ -17,7 +17,12 @@
    function initializeAutomationCenterDashboard() {
       //we remove all rows except header
       $("table#automation-rule-list").find("tr:gt(0)").remove();
-      $("#btn-add-new-automation-rule").unbind("click").bind("click", addNewAutomationRule);
+      
+      // Active "new rule" button only if al least one interpreter available
+      AutomationInterpreterManager.getAll(function(interpreters) {
+         if(Object.keys(interpreters).length > 0)
+            $("#btn-add-new-automation-rule").unbind("click").bind("click", addNewAutomationRule).prop('disabled', false);
+      }, false);
 
       //we dynamically ask for automation-rule
       AutomationRuleManager.get(function (rules) {
