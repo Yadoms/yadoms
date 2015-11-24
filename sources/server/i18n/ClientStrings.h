@@ -40,17 +40,16 @@ namespace i18n
       static std::string UpdateScriptInterpreterSuccess;
       static std::string UpdateScriptInterpreterFinalize;
 
-      static std::string UpdateYadomsCheckForUpdate;
-      static std::string UpdateYadomsCheckForUpdateFailed;
       static std::string UpdateYadomsUpdate;
+      static std::string UpdateYadomsUpdateFailed;
       static std::string UpdateYadomsUpdateAvailable;
       static std::string UpdateYadomsUpToDate;
       static std::string UpdateYadomsDownload;
       static std::string UpdateYadomsDownloadFailed;
       static std::string UpdateYadomsExtract;
       static std::string UpdateYadomsExtractFailed;
-      static std::string UpdateYadomsRunUpdate;
-      static std::string UpdateYadomsRunUpdateFailed;
+      static std::string UpdateYadomsDeploy;
+      static std::string UpdateYadomsDeployFailed;
       static std::string UpdateYadomsExit;
 
 
