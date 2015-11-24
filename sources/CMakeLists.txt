@@ -480,6 +480,8 @@ set(YADOMS_SRC
 	server/web/ws/FrameBase.cpp
 	server/web/ws/FrameFactory.h
 	server/web/ws/FrameFactory.cpp
+	server/web/ws/IsAliveFrame.h
+	server/web/ws/IsAliveFrame.cpp
 	server/web/ws/LogEventFrame.h
 	server/web/ws/LogEventFrame.cpp
 	server/web/ws/NewDeviceFrame.h

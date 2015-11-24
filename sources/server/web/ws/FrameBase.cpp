@@ -13,6 +13,7 @@ namespace web { namespace ws {
       ((DeviceNew))
       ((LogEventNew))
       ((TaskUpdateNotification))
+      ((IsAlive))
    );
 
 

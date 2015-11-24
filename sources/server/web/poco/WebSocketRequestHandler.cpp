@@ -15,6 +15,7 @@
 #include "web/ws/LogEventFrame.h"
 #include "web/ws/NewDeviceFrame.h"
 #include "web/ws/TaskUpdateNotificationFrame.h"
+#include "web/ws/IsAliveFrame.h"
 
 #include "notification/acquisition/Observer.hpp"
 #include "notification/summary/Notification.hpp"
@@ -181,6 +182,11 @@ namespace web {
                               {
                                  boost::shared_ptr<ws::CAcquisitionFilterFrame> parsedFrameAsqFilter = boost::dynamic_pointer_cast<ws::CAcquisitionFilterFrame>(parsedFrame);
                                  newAcquisitionObserver->resetKeywordIdFilter(parsedFrameAsqFilter->getFilter());
+                                 break;
+                              }
+                              case ws::CFrameBase::EFrameType::kIsAliveValue:
+                              {
+                                 send(webSocket, ws::CIsAliveFrame());
                                  break;
                               }
                               default:
