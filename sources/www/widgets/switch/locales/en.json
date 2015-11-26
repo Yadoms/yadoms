@@ -5,8 +5,8 @@
 	"errorDuringSendingCommand": "Error sending command",
 	"configurationSchema": {
 		"devices": {
-			"name": "Switch device",
-			"description": "List of devices to drive",
+			"name": "Devices",
+			"description": "Switch widget is able to drive several devices simultaneously. Select below the devices list to drive",
 			"item": {
 				"name": "",
 				"description": "",

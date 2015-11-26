@@ -5,8 +5,8 @@
 	"errorDuringSendingCommand": "Erreur lors de l'envoi de la commande",
 	"configurationSchema": {
 		"devices": {
-			"name": "Interrupteur",
-			"description": "Liste des équipements à piloter",
+			"name": "Equipements",
+			"description": "Le widget interrupteur peut piloter simultanément plusieurs équipements. Sélectionner ici la liste des équipements à piloter",
 			"item": {
 				"name": "",
 				"description": "",
