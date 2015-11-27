@@ -233,11 +233,15 @@
         //we save the information that the load of yadoms is in progress
         promiseCounter.incrementCounter();
 
+        var $line = $("table#yadoms-install-update-list tr.yadoms-information");
+
+        $line.find("div.action-buttons").removeClass("hidden");
+        $line.find("div.action-progression").addClass("hidden");
+        $line.find("span.update-available-label").addClass("hidden");
+
         YadomsUpdateInformationManager.getList()
            .done(function (list) {
                if (!isNullOrUndefined(list)) {
-
-                   var $line = $("table#yadoms-install-update-list tr.yadoms-information");
 
                    YadomsInformationManager.getList()
                       .done(function (data) {
@@ -297,7 +301,7 @@
                                   $cbVersion.append("<li><a href=\"#\"><em>" + versionToString(value) + "</em></a></li>");
                                   //we manage the click event on each version
                                   $cbVersion.find("li").last().unbind('click').bind('click', function () {
-                                      modals.confirmation.load(askForYadomsUpdate(value))
+                                      modals.confirmation.load(askForYadomsUpdate(value));
                                   });
                               });
 
@@ -390,7 +394,7 @@
 
                 //we remove the progress information and restore buttons
                 item.processing = false;
-                $line.find("div.progress-bar").css("width", "0%");
+                $line.find("div.progress-bar").css("width", "100%");
 
                 //refresh the list
                 refreshAllData();
@@ -421,22 +425,6 @@
     }
 
     function waitForYadomsExit() {
-        //we try to get information from server loop until the server answer
-        /*EventLoggerManager.getLast(true).done(function () {
-                //we received an answer the server is always online
-                setTimeout(waitForYadomsExit(), 500);
-                console.log("waitForYadomsExit EventLoggerManager.getLast(true).done");
-            })
-        .fail(function () {
-            console.log("waitForYadomsExit EventLoggerManager.getLast(true).fail");
-            //the server has stopped
-            var $splash = $('div#yadoms-updating-splash');
-            $splash.find("h1.waiting").addClass("hidden");
-            $splash.find("h1.updating").removeClass("hidden");
-            //we wait for its return 
-                waitForYadomsReturn();
-            });*/
-
         var timeout = setTimeout(function () {
             //the timeout has expired. So server is not alive anymore
             waitForYadomsReturn();
