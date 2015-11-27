@@ -17,7 +17,7 @@
  
 SETLOCAL ENABLEDELAYEDEXPANSION
  
-SET YadomsExecutable="yadoms.exe"
+SET YadomsExecutable=yadoms.exe
  
 set CurrentScriptDir=%~dp0
  
@@ -88,12 +88,13 @@ copy "%CurrentScriptDir%package\*.*" "%YadomsPath%"
 
 echo Yadoms updated successfully
 
+timeout /t 5 /nobreak > nul
+
 echo Restarting Yadoms ...
 
-start %YadomsPath%/%YadomsExecutable%
+explorer %YadomsPath%%YadomsExecutable%
 
 goto :END
 
 
 :END
-pause
