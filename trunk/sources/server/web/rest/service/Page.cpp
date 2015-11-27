@@ -189,10 +189,6 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-
-
-
-
    shared::CDataContainer CPage::deletePage(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       try
