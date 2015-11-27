@@ -332,14 +332,14 @@ Fix dropdown menus hidden by bootstrap modal
 }
 
 /* CSS Method for adding Font Awesome Chevron Icons */
-.panel-title:after {
+.install-update-section-title:after {
     /* symbol for "opening" panels */
     font-family:'FontAwesome';
     content:"\f077";
     float: right;
     color: inherit;
 }
-.panel-heading.collapsed .panel-title:after {
+.panel-heading.collapsed .install-update-section-title:after {
     /* symbol for "collapsed" panels */
     content:"\f078";
 }
@@ -347,3 +347,4 @@ Fix dropdown menus hidden by bootstrap modal
 .dashboard-table-icon {
     max-height: 60px;
 }
+

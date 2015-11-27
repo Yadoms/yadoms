@@ -107,7 +107,7 @@ PageManager.addToDom = function (page) {
    var tabIdAsText = "tab-" + page.id;
    //pill creation
 
-   var container  =  $("<li class=\"tabPagePills\" page-id=\"" + page.id + "\">" +
+   $("<li class=\"tabPagePills\" page-id=\"" + page.id + "\">" +
          "<a href=\"#" + tabIdAsText + "\" data-toggle=\"tab\">" +
             "<span>" + page.name + "</span>" +
             "<div class=\"customizationToolbar pageCustomizationToolbar customization-item hidden\">" +
@@ -126,7 +126,7 @@ PageManager.addToDom = function (page) {
    page.$tab.i18n();
 
    //page creation
-   container = $("div#tabContainer").find(".tab-content").append(
+   var container = $("div#tabContainer").find(".tab-content").append(
       "<div class=\"widgetPage tab-pane active\" id=\"" + tabIdAsText + "\" page-id=\"" + page.id + "\">" +
          "<div class=\"grid grid-stack\">" +
          "</div>" +

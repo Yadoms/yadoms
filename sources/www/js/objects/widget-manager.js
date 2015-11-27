@@ -537,8 +537,8 @@ WidgetManager.createGridstackWidget = function(widget) {
    }
 
    domWidget += ">\n" +
-       "<div class=\" grid-stack-item-content\">\n" +
-         "<div class=\"widgetCustomizationOverlay customization-item hidden\">\n" + 
+       "<div class=\"grid-stack-item-content\">\n" +
+         "<div class=\"panel-widget-customization-overlay customization-item hidden\">\n" +
             "<div class=\"customizationToolbar widgetCustomizationToolbar\">";
 
    if (!isNullOrUndefined(widget.package.configurationSchema)) {
@@ -553,9 +553,9 @@ WidgetManager.createGridstackWidget = function(widget) {
    domWidget +=    "<div class=\"customizationButton widgetCustomizationButton btn-delete-widget\"><i class=\"fa fa-trash-o\"></i></div>\n" +
             "</div>\n" +
        "</div>\n" +
-	   "<div class=\"panel panel-primary\" style=\"margin-bottom: 0px;\">" +
-	       "<div class=\"panel-heading title-widget\" style=\"padding: 5px 8px;\">" + widget.title + "</div>\n" +
-           "<div class=\"panel-body\" style=\"padding: 0px;\" id=\"widget-" + widget.id + "\"  data-bind=\"template: { name: '" + type + "-template' }\"/>\n" +
+	   "<div class=\"panel panel-primary panel-widget\" >" +
+	       "<div class=\"panel-heading panel-widget-title\">" + widget.title + "</div>\n" +
+           "<div class=\"panel-widget-body\" id=\"widget-" + widget.id + "\"  data-bind=\"template: { name: '" + type + "-template' }\"/>\n" +
        "</div>\n" +
    "</div>\n";
 
