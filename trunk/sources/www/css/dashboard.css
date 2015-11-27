@@ -300,6 +300,11 @@ Fix dropdown menus hidden by bootstrap modal
     margin-bottom : 0px;
 }
 
+.install-update-button-group {
+	margin-top : 10px;
+	margin-bottom : 20px;
+}
+
 /*! indicator to show a new update available*/
 .update-available-label {
     margin-left: 5px;
