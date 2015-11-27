@@ -43,20 +43,6 @@ body {
    background-color: transparent;
 }
 
-.widget .widgetCustomizationOverlay,
-.widget .widgetDiv
-{
-    position: absolute;
-    left: 0px;
-    right: 0px;
-    top: 0px;
-    bottom: 0px;
-}
-
-.widget .widgetDiv {
-   background-color: transparent;
-}
-
 .btn-configure-widget,
 .btn-delete-widget {
    color: white;
@@ -122,19 +108,7 @@ body {
    color: #428bca;
 }
 
-.widgetCustomizationToolbar {
-   background-color: #428bca;
-}
 
-.widgetCustomizationButton {
-   color: white;
-}
-
-.widgetCustomizationOverlay{
-   z-index: 18;
-   border: 1px dashed #428bca;
-   text-align: center;
-}
 
 .navbar {
    background-color: rgba(0,0,0,0.0);

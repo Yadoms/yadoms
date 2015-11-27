@@ -19,11 +19,55 @@
     margin: 20px auto;
 }
 
-.title-widget {
+/*Widget container management*/
+
+.grid-stack-item-content {
+    height: 100%;
+    width: 100% !important;
+}
+
+.panel-widget {
+    margin-bottom: 0px;
+    display: table;
+    width: 100%;
+    height: 100%;
+}
+
+.panel-widget-title {
     text-align: center;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    padding: 5px 8px;
+    display: table-row;
+    width: 100%;
+}
+
+.panel-widget-body {
+    padding: 0px;
+    overflow: hidden;
+    height: 100%;
+    display: table;
+    width: 100%;
+}
+
+.panel-widget-customization-overlay
+{
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    margin-bottom: 0px;
+    z-index: 18;
+}
+
+.widgetCustomizationToolbar {
+   background-color: #428bca;
+}
+
+.widgetCustomizationButton {
+   color: white;
 }
 
 /*Standard battery widget indicator*/
