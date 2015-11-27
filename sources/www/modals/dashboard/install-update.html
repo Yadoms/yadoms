@@ -4,17 +4,23 @@
         <span data-i18n="modals.dashboard.sub-windows.install-update.title"></span>
         <i class="making-async-action pull-right fa fa-circle-o-notch fa-spin hidden"></i>
     </h1>
-    <span data-i18n="modals.dashboard.sub-windows.install-update.description"></span><br>
 
-    <div class="row">
-        <div class="col-md-6 pull-right">
-            <span data-i18n="modals.dashboard.sub-windows.install-update.releaseTypeChoice"></span>
-            <select class="form-control cb-release-type">
-                <option value="stable" data-i18n="modals.dashboard.sub-windows.install-update.releaseType.stable"></option>
-                <option value="testing" data-i18n="modals.dashboard.sub-windows.install-update.releaseType.testing"></option>
-                <option value="beta" data-i18n="modals.dashboard.sub-windows.install-update.releaseType.beta"></option>
-            </select>
-        </div>
+    <div class="row install-update-button-group">
+		<div class="col-md-12">
+			<span data-i18n="modals.dashboard.sub-windows.install-update.releaseTypeChoice"></span>
+			<div  class="btn-group" data-toggle="buttons">
+			  <label class="btn btn-primary active">
+				<input type="radio" name="options" id="version-stable" class="install-update-button" autocomplete="off" checked><span data-i18n="modals.dashboard.sub-windows.install-update.releaseType.stable"></span>
+			  </label>
+			  <label class="btn btn-default">
+				<input type="radio" name="options" id="version-testing" class="install-update-button" autocomplete="off"><span data-i18n="modals.dashboard.sub-windows.install-update.releaseType.testing"></span>
+			  </label>
+			  <label class="btn btn-default">
+				<input type="radio" name="options" id="version-beta" class="install-update-button" autocomplete="off"><span data-i18n="modals.dashboard.sub-windows.install-update.releaseType.beta"></span>
+			  </label>
+			</div>		
+			<br/>
+		</div>
     </div>
 
     <div class="panel-group" id="install-update-accordion" role="tablist" aria-multiselectable="true">
@@ -182,47 +188,51 @@
 
     function initializeInstallUpdateDashboard() {
 
-        //we listen for change of release type list
-        $cbReleaseType.unbind("change").bind("change", function () {
-            $cbReleaseType.addClass("disabled");
-            //we get the new list depend on the release type selected
-
-            refreshAllData();
-        });
-
+		$('.install-update-button').on('change', function(e){
+			updatebuttonColor($('#version-stable'));
+			updatebuttonColor($('#version-testing'));
+			updatebuttonColor($('#version-beta'));
+			refreshAllData($(e.target));
+		});
+		
         refreshAllData();
+    }
+
+	
+	    /**
+     * Permit to update wantedVersion array from the combo box release type
+     */
+    function updateReleaseType(clickedInput) {
+		var selectedValue = "";
+		if(clickedInput) {
+			selectedValue = clickedInput.prop('id');
+		}
+        switch (selectedValue) {
+            case "version-beta":
+                wantedVersion = ["beta", "testing", "stable"];
+                break;
+            case "version-testing":
+                wantedVersion = ["testing", "stable"];
+                break;
+            default:
+            case "version-stable":
+                wantedVersion = ["stable"];
+                break;
+        }
     }
 
     /**
      * Ask a refresh of all data in the modal
      */
-    function refreshAllData() {
+    function refreshAllData(e) {
         $asyncActionIndicator.removeClass("hidden");
-        updateReleaseType();
+        updateReleaseType(e);
 
         promiseCounter = new PromiseCounter(0, updateInstallUpdateActionIndicator);
         fillYadomsInformation();
         fillPluginList();
         fillWidgetList();
         fillScriptInterpreterList();
-    }
-
-    /**
-     * Permit to update wantedVersion array from the combo box release type
-     */
-    function updateReleaseType() {
-        switch ($cbReleaseType.val().toLowerCase()) {
-            case "beta":
-                wantedVersion = ["beta", "testing", "stable"];
-                break;
-            case "testing":
-                wantedVersion = ["testing", "stable"];
-                break;
-            default:
-            case "stable":
-                wantedVersion = ["stable"];
-                break;
-        }
     }
 
     /**
@@ -992,4 +1002,19 @@
         return "v " + version.version + " " + version.releaseType.toLowerCase();
     }
 
+    /**
+     * Update button group color depending its checked state
+     * @param input The input button to update
+     */
+	function updatebuttonColor($input) {
+		var $btn = $input.closest('.btn');
+		if($input.prop('checked')) {
+			$btn.removeClass('btn-default').addClass('btn-primary');
+		} else {
+			$btn.removeClass('btn-primary').addClass('btn-default');
+		}
+	}
+	
+	
+	
 </script>
