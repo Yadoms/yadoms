@@ -300,6 +300,10 @@ Fix dropdown menus hidden by bootstrap modal
     margin-bottom : 0px;
 }
 
+.with-overflow-visible {
+	overflow: visible !important;
+}
+
 .install-update-button-group {
 	margin-top : 10px;
 	margin-bottom : 20px;
