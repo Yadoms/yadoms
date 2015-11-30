@@ -144,6 +144,11 @@ body {
     margin: 15px;
 }
 
+.configuration-radio-section {
+    padding: 15px;
+    margin: 15px;
+}
+
 .configuration-header {
     font-size:14px;
     font-weight:700;
