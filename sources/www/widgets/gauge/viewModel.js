@@ -92,12 +92,15 @@ function GaugeViewModel()
 	  var elementID = "widget-gauge-" + this.widget.id; // Unique ID
 	  
 	  // Initialisation of a unique div associated to this widget
-	   	$('<div style="width: 200px; height: 100px; float: left"></div>').attr({
+	   	$('<div style="width: 193px; height: 100px; float: left;overflow: hidden;display: table;margin: auto;"></div>').attr({
 		id: elementID
+		//class: 'gaugeWidget'
 	    }).appendTo( "#widget-" + this.widget.id );
 		
+		//$("div#" + "widget-" + this.widget.id).css({"overflow": "hidden"});
+		
 		//This div is for rounds borders.
-	   	$('<div style="width: 200px; height: 5px; float: left"></div>').appendTo( "#widget-" + this.widget.id );
+	   	$('<div style="width: 193px; height: 5px; float: left"></div>').appendTo( "#widget-" + this.widget.id );
   };
    
    /**
