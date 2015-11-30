@@ -1,0 +1,48 @@
+{
+  "name": "highcharts-export-clientside",
+  "version": "1.1.4",
+  "title": "Highcharts Client-Side Export Module",
+  "type": "plugin",
+  "author": {
+    "name": "A----",
+    "url": "https://github.com/A----/"
+  },
+  "licenses": [
+    {
+      "type": "Public Domain",
+      "url": "http://unlicense.org"
+    }
+  ],
+  "dependencies": {
+    "highcharts": "4.x.x",
+    "jspdf": "1.x.x",
+    "export-csv-xls": "1.3.x"
+  },
+  "description": "Module for Highcharts to export charts client-side",
+  "keywords": [
+    "highcharts",
+    "export",
+    "charts",
+    "jpeg",
+    "jpg",
+    "png",
+    "pdf",
+    "svg",
+    "csv",
+    "xls"
+  ],
+  "homepage": "http://a----.github.io/highcharts-export-clientside/",
+  "docs": "http://a----.github.io/highcharts-export-clientside/",
+  "bugs": "https://github.com/A----/highcharts-export-clientside/issues",
+  "download": "https://github.com/A----/highcharts-export-clientside/archive/1.1.4.zip",
+  "demo": [
+    "http://jsfiddle.net/pscjzhe4/1/"
+  ],
+  "maintainers": [
+    {
+      "name": "A----",
+      "email": "A----@users.noreply.github.com",
+      "url": "https://github.com/A----/"
+    }
+  ]
+}

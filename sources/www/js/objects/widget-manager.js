@@ -205,7 +205,7 @@ WidgetManager.updateWidgetConfiguration_ = function(widget) {
    try
    {   
 	   //Update the widget title
-	   widget.$gridWidget.find('div.panel-heading').text( widget.title );
+       widget.$gridWidget.find('span.panel-widget-title').text(widget.title);
 	   
        // Update widget specific values
       if (!isNullOrUndefined(widget.viewModel.configurationChanged))
@@ -483,7 +483,8 @@ WidgetManager.addToDom_ = function(widget) {
       modals.widgetDelete.load(function (pageId, widgetId) {return function() {showDeleteWidgetModal(pageId, widgetId)}}(pageId, widgetId));
    });
 
-   widget.$div.i18n();
+    
+   widget.$gridWidget.i18n();
 
    //we ask for widget refresh data
    updateWidgetPolling(widget);
@@ -554,7 +555,10 @@ WidgetManager.createGridstackWidget = function(widget) {
             "</div>\n" +
        "</div>\n" +
 	   "<div class=\"panel panel-primary panel-widget\" >" +
-	       "<div class=\"panel-heading panel-widget-title\">" + widget.title + "</div>\n" +
+	       "<div class=\"panel-heading panel-widget-header\">" +
+               "<div class=\"panel-widget-title-toolbar\" ></div>" +
+               "<span class=\"panel-widget-title\">" + widget.title + "</span>\n" +
+           "</div>" +
            "<div class=\"panel-widget-body\" id=\"widget-" + widget.id + "\"  data-bind=\"template: { name: '" + type + "-template' }\"/>\n" +
        "</div>\n" +
    "</div>\n";
