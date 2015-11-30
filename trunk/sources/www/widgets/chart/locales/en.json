@@ -1,74 +1,83 @@
 {
-    "name": "Chart",
-    "description": "A widget that provide a chart to display historized data",
-    "errorDuringGettingDeviceData": "Error during getting device data",
-    "loadingData": "Loading data",
-	"RangeTooBroad" : "Range is too broad",
-    "configurationSchema": {
-        "interval": {
-            "name": "Default interval of the chart",
-            "description": "Used to change the first displayed interval of the chart",
-            "values": {
-                "HOUR": "1 hour",
-                "DAY": "1 day",
-                "WEEK": "1 week",
-                "MONTH": "1 month",
-                "HALF_YEAR": "6 months",
-                "YEAR": "1 year"
-            }
-        },
-        "oneAxis": {
-            "name": "Only one axis for all series",
-            "description": "It allows you to create one axis for all series, with this option, series could be compare with the same scale.",
-			"content": {
-				"customYAxisMinMax": {
-					"name": "Manually set min and max of y axis",
-					"description": "Enabling this section allow you to set the min and max of the chart Y-axis. If disabled, min and max will be automatically computed. This section is active only when the option unique axis is selected",
-					"content": {
-						"minimumValue": {
-							"name": "Minimum Y axis value"
-						},               
-						"maximumValue": {
-							"name": "Maximum Y axis value"
-						}
-					}
-				}
-			}
-      },
-        "devices": {
-            "name": "Devices",
-            "description": "List of plotted devices",
-            "item": {
-                "name": "Plot",
-                "description": "This section describe the configuration of a plot",
-                "content": {
-                    "source": {
-                        "name": "Data to display",
-                        "description": "Choose the data of a device to display on the chart"
-                    },
-                    "color": {
-                        "name": "Color of the plot",
-                        "description": "Permit to change the color of the plot"
-                    },
-                    "PlotType": {
-                        "name": "Plot Type",
-                        "description": "choose beetween following plot type",
-                        "values": {
-                            "line": "Line",
-                            "bar": "Bar",
-                            "arearange": "Line & Range"
-                        }
-                    }
-                }
-            }
-        }
+  "name": "Chart",
+  "description": "A widget that provide a chart to display historized data",
+  "errorDuringGettingDeviceData": "Error during getting device data",
+  "loadingData": "Loading data",
+  "RangeTooBroad": "Range is too broad",
+  "configurationSchema": {
+    "interval": {
+      "name": "Default interval of the chart",
+      "description": "Used to change the first displayed interval of the chart",
+      "values": {
+        "HOUR": "1 hour",
+        "DAY": "1 day",
+        "WEEK": "1 week",
+        "MONTH": "1 month",
+        "HALF_YEAR": "6 months",
+        "YEAR": "1 year"
+      }
     },
-    "navigator": {
-        "hour": "1h",
-        "day": "1d",
-        "week": "1w",
-        "month": "1m",
-        "half_month": "6m",
-        "year": "1y"
+    "oneAxis": {
+      "name": "Only one axis for all series",
+      "description": "It allows you to create one axis for all series, with this option, series could be compare with the same scale.",
+      "content": {
+        "customYAxisMinMax": {
+          "name": "Manually set min and max of y axis",
+          "description": "Enabling this section allow you to set the min and max of the chart Y-axis. If disabled, min and max will be automatically computed. This section is active only when the option unique axis is selected",
+          "content": {
+            "minimumValue": {
+              "name": "Minimum Y axis value"
+            },
+            "maximumValue": {
+              "name": "Maximum Y axis value"
+            }
+          }
+        }
+      }
+    },
+    "devices": {
+      "name": "Devices",
+      "description": "List of plotted devices",
+      "item": {
+        "name": "Plot",
+        "description": "This section describe the configuration of a plot",
+        "content": {
+          "source": {
+            "name": "Data to display",
+            "description": "Choose the data of a device to display on the chart"
+          },
+          "color": {
+            "name": "Color of the plot",
+            "description": "Permit to change the color of the plot"
+          },
+          "PlotType": {
+            "name": "Plot Type",
+            "description": "choose beetween following plot type",
+            "values": {
+              "line": "Line",
+              "bar": "Bar",
+              "arearange": "Line & Range"
+            }
+          }
+        }
+      }
     }
+  },
+  "navigator": {
+    "hour": "1h",
+    "day": "1d",
+    "week": "1w",
+    "month": "1m",
+    "half_year": "6m",
+    "year": "1y"
+  },
+  "export": {
+    "print": "Print",
+    "png": "Download Png",
+    "jpeg": "Download Jpeg",
+    "pdf": "Download Pdf",
+    "svg": "Download Svg",
+    "csv": "Download Csv",
+    "xls": "Download Xls"
+  }
 }
