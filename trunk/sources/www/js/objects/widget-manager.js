@@ -421,7 +421,6 @@ WidgetManager.addToDom_ = function(widget) {
    if (customization)
    {
       widget.$gridWidget.find(".customization-item").removeClass("hidden");
-
    }
 
    var page = PageManager.getPage(widget.idPage);
@@ -429,10 +428,6 @@ WidgetManager.addToDom_ = function(widget) {
 
    //we apply binding to the view
    ko.applyBindings(widget.viewModel, widget.$div[0]);
-
-   widget.$gridWidget.attr("data-gs-x", gridWidth);
-
-
 
    //we initialize the widget
    try
@@ -562,8 +557,8 @@ WidgetManager.createGridstackWidget = function(widget) {
            "<div class=\"panel-widget-body\" id=\"widget-" + widget.id + "\"  data-bind=\"template: { name: '" + type + "-template' }\"/>\n" +
        "</div>\n" +
    "</div>\n";
-
-   var item = page.grid.add_widget($(domWidget), widget.positionX, widget.positionY, widget.sizeX, widget.sizeY, false);
+    debugger;
+    var item = page.grid.add_widget($(domWidget), parseInt(widget.positionX), parseInt(widget.positionY), parseInt(widget.sizeX), parseInt(widget.sizeY), false);
 
    item.i18n();
    return item;
