@@ -557,8 +557,7 @@ WidgetManager.createGridstackWidget = function(widget) {
            "<div class=\"panel-widget-body\" id=\"widget-" + widget.id + "\"  data-bind=\"template: { name: '" + type + "-template' }\"/>\n" +
        "</div>\n" +
    "</div>\n";
-    debugger;
-    var item = page.grid.add_widget($(domWidget), parseInt(widget.positionX), parseInt(widget.positionY), parseInt(widget.sizeX), parseInt(widget.sizeY), false);
+    var item = page.grid.add_widget($(domWidget), widget.positionX, widget.positionY, widget.sizeX, widget.sizeY, false);
 
    item.i18n();
    return item;

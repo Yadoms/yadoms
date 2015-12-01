@@ -49,7 +49,6 @@ YadomsUpdateInformationManager.update = function(yadomsUpdateInformation) {
           //we parse the json answer
           if (data.result != "true")
           {
-             debugger;
              notifyError($.t("objects.generic.errorUpdating", {objectName : "yadoms"}), JSON.stringify(data));
              d.reject();
           } else {
