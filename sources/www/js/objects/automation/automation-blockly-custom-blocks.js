@@ -35,7 +35,7 @@ var BlocklyName = "blockly";
  * Initialize Blockly.Yadoms structure
  * @constructor
  */
-Blockly.Yadoms = function() {
+Blockly.Yadoms = function () {
 };
 
 /**
@@ -110,10 +110,10 @@ Blockly.Yadoms.CurrentGenerationBlockTime_ = undefined;
 Blockly.Yadoms.LoadDataForBlocklyCustomBlocks_ = function () {
 
     var result = {
-        plugins : {},
-        devices : {},
-        keywords : {},
-        recipients : {}
+        plugins: {},
+        devices: {},
+        keywords: {},
+        recipients: {}
     };
 
     PluginInstanceManager.getAll(function (list) {
@@ -149,7 +149,7 @@ Blockly.Yadoms.LoadDataForBlocklyCustomBlocks_ = function () {
  * Create the toolbox
  * @return {string} The toolbox xml string
  */
-Blockly.Yadoms.CreateToolbox_ = function() {
+Blockly.Yadoms.CreateToolbox_ = function () {
 
     var catLogic = $.t("blockly.toolbox.catLogic");
     var catLoops = $.t("blockly.toolbox.catLoops");
@@ -181,7 +181,7 @@ Blockly.Yadoms.CreateToolbox_ = function() {
     toolbox += '        </value>';
     toolbox += '     </block>';
     toolbox += '  </category>';
-    toolbox += '  <category name=" ' + catLogic +'">';
+    toolbox += '  <category name=" ' + catLogic + '">';
     toolbox += '     <block type="controls_if"></block>';
     toolbox += '     <block type="logic_compare"></block>';
     toolbox += '     <block type="logic_operation"></block>';
@@ -189,7 +189,7 @@ Blockly.Yadoms.CreateToolbox_ = function() {
     toolbox += '     <block type="logic_boolean"></block>';
     toolbox += '     <block type="logic_null"></block>';
     toolbox += '  </category>';
-    toolbox += '  <category name=" ' + catLoops +'">';
+    toolbox += '  <category name=" ' + catLoops + '">';
     toolbox += '     <block type="controls_repeat_ext">';
     toolbox += '        <value name="TIMES">';
     toolbox += '           <block type="math_number">';
@@ -218,7 +218,7 @@ Blockly.Yadoms.CreateToolbox_ = function() {
     toolbox += '     <block type="controls_forEach"></block>';
     toolbox += '     <block type="controls_flow_statements"></block>';
     toolbox += '  </category>';
-    toolbox += '  <category name=" ' + catMath +'">';
+    toolbox += '  <category name=" ' + catMath + '">';
     toolbox += '     <block type="math_number"></block>';
     toolbox += '     <block type="math_arithmetic"></block>';
     toolbox += '     <block type="math_single"></block>';
@@ -261,7 +261,7 @@ Blockly.Yadoms.CreateToolbox_ = function() {
     toolbox += '     </block>';
     toolbox += '     <block type="math_random_float"></block>';
     toolbox += '  </category>';
-    toolbox += '  <category name=" ' + catText +'">';
+    toolbox += '  <category name=" ' + catText + '">';
     toolbox += '     <block type="text"></block>';
     toolbox += '     <block type="text_join"></block>';
     toolbox += '     <block type="text_append">';
@@ -296,7 +296,7 @@ Blockly.Yadoms.CreateToolbox_ = function() {
     toolbox += '     <block type="text_trim"></block>';
     toolbox += '     <block type="text_print"></block>';
     toolbox += '  </category>';
-    toolbox += '  <category name=" ' + catLists +'">';
+    toolbox += '  <category name=" ' + catLists + '">';
     toolbox += '     <block type="lists_create_empty"></block>';
     toolbox += '     <block type="lists_create_with"></block>';
     toolbox += '     <block type="lists_repeat">';
@@ -344,7 +344,7 @@ Blockly.Yadoms.CreateToolbox_ = function() {
     toolbox += '        </value>';
     toolbox += '     </block>';
     toolbox += '  </category>';
-    toolbox += '  <category name=" ' + catColour +'">';
+    toolbox += '  <category name=" ' + catColour + '">';
     toolbox += '     <block type="colour_picker"></block>';
     toolbox += '     <block type="colour_random"></block>';
     toolbox += '     <block type="colour_rgb">';
@@ -400,22 +400,22 @@ Blockly.Yadoms.CreateToolbox_ = function() {
  * @constructor
  * @private
  */
-Blockly.Yadoms.LoadLanguageScript_ = function(callback) {
+Blockly.Yadoms.LoadLanguageScript_ = function (callback) {
 
     //first try to load user specific language
     var currentLng = i18n.options.lng.substring(0, 2);
 
-    $.getScript( "libs/blockly/js/locales/" + currentLng + ".js" )
-        .done(function() {
+    $.getScript("libs/blockly/js/locales/" + currentLng + ".js")
+        .done(function () {
             callback();
         })
-        .fail(function() {
+        .fail(function () {
             console.warning("Fail to load Blockly for " + currentLng);
             //if it fails, load english one
-            $.getScript( "libs/blockly/js/locales/en.js" )
-                .done(function() {
+            $.getScript("libs/blockly/js/locales/en.js")
+                .done(function () {
                     callback();
-                }.fail(function() {
+                }.fail(function () {
                     callback();
                 }));
         });
@@ -428,12 +428,12 @@ Blockly.Yadoms.LoadLanguageScript_ = function(callback) {
  * @param maxTopBlocks The maximum number of TopBlocks
  * @constructor
  */
-Blockly.Yadoms.Initialize = function($domTarget, initialContent, maxTopBlocks) {
+Blockly.Yadoms.Initialize = function ($domTarget, initialContent, maxTopBlocks) {
     Blockly.Yadoms.data = Blockly.Yadoms.LoadDataForBlocklyCustomBlocks_();
 
     $domTarget.append("<div class=\"blockly-container\"></div>");
 
-    Blockly.Yadoms.LoadLanguageScript_(function() {
+    Blockly.Yadoms.LoadLanguageScript_(function () {
         //inject blockly dom+js
 
         Blockly.Yadoms.CurrentWorkspace = Blockly.inject($domTarget.find("div.blockly-container")[0],
@@ -452,7 +452,8 @@ Blockly.Yadoms.Initialize = function($domTarget, initialContent, maxTopBlocks) {
                 scrollbars: true,
                 toolbox: Blockly.Yadoms.CreateToolbox_(),
                 zoom:
-                {enabled: true,
+                {
+                    enabled: true,
                     controls: true,
                     wheel: true,
                     maxScale: 2,
@@ -462,7 +463,7 @@ Blockly.Yadoms.Initialize = function($domTarget, initialContent, maxTopBlocks) {
             });
 
         //load initial content if exists
-        if(!isNullOrUndefinedOrEmpty(initialContent)) {
+        if (!isNullOrUndefinedOrEmpty(initialContent)) {
             var xml = Blockly.Xml.textToDom(initialContent);
             Blockly.Xml.domToWorkspace(Blockly.Yadoms.CurrentWorkspace, xml);
         }
@@ -482,11 +483,11 @@ Blockly.Yadoms.Initialize = function($domTarget, initialContent, maxTopBlocks) {
  * @constructor
  * @private
  */
-Blockly.Yadoms.PluginHasKeywordMatching_ = function(plugin, canWrite, allowedKeywordTypes, allowedKeywordCapacities) {
+Blockly.Yadoms.PluginHasKeywordMatching_ = function (plugin, canWrite, allowedKeywordTypes, allowedKeywordCapacities) {
     var currentPluginMatch = false;
 
-    $.each(Blockly.Yadoms.data.devices, function(index, device) {
-        if(device.pluginId == plugin.id) {
+    $.each(Blockly.Yadoms.data.devices, function (index, device) {
+        if (device.pluginId == plugin.id) {
             if (Blockly.Yadoms.DeviceHasKeywordMatching_(device, canWrite, allowedKeywordTypes, allowedKeywordCapacities) == true) {
                 currentPluginMatch = true;
                 return false; //break the $.each, but do not return function
@@ -507,11 +508,11 @@ Blockly.Yadoms.PluginHasKeywordMatching_ = function(plugin, canWrite, allowedKey
  * @constructor
  * @private
  */
-Blockly.Yadoms.DeviceHasKeywordMatching_ = function(device, canWrite, allowedKeywordTypes, allowedKeywordCapacities) {
+Blockly.Yadoms.DeviceHasKeywordMatching_ = function (device, canWrite, allowedKeywordTypes, allowedKeywordCapacities) {
     var currentDeviceMatch = false;
 
-    $.each(Blockly.Yadoms.data.keywords, function(index, keyword) {
-        if(keyword.deviceId == device.id) {
+    $.each(Blockly.Yadoms.data.keywords, function (index, keyword) {
+        if (keyword.deviceId == device.id) {
             if (Blockly.Yadoms.KeywordMatching_(keyword, canWrite, allowedKeywordTypes, allowedKeywordCapacities) == true) {
                 currentDeviceMatch = true;
                 return false; //break the $.each, but do not return function
@@ -531,12 +532,12 @@ Blockly.Yadoms.DeviceHasKeywordMatching_ = function(device, canWrite, allowedKey
  * @constructor
  * @private
  */
-Blockly.Yadoms.KeywordMatching_ = function(keyword, canWrite, allowedKeywordTypes, allowedKeywordCapacities) {
+Blockly.Yadoms.KeywordMatching_ = function (keyword, canWrite, allowedKeywordTypes, allowedKeywordCapacities) {
     //filter on readonly
-    if(canWrite && !keyword.isWritable()) {
+    if (canWrite && !keyword.isWritable()) {
         return false;
     }
-    
+
     var matchTypes = Blockly.Yadoms.KeywordMatchingType_(keyword, allowedKeywordTypes);
     var matchCapacity = Blockly.Yadoms.KeywordMatchingCapacity_(keyword, allowedKeywordCapacities);
     return matchTypes && matchCapacity;
@@ -550,8 +551,8 @@ Blockly.Yadoms.KeywordMatching_ = function(keyword, canWrite, allowedKeywordType
  * @constructor
  * @private
  */
-Blockly.Yadoms.KeywordMatchingType_ = function(keyword, allowedKeywordTypes) {
-    if(allowedKeywordTypes != null && allowedKeywordTypes != undefined) {
+Blockly.Yadoms.KeywordMatchingType_ = function (keyword, allowedKeywordTypes) {
+    if (allowedKeywordTypes != null && allowedKeywordTypes != undefined) {
         return $.inArray(keyword.type.toLowerCase(), allowedKeywordTypes) != -1;
     }
     //if allowedKeywordTypes is null or empty
@@ -566,8 +567,8 @@ Blockly.Yadoms.KeywordMatchingType_ = function(keyword, allowedKeywordTypes) {
  * @constructor
  * @private
  */
-Blockly.Yadoms.KeywordMatchingCapacity_ = function(keyword, allowedKeywordCapacities) {
-    if(allowedKeywordCapacities != null && allowedKeywordCapacities != undefined) {
+Blockly.Yadoms.KeywordMatchingCapacity_ = function (keyword, allowedKeywordCapacities) {
+    if (allowedKeywordCapacities != null && allowedKeywordCapacities != undefined) {
         return $.inArray(keyword.capacityName.toLowerCase(), allowedKeywordCapacities) != -1;
     }
     //if allowedKeywordCapacities is null or empty
@@ -583,11 +584,11 @@ Blockly.Yadoms.KeywordMatchingCapacity_ = function(keyword, allowedKeywordCapaci
  * @constructor
  * @private
  */
-Blockly.Yadoms.LoadPlugins_ = function(canWrite, allowedKeywordTypes, allowedKeywordCapacities) {
+Blockly.Yadoms.LoadPlugins_ = function (canWrite, allowedKeywordTypes, allowedKeywordCapacities) {
 
     var pluginList = [];
-    $.each(Blockly.Yadoms.data.plugins, function(index, plugin) {
-        if(Blockly.Yadoms.PluginHasKeywordMatching_(plugin, canWrite, allowedKeywordTypes, allowedKeywordCapacities)) {
+    $.each(Blockly.Yadoms.data.plugins, function (index, plugin) {
+        if (Blockly.Yadoms.PluginHasKeywordMatching_(plugin, canWrite, allowedKeywordTypes, allowedKeywordCapacities)) {
             pluginList.push([plugin.displayName, plugin.id]);
         }
     });
@@ -604,11 +605,11 @@ Blockly.Yadoms.LoadPlugins_ = function(canWrite, allowedKeywordTypes, allowedKey
  * @constructor
  * @private
  */
-Blockly.Yadoms.LoadDevices_ = function(selectedPluginId, canWrite, allowedKeywordTypes, allowedKeywordCapacities) {
+Blockly.Yadoms.LoadDevices_ = function (selectedPluginId, canWrite, allowedKeywordTypes, allowedKeywordCapacities) {
 
     var deviceList = [];
-    $.each(Blockly.Yadoms.data.devices, function(index, device) {
-        if(device.pluginId == selectedPluginId) {
+    $.each(Blockly.Yadoms.data.devices, function (index, device) {
+        if (device.pluginId == selectedPluginId) {
             if (Blockly.Yadoms.DeviceHasKeywordMatching_(device, canWrite, allowedKeywordTypes, allowedKeywordCapacities)) {
                 deviceList.push([device.friendlyName, device.id]);
             }
@@ -627,11 +628,11 @@ Blockly.Yadoms.LoadDevices_ = function(selectedPluginId, canWrite, allowedKeywor
  * @constructor
  * @private
  */
-Blockly.Yadoms.LoadKeywords_ = function(selectedDeviceId, canWrite, allowedKeywordTypes, allowedKeywordCapacities) {
+Blockly.Yadoms.LoadKeywords_ = function (selectedDeviceId, canWrite, allowedKeywordTypes, allowedKeywordCapacities) {
 
     var keywordList = [];
-    $.each(Blockly.Yadoms.data.keywords, function(index, keyword) {
-        if(keyword.deviceId == selectedDeviceId) {
+    $.each(Blockly.Yadoms.data.keywords, function (index, keyword) {
+        if (keyword.deviceId == selectedDeviceId) {
             if (Blockly.Yadoms.KeywordMatching_(keyword, canWrite, allowedKeywordTypes, allowedKeywordCapacities)) {
                 keywordList.push([keyword.friendlyName, keyword.id]);
             }
@@ -647,9 +648,9 @@ Blockly.Yadoms.LoadKeywords_ = function(selectedDeviceId, canWrite, allowedKeywo
  * @constructor
  * @private
  */
-Blockly.Yadoms.LoadRecipients_ = function() {
+Blockly.Yadoms.LoadRecipients_ = function () {
     var recipientList = [];
-    $.each(Blockly.Yadoms.data.recipients, function(index, recipient) {
+    $.each(Blockly.Yadoms.data.recipients, function (index, recipient) {
         recipientList.push([recipient.toString(), recipient.id]);
     });
     return recipientList;
@@ -664,7 +665,7 @@ Blockly.Yadoms.LoadRecipients_ = function() {
  * @param yadomsTypeName The yadoms type name. In case of enum, this is the internal enum name
  */
 Blockly.Yadoms.GetBlocklyType_ = function (yadomsKeywordType, yadomsTypeName) {
-    switch(yadomsKeywordType.toLowerCase()){
+    switch (yadomsKeywordType.toLowerCase()) {
         case "numeric":
             return "Number";
         case "string":
@@ -687,14 +688,14 @@ Blockly.Yadoms.GetBlocklyType_ = function (yadomsKeywordType, yadomsTypeName) {
  * @param type The block type
  * @constructor
  */
-Blockly.Yadoms.UpdateBlockColour_ = function(self, type) {
-    if(type == "String")
+Blockly.Yadoms.UpdateBlockColour_ = function (self, type) {
+    if (type == "String")
         self.setColour(160);
-    else if(type == "Boolean")
+    else if (type == "Boolean")
         self.setColour(210);
-    else if(type == "Number")
+    else if (type == "Number")
         self.setColour(230);
-    else if(type == "null" ||  type == null || type == undefined)
+    else if (type == "null" || type == null || type == undefined)
         self.setColour(230);
     else
         self.setColour(20);
@@ -713,33 +714,33 @@ Blockly.Yadoms.UpdateBlockColour_ = function(self, type) {
  * @param keywordDropDownName The name of the keywords DropDown
  * @constructor
  */
-Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function(thisBlock, canWrite, allowedKeywordTypes, allowedKeywordCapacities, callbackKeywordSelectionChanged, pluginDropDownName, deviceDropDownName, keywordDropDownName, inputType, inputName) {
+Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function (thisBlock, canWrite, allowedKeywordTypes, allowedKeywordCapacities, callbackKeywordSelectionChanged, pluginDropDownName, deviceDropDownName, keywordDropDownName, inputType, inputName) {
     var pluginDd, deviceDd, keywordDd;
 
 
     //plugin list is static (do not need to update it on each dropdown click)
     var pList = Blockly.Yadoms.LoadPlugins_(canWrite, allowedKeywordTypes, allowedKeywordCapacities);
-    if(pList == null || pList == undefined || pList.length == 0) {
+    if (pList == null || pList == undefined || pList.length == 0) {
         thisBlock.setDisabled(true);
-        pList = [[$.t("blockly.invalid") , "invalid"]];
+        pList = [[$.t("blockly.invalid"), "invalid"]];
     }
 
     //create the plugin dropdown
-    pluginDd = new Blockly.FieldDropdown(pList, function(plugin) {
-        if(!thisBlock.disabled)
+    pluginDd = new Blockly.FieldDropdown(pList, function (plugin) {
+        if (!thisBlock.disabled)
             deviceDd.refresh(Blockly.Yadoms.LoadDevices_(plugin, canWrite, allowedKeywordTypes, allowedKeywordCapacities));
     });
 
 
-    deviceDd = new Blockly.FieldDropdown(function() {
-        var deviceList= Blockly.Yadoms.LoadDevices_(pluginDd.getValue(), canWrite, allowedKeywordTypes, allowedKeywordCapacities);
-        if(deviceList == null || deviceList == undefined || deviceList.length == 0) {
+    deviceDd = new Blockly.FieldDropdown(function () {
+        var deviceList = Blockly.Yadoms.LoadDevices_(pluginDd.getValue(), canWrite, allowedKeywordTypes, allowedKeywordCapacities);
+        if (deviceList == null || deviceList == undefined || deviceList.length == 0) {
             thisBlock.setDisabled(true);
-            deviceList = [[$.t("blockly.invalid") , "invalid"]];
+            deviceList = [[$.t("blockly.invalid"), "invalid"]];
         }
         return deviceList;
-    }, function(device) {
-        if(!thisBlock.disabled) {
+    }, function (device) {
+        if (!thisBlock.disabled) {
             var keywordList = Blockly.Yadoms.LoadKeywords_(device, canWrite, allowedKeywordTypes, allowedKeywordCapacities);
             keywordDd.refresh(keywordList);
 
@@ -752,133 +753,133 @@ Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function(thisBlock, can
                 If only one keyword is available, and only one device available
                 Then don't show keyword and device dropdown
              */
-             
-             
-             //This code block allow to hide dropdowns when only one item is available.
-             /*
-             var pluginText = pluginDd.getText();
-             var deviceText = deviceDd.getText();
-             var keywordText = keywordDd.getText();
-             
-            //if only one item is available, and if keyword list contains one item, then just hide dropdown
-            if (keywordList.length == 1 && deviceDd.getOptions_().length == 1) {
-                deviceDd.setVisible(false);
-                
-                //append the device name to the plugin dropdown (only if not the same name)
-                if(deviceText.toLowerCase() != keywordText.toLowerCase() && pluginText.toLowerCase() != deviceText.toLowerCase()) {
-                   pluginDd.setText(pluginText + "(" + deviceText + "." + keywordText + ")" );
-                } else if(deviceText.toLowerCase() != keywordText.toLowerCase() && pluginText.toLowerCase() == deviceText.toLowerCase()) {
-                   pluginDd.setText(pluginText + "(" + keywordText + ")" );
-                } else if(deviceText.toLowerCase() == keywordText.toLowerCase() && pluginText.toLowerCase() != deviceText.toLowerCase()) {
-                   pluginDd.setText(pluginText + "(" + deviceText + ")" );
-                }
-                
-            } else {
-                deviceDd.setVisible(true);
-            }
 
-            //if only one keyword item is available, the just hide keyword dropdown
-            if (keywordList.length == 1) {
-                keywordDd.setVisible(false);
-                
-                
-                if(deviceText.toLowerCase() != keywordText.toLowerCase()) {
-                   deviceDd.setText(deviceText + "." + keywordText);
-                }
-                
-            } else {
-                keywordDd.setVisible(true);
-            }
-            */
+
+            //This code block allow to hide dropdowns when only one item is available.
+            /*
+            var pluginText = pluginDd.getText();
+            var deviceText = deviceDd.getText();
+            var keywordText = keywordDd.getText();
+            
+           //if only one item is available, and if keyword list contains one item, then just hide dropdown
+           if (keywordList.length == 1 && deviceDd.getOptions_().length == 1) {
+               deviceDd.setVisible(false);
+               
+               //append the device name to the plugin dropdown (only if not the same name)
+               if(deviceText.toLowerCase() != keywordText.toLowerCase() && pluginText.toLowerCase() != deviceText.toLowerCase()) {
+                  pluginDd.setText(pluginText + "(" + deviceText + "." + keywordText + ")" );
+               } else if(deviceText.toLowerCase() != keywordText.toLowerCase() && pluginText.toLowerCase() == deviceText.toLowerCase()) {
+                  pluginDd.setText(pluginText + "(" + keywordText + ")" );
+               } else if(deviceText.toLowerCase() == keywordText.toLowerCase() && pluginText.toLowerCase() != deviceText.toLowerCase()) {
+                  pluginDd.setText(pluginText + "(" + deviceText + ")" );
+               }
+               
+           } else {
+               deviceDd.setVisible(true);
+           }
+
+           //if only one keyword item is available, the just hide keyword dropdown
+           if (keywordList.length == 1) {
+               keywordDd.setVisible(false);
+               
+               
+               if(deviceText.toLowerCase() != keywordText.toLowerCase()) {
+                  deviceDd.setText(deviceText + "." + keywordText);
+               }
+               
+           } else {
+               keywordDd.setVisible(true);
+           }
+           */
         }
     });
 
 
-    keywordDd = new Blockly.FieldDropdown(function() {
-        var keywordList= Blockly.Yadoms.LoadKeywords_(deviceDd.getValue(), canWrite, allowedKeywordTypes, allowedKeywordCapacities);
-        if(keywordList == null || keywordList == undefined || keywordList.length == 0) {
+    keywordDd = new Blockly.FieldDropdown(function () {
+        var keywordList = Blockly.Yadoms.LoadKeywords_(deviceDd.getValue(), canWrite, allowedKeywordTypes, allowedKeywordCapacities);
+        if (keywordList == null || keywordList == undefined || keywordList.length == 0) {
             thisBlock.setDisabled(true);
-            keywordList = [[$.t("blockly.invalid") , "invalid"]];
+            keywordList = [[$.t("blockly.invalid"), "invalid"]];
         }
         return keywordList;
-    }, function(keyword) {
+    }, function (keyword) {
         if (!thisBlock.disabled) {
 
-            var yadomsTypeName="";
-            if(!isNullOrUndefined(Blockly.Yadoms.data.keywords[keyword].typeInfo) && !isNullOrUndefined(Blockly.Yadoms.data.keywords[keyword].typeInfo.name))
-                yadomsTypeName =  Blockly.Yadoms.data.keywords[keyword].typeInfo.name;
+            var yadomsTypeName = "";
+            if (!isNullOrUndefined(Blockly.Yadoms.data.keywords[keyword].typeInfo) && !isNullOrUndefined(Blockly.Yadoms.data.keywords[keyword].typeInfo.name))
+                yadomsTypeName = Blockly.Yadoms.data.keywords[keyword].typeInfo.name;
 
             var type = Blockly.Yadoms.GetBlocklyType_(Blockly.Yadoms.data.keywords[keyword].type, yadomsTypeName);
-            if(callbackKeywordSelectionChanged) {
-               callbackKeywordSelectionChanged(keyword, type);
+            if (callbackKeywordSelectionChanged) {
+                callbackKeywordSelectionChanged(keyword, type);
             }
         }
     });
 
     //add event fire value changed
-    pluginDd.setValue =function(newValue) {
+    pluginDd.setValue = function (newValue) {
         var result = Blockly.FieldDropdown.prototype.setValue.call(this, newValue);
-        if(!isNullOrUndefined(this.changeHandler_) && $.isFunction(this.changeHandler_))
+        if (!isNullOrUndefined(this.changeHandler_) && $.isFunction(this.changeHandler_))
             this.changeHandler_(this.getValue());
         return result;
     };
 
     //add event fire value changed
-    deviceDd.setValue =function(newValue) {
+    deviceDd.setValue = function (newValue) {
         var result = Blockly.FieldDropdown.prototype.setValue.call(this, newValue);
-        if(!isNullOrUndefined(this.changeHandler_) && $.isFunction(this.changeHandler_))
+        if (!isNullOrUndefined(this.changeHandler_) && $.isFunction(this.changeHandler_))
             this.changeHandler_(this.getValue());
         return result;
     };
 
 
     //add event fire value changed
-    keywordDd.setValue =function(newValue) {
+    keywordDd.setValue = function (newValue) {
         var result = Blockly.FieldDropdown.prototype.setValue.call(this, newValue);
-        if(!isNullOrUndefined(this.changeHandler_) && $.isFunction(this.changeHandler_))
+        if (!isNullOrUndefined(this.changeHandler_) && $.isFunction(this.changeHandler_))
             this.changeHandler_(this.getValue());
         return result;
     };
 
 
-    thisBlock.getSelectedKeyword = function() {
+    thisBlock.getSelectedKeyword = function () {
         return keywordDd.getValue();
     };
-    thisBlock.getSelectedDevice = function() {
+    thisBlock.getSelectedDevice = function () {
         return deviceDd.getValue();
     };
-    thisBlock.getSelectedPlugin = function() {
+    thisBlock.getSelectedPlugin = function () {
         return pluginDd.getValue();
     };
 
     var inputNameToUse = inputName;
-    if(isNullOrUndefined(inputName)) {
-       inputNameToUse = "YadomsSelection";
+    if (isNullOrUndefined(inputName)) {
+        inputNameToUse = "YadomsSelection";
     }
-    
+
     var result;
-    if(inputType == "statement") {
-       result = thisBlock.appendStatementInput(inputNameToUse)
-           .appendField(pluginDd, pluginDropDownName)
-           .appendField(deviceDd, deviceDropDownName)
-           .appendField(keywordDd, keywordDropDownName);
+    if (inputType == "statement") {
+        result = thisBlock.appendStatementInput(inputNameToUse)
+            .appendField(pluginDd, pluginDropDownName)
+            .appendField(deviceDd, deviceDropDownName)
+            .appendField(keywordDd, keywordDropDownName);
     }
     else {
-       if(!isNullOrUndefined(inputType)) {
-          result = inputType
-              .appendField(pluginDd, pluginDropDownName)
-              .appendField(deviceDd, deviceDropDownName)
-              .appendField(keywordDd, keywordDropDownName);
-       } else {
-          result = thisBlock.appendDummyInput(inputNameToUse)
-              .appendField(pluginDd, pluginDropDownName)
-              .appendField(deviceDd, deviceDropDownName)
-              .appendField(keywordDd, keywordDropDownName);
-       }
+        if (!isNullOrUndefined(inputType)) {
+            result = inputType
+                .appendField(pluginDd, pluginDropDownName)
+                .appendField(deviceDd, deviceDropDownName)
+                .appendField(keywordDd, keywordDropDownName);
+        } else {
+            result = thisBlock.appendDummyInput(inputNameToUse)
+                .appendField(pluginDd, pluginDropDownName)
+                .appendField(deviceDd, deviceDropDownName)
+                .appendField(keywordDd, keywordDropDownName);
+        }
     }
 
     pluginDd.changeHandler_(pluginDd.getValue());
-   return result;
+    return result;
 };
 
 
@@ -889,7 +890,7 @@ Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function(thisBlock, can
  * @param callback A callback to receive results (xml, python)
  * @constructor
  */
-Blockly.Yadoms.GetResult = function(language, callback) {
+Blockly.Yadoms.GetResult = function (language, callback) {
     assert(!isNullOrUndefined(callback), "callback must be defined");
 
     //get xml code
@@ -906,7 +907,7 @@ Blockly.Yadoms.GetResult = function(language, callback) {
     var completedPythonCode = '# yMain is the script entry point, called by Yadoms\n';
     completedPythonCode += 'import time\n';
     completedPythonCode += '\n';
-    completedPythonCode +='def yMain(yApi):\n';
+    completedPythonCode += 'def yMain(yApi):\n';
     completedPythonCode += "\tprint ('Script started')\n";
     completedPythonCode += pythonCodeIndented;
 
@@ -921,23 +922,23 @@ Blockly.Yadoms.GetResult = function(language, callback) {
  * @param data The new dropdown values
  * @param tryToSelectValue The value of new values to select
  */
-Blockly.FieldDropdown.prototype.refresh = function(data, tryToSelectValue) {
-    if(data != undefined && data.length >0) {
+Blockly.FieldDropdown.prototype.refresh = function (data, tryToSelectValue) {
+    if (data != undefined && data.length > 0) {
         this.menuGenerator_ = data;
 
         var valueFound = false;
-        $.each(data, function(index, val){
-           if(val[1] == tryToSelectValue)
-               valueFound =true;
+        $.each(data, function (index, val) {
+            if (val[1] == tryToSelectValue)
+                valueFound = true;
         });
 
-        if(isNullOrUndefined(tryToSelectValue) || !valueFound)
+        if (isNullOrUndefined(tryToSelectValue) || !valueFound)
             this.setValue(data[0][1]);
         else
             this.setValue(tryToSelectValue);
-//        this.updateTextNode_();
-//        if(!isNullOrUndefined(this.changeHandler_) && $.isFunction(this.changeHandler_))
-//            this.changeHandler_(this.getValue());
+        //        this.updateTextNode_();
+        //        if(!isNullOrUndefined(this.changeHandler_) && $.isFunction(this.changeHandler_))
+        //            this.changeHandler_(this.getValue());
     }
 };
 
@@ -966,15 +967,15 @@ Blockly.FieldDropdown.prototype.refresh = function(data, tryToSelectValue) {
  * @type {{init: Function}}
  */
 Blockly.Blocks['yadoms_keyword_value'] = {
-    pluginDropDownName : "Plugin",
-    deviceDropDownName : "Device",
-    keywordDropDownName : "Keyword",
+    pluginDropDownName: "Plugin",
+    deviceDropDownName: "Device",
+    keywordDropDownName: "Keyword",
     init: function () {
 
         //set custom block parameters
         this.setInputsInline(true);
         this.setOutput(true);
-        this.setTooltip($.t("blockly.blocks.yadoms_keyword_value.tooltip", {defaultValue:''}));
+        this.setTooltip($.t("blockly.blocks.yadoms_keyword_value.tooltip", { defaultValue: '' }));
         this.setHelpUrl('http://www.example.com/');
 
         var thisBlock = this;
@@ -985,8 +986,8 @@ Blockly.Blocks['yadoms_keyword_value'] = {
                 typeToSet("null"); //any type allowed
 
             //make it compatible with older blockly version
-            $.isFunction(thisBlock.changeOutput)?thisBlock.changeOutput(typeToSet):thisBlock.outputConnection.setCheck(typeToSet);
-           
+            $.isFunction(thisBlock.changeOutput) ? thisBlock.changeOutput(typeToSet) : thisBlock.outputConnection.setCheck(typeToSet);
+
             Blockly.Yadoms.UpdateBlockColour_(thisBlock, keywordType);
         }, this.pluginDropDownName, this.deviceDropDownName, this.keywordDropDownName);
     }
@@ -999,24 +1000,24 @@ Blockly.Blocks['yadoms_keyword_value'] = {
  * @param block The block
  * @return {*[]}
  */
-Blockly.Python['yadoms_keyword_value'] = function(block) {
+Blockly.Python['yadoms_keyword_value'] = function (block) {
 
     var dropdown_keyword = block.getSelectedKeyword();
-    
+
     var readCommand = 'yApi.readKeyword(' + dropdown_keyword + ')';
 
-    if(Blockly.Yadoms.CurrentGenerationBlockIsTimed_ == true && Blockly.Yadoms.CurrentGenerationBlockTime_ != undefined) {
-       readCommand = 'yApi.readKeywordAt(' + dropdown_keyword + ', "' + Blockly.Yadoms.CurrentGenerationBlockTime_.toISOString() + '")';
+    if (Blockly.Yadoms.CurrentGenerationBlockIsTimed_ == true && Blockly.Yadoms.CurrentGenerationBlockTime_ != undefined) {
+        readCommand = 'yApi.readKeywordAt(' + dropdown_keyword + ', "' + Blockly.Yadoms.CurrentGenerationBlockTime_.toISOString() + '")';
     }
-    
+
     var keyword = Blockly.Yadoms.data.keywords[dropdown_keyword];
     var code = "";
 
-    switch(keyword.type) {
+    switch (keyword.type) {
         case 'numeric':
             code = 'float(' + readCommand + ')';
             break;
-        case 'boolean' :
+        case 'boolean':
             code = 'bool(' + readCommand + ')';
             break;
         default:
@@ -1033,57 +1034,57 @@ Blockly.Python['yadoms_keyword_value'] = function(block) {
  * @type {{inputValueName: string, operatorValueName: string, init: Function, updateShape_: Function}}
  */
 Blockly.Blocks['yadoms_affect_keyword'] = {
-    inputValueName : "Value",
-    operatorValueName : "operator",
-    unitsInputName : "units",
-    pluginDropDownName : "Plugin",
-    deviceDropDownName : "Device",
-    keywordDropDownName : "Keyword",
-    inputValueShown : false,
-  init: function() {
-      this.setHelpUrl('http://www.example.com/');
-      this.setInputsInline(true);
-      this.setPreviousStatement(true, "null");
-      this.setNextStatement(true, "null");
-      this.setTooltip($.t("blockly.blocks.yadoms_affect_keyword.tooltip", {defaultValue:''}));
-      this.setColour(0);
+    inputValueName: "Value",
+    operatorValueName: "operator",
+    unitsInputName: "units",
+    pluginDropDownName: "Plugin",
+    deviceDropDownName: "Device",
+    keywordDropDownName: "Keyword",
+    inputValueShown: false,
+    init: function () {
+        this.setHelpUrl('http://www.example.com/');
+        this.setInputsInline(true);
+        this.setPreviousStatement(true, "null");
+        this.setNextStatement(true, "null");
+        this.setTooltip($.t("blockly.blocks.yadoms_affect_keyword.tooltip", { defaultValue: '' }));
+        this.setColour(0);
 
-      this.appendDummyInput()
-          .appendField($.t("blockly.blocks.yadoms_affect_keyword.title"));
-      var thisBlock = this;
+        this.appendDummyInput()
+            .appendField($.t("blockly.blocks.yadoms_affect_keyword.title"));
+        var thisBlock = this;
 
-      Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection(this, true, ["numeric", "string", "bool", "nodata", "enum"], undefined, function (keyword, keywordType) {
-          if (keywordType == null || keywordType == undefined) {
-              thisBlock.updateShape_(false);
-          }
-          else {
-              thisBlock.updateShape_(true);
-              thisBlock.getInput(thisBlock.inputValueName).setCheck(keywordType);
-          }
-          thisBlock.updateUnit(Blockly.Yadoms.data.keywords[keyword]);
-      }, thisBlock.pluginDropDownName, thisBlock.deviceDropDownName, thisBlock.keywordDropDownName);
+        Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection(this, true, ["numeric", "string", "bool", "nodata", "enum"], undefined, function (keyword, keywordType) {
+            if (keywordType == null || keywordType == undefined) {
+                thisBlock.updateShape_(false);
+            }
+            else {
+                thisBlock.updateShape_(true);
+                thisBlock.getInput(thisBlock.inputValueName).setCheck(keywordType);
+            }
+            thisBlock.updateUnit(Blockly.Yadoms.data.keywords[keyword]);
+        }, thisBlock.pluginDropDownName, thisBlock.deviceDropDownName, thisBlock.keywordDropDownName);
 
 
-      /**
-       * Method which make type checks when one of connector changes
-       */
-      this.onchange = function() {
-          var keywordValue = thisBlock.getSelectedKeyword();
-          var deviceValue = thisBlock.getSelectedDevice();
-          var pluginValue = thisBlock.getSelectedPlugin();
+        /**
+         * Method which make type checks when one of connector changes
+         */
+        this.onchange = function () {
+            var keywordValue = thisBlock.getSelectedKeyword();
+            var deviceValue = thisBlock.getSelectedDevice();
+            var pluginValue = thisBlock.getSelectedPlugin();
 
-          var inputValue = thisBlock.getInput(thisBlock.inputValueName);
-          if (!inputValue) {
-              return;  // Block under construction, ignore.
-          }
-          var block = inputValue.connection.targetBlock();
-          if (block) {
-              if(block.type == "yadoms_enumeration") {
-                  block.updateEnumeration(keywordValue, deviceValue, pluginValue);
-              }
-          }
-      };
-  },
+            var inputValue = thisBlock.getInput(thisBlock.inputValueName);
+            if (!inputValue) {
+                return;  // Block under construction, ignore.
+            }
+            var block = inputValue.connection.targetBlock();
+            if (block) {
+                if (block.type == "yadoms_enumeration") {
+                    block.updateEnumeration(keywordValue, deviceValue, pluginValue);
+                }
+            }
+        };
+    },
 
     /**
      * Modify this block to have (or not have) an input for 'is divisible by'.
@@ -1091,7 +1092,7 @@ Blockly.Blocks['yadoms_affect_keyword'] = {
      * @private
      * @this Blockly.Block
      */
-    updateShape_: function(extraInput) {
+    updateShape_: function (extraInput) {
 
         var opExist = this.getInput(this.operatorValueName);
         var inExist = this.getInput(this.inputValueName);
@@ -1115,12 +1116,12 @@ Blockly.Blocks['yadoms_affect_keyword'] = {
         }
     },
 
-    updateUnit : function(keyword) {
+    updateUnit: function (keyword) {
         var unitsExist = this.getInput(this.unitsInputName);
-        if(unitsExist)
+        if (unitsExist)
             this.removeInput(this.unitsInputName);
 
-        if(!isNullOrUndefined(keyword) && !isNullOrUndefinedOrEmpty(keyword.units) ) {
+        if (!isNullOrUndefined(keyword) && !isNullOrUndefinedOrEmpty(keyword.units)) {
             this.appendDummyInput(this.unitsInputName).appendField($.t(keyword.units));
         }
     },
@@ -1132,7 +1133,7 @@ Blockly.Blocks['yadoms_affect_keyword'] = {
      * @return {Element} XML storage element.
      * @this Blockly.Block
      */
-    mutationToDom: function() {
+    mutationToDom: function () {
         var container = document.createElement('mutation');
         //attribute name must be lower case
         container.setAttribute('input_shown', this.inputValueShown);
@@ -1143,7 +1144,7 @@ Blockly.Blocks['yadoms_affect_keyword'] = {
      * @param {!Element} xmlElement XML storage element.
      * @this Blockly.Block
      */
-    domToMutation: function(xmlElement) {
+    domToMutation: function (xmlElement) {
         //attribute name must be lower case
         var inputValueShown = (xmlElement.getAttribute('input_shown') == 'true');
         this.updateShape_(inputValueShown);
@@ -1158,7 +1159,7 @@ Blockly.Blocks['yadoms_affect_keyword'] = {
  * @param block The block
  * @return {string}
  */
-Blockly.Python['yadoms_affect_keyword'] = function(block) {
+Blockly.Python['yadoms_affect_keyword'] = function (block) {
     var dropdown_keyword = block.getSelectedKeyword();
     var value = Blockly.Python.valueToCode(block, block.inputValueName, Blockly.Python.ORDER_RELATIONAL) || '0';
     return 'yApi.writeKeyword(' + dropdown_keyword + ', "' + value + '")\n';
@@ -1172,12 +1173,12 @@ Blockly.Python['yadoms_affect_keyword'] = function(block) {
  * Define a "FOR" mutator block for yadoms_logic_compare_is
  */
 Blockly.Blocks['yadoms_logic_compare_is_mutator_for'] = {
-    init: function() {
+    init: function () {
         this.setColour(210);
         this.setInputsInline(true);
         this.setPreviousStatement(true, "null");
         this.setNextStatement(false, "null");
-        this.setTooltip($.t("blockly.blocks.yadoms_logic_compare_is.for.tooltip", {defaultValue:''}));
+        this.setTooltip($.t("blockly.blocks.yadoms_logic_compare_is.for.tooltip", { defaultValue: '' }));
         this.appendDummyInput().appendField($.t("blockly.blocks.yadoms_logic_compare_is.for.title_long"));
         //noinspection JSValidateTypes
         this.contextMenu = false;
@@ -1187,12 +1188,12 @@ Blockly.Blocks['yadoms_logic_compare_is_mutator_for'] = {
  * Define a "AT" mutator block for yadoms_logic_compare_is
  */
 Blockly.Blocks['yadoms_logic_compare_is_mutator_at'] = {
-    init: function() {
+    init: function () {
         this.setColour(210);
         this.setInputsInline(true);
         this.setPreviousStatement(true, "null");
         this.setNextStatement(false, "null");
-        this.setTooltip($.t("blockly.blocks.yadoms_logic_compare_is.at.tooltip", {defaultValue:''}));
+        this.setTooltip($.t("blockly.blocks.yadoms_logic_compare_is.at.tooltip", { defaultValue: '' }));
         this.appendDummyInput().appendField($.t("blockly.blocks.yadoms_logic_compare_is.at.title_long"));
         //noinspection JSValidateTypes
         this.contextMenu = false;
@@ -1202,7 +1203,7 @@ Blockly.Blocks['yadoms_logic_compare_is_mutator_at'] = {
  * Define the base mutator block for yadoms_logic_compare_is
  */
 Blockly.Blocks['yadoms_logic_compare_is_mutator'] = {
-    init: function() {
+    init: function () {
         this.setColour(Blockly.Blocks.logic.HUE);
         this.appendDummyInput()
             .appendField($.t("blockly.blocks.yadoms_logic_compare_is.title"));
@@ -1218,8 +1219,8 @@ Blockly.Blocks['yadoms_logic_compare_is_mutator'] = {
  * @type {{init: Function}}
  */
 Blockly.Blocks['yadoms_logic_compare_is'] = {
-    unitsInputName : "units",
-    init: function() {
+    unitsInputName: "units",
+    init: function () {
         this.setHelpUrl('http://www.example.com/');
         this.setColour(210);
         this.appendDummyInput()
@@ -1227,7 +1228,7 @@ Blockly.Blocks['yadoms_logic_compare_is'] = {
         this.appendValueInput("A");
         this.appendValueInput("B").appendField(new Blockly.FieldDropdown(Blockly.Yadoms.NumberOperators_), "OP");
         this.appendDummyInput().appendField(" ", "unit");
-        
+
         this.setInputsInline(true);
         this.setOutput(true, "Boolean");
 
@@ -1235,14 +1236,14 @@ Blockly.Blocks['yadoms_logic_compare_is'] = {
 
         var thisBlock = this;
 
-        this.durationUnitsEnum =[
+        this.durationUnitsEnum = [
             [$.t("blockly.global.durationUnits.seconds"), 'S'],
             [$.t("blockly.global.durationUnits.minutes"), 'M'],
             [$.t("blockly.global.durationUnits.hours"), 'H'],
             [$.t("blockly.global.durationUnits.days"), 'D']
         ];
-        
-        this.setTooltip(function() {
+
+        this.setTooltip(function () {
             var op = thisBlock.getFieldValue('OP');
             var TOOLTIPS = {
                 'EQ': Blockly.Msg.LOGIC_COMPARE_TOOLTIP_EQ,
@@ -1252,7 +1253,7 @@ Blockly.Blocks['yadoms_logic_compare_is'] = {
                 'GT': Blockly.Msg.LOGIC_COMPARE_TOOLTIP_GT,
                 'GTE': Blockly.Msg.LOGIC_COMPARE_TOOLTIP_GTE
             };
-            return $.t("blockly.blocks.yadoms_logic_compare_is.tooltip", {defaultValue:'', operand:TOOLTIPS[op]});
+            return $.t("blockly.blocks.yadoms_logic_compare_is.tooltip", { defaultValue: '', operand: TOOLTIPS[op] });
         });
 
 
@@ -1262,23 +1263,23 @@ Blockly.Blocks['yadoms_logic_compare_is'] = {
         /**
          * Method which update the operator list, according to the connected types
          */
-        this.updateOperator = function(newCheck) {
+        this.updateOperator = function (newCheck) {
             var selectedOperators = [[]];
-            if(newCheck == "String") {
+            if (newCheck == "String") {
                 selectedOperators = Blockly.Yadoms.StringOperators_;
-            } else if(newCheck == "Boolean") {
+            } else if (newCheck == "Boolean") {
                 selectedOperators = Blockly.Yadoms.BooleanOperators_;
-            } else if(newCheck == "Number") {
+            } else if (newCheck == "Number") {
                 selectedOperators = Blockly.Yadoms.NumberOperators_;
-            } else if(newCheck == "Any" || newCheck == null) {
+            } else if (newCheck == "Any" || newCheck == null) {
                 selectedOperators = Blockly.Yadoms.NumberOperators_;
             } else {
                 //specific types
                 selectedOperators = Blockly.Yadoms.BooleanOperators_;
             }
 
-            var operatorDropDown = $.isFunction(this.getField_)?this.getField_("OP"):this.getField("OP");
-            
+            var operatorDropDown = $.isFunction(this.getField_) ? this.getField_("OP") : this.getField("OP");
+
             //before replacing menuGenerator, get value to restore it after menu update
             var oldValue = operatorDropDown.getValue();
             operatorDropDown.menuGenerator_ = selectedOperators;
@@ -1293,18 +1294,18 @@ Blockly.Blocks['yadoms_logic_compare_is'] = {
          * Update the block unit
          * @param keyword The selected keyword
          */
-        this.updateUnit = function(keyword) {
+        this.updateUnit = function (keyword) {
             thisBlock.setFieldValue(" ", "unit");
-            if(!isNullOrUndefined(keyword) && !isNullOrUndefinedOrEmpty(keyword.units) ) {
-               thisBlock.setFieldValue(" " + $.t(keyword.units), "unit");
+            if (!isNullOrUndefined(keyword) && !isNullOrUndefinedOrEmpty(keyword.units)) {
+                thisBlock.setFieldValue(" " + $.t(keyword.units), "unit");
             }
-            
+
         };
 
         /**
          * Method which make type checks when one of connector changes
          */
-        this.onchange = function() {
+        this.onchange = function () {
 
             //check for A and B connected blocks
             var inputValueA = thisBlock.getInput("A");
@@ -1318,12 +1319,12 @@ Blockly.Blocks['yadoms_logic_compare_is'] = {
             var keywordValue = undefined;
             var deviceValue = undefined;
             var pluginValue = undefined;
-            if(blockA && blockA.type == "yadoms_keyword_value") {
+            if (blockA && blockA.type == "yadoms_keyword_value") {
                 keywordValue = blockA.getSelectedKeyword();
                 deviceValue = blockA.getSelectedDevice();
                 pluginValue = blockA.getSelectedPlugin();
             }
-            if(blockB && blockB.type == "yadoms_keyword_value") {
+            if (blockB && blockB.type == "yadoms_keyword_value") {
                 keywordValue = blockB.getSelectedKeyword();
                 deviceValue = blockB.getSelectedDevice();
                 pluginValue = blockB.getSelectedPlugin();
@@ -1331,15 +1332,15 @@ Blockly.Blocks['yadoms_logic_compare_is'] = {
 
             //update yadoms_enumeration if any
             if (blockA && blockB) {
-                if(blockA.type == "yadoms_keyword_value" && blockB.type == "yadoms_enumeration") {
+                if (blockA.type == "yadoms_keyword_value" && blockB.type == "yadoms_enumeration") {
                     blockB.updateEnumeration(keywordValue, deviceValue, pluginValue);
-                } else if(blockB.type == "yadoms_keyword_value" && blockA.type == "yadoms_enumeration") {
+                } else if (blockB.type == "yadoms_keyword_value" && blockA.type == "yadoms_enumeration") {
                     blockA.updateEnumeration(keywordValue, deviceValue, pluginValue);
                 }
             }
 
             //update units
-            if(keywordValue != undefined)
+            if (keywordValue != undefined)
                 thisBlock.updateUnit(Blockly.Yadoms.data.keywords[keywordValue]);
             else
                 thisBlock.updateUnit(undefined);
@@ -1347,12 +1348,12 @@ Blockly.Blocks['yadoms_logic_compare_is'] = {
 
             //update checks
             if (blockA) {
-                if(inputValueB.connection.check_ != blockA.outputConnection.check_) {
+                if (inputValueB.connection.check_ != blockA.outputConnection.check_) {
                     inputValueB.setCheck(blockA.outputConnection.check_);
                     thisBlock.updateOperator(blockA.outputConnection.check_);
                 }
             } else if (blockB) {
-                if(inputValueA.connection.check_ != blockB.outputConnection.check_) {
+                if (inputValueA.connection.check_ != blockB.outputConnection.check_) {
                     inputValueA.setCheck(blockB.outputConnection.check_);
                     thisBlock.updateOperator(blockB.outputConnection.check_);
                 }
@@ -1363,14 +1364,14 @@ Blockly.Blocks['yadoms_logic_compare_is'] = {
         };
 
     },
-    isAtMutator : false,
-    isForMutator : false,
+    isAtMutator: false,
+    isForMutator: false,
     /**
      * Create XML to represent whether the 'divisorInput' should be present.
      * @return {Element} XML storage element.
      * @this Blockly.Block
      */
-    mutationToDom: function() {
+    mutationToDom: function () {
         var container = document.createElement('mutation');
         container.setAttribute('for_mutator', this.isForMutator);
         container.setAttribute('at_mutator', this.isAtMutator);
@@ -1381,25 +1382,25 @@ Blockly.Blocks['yadoms_logic_compare_is'] = {
      * @param {!Element} xmlElement XML storage element.
      * @this Blockly.Block
      */
-    domToMutation: function(xmlElement) {
+    domToMutation: function (xmlElement) {
         var forMutator = (xmlElement.getAttribute('for_mutator') == 'true');
         var atMutator = (xmlElement.getAttribute('at_mutator') == 'true');
         this.updateShape_(forMutator, atMutator);
     },
 
-    
-        
-    updateShape_ : function(forMutator, atMutator) {
+
+
+    updateShape_: function (forMutator, atMutator) {
         // Disconnect all
         if (this.isForMutator) {
-            if(this.getInput("duration")) {
+            if (this.getInput("duration")) {
                 this.removeInput('duration_text');
                 this.removeInput('duration');
                 this.removeInput('duration_unit');
             }
         }
         if (this.isAtMutator) {
-            if(this.getInput("at")) {
+            if (this.getInput("at")) {
                 this.removeInput('at_text');
                 this.removeInput('at');
             }
@@ -1409,14 +1410,14 @@ Blockly.Blocks['yadoms_logic_compare_is'] = {
 
 
 
-        if(forMutator) {
+        if (forMutator) {
             this.appendDummyInput("duration_text").appendField($.t("blockly.blocks.yadoms_logic_compare_is.for.title"));
             this.appendDummyInput("duration").appendField(new Blockly.FieldTextInput('0', Blockly.FieldTextInput.numberValidator), 'duration').appendField(new Blockly.FieldDropdown(this.durationUnitsEnum), "durationUnit");
             this.isForMutator = true;
-        } else if(atMutator) {
+        } else if (atMutator) {
             this.appendDummyInput("at_text").appendField($.t("blockly.blocks.yadoms_logic_compare_is.at.title"));
             this.appendDummyInput("at")
-                .appendField(new Blockly.FieldTextInput('00:00', function(text) {
+                .appendField(new Blockly.FieldTextInput('00:00', function (text) {
                     if (text.match(/^([01]?[0-9]|2[0-3]):[0-5][0-9]/))
                         return text;
                     return "00:00";
@@ -1426,17 +1427,17 @@ Blockly.Blocks['yadoms_logic_compare_is'] = {
 
 
     },
-    decompose: function(workspace) {
+    decompose: function (workspace) {
         var topBlock = Blockly.Block.obtain(workspace, 'yadoms_logic_compare_is_mutator');
         topBlock.initSvg();
 
         var connection = topBlock.getInput('STACK').connection;
 
-        if(this.isForMutator) {
+        if (this.isForMutator) {
             var forBlock = Blockly.Block.obtain(workspace, 'yadoms_logic_compare_is_mutator_for');
             forBlock.initSvg();
             connection.connect(forBlock.previousConnection);
-        } else if(this.isAtMutator) {
+        } else if (this.isAtMutator) {
             var atBlock = Blockly.Block.obtain(workspace, 'yadoms_logic_compare_is_mutator_at');
             atBlock.initSvg();
             connection.connect(atBlock.previousConnection);
@@ -1448,7 +1449,7 @@ Blockly.Blocks['yadoms_logic_compare_is'] = {
      * @param {!Blockly.Block} containerBlock Root block in mutator.
      * @this Blockly.Block
      */
-    compose: function(containerBlock) {
+    compose: function (containerBlock) {
         // Rebuild the block's optional inputs.
 
         //get the mutator dialog result
@@ -1456,10 +1457,10 @@ Blockly.Blocks['yadoms_logic_compare_is'] = {
 
         var forMutator = false;
         var atMutator = false;
-        if(clauseBlock) {
-            if(clauseBlock.type == 'yadoms_logic_compare_is_mutator_for') {
+        if (clauseBlock) {
+            if (clauseBlock.type == 'yadoms_logic_compare_is_mutator_for') {
                 forMutator = true;
-            } else if(clauseBlock.type == 'yadoms_logic_compare_is_mutator_at') {
+            } else if (clauseBlock.type == 'yadoms_logic_compare_is_mutator_at') {
                 atMutator = true;
             }
         }
@@ -1474,13 +1475,13 @@ Blockly.Blocks['yadoms_logic_compare_is'] = {
  * @param block The block
  * @return {*[]}
  */
-Blockly.Python['yadoms_logic_compare_is'] = function(block) {
+Blockly.Python['yadoms_logic_compare_is'] = function (block) {
 
-    if(block.isForMutator || block.isAtMutator) {
-       if(Blockly.Yadoms.CurrentGenerationBlockIsTimed_)
-          assert(false, "Python : yadoms_logic_compare_is : cannont manage multiple yadoms_logic_compare_is blocks in the same condition");
+    if (block.isForMutator || block.isAtMutator) {
+        if (Blockly.Yadoms.CurrentGenerationBlockIsTimed_)
+            assert(false, "Python : yadoms_logic_compare_is : cannont manage multiple yadoms_logic_compare_is blocks in the same condition");
     }
-    
+
     // Comparison operator.
     var OPERATORS = {
         'EQ': '==',
@@ -1495,52 +1496,51 @@ Blockly.Python['yadoms_logic_compare_is'] = function(block) {
     var order = Blockly.Python.ORDER_RELATIONAL;
     var code = '';
 
-    if(block.isForMutator) {
+    if (block.isForMutator) {
         //TODO Python yadoms_logic_compare_is : FOR mutation generation not implemented");
         var duration = block.getFieldValue('duration');
         var durationUnit = block.getFieldValue('durationUnit');
 
         var timeToCheck;
         var intervallBetweenChecks;
-         switch(durationUnit)
-         {
+        switch (durationUnit) {
             case 'S':
-               timeToCheck = duration;
-               intervallBetweenChecks = 1; //1 sec
-               break;
+                timeToCheck = duration;
+                intervallBetweenChecks = 1; //1 sec
+                break;
             case 'M':
-               timeToCheck = duration * 60;
-               intervallBetweenChecks = 30; //30 sec
-               break;
+                timeToCheck = duration * 60;
+                intervallBetweenChecks = 30; //30 sec
+                break;
             case 'H':
-               timeToCheck = duration * 60 * 60;
-               intervallBetweenChecks = 120; //2 min
-               break;
+                timeToCheck = duration * 60 * 60;
+                intervallBetweenChecks = 120; //2 min
+                break;
             case 'D':
-               timeToCheck = duration * 60 * 60 * 24;
-               intervallBetweenChecks = 1800; //30 min
-               break;
-         }
-         
-         var startDate = new Date();
-         var endDate = new Date(Date.now() - (timeToCheck*1000));
-         
-         var completeCode = "";
-         Blockly.Yadoms.CurrentGenerationBlockIsTimed_ = true;
-         for(dt = startDate; dt>=endDate; dt = new Date(dt.getTime()-(intervallBetweenChecks*1000)))  { //30sec
+                timeToCheck = duration * 60 * 60 * 24;
+                intervallBetweenChecks = 1800; //30 min
+                break;
+        }
+
+        var startDate = new Date();
+        var endDate = new Date(Date.now() - (timeToCheck * 1000));
+
+        var completeCode = "";
+        Blockly.Yadoms.CurrentGenerationBlockIsTimed_ = true;
+        for (dt = startDate; dt >= endDate; dt = new Date(dt.getTime() - (intervallBetweenChecks * 1000))) { //30sec
             Blockly.Yadoms.CurrentGenerationBlockTime_ = dt;
 
-            if(completeCode != "")
-               completeCode += " and ";
-            
+            if (completeCode != "")
+                completeCode += " and ";
+
             var argument0 = Blockly.Python.valueToCode(block, 'A', order) || '0';
             var argument1 = Blockly.Python.valueToCode(block, 'B', order) || '0';
             completeCode += '(' + argument0 + ' ' + operator + ' ' + argument1 + ')';
-         }            
-         Blockly.Yadoms.CurrentGenerationBlockIsTimed_ = false;
-         code =  '(' + completeCode + ')';
-        
-    } else if(block.isAtMutator) {
+        }
+        Blockly.Yadoms.CurrentGenerationBlockIsTimed_ = false;
+        code = '(' + completeCode + ')';
+
+    } else if (block.isAtMutator) {
         Blockly.Yadoms.CurrentGenerationBlockIsTimed_ = true;
         var time = block.getFieldValue('at');
         Blockly.Yadoms.CurrentGenerationBlockTime_ = new Date();
@@ -1548,11 +1548,11 @@ Blockly.Python['yadoms_logic_compare_is'] = function(block) {
         Blockly.Yadoms.CurrentGenerationBlockTime_.setMinutes(time.split(":")[1]);
         Blockly.Yadoms.CurrentGenerationBlockTime_.setSeconds(0);
         Blockly.Yadoms.CurrentGenerationBlockTime_.setMilliseconds(0);
-        
+
         var argument0 = Blockly.Python.valueToCode(block, 'A', order) || '0';
         var argument1 = Blockly.Python.valueToCode(block, 'B', order) || '0';
         code = argument0 + ' ' + operator + ' ' + argument1;
-        
+
         Blockly.Yadoms.CurrentGenerationBlockIsTimed_ = false;
     } else {
         var argument0 = Blockly.Python.valueToCode(block, 'A', order) || '0';
@@ -1560,7 +1560,7 @@ Blockly.Python['yadoms_logic_compare_is'] = function(block) {
         code = argument0 + ' ' + operator + ' ' + argument1;
     }
 
-    
+
     return [code, order];
 };
 
@@ -1583,78 +1583,78 @@ Blockly.Python['yadoms_logic_compare_is'] = function(block) {
  * @type {{init: Function}}
  */
 Blockly.Blocks['yadoms_wait_for_keywords'] = {
-   init: function() {
-       
-      
-       this.appendDummyInput()
-           .appendField($.t("blockly.blocks.yadoms_wait_for_keywords.title"))
-           .appendField(" ")
-           .appendField(new Blockly.FieldVariable(this.generateVariable_()), "outVar");
-           
-       this.setPreviousStatement(true, null);
-       this.setNextStatement(true, null);
-       this.setColour(20);
-       this.setTooltip($.t("blockly.blocks.yadoms_wait_for_keywords.tooltip"));
-       this.setHelpUrl('http://www.example.com/');
-       
-       this.setMutator(new Blockly.Mutator(['yadoms_wait_for_keywords_additional']));
-       this.keywordMutatorCount_ = 0;
-       this.appendKeywordSelectorStatement_(0);
-   },
-   
+    init: function () {
+
+
+        this.appendDummyInput()
+            .appendField($.t("blockly.blocks.yadoms_wait_for_keywords.title"))
+            .appendField(" ")
+            .appendField(new Blockly.FieldVariable(this.generateVariable_()), "outVar");
+
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour(20);
+        this.setTooltip($.t("blockly.blocks.yadoms_wait_for_keywords.tooltip"));
+        this.setHelpUrl('http://www.example.com/');
+
+        this.setMutator(new Blockly.Mutator(['yadoms_wait_for_keywords_additional']));
+        this.keywordMutatorCount_ = 0;
+        this.appendKeywordSelectorStatement_(0);
+    },
+
     /**
      * Append a keyword selection line
      * @param {Number} no The item number 
      * @this Blockly.Block
      * @private
-     */   
-   appendKeywordSelectorStatement_ : function(no) {
+     */
+    appendKeywordSelectorStatement_: function (no) {
 
-      var b = this.appendDummyInput("keyword_part1_" + no)
-            .appendField($.t("blockly.blocks.yadoms_wait_for_keywords.case"));
-      
-      Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection(this, true, ["numeric", "string", "bool", "nodata", "enum"], undefined, undefined, 
-      "pluginDd" + no, "deviceDd" + no, "keywordDd" + no, b)
-         .appendField($.t("blockly.blocks.yadoms_wait_for_keywords.triggered"));
-      
-      this.appendStatementInput("keyword_part2_" + no)      
-         .appendField("    ")
-         .setAlign(Blockly.ALIGN_RIGHT)
-         .appendField($.t("blockly.blocks.yadoms_wait_for_keywords.do"));
-   },
-   
+        var b = this.appendDummyInput("keyword_part1_" + no)
+              .appendField($.t("blockly.blocks.yadoms_wait_for_keywords.case"));
+
+        Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection(this, false, ["numeric", "string", "bool", "nodata", "enum"], undefined, undefined,
+        "pluginDd" + no, "deviceDd" + no, "keywordDd" + no, b)
+           .appendField($.t("blockly.blocks.yadoms_wait_for_keywords.triggered"));
+
+        this.appendStatementInput("keyword_part2_" + no)
+           .appendField("    ")
+           .setAlign(Blockly.ALIGN_RIGHT)
+           .appendField($.t("blockly.blocks.yadoms_wait_for_keywords.do"));
+    },
+
     /**
      * Generate a unique variable name
      * @return {String} The variable name
      * @this Blockly.Block
      * @private
-     */   
-   generateVariable_ : function() {
-       //retreive the workspace
-       var workspace;
-       if (this.isInFlyout) {
-         workspace = this.workspace.targetWorkspace;
-       } else {
-          workspace = this.workspace;
-       }     
+     */
+    generateVariable_: function () {
+        //retreive the workspace
+        var workspace;
+        if (this.isInFlyout) {
+            workspace = this.workspace.targetWorkspace;
+        } else {
+            workspace = this.workspace;
+        }
 
-       //get the default name
-       var name = $.t("blockly.blocks.yadoms_wait_for_keywords.defaultVarName");
-       
-       //if variable is already used anywhere, then append an integer until finding a non used name
-       if(this.isVariableInUse_(workspace, name)) {
-          var offset = 0;
-          while(this.isVariableInUse_(workspace, name + offset)) {
-             offset++;
-          }
-          name += offset;
-       }
-       
-       //rename it to our chosen name
-       Blockly.Variables.renameVariable(name, name, workspace);
-       return name;
-   },
-   
+        //get the default name
+        var name = $.t("blockly.blocks.yadoms_wait_for_keywords.defaultVarName");
+
+        //if variable is already used anywhere, then append an integer until finding a non used name
+        if (this.isVariableInUse_(workspace, name)) {
+            var offset = 0;
+            while (this.isVariableInUse_(workspace, name + offset)) {
+                offset++;
+            }
+            name += offset;
+        }
+
+        //rename it to our chosen name
+        Blockly.Variables.renameVariable(name, name, workspace);
+        return name;
+    },
+
     /**
      * Check if a variable if already used
      * @param {Workspace} workspace The workspace
@@ -1662,86 +1662,86 @@ Blockly.Blocks['yadoms_wait_for_keywords'] = {
      * @return {Boolean} true if the variable is already in use in the workspace
      * @this Blockly.Block
      * @private
-     */      
-   isVariableInUse_ : function(workspace, varName) {
-       var variableList = Blockly.Variables.allVariables(workspace);
-       var inUse = false;
-       for (var i = 0; i < variableList.length; i++) {
-          if (variableList[i] == varName) {
-             inUse = true;
-             break;
-          }
-       }       
-       return inUse;
-   },
-   
-/**
-   * Return all variables referenced by this block.
-   * @return {!Array.<string>} List of variable names.
-   * @this Blockly.Block
-   */
-  getVars: function() {
-    return [this.getFieldValue('outVar')];
-  },
-  /**
-   * Notification that a variable is renaming.
-   * If the name matches one of this block's variables, rename it.
-   * @param {string} oldName Previous name of variable.
-   * @param {string} newName Renamed variable.
-   * @this Blockly.Block
-   */
-  renameVar: function(oldName, newName) {
-   if(this.getFieldValue('outVar')) {
-     if (Blockly.Names.equals(oldName, this.getFieldValue('outVar'))) {
-       this.setFieldValue(newName, 'outVar');
-     }
-   }
-  },
-  customContextMenu: Blockly.Blocks['controls_for'].customContextMenu,   
-  
+     */
+    isVariableInUse_: function (workspace, varName) {
+        var variableList = Blockly.Variables.allVariables(workspace);
+        var inUse = false;
+        for (var i = 0; i < variableList.length; i++) {
+            if (variableList[i] == varName) {
+                inUse = true;
+                break;
+            }
+        }
+        return inUse;
+    },
+
+    /**
+       * Return all variables referenced by this block.
+       * @return {!Array.<string>} List of variable names.
+       * @this Blockly.Block
+       */
+    getVars: function () {
+        return [this.getFieldValue('outVar')];
+    },
+    /**
+     * Notification that a variable is renaming.
+     * If the name matches one of this block's variables, rename it.
+     * @param {string} oldName Previous name of variable.
+     * @param {string} newName Renamed variable.
+     * @this Blockly.Block
+     */
+    renameVar: function (oldName, newName) {
+        if (this.getFieldValue('outVar')) {
+            if (Blockly.Names.equals(oldName, this.getFieldValue('outVar'))) {
+                this.setFieldValue(newName, 'outVar');
+            }
+        }
+    },
+    customContextMenu: Blockly.Blocks['controls_for'].customContextMenu,
+
     /**
      * Create XML to represent whether the number of mutator blocks to add
      * @return {Element} XML storage element.
      * @this Blockly.Block
      */
-    mutationToDom: function() {
-         if (!this.keywordMutatorCount_) {
-          return null;
-        }       
+    mutationToDom: function () {
+        if (!this.keywordMutatorCount_) {
+            return null;
+        }
         var container = document.createElement('mutation');
         container.setAttribute('keywordMutatorCount'.toLowerCase(), this.keywordMutatorCount_);
         return container;
     },
-    
+
     /**
      * Parse XML to restore the mutators blocks'.
      * @param {!Element} xmlElement XML storage element.
      * @this Blockly.Block
      */
-    domToMutation: function(xmlElement) {
-      this.keywordMutatorCount_ = parseInt(xmlElement.getAttribute('keywordMutatorCount'.toLowerCase()), 10) || 0;
-      for (var i = 1; i <= this.keywordMutatorCount_; i++) {
-         this.appendKeywordSelectorStatement_(i);
-       }
+    domToMutation: function (xmlElement) {
+        this.keywordMutatorCount_ = parseInt(xmlElement.getAttribute('keywordMutatorCount'.toLowerCase()), 10) || 0;
+        for (var i = 1; i <= this.keywordMutatorCount_; i++) {
+            this.appendKeywordSelectorStatement_(i);
+        }
     },
 
-      /**
-      * Populate the mutator's dialog with this block's components.
-      * @param {!Blockly.Workspace} workspace Mutator's workspace.
-      * @return {!Blockly.Block} Root block in mutator.
-      * @this Blockly.Block
-      */
-    decompose: function(workspace) {
+    /**
+    * Populate the mutator's dialog with this block's components.
+    * @param {!Blockly.Workspace} workspace Mutator's workspace.
+    * @return {!Blockly.Block} Root block in mutator.
+    * @this Blockly.Block
+    */
+    decompose: function (workspace) {
         var topBlock = Blockly.Block.obtain(workspace, 'yadoms_wait_for_keywords_base');
         topBlock.initSvg();
 
         var connection = topBlock.getInput('STACK').connection;
         for (var i = 1; i <= this.keywordMutatorCount_; i++) {
-         var additionalBlock = Blockly.Block.obtain(workspace, 'yadoms_wait_for_keywords_additional');
-         additionalBlock.initSvg();
-         connection.connect(additionalBlock.previousConnection);
-         connection = additionalBlock.nextConnection;
-       }
+            var additionalBlock = Blockly.Block.obtain(workspace, 'yadoms_wait_for_keywords_additional');
+            additionalBlock.initSvg();
+            connection.connect(additionalBlock.previousConnection);
+            connection = additionalBlock.nextConnection;
+        }
         return topBlock;
     },
     /**
@@ -1749,64 +1749,64 @@ Blockly.Blocks['yadoms_wait_for_keywords'] = {
      * @param {!Blockly.Block} containerBlock Root block in mutator.
      * @this Blockly.Block
      */
-    compose: function(containerBlock) {
-       //This method analyse the mutator dialog result, then recreate the real blick
-       //so it takes sur clauseBlock (= mutator topblock stack = all additional keywords)
-       //foreach additional keyword block found, just append needed blocks
-       
-       // Remove any additional keyword (will be created just after)
-       for (var i = this.keywordMutatorCount_; i > 0; i--) {
-         this.removeInput("keyword_part1_" + i);
-         this.removeInput("keyword_part2_" + i);
-       }
-       
-       this.keywordMutatorCount_ = 0;
-       // Rebuild the block's optional inputs.
-       var clauseBlock = containerBlock.getInputTargetBlock('STACK');
-       while (clauseBlock) {
-         switch (clauseBlock.type) {
-           case 'yadoms_wait_for_keywords_additional':
-             this.keywordMutatorCount_++;
-             this.appendKeywordSelectorStatement_(this.keywordMutatorCount_);
-             break;
-           default:
-             throw 'Unknown block type.';
-         }
-         clauseBlock = clauseBlock.nextConnection &&
-             clauseBlock.nextConnection.targetBlock();
-       }
+    compose: function (containerBlock) {
+        //This method analyse the mutator dialog result, then recreate the real blick
+        //so it takes sur clauseBlock (= mutator topblock stack = all additional keywords)
+        //foreach additional keyword block found, just append needed blocks
+
+        // Remove any additional keyword (will be created just after)
+        for (var i = this.keywordMutatorCount_; i > 0; i--) {
+            this.removeInput("keyword_part1_" + i);
+            this.removeInput("keyword_part2_" + i);
+        }
+
+        this.keywordMutatorCount_ = 0;
+        // Rebuild the block's optional inputs.
+        var clauseBlock = containerBlock.getInputTargetBlock('STACK');
+        while (clauseBlock) {
+            switch (clauseBlock.type) {
+                case 'yadoms_wait_for_keywords_additional':
+                    this.keywordMutatorCount_++;
+                    this.appendKeywordSelectorStatement_(this.keywordMutatorCount_);
+                    break;
+                default:
+                    throw 'Unknown block type.';
+            }
+            clauseBlock = clauseBlock.nextConnection &&
+                clauseBlock.nextConnection.targetBlock();
+        }
     }
 };
 
 
 Blockly.Blocks['yadoms_wait_for_keywords_base'] = {
-  /**
-   * Mutator block for if container.
-   * @this Blockly.Block
-   */
-  init: function() {
-    this.setColour(20);
-    this.appendDummyInput().appendField($.t("blockly.blocks.yadoms_wait_for_keywords.mutator.base.title"));
-    this.appendStatementInput('STACK');
-    this.setTooltip($.t("blockly.blocks.yadoms_wait_for_keywords.mutator.base.tooltip"));
-    this.contextMenu = false;
-  }
+    /**
+     * Mutator block for if container.
+     * @this Blockly.Block
+     */
+    init: function () {
+        this.setColour(20);
+        this.appendDummyInput().appendField($.t("blockly.blocks.yadoms_wait_for_keywords.mutator.base.title"));
+        this.appendStatementInput('STACK');
+        this.setTooltip($.t("blockly.blocks.yadoms_wait_for_keywords.mutator.base.tooltip"));
+        this.contextMenu = false;
+    }
 };
 
 
 Blockly.Blocks['yadoms_wait_for_keywords_additional'] = {
-  /**
-   * Mutator block for if container.
-   * @this Blockly.Block
-   */
-  init: function() {
-    this.setColour(20);
-    this.appendDummyInput().appendField($.t("blockly.blocks.yadoms_wait_for_keywords.mutator.additional.title"));
-    this.setTooltip($.t("blockly.blocks.yadoms_wait_for_keywords.mutator.additional.tooltip"));
-    this.contextMenu = false;
-    this.setPreviousStatement(true, null);
-    this.setNextStatement(true, null);
-  }
+    /**
+     * Mutator block for if container.
+     * @this Blockly.Block
+     */
+    init: function () {
+        this.setColour(20);
+        this.appendDummyInput().appendField($.t("blockly.blocks.yadoms_wait_for_keywords.mutator.additional.title"));
+        this.setTooltip($.t("blockly.blocks.yadoms_wait_for_keywords.mutator.additional.tooltip"));
+        this.contextMenu = false;
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+    }
 };
 
 
@@ -1815,43 +1815,43 @@ Blockly.Blocks['yadoms_wait_for_keywords_additional'] = {
  * @param block The block
  * @return {*[]}
  */
-Blockly.Python['yadoms_wait_for_keywords'] = function(block) {
-   //list all keyword id in a list
-   var kwList = "[";
-   for (var i = 0; i <= this.keywordMutatorCount_; i++) {
-      var keyId = block.getFieldValue("keywordDd" + i);
-      kwList += keyId + " ,";
-   }
-   if(kwList[kwList.length-1] == ",") {
-       kwList = kwList.substring(0, kwList.length - 2);
-   }
-   kwList +="]";
-   
-   //get the output variable
-   var outVar = block.getFieldValue("outVar");
-   
-   //generate the waitForAcquisitions call
-   var code = "keywordId, " + outVar + " = yApi.waitForAcquisitions(" + kwList + ")\n";
+Blockly.Python['yadoms_wait_for_keywords'] = function (block) {
+    //list all keyword id in a list
+    var kwList = "[";
+    for (var i = 0; i <= this.keywordMutatorCount_; i++) {
+        var keyId = block.getFieldValue("keywordDd" + i);
+        kwList += keyId + " ,";
+    }
+    if (kwList[kwList.length - 1] == ",") {
+        kwList = kwList.substring(0, kwList.length - 2);
+    }
+    kwList += "]";
 
-   //for each keyword 
-   for (var i = 0; i <= this.keywordMutatorCount_; i++) {
-      //get the keywordId
-      var keyId = block.getFieldValue("keywordDd" + i);
-      
-      //construct the argument (= if/elif condition)
-      var argument = "keywordId == " + keyId;
-      
-      //get the statement to execute in this case 
-      var branch = Blockly.Python.statementToCode(block, "keyword" + i) || Blockly.Python.PASS;
-      
-      //append code
-      if(i == 0) {
-         code += 'if ' + argument + ':\n' + branch;
-      } else {
-         code += 'elif ' + argument + ':\n' + branch;
-      }
-   }
-   return code;
+    //get the output variable
+    var outVar = block.getFieldValue("outVar");
+
+    //generate the waitForAcquisitions call
+    var code = "keywordId, " + outVar + " = yApi.waitForAcquisitions(" + kwList + ")\n";
+
+    //for each keyword 
+    for (var i = 0; i <= this.keywordMutatorCount_; i++) {
+        //get the keywordId
+        var keyId = block.getFieldValue("keywordDd" + i);
+
+        //construct the argument (= if/elif condition)
+        var argument = "keywordId == " + keyId;
+
+        //get the statement to execute in this case 
+        var branch = Blockly.Python.statementToCode(block, "keyword" + i) || Blockly.Python.PASS;
+
+        //append code
+        if (i == 0) {
+            code += 'if ' + argument + ':\n' + branch;
+        } else {
+            code += 'elif ' + argument + ':\n' + branch;
+        }
+    }
+    return code;
 };
 
 
@@ -1862,8 +1862,8 @@ Blockly.Python['yadoms_wait_for_keywords'] = function(block) {
  * @type {{init: Function}}
  */
 Blockly.Blocks['yadoms_logic_compare_become'] = {
-    unitsInputName : "units",
-    init: function() {
+    unitsInputName: "units",
+    init: function () {
         this.setHelpUrl('http://www.example.com/');
         this.setColour(210);
         this.appendDummyInput()
@@ -1874,7 +1874,7 @@ Blockly.Blocks['yadoms_logic_compare_become'] = {
         this.setOutput(true, "Boolean");
 
         var thisBlock = this;
-        this.setTooltip(function() {
+        this.setTooltip(function () {
             var op = thisBlock.getFieldValue('OP');
             var TOOLTIPS = {
                 'EQ': Blockly.Msg.LOGIC_COMPARE_TOOLTIP_EQ,
@@ -1885,29 +1885,29 @@ Blockly.Blocks['yadoms_logic_compare_become'] = {
                 'GTE': Blockly.Msg.LOGIC_COMPARE_TOOLTIP_GTE
             };
 
-            return $.t("blockly.blocks.yadoms_logic_compare_become.tooltip", {defaultValue:'', operand:TOOLTIPS[op]});
+            return $.t("blockly.blocks.yadoms_logic_compare_become.tooltip", { defaultValue: '', operand: TOOLTIPS[op] });
         });
 
 
         /**
          * Method which update the operator list, according to the connected types
          */
-        thisBlock.updateOperator = function(newCheck) {
+        thisBlock.updateOperator = function (newCheck) {
             var selectedOperators = [[]];
-            if(newCheck == "String") {
+            if (newCheck == "String") {
                 selectedOperators = Blockly.Yadoms.StringOperators_;
-            } else if(newCheck == "Boolean") {
+            } else if (newCheck == "Boolean") {
                 selectedOperators = Blockly.Yadoms.BooleanOperators_;
-            } else if(newCheck == "Number") {
+            } else if (newCheck == "Number") {
                 selectedOperators = Blockly.Yadoms.NumberOperators_;
-            } else if(newCheck == "Any") {
+            } else if (newCheck == "Any") {
                 selectedOperators = Blockly.Yadoms.NumberOperators_;
             } else {
                 //specific types
                 selectedOperators = Blockly.Yadoms.BooleanOperators_;
             }
 
-            var operatorDropDown =$.isFunction(thisBlock.getField_)?thisBlock.getField_("OP"):thisBlock.getField("OP");
+            var operatorDropDown = $.isFunction(thisBlock.getField_) ? thisBlock.getField_("OP") : thisBlock.getField("OP");
             operatorDropDown.menuGenerator_ = selectedOperators;
             operatorDropDown.setValue(selectedOperators[0][1]);
             operatorDropDown.updateTextNode_();
@@ -1920,12 +1920,12 @@ Blockly.Blocks['yadoms_logic_compare_become'] = {
          * Update the block unit
          * @param keyword The selected keyword
          */
-        this.updateUnit = function(keyword) {
+        this.updateUnit = function (keyword) {
             var unitsExist = thisBlock.getInput(this.unitsInputName);
-            if(unitsExist)
+            if (unitsExist)
                 thisBlock.removeInput(thisBlock.unitsInputName);
 
-            if(!isNullOrUndefined(keyword) && !isNullOrUndefinedOrEmpty(keyword.units) ) {
+            if (!isNullOrUndefined(keyword) && !isNullOrUndefinedOrEmpty(keyword.units)) {
                 thisBlock.appendDummyInput(thisBlock.unitsInputName).appendField($.t(keyword.units));
             }
         };
@@ -1933,7 +1933,7 @@ Blockly.Blocks['yadoms_logic_compare_become'] = {
         /**
          * Method which make type checks when one of connector changes
          */
-        this.onchange = function() {
+        this.onchange = function () {
 
             //check for A and B connected blocks
             var inputValueA = thisBlock.getInput("A");
@@ -1947,12 +1947,12 @@ Blockly.Blocks['yadoms_logic_compare_become'] = {
             var keywordValue = undefined;
             var deviceValue = undefined;
             var pluginValue = undefined;
-            if(blockA && blockA.type == "yadoms_keyword_value") {
+            if (blockA && blockA.type == "yadoms_keyword_value") {
                 keywordValue = blockA.getSelectedKeyword();
                 deviceValue = blockA.getSelectedDevice();
                 pluginValue = blockA.getSelectedPlugin();
             }
-            if(blockB && blockB.type == "yadoms_keyword_value") {
+            if (blockB && blockB.type == "yadoms_keyword_value") {
                 keywordValue = blockB.getSelectedKeyword();
                 deviceValue = blockB.getSelectedDevice();
                 pluginValue = blockB.getSelectedPlugin();
@@ -1960,27 +1960,27 @@ Blockly.Blocks['yadoms_logic_compare_become'] = {
 
             //update yadoms_enumeration if any
             if (blockA && blockB) {
-                if(blockA.type == "yadoms_keyword_value" && blockB.type == "yadoms_enumeration") {
+                if (blockA.type == "yadoms_keyword_value" && blockB.type == "yadoms_enumeration") {
                     blockB.updateEnumeration(keywordValue, deviceValue, pluginValue);
-                } else if(blockB.type == "yadoms_keyword_value" && blockA.type == "yadoms_enumeration") {
+                } else if (blockB.type == "yadoms_keyword_value" && blockA.type == "yadoms_enumeration") {
                     blockA.updateEnumeration(keywordValue, deviceValue, pluginValue);
                 }
             }
 
             //update units
-            if(keywordValue != undefined)
+            if (keywordValue != undefined)
                 thisBlock.updateUnit(Blockly.Yadoms.data.keywords[keywordValue]);
             else
                 thisBlock.updateUnit(undefined);
 
             //update checks
             if (blockA) {
-                if(inputValueB.connection.check_ != blockA.outputConnection.check_) {
+                if (inputValueB.connection.check_ != blockA.outputConnection.check_) {
                     inputValueB.setCheck(blockA.outputConnection.check_);
                     thisBlock.updateOperator(blockA.outputConnection.check_);
                 }
             } else if (blockB) {
-                if(inputValueA.connection.check_ != blockB.outputConnection.check_) {
+                if (inputValueA.connection.check_ != blockB.outputConnection.check_) {
                     inputValueA.setCheck(blockB.outputConnection.check_);
                     thisBlock.updateOperator(blockB.outputConnection.check_);
                 }
@@ -1998,7 +1998,7 @@ Blockly.Blocks['yadoms_logic_compare_become'] = {
  * @param block The block
  * @return {*[]}
  */
-Blockly.Python['yadoms_logic_compare_become'] = function(block) {
+Blockly.Python['yadoms_logic_compare_become'] = function (block) {
 
     // Comparison operator.
     var OPERATORS = {
@@ -2027,9 +2027,9 @@ Blockly.Python['yadoms_logic_compare_become'] = function(block) {
 
 
 Blockly.Blocks['yadoms_enumeration'] = {
-    enumerationDropDownName : "enumerationList",
-    currentEnumerationTypeName : "",
-    init: function() {
+    enumerationDropDownName: "enumerationList",
+    currentEnumerationTypeName: "",
+    init: function () {
         var enumDropDown = new Blockly.FieldDropdown([[$.t("blockly.blocks.yadoms_enumeration.title"), "enumeration"]]);
 
         this.setHelpUrl('http://www.example.com/');
@@ -2037,48 +2037,48 @@ Blockly.Blocks['yadoms_enumeration'] = {
         this.appendDummyInput()
             .appendField(enumDropDown, this.enumerationDropDownName);
         this.setOutput(true, "");
-        this.setTooltip($.t("blockly.blocks.yadoms_enumeration.tooltip", {defaultValue:''}));
+        this.setTooltip($.t("blockly.blocks.yadoms_enumeration.tooltip", { defaultValue: '' }));
 
-        this.getSelectedEnumValue = function() {
+        this.getSelectedEnumValue = function () {
             return enumDropDown.getValue();
         };
 
         //add event fire value changed
-        enumDropDown.setValue =function(newValue) {
+        enumDropDown.setValue = function (newValue) {
             var result = Blockly.FieldDropdown.prototype.setValue.call(this, newValue);
-            if(!isNullOrUndefined(this.changeHandler_) && $.isFunction(this.changeHandler_))
+            if (!isNullOrUndefined(this.changeHandler_) && $.isFunction(this.changeHandler_))
                 this.changeHandler_(this.getValue());
             return result;
         };
     },
 
-    updateEnumeration : function(keywordValue, deviceValue, pluginValue) {
+    updateEnumeration: function (keywordValue, deviceValue, pluginValue) {
         //check keyword value is not null
         if (!isNullOrUndefined(keywordValue)) {
 
             //check that keyword data is available
             var pluginData = Blockly.Yadoms.data.plugins[pluginValue];
             var keywordData = Blockly.Yadoms.data.keywords[keywordValue];
-            if(!isNullOrUndefined(keywordData) && keywordData.type.toUpperCase() == "enum".toUpperCase()) {
+            if (!isNullOrUndefined(keywordData) && keywordData.type.toUpperCase() == "enum".toUpperCase()) {
                 var typeInfo = keywordData.typeInfo;
-                if( !isNullOrUndefined(typeInfo) && !isNullOrUndefined(typeInfo.name) && !isNullOrUndefined(typeInfo.values) ) {
-                    if(this.currentEnumerationTypeName != typeInfo.name) {
+                if (!isNullOrUndefined(typeInfo) && !isNullOrUndefined(typeInfo.name) && !isNullOrUndefined(typeInfo.values)) {
+                    if (this.currentEnumerationTypeName != typeInfo.name) {
 
                         var typeToSet = "enum_" + typeInfo.name;
 
                         //make it compatible with older blockly version
-                        $.isFunction(this.changeOutput)?this.changeOutput(typeToSet):this.outputConnection.setCheck(typeToSet);
+                        $.isFunction(this.changeOutput) ? this.changeOutput(typeToSet) : this.outputConnection.setCheck(typeToSet);
 
 
                         //all is OK, this is a new enum, ask for translation
                         var translatedEnum = [];
                         $.each(typeInfo.values, function (index, value) {
-                            var trad = $.t(pluginData.type + ":enumerations." + typeInfo.name + "." + value, {defaultValue : pluginData.package.enumerations[typeInfo.name][value]  });
+                            var trad = $.t(pluginData.type + ":enumerations." + typeInfo.name + "." + value, { defaultValue: pluginData.package.enumerations[typeInfo.name][value] });
                             translatedEnum.push([trad, value]);
                         });
                         //apply new dropdown list
                         this.currentEnumerationTypeName = typeInfo.name;
-                        var enumDropDown =$.isFunction(this.getField_)?this.getField_(this.enumerationDropDownName):this.getField(this.enumerationDropDownName);
+                        var enumDropDown = $.isFunction(this.getField_) ? this.getField_(this.enumerationDropDownName) : this.getField(this.enumerationDropDownName);
 
                         enumDropDown.refresh(translatedEnum, enumDropDown.getValue());
                     }
@@ -2095,7 +2095,7 @@ Blockly.Blocks['yadoms_enumeration'] = {
  * @param block The block
  * @return {*[]}
  */
-Blockly.Python['yadoms_enumeration'] = function(block) {
+Blockly.Python['yadoms_enumeration'] = function (block) {
     var code = Blockly.Python.quote_(block.getSelectedEnumValue());
     return [code, Blockly.Python.ORDER_ATOMIC];
 };
@@ -2108,14 +2108,14 @@ Blockly.Python['yadoms_enumeration'] = function(block) {
  * @return {*[]}
  */
 Blockly.Blocks['yadoms_log'] = {
-    init: function() {
+    init: function () {
         this.setHelpUrl('http://www.example.com/');
         this.setColour(160);
         this.appendValueInput("LogContent")
-            .appendField( $.t("blockly.blocks.yadoms_log.title") )
+            .appendField($.t("blockly.blocks.yadoms_log.title"))
         this.setPreviousStatement(true, "null");
         this.setNextStatement(true, "null");
-        this.setTooltip($.t("blockly.blocks.yadoms_log.tooltip", {defaultValue:''}));
+        this.setTooltip($.t("blockly.blocks.yadoms_log.tooltip", { defaultValue: '' }));
     }
 };
 
@@ -2123,7 +2123,7 @@ Blockly.Blocks['yadoms_log'] = {
  * Define the python generation function for yadoms_log block
  * @param block The block
   */
-Blockly.Python['yadoms_log'] = function(block) {
+Blockly.Python['yadoms_log'] = function (block) {
     var value_name = Blockly.Python.valueToCode(block, 'LogContent', Blockly.Python.ORDER_ATOMIC) || '\'\'';
     return 'print ' + value_name + '\n';
 };
@@ -2135,9 +2135,9 @@ Blockly.Python['yadoms_log'] = function(block) {
  * @return {*[]}
  */
 Blockly.Blocks['yadoms_sleep'] = {
-    init: function() {
+    init: function () {
 
-        var durationUnitsEnum =[
+        var durationUnitsEnum = [
             [$.t("blockly.global.durationUnits.seconds"), 'S'],
             [$.t("blockly.global.durationUnits.minutes"), 'M'],
             [$.t("blockly.global.durationUnits.hours"), 'H'],
@@ -2148,13 +2148,13 @@ Blockly.Blocks['yadoms_sleep'] = {
         this.setColour(20);
         this.appendValueInput("Time")
             .setCheck("Number")
-            .appendField( $.t("blockly.blocks.yadoms_sleep.title") );
+            .appendField($.t("blockly.blocks.yadoms_sleep.title"));
         this.appendDummyInput()
             .appendField(new Blockly.FieldDropdown(durationUnitsEnum), "timeUnit");
         this.setInputsInline(true);
         this.setPreviousStatement(true, "null");
         this.setNextStatement(true, "null");
-        this.setTooltip($.t("blockly.blocks.yadoms_sleep.tooltip", {defaultValue:''}));
+        this.setTooltip($.t("blockly.blocks.yadoms_sleep.tooltip", { defaultValue: '' }));
 
     }
 };
@@ -2165,13 +2165,12 @@ Blockly.Blocks['yadoms_sleep'] = {
  * Define the python generation function for yadoms_sleep block
  * @param block The block
  */
-Blockly.Python['yadoms_sleep'] = function(block) {
+Blockly.Python['yadoms_sleep'] = function (block) {
     var value_time = Blockly.Python.valueToCode(block, 'Time', Blockly.Python.ORDER_ATOMIC);
     var dropdown_name = block.getFieldValue('timeUnit');
 
     var valueInSeconds = value_time;
-    switch(dropdown_name)
-    {
+    switch (dropdown_name) {
         case 'D':
             valueInSeconds = value_time * 60 * 60 * 24;
             break;
@@ -2203,7 +2202,7 @@ Blockly.Blocks['yadoms_controls_if'] = {
      * Block for if/elseif/else condition.
      * @this Blockly.Block
      */
-    init: function() {
+    init: function () {
         this.setHelpUrl(Blockly.Msg.CONTROLS_IF_HELPURL);
         this.setColour(210);
         this.appendValueInput('IF0')
@@ -2216,7 +2215,7 @@ Blockly.Blocks['yadoms_controls_if'] = {
 
         // Assign 'this' to a variable for use in the tooltip closure below.
         var thisBlock = this;
-        this.setTooltip(function() {
+        this.setTooltip(function () {
             if (!thisBlock.elseifCount_ && !thisBlock.elseCount_) {
                 return Blockly.Msg.CONTROLS_IF_TOOLTIP_1;
             } else if (!thisBlock.elseifCount_ && thisBlock.elseCount_) {
@@ -2238,7 +2237,7 @@ Blockly.Blocks['yadoms_controls_if'] = {
  * Define the python generation function for yadoms_controls_if block
  * @param block The block
  */
-Blockly.Python['yadoms_controls_if'] = function(block) {
+Blockly.Python['yadoms_controls_if'] = function (block) {
     var argument = Blockly.Python.valueToCode(block, 'IF0', Blockly.Python.ORDER_NONE) || 'False';
     var branch = Blockly.Python.statementToCode(block, 'DO0') || Blockly.Python.PASS;
     return 'if ' + argument + ':\n' + branch;
@@ -2248,53 +2247,53 @@ Blockly.Python['yadoms_controls_if'] = function(block) {
 
 
 Blockly.Blocks['yadoms_notification_simple'] = {
-    inputValueName : "Value",
-    operatorValueName : "operator",
-    unitsInputName : "units",
-    pluginDropDownName : "Plugin",
-    deviceDropDownName : "Device",
-    keywordDropDownName : "Keyword",
-    recipientDropDownName : "Recipient",
-    inputValueShown : false,
-    
-  init: function() {
-     
-      this.setHelpUrl('http://www.example.com/');
-      this.setInputsInline(true);
-      this.setPreviousStatement(true, "null");
-      this.setNextStatement(true, "null");
-      this.setTooltip($.t("blockly.blocks.yadoms_notification_simple.tooltip", {defaultValue:''}));
-      this.setColour(0);
-      var thisBlock = this;
-      
-      
-      
-      //recipient list is static (do not need to update it on each dropdown click)
-      var recipientList = Blockly.Yadoms.LoadRecipients_();
-      if(recipientList == null || recipientList == undefined || recipientList.length == 0) {
+    inputValueName: "Value",
+    operatorValueName: "operator",
+    unitsInputName: "units",
+    pluginDropDownName: "Plugin",
+    deviceDropDownName: "Device",
+    keywordDropDownName: "Keyword",
+    recipientDropDownName: "Recipient",
+    inputValueShown: false,
+
+    init: function () {
+
+        this.setHelpUrl('http://www.example.com/');
+        this.setInputsInline(true);
+        this.setPreviousStatement(true, "null");
+        this.setNextStatement(true, "null");
+        this.setTooltip($.t("blockly.blocks.yadoms_notification_simple.tooltip", { defaultValue: '' }));
+        this.setColour(0);
+        var thisBlock = this;
+
+
+
+        //recipient list is static (do not need to update it on each dropdown click)
+        var recipientList = Blockly.Yadoms.LoadRecipients_();
+        if (recipientList == null || recipientList == undefined || recipientList.length == 0) {
             this.setDisabled(true);
-            recipientList = [[$.t("blockly.invalid") , "invalid"]];
+            recipientList = [[$.t("blockly.invalid"), "invalid"]];
         }
 
-      thisBlock.recipientDd  = new Blockly.FieldDropdown(recipientList);
+        thisBlock.recipientDd = new Blockly.FieldDropdown(recipientList);
 
         this.appendDummyInput()
             .appendField($.t("blockly.blocks.yadoms_notification_simple.title"))
             .appendField(thisBlock.recipientDd, thisBlock.recipientDropDownName);
-            
+
         this.appendDummyInput()
             .appendField($.t("blockly.blocks.yadoms_notification_simple.by"));
-            
 
 
-      Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection(this, true, ["numeric", "string", "bool", "nodata", "enum"], ["message"], function (keyword, keywordType) {
-      }, thisBlock.pluginDropDownName, thisBlock.deviceDropDownName, thisBlock.keywordDropDownName);
 
-     this.appendValueInput(thisBlock.inputValueName)
-         .setCheck("String")
-         .appendField($.t("blockly.blocks.yadoms_notification_simple.message"));
+        Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection(this, true, ["numeric", "string", "bool", "nodata", "enum"], ["message"], function (keyword, keywordType) {
+        }, thisBlock.pluginDropDownName, thisBlock.deviceDropDownName, thisBlock.keywordDropDownName);
 
-  }
+        this.appendValueInput(thisBlock.inputValueName)
+            .setCheck("String")
+            .appendField($.t("blockly.blocks.yadoms_notification_simple.message"));
+
+    }
 };
 
 
@@ -2305,7 +2304,7 @@ Blockly.Blocks['yadoms_notification_simple'] = {
  * @param block The block
  * @return {string}
  */
-Blockly.Python['yadoms_notification_simple'] = function(block) {
+Blockly.Python['yadoms_notification_simple'] = function (block) {
     var dropdown_keyword = block.getSelectedKeyword();
     var recipientId = block.recipientDd.getValue();
     var value = Blockly.Python.valueToCode(block, block.inputValueName, Blockly.Python.ORDER_RELATIONAL) || '0';
@@ -2333,7 +2332,7 @@ Blockly.Python['yadoms_notification_simple'] = function(block) {
  * Create the validation subclass
  * @constructor
  */
-Blockly.Validation = function() {
+Blockly.Validation = function () {
 };
 
 /**
@@ -2347,8 +2346,8 @@ Blockly.Validation.listErroneousBlocks = [];
  * Define a block as invalid
  * @param block The block to invalidate
  */
-Blockly.Validation.setBlockInvalid = function(block) {
-    if(block != null && block != undefined && $.isFunction(block.addError)) {
+Blockly.Validation.setBlockInvalid = function (block) {
+    if (block != null && block != undefined && $.isFunction(block.addError)) {
         block.addError();
         Blockly.Validation.listErroneousBlocks.push(block);
     }
@@ -2357,15 +2356,15 @@ Blockly.Validation.setBlockInvalid = function(block) {
 /**
  * Clear the invalidated blocks list
  */
-Blockly.Validation.clearInvalidBlocks =  function() {
-    $.each(Blockly.Validation.listErroneousBlocks, function(index, value) {
-        if(value != null && value != undefined &&$.isFunction(value.removeError)) {
+Blockly.Validation.clearInvalidBlocks = function () {
+    $.each(Blockly.Validation.listErroneousBlocks, function (index, value) {
+        if (value != null && value != undefined && $.isFunction(value.removeError)) {
             value.removeError();
         }
     });
 
     //clear the list
-    Blockly.Validation.listErroneousBlocks.splice(0,Blockly.Validation.listErroneousBlocks.length);
+    Blockly.Validation.listErroneousBlocks.splice(0, Blockly.Validation.listErroneousBlocks.length);
 };
 
 /**
@@ -2373,17 +2372,17 @@ Blockly.Validation.clearInvalidBlocks =  function() {
  * @param block The block to check
  * @returns {boolean} true if block is valid, false if invalid
  */
-Blockly.Validation.isBlockValid =  function(block) {
+Blockly.Validation.isBlockValid = function (block) {
 
-    if(block != null && block != undefined) {
+    if (block != null && block != undefined) {
         var currentBlockValid = true;
-        $.each(block.inputList, function(index, subBlock) {
-            if(subBlock.connection != null && subBlock.isVisible() ){
-                if(subBlock.connection.targetConnection == null || subBlock.connection.targetConnection == undefined) {
+        $.each(block.inputList, function (index, subBlock) {
+            if (subBlock.connection != null && subBlock.isVisible()) {
+                if (subBlock.connection.targetConnection == null || subBlock.connection.targetConnection == undefined) {
                     Blockly.Validation.setBlockInvalid(subBlock.sourceBlock_);
                     return currentBlockValid = false;
                 } else {
-                    if(!Blockly.Validation.isBlockValid(subBlock.connection.targetConnection.sourceBlock_))
+                    if (!Blockly.Validation.isBlockValid(subBlock.connection.targetConnection.sourceBlock_))
                         return currentBlockValid = false;
                 }
             }
@@ -2397,19 +2396,19 @@ Blockly.Validation.isBlockValid =  function(block) {
 /**
  * Add the error shpae to the block
  */
-Blockly.BlockSvg.prototype.addError = function() {
-    Blockly.addClass_(/** @type {!Element} */ (this.svgGroup_),
+Blockly.BlockSvg.prototype.addError = function () {
+    Blockly.addClass_(/** @type {!Element} */(this.svgGroup_),
         'blocklySelectedError');
     // Move the selected block to the top of the stack.
-    if(!isNullOrUndefined(this.svgGroup_.parentNode))
+    if (!isNullOrUndefined(this.svgGroup_.parentNode))
         this.svgGroup_.parentNode.appendChild(this.svgGroup_);
 };
 
 /**
  * Remove the error shape of a block
  */
-Blockly.BlockSvg.prototype.removeError = function() {
-    Blockly.removeClass_(/** @type {!Element} */ (this.svgGroup_),
+Blockly.BlockSvg.prototype.removeError = function () {
+    Blockly.removeClass_(/** @type {!Element} */(this.svgGroup_),
         'blocklySelectedError');
 };
 
@@ -2419,11 +2418,11 @@ Blockly.BlockSvg.prototype.removeError = function() {
  * @param maxTopBlocks The maximum number of topblocks allowed
  * @constructor
  */
-Blockly.Validation.Init = function(workspace, maxTopBlocks) {
-    if(maxTopBlocks != undefined && $.isNumeric(maxTopBlocks))
+Blockly.Validation.Init = function (workspace, maxTopBlocks) {
+    if (maxTopBlocks != undefined && $.isNumeric(maxTopBlocks))
         Blockly.Validation.maxTopBlocks_ = maxTopBlocks;
 
-    workspace.addChangeListener( function() {
+    workspace.addChangeListener(function () {
         Blockly.Validation.clearInvalidBlocks();
     });
 };
@@ -2440,23 +2439,23 @@ Blockly.Validation.maxTopBlocks_ = 1;
  * @param workspace The workspace to validate
  * @param callback The callback for the validation result
  */
-Blockly.Validation.validate = function(workspace, callback) {
+Blockly.Validation.validate = function (workspace, callback) {
 
-    if(workspace.topBlocks_.length > Blockly.Validation.maxTopBlocks_) {
+    if (workspace.topBlocks_.length > Blockly.Validation.maxTopBlocks_) {
 
-        $.each(workspace.topBlocks_, function(index, value) {
+        $.each(workspace.topBlocks_, function (index, value) {
             Blockly.Validation.setBlockInvalid(value);
         });
         callback(false, "Only " + Blockly.Validation.maxTopBlocks_ + " max top block is allowed");
     }
     else {
         var result = true;
-        $.each(workspace.topBlocks_, function(index, topBlock) {
-            if(!Blockly.Validation.isBlockValid(topBlock))
+        $.each(workspace.topBlocks_, function (index, topBlock) {
+            if (!Blockly.Validation.isBlockValid(topBlock))
                 result = false;
         });
 
-        if(result)
+        if (result)
             callback(true, "Workspace is valid");
         else
             callback(false, "Workspace is not valid");
@@ -2467,7 +2466,7 @@ Blockly.Validation.validate = function(workspace, callback) {
  * Start the mainWorkspace validation
  * @param callback The callback for the validation result
  */
-Blockly.Validation.validateMainWorkspace = function(callback) {
+Blockly.Validation.validateMainWorkspace = function (callback) {
     Blockly.Validation.validate(Blockly.mainWorkspace, callback);
 };
 
