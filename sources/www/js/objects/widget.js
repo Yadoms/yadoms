@@ -68,7 +68,8 @@ Widget.prototype.toJSON = function () {
  * Synchronize data from grister object and properties of the class
  */
 Widget.prototype.updateDataFromGrid = function() {
-   this.sizeX = this.$gridWidget.attr("data-gs-width");
+    debugger;
+    this.sizeX = this.$gridWidget.attr("data-gs-width");
    this.sizeY = this.$gridWidget.attr("data-gs-height");
    this.positionX = this.$gridWidget.attr("data-gs-x");
    this.positionY = this.$gridWidget.attr("data-gs-y");
