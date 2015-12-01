@@ -160,7 +160,6 @@ widgetViewModelCtor =
            });
 
            self.widget.$gridWidget.find(".export-command").unbind("click").bind("click", function (e) {
-               debugger;
                self.chart.exportChartLocal({
                    type: $(e.currentTarget).attr("mime-type"),
                    filename: 'export'
@@ -170,7 +169,6 @@ widgetViewModelCtor =
 
        this.resized = function () {
            var self = this;
-
            if (!isNullOrUndefined(this.chart)) {
                this.chart.setSize(this.widget.width() - 30, this.widget.height() - 40, false);
 
@@ -331,7 +329,6 @@ widgetViewModelCtor =
                            isSummaryData = true;
                            break;
                    }
-                   console.log("step 2 " + moment().format("HH:mm:ss'SSS"));
 
                    //ensure all series and axis are removed (may cause some crash if not done)
                    while (self.chart.series.length > 0)
@@ -375,13 +372,11 @@ widgetViewModelCtor =
 
                            $.getJSON("rest/acquisition/keyword/" + device.content.source.keywordId + prefixUri + "/" + dateFrom + "/" + dateTo)
                               .done(function (data) {
-                                  console.log("done :", "rest/acquisition/keyword/" + device.content.source.keywordId + prefixUri + "/" + dateFrom + "/" + dateTo);
                                   //we parse the json answer
                                   if (data.result != "true") {
                                       notifyError($.t("chart:errorDuringGettingDeviceData"), JSON.stringify(data));
                                       return;
                                   }
-                                  console.log("step 3 " + moment().format("HH:mm:ss'SSS"));
 
                                   //we make the serie
                                   var plot = [];
@@ -392,7 +387,6 @@ widgetViewModelCtor =
                                   var IndexDevice = index;
 
                                   if (!isSummaryData) {
-                                      console.log("step 4 " + moment().format("HH:mm:ss'SSS"));
                                       //data comes from acquisition table
                                       $.each(data.data.data, function (index, value) {
                                           lastDate = d;
@@ -447,7 +441,6 @@ widgetViewModelCtor =
                                           plot.push([d, v]);
                                       });
                                   }
-                                  console.log("step 5 " + moment().format("HH:mm:ss'SSS"));
                                   var color = "black";
                                   try {
                                       color = device.content.color;
@@ -463,7 +456,6 @@ widgetViewModelCtor =
 
                                   //create axis if needed
                                   if (isNullOrUndefined(self.chart.get(yAxisName))) {
-                                      console.log('Axis do not exist, create it (for index = ' + index + ')');
                                       try {
                                           function isOdd(num) {
                                               return num % 2;
@@ -497,9 +489,6 @@ widgetViewModelCtor =
                                               opposite: isOdd(index)
                                           }, false, false, false);
 
-                                          if (isNullOrUndefined(self.chart.get(yAxisName))) {
-                                              console.error("Impossible de créer un axe !!!!");
-                                          }
                                       } catch (err) {
                                           console.log('Fail to create axis (for index = ' + index + ') : ' + err);
                                       }

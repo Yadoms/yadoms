@@ -68,19 +68,26 @@ Widget.prototype.toJSON = function () {
  * Synchronize data from grister object and properties of the class
  */
 Widget.prototype.updateDataFromGrid = function() {
-    debugger;
-    this.sizeX = this.$gridWidget.attr("data-gs-width");
-   this.sizeY = this.$gridWidget.attr("data-gs-height");
-   this.positionX = this.$gridWidget.attr("data-gs-x");
-   this.positionY = this.$gridWidget.attr("data-gs-y");
+    this.sizeX = parseInt(this.$gridWidget.attr("data-gs-width"));
+   this.sizeY = parseInt(this.$gridWidget.attr("data-gs-height"));
+   this.positionX = parseInt(this.$gridWidget.attr("data-gs-x"));
+   this.positionY = parseInt(this.$gridWidget.attr("data-gs-y"));
 };
 
 Widget.prototype.height = function () {
-   return this.$gridWidget.css("height").replace('px', '');
+   return parseInt(this.$gridWidget.css("height").replace('px', ''));
 };
 
 Widget.prototype.width = function () {
-   return this.$gridWidget.css("width").replace('px', '');
+   return parseInt(this.$gridWidget.css("width").replace('px', ''));
+};
+
+Widget.prototype.setHeight = function (newHeight) {
+    return this.$gridWidget.css("height", newHeight + 'px');
+};
+
+Widget.prototype.setWidth = function (newWidth) {
+    return this.$gridWidget.css("width", newWidth + 'px');
 };
 
 Widget.prototype.title = function () {

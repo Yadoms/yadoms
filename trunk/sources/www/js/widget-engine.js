@@ -170,7 +170,6 @@ function periodicUpdateTask() {
         $.each(data.EventLogger, function (index, value) {
             console.debug("incoming event: " + JSON.stringify(value));
             var gravity;
-            debugger;
             //the gravity of the noty depend on the code
             if ((value.code.toLowerCase() == "started") || (value.code.toLowerCase() == "stopped") || (value.code.toLowerCase() == "updated")) {
                 gravity = "information";

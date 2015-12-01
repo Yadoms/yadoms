@@ -103,7 +103,6 @@
       return function() {
          //we deactivate the button until next status will be acquired to prevent flooding
          getAutomationRuleDomRow(rule).find("button.btn-enableDisable").prop('disabled', true);
-         debugger;
          if (getAutomationRuleDomRow(rule).find("span.fa-stop").length == 1) {
             //we ask for disable
             AutomationRuleManager.disable(rule, function(updatedRule) {
