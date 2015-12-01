@@ -223,6 +223,7 @@
     },
     "edit-automation-rule": {
       "title": "Automation rule edition",
+      "show-help" :  "Help on the yadoms Script API",
       "interpreter-rule": {
         "name": "Interpreter",
         "description": "Interpreter of the rule"

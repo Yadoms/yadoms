@@ -10,7 +10,6 @@
               <div class="modal-body">
                  <div id="automation-rule-configuration"></div>
                  <div id="automation-rule-editor"></div>
-                 <div id="automation-rule-help"><a id="automation-rule-help-link">Help on the yadoms Script API</a></div><!--TODO traduire le message--></!--TODO>
               </div>
               <div class="modal-footer">
                  <div class="form-actions">
@@ -107,19 +106,9 @@
       //i18n
       $modalBody.i18n();
       
-      //Bind help
-      $modalBody.find("#automation-rule-help").find("#automation-rule-help-link").unbind('click').bind('click', function () {
-         self.showDoc(rule.interpreter);
-      });
-
       //we display the modal
       $('div#edit-automation-rule-modal').modal();
    }
    
-   function showDoc(interpreter) {
-      var url = "help.html";
-      url += "?lang=" + systemConfiguration[ConfigurationManager.items.system.language].value;
-      url += "&helpUrl=" + encodeURIComponent(AutomationInterpreterManager.getApiDocUrl(interpreter));
-      window.open(url);
-   }
+
 </script>
