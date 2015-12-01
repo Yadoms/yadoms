@@ -127,30 +127,32 @@ widgetViewModelCtor =
 
            this.chart = this.$chart.highcharts();
 
-           var $toolbar = widget.$gridWidget.find("div.panel-widget-title-toolbar");
-
            //we manage toolbar buttons
-           $toolbar.append("<div class=\"widget-toolbar-button range-btn\" interval=\"HOUR\"><span data-i18n=\"chart:navigator.hour\"/></div>");
-           $toolbar.append("<div class=\"widget-toolbar-button range-btn\" interval=\"DAY\"><span data-i18n=\"chart:navigator.day\"/></div>");
-           $toolbar.append("<div class=\"widget-toolbar-button range-btn\" interval=\"WEEK\"><span data-i18n=\"chart:navigator.week\"/></div>");
-           $toolbar.append("<div class=\"widget-toolbar-button range-btn\" interval=\"MONTH\"><span data-i18n=\"chart:navigator.month\"/></div>");
-           $toolbar.append("<div class=\"widget-toolbar-button range-btn\" interval=\"HALF_YEAR\"><span data-i18n=\"chart:navigator.half_year\"/></div>");
-           $toolbar.append("<div class=\"widget-toolbar-button range-btn\" interval=\"YEAR\"><span data-i18n=\"chart:navigator.year\"/></div>");
-           $toolbar.append("<div class=\"widget-toolbar-button export-btn dropdown\">" +
-                               "<span class=\"dropdown-toggle\" id=\"chartExportMenu\"  type=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"true\">" +
-                                   "<span class=\"fa fa-bars\"/>" +
-                               "</span>" +
-                               "<ul class=\"dropdown-menu\" aria-labelledby=\"chartExportMenu\">" +
-                                   "<li><span class=\"print-command\" data-i18n=\"chart:export.print\"></span></li>" +
-                                   "<li role=\"separator\" class=\"divider\"></li>" +
-                                   "<li><span class=\"export-command\" data-i18n=\"chart:export.png\" mime-type=\"image/png\"></span></li>" +
-                                   "<li><span class=\"export-command\" data-i18n=\"chart:export.jpeg\" mime-type=\"image/jpeg\"></span></li>" +
-                                   "<li><span class=\"export-command\" data-i18n=\"chart:export.pdf\" mime-type=\"application/pdf\"></span></li>" +
-                                   "<li><span class=\"export-command\" data-i18n=\"chart:export.svg\" mime-type=\"image/svg+xml\"></span></li>" +
-                                   "<li><span class=\"export-command\" data-i18n=\"chart:export.csv\" mime-type=\"text/csv\"></span></li>" +
-                                   "<li><span class=\"export-command\" data-i18n=\"chart:export.xls\" mime-type=\"application/vnd.ms-excel\"></span></li>" +
-                               "</ul>" +
-                           "</div>");
+           widget.$toolbar.append("<div class=\"widget-toolbar-button range-btn\" interval=\"HOUR\"><span data-i18n=\"chart:navigator.hour\"/></div>");
+           widget.$toolbar.append("<div class=\"widget-toolbar-button range-btn\" interval=\"DAY\"><span data-i18n=\"chart:navigator.day\"/></div>");
+           widget.$toolbar.append("<div class=\"widget-toolbar-button range-btn\" interval=\"WEEK\"><span data-i18n=\"chart:navigator.week\"/></div>");
+           widget.$toolbar.append("<div class=\"widget-toolbar-button range-btn\" interval=\"MONTH\"><span data-i18n=\"chart:navigator.month\"/></div>");
+           widget.$toolbar.append("<div class=\"widget-toolbar-button range-btn\" interval=\"HALF_YEAR\"><span data-i18n=\"chart:navigator.half_year\"/></div>");
+           widget.$toolbar.append("<div class=\"widget-toolbar-button range-btn\" interval=\"YEAR\"><span data-i18n=\"chart:navigator.year\"/></div>");
+           widget.$toolbar.append("<div class=\"widget-toolbar-separator\"></div>");
+           /*widget.$toolbar.append("<div class=\"widget-toolbar-element\"><span class=\"fa fa-battery-2\"/></div>");
+           widget.$toolbar.append("<div class=\"widget-toolbar-element\"><span class=\"fa fa-signal\"/></div>");
+           widget.$toolbar.append("<div class=\"widget-toolbar-separator\"></div>");*/
+           widget.$toolbar.append("<div class=\"widget-toolbar-button export-btn dropdown\">" +
+                                      "<span class=\"dropdown-toggle\" id=\"chartExportMenu\"  type=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"true\">" +
+                                          "<span class=\"fa fa-bars\"/>" +
+                                      "</span>" +
+                                      "<ul class=\"dropdown-menu\" aria-labelledby=\"chartExportMenu\">" +
+                                          "<li><span class=\"print-command\" data-i18n=\"chart:export.print\"></span></li>" +
+                                          "<li role=\"separator\" class=\"divider\"></li>" +
+                                          "<li><span class=\"export-command\" data-i18n=\"chart:export.png\" mime-type=\"image/png\"></span></li>" +
+                                          "<li><span class=\"export-command\" data-i18n=\"chart:export.jpeg\" mime-type=\"image/jpeg\"></span></li>" +
+                                          "<li><span class=\"export-command\" data-i18n=\"chart:export.pdf\" mime-type=\"application/pdf\"></span></li>" +
+                                          "<li><span class=\"export-command\" data-i18n=\"chart:export.svg\" mime-type=\"image/svg+xml\"></span></li>" +
+                                          "<li><span class=\"export-command\" data-i18n=\"chart:export.csv\" mime-type=\"text/csv\"></span></li>" +
+                                          "<li><span class=\"export-command\" data-i18n=\"chart:export.xls\" mime-type=\"application/vnd.ms-excel\"></span></li>" +
+                                      "</ul>" +
+                                  "</div>");
 
            var $btns = self.widget.$gridWidget.find(".range-btn");
            $btns.unbind("click").bind("click", self.navigatorBtnClick());

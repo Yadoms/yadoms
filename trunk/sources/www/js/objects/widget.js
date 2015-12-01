@@ -14,36 +14,39 @@
  * @constructor
  */
 function Widget(id, idPage, type, title, sizeX, sizeY, positionX, positionY, configuration) {
-   assert(id !== undefined, "id of a widget must be defined");
-   assert(idPage !== undefined, "idPage of a widget must be defined");
-   assert(type !== undefined, "type of a widget must be defined");
-   assert(title !== undefined, "type of a widget must be defined");
-   assert(sizeX !== undefined, "sizeX of a widget must be defined");
-   assert(sizeY !== undefined, "sizeY of a widget must be defined");
-   assert(positionX !== undefined, "positionX of a widget must be defined");
-   assert(positionY !== undefined, "positionY of a widget must be defined");
-   //configuration can be undefined
+    assert(id !== undefined, "id of a widget must be defined");
+    assert(idPage !== undefined, "idPage of a widget must be defined");
+    assert(type !== undefined, "type of a widget must be defined");
+    assert(title !== undefined, "type of a widget must be defined");
+    assert(sizeX !== undefined, "sizeX of a widget must be defined");
+    assert(sizeY !== undefined, "sizeY of a widget must be defined");
+    assert(positionX !== undefined, "positionX of a widget must be defined");
+    assert(positionY !== undefined, "positionY of a widget must be defined");
+    //configuration can be undefined
 
-   this.id = id;
-   this.idPage = idPage;
-   this.type = type;
-   this.title = title;
-   this.sizeX = sizeX;
-   this.sizeY = sizeY;
-   this.positionX = positionX;
-   this.positionY = positionY;
-   this.configuration = configuration;
+    this.id = id;
+    this.idPage = idPage;
+    this.type = type;
+    this.title = title;
+    this.sizeX = sizeX;
+    this.sizeY = sizeY;
+    this.positionX = positionX;
+    this.positionY = positionY;
+    this.configuration = configuration;
 
-   this.viewModel = null;
+    this.viewModel = null;
 
-   //grid item
-   this.$gridWidget = null;
+    //grid item
+    this.$gridWidget = null;
 
-   //div where is embed the widget
-   this.$div = null;
+    //div where is embed the widget
+    this.$div = null;
 
-   //package information of the current widget type (package.json file)
-   this.package = null;
+    //package information of the current widget type (package.json file)
+    this.package = null;
+
+    //toolbar of the widget
+    this.$toolbar = null;
 }
 
 /**
@@ -51,35 +54,35 @@ function Widget(id, idPage, type, title, sizeX, sizeY, positionX, positionY, con
  * @returns {{id: *, idPage: *, type: *,title: *, sizeX: *, sizeY: *, positionX: *, positionY: *, configuration: *}}
  */
 Widget.prototype.toJSON = function () {
-   return { 
-			id : this.id, 
-			idPage: this.idPage, 
-			type: this.type,
-			title: this.title,
-			sizeX: this.sizeX,
-			sizeY: this.sizeY,
-			positionX: this.positionX,
-			positionY: this.positionY,
-			configuration: this.configuration
-		  };
+    return {
+        id: this.id,
+        idPage: this.idPage,
+        type: this.type,
+        title: this.title,
+        sizeX: this.sizeX,
+        sizeY: this.sizeY,
+        positionX: this.positionX,
+        positionY: this.positionY,
+        configuration: this.configuration
+    };
 };
 
 /**
  * Synchronize data from grister object and properties of the class
  */
-Widget.prototype.updateDataFromGrid = function() {
+Widget.prototype.updateDataFromGrid = function () {
     this.sizeX = parseInt(this.$gridWidget.attr("data-gs-width"));
-   this.sizeY = parseInt(this.$gridWidget.attr("data-gs-height"));
-   this.positionX = parseInt(this.$gridWidget.attr("data-gs-x"));
-   this.positionY = parseInt(this.$gridWidget.attr("data-gs-y"));
+    this.sizeY = parseInt(this.$gridWidget.attr("data-gs-height"));
+    this.positionX = parseInt(this.$gridWidget.attr("data-gs-x"));
+    this.positionY = parseInt(this.$gridWidget.attr("data-gs-y"));
 };
 
 Widget.prototype.height = function () {
-   return parseInt(this.$gridWidget.css("height").replace('px', ''));
+    return parseInt(this.$gridWidget.css("height").replace('px', ''));
 };
 
 Widget.prototype.width = function () {
-   return parseInt(this.$gridWidget.css("width").replace('px', ''));
+    return parseInt(this.$gridWidget.css("width").replace('px', ''));
 };
 
 Widget.prototype.setHeight = function (newHeight) {
@@ -91,5 +94,5 @@ Widget.prototype.setWidth = function (newWidth) {
 };
 
 Widget.prototype.title = function () {
-   return this.title;
+    return this.title;
 };
