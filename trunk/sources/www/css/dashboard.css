@@ -158,6 +158,9 @@
     cursor:pointer;
 }
 
+.code-help-button {
+    margin-top: 5px;
+}
 
 .blocklySvg {
     min-height: 400px;

@@ -84,15 +84,11 @@ AutomationInterpreterManager.getAllDetailed = function (callback, sync) {
    }, sync);
 };
 
+AutomationInterpreterManager.getInterpreterBaseUrl = function (interpreter) {
+    assert(!isNullOrUndefined(interpreter), "interpreter must be defined");
 
-/**
- * Get interpreter API doc URL
- * @param interpreter
- * @return API doc URL
- */
-AutomationInterpreterManager.getApiDocUrl = function (interpreter) {
-   assert(!isNullOrUndefined(interpreter), "interpreter must be defined");
-   
-   interpreterType = AutomationInterpreterManager.factory(interpreter).type;
-   return "scriptInterpreters/" + interpreterType + "/yScriptApiDoc.json";
+    var interpreterType = AutomationInterpreterManager.factory(interpreter).type;
+    return "scriptInterpreters/" + interpreterType ;
 };
+
+

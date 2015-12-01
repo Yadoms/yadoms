@@ -160,6 +160,7 @@
 		},
 		"edit-automation-rule": {
 			"title": "Edition d'une règle d'automatisation",
+			"show-help" :  "Afficher l'aide pour l'API Script",
 			"interpreter-rule": {
 				"name": "Interpréteur",
 				"description": "Interpréteur de la règle"

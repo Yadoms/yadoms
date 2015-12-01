@@ -19,6 +19,7 @@ function AutomationEditorCode(interpreters) {
    var self = this;
    self.uuid = createUUID();
    self.editorUuid = createUUID();
+   self.helpUuid = createUUID();
 
    //we compare interpreters and getSupportedInterpreters() static method to keep only active supported interpreters
    this.activeSupportedInterpreters = [];
@@ -43,13 +44,16 @@ AutomationEditorCode.prototype.getUuid = function() {
    return this.uuid;
 };
 
+
+
 /**
  * Obtain DOM structure to insert in editor's page
  */
 AutomationEditorCode.prototype.getDOMStructure = function() {
    return ("<div id=\"" + this.uuid + "\" class=\"code-ide\">" +
                "<div id=\"" + this.editorUuid + "\" class=\"code-editor\"></div>" +
-            "</div>");
+            "</div>" +
+           "<button type=\"button\" class=\"btn btn-info btn-sm code-help-button\" id=\"" + this.helpUuid + "\" data-i18n=\"modals.edit-automation-rule.show-help\">doc</button>");
 };
 
 /**
@@ -72,7 +76,33 @@ AutomationEditorCode.prototype.applyScript = function() {
    //we tab size and soft tabs (tabs replaces by spaces)
    this.editor.getSession().setTabSize(3);
    this.editor.getSession().setUseSoftTabs(true);
+
+    //Bind help
+   $("#" + self.helpUuid).unbind('click').bind('click', function () {
+       self.showDoc();
+   });
 };
+
+
+/**
+ * Show the API documentation
+ */
+AutomationEditorCode.prototype.showDoc = function () {
+    var url = "help.html";
+    url += "?lang=" + window.systemConfiguration[ConfigurationManager.items.system.language].value;
+    url += "&helpUrl=" + encodeURIComponent(this.getApiDocUrl());
+    window.open(url);
+};
+
+
+/**
+ * Get interpreter API doc URL
+ * @return API doc URL
+ */
+AutomationEditorCode.prototype.getApiDocUrl = function () {
+    return AutomationInterpreterManager.getInterpreterBaseUrl(this.rule.interpreter) + "/yScriptApiDoc.json";
+};
+
 
 /**
  * Permit to set the active rule to edit
