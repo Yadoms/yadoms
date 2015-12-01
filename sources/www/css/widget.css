@@ -101,6 +101,8 @@
 .panel-widget-title {
 }
 
+/*Widget toolbar API*/
+
 .widget-toolbar-pressed-button {
     background: white;
     color: #428bca !important;
@@ -116,6 +118,23 @@
     margin-left: 4px;
     margin-right: 4px;
     cursor: pointer;
+}
+
+.widget-toolbar-separator {
+    float: left;
+    height: 20px;
+    border-left: 1px solid white;
+    /* margin-top: 2px; */
+    /* margin-bottom: 2px; */
+    margin-left: 2px;
+    margin-right: 2px;
+}
+
+.widget-toolbar-element {
+    float: left;
+    color: white;
+    margin-left: 4px;
+    margin-right: 4px;
 }
 
 /*Standard battery widget indicator*/
