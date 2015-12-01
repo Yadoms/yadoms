@@ -1,6 +1,7 @@
 .numericDisplayWidgetValueArea {
     margin: auto;
-    display: table;
+    display: table-cell;
+	vertical-align:middle;
 }
 
 .numericDisplayWidget {
@@ -8,4 +9,5 @@
     height: 100%;
     width: 100%;
     text-align: center;
+	display: table;
 }
