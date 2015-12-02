@@ -92,7 +92,7 @@ function ThermometerViewModel()
 		var POS_Y_MIN = 10 * self.WidgetHeight / 100;
 		var POS_Y_MAX = 60 * self.WidgetHeight / 100;		
 		var POS_Y_BALL = 84 * self.WidgetHeight / 100;
-		var POS_CENTER_BALL = 86 * self.WidgetHeight / 100;
+		var POS_CENTER_BALL = 85 * self.WidgetHeight / 100;
 		
         ctx.fillStyle = "rgb(" + Math.round(255 - ( TEMP_MAX - self.data())* 255/90) + ",0," + Math.round( 255 - ( self.data() - TEMP_MIN ) * 255/90 ) + ")"
 		 
@@ -163,11 +163,10 @@ function ThermometerViewModel()
    {
        var self = this;
 	   
-	   //The size is x2 only when the widget is square
 	   if (this.widget.height() <= 250 && this.widget.height() >= 150 && this.widget.width() <= 250 && this.widget.width() >= 150 )
 	   {
-		   self.WidgetWidth  = 200;
-		   self.WidgetHeight = 200;
+		   self.WidgetWidth  = 190;
+		   self.WidgetHeight = 170;
 		   
 		   self.refresh();
 		   isSmall = false;
