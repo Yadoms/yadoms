@@ -41,6 +41,7 @@
 .panel-widget {
     margin-bottom: 0px;
     display: table;
+    table-layout: fixed;
     width: 100%;
     height: 100%;
 }

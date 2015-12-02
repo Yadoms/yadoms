@@ -120,7 +120,7 @@ void CMailSender::onSendMailRequest(boost::shared_ptr<yApi::IYPluginApi> context
       quickmail_initialize();
       mailobj = quickmail_create(NULL, NULL); //from / subject
 
-      quickmail_set_debug_log(mailobj, stdout);
+      //quickmail_set_debug_log(mailobj, stdout);
 
       // Set the sender e-mail address
       quickmail_set_from(mailobj, (char*) m_configuration.SMTPSenderMail().c_str() );
