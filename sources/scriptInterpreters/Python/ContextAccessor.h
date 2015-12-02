@@ -50,15 +50,15 @@ protected:
    /// \param[in] request Received requests
    /// \param[in] messageQueue Message Queue used for answer
    //--------------------------------------------------------------
-   void processGetKeywordId       (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
-   void processGetRecipientId     (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
-   void processReadKeyword        (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
-   void processWaitForAcquisition (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
-   void processWaitForAcquisitions(const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
-   void processWriteKeyword       (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
-   void processSendNotification   (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
-   void processGetInfo            (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
-   void processRuleEnable         (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
+   void processGetKeywordId            (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
+   void processGetRecipientId          (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
+   void processReadKeyword             (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
+   void processWaitForNextAcquisition  (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
+   void processWaitForNextAcquisitions (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
+   void processAt                      (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
+   void processWriteKeyword            (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
+   void processSendNotification        (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
+   void processGetInfo                 (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
 
    //--------------------------------------------------------------
    /// \brief	Send an answer

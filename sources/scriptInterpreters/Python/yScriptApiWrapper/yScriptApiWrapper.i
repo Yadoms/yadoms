@@ -39,7 +39,7 @@
 
 %include stl.i
 
-// Used by IYScriptApi::waitForAcquisitions
+// Used by IYScriptApi::waitForNextAcquisitions
 %template() std::vector<int>;
 %template() std::pair<int, std::string>;
 

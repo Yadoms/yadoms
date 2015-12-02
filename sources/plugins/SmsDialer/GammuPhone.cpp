@@ -84,7 +84,6 @@ void CGammuPhone::unlock(const std::string& pin)
       break;
    default:
       throw CPhoneException(std::string ("Phone security mode not supported : ") + boost::lexical_cast<std::string>(SecurityCode.Type));
-      break;
    }
 
    // Check PIN validity
@@ -365,10 +364,7 @@ bool CGammuPhone::checkMultipart(GSM_MultiSMSMessage* gammuSms)
          razMultipartWaitFlags();
          return true;
       }
-      else
-      {
-         // Incomplete multipart message, waiting for other parts
-      }
+      // Incomplete multipart message, waiting for other parts
    }
    else
    {

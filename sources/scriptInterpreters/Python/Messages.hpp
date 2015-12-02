@@ -13,12 +13,12 @@ enum ERequestIdentifier
    kReqGetKeywordId = 0,
    kReqGetRecipientId,
    kReqReadKeyword,
-   kReqWaitForAcquisition,
-   kReqWaitForAcquisitions,
+   kReqWaitForNextAcquisition,
+   kReqWaitForNextAcquisitions,
+   kReqAt,
    kReqWriteKeyword,
    kReqSendNotification,
    kReqGetInfo,
-   kReqRuleEnable,
 };
 
 //--------------------------------------------------------------
@@ -31,8 +31,8 @@ enum EAnswerIdentifier
    kAnsReadKeyword,
    kAnsWaitForAcquisition,
    kAnsWaitForAcquisitions,
+   kAnsAt,
    kAnsWriteKeyword,
    kAnsSendNotification,
    kAnsGetInfo,
-   kAnsRuleEnable,
 };

@@ -8,6 +8,8 @@
 #include "dataAccessLayer/IConfigurationManager.h"
 #include "communication/ISendMessageAsync.h"
 #include "IGeneralInfo.h"
+#include "notification/action/WaitAction.hpp"
+#include "notification/acquisition/Notification.hpp"
 
 namespace automation { namespace script
 {
@@ -48,8 +50,9 @@ namespace automation { namespace script
       virtual int getKeywordId(const std::string& deviceName, const std::string& keywordName) const;
       virtual int getRecipientId(const std::string& firstName, const std::string& lastName) const;
       virtual std::string readKeyword(int keywordId) const;
-      virtual std::string waitForAcquisition(int keywordId, const std::string& timeout = std::string()) const;
-      virtual std::pair<int, std::string> waitForAcquisitions(const std::vector<int> keywordIdList, const std::string& timeout) const;
+      virtual std::string waitForNextAcquisition(int keywordId, const std::string& timeout = std::string()) const;
+      virtual std::pair<int, std::string> waitForNextAcquisitions(const std::vector<int> keywordIdList, const std::string& timeout) const;
+      virtual void at(const std::string& dateTime) const;
       virtual void writeKeyword(int keywordId, const std::string& newState);
       virtual void sendNotification(int keywordId, int recipientId, const std::string& message);
       virtual std::string getInfo(EInfoKeys key) const;
@@ -75,6 +78,17 @@ namespace automation { namespace script
       ///\throw std::out_of_range if recipient not found
       //-----------------------------------------------------
       void assertExistingRecipient(int recipientId) const;
+
+   protected:
+      //-----------------------------------------------------
+      ///\brief               Wait for an action (used in acquisition notification)
+      ///\param[in] action    Action object to wait on
+      ///\param[in] timeout   Timeout, as string. Can be a duration (format \"hh:mm:ss.xxx\") or a dateTime (format \"YYYY-MM-DD hh:mm:ss.xxx\"). No timeout if empty.
+      ///\return              The acquisition (null if timeout)
+      //-----------------------------------------------------
+      boost::shared_ptr<notification::acquisition::CNotification> waitForAction(
+         boost::shared_ptr<notification::action::CWaitAction<notification::acquisition::CNotification> > action,
+         const std::string& timeout) const;
 
    private:
       //-----------------------------------------------------

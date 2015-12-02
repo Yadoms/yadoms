@@ -111,15 +111,15 @@ void CContextAccessor::processMessage(const char* message, size_t messageSize, b
    shared::CDataContainer request = mainRequestContainer.get<shared::CDataContainer>("content");
    switch (mainRequestContainer.get<ERequestIdentifier>("type"))
    {
-   case kReqGetKeywordId         : processGetKeywordId(request, messageQueue); break;
-   case kReqGetRecipientId       : processGetRecipientId(request, messageQueue); break;
-   case kReqReadKeyword          : processReadKeyword(request, messageQueue); break;
-   case kReqWaitForAcquisition   : processWaitForAcquisition(request, messageQueue); break;
-   case kReqWaitForAcquisitions  : processWaitForAcquisitions(request, messageQueue); break;
-   case kReqWriteKeyword         : processWriteKeyword(request, messageQueue); break;
-   case kReqSendNotification     : processSendNotification(request, messageQueue); break;
-   case kReqGetInfo              : processGetInfo(request, messageQueue); break;
-   case kReqRuleEnable           : processRuleEnable(request, messageQueue); break;
+   case kReqGetKeywordId            : processGetKeywordId(request, messageQueue); break;
+   case kReqGetRecipientId          : processGetRecipientId(request, messageQueue); break;
+   case kReqReadKeyword             : processReadKeyword(request, messageQueue); break;
+   case kReqWaitForNextAcquisition  : processWaitForNextAcquisition(request, messageQueue); break;
+   case kReqWaitForNextAcquisitions : processWaitForNextAcquisitions(request, messageQueue); break;
+   case kReqAt                      : processAt(request, messageQueue); break;
+   case kReqWriteKeyword            : processWriteKeyword(request, messageQueue); break;
+   case kReqSendNotification        : processSendNotification(request, messageQueue); break;
+   case kReqGetInfo                 : processGetInfo(request, messageQueue); break;
    default:
       throw shared::exception::CInvalidParameter("message");
    }
@@ -132,7 +132,7 @@ void CContextAccessor::processGetKeywordId(const shared::CDataContainer& request
    {
       answer.set("returnValue", m_scriptApi->getKeywordId(request.get<std::string>("device"), request.get<std::string>("keyword")));
    }
-   catch (std::out_of_range& ex)
+   catch (std::exception& ex)
    {
       answer.set("error", ex.what());
    }
@@ -146,7 +146,7 @@ void CContextAccessor::processGetRecipientId(const shared::CDataContainer& reque
    {
       answer.set("returnValue", m_scriptApi->getRecipientId(request.get<std::string>("firstName"), request.get<std::string>("lastName")));
    }
-   catch (std::out_of_range& ex)
+   catch (std::exception& ex)
    {
       answer.set("error", ex.what());
    }
@@ -160,41 +160,55 @@ void CContextAccessor::processReadKeyword(const shared::CDataContainer& request,
    {
       answer.set("returnValue", m_scriptApi->readKeyword(request.get<int>("keywordId")));
    }
-   catch (std::out_of_range& ex)
+   catch (std::exception& ex)
    {
       answer.set("error", ex.what());
    }
    sendAnswer(kAnsReadKeyword, answer, messageQueue);
 }
 
-void CContextAccessor::processWaitForAcquisition(const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue)
+void CContextAccessor::processWaitForNextAcquisition(const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue)
 {
    shared::CDataContainer answer;
    try
    {
-      answer.set("returnValue", m_scriptApi->waitForAcquisition(request.get<int>("keywordId"), request.get<std::string>("timeout")));
+      answer.set("returnValue", m_scriptApi->waitForNextAcquisition(request.get<int>("keywordId"), request.get<std::string>("timeout")));
    }
-   catch (std::out_of_range& ex)
+   catch (std::exception& ex)
    {
       answer.set("error", ex.what());
    }
    sendAnswer(kAnsWaitForAcquisition, answer, messageQueue);
 }
 
-void CContextAccessor::processWaitForAcquisitions(const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue)
+void CContextAccessor::processWaitForNextAcquisitions(const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue)
 {
    shared::CDataContainer answer;
    try
    {
-      std::pair<int, std::string> returnValue = m_scriptApi->waitForAcquisitions(request.get<std::vector<int> >("keywordIdList"), request.get<std::string>("timeout"));
+      std::pair<int, std::string> returnValue = m_scriptApi->waitForNextAcquisitions(request.get<std::vector<int> >("keywordIdList"), request.get<std::string>("timeout"));
       answer.set("key", returnValue.first);
       answer.set("value", returnValue.second);
    }
-   catch (std::out_of_range& ex)
+   catch (std::exception& ex)
    {
       answer.set("error", ex.what());
    }
    sendAnswer(kAnsWaitForAcquisitions, answer, messageQueue);
+}
+
+void CContextAccessor::processAt(const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue)
+{
+   shared::CDataContainer answer;
+   try
+   {
+      m_scriptApi->at(request.get<std::string>("dateTime"));
+   }
+   catch (std::exception& ex)
+   {
+      answer.set("error", ex.what());
+   }
+   sendAnswer(kAnsAt, answer, messageQueue);
 }
 
 void CContextAccessor::processWriteKeyword(const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue)
@@ -204,7 +218,7 @@ void CContextAccessor::processWriteKeyword(const shared::CDataContainer& request
    {
       m_scriptApi->writeKeyword(request.get<int>("keywordId"), request.get<std::string>("newState"));
    }
-   catch (std::out_of_range& ex)
+   catch (std::exception& ex)
    {
       answer.set("error", ex.what());
    }
@@ -218,7 +232,7 @@ void CContextAccessor::processSendNotification(const shared::CDataContainer& req
    {
       m_scriptApi->sendNotification(request.get<int>("keywordId"), request.get<int>("recipientId"), request.get<std::string>("message"));
    }
-   catch (std::out_of_range& ex)
+   catch (std::exception& ex)
    {
       answer.set("error", ex.what());
    }
@@ -232,23 +246,9 @@ void CContextAccessor::processGetInfo(const shared::CDataContainer& request, boo
    {
       answer.set("returnValue", m_scriptApi->getInfo(request.get<shared::script::yScriptApi::IYScriptApi::EInfoKeys>("key")));
    }
-   catch (std::out_of_range& ex)
+   catch (std::exception& ex)
    {
       answer.set("error", ex.what());
    }
    sendAnswer(kAnsGetInfo, answer, messageQueue);
-}
-
-void CContextAccessor::processRuleEnable(const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue)
-{
-   shared::CDataContainer answer;
-   try
-   {
-      m_scriptApi->ruleEnable(request.get<bool>("enable"));
-   }
-   catch (std::out_of_range& ex)
-   {
-      answer.set("error", ex.what());
-   }
-   sendAnswer(kAnsRuleEnable, answer, messageQueue);
 }
