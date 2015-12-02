@@ -275,18 +275,21 @@ function ForecastViewModel() {
 			self.RainDayVisible     ( parseBool( self.widget.configuration.Information.content.RainDay ));
 	   }
 	   
-	   // if length = 2 cases -> 2 days
-	   if (self.widget.width() <= 200)
+	   if (self.widget.width() <= 100)
 	   {
 	      self.DayNbre ( 1 );
 	   }
-	   else if (self.widget.width() <= 300) // if length = 3 cases -> 3 days
+	   else if (self.widget.width() <= 200) // if length = 2 cases -> 2 days
 	   {
 	      self.DayNbre ( 3 );
 	   }
+	   else if (self.widget.width() <= 300) // if length = 3 cases -> 3 days
+	   {
+	      self.DayNbre ( 4 );
+	   }
 	   else if (self.widget.width() <= 400) // if length = 4 cases -> 5 days
 	   {
-	      self.DayNbre ( 5 );
+	      self.DayNbre ( 6 );
 	   }
 	   else if (self.widget.width() <= 500) // if length = 5 cases -> 6 days
 	   {

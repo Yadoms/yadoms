@@ -8,10 +8,10 @@
    "dimensions": {
       "min": {
          "x": 1,
-         "y": 1
+         "y": 2
       },
       "max": {
-         "x": 6,
+         "x": 3,
          "y": 3
       },
       "default": {

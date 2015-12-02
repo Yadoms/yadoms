@@ -77,7 +77,11 @@ function GaugeViewModel()
                     useHTML: true
                 }
             }
-        }
+        },
+		
+	   exporting: {
+		   enabled: false
+	   }	
     };   
    
    /**
@@ -100,7 +104,7 @@ function GaugeViewModel()
 		//$("div#" + "widget-" + this.widget.id).css({"overflow": "hidden"});
 		
 		//This div is for rounds borders.
-	   	$('<div style="width: 193px; height: 5px; float: left"></div>').appendTo( "#widget-" + this.widget.id );
+	   	$('<div style="width: 193px; height: 5px; float: left"></div>').appendTo( "#widget-" + this.widget.id );	
   };
    
    /**
@@ -203,8 +207,10 @@ function GaugeViewModel()
 	   //The maximum size
 	   if (this.widget.height() <= 220 && this.widget.height() >= 180 && this.widget.width() <= 320 && this.widget.width() >= 280 )
 	   {
+		   //self.WidgetWidth  = "277px";
+		   //self.WidgetHeight = "150px";
 		   self.WidgetWidth  = "277px";
-		   self.WidgetHeight = "150px";
+		   self.WidgetHeight = "170px";		   
 		   
 		   //To be painted only one time
 		   if ( isSmall == true )
@@ -217,7 +223,7 @@ function GaugeViewModel()
 	   else
 	   {
 		   self.WidgetWidth  = "193px";
-		   self.WidgetHeight = "100px";
+		   self.WidgetHeight = "130px";
 		   
 		   //To be painted only one time
 		   if ( isSmall == false )
