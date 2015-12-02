@@ -43,21 +43,29 @@ namespace shared { namespace script { namespace yScriptApi
       //-----------------------------------------------------
       ///\brief Wait for a new acquisition on a keyword
       ///\param[in] keywordId The keyword ID to watch
-      ///\param[in] timeout Timeout to wait. Format is "hh:mm:ss.xxx". No timeout if empty (default).
+      ///\param[in] timeout Timeout to wait.
       ///\return newState The keyword new state (empty if timeout)
       ///\throw std::out_of_range if keyword not found
       //-----------------------------------------------------
-      virtual std::string waitForAcquisition(int keywordId, const std::string& timeout = std::string()) const = 0;
+      virtual std::string waitForNextAcquisition(int keywordId, const std::string& timeout = std::string()) const = 0;
 
       //-----------------------------------------------------
       ///\brief Wait for a new acquisition on a keyword list
       ///\param[in] keywordIdList The keyword IDs list to watch
-      ///\param[in] timeout Timeout to wait. Format is "hh:mm:ss.xxx". No timeout if empty (default).
+      ///\param[in] timeout Timeout to wait.
       ///\return Returned value is a pair of the keyword Id who changed, and its new value. The keyword Id is kTimeout if timeout.
       ///\throw std::out_of_range if one of the keyword is not found
       //-----------------------------------------------------
       enum { kTimeout = -1 };
-      virtual std::pair<int, std::string> waitForAcquisitions(const std::vector<int> keywordIdList, const std::string& timeout = std::string()) const = 0;
+      virtual std::pair<int, std::string> waitForNextAcquisitions(const std::vector<int> keywordIdList, const std::string& timeout = std::string()) const = 0;
+
+      //-----------------------------------------------------
+      ///\brief Wait for a dateTime
+      ///\param[in] dateTime dateTime to wait.
+      ///\return newState The keyword new state (empty if timeout)
+      ///\throw std::out_of_range if keyword not found
+      //-----------------------------------------------------
+      virtual void at(const std::string& dateTime) const = 0;
 
       //-----------------------------------------------------
       ///\brief Change state of a keyword
@@ -101,13 +109,6 @@ namespace shared { namespace script { namespace yScriptApi
       ///\throw std::out_of_range if key not found
       //-----------------------------------------------------
       virtual std::string getInfo(EInfoKeys key) const = 0;
-
-      //-----------------------------------------------------
-      ///\brief Can be used to prevent a rule for auto-restart
-      ///\param[in] enable true to active auto-restart, false to disable the rule (after the current execution is complete)
-      ///\note : by default, a rule auto-restart at its end
-      //-----------------------------------------------------
-      virtual void ruleEnable(bool enable = true) = 0;
    };
 	
 } } } // namespace shared::script::yScriptApi

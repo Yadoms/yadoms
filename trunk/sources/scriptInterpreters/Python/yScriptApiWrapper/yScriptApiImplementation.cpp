@@ -48,40 +48,29 @@ void CYScriptApiImplementation::sendRequest(ERequestIdentifier requestId, const 
    }
 }
 
-void CYScriptApiImplementation::receiveAnswer(EAnswerIdentifier expectedAnswerId, shared::CDataContainer& answer, const boost::posix_time::time_duration& timeout) const
-{
-   if (!tryReceiveAnswer(expectedAnswerId, answer, timeout))
-      throw std::runtime_error("yScriptApiWrapper::receiveAnswer : Timeout waiting for Yadoms answer");
-}
-
-bool CYScriptApiImplementation::tryReceiveAnswer(EAnswerIdentifier expectedAnswerId, shared::CDataContainer& answer, const boost::posix_time::time_duration& timeout) const
+shared::CDataContainer CYScriptApiImplementation::receiveAnswer(EAnswerIdentifier expectedAnswerId) const
 {
    // Wait answer
    char message[m_messageQueueMessageSize];
    size_t messageSize;
    unsigned int messagePriority;
 
-   // Add a small timeout to let time Yadoms to answer
-   if (!m_receiveMessageQueue->timed_receive(message, m_messageQueueMessageSize, messageSize, messagePriority, shared::currentTime::Provider::now() + boost::posix_time::seconds(10) + timeout))
-      return false;
+   m_receiveMessageQueue->receive(message, m_messageQueueMessageSize, messageSize, messagePriority);
 
    if (messageSize < 1)
-      throw std::runtime_error("yScriptApiWrapper::tryReceiveAnswer : received Yadoms answer is zero length");
+      throw std::runtime_error("yScriptApiWrapper::receiveAnswer : received Yadoms answer is zero length");
 
    // Unserialize received message
    shared::CDataContainer mainAnswerContainer(std::string(message, messageSize));
 
    if (!mainAnswerContainer.exists("type") || !mainAnswerContainer.exists("content"))
-      throw std::out_of_range("yScriptApiWrapper::tryReceiveAnswer : received Yadoms answer is not well formed");
+      throw std::out_of_range("yScriptApiWrapper::receiveAnswer : received Yadoms answer is not well formed");
 
    if (mainAnswerContainer.get<EAnswerIdentifier>("type") != expectedAnswerId)
-      throw std::out_of_range("yScriptApiWrapper::tryReceiveAnswer : received Yadoms answer is wrong type");
+      throw std::out_of_range("yScriptApiWrapper::receiveAnswer : received Yadoms answer is wrong type");
 
-   answer = mainAnswerContainer.get<shared::CDataContainer>("content");
-
-   return true;
+   return mainAnswerContainer.get<shared::CDataContainer>("content");
 }
-
 
 int CYScriptApiImplementation::getKeywordId(const std::string& deviceName, const std::string& keywordName) const
 {
@@ -90,8 +79,7 @@ int CYScriptApiImplementation::getKeywordId(const std::string& deviceName, const
    request.set("keyword", keywordName);
    sendRequest(kReqGetKeywordId, request);
 
-   shared::CDataContainer answer;
-   receiveAnswer(kAnsGetKeywordId, answer);
+   shared::CDataContainer answer = receiveAnswer(kAnsGetKeywordId);
 
    if (answer.exists("error"))
       throw std::out_of_range(std::string("yScriptApiWrapper::getKeywordId, error : ") + answer.get<std::string>("error"));
@@ -106,8 +94,7 @@ int CYScriptApiImplementation::getRecipientId(const std::string& firstName, cons
    request.set("lastName", lastName);
    sendRequest(kReqGetRecipientId, request);
 
-   shared::CDataContainer answer;
-   receiveAnswer(kAnsGetRecipientId, answer);
+   shared::CDataContainer answer = receiveAnswer(kAnsGetRecipientId);
 
    if (answer.exists("error"))
       throw std::out_of_range(std::string("yScriptApiWrapper::getRecipientId, error : ") + answer.get<std::string>("error"));
@@ -121,8 +108,7 @@ std::string CYScriptApiImplementation::readKeyword(int keywordId) const
    request.set("keywordId", keywordId);
    sendRequest(kReqReadKeyword, request);
 
-   shared::CDataContainer answer;
-   receiveAnswer(kAnsReadKeyword, answer);
+   shared::CDataContainer answer = receiveAnswer(kAnsReadKeyword);
 
    if (answer.exists("error"))
       throw std::out_of_range(std::string("yScriptApiWrapper::readKeyword, error : ") + answer.get<std::string>("error"));
@@ -130,36 +116,44 @@ std::string CYScriptApiImplementation::readKeyword(int keywordId) const
    return answer.get<std::string>("returnValue");
 }
 
-std::string CYScriptApiImplementation::waitForAcquisition(int keywordId, const std::string& timeout) const
+std::string CYScriptApiImplementation::waitForNextAcquisition(int keywordId, const std::string& timeout) const
 {
    shared::CDataContainer request;
    request.set("keywordId", keywordId);
    request.set("timeout", timeout);
-   sendRequest(kReqWaitForAcquisition, request);
-   shared::CDataContainer answer;
-   if (!tryReceiveAnswer(kAnsWaitForAcquisition, answer, timeout.empty() ? boost::date_time::pos_infin : boost::posix_time::duration_from_string(timeout)))
-      return std::string();
+   sendRequest(kReqWaitForNextAcquisition, request);
+   shared::CDataContainer answer = receiveAnswer(kAnsWaitForAcquisition);
 
    if (answer.exists("error"))
-      throw std::out_of_range(std::string("yScriptApiWrapper::waitForAcquisition, error : ") + answer.get<std::string>("error"));
+      throw std::out_of_range(std::string("yScriptApiWrapper::waitForNextAcquisition, error : ") + answer.get<std::string>("error"));
 
    return answer.get<std::string>("returnValue");
 }
 
-std::pair<int, std::string> CYScriptApiImplementation::waitForAcquisitions(const std::vector<int> keywordIdList, const std::string& timeout) const
+std::pair<int, std::string> CYScriptApiImplementation::waitForNextAcquisitions(const std::vector<int> keywordIdList, const std::string& timeout) const
 {
    shared::CDataContainer request;
    request.set("keywordIdList", keywordIdList);
    request.set("timeout", timeout);
-   sendRequest(kReqWaitForAcquisitions, request);
-   shared::CDataContainer answer;
-   if (!tryReceiveAnswer(kAnsWaitForAcquisitions, answer, timeout.empty() ? boost::date_time::pos_infin : boost::posix_time::duration_from_string(timeout)))
-      return std::pair<int, std::string>();
+   sendRequest(kReqWaitForNextAcquisitions, request);
+   shared::CDataContainer answer = receiveAnswer(kAnsWaitForAcquisitions);
 
    if (answer.exists("error"))
-      throw std::out_of_range(std::string("yScriptApiWrapper::waitForAcquisitions, error : ") + answer.get<std::string>("error"));
+      throw std::out_of_range(std::string("yScriptApiWrapper::waitForNextAcquisitions, error : ") + answer.get<std::string>("error"));
 
    return std::make_pair(answer.get<int>("key"), answer.get<std::string>("value"));
+}
+
+void CYScriptApiImplementation::at(const std::string& dateTime) const
+{
+   shared::CDataContainer request;
+   request.set("dateTime", dateTime);
+   sendRequest(kReqAt, request);
+
+   shared::CDataContainer answer = receiveAnswer(kAnsAt);
+
+   if (answer.exists("error"))
+      throw std::out_of_range(std::string("yScriptApiWrapper::at, error : ") + answer.get<std::string>("error"));
 }
 
 void CYScriptApiImplementation::writeKeyword(int keywordId, const std::string& newState)
@@ -169,8 +163,7 @@ void CYScriptApiImplementation::writeKeyword(int keywordId, const std::string& n
    request.set("newState", newState);
    sendRequest(kReqWriteKeyword, request);
 
-   shared::CDataContainer answer;
-   receiveAnswer(kAnsWriteKeyword, answer);
+   shared::CDataContainer answer = receiveAnswer(kAnsWriteKeyword);
 
    if (answer.exists("error"))
       throw std::out_of_range(std::string("yScriptApiWrapper::writeKeyword, error : ") + answer.get<std::string>("error"));
@@ -184,8 +177,7 @@ void CYScriptApiImplementation::sendNotification(int keywordId, int recipientId,
    request.set("message", message);
    sendRequest(kReqSendNotification, request);
 
-   shared::CDataContainer answer;
-   receiveAnswer(kAnsSendNotification, answer);
+   shared::CDataContainer answer = receiveAnswer(kAnsSendNotification);
 
    if (answer.exists("error"))
       throw std::out_of_range(std::string("yScriptApiWrapper::sendNotification, error : ") + answer.get<std::string>("error"));
@@ -197,24 +189,10 @@ std::string CYScriptApiImplementation::getInfo(EInfoKeys key) const
    request.set("key", key);
    sendRequest(kReqGetInfo, request);
 
-   shared::CDataContainer answer;
-   receiveAnswer(kAnsGetInfo, answer, boost::posix_time::seconds(30)); // Ehanced timeout for certains long requests
+   shared::CDataContainer answer = receiveAnswer(kAnsGetInfo);
 
    if (answer.exists("error"))
       throw std::out_of_range(std::string("yScriptApiWrapper::getInfo, error : ") + answer.get<std::string>("error"));
 
    return answer.get<std::string>("returnValue");
-}
-
-void CYScriptApiImplementation::ruleEnable(bool enable)
-{
-   shared::CDataContainer request;
-   request.set("enable", enable);
-   sendRequest(kReqRuleEnable, request);
-
-   shared::CDataContainer answer;
-   receiveAnswer(kAnsRuleEnable, answer);
-
-   if (answer.exists("error"))
-      throw std::out_of_range(std::string("yScriptApiWrapper::ruleEnable, error : ") + answer.get<std::string>("error"));
 }

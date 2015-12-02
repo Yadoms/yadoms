@@ -49,7 +49,7 @@
             "return": "The last known keyword state (empty if no known state)",
             "throw": "Error if keyword not found"
         },
-        "waitForAcquisition": {
+        "waitForNextAcquisition": {
             "brief": "Wait for a new acquisition on a keyword",
             "params": {
                 "keywordId": {
@@ -58,13 +58,13 @@
                 },
                 "timeout": {
                     "direction": "in",
-                    "brief": "Timeout to wait. Format is \"hh:mm:ss.xxx\". No timeout if empty (default)."
+                    "brief": "Timeout to wait. Can be a duration (format \"hh:mm:ss.xxx\", \".xxx\" is optional) or a dateTime (format \"YYYY-MM-DD hh:mm:ss.xxx\", \".xxx\" is optional). No timeout if empty (default).\nIf dateTime is used and specified in the past, the function will immediately return."
                 }
             },
             "return": "The keyword new state (empty if timeout)",
             "throw": "Error if keyword not found"
         },
-        "waitForAcquisitions": {
+        "waitForNextAcquisitions": {
             "brief": "Wait for a new acquisition on a keyword list",
             "params": {
                 "keywordIdList": {
@@ -73,11 +73,22 @@
                 },
                 "timeout": {
                     "direction": "in",
-                    "brief": "Timeout to wait. Format is \"hh:mm:ss.xxx\". No timeout if empty (default)."
+                    "brief": "Timeout to wait. Can be a duration (format \"hh:mm:ss.xxx\", \".xxx\" is optional) or a dateTime (format \"YYYY-MM-DD hh:mm:ss.xxx\", \".xxx\" is optional). No timeout if empty (default).\nIf dateTime is used and specified in the past, the function will immediately return."
                 }
             },
             "return": "Returned value is a pair of the keyword Id who changed, and its new value. The keyword Id is kTimeout if timeout.",
             "throw": "Error if at least one keyword was not found"
+        },
+        "at": {
+            "brief": "Wait for a dateTime",
+            "params": {
+                "dateTime": {
+                    "direction": "in",
+                    "brief": "The dateTime to wait for (format \"YYYY-MM-DD hh:mm:ss.xxx\", \".xxx\" is optional)"
+                }
+            },
+            "details": "Return immediately if dateTime in the past",
+            "throw": "Error if wrong dateTime"
         },
         "writeKeyword": {
             "brief": "Change state of a keyword",
@@ -133,16 +144,6 @@
                 "- kYadomsServerOS : get yadoms server OS : returns a string containing the OS name where Yadoms is running",
                 "- kYadomsServerVersion : get yadoms application version : returns a string containing the Yadoms application version"
             ]
-        },
-        "ruleEnable": {
-            "brief": "Can be used to prevent a rule for auto-restart",
-            "params": {
-                "enable": {
-                    "direction": "in",
-                    "brief": "True to active auto-restart, False to disable the rule (after the current execution is complete)"
-                }
-            },
-            "details": "By default, a rule auto-restart at its end"
         }
     }
 }

@@ -1,9 +1,8 @@
 #include "stdafx.h"
 #include "YScriptApiImplementation.h"
+#include "TimeAdapter.h"
 #include "../pluginSystem/DeviceCommand.h"
 
-#include "notification/action/WaitAction.hpp"
-#include "notification/acquisition/Notification.hpp"
 #include "notification/acquisition/Observer.hpp"
 #include "notification/Helpers.hpp"
 
@@ -116,51 +115,116 @@ std::string CYScriptApiImplementation::readKeyword(int keywordId) const
    }
 }
 
-std::string CYScriptApiImplementation::waitForAcquisition(int keywordId, const std::string& timeout) const
+void CYScriptApiImplementation::at(const std::string& dateTime) const
+{
+   try
+   {
+      if (dateTime.empty())
+         throw std::out_of_range("non-empty dateTime must be provided");
+
+      CTimeAdapter timeoutAdapter(dateTime);
+      if (!timeoutAdapter.isDateTime())
+         throw std::out_of_range("dateTime bad format");
+
+      if (timeoutAdapter.dateTime() <= shared::currentTime::Provider::now())
+         return; // dateTime in the past
+
+      enum { kTimePointEventId = shared::event::kUserFirstId + 1 };
+      shared::event::CEventHandler eventHandler;
+      eventHandler.createTimePoint(kTimePointEventId, timeoutAdapter.dateTime());
+
+      eventHandler.waitForEvents();
+   }
+   catch (std::exception& exception)
+   {
+      m_ruleLogger->log(std::string("at : ") + exception.what());
+      throw;
+   }
+}
+
+boost::shared_ptr<notification::acquisition::CNotification> CYScriptApiImplementation::waitForAction(
+   boost::shared_ptr<notification::action::CWaitAction<notification::acquisition::CNotification> > action,
+   const std::string& timeout) const
+{
+   boost::shared_ptr<notification::acquisition::CNotification> newAcquisition;
+
+   if (timeout.empty())    // No timeout
+      return action->wait();
+      
+   // With timeout
+   CTimeAdapter timeoutAdapter(timeout);
+   if (timeoutAdapter.isDateTime())
+   {
+      if (timeoutAdapter.dateTime() <= shared::currentTime::Provider::now())
+         return boost::shared_ptr<notification::acquisition::CNotification>(); // Timeout
+
+      return action->wait(timeoutAdapter.dateTime());
+   }
+      
+   return action->wait(timeoutAdapter.duration());
+}
+
+std::string CYScriptApiImplementation::waitForNextAcquisition(int keywordId, const std::string& timeout) const
 {
    assertExistingKeyword(keywordId);
 
    //create the action (= what to do when notification is observed)
-   boost::shared_ptr<notification::action::CWaitAction<notification::acquisition::CNotification> > waitAction(new notification::action::CWaitAction<notification::acquisition::CNotification>());
+   boost::shared_ptr<notification::action::CWaitAction<notification::acquisition::CNotification> > waitAction(boost::make_shared<notification::action::CWaitAction<notification::acquisition::CNotification> >());
          
    //create the acquisition observer
-   boost::shared_ptr<notification::acquisition::CObserver> observer(new notification::acquisition::CObserver(waitAction));
+   boost::shared_ptr<notification::acquisition::CObserver> observer(boost::make_shared<notification::acquisition::CObserver>(waitAction));
    observer->addKeywordIdFilter(keywordId);
 
-   //regsiter the observer
+   //register the observer
    notification::CHelpers::CCustomSubscriber subscriber(observer);
 
    //wait for acquisition notification
-   boost::shared_ptr<notification::acquisition::CNotification> newAcquisition = waitAction->wait(timeout.empty() ? boost::date_time::pos_infin : boost::posix_time::duration_from_string(timeout));
+   try
+   {
+      boost::shared_ptr<notification::acquisition::CNotification> newAcquisition = waitForAction(waitAction, timeout);
 
-   if (!newAcquisition)
-      return std::string(); // timeout
+      if (!newAcquisition)
+         return std::string(); // Timeout
 
-   return newAcquisition->getAcquisition()->Value;
+      return newAcquisition->getAcquisition()->Value;
+   }
+   catch (std::exception& exception)
+   {
+      m_ruleLogger->log(std::string("waitForNextAcquisition : ") + exception.what());
+      throw;
+   }
 }
 
-std::pair<int, std::string> CYScriptApiImplementation::waitForAcquisitions(const std::vector<int> keywordIdList, const std::string& timeout) const
+std::pair<int, std::string> CYScriptApiImplementation::waitForNextAcquisitions(const std::vector<int> keywordIdList, const std::string& timeout) const
 {
    for (std::vector<int>::const_iterator kwId = keywordIdList.begin(); kwId != keywordIdList.end(); ++ kwId)
       assertExistingKeyword(*kwId);
 
    //create the action (= what to do when notification is observed)
-   boost::shared_ptr<notification::action::CWaitAction<notification::acquisition::CNotification> > waitAction(new notification::action::CWaitAction<notification::acquisition::CNotification>());
+   boost::shared_ptr<notification::action::CWaitAction<notification::acquisition::CNotification> > waitAction(boost::make_shared<notification::action::CWaitAction<notification::acquisition::CNotification> >());
          
    //create the acquisition observer
-   boost::shared_ptr<notification::acquisition::CObserver> observer(new notification::acquisition::CObserver(waitAction));
+   boost::shared_ptr<notification::acquisition::CObserver> observer(boost::make_shared<notification::acquisition::CObserver>(waitAction));
    observer->resetKeywordIdFilter(keywordIdList);
 
-   //regsiter the observer
+   //register the observer
    notification::CHelpers::CCustomSubscriber subscriber(observer);
 
    //wait for acquisition notification
-   boost::shared_ptr<notification::acquisition::CNotification> newAcquisition = waitAction->wait(timeout.empty() ? boost::date_time::pos_infin : boost::posix_time::duration_from_string(timeout));
+   try
+   {
+      boost::shared_ptr<notification::acquisition::CNotification> newAcquisition = waitForAction(waitAction, timeout);
 
-   if (!newAcquisition)
-      return std::make_pair(kTimeout, std::string());
+      if (!newAcquisition)
+         return std::make_pair(kTimeout, std::string()); // Timeout
 
-   return std::pair<int, std::string>(newAcquisition->getAcquisition()->KeywordId, newAcquisition->getAcquisition()->Value);
+      return std::pair<int, std::string>(newAcquisition->getAcquisition()->KeywordId, newAcquisition->getAcquisition()->Value);
+   }
+   catch (std::exception& exception)
+   {
+      m_ruleLogger->log(std::string("waitForNextAcquisitions : ") + exception.what());
+      throw;
+   }
 }
 
 void CYScriptApiImplementation::writeKeyword(int keywordId, const std::string& newState)

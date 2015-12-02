@@ -44,6 +44,21 @@ namespace notification { namespace action {
          return m_eventHandler.getEventData<boost::shared_ptr< T > >();
       }
 
+      //-----------------------------------------------------
+      ///\brief               Wait for simple acquisition (without summaries)
+      ///\param[in] timePoint Timeout is here expressed as timePoint
+      //-----------------------------------------------------
+      virtual boost::shared_ptr< T > wait(const boost::posix_time::ptime& timePoint)
+      {
+         enum { kTimePointEventId = shared::event::kUserFirstId + 1 };
+         m_eventHandler.createTimePoint(kTimePointEventId, timePoint);
+
+         if (m_eventHandler.waitForEvents() == kTimePointEventId)
+            return boost::shared_ptr< T >();
+
+         return m_eventHandler.getEventData<boost::shared_ptr< T > >();
+      }
+
 
    private:
       //-----------------------------
