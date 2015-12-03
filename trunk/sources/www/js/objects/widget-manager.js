@@ -490,7 +490,32 @@ WidgetManager.enableCustomization = function (widget, enable) {
     assert(!isNullOrUndefined(page), "page doesn't exist in PageManager");
 
     page.grid.movable(widget.$gridWidget, enable);
-    page.grid.resizable(widget.$gridWidget, enable);
+    //the widget is resizable only if is allowed in its configuration
+
+    var minX = 0;
+    var maxX = Number.MAX_VALUE;
+    var minY = 0;
+    var maxY = Number.MAX_VALUE;
+    
+    if (!isNullOrUndefined(widget.package.dimensions)) {
+        if (!isNullOrUndefined(widget.package.dimensions.min)) {
+            if (!isNullOrUndefined(widget.package.dimensions.min.x))
+                minX = widget.package.dimensions.min.x;
+            if (!isNullOrUndefined(widget.package.dimensions.min.y))
+                minY = widget.package.dimensions.min.y;
+        }
+        if (!isNullOrUndefined(widget.package.dimensions.max)) {
+            if (!isNullOrUndefined(widget.package.dimensions.max.x))
+                maxX = widget.package.dimensions.max.x;
+            if (!isNullOrUndefined(widget.package.dimensions.max.y))
+                maxY = widget.package.dimensions.max.y;
+        }
+    }
+
+    if ((enable) && ((minX != maxX) || (minY != maxY)))
+        page.grid.resizable(widget.$gridWidget, true);
+    else
+        page.grid.resizable(widget.$gridWidget, false);
 
     if (enable)
         widget.$gridWidget.find(".customization-item").removeClass("hidden");
