@@ -59,15 +59,9 @@ function ClockViewModel() {
    };
 
    this.configurationChanged = function() {
-
    };
 
-   this.getDevicesForAcquisitions = function() {
-      //we are not linked to any device
-      return [];
-   }
-
- };
+   };
 
 /**
  * Update the time onto the widget

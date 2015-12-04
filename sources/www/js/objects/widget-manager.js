@@ -207,9 +207,16 @@ WidgetManager.updateWidgetConfiguration_ = function (widget) {
         //Update the widget title
         widget.$gridWidget.find('span.panel-widget-title').text(widget.title);
 
+        //we clear the listened device list before call the configuration
+        widget.listenedKeywords = [];
+
         // Update widget specific values
         if (!isNullOrUndefined(widget.viewModel.configurationChanged))
             widget.viewModel.configurationChanged();
+
+        //we manage the toolbar api specific icons
+        ToolbarApi.manageBatteryConfiguration(widget);
+
     }
     catch (e) {
         notifyWarning($.t("objects.widgetManager.widgetHasGeneratedAnExceptionDuringCallingMethod", { widgetName: widget.type, methodName: 'configurationChanged' }));

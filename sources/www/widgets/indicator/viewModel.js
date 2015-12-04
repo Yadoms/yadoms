@@ -35,6 +35,8 @@ widgetViewModelCtor =
       this.configurationChanged = function() {
          //we update the kind observable property
 
+         this.widget.ListenKeyword(this.widget.configuration.device.keywordId);
+
          try {
             this.showDeviceName(parseBool(this.widget.configuration.showDeviceName));
          }
@@ -59,15 +61,15 @@ widgetViewModelCtor =
          catch(err) {}
       };
 
-      /**
-       * New acquisition handler
-       * @param searchedDevice Device on which new acquisition was received
-       * @param data Acquisition data
-       */
-      this.onNewAcquisition = function(device, data) {
+        /**
+        * New acquisition handler
+        * @param keywordId keywordId on which new acquisition was received
+        * @param data Acquisition data
+        */
+      this.onNewAcquisition = function (keywordId, data) {
          var self = this;
          try {
-            if (device == this.widget.configuration.device) {
+            if (keywordId == this.widget.configuration.device.keywordId) {
                //it is the right device
                // Adapt for dimmable or switch capacities
                self.command(parseInt(data.value) != 0 ? "1" : "0");
@@ -75,16 +77,4 @@ widgetViewModelCtor =
          }
          catch (err) {}
       };
-
-      this.getDevicesForAcquisitions = function() {
-         var result = [];
-
-         try {
-            result.push(this.widget.configuration.device);
-         }
-         catch (err) {}
-
-         return result;
-      }
-
    };

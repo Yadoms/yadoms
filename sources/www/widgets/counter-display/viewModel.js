@@ -50,6 +50,8 @@ function CounterDisplayViewModel() {
 
       var self = this;
 	  
+      this.widget.ListenKeyword(this.widget.configuration.device.keywordId);
+
       //we get the unit of the keyword
       KeywordManager.get(self.widget.configuration.device.keywordId, function(keyword) {
 		  
@@ -63,19 +65,19 @@ function CounterDisplayViewModel() {
       });
    }
    
-   /**
+    /**
     * New acquisition handler
-    * @param searchedDevice Device on which new acquisition was received
+    * @param keywordId keywordId on which new acquisition was received
     * @param data Acquisition data
     */
-   this.onNewAcquisition = function(device, data) {
+   this.onNewAcquisition = function (keywordId, data) {
       var self = this;	  
 	  
 	  var elementID = "widget-counter-" + self.widget.id; // Unique ID
 	  
-      if (device == self.widget.configuration.device) 
+      if (keywordId == self.widget.configuration.device.keywordId) 
 	  {
-         //it is the good device
+         //it is the right device
 		 $("#" + elementID + ".odometer").html( data.value );
       }
    };
@@ -100,10 +102,4 @@ function CounterDisplayViewModel() {
 	   self.resizefont();
    };	   
    
-   this.getDevicesForAcquisitions = function() {
-      var result = [];
-      result.push(this.widget.configuration.device);
-
-      return result;
-   }
 };

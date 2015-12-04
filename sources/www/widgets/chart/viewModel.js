@@ -135,8 +135,7 @@ widgetViewModelCtor =
            widget.$toolbar.append("<div class=\"widget-toolbar-button range-btn\" interval=\"HALF_YEAR\"><span data-i18n=\"chart:navigator.half_year\"/></div>");
            widget.$toolbar.append("<div class=\"widget-toolbar-button range-btn\" interval=\"YEAR\"><span data-i18n=\"chart:navigator.year\"/></div>");
            widget.$toolbar.append("<div class=\"widget-toolbar-separator\"></div>");
-           /*widget.$toolbar.append("<div class=\"widget-toolbar-element\"><span class=\"fa fa-battery-2\"/></div>");
-           widget.$toolbar.append("<div class=\"widget-toolbar-element\"><span class=\"fa fa-signal\"/></div>");
+           /*widget.$toolbar.append("<div class=\"widget-toolbar-element\"><span class=\"fa fa-signal\"/></div>");
            widget.$toolbar.append("<div class=\"widget-toolbar-separator\"></div>");*/
            widget.$toolbar.append("<div class=\"widget-toolbar-button export-btn dropdown\">" +
                                       "<span class=\"dropdown-toggle\" id=\"chartExportMenu\"  type=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"true\">" +
@@ -201,6 +200,10 @@ widgetViewModelCtor =
                if (isNullOrUndefined(self.seriesUuid[index]))
                    self.seriesUuid[index] = createUUID();
 
+               //we add the keywordId to the listenedList
+               self.widget.ListenKeyword(device.content.source.keywordId);
+
+               //we ask the current value
                KeywordManager.get(device.content.source.keywordId, function (keyword) {
                    self.keywordInfo[index] = keyword;
 
@@ -650,11 +653,11 @@ widgetViewModelCtor =
        };
 
        /**
-        * New acquisition handler
-        * @param searchedDevice Device on which new acquisition was received
-        * @param data Acquisition data
-        */
-       this.onNewAcquisition = function (searchedDevice, data) {
+       * New acquisition handler
+       * @param keywordId keywordId on which new acquisition was received
+       * @param data Acquisition data
+       */
+       this.onNewAcquisition = function (keywordId, data) {
            var self = this;
            var bShift = false;
 
@@ -663,9 +666,9 @@ widgetViewModelCtor =
 
            try {
                $.each(self.widget.configuration.devices, function (index, device) {
-                   if (searchedDevice == device.content.source) {
+                   if (keywordId == device.content.source.keywordId) {
                        //we've found the device
-
+                       var cleanValue;
                        // Cleaning ranges switch
                        switch (self.interval) {
                            case "HOUR":
@@ -753,23 +756,5 @@ widgetViewModelCtor =
            } catch (err) {
                console.log(err);
            }
-       };
-
-       this.getDevicesForAcquisitions = function () {
-           var self = this;
-           var result = [];
-
-           try {
-               $.each(self.widget.configuration.devices, function (index, device) {
-                   try {
-                       result.push(device.content.source);
-                   } catch (err) {
-                       console.log(err);
-                   }
-               });
-           } catch (err) {
-               console.log(err);
-           }
-           return result;
        };
    };

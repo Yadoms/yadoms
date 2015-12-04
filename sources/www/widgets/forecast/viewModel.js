@@ -207,6 +207,8 @@ function ForecastViewModel() {
 	 if ((isNullOrUndefined(self.widget)) || (isNullOrUndefinedOrEmpty(self.widget.configuration)))
 		return;	  
 	 
+	 this.widget.ListenKeyword(this.widget.configuration.device.keywordId);
+
 	 try
 	 {
         self.MaxTempVisible     ( true );
@@ -307,13 +309,4 @@ function ForecastViewModel() {
 	  self.period.removeAll();
 	  self.period ( self.TempPeriod.slice ( 0, self.DayNbre() ));
    };
- 
-   this.getDevicesForAcquisitions = function() {
-      var result = [];
-
-      //Add the keyword Forecast
-      result.push(this.widget.configuration.device);
-
-      return result;
-   }
 };

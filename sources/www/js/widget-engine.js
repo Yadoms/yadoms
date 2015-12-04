@@ -220,20 +220,27 @@ function dispatchToWidgets(acq) {
 
     $.each(page.widgets, function (widgetIndex, widget) {
         //we ask which devices are needed for this widget instance
-        if (!isNullOrUndefined(widget.viewModel.getDevicesForAcquisitions)) {
-            var list = widget.viewModel.getDevicesForAcquisitions();
-            $.each(list, function (deviceIndex, device) {
-                if (!isNullOrUndefined(device.keywordId)) {
+        if (!isNullOrUndefined(widget.listenedKeywords)) {
+            $.each(widget.listenedKeywords, function (keywordIndex, keywordId) {
+                if (!isNullOrUndefined(keywordId)) {
                     //foreach device we ask for last values
-                    if (device.keywordId == acq.keywordId) {
+                    if (keywordId == acq.keywordId) {
                         console.debug("onNewAcquisition : " + JSON.stringify(acq));
                         try {
                             //we signal the new acquisition to the widget if the widget support the method
                             if (widget.viewModel.onNewAcquisition !== undefined)
-                                widget.viewModel.onNewAcquisition(device, acq);
+                                widget.viewModel.onNewAcquisition(keywordId, acq);
                         }
                         catch (e) {
                             console.error(widget.type + " has encouter an error in onNewAcquisition() method:" + e.message);
+                        }
+
+                        //we manage battery api toolbar
+                        var $battery = widget.$toolbar.find(".widget-toolbar-battery");
+                        if ($battery) {
+                            if ($battery.attr("keywordId") == acq.keywordId) {
+                                ToolbarApi.configureBattery(widget, acq.value);
+                            }
                         }
                     }
                 }
@@ -254,11 +261,10 @@ function updateWebSocketFilter() {
         //we build the collection of keywordId to ask
         $.each(page.widgets, function (widgetIndex, widget) {
             //we ask which devices are needed for this widget instance
-            if (!isNullOrUndefined(widget.viewModel.getDevicesForAcquisitions)) {
-                var list = widget.viewModel.getDevicesForAcquisitions();
-                $.each(list, function (deviceIndex, device) {
-                    if (!isNullOrUndefined(device.keywordId)) {
-                        collection.push(device.keywordId);
+            if (!isNullOrUndefined(widget.listenedKeywords)) {
+                $.each(widget.listenedKeywords, function (keywordIndex, keywordId) {
+                    if (!isNullOrUndefined(keywordId)) {
+                        collection.push(keywordId);
                     }
                 });
             }
@@ -281,15 +287,14 @@ function updateWidgetsPolling() {
 }
 
 function updateWidgetPolling(widget) {
-    if (!isNullOrUndefined(widget.viewModel.getDevicesForAcquisitions)) {
-        var list = widget.viewModel.getDevicesForAcquisitions();
-        $.each(list, function (deviceIndex, device) {
-            if ((!isNullOrUndefined(device.deviceId)) && (!isNullOrUndefined(device.keywordId))) {
+    if (!isNullOrUndefined(widget.listenedKeywords)) {
+        $.each(widget.listenedKeywords, function (keywordIndex, keywordId) {
+            if (!isNullOrUndefined(keywordId)) {
                 //foreach device we ask for last values
-                AcquisitionManager.getLastValue(device.keywordId, function (acquisition) {
+                AcquisitionManager.getLastValue(keywordId, function (acquisition) {
                     //we signal the new acquisition to the widget if the widget support the method
                     if (widget.viewModel.onNewAcquisition !== undefined)
-                        widget.viewModel.onNewAcquisition(device, acquisition);
+                        widget.viewModel.onNewAcquisition(keywordId, acquisition);
                 });
             }
         });

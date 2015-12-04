@@ -53,7 +53,6 @@ function NotificationSenderViewModel() {
     */
    this.initialize = function(widget) {
       this.widget = widget;
-      var self = this;
    };
    
    /**
