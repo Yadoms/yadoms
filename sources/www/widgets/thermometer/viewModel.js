@@ -44,7 +44,7 @@ function ThermometerViewModel()
     * @param keywordId keywordId on which new acquisition was received
     * @param data Acquisition data
     */
-   this.onNewAcquisition = function(keywordId, data) {
+   this.onNewAcquisition = function(keywordId, data)
    {
       var self = this;	  
 	  
