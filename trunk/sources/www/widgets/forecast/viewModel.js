@@ -130,10 +130,10 @@ function ForecastViewModel() {
     * @param device Device on which new acquisition was received
     * @param data Acquisition data
     */
-   this.onNewAcquisition = function(device, data) {
+   this.onNewAcquisition = function(keywordId, data) {
       var self = this;
 	  
-      if (device == self.widget.configuration.device) 
+      if (keywordId == self.widget.configuration.device.keywordId) 
       {  
 		 var obj = jQuery.parseJSON( data.value );
 		 
