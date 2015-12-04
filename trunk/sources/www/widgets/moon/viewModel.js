@@ -38,15 +38,15 @@ function MoonViewModel() {
 	    }).appendTo( "#widget-" + this.widget.id );  
    };
 
-   /**
+    /**
     * New acquisition handler
-    * @param searchedDevice Device on which new acquisition was received
+    * @param keywordId keywordId on which new acquisition was received
     * @param data Acquisition data
     */
-   this.onNewAcquisition = function(device, data) {
+   this.onNewAcquisition = function (keywordId, data) {
       var self = this;
 	  
-      if (device == self.widget.configuration.device) 
+      if (keywordId == self.widget.configuration.device.keywordId) 
       {
 		 var obj = jQuery.parseJSON( data.value );
 		 self.data ( parseInt( obj.IlluminatedMoon ) + "%" );
@@ -129,7 +129,9 @@ function MoonViewModel() {
    
    this.configurationChanged = function() 
    {
-      var self = this;
+       var self = this;
+
+       this.widget.ListenKeyword(this.widget.configuration.device.keywordId);
    };
 
    this.resized = function() 
@@ -150,13 +152,4 @@ function MoonViewModel() {
 
 		self.RefreshImage();   
    };	   
-  
-   this.getDevicesForAcquisitions = function() {
-      var result = [];
-
-      //Add the moon keyword
-      result.push(this.widget.configuration.device);
-	  
-	  return result;
-   }
 };

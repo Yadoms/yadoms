@@ -139,6 +139,13 @@
     margin-right: 4px;
 }
 
+.widget-toolbar-battery {
+    float: left;
+    color: white;
+    margin-left: 4px;
+    margin-right: 4px;
+}
+
 /*Standard battery widget indicator*/
 .battery-widget {
     position: absolute;

@@ -107,16 +107,15 @@ function GaugeViewModel()
 	   	$('<div style="width: 193px; height: 5px; float: left"></div>').appendTo( "#widget-" + this.widget.id );	
   };
    
-   /**
+    /**
     * New acquisition handler
-    * @param searchedDevice Device on which new acquisition was received
+    * @param keywordId keywordId on which new acquisition was received
     * @param data Acquisition data
     */
-   this.onNewAcquisition = function(device, data) 
-   {
+   this.onNewAcquisition = function(keywordId, data) {
       var self = this;	  
 	  
-      if (device == self.widget.configuration.device) 
+      if (keywordId == self.widget.configuration.device.keywordId) 
 	  {
 		  if ( data.value != self.data() ) // refresh only when it's necessary.
 		  {
@@ -124,12 +123,6 @@ function GaugeViewModel()
 			self.data ( data.value );
 
 			self.refreshValue ();
-			
-			  //we get the unit of the keyword
-			  KeywordManager.get(self.widget.configuration.device.keywordId, function(keyword) 
-			  {
-				 self.unit($.t(keyword.units));	  
-			   });
 		  }
       }
    };
@@ -155,9 +148,11 @@ function GaugeViewModel()
    {
       var self = this;
 	  
-	 if ((isNullOrUndefined(this.widget)) || (isNullOrUndefinedOrEmpty(this.widget.configuration)))
+	  if ((isNullOrUndefined(this.widget)) || (isNullOrUndefinedOrEmpty(this.widget.configuration)))
 		return;
-	   
+	  
+	  this.widget.ListenKeyword(this.widget.configuration.device.keywordId);
+
 	   // Delete all elements in stopArray
       this.stopsArray = new Array();
       
@@ -292,15 +287,5 @@ function GaugeViewModel()
 				}
 			}],
 		}));
-   };
-  
-   this.getDevicesForAcquisitions = function() 
-   {
-      var result = [];
-
-      //Add the keyword
-      result.push(this.widget.configuration.device);
-	  
-	  return result;
-   }   
+   };  
 };

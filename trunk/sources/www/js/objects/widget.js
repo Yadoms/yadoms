@@ -47,6 +47,9 @@ function Widget(id, idPage, type, title, sizeX, sizeY, positionX, positionY, con
 
     //toolbar of the widget
     this.$toolbar = null;
+
+    //list of all devices {deviceId, keywordId} to listen
+    this.listenedKeywords = [];
 }
 
 /**
@@ -96,3 +99,13 @@ Widget.prototype.setWidth = function (newWidth) {
 Widget.prototype.title = function () {
     return this.title;
 };
+
+/**
+ * Add a device to be listend by the web socket engine
+ */
+Widget.prototype.ListenKeyword = function (keywordId)
+{
+    assert(!isNullOrUndefined(keywordId), "keywordId must be defined");
+
+    this.listenedKeywords.push(keywordId);
+}

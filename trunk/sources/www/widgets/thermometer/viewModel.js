@@ -39,16 +39,16 @@ function ThermometerViewModel()
 	    }).appendTo( "#widget-" + this.widget.id );
    };
    
-   /**
+    /**
     * New acquisition handler
-    * @param searchedDevice Device on which new acquisition was received
+    * @param keywordId keywordId on which new acquisition was received
     * @param data Acquisition data
     */
-   this.onNewAcquisition = function(device, data) 
+   this.onNewAcquisition = function(keywordId, data) {
    {
       var self = this;	  
 	  
-      if (device == self.widget.configuration.device) 
+      if (keywordId == self.widget.configuration.device.keywordId) 
 	  {
 		  if ( data.value != self.data() ) // refresh only when it's necessary.
 		  {
@@ -156,7 +156,9 @@ function ThermometerViewModel()
    
    this.configurationChanged = function() 
    {
-      var self = this;
+       var self = this;
+
+       this.widget.ListenKeyword(this.widget.configuration.device.keywordId);
    };
 
    this.resized = function() 
@@ -212,14 +214,4 @@ function ThermometerViewModel()
 		   isSmall = true;
 	   }
    };	   
-  
-   this.getDevicesForAcquisitions = function() 
-   {
-      var result = [];
-
-      //Add the keyword
-      result.push(this.widget.configuration.device);
-	  
-	  return result;
-   }
 };

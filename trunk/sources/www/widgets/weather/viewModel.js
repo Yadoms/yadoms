@@ -56,13 +56,13 @@ function WeatherViewModel() {
  
    /**
     * New acquisition handler
-    * @param device Device on which new acquisition was received
+    * @param keywordId keywordId on which new acquisition was received
     * @param data Acquisition data
     */
-   this.onNewAcquisition = function(device, data) {
+   this.onNewAcquisition = function(keywordId, data) {
       var self = this;
 	  
-      if (device == self.widget.configuration.device) 
+      if (keywordId == self.widget.configuration.device.keywordId) 
       {  
 		 var obj = jQuery.parseJSON( data.value );
 		 
@@ -80,7 +80,6 @@ function WeatherViewModel() {
 		 //Send update information to the HMI, on if the date is new
     	 if (self.lastUpdate != data.date._i)
 		 {
-		    notifyInformation($.t("Weather updated !", {objectName : device.friendlyName}));
 		    self.lastUpdate = data.date._i;
 		 }
       }
@@ -124,6 +123,8 @@ function WeatherViewModel() {
 	 if ((isNullOrUndefined(self.widget)) || (isNullOrUndefinedOrEmpty(self.widget.configuration)))
 		return;	  
 	 
+	 this.widget.ListenKeyword(this.widget.configuration.device.keywordId);
+
 	 try
 	 {
 		//Read the date format
@@ -157,13 +158,4 @@ function WeatherViewModel() {
 	   
 		self.paint();
    };
- 
-   this.getDevicesForAcquisitions = function() {
-      var result = [];
-
-      //Add the keyword Forecast
-      result.push(this.widget.configuration.device);
-
-      return result;
-   }
 };
