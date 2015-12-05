@@ -40,6 +40,9 @@ widgetViewModelCtor =
 
          this.widget.ListenKeyword(this.widget.configuration.device.keywordId);
 
+		//we fill the deviceId of the battery indicator
+		this.widget.$toolbar.find(".widget-toolbar-battery").attr("deviceId", self.widget.configuration.device.deviceId);		 
+		 
          try {
             this.showDeviceName(parseBool(this.widget.configuration.showDeviceName));
          }
@@ -76,9 +79,6 @@ widgetViewModelCtor =
                //it is the right device
                // Adapt for dimmable or switch capacities
                self.command(parseInt(data.value) != 0 ? "1" : "0");
-			   
-				//we fill the deviceId of the battery indicator
-				this.widget.$toolbar.find(".widget-toolbar-battery").attr("deviceId", self.widget.configuration.device.deviceId);			   
             }
          }
          catch (err) {}

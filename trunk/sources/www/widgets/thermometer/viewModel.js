@@ -60,10 +60,7 @@ function ThermometerViewModel()
 			 
 			 //refresh the canvas
 			 self.refresh();
-		  }
-		  
-        //we fill the deviceId of the battery indicator
-        this.widget.$toolbar.find(".widget-toolbar-battery").attr("deviceId", self.widget.configuration.device.deviceId);		  
+		  }		  
       }
    };
    
@@ -165,6 +162,9 @@ function ThermometerViewModel()
        var self = this;
 
        this.widget.ListenKeyword(this.widget.configuration.device.keywordId);
+	   
+        //we fill the deviceId of the battery indicator
+        this.widget.$toolbar.find(".widget-toolbar-battery").attr("deviceId", self.widget.configuration.device.deviceId);	   
    };
 
    this.resized = function() 
