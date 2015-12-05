@@ -104,7 +104,10 @@ function GaugeViewModel()
 		//$("div#" + "widget-" + this.widget.id).css({"overflow": "hidden"});
 		
 		//This div is for rounds borders.
-	   	$('<div style="width: 193px; height: 5px; float: left"></div>').appendTo( "#widget-" + this.widget.id );	
+	   	$('<div style="width: 193px; height: 5px; float: left"></div>').appendTo( "#widget-" + this.widget.id );
+		
+        //we create the battery indicator
+        this.widget.$toolbar.append("<div class=\"widget-toolbar-battery\" deviceId=\"\"></div>");			
   };
    
     /**
@@ -124,6 +127,9 @@ function GaugeViewModel()
 
 			self.refreshValue ();
 		  }
+		  
+          //we fill the deviceId of the battery indicator
+          this.widget.$toolbar.find(".widget-toolbar-battery").attr("deviceId", self.widget.configuration.device.deviceId);		  
       }
    };
    

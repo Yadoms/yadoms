@@ -195,7 +195,7 @@ function ForecastViewModel() {
 		 //Send update information to the HMI, on if the date is new
     	 if (self.lastUpdate != data.date._i)
 		 {
-		    notifyInformation($.t("Forecast updated !", {objectName : device.friendlyName}));
+		    notifyInformation($.t("Forecast updated !", {objectName : self.widget.configuration.device.friendlyName}));
 		    self.lastUpdate = data.date._i;
 		 }
       }

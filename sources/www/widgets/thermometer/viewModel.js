@@ -37,6 +37,9 @@ function ThermometerViewModel()
 	   	$('<canvas />').attr({
 		id: elementID
 	    }).appendTo( "#widget-" + this.widget.id );
+		
+        //we create the battery indicator
+        this.widget.$toolbar.append("<div class=\"widget-toolbar-battery\" deviceId=\"\"></div>");		
    };
    
     /**
@@ -58,6 +61,9 @@ function ThermometerViewModel()
 			 //refresh the canvas
 			 self.refresh();
 		  }
+		  
+        //we fill the deviceId of the battery indicator
+        this.widget.$toolbar.find(".widget-toolbar-battery").attr("deviceId", self.widget.configuration.device.deviceId);		  
       }
    };
    
@@ -89,10 +95,10 @@ function ThermometerViewModel()
 		var TEMP_MIN = self.widget.configuration.customYAxisMinMax.content.minimumValue;
 		
 		// Value for the physical representation
-		var POS_Y_MIN = 10 * self.WidgetHeight / 100;
-		var POS_Y_MAX = 60 * self.WidgetHeight / 100;		
-		var POS_Y_BALL = 84 * self.WidgetHeight / 100;
-		var POS_CENTER_BALL = 85 * self.WidgetHeight / 100;
+		var POS_Y_MIN = 10 * self.WidgetHeight / 99;
+		var POS_Y_MAX = 60 * self.WidgetHeight / 99;		
+		var POS_Y_BALL = (90 - (self.WidgetWidth/100-1)*7) * (self.WidgetHeight / 99);
+		var POS_CENTER_BALL = (91 - (self.WidgetWidth/100-1)*7) * (self.WidgetHeight / 99);
 		
         ctx.fillStyle = "rgb(" + Math.round(255 - ( TEMP_MAX - self.data())* 255/90) + ",0," + Math.round( 255 - ( self.data() - TEMP_MIN ) * 255/90 ) + ")"
 		 
@@ -148,7 +154,7 @@ function ThermometerViewModel()
 		ctx.arc(self.WidgetWidth / 2, POS_CENTER_BALL, 12 * self.WidgetWidth / 100, Math.PI*1.3, Math.PI*1.7, true);
 		
 		//top
-		ctx.arc(self.WidgetWidth / 2, 10 * self.WidgetWidth / 100, 7 * self.WidgetWidth / 100, Math.PI*2, Math.PI*1, true);
+		ctx.arc(self.WidgetWidth / 2, 10 * self.WidgetHeight / 100, 7 * self.WidgetWidth / 100, Math.PI*2, Math.PI*1, true);
 		
 		ctx.closePath();
 		ctx.stroke();
@@ -176,7 +182,7 @@ function ThermometerViewModel()
 	   else if (this.widget.height() <= 250 && this.widget.height() >= 150 && this.widget.width() >= 80 && this.widget.width() <= 110 )
 	   {
 		   self.WidgetWidth  = 95;
-		   self.WidgetHeight = 160;
+		   self.WidgetHeight = 170;
 		   
 		   //To be painted only one time
 		   self.refresh();
@@ -184,7 +190,7 @@ function ThermometerViewModel()
 	   else if (this.widget.height() <= 350 && this.widget.height() >= 250 && this.widget.width() >= 80 && this.widget.width() <= 110 )
 	   {
 		   self.WidgetWidth  = 95;
-		   self.WidgetHeight = 250;
+		   self.WidgetHeight = 272;
 		   
 		   //To be painted only one time
 		   self.refresh();
@@ -192,7 +198,7 @@ function ThermometerViewModel()
 	   else if (this.widget.height() <= 350 && this.widget.height() >= 250 && this.widget.width() >= 180 && this.widget.width() <= 210 )
 	   {
 		   self.WidgetWidth  = 190;
-		   self.WidgetHeight = 250;
+		   self.WidgetHeight = 272;
 		   
 		   //To be painted only one time
 		   self.refresh();
@@ -200,7 +206,7 @@ function ThermometerViewModel()
 	   else if (this.widget.height() <= 450 && this.widget.height() >= 350 && this.widget.width() >= 180 && this.widget.width() <= 210 )
 	   {
 		   self.WidgetWidth  = 190;
-		   self.WidgetHeight = 350;
+		   self.WidgetHeight = 368;
 		   
 		   //To be painted only one time
 		   self.refresh();
@@ -208,7 +214,7 @@ function ThermometerViewModel()
 	   else
 	   {
 		   self.WidgetWidth  = 95;
-		   self.WidgetHeight = 350;
+		   self.WidgetHeight = 368;
 		   
 		   self.refresh();
 		   isSmall = true;
