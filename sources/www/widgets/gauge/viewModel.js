@@ -126,10 +126,7 @@ function GaugeViewModel()
 			self.data ( data.value );
 
 			self.refreshValue ();
-		  }
-		  
-          //we fill the deviceId of the battery indicator
-          this.widget.$toolbar.find(".widget-toolbar-battery").attr("deviceId", self.widget.configuration.device.deviceId);		  
+		  }	  
       }
    };
    
@@ -162,6 +159,9 @@ function GaugeViewModel()
 	   // Delete all elements in stopArray
       this.stopsArray = new Array();
       
+	  //we fill the deviceId of the battery indicator
+	  this.widget.$toolbar.find(".widget-toolbar-battery").attr("deviceId", self.widget.configuration.device.deviceId);		  
+	  
       switch (self.widget.configuration.displayMode.activeSection)
       {
          case "solidColor":

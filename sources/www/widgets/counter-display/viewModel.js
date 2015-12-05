@@ -61,6 +61,9 @@ function CounterDisplayViewModel() {
 	  
       this.widget.ListenKeyword(this.widget.configuration.device.keywordId);
 
+      //we fill the deviceId of the battery indicator
+      this.widget.$toolbar.find(".widget-toolbar-battery").attr("deviceId", self.widget.configuration.device.deviceId);		  
+	  
       //we get the unit of the keyword
       KeywordManager.get(self.widget.configuration.device.keywordId, function(keyword) {
 		  
@@ -87,10 +90,7 @@ function CounterDisplayViewModel() {
       if (keywordId == self.widget.configuration.device.keywordId) 
 	  {
          //it is the right device
-		 $("#" + elementID + ".odometer").html( data.value );
-		 
-        //we fill the deviceId of the battery indicator
-        this.widget.$toolbar.find(".widget-toolbar-battery").attr("deviceId", self.widget.configuration.device.deviceId);		 
+		 $("#" + elementID + ".odometer").html( data.value );	 
       }
    };
 

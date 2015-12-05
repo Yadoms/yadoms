@@ -108,8 +108,6 @@ widgetViewModelCtor =
                           if (self.capacity[index] == "event")
                               self.state[index] = 0;
                           else {
-                              console.log(self.state);
-
                               // Adapt for dimmable or switch capacities
                               if (parseInt(data.value) != 0)
                                   self.state[index] = 1;
@@ -135,5 +133,4 @@ widgetViewModelCtor =
 
               self.command(average);
           }
-
       };
