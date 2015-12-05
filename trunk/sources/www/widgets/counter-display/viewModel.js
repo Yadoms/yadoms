@@ -25,17 +25,26 @@ function CounterDisplayViewModel() {
 	  
 	odometerOptions = { auto: false }; // Disables auto-initialization
 	
-	  var elementID = "widget-counter-" + this.widget.id; // Unique ID
-  
-  // Initialisation of a unique div associated to this widget
-	var elem = $('<div />').attr({
-	id: elementID,
-	"class":"odometer",
-	"display":"table"
+	var elementID = "widget-counter-" + this.widget.id; // Unique ID
+
+	//Insert this one to center the odometer
+    var elem = $('<div />').attr({
+	id: "counter-row-" + this.widget.id,
+	"style":"display:table-cell;vertical-align:middle;"
 	}).appendTo( "#widget-" + this.widget.id );
+  
+    // Initialisation of a unique div associated to this widget
+
+    var elem = $('<div />').attr({
+	id: elementID,
+	"class":"odometer"
+	}).appendTo( "#counter-row-" + this.widget.id );
 	
 	// For each odometer, initialize with the theme passed in:
 	this.odometer = new Odometer({ el: $("#" + elementID + ".odometer")[0], format: '(.ddd)', value: 0, theme: 'car', duration: 1000, selector: '.my-numbers', minimumIntegerDigit: this.minimumIntegerDigit });
+	
+    //we create the battery indicator
+    this.widget.$toolbar.append("<div class=\"widget-toolbar-battery\" deviceId=\"\"></div>");	
    };
 
    /**
@@ -79,6 +88,9 @@ function CounterDisplayViewModel() {
 	  {
          //it is the right device
 		 $("#" + elementID + ".odometer").html( data.value );
+		 
+        //we fill the deviceId of the battery indicator
+        this.widget.$toolbar.find(".widget-toolbar-battery").attr("deviceId", self.widget.configuration.device.deviceId);		 
       }
    };
 

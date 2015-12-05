@@ -30,6 +30,9 @@ widgetViewModelCtor =
        */
       this.initialize = function(widget) {
          this.widget = widget;
+		 
+        //we create the battery indicator
+        this.widget.$toolbar.append("<div class=\"widget-toolbar-battery\" deviceId=\"\"></div>");		 
       };
 
       this.configurationChanged = function() {
@@ -73,6 +76,9 @@ widgetViewModelCtor =
                //it is the right device
                // Adapt for dimmable or switch capacities
                self.command(parseInt(data.value) != 0 ? "1" : "0");
+			   
+				//we fill the deviceId of the battery indicator
+				this.widget.$toolbar.find(".widget-toolbar-battery").attr("deviceId", self.widget.configuration.device.deviceId);			   
             }
          }
          catch (err) {}
