@@ -139,31 +139,19 @@ namespace automation
       boost::shared_ptr<database::IRuleRequester> m_ruleRequester;
 
       //-----------------------------------------------------
-      ///\brief               The script manager
-      //-----------------------------------------------------
-      boost::shared_ptr<script::IManager> m_scriptManager;
-
-      //-----------------------------------------------------
-      ///\brief               The started rules list (and its mutex)
-      //-----------------------------------------------------
-      std::map<int, boost::shared_ptr<IRule> > m_startedRules;
-      mutable boost::recursive_mutex m_startedRulesMutex;
-
-      //-----------------------------------------------------
       ///\brief               Flag indicating that Yadoms is being shutdown, so don't record rules stop in database
       //-----------------------------------------------------
       boost::shared_ptr<shared::event::CEventHandler> m_ruleEventHandler;
 
       //-----------------------------------------------------
+      ///\brief               The script manager
+      //-----------------------------------------------------
+      boost::shared_ptr<script::IManager> m_scriptManager;
+
+      //-----------------------------------------------------
       ///\brief               The rule state handler
       //-----------------------------------------------------
       boost::shared_ptr<IRuleStateHandler> m_ruleStateHandler;
-
-      //-----------------------------------------------------
-      ///\brief               The handlers to notify when a rule stop (potentially several handlers for one rule)
-      //-----------------------------------------------------
-      mutable boost::recursive_mutex m_ruleStopNotififersMutex;
-      std::map<int, std::set<boost::shared_ptr<shared::event::CEventHandler> > > m_ruleStopNotififers;
 
       //-----------------------------------------------------
       ///\brief               Flag indicating that Yadoms is being shutdown, so don't record rules stop in database
@@ -174,6 +162,18 @@ namespace automation
       ///\brief               Thread managing rule asynchronous events
       //-----------------------------------------------------
       boost::shared_ptr<boost::thread> m_ruleEventsThread;
+
+      //-----------------------------------------------------
+      ///\brief               The started rules list (and its mutex)
+      //-----------------------------------------------------
+      std::map<int, boost::shared_ptr<IRule> > m_startedRules;
+      mutable boost::recursive_mutex m_startedRulesMutex;
+
+      //-----------------------------------------------------
+      ///\brief               The handlers to notify when a rule stop (potentially several handlers for one rule)
+      //-----------------------------------------------------
+      mutable boost::recursive_mutex m_ruleStopNotififersMutex;
+      std::map<int, std::set<boost::shared_ptr<shared::event::CEventHandler> > > m_ruleStopNotififers;
    };
 	
 } // namespace automation	
