@@ -16,7 +16,6 @@ private:
    {
       kStopRequested = shared::event::kUserFirstId,   // Yadoms stop was required
       kPluginManagerEvent,                            // Event from plugin manager
-      kRuleManagerEvent,                              // Event from automation rules manager
       kSystemEvent,                                   // Event from system
    };
 

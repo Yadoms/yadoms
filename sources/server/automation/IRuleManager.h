@@ -1,6 +1,5 @@
 #pragma once
 #include "../database/entities/Entities.h"
-#include "ManagerEvent.h"
 
 namespace automation
 {
@@ -13,7 +12,7 @@ namespace automation
       //-----------------------------------------------------
       ///\brief               Destructor
       //-----------------------------------------------------
-      virtual ~IRuleManager() {}    
+      virtual ~IRuleManager() {}
 
       //-----------------------------------------------------
       ///\brief               Get all available interpreters (re-scan interpreters)
@@ -80,12 +79,6 @@ namespace automation
       /// \throw                          CInvalidParameter if rule id is unknown
       //--------------------------------------------------------------
       virtual void deleteRule(int id) = 0;
-
-      //--------------------------------------------------------------
-      /// \brief           Signal an asynchronous event on plugin manager
-      /// \param [in] event   Event data
-      //--------------------------------------------------------------
-      virtual void signalEvent(const CManagerEvent& event) = 0;
 
       //--------------------------------------------------------------
       /// \brief                          Start all rules using a script interpreter

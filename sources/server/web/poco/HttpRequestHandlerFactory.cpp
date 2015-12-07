@@ -70,16 +70,15 @@ namespace web { namespace poco {
          //manage WebSocket requests
          return createWebSocketRequestHandler();
       }
-      else if (boost::istarts_with(request.getURI(), m_restKeywordBase))
+
+      if (boost::istarts_with(request.getURI(), m_restKeywordBase))
       {
          //manage REST requests
          return createRestRequestHandler();
       }
-      else 
-      {
-         //manage HTTP requests
-         return createHttpRequestHandler();
-      }
+
+      //manage HTTP requests
+      return createHttpRequestHandler();
    }
 
 
@@ -98,14 +97,14 @@ namespace web { namespace poco {
       boost::shared_ptr<Poco::Net::HTTPRequestHandler> realRequestHandler;
       if (!m_restRequestHandler)
       {
-         m_restRequestHandler.reset(new CRestRequestHandler(m_restKeywordBase, m_restService));
+         m_restRequestHandler = boost::make_shared<CRestRequestHandler>(m_restKeywordBase, m_restService);
       }
       realRequestHandler = m_restRequestHandler;
 
       if (m_authenticator)
       {
          if (!m_restRequestHandlerWithAuthentication)
-            m_restRequestHandlerWithAuthentication.reset(new CAuthenticationRequestHandler(m_authenticator, m_restRequestHandler, false));
+            m_restRequestHandlerWithAuthentication = boost::make_shared<CAuthenticationRequestHandler>(m_authenticator, m_restRequestHandler, false);
          realRequestHandler = m_restRequestHandlerWithAuthentication;
       }
       return new CHttpRequestHandlerContainer(realRequestHandler);
@@ -117,14 +116,14 @@ namespace web { namespace poco {
       boost::shared_ptr<Poco::Net::HTTPRequestHandler> realRequestHandler;
       if (!m_httpRequestHandler)
       {
-         m_httpRequestHandler.reset(new CWebsiteRequestHandler(m_configDocRoot, m_alias));
+         m_httpRequestHandler = boost::make_shared<CWebsiteRequestHandler>(m_configDocRoot, m_alias);
       }
       realRequestHandler = m_httpRequestHandler;
 
       if (m_authenticator)
       {
          if (!m_httpRequestHandlerWithAuthentication)
-            m_httpRequestHandlerWithAuthentication.reset(new CAuthenticationRequestHandler(m_authenticator, m_httpRequestHandler, true));
+            m_httpRequestHandlerWithAuthentication = boost::make_shared<CAuthenticationRequestHandler>(m_authenticator, m_httpRequestHandler, true);
          realRequestHandler = m_httpRequestHandlerWithAuthentication;
       }
 
