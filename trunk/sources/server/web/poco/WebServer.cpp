@@ -45,14 +45,14 @@ namespace web { namespace poco {
          svs.getLinger(a, b);
          YADOMS_LOG(information) << "getLinger on_off: " << a << " time : " << b;
          svs.setLinger(true, 2);
-         m_embeddedWebServer.reset(new Poco::Net::HTTPServer(m_httpRequestHandlerFactory, svs, serverParams));
+         m_embeddedWebServer = boost::make_shared<Poco::Net::HTTPServer>(m_httpRequestHandlerFactory, svs, serverParams);
       }
       else
       {
          //if address is specified, try to use it
          Poco::Net::SocketAddress sa(address, boost::lexical_cast<unsigned short>(port));
          Poco::Net::ServerSocket svs(sa);
-         m_embeddedWebServer.reset(new Poco::Net::HTTPServer(m_httpRequestHandlerFactory, svs, serverParams));
+         m_embeddedWebServer = boost::make_shared<Poco::Net::HTTPServer>(m_httpRequestHandlerFactory, svs, serverParams);
       }
       
    }

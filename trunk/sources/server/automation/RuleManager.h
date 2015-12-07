@@ -32,8 +32,6 @@ namespace automation
       ///\param[in] dbRecipientRequester  Database recipient requester
       ///\param[in] configurationManager  Configuration manager (to gain access to Yadoms configuration from rules scripts)
       ///\param[in] eventLogger  Main event logger
-      ///\param[in] supervisor     the supervisor event handler
-      ///\param[in] ruleManagerEventId    The ID to use to send events to supervisor
       //-----------------------------------------------------
       CRuleManager(boost::shared_ptr<database::IRuleRequester> dbRequester, boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
          boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
@@ -41,7 +39,7 @@ namespace automation
          boost::shared_ptr<database::IKeywordRequester> dbKeywordRequester,
          boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester,
          boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
-         boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger, boost::shared_ptr<shared::event::CEventHandler> supervisor, int ruleManagerEventId);
+         boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger);
 
       //-----------------------------------------------------
       ///\brief               Destructor
@@ -58,7 +56,6 @@ namespace automation
       virtual void updateRule(boost::shared_ptr<const database::entities::CRule> ruleData);
       virtual void updateRuleCode(int id, const std::string& code);
       virtual void deleteRule(int id);
-      virtual void signalEvent(const CManagerEvent& event);
       virtual void startAllRulesMatchingInterpreter(const std::string & interpreterName);
       virtual void stopAllRulesMatchingInterpreter(const std::string & interpreterName);
       virtual void deleteAllRulesMatchingInterpreter(const std::string & interpreterName);
@@ -93,6 +90,11 @@ namespace automation
       bool isRuleStarted(int ruleId);
 
       //-----------------------------------------------------
+      ///\brief               Stop all started rules
+      //-----------------------------------------------------
+      void stopRules();
+
+      //-----------------------------------------------------
       ///\brief               Stop a rule
       ///\param[in] ruleId    The rule ID
       //-----------------------------------------------------
@@ -125,6 +127,11 @@ namespace automation
       //-----------------------------------------------------
       void recordRuleStopped(int ruleId, const std::string& error = std::string());
 
+      //-----------------------------------------------------
+      ///\brief               Method of the thread managing rule asynchronous events
+      //-----------------------------------------------------
+      void ruleEventsThreadDoWord();
+
    private:
       //-----------------------------------------------------
       ///\brief               The rule data accessor
@@ -143,6 +150,11 @@ namespace automation
       mutable boost::recursive_mutex m_startedRulesMutex;
 
       //-----------------------------------------------------
+      ///\brief               Flag indicating that Yadoms is being shutdown, so don't record rules stop in database
+      //-----------------------------------------------------
+      boost::shared_ptr<shared::event::CEventHandler> m_ruleEventHandler;
+
+      //-----------------------------------------------------
       ///\brief               The rule state handler
       //-----------------------------------------------------
       boost::shared_ptr<IRuleStateHandler> m_ruleStateHandler;
@@ -152,6 +164,16 @@ namespace automation
       //-----------------------------------------------------
       mutable boost::recursive_mutex m_ruleStopNotififersMutex;
       std::map<int, std::set<boost::shared_ptr<shared::event::CEventHandler> > > m_ruleStopNotififers;
+
+      //-----------------------------------------------------
+      ///\brief               Flag indicating that Yadoms is being shutdown, so don't record rules stop in database
+      //-----------------------------------------------------
+      bool m_yadomsShutdown;
+
+      //-----------------------------------------------------
+      ///\brief               Thread managing rule asynchronous events
+      //-----------------------------------------------------
+      boost::shared_ptr<boost::thread> m_ruleEventsThread;
    };
 	
 } // namespace automation	

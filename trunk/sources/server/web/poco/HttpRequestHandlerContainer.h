@@ -7,16 +7,16 @@
 namespace web { namespace poco {
       
    /*
-    * Cette classse permet d'eviter de recreer les gestionnaires de requete à chaque demande Web
-    * Elle hérite de HTTPRequestHandler et contient un SharedPtr de HTTPRequestHandler.
-    * Ainsi on va recreer à chaque appel un container mais pas l'objet complet
+    * This class avoids to recreate a new request handler for each web request.
+    * It's inherits from HTTPRequestHandler and contains a SharedPtr on HTTPRequestHandler.
+    * So each web request will create only a container, not the full object.
     */
    class CHttpRequestHandlerContainer : public Poco::Net::HTTPRequestHandler
    {
    public:
       /**
        * Ctor
-       * @param m_requestHandler : gestionnaire de requete HTTP à encapsuler
+       * @param m_requestHandler : HTTP handler to encapsulate
        */
       CHttpRequestHandlerContainer(boost::shared_ptr<Poco::Net::HTTPRequestHandler> & m_requestHandler);
 
@@ -26,9 +26,9 @@ namespace web { namespace poco {
       virtual ~CHttpRequestHandlerContainer();
 
       /**
-       * Permet de demander le traitement de la requete
-       * @param request : requete à traiter
-       * @param response : réponse à renvoyer
+       * Process the request
+       * @param request : request to process
+       * @param response : answer to send back
        */
       virtual void handleRequest(Poco::Net::HTTPServerRequest& request, Poco::Net::HTTPServerResponse& response);
 

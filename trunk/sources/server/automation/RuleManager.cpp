@@ -18,16 +18,24 @@ CRuleManager::CRuleManager(boost::shared_ptr<database::IRuleRequester> dbRequest
    boost::shared_ptr<database::IKeywordRequester> dbKeywordRequester,
    boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester,
    boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
-   boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger, boost::shared_ptr<shared::event::CEventHandler> supervisor, int ruleManagerEventId)
+   boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger)
    :m_ruleRequester(dbRequester),
+   m_ruleEventHandler(boost::make_shared<shared::event::CEventHandler>()),
    m_scriptManager(boost::make_shared<script::CManager>("scriptInterpreters", pluginGateway, configurationManager, dbAcquisitionRequester, dbDeviceRequester, dbKeywordRequester, dbRecipientRequester)),
-   m_ruleStateHandler(boost::make_shared<CRuleStateHandler>(dbRequester, eventLogger, supervisor, ruleManagerEventId))
+   m_ruleStateHandler(boost::make_shared<CRuleStateHandler>(dbRequester, eventLogger, m_ruleEventHandler)),
+   m_yadomsShutdown(false),
+   m_ruleEventsThread(boost::make_shared<boost::thread>(boost::bind(&CRuleManager::ruleEventsThreadDoWord, this)))
 {
    startAllRules();
 }
 
 CRuleManager::~CRuleManager()
 {
+   m_yadomsShutdown = true;
+   stopRules();
+
+   m_ruleEventsThread->interrupt();
+   m_ruleEventsThread->join();
 }
 
 void CRuleManager::startAllRules()
@@ -105,6 +113,12 @@ void CRuleManager::startRule(int ruleId)
    }
 }
 
+void CRuleManager::stopRules()
+{
+   while (!m_startedRules.empty())
+      stopRuleAndWaitForStopped(m_startedRules.begin()->first);
+}
+
 void CRuleManager::stopRule(int ruleId)
 {
    boost::lock_guard<boost::recursive_mutex> lock(m_startedRulesMutex);
@@ -151,7 +165,8 @@ void CRuleManager::onRuleStopped(int ruleId, const std::string& error)
 
       m_startedRules.erase(rule);
 
-      recordRuleStopped(ruleId, error);
+      if (!m_yadomsShutdown)
+         recordRuleStopped(ruleId, error);
    }
 
    {
@@ -292,27 +307,38 @@ void CRuleManager::deleteRule(int id)
    }
 }
 
-void CRuleManager::signalEvent(const CManagerEvent& event)
+void CRuleManager::ruleEventsThreadDoWord()
 {
-   switch (event.getSubEventId())
+   try
    {
-   case CManagerEvent::kRuleAbnormalStopped:
-   {
-      // The rule has stopped in a non-conventional way (probably crashed)
-      onRuleStopped(event.getRuleId(), event.getError());
-      break;
+      while (true)
+      {
+         switch (m_ruleEventHandler->waitForEvents())
+         {
+         case CRuleStateHandler::kRuleAbnormalStopped:
+         {
+            // The rule has stopped in a non-conventional way (probably crashed)
+            std::pair<int, std::string> data = m_ruleEventHandler->getEventData<std::pair<int, std::string> >();
+            onRuleStopped(data.first, data.second);
+            break;
+         }
+         case CRuleStateHandler::kRuleStopped:
+         {
+            onRuleStopped(m_ruleEventHandler->getEventData<int>());
+            break;
+         }
+
+         default:
+         {
+            YADOMS_LOG(error) << "Unknown message id";
+            BOOST_ASSERT(false);
+            break;
+         }
+         }
+      }
    }
-   case CManagerEvent::kRuleStopped:
+   catch (boost::thread_interrupted&)
    {
-      onRuleStopped(event.getRuleId());
-      break;
-   }
-   default:
-   {
-      YADOMS_LOG(error) << "Unknown message id";
-      BOOST_ASSERT(false);
-      break;
-   }
    }
 }
 

@@ -2,15 +2,14 @@
 #include <shared/Log.h>
 #include "RuleStateHandler.h"
 #include "RuleException.hpp"
-#include "ManagerEvent.h"
 
 namespace automation
 {
 
 CRuleStateHandler::CRuleStateHandler(boost::shared_ptr<database::IRuleRequester> dbRequester,
    boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger,
-   boost::shared_ptr<shared::event::CEventHandler> supervisor, int ruleManagerEventId)
-   :m_ruleRequester(dbRequester), m_eventLogger(eventLogger), m_supervisor(supervisor), m_ruleManagerEventId(ruleManagerEventId)
+   boost::shared_ptr<shared::event::CEventHandler> ruleEventHandler)
+   :m_ruleRequester(dbRequester), m_eventLogger(eventLogger), m_ruleEventHandler(ruleEventHandler)
 {
 }
 
@@ -23,7 +22,7 @@ void CRuleStateHandler::signalNormalRuleStop(int ruleId)
    YADOMS_LOG(information) << "Stop rule #" << ruleId;
 
    // Signal the stop to asynchronously remove from running rules list
-   postToSupervisor(CManagerEvent::kRuleStopped, ruleId);
+   m_ruleEventHandler->postEvent(kRuleStopped, ruleId);
 }
 
 void CRuleStateHandler::signalRuleError(int ruleId, const std::string& error)
@@ -33,7 +32,7 @@ void CRuleStateHandler::signalRuleError(int ruleId, const std::string& error)
    m_eventLogger->addEvent(database::entities::ESystemEventCode::kRuleFailedValue, m_ruleRequester->getRule(ruleId)->Name(), error);
 
    // Signal the abnormal stop to asynchronously remove from list
-   postToSupervisor(CManagerEvent::kRuleAbnormalStopped, ruleId, error);
+   m_ruleEventHandler->postEvent(kRuleAbnormalStopped, std::pair<int, std::string>(ruleId, error));
 }
 
 void CRuleStateHandler::signalRulesStartError(int ruleId, const std::string& error)
@@ -43,15 +42,8 @@ void CRuleStateHandler::signalRulesStartError(int ruleId, const std::string& err
    m_eventLogger->addEvent(database::entities::ESystemEventCode::kRuleFailedValue, "Automation rules", error);
 
    // Signal the abnormal stop to asynchronously remove from list
-   postToSupervisor(CManagerEvent::kRuleAbnormalStopped, ruleId, error);
+   m_ruleEventHandler->postEvent(kRuleAbnormalStopped, std::pair<int, std::string>(ruleId, error));
 }
-
-void CRuleStateHandler::postToSupervisor(const CManagerEvent::ESubEventType& eventType, int ruleId, const std::string& error) const
-{
-   CManagerEvent event(eventType, ruleId, error);
-   m_supervisor->postEvent<CManagerEvent>(m_ruleManagerEventId, event);
-}
-
 
 } // namespace automation	
 	

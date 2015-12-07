@@ -3,7 +3,6 @@
 #include "database/IRuleRequester.h"
 #include "dataAccessLayer/IEventLogger.h"
 #include <shared/shared/event/EventHandler.hpp>
-#include "ManagerEvent.h"
 
 namespace automation
 {
@@ -13,16 +12,25 @@ namespace automation
    class CRuleStateHandler : public IRuleStateHandler
    {
    public:
+      //--------------------------------------------------------------
+      /// \brief	    Type of rule manager event
+      //--------------------------------------------------------------
+      enum ERuleEventType
+      {
+         kRuleAbnormalStopped = 0,      // Rule abnormal stopped
+         kRuleStopped
+      };
+
+   public:
       //-----------------------------------------------------
       ///\brief               Constructor
       ///\param[in] dbRequester  Database requester
       ///\param[in] eventLogger  Main event logger
-      ///\param[in] supervisor     the supervisor event handler
-      ///\param[in] ruleManagerEventId    The ID to use to send events to supervisor
+      ///\param[in] ruleEventHandler  the rule manager event handler
       //-----------------------------------------------------
       CRuleStateHandler(boost::shared_ptr<database::IRuleRequester> dbRequester,
          boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger,
-         boost::shared_ptr<shared::event::CEventHandler> supervisor, int ruleManagerEventId);
+         boost::shared_ptr<shared::event::CEventHandler> ruleEventHandler);
 
       //-----------------------------------------------------
       ///\brief               Destructor
@@ -34,14 +42,6 @@ namespace automation
       virtual void signalRuleError(int ruleId, const std::string& error);
       virtual void signalRulesStartError(int ruleId, const std::string& error);
       // [END] IRuleStateHandler Implementation
-
-      //-----------------------------------------------------
-      ///\brief               Post event to supervisor
-      ///\param[in] eventType Event type to post to supervisor
-      ///\param[in] ruleId    The rule id
-      ///\param[in] error     The error label, associated to event (empty if no error)
-      //-----------------------------------------------------
-      void postToSupervisor(const CManagerEvent::ESubEventType& eventType, int ruleId, const std::string& error = std::string()) const;
 
 
    private:
@@ -58,12 +58,7 @@ namespace automation
       //--------------------------------------------------------------
       /// \brief			The supervisor event handler
       //--------------------------------------------------------------
-      boost::shared_ptr<shared::event::CEventHandler> m_supervisor;
-
-      //--------------------------------------------------------------
-      /// \brief			ID to use to send events to supervisor
-      //--------------------------------------------------------------
-      const int m_ruleManagerEventId;
+      boost::shared_ptr<shared::event::CEventHandler> m_ruleEventHandler;
    };
 	
 } // namespace automation	
