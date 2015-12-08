@@ -24,13 +24,10 @@ function ConfigurationControlManager(configurationSchema, currentConfiguration, 
 
    var self = this;
 
-   //we build the i18n context
-   var i18nContext = i18nNamespace;
-
    //for each key in package
    $.each(self.configurationSchema, function (key, value) {
       var currentValue = self.configurationValues[key];
-      var handler = ConfigurationHelper.createParameterHandler(i18nContext, key, value, currentValue);
+      var handler = ConfigurationHelper.createParameterHandler(i18nNamespace, key, value, currentValue);
       if (!isNullOrUndefined(handler))
          self.configurationHandlers.push(handler);
    });

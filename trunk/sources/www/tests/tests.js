@@ -6,7 +6,8 @@ module( "utility.js" );
 test( "assert", function() {
    ok( assert(true, "test must be ok"), "assert() with an ok test" );
    throws( function() {
-         assert(false, "test must be ko")}, "assert() with a ko test"
+           assert(false, "test must be ko");
+       }, "assert() with a ko test"
    );
 });
 

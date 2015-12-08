@@ -42,7 +42,7 @@
        $("button#btn-confirm-add-plugin").unbind("click").bind("click", function() {
           //we close the new plugin modal
           $("div#new-plugin-modal").modal("hide");
-          var pluginType =  $("select#pluginTypeList").val();
+          var pluginType = $("select#pluginTypeList").val();
           callback(PluginManager.pluginTypes[pluginType]);
        });
 
