@@ -62,6 +62,7 @@ PluginInstance.prototype.getBoundPackageConfigurationSchema = function() {
  */
 PluginInstance.prototype.getBoundManuallyDeviceCreationConfigurationSchema = function() {
    if (!isNullOrUndefined(this.package)) {
+   debugger;
       var tmp = this.package.manuallyDeviceCreationConfigurationSchema;
       return this.applyBindingPrivate(tmp, ["plugin", "system"]);
    }
