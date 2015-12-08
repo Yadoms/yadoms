@@ -9,8 +9,8 @@
             <div class="modal-body">
                <form>
                   <div class="form-group">
-                     <label for="pluginTypeList" data-i18n="modals.add-manually-device.attachedPlugin"></label>
-                     <select id="pluginTypeList" class="form-control">
+                     <label for="associatedPluginTypeList" data-i18n="modals.add-manually-device.attachedPlugin"></label>
+                     <select id="associatedPluginTypeList" class="form-control">
                      </select>
                   </div>
                </form>
@@ -36,12 +36,12 @@
 
        PluginInstanceManager.getPluginInstanceHandleManuallyDeviceCreation(function(list) {
 
-          $("select#pluginTypeList").empty();
+          $("select#associatedPluginTypeList").empty();
 
           $.each(list, function(index, value) {
              var pi = PluginInstanceManager.factory(value);
              //foreach plugin-instance
-             $("select#pluginTypeList").append("<option value=\""+ pi.id + "\">" + pi.displayName + "</option>");
+             $("select#associatedPluginTypeList").append("<option value=\""+ pi.id + "\">" + pi.displayName + "</option>");
           });
 
           //event click on add plugin button
@@ -50,7 +50,7 @@
              $("div#new-manually-device-modal").modal("hide");
 
              //we get the plugin instance id chosen
-             var pluginId = $("select#pluginTypeList").val();
+             var pluginId = $("select#associatedPluginTypeList").val();
 
              //from the id, retreive the plugin instance
              var instance = $.grep(list, function(e){ return e.id == pluginId; });
