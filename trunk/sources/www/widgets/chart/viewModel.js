@@ -33,6 +33,13 @@ widgetViewModelCtor =
                    type: 'line',
                    marginTop: 10
                },
+               legend: {
+				  layout: 'horizontal',
+				  align: 'center',
+				  verticalAlign: 'bottom',
+				  borderWidth: 0,
+				  enabled : true
+			   },  
                navigator: {
                    adaptToUpdatedData: false,
                    enabled: false
@@ -82,6 +89,9 @@ widgetViewModelCtor =
                },
 
                yAxis: { // Default Axis
+			   
+			     //label.formatter -> in case of a unique point. Cf tooltip formatter.
+			   
                },
 
                plotOptions: {
@@ -122,9 +132,7 @@ widgetViewModelCtor =
                series: []
            };
 
-
            this.$chart.highcharts('StockChart', this.chartOption);
-
            this.chart = this.$chart.highcharts();
 
            //we manage toolbar buttons
@@ -182,7 +190,7 @@ widgetViewModelCtor =
 
            if ((isNullOrUndefined(this.widget)) || (isNullOrUndefinedOrEmpty(this.widget.configuration)))
                return;
-
+	   
            self.interval = this.widget.configuration.interval;
 
            self.widget.$gridWidget.find(".range-btn[interval='" + self.interval + "']").addClass("widget-toolbar-pressed-button");
@@ -247,13 +255,10 @@ widgetViewModelCtor =
 
        this.isBoolVariable = function (index) {
            var self = this;
-           //console.log ("Evaluation bool");
            if (self.keywordInfo[index].type == "Bool") {
-               //console.log ("bool=true");
                return true;
            }
            else {
-               //console.log ("bool=false");							  
                return false;
            }
        }
@@ -265,7 +270,6 @@ widgetViewModelCtor =
 
            //we save interval in the chart
            self.chart.interval = interval;
-
 
            console.log("step 1 " + moment().format("HH:mm:ss'SSS"));
 
@@ -341,7 +345,7 @@ widgetViewModelCtor =
 
                    while (self.chart.yAxis.length > 0)
                        self.chart.yAxis[0].remove(false);
-
+				   
                    var SeriesPromise = new PromiseCounter(self.widget.configuration.devices.length, this.finalRefresh.bind(this), null);
 
                    //for each plot in the configuration we request for data
@@ -446,15 +450,20 @@ widgetViewModelCtor =
                                           plot.push([d, v]);
                                       });
                                   }
-                                  var color = "black";
+                                  var color     = "#606060";// default color
+								  var colorAxis = "#606060";// default color
                                   try {
-                                      color = device.content.color;
+									  color = device.content.color;
+									  if (!parseBool(self.widget.configuration.oneAxis.checkbox))
+                                         colorAxis = device.content.color;
+										  
                                   } catch (err) {
                                       console.log(err);
                                   }
 
                                   //choose the axis id
                                   var yAxisName = 'axis' + self.seriesUuid[index];
+								  
                                   if (parseBool(self.widget.configuration.oneAxis.checkbox)) {
                                       yAxisName = 'axis' + self.seriesUuid[0];
                                   }
@@ -481,14 +490,14 @@ widgetViewModelCtor =
                                               title: {
                                                   text: self.keywordInfo[index].friendlyName,
                                                   style: {
-                                                      color: color
+                                                      color: colorAxis
                                                   }
                                               },
                                               labels: {
                                                   align: align,
                                                   format: '{value} ' + unit,
                                                   style: {
-                                                      color: color
+                                                      color: colorAxis
                                                   }
                                               },
                                               opposite: isOdd(index)
@@ -502,9 +511,15 @@ widgetViewModelCtor =
                                   }
 
                                   if ((parseBool(self.widget.configuration.oneAxis.checkbox))) {
+									  
                                       //Configure the min/max in this case
                                       try {
                                           var yAxis = self.chart.get(yAxisName);
+										  
+										  // Avec un seul axe, pas de nom
+										  yAxis.setTitle({text:""});
+										  
+										  //console.log (self.$chart);
 
                                           if (parseBool(self.widget.configuration.oneAxis.content.customYAxisMinMax.checkbox)) {
                                               //we manage min and max scale y axis
@@ -518,8 +533,8 @@ widgetViewModelCtor =
                                       } catch (err) {
                                           console.log(err);
                                       }
-                                  }
-
+                                  }		  
+								  
                                   try {
                                       if (device.content.PlotType == "arearange") {
                                           console.log(yAxisName);
@@ -550,7 +565,7 @@ widgetViewModelCtor =
                                                   data: range,
                                                   dataGrouping: {
                                                       enabled: false
-                                                  },
+                                                  },											  
                                                   name: self.keywordInfo[index].friendlyName + '(Min,Max)',
                                                   linkedTo: self.seriesUuid[index],
                                                   color: color,
@@ -581,7 +596,7 @@ widgetViewModelCtor =
                                                   enabled: true,
                                                   radius: 2,
                                                   symbol: "circle"
-                                              },
+                                              },											  
                                               color: color,
                                               yAxis: yAxisName,
                                               lineWidth: 2,
@@ -598,8 +613,23 @@ widgetViewModelCtor =
 
                                   //we save the unit in the serie
                                   if (serie)
+								  {
                                       serie.units = $.t(self.keywordInfo[index].units);
+									  
+									  // If only one axis, we show the legend. In otherwise we destroy it
+									  if (parseBool(self.widget.configuration.oneAxis.checkbox)) {
+										serie.options.showInLegend = true;
+										self.chart.legend.renderItem(serie);
+									  }
+									  else{
+										serie.options.showInLegend = false;
+										serie.legendItem = null;
+										self.chart.legend.destroyItem(serie);									  
+									  }
+									  self.chart.legend.render();	
 
+								  }
+	  
                                   self.refreshingData = false;
                                   SeriesPromise.resolve(index);
                               })
