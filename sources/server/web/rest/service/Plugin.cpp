@@ -138,8 +138,6 @@ namespace web { namespace rest { namespace service {
       shared::CDataContainer t;
       t.set(getRestKeyword(), result);
       return CResult::GenerateSuccess(t);
-
-
    }
 
    shared::CDataContainer CPlugin::getAllAvailablePlugins(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)

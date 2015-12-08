@@ -25,7 +25,7 @@ function ConfigurationControlManager(configurationSchema, currentConfiguration, 
    var self = this;
 
    //we build the i18n context
-   var i18nContext = i18nNamespace + ":configurationSchema.";
+   var i18nContext = i18nNamespace;
 
    //for each key in package
    $.each(self.configurationSchema, function (key, value) {

@@ -40,7 +40,7 @@
       var bindedConfigurationSchema = pluginInstance.getBoundPackageConfigurationSchema();
 
       //we append classic configuration
-      var configMgr = new ConfigurationControlManager(bindedConfigurationSchema, pluginInstance.configuration, pluginInstance.type, $modalBody);
+      var configMgr = new ConfigurationControlManager(bindedConfigurationSchema, pluginInstance.configuration, pluginInstance.type + ":configurationSchema.", $modalBody);
 
       //i18n
       $modalBody.i18n();
