@@ -18,6 +18,7 @@ Blockly.Yadoms.CreateToolbox_ = function () {
     toolbox += "    <block type=\"keyword-value-set\"></block>";
     toolbox += "    <block type=\"yadoms_wait_for_keywords\"></block>";
     toolbox += "    <block type=\"yadoms_at\"></block>";
+    toolbox += "    <block type=\"yadoms_get_info\"></block>";
     toolbox += "    <block type=\"yadoms_notification_simple\"></block>";
     toolbox += "    <block type=\"yadoms_enumeration\"></block>";
     toolbox += "    <block type=\"yadoms_sleep\">";

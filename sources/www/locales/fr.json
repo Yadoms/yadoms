@@ -456,6 +456,19 @@
         "title": "Enumération",
         "tooltip": "Represente une valeur d'énumération (le contenu est mis à jour lorsque ce bloc est connecté à un objet)"
       },
+      "yadoms_get_info": {
+        "title": "Info",
+        "tooltip": "Obtient des informations du serveur",
+        "values": {
+          "sunrise": "Heure du coucher du soleil",
+          "sunset": "Heure de lever du soleil",
+          "latitude": "Latitude",
+          "longitude": "Longitude",
+          "altitude": "Altitude",
+          "serverOs": "Yadoms serveur OS",
+          "serverVersion": "Version du serveur Yadoms"
+        }
+      },
       "yadoms_wait_for_keywords": {
         "titleLine1": "Attente d'une nouvelle acquisition",
         "titleLine2": "Stocker la valeur dans",
