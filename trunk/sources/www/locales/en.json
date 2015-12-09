@@ -497,6 +497,13 @@
       }
     },
     "blocks": {
+      "yadoms_at": {
+        "title": "At",
+        "tooltip": "Block the script until the specified date occurs",
+        "date_splitter": "/",
+        "date_hour_separator": " ",
+        "hour_splitter": ":"
+      },
       "yadoms_sleep": {
         "title": "Sleep",
         "tooltip": "Make the script sleep for a duration"
@@ -509,46 +516,45 @@
         "title": "Enumeration",
         "tooltip": "Represents an enumeration value (content is updated when linked to an object)"
       },
-      "yadoms_logic_compare_become": {
-        "title": "Become",
-        "tooltip": "If a keyword become __operand__ than value"
-      },
-      "yadoms_logic_compare_is": {
-        "title": "Is",
-        "tooltip": "If a keyword __operand__ a value",
-        "for": {
-          "title": "For",
-          "title_long": "For (duration)",
-          "tooltip": "If the keyword keep the same value for a duration"
-        },
-        "at": {
-          "title": "At",
-          "title_long": "At (time)",
-          "tooltip": "If the keyword reached a value at a particular time"
-        }
-      },
       "yadoms_wait_for_keywords": {
-        "title": "Wait for a new acquisition and store value in",
+        "titleLine1": "Wait for a new aciquistion",
+        "titleLine2": "Save the acquisition value in",
         "case": "When",
         "triggered": "is triggered",
-        "do": "Then do ",
-        "tooltip": "Wait for one or more keyword changes. The keyword new value is stored in variable keywordNewValue",
-        "defaultVarName": "keywordNewValue",
+        "triggeredType": {
+          "change": "change",
+          "become": "become"
+        },
+        "do": "Then do",
+        "tooltip": "Wait for a new acquisition of one or more keywords.",
+        "defaultVarName": "newAcquisitionValue",
         "mutator": {
           "base": {
-            "title": "Wait for acquisition",
-            "tooltip": "Wait for one or more keyword changes"
+            "title": "Wait for acqusition",
+            "tooltip": "Wait for a new acquisition of one or more keywords."
           },
-          "additional": {
-            "title": "Keyword to watch",
-            "tooltip": "Add a new keyword to watch"
+          "storeInVariable": {
+            "title": "Store acquisition",
+            "tooltip": "Store the new acquisition value in the specified variable"
+          },
+          "change": {
+            "title": "Any acquisition",
+            "tooltip": "Add a block for monitoring any new acquisition of a keword"
+          },
+          "become": {
+            "title": "Specific value",
+            "tooltip": "Add a block for monitoring new acqusitions matching a condition"
+          },
+          "error": {
+            "storeInVariableMoreThanOne": "Only one StoreAcquisition block is allowed",
+            "noAddtitionalBlock": "At least one keyword monitoring is required"
           }
         }
       },
-      "yadoms_keyword_value": {
+      "keyword-value-get": {
         "tooltip": "Read the last device value from database"
       },
-      "yadoms_affect_keyword": {
+      "keyword-value-set": {
         "title": "Set",
         "tooltip": "Affect a new value to a keyword"
       },
