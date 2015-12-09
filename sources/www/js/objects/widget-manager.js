@@ -579,13 +579,13 @@ WidgetManager.createGridstackWidget = function (widget) {
         "<div class=\"panel panel-primary panel-widget\" >" +
             "<div class=\"panel-heading panel-widget-header\">" +
                 "<div class=\"panel-widget-title-toolbar\" ></div>" +
-                "<span class=\"panel-widget-title\">" + widget.title + "</span>\n" +
+                "<div class=\"panel-widget-title panel-widget-title-marquee\">" + widget.title + "</div>\n" +
             "</div>" +
             "<div class=\"panel-widget-body\" id=\"widget-" + widget.id + "\"  data-bind=\"template: { name: '" + type + "-template' }\"/>\n" +
         "</div>\n" +
     "</div>\n";
     var item = page.grid.add_widget($(domWidget), widget.positionX, widget.positionY, widget.sizeX, widget.sizeY, false);
-
+	
     item.i18n();
     return item;
 };

@@ -23,13 +23,13 @@ AcquisitionManager.factory = function(json) {
 * Return the last value of the keywordId
 */
 AcquisitionManager.getLastValue = function (keywordId, callback, sync) {
-   assert(!isNullOrUndefined(keywordId), "keywordId must be defined");
+   assert(!isNullOrUndefinedOrEmpty(keywordId), "keywordId must be defined");
    assert($.isFunction(callback), "callback must be a function");
 
    var async = true;
    if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
       async = !sync;
-
+  
    $.ajax({
       dataType: "json",
       url: "/rest/acquisition/keyword/" + keywordId  + "/lastdata",
