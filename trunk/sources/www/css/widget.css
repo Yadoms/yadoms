@@ -100,6 +100,24 @@
     margin-top: 2px;   
 }
 
+.panel-widget-title-marquee:hover {
+	animation: panel-widget-title-marquee 5s linear infinite;
+	-webkit-animation-play-state: running; /* Chrome, Safari, Opera */
+    animation-play-state: running;
+}
+
+.panel-widget-title-marquee {
+    margin: 0 auto;
+    overflow: hidden;
+    white-space: nowrap;
+    box-sizing: border-box;
+}
+
+@keyframes panel-widget-title-marquee{
+    0%   { text-indent: 0em; }
+    100% { text-indent: -12em; }
+}
+
 .panel-widget-title {
 }
 
