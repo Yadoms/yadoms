@@ -516,6 +516,19 @@
         "title": "Enumeration",
         "tooltip": "Represents an enumeration value (content is updated when linked to an object)"
       },
+      "yadoms_get_info": {
+        "title": "Information",
+        "tooltip": "Get informations from server",
+        "values": {
+          "sunrise": "Sunrise time",
+          "sunset": "Sunset time",
+          "latitude": "Latitude",
+          "longitude": "Longitude",
+          "altitude": "Altitude",
+          "serverOs": "Yadoms server OS",
+          "serverVersion": "Yadoms server version"
+        }
+      },
       "yadoms_wait_for_keywords": {
         "titleLine1": "Wait for a new aciquistion",
         "titleLine2": "Save the acquisition value in",
