@@ -75,10 +75,11 @@
     bottom: 0px;
     z-index: 18;
     margin: 2.5px;
-    background-repeat-y: no-repeat;
+    background-repeat: no-repeat;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
-    background-image: url("../img/roadworks.png");
+    background-image: url("../img/roadworks-widget.png");
+    background-position-x: right;
 }
 
 .widgetCustomizationToolbar {

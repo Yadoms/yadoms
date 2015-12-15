@@ -271,8 +271,6 @@ widgetViewModelCtor =
            //we save interval in the chart
            self.chart.interval = interval;
 
-           console.log("step 1 " + moment().format("HH:mm:ss'SSS"));
-
            try {
                if (!self.refreshingData) {
                    self.chart.showLoading($.t("chart:loadingData"));
@@ -537,7 +535,6 @@ widgetViewModelCtor =
 								  
                                   try {
                                       if (device.content.PlotType == "arearange") {
-                                          console.log(yAxisName);
 
                                           //Add Line
                                           self.chart.addSeries({
@@ -583,7 +580,6 @@ widgetViewModelCtor =
                                                   serie_range.units = $.t(self.keywordInfo[index].units);
                                           }
                                       } else {
-                                          console.log(yAxisName);
 
                                           self.chart.addSeries({
                                               id: self.seriesUuid[index],
