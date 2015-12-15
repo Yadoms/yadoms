@@ -62,16 +62,20 @@ void CLighting5::createSubType(unsigned char subType)
    m_subType = subType;
    switch(m_subType)
    {
-   case sTypeLightwaveRF : m_subTypeManager.reset(new CLighting5LightwaveRfKeyword()); break;
-   case sTypeEMW100      : m_subTypeManager.reset(new CLighting5OnOff("EMW100 GAO/Everflourish")); break;
-   case sTypeBBSB        : m_subTypeManager.reset(new CLighting5OnOff("BBSB new types")); break;
-   case sTypeRSL         : m_subTypeManager.reset(new CLighting5OnOff("Conrad RSL2")); break;
-   case sTypeMDREMOTE    : m_subTypeManager.reset(new CLighting5MdRemoteKeyword()); break;
-   case sTypeLivolo      : m_subTypeManager.reset(new CLighting5Livolo()); break; // Limited support of Livolo (just ON/OFF), as we can't now exact type of module
-   case sTypeTRC02       : m_subTypeManager.reset(new CLighting5OnOff("RGB TRC02 (2 batt)")); break;
-   case sTypeAoke        : m_subTypeManager.reset(new CLighting5OnOff("Aoke Relay")); break;
-   case sTypeTRC02_2     : m_subTypeManager.reset(new CLighting5OnOff("RGB TRC02 (3 batt)")); break;
-   case sTypeEurodomest  : m_subTypeManager.reset(new CLighting5OnOff("Eurodomest")); break;
+   case sTypeLightwaveRF      : m_subTypeManager.reset(new CLighting5LightwaveRfKeyword()); break;
+   case sTypeEMW100           : m_subTypeManager.reset(new CLighting5OnOff("EMW100 GAO/Everflourish")); break;
+   case sTypeBBSB             : m_subTypeManager.reset(new CLighting5OnOff("BBSB new types")); break;
+   case sTypeRSL              : m_subTypeManager.reset(new CLighting5OnOff("Conrad RSL2")); break;
+   case sTypeMDREMOTE         : m_subTypeManager.reset(new CLighting5MdRemoteKeyword()); break;
+   case sTypeLivolo           : m_subTypeManager.reset(new CLighting5Livolo()); break; // Limited support of Livolo (just ON/OFF), as we can't now exact type of module
+   case sTypeTRC02            : m_subTypeManager.reset(new CLighting5OnOff("RGB TRC02 (2 batt)")); break;
+   case sTypeAoke             : m_subTypeManager.reset(new CLighting5OnOff("Aoke Relay")); break;
+   case sTypeTRC02_2          : m_subTypeManager.reset(new CLighting5OnOff("RGB TRC02 (3 batt)")); break;
+   case sTypeEurodomest       : m_subTypeManager.reset(new CLighting5OnOff("Eurodomest")); break;
+   case sTypeLivoloAppliance  : m_subTypeManager.reset(new CLighting5OnOff("Livolo Appliance")); break;
+   case sTypeRGB432W          : m_subTypeManager.reset(new CLighting5OnOff("RGB432W")); break;
+   case sTypeMDREMOTE107      : m_subTypeManager.reset(new CLighting5OnOff("MD remote 107 LED")); break;
+   case sTypeLegrandCAD       : m_subTypeManager.reset(new CLighting5OnOff("Legrand CAD")); break;
    default:
       throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
    }

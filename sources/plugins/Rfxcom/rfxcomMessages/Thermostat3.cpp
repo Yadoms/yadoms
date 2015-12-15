@@ -4,6 +4,8 @@
 #include <shared/exception/InvalidParameter.hpp>
 #include "Thermostat3MertikG6RH4T1.h"
 #include "Thermostat3MertikG6RH4TB.h"
+#include "Thermostat3MertikG6RH4TD.h"
+#include "Thermostat3MertikG6RH4S.h"
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -58,6 +60,8 @@ void CThermostat3::Init(boost::shared_ptr<yApi::IYPluginApi> context)
    {
    case sTypeMertikG6RH4T1 : m_subTypeManager.reset(new CThermostat3MertikG6RH4T1()); break;
    case sTypeMertikG6RH4TB : m_subTypeManager.reset(new CThermostat3MertikG6RH4TB()); break;
+   case sTypeMertikG6RH4TD : m_subTypeManager.reset(new CThermostat3MertikG6RH4TD()); break;
+   case sTypeMertikG6RH4S  : m_subTypeManager.reset(new CThermostat3MertikG6RH4S()); break;
    default:
       throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
    }

@@ -7,8 +7,84 @@
 // users with a big_endian system have to remove the comment slashes before the #define.
 //
 
+/*
+                                                                   
+Copyright 2011-2015, RFXCOM
+
+ALL RIGHTS RESERVED. This code is owned by RFXCOM, and is protected under
+Netherlands Copyright Laws and Treaties and shall be subject to the 
+exclusive jurisdiction of the Netherlands Courts. The information from this
+file may freely be used to create programs to exclusively interface with
+RFXCOM products only. Any other use or unauthorized reprint of this material
+is prohibited. No part of this code may be reproduced or transmitted in
+any form or by any means, electronic or mechanical, including photocopying,
+recording, or by any information storage and retrieval system without
+express written permission from RFXCOM.
+
+The above copyright notice shall be included in all copies or substantial
+portions of this file.
+'----------------------------------------------------------------------------
+*/
 
 /*
+SDK version 9.04A
+	Lighting5 Legrand CAD added
+	msg6-HC HomeConfort protocol enable added
+
+SDK version 9.03
+	MDremote version 107 added
+
+SDK version 9.02
+	Home Confort added
+
+SDK version 9.01
+	RFY - ASA blinds added
+
+SDK version 9.00
+	Lighting5 - sTypeRGB432W added
+	ICMND - msg1 changed to freqsel
+	ICMND - msg2 changed to xmitpwr
+
+SDK version 8.03A
+	Thermostat3 - Mertik G6R-H4S added
+
+SDK version 8.03
+	Subtype for Dolat blinds corrected, was 0x10 changed to 0xA
+
+SDK version 8.02
+	Blinds Dolat added
+	Thermostat3 - Mertik G6R_H4TD added
+
+SDK version 8.01
+	Blinds Sunpery changed
+
+SDK version 8.00
+	Security2 - KeeLoq added
+	Envivo Chime added
+	msg6 - mode bits added
+	sTypeUselectplus added
+	Blinds Sunpery added
+	TH14,RAIN7,WIND7 - Alecto WS4500 added
+
+SDK version 7.02/7.03
+	msg3_RFU changed to msg3_IMAGINTRONIX
+	IRESPONSE.RFU6enabled changed to IRESPONSE.IMAGINTRONIXenabled
+
+SDK version 7.01
+	SelectPlus200689103 Black Chime added
+
+SDK version 7.00
+	TEMP7 - TSS330 added and TH9 – TSS320 added
+	BlindsT8 = Chamberlain CS4330CN added
+	SelectPlus200689101 White Chime added
+	Interface command - start receiver added
+	IRESPONSE size increased to 0x14
+
+SDK version 6.27
+	Livolo Appliance 1-10 added
+	Somfy RFY commands: Enable sun+wind & Disable sun added
+	Smartwares radiator valve added
+
 SDK version 6.26
 	TH13 - Alecto WS1700 and compatibles added
 
@@ -220,6 +296,7 @@ SDK version 4.9
 #define cmdSETMODE	0x03 // set configuration of the interface
 
 #define cmdSAVE		0x06 // save receiving modes of the receiver/transceiver in non-volatile memory
+#define cmdStartRec	0x07 // start RFXtrx receiver
 
 #define cmd310		0x50 // select 310MHz in the 310/315 transceiver
 #define cmd315		0x51 // select 315MHz in the 310/315 transceiver
@@ -236,6 +313,8 @@ SDK version 4.9
 #define sTypeUnknownRFYremote 0x01
 #define sTypeExtError 0x02
 #define sTypeRFYremoteList 0x03
+#define sTypeASAremoteList 0x04
+#define sTypeRecStarted 0x07
 #define sTypeInterfaceWrongCommand 0xFF
 #define recType310 0x50
 #define recType315 0x51
@@ -249,20 +328,20 @@ SDK version 4.9
 #define recType86835FSK 0x5A
 #define recType86895 0x5B
 
-#define msg3_AE 0x01
-#define msg3_RUBICSON 0x02
-#define msg3_FINEOFFSET 0x04
-#define msg3_LIGHTING4 0x08
-#define msg3_RSL 0x10
-#define msg3_SX 0x20
-#define msg3_RFY 0x40
+#define msg3_AE 0x01			//AE Blyss
+#define msg3_RUBICSON 0x02		//Rubicson,Lacrosse, Banggood
+#define msg3_FINEOFFSET 0x04	//Fineoffset,Viking
+#define msg3_LIGHTING4 0x08		//PT2262 and compatible
+#define msg3_RSL 0x10			//RSL,Revolt
+#define msg3_SX 0x20			//ByronSX,Selectplus
+#define msg3_IMAGINTRONIX 0x40
 #define msg3_undec 0x80
 
 #define msg4_MERTIK 0x01
-#define msg4_AD 0x02
-#define msg4_HID 0x04
-#define msg4_LCROS 0x08
-#define msg4_FS20 0x10
+#define msg4_AD 0x02			//AD LightwaveRF
+#define msg4_HID 0x04			//Hideki
+#define msg4_LCROS 0x08			//LaCrosse
+#define msg4_FS20 0x10			//FS20,Legrand CAD
 #define msg4_PROGUARD 0x20
 #define msg4_BLINDST0 0x40
 #define msg4_BLINDST1 0x80
@@ -270,11 +349,20 @@ SDK version 4.9
 #define msg5_X10 0x01
 #define msg5_ARC 0x02
 #define msg5_AC 0x04
-#define msg5_HEU 0x08
-#define msg5_MEI 0x10
+#define msg5_HEU 0x08			//HomeEasy EU
+#define msg5_MEI 0x10			//Meiantech,Atlantic
 #define msg5_OREGON 0x20
 #define msg5_ATI 0x40
 #define msg5_VISONIC 0x80
+
+#define msg6_KeeLoq 0x01
+#define msg6_HC	0x02			//HomeConfort
+#define msg6_RFU2 0x04
+#define msg6_RFU3 0x08
+#define msg6_RFU4 0x10
+#define msg6_RFU5 0x20
+#define msg6_RFU6 0x40
+#define msg6_RFU7 0x80
 
 #define pTypeRecXmitMessage 0x02
 #define sTypeReceiverLockError 0x00
@@ -303,6 +391,8 @@ SDK version 4.9
 #define sTypeUfineoffset 0x12
 #define sTypeUrgb 0x13
 #define sTypeUrfy 0x14
+#define sTypeUselectplus 0x15
+#define sTypeUhomeconfort 0x16
 
 //types for Lighting
 #define pTypeLighting1 0x10
@@ -370,6 +460,10 @@ SDK version 4.9
 #define sTypeAoke 0x07
 #define sTypeTRC02_2 0x08
 #define sTypeEurodomest 0x09
+#define sTypeLivoloAppliance 0x0A
+#define sTypeRGB432W 0x0B
+#define sTypeMDREMOTE107 0x0C
+#define sTypeLegrandCAD 0x0D
 
 #define light5_sOff 0x0
 #define light5_sOn 0x1
@@ -406,12 +500,29 @@ SDK version 4.9
 #define light5_sLivoloGang1Toggle 0x01
 #define light5_sLivoloGang2Toggle 0x02	//dim+ for dimmer
 #define light5_sLivoloGang3Toggle 0x03	//dim- for dimmer
+#define light5_sLivoloGang4Toggle 0x04
+#define light5_sLivoloGang5Toggle 0x05
+#define light5_sLivoloGang6Toggle 0x06
+#define light5_sLivoloGang7Toggle 0x07
+#define light5_sLivoloGang8Toggle 0x08
+#define light5_sLivoloGang9Toggle 0x09
+#define light5_sLivoloGang10Toggle 0x0A
 #define light5_sRGBoff 0x00
 #define light5_sRGBon 0x01
 #define light5_sRGBbright 0x02
 #define light5_sRGBdim 0x03
 #define light5_sRGBcolorplus 0x04
 #define light5_sRGBcolormin 0x05
+#define light5_sMD107_Power 0x0
+#define light5_sMD107_Bright 0x1
+#define light5_sMD107_Dim 0x2
+#define light5_sMD107_100 0x3
+#define light5_sMD107_80 0x4
+#define light5_sMD107_60 0x5
+#define light5_sMD107_40 0x6
+#define light5_sMD107_20 0x7
+#define light5_sMD107_10 0x8
+#define light5_sLegrandToggle 0x00
 
 #define pTypeLighting6 0x15
 #define sTypeBlyss 0x0
@@ -423,6 +534,9 @@ SDK version 4.9
 #define pTypeChime 0x16
 #define sTypeByronSX 0x0
 #define sTypeByronMP001 0x1
+#define sTypeSelectPlus 0x2
+#define sTypeSelectPlus3 0x3
+#define sTypeEnvivo 0x4
 #define chime_sound0 0x1
 #define chime_sound1 0x3
 #define chime_sound2 0x5
@@ -459,6 +573,10 @@ SDK version 4.9
 #define sTypeBlindsT5 0x5	//Media Mount
 #define sTypeBlindsT6 0x6	//DC106, YOOHA, Rohrmotor24 RMF
 #define sTypeBlindsT7 0x7	//Forest
+#define sTypeBlindsT8 0x8	//Chamberlain CS4330CN
+#define sTypeBlindsT9 0x9	//Sunpery
+#define sTypeBlindsT10 0xA	//Dolat DLM-1
+
 #define blinds_sOpen 0x0
 #define blinds_sClose 0x1
 #define blinds_sStop 0x2
@@ -469,11 +587,21 @@ SDK version 4.9
 #define blinds_sChangeDirection 0x7
 #define blinds_sLeft 0x8
 #define blinds_sRight 0x9
+#define blinds_s9ChangeDirection 0x6
+#define blinds_s9ImA = 0x7
+#define blinds_s9ImCenter = 0x8
+#define blinds_s9ImB = 0x9
+#define blinds_s9EraseCurrentCh = 0xA
+#define blinds_s9EraseAllCh = 0xB
+#define blinds_s10LearnMaster = 0x4
+#define blinds_s10EraseCurrentCh = 0x5
+#define blinds_s10ChangeDirection = 0x6
 
 //types for RFY
 #define pTypeRFY 0x1A
 #define sTypeRFY 0x0	//RFY
 #define sTypeRFYext 0x1	//RFY extended
+#define sTypeASA 0x3	//ASA
 #define rfy_sStop 0x0
 #define rfy_sUp 0x1
 #define rfy_sUpStop 0x2
@@ -493,6 +621,16 @@ SDK version 4.9
 #define rfy_s05SecDown 0x10
 #define rfy_s2SecUp 0x11
 #define rfy_s2SecDown 0x12
+#define rfy_sEnableSunWind 0x13
+#define rfy_sDisableSun 0x14
+
+//types for Home Confort
+#define pTypeHomeConfort 0x1B
+#define sTypeHomeConfortTEL010 0x0
+#define HomeConfort_sOff 0x0
+#define HomeConfort_sOn 0x1
+#define HomeConfort_sGroupOff 0x2
+#define HomeConfort_sGroupOn 0x3
 
 //types for Security1
 #define pTypeSecurity1 0x20
@@ -536,6 +674,10 @@ SDK version 4.9
 #define sStatusAlarmDelayedTamper 0x83
 #define sStatusMotionTamper 0x84
 #define sStatusNoMotionTamper 0x85
+
+//types for Security2
+#define pTypeSecurity2 0x21
+#define sTypeSec2Classic 0x0
 
 //types for Camera
 #define pTypeCamera 0x28
@@ -584,6 +726,8 @@ SDK version 4.9
 #define pTypeThermostat3 0x42
 #define sTypeMertikG6RH4T1 0x0	//Mertik G6R-H4T1
 #define sTypeMertikG6RH4TB 0x1	//Mertik G6R-H4TB
+#define sTypeMertikG6RH4TD 0x2	//Mertik G6R-H4TD
+#define sTypeMertikG6RH4S 0x3	//Mertik G6R-H4S
 #define thermostat3_sOff 0x0
 #define thermostat3_sOn 0x1
 #define thermostat3_sUp 0x2
@@ -593,6 +737,14 @@ SDK version 4.9
 #define thermostat3_sRunDown 0x5
 #define thermostat3_On2nd 0x5
 #define thermostat3_sStop 0x6
+
+//types for Radiator valve
+#define pTypeRadiator1 0x48
+#define sTypeSmartwares 0x0	//Homewizard smartwares
+
+#define Radiator1_sNight 0x0
+#define Radiator1_sDay 0x1
+#define Radiator1_sSetTemp 0x2
 
 //types for BBQ temperature
 #define pTypeBBQ 0x4E
@@ -610,7 +762,7 @@ SDK version 4.9
 #define sTypeTEMP4 0x4	//RTHN318
 #define sTypeTEMP5 0x5  //LaCrosse TX3
 #define sTypeTEMP6 0x6  //TS15C
-#define sTypeTEMP7 0x7  //Viking 02811
+#define sTypeTEMP7 0x7  //Viking 02811,TSS330
 #define sTypeTEMP8 0x8  //LaCrosse WS2300
 #define sTypeTEMP9 0x9  //RUBiCSON
 #define sTypeTEMP10 0xA  //TFA 30.3133
@@ -637,11 +789,12 @@ SDK version 4.9
 #define sTypeTH6 0x6  //THGR918,THGRN228,THGN500
 #define sTypeTH7 0x7  //TFA TS34C, Cresta
 #define sTypeTH8 0x8  //WT450H
-#define sTypeTH9 0x9  //Viking 02035,02038 (02035 has no humidity)
+#define sTypeTH9 0x9  //Viking 02035,02038 (02035 has no humidity), TSS320
 #define sTypeTH10 0xA   //Rubicson
 #define sTypeTH11 0xB   //EW109
 #define sTypeTH12 0xC   //Imagintronix
 #define sTypeTH13 0xD   //Alecto WS1700 and compatibles
+#define sTypeTH14 0xE   //Alecto
 
 //types for barometric
 #define pTypeBARO 0x53
@@ -664,6 +817,7 @@ SDK version 4.9
 #define sTypeRAIN4 0x4   //UPM
 #define sTypeRAIN5 0x5   //WS2300
 #define sTypeRAIN6 0x6   //TX5
+#define sTypeRAIN7 0x7   //Alecto
 
 //types for wind
 #define pTypeWIND 0x56
@@ -673,6 +827,7 @@ SDK version 4.9
 #define sTypeWIND4 0x4   //TFA
 #define sTypeWIND5 0x5   //UPM
 #define sTypeWIND6 0x6   //WS2300
+#define sTypeWIND7 0x7   //Alecto WS4500
 
 //types for uv
 #define pTypeUV 0x57
@@ -745,8 +900,8 @@ typedef union tRBUF {
 		BYTE	subtype;
 		BYTE	seqnbr;
 		BYTE	cmnd;
-		BYTE	msg1;
-		BYTE	msg2;
+		BYTE	freqsel;
+		BYTE	xmitpwr;
 		BYTE	msg3;
 		BYTE	msg4;
 		BYTE	msg5;
@@ -768,7 +923,7 @@ typedef union tRBUF {
 #ifdef IS_BIG_ENDIAN
 		//BYTE	msg3;
 		BYTE	UNDECODEDenabled : 1;
-		BYTE	RFU6enabled : 1;
+		BYTE	IMAGINTRONIXenabled : 1;
 		BYTE	SXenabled : 1;
 		BYTE	RSLenabled : 1;
 		BYTE	LIGHTING4enabled : 1;
@@ -795,6 +950,16 @@ typedef union tRBUF {
 		BYTE	ACenabled : 1;
 		BYTE	ARCenabled : 1;
 		BYTE	X10enabled : 1; //note: keep this order
+
+		//BYTE    msg6;
+        BYTE    MSG6Reserved7 : 1;
+        BYTE    MSG6Reserved6 : 1;
+        BYTE    MSG6Reserved5 : 1;
+        BYTE    MSG6Reserved4 : 1;
+        BYTE    MSG6Reserved3 : 1;
+        BYTE    MSG6Reserved2 : 1;
+		BYTE    HCEnabled : 1;
+        BYTE    KEELOQenabled : 1;
 #else
 		//BYTE	msg3;
 		BYTE	AEenabled : 1;
@@ -803,7 +968,7 @@ typedef union tRBUF {
 		BYTE	LIGHTING4enabled : 1;
 		BYTE	RSLenabled : 1;
 		BYTE	SXenabled : 1;
-		BYTE	RFU6enabled : 1;
+		BYTE	IMAGINTRONIXenabled : 1;
 		BYTE	UNDECODEDenabled : 1;
 
 		//BYTE	msg4;
@@ -825,12 +990,28 @@ typedef union tRBUF {
 		BYTE	OREGONenabled : 1;
 		BYTE	ATIenabled : 1;
 		BYTE	VISONICenabled : 1;
+
+      //BYTE	msg6;
+      BYTE    KEELOQenabled : 1;
+      BYTE    HCEnabled : 1;
+      BYTE    MSG6Reserved2 : 1;
+      BYTE    MSG6Reserved3 : 1;
+      BYTE    MSG6Reserved4 : 1;
+      BYTE    MSG6Reserved5 : 1;
+      BYTE    MSG6Reserved6 : 1;
+      BYTE    MSG6Reserved7 : 1;
 #endif
 
-		BYTE	msg6;
 		BYTE	msg7;
 		BYTE	msg8;
 		BYTE	msg9;
+		BYTE	msg10;
+        BYTE	msg11;
+        BYTE	msg12;
+        BYTE	msg13;
+        BYTE	msg14;
+        BYTE	msg15;
+        BYTE	msg16;
 	} IRESPONSE;
 
 	struct {
@@ -1089,6 +1270,28 @@ typedef union tRBUF {
 	} RFY;
 
 	struct {
+		BYTE packetlength;
+		BYTE packettype;
+		BYTE subtype;
+		BYTE seqnbr;
+		BYTE id1;
+		BYTE id2;
+		BYTE id3;
+		BYTE housecode;
+		BYTE unitcode;
+		BYTE cmnd;
+		BYTE rfu1;
+		BYTE rfu2;
+#ifdef IS_BIG_ENDIAN
+		BYTE    rssi : 4;
+		BYTE    filler : 4;
+#else
+		BYTE    filler : 4;
+		BYTE    rssi : 4;
+#endif
+	} HOMECONFORT;
+
+	struct {
 		BYTE	packetlength;
 		BYTE	packettype;
 		BYTE	subtype;
@@ -1105,6 +1308,44 @@ typedef union tRBUF {
 		BYTE	rssi : 4;
 #endif
 	} SECURITY1;
+
+	struct {
+		BYTE	packetlength;
+		BYTE	packettype;
+		BYTE	subtype;
+		BYTE	seqnbr;
+		BYTE	id1;
+		BYTE	id2;
+		BYTE	id3;
+		BYTE	id4;
+		BYTE	id5;
+		BYTE	id6;
+		BYTE	id7;
+		BYTE	id8;
+		BYTE	id9;
+		BYTE	id10;
+		BYTE	id11;
+		BYTE	id12;
+		BYTE	id13;
+		BYTE	id14;
+		BYTE	id15;
+		BYTE	id16;
+		BYTE	id17;
+		BYTE	id18;
+		BYTE	id19;
+		BYTE	id20;
+		BYTE	id21;
+		BYTE	id22;
+		BYTE	id23;
+		BYTE	id24;
+#ifdef IS_BIG_ENDIAN
+		BYTE	rssi : 4;
+		BYTE	battery_level : 4;
+#else
+		BYTE	battery_level : 4;
+		BYTE	rssi : 4;
+#endif
+	} SECURITY2;
 
 	struct {
 		BYTE	packetlength;
@@ -1199,6 +1440,28 @@ typedef union tRBUF {
 		BYTE	rssi : 4;
 #endif
 	} THERMOSTAT3;
+
+	struct {
+		BYTE	packetlength;
+		BYTE	packettype;
+		BYTE	subtype;
+		BYTE	seqnbr;
+		BYTE	id1;
+		BYTE	id2;
+		BYTE	id3;
+		BYTE	id4;
+		BYTE	unitcode;
+		BYTE	cmnd;
+		BYTE	temperature;
+		BYTE	tempPoint5;
+#ifdef IS_BIG_ENDIAN
+		BYTE	rssi : 4;
+		BYTE	filler : 4;
+#else
+		BYTE	filler : 4;
+		BYTE	rssi : 4;
+#endif
+	} RADIATOR1;
 
 	struct {
 		BYTE	packetlength;

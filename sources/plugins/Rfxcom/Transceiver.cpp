@@ -17,6 +17,7 @@
 #include "rfxcomMessages/Fan.h"
 #include "rfxcomMessages/Energy.h"
 #include "rfxcomMessages/FS20.h"
+#include "rfxcomMessages/HomeConfort.h"
 #include "rfxcomMessages/Humidity.h"
 #include "rfxcomMessages/Lighting1.h"
 #include "rfxcomMessages/Lighting2.h"
@@ -25,12 +26,14 @@
 #include "rfxcomMessages/Lighting5.h"
 #include "rfxcomMessages/Lighting6.h"
 #include "rfxcomMessages/Power.h"
+#include "rfxcomMessages/Radiator1.h"
 #include "rfxcomMessages/Rain.h"
 #include "rfxcomMessages/Remote.h"
 #include "rfxcomMessages/RFXMeter.h"
 #include "rfxcomMessages/RFXSensor.h"
 #include "rfxcomMessages/Rfy.h"
 #include "rfxcomMessages/Security1.h"
+#include "rfxcomMessages/Security2.h"
 #include "rfxcomMessages/Temp.h"
 #include "rfxcomMessages/TempRain.h"
 #include "rfxcomMessages/TempHumidity.h"
@@ -109,39 +112,60 @@ shared::communication::CByteBuffer CTransceiver::buildSetModeCmd(unsigned char f
    request.ICMND.cmnd = cmdSETMODE;
 
    // Frequency
-   request.ICMND.msg1 = frequency;
+   request.ICMND.freqsel = frequency;
+
+   // Frequency
+   request.ICMND.xmitpwr = 0; // Not yet supported by RFXCom
 
    // Add protocols activation
    request.ICMND.msg3 = 0;
-   if (configuration.isUNDECODEDenabled() ) request.ICMND.msg3 |= 0x80;
-   if (configuration.isRFU6enabled()      ) request.ICMND.msg3 |= 0x40;
-   if (configuration.isSXenabled()        ) request.ICMND.msg3 |= 0x20;
-   if (configuration.isRSLenabled()       ) request.ICMND.msg3 |= 0x10;
-   if (configuration.isLIGHTING4enabled() ) request.ICMND.msg3 |= 0x08;
-   if (configuration.isFINEOFFSETenabled()) request.ICMND.msg3 |= 0x04;
-   if (configuration.isRUBICSONenabled()  ) request.ICMND.msg3 |= 0x02;
-   if (configuration.isAEenabled()        ) request.ICMND.msg3 |= 0x01;
+   if (configuration.isAEenabled()           ) request.ICMND.msg3 |= msg3_AE;
+   if (configuration.isRUBICSONenabled()     ) request.ICMND.msg3 |= msg3_RUBICSON;
+   if (configuration.isFINEOFFSETenabled()   ) request.ICMND.msg3 |= msg3_FINEOFFSET;
+   if (configuration.isLIGHTING4enabled()    ) request.ICMND.msg3 |= msg3_LIGHTING4;
+   if (configuration.isRSLenabled()          ) request.ICMND.msg3 |= msg3_RSL;
+   if (configuration.isSXenabled()           ) request.ICMND.msg3 |= msg3_SX;
+   if (configuration.isIMAGINTRONIXenabled() ) request.ICMND.msg3 |= msg3_IMAGINTRONIX;
+   if (configuration.isUNDECODEDenabled()    ) request.ICMND.msg3 |= msg3_undec;
    request.ICMND.msg4 = 0;
-   if (configuration.isBLINDST1enabled()  ) request.ICMND.msg4 |= 0x80;
-   if (configuration.isBLINDST0enabled()  ) request.ICMND.msg4 |= 0x40;
-   if (configuration.isPROGUARDenabled()  ) request.ICMND.msg4 |= 0x20;
-   if (configuration.isFS20enabled()      ) request.ICMND.msg4 |= 0x10;
-   if (configuration.isLACROSSEenabled()  ) request.ICMND.msg4 |= 0x08;
-   if (configuration.isHIDEKIenabled()    ) request.ICMND.msg4 |= 0x04;
-   if (configuration.isLWRFenabled()      ) request.ICMND.msg4 |= 0x02;
-   if (configuration.isMERTIKenabled()    ) request.ICMND.msg4 |= 0x01;
+   if (configuration.isMERTIKenabled()       ) request.ICMND.msg4 |= msg4_MERTIK;
+   if (configuration.isLWRFenabled()         ) request.ICMND.msg4 |= msg4_AD;
+   if (configuration.isHIDEKIenabled()       ) request.ICMND.msg4 |= msg4_HID;
+   if (configuration.isLACROSSEenabled()     ) request.ICMND.msg4 |= msg4_LCROS;
+   if (configuration.isFS20enabled()         ) request.ICMND.msg4 |= msg4_FS20;
+   if (configuration.isPROGUARDenabled()     ) request.ICMND.msg4 |= msg4_PROGUARD;
+   if (configuration.isBLINDST0enabled()     ) request.ICMND.msg4 |= msg4_BLINDST0;
+   if (configuration.isBLINDST1enabled()     ) request.ICMND.msg4 |= msg4_BLINDST1;
    request.ICMND.msg5 = 0;
-   if (configuration.isVISONICenabled()   ) request.ICMND.msg5 |= 0x80;
-   if (configuration.isATIenabled()       ) request.ICMND.msg5 |= 0x40;
-   if (configuration.isOREGONenabled()    ) request.ICMND.msg5 |= 0x20;
-   if (configuration.isMEIANTECHenabled() ) request.ICMND.msg5 |= 0x10;
-   if (configuration.isHEEUenabled()      ) request.ICMND.msg5 |= 0x08;
-   if (configuration.isACenabled()        ) request.ICMND.msg5 |= 0x04;
-   if (configuration.isARCenabled()       ) request.ICMND.msg5 |= 0x02;
-   if (configuration.isX10enabled()       ) request.ICMND.msg5 |= 0x01;
+   if (configuration.isX10enabled()          ) request.ICMND.msg5 |= msg5_X10;
+   if (configuration.isARCenabled()          ) request.ICMND.msg5 |= msg5_ARC;
+   if (configuration.isACenabled()           ) request.ICMND.msg5 |= msg5_AC;
+   if (configuration.isHEEUenabled()         ) request.ICMND.msg5 |= msg5_HEU;
+   if (configuration.isMEIANTECHenabled()    ) request.ICMND.msg5 |= msg5_MEI;
+   if (configuration.isOREGONenabled()       ) request.ICMND.msg5 |= msg5_OREGON;
+   if (configuration.isATIenabled()          ) request.ICMND.msg5 |= msg5_ATI;
+   if (configuration.isVISONICenabled()      ) request.ICMND.msg5 |= msg5_VISONIC;
+   request.ICMND.msg6 = 0;
+   if (configuration.isKeeLoqenabled()       ) request.ICMND.msg6 |= msg6_KeeLoq;
+   if (configuration.isHomeConfortenabled()  ) request.ICMND.msg6 |= msg6_HC;
 
    return toBuffer(request, GET_RBUF_STRUCT_SIZE(ICMND));
 }
+
+shared::communication::CByteBuffer CTransceiver::buildStartReceiverCmd() const
+{
+   RBUF request;
+   MEMCLEAR(request.ICMND);   // For better performance, just clear the needed sub-structure of RBUF
+
+   request.ICMND.packetlength = ENCODE_PACKET_LENGTH(ICMND);
+   request.ICMND.packettype = pTypeInterfaceControl;
+   request.ICMND.subtype = sTypeInterfaceCommand;
+   request.ICMND.seqnbr = m_seqNumberProvider->next();
+   request.ICMND.cmnd = cmdStartRec;
+
+   return toBuffer(request, GET_RBUF_STRUCT_SIZE(ICMND));
+}
+
 
 boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CTransceiver::buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> context, boost::shared_ptr<const yApi::IDeviceCommand> command) const
 {
@@ -175,8 +199,12 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CTransceiver:
          return rfxcomMessages::CBlinds1(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
       case pTypeRFY:
          return rfxcomMessages::CRfy(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
+      case pTypeHomeConfort:
+         return rfxcomMessages::CHomeConfort(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
       case pTypeSecurity1:
          return rfxcomMessages::CSecurity1(context, command->getKeyword(), command->getBody(), deviceDetails).encode(m_seqNumberProvider);
+      case pTypeSecurity2:
+         return rfxcomMessages::CSecurity2(context, command->getKeyword(), command->getBody(), deviceDetails).encode(m_seqNumberProvider);
       case pTypeCamera:
          return rfxcomMessages::CCamera1(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
       case pTypeRemote:
@@ -187,6 +215,8 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CTransceiver:
          return rfxcomMessages::CThermostat2(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
       case pTypeThermostat3:
          return rfxcomMessages::CThermostat3(context, command->getKeyword(), command->getBody(), deviceDetails).encode(m_seqNumberProvider);
+      case pTypeRadiator1:
+         return rfxcomMessages::CRadiator1(context, command->getKeyword(), command->getBody(), deviceDetails).encode(m_seqNumberProvider);
       case pTypeFS20:
          return rfxcomMessages::CFS20(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
       default:
@@ -227,6 +257,7 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMess
       case pTypeCurtain: message.reset(new rfxcomMessages::CCurtain1(context, *buf, bufSize, m_seqNumberProvider)); break;
       case pTypeBlinds: message.reset(new rfxcomMessages::CBlinds1(context, *buf, bufSize, m_seqNumberProvider)); break;
       case pTypeRFY: message.reset(new rfxcomMessages::CRfy(context, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeHomeConfort: message.reset(new rfxcomMessages::CHomeConfort(context, *buf, bufSize, m_seqNumberProvider)); break;
       case pTypeTEMP_RAIN: message.reset(new rfxcomMessages::CTempRain(context, *buf, bufSize, m_seqNumberProvider)); break;
       case pTypeTEMP: message.reset(new rfxcomMessages::CTemp(context, *buf, bufSize, m_seqNumberProvider)); break;
       case pTypeHUM: message.reset(new rfxcomMessages::CHumidity(context, *buf, bufSize, m_seqNumberProvider)); break;
@@ -244,11 +275,13 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMess
       case pTypeWEIGHT: message.reset(new rfxcomMessages::CWeight(context, *buf, bufSize, m_seqNumberProvider)); break;
       case pTypeRFXSensor: message.reset(new rfxcomMessages::CRFXSensor(context, *buf, bufSize, m_seqNumberProvider)); break;
       case pTypeSecurity1: message.reset(new rfxcomMessages::CSecurity1(context, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeSecurity2: message.reset(new rfxcomMessages::CSecurity2(context, *buf, bufSize, m_seqNumberProvider)); break;
       case pTypeCamera: message.reset(new rfxcomMessages::CCamera1(context, *buf, bufSize, m_seqNumberProvider)); break;
       case pTypeRemote: message.reset(new rfxcomMessages::CRemote(context, *buf, bufSize, m_seqNumberProvider)); break;
       case pTypeThermostat1: message.reset(new rfxcomMessages::CThermostat1(context, *buf, bufSize, m_seqNumberProvider)); break;
       case pTypeThermostat2: message.reset(new rfxcomMessages::CThermostat2(context, *buf, bufSize, m_seqNumberProvider)); break;
       case pTypeThermostat3: message.reset(new rfxcomMessages::CThermostat3(context, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeRadiator1: message.reset(new rfxcomMessages::CRadiator1(context, *buf, bufSize, m_seqNumberProvider)); break;
       case pTypeBBQ: message.reset(new rfxcomMessages::CBbq(context, *buf, bufSize, m_seqNumberProvider)); break;
       case pTypeFS20: message.reset(new rfxcomMessages::CFS20(context, *buf, bufSize, m_seqNumberProvider)); break;
       default:
@@ -334,6 +367,14 @@ std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYPluginA
          msg.reset(new rfxcomMessages::CLighting5(context, sTypeTRC02_2, data.getConfiguration().get<shared::CDataContainer>("type.content.trc02_2.content")));
       else if (data.getConfiguration().get<bool>("type.content.eurodomest.radio"))
          msg.reset(new rfxcomMessages::CLighting5(context, sTypeEurodomest, data.getConfiguration().get<shared::CDataContainer>("type.content.eurodomest.content")));
+      else if (data.getConfiguration().get<bool>("type.content.livoloAppliance.radio"))
+         msg.reset(new rfxcomMessages::CLighting5(context, sTypeLivoloAppliance, data.getConfiguration().get<shared::CDataContainer>("type.content.livoloAppliance.content")));
+      else if (data.getConfiguration().get<bool>("type.content.rgb432w.radio"))
+         msg.reset(new rfxcomMessages::CLighting5(context, sTypeRGB432W, data.getConfiguration().get<shared::CDataContainer>("type.content.rgb432w.content")));
+      else if (data.getConfiguration().get<bool>("type.content.mdremote107.radio"))
+         msg.reset(new rfxcomMessages::CLighting5(context, sTypeMDREMOTE107, data.getConfiguration().get<shared::CDataContainer>("type.content.mdremote107.content")));
+      else if (data.getConfiguration().get<bool>("type.content.legrandCad.radio"))
+         msg.reset(new rfxcomMessages::CLighting5(context, sTypeLegrandCAD, data.getConfiguration().get<shared::CDataContainer>("type.content.legrandCad.content")));
 
       // Lighting6
       else if (data.getConfiguration().get<bool>("type.content.blyss.radio"))
@@ -344,6 +385,10 @@ std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYPluginA
          msg.reset(new rfxcomMessages::CChime(context, sTypeByronSX, data.getConfiguration().get<shared::CDataContainer>("type.content.byronSx.content")));
       else if (data.getConfiguration().get<bool>("type.content.byronMp001.radio"))
          msg.reset(new rfxcomMessages::CChime(context, sTypeByronMP001, data.getConfiguration().get<shared::CDataContainer>("type.content.byronMp001.content")));
+      else if (data.getConfiguration().get<bool>("type.content.selectPlus.radio"))
+         msg.reset(new rfxcomMessages::CChime(context, sTypeSelectPlus, data.getConfiguration().get<shared::CDataContainer>("type.content.selectPlus.content")));
+      else if (data.getConfiguration().get<bool>("type.content.envivo.radio"))
+         msg.reset(new rfxcomMessages::CChime(context, sTypeEnvivo, data.getConfiguration().get<shared::CDataContainer>("type.content.envivo.content")));
 
       // Fan
       else if (data.getConfiguration().get<bool>("type.content.siemensSf01.radio"))
@@ -370,16 +415,32 @@ std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYPluginA
          msg.reset(new rfxcomMessages::CBlinds1(context, sTypeBlindsT6, data.getConfiguration().get<shared::CDataContainer>("type.content.dc106.content")));
       else if (data.getConfiguration().get<bool>("type.content.forest.radio"))
          msg.reset(new rfxcomMessages::CBlinds1(context, sTypeBlindsT7, data.getConfiguration().get<shared::CDataContainer>("type.content.forest.content")));
+      else if (data.getConfiguration().get<bool>("type.content.chamberlaincs4330cn.radio"))
+         msg.reset(new rfxcomMessages::CBlinds1(context, sTypeBlindsT8, data.getConfiguration().get<shared::CDataContainer>("type.content.chamberlaincs4330cn.content")));
+      else if (data.getConfiguration().get<bool>("type.content.sunperyBtx.radio"))
+         msg.reset(new rfxcomMessages::CBlinds1(context, sTypeBlindsT9, data.getConfiguration().get<shared::CDataContainer>("type.content.sunperyBtx.content")));
+      else if (data.getConfiguration().get<bool>("type.content.dolatDlm1.radio"))
+         msg.reset(new rfxcomMessages::CBlinds1(context, sTypeBlindsT10, data.getConfiguration().get<shared::CDataContainer>("type.content.dolatDlm1.content")));
 
       // Rfy
       else if (data.getConfiguration().get<bool>("type.content.rfy.radio"))
          msg.reset(new rfxcomMessages::CRfy(context, sTypeRFY, data.getConfiguration().get<shared::CDataContainer>("type.content.rfy.content")));
       else if (data.getConfiguration().get<bool>("type.content.rfyExt.radio"))
          msg.reset(new rfxcomMessages::CRfy(context, sTypeRFYext, data.getConfiguration().get<shared::CDataContainer>("type.content.rfyExt.content")));
+      else if (data.getConfiguration().get<bool>("type.content.asa.radio"))
+         msg.reset(new rfxcomMessages::CRfy(context, sTypeASA, data.getConfiguration().get<shared::CDataContainer>("type.content.asa.content")));
+
+      // HomeConfort
+      else if (data.getConfiguration().get<bool>("type.content.homeConfort.radio"))
+         msg.reset(new rfxcomMessages::CHomeConfort(context, sTypeHomeConfortTEL010, data.getConfiguration().get<shared::CDataContainer>("type.content.homeConfort.content")));
 
       // Security1
       else if (data.getConfiguration().get<bool>("type.content.x10SecurityR.radio"))
          msg.reset(new rfxcomMessages::CSecurity1(context, sTypeSecX10R, data.getConfiguration().get<shared::CDataContainer>("type.content.x10SecurityR.content")));
+
+      // Security2
+      else if (data.getConfiguration().get<bool>("type.content.keeLoq.radio"))
+         msg.reset(new rfxcomMessages::CSecurity2(context, sTypeSec2Classic, data.getConfiguration().get<shared::CDataContainer>("type.content.keeLoq.content")));
 
       // Camera1
       else if (data.getConfiguration().get<bool>("type.content.cameraX10Ninja.radio"))
@@ -402,6 +463,14 @@ std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYPluginA
          msg.reset(new rfxcomMessages::CThermostat3(context, sTypeMertikG6RH4T1, data.getConfiguration().get<shared::CDataContainer>("type.content.g6rH4t1.content")));
       else if (data.getConfiguration().get<bool>("type.content.g6rH4tb.radio"))
          msg.reset(new rfxcomMessages::CThermostat3(context, sTypeMertikG6RH4TB, data.getConfiguration().get<shared::CDataContainer>("type.content.g6rH4tb.content")));
+      else if (data.getConfiguration().get<bool>("type.content.g6rH4td.radio"))
+         msg.reset(new rfxcomMessages::CThermostat3(context, sTypeMertikG6RH4TD, data.getConfiguration().get<shared::CDataContainer>("type.content.g6rH4td.content")));
+      else if (data.getConfiguration().get<bool>("type.content.g6rH4s.radio"))
+         msg.reset(new rfxcomMessages::CThermostat3(context, sTypeMertikG6RH4S, data.getConfiguration().get<shared::CDataContainer>("type.content.g6rH4s.content")));
+
+      // Radiator1
+      else if (data.getConfiguration().get<bool>("type.content.smartwares.radio"))
+         msg.reset(new rfxcomMessages::CRadiator1(context, sTypeSmartwares, data.getConfiguration().get<shared::CDataContainer>("type.content.smartwares.content")));
 
       // FS20
       else if (data.getConfiguration().get<bool>("type.content.fs20.radio"))

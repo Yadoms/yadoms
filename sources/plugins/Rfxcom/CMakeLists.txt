@@ -37,6 +37,8 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/FS20.cpp
    rfxcomMessages/Energy.h
    rfxcomMessages/Energy.cpp
+   rfxcomMessages/HomeConfort.h
+   rfxcomMessages/HomeConfort.cpp
    rfxcomMessages/Humidity.h
    rfxcomMessages/Humidity.cpp
    rfxcomMessages/IChimeSubtype.h
@@ -44,6 +46,7 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/ILighting5Subtype.h
    rfxcomMessages/IRemoteSubtype.h
    rfxcomMessages/ISecurity1Subtype.h
+   rfxcomMessages/ISecurity2Subtype.h
    rfxcomMessages/IThermostat1Subtype.h
    rfxcomMessages/IThermostat3Subtype.h
    rfxcomMessages/Lighting1.h
@@ -72,6 +75,8 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/Lighting6.cpp
    rfxcomMessages/Power.h
    rfxcomMessages/Power.cpp
+   rfxcomMessages/Radiator1.h
+   rfxcomMessages/Radiator1.cpp
    rfxcomMessages/Remote.h
    rfxcomMessages/Remote.cpp
    rfxcomMessages/RemoteAtiWonder2.h
@@ -104,16 +109,24 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/Security1X10M.cpp
    rfxcomMessages/Security1X10R.h
    rfxcomMessages/Security1X10R.cpp
+   rfxcomMessages/Security2.h
+   rfxcomMessages/Security2.cpp
+   rfxcomMessages/Security2ClassicKeyLoq.h
+   rfxcomMessages/Security2ClassicKeyLoq.cpp
    rfxcomMessages/Thermostat1.h
    rfxcomMessages/Thermostat1.cpp
    rfxcomMessages/Thermostat2.h
    rfxcomMessages/Thermostat2.cpp
    rfxcomMessages/Thermostat3.h
    rfxcomMessages/Thermostat3.cpp
+   rfxcomMessages/Thermostat3MertikG6RH4S.h
+   rfxcomMessages/Thermostat3MertikG6RH4S.cpp
    rfxcomMessages/Thermostat3MertikG6RH4T1.h
    rfxcomMessages/Thermostat3MertikG6RH4T1.cpp
    rfxcomMessages/Thermostat3MertikG6RH4TB.h
    rfxcomMessages/Thermostat3MertikG6RH4TB.cpp
+   rfxcomMessages/Thermostat3MertikG6RH4TD.h
+   rfxcomMessages/Thermostat3MertikG6RH4TD.cpp
    rfxcomMessages/Thermostat1Digimax.h
    rfxcomMessages/Thermostat1Digimax.cpp
    rfxcomMessages/Thermostat1DigimaxShort.h

@@ -116,6 +116,13 @@ protected:
    void processRfxcomStatusMessage(boost::shared_ptr<yApi::IYPluginApi> context, const rfxcomMessages::CTransceiverStatus& status);
 
    //--------------------------------------------------------------
+   /// \brief	                     Process receiver started message from RFXCom
+   /// \param [in] context          Plugin execution context (Yadoms API)
+   /// \param [in] status           Received status
+   //--------------------------------------------------------------
+   void processRfxcomReceiverStartedMessage(boost::shared_ptr<yApi::IYPluginApi> context, const rfxcomMessages::CTransceiverStatus& status);
+
+   //--------------------------------------------------------------
    /// \brief	                     Process wrong command response from RFXCom
    /// \param [in] context          Plugin execution context (Yadoms API)
    /// \param [in] status           Received status
@@ -171,6 +178,7 @@ private:
       kResettingRfxcom,       // Resetting RFXCom is in progress
       kGettingRfxcomStatus,   // Getting the current RFXCom status (active protocols, etc...)
       kSettingRfxcomMode,     // Update the RFXCom mode (active protocols, etc...)
+      kStartReceiver,         // Start RFXtrx receiver (new command from SDK v7.00)
       kRfxcomIsRunning        // RFXCom is fully initialized, and is running
    };
    mutable EStateMachine m_currentState;

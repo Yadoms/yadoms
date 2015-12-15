@@ -39,6 +39,12 @@ public:
    virtual shared::communication::CByteBuffer buildSetModeCmd(unsigned char frequency, const IRfxcomConfiguration& configuration) const = 0;
 
    //--------------------------------------------------------------
+   /// \brief	                     Build the RFXCom start receiver command
+   /// \return                      Buffer containing the command
+   //--------------------------------------------------------------
+   virtual shared::communication::CByteBuffer buildStartReceiverCmd() const = 0;
+
+   //--------------------------------------------------------------
    /// \brief	                     Build a message to device
    /// \param [in] context          Plugin execution context (Yadoms API)
    /// \param [in] command          The received command

@@ -60,6 +60,9 @@ void CChime::createSubType(unsigned char subType)
    {
    case sTypeByronSX : m_subTypeManager.reset(new CChimeByronSx()); break;
    case sTypeByronMP001 : m_subTypeManager.reset(new CChimeByronMp001()); break;
+   case sTypeSelectPlus: m_subTypeManager.reset(new CChimeByronMp001()); break;
+   case sTypeSelectPlus3: m_subTypeManager.reset(new CChimeByronMp001()); break;
+   case sTypeEnvivo: m_subTypeManager.reset(new CChimeByronMp001()); break;
    default:
       throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
    }

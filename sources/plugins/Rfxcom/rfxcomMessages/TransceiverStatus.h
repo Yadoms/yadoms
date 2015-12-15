@@ -20,6 +20,8 @@ namespace rfxcomMessages
          kUnknownRfyRemote,            /// Unknown RFY remote
          kNoExtendedHardwarePresent,   /// No extended hardware present
          kListRfyMode,                 /// List RFY remotes
+         kListAsaMode,                 /// List ASA remotes
+         kReceiverStarted,             /// Receiver started (since SDK v7.00)
          kWrongCommand                 /// Wrong command received from the application
       };
 
@@ -50,27 +52,33 @@ namespace rfxcomMessages
 
       //--------------------------------------------------------------
       /// \brief	                     Get the status type (= message subType)
-      // \return                       The status type
+      /// \return                      The status type
       //--------------------------------------------------------------
       EStatusType getStatusType() const;
 
       //--------------------------------------------------------------
       /// \brief	                     Get the RfxCom type
-      // \return                       The RfxCom type
+      /// \return                      The RfxCom type
       //--------------------------------------------------------------
       unsigned char getRfxcomType() const;
 
       //--------------------------------------------------------------
       /// \brief	                     Get the RfxCom type as string
-      // \return                       A string representing the RfxCom type
+      /// \return                      A string representing the RfxCom type
       //--------------------------------------------------------------
-      const std::string rfxcomTypeToString() const;
+      std::string rfxcomTypeToString() const;
 
       //--------------------------------------------------------------
       /// \brief	                     Get the RfxCom type as string
-      // \return                       A string representing the RfxCom type
+      /// \return                      A string representing the RfxCom type
       //--------------------------------------------------------------
       unsigned int getFirmwareVersion() const;
+
+      //--------------------------------------------------------------
+      /// \brief	                     Get the valid message (copyright message)
+      /// \return                      A string representing the valid message
+      //--------------------------------------------------------------
+      const std::string getValidMessage() const;
 
       //--------------------------------------------------------------
       /// \brief	                     Check if RfxCom configuration must be updated (need protocols enabled for example)
@@ -96,31 +104,38 @@ namespace rfxcomMessages
       unsigned char m_firmwareVersion;
 
       //--------------------------------------------------------------
+      /// \brief	The valid (copyright) message
+      //--------------------------------------------------------------
+      std::string m_validMessage;
+
+      //--------------------------------------------------------------
       /// \brief  The enable protocols
       //--------------------------------------------------------------
-      bool m_AEenabled        ;
-      bool m_RUBICSONenabled  ;
-      bool m_FINEOFFSETenabled;
-      bool m_LIGHTING4enabled ;
-      bool m_RSLenabled       ;
-      bool m_SXenabled        ;
-      bool m_RFU6enabled      ;
-      bool m_UNDECODEDenabled ;
-      bool m_MERTIKenabled    ;
-      bool m_LWRFenabled      ;
-      bool m_HIDEKIenabled    ;
-      bool m_LACROSSEenabled  ;
-      bool m_FS20enabled      ;
-      bool m_PROGUARDenabled  ;
-      bool m_BLINDST0enabled  ;
-      bool m_BLINDST1enabled  ;
-      bool m_X10enabled       ;
-      bool m_ARCenabled       ;
-      bool m_ACenabled        ;
-      bool m_HEEUenabled      ;
-      bool m_MEIANTECHenabled ;
-      bool m_OREGONenabled    ;
-      bool m_ATIenabled       ;
-      bool m_VISONICenabled   ;
+      bool m_AEenabled           ;
+      bool m_RUBICSONenabled     ;
+      bool m_FINEOFFSETenabled   ;
+      bool m_LIGHTING4enabled    ;
+      bool m_RSLenabled          ;
+      bool m_SXenabled           ;
+      bool m_IMAGINTRONIXenabled ;
+      bool m_UNDECODEDenabled    ;
+      bool m_MERTIKenabled       ;
+      bool m_LWRFenabled         ;
+      bool m_HIDEKIenabled       ;
+      bool m_LACROSSEenabled     ;
+      bool m_FS20enabled         ;
+      bool m_PROGUARDenabled     ;
+      bool m_BLINDST0enabled     ;
+      bool m_BLINDST1enabled     ;
+      bool m_X10enabled          ;
+      bool m_ARCenabled          ;
+      bool m_ACenabled           ;
+      bool m_HEEUenabled         ;
+      bool m_MEIANTECHenabled    ;
+      bool m_OREGONenabled       ;
+      bool m_ATIenabled          ;
+      bool m_VISONICenabled      ;
+      bool m_KeeLoqenabled       ;
+      bool m_HomeConfortenabled  ;
    };
 } // namespace rfxcomMessages

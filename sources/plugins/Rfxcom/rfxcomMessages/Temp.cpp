@@ -87,7 +87,7 @@ void CTemp::buildDeviceModel()
    case sTypeTEMP4: ssModel << "RTHN318"; break;
    case sTypeTEMP5: ssModel << "La Crosse TX2, TX3, TX4, TX17"; break;
    case sTypeTEMP6: ssModel << "TS15C"; break;
-   case sTypeTEMP7: ssModel << "Viking 02811"; break;
+   case sTypeTEMP7: ssModel << "Viking 02811, TSS330"; break;
    case sTypeTEMP8: ssModel << "La Crosse WS2300"; break;
    case sTypeTEMP9: ssModel << "Rubicson"; break;
    case sTypeTEMP10: ssModel << "TFA 30.3133"; break;

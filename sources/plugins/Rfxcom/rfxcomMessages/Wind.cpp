@@ -103,7 +103,7 @@ const std::string& CWind::getDeviceName() const
 void CWind::buildDeviceName()
 {
    std::ostringstream ssdeviceName;
-   ssdeviceName << (unsigned int)m_subType << "." << (unsigned int)m_id;
+   ssdeviceName << static_cast<unsigned int>(m_subType) << "." << static_cast<unsigned int>(m_id);
    m_deviceName = ssdeviceName.str();
 }
 
@@ -119,6 +119,7 @@ void CWind::buildDeviceModel()
    case sTypeWIND4: ssModel << "TFA"; break;
    case sTypeWIND5: ssModel << "UPM"; break;
    case sTypeWIND6: ssModel << "La Crosse WS2300"; break;
+   case sTypeWIND7: ssModel << "Alecto WS4500, Auriol H13726, Hama EWS1500, Meteoscan W155/W160, Ventus WS155"; break;
    default: ssModel << boost::lexical_cast<std::string>(m_subType); break;
    }
 

@@ -20,7 +20,7 @@
              "Lighting4" : { "name" : "Lighting4" },
              "RSL" : { "name" : "RSL" },
              "Byron SX" : { "name" : "Byron SX" },
-             "RFU" : { "name" : "RFU" },
+             "Imagintronix" : { "name" : "Imagintronix/Opus" },
              "undecoded messages" : { "name" : "undecoded messages" },
              "Mertik" : { "name" : "Mertik" },
              "AD LightwaveRF" : { "name" : "AD LightwaveRF" },
@@ -37,7 +37,9 @@
              "Meiantech" : { "name" : "Meiantech" },
              "Oregon Scientific" : { "name" : "Oregon Scientific" },
              "ATI" : { "name" : "ATI" },
-             "Visonic" : { "name" : "Visonic" }
+             "Visonic" : { "name" : "Visonic" },
+             "KeeLoq" : { "name" : "KeeLoq" },
+             "HomeConfort" : { "name" : "HomeConfort" }
           }
        }
    },
@@ -482,6 +484,59 @@
                   }               
                }
             },
+            "livoloAppliance":
+            {
+               "name": "Livolo Appliance",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "The device ID (1-32767)"
+                  },
+                  "unitCode":
+                  {
+                     "name": "Unit Code",
+                     "description": "The unit code (1-10)"
+                  }               
+               }
+            },
+            "rgb432w":
+            {
+               "name": "RGB432W",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "The device ID (1-65535)"
+                  }              
+               }
+            },
+            "mdremote107":
+            {
+               "name": "MD remote 107 LED",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "The device ID (1-65535)"
+                  }              
+               }
+            },
+            "legrandCad":
+            {
+               "name": "Legrand CAD",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "The device ID (1-65535)"
+                  }              
+               }
+            },
             
             "blyss":
             {
@@ -527,6 +582,30 @@
                   {
                      "name": "ID",
                      "description": "The device ID (DIP switches positions 0=OFF, 1=ON : 000000 to 111111)"
+                  }              
+               }
+            },
+            "selectPlus":
+            {
+               "name": "Select Plus",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "The device ID (0-1023)"
+                  }              
+               }
+            },
+            "envivo":
+            {
+               "name": "Envivo",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "The device ID (0-65535)"
                   }              
                }
             },
@@ -678,6 +757,52 @@
                   }             
                }
             },
+            "chamberlaincs4330cn":
+            {
+               "name": "Chamberlain CS4330CN",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "The device ID (1-4095)"
+                  },
+                  "unitCode":
+                  {
+                     "name": "Unit Code",
+                     "description": "The unit code (0-5)"
+                  }             
+               }
+            },
+            "sunperyBtx":
+            {
+               "name": "Sunpery/BTX",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "The device ID (1-16777215)"
+                  },
+                  "unitCode":
+                  {
+                     "name": "Unit Code",
+                     "description": "The unit code (1-6)"
+                  }             
+               }
+            },
+            "dolatDlm1":
+            {
+               "name": "Dolat DLM-1, Topstar",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "The device ID (1-16777215)"
+                  }             
+               }
+            },
             
             "rfy":
             {
@@ -713,6 +838,46 @@
                   }             
                }
             },
+            "asa":
+            {
+               "name": "ASA",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "The device ID (1-1048575)"
+                  },
+                  "unitCode":
+                  {
+                     "name": "Unit Code",
+                     "description": "The unit code (1-5)"
+                  }             
+               }
+            },
+            
+            "homeConfort":
+            {
+               "name": "Home Confort",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "The device ID (1-524287)"
+                  },
+                  "houseCode":
+                  {
+                     "name": "House Code",
+                     "description": "The house code (A-D)"
+                  },
+                  "unitCode":
+                  {
+                     "name": "Unit Code",
+                     "description": "The unit code (1-4)"
+                  }             
+               }
+            },
             
             "x10SecurityR":
             {
@@ -723,6 +888,19 @@
                   {
                      "name": "ID",
                      "description": "The device ID (0-65535)"
+                  }           
+               }
+            },
+            
+            "keeLoq":
+            {
+               "name": "KeeLoq Classic, remote or sensor",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "The device ID (28 bits)"
                   }           
                }
             },
@@ -868,6 +1046,30 @@
                   }               
                }
             },
+            "g6rH4td":
+            {
+               "name": "Mertik G6R-H4TD",
+               "content":
+               {
+                  "unitCode":
+                  {
+                     "name": "Unit Code",
+                     "description": "The unit code (0-65535)"
+                  }               
+               }
+            },
+            "g6rH4s":
+            {
+               "name": "Mertik G6R-H4S",
+               "content":
+               {
+                  "unitCode":
+                  {
+                     "name": "Unit Code",
+                     "description": "The unit code (0-262143)"
+                  }               
+               }
+            },
             
             "cameraX10Ninja":
             {
@@ -879,6 +1081,24 @@
                      "name": "House Code",
                      "description": "The house code (A-P)"
                   }              
+               }
+            },        
+
+            "smartwares":
+            {
+               "name": "Smartwares",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "The device ID (1-67108863)"
+                  },
+                  "unitCode":
+                  {
+                     "name": "Unit Code",
+                     "description": "The unit code (1-16)"
+                  }               
                }
             }
          }
