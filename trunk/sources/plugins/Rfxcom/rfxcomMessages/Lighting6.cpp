@@ -34,7 +34,7 @@ CLighting6::CLighting6(boost::shared_ptr<yApi::IYPluginApi> context, unsigned ch
       throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
 
    m_id = manuallyDeviceCreationConfiguration.get<short>("id");
-   m_groupCode = (unsigned char) manuallyDeviceCreationConfiguration.get<char>("groupCode");
+   m_groupCode = static_cast<unsigned char>(manuallyDeviceCreationConfiguration.get<char>("groupCode"));
    m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned char>("unitCode");
 
    Init(context);
@@ -91,8 +91,8 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CLighting6::e
    rbuf.LIGHTING6.packettype = pTypeLighting6;
    rbuf.LIGHTING6.subtype = m_subType;
    rbuf.LIGHTING6.seqnbr = seqNumberProvider->next();
-   rbuf.LIGHTING6.id1 = (unsigned char)((m_id & 0xFF00) >> 8);
-   rbuf.LIGHTING6.id2 = (unsigned char)(m_id & 0xFF);
+   rbuf.LIGHTING6.id1 = static_cast<unsigned char>((m_id & 0xFF00) >> 8);
+   rbuf.LIGHTING6.id2 = static_cast<unsigned char>(m_id & 0xFF);
    rbuf.LIGHTING6.groupcode = m_groupCode;
    rbuf.LIGHTING6.unitcode = m_unitCode;
    rbuf.LIGHTING6.cmnd = toProtocolState(m_state);
@@ -118,7 +118,7 @@ const std::string& CLighting6::getDeviceName() const
 void CLighting6::buildDeviceName()
 {
    std::ostringstream ssdeviceName;
-   ssdeviceName << m_deviceModel << "." << (char)m_groupCode << "." << (unsigned int)m_id << "." << (unsigned int)m_unitCode;
+   ssdeviceName << m_deviceModel << "." << static_cast<char>(m_groupCode) << "." << static_cast<unsigned int>(m_id) << "." << static_cast<unsigned int>(m_unitCode);
    m_deviceName = ssdeviceName.str();
 }
 

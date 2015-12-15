@@ -325,7 +325,7 @@ void CRfxcom::initRfxcom()
    // No answer
 
    // RFXCom needs some time to recover after reset (see specifications)
-   boost::this_thread::sleep(boost::posix_time::milliseconds(50));
+   boost::this_thread::sleep(boost::posix_time::milliseconds(100));
 
    // Flush receive buffer according to RFXCom specifications
    m_port->flush();
@@ -343,6 +343,7 @@ void CRfxcom::processRfxcomCommandResponseMessage(boost::shared_ptr<yApi::IYPlug
    {
    case rfxcomMessages::CTransceiverStatus::kStatus: processRfxcomStatusMessage(context, status); break;
    case rfxcomMessages::CTransceiverStatus::kWrongCommand: processRfxcomWrongCommandMessage(context, status); break;
+   case rfxcomMessages::CTransceiverStatus::kReceiverStarted: processRfxcomReceiverStartedMessage(context, status); break;
    default:
       YADOMS_LOG(warning) << "Status message (" << status.getStatusType() << ") not yet supported";
       break;
@@ -354,32 +355,77 @@ void CRfxcom::processRfxcomStatusMessage(boost::shared_ptr<yApi::IYPluginApi> co
    YADOMS_LOG(information) << "RFXCom status, type (" << status.rfxcomTypeToString() << "), firmware version (" << status.getFirmwareVersion() << ")";
    status.traceEnabledProtocols();
 
-   if (!status.needConfigurationUpdate(m_configuration))
+   switch (m_currentState)
    {
-      m_currentState = kRfxcomIsRunning;
-      return;
-   }
+   case kGettingRfxcomStatus:
+      if (status.needConfigurationUpdate(m_configuration))
+      {
+         YADOMS_LOG(information) << "Incorrect RFXCom configuration. Updating configuration...";
+         m_currentState = kSettingRfxcomMode;
+         send(m_transceiver->buildSetModeCmd(status.getRfxcomType(), m_configuration), true);// Don't change the RFXCom frequency
+         // Expected reply is also a status message
+      }
+      else
+      {
+         YADOMS_LOG(information) << "Start the RFXtrx receiver...";
+         m_currentState = kStartReceiver;
+         send(m_transceiver->buildStartReceiverCmd(), true);
+         // Expected reply is a response message
+      }
+      break;
 
-   // Incorrect configuration is only possible while initialization procedure
-   if (m_currentState != kGettingRfxcomStatus)
+   case kSettingRfxcomMode:
+      if (status.needConfigurationUpdate(m_configuration))
+      {
+         YADOMS_LOG(warning) << "Unable to set configuration as expected, maybe incompatible protocols were selected";
+         context->recordPluginEvent(yApi::IYPluginApi::kError, "Unable to set configuration as expected, maybe incompatible protocols was selected");
+         m_currentState = kRfxcomIsRunning;
+      }
+      else
+      {
+         YADOMS_LOG(information) << "Start the RFXtrx receiver...";
+         m_currentState = kStartReceiver;
+         send(m_transceiver->buildStartReceiverCmd(), true);
+         // Expected reply is a response message for recent firmware, or wrong command for old firmware (safe to ignore)
+      }
+      break;
+
+   default:
+      YADOMS_LOG(warning) << "Received non-expected message (RFXCom status)";
+      context->recordPluginEvent(yApi::IYPluginApi::kError, "Received non-expected message (RFXCom status)");
+      m_currentState = kRfxcomIsRunning;
+      break;
+   }
+}
+
+void CRfxcom::processRfxcomReceiverStartedMessage(boost::shared_ptr<yApi::IYPluginApi> context, const rfxcomMessages::CTransceiverStatus& status)
+{
+   YADOMS_LOG(information) << "RFXCom started message, device \"" << status.getValidMessage() << "\" detected";
+
+   switch (m_currentState)
    {
-      YADOMS_LOG(warning) << "Unable to set configuration as expected, maybe incompatible protocols were selected";
-      context->recordPluginEvent(yApi::IYPluginApi::kError, "Unable to set configuration as expected, maybe incompatible protocols was selected");
+   case kStartReceiver:
+      YADOMS_LOG(information) << "Receiver started";
       m_currentState = kRfxcomIsRunning;
-      return;
+      break;
+
+   default:
+      YADOMS_LOG(warning) << "Received non-expected message (Receiver started)";
+      context->recordPluginEvent(yApi::IYPluginApi::kError, "Received non-expected message (Receiver started)");
+      m_currentState = kRfxcomIsRunning;
+      break;
    }
-
-   YADOMS_LOG(information) << "Incorrect RFXCom configuration. Updating configuration...";
-
-   // Update active protocols list
-   m_currentState = kSettingRfxcomMode;
-   send(m_transceiver->buildSetModeCmd(status.getRfxcomType(), m_configuration), true);// Don't change the RFXCom frequency
-   // Expected reply is also a status message
 }
 
 void CRfxcom::processRfxcomWrongCommandMessage(boost::shared_ptr<yApi::IYPluginApi> context, const rfxcomMessages::CTransceiverStatus& status)
 {
    YADOMS_LOG(information) << "RFXCom wrong command response";
+   if (m_currentState == kStartReceiver)
+   {
+      // Start receiver message is unknown by old firmwares. In this case, just ignore the message
+      YADOMS_LOG(information) << "Receiver started (old firmware)";
+      m_currentState = kRfxcomIsRunning;
+   }
 }
 
 void CRfxcom::processRfxcomAckMessage(const rfxcomMessages::CAck& ack) const

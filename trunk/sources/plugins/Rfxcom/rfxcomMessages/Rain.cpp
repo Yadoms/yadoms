@@ -28,6 +28,7 @@ CRain::CRain(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, siz
    case sTypeRAIN3:
    case sTypeRAIN4:
    case sTypeRAIN5:
+   case sTypeRAIN7:
       m_rain->set(((rbuf.RAIN.raintotal1 << 16) | (rbuf.RAIN.raintotal2 << 8) | rbuf.RAIN.raintotal3) / 10.0);
       break;
    case sTypeRAIN6:
@@ -106,6 +107,7 @@ void CRain::buildDeviceModel()
    case sTypeRAIN4: ssModel << "UPM"; break;
    case sTypeRAIN5: ssModel << "La Crosse WS2300"; break;
    case sTypeRAIN6: ssModel << "TX5"; break;
+   case sTypeRAIN7: ssModel << "Alecto WS4500, Auriol H13726, Hama EWS1500, Meteoscan W155/W160, Ventus WS155"; break;
    default: ssModel << boost::lexical_cast<std::string>(m_subType); break;
    }
 

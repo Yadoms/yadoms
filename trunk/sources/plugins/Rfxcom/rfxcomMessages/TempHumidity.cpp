@@ -93,11 +93,12 @@ void CTempHumidity::buildDeviceModel()
    case sTypeTH6: ssModel << "THGR918, THGRN228, THGN500"; break;
    case sTypeTH7: ssModel << "TFA TS34C, Cresta"; break;
    case sTypeTH8: ssModel << "WT450H"; break;
-   case sTypeTH9: ssModel << "Viking 02035, 02038 (02035 has no humidity)"; break;
+   case sTypeTH9: ssModel << "Viking 02035, 02038 (02035 has no humidity), TSS320"; break;
    case sTypeTH10: ssModel << "Rubicson"; break;
    case sTypeTH11: ssModel << "EW109"; break;
    case sTypeTH12: ssModel << "Imagintronix"; break;
    case sTypeTH13: ssModel << "Alecto WS1700 and compatibles"; break;
+   case sTypeTH14: ssModel << "Alecto WS3500, WS4500, Auriol H13726, Hama EWS1500, Meteoscan W155/W160, Ventus WS155"; break;
    default: ssModel << boost::lexical_cast<std::string>(m_subType); break;
    }
 

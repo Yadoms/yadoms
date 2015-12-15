@@ -17,8 +17,9 @@ namespace rfxcomMessages
 {
 
 CSecurity1::CSecurity1(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& keyword, const std::string& command, const shared::CDataContainer& deviceDetails)
-   :m_rssi("rssi")
+   :m_batteryLevel("battery"), m_rssi("rssi")
 {
+   m_batteryLevel.set(100);
    m_rssi.set(0);
 
    createSubType(deviceDetails.get<unsigned char>("subType"));
@@ -29,8 +30,9 @@ CSecurity1::CSecurity1(boost::shared_ptr<yApi::IYPluginApi> context, const std::
 }
 
 CSecurity1::CSecurity1(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
-   :m_rssi("rssi")
+   :m_batteryLevel("battery"), m_rssi("rssi")
 {
+   m_batteryLevel.set(100);
    m_rssi.set(0);
 
    createSubType(subType);
@@ -41,13 +43,14 @@ CSecurity1::CSecurity1(boost::shared_ptr<yApi::IYPluginApi> context, unsigned ch
 }
 
 CSecurity1::CSecurity1(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
-   :m_rssi("rssi")
+   :m_batteryLevel("battery"), m_rssi("rssi")
 {
    CheckReceivedMessage(rbuf, rbufSize, pTypeSecurity1, GET_RBUF_STRUCT_SIZE(SECURITY1), DONT_CHECK_SEQUENCE_NUMBER);
 
    createSubType(rbuf.SECURITY1.subtype);
    m_id = (rbuf.SECURITY1.id1 << 8) | rbuf.SECURITY1.id2;
    m_subTypeManager->setFromProtocolState(rbuf.SECURITY1.status);
+   m_batteryLevel.set(NormalizeBatteryLevel(rbuf.SECURITY1.battery_level));
    m_rssi.set(NormalizeRssiLevel(rbuf.SECURITY1.rssi));
 
    declare(context);
@@ -93,6 +96,7 @@ void CSecurity1::declare(boost::shared_ptr<yApi::IYPluginApi> context)
 
       context->declareDevice(m_deviceName, m_subTypeManager->getModel(), details.serialize());
 
+      context->declareKeyword(m_deviceName, m_batteryLevel);
       context->declareKeyword(m_deviceName, m_rssi);
    }
 
@@ -119,6 +123,7 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CSecurity1::e
 void CSecurity1::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    m_subTypeManager->historize(context, m_deviceName);
+   context->historizeData(m_deviceName, m_batteryLevel);
    context->historizeData(m_deviceName, m_rssi);
 }
 

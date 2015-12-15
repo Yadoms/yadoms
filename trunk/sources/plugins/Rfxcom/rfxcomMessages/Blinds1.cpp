@@ -40,6 +40,9 @@ CBlinds1::CBlinds1(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char s
    case sTypeBlindsT5 :
    case sTypeBlindsT6 :
    case sTypeBlindsT7 :
+   case sTypeBlindsT8 :
+   case sTypeBlindsT9 :
+   case sTypeBlindsT10:
       break;
    default:
       throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
@@ -57,7 +60,36 @@ CBlinds1::CBlinds1(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbu
    CheckReceivedMessage(rbuf, rbufSize, pTypeBlinds, GET_RBUF_STRUCT_SIZE(BLINDS1), DONT_CHECK_SEQUENCE_NUMBER);
 
    m_subType = rbuf.BLINDS1.subtype;
-   m_id = rbuf.BLINDS1.id1 << 24 | rbuf.BLINDS1.id2 << 16 | rbuf.BLINDS1.id3 << 8 | rbuf.BLINDS1.id4;
+
+   switch (m_subType)
+   {
+   case sTypeBlindsT0:
+   case sTypeBlindsT1:
+      m_id = rbuf.BLINDS1.id2 << 8 | rbuf.BLINDS1.id3;
+      break;
+
+   case sTypeBlindsT2:
+   case sTypeBlindsT3:
+   case sTypeBlindsT4:
+   case sTypeBlindsT5:
+   case sTypeBlindsT8:
+   case sTypeBlindsT10:
+      m_id = rbuf.BLINDS1.id1 << 16 | rbuf.BLINDS1.id2 << 8 | rbuf.BLINDS1.id3;
+      break;
+
+   case sTypeBlindsT6:
+   case sTypeBlindsT7:
+      m_id = rbuf.BLINDS1.id1 << 24 | rbuf.BLINDS1.id2 << 16 | rbuf.BLINDS1.id3 << 8 | rbuf.BLINDS1.id4;
+      break;
+
+   case sTypeBlindsT9:
+      m_id = rbuf.BLINDS1.id2 << 16 | rbuf.BLINDS1.id3 << 8 | rbuf.BLINDS1.id4;
+      break;
+
+   default:
+      throw shared::exception::COutOfRange("Encode : subType is not supported");
+   }
+
    m_unitCode = rbuf.BLINDS1.unitcode;
    m_state.set(fromProtocolState(rbuf.BLINDS1.cmnd));
    m_batteryLevel.set(NormalizeBatteryLevel(rbuf.BLINDS1.filler));   // filler is specified as battery level in RFXtrx SDF.pdf
@@ -102,10 +134,48 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CBlinds1::enc
    buffer.BLINDS1.packettype = pTypeBlinds;
    buffer.BLINDS1.subtype = m_subType;
    buffer.BLINDS1.seqnbr = seqNumberProvider->next();
-   buffer.BLINDS1.id1 = (unsigned char) (0xFF & (m_id >> 24));
-   buffer.BLINDS1.id2 = (unsigned char) (0xFF & (m_id >> 16));
-   buffer.BLINDS1.id3 = (unsigned char) (0xFF & (m_id >> 8));
-   buffer.BLINDS1.id4 = (unsigned char) (0xFF & m_id);
+
+   switch (m_subType)
+   {
+   case sTypeBlindsT0:
+   case sTypeBlindsT1:
+      buffer.BLINDS1.id1 = 0;
+      buffer.BLINDS1.id2 = static_cast<unsigned char>(0xFF & (m_id >> 8));
+      buffer.BLINDS1.id3 = static_cast<unsigned char>(0xFF & m_id);
+      buffer.BLINDS1.id4 = 0;
+      break;
+
+   case sTypeBlindsT2:
+   case sTypeBlindsT3:
+   case sTypeBlindsT4:
+   case sTypeBlindsT5:
+   case sTypeBlindsT8:
+   case sTypeBlindsT10:
+      buffer.BLINDS1.id1 = static_cast<unsigned char>(0xFF & (m_id >> 16));
+      buffer.BLINDS1.id2 = static_cast<unsigned char>(0xFF & (m_id >> 8));
+      buffer.BLINDS1.id3 = static_cast<unsigned char>(0xFF & m_id);
+      buffer.BLINDS1.id4 = 0;
+      break;
+
+   case sTypeBlindsT6:
+   case sTypeBlindsT7:
+      buffer.BLINDS1.id1 = static_cast<unsigned char>(0xFF & (m_id >> 24));
+      buffer.BLINDS1.id2 = static_cast<unsigned char>(0xFF & (m_id >> 16));
+      buffer.BLINDS1.id3 = static_cast<unsigned char>(0xFF & (m_id >> 8));
+      buffer.BLINDS1.id4 = static_cast<unsigned char>(0xFF & m_id);
+      break;
+
+   case sTypeBlindsT9:
+      buffer.BLINDS1.id1 = 0;
+      buffer.BLINDS1.id2 = static_cast<unsigned char>(0xFF & (m_id >> 16));
+      buffer.BLINDS1.id3 = static_cast<unsigned char>(0xFF & (m_id >> 8));
+      buffer.BLINDS1.id4 = static_cast<unsigned char>(0xFF & m_id);
+      break;
+
+   default:
+      throw shared::exception::COutOfRange("Encode : subType is not supported");
+   }
+
    buffer.BLINDS1.unitcode = m_unitCode;
    buffer.BLINDS1.cmnd = toProtocolState(m_state);
    buffer.BLINDS1.rssi = 0;
@@ -147,6 +217,9 @@ void CBlinds1::buildDeviceModel()
    case sTypeBlindsT5: ssModel << "Media Mount"; break;
    case sTypeBlindsT6: ssModel << "DC106, YOOHA, Rohrmotor24 RMF"; break;
    case sTypeBlindsT7: ssModel << "Forest"; break;
+   case sTypeBlindsT8: ssModel << "Chamberlain CS4330CN"; break;
+   case sTypeBlindsT9: ssModel << "Sunpery/BTX"; break;
+   case sTypeBlindsT10: ssModel << "Dolat DLM-1, Topstar"; break;
    default: ssModel << boost::lexical_cast<std::string>(m_subType); break;
    }
 

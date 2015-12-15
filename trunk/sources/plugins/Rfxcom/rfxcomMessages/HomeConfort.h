@@ -3,28 +3,26 @@
 #include "IRfxcomMessage.h"
 #include "RFXtrxHelpers.h"
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
-#include "ISecurity1Subtype.h"
 
 namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
    //--------------------------------------------------------------
-   /// \brief	The Security1 protocol support
+   /// \brief	The HomeConfort protocol support
    //--------------------------------------------------------------
-   class CSecurity1 : public IRfxcomMessage
+   class CHomeConfort : public IRfxcomMessage
    {
    public:
       //--------------------------------------------------------------
       /// \brief	                        Constructor
       /// \param[in] context              Yadoms APi context
-      /// \param[in] keyword              Keyword concerned by the command
       /// \param[in] command              The command
       /// \param[in] deviceDetails        The device parameters
       /// \throw                          shared::exception::CInvalidParameter if fail to interpret command
       /// \note                           Use this constructor for command (to build RFXCom message)
       //--------------------------------------------------------------
-      CSecurity1(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& keyword, const std::string& command, const shared::CDataContainer& deviceDetails);
+      CHomeConfort(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& command, const shared::CDataContainer& deviceDetails);
 
       //--------------------------------------------------------------
       /// \brief	                        Constructor
@@ -34,7 +32,7 @@ namespace rfxcomMessages
       /// \throw                          shared::exception::CInvalidParameter or shared::exception::COutOfRange if fail to interpret configuration
       /// \note                           Use this constructor for manually device creation
       //--------------------------------------------------------------
-      CSecurity1(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration);
+      CHomeConfort(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration);
 
       //--------------------------------------------------------------
       /// \brief	                        Constructor
@@ -45,12 +43,12 @@ namespace rfxcomMessages
       /// \note                           Use this constructor for received messages (to historize received data to Yadoms)
       /// \throw                          shared::exception::CInvalidParameter
       //--------------------------------------------------------------
-      CSecurity1(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
+      CHomeConfort(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
-      virtual ~CSecurity1();
+      virtual ~CHomeConfort();
 
       // IRfxcomMessage implementation
       virtual boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const;
@@ -60,10 +58,10 @@ namespace rfxcomMessages
       
    protected:
       //--------------------------------------------------------------
-      /// \brief	Set and create the subtype
-      /// \param[in] subType              Device subType
+      /// \brief	Global initialization method
+      /// \param[in] context              Yadoms APi context
       //--------------------------------------------------------------
-      void createSubType(unsigned char subType);
+      void Init(boost::shared_ptr<yApi::IYPluginApi> context);
 
       //--------------------------------------------------------------
       /// \brief	                        Build the device name
@@ -71,16 +69,40 @@ namespace rfxcomMessages
       void buildDeviceName();
 
       //--------------------------------------------------------------
-      /// \brief	Declare the device
-      /// \param[in] context              Yadoms APi context
+      /// \brief	                        Build the sensor model
       //--------------------------------------------------------------
-      void declare(boost::shared_ptr<yApi::IYPluginApi> context);
+      void buildDeviceModel();
+
+      //--------------------------------------------------------------
+      /// \brief	                        Convert Yadoms state command to protocol value
+      /// \param[in] switchState          The state from Yadoms
+      /// \return                         The value known by the protocol
+      //--------------------------------------------------------------
+      static unsigned char toProtocolState(const yApi::historization::CSwitch& switchState);
+      
+      //--------------------------------------------------------------
+      /// \brief	                        Convert protocol value to Yadoms state
+      /// \param[in] protocolState        The value known by the protocol
+      /// \return                         The Yadoms compliant value
+      /// \throw                          shared::exception::CInvalidParameter if fails to interpret command
+      //--------------------------------------------------------------
+      static bool fromProtocolState(unsigned char protocolState);
 
    private:
       //--------------------------------------------------------------
       /// \brief	The device sub-type
       //--------------------------------------------------------------
       unsigned char m_subType;
+
+      //--------------------------------------------------------------
+      /// \brief	The device house code
+      //--------------------------------------------------------------
+      char m_houseCode;
+
+      //--------------------------------------------------------------
+      /// \brief	The device unit code
+      //--------------------------------------------------------------
+      unsigned char m_unitCode;
 
       //--------------------------------------------------------------
       /// \brief	The device id
@@ -93,14 +115,14 @@ namespace rfxcomMessages
       std::string m_deviceName;
 
       //--------------------------------------------------------------
-      /// \brief	The sub-type management
+      /// \brief	The device model
       //--------------------------------------------------------------
-      boost::shared_ptr<ISecurity1Subtype> m_subTypeManager;
+      std::string m_deviceModel;
 
       //--------------------------------------------------------------
-      /// \brief	The battery level (percent)
+      /// \brief	The keyword associated with state
       //--------------------------------------------------------------
-      yApi::historization::CBatteryLevel m_batteryLevel;
+      yApi::historization::CSwitch m_state;
 
       //--------------------------------------------------------------
       /// \brief	The keyword associated with rssi

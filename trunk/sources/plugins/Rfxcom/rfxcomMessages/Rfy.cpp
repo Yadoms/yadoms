@@ -32,6 +32,7 @@ CRfy::CRfy(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char subType, 
    {
    case sTypeRFY     :
    case sTypeRFYext  :
+   case sTypeASA     :
       break;
    default:
       throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
@@ -122,6 +123,7 @@ void CRfy::buildDeviceModel()
    {
    case sTypeRFY: ssModel << "Somfy"; break;
    case sTypeRFYext: ssModel << "SomfyExt"; break;
+   case sTypeASA: ssModel << "ASA"; break;
    default: ssModel << boost::lexical_cast<std::string>(m_subType); break;
    }
    

@@ -3,16 +3,16 @@
 #include "IRfxcomMessage.h"
 #include "RFXtrxHelpers.h"
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
-#include "ISecurity1Subtype.h"
+#include "ISecurity2Subtype.h"
 
 namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
    //--------------------------------------------------------------
-   /// \brief	The Security1 protocol support
+   /// \brief	The Security2 protocol support
    //--------------------------------------------------------------
-   class CSecurity1 : public IRfxcomMessage
+   class CSecurity2 : public IRfxcomMessage
    {
    public:
       //--------------------------------------------------------------
@@ -24,7 +24,7 @@ namespace rfxcomMessages
       /// \throw                          shared::exception::CInvalidParameter if fail to interpret command
       /// \note                           Use this constructor for command (to build RFXCom message)
       //--------------------------------------------------------------
-      CSecurity1(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& keyword, const std::string& command, const shared::CDataContainer& deviceDetails);
+      CSecurity2(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& keyword, const std::string& command, const shared::CDataContainer& deviceDetails);
 
       //--------------------------------------------------------------
       /// \brief	                        Constructor
@@ -34,7 +34,7 @@ namespace rfxcomMessages
       /// \throw                          shared::exception::CInvalidParameter or shared::exception::COutOfRange if fail to interpret configuration
       /// \note                           Use this constructor for manually device creation
       //--------------------------------------------------------------
-      CSecurity1(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration);
+      CSecurity2(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration);
 
       //--------------------------------------------------------------
       /// \brief	                        Constructor
@@ -45,12 +45,12 @@ namespace rfxcomMessages
       /// \note                           Use this constructor for received messages (to historize received data to Yadoms)
       /// \throw                          shared::exception::CInvalidParameter
       //--------------------------------------------------------------
-      CSecurity1(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
+      CSecurity2(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
-      virtual ~CSecurity1();
+      virtual ~CSecurity2();
 
       // IRfxcomMessage implementation
       virtual boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const;
@@ -83,11 +83,6 @@ namespace rfxcomMessages
       unsigned char m_subType;
 
       //--------------------------------------------------------------
-      /// \brief	The device id
-      //--------------------------------------------------------------
-      unsigned int m_id;
-
-      //--------------------------------------------------------------
       /// \brief	The device name
       //--------------------------------------------------------------
       std::string m_deviceName;
@@ -95,7 +90,7 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	The sub-type management
       //--------------------------------------------------------------
-      boost::shared_ptr<ISecurity1Subtype> m_subTypeManager;
+      boost::shared_ptr<ISecurity2Subtype> m_subTypeManager;
 
       //--------------------------------------------------------------
       /// \brief	The battery level (percent)
