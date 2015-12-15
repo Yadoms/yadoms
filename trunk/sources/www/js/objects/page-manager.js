@@ -309,8 +309,11 @@ function widgetResized(event, ui) {
 PageManager.enableCustomization = function (page, enable) {
     assert(!isNullOrUndefined(page), "page must be defined");
 
-    if (enable)
+    if (enable) {
         $(".customization-item").removeClass("hidden");
-    else
+        page.$tab.find("a").first().addClass("pageCustomizationPill");
+    } else {
         $(".customization-item").addClass("hidden");
+        page.$tab.find("a").first().removeClass("pageCustomizationPill");
+    }
 };

@@ -1,15 +1,13 @@
 /* Move down content because we have a fixed navbar that is 50px tall */
-  
+
 body {
     padding-bottom: 20px;
     background: url('../img/background2.png');
-    -moz-background-size: 100% 100%;           /* Gecko 1.9.2 (Firefox 3.6) */
-    -o-background-size: 100% 100%;           /* Opera 9.5 */
-    -webkit-background-size: 100% 100%;           /* Safari 3.0 */
-    background-size: 100% 100%;           /* Gecko 2.0 (Firefox 4.0) and other browsers compatible with CSS3 */
-
-    -moz-border-image: url("../img/background2.jpg") 0;    /* Gecko 1.9.1 (Firefox 3.5) */
-
+    -moz-background-size: 100% 100%; /* Gecko 1.9.2 (Firefox 3.6) */
+    -o-background-size: 100% 100%; /* Opera 9.5 */
+    -webkit-background-size: 100% 100%; /* Safari 3.0 */
+    background-size: 100% 100%; /* Gecko 2.0 (Firefox 4.0) and other browsers compatible with CSS3 */
+    -moz-border-image: url("../img/background2.jpg") 0; /* Gecko 1.9.1 (Firefox 3.5) */
     background-attachment: fixed;
     min-width: 265px;
 }
@@ -18,9 +16,10 @@ body {
 .page-header {
     margin-bottom: 30px;
 }
-.page-header .lead {
-    margin-bottom: 10px;
-}
+
+    .page-header .lead {
+        margin-bottom: 10px;
+    }
 
 .footer {
     position: fixed;
@@ -35,17 +34,17 @@ body {
 }
 
 #pageMenu {
-    float:  none;
+    float: none;
     margin-top: 10px;
 }
 
 .btn-configure-widget,
 .btn-delete-widget {
-   color: white;
+    color: white;
 }
 
 .ui-resizable-se {
-   color: black !important;
+    color: black !important;
 }
 
 .customization-item > .btn-group {
@@ -65,7 +64,6 @@ body {
 }
 
 .customization-item {
-
 }
 
 #btn-add-page {
@@ -75,58 +73,66 @@ body {
 #btn-add-page a {
     border: 0px;
     margin-left: 1px;
-    background-color: #428bca
+    background-image: url("../img/roadworks-pill.png");
+    background-repeat-x: no-repeat;
+    background-position-x: right;
+    cursor: pointer;
 }
 
 .customizationToolbar {
-   position: absolute;
-   right: 0px;
-   top: 0px;
-   border-radius: 0 0 0 4px;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    border-radius: 0 0 0 4px;
 }
 
 .pageCustomizationToolbar {
-   margin-top: 2px;
-   margin-right: 2px;
-   background-color: white;
-   cursor: default;
+    margin-top: 2px;
+    margin-right: 2px;
+    cursor: default;
 }
 
 .customizationButton {
-   float: left;
-   margin-left: 4px;
-   margin-right: 4px;
-   cursor : pointer;
+    float: left;
+    margin-left: 4px;
+    margin-right: 4px;
+    cursor: pointer;
 }
 
 .pageCustomizationButton {
-   color: #428bca;
+    text-shadow: 0 0 2px rgb(0, 0, 0);
+    color: white;
 }
 
-
+.pageCustomizationPill {
+    background-image: url("../img/roadworks-pill.png");
+    background-repeat-x: no-repeat;
+    background-position-x: right;
+}
 
 .navbar {
-   background-color: rgba(0,0,0,0.0);
-   background-image: -webkit-gradient(linear, 50.00% 0.00%, 50.00% 100.00%, color-stop( 0% , rgba(0,0,0,0.00)),color-stop( 100% , rgba(0,0,0,0.00)));
-   background-image: -webkit-linear-gradient(270deg,rgba(0,0,0,0.00) 0%,rgba(0,0,0,0.00) 100%);
-   background-image: linear-gradient(180deg,rgba(0,0,0,0.00) 0%,rgba(0,0,0,0.00) 100%);
-   /*height: 50px;*/
+    background-color: rgba(0,0,0,0.0);
+    background-image: -webkit-gradient(linear, 50.00% 0.00%, 50.00% 100.00%, color-stop( 0%, rgba(0,0,0,0.00)),color-stop( 100%, rgba(0,0,0,0.00)));
+    background-image: -webkit-linear-gradient(270deg,rgba(0,0,0,0.00) 0%,rgba(0,0,0,0.00) 100%);
+    background-image: linear-gradient(180deg,rgba(0,0,0,0.00) 0%,rgba(0,0,0,0.00) 100%);
+    /*height: 50px;*/
 }
 
 .navbar-static-top {
-   width: 100%;
+    width: 100%;
 }
 
 .popover {
-   z-index: 9999;
-   min-width: 200px;
+    z-index: 9999;
+    min-width: 200px;
 }
 
 .control-group:after {
-   content: " ";
-   display: block;
-   clear: both;
+    content: " ";
+    display: block;
+    clear: both;
 }
+
 .iconMenuItem {
     margin-right: 10px;
 }
@@ -150,17 +156,17 @@ body {
 }
 
 .configuration-header {
-    font-size:14px;
-    font-weight:700;
-    letter-spacing:1px;
-    text-transform:uppercase;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
 }
 
 .configuration-label {
 }
 
 .configuration-label-content {
-    display:inline-block;
+    display: inline-block;
     float: left;
     text-align: left;
 }
@@ -177,7 +183,7 @@ body {
 }
 
 .configuration-control {
-    vertical-align:middle;
+    vertical-align: middle;
 }
 
 .iconpicker > i {
@@ -189,9 +195,9 @@ body {
     padding: 0px;
 }
 
-.list-item-line > .col-md-11 > .control-group {
-    margin : 0px;
-}
+    .list-item-line > .col-md-11 > .control-group {
+        margin: 0px;
+    }
 
 .list-parameter-handler-validation-textbox {
     height: 0px;
@@ -214,22 +220,22 @@ body {
 }
 
 .dashboard-list {
-   text-align: center;
-   /*margin-left: auto;
+    text-align: center;
+    /*margin-left: auto;
    margin-right: auto;*/
-   margin-top: 20px;
-   width : initial;
+    margin-top: 20px;
+    width: initial;
 }
 
-.dashboard-list td.long-text {
-   white-space: pre;
-}
+    .dashboard-list td.long-text {
+        white-space: pre;
+    }
 
-.table tbody>tr>td.vert-align{
+.table tbody > tr > td.vert-align {
     vertical-align: middle;
 }
 
-.logTextArea{
+.logTextArea {
     height: 350px;
     resize: none;
 }

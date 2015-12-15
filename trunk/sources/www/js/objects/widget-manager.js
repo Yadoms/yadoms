@@ -169,7 +169,6 @@ WidgetManager.updateToServer = function (widget, callback) {
             if ($.isFunction(callback))
                 callback(false);
         } else {
-
             //we notify that configuration has changed
             try {
                 WidgetManager.updateWidgetConfiguration_(widget);
@@ -205,7 +204,7 @@ WidgetManager.updateToServer = function (widget, callback) {
 WidgetManager.updateWidgetConfiguration_ = function (widget) {
     try {
         //Update the widget title
-        widget.$gridWidget.find('span.panel-widget-title').text(widget.title);
+        widget.$gridWidget.find('div.panel-widget-title').text(widget.title);
 
         //we clear the listened device list before call the configuration
         widget.listenedKeywords = [];
@@ -216,7 +215,6 @@ WidgetManager.updateWidgetConfiguration_ = function (widget) {
 
         //we manage the toolbar api specific icons
         ToolbarApi.manageBatteryConfiguration(widget);
-
     }
     catch (e) {
         notifyWarning($.t("objects.widgetManager.widgetHasGeneratedAnExceptionDuringCallingMethod", { widgetName: widget.type, methodName: 'configurationChanged' }));
