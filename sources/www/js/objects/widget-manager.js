@@ -577,13 +577,28 @@ WidgetManager.createGridstackWidget = function (widget) {
         "<div class=\"panel panel-primary panel-widget\" >" +
             "<div class=\"panel-heading panel-widget-header\">" +
                 "<div class=\"panel-widget-title-toolbar\" ></div>" +
-                "<div class=\"panel-widget-title panel-widget-title-marquee\">" + widget.title + "</div>\n" +
+				"<div class=\"panel-widget-title\">" + widget.title + "</div>\n" +
             "</div>" +
             "<div class=\"panel-widget-body\" id=\"widget-" + widget.id + "\"  data-bind=\"template: { name: '" + type + "-template' }\"/>\n" +
         "</div>\n" +
     "</div>\n";
+	
     var item = page.grid.add_widget($(domWidget), widget.positionX, widget.positionY, widget.sizeX, widget.sizeY, false);
 	
+	//Calculate the overflow ! Theses values could be obtain, only after the application !
+	var overflow = $("[widget-id=" + widget.id +"]").find( ".panel-widget-title" )[0].scrollWidth - 
+	               $("[widget-id=" + widget.id +"]").find( ".panel-widget-title" )[0].offsetWidth;
+	
+	if ( overflow > 0 )
+	{
+    	$("<style type='text/css'> .panel-widget-title-" + widget.id + "{margin: 0 auto; overflow: hidden; white-space: nowrap; box-sizing: border-box; animation: panel-widget-title-marquee-" + widget.id + 
+	    " 30s steps(150) infinite;-webkit-animation-play-state: running; animation-play-state: running;}</style>").appendTo("head");	//html > //ease-in-out
+		
+		$("<style type='text/css'> @keyframes panel-widget-title-marquee-" + widget.id + " { 0%   { text-indent: 0px; } 50% { text-indent: " + -overflow + "px;}  100%  { text-indent: 0px; } }</style>").appendTo("head");
+		
+		$("[widget-id=" + widget.id +"]").find( ".panel-widget-title" ).addClass ("panel-widget-title-" + widget.id);
+	}
+
     item.i18n();
     return item;
 };
