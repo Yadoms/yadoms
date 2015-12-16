@@ -9,22 +9,22 @@
 namespace yApi = shared::plugin::yPluginApi;
 
 //--------------------------------------------------------------
-/// \brief	Virtual Memory of the current process
-/// \note   return the virtual memory used by the current process
+/// \brief	Virtual Memory of Yadoms
+/// \note   return the virtual memory used by Yadoms
 //--------------------------------------------------------------
-class CVirtualProcessMemory : public ILoad
+class CYadomsVirtualProcessMemory : public ILoad
 {
 public:
    //--------------------------------------------------------------
    /// \brief	    Constructor
    /// \param[in] device    The device
    //--------------------------------------------------------------
-   CVirtualProcessMemory(const std::string & device);
+   CYadomsVirtualProcessMemory(const std::string & device);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
-   virtual ~CVirtualProcessMemory();
+   virtual ~CYadomsVirtualProcessMemory();
 
    // ILoad Implementation
    virtual void declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context);

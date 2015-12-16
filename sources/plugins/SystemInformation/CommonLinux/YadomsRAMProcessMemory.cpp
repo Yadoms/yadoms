@@ -1,19 +1,19 @@
 #include "stdafx.h"
-#include "RAMProcessMemory.h"
+#include "YadomsRAMProcessMemory.h"
 #include <shared/exception/Exception.hpp>
 #include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/plugin/yPluginApi/StandardUnits.h>
 #include <shared/Log.h>
 
-CRAMProcessMemory::CRAMProcessMemory(const std::string & device)
+CYadomsRAMProcessMemory::CYadomsRAMProcessMemory(const std::string & device)
    :m_device(device), 
-    m_keyword(new yApi::historization::CKByte("RAMProcessMemory"))
+    m_keyword(new yApi::historization::CKByte("YadomsRAMMemory"))
 {}
 
-CRAMProcessMemory::~CRAMProcessMemory()
+CYadomsRAMProcessMemory::~CYadomsRAMProcessMemory()
 {}
 
-void CRAMProcessMemory::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context)
+void CYadomsRAMProcessMemory::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context)
 {
       if (!context->keywordExists( m_device, m_keyword->getKeyword()))
       {
@@ -21,14 +21,14 @@ void CRAMProcessMemory::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> con
       }
 }
 
-void CRAMProcessMemory::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
+void CYadomsRAMProcessMemory::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    BOOST_ASSERT_MSG(!!context, "context must be defined");
 
    context->historizeData(m_device, *m_keyword);
 }
 
-int CRAMProcessMemory::parseLine(char* line)
+int CYadomsRAMProcessMemory::parseLine(char* line)
 {
    int i = strlen(line);
    while (*line < '0' || *line > '9') line++;
@@ -37,7 +37,7 @@ int CRAMProcessMemory::parseLine(char* line)
    return i;
 }
 
-void CRAMProcessMemory::read()
+void CYadomsRAMProcessMemory::read()
 {
    FILE* file = fopen("/proc/self/status", "r");
    int result = -1;
@@ -59,7 +59,7 @@ void CRAMProcessMemory::read()
    YADOMS_LOG(debug) << "RAM Memory Current Process : " << m_keyword->formatValue();
 }
 
-boost::shared_ptr<yApi::historization::IHistorizable> CRAMProcessMemory::GetHistorizable() const
+boost::shared_ptr<yApi::historization::IHistorizable> CYadomsRAMProcessMemory::GetHistorizable() const
 {
 	return m_keyword;
 }
