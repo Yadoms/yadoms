@@ -61,16 +61,16 @@ IF (UNIX AND NOT APPLE)
 	CommonLinux/DisksList.cpp
 	CommonLinux/DiskUsage.h
 	CommonLinux/DiskUsage.cpp
-	CommonLinux/MemoryLoad.h
-	CommonLinux/MemoryLoad.cpp	
-	CommonLinux/RAMProcessMemory.h
-	CommonLinux/RAMProcessMemory.cpp
-	CommonLinux/VirtualProcessMemory.h
-	CommonLinux/VirtualProcessMemory.cpp
-	CommonLinux/YadomsCPULoad.h
-	CommonLinux/YadomsCPULoad.cpp
         CommonLinux/LinuxHelpers.h
         CommonLinux/LinuxHelpers.cpp
+	CommonLinux/MemoryLoad.h
+	CommonLinux/MemoryLoad.cpp	
+	CommonLinux/YadomsCPULoad.h
+	CommonLinux/YadomsCPULoad.cpp
+	CommonLinux/YadomsRAMProcessMemory.h
+	CommonLinux/YadomsRAMProcessMemory.cpp
+	CommonLinux/YadomsVirtualProcessMemory.h
+	CommonLinux/YadomsVirtualProcessMemory.cpp
 	)
 	
 	source_group(CommonLinux CommonLinux/*.*)

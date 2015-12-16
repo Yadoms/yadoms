@@ -7,8 +7,8 @@
 #include <DiskUsage.h>
 #include <DisksList.h>
 #include "TemperatureSensor.h"
-#include "RAMProcessMemory.h"
-#include "VirtualProcessMemory.h"
+#include "YadomsRAMProcessMemory.h"
+#include "YadomsVirtualProcessMemory.h"
 #include "../ISIConfiguration.h"
 
 // Shortcut to yPluginApi namespace
@@ -45,12 +45,12 @@ private:
    //--------------------------------------------------------------
    /// \brief	    Keyword
    //--------------------------------------------------------------
-   CMemoryLoad           m_MemoryLoad;
-   CCPULoad              m_CPULoad;
-   CYadomsCPULoad        m_YadomsCPULoad;
-   CTemperatureSensor    m_TemperatureSensor;
-   CRAMProcessMemory     m_RAMProcessMemory;
-   CVirtualProcessMemory m_VirtualProcessMemory;
+   CMemoryLoad                 m_MemoryLoad;
+   CCPULoad                    m_CPULoad;
+   CYadomsCPULoad              m_YadomsCPULoad;
+   CTemperatureSensor          m_TemperatureSensor;
+   CYadomsRAMProcessMemory     m_YadomsRAMProcessMemory;
+   CYadomsVirtualProcessMemory m_YadomsVirtualProcessMemory;
 
    std::vector<boost::shared_ptr<CDiskUsage> > m_DiskUsageList;
 };

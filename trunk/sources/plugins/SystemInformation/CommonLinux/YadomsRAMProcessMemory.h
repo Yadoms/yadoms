@@ -9,22 +9,22 @@
 namespace yApi = shared::plugin::yPluginApi;
 
 //--------------------------------------------------------------
-/// \brief	Memory of the current process in RAM
-/// \note   return the memory used in RAM by the current process
+/// \brief	Physical Memory used in RAM
+/// \note   return the Physical memory used in RAM
 //--------------------------------------------------------------
-class CRAMProcessMemory : public ILoad
+class CYadomsRAMProcessMemory : public ILoad
 {
 public:
    //--------------------------------------------------------------
    /// \brief	    Constructor
    /// \param[in] device    The device
    //--------------------------------------------------------------
-   CRAMProcessMemory(const std::string & device);
+   CYadomsRAMProcessMemory(const std::string & device);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
-   virtual ~CRAMProcessMemory();
+   virtual ~CYadomsRAMProcessMemory();
 
    // ILoad Implementation
    virtual void declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context);
