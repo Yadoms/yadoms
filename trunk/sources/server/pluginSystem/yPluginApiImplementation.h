@@ -159,7 +159,7 @@ namespace pluginSystem
       /// \brief	      The plugin state keyword
       /// \note         Use it by pluginState() method
       //--------------------------------------------------------------
-      static const std::string CYPluginApiImplementation::PluginStateDeviceName;
+      static const std::string PluginStateDeviceName;
       boost::shared_ptr<shared::plugin::yPluginApi::historization::CPluginState> m_pluginState;
    };
 	

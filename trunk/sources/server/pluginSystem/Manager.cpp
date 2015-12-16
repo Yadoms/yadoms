@@ -509,7 +509,7 @@ shared::CDataContainer CManager::getInstanceState(int id) const
    boost::shared_ptr<database::entities::CKeyword> stateKw = m_dataProvider->getKeywordRequester()->getKeyword(m_dataProvider->getDeviceRequester()->getDevice(id, "pluginState")->Id, "state");
    try
    {
-      return m_dataProvider->getAcquisitionRequester()->getKeywordLastData(stateKw->Id)->Value;
+      return m_dataProvider->getAcquisitionRequester()->getKeywordLastData(stateKw->Id)->Value();
    }
    catch (shared::exception::CEmptyResult&)
    {
