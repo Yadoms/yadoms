@@ -46,9 +46,10 @@ namespace pluginSystem
       //-----------------------------------------------------
       virtual ~CYPluginApiImplementation();
 
-      // IYPluginApi implementation 
+      // IYPluginApi implementation
+      virtual void setPluginState(const shared::plugin::yPluginApi::historization::EPluginState& state, const std::string & customMessageId = std::string());
       virtual bool deviceExists(const std::string& device) const;
-      virtual const shared::CDataContainer getDeviceDetails(const std::string& device) const;
+      virtual shared::CDataContainer getDeviceDetails(const std::string& device) const;
       virtual void declareDevice(const std::string& device, const std::string& model, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer);
       virtual bool keywordExists(const std::string& device, const std::string& keyword) const;
       virtual bool keywordExists(const std::string& device, const shared::plugin::yPluginApi::historization::IHistorizable& keyword) const;
@@ -61,7 +62,6 @@ namespace pluginSystem
       virtual const shared::plugin::information::IInformation& getInformation() const;
       virtual const boost::filesystem::path getPluginPath() const;
       virtual shared::CDataContainer getConfiguration() const;
-      virtual void recordPluginEvent(PluginEventSeverity severity, const std::string & message);
       virtual shared::event::CEventHandler & getEventHandler();
       // [END] IYPluginApi implementation 
       
@@ -88,8 +88,21 @@ namespace pluginSystem
          const shared::plugin::yPluginApi::EKeywordAccessMode& accessMode, const shared::plugin::yPluginApi::EKeywordDataType& type,
          const std::string & units = shared::CStringExtension::EmptyString,
          const shared::plugin::yPluginApi::historization::EMeasureType & measure = shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute,
-		 const shared::CDataContainer& typeInfo = shared::CDataContainer::EmptyContainer,
+		   const shared::CDataContainer& typeInfo = shared::CDataContainer::EmptyContainer,
          const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer);
+
+      //--------------------------------------------------------------
+      /// \brief	      Get the plugin state keyword (create if not exists)
+      //--------------------------------------------------------------
+      boost::shared_ptr<shared::plugin::yPluginApi::historization::CPluginState> pluginState();
+
+      //-----------------------------------------------------
+      ///\brief Record a plugin major event (recorded in Yadoms database)
+      ///\param    [in]    severity           The message severity
+      ///\param    [in]    message            The message
+      //-----------------------------------------------------      
+      enum PluginEventSeverity { kInfo, kError };
+      virtual void recordPluginEvent(PluginEventSeverity severity, const std::string & message);
 
    private:
       //--------------------------------------------------------------
@@ -141,6 +154,13 @@ namespace pluginSystem
       /// \brief			The plugin event handler
       //--------------------------------------------------------------
       shared::event::CEventHandler m_pluginEventHandler;
+
+      //--------------------------------------------------------------
+      /// \brief	      The plugin state keyword
+      /// \note         Use it by pluginState() method
+      //--------------------------------------------------------------
+      static const std::string CYPluginApiImplementation::PluginStateDeviceName;
+      boost::shared_ptr<shared::plugin::yPluginApi::historization::CPluginState> m_pluginState;
    };
 	
 } // namespace pluginSystem	

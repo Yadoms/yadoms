@@ -116,39 +116,23 @@ PluginInstanceManager.getAll = function (callback, sync) {
 };
 
 /**
- * Get the pluginInstance status
+ * Get the pluginInstance state
  * @param pluginInstance
  * @param callback
  */
-PluginInstanceManager.getStatus = function(pluginInstance, callback) {
+PluginInstanceManager.getState = function (pluginInstance, callback) {
    assert(!isNullOrUndefined(pluginInstance), "pluginInstance must be defined");
-   //we ask for the status of current pluginInstance only on non system plugins
-   if (!pluginInstance.isSystemCategory()) {
-      $.getJSON("/rest/plugin/" + pluginInstance.id + "/status/")
-         .done(function(data) {
-            //we parse the json answer
-            //the default answer is false
-            var result = false;
-            if (data.result != "true")
-            {
-               notifyError($.t("objects.pluginInstance.errorGettingStatus", {pluginName : pluginInstance.displayName}), JSON.stringify(data));
-               return;
-            }
-            if (parseBool(data.data.running))
-            {
-               result = true;
-            }
-            if ($.isFunction(callback))
-               callback(result);
+   assert($.isFunction(callback), "callback must be a function");
 
-            //we update the lastRunningStatus
-            pluginInstance.lastRunningStatus = result;
-
-            return result;
-         })
-         .fail(function() { notifyError($.t("objects.pluginInstance.errorGettingStatus", {pluginName : pluginInstance.displayName})); });
-   }
-};
+   //we ask for the started status of current pluginInstance only on non system plugins
+    if (!pluginInstance.isSystemCategory()) {
+        $.getJSON("/rest/plugin/" + pluginInstance.id + "/state/")
+            .done(function(data) {
+                callback(data.result == "true" ? data.data : "kUnknwonValue");
+            })
+            .fail(function () { notifyError($.t("objects.pluginInstance.errorGettingState", { pluginName: pluginInstance.displayName })); });
+    }
+}; 
 
 /**
  * Start a plugin instance

@@ -65,5 +65,12 @@
             }      
          }
       }
-   }
+   },
+	"customLabels": {
+		"pluginState": {
+			"connecting": "Connexion en cours...",
+			"phoneConnected": "Connexion au téléphone réussie...",
+			"connectionFailed": "Echec de connexion au téléphone..."
+		}
+	}
 }

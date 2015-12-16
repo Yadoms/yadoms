@@ -278,7 +278,9 @@
           "enableDisable": "Activer / désactiver le plugin",
           "startStop": "Démarrer / arrêter le plugin",
           "running": "Démarré",
+					"starting": "Démarrage...",
           "stopped": "Arrêté",
+					"error": "Erreur",
           "configure": "Configurer le plugin",
           "delete": "Supprimer le plugin",
           "errorGettingPluginList": "Erreur lors de la récupération de la liste des plugins",
@@ -527,7 +529,7 @@
   },
   "objects": {
     "pluginInstance": {
-      "errorGettingStatus": "Erreur lors de la récupération de l'état du plugin __pluginName__",
+      "errorGettingState": "Erreur lors de la récupération de l'état du plugin __pluginName__",
       "errorStarting": "Erreur lors du démarrage du plugin __pluginName__",
       "errorStopping": "Erreur lors de l'arrêt du plugin __pluginName__",
       "errorCreating": "Erreur lors de la création de __pluginName__",

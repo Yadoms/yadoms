@@ -52,11 +52,12 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    try
    {
+      context->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
+
+      YADOMS_LOG(debug) << "CMegatecUps is starting...";
+
       // Load configuration values (provided by database)
       m_configuration.initializeWith(context->getConfiguration());
-
-      // the main loop
-      YADOMS_LOG(debug) << "CMegatecUps is running...";
 
       m_waitForAnswerTimer = context->getEventHandler().createTimer(kAnswerTimeout, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(2));
       m_waitForAnswerTimer->stop();
@@ -64,9 +65,10 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
       m_upsStatusRequestTimer->stop();
 
       // Create the connection
-      createConnection(context->getEventHandler());
+      createConnection(context);
 
-      while(1)
+      // the main loop
+      while (true)
       {
          // Wait for an event
          switch(context->getEventHandler().waitForEvents())
@@ -105,7 +107,7 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
                m_configuration.initializeWith(newConfigurationData);
 
                if (needToReconnect)
-                  createConnection(context->getEventHandler());
+                  createConnection(context);
 
                break;
             }
@@ -124,7 +126,7 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
                m_logger.logReceived(buffer);
 
                // Message are in ASCII format
-               std::string message((const char*)(buffer.begin()), buffer.size());
+               std::string message(reinterpret_cast<const char*>(buffer.begin()), buffer.size());
                processDataReceived(context, message);
                break;
             }
@@ -142,7 +144,7 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
             }
          case kProtocolErrorRetryTimer:
             {
-               createConnection(context->getEventHandler());
+               createConnection(context);
                break;
             }
          default:
@@ -159,10 +161,12 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
    }
 }
 
-void CMegatecUps::createConnection(shared::event::CEventHandler& eventHandler)
+void CMegatecUps::createConnection(boost::shared_ptr<yApi::IYPluginApi> context)
 {
+   context->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
+
    // Create the port instance
-   m_port = CMegatecUpsFactory::constructPort(m_configuration, eventHandler, kEvtPortConnection, kEvtPortDataReceived);
+   m_port = CMegatecUpsFactory::constructPort(m_configuration, context->getEventHandler(), kEvtPortConnection, kEvtPortDataReceived);
    m_port->start();
 }
 
@@ -215,7 +219,7 @@ void CMegatecUps::onCommand(boost::shared_ptr<yApi::IYPluginApi> context, const 
 void CMegatecUps::processConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    YADOMS_LOG(debug) << "UPS is now connected";
-   context->recordPluginEvent(yApi::IYPluginApi::kInfo, "UPS is now connected");
+   context->setPluginState(yApi::historization::EPluginState::kRunning);
 
    try
    {
@@ -268,7 +272,7 @@ void CMegatecUps::protocolErrorProcess(boost::shared_ptr<yApi::IYPluginApi> cont
 void CMegatecUps::processUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    YADOMS_LOG(debug) << "UPS connection was lost";
-   context->recordPluginEvent(yApi::IYPluginApi::kInfo, "UPS connection was lost");
+   context->setPluginState(yApi::historization::EPluginState::kError, "connectionFailed");
 
    destroyConnection();
 }

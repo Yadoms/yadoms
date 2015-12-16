@@ -30,8 +30,8 @@ namespace web { namespace rest { namespace service {
       shared::CDataContainer deletePlugin(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  
       shared::CDataContainer deleteAllPlugins(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  
 
-      shared::CDataContainer getInstanceStatus(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
-      shared::CDataContainer startInstance(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
+      shared::CDataContainer getInstanceState(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer startInstance(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
       shared::CDataContainer stopInstance(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
 
       shared::CDataContainer createDevice(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);

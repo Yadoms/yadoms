@@ -35,6 +35,10 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    try
    {
+      context->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
+
+      YADOMS_LOG(debug) << "CFakePlugin is starting...";
+
       // Load configuration values (provided by database)
       m_configuration.initializeWith(context->getConfiguration());
       // Trace the configuration (just for test)
@@ -64,10 +68,10 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
       // Timer used to send fake sensor states periodically
       context->getEventHandler().createTimer(kSendSensorsStateTimerEventId, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(10));
 
+      context->setPluginState(yApi::historization::EPluginState::kRunning);
+
       // the main loop
-      YADOMS_LOG(debug) << "CFakePlugin is running...";
-      context->recordPluginEvent(yApi::IYPluginApi::kInfo, "started");
-      while(1)
+      while (1)
       {
          // Wait for an event
          switch(context->getEventHandler().waitForEvents())
@@ -84,7 +88,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
                // Configuration was updated
                shared::CDataContainer newConfiguration = context->getEventHandler().getEventData<shared::CDataContainer>();
                YADOMS_LOG(debug) << "configuration was updated...";
-               context->recordPluginEvent(yApi::IYPluginApi::kInfo, "Configuration was updated");
+               context->setPluginState(yApi::historization::EPluginState::kCustom, "configurationUpdated");
                BOOST_ASSERT(!newConfiguration.empty());  // newConfigurationValues shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
                // Take into account the new configuration
@@ -196,5 +200,5 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
       YADOMS_LOG(information) << "Thread is stopping...";
    }
 
-   context->recordPluginEvent(yApi::IYPluginApi::kInfo, "stopped");
+   context->setPluginState(yApi::historization::EPluginState::kStopped);
 }

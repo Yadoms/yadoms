@@ -18,6 +18,7 @@
 #include "Illumination.h"
 #include "Load.h"
 #include "Message.h"
+#include "PluginState.h"
 #include "Power.h"
 #include "PowerFactor.h"
 #include "Pressure.h"

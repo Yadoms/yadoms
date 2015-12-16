@@ -6,5 +6,10 @@
 			"name": "Serial port",
 			"description": "The serial port connected to the teleinfo USB reader"
 		}
+	},
+	"customLabels": {
+		"pluginState": {
+			"connectionLost": "Connection to TeleInfo module was lost"
+		}
 	}
 }

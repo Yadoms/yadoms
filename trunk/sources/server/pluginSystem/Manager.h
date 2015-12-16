@@ -128,7 +128,6 @@ namespace pluginSystem
       /// \brief           Stop a running instance of plugin
       /// \param [in] id   Instance Id
       /// \throw           CInvalidParameter if id is unknown
-      /// \note            Just start instance, doesn't modify data in base
       //--------------------------------------------------------------
       void stopInstance(int id);
 
@@ -137,9 +136,17 @@ namespace pluginSystem
       /// \param [in] id   Instance Id
       /// \return          true if instance is running
       /// \throw           CInvalidParameter if id is unknown
-      /// \note            Just start instance, doesn't modify data in base
       //--------------------------------------------------------------
       bool isInstanceRunning(int id) const;
+
+      //--------------------------------------------------------------
+      /// \brief           Get the state of a particular instance of plugin
+      /// \param [in] id   Instance Id
+      /// \return          The instance state data
+      /// \throw           CInvalidParameter if id is unknown
+      //--------------------------------------------------------------
+      shared::CDataContainer getInstanceState(int id) const;
+
 
       //--------------------------------------------------------------
       /// \brief           Signal an asynchronous event on plugin manager

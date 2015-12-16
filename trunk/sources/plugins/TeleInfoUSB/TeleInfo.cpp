@@ -83,8 +83,6 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
                   processTeleInfoUnConnectionEvent(context);
 
                break;
-
-               break;
             }
          case kEvtPortDataReceived:
             {
@@ -107,8 +105,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
                break;
             }
          }
-
-      };
+      }
    }
    // Plugin must catch this end-of-thread exception to make its cleanup.
    // If no cleanup is necessary, still catch it, or Yadoms will consider
@@ -171,7 +168,7 @@ void CTeleInfo::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> context
 void CTeleInfo::processTeleInfoConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    YADOMS_LOG(debug) << "TeleInfo is now connected";
-   context->recordPluginEvent(yApi::IYPluginApi::kInfo, "TeleInfo is now connected");
+   context->setPluginState(yApi::historization::EPluginState::kRunning);
 
    try
    {
@@ -188,7 +185,7 @@ void CTeleInfo::processTeleInfoConnectionEvent(boost::shared_ptr<yApi::IYPluginA
 void CTeleInfo::processTeleInfoUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    YADOMS_LOG(debug) << "TeleInfo connection was lost";
-   context->recordPluginEvent(yApi::IYPluginApi::kInfo, "TeleInfo connection was lost");
+   context->setPluginState(yApi::historization::EPluginState::kError, "connectionLost");
 
    destroyConnection();
 }

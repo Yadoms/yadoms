@@ -24,5 +24,11 @@
 				}
 			}
 		}
+	},
+	"customLabels": {
+		"pluginState": {
+			"connecting": "Connexion en cours...",
+			"connectionFailed": "Erreur de connexion, réessai dans un moment..."
+		},
 	}
 }

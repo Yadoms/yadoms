@@ -36,6 +36,8 @@ void CSmsDialer::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    try
    {
+      context->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
+
       // Load configuration values (provided by database)
       m_configuration.initializeWith(context->getConfiguration());
 
@@ -76,7 +78,7 @@ void CSmsDialer::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 void CSmsDialer::processNotConnectedState(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    YADOMS_LOG(information) << "Phone is not connected"  << std::endl;
-   context->recordPluginEvent(yApi::IYPluginApi::kInfo, "Phone is not connected");
+   context->setPluginState(yApi::historization::EPluginState::kCustom, "phoneConnected");
 
    m_incommingSmsPollTimer->stop();
    m_connectionTimer->start();
@@ -114,7 +116,11 @@ void CSmsDialer::processNotConnectedState(boost::shared_ptr<yApi::IYPluginApi> c
             }
          case kEvtTimerTryToConnectToPhone:
             {
-               m_phone->connect();
+               if (m_phone->connect())
+                  context->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
+               else
+                  context->setPluginState(yApi::historization::EPluginState::kError, "connectionFailed");
+
                break;
             }
          case kEvtTimerCheckForIncommingSms:
@@ -138,8 +144,8 @@ void CSmsDialer::processNotConnectedState(boost::shared_ptr<yApi::IYPluginApi> c
 
 void CSmsDialer::processConnectedState(boost::shared_ptr<yApi::IYPluginApi> context)
 {
-   YADOMS_LOG(information) << "Phone is connected"  << std::endl;
-   context->recordPluginEvent(yApi::IYPluginApi::kInfo, "Phone is connected");
+   YADOMS_LOG(information) << "Phone is connected" << std::endl;
+   context->setPluginState(yApi::historization::EPluginState::kCustom, "phoneConnected");
 
    m_connectionTimer->stop();
 
@@ -163,6 +169,8 @@ void CSmsDialer::processConnectedState(boost::shared_ptr<yApi::IYPluginApi> cont
 
    // And start timer for next incoming SMS check
    m_incommingSmsPollTimer->start();
+
+   context->setPluginState(yApi::historization::EPluginState::kRunning);
 
    while (m_phone->isConnected())
    {

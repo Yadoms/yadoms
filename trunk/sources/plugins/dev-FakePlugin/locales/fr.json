@@ -82,5 +82,11 @@
 			"name": "Reception MMS",
 			"description": "Indique si le destinataire peut recevoir des MMS"
 		}
+	},
+	"customLabels": {
+		"pluginState": {
+			"connecting": "Connexion en cours...",
+			"configurationUpdated": "Configuration mise à jour"
+		}
 	}
 }

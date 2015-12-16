@@ -58,6 +58,7 @@ namespace shared { namespace plugin { namespace yPluginApi {
    const CStandardCapacity& CStandardCapacities::Illumination = CStandardCapacity("illumination", CStandardUnits::Lux, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Load = CStandardCapacity("load", CStandardUnits::Percent, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Message = CStandardCapacity("message", CStandardUnits::NoUnits, EKeywordDataType::kString);
+   const CStandardCapacity& CStandardCapacities::PluginState = CStandardCapacity("pluginState", CStandardUnits::NoUnits, EKeywordDataType::kNoData);
    const CStandardCapacity& CStandardCapacities::Power = CStandardCapacity("power", CStandardUnits::Watt, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::PowerFactor = CStandardCapacity("powerFactor", CStandardUnits::NoUnits, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Pressure = CStandardCapacity("pressure", CStandardUnits::hectoPascal, EKeywordDataType::kNumeric);

@@ -33,7 +33,7 @@ namespace web { namespace rest { namespace service {
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("instance"), CPlugin::getAllPluginsInstance);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("instance")("handleManuallyDeviceCreation"), CPlugin::getAllPluginsInstanceForManualDeviceCreation);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*"), CPlugin::getOnePlugin);
-      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("status"), CPlugin::getInstanceStatus);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("state"), CPlugin::getInstanceState);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("devices"), CPlugin::getPluginDevices);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("binding")("*"), CPlugin::getBinding);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("*")("start"), CPlugin::startInstance);
@@ -278,32 +278,28 @@ namespace web { namespace rest { namespace service {
       return CResult::GenerateSuccess();
    }
 
-   shared::CDataContainer CPlugin::getInstanceStatus(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)  
+   shared::CDataContainer CPlugin::getInstanceState(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       try
       {
-         if(parameters.size()>1)
+         if (parameters.size()>1)
          {
             int instanceId = boost::lexical_cast<int>(parameters[1]);
 
             boost::shared_ptr<database::entities::CPlugin> pluginInstanceFound = m_pluginManager->getInstance(instanceId);
-            if(pluginInstanceFound)
-            {
-               shared::CDataContainer result;
-               result.set("running", m_pluginManager->isInstanceRunning(instanceId));
-               return CResult::GenerateSuccess(result);
-            }
-            
+            if (pluginInstanceFound)
+               return CResult::GenerateSuccess(m_pluginManager->getInstanceState(instanceId));
+
             return CResult::GenerateError("invalid parameter. Can not retreive instance id");
          }
-         
+
          return CResult::GenerateError("invalid parameter. Can not retreive instance id in url");
       }
-      catch(std::exception &ex)
+      catch (std::exception &ex)
       {
          return CResult::GenerateError(ex);
       }
-      catch(...)
+      catch (...)
       {
          return CResult::GenerateError("unknown exception in reading plugin instance status");
       }
