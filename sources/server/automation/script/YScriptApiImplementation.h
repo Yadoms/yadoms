@@ -52,7 +52,7 @@ namespace automation { namespace script
       virtual std::string readKeyword(int keywordId) const;
       virtual std::string waitForNextAcquisition(int keywordId, const std::string& timeout = std::string()) const;
       virtual std::pair<int, std::string> waitForNextAcquisitions(const std::vector<int> keywordIdList, const std::string& timeout) const;
-      virtual void at(const std::string& dateTime) const;
+      virtual void wait(const std::string& dateTimeOrDuration) const;
       virtual void writeKeyword(int keywordId, const std::string& newState);
       virtual void sendNotification(int keywordId, int recipientId, const std::string& message);
       virtual std::string getInfo(EInfoKeys key) const;

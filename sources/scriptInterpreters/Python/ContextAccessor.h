@@ -55,7 +55,7 @@ protected:
    void processReadKeyword             (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
    void processWaitForNextAcquisition  (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
    void processWaitForNextAcquisitions (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
-   void processAt                      (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
+   void processWait                    (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
    void processWriteKeyword            (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
    void processSendNotification        (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
    void processGetInfo                 (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);

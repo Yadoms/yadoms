@@ -115,29 +115,33 @@ std::string CYScriptApiImplementation::readKeyword(int keywordId) const
    }
 }
 
-void CYScriptApiImplementation::at(const std::string& dateTime) const
+void CYScriptApiImplementation::wait(const std::string& dateTimeOrDuration) const
 {
    try
    {
-      if (dateTime.empty())
-         throw std::out_of_range("non-empty dateTime must be provided");
+      if (dateTimeOrDuration.empty())
+         throw std::out_of_range("non-empty dateTimeOrDuration must be provided");
 
-      CTimeAdapter timeoutAdapter(dateTime);
-      if (!timeoutAdapter.isDateTime())
-         throw std::out_of_range("dateTime bad format");
+      CTimeAdapter timeoutAdapter(dateTimeOrDuration);
+      if (timeoutAdapter.isDateTime())
+      {
+         if (timeoutAdapter.dateTime() <= shared::currentTime::Provider::now())
+            return; // dateTime in the past
 
-      if (timeoutAdapter.dateTime() <= shared::currentTime::Provider::now())
-         return; // dateTime in the past
-
-      enum { kTimePointEventId = shared::event::kUserFirstId + 1 };
-      shared::event::CEventHandler eventHandler;
-      eventHandler.createTimePoint(kTimePointEventId, timeoutAdapter.dateTime());
-
-      eventHandler.waitForEvents();
+         enum { kTimePointEventId = shared::event::kUserFirstId + 1 };
+         shared::event::CEventHandler eventHandler;
+         eventHandler.createTimePoint(kTimePointEventId, timeoutAdapter.dateTime());
+         eventHandler.waitForEvents();
+      }
+      else
+      {
+         shared::event::CEventHandler eventHandler;
+         eventHandler.waitForEvents(timeoutAdapter.duration());
+      }
    }
    catch (std::exception& exception)
    {
-      m_ruleLogger->log(std::string("at : ") + exception.what());
+      m_ruleLogger->log(std::string("wait : ") + exception.what());
       throw;
    }
 }
