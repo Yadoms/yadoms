@@ -11,6 +11,7 @@
 #include <shared/exception/NotSupported.hpp>
 #include <shared/exception/EmptyResult.hpp>
 #include <shared/ServiceLocator.h>
+#include <shared/plugin/yPluginApi/historization/PluginState.h>
 
 #include "ExternalPluginLibrary.h"
 #include "InternalPluginLibrary.h"
@@ -493,6 +494,29 @@ bool CManager::isInstanceRunning(int id) const
 {
    boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
    return m_runningInstances.find(id) != m_runningInstances.end();
+}
+
+shared::CDataContainer CManager::getInstanceState(int id) const
+{
+   if (!isInstanceRunning(id))
+   {
+      shared::CDataContainer defaultState;
+      defaultState.set("state", "Stopped");
+      return defaultState;
+   }
+
+   // First find the pluginState keyword associated with the plugin
+   boost::shared_ptr<database::entities::CKeyword> stateKw = m_dataProvider->getKeywordRequester()->getKeyword(m_dataProvider->getDeviceRequester()->getDevice(id, "pluginState")->Id, "state");
+   try
+   {
+      return m_dataProvider->getAcquisitionRequester()->getKeywordLastData(stateKw->Id)->Value;
+   }
+   catch (shared::exception::CEmptyResult&)
+   {
+      shared::CDataContainer defaultState;
+      defaultState.set("state", shared::plugin::yPluginApi::historization::EPluginState::kUnknownValue);
+      return defaultState;
+   }
 }
 
 void CManager::postCommand(int id, boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command)

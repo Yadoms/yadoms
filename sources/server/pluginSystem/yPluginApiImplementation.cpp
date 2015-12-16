@@ -8,6 +8,8 @@
 namespace pluginSystem
 {
 
+const std::string CYPluginApiImplementation::PluginStateDeviceName("pluginState");
+
 CYPluginApiImplementation::CYPluginApiImplementation(
    boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformations,
    const boost::filesystem::path libraryPath, 
@@ -18,8 +20,14 @@ CYPluginApiImplementation::CYPluginApiImplementation(
    boost::shared_ptr<database::IRecipientRequester> recipientRequester,
    boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester,
    boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer)
-   :m_informations(pluginInformations), m_libraryPath(libraryPath),  m_pluginData(pluginData), m_pluginEventLoggerRequester(pluginEventLoggerRequester),
-   m_deviceManager(deviceManager), m_keywordRequester(keywordRequester), m_recipientRequester(recipientRequester), m_acquisitionRequester(acquisitionRequester),
+   :m_informations(pluginInformations),
+   m_libraryPath(libraryPath),
+   m_pluginData(pluginData),
+   m_pluginEventLoggerRequester(pluginEventLoggerRequester),
+   m_deviceManager(deviceManager),
+   m_keywordRequester(keywordRequester),
+   m_recipientRequester(recipientRequester),
+   m_acquisitionRequester(acquisitionRequester),
    m_acquisitionHistorizer(acquisitionHistorizer)
 {
 
@@ -29,12 +37,31 @@ CYPluginApiImplementation::~CYPluginApiImplementation()
 {
 }
 
+void CYPluginApiImplementation::setPluginState(const shared::plugin::yPluginApi::historization::EPluginState& state, const std::string & customMessageId)
+{
+   if (!customMessageId.empty() && (state != shared::plugin::yPluginApi::historization::EPluginState::kCustomValue || state != shared::plugin::yPluginApi::historization::EPluginState::kErrorValue))
+      YADOMS_LOG(warning) << "Custom message ID \"" << customMessageId << "\" will be ignored as state is " << state.toString();
+
+   pluginState()->set(state, customMessageId);
+   historizeData(PluginStateDeviceName, *pluginState());
+
+   switch (state)
+   {
+   case shared::plugin::yPluginApi::historization::EPluginState::kErrorValue: recordPluginEvent(PluginEventSeverity::kError, "error"); break;
+   case shared::plugin::yPluginApi::historization::EPluginState::kStoppedValue: recordPluginEvent(PluginEventSeverity::kInfo, "stopped"); break;
+   case shared::plugin::yPluginApi::historization::EPluginState::kRunningValue: recordPluginEvent(PluginEventSeverity::kInfo, "started"); break;
+   case shared::plugin::yPluginApi::historization::EPluginState::kCustomValue: recordPluginEvent(PluginEventSeverity::kInfo, std::string("custom event (") + customMessageId + std::string(")")); break;
+   default: break;
+   }
+}
+
+
 bool CYPluginApiImplementation::deviceExists(const std::string& device) const
 {
    return m_deviceManager->deviceExists(getPluginId(), device);
 }
 
-const shared::CDataContainer CYPluginApiImplementation::getDeviceDetails(const std::string& device) const
+shared::CDataContainer CYPluginApiImplementation::getDeviceDetails(const std::string& device) const
 {
    return m_deviceManager->getDevice(getPluginId(), device)->Details;
 }
@@ -80,6 +107,21 @@ void CYPluginApiImplementation::declareCustomKeyword(const std::string& device, 
    keywordEntity.Details = details;
 
    m_keywordRequester->addKeyword(keywordEntity);
+}
+
+boost::shared_ptr<shared::plugin::yPluginApi::historization::CPluginState> CYPluginApiImplementation::pluginState()
+{
+   if (!m_pluginState)
+   {
+      m_pluginState = boost::make_shared <shared::plugin::yPluginApi::historization::CPluginState>();
+
+      if (!deviceExists(PluginStateDeviceName))
+         declareDevice(PluginStateDeviceName, "Plugin state");
+      if (!keywordExists(PluginStateDeviceName, *m_pluginState))
+         declareKeyword(PluginStateDeviceName, *m_pluginState);
+   }
+
+   return m_pluginState;
 }
 
 void CYPluginApiImplementation::declareKeyword(const std::string& device, const shared::plugin::yPluginApi::historization::IHistorizable& keyword, const shared::CDataContainer& details)

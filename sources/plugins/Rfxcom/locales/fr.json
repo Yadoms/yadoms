@@ -1103,5 +1103,12 @@
             }
          }
       }
-   }
+   },
+	"customLabels": {
+		"pluginState": {
+			"connecting": "Connexion en cours...",
+         "connected": "Connexion établie",
+         "connectionLost": "Connexion perdue"
+		}
+	}
 }

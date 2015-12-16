@@ -65,5 +65,12 @@
             }      
          }
       }
-   }
+   },
+	"customLabels": {
+		"pluginState": {
+			"connecting": "Connecting...",
+			"phoneConnected": "Connected to phone...",
+			"connectionFailed": "Connection to phone failed..."
+		}
+	}
 }

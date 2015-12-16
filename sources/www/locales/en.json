@@ -335,8 +335,10 @@
           },
           "enableDisable": "Enable / Disable the plugin",
           "startStop": "Start / Stop the plugin",
-          "running": "Running",
-          "stopped": "Stopped",
+		  "running": "Running",
+		  "starting": "Starting...",
+		  "stopped": "Stopped",
+		  "error": "Error",
           "configure": "Configure the plugin",
           "delete": "Delete the plugin",
           "errorGettingPluginList": "An error has occurred acquiring plugin list",
@@ -587,7 +589,7 @@
   },
   "objects": {
     "pluginInstance": {
-      "errorGettingStatus": "An error has occurred getting status of plugin __pluginName__",
+      "errorGettingState": "An error has occurred getting state of plugin __pluginName__",
       "errorStarting": "An error has occurred starting __pluginName__",
       "errorStopping": "An error has occurred stopping __pluginName__",
       "errorCreating": "An error has occurred creating __pluginName__",

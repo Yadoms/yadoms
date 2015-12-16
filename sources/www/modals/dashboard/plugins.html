@@ -6,9 +6,9 @@
       <tr>
          <td data-i18n="modals.dashboard.sub-windows.plugins.table.displayName"></td>
          <td data-i18n="modals.dashboard.sub-windows.plugins.table.type"></td>
-         <td data-i18n="modals.dashboard.sub-windows.plugins.table.status"></td>
          <td data-i18n="modals.dashboard.sub-windows.plugins.table.launchAtStartup"></td>
          <td data-i18n="modals.dashboard.sub-windows.plugins.table.actions"></td>
+          <td data-i18n="modals.dashboard.sub-windows.plugins.table.status"></td>
       </tr>
       <!-- plugin instance will be listed here-->
    </table>
@@ -49,37 +49,39 @@
    }
 
    function addPluginInstanceToDom(pi) {
-      var actionsBtns = "<div class=\"btn-group\">\n" +
+       var name = "<span>" + pi.displayName + "</span>";
+
+       var type = "<img src=\"plugins/" + pi.type + "/icon.png\" class=\"img-thumbnail dashboard-table-icon\">&nbsp;&nbsp;" +
+                   "<span>" + $.t(pi.type + ":name", { defaultValue: pi.package.name }) + "</span>";
+
+       var autoStartCommand = "<input class=\"cb-autoStart\" type=\"checkbox\">";
+
+       var actionsBtns = "<div class=\"btn-group\">\n" +
               "<button type=\"button\" class=\"btn btn-startStop\" data-i18n=\"[title]modals.dashboard.sub-windows.plugins.startStop\"><span class=\"fa fa-power-off\"></span></button>\n" +
               "<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.plugins.configure\"><span class=\"fa fa-cog\"></span></button>\n" +
               "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.plugins.delete\"><span class=\"fa fa-trash\"></span></button>\n" +
               "</div>";
 
-      var autoStartCommand = "<input class=\"cb-autoStart\" type=\"checkbox\">";
-
-      var statusField = "<span class=\"label label-success label-status\"></span>\n";/* +
-              "&nbsp;&nbsp;" +
-              "<button type=\"button\" class=\"btn btn-startStop\"></button>";*/
-
-      var name = "<span>" + pi.displayName + "</span>";
-
-      var type = "<img src=\"plugins/" + pi.type + "/icon.png\" class=\"img-thumbnail dashboard-table-icon\">&nbsp;&nbsp;" +
-                  "<span>" + $.t(pi.type + ":name", {defaultValue:pi.package.name}) + "</span>";
+      var statusField = "<span class=\"label label-success label-status\"></span>\n";
 
       //we add it to the DOM
       var $pluginInstanceList = $("table#plugin-instance-list");
 
-      $pluginInstanceList.append("<tr plugin-id=\"" + pi.id + "\"><td class=\"plugin-displayName vert-align\"></td><td class=\"plugin-type vert-align\" align=\"left\"></td><td class=\"plugin-status vert-align\"></td><td class=\"plugin-autoStart vert-align\"></td><td class=\"plugin-actions vert-align\"></td></tr>");
+      $pluginInstanceList.append("<tr plugin-id=\"" + pi.id + "\">" +
+          "<td class=\"plugin-displayName vert-align\"></td>" +
+          "<td class=\"plugin-type vert-align\" align=\"left\"></td>" +
+          "<td class=\"plugin-autoStart vert-align\"></td>" +
+          "<td class=\"plugin-actions vert-align\"></td>" +
+          "<td class=\"plugin-status vert-align\"></td>" +
+          "</tr>");
 
       var $pluginInstanceRow = getPluginDomRow(pi);
       //we fill the data
       $pluginInstanceRow.find("td.plugin-displayName").html(name);
       $pluginInstanceRow.find("td.plugin-type").html(type);
       $pluginInstanceRow.find("td.plugin-autoStart").html(autoStartCommand);
-      $pluginInstanceRow.find("td.plugin-status").html(statusField);
-
-      //we add actions to the plugin
       $pluginInstanceRow.find("td.plugin-actions").append(actionsBtns);
+      $pluginInstanceRow.find("td.plugin-status").html(statusField);
 
       //we set autostart value
       $pluginInstanceRow.find("input.cb-autoStart").prop("checked", pi.autoStart);
@@ -98,7 +100,7 @@
       return function() {
          //we deactivate the button until next status will be acquired to prevent flooding
          getPluginDomRow(pi).find("button.btn-startStop").prop('disabled', true);
-         if (pi.lastRunningStatus) {
+         if (pi.lastStartedStatus) {
             //we ask for stop
             PluginInstanceManager.stop(pi, function() { getPluginDomRow(pi).find("button.btn-startStop").prop('disabled', false);});
          }
@@ -163,29 +165,51 @@
    }
 
    function periodicDashboardPluginTask() {
-      //periodically we check the status of each plugin
-      if (serverIsOnline) {
-         $.each(pluginInstanceList, function(index, value) {
-            //we ask async for the status
-            PluginInstanceManager.getStatus(value, function (status) {
-               var $row = getPluginDomRow(value);
-               if (status != value.lastRunningStatus) {
-                  var textStatus = "";
-                  var btn;
-                  var label;
+       //periodically we check the status of each plugin
+       if (serverIsOnline) {
+           $.each(pluginInstanceList, function (index, pluginInstance) {
 
-                  if(status) {
-                     $row.find("span.label-status").addClass("label-success").removeClass("label-danger").text($.t("modals.dashboard.sub-windows.plugins.running"));
-                     $row.find("button.btn-startStop").addClass("btn-warning").removeClass("btn-success");
-                  }
-                  else {
-                     $row.find("span.label-status").addClass("label-danger").removeClass("label-success").text($.t("modals.dashboard.sub-windows.plugins.stopped"));
-                     $row.find("button.btn-startStop").addClass("btn-success").removeClass("btn-warning");
-                  }
-               }
-            });
-         });
-      }
+               PluginInstanceManager.getState(pluginInstance, function (status) {
+                   var $row = getPluginDomRow(pluginInstance);
+                   if (status.state != pluginInstance.lastStatus) {
+
+                       // Update start/stop button
+                       var $startStopButton = $row.find("button.btn-startstop");
+                       if (status.state == "Stopped") {
+                           $startStopButton.addClass("btn-success").removeClass("btn-warning");
+                       }
+                       else {
+                           $startStopButton.addClass("btn-warning").removeClass("btn-success");
+                       }
+
+                       // Update state label
+                       var $label = $row.find("span.label-status");
+                       debugger;
+                       switch(status.state) {
+                           case "Error":
+                               $label.removeClass("label-success").removeClass("label-warning").addClass("label-danger").text(getCustomMessage(pluginInstance, status.messageId, "modals.dashboard.sub-windows.plugins.error"));
+                               break;
+                           case "Stopped":
+                               $label.removeClass("label-success").addClass("label-warning").removeClass("label-danger").text($.t("modals.dashboard.sub-windows.plugins.stopped"));
+                               break;
+                           case "Running":
+                               $label.addClass("label-success").removeClass("label-warning").removeClass("label-danger").text($.t("modals.dashboard.sub-windows.plugins.running"));
+                               break;
+                           case "Custom":
+                               $label.removeClass("label-success").addClass("label-warning").removeClass("label-danger").text(getCustomMessage(pluginInstance, status.messageId, "modals.dashboard.sub-windows.plugins.starting"));
+                               break;
+                           default:
+                               $label.removeClass("label-danger").text("");
+                               break;
+                       }
+                   }
+               });
+           });
+       }
+   }
+
+   function getCustomMessage(pluginInstance, messageId, defaultMessage) {
+       return $.t(pluginInstance.type + ":customLabels.pluginState." + messageId, { defaultValue: $.t(defaultMessage) });
    }
 
    function addNewPlugin() {

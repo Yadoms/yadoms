@@ -82,5 +82,11 @@
 			"name": "Receive MMS",
 			"description": "Indicate if recipient could receive MMS"
 		}
+	},
+	"customLabels": {
+		"pluginState": {
+			"connecting": "Connecting...",
+			"configurationUpdated": "Configuration updated"
+		}
 	}
 }

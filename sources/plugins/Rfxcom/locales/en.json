@@ -1103,5 +1103,12 @@
             }
          }
       }
-   }
+   },
+	"customLabels": {
+		"pluginState": {
+			"connecting": "Connecting...",
+         "connected": "RFXCom is now connected",
+         "connectionLost": "RFXCom connection was lost"
+		}
+	}
 }

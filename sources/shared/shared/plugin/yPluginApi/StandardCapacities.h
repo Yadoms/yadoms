@@ -34,6 +34,7 @@ namespace shared { namespace plugin { namespace yPluginApi {
       static const CStandardCapacity & Illumination;      // illumination      | lux                   | Illumination (lux)
       static const CStandardCapacity & Load;              // load              | percent               | Load (%)
       static const CStandardCapacity & Message;           // message           |  -                    | A message (contains "from", "to" and "body" fields)
+      static const CStandardCapacity & PluginState;       // pluginState       | none                  | Specific capacity for plugin states
       static const CStandardCapacity & Power;             // power             | Watt                  | Power
       static const CStandardCapacity & PowerFactor;       // powerFactor       |  -                    | Power factor (-1 to 1)
       static const CStandardCapacity & Pressure;          // pressure          | hPa                   | Pressure

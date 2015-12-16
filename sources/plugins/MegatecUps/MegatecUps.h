@@ -73,9 +73,9 @@ protected:
 
    //--------------------------------------------------------------
    /// \brief	                     Create the connection to the UPS
-   /// \param [in] eventHandler     Event handler to be notified on events on the connection
+   /// \param [in] context          Plugin execution context (Yadoms API)
    //--------------------------------------------------------------
-   void createConnection(shared::event::CEventHandler& eventHandler);
+   void createConnection(boost::shared_ptr<yApi::IYPluginApi> context);
 
    //--------------------------------------------------------------
    /// \brief	                     Close the connection to the UPS

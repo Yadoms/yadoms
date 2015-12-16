@@ -5,20 +5,21 @@
  * @constructor
  */
 function PluginInstance(id, displayName, type, configuration, autoStart, category) {
-   //id is optional because null is used when creating new instance
-   assert(!isNullOrUndefined(displayName), "displayName of a pluginInstance must be defined");
-   assert(!isNullOrUndefined(type), "type of a pluginInstance must be defined");
-   assert(!isNullOrUndefined(configuration), "configuration of a pluginInstance must be defined");
-   assert(!isNullOrUndefined(autoStart), "autoStart of a pluginInstance must be defined");
-   assert(!isNullOrUndefined(category), "category of a pluginInstance must be defined");
+    //id is optional because null is used when creating new instance
+    assert(!isNullOrUndefined(displayName), "displayName of a pluginInstance must be defined");
+    assert(!isNullOrUndefined(type), "type of a pluginInstance must be defined");
+    assert(!isNullOrUndefined(configuration), "configuration of a pluginInstance must be defined");
+    assert(!isNullOrUndefined(autoStart), "autoStart of a pluginInstance must be defined");
+    assert(!isNullOrUndefined(category), "category of a pluginInstance must be defined");
 
-   this.id = id;
-   this.displayName = displayName;
-   this.type = type;
-   this.configuration = configuration;
-   this.autoStart = autoStart;
-   this.lastRunningStatus = null;
-   this.category = category;
+    this.id = id;
+    this.displayName = displayName;
+    this.type = type;
+    this.configuration = configuration;
+    this.autoStart = autoStart;
+    this.lastStartedStatus = null;//TODO virer
+    this.lastStatus = null;
+    this.category = category;
 }
 
 /**

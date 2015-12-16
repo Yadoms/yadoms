@@ -38,13 +38,14 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    try
    {
+      context->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
+
+      YADOMS_LOG(debug) << "CRfxcom is starting...";
+
       m_currentState = kNotInitialized;
 
       // Load configuration values (provided by database)
       m_configuration.initializeWith(context->getConfiguration());
-
-      // the main loop
-      YADOMS_LOG(debug) << "CRfxcom is running...";
 
       // Create the transceiver
       m_transceiver = CRfxcomFactory::constructTransceiver();
@@ -55,7 +56,8 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
       // Create the connection
       createConnection(context->getEventHandler());
 
-      while(1)
+      // the main loop
+      while (1)
       {
          // Wait for an event
          switch(context->getEventHandler().waitForEvents())
@@ -244,7 +246,7 @@ void CRfxcom::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> context
 void CRfxcom::processRfxcomConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    YADOMS_LOG(debug) << "RFXCom is now connected";
-   context->recordPluginEvent(yApi::IYPluginApi::kInfo, "RFXCom is now connected");
+   context->setPluginState(yApi::historization::EPluginState::kCustom, "connected");
 
    try
    {
@@ -275,7 +277,7 @@ void CRfxcom::errorProcess(boost::shared_ptr<yApi::IYPluginApi> context)
 void CRfxcom::processRfxcomUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    YADOMS_LOG(debug) << "RFXCom connection was lost";
-   context->recordPluginEvent(yApi::IYPluginApi::kInfo, "RFXCom connection was lost");
+   context->setPluginState(yApi::historization::EPluginState::kCustom, "connectionLost");
 
    destroyConnection();
 }
@@ -378,7 +380,7 @@ void CRfxcom::processRfxcomStatusMessage(boost::shared_ptr<yApi::IYPluginApi> co
       if (status.needConfigurationUpdate(m_configuration))
       {
          YADOMS_LOG(warning) << "Unable to set configuration as expected, maybe incompatible protocols were selected";
-         context->recordPluginEvent(yApi::IYPluginApi::kError, "Unable to set configuration as expected, maybe incompatible protocols was selected");
+         context->setPluginState(yApi::historization::EPluginState::kRunning);
          m_currentState = kRfxcomIsRunning;
       }
       else
@@ -392,7 +394,7 @@ void CRfxcom::processRfxcomStatusMessage(boost::shared_ptr<yApi::IYPluginApi> co
 
    default:
       YADOMS_LOG(warning) << "Received non-expected message (RFXCom status)";
-      context->recordPluginEvent(yApi::IYPluginApi::kError, "Received non-expected message (RFXCom status)");
+      context->setPluginState(yApi::historization::EPluginState::kRunning);
       m_currentState = kRfxcomIsRunning;
       break;
    }
@@ -406,12 +408,13 @@ void CRfxcom::processRfxcomReceiverStartedMessage(boost::shared_ptr<yApi::IYPlug
    {
    case kStartReceiver:
       YADOMS_LOG(information) << "Receiver started";
+      context->setPluginState(yApi::historization::EPluginState::kRunning);
       m_currentState = kRfxcomIsRunning;
       break;
 
    default:
       YADOMS_LOG(warning) << "Received non-expected message (Receiver started)";
-      context->recordPluginEvent(yApi::IYPluginApi::kError, "Received non-expected message (Receiver started)");
+      context->setPluginState(yApi::historization::EPluginState::kRunning);
       m_currentState = kRfxcomIsRunning;
       break;
    }
@@ -424,6 +427,7 @@ void CRfxcom::processRfxcomWrongCommandMessage(boost::shared_ptr<yApi::IYPluginA
    {
       // Start receiver message is unknown by old firmwares. In this case, just ignore the message
       YADOMS_LOG(information) << "Receiver started (old firmware)";
+      context->setPluginState(yApi::historization::EPluginState::kRunning);
       m_currentState = kRfxcomIsRunning;
    }
 }
