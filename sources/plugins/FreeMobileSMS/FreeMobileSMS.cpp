@@ -44,7 +44,7 @@ void CFreeMobileSms::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 
       // the main loop
       YADOMS_LOG(debug) << "CFreeMobileSms is running...";
-      context->recordPluginEvent(yApi::IYPluginApi::kInfo, "started");
+      context->setPluginState(yApi::historization::EPluginState::kRunning);
       while(1)
       {
          // Wait for an event
@@ -91,7 +91,7 @@ void CFreeMobileSms::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
       YADOMS_LOG(information) << "Thread is stopping...";
    }
 
-   context->recordPluginEvent(yApi::IYPluginApi::kInfo, "stopped");
+   context->setPluginState(yApi::historization::EPluginState::kStopped);
 }
 
 
