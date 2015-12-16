@@ -34,11 +34,11 @@ widgetViewModelCtor =
                    marginTop: 10
                },
                legend: {
-				  layout: 'horizontal',
-				  align: 'center',
-				  verticalAlign: 'bottom',
-				  borderWidth: 0,
-				  enabled : true
+		   layout: 'horizontal',
+		   align: 'center',
+		   verticalAlign: 'bottom',
+		   borderWidth: 0,
+		   enabled : true
 			   },  
                navigator: {
                    adaptToUpdatedData: false,
@@ -89,9 +89,6 @@ widgetViewModelCtor =
                },
 
                yAxis: { // Default Axis
-			   
-			     //label.formatter -> in case of a unique point. Cf tooltip formatter.
-			   
                },
 
                plotOptions: {
@@ -449,7 +446,7 @@ widgetViewModelCtor =
                                       });
                                   }
                                   var color     = "#606060";// default color
-								  var colorAxis = "#606060";// default color
+				  var colorAxis = "#606060";// default color
                                   try {
 									  color = device.content.color;
 									  if (!parseBool(self.widget.configuration.oneAxis.checkbox))
@@ -493,7 +490,7 @@ widgetViewModelCtor =
                                               },
                                               labels: {
                                                   align: align,
-                                                  format: '{value} ' + unit,
+                                                  format: '{value:.1f} ' + unit,
                                                   style: {
                                                       color: colorAxis
                                                   }
@@ -612,22 +609,22 @@ widgetViewModelCtor =
 								  {
                                       serie.units = $.t(self.keywordInfo[index].units);
 									  
-									  // If only one axis, we show the legend. In otherwise we destroy it
-									  if (parseBool(self.widget.configuration.oneAxis.checkbox)) {
-										serie.options.showInLegend = true;
-										self.chart.legend.renderItem(serie);
-									  }
-									  else{
-										serie.options.showInLegend = false;
-										serie.legendItem = null;
-										self.chart.legend.destroyItem(serie);									  
-									  }
-									  self.chart.legend.render();	
+				      // If only one axis, we show the legend. In otherwise we destroy it
+				      if (parseBool(self.widget.configuration.oneAxis.checkbox)) {
+					serie.options.showInLegend = true;
+					self.chart.legend.renderItem(serie);
+				      }
+				      else{
+					serie.options.showInLegend = false;
+					serie.legendItem = null;
+					self.chart.legend.destroyItem(serie);									  
+				      }
+				      self.chart.legend.render();	
 
 								  }
 	  
-                                  self.refreshingData = false;
-                                  SeriesPromise.resolve(index);
+                                      self.refreshingData = false;
+                                      SeriesPromise.resolve(index);
                               })
                               .fail(function () {
                                   notifyError($.t("chart:errorDuringGettingDeviceData"));
@@ -643,8 +640,29 @@ widgetViewModelCtor =
 
 
        this.finalRefresh = function () {
-           this.chart.hideLoading();
-           this.chart.redraw(false); //without animation
+          self = this;
+
+          console.log ( this.chart );
+          //console.log ( this.chart.series[0].xData.length );
+
+          var NoAvailableData = true;
+
+          $.each(this.chart.series, function (index, value) {
+              if (value.xData.length != 0)
+                NoAvailableData = false;
+          });
+          // TODO : To be finished !!
+          // If for all data, length == 0, we display no Data Available
+          if (NoAvailableData)
+           {
+              self.chart.showLoading($.t("chart:NoAvailableData"));
+           }
+           else
+           {
+              self.chart.hideLoading();
+           }
+
+           self.chart.redraw(false); //without animation
        };
 
        this.DisplaySummary = function (index, nb, device, range, Prefix) {
@@ -661,6 +679,7 @@ widgetViewModelCtor =
                   .done(function (data) {
                       try {
                           if (data.data.data[0] != undefined) {
+                              self.chart.hideLoading(); // If a text was displayed before
                               self.chart.get(self.seriesUuid[index]).addPoint([DateTimeFormatter.isoDateToDate(data.data.data[0].date)._d.getTime().valueOf(), parseFloat(data.data.data[0].avg)], true, false, true);
 
                               //Add also for ranges if any
@@ -732,16 +751,16 @@ widgetViewModelCtor =
                            if (!isNullOrUndefined(serie_range))
                                self.cleanUpChart(serie_range, data.date, cleanValue);
 
-                           //console.log ( parseFloat(data.value) );
-                           console.log(serie);
-
                            // Add new point depending of the interval
                            switch (self.interval) {
                                case "HOUR":
                                    console.log(serie);
 
                                    if (!isNullOrUndefined(serie))
+                                   {
+                                       self.chart.hideLoading(); // If a text was displayed before
                                        serie.addPoint([data.date.valueOf(), parseFloat(data.value)], true, false, true);
+                                   }
                                    break;
                                case "DAY":
 

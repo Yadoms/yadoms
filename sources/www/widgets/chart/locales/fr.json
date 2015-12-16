@@ -4,6 +4,7 @@
 	"errorDuringGettingDeviceData": "Erreur lors de la récupération des données",
 	"loadingData": "Chargement des données",
 	"RangeTooBroad" : "Echelle trop large",
+        "NoAvailableData": "Données indisponibles",
 	"configurationSchema": {
 		"interval": {
 			"name": "Période d'affichage du graphique",

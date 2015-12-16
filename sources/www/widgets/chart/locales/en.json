@@ -4,6 +4,7 @@
   "errorDuringGettingDeviceData": "Error during getting device data",
   "loadingData": "Loading data",
   "RangeTooBroad": "Range is too broad",
+  "NoAvailableData": "No available data",
   "configurationSchema": {
     "interval": {
       "name": "Default interval of the chart",
