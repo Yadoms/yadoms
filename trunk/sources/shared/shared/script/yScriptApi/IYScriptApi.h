@@ -61,11 +61,11 @@ namespace shared { namespace script { namespace yScriptApi
 
       //-----------------------------------------------------
       ///\brief Wait for a dateTime
-      ///\param[in] dateTime dateTime to wait.
+      ///\param[in] dateTimeOrDuration dateTime or duration to wait.
       ///\return newState The keyword new state (empty if timeout)
       ///\throw std::out_of_range if keyword not found
       //-----------------------------------------------------
-      virtual void at(const std::string& dateTime) const = 0;
+      virtual void wait(const std::string& dateTimeOrDuration) const = 0;
 
       //-----------------------------------------------------
       ///\brief Change state of a keyword

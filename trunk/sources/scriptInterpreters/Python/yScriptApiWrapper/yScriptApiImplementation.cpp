@@ -144,16 +144,16 @@ std::pair<int, std::string> CYScriptApiImplementation::waitForNextAcquisitions(c
    return std::make_pair(answer.get<int>("key"), answer.get<std::string>("value"));
 }
 
-void CYScriptApiImplementation::at(const std::string& dateTime) const
+void CYScriptApiImplementation::wait(const std::string& dateTimeOrDuration) const
 {
    shared::CDataContainer request;
-   request.set("dateTime", dateTime);
-   sendRequest(kReqAt, request);
+   request.set("dateTimeOrDuration", dateTimeOrDuration);
+   sendRequest(kReqWait, request);
 
-   shared::CDataContainer answer = receiveAnswer(kAnsAt);
+   shared::CDataContainer answer = receiveAnswer(kAnsWait);
 
    if (answer.exists("error"))
-      throw std::out_of_range(std::string("yScriptApiWrapper::at, error : ") + answer.get<std::string>("error"));
+      throw std::out_of_range(std::string("yScriptApiWrapper::wait, error : ") + answer.get<std::string>("error"));
 }
 
 void CYScriptApiImplementation::writeKeyword(int keywordId, const std::string& newState)
