@@ -96,20 +96,20 @@
    }
 
    function startStopPlugin(pi) {
-      //pi represent the pluginInstance concerned
-      return function() {
-         //we deactivate the button until next status will be acquired to prevent flooding
-         getPluginDomRow(pi).find("button.btn-startStop").prop('disabled', true);
-         if (pi.lastStartedStatus) {
-            //we ask for stop
-            PluginInstanceManager.stop(pi, function() { getPluginDomRow(pi).find("button.btn-startStop").prop('disabled', false);});
-         }
-         else
-         {
-            //we ask for start
-            PluginInstanceManager.start(pi, function() { getPluginDomRow(pi).find("button.btn-startStop").prop('disabled', false);});
-         }
-      }
+       //pi represent the pluginInstance concerned
+       assert(!isNullOrUndefined(pi), "pi must be defined");
+       return function () {
+           //we deactivate the button until next status will be acquired to prevent flooding
+           getPluginDomRow(pi).find("button.btn-startStop").prop('disabled', true);
+           if (pi.lastState == "Stopped" || pi.lastState == "Error") {
+               //we ask for start
+               PluginInstanceManager.start(pi, function () { getPluginDomRow(pi).find("button.btn-startStop").prop('disabled', false); });
+           }
+           else {
+               //we ask for stop
+               PluginInstanceManager.stop(pi, function () { getPluginDomRow(pi).find("button.btn-startStop").prop('disabled', false); });
+           }
+       }
    }
 
    function configurePlugin(pi) {
@@ -171,20 +171,19 @@
 
                PluginInstanceManager.getState(pluginInstance, function (status) {
                    var $row = getPluginDomRow(pluginInstance);
-                   if (status.state != pluginInstance.lastStatus) {
+                   if (status.state != pluginInstance.lastState) {
 
                        // Update start/stop button
-                       var $startStopButton = $row.find("button.btn-startstop");
-                       if (status.state == "Stopped") {
+                       var $startStopButton = $row.find("button.btn-startStop");
+                       if (status.state == "Stopped" || status.state == "Error") {
                            $startStopButton.addClass("btn-success").removeClass("btn-warning");
                        }
                        else {
-                           $startStopButton.addClass("btn-warning").removeClass("btn-success");
+                           $startStopButton.removeClass("btn-success").addClass("btn-warning");
                        }
 
                        // Update state label
                        var $label = $row.find("span.label-status");
-                       debugger;
                        switch(status.state) {
                            case "Error":
                                $label.removeClass("label-success").removeClass("label-warning").addClass("label-danger").text(getCustomMessage(pluginInstance, status.messageId, "modals.dashboard.sub-windows.plugins.error"));

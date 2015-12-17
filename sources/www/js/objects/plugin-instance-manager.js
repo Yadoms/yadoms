@@ -127,8 +127,9 @@ PluginInstanceManager.getState = function (pluginInstance, callback) {
    //we ask for the started status of current pluginInstance only on non system plugins
     if (!pluginInstance.isSystemCategory()) {
         $.getJSON("/rest/plugin/" + pluginInstance.id + "/state/")
-            .done(function(data) {
-                callback(data.result == "true" ? data.data : "kUnknwonValue");
+            .done(function (data) {
+                callback(data.result == "true" ? data.data : {state:"Unknown"} );
+                pluginInstance.lastState = data.data.state;
             })
             .fail(function () { notifyError($.t("objects.pluginInstance.errorGettingState", { pluginName: pluginInstance.displayName })); });
     }
