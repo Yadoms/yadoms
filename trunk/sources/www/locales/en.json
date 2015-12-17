@@ -96,7 +96,8 @@
       "moveToLeft": "Move to left",
       "moveToRight": "Move to right",
       "rename": "Rename",
-      "delete": "Delete"
+      "delete": "Delete",
+      "dropHereToMovePage" : "Drop here to move to page __pageName__"
     },
     "errors": {
       "unableToAddWidgetWithoutPage": "You must have at least one page to add widget",

@@ -236,9 +236,9 @@
 			updateWebSocketFilter();
 		 })
 		 .fail(function(errorMessage) {
-			console.error(errorMessage);
-			notifyError($.t("modals.add-widget.unableToCreateWidgetOfType", {"widgetType" : widgetType}))
-		 });
+			    console.error(errorMessage);
+			    notifyError($.t("modals.add-widget.unableToCreateWidgetOfType", { "widgetType": newWidget.type }));
+         });
 
       })
       .fail(function(widgetType) { 

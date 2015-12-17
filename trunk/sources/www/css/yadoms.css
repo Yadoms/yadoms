@@ -70,14 +70,14 @@ body {
     width: 0.0001%;
 }
 
-#btn-add-page a {
-    border: 0px;
-    margin-left: 1px;
-    background-image: url("../img/roadworks-pill.png");
-    background-repeat-x: no-repeat;
-    background-position-x: right;
-    cursor: pointer;
-}
+    #btn-add-page a {
+        border: 0px;
+        margin-left: 1px;
+        background-image: url("../img/roadworks-pill.png");
+        background-repeat-x: no-repeat;
+        background-position-x: right;
+        cursor: pointer;
+    }
 
 .customizationToolbar {
     position: absolute;
@@ -238,4 +238,20 @@ body {
 .logTextArea {
     height: 350px;
     resize: none;
+}
+
+.tabPagePillsDropper {
+    top: 0px;
+    bottom: 0px;
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    margin: 2px;
+    border-style: dashed;
+    background: lightgray;
+    -ms-opacity: .7;
+    opacity: .7;
+    border-width: 2px;
+    font-weight: bold;
+    padding: 2px;
 }

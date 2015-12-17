@@ -104,6 +104,8 @@ PageManager.addToDom = function (page) {
     assert(!isNullOrUndefined(page), "page must be defined");
     var tabIdAsText = "tab-" + page.id;
     //pill creation
+    var dataI18nOptions = { "pageName": page.name };
+
 
     $("<li class=\"tabPagePills\" page-id=\"" + page.id + "\">" +
           "<a href=\"#" + tabIdAsText + "\" data-toggle=\"tab\">" +
@@ -116,6 +118,7 @@ PageManager.addToDom = function (page) {
                 "<div class=\"customizationButton pageCustomizationButton delete-page\" title=\"Delete\" data-i18n=\"[title]mainPage.customization.delete\"><i class=\"fa fa-lg fa-trash-o\"></i></div>" +
              "</div>" +
           "</a>" +
+          "<div class=\"hidden tabPagePillsDropper\" data-i18n=\"mainPage.customization.dropHereToMovePage\" data-i18n-options=\'" + JSON.stringify(dataI18nOptions) + "\'></div>" +
           "</li>").insertBefore($("li#btn-add-page"));
 
     page.$tab = $(".page-tabs").find("li[page-id=\"" + page.id + "\"]");
@@ -146,6 +149,64 @@ PageManager.addToDom = function (page) {
     page.grid = page.$grid.gridstack(options).data('gridstack');
 
     page.$grid.on('resizestop', widgetResized);
+
+    page.$grid.on('dragstop', function (event, ui) {
+        //we remove the page overlay
+        $(".tabPagePills .tabPagePillsDropper").addClass("hidden");
+
+        //we look if the widget has been dropped onto another page pill
+        if ((!event.toElement) || (!event.target))
+            return;
+        var $page = $(event.toElement).parent();
+        if (!$page)
+            return;
+        var $widget = $(event.target);
+        if (!$widget)
+            return;
+        var targetPageId = $page.attr("page-id");
+        if (!targetPageId)
+            return;
+        var targetPage = PageManager.getPage(targetPageId);
+        //the widget that move is on the current page
+        if (page.id == targetPageId)
+            return;
+
+        //a widget has been dropped onto antoher page pill
+        //we move the widget to the other pill
+        var widgetId = $widget.attr("widget-id");
+        var widgetToMove = page.getWidget(widgetId);
+        widgetToMove.positionX = -1;
+        widgetToMove.positionY = -1;
+        widgetToMove.idPage = targetPageId;
+
+        //we remove it from current page
+        page.grid.remove_widget(widgetToMove.$gridWidget, true);
+        page.widgets.splice($.inArray(widgetToMove, page.widgets), 1);
+
+        //we update the widget on the server
+        WidgetManager.updateToServer(widgetToMove, function() {
+            //the widget has been moved successfully
+            //we add it to the new page
+            if (targetPage.loaded) {
+                //if the page has been already loaded we add it to the page
+                WidgetManager.loadWidget(widgetToMove, targetPage)
+                    .done(function () {
+                        //we update the filter for the websocket
+                        updateWebSocketFilter();
+                    })
+                    .fail(function (errorMessage) {
+                        console.error(errorMessage);
+                        notifyError($.t("modals.add-widget.unableToCreateWidgetOfType", { "widgetType": widgetMoved.type }));
+                    });
+            }
+
+        });
+    });
+
+    page.$grid.on('dragstart', function (event, ui) {
+        //we reveal the overlay on all other page to indicate that the user can move widget onto other pages
+        $(".tabPagePills").not("[page-id=\"" + page.id + "\"]").find(".tabPagePillsDropper").removeClass("hidden");
+    });
 
     PageManager.enableCustomization(page, customization);
 

@@ -18,89 +18,90 @@ var waitForRealeaseButtonAfterEnteringCustomization = false;
  * Animate the customization wrench button
  */
 function animateCustomizeButton() {
-   $("a#customizeButton i").transition({
-      rotate: '+=30deg',
-      duration: 500,
-      easing: 'linear',
-      complete: function() {
-         if (customization)
-            animateCustomizeButton();
-         else
-            $("a#customizeButton i").transition({
-               rotate: '0deg',
-               duration: 100
-            });
-      }
-   });
+    $("a#customizeButton i").transition({
+        rotate: '+=30deg',
+        duration: 500,
+        easing: 'linear',
+        complete: function () {
+            if (customization)
+                animateCustomizeButton();
+            else
+                $("a#customizeButton i").transition({
+                    rotate: '0deg',
+                    duration: 100
+                });
+        }
+    });
 }
 
 /**
  * Callback of the click on the customize button
  */
-$("a#customizeButton").click(function() {
-   customization = !customization;
+$("a#customizeButton").click(function () {
+    customization = !customization;
 
-   if (customization)
-   {
-      enterCustomization();
-   }
-   else
-       exitCustomization();
+    if (customization) {
+        enterCustomization();
+    }
+    else
+        exitCustomization();
 });
 
 function enterCustomization() {
-   customization = true;
+    customization = true;
 
-   $.each(PageManager.pages, function (index, currentPage) {
-      PageManager.enableCustomization(currentPage, true);
-      $.each(currentPage.widgets, function (index, currentWidget) {
-         WidgetManager.enableCustomization(currentWidget, true);
-      });
-   });
+    $.each(PageManager.pages, function (index, currentPage) {
+        PageManager.enableCustomization(currentPage, true);
+        $.each(currentPage.widgets, function (index, currentWidget) {
+            WidgetManager.enableCustomization(currentWidget, true);
+        });
+    });
 
-   animateCustomizeButton();
+    animateCustomizeButton();
 }
 
 /**
  * End customization and send all configuration to server
  */
 function exitCustomization(saveCustomization) {
-   if (isNullOrUndefined(saveCustomization))
-      saveCustomization = true;
+    if (isNullOrUndefined(saveCustomization))
+        saveCustomization = true;
 
-   customization = false;
-   waitForRealeaseButtonAfterEnteringCustomization = false;
+    customization = false;
+    waitForRealeaseButtonAfterEnteringCustomization = false;
 
-   //we save all widgets in each page
-   $.each(PageManager.pages, function (index, currentPage) {
-      PageManager.enableCustomization(currentPage, false);
-      $.each(currentPage.widgets, function (index, currentWidget) {
-         WidgetManager.enableCustomization(currentWidget, false);
-         currentWidget.updateDataFromGrid();
-      });
+    //we save all widgets in each page
+    $.each(PageManager.pages, function (index, currentPage) {
+        PageManager.enableCustomization(currentPage, false);
+        if (currentPage.loaded) {
+            $.each(currentPage.widgets, function (index, currentWidget) {
+                WidgetManager.enableCustomization(currentWidget, false);
+                currentWidget.updateDataFromGrid();
+            });
 
-      if (saveCustomization) {
-         $.ajax({
-            type: "PUT",
-            url: "/rest/page/" + currentPage.id + "/widget",
-            data: JSON.stringify(currentPage.widgets),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json"
-         })
-             .done(function (data) {
-                //we parse the json answer
-                if (data.result != "true") {
-                   notifyError($.t("mainPage.errors.errorSavingCustomization"), JSON.stringify(data));
-                   console.error(data.message);
-                }
-             })
-             .fail(function () {
-                notifyError($.t("mainPage.errors.errorSavingCustomization"))
-             });
-      }
-   });
+            if (saveCustomization) {
+                $.ajax({
+                    type: "PUT",
+                    url: "/rest/page/" + currentPage.id + "/widget",
+                    data: JSON.stringify(currentPage.widgets),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json"
+                })
+                    .done(function (data) {
+                        //we parse the json answer
+                        if (data.result != "true") {
+                            notifyError($.t("mainPage.errors.errorSavingCustomization"), JSON.stringify(data));
+                            console.error(data.message);
+                        }
+                    })
+                    .fail(function () {
+                        notifyError($.t("mainPage.errors.errorSavingCustomization"))
+                    });
+            }
+        }
+    });
 }
 
 function createOrUpdatePage(pageId) {
-   modals.pageConfigure.load(function (pageId) {return function() {showPageModificationModal(pageId)}}(pageId));
+    modals.pageConfigure.load(function (pageId) { return function () { showPageModificationModal(pageId) } }(pageId));
 }
