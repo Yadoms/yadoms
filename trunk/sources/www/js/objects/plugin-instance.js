@@ -17,8 +17,7 @@ function PluginInstance(id, displayName, type, configuration, autoStart, categor
     this.type = type;
     this.configuration = configuration;
     this.autoStart = autoStart;
-    this.lastStartedStatus = null;//TODO virer
-    this.lastStatus = null;
+    this.lastState = null;
     this.category = category;
 }
 
