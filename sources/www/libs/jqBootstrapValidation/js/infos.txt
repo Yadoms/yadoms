@@ -1,6 +1,9 @@
-Version 1.3.6
+﻿Version 1.3.6
 
 Avec modif NHI (meilleure intégration bootstrap pour les messages d'erreur)
 
 library taken from branch 
 https://github.com/korengal/jqBootstrapValidation/network
+
+With JMB modifications :
+https://github.com/ReactiveRaven/jqBootstrapValidation/issues/89
