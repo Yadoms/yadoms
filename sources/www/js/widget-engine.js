@@ -69,6 +69,9 @@ function requestWidgets(page) {
     //we request widgets for the first page
     var loadWidgetsNotification = notifyInformation($.t("mainPage.actions.loadingWidgetsOfPage", { pageName: page.name }));
 
+    //before making anything we empty the gridstack
+    page.grid.remove_all();
+
     var d = WidgetManager.getWidgetOfPageFromServer(page)
     .done(function (list) {
         if (list != null) {
@@ -119,8 +122,6 @@ function tabClick(pageId) {
         //we poll all widget data
         updateWidgetsPolling();
     }
-
-
 }
 
 function periodicUpdateTask() {
