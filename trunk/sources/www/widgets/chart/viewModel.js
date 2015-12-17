@@ -187,9 +187,13 @@ widgetViewModelCtor =
 
            if ((isNullOrUndefined(this.widget)) || (isNullOrUndefinedOrEmpty(this.widget.configuration)))
                return;
-	   
+
+		   //Desactivate the old button
+           self.widget.$gridWidget.find(".range-btn[interval='" + self.interval + "']").removeClass("widget-toolbar-pressed-button");		   
+		   
            self.interval = this.widget.configuration.interval;
 
+		   //Activate the new button
            self.widget.$gridWidget.find(".range-btn[interval='" + self.interval + "']").addClass("widget-toolbar-pressed-button");
 
            //just update some viewmodel info

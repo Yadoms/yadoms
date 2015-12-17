@@ -401,7 +401,12 @@
             function (event, params) {
 
               var value = getValue($this);
-
+			  
+			  //JMB Modification
+			  if (value == null)
+				  value="";
+			  //
+			  
               // Get a list of the errors to apply
               var errorsFound = [];
 

@@ -270,20 +270,23 @@ DeviceParameterHandler.prototype.getDOMObject = function () {
    var input = "<div id=\"" + this.uuidContainer + "\"><select " +
                         "class=\"form-control enable-validation\" " +
                         "id=\"" + this.uuid + "\" " +
-                        "data-content=\"" + this.description + "\"" +
-                        "required ";
+                        "data-content=\"" + this.description + "\" " +
+                        "required ";//
    var i18nData = " data-i18n=\"";
 
    var self = this;
-   //i18nData += "[data-content]" + self.i18nContext + self.paramName + ".description";
 
-   //i18nData += "\" ";
    input += " >";
    input += "<option value=\"\"></option>" +
             "</select>";
-
-   input += "<select class=\"form-control\" id=\"" + self.uuidKeywordList + "\"></select>";
-
+/*
+   input += "<select " +
+            "class=\"form-control enable-validation\" " +
+			"id=\"" + self.uuidKeywordList + "\ " +
+            " ></select>"; //required
+*/
+   input += "<select class=\"form-control enable-validation\" id=\"" + self.uuidKeywordList + "\" required ></select>";
+   
    input += "<div class=\"device-details\">" +
               "" +
             "</div></div>";
