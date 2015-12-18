@@ -52,7 +52,7 @@
        var name = "<span>" + pi.displayName + "</span>";
 
        var type = "<img src=\"plugins/" + pi.type + "/icon.png\" class=\"img-thumbnail dashboard-table-icon\">&nbsp;&nbsp;" +
-                   "<span>" + $.t(pi.type + ":name", { defaultValue: pi.package.name }) + "</span>";
+                   "<span>" + $.t("plugins/" + pi.type + ":name", { defaultValue: pi.package.name }) + "</span>";
 
        var autoStartCommand = "<input class=\"cb-autoStart\" type=\"checkbox\">";
 
@@ -208,13 +208,13 @@
    }
 
    function getCustomMessage(pluginInstance, messageId, defaultMessage) {
-       return $.t(pluginInstance.type + ":customLabels.pluginState." + messageId, { defaultValue: $.t(defaultMessage) });
+       return $.t("plugins/" + pluginInstance.type + ":customLabels.pluginState." + messageId, { defaultValue: $.t(defaultMessage) });
    }
 
    function addNewPlugin() {
       modals.pluginAdd.load(function() {
          askPluginTypes(function(pluginType) {
-            var pi = new PluginInstance(null, $.t(pluginType.type + ":name", {defaultValue : pluginType.package.name}), pluginType.type, "", 1, "user");
+            var pi = new PluginInstance(null, $.t("plugins/" + pluginType.type + ":name", {defaultValue : pluginType.package.name}), pluginType.type, "", 1, "user");
             //we get package.json
             PluginInstanceManager.downloadPackage(pi, function() {
                //we ask for configuration modal async

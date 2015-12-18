@@ -641,7 +641,7 @@
 
         var actionsBtns = "<div class=\"btn-group\">\n";
         var s = "<tr id=\"" + item.type + "\">" +
-                    "<td><span>" + $.t(item.type + ":name", { defaultValue: item.package.name }) + "</span>" +
+                    "<td><span>" + $.t(objectType + "s/" + item.type + ":name", { defaultValue: item.package.name }) + "</span>" +
                     "<span class=\"update-available-label hidden label label-as-badge label-success\">1</span>" +
                     "</td>";
 
@@ -883,7 +883,7 @@
                 showConfirmModal(btnKind.yesNo,
                         $.t("modals.dashboard.sub-windows.install-update.generic.confirmInstallTitle"),
                         $.t("modals.dashboard.sub-windows.install-update.generic.confirmInstall", {
-                            objectName: $.t(item.type + ":name", { defaultValue: item.package.name }),
+                            objectName: $.t(objectType + "s/" + item.type + ":name", { defaultValue: item.package.name }),
                             version: versionToString(updateInformation)
                         }),
                         function () {
@@ -909,7 +909,7 @@
                 showConfirmModal(btnKind.yesNo,
                         $.t("modals.dashboard.sub-windows.install-update.generic.confirmUpdateTitle"),
                         $.t("modals.dashboard.sub-windows.install-update.generic.confirmUpdate", {
-                            objectName: $.t(item.type + ":name", { defaultValue: item.package.name }),
+                            objectName: $.t(objectType + "s/" + item.type + ":name", { defaultValue: item.package.name }),
                             version: versionToString(updateInformation)
                         }),
                         function () {
@@ -933,7 +933,7 @@
             modals.confirmation.load(function () {
                 showConfirmModal(btnKind.yesNo,
                         $.t("modals.dashboard.sub-windows.install-update.generic.confirmRemoveTitle"),
-                        $.t("modals.dashboard.sub-windows.install-update.generic.confirmRemove", { objectName: $.t(item.type + ":name", { defaultValue: item.package.name }) }),
+                        $.t("modals.dashboard.sub-windows.install-update.generic.confirmRemove", { objectName: $.t(objectType + "s/" + item.type + ":name", { defaultValue: item.package.name }) }),
                         function () {
                             //the user has confirmed the action
                             UpdateInformationManager.remove(objectType, item.type, function (taskId) {
