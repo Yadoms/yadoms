@@ -39,7 +39,7 @@ CYPluginApiImplementation::~CYPluginApiImplementation()
 
 void CYPluginApiImplementation::setPluginState(const shared::plugin::yPluginApi::historization::EPluginState& state, const std::string & customMessageId)
 {
-   if (!customMessageId.empty() && (state != shared::plugin::yPluginApi::historization::EPluginState::kCustomValue || state != shared::plugin::yPluginApi::historization::EPluginState::kErrorValue))
+   if (!customMessageId.empty() && (state != shared::plugin::yPluginApi::historization::EPluginState::kCustomValue && state != shared::plugin::yPluginApi::historization::EPluginState::kErrorValue))
       YADOMS_LOG(warning) << "Custom message ID \"" << customMessageId << "\" will be ignored as state is " << state.toString();
 
    pluginState()->set(state, customMessageId);
