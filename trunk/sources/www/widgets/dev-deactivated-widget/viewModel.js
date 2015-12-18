@@ -18,10 +18,10 @@ function DevDeactivatedWidgetViewModel() {
       this.widget = widget;
 
       if (!isNullOrUndefined(this.widget.requiredType)) {
-         this.widget.$gridWidget.find("div.deactivatedWidget span").text($.t("dev-deactivated-widget:deactivatedWithType", {widgetType : this.widget.requiredType}));
+          this.widget.$gridWidget.find("div.deactivatedWidget span").text($.t("widgets/dev-deactivated-widget:deactivatedWithType", { widgetType: this.widget.requiredType }));
       }
       else {
-         this.widget.$gridWidget.find("div.deactivatedWidget span").text($.t("dev-deactivated-widget:deactivated"));
+          this.widget.$gridWidget.find("div.deactivatedWidget span").text($.t("widgets/dev-deactivated-widget:deactivated"));
       }
    };
 

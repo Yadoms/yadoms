@@ -21,10 +21,9 @@ WidgetPackageManager.factory = function(json) {
    var wp = new WidgetPackage();
    wp.package = json;
    wp.type = json.type;
-
    //we get i18n data
-   i18n.options.resGetPath = 'widgets/__ns__/locales/__lng__.json';
-   i18n.loadNamespace(json.type);
+   i18n.options.resGetPath = '__ns__/locales/__lng__.json';
+   i18n.loadNamespace("widgets/" + json.type);
    //we restore the resGetPath
    i18n.options.resGetPath = "locales/__lng__.json";
 

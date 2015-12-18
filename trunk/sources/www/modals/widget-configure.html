@@ -38,7 +38,7 @@
       if ($.isFunction(nameParameter.applyScript))
          nameParameter.applyScript();	  
 	  
-      var configMgr = new ConfigurationControlManager(widgetToConfigure.package.configurationSchema, widgetToConfigure.configuration, widgetToConfigure.type + ":configurationSchema.", $modalBody);
+      var configMgr = new ConfigurationControlManager(widgetToConfigure.package.configurationSchema, widgetToConfigure.configuration, "widgets/" + widgetToConfigure.type + ":configurationSchema.", $modalBody);
 
       //i18n
       $modalBody.i18n();

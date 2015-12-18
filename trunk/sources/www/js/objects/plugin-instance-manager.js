@@ -375,8 +375,8 @@ PluginInstanceManager.downloadPackage = function(pluginInstance, callback, sync)
             pluginInstance.package = data;
 
             //we manage i18n
-            i18n.options.resGetPath = 'plugins/__ns__/locales/__lng__.json';
-            i18n.loadNamespace(pluginInstance.type);
+            i18n.options.resGetPath = '__ns__/locales/__lng__.json';
+            i18n.loadNamespace("plugins/" + pluginInstance.type);
 
             //we restore the resGetPath
             i18n.options.resGetPath = "locales/__lng__.json";

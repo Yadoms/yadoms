@@ -35,7 +35,7 @@
        //foreach plugin-type
        Object.keys(PluginManager.pluginTypes).forEach(function(key, index) {
           var value = PluginManager.pluginTypes[key];
-          $("select#pluginTypeList").append("<option value=\"" + value.type + "\">" + $.t(value.type + ":name", {defaultValue : value.package.name}) + "</option>");
+          $("select#pluginTypeList").append("<option value=\"" + value.type + "\">" + $.t("plugins/" + value.type + ":name", { defaultValue: value.package.name }) + "</option>");
        });
 
        //event click on add plugin button
