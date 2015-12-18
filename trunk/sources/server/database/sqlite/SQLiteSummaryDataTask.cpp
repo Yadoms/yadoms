@@ -11,6 +11,7 @@
 #include "database/sqlite/Query.h"
 #include <shared/plugin/yPluginApi/KeywordDataType.h>
 #include <shared/currentTime/Provider.h>
+#include <shared/exception/EmptyResult.hpp>
 
 #include "notification/acquisition/Notification.hpp"
 #include "notification/summary/Notification.hpp"
@@ -88,56 +89,67 @@ namespace sqlite {
       {
          if (i->get()->Type() == shared::plugin::yPluginApi::EKeywordDataType::kNumeric)
          {
-            boost::shared_ptr<entities::CAcquisition> lastData = m_acquisitionRequester->getKeywordLastData(i->get()->Id);
-            
-            //if current day
-            //    if NOT same hour
-            //       compute HOUR
-            //else
-            //    compute hour
-            //    compute day
-
-
-            tm acqDate = boost::posix_time::to_tm(lastData->Date());
-            tm now = boost::posix_time::to_tm(boost::posix_time::second_clock::local_time());
-            
-            bool computeHourValue = false, computeDayValue = false;
-
-            if (acqDate.tm_year == now.tm_year && acqDate.tm_yday == now.tm_yday)
+            try
             {
-               //same day, do not compute day summary data
-               if (acqDate.tm_hour != now.tm_hour)
+               boost::shared_ptr<entities::CAcquisition> lastData = m_acquisitionRequester->getKeywordLastData(i->get()->Id);
+
+               //if current day
+               //    if NOT same hour
+               //       compute HOUR
+               //else
+               //    compute hour
+               //    compute day
+
+
+               tm acqDate = boost::posix_time::to_tm(lastData->Date());
+               tm now = boost::posix_time::to_tm(boost::posix_time::second_clock::local_time());
+
+               bool computeHourValue = false, computeDayValue = false;
+
+               if (acqDate.tm_year == now.tm_year && acqDate.tm_yday == now.tm_yday)
                {
-                  //the hour have changed, compute hour summary data
+                  //same day, do not compute day summary data
+                  if (acqDate.tm_hour != now.tm_hour)
+                  {
+                     //the hour have changed, compute hour summary data
+                     computeHourValue = true;
+                  }
+               }
+               else
+               {
+                  //another day
+                  computeDayValue = true;
                   computeHourValue = true;
                }
-            }
-            else
-            {
-               //another day
-               computeDayValue = true;
-               computeHourValue = true;
-            }
 
 
-            if (computeHourValue)
-            {
-               if (!m_acquisitionRequester->summaryDataExists(i->get()->Id(), database::entities::EAcquisitionSummaryType::kHour, lastData->Date()))
+               if (computeHourValue)
                {
-                  YADOMS_LOG(information) << "    Computing HOUR : " << i->get()->FriendlyName() << " @ " << lastData->Date() << " ...";
-                  m_acquisitionRequester->saveSummaryData(i->get()->Id(), database::entities::EAcquisitionSummaryType::kHour, lastData->Date());
-                  YADOMS_LOG(information) << "    Computing HOUR : " << i->get()->FriendlyName() << " @ " << lastData->Date() << " done";
+                  if (!m_acquisitionRequester->summaryDataExists(i->get()->Id(), database::entities::EAcquisitionSummaryType::kHour, lastData->Date()))
+                  {
+                     YADOMS_LOG(debug) << "    Computing HOUR : " << i->get()->FriendlyName() << " @ " << lastData->Date() << " ...";
+                     m_acquisitionRequester->saveSummaryData(i->get()->Id(), database::entities::EAcquisitionSummaryType::kHour, lastData->Date());
+                     YADOMS_LOG(debug) << "    Computing HOUR : " << i->get()->FriendlyName() << " @ " << lastData->Date() << " done";
+                  }
+               }
+
+               if (computeDayValue)
+               {
+                  if (!m_acquisitionRequester->summaryDataExists(i->get()->Id(), database::entities::EAcquisitionSummaryType::kDay, lastData->Date()))
+                  {
+                     YADOMS_LOG(debug) << "    Computing DAY : " << i->get()->FriendlyName() << " @ " << lastData->Date() << " ...";
+                     m_acquisitionRequester->saveSummaryData(i->get()->Id(), database::entities::EAcquisitionSummaryType::kDay, lastData->Date());
+                     YADOMS_LOG(debug) << "    Computing DAY : " << i->get()->FriendlyName() << " @ " << lastData->Date() << " done";
+                  }
                }
             }
-
-            if (computeDayValue)
+            catch (shared::exception::CEmptyResult & ex)
             {
-               if (!m_acquisitionRequester->summaryDataExists(i->get()->Id(), database::entities::EAcquisitionSummaryType::kDay, lastData->Date()))
-               {
-                  YADOMS_LOG(information) << "    Computing DAY : " << i->get()->FriendlyName() << " @ " << lastData->Date() << " ...";
-                  m_acquisitionRequester->saveSummaryData(i->get()->Id(), database::entities::EAcquisitionSummaryType::kDay, lastData->Date());
-                  YADOMS_LOG(information) << "    Computing DAY : " << i->get()->FriendlyName() << " @ " << lastData->Date() << " done";
-               }
+               YADOMS_LOG(information) << "Cannot compute summary values : " << ex.what();
+            }
+            catch (std::exception & ex)
+            {
+               YADOMS_LOG(error) << "Error in computing summary values :" << ex.what();
             }
          }
       }
@@ -170,12 +182,23 @@ namespace sqlite {
       m_acquisitionRequester->getKeywordsHavingDate(previousHour, currentHour, keywordToTreat);
       for (std::vector<int>::iterator i = keywordToTreat.begin(); i != keywordToTreat.end(); ++i)
       {
-         if (!m_acquisitionRequester->summaryDataExists(*i, database::entities::EAcquisitionSummaryType::kHour, previousHour))
+         try
          {
-            YADOMS_LOG(information) << "    Computing HOUR : " << *i << " @ " << previousHour << " ...";
-            boost::shared_ptr< database::entities::CAcquisitionSummary> insertedValue = m_acquisitionRequester->saveSummaryData(*i, database::entities::EAcquisitionSummaryType::kHour, previousHour);
-            summaryAcquisitions.push_back(insertedValue);
-            YADOMS_LOG(information) << "    Computing HOUR : " << *i << " @ " << previousHour << " done";
+            if (!m_acquisitionRequester->summaryDataExists(*i, database::entities::EAcquisitionSummaryType::kHour, previousHour))
+            {
+               YADOMS_LOG(debug) << "    Computing HOUR : " << *i << " @ " << previousHour << " ...";
+               boost::shared_ptr< database::entities::CAcquisitionSummary> insertedValue = m_acquisitionRequester->saveSummaryData(*i, database::entities::EAcquisitionSummaryType::kHour, previousHour);
+               summaryAcquisitions.push_back(insertedValue);
+               YADOMS_LOG(debug) << "    Computing HOUR : " << *i << " @ " << previousHour << " done";
+            }
+         }
+         catch (shared::exception::CEmptyResult & ex)
+         {
+            YADOMS_LOG(information) << "Cannot compute HOUR summary value : " << ex.what();
+         }
+         catch (std::exception & ex)
+         {
+            YADOMS_LOG(error) << "Error in computing HOUR summary values :" << ex.what();
          }
       }
 
@@ -191,12 +214,23 @@ namespace sqlite {
          m_acquisitionRequester->getKeywordsHavingDate(previousDay, currentDay, keywordToTreat);
          for (std::vector<int>::iterator i = keywordToTreat.begin(); i != keywordToTreat.end(); ++i)
          {
-            if (!m_acquisitionRequester->summaryDataExists(*i, database::entities::EAcquisitionSummaryType::kDay, previousDay))
+            try
             {
-               YADOMS_LOG(information) << "    Computing DAY : " << *i << " @ " << previousDay << " ...";
-               boost::shared_ptr< database::entities::CAcquisitionSummary> insertedValue = m_acquisitionRequester->saveSummaryData(*i, database::entities::EAcquisitionSummaryType::kDay, previousDay);
-               summaryAcquisitions.push_back(insertedValue);
-               YADOMS_LOG(information) << "    Computing DAY : " << *i << " @ " << previousDay << " done";
+               if (!m_acquisitionRequester->summaryDataExists(*i, database::entities::EAcquisitionSummaryType::kDay, previousDay))
+               {
+                  YADOMS_LOG(debug) << "    Computing DAY : " << *i << " @ " << previousDay << " ...";
+                  boost::shared_ptr< database::entities::CAcquisitionSummary> insertedValue = m_acquisitionRequester->saveSummaryData(*i, database::entities::EAcquisitionSummaryType::kDay, previousDay);
+                  summaryAcquisitions.push_back(insertedValue);
+                  YADOMS_LOG(debug) << "    Computing DAY : " << *i << " @ " << previousDay << " done";
+               }
+            }
+            catch (shared::exception::CEmptyResult & ex)
+            {
+               YADOMS_LOG(information) << "Cannot compute DAY summary value : " << ex.what();
+            }
+            catch (std::exception & ex)
+            {
+               YADOMS_LOG(error) << "Error in computing DAY summary values :" << ex.what();
             }
          }
       }

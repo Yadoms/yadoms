@@ -199,8 +199,20 @@ namespace sqlite {
 
    void CSQLiteRequester::vacuum()
    {
-      queryStatement(CQuery().Vacuum());
-      
+      //we ensure that no transaction is active
+      //is a transaction is active, hust wait for the transaction to end (timetout 20sec)
+      int waitLoopCount = 0;
+      while(m_bOneTransactionActive && waitLoopCount < 100) //100 = 100 * 200ms = 20sec
+      {
+         boost::this_thread::sleep(boost::posix_time::milliseconds(200));
+         waitLoopCount++;
+      }
+
+      //if no timeout, execute vacuum
+      if (waitLoopCount >= 50 || m_bOneTransactionActive)
+         YADOMS_LOG(warning) << "Fail to execute vacuum, one transaction is still active";
+      else
+         queryStatement(CQuery().Vacuum());
    }
 
 
