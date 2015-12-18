@@ -76,7 +76,7 @@ Blockly.Python["yadoms_wait_for_keywords"] = function (block) {
                 operator = Blockly.Yadoms.Python.getOperatorCode(block.getFieldValue("operatorDd" + i));
                 argument1 = Blockly.Python.valueToCode(block, "additionalInput_part1_" + i, order) || "0";
                 condition = waitForEventResultVar + ".getType() == 2";
-                condition += " and " + outVar + " " + operator + " " + argument1;
+                condition += " and scriptUtilities.strToDateTime(" + outVar + ") " + operator + " " + argument1;
                 break;
 
             default:
