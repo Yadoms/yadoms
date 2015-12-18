@@ -6,22 +6,35 @@
 Blockly.Python["yadoms_wait_for_keywords"] = function (block) {
     var order = Blockly.Python.ORDER_RELATIONAL;
 
-    var endOfLoopVar = block.generateVariable_("endOfLoop");
-
     //list all keyword id in a list
-    var kwList = block.python_getKeywordList();
+    var kwList = Blockly.Yadoms.Python.listToStringArray(block.getKeywordList());
 
     //get the output variable
+    debugger;
     var outVar;
     if (block.mutationData_.storeInVariable === true) {
         outVar = block.getFieldValue("outVar");
     } else {
-        outVar = "keywordValue";
+        outVar = block.generateVariable_("keywordValue");
     }
 
-    //generate the waitForAcquisitions call
-    var code = "keywordId, " + outVar + " = yApi.waitForNextAcquisitions(" + kwList + ")\n";
+    var endOfLoopVar = block.generateVariable_("endOfLoop");
+    var waitForEventResultVar = block.generateVariable_("waitForEventResult");
+    var keywordIdVar = block.generateVariable_("keywordId");
 
+    var listenForDateTime = "False";
+    if ($.inArray("yadoms_wait_for_keywords_mutator_datetime_change", this.mutationData_.additionalBlocks) !== -1 ||
+        $.inArray("yadoms_wait_for_keywords_mutator_datetime_become", this.mutationData_.additionalBlocks) !== -1) {
+        listenForDateTime = "True";
+    }
+
+
+    //generate the waitForAcquisitions call
+    var code = waitForEventResultVar + " = yApi.waitForEvent(" + kwList + ", " + listenForDateTime + ")\n";
+
+    code += keywordIdVar + " = " + waitForEventResultVar + ".getKeywordId()\n";
+    code += outVar + " = " + waitForEventResultVar + ".getValue()\n";
+    
     //for each keyword 
     var i;
     for (i = 0; i < this.mutationData_.additionalBlocks.length; i++) {
@@ -34,21 +47,40 @@ Blockly.Python["yadoms_wait_for_keywords"] = function (block) {
         var keyId = block.getFieldValue("keywordDd" + i); //construct the argument (= if/elif condition)
 
         //create the filrst condition if it is the matching keyword
-        var condition = "keywordId == " + keyId;
+        var condition = "";
 
         //append specific conditions
+        var operator;
+        var argument1;
         switch (this.mutationData_.additionalBlocks[i]) {
             case "yadoms_wait_for_keywords_mutator_change":
                 //nothing to add, watching anychanges
+                condition = waitForEventResultVar + ".getType() == 1 and " +keywordIdVar + " == " + keyId;
                 break;
 
             case "yadoms_wait_for_keywords_mutator_become":
                 //add the become if
-                var operator =  Blockly.Yadoms.Python.getOperatorCode(block.getFieldValue("operatorDd" + i));
+                operator = Blockly.Yadoms.Python.getOperatorCode(block.getFieldValue("operatorDd" + i));
                 var keywordId = block.getFieldValue("keywordDd" + i);
 				var argument0 = Blockly.Yadoms.Python.cast(keywordId, outVar);
-                var argument1 = Blockly.Python.valueToCode(block, "additionalInput_part1_" + i, order) || "0";
+                argument1 = Blockly.Python.valueToCode(block, "additionalInput_part1_" + i, order) || "0";
+                condition = waitForEventResultVar + ".getType() == 1 and " + keywordIdVar + " == " + keyId;
                 condition += " and " + argument0 + " " + operator + " " + argument1;
+                break;
+
+            case "yadoms_wait_for_keywords_mutator_datetime_change":
+                condition = waitForEventResultVar + ".getType() == 2";
+                break;
+
+            case "yadoms_wait_for_keywords_mutator_datetime_become":
+                operator = Blockly.Yadoms.Python.getOperatorCode(block.getFieldValue("operatorDd" + i));
+                argument1 = Blockly.Python.valueToCode(block, "additionalInput_part1_" + i, order) || "0";
+                condition = waitForEventResultVar + ".getType() == 2";
+                condition += " and " + outVar + " " + operator + " " + argument1;
+                break;
+
+            default:
+                condition = "False"; //disable if for invalid mutation block (should never occurs)
                 break;
         }
         
@@ -62,12 +94,14 @@ Blockly.Python["yadoms_wait_for_keywords"] = function (block) {
     }
 
 
-    var loop = endOfLoopVar + " = False\n";
+    var loop = "# Wait for event block -------> START\n";
+
+    loop += endOfLoopVar + " = False\n";
 
     code = Blockly.Python.prefixLines(code, Blockly.Python.INDENT) || Blockly.Python.PASS;
     loop += "while " + endOfLoopVar + " != True :\n" + code + "\n";
 
-    
+    loop += "# Wait for event block -------> END\n";
 
     return loop;
 };

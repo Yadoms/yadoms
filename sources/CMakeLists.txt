@@ -219,6 +219,11 @@ set(YADOMS_SRC
    server/authentication/IAuthentication.h
    server/authentication/BasicAuthentication.h
    server/authentication/BasicAuthentication.cpp
+
+   server/dateTime/DateTimeTask.h
+   server/dateTime/DateTimeTask.cpp
+   server/dateTime/DateTimeNotifier.h
+   server/dateTime/DateTimeNotifier.cpp
    
 	server/automation/IRule.h
 	server/automation/IRuleThreadHandler.h
@@ -502,6 +507,7 @@ source_group(server\\communication\\callback  server/communication/callback/*.*)
 source_group(server\\dataAccessLayer  server/dataAccessLayer/*.*)
 source_group(server\\database  server/database/*.*)
 source_group(server\\database\\entities  server/database/entities/*.*)
+source_group(server\\dateTime  server/dateTime/*.*)
 source_group(server\\i18n  server/i18n/*.*)
 source_group(server\\logConfiguration  server/logConfiguration/*.*)
 source_group(server\\notification  server/notification/*.*)

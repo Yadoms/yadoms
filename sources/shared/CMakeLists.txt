@@ -56,6 +56,9 @@ set(SHARED_LIB_SRC
    shared/currentTime/Provider.h
    shared/currentTime/Provider.cpp
 
+   shared/dateTime/DateTimeContainer.h
+   shared/dateTime/DateTimeContainer.cpp
+
 	shared/encryption/Xor.h
 	shared/encryption/Xor.cpp
 	shared/encryption/Base64.h
@@ -212,6 +215,7 @@ set(SHARED_LIB_SRC
 
    shared/script/yScriptApi/commonIncludes.h
    shared/script/yScriptApi/IYScriptApi.h
+   shared/script/yScriptApi/WaitForEventResult.h
 
    shared/tools/Random.h
    shared/tools/Random.cpp
@@ -289,6 +293,7 @@ ENDIF()
 source_group(communication shared/communication/*.*)
 source_group(compression shared/shared/compression/*.* )	
 source_group(currentTime shared/shared/currentTime/*.* )	
+source_group(dateTime shared/shared/dateTime/*.* )	
 source_group(encryption shared/shared/encryption/*.* )	
 source_group(enumeration shared/shared/enumeration/*.* )	
 source_group(event shared/event/*.*)

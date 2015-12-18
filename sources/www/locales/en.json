@@ -487,6 +487,7 @@
       "catLoops": "Loops",
       "catMath": "Math",
       "catText": "Text",
+      "catDates": "Date/time",
       "catLists": "Lists",
       "catColour": "Colour"
     },
@@ -536,6 +537,7 @@
         "titleLine1": "Wait for a new aciquistion",
         "titleLine2": "Save the acquisition value in",
         "case": "When",
+        "datetime": "date/time",
         "triggered": "is triggered",
         "triggeredType": {
           "change": "change",
@@ -561,6 +563,14 @@
             "title": "Specific value",
             "tooltip": "Add a block for monitoring new acqusitions matching a condition"
           },
+          "datetimeChange": {
+            "title": "Date/time update",
+            "tooltip": "Add a block for monitoring date/time changes (every minutes)"
+          },
+          "datetimeBecome": {
+            "title": "Date/time specific value",
+            "tooltip": "Add a block for monitoring date/time and do something when datE/time is matching the condition"
+          },
           "error": {
             "storeInVariableMoreThanOne": "Only one StoreAcquisition block is allowed",
             "noAddtitionalBlock": "At least one keyword monitoring is required"
@@ -585,6 +595,12 @@
         "message": "Message",
         "subject": "Subject",
         "tooltip": "Send an advanced message to a recipient"
+      },
+      "dates": {
+        "yadoms_date_weekDay": {
+          "title": "Every",
+          "tooltip": "One day in the week"
+        }
       }
     }
   },

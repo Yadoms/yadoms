@@ -27,6 +27,11 @@ Blockly.Blocks['yadoms_get_info'] = {
             .appendField(new Blockly.FieldDropdown(this.informationIdList_, function(val) {
                 //var val = self.getFieldValue(self.dropdownValueName_);
                 switch (val) {
+                    case self.informationIdList_[0][1]: //sunrise
+                    case self.informationIdList_[1][1]: //sunset
+                        self.outputConnection.setCheck("time");
+                        self.setColour(160);
+                        break;
                     case self.informationIdList_[2][1]: //latitude
                     case self.informationIdList_[3][1]: //longitude
                     case self.informationIdList_[4][1]: //altitude

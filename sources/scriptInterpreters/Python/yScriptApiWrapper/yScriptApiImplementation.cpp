@@ -144,6 +144,30 @@ std::pair<int, std::string> CYScriptApiImplementation::waitForNextAcquisitions(c
    return std::make_pair(answer.get<int>("key"), answer.get<std::string>("value"));
 }
 
+shared::script::yScriptApi::CWaitForEventResult CYScriptApiImplementation::waitForEvent(const std::vector<int> keywordIdList, bool receiveDateTimeEvent, const std::string& timeout) const
+{
+   shared::CDataContainer request;
+   request.set("keywordIdList", keywordIdList);
+   request.set("receiveDateTimeEvent", receiveDateTimeEvent);
+   request.set("timeout", timeout);
+   sendRequest(kReqWaitForEvent, request);
+   shared::CDataContainer answer = receiveAnswer(kAnsWaitForEvent);
+
+   if (answer.exists("error"))
+      throw std::out_of_range(std::string("yScriptApiWrapper::waitForEvent, error : ") + answer.get<std::string>("error"));
+
+   shared::script::yScriptApi::CWaitForEventResult result;
+   if (answer.containsValue("type"))
+      result.setType(answer.get<shared::script::yScriptApi::CWaitForEventResult::EResultType>("type"));
+
+   if (answer.containsValue("keywordId"))
+      result.setKeywordId(answer.get<int>("keywordId"));
+
+   if (answer.containsValue("value"))
+      result.setValue(answer.get<std::string>("value"));
+   return result;
+}
+
 void CYScriptApiImplementation::wait(const std::string& dateTimeOrDuration) const
 {
    shared::CDataContainer request;

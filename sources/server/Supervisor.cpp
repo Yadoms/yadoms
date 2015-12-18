@@ -28,6 +28,8 @@
 #include <shared/ServiceLocator.h>
 #include "startupOptions/IStartupOptions.h"
 #include "Version.h"
+#include "dateTime/DateTimeNotifier.h"
+
 
 CSupervisor::CSupervisor(boost::shared_ptr<shared::event::CEventHandler> applicationEventHandler, const int applicationStopCode)
    :m_EventHandler(new shared::event::CEventHandler), m_applicationEventHandler(applicationEventHandler), m_applicationStopCode(applicationStopCode)
@@ -120,6 +122,10 @@ void CSupervisor::run()
       // Register to event logger started event
       dal->getEventLogger()->addEvent(database::entities::ESystemEventCode::kStarted, "yadoms", shared::CStringExtension::EmptyString);
 
+      //create and start the dateTime notification scheduler
+      dateTime::CDateTimeNotifier dateTimeNotificationService;
+      dateTimeNotificationService.start();
+
       // Main loop
       YADOMS_LOG(information) << "Supervisor is running...";
       bool stopIsRequested = false;
@@ -147,6 +153,9 @@ void CSupervisor::run()
       }
 
       YADOMS_LOG(information) << "Supervisor is stopping...";
+
+      //stop datetime notification service
+      dateTimeNotificationService.start();
 
       //stop web server
       webServer.reset();

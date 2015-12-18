@@ -12,7 +12,7 @@ Blockly.Python["yadoms_at"] = function (block) {
     var textMinute = block.getFieldValue(block.minuteFieldName);
     var textSecond = block.getFieldValue(block.secondFieldName);
     
-    var code = "yApi.at(\"" + textYear + "-" + textMonth + "-" + textDay + " " + textHour + ":" + textMinute + ":" + textSecond + "\")\n";
+    var code = "yApi.wait(\"" + textYear + "-" + textMonth + "-" + textDay + " " + textHour + ":" + textMinute + ":" + textSecond + "\")\n";
     return code;
 };
 

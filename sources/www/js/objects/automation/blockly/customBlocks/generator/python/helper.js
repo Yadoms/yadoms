@@ -41,6 +41,26 @@ Blockly.Yadoms.Python.operators_ = {
 };
 
 /**
+* Convert an list into string array
+* @param {Array of Number} list A list of values (ie: [1,5,6])
+* @returns {String} The list of values (ie: "[1,5,6]" )
+*/
+Blockly.Yadoms.Python.listToStringArray = function (list) {
+    //list all keyword id in a list
+    var resultList = "[";
+
+    for (var i = 0; i < list.length; i++) {
+        resultList += list[i] + " ,";
+    }
+
+    if (resultList[resultList.length - 1] === ",") {
+        resultList = resultList.substring(0, resultList.length - 2);
+    }
+    resultList += "]";
+    return resultList;
+};
+
+/**
  * Get the code for an operator
  * @param {String} operator The operator from blockly code
  * @return {String} The resulting python code
@@ -51,3 +71,32 @@ Blockly.Yadoms.Python.getOperatorCode = function(operator) {
 	}
 	return null;
 };
+
+
+Blockly.Yadoms.Python.addDateTimeFunctions_ = false;
+
+Blockly.Yadoms.Python.clearAdditionalImports = function() {
+    Blockly.Yadoms.Python.addDateTimeFunctions_ = false;
+}
+
+Blockly.Yadoms.Python.AddDateTimeFunctions = function() {
+    Blockly.Yadoms.Python.addDateTimeFunctions_ = true;
+}
+
+Blockly.Yadoms.Python.HasDateTimeFunctions = function() {
+    return Blockly.Yadoms.Python.addDateTimeFunctions_;
+}
+
+
+Blockly.Yadoms.Python.GenerateDateTimePythonCode_ = function() {
+    var additionalCode = "# datetime helpers\n";
+    additionalCode += "from datetime import datetime, date, time, timedelta\n";
+    additionalCode += "from time import strptime, mktime\n";
+    additionalCode += "def next_weekday(d, weekday):\n";
+    additionalCode += "\tdays_ahead = weekday - d.weekday()\n";
+    additionalCode += "\tif days_ahead < 0: # Target day already happened this week\n";
+    additionalCode += "\t\tdays_ahead += 7\n";
+    additionalCode += "\treturn d + timedelta(days_ahead)\n";
+    additionalCode += "\n";
+    return additionalCode;
+}

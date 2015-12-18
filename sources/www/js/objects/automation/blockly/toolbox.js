@@ -9,6 +9,7 @@ Blockly.Yadoms.CreateToolbox_ = function () {
     var catLoops = $.t("blockly.toolbox.catLoops");
     var catMath = $.t("blockly.toolbox.catMath");
     var catText = $.t("blockly.toolbox.catText");
+    var catDates = $.t("blockly.toolbox.catDates");
     var catLists = $.t("blockly.toolbox.catLists");
     var catColour = $.t("blockly.toolbox.catColour");
 
@@ -35,7 +36,7 @@ Blockly.Yadoms.CreateToolbox_ = function () {
     toolbox += "        </value>";
     toolbox += "     </block>";
     toolbox += "  </category>";
-    toolbox += "  <category name=\" " + catLogic + "\">";
+    toolbox += "  <category name=\" " + catLogic + "\" colour=\"210\">";
     toolbox += "     <block type=\"controls_if\"></block>";
     toolbox += "     <block type=\"logic_compare\"></block>";
     toolbox += "     <block type=\"logic_operation\"></block>";
@@ -43,7 +44,7 @@ Blockly.Yadoms.CreateToolbox_ = function () {
     toolbox += "     <block type=\"logic_boolean\"></block>";
     toolbox += "     <block type=\"logic_null\"></block>";
     toolbox += "  </category>";
-    toolbox += "  <category name=\" " + catLoops + "\">";
+    toolbox += "  <category name=\" " + catLoops + "\" colour=\"120\">";
     toolbox += "     <block type=\"controls_repeat_ext\">";
     toolbox += "        <value name=\"TIMES\">";
     toolbox += "           <block type=\"math_number\">";
@@ -72,7 +73,7 @@ Blockly.Yadoms.CreateToolbox_ = function () {
     toolbox += "     <block type=\"controls_forEach\"></block>";
     toolbox += "     <block type=\"controls_flow_statements\"></block>";
     toolbox += "  </category>";
-    toolbox += "  <category name=\" " + catMath + "\">";
+    toolbox += "  <category name=\" " + catMath + "\" colour=\"230\">";
     toolbox += "     <block type=\"math_number\"></block>";
     toolbox += "     <block type=\"math_arithmetic\"></block>";
     toolbox += "     <block type=\"math_single\"></block>";
@@ -115,7 +116,7 @@ Blockly.Yadoms.CreateToolbox_ = function () {
     toolbox += "     </block>";
     toolbox += "     <block type=\"math_random_float\"></block>";
     toolbox += "  </category>";
-    toolbox += "  <category name=\" " + catText + "\">";
+    toolbox += "  <category name=\" " + catText + "\" colour=\"160\">";
     toolbox += "     <block type=\"text\"></block>";
     toolbox += "     <block type=\"text_join\"></block>";
     toolbox += "     <block type=\"text_append\">";
@@ -150,7 +151,30 @@ Blockly.Yadoms.CreateToolbox_ = function () {
     toolbox += "     <block type=\"text_trim\"></block>";
     toolbox += "     <block type=\"text_print\"></block>";
     toolbox += "  </category>";
-    toolbox += "  <category name=\" " + catLists + "\">";
+
+    toolbox += "  <category name=\"" + catDates + "\" colour=\"160\">";
+    toolbox += "    <block type=\"yadoms_date_datetime\"></block>";
+    toolbox += "    <block type=\"yadoms_date_date\"></block>";
+    toolbox += "    <block type=\"yadoms_date_time\"></block>";
+    toolbox += "    <block type=\"yadoms_date_everyDay\"></block>";
+    toolbox += "    <block type=\"yadoms_date_weekDay\"></block>";
+    toolbox += "    <block type=\"yadoms_date_arithmetic\"></block>";
+    toolbox += "    <block type=\"yadoms_date_timespan\">";
+    toolbox += "        <value name=\"hourInput\">";
+    toolbox += "           <block type=\"math_number\">";
+    toolbox += "              <field name=\"NUM\">1</field>";
+    toolbox += "           </block>";
+    toolbox += "        </value>";
+    toolbox += "        <value name=\"minuteInput\">";
+    toolbox += "           <block type=\"math_number\">";
+    toolbox += "              <field name=\"NUM\">0</field>";
+    toolbox += "           </block>";
+    toolbox += "        </value>";
+    toolbox += "    </block>";
+    toolbox += "    <block type=\"yadoms_date_extract\"></block>";
+    toolbox += "  </category>";
+
+    toolbox += "  <category name=\" " + catLists + "\" colour=\"260\">";
     toolbox += "     <block type=\"lists_create_empty\"></block>";
     toolbox += "     <block type=\"lists_create_with\"></block>";
     toolbox += "     <block type=\"lists_repeat\">";
@@ -198,7 +222,7 @@ Blockly.Yadoms.CreateToolbox_ = function () {
     toolbox += "        </value>";
     toolbox += "     </block>";
     toolbox += "  </category>";
-    toolbox += "  <category name=\" " + catColour + "\">";
+    toolbox += "  <category name=\" " + catColour + "\" colour=\"20\">";
     toolbox += "     <block type=\"colour_picker\"></block>";
     toolbox += "     <block type=\"colour_random\"></block>";
     toolbox += "     <block type=\"colour_rgb\">";

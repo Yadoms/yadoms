@@ -278,9 +278,9 @@
           "enableDisable": "Activer / désactiver le plugin",
           "startStop": "Démarrer / arrêter le plugin",
           "running": "Démarré",
-					"starting": "Démarrage...",
+          "starting": "Démarrage...",
           "stopped": "Arrêté",
-					"error": "Erreur",
+          "error": "Erreur",
           "configure": "Configurer le plugin",
           "delete": "Supprimer le plugin",
           "errorGettingPluginList": "Erreur lors de la récupération de la liste des plugins",
@@ -426,6 +426,7 @@
       "catLoops": "Boucle",
       "catMath": "Math",
       "catText": "Texte",
+      "catDates": "Date/heure",
       "catLists": "Listes",
       "catColour": "Couleurs"
     },
@@ -462,8 +463,8 @@
         "title": "Info",
         "tooltip": "Obtient des informations du serveur",
         "values": {
-          "sunrise": "Heure du coucher du soleil",
-          "sunset": "Heure de lever du soleil",
+          "sunrise": "Heure de lever du soleil",
+          "sunset": "Heure du coucher du soleil",
           "latitude": "Latitude",
           "longitude": "Longitude",
           "altitude": "Altitude",
@@ -475,6 +476,7 @@
         "titleLine1": "Attente d'une nouvelle acquisition",
         "titleLine2": "Stocker la valeur dans",
         "case": "Lorsque",
+        "datetime": "la date/heure",
         "triggered": "change",
         "triggeredType": {
           "change": "change",
@@ -500,6 +502,14 @@
             "title": "Keyword : valeur spécifique",
             "tooltip": "Ajoute un nouveau block pour observer une condition particulière de changement d'un keyword"
           },
+          "datetimeChange": {
+            "title": "Date/heure : mise à jour",
+            "tooltip": "Ajoute un nouveau block pour effectuer des actions lorsque la date/heure change (toutes les minutes)"
+          },
+          "datetimeBecome": {
+            "title": "Date/heure : valeur spécifique",
+            "tooltip": "Ajoute un nouveau block pour effectuer des actions lorsque la date/heure atteint une condition particulière"
+          },
           "error": {
             "storeInVariableMoreThanOne": "Un seul block d'enregistrement en variable est autorisé",
             "noAddtitionalBlock": "Au moins un keyword est requis"
@@ -524,6 +534,38 @@
         "message": "Message",
         "subject": "Sujet",
         "tooltip": "Envoyer un message avancée à un destinataire"
+      },
+      "dates": {
+        "yadoms_date_date": {
+          "tooltip": "Choisi une date"
+        },
+        "yadoms_date_weekDay": {
+          "title": "Chaque",
+          "tooltip": "Choisi un jour de la semaine"
+        },
+        "yadoms_date_time": {
+          "tooltip": "Selection d'une heure/minute",
+          "hour": "h",
+          "minute": "min"
+        },
+        "yadoms_date_datetime": {
+          "tooltip": "Selection d'une date/heure",
+          "date": "Date",
+          "time": "Heure"
+        },
+        "yadoms_date_everyDay": {
+          "title": "Chaque jour",
+          "tooltip": "Chaque jour"
+        },
+        "yadoms_date_timespan": {
+          "title": "Durée",
+          "tooltip": "Défini une durée en heures + minutes (avec des heures qui peuvent être > 24)",
+          "hour": "h",
+          "minute": "min"
+        },
+        "yadoms_date_arithmetic": {
+          "tooltip": "Ajoute ou supprime une duée d'une date et/ou heure"
+        }
       }
     }
   },
