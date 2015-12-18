@@ -53,6 +53,7 @@ namespace automation { namespace script
       virtual std::string waitForNextAcquisition(int keywordId, const std::string& timeout = std::string()) const;
       virtual std::pair<int, std::string> waitForNextAcquisitions(const std::vector<int> keywordIdList, const std::string& timeout) const;
       virtual void wait(const std::string& dateTimeOrDuration) const;
+      virtual shared::script::yScriptApi::CWaitForEventResult waitForEvent(const std::vector<int> keywordIdList, bool receiveDateTimeEvent, const std::string& timeout) const;
       virtual void writeKeyword(int keywordId, const std::string& newState);
       virtual void sendNotification(int keywordId, int recipientId, const std::string& message);
       virtual std::string getInfo(EInfoKeys key) const;
@@ -89,6 +90,8 @@ namespace automation { namespace script
       boost::shared_ptr<notification::acquisition::CNotification> waitForAction(
          boost::shared_ptr<notification::action::CWaitAction<notification::acquisition::CNotification> > action,
          const std::string& timeout) const;
+
+      boost::posix_time::ptime convertTimeoutToPtime(const std::string & timeout);
 
    private:
       //-----------------------------------------------------

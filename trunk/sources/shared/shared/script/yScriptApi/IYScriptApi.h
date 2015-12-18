@@ -1,8 +1,8 @@
 #pragma once
+#include "WaitForEventResult.h"
 
 namespace shared { namespace script { namespace yScriptApi
 {
-
    //-----------------------------------------------------
    ///\brief The API used by the scripts to interact with Yadoms
    //-----------------------------------------------------
@@ -58,6 +58,17 @@ namespace shared { namespace script { namespace yScriptApi
       //-----------------------------------------------------
       enum { kTimeout = -1 };
       virtual std::pair<int, std::string> waitForNextAcquisitions(const std::vector<int> keywordIdList, const std::string& timeout = std::string()) const = 0;
+    
+
+      //-----------------------------------------------------
+      ///\brief Wait for a new acquisition on a keyword list
+      ///\param[in] keywordIdList The keyword IDs list to watch
+      ///\param[in] receiveDateTimeEvent true to receive date/time events (one per minute)
+      ///\param[in] timeout Timeout to wait.
+      ///\return Returned value is a pair of the keyword Id who changed, and its new value. The keyword Id is kTimeout if timeout.
+      ///\throw std::out_of_range if one of the keyword is not found
+      //-----------------------------------------------------
+      virtual shared::script::yScriptApi::CWaitForEventResult waitForEvent(const std::vector<int> keywordIdList, bool receiveDateTimeEvent, const std::string& timeout = std::string()) const = 0;
 
       //-----------------------------------------------------
       ///\brief Wait for a dateTime

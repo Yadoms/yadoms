@@ -7,6 +7,7 @@
 #include <string>
 #include <utility>
 #include <shared/script/yScriptApi/IYScriptApi.h>
+#include <shared/script/yScriptApi/WaitForEventResult.h>
 
 #include <iostream>
 
@@ -57,6 +58,7 @@
 }
 
 %include <shared/script/yScriptApi/IYScriptApi.h>
+%include <shared/script/yScriptApi/WaitForEventResult.h>
 
 // yScriptApi instance creation method
 // Create the yScriptApi instance (need the context accessor ID provided by Yadoms)

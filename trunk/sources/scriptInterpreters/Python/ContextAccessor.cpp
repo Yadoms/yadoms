@@ -116,6 +116,7 @@ void CContextAccessor::processMessage(const char* message, size_t messageSize, b
    case kReqReadKeyword             : processReadKeyword(request, messageQueue); break;
    case kReqWaitForNextAcquisition  : processWaitForNextAcquisition(request, messageQueue); break;
    case kReqWaitForNextAcquisitions : processWaitForNextAcquisitions(request, messageQueue); break;
+   case kReqWaitForEvent            : processWaitForEvent(request, messageQueue); break;
    case kReqWait                    : processWait(request, messageQueue); break;
    case kReqWriteKeyword            : processWriteKeyword(request, messageQueue); break;
    case kReqSendNotification        : processSendNotification(request, messageQueue); break;
@@ -195,6 +196,24 @@ void CContextAccessor::processWaitForNextAcquisitions(const shared::CDataContain
       answer.set("error", ex.what());
    }
    sendAnswer(kAnsWaitForAcquisitions, answer, messageQueue);
+}
+
+void CContextAccessor::processWaitForEvent(const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue)
+{
+   shared::CDataContainer answer;
+   try
+   {
+      shared::script::yScriptApi::CWaitForEventResult returnValue = m_scriptApi->waitForEvent(request.get<std::vector<int> >("keywordIdList"), request.get<bool>("receiveDateTimeEvent"), request.get<std::string>("timeout"));
+      
+      answer.set("type", returnValue.getType());
+      answer.set("keywordId", returnValue.getKeywordId());
+      answer.set("value", returnValue.getValue());
+   }
+   catch (std::exception& ex)
+   {
+      answer.set("error", ex.what());
+   }
+   sendAnswer(kAnsWaitForEvent, answer, messageQueue);
 }
 
 void CContextAccessor::processWait(const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue)

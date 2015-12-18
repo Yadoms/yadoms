@@ -10,6 +10,8 @@
 #include <shared/Log.h>
 #include <shared/exception/EmptyResult.hpp>
 
+#include <shared/dateTime/DateTimeContainer.h>
+
 namespace automation { namespace script
 {
 
@@ -230,6 +232,110 @@ std::pair<int, std::string> CYScriptApiImplementation::waitForNextAcquisitions(c
       throw;
    }
 }
+
+shared::script::yScriptApi::CWaitForEventResult CYScriptApiImplementation::waitForEvent(const std::vector<int> keywordIdList, bool receiveDateTimeEvent, const std::string& timeout) const
+{
+
+   for (std::vector<int>::const_iterator kwId = keywordIdList.begin(); kwId != keywordIdList.end(); ++kwId)
+      assertExistingKeyword(*kwId);
+
+   shared::event::CEventHandler eventHandler;
+   
+   enum
+   {
+      kKeyword = shared::event::kUserFirstId,
+      kTime
+   };
+
+
+   //create the action (= what to do when notification is observed)
+   boost::shared_ptr< notification::action::CEventAction<notification::acquisition::CNotification> > keywordEventAction(boost::make_shared<notification::action::CEventAction<notification::acquisition::CNotification> >(eventHandler, kKeyword));
+
+   //create the acquisition observer
+   boost::shared_ptr<notification::acquisition::CObserver> observer(boost::make_shared<notification::acquisition::CObserver>(keywordEventAction));
+   observer->resetKeywordIdFilter(keywordIdList);
+
+   //register the observer
+   notification::CHelpers::CCustomSubscriber subscriber(observer);
+
+
+   boost::shared_ptr< notification::IObserver > dateTimeObserver = boost::shared_ptr< notification::IObserver >(NULL);
+   if (receiveDateTimeEvent)
+   {
+      dateTimeObserver = notification::CHelpers::subscribeBasicObserver< shared::dateTime::CDateTimeContainer >(eventHandler, kTime);
+   }
+
+   //wait for acquisition notification
+   try
+   {
+      //manage timeout (fix point, duration,...)
+      boost::posix_time::time_duration realTimeout = boost::posix_time::pos_infin;
+      if (!timeout.empty())
+      {
+         // With timeout
+         CTimeAdapter timeoutAdapter(timeout);
+         if (timeoutAdapter.isDateTime())
+         {
+            eventHandler.createTimePoint(shared::event::kTimeout, timeoutAdapter.dateTime());
+         }
+         else
+         {
+            realTimeout = timeoutAdapter.duration();
+         }
+      }
+
+      //wait for event
+      int resultCode = eventHandler.waitForEvents(realTimeout);
+
+      shared::script::yScriptApi::CWaitForEventResult result;
+      switch (resultCode)
+      {
+         case shared::event::kTimeout:
+         {
+            result.setType(shared::script::yScriptApi::CWaitForEventResult::kTimeout);
+            break;
+         }
+
+         case kKeyword:
+         {
+            boost::shared_ptr<notification::acquisition::CNotification> newAcquisition = eventHandler.getEventData< boost::shared_ptr<notification::acquisition::CNotification> >();
+            result.setType(shared::script::yScriptApi::CWaitForEventResult::kKeyword);
+            if (newAcquisition)
+            {
+               result.setKeywordId(newAcquisition->getAcquisition()->KeywordId);
+               result.setValue(newAcquisition->getAcquisition()->Value);
+            }
+            break;
+         }
+
+         case kTime:
+         {
+            boost::shared_ptr< shared::dateTime::CDateTimeContainer> timeNotif = eventHandler.getEventData< boost::shared_ptr<shared::dateTime::CDateTimeContainer> > ();
+
+            result.setType(shared::script::yScriptApi::CWaitForEventResult::kDateTime);
+            if (timeNotif)
+            {
+               result.setValue(boost::posix_time::to_iso_string(timeNotif->getBoostDateTime()));
+            }
+            break;
+         }
+      }
+
+      if (dateTimeObserver)
+         notification::CHelpers::unsubscribeObserver(dateTimeObserver);
+
+      return result;
+   }
+   catch (std::exception& exception)
+   {
+      m_ruleLogger->log(std::string("waitForEvent : ") + exception.what());
+
+      if (dateTimeObserver)
+         notification::CHelpers::unsubscribeObserver(dateTimeObserver);
+      throw;
+   }
+}
+
 
 void CYScriptApiImplementation::writeKeyword(int keywordId, const std::string& newState)
 {
