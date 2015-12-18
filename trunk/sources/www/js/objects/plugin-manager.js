@@ -45,9 +45,11 @@ PluginManager.get = function (callback, sync) {
        //we've got a list of plugin type. For each of one we download the package.json
        PluginManager.pluginTypes = [];
        var pluginCountRemaining =  data.data.plugins.length;
+           debugger;
+       i18n.options.resGetPath = '__ns__/locales/__lng__.json';
 
-       i18n.options.resGetPath = 'plugins/__ns__/locales/__lng__.json';
-       $.each(data.data.plugins, function(index, pluginType) {
+       $.each(data.data.plugins, function (index, pluginType) {
+           i18n.loadNamespace("plugins/" + pluginType);
            PluginManager.downloadPackage(pluginType, function(package) {
               PluginManager.pluginTypes[pluginType] = PluginManager.factory(package);
                pluginCountRemaining--;
@@ -85,7 +87,7 @@ PluginManager.downloadPackage = function(pluginType, callback, sync) {
     })
     .done(function( data ) {
 
-        i18n.loadNamespace(pluginType, function() {
+        i18n.loadNamespace("plugins/" + pluginType, function () {
             if ($.isFunction(callback))
                 callback(data);
         });
