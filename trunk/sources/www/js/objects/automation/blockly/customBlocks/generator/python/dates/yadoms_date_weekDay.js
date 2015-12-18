@@ -7,6 +7,6 @@ Blockly.Python["yadoms_date_weekDay"] = function (block) {
     //see https://docs.python.org/2/library/datetime.html#timedelta-objects
     Blockly.Yadoms.Python.AddDateTimeFunctions();
 
-    var code = "next_weekday(date.today(), " + block.getWeekDay() +")";
+    var code = "scriptUtilities.next_weekday(date.today(), " + block.getWeekDay() +")";
     return [code, Blockly.Python.ORDER_ATOMIC];
 };

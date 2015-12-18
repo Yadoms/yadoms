@@ -196,6 +196,22 @@ namespace notification {
          return subscribeBasicObserver< N >(observerAction, notificationCenter);
       }
 
+      //-----------------------------
+      ///\brief Subscribe an observer, which will post an event 
+      ///\param [in] eventHandler            The eventHandler handler (shared_ptr)
+      ///\param [in] notificationEventCode   The notification code
+      ///\param [in] notificationCenter      The notification center (if not specified, it tries to get the service located NotificationCenter)
+      ///\template N                         The notification type to observe
+      ///\return The created observer
+      //-----------------------------
+      template<class N>
+      static boost::shared_ptr< IObserver > subscribeBasicObserver(boost::shared_ptr<shared::event::CEventHandler> eventHandler, const int notificationEventCode, boost::shared_ptr<CNotificationCenter> notificationCenter = boost::shared_ptr<CNotificationCenter>())
+      {
+         //create the action
+         boost::shared_ptr< action::IAction< N > > observerAction(new action::CEventPtrAction< N >(eventHandler, notificationEventCode));
+         return subscribeBasicObserver< N >(observerAction, notificationCenter);
+      }
+
 
       //-----------------------------
       ///\brief Subscribe a basic observer, which will call a function pointer callback
@@ -235,6 +251,23 @@ namespace notification {
       {
          //create the action
          boost::shared_ptr< action::IAction< N > > observerAction(new action::CEventAction< N >(eventHandler, notificationEventCode));
+         return subscribeChangeObserver< N >(changeType, observerAction, notificationCenter);
+      }
+
+      //-----------------------------
+      ///\brief Subscribe a change observer, which will post an event 
+      ///\param [in] changeType              The type of change notification to observer (create, update or delete)
+      ///\param [in] eventHandler            The eventHandler handler (shared_ptr)
+      ///\param [in] notificationEventCode   The notification code
+      ///\param [in] notificationCenter      The notification center (if not specified, it tries to get the service located NotificationCenter)
+      ///\template N                         The notification type to observe
+      ///\return  The created observer
+      //-----------------------------
+      template<class N>
+      static boost::shared_ptr< IObserver > subscribeChangeObserver(change::EChangeType changeType, boost::shared_ptr<shared::event::CEventHandler> eventHandler, const int notificationEventCode, boost::shared_ptr<CNotificationCenter> notificationCenter = boost::shared_ptr<CNotificationCenter>())
+      {
+         //create the action
+         boost::shared_ptr< action::IAction< N > > observerAction(new action::CEventPtrAction< N >(eventHandler, notificationEventCode));
          return subscribeChangeObserver< N >(changeType, observerAction, notificationCenter);
       }
 

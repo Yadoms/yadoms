@@ -90,13 +90,8 @@ Blockly.Yadoms.Python.HasDateTimeFunctions = function() {
 
 Blockly.Yadoms.Python.GenerateDateTimePythonCode_ = function() {
     var additionalCode = "# datetime helpers\n";
+    additionalCode += "import scriptUtilities\n";
     additionalCode += "from datetime import datetime, date, time, timedelta\n";
-    additionalCode += "from time import strptime, mktime\n";
-    additionalCode += "def next_weekday(d, weekday):\n";
-    additionalCode += "\tdays_ahead = weekday - d.weekday()\n";
-    additionalCode += "\tif days_ahead < 0: # Target day already happened this week\n";
-    additionalCode += "\t\tdays_ahead += 7\n";
-    additionalCode += "\treturn d + timedelta(days_ahead)\n";
     additionalCode += "\n";
     return additionalCode;
 }

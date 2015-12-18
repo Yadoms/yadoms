@@ -7,7 +7,7 @@ Blockly.Python["yadoms_get_info"] = function (block) {
     var code = "yApi.getInfo(yApi." + val + ")";
 
     if (val === block.informationIdList_[0][1] || val === block.informationIdList_[1][1]) {
-        code = " time(strptime(" + code + ", \"%H:%M\").tm_hour, strptime("+ code + ", \"%H:%M\").tm_min)";
+        code = "scriptUtilities.strToTime(" + code + ")";
     }
 
     return [code, Blockly.Python.ORDER_ATOMIC];

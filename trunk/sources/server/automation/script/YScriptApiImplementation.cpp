@@ -239,7 +239,7 @@ shared::script::yScriptApi::CWaitForEventResult CYScriptApiImplementation::waitF
    for (std::vector<int>::const_iterator kwId = keywordIdList.begin(); kwId != keywordIdList.end(); ++kwId)
       assertExistingKeyword(*kwId);
 
-   shared::event::CEventHandler eventHandler;
+   boost::shared_ptr<shared::event::CEventHandler> eventHandler(new shared::event::CEventHandler());
    
    enum
    {
@@ -249,7 +249,7 @@ shared::script::yScriptApi::CWaitForEventResult CYScriptApiImplementation::waitF
 
 
    //create the action (= what to do when notification is observed)
-   boost::shared_ptr< notification::action::CEventAction<notification::acquisition::CNotification> > keywordEventAction(boost::make_shared<notification::action::CEventAction<notification::acquisition::CNotification> >(eventHandler, kKeyword));
+   boost::shared_ptr< notification::action::CEventPtrAction<notification::acquisition::CNotification> > keywordEventAction(new notification::action::CEventPtrAction<notification::acquisition::CNotification>(eventHandler, kKeyword));
 
    //create the acquisition observer
    boost::shared_ptr<notification::acquisition::CObserver> observer(boost::make_shared<notification::acquisition::CObserver>(keywordEventAction));
@@ -276,7 +276,7 @@ shared::script::yScriptApi::CWaitForEventResult CYScriptApiImplementation::waitF
          CTimeAdapter timeoutAdapter(timeout);
          if (timeoutAdapter.isDateTime())
          {
-            eventHandler.createTimePoint(shared::event::kTimeout, timeoutAdapter.dateTime());
+            eventHandler->createTimePoint(shared::event::kTimeout, timeoutAdapter.dateTime());
          }
          else
          {
@@ -285,7 +285,7 @@ shared::script::yScriptApi::CWaitForEventResult CYScriptApiImplementation::waitF
       }
 
       //wait for event
-      int resultCode = eventHandler.waitForEvents(realTimeout);
+      int resultCode = eventHandler->waitForEvents(realTimeout);
 
       shared::script::yScriptApi::CWaitForEventResult result;
       switch (resultCode)
@@ -298,7 +298,7 @@ shared::script::yScriptApi::CWaitForEventResult CYScriptApiImplementation::waitF
 
          case kKeyword:
          {
-            boost::shared_ptr<notification::acquisition::CNotification> newAcquisition = eventHandler.getEventData< boost::shared_ptr<notification::acquisition::CNotification> >();
+            boost::shared_ptr<notification::acquisition::CNotification> newAcquisition = eventHandler->getEventData< boost::shared_ptr<notification::acquisition::CNotification> >();
             result.setType(shared::script::yScriptApi::CWaitForEventResult::kKeyword);
             if (newAcquisition)
             {
@@ -310,7 +310,7 @@ shared::script::yScriptApi::CWaitForEventResult CYScriptApiImplementation::waitF
 
          case kTime:
          {
-            boost::shared_ptr< shared::dateTime::CDateTimeContainer> timeNotif = eventHandler.getEventData< boost::shared_ptr<shared::dateTime::CDateTimeContainer> > ();
+            boost::shared_ptr< shared::dateTime::CDateTimeContainer> timeNotif = eventHandler->getEventData< boost::shared_ptr<shared::dateTime::CDateTimeContainer> > ();
 
             result.setType(shared::script::yScriptApi::CWaitForEventResult::kDateTime);
             if (timeNotif)

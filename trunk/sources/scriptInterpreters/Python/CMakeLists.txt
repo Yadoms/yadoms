@@ -35,6 +35,7 @@ if(PYTHONLIBS_FOUND)
       ScriptProcess.cpp
       
       scriptCaller.py
+      scriptUtilities.py
    )
 
 
@@ -81,6 +82,7 @@ if(PYTHONLIBS_FOUND)
    SCRIPT_INTERPRETER_POST_BUILD_COPY_FILE(python package.json)
    SCRIPT_INTERPRETER_POST_BUILD_COPY_FILE(python icon.png)
    SCRIPT_INTERPRETER_POST_BUILD_COPY_FILE(python scriptCaller.py)
+   SCRIPT_INTERPRETER_POST_BUILD_COPY_FILE(python scriptUtilities.py)
    SCRIPT_INTERPRETER_POST_BUILD_COPY_DIRECTORY(python locales)
 	  
    #########################################

@@ -27,6 +27,9 @@ if __name__ == '__main__':
    scriptModule = args[2]
    contextAccessorId = args[3]
 
+   #import utility
+   scriptUtilities = __import__("scriptUtilities")
+   
    # Create yScript API instance
    yApi = yScriptApiWrapper.createScriptApiInstance(contextAccessorId)
    
