@@ -557,6 +557,14 @@
           "title": "Chaque jour",
           "tooltip": "Chaque jour"
         },
+        "yadoms_date_today": {
+          "title": "Aujourd'hui",
+          "tooltip": "Aujourd'hui"
+        },
+        "yadoms_date_now": {
+          "title": "Maintenant",
+          "tooltip": "Maintenant"
+        },
         "yadoms_date_timespan": {
           "title": "Durée",
           "tooltip": "Défini une durée en heures + minutes (avec des heures qui peuvent être > 24)",
@@ -565,6 +573,24 @@
         },
         "yadoms_date_arithmetic": {
           "tooltip": "Ajoute ou supprime une duée d'une date et/ou heure"
+        },
+		"yadoms_date_extract": {
+          "title": "Extraire ",
+          "tooltip": "Extrait une information d'une date",
+		  "from" : "depuis",
+		  "what" : {
+			"date" : "la date (sans l'heure)",
+			"time" : "l'heure complète (HH:MM)",
+			"year" : "l'année",
+			"month" : "le mois",
+			"day" : "le jour",
+			"hour" : "l'heure (HH)",
+			"minute" : "les minutes",
+			"weekDay" : "le jour de la semaine",
+			"weekDayString" : "le jour de la semaine (texte)",
+			"monthDay" : "le jour du mois",
+			"yearDay" : "le jour de l'année"
+		  }
         }
       }
     }
