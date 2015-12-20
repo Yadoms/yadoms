@@ -6,5 +6,10 @@
 			"name": "Port série",
 			"description": "Le port série connecté au matériel ZWave (adaptateur USB par exemple)."
 		}
+	},
+	"customLabels": {
+		"pluginState": {
+			"updateConfiguration": "Mise à jour de la configuration..."
+		}
 	}
 }

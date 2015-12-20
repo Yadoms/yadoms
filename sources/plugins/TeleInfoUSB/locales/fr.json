@@ -9,7 +9,8 @@
 	},
 	"customLabels": {
 		"pluginState": {
-			"connectionLost": "Connexion au module TeleInfo perdue"
+			"connectionLost": "Connexion au module TeleInfo perdue",
+			"updateConfiguration": "Mise à jour de la configuration..."
 		}
 	}
 }

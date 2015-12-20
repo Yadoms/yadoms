@@ -86,9 +86,9 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
          case yApi::IYPluginApi::kEventUpdateConfiguration:
             {
                // Configuration was updated
+               context->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
                shared::CDataContainer newConfiguration = context->getEventHandler().getEventData<shared::CDataContainer>();
-               YADOMS_LOG(debug) << "configuration was updated...";
-               context->setPluginState(yApi::historization::EPluginState::kCustom, "configurationUpdated");
+               YADOMS_LOG(debug) << "Update configuration...";
                BOOST_ASSERT(!newConfiguration.empty());  // newConfigurationValues shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
                // Take into account the new configuration
@@ -99,6 +99,8 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 
                // Trace the configuration
                m_configuration.trace();
+
+               context->setPluginState(yApi::historization::EPluginState::kRunning);
 
                break;
             }

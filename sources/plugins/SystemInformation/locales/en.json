@@ -8,5 +8,10 @@
 		 "name": "Advanced Variables",
 		 "description": "Advanced variables for debug purpose only"
 	  }
+	},
+	"customLabels": {
+		"pluginState": {
+			"updateConfiguration": "Configuration updating..."
+		}
 	}
 }

@@ -101,6 +101,7 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
             }
          case yApi::IYPluginApi::kEventUpdateConfiguration:
             {
+               context->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
                onUpdateConfiguration(context, context->getEventHandler().getEventData<shared::CDataContainer>());
 
                m_WeatherConditionsRequester.OnUpdate ( context, m_configuration );
@@ -113,12 +114,13 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
                m_AstronomyRequester.Request( context );
                m_AstronomyRequester.Parse  ( context, m_configuration );
 
-			   m_Forecast10Days.OnUpdate ( context, m_configuration );
+			      m_Forecast10Days.OnUpdate ( context, m_configuration );
 
                m_Forecast10Days.SetCityName ( m_WeatherConditionsRequester.GetCityName());
                m_Forecast10Days.Request( context );
                m_Forecast10Days.Parse  ( context, m_configuration );
 
+               context->setPluginState(yApi::historization::EPluginState::kRunning);
                break;
             }
 
@@ -142,7 +144,7 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 void CWeatherUnderground::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> context, const shared::CDataContainer& newConfigurationData)
 {
    // Configuration was updated
-   YADOMS_LOG(debug) << "Configuration was updated...";
+   YADOMS_LOG(debug) << "Update configuration...";
    BOOST_ASSERT(!newConfigurationData.empty());  // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
    // Update configuration

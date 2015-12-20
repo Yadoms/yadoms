@@ -1107,8 +1107,9 @@
 	"customLabels": {
 		"pluginState": {
 			"connecting": "Connexion en cours...",
-         "connected": "Connexion établie",
-         "connectionLost": "Connexion perdue"
+         "initializing": "Initialisation RFXCom...",
+         "connectionLost": "Connexion perdue",
+			"updateConfiguration": "Mise à jour de la configuration..."
 		}
 	}
 }

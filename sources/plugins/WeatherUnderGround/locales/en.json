@@ -335,5 +335,10 @@
 			"name": "Rain Forecast",
 			"description": "Individual rain forecast parameters for 3 next days could be used in Yadoms"
 		}
+	},
+	"customLabels": {
+		"pluginState": {
+			"updateConfiguration": "Configuration updating..."
+		}
 	}
 }
