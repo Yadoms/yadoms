@@ -65,8 +65,9 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
             case yApi::IYPluginApi::kEventUpdateConfiguration:
             {
                // Configuration was updated
+               context->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
                shared::CDataContainer newConfiguration = context->getEventHandler().getEventData<shared::CDataContainer>();
-               YADOMS_LOG(debug) << "configuration was updated...";
+               YADOMS_LOG(debug) << "Update configuration...";
                BOOST_ASSERT(!newConfiguration.empty());  // newConfigurationValues shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
                // Take into account the new configuration
@@ -74,6 +75,8 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
                // - Update some resources,
                // - etc...
                m_configuration.initializeWith(newConfiguration);
+
+               context->setPluginState(yApi::historization::EPluginState::kRunning);
                break;
             }
             case kDeclareDevice:

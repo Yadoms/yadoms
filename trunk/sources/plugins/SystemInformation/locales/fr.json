@@ -8,6 +8,11 @@
 		 "name": "Variables avancées",
 		 "description": "Variables avancées pour des besoins de debug uniquement"
 	  }
-	}   
+	},
+	"customLabels": {
+		"pluginState": {
+			"updateConfiguration": "Mise à jour de la configuration..."
+		}
+	}
 }
 

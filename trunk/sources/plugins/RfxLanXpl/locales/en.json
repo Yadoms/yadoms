@@ -152,5 +152,10 @@
 				}
 			}
 		}
+	},
+	"customLabels": {
+		"pluginState": {
+			"updateConfiguration": "Configuration updating..."
+		}
 	}
 }

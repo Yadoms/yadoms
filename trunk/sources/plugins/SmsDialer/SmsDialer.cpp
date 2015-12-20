@@ -99,6 +99,7 @@ void CSmsDialer::processNotConnectedState(boost::shared_ptr<yApi::IYPluginApi> c
          case yApi::IYPluginApi::kEventUpdateConfiguration:
             {
                // Configuration was updated
+               context->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
                std::string newConfiguration = context->getEventHandler().getEventData<std::string>();
                YADOMS_LOG(debug) << "configuration was updated...";
                BOOST_ASSERT(!newConfiguration.empty());  // newConfigurationValues shouldn't be empty, or kEvtUpdateConfiguration shouldn't be generated
@@ -112,6 +113,7 @@ void CSmsDialer::processNotConnectedState(boost::shared_ptr<yApi::IYPluginApi> c
                // Create new phone
                m_phone = CSmsDialerFactory::constructPhone(m_configuration);
 
+               context->setPluginState(yApi::historization::EPluginState::kRunning);
                break;
             }
          case kEvtTimerTryToConnectToPhone:
@@ -197,8 +199,9 @@ void CSmsDialer::processConnectedState(boost::shared_ptr<yApi::IYPluginApi> cont
          case yApi::IYPluginApi::kEventUpdateConfiguration:
             {
                // Configuration was updated
+               context->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
                std::string newConfiguration = context->getEventHandler().getEventData<std::string>();
-               YADOMS_LOG(debug) << "configuration was updated...";
+               YADOMS_LOG(debug) << "Update configuration...";
                BOOST_ASSERT(!newConfiguration.empty());  // newConfigurationValues shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
                // Close connection with current phone
@@ -210,6 +213,7 @@ void CSmsDialer::processConnectedState(boost::shared_ptr<yApi::IYPluginApi> cont
                // Create new phone
                m_phone = CSmsDialerFactory::constructPhone(m_configuration);
 
+               context->setPluginState(yApi::historization::EPluginState::kRunning);
                break;
             }
          case kEvtTimerTryToConnectToPhone:

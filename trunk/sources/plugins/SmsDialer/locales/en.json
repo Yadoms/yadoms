@@ -70,7 +70,8 @@
 		"pluginState": {
 			"connecting": "Connecting...",
 			"phoneConnected": "Connected to phone...",
-			"connectionFailed": "Connection to phone failed..."
+			"connectionFailed": "Connection to phone failed...",
+			"updateConfiguration": "Configuration updating..."
 		}
 	}
 }

@@ -28,7 +28,8 @@
 	"customLabels": {
 		"pluginState": {
 			"connecting": "Connexion en cours...",
-			"connectionFailed": "Erreur de connexion, réessai dans un moment..."
-		},
+			"connectionFailed": "Erreur de connexion, réessai dans un moment...",
+			"updateConfiguration": "Mise à jour de la configuration..."
+		}
 	}
 }

@@ -87,8 +87,9 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
          case yApi::IYPluginApi::kEventUpdateConfiguration:
          {
             // Configuration was updated
+            context->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
             shared::CDataContainer newConfiguration = context->getEventHandler().getEventData<shared::CDataContainer>();
-            YADOMS_LOG(debug) << "configuration was updated...";
+            YADOMS_LOG(debug) << "Update configuration...";
 
             //read new conf and
             CRfxLanXplConfiguration newConf;
@@ -108,21 +109,13 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
                   stopHub(hub);
                }
             }
-            else
-            {
-               //if (!boost::iequals(m_configuration.getHubLocalIp(), newConf.getHubLocalIp()))
-               //{
-               //   //the filter chages, just update hub
-               //   if (m_hub)
-               //      m_hub->updateHubFilter(newConf.getHubLocalIp());
-               //}
-            }
 
             // Take into account the new configuration
             // - Restart the plugin if necessary,
             // - Update some resources,
             // - etc...
             m_configuration.initializeWith(newConfiguration);
+            context->setPluginState(yApi::historization::EPluginState::kRunning);
             break;
          }
 

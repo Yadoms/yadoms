@@ -86,7 +86,7 @@
 	"customLabels": {
 		"pluginState": {
 			"connecting": "Connexion en cours...",
-			"configurationUpdated": "Configuration mise à jour"
+			"updateConfiguration": "Mise à jour de la configuration..."
 		}
 	}
 }

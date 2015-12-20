@@ -334,5 +334,10 @@
 			"name": "Prévisions pluviométriques",
 			"description": "Les prévisions pluviométriques pour les 3 prochains jours peuvent être utilisées dans Yadoms"
 		}
+	},
+	"customLabels": {
+		"pluginState": {
+			"updateConfiguration": "Mise à jour de la configuration..."
+		}
 	}
 }

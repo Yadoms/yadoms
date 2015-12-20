@@ -27,7 +27,8 @@
 	"customLabels": {
 		"pluginState": {
 			"connecting": "Connecting...",
-			"connectionFailed": "Connection failed, will retry in a while..."
-		},
+			"connectionFailed": "Connection failed, will retry in a while...",
+			"updateConfiguration": "Configuration updating..."
+		}
 	}
 }

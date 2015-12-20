@@ -86,7 +86,7 @@
 	"customLabels": {
 		"pluginState": {
 			"connecting": "Connecting...",
-			"configurationUpdated": "Configuration updated"
+			"updateConfiguration": "Configuration updating..."
 		}
 	}
 }
