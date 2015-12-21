@@ -31,6 +31,11 @@ std::string CRfxcomConfiguration::getSerialPort() const
    return m_data.get<std::string>("SerialPort");
 }
 
+unsigned int CRfxcomConfiguration::getSendRepetitions() const
+{
+   return m_data.get<unsigned int>("SendRepetitions");
+}
+
 bool CRfxcomConfiguration::isAEenabled          () const { return m_data.getWithDefault<bool>("Protocols.content.AE Blyss", false); }
 bool CRfxcomConfiguration::isRUBICSONenabled    () const { return m_data.getWithDefault<bool>("Protocols.content.Rubicson", false); }
 bool CRfxcomConfiguration::isFINEOFFSETenabled  () const { return m_data.getWithDefault<bool>("Protocols.content.FineOffset/Viking", false); }

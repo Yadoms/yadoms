@@ -20,6 +20,7 @@ public:
    virtual std::string getEthernetAddress() const;
    virtual std::string getEthernetPort() const;
    virtual std::string getSerialPort() const;
+   virtual unsigned int getSendRepetitions() const;
    virtual bool isAEenabled            () const;
    virtual bool isRUBICSONenabled      () const;
    virtual bool isFINEOFFSETenabled    () const;
