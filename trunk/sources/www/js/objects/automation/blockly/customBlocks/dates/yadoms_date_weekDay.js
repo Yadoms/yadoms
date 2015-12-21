@@ -33,7 +33,7 @@ Blockly.Blocks['yadoms_date_weekDay'] = {
         .appendField(this.dropdown_, this.weekDaysDropdownName_);
     this.setInputsInline(true);
     this.setOutput(true, "date");
-    this.setColour(160);
+    this.setColour(Blockly.Yadoms.Dates.date.HUE);
     this.setTooltip($.t("blockly.blocks.dates.yadoms_date_weekDay.tooltip", { defaultValue: "" }));
     this.setHelpUrl('http://www.example.com/');
   },

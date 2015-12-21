@@ -31,7 +31,7 @@
         .appendField(new Blockly.FieldDropdown(operators), this.operatorFieldName_);
     this.setInputsInline(true);
     this.setOutput(true, ["time", "datetime", "timespan"]);
-    this.setColour(160);
+    this.setColour(Blockly.Yadoms.Dates.datetime.HUE);
     this.setTooltip($.t("blockly.blocks.dates.yadoms_date_arithmetic.tooltip", { defaultValue: "" }));
     this.setHelpUrl('http://www.example.com/');
   }

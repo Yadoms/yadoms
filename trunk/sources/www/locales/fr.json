@@ -440,19 +440,16 @@
       }
     },
     "blocks": {
-      "yadoms_at": {
-        "title": "At",
-        "tooltip": "Le script attends la date/heure spécifiée",
-        "date_splitter": "/",
-        "date_hour_separator": " ",
-        "hour_splitter": ":"
+      "yadoms_wait": {
+        "title": "Attendre",
+        "tooltip": "Le script attends une date/heure spécifiée ou une durée"
       },
       "yadoms_sleep": {
-        "title": "Sleep",
+        "title": "Attendre",
         "tooltip": "Le script passe en pause pendant une durée donnée"
       },
       "yadoms_log": {
-        "title": "Log",
+        "title": "Loguer",
         "tooltip": "Ecrit une ligne dans le fichier de log du script"
       },
       "yadoms_enumeration": {
@@ -472,18 +469,18 @@
           "serverVersion": "Version du serveur Yadoms"
         }
       },
-      "yadoms_wait_for_keywords": {
-        "titleLine1": "Attente d'une nouvelle acquisition",
-        "titleLine2": "Stocker la valeur dans",
+      "yadoms_wait_for_event": {
+        "titleLine1": "Attendre un évènement",
+        "titleLine2": "Stocker sa valeur dans",
         "case": "Lorsque",
         "datetime": "la date/heure",
         "triggered": "change",
         "triggeredType": {
-          "change": "change",
-          "become": "devient"
+          "change": "envoie une donnée",
+          "become": ""
         },
-        "do": "Alors faire",
-        "tooltip": "Attend une nouvelle acquisition d'un ou plusieurs keyword. La valeur du keyword qui a changé est stockée dans la variable keywordNouvelleValeur",
+        "do": "Faire",
+        "tooltip": "Attend une évènement. cela peut être l'évolution d'une donnée, ou bien la date/heure qui change",
         "defaultVarName": "nouvelleAcqusition",
         "mutator": {
           "base": {
@@ -491,23 +488,23 @@
             "tooltip": "Attend une nouvelle acquisition d'un ou plusieurs keyword."
           },
           "storeInVariable": {
-            "title": "Stocker la valeur",
+            "title": "Stocker sa valeur",
             "tooltip": "Ajoute un nouveau keyword à observer"
           },
           "change": {
-            "title": "Keyword : tous changements",
-            "tooltip": "Ajoute un nouveau block pour observer les changements d'un keyword"
+            "title": "Equipement : chaque nouvelle donnée",
+            "tooltip": "Ajoute un nouveau block pour observer les changements d'un équipement"
           },
           "become": {
-            "title": "Keyword : valeur spécifique",
-            "tooltip": "Ajoute un nouveau block pour observer une condition particulière de changement d'un keyword"
+            "title": "Equipement : donnée particulière",
+            "tooltip": "Ajoute un nouveau block pour observer une condition particulière de changement d'une donnée d'un équipement"
           },
           "datetimeChange": {
             "title": "Date/heure : mise à jour",
             "tooltip": "Ajoute un nouveau block pour effectuer des actions lorsque la date/heure change (toutes les minutes)"
           },
           "datetimeBecome": {
-            "title": "Date/heure : valeur spécifique",
+            "title": "Date/heure : sur une date spécifique",
             "tooltip": "Ajoute un nouveau block pour effectuer des actions lorsque la date/heure atteint une condition particulière"
           },
           "error": {
@@ -546,12 +543,12 @@
         "yadoms_date_time": {
           "tooltip": "Selection d'une heure/minute",
           "hour": "h",
-          "minute": "min"
+          "minute": ""
         },
         "yadoms_date_datetime": {
           "tooltip": "Selection d'une date/heure",
-          "date": "Date",
-          "time": "Heure"
+          "date": "",
+          "time": "à"
         },
         "yadoms_date_everyDay": {
           "title": "Chaque jour",
@@ -564,6 +561,14 @@
         "yadoms_date_now": {
           "title": "Maintenant",
           "tooltip": "Maintenant"
+        },
+        "yadoms_date_sunrise": {
+          "title": "Heure de lever du soleil",
+          "tooltip": "Obtient l'heure de lever du soleil du jour"
+        },
+        "yadoms_date_sunset": {
+          "title": "Heure de coucher du soleil",
+          "tooltip": "Obtient l'heure de coucher du soleil du jour"
         },
         "yadoms_date_timespan": {
           "title": "Durée",

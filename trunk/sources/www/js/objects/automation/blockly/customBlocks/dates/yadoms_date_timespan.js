@@ -27,7 +27,7 @@ Blockly.Blocks['yadoms_date_timespan'] = {
         .appendField($.t("blockly.blocks.dates.yadoms_date_timespan.minute", { defaultValue: "min" }));
     this.setInputsInline(true);
     this.setOutput(true, "timespan");
-    this.setColour(160);
+    this.setColour(Blockly.Yadoms.Dates.timespan.HUE);
     this.setTooltip($.t("blockly.blocks.dates.yadoms_date_timespan.tooltip", { defaultValue: "" }));
     this.setHelpUrl('http://www.example.com/');
   }

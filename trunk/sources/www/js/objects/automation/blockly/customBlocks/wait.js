@@ -5,77 +5,19 @@
  * Define a condition block which is true when a keyword match a value (not a front value)
  * @type {{init: Function}}
  */
-Blockly.Blocks["yadoms_at"] = {
-    yearFieldName: "year",
-    monthFieldName: "month",
-    dayFieldName: "day",
-    hourFieldName: "hour",
-    minuteFieldName: "minute",
-    secondFieldName: "second",
+Blockly.Blocks["yadoms_wait"] = {
+    valueInput_: "timeToWait",
     init: function() {
         this.setHelpUrl("http://www.example.com/");
-        this.setColour(210);
+        this.setColour(Blockly.Yadoms.Dates.datetime.HUE);
 
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
 
-        this.defaultDate = new Date();
-
-        var self = this;
-
-        this.appendDummyInput()
-            .appendField($.t("blockly.blocks.yadoms_at.title"))
-            .appendField(new Blockly.FieldTextInput(this.defaultDate.getFullYear(), function(text) { return self.yearRegexCheck(self, text); }), this.yearFieldName)
-            .appendField($.t("blockly.blocks.yadoms_at.date_splitter"))
-            .appendField(new Blockly.FieldTextInput(this.defaultDate.getMonth() + 1, function(text) { return self.monthRegexCheck(self, text); }), this.monthFieldName)
-            .appendField($.t("blockly.blocks.yadoms_at.date_splitter"))
-            .appendField(new Blockly.FieldTextInput(this.defaultDate.getDate(), function(text) { return self.dayRegexCheck(self, text); }), this.dayFieldName)
-            .appendField($.t("blockly.blocks.yadoms_at.date_hour_separator"))
-            .appendField(new Blockly.FieldTextInput(this.defaultDate.getHours(), function (text) { return self.hourRegexCheck(self, text); }), this.hourFieldName)
-            .appendField($.t("blockly.blocks.yadoms_at.hour_splitter"))
-            .appendField(new Blockly.FieldTextInput(this.defaultDate.getMinutes(), function (text) { return self.minRegexCheck(self, text); }), this.minuteFieldName)
-            .appendField($.t("blockly.blocks.yadoms_at.hour_splitter"))
-            .appendField(new Blockly.FieldTextInput(this.defaultDate.getSeconds(), function (text) { return self.secRegexCheck(self, text); }), this.secondFieldName);
-        this.setTooltip(function() {
-            return $.t("blockly.blocks.yadoms_at.tooltip");
-        });
-    },
-
-    yearRegexCheck : function (block, text) {
-        var check = "" + text; //force to make a string (in soem case text is not always a string instance)
-        if (check.match(/^(19[5-9]\d|20[0-4]\d|2050)$/))
-            return text;
-        return block.defaultDate.getFullYear();
-    },
-    monthRegexCheck: function (block, text) {
-        var check = "" + text; //force to make a string (in soem case text is not always a string instance)
-        if (check.match(/^(0?[1-9]|1[012])$/))
-            return text;
-        return block.defaultDate.getMonth() + 1;
-    },
-    dayRegexCheck: function (block, text) {
-        var check = "" + text; //force to make a string (in soem case text is not always a string instance)
-        if (check.match(/^(0[1-9]|[1-9]|[12]\d|3[01])$/))
-            return text;
-        return block.defaultDate.getDate();
-    },
-    hourRegexCheck: function (block, text) {
-        var check = "" + text; //force to make a string (in soem case text is not always a string instance)
-        if (check.match(/^([0-9]|[01]\d|2[0-3])$/))
-            return text;
-        return block.defaultDate.getHours();
-    },
-    minRegexCheck: function (block, text) {
-        var check = "" + text; //force to make a string (in soem case text is not always a string instance)
-        if (check.match(/^([0-9]|[0-5][0-9])$/))
-            return text;
-        return block.defaultDate.getMinutes();
-    },
-    secRegexCheck: function (block, text) {
-        var check = "" + text; //force to make a string (in soem case text is not always a string instance)
-        if (check.match(/^([0-9]|[0-5][0-9])$/))
-            return text;
-        return block.defaultDate.getSeconds();
+        this.appendValueInput(this.valueInput_)
+			.setCheck(["datetime", "timespan"])
+            .appendField($.t("blockly.blocks.yadoms_wait.title"));
+		this.setTooltip($.t("blockly.blocks.yadoms_wait.tooltip", { defaultValue: "" }));			
     }
 };
 

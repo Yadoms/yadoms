@@ -11,7 +11,7 @@ Blockly.Blocks['yadoms_date_datetime'] = {
   /**
    * The date input name
    */
-  hourInputName_ : "hourInput",
+  timeInputName_ : "timeInput",
 
   /**
    *Block initialization function
@@ -22,11 +22,11 @@ Blockly.Blocks['yadoms_date_datetime'] = {
         .setCheck("date");
       this.appendDummyInput()
           .appendField($.t("blockly.blocks.dates.yadoms_date_datetime.time", { defaultValue: "time" }));
-    this.appendValueInput(this.hourInputName_)
+    this.appendValueInput(this.timeInputName_)
         .setCheck("time");
     this.setInputsInline(true);
     this.setOutput(true, "datetime");
-    this.setColour(160);
+    this.setColour(Blockly.Yadoms.Dates.datetime.HUE);
     this.setTooltip($.t("blockly.blocks.dates.yadoms_date_datetime.tooltip", { defaultValue: "" }));
     this.setHelpUrl('http://www.example.com/');
   }

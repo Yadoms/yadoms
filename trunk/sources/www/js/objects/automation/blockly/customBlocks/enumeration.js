@@ -104,7 +104,7 @@ Blockly.Blocks["yadoms_enumeration"] = {
         var enumDropDown = new Blockly.FieldDropdown([[$.t("blockly.blocks.yadoms_enumeration.title"), "enumeration"]]);
 
         this.setHelpUrl("http://www.example.com/");
-        this.setColour(20);
+        this.setColour(Blockly.Yadoms.blockColour.HUE);
         this.appendDummyInput()
             .appendField(enumDropDown, this.enumerationDropDownName);
         this.setOutput(true, "");

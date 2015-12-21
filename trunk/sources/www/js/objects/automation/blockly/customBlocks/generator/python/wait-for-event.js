@@ -1,9 +1,9 @@
 /**
- * Define the python generation function for yadoms_wait_for_keywords block
+ * Define the python generation function for yadoms_wait_for_event block
  * @param block The block
  * @return {*[]}
  */
-Blockly.Python["yadoms_wait_for_keywords"] = function (block) {
+Blockly.Python["yadoms_wait_for_event"] = function (block) {
     var order = Blockly.Python.ORDER_RELATIONAL;
 
     //list all keyword id in a list
@@ -23,8 +23,8 @@ Blockly.Python["yadoms_wait_for_keywords"] = function (block) {
     var keywordIdVar = block.generateVariable_("keywordId");
 
     var listenForDateTime = "False";
-    if ($.inArray("yadoms_wait_for_keywords_mutator_datetime_change", this.mutationData_.additionalBlocks) !== -1 ||
-        $.inArray("yadoms_wait_for_keywords_mutator_datetime_become", this.mutationData_.additionalBlocks) !== -1) {
+    if ($.inArray("yadoms_wait_for_event_mutator_datetime_change", this.mutationData_.additionalBlocks) !== -1 ||
+        $.inArray("yadoms_wait_for_event_mutator_datetime_become", this.mutationData_.additionalBlocks) !== -1) {
         listenForDateTime = "True";
     }
 
@@ -40,7 +40,7 @@ Blockly.Python["yadoms_wait_for_keywords"] = function (block) {
     for (i = 0; i < this.mutationData_.additionalBlocks.length; i++) {
 
         if (!this.mutationData_.additionalBlocks[i] ||
-            this.mutationData_.additionalBlocks[i] === "yadoms_wait_for_keywords_mutator_store_in_variable")
+            this.mutationData_.additionalBlocks[i] === "yadoms_wait_for_event_mutator_store_in_variable")
             continue;
         
         //get the keywordId
@@ -53,12 +53,12 @@ Blockly.Python["yadoms_wait_for_keywords"] = function (block) {
         var operator;
         var argument1;
         switch (this.mutationData_.additionalBlocks[i]) {
-            case "yadoms_wait_for_keywords_mutator_change":
+            case "yadoms_wait_for_event_mutator_change":
                 //nothing to add, watching anychanges
                 condition = waitForEventResultVar + ".getType() == 1 and " +keywordIdVar + " == " + keyId;
                 break;
 
-            case "yadoms_wait_for_keywords_mutator_become":
+            case "yadoms_wait_for_event_mutator_become":
                 //add the become if
                 operator = Blockly.Yadoms.Python.getOperatorCode(block.getFieldValue("operatorDd" + i));
                 var keywordId = block.getFieldValue("keywordDd" + i);
@@ -68,15 +68,15 @@ Blockly.Python["yadoms_wait_for_keywords"] = function (block) {
                 condition += " and " + argument0 + " " + operator + " " + argument1;
                 break;
 
-            case "yadoms_wait_for_keywords_mutator_datetime_change":
+            case "yadoms_wait_for_event_mutator_datetime_change":
                 condition = waitForEventResultVar + ".getType() == 2";
                 break;
 
-            case "yadoms_wait_for_keywords_mutator_datetime_become":
+            case "yadoms_wait_for_event_mutator_datetime_become":
                 operator = Blockly.Yadoms.Python.getOperatorCode(block.getFieldValue("operatorDd" + i));
                 argument1 = Blockly.Python.valueToCode(block, "additionalInput_part1_" + i, order) || "0";
                 condition = waitForEventResultVar + ".getType() == 2";
-                condition += " and scriptUtilities.strToDateTime(" + outVar + ") " + operator + " " + argument1;
+                condition += " and scriptUtilities.strToDateTime(" + outVar + ") " + operator + " scriptUtilities.toDatetime(" + argument1 + ")";
                 break;
 
             default:

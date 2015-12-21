@@ -16,7 +16,7 @@ Blockly.Blocks["yadoms_notification_simple"] = {
         this.setPreviousStatement(true, "null");
         this.setNextStatement(true, "null");
         this.setTooltip($.t("blockly.blocks.yadoms_notification_simple.tooltip", { defaultValue: "" }));
-        this.setColour(0);
+        this.setColour(Blockly.Yadoms.blockColour.HUE);
         var thisBlock = this;
 
 

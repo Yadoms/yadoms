@@ -9,7 +9,7 @@
         .appendField($.t("blockly.blocks.dates.yadoms_date_everyDay.title", { defaultValue: "Every day" }));
     this.setInputsInline(true);
     this.setOutput(true, "date");
-    this.setColour(160);
+    this.setColour(Blockly.Yadoms.Dates.date.HUE);
     this.setTooltip($.t("blockly.blocks.dates.yadoms_date_everyDay.tooltip", { defaultValue: "" }));
     this.setHelpUrl('http://www.example.com/');
   }
