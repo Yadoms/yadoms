@@ -3,24 +3,24 @@
  * Define a condition block which is true when a keyword match a value (not a front value)
  * @type {{init: Function}}
  */
-Blockly.Blocks["yadoms_wait_for_keywords"] = {
+Blockly.Blocks["yadoms_wait_for_event"] = {
     init: function () {
 
 
         this.appendDummyInput()
-            .appendField($.t("blockly.blocks.yadoms_wait_for_keywords.titleLine1"));
+            .appendField($.t("blockly.blocks.yadoms_wait_for_event.titleLine1"));
 
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour(20);
-        this.setTooltip($.t("blockly.blocks.yadoms_wait_for_keywords.tooltip"));
+        this.setColour(Blockly.Yadoms.blockColour.HUE);
+        this.setTooltip($.t("blockly.blocks.yadoms_wait_for_event.tooltip"));
         this.setHelpUrl("http://www.example.com/");
 
-        this.setMutator(new Blockly.Mutator(["yadoms_wait_for_keywords_mutator_store_in_variable",
-                                            "yadoms_wait_for_keywords_mutator_change",
-                                            "yadoms_wait_for_keywords_mutator_become",
-                                            "yadoms_wait_for_keywords_mutator_datetime_change",
-                                            "yadoms_wait_for_keywords_mutator_datetime_become"]));
+        this.setMutator(new Blockly.Mutator(["yadoms_wait_for_event_mutator_store_in_variable",
+                                            "yadoms_wait_for_event_mutator_change",
+                                            "yadoms_wait_for_event_mutator_become",
+                                            "yadoms_wait_for_event_mutator_datetime_change",
+                                            "yadoms_wait_for_event_mutator_datetime_become"]));
     },
 
     /**
@@ -45,7 +45,7 @@ Blockly.Blocks["yadoms_wait_for_keywords"] = {
         if (showInput === true) {
             if (input == null) {
                 this.appendDummyInput("storeVariableInput")
-					.appendField($.t("blockly.blocks.yadoms_wait_for_keywords.titleLine2"))
+					.appendField($.t("blockly.blocks.yadoms_wait_for_event.titleLine2"))
 					.appendField(" ")
 					.appendField(new Blockly.FieldVariable(this.generateVariable_(varName)), "outVar");
             }
@@ -92,18 +92,18 @@ Blockly.Blocks["yadoms_wait_for_keywords"] = {
         if (inputList != undefined) {
             $.each(inputList, function (index, inputToShow) {
                 switch(inputToShow) {
-                    case "yadoms_wait_for_keywords_mutator_change":
+                    case "yadoms_wait_for_event_mutator_change":
                         self.appendKeywordSelectorStatementChange_(index);
                         break;
-                    case "yadoms_wait_for_keywords_mutator_become":
+                    case "yadoms_wait_for_event_mutator_become":
                         self.appendKeywordSelectorStatementBecome_(index);
                         break;
 
-                    case "yadoms_wait_for_keywords_mutator_datetime_change":
+                    case "yadoms_wait_for_event_mutator_datetime_change":
                         self.appendDatetimeStatementChange_(index);
                         break;
 
-                    case "yadoms_wait_for_keywords_mutator_datetime_become":
+                    case "yadoms_wait_for_event_mutator_datetime_become":
                         self.appendDatetimeStatementBecome_(index);
                         break;
 
@@ -121,9 +121,9 @@ Blockly.Blocks["yadoms_wait_for_keywords"] = {
      * @private 
      */
     appendKeywordSelectorStatementChange_ : function(no, devId, keyId, statementConnection) {
-        var bDummyInput = this.appendDummyInput("additionalInput_part1_" + no).appendField($.t("blockly.blocks.yadoms_wait_for_keywords.case"));
+        var bDummyInput = this.appendDummyInput("additionalInput_part1_" + no).appendField($.t("blockly.blocks.yadoms_wait_for_event.case"));
         Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection(this, false, ["numeric", "string", "bool", "nodata", "enum"], undefined, undefined, "deviceDd" + no, "keywordDd" + no, bDummyInput)
-        .appendField($.t("blockly.blocks.yadoms_wait_for_keywords.triggeredType.change"));
+        .appendField($.t("blockly.blocks.yadoms_wait_for_event.triggeredType.change"));
 
         if (devId) {
             var devDd = this.getField("deviceDd" + no);
@@ -148,10 +148,10 @@ Blockly.Blocks["yadoms_wait_for_keywords"] = {
      * @private 
      */
     appendKeywordSelectorStatementBecome_: function (no, devId, keyId, operator, valueConnection, statementConnection) {
-        var bValueInput = this.appendValueInput("additionalInput_part1_" + no).appendField($.t("blockly.blocks.yadoms_wait_for_keywords.case"));
+        var bValueInput = this.appendValueInput("additionalInput_part1_" + no).appendField($.t("blockly.blocks.yadoms_wait_for_event.case"));
         var self = this;
         Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection(this, false, ["numeric", "string", "bool", "nodata", "enum"], undefined, function () { self.onKeywordChange_(no); }, "deviceDd" + no, "keywordDd" + no, bValueInput)
-        .appendField($.t("blockly.blocks.yadoms_wait_for_keywords.triggeredType.become")).appendField(new Blockly.FieldDropdown(Blockly.Yadoms.NumberOperators_), "operatorDd"+no);
+        .appendField($.t("blockly.blocks.yadoms_wait_for_event.triggeredType.become")).appendField(new Blockly.FieldDropdown(Blockly.Yadoms.NumberOperators_), "operatorDd"+no);
 
         if (devId) {
             var devDd = this.getField("deviceDd" + no);
@@ -181,9 +181,9 @@ Blockly.Blocks["yadoms_wait_for_keywords"] = {
      * @private 
      */
     appendDatetimeStatementChange_: function (no, statementConnection) {
-        this.appendDummyInput("additionalInput_part1_" + no).appendField($.t("blockly.blocks.yadoms_wait_for_keywords.case"))
-            .appendField($.t("blockly.blocks.yadoms_wait_for_keywords.datetime"))
-            .appendField($.t("blockly.blocks.yadoms_wait_for_keywords.triggeredType.change"));
+        this.appendDummyInput("additionalInput_part1_" + no).appendField($.t("blockly.blocks.yadoms_wait_for_event.case"))
+            .appendField($.t("blockly.blocks.yadoms_wait_for_event.datetime"))
+            .appendField($.t("blockly.blocks.yadoms_wait_for_event.triggeredType.change"));
 
         this.appendInputPart2_(no, statementConnection);
     },
@@ -198,10 +198,10 @@ Blockly.Blocks["yadoms_wait_for_keywords"] = {
      */
     appendDatetimeStatementBecome_: function (no, operator, valueConnection, statementConnection) {
         var bValueInput = this.appendValueInput("additionalInput_part1_" + no)
-            .setCheck("datetime")
-            .appendField($.t("blockly.blocks.yadoms_wait_for_keywords.case"))
-            .appendField($.t("blockly.blocks.yadoms_wait_for_keywords.datetime"))
-            .appendField($.t("blockly.blocks.yadoms_wait_for_keywords.triggeredType.become"))
+            .setCheck(["datetime", "time", "date"])
+            .appendField($.t("blockly.blocks.yadoms_wait_for_event.case"))
+            .appendField($.t("blockly.blocks.yadoms_wait_for_event.datetime"))
+            .appendField($.t("blockly.blocks.yadoms_wait_for_event.triggeredType.become"))
             .appendField(new Blockly.FieldDropdown(Blockly.Yadoms.NumberOperators_), "operatorDd" + no);
 
         if (operator) {
@@ -226,7 +226,7 @@ Blockly.Blocks["yadoms_wait_for_keywords"] = {
         var inputPart2 = this.appendStatementInput("additionalInput_part2_" + no);
         inputPart2.appendField("    ")
            .setAlign(Blockly.ALIGN_RIGHT)
-           .appendField($.t("blockly.blocks.yadoms_wait_for_keywords.do"));
+           .appendField($.t("blockly.blocks.yadoms_wait_for_event.do"));
 
         if (statementConnection) {
             inputPart2.connection.connect(statementConnection);
@@ -299,7 +299,7 @@ Blockly.Blocks["yadoms_wait_for_keywords"] = {
         }
 
         //get the default name
-        var name = defaultVarName || $.t("blockly.blocks.yadoms_wait_for_keywords.defaultVarName");
+        var name = defaultVarName || $.t("blockly.blocks.yadoms_wait_for_event.defaultVarName");
 
         //if variable is already used anywhere, then append an integer until finding a non used name
         if (this.isVariableInUse_(workspace, name)) {
@@ -419,13 +419,13 @@ Blockly.Blocks["yadoms_wait_for_keywords"] = {
     * @this Blockly.Block
     */
     decompose: function (workspace) {
-        var topBlock = Blockly.Block.obtain(workspace, "yadoms_wait_for_keywords_base");
+        var topBlock = Blockly.Block.obtain(workspace, "yadoms_wait_for_event_base");
         topBlock.initSvg();
 
         var connection = topBlock.getInput("STACK").connection;
 
         if (this.mutationData_.storeInVariable === true) {
-            var additionalBlock = Blockly.Block.obtain(workspace, "yadoms_wait_for_keywords_mutator_store_in_variable");
+            var additionalBlock = Blockly.Block.obtain(workspace, "yadoms_wait_for_event_mutator_store_in_variable");
             additionalBlock.initSvg();
             connection.connect(additionalBlock.previousConnection);
             connection = additionalBlock.nextConnection;
@@ -438,7 +438,7 @@ Blockly.Blocks["yadoms_wait_for_keywords"] = {
                 connection.connect(additionalBlock.previousConnection);
                 connection = additionalBlock.nextConnection;
             } else {
-                console.error("Blockly : yadoms_wait_for_keywords : decompose : unknown block type : " + blockType);
+                console.error("Blockly : yadoms_wait_for_event : decompose : unknown block type : " + blockType);
             }
         });
 
@@ -480,32 +480,32 @@ Blockly.Blocks["yadoms_wait_for_keywords"] = {
         
         while (clauseBlock) {
             switch (clauseBlock.type) {
-                case "yadoms_wait_for_keywords_mutator_store_in_variable":
+                case "yadoms_wait_for_event_mutator_store_in_variable":
                     if (this.mutationData_.storeInVariable === true)
                         storeInVariableMoreThanOnce = true;
                     this.mutationData_.storeInVariable = true;
                     this.updateStoreVariableInput_(this.mutationData_.storeInVariable, clauseBlock.storeVariableName_);
                     break;
 
-                case "yadoms_wait_for_keywords_mutator_change":
+                case "yadoms_wait_for_event_mutator_change":
                     this.mutationData_.additionalBlocks.push(clauseBlock.type);
                     this.appendKeywordSelectorStatementChange_(additionalBlockCount, clauseBlock.part1DeviceId_, clauseBlock.part1KeywordId_, clauseBlock.part2Connection_);
                     additionalBlockCount++;
                     break;
 
-                case "yadoms_wait_for_keywords_mutator_become":
+                case "yadoms_wait_for_event_mutator_become":
                     this.mutationData_.additionalBlocks.push(clauseBlock.type);
                     this.appendKeywordSelectorStatementBecome_(additionalBlockCount, clauseBlock.part1DeviceId_, clauseBlock.part1KeywordId_, clauseBlock.part1Operator_, clauseBlock.part1Connection_, clauseBlock.part2Connection_);
                     additionalBlockCount++;
                     break;
 
-                case "yadoms_wait_for_keywords_mutator_datetime_change":
+                case "yadoms_wait_for_event_mutator_datetime_change":
                     this.mutationData_.additionalBlocks.push(clauseBlock.type);
                     this.appendDatetimeStatementChange_(additionalBlockCount, clauseBlock.part2Connection_);
                     additionalBlockCount++;
                     break;
 
-                case "yadoms_wait_for_keywords_mutator_datetime_become":
+                case "yadoms_wait_for_event_mutator_datetime_become":
                     this.mutationData_.additionalBlocks.push(clauseBlock.type);
                     this.appendDatetimeStatementBecome_(additionalBlockCount, clauseBlock.part1Operator_, clauseBlock.part1Connection_, clauseBlock.part2Connection_);
                     additionalBlockCount++;
@@ -522,11 +522,11 @@ Blockly.Blocks["yadoms_wait_for_keywords"] = {
         this.setWarningText(null);
 
         if (storeInVariableMoreThanOnce === true) {
-            this.setWarningText($.t("blockly.blocks.yadoms_wait_for_keywords.mutator.error.storeInVariableMoreThanOne"));
+            this.setWarningText($.t("blockly.blocks.yadoms_wait_for_event.mutator.error.storeInVariableMoreThanOne"));
         }
 
         if (additionalBlockCount === 0) {
-            this.setWarningText($.t("blockly.blocks.yadoms_wait_for_keywords.mutator.error.noAddtitionalBlock"));
+            this.setWarningText($.t("blockly.blocks.yadoms_wait_for_event.mutator.error.noAddtitionalBlock"));
         }
     },
     /**
@@ -541,7 +541,7 @@ Blockly.Blocks["yadoms_wait_for_keywords"] = {
             var inputPart1;
             var inputPart2;
             switch (clauseBlock.type) {
-                case "yadoms_wait_for_keywords_mutator_change":
+                case "yadoms_wait_for_event_mutator_change":
                     //save deviceId, KeywordId
                     clauseBlock.part1DeviceId_ = this.getFieldValue("deviceDd" + i);
                     clauseBlock.part1KeywordId_ = this.getFieldValue("keywordDd" + i);
@@ -551,7 +551,7 @@ Blockly.Blocks["yadoms_wait_for_keywords"] = {
                     i++;
                     break;
 
-                case "yadoms_wait_for_keywords_mutator_become":
+                case "yadoms_wait_for_event_mutator_become":
                     //save deviceId, KeywordId, operator, value
                     inputPart1 = this.getInput("additionalInput_part1_" + i);
 
@@ -566,14 +566,14 @@ Blockly.Blocks["yadoms_wait_for_keywords"] = {
                     i++;
                     break;
 
-                case "yadoms_wait_for_keywords_mutator_datetime_change":
+                case "yadoms_wait_for_event_mutator_datetime_change":
                     //save statement
                     inputPart2 = this.getInput("additionalInput_part2_" + i);
                     clauseBlock.part2Connection_ = inputPart2 && inputPart2.connection.targetConnection;
                     i++;
                     break;
 
-                case "yadoms_wait_for_keywords_mutator_datetime_become":
+                case "yadoms_wait_for_event_mutator_datetime_become":
                     //save operator, connection
                     inputPart1 = this.getInput("additionalInput_part1_" + i);
 
@@ -587,7 +587,7 @@ Blockly.Blocks["yadoms_wait_for_keywords"] = {
                     break;
 
 
-                case 'yadoms_wait_for_keywords_mutator_store_in_variable':
+                case 'yadoms_wait_for_event_mutator_store_in_variable':
                     //save variable name
                     clauseBlock.storeVariableName_ = this.getFieldValue("outVar");
                     break;
@@ -624,29 +624,29 @@ Blockly.Blocks["yadoms_wait_for_keywords"] = {
 };
 
 
-Blockly.Blocks["yadoms_wait_for_keywords_base"] = {
+Blockly.Blocks["yadoms_wait_for_event_base"] = {
     /**
      * Mutator block for if container.
      * @this Blockly.Block
      */
     init: function () {
-        this.setColour(20);
-        this.appendDummyInput().appendField($.t("blockly.blocks.yadoms_wait_for_keywords.mutator.base.title"));
+        this.setColour(Blockly.Yadoms.blockColour.HUE);
+        this.appendDummyInput().appendField($.t("blockly.blocks.yadoms_wait_for_event.mutator.base.title"));
         this.appendStatementInput("STACK");
-        this.setTooltip($.t("blockly.blocks.yadoms_wait_for_keywords.mutator.base.tooltip"));
+        this.setTooltip($.t("blockly.blocks.yadoms_wait_for_event.mutator.base.tooltip"));
         this.contextMenu = false;
     }
 };
 
-Blockly.Blocks["yadoms_wait_for_keywords_mutator_store_in_variable"] = {
+Blockly.Blocks["yadoms_wait_for_event_mutator_store_in_variable"] = {
     /**
      * Mutator block "store in variable".
      * @this Blockly.Block
      */
     init: function () {
-        this.setColour(20);
-        this.appendDummyInput().appendField($.t("blockly.blocks.yadoms_wait_for_keywords.mutator.storeInVariable.title"));
-        this.setTooltip($.t("blockly.blocks.yadoms_wait_for_keywords.mutator.storeInVariable.tooltip"));
+        this.setColour(Blockly.Yadoms.blockColour.HUE);
+        this.appendDummyInput().appendField($.t("blockly.blocks.yadoms_wait_for_event.mutator.storeInVariable.title"));
+        this.setTooltip($.t("blockly.blocks.yadoms_wait_for_event.mutator.storeInVariable.tooltip"));
         this.contextMenu = false;
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
@@ -655,30 +655,30 @@ Blockly.Blocks["yadoms_wait_for_keywords_mutator_store_in_variable"] = {
 
 
 
-Blockly.Blocks["yadoms_wait_for_keywords_mutator_change"] = {
+Blockly.Blocks["yadoms_wait_for_event_mutator_change"] = {
     /**
      * Mutator block for if container.
      * @this Blockly.Block
      */
     init: function () {
-        this.setColour(20);
-        this.appendDummyInput().appendField($.t("blockly.blocks.yadoms_wait_for_keywords.mutator.change.title"));
-        this.setTooltip($.t("blockly.blocks.yadoms_wait_for_keywords.mutator.change.tooltip"));
+        this.setColour(Blockly.Yadoms.blockColour.HUE);
+        this.appendDummyInput().appendField($.t("blockly.blocks.yadoms_wait_for_event.mutator.change.title"));
+        this.setTooltip($.t("blockly.blocks.yadoms_wait_for_event.mutator.change.tooltip"));
         this.contextMenu = false;
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
     }
 };
 
-Blockly.Blocks["yadoms_wait_for_keywords_mutator_become"] = {
+Blockly.Blocks["yadoms_wait_for_event_mutator_become"] = {
     /**
      * Mutator block for if container.
      * @this Blockly.Block
      */
     init: function () {
-        this.setColour(20);
-        this.appendDummyInput().appendField($.t("blockly.blocks.yadoms_wait_for_keywords.mutator.become.title"));
-        this.setTooltip($.t("blockly.blocks.yadoms_wait_for_keywords.mutator.become.tooltip"));
+        this.setColour(Blockly.Yadoms.blockColour.HUE);
+        this.appendDummyInput().appendField($.t("blockly.blocks.yadoms_wait_for_event.mutator.become.title"));
+        this.setTooltip($.t("blockly.blocks.yadoms_wait_for_event.mutator.become.tooltip"));
         this.contextMenu = false;
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
@@ -686,30 +686,30 @@ Blockly.Blocks["yadoms_wait_for_keywords_mutator_become"] = {
 };
 
 
-Blockly.Blocks["yadoms_wait_for_keywords_mutator_datetime_change"] = {
+Blockly.Blocks["yadoms_wait_for_event_mutator_datetime_change"] = {
     /**
      * Mutator block for datet/time change container.
      * @this Blockly.Block
      */
     init: function () {
-        this.setColour(20);
-        this.appendDummyInput().appendField($.t("blockly.blocks.yadoms_wait_for_keywords.mutator.datetimeChange.title"));
-        this.setTooltip($.t("blockly.blocks.yadoms_wait_for_keywords.mutator.datetimeChange.tooltip"));
+        this.setColour(Blockly.Yadoms.blockColour.HUE);
+        this.appendDummyInput().appendField($.t("blockly.blocks.yadoms_wait_for_event.mutator.datetimeChange.title"));
+        this.setTooltip($.t("blockly.blocks.yadoms_wait_for_event.mutator.datetimeChange.tooltip"));
         this.contextMenu = false;
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
     }
 };
 
-Blockly.Blocks["yadoms_wait_for_keywords_mutator_datetime_become"] = {
+Blockly.Blocks["yadoms_wait_for_event_mutator_datetime_become"] = {
     /**
      * Mutator block for date/time matching condition container.
      * @this Blockly.Block
      */
     init: function () {
-        this.setColour(20);
-        this.appendDummyInput().appendField($.t("blockly.blocks.yadoms_wait_for_keywords.mutator.datetimeBecome.title"));
-        this.setTooltip($.t("blockly.blocks.yadoms_wait_for_keywords.mutator.datetimeBecome.tooltip"));
+        this.setColour(Blockly.Yadoms.blockColour.HUE);
+        this.appendDummyInput().appendField($.t("blockly.blocks.yadoms_wait_for_event.mutator.datetimeBecome.title"));
+        this.setTooltip($.t("blockly.blocks.yadoms_wait_for_event.mutator.datetimeBecome.tooltip"));
         this.contextMenu = false;
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);

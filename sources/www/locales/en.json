@@ -501,12 +501,9 @@
       }
     },
     "blocks": {
-      "yadoms_at": {
+      "yadoms_wait": {
         "title": "At",
-        "tooltip": "Block the script until the specified date occurs",
-        "date_splitter": "/",
-        "date_hour_separator": " ",
-        "hour_splitter": ":"
+        "tooltip": "Block the script until the specified date occurs"
       },
       "yadoms_sleep": {
         "title": "Sleep",

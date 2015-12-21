@@ -1,5 +1,8 @@
 Blockly.Python['yadoms_date_extract'] = function(block) {
+    //see https://docs.python.org/2/library/datetime.html#datetime-objects
+    Blockly.Yadoms.Python.AddDateTimeFunctions();
 
+	
   var chosenDate = Blockly.Python.valueToCode(block, block.valueInputName_, Blockly.Python.ORDER_ATOMIC) || '0';
   
   var chosenValue = block.getFieldValue(block.dropdownName_);

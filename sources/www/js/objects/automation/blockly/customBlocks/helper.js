@@ -1,5 +1,4 @@
 
-
 /**
  * Configure a custom block by adding the dropdowns allowing selecting a keyword
  * @param thisBlock The block to configure

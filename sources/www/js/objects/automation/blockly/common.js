@@ -13,6 +13,12 @@ Blockly.Yadoms = function () {
 };
 
 /**
+ * Common HSV hue for all "Yadoms" blocks.
+ */
+Blockly.Yadoms.blockColour = { HUE : 20 }
+
+
+/**
  * The active blockly workspace
  */
 Blockly.Yadoms.CurrentWorkspace = null;
@@ -187,15 +193,13 @@ Blockly.Yadoms.GetBlocklyType_ = function (yadomsKeywordType, yadomsTypeName) {
  */
 Blockly.Yadoms.UpdateBlockColour_ = function (self, type) {
     if (type === "String")
-        self.setColour(160);
+        self.setColour(Blockly.Blocks.texts.HUE);
     else if (type === "Boolean")
-        self.setColour(210);
+        self.setColour(Blockly.Blocks.logic.HUE);
     else if (type === "Number")
-        self.setColour(230);
-    else if (type === "null" || type == null)
-        self.setColour(230);
-    else
-        self.setColour(20);
+        self.setColour(Blockly.Blocks.math.HUE);
+    else //if (type === "null" || type == null)
+        self.setColour(Blockly.Blocks.math.HUE);
 };
 
 

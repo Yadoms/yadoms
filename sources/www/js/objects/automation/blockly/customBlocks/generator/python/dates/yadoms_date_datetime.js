@@ -8,7 +8,7 @@ Blockly.Python["yadoms_date_datetime"] = function (block) {
     Blockly.Yadoms.Python.AddDateTimeFunctions();
 
     var date = Blockly.Python.valueToCode(block, block.dateInputName_, Blockly.Python.ORDER_ATOMIC);
-    var time = Blockly.Python.valueToCode(block, block.hourInputName_, Blockly.Python.ORDER_ATOMIC);
+    var time = Blockly.Python.valueToCode(block, block.timeInputName_, Blockly.Python.ORDER_ATOMIC);
 
     var code = "datetime.combine(" + date + ", " + time + ")";
 

@@ -17,7 +17,7 @@ Blockly.Blocks["yadoms_sleep"] = {
         ];
 
         this.setHelpUrl("http://www.example.com/");
-        this.setColour(20);
+        this.setColour(Blockly.Yadoms.blockColour.HUE);
         this.appendValueInput("Time")
             .setCheck("Number")
             .appendField($.t("blockly.blocks.yadoms_sleep.title"));

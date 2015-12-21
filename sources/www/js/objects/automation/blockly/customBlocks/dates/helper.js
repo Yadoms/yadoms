@@ -5,6 +5,28 @@
 Blockly.Yadoms.Dates = function() {
 }
 
+
+
+/**
+ * Common HSV hue for all "datetime" blocks.
+ */
+Blockly.Yadoms.Dates.datetime = { HUE : 260 }
+
+/**
+ * Common HSV hue for all "date" blocks.
+ */
+Blockly.Yadoms.Dates.date = { HUE : 320 }
+
+/**
+ * Common HSV hue for all "time" blocks.
+ */
+Blockly.Yadoms.Dates.time = { HUE : 300 }
+
+/**
+ * Common HSV hue for all "timespan" blocks.
+ */
+Blockly.Yadoms.Dates.timespan = { HUE : 280 }
+
 /**
  * Localized dates symbols
  */

@@ -26,7 +26,7 @@
         .appendField($.t("blockly.blocks.dates.yadoms_date_time.minute", { defaultValue: "min" }));
     this.setInputsInline(true);
     this.setOutput(true, "time");
-    this.setColour(160);
+    this.setColour(Blockly.Yadoms.Dates.time.HUE);
     this.setTooltip($.t("blockly.blocks.dates.yadoms_date_time.tooltip", { defaultValue: "" }));
     this.setHelpUrl('http://www.example.com/');
   }

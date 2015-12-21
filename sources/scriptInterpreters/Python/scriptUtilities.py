@@ -24,3 +24,23 @@ def strToDateTime(dateTimeAsString):
 	
 def strMatchDate(dateTimeAsString, dateTime):
 	return strToDateTime(dateTimeAsString) == dateTime
+
+def dateTimeToString(dateTimeObject):
+	return dateTimeObject.strftime("%Y-%m-%d %H:%M:%S")
+
+def timeDeltaToString(dateTimeObject):
+	hours, remainder = divmod(dateTimeObject.total_seconds(), 3600)
+	minutes, seconds = divmod(remainder, 60)
+	return "{0}:{1}:{2}".format(hours, minutes, seconds)
+	
+def dateTimeOrTimeDeltaToString(object):
+	if type(object) is timedelta:
+		return timeDeltaToString(object)
+	return dateTimeToString(object)
+	
+def toDatetime(object):
+	if type(object) is time:
+		return datetime.combine(date.today(), object)
+	if type(object) is date:
+		return datetime.combine(object, datetime.time(0,0,0))
+	return object

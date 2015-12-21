@@ -22,36 +22,49 @@ Blockly.Blocks['yadoms_get_info'] = {
             [$.t("blockly.blocks.yadoms_get_info.values.serverVersion"), "kYadomsServerVersion"]
         ];
 
+		this.dropDown_ = new Blockly.FieldDropdown(this.informationIdList_, function(val) {
+            self.updateTypes_(val);
+        });		
+		
         this.appendDummyInput()
             .appendField($.t("blockly.blocks.yadoms_get_info.title"))
-            .appendField(new Blockly.FieldDropdown(this.informationIdList_, function(val) {
-                //var val = self.getFieldValue(self.dropdownValueName_);
-                switch (val) {
-                    case self.informationIdList_[0][1]: //sunrise
-                    case self.informationIdList_[1][1]: //sunset
-                        self.outputConnection.setCheck("time");
-                        self.setColour(160);
-                        break;
-                    case self.informationIdList_[2][1]: //latitude
-                    case self.informationIdList_[3][1]: //longitude
-                    case self.informationIdList_[4][1]: //altitude
-                        self.outputConnection.setCheck("Number");
-                        self.setColour(230);
-                        break;
-                    default:
-                        self.outputConnection.setCheck("String");
-                        self.setColour(210);
-                        break;
-                }
-            }), this.dropdownValueName_);
-        this.setColour(210);
+            .appendField(this.dropDown_, this.dropdownValueName_);
+        this.setColour(Blockly.Blocks.texts.HUE);
         this.setTooltip($.t("blockly.blocks.yadoms_get_info.tooltip", { defaultValue: "" }));
         this.setHelpUrl('http://www.example.com/');
         this.setOutput(true, "String");
 
+		//set the value to the first available item, to force the setcheck to be done
+		this.initDropDown_();
     },
-    onValueChange: function (block) {
-        
-    }
+	
+    initDropDown_ : function() {
+		//update check/outputType
+		var value = this.informationIdList_[0][1];
+		this.dropDown_.setValue(value);
+		this.updateTypes_(value);
+	},
+	  
+	updateTypes_ : function(val) {
+		console.log("change type : " + val);
+		//var val = self.getFieldValue(self.dropdownValueName_);
+		switch (val) {
+			case this.informationIdList_[0][1]: //sunrise
+			case this.informationIdList_[1][1]: //sunset
+				this.outputConnection.setCheck("time");
+				this.setColour(Blockly.Yadoms.Dates.time.HUE);
+				break;
+			case this.informationIdList_[2][1]: //latitude
+			case this.informationIdList_[3][1]: //longitude
+			case this.informationIdList_[4][1]: //altitude
+				this.outputConnection.setCheck("Number");
+				this.setColour(Blockly.Blocks.math.HUE);
+				break;
+			default:
+				this.outputConnection.setCheck("String");
+				this.setColour(Blockly.Blocks.texts.HUE);
+				break;
+		}
+	}
 };
 

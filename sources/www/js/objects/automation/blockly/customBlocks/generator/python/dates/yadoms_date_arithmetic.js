@@ -1,5 +1,8 @@
 Blockly.Python['yadoms_date_arithmetic'] = function(block) {
-  // Basic arithmetic operators, and power.
+    //see https://docs.python.org/2/library/datetime.html#datetime-objects
+    Blockly.Yadoms.Python.AddDateTimeFunctions();
+
+	// Basic arithmetic operators, and power.
   var OPERATORS = {
     'ADD': [' + ', Blockly.Python.ORDER_ADDITIVE],
     'MINUS': [' - ', Blockly.Python.ORDER_ADDITIVE]

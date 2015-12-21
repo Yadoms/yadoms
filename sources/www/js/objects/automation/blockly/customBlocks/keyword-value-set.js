@@ -17,7 +17,7 @@ Blockly.Blocks["keyword-value-set"] = {
         this.setPreviousStatement(true, "null");
         this.setNextStatement(true, "null");
         this.setTooltip($.t("blockly.blocks.keyword-value-set.tooltip", { defaultValue: "" }));
-        this.setColour(0);
+        this.setColour(Blockly.Yadoms.blockColour.HUE);
 
         this.appendDummyInput()
             .appendField($.t("blockly.blocks.keyword-value-set.title"));
