@@ -42,18 +42,23 @@ bool CScriptFile::exists() const
    return boost::filesystem::exists(m_scriptFile);
 }
 
-std::string CScriptFile::read() const
+std::string CScriptFile::PythonFileRead(const std::string& filename)
 {
-   if (!exists())
-      throw shared::exception::CInvalidParameter(m_scriptFile.string());
+   if (!boost::filesystem::exists(filename))
+      throw shared::exception::CInvalidParameter(filename);
 
-   std::ifstream file(m_scriptFile.string().c_str());
+   std::ifstream file(filename.c_str());
    if (!file.is_open())
-      throw shared::exception::CInvalidParameter(m_scriptFile.string());
+      throw shared::exception::CInvalidParameter(filename);
 
    std::istreambuf_iterator<char> eos;
    std::string content(std::istreambuf_iterator<char>(file), eos);
    return content.erase(0, 3); // Remove UTF-8 BOM
+}
+
+std::string CScriptFile::read() const
+{
+   return PythonFileRead(m_scriptFile.string());
 }
 
 void CScriptFile::write(const std::string& content) const

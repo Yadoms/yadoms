@@ -28,6 +28,11 @@ public:
    virtual void write(const std::string& content) const;
    // [END] IScriptFile Implementation
 
+   //--------------------------------------------------------------
+   /// \brief	Read Python file
+   //--------------------------------------------------------------
+   static std::string PythonFileRead(const std::string& filename);
+
 private:
    //--------------------------------------------------------------
    /// \brief	Full path of script file

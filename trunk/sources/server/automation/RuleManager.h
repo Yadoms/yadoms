@@ -53,6 +53,7 @@ namespace automation
       virtual boost::shared_ptr<database::entities::CRule> getRule(int id) const;
       virtual std::string getRuleCode(int id) const;
       virtual std::string getRuleLog(int id) const;
+      virtual std::string getRuleTemplateCode(const std::string & interpreterName) const;
       virtual void updateRule(boost::shared_ptr<const database::entities::CRule> ruleData);
       virtual void updateRuleCode(int id, const std::string& code);
       virtual void deleteRule(int id);

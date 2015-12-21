@@ -46,6 +46,13 @@ namespace automation { namespace script
       ///\throw CInvalidParameter if rule ID or file not found
       //-----------------------------------------------------
       virtual std::string getScriptFile(boost::shared_ptr<const database::entities::CRule> ruleData) = 0;
+
+      //-----------------------------------------------------
+      ///\brief               Get the script template file
+      ///\param[in] interpreterName Interpreter to unload
+      ///\return              The template code
+      //-----------------------------------------------------
+      virtual std::string getScriptTemplateFile(const std::string& interpreterName) = 0;
       
       //-----------------------------------------------------
       ///\brief               Update the script file (create if necessary)

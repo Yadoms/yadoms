@@ -31,7 +31,9 @@ namespace web { namespace rest { namespace service {
    void CAutomationRule::configureDispatcher(CRestDispatcher & dispatcher)
    {
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)(m_restSubKeywordInterpreter), CAutomationRule::getAllInterpreters);
-      
+
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)(m_restSubKeywordRule)("*")("codeTemplate"), CAutomationRule::getRuleCodeTemplate);
+
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)(m_restSubKeywordRule), CAutomationRule::getAllRules);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)(m_restSubKeywordRule), CAutomationRule::createRule, CAutomationRule::transactionalMethod);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)(m_restSubKeywordRule)("*"), CAutomationRule::deleteRule, CAutomationRule::transactionalMethod);
@@ -118,6 +120,31 @@ namespace web { namespace rest { namespace service {
 
          shared::CDataContainer result;
          result.set("code", m_rulesManager->getRuleCode(boost::lexical_cast<int>(parameters[2])));
+         return CResult::GenerateSuccess(result);
+      }
+      catch (CRuleException& e)
+      {
+         return CResult::GenerateError(std::string("Fail to retreive rule code : ") + e.what());
+      }
+      catch (std::exception &ex)
+      {
+         return CResult::GenerateError(ex);
+      }
+      catch (...)
+      {
+         return CResult::GenerateError("unknown exception in retreiving the rule");
+      }
+   }
+
+   shared::CDataContainer CAutomationRule::getRuleCodeTemplate(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   {
+      try
+      {
+         if (parameters.size() != 4)
+            throw CRuleException("invalid parameter in URL");
+
+         shared::CDataContainer result;
+         result.set("code", m_rulesManager->getRuleTemplateCode(parameters[2]));
          return CResult::GenerateSuccess(result);
       }
       catch (CRuleException& e)
