@@ -3,7 +3,7 @@
  */
 
 /**
- * This associative array based on plugin Type conains all plugin type information with their package
+ * This associative array based on plugin Type contains all plugin type information with their package
  * @type {Array}
  */
 PluginManager.pluginTypes = [];
@@ -45,7 +45,6 @@ PluginManager.get = function (callback, sync) {
        //we've got a list of plugin type. For each of one we download the package.json
        PluginManager.pluginTypes = [];
        var pluginCountRemaining =  data.data.plugins.length;
-           debugger;
        i18n.options.resGetPath = '__ns__/locales/__lng__.json';
 
        $.each(data.data.plugins, function (index, pluginType) {

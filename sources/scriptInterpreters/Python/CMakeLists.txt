@@ -83,6 +83,7 @@ if(PYTHONLIBS_FOUND)
    SCRIPT_INTERPRETER_POST_BUILD_COPY_FILE(python icon.png)
    SCRIPT_INTERPRETER_POST_BUILD_COPY_FILE(python scriptCaller.py)
    SCRIPT_INTERPRETER_POST_BUILD_COPY_FILE(python scriptUtilities.py)
+   SCRIPT_INTERPRETER_POST_BUILD_COPY_FILE(python template.py)
    SCRIPT_INTERPRETER_POST_BUILD_COPY_DIRECTORY(python locales)
 	  
    #########################################

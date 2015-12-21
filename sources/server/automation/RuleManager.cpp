@@ -245,6 +245,19 @@ std::string CRuleManager::getRuleLog(int id) const
    }
 }
 
+std::string CRuleManager::getRuleTemplateCode(const std::string & interpreterName) const
+{
+   try
+   {
+      return m_scriptManager->getScriptTemplateFile(interpreterName);
+   }
+   catch (shared::exception::CEmptyResult& e)
+   {
+      YADOMS_LOG(error) << "Unable to get rule template code : " << e.what();
+      return std::string();
+   }
+}
+
 void CRuleManager::updateRule(boost::shared_ptr<const database::entities::CRule> ruleData)
 {
    // Check for supported modifications

@@ -193,6 +193,13 @@ std::string CManager::getScriptFile(boost::shared_ptr<const database::entities::
    return scriptInterpreter->loadScriptContent(scriptProperties->scriptPath()); 
 }
 
+std::string CManager::getScriptTemplateFile(const std::string& interpreterName)
+{
+   // Load the template file content (delegated to the interpreter)
+   boost::shared_ptr<shared::script::IInterpreter> scriptInterpreter = getAssociatedInterpreter(interpreterName);
+   return scriptInterpreter->loadScriptContent(std::string());
+}
+
 void CManager::updateScriptFile(boost::shared_ptr<const database::entities::CRule> ruleData, const std::string& code)
 {
    boost::shared_ptr<IProperties> scriptProperties(createScriptProperties(ruleData));

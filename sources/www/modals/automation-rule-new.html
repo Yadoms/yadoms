@@ -50,9 +50,8 @@
    function newAutomationRuleButtonClicked(editor, callback) {
       return function() {
          //we create the empty rule and go to edition
-         //TODO : manage empty script template from interpreter
          var r = new AutomationRule(-1, "", "", editor.getActiveSupportedInterpreters()[0].name, editor.getName(),
-                                    "", /*template*/"", "", true);
+                                    "", "", "", true);
          //we hide the current modal
          $("div#automation-rule-new-modal").modal("hide");
 

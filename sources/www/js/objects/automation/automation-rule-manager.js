@@ -186,6 +186,41 @@ AutomationRuleManager.getCode = function(rule, callback, sync) {
 };
 
 /**
+ * Get the template code associated to interpreter
+ * @param interpreter
+ * @param callback
+ * @param sync
+ */
+AutomationRuleManager.getTemplateCode = function(rule, callback, sync) {
+   assert(!isNullOrUndefined(rule), "rule must be defined");
+   assert($.isFunction(callback), "callback must be a function");
+
+   var async = true;
+   if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
+      async = !sync;
+
+   $.ajax({
+      dataType: "json",
+      url: "rest/automation/rule/" + rule.interpreter + "/codeTemplate",
+      async: async
+   })
+       .done(function( data ) {
+          //we parse the json answer
+          if (data.result != "true")
+          {
+             notifyError($.t("objects.generic.errorGetting", {objectName : "automation template code"}), JSON.stringify(data));
+             return;
+          }
+
+          rule.code = data.data.code;
+          rule.codeHasBeenDownloaded = true;
+
+          callback();
+       })
+       .fail(function() {notifyError($.t("objects.generic.errorGetting", {objectName : "automation template code"}));});
+};
+
+/**
  * Update the code of the rule
  * @param rule
  * @param code

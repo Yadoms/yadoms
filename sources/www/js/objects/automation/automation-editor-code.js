@@ -115,7 +115,14 @@ AutomationEditorCode.prototype.setRule = function(rule) {
    self.editor.getSession().setMode("ace/mode/" + self.rule.interpreter.toLowerCase());
 
    //we get the code only if the rule exist server side
-   if (rule.id != -1) {
+   if (rule.id == -1) {
+      // Rule id unknown, get code template
+      AutomationRuleManager.getTemplateCode(self.rule, function () {
+         self.editor.setValue(rule.code);
+         self.editor.gotoLine(0, 0, false);
+      }, true);
+   }
+   else {
       AutomationRuleManager.getCode(self.rule, function () {
          self.editor.setValue(rule.code);
          self.editor.gotoLine(0, 0, false);
@@ -161,7 +168,7 @@ AutomationEditorCode.prototype.setInterpreter = function(newInterpreter) {
    if (found) {
       //we change the current interpreter
       this.rule.interpreter = newInterpreter;
-      this.editor.getSession().setMode("ace/mode/" + this.rule.interpreter);
+      this.editor.getSession().setMode("ace/mode/" + this.rule.interpreter.toLowerCase());
    }
 };
 

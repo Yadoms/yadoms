@@ -57,6 +57,13 @@ namespace automation
       /// \throw           CEmptyResult if fails
       //--------------------------------------------------------------
       virtual std::string getRuleCode(int id) const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief           Get the template code for an interpreter
+      /// \param[in] interpreterName      The script interpreter name
+      /// \return          The template code for the interpreter, if available (empty string if not)
+      //--------------------------------------------------------------
+      virtual std::string getRuleTemplateCode(const std::string & interpreterName) const = 0;
       
       //--------------------------------------------------------------
       /// \brief           Update rule informations
