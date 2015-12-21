@@ -8,6 +8,11 @@
          "name" : "Serial port",
          "description" : "The virtual serial port connected to the RFXCom"
       },
+      "SendRepetitions" :
+      {
+         "name" : "Send repetitions",
+         "description" : "To workaround transmission conflicts in case of big installation with a lot of sensors, RFXCom plugin can repeat each transmission. Set repetitions number here (0 by default, means only one transmission)."
+      },
       "Protocols":
       {
           "name" : "Protocols to listen",

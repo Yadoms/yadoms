@@ -200,7 +200,12 @@ void CRfxcom::onCommand(boost::shared_ptr<yApi::IYPluginApi> context, boost::sha
       return;
    }
 
-   send(m_transceiver->buildMessageToDevice(context, command));
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > message(m_transceiver->buildMessageToDevice(context, command));
+   send(message);
+
+   // Manage repetitions
+   for (unsigned int repetition = 0; repetition < m_configuration.getSendRepetitions(); ++repetition)
+      send(message);
 }
 
 void CRfxcom::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> context, const shared::CDataContainer& newConfigurationData)

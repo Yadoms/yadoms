@@ -8,6 +8,11 @@
          "name": "Port série",
          "description": "Le port série virtuel connecté au RFXCom"
       },
+      "SendRepetitions" :
+      {
+         "name" : "Repetitions d'envoi",
+         "description" : "Pour éviter les conflits de transmission dans le cas d'une importante installation contenant un nombre conséquent de capteurs, l'envoi peut être répété. Indiquer ici le nombre d'envois supplémentaires (0 par defaut)."
+      },
       "Protocols":
       {
           "name" : "Protocoles en écoute",
