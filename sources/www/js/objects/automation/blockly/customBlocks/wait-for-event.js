@@ -249,9 +249,23 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
 
             var type = Blockly.Yadoms.GetBlocklyType_(keyword.type, yadomsTypeName);
 
+
             //null value allowed, dont check if type is null
             this.getInput("additionalInput_part1_" + no).setCheck(type);
             this.updateOperator_(no, type);
+			
+			//if connection is empty, add good default block
+			var connection = this.getInput("additionalInput_part1_" + no).connection;
+			if(!connection.targetConnection) {
+				var childBlock = Blockly.Yadoms.GetDefaultBlock_(keyword, this.workspace);
+				if(childBlock) {
+					//childBlock.setFieldValue('NUM', 42);
+					childBlock.initSvg();
+					childBlock.render();
+					connection.connect(childBlock.outputConnection);
+				}
+			}
+			
         }
     },
 

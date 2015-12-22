@@ -184,6 +184,45 @@ Blockly.Yadoms.GetBlocklyType_ = function (yadomsKeywordType, yadomsTypeName) {
 };
 
 
+/**
+ * Function which convert a yadoms type, to a blockly type
+ * @param keyword  The keyword
+ * @returns {*} The blockly type matching yadoms type
+ * @constructor
+ * @param yadomsTypeName The yadoms type name. In case of enum, this is the internal enum name
+ */
+Blockly.Yadoms.GetDefaultBlock_ = function (keyword, workspace) {
+	var createdBlock = null;
+	
+    switch (keyword.type.toLowerCase()) {
+        case "numeric":
+			createdBlock = Blockly.Block.obtain(workspace, 'math_number');
+			//childBlock.setFieldValue('NUM', 42);
+			break;
+        case "string":
+			createdBlock = Blockly.Block.obtain(workspace, 'text');
+			createdBlock.setFieldValue('Hello', 'TEXT');		
+			break;
+
+        case "bool":
+			createdBlock = Blockly.Block.obtain(workspace, 'logic_boolean');
+            break;
+			
+        case "enum":
+			createdBlock = Blockly.Block.obtain(workspace, 'yadoms_enumeration');
+			var device = Blockly.Yadoms.data.devices[keyword.deviceId];
+			var plugin = Blockly.Yadoms.data.plugins[device.pluginId];
+			createdBlock.updateEnumeration(keyword.id, device.id, plugin.id);
+		    break
+			
+
+        default:
+            break; //all other blocks do nothing
+    }
+	return createdBlock;
+};
+
+
 
 /**
  * Update a block colour depending on its type
