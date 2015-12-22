@@ -144,7 +144,7 @@ Blockly.Blocks["yadoms_enumeration"] = {
                         //all is OK, this is a new enum, ask for translation
                         var translatedEnum = [];
                         $.each(typeInfo.values, function (index, value) {
-                            var trad = $.t(pluginData.type + ":enumerations." + typeInfo.name + "." + value, { defaultValue: pluginData.package.enumerations[typeInfo.name][value] });
+                            var trad = $.t("plugins/" + pluginData.type + ":enumerations." + typeInfo.name + "." + value, { defaultValue: pluginData.package.enumerations[typeInfo.name][value] });
                             translatedEnum.push([trad, value]);
                         });
                         //apply new dropdown list
