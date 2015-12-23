@@ -23,7 +23,7 @@ Blockly.Blocks["keyword-value-set"] = {
             .appendField($.t("blockly.blocks.keyword-value-set.title"));
         var thisBlock = this;
 
-        Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection(this, true, ["numeric", "string", "bool", "nodata", "enum"], undefined, function (keyword, keywordType) {
+        Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection(this, true, ["numeric", "string", "bool", "nodata", "enum", "datetime"], undefined, function (keyword, keywordType) {
             if (keywordType == null) {
                 thisBlock.updateShape_(false);
             }

@@ -10,7 +10,7 @@
  * @param keywordDropDownName The name of the keywords DropDown
  * @constructor
  */
-Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function (thisBlock, onlyWritableKeywords, allowedKeywordTypes, allowedKeywordCapacities, callbackKeywordSelectionChanged, deviceDropDownName, keywordDropDownName, inputType, inputName) {
+Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function (thisBlock, onlyWritableKeywords, allowedKeywordTypes, allowedKeywordCapacities, callbackKeywordSelectionChanged, deviceDropDownName, keywordDropDownName, inputType, inputName, workspace) {
     thisBlock.selectedPlugin_ = null;
 
     var keywordDd;
@@ -47,8 +47,66 @@ Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function (thisBlock, on
             var yadomsTypeName = "";
             if (!isNullOrUndefined(Blockly.Yadoms.data.keywords[keyword].typeInfo) && !isNullOrUndefined(Blockly.Yadoms.data.keywords[keyword].typeInfo.name))
                 yadomsTypeName = Blockly.Yadoms.data.keywords[keyword].typeInfo.name;
-
+			
             var type = Blockly.Yadoms.GetBlocklyType_(Blockly.Yadoms.data.keywords[keyword].type, yadomsTypeName);
+
+			//automatic block creation
+			/*
+			if(inputType && inputType.type == Blockly.INPUT_VALUE) {
+				if(workspace) {
+					//if connection is empty, add good default block
+					var childBlock = null;
+					var connection = inputType.connection;
+					var connectionIsNull = connection && !connection.targetConnection;
+					
+					if(connectionIsNull) {
+						childBlock = Blockly.Yadoms.GetDefaultBlock_(Blockly.Yadoms.data.keywords[keyword], workspace);
+						if(childBlock) {
+							//childBlock.setFieldValue('NUM', 42);
+							childBlock.initSvg();
+							childBlock.render();
+							if(!childBlock.data)
+								childBlock.data = {};
+							childBlock.data.automaticallyCreated = true;
+							childBlock.onchange = function() {
+								debugger;
+								if(childBlock.data)
+									childBlock.data.automaticallyCreated = false;
+							}
+							connection.connect(childBlock.outputConnection);
+						}
+					} else {
+						childBlock = connection.targetBlock();
+					}
+					
+					inputType.setCheck(type);
+					
+					if(childBlock) {
+						if(connectionIsNull) {
+								
+							//in case the block has been disposed due to setCheck method, then just delete it
+							if(!childBlock.getParent()) {
+								childBlock.dispose();						
+							}
+						} else {
+							//check if the initial child block is still connected
+							if(!childBlock.getParent()) {
+								if(childBlock.data && childBlock.data.automaticallyCreated === true) {
+									childBlock.dispose();
+								}								
+							}							
+						}
+					}
+				} else {
+					inputType.setCheck(type);
+				}
+			}
+			*/
+			if(inputType && inputType.type == Blockly.INPUT_VALUE) {
+				inputType.setCheck(type);
+			}
+			
+
             if (callbackKeywordSelectionChanged) {
                 callbackKeywordSelectionChanged(keyword, type);
             }

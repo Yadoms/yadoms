@@ -15,7 +15,7 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
         this.setColour(Blockly.Yadoms.blockColour.HUE);
         this.setTooltip($.t("blockly.blocks.yadoms_wait_for_event.tooltip"));
         this.setHelpUrl("http://www.example.com/");
-
+		this.setInputsInline(true);
         this.setMutator(new Blockly.Mutator(["yadoms_wait_for_event_mutator_store_in_variable",
                                             "yadoms_wait_for_event_mutator_change",
                                             "yadoms_wait_for_event_mutator_become",
@@ -47,7 +47,8 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
                 this.appendDummyInput("storeVariableInput")
 					.appendField($.t("blockly.blocks.yadoms_wait_for_event.titleLine2"))
 					.appendField(" ")
-					.appendField(new Blockly.FieldVariable(this.generateVariable_(varName)), "outVar");
+					.appendField(new Blockly.FieldVariable(this.generateVariable_(varName)), "outVar")
+					.setForceNewlineInput(true);
             }
         } else {
             if (input !== null) {
@@ -122,9 +123,9 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
      */
     appendKeywordSelectorStatementChange_ : function(no, devId, keyId, statementConnection) {
         var bDummyInput = this.appendDummyInput("additionalInput_part1_" + no).appendField($.t("blockly.blocks.yadoms_wait_for_event.case"));
-        Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection(this, false, ["numeric", "string", "bool", "nodata", "enum"], undefined, undefined, "deviceDd" + no, "keywordDd" + no, bDummyInput)
+        Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection(this, false, ["numeric", "string", "bool", "nodata", "enum", "datetime"], undefined, undefined, "deviceDd" + no, "keywordDd" + no, bDummyInput)
         .appendField($.t("blockly.blocks.yadoms_wait_for_event.triggeredType.change"));
-
+		bDummyInput.setForceNewlineInput(true);
         if (devId) {
             var devDd = this.getField("deviceDd" + no);
             devDd.setValue(devId);
@@ -150,9 +151,10 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
     appendKeywordSelectorStatementBecome_: function (no, devId, keyId, operator, valueConnection, statementConnection) {
         var bValueInput = this.appendValueInput("additionalInput_part1_" + no).appendField($.t("blockly.blocks.yadoms_wait_for_event.case"));
         var self = this;
-        Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection(this, false, ["numeric", "string", "bool", "nodata", "enum"], undefined, function () { self.onKeywordChange_(no); }, "deviceDd" + no, "keywordDd" + no, bValueInput)
+        Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection(this, false, ["numeric", "string", "bool", "datetime", "enum"], undefined, function () { self.onKeywordChange_(no); }, "deviceDd" + no, "keywordDd" + no, bValueInput, "", self.workspace)
         .appendField($.t("blockly.blocks.yadoms_wait_for_event.triggeredType.become")).appendField(new Blockly.FieldDropdown(Blockly.Yadoms.NumberOperators_), "operatorDd"+no);
-
+		bValueInput.setForceNewlineInput(true);
+		
         if (devId) {
             var devDd = this.getField("deviceDd" + no);
             devDd.setValue(devId);
@@ -169,7 +171,7 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
 
         if (valueConnection) {
             bValueInput.connection.connect(valueConnection);
-        }
+        } 
 
         this.appendInputPart2_(no, statementConnection);
     },
@@ -183,7 +185,8 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
     appendDatetimeStatementChange_: function (no, statementConnection) {
         this.appendDummyInput("additionalInput_part1_" + no).appendField($.t("blockly.blocks.yadoms_wait_for_event.case"))
             .appendField($.t("blockly.blocks.yadoms_wait_for_event.datetime"))
-            .appendField($.t("blockly.blocks.yadoms_wait_for_event.triggeredType.change"));
+            .appendField($.t("blockly.blocks.yadoms_wait_for_event.triggeredType.change"))
+			.setForceNewlineInput(true);
 
         this.appendInputPart2_(no, statementConnection);
     },
@@ -202,7 +205,8 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
             .appendField($.t("blockly.blocks.yadoms_wait_for_event.case"))
             .appendField($.t("blockly.blocks.yadoms_wait_for_event.datetime"))
             .appendField($.t("blockly.blocks.yadoms_wait_for_event.triggeredType.become"))
-            .appendField(new Blockly.FieldDropdown(Blockly.Yadoms.NumberOperators_), "operatorDd" + no);
+            .appendField(new Blockly.FieldDropdown(Blockly.Yadoms.NumberOperators_), "operatorDd" + no)
+			.setForceNewlineInput(true);
 
         if (operator) {
             var opDd = this.getField("operatorDd" + no);
@@ -255,6 +259,7 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
             this.updateOperator_(no, type);
 			
 			//if connection is empty, add good default block
+			/*
 			var connection = this.getInput("additionalInput_part1_" + no).connection;
 			if(!connection.targetConnection) {
 				var childBlock = Blockly.Yadoms.GetDefaultBlock_(keyword, this.workspace);
@@ -264,7 +269,7 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
 					childBlock.render();
 					connection.connect(childBlock.outputConnection);
 				}
-			}
+			}*/
 			
         }
     },

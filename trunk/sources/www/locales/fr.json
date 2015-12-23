@@ -452,6 +452,10 @@
         "title": "Loguer",
         "tooltip": "Ecrit une ligne dans le fichier de log du script"
       },
+      "infinite-loop": {
+        "title": "A l'infini",
+        "tooltip": "boucle infinie"
+      },
       "yadoms_enumeration": {
         "title": "Enumération",
         "tooltip": "Represente une valeur d'énumération (le contenu est mis à jour lorsque ce bloc est connecté à un objet)"

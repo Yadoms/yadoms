@@ -176,6 +176,8 @@ Blockly.Yadoms.GetBlocklyType_ = function (yadomsKeywordType, yadomsTypeName) {
             return "String";
         case "bool":
             return "Boolean";
+        case "datetime":
+            return "datetime";
         case "enum":
             return "enum_" + yadomsTypeName;
         default:
@@ -215,6 +217,9 @@ Blockly.Yadoms.GetDefaultBlock_ = function (keyword, workspace) {
 			createdBlock.updateEnumeration(keyword.id, device.id, plugin.id);
 		    break
 			
+        case "datetime":
+			createdBlock = Blockly.Block.obtain(workspace, 'yadoms_date_datetime');
+            break;
 
         default:
             break; //all other blocks do nothing
@@ -237,6 +242,8 @@ Blockly.Yadoms.UpdateBlockColour_ = function (self, type) {
         self.setColour(Blockly.Blocks.logic.HUE);
     else if (type === "Number")
         self.setColour(Blockly.Blocks.math.HUE);
+    else if (type === "datetime")
+        self.setColour(Blockly.Yadoms.Dates.datetime.HUE);
     else //if (type === "null" || type == null)
         self.setColour(Blockly.Blocks.math.HUE);
 };
