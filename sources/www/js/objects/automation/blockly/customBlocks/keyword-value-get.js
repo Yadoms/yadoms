@@ -15,7 +15,7 @@ Blockly.Blocks["keyword-value-get"] = {
         this.setHelpUrl("http://www.example.com/");
 
         var thisBlock = this;
-        Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection(thisBlock, false, ["numeric", "string", "bool", "enum"], undefined, function (keyword, keywordType) {
+        Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection(thisBlock, false, ["numeric", "string", "bool", "enum", "datetime"], undefined, function (keyword, keywordType) {
 
             var typeToSet = keywordType;
             if (typeToSet == null)

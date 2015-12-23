@@ -38,6 +38,8 @@ Blockly.Yadoms.CreateToolbox_ = function () {
     toolbox += "     <block type=\"logic_null\"></block>";
     toolbox += "  </category>";
     toolbox += "  <category name=\" " + catLoops + "\" colour=\"120\">";
+    toolbox += "     <block type=\"infinite-loop\"></block>";
+    toolbox += "     <block type=\"controls_whileUntil\"></block>";
     toolbox += "     <block type=\"controls_repeat_ext\">";
     toolbox += "        <value name=\"TIMES\">";
     toolbox += "           <block type=\"math_number\">";
@@ -45,7 +47,6 @@ Blockly.Yadoms.CreateToolbox_ = function () {
     toolbox += "           </block>";
     toolbox += "        </value>";
     toolbox += "     </block>";
-    toolbox += "     <block type=\"controls_whileUntil\"></block>";
     toolbox += "     <block type=\"controls_for\">";
     toolbox += "        <value name=\"FROM\">";
     toolbox += "           <block type=\"math_number\">";
