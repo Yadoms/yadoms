@@ -110,6 +110,7 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/KeywordAccessMode.cpp
    shared/plugin/yPluginApi/KeywordDataType.h
    shared/plugin/yPluginApi/KeywordDataType.cpp
+   shared/plugin/yPluginApi/YPluginConfiguration.hpp
    shared/plugin/yPluginApi/StandardUnits.h
    shared/plugin/yPluginApi/StandardCapacities.h
    shared/plugin/yPluginApi/StandardValues.h

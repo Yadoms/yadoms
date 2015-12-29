@@ -267,7 +267,7 @@ void CMegatecUps::protocolErrorProcess(boost::shared_ptr<yApi::IYPluginApi> cont
    }
 
    // Retry full connection
-   destroyConnection();
+   processUnConnectionEvent(context);
    context->getEventHandler().createTimer(kProtocolErrorRetryTimer, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(30));
 }
 

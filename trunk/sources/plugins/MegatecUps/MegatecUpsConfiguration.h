@@ -1,6 +1,10 @@
 #pragma once
 
 #include "IMegatecUpsConfiguration.h"
+#include <shared/plugin/yPluginApi/YPluginConfiguration.hpp>
+
+// Shortcut to yPluginApi namespace
+namespace yApi = shared::plugin::yPluginApi;
 
 
 //--------------------------------------------------------------
@@ -24,8 +28,8 @@ public:
 
 private:
    //--------------------------------------------------------------
-   /// \brief	    Configuration raw data
+   /// \brief	    Configuration getter
    //--------------------------------------------------------------
-   shared::CDataContainer m_data;
+   yApi::YPluginConfiguration m_data;
 };
 

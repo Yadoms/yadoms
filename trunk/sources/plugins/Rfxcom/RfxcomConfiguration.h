@@ -1,7 +1,10 @@
 #pragma once
 
 #include "IRfxcomConfiguration.h"
+#include <shared/plugin/yPluginApi/YPluginConfiguration.hpp>
 
+// Shortcut to yPluginApi namespace
+namespace yApi = shared::plugin::yPluginApi;
 
 //--------------------------------------------------------------
 /// \brief	Configuration of the plugin
@@ -51,8 +54,8 @@ public:
 
 private:
    //--------------------------------------------------------------
-   /// \brief	    Configuration raw data
+   /// \brief	    Configuration getter
    //--------------------------------------------------------------
-   shared::CDataContainer m_data;
+   yApi::YPluginConfiguration m_configuration;
 };
 

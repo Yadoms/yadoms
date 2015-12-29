@@ -173,7 +173,7 @@
 
                        // Update start/stop button
                        var $startStopButton = $row.find("button.btn-startStop");
-                       if (status.state == "Stopped" || status.state == "Error") {
+                       if (status.state == "Stopped") {
                            $startStopButton.addClass("btn-success").removeClass("btn-warning");
                        }
                        else {
