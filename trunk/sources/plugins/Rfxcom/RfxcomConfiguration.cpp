@@ -33,7 +33,7 @@ std::string CRfxcomConfiguration::getSerialPort() const
 
 unsigned int CRfxcomConfiguration::getSendRepetitions() const
 {
-   return m_data.get<unsigned int>("SendRepetitions");
+   return m_data.getWithDefault<unsigned int>("SendRepetitions", 0);
 }
 
 bool CRfxcomConfiguration::isAEenabled          () const { return m_data.getWithDefault<bool>("Protocols.content.AE Blyss", false); }
