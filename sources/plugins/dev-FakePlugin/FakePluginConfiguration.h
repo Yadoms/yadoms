@@ -1,6 +1,10 @@
 #pragma once
 
 #include <shared/DataContainer.h>
+#include <shared/plugin/yPluginApi/YPluginConfiguration.hpp>
+
+// Shortcut to yPluginApi namespace
+namespace yApi = shared::plugin::yPluginApi;
 
 
 //--------------------------------------------------------------
@@ -16,7 +20,7 @@ enum EEnumType
 //--------------------------------------------------------------
 /// \brief	Configuration of the fake plugin
 //--------------------------------------------------------------
-class CFakePluginConfiguration : public shared::CDataContainer
+class CFakePluginConfiguration
 {
 public:
    //--------------------------------------------------------------
@@ -25,13 +29,19 @@ public:
    virtual ~CFakePluginConfiguration();
 
    //--------------------------------------------------------------
+   /// \brief		   Load configuration data
+   /// \param [in] data The data container
+   //--------------------------------------------------------------
+   void initializeWith(const shared::CDataContainer &data);
+
+   //--------------------------------------------------------------
    /// \brief	    Just for test, not needed for real plugin
    //--------------------------------------------------------------
    void trace();
 
    //--------------------------------------------------------------
    //--------------------------------------------------------------
-   // You can add your own accessors here for better code readability
+   // You can add your own accessors for better code readability
    //--------------------------------------------------------------
    //--------------------------------------------------------------
 
@@ -39,5 +49,11 @@ public:
    /// \brief	    Enum parameter
    //--------------------------------------------------------------
    EEnumType getEnumParameter() const;
+
+private:
+   //--------------------------------------------------------------
+   /// \brief	    Configuration getter
+   //--------------------------------------------------------------
+   yApi::YPluginConfiguration m_configuration;
 };
 

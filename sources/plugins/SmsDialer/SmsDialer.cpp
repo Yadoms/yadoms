@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "SmsDialer.h"
+#include <shared/plugin/ImplementationHelper.h>
 #include <shared/Log.h>
 #include <shared/exception/EmptyResult.hpp>
 #include <shared/plugin/yPluginApi/StandardCapacities.h>

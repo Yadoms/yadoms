@@ -8,7 +8,7 @@ CRfxcomConfiguration::~CRfxcomConfiguration()
 
 void CRfxcomConfiguration::initializeWith(const shared::CDataContainer &data)
 {
-   m_data.initializeWith(data);
+   m_configuration.initializeWith(data);
 }
 
 bool CRfxcomConfiguration::comIsEthernet() const
@@ -28,37 +28,37 @@ std::string CRfxcomConfiguration::getEthernetPort() const
 
 std::string CRfxcomConfiguration::getSerialPort() const
 {
-   return m_data.get<std::string>("SerialPort");
+   return m_configuration.get<std::string>("SerialPort");
 }
 
 unsigned int CRfxcomConfiguration::getSendRepetitions() const
 {
-   return m_data.getWithDefault<unsigned int>("SendRepetitions", 0);
+   return m_configuration.get<unsigned int>("SendRepetitions");
 }
 
-bool CRfxcomConfiguration::isAEenabled          () const { return m_data.getWithDefault<bool>("Protocols.content.AE Blyss", false); }
-bool CRfxcomConfiguration::isRUBICSONenabled    () const { return m_data.getWithDefault<bool>("Protocols.content.Rubicson", false); }
-bool CRfxcomConfiguration::isFINEOFFSETenabled  () const { return m_data.getWithDefault<bool>("Protocols.content.FineOffset/Viking", false); }
-bool CRfxcomConfiguration::isLIGHTING4enabled   () const { return m_data.getWithDefault<bool>("Protocols.content.Lighting4", false); }
-bool CRfxcomConfiguration::isRSLenabled         () const { return m_data.getWithDefault<bool>("Protocols.content.RSL", false); }
-bool CRfxcomConfiguration::isSXenabled          () const { return m_data.getWithDefault<bool>("Protocols.content.Byron SX", false); }
-bool CRfxcomConfiguration::isIMAGINTRONIXenabled() const { return m_data.getWithDefault<bool>("Protocols.content.Imagintronix", false); }
-bool CRfxcomConfiguration::isUNDECODEDenabled   () const { return m_data.getWithDefault<bool>("Protocols.content.undecoded messages", false); }
-bool CRfxcomConfiguration::isMERTIKenabled      () const { return m_data.getWithDefault<bool>("Protocols.content.Mertik", false); }
-bool CRfxcomConfiguration::isLWRFenabled        () const { return m_data.getWithDefault<bool>("Protocols.content.AD LightwaveRF", false); }
-bool CRfxcomConfiguration::isHIDEKIenabled      () const { return m_data.getWithDefault<bool>("Protocols.content.Hideki/UPM", false); }
-bool CRfxcomConfiguration::isLACROSSEenabled    () const { return m_data.getWithDefault<bool>("Protocols.content.La Crosse", false); }
-bool CRfxcomConfiguration::isFS20enabled        () const { return m_data.getWithDefault<bool>("Protocols.content.FS20", false); }
-bool CRfxcomConfiguration::isPROGUARDenabled    () const { return m_data.getWithDefault<bool>("Protocols.content.ProGuard", false); }
-bool CRfxcomConfiguration::isBLINDST0enabled    () const { return m_data.getWithDefault<bool>("Protocols.content.BlindsT0", false); }
-bool CRfxcomConfiguration::isBLINDST1enabled    () const { return m_data.getWithDefault<bool>("Protocols.content.BlindsT1", false); }
-bool CRfxcomConfiguration::isX10enabled         () const { return m_data.getWithDefault<bool>("Protocols.content.X10", false); }
-bool CRfxcomConfiguration::isARCenabled         () const { return m_data.getWithDefault<bool>("Protocols.content.ARC", false); }
-bool CRfxcomConfiguration::isACenabled          () const { return m_data.getWithDefault<bool>("Protocols.content.AC", false); }
-bool CRfxcomConfiguration::isHEEUenabled        () const { return m_data.getWithDefault<bool>("Protocols.content.HomeEasy EU", false); }
-bool CRfxcomConfiguration::isMEIANTECHenabled   () const { return m_data.getWithDefault<bool>("Protocols.content.Meiantech", false); }
-bool CRfxcomConfiguration::isOREGONenabled      () const { return m_data.getWithDefault<bool>("Protocols.content.Oregon Scientific", false); }
-bool CRfxcomConfiguration::isATIenabled         () const { return m_data.getWithDefault<bool>("Protocols.content.ATI", false); }
-bool CRfxcomConfiguration::isVISONICenabled     () const { return m_data.getWithDefault<bool>("Protocols.content.Visonic", false); }
-bool CRfxcomConfiguration::isKeeLoqenabled      () const { return m_data.getWithDefault<bool>("Protocols.content.KeeLoq", false); }
-bool CRfxcomConfiguration::isHomeConfortenabled () const { return m_data.getWithDefault<bool>("Protocols.content.HomeConfort", false); }
+bool CRfxcomConfiguration::isAEenabled          () const { return m_configuration.get<bool>("Protocols.content.AE Blyss"); }
+bool CRfxcomConfiguration::isRUBICSONenabled    () const { return m_configuration.get<bool>("Protocols.content.Rubicson"); }
+bool CRfxcomConfiguration::isFINEOFFSETenabled  () const { return m_configuration.get<bool>("Protocols.content.FineOffset/Viking"); }
+bool CRfxcomConfiguration::isLIGHTING4enabled   () const { return m_configuration.get<bool>("Protocols.content.Lighting4"); }
+bool CRfxcomConfiguration::isRSLenabled         () const { return m_configuration.get<bool>("Protocols.content.RSL"); }
+bool CRfxcomConfiguration::isSXenabled          () const { return m_configuration.get<bool>("Protocols.content.Byron SX"); }
+bool CRfxcomConfiguration::isIMAGINTRONIXenabled() const { return m_configuration.get<bool>("Protocols.content.Imagintronix"); }
+bool CRfxcomConfiguration::isUNDECODEDenabled   () const { return m_configuration.get<bool>("Protocols.content.undecoded messages"); }
+bool CRfxcomConfiguration::isMERTIKenabled      () const { return m_configuration.get<bool>("Protocols.content.Mertik"); }
+bool CRfxcomConfiguration::isLWRFenabled        () const { return m_configuration.get<bool>("Protocols.content.AD LightwaveRF"); }
+bool CRfxcomConfiguration::isHIDEKIenabled      () const { return m_configuration.get<bool>("Protocols.content.Hideki/UPM"); }
+bool CRfxcomConfiguration::isLACROSSEenabled    () const { return m_configuration.get<bool>("Protocols.content.La Crosse"); }
+bool CRfxcomConfiguration::isFS20enabled        () const { return m_configuration.get<bool>("Protocols.content.FS20"); }
+bool CRfxcomConfiguration::isPROGUARDenabled    () const { return m_configuration.get<bool>("Protocols.content.ProGuard"); }
+bool CRfxcomConfiguration::isBLINDST0enabled    () const { return m_configuration.get<bool>("Protocols.content.BlindsT0"); }
+bool CRfxcomConfiguration::isBLINDST1enabled    () const { return m_configuration.get<bool>("Protocols.content.BlindsT1"); }
+bool CRfxcomConfiguration::isX10enabled         () const { return m_configuration.get<bool>("Protocols.content.X10"); }
+bool CRfxcomConfiguration::isARCenabled         () const { return m_configuration.get<bool>("Protocols.content.ARC"); }
+bool CRfxcomConfiguration::isACenabled          () const { return m_configuration.get<bool>("Protocols.content.AC"); }
+bool CRfxcomConfiguration::isHEEUenabled        () const { return m_configuration.get<bool>("Protocols.content.HomeEasy EU"); }
+bool CRfxcomConfiguration::isMEIANTECHenabled   () const { return m_configuration.get<bool>("Protocols.content.Meiantech"); }
+bool CRfxcomConfiguration::isOREGONenabled      () const { return m_configuration.get<bool>("Protocols.content.Oregon Scientific"); }
+bool CRfxcomConfiguration::isATIenabled         () const { return m_configuration.get<bool>("Protocols.content.ATI"); }
+bool CRfxcomConfiguration::isVISONICenabled     () const { return m_configuration.get<bool>("Protocols.content.Visonic"); }
+bool CRfxcomConfiguration::isKeeLoqenabled      () const { return m_configuration.get<bool>("Protocols.content.KeeLoq"); }
+bool CRfxcomConfiguration::isHomeConfortenabled () const { return m_configuration.get<bool>("Protocols.content.HomeConfort"); }

@@ -61,7 +61,7 @@
             "PIN":
             {
                "name": "PIN",
-               "description": "Code PIN du téléphone",
+               "description": "Code PIN du téléphone"
             }      
          }
       }
