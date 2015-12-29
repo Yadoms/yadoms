@@ -150,3 +150,10 @@
     margin-left: 4px;
     margin-right: 4px;
 }
+
+.widget-toolbar-low-battery {
+	float: left;
+	color: red;
+    margin-left: 4px;
+    margin-right: 4px;	
+}
