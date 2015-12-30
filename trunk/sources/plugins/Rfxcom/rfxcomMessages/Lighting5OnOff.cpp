@@ -15,9 +15,9 @@ CLighting5OnOff::CLighting5OnOff(const std::string& model)
 {
 }
     
-    CLighting5OnOff::~CLighting5OnOff()
-    {
-    }
+CLighting5OnOff::~CLighting5OnOff()
+{
+}
     
 std::string CLighting5OnOff::getModel() const
 {
