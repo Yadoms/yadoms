@@ -34,6 +34,16 @@ namespace shared { namespace plugin { namespace yPluginApi
       }
 
       //--------------------------------------------------------------
+      /// \brief	    Check if parameter is present (only in the configuration)
+      /// \param [in] parameterName    Name of the parameter
+      /// \return     true if parameter found
+      //--------------------------------------------------------------
+      bool exists(const std::string& parameterName) const
+      {
+         return m_configurationData.exists(parameterName);
+      }
+
+      //--------------------------------------------------------------
       /// \brief	    Get a value from configuration
       /// \param[in] parameterName Parameter to retrieve configuration
       /// \return The parameter value from configuration. If not found, search for
