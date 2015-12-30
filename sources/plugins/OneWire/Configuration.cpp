@@ -1,6 +1,10 @@
 #include "stdafx.h"
 #include "Configuration.h"
 #include <shared/Log.h>
+#include <shared/plugin/yPluginApi/YPluginConfiguration.hpp>
+
+// Shortcut to yPluginApi namespace
+namespace yApi = shared::plugin::yPluginApi;
 
 CConfiguration::CConfiguration()
    :m_isOwfsMode(false), m_isKernelMode(false)
@@ -13,19 +17,20 @@ CConfiguration::~CConfiguration()
 
 void CConfiguration::initializeWith(const shared::CDataContainer &data)
 {
-   m_data.initializeWith(data);
+   yApi::YPluginConfiguration configurationData;
+   configurationData.initializeWith(data);
 
    try
    {
-      if (data.exists("linuxMode"))
+      if (configurationData.exists("linuxMode"))
       {
-         m_isOwfsMode = data.get<bool>("linuxMode.content.owfs.radio");
+         m_isOwfsMode = configurationData.get<bool>("linuxMode.content.owfs.radio");
          if (m_isOwfsMode)
-            m_owfsMountPoint = boost::filesystem::path(data.get<std::string>("linuxMode.content.owfs.content.mountPoint"));
+            m_owfsMountPoint = boost::filesystem::path(configurationData.get<std::string>("linuxMode.content.owfs.content.mountPoint"));
 
-         m_isKernelMode = data.get<bool>("linuxMode.content.kernel.radio");
+         m_isKernelMode = configurationData.get<bool>("linuxMode.content.kernel.radio");
          if (m_isKernelMode)
-            m_kernelMountPoint = boost::filesystem::path(data.get<std::string>("linuxMode.content.kernel.content.mountPoint"));
+            m_kernelMountPoint = boost::filesystem::path(configurationData.get<std::string>("linuxMode.content.kernel.content.mountPoint"));
       }
    }
    catch (const shared::exception::CException& e)
