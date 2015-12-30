@@ -69,7 +69,7 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	                        The device model
       //--------------------------------------------------------------
-      const std::string& m_model;
+      const std::string m_model;
 
       //--------------------------------------------------------------
       /// \brief	                        The keyword
