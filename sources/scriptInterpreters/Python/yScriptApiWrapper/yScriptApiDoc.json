@@ -99,7 +99,7 @@
                 },
                 "newState": {
                     "direction": "in",
-                    "brief": "The keyword new state"
+                    "brief": "The keyword new state. Must be a string (ex, for booléan, must be \"1\" or \"0\")"
                 }
             },
             "details": "Do nothing if keyword is not found or not writable",
