@@ -2,24 +2,52 @@ Blockly.Yadoms.Python = function () {
 };
 
 /**
- * Get the code for reading a keyword from its id
+ * Get the code for casting a keyword data in the python compatible type
  * @param {Number} keywordId The target keyword id
+ * @param {String} command The command (python code) which provide a keyword data (ie: yApi.readKeyword...)
  * @return {String} The resulting python code
  */
-Blockly.Yadoms.Python.cast = function(keywordId, command) {
+Blockly.Yadoms.Python.castToPython = function(keywordId, command) {
 	var code = command;
 	if(keywordId && command) {
 		//retreive the keyword information, to apply cast if needed
 		var keyword = Blockly.Yadoms.data.keywords[keywordId];
 		if(keyword && keyword.type) {
-			switch (keyword.type) {
+			switch (keyword.type.toLowerCase()) {
 				case "numeric":
 					code = "float(" + command + ")";
 					break;
+				case "bool":
 				case "boolean":
 					code = "bool(" + command + ")";
 					break;
 				default:
+					break;
+			}
+		}
+	}
+	return code;
+};
+
+/**
+ * Get the code for casting a python value to a keyword type
+ * @param {Number} keywordId The target keyword id
+ * @param {String} command The command (python code) which provide python data to convert to yadoms keyword type
+ * @return {String} The resulting python code
+ */
+Blockly.Yadoms.Python.castFromPython = function(keywordId, command) {
+	var code = command;
+	if(keywordId && command) {
+		//retreive the keyword information, to apply cast if needed
+		var keyword = Blockly.Yadoms.data.keywords[keywordId];
+		if(keyword && keyword.type) {
+			switch (keyword.type.toLowerCase()) {
+				case "bool":
+				case "boolean":
+					code = "str(int(" + command + "))";
+					break;
+				default:
+					code = "\"" + command + "\"";
 					break;
 			}
 		}

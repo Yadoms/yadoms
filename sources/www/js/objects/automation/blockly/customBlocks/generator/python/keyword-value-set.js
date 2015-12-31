@@ -6,7 +6,10 @@
 Blockly.Python["keyword-value-set"] = function (block) {
     var dropdownKeyword = block.getSelectedKeyword();
     var value = Blockly.Python.valueToCode(block, block.inputValueName, Blockly.Python.ORDER_RELATIONAL) || "0";
-    return "yApi.writeKeyword(" + dropdownKeyword + ", \"" + value + "\")\n";
+	
+	var castValue = Blockly.Yadoms.Python.castFromPython(dropdownKeyword, value);
+	
+    return "yApi.writeKeyword(" + dropdownKeyword + ", " + castValue + ")\n";
 };
 
 

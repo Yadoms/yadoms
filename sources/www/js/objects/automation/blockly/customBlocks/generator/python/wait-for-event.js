@@ -62,7 +62,7 @@ Blockly.Python["yadoms_wait_for_event"] = function (block) {
                 //add the become if
                 operator = Blockly.Yadoms.Python.getOperatorCode(block.getFieldValue("operatorDd" + i));
                 var keywordId = block.getFieldValue("keywordDd" + i);
-				var argument0 = Blockly.Yadoms.Python.cast(keywordId, outVar);
+				var argument0 = Blockly.Yadoms.Python.castToPython(keywordId, outVar);
                 argument1 = Blockly.Python.valueToCode(block, "additionalInput_part1_" + i, order) || "0";
                 condition = waitForEventResultVar + ".getType() == 1 and " + keywordIdVar + " == " + keyId;
                 condition += " and " + argument0 + " " + operator + " " + argument1;
