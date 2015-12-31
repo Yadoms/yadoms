@@ -37,16 +37,16 @@ void CSmsDialer::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    try
    {
-      context->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
-
       // Load configuration values (provided by database)
       m_configuration.initializeWith(context->getConfiguration());
 
-      // Create the phone instance
-      m_phone = CSmsDialerFactory::constructPhone(m_configuration);
-
       // the main loop
       YADOMS_LOG(debug) << "CSmsDialer is running...";
+
+      // Create the phone instance
+      m_phone = CSmsDialerFactory::constructPhone(m_configuration);
+      m_phone->connect();
+      context->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
 
       // Timer used to periodically try to connect to phone
       m_connectionTimer = context->getEventHandler().createTimer(kEvtTimerTryToConnectToPhone, shared::event::CEventTimer::kPeriodic, boost::posix_time::minutes(1));
@@ -55,8 +55,6 @@ void CSmsDialer::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
       // Timer used to periodically check for incoming SMS
       m_incommingSmsPollTimer = context->getEventHandler().createTimer(kEvtTimerCheckForIncommingSms, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(30));
       m_incommingSmsPollTimer->stop();
-
-      m_phone->connect();
 
       while(1)
       {
@@ -79,7 +77,7 @@ void CSmsDialer::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 void CSmsDialer::processNotConnectedState(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    YADOMS_LOG(information) << "Phone is not connected"  << std::endl;
-   context->setPluginState(yApi::historization::EPluginState::kCustom, "phoneConnected");
+   context->setPluginState(yApi::historization::EPluginState::kCustom, "connectionFailed");
 
    m_incommingSmsPollTimer->stop();
    m_connectionTimer->start();
@@ -113,8 +111,9 @@ void CSmsDialer::processNotConnectedState(boost::shared_ptr<yApi::IYPluginApi> c
 
                // Create new phone
                m_phone = CSmsDialerFactory::constructPhone(m_configuration);
+               m_phone->connect();
+               context->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
 
-               context->setPluginState(yApi::historization::EPluginState::kRunning);
                break;
             }
          case kEvtTimerTryToConnectToPhone:
@@ -214,7 +213,6 @@ void CSmsDialer::processConnectedState(boost::shared_ptr<yApi::IYPluginApi> cont
                // Create new phone
                m_phone = CSmsDialerFactory::constructPhone(m_configuration);
 
-               context->setPluginState(yApi::historization::EPluginState::kRunning);
                break;
             }
          case kEvtTimerTryToConnectToPhone:
