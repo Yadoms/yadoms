@@ -12,6 +12,11 @@ Blockly.Python['yadoms_date_arithmetic'] = function(block) {
   var order = tuple[1];
   var argument0 = Blockly.Python.valueToCode(block, block.inputNameA_, order) || '0';
   var argument1 = Blockly.Python.valueToCode(block, block.inputNameB_, order) || '0';
+  
+  //ensure date and time objects are converted to datetime
+  argument0 = "scriptUtilities.toDatetime(" + argument0 + ")";
+  argument1 = "scriptUtilities.toDatetime(" + argument1 + ")";
+  
   var code = argument0 + operator + argument1;
   return [code, order];
 };
