@@ -91,16 +91,38 @@ Blockly.Blocks["yadoms_enumeration2"] = {
 //};
 
 
+Blockly.Yadoms.Enumerations = {
+    mutators: [],
 
+    initialize : function() {
 
+        $.each(Blockly.Yadoms.data.enumerations, function (index, enumItem) {
+            var blockName = "yadoms_enum_mutator_" + enumItem.name;
+
+            Blockly.Blocks[blockName] = {
+                init: function () {
+                    this.setColour(Blockly.Yadoms.blockColour.HUE);
+                    this.appendDummyInput().appendField(enumItem.name);
+                    this.appendStatementInput("STACK");
+                    this.setPreviousStatement(true);
+                    this.setTooltip($.t("blockly.blocks.yadoms_wait_for_event.mutator.base.tooltip"));
+                    this.contextMenu = false;
+                }
+            }
+
+            Blockly.Yadoms.Enumerations.mutators.push(blockName);
+        });
+    }
+};
 
 
 
 
 Blockly.Blocks["yadoms_enumeration"] = {
     enumerationDropDownName: "enumerationList",
-    currentEnumerationTypeName: "",
+    
     init: function () {
+        this.currentEnumerationTypeName = "";
         var enumDropDown = new Blockly.FieldDropdown([[$.t("blockly.blocks.yadoms_enumeration.title"), "enumeration"]]);
 
         this.setHelpUrl("http://www.example.com/");
@@ -121,6 +143,8 @@ Blockly.Blocks["yadoms_enumeration"] = {
                 this.changeHandler_(this.getValue());
             return result;
         };
+
+        this.setMutator(new Blockly.Mutator([]));
     },
 
     updateEnumeration: function (keywordValue, deviceValue, pluginValue) {
@@ -128,6 +152,10 @@ Blockly.Blocks["yadoms_enumeration"] = {
         if (!isNullOrUndefined(keywordValue)) {
 
             //check that keyword data is available
+            if (!pluginValue) {
+                pluginValue = Blockly.Yadoms.data.getPluginIdFromKeywordId(keywordValue);
+            }
+            
             var pluginData = Blockly.Yadoms.data.plugins[pluginValue];
             var keywordData = Blockly.Yadoms.data.keywords[keywordValue];
             if (!isNullOrUndefined(keywordData) && keywordData.type.toUpperCase() === "enum".toUpperCase()) {
@@ -156,5 +184,72 @@ Blockly.Blocks["yadoms_enumeration"] = {
                 }
             }
         }
+    },
+
+
+
+
+    /**
+     * Create XML to represent whether the number of mutator blocks to add
+     * @return {Element} XML storage element.
+     * @this Blockly.Block
+     */
+    mutationToDom: function () {
+        var container = document.createElement("mutation");
+        return container;
+    },
+
+    /**
+     * Parse XML to restore the mutators blocks'.
+     * @param {!Element} xmlElement XML storage element.
+     * @this Blockly.Block
+     */
+    domToMutation: function (xmlElement) {
+    },
+
+    /**
+    * Populate the mutator's dialog with this block's components.
+    * @param {!Blockly.Workspace} workspace Mutator's workspace.
+    * @return {!Blockly.Block} Root block in mutator.
+    * @this Blockly.Block
+    */
+    decompose: function (workspace) {
+        var topBlock = Blockly.Block.obtain(workspace, "yadoms_enumeration_mutator");
+        topBlock.initSvg();
+        return topBlock;
+    },
+
+    /**
+     * Reconfigure this block based on the mutator dialog's components.
+     * @param {!Blockly.Block} containerBlock Root block in mutator.
+     * @this Blockly.Block
+     */
+    compose: function (containerBlock) {
+        //This method analyse the mutator dialog result, then recreate the real blick
+        //so it takes sur clauseBlock (= mutator topblock stack = all additional keywords)
+        //foreach additional keyword block found, just append needed blocks
+        var keyword = containerBlock.getSelectedKeyword();
+        var device = containerBlock.getSelectedDevice();
+        var plugin = containerBlock.getSelectedPlugin();
+        this.updateEnumeration(keyword, device, plugin);
+    }
+};
+
+
+Blockly.Blocks["yadoms_enumeration_mutator"] = {
+    deviceDropDownName: "Device",
+    keywordDropDownName: "Keyword",
+
+    /**
+     * Mutator block for if container.
+     * @this Blockly.Block
+     */
+    init: function () {
+        this.setColour(Blockly.Yadoms.blockColour.HUE);
+        this.appendDummyInput().appendField($.t("blockly.blocks.yadoms_enumeration.mutator.title"));
+        this.setTooltip($.t("blockly.blocks.yadoms_enumeration.mutator.tooltip"));
+        this.contextMenu = false;
+        var thisBlock = this;
+        Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection(thisBlock, false, ["enum"], undefined, undefined, this.deviceDropDownName, this.keywordDropDownName);
     }
 };

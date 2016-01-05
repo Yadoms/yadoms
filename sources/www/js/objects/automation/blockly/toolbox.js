@@ -187,8 +187,8 @@ Blockly.Yadoms.CreateToolbox_ = function () {
     toolbox += "    </block>";
     toolbox += "    <block type=\"yadoms_date_everyDay\"></block>";
     toolbox += "    <block type=\"yadoms_date_weekDay\"></block>";
-    toolbox += "    <block type=\"yadoms_date_sunset\"></block>";
     toolbox += "    <block type=\"yadoms_date_sunrise\"></block>";
+    toolbox += "    <block type=\"yadoms_date_sunset\"></block>";
     toolbox += "    <block type=\"yadoms_date_arithmetic\"></block>";
     toolbox += "    <block type=\"yadoms_date_timespan\">";
     toolbox += "        <value name=\"hourInput\">";

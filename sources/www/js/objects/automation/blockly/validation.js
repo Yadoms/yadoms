@@ -65,15 +65,15 @@ Blockly.Validation.isBlockValid = function (block) {
         var currentBlockValid = true;
         $.each(block.inputList, function (index, subBlock) {
             if (subBlock.connection != null && subBlock.isVisible()) {
-                if (subBlock.connection.targetConnection == null || subBlock.connection.targetConnection == undefined) {
+                if ((subBlock.connection.targetConnection == null || subBlock.connection.targetConnection == undefined) && subBlock.type === Blockly.INPUT_VALUE)  {
                     Blockly.Validation.setBlockInvalid(subBlock.sourceBlock_);
-                    return currentBlockValid = false;
+                    currentBlockValid = false;
                 } else {
-                    if (!Blockly.Validation.isBlockValid(subBlock.connection.targetConnection.sourceBlock_))
-                        return currentBlockValid = false;
+                    if (subBlock.connection && subBlock.connection.targetConnection && !Blockly.Validation.isBlockValid(subBlock.connection.targetConnection.sourceBlock_))
+                        currentBlockValid = false;
                 }
             }
-            // ReSharper disable once NotAllPathsReturnValue
+            return currentBlockValid;
         });
         return currentBlockValid;
     }
@@ -122,6 +122,21 @@ Blockly.Validation.Init = function (workspace, maxTopBlocks) {
  */
 Blockly.Validation.maxTopBlocks_ = 1;
 
+
+/**
+ * Get the real topBlocks (without functions)
+ * @param workspace The workspace 
+ * @return The topBlock list (without functions)
+ */
+Blockly.Validation.getRealTopBlocks_ = function (workspace) {
+    var result = [];
+    $.each(workspace.topBlocks_, function (index, value) {
+        if (value.type !== "procedures_defnoreturn" && value.type !== "procedures_defreturn")
+            result.push(value);
+    });
+    return result;
+};
+
 /**
  * Start a workspace validation
  * @param workspace The workspace to validate
@@ -129,9 +144,11 @@ Blockly.Validation.maxTopBlocks_ = 1;
  */
 Blockly.Validation.validate = function (workspace, callback) {
 
-    if (workspace.topBlocks_.length > Blockly.Validation.maxTopBlocks_) {
+    var topBlocks = Blockly.Validation.getRealTopBlocks_(workspace);
 
-        $.each(workspace.topBlocks_, function (index, value) {
+    if (topBlocks.length > Blockly.Validation.maxTopBlocks_) {
+
+        $.each(topBlocks, function (index, value) {
             Blockly.Validation.setBlockInvalid(value);
         });
         callback(false, "Only " + Blockly.Validation.maxTopBlocks_ + " max top block is allowed");

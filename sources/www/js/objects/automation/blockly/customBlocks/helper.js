@@ -13,7 +13,9 @@
 Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function (thisBlock, onlyWritableKeywords, allowedKeywordTypes, allowedKeywordCapacities, callbackKeywordSelectionChanged, deviceDropDownName, keywordDropDownName, inputType, inputName, workspace) {
     thisBlock.selectedPlugin_ = null;
 
+    // ReSharper disable JoinDeclarationAndInitializerJs
     var keywordDd;
+    // ReSharper restore JoinDeclarationAndInitializerJs
 
     var deviceDd = new Blockly.FieldDropdown(function () {
         var deviceList = Blockly.Yadoms.LoadDevices_(onlyWritableKeywords, allowedKeywordTypes, allowedKeywordCapacities);
@@ -102,7 +104,7 @@ Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function (thisBlock, on
 				}
 			}
 			*/
-			if(inputType && inputType.type == Blockly.INPUT_VALUE) {
+			if(inputType && inputType.type === Blockly.INPUT_VALUE) {
 				inputType.setCheck(type);
 			}
 			

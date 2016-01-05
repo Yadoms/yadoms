@@ -259,7 +259,7 @@ shared::script::yScriptApi::CWaitForEventResult CYScriptApiImplementation::waitF
    notification::CHelpers::CCustomSubscriber subscriber(observer);
 
 
-   boost::shared_ptr< notification::IObserver > dateTimeObserver = boost::shared_ptr< notification::IObserver >(NULL);
+   boost::shared_ptr< notification::IObserver > dateTimeObserver;
    if (receiveDateTimeEvent)
    {
       dateTimeObserver = notification::CHelpers::subscribeBasicObserver< shared::dateTime::CDateTimeContainer >(eventHandler, kTime);
