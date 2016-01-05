@@ -21,9 +21,15 @@ RecipientManager.factory = function (json) {
     assert(!isNullOrUndefined(json.lastName), "json.lastName must be defined");
     assert(!isNullOrUndefined(json.fields), "json.fields must be defined");
 
+    var d = $.Deferred();
+
     var r = new Recipient(json.id, json.firstName, json.lastName, json.fields);
-    r.mergeFields();
-    return r;
+    r.mergeFields()
+    .done(function () {
+        d.resolve(r);
+    });
+
+    return d.promise();
 };
 
 /**
@@ -45,15 +51,15 @@ RecipientManager.factoryField = function (json) {
 /**
  * Get a recipient from the server by Id
  * @param recipientId The Id to find
- * @param callback The callback to receive result
  * @param sync True to get the result synchronously, false asynchronously
  */
-RecipientManager.get = function (recipientId, callback, sync) {
+RecipientManager.get = function (recipientId, sync) {
     assert(!isNullOrUndefined(recipientId), "recipientId must be defined");
-    assert($.isFunction(callback), "callback must be a function");
+
+    var d = $.Deferred();
 
     var async = true;
-    if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
+    if (!isNullOrUndefined(sync) && $.type(sync) === "boolean")
         async = !sync;
 
     $.ajax({
@@ -66,14 +72,21 @@ RecipientManager.get = function (recipientId, callback, sync) {
         .done(function (data) {
             //we parse the json answer
             if (data.result != "true") {
-                notifyError($.t("objects.generic.errorGetting", {objectName: "Recipient with Id = " + recipientId}), JSON.stringify(data));
+                notifyError($.t("objects.generic.errorGetting", { objectName: "Recipient with Id = " + recipientId }), JSON.stringify(data));
+                d.fail();
                 return;
             }
-            callback(RecipientManager.factory(data.data));
+            RecipientManager.factory(data.data)
+                .done(function (newRecipient) {
+                    d.resolve(newRecipient);
+                });
         })
         .fail(function () {
-            notifyError($.t("objects.generic.errorGetting", {objectName: "Recipient with Id = " + recipientId}));
+            notifyError($.t("objects.generic.errorGetting", { objectName: "Recipient with Id = " + recipientId }));
+            d.fail();
         });
+
+    return d.promise();
 };
 
 
@@ -81,21 +94,27 @@ RecipientManager.get = function (recipientId, callback, sync) {
  * Create an empty recipient (with all fields empty)
  */
 RecipientManager.createEmptyRecipient = function () {
+    var d = $.Deferred();
+
     var emptyRecipient = new Recipient(undefined, "", "", []);
-    emptyRecipient.mergeFields();
-    return emptyRecipient;
+    emptyRecipient.mergeFields()
+        .done(function () {
+            d.resolve(emptyRecipient);
+        });
+
+    return d.promise();
 };
 
 /**
  * Get the list of all recipients
- * @param callback The callback for the result
- * @param sync True to get the result synchronously, false asynchronously
+  * @param sync True to get the result synchronously, false asynchronously
  */
-RecipientManager.getAll = function (callback, sync) {
-    assert($.isFunction(callback), "callback must be defined");
+RecipientManager.getAll = function (sync) {
+
+    var d = $.Deferred();
 
     var async = true;
-    if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
+    if (!isNullOrUndefined(sync) && $.type(sync) === "boolean")
         async = !sync;
 
     $.ajax({
@@ -106,88 +125,109 @@ RecipientManager.getAll = function (callback, sync) {
         async: async
     })
     .done(
-    /**
-     * Receive result from server
-     * @param {{result:string}, {data: {recipient : object}}} data
-     */
-    function (data) {
-        //we parse the json answer
-        if (data.result != "true") {
-            notifyError($.t("objects.recipient.errorGettingList"), JSON.stringify(data));
-            return;
-        }
+        /**
+         * Receive result from server
+         * @param {{result:string}, {data: {recipient : object}}} data
+         */
+        function (data) {
+            //we parse the json answer
+            if (data.result != "true") {
+                notifyError($.t("objects.recipient.errorGettingList"), JSON.stringify(data));
+                d.fail();
+                return;
+            }
 
-        var recipientList = [];
-        $.each(data.data.recipient, function (index, value) {
-            recipientList.push(RecipientManager.factory(value));
-        });
+            var recipientList = [];
+            var arrayOfDeffered = [];
+            $.each(data.data.recipient, function (index, value) {
+                var deffered = RecipientManager.factory(value);
+                arrayOfDeffered.push(deffered);
+                deffered.done(function(newRecipient) {
+                    recipientList.push(newRecipient);
+                });
+            });
 
-        if ($.isFunction(callback))
-            callback(recipientList);
-    })
+            //when all deffered have been finished
+            $.when.apply($, arrayOfDeffered)
+            .done(function () {
+                d.resolve(recipientList);
+            });
+        })
     .fail(function () {
         notifyError($.t("modals.recipient.errorGettingList"));
-        callback(null);
+        d.fail();
     });
+
+    return d.promise();
 };
 
 /**
  * Get the list of recipients containing a specific field
  * @param field The field to search for
- * @param callback The callback for the result
  * @param sync True to get the result synchronously, false asynchronously
  */
-RecipientManager.getByField = function (field, callback, sync) {
-   assert($.isFunction(callback), "callback must be defined");
-   assert(!isNullOrUndefined(field), "field must be defined");
+RecipientManager.getByField = function (field, sync) {
+    assert(!isNullOrUndefined(field), "field must be defined");
 
-   var async = true;
-   if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
-      async = !sync;
+    var d = $.Deferred();
 
-   $.ajax({
-      type: "GET",
-      url: "/rest/recipient/field/" + field,
-      contentType: "application/json; charset=utf-8",
-      dataType: "json",
-      async: async
-   })
-      .done(function (data) {
-         //we parse the json answer
-         if (data.result != "true") {
-            notifyError($.t("objects.generic.errorGetting", {objectName: "Recipient fields with name = " + field}), JSON.stringify(data));
-            return;
-         }
+    var async = true;
+    if (!isNullOrUndefined(sync) && $.type(sync) === "boolean")
+        async = !sync;
 
-         var recipientFieldList = [];
-         $.each(data.data.field, function (index, value) {
-            recipientFieldList.push(RecipientManager.factoryField(value));
-         });
+    $.ajax({
+        type: "GET",
+        url: "/rest/recipient/field/" + field,
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        async: async
+    })
+       .done(function (data) {
+           //we parse the json answer
+           if (data.result != "true") {
+               notifyError($.t("objects.generic.errorGetting", { objectName: "Recipient fields with name = " + field }), JSON.stringify(data));
+               d.fail();
+               return;
+           }
 
-         //we call the callback with true as a ok result
-         if ($.isFunction(callback))
-            callback(recipientFieldList);
-         
-      })
-      .fail(function () {
-         notifyError($.t("objects.generic.errorGetting", {objectName: "Recipient fields with name = " + field}));
-         //launch callback with false as ko result
-         if ($.isFunction(callback))
-            callback(null);
-      });
+           var recipientFieldList = [];
+           var arrayOfDeffered = [];
+
+           $.each(data.data.field, function (index, value) {
+               var deffered = RecipientManager.factory(value);
+               arrayOfDeffered.push(deffered);
+               deffered.done(function (newRecipient) {
+                   recipientFieldList.push(newRecipient);
+               });
+           });
+
+           //when all deffered have been finished
+           $.when.apply($, arrayOfDeffered)
+           .done(function () {
+               d.resolve(recipientFieldList);
+           });
+
+       })
+       .fail(function () {
+           notifyError($.t("objects.generic.errorGetting", { objectName: "Recipient fields with name = " + field }));
+           d.fail();
+       });
+
+    return d.promise();
 };
 
 /**
  * Delete a recipient
  * @param recipientToDelete The recipient to delete
- * @param callback The callback for the result
  * @param sync True to get the result synchronously, false asynchronously
  */
-RecipientManager.deleteFromServer = function (recipientToDelete, callback, sync) {
+RecipientManager.deleteFromServer = function (recipientToDelete, sync) {
     assert(!isNullOrUndefined(recipientToDelete), "recipient must be defined");
-    assert($.isFunction(callback), "callback must be defined");
+
+    var d = $.Deferred();
+
     var async = true;
-    if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
+    if (!isNullOrUndefined(sync) && $.type(sync) === "boolean")
         async = !sync;
 
     $.ajax({
@@ -200,28 +240,32 @@ RecipientManager.deleteFromServer = function (recipientToDelete, callback, sync)
         .done(function (data) {
             //we parse the json answer
             if (data.result != "true") {
-                notifyError($.t("objects.generic.errorDeleting", {objectName: recipientToDelete.firstName + " " + recipientToDelete.lastName}), JSON.stringify(data));
+                notifyError($.t("objects.generic.errorDeleting", { objectName: recipientToDelete.firstName + " " + recipientToDelete.lastName }), JSON.stringify(data));
+                d.fail();
                 return;
             }
-            callback();
+            d.resolve();
         })
         .fail(function () {
-            notifyError($.t("objects.generic.errorDeleting", {objectName: recipientToDelete.firstName + " " + recipientToDelete.lastName}));
+            notifyError($.t("objects.generic.errorDeleting", { objectName: recipientToDelete.firstName + " " + recipientToDelete.lastName }));
+            d.fail();
         });
+
+    return d.promise();
 };
 
 /**
  * Update a recipient
  * @param recipientToUpdate The recipient to update
- * @param callback The callback for the result
  * @param sync True to get the result synchronously, false asynchronously
  */
-RecipientManager.updateToServer = function (recipientToUpdate, callback, sync) {
+RecipientManager.updateToServer = function (recipientToUpdate, sync) {
     assert(!isNullOrUndefined(recipientToUpdate), "recipient must be defined");
-    assert($.isFunction(callback), "callback must be defined");
+
+    var d = $.Deferred();
 
     var async = true;
-    if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
+    if (!isNullOrUndefined(sync) && $.type(sync) === "boolean")
         async = !sync;
     $.ajax({
         type: "PUT",
@@ -234,40 +278,36 @@ RecipientManager.updateToServer = function (recipientToUpdate, callback, sync) {
         .done(function (data) {
             //we parse the json answer
             if (data.result != "true") {
-                notifyError($.t("objects.generic.errorUpdating", {objectName: recipientToUpdate.firstName + " " + recipientToUpdate.lastName}), JSON.stringify(data));
-                //launch callback with false as ko result
-                if ($.isFunction(callback))
-                    callback(false);
+                notifyError($.t("objects.generic.errorUpdating", { objectName: recipientToUpdate.firstName + " " + recipientToUpdate.lastName }), JSON.stringify(data));
+                d.fail();
                 return;
             }
             //it's okay
             //we update our information from the server
-            recipientToUpdate = RecipientManager.factory(data.data);
-
-            //we call the callback with true as a ok result
-            if ($.isFunction(callback))
-                callback(true, recipientToUpdate);
+            RecipientManager.factory(data.data)
+            .done(function(recipientUpdated) {
+                d.resolve(recipientUpdated);
+            });
         })
         .fail(function () {
-            notifyError($.t("objects.generic.errorUpdating", {objectName: recipientToUpdate.firstName + " " + recipientToUpdate.lastName}));
-            //launch callback with false as ko result
-            if ($.isFunction(callback))
-                callback(false);
+            notifyError($.t("objects.generic.errorUpdating", { objectName: recipientToUpdate.firstName + " " + recipientToUpdate.lastName }));
+            d.fail();
         });
+    return d.promise();
 };
 
 /**
  * Add a recipient on the server
  * @param recipientToAdd The recipient to add
- * @param callback The callback for the result
  * @param sync True to get the result synchronously, false asynchronously
  */
-RecipientManager.addToServer = function (recipientToAdd, callback, sync) {
+RecipientManager.addToServer = function (recipientToAdd, sync) {
     assert(!isNullOrUndefined(recipientToAdd), "recipient must be defined");
-    assert($.isFunction(callback), "callback must be defined");
+
+    var d = $.Deferred();
 
     var async = true;
-    if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
+    if (!isNullOrUndefined(sync) && $.type(sync) === "boolean")
         async = !sync;
 
     $.ajax({
@@ -281,24 +321,20 @@ RecipientManager.addToServer = function (recipientToAdd, callback, sync) {
         .done(function (data) {
             //we parse the json answer
             if (data.result != "true") {
-                notifyError($.t("objects.generic.errorUpdating", {objectName: recipientToAdd.firstName + " " + recipientToAdd.lastName}), JSON.stringify(data));
-                //launch callback with false as ko result
-                if ($.isFunction(callback))
-                    callback(false);
+                notifyError($.t("objects.generic.errorUpdating", { objectName: recipientToAdd.firstName + " " + recipientToAdd.lastName }), JSON.stringify(data));
+                d.fail();
                 return;
             }
             //it's okay
             //we update our information from the server
-            recipientToAdd = RecipientManager.factory(data.data);
-
-            //we call the callback with true as a ok result
-            if ($.isFunction(callback))
-                callback(true, recipientToAdd);
+            RecipientManager.factory(data.data)
+           .done(function (recipientAdded) {
+               d.resolve(recipientAdded);
+           });
         })
         .fail(function () {
-            notifyError($.t("objects.generic.errorUpdating", {objectName: recipientToAdd.firstName + " " + recipientToAdd.lastName}));
-            //launch callback with false as ko result
-            if ($.isFunction(callback))
-                callback(false);
+            notifyError($.t("objects.generic.errorUpdating", { objectName: recipientToAdd.firstName + " " + recipientToAdd.lastName }));
+            d.fail();
         });
+    return d.promise();
 };

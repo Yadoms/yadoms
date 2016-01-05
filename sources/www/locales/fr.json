@@ -1,4 +1,67 @@
 ﻿{
+  "core": {
+    "event": "evennement",
+    "plugin": {
+      "name": "plugin",
+      "install": "Installation du plugin ...",
+      "update": "Mise à jour du plugin ...",
+      "remove": "Suppression du plugin ...",
+      "removeFailed": "La suppression du plugin a echoué",
+      "download": "Téléchargement du plugin ...",
+      "downloadFailed": "Le téléchargement du plugin a echoué",
+      "deploy": "Déploiement du plugin ...",
+      "deployFailed": "Le déploiement du plugin a echoué",
+      "finalize": "Finalisation ...",
+      "success": "Succés"
+    },
+    "widget": {
+      "name": "widget",
+      "install": "Installation du widget ...",
+      "update": "Mise à jour du widget ...",
+      "remove": "Suppression du widget ...",
+      "removeFailed": "La suppression du widget a echoué",
+      "download": "Téléchargement du  widget ...",
+      "downloadFailed": "Le téléchargement du widget a echoué",
+      "deploy": "Déploiement du widget ...",
+      "deployFailed": "Le déploiement du widget a echoué",
+      "finalize": "Finalisation ...",
+      "success": "Succés"
+    },
+    "scriptInterpreter": {
+      "name": "script interpreter",
+      "install": "Installation de l'interpreteur de scripts ...",
+      "update": "Mise à jour de l'interpreteur de scripts ...",
+      "remove": "Suppression de l'interpreteur de scripts ...",
+      "removeFailed": "La suppression de l'interpreteur de scripts a echoué",
+      "download": "Téléchargement de l'interpreteur de scripts ...",
+      "downloadFailed": "Le téléchargement de l'interpreteur de scripts a echoué",
+      "deploy": "Déploiement de l'interpreteur de scripts ...",
+      "deployFailed": "Le déploiement de l'interpreteur de scripts a echoué",
+      "finalize": "Finalisation ...",
+      "success": "Succés"
+    },
+    "yadoms": {
+      "name": "yadoms",
+      "update": "Mise à jour de Yadoms ...",
+      "updateFailed": "La mise à jour de Yadoms a echoué",
+      "download": "Téléchargement de Yadoms ...",
+      "downloadFailed": "Le téléchargement de Yadoms a echoué",
+      "extract": "Extraction de Yadoms ...",
+      "extractFailed": "L'extraction de Yadoms a echoué",
+      "deploy": "Déploiement de Yadoms ...",
+      "deployFailed": "Le déploiement de Yadoms a echoué",
+      "exit": "Arrêt Yadoms ...",
+      "information": "Informations à propos de Yadoms"
+    },
+    "task": {
+      "name": "tâche",
+      "started": "Tâche démarrée",
+      "interrupted": "Tâche interrompue",
+      "crash": "Tâche plantée",
+      "unknownError": "Erreur inconnue",
+      "end":  "Tâche arrétée"
+    }
+  },
   "common": {
     "ok": "Ok",
     "confirm": "Confirmer",
@@ -686,13 +749,13 @@
     }
   },
   "eventLogger": {
-    "DefaultCode": "Evénement inconnu : __what__ généré par $t(system.__who__)",
-    "Started": "$t(system.__who__) a démarré",
-    "Stopped": "$t(system.__who__) s'est arrêté",
-    "Updated": "The $t(system.__who__) a été mise à jour",
+    "DefaultCode": "Evénement inconnu : __what__ généré par $t(core.__who__.name)",
+    "Started": "$t(core.__who__.name) a démarré",
+    "Stopped": "$t(core.__who__.name) s'est arrêté",
+    "Updated": "The $t(core.__who__.name) a été mise à jour",
     "YadomsCrash": "yadoms a rencontré une erreur et s'est arrêté",
     "PluginCrash": "__who__ a rencontré une erreur et s'est arrêté",
-    "TaskFailed": "La tâche $t(system.__who__) a rencontré une erreur et s'est arrêtée",
+    "TaskFailed": "La tâche __who__ a rencontré une erreur et s'est arrêtée",
     "RuleFailed": "La règle d'automatisation __who__ a échoué"
   },
   "webSockets": {

@@ -7,19 +7,21 @@
  */
 Blockly.Yadoms.LoadDataForBlocklyCustomBlocks_ = function () {
 
+    var d = $.Deferred();
+
     var result = {
         plugins: {},
         devices: {},
         keywords: {},
         recipients: {},
-        enumerations : {}
+        enumerations: {}
     };
 
-    PluginInstanceManager.getAll(function (list) {
-        $.each(list, function (key, plugin) {
+    PluginInstanceManager.getAll(function(list) {
+        $.each(list, function(key, plugin) {
             result.plugins[plugin.id] = plugin;
         });
-    }, true);
+    });
 
     DeviceManager.getAll(function (list) {
         $.each(list, function (deviceKey, device) {
@@ -33,46 +35,47 @@ Blockly.Yadoms.LoadDataForBlocklyCustomBlocks_ = function () {
         });
     }, true);
 
-    RecipientManager.getAll(function (list) {
+    RecipientManager.getAll(true)
+    .done(function (list) {
         $.each(list, function (recipientKey, recipient) {
             result.recipients[recipient.id] = recipient;
         });
-    }, true);
+        //TODO : extract this code into a deffered when of all previous synchronous calls
+        $.each(result.keywords, function (index, keywordData) {
+            var pluginData = result.plugins[result.devices[keywordData.deviceId].pluginId];
+            if (!isNullOrUndefined(keywordData) && keywordData.type.toUpperCase() === "enum".toUpperCase()) {
+                var typeInfo = keywordData.typeInfo;
+                if (!isNullOrUndefined(typeInfo) && !isNullOrUndefined(typeInfo.name) && !isNullOrUndefined(typeInfo.values)) {
+                    var typeToSet = "enum_" + typeInfo.name;
 
+                    //all is OK, this is a new enum, ask for translation
+                    var translatedEnum = [];
+                    $.each(typeInfo.values, function (index2, value) {
+                        var trad = $.t(pluginData.type + ":enumerations." + typeInfo.name + "." + value, { defaultValue: pluginData.package.enumerations[typeInfo.name][value] });
+                        translatedEnum.push([trad, value]);
+                    });
 
-    $.each(result.keywords, function (index, keywordData) {
-        var pluginData = result.plugins[result.devices[keywordData.deviceId].pluginId];
-        if (!isNullOrUndefined(keywordData) && keywordData.type.toUpperCase() === "enum".toUpperCase()) {
-            var typeInfo = keywordData.typeInfo;
-            if (!isNullOrUndefined(typeInfo) && !isNullOrUndefined(typeInfo.name) && !isNullOrUndefined(typeInfo.values)) {
-                var typeToSet = "enum_" + typeInfo.name;
+                    result.enumerations[typeToSet] = {
+                        typeToSet: typeToSet,
+                        name: typeInfo.name,
+                        values: translatedEnum
+                    };
 
-                //all is OK, this is a new enum, ask for translation
-                var translatedEnum = [];
-                $.each(typeInfo.values, function (index, value) {
-                    var trad = $.t(pluginData.type + ":enumerations." + typeInfo.name + "." + value, { defaultValue: pluginData.package.enumerations[typeInfo.name][value] });
-                    translatedEnum.push([trad, value]);
-                });
-
-                result.enumerations[typeToSet] = {
-                    typeToSet: typeToSet,
-                    name: typeInfo.name,
-                    values: translatedEnum
-                };
-
-                //apply new dropdown list
-                /*
-                this.currentEnumerationTypeName = typeInfo.name;
-                var enumDropDown = $.isFunction(this.getField_) ? this.getField_(this.enumerationDropDownName) : this.getField(this.enumerationDropDownName);
-
-                enumDropDown.refresh(translatedEnum, enumDropDown.getValue());*/
-            }
-        }
-
-    });
+                    //apply new dropdown list
+                    /*
+                    this.currentEnumerationTypeName = typeInfo.name;
+                    var enumDropDown = $.isFunction(this.getField_) ? this.getField_(this.enumerationDropDownName) : this.getField(this.enumerationDropDownName);
     
+                    enumDropDown.refresh(translatedEnum, enumDropDown.getValue());*/
+                }
+            }
 
-    return result;
+        });
+
+        d.resolve(result);
+    });
+
+    return d.promise();
 };
 
 
@@ -194,7 +197,7 @@ Blockly.Yadoms.GetPluginMatchingDevice_ = function (device) {
             return Blockly.Yadoms.data.devices[device].pluginId;
         }
     }
-        
+
     return null;
 }
 

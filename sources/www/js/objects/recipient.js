@@ -60,43 +60,43 @@ Recipient.systemFields = {
 Recipient.prototype.mergeFields = function() {
     var self = this;
 
+    var d = $.Deferred();
+
     var definedFields = [];
     $.each(this.fields, function(index, f) {
         definedFields.push(f);
     });
 
     this.fields = [];
-    debugger;
     //add system fields
-    for (var systemField in Recipient.systemFields) {
+    $.each(Recipient.systemFields, function(key, value) {
         var currentField = {
-            fieldName: systemField,
+            fieldName: key,
             pluginType: "system",
             pluginDefaultDisplayName: "system",
-            name: $.t("objects.recipient.fields." + systemField + ".name"),
-            description: $.t("objects.recipient.fields." + systemField + ".description"),
-            regexErrorMessage: $.t("objects.recipient.fields." + systemField + ".regexErrorMessage"),
-            regex: Recipient.systemFields[systemField],
+            name: $.t("objects.recipient.fields." + key + ".name"),
+            description: $.t("objects.recipient.fields." + key + ".description"),
+            regexErrorMessage: $.t("objects.recipient.fields." + key + ".regexErrorMessage"),
+            regex: value,
             value: ""
         };
 
         //search the field value in definedFields (search if the recipient is already configured for this field)
         $.each(definedFields, function(index, field) {
-            if (field.pluginType.toLowerCase() == "system" && field.fieldName.toUpperCase() == systemField.toUpperCase()) {
+            if (field.pluginType.toLowerCase() == "system" && field.fieldName.toLowerCase() == key.toLowerCase()) {
                 //the field match an already saved one, just reuse the value
                 currentField.value = field.value;
             }
         });
 
         self.fields.push(currentField);
-    }
+    });
 
     //add plugin fields from the cache array
     //we take only plugin that have at least one instance
     //we dynamically ask for plugins (async)
     PluginInstanceManager.getAll(function(allInstances) {
         var instanciatedTypes = [];
-        debugger;
         $.each(allInstances, function(index, value) {
             if (!PluginInstanceManager.isSystemCategory(value))
                 instanciatedTypes.push(value.type);
@@ -130,5 +130,8 @@ Recipient.prototype.mergeFields = function() {
                 self.fields.push(currentField);
             }
         });
+        d.resolve();
     });
+
+    return d.promise();
 }

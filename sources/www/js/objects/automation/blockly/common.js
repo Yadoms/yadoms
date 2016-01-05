@@ -111,16 +111,17 @@ Blockly.Yadoms.LoadLanguageScript_ = function (callback) {
  * @constructor
  */
 Blockly.Yadoms.Initialize = function ($domTarget, initialContent, maxTopBlocks) {
-    Blockly.Yadoms.data = Blockly.Yadoms.LoadDataForBlocklyCustomBlocks_();
+    Blockly.Yadoms.LoadDataForBlocklyCustomBlocks_()
+    .done(function(data) {
+        Blockly.Yadoms.data = data;
+        Blockly.Python.INDENT = "\t";
 
-    Blockly.Python.INDENT = "\t";
+        $domTarget.append("<div class=\"blockly-container\"></div>");
 
-    $domTarget.append("<div class=\"blockly-container\"></div>");
+        Blockly.Yadoms.LoadLanguageScript_(function() {
+            //inject blockly dom+js
 
-    Blockly.Yadoms.LoadLanguageScript_(function () {
-        //inject blockly dom+js
-
-        Blockly.Yadoms.CurrentWorkspace = Blockly.inject($domTarget.find("div.blockly-container")[0],
+            Blockly.Yadoms.CurrentWorkspace = Blockly.inject($domTarget.find("div.blockly-container")[0],
             {
                 comments: true,
                 disable: true,
@@ -146,14 +147,15 @@ Blockly.Yadoms.Initialize = function ($domTarget, initialContent, maxTopBlocks) 
                 }
             });
 
-        //load initial content if exists
-        if (!isNullOrUndefinedOrEmpty(initialContent)) {
-            var xml = Blockly.Xml.textToDom(initialContent);
-            Blockly.Xml.domToWorkspace(Blockly.Yadoms.CurrentWorkspace, xml);
-        }
+            //load initial content if exists
+            if (!isNullOrUndefinedOrEmpty(initialContent)) {
+                var xml = Blockly.Xml.textToDom(initialContent);
+                Blockly.Xml.domToWorkspace(Blockly.Yadoms.CurrentWorkspace, xml);
+            }
 
-        //initialize validation
-        Blockly.Validation.Init(Blockly.Yadoms.CurrentWorkspace, maxTopBlocks);
+            //initialize validation
+            Blockly.Validation.Init(Blockly.Yadoms.CurrentWorkspace, maxTopBlocks);
+        });
     });
 };
 

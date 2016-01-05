@@ -70,14 +70,15 @@ function NotificationSenderViewModel() {
             }
             
             var recipientTuples = new Array();
-            RecipientManager.getByField(keyword.typeInfo.associatedRecipientField, function (list) {
+            RecipientManager.getByField(keyword.typeInfo.associatedRecipientField, true)
+            .done(function (list) {
                $.each(list, function (recipientFieldKey, recipientField) {
-                  RecipientManager.get(recipientField.idRecipient, function(recipient) {
+                  RecipientManager.get(recipientField.idRecipient, true)
+                  .done(function(recipient) {
                      self.toList.push(new recipientTuple({id: recipient.id, name: recipient}));
-                  }, true);
+                  });
                });
-            }, true);
-            
+            });
          });
       }
       catch(err) {}
