@@ -205,7 +205,8 @@ function periodicUpdateTask() {
                 //we close the dashboard if shown
                 $('#main-dashboard-modal').modal('hide');
                 //we stop refresh timer of the dashboard if set
-                clearInterval(periodicDashboardTask);
+                if (periodicDashboardTask)
+                    clearInterval(periodicDashboardTask);
             }
         }
         //if we are again offline there is nothing to do

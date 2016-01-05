@@ -25,10 +25,10 @@
    /**
     * Show a recipient configuration modal form
     * @param recipient  The recipient to update
-    * @param callback A function to receive the updated data (after validation)
     */
-   function showRecipientConfigurationModal(recipient, callback) {
-      assert($.isFunction(callback), "callback must be defined");
+   function showRecipientConfigurationModal(recipient) {
+
+      var d = new $.Deferred();
 
       //construct the dom
       var $modalBody = $("div#recipient-configure-modal .modal-body");
@@ -49,7 +49,6 @@
 
       //add custom fields (email, mobile phone,...)
       var recipientConfigurationFields = [];
-
       var sections = {};
       $.each(recipient.fields, function (index, field) {
 
@@ -68,7 +67,6 @@
          }
          else {
              //create or retrieve section for the plugin
-             debugger;
             if(sections[field.pluginType] == undefined) {
                sections[field.pluginType] = new SectionParameterHandler("[prepend]modals.recipient_configure.","pluginSection",
                        {
@@ -128,7 +126,7 @@
             console.debug("End of recipient configuration");
 
             $("div#recipient-configure-modal").modal("hide");
-            callback(completedRecipient);
+            d.resolve(completedRecipient);
          },
          filter: function() {
             //we check only control that have class enable-validation and are visible
@@ -139,5 +137,6 @@
       //we display the modal
       $('div#recipient-configure-modal').modal();
 
+      return d.promise();
    }
 </script>
