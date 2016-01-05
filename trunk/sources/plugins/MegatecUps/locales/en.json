@@ -22,6 +22,7 @@
 					"name": "Restore delay (minutes)",
 					"description": "After AC power is recovered, UPS will wait for this delay before to restore power at output."
 				}
+         }
 		}
 	},
 	"customLabels": {
