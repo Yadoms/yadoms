@@ -505,16 +505,30 @@ shared::CDataContainer CManager::getInstanceState(int id) const
       return defaultState;
    }
 
-   // First find the pluginState keyword associated with the plugin
-   boost::shared_ptr<database::entities::CKeyword> stateKw = m_dataProvider->getKeywordRequester()->getKeyword(m_dataProvider->getDeviceRequester()->getDevice(id, "pluginState")->Id, "state");
+   boost::shared_ptr<database::entities::CDevice> device;
    try
    {
+      // First find the pluginState device associated with the plugin
+      device = m_dataProvider->getDeviceRequester()->getDevice(id, "pluginState");
+   }
+   catch (shared::exception::CEmptyResult&)
+   {
+      // Device doesn't exist, probably not supported by plugin. Plugin is then considered as running.
+      shared::CDataContainer defaultState;
+      defaultState.set("state", shared::plugin::yPluginApi::historization::EPluginState::kRunning);
+      return defaultState;
+   }
+
+   try
+   {
+      boost::shared_ptr<database::entities::CKeyword> stateKw = m_dataProvider->getKeywordRequester()->getKeyword(device->Id, "state");
       return m_dataProvider->getAcquisitionRequester()->getKeywordLastData(stateKw->Id)->Value();
    }
    catch (shared::exception::CEmptyResult&)
    {
+      // pluginState keyword exist, but was never historized, so considered as unknown.
       shared::CDataContainer defaultState;
-      defaultState.set("state", shared::plugin::yPluginApi::historization::EPluginState::kUnknownValue);
+      defaultState.set("state", shared::plugin::yPluginApi::historization::EPluginState::kUnknown);
       return defaultState;
    }
 }
