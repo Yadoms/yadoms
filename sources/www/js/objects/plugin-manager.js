@@ -92,7 +92,7 @@ PluginManager.downloadPackage = function(pluginType, callback, sync) {
         });
     })
     .fail(function() {
-        notifyError($.t("objects.pluginInstance.errorGettingPackage", {pluginName : pluginInstance.displayName}));
+        notifyError($.t("objects.pluginInstance.errorGettingPackage", {pluginName : pluginType}));
         if ($.isFunction(callback))
             callback();
     });
