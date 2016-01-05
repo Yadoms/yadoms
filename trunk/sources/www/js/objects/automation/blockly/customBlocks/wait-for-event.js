@@ -21,15 +21,17 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
                                             "yadoms_wait_for_event_mutator_become",
                                             "yadoms_wait_for_event_mutator_datetime_change",
                                             "yadoms_wait_for_event_mutator_datetime_become"]));
+
+        /**
+         * Member which stores the mutation data
+        */
+        this.mutationData_ = {
+            storeInVariable: false,
+            additionalBlocks: []
+        };
     },
 
-    /**
-     * Member which stores the mutation data
-     */
-    mutationData_: {
-        storeInVariable: false,
-        additionalBlocks: []
-    },
+
 
 
 
@@ -136,6 +138,31 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
         }
 
         this.appendInputPart2_(no, statementConnection);
+    },
+
+    /**
+     * When something changes on the block, check if any enumeration block has been connected, and then update types
+     */
+    onchange: function () {
+        //browse all become inputs
+        //if a connected block is an enuemration, then update enum matching the selected keyword
+        var self = this;
+        $.each(this.mutationData_.additionalBlocks, function (index, blockType) {
+            if (blockType === "yadoms_wait_for_event_mutator_become") {
+                var input = self.getInput("additionalInput_part1_" + index);
+                if (input && input.connection) {
+                    var block = input.connection.targetBlock();
+                    if (block) {
+                        if (block.type === "yadoms_enumeration") {
+                            var keywordValue = self.getFieldValue("keywordDd" + index);
+                            if (keywordValue) {
+                                block.updateEnumeration(keywordValue);
+                            }
+                        }
+                    }
+                }
+            }
+        });
     },
 
     /**

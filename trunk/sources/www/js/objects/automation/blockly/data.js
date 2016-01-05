@@ -14,14 +14,20 @@ Blockly.Yadoms.LoadDataForBlocklyCustomBlocks_ = function () {
         devices: {},
         keywords: {},
         recipients: {},
-        enumerations: {}
+        enumerations: {},
+
+        getPluginIdFromKeywordId: function (keywordId) {
+            if (this.keywords[keywordId] && this.devices[this.keywords[keywordId].deviceId])
+                return this.devices[this.keywords[keywordId].deviceId].pluginId;
+            return undefined;
+        }
     };
 
     PluginInstanceManager.getAll(function(list) {
         $.each(list, function(key, plugin) {
             result.plugins[plugin.id] = plugin;
         });
-    });
+    }, true);
 
     DeviceManager.getAll(function (list) {
         $.each(list, function (deviceKey, device) {

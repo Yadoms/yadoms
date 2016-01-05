@@ -521,7 +521,11 @@
       },
       "yadoms_enumeration": {
         "title": "Enumération",
-        "tooltip": "Represente une valeur d'énumération (le contenu est mis à jour lorsque ce bloc est connecté à un objet)"
+        "tooltip": "Represente une valeur d'énumération (le contenu est mis à jour lorsque ce bloc est connecté à un objet)",
+        "mutator": {
+          "title": "Choisir le type de données selon le keyword",
+          "tooltip": "Il suffit de choisir le keyword pour obtenir les énumérations possibles"
+        }
       },
       "yadoms_get_info": {
         "title": "Info",

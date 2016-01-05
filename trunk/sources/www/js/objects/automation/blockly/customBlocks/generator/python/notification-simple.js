@@ -7,6 +7,6 @@ Blockly.Python["yadoms_notification_simple"] = function (block) {
     var dropdownKeyword = block.getSelectedKeyword();
     var recipientId = block.recipientDd.getValue();
     var message = Blockly.Python.valueToCode(block, block.inputValueName, Blockly.Python.ORDER_RELATIONAL) || "0";
-    return "yApi.sendNotification(" + dropdownKeyword + "," + recipientId + ", \"" + message + "\")\n";
+    return "yApi.sendNotification(" + dropdownKeyword + "," + recipientId + ", " + message + ")\n";
 };
 
