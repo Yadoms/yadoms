@@ -50,7 +50,7 @@ protected:
    /// \param [in] context          Plugin execution context (Yadoms API)
    /// \param [in] command          The received command
    //--------------------------------------------------------------
-   void onCommand(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& command);
+   void onCommandShutdown(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& command);
 
    //--------------------------------------------------------------
    /// \brief	                     Called when the UPS becomes connected
@@ -120,11 +120,6 @@ protected:
    /// \brief	                     Send the 'Shutdown' command
    //--------------------------------------------------------------
    void sendShtudownCmd();
-
-   //--------------------------------------------------------------
-   /// \brief	                     Send the 'Cancel shutdown' command
-   //--------------------------------------------------------------
-   void sendCancelShtudownCmd();
 
    //--------------------------------------------------------------
    /// \brief	                     Process received status from UPS
@@ -272,7 +267,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	The shutdown device
    //--------------------------------------------------------------
-   yApi::historization::CSwitch m_upsShutdown;
+   yApi::historization::CEvent m_upsShutdown;
 };
 
 
