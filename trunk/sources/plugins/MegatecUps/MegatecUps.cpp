@@ -80,7 +80,7 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
                YADOMS_LOG(debug) << "Command received :" << command->toString();
 
                if (boost::iequals(command->getKeyword(), m_upsShutdown.getKeyword()))
-                  onCommand(context, command->getBody());
+                  onCommandShutdown(context, command->getBody());
                else
                   YADOMS_LOG(warning) << "Received command for unknown keyword from Yadoms : " << command->toString();
 
@@ -206,16 +206,12 @@ void CMegatecUps::send(const shared::communication::CByteBuffer& buffer, bool ne
       m_waitForAnswerTimer->start();
 }
 
-void CMegatecUps::onCommand(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& command)
+void CMegatecUps::onCommandShutdown(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& command)
 {
    if (!m_port)
       YADOMS_LOG(warning) << "Command not send (UPS is not ready) : " << command;
 
-   m_upsShutdown.set(command);
-   if (m_upsShutdown.get())
-      sendShtudownCmd();
-   else
-      sendCancelShtudownCmd();
+   sendShtudownCmd();
 }
 
 void CMegatecUps::processConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> context)
@@ -413,14 +409,6 @@ void CMegatecUps::sendShtudownCmd()
 
    cmd << MEGATEC_EOF;
 
-   m_protocolErrorCounter = 0;
-   send(cmd.str());
-}
-
-void CMegatecUps::sendCancelShtudownCmd()
-{
-   std::ostringstream cmd;
-   cmd << 'C' << MEGATEC_EOF;
    m_protocolErrorCounter = 0;
    send(cmd.str());
 }
