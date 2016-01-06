@@ -168,18 +168,6 @@ shared::script::yScriptApi::CWaitForEventResult CYScriptApiImplementation::waitF
    return result;
 }
 
-void CYScriptApiImplementation::wait(const std::string& dateTimeOrDuration) const
-{
-   shared::CDataContainer request;
-   request.set("dateTimeOrDuration", dateTimeOrDuration);
-   sendRequest(kReqWait, request);
-
-   shared::CDataContainer answer = receiveAnswer(kAnsWait);
-
-   if (answer.exists("error"))
-      throw std::out_of_range(std::string("yScriptApiWrapper::wait, error : ") + answer.get<std::string>("error"));
-}
-
 void CYScriptApiImplementation::writeKeyword(int keywordId, const std::string& newState)
 {
    shared::CDataContainer request;

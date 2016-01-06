@@ -266,8 +266,6 @@ set(YADOMS_SRC
 	server/automation/script/Properties.cpp
    server/automation/script/StopNotifier.h
    server/automation/script/StopNotifier.cpp
-   server/automation/script/TimeAdapter.h
-   server/automation/script/TimeAdapter.cpp
 	server/automation/script/YScriptApiImplementation.h
 	server/automation/script/YScriptApiImplementation.cpp
 

@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "YScriptApiImplementation.h"
-#include "TimeAdapter.h"
 #include "../pluginSystem/DeviceCommand.h"
 
 #include "notification/acquisition/Observer.hpp"
@@ -117,37 +116,6 @@ std::string CYScriptApiImplementation::readKeyword(int keywordId) const
    }
 }
 
-void CYScriptApiImplementation::wait(const std::string& dateTimeOrDuration) const
-{
-   try
-   {
-      if (dateTimeOrDuration.empty())
-         throw std::out_of_range("non-empty dateTimeOrDuration must be provided");
-
-      CTimeAdapter timeoutAdapter(dateTimeOrDuration);
-      if (timeoutAdapter.isDateTime())
-      {
-         if (timeoutAdapter.dateTime() <= shared::currentTime::Provider::now())
-            return; // dateTime in the past
-
-         enum { kTimePointEventId = shared::event::kUserFirstId + 1 };
-         shared::event::CEventHandler eventHandler;
-         eventHandler.createTimePoint(kTimePointEventId, timeoutAdapter.dateTime());
-         eventHandler.waitForEvents();
-      }
-      else
-      {
-         shared::event::CEventHandler eventHandler;
-         eventHandler.waitForEvents(timeoutAdapter.duration());
-      }
-   }
-   catch (std::exception& exception)
-   {
-      m_ruleLogger->log(std::string("wait : ") + exception.what());
-      throw;
-   }
-}
-
 boost::shared_ptr<notification::acquisition::CNotification> CYScriptApiImplementation::waitForAction(
    boost::shared_ptr<notification::action::CWaitAction<notification::acquisition::CNotification> > action,
    const std::string& timeout) const
@@ -157,17 +125,8 @@ boost::shared_ptr<notification::acquisition::CNotification> CYScriptApiImplement
    if (timeout.empty())    // No timeout
       return action->wait();
       
-   // With timeout
-   CTimeAdapter timeoutAdapter(timeout);
-   if (timeoutAdapter.isDateTime())
-   {
-      if (timeoutAdapter.dateTime() <= shared::currentTime::Provider::now())
-         return boost::shared_ptr<notification::acquisition::CNotification>(); // Timeout
-
-      return action->wait(timeoutAdapter.dateTime());
-   }
-      
-   return action->wait(timeoutAdapter.duration());
+   // With timeout      
+   return action->wait(boost::posix_time::duration_from_string(timeout));
 }
 
 std::string CYScriptApiImplementation::waitForNextAcquisition(int keywordId, const std::string& timeout) const
@@ -239,7 +198,7 @@ shared::script::yScriptApi::CWaitForEventResult CYScriptApiImplementation::waitF
    for (std::vector<int>::const_iterator kwId = keywordIdList.begin(); kwId != keywordIdList.end(); ++kwId)
       assertExistingKeyword(*kwId);
 
-   boost::shared_ptr<shared::event::CEventHandler> eventHandler(new shared::event::CEventHandler());
+   boost::shared_ptr<shared::event::CEventHandler> eventHandler(boost::make_shared<shared::event::CEventHandler>());
    
    enum
    {
@@ -261,31 +220,12 @@ shared::script::yScriptApi::CWaitForEventResult CYScriptApiImplementation::waitF
 
    boost::shared_ptr< notification::IObserver > dateTimeObserver;
    if (receiveDateTimeEvent)
-   {
       dateTimeObserver = notification::CHelpers::subscribeBasicObserver< shared::dateTime::CDateTimeContainer >(eventHandler, kTime);
-   }
 
-   //wait for acquisition notification
+   //wait for event
    try
    {
-      //manage timeout (fix point, duration,...)
-      boost::posix_time::time_duration realTimeout = boost::posix_time::pos_infin;
-      if (!timeout.empty())
-      {
-         // With timeout
-         CTimeAdapter timeoutAdapter(timeout);
-         if (timeoutAdapter.isDateTime())
-         {
-            eventHandler->createTimePoint(shared::event::kTimeout, timeoutAdapter.dateTime());
-         }
-         else
-         {
-            realTimeout = timeoutAdapter.duration();
-         }
-      }
-
-      //wait for event
-      int resultCode = eventHandler->waitForEvents(realTimeout);
+      int resultCode = eventHandler->waitForEvents(timeout.empty() ? boost::posix_time::pos_infin : boost::posix_time::duration_from_string(timeout));
 
       shared::script::yScriptApi::CWaitForEventResult result;
       switch (resultCode)

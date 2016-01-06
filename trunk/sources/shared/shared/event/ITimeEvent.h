@@ -18,6 +18,8 @@ namespace shared { namespace event
       //--------------------------------------------------------------
       /// \brief	    Get the next stop point
       /// \return     Next stop point of the time event, boost::date_time::not_a_date_time if time event is not active
+      /// \note       Be careful of a limitation : a time-point is not DST (Daylight Saving Time) compatible : for example, 
+      //              a timepoint set after a DST change (ie change to summer hour) will not take account of time offset.
       //--------------------------------------------------------------
       virtual boost::posix_time::ptime getNextStopPoint() const = 0;
 

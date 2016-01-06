@@ -117,7 +117,6 @@ void CContextAccessor::processMessage(const char* message, size_t messageSize, b
    case kReqWaitForNextAcquisition  : processWaitForNextAcquisition(request, messageQueue); break;
    case kReqWaitForNextAcquisitions : processWaitForNextAcquisitions(request, messageQueue); break;
    case kReqWaitForEvent            : processWaitForEvent(request, messageQueue); break;
-   case kReqWait                    : processWait(request, messageQueue); break;
    case kReqWriteKeyword            : processWriteKeyword(request, messageQueue); break;
    case kReqSendNotification        : processSendNotification(request, messageQueue); break;
    case kReqGetInfo                 : processGetInfo(request, messageQueue); break;
@@ -214,20 +213,6 @@ void CContextAccessor::processWaitForEvent(const shared::CDataContainer& request
       answer.set("error", ex.what());
    }
    sendAnswer(kAnsWaitForEvent, answer, messageQueue);
-}
-
-void CContextAccessor::processWait(const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue)
-{
-   shared::CDataContainer answer;
-   try
-   {
-      m_scriptApi->wait(request.get<std::string>("dateTimeOrDuration"));
-   }
-   catch (std::exception& ex)
-   {
-      answer.set("error", ex.what());
-   }
-   sendAnswer(kAnsWait, answer, messageQueue);
 }
 
 void CContextAccessor::processWriteKeyword(const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue)

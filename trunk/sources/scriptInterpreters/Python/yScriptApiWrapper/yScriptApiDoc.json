@@ -79,17 +79,6 @@
             "return": "Returned value is a pair of the keyword Id who changed, and its new value. The keyword Id is kTimeout if timeout.",
             "throw": "Error if at least one keyword was not found"
         },
-        "wait": {
-            "brief": "Wait for a dateTime",
-            "params": {
-                "dateTimeOdDuration": {
-                    "direction": "in",
-                    "brief": "The dateTime to wait. Can be a duration (format \"hh:mm:ss\") or a dateTime (format \"YYYY-MM-DD hh:mm:ss\"). No timeout if empty (default).\nIf dateTime is used and specified in the past, the function will immediately return."
-                }
-            },
-            "details": "Return immediately if dateTime in the past",
-            "throw": "Error if wrong dateTime"
-        },
         "writeKeyword": {
             "brief": "Change state of a keyword",
             "params": {
