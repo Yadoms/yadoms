@@ -71,14 +71,6 @@ namespace shared { namespace script { namespace yScriptApi
       virtual shared::script::yScriptApi::CWaitForEventResult waitForEvent(const std::vector<int> keywordIdList, bool receiveDateTimeEvent, const std::string& timeout = std::string()) const = 0;
 
       //-----------------------------------------------------
-      ///\brief Wait for a dateTime
-      ///\param[in] dateTimeOrDuration dateTime or duration to wait.
-      ///\return newState The keyword new state (empty if timeout)
-      ///\throw std::out_of_range if keyword not found
-      //-----------------------------------------------------
-      virtual void wait(const std::string& dateTimeOrDuration) const = 0;
-
-      //-----------------------------------------------------
       ///\brief Change state of a keyword
       ///\param[in] keywordId The keyword ID to change state
       ///\param[in] newState The keyword new state

@@ -229,9 +229,11 @@ namespace shared { namespace event
       /// \param[in] dateTime          date/time when to raise the event, must be in the future
       /// \return     the created time point (see note)
       /// \throw      exception::out_of_range if dateTime not in the future
-      /// \note       Usually, caller don't need to get the time point object as it is owned (and will be destroyed) by the event handler.
+      /// \note       - Usually, caller don't need to get the time point object as it is owned (and will be destroyed) by the event handler.
       //              Keep a reference on the time point object can be useful if you want to re-use it or differ initialization. In this case,
       //              the event handler won't remove it from it's time events list.
+      //              - Be careful of a limitation : a time-point is not DST (Daylight Saving Time) compatible : for example, 
+      //              a timepoint set after a DST change (ie change to summer hour) will not take account of time offset.
       //--------------------------------------------------------------
       boost::shared_ptr<CEventTimePoint> createTimePoint(int timePointEventId, const boost::posix_time::ptime& dateTime)
       {
