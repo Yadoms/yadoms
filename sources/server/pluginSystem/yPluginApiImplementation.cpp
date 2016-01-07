@@ -28,9 +28,8 @@ CYPluginApiImplementation::CYPluginApiImplementation(
    m_keywordRequester(keywordRequester),
    m_recipientRequester(recipientRequester),
    m_acquisitionRequester(acquisitionRequester),
-   m_acquisitionHistorizer(acquisitionHistorizer)
+   m_acquisitionHistorizer(acquisitionHistorizer)   
 {
-
 }
       
 CYPluginApiImplementation::~CYPluginApiImplementation() 
@@ -116,7 +115,7 @@ boost::shared_ptr<shared::plugin::yPluginApi::historization::CPluginState> CYPlu
       m_pluginState = boost::make_shared <shared::plugin::yPluginApi::historization::CPluginState>();
 
       if (!deviceExists(PluginStateDeviceName))
-         declareDevice(PluginStateDeviceName, "Plugin state");
+         m_deviceManager->createDevice(getPluginId(), PluginStateDeviceName, m_pluginData->DisplayName() + " plugin state", "Plugin state", shared::CDataContainer::EmptyContainer);
       if (!keywordExists(PluginStateDeviceName, *m_pluginState))
          declareKeyword(PluginStateDeviceName, *m_pluginState);
    }
