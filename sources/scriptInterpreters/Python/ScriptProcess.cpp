@@ -2,7 +2,7 @@
 #include "ScriptProcess.h"
 #include <shared/Log.h>
 #include "PythonException.hpp"
-#include <shared/FileSystemExtension.h>
+#include "FileSystemPathHelper.h"
 
 
 CScriptProcess::CScriptProcess(
@@ -39,7 +39,7 @@ void CScriptProcess::start()
 
       Poco::Pipe outPipe, errPipe;
       m_process = boost::make_shared<Poco::ProcessHandle>(
-         Poco::Process::launch(m_executable->path().string(), args, shared::CFileSystemExtension::getModulePath().string(), NULL, &outPipe, &errPipe));
+         Poco::Process::launch(m_executable->path().string(), args, CFileSystemPathHelper::getExecutingPath().string(), NULL, &outPipe, &errPipe));
 
       boost::shared_ptr<Poco::PipeInputStream> moduleStdOut = boost::make_shared<Poco::PipeInputStream>(outPipe);
       boost::shared_ptr<Poco::PipeInputStream> moduleStdErr = boost::make_shared<Poco::PipeInputStream>(errPipe);
