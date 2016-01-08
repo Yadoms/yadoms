@@ -13,14 +13,18 @@ Blockly.Yadoms.CreateToolbox_ = function () {
     var catLists = $.t("blockly.toolbox.catLists");
     var catColour = $.t("blockly.toolbox.catColour");
 
+    var catActions = $.t("blockly.toolbox.catActions");
+    var catDevices = $.t("blockly.toolbox.catDevices");
+    var catEnumerations = $.t("blockly.toolbox.catEnumerations");
+    var catVariables = $.t("blockly.toolbox.catVariables");
+    var catFunctions = $.t("blockly.toolbox.catFunctions");
+
     var toolbox = "<xml>";
-    toolbox += "  <category name=\"Yadoms\" colour=\"20\">";
+
+    //evenement
+    toolbox += "  <category name=\"" + catActions + "\" colour=\"20\">";
     toolbox += "    <block type=\"yadoms_wait_for_event\"></block>";
-    toolbox += "    <block type=\"keyword-value-get\"></block>";
-    toolbox += "    <block type=\"keyword-value-set\"></block>";
     toolbox += "    <block type=\"yadoms_notification_simple\"></block>";
-    toolbox += "    <block type=\"yadoms_get_info\"></block>";
-    toolbox += "    <block type=\"yadoms_enumeration\"></block>";
     toolbox += "    <block type=\"yadoms_sleep\">";
     toolbox += "        <value name=\"Time\">";
     toolbox += "           <block type=\"math_number\">";
@@ -28,8 +32,20 @@ Blockly.Yadoms.CreateToolbox_ = function () {
     toolbox += "           </block>";
     toolbox += "        </value>";
     toolbox += "    </block>";
+    //toolbox += "    <block type=\"yadoms_get_info\"></block>";
     toolbox += "  </category>";
-    toolbox += "  <category name=\" " + catLogic + "\" colour=\"210\">";
+
+    //materiel
+    toolbox += "  <category name=\"" + catDevices + "\" colour=\"20\">";
+    toolbox += "    <block type=\"keyword-value-get\"></block>";
+    toolbox += "    <block type=\"keyword-value-set\"></block>";
+    toolbox += "  </category>";
+
+    //destinataires
+    toolbox += "  <sep></sep>";
+    
+
+    toolbox += "  <category name=\"" + catLogic + "\" colour=\"210\">";
     toolbox += "     <block type=\"controls_if\"></block>";
     toolbox += "     <block type=\"logic_compare\"></block>";
     toolbox += "     <block type=\"logic_operation\"></block>";
@@ -37,7 +53,7 @@ Blockly.Yadoms.CreateToolbox_ = function () {
     toolbox += "     <block type=\"logic_boolean\"></block>";
     toolbox += "     <block type=\"logic_null\"></block>";
     toolbox += "  </category>";
-    toolbox += "  <category name=\" " + catLoops + "\" colour=\"120\">";
+    toolbox += "  <category name=\"" + catLoops + "\" colour=\"120\">";
     toolbox += "     <block type=\"infinite-loop\"></block>";
     toolbox += "     <block type=\"controls_whileUntil\"></block>";
     toolbox += "     <block type=\"controls_repeat_ext\">";
@@ -67,7 +83,7 @@ Blockly.Yadoms.CreateToolbox_ = function () {
     toolbox += "     <block type=\"controls_forEach\"></block>";
     toolbox += "     <block type=\"controls_flow_statements\"></block>";
     toolbox += "  </category>";
-    toolbox += "  <category name=\" " + catMath + "\" colour=\"230\">";
+    toolbox += "  <category name=\"" + catMath + "\" colour=\"230\">";
     toolbox += "     <block type=\"math_number\"></block>";
     toolbox += "     <block type=\"math_arithmetic\"></block>";
     toolbox += "     <block type=\"math_single\"></block>";
@@ -110,8 +126,14 @@ Blockly.Yadoms.CreateToolbox_ = function () {
     toolbox += "     </block>";
     toolbox += "     <block type=\"math_random_float\"></block>";
     toolbox += "  </category>";
-    toolbox += "  <category name=\" " + catText + "\" colour=\"160\">";
+    toolbox += "  <category name=\"" + catText + "\" colour=\"160\">";
     toolbox += "     <block type=\"text\"></block>";
+    toolbox += "     <block type=\"yadoms_log\">";
+    toolbox += "         <value name=\"LogContent\">";
+    toolbox += "            <block type=\"text\">";
+    toolbox += "            </block>";
+    toolbox += "         </value>";
+    toolbox += "     </block>";
     toolbox += "     <block type=\"text_join\"></block>";
     toolbox += "     <block type=\"text_append\">";
     toolbox += "        <value name=\"TEXT\">";
@@ -143,12 +165,10 @@ Blockly.Yadoms.CreateToolbox_ = function () {
     toolbox += "     </block>";
     toolbox += "     <block type=\"text_changeCase\"></block>";
     toolbox += "     <block type=\"text_trim\"></block>";
-    toolbox += "     <block type=\"yadoms_log\">";
-    toolbox += "         <value name=\"LogContent\">";
-    toolbox += "            <block type=\"text\">";
-    toolbox += "            </block>";
-    toolbox += "         </value>";
-    toolbox += "     </block>";
+    toolbox += "  </category>";
+
+    toolbox += "  <category name=\"" + catEnumerations + "\" colour=\"20\">";
+    toolbox += "    <block type=\"yadoms_enumeration\"></block>";
     toolbox += "  </category>";
 
     toolbox += "  <category name=\"" + catDates + "\" colour=\"260\">";
@@ -207,7 +227,7 @@ Blockly.Yadoms.CreateToolbox_ = function () {
     toolbox += "    <block type=\"yadoms_date_extract\"></block>";
     toolbox += "  </category>";
 
-    toolbox += "  <category name=\" " + catLists + "\" colour=\"260\">";
+    toolbox += "  <category name=\"" + catLists + "\" colour=\"260\">";
     toolbox += "     <block type=\"lists_create_empty\"></block>";
     toolbox += "     <block type=\"lists_create_with\"></block>";
     toolbox += "     <block type=\"lists_repeat\">";
@@ -255,7 +275,7 @@ Blockly.Yadoms.CreateToolbox_ = function () {
     toolbox += "        </value>";
     toolbox += "     </block>";
     toolbox += "  </category>";
-    toolbox += "  <category name=\" " + catColour + "\" colour=\"20\">";
+    toolbox += "  <category name=\"" + catColour + "\" colour=\"20\">";
     toolbox += "     <block type=\"colour_picker\"></block>";
     toolbox += "     <block type=\"colour_random\"></block>";
     toolbox += "     <block type=\"colour_rgb\">";
@@ -293,9 +313,10 @@ Blockly.Yadoms.CreateToolbox_ = function () {
     toolbox += "        </value>";
     toolbox += "     </block>";
     toolbox += "  </category>";
+
     toolbox += "  <sep></sep>";
-    toolbox += "  <category name=\"Variables\" colour=\"330\" custom=\"VARIABLE\"></category>";
-    toolbox += "  <category name=\"Functions\" colour=\"290\" custom=\"PROCEDURE\"></category>";
+    toolbox += "  <category name=\"" + catVariables + "\" colour=\"330\" custom=\"VARIABLE\"></category>";
+    toolbox += "  <category name=\"" + catFunctions + "\" colour=\"290\" custom=\"PROCEDURE\"></category>";
     toolbox += "</xml>";
     return toolbox;
 };

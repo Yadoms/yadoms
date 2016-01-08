@@ -491,7 +491,12 @@
       "catText": "Texte",
       "catDates": "Date/heure",
       "catLists": "Listes",
-      "catColour": "Couleurs"
+      "catColour": "Couleurs",
+      "catActions": "Actions",
+      "catDevices": "Equipements",
+      "catEnumerations": "Enums",
+      "catVariables": "Variables",
+      "catFunctions": "Fonctions"
     },
     "invalid": "Invalide",
     "global": {
