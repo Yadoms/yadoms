@@ -336,7 +336,7 @@ void CRfxcom::initRfxcom()
    // No answer
 
    // RFXCom needs some time to recover after reset (see specifications)
-   boost::this_thread::sleep(boost::posix_time::seconds(8));
+   boost::this_thread::sleep(boost::posix_time::milliseconds(100));
 
    // Flush receive buffer according to RFXCom specifications
    m_port->flush();
