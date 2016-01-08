@@ -32,10 +32,14 @@ namespace shared
       ///               This code must be executed in the module which the path is required,
       ///               so let it in the header file.
       //--------------------------------------------------------------
-      static boost::filesystem::path getModuleFullPath()
-      { 
+      static inline boost::filesystem::path getModuleFullPath(void * ptr)
+      {
+          void * ptrToUse = ptr;
+          if(ptrToUse == NULL)
+              ptrToUse = (void*)getModuleFullPath;
+          
          Dl_info dl_info; 
-         if (dladdr((void *)getModulePath, &dl_info) == 0) 
+         if (dladdr(ptrToUse, &dl_info) == 0)
          { 
             const std::string error(strerror(errno));
             throw shared::exception::CException(std::string("CFileSystemExtension::getModuleFullPath fails with error ") + error);
@@ -50,9 +54,9 @@ namespace shared
       ///               This code must be executed in the module which the path is required,
       ///               so let it in the header file.
       //--------------------------------------------------------------
-      static boost::filesystem::path getModulePath()
+      static inline boost::filesystem::path getModulePath(void * ptr = NULL)
       {
-         return getModuleFullPath().parent_path();                                                                                 
+         return getModuleFullPath(ptr).parent_path();
       }
 
    };

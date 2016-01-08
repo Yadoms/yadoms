@@ -278,10 +278,19 @@ namespace shared { namespace event
       int popEvent()
       {
          boost::recursive_mutex::scoped_lock lock(m_eventsQueueMutex);
-         BOOST_ASSERT(!m_eventsQueue.empty());
-         m_lastEvent = m_eventsQueue.front();
-         m_eventsQueue.pop();
-         return m_lastEvent->getId();
+          
+          if(m_eventsQueue.empty())
+          {
+              //sometimes happen with MacOSX, don't know why
+              return kNoEvent;
+          }
+          else
+          {
+              //good behavior
+              m_lastEvent = m_eventsQueue.front();
+              m_eventsQueue.pop();
+              return m_lastEvent->getId();
+          }
       }
 
       //--------------------------------------------------------------

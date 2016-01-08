@@ -10,7 +10,7 @@ CFakeSensor::CFakeSensor(const std::string& deviceName)
    m_temperature1(boost::make_shared<yApi::historization::CTemperature>("temp1")),
    m_temperature2(boost::make_shared<yApi::historization::CTemperature>("temp2")),
    m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("Battery")),
-   m_current(boost::make_shared<yApi::historization::CCurrent>("current", yApi::EKeywordAccessMode::kGet, yApi::historization::EMeasureType::kAbsolute, yApi::historization::typeInfo::CDoubleTypeInfo().setMin(0).setMax(5).setPrecision(0.1))),
+   m_current(new yApi::historization::CCurrent("current", yApi::EKeywordAccessMode::kGet, yApi::historization::EMeasureType::kAbsolute, yApi::historization::typeInfo::CDoubleTypeInfo().setMin(0).setMax(5).setPrecision(0.1))),
    m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
    m_dateTime(boost::make_shared<yApi::historization::CDateTime>("dateTime", shared::plugin::yPluginApi::EKeywordAccessMode::kGet)),
    m_dist(0, 20)
