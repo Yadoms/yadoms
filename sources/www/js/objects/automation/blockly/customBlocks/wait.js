@@ -15,7 +15,7 @@ Blockly.Blocks["yadoms_wait"] = {
         this.setNextStatement(true, null);
 
         this.appendValueInput(this.valueInput_)
-			.setCheck(["datetime", "timespan"])
+			.setCheck(["timespan"])
             .appendField($.t("blockly.blocks.yadoms_wait.title"));
 		this.setTooltip($.t("blockly.blocks.yadoms_wait.tooltip", { defaultValue: "" }));			
     }
