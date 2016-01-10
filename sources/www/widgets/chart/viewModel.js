@@ -14,6 +14,7 @@ widgetViewModelCtor =
        //Keyword Id List !
        this.devicesList = [];
        this.interval = 0;
+	   this.deviceInfo  = [];
        this.keywordInfo = [];
        this.ChartPromise = null;
 
@@ -201,10 +202,14 @@ widgetViewModelCtor =
            self.devicesList = self.widget.configuration.devices.slice(0);
 
 
-           self.ChartPromise = new PromiseCounter(self.devicesList.length, this.refreshData.bind(this), this.widget.configuration.interval);
+		   // Size of the promise is double.
+		   // The low part is for the keywords.
+		   // The high part is for the devices.
+           self.ChartPromise = new PromiseCounter( self.devicesList.length * 2, this.refreshData.bind(this), this.widget.configuration.interval );
 
            //we create an uuid for each serie
            $.each(self.widget.configuration.devices, function (index, device) {
+							  
                //we update uuid if they don't exist
                if (isNullOrUndefined(self.seriesUuid[index]))
                    self.seriesUuid[index] = createUUID();
@@ -212,6 +217,13 @@ widgetViewModelCtor =
                //we add the keywordId to the listenedList
                self.widget.ListenKeyword(device.content.source.keywordId);
 
+		       // We ask the current device name
+			   DeviceManager.get( device.content.source.deviceId, function (device) {
+				   self.deviceInfo[index] = device; 
+				   
+				   self.ChartPromise.resolve( self.devicesList.length + index );
+			   });			   
+			   
                //we ask the current value
                KeywordManager.get(device.content.source.keywordId, function (keyword) {
                    self.keywordInfo[index] = keyword;
@@ -487,7 +499,7 @@ widgetViewModelCtor =
                                           self.chart.addAxis({ // new axis
                                               id: yAxisName, //The same id as the serie with axis at the beginning
                                               title: {
-                                                  text: self.keywordInfo[index].friendlyName,
+                                                  text: self.deviceInfo[index].friendlyName + "/" + self.keywordInfo[index].friendlyName,
                                                   style: {
                                                       color: colorAxis
                                                   }
