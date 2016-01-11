@@ -49,11 +49,11 @@ void CSecurity1X10R::set(const std::string& keyword, const std::string& yadomsCo
 {
    if (boost::iequals(keyword, m_panic.getKeyword()))
    {
-      m_panic.set(yadomsCommand); m_statusByte = m_panic.get() ? sStatusPanic : sStatusPanicOff;
+      m_panic.setCommand(yadomsCommand); m_statusByte = m_panic.get() ? sStatusPanic : sStatusPanicOff;
    }
    else if (boost::iequals(keyword, m_armAlarm.getKeyword()))
    {
-      m_armAlarm.set(yadomsCommand);
+      m_armAlarm.setCommand(yadomsCommand);
       switch(m_armAlarm.get())
       {
       case yApi::historization::EArmingAlarmStatus::kDisarmedValue : m_statusByte = sStatusDisarm; break;
@@ -64,11 +64,11 @@ void CSecurity1X10R::set(const std::string& keyword, const std::string& yadomsCo
    }
    else if (boost::iequals(keyword, m_light1.getKeyword()))
    {
-      m_light1.set(yadomsCommand); m_statusByte = m_light1.get() ? sStatusLightOn : sStatusLightOff;
+      m_light1.setCommand(yadomsCommand); m_statusByte = m_light1.get() ? sStatusLightOn : sStatusLightOff;
    }
    else if (boost::iequals(keyword, m_light2.getKeyword()))
    {
-      m_light2.set(yadomsCommand); m_statusByte = m_light2.get() ? sStatusLight2On : sStatusLight2Off;
+      m_light2.setCommand(yadomsCommand); m_statusByte = m_light2.get() ? sStatusLight2On : sStatusLight2Off;
    }
 }
 

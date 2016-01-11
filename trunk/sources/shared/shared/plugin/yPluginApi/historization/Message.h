@@ -38,7 +38,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       ///\param[in] yadomsCommand   Yadoms command
       ///\throw                     shared::exception::CInvalidParameter or COutOfRange if fail to parse command
       //-----------------------------------------------------
-      void set(const std::string& yadomsCommand);
+      void setCommand(const std::string& yadomsCommand);
 
       //-----------------------------------------------------
       ///\brief                     Set value from on/off state

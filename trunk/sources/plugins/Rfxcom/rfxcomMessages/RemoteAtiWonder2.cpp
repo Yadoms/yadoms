@@ -37,8 +37,8 @@ void CRemoteAtiWonder2::historize(boost::shared_ptr<yApi::IYPluginApi> context, 
 
 void CRemoteAtiWonder2::set(const std::string& yadomsCommand)
 {
-   m_keywordCmnd.set(yadomsCommand);
-   m_keywordCmndtype.set(yadomsCommand);
+   m_keywordCmnd.setCommand(yadomsCommand);
+   m_keywordCmndtype.setCommand(yadomsCommand);
 }
 
 void CRemoteAtiWonder2::setFromProtocolState(const RBUF& remoteRbuf)

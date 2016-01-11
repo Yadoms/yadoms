@@ -68,6 +68,7 @@ namespace shared { namespace plugin { namespace yPluginApi {
    const CStandardCapacity& CStandardCapacities::Speed = CStandardCapacity("speed", CStandardUnits::MetersPerSecond, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Switch = CStandardCapacity("switch", CStandardUnits::NoUnits, EKeywordDataType::kBool);
    const CStandardCapacity& CStandardCapacities::Temperature = CStandardCapacity("temperature", CStandardUnits::DegreesCelcius, EKeywordDataType::kNumeric);
+   const CStandardCapacity& CStandardCapacities::Text = CStandardCapacity("text", CStandardUnits::NoUnits, EKeywordDataType::kString);
    const CStandardCapacity& CStandardCapacities::UpDownStop = CStandardCapacity("upDownStop", CStandardUnits::NoUnits, EKeywordDataType::kNoData);
    const CStandardCapacity& CStandardCapacities::Uv = CStandardCapacity("uv", CStandardUnits::Uv, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Voltage = CStandardCapacity("voltage", CStandardUnits::Volt, EKeywordDataType::kNumeric);

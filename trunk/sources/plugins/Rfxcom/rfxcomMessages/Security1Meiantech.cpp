@@ -44,11 +44,11 @@ void CSecurity1Meiantech::set(const std::string& keyword, const std::string& yad
 {
    if (boost::iequals(keyword, m_panic.getKeyword()))
    {
-      m_panic.set(yadomsCommand); m_statusByte = m_panic.get() ? sStatusPanic : sStatusNormal;
+      m_panic.setCommand(yadomsCommand); m_statusByte = m_panic.get() ? sStatusPanic : sStatusNormal;
    }
    else if (boost::iequals(keyword, m_armAlarm.getKeyword()))
    {
-      m_armAlarm.set(yadomsCommand);
+      m_armAlarm.setCommand(yadomsCommand);
       switch(m_armAlarm.get())
       {
       case yApi::historization::EArmingAlarmStatus::kDisarmedValue : m_statusByte = sStatusDisarm; break;

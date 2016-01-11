@@ -256,7 +256,7 @@ void CSmsDialer::onPowerPhoneRequest(boost::shared_ptr<yApi::IYPluginApi> contex
 {
    try
    {
-      m_powerKeyword.set(powerRequest);
+      m_powerKeyword.setCommand(powerRequest);
       m_phone->powerOn(m_powerKeyword.get());
 
       // Update keyword and historize new state
@@ -273,7 +273,7 @@ void CSmsDialer::onSendSmsRequest(boost::shared_ptr<yApi::IYPluginApi> context, 
 {
    try
    {
-      m_messageKeyword.set(sendSmsRequest);
+      m_messageKeyword.setCommand(sendSmsRequest);
       boost::shared_ptr<ISms> sms(new CSms(getRecipientPhone(context, m_messageKeyword.to()), m_messageKeyword.body()));
       m_phone->send(sms);
       notifyAck(true);

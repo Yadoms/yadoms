@@ -13,12 +13,12 @@ CFan::CFan(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& keyw
 {
    if (boost::iequals(keyword, m_light.getKeyword()))
    {
-      m_light.set(command);
+      m_light.setCommand(command);
       m_lightCmd = true;
    }
    else if (boost::iequals(keyword, m_fan.getKeyword()))
    {
-      m_fan.set(command);
+      m_fan.setCommand(command);
       m_lightCmd = false;
    }
    else

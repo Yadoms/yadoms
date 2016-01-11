@@ -39,7 +39,7 @@ void CThermostat1Digimax::historize(boost::shared_ptr<yApi::IYPluginApi> context
 void CThermostat1Digimax::set(const std::string& yadomsCommand)
 {
    m_currentTemperature.set(0.0);
-   m_setPoint.set(yadomsCommand);
+   m_setPoint.setCommand(yadomsCommand);
 }
 
 void CThermostat1Digimax::reset()

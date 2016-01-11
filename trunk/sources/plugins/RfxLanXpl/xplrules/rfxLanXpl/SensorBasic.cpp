@@ -248,14 +248,14 @@ namespace xplrules { namespace rfxLanXpl {
          if (msg.getBodyValue(m_keywordType) == m_keywordTypeTemp)
          {
             boost::shared_ptr< shared::plugin::yPluginApi::historization::CTemperature > digimaxTemp(new shared::plugin::yPluginApi::historization::CTemperature(m_keywordTypeTemp));
-            digimaxTemp->set(msg.getBodyValue(m_keywordCurrent));
+            digimaxTemp->setCommand(msg.getBodyValue(m_keywordCurrent));
             data.push_back(digimaxTemp);
          }
 
          if (msg.getBodyValue(m_keywordType) == m_keywordTypeSetpoint)
          {
             boost::shared_ptr< shared::plugin::yPluginApi::historization::CTemperature > digimaxSetPoint(new shared::plugin::yPluginApi::historization::CTemperature(m_keywordTypeSetpoint));
-            digimaxSetPoint->set(msg.getBodyValue(m_keywordCurrent));
+            digimaxSetPoint->setCommand(msg.getBodyValue(m_keywordCurrent));
             data.push_back(digimaxSetPoint);
          }
 
@@ -274,7 +274,7 @@ namespace xplrules { namespace rfxLanXpl {
          if (msg.getBodyValue(m_keywordType) == m_keywordTypeTemp)
          {
             boost::shared_ptr< shared::plugin::yPluginApi::historization::CTemperature > temp(new shared::plugin::yPluginApi::historization::CTemperature(m_keywordTypeTemp));
-            temp->set(msg.getBodyValue(m_keywordCurrent));
+            temp->setCommand(msg.getBodyValue(m_keywordCurrent));
             data.push_back(temp);
          }
       }

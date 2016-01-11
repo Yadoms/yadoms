@@ -8,8 +8,6 @@
 namespace pluginSystem
 {
 
-const std::string CYPluginApiImplementation::PluginStateDeviceName("pluginState");
-
 CYPluginApiImplementation::CYPluginApiImplementation(
    boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformations,
    const boost::filesystem::path libraryPath, 
@@ -41,8 +39,10 @@ void CYPluginApiImplementation::setPluginState(const shared::plugin::yPluginApi:
    if (!customMessageId.empty() && (state != shared::plugin::yPluginApi::historization::EPluginState::kCustomValue && state != shared::plugin::yPluginApi::historization::EPluginState::kErrorValue))
       YADOMS_LOG(warning) << "Custom message ID \"" << customMessageId << "\" will be ignored as state is " << state.toString();
 
-   pluginState()->set(state, customMessageId);
-   historizeData(PluginStateDeviceName, *pluginState());
+   pluginStateKeyword()->set(state);
+   pluginStateMessageIdKeyword()->set(customMessageId);
+   historizeData(pluginStateDevice(), *pluginStateKeyword());
+   historizeData(pluginStateDevice(), *pluginStateMessageIdKeyword());
 
    switch (state)
    {
@@ -108,19 +108,40 @@ void CYPluginApiImplementation::declareCustomKeyword(const std::string& device, 
    m_keywordRequester->addKeyword(keywordEntity);
 }
 
-boost::shared_ptr<shared::plugin::yPluginApi::historization::CPluginState> CYPluginApiImplementation::pluginState()
+std::string CYPluginApiImplementation::pluginStateDevice()
 {
-   if (!m_pluginState)
-   {
-      m_pluginState = boost::make_shared <shared::plugin::yPluginApi::historization::CPluginState>();
+   static const std::string PluginStateDeviceName("pluginState");
 
-      if (!deviceExists(PluginStateDeviceName))
-         m_deviceManager->createDevice(getPluginId(), PluginStateDeviceName, m_pluginData->DisplayName() + " plugin state", "Plugin state", shared::CDataContainer::EmptyContainer);
-      if (!keywordExists(PluginStateDeviceName, *m_pluginState))
-         declareKeyword(PluginStateDeviceName, *m_pluginState);
+   if (!deviceExists(PluginStateDeviceName))
+      m_deviceManager->createDevice(getPluginId(), PluginStateDeviceName, m_pluginData->DisplayName() + " plugin state", "Plugin state", shared::CDataContainer::EmptyContainer);
+
+   return PluginStateDeviceName;
+}
+
+boost::shared_ptr<shared::plugin::yPluginApi::historization::CPluginState> CYPluginApiImplementation::pluginStateKeyword()
+{
+   if (!m_pluginStateKeyword)
+   {
+      m_pluginStateKeyword = boost::make_shared <shared::plugin::yPluginApi::historization::CPluginState>("state");
+
+      if (!keywordExists(pluginStateDevice(), *m_pluginStateKeyword))
+         declareKeyword(pluginStateDevice(), *m_pluginStateKeyword);
    }
 
-   return m_pluginState;
+   return m_pluginStateKeyword;
+}
+
+boost::shared_ptr<shared::plugin::yPluginApi::historization::CText> CYPluginApiImplementation::pluginStateMessageIdKeyword()
+{
+   if (!m_pluginStateMessageIdKeyword)
+   {
+      m_pluginStateMessageIdKeyword = boost::make_shared <shared::plugin::yPluginApi::historization::CText>("customMessageId");
+
+      if (!keywordExists(pluginStateDevice(), *m_pluginStateMessageIdKeyword))
+         declareKeyword(pluginStateDevice(), *m_pluginStateMessageIdKeyword);
+   }
+
+   return m_pluginStateMessageIdKeyword;
 }
 
 void CYPluginApiImplementation::declareKeyword(const std::string& device, const shared::plugin::yPluginApi::historization::IHistorizable& keyword, const shared::CDataContainer& details)

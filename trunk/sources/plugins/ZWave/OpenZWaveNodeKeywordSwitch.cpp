@@ -8,7 +8,7 @@ COpenZWaveNodeKeywordSwitch::COpenZWaveNodeKeywordSwitch(const std::string & key
 
 bool COpenZWaveNodeKeywordSwitch::sendCommand(const std::string & commandData)
 {
-   m_switch.set(commandData);
+   m_switch.setCommand(commandData);
    return realSendCommand<bool>(m_switch.get());
 }
 

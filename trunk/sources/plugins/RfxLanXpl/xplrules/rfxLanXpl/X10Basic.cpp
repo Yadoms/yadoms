@@ -301,7 +301,7 @@ namespace xplrules { namespace rfxLanXpl {
          {
             //in case of x10 protocol, do not add protocol name in xpl message
             shared::plugin::yPluginApi::historization::CSwitch swCommand(m_keywordCommand); 
-            swCommand.set(commandData->getBody());
+            swCommand.setCommand(commandData->getBody());
             if (swCommand.get())
                newMessage->addToBody(m_keywordCommand, ECommands::kOn.toString());
             else
@@ -312,7 +312,7 @@ namespace xplrules { namespace rfxLanXpl {
          default:
          {
             shared::plugin::yPluginApi::historization::CSwitch swCommand(m_keywordCommand);
-            swCommand.set(commandData->getBody());
+            swCommand.setCommand(commandData->getBody());
             newMessage->addToBody(m_keywordProtocol, protocol.toString());
             if (swCommand.get())
                newMessage->addToBody(m_keywordCommand, ECommands::kOn.toString());

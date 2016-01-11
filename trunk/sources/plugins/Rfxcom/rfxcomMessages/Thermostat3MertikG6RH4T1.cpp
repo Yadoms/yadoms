@@ -38,11 +38,11 @@ void CThermostat3MertikG6RH4T1::set(const std::string& keyword, const std::strin
 {
    if (boost::iequals(keyword, m_onOff.getKeyword()))
    {
-      m_onOff.set(yadomsCommand); m_statusByte = m_onOff.get() ? thermostat3_sOn : thermostat3_sOff;
+      m_onOff.setCommand(yadomsCommand); m_statusByte = m_onOff.get() ? thermostat3_sOn : thermostat3_sOff;
    }
    else if (boost::iequals(keyword, m_UpDown.getKeyword()))
    {
-      m_UpDown.set(yadomsCommand);
+      m_UpDown.setCommand(yadomsCommand);
       switch(m_UpDown.get())
       {
       case yApi::historization::EUpDownStopCommand::kUpValue: m_statusByte = thermostat3_sUp; break;
@@ -53,7 +53,7 @@ void CThermostat3MertikG6RH4T1::set(const std::string& keyword, const std::strin
    }
    else if (boost::iequals(keyword, m_RunUpDown.getKeyword()))
    {
-      m_RunUpDown.set(yadomsCommand);
+      m_RunUpDown.setCommand(yadomsCommand);
       switch(m_RunUpDown.get())
       {
       case yApi::historization::EUpDownStopCommand::kUpValue: m_statusByte = thermostat3_sRunUp; break;
