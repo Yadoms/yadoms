@@ -96,10 +96,6 @@ widgetViewModelCtor =
                    bar: {
                        pointPadding: 0.2
                    },
-
-                   series: {
-                       connectNulls: false
-                   }
                },
 
                tooltip: {
@@ -294,6 +290,7 @@ widgetViewModelCtor =
                    var prefixUri = "";
                    var timeBetweenTwoConsecutiveValues;
                    var isSummaryData;
+				   var DeviceIsSummary = [];
 
                    switch (interval) {
                        case "HOUR":
@@ -361,8 +358,9 @@ widgetViewModelCtor =
 
                    //for each plot in the configuration we request for data
                    $.each(self.widget.configuration.devices, function (index, device) {
-
+				   
                        var DisplayData = true;
+					   
                        //If the device is a bool, you have to modify
                        if (self.isBoolVariable(index)) {
                            switch (interval) {
@@ -383,9 +381,11 @@ widgetViewModelCtor =
                            //we request hour summary data
                            prefixUri = "";
                            isSummaryData = false;
+						   DeviceIsSummary[index] = false;     // We change the summary for the boolean device.
                        }
                        else {
                            DisplayData = true;
+						   DeviceIsSummary[index] = isSummaryData; // By default, it's the summary define above.
                        }
 
                        if (DisplayData) {
@@ -405,8 +405,8 @@ widgetViewModelCtor =
                                   var lastDate;
                                   var d;
                                   var IndexDevice = index;
-
-                                  if (!isSummaryData) {
+								  
+                                  if (!(DeviceIsSummary[index])) {
                                       //data comes from acquisition table
                                       $.each(data.data.data, function (index, value) {
                                           lastDate = d;
@@ -462,7 +462,7 @@ widgetViewModelCtor =
                                       });
                                   }
                                   var color     = "#606060";// default color
-				  var colorAxis = "#606060";// default color
+				                  var colorAxis = "#606060";// default color
                                   try {
 									  color = device.content.color;
 									  if (!parseBool(self.widget.configuration.oneAxis.checkbox))
@@ -529,8 +529,6 @@ widgetViewModelCtor =
 										  
 										  // Avec un seul axe, pas de nom
 										  yAxis.setTitle({text:""});
-										  
-										  //console.log (self.$chart);
 
                                           if (parseBool(self.widget.configuration.oneAxis.content.customYAxisMinMax.checkbox)) {
                                               //we manage min and max scale y axis
@@ -557,6 +555,7 @@ widgetViewModelCtor =
                                                   enabled: false
                                               },
                                               name: self.keywordInfo[index].friendlyName,
+											  connectNulls: self.isBoolVariable(index),
                                               marker: {
                                                   enabled: null,
                                                   radius: 2,
@@ -569,7 +568,7 @@ widgetViewModelCtor =
                                           }, false, false); // Do not redraw immediately
 
                                           //Add Ranges
-                                          if (isSummaryData) {
+                                          if (DeviceIsSummary[index]) {
                                               self.chart.addSeries({
                                                   id: 'range_' + self.seriesUuid[index],
                                                   data: range,
@@ -581,6 +580,7 @@ widgetViewModelCtor =
                                                   color: color,
                                                   yAxis: yAxisName,
                                                   type: device.content.PlotType,
+											      connectNulls: false, 
                                                   lineWidth: 0,
                                                   fillOpacity: 0.3,
                                                   zIndex: 0
@@ -609,7 +609,8 @@ widgetViewModelCtor =
                                               color: color,
                                               yAxis: yAxisName,
                                               lineWidth: 2,
-                                              step: self.isBoolVariable(index),
+											  connectNulls: self.isBoolVariable(index),   // For boolean values, connects points far away.
+                                              step:         self.isBoolVariable(index),   // For boolean values, create steps.
                                               type: device.content.PlotType,
                                               animation: false
                                           }, false, false); // Do not redraw immediately
@@ -625,17 +626,17 @@ widgetViewModelCtor =
 								  {
                                       serie.units = $.t(self.keywordInfo[index].units);
 									  
-				      // If only one axis, we show the legend. In otherwise we destroy it
-				      if (parseBool(self.widget.configuration.oneAxis.checkbox)) {
-					serie.options.showInLegend = true;
-					self.chart.legend.renderItem(serie);
-				      }
-				      else{
-					serie.options.showInLegend = false;
-					serie.legendItem = null;
-					self.chart.legend.destroyItem(serie);									  
-				      }
-				      self.chart.legend.render();	
+									  // If only one axis, we show the legend. In otherwise we destroy it
+									  if (parseBool(self.widget.configuration.oneAxis.checkbox)) {
+										 serie.options.showInLegend = true;
+										 self.chart.legend.renderItem(serie);
+									  }
+									  else{
+										serie.options.showInLegend = false;
+										serie.legendItem = null;
+										self.chart.legend.destroyItem(serie);									  
+									  }
+									  self.chart.legend.render();	
 
 								  }
 	  
