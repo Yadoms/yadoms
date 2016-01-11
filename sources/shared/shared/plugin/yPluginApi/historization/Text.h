@@ -1,39 +1,28 @@
 #pragma once
 #include <shared/Export.h>
-#include <shared/enumeration/EnumHelpers.hpp>
 #include "SingleHistorizableData.hpp"
+#include "typeInfo/StringTypeInfo.h"
 
 namespace shared { namespace plugin { namespace yPluginApi { namespace historization
-{
+{   
    //-----------------------------------------------------
-   ///\brief Plugin state
+   ///\brief A text historizable object
    //-----------------------------------------------------
-   DECLARE_ENUM_HEADER_SHARED(EPluginState, YADOMS_SHARED_EXPORT,
-      ((Unknown))
-      ((Error))
-      ((Stopped))
-      ((Running))
-      ((Custom))
-   );
-
-
-   //-----------------------------------------------------
-   ///\brief The plugin state historizable object
-   //-----------------------------------------------------
-   class YADOMS_SHARED_EXPORT CPluginState : public CSingleHistorizableData<EPluginState>
+   class YADOMS_SHARED_EXPORT CText : public CSingleHistorizableData<std::string>
    {
    public:
       //-----------------------------------------------------
       ///\brief                     Constructor
       ///\param[in] keywordName     Yadoms keyword name
       ///\param[in] accessMode      The access mode
+      ///\param[in] measureType     The measure type (normally kAbsolute)
       //-----------------------------------------------------
-      CPluginState(const std::string& keywordName, const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGet);
+      CText(const std::string& keywordName, const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGet, const EMeasureType& measureType = EMeasureType::kAbsolute, typeInfo::CStringTypeInfo & additionalInfo = typeInfo::CStringTypeInfo::Empty);
 
       //-----------------------------------------------------
       ///\brief                     Destructor
       //-----------------------------------------------------
-      virtual ~CPluginState();
+      virtual ~CText();
    };
 
 

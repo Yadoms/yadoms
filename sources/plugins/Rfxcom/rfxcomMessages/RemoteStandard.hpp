@@ -50,7 +50,7 @@ namespace rfxcomMessages
 
       virtual void set(const std::string& yadomsCommand)
       {
-         m_keyword.set(yadomsCommand);
+         m_keyword.setCommand(yadomsCommand);
       }
 
       virtual void setFromProtocolState(const RBUF& remoteRbuf)
@@ -61,7 +61,7 @@ namespace rfxcomMessages
       virtual void toProtocolState(RBUF& remoteRbuf) const
       {
          remoteRbuf.REMOTE.cmndtype = 0;
-         remoteRbuf.REMOTE.cmnd = (unsigned char)m_keyword.get().toInteger();
+         remoteRbuf.REMOTE.cmnd = static_cast<unsigned char>(m_keyword.get().toInteger());
       }
       // [END] IRemoteSubtype implementation
 

@@ -12,7 +12,7 @@ namespace rfxcomMessages
 CCamera1::CCamera1(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& command, const shared::CDataContainer& deviceDetails)
    :m_camera("camera"), m_rssi("rssi")
 {
-   m_camera.set(command);
+   m_camera.setCommand(command);
    m_rssi.set(0);
 
    m_subType = deviceDetails.get<unsigned char>("subType");

@@ -34,7 +34,7 @@ const EKeywordAccessMode& CMessage::getAccessMode() const
    return m_accessMode;
 }
 
-void CMessage::set(const std::string& yadomsCommand)
+void CMessage::setCommand(const std::string& yadomsCommand)
 {
    m_content.reset(new CMessageFormatter(yadomsCommand));
 }

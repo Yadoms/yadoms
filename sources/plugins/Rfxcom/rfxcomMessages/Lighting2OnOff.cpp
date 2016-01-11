@@ -36,7 +36,7 @@ void CLighting2OnOff::historize(boost::shared_ptr<yApi::IYPluginApi> context, co
 
 void CLighting2OnOff::set(const std::string& yadomsCommand)
 {
-   m_keyword.set(yadomsCommand);
+   m_keyword.setCommand(yadomsCommand);
 }
 
 void CLighting2OnOff::reset()

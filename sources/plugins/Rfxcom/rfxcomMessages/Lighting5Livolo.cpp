@@ -36,7 +36,7 @@ void CLighting5Livolo::historize(boost::shared_ptr<yApi::IYPluginApi> context, c
 
 void CLighting5Livolo::set(const std::string& yadomsCommand)
 {
-   m_keyword.set(yadomsCommand);
+   m_keyword.setCommand(yadomsCommand);
 }
 
 void CLighting5Livolo::reset()

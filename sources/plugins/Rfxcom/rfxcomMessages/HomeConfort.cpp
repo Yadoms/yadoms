@@ -12,7 +12,7 @@ namespace rfxcomMessages
 CHomeConfort::CHomeConfort(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& command, const shared::CDataContainer& deviceDetails)
    :m_state("state"), m_rssi("rssi")
 {
-   m_state.set(command);
+   m_state.setCommand(command);
    m_rssi.set(0);
 
    m_subType = deviceDetails.get<unsigned char>("subType");

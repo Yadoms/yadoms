@@ -62,25 +62,25 @@ void CSecurity2ClassicKeyLoq::set(const std::string& keyword, const std::string&
 {
    if (boost::iequals(keyword, m_button0.getKeyword()))
    {
-      m_button0.set(yadomsCommand);
+      m_button0.setCommand(yadomsCommand);
       return;
    }
    
    if (boost::iequals(keyword, m_button1.getKeyword()))
    {
-      m_button1.set(yadomsCommand);
+      m_button1.setCommand(yadomsCommand);
       return;
    }
    
    if (boost::iequals(keyword, m_button2.getKeyword()))
    {
-      m_button2.set(yadomsCommand);
+      m_button2.setCommand(yadomsCommand);
       return;
    }
    
    if (boost::iequals(keyword, m_button3.getKeyword()))
    {
-      m_button3.set(yadomsCommand);
+      m_button3.setCommand(yadomsCommand);
       return;
    }
 

@@ -14,12 +14,12 @@ CRadiator1::CRadiator1(boost::shared_ptr<yApi::IYPluginApi> context, const std::
 {
    if (boost::iequals(keyword, m_day.getKeyword()))
    {
-      m_day.set(command);
+      m_day.setCommand(command);
       m_dayNightCmd = true;
    }
    else if (boost::iequals(keyword, m_setPoint.getKeyword()))
    {
-      m_setPoint.set(command);
+      m_setPoint.setCommand(command);
       m_dayNightCmd = false;
    }
    else

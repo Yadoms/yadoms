@@ -92,9 +92,11 @@ namespace pluginSystem
          const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer);
 
       //--------------------------------------------------------------
-      /// \brief	      Get the plugin state keyword (create if not exists)
+      /// \brief	      Get the plugin state device/keywords (create if not exists)
       //--------------------------------------------------------------
-      boost::shared_ptr<shared::plugin::yPluginApi::historization::CPluginState> pluginState();
+      std::string pluginStateDevice();
+      boost::shared_ptr<shared::plugin::yPluginApi::historization::CPluginState> pluginStateKeyword();
+      boost::shared_ptr<shared::plugin::yPluginApi::historization::CText> pluginStateMessageIdKeyword();
 
       //-----------------------------------------------------
       ///\brief Record a plugin major event (recorded in Yadoms database)
@@ -159,8 +161,8 @@ namespace pluginSystem
       /// \brief	      The plugin state keyword
       /// \note         Use it by pluginState() method
       //--------------------------------------------------------------
-      static const std::string PluginStateDeviceName;
-      boost::shared_ptr<shared::plugin::yPluginApi::historization::CPluginState> m_pluginState;
+      boost::shared_ptr<shared::plugin::yPluginApi::historization::CPluginState> m_pluginStateKeyword;
+      boost::shared_ptr<shared::plugin::yPluginApi::historization::CText> m_pluginStateMessageIdKeyword;
    };
 	
 } // namespace pluginSystem	

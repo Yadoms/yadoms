@@ -522,7 +522,11 @@ shared::CDataContainer CManager::getInstanceState(int id) const
    try
    {
       boost::shared_ptr<database::entities::CKeyword> stateKw = m_dataProvider->getKeywordRequester()->getKeyword(device->Id, "state");
-      return m_dataProvider->getAcquisitionRequester()->getKeywordLastData(stateKw->Id)->Value();
+      boost::shared_ptr<database::entities::CKeyword> customMessageIdKw = m_dataProvider->getKeywordRequester()->getKeyword(device->Id, "customMessageId");
+      shared::CDataContainer defaultState;
+      defaultState.set("state", m_dataProvider->getAcquisitionRequester()->getKeywordLastData(stateKw->Id)->Value());
+      defaultState.set("messageId", m_dataProvider->getAcquisitionRequester()->getKeywordLastData(customMessageIdKw->Id)->Value());
+      return defaultState;
    }
    catch (shared::exception::CEmptyResult&)
    {

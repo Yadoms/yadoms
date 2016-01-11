@@ -92,7 +92,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       ///\param[in] yadomsCommand   Yadoms command
       ///\throw                     shared::exception::CInvalidParameter or COutOfRange if fail to parse command
       //-----------------------------------------------------
-      virtual void set(const std::string& yadomsCommand)
+      virtual void setCommand(const std::string& yadomsCommand)
       {
          m_value = Normalize(helper<T>::getInternal(yadomsCommand));
       }

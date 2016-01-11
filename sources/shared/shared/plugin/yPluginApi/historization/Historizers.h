@@ -28,6 +28,7 @@
 #include "Speed.h"
 #include "Switch.h"
 #include "Temperature.h"
+#include "Text.h"
 #include "UpDownStop.h"
 #include "Uv.h"
 #include "Voltage.h"

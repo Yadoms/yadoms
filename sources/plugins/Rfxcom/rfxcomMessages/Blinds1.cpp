@@ -11,7 +11,7 @@ namespace rfxcomMessages
 CBlinds1::CBlinds1(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& command, const shared::CDataContainer& deviceDetails)
    :m_state("state"), m_batteryLevel("battery"), m_rssi("rssi")
 {
-   m_state.set(command);
+   m_state.setCommand(command);
    m_batteryLevel.set(100);
    m_rssi.set(0);
 

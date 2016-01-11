@@ -183,6 +183,8 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/historization/Switch.h
    shared/plugin/yPluginApi/historization/Temperature.cpp
    shared/plugin/yPluginApi/historization/Temperature.h
+   shared/plugin/yPluginApi/historization/Text.cpp
+   shared/plugin/yPluginApi/historization/Text.h
    shared/plugin/yPluginApi/historization/UpDownStop.cpp
    shared/plugin/yPluginApi/historization/UpDownStop.h
    shared/plugin/yPluginApi/historization/Uv.cpp
