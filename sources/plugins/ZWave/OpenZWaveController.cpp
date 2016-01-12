@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "OpenZWaveController.h"
 #include <shared/Log.h>
-#include <FatalErrorException.h>
 #include "ZWave.h"
 #include "OpenZWaveCommandClass.h"
 #include <shared/plugin/yPluginApi/StandardCapacities.h>
@@ -175,9 +174,9 @@ bool COpenZWaveController::start()
 
       return true;
    }
-   catch (OpenZWave::CFatalErrorException & ex)
+   catch (OpenZWave::OZWException & ex)
    {
-      YADOMS_LOG(fatal) << "Fail to start OpenZWave controller : " << ex.what();
+      YADOMS_LOG(fatal) << "Fail to start OpenZWave controller : " << ex.GetMsg();
    }
    return false;
 }

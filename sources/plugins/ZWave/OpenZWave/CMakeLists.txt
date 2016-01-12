@@ -12,7 +12,7 @@
 #########################################
 ## Define the main folder name
 #########################################
-set(OPENZWAVE_DIR_NAME openzwave-1.2.919 )
+set(OPENZWAVE_DIR_NAME openzwave-1.4.1 )
 
 
 #########################################
@@ -24,7 +24,6 @@ set(OPENZWAVE_MAIN_SOURCES
 		${OPENZWAVE_DIR_NAME}/cpp/src/DoxygenMain.h
 		${OPENZWAVE_DIR_NAME}/cpp/src/Driver.h
 		${OPENZWAVE_DIR_NAME}/cpp/src/Driver.cpp
-		${OPENZWAVE_DIR_NAME}/cpp/src/FatalErrorException.h
 		${OPENZWAVE_DIR_NAME}/cpp/src/Group.h
 		${OPENZWAVE_DIR_NAME}/cpp/src/Group.cpp
 		${OPENZWAVE_DIR_NAME}/cpp/src/Manager.h
@@ -34,13 +33,17 @@ set(OPENZWAVE_MAIN_SOURCES
 		${OPENZWAVE_DIR_NAME}/cpp/src/Node.h
 		${OPENZWAVE_DIR_NAME}/cpp/src/Node.cpp
 		${OPENZWAVE_DIR_NAME}/cpp/src/Notification.h
+		${OPENZWAVE_DIR_NAME}/cpp/src/Notification.cpp
 		${OPENZWAVE_DIR_NAME}/cpp/src/Options.h
 		${OPENZWAVE_DIR_NAME}/cpp/src/Options.cpp
+		${OPENZWAVE_DIR_NAME}/cpp/src/OZWException.h
 		${OPENZWAVE_DIR_NAME}/cpp/src/Scene.h
 		${OPENZWAVE_DIR_NAME}/cpp/src/Scene.cpp
 		${OPENZWAVE_DIR_NAME}/cpp/src/Utils.h
 		${OPENZWAVE_DIR_NAME}/cpp/src/Utils.cpp
-		${OPENZWAVE_DIR_NAME}/cpp/src/vers.cpp	
+		${OPENZWAVE_DIR_NAME}/cpp/src/vers.cpp
+		${OPENZWAVE_DIR_NAME}/cpp/src/ZWSecurity.h
+		${OPENZWAVE_DIR_NAME}/cpp/src/ZWSecurity.cpp
 )  
 
 #########################################
@@ -61,10 +64,14 @@ set(OPENZWAVE_COMMANDCLASSES_SOURCES
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/BasicWindowCovering.h
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/Battery.cpp
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/Battery.h
+	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/CentralScene.cpp
+	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/CentralScene.h
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/ClimateControlSchedule.cpp
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/ClimateControlSchedule.h
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/Clock.cpp
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/Clock.h
+	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/Color.cpp
+	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/Color.h
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/CommandClass.cpp
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/CommandClass.h
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/CommandClasses.cpp
@@ -75,6 +82,8 @@ set(OPENZWAVE_COMMANDCLASSES_SOURCES
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/ControllerReplication.h
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/CRC16Encap.cpp
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/CRC16Encap.h
+	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/DeviceResetLocally.cpp
+	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/DeviceResetLocally.h
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/DoorLock.cpp
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/DoorLock.h
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/DoorLockLogging.cpp
@@ -149,6 +158,8 @@ set(OPENZWAVE_COMMANDCLASSES_SOURCES
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/Version.h
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/WakeUp.cpp
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/WakeUp.h
+	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/ZWavePlusInfo.cpp
+	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/ZWavePlusInfo.h
 )
 
 #########################################
