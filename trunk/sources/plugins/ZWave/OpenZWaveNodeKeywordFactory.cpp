@@ -9,7 +9,7 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::createKey
    switch(commandClass())
    {
    case ECommandClass::kSwitchBinaryValue:
-      return boost::shared_ptr<IOpenZWaveNodeKeyword>(new COpenZWaveNodeKeywordSwitch(keyword, value));
+      return boost::shared_ptr<IOpenZWaveNodeKeyword>(new COpenZWaveNodeKeywordSwitch(keyword + "." + commandClass.toString(), value));
       break;
     default:
       throw shared::exception::CNotSupported(commandClass.toString());

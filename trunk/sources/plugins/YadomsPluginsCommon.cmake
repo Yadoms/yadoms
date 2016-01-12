@@ -58,6 +58,9 @@ MACRO(PLUGIN_LINK _targetName)
 	
 ENDMACRO()
 
+# brief Copy a file to the target output dir
+# param [in] _targetName The current target (ie: pluginName)
+# param [in] _resource The resource (absolute path) to copy to the target output dir
 MACRO(PLUGIN_POST_BUILD_COPY_FILE _targetName _resource)
 
    get_filename_component(_resourcePath ${_resource}  DIRECTORY)
@@ -76,6 +79,40 @@ MACRO(PLUGIN_POST_BUILD_COPY_FILE _targetName _resource)
    endif()	
 ENDMACRO()
 
+
+
+# brief Copy a dependency (dll or so) to yadoms output dir (not next to _targetName)
+# param [in] _targetName The current target (ie: pluginName)
+# param [in] _resource The resource (absolute path) to copy to Yadoms dir
+MACRO(PLUGIN_POST_BUILD_COPY_FILE_DEPENDENCY _targetName _resource)
+   get_filename_component(_resourcePath ${_resource}  DIRECTORY)
+   
+   install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/${_resource} 
+			DESTINATION ${_resourcePath}
+			COMPONENT  ${_targetName})
+			
+   add_custom_command(TARGET ${_targetName} POST_BUILD
+      COMMAND ${CMAKE_COMMAND} -E copy_if_different ${_resource} $<TARGET_FILE_DIR:yadoms>/)
+   if(COTIRE_USE)
+      if(COTIRE_USE_UNITY)
+         add_custom_command(TARGET ${_targetName}_unity POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different ${_resource} $<TARGET_FILE_DIR:yadoms_unity>/)
+	  endif()	
+   endif()	
+ENDMACRO()
+
+# brief Copy list of dependencies (dll or so) to yadoms output dir (not next to _targetName)
+# param [in] _targetName The current target (ie: pluginName)
+# param [in] _resources The resources (absolute path) to copy to Yadoms dir
+MACRO(PLUGIN_POST_BUILD_COPY_FILE_DEPENDENCIES _targetName _resources)
+   foreach(resource ${_resources})
+      PLUGIN_POST_BUILD_COPY_FILE_DEPENDENCY(${_targetName} ${resource})
+   endforeach(resource)
+ENDMACRO()
+
+# brief Copy a directory (and its content) to the target output dir
+# param [in] _targetName The current target (ie: pluginName)
+# param [in] _resource The resource folder (absolute path) to copy to the target output dir
 MACRO(PLUGIN_POST_BUILD_COPY_DIRECTORY _targetName _resource)
    install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${_resource} 
 			DESTINATION ${INSTALL_BINDIR}/plugins/${_targetName}

@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "OpenZWaveNodeCapacity.h"
 #include <shared/Log.h>
-#include <FatalErrorException.h>
 #include "ZWave.h"
 #include "OpenZWaveCommandClass.h"
 #include <CommandClasses.h>
