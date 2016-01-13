@@ -4,7 +4,8 @@
 	"configurationSchema": {
 		"Sender": {
 			"name": "Adresse email expéditeur",
-			"description": "Cette adresse sera utilisée pour le champ 'expéditeur'"
+			"description": "Cette adresse sera utilisée pour le champ 'expéditeur'",
+			"regexErrorMessage" : "Doit être une adresse email valide"
 		},
 		"SMTPServer": {
 			"name": "Serveur SMTP",
@@ -14,13 +15,29 @@
 			"name": "port du serveur SMTP",
 			"description": "port SMTP (ex: 25, 465 or 587)"
 		},
-		"User": {
-			"name": "Utilisateur",
-			"description": ""
-		},
-		"Password": {
-			"name": "Mot de passe",
-			"description": ""
-		}
+		"Security": {
+			"name" : "Sécurité",
+			"description": "Le serveur SMTP requiert une connexion sécurisée",
+			"values": {
+				"none": "Aucune",
+				"SSL": "SSL",
+				"TLS": "TSL",
+				"Automatic": "Automatique"
+			}
+		},		
+		"authentication": {
+			"name": "Authentification requise",
+			"description": "Seulement si le server SMTP requiert une authentification",
+			"content": {
+				"User": {
+					"name": "Utilisateur",
+					"description": ""
+				},
+				"Password": {
+					"name": "Mot de passe",
+					"description": "Pour le serveur smtp de Google, le mot de passe est celui des GoogleApps"
+				}
+			}
+		}		
 	}
 }

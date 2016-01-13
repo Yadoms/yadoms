@@ -2,9 +2,16 @@
 #include "MailSender.h"
 #include <shared/Log.h>
 #include <shared/plugin/yPluginApi/historization/Message.h>
+#include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
 #include <shared/plugin/ImplementationHelper.h>
 #include <shared/exception/EmptyResult.hpp>
 #include "EmptyParameterException.hpp"
+#include <Poco/Net/MailMessage.h>
+#include <Poco/Net/MailRecipient.h>
+#include "SmtpServiceProviderFactory.h"
+#include <Poco/Net/NetException.h>
+#include "SecurityMode.h"
+#include "MSConfiguration.h"
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -12,9 +19,9 @@
 
 IMPLEMENT_PLUGIN(CMailSender)
 
-CMailSender::CMailSender(): m_deviceName       ("MailSender"),
-                            m_mailId           ("email"),
-                            m_messageKeyword   ("message", m_mailId, yApi::EKeywordAccessMode::kGetSet)
+CMailSender::CMailSender() : m_deviceName("MailSender"), m_configuration(new CMSConfiguration()),
+m_mailId("email"),
+m_messageKeyword("message", m_mailId, yApi::EKeywordAccessMode::kGetSet)
 {
 }
 
@@ -27,25 +34,26 @@ void CMailSender::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
    {
       YADOMS_LOG(information) << "MailSender is starting...";
 
-      m_configuration.initializeWith(context->getConfiguration());
 
+      m_configuration->initializeWith(context->getConfiguration());
       // Declaration of the device and Associated keywords
       declareDevice(context);
 
       // the main loop
       YADOMS_LOG(information) << "MailSender plugin is running...";
 
-      while(1)
+      while (1)
       {
          // Wait for an event
-         switch(context->getEventHandler().waitForEvents())
+         switch (context->getEventHandler().waitForEvents())
          {
-             case yApi::IYPluginApi::kEventUpdateConfiguration:
-                {
-                   onUpdateConfiguration(context, context->getEventHandler().getEventData<shared::CDataContainer>());
-                   break;
-                }
-         case yApi::IYPluginApi::kEventDeviceCommand:
+            case yApi::IYPluginApi::kEventUpdateConfiguration:
+            {
+               onUpdateConfiguration(context, context->getEventHandler().getEventData<shared::CDataContainer>());
+               break;
+            }
+
+            case yApi::IYPluginApi::kEventDeviceCommand:
             {
                // Command received
                boost::shared_ptr<const yApi::IDeviceCommand> command = context->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
@@ -55,23 +63,23 @@ void CMailSender::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
                   onSendMailRequest(context, command->getBody());
                else
                   YADOMS_LOG(warning) << "Received command for unknown keyword from Yadoms : " << command->toString();
-             }
-             break;
+            }
+            break;
 
-             default:
-                {
-                   YADOMS_LOG(error) << "Unknown message id";
-                   break;
-                }
+            default:
+            {
+               YADOMS_LOG(error) << "Unknown message id";
+               break;
+            }
          }
-      };
+      }
    }
    // Plugin must catch this end-of-thread exception to make its cleanup.
    // If no cleanup is necessary, still catch it, or Yadoms will consider
    // as a plugin failure.
    catch (boost::thread_interrupted&)
    {
-      YADOMS_LOG(information) << "MailSender is stopping..."  << std::endl;
+      YADOMS_LOG(information) << "MailSender is stopping..." << std::endl;
    }
 }
 
@@ -94,64 +102,35 @@ void CMailSender::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> con
    BOOST_ASSERT(!newConfigurationData.empty());  // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
    // Update configuration
-   m_configuration.initializeWith(newConfigurationData);
+   m_configuration->initializeWith(newConfigurationData);
 }
 
 void CMailSender::onSendMailRequest(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& sendMailRequest)
 {
    try
    {
-      m_messageKeyword.set(sendMailRequest);
+      m_messageKeyword.setCommand(sendMailRequest);
 
-      std::string m_UserMail      = m_configuration.SMTPUserAccount();
+      std::string from = m_configuration->getSenderEmail();
+      std::string to = getRecipientMail(context, m_messageKeyword.to());
 
-      std::string m_RecipientMail = getRecipientMail( context, m_messageKeyword.to() );
+      std::string subject = "Yadoms Notification !";
+      Poco::Net::MailMessage message;
+      message.setSender(from);
+      message.addRecipient(Poco::Net::MailRecipient(Poco::Net::MailRecipient::PRIMARY_RECIPIENT, to));
+      message.setSubject(subject);
+      message.setContentType("text/plain; charset=UTF-8");
+      message.setContent(m_messageKeyword.body(), Poco::Net::MailMessage::ENCODING_8BIT);
 
-      if (m_configuration.SMTPSenderMail().empty() || 
-          m_configuration.SMTPServerName().empty() ||
-          m_configuration.SMTPUserAccount().empty() ||
-          m_configuration.SMTPUserPassword().empty()
-         )
+      boost::shared_ptr<ISmtpServiceProvider>  mailServiceProvider = CSmtpServiceProviderFactory::CreateSmtpServer(m_configuration);
+      if (mailServiceProvider->sendMail(message))
       {
-         throw CEmptyParameterException ("Empty Parameter - No sending");
+         YADOMS_LOG(debug) << "Email successfully sent to " << to;
       }
-
-      //initialize mail object
-      quickmail_initialize();
-      mailobj = quickmail_create(NULL, NULL); //from / subject
-
-      //quickmail_set_debug_log(mailobj, stdout);
-
-      // Set the sender e-mail address
-      quickmail_set_from(mailobj, (char*) m_configuration.SMTPSenderMail().c_str() );
-
-      // Set the recipient address
-      quickmail_add_to  (mailobj, m_RecipientMail.c_str() );
-
-      // Set Subject
-      quickmail_set_subject(mailobj, "Yadoms Notification !" );
-
-      // Add the body
-      const char* mime_type = "text/html";
-      quickmail_add_body_memory(mailobj, mime_type, (char*) m_messageKeyword.body().c_str(), m_messageKeyword.body().length(), 0);
-
-      // This line is necessary
-      quickmail_add_attachment_file(mailobj, "", NULL);
-
-      const char* errmsg;
-      if ((errmsg = quickmail_send(mailobj, (char *) m_configuration.SMTPServerName().c_str(), 
-                                                     m_configuration.SMTPServerPort(), 
-                                            (char *) m_configuration.SMTPUserAccount().c_str(), 
-                                            (char *) m_configuration.SMTPUserPassword().c_str()
-                                  )) != NULL) {
-         YADOMS_LOG(information) << "MailSender not ok :" << errmsg;
-      }else
+      else
       {
-	 YADOMS_LOG(information) << "MailSender ok";
+         YADOMS_LOG(error) << "Fail to send email to " << to;
       }
-
-      //clean up
-      quickmail_destroy(mailobj);
    }
    catch (shared::exception::CInvalidParameter& e)
    {
@@ -163,6 +142,7 @@ void CMailSender::onSendMailRequest(boost::shared_ptr<yApi::IYPluginApi> context
       YADOMS_LOG(error) << "Error sending Mail";
    }
 }
+
 
 std::string CMailSender::getRecipientMail(boost::shared_ptr<yApi::IYPluginApi> context, int recipientId)
 {
