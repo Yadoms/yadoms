@@ -57,7 +57,7 @@ void C8ChannelAddressableSwitch::set(const std::string& keyword, const std::stri
             YADOMS_LOG(error) << "Try to drive the read-only keyword " << keyword;
             return;
          }
-         m_keyword[i]->set(command);
+         m_keyword[i]->setCommand(command);
          m_io->write(i, m_keyword[i]->get());
       }
    }

@@ -56,7 +56,7 @@ void CHighPrecisionLiBatteryMonitor::set(const std::string& keyword, const std::
       return;
    }
 
-   m_kwIo->set(command);
+   m_kwIo->setCommand(command);
    m_io->writeIo(m_kwIo->get());
 }
 

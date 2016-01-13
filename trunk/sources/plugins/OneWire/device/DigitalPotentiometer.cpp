@@ -51,7 +51,7 @@ void CDigitalPotentiometer::set(const std::string& keyword, const std::string& c
 
    if (m_potentiometerMode->getKeyword() == keyword)
    {
-      m_potentiometerMode->set(command);
+      m_potentiometerMode->setCommand(command);
       m_io->writePotentiometerMode(m_potentiometerMode->get());
    }
    else if (m_dim->getKeyword() == keyword)
