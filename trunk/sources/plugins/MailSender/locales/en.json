@@ -1,31 +1,44 @@
 {
-   "name": "Mail Sender",
-   "description": "This plugin provide information about the server to send a e-mail",
-   "configurationSchema":
-   {
-	  "Sender":
-	  {      "name": "Sender Mail",
-                 "description" : "This e-mail will fill the 'from' field of e-mails"
-	  },
-	  "SMTPServer":
-	  {
-		 "name": "SMTP server",
-                 "description" : "SMTP server name (ex: smtp.gmail.com)"
-	  },
-	  "SMTPPort":
-	  {
-		 "name": "SMTP port of the server",
-                 "description" : "SMTP port (ex: 25, 465 or 587)"
-	  },
-	  "User":
-	  {
-		 "name": "Account name",
-                 "description" : ""
-	  },
-	  "Password":
-	  {
-		 "name": "Account password",
-                 "description" : ""
-	  }
-   }
+	"name": "Mail Sender",
+	"description": "This plugin provide information about the server to send a e-mail",
+	"configurationSchema": {
+		"Sender": {
+			"name": "Sender Mail",
+			"description": "This e-mail will fill the 'from' field of e-mails",
+			"regexErrorMessage" : "Must be a valid email address"
+		},
+		"SMTPServer": {
+			"name": "SMTP server",
+			"description": "SMTP server name (ie: smtp.gmail.com)"
+		},
+		"SMTPPort": {
+			"name": "SMTP port of the server",
+			"description": "SMTP port (ex: 25, 465 or 587)"
+		},
+		"Security": {
+			"name" : "Security",
+			"description": "The SMTP server requires a secure connection",
+			"values": {
+				"none": "None",
+				"SSL": "Ssl",
+				"TLS": "TSL",
+				"Automatic": "Automatic"
+			}
+		},		
+		"authentication": {
+			"name": "Authentication required by server",
+			"description": "Only if SMTP server requires an authentication",
+			"content": {
+				"User": {
+					"name": "Account name",
+					"description": ""
+				},
+				"Password": {
+					"name": "Account password",
+					"description": "For gmail smtp, this can be GoogleApps password"
+				}
+			}
+		}		
+
+	}
 }

@@ -22,11 +22,14 @@ public:
 
    // IMSConfiguration implementation
    virtual void initializeWith(const shared::CDataContainer &data);
-   virtual std::string SMTPSenderMail   (void) const;
-   virtual std::string SMTPServerName   (void) const;
-   virtual int         SMTPServerPort   (void) const;
-   virtual std::string SMTPUserAccount  (void) const;
-   virtual std::string SMTPUserPassword (void) const;
+   virtual std::string getSenderEmail() const;
+   virtual std::string getHost() const;
+   virtual Poco::UInt16 getPort() const;
+   virtual ESecurityMode getSecurityMode() const;
+   virtual bool getAuthenticationRequired() const;
+   virtual std::string getLogin() const;
+   virtual std::string getPassword() const;
+
    // [END] ISIConfiguration implementation
 
 private:
@@ -48,7 +51,17 @@ private:
    //--------------------------------------------------------------
    /// \brief	    The port of the server
    //--------------------------------------------------------------
-   int m_ServerPort;
+   Poco::UInt16 m_ServerPort;
+
+   //--------------------------------------------------------------
+   /// \brief	    The server securoty mode
+   //--------------------------------------------------------------
+   ESecurityMode m_kSecurityMode;
+
+   //--------------------------------------------------------------
+   /// \brief	    Server authentication required
+   //--------------------------------------------------------------
+   bool m_bRequireAuthentication;
 
    //--------------------------------------------------------------
    /// \brief	    User account

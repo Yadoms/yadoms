@@ -1,35 +1,53 @@
 {
-   "type": "MailSender",
-   "version": "1.0",
-   "releaseType": "beta",
-   "author": "YADOMS Team",
-   "url": "http://sourceforge.net/projects/yadoms/",
-   "credits": "",
-   "supportedPlatforms":"all",
-   "configurationSchema": {
-	  "Sender":
-	  {
-		 "type": "string"
-	  },
-	  "SMTPServer":
-	  {
-		 "type": "string"
-	  },
-	  "SMTPPort":
-	  {
-		 "type": "int",
-                 "defaultValue": "587"
-	  },
-	  "User":
-	  {
-		 "type": "string"
-	  },
-	  "Password":
-	  {
-		 "type": "string",
-                 "encrypted": "true"
-	  }
-   },
-   "supportManuallyDeviceCreation": "false",
-   "manuallyDeviceCreationConfigurationSchema": {}
+	"type": "MailSender",
+	"version": "1.0",
+	"releaseType": "beta",
+	"author": "YADOMS Team",
+	"url": "http://sourceforge.net/projects/yadoms/",
+	"credits": "",
+	"supportedPlatforms": "all",
+	"configurationSchema": {
+		"Sender": {
+			"type": "string",
+			"regex" : "^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$",
+			"required" : "true"
+		},
+		"SMTPServer": {
+			"type": "string"
+		},
+		"SMTPPort": {
+			"type": "int",
+			"defaultValue": "587"
+		},
+		"Security": {
+			"type": "enum",
+			"values": {
+				"none": "None",
+				"SSL": "Ssl",
+				"TLS": "TSL",
+				"Automatic": "Automatic"
+			}
+		},
+		"authentication": {
+			"type": "section",
+			"name": "Authentication required by server",
+			"description": "Only if SMTP server requires an authentication",
+			"enableWithCheckBox": "true",
+			"enableWithCheckBoxDefaultValue": "false",
+			"content": {
+				"User": {
+					"type": "string"
+				},
+				"Password": {
+					"type": "string",
+					"encrypted": "true"
+				}
+			}
+		}
+
+
+
+	},
+	"supportManuallyDeviceCreation": "false",
+	"manuallyDeviceCreationConfigurationSchema": {}
 }

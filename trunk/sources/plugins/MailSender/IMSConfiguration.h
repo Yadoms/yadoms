@@ -1,6 +1,7 @@
 #pragma once
 #include <shared/DataContainer.h>
-
+#include <Poco/Types.h>
+#include "SecurityMode.h"
 //--------------------------------------------------------------
 /// \brief	Interface of plugin configuration
 //--------------------------------------------------------------
@@ -22,9 +23,11 @@ public:
    /// \brief	    Get options enabled from the configuration
    //--------------------------------------------------------------
 
-   virtual std::string SMTPSenderMail   (void) const = 0;
-   virtual std::string SMTPServerName   (void) const = 0;
-   virtual int         SMTPServerPort   (void) const = 0;
-   virtual std::string SMTPUserAccount  (void) const = 0;
-   virtual std::string SMTPUserPassword (void) const = 0;
+   virtual std::string getSenderEmail() const = 0;
+   virtual std::string getHost() const = 0;
+   virtual Poco::UInt16 getPort() const = 0;
+   virtual ESecurityMode getSecurityMode() const = 0;
+   virtual bool getAuthenticationRequired() const = 0;
+   virtual std::string getLogin() const = 0;
+   virtual std::string getPassword() const = 0;
 };

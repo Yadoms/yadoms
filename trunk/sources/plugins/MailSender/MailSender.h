@@ -1,7 +1,6 @@
 #pragma once
 #include <shared/plugin/IPlugin.h>
-#include "MSConfiguration.h"
-#include <quickmail.h>
+#include "IMSConfiguration.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -55,12 +54,15 @@ public:
    void onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> context, const shared::CDataContainer& newConfigurationData);
 
 private:
+   //--------------------------------------------------------------
+   /// \brief The device name
+   //--------------------------------------------------------------
    std::string m_deviceName;
 
    //--------------------------------------------------------------
    /// \brief	The plugin configuration
    //--------------------------------------------------------------
-   CMSConfiguration m_configuration;
+   boost::shared_ptr<IMSConfiguration> m_configuration;
 
    //--------------------------------------------------------------
    /// \brief	    Recipient field used to retrieve e-mail from a recipient
@@ -71,9 +73,4 @@ private:
    /// \brief	    Message historization object
    //--------------------------------------------------------------
    yApi::historization::CMessage m_messageKeyword;
-
-   //--------------------------------------------------------------
-   /// \brief	    Create the structure of the mail
-   //--------------------------------------------------------------
-   quickmail mailobj;
 };
