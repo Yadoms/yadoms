@@ -71,7 +71,9 @@ set(GAMMU_USE_PKGCONFIG ON)
 # - For Raspberry cross-compilation
 #set(GAMMU_USE_PKGCONFIG OFF)
 #set(GAMMU_ROOT "/path/to/Gammu/gammu-1.34.0/raspberry")
-
+# - For MacOSX (one path is usr/local/Cellar/gammu/1.36.5)
+#set(GAMMU_USE_PKGCONFIG OFF)
+#set(GAMMU_ROOT "path/to/gammu")
 
 
 ##### Script interpreters ######
