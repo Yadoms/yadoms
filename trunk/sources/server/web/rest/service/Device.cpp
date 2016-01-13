@@ -38,7 +38,7 @@ namespace web { namespace rest { namespace service {
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT",  (m_restKeyword)("*"), CDevice::updateDeviceFriendlyName, CDevice::transactionalMethod);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT",  (m_restKeyword)("keyword")("*"), CDevice::updateKeywordFriendlyName, CDevice::transactionalMethod);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("keyword")("*")("command"), CDevice::sendDeviceCommand, CDevice::transactionalMethod);
-      REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE",  (m_restKeyword)("*"), CDevice::deleteDevice, CDevice::transactionalMethod);
+      REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*")("*"), CDevice::cleanupDevice, CDevice::transactionalMethod);
    }
 
    shared::CDataContainer CDevice::getOneDevice(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
@@ -248,17 +248,32 @@ namespace web { namespace rest { namespace service {
 
 
 
-   shared::CDataContainer CDevice::deleteDevice(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   shared::CDataContainer CDevice::cleanupDevice(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       try
       {
-         if(parameters.size()>=1)
+         if(parameters.size()>1)
          {
             //get device id from URL
             int deviceId = boost::lexical_cast<int>(parameters[1]);
 
-            //remove device in db
-            m_dataProvider->getDeviceRequester()->removeDevice(deviceId);
+            bool removeDevice = parameters.size() > 2 && parameters[2] == "removeDevice";
+
+            //cleanup device in db
+            std::vector<boost::shared_ptr<database::entities::CKeyword> > keywords = m_dataProvider->getKeywordRequester()->getKeywords(deviceId);
+            for (std::vector<boost::shared_ptr<database::entities::CKeyword> >::const_iterator keyword = keywords.begin(); keyword != keywords.end(); ++keyword)
+            {
+               // Cleanup keyword acquisitions
+               m_dataProvider->getAcquisitionRequester()->removeKeywordData((*keyword)->Id);
+
+               // Remove keyword if asked
+               if (removeDevice)
+                  m_dataProvider->getKeywordRequester()->removeKeyword((*keyword)->Id);
+            }
+
+            if (removeDevice)
+               m_dataProvider->getDeviceRequester()->removeDevice(deviceId);
+
             return CResult::GenerateSuccess();
          }
          return CResult::GenerateError("invalid parameter. Can not retreive device id in url");

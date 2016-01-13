@@ -54,6 +54,12 @@
     text-align: right;
 }
 
+/*Device edition part*/
+
+.delete-device {
+    margin-top: 15px;
+}
+
 /*Automation rule edition part*/
 
 .edit-automation-rule-modal {
