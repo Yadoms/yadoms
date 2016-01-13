@@ -184,6 +184,12 @@
       "attachedPlugin": "Attached plugin",
       "errorDuringGettingPluginTypes": "Error during requesting plugin types"
     },
+    "delete-device": {
+      "title": "Delete historic device confirmation",
+      "text": "This operation will cleanup device __deviceName__ historic. Continue anyway ?",
+      "checkDeleteDevice": "Delete the device",
+      "checkDeleteDeviceNote": "Please note that device will be re-created if still transmits."
+    },
     "configure-plugin": {
       "title": "Plugin configuration",
       "name-configuration": {
@@ -379,7 +385,6 @@
           },
           "configure": "Configure the device",
           "delete": "Delete the device",
-          "confirmDeviceDeletion": "This action will delete the device __deviceName__ and all of its data. Continue anyway ?",
           "errorGettingDeviceList": "An error has occurred acquiring device list",
           "errorGettingDeviceDetailsList": "An error has occurred acquiring device details list",
           "noAcquisition": "No acquisition"

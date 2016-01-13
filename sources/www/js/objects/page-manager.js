@@ -227,7 +227,7 @@ PageManager.addToDom = function (page) {
         createOrUpdatePage($(e.currentTarget).parents("li.tabPagePills").attr("page-id"));
     });
 
-    //we listen click event on rename click
+    //we listen click event on delete click
     page.$tab.find('div.delete-page').bind('click', function (e) {
         var pageId = $(e.currentTarget).parents("li.tabPagePills").attr("page-id");
         modals.pageDelete.load(function (pageId) { return function () { showDeletePageModal(pageId) } }(pageId));

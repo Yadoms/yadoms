@@ -213,12 +213,12 @@ namespace database {  namespace sqlite { namespace requesters {
    void CDevice::removeDevice(int deviceId)
    {
       CQuery qDelete;
-      qDelete. DeleteFrom(CDeviceTable::getTableName()).
+      qDelete.DeleteFrom(CDeviceTable::getTableName()).
          Where(CDeviceTable::getIdColumnName(), CQUERY_OP_EQUAL, deviceId);
       if(m_databaseRequester->queryStatement(qDelete) <= 0)
          throw  shared::exception::CEmptyResult("No lines affected");
 
-      qDelete.Clear(). DeleteFrom(CKeywordTable::getTableName()).
+      qDelete.Clear().DeleteFrom(CKeywordTable::getTableName()).
          Where(CKeywordTable::getDeviceIdColumnName(), CQUERY_OP_EQUAL, deviceId);
       m_databaseRequester->queryStatement(qDelete);
    }

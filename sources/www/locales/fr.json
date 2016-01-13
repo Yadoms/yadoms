@@ -183,6 +183,12 @@
       "attachedPlugin": "Plugin attaché",
       "errorDuringGettingPluginTypes": "Erreur lors de la récupération de la liste des types de plugins"
     },
+    "delete-device": {
+      "title": "Confirmation de l'historique de l'équipement",
+      "text": "Cette opération va supprimer l'historique associé à l'équipement __deviceName__. Voulez-vous continuer ?",
+      "checkDeleteDevice": "Supprimer l'équipement",
+      "checkDeleteDeviceNote": "Attention, l'équipement sera re-créé si Yadoms reçoit à nouveau un message provenant du capteur associé."
+    },
     "configure-plugin": {
       "title": "Configuration du plugin",
       "name-configuration": {
@@ -383,7 +389,6 @@
           },
           "configure": "Configuration de l'équipement",
           "delete": "Suppression de l'équipement",
-          "confirmDeviceDeletion": "Confirmez-vous la suppressionde l'équipement __deviceName__ et toutes ses données ?",
           "errorGettingDeviceList": "Erreur lors de la récupération de la liste des équipements",
           "errorGettingDeviceDetailsList": "Erreur lors de la récupération des détails de l'équipement",
           "noAcquisition": "Aucune acquisition"

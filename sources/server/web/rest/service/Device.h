@@ -67,9 +67,9 @@ namespace web { namespace rest { namespace service {
       shared::CDataContainer sendDeviceCommand(const std::vector<std::string> & parameters, const std::string & requestContent);   
 
       //-----------------------------------------
-      ///\brief   delete a device in database
+      ///\brief   cleanup a device in database
       //-----------------------------------------
-      shared::CDataContainer deleteDevice(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
+      shared::CDataContainer cleanupDevice(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
 
       //-----------------------------------------
       ///\brief   update a device friendly name

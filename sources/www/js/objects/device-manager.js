@@ -185,11 +185,16 @@ DeviceManager.getKeywords = function(device, callback, sync) {
    }
 };
 
-DeviceManager.deleteFromServer = function(device, callback) {
+DeviceManager.deleteFromServer = function(device, deleteDevice, callback) {
    assert(!isNullOrUndefined(device), "device must be defined");
+   
+   if (isNullOrUndefined(deleteDevice)) {
+      deleteDevice = false;
+   }
+   
    $.ajax({
       type: "DELETE",
-      url: "/rest/device/" + device.id,
+      url: "/rest/device/" + device.id + (deleteDevice ? "/removeDevice" : ""),
       contentType: "application/json; charset=utf-8",
       dataType: "json"
    })
