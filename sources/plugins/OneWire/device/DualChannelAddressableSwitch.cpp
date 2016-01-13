@@ -69,7 +69,7 @@ void CDualChannelAddressableSwitch::set(const std::string& keyword, const std::s
       YADOMS_LOG(error) << "Try to drive the read-only keyword " << keyword;
       return;
    }
-   kw->set(command);
+   kw->setCommand(command);
    m_io->write(unit, kw->get());
 }
 

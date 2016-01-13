@@ -42,7 +42,7 @@ void CAdressableSwitch::set(const std::string& keyword, const std::string& comma
    if (m_state.getAccessMode() != yApi::EKeywordAccessMode::kGetSetValue)
       YADOMS_LOG(error) << "Try to drive the read-only keyword " << keyword;
    
-   m_state.set(command);
+   m_state.setCommand(command);
    m_io->write(m_state.get());
 }
 
