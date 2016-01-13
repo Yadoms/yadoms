@@ -87,6 +87,7 @@ function SectionParameterHandler(i18nContext, paramName, content, currentValue, 
  * @returns {string}
  */
 SectionParameterHandler.prototype.getDOMObject = function () {
+	
    var input = "<div class=\"control-group configuration-section well\" >" +
                   "<div class=\"configuration-header\" >";
 
@@ -164,6 +165,7 @@ SectionParameterHandler.prototype.getDOMObject = function () {
  */
 SectionParameterHandler.prototype.applyScript = function () {
    var self = this;
+   
    if (self.enableWithCheckBox) {
       $("#" + self.selectorUuid).change(function () {
          if ($("#" + self.selectorUuid).prop("checked")) {
@@ -185,9 +187,16 @@ SectionParameterHandler.prototype.applyScript = function () {
             radioSections.addClass("hidden");
             radioSections.removeClass("has-warning");
             radioSections.find("input,select,textarea").removeClass("enable-validation");
-            //we show current
+			
+			//Disable all existing sub-buttons
+			radioSections.find("button").attr("disabled", true);
+			
+			//we show current
             $("div#" + self.uuid).removeClass("hidden").removeClass("has-warning");
             $("div#" + self.uuid).find("input,select,textarea").addClass("enable-validation");
+			
+			//Enable all existing sub-buttons
+			$("div#" + self.uuid).find("button").removeAttr("disabled");
          }
       });
    }
@@ -218,6 +227,7 @@ SectionParameterHandler.prototype.getParamName = function() {
 SectionParameterHandler.prototype.getCurrentConfiguration = function () {
    //we update configurationValues with content of DOM
    var self = this;
+   
    self.configurationValues = {};
    self.configurationValues.content = {};
    $.each(self.configurationHandlers, function (key, value) {
