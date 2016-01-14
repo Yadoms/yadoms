@@ -83,4 +83,11 @@ const boost::shared_ptr<CPeripherals::SerialPortsMap> CPeripherals::getSerialPor
 	return serialPorts;
 }
 
+boost::system::error_code CPeripherals::flushSerialPort(boost::asio::serial_port& port)
+{
+   return tcflush(port.native(), TCIOFLUSH) ?
+      boost::system::error_code(errno, boost::asio::error::get_system_category()) :
+      boost::system::error_code();
+}
+
 } // namespace shared

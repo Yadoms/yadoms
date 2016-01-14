@@ -2,6 +2,7 @@
 #include "AsyncSerialPort.h"
 #include <shared/Log.h>
 #include <shared/exception/InvalidParameter.hpp>
+#include <shared/Peripherals.h>
 #include "PortException.hpp"
 #include "Buffer.hpp"
 
@@ -116,6 +117,10 @@ void CAsyncSerialPort::setReceiveBufferHandler(boost::shared_ptr<IReceiveBufferH
 
 void CAsyncSerialPort::flush()
 {
+   // Hardware flush
+   CPeripherals::flushSerialPort(m_boostSerialPort);
+
+   // Clear the receive buffer
    if (!!m_receiveBufferHandler)
       m_receiveBufferHandler->flush();
 }
