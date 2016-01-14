@@ -61,4 +61,11 @@ const boost::shared_ptr<const CPeripherals::SerialPortsMap> CPeripherals::getSer
    return serialPorts;
 }
 
+boost::system::error_code CPeripherals::flushSerialPort(boost::asio::serial_port& port)
+{
+   return PurgeComm(port.native(), PURGE_RXABORT | PURGE_RXCLEAR | PURGE_TXABORT | PURGE_TXCLEAR) ?
+      boost::system::error_code() :
+      boost::system::error_code(GetLastError(), boost::asio::error::get_system_category());
+}
+
 } // namespace shared

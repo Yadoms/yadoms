@@ -32,6 +32,13 @@ namespace shared
       //--------------------------------------------------------------
       typedef std::map<std::string, std::string> SerialPortsMap;
       static const boost::shared_ptr<const SerialPortsMap> getSerialPorts();
+
+      //--------------------------------------------------------------
+      /// \brief			Flush serial port buffers (input & output)
+      /// \param[in]    port The port to flush
+      /// \return       error code
+      //--------------------------------------------------------------
+      static boost::system::error_code flushSerialPort(boost::asio::serial_port& port);
    };
 
 } // namespace shared
