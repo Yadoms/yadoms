@@ -14,7 +14,7 @@ set(BOOST_ROOT "/path/to/boost/boost_1_58_0")
 set(POCO_ROOT "path/to/poco/poco-1.6.0-all")
 
 #define OpenSSL ROOT
-set(OPENSSL_ROOT_DIR "path/to/openssl")
+#set(OPENSSL_ROOT_DIR "path/to/openssl")
 
 
 
@@ -81,7 +81,6 @@ set(GAMMU_USE_PKGCONFIG ON)
 # Script interpreters needs Swig (needed for all script interpreters)
 # if swig is installed on system (make install), just define SWIG_ROOT to ""
 # else specify the path containing the swig executable
-#set(SWIG_ROOT "/Path/to/swig")
 set(SWIG_ROOT "")
 
 
@@ -107,8 +106,3 @@ set(PYTHON_USE_SOURCES OFF)
 ##### CPACK ######
 #For Windows, it activate making installation package with NSIS; else it use classic ZIP
 #set(USE_NSIS ON)
-
-##### LibQuickmail ######
-#
-# Plugin MailSender needs Libquickmail library
-#set(LIBQUICKMAIL_ROOT "/Path/to/libquickmail")
