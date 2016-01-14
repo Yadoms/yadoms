@@ -21,7 +21,7 @@
 			"values": {
 				"none": "None",
 				"SSL": "Ssl",
-				"TLS": "TSL",
+				"TLS": "TLS",
 				"Automatic": "Automatic"
 			}
 		},		
