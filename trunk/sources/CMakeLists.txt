@@ -176,6 +176,24 @@ if(${OPENSSL_FOUND})
    endif()
 endif()
 
+
+
+#in case of OpenSSL use
+IF(${PocoNetSSLFound})
+   IF(WIN32)
+      #add libeay32.dll and ssleay32.dll as dependencies
+      IF(EXISTS "${OPENSSL_ROOT_DIR}/bin/libeay32.dll")
+         SET(PocoNetSSLDepends "${OPENSSL_ROOT_DIR}/bin/libeay32.dll")
+      ENDIF()
+       
+      IF(EXISTS "${OPENSSL_ROOT_DIR}/bin/ssleay32.dll")
+         SET(PocoNetSSLDepends ${PocoNetSSLDepends} "${OPENSSL_ROOT_DIR}/bin/ssleay32.dll")
+      ENDIF()
+       
+   ENDIF(WIN32)
+ENDIF()
+
+
 # define libraries to link with
 set(LIBS ${LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${RT_LIBRARY} ${Poco_FOUND_LIBS})
 
@@ -794,6 +812,14 @@ target_link_libraries(yadoms yadoms-shared ${LIBS} ${CMAKE_DL_LIBS})
 POST_BUILD_COPY_BOOST_LIBRARIES(yadoms)
 POST_BUILD_COPY_POCO(yadoms)
 
+#copy PocoNetSSL depends
+FOREACH (PocoNetSSLDepend ${PocoNetSSLDepends})
+   add_custom_command(TARGET yadoms POST_BUILD
+                      COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                          ${PocoNetSSLDepend} $<TARGET_FILE_DIR:yadoms>/)
+ENDFOREACH(PocoNetSSLDepend)
+
+
 #copy www directory into build directory
 add_custom_command(TARGET yadoms POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy_directory
@@ -848,6 +874,12 @@ FOREACH (POCOLIBRARY ${Poco_FOUND_RELEASE_BINS})
 	install(FILES ${POCOLIBRARY} CONFIGURATIONS Release;RelWithDebInfo;MinSizeRel RUNTIME DESTINATION ${INSTALL_BINDIR})
 ENDFOREACH(POCOLIBRARY)
 
+#add depends
+FOREACH (PocoNetSSLDepend ${PocoNetSSLDepends})
+	install(FILES ${PocoNetSSLDepend} CONFIGURATIONS Debug;Release;RelWithDebInfo;MinSizeRel RUNTIME DESTINATION ${INSTALL_BINDIR})
+ENDFOREACH(PocoNetSSLDepend)
+
+
 #add www directory
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/www DESTINATION ${INSTALL_BINDIR})
 
@@ -857,7 +889,17 @@ install(DIRECTORY ${CMAKE_SOURCE_DIR}/www DESTINATION ${INSTALL_BINDIR})
 #indicate that debug distribution are allowed (so required debug components are copied in debug mode)
 SET(CMAKE_INSTALL_DEBUG_LIBRARIES ON)
 SET(CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION ${INSTALL_BINDIR})
+
+#add common runtime libs
 INCLUDE(InstallRequiredSystemLibraries)
+INSTALL(FILES ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS} DESTINATION ${INSTALL_BINDIR})
+
+#add specific runtime libs
+if(WIN32)
+   FindWindowsDependencies(fileList)
+   INSTALL(FILES ${fileList} DESTINATION ${INSTALL_BINDIR})
+endif()
+
 
 set(CPACK_COMPONENT_YADOMSCORE_DISPLAY_NAME "Yadoms Server")
 set(CPACK_COMPONENT_YADOMSCORE_REQUIRED ON)
