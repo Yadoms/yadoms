@@ -87,7 +87,7 @@ PageManager.createPage = function (pageName, pageOrder, callback) {
            var p = PageManager.factory(data.data);
 
            if ($.isFunction(callback))
-               callback(p)
+                callback(p);
        })
        .fail(function () { notifyError($.t("objects.generic.errorCreating", { objectName: pageName })); });
 };
@@ -204,8 +204,10 @@ PageManager.addToDom = function (page) {
     });
 
     page.$grid.on('dragstart', function (event, ui) {
-        //we reveal the overlay on all other page to indicate that the user can move widget onto other pages
-        $(".tabPagePills").not("[page-id=\"" + page.id + "\"]").find(".tabPagePillsDropper").removeClass("hidden");
+        if (customization) {
+        	//we reveal the overlay on all other page to indicate that the user can move widget onto other pages
+        	$(".tabPagePills").not("[page-id=\"" + page.id + "\"]").find(".tabPagePillsDropper").removeClass("hidden");
+        }
     });
 
     PageManager.enableCustomization(page, customization);
