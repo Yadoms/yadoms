@@ -1,1 +1,2 @@
 sources/CMakeListsUserConfig.txt
+sources/scriptInterpreters/Python/yScriptApiWrapper/swigpyrun.h
