@@ -1,9 +1,11 @@
-/* ========================================================================
- * Bootstrap: fa-icon-names-4.2.0.js by @recktoner
- * Font-awesome names from the version 4.2.0
+/*!========================================================================
+ * Bootstrap: iconset-fontawesome-4.1.0.js by @recktoner 
  * https://victor-valencia.github.com/bootstrap-iconpicker
+ * 
+ * Iconset: Font Awesome 4.1.0
+ * http://fortawesome.github.io/Font-Awesome/
  * ========================================================================
- * Copyright 2013-2014 Victor Valencia Rico.
+ * Copyright 2013-2015 Victor Valencia Rico.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,20 +22,19 @@
 
 ;(function($){
 
-    $.fontawesome = $.fontawesome || [];
-    $.extend(
-        $.fontawesome,    
-        [
+    $.iconset_fontawesome = {
+        iconClass: 'fa',
+        iconClassFix: 'fa-',
+        icons: [
+            '',
             'adjust',
             'anchor',
             'archive',
-            'area-chart',
             'arrows',
             'arrows-h',
             'arrows-v',
             'automobile',
             'asterisk',
-            'at',
             'ban',
             'bank',
             'bar-chart-o',
@@ -42,11 +43,6 @@
             'beer',
             'bell',
             'bell-o',
-            'bell-slash',
-            'bell-slash-o',
-            'bicycle',
-            'binoculars',
-            'birthday-cake',
             'bolt',
             'bomb',
             'book',
@@ -58,9 +54,7 @@
             'building-o',
             'bullhorn',
             'bullseye',
-            'bus',            
             'cab',
-            'calculator',
             'calendar',
             'calendar-o',
             'camera',
@@ -70,13 +64,6 @@
             'caret-square-o-left',
             'caret-square-o-right',
             'caret-square-o-up',
-            'cc',
-            'cc-amex',
-            'cc-discover',
-            'cc-mastercard',
-            'cc-paypal',
-            'cc-stripe',
-            'cc-visa',
             'certificate',
             'check',
             'check-circle',
@@ -101,7 +88,6 @@
             'comments',
             'comments-o',
             'compass',
-            'copyright',
             'credit-card',
             'crop',            
             'crosshairs',
@@ -130,7 +116,6 @@
             'external-link-square',
             'eye',
             'eye-slash',
-            'eyedropper',
             'fax',
             'female',
             'fighter-jet',
@@ -162,7 +147,6 @@
             'folder-open',
             'folder-open-o',
             'frown-o',
-            'futbol-o',
             'gamepad',
             'gavel',
             'gear',
@@ -196,7 +180,6 @@
             'life-ring',
             'life-saver',
             'lightbulb-o',
-            'line-chart',
             'location-arrow',
             'lock',
             'magic',
@@ -220,8 +203,6 @@
             'mortar-board',
             'music',
             'navicon',
-            'newspaper-o',
-            'paint-brush',
             'paper-plane',
             'paper-plane-o',
             'paw',
@@ -232,9 +213,7 @@
             'phone-square',
             'photo',
             'picture-o',
-            'pie-chart',            
             'plane',
-            'plug',
             'plus',
             'plus-circle',
             'plus-square',
@@ -275,7 +254,6 @@
             'sitemap',
             'sliders',
             'smile-o',
-            'soccer-ball-o',
             'sort',
             'sort-alpha-asc',
             'sort-alpha-desc',
@@ -320,16 +298,12 @@
             'tint',
             'toggle-down',
             'toggle-left',
-            'toggle-off',
-            'toggle-on',                        
             'toggle-right',
             'toggle-up',
-            'trash',            
             'trash-o',
             'tree',
             'trophy',
             'truck',
-            'tty',                        
             'umbrella',
             'university',
             'unlock',
@@ -343,8 +317,7 @@
             'volume-off',
             'volume-up',
             'warning',
-            'wheelchair',            
-            'wifi',
+            'wheelchair',
             'wrench',                        
             'check-square',
             'check-square-o',
@@ -364,7 +337,6 @@
             'eur',
             'euro',
             'gbp',
-            'ils',
             'inr',
             'jpy',
             'krw',
@@ -374,8 +346,6 @@
             'rub',
             'ruble',
             'rupee',
-            'shekel',
-            'sheqel',
             'try',
             'turkish-lira',
             'usd',
@@ -500,7 +470,6 @@
             'youtube-play',
             'adn',
             'android',
-            'angellist',
             'apple',
             'behance',
             'behance-square',
@@ -529,25 +498,20 @@
             'google',
             'google-plus',
             'google-plus-square',
-            'google-wallet',
             'hacker-news',
             'html5',
             'instagram',
-            'ioxhost',            
             'joomla',
             'jsfiddle',
-            'lastfm',
-            'lastfm-square',
             'linkedin',
             'linkedin-square',
             'linux',
             'maxcdn',
-            'meanpath',
             'openid',
             'pagelines',
-            'paypal',
             'pied-piper',
             'pied-piper-alt',
+            'pied-piper-square',
             'pinterest',
             'pinterest-square',
             'qq',
@@ -560,7 +524,6 @@
             'share-alt-square',
             'skype',
             'slack',
-            'slideshare',
             'soundcloud',
             'spotify',
             'stack-exchange',
@@ -573,7 +536,6 @@
             'trello',
             'tumblr',
             'tumblr-square',
-            'twitch',            
             'twitter',
             'twitter-square',
             'vimeo-square',
@@ -587,7 +549,6 @@
             'xing',
             'xing-square',
             'yahoo',
-            'yelp',
             'youtube',
             'youtube-play',
             'youtube-square',
@@ -599,6 +560,6 @@
             'stethoscope',
             'user-md',
             'wheelchair'
-        ]);
+        ]};
     
 })(jQuery);
