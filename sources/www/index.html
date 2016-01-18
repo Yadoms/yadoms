@@ -27,7 +27,7 @@
     <title>Yadoms</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="libs/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="libs/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/bootstrap-non-responsive.css" rel="stylesheet">
     <!-- Custom styles for this template -->
     <link href="css/yadoms.css" rel="stylesheet">
@@ -35,7 +35,7 @@
     <link href="css/widget.css" rel="stylesheet">
 
     <link href="libs/bootstrap-colorpicker-master/css/bootstrap-colorpicker.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="libs/bootstrap-iconpicker-1.4.0/css/bootstrap-iconpicker.min.css" />
+    <link rel="stylesheet" href="libs/bootstrap-iconpicker-1.7.0/css/bootstrap-iconpicker.min.css" />
 
     <!-- Gridstack includes -->
     <link rel="stylesheet" href="libs/gridstack/css/gridstack.css" />
@@ -54,8 +54,18 @@
                         <!--<label class="label label-default">v 0.7</label>-->
                     </div>
                     <div class="">
+                        <ul class="nav navbar-nav">
+                            <li class="dropdown">
+                                <a class="dropdown-toggle" id="dropDownButton" data-toggle="dropdown"><i class="caret"></i></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#" id="btn-show-dashboard"><i class="fa fa-cog iconMenuItem"></i><span data-i18n="mainPage.menu.dashboard"></span></a></li>
+                                </ul>
+                            </li>
+                            <!--<li><button class="btn btn-default customization-item hidden" id="btn-add-page"><i class="fa fa-file-o"></i><span class="hidden-xs">&nbsp;&nbsp;</span><span class="hidden-xs" data-i18n="mainPage.customization.addNewPage"></span></button></li>-->
+                            <!--<li><button class="btn btn-default customization-item hidden" id="btn-add-widget"><i class="fa fa-puzzle-piece"></i><span class="hidden-xs">&nbsp;&nbsp;</span><span class="hidden-xs" data-i18n="mainPage.customization.addNewWidget"></span></button></li>-->
+                        </ul>
                         <ul class="nav navbar-nav navbar-right">
-                            <li><a href="#" class="" id="btn-show-dashboard" data-i18n="[title]mainPage.menu.dashboard"><i class="fa fa-cog"></i></a></li>
+                            <li><a href="#" class="" id="chartButton" data-i18n="[title]mainPage.menu.charts"><i class="fa fa-bar-chart-o"></i></a></li>
                             <li><a href="#" class="" id="customizeButton" data-i18n="[title]mainPage.menu.customization"><i class="fa fa-wrench"></i></a></li>
                         </ul>
                     </div>
@@ -96,10 +106,10 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="libs/jquery/js/jquery-1.11.0.min.js"></script>
+    <script src="libs/jquery/js/jquery-2.2.0.min.js"></script>
     <!-- must be included before bootstrap -->
     <script src="libs/jquery-ui/js/jquery-ui.js"></script>
-    <script src="libs/bootstrap/js/bootstrap.js"></script>
+    <script src="libs/bootstrap/js/bootstrap.min.js"></script>
 
     <script src="libs/transit/js/jquery.transit.min.js"></script>
     <script src="libs/knockout/js/knockout-3.0.0.js"></script>
@@ -191,7 +201,8 @@
     <script src="libs/exportcsv/v1.3.5/export-csv.js"></script>
 
     <script src="libs/bootstrap-colorpicker-master/js/bootstrap-colorpicker.min.js"></script>
-    <script src="libs/bootstrap-iconpicker-1.4.0/js/bootstrap-iconpicker.min.js"></script>
+	<script src="libs/bootstrap-iconpicker-1.7.0/js/iconset/iconset-glyphicon.min.js"></script>
+    <script src="libs/bootstrap-iconpicker-1.7.0/js/bootstrap-iconpicker.min.js"></script>
 
     <script src="libs/blockly/js/blockly_compressed.js"></script>
     <script src="libs/blockly/js/blocks_compressed.js"></script>
