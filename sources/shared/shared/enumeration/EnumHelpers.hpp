@@ -7,7 +7,7 @@
 
 This class contains macros for defining extended macros which add the ability to use string and/or values for enum
 
-Documentation : https://sourceforge.net/p/yadoms/wiki/Enhanced%20enumerations/
+Documentation : https://github.com/Yadoms/yadoms/wiki/Enhanced%20enumerations/
 
 
 //////////////////////////////////////////////

@@ -3,7 +3,7 @@
 	"version": "0.1",
 	"releaseType": "beta",
 	"author": "Sébastien Gallou",
-	"url": "http://sourceforge.net/projects/yadoms/",
+   "url": "https://github.com/Yadoms/yadoms/",
 	"credits": "",
 	"supportedPlatforms": "all",
 	"configurationSchema": {

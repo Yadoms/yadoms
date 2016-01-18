@@ -18,7 +18,7 @@ static const std::string DefaultPackageFileContent(
 "      \"version\": \"0.1\","
 "      \"releaseType\": \"beta\","
 "      \"author\": \"yadoms-team\","
-"     \"url\": \"http://sourceforge.net/projects/yadoms/\","
+"     \"url\": \"https://github.com/Yadoms/yadoms/\","
 "     \"configurationSchema\":"
 "  {"
 "      \"StringParameter\":"
@@ -123,9 +123,9 @@ BOOST_AUTO_TEST_CASE(ReadDefaultInformation)
    BOOST_CHECK_EQUAL(info.getVersion(), "0.1");
    BOOST_CHECK_EQUAL(info.getReleaseType(), shared::plugin::information::EReleaseType::kBetaValue);
    BOOST_CHECK_EQUAL(info.getAuthor(), "yadoms-team");
-   BOOST_CHECK_EQUAL(info.getUrl(), "http://sourceforge.net/projects/yadoms/");
+   BOOST_CHECK_EQUAL(info.getUrl(), "https://github.com/Yadoms/yadoms/");
    BOOST_CHECK_EQUAL(info.getIdentity(), "FakePackage v0.1[Beta]");
-   BOOST_CHECK_EQUAL(info.toString(), "FakePackage v0.1[Beta] by yadoms-team (http://sourceforge.net/projects/yadoms/)");
+   BOOST_CHECK_EQUAL(info.toString(), "FakePackage v0.1[Beta] by yadoms-team (https://github.com/Yadoms/yadoms/)");
 }
 
 BOOST_AUTO_TEST_CASE(WrongPackageFileJsonFormat)
@@ -137,7 +137,7 @@ BOOST_AUTO_TEST_CASE(WrongPackageFileJsonFormat)
       "   \"version\": \"0.1\","
       "   \"releaseType\": \"beta\","
       "   \"author\": \"yadoms-team\","
-      "   \"url\": \"http://sourceforge.net/projects/yadoms/\","); // Closing brace is missing
+      "   \"url\": \"https://github.com/Yadoms/yadoms/\","); // Closing brace is missing
 
    BOOST_REQUIRE_THROW(pluginSystem::CInformation info(fileContent), shared::exception::CInvalidParameter);
 }
@@ -151,7 +151,7 @@ BOOST_AUTO_TEST_CASE(NullOrEmptyPluginName)
       "   \"version\": \"0.1\","
       "   \"releaseType\": \"beta\","
       "   \"author\": \"yadoms-team\","
-      "   \"url\": \"http://sourceforge.net/projects/yadoms/\""
+      "   \"url\": \"https://github.com/Yadoms/yadoms/\""
       "}");
    BOOST_REQUIRE_THROW(pluginSystem::CInformation info(fileContentWithEmptyName), shared::exception::CInvalidParameter);
 
@@ -161,7 +161,7 @@ BOOST_AUTO_TEST_CASE(NullOrEmptyPluginName)
       "   \"version\": \"0.1\","
       "   \"releaseType\": \"beta\","
       "   \"author\": \"yadoms-team\","
-      "   \"url\": \"http://sourceforge.net/projects/yadoms/\""
+      "   \"url\": \"https://github.com/Yadoms/yadoms/\""
       "}");
    BOOST_REQUIRE_THROW(pluginSystem::CInformation info(fileContentWithoutName), shared::exception::CInvalidParameter);
 }
@@ -175,7 +175,7 @@ BOOST_AUTO_TEST_CASE(NullOrEmptyPluginDescription)
       "   \"version\": \"0.1\","
       "   \"releaseType\": \"beta\","
       "   \"author\": \"yadoms-team\","
-      "   \"url\": \"http://sourceforge.net/projects/yadoms/\""
+      "   \"url\": \"https://github.com/Yadoms/yadoms/\""
       "}");
    BOOST_REQUIRE_THROW(pluginSystem::CInformation info(fileContentWithEmptyDescription), shared::exception::CInvalidParameter);
 
@@ -185,7 +185,7 @@ BOOST_AUTO_TEST_CASE(NullOrEmptyPluginDescription)
       "   \"version\": \"0.1\","
       "   \"releaseType\": \"beta\","
       "   \"author\": \"yadoms-team\","
-      "   \"url\": \"http://sourceforge.net/projects/yadoms/\""
+      "   \"url\": \"https://github.com/Yadoms/yadoms/\""
       "}");
    BOOST_REQUIRE_THROW(pluginSystem::CInformation info(fileContentWithoutDescription), shared::exception::CInvalidParameter);
 }
@@ -199,7 +199,7 @@ BOOST_AUTO_TEST_CASE(BadPluginVersionFormat)
       "   \"version\": \"\","
       "   \"releaseType\": \"beta\","
       "   \"author\": \"yadoms-team\","
-      "   \"url\": \"http://sourceforge.net/projects/yadoms/\""
+      "   \"url\": \"https://github.com/Yadoms/yadoms/\""
       "}");
    BOOST_REQUIRE_THROW(pluginSystem::CInformation info(fileContentWithEmptyVersion), shared::exception::CInvalidParameter);
 
@@ -209,7 +209,7 @@ BOOST_AUTO_TEST_CASE(BadPluginVersionFormat)
       "   \"description\": \"This is just a fake package file, used to test pluginSystem::CInformation class.\","
       "   \"releaseType\": \"beta\","
       "   \"author\": \"yadoms-team\","
-      "   \"url\": \"http://sourceforge.net/projects/yadoms/\""
+      "   \"url\": \"https://github.com/Yadoms/yadoms/\""
       "}");
    BOOST_REQUIRE_THROW(pluginSystem::CInformation info(fileContentWithoutVersion), shared::exception::CInvalidParameter);
 
@@ -220,7 +220,7 @@ BOOST_AUTO_TEST_CASE(BadPluginVersionFormat)
       "   \"version\": \"0.\","
       "   \"releaseType\": \"beta\","
       "   \"author\": \"yadoms-team\","
-      "   \"url\": \"http://sourceforge.net/projects/yadoms/\""
+      "   \"url\": \"https://github.com/Yadoms/yadoms/\""
       "}");
    BOOST_REQUIRE_THROW(pluginSystem::CInformation info(fileContentWithBadVersion1), shared::exception::CInvalidParameter);
 
@@ -231,7 +231,7 @@ BOOST_AUTO_TEST_CASE(BadPluginVersionFormat)
       "   \"version\": \".1\","
       "   \"releaseType\": \"beta\","
       "   \"author\": \"yadoms-team\","
-      "   \"url\": \"http://sourceforge.net/projects/yadoms/\""
+      "   \"url\": \"https://github.com/Yadoms/yadoms/\""
       "}");
    BOOST_REQUIRE_THROW(pluginSystem::CInformation info(fileContentWithBadVersion2), shared::exception::CInvalidParameter);
 
@@ -242,7 +242,7 @@ BOOST_AUTO_TEST_CASE(BadPluginVersionFormat)
       "   \"version\": \"0.a\","
       "   \"releaseType\": \"beta\","
       "   \"author\": \"yadoms-team\","
-      "   \"url\": \"http://sourceforge.net/projects/yadoms/\""
+      "   \"url\": \"https://github.com/Yadoms/yadoms/\""
       "}");
    BOOST_REQUIRE_THROW(pluginSystem::CInformation info(fileContentWithBadVersion3), shared::exception::CInvalidParameter);
 
@@ -253,7 +253,7 @@ BOOST_AUTO_TEST_CASE(BadPluginVersionFormat)
       "   \"version\": \"12\","
       "   \"releaseType\": \"beta\","
       "   \"author\": \"yadoms-team\","
-      "   \"url\": \"http://sourceforge.net/projects/yadoms/\""
+      "   \"url\": \"https://github.com/Yadoms/yadoms/\""
       "}");
    BOOST_REQUIRE_THROW(pluginSystem::CInformation info(fileContentWithBadVersion4), shared::exception::CInvalidParameter);
 }
@@ -267,7 +267,7 @@ BOOST_AUTO_TEST_CASE(PluginInformationBadReleaseType)
       "   \"version\": \"0.1\","
       "   \"releaseType\": \"beta\","
       "   \"author\": \"yadoms-team\","
-      "   \"url\": \"http://sourceforge.net/projects/yadoms/\""
+      "   \"url\": \"https://github.com/Yadoms/yadoms/\""
       "}");
    BOOST_REQUIRE_THROW(pluginSystem::CInformation info(fileContentWithEmptyReleaseType), shared::exception::CInvalidParameter);
 
@@ -277,7 +277,7 @@ BOOST_AUTO_TEST_CASE(PluginInformationBadReleaseType)
       "   \"description\": \"This is just a fake package file, used to test pluginSystem::CInformation class.\","
       "   \"version\": \"0.1\","
       "   \"author\": \"yadoms-team\","
-      "   \"url\": \"http://sourceforge.net/projects/yadoms/\""
+      "   \"url\": \"https://github.com/Yadoms/yadoms/\""
       "}");
    BOOST_REQUIRE_THROW(pluginSystem::CInformation info(fileContentWithoutReleaseType), shared::exception::CInvalidParameter);
 
@@ -288,7 +288,7 @@ BOOST_AUTO_TEST_CASE(PluginInformationBadReleaseType)
       "   \"version\": \"0.1\","
       "   \"releaseType\": \"betas\","
       "   \"author\": \"yadoms-team\","
-      "   \"url\": \"http://sourceforge.net/projects/yadoms/\""
+      "   \"url\": \"https://github.com/Yadoms/yadoms/\""
       "}");
    BOOST_REQUIRE_THROW(pluginSystem::CInformation info(fileContentWithBadReleaseType), shared::exception::CInvalidParameter);
 }
@@ -302,7 +302,7 @@ BOOST_AUTO_TEST_CASE(NullOrEmptyPluginAuthor)
       "   \"version\": \"0.1\","
       "   \"releaseType\": \"beta\","
       "   \"author\": \"\","
-      "   \"url\": \"http://sourceforge.net/projects/yadoms/\""
+      "   \"url\": \"https://github.com/Yadoms/yadoms/\""
       "}");
    BOOST_REQUIRE_THROW(pluginSystem::CInformation info(fileContentWithEmptyAuthor), shared::exception::CInvalidParameter);
 
@@ -312,7 +312,7 @@ BOOST_AUTO_TEST_CASE(NullOrEmptyPluginAuthor)
       "   \"description\": \"This is just a fake package file, used to test pluginSystem::CInformation class.\","
       "   \"version\": \"0.1\","
       "   \"releaseType\": \"beta\","
-      "   \"url\": \"http://sourceforge.net/projects/yadoms/\""
+      "   \"url\": \"https://github.com/Yadoms/yadoms/\""
       "}");
    BOOST_REQUIRE_THROW(pluginSystem::CInformation info(fileContentWithoutAuthor), shared::exception::CInvalidParameter);
 }
