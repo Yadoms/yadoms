@@ -896,8 +896,7 @@ INSTALL(FILES ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS} DESTINATION ${INSTALL_BINDIR}
 
 #add specific runtime libs
 if(WIN32)
-   FindWindowsDependencies(fileList)
-   INSTALL(FILES ${fileList} DESTINATION ${INSTALL_BINDIR})
+   InstallWindowsSdkDependencies()
 endif()
 
 
