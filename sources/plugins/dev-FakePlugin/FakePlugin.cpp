@@ -11,9 +11,8 @@
 #include <boost/random/independent_bits.hpp>
 #include "FakeController.h"
 
-// Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
+// Use this macro to define all necessary to make your library a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
-// This macro also defines the static PluginInformations value that can be used by plugin to get information values
 IMPLEMENT_PLUGIN(CFakePlugin)
 
 
@@ -35,6 +34,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    try
    {
+      // Informs Yadoms about the plugin actual state
       context->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
 
       YADOMS_LOG(debug) << "CFakePlugin is starting...";
@@ -188,14 +188,14 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
          }
          default:
             {
-               YADOMS_LOG(error) << "Unknown ou unsupported message id " << context->getEventHandler().getEventId();
+               YADOMS_LOG(error) << "Unknown or unsupported message id " << context->getEventHandler().getEventId();
                break;
             }
          }
       }
    }
-   // Plugin must catch this end-of-thread exception to make its cleanup.
-   // If no cleanup is necessary, still catch it, or Yadoms will consider
+   // Plugin must catch this end-of-thread exception to make its clean-up.
+   // If no clean-up is necessary, still catch it, or Yadoms will consider
    // as a plugin failure.
    catch (boost::thread_interrupted&)
    {
