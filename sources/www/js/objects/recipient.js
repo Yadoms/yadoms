@@ -107,27 +107,29 @@ Recipient.prototype.mergeFields = function() {
         $.each(instanciatedTypes, function(key, value) {
             //for each recipient fields in the plugin
             var plugin = PluginManager.pluginTypes[value];
-            var recipientFieldsFromPlugin = plugin.getRecipientFields();
-            for (var recipientField in recipientFieldsFromPlugin) {
-                //make a copy of the object
-                var currentField = $.extend(true, {}, recipientFieldsFromPlugin[recipientField]);
+            if (plugin) {
+                var recipientFieldsFromPlugin = plugin.getRecipientFields();
+                for (var recipientField in recipientFieldsFromPlugin) {
+                    //make a copy of the object
+                    var currentField = $.extend(true, {}, recipientFieldsFromPlugin[recipientField]);
 
-                //force the field value to empty string
-                currentField.value = currentField.defaultValue;
+                    //force the field value to empty string
+                    currentField.value = currentField.defaultValue;
 
-                //search the field value in definedFields (search if the recipient is already configured for this field)
-                $.each(definedFields, function(index, field) {
-                    if (field.pluginType.toUpperCase() == plugin.type.toUpperCase() && field.fieldName.toUpperCase() == recipientField.toUpperCase()) {
-                        //the field match an already saved one, just reuse the value
-                        currentField.value = field.value;
-                    }
-                });
+                    //search the field value in definedFields (search if the recipient is already configured for this field)
+                    $.each(definedFields, function(index, field) {
+                        if (field.pluginType.toUpperCase() === plugin.type.toUpperCase() && field.fieldName.toUpperCase() === recipientField.toUpperCase()) {
+                            //the field match an already saved one, just reuse the value
+                            currentField.value = field.value;
+                        }
+                    });
 
-                currentField.fieldName = recipientField;
-                currentField.pluginType = plugin.type;
-                currentField.pluginDefaultDisplayName = plugin.package.name;
+                    currentField.fieldName = recipientField;
+                    currentField.pluginType = plugin.type;
+                    currentField.pluginDefaultDisplayName = plugin.package.name;
 
-                self.fields.push(currentField);
+                    self.fields.push(currentField);
+                }
             }
         });
         d.resolve();

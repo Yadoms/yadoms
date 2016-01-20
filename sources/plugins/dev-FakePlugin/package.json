@@ -76,11 +76,14 @@
   },
   "enumerations": {
     "EFakeControllerValues": {
-      "Stop": "",
-      "Run": "",
-      "Back": "",
-      "Left": "",
-      "Right": ""
+		"name" : "",
+		"values" : {
+		  "Stop": "",
+		  "Run": "",
+		  "Back": "",
+		  "Left": "",
+		  "Right": ""
+	   }
     }
   },
   "recipientFields" : {

@@ -60,11 +60,14 @@
 	},
 	"enumerations": {
 		"EFakeControllerValues": {
-			"Stop": "Arreter",
-			"Run": "Avancer",
-			"Back": "Arrière",
-			"Left": "Gauche",
-			"Right": "Droite"
+			"name" : "Etat controller",
+			"value" : {
+				"Stop": "Arreter",
+				"Run": "Avancer",
+				"Back": "Arrière",
+				"Left": "Gauche",
+				"Right": "Droite"
+			}
 		}
 	},
 	"recipientFields": {
