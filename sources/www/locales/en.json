@@ -59,7 +59,7 @@
       "interrupted": "Task interrupted",
       "crash": "Task crashed",
       "unknownError": "Unknown Task error",
-      "end":  "Task end"
+      "end": "Task end"
     }
   },
   "common": {
@@ -97,15 +97,15 @@
       "moveToRight": "Move to right",
       "rename": "Rename",
       "delete": "Delete",
-      "dropHereToMovePage" : "Drop here to move to page __pageName__"
+      "dropHereToMovePage": "Drop here to move to page __pageName__"
     },
     "errors": {
       "unableToAddWidgetWithoutPage": "You must have at least one page to add widget",
-	  "unableToGetEventLog": "Unable to get event log",
+      "unableToGetEventLog": "Unable to get event log",
       "errorDuringSavingPagePosition": "Error during saving page position",
       "unableToGetPages": "Unable to get pages",
       "errorDuringRequestingWidgets": "Error during requesting widgets",
-	  "errorDuringRequestingNewLogEvents": "Error during requesting new logs events",
+      "errorDuringRequestingNewLogEvents": "Error during requesting new logs events",
       "youHaveBeenDisconnectedFromTheServerOrItHasGoneOffline": "You have been disconnected from the server or it has gone offline",
       "errorSavingCustomization": "Error saving customization",
       "errorMakingFirstConfiguration": "Error making first configuration"
@@ -137,10 +137,10 @@
     },
     "configure-widget": {
       "title": "Widget configuration",
-			"titleName": {
-			     "name" : "Title",
-			     "description" : "Text displayed for the widget"
-				 },
+      "titleName": {
+        "name": "Title",
+        "description": "Text displayed for the widget"
+      },
       "errorDuringGettingDeviceList": "Error during getting device list",
       "errorDuringGettingDeviceListMatchCapacity": "Error during getting device list that match capacity __expectedCapacityAccess__ __expectedCapacity__",
       "errorDuringGettingDeviceListMatchCapacityType": "Error during getting device list that match capacity type __expectedCapacityAccess__ __expectedCapacityType__",
@@ -230,7 +230,7 @@
     },
     "edit-automation-rule": {
       "title": "Automation rule edition",
-      "show-help" :  "Help on the yadoms Script API",
+      "show-help": "Help on the yadoms Script API",
       "interpreter-rule": {
         "name": "Interpreter",
         "description": "Interpreter of the rule"
@@ -244,9 +244,9 @@
         "description": "Description of the rule"
       }
     },
-		"show-log-automation-rule": {
-			"title": "Automation rule edition log"
-		},
+    "show-log-automation-rule": {
+      "title": "Automation rule edition log"
+    },
     "qrcode": {
       "title": "QR Code de Yadoms",
       "text": "Here is the QRCode of Yadoms. You can now flash it with your phone to access Yadoms everywhere."
@@ -342,10 +342,10 @@
           },
           "enableDisable": "Enable / Disable the plugin",
           "startStop": "Start / Stop the plugin",
-		  "running": "Running",
-		  "starting": "Starting...",
-		  "stopped": "Stopped",
-		  "error": "Error",
+          "running": "Running",
+          "starting": "Starting...",
+          "stopped": "Stopped",
+          "error": "Error",
           "configure": "Configure the plugin",
           "delete": "Delete the plugin",
           "errorGettingPluginList": "An error has occurred acquiring plugin list",
@@ -408,13 +408,13 @@
           "edit": "Edit the rule",
           "delete": "Delete the rule",
           "confirmDeletion": "This action will delete the rule __name__. Continue anyway ?",
-					"log": "View log",
+          "log": "View log",
           "ruleSuccessfullyCreated": "Rule successfully created",
           "ruleSuccessfullyUpdated": "Rule successfully updated",
           "ruleDeleted": "Règle supprimée",
           "editors": {
             "code": {
-							"name": "Code"
+              "name": "Code"
             },
             "blockly": {
               "name": "Blockly"
@@ -498,7 +498,7 @@
       "catActions": "Actions",
       "catDevices": "Devices",
       "catEnumerations": "Enumerations",
-	  "catVariables": "Variables",
+      "catVariables": "Variables",
       "catFunctions": "Functions"
 
     },
@@ -699,59 +699,59 @@
     "Stopped": "$t(core.__who__.name) has stopped",
     "Updated": "The $t(core.__who__.name) has been updated",
     "YadomsCrash": "yadoms has crashed",
-		"PluginCrash": "Plugin __who__ has been crashed",
+    "PluginCrash": "Plugin __who__ has been crashed",
     "TaskFailed": "__who__ task has been crashed",
     "RuleFailed": "The automation rule __who__ has failed"
   },
-	"webSockets": {
-		"update": {
-			"plugin": {
-				"install": "Installing plugin...",
-				"update": "Updating plugin...",
-				"remove": "Removing plugin...",
-				"removeFailed": "Remove plugin failed",
-				"download": "Downloading plugin...",
-				"downloadFailed": "Download plugin failed",
-				"deploy": "Delpoying plugin...",
-				"deployFailed": "Deploy plugin failed",
-				"finalize": "Finalizing...",
-				"success": "Success"
-			},
-			"widget": {
-				"install": "Installing widget ...",
-				"update": "Updating widget ...",
-				"remove": "Removing widget ...",
-				"removeFailed": "Remove widget failed",
-				"download": "Downloading widget ...",
-				"downloadFailed": "Download widget failed",
-				"deploy": "Delpoying widget ...",
-				"deployFailed": "Deploy widget failed",
-				"finalize": "Finalizing ...",
-				"success": "Success"
-			},
-			"scriptInterpreter": {
-			  "install": "Installing script interpreter ...",
-			  "update": "Updating script interpreter ...",
-			  "remove": "Removing script interpreter ...",
-			  "removeFailed": "Remove script interpreter failed",
-			  "download": "Downloading script interpreter ...",
-			  "downloadFailed": "Download script interpreter failed",
-			  "deploy": "Delpoying script interpreter ...",
-			  "deployFailed": "Deploy script interpreter failed",
-			  "finalize": "Finalizing ...",
-			  "success": "Success"
-			}
-		},
-		"task": {
-			"started": "Task started"
-		}
-	},
-	"system": {
-		"yadoms": "yadoms",
-		"databaseBackup": "Database backup",
-		"pluginUpdate": "Plugin update",
-		"yadomsUpdate": "Yadoms update"
-	},
+  "webSockets": {
+    "update": {
+      "plugin": {
+        "install": "Installing plugin...",
+        "update": "Updating plugin...",
+        "remove": "Removing plugin...",
+        "removeFailed": "Remove plugin failed",
+        "download": "Downloading plugin...",
+        "downloadFailed": "Download plugin failed",
+        "deploy": "Delpoying plugin...",
+        "deployFailed": "Deploy plugin failed",
+        "finalize": "Finalizing...",
+        "success": "Success"
+      },
+      "widget": {
+        "install": "Installing widget ...",
+        "update": "Updating widget ...",
+        "remove": "Removing widget ...",
+        "removeFailed": "Remove widget failed",
+        "download": "Downloading widget ...",
+        "downloadFailed": "Download widget failed",
+        "deploy": "Delpoying widget ...",
+        "deployFailed": "Deploy widget failed",
+        "finalize": "Finalizing ...",
+        "success": "Success"
+      },
+      "scriptInterpreter": {
+        "install": "Installing script interpreter ...",
+        "update": "Updating script interpreter ...",
+        "remove": "Removing script interpreter ...",
+        "removeFailed": "Remove script interpreter failed",
+        "download": "Downloading script interpreter ...",
+        "downloadFailed": "Download script interpreter failed",
+        "deploy": "Delpoying script interpreter ...",
+        "deployFailed": "Deploy script interpreter failed",
+        "finalize": "Finalizing ...",
+        "success": "Success"
+      }
+    },
+    "task": {
+      "started": "Task started"
+    }
+  },
+  "system": {
+    "yadoms": "yadoms",
+    "databaseBackup": "Database backup",
+    "pluginUpdate": "Plugin update",
+    "yadomsUpdate": "Yadoms update"
+  },
   "initialization": {
     "homePage": "Home Page"
   },
@@ -778,6 +778,83 @@
       "voltAmpere": "VA",
       "watt": "W",
       "wattPerHour": "Wh"
+    }
+  },
+  "enumerations": {
+    "EPluginState": {
+      "name": "Plugin state",
+      "values": {
+        "Unknown": "Unknown",
+        "Error": "Error",
+        "Stopped": "Stopped",
+        "Running": "Running",
+        "Custom": "Custom"
+      }
+    },
+    "EWeatherCondition": {
+      "name": "Weather condition",
+      "values": {
+        "Cloudy": "Cloudy",
+        "Snow": "Snow",
+        "ChanceSnow": "ChanceSnow",
+        "PartlySunny": "PartlySunny",
+        "Sunny": "Sunny",
+        "ChanceRain": "ChanceRain",
+        "Rain": "Rain",
+        "Sleet": "Sleet",
+        "ChanceStorm": "ChanceStorm",
+        "Storm": "Storm",
+        "Fog": "Fog",
+        "Night_Clear": "Night_Clear",
+        "Night_Cloudy": "Night_Cloudy",
+        "Night_Rain": "Night_Rain",
+        "Night_Snow": "Night_Snow"
+      }
+    },
+    "EArmingAlarmStatus": {
+      "name": "Arming alarm status",
+      "values": {
+        "Disarmed": "Disarmed",
+        "ArmedAtHome": "ArmedAtHome",
+        "ArmedAway": "ArmedAway"
+      }
+    },
+    "ECameraMoveCommand": {
+      "name": "Camera move command",
+      "values": {
+        "Left": "Left",
+        "Right": "Right",
+        "Up": "Up",
+        "Down": "Down",
+        "Position1": "Position1",
+        "ProgramPosition1": "ProgramPosition1",
+        "Position2": "Position2",
+        "ProgramPosition2": "ProgramPosition2",
+        "Position3": "Position3",
+        "ProgramPosition3": "ProgramPosition3",
+        "Position4": "Position4",
+        "ProgramPosition4": "ProgramPosition4",
+        "CenterPosition": "CenterPosition",
+        "ProgramCenterPosition": "ProgramCenterPosition",
+        "Sweep": "Sweep",
+        "ProgramSweep": "ProgramSweep"
+      }
+    },
+    "ECurtainCommand": {
+      "name": "Curtain command",
+      "values": {
+        "Stop": "Stop",
+        "Open": "Open",
+        "Close": "Close"
+      }
+    },
+    "EUpDownStopCommand": {
+      "name": "up/down/stop command",
+      "values": {
+        "Stop": "Stop",
+        "Up": "Up",
+        "Down": "Down"
+      }
     }
   }
 }

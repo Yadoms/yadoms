@@ -59,7 +59,7 @@
       "interrupted": "Tâche interrompue",
       "crash": "Tâche plantée",
       "unknownError": "Erreur inconnue",
-      "end":  "Tâche arrétée"
+      "end": "Tâche arrétée"
     }
   },
   "common": {
@@ -660,23 +660,23 @@
         "yadoms_date_arithmetic": {
           "tooltip": "Ajoute ou supprime une duée d'une date et/ou heure"
         },
-		"yadoms_date_extract": {
+        "yadoms_date_extract": {
           "title": "Extraire ",
           "tooltip": "Extrait une information d'une date",
-		  "from" : "depuis",
-		  "what" : {
-			"date" : "la date (sans l'heure)",
-			"time" : "l'heure complète (HH:MM)",
-			"year" : "l'année",
-			"month" : "le mois",
-			"day" : "le jour",
-			"hour" : "l'heure (HH)",
-			"minute" : "les minutes",
-			"weekDay" : "le jour de la semaine",
-			"weekDayString" : "le jour de la semaine (texte)",
-			"monthDay" : "le jour du mois",
-			"yearDay" : "le jour de l'année"
-		  }
+          "from": "depuis",
+          "what": {
+            "date": "la date (sans l'heure)",
+            "time": "l'heure complète (HH:MM)",
+            "year": "l'année",
+            "month": "le mois",
+            "day": "le jour",
+            "hour": "l'heure (HH)",
+            "minute": "les minutes",
+            "weekDay": "le jour de la semaine",
+            "weekDayString": "le jour de la semaine (texte)",
+            "monthDay": "le jour du mois",
+            "yearDay": "le jour de l'année"
+          }
         }
       }
     }
@@ -836,5 +836,83 @@
       "watt": "W",
       "wattPerHour": "Wh"
     }
+  },
+  "enumerations": {
+    "EPluginState": {
+      "name": "Etat du plugin",
+      "values": {
+        "Unknown": "Inconnu",
+        "Error": "Erreur",
+        "Stopped": "Arrêté",
+        "Running": "En cours d'exécution",
+        "Custom": "Personnalisé"
+      }
+    },
+    "EWeatherCondition": {
+      "name": "Condition climatique",
+      "values": {
+        "Cloudy": "Nuageux",
+        "Snow": "Neige",
+        "ChanceSnow": "Neige probable",
+        "PartlySunny": "Partiellement ensoleillé",
+        "Sunny": "Ensoleillé",
+        "ChanceRain": "¨Pluie probable",
+        "Rain": "Pluie",
+        "Sleet": "Neige fondue",
+        "ChanceStorm": "Tempête probable",
+        "Storm": "Tempête",
+        "Fog": "Brouillard",
+        "Night_Clear": "Nuit claire",
+        "Night_Cloudy": "Nuit nuageuse",
+        "Night_Rain": "Nuit pluvieuse",
+        "Night_Snow": "Nuit neige"
+      }
+    },
+    "EArmingAlarmStatus": {
+      "name": "Etat de l'alarme",
+      "values": {
+        "Disarmed": "Désarmée",
+        "ArmedAtHome": "Armée à la maison",
+        "ArmedAway": "Armée en dehors de la maison"
+      }
+    },
+    "ECameraMoveCommand": {
+      "name": "Commande de la caméra",
+      "values": {
+        "Left": "Gauche",
+        "Right": "Droite",
+        "Up": "Haut",
+        "Down": "Bas",
+        "Position1": "Position n°1",
+        "ProgramPosition1": "Position programmée n°1",
+        "Position2": "Position n°2",
+        "ProgramPosition2": "Position programmée n°2",
+        "Position3": "Position n°3",
+        "ProgramPosition3": "Position programmée n°3",
+        "Position4": "Position n°4",
+        "ProgramPosition4": "Position programmée n°4",
+        "CenterPosition": "Position centre",
+        "ProgramCenterPosition": "Position centre programmée",
+        "Sweep": "Balayage",
+        "ProgramSweep": "Balayage programmé"
+      }
+    },
+    "ECurtainCommand": {
+      "name": "Commande du store",
+      "values": {
+        "Stop": "Arrêter",
+        "Open": "Ouvrir",
+        "Close": "Fermer"
+      }
+    },
+    "EUpDownStopCommand": {
+      "name": "Commande haut/bas",
+      "values": {
+        "Stop": "Stop",
+        "Up": "Haut",
+        "Down": "Bas"
+      }
+    }
   }
 }
+
