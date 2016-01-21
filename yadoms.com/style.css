@@ -58,6 +58,10 @@ section {
     max-height: 50px;
 }
 
+.nonvisible-link {
+    display: initial;
+}
+
 /*Slide 1*/
 #logo {
 	height: 128px;
