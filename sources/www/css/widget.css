@@ -151,9 +151,6 @@
     margin-right: 4px;
 }
 
-.widget-toolbar-low-battery {
-	float: left;
+.widget-toolbar-battery span[class~=fa-battery-0] {
 	color: red;
-    margin-left: 4px;
-    margin-right: 4px;	
 }
