@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "PluginState.h"
 #include "../StandardValues.h"
+#include "../StandardCapacity.h"
+#include "../StandardUnits.h"
 #include <shared/exception/InvalidParameter.hpp>
 #include <shared/DataContainer.h>
 #include <shared/StringExtension.h>
@@ -17,8 +19,10 @@ DECLARE_ENUM_IMPLEMENTATION(EPluginState,
    ((Custom))
 );
 
+const shared::plugin::yPluginApi::CStandardCapacity& PluginStateCapacity = shared::plugin::yPluginApi::CStandardCapacity("pluginState_capacity", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kEnum);
+
 CPluginState::CPluginState(const std::string& keywordName, const EKeywordAccessMode& accessMode)
-   :CSingleHistorizableData<EPluginState>(keywordName, CStandardCapacities::Text, accessMode, EPluginState::kUnknown, EMeasureType::kAbsolute)
+   :CSingleHistorizableData<EPluginState>(keywordName, PluginStateCapacity, accessMode)
 {
 }
 

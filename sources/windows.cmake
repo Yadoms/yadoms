@@ -11,8 +11,8 @@ macro(get_WIN32_WINNT version)
 endmacro()
 
 
-
-macro(FindWindowsDependencies dependencies)
+#This macro add some SDK dependencies to INSTALL
+macro(InstallWindowsSdkDependencies)
    #in case of Windows 10, we should append universal crt files
    #could be found in Windows 10 sdk
    
@@ -36,9 +36,8 @@ macro(FindWindowsDependencies dependencies)
          
          FILE(GLOB children RELATIVE "${Win10SdkArchDir}" "${Win10SdkArchDir}/*.dll")
          FOREACH(child ${children})
-            SET(${dependencies} ${dependencies} "${Win10SdkArchDir}/${child}")
+            INSTALL(FILES "${Win10SdkArchDir}/${child}" DESTINATION ${INSTALL_BINDIR})
          ENDFOREACH()
-        
       endif()
       
    ENDIF()

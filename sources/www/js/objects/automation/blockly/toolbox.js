@@ -167,9 +167,19 @@ Blockly.Yadoms.CreateToolbox_ = function () {
     toolbox += "     <block type=\"text_trim\"></block>";
     toolbox += "  </category>";
 
-    toolbox += "  <category name=\"" + catEnumerations + "\" colour=\"20\">";
-    toolbox += "    <block type=\"yadoms_enumeration\"></block>";
-    toolbox += "  </category>";
+//    toolbox += "  <category name=\"" + catEnumerations + "\" colour=\"20\">";
+//    toolbox += "    <block type=\"yadoms_enumeration\"></block>";
+//    toolbox += "  </category>";
+
+
+    if (Blockly.Yadoms.EnumerationsHelper.allBlocks.length > 0) {
+        toolbox += "  <category name=\"" + catEnumerations + "\" colour=\"20\">";
+        $.each(Blockly.Yadoms.EnumerationsHelper.allBlocks, function (index, value) {
+            toolbox += "     <block type=\"" + value + "\"></block>";
+        });
+        toolbox += "  </category>";
+    }
+
 
     toolbox += "  <category name=\"" + catDates + "\" colour=\"260\">";
     toolbox += "    <block type=\"yadoms_date_datetime\">";

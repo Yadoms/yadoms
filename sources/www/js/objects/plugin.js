@@ -22,4 +22,5 @@ Plugin.prototype.getRecipientFields = function() {
          return this.package.recipientFields;
       }
    }
+   return null;
 };

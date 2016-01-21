@@ -3,6 +3,11 @@ Yadoms is an open source project.
 
 It aims to publish a simple, powerfull, flexible and multiplatforms domotic solution.
 
+#Forum
+
+http://www.yadoms.com/forum
+
+
 #Features
 * Edit
 * Many devices support

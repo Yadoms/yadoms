@@ -57,22 +57,19 @@ Blockly.Yadoms.LoadDataForBlocklyCustomBlocks_ = function () {
                     //all is OK, this is a new enum, ask for translation
                     var translatedEnum = [];
                     $.each(typeInfo.values, function (index2, value) {
-                        var trad = $.t(pluginData.type + ":enumerations." + typeInfo.name + "." + value, { defaultValue: pluginData.package.enumerations[typeInfo.name][value] });
+                        var trad = $.t("plugins/" + pluginData.type + ":enumerations." + typeInfo.name + ".values." + value, { defaultValue: value });
                         translatedEnum.push([trad, value]);
                     });
+
+                    var translatedName = $.t("plugins/" + pluginData.type + ":enumerations." + typeInfo.name + ".name", { defaultValue: typeInfo.name });
 
                     result.enumerations[typeToSet] = {
                         typeToSet: typeToSet,
                         name: typeInfo.name,
+                        translatedName : translatedName,
                         values: translatedEnum
                     };
 
-                    //apply new dropdown list
-                    /*
-                    this.currentEnumerationTypeName = typeInfo.name;
-                    var enumDropDown = $.isFunction(this.getField_) ? this.getField_(this.enumerationDropDownName) : this.getField(this.enumerationDropDownName);
-    
-                    enumDropDown.refresh(translatedEnum, enumDropDown.getValue());*/
                 }
             }
 
