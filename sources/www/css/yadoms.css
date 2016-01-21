@@ -17,9 +17,9 @@ body {
     margin-bottom: 30px;
 }
 
-    .page-header .lead {
-        margin-bottom: 10px;
-    }
+.page-header .lead {
+    margin-bottom: 10px;
+}
 
 .footer {
     position: fixed;
@@ -254,4 +254,8 @@ body {
     border-width: 2px;
     font-weight: bold;
     padding: 2px;
+}
+
+.modal-body {
+    margin-left: 0px !important;
 }
