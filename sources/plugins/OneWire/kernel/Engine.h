@@ -35,8 +35,8 @@ protected:
 
    //--------------------------------------------------------------
    /// \brief	Scan a network node and add found devices to device list
-   /// \param[in] slavesFile The file containinf the list of slave devices
-   /// \param[inout] devices The list to complete with found devies
+   /// \param[in] slavesFile The file containing the list of slave devices
+   /// \param[inout] devices The list to complete with found devices
    //--------------------------------------------------------------
    void scanNetworkNode(const boost::filesystem::path& slavesFile, std::map<std::string, boost::shared_ptr<device::IDevice> >& devices);
 
