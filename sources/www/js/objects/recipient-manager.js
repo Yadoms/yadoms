@@ -42,9 +42,14 @@ RecipientManager.factoryField = function (json) {
     assert(!isNullOrUndefined(json.idRecipient), "json.idRecipient must be defined");
     assert(!isNullOrUndefined(json.pluginType), "json.pluginType must be defined");
     assert(!isNullOrUndefined(json.fieldName), "json.fieldName must be defined");
-    assert(!isNullOrUndefined(json.value), "json.value must be defined");
+    assert(!isNullOrUndefined(json.value), "json.value must be defined");    
+    
+    var d = $.Deferred();
 
-    return new RecipientField(json.idRecipient, json.pluginType, json.fieldName, json.value);
+    var r = new RecipientField(json.idRecipient, json.pluginType, json.fieldName, json.value);
+    d.resolve(r);
+   
+    return d.promise();
 };
 
 
@@ -194,7 +199,7 @@ RecipientManager.getByField = function (field, sync) {
            var arrayOfDeffered = [];
 
            $.each(data.data.field, function (index, value) {
-               var deffered = RecipientManager.factory(value);
+               var deffered = RecipientManager.factoryField(value);
                arrayOfDeffered.push(deffered);
                deffered.done(function (newRecipient) {
                    recipientFieldList.push(newRecipient);

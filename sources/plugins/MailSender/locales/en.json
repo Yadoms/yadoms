@@ -4,7 +4,7 @@
 	"configurationSchema": {
 		"Sender": {
 			"name": "Sender Mail",
-			"description": "This e-mail will fill the 'from' field of e-mails",
+			"description": "Yadoms must use an existing mail account. Enter here the email to use to send emails (will also be used as 'from' field of sent emails).",
 			"regexErrorMessage" : "Must be a valid email address"
 		},
 		"SMTPServer": {

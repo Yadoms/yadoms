@@ -44,9 +44,6 @@
 				}
 			}
 		}
-
-
-
 	},
 	"supportManuallyDeviceCreation": "false",
 	"manuallyDeviceCreationConfigurationSchema": {}

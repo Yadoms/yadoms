@@ -4,7 +4,7 @@
 	"configurationSchema": {
 		"Sender": {
 			"name": "Adresse email expéditeur",
-			"description": "Cette adresse sera utilisée pour le champ 'expéditeur'",
+			"description": "Yadoms a besoin d'un compte mail existant pour pouvoir envoyer des mails. Entrer ici l'adresse du compte mail à utiliser (Cette adresse sera également utilisée pour le champ 'expéditeur' des emails envoyés).",
 			"regexErrorMessage" : "Doit être une adresse email valide"
 		},
 		"SMTPServer": {
