@@ -21,7 +21,7 @@ void CMSConfiguration::initializeWith(const shared::CDataContainer &data)
 
       if (m_data.exists("account.content.gmail"))
       {
-         m_ServerName = "smtp.google.com";
+         m_ServerName = "smtp.gmail.com";
          m_ServerPort = 587;
          m_kSecurityMode = ESecurityMode::kTLS;
          m_bRequireAuthentication = true;
