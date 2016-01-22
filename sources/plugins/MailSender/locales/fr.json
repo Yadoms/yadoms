@@ -9,13 +9,14 @@
 		},
       "account": {
          "name": "Type de compte",
+         "description": "Si votre fournisseur de compte mail est introuvable dans cette liste, choisissez \"Autre\"",
          "content":  {
             "gmail": {
                "name": "GMail",
                "content": {
                   "password": {
                      "name": "Mot de passe",
-                     "description": "Pour le serveur smtp de Google, le mot de passe est celui des GoogleApps"
+                     "description": "Le mot de passe peut être celui des GoogleApps"
                   }               
                }
             },
@@ -45,12 +46,10 @@
                      "description": "Seulement si le server SMTP requiert une authentification",
                      "content": {
                         "user": {
-                           "name": "Utilisateur",
-                           "description": ""
+                           "name": "Utilisateur"
                         },
                         "password": {
-                           "name": "Mot de passe",
-                           "description": "Pour le serveur smtp de Google, le mot de passe est celui des GoogleApps"
+                           "name": "Mot de passe"
                         }
                      }
                   }

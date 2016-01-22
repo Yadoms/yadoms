@@ -9,18 +9,19 @@
 		},
       "account": {
          "name": "Account type",
+         "description": "If your email account provider is not found in this list, choose \"Other\"",
          "content":  {
             "gmail": {
                "name": "GMail",
                "content": {
                   "password": {
                      "name": "Password",
-                     "description": "Pour le serveur smtp de Google, le mot de passe est celui des GoogleApps"
+                     "description": "This can be the GoogleApps password"
                   }               
                }
             },
             "other": {
-               "name": "Autre",
+               "name": "Other",
                "content": {
                   "SMTPServer": {
                      "name": "SMTP server",
@@ -45,12 +46,10 @@
                      "description": "Only if SMTP server requires an authentication",
                      "content": {
                         "user": {
-                           "name": "Account name",
-                           "description": ""
+                           "name": "Account name"
                         },
                         "password": {
-                           "name": "Account password",
-                           "description": "For gmail smtp, this can be GoogleApps password"
+                           "name": "Account password"
                         }
                      }
                   }
