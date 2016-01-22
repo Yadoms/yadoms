@@ -65,8 +65,4 @@ ToolbarApi.configureBattery = function (widget, batteryLevel) {
         fill = 4;
 
     widget.$toolbar.find("div.widget-toolbar-battery span").removeClass().addClass("fa fa-battery-" + fill);
-	
-	//In case of very low level, the battery is in red
-	if (fill == 0)
-	   widget.$toolbar.find("div.widget-toolbar-battery").removeClass("widget-toolbar-battery").addClass("widget-toolbar-low-battery");	
 };
