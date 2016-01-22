@@ -18,13 +18,25 @@ void CMSConfiguration::initializeWith(const shared::CDataContainer &data)
       m_data.initializeWith(data);
 
       m_SenderMail = m_data.get<std::string>("Sender");
-      m_ServerName = m_data.get<std::string>("SMTPServer");
-      m_ServerPort = m_data.get<Poco::UInt16>("SMTPPort");
-      m_kSecurityMode = m_data.get<ESecurityMode>("Security");
-      m_bRequireAuthentication = m_data.get<bool>("authentication.checkbox");
-      m_UserAccount = m_data.get<std::string>("authentication.content.User");
-      m_Password = shared::encryption::CXor::decryptBase64(m_data.get<std::string>("authentication.content.Password"));
 
+      if (m_data.exists("account.content.gmail"))
+      {
+         m_ServerName = "smtp.google.com";
+         m_ServerPort = 587;
+         m_kSecurityMode = ESecurityMode::kTLS;
+         m_bRequireAuthentication = true;
+         m_UserAccount = m_SenderMail;
+         m_Password = shared::encryption::CXor::decryptBase64(m_data.get<std::string>("account.content.gmail.authentication.content.Password"));
+      }
+      else if (m_data.exists("account.content.other"))
+      {
+         m_ServerName = m_data.get<std::string>("account.content.other.SMTPServer");
+         m_ServerPort = m_data.get<Poco::UInt16>("account.content.other.SMTPPort");
+         m_kSecurityMode = m_data.get<ESecurityMode>("account.content.other.Security");
+         m_bRequireAuthentication = m_data.get<bool>("account.content.other.authentication.checkbox");
+         m_UserAccount = m_data.get<std::string>("account.content.other.authentication.content.user");
+         m_Password = shared::encryption::CXor::decryptBase64(m_data.get<std::string>("account.content.other.authentication.content.Password"));
+      }
    }
    catch (boost::thread_interrupted&)
    {

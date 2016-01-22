@@ -7,38 +7,58 @@
 			"description": "Yadoms must use an existing mail account. Enter here the email to use to send emails (will also be used as 'from' field of sent emails).",
 			"regexErrorMessage" : "Must be a valid email address"
 		},
-		"SMTPServer": {
-			"name": "SMTP server",
-			"description": "SMTP server name (ie: smtp.gmail.com)"
-		},
-		"SMTPPort": {
-			"name": "SMTP port of the server",
-			"description": "SMTP port (ex: 25, 465 or 587)"
-		},
-		"Security": {
-			"name" : "Security",
-			"description": "The SMTP server requires a secure connection",
-			"values": {
-				"none": "None",
-				"SSL": "Ssl",
-				"TLS": "TLS",
-				"Automatic": "Automatic"
-			}
-		},		
-		"authentication": {
-			"name": "Authentication required by server",
-			"description": "Only if SMTP server requires an authentication",
-			"content": {
-				"User": {
-					"name": "Account name",
-					"description": ""
-				},
-				"Password": {
-					"name": "Account password",
-					"description": "For gmail smtp, this can be GoogleApps password"
-				}
-			}
-		}		
-
+      "account": {
+         "name": "Account type",
+         "content":  {
+            "gmail": {
+               "name": "GMail",
+               "content": {
+                  "password": {
+                     "name": "Password",
+                     "description": "Pour le serveur smtp de Google, le mot de passe est celui des GoogleApps"
+                  }               
+               }
+            }
+         },
+         "content": {
+            "other": {
+               "name": "Autre",
+               "content": {
+                  "SMTPServer": {
+                     "name": "SMTP server",
+                     "description": "SMTP server name"
+                  },
+                  "SMTPPort": {
+                     "name": "SMTP port of the server",
+                     "description": "SMTP port"
+                  },
+                  "Security": {
+                     "name" : "Security",
+                     "description": "The SMTP server requires a secure connection",
+                     "values": {
+                        "none": "None",
+                        "SSL": "SSL",
+                        "TLS": "TLS",
+                        "Automatic": "Automatic"
+                     }
+                  },		
+                  "authentication": {
+                     "name": "Authentication required by server",
+                     "description": "Only if SMTP server requires an authentication",
+                     "content": {
+                        "user": {
+                           "name": "Account name",
+                           "description": ""
+                        },
+                        "password": {
+                           "name": "Account password",
+                           "description": "For gmail smtp, this can be GoogleApps password"
+                        }
+                     }
+                  }
+               }
+            }
+         }
+      }
 	}
 }

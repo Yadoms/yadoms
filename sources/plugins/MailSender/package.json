@@ -6,45 +6,66 @@
    "url": "https://github.com/Yadoms/yadoms/",
 	"credits": "",
 	"supportedPlatforms": "all",
+	"supportManuallyDeviceCreation": "false",
+	"manuallyDeviceCreationConfigurationSchema": {},
 	"configurationSchema": {
 		"Sender": {
 			"type": "string",
 			"regex" : "^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$",
 			"required" : "true"
 		},
-		"SMTPServer": {
-			"type": "string"
-		},
-		"SMTPPort": {
-			"type": "int",
-			"defaultValue": "587"
-		},
-		"Security": {
-			"type": "enum",
-			"values": {
-				"none": "None",
-				"SSL": "Ssl",
-				"TLS": "TLS",
-				"Automatic": "Automatic"
-			}
-		},
-		"authentication": {
-			"type": "section",
-			"name": "Authentication required by server",
-			"description": "Only if SMTP server requires an authentication",
-			"enableWithCheckBox": "true",
-			"enableWithCheckBoxDefaultValue": "false",
-			"content": {
-				"User": {
-					"type": "string"
-				},
-				"Password": {
-					"type": "string",
-					"encrypted": "true"
-				}
-			}
-		}
-	},
-	"supportManuallyDeviceCreation": "false",
-	"manuallyDeviceCreationConfigurationSchema": {}
+      "account": {
+         "type": "radioSection",
+         "content":  {
+            "gmail": {
+               "type": "section",
+               "content": {
+                  "password": {
+                     "type": "string",
+                     "encrypted": "true"
+                  }               
+               }
+            }
+         },
+         "content": {
+            "other": {
+               "type": "section",
+               "content": {
+                  "SMTPServer": {
+                     "type": "string"
+                  },
+                  "SMTPPort": {
+                     "type": "int",
+                     "defaultValue": "587"
+                  },
+                  "Security": {
+                     "type": "enum",
+                     "values": {
+                        "none": "None",
+                        "SSL": "Ssl",
+                        "TLS": "TLS",
+                        "Automatic": "Automatic"
+                     }
+                  },
+                  "authentication": {
+                     "type": "section",
+                     "name": "Authentication required by server",
+                     "description": "Only if SMTP server requires an authentication",
+                     "enableWithCheckBox": "true",
+                     "enableWithCheckBoxDefaultValue": "false",
+                     "content": {
+                        "user": {
+                           "type": "string"
+                        },
+                        "password": {
+                           "type": "string",
+                           "encrypted": "true"
+                        }
+                     }
+                  }              
+               }
+            }
+         }
+      }
+	}
 }
