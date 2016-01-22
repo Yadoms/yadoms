@@ -25,9 +25,7 @@
                      "encrypted": "true"
                   }               
                }
-            }
-         },
-         "content": {
+            },
             "other": {
                "type": "section",
                "content": {

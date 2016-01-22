@@ -26,7 +26,7 @@ void CMSConfiguration::initializeWith(const shared::CDataContainer &data)
          m_kSecurityMode = ESecurityMode::kTLS;
          m_bRequireAuthentication = true;
          m_UserAccount = m_SenderMail;
-         m_Password = shared::encryption::CXor::decryptBase64(m_data.get<std::string>("account.content.gmail.authentication.content.Password"));
+         m_Password = shared::encryption::CXor::decryptBase64(m_data.get<std::string>("account.content.gmail.content.password"));
       }
       else if (m_data.exists("account.content.other"))
       {
@@ -35,7 +35,7 @@ void CMSConfiguration::initializeWith(const shared::CDataContainer &data)
          m_kSecurityMode = m_data.get<ESecurityMode>("account.content.other.Security");
          m_bRequireAuthentication = m_data.get<bool>("account.content.other.authentication.checkbox");
          m_UserAccount = m_data.get<std::string>("account.content.other.authentication.content.user");
-         m_Password = shared::encryption::CXor::decryptBase64(m_data.get<std::string>("account.content.other.authentication.content.Password"));
+         m_Password = shared::encryption::CXor::decryptBase64(m_data.get<std::string>("account.content.other.content.authentication.content.password"));
       }
    }
    catch (boost::thread_interrupted&)

@@ -18,9 +18,7 @@
                      "description": "Pour le serveur smtp de Google, le mot de passe est celui des GoogleApps"
                   }               
                }
-            }
-         },
-         "content": {
+            },
             "other": {
                "name": "Autre",
                "content": {
