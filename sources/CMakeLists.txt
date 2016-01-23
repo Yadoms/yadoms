@@ -162,7 +162,7 @@ if(${OPENSSL_FOUND})
 endif()
 
 
-set( POCO_REQUIRE_MINIMUM_VERSION "1.6.0")
+set( POCO_REQUIRE_MINIMUM_VERSION "1.6.1")
 include(FindPoco.cmake)
 
 IF(NOT ${Poco_FOUND})
