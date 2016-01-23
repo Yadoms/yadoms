@@ -241,7 +241,7 @@ function dispatchToWidgets(acq) {
                         var $battery = widget.$toolbar.find(".widget-toolbar-battery");
                         if ($battery) {
                             if ($battery.attr("keywordId") == acq.keywordId) {
-                                ToolbarApi.configureBattery(widget, acq.value);
+                                ToolbarApi.updateBatteryLevel(widget, acq.value);
                             }
                         }
                     }

@@ -31,7 +31,7 @@ ToolbarApi.manageBatteryConfiguration = function (widget) {
 
                     //we ask immediately for the battery value
                     AcquisitionManager.getLastValue(batteryLevel.id, function (lastValue) {
-                        ToolbarApi.configureBattery(widget, lastValue.value);
+                        ToolbarApi.updateBatteryLevel(widget, lastValue.value);
                     });
                 }
                 else {
@@ -46,7 +46,7 @@ ToolbarApi.manageBatteryConfiguration = function (widget) {
 /**
  * Apply batterylevel onto the icon of the toolbar
  */
-ToolbarApi.configureBattery = function (widget, batteryLevel) {
+ToolbarApi.updateBatteryLevel = function (widget, batteryLevel) {
     assert(!isNullOrUndefined(widget), "$widget must be defined");
     assert(!isNullOrUndefined(batteryLevel), "batteryLevel must be defined");
 
@@ -66,3 +66,20 @@ ToolbarApi.configureBattery = function (widget, batteryLevel) {
 
     widget.$toolbar.find("div.widget-toolbar-battery span").removeClass().addClass("fa fa-battery-" + fill);
 };
+
+/**
+ * Add a battery icon to the widget. DeviceId should be configured with ToolbarApi.configureBatteryIcon
+ */
+ToolbarApi.addBatteryIconToWidget = function (widget) {
+	widget.$toolbar.append("<div class=\"widget-toolbar-battery\" deviceId=\"\"></div>");
+}
+
+/**
+ * Define the keyword Id of the battery toolbar icon. (ToolbarApi.addBatteryIconToWidget must have been called before)
+ */
+ToolbarApi.configureBatteryIcon = function (widget, deviceId) {
+    var $batteryIcon = widget.$toolbar.find(".widget-toolbar-battery");
+    if ($batteryIcon) {
+        $batteryIcon.attr("deviceId", deviceId);
+    }
+}
