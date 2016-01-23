@@ -83,3 +83,20 @@ ToolbarApi.configureBatteryIcon = function (widget, deviceId) {
         $batteryIcon.attr("deviceId", deviceId);
     }
 }
+
+/**
+ * Add a custom icon the toolbar of a widget
+ */
+ToolbarApi.appendCustomIcon = function (widget, buttonDOM) {
+    widget.$toolbar.append(buttonDOM);
+}
+
+/**
+ * Add a separator on the toolbar of a widget
+ */
+ToolbarApi.appendSeparator = function (widget) {
+    widget.$toolbar.append("<div class=\"widget-toolbar-separator\"></div>");
+}
+
+
+

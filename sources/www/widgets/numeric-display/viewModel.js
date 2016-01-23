@@ -21,7 +21,7 @@ function NumericDisplayViewModel() {
         this.widget = widget;
 
         //we create the battery indicator
-        this.widget.$toolbar.append("<div class=\"widget-toolbar-battery\" deviceId=\"\"></div>");
+        ToolbarApi.addBatteryIconToWidget(this.widget);
     };
 
     /**
@@ -44,7 +44,7 @@ function NumericDisplayViewModel() {
         this.widget.ListenKeyword(this.widget.configuration.device.keywordId);
 
         //we fill the deviceId of the battery indicator
-        this.widget.$toolbar.find(".widget-toolbar-battery").attr("deviceId", self.widget.configuration.device.deviceId);
+        ToolbarApi.configureBatteryIcon(this.widget, self.widget.configuration.device.deviceId);
     }
 
     /**
