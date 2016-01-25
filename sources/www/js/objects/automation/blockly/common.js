@@ -122,8 +122,9 @@ Blockly.Yadoms.Initialize = function ($domTarget, initialContent, maxTopBlocks) 
 
         Blockly.Yadoms.LoadLanguageScript_(function() {
             //inject blockly dom+js
-
-            Blockly.Yadoms.CurrentWorkspace = Blockly.inject($domTarget.find("div.blockly-container")[0],
+            var blocklyArea = $("#automation-rule-editor")[0];
+            var blocklyDiv = $domTarget.find("div.blockly-container")[0];
+            Blockly.Yadoms.CurrentWorkspace = Blockly.inject(blocklyDiv,
             {
                 comments: true,
                 disable: true,

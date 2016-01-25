@@ -62,6 +62,7 @@
 
 .edit-automation-rule-modal {
     width: 90%;
+    height: 90%;
     padding: 0;
 }
 
@@ -162,15 +163,50 @@
     cursor:pointer;
 }
 
+#edit-automation-rule-modal .modal-body {
+    position: absolute;
+    top: 50px;
+    bottom: 60px;
+    left: 0;
+    right: 0;
+}
+
+#edit-automation-rule-modal .modal-footer {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+}
+
+#edit-automation-rule-modal .form-horizontal {
+    height: 100%;
+}
+
+#automation-rule-configuration {
+}
+
+#automation-rule-editor {
+    height: 100%;
+    padding-bottom: 115px;
+}
+
+#automation-rule-editor > div {
+    height: 100%;
+}
+
 .code-help-button {
     margin-top: 5px;
 }
 
 .blocklySvg {
-    min-height: 400px;
     width: 100%;
     z-index: 9999 !important;
 	display:block; /* fix svg growing up after each clic */
+    height: 100%;
+}
+
+.blockly-container {
+    height: 100%;
 }
 
 /**

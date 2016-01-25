@@ -259,3 +259,7 @@ body {
 .modal-body {
     margin-left: 0px !important;
 }
+
+.modal-content {
+    height: 100%;
+}

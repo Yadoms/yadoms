@@ -318,7 +318,7 @@
             modals.recipientConfigure = new LazyLoaderManager("modals/recipient_configure.html");
 
             //we start i18n engine
-            var option = { resGetPath: "locales/__lng__.json", fallbackLng: "en", useDataAttrOptions: true, debug: true, "fallbackNS": "translation" };
+            var option = { resGetPath: "locales/__lng__.json", fallbackLng: "en", useDataAttrOptions: true, debug: true, fallbackNS: "translation" };
             i18n.init(option, function () {
                 //$("html").i18n();
 
