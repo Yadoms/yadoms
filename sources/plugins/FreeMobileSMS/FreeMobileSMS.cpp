@@ -127,7 +127,7 @@ void CFreeMobileSms::sendSms(boost::shared_ptr<yApi::IYPluginApi> context, const
       //read answer
       session.receiveResponse(response);
       std::cout << response.getStatus() << " " << response.getReason() << std::endl;
-      if (response.getStatus() != Poco::Net::HTTPResponse::HTTP_UNAUTHORIZED)
+      if (response.getStatus() == Poco::Net::HTTPResponse::HTTP_OK)
       {
          //return true;
          YADOMS_LOG(information) << "SMS sent";
