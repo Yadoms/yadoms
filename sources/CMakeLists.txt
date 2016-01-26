@@ -673,7 +673,7 @@ IF(USE_SQLITE_DATABASE)
 	source_group(server\\database\\sqlite\\requesters  server/database/sqlite/requesters/*.*)
 	source_group(server\\database\\sqlite\\versioning  server/database/sqlite/versioning/*.*)
 	
-	set(LIBS ${LIBS} sqlite)
+	set(YADOMS_EXTERNAL_LINK sqlite)
 	set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${SQLITE_INCLUDE_DIRECTORY})
 ENDIF()
 
@@ -800,7 +800,7 @@ set_property( TARGET yadoms PROPERTY INCLUDE_DIRECTORIES ${YADOMS_ALL_INCL_DIR})
 ##################################################################################################
 ## Link
 ##################################################################################################
-target_link_libraries(yadoms yadoms-shared ${LIBS} ${CMAKE_DL_LIBS})
+target_link_libraries(yadoms yadoms-shared ${YADOMS_EXTERNAL_LINK} ${LIBS} ${CMAKE_DL_LIBS})
 
 
 
@@ -841,7 +841,7 @@ if(COTIRE_USE)
 	cotire(yadoms)
 	
 	if(COTIRE_USE_UNITY)
-		target_link_libraries(yadoms_unity yadoms-shared_unity ${LIBS} ${CMAKE_DL_LIBS})
+		target_link_libraries(yadoms_unity yadoms-shared_unity ${YADOMS_EXTERNAL_LINK} ${LIBS} ${CMAKE_DL_LIBS})
 		set_property( TARGET yadoms_unity PROPERTY INCLUDE_DIRECTORIES ${YADOMS_ALL_INCL_DIR})
 	endif()	
 endif()
