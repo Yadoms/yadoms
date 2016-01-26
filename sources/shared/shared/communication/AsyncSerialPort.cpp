@@ -15,7 +15,8 @@ CAsyncSerialPort::CAsyncSerialPort(
    boost::asio::serial_port_base::character_size characterSize,
    boost::asio::serial_port_base::stop_bits stop_bits,
    boost::asio::serial_port_base::flow_control flowControl,
-   boost::posix_time::time_duration connectRetryDelay)
+   boost::posix_time::time_duration connectRetryDelay,
+   bool flushAtConnect)
    :m_boostSerialPort(m_ioService),
    m_port(port),
    m_baudrate(baudrate), m_parity(parity), m_characterSize(characterSize), m_stop_bits(stop_bits), m_flowControl(flowControl),
@@ -23,7 +24,8 @@ CAsyncSerialPort::CAsyncSerialPort(
    m_connectStateEventHandler(NULL),
    m_connectStateEventId(event::kNoEvent),
    m_connectRetryDelay(connectRetryDelay),
-   m_connectRetryTimer(m_ioService)
+   m_connectRetryTimer(m_ioService),
+   m_flushAtConnect(flushAtConnect)
 {
 }
 
@@ -146,6 +148,10 @@ void CAsyncSerialPort::tryConnect()
 
    // Connected
    notifyEventHandler(true);
+
+   // Flush buffers if required
+   if (m_flushAtConnect)
+      flush();
 
    // Start listening on the port
    startRead();

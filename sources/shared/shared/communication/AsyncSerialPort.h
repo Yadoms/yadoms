@@ -20,6 +20,7 @@ namespace shared { namespace communication {
       /// \param[in] stop_bits            Nb of stop bits (see boost::asio::serial_port_base::stop_bits::type for values)
       /// \param[in] flowControl          Flow control (see boost::asio::serial_port_base::flow_control::type for values)
       /// \param[in] connectRetryDelay    Delay between 2 connection retries
+      /// \param[in] flushAtConnect       If true (default), flush serial port buffers before listening on port
       //--------------------------------------------------------------
       CAsyncSerialPort(
          const std::string& port,
@@ -28,7 +29,8 @@ namespace shared { namespace communication {
          boost::asio::serial_port_base::character_size characterSize = boost::asio::serial_port_base::character_size(8),
          boost::asio::serial_port_base::stop_bits stop_bits = boost::asio::serial_port_base::stop_bits(boost::asio::serial_port_base::stop_bits::one),
          boost::asio::serial_port_base::flow_control flowControl = boost::asio::serial_port_base::flow_control(boost::asio::serial_port_base::flow_control::none),
-         boost::posix_time::time_duration connectRetryDelay = boost::posix_time::seconds(30));
+         boost::posix_time::time_duration connectRetryDelay = boost::posix_time::seconds(30),
+         bool flushAtConnect = true);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
@@ -142,6 +144,11 @@ namespace shared { namespace communication {
       /// \brief	Thread for asynchronous operations
       //--------------------------------------------------------------
       boost::shared_ptr<boost::thread> m_asyncThread;
+
+      //--------------------------------------------------------------
+      /// \brief	Flush serial port buffers before listening on port (just after connection)
+      //--------------------------------------------------------------
+      bool m_flushAtConnect;
    };
 
 } } // namespace shared::communication
