@@ -215,10 +215,7 @@ Blockly.Yadoms.GetDefaultBlock_ = function (keyword, workspace) {
             break;
 			
         case "enum":
-			createdBlock = Blockly.Block.obtain(workspace, 'yadoms_enumeration');
-			var device = Blockly.Yadoms.data.devices[keyword.deviceId];
-			var plugin = Blockly.Yadoms.data.plugins[device.pluginId];
-			createdBlock.updateEnumeration(keyword.id, device.id, plugin.id);
+			createdBlock = Blockly.Block.obtain(workspace, keyword.typeInfo.name);
 		    break
 			
         case "datetime":
