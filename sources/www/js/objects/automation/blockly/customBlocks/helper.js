@@ -10,7 +10,7 @@
  * @param keywordDropDownName The name of the keywords DropDown
  * @constructor
  */
-Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function (thisBlock, onlyWritableKeywords, allowedKeywordTypes, allowedKeywordCapacities, callbackKeywordSelectionChanged, deviceDropDownName, keywordDropDownName, inputType, inputName, workspace) {
+Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function (thisBlock, onlyWritableKeywords, allowedKeywordTypes, allowedKeywordCapacities, callbackKeywordSelectionChanged, deviceDropDownName, keywordDropDownName, inputType, inputName, workspace, automaticallyCreateInputBlock) {
     thisBlock.selectedPlugin_ = null;
 
     // ReSharper disable JoinDeclarationAndInitializerJs
@@ -104,8 +104,35 @@ Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function (thisBlock, on
 				}
 			}
 			*/
-			if(inputType && inputType.type === Blockly.INPUT_VALUE) {
-				inputType.setCheck(type);
+            if (inputType && inputType.type === Blockly.INPUT_VALUE) {
+
+                //if the input is connected to shadow block, then just remove it
+                var connection = inputType.connection;
+                var connectionIsNull = connection && !connection.targetConnection;
+                if (!connectionIsNull) {
+                    var childBlock = connection.targetBlock();
+                    if (childBlock) {
+                        if (childBlock.isShadow()) {
+                            childBlock.dispose();
+                        }
+                    }
+                }
+
+                inputType.setCheck(type);
+
+                //if connection is empty, add good default block
+                if (!connection.targetConnection && automaticallyCreateInputBlock === true) {
+
+                    thisBlock.createInputBlock(inputType, workspace);
+                    /*
+                    var newChildBlock = Blockly.Yadoms.GetDefaultBlock_(Blockly.Yadoms.data.keywords[keyword], workspace);
+                    if (newChildBlock) {
+                        newChildBlock.setShadow(true);
+                        newChildBlock.initSvg();
+                        newChildBlock.render();
+                        connection.connect(newChildBlock.outputConnection);
+                    }*/
+                }
 			}
 			
 
@@ -114,6 +141,19 @@ Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function (thisBlock, on
             }
         }
     });
+
+    thisBlock.createInputBlock = function (inputType, workspace) {
+        if (inputType && inputType.type === Blockly.INPUT_VALUE) {
+            var connection = inputType.connection;
+            var newChildBlock = Blockly.Yadoms.GetDefaultBlock_(Blockly.Yadoms.data.keywords[keywordDd.getValue()], workspace);
+            if (newChildBlock) {
+                newChildBlock.setShadow(true);
+                newChildBlock.initSvg();
+                newChildBlock.render();
+                connection.connect(newChildBlock.outputConnection);
+            }
+        }
+    };
 
     //add event fire value changed
     deviceDd.setValue = function (newValue) {

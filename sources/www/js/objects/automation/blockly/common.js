@@ -86,13 +86,12 @@ Blockly.Yadoms.LoadLanguageScript_ = function (callback) {
 
     //first try to load user specific language
     var currentLng = i18n.options.lng.substring(0, 2);
-
     $.getScript("libs/blockly/js/locales/" + currentLng + ".js")
         .done(function () {
             callback();
         })
         .fail(function () {
-            console.warning("Fail to load Blockly for " + currentLng);
+            console.warn("Fail to load Blockly for " + currentLng);
             //if it fails, load english one
             $.getScript("libs/blockly/js/locales/en.js")
                 .done(function () {
