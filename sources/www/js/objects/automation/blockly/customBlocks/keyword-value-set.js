@@ -62,8 +62,14 @@ Blockly.Blocks["keyword-value-set"] = {
 
                 //if connection is empty, add good default block
                 if (!input.connection.targetConnection && thisBlock.disableAutomaticBlocCreation === false) {
-
-                    thisBlock.createInputBlock(input, thisBlock.workspace);
+                    var newChildBlock = Blockly.Yadoms.GetDefaultBlock_(Blockly.Yadoms.data.keywords[keyword], thisBlock.workspace);
+                    if (newChildBlock) {
+                        newChildBlock.setShadow(true);
+                        newChildBlock.initSvg();
+                        newChildBlock.render();
+                        input.connection.connect(newChildBlock.outputConnection);
+                    }					
+					
                 }
             }
             thisBlock.updateUnit(Blockly.Yadoms.data.keywords[keyword]);
