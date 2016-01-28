@@ -276,7 +276,7 @@
       modals.deviceAddManually.load(function() {
          askPluginTypesForManuallyDeviceCreation(function(pi) {
             //we get package.json
-            PluginInstanceManager.downloadPackage(pi, function() {
+            PluginInstanceManager.downloadPackage(pi).done(function() {
                //we ask for configuration modal async
                modals.deviceConfigureManually.load(function() {
                   //we launch configureInstance GUI

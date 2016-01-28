@@ -102,13 +102,41 @@ PluginInstanceManager.getAll = function (callback, sync) {
           }
 
           var result = [];
-          data.data.plugin.forEach(function( value) {
-             var pi = PluginInstanceManager.factory(value);
-             PluginInstanceManager.downloadPackage(pi, undefined, true);
-             result.push(pi);
+          var arrayOfDeffered = [];
+          data.data.plugin.forEach(function (value) {
+              try {
+                  var pi = PluginInstanceManager.factory(value);
+                  var deffered = PluginInstanceManager.downloadPackage(pi);
+                  arrayOfDeffered.push(deffered);
+                  deffered.done(function() {
+                      result.push(pi);
+                  }).fail(function() {
+                      console.warn("fail to get plugin " + value);
+                  });
+
+              } catch (ex) {
+                  notifyWarning($.t("objects.generic.errorLoading", { objectName: "plugin " + value }), JSON.stringify(ex));
+              }
+
           });
 
-          callback(result);
+           //when all deffered have been finished
+          //$.when.apply($, arrayOfDeffered)
+          //.done(function () {
+          //    callback(result);
+          //});
+
+          $.when.apply($, $.map(arrayOfDeffered, function (d) {
+              var wrapDeferred = $.Deferred();
+              // you can add .done and .fail if you want to keep track of each results individualy
+              d.always(function() {
+                   wrapDeferred.resolve();
+              });
+              return wrapDeferred.promise();
+          })).done(function () {
+              callback(result);
+          });
+
        })
        .fail(function() {
           notifyError($.t("objects.generic.errorLoading", {objectName:"plugin instances"}));
@@ -352,24 +380,20 @@ PluginInstanceManager.updateToServer = function(pluginInstance, callback, sync) 
 /**
  * Download a plugin package for an instance (asynchronously)
  * @param pluginInstance The plugin instance
- * @param callback The callback for receiving the plugin package
  */
-PluginInstanceManager.downloadPackage = function(pluginInstance, callback, sync) {
+PluginInstanceManager.downloadPackage = function(pluginInstance) {
    assert(!isNullOrUndefined(pluginInstance), "pluginInstance must be defined");
+
+   var d = new $.Deferred();
 
    //we can't download package from system plugins
    if (!pluginInstance.isSystemCategory()) {
-
-       var async = true;
-       if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
-           async = !sync;
 
        $.ajax({
            type: "GET",
            url: "plugins/" + pluginInstance.type + "/package.json",
            contentType: "application/json; charset=utf-8",
-           dataType: "json",
-           async: async
+           dataType: "json"
        }).done(function (data) {
 
             pluginInstance.package = data;
@@ -381,18 +405,18 @@ PluginInstanceManager.downloadPackage = function(pluginInstance, callback, sync)
             //we restore the resGetPath
             i18n.options.resGetPath = "locales/__lng__.json";
 
-            if ($.isFunction(callback))
-               callback();
+            d.resolve();
+
          })
          .fail(function() {
-             notifyError($.t("objects.pluginInstance.errorGettingPackage", {pluginName : pluginInstance.displayName}));
-             if ($.isFunction(callback))
-                callback();
+             notifyError($.t("objects.pluginInstance.errorGettingPackage", { pluginName: pluginInstance.displayName }));
+             d.reject();
           });
    } else {
-      if ($.isFunction(callback))
-         callback();
+       d.resolve();
    }
+
+   return d.promise();
 };
 
 /**
