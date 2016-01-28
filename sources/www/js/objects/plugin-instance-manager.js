@@ -120,23 +120,9 @@ PluginInstanceManager.getAll = function (callback, sync) {
 
           });
 
-           //when all deffered have been finished
-          //$.when.apply($, arrayOfDeffered)
-          //.done(function () {
-          //    callback(result);
-          //});
-
-          $.when.apply($, $.map(arrayOfDeffered, function (d) {
-              var wrapDeferred = $.Deferred();
-              // you can add .done and .fail if you want to keep track of each results individualy
-              d.always(function() {
-                   wrapDeferred.resolve();
-              });
-              return wrapDeferred.promise();
-          })).done(function () {
+          $.whenAll(arrayOfDeffered).done(function () {
               callback(result);
           });
-
        })
        .fail(function() {
           notifyError($.t("objects.generic.errorLoading", {objectName:"plugin instances"}));

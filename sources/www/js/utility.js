@@ -228,3 +228,15 @@ function concatenateUrl(url1, url2) {
    //default case : append the url
    return url1 + url2;
 }
+
+$.whenAll = function (arrayOfDeffered) {
+    return $.when.apply($, $.map(arrayOfDeffered, function(d) {
+        var wrapDeferred = $.Deferred();
+        // you can add .done and .fail if you want to keep track of each results individualy
+        d.always(function() {
+            wrapDeferred.resolve();
+        });
+        return wrapDeferred.promise();
+    }));
+}
+
