@@ -16,11 +16,19 @@ var failGetEventCounter = 0;
 function initializeWidgetEngine() {
 
     /**
-     * Callback of the click on the add widget button
-     * Make lazy loading of the add widget modal
+     * Callback of the click on the add page button
+     * Make lazy loading of the add page modal
      */
     $("#btn-add-page").click(function () {
         createOrUpdatePage();
+    });
+
+/**
+     * Callback of the click on the add widget button
+     * Make lazy loading of the add widget modal
+     */
+    $("#btn-add-widget").click(function() {
+        modals.widgetAdd.load(function() { askWidgetPackages(); });
     });
 
     //we ask all widgets packages

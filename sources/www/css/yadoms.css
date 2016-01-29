@@ -72,6 +72,10 @@ body {
     overflow-y: auto !important;
 }
 
+#btn-add-widget {
+    margin-top: 9px;
+}
+
 #btn-add-page {
     width: 0.0001%;
 }
