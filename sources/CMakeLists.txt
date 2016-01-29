@@ -50,6 +50,7 @@ include(copyBoost.cmake)
 ## CPack installation preconfiguration
 ##################################################################################################
 set(INSTALL_BINDIR "bin")
+SET(CPACK_OUTPUT_FILE_PREFIX "${PROJECT_SOURCE_DIR}/../builds/package")
 set(CMAKE_INSTALL_DEFAULT_COMPONENT_NAME "YadomsCore")
 
 ##################################################################################################
