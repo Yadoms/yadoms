@@ -228,3 +228,5 @@ function concatenateUrl(url1, url2) {
    //default case : append the url
    return url1 + url2;
 }
+
+

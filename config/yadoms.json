@@ -1,7 +1,7 @@
 {
    "server" : {
 	  "port" : "8080",
-	  "ip" : "0.0.0.0"
+	  "ip" : "0.0.0.0",
       "www" : "www",
 	  "logLevel" : "information",
 	  "databasePath" : "yadoms.db3",

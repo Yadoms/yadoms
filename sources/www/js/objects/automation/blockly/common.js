@@ -86,13 +86,12 @@ Blockly.Yadoms.LoadLanguageScript_ = function (callback) {
 
     //first try to load user specific language
     var currentLng = i18n.options.lng.substring(0, 2);
-
     $.getScript("libs/blockly/js/locales/" + currentLng + ".js")
         .done(function () {
             callback();
         })
         .fail(function () {
-            console.warning("Fail to load Blockly for " + currentLng);
+            console.warn("Fail to load Blockly for " + currentLng);
             //if it fails, load english one
             $.getScript("libs/blockly/js/locales/en.js")
                 .done(function () {
@@ -216,10 +215,7 @@ Blockly.Yadoms.GetDefaultBlock_ = function (keyword, workspace) {
             break;
 			
         case "enum":
-			createdBlock = Blockly.Block.obtain(workspace, 'yadoms_enumeration');
-			var device = Blockly.Yadoms.data.devices[keyword.deviceId];
-			var plugin = Blockly.Yadoms.data.plugins[device.pluginId];
-			createdBlock.updateEnumeration(keyword.id, device.id, plugin.id);
+			createdBlock = Blockly.Block.obtain(workspace, keyword.typeInfo.name);
 		    break
 			
         case "datetime":

@@ -152,9 +152,8 @@ RecipientManager.getAll = function (sync) {
                 });
             });
 
-            //when all deffered have been finished
-            $.when.apply($, arrayOfDeffered)
-            .done(function () {
+            //when all deffered have been finished (and even if one of them is rejected)
+            $.whenAll(arrayOfDeffered).done(function () {
                 d.resolve(recipientList);
             });
         })
@@ -206,11 +205,11 @@ RecipientManager.getByField = function (field, sync) {
                });
            });
 
-           //when all deffered have been finished
-           $.when.apply($, arrayOfDeffered)
-           .done(function () {
+           //when all deffered have been finished (and even if one of them is rejected)
+           $.whenAll(arrayOfDeffered).done(function () {
                d.resolve(recipientFieldList);
            });
+
 
        })
        .fail(function () {

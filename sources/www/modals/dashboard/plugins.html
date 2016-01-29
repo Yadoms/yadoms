@@ -114,7 +114,7 @@
       //pi represent the pluginInstance concerned
       return function() {
          //we get package.json
-         PluginInstanceManager.downloadPackage(pi, function() {
+         PluginInstanceManager.downloadPackage(pi).done(function() {
             //we ask for configuration modal async
             modals.pluginConfigure.load(function() {
                configurePluginInstance(pi, function() {
@@ -214,7 +214,7 @@
          askPluginTypes(function(pluginType) {
             var pi = new PluginInstance(null, $.t("plugins/" + pluginType.type + ":name", {defaultValue : pluginType.package.name}), pluginType.type, "", 1, "user");
             //we get package.json
-            PluginInstanceManager.downloadPackage(pi, function() {
+            PluginInstanceManager.downloadPackage(pi).done(function() {
                //we ask for configuration modal async
                modals.pluginConfigure.load(function() {
                   //we launch configureInstance GUI

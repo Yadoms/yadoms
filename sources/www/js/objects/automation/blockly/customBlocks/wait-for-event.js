@@ -15,7 +15,8 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
         this.setColour(Blockly.Yadoms.blockColour.HUE);
         this.setTooltip($.t("blockly.blocks.yadoms_wait_for_event.tooltip"));
         this.setHelpUrl("http://www.example.com/");
-		this.setInputsInline(true);
+        this.setInputsInline(true);
+        this.disableAutomaticBlocCreation = false;
         this.setMutator(new Blockly.Mutator(["yadoms_wait_for_event_mutator_store_in_variable",
                                             "yadoms_wait_for_event_mutator_change",
                                             "yadoms_wait_for_event_mutator_become",
@@ -178,7 +179,7 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
     appendKeywordSelectorStatementBecome_: function (no, devId, keyId, operator, valueConnection, statementConnection) {
         var bValueInput = this.appendValueInput("additionalInput_part1_" + no).appendField($.t("blockly.blocks.yadoms_wait_for_event.case"));
         var self = this;
-        Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection(this, false, ["numeric", "string", "bool", "datetime", "enum"], undefined, function () { self.onKeywordChange_(no); }, "deviceDd" + no, "keywordDd" + no, bValueInput, "", self.workspace)
+        Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection(this, false, ["numeric", "string", "bool", "datetime", "enum"], undefined, function (keyword, type) { self.onKeywordChange_(no, keyword, type); }, "deviceDd" + no, "keywordDd" + no, bValueInput, "", self.workspace, !(self.disableAutomaticBlocCreation))
         .appendField($.t("blockly.blocks.yadoms_wait_for_event.triggeredType.become")).appendField(new Blockly.FieldDropdown(Blockly.Yadoms.NumberOperators_), "operatorDd"+no);
 		bValueInput.setForceNewlineInput(true);
 		
@@ -197,8 +198,13 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
         }
 
         if (valueConnection) {
+
+            if (bValueInput && bValueInput.connection && bValueInput.connection.targetBlock()) {
+                bValueInput.connection.targetBlock().dispose();
+            }
+
             bValueInput.connection.connect(valueConnection);
-        } 
+        }
 
         this.appendInputPart2_(no, statementConnection);
     },
@@ -240,8 +246,18 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
             opDd.setValue(operator);
         }
 
-        if (valueConnection) {
-            bValueInput.connection.connect(valueConnection);
+        if (bValueInput) {
+            if (valueConnection) {
+                bValueInput.connection.connect(valueConnection);
+            } else {
+                var newChildBlock = Blockly.Block.obtain(this.workspace, 'yadoms_date_datetime');
+                if (newChildBlock) {
+                    newChildBlock.setShadow(true);
+                    newChildBlock.initSvg();
+                    newChildBlock.render();
+                    bValueInput.connection.connect(newChildBlock.outputConnection);
+                }
+            }
         }
 
         this.appendInputPart2_(no, statementConnection);
@@ -269,36 +285,8 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
      * When keyword changes, update check and operator
      * @param {Number} no The input number
      */
-    onKeywordChange_: function (no) {
-        var keywordId = this.getFieldValue("keywordDd" + no);
-        if (keywordId) {
-            var keyword = Blockly.Yadoms.data.keywords[keywordId];
-
-            var yadomsTypeName = "";
-            if (!isNullOrUndefined(keyword.typeInfo) && !isNullOrUndefined(keyword.typeInfo.name))
-                yadomsTypeName = keyword.typeInfo.name;
-
-            var type = Blockly.Yadoms.GetBlocklyType_(keyword.type, yadomsTypeName);
-
-
-            //null value allowed, dont check if type is null
-            this.getInput("additionalInput_part1_" + no).setCheck(type);
+    onKeywordChange_: function (no, keywordId, type) {
             this.updateOperator_(no, type);
-			
-			//if connection is empty, add good default block
-			/*
-			var connection = this.getInput("additionalInput_part1_" + no).connection;
-			if(!connection.targetConnection) {
-				var childBlock = Blockly.Yadoms.GetDefaultBlock_(keyword, this.workspace);
-				if(childBlock) {
-					//childBlock.setFieldValue('NUM', 42);
-					childBlock.initSvg();
-					childBlock.render();
-					connection.connect(childBlock.outputConnection);
-				}
-			}*/
-			
-        }
     },
 
     /**
@@ -403,7 +391,7 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
             }
         }
     },
-    customContextMenu: Blockly.Blocks["controls_for"].customContextMenu,
+    //customContextMenu: Blockly.Blocks["controls_for"].customContextMenu,
 
     /**
      * Update the block depending on the mutation
@@ -455,7 +443,10 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
                 this.mutationData_.additionalBlocks.push(childNode.getAttribute("type"));
             }
         }
+
+        this.disableAutomaticBlocCreation = true;
         this.updateShape_();
+        this.disableAutomaticBlocCreation = false;
     },
 
     /**
@@ -500,6 +491,12 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
         if (inputVar)
             this.removeInput("storeVariableInput");
         this.removeAllAdditionalInputs_();
+
+        //remove any shadow item on workspace
+        $.each(this.workspace.topBlocks_, function (index, block) {
+            if (block && block.isShadow())
+                block.dispose();
+        });
     },
 
     /**
@@ -564,6 +561,12 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
                 clauseBlock.nextConnection.targetBlock();
         }
 
+        //remove any shadow item on workspace
+        $.each(this.workspace.topBlocks_, function(index, block) {
+            if (block && block.isShadow())
+                block.dispose();
+        });
+
         //manage warning display
         this.setWarningText(null);
 
@@ -574,6 +577,15 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
         if (additionalBlockCount === 0) {
             this.setWarningText($.t("blockly.blocks.yadoms_wait_for_event.mutator.error.noAddtitionalBlock"));
         }
+    },
+
+    getTargetConnectionIfNotShadow_: function (input) {
+
+        if (input && input.connection) {
+            if (input.connection.targetBlock() && !input.connection.targetBlock().isShadow())
+                return input.connection.targetConnection;
+        }
+        return undefined;
     },
     /**
      * Store pointers to any connected child blocks.
@@ -593,7 +605,8 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
                     clauseBlock.part1KeywordId_ = this.getFieldValue("keywordDd" + i);
                     //save statement
                     inputPart2 = this.getInput("additionalInput_part2_" + i);
-                    clauseBlock.part2Connection_ = inputPart2 && inputPart2.connection.targetConnection;
+                    clauseBlock.part2Connection_ = this.getTargetConnectionIfNotShadow_(inputPart2);
+
                     i++;
                     break;
 
@@ -604,18 +617,18 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
                     clauseBlock.part1DeviceId_ = this.getFieldValue("deviceDd" + i);
                     clauseBlock.part1KeywordId_ = this.getFieldValue("keywordDd" + i);
                     clauseBlock.part1Operator_ = this.getFieldValue("operatorDd" + i);
-                    clauseBlock.part1Connection_ = inputPart1 && inputPart1.connection.targetConnection;
+                    clauseBlock.part1Connection_ = this.getTargetConnectionIfNotShadow_(inputPart1); 
 
                     //save statement
                     inputPart2 = this.getInput("additionalInput_part2_" + i);
-                    clauseBlock.part2Connection_ = inputPart2 && inputPart2.connection.targetConnection;
+                    clauseBlock.part2Connection_ = this.getTargetConnectionIfNotShadow_(inputPart2); 
                     i++;
                     break;
 
                 case "yadoms_wait_for_event_mutator_datetime_change":
                     //save statement
                     inputPart2 = this.getInput("additionalInput_part2_" + i);
-                    clauseBlock.part2Connection_ = inputPart2 && inputPart2.connection.targetConnection;
+                    clauseBlock.part2Connection_ = this.getTargetConnectionIfNotShadow_(inputPart2);
                     i++;
                     break;
 
@@ -624,11 +637,11 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
                     inputPart1 = this.getInput("additionalInput_part1_" + i);
 
                     clauseBlock.part1Operator_ = this.getFieldValue("operatorDd" + i);
-                    clauseBlock.part1Connection_ = inputPart1 && inputPart1.connection.targetConnection;
+                    clauseBlock.part1Connection_ = this.getTargetConnectionIfNotShadow_(inputPart1);
 
                     //save statement
                     inputPart2 = this.getInput("additionalInput_part2_" + i);
-                    clauseBlock.part2Connection_ = inputPart2 && inputPart2.connection.targetConnection;
+                    clauseBlock.part2Connection_ = this.getTargetConnectionIfNotShadow_(inputPart2);
                     i++;
                     break;
 

@@ -19,41 +19,62 @@ Blockly.Blocks["keyword-value-set"] = {
         this.setTooltip($.t("blockly.blocks.keyword-value-set.tooltip", { defaultValue: "" }));
         this.setColour(Blockly.Yadoms.blockColour.HUE);
 
+        this.disableAutomaticBlocCreation = false;
+
         this.appendDummyInput()
             .appendField($.t("blockly.blocks.keyword-value-set.title"));
         var thisBlock = this;
 
         Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection(this, true, ["numeric", "string", "bool", "nodata", "enum", "datetime"], undefined, function (keyword, keywordType) {
             if (keywordType == null) {
+
+                var previousInput = thisBlock.getInput(thisBlock.inputValueName);
+                if (previousInput) {
+                    //remove any shadow item before removing input if already exists
+                    //if the input is connected to shadow block, then just remove it
+                    if (previousInput.connection && previousInput.connection.targetConnection) {
+                        if (previousInput.connection.targetBlock() && previousInput.connection.targetBlock().isShadow()) {
+                            previousInput.connection.targetBlock().dispose();
+                        }
+                    }
+                }
+
                 thisBlock.updateShape_(false);
             }
             else {
                 thisBlock.updateShape_(true);
-                thisBlock.getInput(thisBlock.inputValueName).setCheck(keywordType);
+
+                var input = thisBlock.getInput(thisBlock.inputValueName);
+
+                //remove any shadow item before changing type check
+                //if the input is connected to shadow block, then just remove it
+                if (input.connection && input.connection.targetConnection) {
+                    var childBlock = input.connection.targetBlock();
+                    if (childBlock) {
+                        if (childBlock.isShadow()) {
+                            childBlock.dispose();
+                        }
+                    }
+                }
+
+                //update type check
+                input.setCheck(keywordType);
+
+                //if connection is empty, add good default block
+                if (!input.connection.targetConnection && thisBlock.disableAutomaticBlocCreation === false) {
+                    var newChildBlock = Blockly.Yadoms.GetDefaultBlock_(Blockly.Yadoms.data.keywords[keyword], thisBlock.workspace);
+                    if (newChildBlock) {
+                        newChildBlock.setShadow(true);
+                        newChildBlock.initSvg();
+                        newChildBlock.render();
+                        input.connection.connect(newChildBlock.outputConnection);
+                    }					
+					
+                }
             }
             thisBlock.updateUnit(Blockly.Yadoms.data.keywords[keyword]);
         }, thisBlock.deviceDropDownName, thisBlock.keywordDropDownName);
 
-
-        /**
-         * Method which make type checks when one of connector changes
-         */
-        this.onchange = function () {
-            var keywordValue = thisBlock.getSelectedKeyword();
-            var deviceValue = thisBlock.getSelectedDevice();
-            var pluginValue = thisBlock.getSelectedPlugin();
-
-            var inputValue = thisBlock.getInput(thisBlock.inputValueName);
-            if (!inputValue) {
-                return;  // Block under construction, ignore.
-            }
-            var block = inputValue.connection.targetBlock();
-            if (block) {
-                if (block.type === "yadoms_enumeration") {
-                    block.updateEnumeration(keywordValue, deviceValue, pluginValue);
-                }
-            }
-        };
     },
 
     /**
@@ -117,7 +138,10 @@ Blockly.Blocks["keyword-value-set"] = {
     domToMutation: function (xmlElement) {
         //attribute name must be lower case
         var inputValueShown = (xmlElement.getAttribute("input_shown") === "true");
+
+        this.disableAutomaticBlocCreation = true;
         this.updateShape_(inputValueShown);
+        this.disableAutomaticBlocCreation = false;
     }
 
 

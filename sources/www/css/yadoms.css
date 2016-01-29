@@ -66,6 +66,12 @@ body {
 .customization-item {
 }
 
+/*We ensure that all modal can scroll the screen*/
+.modal {
+    overflow-x: hidden;
+    overflow-y: auto !important;
+}
+
 #btn-add-page {
     width: 0.0001%;
 }

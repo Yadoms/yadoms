@@ -145,7 +145,6 @@
      * Callback to the click of the button to confirm an add of a new widget
      */
     $("button#btn-confirm-add-widget").click(function () {
-
        var currentPage = PageManager.getCurrentPage();
        assert(!isNullOrUndefined(currentPage), "A page must be selected");
 
@@ -153,63 +152,65 @@
        $("button#btn-get-more-widget").removeClass("hidden");
        $("button#btn-close-details").addClass("hidden");
 
-       //we close the new widget modal
-       $("div#new-widget-modal").modal("hide");
+       //we close the new widget modal and wait for the modal being closed before continuing
 
-       var $detailsDiv = $("div#add-widget-details");
+        $("div#new-widget-modal").on("hidden.bs.modal", function() {
+            var $detailsDiv = $("div#add-widget-details");
 
-       var packageName = $detailsDiv.attr("widget-type");
+            var packageName = $detailsDiv.attr("widget-type");
 
-       //we get default size of the widget
-       var minX = 1;
-       var minY = 1;
+            //we get default size of the widget
+            var minX = 1;
+            var minY = 1;
 
-       var package = WidgetPackageManager.widgetPackages[packageName].package;
+            var package = WidgetPackageManager.widgetPackages[packageName].package;
 
-       try {
-          minX = package.dimensions.min.x;
-          minY = package.dimensions.min.y;
-       }
-       catch(err) {}
+            try {
+                minX = package.dimensions.min.x;
+                minY = package.dimensions.min.y;
+            }
+            catch (err) { }
 
-       var maxX = Infinity;
-       var maxY = Infinity;
-       try {
-          maxX = package.dimensions.max.x;
-          maxY = package.dimensions.max.y;
-       }
-       catch(err) {}
+            var maxX = Infinity;
+            var maxY = Infinity;
+            try {
+                maxX = package.dimensions.max.x;
+                maxY = package.dimensions.max.y;
+            }
+            catch (err) { }
 
-       var defaultX = 1;
-       var defaultY = 1;
-       try {
-          defaultX = package.dimensions.default.x;
-          defaultY = package.dimensions.default.y;
-       }
-       catch(err) {}
+            var defaultX = 1;
+            var defaultY = 1;
+            try {
+                defaultX = package.dimensions.default.x;
+                defaultY = package.dimensions.default.y;
+            }
+            catch (err) { }
 
-       var sizeX = Math.min(maxX, Math.max(defaultX, minX));
-       var sizeY  = Math.min(maxY, Math.max(defaultY, minY));
+            var sizeX = Math.min(maxX, Math.max(defaultX, minX));
+            var sizeY = Math.min(maxY, Math.max(defaultY, minY));
 
-       //we create a fake widget to display configuration form
-       var newWidget = new Widget(-1, currentPage.id, packageName, "", sizeX, sizeY, 0, 0, "");
+            //we create a fake widget to display configuration form
+            var newWidget = new Widget(-1, currentPage.id, packageName, "", sizeX, sizeY, 0, 0, "");
 
-       newWidget.package = package;
+            newWidget.package = package;
 
-       //we load configuration window only if the widget has a configuration
-       if (!isNullOrUndefined(newWidget.package.configurationSchema)) {
-          modals.widgetConfiguration.load(function() {
+            //we load configuration window only if the widget has a configuration
+            if (!isNullOrUndefined(newWidget.package.configurationSchema)) {
+                modals.widgetConfiguration.load(function () {
 
-              configureWidget(newWidget, function () {
-                  //if the configuration has been validated we can create the widget
-                 createWidget(newWidget, currentPage);
-              });
-          });
-       }
-       else {
-          //we directly create the widget
-          createWidget(newWidget, currentPage);
-       }
+                    configureWidget(newWidget, function () {
+                        //if the configuration has been validated we can create the widget
+                        createWidget(newWidget, currentPage);
+                    });
+                });
+            }
+            else {
+                //we directly create the widget
+                createWidget(newWidget, currentPage);
+            }
+        });
+        $("div#new-widget-modal").modal("hide");
     });
 
    function createWidget(newWidget, currentPage) {

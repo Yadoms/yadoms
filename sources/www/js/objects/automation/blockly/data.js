@@ -27,57 +27,59 @@ Blockly.Yadoms.LoadDataForBlocklyCustomBlocks_ = function () {
         $.each(list, function(key, plugin) {
             result.plugins[plugin.id] = plugin;
         });
+		
+		DeviceManager.getAll(function (list) {
+			$.each(list, function (deviceKey, device) {
+				result.devices[device.id] = device;
+			});
+		}, true);
+
+		KeywordManager.getAll(function (list) {
+			$.each(list, function (keywordKey, keyword) {
+				result.keywords[keyword.id] = keyword;
+			});
+		}, true);
+
+		RecipientManager.getAll(true)
+		.done(function (list) {
+			$.each(list, function (recipientKey, recipient) {
+				result.recipients[recipient.id] = recipient;
+			});
+			//TODO : extract this code into a deffered when of all previous synchronous calls
+			$.each(result.keywords, function (index, keywordData) {
+				var pluginData = result.plugins[result.devices[keywordData.deviceId].pluginId];
+				if (!isNullOrUndefined(keywordData) && keywordData.type.toUpperCase() === "enum".toUpperCase()) {
+					var typeInfo = keywordData.typeInfo;
+					if (!isNullOrUndefined(typeInfo) && !isNullOrUndefined(typeInfo.name) && !isNullOrUndefined(typeInfo.values)) {
+						var typeToSet = "enum_" + typeInfo.name;
+
+						//all is OK, this is a new enum, ask for translation
+						var translatedEnum = [];
+						$.each(typeInfo.values, function (index2, value) {
+							var trad = $.t("plugins/" + pluginData.type + ":enumerations." + typeInfo.name + ".values." + value, { defaultValue: value });
+							translatedEnum.push([trad, value]);
+						});
+
+						var translatedName = $.t("plugins/" + pluginData.type + ":enumerations." + typeInfo.name + ".name", { defaultValue: typeInfo.name });
+
+						result.enumerations[typeToSet] = {
+							typeToSet: typeToSet,
+							name: typeInfo.name,
+							translatedName : translatedName,
+							values: translatedEnum
+						};
+
+					}
+				}
+
+			});
+
+			d.resolve(result);
+		});
+		
     }, true);
 
-    DeviceManager.getAll(function (list) {
-        $.each(list, function (deviceKey, device) {
-            result.devices[device.id] = device;
-        });
-    }, true);
-
-    KeywordManager.getAll(function (list) {
-        $.each(list, function (keywordKey, keyword) {
-            result.keywords[keyword.id] = keyword;
-        });
-    }, true);
-
-    RecipientManager.getAll(true)
-    .done(function (list) {
-        $.each(list, function (recipientKey, recipient) {
-            result.recipients[recipient.id] = recipient;
-        });
-        //TODO : extract this code into a deffered when of all previous synchronous calls
-        $.each(result.keywords, function (index, keywordData) {
-            var pluginData = result.plugins[result.devices[keywordData.deviceId].pluginId];
-            if (!isNullOrUndefined(keywordData) && keywordData.type.toUpperCase() === "enum".toUpperCase()) {
-                var typeInfo = keywordData.typeInfo;
-                if (!isNullOrUndefined(typeInfo) && !isNullOrUndefined(typeInfo.name) && !isNullOrUndefined(typeInfo.values)) {
-                    var typeToSet = "enum_" + typeInfo.name;
-
-                    //all is OK, this is a new enum, ask for translation
-                    var translatedEnum = [];
-                    $.each(typeInfo.values, function (index2, value) {
-                        var trad = $.t("plugins/" + pluginData.type + ":enumerations." + typeInfo.name + ".values." + value, { defaultValue: value });
-                        translatedEnum.push([trad, value]);
-                    });
-
-                    var translatedName = $.t("plugins/" + pluginData.type + ":enumerations." + typeInfo.name + ".name", { defaultValue: typeInfo.name });
-
-                    result.enumerations[typeToSet] = {
-                        typeToSet: typeToSet,
-                        name: typeInfo.name,
-                        translatedName : translatedName,
-                        values: translatedEnum
-                    };
-
-                }
-            }
-
-        });
-
-        d.resolve(result);
-    });
-
+    
     return d.promise();
 };
 
