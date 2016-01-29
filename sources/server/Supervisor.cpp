@@ -158,6 +158,7 @@ void CSupervisor::run()
       dateTimeNotificationService.start();
 
       //stop web server
+      webServer->stop();
       webServer.reset();
 
       //stop the automation rules
