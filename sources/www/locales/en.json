@@ -511,6 +511,7 @@
         "days": "days"
       }
     },
+    "templateHelp": "Click on the blue cog icon, to configure the trigger",
     "blocks": {
       "yadoms_wait": {
         "title": "At",

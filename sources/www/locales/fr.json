@@ -512,6 +512,7 @@
         "days": "jours"
       }
     },
+    "templateHelp": "Cliquer sur l'icone engrenage bleu pour configurer les évènements",
     "blocks": {
       "yadoms_wait": {
         "title": "Attendre",

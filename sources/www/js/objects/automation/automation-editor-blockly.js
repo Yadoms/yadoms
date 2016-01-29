@@ -75,19 +75,13 @@ AutomationEditorBlockly.prototype.onModalShown = function($modal) {
    $(document).off('focusin.modal');
 
    //load content
-   //TODO : check if rule exist
    var content = self.rule.content;
 
-   //to make the blockly works twice, we remove completely the dom element on re-create it
-   /*var $mainDiv = $("div#" + this.getUuid());
-    if(!isNullOrUndefined($mainDiv))
-    $mainDiv.remove();
-*/
+   //clear main div (content and css classes)
    $mainDiv.empty().removeClass();
-
+   
    //load blockly
    Blockly.Yadoms.Initialize($mainDiv, content, 1);
-   //Blockly.Yadoms.Initialize($mainDiv.find("div.blockly-container")[0], content, 1);
 };
 
 /**

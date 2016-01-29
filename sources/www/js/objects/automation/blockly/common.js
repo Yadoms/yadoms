@@ -102,6 +102,13 @@ Blockly.Yadoms.LoadLanguageScript_ = function (callback) {
         });
 };
 
+
+/**
+ * This is the template for a default rule
+ * @private
+ */
+Blockly.Yadoms.DefaultTemplate_ = "<xml xmlns=\"http://www.w3.org/1999/xhtml\"><block type=\"infinite-loop\" x=\"87\" y=\"38\"><statement name=\"DO\"><block type=\"yadoms_wait_for_event\"><mutation storeinvariable=\"false\"></mutation><comment pinned=\"true\" h=\"89\" w=\"235\">__help__</comment></block></statement></block></xml>";
+    
 /**
  * Initialize blockly for Yadoms
  * @param $domTarget The div in which inject Blockly
@@ -152,7 +159,14 @@ Blockly.Yadoms.Initialize = function ($domTarget, initialContent, maxTopBlocks) 
             //load initial content if exists
             if (!isNullOrUndefinedOrEmpty(initialContent)) {
                 var xml = Blockly.Xml.textToDom(initialContent);
-                Blockly.Xml.domToWorkspace(Blockly.Yadoms.CurrentWorkspace, xml);
+                if (xml)
+                    Blockly.Xml.domToWorkspace(Blockly.Yadoms.CurrentWorkspace, xml);
+            } else {
+                //load default template if no content is found
+                var templateWithTranslatedHelp = Blockly.Yadoms.DefaultTemplate_.replace("__help__", $.t("blockly.templateHelp"));
+                var defaultXml = Blockly.Xml.textToDom(templateWithTranslatedHelp);
+                if (defaultXml)
+                    Blockly.Xml.domToWorkspace(Blockly.Yadoms.CurrentWorkspace, defaultXml);
             }
 
             //initialize validation
