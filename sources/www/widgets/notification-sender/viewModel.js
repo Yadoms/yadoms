@@ -15,7 +15,7 @@ function NotificationSenderViewModel() {
    self.widget = null;
 
    // Observable data
-   self.toCaption = ko.observable($.t("notification-sender:to"));
+   self.toCaption = ko.observable($.t("widgets/notification-sender:to"));
    self.body = ko.observable();
    self.toSelected = ko.observable();
    
