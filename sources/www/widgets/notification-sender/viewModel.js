@@ -65,7 +65,7 @@ function NotificationSenderViewModel() {
          //(ie : recipients list contains only recipient having phone number for keywords supporting sms)
          KeywordManager.get(self.widget.configuration.device.keywordId, function (keyword) {
             if (isNullOrUndefined(keyword.typeInfo.associatedRecipientField)) {
-               console.warning("typeInfo.associatedRecipientField not specified for keyword = " + self.widget.configuration.device.keywordId);
+               console.warn("typeInfo.associatedRecipientField not specified for keyword = " + self.widget.configuration.device.keywordId);
                return;
             }
             
