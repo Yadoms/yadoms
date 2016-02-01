@@ -43,11 +43,12 @@ Blockly.Blocks['yadoms_date_extract'] = {
     this.setColour(Blockly.Yadoms.Dates.datetime.HUE);
     this.setTooltip($.t("blockly.blocks.dates.yadoms_date_extract.tooltip", { defaultValue: "" }));
     this.setHelpUrl('http://www.example.com/');
-	console.log("Création");
-	
 	this.initDropDown_();
   },
   
+    /**
+     * Initialize dropdown
+     */
   initDropDown_ : function() {
 	//update check/outputType
 	var value = this.values_[0][1];
@@ -55,7 +56,11 @@ Blockly.Blocks['yadoms_date_extract'] = {
 	this.updateTypes_(value);
   },
   
-  updateTypes_ : function(val) {
+/**
+ * Update types for result
+ * @param {String} val The new type of the result
+ */
+  updateTypes_: function (val) {
 	switch (val) {
 			case "date":
 				this.getInput(this.valueInputName_).setCheck("datetime");

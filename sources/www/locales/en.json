@@ -525,9 +525,9 @@
         "title": "Log",
         "tooltip": "Write a line to the script log file"
       },
-      "yadoms_enumeration": {
-        "title": "Enumeration",
-        "tooltip": "Represents an enumeration value (content is updated when linked to an object)"
+      "infinite-loop": {
+        "title": "Infinitely",
+        "tooltip": "Infinite loop"
       },
       "yadoms_get_info": {
         "title": "Information",
@@ -542,9 +542,9 @@
           "serverVersion": "Yadoms server version"
         }
       },
-      "yadoms_wait_for_keywords": {
-        "titleLine1": "Wait for a new aciquistion",
-        "titleLine2": "Save the acquisition value in",
+      "yadoms_wait_for_event": {
+        "titleLine1": "Wait for event",
+        "titleLine2": "Save value in",
         "case": "When",
         "datetime": "date/time",
         "triggered": "is triggered",
@@ -553,7 +553,7 @@
           "become": "become"
         },
         "do": "Then do",
-        "tooltip": "Wait for a new acquisition of one or more keywords.",
+        "tooltip": "Wait for an event. It can be a device acquisition update or the date/time change",
         "defaultVarName": "newAcquisitionValue",
         "mutator": {
           "base": {
@@ -561,16 +561,16 @@
             "tooltip": "Wait for a new acquisition of one or more keywords."
           },
           "storeInVariable": {
-            "title": "Store acquisition",
-            "tooltip": "Store the new acquisition value in the specified variable"
+            "title": "Store value",
+            "tooltip": "Store the event value in the specified variable"
           },
           "change": {
-            "title": "Any acquisition",
-            "tooltip": "Add a block for monitoring any new acquisition of a keword"
+            "title": "Device : any new acquisition",
+            "tooltip": "Add a block for monitoring any new acquisition of a device"
           },
           "become": {
-            "title": "Specific value",
-            "tooltip": "Add a block for monitoring new acqusitions matching a condition"
+            "title": "Device : particular value",
+            "tooltip": "Add a block for monitoring new device acqusition matching a condition"
           },
           "datetimeChange": {
             "title": "Date/time update",
@@ -606,9 +606,69 @@
         "tooltip": "Send an advanced message to a recipient"
       },
       "dates": {
+        "yadoms_date_date": {
+          "tooltip": "Choose a date"
+        },
         "yadoms_date_weekDay": {
           "title": "Every",
           "tooltip": "One day in the week"
+        },
+        "yadoms_date_time": {
+          "tooltip": "An hour/minute",
+          "hour": "h",
+          "minute": ""
+        },
+        "yadoms_date_datetime": {
+          "tooltip": "A date/time object",
+          "date": "",
+          "time": "at"
+        },
+        "yadoms_date_everyDay": {
+          "title": "Every day",
+          "tooltip": "Every day"
+        },
+        "yadoms_date_today": {
+          "title": "Today",
+          "tooltip": "Today"
+        },
+        "yadoms_date_now": {
+          "title": "Now",
+          "tooltip": "Now"
+        },
+        "yadoms_date_sunrise": {
+          "title": "Sunrise",
+          "tooltip": "Get the sunrise time"
+        },
+        "yadoms_date_sunset": {
+          "title": "Sunset",
+          "tooltip": "Get the sunset time"
+        },
+        "yadoms_date_timespan": {
+          "title": "Duration",
+          "tooltip": "Define a duration in hour+minutes (with hours which can be greater then 24)",
+          "hour": "h",
+          "minute": "min"
+        },
+        "yadoms_date_arithmetic": {
+          "tooltip": "Add or substract a duration from a date/time object"
+        },
+        "yadoms_date_extract": {
+          "title": "Extract ",
+          "tooltip": "Extract a value from a datetime",
+          "from": "from",
+          "what": {
+            "date": "the date",
+            "time": "the complete time (HH:MM)",
+            "year": "the year",
+            "month": "the month",
+            "day": "the day",
+            "hour": "the hour (HH)",
+            "minute": "the minutes",
+            "weekDay": "the day of the week",
+            "weekDayString": "the day of the week (text)",
+            "monthDay": "the day of the month",
+            "yearDay": "the day of the year"
+          }
         }
       }
     }

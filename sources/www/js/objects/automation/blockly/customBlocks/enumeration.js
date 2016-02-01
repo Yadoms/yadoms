@@ -1,7 +1,23 @@
 
 Blockly.Yadoms.EnumerationsHelper = {
 
+    /**
+     * All created enumeration blocks
+     */
     allBlocks: [],
+
+    /**
+     * Initialize enumeration blocks
+     */
+    initialize: function () {
+        //clear previously created block (in case of loading multiple times Blockly)
+        Blockly.Yadoms.EnumerationsHelper.allBlocks = [];
+
+        $.each(Blockly.Yadoms.data.enumerations, function (index, enumItem) {
+            Blockly.Yadoms.EnumerationsHelper.createBlock_(enumItem);
+        });
+    },
+
 
     /**
      * Create an enuemration block
@@ -10,14 +26,12 @@ Blockly.Yadoms.EnumerationsHelper = {
      * @private 
      */
     createBlock_: function (enumItem) {
-
-        console.log("Creating Enum block : " + enumItem.name);
-        console.log("Enum data : " + enumItem);
-
         var blockName = enumItem.name;
 
+        //psuh the block name
         Blockly.Yadoms.EnumerationsHelper.allBlocks.push(blockName);
 
+        //push the block code
         Blockly.Blocks[blockName] = {
             init: function() {
                 this.setColour(Blockly.Yadoms.blockColour.HUE);
@@ -38,22 +52,14 @@ Blockly.Yadoms.EnumerationsHelper = {
             }
         };
 
+        //push python generation
         Blockly.Python[blockName] = function (block) {
             var code = Blockly.Python.quote_(block.getSelectedEnumValue());
             return [code, Blockly.Python.ORDER_ATOMIC];
         };
 
-    },
-
-    /**
-     * Create enumeration blocks
-     * @returns {} 
-     */
-    createBlocks : function() {
-        $.each(Blockly.Yadoms.data.enumerations, function (index, enumItem) {
-            Blockly.Yadoms.EnumerationsHelper.createBlock_(enumItem);
-        });
     }
+
 
 }
 
