@@ -15,26 +15,6 @@ var customization = false;
 var waitForRealeaseButtonAfterEnteringCustomization = false;
 
 /**
- * Animate the customization wrench button
- */
-function animateCustomizeButton() {
-    $("a#customizeButton i").transition({
-        rotate: '+=30deg',
-        duration: 500,
-        easing: 'linear',
-        complete: function () {
-            if (customization)
-                animateCustomizeButton();
-            else
-                $("a#customizeButton i").transition({
-                    rotate: '0deg',
-                    duration: 100
-                });
-        }
-    });
-}
-
-/**
  * Callback of the click on the customize button
  */
 $("a#customizeButton").click(function () {
@@ -57,7 +37,7 @@ function enterCustomization() {
         });
     });
 
-    animateCustomizeButton();
+    $("a#customizeButton i").addClass("fa-spin ");
 }
 
 /**
@@ -69,6 +49,7 @@ function exitCustomization(saveCustomization) {
 
     customization = false;
     waitForRealeaseButtonAfterEnteringCustomization = false;
+    $("a#customizeButton i").removeClass("fa-spin");
 
     //we save all widgets in each page
     $.each(PageManager.pages, function (index, currentPage) {

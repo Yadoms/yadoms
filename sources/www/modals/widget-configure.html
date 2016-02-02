@@ -23,58 +23,58 @@
 <script>
    var widgetToConfigure = null;
 
-   function configureWidget(widgetToConfigure, callback) {
-      assert(widgetToConfigure !== undefined, "widgetToConfigure must be defined");
-      assert($.isFunction(callback), "callback must be defined");
+    function configureWidget(widgetToConfigure, callback) {
+        assert(widgetToConfigure !== undefined, "widgetToConfigure must be defined");
+        assert($.isFunction(callback), "callback must be defined");
 
-      var $modalBody = $('div#configure-widget-modal .modal-body');
-      $modalBody.empty();
-      $('div#configure-widget-modal form').unbind("submit");
-      
-      //we append the text title section
-      var nameParameter = new StringParameterHandler("modals.configure-widget.", "titleName", {required:"false"}, widgetToConfigure.title);
-      $modalBody.append(nameParameter.getDOMObject());
-      //we finish friendlyNameParameter instantiation
-      if ($.isFunction(nameParameter.applyScript))
-         nameParameter.applyScript();	  
-	  
-      var configMgr = new ConfigurationControlManager(widgetToConfigure.package.configurationSchema, widgetToConfigure.configuration, "widgets/" + widgetToConfigure.type + ":configurationSchema.", $modalBody);
+        //we async load some libraries
+        ConfigurationHelper.loadConfigurationLib().done(function() {
 
-      //i18n
-      $modalBody.i18n();
+            var $modalBody = $('div#configure-widget-modal .modal-body');
+            $modalBody.empty();
+            $('div#configure-widget-modal form').unbind("submit");
 
-      //validation form
-      //erase previous jqBootstrapValidation
-      $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy").jqBootstrapValidation({
-         preventSubmit: true,
-         submitError: function($form, event, errors) {
-            console.warn("Unable to validate form: " + errors);
-         },
-         submitSuccess: function($form, event) {
-            event.preventDefault();
-            widgetToConfigure.configuration = configMgr.getCurrentConfiguration();
+            //we append the text title section
+            var nameParameter = new StringParameterHandler("modals.configure-widget.", "titleName", { required: "false" }, widgetToConfigure.title);
+            $modalBody.append(nameParameter.getDOMObject());
+            //we finish friendlyNameParameter instantiation
+            if ($.isFunction(nameParameter.applyScript))
+                nameParameter.applyScript();
 
-			widgetToConfigure.title = $form.find("input")[0].value;
-			
-            //we clear the current id
-            widgetToConfigure = undefined;
+            var configMgr = new ConfigurationControlManager(widgetToConfigure.package.configurationSchema, widgetToConfigure.configuration, "widgets/" + widgetToConfigure.type + ":configurationSchema.", $modalBody);
 
-            $("div#configure-widget-modal").modal("hide");
+            //i18n
+            $modalBody.i18n();
 
-            callback();
-         },
-         filter: function() {
-            //we check only control that have class enable-validation and are visible
-            return $(this).is(".enable-validation") && $(this).is(":visible");
-         }
-      });
+            //validation form
+            //erase previous jqBootstrapValidation
+            $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy").jqBootstrapValidation({
+                preventSubmit: true,
+                submitError: function($form, event, errors) {
+                    console.warn("Unable to validate form: " + errors);
+                },
+                submitSuccess: function($form, event) {
+                    event.preventDefault();
+                    widgetToConfigure.configuration = configMgr.getCurrentConfiguration();
 
-      //we display the modal
-      $('div#configure-widget-modal').modal();
+                    widgetToConfigure.title = $form.find("input")[0].value;
 
-   }
+                    //we clear the current id
+                    widgetToConfigure = undefined;
 
-   $('div#configure-widget-modal').on('shown.bs.modal', function () {
-    });
+                    $("div#configure-widget-modal").modal("hide");
+
+                    callback();
+                },
+                filter: function() {
+                    //we check only control that have class enable-validation and are visible
+                    return $(this).is(".enable-validation") && $(this).is(":visible");
+                }
+            });
+
+            //we display the modal
+            $('div#configure-widget-modal').modal();
+        });
+    }
 
 </script>

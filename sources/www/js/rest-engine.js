@@ -99,8 +99,8 @@ RestEngine.restCall = function(type, url, data, sync, dataType){
       
    //We send request to server
    $.ajax(ajaxOptions)
-      .done(function( data ) {
-         if(ajaxOptions.dataType == "json") {
+      .done(function (data, textStatus, jqXHR) {
+          if (ajaxOptions.dataType == "json") {
             //if JSON dataType expected, we parse the json answer
             if (data.result) {
                //if answer is ok we return data field

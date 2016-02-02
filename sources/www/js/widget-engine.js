@@ -33,6 +33,7 @@ function initializeWidgetEngine() {
 
     //we ask all widgets packages
     WidgetPackageManager.getAll(function () {
+        console.timeStamp("entering WidgetPackageManager.getAll");
         //we show notification
         loadPagesNotification = notifyInformation($.t("mainPage.actions.loadingPages"));
         PageManager.getAll(function () {

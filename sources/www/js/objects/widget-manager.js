@@ -129,7 +129,7 @@ WidgetManager.getViewModelFromServer_ = function (widgetType) {
     widgetViewModelCtor = null;
     var d = new $.Deferred();
     RestEngine.get("widgets/" + widgetType + "/viewModel.js", undefined, "script")
-       .done(function (viewModel) {
+       .done(function () {
            if (isNullOrUndefined(widgetViewModelCtor)) {
                console.error("ViewModel of widget " + widgetType + " do not contains widgetViewModelCtor function");
                d.reject();

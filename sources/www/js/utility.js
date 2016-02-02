@@ -229,4 +229,118 @@ function concatenateUrl(url1, url2) {
    return url1 + url2;
 }
 
+var loadedJSLibs = [];
 
+/**
+ * Load js library and return a promise
+ * @param {string} url of the library
+ */
+function asyncLoadJSLib(librayName) {
+    assert(librayName != undefined, "librayName must be defined");
+
+    var d = new $.Deferred();
+
+    if (!loadedJSLibs[librayName]) {
+        /*
+        $.ajax({
+                url: librayName,
+                dataType: "script"
+        })
+        .fail(function (jqXHR, textStatus, errorThrown) {
+            console.error("Fail to load javascript library: " + librayName + " (" + jqXHR + ", " + textStatus + ", " + errorThrown + ")");
+        })
+        .then(function(data, textStatus, jqXHR) {
+            debugger;
+            //the js has been ran, we save the information to prevent from other reloads
+            loadedJSLibs[librayName] = true;
+            d.resolve();
+        });*/
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = librayName;
+        // ASYNC: load in parallel and execute as soon as possible
+        script.async = false;
+        // DEFER: load in parallel but maintain execution order
+        script.defer = false;
+
+        script.onload = script.onreadystatechange = function (event) {
+            //from headJS
+            if (event.type === "load" || (/loaded|complete/.test(script.readyState) && (!document.documentMode || document.documentMode < 9))) {
+                // release event listeners
+                script.onload = script.onreadystatechange = script.onerror = null;
+                
+                d.resolve();
+            }
+        };
+
+        script.onerror = function(event) {
+            console.error(event);
+            script.onload = script.onreadystatechange = script.onerror = null;
+            d.resolve();
+        }
+
+        //we insert into head (from HeadJS)
+        var head = document.head || document.getElementsByTagName("head")[0];
+
+        
+        head.insertBefore(script, head.lastChild);
+
+        //the js has been ran, we save the information to prevent from other reloads
+        loadedJSLibs[librayName] = true;
+    }
+
+    return d.promise();
+}
+
+/**
+ * Load js libraries and return a promise
+ * @param {array of string} urls of the libraries
+ */
+function asyncLoadJSLibs(librayNames) {
+    assert(Array.isArray(librayNames), "librayNames must be an array of string");
+
+    var d = new $.Deferred();
+    var arrayOfDeffered = [];
+
+    $.each(librayNames, function(index, lib) {
+        if (!loadedJSLibs[lib]) {
+            arrayOfDeffered.push(asyncLoadJSLib(lib));
+        }
+    });
+
+    $.whenAll(arrayOfDeffered).done(function () {
+        d.resolve();
+    });
+
+    return d.promise();
+}
+
+/**
+ * Load js libraries and return a promise
+ * @param {array of string} urls of the libraries
+ */
+function asyncLoadJSLibsSequentially(librayNames) {
+    assert(Array.isArray(librayNames), "librayNames must be an array of string");
+    var d = new $.Deferred();
+    if (librayNames.length > 0) {
+        console.log(librayNames[0]);
+        asyncLoadJSLib(librayNames[0]).done(function() { //TODO : replace by alsways
+            //we continue
+            console.log(librayNames[0] + " loaded");
+            librayNames.shift();
+            setTimeout(function() {
+                asyncLoadJSLibsSequentially(librayNames)
+                    .done(function() {
+                        d.resolve();
+                    })
+                    .fail(function() {
+                        d.reject();
+                    });
+            }, 10000);
+        });
+    } else {
+        d.resolve();
+    }
+    
+    return d.promise();
+}

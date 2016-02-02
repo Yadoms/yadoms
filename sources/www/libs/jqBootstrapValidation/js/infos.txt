@@ -7,3 +7,5 @@ https://github.com/korengal/jqBootstrapValidation/network
 
 With JMB modifications :
 https://github.com/ReactiveRaven/jqBootstrapValidation/issues/89
+
+Modified file has been minified

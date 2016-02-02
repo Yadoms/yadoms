@@ -148,7 +148,6 @@ widgetViewModelCtor =
                                                             "<li role=\"separator\" class=\"divider\"></li>" +
                                                             "<li><span class=\"export-command\" data-i18n=\"widgets/chart:export.png\" mime-type=\"image/png\"></span></li>" +
                                                             "<li><span class=\"export-command\" data-i18n=\"widgets/chart:export.jpeg\" mime-type=\"image/jpeg\"></span></li>" +
-                                                            "<li><span class=\"export-command\" data-i18n=\"widgets/chart:export.pdf\" mime-type=\"application/pdf\"></span></li>" +
                                                             "<li><span class=\"export-command\" data-i18n=\"widgets/chart:export.svg\" mime-type=\"image/svg+xml\"></span></li>" +
                                                             "<li><span class=\"export-command\" data-i18n=\"widgets/chart:export.csv\" mime-type=\"text/csv\"></span></li>" +
                                                             "<li><span class=\"export-command\" data-i18n=\"widgets/chart:export.xls\" mime-type=\"application/vnd.ms-excel\"></span></li>" +

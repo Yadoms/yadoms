@@ -3,6 +3,29 @@
  */
 function ConfigurationHelper(){}
 
+ConfigurationHelper.loadConfigurationLib = function() {
+    var d = new $.Deferred();
+
+    asyncLoadJSLibs([
+        "js/objects/configuration/configuration-control-manager.js",
+        "js/objects/configuration/int-parameter-handler.js",
+        "js/objects/configuration/decimal-parameter-handler.js",
+        "js/objects/configuration/enum-parameter-handler.js",
+        "js/objects/configuration/string-parameter-handler.js",
+        "js/objects/configuration/bool-parameter-handler.js",
+        "js/objects/configuration/section-parameter-handler.js",
+        "js/objects/configuration/device-parameter-handler.js",
+        "js/objects/configuration/radio-section-parameter-handler.js",
+        "js/objects/configuration/color-parameter-handler.js",
+        "js/objects/configuration/icon-parameter-handler.js",
+        "js/objects/configuration/list-parameter-handler.js"
+    ], function() {
+        d.resolve();
+    });
+
+    return d.promise();
+}
+
 ConfigurationHelper.createControlGroup = function (parameterHandler, controlToInsert, placeInsideLabel, classOfControlGroup) {
 
    assert(parameterHandler !== undefined, "parameterHandler must be defined");

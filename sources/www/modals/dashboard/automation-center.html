@@ -1,228 +1,294 @@
 <div id="dashboard-automation-center">
-   <h1 class="page-header"><span class="fa fa-code-fork"></span>&nbsp;<span data-i18n="modals.dashboard.sub-windows.automation-center.title"></span></h1>
-   <span data-i18n="modals.dashboard.sub-windows.automation-center.description"></span><br>
-   <button id="btn-add-new-automation-rule" type="button" class="btn btn-success dashboard-btn-new" disabled><span class="fa fa-code-fork"></span>&nbsp;&nbsp;<span data-i18n="modals.dashboard.sub-windows.automation-center.new"></span></button>
-   <table id="automation-rule-list" class="table table-bordered table-striped dashboard-list">
-      <tr>
-         <td data-i18n="modals.dashboard.sub-windows.automation-center.table.name"></td>
-         <td data-i18n="modals.dashboard.sub-windows.automation-center.table.description"></td>
-         <td data-i18n="modals.dashboard.sub-windows.automation-center.table.actions"></td>
-         <td data-i18n="modals.dashboard.sub-windows.automation-center.table.state"></td>
-      </tr>
-      <!-- plugin instance will be listed here-->
-   </table>
+    <h1 class="page-header"><span class="fa fa-code-fork"></span>&nbsp;<span data-i18n="modals.dashboard.sub-windows.automation-center.title"></span></h1>
+    <span data-i18n="modals.dashboard.sub-windows.automation-center.description"></span><br>
+    <button id="btn-add-new-automation-rule" type="button" class="btn btn-success dashboard-btn-new" disabled><span class="fa fa-code-fork"></span>&nbsp;&nbsp;<span data-i18n="modals.dashboard.sub-windows.automation-center.new"></span></button>
+    <table id="automation-rule-list" class="table table-bordered table-striped dashboard-list">
+        <tr>
+            <td data-i18n="modals.dashboard.sub-windows.automation-center.table.name"></td>
+            <td data-i18n="modals.dashboard.sub-windows.automation-center.table.description"></td>
+            <td data-i18n="modals.dashboard.sub-windows.automation-center.table.actions"></td>
+            <td data-i18n="modals.dashboard.sub-windows.automation-center.table.state"></td>
+        </tr>
+        <!-- plugin instance will be listed here-->
+    </table>
 </div>
 <script>
 
-   function initializeAutomationCenterDashboard() {
-      //we remove all rows except header
-      $("table#automation-rule-list").find("tr:gt(0)").remove();
-      
-      // Active "new rule" button only if al least one interpreter available
-      AutomationInterpreterManager.getAll(function(interpreters) {
-         if(Object.keys(interpreters).length > 0)
-            $("#btn-add-new-automation-rule").unbind("click").bind("click", addNewAutomationRule).prop('disabled', false);
-      }, false);
+    function initializeAutomationCenterDashboard() {
+        asyncLoadJSLibs([
+            "libs/blockly/js/blockly_compressed.js",
+            "libs/blockly/js/blocks_compressed.js",
+            "libs/blockly/js/python_compressed.js",
+            "js/objects/automation/blockly/common.js",
+            "js/objects/automation/blockly/data.js",
+            "js/objects/automation/blockly/python.js",
+            "js/objects/automation/blockly/toolbox.js",
+            "js/objects/automation/blockly/validation.js",
+            "js/objects/automation/blockly/customBlocks/enumeration.js",
+            "js/objects/automation/blockly/customBlocks/get-info.js",
+            "js/objects/automation/blockly/customBlocks/helper.js",
+            "js/objects/automation/blockly/customBlocks/infinite-loop.js",
+            "js/objects/automation/blockly/customBlocks/keyword-value-get.js",
+            "js/objects/automation/blockly/customBlocks/keyword-value-set.js",
+            "js/objects/automation/blockly/customBlocks/log.js",
+            "js/objects/automation/blockly/customBlocks/notification-simple.js",
+            "js/objects/automation/blockly/customBlocks/sleep.js",
+            "js/objects/automation/blockly/customBlocks/wait.js",
+            "js/objects/automation/blockly/customBlocks/wait-for-event.js",
+            "js/objects/automation/blockly/customBlocks/dates/helper.js",
+            "js/objects/automation/blockly/customBlocks/dates/yadoms_date_arithmetic.js",
+            "js/objects/automation/blockly/customBlocks/dates/yadoms_date_date.js",
+            "js/objects/automation/blockly/customBlocks/dates/yadoms_date_datetime.js",
+            "js/objects/automation/blockly/customBlocks/dates/yadoms_date_everyDay.js",
+            "js/objects/automation/blockly/customBlocks/dates/yadoms_date_extract.js",
+            "js/objects/automation/blockly/customBlocks/dates/yadoms_date_time.js",
+            "js/objects/automation/blockly/customBlocks/dates/yadoms_date_timespan.js",
+            "js/objects/automation/blockly/customBlocks/dates/yadoms_date_weekDay.js",
+            "js/objects/automation/blockly/customBlocks/dates/yadoms_date_today.js",
+            "js/objects/automation/blockly/customBlocks/dates/yadoms_date_now.js",
+            "js/objects/automation/blockly/customBlocks/dates/yadoms_date_sunrise.js",
+            "js/objects/automation/blockly/customBlocks/dates/yadoms_date_sunset.js",
+            "js/objects/automation/blockly/customBlocks/generator/python/enumeration.js",
+            "js/objects/automation/blockly/customBlocks/generator/python/get-info.js",
+            "js/objects/automation/blockly/customBlocks/generator/python/helper.js",
+            "js/objects/automation/blockly/customBlocks/generator/python/infinite-loop.js",
+            "js/objects/automation/blockly/customBlocks/generator/python/keyword-value-get.js",
+            "js/objects/automation/blockly/customBlocks/generator/python/keyword-value-set.js",
+            "js/objects/automation/blockly/customBlocks/generator/python/log.js",
+            "js/objects/automation/blockly/customBlocks/generator/python/notification-simple.js",
+            "js/objects/automation/blockly/customBlocks/generator/python/sleep.js",
+            "js/objects/automation/blockly/customBlocks/generator/python/wait.js",
+            "js/objects/automation/blockly/customBlocks/generator/python/wait-for-event.js",
+            "js/objects/automation/blockly/customBlocks/generator/python/dates/yadoms_date_arithmetic.js",
+            "js/objects/automation/blockly/customBlocks/generator/python/dates/yadoms_date_date.js",
+            "js/objects/automation/blockly/customBlocks/generator/python/dates/yadoms_date_datetime.js",
+            "js/objects/automation/blockly/customBlocks/generator/python/dates/yadoms_date_everyDay.js",
+            "js/objects/automation/blockly/customBlocks/generator/python/dates/yadoms_date_extract.js",
+            "js/objects/automation/blockly/customBlocks/generator/python/dates/yadoms_date_time.js",
+            "js/objects/automation/blockly/customBlocks/generator/python/dates/yadoms_date_timespan.js",
+            "js/objects/automation/blockly/customBlocks/generator/python/dates/yadoms_date_weekDay.js",
+            "js/objects/automation/blockly/customBlocks/generator/python/dates/yadoms_date_today.js",
+            "js/objects/automation/blockly/customBlocks/generator/python/dates/yadoms_date_now.js",
+            "js/objects/automation/blockly/customBlocks/generator/python/dates/yadoms_date_sunrise.js",
+            "js/objects/automation/blockly/customBlocks/generator/python/dates/yadoms_date_sunset.js",
+            "libs/ace/js/src-min/ace.js",
+            "libs/ace/js/src-min/ext-language_tools.js",
+            "js/objects/automation/i-automation-rule-editor.js",
+            "js/objects/automation/automation-editor-code.js",
+            "js/objects/automation/automation-editor-blockly.js",
+            "js/objects/automation/automation-editor-manager.js"
+        ]).done(function () {
 
-      //we dynamically ask for automation-rule
-      AutomationRuleManager.get(function (rules) {
-         $.each(rules, function(index, value) {
-            addAutomationRuleToDom(value);
-         });
+            //when additionnal libs have been loaded we can continue
+            //we remove all rows except header
+            $("table#automation-rule-list").find("tr:gt(0)").remove();
 
-         //we use the periodic task of the dashboard
-         clearInterval(periodicDashboardTask);
-         periodicDashboardTask = setInterval(periodicDashboardAutomationCenterTask, 2000);
-      });
-   }
+            // Active "new rule" button only if at least one interpreter available
+            AutomationInterpreterManager.getAll(function (interpreters) {
+                if (Object.keys(interpreters).length > 0)
+                    $("#btn-add-new-automation-rule").unbind("click").bind("click", addNewAutomationRule).prop('disabled', false);
+            }, false);
 
-   function getAutomationRuleDomRow(rule) {
-      return $("table#automation-rule-list").find("tr[automation-rule-id='" + rule.id + "']");
-   }
+            //we dynamically ask for automation-rule
+            AutomationRuleManager.get(function (rules) {
+                $.each(rules, function (index, value) {
+                    addAutomationRuleToDom(value);
+                });
 
-   function addAutomationRuleToDom(rule) {
-      //we add it to the DOM
-      var $ruleList = $("table#automation-rule-list");
-
-      $ruleList.append("<tr automation-rule-id=\"" + rule.id + "\">" +
-                           "<td class=\"automation-rule-name\"></td>\n" +
-                           "<td class=\"automation-rule-description\"></td>\n" +
-                           "<td class=\"automation-rule-actions\">\n" +
-                              "<div class=\"btn-group\">\n" +
-                              "<button type=\"button\" class=\"btn btn-enableDisable\" data-i18n=\"[title]modals.dashboard.sub-windows.automation-center.startStop\"></button>\n" +
-                              "<button type=\"button\" class=\"btn btn-edit btn-primary\" data-i18n=\"[title]modals.dashboard.sub-windows.automation-center.edit\"><span class=\"fa fa-pencil\"></span></button>\n" +
-                              "<button type=\"button\" class=\"btn btn-log btn-info\" data-i18n=\"[title]modals.dashboard.sub-windows.automation-center.log\"><span class=\"fa fa-file-text-o\"></span></button>\n" +
-                              "<button type=\"button\" class=\"btn btn-delete btn-danger\" data-i18n=\"[title]modals.dashboard.sub-windows.automation-center.delete\"><span class=\"fa fa-trash-o\"></span></button>\n" +
-                              "</div>\n" +
-                           "</td>\n" +
-                           "<td class=\"automation-rule-state\">" +
-                              "<span class=\"label label-success label-status\"></span>" +
-                           "</td>" +
-                        "</tr>\n");
-
-      var $ruleRow = getAutomationRuleDomRow(rule);
-
-      //we bind event on the different actions
-      $ruleRow.find("button.btn-enableDisable").unbind('click').bind('click', startStopAutomationRule(rule));
-      $ruleRow.find("button.btn-edit").unbind('click').bind('click', editAutomationRule(rule));
-      $ruleRow.find("button.btn-log").unbind('click').bind('click', showLogAutomationRule(rule));
-      $ruleRow.find("button.btn-delete").unbind('click').bind('click', deleteAutomationRule(rule));
-
-      updateDOMAutomationRule(rule);
-   }
-
-   function updateDOMAutomationRule(rule) {
-      assert(!isNullOrUndefined(rule), "rule must be defined");
-      var $ruleRow = getAutomationRuleDomRow(rule);
-
-      //we fill the data
-      $ruleRow.find("td.automation-rule-name").text(rule.name);
-      $ruleRow.find("td.automation-rule-description").text(rule.description);
-
-      //we manage the state
-      switch (rule.state) {
-         case "Stopped":
-            $ruleRow.find("span.label-status").addClass("label-warning").removeClass("label-danger").removeClass("label-success").text($.t("modals.dashboard.sub-windows.automation-center.ruleState.stopped"));
-            $ruleRow.find("button.btn-enableDisable").addClass("btn-success").removeClass("btn-warning").empty().append("<span class=\"fa fa-play\"></span>");
-            break;
-         case "Running":
-            $ruleRow.find("span.label-status").addClass("label-success").removeClass("label-danger").removeClass("label-warning").text($.t("modals.dashboard.sub-windows.automation-center.ruleState.running"));
-            $ruleRow.find("button.btn-enableDisable").addClass("btn-warning").removeClass("btn-success").empty().append("<span class=\"fa fa-stop\"></span>");;
-            break;
-         case "Error":
-            $ruleRow.find("span.label-status").addClass("label-danger").removeClass("label-success").removeClass("label-warning").text($.t("modals.dashboard.sub-windows.automation-center.ruleState.error"));
-            $ruleRow.find("button.btn-enableDisable").addClass("btn-success").removeClass("btn-warning").empty().append("<span class=\"fa fa-play\"></span>");;
-            break;
-      }
-
-      $ruleRow.i18n();
-   }
-
-   function startStopAutomationRule(rule) {
-      //rule represent the automation rule concerned
-      return function() {
-         //we deactivate the button until next status will be acquired to prevent flooding
-         getAutomationRuleDomRow(rule).find("button.btn-enableDisable").prop('disabled', true);
-         if (getAutomationRuleDomRow(rule).find("span.fa-stop").length == 1) {
-            //we ask for disable
-            AutomationRuleManager.disable(rule, function(updatedRule) {
-               if (updatedRule) {
-                  getAutomationRuleDomRow(updatedRule).find("button.btn-enableDisable").prop('disabled', false);
-                  updateDOMAutomationRule(updatedRule);
-               }
+                //we use the periodic task of the dashboard
+                clearInterval(periodicDashboardTask);
+                periodicDashboardTask = setInterval(periodicDashboardAutomationCenterTask, 2000);
             });
-         }
-         else
-         {
-            //we ask for enable
-            AutomationRuleManager.enable(rule, function(updatedRule) {
-               if (updatedRule) {
-                  getAutomationRuleDomRow(updatedRule).find("button.btn-enableDisable").prop('disabled', false);
-                  updateDOMAutomationRule(updatedRule);
-               }
-            });
-         }
-      }
-   }
 
-   function editAutomationRule(rule) {
-      //rule represent the automation rule concerned
-      return function() {
-         rule.downloadEditor(function () {
-            modals.automationRuleEdit.load(function () {
-               showEditionAutomationRule(rule, function () {
-                  //we ask for automation rule update
-                  AutomationRuleManager.updateToServer(rule, function(ruleUpdated) {
-                     //if it's okay
-                     if (!ruleUpdated) {
-                        notifyError($.t("objects.generic.errorUpdating", {objectName : "automation rule"}));
-                        return;
-                     }
+        });
+    }
 
-                     //we update the code
-                     AutomationRuleManager.updateCode(ruleUpdated, function (codeUpdateOk) {
-                        if (!codeUpdateOk) {
-                           notifyError($.t("objects.generic.errorUpdating", {objectName: "automation rule"}));
-                           return;
-                        }
+    function getAutomationRuleDomRow(rule) {
+        return $("table#automation-rule-list").find("tr[automation-rule-id='" + rule.id + "']");
+    }
 
-                        notifySuccess($.t("modals.dashboard.sub-windows.automation-center.ruleSuccessfullyUpdated"));
-                        //we refresh the gui
-                        updateDOMAutomationRule(ruleUpdated);
-                     });
-                  });
-               });
-            });
-         });
-      }
-   }
-   
-   function showLogAutomationRule(rule) {
-      //rule represent the automation rule concerned
-      return function() {
-         modals.automationRuleShowLog.load(function () {
-            showLogAutomationRuleModal(rule, function () {
-               AutomationRuleManager.getLog(rule, function (logContent) {
-                  showLogAutomationRuleModalUpdateLog(logContent);
-               });
-            });
-         });
-      }
-   }   
+    function addAutomationRuleToDom(rule) {
+        //we add it to the DOM
+        var $ruleList = $("table#automation-rule-list");
 
-   function deleteAutomationRule(rule) {
-      //rule represent the automation rule concerned
-      return function() {
-         modals.confirmation.load(function() {
-            showConfirmModal(btnKind.yesNo, null, $.t("modals.dashboard.sub-windows.automation-center.confirmDeletion", {name:rule.name}),
-            function () {
-               //deletion has been confirmed
-               AutomationRuleManager.deleteFromServer(rule, function() {
-                  notifySuccess($.t("modals.dashboard.sub-windows.automation-center.ruleDeleted"));
-                  //we remove rule from dom
-                  getAutomationRuleDomRow(rule).remove();
-               });
-            });
-         });
-      }
-   }
+        $ruleList.append("<tr automation-rule-id=\"" + rule.id + "\">" +
+                             "<td class=\"automation-rule-name\"></td>\n" +
+                             "<td class=\"automation-rule-description\"></td>\n" +
+                             "<td class=\"automation-rule-actions\">\n" +
+                                "<div class=\"btn-group\">\n" +
+                                "<button type=\"button\" class=\"btn btn-enableDisable\" data-i18n=\"[title]modals.dashboard.sub-windows.automation-center.startStop\"></button>\n" +
+                                "<button type=\"button\" class=\"btn btn-edit btn-primary\" data-i18n=\"[title]modals.dashboard.sub-windows.automation-center.edit\"><span class=\"fa fa-pencil\"></span></button>\n" +
+                                "<button type=\"button\" class=\"btn btn-log btn-info\" data-i18n=\"[title]modals.dashboard.sub-windows.automation-center.log\"><span class=\"fa fa-file-text-o\"></span></button>\n" +
+                                "<button type=\"button\" class=\"btn btn-delete btn-danger\" data-i18n=\"[title]modals.dashboard.sub-windows.automation-center.delete\"><span class=\"fa fa-trash-o\"></span></button>\n" +
+                                "</div>\n" +
+                             "</td>\n" +
+                             "<td class=\"automation-rule-state\">" +
+                                "<span class=\"label label-success label-status\"></span>" +
+                             "</td>" +
+                          "</tr>\n");
 
-   function periodicDashboardAutomationCenterTask() {
-      if (serverIsOnline) {
-         AutomationRuleManager.get(function (rules) {
-            $.each(rules, function(index, value) {
-               updateDOMAutomationRule(value);
-            });
-         });
-      }
-   }
+        var $ruleRow = getAutomationRuleDomRow(rule);
 
-   function addNewAutomationRule() {
-      AutomationEditorManager.getAll(function (editors) {
-         modals.automationRuleNew.load(function() {
-            //we launch new rule GUI
-            showNewAutomationRule(editors, function(rule) {
-               rule.downloadEditor(function() {
-                  modals.automationRuleEdit.load(function () {
-                     showEditionAutomationRule(rule, function () {
-                        //we ask for automation rule creation
-                        AutomationRuleManager.createToServer(rule, function(newRule) {
-                           //if it's okay
-                           if (!newRule) {
-                              notifyError($.t("objects.generic.errorCreating", {objectName: "automation rule"}));
-                              return;
-                           }
+        //we bind event on the different actions
+        $ruleRow.find("button.btn-enableDisable").unbind('click').bind('click', startStopAutomationRule(rule));
+        $ruleRow.find("button.btn-edit").unbind('click').bind('click', editAutomationRule(rule));
+        $ruleRow.find("button.btn-log").unbind('click').bind('click', showLogAutomationRule(rule));
+        $ruleRow.find("button.btn-delete").unbind('click').bind('click', deleteAutomationRule(rule));
 
-                           notifySuccess($.t("modals.dashboard.sub-windows.automation-center.ruleSuccessfullyCreated"));
-                           //we add it to gui
-                           addAutomationRuleToDom(newRule);
+        updateDOMAutomationRule(rule);
+    }
+
+    function updateDOMAutomationRule(rule) {
+        assert(!isNullOrUndefined(rule), "rule must be defined");
+        var $ruleRow = getAutomationRuleDomRow(rule);
+
+        //we fill the data
+        $ruleRow.find("td.automation-rule-name").text(rule.name);
+        $ruleRow.find("td.automation-rule-description").text(rule.description);
+
+        //we manage the state
+        switch (rule.state) {
+            case "Stopped":
+                $ruleRow.find("span.label-status").addClass("label-warning").removeClass("label-danger").removeClass("label-success").text($.t("modals.dashboard.sub-windows.automation-center.ruleState.stopped"));
+                $ruleRow.find("button.btn-enableDisable").addClass("btn-success").removeClass("btn-warning").empty().append("<span class=\"fa fa-play\"></span>");
+                break;
+            case "Running":
+                $ruleRow.find("span.label-status").addClass("label-success").removeClass("label-danger").removeClass("label-warning").text($.t("modals.dashboard.sub-windows.automation-center.ruleState.running"));
+                $ruleRow.find("button.btn-enableDisable").addClass("btn-warning").removeClass("btn-success").empty().append("<span class=\"fa fa-stop\"></span>");;
+                break;
+            case "Error":
+                $ruleRow.find("span.label-status").addClass("label-danger").removeClass("label-success").removeClass("label-warning").text($.t("modals.dashboard.sub-windows.automation-center.ruleState.error"));
+                $ruleRow.find("button.btn-enableDisable").addClass("btn-success").removeClass("btn-warning").empty().append("<span class=\"fa fa-play\"></span>");;
+                break;
+        }
+
+        $ruleRow.i18n();
+    }
+
+    function startStopAutomationRule(rule) {
+        //rule represent the automation rule concerned
+        return function () {
+            //we deactivate the button until next status will be acquired to prevent flooding
+            getAutomationRuleDomRow(rule).find("button.btn-enableDisable").prop('disabled', true);
+            if (getAutomationRuleDomRow(rule).find("span.fa-stop").length == 1) {
+                //we ask for disable
+                AutomationRuleManager.disable(rule, function (updatedRule) {
+                    if (updatedRule) {
+                        getAutomationRuleDomRow(updatedRule).find("button.btn-enableDisable").prop('disabled', false);
+                        updateDOMAutomationRule(updatedRule);
+                    }
+                });
+            }
+            else {
+                //we ask for enable
+                AutomationRuleManager.enable(rule, function (updatedRule) {
+                    if (updatedRule) {
+                        getAutomationRuleDomRow(updatedRule).find("button.btn-enableDisable").prop('disabled', false);
+                        updateDOMAutomationRule(updatedRule);
+                    }
+                });
+            }
+        }
+    }
+
+    function editAutomationRule(rule) {
+        //rule represent the automation rule concerned
+        return function () {
+            rule.downloadEditor(function () {
+                modals.automationRuleEdit.load(function () {
+                    showEditionAutomationRule(rule, function () {
+                        //we ask for automation rule update
+                        AutomationRuleManager.updateToServer(rule, function (ruleUpdated) {
+                            //if it's okay
+                            if (!ruleUpdated) {
+                                notifyError($.t("objects.generic.errorUpdating", { objectName: "automation rule" }));
+                                return;
+                            }
+
+                            //we update the code
+                            AutomationRuleManager.updateCode(ruleUpdated, function (codeUpdateOk) {
+                                if (!codeUpdateOk) {
+                                    notifyError($.t("objects.generic.errorUpdating", { objectName: "automation rule" }));
+                                    return;
+                                }
+
+                                notifySuccess($.t("modals.dashboard.sub-windows.automation-center.ruleSuccessfullyUpdated"));
+                                //we refresh the gui
+                                updateDOMAutomationRule(ruleUpdated);
+                            });
                         });
-                     });
-                  });
-               });
+                    });
+                });
             });
-         });
-      });
-   };
+        }
+    }
+
+    function showLogAutomationRule(rule) {
+        //rule represent the automation rule concerned
+        return function () {
+            modals.automationRuleShowLog.load(function () {
+                showLogAutomationRuleModal(rule, function () {
+                    AutomationRuleManager.getLog(rule, function (logContent) {
+                        showLogAutomationRuleModalUpdateLog(logContent);
+                    });
+                });
+            });
+        }
+    }
+
+    function deleteAutomationRule(rule) {
+        //rule represent the automation rule concerned
+        return function () {
+            modals.confirmation.load(function () {
+                showConfirmModal(btnKind.yesNo, null, $.t("modals.dashboard.sub-windows.automation-center.confirmDeletion", { name: rule.name }),
+                function () {
+                    //deletion has been confirmed
+                    AutomationRuleManager.deleteFromServer(rule, function () {
+                        notifySuccess($.t("modals.dashboard.sub-windows.automation-center.ruleDeleted"));
+                        //we remove rule from dom
+                        getAutomationRuleDomRow(rule).remove();
+                    });
+                });
+            });
+        }
+    }
+
+    function periodicDashboardAutomationCenterTask() {
+        if (serverIsOnline) {
+            AutomationRuleManager.get(function (rules) {
+                $.each(rules, function (index, value) {
+                    updateDOMAutomationRule(value);
+                });
+            });
+        }
+    }
+
+    function addNewAutomationRule() {
+        AutomationEditorManager.getAll(function (editors) {
+            modals.automationRuleNew.load(function () {
+                //we launch new rule GUI
+                showNewAutomationRule(editors, function (rule) {
+                    rule.downloadEditor(function () {
+                        modals.automationRuleEdit.load(function () {
+                            showEditionAutomationRule(rule, function () {
+                                //we ask for automation rule creation
+                                AutomationRuleManager.createToServer(rule, function (newRule) {
+                                    //if it's okay
+                                    if (!newRule) {
+                                        notifyError($.t("objects.generic.errorCreating", { objectName: "automation rule" }));
+                                        return;
+                                    }
+
+                                    notifySuccess($.t("modals.dashboard.sub-windows.automation-center.ruleSuccessfullyCreated"));
+                                    //we add it to gui
+                                    addAutomationRuleToDom(newRule);
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+        });
+    };
 
 </script>
