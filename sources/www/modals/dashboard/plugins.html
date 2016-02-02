@@ -49,18 +49,24 @@
    function addPluginInstanceToDom(pi) {
        var name = "<span>" + pi.displayName + "</span>";
 
+       var failToLoadPluginPackage =  pi.package === null ||  pi.package === undefined || pi.package.failToLoad === true;
+
        var type = "<img src=\"plugins/" + pi.type + "/icon.png\" class=\"img-thumbnail dashboard-table-icon\">&nbsp;&nbsp;" +
                    "<span>" + $.t("plugins/" + pi.type + ":name", { defaultValue: pi.package.name }) + "</span>";
 
        var autoStartCommand = "<input class=\"cb-autoStart\" type=\"checkbox\">";
+       if (failToLoadPluginPackage === true)
+           autoStartCommand = "";
 
        var actionsBtns = "<div class=\"btn-group\">\n" +
-              "<button type=\"button\" class=\"btn btn-startStop\" data-i18n=\"[title]modals.dashboard.sub-windows.plugins.startStop\"><span class=\"fa fa-power-off\"></span></button>\n" +
-              "<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.plugins.configure\"><span class=\"fa fa-cog\"></span></button>\n" +
+              ((failToLoadPluginPackage === true)?"":"<button type=\"button\" class=\"btn btn-startStop\" data-i18n=\"[title]modals.dashboard.sub-windows.plugins.startStop\"><span class=\"fa fa-power-off\"></span></button>\n") +
+              ((failToLoadPluginPackage === true)?"":"<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.plugins.configure\"><span class=\"fa fa-cog\"></span></button>\n") +
               "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.plugins.delete\"><span class=\"fa fa-trash\"></span></button>\n" +
               "</div>";
 
-      var statusField = "<span class=\"label label-success label-status\"></span>\n";
+       var statusField = "<span class=\"label label-success label-status\"></span>\n";
+       if (failToLoadPluginPackage === true)
+           statusField = "<span class=\"label label-danger\" data-i18n=\"modals.dashboard.sub-windows.plugins.packageError\"></span>\n";
 
       //we add it to the DOM
       var $pluginInstanceList = $("table#plugin-instance-list");
@@ -84,11 +90,13 @@
       //we set autostart value
       $pluginInstanceRow.find("input.cb-autoStart").prop("checked", pi.autoStart);
 
-      //we bind event on the different actions
-      $pluginInstanceRow.find("button.btn-startStop").unbind('click').bind('click', startStopPlugin(pi));
-      $pluginInstanceRow.find("button.btn-configure").unbind('click').bind('click', configurePlugin(pi));
-      $pluginInstanceRow.find("button.btn-delete").unbind('click').bind('click', deletePlugin(pi));
-      $pluginInstanceRow.find("input.cb-autoStart").unbind('change').bind('change', autoStartChange(pi));
+       //we bind event on the different actions
+       if (!failToLoadPluginPackage) {
+           $pluginInstanceRow.find("button.btn-startStop").unbind('click').bind('click', startStopPlugin(pi));
+           $pluginInstanceRow.find("button.btn-configure").unbind('click').bind('click', configurePlugin(pi));
+           $pluginInstanceRow.find("input.cb-autoStart").unbind('change').bind('change', autoStartChange(pi));
+       }
+       $pluginInstanceRow.find("button.btn-delete").unbind('click').bind('click', deletePlugin(pi));
 
       $pluginInstanceRow.i18n();
    }
@@ -182,7 +190,8 @@
 
                        // Update state label
                        var $label = $row.find("span.label-status");
-                       switch(status.state) {
+                       if ($label) {
+                           switch (status.state) {
                            case "Error":
                                $label.removeClass("label-success").removeClass("label-warning").addClass("label-danger").text(getCustomMessage(pluginInstance, status.messageId, "modals.dashboard.sub-windows.plugins.error"));
                                break;
@@ -198,6 +207,7 @@
                            default:
                                $label.removeClass("label-danger").text("");
                                break;
+                           }
                        }
                    }
                });

@@ -350,6 +350,7 @@
           "starting": "Démarrage...",
           "stopped": "Arrêté",
           "error": "Erreur",
+          "packageError": "Plugin invalide",
           "configure": "Configurer le plugin",
           "delete": "Supprimer le plugin",
           "errorGettingPluginList": "Erreur lors de la récupération de la liste des plugins",
@@ -530,14 +531,6 @@
         "title": "A l'infini",
         "tooltip": "boucle infinie"
       },
-      "yadoms_enumeration": {
-        "title": "Enumération",
-        "tooltip": "Represente une valeur d'énumération (le contenu est mis à jour lorsque ce bloc est connecté à un objet)",
-        "mutator": {
-          "title": "Choisir le type de données selon le keyword",
-          "tooltip": "Il suffit de choisir le keyword pour obtenir les énumérations possibles"
-        }
-      },
       "yadoms_get_info": {
         "title": "Info",
         "tooltip": "Obtient des informations du serveur",
@@ -571,7 +564,7 @@
           },
           "storeInVariable": {
             "title": "Stocker sa valeur",
-            "tooltip": "Ajoute un nouveau keyword à observer"
+            "tooltip": "Enregistre la valeur de l'événement dans une variable"
           },
           "change": {
             "title": "Equipement : chaque nouvelle donnée",

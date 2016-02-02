@@ -346,6 +346,7 @@
           "starting": "Starting...",
           "stopped": "Stopped",
           "error": "Error",
+          "packageError": "Invalid plugin",
           "configure": "Configure the plugin",
           "delete": "Delete the plugin",
           "errorGettingPluginList": "An error has occurred acquiring plugin list",

@@ -110,8 +110,13 @@ PluginInstanceManager.getAll = function (callback, sync) {
                   arrayOfDeffered.push(deffered);
                   deffered.done(function() {
                       result.push(pi);
-                  }).fail(function() {
-                      console.warn("fail to get plugin " + value);
+                  }).fail(function () {
+                      pi.package = {
+                          name: value.displayName,
+                          failToLoad : true
+                      };
+                      result.push(pi);
+                      console.warn("fail to get plugin " + value.displayName);
                   });
 
               } catch (ex) {
