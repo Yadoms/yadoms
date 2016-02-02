@@ -28,7 +28,7 @@
         assert($.isFunction(callback), "callback must be defined");
 
         //we async load some libraries
-        ConfigurationHelper.loadConfigurationLib().done(function() {
+        ConfigurationHelper.loadConfigurationLibs().done(function() {
 
             var $modalBody = $('div#configure-widget-modal .modal-body');
             $modalBody.empty();

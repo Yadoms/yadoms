@@ -1,9 +1,6 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <script type="text/javascript">
-            var timerStart = Date.now();
-    </script>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -233,14 +230,10 @@
 
             //we start i18n engine
             var option = { resGetPath: "locales/__lng__.json", fallbackLng: "en", useDataAttrOptions: true, debug: false, fallbackNS: "translation" };
-            console.timeStamp("plop");
             i18n.init(option, function () {
-                //$("html").i18n();
-                console.log("2", Date.now() - timerStart);
                 //we get install/firstStart key to have information if firstStart has already been done
                 ConfigurationManager.get(ConfigurationManager.items.installSection, ConfigurationManager.items.install.firstStart,
                     function (result) {
-                        console.timeEnd("timer");
                         var firstStart = true;
                         //we don't need to set default values
                         if ((!isNullOrUndefined(result)) && (!parseBool(result.value)))
@@ -347,11 +340,9 @@
                         //we set the right language
                         i18n.setLng(systemConfiguration[ConfigurationManager.items.system.language].value, function () {
                             $("html").i18n();
-                            console.timeStamp("exiting $(html).i18n();");
                             moment.lang(systemConfiguration[ConfigurationManager.items.system.language].value);
                             WebSocketEngine.initializeWebSocketEngine(function () {
                                 //we listen acquisitionupdate event
-                                console.timeStamp("exiting WebSocketEngine");
                                 $(document).on("acquisitionupdate", function (e, websocketData) {
                                     var acq = AcquisitionManager.factory(websocketData.data);
                                     dispatchToWidgets(acq);
@@ -359,7 +350,6 @@
 
                                 //web socket opened
                                 initializeWidgetEngine();
-                                console.timeStamp("exiting initializeWidgetEngine");
                             });
                         });
                     }

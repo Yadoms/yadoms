@@ -268,7 +268,7 @@ function asyncLoadJSLib(librayName) {
             if (event.type === "load" || (/loaded|complete/.test(script.readyState) && (!document.documentMode || document.documentMode < 9))) {
                 // release event listeners
                 script.onload = script.onreadystatechange = script.onerror = null;
-                
+                console.debug(librayName + " loaded");
                 d.resolve();
             }
         };

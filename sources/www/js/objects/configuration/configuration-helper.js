@@ -3,7 +3,7 @@
  */
 function ConfigurationHelper(){}
 
-ConfigurationHelper.loadConfigurationLib = function() {
+ConfigurationHelper.loadConfigurationLibs = function() {
     var d = new $.Deferred();
 
     asyncLoadJSLibs([
@@ -20,6 +20,7 @@ ConfigurationHelper.loadConfigurationLib = function() {
         "js/objects/configuration/icon-parameter-handler.js",
         "js/objects/configuration/list-parameter-handler.js"
     ], function() {
+        debugger;
         d.resolve();
     });
 
