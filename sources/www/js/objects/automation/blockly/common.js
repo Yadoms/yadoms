@@ -23,6 +23,12 @@ Blockly.Yadoms.blockColour = { HUE : 20 }
  */
 Blockly.Yadoms.CurrentWorkspace = null;
 
+
+/**
+ * Indicate if the current workspace is being load from xml
+ */
+Blockly.Yadoms.isLoadingFromXml = false;
+
 /**
  * List of operators for numbers
  * @type {*[]}
@@ -156,6 +162,7 @@ Blockly.Yadoms.Initialize = function ($domTarget, initialContent, maxTopBlocks) 
                 }
             });
 
+            Blockly.Yadoms.isLoadingFromXml = true;
             //load initial content if exists
             if (!isNullOrUndefinedOrEmpty(initialContent)) {
                 var xml = Blockly.Xml.textToDom(initialContent);
@@ -168,6 +175,7 @@ Blockly.Yadoms.Initialize = function ($domTarget, initialContent, maxTopBlocks) 
                 if (defaultXml)
                     Blockly.Xml.domToWorkspace(Blockly.Yadoms.CurrentWorkspace, defaultXml);
             }
+            Blockly.Yadoms.isLoadingFromXml = false;
 
             //initialize validation
             Blockly.Validation.Init(Blockly.Yadoms.CurrentWorkspace, maxTopBlocks);

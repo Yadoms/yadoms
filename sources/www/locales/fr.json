@@ -514,6 +514,8 @@
       }
     },
     "templateHelp": "Cliquer sur l'icone engrenage bleu pour configurer les évènements",
+    "chooseDeviceHelper": "Choisir un équipement",
+    "chooseKeywordHelper": "Choisir une donnée",
     "blocks": {
       "yadoms_wait": {
         "title": "Attendre",

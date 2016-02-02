@@ -226,6 +226,10 @@ Fix dropdown menus hidden by bootstrap modal
 
 }
 
+.blocklyValidationDropdownError{
+    font-style: italic;
+    font-weight: bold;
+}
 
 .blocklySelectedError>.blocklyPath {
     stroke: #f00;

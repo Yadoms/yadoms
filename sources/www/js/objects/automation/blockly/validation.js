@@ -63,18 +63,28 @@ Blockly.Validation.isBlockValid = function (block) {
 
     if (block != null) {
         var currentBlockValid = true;
-        $.each(block.inputList, function (index, subBlock) {
-            if (subBlock.connection != null && subBlock.isVisible()) {
-                if ((subBlock.connection.targetConnection == null || subBlock.connection.targetConnection == undefined) && subBlock.type === Blockly.INPUT_VALUE)  {
-                    Blockly.Validation.setBlockInvalid(subBlock.sourceBlock_);
-                    currentBlockValid = false;
-                } else {
-                    if (subBlock.connection && subBlock.connection.targetConnection && !Blockly.Validation.isBlockValid(subBlock.connection.targetConnection.sourceBlock_))
-                        currentBlockValid = false;
-                }
+
+        if ($.isFunction(block.isValid)) {
+            currentBlockValid = block.isValid();
+            if (!currentBlockValid) {
+                Blockly.Validation.setBlockInvalid(block);
             }
-            return currentBlockValid;
-        });
+        }
+
+        if (currentBlockValid) {
+            $.each(block.inputList, function(index, subBlock) {
+                if (subBlock.connection != null && subBlock.isVisible()) {
+                    if ((subBlock.connection.targetConnection == null || subBlock.connection.targetConnection == undefined) && subBlock.type === Blockly.INPUT_VALUE) {
+                        Blockly.Validation.setBlockInvalid(subBlock.sourceBlock_);
+                        currentBlockValid = false;
+                    } else {
+                        if (subBlock.connection && subBlock.connection.targetConnection && !Blockly.Validation.isBlockValid(subBlock.connection.targetConnection.sourceBlock_))
+                            currentBlockValid = false;
+                    }
+                }
+                return currentBlockValid;
+            });
+        }
         return currentBlockValid;
     }
     return false;

@@ -19,8 +19,6 @@ Blockly.Blocks["keyword-value-set"] = {
         this.setTooltip($.t("blockly.blocks.keyword-value-set.tooltip", { defaultValue: "" }));
         this.setColour(Blockly.Yadoms.blockColour.HUE);
 
-        this.disableAutomaticBlocCreation = false;
-
         this.appendDummyInput()
             .appendField($.t("blockly.blocks.keyword-value-set.title"));
         var thisBlock = this;
@@ -61,7 +59,7 @@ Blockly.Blocks["keyword-value-set"] = {
                 input.setCheck(keywordType);
 
                 //if connection is empty, add good default block
-                if (!input.connection.targetConnection && thisBlock.disableAutomaticBlocCreation === false) {
+                if (!input.connection.targetConnection && Blockly.Yadoms.isLoadingFromXml === false) {
                     var newChildBlock = Blockly.Yadoms.GetDefaultBlock_(Blockly.Yadoms.data.keywords[keyword], thisBlock.workspace);
                     if (newChildBlock) {
                         newChildBlock.setShadow(true);
@@ -139,9 +137,7 @@ Blockly.Blocks["keyword-value-set"] = {
         //attribute name must be lower case
         var inputValueShown = (xmlElement.getAttribute("input_shown") === "true");
 
-        this.disableAutomaticBlocCreation = true;
         this.updateShape_(inputValueShown);
-        this.disableAutomaticBlocCreation = false;
     }
 
 

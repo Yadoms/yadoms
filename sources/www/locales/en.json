@@ -513,6 +513,8 @@
       }
     },
     "templateHelp": "Click on the blue cog icon, to configure the trigger",
+    "chooseDeviceHelper" :  "Choose device",
+    "chooseKeywordHelper" :  "Choose keyword",
     "blocks": {
       "yadoms_wait": {
         "title": "At",

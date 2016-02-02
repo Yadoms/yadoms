@@ -16,7 +16,6 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
         this.setTooltip($.t("blockly.blocks.yadoms_wait_for_event.tooltip"));
         this.setHelpUrl("http://www.example.com/");
         this.setInputsInline(true);
-        this.disableAutomaticBlocCreation = false;
         this.setMutator(new Blockly.Mutator(["yadoms_wait_for_event_mutator_store_in_variable",
                                             "yadoms_wait_for_event_mutator_change",
                                             "yadoms_wait_for_event_mutator_become",
@@ -179,7 +178,7 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
     appendKeywordSelectorStatementBecome_: function (no, devId, keyId, operator, valueConnection, statementConnection) {
         var bValueInput = this.appendValueInput("additionalInput_part1_" + no).appendField($.t("blockly.blocks.yadoms_wait_for_event.case"));
         var self = this;
-        Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection(this, false, ["numeric", "string", "bool", "datetime", "enum"], undefined, function (keyword, type) { self.onKeywordChange_(no, keyword, type); }, "deviceDd" + no, "keywordDd" + no, bValueInput, "", self.workspace, !(self.disableAutomaticBlocCreation))
+        Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection(this, false, ["numeric", "string", "bool", "datetime", "enum"], undefined, function (keyword, type) { self.onKeywordChange_(no, keyword, type); }, "deviceDd" + no, "keywordDd" + no, bValueInput, "", self.workspace)
         .appendField($.t("blockly.blocks.yadoms_wait_for_event.triggeredType.become")).appendField(new Blockly.FieldDropdown(Blockly.Yadoms.NumberOperators_), "operatorDd"+no);
 		bValueInput.setForceNewlineInput(true);
 		
@@ -238,8 +237,9 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
             .appendField($.t("blockly.blocks.yadoms_wait_for_event.case"))
             .appendField($.t("blockly.blocks.yadoms_wait_for_event.datetime"))
             .appendField($.t("blockly.blocks.yadoms_wait_for_event.triggeredType.become"))
-            .appendField(new Blockly.FieldDropdown(Blockly.Yadoms.NumberOperators_), "operatorDd" + no)
-			.setForceNewlineInput(true);
+            .appendField(new Blockly.FieldDropdown(Blockly.Yadoms.NumberOperators_), "operatorDd" + no);
+
+        bValueInput.setForceNewlineInput(true);
 
         if (operator) {
             var opDd = this.getField("operatorDd" + no);
@@ -249,7 +249,7 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
         if (bValueInput) {
             if (valueConnection) {
                 bValueInput.connection.connect(valueConnection);
-            } else {
+            } else if(Blockly.Yadoms.isLoadingFromXml === false) {
                 var newChildBlock = Blockly.Block.obtain(this.workspace, 'yadoms_date_datetime');
                 if (newChildBlock) {
                     newChildBlock.setShadow(true);
@@ -444,9 +444,7 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
             }
         }
 
-        this.disableAutomaticBlocCreation = true;
         this.updateShape_();
-        this.disableAutomaticBlocCreation = false;
     },
 
     /**
