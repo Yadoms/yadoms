@@ -32,4 +32,6 @@ To run all tests :
    
 To run tests of a specific module :
    python -m dashboard.automation.testCreateRule
+
+(add --verbose to have more information about test running)
    
