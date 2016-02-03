@@ -5,7 +5,6 @@ function ConfigurationHelper(){}
 
 ConfigurationHelper.loadConfigurationLibs = function() {
     var d = new $.Deferred();
-
     asyncLoadJSLibs([
         "js/objects/configuration/configuration-control-manager.js",
         "js/objects/configuration/int-parameter-handler.js",
@@ -19,8 +18,7 @@ ConfigurationHelper.loadConfigurationLibs = function() {
         "js/objects/configuration/color-parameter-handler.js",
         "js/objects/configuration/icon-parameter-handler.js",
         "js/objects/configuration/list-parameter-handler.js"
-    ], function() {
-        debugger;
+    ]).done(function () {
         d.resolve();
     });
 
