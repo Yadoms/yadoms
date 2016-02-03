@@ -31,9 +31,9 @@ function ClockViewModel() {
         var target = this;
 
         //we set the date into toolbar
-        ToolbarApi.appendCustomIcon(this.widget, "<span class=\"widget-clock-date-field\"></span>");
+        ToolbarApi.appendCustomIcon(this.widget, "<span class=\"date-field\"></span>");
 
-        this.$dateField = this.widget.$gridWidget.find(".widget-clock-date-field");
+        this.$dateField = this.widget.$gridWidget.find(".date-field");
 
         setInterval(function () {
             ClockViewModel_updateTime(target);
@@ -45,14 +45,27 @@ function ClockViewModel() {
     * Callback for a resized event
     */
     this.resized = function () {
-        if (this.widget.width() <= 200) {
-            this.timeFontSize("2.7em");
-        }
-        else if (this.widget.width() <= 300) {
-            this.timeFontSize("3.3em");
+        var width = this.widget.width();
+        var height = this.widget.height();
+        
+        if (width <= 100) {
+            this.timeFontSize("2.5em");
         }
         else {
-            this.timeFontSize("6.0em");
+            //we look for height and width
+            if (width <= 200) {
+                if (height <= 100) {
+                    this.timeFontSize("3.3em");
+                } else {
+                    this.timeFontSize("4.5em");
+                }
+            } else {
+                if (height <= 100) {
+                    this.timeFontSize("3.3em");
+                } else {
+                    this.timeFontSize("8em");
+                }
+            }
         }
     };
 
