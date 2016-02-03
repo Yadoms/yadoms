@@ -47,6 +47,7 @@ namespace automation
       virtual ~CRuleManager();
 
       // IRuleManager Implementation
+      virtual void stop();
       virtual std::vector<std::string> getAvailableInterpreters();
       virtual std::vector<boost::shared_ptr<database::entities::CRule> > getRules() const;
       virtual int createRule(boost::shared_ptr<const database::entities::CRule> ruleData, const std::string& code);
@@ -61,6 +62,7 @@ namespace automation
       virtual void stopAllRulesMatchingInterpreter(const std::string & interpreterName);
       virtual void deleteAllRulesMatchingInterpreter(const std::string & interpreterName);
       // [END] IRuleManager Implementation
+
 
    protected:
       

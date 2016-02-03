@@ -43,7 +43,6 @@ namespace web { namespace poco {
          bool a = false;
          int b = 0;
          svs.getLinger(a, b);
-         YADOMS_LOG(information) << "getLinger on_off: " << a << " time : " << b;
          svs.setLinger(true, 2);
          m_embeddedWebServer = boost::make_shared<Poco::Net::HTTPServer>(m_httpRequestHandlerFactory, svs, serverParams);
       }

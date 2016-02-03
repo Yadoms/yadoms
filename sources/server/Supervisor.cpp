@@ -155,7 +155,7 @@ void CSupervisor::run()
       YADOMS_LOG(information) << "Supervisor is stopping...";
 
       //stop datetime notification service
-      dateTimeNotificationService.start();
+      dateTimeNotificationService.stop();
 
       //stop web server
       webServer->stop();
@@ -163,14 +163,21 @@ void CSupervisor::run()
 
       //stop the automation rules
       shared::CServiceLocator::instance().remove<automation::IRuleManager>(automationRulesManager);
+      automationRulesManager->stop();
       automationRulesManager.reset();
 
       //stop task manager
+      taskManager->stop();
       taskManager.reset();
 
       //stop all plugins
+      //force to stop all plugin, the reset() will cal stop only at pluginMAnager deletion, which could happen in the future if it is used elsewhere
       shared::CServiceLocator::instance().remove<pluginSystem::CManager>(pluginManager);
+      pluginManager->stop();
       pluginManager.reset();
+
+      //stop database tasks
+      pDataProvider->stopMaintenanceTasks();
 
       YADOMS_LOG(information) << "Supervisor is stopped";
 

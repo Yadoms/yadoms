@@ -31,6 +31,12 @@ CRuleManager::CRuleManager(boost::shared_ptr<database::IRuleRequester> dbRequest
 
 CRuleManager::~CRuleManager()
 {
+   if(!m_yadomsShutdown)
+      stop();
+}
+
+void CRuleManager::stop()
+{
    m_yadomsShutdown = true;
    stopRules();
 

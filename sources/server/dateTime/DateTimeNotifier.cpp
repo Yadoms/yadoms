@@ -16,7 +16,7 @@ namespace dateTime {
 
    CDateTimeNotifier::~CDateTimeNotifier()
    {
-      stop();
+      //stop();
    }
    
    void CDateTimeNotifier::start()
@@ -39,6 +39,8 @@ namespace dateTime {
 
    void CDateTimeNotifier::stop()
    {
-      m_dateTimeTimer.cancel(false);
+      m_dateTimeTimer.cancel(true);
+      if(m_dateTimeTask)
+         m_dateTimeTask->cancel();
    }
 } //namespace dateTime
