@@ -23,7 +23,7 @@ function RestEngine(){}
  * @return a promise
 */
 RestEngine.get = function (url, data, dataType) {
-   return RestEngine.restCall("GET", url, data, undefined, dataType);
+   return RestEngine.restCall2("GET", url, data, undefined, dataType);
 };
 
 /**
@@ -43,7 +43,7 @@ RestEngine.put = function (url, data) {
  * @return a promise
  */
 RestEngine.post = function (url, data) {
-   return RestEngine.restCall("POST", url, data);
+   return RestEngine.restCall2("POST", url, data);
 };
 
 /**
@@ -53,7 +53,7 @@ RestEngine.post = function (url, data) {
  * @return a promise
  */
 RestEngine.delete = function (url, data) {
-   return RestEngine.restCall("DELETE", url, data);
+   return RestEngine.restCall2("DELETE", url, data);
 };
 
 /**
@@ -65,37 +65,15 @@ RestEngine.delete = function (url, data) {
  * @param {String} dataType The expected return data type (is specified use value, if undefined use json, if "auto" don't speciy anything and let $.ajax guess
  * @return a promise
  */
-RestEngine.restCall = function(type, url, data, sync, dataType){
-   assert(!isNullOrUndefined(type), "type must be defined");
+RestEngine.restCall = function(type, url, data){
+    assert(!isNullOrUndefined(type), "type must be defined");
    assert(!isNullOrUndefined(url), "url must be defined");
    
 	var d = $.Deferred();
-   
-   var ajaxOptions ={
-      type : type,
-      url: url
-   };
 
-   //manage data
-   if (!isNullOrUndefined(data)) {
-      ajaxOptions.data = data;
-   }
-   
-   //manage synchronous option
-	if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
-		ajaxOptions.async = !sync;
-
-
-   //manage dataType option
-   //if "auto" => don't define option, let $ajax guess type
-   //if undefined or null => use "json"
-   //other => use specified value
-   if (isNullOrUndefined(dataType))
-      ajaxOptions.dataType = "json";
-   else if(dataType !== "auto") {
-      ajaxOptions.dataType = dataType;
-   }
-      
+	var ajaxOptions = data || {};
+    ajaxOptions.type = type;
+	ajaxOptions.url = url;
       
    //We send request to server
    $.ajax(ajaxOptions)
@@ -123,4 +101,72 @@ RestEngine.restCall = function(type, url, data, sync, dataType){
    return d.promise();
 }
 
+
+
+/**
+ * Send a REST call asynchronous request
+ * @param {string} type of the request  : "GET", "POST", "DELETE", "POST"
+ * @param {string} url The URL request : "/devices/32"
+ * @param {JSON} data The request data
+ * @param {bool} sync Indicate if the query is synchronous
+ * @param {String} dataType The expected return data type (is specified use value, if undefined use json, if "auto" don't speciy anything and let $.ajax guess
+ * @return a promise
+ */
+RestEngine.restCall2 = function (type, url, data, sync, dataType) {
+    assert(!isNullOrUndefined(type), "type must be defined");
+    assert(!isNullOrUndefined(url), "url must be defined");
+
+    var d = $.Deferred();
+
+    var ajaxOptions = {
+        type: type,
+        url: url
+    };
+
+    //manage data
+    if (!isNullOrUndefined(data)) {
+        ajaxOptions.data = data;
+    }
+
+    //manage synchronous option
+    if (!isNullOrUndefined(sync) && $.type(sync) === "boolean")
+        ajaxOptions.async = !sync;
+
+
+    //manage dataType option
+    //if "auto" => don't define option, let $ajax guess type
+    //if undefined or null => use "json"
+    //other => use specified value
+    if (isNullOrUndefined(dataType))
+        ajaxOptions.dataType = "json";
+    else if (dataType !== "auto") {
+        ajaxOptions.dataType = dataType;
+    }
+
+
+    //We send request to server
+    $.ajax(ajaxOptions)
+       .done(function (data) {
+           if (ajaxOptions.dataType === "json") {
+               //if JSON dataType expected, we parse the json answer
+               if (data.result) {
+                   //if answer is ok we return data field
+                   d.resolve(data.data);
+               }
+               else {
+                   d.reject(data.errorMessage);
+               }
+           } else {
+               //it is not json result, just resolve using data (case of simple ajax file download)
+               d.resolve(data);
+           }
+       })
+       .fail(function (jqXhr, textStatus, errorThrown) {
+           //console.error("Options : " + ajaxOptions);
+           //we build an error using HTTP error code
+           d.reject(jqXhr.status + errorThrown);
+       });
+
+    return d.promise();
+}
 

@@ -109,11 +109,15 @@
            getPluginDomRow(pi).find("button.btn-startStop").prop('disabled', true);
            if (pi.lastState == "Stopped" || pi.lastState == "Error") {
                //we ask for start
-               PluginInstanceManager.start(pi, function () { getPluginDomRow(pi).find("button.btn-startStop").prop('disabled', false); });
+               PluginInstanceManager.start(pi).done(function () {
+                    getPluginDomRow(pi).find("button.btn-startStop").prop('disabled', false);
+               });
            }
            else {
                //we ask for stop
-               PluginInstanceManager.stop(pi, function () { getPluginDomRow(pi).find("button.btn-startStop").prop('disabled', false); });
+               PluginInstanceManager.stop(pi).done(function () {
+                    getPluginDomRow(pi).find("button.btn-startStop").prop('disabled', false);
+               });
            }
        }
    }
@@ -175,42 +179,45 @@
        if (serverIsOnline) {
            $.each(pluginInstanceList, function (index, pluginInstance) {
 
-               PluginInstanceManager.getState(pluginInstance, function (status) {
-                   var $row = getPluginDomRow(pluginInstance);
-                   if (status.state != pluginInstance.lastState) {
+               PluginInstanceManager.getState(pluginInstance)
+               .done(function (status) {
+                       if (status) {
+                           var $row = getPluginDomRow(pluginInstance);
+                           if (status.state !== pluginInstance.lastState) {
 
-                       // Update start/stop button
-                       var $startStopButton = $row.find("button.btn-startStop");
-                       if (status.state == "Stopped") {
-                           $startStopButton.addClass("btn-success").removeClass("btn-warning");
-                       }
-                       else {
-                           $startStopButton.removeClass("btn-success").addClass("btn-warning");
-                       }
+                               // Update start/stop button
+                               var $startStopButton = $row.find("button.btn-startStop");
+                               if (status.state === "Stopped") {
+                                   $startStopButton.addClass("btn-success").removeClass("btn-warning");
+                               } else {
+                                   $startStopButton.removeClass("btn-success").addClass("btn-warning");
+                               }
 
-                       // Update state label
-                       var $label = $row.find("span.label-status");
-                       if ($label) {
-                           switch (status.state) {
-                           case "Error":
-                               $label.removeClass("label-success").removeClass("label-warning").addClass("label-danger").text(getCustomMessage(pluginInstance, status.messageId, "modals.dashboard.sub-windows.plugins.error"));
-                               break;
-                           case "Stopped":
-                               $label.removeClass("label-success").addClass("label-warning").removeClass("label-danger").text($.t("modals.dashboard.sub-windows.plugins.stopped"));
-                               break;
-                           case "Running":
-                               $label.addClass("label-success").removeClass("label-warning").removeClass("label-danger").text($.t("modals.dashboard.sub-windows.plugins.running"));
-                               break;
-                           case "Custom":
-                               $label.removeClass("label-success").addClass("label-warning").removeClass("label-danger").text(getCustomMessage(pluginInstance, status.messageId, "modals.dashboard.sub-windows.plugins.starting"));
-                               break;
-                           default:
-                               $label.removeClass("label-danger").text("");
-                               break;
+                               // Update state label
+                               var $label = $row.find("span.label-status");
+                               if ($label) {
+                                   switch (status.state) {
+                                   case "Error":
+                                       $label.removeClass("label-success").removeClass("label-warning").addClass("label-danger").text(getCustomMessage(pluginInstance, status.messageId, "modals.dashboard.sub-windows.plugins.error"));
+                                       break;
+                                   case "Stopped":
+                                       $label.removeClass("label-success").addClass("label-warning").removeClass("label-danger").text($.t("modals.dashboard.sub-windows.plugins.stopped"));
+                                       break;
+                                   case "Running":
+                                       $label.addClass("label-success").removeClass("label-warning").removeClass("label-danger").text($.t("modals.dashboard.sub-windows.plugins.running"));
+                                       break;
+                                   case "Custom":
+                                       $label.removeClass("label-success").addClass("label-warning").removeClass("label-danger").text(getCustomMessage(pluginInstance, status.messageId, "modals.dashboard.sub-windows.plugins.starting"));
+                                       break;
+                                   default:
+                                       $label.removeClass("label-danger").text("");
+                                       break;
+                                   }
+                               }
                            }
+                           pluginInstance.lastState = status.state;
                        }
-                   }
-               });
+                   });
            });
        }
    }
