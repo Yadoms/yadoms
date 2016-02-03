@@ -4,15 +4,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as Condition
 
-
-def isShowDashboardButtonAvailable(browser):
-   """Check if the dashboard button is available"""
-   if (not getShowDashboardButton(browser).is_displayed()):
-      # Sometimes first click on drop-down button is lost, so retry...
-      getDropDownButton(browser).click()
-      return False;
-   return True;
-
    
 def getDropDownButton(browser):
    return browser.find_element_by_id("dropDownButton")
@@ -30,9 +21,7 @@ def get(browser):
 def open(browser):
    """Open the dashboard and wait until displayed"""
    
-   WebDriverWait(browser, 10).until(Condition.visibility_of(getDropDownButton(browser)))
-   getDropDownButton(browser).click()
-   WebDriverWait(browser, 10).until(lambda browser: isShowDashboardButtonAvailable(browser))
+   WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "btn-show-dashboard")))
    getShowDashboardButton(browser).click()
    WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "main-dashboard-modal")))
    return get(browser)

@@ -1,4 +1,6 @@
 import unittest
+import database
+import scripts
 import yadomsServer
 import dashboard
 from selenium import webdriver
@@ -7,6 +9,8 @@ class MenuEntries(unittest.TestCase):
    """Check entries of the dashboard main menu"""
    
    def setUp(self):
+      database.new()
+      scripts.deleteAll()
       self.serverProcess = yadomsServer.start()
       self.browser = webdriver.Firefox()
       self.browser.implicitly_wait(10)
