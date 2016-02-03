@@ -42,7 +42,7 @@
          $("input#modify-page-text").val("");
       }
       //we display the modal
-      $('div#modify-page-modal').modal();
+      $('div#modify-page-modal').modal({ backdrop: 'static' });
    }
 
    $('div#modify-page-modal').on('shown.bs.modal', function () {
