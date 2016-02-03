@@ -177,6 +177,13 @@ class AceCodeEditor:
    def __init__(self, codeEditorWebElement):
        self.__codeEditorWebElement = codeEditorWebElement
           
+   def clear(self):
+      """ Remove the existing code """
+   
+      self.__codeEditorWebElement.send_keys(Keys.CONTROL + "a")
+      self.__codeEditorWebElement.send_keys(Keys.DELETE)
+      
+      
    def writeCode(self, code):
       """ Write code into codeEditor """
       """ code must be provided as list of code lines """

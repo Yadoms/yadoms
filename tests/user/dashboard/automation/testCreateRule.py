@@ -135,6 +135,7 @@ class CreateRule(unittest.TestCase):
       editRuleModal.getRuleDescription(self.browser).send_keys(ruleDescription)
          
       # - Rule code
+      editRuleModal.getRuleCodeEditor(self.browser).clear()
       editRuleModal.getRuleCodeEditor(self.browser).writeCode(ruleCode)
 
 
