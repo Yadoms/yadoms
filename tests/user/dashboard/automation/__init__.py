@@ -155,10 +155,6 @@ class EditRuleModal():
       # Not found
       assert False      
 
-   def getInterpreterSelector(self, browser):
-      ruleConfigurationPanel = browser.find_element_by_id("automation-rule-configuration")
-      return self.__getConfigurationItem(ruleConfigurationPanel, "[data-content]modals.edit-automation-rule.interpreter-rule.description")
-
    def getRuleName(self, browser):
       ruleConfigurationPanel = browser.find_element_by_id("automation-rule-configuration")
       return self.__getConfigurationItem(ruleConfigurationPanel, "[data-content]modals.edit-automation-rule.name-rule.description")

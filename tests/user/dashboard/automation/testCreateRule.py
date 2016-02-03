@@ -131,7 +131,6 @@ class CreateRule(unittest.TestCase):
 
       # - Rule configuration
       editRuleModal = dashboard.automation.waitEditRuleModal(self.browser)
-      Select(editRuleModal.getInterpreterSelector(self.browser)).select_by_value('0') # Select Python interpreter
       editRuleModal.getRuleName(self.browser).send_keys(ruleName)
       editRuleModal.getRuleDescription(self.browser).send_keys(ruleDescription)
          
