@@ -1,5 +1,4 @@
 .clockWidget-time {
-  #  position: absolute;
     text-align: center;
     top: 10%;
     bottom: 0px;
@@ -7,8 +6,6 @@
     right: 0px;
 }
 
-.clockWidget-date {
-  #  position: absolute;
-    text-align: left;
-    margin: auto;
+.widget-clock-date-field {
+    margin-left: 10px;
 }
