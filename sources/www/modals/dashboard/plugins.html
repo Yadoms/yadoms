@@ -25,7 +25,7 @@
       $("#btn-add-new-plugin").unbind("click").bind("click", addNewPlugin);
 
       //we dynamically ask for plugins (async)
-      PluginInstanceManager.getAll(function(allInstances){
+      PluginInstanceManager.getAll().done(function(allInstances){
          //foreach result we append a <tr>
          $.each(allInstances, function(index, value) {
             pluginInstanceList.push(value);
@@ -36,10 +36,10 @@
          });
 
          //we use the periodic task of the dashboard
-         clearInterval(periodicDashboardTask);
+         clearInterval(window.periodicDashboardTask);
          periodicDashboardTask = setInterval(periodicDashboardPluginTask, 2000);
          periodicDashboardPluginTask();
-      }, false);
+      });
    }
 
    function getPluginDomRow(pluginInstance) {

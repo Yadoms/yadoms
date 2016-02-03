@@ -92,15 +92,15 @@ RestEngine.restCall = function(type, url, data, sync, dataType){
    //other => use specified value
    if (isNullOrUndefined(dataType))
       ajaxOptions.dataType = "json";
-   else if(dataType != "auto") {
+   else if(dataType !== "auto") {
       ajaxOptions.dataType = dataType;
    }
       
       
    //We send request to server
    $.ajax(ajaxOptions)
-      .done(function (data, textStatus, jqXHR) {
-          if (ajaxOptions.dataType == "json") {
+      .done(function (data) {
+          if (ajaxOptions.dataType === "json") {
             //if JSON dataType expected, we parse the json answer
             if (data.result) {
                //if answer is ok we return data field
@@ -114,10 +114,10 @@ RestEngine.restCall = function(type, url, data, sync, dataType){
             d.resolve(data);
          }
       })
-      .fail(function(jqXHR, textStatus, errorThrown) {
+      .fail(function(jqXhr, textStatus, errorThrown) {
          //console.error("Options : " + ajaxOptions);
          //we build an error using HTTP error code
-         d.reject(jqXHR.status + errorThrown);
+         d.reject(jqXhr.status + errorThrown);
       });
    
    return d.promise();

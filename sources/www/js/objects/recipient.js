@@ -95,7 +95,7 @@ Recipient.prototype.mergeFields = function() {
     //add plugin fields from the cache array
     //we take only plugin that have at least one instance
     //we dynamically ask for plugins (async)
-    PluginInstanceManager.getAll(function(allInstances) {
+    PluginInstanceManager.getAll().done(function(allInstances) {
         var instanciatedTypes = [];
         $.each(allInstances, function(index, value) {
             if (!PluginInstanceManager.isSystemCategory(value))

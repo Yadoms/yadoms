@@ -75,35 +75,14 @@ PluginInstanceManager.get = function (pluginInstanceId, callback, sync) {
  * @param callback The callback for result
  * @param sync true to be wait for results, false to call asynchronously
  */
-PluginInstanceManager.getAll = function (callback, sync) {
-   assert($.isFunction(callback), "callback must be a function");
+PluginInstanceManager.getAll = function () {
+   var d = new $.Deferred();
 
-   var async = true;
-
-   if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
-      async = !sync;
-
-   $.ajax({
-      dataType: "json",
-      url: "rest/plugin/instance",
-      async: async
-   })
-       .done(
-       /**
-        * Receive result from server
-        * @param {{result:string}, {data: {plugin : object}}} data
-        */
-       function( data ) {
-          //we parse the json answer
-          if (data.result != "true")
-          {
-             notifyError($.t("objects.generic.errorLoading", {objectName:"plugin instances"}), JSON.stringify(data));
-             return;
-          }
-
+   RestEngine.get("rest/plugin/instance")
+       .done(function (data) {
           var result = [];
           var arrayOfDeffered = [];
-          data.data.plugin.forEach(function (value) {
+          data.plugin.forEach(function (value) {
               try {
                   var pi = PluginInstanceManager.factory(value);
                   var deffered = PluginInstanceManager.downloadPackage(pi);
@@ -126,12 +105,16 @@ PluginInstanceManager.getAll = function (callback, sync) {
           });
 
           $.whenAll(arrayOfDeffered).done(function () {
-              callback(result);
+              d.resolve(result);
           });
        })
-       .fail(function() {
-          notifyError($.t("objects.generic.errorLoading", {objectName:"plugin instances"}));
+       .fail(function (internalErrorMessage) {
+           var errorMessage = $.t("objects.generic.errorLoading", { objectName: "plugin instances" }) + " Inner error :" + internalErrorMessage;
+           notifyError(errorMessage);
+           d.reject(errorMessage);
        });
+
+   return d.promise();
 };
 
 /**
