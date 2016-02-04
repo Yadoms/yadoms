@@ -20,7 +20,8 @@ ToolbarApi.manageBatteryConfiguration = function (widget) {
         var deviceId = $battery.attr("deviceId");
         if (deviceId) {
             //we check for the device to look if it has battery keyword
-            DeviceManager.getKeywordsByDeviceId(deviceId, function (keywords) {
+            DeviceManager.getKeywordsByDeviceId(deviceId)
+            .done(function (keywords) {
                 var batteryLevel = keywords.find(function (element) { return element.capacityName == "batteryLevel"; });
                 if (batteryLevel) {
                     //it has capacity
@@ -35,13 +36,16 @@ ToolbarApi.manageBatteryConfiguration = function (widget) {
                         ToolbarApi.updateBatteryLevel(widget, lastValue.value);
                     })
                     .fail(function(error) {
-                       notifyError($.t("objects.generic.errorGetting", { objectName: "Acquisition KeywordId = " + batteryLevel.id }), error);
+                        notifyError($.t("objects.generic.errorGetting", { objectName: "keyword for device = " + deviceId }), error);
                     });
                 }
                 else {
                     //we can hide the div to prevent margin spaces before the title
                     $battery.hide();
                 }
+            })
+            .fail(function(error) {
+                notifyError($.t("objects.generic.errorGetting", { objectName: "Acquisition KeywordId = " + batteryLevel.id }), error);
             });
         }
     }

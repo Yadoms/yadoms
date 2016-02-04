@@ -55,7 +55,8 @@ widgetViewModelCtor =
 
               //we ask for device information
               try {
-                  DeviceManager.get(this.widget.configuration.device.deviceId, function (device) {
+                  DeviceManager.get(this.widget.configuration.device.deviceId)
+                  .done(function (device) {
                       self.indicatorText(device.friendlyName);
                   });
                   // Get the capacity of the keyword

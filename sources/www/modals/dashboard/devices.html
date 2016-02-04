@@ -45,7 +45,8 @@
       //we clear pluginInstance array
       deviceList = [];
 
-      DeviceManager.getAll(function (allDevices) {
+      DeviceManager.getAll()
+      .done(function (allDevices) {
          deviceList = allDevices;
          //foreach result we append a <tr>
          $.each(allDevices, function (index, value) {
@@ -140,13 +141,16 @@
          //we just ask for the friendly name
          modals.deviceConfigure.load(function () {
             showConfigurationDeviceModal(device, function () {
-               DeviceManager.updateToServer(device, function (result) {
-                  //We update the information that can have changed after the configuration
-                  var $row = getDeviceDomRow(device);
-
-                  var friendlyName = "<span class=\"glyphicon glyphicon-chevron-down deploy\">&nbsp;</span><span>" + device.friendlyName + "</span>";
-                  $row.find("td.device-friendlyName").html(friendlyName);
-               });
+                DeviceManager.updateToServer(device)
+                .done(function (updateDevice) {
+                    //We update the information that can have changed after the configuration
+                   var $row = getDeviceDomRow(updateDevice);
+                   var friendlyName = "<span class=\"glyphicon glyphicon-chevron-down deploy\">&nbsp;</span><span>" + device.friendlyName + "</span>";
+                   $row.find("td.device-friendlyName").html(friendlyName);
+                })
+                .fail(function(error) {
+                    notifyError($.t("objects.deviceManager.errorUpdating", { deviceName: device.friendlyName }), error);
+                });
             });
          });
       }
@@ -159,7 +163,8 @@
          modals.deviceDelete.load(function () {
             showDeleteDeviceModal(device, function (deleteDevice) {
                //deletion has been confirmed
-               DeviceManager.deleteFromServer(device, deleteDevice, function () {
+                DeviceManager.deleteFromServer(device, deleteDevice)
+                 .done(function () {
 
                   if (deleteDevice) {
                      //we remove device from array
@@ -217,7 +222,8 @@
             //we stop the timer task
             clearInterval(periodicDashboardTask);
 
-            DeviceManager.getKeywords(device, function () {
+            DeviceManager.getKeywords(device)
+            .done(function () {
                var actionsBtns = "<div class=\"btn-group\">\n" +
                        "<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.configure\"><span class=\"fa fa-pencil\"></span></button>\n" +
                        "</div>";
@@ -347,7 +353,8 @@
       //periodically we check the status of each plugin
       if (serverIsOnline) {
          //Check for new devices
-         DeviceManager.getAll(function (allDevices) {
+          DeviceManager.getAll()
+          .done(function (allDevices) {
             //Only if the number of devices is different, we check which one
             if (deviceList.length !== allDevices.length) {
                //foreach result we append a <tr>
