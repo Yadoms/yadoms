@@ -4,6 +4,7 @@
 #include "XplMessage.h"
 #include <shared/event/EventHandler.hpp>
 #include <Poco/TaskManager.h>
+#include <Poco/ThreadPool.h>
 #include <Poco/Net/NetworkInterface.h>
 #include "XplServiceTask.h"
 
@@ -96,9 +97,20 @@ namespace xplcore
       void clearAllSubscriptions();
 
    private:
+      //--------------------------------------------------------------
+      /// \brief			XplService thread pool (required for task manager)
+      //--------------------------------------------------------------
+      Poco::ThreadPool m_localThreadPool;
+
+      //--------------------------------------------------------------
+      /// \brief			XplService task manager
+      //--------------------------------------------------------------
       Poco::TaskManager m_taskManager;
 
-      //use pointer because taskManager take the ownership and destroy it at end
+      //--------------------------------------------------------------
+      /// \brief			XplService task pointer
+      ///               use pointer because taskManager take the ownership and destroy it at end
+      //--------------------------------------------------------------
       CXplServiceTask* m_xplTask;
    };
 
