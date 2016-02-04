@@ -30,8 +30,12 @@ ToolbarApi.manageBatteryConfiguration = function (widget) {
                     widget.ListenKeyword(batteryLevel.id);
 
                     //we ask immediately for the battery value
-                    AcquisitionManager.getLastValue(batteryLevel.id, function (lastValue) {
+                    AcquisitionManager.getLastValue(batteryLevel.id)
+                    .done(function (lastValue) {
                         ToolbarApi.updateBatteryLevel(widget, lastValue.value);
+                    })
+                    .fail(function(error) {
+                       notifyError($.t("objects.generic.errorGetting", { objectName: "Acquisition KeywordId = " + batteryLevel.id }), error);
                     });
                 }
                 else {
