@@ -130,11 +130,15 @@
             //we ask for configuration modal async
             modals.pluginConfigure.load(function() {
                configurePluginInstance(pi, function() {
-                  PluginInstanceManager.updateToServer(pi, function(result) {
-                     //We update the information that can have changed after the configuration
-                     var $row = getPluginDomRow(pi);
-                     $row.find("td.plugin-DisplayName").html(pi.name);
-                  });
+                   PluginInstanceManager.updateToServer(pi)
+                       .done(function() {
+                           //We update the information that can have changed after the configuration
+                           var $row = getPluginDomRow(pi);
+                           $row.find("td.plugin-displayName").html(pi.displayName);
+                       })
+                       .fail(function(error) {
+                           notifyError($.t("modals.configure-plugin.pluginFailToConfigure", { pluginName: pi.displayName }), error);
+                       });
                });
             });
          });
@@ -144,20 +148,31 @@
    function deletePlugin(pi) {
       //pi represent the pluginInstance concerned
       return function() {
-         modals.confirmation.load(function() {
-            showConfirmModal(btnKind.yesNo, null, $.t("modals.dashboard.sub-windows.plugins.confirmPluginDeletion", {pluginName:pi.DisplayName}),
+          modals.confirmation.load(function () {
+            showConfirmModal(btnKind.yesNo, null, $.t("modals.dashboard.sub-windows.plugins.confirmPluginDeletion", {pluginName:pi.displayName}),
             function () {
-               //deletion has been confirmed
-               PluginInstanceManager.deleteFromServer(pi, function() {
+                //deletion has been confirmed
+                var deletePromsie = PluginInstanceManager.deleteFromServer(pi);
+                
+                //disable button access until promise result
+                getPluginDomRow(pi).find("button").prop('disabled', true);
+
+                deletePromsie.done(function () {
                   //we remove pi from array
                   var i = pluginInstanceList.indexOf(pi);
-                  if(i != -1) {
+                  if(i !== -1) {
                      pluginInstanceList.splice(i, 1);
                   }
 
                   //we remove pi from dom
                   getPluginDomRow(pi).remove();
-               });
+                });
+
+                //if it fails, restore button access
+                deletePromsie.fail(function (error) {
+                    notifyError($.t("modals.configure-plugin.pluginFailToDelete", { pluginName: pi.displayName }), error);
+                    getPluginDomRow(pi).find("button").prop('disabled', false);
+                });
             });
          });
       }
@@ -167,10 +182,15 @@
       //pi represent the pluginInstance concerned
       return function() {
          //we set autoStart attr to cb value and send it to the server as an update
-         pi.autoStart = getPluginDomRow(pi).find("input.cb-autoStart").prop("disabled", true).prop("checked");
-         PluginInstanceManager.updateToServer(pi, function(result) {
-            getPluginDomRow(pi).find("input.cb-autoStart").prop("disabled", false).prop("checked", pi.autoStart);
-         });
+          pi.autoStart = getPluginDomRow(pi).find("input.cb-autoStart").prop("disabled", true).prop("checked");
+
+          PluginInstanceManager.updateToServer(pi)
+            .done(function () {
+                getPluginDomRow(pi).find("input.cb-autoStart").prop("disabled", false).prop("checked", pi.autoStart);
+            })
+            .fail(function (error) {
+                notifyError($.t("modals.configure-plugin.pluginFailToConfigure", { pluginName: pi.displayName }), error);
+            });
       }
    }
 
@@ -237,14 +257,15 @@
                   //we launch configureInstance GUI
                   configurePluginInstance(pi, function() {
                      //we ask for pluginInstance creation
-                     PluginInstanceManager.createToServer(pi, function(result) {
-                        //if it's okay
-                        if (result) {
-                           notifySuccess($.t("modals.configure-plugin.pluginSuccessfullyCreated"));
-                           addPluginInstanceToDom(pi);
-                           pluginInstanceList.push(pi);
-                        }
-                     });
+                      PluginInstanceManager.createToServer(pi)
+                          .done(function() {
+                              notifySuccess($.t("modals.configure-plugin.pluginSuccessfullyCreated"));
+                              addPluginInstanceToDom(pi);
+                              pluginInstanceList.push(pi);
+                          })
+                          .fail(function(error) {
+                              notifyError($.t("modals.configure-plugin.pluginFailToCreate", { pluginName: pi.displayName }), error);
+                          });
                   });
                });
             });

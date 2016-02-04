@@ -196,7 +196,10 @@
         "description": "Nom personnalisable du plugin",
         "regexErrorMessage": "Le nom du plugin doit contenir au minimum 1 caractère"
       },
-      "pluginSuccessfullyCreated": "Plugin créé"
+      "pluginSuccessfullyCreated": "Plugin créé",
+      "pluginFailToCreate": "Impossible de créer le plugin __pluginName__",
+      "pluginFailToDelete": "Impossible de supprimer le plugin __pluginName__",
+      "pluginFailToConfigure": "Impossible de configurer le plugin __pluginName__"
     },
     "configure-device": {
       "title": "Configuration de l'équipement",

@@ -19,19 +19,23 @@
 
     function initializeDeviceDashboard() {
 
-        //we check if there is at least one plugin instantiated that handle manual creation
-        PluginInstanceManager.getPluginInstanceHandleManuallyDeviceCreation(function(list) {
-            if (list.length > 0) {
-                //there is at least one plugin instance that handle this button
-                $("#btn-add-new-device").removeClass("disabled").unbind("click").bind("click", addNewDevice);
-            }
-        });
+       //we check if there is at least one plugin instantiated that handle manual creation
+       PluginInstanceManager.getPluginInstanceHandleManuallyDeviceCreation()
+       .done(function (list) {
+          if (list.length > 0) {
+             //there is at least one plugin instance that handle this button
+             $("#btn-add-new-device").removeClass("disabled").unbind("click").bind("click", addNewDevice);
+          }
+       })
+       .fail(function (error) {
+          notifyError($.t("modals.pluginInstance.errorGettingManuallyDeviceCreation"), error);
+       });
 
-        refreshDeviceList();
+       refreshDeviceList();
 
-        //we use the periodic task of the dashboard
-        clearInterval(periodicDashboardTask);
-        periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
+       //we use the periodic task of the dashboard
+       clearInterval(periodicDashboardTask);
+       periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
     }
 
     function refreshDeviceList() {
@@ -279,9 +283,13 @@
                         //we launch configureInstance GUI
                         showConfigurationManuallyDeviceModal(pi, function (newDeviceName, newDeviceConfiguration) {
                             //we ask for manually device creation
-                            PluginInstanceManager.createManuallyDevice(pi, newDeviceName, newDeviceConfiguration, function() {
-                                refreshDeviceList();
-                            });
+                           PluginInstanceManager.createManuallyDevice(pi, newDeviceName, newDeviceConfiguration)
+                           .done(function () {
+                              refreshDeviceList();
+                           })
+                           .fail(function (error) {
+                              notifyError($.t("objects.pluginInstance.errorCreatingManuallyDevice", { deviceName: newDeviceName }), error);
+                           });
                         });
                     });
                 });

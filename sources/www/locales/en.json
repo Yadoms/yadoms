@@ -197,7 +197,10 @@
         "description": "Friendly name of your plugin",
         "regexErrorMessage": "The name of the plugin must contains at least one character"
       },
-      "pluginSuccessfullyCreated": "Plugin successfully created"
+      "pluginSuccessfullyCreated": "Plugin successfully created",
+      "pluginFailToCreate": "Fail to create plugin __pluginName__",
+      "pluginFailToDelete": "Fail to delete plugin __pluginName__",
+      "pluginFailToConfigure": "Fail to configure plugin __pluginName__"
     },
     "configure-device": {
       "title": "Device configuration",

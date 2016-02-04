@@ -1,67 +1,69 @@
 <!--New plugin Modal -->
 <div class="modal fade" id="new-manually-device-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" data-i18n="modals.add-manually-device.title"></h4>
-            </div>
-            <div class="modal-body">
-               <form>
-                  <div class="form-group">
-                     <label for="associatedPluginTypeList" data-i18n="modals.add-manually-device.attachedPlugin"></label>
-                     <select id="associatedPluginTypeList" class="form-control">
-                     </select>
-                  </div>
-               </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="common.cancel"></button>
-                <button id="btn-confirm-add-manually-device" type="button" class="btn btn-primary" data-i18n="common.ok"></button>
-            </div>
-        </div>
-    </div>
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title" data-i18n="modals.add-manually-device.title"></h4>
+         </div>
+         <div class="modal-body">
+            <form>
+               <div class="form-group">
+                  <label for="associatedPluginTypeList" data-i18n="modals.add-manually-device.attachedPlugin"></label>
+                  <select id="associatedPluginTypeList" class="form-control"></select>
+               </div>
+            </form>
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="common.cancel"></button>
+            <button id="btn-confirm-add-manually-device" type="button" class="btn btn-primary" data-i18n="common.ok"></button>
+         </div>
+      </div>
+   </div>
 </div>
 
 <script>
 
-    var pluginTypes = [];
+   var pluginTypes = [];
 
-    /**
-     * Ask for plugin types to the REST server
-     */
-    function askPluginTypesForManuallyDeviceCreation(callback)
-    {
-       assert($.isFunction(callback), "callback must be defined");
+   /**
+    * Ask for plugin types to the REST server
+    */
+   function askPluginTypesForManuallyDeviceCreation(callback) {
+      assert($.isFunction(callback), "callback must be defined");
 
-       PluginInstanceManager.getPluginInstanceHandleManuallyDeviceCreation(function(list) {
+      PluginInstanceManager.getPluginInstanceHandleManuallyDeviceCreation()
+      .done(function (list) {
 
-          $("select#associatedPluginTypeList").empty();
+         $("select#associatedPluginTypeList").empty();
 
-          $.each(list, function(index, value) {
-             var pi = PluginInstanceManager.factory(value);
-             //foreach plugin-instance
-             $("select#associatedPluginTypeList").append("<option value=\""+ pi.id + "\">" + pi.displayName + "</option>");
-          });
+         $.each(list, function (index, value) {
+            var pi = PluginInstanceManager.factory(value);
+            //foreach plugin-instance
+            $("select#associatedPluginTypeList").append("<option value=\"" + pi.id + "\">" + pi.displayName + "</option>");
+         });
 
-          //event click on add plugin button
-          $("button#btn-confirm-add-manually-device").unbind("click").bind("click", function() {
-             //we close the new widget modal
-             $("div#new-manually-device-modal").modal("hide");
+         //event click on add plugin button
+         $("button#btn-confirm-add-manually-device").unbind("click").bind("click", function () {
+            //we close the new widget modal
+            $("div#new-manually-device-modal").modal("hide");
 
-             //we get the plugin instance id chosen
-             var pluginId = $("select#associatedPluginTypeList").val();
+            //we get the plugin instance id chosen
+            var pluginId = $("select#associatedPluginTypeList").val();
 
-             //from the id, retreive the plugin instance
-             var instance = $.grep(list, function(e){ return e.id == pluginId; });
+            //from the id, retreive the plugin instance
+            var instance = $.grep(list, function (e) { return e.id == pluginId; });
 
-             //send found instance
-             callback(instance[0]);
-          });
+            //send found instance
+            callback(instance[0]);
+         });
 
-          //we display the modal
-          $('div#new-manually-device-modal').modal({ backdrop: 'static' });
+         //we display the modal
+         $('div#new-manually-device-modal').modal({ backdrop: 'static' });
+      })
+       .fail(function (error) {
+          notifyError($.t("modals.pluginInstance.errorGettingManuallyDeviceCreation"), error);
        });
-    }
+   }
 
 </script>
