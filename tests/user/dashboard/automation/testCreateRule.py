@@ -9,6 +9,7 @@ import dashboard.automation
 import notification
 import i18n
 import tools
+import os.path
 
 class CreateRule(unittest.TestCase):
    """Create rule test"""
@@ -110,7 +111,7 @@ class CreateRule(unittest.TestCase):
              'Traceback (most recent call last):\n',
              '  File "scriptCaller.py", line 36, in <module>\n',
              '    script = __import__(scriptModule)\n',
-             '  File "D:\Projets\Domotique\yadoms\\builds\\DEBUG\\scripts\\locals\\rule_1\yadomsScript.py", line 4\n',
+             '  File "' + os.path.abspath(scripts.ruleFullPath(1)) + '", line 4\n',
              '    while(True)\n',
              '              ^\n',
              'SyntaxError: invalid syntax\n']))

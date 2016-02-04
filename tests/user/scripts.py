@@ -19,6 +19,13 @@ def deploy(scripts):
       ruleTargetPath = os.path.join(yadomsServer.scriptsPath(), "locals", "rule_" + str(index + 1))
       os.makedirs(ruleTargetPath)
       shutil.copyfile(os.path.join("resources", "scripts", script + ".py"), os.path.join(ruleTargetPath, "yadomsScript.py"))
+            
+         
+def ruleFullPath(id):
+   """Get the rule full path for rule id"""
+   rulePath = os.path.join(yadomsServer.scriptsPath(), "locals", "rule_" + str(id))
+   ruleFilePath = os.path.join(rulePath, "yadomsScript.py")
+   return ruleFilePath
       
       
 def checkLocalRuleCodeById(id, expectedCode):
