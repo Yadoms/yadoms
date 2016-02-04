@@ -721,7 +721,10 @@
       "errorDuringGettingPages": "Error during requesting pages"
     },
     "ConfigurationManager": {
-      "errorDuringGettingSystemConfiguration": "Error during getting configuration"
+      "errorDuringGettingSystemConfiguration": "Error during getting configuration",
+      "errorDuringGettingConfiguration": "Error in reading configuration __section__.__key__",
+      "errorDuringCreatingConfiguration": "Error in creating configuration __section__.__key__",
+      "errorDuringUpdatingConfiguration": "Error in updating configuration __section__.__key__"
     },
     "recipient": {
       "errorGettingRecipientList": "An error has occurred acquiring recipient list",

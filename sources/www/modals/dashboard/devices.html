@@ -72,7 +72,7 @@
    //Get the Device in the deviceList array searching by its id
    function getDeviceFromId(id) {
       var i = deviceList.map(function (e) { return e.id; }).indexOf(id);
-      if (i)
+      if (i !== -1)
          return deviceList[i];
       return undefined;
    }
@@ -367,11 +367,11 @@
 
             //we get the device
             var device = getDeviceFromId($deviceDetailsTable.attr("device-id"));
-
-            AcquisitionManager.getLastValues(device.keywords)
-               .done(function (data) {
-                  $.each(data, function (index, acquisition) {
-                     $.each(device.keywords, function (idx, keyword) {
+            if (device && device.keywords) {
+               AcquisitionManager.getLastValues(device.keywords)
+               .done(function(data) {
+                  $.each(data, function(index, acquisition) {
+                     $.each(device.keywords, function(idx, keyword) {
                         if (keyword.id === acquisition.keywordId) {
                            var $keywordRow = getKeywordDomRow(keyword);
                            if (!$keywordRow) {
@@ -384,9 +384,10 @@
                      });
                   });
                })
-               .fail(function (error) {
+               .fail(function(error) {
                   notifyError($.t("objects.generic.errorGetting", { objectName: "last acquisition for device = " + device.id }), error);
                });
+            }
          }
       }
    }

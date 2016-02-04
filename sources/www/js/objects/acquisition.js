@@ -26,9 +26,9 @@ Acquisition.prototype.toJSON = function () {
  * Creates an empty Acquisition
  * @constructor
  */
-function EmptyAcquisition() {
+function EmptyAcquisition(keywordId) {
    this.date = "";
-   this.keywordId = "";
+   this.keywordId = keywordId || "";
    this.value = "";
 }
 

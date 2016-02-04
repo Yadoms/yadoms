@@ -8,6 +8,11 @@
  */
 function ConfigurationManager(){}
 
+/**
+ * Create a ConfigurationItem from json content
+ * @param {Json} json The configuration item as json
+ * @returns {ConfigurationItem} The newly created configuration item
+ */
 ConfigurationManager.factory = function(json) {
    assert(!isNullOrUndefined(json), "json must be defined");
    assert(!isNullOrUndefined(json.section), "json.section must be defined");
@@ -42,118 +47,75 @@ ConfigurationManager.items.install = {};
 ConfigurationManager.items.installSection = "install";
 ConfigurationManager.items.install.firstStart = "firstStart";
 
-ConfigurationManager.getSection = function(section, callback) {
+/**
+ * Get all configuration values from a section
+ * @param {Section} section The section
+ * @returns {Promise} 
+ */
+ConfigurationManager.getSection = function(section) {
    assert(!isNullOrUndefined(section), "section must be defined");
-   assert($.isFunction(callback), "callback must be defined");
 
-   $.getJSON("rest/configuration/" + section)
+   var d = new $.Deferred();
+
+   RestEngine.getJson("rest/configuration/" + section)
       .done(function(data) {
-         //we parse the json answer
-         if (data.result != "true")
-         {
-            notifyError($.t("objects.ConfigurationManager.errorDuringGettingSystemConfiguration"), JSON.stringify(data));
-            callback(null);
-            return;
-         }
-
          var result = [];
 
-         $.each(data.data.configuration, function(index, value) {
+         $.each(data.configuration, function (index, value) {
             var ci = ConfigurationManager.factory(value);
             result[ci.name] = ci;
          });
 
-         callback(result);
+         d.resolve(result);
       })
-      .fail(function() {
-         notifyError($.t("objects.ConfigurationManager.errorDuringGettingSystemConfiguration"));
-         callback(null);
-      });
+      .fail(d.reject);
+
+   return d.promise();
 };
 
-ConfigurationManager.get = function(configurationSection, configurationName, callback) {
+/**
+ * Get a configuration value from server
+ * @param {String} configurationSection The item section
+ * @param {String} configurationName The item key
+ * @returns {Promise} 
+ */
+ConfigurationManager.get = function(configurationSection, configurationName) {
    assert(!isNullOrUndefined(configurationSection), "configurationSection must be defined");
    assert(!isNullOrUndefined(configurationName), "configurationName must be defined");
-   assert($.isFunction(callback), "callback must be defined");
 
-   $.getJSON("rest/configuration/" + configurationSection + "/" + configurationName)
+   var d = new $.Deferred();
+   RestEngine.getJson("rest/configuration/" + configurationSection + "/" + configurationName)
       .done(function(data) {
-         //we parse the json answer
-         if (data.result != "true")
-         {
-            //we don't signal error. If necessary it will be done in the callback
-            callback(null);
-            return;
-         }
-
-         var result = ConfigurationManager.factory(data.data);
-         callback(result);
+         var result = ConfigurationManager.factory(data);
+         d.resolve(result);
       })
-      .fail(function() {
-         notifyError($.t("objects.ConfigurationManager.errorDuringGettingSystemConfiguration"));
-         callback(null);
-      });
+      .fail(d.reject);
+   return d.promise();
 };
 
-ConfigurationManager.getSync = function(configurationSection, configurationName) {
-   assert(!isNullOrUndefined(configurationSection), "configurationSection must be defined");
-   assert(!isNullOrUndefined(configurationName), "configurationName must be defined");
 
-   var result = null;
-
-   $.ajax({
-      type: "GET",
-      url: "rest/configuration/" + configurationSection + "/" + configurationName,
-      dataType: "json",
-      async: false
-   })
-   .done(function(data) {
-      //we parse the json answer
-      if (data.result != "true")
-      {
-         //we don't signal error. If necessary it will be done in the callback
-      }
-      else {
-         result = ConfigurationManager.factory(data.data);
-      }
-   })
-   .fail(function() {
-      notifyError($.t("objects.ConfigurationManager.errorDuringGettingSystemConfiguration"));
-   });
-
-   return result;
-};
-
-ConfigurationManager.updateToServerSync = function(configurationItem) {
+/**
+ * Update a configuration item
+ * @param {Object} configurationItem The configuration item to update
+ * @returns {Promise} 
+ */
+ConfigurationManager.updateToServer = function (configurationItem) {
    assert(!isNullOrUndefined(configurationItem), "configurationItem must be defined");
-   var result = false;
-   $.ajax({
-      type: "PUT",
-      url: "/rest/configuration/" + configurationItem.section + "/" + configurationItem.name,
-      data: JSON.stringify(configurationItem),
-      contentType: "application/json; charset=utf-8",
-      dataType: "json",
-      async: false
-   })
-      .done(function(data) {
-         //we parse the json answer
-         if (data.result != "true")
-         {
-            notifyError($.t("objects.generic.errorUpdating", {objectName: "configuration"}), JSON.stringify(data));
-            return;
-         }
-         //it's okay
-         result = true;
-      })
-      .fail(function() {
-         notifyError($.t("objects.generic.errorUpdating", {objectName: "configuration"}));
-      });
-
-   return result;
+   return RestEngine.putJson("/rest/configuration/" + configurationItem.section + "/" + configurationItem.name, { data: JSON.stringify(configurationItem) });
 };
 
-//TODO : make it use a ConfigurationItem object
-ConfigurationManager.createToServerSync = function(section, name, value, defaultValue, description, securityAccess) {
+
+/**
+ * Save a configuration item 
+ * @param {String} section The configuration item section
+ * @param {String} name The configuration item identifier
+ * @param {String} value The value 
+ * @param {String} defaultValue The default value
+ * @param {String} description The descrption
+ * @param {String} securityAccess The securit access
+ * @returns {Promise} 
+ */
+ConfigurationManager.createToServer = function(section, name, value, defaultValue, description, securityAccess) {
    assert(!isNullOrUndefined(section), "section must be defined");
    assert(!isNullOrUndefined(name), "name must be defined");
    assert(!isNullOrUndefined(value), "value must be defined");
@@ -164,35 +126,14 @@ ConfigurationManager.createToServerSync = function(section, name, value, default
    if (isNullOrUndefined(defaultValue))
       defaultValue = value;
 
-   var result = null;
-   $.ajax({
-      type: "PUT",
-      url: "/rest/configuration/" + section + "/" + name,
-      data: JSON.stringify({ "section": section,
-              "name": name,
-              "value": value,
-              "defaultValue": defaultValue,
-              "description": description,
-              "securityAccess": securityAccess
-      }),
-      contentType: "application/json; charset=utf-8",
-      dataType: "json",
-      async: false
-   })
-      .done(function(data) {
-         //we parse the json answer
-         if (data.result != "true")
-         {
-            notifyError($.t("objects.generic.errorCreating", {objectName : "configuration named " + name + " in section " + section}), JSON.stringify(data));
-         }
-         else {
-            //it's okay
-            result = data.data;
-         }
+   return RestEngine.putJson("/rest/configuration/" + section + "/" + name, {
+      data: JSON.stringify({
+         "section": section,
+         "name": name,
+         "value": value,
+         "defaultValue": defaultValue,
+         "description": description,
+         "securityAccess": securityAccess
       })
-      .fail(function() {
-         notifyError($.t("objects.generic.errorCreating", {objectName : "configuration named " + name + " in section " + section}));
-      });
-
-   return result;
+   });
 };

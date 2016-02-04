@@ -722,7 +722,10 @@
       "errorDuringGettingPages": "Erreur lors de la récupération des pages"
     },
     "ConfigurationManager": {
-      "errorDuringGettingSystemConfiguration": "Error lors de la récupération de la configuration"
+      "errorDuringGettingSystemConfiguration": "Errrur lors de la récupération de la configuration",
+      "errorDuringGettingConfiguration": "Erreur lors de la récupération de la configuration __section__.__key__",
+      "errorDuringCreatingConfiguration": "Erreur lors de la création de la configuration __section__.__key__",
+      "errorDuringUpdatingConfiguration": "Erreur lors de la mise à jour de la configuration __section__.__key__"
     },
     "recipient": {
       "errorGettingRecipientList": "Une erreur est apparue lors du listing des destinataires",

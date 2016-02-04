@@ -97,21 +97,25 @@ namespace web {
                      shared::CDataContainer result;
                      for (std::vector<int>::iterator i = list.begin(); i != list.end(); ++i)
                      {
-                        YADOMS_LOG(information) << " KeywordId = " << *i;
-                        result.set(boost::lexical_cast<std::string>(*i), m_dataProvider->getAcquisitionRequester()->getKeywordLastData(*i));
+                        try
+                        {
+                           result.set(boost::lexical_cast<std::string>(*i), m_dataProvider->getAcquisitionRequester()->getKeywordLastData(*i));
+                        }
+                        catch (shared::exception::CEmptyResult & /*noData*/)
+                        {
+                           //ensure returning entity object, because we need to indicate that a keyword have no data, not others (in case of multiple keyword without data)
+                           shared::CDataContainer emptyResult;
+                           emptyResult.set("keywordId", *i);
+                           result.set(boost::lexical_cast<std::string>(*i), emptyResult);
+                        }
                      }
                      return CResult::GenerateSuccess(result);
-                        
+
                   }
                   requestContent.printToLog();
                   return CResult::GenerateError("invalid parameter. Can not retreive keywords in request content");
                }
                return CResult::GenerateError("invalid parameter.");
-            }
-            catch (shared::exception::CEmptyResult & /*noData*/)
-            {
-               //if no data just return success
-               return CResult::GenerateSuccess();
             }
             catch (std::exception &ex)
             {
