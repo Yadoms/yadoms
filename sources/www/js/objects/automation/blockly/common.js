@@ -102,9 +102,11 @@ Blockly.Yadoms.LoadLanguageScript_ = function (callback) {
             $.getScript("libs/blockly/js/locales/en.js")
                 .done(function () {
                     callback();
-                }.fail(function () {
+                })
+                .fail(function () {
+                    console.error("Fail to load Blockly for en");
                     callback();
-                }));
+                });
         });
 };
 
