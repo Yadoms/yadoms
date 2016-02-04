@@ -339,7 +339,7 @@
           "table": {
             "displayName": "Name",
             "status": "Status",
-            "launchAtStartup": "Launch At Startup",
+            "launchAtStartup": "Launch at startup",
             "type": "Plugin type",
             "actions": "Actions"
           },
@@ -395,13 +395,14 @@
         },
         "automation-center": {
           "title": "Automation center",
-          "description": "You can create or modify your automatisation rules of Yadoms",
+          "description": "You can create or modify your automation rules of Yadoms",
           "new": "Create a new rule",
           "table": {
-            "state": "State",
             "name": "Name",
             "description": "Description",
-            "actions": "Actions"
+            "autoStart": "Launch at startup",
+            "actions": "Actions",
+            "state": "State"
           },
           "startStop": "Start / Stop the rule",
           "ruleState": {
@@ -415,7 +416,7 @@
           "log": "View log",
           "ruleSuccessfullyCreated": "Rule successfully created",
           "ruleSuccessfullyUpdated": "Rule successfully updated",
-          "ruleDeleted": "Règle supprimée",
+          "ruleDeleted": "Rule successfully removed",
           "editors": {
             "code": {
               "name": "Code"

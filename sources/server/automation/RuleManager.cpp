@@ -60,8 +60,8 @@ bool CRuleManager::startRules(const std::vector<boost::shared_ptr<database::enti
    {
       try
       {
-         // Don't start a rule in error state
-         if ((*it)->State() != database::entities::ERuleState::kErrorValue)
+         // Start only autoStarted rules if not in error state
+         if ((*it)->AutoStart() && (*it)->State() != database::entities::ERuleState::kErrorValue)
             startRule((*it)->Id);
       }
       catch (CRuleException&)
@@ -84,9 +84,6 @@ void CRuleManager::startRule(int ruleId)
    try
    {
       boost::shared_ptr<const database::entities::CRule> ruleData = getRule(ruleId);
-
-      if (!ruleData->Enabled())
-         return;  // Rule not enabled, don't start
 
       if (isRuleStarted(ruleData->Id()))
          return;  // Rule already started
@@ -274,18 +271,6 @@ void CRuleManager::updateRule(boost::shared_ptr<const database::entities::CRule>
    }
 
    m_ruleRequester->updateRule(ruleData);
-
-   if (ruleData->Enabled.isDefined())
-   {
-      if (ruleData->Enabled() != isRuleStarted(ruleData->Id))
-      {
-         // Enable/disable state changed, apply it
-         if (ruleData->Enabled())
-            startRule(ruleData->Id());
-         else
-            stopRuleAndWaitForStopped(ruleData->Id());
-      }
-   }
 }
 
 void CRuleManager::updateRuleCode(int id, const std::string& code)

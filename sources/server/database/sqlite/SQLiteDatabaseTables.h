@@ -112,7 +112,7 @@ namespace sqlite {
       (Model)
       (Content)
       (Configuration)
-      (Enabled)
+      (AutoStart)
       (State)
       (ErrorMessage)
       (StartDate)

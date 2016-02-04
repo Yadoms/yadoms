@@ -402,10 +402,11 @@
           "description": "Gérer, ajouter et supprimer des règles d'automatisation",
           "new": "Création d'une règle",
           "table": {
-            "state": "Etat",
             "name": "Nom",
             "description": "Description",
-            "actions": "Actions"
+            "autoStart": "Démarrer automatiquement",
+            "actions": "Actions",
+            "state": "Etat"
           },
           "startStop": "Démarrer / Arrêter la règle",
           "ruleState": {
