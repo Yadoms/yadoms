@@ -65,12 +65,19 @@ def getCurrentNotifications(browser):
    return notifications
    
    
-def isNotification(browser, expectedType, expectedText):
+def isNotification(browser, expectedType):
+   for notification in getCurrentNotifications(browser):
+      if expectedType == notification.getType():
+         return True
+   return False
+   
+   
+def isNotificationWithText(browser, expectedType, expectedText):
    for notification in getCurrentNotifications(browser):
       if Notification(expectedType, expectedText) == notification:
          return True
    return False
-   
+
    
 def isNotificationContainingText(browser, expectedType, expectedSubText):
    for notification in getCurrentNotifications(browser):
@@ -79,13 +86,19 @@ def isNotificationContainingText(browser, expectedType, expectedSubText):
    return False
 
 
-def wait(browser, expectedType, expectedText):
+def wait(browser, expectedType):
    """ Wait for an expected notification """
    WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "noty_bottomRight_layout_container")))
-   WebDriverWait(browser, 10).until(lambda driver: isNotification(browser, expectedType, expectedText))
+   WebDriverWait(browser, 10).until(lambda driver: isNotification(browser, expectedType))
 
 
-def waitIn(browser, expectedType, expectedSubText):
+def waitText(browser, expectedType, expectedText):
+   """ Wait for an expected notification """
+   WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "noty_bottomRight_layout_container")))
+   WebDriverWait(browser, 10).until(lambda driver: isNotificationWithText(browser, expectedType, expectedText))
+
+
+def waitSubText(browser, expectedType, expectedSubText):
    """ Wait for a notification contining expected text"""
    WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "noty_bottomRight_layout_container")))
    WebDriverWait(browser, 10).until(lambda driver: isNotificationContainingText(browser, expectedType, expectedSubText))

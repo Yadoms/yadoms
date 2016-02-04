@@ -44,7 +44,7 @@ class EditRule(unittest.TestCase):
       editRuleModal.getConfirmConfigureRuleButton(self.browser).click()
       
       # Check modified rule
-      notification.wait(self.browser, notification.Type.Success, i18n.get()["modals"]["dashboard"]["sub-windows"]["automation-center"]["ruleSuccessfullyUpdated"])
+      notification.waitText(self.browser, notification.Type.Success, i18n.get()["modals"]["dashboard"]["sub-windows"]["automation-center"]["ruleSuccessfullyUpdated"])
       
       rulesTable = dashboard.automation.waitRulesTableHasNRules(self.browser, 1)
       ruleDatas = dashboard.automation.getRuleDatas(rulesTable, ruleNumber)
@@ -71,7 +71,7 @@ class EditRule(unittest.TestCase):
       editRuleModal.getConfirmConfigureRuleButton(self.browser).click()
       
       # Check modified rule
-      notification.wait(self.browser, notification.Type.Success, i18n.get()["modals"]["dashboard"]["sub-windows"]["automation-center"]["ruleSuccessfullyUpdated"])
+      notification.waitText(self.browser, notification.Type.Success, i18n.get()["modals"]["dashboard"]["sub-windows"]["automation-center"]["ruleSuccessfullyUpdated"])
       
       rulesTable = dashboard.automation.waitRulesTableHasNRules(self.browser, 1)
       ruleDatas = dashboard.automation.getRuleDatas(rulesTable, ruleNumber)

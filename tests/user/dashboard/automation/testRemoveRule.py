@@ -60,7 +60,7 @@ class RemoveRule(unittest.TestCase):
       confirmationModal.getRuleRemovingConfirmationModalOkButton().click()
       
       # Notification expected
-      notification.wait(self.browser, notification.Type.Success, i18n.get()["modals"]["dashboard"]["sub-windows"]["automation-center"]["ruleDeleted"])
+      notification.waitText(self.browser, notification.Type.Success, i18n.get()["modals"]["dashboard"]["sub-windows"]["automation-center"]["ruleDeleted"])
       # Table should be updated
       self.assertTrue(tools.waitUntil(lambda: dashboard.automation.getRuleNumberInTable(self.browser, rulesTable) == 0, 5))
   

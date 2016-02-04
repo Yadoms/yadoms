@@ -25,18 +25,31 @@ def checkLocalRuleCodeById(id, expectedCode):
    """Check the local rule for expected code"""
    
    rulePath = os.path.join(yadomsServer.scriptsPath(), "locals", "rule_" + str(id))
-   assert os.path.isdir(rulePath)
+   if not os.path.isdir(rulePath):
+      return False
    
    ruleFilePath = os.path.join(rulePath, "yadomsScript.py")
-   assert os.path.isfile(ruleFilePath)
-   
+   if not os.path.isfile(ruleFilePath):
+      return False
+      
    readCode = []
    with open(ruleFilePath, 'r') as ruleFile:
       for line in ruleFile:
          readCode.append(line.rstrip())
-         
-   assert readCode == expectedCode
+
+   # Remove BOM
+   if len(readCode) > 0 and readCode[0][0] == '\xef' and readCode[0][1] == '\xbb' and readCode[0][2] == '\xbf':
+      readCode[0] = readCode[0][3:]
       
+   if (readCode != expectedCode):
+      print ">>>>>>>>>>> Read code : "
+      print readCode
+      print ">>>>>>>>>>> Expected code : "
+      print expectedCode
+      return False
+      
+   return True
+   
       
 def checkLocalRuleLogById(id, expectedLog):
    """Check the local rule for expected log"""
@@ -55,4 +68,12 @@ def checkLocalRuleLogById(id, expectedLog):
          # Remove date/time for comparison
          readLog.append(re.sub("\d{4}\/\d{1,2}\/\d{1,2} \d{2}:\d{2}:\d{2} : ", "", line))
          
-   return readLog == expectedLog
+   if (readLog != expectedLog):
+      print ">>>>>>>>>>> Read log : "
+      print readLog
+      print ">>>>>>>>>>> Expected log : "
+      print expectedLog
+      return False         
+
+   return True
+   

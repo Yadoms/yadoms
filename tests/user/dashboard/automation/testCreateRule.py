@@ -24,7 +24,7 @@ class CreateRule(unittest.TestCase):
 
    def checkCreateOkRule(self, ruleName, ruleDescription, ruleCode, ruleLog):
       # - notification
-      notification.wait(self.browser, notification.Type.Success, i18n.get()["modals"]["dashboard"]["sub-windows"]["automation-center"]["ruleSuccessfullyCreated"])
+      notification.waitText(self.browser, notification.Type.Success, i18n.get()["modals"]["dashboard"]["sub-windows"]["automation-center"]["ruleSuccessfullyCreated"])
       
       # - in web client
       rulesTable = dashboard.automation.waitRulesTableHasNRules(self.browser, 1)
@@ -45,7 +45,7 @@ class CreateRule(unittest.TestCase):
       
       
       # - on disk (corresponding script file)
-      scripts.checkLocalRuleCodeById(1, ruleCode)
+      self.assertTrue(scripts.checkLocalRuleCodeById(1, ruleCode))
       self.assertTrue(tools.waitUntil(lambda: scripts.checkLocalRuleLogById(1, ruleLog)))
             
             
@@ -62,7 +62,6 @@ class CreateRule(unittest.TestCase):
           "      time.sleep(100)"],
          lambda ruleName, ruleDescription, ruleCode: self.checkCreateOkRule(ruleName, ruleDescription, ruleCode,
             ['#### START ####\n',
-             '#### END ####\n',
              'Some log entry...\n']))
             
             
@@ -70,8 +69,8 @@ class CreateRule(unittest.TestCase):
 
    def checkCreateErroneousRule(self, ruleName, ruleDescription, ruleCode, ruleLog):
       # - notifications
-      notification.wait(self.browser, notification.Type.Success, i18n.get()["modals"]["dashboard"]["sub-windows"]["automation-center"]["ruleSuccessfullyCreated"])
-      notification.waitIn(self.browser, notification.Type.Error, i18n.get()["eventLogger"]["RuleFailed"].replace("__who__", ruleName))
+      notification.waitText(self.browser, notification.Type.Success, i18n.get()["modals"]["dashboard"]["sub-windows"]["automation-center"]["ruleSuccessfullyCreated"])
+      notification.waitSubText(self.browser, notification.Type.Error, i18n.get()["eventLogger"]["RuleFailed"].replace("__who__", ruleName))
       
       # - in web client
       rulesTable = dashboard.automation.waitRulesTableHasNRules(self.browser, 1)
@@ -91,7 +90,7 @@ class CreateRule(unittest.TestCase):
       self.assertTrue(tools.waitUntil(lambda: dashboard.automation.getRuleState(rulesTable, ruleNumber) == dashboard.automation.RuleState.Error))
       
       # - on disk (corresponding script file)
-      scripts.checkLocalRuleCodeById(1, ruleCode)
+      self.assertTrue(scripts.checkLocalRuleCodeById(1, ruleCode))
       self.assertTrue(tools.waitUntil(lambda: scripts.checkLocalRuleLogById(1, ruleLog)))
       
       
@@ -108,11 +107,10 @@ class CreateRule(unittest.TestCase):
           "      time.sleep(100)"],
          lambda ruleName, ruleDescription, ruleCode: self.checkCreateErroneousRule(ruleName, ruleDescription, ruleCode,
             ['#### START ####\n',
-             '#### END ####\n',
              'Traceback (most recent call last):\n',
-             '  File "scriptCaller.py", line 35, in <module>\n',
+             '  File "scriptCaller.py", line 36, in <module>\n',
              '    script = __import__(scriptModule)\n',
-             '  File "D:\Projets\Domotique\yadoms-code\\trunk\\builds\\DEBUG\\scripts\\locals\\rule_1\yadomsScript.py", line 4\n',
+             '  File "D:\Projets\Domotique\yadoms\\builds\\DEBUG\\scripts\\locals\\rule_1\yadomsScript.py", line 4\n',
              '    while(True)\n',
              '              ^\n',
              'SyntaxError: invalid syntax\n']))
