@@ -23,7 +23,7 @@ Blockly.Yadoms.LoadDataForBlocklyCustomBlocks_ = function () {
         }
     };
 
-    PluginInstanceManager.getAll(function(list) {
+    PluginInstanceManager.getAll().done(function(list) {
         $.each(list, function(key, plugin) {
             result.plugins[plugin.id] = plugin;
         });
@@ -47,37 +47,39 @@ Blockly.Yadoms.LoadDataForBlocklyCustomBlocks_ = function () {
 			});
 			//TODO : extract this code into a deffered when of all previous synchronous calls
 			$.each(result.keywords, function (index, keywordData) {
-				var pluginData = result.plugins[result.devices[keywordData.deviceId].pluginId];
-				if (!isNullOrUndefined(keywordData) && keywordData.type.toUpperCase() === "enum".toUpperCase()) {
-					var typeInfo = keywordData.typeInfo;
-					if (!isNullOrUndefined(typeInfo) && !isNullOrUndefined(typeInfo.name) && !isNullOrUndefined(typeInfo.values)) {
-						var typeToSet = "enum_" + typeInfo.name;
+			    var device = result.devices[keywordData.deviceId];
+			    if (device) {
+			        var pluginData = result.plugins[device.pluginId];
+			        if (keywordData && keywordData.type.toUpperCase() === "enum".toUpperCase()) {
+			            var typeInfo = keywordData.typeInfo;
+			            if (!isNullOrUndefined(typeInfo) && !isNullOrUndefined(typeInfo.name) && !isNullOrUndefined(typeInfo.values)) {
+			                var typeToSet = "enum_" + typeInfo.name;
 
-						//all is OK, this is a new enum, ask for translation
-						var translatedEnum = [];
-						$.each(typeInfo.values, function (index2, value) {
-							var trad = $.t("plugins/" + pluginData.type + ":enumerations." + typeInfo.name + ".values." + value, { defaultValue: value });
-							translatedEnum.push([trad, value]);
-						});
+			                //all is OK, this is a new enum, ask for translation
+			                var translatedEnum = [];
+			                $.each(typeInfo.values, function(index2, value) {
+			                    var trad = $.t("plugins/" + pluginData.type + ":enumerations." + typeInfo.name + ".values." + value, { defaultValue: value });
+			                    translatedEnum.push([trad, value]);
+			                });
 
-						var translatedName = $.t("plugins/" + pluginData.type + ":enumerations." + typeInfo.name + ".name", { defaultValue: typeInfo.name });
+			                var translatedName = $.t("plugins/" + pluginData.type + ":enumerations." + typeInfo.name + ".name", { defaultValue: typeInfo.name });
 
-						result.enumerations[typeToSet] = {
-							typeToSet: typeToSet,
-							name: typeInfo.name,
-							translatedName : translatedName,
-							values: translatedEnum
-						};
+			                result.enumerations[typeToSet] = {
+			                    typeToSet: typeToSet,
+			                    name: typeInfo.name,
+			                    translatedName: translatedName,
+			                    values: translatedEnum
+			                };
 
-					}
-				}
-
+			            }
+			        }
+			    }
 			});
 
 			d.resolve(result);
 		});
 		
-    }, true);
+    });
 
     
     return d.promise();

@@ -297,14 +297,14 @@
             * Make lazy loading of the qrcode modal
             */
             $("#btn-show-qrcode").click(function () {
-                modals.qrCode.load(function () { $('#qrcode-modal').modal(); });
+                modals.qrCode.load(function () { $('#qrcode-modal').modal({ backdrop: 'static' }); });
             });
 
             $("#btn-show-dashboard").click(function () {
                 modals.mainDashboard.load(function () {
                     //before showing the dashboard we update many cache informations
                     PluginManager.get(function () {
-                        $('#main-dashboard-modal').modal();
+                        $('#main-dashboard-modal').modal({ backdrop: 'static' });
                         $('#main-dashboard-modal').off('hidden.bs.modal').on('hidden.bs.modal', function () {
 
                             //clear the bootstrap validation when modal is hidden (handle submit and cancel behaviors)

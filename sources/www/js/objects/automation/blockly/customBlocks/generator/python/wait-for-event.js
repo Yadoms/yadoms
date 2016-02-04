@@ -10,7 +10,6 @@ Blockly.Python["yadoms_wait_for_event"] = function (block) {
     var kwList = Blockly.Yadoms.Python.listToStringArray(block.getKeywordList());
 
     //get the output variable
-    debugger;
     var outVar;
     if (block.mutationData_.storeInVariable === true) {
         outVar = block.getFieldValue("outVar");

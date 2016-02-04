@@ -15,6 +15,11 @@ namespace automation
       virtual ~IRuleManager() {}
 
       //-----------------------------------------------------
+      ///\brief               Stop the Rule manager (stop all rules)
+      //-----------------------------------------------------
+      virtual void stop() = 0;
+
+      //-----------------------------------------------------
       ///\brief               Get all available interpreters (re-scan interpreters)
       ///\return              The interpreter list
       //-----------------------------------------------------

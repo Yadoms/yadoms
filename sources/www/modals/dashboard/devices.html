@@ -101,8 +101,8 @@
         $deviceRow.i18n();
 
         //we async ask for attached plugins
-        DeviceManager.getAttachedPlugin(device, function() {
-            var $deviceRow = getDeviceDomRow(device);
+        DeviceManager.getAttachedPlugin(device)
+        .done(function() {
             var iconName;
             if (!device.attachedPlugin.isSystemCategory()) {
                 iconName = "plugins/" + device.attachedPlugin.type + "/icon.png";
@@ -119,6 +119,10 @@
                     "<span>" + device.attachedPlugin.displayName + "</span>";
 
             $deviceRow.find("td.device-attachedTo").html(attachedTo);
+        })
+        .fail(function (error) {
+            $deviceRow.find("button.btn-configure").addClass("disabled");
+            $deviceRow.find("td.device-attachedTo").html(error);
         });
     }
 

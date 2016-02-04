@@ -77,7 +77,6 @@ WebSocketEngine.initializeWebSocketEngine = function(callback) {
                             $(document).trigger("acquisitionupdate", websocketData);
                             break;
                         case "devicenew":
-                            debugger;
                             break;
                         case "taskupdatenotification":
                             $(document).trigger("taskupdatenotification." + websocketData.uuid, websocketData);

@@ -31,7 +31,7 @@
       $("div#delete-widget-modal").find("div.modal-body").text($.t("modals.delete-widget.text", { widgetType : $.t("widgets/" + widgetToDelete.type + ":name", { defaultValue : widgetToDelete.package.name})}));
 
       //we display the modal
-      $('div#delete-widget-modal').modal();
+      $('div#delete-widget-modal').modal({ backdrop: 'static' });
    }
 
    /**

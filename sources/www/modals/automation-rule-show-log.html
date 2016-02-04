@@ -30,7 +30,7 @@
       getLog(rule);
 
       //we display the modal
-      $('div#show-log-automation-rule-modal').modal();
+      $('div#show-log-automation-rule-modal').modal({ backdrop: 'static' });
    }
    
    function showLogAutomationRuleModalUpdateLog(logContent) {
@@ -41,6 +41,6 @@
       $logSlot.text(logContent);
 
       //we display the modal
-      $('div#show-log-automation-rule-modal').modal();
+      $('div#show-log-automation-rule-modal').modal({ backdrop: 'static' });
    }
 </script>

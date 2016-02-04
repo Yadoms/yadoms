@@ -574,7 +574,7 @@ WidgetManager.createGridstackWidget = function (widget) {
     domWidget += "<div class=\"customizationButton widgetCustomizationButton btn-delete-widget\"><i class=\"fa fa-trash-o\"></i></div>\n" +
              "</div>\n" +
         "</div>\n" +
-        "<div class=\"panel panel-primary panel-widget\" >" +
+        "<div class=\"panel panel-primary panel-widget widget-" + type + "\" >" +
             "<div class=\"panel-heading panel-widget-header\">" +
                 "<div class=\"panel-widget-title-toolbar\" ></div>" +
 				"<div class=\"panel-widget-title\">" + widget.title + "</div>\n" +

@@ -41,6 +41,7 @@ namespace sqlite {
       // IDatabaseProvider implementation
       bool load();
       void unload();
+      void stopMaintenanceTasks();
       boost::shared_ptr<ITransactionalProvider> getTransactionalEngine();
       boost::shared_ptr<IPluginRequester> getPluginRequester() { return m_pluginRequester; }
       boost::shared_ptr<IConfigurationRequester> getConfigurationRequester() { return m_configurationRequester; }

@@ -30,6 +30,7 @@ namespace database {
 
       CSQLiteDataProvider::~CSQLiteDataProvider()
       {
+         stopMaintenanceTasks();
          unload();
       }
 
@@ -220,8 +221,22 @@ namespace database {
 
       void CSQLiteDataProvider::unload()
       {
+         //close database access
          if (m_pDatabaseHandler != NULL)
             sqlite3_close(m_pDatabaseHandler);
+      }
+
+      void CSQLiteDataProvider::stopMaintenanceTasks()
+      {
+         //cancel all tasks
+         if (m_maintenanceSummaryComputingTask)
+            m_maintenanceSummaryComputingTask->cancel();
+         if (m_maintenancePurgeTask)
+            m_maintenancePurgeTask->cancel();
+         m_maintenanceTimer.cancel();
+
+         m_maintenancePurgeTask.assign(NULL);
+         m_maintenanceSummaryComputingTask.assign(NULL);
       }
 
       void CSQLiteDataProvider::loadRequesters()

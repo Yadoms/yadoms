@@ -33,9 +33,14 @@ namespace database {
       virtual bool load() = 0;
 
       //--------------------------------------------------------------
-      /// \Brief	Unoad the database system
+      /// \Brief	Unload the database system
       //--------------------------------------------------------------
-      virtual void unload() = 0;
+      virtual void unload() = 0;   
+      
+      //--------------------------------------------------------------
+      /// \Brief	Stop all maintenance tasks
+      //--------------------------------------------------------------
+      virtual void stopMaintenanceTasks() = 0;
 
       //--------------------------------------------------------------
       /// \Brief		get the transactional engine

@@ -36,74 +36,42 @@ PluginInstanceManager.factory = function(json) {
  * @returns {boolean}
  */
 PluginInstanceManager.isSystemCategory = function(pluginInstance) {
-    return pluginInstance.category.toLowerCase()== PluginInstanceManager._systemCategory.toLowerCase();
+    return pluginInstance.category.toLowerCase() === PluginInstanceManager._systemCategory.toLowerCase();
 };
 
 /**
  * Get a plugin instance using its ID
  * @param pluginInstanceId The plugin instance id to get
- * @param callback The callback used to return the plugin instance found
- * @param sync true to get result synchronously
  */
-PluginInstanceManager.get = function (pluginInstanceId, callback, sync) {
-   assert(!isNullOrUndefined(pluginInstanceId), "pluginInstanceId must be defined");
-   assert($.isFunction(callback), "callback must be a function");
+PluginInstanceManager.get = function (pluginInstanceId) {
+    assert(!isNullOrUndefined(pluginInstanceId), "pluginInstanceId must be defined");
 
-   var async = true;
-   if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
-      async = !sync;
-
-   $.ajax({
-      dataType: "json",
-      url: "rest/plugin/" + pluginInstanceId,
-      async: async
-   })
-      .done(function( data ) {
-         //we parse the json answer
-         if (data.result != "true")
-         {
-            notifyError($.t("objects.generic.errorGetting", {objectName : "Plugin with Id = " + pluginInstanceId}), JSON.stringify(data));
-            return;
-         }
-         callback(PluginInstanceManager.factory(data.data));
-      })
-      .fail(function() {notifyError($.t("objects.generic.errorGetting", {objectName : "Plugin with Id = " + pluginInstanceId}));});
+    var d = new $.Deferred();
+    RestEngine.get("rest/plugin/" + pluginInstanceId)
+        .done(function (data) {
+            if (!isNullOrUndefinedOrEmpty(data))
+                d.resolve(PluginInstanceManager.factory(data));
+            else
+                d.reject($.t("objects.generic.errorGetting", { objectName: "Plugin with Id = " + pluginInstanceId }));
+        })
+    .fail(function (errorMessage) {
+        notifyError($.t("objects.generic.errorGetting", { objectName: "Plugin with Id = " + pluginInstanceId }), errorMessage);
+        d.reject(errorMessage);
+    });
+    return d.promise();
 };
 
 /**
  * Function which list all available plugins instance
- * @param callback The callback for result
- * @param sync true to be wait for results, false to call asynchronously
  */
-PluginInstanceManager.getAll = function (callback, sync) {
-   assert($.isFunction(callback), "callback must be a function");
+PluginInstanceManager.getAll = function () {
+   var d = new $.Deferred();
 
-   var async = true;
-
-   if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
-      async = !sync;
-
-   $.ajax({
-      dataType: "json",
-      url: "rest/plugin/instance",
-      async: async
-   })
-       .done(
-       /**
-        * Receive result from server
-        * @param {{result:string}, {data: {plugin : object}}} data
-        */
-       function( data ) {
-          //we parse the json answer
-          if (data.result != "true")
-          {
-             notifyError($.t("objects.generic.errorLoading", {objectName:"plugin instances"}), JSON.stringify(data));
-             return;
-          }
-
+   RestEngine.get("rest/plugin/instance")
+       .done(function (data) {
           var result = [];
           var arrayOfDeffered = [];
-          data.data.plugin.forEach(function (value) {
+          data.plugin.forEach(function (value) {
               try {
                   var pi = PluginInstanceManager.factory(value);
                   var deffered = PluginInstanceManager.downloadPackage(pi);
@@ -126,32 +94,38 @@ PluginInstanceManager.getAll = function (callback, sync) {
           });
 
           $.whenAll(arrayOfDeffered).done(function () {
-              callback(result);
+              d.resolve(result);
           });
        })
-       .fail(function() {
-          notifyError($.t("objects.generic.errorLoading", {objectName:"plugin instances"}));
+       .fail(function (internalErrorMessage) {
+           var errorMessage = $.t("objects.generic.errorLoading", { objectName: "plugin instances" }) + " Inner error :" + internalErrorMessage;
+           notifyError(errorMessage);
+           d.reject(errorMessage);
        });
+
+   return d.promise();
 };
 
 /**
  * Get the pluginInstance state
  * @param pluginInstance
- * @param callback
  */
-PluginInstanceManager.getState = function (pluginInstance, callback) {
+PluginInstanceManager.getState = function (pluginInstance) {
    assert(!isNullOrUndefined(pluginInstance), "pluginInstance must be defined");
-   assert($.isFunction(callback), "callback must be a function");
-
-   //we ask for the started status of current pluginInstance only on non system plugins
-    if (!pluginInstance.isSystemCategory()) {
-        $.getJSON("/rest/plugin/" + pluginInstance.id + "/state/")
-            .done(function (data) {
-                callback(data.result == "true" ? data.data : {state:"Unknown"} );
-                pluginInstance.lastState = data.data.state;
-            })
-            .fail(function () { notifyError($.t("objects.pluginInstance.errorGettingState", { pluginName: pluginInstance.displayName })); });
+   
+   var d = new $.Deferred();
+   if (!pluginInstance.isSystemCategory()) {
+       RestEngine.get("/rest/plugin/" + pluginInstance.id + "/state")
+           .done(function(data) {
+               d.resolve(data);
+           })
+           .fail(function() {
+               d.resolve({ state: "Unknown" });
+           });
+   } else {
+        d.resolve();
     }
+    return d.promise();
 }; 
 
 /**
@@ -160,34 +134,18 @@ PluginInstanceManager.getState = function (pluginInstance, callback) {
  * @param callback The callback for the result
  * @param sync True to wait for result, false (or undefined) to work asynchronously
  */
-PluginInstanceManager.start = function(pluginInstance, callback, sync) {
+PluginInstanceManager.start = function(pluginInstance) {
    assert(!isNullOrUndefined(pluginInstance), "pluginInstance must be defined");
+   var d = new $.Deferred();
 
-    var async = true;
-    if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
-        async = !sync;
-
-   //we can't start system plugins
-   if (!pluginInstance.isSystemCategory()) {
-      $.ajax({
-         type: "PUT",
-         url: "/rest/plugin/" + pluginInstance.id + "/start",
-         contentType: "application/json; charset=utf-8",
-         dataType: "json",
-         async: async
-      })
-         .done(function(data) {
-            //we parse the json answer
-            if (data.result != "true")
-            {
-               notifyError($.t("objects.pluginInstance.errorStarting", {pluginName : pluginInstance.displayName}), JSON.stringify(data));
-               return;
-            }
-            if ($.isFunction(callback))
-               callback();
-         })
-         .fail(function() {notifyError($.t("objects.pluginInstance.errorStarting", {pluginName : pluginInstance.displayName}));});
-   }
+    if (!pluginInstance.isSystemCategory()) {
+        RestEngine.put("/rest/plugin/" + pluginInstance.id + "/start", { dataType: "json", contentType: "application/json; charset=utf-8" })
+        .done(d.resolve)
+        .fail(d.reject);
+    } else {
+        d.resolve();
+    }
+    return d.promise();
 };
 
 /**
@@ -196,35 +154,19 @@ PluginInstanceManager.start = function(pluginInstance, callback, sync) {
  * @param callback The callback for the result
  * @param sync True to wait for result, false (or undefined) to work asynchronously
  */
-PluginInstanceManager.stop = function(pluginInstance, callback, sync) {
-   assert(!isNullOrUndefined(pluginInstance), "pluginInstance must be defined");
+PluginInstanceManager.stop = function (pluginInstance) {
 
-    var async = true;
-    if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
-        async = !sync;
+    assert(!isNullOrUndefined(pluginInstance), "pluginInstance must be defined");
+    var d = new $.Deferred();
 
-   //we can't stop system plugins
-   if (!pluginInstance.isSystemCategory()) {
-      $.ajax({
-         type: "PUT",
-         url: "/rest/plugin/" + pluginInstance.id + "/stop",
-         contentType: "application/json; charset=utf-8",
-         dataType: "json",
-         async: async
-      })
-         .done(function(data) {
-            //we parse the json answer
-            if (data.result != "true")
-            {
-               notifyError($.t("objects.pluginInstance.errorStopping", {pluginName : pluginInstance.displayName}), JSON.stringify(data));
-               return;
-            }
-
-            if ($.isFunction(callback))
-               callback();
-         })
-         .fail(function() {notifyError($.t("objects.pluginInstance.errorStopping", {pluginName : pluginInstance.displayName}));});
-   }
+    if (!pluginInstance.isSystemCategory()) {
+        RestEngine.put("/rest/plugin/" + pluginInstance.id + "/stop", { dataType: "json", contentType: "application/json; charset=utf-8" })
+        .done(d.resolve)
+        .fail(d.reject);
+    } else {
+        d.resolve();
+    }
+    return d.promise();
 };
 
 /**

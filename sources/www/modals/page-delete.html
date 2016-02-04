@@ -28,7 +28,7 @@
       $("div#delete-page-modal").find("div.modal-body").text($.t("modals.delete-page.text", { pageName : pageToDelete.name}));
 
       //we display the modal
-      $('div#delete-page-modal').modal();
+      $('div#delete-page-modal').modal({ backdrop: 'static' });
    }
 
    /**

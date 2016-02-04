@@ -96,7 +96,7 @@
 
 .panel-widget-title-toolbar {
     float: left;
-    border-right: 1px solid white;
+    /*border-right: 1px solid white;*/
     padding-right: 2.5px;
     margin-top: 2px;   
 }
@@ -106,6 +106,7 @@
 	overflow: hidden; 
 	white-space: nowrap; 
 	box-sizing: border-box;
+    margin-top: 2px;
 }
 
 /*Widget toolbar API*/
