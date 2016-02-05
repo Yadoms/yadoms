@@ -128,7 +128,7 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(Rule, "CREATE TABLE Rule                   
                                              model TEXT,                                                          \
                                              content TEXT,                                                        \
                                              configuration TEXT,                                                  \
-                                             enabled INTEGER DEFAULT 1,                                           \
+                                             autoStart INTEGER DEFAULT 1,                                         \
                                              state TEXT NOT NULL default 'Stopped',                               \
                                              errorMessage TEXT,                                                   \
                                              startDate TEXT,                                                      \
