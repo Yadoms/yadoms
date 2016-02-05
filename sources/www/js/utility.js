@@ -93,6 +93,12 @@ function notifyError(message, errorInfo, timeout)
    return notify(message, 'error', timeout);
 }
 
+/**
+ * Parse a string as a boolean
+ * @param string to parse
+ * @param defaultValue 
+ * @returns boolean value 
+ */
 function parseBool(string, defaultValue) {
    if (isNullOrUndefined(defaultValue))
       defaultValue = false;
@@ -108,7 +114,14 @@ function parseBool(string, defaultValue) {
       default: return defaultValue;
    }
 }
-
+/**
+ * Display a confirm dialog
+ * @param {string} message to display
+ * @param {string} gravity of the dialog
+ * @param {function pointer} confirmCallback 
+ * @param {functionpointer} cancelCallback 
+ * @returns {noty} 
+ */
 function notifyConfirm(message, gravity, confirmCallback, cancelCallback) {
    assert(message != undefined, "Message must be defined");
    assert(gravity != undefined, "Gravity must be defined");

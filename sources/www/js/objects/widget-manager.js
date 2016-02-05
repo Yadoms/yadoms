@@ -521,11 +521,6 @@ WidgetManager.enableCustomization = function (widget, enable) {
         page.grid.resizable(widget.$gridWidget, true);
     else
         page.grid.resizable(widget.$gridWidget, false);
-
-    if (enable)
-        widget.$gridWidget.find(".customization-item").removeClass("hidden");
-    else
-        widget.$gridWidget.find(".customization-item").addClass("hidden");
 };
 
 /**

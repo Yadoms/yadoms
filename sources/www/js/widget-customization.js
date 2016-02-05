@@ -37,6 +37,12 @@ function enterCustomization() {
         });
     });
 
+    //we show / hide customization items
+    if (customization)
+        $(".customization-item").removeClass("hidden");
+    else
+        $(".customization-item").addClass("hidden");
+
     $("a#customizeButton i").addClass("fa-spin ");
 }
 

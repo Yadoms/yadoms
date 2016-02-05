@@ -49,23 +49,35 @@ PluginInstance.prototype.isSystemCategory = function() {
  * @returns {*} The configuration schema or undefined
  */
 PluginInstance.prototype.getBoundPackageConfigurationSchema = function() {
+   var d = new $.Deferred();
+
    if (!isNullOrUndefined(this.package)) {
       var tmp = this.package.configurationSchema;
-      return this.applyBindingPrivate(tmp, ["system"]);
+      this.applyBindingPrivate(tmp, ["system"])
+         .done(d.resolve)
+         .fail(d.reject);
+   } else {
+      d.reject("undefined package");
    }
-   return undefined;
+   return d.promise();
 };
 
 /**
  *  Get the bound manually device creation configuration schema
  * @returns {*}
  */
-PluginInstance.prototype.getBoundManuallyDeviceCreationConfigurationSchema = function() {
+PluginInstance.prototype.getBoundManuallyDeviceCreationConfigurationSchema = function () {
+   var d = new $.Deferred();
+
    if (!isNullOrUndefined(this.package)) {
       var tmp = this.package.manuallyDeviceCreationConfigurationSchema;
-      return this.applyBindingPrivate(tmp, ["plugin", "system"]);
+      this.applyBindingPrivate(tmp, ["plugin", "system"])
+      .done(d.resolve)
+      .fail(d.reject);
+   } else {
+      d.reject("undefined package");
    }
-   return undefined;
+   return d.promise();
 };
 
 /**
@@ -78,50 +90,65 @@ PluginInstance.prototype.applyBindingPrivate = function(item, allowedTypes) {
    assert(!isNullOrUndefined(item), "item must be defined");
    assert(!isNullOrUndefined(allowedTypes), "allowedTypes must be defined");
    var self = this;
-   for (var key in item) {
-      if ($.isPlainObject(item[key])) {
-         if (!isNullOrUndefined(item[key].__Binding__)) {
+
+   var d = new $.Deferred();
+
+   var arrayOfDeffered = [];
+
+   $.each(item, function(key, confItem) {
+      if ($.isPlainObject(confItem)) {
+         if (!isNullOrUndefined(confItem.__Binding__)) {
             //we've got binding
-            assert(!isNullOrUndefined(item[key].__Binding__.type), "type must be defined in binding");
+            assert(!isNullOrUndefined(confItem.__Binding__.type), "type must be defined in binding");
             //is the binding type is allowed
 
-            assert ($.inArray(item[key].__Binding__.type.toLowerCase(), allowedTypes) != -1, "Binding of type " + item[key].__Binding__.type + " is not allowed here");
-            assert(!isNullOrUndefined(item[key].__Binding__.query), "query must be defined in binding");
+            assert($.inArray(confItem.__Binding__.type.toLowerCase(), allowedTypes) != -1, "Binding of type " + confItem.__Binding__.type + " is not allowed here");
+            assert(!isNullOrUndefined(confItem.__Binding__.query), "query must be defined in binding");
 
-            var destList = {};
-
-            switch (item[key].__Binding__.type.toLowerCase())
-            {
-               case "system":
-
-                  //we ask synchronously the bound value
-                  RestEngine.getJson("/rest/system/binding/" + item[key].__Binding__.query)
-                  .done(function(data) {
+            switch (confItem.__Binding__.type.toLowerCase()) {
+            case "system":
+               //we ask synchronously the bound value
+               var deffered = RestEngine.getJson("/rest/system/binding/" + confItem.__Binding__.query);
+               arrayOfDeffered.push(deffered);
+               deffered.done(function(data) {
                      //we replace the binded value by the result
-                     item[key] = data;
-                  })
-                  .fail(function(error) {
-                      notifyError($.t("objects.pluginInstance.errorApplyingBinding"), error);
-                  });
-                  break;
-               case "plugin":
-                  //we ask synchronously the binded value
-
-                  RestEngine.getJson("/rest/plugin/" + self.id + "/binding/" + item[key].__Binding__.query)
-                  .done(function(data) {
-                     //we replace the binded value by the result
-                     item[key] = data;
+                  item[key] = data;
                   })
                   .fail(function(error) {
                      notifyError($.t("objects.pluginInstance.errorApplyingBinding"), error);
                   });
-                  break;
+               break;
+            case "plugin":
+               //we ask synchronously the binded value
+
+               var defferedPlugin = RestEngine.getJson("/rest/plugin/" + self.id + "/binding/" + confItem.__Binding__.query);
+               arrayOfDeffered.push(defferedPlugin);
+               defferedPlugin.done(function(data) {
+                     //we replace the binded value by the result
+                  item[key] = data;
+                  })
+                  .fail(function(error) {
+                     notifyError($.t("objects.pluginInstance.errorApplyingBinding"), error);
+                  });
+               break;
             }
-         }
-         else {
-            item[key] = this.applyBindingPrivate(item[key], allowedTypes);
+         } else {
+            var innerDeferred = self.applyBindingPrivate(confItem, allowedTypes);
+            arrayOfDeffered.push(innerDeferred);
+            innerDeferred.done(function(data) {
+               confItem = data;
+            });
          }
       }
+   });
+
+   if (arrayOfDeffered.length > 0) {
+      $.whenAll(arrayOfDeffered).done(function() {
+         d.resolve(item);
+      });
+   } else {
+      d.resolve(item);
    }
-   return item;
+
+   return d.promise();
 };
