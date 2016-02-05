@@ -26,11 +26,24 @@ def open(browser):
    WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "main-dashboard-modal")))
    return get(browser)
 
+
+def openPage(browser, pageElementId, elementIdToWait):
+   """Open a specific dashboard page"""
+   
+   pluginItem = browser.find_element_by_id(pageElementId)
+   pluginItem.click()
+
+   WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, elementIdToWait)))
+
    
 def openAutomation(browser):
    """Open the automation page of dashboard"""
    
-   automationItem = browser.find_element_by_id("btn-dashboard-automatisation")
-   automationItem.click()
+   openPage(browser, "btn-dashboard-automatisation", "automation-rule-list")
 
-   WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "automation-rule-list")))
+   
+def openPlugin(browser):
+   """Open the plugin page of dashboard"""
+   
+   openPage(browser, "btn-dashboard-plugins", "plugin-instance-list")
+   

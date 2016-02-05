@@ -23,9 +23,15 @@ def databasePath():
    
    
 def scriptsPath():
-   """return the scripts database path"""
+   """return the scripts path"""
    
    return os.path.join(binaryPath(), "scripts")
+   
+   
+def pluginsPath():
+   """return the plugins path"""
+   
+   return os.path.join(binaryPath(), "plugins")
    
    
 def wwwLocalesPath():
