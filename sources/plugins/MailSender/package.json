@@ -35,6 +35,15 @@
                   }               
                }
             },
+            "ovh": {
+               "type": "section",
+               "content": {
+                  "password": {
+                     "type": "string",
+                     "encrypted": "true"
+                  }               
+               }
+            },
             "yahoo": {
                "type": "section",
                "content": {

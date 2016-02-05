@@ -2,9 +2,10 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as Condition
 from selenium.webdriver.common.keys import Keys
+import modals
 
 
-""" Operations on main dashboard page """
+""" Operations on automation dashboard page """
 
 def getCreateRuleButton(browser):
    return browser.find_element_by_id("btn-add-new-automation-rule")
@@ -113,22 +114,9 @@ class NewRuleModal():
 
    
 
-class RemoveRuleConfirmationModal():
+class RemoveRuleConfirmationModal(modals.RemoveObjectConfirmationModal):
    """ Operations on delete rule confirmation modal """
-   
-   def __init__(self, removeRuleConfirmationModalWebElement):
-       self.__removeRuleConfirmationModalWebElement = removeRuleConfirmationModalWebElement
-   
-   def getRuleRemovingConfirmationModalText(self):
-      return self.__removeRuleConfirmationModalWebElement.find_element_by_class_name("modal-body").text
-
-   def getRuleRemovingConfirmationModalOkButton(self):
-      footer = self.__removeRuleConfirmationModalWebElement.find_element_by_class_name("modal-footer")
-      return footer.find_element_by_class_name("btn-confirm")
-      
-   def getRuleRemovingConfirmationModalCancelButton(self):
-      footer = self.__removeRuleConfirmationModalWebElement.find_element_by_class_name("modal-footer")
-      return footer.find_element_by_class_name("btn-cancel")
+   pass
    
 
 

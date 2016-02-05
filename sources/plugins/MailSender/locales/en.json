@@ -29,6 +29,15 @@
                   }               
                }
             },
+            "ovh": {
+               "name": "OVH",
+               "content": {
+                  "password": {
+                     "name": "Password",
+                     "description": "Your OVH account password"
+                  }               
+               }
+            },
             "yahoo": {
                "name": "Yahoo",
                "content": {
