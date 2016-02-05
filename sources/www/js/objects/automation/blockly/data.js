@@ -40,7 +40,7 @@ Blockly.Yadoms.LoadDataForBlocklyCustomBlocks_ = function () {
                 result.keywords[keyword.id] = keyword;
              });
 
-             RecipientManager.getAll(true)
+             RecipientManager.getAll()
              .done(function (listRecipients) {
                 $.each(listRecipients, function (recipientKey, recipient) {
                    result.recipients[recipient.id] = recipient;
@@ -50,6 +50,9 @@ Blockly.Yadoms.LoadDataForBlocklyCustomBlocks_ = function () {
                 Blockly.Yadoms.LoadDataFinalize_(result);
 
                 d.resolve(result);
+             })
+             .fail(function(error) {
+                notifyError($.t("modals.recipient.errorGettingList"), error);
              });
           });
        });

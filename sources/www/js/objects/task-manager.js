@@ -34,35 +34,17 @@ TaskManager.factory = function (json) {
 /**
  * Create a task
  * @param {string} taskType The task type
- * @param {function} callback The callback
- * @param {boolean} sync specify true for synchronous call to server
  */
-TaskManager.createTask = function(taskType, callback, sync) {
+TaskManager.createTask = function(taskType) {
     assert(!isNullOrUndefined(taskType), "taskType must be defined");
 
-    var async = true;
-    if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
-        async = !sync;
+    var d = $.Deferred();
 
-    $.ajax({
-        type: "POST",
-        url: "/rest/task/",
-        data: JSON.stringify({ type: taskType }),
-        contentType: "application/json; charset=utf-8",
-        dataType: "json",
-        async: async
+   RestEngine.postJson("/rest/task/", { data: JSON.stringify({ type: taskType }) })
+    .done(function (data) {
+       d.resolve(TaskManager.factory(data));
     })
-        .done(function(data) {
-            //we parse the json answer
-            if (data.result != "true")
-            {
-                notifyError($.t("objects.generic.errorCreating", {objectName : taskType}), JSON.stringify(data));
-                return;
-            }
+    .fail(d.reject);
 
-            var createdTask = TaskManager.factory(data.data);
-            if ($.isFunction(callback))
-                callback(createdTask);
-        })
-        .fail(function() {notifyError($.t("objects.generic.errorCreating", {objectName : pageName}));});
+    return d.promise();
 };

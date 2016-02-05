@@ -195,7 +195,8 @@ PageManager.addToDom = function (page) {
       page.widgets.splice($.inArray(widgetToMove, page.widgets), 1);
 
       //we update the widget on the server
-      WidgetManager.updateToServer(widgetToMove, function () {
+      WidgetManager.updateToServer(widgetToMove)
+      .done(function () {
          //the widget has been moved successfully
          //we add it to the new page
          if (targetPage.loaded) {

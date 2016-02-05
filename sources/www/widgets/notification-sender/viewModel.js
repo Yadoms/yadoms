@@ -70,16 +70,18 @@ function NotificationSenderViewModel() {
                return;
             }
             
-            var recipientTuples = new Array();
-            RecipientManager.getByField(keyword.typeInfo.associatedRecipientField, true)
+            RecipientManager.getByField(keyword.typeInfo.associatedRecipientField)
             .done(function (list) {
                $.each(list, function (recipientFieldKey, recipientField) {
-                  RecipientManager.get(recipientField.idRecipient, true)
+                  RecipientManager.get(recipientField.idRecipient)
                   .done(function(recipient) {
                      self.toList.push(new recipientTuple({id: recipient.id, name: recipient}));
                   });
                });
-            });
+            })
+             .fail(function (error) {
+                notifyError($.t("objects.generic.errorGetting", { objectName: "Recipient with fields = " + keyword.typeInfo.associatedRecipientField }), error);
+             });
          });
       }
       catch(err) {}

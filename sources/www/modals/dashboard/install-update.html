@@ -354,6 +354,9 @@
 
                           //we update the header update availble label
                           updateHeaderUpdateAvailableLabel("yadoms");
+                      })
+                      .fail(function(error) {
+                            notifyError($.t("objects.generic.errorGetting", { objectName: $.t("core.yadoms.information") }), error);
                       });
                }
            })
@@ -500,8 +503,12 @@
         var objectType = "widget";
         //we save the information that the load of objectType is in progress
         promiseCounter.incrementCounter();
-        WidgetPackageManager.getAll(function () {
+        WidgetPackageManager.getAll()
+        .done(function () {
             buildList(objectType, WidgetPackageManager.widgetPackages);
+        })
+        .fail(function (error) {
+           notifyError($.t("objects.widgetPackageManager.errorDuringGettingPackages"), error);
         });
     }
 
