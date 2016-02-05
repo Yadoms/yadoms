@@ -486,7 +486,8 @@
         var objectType = "plugin";
         //we save the information that the load of objectType is in progress
         promiseCounter.incrementCounter();
-        PluginManager.get(function (localList) {
+        PluginManager.get()
+        .done(function (localList) {
             buildList(objectType, localList);
         });
     }

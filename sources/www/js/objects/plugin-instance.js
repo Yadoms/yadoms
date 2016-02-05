@@ -95,43 +95,26 @@ PluginInstance.prototype.applyBindingPrivate = function(item, allowedTypes) {
                case "system":
 
                   //we ask synchronously the bound value
-                  $.ajax({
-                     dataType: "json",
-                     url: "/rest/system/binding/" + item[key].__Binding__.query,
-                     async: false
-                  })
+                  RestEngine.getJson("/rest/system/binding/" + item[key].__Binding__.query)
                   .done(function(data) {
-                     //we parse the json answer
-                     if (data.result != "true")
-                     {
-                        notifyError($.t("objects.pluginInstance.errorApplyingBinding"), JSON.stringify(data));
-                        return;
-                     }
-
                      //we replace the binded value by the result
-                     item[key] = data.data;
+                     item[key] = data;
                   })
-                  .fail(function() {notifyError($.t("objects.pluginInstance.errorApplyingBinding"));});
+                  .fail(function(error) {
+                      notifyError($.t("objects.pluginInstance.errorApplyingBinding"), error);
+                  });
                   break;
                case "plugin":
                   //we ask synchronously the binded value
-                  $.ajax({
-                     dataType: "json",
-                     url: "/rest/plugin/" + self.id + "/binding/" + item[key].__Binding__.query,
-                     async: false
-                  })
-                  .done(function(data) {
-                     //we parse the json answer
-                     if (data.result != "true")
-                     {
-                        notifyError($.t("objects.pluginInstance.errorApplyingBinding"), JSON.stringify(data));
-                        return;
-                     }
 
+                  RestEngine.getJson("/rest/plugin/" + self.id + "/binding/" + item[key].__Binding__.query)
+                  .done(function(data) {
                      //we replace the binded value by the result
-                     item[key] = data.data;
+                     item[key] = data;
                   })
-                  .fail(function() {notifyError($.t("objects.pluginInstance.errorApplyingBinding"));});
+                  .fail(function(error) {
+                     notifyError($.t("objects.pluginInstance.errorApplyingBinding"), error);
+                  });
                   break;
             }
          }

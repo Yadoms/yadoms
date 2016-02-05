@@ -98,7 +98,8 @@
          //we increment the pageOrder for the new page
          lastPageOrder++;
 
-         PageManager.createPage(newPageName, lastPageOrder, function(newPage) {
+         PageManager.createPage(newPageName, lastPageOrder)
+         .done(function (newPage) {
             //we add the page to the list
             PageManager.addPage(newPage);
             //and to the DOM

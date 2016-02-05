@@ -36,7 +36,8 @@ function initializeWidgetEngine() {
         console.timeStamp("entering WidgetPackageManager.getAll");
         //we show notification
         loadPagesNotification = notifyInformation($.t("mainPage.actions.loadingPages"));
-        PageManager.getAll(function () {
+        PageManager.getAll()
+        .done(function () {
             if (loadPagesNotification != null) {
                 loadPagesNotification.close();
                 if (loadPagesNotification.showing)
@@ -73,7 +74,10 @@ function initializeWidgetEngine() {
             .fail(function (error) {
                notifyError($.t("objects.generic.errorGetting", { objectName: $.t("core.event") }, error));
             });
-        });
+         })
+         .fail(function (error) {
+            notifyError($.t("objects.pageManager.errorDuringGettingPages"), error);
+         });
     });
 }
 
