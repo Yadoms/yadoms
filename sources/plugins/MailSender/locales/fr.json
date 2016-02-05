@@ -20,6 +20,24 @@
                   }               
                }
             },
+            "outlook": {
+               "name": "Outlook",
+               "content": {
+                  "password": {
+                     "name": "Mot de passe",
+                     "description": "Le mot de passe de votre compte outlook.com"
+                  }               
+               }
+            },
+            "yahoo": {
+               "name": "Yahoo",
+               "content": {
+                  "password": {
+                     "name": "Mot de passe",
+                     "description": "Le mot de passe de votre compte Yahoo"
+                  }               
+               }
+            },
             "other": {
                "name": "Autre",
                "content": {

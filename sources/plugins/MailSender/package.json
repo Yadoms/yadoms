@@ -26,6 +26,24 @@
                   }               
                }
             },
+            "outlook": {
+               "type": "section",
+               "content": {
+                  "password": {
+                     "type": "string",
+                     "encrypted": "true"
+                  }               
+               }
+            },
+            "yahoo": {
+               "type": "section",
+               "content": {
+                  "password": {
+                     "type": "string",
+                     "encrypted": "true"
+                  }               
+               }
+            },
             "other": {
                "type": "section",
                "content": {

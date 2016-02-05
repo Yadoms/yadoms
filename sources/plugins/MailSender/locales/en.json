@@ -20,6 +20,24 @@
                   }               
                }
             },
+            "outlook": {
+               "name": "Outlook",
+               "content": {
+                  "password": {
+                     "name": "Password",
+                     "description": "Your Outlook.com account password"
+                  }               
+               }
+            },
+            "yahoo": {
+               "name": "Yahoo",
+               "content": {
+                  "password": {
+                     "name": "Password",
+                     "description": "Your Yahoo account password"
+                  }               
+               }
+            },
             "other": {
                "name": "Other",
                "content": {
