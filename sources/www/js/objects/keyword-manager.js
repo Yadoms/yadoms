@@ -22,114 +22,56 @@ KeywordManager.factory = function(json) {
    return new Keyword(json.id, json.deviceId, json.capacityName, json.accessMode, json.name, json.friendlyName, json.type, json.units, json.details, json.typeInfo);
 };
 
-KeywordManager.updateToServer = function(keyword, callback) {
+KeywordManager.updateToServer = function(keyword) {
    assert(!isNullOrUndefined(keyword), "keyword must be defined");
-   $.ajax({
-      type: "PUT",
-      url: "/rest/device/keyword/" + keyword.id,
-      data: JSON.stringify(keyword),
-      contentType: "application/json; charset=utf-8",
-      dataType: "json"
+
+   var d = new $.Deferred();
+
+   RestEngine.putJson("/rest/device/keyword/" + keyword.id, { data: JSON.stringify(keyword) })
+   .done(function(data) {
+      keyword.friendlyName = data.friendlyName;
+      d.resolve();
    })
-      .done(function(data) {
-         //we parse the json answer
-         if (data.result != "true")
-         {
-            notifyError($.t("objects.generic.errorUpdating", {objectName : keyword.friendlyName}), JSON.stringify(data));
-            //launch callback with false as ko result
-            if ($.isFunction(callback))
-               callback(false);
-            return;
-         }
-         //it's okay
+   .fail(d.reject);
 
-         keyword.friendlyName = data.data.friendlyName;
-
-         //we call the callback with true as a ok result
-         if ($.isFunction(callback))
-            callback(true);
-      })
-      .fail(function() {
-         notifyError($.t("objects.generic.errorUpdating", {objectName : keyword.friendlyName}));
-         //launch callback with false as ko result
-         if ($.isFunction(callback))
-            callback(false);
-      });
+   return d.promise();
 };
 
-KeywordManager.get = function (keywordId, callback, sync) {
+KeywordManager.get = function (keywordId) {
    assert(!isNullOrUndefined(keywordId), "keywordId must be defined");
-   assert($.isFunction(callback), "callback must be a function");
 
-   var async = true;
-   if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
-      async = !sync;
+   var d = new $.Deferred();
 
-   $.ajax({
-      dataType: "json",
-      url: "rest/device/keyword/" + keywordId,
-      async: async
+   RestEngine.getJson("rest/device/keyword/" + keywordId)
+   .done(function (data) {
+      d.resolve(KeywordManager.factory(data));
    })
-   .done(function( data ) {
-      //we parse the json answer
-      if (data.result != "true")
-      {
-         notifyError($.t("objects.generic.errorGetting", {objectName : "Keyword with Id = " + keywordId}), JSON.stringify(data));
-         return;
-      }
-      callback(KeywordManager.factory(data.data));
-   })
-   .fail(function() {notifyError($.t("objects.generic.errorGetting", {objectName : "Keyword with Id = " + keywordId}));});
+   .fail(d.reject);
+
+   return d.promise();
 };
 
-KeywordManager.getAll = function (callback, sync) {
-    assert(!isNullOrUndefined(callback), "callback must be defined");
+KeywordManager.getAll = function () {
+   var d = new $.Deferred();
 
-    var async = true;
-    if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
-        async = !sync;
+   RestEngine.getJson("/rest/device/keyword")
+   .done(function (data) {
+      var devices = [];
+      //foreach result we append a <tr>
+      $.each(data.keywords, function (index, value) {
+         devices.push(KeywordManager.factory(value));
+      });
+      d.resolve(devices);
+   })
+   .fail(d.reject);
 
-    $.ajax({
-        dataType: "json",
-        url: "/rest/device/keyword",
-        async: async
-    }).done(function (data) {
-        //we parse the json answer
-        if (data.result != "true") {
-            notifyError($.t("objects.generic.errorGetting", {objectName: "all keywords"}), JSON.stringify(data));
-            return;
-        }
-
-        var devices = [];
-        //foreach result we append a <tr>
-        $.each(data.data.keywords, function (index, value) {
-            devices.push(KeywordManager.factory(value));
-        });
-        callback(devices);
-    })
-        .fail(function () {
-            notifyError($.t("objects.generic.errorGetting", {objectName: "all keywords"}));
-        });
-
+   return d.promise();
 };
 
 /**
  * Allow to send a command
  */
-KeywordManager.sendCommand = function(keywordId, data) {
-   $.ajax({
-      type: "POST",
-      url: "/rest/device/keyword/" + keywordId + "/command",
-      data: data,
-      contentType: "application/text; charset=utf-8",
-      dataType: "json"
-   })
-       .done(function(data) {
-          //we parse the json answer
-          if (data.result != "true")
-          {
-             notifyError($.t("objects.widget.errorSendingCommand"), JSON.stringify(data));
-          }
-       })
-       .fail(function() {notifyError($.t("objects.widget.errorSendingCommand")); });
+KeywordManager.sendCommand = function (keywordId, data) {
+   assert(!isNullOrUndefined(keywordId), "keywordId must be defined");
+   return RestEngine.postJson("/rest/device/keyword/" + keywordId + "/command", { data: data });
 };

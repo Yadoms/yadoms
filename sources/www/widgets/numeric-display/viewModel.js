@@ -37,7 +37,7 @@ function NumericDisplayViewModel() {
         var self = this;
 
         //we get the unit of the keyword
-        KeywordManager.get(self.widget.configuration.device.keywordId, function (keyword) {
+        KeywordManager.get(self.widget.configuration.device.keywordId).done(function (keyword) {
             self.unit($.t(keyword.units));
         });
 

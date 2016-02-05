@@ -80,9 +80,10 @@ widgetViewModelCtor =
 
                       if (!isNullOrUndefined(device.content.source.deviceId)) {
                           // Get the capacity of the keyword
-                          KeywordManager.get(device.content.source.keywordId, function (keyword) {
-                              self.capacity[index] = keyword.capacityName;
-                          });
+                         KeywordManager.get(device.content.source.keywordId)
+                         .done(function (keyword) {
+                           self.capacity[index] = keyword.capacityName;
+                         });
 
                           //Initialisation initiale
                           if (isNullOrUndefined(self.state[index]))

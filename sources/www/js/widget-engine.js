@@ -56,20 +56,23 @@ function initializeWidgetEngine() {
 
             //we ask for the last event to ask only those occurs after this one
             EventLoggerManager.getLast()
-              .done(function (data) {
-                  //we save the id of the last event
-                  LastEventLogId = data.id;
+            .done(function (data) {
+               //we save the id of the last event
+               LastEventLogId = data.id;
 
-                  //we can start the periodic update
-                  serverIsOnline = true;
-                  if (!WebSocketEngine.isActive())
-                      widgetUpdateInterval = setInterval(periodicUpdateTask, UpdateIntervalWithWebSocketDisabled);
-                  else
-                      widgetUpdateInterval = setInterval(periodicUpdateTask, UpdateInterval);
+               //we can start the periodic update
+               serverIsOnline = true;
+               if (!WebSocketEngine.isActive())
+                  widgetUpdateInterval = setInterval(periodicUpdateTask, UpdateIntervalWithWebSocketDisabled);
+               else
+                  widgetUpdateInterval = setInterval(periodicUpdateTask, UpdateInterval);
 
-                  //we update widget data
-                  updateWidgetsPolling();
-              });
+               //we update widget data
+               updateWidgetsPolling();
+            })
+            .fail(function (error) {
+               notifyError($.t("objects.generic.errorGetting", { objectName: $.t("core.event") }, error));
+            });
         });
     });
 }
@@ -136,7 +139,8 @@ function tabClick(pageId) {
 function periodicUpdateTask() {
     //we first check if the server is online and only if it answer to the eventLog new messages
     //to do that we ask event message
-    EventLoggerManager.getFrom(LastEventLogId).done(function (data) {
+    EventLoggerManager.getFrom(LastEventLogId)
+    .done(function (data) {
         //we reset the fail event counter
         failGetEventCounter = 0;
 
@@ -200,13 +204,13 @@ function periodicUpdateTask() {
         if (!WebSocketEngine.isActive())
             updateWidgetsPolling();
     })
-    .fail(function () {
+    .fail(function (error) {
         if (serverIsOnline) {
             failGetEventCounter++;
             if (failGetEventCounter >= 3) {
                 //we indicate that *server has passed offline
                 serverIsOnline = false;
-                OfflineServerNotification = notifyError($.t("mainPage.errors.youHaveBeenDisconnectedFromTheServerOrItHasGoneOffline"), "", false);
+                OfflineServerNotification = notifyError($.t("mainPage.errors.youHaveBeenDisconnectedFromTheServerOrItHasGoneOffline"), error, false);
                 //we change the interval period
                 clearInterval(widgetUpdateInterval);
                 widgetUpdateInterval = setInterval(periodicUpdateTask, UpdateIntervalInOfflineMode);

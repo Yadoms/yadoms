@@ -465,14 +465,15 @@
         $splash.find("h1.updating").removeClass("hidden");
 
         //we try to get information from server loop until the server answer
-        EventLoggerManager.getLast(true, { timeout : 2000 }).done(function () {
+        EventLoggerManager.getLast({ timeout: 2000 })
+        .done(function () {
             console.log("waitForYadomsReturn EventLoggerManager.getLast(true).done");
             //we received an answer, the server is back
             //we reload full page
             location.reload();
         })
-        .fail(function () {
-            console.log("waitForYadomsReturn EventLoggerManager.getLast(true).fail");
+        .fail(function (error) {
+            console.log("waitForYadomsReturn EventLoggerManager.getLast(true).fail : " + error);
             setTimeout(waitForYadomsReturn(), 500);
         });
 
