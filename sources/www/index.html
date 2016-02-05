@@ -167,7 +167,7 @@
     <script src="libs/highstock/js/highstock.js"></script>
     <script src="libs/highstock/js/highcharts-more.js"></script>
     <script src="libs/highstock/js/modules/exporting.js"></script>
-    <script src="libs/highstock/js/modules/solid-gauge.js"></script>
+    <script src="libs/highstock/js/modules/canvas-tools.js"></script>
     <script src="libs/export-csv/js/export-csv.min.js"></script>
 
     <script src="libs/highcharts-export-clientside/js/highcharts-export-clientside.min.js"></script>
@@ -180,8 +180,8 @@
 
     <script src="libs/jquery-MD5/js/jquery.md5.min.js"></script>
 
-    <script src="libs/lodash/lodash.core.min.js"></script>
-    <script src="libs/gridstack/js/gridstack.min.js"></script>
+    <script src="libs/lodash/lodash.min.js"></script>
+    <script src="libs/gridstack/js/gridstack.js"></script>
     
     <div id="templates" class="hidden"></div>
 
@@ -232,64 +232,76 @@
             var option = { resGetPath: "locales/__lng__.json", fallbackLng: "en", useDataAttrOptions: true, debug: false, fallbackNS: "translation" };
             i18n.init(option, function () {
                 //we get install/firstStart key to have information if firstStart has already been done
-                ConfigurationManager.get(ConfigurationManager.items.installSection, ConfigurationManager.items.install.firstStart,
-                    function (result) {
-                        var firstStart = true;
-                        //we don't need to set default values
-                        if ((!isNullOrUndefined(result)) && (!parseBool(result.value)))
-                            firstStart = false;
+               ConfigurationManager.get(ConfigurationManager.items.installSection, ConfigurationManager.items.install.firstStart)
+               .done(function () {
+                     //we start app normally
+                     main();
+               })
+               .fail(function() {
+                  //we make the first start configuration
+                  notifyInformation($.t("mainPage.actions.firstRunConfiguration"));
+                  var navigatorLanguage = window.navigator.userLanguage || window.navigator.language;
+                  //var navigatorTimezone = jstz.determine().name();
 
-                        if (firstStart) {
-                            //we make the first start configuration
-                            notifyInformation($.t("mainPage.actions.firstRunConfiguration"));
-                            var navigatorLanguage = window.navigator.userLanguage || window.navigator.language;
-                            //var navigatorTimezone = jstz.determine().name();
+                  //update configuration with these values
 
-                            //update configuration with these values
-                            var item = ConfigurationManager.createToServerSync(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.language, navigatorLanguage, "", "language used by default");
-                            if (!isNullOrUndefined(item)) {
-                                console.info("Language detected : " + navigatorLanguage);
+                  ConfigurationManager.createToServer(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.language, navigatorLanguage, "", "language used by default")
+                 .done(function () {
+                    console.info("Language detected : " + navigatorLanguage);
 
-                                item = ConfigurationManager.createToServerSync(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.advancedParameters, false);
-                                if (!isNullOrUndefined(item)) {
-                                    console.info("Advanced parameters : false");
+                    ConfigurationManager.createToServer(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.advancedParameters, false)
+                    .done(function () {
+                       console.info("Advanced parameters : false");
 
-                                    item = ConfigurationManager.createToServerSync(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.dateFormatString, "LLL");
-                                    if (!isNullOrUndefined(item)) {
-                                        console.info("Date Format String : " + "LLL");
+                       ConfigurationManager.createToServer(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.dateFormatString, "LLL")
+                       .done(function () {
+                          console.info("Date Format String : " + "LLL");
 
-                                        var basicAuth = { "active": false, "user": "admin", "password": "" };
-                                        item = ConfigurationManager.createToServerSync(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.basicAuthentication, JSON.stringify(basicAuth));
-                                        if (!isNullOrUndefined(item)) {
-                                            console.info("Basic authentication : " + JSON.stringify(basicAuth));
+                          var basicAuth = { "active": false, "user": "admin", "password": "" };
+                          ConfigurationManager.createToServer(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.basicAuthentication, JSON.stringify(basicAuth))
+                          .done(function () {
+                             console.info("Basic authentication : " + JSON.stringify(basicAuth));
 
-                                            //we save the fact that first start configuration has been made
-                                            var firstStep = ConfigurationManager.createToServerSync(ConfigurationManager.items.installSection, ConfigurationManager.items.install.firstStart, "false", "true", "First start of Web app has been done");
-                                            if (!isNullOrUndefined(firstStep)) {
-                                                //we check for page. If there is no page, we create a new one automatically
-                                                PageManager.getAll(function () {
-                                                    if (PageManager.pages.length == 0) {
-                                                        console.info("Creating a default page");
-                                                        PageManager.createPage($.t("initialization.homePage"), 0, function (p) {
-                                                            PageManager.ensureOnePageIsSelected();
-                                                        });
-                                                    }
-                                                    //we can start app
-                                                    main();
-                                                });
 
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        else {
-                            //we start app normally
-                            main();
-                        }
-                    }
-                );
+                             ConfigurationManager.createToServer(ConfigurationManager.items.installSection, ConfigurationManager.items.install.firstStart, "false", "true", "First start of Web app has been done")
+                             .done(function () {
+                                //we check for page. If there is no page, we create a new one automatically
+                                PageManager.getAll(function () {
+                                   if (PageManager.pages.length === 0) {
+                                      console.info("Creating a default page");
+                                      PageManager.createPage($.t("initialization.homePage"), 0, function () {
+                                         PageManager.ensureOnePageIsSelected();
+                                      });
+                                   }
+                                   //we can start app
+                                   main();
+                                });
+                             })
+                             .fail(function (error) {
+                                notifyError($.t("objects.ConfigurationManager.errorDuringGettingConfiguration", { section: ConfigurationManager.items.installSection, key: ConfigurationManager.items.install.firstStart }), error);
+                             });
+
+
+
+                          })
+                          .fail(function (error) {
+                             notifyError($.t("objects.ConfigurationManager.errorDuringGettingConfiguration", { section: ConfigurationManager.items.systemSection, key: ConfigurationManager.items.system.basicAuthentication }), error);
+                          });
+
+                       })
+                       .fail(function (error) {
+                          notifyError($.t("objects.ConfigurationManager.errorDuringGettingConfiguration", { section: ConfigurationManager.items.systemSection, key: ConfigurationManager.items.system.dateFormatString }), error);
+                       });
+                    })
+                    .fail(function (error) {
+                       notifyError($.t("objects.ConfigurationManager.errorDuringGettingConfiguration", { section: ConfigurationManager.items.systemSection, key: ConfigurationManager.items.system.advancedParameters }), error);
+                    });
+
+                 })
+                 .fail(function (error) {
+                    notifyError($.t("objects.ConfigurationManager.errorDuringGettingConfiguration", { section: ConfigurationManager.items.systemSection, key: ConfigurationManager.items.system.language }), error);
+                 });
+               });
             });
 
             /**
@@ -322,7 +334,7 @@
             */
             $(document).keyup(function (e) {
                 //escape key
-                if (e.keyCode == 27) {
+                if (e.keyCode === 27) {
                     if (customization) {
                         exitCustomization();
                     }
@@ -333,8 +345,8 @@
 
         function main() {
             //we get configuration
-            ConfigurationManager.getSection(ConfigurationManager.items.systemSection,
-                function (result) {
+           ConfigurationManager.getSection(ConfigurationManager.items.systemSection)
+              .done(function (result) {
                     if (!isNullOrUndefined(result)) {
                         systemConfiguration = result;
                         //we set the right language
@@ -353,7 +365,10 @@
                             });
                         });
                     }
-                });
+              })
+           .fail(function(error) {
+              notifyError($.t("objects.ConfigurationManager.errorDuringGettingSystemConfiguration"), error);
+           });
         }
 
     </script>

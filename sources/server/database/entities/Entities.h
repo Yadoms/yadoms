@@ -161,7 +161,7 @@ namespace database { namespace entities {
       ((Model)(std::string))
       ((Content)(std::string))
       ((Configuration)(shared::CDataContainer))
-      ((Enabled)(bool))
+      ((AutoStart)(bool))
       ((State)(database::entities::ERuleState))
       ((ErrorMessage)(std::string))
       ((StartDate)(boost::posix_time::ptime))

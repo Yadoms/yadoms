@@ -98,6 +98,8 @@ namespace xplcore
       {
          YADOMS_LOG(fatal) << "The XplServiceTask fails. Unknown expcetion : " << ex.what();
       }
+
+      YADOMS_LOG(information) << "XplServiceTask : stopped";
    }
 
    void CXplServiceTask::initializeConnector(Poco::Net::NetworkInterface & networkInterface)

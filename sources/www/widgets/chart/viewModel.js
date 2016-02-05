@@ -213,9 +213,9 @@ widgetViewModelCtor =
                self.widget.ListenKeyword(device.content.source.keywordId);
 
 		       // We ask the current device name
-			   DeviceManager.get( device.content.source.deviceId, function (device) {
-				   self.deviceInfo[index] = device; 
-				   
+               DeviceManager.get( device.content.source.deviceId)
+               .done(function (data) {
+                   self.deviceInfo[index] = data;
 				   self.ChartPromise.resolve( self.devicesList.length + index );
 			   });			   
 			   

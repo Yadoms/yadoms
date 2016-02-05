@@ -20,12 +20,30 @@
                   }               
                }
             },
+            "outlook": {
+               "name": "Outlook",
+               "content": {
+                  "password": {
+                     "name": "Mot de passe",
+                     "description": "Le mot de passe de votre compte outlook.com"
+                  }               
+               }
+            },
             "ovh": {
                "name": "OVH",
                "content": {
                   "password": {
                      "name": "Mot de passe",
-                     "description": "Le mot de passe du compte de messagerie OVH"
+                     "description": "Le mot de passe de votre compte OVH"
+                  }               
+               }
+            },
+            "yahoo": {
+               "name": "Yahoo",
+               "content": {
+                  "password": {
+                     "name": "Mot de passe",
+                     "description": "Le mot de passe de votre compte Yahoo"
                   }               
                }
             },

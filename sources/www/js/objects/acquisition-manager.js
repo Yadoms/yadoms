@@ -9,9 +9,12 @@
 function AcquisitionManager(){}
 
 AcquisitionManager.factory = function(json) {
-   if (isNullOrUndefinedOrEmpty(json))
+   if (isNullOrUndefinedOrEmpty(json) || !json.date || !json.value) {
+      if(json && json.keywordId)
+         return new EmptyAcquisition(json.keywordId);
       return new EmptyAcquisition();
-   
+   }
+
    assert(!isNullOrUndefined(json.date), "json.date must be defined");
    assert(!isNullOrUndefined(json.keywordId), "json.keywordId must be defined");
    assert(!isNullOrUndefined(json.value), "json.value must be defined");
@@ -20,30 +23,48 @@ AcquisitionManager.factory = function(json) {
 };
 
 /**
-* Return the last value of the keywordId
-*/
-AcquisitionManager.getLastValue = function (keywordId, callback, sync) {
+ * Get the last value of the keywordId
+ * @param {Integer|String} keywordId The keyword id to request last data
+ * @return {Promise(lastData)}
+ */
+AcquisitionManager.getLastValue = function (keywordId) {
    assert(!isNullOrUndefinedOrEmpty(keywordId), "keywordId must be defined");
-   assert($.isFunction(callback), "callback must be a function");
 
-   var async = true;
-   if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
-      async = !sync;
-  
-   $.ajax({
-      dataType: "json",
-      url: "/rest/acquisition/keyword/" + keywordId  + "/lastdata",
-      async: async
-   })
-   .done(function( data ) {
-      //we parse the json answer
-      if (data.result != "true")
-      {
-         notifyError($.t("objects.generic.errorGetting", {objectName : "Acquisition KeywordId = " + keywordId}), JSON.stringify(data));
-         return;
-      }
-	  
-      callback(AcquisitionManager.factory(data.data));
-   })
-   .fail(function() {notifyError($.t("objects.generic.errorGetting", {objectName : "Acquisition KeywordId = " + keywordId}));});   
+   var d = new $.Deferred();
+
+   RestEngine.getJson("/rest/acquisition/keyword/" + keywordId + "/lastdata")
+      .done(function(data) {
+         d.resolve(AcquisitionManager.factory(data));
+      })
+      .fail(d.reject);
+
+   return d.promise();
 };
+
+
+/**
+ * Get the last values of the keyword list
+ * @param {Array} keywords The keyword array
+ * @return {Promise(lastData)}
+ */
+AcquisitionManager.getLastValues = function(keywords) {
+   var d = new $.Deferred();
+   
+   //extract only keyword id
+   var allKeywordId = [];
+   $.each(keywords, function(index, keyword) {
+      allKeywordId.push(keyword.id);
+   });
+   
+   RestEngine.putJson("/rest/acquisition/keyword/lastdata", { data: JSON.stringify({ keywords: allKeywordId }) })
+      .done(function (data) {
+         var result = [];
+         $.each(data, function(index, keydata) {
+            result.push(AcquisitionManager.factory(keydata));
+         });
+         d.resolve(result);
+      })
+      .fail(d.reject);
+
+   return d.promise();
+}

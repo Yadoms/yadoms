@@ -72,7 +72,7 @@ WidgetManager.getWidgetOfPageFromServer = function (page) {
     page.loaded = true;
 
     var d = new $.Deferred();
-    RestEngine.get("/rest/page/" + page.id + "/widget")
+    RestEngine.getJson("/rest/page/" + page.id + "/widget")
        .done(function (data) {
            var list = [];
            $.each(data.widget, function (index, value) {
@@ -98,7 +98,7 @@ WidgetManager.getWidgetOfPageFromServer = function (page) {
 WidgetManager.getViewFromServer_ = function (widgetType) {
     assert(!isNullOrUndefined(widgetType), "widgetType must be defined");
     var d = new $.Deferred();
-    RestEngine.get("widgets/" + widgetType + "/view.html", undefined, "auto")
+    RestEngine.get("widgets/" + widgetType + "/view.html")
        .done(function (view) {
            if (!isNullOrUndefined(view) && view.match(".*<script.*id=\"" + widgetType + "-template\">.*")) {
                $("div#templates").append(view);
@@ -128,7 +128,7 @@ WidgetManager.getViewModelFromServer_ = function (widgetType) {
 
     widgetViewModelCtor = null;
     var d = new $.Deferred();
-    RestEngine.get("widgets/" + widgetType + "/viewModel.js", undefined, "script")
+    RestEngine.getScript("widgets/" + widgetType + "/viewModel.js")
        .done(function () {
            if (isNullOrUndefined(widgetViewModelCtor)) {
                console.error("ViewModel of widget " + widgetType + " do not contains widgetViewModelCtor function");
@@ -521,11 +521,6 @@ WidgetManager.enableCustomization = function (widget, enable) {
         page.grid.resizable(widget.$gridWidget, true);
     else
         page.grid.resizable(widget.$gridWidget, false);
-
-    if (enable)
-        widget.$gridWidget.find(".customization-item").removeClass("hidden");
-    else
-        widget.$gridWidget.find(".customization-item").addClass("hidden");
 };
 
 /**

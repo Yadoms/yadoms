@@ -25,6 +25,11 @@ namespace web { namespace rest { namespace service {
       shared::CDataContainer getKeywordLastData(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
 
       //-----------------------------------------
+      ///\brief   Get the last data of a list of keywords
+      //-----------------------------------------
+      shared::CDataContainer getKeywordListLastData(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+
+      //-----------------------------------------
       ///\brief   Get the data of a keyword (with optional date filter)
       //-----------------------------------------
       shared::CDataContainer getKeywordData(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   

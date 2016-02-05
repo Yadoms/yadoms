@@ -9,7 +9,7 @@
 //         (Name)("name")
 //         (PluginName)("pluginName")
 //         (Configuration)("configuration")
-//         (Enabled)("enabled")
+//         (AutoStart)("autoStart")
 //         )
 //
 //    Ouptut :
@@ -39,7 +39,7 @@
 //              (Name)("name")
 //              (PluginName)("pluginName")
 //              (Configuration)("configuration")
-//              (Enabled)("enabled")
+//              (AutoStart)("autoStart")
 //          )
 //
 //    Output :

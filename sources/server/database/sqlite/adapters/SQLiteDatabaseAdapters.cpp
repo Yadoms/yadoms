@@ -114,7 +114,7 @@ namespace database {   namespace sqlite {  namespace adapters {
       ((Model)(std::string)(""))
       ((Content)(std::string)(""))
       ((Configuration)(shared::CDataContainer)(shared::CDataContainer()))
-      ((Enabled)(bool)(true))
+      ((AutoStart)(bool)(true))
       ((State)(database::entities::ERuleState)(database::entities::ERuleState::kStopped)(std::string))
       ((ErrorMessage)(std::string)(""))
       ((StartDate)(boost::posix_time::ptime)(shared::currentTime::Provider::now()))

@@ -10,7 +10,7 @@ function AutomationRuleManager(){}
 
 AutomationRuleManager.factory = function(json) {
    assert(!isNullOrUndefined(json), "json must be defined");
-   return new AutomationRule(json.id, json.name, json.description, json.interpreter, json.editor, json.model, json.content, json.configuration, parseBool(json.enabled), json.state, json.errorMessage, json.startDate, json.stopDate);
+   return new AutomationRule(json.id, json.name, json.description, json.interpreter, json.editor, json.model, json.content, json.configuration, parseBool(json.autoStart), json.state, json.errorMessage, json.startDate, json.stopDate);
 };
 
 AutomationRuleManager.createToServer = function(rule, callback) {
@@ -25,7 +25,7 @@ AutomationRuleManager.createToServer = function(rule, callback) {
                               model: rule.model,
                               content: rule.content,
                               configuration: rule.configuration,
-                              enabled: rule.enabled,
+                              autoStart: rule.autoStart,
                               code: rule.code
                            }),
       contentType: "application/json; charset=utf-8",
@@ -138,15 +138,21 @@ AutomationRuleManager.updateToServer = function(rule, callback) {
       });
 };
 
-AutomationRuleManager.disable = function(rule, callback) {
+AutomationRuleManager.stop = function(rule, callback) {
    assert(!isNullOrUndefined(rule), "rule must be defined");
    rule.enabled = false;
    AutomationRuleManager.updateToServer(rule, callback);
 };
 
-AutomationRuleManager.enable = function(rule, callback) {
+AutomationRuleManager.start = function(rule, callback) {
    assert(!isNullOrUndefined(rule), "rule must be defined");
    rule.enabled = true;
+   AutomationRuleManager.updateToServer(rule, callback);
+};
+
+AutomationRuleManager.setAutoStart = function(rule, autoStartValue, callback) {
+   assert(!isNullOrUndefined(rule), "rule must be defined");
+   rule.autoStart = autoStartValue;
    AutomationRuleManager.updateToServer(rule, callback);
 };
 

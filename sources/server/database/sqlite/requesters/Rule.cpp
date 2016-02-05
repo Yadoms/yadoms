@@ -211,15 +211,15 @@ namespace database { namespace sqlite { namespace requesters {
             throw CDatabaseException("Failed to update Configuration field");
       }
       
-      //update enable flag
-      if(ruleData->Enabled.isDefined())
+      //update autoStart flag
+      if(ruleData->AutoStart.isDefined())
       {
          qUpdate.Clear().Update(CRuleTable::getTableName()).
-            Set(CRuleTable::getEnabledColumnName(), ruleData->Enabled()).
+            Set(CRuleTable::getAutoStartColumnName(), ruleData->AutoStart()).
          Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, ruleData->Id());
 
          if(m_databaseRequester->queryStatement(qUpdate) <= 0)
-            throw CDatabaseException("Failed to update enable flag field");
+            throw CDatabaseException("Failed to update autoStart flag field");
       }   
       
       //update state flag

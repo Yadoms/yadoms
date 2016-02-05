@@ -28,6 +28,7 @@ namespace web {
 
          void CAcquisition::configureDispatcher(CRestDispatcher & dispatcher)
          {
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("keyword")("lastdata"), CAcquisition::getKeywordListLastData); //get the last data of a list of keywords
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*")("lastdata"), CAcquisition::getKeywordLastData); //get all keyword data
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*"), CAcquisition::getKeywordData); //get all keyword data
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*")("*"), CAcquisition::getKeywordData); //get keyword data from date
@@ -83,6 +84,48 @@ namespace web {
             }
          }
 
+         shared::CDataContainer CAcquisition::getKeywordListLastData(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+         {
+            try
+            {
+               if (parameters.size() > 1)
+               {
+                  if (requestContent.containsChild("keywords"))
+                  {
+                     std::vector<int> list = requestContent.get< std::vector<int> >("keywords");
+
+                     shared::CDataContainer result;
+                     for (std::vector<int>::iterator i = list.begin(); i != list.end(); ++i)
+                     {
+                        try
+                        {
+                           result.set(boost::lexical_cast<std::string>(*i), m_dataProvider->getAcquisitionRequester()->getKeywordLastData(*i));
+                        }
+                        catch (shared::exception::CEmptyResult & /*noData*/)
+                        {
+                           //ensure returning entity object, because we need to indicate that a keyword have no data, not others (in case of multiple keyword without data)
+                           shared::CDataContainer emptyResult;
+                           emptyResult.set("keywordId", *i);
+                           result.set(boost::lexical_cast<std::string>(*i), emptyResult);
+                        }
+                     }
+                     return CResult::GenerateSuccess(result);
+
+                  }
+                  requestContent.printToLog();
+                  return CResult::GenerateError("invalid parameter. Can not retreive keywords in request content");
+               }
+               return CResult::GenerateError("invalid parameter.");
+            }
+            catch (std::exception &ex)
+            {
+               return CResult::GenerateError(ex);
+            }
+            catch (...)
+            {
+               return CResult::GenerateError("unknown exception in retreiving one acquisition");
+            }
+         }
 
          shared::CDataContainer CAcquisition::getKeywordData(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
          {

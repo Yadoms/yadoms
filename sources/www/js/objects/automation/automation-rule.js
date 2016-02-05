@@ -4,7 +4,7 @@
  * Creates an instance of AutomationRule
  * @constructor
  */
-function AutomationRule(id, name, description, interpreter, editorName, model, content, configuration, enabled, state, errorMessage, startDate, stopDate) {
+function AutomationRule(id, name, description, interpreter, editorName, model, content, configuration, autoStart, state, errorMessage, startDate, stopDate) {
    assert(!isNullOrUndefined(id), "id of a AutomationRule must be defined");
    assert(!isNullOrUndefined(name), "name of a AutomationRule must be defined");
    assert(!isNullOrUndefined(description), "description of a AutomationRule must be defined");
@@ -13,7 +13,7 @@ function AutomationRule(id, name, description, interpreter, editorName, model, c
    assert(!isNullOrUndefined(model), "actions of a AutomationRule must be defined");
    assert(!isNullOrUndefined(content), "content of a AutomationRule must be defined");
    assert(!isNullOrUndefined(configuration), "content of a AutomationRule must be defined");
-   assert(!isNullOrUndefined(enabled), "enabled of a AutomationRule must be defined");
+   assert(!isNullOrUndefined(autoStart), "autoStart of a AutomationRule must be defined");
 
    this.id = id;
    this.name = name;
@@ -24,7 +24,7 @@ function AutomationRule(id, name, description, interpreter, editorName, model, c
    this.model = model;
    this.content = content;
    this.configuration = configuration;
-   this.enabled = enabled;
+   this.autoStart = autoStart;
    this.state = state;
    this.errorMessage = errorMessage;
    this.startDate = startDate;
@@ -44,7 +44,7 @@ AutomationRule.prototype.toJSON = function () {
       model: this.model,
       content: this.content,
       configuration: this.configuration,
-      enabled: this.enabled
+      autoStart: this.autoStart
       //we don't take fields that are filled by the server
    };
 };

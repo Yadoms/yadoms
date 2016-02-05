@@ -197,7 +197,10 @@
         "description": "Friendly name of your plugin",
         "regexErrorMessage": "The name of the plugin must contains at least one character"
       },
-      "pluginSuccessfullyCreated": "Plugin successfully created"
+      "pluginSuccessfullyCreated": "Plugin successfully created",
+      "pluginFailToCreate": "Fail to create plugin __pluginName__",
+      "pluginFailToDelete": "Fail to delete plugin __pluginName__",
+      "pluginFailToConfigure": "Fail to configure plugin __pluginName__"
     },
     "configure-device": {
       "title": "Device configuration",
@@ -336,7 +339,7 @@
           "table": {
             "displayName": "Name",
             "status": "Status",
-            "launchAtStartup": "Launch At Startup",
+            "launchAtStartup": "Launch at startup",
             "type": "Plugin type",
             "actions": "Actions"
           },
@@ -392,13 +395,14 @@
         },
         "automation-center": {
           "title": "Automation center",
-          "description": "You can create or modify your automatisation rules of Yadoms",
+          "description": "You can create or modify your automation rules of Yadoms",
           "new": "Create a new rule",
           "table": {
-            "state": "State",
             "name": "Name",
             "description": "Description",
-            "actions": "Actions"
+            "autoStart": "Launch at startup",
+            "actions": "Actions",
+            "state": "State"
           },
           "startStop": "Start / Stop the rule",
           "ruleState": {
@@ -412,7 +416,7 @@
           "log": "View log",
           "ruleSuccessfullyCreated": "Rule successfully created",
           "ruleSuccessfullyUpdated": "Rule successfully updated",
-          "ruleDeleted": "Règle supprimée",
+          "ruleDeleted": "Rule successfully removed",
           "editors": {
             "code": {
               "name": "Code"
@@ -718,7 +722,10 @@
       "errorDuringGettingPages": "Error during requesting pages"
     },
     "ConfigurationManager": {
-      "errorDuringGettingSystemConfiguration": "Error during getting configuration"
+      "errorDuringGettingSystemConfiguration": "Error during getting configuration",
+      "errorDuringGettingConfiguration": "Error in reading configuration __section__.__key__",
+      "errorDuringCreatingConfiguration": "Error in creating configuration __section__.__key__",
+      "errorDuringUpdatingConfiguration": "Error in updating configuration __section__.__key__"
     },
     "recipient": {
       "errorGettingRecipientList": "An error has occurred acquiring recipient list",

@@ -301,12 +301,16 @@ function updateWidgetPolling(widget) {
     if (!isNullOrUndefined(widget.listenedKeywords)) {
         $.each(widget.listenedKeywords, function (keywordIndex, keywordId) {
             if (!isNullOrUndefined(keywordId)) {
-                //foreach device we ask for last values
-                AcquisitionManager.getLastValue(keywordId, function (acquisition) {
-                    //we signal the new acquisition to the widget if the widget support the method
-                    if (widget.viewModel.onNewAcquisition !== undefined)
+               //foreach device we ask for last values
+               AcquisitionManager.getLastValue(keywordId)
+                  .done(function (acquisition) {
+                     //we signal the new acquisition to the widget if the widget support the method
+                     if (widget.viewModel.onNewAcquisition !== undefined)
                         widget.viewModel.onNewAcquisition(keywordId, acquisition);
-                });
+                  })
+                  .fail(function (error) {
+                     notifyError($.t("objects.generic.errorGetting", { objectName: "Acquisition KeywordId = " + keywordId }), error);
+                  });
             }
         });
     }

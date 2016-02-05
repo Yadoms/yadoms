@@ -24,6 +24,7 @@ namespace xplcore
       const std::string & instanceId,
       shared::event::CEventHandler * pHubFoundEventHandler, 
       int hubFoundEventCode)
+      : m_localThreadPool("XplService ThreaPool"), m_taskManager(m_localThreadPool) //make sure task manager use its own threadpool, otherwise it could not be stopped properly
    {
       m_xplTask = new CXplServiceTask(networkInterface, CXplConstants::getYadomsVendorId(), deviceId, instanceId, pHubFoundEventHandler, hubFoundEventCode);
 
@@ -44,14 +45,19 @@ namespace xplcore
 
    void CXplService::stop()
    {
+      
       YADOMS_LOG(information) << "Ask for serviceTask to end.";
+      //cancel xpl task
+      if (m_xplTask)
+         m_xplTask->cancel();
+
+      //cancel all other ones
       m_taskManager.cancelAll();
+
       YADOMS_LOG(information) << "Wait for all tasks to end.";
       m_taskManager.joinAll();
       YADOMS_LOG(information) << "CXplService stopped.";
-
       //do not delete m_xplTasks, before taskmanager has already done it
-
    }
 
    CXplActor CXplService::getActor() const

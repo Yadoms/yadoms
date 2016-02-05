@@ -196,7 +196,10 @@
         "description": "Nom personnalisable du plugin",
         "regexErrorMessage": "Le nom du plugin doit contenir au minimum 1 caractère"
       },
-      "pluginSuccessfullyCreated": "Plugin créé"
+      "pluginSuccessfullyCreated": "Plugin créé",
+      "pluginFailToCreate": "Impossible de créer le plugin __pluginName__",
+      "pluginFailToDelete": "Impossible de supprimer le plugin __pluginName__",
+      "pluginFailToConfigure": "Impossible de configurer le plugin __pluginName__"
     },
     "configure-device": {
       "title": "Configuration de l'équipement",
@@ -399,10 +402,11 @@
           "description": "Gérer, ajouter et supprimer des règles d'automatisation",
           "new": "Création d'une règle",
           "table": {
-            "state": "Etat",
             "name": "Nom",
             "description": "Description",
-            "actions": "Actions"
+            "autoStart": "Démarrer automatiquement",
+            "actions": "Actions",
+            "state": "Etat"
           },
           "startStop": "Démarrer / Arrêter la règle",
           "ruleState": {
@@ -719,7 +723,10 @@
       "errorDuringGettingPages": "Erreur lors de la récupération des pages"
     },
     "ConfigurationManager": {
-      "errorDuringGettingSystemConfiguration": "Error lors de la récupération de la configuration"
+      "errorDuringGettingSystemConfiguration": "Errrur lors de la récupération de la configuration",
+      "errorDuringGettingConfiguration": "Erreur lors de la récupération de la configuration __section__.__key__",
+      "errorDuringCreatingConfiguration": "Erreur lors de la création de la configuration __section__.__key__",
+      "errorDuringUpdatingConfiguration": "Erreur lors de la mise à jour de la configuration __section__.__key__"
     },
     "recipient": {
       "errorGettingRecipientList": "Une erreur est apparue lors du listing des destinataires",

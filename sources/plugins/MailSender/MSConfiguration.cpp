@@ -28,6 +28,15 @@ void CMSConfiguration::initializeWith(const shared::CDataContainer &data)
          m_UserAccount = m_SenderMail;
          m_Password = shared::encryption::CXor::decryptBase64(m_data.get<std::string>("account.content.gmail.content.password"));
       }
+      else if (m_data.exists("account.content.outlook"))
+      {
+         m_ServerName = "smtp-mail.outlook.com";
+         m_ServerPort = 587;
+         m_kSecurityMode = ESecurityMode::kTLS;
+         m_bRequireAuthentication = true;
+         m_UserAccount = m_SenderMail;
+         m_Password = shared::encryption::CXor::decryptBase64(m_data.get<std::string>("account.content.outlook.content.password"));
+      }
       else if (m_data.exists("account.content.ovh"))
       {
          m_ServerName = "ns0.ovh.net";
@@ -36,6 +45,15 @@ void CMSConfiguration::initializeWith(const shared::CDataContainer &data)
          m_bRequireAuthentication = true;
          m_UserAccount = m_SenderMail;
          m_Password = shared::encryption::CXor::decryptBase64(m_data.get<std::string>("account.content.ovh.content.password"));
+      }
+      else if (m_data.exists("account.content.yahoo"))
+      {
+         m_ServerName = "smtp.mail.yahoo.com";
+         m_ServerPort = 587;
+         m_kSecurityMode = ESecurityMode::kTLS;
+         m_bRequireAuthentication = true;
+         m_UserAccount = m_SenderMail;
+         m_Password = shared::encryption::CXor::decryptBase64(m_data.get<std::string>("account.content.yahoo.content.password"));
       }
       else if (m_data.exists("account.content.other"))
       {

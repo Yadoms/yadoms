@@ -114,7 +114,7 @@ namespace sqlite {
       ((Model)("model"))
       ((Content)("content"))
       ((Configuration)("configuration"))
-      ((Enabled)("enabled"))
+      ((AutoStart)("autoStart"))
       ((State)("state"))
       ((ErrorMessage)("errorMessage"))
       ((StartDate)("startDate"))
