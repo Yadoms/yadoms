@@ -20,6 +20,15 @@
                   }               
                }
             },
+            "ovh": {
+               "name": "OVH",
+               "content": {
+                  "password": {
+                     "name": "Mot de passe",
+                     "description": "Le mot de passe du compte de messagerie OVH"
+                  }               
+               }
+            },
             "other": {
                "name": "Autre",
                "content": {

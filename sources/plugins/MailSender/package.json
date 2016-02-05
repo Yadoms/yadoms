@@ -26,6 +26,15 @@
                   }               
                }
             },
+            "ovh": {
+               "type": "section",
+               "content": {
+                  "password": {
+                     "type": "string",
+                     "encrypted": "true"
+                  }               
+               }
+            },
             "other": {
                "type": "section",
                "content": {

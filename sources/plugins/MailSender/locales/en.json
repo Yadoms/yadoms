@@ -20,6 +20,15 @@
                   }               
                }
             },
+            "ovh": {
+               "name": "OVH",
+               "content": {
+                  "password": {
+                     "name": "Password",
+                     "description": "OVH account password"
+                  }               
+               }
+            },
             "other": {
                "name": "Other",
                "content": {

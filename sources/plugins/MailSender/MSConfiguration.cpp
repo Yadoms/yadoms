@@ -28,6 +28,15 @@ void CMSConfiguration::initializeWith(const shared::CDataContainer &data)
          m_UserAccount = m_SenderMail;
          m_Password = shared::encryption::CXor::decryptBase64(m_data.get<std::string>("account.content.gmail.content.password"));
       }
+      else if (m_data.exists("account.content.ovh"))
+      {
+         m_ServerName = "ns0.ovh.net";
+         m_ServerPort = 587;
+         m_kSecurityMode = ESecurityMode::kNone;
+         m_bRequireAuthentication = true;
+         m_UserAccount = m_SenderMail;
+         m_Password = shared::encryption::CXor::decryptBase64(m_data.get<std::string>("account.content.ovh.content.password"));
+      }
       else if (m_data.exists("account.content.other"))
       {
          m_ServerName = m_data.get<std::string>("account.content.other.SMTPServer");
