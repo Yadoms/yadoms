@@ -37,12 +37,8 @@ function enterCustomization() {
         });
     });
 
-    //we show / hide customization items
-    if (enable)
-        $(".customization-item").removeClass("hidden");
-    else
-        $(".customization-item").addClass("hidden");
-
+    //we show customization items
+    $(".customization-item").removeClass("hidden");
     $("a#customizeButton i").addClass("fa-spin ");
 }
 
@@ -56,6 +52,8 @@ function exitCustomization(saveCustomization) {
     customization = false;
     waitForRealeaseButtonAfterEnteringCustomization = false;
     $("a#customizeButton i").removeClass("fa-spin");
+    //we hide customization items
+    $(".customization-item").addClass("hidden");
 
     //we save all widgets in each page
     $.each(PageManager.pages, function (index, currentPage) {
