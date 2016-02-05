@@ -52,22 +52,28 @@ AutomationRule.prototype.toJSON = function () {
 /**
  * Download the editor attached to the rule
  */
-AutomationRule.prototype.downloadEditor = function (callback) {
-   assert($.isFunction(callback), "callback must be a function");
+AutomationRule.prototype.downloadEditor = function () {
+   var d = new Deferred();
+
    var self = this;
    if (!self.editorHasBeenDownloaded) {
-      AutomationEditorManager.getByName(self.editorName, function (editor) {
+      AutomationEditorManager.getByName(self.editorName)
+      .done(function (editor) {
          //if there is an error getting editor
          if (!editor) {
-            notifyError($.t("objects.generic.errorEditing", {objectName: "automation rule"}));
+            notifyError($.t("objects.generic.errorEditing", { objectName: "automation rule" }));
+            d.reject();
             return;
          }
          self.editor = editor;
          self.editorHasBeenDownloaded = true;
-         callback();
-      });
+         d.resolve();
+      })
+      .fail(d.reject);
    }
    else {
-      callback();
+      d.resolve();
    }
+
+   return d.promise();
 };

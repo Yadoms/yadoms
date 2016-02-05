@@ -520,9 +520,14 @@
         var objectType = "scriptInterpreter";
         //we save the information that the load of objectType is in progress
         promiseCounter.incrementCounter();
-        AutomationInterpreterManager.getAllDetailed(function (interpreters) {
+        AutomationInterpreterManager.getAllDetailed()
+        .done(function (interpreters) {
             buildList(objectType, interpreters);
+        })
+        .fail(function (error) {
+            notifyError($.t("objects.interpreter.errorListingInterpreters"), error);
         });
+
     }
     /**
      * Create the list from the localList

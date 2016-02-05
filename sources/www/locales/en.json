@@ -723,10 +723,13 @@
       "errorDuringGettingPages": "Error during requesting pages"
     },
     "ConfigurationManager": {
-      "errorDuringGettingSystemConfiguration": "Error during getting configuration",
-      "errorDuringGettingConfiguration": "Error in reading configuration __section__.__key__",
-      "errorDuringCreatingConfiguration": "Error in creating configuration __section__.__key__",
-      "errorDuringUpdatingConfiguration": "Error in updating configuration __section__.__key__"
+        "errorDuringGettingSystemConfiguration": "Error during getting configuration",
+        "errorDuringGettingConfiguration": "Error in reading configuration __section__.__key__",
+        "errorDuringCreatingConfiguration": "Error in creating configuration __section__.__key__",
+        "errorDuringUpdatingConfiguration": "Error in updating configuration __section__.__key__"
+    },
+    "interpreter": { 
+        "errorListingInterpreters" :  "An error has occurred listing script interpreters"
     },
     "recipient": {
       "errorGettingRecipientList": "An error has occurred acquiring recipient list",

@@ -201,12 +201,13 @@
 
     function editAutomationRule(rule) {
         //rule represent the automation rule concerned
-        return function () {
-            rule.downloadEditor(function () {
-                modals.automationRuleEdit.load(function () {
-                    showEditionAutomationRule(rule, function () {
+        return function() {
+            rule.downloadEditor()
+            .done(function() {
+                modals.automationRuleEdit.load(function() {
+                    showEditionAutomationRule(rule, function() {
                         //we ask for automation rule update
-                        AutomationRuleManager.updateToServer(rule, function (ruleUpdated) {
+                        AutomationRuleManager.updateToServer(rule, function(ruleUpdated) {
                             //if it's okay
                             if (!ruleUpdated) {
                                 notifyError($.t("objects.generic.errorUpdating", { objectName: "automation rule" }));
@@ -214,7 +215,7 @@
                             }
 
                             //we update the code
-                            AutomationRuleManager.updateCode(ruleUpdated, function (codeUpdateOk) {
+                            AutomationRuleManager.updateCode(ruleUpdated, function(codeUpdateOk) {
                                 if (!codeUpdateOk) {
                                     notifyError($.t("objects.generic.errorUpdating", { objectName: "automation rule" }));
                                     return;
@@ -227,8 +228,11 @@
                         });
                     });
                 });
+            })
+            .fail(function(error) {
+                notifyError($.t("objects.generic.errorEditing", { objectName: "automation rule" }), error);
             });
-        }
+        };
     }
 
     function showLogAutomationRule(rule) {
@@ -288,11 +292,13 @@
     }
 
     function addNewAutomationRule() {
-        AutomationEditorManager.getAll(function (editors) {
+        AutomationEditorManager.getAll()
+        .done(function (editors) {
             modals.automationRuleNew.load(function () {
                 //we launch new rule GUI
                 showNewAutomationRule(editors, function (rule) {
-                    rule.downloadEditor(function () {
+                    rule.downloadEditor()
+                    .done(function () {
                         modals.automationRuleEdit.load(function () {
                             showEditionAutomationRule(rule, function () {
                                 //we ask for automation rule creation
@@ -309,9 +315,15 @@
                                 });
                             });
                         });
+                    })
+                    .fail(function (error) {
+                        notifyError($.t("objects.generic.errorCreating", { objectName: "automation rule" }), error);
                     });
                 });
             });
+        })
+        .fail(function (error) {
+           notifyError($.t("objects.generic.errorGetting", { objectName: "interpreters" }), error);
         });
     };
 
