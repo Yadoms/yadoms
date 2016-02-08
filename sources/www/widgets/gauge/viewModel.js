@@ -179,8 +179,6 @@ widgetViewModelCtor = function GaugeViewModel() {
             break;
       }
 
-      console.log(self.stopsArray);
-
       //we get the unit of the keyword
       KeywordManager.get(self.widget.configuration.device.keywordId)
       .done(function (keyword) {
