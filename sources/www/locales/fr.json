@@ -398,39 +398,48 @@
                     "errorUpdatingKeyword": "Erreur lors de la la mise à jour de la donnée __keyword__",
                     "noAcquisition": "Aucune acquisition"
                 },
-                "automation-center": {
-                    "title": "Centre d'automatisation",
-                    "description": "Gérer, ajouter et supprimer des règles d'automatisation",
-                    "new": "Création d'une règle",
-                    "table": {
-                        "name": "Nom",
-                        "description": "Description",
-                        "autoStart": "Démarrer automatiquement",
-                        "actions": "Actions",
-                        "state": "Etat"
-                    },
-                    "startStop": "Démarrer / Arrêter la règle",
-                    "ruleState": {
-                        "stopped": "Arrêtée",
-                        "running": "En cours",
-                        "error": "Erreur"
-                    },
-                    "edit": "Modifier la règle",
-                    "delete": "Supprimer la règle",
-                    "confirmDeletion": "Confirmez-vous la suppression de la règle __name__ ?",
-                    "log": "Consulter le journal",
-                    "ruleSuccessfullyCreated": "Règle créée",
-                    "ruleSuccessfullyUpdated": "Règle mise à jour",
-                    "ruleDeleted": "Règle supprimée",
-                    "editors": {
-                        "code": {
-                            "name": "Code"
-                        },
-                        "blockly": {
-                            "name": "Blockly"
-                        }
-                    }
+              "automation-center": {
+                "title": "Centre d'automatisation",
+                "description": "Gérer, ajouter et supprimer des règles d'automatisation",
+                "new": "Création d'une règle",
+                "table": {
+                  "name": "Nom",
+                  "description": "Description",
+                  "autoStart": "Démarrer automatiquement",
+                  "actions": "Actions",
+                  "state": "Etat"
                 },
+                "startStop": "Démarrer / Arrêter la règle",
+                "ruleState": {
+                  "stopped": "Arrêtée",
+                  "running": "En cours",
+                  "error": "Erreur"
+                },
+                "edit": "Modifier la règle",
+                "delete": "Supprimer la règle",
+                "confirmDeletion": "Confirmez-vous la suppression de la règle __name__ ?",
+                "log": "Consulter le journal",
+                "ruleSuccessfullyCreated": "Règle créée",
+                "ruleSuccessfullyUpdated": "Règle mise à jour",
+                "ruleDeleted": "Règle supprimée",
+                "ruleCreationError": "Impossible de créer la règle __rule__.",
+                "ruleUpdateError": "Impossible de mettre à jour la règle __rule__.",
+                "ruleEditError": "Impossible d'éditer la règle __rule__.",
+                "ruleDeletionError": "Impossible de supprimer la règle __rule__.",
+                "ruleStopError": "Impossible d'arrêter la règle __rule__.",
+                "ruleStartError": "Impossible de démarrer la règle __rule__.",
+                "ruleListingError": "Impossible de lister les règles.",
+                "ruleInterpreterListingError": "Impossible de lister les interpréteurs de règles.",
+                "ruleGetLogError": "Impossible d'obtenir le log de la règle __rule__.",
+                "editors": {
+                  "code": {
+                    "name": "Code"
+                  },
+                  "blockly": {
+                    "name": "Blockly"
+                  }
+                }
+              },
                 "install-update": {
                     "title": "Installation & Mise à jour",
                     "description": "Installation et mise à jour des composants de Yadoms",

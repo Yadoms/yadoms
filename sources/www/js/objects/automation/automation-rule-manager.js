@@ -8,300 +8,232 @@
  */
 function AutomationRuleManager(){}
 
+/**
+ * Create a rule from server json data
+ * @param {Object} json The rule data given by server (json format)
+ * @returns {AutomationRule} 
+ */
 AutomationRuleManager.factory = function(json) {
    assert(!isNullOrUndefined(json), "json must be defined");
    return new AutomationRule(json.id, json.name, json.description, json.interpreter, json.editor, json.model, json.content, json.configuration, parseBool(json.autoStart), json.state, json.errorMessage, json.startDate, json.stopDate);
 };
 
-AutomationRuleManager.createToServer = function(rule, callback) {
-   assert(!isNullOrUndefined(rule), "rule must be defined");
-   $.ajax({
-      type: "POST",
-      url: "/rest/automation/rule",
-      data: JSON.stringify({  name: rule.name,
-                              description: rule.description,
-                              interpreter: rule.interpreter,
-                              editor: rule.editorName,
-                              model: rule.model,
-                              content: rule.content,
-                              configuration: rule.configuration,
-                              autoStart: rule.autoStart,
-                              code: rule.code
-                           }),
-      contentType: "application/json; charset=utf-8",
-      dataType: "json"
-   })
-      .done(function(data) {
-         //we parse the json answer
-         if (data.result != "true")
-         {
-            notifyError($.t("objects.generic.errorCreating", {objectName : rule.name}), JSON.stringify(data));
-            //launch callback with false as ko result
-            if ($.isFunction(callback))
-               callback(false);
-            return;
-         }
+/**
+ * Create a rule to the server
+ * @param {Object} rule The rule to create
+ * @returns {Promise} 
+ */
+AutomationRuleManager.createToServer = function(rule) {
+    assert(!isNullOrUndefined(rule), "rule must be defined");
 
-         //we update our information from the server
-         var newRule = AutomationRuleManager.factory(data.data);
-         //we copy other items
-         newRule.code = rule.code;
-         if ($.isFunction(callback))
-            callback(newRule);
-      })
-      .fail(function() {
-         notifyError($.t("objects.generic.errorCreating", {objectName : rule.name}));
-         //launch callback with false as ko result
-         if ($.isFunction(callback))
-            callback(false);
+   var d = new $.Deferred();
+
+   var requestData = {
+      name: rule.name,
+      description: rule.description,
+      interpreter: rule.interpreter,
+      editor: rule.editorName,
+      model: rule.model,
+      content: rule.content,
+      configuration: rule.configuration,
+      autoStart: rule.autoStart,
+      code: rule.code
+   };
+
+   RestEngine.postJson("/rest/automation/rule", { data: JSON.stringify(requestData)})
+   .done(function(data) {
+      //we update our information from the server
+      var newRule = AutomationRuleManager.factory(data);
+      //we copy other items
+      newRule.code = rule.code;
+      d.resolve(newRule);
+   })
+   .fail(d.reject);
+
+   return d.promise();
+};
+
+/**
+ * Get all rules from server
+ * @returns {Promise} 
+ */
+AutomationRuleManager.get = function () {
+
+   var d = new $.Deferred();
+
+   RestEngine.getJson("rest/automation/rule")
+   .done(function (data) {
+      var allRules = [];
+      $.each(data.rules, function (index, value) {
+         allRules.push(AutomationRuleManager.factory(value));
       });
-};
 
-AutomationRuleManager.get = function (callback) {
-   assert($.isFunction(callback), "callback must be a function");
-   $.getJSON("rest/automation/rule")
-      .done(function( data ) {
-         //we parse the json answer
-         if (data.result != "true")
-         {
-            notifyError($.t("objects.generic.errorGetting", {objectName : "automation rules"}), JSON.stringify(data));
-            return;
-         }
-
-           var allRules = [];
-           $.each(data.data.rules, function(index, value) {
-               allRules.push(AutomationRuleManager.factory(value));
-           });
-
-         callback(allRules);
-      })
-      .fail(function() {notifyError($.t("objects.generic.errorGetting", {objectName : "automation rules"}));});
-};
-
-AutomationRuleManager.deleteFromServer = function(rule, callback) {
-   assert(!isNullOrUndefined(rule), "rule must be defined");
-
-   $.ajax({
-      type: "DELETE",
-      url: "/rest/automation/rule/" + rule.id,
-      contentType: "application/json; charset=utf-8",
-      dataType: "json"
+      d.resolve(allRules);
    })
-      .done(function(data) {
-         //we parse the json answer
-         if (data.result != "true")
-         {
-            notifyError($.t("objects.generic.errorDeleting", {objectName : rule.name}), JSON.stringify(data));
-            return;
-         }
+   .fail(d.reject);
 
-         if ($.isFunction(callback))
-            callback();
-      })
-      .fail(function() {notifyError($.t("objects.generic.errorDeleting", {objectName : rule.name}));});
+   return d.promise();
 };
 
-AutomationRuleManager.updateToServer = function(rule, callback) {
+/**
+ * Delete a rule from server
+ * @param {Object} rule The rule to delete
+ * @returns {Promise} 
+ */
+AutomationRuleManager.deleteFromServer = function (rule) {
+   assert(!isNullOrUndefined(rule), "rule must be defined");
+   return RestEngine.deleteJson("/rest/automation/rule/" + rule.id);
+};
+
+/**
+ * Update a rule
+ * @param {Object} rule The rule to update (with updated fields)
+ * @returns {Promsie} 
+ */
+AutomationRuleManager.updateToServer = function(rule) {
    assert(!isNullOrUndefined(rule), "rule must be defined");
 
-   $.ajax({
-      type: "PUT",
-      url: "/rest/automation/rule/" + rule.id,
-      data: JSON.stringify(rule),
-      contentType: "application/json; charset=utf-8",
-      dataType: "json"
+   var d = new $.Deferred();
+
+   RestEngine.putJson("/rest/automation/rule/" + rule.id, { data: JSON.stringify(rule) })
+   .done(function (data) {
+      //it's okay
+      //we update our information from the server
+      var updatedRule = AutomationRuleManager.factory(data);
+      //we copy other items
+      updatedRule.code = rule.code;
+      d.resolve(updatedRule);
    })
-      .done(function(data) {
-         //we parse the json answer
-         if (data.result != "true")
-         {
-            notifyError($.t("objects.generic.errorUpdating", {objectName : rule.name}), JSON.stringify(data));
-            //launch callback with false as ko result
-            if ($.isFunction(callback))
-               callback(false);
-            return;
-         }
-         //it's okay
-         //we update our information from the server
-         var newRule = AutomationRuleManager.factory(data.data);
-         //we copy other items
-         newRule.code = rule.code;
-         if ($.isFunction(callback))
-            callback(newRule);
+   .fail(d.reject);
 
-      })
-      .fail(function() {
-         notifyError($.t("objects.generic.errorUpdating", {objectName : rule.name}));
-         //launch callback with false as ko result
-         if ($.isFunction(callback))
-            callback(false);
-      });
+   return d.promise();
 };
 
-AutomationRuleManager.stop = function(rule, callback) {
+/**
+ * Stop a rule
+ * @param {Object} rule The rule to update
+ * @returns {Promise} 
+ */
+AutomationRuleManager.stop = function(rule) {
    assert(!isNullOrUndefined(rule), "rule must be defined");
-   rule.enabled = false;
-   AutomationRuleManager.updateToServer(rule, callback);
+   
+   var d = new $.Deferred();
+
+   RestEngine.getJson("/rest/automation/rule/" + rule.id + "/stop")
+   .done(function (data) {
+      //it's okay
+      //we update our information from the server
+      var updatedRule = AutomationRuleManager.factory(data);
+      //we copy other items
+      updatedRule.code = rule.code;
+      d.resolve(updatedRule);
+   })
+   .fail(d.reject);
+
+   return d.promise();
 };
 
-AutomationRuleManager.start = function(rule, callback) {
+/**
+ * Start a rule
+ * @param {Object} rule The rule to update
+ * @returns {Promise} 
+ */
+AutomationRuleManager.start = function (rule) {
    assert(!isNullOrUndefined(rule), "rule must be defined");
-   rule.enabled = true;
-   AutomationRuleManager.updateToServer(rule, callback);
+
+   var d = new $.Deferred();
+
+   RestEngine.getJson("/rest/automation/rule/" + rule.id + "/start")
+   .done(function (data) {
+      //it's okay
+      //we update our information from the server
+      var updatedRule = AutomationRuleManager.factory(data);
+      //we copy other items
+      updatedRule.code = rule.code;
+      d.resolve(updatedRule);
+   })
+   .fail(d.reject);
+
+   return d.promise();
 };
 
-AutomationRuleManager.setAutoStart = function(rule, autoStartValue, callback) {
+/**
+ * Change autostart of a rule
+ * @param {Object} rule The rule to update
+ * @param {Boolean} autoStartValue The new autoStart value to set
+ * @returns {Promise} 
+ */
+AutomationRuleManager.setAutoStart = function(rule, autoStartValue) {
    assert(!isNullOrUndefined(rule), "rule must be defined");
    rule.autoStart = autoStartValue;
-   AutomationRuleManager.updateToServer(rule, callback);
+   return AutomationRuleManager.updateToServer(rule, callback);
 };
 
 /**
  * Get the code of the rule
- * @param rule
- * @param callback
- * @param sync
+ * @param {Object} rule The rule to get the code
+ * @return {Promise}
  */
-AutomationRuleManager.getCode = function(rule, callback, sync) {
+AutomationRuleManager.getCode = function(rule) {
    assert(!isNullOrUndefined(rule), "rule must be defined");
-   assert($.isFunction(callback), "callback must be a function");
 
-   var async = true;
-   if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
-      async = !sync;
+   var d = new $.Deferred();
 
-   $.ajax({
-      dataType: "json",
-      url: "rest/automation/rule/" + rule.id + "/code",
-      async: async
+   RestEngine.getJson("rest/automation/rule/" + rule.id + "/code")
+   .done(function (data) {
+      rule.code = data.code;
+      rule.codeHasBeenDownloaded = true;
+      d.resolve();
    })
-       .done(function( data ) {
-          //we parse the json answer
-          if (data.result != "true")
-          {
-             notifyError($.t("objects.generic.errorGetting", {objectName : "automation code rule"}), JSON.stringify(data));
-             return;
-          }
+   .fail(d.reject);
 
-          rule.code = data.data.code;
-          rule.codeHasBeenDownloaded = true;
-
-          callback();
-       })
-       .fail(function() {notifyError($.t("objects.generic.errorGetting", {objectName : "automation code rule"}));});
+   return d.promise();
 };
 
 /**
  * Get the template code associated to interpreter
- * @param interpreter
- * @param callback
- * @param sync
+ * @param {Object} rule The rule to get the template code
+ * @return {Promise}
  */
-AutomationRuleManager.getTemplateCode = function(rule, callback, sync) {
+AutomationRuleManager.getTemplateCode = function(rule) {
    assert(!isNullOrUndefined(rule), "rule must be defined");
-   assert($.isFunction(callback), "callback must be a function");
+   assert(!isNullOrUndefined(rule.interpreter), "rule interpreter must be defined");
 
-   var async = true;
-   if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
-      async = !sync;
-
-   $.ajax({
-      dataType: "json",
-      url: "rest/automation/rule/" + rule.interpreter + "/codeTemplate",
-      async: async
+   var d = new $.Deferred();
+   RestEngine.getJson("rest/automation/rule/" + rule.interpreter + "/codeTemplate")
+   .done(function (data) {
+      rule.code = data.code;
+      rule.codeHasBeenDownloaded = true;
+      d.resolve();
    })
-       .done(function( data ) {
-          //we parse the json answer
-          if (data.result != "true")
-          {
-             notifyError($.t("objects.generic.errorGetting", {objectName : "automation template code"}), JSON.stringify(data));
-             return;
-          }
-
-          rule.code = data.data.code;
-          rule.codeHasBeenDownloaded = true;
-
-          callback();
-       })
-       .fail(function() {notifyError($.t("objects.generic.errorGetting", {objectName : "automation template code"}));});
+   .fail(d.reject);
+   return d.promise();
 };
 
 /**
- * Update the code of the rule
- * @param rule
- * @param code
- * @param callback
- * @param sync
+ *Update the rule code
+ * @param {Object} rule The rule to update the code
+ * @return {Promise}
  */
-AutomationRuleManager.updateCode = function(rule, callback, sync) {
+AutomationRuleManager.updateCode = function(rule) {
    assert(!isNullOrUndefined(rule), "rule must be defined");
-   assert($.isFunction(callback), "callback must be a function");
-
-   var async = true;
-   if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
-      async = !sync;
-
-   $.ajax({
-      type: "PUT",
-      url: "rest/automation/rule/" + rule.id + "/code",
-      data: JSON.stringify({"code" : rule.code}),
-      contentType: "application/json; charset=utf-8",
-      dataType: "json",
-      async: async
+   
+   var d = new $.Deferred();
+   RestEngine.putJson("rest/automation/rule/" + rule.id + "/code", { data: JSON.stringify({ "code": rule.code }) })
+   .done(function (data) {
+      rule.code = data.code;
+      d.resolve();
    })
-       .done(function(data) {
-          //we parse the json answer
-          if (data.result != "true")
-          {
-             notifyError($.t("objects.generic.errorUpdating", {objectName : rule.name}), JSON.stringify(data));
-             //launch callback with false as ko result
-             if ($.isFunction(callback))
-                callback(false);
-             return;
-          }
-          //it's okay
-
-          rule.code = data.data.code;
-          //we call the callback with true as a ok result
-          if ($.isFunction(callback))
-             callback(true);
-       })
-       .fail(function() {
-          notifyError($.t("objects.generic.errorUpdating", {objectName : rule.name}));
-          //launch callback with false as ko result
-          if ($.isFunction(callback))
-             callback(false);
-       });
+   .fail(d.reject);
+   return d.promise();
 };
 
 /**
- * Get the log of the rule
- * @param rule
- * @param callback
- * @param sync
+ * Get the log content of a rule
+ * @param {Object} rule The rule to get the log content
+ * @return {Promise}
  */
-AutomationRuleManager.getLog = function(rule, callback, sync) {
+AutomationRuleManager.getLog = function(rule) {
    assert(!isNullOrUndefined(rule), "rule must be defined");
-   assert($.isFunction(callback), "callback must be a function");
-
-   var async = true;
-   if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
-      async = !sync;
-
-   $.ajax({
-      dataType: "json",
-      url: "rest/automation/rule/" + rule.id + "/log",
-      async: async
-   })
-       .done(function( data ) {
-          //we parse the json answer
-          if (data.result != "true")
-          {
-             notifyError($.t("objects.generic.errorGetting", {objectName : "automation rule log"}), JSON.stringify(data));
-             return;
-          }
-
-          callback(data.data.log);
-       })
-       .fail(function() {notifyError($.t("objects.generic.errorGetting", {objectName : "automation rule log"}));});
+   return RestEngine.getJson("rest/automation/rule/" + rule.id + "/log");
 };

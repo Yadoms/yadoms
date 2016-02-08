@@ -53,7 +53,7 @@ AutomationRule.prototype.toJSON = function () {
  * Download the editor attached to the rule
  */
 AutomationRule.prototype.downloadEditor = function () {
-   var d = new Deferred();
+   var d = new $.Deferred();
 
    var self = this;
    if (!self.editorHasBeenDownloaded) {

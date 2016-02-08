@@ -280,7 +280,7 @@ Fix dropdown menus hidden by bootstrap modal
 }
 
 .code-editor {
-    height: 300px;
+    height: 100%;
     border: 1px #ccc solid;
 }
 

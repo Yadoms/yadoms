@@ -418,6 +418,15 @@
           "ruleSuccessfullyCreated": "Rule successfully created",
           "ruleSuccessfullyUpdated": "Rule successfully updated",
           "ruleDeleted": "Rule successfully removed",
+          "ruleCreationError": "Fail to create rule __rule__.",
+          "ruleUpdateError": "Fail to update rule __rule__.",
+          "ruleEditError": "Fail to edit rule __rule__.",
+          "ruleDeletionError": "Fail to delete rule __rule__.",
+          "ruleStopError": "Fail to stop rule __rule__.",
+          "ruleStartError": "Fail to start rule __rule__.",
+          "ruleListingError": "Fail to list rules.",
+          "ruleInterpreterListingError": "Fail to list rule interpreters.",
+          "ruleGetLogError": "Fail to get logs of rule __rule__.",
           "editors": {
             "code": {
               "name": "Code"

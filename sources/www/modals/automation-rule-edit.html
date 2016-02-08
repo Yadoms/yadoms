@@ -72,44 +72,49 @@
       rule.editor.applyScript();
 
       //we set the rule to edit to the editor
-      rule.editor.setRule(rule);
+      rule.editor.setRule(rule)
+      .done(function() {
+         $("div#edit-automation-rule-modal").off("shown.bs.modal").on("shown.bs.modal", function () {
+            rule.editor.onModalShown($modalConfiguration);
+         });
 
-      $("div#edit-automation-rule-modal").off("shown.bs.modal").on("shown.bs.modal", function () {
-         rule.editor.onModalShown($modalConfiguration);
-      });
+         //validation form
+         $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy").jqBootstrapValidation({
+            preventSubmit: true,
+            submitError: function($form, event, errors) {
+               console.warn("Unable to validate form: " + errors);
+            },
+            submitSuccess: function($form, event) {
+               event.preventDefault();
+               if (rule.editor.validate()) {
+                  rule.name = nameParameter.getCurrentConfiguration();
+                  rule.description = descriptionParameter.getCurrentConfiguration();
+                  rule.editor.updateRule();
 
-      //validation form
-      $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy").jqBootstrapValidation({
-         preventSubmit: true,
-         submitError: function($form, event, errors) {
-            console.warn("Unable to validate form: " + errors);
-         },
-         submitSuccess: function($form, event) {
-            event.preventDefault();
-            if (rule.editor.validate()) {
-               rule.name = nameParameter.getCurrentConfiguration();
-               rule.description = descriptionParameter.getCurrentConfiguration();
-               rule.editor.updateRule();
+                  console.debug("End of Automation rule edition : " + JSON.stringify(rule));
 
-               console.debug("End of Automation rule edition : " + JSON.stringify(rule));
+                  //we hide the current window and the wizard if opened previously
+                  $("div#edit-automation-rule-modal").modal("hide");
 
-               //we hide the current window and the wizard if opened previously
-               $("div#edit-automation-rule-modal").modal("hide");
-
-               callback();
+                  callback();
+               }
+            },
+            filter: function() {
+               //we check only control that have class enable-validation and are visible
+               return $(this).is(".enable-validation") && $(this).is(":visible");
             }
-         },
-         filter: function() {
-            //we check only control that have class enable-validation and are visible
-            return $(this).is(".enable-validation") && $(this).is(":visible");
-         }
-      });
+         });
 
-      //i18n
-      $modalBody.i18n();
+         //i18n
+         $modalBody.i18n();
       
-      //we display the modal
-      $('div#edit-automation-rule-modal').modal({ backdrop: 'static' });
+         //we display the modal
+         $('div#edit-automation-rule-modal').modal({ backdrop: 'static' });
+
+      })
+      .fail(function (error) {
+         notifyError($.t("modals.dashboard.sub-windows.automation-center.ruleEditError", { rule : ""}), error);
+      });
    }
    
 

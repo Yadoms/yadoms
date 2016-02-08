@@ -153,7 +153,7 @@ RestEngine.restCall_ = function(type, url, data){
                d.resolve(data.data);
             }
             else {
-               d.reject(data.errorMessage);
+               d.reject(data.message);
             }
          } else {
             //it is not json result, just resolve using data (case of simple ajax file download)
