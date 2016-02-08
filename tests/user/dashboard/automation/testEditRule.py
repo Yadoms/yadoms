@@ -12,6 +12,7 @@ import dashboard
 import dashboard.automation
 import notification
 import i18n
+import tools
 
 class EditRule(unittest.TestCase):
    """Edit rule test"""
@@ -34,6 +35,7 @@ class EditRule(unittest.TestCase):
      
       # Edit the first rule
       rulesTable = dashboard.automation.waitRulesTableHasNRules(self.browser, 1)
+      tools.waitUntil(lambda: dashboard.automation.getRuleEditButton(rulesTable, ruleNumber).is_enabled())
       dashboard.automation.getRuleEditButton(rulesTable, ruleNumber).click()
       
       # Modify rule description
@@ -58,6 +60,7 @@ class EditRule(unittest.TestCase):
 
       # Start the rule
       rulesTable = dashboard.automation.waitRulesTableHasNRules(self.browser, 1)
+      tools.waitUntil(lambda: dashboard.automation.getRuleStartStopButton(rulesTable, ruleNumber).is_enabled())
       dashboard.automation.getRuleStartStopButton(rulesTable, ruleNumber).click()
       WebDriverWait(self.browser, 10).until(lambda driver: dashboard.automation.getRuleState(rulesTable, ruleNumber) is dashboard.automation.RuleState.Running)
       

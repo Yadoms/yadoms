@@ -10,6 +10,7 @@ import scripts
 import yadomsServer
 import dashboard
 import dashboard.automation
+import tools
 
 class StartStopRule(unittest.TestCase):
    """Start/Stop rule test"""
@@ -38,10 +39,12 @@ class StartStopRule(unittest.TestCase):
       self.assertTrue(dashboard.automation.getRuleAutoStart(rulesTable, ruleNumber))
       
       # Start rule
+      tools.waitUntil(lambda: startStopButton.is_enabled())
       startStopButton.click()
       WebDriverWait(self.browser, 10).until(lambda driver: dashboard.automation.getRuleState(rulesTable, ruleNumber) is dashboard.automation.RuleState.Running)
 
       # Stop rule
+      tools.waitUntil(lambda: startStopButton.is_enabled())
       startStopButton.click()
       WebDriverWait(self.browser, 10).until(lambda driver: dashboard.automation.getRuleState(rulesTable, ruleNumber) is dashboard.automation.RuleState.Stopped)
             

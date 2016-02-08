@@ -35,6 +35,7 @@ class RemoveRule(unittest.TestCase):
       
       
    def initialConditionsForRemoveRunningRuleTest(self, rulesTable, ruleNumber):
+      tools.waitUntil(lambda: dashboard.automation.getRuleStartStopButton(rulesTable, ruleNumber).is_enabled())
       dashboard.automation.getRuleStartStopButton(rulesTable, ruleNumber).click()
       self.assertTrue(tools.waitUntil(lambda: dashboard.automation.getRuleState(rulesTable, ruleNumber), dashboard.automation.RuleState.Running))
    
