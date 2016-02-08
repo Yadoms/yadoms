@@ -24,20 +24,20 @@ widgetViewModelCtor = function GaugeViewModel() {
    this.gaugeOptions = {
 
       chart: {
-         type: 'solidgauge'
+         type: "solidgauge"
       },
 
       title: null,
       pane: {
-         center: ['50%', '85%'],
-         size: '140%',
+         center: ["50%", "85%"],
+         size: "140%",
          startAngle: -90,
          endAngle: 90,
          background: {
-            backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || '#EEE',
-            innerRadius: '60%',
-            outerRadius: '100%',
-            shape: 'arc'
+            backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || "#EEE",
+            innerRadius: "60%",
+            outerRadius: "100%",
+            shape: "arc"
          }
       },
 
@@ -90,11 +90,11 @@ widgetViewModelCtor = function GaugeViewModel() {
    this.initialize = function (widget) {
       this.widget = widget;
 
-      var elementID = "widget-gauge-" + this.widget.id; // Unique ID
+      var elementId = "widget-gauge-" + this.widget.id; // Unique ID
 
       // Initialisation of a unique div associated to this widget
       $('<div style="width: 193px; height: 100px; float: left;overflow: hidden;display: table;margin: auto;"></div>').attr({
-         id: elementID
+         id: elementId
          //class: 'gaugeWidget'
       }).appendTo("#widget-" + this.widget.id);
 
@@ -115,8 +115,8 @@ widgetViewModelCtor = function GaugeViewModel() {
    this.onNewAcquisition = function (keywordId, data) {
       var self = this;
 
-      if (keywordId == self.widget.configuration.device.keywordId) {
-         if (data.value != self.data()) // refresh only when it's necessary.
+      if (keywordId === self.widget.configuration.device.keywordId) {
+         if (data.value !== self.data()) // refresh only when it's necessary.
          {
             //it is the good device
             self.data(data.value);
@@ -129,15 +129,17 @@ widgetViewModelCtor = function GaugeViewModel() {
    this.refreshValue = function () {
       var self = this;
 
-      var elementID = "widget-gauge-" + self.widget.id; // Unique ID
+      var elementId = "widget-gauge-" + self.widget.id; // Unique ID
 
-      chart = $('#' + elementID).highcharts();
+      var chart = $("#" + elementId).highcharts();
 
       if (chart) {
-         console.log(chart);
-
-         point = chart.series[0].points[0];
-         point.update(self.data());
+         if (chart.serie && chart.series.length > 0) {
+            if (chart.series[0].points && chart.series[0].points.length > 0) {
+               var point = chart.series[0].points[0];
+               point.update(self.data());
+            }
+         }
       }
    };
 
@@ -161,15 +163,15 @@ widgetViewModelCtor = function GaugeViewModel() {
             break;
          case "thresholds":
             var previousColor = self.widget.configuration.displayMode.content.thresholds.content.firstColor;
-            self.widget.configuration.displayMode.content.thresholds.content.addedThresholds.forEach(function (addedThreshold, index) {
+            self.widget.configuration.displayMode.content.thresholds.content.addedThresholds.forEach(function(addedThreshold) {
                var thresholdRatio = (addedThreshold.content.value - self.widget.configuration.customYAxisMinMax.content.minimumValue) /
-                  (self.widget.configuration.customYAxisMinMax.content.maximumValue - self.widget.configuration.customYAxisMinMax.content.minimumValue);
+               (self.widget.configuration.customYAxisMinMax.content.maximumValue - self.widget.configuration.customYAxisMinMax.content.minimumValue);
 
                self.stopsArray.push([thresholdRatio - 0.001, previousColor]);
                self.stopsArray.push([thresholdRatio, addedThreshold.content.color]);
 
                previousColor = addedThreshold.content.color;
-            })
+            });
             break;
          case "gradient":
             self.stopsArray.push([0, self.widget.configuration.displayMode.content.gradient.content.minColor]);
@@ -202,7 +204,7 @@ widgetViewModelCtor = function GaugeViewModel() {
          self.WidgetHeight = "170px";
 
          //To be painted only one time
-         if (isSmall == true) {
+         if (isSmall === true) {
             isSmall = false;
             self.refresh();
             self.refreshValue();
@@ -213,7 +215,7 @@ widgetViewModelCtor = function GaugeViewModel() {
          self.WidgetHeight = "130px";
 
          //To be painted only one time
-         if (isSmall == false) {
+         if (isSmall === false) {
             isSmall = true;
             self.refresh();
             self.refreshValue();
@@ -222,30 +224,31 @@ widgetViewModelCtor = function GaugeViewModel() {
    };
 
    this.refresh = function () {
-      self = this;
+      var self = this;
 
-      var SizeValue = 12;
-      var SizeUnit = 8;
+      var sizeValue;
+      var sizeUnit;
+      var titlePosition;
 
-      if (isSmall == true) {
-         SizeValue = 12;
-         SizeUnit = 8;
-         TitlePosition = -33;
+      if (isSmall === true) {
+         sizeValue = 12;
+         sizeUnit = 8;
+         titlePosition = -33;
       }
       else {
-         SizeValue = 24;
-         SizeUnit = 12;
-         TitlePosition = -70;
+         sizeValue = 24;
+         sizeUnit = 12;
+         titlePosition = -70;
       }
 
-      var elementID = "widget-gauge-" + self.widget.id; // Unique ID
+      var elementId = "widget-gauge-" + self.widget.id; // Unique ID
 
       //Attributes of div could only be changed trough theses variables. In an other way the div is stretched.	   
-      document.getElementById(elementID).style.height = self.WidgetHeight;
-      document.getElementById(elementID).style.width = self.WidgetWidth;
+      document.getElementById(elementId).style.height = self.WidgetHeight;
+      document.getElementById(elementId).style.width = self.WidgetWidth;
 
       //we configured the chart !
-      $('#' + elementID).highcharts(Highcharts.merge(self.gaugeOptions, {
+      $('#' + elementId).highcharts(Highcharts.merge(self.gaugeOptions, {
          navigation: {
             buttonOptions: {
                enabled: !isSmall
@@ -258,7 +261,7 @@ widgetViewModelCtor = function GaugeViewModel() {
             title: {
                enabled: "middle",
                text: self.widget.configuration.text,
-               y: TitlePosition
+               y: titlePosition
             }
          },
 
@@ -266,14 +269,14 @@ widgetViewModelCtor = function GaugeViewModel() {
             name: 'Data',
             data: [1],
             dataLabels: {
-               format: '<div style="text-align:center"><span style="text-align:center;font-size:' + SizeValue + 'px;color:' +
+               format: '<div style="text-align:center"><span style="text-align:center;font-size:' + sizeValue + 'px;color:' +
 						((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y:.1f}</span>' +  //<br/>
-						   '<span style="text-align:center;font-size:' + SizeUnit + 'px;color:silver"> ' + self.unit() + '</span></div>'
+						   '<span style="text-align:center;font-size:' + sizeUnit + 'px;color:silver"> ' + self.unit() + '</span></div>'
             },
             tooltip: {
                valueSuffix: self.unit()
             }
-         }],
+         }]
       }));
    };
 };
