@@ -35,6 +35,8 @@ class StartStopRule(unittest.TestCase):
       
       self.assertEqual(dashboard.automation.getRuleState(rulesTable, ruleNumber), dashboard.automation.RuleState.Stopped)
       
+      self.assertTrue(dashboard.automation.getRuleAutoStart(rulesTable, ruleNumber))
+      
       # Start rule
       startStopButton.click()
       WebDriverWait(self.browser, 10).until(lambda driver: dashboard.automation.getRuleState(rulesTable, ruleNumber) is dashboard.automation.RuleState.Running)

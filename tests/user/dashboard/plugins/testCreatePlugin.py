@@ -36,7 +36,7 @@ class CreatePlugin(unittest.TestCase):
       self.assertEqual(len(dashboard.plugins.getPluginDatas(pluginsTable, pluginNumber)), 5)
       self.assertEqual(dashboard.plugins.getPluginName(pluginsTable, pluginNumber), pluginInstanceName)
       self.assertEqual(dashboard.plugins.getPluginType(pluginsTable, pluginNumber).lstrip(), pluginType)
-      self.assertEqual(dashboard.plugins.getPluginAutoStart(pluginsTable, pluginNumber), True)
+      self.assertTrue(dashboard.plugins.getPluginAutoStart(pluginsTable, pluginNumber))
 
       buttons = dashboard.plugins.getPluginButtons(pluginsTable, pluginNumber)
       self.assertEqual(len(buttons), 3)
@@ -71,6 +71,7 @@ class CreatePlugin(unittest.TestCase):
       dashboard.openPlugin(self.browser)
 
       # Create new plugin
+      tools.waitUntil(lambda: dashboard.plugins.getCreatePluginButton(self.browser).is_enabled())
       dashboard.plugins.getCreatePluginButton(self.browser).click()
       newPluginModal = dashboard.plugins.waitNewPluginModal(self.browser)
       newPluginModal.selectPlugin(pluginType).click()

@@ -50,6 +50,7 @@ class EditRule(unittest.TestCase):
       ruleDatas = dashboard.automation.getRuleDatas(rulesTable, ruleNumber)
       self.assertEqual(ruleDatas[1].text, ruleNewDescription)
       self.assertEqual(dashboard.automation.getRuleState(rulesTable, ruleNumber), dashboard.automation.RuleState.Stopped)
+      self.assertTrue(dashboard.automation.getRuleAutoStart(rulesTable, ruleNumber))
          
       
    def test_editRunningRule(self):
@@ -77,6 +78,7 @@ class EditRule(unittest.TestCase):
       ruleDatas = dashboard.automation.getRuleDatas(rulesTable, ruleNumber)
       self.assertEqual(ruleDatas[1].text, ruleNewDescription)
       self.assertEqual(dashboard.automation.getRuleState(rulesTable, ruleNumber), dashboard.automation.RuleState.Running)
+      self.assertTrue(dashboard.automation.getRuleAutoStart(rulesTable, ruleNumber))
       
       
       

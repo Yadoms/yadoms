@@ -36,9 +36,12 @@ def getRuleName(rulesTable, ruleNumber):
 
 def getRuleDescription(rulesTable, ruleNumber):
    return getRuleDatas(rulesTable, ruleNumber)[1].text
+
+def getRuleAutoStart(rulesTable, ruleNumber):
+   return getRuleDatas(rulesTable, ruleNumber)[2].find_element_by_tag_name("input").is_selected()
    
 def getRuleButtons(rulesTable, ruleNumber):
-   rulesDataButtonsCell = getRuleDatas(rulesTable, ruleNumber)[2]
+   rulesDataButtonsCell = getRuleDatas(rulesTable, ruleNumber)[3]
    buttonsGroup = rulesDataButtonsCell.find_element_by_class_name("btn-group")
    return buttonsGroup.find_elements_by_xpath("./child::*")
    
@@ -49,7 +52,7 @@ def getRuleButton(rulesTable, ruleNumber, index):
 def getRuleStartStopButton(rulesTable, ruleNumber):
    """ Start/Stop button is the first button of the buttons group """
    button = getRuleButton(rulesTable, ruleNumber, 0)
-   assert "btn-enableDisable" in button.get_attribute("class")
+   assert "btn-startStop" in button.get_attribute("class")
    return button
    
 def getRuleEditButton(rulesTable, ruleNumber):
@@ -85,7 +88,7 @@ class RuleState:
    Stopped, Running, Error = range(3)
    
 def getRuleState(rulesTable, ruleNumber):
-   ruleStateCell = getRuleDatas(rulesTable, ruleNumber)[3]
+   ruleStateCell = getRuleDatas(rulesTable, ruleNumber)[4]
    if ("label-warning" in ruleStateCell.find_element_by_class_name("label-status").get_attribute("class")):
       return RuleState.Stopped
    if ("label-success" in ruleStateCell.find_element_by_class_name("label-status").get_attribute("class")):

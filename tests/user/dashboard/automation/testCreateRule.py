@@ -32,13 +32,14 @@ class CreateRule(unittest.TestCase):
 
       ruleNumber = 0
       
-      self.assertEqual(len(dashboard.automation.getRuleDatas(rulesTable, ruleNumber)), 4)
+      self.assertEqual(len(dashboard.automation.getRuleDatas(rulesTable, ruleNumber)), 5)
       self.assertEqual(dashboard.automation.getRuleName(rulesTable, ruleNumber), ruleName)
       self.assertEqual(dashboard.automation.getRuleDescription(rulesTable, ruleNumber), ruleDescription)
+      self.assertTrue(dashboard.automation.getRuleAutoStart(rulesTable, ruleNumber))
 
       buttons = dashboard.automation.getRuleButtons(rulesTable, ruleNumber)
       self.assertEqual(len(buttons), 4)
-      self.assertEqual(dashboard.automation.getRuleStartStopButton(rulesTable, ruleNumber).get_attribute("class"), "btn btn-enableDisable btn-warning")
+      self.assertEqual(dashboard.automation.getRuleStartStopButton(rulesTable, ruleNumber).get_attribute("class"), "btn btn-startStop btn-warning")
       self.assertEqual(dashboard.automation.getRuleEditButton(rulesTable, ruleNumber).get_attribute("class"), "btn btn-edit btn-primary")
       self.assertEqual(dashboard.automation.getRuleRemoveButton(rulesTable, ruleNumber).get_attribute("class"), "btn btn-delete btn-danger")
 
@@ -78,9 +79,10 @@ class CreateRule(unittest.TestCase):
 
       ruleNumber = 0
       
-      self.assertEqual(len(dashboard.automation.getRuleDatas(rulesTable, ruleNumber)), 4)
+      self.assertEqual(len(dashboard.automation.getRuleDatas(rulesTable, ruleNumber)), 5)
       self.assertEqual(dashboard.automation.getRuleName(rulesTable, ruleNumber), ruleName)
       self.assertEqual(dashboard.automation.getRuleDescription(rulesTable, ruleNumber), ruleDescription)
+      self.assertTrue(dashboard.automation.getRuleAutoStart(rulesTable, ruleNumber))
 
       buttons = dashboard.automation.getRuleButtons(rulesTable, ruleNumber)
       self.assertEqual(len(buttons), 4)
@@ -124,6 +126,7 @@ class CreateRule(unittest.TestCase):
       dashboard.openAutomation(self.browser)
 
       # Create new rule
+      tools.waitUntil(lambda: dashboard.automation.getCreateRuleButton(self.browser).is_enabled())
       dashboard.automation.getCreateRuleButton(self.browser).click()
       newRuleModal = dashboard.automation.waitNewRuleModal(self.browser)
       newRuleModal.getEditorSelectionButton("code").click()
