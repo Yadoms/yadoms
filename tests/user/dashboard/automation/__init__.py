@@ -89,11 +89,12 @@ class RuleState:
    
 def getRuleState(rulesTable, ruleNumber):
    ruleStateCell = getRuleDatas(rulesTable, ruleNumber)[4]
-   if ("label-warning" in ruleStateCell.find_element_by_class_name("label-status").get_attribute("class")):
+   print "getRuleState = ", ruleStateCell.find_element_by_class_name("label-status").get_attribute("class")
+   if "label-warning" in ruleStateCell.find_element_by_class_name("label-status").get_attribute("class"):
       return RuleState.Stopped
-   if ("label-success" in ruleStateCell.find_element_by_class_name("label-status").get_attribute("class")):
+   if "label-success" in ruleStateCell.find_element_by_class_name("label-status").get_attribute("class"):
       return RuleState.Running
-   if ("label-danger" in ruleStateCell.find_element_by_class_name("label-status").get_attribute("class")):
+   if "label-danger" in ruleStateCell.find_element_by_class_name("label-status").get_attribute("class"):
       return RuleState.Error
    assert False   
 
