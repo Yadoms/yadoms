@@ -4,6 +4,7 @@ from selenium.webdriver.support import expected_conditions as Condition
 from selenium.webdriver.common.keys import Keys
 import modals
 import i18n
+import tools
 
 
 """ Operations on plugins dashboard page """
@@ -148,6 +149,7 @@ class ConfigurePluginModal():
       return self.__getConfigurationItemByName("modals.configure-plugin.name-configuration.name")
       
    def replacePluginName(self, newName):
+      tools.waitUntil(lambda: self.getPluginName().is_enabled())
       nameField = self.getPluginName()
       nameField.send_keys(Keys.CONTROL + "a")
       nameField.send_keys(Keys.DELETE)
