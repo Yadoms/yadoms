@@ -70,7 +70,21 @@ bool COpenZWaveController::start()
       boost::filesystem::path folder = full_path.parent_path();
       folder /= "config";
 
-      OpenZWave::Options::Create(folder.string(), "", "");
+      boost::filesystem::path dataFolder = full_path.parent_path();
+      dataFolder /= "data";
+      if (!boost::filesystem::exists(dataFolder)) 
+      {
+         boost::system::error_code returnedError;
+
+         boost::filesystem::create_directories(dataFolder, returnedError);
+         if (returnedError)
+         {
+            //did not successfully create directories
+            YADOMS_LOG(error) << "Fali to create folder : " << dataFolder.string();
+         }
+      }
+
+      OpenZWave::Options::Create(folder.string(), dataFolder.string(), "");
       OpenZWave::Options::Get()->AddOptionInt("SaveLogLevel", OpenZWave::LogLevel_Error);
       OpenZWave::Options::Get()->AddOptionInt("QueueLogLevel", OpenZWave::LogLevel_Error);
       OpenZWave::Options::Get()->AddOptionInt("DumpTrigger", OpenZWave::LogLevel_Error);
