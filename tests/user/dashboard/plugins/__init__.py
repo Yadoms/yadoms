@@ -38,7 +38,7 @@ def getPluginType(pluginsTable, pluginNumber):
    return getPluginDatas(pluginsTable, pluginNumber)[1].text
    
 def getPluginAutoStart(pluginsTable, pluginNumber):
-   return getPluginDatas(pluginsTable, pluginNumber)[2].find_elements_by_tag_name("input")
+   return getPluginDatas(pluginsTable, pluginNumber)[2].find_element_by_tag_name("input").is_selected()
    
 def getPluginButtons(pluginsTable, pluginNumber):
    pluginsActionsButtonsCell = getPluginDatas(pluginsTable, pluginNumber)[3]
@@ -61,9 +61,9 @@ def getPluginEditButton(pluginsTable, pluginNumber):
    assert "btn-configure" in button.get_attribute("class")
    return button
    
-def getPluginLogButton(pluginsTable, pluginNumber):
+def getPluginRemoveButton(pluginsTable, pluginNumber):
    """ Remove button is the third button of the buttons group """
-   button = getPluginButton(pluginsTable, pluginNumber, 3)
+   button = getPluginButton(pluginsTable, pluginNumber, 2)
    assert "btn-delete" in button.get_attribute("class")
    return button
    
@@ -129,7 +129,6 @@ class ConfigurePluginModal():
    """ Operations on plugin configuration modal """
    
    def __init__(self, configurePluginModalWebElement):
-      print "configurePluginModalWebElement = ", configurePluginModalWebElement
       self.__configurePluginModalWebElement = configurePluginModalWebElement
 
    def __getConfigurationItemByName(self, dataI18nString):

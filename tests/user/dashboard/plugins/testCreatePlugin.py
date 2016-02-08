@@ -1,6 +1,7 @@
 ﻿import unittest
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
+from selenium.webdriver.support.ui import WebDriverWait
 import database
 import scripts
 import yadomsServer
@@ -37,18 +38,22 @@ class CreatePlugin(unittest.TestCase):
       self.assertEqual(dashboard.plugins.getPluginType(pluginsTable, pluginNumber).lstrip(), pluginType)
       self.assertEqual(dashboard.plugins.getPluginAutoStart(pluginsTable, pluginNumber), True)
 
-      buttons = dashboard.plugins.getRuleButtons(pluginsTable, pluginNumber)
+      buttons = dashboard.plugins.getPluginButtons(pluginsTable, pluginNumber)
       self.assertEqual(len(buttons), 3)
-      self.assertEqual(dashboard.plugins.getRuleStartStopButton(pluginsTable, pluginNumber).get_attribute("class"), "btn btn-enableDisable btn-warning")
-      self.assertEqual(dashboard.plugins.getRuleEditButton(pluginsTable, pluginNumber).get_attribute("class"), "btn btn-edit btn-primary")
-      self.assertEqual(dashboard.plugins.getRuleRemoveButton(pluginsTable, pluginNumber).get_attribute("class"), "btn btn-delete btn-danger")
+      WebDriverWait(self.browser, 10).until(lambda driver: \
+         "btn" in dashboard.plugins.getPluginStartStopButton(pluginsTable, pluginNumber).get_attribute("class") and \
+         "btn-startStop" in dashboard.plugins.getPluginStartStopButton(pluginsTable, pluginNumber).get_attribute("class") and \
+         "btn-warning" in dashboard.plugins.getPluginStartStopButton(pluginsTable, pluginNumber).get_attribute("class"))
+      self.assertTrue( \
+         "btn" in dashboard.plugins.getPluginEditButton(pluginsTable, pluginNumber).get_attribute("class") and \
+         "btn-configure" in dashboard.plugins.getPluginEditButton(pluginsTable, pluginNumber).get_attribute("class") and \
+         "btn-primary" in dashboard.plugins.getPluginEditButton(pluginsTable, pluginNumber).get_attribute("class"))
+      self.assertTrue( \
+         "btn" in dashboard.plugins.getPluginRemoveButton(pluginsTable, pluginNumber).get_attribute("class") and \
+         "btn-delete" in dashboard.plugins.getPluginRemoveButton(pluginsTable, pluginNumber).get_attribute("class") and \
+         "btn-danger" in dashboard.plugins.getPluginRemoveButton(pluginsTable, pluginNumber).get_attribute("class"))
 
-      self.assertEqual(dashboard.plugins.getRuleState(pluginsTable, pluginNumber), dashboard.plugins.PluginState.Running)
-      
-      
-      # - on disk (corresponding script file)
-      self.assertTrue(scripts.checkLocalRuleCodeById(1, ruleCode))
-      self.assertTrue(tools.waitUntil(lambda: scripts.checkLocalRuleLogById(1, ruleLog)))
+      WebDriverWait(self.browser, 20).until(lambda driver: dashboard.plugins.getPluginState(pluginsTable, pluginNumber) == dashboard.plugins.PluginState.Running)
             
             
    def test_createOkPlugin(self):
