@@ -240,10 +240,10 @@ void CMegatecUps::protocolErrorProcess(boost::shared_ptr<yApi::IYPluginApi> cont
 {
    if (m_protocolErrorCounter < 3)
    {
+      ++m_protocolErrorCounter;
       send(m_lastSentBuffer, true, m_answerIsRequired);
       return;
    }
-   ++m_protocolErrorCounter;
 
    // Already 3 tries, and still no answer...
    if (!m_answerIsRequired)
