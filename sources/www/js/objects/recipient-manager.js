@@ -95,7 +95,6 @@ RecipientManager.createEmptyRecipient = function () {
 
 /**
  * Get the list of all recipients
-  * @param sync True to get the result synchronously, false asynchronously
  */
 RecipientManager.getAll = function () {
 
