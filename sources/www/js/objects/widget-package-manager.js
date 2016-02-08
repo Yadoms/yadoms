@@ -34,19 +34,16 @@ WidgetPackageManager.factory = function(json) {
 
 WidgetPackageManager.widgetPackages = [];
 
-WidgetPackageManager.getAll = function(callback) {
-   $.getJSON("rest/widget/package")
+WidgetPackageManager.getAll = function () {
+
+   var d = new $.Deferred();
+
+   RestEngine.getJson("rest/widget/package")
       .done(function(data) {
-         //we parse the json answer
-         if (data.result != "true")
-         {
-            notifyError($.t("objects.widgetPackageManager.errorDuringGettingPackages"), JSON.stringify(data));
-            return;
-         }
          //we add it to the package list
          var newWidgetPackages = [];
 
-         $.each(data.data.package, function(index, value) {
+         $.each(data.package, function(index, value) {
             try {
                newWidgetPackages.push(WidgetPackageManager.factory(value));
             } catch (err) {
@@ -75,23 +72,10 @@ WidgetPackageManager.getAll = function(callback) {
             }
          }
 
-         
-         /*
-         WidgetPackageManager.widgetPackages = [];
-
-         $.each(data.data.package, function(index, value) {
-            try {
-               WidgetPackageManager.widgetPackages[value.type] = WidgetPackageManager.factory(value);
-            } catch (err) {
-               notifyError($.t("objects.widgetPackageManager.incorrectPackage"), value);
-            }
-         });
-                  */
-         
-         if ($.isFunction(callback))
-            callback();
+         d.resolve();
       })
-      .fail(function() {notifyError($.t("objects.widgetPackageManager.errorDuringGettingPackages"));});
+      .fail(d.reject);
+   return d.promise();
 };
 
 WidgetPackageManager.packageExists = function(packageName) {

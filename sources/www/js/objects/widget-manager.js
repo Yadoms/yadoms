@@ -152,48 +152,34 @@ WidgetManager.getViewModelFromServer_ = function (widgetType) {
     return d.promise();
 };
 
-WidgetManager.updateToServer = function (widget, callback) {
+WidgetManager.updateToServer = function (widget) {
     assert(!isNullOrUndefined(widget), "widget must be defined");
 
-    $.ajax({
-        type: "PUT",
-        url: "/rest/widget/" + widget.id,
-        data: JSON.stringify(widget),
-        contentType: "application/json; charset=utf-8",
-        dataType: "json"
-    })
+   var d = new $.Deferred();
+
+   RestEngine.putJson("/rest/widget/" + widget.id, { data: JSON.stringify(widget) })
     .done(function (data) {
-        //we parse the json answer
-        if (data.result != "true") {
-            notifyError($.t("objects.widgetManager.errorDuringModifyingWidget"), JSON.stringify(data));
-            if ($.isFunction(callback))
-                callback(false);
-        } else {
-            //we notify that configuration has changed
-            try {
-                WidgetManager.updateWidgetConfiguration_(widget);
+         //we notify that configuration has changed
+         try {
+            WidgetManager.updateWidgetConfiguration_(widget);
 
-                //we ask for a refresh of widget data
-                updateWidgetPolling(widget);
+            //we ask for a refresh of widget data
+            updateWidgetPolling(widget);
 
-                if ($.isFunction(callback))
-                    callback(true);
-            }
-            catch (e) {
-                notifyWarning($.t("objects.widgetManager.exceptionDuringCallConfigurationChanged", { "widgetType": widget.type }));
-                console.warn(e);
-                if ($.isFunction(callback))
-                    callback(false);
-            }
-        }
-    })
-        .fail(function () {
-            return function () {
-                notifyError($.t("objects.widgetManager.errorDuringModifyingWidgetNamed", { "widgetType": widget.type }));
-                if ($.isFunction(callback))
-                    callback(false);
-            };
-        }(widget.type));
+            d.resolve();
+         }
+         catch (e) {
+               notifyWarning($.t("objects.widgetManager.exceptionDuringCallConfigurationChanged", { "widgetType": widget.type }));
+               console.warn(e);
+            d.reject();
+         }
+   })
+   .fail(function () {
+      return function () {
+            notifyError($.t("objects.widgetManager.errorDuringModifyingWidgetNamed", { "widgetType": widget.type }));
+            d.reject();
+      };
+   }(widget.type));
 };
 
 /**

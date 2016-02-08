@@ -38,7 +38,7 @@ function enterCustomization() {
     });
 
     //we show / hide customization items
-    if (enable)
+    if (customization)
         $(".customization-item").removeClass("hidden");
     else
         $(".customization-item").addClass("hidden");

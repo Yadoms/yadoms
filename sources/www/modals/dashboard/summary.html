@@ -28,20 +28,16 @@
 </div>
 
 <script>
+   
+
    //we update all fields
-   $.getJSON("rest/configuration/Database/Version")
-      .done(function(data) {
-
-         //we parse the json answer
-         if (data.result != "true") {
-           notifyError($.t("dashboard.sub-windows.summary.errorRequestingDatabaseVersion"), JSON.stringify(data));
-            return;
-         }
-
-         $("td#dashboard-summary-database-version").text(data.data.value);
-
-      })
-      .fail(function() { notifyError($.t("dashboard.sub-windows.summary.errorRequestingDatabaseVersion")); });
+   RestEngine.getJson("rest/configuration/Database/Version")
+   .done(function(data) {
+      $("td#dashboard-summary-database-version").text(data.value);
+   })
+   .fail(function(error) {
+         notifyError($.t("dashboard.sub-windows.summary.errorRequestingDatabaseVersion"), error);
+   });
 
    YadomsInformationManager.getList()
       .done(function(data) {
@@ -50,6 +46,9 @@
          $("td#dashboard-summary-software-version").text(data.yadoms.version + " " + data.yadoms.releaseType);
          $("td#dashboard-summary-started-from").text(DateTimeFormatter.isoDateToDate(data.startupTime).fromNow());
 
+      })
+      .fail(function (error) {
+         notifyError($.t("objects.generic.errorGetting", { objectName: $.t("core.yadoms.information") }), error);
       });
 
 </script>

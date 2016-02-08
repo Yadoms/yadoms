@@ -272,10 +272,14 @@
          //we just ask for the friendly name
          modals.keywordConfigure.load(function () {
             showConfigurationKeywordModal(keyword, function () {
-               KeywordManager.updateToServer(keyword, function (result) {
+               KeywordManager.updateToServer(keyword)
+               .done(function () {
                   //We update the information that can have changed after the configuration
                   var $row = getKeywordDomRow(keyword);
                   $row.find("td.keyword-friendlyName").html(keyword.friendlyName);
+               })
+               .fail(function (error) {
+                  notifyError($.t("modals.dashboard.sub-windows.devices.errorUpdatingKeyword", { keyword: keyword.friendlyName }), error);
                });
             });
          });

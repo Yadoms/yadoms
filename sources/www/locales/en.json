@@ -391,6 +391,7 @@
           "delete": "Delete the device",
           "errorGettingDeviceList": "An error has occurred acquiring device list",
           "errorGettingDeviceDetailsList": "An error has occurred acquiring device details list",
+          "errorUpdatingKeyword": "An error occurred updating data __keyword__",
           "noAcquisition": "No acquisition"
         },
         "automation-center": {

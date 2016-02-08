@@ -46,5 +46,5 @@ Keyword.prototype.toJSON = function () {
  * @returns {boolean}
  */
 Keyword.prototype.isWritable = function() {
-  return this.accessMode.toLowerCase() == "getset";
+  return this.accessMode.toLowerCase() === "getset";
 };

@@ -24,12 +24,15 @@
         $("#btn-add-new-recipient").unbind("click").bind("click", addNewRecipient());
 
         //get all recipients from server and add them to dom
-        RecipientManager.getAll(true)
+        RecipientManager.getAll()
         .done(function (recipientList) {
             //foreach result we append a <tr>
             $.each(recipientList, function (index, value) {
                 addRecipientToDom(value);
             });
+        })
+        .fail(function (error) {
+           notifyError($.t("modals.recipient.errorGettingList"), error);
         });
     }
 
@@ -107,7 +110,10 @@
                     .done(function () {
                         //we remove recipientToDelete from dom
                         getRecipientDomRow(recipientToDelete).remove();
-                    });
+                    })
+                   .fail(function(error) {
+                      notifyError($.t("objects.generic.errorDeleting", { objectName: recipientToDelete.firstName + " " + recipientToDelete.lastName }), error);
+                   });
                 });
             });
         }
@@ -150,6 +156,9 @@
                 .done(function (recipientUpdated) {
                     //on server operation success, update recipient table with updated data
                     updateRecipientDom(recipientUpdated);
+                })
+                .fail(function () {
+                   notifyError($.t("objects.generic.errorUpdating", { objectName: recipientToConfigure.firstName + " " + recipientToConfigure.lastName }));
                 });
             });
         };
@@ -172,7 +181,11 @@
                     .done(function (recipientAddedToServer) {
                         //on server operation success, add the recipient to the dashboard table
                         addRecipientToDom(recipientAddedToServer);
-                    });
+                    })
+                   .fail(function (error) {
+                      notifyError($.t("objects.generic.errorCreating", { objectName: filledRecipient.firstName + " " + filledRecipient.lastName }), error);
+                   });
+                    
                 });
             });
         };

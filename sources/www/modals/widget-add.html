@@ -64,7 +64,11 @@
      */
     function askWidgetPackages()
     {
-        WidgetPackageManager.getAll(requestWidgetsTypeDone);
+       WidgetPackageManager.getAll()
+       .done(requestWidgetsTypeDone)
+       .fail(function (error) {
+          notifyError($.t("objects.widgetPackageManager.errorDuringGettingPackages"), error);
+       });
     }
 
     /**

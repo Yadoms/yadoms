@@ -19,7 +19,7 @@ void CMSConfiguration::initializeWith(const shared::CDataContainer &data)
 
       m_SenderMail = m_data.get<std::string>("Sender");
 
-      if (m_data.exists("account.content.gmail"))
+      if (m_data.exists("account.content.gmail.radio") && m_data.get<bool>("account.content.gmail.radio"))
       {
          m_ServerName = "smtp.gmail.com";
          m_ServerPort = 587;
@@ -28,7 +28,7 @@ void CMSConfiguration::initializeWith(const shared::CDataContainer &data)
          m_UserAccount = m_SenderMail;
          m_Password = shared::encryption::CXor::decryptBase64(m_data.get<std::string>("account.content.gmail.content.password"));
       }
-      else if (m_data.exists("account.content.outlook"))
+      else if (m_data.exists("account.content.outlook.radio") && m_data.get<bool>("account.content.outlook.radio"))
       {
          m_ServerName = "smtp-mail.outlook.com";
          m_ServerPort = 587;
@@ -37,7 +37,7 @@ void CMSConfiguration::initializeWith(const shared::CDataContainer &data)
          m_UserAccount = m_SenderMail;
          m_Password = shared::encryption::CXor::decryptBase64(m_data.get<std::string>("account.content.outlook.content.password"));
       }
-      else if (m_data.exists("account.content.ovh"))
+      else if (m_data.exists("account.content.ovh.radio") && m_data.get<bool>("account.content.ovh.radio"))
       {
          m_ServerName = "ns0.ovh.net";
          m_ServerPort = 587;
@@ -46,7 +46,7 @@ void CMSConfiguration::initializeWith(const shared::CDataContainer &data)
          m_UserAccount = m_SenderMail;
          m_Password = shared::encryption::CXor::decryptBase64(m_data.get<std::string>("account.content.ovh.content.password"));
       }
-      else if (m_data.exists("account.content.yahoo"))
+      else if (m_data.exists("account.content.yahoo.radio") && m_data.get<bool>("account.content.yahoo.radio"))
       {
          m_ServerName = "smtp.mail.yahoo.com";
          m_ServerPort = 587;
@@ -55,7 +55,7 @@ void CMSConfiguration::initializeWith(const shared::CDataContainer &data)
          m_UserAccount = m_SenderMail;
          m_Password = shared::encryption::CXor::decryptBase64(m_data.get<std::string>("account.content.yahoo.content.password"));
       }
-      else if (m_data.exists("account.content.other"))
+      else 
       {
          m_ServerName = m_data.get<std::string>("account.content.other.SMTPServer");
          m_ServerPort = m_data.get<Poco::UInt16>("account.content.other.SMTPPort");

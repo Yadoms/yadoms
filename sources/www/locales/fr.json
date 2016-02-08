@@ -395,6 +395,7 @@
           "delete": "Suppression de l'équipement",
           "errorGettingDeviceList": "Erreur lors de la récupération de la liste des équipements",
           "errorGettingDeviceDetailsList": "Erreur lors de la récupération des détails de l'équipement",
+          "errorUpdatingKeyword": "Erreur lors de la la mise à jour de la donnée __keyword__",
           "noAcquisition": "Aucune acquisition"
         },
         "automation-center": {
