@@ -61,6 +61,8 @@ namespace automation
       virtual void startAllRulesMatchingInterpreter(const std::string & interpreterName);
       virtual void stopAllRulesMatchingInterpreter(const std::string & interpreterName);
       virtual void deleteAllRulesMatchingInterpreter(const std::string & interpreterName);
+      virtual void startRule(int ruleId);
+      virtual void stopRule(int ruleId);
       // [END] IRuleManager Implementation
 
 
@@ -79,13 +81,6 @@ namespace automation
       bool startRules(const std::vector<boost::shared_ptr<database::entities::CRule> >& rules);
 
       //-----------------------------------------------------
-      ///\brief               Start a rule from configured rule data
-      ///\param[in] ruleId    The rule ID
-      ///\throw CRuleException Error starting rule
-      //-----------------------------------------------------
-      void startRule(int ruleId);
-
-      //-----------------------------------------------------
       ///\brief               Check if a rule is started
       ///\param[in] ruleId    The rule ID
       ///\return              true if started
@@ -96,12 +91,6 @@ namespace automation
       ///\brief               Stop all started rules
       //-----------------------------------------------------
       void stopRules();
-
-      //-----------------------------------------------------
-      ///\brief               Stop a rule
-      ///\param[in] ruleId    The rule ID
-      //-----------------------------------------------------
-      void stopRule(int ruleId);
 
       //-----------------------------------------------------
       ///\brief               Stop the rule and wait for stopped

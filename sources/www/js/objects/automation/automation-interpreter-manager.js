@@ -23,65 +23,60 @@ AutomationInterpreterManager.factory = function(interpreterName) {
  * @param callback
  * @param sync : true if function must be blocking (synchronous)
  */
-AutomationInterpreterManager.getAll = function (callback, sync) {
-   assert($.isFunction(callback), "callback must be a function");
+AutomationInterpreterManager.getAll = function () {
+   var d = new $.Deferred();
 
-   var async = true;
-   if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
-      async = !sync;
-
-   $.ajax({
-      dataType: "json",
-      url: "rest/automation/interpreter",
-      async: async
+   RestEngine.getJson("rest/automation/interpreter")
+   .done(function(data) {
+      var interpreters = [];
+      data.interpreters.forEach(function(value) {
+         var interpreter = AutomationInterpreterManager.factory(value);
+         interpreters[interpreter.type] = interpreter;
+      });
+      d.resolve(interpreters);
    })
-   .done(function( data ) {
-         //we parse the json answer
-         if (data.result != "true")
-         {
-            notifyError($.t("objects.generic.errorGetting", {objectName : "interpreters"}), JSON.stringify(data));
-            return;
-         }
+   .fail(d.reject);
 
-         var interpreters = [];
-         data.data.interpreters.forEach(function(value, index) {
-            var interpreter = AutomationInterpreterManager.factory(value);
-            interpreters[interpreter.type] = interpreter;
-         });
-
-         callback(interpreters);
-      })
-   .fail(function() { notifyError($.t("objects.generic.errorGetting", {objectName : "interpreters"})); });
+   return d.promise();
 };
 
 
 /**
  * Get all interpreters from database and package.json
- * @param callback
- * @param sync : true if function must be blocking (synchronous)
  */
-AutomationInterpreterManager.getAllDetailed = function (callback, sync) {
+AutomationInterpreterManager.getAllDetailed = function () {
    assert($.isFunction(callback), "callback must be a function");
+   var d = new $.Deferred();
 
-   AutomationInterpreterManager.getAll(function(interpreters) {
+
+   AutomationInterpreterManager.getAll()
+   .done(function (interpreters) {
+      var deferredArray =[];
+
       //for each name we get the package.json file and append it to the associative array
-      Object.keys(interpreters).forEach(function (key, value) {
+      Object.keys(interpreters).forEach(function (key) {
          //this thread will ask for synchronous package.json requests
          var value = interpreters[key];
-         $.ajax({
-            dataType: "json",
-            url: "scriptInterpreters/" + value.type + "/package.json",
-            async: false
-         })
-          .done(function( data ) {
-                value.fillDetails(data);
+
+         var deferred = RestEngine.get("scriptInterpreters/" + value.type + "/package.json", { dataType: "json" });
+         deferredArray.push(deferred);
+
+         deferred.done(function (data) {
+             value.fillDetails(data);
           })
           .fail(function() {
              notifyError($.t("objects.generic.errorGetting", {objectName : "scriptInterpreters/" + value + "/package.json"}));
           });
       });
-      callback(interpreters);
-   }, sync);
+
+      $.whenAll(deferredArray)
+      .done(function() {
+         d.resolve(interpreters);
+      });
+   })
+   .fail(d.reject);
+
+   return d.promise();
 };
 
 AutomationInterpreterManager.getInterpreterBaseUrl = function (interpreter) {

@@ -61,6 +61,11 @@ AutomationEditorBlockly.prototype.applyScript = function() {
 AutomationEditorBlockly.prototype.setRule = function(rule) {
    //we add the .code and go to the end of code
    this.rule = rule;
+
+   //the setRule function must return a promise
+   var d = new $.Deferred();
+   d.resolve();
+   return d.promise();
 };
 
 /**

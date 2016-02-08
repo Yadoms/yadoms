@@ -12,10 +12,11 @@ function AutomationEditorManager(){}
  * Create the list of all IAutomationEditor managed
  * @constructor
  */
-AutomationEditorManager.getAll = function(callback) {
-   assert($.isFunction(callback), "callback must be a function");
+AutomationEditorManager.getAll = function() {
+   var d = new $.Deferred();
 
-   AutomationInterpreterManager.getAll(function (interpreters) {
+   AutomationInterpreterManager.getAll()
+   .done(function (interpreters) {
       var editors = [];
 
       //to add an editor in the return list it must support at least one available interpreter
@@ -46,27 +47,36 @@ AutomationEditorManager.getAll = function(callback) {
          editors.push(new AutomationEditorBlockly(interpreters));
       }
 
-      callback(editors);
+      d.resolve(editors);
 
-   }, this);
+   })
+   .fail(d.reject);
+
+   return d.promise();
 };
 
 /**
  * Create the list of all IAutomationEditor managed
  * @constructor
  */
-AutomationEditorManager.getByName = function(name, callback) {
+AutomationEditorManager.getByName = function(name) {
    assert(!isNullOrUndefined(name), "name must be defined");
-   assert($.isFunction(callback), "callback must be a function");
+   var d = new $.Deferred();
 
-   AutomationEditorManager.getAll(function (editors) {
+   AutomationEditorManager.getAll()
+   .done(function (editors) {
       var editorFound = false;
-      $.each(editors, function  (key, value) {
-         if (value.getName().toLowerCase() == name.toLowerCase()) {
-            return editorFound = value;
+      $.each(editors, function (key, value) {
+         if (!editorFound) {
+            if (value.getName().toLowerCase() == name.toLowerCase()) {
+               editorFound = value;
+            }
          }
       });
       //if we reach this code, no matching editor has been found
-      callback(editorFound);
-   });
+      d.resolve(editorFound);
+   })
+   .fail(d.reject);
+
+   return d.promise();
 }

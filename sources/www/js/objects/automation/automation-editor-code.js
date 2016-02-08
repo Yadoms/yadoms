@@ -51,9 +51,9 @@ AutomationEditorCode.prototype.getUuid = function() {
  */
 AutomationEditorCode.prototype.getDOMStructure = function() {
    return ("<div id=\"" + this.uuid + "\" class=\"code-ide\">" +
-               "<div id=\"" + this.editorUuid + "\" class=\"code-editor\"></div>" +
-            "</div>" +
-           "<button type=\"button\" class=\"btn btn-info btn-sm code-help-button\" id=\"" + this.helpUuid + "\" data-i18n=\"modals.edit-automation-rule.show-help\">doc</button>");
+         "<div id=\"" + this.editorUuid + "\" class=\"code-editor\"></div>" +
+         "<button type=\"button\" class=\"btn btn-info btn-sm code-help-button\" id=\"" + this.helpUuid + "\" data-i18n=\"modals.edit-automation-rule.show-help\">doc</button>") +
+      "</div>";
 };
 
 /**
@@ -70,7 +70,8 @@ AutomationEditorCode.prototype.applyScript = function() {
       enableBasicAutocompletion: true,
       enableSnippets: true,
       displayIndentGuides: true,
-      highlightSelectedWord: true
+      highlightSelectedWord: true,
+      showPrintMargin : false
    });
 
    //we tab size and soft tabs (tabs replaces by spaces)
@@ -110,24 +111,34 @@ AutomationEditorCode.prototype.getApiDocUrl = function () {
  */
 AutomationEditorCode.prototype.setRule = function(rule) {
    //we add the .code and go to the end of code
+   var d = new $.Deferred();
+
    var self = this;
    self.rule = rule;
    self.editor.getSession().setMode("ace/mode/" + self.rule.interpreter.toLowerCase());
 
    //we get the code only if the rule exist server side
-   if (rule.id == -1) {
+   if (rule.id === -1) {
       // Rule id unknown, get code template
-      AutomationRuleManager.getTemplateCode(self.rule, function () {
+      AutomationRuleManager.getTemplateCode(self.rule)
+      .done(function () {
          self.editor.setValue(rule.code);
          self.editor.gotoLine(0, 0, false);
-      }, true);
+         d.resolve();
+      })
+      .fail(d.reject);
    }
    else {
-      AutomationRuleManager.getCode(self.rule, function () {
+      AutomationRuleManager.getCode(self.rule)
+      .done(function () {
          self.editor.setValue(rule.code);
          self.editor.gotoLine(0, 0, false);
-      }, true);
+         d.resolve();
+      })
+      .fail(d.reject);
    }
+
+   return d.promise();
 };
 
 /**
