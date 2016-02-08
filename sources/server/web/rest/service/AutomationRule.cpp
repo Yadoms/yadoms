@@ -40,6 +40,8 @@ namespace web { namespace rest { namespace service {
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)(m_restSubKeywordRule)("*"), CAutomationRule::getRule);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)(m_restSubKeywordRule)("*")("code"), CAutomationRule::getRuleCode);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)(m_restSubKeywordRule)("*")("log"), CAutomationRule::getRuleLog);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)(m_restSubKeywordRule)("*")("start"), CAutomationRule::startRule);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)(m_restSubKeywordRule)("*")("stop"), CAutomationRule::stopRule);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)(m_restSubKeywordRule)("*"), CAutomationRule::updateRule, CAutomationRule::transactionalMethod);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)(m_restSubKeywordRule)("*")("code"), CAutomationRule::updateRuleCode, CAutomationRule::transactionalMethod);
    }
@@ -182,6 +184,64 @@ namespace web { namespace rest { namespace service {
       catch (...)
       {
          return CResult::GenerateError("unknown exception in retreiving the rule");
+      }
+   }
+
+   shared::CDataContainer CAutomationRule::startRule(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   {
+      try
+      {
+         if (parameters.size() != 4)
+            throw CRuleException("invalid parameter in URL");
+
+         int ruleId = boost::lexical_cast<int>(parameters[2]);
+
+         //start the rule
+         m_rulesManager->startRule(ruleId);
+
+         boost::shared_ptr<const database::entities::CRule> ruleFound = m_rulesManager->getRule(ruleId);
+         return CResult::GenerateSuccess(ruleFound);
+      }
+      catch (CRuleException& e)
+      {
+         return CResult::GenerateError(std::string("Fail to start rule : ") + e.what());
+      }
+      catch (std::exception &ex)
+      {
+         return CResult::GenerateError(ex);
+      }
+      catch (...)
+      {
+         return CResult::GenerateError("unknown exception in starting the rule");
+      }
+   }
+
+   shared::CDataContainer CAutomationRule::stopRule(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   {
+      try
+      {
+         if (parameters.size() != 4)
+            throw CRuleException("invalid parameter in URL");
+
+         int ruleId = boost::lexical_cast<int>(parameters[2]);
+
+         //stop the rule
+         m_rulesManager->stopRule(ruleId);
+
+         boost::shared_ptr<const database::entities::CRule> ruleFound = m_rulesManager->getRule(ruleId);
+         return CResult::GenerateSuccess(ruleFound);
+      }
+      catch (CRuleException& e)
+      {
+         return CResult::GenerateError(std::string("Fail to stop rule : ") + e.what());
+      }
+      catch (std::exception &ex)
+      {
+         return CResult::GenerateError(ex);
+      }
+      catch (...)
+      {
+         return CResult::GenerateError("unknown exception in stopping the rule");
       }
    }
 

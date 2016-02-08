@@ -109,6 +109,19 @@ namespace automation
       /// \param[in] interpreterName      The script interpreter name
       //--------------------------------------------------------------
       virtual void deleteAllRulesMatchingInterpreter(const std::string & interpreterName) = 0;
+
+      //-----------------------------------------------------
+      ///\brief               Start a rule from configured rule data
+      ///\param[in] ruleId    The rule ID
+      ///\throw CRuleException Error starting rule
+      //-----------------------------------------------------
+      virtual void startRule(int ruleId) = 0;
+
+      //-----------------------------------------------------
+      ///\brief               Stop a rule
+      ///\param[in] ruleId    The rule ID
+      //-----------------------------------------------------
+      virtual void stopRule(int ruleId) = 0;
    };
 	
 } // namespace automation	
