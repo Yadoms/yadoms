@@ -244,7 +244,7 @@
                }
                else {
                   //we bind event on the different actions
-                  $keywordRow.find("button.btn-configure").unbind('click').bind('click', configureKeyword(keyword));
+                  $keywordRow.find("button.btn-configure").unbind('click').bind('click', function() { configureKeyword(keyword); });
                }
             });
 
