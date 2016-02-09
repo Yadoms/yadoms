@@ -61,27 +61,11 @@ function NotificationSenderViewModel() {
    */
    this.configurationChanged = function() {
       try {
-         //we ask for keyword information, to filter recipients corresponding on keyword properties
-         //(ie : recipients list contains only recipient having phone number for keywords supporting sms)
-         KeywordManager.get(self.widget.configuration.device.keywordId)
-         .done(function (keyword) {
-            if (isNullOrUndefined(keyword.typeInfo.associatedRecipientField)) {
-               console.warn("typeInfo.associatedRecipientField not specified for keyword = " + self.widget.configuration.device.keywordId);
-               return;
-            }
-            
-            RecipientManager.getByField(keyword.typeInfo.associatedRecipientField)
-            .done(function (list) {
-               $.each(list, function (recipientFieldKey, recipientField) {
-                  RecipientManager.get(recipientField.idRecipient)
-                  .done(function(recipient) {
-                     self.toList.push(new recipientTuple({id: recipient.id, name: recipient}));
-                  });
-               });
-            })
-             .fail(function (error) {
-                notifyError($.t("objects.generic.errorGetting", { objectName: "Recipient with fields = " + keyword.typeInfo.associatedRecipientField }), error);
-             });
+         RecipientManager.getAll()
+         .done(function(recipients) {
+            $.each(recipients, function (recipientKey, recipient) {
+               self.toList.push(new recipientTuple({id: recipient.id, name: recipient}));
+            });
          });
       }
       catch(err) {}
