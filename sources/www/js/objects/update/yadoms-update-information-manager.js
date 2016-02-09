@@ -8,59 +8,13 @@
  * @param objectType
  * @param sync
  */
-YadomsUpdateInformationManager.getList = function() {
-   var d = $.Deferred();
-
-   $.ajax({
-      dataType: "json",
-      url: "rest/update/yadoms/list/" + i18n.lng()
-   })
-   .done(function( data ) {
-      //we parse the json answer
-      if (data.result != "true")
-      {
-         notifyError($.t("objects.update-information.errorListing"), JSON.stringify(data));
-         d.reject();
-      } else {
-         d.resolve(data.data);
-      }
-   })
-   .fail(function() {
-      notifyError($.t("objects.update-information.errorListing"));
-      d.reject();
-   });
-
-   return d.promise();
+YadomsUpdateInformationManager.getList = function () {
+   return RestEngine.getJson("rest/update/yadoms/list/" + i18n.lng());
 };
 
 YadomsUpdateInformationManager.update = function(yadomsUpdateInformation) {
    assert(!isNullOrUndefined(yadomsUpdateInformation), "yadomsUpdateInformation must be defined");
-
-   var d = $.Deferred();
-
-   $.ajax({
-      dataType: "json",
-      url: "rest/update/yadoms/update/",
-      data: JSON.stringify({ "versionData": yadomsUpdateInformation }),
-      type: "POST",
-      contentType: "application/json; charset=utf-8"
-   })
-       .done(function( data ) {
-          //we parse the json answer
-          if (data.result != "true")
-          {
-             notifyError($.t("objects.generic.errorUpdating", {objectName : "yadoms"}), JSON.stringify(data));
-             d.reject();
-          } else {
-             d.resolve(data.data.taskId);
-          }
-       })
-       .fail(function() {
-          notifyError($.t("objects.generic.errorUpdating", {objectName : "yadoms"}));
-          d.reject();
-       });
-
-   return d.promise();
+   return RestEngine.postJson("rest/update/yadoms/update", { data: JSON.stringify({ "versionData": yadomsUpdateInformation }) });
 };
 
 /**

@@ -260,13 +260,11 @@
 
             $("button#resetSystemConfiguration").unbind('click').bind('click', function () {
                //we ask for confirmation before resetting all system configuration
-               modals.confirmation.load(function () {
+               modals.confirmation.loadAsync()
+               .done(function () {
                   showConfirmModal(btnKind.yesNo, null, $.t("modals.dashboard.sub-windows.system-configuration.confirmResetToDefault"),
                        function () {
                           //restore to default has been confirmed
-
-                          var errorOccurred = false;
-
                           var d = new $.Deferred();
 
                           //we get all default values of each parameters on set it as value

@@ -316,11 +316,15 @@
             * Make lazy loading of the qrcode modal
             */
             $("#btn-show-qrcode").click(function () {
-                modals.qrCode.load(function () { $('#qrcode-modal').modal({ backdrop: 'static' }); });
+               modals.qrCode.loadAsync()
+               .done(function() {
+                     $('#qrcode-modal').modal({ backdrop: 'static' });
+               });
             });
 
             $("#btn-show-dashboard").click(function () {
-                modals.mainDashboard.load(function () {
+               modals.mainDashboard.loadAsync()
+               .done(function () {
                     //before showing the dashboard we update many cache informations
                    PluginManager.get()
                    .done(function () {

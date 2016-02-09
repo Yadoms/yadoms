@@ -96,23 +96,23 @@ WidgetManager.getWidgetOfPageFromServer = function (page) {
  * @private
  */
 WidgetManager.getViewFromServer_ = function (widgetType) {
-    assert(!isNullOrUndefined(widgetType), "widgetType must be defined");
-    var d = new $.Deferred();
-    RestEngine.get("widgets/" + widgetType + "/view.html")
-       .done(function (view) {
-           if (!isNullOrUndefined(view) && view.match(".*<script.*id=\"" + widgetType + "-template\">.*")) {
-               $("div#templates").append(view);
-               d.resolve();
-           } else {
-               d.reject("Fail to load view.html of widget " + widgetType);
-           }
+   assert(!isNullOrUndefined(widgetType), "widgetType must be defined");
+   var d = new $.Deferred();
+   RestEngine.get("widgets/" + widgetType + "/view.html")
+   .done(function (view) {
+      if (!isNullOrUndefined(view) && view.match(".*<script.*id=\"" + widgetType + "-template\">.*")) {
+         $("div#templates").append(view);
+         d.resolve();
+      } else {
+         d.reject("Fail to load view.html of widget " + widgetType);
+      }
 
-       })
-       .fail(function (errorMessage) {
-           console.error("Fail to get view from server : " + errorMessage);
-           d.reject(errorMessage);
-       });
-    return d.promise();
+   })
+   .fail(function (errorMessage) {
+      console.error("Fail to get view from server : " + errorMessage);
+      d.reject(errorMessage);
+   });
+   return d.promise();
 
 };
 
@@ -151,6 +151,44 @@ WidgetManager.getViewModelFromServer_ = function (widgetType) {
 
     return d.promise();
 };
+
+
+
+
+
+
+/**
+ * Create a new widget
+ * @param {Object} newWidget A widget object to create in database
+ * @returns {Promise} 
+ */
+WidgetManager.createWidget = function (newWidget) {
+
+   var d = new $.Deferred();
+
+   var data = JSON.stringify({ idPage: newWidget.idPage, type: newWidget.type, title: newWidget.title, sizeX: newWidget.sizeX, sizeY: newWidget.sizeY, positionX: newWidget.positionX, positionY: newWidget.positionY, configuration: newWidget.configuration });
+
+   RestEngine.postJson("/rest/widget", { data : data})
+   .done(function (widgetData) {
+      var w = WidgetManager.factory(widgetData);
+         d.resolve(w);
+   })
+   .fail(d.reject);
+   return d.promise();
+}
+
+/**
+ * Delete a widget
+ * @param {Object} widgetToDelete The widget to delete
+ * @returns {} 
+ */
+WidgetManager.deleteWidget = function (widgetToDelete) {
+   assert(!isNullOrUndefined(widgetToDelete), "widgetToDelete must be defined");
+   return RestEngine.deleteJson("/rest/widget/" + widgetToDelete.id);
+}
+
+
+
 
 WidgetManager.updateToServer = function (widget) {
     assert(!isNullOrUndefined(widget), "widget must be defined");
@@ -446,23 +484,25 @@ WidgetManager.addToDom_ = function (widget) {
         var widgetDOMElement = $(e.currentTarget).parents(".widget");
         var pageId = widgetDOMElement.attr("page-id");
         var widgetId = widgetDOMElement.attr("widget-id");
-        modals.widgetConfiguration.load(function (pageId, widgetId) {
-            return function () {
-                var widgetToConfigure = WidgetManager.get(pageId, widgetId);
-                configureWidget(widgetToConfigure, function () {
-                    WidgetManager.updateToServer(widgetToConfigure);
-                });
-            }
-        }(pageId, widgetId));
+        modals.widgetConfiguration.loadAsync()
+        .done(function () {
+           var widgetToConfigure = WidgetManager.get(pageId, widgetId);
+           configureWidget(widgetToConfigure, function () {
+              WidgetManager.updateToServer(widgetToConfigure);
+           });
+        });
     });
 
     //we listen click event on delete click
-    widget.$gridWidget.find('div.btn-delete-widget').bind('click', function (e) {
-        var widgetDOMElement = $(e.currentTarget).parents(".widget");
-        var pageId = widgetDOMElement.attr("page-id");
-        var widgetId = widgetDOMElement.attr("widget-id");
-        modals.widgetDelete.load(function (pageId, widgetId) { return function () { showDeleteWidgetModal(pageId, widgetId) } }(pageId, widgetId));
-    });
+   widget.$gridWidget.find('div.btn-delete-widget').bind('click', function(e) {
+      var widgetDOMElement = $(e.currentTarget).parents(".widget");
+      var pageId = widgetDOMElement.attr("page-id");
+      var widgetId = widgetDOMElement.attr("widget-id");
+      modals.widgetDelete.loadAsync()
+      .done(function() {
+         showDeleteWidgetModal(pageId, widgetId);
+      });
+   });
 
 
     widget.$gridWidget.i18n();

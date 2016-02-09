@@ -28,8 +28,12 @@ function initializeWidgetEngine() {
         * Make lazy loading of the add widget modal
         */
    $("#btn-add-widget").click(function () {
-      modals.widgetAdd.load(function () { askWidgetPackages(); });
+      modals.widgetAdd.loadAsync()
+      .done(function() { askWidgetPackages(); });
    });
+
+
+
 
    //we ask all widgets packages
    WidgetPackageManager.getAll()

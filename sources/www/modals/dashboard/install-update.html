@@ -106,7 +106,6 @@
                             <td class="install-update-action-row col-md-3" data-i18n="modals.dashboard.sub-windows.install-update.generic.actions"></td>
                         </tr>
                         <!-- plugins will be listed here-->
-                        </tr>
                     </table>
                 </div>
             </div>
@@ -311,7 +310,10 @@
                                   $cbVersion.append("<li><a href=\"#\"><em>" + versionToString(value) + "</em></a></li>");
                                   //we manage the click event on each version
                                   $cbVersion.find("li").last().unbind('click').bind('click', function () {
-                                      modals.confirmation.load(askForYadomsUpdate(value));
+                                     modals.confirmation.loadAsync()
+                                     .done(function() {
+                                        askForYadomsUpdate(value);
+                                     });
                                   });
                               });
 
@@ -341,7 +343,9 @@
                               $line.find("div.btn-install button.btn-expand").addClass("disabled");
                           //we manage click events
                           if (serverVersions.length > 0) {
-                              $line.find("button.main-btn").unbind('click').bind('click', askForYadomsUpdate(serverVersions[0]));
+                              $line.find("button.main-btn").unbind('click').bind('click', function() {
+                                  askForYadomsUpdate(serverVersions[0]);
+                              });
                           }
 
                           //we manage the ! label to show a new version is available
@@ -367,23 +371,25 @@
     }
 
     function askForYadomsUpdate(version) {
-        return function () {
-            modals.confirmation.load(function () {
-                showConfirmModal(btnKind.yesNo,
-                        $.t("modals.dashboard.sub-windows.install-update.generic.confirmUpdateTitle"),
-                        $.t("modals.dashboard.sub-windows.install-update.generic.confirmUpdate", {
-                            objectName: $.t("core.yadoms.name"),
-                            version: versionToString(version)
-                        }),
-                        function () {
-                            //the user has confirmed the action
-                            YadomsUpdateInformationManager.update(version)
-                                    .done(function (taskId) {
-                                        yadomsUpdateCallback(taskId, version);
-                                    });
-                        });
-            });
-        };
+       modals.confirmation.loadAsync()
+       .done(function () {
+          showConfirmModal(btnKind.yesNo,
+                $.t("modals.dashboard.sub-windows.install-update.generic.confirmUpdateTitle"),
+                $.t("modals.dashboard.sub-windows.install-update.generic.confirmUpdate", {
+                   objectName: $.t("core.yadoms.name"),
+                   version: versionToString(version)
+                }),
+                function () {
+                   //the user has confirmed the action
+                   YadomsUpdateInformationManager.update(version)
+                   .done(function (data) {
+                      yadomsUpdateCallback(data.taskId, version);
+                   })
+                   .fail(function (error) {
+                      notifyError($.t("objects.generic.errorUpdating", { objectName: "yadoms" }), error);
+                   });
+                });
+       });
     }
 
     function yadomsUpdateCallback(taskId, item) {
@@ -538,31 +544,35 @@
 
         //we remove all rows except header
         $("table#" + objectType + "-install-update-list").find("tr:gt(0)").remove();
-        UpdateInformationManager.getList(objectType, function (serverList) {
-            //we get installed plugin List
-            if (!isNullOrUndefined(serverList)) {
-                mergeLists(localList, serverList, function (mergedList) {
-                    //we sort the list by name
-                    mergedList.sort(function (item1, item2) {
-                        return item2.type > item1.type;
-                    });
-                    //we display the result
-                    Object.keys(mergedList).forEach(function (key, localIndex) {
-                        if (!key.startsWith("dev-")) {
-                            //the actual item does nothing
-                            mergedList[key].processing = false;
-                            createInstallUpdateItemLine(objectType, mergedList[key]);
-                            //we set the visibility to the allowed buttons
-                            updateLine(objectType, mergedList[key]);
-                        }
-                    });
-                    //we manage the promise
-                    promiseCounter.resolve();
+       UpdateInformationManager.getList(objectType)
+       .done(function(serverList) {
+          //we get installed plugin List
+          if (!isNullOrUndefined(serverList)) {
+             mergeLists(localList, serverList, function(mergedList) {
+                //we sort the list by name
+                mergedList.sort(function(item1, item2) {
+                   return item2.type > item1.type;
                 });
-            }
-            //we enable the release type list
-            $cbReleaseType.removeClass("disabled");
-        });
+                //we display the result
+                Object.keys(mergedList).forEach(function(key) {
+                   if (!key.startsWith("dev-")) {
+                      //the actual item does nothing
+                      mergedList[key].processing = false;
+                      createInstallUpdateItemLine(objectType, mergedList[key]);
+                      //we set the visibility to the allowed buttons
+                      updateLine(objectType, mergedList[key]);
+                   }
+                });
+                //we manage the promise
+                promiseCounter.resolve();
+             });
+          }
+          //we enable the release type list
+          $cbReleaseType.removeClass("disabled");
+       })
+       .fail(function(error) {
+          notifyError($.t("objects.update-information.errorListing"), error);
+       });
     }
 
     /**
@@ -818,11 +828,11 @@
                     //we manage the click event on each version
                     if (!isNullOrUndefined(item.package.version)) {
                         //the item is already installed, we ask an update
-                        $cbVersion.find("li").last().unbind('click').bind('click', askForUpdate(objectType, item, value));
+                       $cbVersion.find("li").last().unbind('click').bind('click', function() { askForUpdate(objectType, item, value); });
                     }
                     else {
                         //the item isn't installed so we make a new install
-                        $cbVersion.find("li").last().unbind('click').bind('click', askForInstall(objectType, item, value));
+                        $cbVersion.find("li").last().unbind('click').bind('click', function() { askForInstall(objectType, item, value); });
                     }
                 });
             }
@@ -852,12 +862,12 @@
                 $line.find("div.btn-install button.btn-expand").addClass("disabled");
 
             //we manage click events
-            if (!isNullOrUndefined(item.package.version)) {
-                //the item is already installed, we ask an update if there is some available
-                if (availableVersions.length > 0) {
-                    $line.find("button.main-btn").unbind('click').bind('click', askForUpdate(objectType, item, availableVersions[0]));
-                }
-                $line.find("button.btn-uninstall").unbind('click').bind('click', askForRemove(objectType, item));
+           if (!isNullOrUndefined(item.package.version)) {
+              //the item is already installed, we ask an update if there is some available
+              if (availableVersions.length > 0) {
+                 $line.find("button.main-btn").unbind('click').bind('click', function() { askForUpdate(objectType, item, availableVersions[0]); });
+              }
+              $line.find("button.btn-uninstall").unbind('click').bind('click', function () { askForRemove(objectType, item); });
 
                 //we manage the ! label to show a new version is available
                 if (installUpdateAllowed) {
@@ -870,7 +880,7 @@
             else {
                 //the item isn't installed so we make a new install if there is some available
                 if (availableVersions.length > 0)
-                    $line.find("button.main-btn").unbind('click').bind('click', askForInstall(objectType, item, availableVersions[0]));
+                   $line.find("button.main-btn").unbind('click').bind('click', function() { askForInstall(objectType, item, availableVersions[0]) });
                 $line.find("span.update-available-label").addClass("hidden");
             }
         }
@@ -892,23 +902,26 @@
         assert(!isNullOrUndefined(item), "item must be defined");
         assert(!isNullOrUndefined(updateInformation), "updateInformation must be defined");
 
-        return function () {
-            modals.confirmation.load(function () {
-                showConfirmModal(btnKind.yesNo,
-                        $.t("modals.dashboard.sub-windows.install-update.generic.confirmInstallTitle"),
-                        $.t("modals.dashboard.sub-windows.install-update.generic.confirmInstall", {
-                            objectName: $.t(objectType + "s/" + item.type + ":name", { defaultValue: item.package.name }),
-                            version: versionToString(updateInformation)
-                        }),
-                        function () {
-                            //the user has confirmed the action
-                            UpdateInformationManager.install(objectType, updateInformation.downloadUrl, function (taskId) {
-                                installUpdateRemoveCallback(objectType, taskId, item);
-                            });
-                        });
-            });
-        }
-    }
+        modals.confirmation.loadAsync()
+           .done(function () {
+              showConfirmModal(btnKind.yesNo,
+                    $.t("modals.dashboard.sub-windows.install-update.generic.confirmInstallTitle"),
+                    $.t("modals.dashboard.sub-windows.install-update.generic.confirmInstall", {
+                       objectName: $.t(objectType + "s/" + item.type + ":name", { defaultValue: item.package.name }),
+                       version: versionToString(updateInformation)
+                    }),
+                    function () {
+                       //the user has confirmed the action
+                       UpdateInformationManager.install(objectType, updateInformation.downloadUrl)
+                       .done(function (data) {
+                          installUpdateRemoveCallback(objectType, data.taskId, item);
+                       })
+                       .fail(function (error) {
+                          notifyError($.t("objects.generic.errorInstalling", { objectName: objectType }), error);
+                       });
+                    });
+           });
+     }
 
     /**
      * Ask for a confirmation of an update of an item
@@ -918,22 +931,25 @@
         assert(!isNullOrUndefined(item), "item must be defined");
         assert(!isNullOrUndefined(updateInformation), "updateInformation must be defined");
 
-        return function () {
-            modals.confirmation.load(function () {
-                showConfirmModal(btnKind.yesNo,
-                        $.t("modals.dashboard.sub-windows.install-update.generic.confirmUpdateTitle"),
-                        $.t("modals.dashboard.sub-windows.install-update.generic.confirmUpdate", {
-                            objectName: $.t(objectType + "s/" + item.type + ":name", { defaultValue: item.package.name }),
-                            version: versionToString(updateInformation)
-                        }),
-                        function () {
-                            //the user has confirmed the action
-                            UpdateInformationManager.update(objectType, item.type, updateInformation.downloadUrl, function (taskId) {
-                                installUpdateRemoveCallback(objectType, taskId, item);
-                            });
-                        });
-            });
-        }
+        modals.confirmation.loadAsync()
+        .done(function () {
+           showConfirmModal(btnKind.yesNo,
+                 $.t("modals.dashboard.sub-windows.install-update.generic.confirmUpdateTitle"),
+                 $.t("modals.dashboard.sub-windows.install-update.generic.confirmUpdate", {
+                    objectName: $.t(objectType + "s/" + item.type + ":name", { defaultValue: item.package.name }),
+                    version: versionToString(updateInformation)
+                 }),
+                 function () {
+                    //the user has confirmed the action
+                    UpdateInformationManager.update(objectType, item.type, updateInformation.downloadUrl)
+                    .done(function (data) {
+                       installUpdateRemoveCallback(objectType, data.taskId, item);
+                    })
+                    .fail(function (error) {
+                       notifyError($.t("objects.generic.errorUpdating", { objectName: objectType }), error);
+                    });
+                 });
+        });
     }
 
     /**
@@ -943,20 +959,23 @@
         assert(!isNullOrUndefined(objectType), "objectType must be defined");
         assert(!isNullOrUndefined(item), "item must be defined");
 
-        return function () {
-            modals.confirmation.load(function () {
-                showConfirmModal(btnKind.yesNo,
-                        $.t("modals.dashboard.sub-windows.install-update.generic.confirmRemoveTitle"),
-                        $.t("modals.dashboard.sub-windows.install-update.generic.confirmRemove", { objectName: $.t(objectType + "s/" + item.type + ":name", { defaultValue: item.package.name }) }),
-                        function () {
-                            //the user has confirmed the action
-                            UpdateInformationManager.remove(objectType, item.type, function (taskId) {
-                                installUpdateRemoveCallback(objectType, taskId, item);
-                            });
-                        });
-            });
-        }
-    }
+        modals.confirmation.loadAsync()
+         .done(function () {
+            showConfirmModal(btnKind.yesNo,
+                  $.t("modals.dashboard.sub-windows.install-update.generic.confirmRemoveTitle"),
+                  $.t("modals.dashboard.sub-windows.install-update.generic.confirmRemove", { objectName: $.t(objectType + "s/" + item.type + ":name", { defaultValue: item.package.name }) }),
+                  function () {
+                     //the user has confirmed the action
+                     UpdateInformationManager.remove(objectType, item.type)
+                     .done(function (data) {
+                        installUpdateRemoveCallback(objectType, data.taskId, item);
+                     })
+                     .fail(function (error) {
+                        notifyError($.t("objects.generic.errorDeleting", { objectName: objectType }), error);
+                     });
+                  });
+         });
+     }
 
     function installUpdateRemoveCallback(objectType, taskId, item) {
         assert(!isNullOrUndefined(objectType), "objectType must be defined");
@@ -974,13 +993,13 @@
 
             var taskFinished = false;
             //we manage the end of the task
-            if (taskUpdateInformation.taskState.toLowerCase() == "fail") {
+            if (taskUpdateInformation.taskState.toLowerCase() === "fail") {
                 console.error("Unable to install : " + taskUpdateInformation.exception);
                 notifyError($.t("core." + taskUpdateInformation.message));
                 taskFinished = true;
             }
 
-            if (taskUpdateInformation.taskState.toLowerCase() == "success") {
+            if (taskUpdateInformation.taskState.toLowerCase() === "success") {
                 notifySuccess($.t("core." + taskUpdateInformation.message));
                 taskFinished = true;
             }
@@ -1002,7 +1021,7 @@
     }
 
     function matchVersion(version1, version2) {
-        return ((version1.version == version2.version) && (version1.releaseType.toLowerCase() == version2.releaseType.toLowerCase()))
+        return ((version1.version === version2.version) && (version1.releaseType.toLowerCase() === version2.releaseType.toLowerCase()))
     }
 
     /**
