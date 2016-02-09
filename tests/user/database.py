@@ -10,7 +10,7 @@ def new():
    resources.deleteFile(yadomsServer.databasePath())
 
          
-def withOneStoppedRule():
-   """Deploy a database containing one rule in stopped state"""
+def deploy(databaseName):
+   """Deploy a specific database"""
       
-   shutil.copyfile(os.path.join("resources", "databases", "OneStoppedRule.db3"), yadomsServer.databasePath())
+   shutil.copyfile(os.path.join("resources", "databases", databaseName + ".db3"), yadomsServer.databasePath())

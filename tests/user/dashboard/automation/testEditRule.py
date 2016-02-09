@@ -18,7 +18,7 @@ class EditRule(unittest.TestCase):
    """Edit rule test"""
    
    def setUp(self):
-      database.withOneStoppedRule()
+      database.deploy('OneStoppedRule')
       scripts.deploy(["DisplayLatitude"])
       self.serverProcess = yadomsServer.start()
       self.browser = webdriver.Firefox()

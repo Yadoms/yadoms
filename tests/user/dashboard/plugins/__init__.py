@@ -57,7 +57,7 @@ def getPluginStartStopButton(pluginsTable, pluginNumber):
    assert "btn-startStop" in button.get_attribute("class")
    return button
    
-def getPluginEditButton(pluginsTable, pluginNumber):
+def getPluginConfigureButton(pluginsTable, pluginNumber):
    """ Configure button is the second button of the buttons group """
    button = getPluginButton(pluginsTable, pluginNumber, 1)
    assert "btn-configure" in button.get_attribute("class")
