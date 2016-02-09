@@ -6,10 +6,7 @@ import database
 import yadomsServer
 import dashboard
 import dashboard.plugins
-import notification
-import i18n
 import tools
-import os.path
 
 class ConfigurePlugin(unittest.TestCase):
    """Configure plugin test"""
