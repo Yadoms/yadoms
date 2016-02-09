@@ -1,0 +1,57 @@
+﻿import unittest
+from selenium import webdriver
+from selenium.webdriver.support.ui import Select
+from selenium.webdriver.support.ui import WebDriverWait
+import database
+import yadomsServer
+import dashboard
+import dashboard.plugins
+import notification
+import i18n
+import tools
+import os.path
+
+class ConfigurePlugin(unittest.TestCase):
+   """Configure plugin test"""
+   
+   def setUp(self):
+      database.deploy('OneFakePlugin')
+      self.serverProcess = yadomsServer.start()
+      self.browser = webdriver.Firefox()
+      self.browser.implicitly_wait(10)
+      yadomsServer.openClient(self.browser)
+      
+      # Open plugins dashboard
+      dashboard.open(self.browser)
+      dashboard.openPlugin(self.browser)
+      
+
+   def test_configurePlugin(self):
+      pluginNumber = 0
+     
+      # Configure the first plugin
+      pluginsTable = dashboard.plugins.waitPluginsTableHasNPlugins(self.browser, 1)
+      tools.waitUntil(lambda: dashboard.plugins.getPluginConfigureButton(pluginsTable, pluginNumber).is_enabled())
+      dashboard.plugins.getPluginConfigureButton(pluginsTable, pluginNumber).click()
+      
+      # Modify plugin name
+      pluginNewName = "This is the new plugin name"
+      configurePluginModal = dashboard.plugins.waitConfigurePluginModal(self.browser)
+      configurePluginModal.replacePluginName(pluginNewName)
+      configurePluginModal.getConfirmButton(self.browser).click()
+      
+      # Check modified plugin
+      
+      pluginsTable = dashboard.plugins.waitPluginsTableHasNPlugins(self.browser, 1)
+      pluginDatas = dashboard.plugins.getPluginDatas(pluginsTable, pluginNumber)
+      self.assertTrue(tools.waitUntil(lambda: dashboard.plugins.getPluginName(pluginsTable, pluginNumber) == pluginNewName))
+      self.assertEqual(dashboard.plugins.getPluginState(pluginsTable, pluginNumber), dashboard.plugins.PluginState.Running)
+      self.assertTrue(dashboard.plugins.getPluginAutoStart(pluginsTable, pluginNumber))
+      
+      
+   def tearDown(self):
+      self.browser.close()
+      yadomsServer.stop(self.serverProcess)
+
+if __name__ == "__main__":
+   unittest.main()
