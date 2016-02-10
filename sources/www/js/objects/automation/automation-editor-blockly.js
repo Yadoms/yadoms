@@ -90,6 +90,22 @@ AutomationEditorBlockly.prototype.onModalShown = function($modal) {
 };
 
 /**
+ * Permit to fire an event when the modal is hidden
+ * @param rule
+ */
+AutomationEditorBlockly.prototype.onModalHidden = function ($modal) {
+   //remove remainging divs
+   var $widgetDiv = $(".blocklyWidgetDiv");
+   if ($widgetDiv)
+      $widgetDiv.remove();
+
+   var $tooltipDiv = $(".blocklyTooltipDiv");
+   if ($tooltipDiv)
+      $tooltipDiv.remove();
+};
+
+
+/**
  * Permit to update the current rule with editor content
  */
 AutomationEditorBlockly.prototype.updateRule = function() {

@@ -150,6 +150,14 @@ AutomationEditorCode.prototype.onModalShown = function($modal) {
 };
 
 /**
+ * Permit to fire an event when the modal is hidden
+ * @param rule
+ */
+AutomationEditorCode.prototype.onModalHidden = function ($modal) {
+   //nothing to do
+};
+
+/**
  * Permit to update the current rule with editor content
  */
 AutomationEditorCode.prototype.updateRule = function() {
