@@ -352,17 +352,18 @@ WidgetManager.downloadWidgetViewAndVieWModel_ = function (widgetType, canReject)
  * Load a widget and add it to the page
  * @param {Widget} widget The widgetType to load
  * @param {Page} pageWhereToAdd The page where to add the widget
+ * @param {Boolean} ensureVisible If true ensure the item is visible (scroll if needed), else (false or undefined) do not check widget visibility
  * @return a promise
  * @private
  */
-WidgetManager.loadWidget = function (widget, pageWhereToAdd) {
+WidgetManager.loadWidget = function (widget, pageWhereToAdd, ensureVisible) {
     assert(!isNullOrUndefined(widget), "widget must be defined");
     assert(!isNullOrUndefined(pageWhereToAdd), "pageWhereToAdd must be defined");
 
     var d = $.Deferred();
 
     if (!WidgetPackageManager.packageExists(widget.type)) {
-        WidgetManager.instanciateDowngradedWidgetToPage_(pageWhereToAdd, widget, "package do not exists");
+       WidgetManager.instanciateDowngradedWidgetToPage_(pageWhereToAdd, widget, "package do not exists", ensureVisible);
         d.reject();
 
     } else {
@@ -370,15 +371,15 @@ WidgetManager.loadWidget = function (widget, pageWhereToAdd) {
         if (!WidgetPackageManager.widgetPackages[widget.type].viewAnViewModelHaveBeenDownloaded) {
             WidgetManager.downloadWidgetViewAndVieWModel_(widget.type, true)
             .done(function () {
-                WidgetManager.instanciateWidgetToPage_(pageWhereToAdd, widget, widget.type);
+               WidgetManager.instanciateWidgetToPage_(pageWhereToAdd, widget, widget.type, ensureVisible);
                 d.resolve();
             })
             .fail(function (errorMessage) {
-                WidgetManager.instanciateDowngradedWidgetToPage_(pageWhereToAdd, widget, errorMessage);
+               WidgetManager.instanciateDowngradedWidgetToPage_(pageWhereToAdd, widget, errorMessage, ensureVisible);
                 d.reject(errorMessage);
             });
         } else {
-            WidgetManager.instanciateWidgetToPage_(pageWhereToAdd, widget, widget.type);
+           WidgetManager.instanciateWidgetToPage_(pageWhereToAdd, widget, widget.type, ensureVisible);
             d.resolve();
         }
 
@@ -392,13 +393,14 @@ WidgetManager.loadWidget = function (widget, pageWhereToAdd) {
  * @param {Page} pageWhereToAdd The page where to add the widget
  * @param {Widget} widget The widget to load
  * @param {String} widgetType The widgetType to load
+ * @param {Boolean} ensureVisible If true ensure the item is visible (scroll if needed), else (false or undefined) do not check widget visibility
  * @private
  */
-WidgetManager.instanciateWidgetToPage_ = function (pageWhereToAdd, widget, widgetType) {
+WidgetManager.instanciateWidgetToPage_ = function (pageWhereToAdd, widget, widgetType, ensureVisible) {
     try {
         //we finalize the load of the widget
         WidgetManager.consolidate_(widget, WidgetPackageManager.widgetPackages[widgetType]);
-        WidgetManager.addToDom_(widget);
+        WidgetManager.addToDom_(widget, ensureVisible);
         //we add the widget to the collection
         pageWhereToAdd.addWidget(widget);
     }
@@ -417,9 +419,10 @@ WidgetManager.instanciateWidgetToPage_ = function (pageWhereToAdd, widget, widge
  * @param {Page} pageWhereToAdd The page where to add the widget
  * @param {Widget} widget The widget to load
  * @param {String} errorMessage An error message
- * @private
+* @param {Boolean} ensureVisible If true ensure the item is visible (scroll if needed), else (false or undefined) do not check widget visibility
+  * @private
  */
-WidgetManager.instanciateDowngradedWidgetToPage_ = function (pageWhereToAdd, widget, errorMessage) {
+WidgetManager.instanciateDowngradedWidgetToPage_ = function (pageWhereToAdd, widget, errorMessage, ensureVisible) {
     console.warn("Fail to load widget " + widget.type + " , then load deactivated model instead." + (errorMessage || ""));
 
     //flag the widget as downgraded
@@ -427,15 +430,16 @@ WidgetManager.instanciateDowngradedWidgetToPage_ = function (pageWhereToAdd, wid
     widget.downgraded = true;
 
     //load downgraded widget instead
-    WidgetManager.instanciateWidgetToPage_(pageWhereToAdd, widget, WidgetManager.DeactivatedWidgetPackageName);
+    WidgetManager.instanciateWidgetToPage_(pageWhereToAdd, widget, WidgetManager.DeactivatedWidgetPackageName, ensureVisible);
 }
 
 /**
  * Add a widget to page
  * @param {Widget} widget The widget to add
- * @private
+  * @param {Boolean} ensureVisible If true ensure the item is visible (scroll if needed), else (false or undefined) do not check widget visibility
+* @private
  */
-WidgetManager.addToDom_ = function (widget) {
+WidgetManager.addToDom_ = function (widget, ensureVisible) {
     assert(!isNullOrUndefined(widget), "widget must be defined");
 
     var widgetDivId = "widget-" + widget.id;
@@ -507,9 +511,15 @@ WidgetManager.addToDom_ = function (widget) {
 
     widget.$gridWidget.i18n();
 
-    //we ask for widget refresh data
+   if (ensureVisible === true) {
+      //ensure the item is completly visible
+      $.ensureVisible(widget.$gridWidget, true);
+   }
+   //we ask for widget refresh data
     updateWidgetPolling(widget);
 };
+
+
 
 /**
  * Enable or disable customization on widget

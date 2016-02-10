@@ -222,7 +222,7 @@
       .done(function(w) {
          w.positionX = undefined;
          w.positionY = undefined;
-         WidgetManager.loadWidget(w, currentPage)
+         WidgetManager.loadWidget(w, currentPage, true)
          .done(function () {
           	//we update the filter for the websocket
           	updateWebSocketFilter();
