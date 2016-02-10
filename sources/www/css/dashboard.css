@@ -266,7 +266,8 @@ Fix dropdown menus hidden by bootstrap modal
 }
 
 .code-ide {
-    margin-top: 15px;
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 
 .code-editor {
