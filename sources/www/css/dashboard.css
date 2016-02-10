@@ -1,16 +1,11 @@
 .main-dashboard-modal {
     width: 98%;
-    /*height: 92%;*/
     padding: 0;
 }
 
-.main-dashboard-modal-content {
-    /*height: 99%;*/
-}
-
 .dashboard-modal-body {
-    padding-top: 0px;
-    padding-bottom: 0px;
+    padding-top: 0;
+    padding-bottom: 0;
 }
 
 .sidebar {
@@ -110,19 +105,13 @@
 }
 
 .automation-rule ul.automation-rule-sub-item li.automation-rule-sub-item > span {
-    /*-moz-border-radius:2px;
-    -webkit-border-radius:2px;
-    border:1px solid #999;
-    border-radius:2px;*/
     display:inline-block;
-    /*padding:0px 0px;*/
     text-decoration:none;
-
     padding: 2px 2px 2px 2px;
-
     border-width: 1px 1px 1px 5px;
     border-style: solid;
     border-color: #bbb;
+    -ms-border-radius: 3px;
     border-radius: 3px;
 }
 
@@ -153,6 +142,10 @@
 }
 
 .automation-rule-item > .dropdown-menu {
+    -moz-min-width: 60px;
+    -ms-min-width: 60px;
+    -o-min-width: 60px;
+    -webkit-min-width: 60px;
     min-width: 60px;
 }
 
@@ -180,9 +173,6 @@
 
 #edit-automation-rule-modal .form-horizontal {
     height: 100%;
-}
-
-#automation-rule-configuration {
 }
 
 #automation-rule-editor {
@@ -287,6 +277,10 @@ Fix dropdown menus hidden by bootstrap modal
 /*Menu with dropdown management*/
 .dropdown-submenu {
     position: relative;
+    -moz-min-width: 200px;
+    -ms-min-width: 200px;
+    -o-min-width: 200px;
+    -webkit-min-width: 200px;
     min-width: 200px;
 }
 
@@ -297,6 +291,7 @@ Fix dropdown menus hidden by bootstrap modal
     margin-left: -1px;
     -webkit-border-radius: 0 6px 6px 6px;
     -moz-border-radius: 0 6px 6px;
+    -ms-border-radius: 0 6px 6px 6px;
     border-radius: 0 6px 6px 6px;
 }
 
@@ -331,20 +326,29 @@ Fix dropdown menus hidden by bootstrap modal
     margin-left: 10px;
     -webkit-border-radius: 6px 0 6px 6px;
     -moz-border-radius: 6px 0 6px 6px;
+    -ms-border-radius: 6px 0 6px 6px;
     border-radius: 6px 0 6px 6px;
 }
 
 .keyword-list li {
+    -moz-min-width:200px;
+    -ms-min-width:200px;
+    -o-min-width:200px;
+    -webkit-min-width:200px;
     min-width:200px;
 }
 
 .recipient-list li {
+    -moz-min-width:300px;
+    -ms-min-width:300px;
+    -o-min-width:300px;
+    -webkit-min-width:300px;
     min-width:300px;
 }
 
 /*Install update dashboard page*/
 .action-progression .progress {
-    margin-bottom : 0px;
+    margin-bottom : 0;
 }
 
 .with-overflow-visible {
@@ -364,8 +368,8 @@ Fix dropdown menus hidden by bootstrap modal
 /*Yadoms updating blocking splash screen*/
 #yadoms-updating-splash {
     position: fixed;
-    top: 0px;
-    left: 0px;
+    top: 0;
+    left: 0;
     height: 100%;
     width: 100%;
     z-index: 10000;

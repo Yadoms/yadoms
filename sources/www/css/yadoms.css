@@ -6,9 +6,14 @@ body {
     -moz-background-size: 100% 100%; /* Gecko 1.9.2 (Firefox 3.6) */
     -o-background-size: 100% 100%; /* Opera 9.5 */
     -webkit-background-size: 100% 100%; /* Safari 3.0 */
+    -ms-background-size: 100% 100%;
     background-size: 100% 100%; /* Gecko 2.0 (Firefox 4.0) and other browsers compatible with CSS3 */
     -moz-border-image: url("../img/background2.jpg") 0; /* Gecko 1.9.1 (Firefox 3.5) */
     background-attachment: fixed;
+    -moz-min-width: 265px;
+    -ms-min-width: 265px;
+    -o-min-width: 265px;
+    -webkit-min-width: 265px;
     min-width: 265px;
 }
 
@@ -80,19 +85,20 @@ body {
     width: 0.0001%;
 }
 
-    #btn-add-page a {
-        border: 0px;
-        margin-left: 1px;
-        background-image: url("../img/roadworks-pill.png");
-        background-repeat-x: no-repeat;
-        background-position-x: right;
-        cursor: pointer;
-    }
+#btn-add-page a {
+    border: 0;
+    margin-left: 1px;
+    background-image: url("../img/roadworks-pill.png");
+    background-repeat: no-repeat;
+    background-position: right top;
+    cursor: pointer;
+}
 
 .customizationToolbar {
     position: absolute;
-    right: 0px;
-    top: 0px;
+    right: 0;
+    top: 0;
+    -ms-border-radius: 0 0 0 4px;
     border-radius: 0 0 0 4px;
 }
 
@@ -110,21 +116,23 @@ body {
 }
 
 .pageCustomizationButton {
+    -ms-text-shadow: 0 0 2px rgb(0, 0, 0);
     text-shadow: 0 0 2px rgb(0, 0, 0);
     color: white;
 }
 
 .pageCustomizationPill {
     background-image: url("../img/roadworks-pill.png");
-    background-repeat-x: no-repeat;
-    background-position-x: right;
+    background-repeat: no-repeat;
+    background-position: right center;
 }
 
 .navbar {
+    background-color: #000000;
     background-color: rgba(0,0,0,0.0);
-    background-image: -webkit-gradient(linear, 50.00% 0.00%, 50.00% 100.00%, color-stop( 0%, rgba(0,0,0,0.00)),color-stop( 100%, rgba(0,0,0,0.00)));
-    background-image: -webkit-linear-gradient(270deg,rgba(0,0,0,0.00) 0%,rgba(0,0,0,0.00) 100%);
-    background-image: linear-gradient(180deg,rgba(0,0,0,0.00) 0%,rgba(0,0,0,0.00) 100%);
+    background-image: -webkit-gradient(linear, 50.00% 0.00, 50.00% 100.00%, color-stop( 0, rgba(0,0,0,0.00)),color-stop( 100%, rgba(0,0,0,0.00)));
+    background-image: -webkit-linear-gradient(270deg,rgba(0,0,0,0.00) 0,rgba(0,0,0,0.00) 100%);
+    background-image: linear-gradient(180deg,rgba(0,0,0,0.00) 0,rgba(0,0,0,0.00) 100%);
     /*height: 50px;*/
 }
 
@@ -134,6 +142,10 @@ body {
 
 .popover {
     z-index: 9999;
+    -moz-min-width: 200px;
+    -ms-min-width: 200px;
+    -o-min-width: 200px;
+    -webkit-min-width: 200px;
     min-width: 200px;
 }
 
@@ -172,9 +184,6 @@ body {
     text-transform: uppercase;
 }
 
-.configuration-label {
-}
-
 .configuration-label-content {
     display: inline-block;
     float: left;
@@ -202,17 +211,17 @@ body {
 }
 
 .list-item-line > .col-md-11 {
-    padding: 0px;
+    padding: 0;
 }
 
-    .list-item-line > .col-md-11 > .control-group {
-        margin: 0px;
-    }
+.list-item-line > .col-md-11 > .control-group {
+    margin: 0;
+}
 
 .list-parameter-handler-validation-textbox {
-    height: 0px;
-    padding: 0px;
-    border: 0px;
+    height: 0;
+    padding: 0;
+    border: 0;
 }
 
 /*Dashboard*/
@@ -247,15 +256,18 @@ body {
 
 .logTextArea {
     height: 350px;
+    -moz-resize: none;
+    -ms-resize: none;
+    -o-resize: none;
     resize: none;
 }
 
 .tabPagePillsDropper {
-    top: 0px;
-    bottom: 0px;
+    top: 0;
+    bottom: 0;
     position: absolute;
-    left: 0px;
-    right: 0px;
+    left: 0;
+    right: 0;
     margin: 2px;
     border-style: dashed;
     background: lightgray;
@@ -267,7 +279,7 @@ body {
 }
 
 .modal-body {
-    margin-left: 0px !important;
+    margin-left: 0 !important;
 }
 
 .modal-content {
