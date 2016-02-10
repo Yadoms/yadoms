@@ -1,0 +1,12 @@
+package python;
+
+message ToYadoms {
+
+  message KeywordIdRequest {
+    required string deviceName = 1;
+    required string keywordName = 2;
+  }
+  
+  optional KeywordIdRequest keywordIdRequest = 1;
+
+}

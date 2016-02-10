@@ -34,11 +34,16 @@ if(PYTHONLIBS_FOUND)
       ScriptProcess.h
       ScriptProcess.cpp
       
+      Messages.proto
+      
       scriptCaller.py
       scriptUtilities.py
    )
 
-
+   protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS Messages.proto)
+   set(PYTHON_SOURCES ${PYTHON_SOURCES} ${PROTO_SRCS} ${PROTO_HDRS})
+   set(PROTOBUF_GENERATED_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE INTERNAL "Path to generated protobuf files.")
+   
    #Append platform specific files
    IF(WIN32)
    set(PYTHON_SOURCES	
@@ -78,8 +83,8 @@ if(PYTHONLIBS_FOUND)
    ## even if PYTHON_INCLDIR or PYTHON_LINK are empty
    #########################################
    SCRIPT_INTERPRETER_SOURCES(python ${PYTHON_SOURCES})
-   SCRIPT_INTERPRETER_INCLDIR(python ${PYTHON_INCLDIR} ${PLATFORM_SPECIFIC_INCL_DIR})
-   SCRIPT_INTERPRETER_LINK(python ${PYTHON_LINK})
+   SCRIPT_INTERPRETER_INCLDIR(python ${PYTHON_INCLDIR} ${PLATFORM_SPECIFIC_INCL_DIR} ${PROTOBUF_INCLUDE_DIRS} ${PROTOBUF_GENERATED_DIR})
+   SCRIPT_INTERPRETER_LINK(python ${PYTHON_LINK} ${PROTOBUF_LIBRARIES})
 
    #########################################
    ## Post-build commands

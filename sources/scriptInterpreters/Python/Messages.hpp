@@ -1,6 +1,9 @@
 #pragma once
 
-#include <shared/script/yScriptApi/IYScriptApi.h>
+#include <shared/script/yScriptApi/IYScriptApi.h> //TODO utile ?
+
+#include <Messages.pb.h>
+
 
 const size_t m_messageQueueMessageSize(1000);
 
@@ -8,7 +11,7 @@ const size_t m_messageQueueMessageSize(1000);
 //--------------------------------------------------------------
 /// \brief Messages requests identifiers
 //--------------------------------------------------------------
-enum ERequestIdentifier
+enum ERequestIdentifier//TODO supprimer
 {
    kReqGetKeywordId = 0,
    kReqGetRecipientId,
@@ -24,7 +27,7 @@ enum ERequestIdentifier
 //--------------------------------------------------------------
 /// \brief Messages answers identifiers
 //--------------------------------------------------------------
-enum EAnswerIdentifier
+enum EAnswerIdentifier//TODO supprimer
 {
    kAnsGetKeywordId = 0,
    kAnsGetRecipientId,
