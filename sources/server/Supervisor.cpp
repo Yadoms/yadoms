@@ -171,7 +171,7 @@ void CSupervisor::run()
       taskManager.reset();
 
       //stop all plugins
-      //force to stop all plugin, the reset() will cal stop only at pluginMAnager deletion, which could happen in the future if it is used elsewhere
+      //force to stop all plugin, the reset() will call stop only at pluginManager deletion, which could happen in the future if it is used elsewhere
       shared::CServiceLocator::instance().remove<pluginSystem::CManager>(pluginManager);
       pluginManager->stop();
       pluginManager.reset();
@@ -198,7 +198,11 @@ void CSupervisor::run()
 
    //notify application that supervisor ends
    if (m_applicationEventHandler)
+   {
+      YADOMS_LOG(debug) << "Supervisor, end : post event to Yadoms application...";
       m_applicationEventHandler->postEvent(m_applicationStopCode);
+      YADOMS_LOG(debug) << "Supervisor, end : event posted to Yadoms application";
+   }
 }
 
 void CSupervisor::requestToStop()
