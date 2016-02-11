@@ -18,7 +18,7 @@ function EnumParameterHandler(i18NContext, paramName, content, currentValue) {
    //values can be empty
    this.values = content.values;
    this.value = currentValue;
-   this.sort = content.sort;
+   this.sort = parseBool(content.sort);
 
    this.name = content.name;
    this.uuid = createUUID();
@@ -71,14 +71,17 @@ EnumParameterHandler.prototype.setValues = function (values) {
 
 EnumParameterHandler.arrangeCollection = function (collection, alphabeticallySort) {
    var sortable = [];
+    debugger;
    $.each(collection, function (key, value) {
-      if (value && key && key !== "undefined")
+      if (value !== undefined && key && key !== "undefined")
          sortable.push([key, value]);
    });
 
    if (alphabeticallySort === true) {
       sortable.sort(function(a, b) {
-         return a[1].localeCompare(b[1]);
+          if (a !== undefined && b !== undefined)
+              return a[1].localeCompare(b[1]);
+          return 1;
       });
    }
    return sortable;
@@ -89,9 +92,21 @@ EnumParameterHandler.prototype.updateValues = function () {
    var $select = self.locateInDOM();
    $select.empty();
 
-   
-   //we iterate through the values collection
-   $.each(EnumParameterHandler.arrangeCollection(self.values, self.sort), function (key, value) {
+    //we fill a new object with the values transalted if possible
+   var translatedValues = {};
+   $.each(self.values, function (key, value) {
+       var newValue = "";
+       if (i18n.exists(self.i18nContext + self.paramName + ".values." + key)) {
+           newValue = $.t(self.i18nContext + self.paramName + ".values." + key);
+       }
+       else { //if the precedent line doesn't exist into the i18n we are in the case of binding. So we have to display the "value"
+           newValue = value;
+       }
+       translatedValues[key] = newValue;
+   });
+
+    //we iterate through the values collection
+   $.each(EnumParameterHandler.arrangeCollection(translatedValues, self.sort), function (key, value) {
       //key contains the index in array
       //value contains [languageCode, languageDisplayName]
       var languageCode = value[0];
@@ -101,12 +116,7 @@ EnumParameterHandler.prototype.updateValues = function () {
       if (languageCode === self.value)
          line += " selected";
 	 
-      if (i18n.exists(self.i18nContext + self.paramName + ".values." + languageCode)) {
-         line += " >" + $.t(self.i18nContext + self.paramName + ".values." + languageCode) + "</option>";
-		 }
-		 else{ //if the precedent line doesn't exist into the i18n we are in the case of binding. So we have to display the "value"
-         line += " >" + languagelanguageDisplayNameCode + "</option>";
-		 }
+      line += " >" + languagelanguageDisplayNameCode + "</option>";
 	  
       $select.append(line);
    });
