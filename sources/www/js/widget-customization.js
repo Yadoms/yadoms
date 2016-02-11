@@ -67,28 +67,18 @@ function exitCustomization(saveCustomization) {
             });
 
             if (saveCustomization) {
-                $.ajax({
-                    type: "PUT",
-                    url: "/rest/page/" + currentPage.id + "/widget",
-                    data: JSON.stringify(currentPage.widgets),
-                    contentType: "application/json; charset=utf-8",
-                    dataType: "json"
-                })
-                    .done(function (data) {
-                        //we parse the json answer
-                        if (data.result != "true") {
-                            notifyError($.t("mainPage.errors.errorSavingCustomization"), JSON.stringify(data));
-                            console.error(data.message);
-                        }
-                    })
-                    .fail(function () {
-                        notifyError($.t("mainPage.errors.errorSavingCustomization"))
-                    });
+               PageManager.saveCustomization(currentPage)
+               .fail(function (error) {
+                  notifyError($.t("mainPage.errors.errorSavingCustomization"), error);
+               });
             }
         }
     });
 }
 
 function createOrUpdatePage(pageId) {
-    modals.pageConfigure.load(function (pageId) { return function () { showPageModificationModal(pageId) } }(pageId));
+   modals.pageConfigure.loadAsync()
+   .done(function () {
+         showPageModificationModal(pageId);
+    });
 }

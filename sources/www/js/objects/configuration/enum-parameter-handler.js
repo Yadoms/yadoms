@@ -4,26 +4,27 @@
 
 /**
  * Create an enum parameter handler
- * @param i18nContext
+ * @param i18NContext
  * @param paramName
  * @param content
  * @param currentValue
  * @constructor
  */
-function EnumParameterHandler(i18nContext, paramName, content, currentValue) {
-   assert(i18nContext !== undefined, "i18nContext must contain path of i18n");
+function EnumParameterHandler(i18NContext, paramName, content, currentValue) {
+   assert(i18NContext !== undefined, "i18nContext must contain path of i18n");
    assert(paramName !== undefined, "paramName must be defined");
    assert(content !== undefined, "content must be defined");
 
    //values can be empty
    this.values = content.values;
    this.value = currentValue;
+   this.sort = content.sort;
 
    this.name = content.name;
    this.uuid = createUUID();
    this.paramName = paramName;
    this.description = isNullOrUndefined(content.description)?"":content.description;
-   this.i18nContext = i18nContext;
+   this.i18nContext = i18NContext;
    this.content = content;
 }
 
@@ -35,13 +36,13 @@ EnumParameterHandler.prototype.getDOMObject = function () {
    //Now values can't be empty
    assert(this.values !== undefined, "values field must be defined");
 
-   if ((this.value === undefined) || (this.value == null) || (this.value == "")) {
+   if ((this.value === undefined) || (this.value == null) || (this.value === "")) {
       //we set the default value
       this.value = this.content.defaultValue;
    }
 
    //if it is still not defined we take the first item in the list
-   if ((this.value === undefined) || (this.value == null) || (this.value == "")) {
+   if ((this.value === undefined) || (this.value == null) || (this.value === "")) {
       this.value = this.content.values[0];
    }
 
@@ -50,13 +51,13 @@ EnumParameterHandler.prototype.getDOMObject = function () {
                         "id=\"" + this.uuid + "\" " +
                         "data-content=\"" + this.description + "\"" +
                         "required ";
-   var i18nData = " data-i18n=\"";
+   var i18NData = " data-i18n=\"";
 
    var self = this;
-   i18nData += "[data-content]" + self.i18nContext + self.paramName + ".description";
+   i18NData += "[data-content]" + self.i18nContext + self.paramName + ".description";
 
-   i18nData += "\" ";
-   input += i18nData + " >";
+   i18NData += "\" ";
+   input += i18NData + " >";
 
    input += "</select>";
    return ConfigurationHelper.createControlGroup(self, input);
@@ -67,23 +68,44 @@ EnumParameterHandler.prototype.setValues = function (values) {
    this.updateValues();
 };
 
+
+EnumParameterHandler.arrangeCollection = function (collection, alphabeticallySort) {
+   var sortable = [];
+   $.each(collection, function (key, value) {
+      if (value && key && key !== "undefined")
+         sortable.push([key, value]);
+   });
+
+   if (alphabeticallySort === true) {
+      sortable.sort(function(a, b) {
+         return a[1].localeCompare(b[1]);
+      });
+   }
+   return sortable;
+}
+
 EnumParameterHandler.prototype.updateValues = function () {
    var self = this;
    var $select = self.locateInDOM();
    $select.empty();
 
+   
    //we iterate through the values collection
-   $.each(self.values, function (key, value) {
-	   
-      var line = "<option value=\"" + key + "\"";
-      if (key == self.value)
+   $.each(EnumParameterHandler.arrangeCollection(self.values, self.sort), function (key, value) {
+      //key contains the index in array
+      //value contains [languageCode, languageDisplayName]
+      var languageCode = value[0];
+      var languagelanguageDisplayNameCode = value[1];
+
+      var line = "<option value=\"" + languageCode + "\"";
+      if (languageCode === self.value)
          line += " selected";
 	 
-		 if ( i18n.exists( self.i18nContext + self.paramName + ".values." + key ) ){
-			 line += " >" + $.t( self.i18nContext + self.paramName + ".values." + key ) + "</option>";
+      if (i18n.exists(self.i18nContext + self.paramName + ".values." + languageCode)) {
+         line += " >" + $.t(self.i18nContext + self.paramName + ".values." + languageCode) + "</option>";
 		 }
 		 else{ //if the precedent line doesn't exist into the i18n we are in the case of binding. So we have to display the "value"
-			 line += " >" + value + "</option>";
+         line += " >" + languagelanguageDisplayNameCode + "</option>";
 		 }
 	  
       $select.append(line);

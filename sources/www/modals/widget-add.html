@@ -201,8 +201,8 @@
 
             //we load configuration window only if the widget has a configuration
             if (!isNullOrUndefined(newWidget.package.configurationSchema)) {
-                modals.widgetConfiguration.load(function () {
-
+               modals.widgetConfiguration.loadAsync()
+               .done(function () {
                     configureWidget(newWidget, function () {
                         //if the configuration has been validated we can create the widget
                         createWidget(newWidget, currentPage);
@@ -218,42 +218,22 @@
     });
 
    function createWidget(newWidget, currentPage) {
-      $.ajax({
-         type: "POST",
-         url: "/rest/widget",
-         data: JSON.stringify({ idPage: newWidget.idPage, type: newWidget.type, title: newWidget.title, sizeX: newWidget.sizeX, sizeY: newWidget.sizeY, positionX: newWidget.positionX, positionY: newWidget.positionY, configuration: newWidget.configuration }),
-         contentType: "application/json; charset=utf-8",
-         dataType: "json"
-      })
-      .done(function(data) {
-         //we parse the json answer
-         if (data.result != "true")
-         {
-            notifyError($.t("modals.add-widget.errorDuringCreatingWidget"), JSON.stringify(data));
-            return;
-         }
-
-         //we add the widget dynamically
-         var w = WidgetManager.factory(data.data);
-         //we indicate a new attribute to indicate that the widget has to be placed automatically on the gridstack and not at the specified positionX and positionY
+      WidgetManager.createWidget(newWidget)
+      .done(function(w) {
          w.positionX = undefined;
          w.positionY = undefined;
-         WidgetManager.loadWidget(w, currentPage)
-		 .done(function() {
-		    //we update the filter for the websocket
-			updateWebSocketFilter();
-		 })
-		 .fail(function(errorMessage) {
-			    console.error(errorMessage);
-			    notifyError($.t("modals.add-widget.unableToCreateWidgetOfType", { "widgetType": newWidget.type }));
-         });
-
-      })
-      .fail(function(widgetType) { 
-		return function() {
-			notifyError($.t("modals.add-widget.unableToCreateWidgetOfType", {"widgetType" : widgetType}))
-		}();
-	  });
+         WidgetManager.loadWidget(w, currentPage, true)
+         .done(function () {
+          	//we update the filter for the websocket
+          	updateWebSocketFilter();
+         })
+		   .fail(function (errorMessage) {
+		      notifyError($.t("modals.add-widget.unableToCreateWidgetOfType", { "widgetType": newWidget.type }), errorMessage);
+		   });
+       })
+      .fail(function (errorMessage) {
+         notifyError($.t("modals.add-widget.unableToCreateWidgetOfType", { "widgetType": newWidget.type }), errorMessage);
+      });
    }
 
 </script>

@@ -66,6 +66,14 @@ IAutomationRuleEditor.prototype.onModalShown = function($modal) {
 };
 
 /**
+ * Permit to fire an event when the modal is hidden
+ * @param rule
+ */
+IAutomationRuleEditor.prototype.onModalHidden = function($modal) {
+   assert(false, "onModalHidden() of IAutomationRuleEditor must be implemented in derived class");
+};
+
+/**
  * Permit to update the current rule with editor content
  */
 IAutomationRuleEditor.prototype.updateRule = function() {

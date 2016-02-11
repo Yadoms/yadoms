@@ -43,10 +43,16 @@
       //we ask for deletion of the page
 
       PageManager.deletePage(pageToDelete)
-      .done(function() {
+      .done(function () {
+         pageToDelete.$tab.remove();
+         pageToDelete.$content.remove();
+         PageManager.pages.splice($.inArray(pageToDelete, PageManager.pages), 1);
+         PageManager.ensureOnePageIsSelected();
          notifySuccess($.t("modals.delete-page.pageSuccessfullyDeleted"));
       })
-      .fail(function (pageName) { return function () { notifyError($.t("modals.delete-page.errorDuringDeletingPageNamed", { "pageName": pageName })); }; }(pageToDelete.name))
+      .fail(function(error) {
+         notifyError($.t("modals.delete-page.errorDuringDeletingPageNamed", { "pageName": pageToDelete.name }), error); 
+      })
       .always(function () {
          //we clear the current id
          pageToDelete = null;

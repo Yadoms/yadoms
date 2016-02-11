@@ -72,7 +72,7 @@ AutomationEditorBlockly.prototype.setRule = function(rule) {
  * Permit to fire an event when the modal is shown
  * @param rule
  */
-AutomationEditorBlockly.prototype.onModalShown = function($modal) {
+AutomationEditorBlockly.prototype.onModalShown = function() {
    var self = this;
    var $mainDiv = $("div#" + this.getUuid());
 
@@ -88,6 +88,22 @@ AutomationEditorBlockly.prototype.onModalShown = function($modal) {
    //load blockly
    Blockly.Yadoms.Initialize($mainDiv, content, 1);
 };
+
+/**
+ * Permit to fire an event when the modal is hidden
+ * @param rule
+ */
+AutomationEditorBlockly.prototype.onModalHidden = function () {
+   //remove remainging divs
+   var $widgetDiv = $(".blocklyWidgetDiv");
+   if ($widgetDiv)
+      $widgetDiv.remove();
+
+   var $tooltipDiv = $(".blocklyTooltipDiv");
+   if ($tooltipDiv)
+      $tooltipDiv.remove();
+};
+
 
 /**
  * Permit to update the current rule with editor content
@@ -129,7 +145,7 @@ AutomationEditorBlockly.prototype.validate = function() {
 AutomationEditorBlockly.prototype.setInterpreter = function(newInterpreter) {
    var found = false;
    $.each(AutomationEditorBlockly.getSupportedInterpreters(), function (key, value) {
-      if (value == newInterpreter)
+      if (value === newInterpreter)
          found = true;
    });
 

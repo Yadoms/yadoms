@@ -45,9 +45,9 @@ class CreatePlugin(unittest.TestCase):
          "btn-startStop" in dashboard.plugins.getPluginStartStopButton(pluginsTable, pluginNumber).get_attribute("class") and \
          "btn-warning" in dashboard.plugins.getPluginStartStopButton(pluginsTable, pluginNumber).get_attribute("class"))
       self.assertTrue( \
-         "btn" in dashboard.plugins.getPluginEditButton(pluginsTable, pluginNumber).get_attribute("class") and \
-         "btn-configure" in dashboard.plugins.getPluginEditButton(pluginsTable, pluginNumber).get_attribute("class") and \
-         "btn-primary" in dashboard.plugins.getPluginEditButton(pluginsTable, pluginNumber).get_attribute("class"))
+         "btn" in dashboard.plugins.getPluginConfigureButton(pluginsTable, pluginNumber).get_attribute("class") and \
+         "btn-configure" in dashboard.plugins.getPluginConfigureButton(pluginsTable, pluginNumber).get_attribute("class") and \
+         "btn-primary" in dashboard.plugins.getPluginConfigureButton(pluginsTable, pluginNumber).get_attribute("class"))
       self.assertTrue( \
          "btn" in dashboard.plugins.getPluginRemoveButton(pluginsTable, pluginNumber).get_attribute("class") and \
          "btn-delete" in dashboard.plugins.getPluginRemoveButton(pluginsTable, pluginNumber).get_attribute("class") and \

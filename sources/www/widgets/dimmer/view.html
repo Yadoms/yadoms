@@ -1,23 +1,20 @@
 <script type="text/html" id="dimmer-template">
    <link href="widgets/dimmer/widget.css" rel="stylesheet">
    <table>
-   <tr>
-     <div align="center"> <span class="dimmerWidgetText" data-bind="text: DimmerText, css: { hidden: showDeviceName() == false}"></span> </div>
-   </tr>
-   <tr>
-	  <td>
-	   <div class="dimmerWidgetValueArea" align="center">
-          <span class="dimmerWidgetData" data-bind="text: DisplayValue"></span>
-		  &nbsp
-          <span class="dimmerWidgetData" data-bind="translatedText: unit"></span>
-       </div>
-	   </td>
-	   <td>
-		  <div class="btn-group-vertical btn-toggle">
-			 <button class="btn btn-lg btn-default" data-bind="event: {click: function() {commandClick( step() )}}"><span class="glyphicon glyphicon-plus"></span></button>
-			 <button class="btn btn-lg btn-default" data-bind="event: {click: function() {commandClick( -step() )}}"><span class="glyphicon glyphicon-minus"></span></button>
-		  </div>
-	   </td>
-	  </tr>
-	  </table>
+      <tr>
+         <td>
+            <div class="dimmerWidgetValueArea" align="center">
+               <span class="dimmerWidgetData" data-bind="text: DisplayValue"></span>
+               &nbsp
+               <span class="dimmerWidgetData" data-bind="translatedText: unit"></span>
+            </div>
+         </td>
+         <td>
+            <div class="btn-group-vertical btn-toggle">
+               <button class="btn btn-lg btn-default" data-bind="event: {click: function() {commandClick( step() )}}"><span class="glyphicon glyphicon-plus"></span></button>
+               <button class="btn btn-lg btn-default" data-bind="event: {click: function() {commandClick( -step() )}}"><span class="glyphicon glyphicon-minus"></span></button>
+            </div>
+         </td>
+      </tr>
+   </table>
 </script>

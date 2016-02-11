@@ -18,6 +18,7 @@
     text-align: center;
     background-color: #f9f9f9;
     border: 1px solid #E9E9E9;
+    -ms-border-radius: 5px;
     border-radius: 5px;
     margin: 5px;
 }
@@ -25,7 +26,7 @@
 #ul-add-widget li img {
     max-width: 100%;
     max-height: 100%;
-    margin-top: 0px;
+    margin-top: 0;
 }
 
 .widget-preview {
@@ -38,14 +39,15 @@
 }
 
 #add-widget-details {
-    right: 0px;
-    left: 0px;
-    top: 0px;
-    bottom: 0px;
+    right: 0;
+    left: 0;
+    top: 0;
+    bottom: 0;
     margin: 20px;
     position: absolute;
     border: 1px solid #E9E9E9;
     background-color: #f9f9f9;
+    -ms-border-radius: 3px;
     border-radius: 3px;
     display: none;
 }
@@ -76,6 +78,7 @@
 
 #add-widget-details .table-responsive {
     width: 70%;
+    -ms-border-radius: 3px;
     border-radius: 3px;
 }
 

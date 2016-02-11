@@ -18,7 +18,7 @@ class RemoveRule(unittest.TestCase):
    """Remove rule test"""
    
    def setUp(self):
-      database.withOneStoppedRule()
+      database.deploy('OneStoppedRule')
       scripts.deploy(["DisplayLatitude"])
       self.serverProcess = yadomsServer.start()
       self.browser = webdriver.Firefox()
@@ -58,7 +58,7 @@ class RemoveRule(unittest.TestCase):
       # Remove rule
       removeButton.click()
       confirmationModal = dashboard.automation.waitRemoveRuleConfirmationModal(self.browser)
-      confirmationModal.getConfirmationModalOkButton().click()
+      confirmationModal.getOkButton().click()
       
       # Notification expected
       notification.waitText(self.browser, notification.Type.Success, i18n.get()["modals"]["dashboard"]["sub-windows"]["automation-center"]["ruleDeleted"])
@@ -82,7 +82,7 @@ class RemoveRule(unittest.TestCase):
       # Remove rule
       removeButton.click()
       confirmationModal = dashboard.automation.waitRemoveRuleConfirmationModal(self.browser)
-      confirmationModal.getConfirmationModalCancelButton().click()
+      confirmationModal.getCancelButton().click()
       
       # No notification expected
       self.assertTrue(notification.noNotification(self.browser))

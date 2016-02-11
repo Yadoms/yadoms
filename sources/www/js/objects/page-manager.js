@@ -66,10 +66,10 @@ PageManager.getPage = function (pageId) {
 
 
 /**
- * 
- * @param {} pageName 
- * @param {} pageOrder 
- * @returns {} 
+ * Create a new page
+ * @param {} pageName The new page name
+ * @param {} pageOrder The new page order
+ * @returns {Promise} 
  */
 PageManager.createPage = function (pageName, pageOrder) {
    assert(!isNullOrUndefined(pageName), "pageName must be defined");
@@ -87,21 +87,26 @@ PageManager.createPage = function (pageName, pageOrder) {
    return d.promise();
 };
 
+/**
+ * Update a page
+ * @param {String|Integer} pageId The page id
+ * @param {String} pageName The page new name
+ * @param {String|Integer} pageOrder The page new order
+ * @returns {Promise} 
+ */
+PageManager.updatePage = function (pageId, pageName, pageOrder) {
+   assert(!isNullOrUndefined(pageId), "pageId must be defined");
+   assert(!isNullOrUndefined(pageName), "pageId must be defined");
+   return RestEngine.putJson("/rest/page/" + pageId, { data: JSON.stringify({ id: pageId, name: pageName, pageOrder: pageOrder }) });
+};
 
+/**
+ * Delete a page
+ * @param {Object} pageToDelete The page to dleete
+ * @returns {Promise} 
+ */
 PageManager.deletePage = function (pageToDelete) {
-
-   var d = new $.Deferred();
-
-   RestEngine.deleteJson("/rest/page/" + pageToDelete.id)
-   .done(function () {
-      pageToDelete.$tab.remove();
-      pageToDelete.$content.remove();
-      PageManager.pages.splice($.inArray(pageToDelete, PageManager.pages), 1);
-      PageManager.ensureOnePageIsSelected();
-      d.resolve();
-   })
-   .fail(d.reject);
-   return d.promise();
+   return RestEngine.deleteJson("/rest/page/" + pageToDelete.id);
 };
 
 PageManager.addPage = function (page) {
@@ -237,9 +242,12 @@ PageManager.addToDom = function (page) {
    });
 
    //we listen click event on delete click
-   page.$tab.find('div.delete-page').bind('click', function (e) {
+   page.$tab.find('div.delete-page').bind('click', function(e) {
       var pageId = $(e.currentTarget).parents("li.tabPagePills").attr("page-id");
-      modals.pageDelete.load(function (pageId) { return function () { showDeletePageModal(pageId) } }(pageId));
+      modals.pageDelete.loadAsync()
+         .done(function() {
+            showDeletePageModal(pageId);
+         });
    });
 
    //we listen click event on move left click
@@ -374,4 +382,13 @@ PageManager.enableCustomization = function (page, enable) {
       $(".customization-item").addClass("hidden");
       page.$tab.find("a").first().removeClass("pageCustomizationPill");
    }
+};
+
+/**
+ * Save a page customization to database
+ * @param {Object} page The page to save
+ * @returns {Promise} 
+ */
+PageManager.saveCustomization = function (page) {
+   return RestEngine.putJson("/rest/page/" + page.id + "/widget", { data: JSON.stringify(page.widgets) });
 };

@@ -53,24 +53,25 @@
         $container.slideUp(animationDuration, function() {
             $container.empty();
             if (isNullOrUndefined(subWindowList[subWindowPath])) {
-                //it's the first time we load this sub window
-                $.ajax(subWindowPath)
-                     .done(function(data) {
-                         var $data = $(data);
-                         $data.i18n();
-                         //we save it in the sub window list
-                         subWindowList[subWindowPath] = $data;
+               //it's the first time we load this sub window
 
-                         //we add the modal to the body
-                         $container.append($data);
-                         $container.slideDown(animationDuration);
-                         //we call the callback
-                         if ($.isFunction(callback))
-                             callback();
-                     })
-                     .fail(function() {
-                         notifyError($.t("modals.dashboard.unableToLoadSubWindow", {subWindowPath : subWindowPath}));
-                     });
+               RestEngine.getHtml(subWindowPath)
+               .done(function(data) {
+                     var $data = $(data);
+                     $data.i18n();
+                     //we save it in the sub window list
+                     subWindowList[subWindowPath] = $data;
+
+                     //we add the modal to the body
+                     $container.append($data);
+                     $container.slideDown(animationDuration);
+                     //we call the callback
+                     if ($.isFunction(callback))
+                        callback();
+               })
+               .fail(function(error) {
+                     notifyError($.t("modals.dashboard.unableToLoadSubWindow", {subWindowPath : subWindowPath}), error);
+               });
             }
             else {
                 //we already have loaded this sub window

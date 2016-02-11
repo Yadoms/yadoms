@@ -16,8 +16,6 @@ widgetViewModelCtor = function DimmerViewModel() {
 
    this.unit = ko.observable("");
 
-   this.showDeviceName = ko.observable(true);
-
    this.commandClick = function (value) {
       if ((!isNullOrUndefined(this.widget.configuration)) && (!isNullOrUndefined(this.widget.configuration.device))) {
          this.command(this.command() + value);
@@ -43,10 +41,6 @@ widgetViewModelCtor = function DimmerViewModel() {
 
       //we register keyword new acquisition
       WidgetApi.keyword.registerKeywordAcquisitions(self.widget, self.widget.configuration.device.keywordId);
-
-      if (!isNullOrUndefined(self.widget.configuration.showDeviceName)) {
-         this.showDeviceName(parseBool(self.widget.configuration.showDeviceName));
-      }
 
       //Read the step
       self.step(self.widget.configuration.StepValue);

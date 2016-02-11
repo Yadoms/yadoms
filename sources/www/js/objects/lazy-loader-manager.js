@@ -31,7 +31,7 @@ LazyLoaderManager.prototype.load = function (callback){
    }
    else
    {
-      $.ajax(self.modalPath)
+      RestEngine.getHtml(self.modalPath)
          .done(function(data) {
             var $data = $(data);
             $data.i18n();
@@ -42,8 +42,40 @@ LazyLoaderManager.prototype.load = function (callback){
             //we call the callback
             callback();
          })
-         .fail(function() {
-            notifyError($.t("objects.lazyLoaderManager.unableToLoadModal", {modalPath : self.modalPath}));
+         .fail(function(error) {
+            notifyError($.t("objects.lazyLoaderManager.unableToLoadModal", {modalPath : self.modalPath}), error);
          });
    }
+};
+
+/**
+ * Load the modal with lazy loading if needed
+ * @param callback
+ */
+LazyLoaderManager.prototype.loadAsync = function () {
+   var d = new $.Deferred();
+
+   var self = this;
+   if (self.modalHasBeenLoaded) {
+      //we simply call the callback function
+      d.resolve();
+   }
+   else {
+      RestEngine.getHtml(self.modalPath)
+      .done(function(data) {
+         var $data = $(data);
+         $data.i18n();
+         //we add the modal to the body
+         $('body').append($data);
+         //we save the information that the modal has been loaded
+         self.modalHasBeenLoaded = true;
+         //we call the callback
+         d.resolve();
+      })
+      .fail(function(error) {
+         notifyError($.t("objects.lazyLoaderManager.unableToLoadModal", { modalPath: self.modalPath }), error);
+         d.reject(error);
+      });
+   }
+   return d.promise();
 };
