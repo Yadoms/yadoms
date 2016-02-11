@@ -470,64 +470,66 @@ WidgetManager.addToDom_ = function (widget, ensureVisible) {
    //we apply binding to the view
    ko.applyBindings(widget.viewModel, widget.$div[0]);
 
-   //we initialize the widget
-   try {
-      if (widget.viewModel.initialize !== undefined)
-         widget.viewModel.initialize(widget);
-   }
-   catch (e) {
-      notifyWarning($.t("objects.widgetManager.widgetHasGeneratedAnExceptionDuringCallingMethod", { widgetName: widget.type, methodName: 'initialize' }));
-      console.warn(e);
-   }
-
-   //we notify that configuration has changed
-   WidgetManager.updateWidgetConfiguration_(widget);
-
-   //we notify that widget has been resized
-   try {
-      if (widget.viewModel.resized !== undefined) {
-         widget.viewModel.resized();
-      }
-   }
-   catch (e) {
-      notifyWarning($.t("widgets.errors.widgetHasGeneratedAnExceptionDuringCallingMethod", { widgetName: widget.type, methodName: 'resized' }));
-      console.warn(e);
-   }
-
-   //we listen click event on configure click
+    //we listen click event on configure click
    widget.$gridWidget.find('div.btn-configure-widget').bind('click', function (e) {
-      var widgetDomElement = $(e.currentTarget).parents(".widget");
-      var pageId = widgetDomElement.attr("page-id");
-      var widgetId = widgetDomElement.attr("widget-id");
-      modals.widgetConfiguration.loadAsync()
-      .done(function () {
-         var widgetToConfigure = WidgetManager.get(pageId, widgetId);
-         configureWidget(widgetToConfigure, function () {
-            WidgetManager.updateToServer(widgetToConfigure);
-         });
-      });
+       var widgetDOMElement = $(e.currentTarget).parents(".widget");
+       var pageId = widgetDOMElement.attr("page-id");
+       var widgetId = widgetDOMElement.attr("widget-id");
+       modals.widgetConfiguration.load(function (pageId, widgetId) {
+           return function () {
+               var widgetToConfigure = WidgetManager.get(pageId, widgetId);
+               configureWidget(widgetToConfigure, function () {
+                   WidgetManager.updateToServer(widgetToConfigure);
+               });
+           }
+       }(pageId, widgetId));
    });
 
-   //we listen click event on delete click
+    //we listen click event on delete click
    widget.$gridWidget.find('div.btn-delete-widget').bind('click', function (e) {
-      var widgetDomElement = $(e.currentTarget).parents(".widget");
-      var pageId = widgetDomElement.attr("page-id");
-      var widgetId = widgetDomElement.attr("widget-id");
-      modals.widgetDelete.loadAsync()
-      .done(function () {
-         showDeleteWidgetModal(pageId, widgetId);
-      });
+       var widgetDOMElement = $(e.currentTarget).parents(".widget");
+       var pageId = widgetDOMElement.attr("page-id");
+       var widgetId = widgetDOMElement.attr("widget-id");
+       modals.widgetDelete.load(function (pageId, widgetId) { return function () { showDeleteWidgetModal(pageId, widgetId) } }(pageId, widgetId));
    });
 
+    //we initialize the widget
+    try {
+        if (widget.viewModel.initialize !== undefined) {
+            var defferedResult = widget.viewModel.initialize(widget);
+            //we manage answer if it is a promise or not
+            defferedResult = defferedResult || new $.Deferred().resolve();
+            defferedResult.done(function () {
+                //we notify that configuration has changed
+                WidgetManager.updateWidgetConfiguration_(widget);
 
-   widget.$gridWidget.i18n();
+                //we notify that widget has been resized
+                try {
+                    if (widget.viewModel.resized !== undefined) {
+                        widget.viewModel.resized();
+                    }
+                }
+                catch (e) {
+                    notifyWarning($.t("widgets.errors.widgetHasGeneratedAnExceptionDuringCallingMethod", { widgetName: widget.type, methodName: 'resized' }));
+                    console.warn(e);
+                }
 
-   if (ensureVisible === true) {
-      //ensure the item is completly visible
-      $.ensureVisible(widget.$gridWidget, true);
-   }
-   //we ask for widget refresh data
-   updateWidgetPolling(widget);
+                widget.$gridWidget.i18n();
+
+                if (ensureVisible === true) {
+                    //ensure the item is completly visible
+                    $.ensureVisible(widget.$gridWidget, true);
+                }
+
+                //we ask for widget refresh data
+                updateWidgetPolling(widget);
+            });
+        }
+    }
+    catch (e) {
+        notifyWarning($.t("objects.widgetManager.widgetHasGeneratedAnExceptionDuringCallingMethod", { widgetName: widget.type, methodName: 'initialize' }));
+        console.warn(e);
+    }
 };
 
 

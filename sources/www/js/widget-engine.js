@@ -277,7 +277,6 @@ function dispatchToWidgets(acq) {
 }
 
 function updateWebSocketFilter() {
-   console.log("updateWebSocketFilter()");
    if (WebSocketEngine.isActive()) {
       var page = PageManager.getCurrentPage();
       if (page == null)
