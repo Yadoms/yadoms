@@ -31,6 +31,10 @@ std::string CContextAccessor::createId()
 
 void CContextAccessor::doWork()
 {
+   // Verify that the version of the library that we linked against is
+   // compatible with the version of the headers we compiled against.
+   GOOGLE_PROTOBUF_VERIFY_VERSION;
+
    const std::string sendMessageQueueId(m_id + ".toScript");
    const std::string receiveMessageQueueId(m_id + ".toYadoms");
    const CMessageQueueRemover sendMessageQueueRemover(sendMessageQueueId);
@@ -43,7 +47,7 @@ void CContextAccessor::doWork()
 
       m_readyBarrier.wait();
 
-      char message[m_messageQueueMessageSize];
+      unsigned char message[m_messageQueueMessageSize];
       size_t messageSize;
       unsigned int messagePriority;
       while (true)
@@ -83,6 +87,9 @@ void CContextAccessor::doWork()
    }
 
    YADOMS_LOG(debug) << "Close message queues";
+
+   // Delete all global objects allocated by libprotobuf.
+   google::protobuf::ShutdownProtobufLibrary();
 }
 
 void CContextAccessor::sendAnswer(EAnswerIdentifier answerId, const shared::CDataContainer& answer, boost::interprocess::message_queue& messageQueue)
@@ -97,32 +104,50 @@ void CContextAccessor::sendAnswer(EAnswerIdentifier answerId, const shared::CDat
    messageQueue.send(serializedRequest.c_str(), serializedRequest.size(), 0);
 }
 
-void CContextAccessor::processMessage(const char* message, size_t messageSize, boost::interprocess::message_queue& messageQueue)
+void CContextAccessor::processMessage(const void* message, size_t messageSize, boost::interprocess::message_queue& messageQueue)
 {
    if (messageSize < 1)
       throw shared::exception::CInvalidParameter("messageSize");
 
    // Unserialize message
-   shared::CDataContainer mainRequestContainer(std::string(message, messageSize));
-   if (!mainRequestContainer.exists("type") || !mainRequestContainer.exists("content"))
-      throw shared::exception::CInvalidParameter("message"); 
+   wrapperMessages::ToYadoms request;
+   if (!request.ParseFromArray(message, messageSize))
+      throw shared::exception::CInvalidParameter("message");
 
    // Process message
-   shared::CDataContainer request = mainRequestContainer.get<shared::CDataContainer>("content");
-   switch (mainRequestContainer.get<ERequestIdentifier>("type"))
+   if (request.has_keywordidrequest())
+      processGetKeywordId(request.keywordidrequest(), messageQueue);
+
+   //TODO nettoyage
+   //shared::CDataContainer request = mainRequestContainer.get<shared::CDataContainer>("content");
+   //switch (mainRequestContainer.get<ERequestIdentifier>("type"))
+   //{
+   //case kReqGetKeywordId            : processGetKeywordId(request, messageQueue); break;
+   //case kReqGetRecipientId          : processGetRecipientId(request, messageQueue); break;
+   //case kReqReadKeyword             : processReadKeyword(request, messageQueue); break;
+   //case kReqWaitForNextAcquisition  : processWaitForNextAcquisition(request, messageQueue); break;
+   //case kReqWaitForNextAcquisitions : processWaitForNextAcquisitions(request, messageQueue); break;
+   //case kReqWaitForEvent            : processWaitForEvent(request, messageQueue); break;
+   //case kReqWriteKeyword            : processWriteKeyword(request, messageQueue); break;
+   //case kReqSendNotification        : processSendNotification(request, messageQueue); break;
+   //case kReqGetInfo                 : processGetInfo(request, messageQueue); break;
+   //default:
+   //   throw shared::exception::CInvalidParameter("message");
+   //}
+}
+
+void CContextAccessor::processGetKeywordId(const wrapperMessages::ToYadoms_KeywordIdRequest& request, boost::interprocess::message_queue& messageQueue)
+{
+   shared::CDataContainer answer;
+   try
    {
-   case kReqGetKeywordId            : processGetKeywordId(request, messageQueue); break;
-   case kReqGetRecipientId          : processGetRecipientId(request, messageQueue); break;
-   case kReqReadKeyword             : processReadKeyword(request, messageQueue); break;
-   case kReqWaitForNextAcquisition  : processWaitForNextAcquisition(request, messageQueue); break;
-   case kReqWaitForNextAcquisitions : processWaitForNextAcquisitions(request, messageQueue); break;
-   case kReqWaitForEvent            : processWaitForEvent(request, messageQueue); break;
-   case kReqWriteKeyword            : processWriteKeyword(request, messageQueue); break;
-   case kReqSendNotification        : processSendNotification(request, messageQueue); break;
-   case kReqGetInfo                 : processGetInfo(request, messageQueue); break;
-   default:
-      throw shared::exception::CInvalidParameter("message");
+      answer.set("returnValue", m_scriptApi->getKeywordId(request.devicename(), request.keywordname()));
    }
+   catch (std::exception& ex)
+   {
+      answer.set("error", ex.what());
+   }
+   sendAnswer(kAnsGetKeywordId, answer, messageQueue);
 }
 
 void CContextAccessor::processGetKeywordId(const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue)

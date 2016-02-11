@@ -36,10 +36,10 @@ public:
 protected:
    //--------------------------------------------------------------
    /// \brief	Send a request
-   /// \param[in] requestId The request message identifier
-   /// \param[in] request The request
+   /// \param[in] request Request to send
    //--------------------------------------------------------------
-   void sendRequest(ERequestIdentifier requestId, const shared::CDataContainer& request) const;
+   void sendRequest(const google::protobuf::Message& request) const;
+   void sendRequest(ERequestIdentifier requestId, const shared::CDataContainer& request) const;//TODO virer
 
    //--------------------------------------------------------------
    /// \brief	Wait for an answer

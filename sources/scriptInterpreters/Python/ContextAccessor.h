@@ -43,13 +43,14 @@ protected:
    /// \param[in] messageSize The message size
    /// \param[in] boost::interprocess::message_queue Message queue used to send answer
    //--------------------------------------------------------------
-   void processMessage(const char* message, size_t messageSize, boost::interprocess::message_queue& messageQueue);
+   void processMessage(const void* message, size_t messageSize, boost::interprocess::message_queue& messageQueue);
 
    //--------------------------------------------------------------
    /// \brief	Process messages
    /// \param[in] request Received requests
    /// \param[in] messageQueue Message Queue used for answer
    //--------------------------------------------------------------
+   void processGetKeywordId(const wrapperMessages::ToYadoms_KeywordIdRequest& request, boost::interprocess::message_queue& messageQueue);
    void processGetKeywordId            (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
    void processGetRecipientId          (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
    void processReadKeyword             (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);

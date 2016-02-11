@@ -1,12 +1,22 @@
-package python;
+package wrapperMessages;
 
 message ToYadoms {
 
-  message KeywordIdRequest {
-    required string deviceName = 1;
-    required string keywordName = 2;
-  }
-  
-  optional KeywordIdRequest keywordIdRequest = 1;
+// TODO ajouter une version ?
+
+   message KeywordIdRequest
+   {
+      required string deviceName = 1;
+      required string keywordName = 2;
+   }
+
+   message KeywordIdAnswer
+   {
+      optional string error = 1;
+      required int32 keywordId = 2;
+   }
+
+   optional KeywordIdRequest keywordIdRequest = 1;
+   optional KeywordIdAnswer keywordIdAnswer = 2;
 
 }

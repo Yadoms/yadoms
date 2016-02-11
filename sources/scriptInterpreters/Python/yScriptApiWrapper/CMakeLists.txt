@@ -21,6 +21,9 @@ set(PYTHON_WRAPPER_SOURCES
    yScriptApiImplementation.cpp
    
    yScriptApiDoc.json
+   
+   ${PROTO_SRCS}
+   ${PROTO_HDRS}
 )
 
 #########################################
@@ -69,7 +72,7 @@ endif()
 #########################################
 SCRIPT_API_WRAPPER_SOURCES(python ${PYTHON_WRAPPER_SOURCES})
 SCRIPT_API_WRAPPER_INCLDIR(${PYTHON_WRAPPER_INCLDIR} ${PROTOBUF_INCLUDE_DIRS} ${PROTOBUF_GENERATED_DIR})
-SCRIPT_API_WRAPPER_LINK(${PYTHON_WRAPPER_LINK})
+SCRIPT_API_WRAPPER_LINK(${PYTHON_WRAPPER_LINK} ${PROTOBUF_LIBRARIES})
 
 
 #########################################

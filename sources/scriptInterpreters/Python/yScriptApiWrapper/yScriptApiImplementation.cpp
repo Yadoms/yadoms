@@ -8,6 +8,10 @@
 
 CYScriptApiImplementation::CYScriptApiImplementation(const std::string& yScriptApiAccessorId)
 {
+   // Verify that the version of the library that we linked against is
+   // compatible with the version of the headers we compiled against.
+   GOOGLE_PROTOBUF_VERIFY_VERSION;
+
    try
    {
       const std::string sendMessageQueueId(yScriptApiAccessorId + ".toYadoms");
@@ -27,6 +31,31 @@ CYScriptApiImplementation::CYScriptApiImplementation(const std::string& yScriptA
 
 CYScriptApiImplementation::~CYScriptApiImplementation()
 {
+   // Delete all global objects allocated by libprotobuf.
+   google::protobuf::ShutdownProtobufLibrary();
+}
+
+void CYScriptApiImplementation::sendRequest(const google::protobuf::Message& request) const
+{
+   try
+   {
+      unsigned char message[m_messageQueueMessageSize]; //TODO à mettre dans la classe pour ne pas allouer/désallouer sans cesse
+
+      if (!request.IsInitialized())
+         throw std::overflow_error("CYScriptApiImplementation::sendRequest : request is not fully initialized");
+
+      if (request.ByteSize() > m_messageQueueMessageSize)
+         throw std::overflow_error("CYScriptApiImplementation::sendRequest : request is too big");
+
+      if (!request.SerializeToArray(message, m_messageQueueMessageSize))
+         throw std::overflow_error("CYScriptApiImplementation::sendRequest : fail to serialize request (too big ?)");
+
+      m_sendMessageQueue->send(message, request.GetCachedSize(), 0);
+   }
+   catch (boost::interprocess::interprocess_exception& ex)
+   {
+      throw std::overflow_error(std::string("yScriptApiWrapper::sendRequest : Error at IYScriptApi method call, ") + ex.what());
+   }
 }
 
 void CYScriptApiImplementation::sendRequest(ERequestIdentifier requestId, const shared::CDataContainer& request) const
@@ -74,10 +103,11 @@ shared::CDataContainer CYScriptApiImplementation::receiveAnswer(EAnswerIdentifie
 
 int CYScriptApiImplementation::getKeywordId(const std::string& deviceName, const std::string& keywordName) const
 {
-   shared::CDataContainer request;
-   request.set("device", deviceName);
-   request.set("keyword", keywordName);
-   sendRequest(kReqGetKeywordId, request);
+   wrapperMessages::ToYadoms req;
+   wrapperMessages::ToYadoms_KeywordIdRequest* request = req.mutable_keywordidrequest();
+   request->set_devicename(deviceName);
+   request->set_keywordname(keywordName);
+   sendRequest(req);
 
    shared::CDataContainer answer = receiveAnswer(kAnsGetKeywordId);
 
