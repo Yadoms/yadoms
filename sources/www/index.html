@@ -362,8 +362,8 @@
                         systemConfiguration = result;
                         //we set the right language
                         i18n.setLng(systemConfiguration[ConfigurationManager.items.system.language].value, function () {
-                            $("html").i18n();
-                            moment.lang(systemConfiguration[ConfigurationManager.items.system.language].value);
+                           $("html").i18n();
+                            moment.lang(window.navigator.userLanguage || window.navigator.language);
                             WebSocketEngine.initializeWebSocketEngine(function () {
                                 //we listen acquisitionupdate event
                                 $(document).on("acquisitionupdate", function (e, websocketData) {

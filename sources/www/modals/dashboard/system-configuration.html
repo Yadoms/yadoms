@@ -31,7 +31,7 @@
 
             //*************
             //language
-            var languageParameter = new EnumParameterHandler(i18NContext, ConfigurationManager.items.system.language, { "values": window.getIsoLanguageArray(), "defaultValue": systemConfiguration[ConfigurationManager.items.system.language].defaultValue, "sort": true }, systemConfiguration[ConfigurationManager.items.system.language].value);
+            var languageParameter = new EnumParameterHandler(i18NContext, ConfigurationManager.items.system.language, { "values": window.getSupportedLanguages(), "defaultValue": systemConfiguration[ConfigurationManager.items.system.language].defaultValue, "sort": true }, systemConfiguration[ConfigurationManager.items.system.language].value);
 
             //*************
             //Basic Authentication parameters
@@ -161,7 +161,6 @@
                      //we change language of i18n
                      i18n.setLng(systemConfiguration[ConfigurationManager.items.system.language].value, function () {
                         $("html").i18n();
-                        moment.lang(systemConfiguration[ConfigurationManager.items.system.language].value);
                      });
 
 
@@ -277,7 +276,6 @@
                               //we change language of i18n
                               i18n.setLng(systemConfiguration[ConfigurationManager.items.system.language].value, function () {
                                  $("html").i18n();
-                                 moment.lang(systemConfiguration[ConfigurationManager.items.system.language].value);
                               });
 
                               //*************
