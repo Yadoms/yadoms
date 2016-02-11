@@ -71,7 +71,6 @@ EnumParameterHandler.prototype.setValues = function (values) {
 
 EnumParameterHandler.arrangeCollection = function (collection, alphabeticallySort) {
    var sortable = [];
-    debugger;
    $.each(collection, function (key, value) {
       if (value !== undefined && key && key !== "undefined")
          sortable.push([key, value]);
