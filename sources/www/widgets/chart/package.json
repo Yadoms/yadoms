@@ -80,7 +80,8 @@
 						"defaultValue": "#0000FF"
 					},
 					"PlotType": {
-						"type": "enum",
+            "type": "enum",
+            "sort": "true",
 						"values": {
 							"line": "",
 							"bar": "",
