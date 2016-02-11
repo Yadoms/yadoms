@@ -123,7 +123,8 @@ function WeatherViewModel() {
 	 if ((isNullOrUndefined(self.widget)) || (isNullOrUndefinedOrEmpty(self.widget.configuration)))
 		return;	  
 	 
-	 this.widget.ListenKeyword(this.widget.configuration.device.keywordId);
+     //we register keyword new acquisition
+	 WidgetApi.keyword.registerKeywordAcquisitions(self.widget, self.widget.configuration.device.keywordId);
 
 	 try
 	 {

@@ -23,150 +23,164 @@ widgetViewModelCtor =
        * @param widget widget class object
        */
       this.initialize = function (widget) {
+
+         var d = new $.Deferred();
          this.widget = widget;
          var self = this;
 
          // create the chart
          this.$chart = self.widget.$gridWidget.find("div.chartWidgetContainer");
+          debugger;
+          WidgetApi.loadLibrary([
+              "libs/highstock/js/highstock.js",
+              "libs/highstock/js/highcharts-more.js",
+              "libs/highstock/js/modules/exporting.js",
+              "libs/highstock/js/modules/solid-gauge.js",
+              "libs/highcharts-export-clientside/js/highcharts-export-clientside.min.js"
+          ]).done(function() {
 
-         this.chartOption = {
-            chart: {
-               type: 'line',
-               marginTop: 10
-            },
-            legend: {
-               layout: 'horizontal',
-               align: 'center',
-               verticalAlign: 'bottom',
-               borderWidth: 0,
-               enabled: true
-            },
-            navigator: {
-               adaptToUpdatedData: false,
-               enabled: false
-            },
-            credits: {
-               enabled: false
-            },
-            rangeSelector: {
-               enabled: false
-            },
+              self.chartOption = {
+                  chart: {
+                      type: 'line',
+                      marginTop: 10
+                  },
+                  legend: {
+                      layout: 'horizontal',
+                      align: 'center',
+                      verticalAlign: 'bottom',
+                      borderWidth: 0,
+                      enabled: true
+                  },
+                  navigator: {
+                      adaptToUpdatedData: false,
+                      enabled: false
+                  },
+                  credits: {
+                      enabled: false
+                  },
+                  rangeSelector: {
+                      enabled: false
+                  },
 
-            title: {
-               text: null
-            },
+                  title: {
+                      text: null
+                  },
 
-            scrollbar: {
-               enabled: false
-            },
+                  scrollbar: {
+                      enabled: false
+                  },
 
-            subtitle: {
-               text: ''
-            },
+                  subtitle: {
+                      text: ''
+                  },
 
-            xAxis: {
-               ordinal: false, //axis is linear
-               events: {},
-               labels: {
-                  formatter: function () {
-                     if (this.chart.interval) {
-                        switch (this.chart.interval) {
-                           default:
-                           case "HOUR":
-                           case "DAY":
-                              return DateTimeFormatter.dateToString(this.value, "LT");
-                              break;
-                           case "WEEK":
-                           case "MONTH":
-                           case "HALF_YEAR":
-                           case "YEAR":
-                              return DateTimeFormatter.dateToString(this.value, "L");
-                              break;
-                        }
-                     }
-                     return DateTimeFormatter.dateToString(this.value);
-                  }
-               }
-            },
+                  xAxis: {
+                      ordinal: false, //axis is linear
+                      events: {},
+                      labels: {
+                          formatter: function() {
+                              if (self.chart.interval) {
+                                  switch (self.chart.interval) {
+                                  default:
+                                  case "HOUR":
+                                  case "DAY":
+                                      return DateTimeFormatter.dateToString(this.value, "LT");
+                                      break;
+                                  case "WEEK":
+                                  case "MONTH":
+                                  case "HALF_YEAR":
+                                  case "YEAR":
+                                      return DateTimeFormatter.dateToString(this.value, "L");
+                                      break;
+                                  }
+                              }
+                              return DateTimeFormatter.dateToString(this.value);
+                          }
+                      }
+                  },
 
-            yAxis: { // Default Axis
-            },
+                  yAxis: {
+                    // Default Axis
+                  },
 
-            plotOptions: {
-               bar: {
-                  pointPadding: 0.2
-               },
-            },
+                  plotOptions: {
+                      bar: {
+                          pointPadding: 0.2
+                      },
+                  },
 
-            tooltip: {
-               useHTML: true,
-               enabled: true,
-               formatter: function () {
-                  var s = "<b>" + DateTimeFormatter.dateToString(this.x, "llll") + "</b>";
-                  $.each(this.points, function () {
-                     if (!this.series.hideInLegend) {
-                        if (isNullOrUndefined(this.point.low)) { //Standard serie
-                           s += "<br/><i style=\"color: " + this.series.color + ";\" class=\"fa fa-circle\"></i>&nbsp;" +
-                              this.series.name + " : " + this.y.toFixed(1) + " " + this.series.units;
-                        } else { //Range Serie
-                           s += "<br/><i style=\"color: " + this.series.color + ";\" class=\"fa fa-circle\"></i>&nbsp;" +
-                              this.series.name + " : " + this.point.low.toFixed(1) + "-" + this.point.high.toFixed(1) + " " + this.series.units;
-                        }
-                     }
+                  tooltip: {
+                      useHTML: true,
+                      enabled: true,
+                      formatter: function() {
+                          var s = "<b>" + DateTimeFormatter.dateToString(this.x, "llll") + "</b>";
+                          $.each(this.points, function() {
+                              if (!this.series.hideInLegend) {
+                                  if (isNullOrUndefined(this.point.low)) { //Standard serie
+                                      s += "<br/><i style=\"color: " + this.series.color + ";\" class=\"fa fa-circle\"></i>&nbsp;" +
+                                          this.series.name + " : " + this.y.toFixed(1) + " " + this.series.units;
+                                  } else { //Range Serie
+                                      s += "<br/><i style=\"color: " + this.series.color + ";\" class=\"fa fa-circle\"></i>&nbsp;" +
+                                          this.series.name + " : " + this.point.low.toFixed(1) + "-" + this.point.high.toFixed(1) + " " + this.series.units;
+                                  }
+                              }
+                          });
+                          return s;
+                      },
+                      shared: true
+                  },
+
+                  exporting: {
+                      enabled: false
+                  },
+
+                  series: []
+              };
+              
+              self.$chart.highcharts('StockChart', this.chartOption);
+              self.chart = self.$chart.highcharts();
+
+              //we manage toolbar buttons
+              WidgetApi.toolbar.appendCustom(self.widget, "<div class=\"widget-toolbar-button range-btn\" interval=\"HOUR\"><span data-i18n=\"widgets/chart:navigator.hour\"/></div>");
+              WidgetApi.toolbar.appendCustom(self.widget, "<div class=\"widget-toolbar-button range-btn\" interval=\"DAY\"><span data-i18n=\"widgets/chart:navigator.day\"/></div>");
+              WidgetApi.toolbar.appendCustom(self.widget, "<div class=\"widget-toolbar-button range-btn\" interval=\"WEEK\"><span data-i18n=\"widgets/chart:navigator.week\"/></div>");
+              WidgetApi.toolbar.appendCustom(self.widget, "<div class=\"widget-toolbar-button range-btn\" interval=\"MONTH\"><span data-i18n=\"widgets/chart:navigator.month\"/></div>");
+              WidgetApi.toolbar.appendCustom(self.widget, "<div class=\"widget-toolbar-button range-btn\" interval=\"HALF_YEAR\"><span data-i18n=\"widgets/chart:navigator.half_year\"/></div>");
+              WidgetApi.toolbar.appendCustom(self.widget, "<div class=\"widget-toolbar-button range-btn\" interval=\"YEAR\"><span data-i18n=\"widgets/chart:navigator.year\"/></div>");
+              WidgetApi.toolbar.appendSeparator(self.widget);
+              /*
+             widget.$toolbar.append("<div class=\"widget-toolbar-separator\"></div>");*/
+              WidgetApi.toolbar.appendCustom(self.widget, "<div class=\"widget-toolbar-button export-btn dropdown\">" +
+                  "<span class=\"dropdown-toggle\" id=\"chartExportMenu\"  type=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"true\">" +
+                  "<span class=\"fa fa-bars\"/>" +
+                  "</span>" +
+                  "<ul class=\"dropdown-menu\" aria-labelledby=\"chartExportMenu\">" +
+                  "<li><span class=\"print-command\" data-i18n=\"widgets/chart:export.print\"></span></li>" +
+                  "<li role=\"separator\" class=\"divider\"></li>" +
+                  "<li><span class=\"export-command\" data-i18n=\"widgets/chart:export.png\" mime-type=\"image/png\"></span></li>" +
+                  "<li><span class=\"export-command\" data-i18n=\"widgets/chart:export.jpeg\" mime-type=\"image/jpeg\"></span></li>" +
+                  "<li><span class=\"export-command\" data-i18n=\"widgets/chart:export.svg\" mime-type=\"image/svg+xml\"></span></li>" +
+                  "<li><span class=\"export-command\" data-i18n=\"widgets/chart:export.csv\" mime-type=\"text/csv\"></span></li>" +
+                  "<li><span class=\"export-command\" data-i18n=\"widgets/chart:export.xls\" mime-type=\"application/vnd.ms-excel\"></span></li>" +
+                  "</ul>" +
+                  "</div>");
+
+              var $btns = self.widget.$gridWidget.find(".range-btn");
+              $btns.unbind("click").bind("click", self.navigatorBtnClick());
+
+              self.widget.$gridWidget.find(".print-command").unbind("click").bind("click", function() {
+                  self.chart.print();
+              });
+
+              self.widget.$gridWidget.find(".export-command").unbind("click").bind("click", function(e) {
+                  self.chart.exportChartLocal({
+                      type: $(e.currentTarget).attr("mime-type"),
+                      filename: 'export'
                   });
-                  return s;
-               },
-               shared: true
-            },
-
-            exporting: {
-               enabled: false
-            },
-
-            series: []
-         };
-
-         this.$chart.highcharts('StockChart', this.chartOption);
-         this.chart = this.$chart.highcharts();
-
-         //we manage toolbar buttons
-         ToolbarApi.appendCustomIcon(this.widget, "<div class=\"widget-toolbar-button range-btn\" interval=\"HOUR\"><span data-i18n=\"widgets/chart:navigator.hour\"/></div>");
-         ToolbarApi.appendCustomIcon(this.widget, "<div class=\"widget-toolbar-button range-btn\" interval=\"DAY\"><span data-i18n=\"widgets/chart:navigator.day\"/></div>");
-         ToolbarApi.appendCustomIcon(this.widget, "<div class=\"widget-toolbar-button range-btn\" interval=\"WEEK\"><span data-i18n=\"widgets/chart:navigator.week\"/></div>");
-         ToolbarApi.appendCustomIcon(this.widget, "<div class=\"widget-toolbar-button range-btn\" interval=\"MONTH\"><span data-i18n=\"widgets/chart:navigator.month\"/></div>");
-         ToolbarApi.appendCustomIcon(this.widget, "<div class=\"widget-toolbar-button range-btn\" interval=\"HALF_YEAR\"><span data-i18n=\"widgets/chart:navigator.half_year\"/></div>");
-         ToolbarApi.appendCustomIcon(this.widget, "<div class=\"widget-toolbar-button range-btn\" interval=\"YEAR\"><span data-i18n=\"widgets/chart:navigator.year\"/></div>");
-         ToolbarApi.appendSeparator(this.widget);
-         /*widget.$toolbar.append("<div class=\"widget-toolbar-element\"><span class=\"fa fa-signal\"/></div>");
-         widget.$toolbar.append("<div class=\"widget-toolbar-separator\"></div>");*/
-         ToolbarApi.appendCustomIcon(this.widget, "<div class=\"widget-toolbar-button export-btn dropdown\">" +
-                                                      "<span class=\"dropdown-toggle\" id=\"chartExportMenu\"  type=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"true\">" +
-                                                          "<span class=\"fa fa-bars\"/>" +
-                                                      "</span>" +
-                                                      "<ul class=\"dropdown-menu\" aria-labelledby=\"chartExportMenu\">" +
-                                                          "<li><span class=\"print-command\" data-i18n=\"widgets/chart:export.print\"></span></li>" +
-                                                          "<li role=\"separator\" class=\"divider\"></li>" +
-                                                          "<li><span class=\"export-command\" data-i18n=\"widgets/chart:export.png\" mime-type=\"image/png\"></span></li>" +
-                                                          "<li><span class=\"export-command\" data-i18n=\"widgets/chart:export.jpeg\" mime-type=\"image/jpeg\"></span></li>" +
-                                                          "<li><span class=\"export-command\" data-i18n=\"widgets/chart:export.svg\" mime-type=\"image/svg+xml\"></span></li>" +
-                                                          "<li><span class=\"export-command\" data-i18n=\"widgets/chart:export.csv\" mime-type=\"text/csv\"></span></li>" +
-                                                          "<li><span class=\"export-command\" data-i18n=\"widgets/chart:export.xls\" mime-type=\"application/vnd.ms-excel\"></span></li>" +
-                                                      "</ul>" +
-                                                  "</div>");
-
-         var $btns = self.widget.$gridWidget.find(".range-btn");
-         $btns.unbind("click").bind("click", self.navigatorBtnClick());
-
-         self.widget.$gridWidget.find(".print-command").unbind("click").bind("click", function () {
-            self.chart.print();
-         });
-
-         self.widget.$gridWidget.find(".export-command").unbind("click").bind("click", function (e) {
-            self.chart.exportChartLocal({
-               type: $(e.currentTarget).attr("mime-type"),
-               filename: 'export'
-            });
-         });
+              });
+              d.resolve();
+          });
+          return d.promise();
       };
 
       this.resized = function () {
@@ -196,7 +210,6 @@ widgetViewModelCtor =
          self.seriesUuid = [];
          self.devicesList = self.widget.configuration.devices.slice(0);
 
-
          // Size of the promise is double.
          // The low part is for the keywords.
          // The high part is for the devices.
@@ -209,8 +222,8 @@ widgetViewModelCtor =
             if (isNullOrUndefined(self.seriesUuid[index]))
                self.seriesUuid[index] = createUUID();
 
-            //we add the keywordId to the listenedList
-            self.widget.ListenKeyword(device.content.source.keywordId);
+            //we register keyword new acquisition
+            WidgetApi.keyword.registerKeywordAcquisitions(self.widget, device.content.source.keywordId);
 
             // We ask the current device name
             DeviceManager.get(device.content.source.deviceId)

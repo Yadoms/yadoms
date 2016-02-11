@@ -59,7 +59,8 @@ function CounterDisplayViewModel() {
 
       var self = this;
 
-      this.widget.ListenKeyword(this.widget.configuration.device.keywordId);
+      //we register keyword new acquisition
+      WidgetApi.keyword.registerKeywordAcquisitions(self.widget, self.widget.configuration.device.keywordId);
 
       //we fill the deviceId of the battery indicator
       this.widget.$toolbar.find(".widget-toolbar-battery").attr("deviceId", self.widget.configuration.device.deviceId);

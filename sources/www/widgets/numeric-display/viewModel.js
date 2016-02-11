@@ -4,7 +4,7 @@ widgetViewModelCtor =
  * Create a Numeric Display ViewModel
  * @constructor
  */
-function NumericDisplayViewModel() {
+function numericDisplayViewModel() {
     //observable data
     this.data = ko.observable(0).extend({ numeric: 1 });
     this.unit = ko.observable("");
@@ -21,7 +21,7 @@ function NumericDisplayViewModel() {
         this.widget = widget;
 
         //we create the battery indicator
-        ToolbarApi.addBatteryIconToWidget(this.widget);
+        WidgetApi.toolbar.addBatteryIcon(this.widget);
     };
 
     /**
@@ -35,7 +35,7 @@ function NumericDisplayViewModel() {
     this.configurationChanged = function () {
 
         var self = this;
-
+        /*
         //we get the unit of the keyword
         KeywordManager.get(self.widget.configuration.device.keywordId).done(function (keyword) {
             self.unit($.t(keyword.units));
@@ -45,6 +45,16 @@ function NumericDisplayViewModel() {
 
         //we fill the deviceId of the battery indicator
         ToolbarApi.configureBatteryIcon(this.widget, self.widget.configuration.device.deviceId);
+        */
+        WidgetApi.keyword.getInformation(self.widget.configuration.device.keywordId).done(function (keyword) {
+            self.unit($.t(keyword.units));
+        });
+
+        //we register keyword new acquisition
+        WidgetApi.keyword.registerKeywordAcquisitions(self.widget, self.widget.configuration.device.keywordId);
+
+        //we fill the deviceId of the battery indicator
+        WidgetApi.toolbar.configureBatteryIcon(self.widget, self.widget.configuration.device.deviceId);
     }
 
     /**

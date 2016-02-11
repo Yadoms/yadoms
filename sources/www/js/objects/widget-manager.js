@@ -417,30 +417,6 @@ WidgetManager.addToDom_ = function (widget) {
     //we apply binding to the view
     ko.applyBindings(widget.viewModel, widget.$div[0]);
 
-    //we initialize the widget
-    try {
-        if (widget.viewModel.initialize !== undefined)
-            widget.viewModel.initialize(widget);
-    }
-    catch (e) {
-        notifyWarning($.t("objects.widgetManager.widgetHasGeneratedAnExceptionDuringCallingMethod", { widgetName: widget.type, methodName: 'initialize' }));
-        console.warn(e);
-    }
-
-    //we notify that configuration has changed
-    WidgetManager.updateWidgetConfiguration_(widget);
-
-    //we notify that widget has been resized
-    try {
-        if (widget.viewModel.resized !== undefined) {
-            widget.viewModel.resized();
-        }
-    }
-    catch (e) {
-        notifyWarning($.t("widgets.errors.widgetHasGeneratedAnExceptionDuringCallingMethod", { widgetName: widget.type, methodName: 'resized' }));
-        console.warn(e);
-    }
-
     //we listen click event on configure click
     widget.$gridWidget.find('div.btn-configure-widget').bind('click', function (e) {
         var widgetDOMElement = $(e.currentTarget).parents(".widget");
@@ -464,11 +440,39 @@ WidgetManager.addToDom_ = function (widget) {
         modals.widgetDelete.load(function (pageId, widgetId) { return function () { showDeleteWidgetModal(pageId, widgetId) } }(pageId, widgetId));
     });
 
+    //we initialize the widget
+    try {
+        if (widget.viewModel.initialize !== undefined) {
+            debugger;
+            var defferedResult = widget.viewModel.initialize(widget);
+            //we manage answer if it is a promise or not
+            defferedResult = defferedResult || new $.Deferred().resolve();
+            defferedResult.done(function() {
+                //we notify that configuration has changed
+                WidgetManager.updateWidgetConfiguration_(widget);
 
-    widget.$gridWidget.i18n();
+                //we notify that widget has been resized
+                try {
+                    if (widget.viewModel.resized !== undefined) {
+                        widget.viewModel.resized();
+                    }
+                }
+                catch (e) {
+                    notifyWarning($.t("widgets.errors.widgetHasGeneratedAnExceptionDuringCallingMethod", { widgetName: widget.type, methodName: 'resized' }));
+                    console.warn(e);
+                }
 
-    //we ask for widget refresh data
-    updateWidgetPolling(widget);
+                widget.$gridWidget.i18n();
+
+                //we ask for widget refresh data
+                updateWidgetPolling(widget);
+            });
+        }
+    }
+    catch (e) {
+        notifyWarning($.t("objects.widgetManager.widgetHasGeneratedAnExceptionDuringCallingMethod", { widgetName: widget.type, methodName: 'initialize' }));
+        console.warn(e);
+    }
 };
 
 /**

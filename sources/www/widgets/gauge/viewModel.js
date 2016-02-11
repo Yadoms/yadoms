@@ -98,13 +98,17 @@ widgetViewModelCtor = function GaugeViewModel() {
          //class: 'gaugeWidget'
       }).appendTo("#widget-" + this.widget.id);
 
-      //$("div#" + "widget-" + this.widget.id).css({"overflow": "hidden"});
-
       //This div is for rounds borders.
       $('<div style="width: 193px; height: 5px; float: left"></div>').appendTo("#widget-" + this.widget.id);
 
       //we create the battery indicator
       this.widget.$toolbar.append("<div class=\"widget-toolbar-battery\" deviceId=\"\"></div>");
+
+       WidgetApi.loadLibrary([
+           "libs/highstock/js/highstock.js",
+           "libs/highstock/js/highcharts-more.js",
+           "libs/highstock/js/modules/solid-gauge.js"
+       ]);
    };
 
    /**
@@ -149,7 +153,8 @@ widgetViewModelCtor = function GaugeViewModel() {
       if ((isNullOrUndefined(this.widget)) || (isNullOrUndefinedOrEmpty(this.widget.configuration)))
          return;
 
-      this.widget.ListenKeyword(this.widget.configuration.device.keywordId);
+      //we register keyword new acquisition
+      WidgetApi.keyword.registerKeywordAcquisitions(self.widget, self.widget.configuration.device.keywordId);
 
       // Delete all elements in stopArray
       this.stopsArray = new Array();

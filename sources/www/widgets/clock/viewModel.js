@@ -31,7 +31,7 @@ function ClockViewModel() {
         var target = this;
 
         //we set the date into toolbar
-        ToolbarApi.appendCustomIcon(this.widget, "<span class=\"date-field\"></span>");
+        WidgetApi.toolbar.appendCustom(this.widget, "<span class=\"date-field\"></span>");
 
         this.$dateField = this.widget.$gridWidget.find(".date-field");
 

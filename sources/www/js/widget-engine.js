@@ -311,7 +311,8 @@ function updateWidgetsPolling() {
 
 function updateWidgetPolling(widget) {
    if (!isNullOrUndefined(widget.listenedKeywords)) {
-      $.each(widget.listenedKeywords, function (keywordIndex, keywordId) {
+       //TODO : aggregate all keywordsId and use AcquisitionManager.getLastValues(device.keywords)
+       $.each(widget.listenedKeywords, function (keywordIndex, keywordId) {
          if (!isNullOrUndefined(keywordId)) {
             //foreach device we ask for last values
             AcquisitionManager.getLastValue(keywordId)

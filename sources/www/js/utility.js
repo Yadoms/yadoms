@@ -251,9 +251,10 @@ var loadedJSLibs = [];
 function asyncLoadJSLib(librayName) {
     assert(librayName != undefined, "librayName must be defined");
 
-    var d = new $.Deferred();
-
     if (!loadedJSLibs[librayName]) {
+
+        //we create a new deffered
+        var d = new $.Deferred();
         var script = document.createElement("script");
         script.type = "text/javascript";
         script.src = librayName;
@@ -262,7 +263,7 @@ function asyncLoadJSLib(librayName) {
         // DEFER: load in parallel but maintain execution order
         script.defer = false;
 
-        script.onload = script.onreadystatechange = function (event) {
+        script.onload = script.onreadystatechange = function(event) {
             //from headJS
             if (event.type === "load" || (/loaded|complete/.test(script.readyState) && (!document.documentMode || document.documentMode < 9))) {
                 // release event listeners
@@ -285,12 +286,13 @@ function asyncLoadJSLib(librayName) {
         head.insertBefore(script, head.lastChild);
 
         //the js has been ran, we save the information to prevent from other reloads
-        loadedJSLibs[librayName] = true;
+        var promise = d.promise();
+        //we save the promise for other load requests
+        loadedJSLibs[librayName] = promise;
+        return promise;
+    } else {
+        return loadedJSLibs[librayName];
     }
-    else
-        d.resolve();
-
-    return d.promise();
 }
 
 /**
@@ -304,10 +306,9 @@ function asyncLoadJSLibs(librayNames) {
     var arrayOfDeffered = [];
 
     $.each(librayNames, function(index, lib) {
-        if (!loadedJSLibs[lib]) {
-            arrayOfDeffered.push(asyncLoadJSLib(lib));
-        }
+        arrayOfDeffered.push(asyncLoadJSLib(lib));
     });
+
     $.whenAll(arrayOfDeffered).done(function () {
         d.resolve();
     });

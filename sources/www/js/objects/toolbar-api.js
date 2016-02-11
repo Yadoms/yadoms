@@ -28,7 +28,7 @@ ToolbarApi.manageBatteryConfiguration = function (widget) {
                     $battery.append("<span class=\"\"/>");
                     $battery.attr("keywordId", batteryLevel.id);
                     //we add it to the filter of keyword for websockets
-                    widget.ListenKeyword(batteryLevel.id);
+                    WidgetApi.keyword.registerKeywordAcquisitions(widget, batteryLevel.id);
 
                     //we ask immediately for the battery value
                     AcquisitionManager.getLastValue(batteryLevel.id)
@@ -95,7 +95,7 @@ ToolbarApi.configureBatteryIcon = function (widget, deviceId) {
 /**
  * Add a custom icon the toolbar of a widget
  */
-ToolbarApi.appendCustomIcon = function (widget, buttonDOM) {
+ToolbarApi.appendCustom = function (widget, buttonDOM) {
     widget.$toolbar.append(buttonDOM);
 }
 

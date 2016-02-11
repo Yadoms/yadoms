@@ -58,7 +58,8 @@ widgetViewModelCtor =
 
               if ((!isNullOrUndefined(this.widget.configuration)) && (!isNullOrUndefined(this.widget.configuration.devices))) {
                   $.each(this.widget.configuration.devices, function (index, device) {
-                      self.widget.ListenKeyword(device.content.source.keywordId);
+                      //we register keyword new acquisition
+                      WidgetApi.keyword.registerKeywordAcquisitions(self.widget, device.content.source.keywordId);
                   });
               }
 

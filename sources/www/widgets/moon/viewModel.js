@@ -130,8 +130,8 @@ function MoonViewModel() {
    this.configurationChanged = function() 
    {
        var self = this;
-
-       this.widget.ListenKeyword(this.widget.configuration.device.keywordId);
+       //we register keyword new acquisition
+       WidgetApi.keyword.registerKeywordAcquisitions(self.widget, self.widget.configuration.device.keywordId);
    };
 
    this.resized = function() 
