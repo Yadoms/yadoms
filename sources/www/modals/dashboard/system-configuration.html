@@ -31,7 +31,7 @@
 
             //*************
             //language
-            var languageParameter = new EnumParameterHandler(i18NContext, ConfigurationManager.items.system.language, { "values": isoLanguageCodes, "defaultValue": systemConfiguration[ConfigurationManager.items.system.language].defaultValue }, systemConfiguration[ConfigurationManager.items.system.language].value);
+            var languageParameter = new EnumParameterHandler(i18NContext, ConfigurationManager.items.system.language, { "values": window.getIsoLanguageArray(), "defaultValue": systemConfiguration[ConfigurationManager.items.system.language].defaultValue, "sort": true }, systemConfiguration[ConfigurationManager.items.system.language].value);
 
             //*************
             //Basic Authentication parameters

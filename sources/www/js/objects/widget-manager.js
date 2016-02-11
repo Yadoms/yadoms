@@ -16,18 +16,18 @@ WidgetManager.DeactivatedWidgetPackageName = "dev-deactivated-widget";
  * @returns {Widget}
  */
 WidgetManager.factory = function (json) {
-    assert(!isNullOrUndefined(json), "json must be defined");
-    assert(!isNullOrUndefined(json.id), "json.id must be defined");
-    assert(!isNullOrUndefined(json.idPage), "json.idPage must be defined");
-    assert(!isNullOrUndefined(json.type), "json.name must be defined");
-    assert(!isNullOrUndefined(json.title), "json.title must be defined");
-    assert(!isNullOrUndefined(json.sizeX), "json.sizeX must be defined");
-    assert(!isNullOrUndefined(json.sizeY), "json.sizeY must be defined");
-    assert(!isNullOrUndefined(json.positionX), "json.positionX must be defined");
-    assert(!isNullOrUndefined(json.positionY), "json.positionY must be defined");
-    assert(!isNullOrUndefined(json.configuration), "json.configuration must be defined");
+   assert(!isNullOrUndefined(json), "json must be defined");
+   assert(!isNullOrUndefined(json.id), "json.id must be defined");
+   assert(!isNullOrUndefined(json.idPage), "json.idPage must be defined");
+   assert(!isNullOrUndefined(json.type), "json.name must be defined");
+   assert(!isNullOrUndefined(json.title), "json.title must be defined");
+   assert(!isNullOrUndefined(json.sizeX), "json.sizeX must be defined");
+   assert(!isNullOrUndefined(json.sizeY), "json.sizeY must be defined");
+   assert(!isNullOrUndefined(json.positionX), "json.positionX must be defined");
+   assert(!isNullOrUndefined(json.positionY), "json.positionY must be defined");
+   assert(!isNullOrUndefined(json.configuration), "json.configuration must be defined");
 
-    return new Widget(json.id, json.idPage, json.type, json.title, json.sizeX, json.sizeY, json.positionX, json.positionY, json.configuration);
+   return new Widget(json.id, json.idPage, json.type, json.title, json.sizeX, json.sizeY, json.positionX, json.positionY, json.configuration);
 };
 
 /**
@@ -37,14 +37,17 @@ WidgetManager.factory = function (json) {
  * @returns {Widget}
  */
 WidgetManager.get = function (pageId, widgetId) {
-    assert(pageId !== undefined, "page Id must be defined");
-    assert(widgetId !== undefined, "Widget Id must be defined");
+   assert(pageId !== undefined, "page Id must be defined");
+   assert(widgetId !== undefined, "Widget Id must be defined");
 
-    var page = PageManager.getPage(pageId);
-    assert(page != null, "page Id doesn't exit");
-    var widget = page.getWidget(widgetId);
-    assert(widget != null, "widget Id doesn't exit in the page");
-    return widget;
+   var page = PageManager.getPage(pageId);
+   assert(page != null, "page Id doesn't exit");
+   if (page) {
+      var widget = page.getWidget(widgetId);
+      assert(widget != null, "widget Id doesn't exit in the page");
+      return widget;
+   }
+   return null;
 };
 
 /**
@@ -53,11 +56,14 @@ WidgetManager.get = function (pageId, widgetId) {
  * @returns {Widget}
  */
 WidgetManager.getFromGridElement = function ($gridElement) {
-    assert($gridElement !== undefined, "$gridElement must be defined");
+   assert($gridElement !== undefined, "$gridElement must be defined");
 
-    var pageId = $gridElement.attr("page-id");
-    var widgetId = $gridElement.attr("widget-id");
-    return WidgetManager.get(pageId, widgetId);
+   if ($gridElement) {
+      var pageId = $gridElement.attr("page-id");
+      var widgetId = $gridElement.attr("widget-id");
+      return WidgetManager.get(pageId, widgetId);
+   }
+   return null;
 };
 
 /**
@@ -66,27 +72,32 @@ WidgetManager.getFromGridElement = function ($gridElement) {
  * @returns a promise
  */
 WidgetManager.getWidgetOfPageFromServer = function (page) {
-    assert(page !== undefined, "page must be defined");
+   assert(page !== undefined, "page must be defined");
 
-    //we save the information that the widgets for this page have already been asked
-    page.loaded = true;
+   var d = new $.Deferred();
 
-    var d = new $.Deferred();
-    RestEngine.getJson("/rest/page/" + page.id + "/widget")
-       .done(function (data) {
-           var list = [];
-           $.each(data.widget, function (index, value) {
+   //we save the information that the widgets for this page have already been asked
+   if (page) {
+      page.loaded = true;
+
+      RestEngine.getJson("/rest/page/" + page.id + "/widget")
+         .done(function(data) {
+            var list = [];
+            $.each(data.widget, function(index, value) {
                list.push(WidgetManager.factory(value));
-           });
+            });
 
-           d.resolve(list);
-       })
-       .fail(function (errorMessage) {
-           console.error("Fail to getWidgetOfPageFromServer from server : " + errorMessage);
-           notifyError($.t("objects.widgetManager.unableToGetWidgets"), errorMessage);
-           d.reject(errorMessage);
-       });
-    return d.promise();
+            d.resolve(list);
+         })
+         .fail(function(errorMessage) {
+            console.error("Fail to getWidgetOfPageFromServer from server : " + errorMessage);
+            notifyError($.t("objects.widgetManager.unableToGetWidgets"), errorMessage);
+            d.reject(errorMessage);
+         });
+   } else {
+      d.reject("Page is not defined");
+   }
+   return d.promise();
 };
 
 /**
@@ -124,32 +135,32 @@ WidgetManager.getViewFromServer_ = function (widgetType) {
  * @private
  */
 WidgetManager.getViewModelFromServer_ = function (widgetType) {
-    assert(!isNullOrUndefined(widgetType), "widgetType must be defined");
+   assert(!isNullOrUndefined(widgetType), "widgetType must be defined");
 
-    widgetViewModelCtor = null;
-    var d = new $.Deferred();
-    RestEngine.getScript("widgets/" + widgetType + "/viewModel.js")
-       .done(function () {
-           if (isNullOrUndefined(widgetViewModelCtor)) {
-               console.error("ViewModel of widget " + widgetType + " do not contains widgetViewModelCtor function");
-               d.reject();
-           } else {
-               WidgetPackageManager.widgetPackages[widgetType].viewModelCtor = widgetViewModelCtor;
-               //all job has been done without error
-               WidgetPackageManager.widgetPackages[widgetType].viewAnViewModelHaveBeenDownloaded = true;
+   widgetViewModelCtor = null;
+   var d = new $.Deferred();
+   RestEngine.getScript("widgets/" + widgetType + "/viewModel.js")
+      .done(function () {
+         if (isNullOrUndefined(widgetViewModelCtor)) {
+            console.error("ViewModel of widget " + widgetType + " do not contains widgetViewModelCtor function");
+            d.reject();
+         } else {
+            WidgetPackageManager.widgetPackages[widgetType].viewModelCtor = widgetViewModelCtor;
+            //all job has been done without error
+            WidgetPackageManager.widgetPackages[widgetType].viewAnViewModelHaveBeenDownloaded = true;
 
-               //ensure next async call will not use this viewModel
-               widgetViewModelCtor = null;
-               d.resolve();
-           }
+            //ensure next async call will not use this viewModel
+            widgetViewModelCtor = null;
+            d.resolve();
+         }
 
-       })
-       .fail(function (errorMessage) {
-           console.error("Fail to get viewModel from server : " + errorMessage);
-           d.reject(errorMessage);
-       });
+      })
+      .fail(function (errorMessage) {
+         console.error("Fail to get viewModel from server : " + errorMessage);
+         d.reject(errorMessage);
+      });
 
-    return d.promise();
+   return d.promise();
 };
 
 
@@ -168,10 +179,10 @@ WidgetManager.createWidget = function (newWidget) {
 
    var data = JSON.stringify({ idPage: newWidget.idPage, type: newWidget.type, title: newWidget.title, sizeX: newWidget.sizeX, sizeY: newWidget.sizeY, positionX: newWidget.positionX, positionY: newWidget.positionY, configuration: newWidget.configuration });
 
-   RestEngine.postJson("/rest/widget", { data : data})
+   RestEngine.postJson("/rest/widget", { data: data })
    .done(function (widgetData) {
       var w = WidgetManager.factory(widgetData);
-         d.resolve(w);
+      d.resolve(w);
    })
    .fail(d.reject);
    return d.promise();
@@ -191,31 +202,31 @@ WidgetManager.deleteWidget = function (widgetToDelete) {
 
 
 WidgetManager.updateToServer = function (widget) {
-    assert(!isNullOrUndefined(widget), "widget must be defined");
+   assert(!isNullOrUndefined(widget), "widget must be defined");
 
    var d = new $.Deferred();
 
    RestEngine.putJson("/rest/widget/" + widget.id, { data: JSON.stringify(widget) })
-    .done(function (data) {
-         //we notify that configuration has changed
-         try {
-            WidgetManager.updateWidgetConfiguration_(widget);
+    .done(function () {
+       //we notify that configuration has changed
+       try {
+          WidgetManager.updateWidgetConfiguration_(widget);
 
-            //we ask for a refresh of widget data
-            updateWidgetPolling(widget);
+          //we ask for a refresh of widget data
+          updateWidgetPolling(widget);
 
-            d.resolve();
-         }
-         catch (e) {
-               notifyWarning($.t("objects.widgetManager.exceptionDuringCallConfigurationChanged", { "widgetType": widget.type }));
-               console.warn(e);
-            d.reject();
-         }
-   })
+          d.resolve();
+       }
+       catch (e) {
+          notifyWarning($.t("objects.widgetManager.exceptionDuringCallConfigurationChanged", { "widgetType": widget.type }));
+          console.warn(e);
+          d.reject();
+       }
+    })
    .fail(function () {
       return function () {
-            notifyError($.t("objects.widgetManager.errorDuringModifyingWidgetNamed", { "widgetType": widget.type }));
-            d.reject();
+         notifyError($.t("objects.widgetManager.errorDuringModifyingWidgetNamed", { "widgetType": widget.type }));
+         d.reject();
       };
    }(widget.type));
 };
@@ -226,24 +237,24 @@ WidgetManager.updateToServer = function (widget) {
  * @private
  */
 WidgetManager.updateWidgetConfiguration_ = function (widget) {
-    try {
-        //Update the widget title
-        widget.$gridWidget.find('div.panel-widget-title').text(widget.title);
+   try {
+      //Update the widget title
+      widget.$gridWidget.find('div.panel-widget-title').text(widget.title);
 
-        //we clear the listened device list before call the configuration
-        widget.listenedKeywords = [];
+      //we clear the listened device list before call the configuration
+      widget.listenedKeywords = [];
 
-        // Update widget specific values
-        if (!isNullOrUndefined(widget.viewModel.configurationChanged))
-            widget.viewModel.configurationChanged();
+      // Update widget specific values
+      if (!isNullOrUndefined(widget.viewModel.configurationChanged))
+         widget.viewModel.configurationChanged();
 
-        //we manage the toolbar api specific icons
-        ToolbarApi.manageBatteryConfiguration(widget);
-    }
-    catch (e) {
-        notifyWarning($.t("objects.widgetManager.widgetHasGeneratedAnExceptionDuringCallingMethod", { widgetName: widget.type, methodName: 'configurationChanged' }));
-        console.warn(e);
-    }
+      //we manage the toolbar api specific icons
+      ToolbarApi.manageBatteryConfiguration(widget);
+   }
+   catch (e) {
+      notifyWarning($.t("objects.widgetManager.widgetHasGeneratedAnExceptionDuringCallingMethod", { widgetName: widget.type, methodName: 'configurationChanged' }));
+      console.warn(e);
+   }
 };
 
 /**
@@ -253,13 +264,13 @@ WidgetManager.updateWidgetConfiguration_ = function (widget) {
  * @private
  */
 WidgetManager.consolidate_ = function (widget, widgetPackage) {
-    assert(!isNullOrUndefined(widget), "widget must be defined");
-    assert(!isNullOrUndefined(widgetPackage), "widgetPackage must be defined");
+   assert(!isNullOrUndefined(widget), "widget must be defined");
+   assert(!isNullOrUndefined(widgetPackage), "widgetPackage must be defined");
 
-    //we use to construct the viewModel of the current widget
-    //noinspection JSPotentiallyInvalidConstructorUsage
-    widget.viewModel = new widgetPackage.viewModelCtor();
-    widget.package = widgetPackage.package;
+   //we use to construct the viewModel of the current widget
+   //noinspection JSPotentiallyInvalidConstructorUsage
+   widget.viewModel = new widgetPackage.viewModelCtor();
+   widget.package = widgetPackage.package;
 };
 
 
@@ -270,44 +281,44 @@ WidgetManager.consolidate_ = function (widget, widgetPackage) {
  * @return a promise
  */
 WidgetManager.loadWidgets = function (widgetList, pageWhereToAdd) {
-    var d = new $.Deferred();
+   var d = new $.Deferred();
 
-    //make the list of distinct widget type to load
-    var distinctWidgetTypes = [WidgetManager.DeactivatedWidgetPackageName];
-    for (var i = 0, j = widgetList.length; i < j; i++) {
-        if (distinctWidgetTypes.indexOf(widgetList[i].type) == -1)
-            distinctWidgetTypes.push(widgetList[i].type);
-    }
+   //make the list of distinct widget type to load
+   var distinctWidgetTypes = [WidgetManager.DeactivatedWidgetPackageName];
+   for (var i = 0, j = widgetList.length; i < j; i++) {
+      if (distinctWidgetTypes.indexOf(widgetList[i].type) === -1)
+         distinctWidgetTypes.push(widgetList[i].type);
+   }
 
-    //for each distinct type to load, download its View and ViewModel
-    var arrayOfDeffered = [];
-    $.each(distinctWidgetTypes, function (index, widgetType) {
-        arrayOfDeffered.push(WidgetManager.downloadWidgetViewAndVieWModel_(widgetType, false /*should not reject to allow loading partially the page (with deactivated widgets)*/));
-    });
+   //for each distinct type to load, download its View and ViewModel
+   var arrayOfDeffered = [];
+   $.each(distinctWidgetTypes, function (index, widgetType) {
+      arrayOfDeffered.push(WidgetManager.downloadWidgetViewAndVieWModel_(widgetType, false /*should not reject to allow loading partially the page (with deactivated widgets)*/));
+   });
 
-    //When all view/viewModel off all requested types of widgets are loaded, 
-    //then create widgets on page
-    $.when.apply($, arrayOfDeffered)
-       .done(function () {
-           d.resolve();
-           var arrayOfLoadingWidgetDeferred = [];
-           $.each(widgetList, function (index, widget) {
-               arrayOfLoadingWidgetDeferred.push(WidgetManager.loadWidget(widget, pageWhereToAdd));
-           });
+   //When all view/viewModel off all requested types of widgets are loaded, 
+   //then create widgets on page
+   $.when.apply($, arrayOfDeffered)
+      .done(function () {
+         d.resolve();
+         var arrayOfLoadingWidgetDeferred = [];
+         $.each(widgetList, function (index, widget) {
+            arrayOfLoadingWidgetDeferred.push(WidgetManager.loadWidget(widget, pageWhereToAdd));
+         });
 
-           $.when.apply($, arrayOfLoadingWidgetDeferred)
-           .done(function () {
-               d.resolve();
-           })
-           .fail(function (errorMessage) {
-               d.reject(errorMessage);
-           });
-       })
-       .fail(function (errorMessage) {
-           d.reject(errorMessage);
-       });
+         $.when.apply($, arrayOfLoadingWidgetDeferred)
+         .done(function () {
+            d.resolve();
+         })
+         .fail(function (errorMessage) {
+            d.reject(errorMessage);
+         });
+      })
+      .fail(function (errorMessage) {
+         d.reject(errorMessage);
+      });
 
-    return d.promise();
+   return d.promise();
 };
 
 /**
@@ -318,33 +329,33 @@ WidgetManager.loadWidgets = function (widgetList, pageWhereToAdd) {
  * @private
  */
 WidgetManager.downloadWidgetViewAndVieWModel_ = function (widgetType, canReject) {
-    var d = $.Deferred();
+   var d = $.Deferred();
 
-    WidgetManager.getViewFromServer_(widgetType)
-    .done(function () {
-        WidgetManager.getViewModelFromServer_(widgetType)
-        .done(function () {
-            d.resolve();
-        })
-        .fail(function (error) {
-            if (canReject) {
-                d.reject(error);
-            } else {
-                console.error(error);
-                d.resolve();
-            }
-        });
-    })
-    .fail(function (error) {
-        if (canReject) {
+   WidgetManager.getViewFromServer_(widgetType)
+   .done(function () {
+      WidgetManager.getViewModelFromServer_(widgetType)
+      .done(function () {
+         d.resolve();
+      })
+      .fail(function (error) {
+         if (canReject) {
             d.reject(error);
-        } else {
+         } else {
             console.error(error);
             d.resolve();
-        }
-    });
+         }
+      });
+   })
+   .fail(function (error) {
+      if (canReject) {
+         d.reject(error);
+      } else {
+         console.error(error);
+         d.resolve();
+      }
+   });
 
-    return d.promise();
+   return d.promise();
 };
 
 
@@ -357,34 +368,34 @@ WidgetManager.downloadWidgetViewAndVieWModel_ = function (widgetType, canReject)
  * @private
  */
 WidgetManager.loadWidget = function (widget, pageWhereToAdd, ensureVisible) {
-    assert(!isNullOrUndefined(widget), "widget must be defined");
-    assert(!isNullOrUndefined(pageWhereToAdd), "pageWhereToAdd must be defined");
+   assert(!isNullOrUndefined(widget), "widget must be defined");
+   assert(!isNullOrUndefined(pageWhereToAdd), "pageWhereToAdd must be defined");
 
-    var d = $.Deferred();
+   var d = $.Deferred();
 
-    if (!WidgetPackageManager.packageExists(widget.type)) {
-       WidgetManager.instanciateDowngradedWidgetToPage_(pageWhereToAdd, widget, "package do not exists", ensureVisible);
-        d.reject();
+   if (!WidgetPackageManager.packageExists(widget.type)) {
+      WidgetManager.instanciateDowngradedWidgetToPage_(pageWhereToAdd, widget, "package do not exists", ensureVisible);
+      d.reject();
 
-    } else {
+   } else {
 
-        if (!WidgetPackageManager.widgetPackages[widget.type].viewAnViewModelHaveBeenDownloaded) {
-            WidgetManager.downloadWidgetViewAndVieWModel_(widget.type, true)
-            .done(function () {
-               WidgetManager.instanciateWidgetToPage_(pageWhereToAdd, widget, widget.type, ensureVisible);
-                d.resolve();
-            })
-            .fail(function (errorMessage) {
-               WidgetManager.instanciateDowngradedWidgetToPage_(pageWhereToAdd, widget, errorMessage, ensureVisible);
-                d.reject(errorMessage);
-            });
-        } else {
-           WidgetManager.instanciateWidgetToPage_(pageWhereToAdd, widget, widget.type, ensureVisible);
+      if (!WidgetPackageManager.widgetPackages[widget.type].viewAnViewModelHaveBeenDownloaded) {
+         WidgetManager.downloadWidgetViewAndVieWModel_(widget.type, true)
+         .done(function () {
+            WidgetManager.instanciateWidgetToPage_(pageWhereToAdd, widget, widget.type, ensureVisible);
             d.resolve();
-        }
+         })
+         .fail(function (errorMessage) {
+            WidgetManager.instanciateDowngradedWidgetToPage_(pageWhereToAdd, widget, errorMessage, ensureVisible);
+            d.reject(errorMessage);
+         });
+      } else {
+         WidgetManager.instanciateWidgetToPage_(pageWhereToAdd, widget, widget.type, ensureVisible);
+         d.resolve();
+      }
 
-    }
-    return d.promise();
+   }
+   return d.promise();
 };
 
 
@@ -397,21 +408,21 @@ WidgetManager.loadWidget = function (widget, pageWhereToAdd, ensureVisible) {
  * @private
  */
 WidgetManager.instanciateWidgetToPage_ = function (pageWhereToAdd, widget, widgetType, ensureVisible) {
-    try {
-        //we finalize the load of the widget
-        WidgetManager.consolidate_(widget, WidgetPackageManager.widgetPackages[widgetType]);
-        WidgetManager.addToDom_(widget, ensureVisible);
-        //we add the widget to the collection
-        pageWhereToAdd.addWidget(widget);
-    }
-    catch (ex) {
-        if (!widget.downgraded) {
-            //load widget as deactivated
-            WidgetManager.instanciateDowngradedWidgetToPage_(pageWhereToAdd, widget, "Exception in loading viewModel : " + ex);
-        } else {
-            console.error("Fail to load deactivated widget");
-        }
-    }
+   try {
+      //we finalize the load of the widget
+      WidgetManager.consolidate_(widget, WidgetPackageManager.widgetPackages[widgetType]);
+      WidgetManager.addToDom_(widget, ensureVisible);
+      //we add the widget to the collection
+      pageWhereToAdd.addWidget(widget);
+   }
+   catch (ex) {
+      if (!widget.downgraded) {
+         //load widget as deactivated
+         WidgetManager.instanciateDowngradedWidgetToPage_(pageWhereToAdd, widget, "Exception in loading viewModel : " + ex);
+      } else {
+         console.error("Fail to load deactivated widget");
+      }
+   }
 }
 
 /**
@@ -423,14 +434,14 @@ WidgetManager.instanciateWidgetToPage_ = function (pageWhereToAdd, widget, widge
   * @private
  */
 WidgetManager.instanciateDowngradedWidgetToPage_ = function (pageWhereToAdd, widget, errorMessage, ensureVisible) {
-    console.warn("Fail to load widget " + widget.type + " , then load deactivated model instead." + (errorMessage || ""));
+   console.warn("Fail to load widget " + widget.type + " , then load deactivated model instead." + (errorMessage || ""));
 
-    //flag the widget as downgraded
-    widget.requiredType = widget.type;
-    widget.downgraded = true;
+   //flag the widget as downgraded
+   widget.requiredType = widget.type;
+   widget.downgraded = true;
 
-    //load downgraded widget instead
-    WidgetManager.instanciateWidgetToPage_(pageWhereToAdd, widget, WidgetManager.DeactivatedWidgetPackageName, ensureVisible);
+   //load downgraded widget instead
+   WidgetManager.instanciateWidgetToPage_(pageWhereToAdd, widget, WidgetManager.DeactivatedWidgetPackageName, ensureVisible);
 }
 
 /**
@@ -440,83 +451,83 @@ WidgetManager.instanciateDowngradedWidgetToPage_ = function (pageWhereToAdd, wid
 * @private
  */
 WidgetManager.addToDom_ = function (widget, ensureVisible) {
-    assert(!isNullOrUndefined(widget), "widget must be defined");
+   assert(!isNullOrUndefined(widget), "widget must be defined");
 
-    var widgetDivId = "widget-" + widget.id;
-    widget.$gridWidget = WidgetManager.createGridstackWidget(widget);
-    widget.$div = $("div#" + widgetDivId);
-    widget.$toolbar = widget.$gridWidget.find("div.panel-widget-title-toolbar");
+   var widgetDivId = "widget-" + widget.id;
+   widget.$gridWidget = WidgetManager.createGridstackWidget(widget);
+   widget.$div = $("div#" + widgetDivId);
+   widget.$toolbar = widget.$gridWidget.find("div.panel-widget-title-toolbar");
 
-    //we check if we are in customization we must apply customization on the new item
-    WidgetManager.enableCustomization(widget, customization);
-    if (customization) {
-        widget.$gridWidget.find(".customization-item").removeClass("hidden");
-    }
+   //we check if we are in customization we must apply customization on the new item
+   WidgetManager.enableCustomization(widget, customization);
+   if (customization) {
+      widget.$gridWidget.find(".customization-item").removeClass("hidden");
+   }
 
-    var page = PageManager.getPage(widget.idPage);
-    assert(!isNullOrUndefined(page), "page doesn't exist in PageManager");
+   var page = PageManager.getPage(widget.idPage);
+   assert(!isNullOrUndefined(page), "page doesn't exist in PageManager");
 
-    //we apply binding to the view
-    ko.applyBindings(widget.viewModel, widget.$div[0]);
+   //we apply binding to the view
+   ko.applyBindings(widget.viewModel, widget.$div[0]);
 
-    //we initialize the widget
-    try {
-        if (widget.viewModel.initialize !== undefined)
-            widget.viewModel.initialize(widget);
-    }
-    catch (e) {
-        notifyWarning($.t("objects.widgetManager.widgetHasGeneratedAnExceptionDuringCallingMethod", { widgetName: widget.type, methodName: 'initialize' }));
-        console.warn(e);
-    }
+   //we initialize the widget
+   try {
+      if (widget.viewModel.initialize !== undefined)
+         widget.viewModel.initialize(widget);
+   }
+   catch (e) {
+      notifyWarning($.t("objects.widgetManager.widgetHasGeneratedAnExceptionDuringCallingMethod", { widgetName: widget.type, methodName: 'initialize' }));
+      console.warn(e);
+   }
 
-    //we notify that configuration has changed
-    WidgetManager.updateWidgetConfiguration_(widget);
+   //we notify that configuration has changed
+   WidgetManager.updateWidgetConfiguration_(widget);
 
-    //we notify that widget has been resized
-    try {
-        if (widget.viewModel.resized !== undefined) {
-            widget.viewModel.resized();
-        }
-    }
-    catch (e) {
-        notifyWarning($.t("widgets.errors.widgetHasGeneratedAnExceptionDuringCallingMethod", { widgetName: widget.type, methodName: 'resized' }));
-        console.warn(e);
-    }
+   //we notify that widget has been resized
+   try {
+      if (widget.viewModel.resized !== undefined) {
+         widget.viewModel.resized();
+      }
+   }
+   catch (e) {
+      notifyWarning($.t("widgets.errors.widgetHasGeneratedAnExceptionDuringCallingMethod", { widgetName: widget.type, methodName: 'resized' }));
+      console.warn(e);
+   }
 
-    //we listen click event on configure click
-    widget.$gridWidget.find('div.btn-configure-widget').bind('click', function (e) {
-        var widgetDOMElement = $(e.currentTarget).parents(".widget");
-        var pageId = widgetDOMElement.attr("page-id");
-        var widgetId = widgetDOMElement.attr("widget-id");
-        modals.widgetConfiguration.loadAsync()
-        .done(function () {
-           var widgetToConfigure = WidgetManager.get(pageId, widgetId);
-           configureWidget(widgetToConfigure, function () {
-              WidgetManager.updateToServer(widgetToConfigure);
-           });
-        });
-    });
+   //we listen click event on configure click
+   widget.$gridWidget.find('div.btn-configure-widget').bind('click', function (e) {
+      var widgetDomElement = $(e.currentTarget).parents(".widget");
+      var pageId = widgetDomElement.attr("page-id");
+      var widgetId = widgetDomElement.attr("widget-id");
+      modals.widgetConfiguration.loadAsync()
+      .done(function () {
+         var widgetToConfigure = WidgetManager.get(pageId, widgetId);
+         configureWidget(widgetToConfigure, function () {
+            WidgetManager.updateToServer(widgetToConfigure);
+         });
+      });
+   });
 
-    //we listen click event on delete click
-   widget.$gridWidget.find('div.btn-delete-widget').bind('click', function(e) {
-      var widgetDOMElement = $(e.currentTarget).parents(".widget");
-      var pageId = widgetDOMElement.attr("page-id");
-      var widgetId = widgetDOMElement.attr("widget-id");
+   //we listen click event on delete click
+   widget.$gridWidget.find('div.btn-delete-widget').bind('click', function (e) {
+      var widgetDomElement = $(e.currentTarget).parents(".widget");
+      var pageId = widgetDomElement.attr("page-id");
+      var widgetId = widgetDomElement.attr("widget-id");
       modals.widgetDelete.loadAsync()
-      .done(function() {
+      .done(function () {
          showDeleteWidgetModal(pageId, widgetId);
       });
    });
 
 
-    widget.$gridWidget.i18n();
+   widget.$gridWidget.i18n();
 
    if (ensureVisible === true) {
       //ensure the item is completly visible
       $.ensureVisible(widget.$gridWidget, true);
    }
    //we ask for widget refresh data
-    updateWidgetPolling(widget);
+   updateWidgetPolling(widget);
 };
 
 
@@ -527,36 +538,36 @@ WidgetManager.addToDom_ = function (widget, ensureVisible) {
  * @param {Boolean} enable If true configure the widget in customization mode, else in normal mode
  */
 WidgetManager.enableCustomization = function (widget, enable) {
-    var page = PageManager.getPage(widget.idPage);
-    assert(!isNullOrUndefined(page), "page doesn't exist in PageManager");
+   var page = PageManager.getPage(widget.idPage);
+   assert(!isNullOrUndefined(page), "page doesn't exist in PageManager");
 
-    page.grid.movable(widget.$gridWidget, enable);
-    //the widget is resizable only if is allowed in its configuration
+   page.grid.movable(widget.$gridWidget, enable);
+   //the widget is resizable only if is allowed in its configuration
 
-    var minX = 0;
-    var maxX = Number.MAX_VALUE;
-    var minY = 0;
-    var maxY = Number.MAX_VALUE;
-    
-    if (!isNullOrUndefined(widget.package.dimensions)) {
-        if (!isNullOrUndefined(widget.package.dimensions.min)) {
-            if (!isNullOrUndefined(widget.package.dimensions.min.x))
-                minX = widget.package.dimensions.min.x;
-            if (!isNullOrUndefined(widget.package.dimensions.min.y))
-                minY = widget.package.dimensions.min.y;
-        }
-        if (!isNullOrUndefined(widget.package.dimensions.max)) {
-            if (!isNullOrUndefined(widget.package.dimensions.max.x))
-                maxX = widget.package.dimensions.max.x;
-            if (!isNullOrUndefined(widget.package.dimensions.max.y))
-                maxY = widget.package.dimensions.max.y;
-        }
-    }
+   var minX = 0;
+   var maxX = Number.MAX_VALUE;
+   var minY = 0;
+   var maxY = Number.MAX_VALUE;
 
-    if ((enable) && ((minX != maxX) || (minY != maxY)))
-        page.grid.resizable(widget.$gridWidget, true);
-    else
-        page.grid.resizable(widget.$gridWidget, false);
+   if (!isNullOrUndefined(widget.package.dimensions)) {
+      if (!isNullOrUndefined(widget.package.dimensions.min)) {
+         if (!isNullOrUndefined(widget.package.dimensions.min.x))
+            minX = widget.package.dimensions.min.x;
+         if (!isNullOrUndefined(widget.package.dimensions.min.y))
+            minY = widget.package.dimensions.min.y;
+      }
+      if (!isNullOrUndefined(widget.package.dimensions.max)) {
+         if (!isNullOrUndefined(widget.package.dimensions.max.x))
+            maxX = widget.package.dimensions.max.x;
+         if (!isNullOrUndefined(widget.package.dimensions.max.y))
+            maxY = widget.package.dimensions.max.y;
+      }
+   }
+
+   if ((enable) && ((minX !== maxX) || (minY !== maxY)))
+      page.grid.resizable(widget.$gridWidget, true);
+   else
+      page.grid.resizable(widget.$gridWidget, false);
 };
 
 /**
@@ -565,76 +576,75 @@ WidgetManager.enableCustomization = function (widget, enable) {
  * @returns {object} The gridstack item
  */
 WidgetManager.createGridstackWidget = function (widget) {
-    assert(widget !== undefined, "widget must be defined");
+   assert(widget !== undefined, "widget must be defined");
 
-    var page = PageManager.getPage(widget.idPage);
-    assert(!isNullOrUndefined(page), "page doesn't exist in PageManager");
+   var page = PageManager.getPage(widget.idPage);
+   assert(!isNullOrUndefined(page), "page doesn't exist in PageManager");
 
-    var domWidget = "<div class=\"widget\" page-id=\"" + widget.idPage + "\" widget-id=\"" + widget.id + "\"";
+   var domWidget = "<div class=\"widget\" page-id=\"" + widget.idPage + "\" widget-id=\"" + widget.id + "\"";
 
-    //we add minimum dimension constraint to the grids widget
-    if (!isNullOrUndefined(widget.package.dimensions)) {
-        if (!isNullOrUndefined(widget.package.dimensions.min)) {
-            if (!isNullOrUndefined(widget.package.dimensions.min.x))
-                domWidget += " data-gs-min-width=\"" + widget.package.dimensions.min.x + "\"";
-            if (!isNullOrUndefined(widget.package.dimensions.min.y))
-                domWidget += " data-gs-min-height=\"" + widget.package.dimensions.min.y + "\"";
-        }
-        if (!isNullOrUndefined(widget.package.dimensions.max)) {
-            if (!isNullOrUndefined(widget.package.dimensions.max.x))
-                domWidget += " data-gs-max-width=\"" + widget.package.dimensions.max.x + "\"";
-            if (!isNullOrUndefined(widget.package.dimensions.max.y))
-                domWidget += " data-gs-max-height=\"" + widget.package.dimensions.max.y + "\"";
-        }
-    }
+   //we add minimum dimension constraint to the grids widget
+   if (!isNullOrUndefined(widget.package.dimensions)) {
+      if (!isNullOrUndefined(widget.package.dimensions.min)) {
+         if (!isNullOrUndefined(widget.package.dimensions.min.x))
+            domWidget += " data-gs-min-width=\"" + widget.package.dimensions.min.x + "\"";
+         if (!isNullOrUndefined(widget.package.dimensions.min.y))
+            domWidget += " data-gs-min-height=\"" + widget.package.dimensions.min.y + "\"";
+      }
+      if (!isNullOrUndefined(widget.package.dimensions.max)) {
+         if (!isNullOrUndefined(widget.package.dimensions.max.x))
+            domWidget += " data-gs-max-width=\"" + widget.package.dimensions.max.x + "\"";
+         if (!isNullOrUndefined(widget.package.dimensions.max.y))
+            domWidget += " data-gs-max-height=\"" + widget.package.dimensions.max.y + "\"";
+      }
+   }
 
-    domWidget += ">\n" +
-        "<div class=\"grid-stack-item-content\">\n" +
-          "<div class=\"panel-widget-customization-overlay customization-item hidden\">\n" +
-             "<div class=\"customizationToolbar widgetCustomizationToolbar\">";
+   domWidget += ">\n" +
+       "<div class=\"grid-stack-item-content\">\n" +
+         "<div class=\"panel-widget-customization-overlay customization-item hidden\">\n" +
+            "<div class=\"customizationToolbar widgetCustomizationToolbar\">";
 
-    if (!isNullOrUndefined(widget.package.configurationSchema)) {
-        domWidget += "<div class=\"customizationButton widgetCustomizationButton btn-configure-widget\"><i class=\"fa fa-cog\"></i></div>\n";
-    }
+   if (!isNullOrUndefined(widget.package.configurationSchema)) {
+      domWidget += "<div class=\"customizationButton widgetCustomizationButton btn-configure-widget\"><i class=\"fa fa-cog\"></i></div>\n";
+   }
 
-    var type = widget.type;
-    if (!isNullOrUndefined(widget.downgraded)) {
-        type = "dev-deactivated-widget";
-    }
+   var type = widget.type;
+   if (!isNullOrUndefined(widget.downgraded)) {
+      type = "dev-deactivated-widget";
+   }
 
-    domWidget += "<div class=\"customizationButton widgetCustomizationButton btn-delete-widget\"><i class=\"fa fa-trash-o\"></i></div>\n" +
-             "</div>\n" +
-        "</div>\n" +
-        "<div class=\"panel panel-primary panel-widget widget-" + type + "\" >" +
-            "<div class=\"panel-heading panel-widget-header\">" +
-                "<div class=\"panel-widget-title-toolbar\" ></div>" +
-				"<div class=\"panel-widget-title\">" + widget.title + "</div>\n" +
-            "</div>" +
-            "<div class=\"panel-widget-body\" id=\"widget-" + widget.id + "\"  data-bind=\"template: { name: '" + type + "-template' }\"/>\n" +
-        "</div>\n" +
-    "</div>\n";
+   domWidget += "<div class=\"customizationButton widgetCustomizationButton btn-delete-widget\"><i class=\"fa fa-trash-o\"></i></div>\n" +
+            "</div>\n" +
+       "</div>\n" +
+       "<div class=\"panel panel-primary panel-widget widget-" + type + "\" >" +
+           "<div class=\"panel-heading panel-widget-header\">" +
+               "<div class=\"panel-widget-title-toolbar\" ></div>" +
+           "<div class=\"panel-widget-title\">" + widget.title + "</div>\n" +
+           "</div>" +
+           "<div class=\"panel-widget-body\" id=\"widget-" + widget.id + "\"  data-bind=\"template: { name: '" + type + "-template' }\"/>\n" +
+       "</div>\n" +
+   "</div>\n";
 
-    //we put widget automatically at the first empty place if position has been undefined
-    var autoPosition = ((!widget.positionX) || (!widget.positionY));
+   //we put widget automatically at the first empty place if position has been undefined
+   var autoPosition = ((!widget.positionX) || (!widget.positionY));
 
-    var item = page.grid.add_widget($(domWidget), widget.positionX, widget.positionY, widget.sizeX, widget.sizeY, autoPosition);
-	
-	//Calculate the overflow ! Theses values could be obtain, only after the application !
-	var overflow = $("[widget-id=" + widget.id +"]").find( ".panel-widget-title" )[0].scrollWidth - 
-	               $("[widget-id=" + widget.id +"]").find( ".panel-widget-title" )[0].offsetWidth;
-	
-	if ( overflow > 0 )
-	{
-    	$("<style type='text/css'> .panel-widget-title-" + widget.id + "{margin: 0 auto; overflow: hidden; white-space: nowrap; box-sizing: border-box; animation: panel-widget-title-marquee-" + widget.id + 
+   var item = page.grid.add_widget($(domWidget), widget.positionX, widget.positionY, widget.sizeX, widget.sizeY, autoPosition);
+
+   //Calculate the overflow ! Theses values could be obtain, only after the application !
+   var overflow = $("[widget-id=" + widget.id + "]").find(".panel-widget-title")[0].scrollWidth -
+	               $("[widget-id=" + widget.id + "]").find(".panel-widget-title")[0].offsetWidth;
+
+   if (overflow > 0) {
+      $("<style type='text/css'> .panel-widget-title-" + widget.id + "{margin: 0 auto; overflow: hidden; white-space: nowrap; box-sizing: border-box; animation: panel-widget-title-marquee-" + widget.id +
 	    " 30s steps(150) infinite;-webkit-animation-play-state: running; animation-play-state: running;}</style>").appendTo("head");	//html > //ease-in-out
-		
-		$("<style type='text/css'> @keyframes panel-widget-title-marquee-" + widget.id + " { 0%   { text-indent: 0px; } 50% { text-indent: " + -overflow + "px;}  100%  { text-indent: 0px; } }</style>").appendTo("head");
-		
-		$("[widget-id=" + widget.id +"]").find( ".panel-widget-title" ).addClass ("panel-widget-title-" + widget.id);
-	}
 
-    item.i18n();
-    return item;
+      $("<style type='text/css'> @keyframes panel-widget-title-marquee-" + widget.id + " { 0%   { text-indent: 0px; } 50% { text-indent: " + -overflow + "px;}  100%  { text-indent: 0px; } }</style>").appendTo("head");
+
+      $("[widget-id=" + widget.id + "]").find(".panel-widget-title").addClass("panel-widget-title-" + widget.id);
+   }
+
+   item.i18n();
+   return item;
 };
 
 

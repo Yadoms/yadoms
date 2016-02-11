@@ -18,6 +18,7 @@ function EnumParameterHandler(i18NContext, paramName, content, currentValue) {
    //values can be empty
    this.values = content.values;
    this.value = currentValue;
+   this.sort = content.sort;
 
    this.name = content.name;
    this.uuid = createUUID();
@@ -67,23 +68,44 @@ EnumParameterHandler.prototype.setValues = function (values) {
    this.updateValues();
 };
 
+
+EnumParameterHandler.arrangeCollection = function (collection, alphabeticallySort) {
+   var sortable = [];
+   $.each(collection, function (key, value) {
+      if (value && key && key !== "undefined")
+         sortable.push([key, value]);
+   });
+
+   if (alphabeticallySort === true) {
+      sortable.sort(function(a, b) {
+         return a[1].localeCompare(b[1]);
+      });
+   }
+   return sortable;
+}
+
 EnumParameterHandler.prototype.updateValues = function () {
    var self = this;
    var $select = self.locateInDOM();
    $select.empty();
 
+   
    //we iterate through the values collection
-   $.each(self.values, function (key, value) {
-	   
-      var line = "<option value=\"" + key + "\"";
-      if (key === self.value)
+   $.each(EnumParameterHandler.arrangeCollection(self.values, self.sort), function (key, value) {
+      //key contains the index in array
+      //value contains [languageCode, languageDisplayName]
+      var languageCode = value[0];
+      var languagelanguageDisplayNameCode = value[1];
+
+      var line = "<option value=\"" + languageCode + "\"";
+      if (languageCode === self.value)
          line += " selected";
 	 
-		 if ( i18n.exists( self.i18nContext + self.paramName + ".values." + key ) ){
-			 line += " >" + $.t( self.i18nContext + self.paramName + ".values." + key ) + "</option>";
+      if (i18n.exists(self.i18nContext + self.paramName + ".values." + languageCode)) {
+         line += " >" + $.t(self.i18nContext + self.paramName + ".values." + languageCode) + "</option>";
 		 }
 		 else{ //if the precedent line doesn't exist into the i18n we are in the case of binding. So we have to display the "value"
-			 line += " >" + value + "</option>";
+         line += " >" + languagelanguageDisplayNameCode + "</option>";
 		 }
 	  
       $select.append(line);

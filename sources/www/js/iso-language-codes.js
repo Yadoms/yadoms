@@ -1,244 +1,774 @@
 /**
- * Created by nhilaire on 18/07/14.
+ * @author Anatoly Mironov (mirontoli)
+ * http://sharepointkunskap.wordpress.com
+ * http://www.bool.se
+ *  
+ * http://stackoverflow.com/questions/3605495/generate-a-list-of-localized-language-names-with-links-to-google-translate/14800384#14800384
+ * http://stackoverflow.com/questions/10997128/language-name-from-iso-639-1-code-in-javascript/14800499#14800499
+ * 
+ * using Phil Teare's answer on stackoverflow
+ * http://stackoverflow.com/questions/3217492/list-of-language-codes-in-yaml-or-json/4900304#4900304
+ * Just for testing only. Incorporate in your own javascript namespace
+ * Example: getLanguageName("cv-RU") --> Chuvash
  */
+(function () {
+   'use strict';
 
-var isoLanguageCodes =
-{"af"	: "Afrikaans",
-   "af-ZA"	: "Afrikaans (South Africa)",
-   "ar"	: "Arabic",
-   "ar-AE"	: "Arabic (U.A.E.)",
-   "ar-BH"	: "Arabic (Bahrain)",
-   "ar-DZ"	: "Arabic (Algeria)",
-   "ar-EG"	: "Arabic (Egypt)",
-   "ar-IQ"	: "Arabic (Iraq)",
-   "ar-JO"	: "Arabic (Jordan)",
-   "ar-KW"	: "Arabic (Kuwait)",
-   "ar-LB"	: "Arabic (Lebanon)",
-   "ar-LY"	: "Arabic (Libya)",
-   "ar-MA"	: "Arabic (Morocco)",
-   "ar-OM"	: "Arabic (Oman)",
-   "ar-QA"	: "Arabic (Qatar)",
-   "ar-SA"	: "Arabic (Saudi Arabia)",
-   "ar-SY"	: "Arabic (Syria)",
-   "ar-TN"	: "Arabic (Tunisia)",
-   "ar-YE"	: "Arabic (Yemen)",
-   "az"	: "Azeri (Latin)",
-   "az-AZ"	: "Azeri (Latin) (Azerbaijan)",
-   "az-AZ"	: "Azeri (Cyrillic) (Azerbaijan)",
-   "be"	: "Belarusian",
-   "be-BY"	: "Belarusian (Belarus)",
-   "bg"	: "Bulgarian",
-   "bg-BG"	: "Bulgarian (Bulgaria)",
-   "bs-BA"	: "Bosnian (Bosnia and Herzegovina)",
-   "ca"	: "Catalan",
-   "ca-ES"	: "Catalan (Spain)",
-   "cs"	: "Czech",
-   "cs-CZ"	: "Czech (Czech Republic)",
-   "cy"	: "Welsh",
-   "cy-GB"	: "Welsh (United Kingdom)",
-   "da"	: "Danish",
-   "da-DK"	: "Danish (Denmark)",
-   "de"	: "German",
-   "de-AT"	: "German (Austria)",
-   "de-CH"	: "German (Switzerland)",
-   "de-DE"	: "German (Germany)",
-   "de-LI"	: "German (Liechtenstein)",
-   "de-LU"	: "German (Luxembourg)",
-   "dv"	: "Divehi",
-   "dv-MV"	: "Divehi (Maldives)",
-   "el"	: "Greek",
-   "el-GR"	: "Greek (Greece)",
-   "en"	: "English",
-   "en-AU"	: "English (Australia)",
-   "en-BZ"	: "English (Belize)",
-   "en-CA"	: "English (Canada)",
-   "en-CB"	: "English (Caribbean)",
-   "en-GB"	: "English (United Kingdom)",
-   "en-IE"	: "English (Ireland)",
-   "en-JM"	: "English (Jamaica)",
-   "en-NZ"	: "English (New Zealand)",
-   "en-PH"	: "English (Republic of the Philippines)",
-   "en-TT"	: "English (Trinidad and Tobago)",
-   "en-US"	: "English (United States)",
-   "en-ZA"	: "English (South Africa)",
-   "en-ZW"	: "English (Zimbabwe)",
-   "eo"	: "Esperanto",
-   "es"	: "Spanish",
-   "es-AR"	: "Spanish (Argentina)",
-   "es-BO"	: "Spanish (Bolivia)",
-   "es-CL"	: "Spanish (Chile)",
-   "es-CO"	: "Spanish (Colombia)",
-   "es-CR"	: "Spanish (Costa Rica)",
-   "es-DO"	: "Spanish (Dominican Republic)",
-   "es-EC"	: "Spanish (Ecuador)",
-   "es-ES"	: "Spanish (Castilian)",
-   "es-ES"	: "Spanish (Spain)",
-   "es-GT"	: "Spanish (Guatemala)",
-   "es-HN"	: "Spanish (Honduras)",
-   "es-MX"	: "Spanish (Mexico)",
-   "es-NI"	: "Spanish (Nicaragua)",
-   "es-PA"	: "Spanish (Panama)",
-   "es-PE"	: "Spanish (Peru)",
-   "es-PR"	: "Spanish (Puerto Rico)",
-   "es-PY"	: "Spanish (Paraguay)",
-   "es-SV"	: "Spanish (El Salvador)",
-   "es-UY"	: "Spanish (Uruguay)",
-   "es-VE"	: "Spanish (Venezuela)",
-   "et"	: "Estonian",
-   "et-EE"	: "Estonian (Estonia)",
-   "eu"	: "Basque",
-   "eu-ES"	: "Basque (Spain)",
-   "fa"	: "Farsi",
-   "fa-IR"	: "Farsi (Iran)",
-   "fi"	: "Finnish",
-   "fi-FI"	: "Finnish (Finland)",
-   "fo"	: "Faroese",
-   "fo-FO"	: "Faroese (Faroe Islands)",
-   "fr"	: "French",
-   "fr-BE"	: "French (Belgium)",
-   "fr-CA"	: "French (Canada)",
-   "fr-CH"	: "French (Switzerland)",
-   "fr-FR"	: "French (France)",
-   "fr-LU"	: "French (Luxembourg)",
-   "fr-MC"	: "French (Principality of Monaco)",
-   "gl"	: "Galician",
-   "gl-ES"	: "Galician (Spain)",
-   "gu"	: "Gujarati",
-   "gu-IN"	: "Gujarati (India)",
-   "he"	: "Hebrew",
-   "he-IL"	: "Hebrew (Israel)",
-   "hi"	: "Hindi",
-   "hi-IN"	: "Hindi (India)",
-   "hr"	: "Croatian",
-   "hr-BA"	: "Croatian (Bosnia and Herzegovina)",
-   "hr-HR"	: "Croatian (Croatia)",
-   "hu"	: "Hungarian",
-   "hu-HU"	: "Hungarian (Hungary)",
-   "hy"	: "Armenian",
-   "hy-AM"	: "Armenian (Armenia)",
-   "id"	: "Indonesian",
-   "id-ID"	: "Indonesian (Indonesia)",
-   "is"	: "Icelandic",
-   "is-IS"	: "Icelandic (Iceland)",
-   "it"	: "Italian",
-   "it-CH"	: "Italian (Switzerland)",
-   "it-IT"	: "Italian (Italy)",
-   "ja"	: "Japanese",
-   "ja-JP"	: "Japanese (Japan)",
-   "ka"	: "Georgian",
-   "ka-GE"	: "Georgian (Georgia)",
-   "kk"	: "Kazakh",
-   "kk-KZ"	: "Kazakh (Kazakhstan)",
-   "kn"	: "Kannada",
-   "kn-IN"	: "Kannada (India)",
-   "ko"	: "Korean",
-   "ko-KR"	: "Korean (Korea)",
-   "kok"	: "Konkani",
-   "kok-IN": "Konkani (India)",
-   "ky"	: "Kyrgyz",
-   "ky-KG"	: "Kyrgyz (Kyrgyzstan)",
-   "lt"	: "Lithuanian",
-   "lt-LT"	: "Lithuanian (Lithuania)",
-   "lv"	: "Latvian",
-   "lv-LV"	: "Latvian (Latvia)",
-   "mi"	: "Maori",
-   "mi-NZ"	: "Maori (New Zealand)",
-   "mk"	: "FYRO Macedonian",
-   "mk-MK"	: "FYRO Macedonian (Former Yugoslav Republic of Macedonia)",
-   "mn"	: "Mongolian",
-   "mn-MN"	: "Mongolian (Mongolia)",
-   "mr"	: "Marathi",
-   "mr-IN"	: "Marathi (India)",
-   "ms"	: "Malay",
-   "ms-BN"	: "Malay (Brunei Darussalam)",
-   "ms-MY"	: "Malay (Malaysia)",
-   "mt"	: "Maltese",
-   "mt-MT"	: "Maltese (Malta)",
-   "nb"	: "Norwegian (Bokmål)",
-   "nb-NO"	: "Norwegian (Bokmål) (Norway)",
-   "nl"	: "Dutch",
-   "nl-BE"	: "Dutch (Belgium)",
-   "nl-NL"	: "Dutch (Netherlands)",
-   "nn-NO"	: "Norwegian (Nynorsk) (Norway)",
-   "ns"	: "Northern Sotho",
-   "ns-ZA"	: "Northern Sotho (South Africa)",
-   "pa"	: "Punjabi",
-   "pa-IN"	: "Punjabi (India)",
-   "pl"	: "Polish",
-   "pl-PL"	: "Polish (Poland)",
-   "ps"	: "Pashto",
-   "ps-AR"	: "Pashto (Afghanistan)",
-   "pt"	: "Portuguese",
-   "pt-BR"	: "Portuguese (Brazil)",
-   "pt-PT"	: "Portuguese (Portugal)",
-   "qu"	: "Quechua",
-   "qu-BO"	: "Quechua (Bolivia)",
-   "qu-EC"	: "Quechua (Ecuador)",
-   "qu-PE"	: "Quechua (Peru)",
-   "ro"	: "Romanian",
-   "ro-RO"	: "Romanian (Romania)",
-   "ru"	: "Russian",
-   "ru-RU"	: "Russian (Russia)",
-   "sa"	: "Sanskrit",
-   "sa-IN"	: "Sanskrit (India)",
-   "se"	: "Sami (Northern)",
-   "se-FI"	: "Sami (Northern) (Finland)",
-   "se-FI"	: "Sami (Skolt) (Finland)",
-   "se-FI"	: "Sami (Inari) (Finland)",
-   "se-NO"	: "Sami (Northern) (Norway)",
-   "se-NO"	: "Sami (Lule) (Norway)",
-   "se-NO"	: "Sami (Southern) (Norway)",
-   "se-SE"	: "Sami (Northern) (Sweden)",
-   "se-SE"	: "Sami (Lule) (Sweden)",
-   "se-SE"	: "Sami (Southern) (Sweden)",
-   "sk"	: "Slovak",
-   "sk-SK"	: "Slovak (Slovakia)",
-   "sl"	: "Slovenian",
-   "sl-SI"	: "Slovenian (Slovenia)",
-   "sq"	: "Albanian",
-   "sq-AL"	: "Albanian (Albania)",
-   "sr-BA"	: "Serbian (Latin) (Bosnia and Herzegovina)",
-   "sr-BA"	: "Serbian (Cyrillic) (Bosnia and Herzegovina)",
-   "sr-SP"	: "Serbian (Latin) (Serbia and Montenegro)",
-   "sr-SP"	: "Serbian (Cyrillic) (Serbia and Montenegro)",
-   "sv"	: "Swedish",
-   "sv-FI"	: "Swedish (Finland)",
-   "sv-SE"	: "Swedish (Sweden)",
-   "sw"	: "Swahili",
-   "sw-KE"	: "Swahili (Kenya)",
-   "syr"	: "Syriac",
-   "syr-SY": "Syriac (Syria)",
-   "ta"	: "Tamil",
-   "ta-IN"	: "Tamil (India)",
-   "te"	: "Telugu",
-   "te-IN"	: "Telugu (India)",
-   "th"	: "Thai",
-   "th-TH"	: "Thai (Thailand)",
-   "tl"	: "Tagalog",
-   "tl-PH"	: "Tagalog (Philippines)",
-   "tn"	: "Tswana",
-   "tn-ZA"	: "Tswana (South Africa)",
-   "tr"	: "Turkish",
-   "tr-TR"	: "Turkish (Turkey)",
-   "tt"	: "Tatar",
-   "tt-RU"	: "Tatar (Russia)",
-   "ts"	: "Tsonga",
-   "uk"	: "Ukrainian",
-   "uk-UA"	: "Ukrainian (Ukraine)",
-   "ur"	: "Urdu",
-   "ur-PK"	: "Urdu (Islamic Republic of Pakistan)",
-   "uz"	: "Uzbek (Latin)",
-   "uz-UZ"	: "Uzbek (Latin) (Uzbekistan)",
-   "uz-UZ"	: "Uzbek (Cyrillic) (Uzbekistan)",
-   "vi"	: "Vietnamese",
-   "vi-VN"	: "Vietnamese (Viet Nam)",
-   "xh"	: "Xhosa",
-   "xh-ZA"	: "Xhosa (South Africa)",
-   "zh"	: "Chinese",
-   "zh-CN"	: "Chinese (S)",
-   "zh-HK"	: "Chinese (Hong Kong)",
-   "zh-MO"	: "Chinese (Macau)",
-   "zh-SG"	: "Chinese (Singapore)",
-   "zh-TW"	: "Chinese (T)",
-   "zu"	: "Zulu",
-   "zu-ZA"	: "Zulu (South Africa)" }
+   /**
+	 * @author Phil Teare
+	 * using wikipedia data
+	 */
+   var isoLangs = {
+      "ab": {
+         "name": "Abkhaz",
+         "nativeName": "аҧсуа"
+      },
+      "aa": {
+         "name": "Afar",
+         "nativeName": "Afaraf"
+      },
+      "af": {
+         "name": "Afrikaans",
+         "nativeName": "Afrikaans"
+      },
+      "ak": {
+         "name": "Akan",
+         "nativeName": "Akan"
+      },
+      "sq": {
+         "name": "Albanian",
+         "nativeName": "Shqip"
+      },
+      "am": {
+         "name": "Amharic",
+         "nativeName": "አማርኛ"
+      },
+      "ar": {
+         "name": "Arabic",
+         "nativeName": "العربية"
+      },
+      "an": {
+         "name": "Aragonese",
+         "nativeName": "Aragonés"
+      },
+      "hy": {
+         "name": "Armenian",
+         "nativeName": "Հայերեն"
+      },
+      "as": {
+         "name": "Assamese",
+         "nativeName": "অসমীয়া"
+      },
+      "av": {
+         "name": "Avaric",
+         "nativeName": "авар мацӀ, магӀарул мацӀ"
+      },
+      "ae": {
+         "name": "Avestan",
+         "nativeName": "avesta"
+      },
+      "ay": {
+         "name": "Aymara",
+         "nativeName": "aymar aru"
+      },
+      "az": {
+         "name": "Azerbaijani",
+         "nativeName": "azərbaycan dili"
+      },
+      "bm": {
+         "name": "Bambara",
+         "nativeName": "bamanankan"
+      },
+      "ba": {
+         "name": "Bashkir",
+         "nativeName": "башҡорт теле"
+      },
+      "eu": {
+         "name": "Basque",
+         "nativeName": "euskara, euskera"
+      },
+      "be": {
+         "name": "Belarusian",
+         "nativeName": "Беларуская"
+      },
+      "bn": {
+         "name": "Bengali",
+         "nativeName": "বাংলা"
+      },
+      "bh": {
+         "name": "Bihari",
+         "nativeName": "भोजपुरी"
+      },
+      "bi": {
+         "name": "Bislama",
+         "nativeName": "Bislama"
+      },
+      "bs": {
+         "name": "Bosnian",
+         "nativeName": "bosanski jezik"
+      },
+      "br": {
+         "name": "Breton",
+         "nativeName": "brezhoneg"
+      },
+      "bg": {
+         "name": "Bulgarian",
+         "nativeName": "български език"
+      },
+      "my": {
+         "name": "Burmese",
+         "nativeName": "ဗမာစာ"
+      },
+      "ca": {
+         "name": "Catalan; Valencian",
+         "nativeName": "Català"
+      },
+      "ch": {
+         "name": "Chamorro",
+         "nativeName": "Chamoru"
+      },
+      "ce": {
+         "name": "Chechen",
+         "nativeName": "нохчийн мотт"
+      },
+      "ny": {
+         "name": "Chichewa; Chewa; Nyanja",
+         "nativeName": "chiCheŵa, chinyanja"
+      },
+      "zh": {
+         "name": "Chinese",
+         "nativeName": "中文 (Zhōngwén), 汉语, 漢語"
+      },
+      "cv": {
+         "name": "Chuvash",
+         "nativeName": "чӑваш чӗлхи"
+      },
+      "kw": {
+         "name": "Cornish",
+         "nativeName": "Kernewek"
+      },
+      "co": {
+         "name": "Corsican",
+         "nativeName": "corsu, lingua corsa"
+      },
+      "cr": {
+         "name": "Cree",
+         "nativeName": "ᓀᐦᐃᔭᐍᐏᐣ"
+      },
+      "hr": {
+         "name": "Croatian",
+         "nativeName": "hrvatski"
+      },
+      "cs": {
+         "name": "Czech",
+         "nativeName": "česky, čeština"
+      },
+      "da": {
+         "name": "Danish",
+         "nativeName": "dansk"
+      },
+      "dv": {
+         "name": "Divehi; Dhivehi; Maldivian;",
+         "nativeName": "ދިވެހި"
+      },
+      "nl": {
+         "name": "Dutch",
+         "nativeName": "Nederlands, Vlaams"
+      },
+      "en": {
+         "name": "English",
+         "nativeName": "English"
+      },
+      "eo": {
+         "name": "Esperanto",
+         "nativeName": "Esperanto"
+      },
+      "et": {
+         "name": "Estonian",
+         "nativeName": "eesti, eesti keel"
+      },
+      "ee": {
+         "name": "Ewe",
+         "nativeName": "Eʋegbe"
+      },
+      "fo": {
+         "name": "Faroese",
+         "nativeName": "føroyskt"
+      },
+      "fj": {
+         "name": "Fijian",
+         "nativeName": "vosa Vakaviti"
+      },
+      "fi": {
+         "name": "Finnish",
+         "nativeName": "suomi, suomen kieli"
+      },
+      "fr": {
+         "name": "French",
+         "nativeName": "français, langue française"
+      },
+      "ff": {
+         "name": "Fula; Fulah; Pulaar; Pular",
+         "nativeName": "Fulfulde, Pulaar, Pular"
+      },
+      "gl": {
+         "name": "Galician",
+         "nativeName": "Galego"
+      },
+      "ka": {
+         "name": "Georgian",
+         "nativeName": "ქართული"
+      },
+      "de": {
+         "name": "German",
+         "nativeName": "Deutsch"
+      },
+      "el": {
+         "name": "Greek, Modern",
+         "nativeName": "Ελληνικά"
+      },
+      "gn": {
+         "name": "Guaraní",
+         "nativeName": "Avañeẽ"
+      },
+      "gu": {
+         "name": "Gujarati",
+         "nativeName": "ગુજરાતી"
+      },
+      "ht": {
+         "name": "Haitian; Haitian Creole",
+         "nativeName": "Kreyòl ayisyen"
+      },
+      "ha": {
+         "name": "Hausa",
+         "nativeName": "Hausa, هَوُسَ"
+      },
+      "he": {
+         "name": "Hebrew (modern)",
+         "nativeName": "עברית"
+      },
+      "hz": {
+         "name": "Herero",
+         "nativeName": "Otjiherero"
+      },
+      "hi": {
+         "name": "Hindi",
+         "nativeName": "हिन्दी, हिंदी"
+      },
+      "ho": {
+         "name": "Hiri Motu",
+         "nativeName": "Hiri Motu"
+      },
+      "hu": {
+         "name": "Hungarian",
+         "nativeName": "Magyar"
+      },
+      "ia": {
+         "name": "Interlingua",
+         "nativeName": "Interlingua"
+      },
+      "id": {
+         "name": "Indonesian",
+         "nativeName": "Bahasa Indonesia"
+      },
+      "ie": {
+         "name": "Interlingue",
+         "nativeName": "Originally called Occidental; then Interlingue after WWII"
+      },
+      "ga": {
+         "name": "Irish",
+         "nativeName": "Gaeilge"
+      },
+      "ig": {
+         "name": "Igbo",
+         "nativeName": "Asụsụ Igbo"
+      },
+      "ik": {
+         "name": "Inupiaq",
+         "nativeName": "Iñupiaq, Iñupiatun"
+      },
+      "io": {
+         "name": "Ido",
+         "nativeName": "Ido"
+      },
+      "is": {
+         "name": "Icelandic",
+         "nativeName": "Íslenska"
+      },
+      "it": {
+         "name": "Italian",
+         "nativeName": "Italiano"
+      },
+      "iu": {
+         "name": "Inuktitut",
+         "nativeName": "ᐃᓄᒃᑎᑐᑦ"
+      },
+      "ja": {
+         "name": "Japanese",
+         "nativeName": "日本語 (にほんご／にっぽんご)"
+      },
+      "jv": {
+         "name": "Javanese",
+         "nativeName": "basa Jawa"
+      },
+      "kl": {
+         "name": "Kalaallisut, Greenlandic",
+         "nativeName": "kalaallisut, kalaallit oqaasii"
+      },
+      "kn": {
+         "name": "Kannada",
+         "nativeName": "ಕನ್ನಡ"
+      },
+      "kr": {
+         "name": "Kanuri",
+         "nativeName": "Kanuri"
+      },
+      "ks": {
+         "name": "Kashmiri",
+         "nativeName": "कश्मीरी, كشميري‎"
+      },
+      "kk": {
+         "name": "Kazakh",
+         "nativeName": "Қазақ тілі"
+      },
+      "km": {
+         "name": "Khmer",
+         "nativeName": "ភាសាខ្មែរ"
+      },
+      "ki": {
+         "name": "Kikuyu, Gikuyu",
+         "nativeName": "Gĩkũyũ"
+      },
+      "rw": {
+         "name": "Kinyarwanda",
+         "nativeName": "Ikinyarwanda"
+      },
+      "ky": {
+         "name": "Kirghiz, Kyrgyz",
+         "nativeName": "кыргыз тили"
+      },
+      "kv": {
+         "name": "Komi",
+         "nativeName": "коми кыв"
+      },
+      "kg": {
+         "name": "Kongo",
+         "nativeName": "KiKongo"
+      },
+      "ko": {
+         "name": "Korean",
+         "nativeName": "한국어 (韓國語), 조선말 (朝鮮語)"
+      },
+      "ku": {
+         "name": "Kurdish",
+         "nativeName": "Kurdî, كوردی‎"
+      },
+      "kj": {
+         "name": "Kwanyama, Kuanyama",
+         "nativeName": "Kuanyama"
+      },
+      "la": {
+         "name": "Latin",
+         "nativeName": "latine, lingua latina"
+      },
+      "lb": {
+         "name": "Luxembourgish, Letzeburgesch",
+         "nativeName": "Lëtzebuergesch"
+      },
+      "lg": {
+         "name": "Luganda",
+         "nativeName": "Luganda"
+      },
+      "li": {
+         "name": "Limburgish, Limburgan, Limburger",
+         "nativeName": "Limburgs"
+      },
+      "ln": {
+         "name": "Lingala",
+         "nativeName": "Lingála"
+      },
+      "lo": {
+         "name": "Lao",
+         "nativeName": "ພາສາລາວ"
+      },
+      "lt": {
+         "name": "Lithuanian",
+         "nativeName": "lietuvių kalba"
+      },
+      "lu": {
+         "name": "Luba-Katanga",
+         "nativeName": ""
+      },
+      "lv": {
+         "name": "Latvian",
+         "nativeName": "latviešu valoda"
+      },
+      "gv": {
+         "name": "Manx",
+         "nativeName": "Gaelg, Gailck"
+      },
+      "mk": {
+         "name": "Macedonian",
+         "nativeName": "македонски јазик"
+      },
+      "mg": {
+         "name": "Malagasy",
+         "nativeName": "Malagasy fiteny"
+      },
+      "ms": {
+         "name": "Malay",
+         "nativeName": "bahasa Melayu, بهاس ملايو‎"
+      },
+      "ml": {
+         "name": "Malayalam",
+         "nativeName": "മലയാളം"
+      },
+      "mt": {
+         "name": "Maltese",
+         "nativeName": "Malti"
+      },
+      "mi": {
+         "name": "Māori",
+         "nativeName": "te reo Māori"
+      },
+      "mr": {
+         "name": "Marathi (Marāṭhī)",
+         "nativeName": "मराठी"
+      },
+      "mh": {
+         "name": "Marshallese",
+         "nativeName": "Kajin M̧ajeļ"
+      },
+      "mn": {
+         "name": "Mongolian",
+         "nativeName": "монгол"
+      },
+      "na": {
+         "name": "Nauru",
+         "nativeName": "Ekakairũ Naoero"
+      },
+      "nv": {
+         "name": "Navajo, Navaho",
+         "nativeName": "Diné bizaad, Dinékʼehǰí"
+      },
+      "nb": {
+         "name": "Norwegian Bokmål",
+         "nativeName": "Norsk bokmål"
+      },
+      "nd": {
+         "name": "North Ndebele",
+         "nativeName": "isiNdebele"
+      },
+      "ne": {
+         "name": "Nepali",
+         "nativeName": "नेपाली"
+      },
+      "ng": {
+         "name": "Ndonga",
+         "nativeName": "Owambo"
+      },
+      "nn": {
+         "name": "Norwegian Nynorsk",
+         "nativeName": "Norsk nynorsk"
+      },
+      "no": {
+         "name": "Norwegian",
+         "nativeName": "Norsk"
+      },
+      "ii": {
+         "name": "Nuosu",
+         "nativeName": "ꆈꌠ꒿ Nuosuhxop"
+      },
+      "nr": {
+         "name": "South Ndebele",
+         "nativeName": "isiNdebele"
+      },
+      "oc": {
+         "name": "Occitan",
+         "nativeName": "Occitan"
+      },
+      "oj": {
+         "name": "Ojibwe, Ojibwa",
+         "nativeName": "ᐊᓂᔑᓈᐯᒧᐎᓐ"
+      },
+      "cu": {
+         "name": "Old Church Slavonic, Church Slavic, Church Slavonic, Old Bulgarian, Old Slavonic",
+         "nativeName": "ѩзыкъ словѣньскъ"
+      },
+      "om": {
+         "name": "Oromo",
+         "nativeName": "Afaan Oromoo"
+      },
+      "or": {
+         "name": "Oriya",
+         "nativeName": "ଓଡ଼ିଆ"
+      },
+      "os": {
+         "name": "Ossetian, Ossetic",
+         "nativeName": "ирон æвзаг"
+      },
+      "pa": {
+         "name": "Panjabi, Punjabi",
+         "nativeName": "ਪੰਜਾਬੀ, پنجابی‎"
+      },
+      "pi": {
+         "name": "Pāli",
+         "nativeName": "पाऴि"
+      },
+      "fa": {
+         "name": "Persian",
+         "nativeName": "فارسی"
+      },
+      "pl": {
+         "name": "Polish",
+         "nativeName": "polski"
+      },
+      "ps": {
+         "name": "Pashto, Pushto",
+         "nativeName": "پښتو"
+      },
+      "pt": {
+         "name": "Portuguese",
+         "nativeName": "Português"
+      },
+      "qu": {
+         "name": "Quechua",
+         "nativeName": "Runa Simi, Kichwa"
+      },
+      "rm": {
+         "name": "Romansh",
+         "nativeName": "rumantsch grischun"
+      },
+      "rn": {
+         "name": "Kirundi",
+         "nativeName": "kiRundi"
+      },
+      "ro": {
+         "name": "Romanian, Moldavian, Moldovan",
+         "nativeName": "română"
+      },
+      "ru": {
+         "name": "Russian",
+         "nativeName": "русский язык"
+      },
+      "sa": {
+         "name": "Sanskrit (Saṁskṛta)",
+         "nativeName": "संस्कृतम्"
+      },
+      "sc": {
+         "name": "Sardinian",
+         "nativeName": "sardu"
+      },
+      "sd": {
+         "name": "Sindhi",
+         "nativeName": "सिन्धी, سنڌي، سندھی‎"
+      },
+      "se": {
+         "name": "Northern Sami",
+         "nativeName": "Davvisámegiella"
+      },
+      "sm": {
+         "name": "Samoan",
+         "nativeName": "gagana faa Samoa"
+      },
+      "sg": {
+         "name": "Sango",
+         "nativeName": "yângâ tî sängö"
+      },
+      "sr": {
+         "name": "Serbian",
+         "nativeName": "српски језик"
+      },
+      "gd": {
+         "name": "Scottish Gaelic; Gaelic",
+         "nativeName": "Gàidhlig"
+      },
+      "sn": {
+         "name": "Shona",
+         "nativeName": "chiShona"
+      },
+      "si": {
+         "name": "Sinhala, Sinhalese",
+         "nativeName": "සිංහල"
+      },
+      "sk": {
+         "name": "Slovak",
+         "nativeName": "slovenčina"
+      },
+      "sl": {
+         "name": "Slovene",
+         "nativeName": "slovenščina"
+      },
+      "so": {
+         "name": "Somali",
+         "nativeName": "Soomaaliga, af Soomaali"
+      },
+      "st": {
+         "name": "Southern Sotho",
+         "nativeName": "Sesotho"
+      },
+      "es": {
+         "name": "Spanish; Castilian",
+         "nativeName": "español, castellano"
+      },
+      "su": {
+         "name": "Sundanese",
+         "nativeName": "Basa Sunda"
+      },
+      "sw": {
+         "name": "Swahili",
+         "nativeName": "Kiswahili"
+      },
+      "ss": {
+         "name": "Swati",
+         "nativeName": "SiSwati"
+      },
+      "sv": {
+         "name": "Swedish",
+         "nativeName": "svenska"
+      },
+      "ta": {
+         "name": "Tamil",
+         "nativeName": "தமிழ்"
+      },
+      "te": {
+         "name": "Telugu",
+         "nativeName": "తెలుగు"
+      },
+      "tg": {
+         "name": "Tajik",
+         "nativeName": "тоҷикӣ, toğikī, تاجیکی‎"
+      },
+      "th": {
+         "name": "Thai",
+         "nativeName": "ไทย"
+      },
+      "ti": {
+         "name": "Tigrinya",
+         "nativeName": "ትግርኛ"
+      },
+      "bo": {
+         "name": "Tibetan Standard, Tibetan, Central",
+         "nativeName": "བོད་ཡིག"
+      },
+      "tk": {
+         "name": "Turkmen",
+         "nativeName": "Türkmen, Түркмен"
+      },
+      "tl": {
+         "name": "Tagalog",
+         "nativeName": "Wikang Tagalog, ᜏᜒᜃᜅ᜔ ᜆᜄᜎᜓᜄ᜔"
+      },
+      "tn": {
+         "name": "Tswana",
+         "nativeName": "Setswana"
+      },
+      "to": {
+         "name": "Tonga (Tonga Islands)",
+         "nativeName": "faka Tonga"
+      },
+      "tr": {
+         "name": "Turkish",
+         "nativeName": "Türkçe"
+      },
+      "ts": {
+         "name": "Tsonga",
+         "nativeName": "Xitsonga"
+      },
+      "tt": {
+         "name": "Tatar",
+         "nativeName": "татарча, tatarça, تاتارچا‎"
+      },
+      "tw": {
+         "name": "Twi",
+         "nativeName": "Twi"
+      },
+      "ty": {
+         "name": "Tahitian",
+         "nativeName": "Reo Tahiti"
+      },
+      "ug": {
+         "name": "Uighur, Uyghur",
+         "nativeName": "Uyƣurqə, ئۇيغۇرچە‎"
+      },
+      "uk": {
+         "name": "Ukrainian",
+         "nativeName": "українська"
+      },
+      "ur": {
+         "name": "Urdu",
+         "nativeName": "اردو"
+      },
+      "uz": {
+         "name": "Uzbek",
+         "nativeName": "zbek, Ўзбек, أۇزبېك‎"
+      },
+      "ve": {
+         "name": "Venda",
+         "nativeName": "Tshivenḓa"
+      },
+      "vi": {
+         "name": "Vietnamese",
+         "nativeName": "Tiếng Việt"
+      },
+      "vo": {
+         "name": "Volapük",
+         "nativeName": "Volapük"
+      },
+      "wa": {
+         "name": "Walloon",
+         "nativeName": "Walon"
+      },
+      "cy": {
+         "name": "Welsh",
+         "nativeName": "Cymraeg"
+      },
+      "wo": {
+         "name": "Wolof",
+         "nativeName": "Wollof"
+      },
+      "fy": {
+         "name": "Western Frisian",
+         "nativeName": "Frysk"
+      },
+      "xh": {
+         "name": "Xhosa",
+         "nativeName": "isiXhosa"
+      },
+      "yi": {
+         "name": "Yiddish",
+         "nativeName": "ייִדיש"
+      },
+      "yo": {
+         "name": "Yoruba",
+         "nativeName": "Yorùbá"
+      },
+      "za": {
+         "name": "Zhuang, Chuang",
+         "nativeName": "Saɯ cueŋƅ, Saw cuengh"
+      }
+   }
+
+   var getLanguageName = function (key) {
+      key = key.slice(0, 2);
+      var lang = isoLangs[key];
+      return lang ? lang.name : undefined;
+   }
+   var getLanguageNativeName = function (key) {
+      key = key.slice(0, 2);
+      var lang = isoLangs[key];
+      return lang ? lang.nativveName : undefined;
+   }
+
+   var getIsoLanguageArray = function() {
+      var result = {};
+      $.each(isoLangs, function(index, value) {
+         result[index] = value["nativeName"] + " (" + value["name"] + ")";
+      });
+      return result;
+   }
+   
+   window.getLanguageName = getLanguageName;
+   window.getLanguageNativeName = getLanguageNativeName;
+   window.getIsoLanguageArray = getIsoLanguageArray;
+})();
