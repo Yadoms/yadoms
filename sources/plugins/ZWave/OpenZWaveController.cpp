@@ -9,7 +9,7 @@
 #include <Options.h>
 #include <Manager.h>
 #include <Notification.h>
-#include <Log.h>
+#include <platform/Log.h>
 #include "KeywordContainer.h"
 
 COpenZWaveController::COpenZWaveController()
@@ -27,9 +27,24 @@ COpenZWaveController::~COpenZWaveController()
 
 void OnGlobalNotification(OpenZWave::Notification const* _notification, void* _context)
 {
-   COpenZWaveController * pPlugin = static_cast<COpenZWaveController *>(_context);
-   if (pPlugin != NULL)
-      pPlugin->OnNotification(_notification, _context);
+   try
+   {
+      COpenZWaveController * pPlugin = static_cast<COpenZWaveController *>(_context);
+      if (pPlugin != NULL)
+         pPlugin->OnNotification(_notification, _context);
+   }
+   catch (OpenZWave::OZWException & ex)
+   {
+      YADOMS_LOG(fatal) << "OpenZWave exception (OnGlobalNotification) : " << ex.what();
+   }
+   catch (std::exception & ex)
+   {
+      YADOMS_LOG(fatal) << "OpenZWave std::exception (OnGlobalNotification) : " << ex.what();
+   }
+   catch (...)
+   {
+      YADOMS_LOG(fatal) << "OpenZWave unknown exception (OnGlobalNotification)";
+   }
 }
 
 
@@ -39,14 +54,6 @@ std::string COpenZWaveController::GenerateDeviceStringID(uint32 homeId, uint8 no
    sstr << homeId << "." << (int)nodeId;
    return sstr.str();
 }
-
-//std::string COpenZWaveController::GenerateKeywordStringID(const std::string & label, const ECommandClass & commandClass)
-//{
-//   std::stringstream sstr;
-//   sstr << label << "." << commandClass.toString();
-//   return sstr.str();
-//}
-
 
 void COpenZWaveController::configure(CZWaveConfiguration * configuration, shared::event::CEventHandler * handler)
 {
@@ -190,14 +197,38 @@ bool COpenZWaveController::start()
    }
    catch (OpenZWave::OZWException & ex)
    {
-      YADOMS_LOG(fatal) << "Fail to start OpenZWave controller : " << ex.GetMsg();
+      YADOMS_LOG(fatal) << "Fail to start OpenZWave controller : OpenZWave exception : " << ex.what();
    }
+   catch (std::exception & ex)
+   {
+      YADOMS_LOG(fatal) << "Fail to start OpenZWave controller : std::exception : " << ex.what();
+   }
+   catch (...)
+   {
+      YADOMS_LOG(fatal) << "Fail to start OpenZWave controller unknown exception";
+   }
+
    return false;
 }
 
 void COpenZWaveController::stop()
 {
-   OpenZWave::Manager::Destroy();
+   try
+   {
+      OpenZWave::Manager::Destroy();
+   }
+   catch (OpenZWave::OZWException & ex)
+   {
+      YADOMS_LOG(fatal) << "Fail to stop OpenZWave controller : OpenZWave exception : " << ex.what();
+   }
+   catch (std::exception & ex)
+   {
+      YADOMS_LOG(fatal) << "Fail to stop OpenZWave controller : std::exception : " << ex.what();
+   }
+   catch (...)
+   {
+      YADOMS_LOG(fatal) << "Fail to stop OpenZWave controller unknown exception";
+   }
 }
 
 
