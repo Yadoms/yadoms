@@ -314,20 +314,18 @@ function updateWidgetsPolling() {
 
 function updateWidgetPolling(widget) {
    if (!isNullOrUndefined(widget.listenedKeywords)) {
-       //TODO : aggregate all keywordsId and use AcquisitionManager.getLastValues(device.keywords)
-       $.each(widget.listenedKeywords, function (keywordIndex, keywordId) {
-         if (!isNullOrUndefined(keywordId)) {
-            //foreach device we ask for last values
-            AcquisitionManager.getLastValue(keywordId)
-               .done(function (acquisition) {
-                  //we signal the new acquisition to the widget if the widget support the method
-                  if (widget.viewModel.onNewAcquisition !== undefined)
-                     widget.viewModel.onNewAcquisition(keywordId, acquisition);
-               })
-               .fail(function (error) {
-                  notifyError($.t("objects.generic.errorGetting", { objectName: "Acquisition KeywordId = " + keywordId }), error);
-               });
+      AcquisitionManager.getLastValues(widget.listenedKeywords)
+      .done(function (data) {
+         if (data) {
+            $.each(data, function(index, acquisition) {
+               //we signal the new acquisition to the widget if the widget support the method
+               if (widget.viewModel.onNewAcquisition !== undefined)
+                  widget.viewModel.onNewAcquisition(acquisition.keywordId, acquisition);
+            });
          }
+      })
+      .fail(function (error) {
+         notifyError($.t("objects.generic.errorGetting", { objectName: "last acquisition for widget = " + widget.id }), error);
       });
    }
 }
