@@ -60,12 +60,6 @@ namespace startupOptions
       virtual const std::string getScriptInterpretersPath() const = 0;
 
       //--------------------------------------------------------------
-      /// \brief	    Get the debug flag
-      /// \return     flag indicating if debug mode is activated
-      //--------------------------------------------------------------
-      virtual bool getDebugFlag() const = 0;   
-      
-      //--------------------------------------------------------------
       /// \brief	    Get the no password flag
       /// \return     flag indicating if password check is disabled for this instance
       //--------------------------------------------------------------
