@@ -92,20 +92,18 @@ void CContextAccessor::doWork()
    google::protobuf::ShutdownProtobufLibrary();
 }
 
-void CContextAccessor::sendAnswer(const protobufMessage::ToScript& answer, boost::interprocess::message_queue& messageQueue)
+void CContextAccessor::sendAnswer(const protobufMessage::Answer& answer, boost::interprocess::message_queue& messageQueue)
 {
-   unsigned char message[m_messageQueueMessageSize]; //TODO à mettre dans la classe pour ne pas allouer/désallouer sans cesse
-
    if (!answer.IsInitialized())
       throw std::overflow_error("CContextAccessor::sendAnswer : answer is not fully initialized");
 
    if (answer.ByteSize() > m_messageQueueMessageSize)
       throw std::overflow_error("CContextAccessor::sendAnswer : answer is too big");
 
-   if (!answer.SerializeToArray(message, m_messageQueueMessageSize))
+   if (!answer.SerializeToArray(m_mqBuffer, m_messageQueueMessageSize))
       throw std::overflow_error("CContextAccessor::sendAnswer : fail to serialize answer (too big ?)");
 
-   messageQueue.send(message, answer.GetCachedSize(), 0);
+   messageQueue.send(m_mqBuffer, answer.GetCachedSize(), 0);
 }
 
 void CContextAccessor::processMessage(const void* message, size_t messageSize, boost::interprocess::message_queue& messageQueue)
@@ -114,37 +112,37 @@ void CContextAccessor::processMessage(const void* message, size_t messageSize, b
       throw shared::exception::CInvalidParameter("messageSize");
 
    // Unserialize message
-   protobufMessage::ToYadoms request;
+   protobufMessage::Request request;
    if (!request.ParseFromArray(message, messageSize))
       throw shared::exception::CInvalidParameter("message");
 
    // Process message
-   if (request.has_getkeywordidrequest())
-      processGetKeywordId(request.getkeywordidrequest(), messageQueue);
-   else if (request.has_getkeywordidrequest())
-      processGetRecipientId(request.getrecipientidrequest(), messageQueue);
-   else if (request.has_readkeywordrequest())
-      processReadKeyword(request.readkeywordrequest(), messageQueue);
-   else if (request.has_waitfornextacquisitionrequest())
-      processWaitForNextAcquisition(request.waitfornextacquisitionrequest(), messageQueue);
-   else if (request.has_waitfornextacquisitionsrequest())
-      processWaitForNextAcquisitions(request.waitfornextacquisitionsrequest(), messageQueue);
-   else if (request.has_waitforeventrequest())
-      processWaitForEvent(request.waitforeventrequest(), messageQueue);
-   else if (request.has_writekeywordrequest())
-      processWriteKeyword(request.writekeywordrequest(), messageQueue);
-   else if (request.has_sendnotificationrequest())
-      processSendNotification(request.sendnotificationrequest(), messageQueue);
-   else if (request.has_getinforequest())
-      processGetInfo(request.getinforequest(), messageQueue);
+   if (request.has_getkeywordid())
+      processGetKeywordId(request.getkeywordid(), messageQueue);
+   else if (request.has_getkeywordid())
+      processGetRecipientId(request.getrecipientid(), messageQueue);
+   else if (request.has_readkeyword())
+      processReadKeyword(request.readkeyword(), messageQueue);
+   else if (request.has_waitfornextacquisition())
+      processWaitForNextAcquisition(request.waitfornextacquisition(), messageQueue);
+   else if (request.has_waitfornextacquisitions())
+      processWaitForNextAcquisitions(request.waitfornextacquisitions(), messageQueue);
+   else if (request.has_waitforevent())
+      processWaitForEvent(request.waitforevent(), messageQueue);
+   else if (request.has_writekeyword())
+      processWriteKeyword(request.writekeyword(), messageQueue);
+   else if (request.has_sendnotification())
+      processSendNotification(request.sendnotification(), messageQueue);
+   else if (request.has_getinfo())
+      processGetInfo(request.getinfo(), messageQueue);
    else
       throw shared::exception::CInvalidParameter("message");
 }
 
-void CContextAccessor::processGetKeywordId(const protobufMessage::ToYadoms_GetKeywordIdRequest& request, boost::interprocess::message_queue& messageQueue)
+void CContextAccessor::processGetKeywordId(const protobufMessage::Request_GetKeywordId& request, boost::interprocess::message_queue& messageQueue)
 {
-   protobufMessage::ToScript ans;
-   protobufMessage::ToScript_GetKeywordIdAnswer* answer = ans.mutable_getkeywordidanswer();
+   protobufMessage::Answer ans;
+   protobufMessage::Answer_GetKeywordId* answer = ans.mutable_getkeywordid();
    try
    {
       answer->set_id(m_scriptApi->getKeywordId(request.devicename(), request.keywordname()));
@@ -156,10 +154,10 @@ void CContextAccessor::processGetKeywordId(const protobufMessage::ToYadoms_GetKe
    sendAnswer(ans, messageQueue);
 }
 
-void CContextAccessor::processGetRecipientId(const protobufMessage::ToYadoms_GetRecipientIdRequest& request, boost::interprocess::message_queue& messageQueue)
+void CContextAccessor::processGetRecipientId(const protobufMessage::Request_GetRecipientId& request, boost::interprocess::message_queue& messageQueue)
 {
-   protobufMessage::ToScript ans;
-   protobufMessage::ToScript_GetRecipientIdAnswer* answer = ans.mutable_getrecipientidanswer();
+   protobufMessage::Answer ans;
+   protobufMessage::Answer_GetRecipientId* answer = ans.mutable_getrecipientid();
    try
    {
       answer->set_id(m_scriptApi->getRecipientId(request.firstname(), request.lastname()));
@@ -171,10 +169,10 @@ void CContextAccessor::processGetRecipientId(const protobufMessage::ToYadoms_Get
    sendAnswer(ans, messageQueue);
 }
 
-void CContextAccessor::processReadKeyword(const protobufMessage::ToYadoms_ReadKeywordRequest& request, boost::interprocess::message_queue& messageQueue)
+void CContextAccessor::processReadKeyword(const protobufMessage::Request_ReadKeyword& request, boost::interprocess::message_queue& messageQueue)
 {
-   protobufMessage::ToScript ans;
-   protobufMessage::ToScript_ReadKeywordAnswer* answer = ans.mutable_readkeywordanswer();
+   protobufMessage::Answer ans;
+   protobufMessage::Answer_ReadKeyword* answer = ans.mutable_readkeyword();
    try
    {
       answer->set_value(m_scriptApi->readKeyword(request.keywordid()));
@@ -186,10 +184,10 @@ void CContextAccessor::processReadKeyword(const protobufMessage::ToYadoms_ReadKe
    sendAnswer(ans, messageQueue);
 }
 
-void CContextAccessor::processWaitForNextAcquisition(const protobufMessage::ToYadoms_WaitForNextAcquisitionRequest& request, boost::interprocess::message_queue& messageQueue)
+void CContextAccessor::processWaitForNextAcquisition(const protobufMessage::Request_WaitForNextAcquisition& request, boost::interprocess::message_queue& messageQueue)
 {
-   protobufMessage::ToScript ans;
-   protobufMessage::ToScript_WaitForNextAcquisitionAnswer* answer = ans.mutable_waitfornextacquisitionanswer();
+   protobufMessage::Answer ans;
+   protobufMessage::Answer_WaitForNextAcquisition* answer = ans.mutable_waitfornextacquisition();
    try
    {
       answer->set_acquisition(m_scriptApi->waitForNextAcquisition(request.keywordid(), request.has_timeout() ? request.timeout() : std::string()));
@@ -201,14 +199,14 @@ void CContextAccessor::processWaitForNextAcquisition(const protobufMessage::ToYa
    sendAnswer(ans, messageQueue);
 }
 
-void CContextAccessor::processWaitForNextAcquisitions(const protobufMessage::ToYadoms_WaitForNextAcquisitionsRequest& request, boost::interprocess::message_queue& messageQueue)
+void CContextAccessor::processWaitForNextAcquisitions(const protobufMessage::Request_WaitForNextAcquisitions& request, boost::interprocess::message_queue& messageQueue)
 {
-   protobufMessage::ToScript ans;
-   protobufMessage::ToScript_WaitForNextAcquisitionsAnswer* answer = ans.mutable_waitfornextacquisitionsanswer();
+   protobufMessage::Answer ans;
+   protobufMessage::Answer_WaitForNextAcquisitions* answer = ans.mutable_waitfornextacquisitions();
    try
    {
       std::vector<int> keywordIdList;
-      for (google::protobuf::RepeatedField< ::google::protobuf::int32 >::const_iterator it = request.keywordid().begin(); it != request.keywordid().end(); ++it)
+      for (google::protobuf::RepeatedField<google::protobuf::int32>::const_iterator it = request.keywordid().begin(); it != request.keywordid().end(); ++it)
          keywordIdList.push_back(*it);
       std::pair<int, std::string> result = m_scriptApi->waitForNextAcquisitions(keywordIdList, request.has_timeout() ? request.timeout() : std::string());
       answer->set_keywordid(result.first);
@@ -222,21 +220,21 @@ void CContextAccessor::processWaitForNextAcquisitions(const protobufMessage::ToY
    sendAnswer(ans, messageQueue);
 }
 
-void CContextAccessor::processWaitForEvent(const protobufMessage::ToYadoms_WaitForEventRequest& request, boost::interprocess::message_queue& messageQueue)
+void CContextAccessor::processWaitForEvent(const protobufMessage::Request_WaitForEvent& request, boost::interprocess::message_queue& messageQueue)
 {
-   protobufMessage::ToScript ans;
-   protobufMessage::ToScript_WaitForEventAnswer* answer = ans.mutable_waitforeventrequestanswer();
+   protobufMessage::Answer ans;
+   protobufMessage::Answer_WaitForEvent* answer = ans.mutable_waitforevent();
    try
    {
       std::vector<int> keywordIdList;
-      for (google::protobuf::RepeatedField< ::google::protobuf::int32 >::const_iterator it = request.keywordid().begin(); it != request.keywordid().end(); ++it)
+      for (google::protobuf::RepeatedField<google::protobuf::int32>::const_iterator it = request.keywordid().begin(); it != request.keywordid().end(); ++it)
          keywordIdList.push_back(*it);
       shared::script::yScriptApi::CWaitForEventResult result = m_scriptApi->waitForEvent(keywordIdList, request.receivedatetimeevent(), request.has_timeout() ? request.timeout() : std::string());
       switch (result.getType())
       {
-      case shared::script::yScriptApi::CWaitForEventResult::kTimeout:answer->set_type(protobufMessage::ToScript_WaitForEventAnswer_EventType::ToScript_WaitForEventAnswer_EventType_kTimeout); break;
-      case shared::script::yScriptApi::CWaitForEventResult::kKeyword:answer->set_type(protobufMessage::ToScript_WaitForEventAnswer_EventType::ToScript_WaitForEventAnswer_EventType_kKeyword); break;
-      case shared::script::yScriptApi::CWaitForEventResult::kDateTime:answer->set_type(protobufMessage::ToScript_WaitForEventAnswer_EventType::ToScript_WaitForEventAnswer_EventType_kDateTime); break;
+      case shared::script::yScriptApi::CWaitForEventResult::kTimeout:answer->set_type(protobufMessage::Answer_WaitForEvent_EventType::Answer_WaitForEvent_EventType_kTimeout); break;
+      case shared::script::yScriptApi::CWaitForEventResult::kKeyword:answer->set_type(protobufMessage::Answer_WaitForEvent_EventType::Answer_WaitForEvent_EventType_kKeyword); break;
+      case shared::script::yScriptApi::CWaitForEventResult::kDateTime:answer->set_type(protobufMessage::Answer_WaitForEvent_EventType::Answer_WaitForEvent_EventType_kDateTime); break;
       default:
          throw shared::exception::CInvalidParameter("CWaitForEventResult::type");
       }
@@ -251,9 +249,9 @@ void CContextAccessor::processWaitForEvent(const protobufMessage::ToYadoms_WaitF
    sendAnswer(ans, messageQueue);
 }
 
-void CContextAccessor::processWriteKeyword(const protobufMessage::ToYadoms_WriteKeywordRequest& request, boost::interprocess::message_queue& messageQueue)
+void CContextAccessor::processWriteKeyword(const protobufMessage::Request_WriteKeyword& request, boost::interprocess::message_queue& messageQueue)
 {
-   protobufMessage::ToScript ans;
+   protobufMessage::Answer ans;
    try
    {
       m_scriptApi->writeKeyword(request.keywordid(), request.newstate());
@@ -265,9 +263,9 @@ void CContextAccessor::processWriteKeyword(const protobufMessage::ToYadoms_Write
    sendAnswer(ans, messageQueue);
 }
 
-void CContextAccessor::processSendNotification(const protobufMessage::ToYadoms_SendNotificationRequest& request, boost::interprocess::message_queue& messageQueue)
+void CContextAccessor::processSendNotification(const protobufMessage::Request_SendNotification& request, boost::interprocess::message_queue& messageQueue)
 {
-   protobufMessage::ToScript ans;
+   protobufMessage::Answer ans;
    try
    {
       m_scriptApi->sendNotification(request.keywordid(), request.recipientid(), request.message());
@@ -279,22 +277,22 @@ void CContextAccessor::processSendNotification(const protobufMessage::ToYadoms_S
    sendAnswer(ans, messageQueue);
 }
 
-void CContextAccessor::processGetInfo(const protobufMessage::ToYadoms_GetInfoRequest& request, boost::interprocess::message_queue& messageQueue)
+void CContextAccessor::processGetInfo(const protobufMessage::Request_GetInfo& request, boost::interprocess::message_queue& messageQueue)
 {
-   protobufMessage::ToScript ans;
-   protobufMessage::ToScript_GetInfoAnswer* answer = ans.mutable_getinfoanswer();
+   protobufMessage::Answer ans;
+   protobufMessage::Answer_GetInfo* answer = ans.mutable_getinfo();
    try
    {
       shared::script::yScriptApi::IYScriptApi::EInfoKeys key;
       switch (request.key())
       {
-      case protobufMessage::ToYadoms_GetInfoRequest_Key::ToYadoms_GetInfoRequest_Key_kSunrise: key = shared::script::yScriptApi::IYScriptApi::kSunrise; break;
-      case protobufMessage::ToYadoms_GetInfoRequest_Key::ToYadoms_GetInfoRequest_Key_kSunset: key = shared::script::yScriptApi::IYScriptApi::kSunset; break;
-      case protobufMessage::ToYadoms_GetInfoRequest_Key::ToYadoms_GetInfoRequest_Key_kLatitude: key = shared::script::yScriptApi::IYScriptApi::kLatitude; break;
-      case protobufMessage::ToYadoms_GetInfoRequest_Key::ToYadoms_GetInfoRequest_Key_kLongitude: key = shared::script::yScriptApi::IYScriptApi::kLongitude; break;
-      case protobufMessage::ToYadoms_GetInfoRequest_Key::ToYadoms_GetInfoRequest_Key_kAltitude: key = shared::script::yScriptApi::IYScriptApi::kAltitude; break;
-      case protobufMessage::ToYadoms_GetInfoRequest_Key::ToYadoms_GetInfoRequest_Key_kYadomsServerOS: key = shared::script::yScriptApi::IYScriptApi::kYadomsServerOS; break;
-      case protobufMessage::ToYadoms_GetInfoRequest_Key::ToYadoms_GetInfoRequest_Key_kYadomsServerVersion: key = shared::script::yScriptApi::IYScriptApi::kYadomsServerVersion; break;
+      case protobufMessage::Request_GetInfo_Key::Request_GetInfo_Key_kSunrise: key = shared::script::yScriptApi::IYScriptApi::kSunrise; break;
+      case protobufMessage::Request_GetInfo_Key::Request_GetInfo_Key_kSunset: key = shared::script::yScriptApi::IYScriptApi::kSunset; break;
+      case protobufMessage::Request_GetInfo_Key::Request_GetInfo_Key_kLatitude: key = shared::script::yScriptApi::IYScriptApi::kLatitude; break;
+      case protobufMessage::Request_GetInfo_Key::Request_GetInfo_Key_kLongitude: key = shared::script::yScriptApi::IYScriptApi::kLongitude; break;
+      case protobufMessage::Request_GetInfo_Key::Request_GetInfo_Key_kAltitude: key = shared::script::yScriptApi::IYScriptApi::kAltitude; break;
+      case protobufMessage::Request_GetInfo_Key::Request_GetInfo_Key_kYadomsServerOS: key = shared::script::yScriptApi::IYScriptApi::kYadomsServerOS; break;
+      case protobufMessage::Request_GetInfo_Key::Request_GetInfo_Key_kYadomsServerVersion: key = shared::script::yScriptApi::IYScriptApi::kYadomsServerVersion; break;
       default:
          throw shared::exception::CInvalidParameter("answer.waitforeventrequestanswer.type");
       }

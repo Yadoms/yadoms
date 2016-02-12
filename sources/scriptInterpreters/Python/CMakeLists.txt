@@ -86,6 +86,12 @@ if(PYTHONLIBS_FOUND)
    SCRIPT_INTERPRETER_INCLDIR(python ${PYTHON_INCLDIR} ${PLATFORM_SPECIFIC_INCL_DIR} ${PROTOBUF_INCLUDE_DIRS} ${PROTOBUF_GENERATED_DIR})
    SCRIPT_INTERPRETER_LINK(python ${PYTHON_LINK} ${PROTOBUF_LIBRARIES})
 
+   #Ignore some warnings under VisualStudio for Protobuf generated files
+   IF(WIN32)
+      set_property(SOURCE ${PROTO_SRCS} APPEND PROPERTY COMPILE_FLAGS "/wd4244 /wd4125")
+      set_property(TARGET python APPEND PROPERTY LINK_FLAGS "/ignore:4075")
+   ENDIF()
+
    #########################################
    ## Post-build commands
    ## Copy files to build directory

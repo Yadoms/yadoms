@@ -37,7 +37,7 @@ protected:
    /// \brief	Send a request
    /// \param[in] request Request to send
    //--------------------------------------------------------------
-   void sendRequest(const google::protobuf::Message& request) const;
+   void sendRequest(const protobufMessage::Request& request) const;
 
    //--------------------------------------------------------------
    /// \brief	Wait for an answer
@@ -45,7 +45,7 @@ protected:
    /// \throw std::runtime_error if message queue error
    /// \throw shared::exception::CInvalidParameter if error parsing message
    //--------------------------------------------------------------
-   void receiveAnswer(protobufMessage::ToScript& answer) const;
+   void receiveAnswer(protobufMessage::Answer& answer) const;
 
 private:
    //-----------------------------------------------------
@@ -54,4 +54,9 @@ private:
    //-----------------------------------------------------
    mutable boost::shared_ptr<boost::interprocess::message_queue> m_sendMessageQueue;
    mutable boost::shared_ptr<boost::interprocess::message_queue> m_receiveMessageQueue;
+
+   //-----------------------------------------------------
+   ///\brief               The message queue buffer, localy used but defined here to be allocated only once
+   //-----------------------------------------------------
+   mutable unsigned char m_mqBuffer[m_messageQueueMessageSize];
 };
