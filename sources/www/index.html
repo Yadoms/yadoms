@@ -193,41 +193,43 @@
 
         $("#copyrightLabel").html("&copy; Yadoms " + new Date().getFullYear());
 
-        var systemConfiguration = [];
+        var Yadoms = {
+           systemConfiguration: [],
+           modals : {},
+           updateIntervalInOfflineMode : 10000,
+           updateIntervalWithWebSocketDisabled: 1000,
+           updateInterval: 5000,
+           periodicDashboardTask : {},
+           numberOfColumns: 12,
+           gridWidth : 100,
+           gridMargin : 5
+       };
 
-        var numberOfColumns = 12;
-        var gridWidth = 100;
-        var gridMargin = 5;
-        var UpdateInterval = 5000;
-        var UpdateIntervalWithWebSocketDisabled = 1000;
-        var UpdateIntervalInOfflineMode = 10000;
-
-        var modals = {};
-
+        
         /**
         * On page loaded
         */
         $(document).ready(function () {
             //we define all the modals to lazy load
-            modals.widgetAdd = new LazyLoaderManager("modals/widget-add.html");
-            modals.widgetConfiguration = new LazyLoaderManager("modals/widget-configure.html");
-            modals.widgetDelete = new LazyLoaderManager("modals/widget-delete.html");
-            modals.pageDelete = new LazyLoaderManager("modals/page-delete.html");
-            modals.pageConfigure = new LazyLoaderManager("modals/page-configure.html");
-            modals.qrCode = new LazyLoaderManager("modals/qrcode.html");
-            modals.mainDashboard = new LazyLoaderManager("modals/dashboard.html");
-            modals.confirmation = new LazyLoaderManager("modals/confirmation.html");
-            modals.pluginAdd = new LazyLoaderManager("modals/plugin-add.html");
-            modals.pluginConfigure = new LazyLoaderManager("modals/plugin-configure.html");
-            modals.deviceConfigure = new LazyLoaderManager("modals/device-configure.html");
-            modals.keywordConfigure = new LazyLoaderManager("modals/keyword-configure.html");
-            modals.deviceAddManually = new LazyLoaderManager("modals/device-add-manually.html");
-            modals.deviceConfigureManually = new LazyLoaderManager("modals/device-configure-manually.html");
-            modals.deviceDelete = new LazyLoaderManager("modals/device-delete.html");
-            modals.automationRuleNew = new LazyLoaderManager("modals/automation-rule-new.html");
-            modals.automationRuleEdit = new LazyLoaderManager("modals/automation-rule-edit.html");
-            modals.automationRuleShowLog = new LazyLoaderManager("modals/automation-rule-show-log.html");
-            modals.recipientConfigure = new LazyLoaderManager("modals/recipient_configure.html");
+           Yadoms.modals.widgetAdd = new LazyLoaderManager("modals/widget-add.html");
+           Yadoms.modals.widgetConfiguration = new LazyLoaderManager("modals/widget-configure.html");
+           Yadoms.modals.widgetDelete = new LazyLoaderManager("modals/widget-delete.html");
+           Yadoms.modals.pageDelete = new LazyLoaderManager("modals/page-delete.html");
+           Yadoms.modals.pageConfigure = new LazyLoaderManager("modals/page-configure.html");
+           Yadoms.modals.qrCode = new LazyLoaderManager("modals/qrcode.html");
+           Yadoms.modals.mainDashboard = new LazyLoaderManager("modals/dashboard.html");
+           Yadoms.modals.confirmation = new LazyLoaderManager("modals/confirmation.html");
+           Yadoms.modals.pluginAdd = new LazyLoaderManager("modals/plugin-add.html");
+           Yadoms.modals.pluginConfigure = new LazyLoaderManager("modals/plugin-configure.html");
+           Yadoms.modals.deviceConfigure = new LazyLoaderManager("modals/device-configure.html");
+           Yadoms.modals.keywordConfigure = new LazyLoaderManager("modals/keyword-configure.html");
+           Yadoms.modals.deviceAddManually = new LazyLoaderManager("modals/device-add-manually.html");
+           Yadoms.modals.deviceConfigureManually = new LazyLoaderManager("modals/device-configure-manually.html");
+           Yadoms.modals.deviceDelete = new LazyLoaderManager("modals/device-delete.html");
+           Yadoms.modals.automationRuleNew = new LazyLoaderManager("modals/automation-rule-new.html");
+           Yadoms.modals.automationRuleEdit = new LazyLoaderManager("modals/automation-rule-edit.html");
+           Yadoms.modals.automationRuleShowLog = new LazyLoaderManager("modals/automation-rule-show-log.html");
+           Yadoms.modals.recipientConfigure = new LazyLoaderManager("modals/recipient_configure.html");
 
             //we start i18n engine
             var option = { resGetPath: "locales/__lng__.json", fallbackLng: "en", useDataAttrOptions: true, debug: false, fallbackNS: "translation" };
@@ -315,14 +317,14 @@
             * Make lazy loading of the qrcode modal
             */
             $("#btn-show-qrcode").click(function () {
-               modals.qrCode.loadAsync()
+               Yadoms.modals.qrCode.loadAsync()
                .done(function() {
                      $('#qrcode-modal').modal({ backdrop: 'static' });
                });
             });
 
             $("#btn-show-dashboard").click(function () {
-               modals.mainDashboard.loadAsync()
+               Yadoms.modals.mainDashboard.loadAsync()
                .done(function () {
                     //before showing the dashboard we update many cache informations
                    PluginManager.get()
@@ -359,9 +361,9 @@
            ConfigurationManager.getSection(ConfigurationManager.items.systemSection)
               .done(function (result) {
                     if (!isNullOrUndefined(result)) {
-                        systemConfiguration = result;
+                        Yadoms.systemConfiguration = result;
                         //we set the right language
-                        i18n.setLng(systemConfiguration[ConfigurationManager.items.system.language].value, function () {
+                        i18n.setLng(Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value, function () {
                            $("html").i18n();
                             moment.lang(window.navigator.userLanguage || window.navigator.language);
                             WebSocketEngine.initializeWebSocketEngine(function () {

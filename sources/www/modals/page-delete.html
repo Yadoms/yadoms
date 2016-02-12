@@ -20,16 +20,16 @@
 <script>
    var pageToDelete = null;
 
-   function showDeletePageModal(pageId) {
+   Yadoms.showDeletePageModal = function(pageId) {
       assert(pageId !== undefined, "Page Id must be defined");
       pageToDelete = PageManager.getPage(pageId);
       assert(pageToDelete != null, "page Id doesn't exit");
 
-      $("div#delete-page-modal").find("div.modal-body").text($.t("modals.delete-page.text", { pageName : pageToDelete.name}));
+      $("div#delete-page-modal").find("div.modal-body").text($.t("modals.delete-page.text", { pageName: pageToDelete.name }));
 
       //we display the modal
       $('div#delete-page-modal').modal({ backdrop: 'static' });
-   }
+   };
 
    /**
     * Callback to the click of the button to confirm deletion of a page

@@ -22,7 +22,7 @@
 </div>
 
 <script>
-   function showConfigurationDeviceModal(device, callback) {
+   Yadoms.showConfigurationDeviceModal = function(device, callback) {
       assert(!isNullOrUndefined(device), "device must be defined");
       assert($.isFunction(callback), "callback must be defined");
 
@@ -30,7 +30,7 @@
       $modalBody.empty();
 
       //we append the text section
-      var friendlyNameParameter = new StringParameterHandler("modals.configure-device.", "friendlyName-configuration", {regex:'.+'}, device.friendlyName);
+      var friendlyNameParameter = new StringParameterHandler("modals.configure-device.", "friendlyName-configuration", { regex: '.+' }, device.friendlyName);
       $modalBody.append(friendlyNameParameter.getDOMObject());
       //we finish friendlyNameParameter instantiation
       if ($.isFunction(friendlyNameParameter.applyScript))
@@ -65,5 +65,5 @@
 
       //we display the modal
       $('div#configure-device-modal').modal({ backdrop: 'static' });
-   }
+   };
 </script>

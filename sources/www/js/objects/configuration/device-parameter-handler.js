@@ -66,7 +66,7 @@ function populateDeviceList(handler) {
       var $deviceList = $("select#" + handler.uuid);
 
       //A device matches criteria
-      if (data.data.device.length != 0) {
+      if (data.data.device.length !== 0) {
           var itemToSelect = -1;
           $.each(data.data.device, function(index, value) {
              //we add device only if it is not already in the list
@@ -83,7 +83,7 @@ function populateDeviceList(handler) {
           $cbKeywords.prop('disabled', true);
 
           //we set the last selected device if it exist anymore
-          if (itemToSelect != -1)
+          if (itemToSelect !== -1)
             $deviceList.prop('selectedIndex', itemToSelect);
 
           $deviceList.change();

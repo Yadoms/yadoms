@@ -121,7 +121,7 @@ PageManager.addToDom = function (page) {
    assert(!isNullOrUndefined(page), "page must be defined");
    var tabIdAsText = "tab-" + page.id;
    //pill creation
-   var dataI18nOptions = { "pageName": page.name };
+   var dataI18NOptions = { "pageName": page.name };
 
 
    $("<li class=\"tabPagePills\" page-id=\"" + page.id + "\">" +
@@ -134,7 +134,7 @@ PageManager.addToDom = function (page) {
                "<div class=\"customizationButton pageCustomizationButton delete-page\" title=\"Delete\" data-i18n=\"[title]mainPage.customization.delete\"><i class=\"fa fa-lg fa-trash-o\"></i></div>" +
             "</div>" +
          "</a>" +
-         "<div class=\"hidden tabPagePillsDropper\" data-i18n=\"mainPage.customization.dropHereToMovePage\" data-i18n-options=\'" + JSON.stringify(dataI18nOptions) + "\'></div>" +
+         "<div class=\"hidden tabPagePillsDropper\" data-i18n=\"mainPage.customization.dropHereToMovePage\" data-i18n-options=\'" + JSON.stringify(dataI18NOptions) + "\'></div>" +
          "</li>").insertBefore($("li#btn-add-page"));
 
    page.$tab = $(".page-tabs").find("li[page-id=\"" + page.id + "\"]");
@@ -153,11 +153,11 @@ PageManager.addToDom = function (page) {
    page.$content = container.find("div#" + tabIdAsText);
 
    var options = {
-      width: numberOfColumns,
+      width: Yadoms.numberOfColumns,
       float: true,
       always_show_resize_handle: true,
-      cell_height: gridWidth,
-      vertical_margin: gridMargin,
+      cell_height: Yadoms.gridWidth,
+      vertical_margin: Yadoms.gridMargin,
       min_width: 0
    };
 
@@ -184,7 +184,7 @@ PageManager.addToDom = function (page) {
          return;
       var targetPage = PageManager.getPage(targetPageId);
       //the widget that move is on the current page
-      if (page.id == targetPageId)
+      if (page.id === targetPageId)
          return;
 
       //a widget has been dropped onto antoher page pill
@@ -213,7 +213,7 @@ PageManager.addToDom = function (page) {
                 })
                 .fail(function (errorMessage) {
                    console.error(errorMessage);
-                   notifyError($.t("modals.add-widget.unableToCreateWidgetOfType", { "widgetType": widgetMoved.type }));
+                   notifyError($.t("modals.add-widget.unableToCreateWidgetOfType", { "widgetType": widgetToMove.type }));
                 });
          }
 
@@ -244,9 +244,9 @@ PageManager.addToDom = function (page) {
    //we listen click event on delete click
    page.$tab.find('div.delete-page').bind('click', function(e) {
       var pageId = $(e.currentTarget).parents("li.tabPagePills").attr("page-id");
-      modals.pageDelete.loadAsync()
+      Yadoms.modals.pageDelete.loadAsync()
          .done(function() {
-            showDeletePageModal(pageId);
+            Yadoms.showDeletePageModal(pageId);
          });
    });
 
@@ -265,8 +265,7 @@ PageManager.addToDom = function (page) {
    });
 
    //we listen for click event with no code inside to help event transmission until exit customization
-   page.$tab.bind('click', function (e) {
-   });
+   page.$tab.bind('click', function () {});
 };
 
 PageManager.movePage = function (page, direction) {
@@ -305,26 +304,27 @@ PageManager.movePage = function (page, direction) {
 
       var nearestPage = PageManager.getPage(nearestId);
       assert(nearestPage != null, "Unable to find nearest page to move");
+      if (nearestPage) {
+         //we can move pageOrder
+         //we move it into the array and send the complete collection to rest server
+         nearestPage.pageOrder = page.pageOrder;
+         page.pageOrder = nearestPageOrder;
 
-      //we can move pageOrder
-      //we move it into the array and send the complete collection to rest server
-      nearestPage.pageOrder = page.pageOrder;
-      page.pageOrder = nearestPageOrder;
-
-      //we make an array of pages to send to rest server
-      RestEngine.putJson("/rest/page", { data: JSON.stringify(PageManager.pages) })
-      .done(function () {
-         //we move the tab dynamically
-         var tabDomElement = page.$tab.detach();
-         if (direction === "right") {
-            tabDomElement.insertAfter(nearestPage.$tab);
-         } else {
-            tabDomElement.insertBefore(nearestPage.$tab);
-         }
-      })
-      .fail(function (error) {
-         notifyError($.t("mainPage.errors.errorDuringSavingPagePosition"), error);
-      });
+         //we make an array of pages to send to rest server
+         RestEngine.putJson("/rest/page", { data: JSON.stringify(PageManager.pages) })
+            .done(function() {
+               //we move the tab dynamically
+               var tabDomElement = page.$tab.detach();
+               if (direction === "right") {
+                  tabDomElement.insertAfter(nearestPage.$tab);
+               } else {
+                  tabDomElement.insertBefore(nearestPage.$tab);
+               }
+            })
+            .fail(function(error) {
+               notifyError($.t("mainPage.errors.errorDuringSavingPagePosition"), error);
+            });
+      }
    }
 };
 
@@ -348,8 +348,7 @@ PageManager.getCurrentPage = function () {
    return PageManager.getPage(pageId);
 };
 
-function widgetResized(event, ui) {
-   var grid = this;
+function widgetResized(event) {
    var $widget = $(event.target);
    var widgetObject = WidgetManager.getFromGridElement($widget);
    //we compute the target size

@@ -1,26 +1,25 @@
 <!--Confirmation Modal -->
 <div class="modal fade" id="confirmation-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
    <div class="modal-dialog">
-       <div class="modal-content">
-           <div class="modal-header">
-               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-               <h4 class="modal-title" data-i18n="modals.confirmation.title"></h4>
-           </div>
-           <div class="modal-body">
-           </div>
-           <div class="modal-footer">
-              <button type="button" class="btn btn-default btn-cancel" data-dismiss="modal" data-i18n="common.cancel"></button>
-              <button type="button" class="btn btn-primary btn-confirm" data-i18n="common.ok"></button>
-           </div>
-       </div>
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title" data-i18n="modals.confirmation.title"></h4>
+         </div>
+         <div class="modal-body">
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-default btn-cancel" data-dismiss="modal" data-i18n="common.cancel"></button>
+            <button type="button" class="btn btn-primary btn-confirm" data-i18n="common.ok"></button>
+         </div>
+      </div>
    </div>
 </div>
 <script>
+   Yadoms.btnKind = Object.freeze({ yesNo: 0, okCancel: 1, confirmCancel: 2 });
+   Object.freeze(Yadoms.btnKind);
 
-   var btnKind = Object.freeze({yesNo: 0, okCancel: 1, confirmCancel : 2});
-   Object.freeze(btnKind);
-
-   function showConfirmModal(kindOfBtn, title, text, confirmCallBack, cancelCallback) {
+   Yadoms.showConfirmModal = function (kindOfBtn, title, text, confirmCallBack, cancelCallback) {
       assert(kindOfBtn !== undefined, "kindOfBtn must be defined and a value of enum btnKind");
       assert(title !== undefined, "title must be defined. Set to null to use default confirmation title");
       assert(text !== undefined, "text must be defined.");
@@ -36,16 +35,16 @@
 
       //we set btn text
       switch (kindOfBtn) {
-         case btnKind.yesNo:
+         case Yadoms.btnKind.yesNo:
             $("div#confirmation-modal").find("button.btn-cancel").text($.t("common.no"));
             $("div#confirmation-modal").find("button.btn-confirm").text($.t("common.yes"));
             break;
-         case btnKind.confirmCancel:
+         case Yadoms.btnKind.confirmCancel:
             $("div#confirmation-modal").find("button.btn-cancel").text($.t("common.cancel"));
             $("div#confirmation-modal").find("button.btn-confirm").text($.t("common.confirm"));
             break;
          default:
-         case btnKind.okCancel:
+         case Yadoms.btnKind.okCancel:
             $("div#confirmation-modal").find("button.btn-cancel").text($.t("common.cancel"));
             $("div#confirmation-modal").find("button.btn-confirm").text($.t("common.ok"));
             break;
@@ -62,5 +61,5 @@
 
       //we display the modal
       $('div#confirmation-modal').modal({ backdrop: 'static' });
-   }
+   };
 </script>

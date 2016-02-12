@@ -29,41 +29,41 @@
    /**
     * Ask for plugin types to the REST server
     */
-   function askPluginTypesForManuallyDeviceCreation(callback) {
+   Yadoms.askPluginTypesForManuallyDeviceCreation = function(callback) {
       assert($.isFunction(callback), "callback must be defined");
 
       PluginInstanceManager.getPluginInstanceHandleManuallyDeviceCreation()
-      .done(function (list) {
+         .done(function(list) {
 
-         $("select#associatedPluginTypeList").empty();
+            $("select#associatedPluginTypeList").empty();
 
-         $.each(list, function (index, value) {
-            var pi = PluginInstanceManager.factory(value);
-            //foreach plugin-instance
-            $("select#associatedPluginTypeList").append("<option value=\"" + pi.id + "\">" + pi.displayName + "</option>");
+            $.each(list, function(index, value) {
+               var pi = PluginInstanceManager.factory(value);
+               //foreach plugin-instance
+               $("select#associatedPluginTypeList").append("<option value=\"" + pi.id + "\">" + pi.displayName + "</option>");
+            });
+
+            //event click on add plugin button
+            $("button#btn-confirm-add-manually-device").unbind("click").bind("click", function() {
+               //we close the new widget modal
+               $("div#new-manually-device-modal").modal("hide");
+
+               //we get the plugin instance id chosen
+               var pluginId = $("select#associatedPluginTypeList").val();
+
+               //from the id, retreive the plugin instance
+               var instance = $.grep(list, function(e) { return e.id === pluginId; });
+
+               //send found instance
+               callback(instance[0]);
+            });
+
+            //we display the modal
+            $('div#new-manually-device-modal').modal({ backdrop: 'static' });
+         })
+         .fail(function(error) {
+            notifyError($.t("modals.pluginInstance.errorGettingManuallyDeviceCreation"), error);
          });
-
-         //event click on add plugin button
-         $("button#btn-confirm-add-manually-device").unbind("click").bind("click", function () {
-            //we close the new widget modal
-            $("div#new-manually-device-modal").modal("hide");
-
-            //we get the plugin instance id chosen
-            var pluginId = $("select#associatedPluginTypeList").val();
-
-            //from the id, retreive the plugin instance
-            var instance = $.grep(list, function (e) { return e.id == pluginId; });
-
-            //send found instance
-            callback(instance[0]);
-         });
-
-         //we display the modal
-         $('div#new-manually-device-modal').modal({ backdrop: 'static' });
-      })
-       .fail(function (error) {
-          notifyError($.t("modals.pluginInstance.errorGettingManuallyDeviceCreation"), error);
-       });
-   }
+   };
 
 </script>

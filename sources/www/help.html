@@ -142,7 +142,7 @@
       * Make lazy loading of the qrcode modal
       */
       $("#btn-show-qrcode").click(function() {
-         modals.qrCode.loadAsync()
+         Yadoms.modals.qrCode.loadAsync()
          .done(function() {
             $('#qrcode-modal').modal();
          });

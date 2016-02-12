@@ -77,8 +77,8 @@ function exitCustomization(saveCustomization) {
 }
 
 function createOrUpdatePage(pageId) {
-   modals.pageConfigure.loadAsync()
+   Yadoms.modals.pageConfigure.loadAsync()
    .done(function () {
-         showPageModificationModal(pageId);
+      Yadoms.showPageModificationModal(pageId);
     });
 }

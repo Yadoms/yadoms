@@ -23,27 +23,24 @@
    /**
    * Ask for widget packages to the REST server
    */
-   function showPageModificationModal(pageId) {
-      if (pageId !== undefined)
-      {
-         pageCurrentlyModified = PageManager.getPage(pageId);
-         assert(pageCurrentlyModified != null, "page Id doesn't exit");
+    Yadoms.showPageModificationModal = function(pageId) {
+       if (pageId !== undefined) {
+          pageCurrentlyModified = PageManager.getPage(pageId);
+          assert(pageCurrentlyModified != null, "page Id doesn't exit");
 
-         //we are currently modifying a page
-         $("h4#modify-page-modal-title").text($.t("modals.modify-page.renamePageTitle"));
-         $("button#btn-confirm-modify-page").text($.t("modals.modify-page.renamePageValidationButton"));
-         $("input#modify-page-text").val(pageCurrentlyModified.name);
-      }
-      else
-      {
-         //we are currently adding a new page
-         $("h4#modify-page-modal-title").text($.t("modals.modify-page.createNewPageTitle"));
-         $("button#btn-confirm-modify-page").text($.t("modals.modify-page.createNewPageValidationButton"));
-         $("input#modify-page-text").val("");
-      }
-      //we display the modal
-      $('div#modify-page-modal').modal({ backdrop: 'static' });
-   }
+          //we are currently modifying a page
+          $("h4#modify-page-modal-title").text($.t("modals.modify-page.renamePageTitle"));
+          $("button#btn-confirm-modify-page").text($.t("modals.modify-page.renamePageValidationButton"));
+          $("input#modify-page-text").val(pageCurrentlyModified.name);
+       } else {
+          //we are currently adding a new page
+          $("h4#modify-page-modal-title").text($.t("modals.modify-page.createNewPageTitle"));
+          $("button#btn-confirm-modify-page").text($.t("modals.modify-page.createNewPageValidationButton"));
+          $("input#modify-page-text").val("");
+       }
+       //we display the modal
+       $('div#modify-page-modal').modal({ backdrop: 'static' });
+    };
 
    $('div#modify-page-modal').on('shown.bs.modal', function () {
       $('input#modify-page-text').focus();

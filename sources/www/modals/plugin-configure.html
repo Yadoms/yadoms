@@ -22,55 +22,58 @@
 </div>
 
 <script>
-   function configurePluginInstance(pluginInstance, callback) {
+   Yadoms.configurePluginInstance = function(pluginInstance, callback) {
       assert(pluginInstance !== undefined, "pluginInstance must be defined");
       assert($.isFunction(callback), "callback must be defined");
 
-      var $modalBody = $("div#configure-plugin-modal .modal-body");
-      $modalBody.empty();
+      if (pluginInstance) {
 
-      //we append the text section
-      var nameParameter = new StringParameterHandler("modals.configure-plugin.", "name-configuration", {required:"true"}, pluginInstance.displayName);
-      $modalBody.append(nameParameter.getDOMObject());
-      //we finish friendlyNameParameter instantiation
-      if ($.isFunction(nameParameter.applyScript))
-         nameParameter.applyScript();
+         var $modalBody = $("div#configure-plugin-modal .modal-body");
+         $modalBody.empty();
 
-      //we apply binding on configuration if necessary
-      pluginInstance.getBoundPackageConfigurationSchema()
-         .done(function(bindedConfigurationSchema) {
+         //we append the text section
+         var nameParameter = new StringParameterHandler("modals.configure-plugin.", "name-configuration", { required: "true" }, pluginInstance.displayName);
+         $modalBody.append(nameParameter.getDOMObject());
+         //we finish friendlyNameParameter instantiation
+         if ($.isFunction(nameParameter.applyScript))
+            nameParameter.applyScript();
 
-            //we append classic configuration
-            var configMgr = new ConfigurationControlManager(bindedConfigurationSchema, pluginInstance.configuration, "plugins/" + pluginInstance.type + ":configurationSchema.", $modalBody);
+         //we apply binding on configuration if necessary
+         pluginInstance.getBoundPackageConfigurationSchema()
+            .done(function(bindedConfigurationSchema) {
 
-            //i18n
-            $modalBody.i18n();
+               //we append classic configuration
+               var configMgr = new ConfigurationControlManager(bindedConfigurationSchema, pluginInstance.configuration, "plugins/" + pluginInstance.type + ":configurationSchema.", $modalBody);
 
-            //validation form
-            //erase previous jqBootstrapValidation
-            $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy").jqBootstrapValidation({
-               preventSubmit: true,
-               submitError: function($form, event, errors) {
-                  console.warn("Unable to validate form: " + errors);
-               },
-               submitSuccess: function($form, event) {
-                  event.preventDefault();
-                  pluginInstance.displayName = nameParameter.getCurrentConfiguration();
-                  pluginInstance.configuration = configMgr.getCurrentConfiguration();
+               //i18n
+               $modalBody.i18n();
 
-                  console.debug("End of Plugin Configuration : " + JSON.stringify(pluginInstance));
+               //validation form
+               //erase previous jqBootstrapValidation
+               $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy").jqBootstrapValidation({
+                  preventSubmit: true,
+                  submitError: function($form, event, errors) {
+                     console.warn("Unable to validate form: " + errors);
+                  },
+                  submitSuccess: function($form, event) {
+                     event.preventDefault();
+                     pluginInstance.displayName = nameParameter.getCurrentConfiguration();
+                     pluginInstance.configuration = configMgr.getCurrentConfiguration();
 
-                  $("div#configure-plugin-modal").modal("hide");
-                  callback();
-               },
-               filter: function() {
-                  //we check only control that have class enable-validation and are visible
-                  return $(this).is(".enable-validation") && $(this).is(":visible");
-               }
+                     console.debug("End of Plugin Configuration : " + JSON.stringify(pluginInstance));
+
+                     $("div#configure-plugin-modal").modal("hide");
+                     callback();
+                  },
+                  filter: function() {
+                     //we check only control that have class enable-validation and are visible
+                     return $(this).is(".enable-validation") && $(this).is(":visible");
+                  }
+               });
+
+               //we display the modal
+               $('div#configure-plugin-modal').modal({ backdrop: 'static' });
             });
-
-            //we display the modal
-            $('div#configure-plugin-modal').modal({ backdrop: 'static' });
-         });
-   }
+      }
+   };
 </script>

@@ -22,52 +22,52 @@
 </div>
 
 <script>
-   function showConfigurationManuallyDeviceModal(pluginInstance, callback) {
+   Yadoms.showConfigurationManuallyDeviceModal = function(pluginInstance, callback) {
       assert(!isNullOrUndefined(pluginInstance), "pluginInstance must be defined");
       assert($.isFunction(callback), "callback must be defined");
 
       pluginInstance.getBoundManuallyDeviceCreationConfigurationSchema()
-      .done(function (configurationSchema) {
-         var $modalBody = $("div#configure-manually-device-modal .modal-body");
-         $modalBody.empty();
+         .done(function(configurationSchema) {
+            var $modalBody = $("div#configure-manually-device-modal .modal-body");
+            $modalBody.empty();
 
-         //we append the text section
-         var friendlyNameParameter = new StringParameterHandler("modals.configure-manually-device.", "friendlyName-configuration", { required: "true" }, "");
-         $modalBody.append(friendlyNameParameter.getDOMObject());
-         //we finish friendlyNameParameter instantiation
-         if ($.isFunction(friendlyNameParameter.applyScript))
-            friendlyNameParameter.applyScript();
+            //we append the text section
+            var friendlyNameParameter = new StringParameterHandler("modals.configure-manually-device.", "friendlyName-configuration", { required: "true" }, "");
+            $modalBody.append(friendlyNameParameter.getDOMObject());
+            //we finish friendlyNameParameter instantiation
+            if ($.isFunction(friendlyNameParameter.applyScript))
+               friendlyNameParameter.applyScript();
 
-         //we append classic configuration
-         var configMgr = new ConfigurationControlManager(configurationSchema, undefined, "plugins/" + pluginInstance.type + ":manuallyDeviceCreationConfigurationSchema.", $modalBody);
+            //we append classic configuration
+            var configMgr = new ConfigurationControlManager(configurationSchema, undefined, "plugins/" + pluginInstance.type + ":manuallyDeviceCreationConfigurationSchema.", $modalBody);
 
-         //i18n
-         $modalBody.i18n();
+            //i18n
+            $modalBody.i18n();
 
-         //validation form
-         //erase previous jqBootstrapValidation
-         $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy").jqBootstrapValidation({
-            preventSubmit: true,
-            submitError: function ($form, event, errors) {
-               console.warn("Unable to validate form: " + errors);
-            },
-            submitSuccess: function ($form, event) {
-               event.preventDefault();
+            //validation form
+            //erase previous jqBootstrapValidation
+            $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy").jqBootstrapValidation({
+               preventSubmit: true,
+               submitError: function($form, event, errors) {
+                  console.warn("Unable to validate form: " + errors);
+               },
+               submitSuccess: function($form, event) {
+                  event.preventDefault();
 
-               var deviceName = friendlyNameParameter.getCurrentConfiguration();
-               var configuration = configMgr.getCurrentConfiguration();
+                  var deviceName = friendlyNameParameter.getCurrentConfiguration();
+                  var configuration = configMgr.getCurrentConfiguration();
 
-               $("div#configure-manually-device-modal").modal("hide");
-               callback(deviceName, configuration);
-            },
-            filter: function () {
-               //we check only control that have class enable-validation and are visible
-               return $(this).is(".enable-validation") && $(this).is(":visible");
-            }
+                  $("div#configure-manually-device-modal").modal("hide");
+                  callback(deviceName, configuration);
+               },
+               filter: function() {
+                  //we check only control that have class enable-validation and are visible
+                  return $(this).is(".enable-validation") && $(this).is(":visible");
+               }
+            });
+
+            //we display the modal
+            $('div#configure-manually-device-modal').modal({ backdrop: 'static' });
          });
-
-         //we display the modal
-         $('div#configure-manually-device-modal').modal({ backdrop: 'static' });
-      });
-   }
+   };
 </script>

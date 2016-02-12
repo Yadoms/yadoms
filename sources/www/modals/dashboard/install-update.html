@@ -183,9 +183,9 @@
 
    var $asyncActionIndicator = $("div#dashboard-install-update i.making-async-action");
 
-   function initializeInstallUpdateDashboard() {
+   Yadoms.initializeInstallUpdateDashboard = function() {
 
-      $('.install-update-button').on('change', function (e) {
+      $('.install-update-button').on('change', function(e) {
          updatebuttonColor($('#version-stable'));
          updatebuttonColor($('#version-testing'));
          updatebuttonColor($('#version-beta'));
@@ -193,7 +193,7 @@
       });
 
       refreshAllData();
-   }
+   };
 
 
    /**
@@ -312,7 +312,7 @@
                            $cbVersion.append("<li><a href=\"#\"><em>" + versionToString(value) + "</em></a></li>");
                            //we manage the click event on each version
                            $cbVersion.find("li").last().unbind('click').bind('click', function () {
-                              modals.confirmation.loadAsync()
+                              Yadoms.modals.confirmation.loadAsync()
                               .done(function () {
                                  askForYadomsUpdate(value);
                               });
@@ -372,9 +372,9 @@
    }
 
    function askForYadomsUpdate(version) {
-      modals.confirmation.loadAsync()
+      Yadoms.modals.confirmation.loadAsync()
       .done(function () {
-         showConfirmModal(btnKind.yesNo,
+         Yadoms.showConfirmModal(Yadoms.btnKind.yesNo,
                $.t("modals.dashboard.sub-windows.install-update.generic.confirmUpdateTitle"),
                $.t("modals.dashboard.sub-windows.install-update.generic.confirmUpdate", {
                   objectName: $.t("core.yadoms.name"),
@@ -666,7 +666,6 @@
       assert(!isNullOrUndefined(objectType), "objectType must be defined");
       assert(!isNullOrUndefined(item), "item must be defined");
 
-      var actionsBtns = "<div class=\"btn-group\">\n";
       var s = "<tr id=\"" + item.type + "\">" +
                   "<td><span>" + $.t(objectType + "s/" + item.type + ":name", { defaultValue: item.package.name }) + "</span>" +
                   "<span class=\"update-available-label hidden label label-as-badge label-success\">1</span>" +
@@ -818,10 +817,10 @@
             }
 
             //the main install button is allowed only if latest version and current version are different
-            installUpdateAllowed = (UpdateInformationManager.compareVersion(item.package, latestVersion) != 0);
+            installUpdateAllowed = (UpdateInformationManager.compareVersion(item.package, latestVersion) !== 0);
 
             //we create a combo that have all available versions for install or update
-            $cbVersion = $line.find("ul.versions");
+            var $cbVersion = $line.find("ul.versions");
             $cbVersion.empty();
             availableVersions.sort(UpdateInformationManager.compareVersion);
 
@@ -905,9 +904,9 @@
       assert(!isNullOrUndefined(item), "item must be defined");
       assert(!isNullOrUndefined(updateInformation), "updateInformation must be defined");
 
-      modals.confirmation.loadAsync()
+      Yadoms.modals.confirmation.loadAsync()
          .done(function () {
-            showConfirmModal(btnKind.yesNo,
+            Yadoms.showConfirmModal(Yadoms.btnKind.yesNo,
                   $.t("modals.dashboard.sub-windows.install-update.generic.confirmInstallTitle"),
                   $.t("modals.dashboard.sub-windows.install-update.generic.confirmInstall", {
                      objectName: $.t(objectType + "s/" + item.type + ":name", { defaultValue: item.package.name }),
@@ -934,9 +933,9 @@
       assert(!isNullOrUndefined(item), "item must be defined");
       assert(!isNullOrUndefined(updateInformation), "updateInformation must be defined");
 
-      modals.confirmation.loadAsync()
+      Yadoms.modals.confirmation.loadAsync()
       .done(function () {
-         showConfirmModal(btnKind.yesNo,
+         Yadoms.showConfirmModal(Yadoms.btnKind.yesNo,
                $.t("modals.dashboard.sub-windows.install-update.generic.confirmUpdateTitle"),
                $.t("modals.dashboard.sub-windows.install-update.generic.confirmUpdate", {
                   objectName: $.t(objectType + "s/" + item.type + ":name", { defaultValue: item.package.name }),
@@ -962,9 +961,9 @@
       assert(!isNullOrUndefined(objectType), "objectType must be defined");
       assert(!isNullOrUndefined(item), "item must be defined");
 
-      modals.confirmation.loadAsync()
+      Yadoms.modals.confirmation.loadAsync()
        .done(function () {
-          showConfirmModal(btnKind.yesNo,
+          Yadoms.showConfirmModal(Yadoms.btnKind.yesNo,
                 $.t("modals.dashboard.sub-windows.install-update.generic.confirmRemoveTitle"),
                 $.t("modals.dashboard.sub-windows.install-update.generic.confirmRemove", { objectName: $.t(objectType + "s/" + item.type + ":name", { defaultValue: item.package.name }) }),
                 function () {

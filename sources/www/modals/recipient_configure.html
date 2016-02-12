@@ -26,7 +26,7 @@
     * Show a recipient configuration modal form
     * @param recipient  The recipient to update
     */
-   function showRecipientConfigurationModal(recipient) {
+   Yadoms.showRecipientConfigurationModal = function(recipient) {
 
       var d = new $.Deferred();
 
@@ -35,13 +35,13 @@
       $modalBody.empty();
 
       //add first and last name
-      var firstNameParameter = new StringParameterHandler("modals.recipient_configure.", "firstName", {required:"true"}, recipient.firstName);
+      var firstNameParameter = new StringParameterHandler("modals.recipient_configure.", "firstName", { required: "true" }, recipient.firstName);
       $modalBody.append(firstNameParameter.getDOMObject());
       //we finish instantiation
       if ($.isFunction(firstNameParameter.applyScript))
          firstNameParameter.applyScript();
 
-      var lastNameParameter = new StringParameterHandler("modals.recipient_configure.", "lastName", {required:"true"}, recipient.lastName);
+      var lastNameParameter = new StringParameterHandler("modals.recipient_configure.", "lastName", { required: "true" }, recipient.lastName);
       $modalBody.append(lastNameParameter.getDOMObject());
       //we finish instantiation
       if ($.isFunction(lastNameParameter.applyScript))
@@ -50,11 +50,10 @@
       //add custom fields (email, mobile phone,...)
       var recipientConfigurationFields = [];
       var sections = {};
-      $.each(recipient.fields, function (index, field) {
-
-         if(field.pluginType == "system") {
-            var valueParameter = new StringParameterHandler("objects.recipient.fields.", field.fieldName, field, field.value);
-            //keep the field
+      $.each(recipient.fields, function(index, field) {
+         var valueParameter;
+         if (field.pluginType === "system") {
+            valueParameter = new StringParameterHandler("objects.recipient.fields.", field.fieldName, field, field.value); //keep the field
             valueParameter.field = field;
             recipientConfigurationFields.push(valueParameter);
 
@@ -64,18 +63,15 @@
             if ($.isFunction(valueParameter.applyScript))
                valueParameter.applyScript();
 
-         }
-         else {
-             //create or retrieve section for the plugin
-            if(sections[field.pluginType] == undefined) {
-               sections[field.pluginType] = new SectionParameterHandler("[prepend]modals.recipient_configure.","pluginSection",
-                       {
-                          name : $.t("plugins/" + field.pluginType + ":name", { "defaultValue" :  field.pluginDefaultDisplayName })
-                       });
+         } else {
+            //create or retrieve section for the plugin
+            if (sections[field.pluginType] == undefined) {
+               sections[field.pluginType] = new SectionParameterHandler("[prepend]modals.recipient_configure.", "pluginSection",
+               {
+                  name: $.t("plugins/" + field.pluginType + ":name", { "defaultValue": field.pluginDefaultDisplayName })
+               });
             }
-
-            var valueParameter = ConfigurationHelper.createParameterHandler("plugins/" + field.pluginType + ":recipientFields.", field.fieldName, field, field.value);
-            //keep the field
+            valueParameter = ConfigurationHelper.createParameterHandler("plugins/" + field.pluginType + ":recipientFields.", field.fieldName, field, field.value); //keep the field
             valueParameter.field = field;
             recipientConfigurationFields.push(valueParameter);
 
@@ -115,7 +111,7 @@
 
             //retrieve all fields
             var fields = [];
-            $.each(recipientConfigurationFields, function (index, configField) {
+            $.each(recipientConfigurationFields, function(index, configField) {
                configField.field.value = configField.getCurrentConfiguration();
                fields.push(configField.field);
             });
@@ -138,5 +134,5 @@
       $('div#recipient-configure-modal').modal({ backdrop: 'static' });
 
       return d.promise();
-   }
+   };
 </script>

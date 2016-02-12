@@ -137,6 +137,7 @@ WidgetManager.getViewFromServer_ = function (widgetType) {
 WidgetManager.getViewModelFromServer_ = function (widgetType) {
    assert(!isNullOrUndefined(widgetType), "widgetType must be defined");
 
+   // ReSharper disable AssignToImplicitGlobalInFunctionScope
    widgetViewModelCtor = null;
    var d = new $.Deferred();
    RestEngine.getScript("widgets/" + widgetType + "/viewModel.js")
@@ -161,6 +162,7 @@ WidgetManager.getViewModelFromServer_ = function (widgetType) {
       });
 
    return d.promise();
+   // ReSharper restore AssignToImplicitGlobalInFunctionScope
 };
 
 
@@ -220,15 +222,15 @@ WidgetManager.updateToServer = function (widget) {
        catch (e) {
           notifyWarning($.t("objects.widgetManager.exceptionDuringCallConfigurationChanged", { "widgetType": widget.type }));
           console.warn(e);
-          d.reject();
+          d.reject(e);
        }
     })
-   .fail(function () {
-      return function () {
-         notifyError($.t("objects.widgetManager.errorDuringModifyingWidgetNamed", { "widgetType": widget.type }));
-         d.reject();
-      };
-   }(widget.type));
+   .fail(function(error) {
+      notifyError($.t("objects.widgetManager.errorDuringModifyingWidgetNamed", { "widgetType": widget.type }), error);
+      d.reject(error);
+   });
+
+   return d.promise();
 };
 
 /**
@@ -269,6 +271,7 @@ WidgetManager.consolidate_ = function (widget, widgetPackage) {
 
    //we use to construct the viewModel of the current widget
    //noinspection JSPotentiallyInvalidConstructorUsage
+   // ReSharper disable once InconsistentNaming
    widget.viewModel = new widgetPackage.viewModelCtor();
    widget.package = widgetPackage.package;
 };
@@ -472,13 +475,13 @@ WidgetManager.addToDom_ = function (widget, ensureVisible) {
 
     //we listen click event on configure click
    widget.$gridWidget.find('div.btn-configure-widget').bind('click', function (e) {
-       var widgetDOMElement = $(e.currentTarget).parents(".widget");
-       var pageId = widgetDOMElement.attr("page-id");
-       var widgetId = widgetDOMElement.attr("widget-id");
-       modals.widgetConfiguration.load(function (pageId, widgetId) {
+       var widgetDomElement = $(e.currentTarget).parents(".widget");
+       var pageId = widgetDomElement.attr("page-id");
+       var widgetId = widgetDomElement.attr("widget-id");
+       Yadoms.modals.widgetConfiguration.load(function (pageId, widgetId) {
            return function () {
                var widgetToConfigure = WidgetManager.get(pageId, widgetId);
-               configureWidget(widgetToConfigure, function () {
+               Yadoms.configureWidget(widgetToConfigure, function () {
                    WidgetManager.updateToServer(widgetToConfigure);
                });
            }
@@ -487,10 +490,12 @@ WidgetManager.addToDom_ = function (widget, ensureVisible) {
 
     //we listen click event on delete click
    widget.$gridWidget.find('div.btn-delete-widget').bind('click', function (e) {
-       var widgetDOMElement = $(e.currentTarget).parents(".widget");
-       var pageId = widgetDOMElement.attr("page-id");
-       var widgetId = widgetDOMElement.attr("widget-id");
-       modals.widgetDelete.load(function (pageId, widgetId) { return function () { showDeleteWidgetModal(pageId, widgetId) } }(pageId, widgetId));
+       var widgetDomElement = $(e.currentTarget).parents(".widget");
+       var pageId = widgetDomElement.attr("page-id");
+       var widgetId = widgetDomElement.attr("widget-id");
+       Yadoms.modals.widgetDelete.load(function() {
+          Yadoms.showDeleteWidgetModal(pageId, widgetId);
+       });
    });
 
     //we initialize the widget

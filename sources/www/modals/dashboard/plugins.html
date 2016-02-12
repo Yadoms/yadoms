@@ -16,16 +16,16 @@
 <script>
    var pluginInstanceList = [];
 
-   function initializePluginDashboard() {
+   Yadoms.initializePluginDashboard = function() {
       //we remove all rows except header
       $("table#plugin-instance-list").find("tr:gt(0)").remove();
       //we clear pluginInstance array
       pluginInstanceList = [];
 
-      $("#btn-add-new-plugin").unbind("click").bind("click", function () { addNewPlugin(); });
+      $("#btn-add-new-plugin").unbind("click").bind("click", function() { addNewPlugin(); });
 
       //we dynamically ask for plugins (async)
-      PluginInstanceManager.getAll().done(function(allInstances){
+      PluginInstanceManager.getAll().done(function(allInstances) {
          //foreach result we append a <tr>
          $.each(allInstances, function(index, value) {
             pluginInstanceList.push(value);
@@ -36,11 +36,11 @@
          });
 
          //we use the periodic task of the dashboard
-         clearInterval(window.periodicDashboardTask);
-         periodicDashboardTask = setInterval(periodicDashboardPluginTask, 2000);
+         clearInterval(Yadoms.periodicDashboardTask);
+         Yadoms.periodicDashboardTask = setInterval(periodicDashboardPluginTask, 2000);
          periodicDashboardPluginTask();
       });
-   }
+   };
 
    function getPluginDomRow(pluginInstance) {
       return $("table#plugin-instance-list").find("tr[plugin-id='" + pluginInstance.id + "']");
@@ -106,7 +106,7 @@
       assert(!isNullOrUndefined(pi), "pi must be defined");
       //we deactivate the button until next status will be acquired to prevent flooding
       getPluginDomRow(pi).find("button.btn-startStop").prop('disabled', true);
-      if (pi.lastState == "Stopped" || pi.lastState == "Error") {
+      if (pi.lastState === "Stopped" || pi.lastState === "Error") {
          //we ask for start
          PluginInstanceManager.start(pi).done(function () {
             getPluginDomRow(pi).find("button.btn-startStop").prop('disabled', false);
@@ -125,9 +125,9 @@
       //we get package.json
       PluginInstanceManager.downloadPackage(pi).done(function() {
          //we ask for configuration modal async
-         modals.pluginConfigure.loadAsync()
+         Yadoms.modals.pluginConfigure.loadAsync()
          .done(function () {
-            configurePluginInstance(pi, function() {
+            Yadoms.configurePluginInstance(pi, function() {
                   PluginInstanceManager.updateToServer(pi)
                      .done(function() {
                         //We update the information that can have changed after the configuration
@@ -144,9 +144,9 @@
 
    function deletePlugin(pi) {
       //pi represent the pluginInstance concerned
-      modals.confirmation.loadAsync()
+      Yadoms.modals.confirmation.loadAsync()
       .done(function () {
-         showConfirmModal(btnKind.yesNo, null, $.t("modals.dashboard.sub-windows.plugins.confirmPluginDeletion", { pluginName: pi.displayName }),
+         Yadoms.showConfirmModal(Yadoms.btnKind.yesNo, null, $.t("modals.dashboard.sub-windows.plugins.confirmPluginDeletion", { pluginName: pi.displayName }),
          function () {
             //deletion has been confirmed
             var deletePromsie = PluginInstanceManager.deleteFromServer(pi);
@@ -241,17 +241,17 @@
    }
 
    function addNewPlugin() {
-      modals.pluginAdd.loadAsync()
+      Yadoms.modals.pluginAdd.loadAsync()
       .done(function() {
-         askPluginTypes(function(pluginType) {
+         Yadoms.askPluginTypes(function(pluginType) {
             var pi = new PluginInstance(null, $.t("plugins/" + pluginType.type + ":name", {defaultValue : pluginType.package.name}), pluginType.type, "", 1, "user");
             //we get package.json
             PluginInstanceManager.downloadPackage(pi).done(function() {
                //we ask for configuration modal async
-               modals.pluginConfigure.loadAsync()
+               Yadoms.modals.pluginConfigure.loadAsync()
                .done(function() {
                   //we launch configureInstance GUI
-                  configurePluginInstance(pi, function() {
+                  Yadoms.configurePluginInstance(pi, function () {
                      //we ask for pluginInstance creation
                       PluginInstanceManager.createToServer(pi)
                           .done(function() {
