@@ -85,13 +85,12 @@ widgetViewModelCtor =
                                        case "HOUR":
                                        case "DAY":
                                            return DateTimeFormatter.dateToString(this.value, "LT");
-                                           break;
+
                                        case "WEEK":
                                        case "MONTH":
                                        case "HALF_YEAR":
                                        case "YEAR":
                                            return DateTimeFormatter.dateToString(this.value, "L");
-                                           break;
                                    }
                                }
                                return DateTimeFormatter.dateToString(this.value);
@@ -106,7 +105,7 @@ widgetViewModelCtor =
                    plotOptions: {
                        bar: {
                            pointPadding: 0.2
-                       },
+                       }
                    },
 
                    tooltip: {
@@ -243,8 +242,6 @@ widgetViewModelCtor =
        };
 
        this.cleanUpChart = function (serie, time, cleanValue) {
-           var self = this;
-
            var ex = false;
 
            while (!ex) {
@@ -302,7 +299,7 @@ widgetViewModelCtor =
                    var prefixUri = "";
                    var timeBetweenTwoConsecutiveValues;
                    var isSummaryData;
-                   var DeviceIsSummary = [];
+                   var deviceIsSummary = [];
 
                    switch (interval) {
                        case "HOUR":
@@ -370,7 +367,7 @@ widgetViewModelCtor =
                    //for each plot in the configuration we request for data
                    $.each(self.widget.configuration.devices, function (index, device) {
 
-                       var DisplayData = true;
+                       var displayData = true;
 
                        //If the device is a bool, you have to modify
                        if (self.isBoolVariable(index)) {
@@ -379,27 +376,27 @@ widgetViewModelCtor =
                                case "WEEK":
                                case "MONTH":
                                    dateTo = DateTimeFormatter.dateToIsoDate(moment());
-                                   DisplayData = true;
+                                   displayData = true;
                                    break;
                                case "HALF_YEAR":
                                case "YEAR":
                                    // Display that the range is too large
                                    self.chart.showLoading($.t("widgets/chart:RangeTooBroad"));
-                                   DisplayData = false;
+                                   displayData = false;
                                    self.refreshingData = false;
                                    break;
                            }
                            //we request hour summary data
                            prefixUri = "";
                            isSummaryData = false;
-                           DeviceIsSummary[index] = false;     // We change the summary for the boolean device.
+                           deviceIsSummary[index] = false;     // We change the summary for the boolean device.
                        }
                        else {
-                           DisplayData = true;
-                           DeviceIsSummary[index] = isSummaryData; // By default, it's the summary define above.
+                           displayData = true;
+                           deviceIsSummary[index] = isSummaryData; // By default, it's the summary define above.
                        }
 
-                       if (DisplayData) {
+                       if (displayData) {
 
                            var deffered = RestEngine.getJson("rest/acquisition/keyword/" + device.content.source.keywordId + prefixUri + "/" + dateFrom + "/" + dateTo);
                            arrayOfDeffered.push(deffered);
@@ -411,9 +408,8 @@ widgetViewModelCtor =
 
                                   var lastDate;
                                   var d;
-                                  var IndexDevice = index;
 
-                                  if (!(DeviceIsSummary[index])) {
+                                  if (!(deviceIsSummary[index])) {
                                       //data comes from acquisition table
                                       $.each(data.data, function (index, value) {
                                           lastDate = d;
@@ -493,10 +489,9 @@ widgetViewModelCtor =
                                               return num % 2;
                                           }
 
-                                          if (isOdd(index))
+                                          var align = 'right';
+                                         if (isOdd(index))
                                               align = 'left';
-                                          else
-                                              align = 'right';
 
                                           var unit = $.t(self.keywordInfo[index].units);
 
@@ -546,8 +541,8 @@ widgetViewModelCtor =
                                               //we cancel previous extremes
                                               yAxis.setExtremes(null, null);
                                           }
-                                      } catch (err) {
-                                          console.log(err);
+                                      } catch (error2) {
+                                          console.log(error2);
                                       }
                                   }
 
@@ -575,7 +570,7 @@ widgetViewModelCtor =
                                           }, false, false); // Do not redraw immediately
 
                                           //Add Ranges
-                                          if (DeviceIsSummary[index]) {
+                                          if (deviceIsSummary[index]) {
                                               self.chart.addSeries({
                                                   id: 'range_' + self.seriesUuid[index],
                                                   data: range,
@@ -593,11 +588,11 @@ widgetViewModelCtor =
                                                   zIndex: 0
                                               }, false, false); // Do not redraw immediately
 
-                                              var serie_range = self.chart.get('range_' + self.seriesUuid[index]);
+                                              var serieRange = self.chart.get('range_' + self.seriesUuid[index]);
 
                                               // Add Units for ranges
-                                              if (serie_range)
-                                                  serie_range.units = $.t(self.keywordInfo[index].units);
+                                              if (serieRange)
+                                                  serieRange.units = $.t(self.keywordInfo[index].units);
                                           }
                                       } else {
 
@@ -671,7 +666,7 @@ widgetViewModelCtor =
            var noAvailableData = true;
 
            $.each(self.chart.series, function (index, value) {
-               if (value.xData.length != 0)
+               if (value.xData.length !== 0)
                    noAvailableData = false;
            });
            // TODO : To be finished !!
@@ -686,27 +681,27 @@ widgetViewModelCtor =
            self.chart.redraw(false); //without animation
        };
 
-       this.DisplaySummary = function (index, nb, device, range, Prefix) {
+       this.DisplaySummary = function (index, nb, device, range, prefix) {
            var self = this;
 
            try {
                //The goal is to ask to the server the elapsed time only. Example : 22h00 -> 22h59mn59s. 
                //If you ask 22h00 -> 23h00, the system return also the average for 23h. If 23h is not complete, the value will be wrong.
 
-               var dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf(Prefix).subtract(1, 'seconds'));
-               var dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(nb, range).startOf(Prefix));
+               var dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf(prefix).subtract(1, 'seconds'));
+               var dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(nb, range).startOf(prefix));
 
-               $.getJSON("rest/acquisition/keyword/" + device.content.source.keywordId + "/" + Prefix + "/" + dateFrom + "/" + dateTo)
+               RestEngine.getJson("rest/acquisition/keyword/" + device.content.source.keywordId + "/" + prefix + "/" + dateFrom + "/" + dateTo)
                   .done(function (data) {
                       try {
-                          if (data.data.data[0] != undefined) {
+                          if (data.data[0] != undefined) {
                               self.chart.hideLoading(); // If a text was displayed before
-                              self.chart.get(self.seriesUuid[index]).addPoint([DateTimeFormatter.isoDateToDate(data.data.data[0].date)._d.getTime().valueOf(), parseFloat(data.data.data[0].avg)], true, false, true);
+                              self.chart.get(self.seriesUuid[index]).addPoint([DateTimeFormatter.isoDateToDate(data.data[0].date)._d.getTime().valueOf(), parseFloat(data.data[0].avg)], true, false, true);
 
                               //Add also for ranges if any
                               var serie = self.chart.get('range_' + self.seriesUuid[index]);
                               if (serie)
-                                  serie.addPoint([DateTimeFormatter.isoDateToDate(data.data.data[0].date)._d.getTime().valueOf(), parseFloat(data.data.data[0].min), parseFloat(data.data.data[0].max)], true, false, true);
+                                  serie.addPoint([DateTimeFormatter.isoDateToDate(data.data[0].date)._d.getTime().valueOf(), parseFloat(data.data[0].min), parseFloat(data.data[0].max)], true, false, true);
                           }
                       } catch (err) {
                           console.error(err.message);
@@ -725,9 +720,8 @@ widgetViewModelCtor =
        */
        this.onNewAcquisition = function (keywordId, data) {
            var self = this;
-           var bShift = false;
 
-           if (self.seriesUuid.length == 0)
+           if (self.seriesUuid.length === 0)
                return;
 
            try {
@@ -761,7 +755,7 @@ widgetViewModelCtor =
                        }
 
                        var serie = self.chart.get(self.seriesUuid[index]);
-                       var serie_range = self.chart.get('range_' + self.seriesUuid[index]);
+                       var serieRange = self.chart.get('range_' + self.seriesUuid[index]);
 
                        // If a serie is available
                        if (!isNullOrUndefined(serie)) {
@@ -769,8 +763,8 @@ widgetViewModelCtor =
                            self.cleanUpChart(serie, data.date, cleanValue);
 
                            // Clean points > cleanValue for ranges, if any
-                           if (!isNullOrUndefined(serie_range))
-                               self.cleanUpChart(serie_range, data.date, cleanValue);
+                           if (!isNullOrUndefined(serieRange))
+                               self.cleanUpChart(serieRange, data.date, cleanValue);
 
                            // Add new point depending of the interval
                            switch (self.interval) {

@@ -4,49 +4,47 @@
 
 /**
  * Create a device parameter handler
- * @param i18nContext
+ * @param i18NContext
  * @param paramName
  * @param content
  * @param currentValue
  * @constructor
  */
-function DeviceParameterHandler(i18nContext, paramName, content, currentValue) {
-   assert(i18nContext !== undefined, "i18nContext must contain path of i18n");
+function DeviceParameterHandler(i18NContext, paramName, content, currentValue) {
+   assert(i18NContext !== undefined, "i18nContext must contain path of i18n");
    assert(paramName !== undefined, "paramName must be defined");
    assert(content !== undefined, "content must be defined");
-   assert(content.expectedKeywordAccess !== undefined, "expectedKeywordAccess field must be defined");
+   assert(content && content.expectedKeywordAccess !== undefined, "expectedKeywordAccess field must be defined");
+   if (content) {
+      this.expectedKeywordAccess = content.expectedKeywordAccess;
 
-   this.expectedKeywordAccess = content.expectedKeywordAccess;
+      if (!isNullOrUndefined(currentValue)) {
+         this.value = currentValue;
+      } else {
+         this.value = {};
+      }
 
-   if (!isNullOrUndefined(currentValue)) {
-      this.value = currentValue;
-   }
-   else {
-      this.value = {};
-   }
+      this.name = content.name;
+      this.uuidContainer = createUUID();
+      this.uuid = createUUID();
+      this.uuidKeywordList = createUUID();
+      this.paramName = paramName;
+      this.description = isNullOrUndefined(content.description) ? "" : content.description;
+      this.i18nContext = i18NContext;
+      this.content = content;
 
-   this.name = content.name;
-   this.uuidContainer = createUUID();
-   this.uuid = createUUID();
-   this.uuidKeywordList = createUUID();
-   this.paramName = paramName;
-   this.description = isNullOrUndefined(content.description)?"":content.description;
-   this.i18nContext = i18nContext;
-   this.content = content;
-
-   if (!isNullOrUndefined(content.expectedKeywordType)) {
-      //we look for a type
-      this.expectedKeywordType = content.expectedKeywordType;
-      this.lookupMethod = "type";
-   }
-   else if (!isNullOrUndefined(content.expectedCapacity)) {
-      //we look for a capacity name
-      this.expectedCapacity = content.expectedCapacity;
-      this.lookupMethod = "name";
-   }
-   else {
-      //we look for all
-      this.lookupMethod = "all";
+      if (!isNullOrUndefined(content.expectedKeywordType)) {
+         //we look for a type
+         this.expectedKeywordType = content.expectedKeywordType;
+         this.lookupMethod = "type";
+      } else if (!isNullOrUndefined(content.expectedCapacity)) {
+         //we look for a capacity name
+         this.expectedCapacity = content.expectedCapacity;
+         this.lookupMethod = "name";
+      } else {
+         //we look for all
+         this.lookupMethod = "all";
+      }
    }
 }
 
@@ -57,20 +55,14 @@ function DeviceParameterHandler(i18nContext, paramName, content, currentValue) {
  */
 function populateDeviceList(handler) {
    return function(data) {
-      //we parse the json answer
-      if (data.result != "true")
-      {
-         notifyError($.t("modals.configure-widget.errorDuringGettingDeviceList"), JSON.stringify(data));
-         return;
-      }
       var $deviceList = $("select#" + handler.uuid);
 
       //A device matches criteria
-      if (data.data.device.length !== 0) {
+      if (data.device.length !== 0) {
           var itemToSelect = -1;
-          $.each(data.data.device, function(index, value) {
+          $.each(data.device, function(index, value) {
              //we add device only if it is not already in the list
-             if ($deviceList.find("option[id=\"" + value.id + "\"]").length == 0) {
+             if ($deviceList.find("option[id=\"" + value.id + "\"]").length === 0) {
                $deviceList.append("<option value=\"" + value.id + "\">" + value.friendlyName + "</option>");
                //if the new element is those that we are looking for we save the position in the list
                if (value.id == handler.value.deviceId)
@@ -122,36 +114,29 @@ DeviceParameterHandler.prototype.applyScript = function () {
             $cbKeywords.prop('disabled', true);
 
             //we ask for all keywords of the device and we will pick just those we need
-            $.getJSON("/rest/device/" + $("select#" + handler.uuid).val() + "/keyword")
+            RestEngine.getJson("/rest/device/" + $("select#" + handler.uuid).val() + "/keyword")
                .done(function(data2) {
-                  //we parse the json answer
-                  if (data2.result != "true")
-                  {
-                     notifyError($.t("modals.configure-widget.errorDuringGettingKeywordList"), JSON.stringify(data2));
-                     return;
-                  }
-
                   $cbKeywords.empty();
                   $cbKeywords.append("<option value=\"\"></option>");
                   var newList = [];
 
-                  $.each(data2.data.keyword, function(index, value) {
+                  $.each(data2.keyword, function(index, value) {
                      //we add the keyword only if access mode is at least the same than expected
-                     if ((handler.expectedKeywordAccess.toLowerCase() != "getset") || (value.accessMode.toLowerCase() != "get")) {
+                     if ((handler.expectedKeywordAccess.toLowerCase() !== "getset") || (value.accessMode.toLowerCase() !== "get")) {
                         switch (handler.lookupMethod)
                         {
                            case "name":
                               //we lookup by capacity name (configuration should have several capacities)
                               if (Array.isArray(handler.expectedCapacity)) {
                                  $.each(handler.expectedCapacity, function(indexHandlerCapacity, handlerCapacity) {
-                                    if (value.capacityName.toLowerCase() == handlerCapacity.toLowerCase()) {
+                                    if (value.capacityName.toLowerCase() === handlerCapacity.toLowerCase()) {
                                        //this keyword interest us we push it into the list
                                        newList.push(value);
                                     }
                                  });
                               }
                               else {
-                                 if (value.capacityName.toLowerCase() == handler.expectedCapacity.toLowerCase()) {
+                                 if (value.capacityName.toLowerCase() === handler.expectedCapacity.toLowerCase()) {
                                     //this keyword interest us we push it into the list
                                     newList.push(value);
                                  }
@@ -162,14 +147,14 @@ DeviceParameterHandler.prototype.applyScript = function () {
                               //we lookup by capacity type (configuration should have several types)
                               if (Array.isArray(handler.expectedKeywordType)) {
                                  $.each(handler.expectedKeywordType, function(indexHandlerKwType, handlerKwType) {
-                                    if (value.type.toLowerCase() == handlerKwType.toLowerCase()) {
+                                    if (value.type.toLowerCase() === handlerKwType.toLowerCase()) {
                                        //this keyword interest us we push it into the list
                                        newList.push(value);
                                     }
                                  });
                               }
                               else {
-                                 if (value.type.toLowerCase() == handler.expectedKeywordType.toLowerCase()) {
+                                 if (value.type.toLowerCase() === handler.expectedKeywordType.toLowerCase()) {
                                     //this keyword interest us we push it into the list
                                     newList.push(value);
                                  }
@@ -203,7 +188,9 @@ DeviceParameterHandler.prototype.applyScript = function () {
                   $cbKeywords.prop('selectedIndex', keywordToSelect);
                   handler.locateInDOM().change();
                })
-               .fail(function() {notifyError($.t("modals.configure-widget.errorDuringGettingKeywordList"));})
+               .fail(function(error) {
+                  notifyError($.t("modals.configure-widget.errorDuringGettingKeywordList"), error);
+               })
                .always(function() {
                   //we re-enable the device combo
                   $deviceList.prop('disabled', false);
@@ -222,16 +209,20 @@ DeviceParameterHandler.prototype.applyScript = function () {
             //we have a list of types
             //we async ask for device list that support a type
             $.each(self.expectedKeywordType, function (index, type) {
-               $.getJSON("/rest/device/matchcapacitytype/" + self.expectedKeywordAccess + "/" + type)
+               RestEngine.getJson("/rest/device/matchcapacitytype/" + self.expectedKeywordAccess + "/" + type)
                   .done(populateDeviceList(self))
-                  .fail(function() {notifyError($.t("modals.configure-widget.errorDuringGettingDeviceListMatchCapacityType", {expectedKeywordAccess : self.expectedKeywordAccess, expectedKeywordType : type}));});
+                  .fail(function(error) {
+                     notifyError($.t("modals.configure-widget.errorDuringGettingDeviceListMatchCapacityType", {expectedKeywordAccess : self.expectedKeywordAccess, expectedKeywordType : type}), error);
+                  });
             });
          }
          else {
             //we async ask for device list that support a type
-            $.getJSON("/rest/device/matchcapacitytype/" + self.expectedKeywordAccess + "/" + self.expectedKeywordType)
+            RestEngine.getJson("/rest/device/matchcapacitytype/" + self.expectedKeywordAccess + "/" + self.expectedKeywordType)
                .done(populateDeviceList(self))
-               .fail(function() {notifyError($.t("modals.configure-widget.errorDuringGettingDeviceListMatchCapacityType", {expectedKeywordAccess : self.expectedKeywordAccess, expectedKeywordType : self.expectedKeywordType}));});
+               .fail(function(error) {
+                  notifyError($.t("modals.configure-widget.errorDuringGettingDeviceListMatchCapacityType", {expectedKeywordAccess : self.expectedKeywordAccess, expectedKeywordType : self.expectedKeywordType}), error);
+               });
          }
          break;
       case "name":
@@ -240,24 +231,30 @@ DeviceParameterHandler.prototype.applyScript = function () {
             //we have a list of capacities
             //we async ask for keyword list of the device for each capacity
             $.each(self.expectedCapacity, function (index, capacity) {
-               $.getJSON("/rest/device/matchcapacity/" + self.expectedKeywordAccess + "/" + capacity)
+               RestEngine.getJson("/rest/device/matchcapacity/" + self.expectedKeywordAccess + "/" + capacity)
                   .done(populateDeviceList(self))
-                  .fail(function() {notifyError($.t("modals.configure-widget.errorDuringGettingDeviceListMatchCapacity", {expectedKeywordAccess : self.expectedKeywordAccess, expectedCapacity : self.expectedCapacity}));});
+                  .fail(function(error) {
+                     notifyError($.t("modals.configure-widget.errorDuringGettingDeviceListMatchCapacity", {expectedKeywordAccess : self.expectedKeywordAccess, expectedCapacity : self.expectedCapacity}), error);
+                  });
             });
          }
          else {
             //we have only one capacity
-            $.getJSON("/rest/device/matchcapacity/" + self.expectedKeywordAccess + "/" + self.expectedCapacity)
+            RestEngine.getJsongetJSON("/rest/device/matchcapacity/" + self.expectedKeywordAccess + "/" + self.expectedCapacity)
                .done(populateDeviceList(self))
-               .fail(function() {notifyError($.t("modals.configure-widget.errorDuringGettingDeviceListMatchCapacity", {expectedKeywordAccess : self.expectedKeywordAccess, expectedCapacity : self.expectedCapacity}));});
+               .fail(function(error) {
+                  notifyError($.t("modals.configure-widget.errorDuringGettingDeviceListMatchCapacity", {expectedKeywordAccess : self.expectedKeywordAccess, expectedCapacity : self.expectedCapacity}), error);
+               });
          }
          break;
       default:
       case "all":
          //we get all devices
-         $.getJSON("/rest/device/")
+         RestEngine.getJson("/rest/device/")
             .done(populateDeviceList(self))
-            .fail(function() {notifyError($.t("modals.configure-widget.errorDuringGettingDeviceList"));});
+            .fail(function(error) {
+               notifyError($.t("modals.configure-widget.errorDuringGettingDeviceList"), error);
+            });
          break;
    }
 };
@@ -272,19 +269,12 @@ DeviceParameterHandler.prototype.getDOMObject = function () {
                         "id=\"" + this.uuid + "\" " +
                         "data-content=\"" + this.description + "\" " +
                         "required ";//
-   var i18nData = " data-i18n=\"";
-
    var self = this;
 
    input += " >";
    input += "<option value=\"\"></option>" +
             "</select>";
-/*
-   input += "<select " +
-            "class=\"form-control enable-validation\" " +
-			"id=\"" + self.uuidKeywordList + "\ " +
-            " ></select>"; //required
-*/
+
    input += "<select class=\"form-control enable-validation\" id=\"" + self.uuidKeywordList + "\" required ></select>";
    
    input += "<div class=\"device-details\">" +
