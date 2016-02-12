@@ -35,7 +35,6 @@ widgetViewModelCtor =
                "libs/highstock/js/highstock.js",
                "libs/highstock/js/highcharts-more.js",
                "libs/highstock/js/modules/exporting.js",
-               "libs/highstock/js/modules/solid-gauge.js",
                "libs/highcharts-export-clientside/js/highcharts-export-clientside.min.js"
            ]).done(function () {
 

@@ -136,7 +136,6 @@ WidgetManager.getViewFromServer_ = function (widgetType) {
  */
 WidgetManager.getViewModelFromServer_ = function (widgetType) {
    assert(!isNullOrUndefined(widgetType), "widgetType must be defined");
-
    // ReSharper disable AssignToImplicitGlobalInFunctionScope
    widgetViewModelCtor = null;
    var d = new $.Deferred();
@@ -411,7 +410,7 @@ WidgetManager.loadWidget = function (widget, pageWhereToAdd, ensureVisible) {
  * @private
  */
 WidgetManager.instanciateWidgetToPage_ = function (pageWhereToAdd, widget, widgetType, ensureVisible) {
-   try {
+    try {
       //we finalize the load of the widget
       WidgetManager.consolidate_(widget, WidgetPackageManager.widgetPackages[widgetType]);
       WidgetManager.addToDom_(widget, ensureVisible);
