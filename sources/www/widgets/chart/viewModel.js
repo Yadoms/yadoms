@@ -452,13 +452,13 @@ widgetViewModelCtor =
                                           if ((lastDate != undefined) && (timeBetweenTwoConsecutiveValues != undefined) &&
                                              (lastDate + timeBetweenTwoConsecutiveValues < d)) {
 
-                                              if (device.content.PlotType == "arearange")
+                                              if (device.content.PlotType === "arearange")
                                                   range.push([d, null, null]);
 
                                               plot.push([d, null]);
                                           }
 
-                                          if (device.content.PlotType == "arearange")
+                                          if (device.content.PlotType === "arearange")
                                               range.push([d, vMin, vMax]);
 
                                           plot.push([d, v]);
@@ -726,8 +726,8 @@ widgetViewModelCtor =
 
            try {
                $.each(self.widget.configuration.devices, function (index, device) {
-                   if (keywordId == device.content.source.keywordId) {
-                       //we've found the device
+                   if (keywordId === device.content.source.keywordId) {
+                      //we've found the device
                        var cleanValue;
                        // Cleaning ranges switch
                        switch (self.interval) {
