@@ -58,25 +58,6 @@ void CYScriptApiImplementation::sendRequest(const google::protobuf::Message& req
    }
 }
 
-void CYScriptApiImplementation::sendRequest(ERequestIdentifier requestId, const shared::CDataContainer& request) const
-{
-   try
-   {
-      shared::CDataContainer mainRequestContainer;
-      mainRequestContainer.set("type", requestId);
-      mainRequestContainer.set("content", request);
-
-      const std::string serializedRequest(mainRequestContainer.serialize());
-      if (serializedRequest.size() > m_messageQueueMessageSize)
-         throw std::overflow_error("yScriptApiWrapper::sendRequest : request is too big");
-      m_sendMessageQueue->send(serializedRequest.c_str(), serializedRequest.size(), 0);
-   }
-   catch (boost::interprocess::interprocess_exception& ex)
-   {
-      throw std::overflow_error(std::string("yScriptApiWrapper::sendRequest : Error at IYScriptApi method call, ") + ex.what());
-   }
-}
-
 void CYScriptApiImplementation::receiveAnswer(protobufMessage::ToScript& answer) const
 {
    // Wait answer
@@ -91,30 +72,6 @@ void CYScriptApiImplementation::receiveAnswer(protobufMessage::ToScript& answer)
 
    if (!answer.ParseFromArray(message, messageSize))
       throw shared::exception::CInvalidParameter("message");
-}
-
-shared::CDataContainer CYScriptApiImplementation::receiveAnswer(EAnswerIdentifier expectedAnswerId) const
-{
-   // Wait answer
-   char message[m_messageQueueMessageSize];
-   size_t messageSize;
-   unsigned int messagePriority;
-
-   m_receiveMessageQueue->receive(message, m_messageQueueMessageSize, messageSize, messagePriority);
-
-   if (messageSize < 1)
-      throw std::runtime_error("yScriptApiWrapper::receiveAnswer : received Yadoms answer is zero length");
-
-   // Unserialize received message
-   shared::CDataContainer mainAnswerContainer(std::string(message, messageSize));
-
-   if (!mainAnswerContainer.exists("type") || !mainAnswerContainer.exists("content"))
-      throw std::out_of_range("yScriptApiWrapper::receiveAnswer : received Yadoms answer is not well formed");
-
-   if (mainAnswerContainer.get<EAnswerIdentifier>("type") != expectedAnswerId)
-      throw std::out_of_range("yScriptApiWrapper::receiveAnswer : received Yadoms answer is wrong type");
-
-   return mainAnswerContainer.get<shared::CDataContainer>("content");
 }
 
 int CYScriptApiImplementation::getKeywordId(const std::string& deviceName, const std::string& keywordName) const

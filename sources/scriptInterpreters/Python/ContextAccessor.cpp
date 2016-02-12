@@ -108,18 +108,6 @@ void CContextAccessor::sendAnswer(const protobufMessage::ToScript& answer, boost
    messageQueue.send(message, answer.GetCachedSize(), 0);
 }
 
-void CContextAccessor::sendAnswer(EAnswerIdentifier answerId, const shared::CDataContainer& answer, boost::interprocess::message_queue& messageQueue)
-{
-   shared::CDataContainer mainAnswerContainer;
-   mainAnswerContainer.set("type", answerId);
-   mainAnswerContainer.set("content", answer);
-
-   const std::string serializedRequest(mainAnswerContainer.serialize());
-   if (serializedRequest.size() > m_messageQueueMessageSize)
-      throw std::overflow_error("sendRequest : answer is too big");
-   messageQueue.send(serializedRequest.c_str(), serializedRequest.size(), 0);
-}
-
 void CContextAccessor::processMessage(const void* message, size_t messageSize, boost::interprocess::message_queue& messageQueue)
 {
    if (messageSize < 1)
@@ -147,6 +135,8 @@ void CContextAccessor::processMessage(const void* message, size_t messageSize, b
       processWriteKeyword(request.writekeywordrequest(), messageQueue);
    else if (request.has_sendnotificationrequest())
       processSendNotification(request.sendnotificationrequest(), messageQueue);
+   else if (request.has_getinforequest())
+      processGetInfo(request.getinforequest(), messageQueue);
    else
       throw shared::exception::CInvalidParameter("message");
 }
@@ -289,16 +279,31 @@ void CContextAccessor::processSendNotification(const protobufMessage::ToYadoms_S
    sendAnswer(ans, messageQueue);
 }
 
-void CContextAccessor::processGetInfo(const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue)
+void CContextAccessor::processGetInfo(const protobufMessage::ToYadoms_GetInfoRequest& request, boost::interprocess::message_queue& messageQueue)
 {
-   shared::CDataContainer answer;
+   protobufMessage::ToScript ans;
+   protobufMessage::ToScript_GetInfoAnswer* answer = ans.mutable_getinfoanswer();
    try
    {
-      answer.set("returnValue", m_scriptApi->getInfo(request.get<shared::script::yScriptApi::IYScriptApi::EInfoKeys>("key")));
+      shared::script::yScriptApi::IYScriptApi::EInfoKeys key;
+      switch (request.key())
+      {
+      case protobufMessage::ToYadoms_GetInfoRequest_Key::ToYadoms_GetInfoRequest_Key_kSunrise: key = shared::script::yScriptApi::IYScriptApi::kSunrise; break;
+      case protobufMessage::ToYadoms_GetInfoRequest_Key::ToYadoms_GetInfoRequest_Key_kSunset: key = shared::script::yScriptApi::IYScriptApi::kSunset; break;
+      case protobufMessage::ToYadoms_GetInfoRequest_Key::ToYadoms_GetInfoRequest_Key_kLatitude: key = shared::script::yScriptApi::IYScriptApi::kLatitude; break;
+      case protobufMessage::ToYadoms_GetInfoRequest_Key::ToYadoms_GetInfoRequest_Key_kLongitude: key = shared::script::yScriptApi::IYScriptApi::kLongitude; break;
+      case protobufMessage::ToYadoms_GetInfoRequest_Key::ToYadoms_GetInfoRequest_Key_kAltitude: key = shared::script::yScriptApi::IYScriptApi::kAltitude; break;
+      case protobufMessage::ToYadoms_GetInfoRequest_Key::ToYadoms_GetInfoRequest_Key_kYadomsServerOS: key = shared::script::yScriptApi::IYScriptApi::kYadomsServerOS; break;
+      case protobufMessage::ToYadoms_GetInfoRequest_Key::ToYadoms_GetInfoRequest_Key_kYadomsServerVersion: key = shared::script::yScriptApi::IYScriptApi::kYadomsServerVersion; break;
+      default:
+         throw shared::exception::CInvalidParameter("answer.waitforeventrequestanswer.type");
+      }
+
+      answer->set_value(m_scriptApi->getInfo(key));
    }
    catch (std::exception& ex)
    {
-      answer.set("error", ex.what());
+      ans.set_error(ex.what());
    }
-   sendAnswer(kAnsGetInfo, answer, messageQueue);
+   sendAnswer(ans, messageQueue);
 }

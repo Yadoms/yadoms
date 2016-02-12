@@ -2,7 +2,6 @@
 #include "IContextAccessor.h"
 #include <shared/script/yScriptApi/IYScriptApi.h>
 #include <shared/ThreadBase.h>
-#include <shared/DataContainer.h>//TODO virer ?
 #include "Messages.hpp"
 
 
@@ -58,7 +57,7 @@ protected:
    void processWaitForEvent(const protobufMessage::ToYadoms_WaitForEventRequest& request, boost::interprocess::message_queue& messageQueue);
    void processWriteKeyword(const protobufMessage::ToYadoms_WriteKeywordRequest& request, boost::interprocess::message_queue& messageQueue);
    void processSendNotification(const protobufMessage::ToYadoms_SendNotificationRequest& request, boost::interprocess::message_queue& messageQueue);
-   void processGetInfo                 (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
+   void processGetInfo(const protobufMessage::ToYadoms_GetInfoRequest& request, boost::interprocess::message_queue& messageQueue);
 
    //--------------------------------------------------------------
    /// \brief	Send an answer
@@ -66,7 +65,6 @@ protected:
    /// \param[in] boost::interprocess::message_queue Message queue used to send answer
    //--------------------------------------------------------------
    void sendAnswer(const protobufMessage::ToScript& answer, boost::interprocess::message_queue& messageQueue);
-   void sendAnswer(EAnswerIdentifier answerId, const shared::CDataContainer& answer, boost::interprocess::message_queue& messageQueue);//TODO virer
 
 private:
    //--------------------------------------------------------------

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <shared/script/yScriptApi/IYScriptApi.h>
-#include <shared/DataContainer.h>
 #include "../Messages.hpp"
 
 //-----------------------------------------------------
@@ -39,7 +38,6 @@ protected:
    /// \param[in] request Request to send
    //--------------------------------------------------------------
    void sendRequest(const google::protobuf::Message& request) const;
-   void sendRequest(ERequestIdentifier requestId, const shared::CDataContainer& request) const;//TODO virer
 
    //--------------------------------------------------------------
    /// \brief	Wait for an answer
@@ -48,7 +46,6 @@ protected:
    /// \throw shared::exception::CInvalidParameter if error parsing message
    //--------------------------------------------------------------
    void receiveAnswer(protobufMessage::ToScript& answer) const;
-   shared::CDataContainer receiveAnswer(EAnswerIdentifier expectedAnswerId) const;//TODO virer
 
 private:
    //-----------------------------------------------------
