@@ -2,7 +2,7 @@
 #include "IContextAccessor.h"
 #include <shared/script/yScriptApi/IYScriptApi.h>
 #include <shared/ThreadBase.h>
-#include <shared/DataContainer.h>
+#include <shared/DataContainer.h>//TODO virer ?
 #include "Messages.hpp"
 
 
@@ -50,34 +50,23 @@ protected:
    /// \param[in] request Received requests
    /// \param[in] messageQueue Message Queue used for answer
    //--------------------------------------------------------------
-   void processGetKeywordId(const wrapperMessages::ToYadoms_KeywordIdRequest& request, boost::interprocess::message_queue& messageQueue);
-   void processGetKeywordId            (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
-   void processGetRecipientId          (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
-   void processReadKeyword             (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
-   void processWaitForNextAcquisition  (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
-   void processWaitForNextAcquisitions (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
-   void processWaitForEvent            (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
-   void processWriteKeyword            (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
-   void processSendNotification        (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
+   void processGetKeywordId(const protobufMessage::ToYadoms_GetKeywordIdRequest& request, boost::interprocess::message_queue& messageQueue);
+   void processGetRecipientId(const protobufMessage::ToYadoms_GetRecipientIdRequest& request, boost::interprocess::message_queue& messageQueue);
+   void processReadKeyword(const protobufMessage::ToYadoms_ReadKeywordRequest& request, boost::interprocess::message_queue& messageQueue);
+   void processWaitForNextAcquisition(const protobufMessage::ToYadoms_WaitForNextAcquisitionRequest& request, boost::interprocess::message_queue& messageQueue);
+   void processWaitForNextAcquisitions(const protobufMessage::ToYadoms_WaitForNextAcquisitionsRequest& request, boost::interprocess::message_queue& messageQueue);
+   void processWaitForEvent(const protobufMessage::ToYadoms_WaitForEventRequest& request, boost::interprocess::message_queue& messageQueue);
+   void processWriteKeyword(const protobufMessage::ToYadoms_WriteKeywordRequest& request, boost::interprocess::message_queue& messageQueue);
+   void processSendNotification(const protobufMessage::ToYadoms_SendNotificationRequest& request, boost::interprocess::message_queue& messageQueue);
    void processGetInfo                 (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
 
    //--------------------------------------------------------------
    /// \brief	Send an answer
-   /// \param[in] answerId The answer message identifier
    /// \param[in] answer The answer
    /// \param[in] boost::interprocess::message_queue Message queue used to send answer
    //--------------------------------------------------------------
-   void sendAnswer(EAnswerIdentifier answerId, const shared::CDataContainer& answer, boost::interprocess::message_queue& messageQueue);
-
-   //--------------------------------------------------------------
-   /// \brief	   Wait that context is ready
-   //--------------------------------------------------------------
-   void waitForReady();
-
-   //--------------------------------------------------------------
-   /// \brief	   Set context as ready
-   //--------------------------------------------------------------
-   void setReady();
+   void sendAnswer(const protobufMessage::ToScript& answer, boost::interprocess::message_queue& messageQueue);
+   void sendAnswer(EAnswerIdentifier answerId, const shared::CDataContainer& answer, boost::interprocess::message_queue& messageQueue);//TODO virer
 
 private:
    //--------------------------------------------------------------

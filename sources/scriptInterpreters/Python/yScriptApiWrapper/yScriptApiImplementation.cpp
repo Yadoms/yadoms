@@ -77,6 +77,22 @@ void CYScriptApiImplementation::sendRequest(ERequestIdentifier requestId, const 
    }
 }
 
+void CYScriptApiImplementation::receiveAnswer(protobufMessage::ToScript& answer) const
+{
+   // Wait answer
+   char message[m_messageQueueMessageSize];
+   size_t messageSize;
+   unsigned int messagePriority;
+
+   m_receiveMessageQueue->receive(message, m_messageQueueMessageSize, messageSize, messagePriority);
+
+   if (messageSize < 1)
+      throw std::runtime_error("yScriptApiWrapper::receiveAnswer : received Yadoms answer is zero length");
+
+   if (!answer.ParseFromArray(message, messageSize))
+      throw shared::exception::CInvalidParameter("message");
+}
+
 shared::CDataContainer CYScriptApiImplementation::receiveAnswer(EAnswerIdentifier expectedAnswerId) const
 {
    // Wait answer
@@ -103,138 +119,203 @@ shared::CDataContainer CYScriptApiImplementation::receiveAnswer(EAnswerIdentifie
 
 int CYScriptApiImplementation::getKeywordId(const std::string& deviceName, const std::string& keywordName) const
 {
-   wrapperMessages::ToYadoms req;
-   wrapperMessages::ToYadoms_KeywordIdRequest* request = req.mutable_keywordidrequest();
+   protobufMessage::ToYadoms req;
+   protobufMessage::ToYadoms_GetKeywordIdRequest* request = req.mutable_getkeywordidrequest();
    request->set_devicename(deviceName);
    request->set_keywordname(keywordName);
    sendRequest(req);
 
-   shared::CDataContainer answer = receiveAnswer(kAnsGetKeywordId);
+   protobufMessage::ToScript answer;
+   receiveAnswer(answer);
 
-   if (answer.exists("error"))
-      throw std::out_of_range(std::string("yScriptApiWrapper::getKeywordId, error : ") + answer.get<std::string>("error"));
+   if (!answer.has_getkeywordidanswer())
+      throw std::out_of_range("yScriptApiWrapper::getKeywordId, wrong message received");
 
-   return answer.get<int>("returnValue");
+   if (answer.has_error())
+      throw std::out_of_range(std::string("yScriptApiWrapper::getKeywordId, error : ") + answer.error());
+
+   return answer.getkeywordidanswer().id();
 }
 
 int CYScriptApiImplementation::getRecipientId(const std::string& firstName, const std::string& lastName) const
 {
-   shared::CDataContainer request;
-   request.set("firstName", firstName);
-   request.set("lastName", lastName);
-   sendRequest(kReqGetRecipientId, request);
+   protobufMessage::ToYadoms req;
+   protobufMessage::ToYadoms_GetRecipientIdRequest* request = req.mutable_getrecipientidrequest();
+   request->set_firstname(firstName);
+   request->set_lastname(lastName);
+   sendRequest(req);
 
-   shared::CDataContainer answer = receiveAnswer(kAnsGetRecipientId);
+   protobufMessage::ToScript answer;
+   receiveAnswer(answer);
 
-   if (answer.exists("error"))
-      throw std::out_of_range(std::string("yScriptApiWrapper::getRecipientId, error : ") + answer.get<std::string>("error"));
+   if (!answer.has_getrecipientidanswer())
+      throw std::out_of_range("yScriptApiWrapper::getRecipientId, wrong message received");
 
-   return answer.get<int>("returnValue");
+   if (answer.has_error())
+      throw std::out_of_range(std::string("yScriptApiWrapper::getRecipientId, error : ") + answer.error());
+
+   return answer.getrecipientidanswer().id();
 }
 
 std::string CYScriptApiImplementation::readKeyword(int keywordId) const
 {
-   shared::CDataContainer request;
-   request.set("keywordId", keywordId);
-   sendRequest(kReqReadKeyword, request);
+   protobufMessage::ToYadoms req;
+   protobufMessage::ToYadoms_ReadKeywordRequest* request = req.mutable_readkeywordrequest();
+   request->set_keywordid(keywordId);
+   sendRequest(req);
 
-   shared::CDataContainer answer = receiveAnswer(kAnsReadKeyword);
+   protobufMessage::ToScript answer;
+   receiveAnswer(answer);
 
-   if (answer.exists("error"))
-      throw std::out_of_range(std::string("yScriptApiWrapper::readKeyword, error : ") + answer.get<std::string>("error"));
+   if (!answer.has_readkeywordanswer())
+      throw std::out_of_range("yScriptApiWrapper::readKeyword, wrong message received");
 
-   return answer.get<std::string>("returnValue");
+   if (answer.has_error())
+      throw std::out_of_range(std::string("yScriptApiWrapper::readKeyword, error : ") + answer.error());
+
+   return answer.readkeywordanswer().value();
 }
 
 std::string CYScriptApiImplementation::waitForNextAcquisition(int keywordId, const std::string& timeout) const
 {
-   shared::CDataContainer request;
-   request.set("keywordId", keywordId);
-   request.set("timeout", timeout);
-   sendRequest(kReqWaitForNextAcquisition, request);
-   shared::CDataContainer answer = receiveAnswer(kAnsWaitForAcquisition);
+   protobufMessage::ToYadoms req;
+   protobufMessage::ToYadoms_WaitForNextAcquisitionRequest* request = req.mutable_waitfornextacquisitionrequest();
+   request->set_keywordid(keywordId);
+   if (!timeout.empty())
+      request->set_timeout(timeout);
+   sendRequest(req);
 
-   if (answer.exists("error"))
-      throw std::out_of_range(std::string("yScriptApiWrapper::waitForNextAcquisition, error : ") + answer.get<std::string>("error"));
+   protobufMessage::ToScript answer;
+   receiveAnswer(answer);
 
-   return answer.get<std::string>("returnValue");
+   if (!answer.has_waitfornextacquisitionanswer())
+      throw std::out_of_range("yScriptApiWrapper::waitForNextAcquisition, wrong message received");
+
+   if (answer.has_error())
+      throw std::out_of_range(std::string("yScriptApiWrapper::waitForNextAcquisition, error : ") + answer.error());
+
+   return answer.waitfornextacquisitionanswer().acquisition();
 }
 
 std::pair<int, std::string> CYScriptApiImplementation::waitForNextAcquisitions(const std::vector<int> keywordIdList, const std::string& timeout) const
 {
-   shared::CDataContainer request;
-   request.set("keywordIdList", keywordIdList);
-   request.set("timeout", timeout);
-   sendRequest(kReqWaitForNextAcquisitions, request);
-   shared::CDataContainer answer = receiveAnswer(kAnsWaitForAcquisitions);
+   protobufMessage::ToYadoms req;
+   protobufMessage::ToYadoms_WaitForNextAcquisitionsRequest* request = req.mutable_waitfornextacquisitionsrequest();
+   for (std::vector<int>::const_iterator it = keywordIdList.begin(); it != keywordIdList.end(); ++it)
+      request->add_keywordid(*it);
+   if (!timeout.empty())
+      request->set_timeout(timeout);
+   sendRequest(req);
 
-   if (answer.exists("error"))
-      throw std::out_of_range(std::string("yScriptApiWrapper::waitForNextAcquisitions, error : ") + answer.get<std::string>("error"));
+   protobufMessage::ToScript answer;
+   receiveAnswer(answer);
 
-   return std::make_pair(answer.get<int>("key"), answer.get<std::string>("value"));
+   if (!answer.has_waitfornextacquisitionsanswer())
+      throw std::out_of_range("yScriptApiWrapper::waitForNextAcquisitions, wrong message received");
+
+   if (answer.has_error())
+      throw std::out_of_range(std::string("yScriptApiWrapper::waitForNextAcquisitions, error : ") + answer.error());
+
+   return std::pair<int, std::string>(answer.waitfornextacquisitionsanswer().keywordid(), answer.waitfornextacquisitionsanswer().has_acquisition() ? answer.waitfornextacquisitionsanswer().acquisition() : std::string());
 }
 
 shared::script::yScriptApi::CWaitForEventResult CYScriptApiImplementation::waitForEvent(const std::vector<int> keywordIdList, bool receiveDateTimeEvent, const std::string& timeout) const
 {
-   shared::CDataContainer request;
-   request.set("keywordIdList", keywordIdList);
-   request.set("receiveDateTimeEvent", receiveDateTimeEvent);
-   request.set("timeout", timeout);
-   sendRequest(kReqWaitForEvent, request);
-   shared::CDataContainer answer = receiveAnswer(kAnsWaitForEvent);
+   protobufMessage::ToYadoms req;
+   protobufMessage::ToYadoms_WaitForEventRequest* request = req.mutable_waitforeventrequest();
+   for (std::vector<int>::const_iterator it = keywordIdList.begin(); it != keywordIdList.end(); ++it)
+      request->add_keywordid(*it);
+   if (!timeout.empty())
+      request->set_timeout(timeout);
+   sendRequest(req);
 
-   if (answer.exists("error"))
-      throw std::out_of_range(std::string("yScriptApiWrapper::waitForEvent, error : ") + answer.get<std::string>("error"));
+   protobufMessage::ToScript answer;
+   receiveAnswer(answer);
+
+   if (!answer.has_waitforeventrequestanswer())
+      throw std::out_of_range("yScriptApiWrapper::waitForEvent, wrong message received");
+
+   if (answer.has_error())
+      throw std::out_of_range(std::string("yScriptApiWrapper::waitForEvent, error : ") + answer.error());
 
    shared::script::yScriptApi::CWaitForEventResult result;
-   if (answer.containsValue("type"))
-      result.setType(answer.get<shared::script::yScriptApi::CWaitForEventResult::EResultType>("type"));
+   switch (answer.waitforeventrequestanswer().type())
+   {
+   case protobufMessage::ToScript_WaitForEventAnswer_EventType::ToScript_WaitForEventAnswer_EventType_kTimeout:result.setType(shared::script::yScriptApi::CWaitForEventResult::kTimeout); break;
+   case protobufMessage::ToScript_WaitForEventAnswer_EventType::ToScript_WaitForEventAnswer_EventType_kKeyword:result.setType(shared::script::yScriptApi::CWaitForEventResult::kKeyword); break;
+   case protobufMessage::ToScript_WaitForEventAnswer_EventType::ToScript_WaitForEventAnswer_EventType_kDateTime:result.setType(shared::script::yScriptApi::CWaitForEventResult::kDateTime); break;
+   default:
+      throw shared::exception::CInvalidParameter("answer.waitforeventrequestanswer.type");
+   }
 
-   if (answer.containsValue("keywordId"))
-      result.setKeywordId(answer.get<int>("keywordId"));
-
-   if (answer.containsValue("value"))
-      result.setValue(answer.get<std::string>("value"));
+   result.setKeywordId(answer.waitforeventrequestanswer().keywordid());
+   result.setValue(answer.waitforeventrequestanswer().has_acquisition() ? answer.waitforeventrequestanswer().acquisition() : std::string());
    return result;
 }
 
 void CYScriptApiImplementation::writeKeyword(int keywordId, const std::string& newState)
 {
-   shared::CDataContainer request;
-   request.set("keywordId", keywordId);
-   request.set("newState", newState);
-   sendRequest(kReqWriteKeyword, request);
+   protobufMessage::ToYadoms req;
+   protobufMessage::ToYadoms_WriteKeywordRequest* request = req.mutable_writekeywordrequest();
+   request->set_keywordid(keywordId);//TODO utiliser des lambdas
+   request->set_newstate(newState);
+   sendRequest(req);
 
-   shared::CDataContainer answer = receiveAnswer(kAnsWriteKeyword);
+   protobufMessage::ToScript answer;
+   receiveAnswer(answer);
 
-   if (answer.exists("error"))
-      throw std::out_of_range(std::string("yScriptApiWrapper::writeKeyword, error : ") + answer.get<std::string>("error"));
+   if (!answer.has_writekeywordanswer())
+      throw std::out_of_range("yScriptApiWrapper::writeKeyword, wrong message received");
+
+   if (answer.has_error())
+      throw std::out_of_range(std::string("yScriptApiWrapper::writeKeyword, error : ") + answer.error());
 }
 
 void CYScriptApiImplementation::sendNotification(int keywordId, int recipientId, const std::string& message)
 {
-   shared::CDataContainer request;
-   request.set("keywordId", keywordId);
-   request.set("recipientId", recipientId);
-   request.set("message", message);
-   sendRequest(kReqSendNotification, request);
+   protobufMessage::ToYadoms req;
+   protobufMessage::ToYadoms_SendNotificationRequest* request = req.mutable_sendnotificationrequest();
+   request->set_keywordid(keywordId);
+   request->set_recipientid(recipientId);
+   request->set_message(message);
+   sendRequest(req);
 
-   shared::CDataContainer answer = receiveAnswer(kAnsSendNotification);
+   protobufMessage::ToScript answer;
+   receiveAnswer(answer);
 
-   if (answer.exists("error"))
-      throw std::out_of_range(std::string("yScriptApiWrapper::sendNotification, error : ") + answer.get<std::string>("error"));
+   if (!answer.has_sendnotificationanswer())
+      throw std::out_of_range("yScriptApiWrapper::sendNotification, wrong message received");
+
+   if (answer.has_error())
+      throw std::out_of_range(std::string("yScriptApiWrapper::sendNotification, error : ") + answer.error());
 }
 
 std::string CYScriptApiImplementation::getInfo(EInfoKeys key) const
 {
-   shared::CDataContainer request;
-   request.set("key", key);
-   sendRequest(kReqGetInfo, request);
+   protobufMessage::ToYadoms req;
+   protobufMessage::ToYadoms_GetInfoRequest* request = req.mutable_getinforequest();
+   switch (key)
+   {
+   case kSunrise:request->set_key(protobufMessage::ToYadoms_GetInfoRequest_Key::ToYadoms_GetInfoRequest_Key_kSunrise); break;
+   case kSunset:request->set_key(protobufMessage::ToYadoms_GetInfoRequest_Key::ToYadoms_GetInfoRequest_Key_kSunset); break;
+   case kLatitude:request->set_key(protobufMessage::ToYadoms_GetInfoRequest_Key::ToYadoms_GetInfoRequest_Key_kLatitude); break;
+   case kLongitude:request->set_key(protobufMessage::ToYadoms_GetInfoRequest_Key::ToYadoms_GetInfoRequest_Key_kLongitude); break;
+   case kAltitude:request->set_key(protobufMessage::ToYadoms_GetInfoRequest_Key::ToYadoms_GetInfoRequest_Key_kAltitude); break;
+   case kYadomsServerOS:request->set_key(protobufMessage::ToYadoms_GetInfoRequest_Key::ToYadoms_GetInfoRequest_Key_kYadomsServerOS); break;
+   case kYadomsServerVersion:request->set_key(protobufMessage::ToYadoms_GetInfoRequest_Key::ToYadoms_GetInfoRequest_Key_kYadomsServerVersion); break;
+   default:
+      throw shared::exception::CInvalidParameter("answer.waitforeventrequestanswer.type");
+   }
+   sendRequest(req);
 
-   shared::CDataContainer answer = receiveAnswer(kAnsGetInfo);
+   protobufMessage::ToScript answer;
+   receiveAnswer(answer);
 
-   if (answer.exists("error"))
-      throw std::out_of_range(std::string("yScriptApiWrapper::getInfo, error : ") + answer.get<std::string>("error"));
+   if (!answer.has_sendnotificationanswer())
+      throw std::out_of_range("yScriptApiWrapper::sendNotification, wrong message received");
 
-   return answer.get<std::string>("returnValue");
+   if (answer.has_error())
+      throw std::out_of_range(std::string("yScriptApiWrapper::sendNotification, error : ") + answer.error());
+
+   return answer.getinfoanswer().value();
 }

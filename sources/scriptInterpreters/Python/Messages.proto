@@ -1,22 +1,137 @@
-package wrapperMessages;
+package protobufMessage;
+
+enum VERSION { CURRENT = 1; }
 
 message ToYadoms {
 
-// TODO ajouter une version ?
+   // Main interface version (future use...)
+   optional VERSION version = 1 [default = CURRENT];
 
-   message KeywordIdRequest
+   message GetKeywordIdRequest//TODO virer les suffixes "Request" et "Answer" ?
    {
       required string deviceName = 1;
       required string keywordName = 2;
    }
+   optional GetKeywordIdRequest getKeywordIdRequest = 2;
 
-   message KeywordIdAnswer
+   message GetRecipientIdRequest
    {
-      optional string error = 1;
-      required int32 keywordId = 2;
+      required string firstName = 1;
+      required string lastName = 2;
    }
+   optional GetRecipientIdRequest getRecipientIdRequest = 3;
 
-   optional KeywordIdRequest keywordIdRequest = 1;
-   optional KeywordIdAnswer keywordIdAnswer = 2;
+   message ReadKeywordRequest
+   {
+      required int32 keywordId = 1;
+   }
+   optional ReadKeywordRequest readKeywordRequest = 4;
 
+   message WaitForNextAcquisitionRequest
+   {
+      required int32 keywordId = 1;
+      optional string timeout = 2;
+   }
+   optional WaitForNextAcquisitionRequest waitForNextAcquisitionRequest = 5;
+
+   message WaitForNextAcquisitionsRequest
+   {
+      repeated int32 keywordId = 1;
+      optional string timeout = 2;
+   }
+   optional WaitForNextAcquisitionsRequest waitForNextAcquisitionsRequest = 6;
+
+   message WaitForEventRequest
+   {
+      repeated int32 keywordId = 1;
+      required bool receiveDateTimeEvent = 2;
+      optional string timeout = 3;
+   }
+   optional WaitForEventRequest waitForEventRequest = 7;
+
+   message WriteKeywordRequest
+   {
+      required int32 keywordId = 1;
+      required string newState = 2;
+   }
+   optional WriteKeywordRequest writeKeywordRequest = 8;
+
+   message SendNotificationRequest
+   {
+      required int32 keywordId = 1;
+      required int32 recipientId = 2;
+      required string message = 3;
+   }
+   optional SendNotificationRequest sendNotificationRequest = 9;
+
+   message GetInfoRequest
+   {
+      enum Key { kSunrise = 0; kSunset = 1; kLatitude = 2; kLongitude = 3; kAltitude = 4; kYadomsServerOS = 5; kYadomsServerVersion = 6; }
+      required Key key = 1;
+   }
+   optional GetInfoRequest getInfoRequest = 10;
+}
+
+message ToScript {
+
+   // Main interface version
+   optional VERSION version = 1 [default = CURRENT];
+
+   optional string error = 2;
+   
+   message GetKeywordIdAnswer
+   {
+      required int32 id = 1;
+   }
+   optional GetKeywordIdAnswer getKeywordIdAnswer = 3;
+   
+   message GetRecipientIdAnswer
+   {
+      required int32 id = 1;
+   }
+   optional GetRecipientIdAnswer getRecipientIdAnswer = 4;
+   
+   message ReadKeywordAnswer
+   {
+      required string value = 1;
+   }
+   optional ReadKeywordAnswer readKeywordAnswer = 5;
+   
+   message WaitForNextAcquisitionAnswer
+   {
+      required string acquisition = 1;
+   }
+   optional WaitForNextAcquisitionAnswer waitForNextAcquisitionAnswer = 6;
+   
+   message WaitForNextAcquisitionsAnswer
+   {
+      required int32 keywordId = 1;
+      optional string acquisition = 2;
+   }
+   optional WaitForNextAcquisitionsAnswer waitForNextAcquisitionsAnswer = 7;
+   
+   message WaitForEventAnswer
+   {
+      enum EventType { kTimeout = 0; kKeyword = 1; kDateTime = 2; }
+      required EventType type = 1;
+      required int32 keywordId = 2;
+      optional string acquisition = 3;
+   }
+   optional WaitForEventAnswer waitForEventRequestAnswer = 8;
+   
+   message WriteKeywordAnswer
+   {
+   }
+   optional WriteKeywordAnswer writeKeywordAnswer = 9;
+   
+   message SendNotificationAnswer
+   {
+   }
+   optional SendNotificationAnswer sendNotificationAnswer = 10;
+
+   message GetInfoAnswer
+   {
+      required string value = 1;
+   }
+   optional GetInfoAnswer getInfoAnswer = 11;
 }

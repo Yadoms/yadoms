@@ -43,12 +43,12 @@ protected:
 
    //--------------------------------------------------------------
    /// \brief	Wait for an answer
-   /// \param[in] expectedAnswerId The expected answer message identifier
-   /// \return The answer
+   /// \param[in] answer Received answer from Yadoms
    /// \throw std::runtime_error if message queue error
-   /// \throw std::out_of_range if wrong answer message identifier received
+   /// \throw shared::exception::CInvalidParameter if error parsing message
    //--------------------------------------------------------------
-   shared::CDataContainer receiveAnswer(EAnswerIdentifier expectedAnswerId) const;
+   void receiveAnswer(protobufMessage::ToScript& answer) const;
+   shared::CDataContainer receiveAnswer(EAnswerIdentifier expectedAnswerId) const;//TODO virer
 
 private:
    //-----------------------------------------------------
