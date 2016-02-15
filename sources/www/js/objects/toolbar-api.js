@@ -25,21 +25,21 @@ ToolbarApi.prototype.manageBatteryConfiguration = function () {
             //we check for the device to look if it has battery keyword
             DeviceManager.getKeywordsByDeviceId(deviceId)
             .done(function (keywords) {
-                var batteryLevel = keywords.find(function (element) { return element.capacityName == "batteryLevel"; });
+                var batteryLevel = keywords.find(function (element) { return element.capacityName === "batteryLevel"; });
                 if (batteryLevel) {
                     //it has capacity
                     $battery.append("<span class=\"\"/>");
                     $battery.attr("keywordId", batteryLevel.id);
                     //we add it to the filter of keyword for websockets
-                    WidgetApi.registerKeywordAcquisitions(self, batteryLevel.id);
+                    self.widget.viewModel.widgetApi.registerKeywordAcquisitions(batteryLevel.id);
 
                     //we ask immediately for the battery value
                     AcquisitionManager.getLastValue(batteryLevel.id)
                     .done(function (lastValue) {
-                        ToolbarApi.updateBatteryLevel(self, lastValue.value);
+                       self.widget.viewModel.widgetApi.toolbar.updateBatteryLevel(lastValue.value);
                     })
                     .fail(function(error) {
-                        notifyError($.t("objects.generic.errorGetting", { objectName: "keyword for device = " + deviceId }), error);
+                       notifyError($.t("objects.generic.errorGetting", { objectName: "Acquisition KeywordId = " + batteryLevel.id }), error);
                     });
                 }
                 else {
@@ -48,7 +48,7 @@ ToolbarApi.prototype.manageBatteryConfiguration = function () {
                 }
             })
             .fail(function(error) {
-                notifyError($.t("objects.generic.errorGetting", { objectName: "Acquisition KeywordId = " + batteryLevel.id }), error);
+               notifyError($.t("objects.generic.errorGetting", { objectName: "keyword for device = " + deviceId }), error);
             });
         }
     }
@@ -98,9 +98,9 @@ ToolbarApi.prototype.configureBatteryIcon = function (deviceId) {
 /**
  * Add a custom icon the toolbar of a widget
  */
-ToolbarApi.prototype.appendCustom = function (buttonDOM) {
-    assert(!isNullOrUndefined(buttonDOM), "buttonDOM must be defined");
-    this.widget.$toolbar.append(buttonDOM);
+ToolbarApi.prototype.appendCustom = function (buttonDom) {
+    assert(!isNullOrUndefined(buttonDom), "buttonDOM must be defined");
+    this.widget.$toolbar.append(buttonDom);
 }
 
 /**
