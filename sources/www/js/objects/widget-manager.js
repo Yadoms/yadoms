@@ -242,7 +242,7 @@ WidgetManager.updateWidgetConfiguration_ = function (widget) {
          widget.viewModel.configurationChanged();
 
       //we manage the toolbar api specific icons
-      ToolbarApi.manageBatteryConfiguration(widget);
+      widget.viewModel.widgetApi.toolbar.manageBatteryConfiguration();
    }
    catch (e) {
       notifyWarning($.t("objects.widgetManager.widgetHasGeneratedAnExceptionDuringCallingMethod", { widgetName: widget.type, methodName: 'configurationChanged' }));
@@ -492,7 +492,10 @@ WidgetManager.addToDom_ = function (widget, ensureVisible) {
     //we initialize the widget
     try {
         if (widget.viewModel.initialize !== undefined) {
-            var defferedResult = widget.viewModel.initialize(widget);
+            //we save the widget object into the viewModel
+            widget.viewModel.widget = widget;
+            widget.viewModel.widgetApi = new WidgetApi(widget);
+            var defferedResult = widget.viewModel.initialize();
             //we manage answer if it is a promise or not
             defferedResult = defferedResult || new $.Deferred().resolve();
             defferedResult.done(function () {

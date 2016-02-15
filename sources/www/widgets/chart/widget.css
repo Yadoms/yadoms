@@ -6,27 +6,9 @@
     overflow: hidden;
 }
 
-.chartWidget .btn-group {
-    top: 10px;
-    position: absolute;
-    z-index: 10;
-    left: 10px;
-}
-
 .chartWidgetContainer {
     width: 100%;
     height: 100%;
     text-align: center;
     margin: auto;
-}
-
-/*Permit to use a span instead of a <a> in a dropdown menu*/
-.dropdown-menu > li > span {
-    display: block;
-    padding: 3px 20px;
-    clear: both;
-    font-weight: normal;
-    line-height: 1.42857143;
-    color: #333;
-    white-space: nowrap;
 }

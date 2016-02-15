@@ -7,7 +7,6 @@ widgetViewModelCtor =
    function chartViewModel() {
 
        //widget identifier
-       this.widget = null;
        this.refreshingData = false;
        this.seriesUuid = [];
 
@@ -20,18 +19,16 @@ widgetViewModelCtor =
 
        /**
         * Initialization method
-        * @param widget widget class object
         */
-       this.initialize = function (widget) {
+       this.initialize = function () {
 
            var self = this;
            var d = new $.Deferred();
-           self.widget = widget;
            
            // create the chart
-           self.$chart = self.widget.$gridWidget.find("div.chartWidgetContainer");
+           self.$chart = self.widgetApi.find("div.chartWidgetContainer");
 
-           WidgetApi.loadLibrary([
+           self.widgetApi.loadLibrary([
                "libs/highstock/js/highstock.js",
                "libs/highstock/js/highcharts-more.js",
                "libs/highstock/js/modules/exporting.js",
@@ -139,16 +136,15 @@ widgetViewModelCtor =
                self.chart = self.$chart.highcharts();
 
                //we manage toolbar buttons
-               WidgetApi.toolbar.appendCustom(self.widget, "<div class=\"widget-toolbar-button range-btn\" interval=\"HOUR\"><span data-i18n=\"widgets/chart:navigator.hour\"/></div>");
-               WidgetApi.toolbar.appendCustom(self.widget, "<div class=\"widget-toolbar-button range-btn\" interval=\"DAY\"><span data-i18n=\"widgets/chart:navigator.day\"/></div>");
-               WidgetApi.toolbar.appendCustom(self.widget, "<div class=\"widget-toolbar-button range-btn\" interval=\"WEEK\"><span data-i18n=\"widgets/chart:navigator.week\"/></div>");
-               WidgetApi.toolbar.appendCustom(self.widget, "<div class=\"widget-toolbar-button range-btn\" interval=\"MONTH\"><span data-i18n=\"widgets/chart:navigator.month\"/></div>");
-               WidgetApi.toolbar.appendCustom(self.widget, "<div class=\"widget-toolbar-button range-btn\" interval=\"HALF_YEAR\"><span data-i18n=\"widgets/chart:navigator.half_year\"/></div>");
-               WidgetApi.toolbar.appendCustom(self.widget, "<div class=\"widget-toolbar-button range-btn\" interval=\"YEAR\"><span data-i18n=\"widgets/chart:navigator.year\"/></div>");
-               WidgetApi.toolbar.appendSeparator(self.widget);
-               /*
-              widget.$toolbar.append("<div class=\"widget-toolbar-separator\"></div>");*/
-               WidgetApi.toolbar.appendCustom(self.widget, "<div class=\"widget-toolbar-button export-btn dropdown\">" +
+               self.widgetApi.toolbar.appendCustom("<div class=\"widget-toolbar-button range-btn\" interval=\"HOUR\"><span data-i18n=\"widgets/chart:navigator.hour\"/></div>");
+               self.widgetApi.toolbar.appendCustom("<div class=\"widget-toolbar-button range-btn\" interval=\"DAY\"><span data-i18n=\"widgets/chart:navigator.day\"/></div>");
+               self.widgetApi.toolbar.appendCustom("<div class=\"widget-toolbar-button range-btn\" interval=\"WEEK\"><span data-i18n=\"widgets/chart:navigator.week\"/></div>");
+               self.widgetApi.toolbar.appendCustom("<div class=\"widget-toolbar-button range-btn\" interval=\"MONTH\"><span data-i18n=\"widgets/chart:navigator.month\"/></div>");
+               self.widgetApi.toolbar.appendCustom("<div class=\"widget-toolbar-button range-btn\" interval=\"HALF_YEAR\"><span data-i18n=\"widgets/chart:navigator.half_year\"/></div>");
+               self.widgetApi.toolbar.appendCustom("<div class=\"widget-toolbar-button range-btn\" interval=\"YEAR\"><span data-i18n=\"widgets/chart:navigator.year\"/></div>");
+               self.widgetApi.toolbar.appendSeparator();
+               
+               self.widgetApi.toolbar.appendCustom("<div class=\"widget-toolbar-button export-btn dropdown\">" +
                    "<span class=\"dropdown-toggle\" id=\"chartExportMenu\"  type=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"true\">" +
                    "<span class=\"fa fa-bars\"/>" +
                    "</span>" +
@@ -163,14 +159,14 @@ widgetViewModelCtor =
                    "</ul>" +
                    "</div>");
 
-               var $btns = self.widget.$gridWidget.find(".range-btn");
+               var $btns = self.widgetApi.find(".range-btn");
                $btns.unbind("click").bind("click", self.navigatorBtnClick());
 
-               self.widget.$gridWidget.find(".print-command").unbind("click").bind("click", function () {
+               self.widgetApi.find(".print-command").unbind("click").bind("click", function () {
                    self.chart.print();
                });
 
-               self.widget.$gridWidget.find(".export-command").unbind("click").bind("click", function (e) {
+               self.widgetApi.find(".export-command").unbind("click").bind("click", function (e) {
                    self.chart.exportChartLocal({
                        type: $(e.currentTarget).attr("mime-type"),
                        filename: 'export'
@@ -197,12 +193,12 @@ widgetViewModelCtor =
                return;
 
            //Desactivate the old button
-           self.widget.$gridWidget.find(".range-btn[interval='" + self.interval + "']").removeClass("widget-toolbar-pressed-button");
+           self.widgetApi.find(".range-btn[interval='" + self.interval + "']").removeClass("widget-toolbar-pressed-button");
 
            self.interval = self.widget.configuration.interval;
 
            //Activate the new button
-           self.widget.$gridWidget.find(".range-btn[interval='" + self.interval + "']").addClass("widget-toolbar-pressed-button");
+           self.widgetApi.find(".range-btn[interval='" + self.interval + "']").addClass("widget-toolbar-pressed-button");
 
            //just update some viewmodel info
            self.seriesUuid = [];
@@ -218,7 +214,7 @@ widgetViewModelCtor =
                    self.seriesUuid[index] = createUUID();
 
                //we register keyword new acquisition
-               WidgetApi.keyword.registerKeywordAcquisitions(self.widget, device.content.source.keywordId);
+               self.widgetApi.registerKeywordAcquisitions(device.content.source.keywordId);
 
                // We ask the current device name
                var deffered = DeviceManager.get(device.content.source.deviceId);
@@ -264,8 +260,8 @@ widgetViewModelCtor =
                var interval = $(e.currentTarget).attr("interval");
 
                //we manage button inversion
-               self.widget.$gridWidget.find(".range-btn[interval='" + interval + "']").addClass("widget-toolbar-pressed-button");
-               self.widget.$gridWidget.find(".range-btn[interval!='" + interval + "']").removeClass("widget-toolbar-pressed-button");
+               self.widgetApi.find(".range-btn[interval='" + interval + "']").addClass("widget-toolbar-pressed-button");
+               self.widgetApi.find(".range-btn[interval!='" + interval + "']").removeClass("widget-toolbar-pressed-button");
 
                self.refreshData(interval);
            };
