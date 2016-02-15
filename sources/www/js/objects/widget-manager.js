@@ -164,11 +164,6 @@ WidgetManager.getViewModelFromServer_ = function (widgetType) {
    // ReSharper restore AssignToImplicitGlobalInFunctionScope
 };
 
-
-
-
-
-
 /**
  * Create a new widget
  * @param {Object} newWidget A widget object to create in database
@@ -198,9 +193,6 @@ WidgetManager.deleteWidget = function (widgetToDelete) {
    assert(!isNullOrUndefined(widgetToDelete), "widgetToDelete must be defined");
    return RestEngine.deleteJson("/rest/widget/" + widgetToDelete.id);
 }
-
-
-
 
 WidgetManager.updateToServer = function (widget) {
    assert(!isNullOrUndefined(widget), "widget must be defined");
@@ -522,8 +514,10 @@ WidgetManager.addToDom_ = function (widget, ensureVisible) {
 
                 if (ensureVisible === true) {
                     //ensure the item is completly visible
-                    $.ensureVisible(widget.$gridWidget, true);
+                    widget.$gridWidget.ensureVisible(true);
                 }
+
+                widget.$gridWidget.find(".widget-api-textfit").fitText();
 
                 //we ask for widget refresh data
                 updateWidgetPolling(widget);

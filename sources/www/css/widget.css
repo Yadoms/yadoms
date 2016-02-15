@@ -162,3 +162,18 @@
 .widget-toolbar-battery span[class~=fa-battery-0] {
 	color: red;
 }
+
+.widget-api-textfit {
+    height: 100%;
+}
+
+/*Permit to use a span instead of a <a> in a dropdown menu*/
+.dropdown-menu > li > span {
+    display: block;
+    padding: 3px 20px;
+    clear: both;
+    font-weight: normal;
+    line-height: 1.42857143;
+    color: #333;
+    white-space: nowrap;
+}
