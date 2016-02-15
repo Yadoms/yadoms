@@ -106,10 +106,6 @@ namespace startupOptions
    {
       return m_configContainer.getString("server.databasePath", "yadoms.db3");
    }
-   bool CStartupOptions::getDebugFlag() const
-   {
-      return m_configContainer.getBool("server.debug", false);
-   }
    bool CStartupOptions::getNoPasswordFlag() const
    {
       return m_configContainer.getBool("server.noPassword", false);

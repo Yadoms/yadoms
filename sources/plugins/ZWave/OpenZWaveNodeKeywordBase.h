@@ -1,9 +1,10 @@
 #pragma once
 
 #include "IOpenZWaveNodeKeyword.h"
-#include <Value.h>
+#include <value_classes/Value.h>
 #include <Manager.h>
 #include <shared/exception/OutOfRange.hpp>
+#include <shared/Log.h>
 
 //--------------------------------------------------------------
 /// \brief	    Base class for keywords
@@ -37,7 +38,23 @@ protected:
    template<class T>
    bool realSendCommand(const T & data)
    {
-      return OpenZWave::Manager::Get()->SetValue(m_valueId, data);      
+      try
+      {
+         return OpenZWave::Manager::Get()->SetValue(m_valueId, data);
+      }
+      catch (OpenZWave::OZWException & ex)
+      {
+         YADOMS_LOG(fatal) << "Fail to send command : OpenZWave exception : " << ex.what();
+      }
+      catch (std::exception & ex)
+      {
+         YADOMS_LOG(fatal) << "Fail to send command : std::exception : " << ex.what();
+      }
+      catch (...)
+      {
+         YADOMS_LOG(fatal) << "Fail to send command : unknown exception";
+      }
+      return false;
    }
 
 

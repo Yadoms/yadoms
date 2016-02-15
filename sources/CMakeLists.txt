@@ -854,6 +854,9 @@ endif()
 
 #set yadoms executable to be copied in bindir
 install(TARGETS yadoms RUNTIME DESTINATION ${INSTALL_BINDIR})
+
+#set yadoms.ini configuration file to be copied in bindir
+install(FILES "../config/yadoms.ini" DESTINATION ${INSTALL_BINDIR})
    
 #set boost/debug libs to be copied in bindir
 FOREACH (BOOSTLIBRARY ${BOOST_FOUND_DEBUG_BINS})

@@ -112,11 +112,6 @@
                   value);
 
                //*************
-               //developerMode
-               var developerModeParameter = new BoolParameterHandler(i18NContext, ConfigurationManager.items.system.developerMode, { defaultValue: Yadoms.systemConfiguration[ConfigurationManager.items.system.developerMode].defaultValue }, Yadoms.systemConfiguration[ConfigurationManager.items.system.developerMode].value);
-               advancedSectionParameters.configurationHandlers.push(developerModeParameter);
-
-               //*************
                //dateFormatString
                var dateFormatStringParameter = new StringParameterHandler(i18NContext, ConfigurationManager.items.system.dateFormatString, { defaultValue: Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString].defaultValue, "required": "true" }, Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString].value);
                advancedSectionParameters.configurationHandlers.push(dateFormatStringParameter);
@@ -124,15 +119,12 @@
 
                //and add it to the gui
                $modalBody.append(languageParameter.getDOMObject());
-               //$modalBody.append(timezoneParameter.getDOMObject());
                $modalBody.append(basicAuthenticationSectionParameters.getDOMObject());
                $modalBody.append(advancedSectionParameters.getDOMObject());
 
                //we finish controls instantiation
                if ($.isFunction(languageParameter.applyScript))
                   languageParameter.applyScript();
-               //if ($.isFunction(timezoneParameter.applyScript))
-               //   timezoneParameter.applyScript();
                if ($.isFunction(basicAuthenticationSectionParameters.applyScript))
                   basicAuthenticationSectionParameters.applyScript();
                if ($.isFunction(advancedSectionParameters.applyScript))
@@ -169,72 +161,64 @@
                            });
 
 
-//*************
+                           //*************
                            //advanced parameters
                            Yadoms.systemConfiguration[ConfigurationManager.items.system.advancedParameters].value = advancedSectionParameters.getCurrentConfiguration().checkbox;
 
                            ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.advancedParameters])
                               .done(function() {
+                                    //*************
+                                    //dateFormatString
+                                    Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString].value = dateFormatStringParameter.getCurrentConfiguration();
+                                    ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString])
+                                       .done(function() {
 
-                                 //*************
-                                 //developerMode
-                                 Yadoms.systemConfiguration[ConfigurationManager.items.system.developerMode].value = developerModeParameter.getCurrentConfiguration();
-                                 ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.developerMode])
-                                    .done(function() {
-                                       //*************
-                                       //dateFormatString
-                                       Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString].value = dateFormatStringParameter.getCurrentConfiguration();
-                                       ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString])
-                                          .done(function() {
+                                          //*************
+                                          //basic authentication
+                                          var value = {};
 
-                                             //*************
-                                             //basic authentication
-                                             var value = {};
+                                          value.active = basicAuthenticationSectionParameters.getCurrentConfiguration().checkbox;
 
-                                             value.active = basicAuthenticationSectionParameters.getCurrentConfiguration().checkbox;
+                                          //if we activate / deactivate the authentication we must reload the page
+                                          if (value.active !== basicAuth.active)
+                                             pageHasToBeReloaded = true;
 
-                                             //if we activate / deactivate the authentication we must reload the page
-                                             if (value.active !== basicAuth.active)
+                                          if (value.active) {
+                                             //the authentication method is active
+                                             value.user = userAuthenticationParameter.getCurrentConfiguration();
+
+                                             if (value.user !== basicAuth.user)
                                                 pageHasToBeReloaded = true;
 
-                                             if (value.active) {
-                                                //the authentication method is active
-                                                value.user = userAuthenticationParameter.getCurrentConfiguration();
-
-                                                if (value.user !== basicAuth.user)
-                                                   pageHasToBeReloaded = true;
-
-                                                //we check for password modification
-                                                var newPass = passwordAuthenticationParameter.getCurrentConfiguration();
-                                                if (newPass !== $.md5(fakePassword)) {
-                                                   //the password has been changed
-                                                   value.password = newPass;
-                                                   //we has to reload the page
-                                                   pageHasToBeReloaded = true;
-                                                } else {
-                                                   //we set the previous one
-                                                   value.password = basicAuth.password;
-                                                }
+                                             //we check for password modification
+                                             var newPass = passwordAuthenticationParameter.getCurrentConfiguration();
+                                             if (newPass !== $.md5(fakePassword)) {
+                                                //the password has been changed
+                                                value.password = newPass;
+                                                //we has to reload the page
+                                                pageHasToBeReloaded = true;
                                              } else {
-                                                //the authentication method is inactive
-                                                value.user = userAuthenticationParameter.getCurrentConfiguration();
-                                                //we clear the password for the next re-activation
-                                                value.password = "";
+                                                //we set the previous one
+                                                value.password = basicAuth.password;
                                              }
+                                          } else {
+                                             //the authentication method is inactive
+                                             value.user = userAuthenticationParameter.getCurrentConfiguration();
+                                             //we clear the password for the next re-activation
+                                             value.password = "";
+                                          }
 
-                                             Yadoms.systemConfiguration[ConfigurationManager.items.system.basicAuthentication].value = value;
+                                          Yadoms.systemConfiguration[ConfigurationManager.items.system.basicAuthentication].value = value;
 
-                                             ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.basicAuthentication])
-                                                .done(function() {
-                                                   d.resolve();
-                                                })
-                                                .fail(d.reject);
-                                          })
-                                          .fail(d.reject);
-                                    })
-                                    .fail(d.reject);
-                              })
-                              .fail(d.reject);
+                                          ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.basicAuthentication])
+                                             .done(function() {
+                                                d.resolve();
+                                             })
+                                             .fail(d.reject);
+                                       })
+                                       .fail(d.reject);
+                                 })
+                                 .fail(d.reject);
                         })
                         .fail(d.reject);
 
@@ -291,21 +275,13 @@
                                           ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.advancedParameters])
                                              .done(function() {
                                                 //*************
-                                                //developerMode
-                                                Yadoms.systemConfiguration[ConfigurationManager.items.system.developerMode].value = systemConfiguration[ConfigurationManager.items.system.developerMode].defaultValue;
-                                                ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.developerMode])
+                                                //dateFormatString
+                                                Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString].value = systemConfiguration[ConfigurationManager.items.system.dateFormatString].defaultValue;
+                                                ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString])
                                                    .done(function() {
-                                                      //*************
-                                                      //dateFormatString
-                                                      Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString].value = systemConfiguration[ConfigurationManager.items.system.dateFormatString].defaultValue;
-                                                      ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString])
-                                                         .done(function() {
-                                                            d.resolve();
-                                                         })
-                                                         .fail(d.reject);
+                                                      d.resolve();
                                                    })
                                                    .fail(d.reject);
-
                                              })
                                              .fail(d.reject);
                                        })

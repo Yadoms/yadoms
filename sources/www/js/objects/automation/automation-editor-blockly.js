@@ -94,14 +94,8 @@ AutomationEditorBlockly.prototype.onModalShown = function() {
  * @param rule
  */
 AutomationEditorBlockly.prototype.onModalHidden = function () {
-   //remove remainging divs
-   var $widgetDiv = $(".blocklyWidgetDiv");
-   if ($widgetDiv)
-      $widgetDiv.remove();
-
-   var $tooltipDiv = $(".blocklyTooltipDiv");
-   if ($tooltipDiv)
-      $tooltipDiv.remove();
+   Blockly.WidgetDiv.hide();
+   Blockly.Tooltip.hide();
 };
 
 

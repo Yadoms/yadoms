@@ -44,7 +44,6 @@ namespace startupOptions
       virtual const std::string getDatabaseFile() const;
       virtual const std::string getPluginsPath() const;
       virtual const std::string getScriptInterpretersPath() const;
-      virtual bool getDebugFlag() const;
       virtual bool getNoPasswordFlag() const;
       virtual bool getIsRunningAsService() const;
       virtual const std::string getUpdateSiteUri() const;

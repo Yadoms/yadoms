@@ -31,7 +31,6 @@ ConfigurationManager.factory = function(json) {
 ConfigurationManager.items = {};
 ConfigurationManager.items.system = {};
 ConfigurationManager.items.systemSection = "system";
-ConfigurationManager.items.system.developerMode = "developerMode";
 ConfigurationManager.items.system.language = "language";
 ConfigurationManager.items.system.timezone = "timezone";
 

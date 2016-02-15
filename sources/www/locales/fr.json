@@ -319,10 +319,6 @@
                             "name": "Paramètres avancés",
                             "description": "Configuration avancée de Yadoms. Cette section est réservée aux utilisateurs expérimentés."
                         },
-                        "developerMode": {
-                            "name": "Mode développeur",
-                            "description": "Le mode développeur ajoute des informations pour aide le développeur de plugins ou widgets."
-                        },
                         "dateFormatString": {
                             "name": "Format de la date",
                             "description": "Vous pouvez changer le format de la date en utilisant la syntaxe mount.js (ex \"LLL\" ou \"'MMMM Do YYYY, h:mm:ss a\")"
