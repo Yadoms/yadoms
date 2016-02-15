@@ -315,10 +315,6 @@
               "name": "Advanced parameters",
               "description": "Define advanced parameters. This section is for advanced users only."
             },
-            "developerMode": {
-              "name": "Developer mode",
-              "description": "The developer mode add information in parts of the software to help development of plugins and widgets."
-            },
             "dateFormatString": {
               "name": "Date Format String",
               "description": "You can change date format string using momnt.js syntax (ie \"LLL\" or \"'MMMM Do YYYY, h:mm:ss a\")"

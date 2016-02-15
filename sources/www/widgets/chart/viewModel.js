@@ -669,7 +669,7 @@ widgetViewModelCtor =
                if (value.xData.length !== 0)
                    noAvailableData = false;
            });
-           // TODO : To be finished !!
+
            // If for all data, length == 0, we display no Data Available
            if (noAvailableData) {
                self.chart.showLoading($.t("widgets/chart:noAvailableData"));
