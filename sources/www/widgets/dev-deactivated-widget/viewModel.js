@@ -6,33 +6,28 @@ widgetViewModelCtor =
  */
 function DevDeactivatedWidgetViewModel() {
    /**
-    * Widget identifier
-    */
-   this.widget = null;
-
-   /**
     * Initialization method
     * @param widget widget class object
     */
-   this.initialize = function(widget) {
-      this.widget = widget;
-
+   this.initialize = function() {
       if (!isNullOrUndefined(this.widget.requiredType)) {
-          this.widget.$gridWidget.find("div.deactivatedWidget span").text($.t("widgets/dev-deactivated-widget:deactivatedWithType", { widgetType: this.widget.requiredType }));
+          this.widgetApi.find(".deactivatedWidget").text($.t("widgets/dev-deactivated-widget:deactivatedWithType", { widgetType: this.widget.requiredType }));
       }
       else {
-          this.widget.$gridWidget.find("div.deactivatedWidget span").text($.t("widgets/dev-deactivated-widget:deactivated"));
+          this.widgetApi.find(".deactivatedWidget").text($.t("widgets/dev-deactivated-widget:deactivated"));
       }
    };
 
    /**
     * Callback for a resized event
     */
-   this.resized = function() {
+   this.resized = function () {
+      /*
       if (this.widget.width() <= 200) {
-         this.widget.$gridWidget.find("div.deactivatedWidget span").css("font-size", "1em");
+         this.widgetApi.find("div.deactivatedWidget span").css("font-size", "1em");
       }
       else
-         this.widget.$gridWidget.find("div.deactivatedWidget span").css("font-size", "2em");
+         this.widgetApi.find("div.deactivatedWidget span").css("font-size", "2em");
+         */
    };
 };

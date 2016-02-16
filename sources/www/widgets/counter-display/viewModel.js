@@ -18,9 +18,6 @@ function counterDisplayViewModel() {
     * @param widget widget class object
     */
    this.initialize = function () {
-      debugger;
-
-
       window.odometerOptions = {
          auto: false // Don't automatically initialize everything with class 'odometer'
       };
