@@ -47,7 +47,7 @@ function counterDisplayViewModel() {
       self.widgetApi.registerKeywordAcquisitions(self.widget.configuration.device.keywordId);
 
       //we fill the deviceId of the battery indicator
-      self.widgetApi.find(".widget-toolbar-battery").attr("deviceId", self.widget.configuration.device.deviceId);
+      self.widgetApi.toolbar.configureBatteryIcon(self.widget.configuration.device.deviceId);
 
       //we get the unit of the keyword
       KeywordManager.get(self.widget.configuration.device.keywordId)

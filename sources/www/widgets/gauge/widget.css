@@ -1,0 +1,14 @@
+.widget-gauge-main {
+    width: 193px; 
+    height: 100px; 
+    float: left;
+    overflow: hidden;
+    display: table;
+    margin: auto;
+}
+
+.widget-gauge-round-border {
+    width: 193px; 
+    height: 5px; 
+    float: left    
+}

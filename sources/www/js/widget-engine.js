@@ -28,7 +28,13 @@ function initializeWidgetEngine() {
         * Make lazy loading of the add widget modal
         */
    $("#btn-add-widget").click(function () {
-      Yadoms.modals.widgetAdd.loadAsync().done(Yadoms.askWidgetPackages);
+      Yadoms.modals.widgetAdd.loadAsync()
+       .done(function () {
+            Yadoms.askWidgetPackages();
+       })
+      .fail(function(error) {
+         notifyError($.t("objects.lazyLoaderManager.unableToLoadModal", { modalPath: self.modalPath }), error);
+      });
    });
 
 

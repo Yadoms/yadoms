@@ -18,24 +18,10 @@ function MoonViewModel() {
    this.photoName = ko.observable("widgets/moon/images/new.png");
 
    /**
-    * Widget identifier
-    */
-   this.widget = null;
-
-   /**
     * Initialization method
     * @param widget widget class object
     */
-   this.initialize = function(widget) 
-   {
-      this.widget = widget;
-	  
-	  elementID = "widget-moon-" + this.widget.id;
-	  
-	  // Initialisation of a unique canvas associated to this widget
-	  $('<canvas class=\"canvas\" />').attr({
-		id: elementID
-	    }).appendTo( "#widget-" + this.widget.id );  
+   this.initialize = function() {
    };
 
     /**
@@ -51,8 +37,6 @@ function MoonViewModel() {
 		 var obj = jQuery.parseJSON( data.value );
 		 self.data ( parseInt( obj.IlluminatedMoon ) + "%" );
 		 var res = obj.DayOfMoon;
-		 
-		 elementID = "widget-moon-" + this.widget.id;
 		 
 		 console.log ( res );
 		 
@@ -92,23 +76,23 @@ function MoonViewModel() {
    {
 	   var self = this;
 	   
+	   
 		//get a reference to the canvas
-		var ctx = $( "#" + elementID ).get(0).getContext("2d");
+	   var ctx = self.widgetApi.find(".moonCanvas").get(0).getContext("2d");
 		
 		// Refresh the canvas, clear all existing information
 		ctx.clearRect(0, 0, self.WidgetWidth, self.WidgetHeight );
 		
 		//Attributes of canvas could only be changed trough theses variables. In an other way the canvas is stretched.
-		$("#" + elementID ).attr('width' , self.WidgetWidth  );
-        $("#" + elementID ).attr('height', self.WidgetHeight );	
+		self.widgetApi.find(".moonCanvas").attr('width', self.WidgetWidth);
+		self.widgetApi.find(".moonCanvas").attr('height', self.WidgetHeight);
 		 
-		base_image = new Image();
-		base_image.id = elementID + "-image";
-		base_image.src = self.photoName();
+		var baseImage = new Image();
+		baseImage.src = self.photoName();
 		
-		base_image.onload = function()
+		baseImage.onload = function()
 		{;
-		   ctx.drawImage( base_image,100,100,300,300, 0, 0, self.WidgetWidth, self.WidgetHeight );
+		   ctx.drawImage( baseImage,100,100,300,300, 0, 0, self.WidgetWidth, self.WidgetHeight );
 
            ctx.fillStyle = "rgb(0,0,0)";		   
 		  
@@ -131,7 +115,7 @@ function MoonViewModel() {
    {
        var self = this;
        //we register keyword new acquisition
-       WidgetApi.keyword.registerKeywordAcquisitions(self.widget, self.widget.configuration.device.keywordId);
+       self.widgetApi.registerKeywordAcquisitions(self.widget.configuration.device.keywordId);
    };
 
    this.resized = function() 

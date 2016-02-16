@@ -10,18 +10,14 @@ function numericDisplayViewModel() {
     this.unit = ko.observable("");
     this.fontSize = ko.observable(25);
 
-    //widget identifier
-    this.widget = null;
-
     /**
      * Initialization method
      * @param widget widget class object
      */
-    this.initialize = function (widget) {
-        this.widget = widget;
+    this.initialize = function () {
 
         //we create the battery indicator
-        WidgetApi.toolbar.addBatteryIcon(this.widget);
+       this.widgetApi.toolbar.addBatteryIconToWidget();
     };
 
     /**
@@ -46,15 +42,15 @@ function numericDisplayViewModel() {
         //we fill the deviceId of the battery indicator
         ToolbarApi.configureBatteryIcon(this.widget, self.widget.configuration.device.deviceId);
         */
-        WidgetApi.keyword.getInformation(self.widget.configuration.device.keywordId).done(function (keyword) {
+        self.widgetApi.getKeywordInformation(self.widget.configuration.device.keywordId).done(function (keyword) {
             self.unit($.t(keyword.units));
         });
 
         //we register keyword new acquisition
-        WidgetApi.keyword.registerKeywordAcquisitions(self.widget, self.widget.configuration.device.keywordId);
+        self.widgetApi.registerKeywordAcquisitions(self.widget.configuration.device.keywordId);
 
         //we fill the deviceId of the battery indicator
-        WidgetApi.toolbar.configureBatteryIcon(self.widget, self.widget.configuration.device.deviceId);
+        self.widgetApi.toolbar.configureBatteryIcon(self.widget.configuration.device.deviceId);
     }
 
     /**
@@ -67,58 +63,11 @@ function numericDisplayViewModel() {
 
         if (keywordId == self.widget.configuration.device.keywordId) {
             //it is the right device
-            self.data(data.value);
-
-            self.resizefont();
+           self.data(data.value);
+           self.widgetApi.find(".widget-api-textfit").fitText();
         }
     };
 
-    this.resizefont = function () {
-        self = this;
-        
-        switch (self.data().toString().length + self.unit().toString().length) {
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-            case 5:
-            case 6:
-                self.fontSize(30);
-                break;
-            case 7:
-                if (self.widget.width() <= 100)
-                    self.fontSize(25);
-                else
-                    self.fontSize(30);
-                break;
-            case 8:
-                if (self.widget.width() <= 100)
-                    self.fontSize(20);
-                else
-                    self.fontSize(30);
-                break;
-            case 9:
-                if (self.widget.width() <= 100)
-                    self.fontSize(17);
-                else
-                    self.fontSize(30);
-                break;
-            case 10:
-            case 11:
-                if (self.widget.width() <= 100)
-                    self.fontSize(15);
-                else
-                    self.fontSize(30);
-                break;
-            default:
-                self.fontSize(25);
-                break;
-        }
-    }
-
     this.resized = function () {
-        var self = this;
-
-        self.resizefont();
     };
 };

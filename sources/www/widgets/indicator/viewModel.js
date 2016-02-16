@@ -10,9 +10,6 @@ widgetViewModelCtor = function IndicatorViewModel() {
    //observable data
    this.icon = ko.observable("");
 
-   //widget identifier
-   this.widget = null;
-
    this.capacity = null;
 
    //kind will be available with analog devices
@@ -24,24 +21,21 @@ widgetViewModelCtor = function IndicatorViewModel() {
 
    /**
     * Initialization method
-    * @param widget widget class object
     */
-   this.initialize = function (widget) {
-      this.widget = widget;
-
+   this.initialize = function () {
       //we create the battery indicator
-      this.widget.$toolbar.append("<div class=\"widget-toolbar-battery\" deviceId=\"\"></div>");
+      this.widgetApi.toolbar.addBatteryIconToWidget();
+
    };
 
    this.configurationChanged = function () {
-      //we update the kind observable property
       var self = this;
 
       //we register keyword new acquisition
-      WidgetApi.keyword.registerKeywordAcquisitions(self.widget, self.widget.configuration.device.keywordId);
+      self.widgetApi.registerKeywordAcquisitions(self.widget.configuration.device.keywordId);
 
       //we fill the deviceId of the battery indicator
-      self.widget.$toolbar.find(".widget-toolbar-battery").attr("deviceId", self.widget.configuration.device.deviceId);
+      self.widgetApi.toolbar.configureBatteryIcon(self.widget.configuration.device.deviceId);
 
       try {
          self.showDeviceName(parseBool(self.widget.configuration.showDeviceName));
@@ -80,10 +74,10 @@ widgetViewModelCtor = function IndicatorViewModel() {
    this.onNewAcquisition = function (keywordId, data) {
       var self = this;
       try {
-         if (keywordId == this.widget.configuration.device.keywordId) {
+         if (keywordId === self.widget.configuration.device.keywordId) {
             //it is the right device
             // Adapt for dimmable or switch capacities
-            self.command(parseInt(data.value) != 0 ? "1" : "0");
+            self.command(parseInt(data.value) !== 0 ? "1" : "0");
          }
       }
       catch (err) { }

@@ -1,9 +1,7 @@
 <script type="text/html" id="numeric-display-template">
     <link href="widgets/numeric-display/widget.css" rel="stylesheet">
     <div class="numericDisplayWidget">
-       <div class="numericDisplayWidgetValueArea" align="center">
-          <span data-bind="text: data, style: fontStyleCSS"></span>
-          <span data-bind="text: unit"></span>
+       <div class="numericDisplayWidgetValueArea widget-api-textfit" align="center" data-bind="text: data() + ' ' + unit()" >
        </div>
 	</div>
 </script>

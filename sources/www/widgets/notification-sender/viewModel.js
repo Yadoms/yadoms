@@ -4,11 +4,8 @@ widgetViewModelCtor =
  * Create a notification-sender ViewModel
  * @constructor
  */
-function NotificationSenderViewModel() {
+function notificationSenderViewModel() {
    var self = this;
-
-   // Widget identifier
-   self.widget = null;
 
    // Observable data
    self.toCaption = ko.observable($.t("widgets/notification-sender:to"));
@@ -47,8 +44,7 @@ function NotificationSenderViewModel() {
     * Initialization method
     * @param widget widget class object
     */
-   this.initialize = function(widget) {
-      this.widget = widget;
+   this.initialize = function() {
    };
    
    /**

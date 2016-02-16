@@ -48,25 +48,26 @@ function getTextWidth(text, font) {
          // Store the object
          var $this = $(this);
 
-         // Resizer() resizes items based on the object width divided by the compressor * 10
-         var resizer = function () {
+         if (!$.isFunction($this.resizer)) {
+            // Resizer() resizes items based on the object width divided by the compressor * 10
+            $this.resizer = function() {
 
-            //determine the width for a large fontsize
-            var px300 = getTextWidth($this.text(), "300px " + $this.css("text-family"));
-            //estimate the size relative to the item width, and apply a 0.8 factor to ensure the text will fit
-            var fontSizeFromWidth = ($this.width() * 300 / px300) * 0.8;
+               //determine the width for a large fontsize
+               var px300 = getTextWidth($this.text(), "300px " + $this.css("text-family"));
+               //estimate the size relative to the item width, and apply a 0.8 factor to ensure the text will fit
+               var fontSizeFromWidth = ($this.width() * 300 / px300) * 0.8;
 
-            $this.css('font-size', 1);
-            var lh = parseFloat($this.css("line-height"));
-            var fontSizeFromHeight = $this.height() / lh;
-            $this.css('font-size', Math.max(Math.min(fontSizeFromWidth, fontSizeFromHeight), minimumFontSize));
-         };
-
+               $this.css('font-size', 1);
+               var lh = parseFloat($this.css("line-height"));
+               var fontSizeFromHeight = $this.height() / lh;
+               $this.css('font-size', Math.max(Math.min(fontSizeFromWidth, fontSizeFromHeight), minimumFontSize));
+            };
+            // Call on resize. Opera debounces their resize by default.
+            $(window).on('resize.fittext orientationchange.fittext', $this.resizer);
+         }
          // Call once to set.
-         resizer();
+         $this.resizer();
 
-         // Call on resize. Opera debounces their resize by default.
-         $(window).on('resize.fittext orientationchange.fittext', resizer);
 
       });
    };
