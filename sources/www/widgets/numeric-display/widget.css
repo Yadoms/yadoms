@@ -1,13 +1,21 @@
-.numericDisplayWidgetValueArea {
-    margin: auto;
-    display: table-cell;
-	vertical-align:middle;
-}
-
-.numericDisplayWidget {
-	margin: auto;
+.numeric-display-widget {
     height: 100%;
     width: 100%;
     text-align: center;
-	display: table;
+	position: relative;
+    display: table;
 }
+
+
+.numeric-display-unit {
+	vertical-align:top;
+    display: table-cell;
+    width: 20%;
+}
+
+.numeric-display-value {
+	vertical-align:middle;
+    display: table-cell;
+    width: 80%;
+}
+
