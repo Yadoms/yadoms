@@ -1,7 +1,19 @@
-.moonCanvas {
-    padding-left: 0;
-    padding-right: 0;
-    margin-left: auto;
-    margin-right: auto;
-    display: block;
+.moonContainer {
+    width: 100%;
+    height: 100%;
+}
+
+.moonImage {
+    width: 100%;
+    height: 70%;
+    background-repeat: no-repeat;
+    background-position: center center;
+    -ms-background-size: contain;
+    background-size: contain;
+}
+
+.moonPercentage {
+    width: 100%;
+    height: 30%;
+    text-align: center
 }

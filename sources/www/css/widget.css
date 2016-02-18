@@ -165,6 +165,7 @@
 
 .widget-api-textfit {
     height: 100%;
+    min-height: 20px;   /* min font height is 14, so min height is 14*1.41 ~= 20*/
 }
 
 /*Permit to use a span instead of a <a> in a dropdown menu*/
