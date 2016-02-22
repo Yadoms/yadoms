@@ -78,7 +78,6 @@ SCRIPT_API_WRAPPER_LINK(${PYTHON_WRAPPER_LINK} ${PROTOBUF_LIBRARIES})
 #Ignore some warnings under VisualStudio for Protobuf generated files
 IF(WIN32)
    set_property(SOURCE ${PROTO_SRCS} APPEND PROPERTY COMPILE_FLAGS "/wd4244 /wd4125")
-   set_property(TARGET ${SWIG_MODULE_yScriptApiWrapper_REAL_NAME} APPEND PROPERTY LINK_FLAGS "/ignore:4075")
 ENDIF() 
 
 #########################################
