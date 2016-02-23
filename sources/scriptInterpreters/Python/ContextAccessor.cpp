@@ -119,7 +119,7 @@ void CContextAccessor::processMessage(const void* message, size_t messageSize, b
    // Process message
    if (request.has_getkeywordid())
       processGetKeywordId(request.getkeywordid(), messageQueue);
-   else if (request.has_getkeywordid())
+   else if (request.has_getrecipientid())
       processGetRecipientId(request.getrecipientid(), messageQueue);
    else if (request.has_readkeyword())
       processReadKeyword(request.readkeyword(), messageQueue);
