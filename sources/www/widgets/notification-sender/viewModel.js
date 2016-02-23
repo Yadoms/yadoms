@@ -1,18 +1,11 @@
-//TODO mettre à jour le contenu du select (champ "to") lorsque la liste des récipients change, sera
-// possible lorsque le point suivant du Trello (https://trello.com/c/BXKNfMA3) sera résolu :
-// "IHM, widgets : ajouter une méthode facilitant l'envoi de commande "KeywordManager.sendCommand = function(keyword, data, callback)" et masquant la requête REST (comme pour les autres requêtes REST)"
-
 widgetViewModelCtor =
 
 /**
  * Create a notification-sender ViewModel
  * @constructor
  */
-function NotificationSenderViewModel() {
+function notificationSenderViewModel() {
    var self = this;
-
-   // Widget identifier
-   self.widget = null;
 
    // Observable data
    self.toCaption = ko.observable($.t("widgets/notification-sender:to"));
@@ -51,8 +44,7 @@ function NotificationSenderViewModel() {
     * Initialization method
     * @param widget widget class object
     */
-   this.initialize = function(widget) {
-      this.widget = widget;
+   this.initialize = function() {
    };
    
    /**

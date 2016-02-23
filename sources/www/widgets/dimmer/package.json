@@ -25,10 +25,6 @@
 			"expectedKeywordType": "numeric",
 			"expectedKeywordAccess": "getset"
 		},
-		"showDeviceName": {
-			"type": "bool",
-			"defaultValue": "true"
-		},
 		"StepValue": {
 			"type": "decimal",
 			"defaultValue": "0.2"

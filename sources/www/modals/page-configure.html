@@ -23,27 +23,24 @@
    /**
    * Ask for widget packages to the REST server
    */
-   function showPageModificationModal(pageId) {
-      if (pageId !== undefined)
-      {
-         pageCurrentlyModified = PageManager.getPage(pageId);
-         assert(pageCurrentlyModified != null, "page Id doesn't exit");
+    Yadoms.showPageModificationModal = function(pageId) {
+       if (pageId !== undefined) {
+          pageCurrentlyModified = PageManager.getPage(pageId);
+          assert(pageCurrentlyModified != null, "page Id doesn't exit");
 
-         //we are currently modifying a page
-         $("h4#modify-page-modal-title").text($.t("modals.modify-page.renamePageTitle"));
-         $("button#btn-confirm-modify-page").text($.t("modals.modify-page.renamePageValidationButton"));
-         $("input#modify-page-text").val(pageCurrentlyModified.name);
-      }
-      else
-      {
-         //we are currently adding a new page
-         $("h4#modify-page-modal-title").text($.t("modals.modify-page.createNewPageTitle"));
-         $("button#btn-confirm-modify-page").text($.t("modals.modify-page.createNewPageValidationButton"));
-         $("input#modify-page-text").val("");
-      }
-      //we display the modal
-      $('div#modify-page-modal').modal({ backdrop: 'static' });
-   }
+          //we are currently modifying a page
+          $("h4#modify-page-modal-title").text($.t("modals.modify-page.renamePageTitle"));
+          $("button#btn-confirm-modify-page").text($.t("modals.modify-page.renamePageValidationButton"));
+          $("input#modify-page-text").val(pageCurrentlyModified.name);
+       } else {
+          //we are currently adding a new page
+          $("h4#modify-page-modal-title").text($.t("modals.modify-page.createNewPageTitle"));
+          $("button#btn-confirm-modify-page").text($.t("modals.modify-page.createNewPageValidationButton"));
+          $("input#modify-page-text").val("");
+       }
+       //we display the modal
+       $('div#modify-page-modal').modal({ backdrop: 'static' });
+    };
 
    $('div#modify-page-modal').on('shown.bs.modal', function () {
       $('input#modify-page-text').focus();
@@ -57,30 +54,20 @@
       //we close the modify page modal
       $("div#modify-page-modal").modal("hide");
       var newPageName= $('input#modify-page-text').val();
-
+      
       if (pageCurrentlyModified != null) {
          //we have validated a page modification
-         $.ajax({
-            type: "PUT",
-            url: "/rest/page/" + pageCurrentlyModified.id,
-            data: JSON.stringify({id : pageCurrentlyModified.id, name: newPageName, pageOrder: pageCurrentlyModified.pageOrder}),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json"
-         })
-         .done(function(data) {
-           //we parse the json answer
-           if (data.result != "true")
-           {
-              notifyError($.t("modals.modify-page.errorDuringModifyingPage"), JSON.stringify(data));
-              return;
-           }
 
+         PageManager.updatePage(pageCurrentlyModified.id, newPageName, pageCurrentlyModified.pageOrder)
+         .done(function(data) {
            //we modify the page dynamically
-           var newName = data.data.name;
+           var newName = data.name;
            pageCurrentlyModified.name = newName;
            pageCurrentlyModified.$tab.find("a span").text(newName);
          })
-         .fail(function(pageName) { return function() {$.t("modals.delete-page.errorDuringDeletingPageNamed", {"pageName" : pageName});};}(newPageName))
+         .fail(function(error) {
+            notifyError($.t("modals.modify-page.errorDuringModifyingPageNamed", { pageName: newPageName }), error);
+         })
          .always(function() {
             //we clear the current id
             pageCurrentlyModified = undefined;

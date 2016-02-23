@@ -34,114 +34,55 @@ UpdateInformationManager.factory = function(json) {
  * @param objectType : "plugin", "widget", "scriptInterpreter"
  * @param sync
  */
-UpdateInformationManager.getList = function(objectType, callback, sync) {
+UpdateInformationManager.getList = function(objectType) {
    assert(!isNullOrUndefined(objectType), "objectType must be defined");
-   assert($.isFunction(callback), "callback must be a function");
 
-   var async = true;
-   if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
-      async = !sync;
+   var d = new $.Deferred();
 
-   $.ajax({
-      dataType: "json",
-      url: "rest/update/" + objectType + "/list/" + i18n.lng(),
-      async: async
-   })
-   .done(function( data ) {
-      //we parse the json answer
-      if (data.result != "true")
-      {
-         notifyError($.t("objects.update-information.errorListing"), JSON.stringify(data));
-         callback(false);
-         return;
-      }
-
+   RestEngine.getJson("rest/update/" + objectType + "/list/" + i18n.lng())
+   .done(function(data) {
       var result = {};
-      $.each(data.data, function(index, value) {
+      $.each(data, function(index, value) {
          //value is a list of all version available
          result[index] = [];
          $.each(value, function(versionIndex, versionValue) {
             try {
                result[index].push(UpdateInformationManager.factory(versionValue));
-            }
-            catch (e) {
-               console.error(e);
+            } catch (e) {
+               console.warn("Fail to parse " + objectType + " (" + index + ") package.");
+               console.warn("    name:" + versionValue.name);
+               console.warn("    releaseType:" + versionValue.releaseType);
+               console.warn("    version:" + versionValue.version);
+               console.warn("    type:" + versionValue.type);
+               console.warn("    description:" + versionValue.description);
+               console.warn("    url:" + versionValue.url);
+               console.warn("    author:" + versionValue.author);
+               console.warn("    credits:" + versionValue.credits);
+               console.warn("    downloadUrl:" + versionValue.downloadUrl);
+               console.warn("    iconUrl:" + versionValue.iconUrl);
+               console.warn("    md5Hash:" + versionValue.md5Hash);
+               console.warn(e);
             }
          });
       });
 
-      callback(result);
+      d.resolve(result);
    })
-   .fail(function() {
-      notifyError($.t("objects.update-information.errorListing"));
-      callback(false);
-   });
+   .fail(d.reject);
+
+   return d.promise();
 };
 
-UpdateInformationManager.install = function(objectType, downloadUrl, callback, sync) {
+UpdateInformationManager.install = function(objectType, downloadUrl) {
    assert(!isNullOrUndefined(objectType), "objectType must be defined");
    assert(!isNullOrUndefined(downloadUrl), "downloadUrl must be defined");
-   assert($.isFunction(callback), "callback must be a function");
-
-   var async = true;
-   if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
-      async = !sync;
-
-   $.ajax({
-      dataType: "json",
-      url: "rest/update/" + objectType + "/install",
-      async: async,
-      data: JSON.stringify({"downloadUrl" : downloadUrl}),
-      type: "POST",
-      contentType: "application/json; charset=utf-8"
-   })
-       .done(function( data ) {
-          //we parse the json answer
-          if (data.result != "true")
-          {
-             notifyError($.t("objects.generic.errorInstalling", {objectName : objectType}), JSON.stringify(data));
-             return;
-          }
-
-          //we launch the callback with the task id
-          callback(data.data.taskId);
-       })
-       .fail(function() {
-          notifyError($.t("objects.generic.errorInstalling", {objectName : objectType}));
-       });
+   return RestEngine.postJson("rest/update/" + objectType + "/install", { data: JSON.stringify({ "downloadUrl": downloadUrl }) });
 };
 
-UpdateInformationManager.update = function(objectType, type, downloadUrl, callback, sync) {
+UpdateInformationManager.update = function(objectType, type, downloadUrl) {
    assert(!isNullOrUndefined(objectType), "objectType must be defined");
    assert(!isNullOrUndefined(type), "type must be defined");
-   assert(!isNullOrUndefined(downloadUrl), "downloadUrl must be defined");
-   assert($.isFunction(callback), "callback must be a function");
-
-   var async = true;
-   if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
-      async = !sync;
-
-   $.ajax({
-      dataType: "json",
-      url: "rest/update/" + objectType + "/update/" + type,
-      async: async,
-      data: JSON.stringify({"downloadUrl" : downloadUrl}),
-      type: "POST",
-      contentType: "application/json; charset=utf-8"
-   })
-       .done(function( data ) {
-          //we parse the json answer
-          if (data.result != "true")
-          {
-             notifyError($.t("objects.generic.errorUpdating", {objectName : "plugin"}), JSON.stringify(data));
-             return;
-          }
-
-          callback(data.data.taskId);
-       })
-       .fail(function() {
-          notifyError($.t("objects.generic.errorUpdating", {objectName : "plugin"}));
-       });
+   return RestEngine.postJson("rest/update/" + objectType + "/update/" + type, { data: JSON.stringify({ "downloadUrl": downloadUrl }) });
 };
 
 /**
@@ -150,35 +91,10 @@ UpdateInformationManager.update = function(objectType, type, downloadUrl, callba
  * @param callback
  * @param sync
  */
-UpdateInformationManager.remove = function(objectType, type, callback, sync) {
+UpdateInformationManager.remove = function(objectType, type) {
    assert(!isNullOrUndefined(objectType), "objectType must be defined");
    assert(!isNullOrUndefined(type), "type must be defined");
-   assert($.isFunction(callback), "callback must be a function");
-
-   var async = true;
-   if (!isNullOrUndefined(sync) && $.type( sync ) === "boolean")
-      async = !sync;
-
-   $.ajax({
-      dataType: "json",
-      url: "rest/update/" + objectType + "/remove/" + type,
-      async: async,
-      type: "POST",
-      contentType: "application/json; charset=utf-8"
-   })
-       .done(function( data ) {
-          //we parse the json answer
-          if (data.result != "true")
-          {
-             notifyError($.t("objects.generic.errorUpdating", {objectName : objectType}), JSON.stringify(data));
-             return;
-          }
-
-          callback(data.data.taskId);
-       })
-       .fail(function() {
-          notifyError($.t("objects.generic.errorUpdating", {objectName : objectType}));
-       });
+   return RestEngine.postJson("rest/update/" + objectType + "/remove/" + type);
 };
 
 /**

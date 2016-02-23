@@ -45,9 +45,7 @@ AutomationInterpreterManager.getAll = function () {
  * Get all interpreters from database and package.json
  */
 AutomationInterpreterManager.getAllDetailed = function () {
-   assert($.isFunction(callback), "callback must be a function");
    var d = new $.Deferred();
-
 
    AutomationInterpreterManager.getAll()
    .done(function (interpreters) {

@@ -4,13 +4,10 @@ widgetViewModelCtor =
     * Create a Switch ViewModel
     * @constructor
     */
-      function SwitchViewModel() {
+      function switchViewModel() {
           //observable data
           this.state = [];
           this.command = ko.observable(1);
-
-          //widget identifier
-          this.widget = null;
 
           this.kind = ko.observable("simple");
           this.icon = ko.observable("");
@@ -21,7 +18,7 @@ widgetViewModelCtor =
 
           this.commandClick = function (newState) {
 
-              self = this;
+              var self = this;
 
               if ((!isNullOrUndefined(this.widget.configuration)) && (!isNullOrUndefined(this.widget.configuration.devices))) {
                   var cmd = null;
@@ -45,8 +42,7 @@ widgetViewModelCtor =
            * Initialization method
            * @param widget widget class object
            */
-          this.initialize = function (widget) {
-              this.widget = widget;
+          this.initialize = function () {
           };
 
           this.configurationChanged = function () {
@@ -58,7 +54,8 @@ widgetViewModelCtor =
 
               if ((!isNullOrUndefined(this.widget.configuration)) && (!isNullOrUndefined(this.widget.configuration.devices))) {
                   $.each(this.widget.configuration.devices, function (index, device) {
-                      self.widget.ListenKeyword(device.content.source.keywordId);
+                      //we register keyword new acquisition
+                      self.widgetApi.registerKeywordAcquisitions(device.content.source.keywordId);
                   });
               }
 
@@ -104,13 +101,13 @@ widgetViewModelCtor =
               if ((this.widget.configuration != undefined) && (this.widget.configuration.devices != undefined)) {
 
                   $.each(this.widget.configuration.devices, function (index, device) {
-                      if (keywordId == device.content.source.keywordId) {
+                      if (keywordId === device.content.source.keywordId) {
                           //it is the right device
-                          if (self.capacity[index] == "event")
+                          if (self.capacity[index] === "event")
                               self.state[index] = 0;
                           else {
                               // Adapt for dimmable or switch capacities
-                              if (parseInt(data.value) != 0)
+                              if (parseInt(data.value) !== 0)
                                   self.state[index] = 1;
                               else
                                   self.state[index] = 0;

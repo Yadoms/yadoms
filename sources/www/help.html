@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <!-- This page is used to display some help -->
 <!-- Help content must be downloadable from the Yadoms server -->
 <!-- Help content must be in json format -->
@@ -142,7 +142,10 @@
       * Make lazy loading of the qrcode modal
       */
       $("#btn-show-qrcode").click(function() {
-         modals.qrCode.load(function() {$('#qrcode-modal').modal();});
+         Yadoms.modals.qrCode.loadAsync()
+         .done(function() {
+            $('#qrcode-modal').modal();
+         });
       });
    });
    

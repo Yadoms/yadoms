@@ -59,6 +59,17 @@ if ( WIN32 )
 		${ZWAVE_PLUGIN_ADDITIONAL_LIB}
 		Setupapi.lib
 	)
+else()
+	include(FindUDev.cmake)
+	if(UDEV_FOUND)
+		set(ZWAVE_PLUGIN_ADDITIONAL_LIB
+			${ZWAVE_PLUGIN_ADDITIONAL_LIB}
+			${UDEV_LIBRARIES}
+		)
+	else()
+		message(error "Fail to find udev")
+	endif()
+	
 endif()
 
 

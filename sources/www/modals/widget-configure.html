@@ -23,7 +23,7 @@
 <script>
    var widgetToConfigure = null;
 
-    function configureWidget(widgetToConfigure, callback) {
+   Yadoms.configureWidget = function (widgetToConfigure, callback) {
         assert(widgetToConfigure !== undefined, "widgetToConfigure must be defined");
         assert($.isFunction(callback), "callback must be defined");
 

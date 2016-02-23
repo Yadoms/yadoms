@@ -34,6 +34,7 @@
 
 /*Permit to make label rouded like badge*/
 .label-as-badge {
+    -ms-border-radius: 1em;
     border-radius: 1em;
 }
 

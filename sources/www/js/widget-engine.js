@@ -28,8 +28,17 @@ function initializeWidgetEngine() {
         * Make lazy loading of the add widget modal
         */
    $("#btn-add-widget").click(function () {
-      modals.widgetAdd.load(function () { askWidgetPackages(); });
+      Yadoms.modals.widgetAdd.loadAsync()
+       .done(function () {
+            Yadoms.askWidgetPackages();
+       })
+      .fail(function(error) {
+         notifyError($.t("objects.lazyLoaderManager.unableToLoadModal", { modalPath: self.modalPath }), error);
+      });
    });
+
+
+
 
    //we ask all widgets packages
    WidgetPackageManager.getAll()
@@ -65,9 +74,9 @@ function initializeWidgetEngine() {
             //we can start the periodic update
             serverIsOnline = true;
             if (!WebSocketEngine.isActive())
-               widgetUpdateInterval = setInterval(periodicUpdateTask, UpdateIntervalWithWebSocketDisabled);
+               widgetUpdateInterval = setInterval(periodicUpdateTask, Yadoms.updateIntervalWithWebSocketDisabled);
             else
-               widgetUpdateInterval = setInterval(periodicUpdateTask, UpdateInterval);
+               widgetUpdateInterval = setInterval(periodicUpdateTask, Yadoms.updateInterval);
 
             //we update widget data
             updateWidgetsPolling();
@@ -126,21 +135,22 @@ function tabClick(pageId) {
    //we check for widget loading if page is different than the current
    var currentPage = PageManager.getCurrentPage();
 
-   if ((currentPage != null) && (currentPage.id == pageId))
+   if ((currentPage != null) && (currentPage.id === pageId))
       return;
 
    var page = PageManager.getPage(pageId);
    assert(page != null, "page Id doesn't exit");
-
-   //and if it's not loaded for the moment
-   if (!page.loaded) {
-      requestWidgets(page).done(function () {
+   if (page) {
+      //and if it's not loaded for the moment
+      if (!page.loaded) {
+         requestWidgets(page).done(function() {
+            //we poll all widget data
+            updateWidgetsPolling();
+         });
+      } else {
          //we poll all widget data
          updateWidgetsPolling();
-      });
-   } else {
-      //we poll all widget data
-      updateWidgetsPolling();
+      }
    }
 }
 
@@ -167,9 +177,9 @@ function periodicUpdateTask() {
          //we change the interval period to the normal one
          clearInterval(widgetUpdateInterval);
          if (!WebSocketEngine.isActive())
-            widgetUpdateInterval = setInterval(periodicUpdateTask, UpdateIntervalWithWebSocketDisabled);
+            widgetUpdateInterval = setInterval(periodicUpdateTask, Yadoms.updateIntervalWithWebSocketDisabled);
          else
-            widgetUpdateInterval = setInterval(periodicUpdateTask, UpdateInterval);
+            widgetUpdateInterval = setInterval(periodicUpdateTask, Yadoms.updateInterval);
 
          //we reinitialize the websocket
          WebSocketEngine.initializeWebSocketEngine(function () {
@@ -193,7 +203,7 @@ function periodicUpdateTask() {
          console.debug("incoming event: " + JSON.stringify(value));
          var gravity;
          //the gravity of the noty depend on the code
-         if ((value.code.toLowerCase() == "started") || (value.code.toLowerCase() == "stopped") || (value.code.toLowerCase() == "updated")) {
+         if ((value.code.toLowerCase() === "started") || (value.code.toLowerCase() === "stopped") || (value.code.toLowerCase() === "updated")) {
             gravity = "information";
          }
          else {
@@ -221,13 +231,13 @@ function periodicUpdateTask() {
             OfflineServerNotification = notifyError($.t("mainPage.errors.youHaveBeenDisconnectedFromTheServerOrItHasGoneOffline"), error, false);
             //we change the interval period
             clearInterval(widgetUpdateInterval);
-            widgetUpdateInterval = setInterval(periodicUpdateTask, UpdateIntervalInOfflineMode);
+            widgetUpdateInterval = setInterval(periodicUpdateTask, Yadoms.updateIntervalInOfflineMode);
             failGetEventCounter = 0;
             //we close the dashboard if shown
             $('#main-dashboard-modal').modal('hide');
             //we stop refresh timer of the dashboard if set
-            if (periodicDashboardTask)
-               clearInterval(periodicDashboardTask);
+            if (Yadoms.periodicDashboardTask)
+               clearInterval(Yadoms.periodicDashboardTask);
          }
       }
       //if we are again offline there is nothing to do
@@ -262,7 +272,7 @@ function dispatchToWidgets(acq) {
                   var $battery = widget.$toolbar.find(".widget-toolbar-battery");
                   if ($battery) {
                      if ($battery.attr("keywordId") == acq.keywordId) {
-                        ToolbarApi.updateBatteryLevel(widget, acq.value);
+                        widget.viewModel.widgetApi.toolbar.updateBatteryLevel(acq.value);
                      }
                   }
                }
@@ -273,7 +283,6 @@ function dispatchToWidgets(acq) {
 }
 
 function updateWebSocketFilter() {
-   console.log("updateWebSocketFilter()");
    if (WebSocketEngine.isActive()) {
       var page = PageManager.getCurrentPage();
       if (page == null)
@@ -311,19 +320,18 @@ function updateWidgetsPolling() {
 
 function updateWidgetPolling(widget) {
    if (!isNullOrUndefined(widget.listenedKeywords)) {
-      $.each(widget.listenedKeywords, function (keywordIndex, keywordId) {
-         if (!isNullOrUndefined(keywordId)) {
-            //foreach device we ask for last values
-            AcquisitionManager.getLastValue(keywordId)
-               .done(function (acquisition) {
-                  //we signal the new acquisition to the widget if the widget support the method
-                  if (widget.viewModel.onNewAcquisition !== undefined)
-                     widget.viewModel.onNewAcquisition(keywordId, acquisition);
-               })
-               .fail(function (error) {
-                  notifyError($.t("objects.generic.errorGetting", { objectName: "Acquisition KeywordId = " + keywordId }), error);
-               });
+      AcquisitionManager.getLastValues(widget.listenedKeywords)
+      .done(function (data) {
+         if (data) {
+            $.each(data, function(index, acquisition) {
+               //we signal the new acquisition to the widget if the widget support the method
+               if (widget.viewModel.onNewAcquisition !== undefined)
+                  widget.viewModel.onNewAcquisition(acquisition.keywordId, acquisition);
+            });
          }
+      })
+      .fail(function (error) {
+         notifyError($.t("objects.generic.errorGetting", { objectName: "last acquisition for widget = " + widget.id }), error);
       });
    }
 }

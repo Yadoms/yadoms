@@ -10,7 +10,7 @@
                <div class="modal-text"></div>
                <div class="delete-device">
                   <label>
-                     <input type="checkbox" id="checkbox"></input>
+                     <input type="checkbox" id="checkbox"/>
                      <label for="checkbox" data-i18n="modals.delete-device.checkDeleteDevice"></label>
                      <label data-i18n="modals.delete-device.checkDeleteDeviceNote"></label>
                   </label>
@@ -24,14 +24,14 @@
    </div>
 </div>
 <script>
-    
-    function showDeleteDeviceModal(device, confirmCallBack, cancelCallback) {
+
+   Yadoms.showDeleteDeviceModal = function(device, confirmCallBack, cancelCallback) {
       assert($.isFunction(confirmCallBack), "confirmCallBack must be defined.");
-      
+
       $("input#checkbox").prop("checked", false);
 
       //we set text
-      $("div#device-delete-modal").find("div.modal-text").text($.t("modals.delete-device.text", {deviceName:device.friendlyName}));
+      $("div#device-delete-modal").find("div.modal-text").text($.t("modals.delete-device.text", { deviceName: device.friendlyName }));
 
       //we set btn text
       $("div#device-delete-modal").find("button.btn-cancel").text($.t("common.cancel"));
@@ -41,12 +41,12 @@
       if ($.isFunction(cancelCallback))
          $("div#device-delete-modal").find("button.btn-cancel").unbind('click').bind('click', cancelCallback);
 
-      $("div#device-delete-modal").find("button.btn-confirm").unbind('click').bind('click', function () {
+      $("div#device-delete-modal").find("button.btn-confirm").unbind('click').bind('click', function() {
          confirmCallBack($("input#checkbox").prop("checked"));
          $("div#device-delete-modal").modal("hide");
       });
 
       //we display the modal
       $('div#device-delete-modal').modal({ backdrop: 'static' });
-   }
+   };
 </script>

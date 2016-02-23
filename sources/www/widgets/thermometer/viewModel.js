@@ -4,7 +4,7 @@ widgetViewModelCtor =
  * Create a thermometer ViewModel
  * @constructor
  */
-function ThermometerViewModel() 
+function thermometerViewModel() 
 {  
    //observable data
    this.data = ko.observable(0).extend({ numeric: 1 });
@@ -17,29 +17,16 @@ function ThermometerViewModel()
    
    var isSmall = true;
 	 
-   /**
-    * Widget identifier
-    */
-   this.widget = null;
 
    /**
     * Initialization method
     * @param widget widget class object
     */
 	
-   this.initialize = function(widget) 
+   this.initialize = function() 
    {
-      this.widget = widget;
-	  
-	  var elementID = "widget-thermometer-" + this.widget.id; // Unique ID
-	  
-	  // Initialisation of a unique canvas associated to this widget
-	   	$('<canvas />').attr({
-		id: elementID
-	    }).appendTo( "#widget-" + this.widget.id );
-		
         //we create the battery indicator
-        this.widget.$toolbar.append("<div class=\"widget-toolbar-battery\" deviceId=\"\"></div>");		
+        this.widgetApi.toolbar.addBatteryIconToWidget();		
    };
    
     /**
@@ -51,9 +38,9 @@ function ThermometerViewModel()
    {
       var self = this;	  
 	  
-      if (keywordId == self.widget.configuration.device.keywordId) 
+      if (keywordId === self.widget.configuration.device.keywordId) 
 	  {
-		  if ( data.value != self.data() ) // refresh only when it's necessary.
+		  if ( data.value !== self.data() ) // refresh only when it's necessary.
 		  {
 			 //it is the good device
 			 self.data(data.value);
@@ -67,18 +54,18 @@ function ThermometerViewModel()
    this.refresh = function()
    {
 	   var self = this;
-	
-	    var elementID = "widget-thermometer-" + this.widget.id; // Unique ID
-	
+
+      var element = self.widgetApi.find(".thermometer-canvas");
+
 		//get a reference to the canvas
-		var ctx = $( "#" + elementID ).get(0).getContext("2d");
+      var ctx = element.get(0).getContext("2d");
 		
 		// Refresh the canvas, clear all existing information
 		ctx.clearRect(0, 0, self.WidgetWidth, self.WidgetHeight );
 		
 		//Attributes of canvas could only be changed trough theses variables. In an other way the canvas is stretched.
-		$("#" + elementID ).attr('width' , self.WidgetWidth  );
-        $("#" + elementID ).attr('height', self.WidgetHeight );
+		element.attr('width', self.WidgetWidth);
+		element.attr('height', self.WidgetHeight);
 
 		//x  : initial x shouldn't change
 		//y  : position y for the height of the column. 0 is the top of the frame
@@ -88,47 +75,47 @@ function ThermometerViewModel()
 		// 50°  -> 60 of height
 		
 		// Value 
-		var TEMP_MAX = self.widget.configuration.customYAxisMinMax.content.maximumValue;
-		var TEMP_MIN = self.widget.configuration.customYAxisMinMax.content.minimumValue;
+		var tempMax = self.widget.configuration.customYAxisMinMax.content.maximumValue;
+		var tempMin = self.widget.configuration.customYAxisMinMax.content.minimumValue;
 		
 		// Value for the physical representation
-		var POS_Y_MIN = 10 * self.WidgetHeight / 99;
-		var POS_Y_MAX = 60 * self.WidgetHeight / 99;		
-		var POS_Y_BALL = (90 - (self.WidgetWidth/100-1)*7) * (self.WidgetHeight / 99);
-		var POS_CENTER_BALL = (91 - (self.WidgetWidth/100-1)*7) * (self.WidgetHeight / 99);
-		
-        ctx.fillStyle = "rgb(" + Math.round(255 - ( TEMP_MAX - self.data())* 255/90) + ",0," + Math.round( 255 - ( self.data() - TEMP_MIN ) * 255/90 ) + ")"
+		var posYMin = 10 * self.WidgetHeight / 99;
+		var posYMax = 60 * self.WidgetHeight / 99;		
+		var posYBall = (90 - (self.WidgetWidth/100-1)*7) * (self.WidgetHeight / 99);
+		var posCenterBall = (91 - (self.WidgetWidth/100-1)*7) * (self.WidgetHeight / 99);
+
+      ctx.fillStyle = "rgb(" + Math.round(255 - (tempMax - self.data()) * 255 / 90) + ",0," + Math.round(255 - (self.data() - tempMin) * 255 / 90) + ")";
 		 
 		//draw a circle
 		ctx.beginPath();
 		         // position x         position y             diameter
-		ctx.arc(self.WidgetWidth / 2, POS_CENTER_BALL , 8 * self.WidgetWidth / 100, 0, Math.PI*2, true); 
+		ctx.arc(self.WidgetWidth / 2, posCenterBall , 8 * self.WidgetWidth / 100, 0, Math.PI*2, true); 
 		ctx.closePath();
 		ctx.fill();
 		
-		var initial_position_y = POS_Y_MAX;
-		var lenght_column = POS_Y_BALL - initial_position_y;		
+		var initialPositionY = posYMax;
+		var lenghtColumn = posYBall - initialPositionY;		
 		
-		if (self.data() > TEMP_MIN && self.data() < TEMP_MAX)
+		if (self.data() > tempMin && self.data() < tempMax)
 		{
-			initial_position_y = POS_Y_MIN + ( TEMP_MAX - self.data() )*( POS_Y_MAX - POS_Y_MIN )/ ( TEMP_MAX - TEMP_MIN) ;
-			lenght_column = POS_Y_BALL - initial_position_y;
+			initialPositionY = posYMin + ( tempMax - self.data() )*( posYMax - posYMin )/ ( tempMax - tempMin) ;
+			lenghtColumn = posYBall - initialPositionY;
 		}
 		else
 		{
-			if ( self.data() <= TEMP_MIN )
+			if ( self.data() <= tempMin )
 			{
-				initial_position_y = POS_Y_MAX;
-				lenght_column = POS_Y_BALL - initial_position_y;
+				initialPositionY = posYMax;
+				lenghtColumn = posYBall - initialPositionY;
 			}
-			if (self.data() > TEMP_MAX )
+			if (self.data() > tempMax )
 			{
-				initial_position_y = POS_Y_MIN;
-				lenght_column = POS_Y_BALL - initial_position_y;
+				initialPositionY = posYMin;
+				lenghtColumn = posYBall - initialPositionY;
 			}			
 		}
 		
-		ctx.fillRect( (self.WidgetWidth / 2) - (3 * self.WidgetWidth / 100), initial_position_y, 6 * self.WidgetWidth / 100, lenght_column );
+		ctx.fillRect( (self.WidgetWidth / 2) - (3 * self.WidgetWidth / 100), initialPositionY, 6 * self.WidgetWidth / 100, lenghtColumn );
 
 		if (self.WidgetWidth <= 100)
 		   ctx.font="12px Georgia";
@@ -136,7 +123,7 @@ function ThermometerViewModel()
 		   ctx.font="20px Georgia";
    
 		//write the text at the same position as the height of the column
-		ctx.fillText(self.data() + "°",self.WidgetWidth / 2 + 15*self.WidgetWidth / 100, initial_position_y );
+		ctx.fillText(self.data() + "°",self.WidgetWidth / 2 + 15*self.WidgetWidth / 100, initialPositionY );
 		  
         // Draw the thermometer
 		//draw a circle
@@ -148,7 +135,7 @@ function ThermometerViewModel()
 		
 		//bubble
 		         // position x        position y             diameter
-		ctx.arc(self.WidgetWidth / 2, POS_CENTER_BALL, 12 * self.WidgetWidth / 100, Math.PI*1.3, Math.PI*1.7, true);
+		ctx.arc(self.WidgetWidth / 2, posCenterBall, 12 * self.WidgetWidth / 100, Math.PI*1.3, Math.PI*1.7, true);
 		
 		//top
 		ctx.arc(self.WidgetWidth / 2, 10 * self.WidgetHeight / 100, 7 * self.WidgetWidth / 100, Math.PI*2, Math.PI*1, true);
@@ -161,10 +148,11 @@ function ThermometerViewModel()
    {
        var self = this;
 
-       this.widget.ListenKeyword(this.widget.configuration.device.keywordId);
+       //we register keyword new acquisition
+       self.widgetApi.registerKeywordAcquisitions(self.widget.configuration.device.keywordId);
 	   
-        //we fill the deviceId of the battery indicator
-        this.widget.$toolbar.find(".widget-toolbar-battery").attr("deviceId", self.widget.configuration.device.deviceId);	   
+      //we fill the deviceId of the battery indicator
+       self.widgetApi.toolbar.configureBatteryIcon(self.widget.configuration.device.deviceId);
    };
 
    this.resized = function() 

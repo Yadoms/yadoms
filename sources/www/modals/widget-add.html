@@ -12,7 +12,7 @@
                 <div id="add-widget-details" widget-type="">
                     <div class="row header">
                        <div class="col-md-4 cell">
-                           <img class/>
+                          <img alt=""/>
                        </div>
                        <div class="col-md-4 cell">
                           <h1><span class="widget-name"></span></h1>
@@ -20,7 +20,7 @@
                        <div class="col-md-4 cell">
                           <button id="btn-confirm-add-widget" type="button" class="btn btn-success">
                                 <i class="fa fa-plus"></i>&nbsp;
-                                <span data-i18n="modals.add-widget.add"/>
+                             <span data-i18n="modals.add-widget.add"></span>
                           </button>
                        </div>
                     </div>
@@ -48,11 +48,13 @@
                     </ul>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button id="btn-get-more-widget" type="button" class="btn btn-primary pull-left" data-i18n="modals.add-widget.getMore"></button>
-                <button id="btn-close-details" type="button" class="btn btn-default pull-left hidden"><i class="fa fa-reply"></i>&nbsp;<span data-i18n="modals.add-widget.goBack"></span></button>
-                <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="common.close">Close</button>
-            </div>
+           <div class="modal-footer">
+              <!-- Show button when something behind is available (see similar comments)
+                  <button id="btn-get-more-widget" type="button" class="btn btn-primary pull-left" data-i18n="modals.add-widget.getMore"></button>
+              -->
+              <button id="btn-close-details" type="button" class="btn btn-default pull-left hidden"><i class="fa fa-reply"></i>&nbsp;<span data-i18n="modals.add-widget.goBack"></span></button>
+              <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="common.close">Close</button>
+           </div>
         </div>
     </div>
 </div>
@@ -62,14 +64,13 @@
     /**
      * Ask for widget packages to the REST server
      */
-    function askWidgetPackages()
-    {
-       WidgetPackageManager.getAll()
-       .done(requestWidgetsTypeDone)
-       .fail(function (error) {
-          notifyError($.t("objects.widgetPackageManager.errorDuringGettingPackages"), error);
-       });
-    }
+   Yadoms.askWidgetPackages = function() {
+      WidgetPackageManager.getAll()
+         .done(requestWidgetsTypeDone)
+         .fail(function(error) {
+            notifyError($.t("objects.widgetPackageManager.errorDuringGettingPackages"), error);
+         });
+   };
 
     /**
      * Callback of the request widget packages
@@ -82,33 +83,40 @@
         $detailsDiv.hide();
 
        //we replace the "go back" button by the "Get more" one
+        
+       /*Show button when something behind is available (see similar comments)
        $("button#btn-get-more-widget").removeClass("hidden");
+       */
        $("button#btn-close-details").addClass("hidden");
 
         $("ul#ul-add-widget").empty();
         for(var index in WidgetPackageManager.widgetPackages) {
+          if (WidgetPackageManager.widgetPackages.hasOwnProperty(index)) {
              var value = WidgetPackageManager.widgetPackages[index].package;
              //if the widget begin with dev-, it's a developer widget use only
              if ((value) && (!value.type.startsWith("dev-"))) {
-                var i18ncontext = value.type + ":";
+                var i18NContext = value.type + ":";
                 $("ul#ul-add-widget").append(
                    "<li>" +
-                       "<button type=\"button\" class=\"btn-select-widget btn btn-default\" widget-type=\"" + value.type + "\">" +
-                           "<div class=\"widget-preview\" ><img src=\"/widgets/" + value.type + "/preview.png\"></div>" +
-                           "<span class=\"widget-name\" data-i18n=\"widgets/" + i18ncontext + "name\"></span>" +
-                       "</button>" +
+                   "<button type=\"button\" class=\"btn-select-widget btn btn-default\" widget-type=\"" + value.type + "\">" +
+                   "<div class=\"widget-preview\" ><img src=\"/widgets/" + value.type + "/preview.png\"></div>" +
+                   "<span class=\"widget-name\" data-i18n=\"widgets/" + i18NContext + "name\"></span>" +
+                   "</button>" +
                    "</li>"
                 );
              }
-        }
+          }
+       }
 
-        $("button.btn-select-widget").unbind().bind('click', function (e) {
+       $("button.btn-select-widget").unbind().bind('click', function (e) {
             var type = $(e.currentTarget).attr("widget-type");
             if (!isNullOrUndefined(type)) {
                 var value = WidgetPackageManager.widgetPackages[type].package;
                 if (!isNullOrUndefined(value)) {
-                    //we replace the "Get more" button by the "go back" one
+                   //we replace the "Get more" button by the "go back" one
+                    /*Show button when something behind is available (see similar comments)
                     $("button#btn-get-more-widget").addClass("hidden");
+                    */
                     $("button#btn-close-details").removeClass("hidden");
 
                     //we show more details about the widget
@@ -140,8 +148,9 @@
        var $detailsDiv = $("div#add-widget-details");
        $detailsDiv.fadeOut();
        //we replace the "go back" button by the "Get more" one
+       /*Show button when something behind is available (see similar comments)
        $("button#btn-get-more-widget").removeClass("hidden");
-
+       */
        $("button#btn-close-details").addClass("hidden");
     });
 
@@ -153,7 +162,9 @@
        assert(!isNullOrUndefined(currentPage), "A page must be selected");
 
        //we replace the "go back" button by the "Get more" one for next display
+       /*Show button when something behind is available (see similar comments)
        $("button#btn-get-more-widget").removeClass("hidden");
+       */
        $("button#btn-close-details").addClass("hidden");
 
        //we close the new widget modal and wait for the modal being closed before continuing
@@ -201,9 +212,9 @@
 
             //we load configuration window only if the widget has a configuration
             if (!isNullOrUndefined(newWidget.package.configurationSchema)) {
-                modals.widgetConfiguration.load(function () {
-
-                    configureWidget(newWidget, function () {
+               Yadoms.modals.widgetConfiguration.loadAsync()
+               .done(function () {
+                  Yadoms.configureWidget(newWidget, function () {
                         //if the configuration has been validated we can create the widget
                         createWidget(newWidget, currentPage);
                     });
@@ -218,42 +229,22 @@
     });
 
    function createWidget(newWidget, currentPage) {
-      $.ajax({
-         type: "POST",
-         url: "/rest/widget",
-         data: JSON.stringify({ idPage: newWidget.idPage, type: newWidget.type, title: newWidget.title, sizeX: newWidget.sizeX, sizeY: newWidget.sizeY, positionX: newWidget.positionX, positionY: newWidget.positionY, configuration: newWidget.configuration }),
-         contentType: "application/json; charset=utf-8",
-         dataType: "json"
-      })
-      .done(function(data) {
-         //we parse the json answer
-         if (data.result != "true")
-         {
-            notifyError($.t("modals.add-widget.errorDuringCreatingWidget"), JSON.stringify(data));
-            return;
-         }
-
-         //we add the widget dynamically
-         var w = WidgetManager.factory(data.data);
-         //we indicate a new attribute to indicate that the widget has to be placed automatically on the gridstack and not at the specified positionX and positionY
+      WidgetManager.createWidget(newWidget)
+      .done(function(w) {
          w.positionX = undefined;
          w.positionY = undefined;
-         WidgetManager.loadWidget(w, currentPage)
-		 .done(function() {
-		    //we update the filter for the websocket
-			updateWebSocketFilter();
-		 })
-		 .fail(function(errorMessage) {
-			    console.error(errorMessage);
-			    notifyError($.t("modals.add-widget.unableToCreateWidgetOfType", { "widgetType": newWidget.type }));
-         });
-
-      })
-      .fail(function(widgetType) { 
-		return function() {
-			notifyError($.t("modals.add-widget.unableToCreateWidgetOfType", {"widgetType" : widgetType}))
-		}();
-	  });
+         WidgetManager.loadWidget(w, currentPage, true)
+         .done(function () {
+          	//we update the filter for the websocket
+          	updateWebSocketFilter();
+         })
+		   .fail(function (errorMessage) {
+		      notifyError($.t("modals.add-widget.unableToCreateWidgetOfType", { "widgetType": newWidget.type }), errorMessage);
+		   });
+       })
+      .fail(function (errorMessage) {
+         notifyError($.t("modals.add-widget.unableToCreateWidgetOfType", { "widgetType": newWidget.type }), errorMessage);
+      });
    }
 
 </script>

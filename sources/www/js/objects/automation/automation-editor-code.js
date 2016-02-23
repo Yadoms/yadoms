@@ -90,7 +90,7 @@ AutomationEditorCode.prototype.applyScript = function() {
  */
 AutomationEditorCode.prototype.showDoc = function () {
     var url = "help.html";
-    url += "?lang=" + window.systemConfiguration[ConfigurationManager.items.system.language].value;
+    url += "?lang=" + Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value;
     url += "&helpUrl=" + encodeURIComponent(this.getApiDocUrl());
     window.open(url);
 };
@@ -145,7 +145,15 @@ AutomationEditorCode.prototype.setRule = function(rule) {
  * Permit to fire an event when the modal is shown
  * @param rule
  */
-AutomationEditorCode.prototype.onModalShown = function($modal) {
+AutomationEditorCode.prototype.onModalShown = function() {
+   //nothing to do
+};
+
+/**
+ * Permit to fire an event when the modal is hidden
+ * @param rule
+ */
+AutomationEditorCode.prototype.onModalHidden = function () {
    //nothing to do
 };
 

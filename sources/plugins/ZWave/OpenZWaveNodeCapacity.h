@@ -1,7 +1,7 @@
 #pragma once
 
 #include "OpenZWaveCommandClass.h"
-#include <CommandClass.h>
+#include <command_classes/CommandClass.h>
 #include "IOpenZWaveNodeKeyword.h"
 
 //--------------------------------------------------------------

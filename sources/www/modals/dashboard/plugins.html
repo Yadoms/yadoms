@@ -16,16 +16,16 @@
 <script>
    var pluginInstanceList = [];
 
-   function initializePluginDashboard() {
+   Yadoms.initializePluginDashboard = function() {
       //we remove all rows except header
       $("table#plugin-instance-list").find("tr:gt(0)").remove();
       //we clear pluginInstance array
       pluginInstanceList = [];
 
-      $("#btn-add-new-plugin").unbind("click").bind("click", addNewPlugin);
+      $("#btn-add-new-plugin").unbind("click").bind("click", function() { addNewPlugin(); });
 
       //we dynamically ask for plugins (async)
-      PluginInstanceManager.getAll().done(function(allInstances){
+      PluginInstanceManager.getAll().done(function(allInstances) {
          //foreach result we append a <tr>
          $.each(allInstances, function(index, value) {
             pluginInstanceList.push(value);
@@ -36,11 +36,11 @@
          });
 
          //we use the periodic task of the dashboard
-         clearInterval(window.periodicDashboardTask);
-         periodicDashboardTask = setInterval(periodicDashboardPluginTask, 2000);
+         clearInterval(Yadoms.periodicDashboardTask);
+         Yadoms.periodicDashboardTask = setInterval(periodicDashboardPluginTask, 2000);
          periodicDashboardPluginTask();
       });
-   }
+   };
 
    function getPluginDomRow(pluginInstance) {
       return $("table#plugin-instance-list").find("tr[plugin-id='" + pluginInstance.id + "']");
@@ -90,108 +90,102 @@
       //we set autostart value
       $pluginInstanceRow.find("input.cb-autoStart").prop("checked", pi.autoStart);
 
-       //we bind event on the different actions
+      //we bind event on the different actions
        if (!failToLoadPluginPackage) {
-           $pluginInstanceRow.find("button.btn-startStop").unbind('click').bind('click', startStopPlugin(pi));
-           $pluginInstanceRow.find("button.btn-configure").unbind('click').bind('click', configurePlugin(pi));
-           $pluginInstanceRow.find("input.cb-autoStart").unbind('change').bind('change', autoStartChange(pi));
+          $pluginInstanceRow.find("button.btn-startStop").unbind('click').bind('click', function () {startStopPlugin(pi); });
+          $pluginInstanceRow.find("button.btn-configure").unbind('click').bind('click', function () {configurePlugin(pi); });
+          $pluginInstanceRow.find("input.cb-autoStart").unbind('change').bind('change', function () {autoStartChange(pi); });
        }
-       $pluginInstanceRow.find("button.btn-delete").unbind('click').bind('click', deletePlugin(pi));
+       $pluginInstanceRow.find("button.btn-delete").unbind('click').bind('click', function() { deletePlugin(pi); });
 
       $pluginInstanceRow.i18n();
    }
 
    function startStopPlugin(pi) {
-       //pi represent the pluginInstance concerned
-       assert(!isNullOrUndefined(pi), "pi must be defined");
-       return function () {
-           //we deactivate the button until next status will be acquired to prevent flooding
-           getPluginDomRow(pi).find("button.btn-startStop").prop('disabled', true);
-           if (pi.lastState == "Stopped" || pi.lastState == "Error") {
-               //we ask for start
-               PluginInstanceManager.start(pi).done(function () {
-                    getPluginDomRow(pi).find("button.btn-startStop").prop('disabled', false);
-               });
-           }
-           else {
-               //we ask for stop
-               PluginInstanceManager.stop(pi).done(function () {
-                    getPluginDomRow(pi).find("button.btn-startStop").prop('disabled', false);
-               });
-           }
-       }
+      //pi represent the pluginInstance concerned
+      assert(!isNullOrUndefined(pi), "pi must be defined");
+      //we deactivate the button until next status will be acquired to prevent flooding
+      getPluginDomRow(pi).find("button.btn-startStop").prop('disabled', true);
+      if (pi.lastState === "Stopped" || pi.lastState === "Error") {
+         //we ask for start
+         PluginInstanceManager.start(pi).done(function () {
+            getPluginDomRow(pi).find("button.btn-startStop").prop('disabled', false);
+         });
+      }
+      else {
+         //we ask for stop
+         PluginInstanceManager.stop(pi).done(function () {
+            getPluginDomRow(pi).find("button.btn-startStop").prop('disabled', false);
+         });
+      }
    }
 
    function configurePlugin(pi) {
       //pi represent the pluginInstance concerned
-      return function() {
-         //we get package.json
-         PluginInstanceManager.downloadPackage(pi).done(function() {
-            //we ask for configuration modal async
-            modals.pluginConfigure.load(function() {
-               configurePluginInstance(pi, function() {
-                   PluginInstanceManager.updateToServer(pi)
-                       .done(function() {
-                           //We update the information that can have changed after the configuration
-                           var $row = getPluginDomRow(pi);
-                           $row.find("td.plugin-displayName").html(pi.displayName);
-                       })
-                       .fail(function(error) {
-                           notifyError($.t("modals.configure-plugin.pluginFailToConfigure", { pluginName: pi.displayName }), error);
-                       });
-               });
+      //we get package.json
+      PluginInstanceManager.downloadPackage(pi).done(function() {
+         //we ask for configuration modal async
+         Yadoms.modals.pluginConfigure.loadAsync()
+         .done(function () {
+            Yadoms.configurePluginInstance(pi, function() {
+                  PluginInstanceManager.updateToServer(pi)
+                     .done(function() {
+                        //We update the information that can have changed after the configuration
+                        var $row = getPluginDomRow(pi);
+                        $row.find("td.plugin-displayName").html(pi.displayName);
+                     })
+                     .fail(function(error) {
+                        notifyError($.t("modals.configure-plugin.pluginFailToConfigure", { pluginName: pi.displayName }), error);
+                     });
             });
          });
-      }
+      });
    }
 
    function deletePlugin(pi) {
       //pi represent the pluginInstance concerned
-      return function() {
-          modals.confirmation.load(function () {
-            showConfirmModal(btnKind.yesNo, null, $.t("modals.dashboard.sub-windows.plugins.confirmPluginDeletion", {pluginName:pi.displayName}),
-            function () {
-                //deletion has been confirmed
-                var deletePromsie = PluginInstanceManager.deleteFromServer(pi);
-                
-                //disable button access until promise result
-                getPluginDomRow(pi).find("button").prop('disabled', true);
+      Yadoms.modals.confirmation.loadAsync()
+      .done(function () {
+         Yadoms.showConfirmModal(Yadoms.btnKind.yesNo, null, $.t("modals.dashboard.sub-windows.plugins.confirmPluginDeletion", { pluginName: pi.displayName }),
+         function () {
+            //deletion has been confirmed
+            var deletePromsie = PluginInstanceManager.deleteFromServer(pi);
 
-                deletePromsie.done(function () {
-                  //we remove pi from array
-                  var i = pluginInstanceList.indexOf(pi);
-                  if(i !== -1) {
-                     pluginInstanceList.splice(i, 1);
-                  }
+            //disable button access until promise result
+            getPluginDomRow(pi).find("button").prop('disabled', true);
 
-                  //we remove pi from dom
-                  getPluginDomRow(pi).remove();
-                });
+            deletePromsie.done(function () {
+               //we remove pi from array
+               var i = pluginInstanceList.indexOf(pi);
+               if (i !== -1) {
+                  pluginInstanceList.splice(i, 1);
+               }
 
-                //if it fails, restore button access
-                deletePromsie.fail(function (error) {
-                    notifyError($.t("modals.configure-plugin.pluginFailToDelete", { pluginName: pi.displayName }), error);
-                    getPluginDomRow(pi).find("button").prop('disabled', false);
-                });
+               //we remove pi from dom
+               getPluginDomRow(pi).remove();
+            });
+
+            //if it fails, restore button access
+            deletePromsie.fail(function (error) {
+               notifyError($.t("modals.configure-plugin.pluginFailToDelete", { pluginName: pi.displayName }), error);
+               getPluginDomRow(pi).find("button").prop('disabled', false);
             });
          });
-      }
+      });
    }
 
    function autoStartChange(pi) {
       //pi represent the pluginInstance concerned
-      return function() {
-         //we set autoStart attr to cb value and send it to the server as an update
-          pi.autoStart = getPluginDomRow(pi).find("input.cb-autoStart").prop("disabled", true).prop("checked");
+      //we set autoStart attr to cb value and send it to the server as an update
+      pi.autoStart = getPluginDomRow(pi).find("input.cb-autoStart").prop("disabled", true).prop("checked");
 
-          PluginInstanceManager.updateToServer(pi)
-            .done(function () {
-                getPluginDomRow(pi).find("input.cb-autoStart").prop("disabled", false).prop("checked", pi.autoStart);
-            })
-            .fail(function (error) {
-                notifyError($.t("modals.configure-plugin.pluginFailToConfigure", { pluginName: pi.displayName }), error);
-            });
-      }
+      PluginInstanceManager.updateToServer(pi)
+      .done(function () {
+         getPluginDomRow(pi).find("input.cb-autoStart").prop("disabled", false).prop("checked", pi.autoStart);
+      })
+      .fail(function (error) {
+         notifyError($.t("modals.configure-plugin.pluginFailToConfigure", { pluginName: pi.displayName }), error);
+      });
    }
 
    function periodicDashboardPluginTask() {
@@ -247,15 +241,17 @@
    }
 
    function addNewPlugin() {
-      modals.pluginAdd.load(function() {
-         askPluginTypes(function(pluginType) {
+      Yadoms.modals.pluginAdd.loadAsync()
+      .done(function() {
+         Yadoms.askPluginTypes(function(pluginType) {
             var pi = new PluginInstance(null, $.t("plugins/" + pluginType.type + ":name", {defaultValue : pluginType.package.name}), pluginType.type, "", 1, "user");
             //we get package.json
             PluginInstanceManager.downloadPackage(pi).done(function() {
                //we ask for configuration modal async
-               modals.pluginConfigure.load(function() {
+               Yadoms.modals.pluginConfigure.loadAsync()
+               .done(function() {
                   //we launch configureInstance GUI
-                  configurePluginInstance(pi, function() {
+                  Yadoms.configurePluginInstance(pi, function () {
                      //we ask for pluginInstance creation
                       PluginInstanceManager.createToServer(pi)
                           .done(function() {

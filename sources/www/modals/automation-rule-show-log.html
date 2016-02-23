@@ -23,17 +23,17 @@
 </div>
 
 <script>
-   function showLogAutomationRuleModal(rule, getLog) {
+   Yadoms.showLogAutomationRuleModal = function(rule, getLog) {
       assert(!isNullOrUndefined(rule), "rule must be defined");
       assert($.isFunction(getLog), "getLog must be defined");
-      
+
       getLog(rule);
 
       //we display the modal
       $('div#show-log-automation-rule-modal').modal({ backdrop: 'static' });
-   }
-   
-   function showLogAutomationRuleModalUpdateLog(logContent) {
+   };
+
+   Yadoms.showLogAutomationRuleModalUpdateLog = function(logContent) {
       assert(!isNullOrUndefined(logContent), "logContent must be defined");
 
       var $modalBody = $("div#show-log-automation-rule-modal .modal-body");
@@ -42,5 +42,5 @@
 
       //we display the modal
       $('div#show-log-automation-rule-modal').modal({ backdrop: 'static' });
-   }
+   };
 </script>

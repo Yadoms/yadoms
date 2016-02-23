@@ -66,10 +66,10 @@ PageManager.getPage = function (pageId) {
 
 
 /**
- * 
- * @param {} pageName 
- * @param {} pageOrder 
- * @returns {} 
+ * Create a new page
+ * @param {} pageName The new page name
+ * @param {} pageOrder The new page order
+ * @returns {Promise} 
  */
 PageManager.createPage = function (pageName, pageOrder) {
    assert(!isNullOrUndefined(pageName), "pageName must be defined");
@@ -87,21 +87,26 @@ PageManager.createPage = function (pageName, pageOrder) {
    return d.promise();
 };
 
+/**
+ * Update a page
+ * @param {String|Integer} pageId The page id
+ * @param {String} pageName The page new name
+ * @param {String|Integer} pageOrder The page new order
+ * @returns {Promise} 
+ */
+PageManager.updatePage = function (pageId, pageName, pageOrder) {
+   assert(!isNullOrUndefined(pageId), "pageId must be defined");
+   assert(!isNullOrUndefined(pageName), "pageId must be defined");
+   return RestEngine.putJson("/rest/page/" + pageId, { data: JSON.stringify({ id: pageId, name: pageName, pageOrder: pageOrder }) });
+};
 
+/**
+ * Delete a page
+ * @param {Object} pageToDelete The page to dleete
+ * @returns {Promise} 
+ */
 PageManager.deletePage = function (pageToDelete) {
-
-   var d = new $.Deferred();
-
-   RestEngine.deleteJson("/rest/page/" + pageToDelete.id)
-   .done(function () {
-      pageToDelete.$tab.remove();
-      pageToDelete.$content.remove();
-      PageManager.pages.splice($.inArray(pageToDelete, PageManager.pages), 1);
-      PageManager.ensureOnePageIsSelected();
-      d.resolve();
-   })
-   .fail(d.reject);
-   return d.promise();
+   return RestEngine.deleteJson("/rest/page/" + pageToDelete.id);
 };
 
 PageManager.addPage = function (page) {
@@ -116,7 +121,7 @@ PageManager.addToDom = function (page) {
    assert(!isNullOrUndefined(page), "page must be defined");
    var tabIdAsText = "tab-" + page.id;
    //pill creation
-   var dataI18nOptions = { "pageName": page.name };
+   var dataI18NOptions = { "pageName": page.name };
 
 
    $("<li class=\"tabPagePills\" page-id=\"" + page.id + "\">" +
@@ -129,7 +134,7 @@ PageManager.addToDom = function (page) {
                "<div class=\"customizationButton pageCustomizationButton delete-page\" title=\"Delete\" data-i18n=\"[title]mainPage.customization.delete\"><i class=\"fa fa-lg fa-trash-o\"></i></div>" +
             "</div>" +
          "</a>" +
-         "<div class=\"hidden tabPagePillsDropper\" data-i18n=\"mainPage.customization.dropHereToMovePage\" data-i18n-options=\'" + JSON.stringify(dataI18nOptions) + "\'></div>" +
+         "<div class=\"hidden tabPagePillsDropper\" data-i18n=\"mainPage.customization.dropHereToMovePage\" data-i18n-options=\'" + JSON.stringify(dataI18NOptions) + "\'></div>" +
          "</li>").insertBefore($("li#btn-add-page"));
 
    page.$tab = $(".page-tabs").find("li[page-id=\"" + page.id + "\"]");
@@ -148,11 +153,11 @@ PageManager.addToDom = function (page) {
    page.$content = container.find("div#" + tabIdAsText);
 
    var options = {
-      width: numberOfColumns,
+      width: Yadoms.numberOfColumns,
       float: true,
       always_show_resize_handle: true,
-      cell_height: gridWidth,
-      vertical_margin: gridMargin,
+      cell_height: Yadoms.gridWidth,
+      vertical_margin: Yadoms.gridMargin,
       min_width: 0
    };
 
@@ -179,7 +184,7 @@ PageManager.addToDom = function (page) {
          return;
       var targetPage = PageManager.getPage(targetPageId);
       //the widget that move is on the current page
-      if (page.id == targetPageId)
+      if (page.id === targetPageId)
          return;
 
       //a widget has been dropped onto antoher page pill
@@ -208,7 +213,7 @@ PageManager.addToDom = function (page) {
                 })
                 .fail(function (errorMessage) {
                    console.error(errorMessage);
-                   notifyError($.t("modals.add-widget.unableToCreateWidgetOfType", { "widgetType": widgetMoved.type }));
+                   notifyError($.t("modals.add-widget.unableToCreateWidgetOfType", { "widgetType": widgetToMove.type }));
                 });
          }
 
@@ -237,9 +242,12 @@ PageManager.addToDom = function (page) {
    });
 
    //we listen click event on delete click
-   page.$tab.find('div.delete-page').bind('click', function (e) {
+   page.$tab.find('div.delete-page').bind('click', function(e) {
       var pageId = $(e.currentTarget).parents("li.tabPagePills").attr("page-id");
-      modals.pageDelete.load(function (pageId) { return function () { showDeletePageModal(pageId) } }(pageId));
+      Yadoms.modals.pageDelete.loadAsync()
+         .done(function() {
+            Yadoms.showDeletePageModal(pageId);
+         });
    });
 
    //we listen click event on move left click
@@ -257,8 +265,7 @@ PageManager.addToDom = function (page) {
    });
 
    //we listen for click event with no code inside to help event transmission until exit customization
-   page.$tab.bind('click', function (e) {
-   });
+   page.$tab.bind('click', function () {});
 };
 
 PageManager.movePage = function (page, direction) {
@@ -297,26 +304,27 @@ PageManager.movePage = function (page, direction) {
 
       var nearestPage = PageManager.getPage(nearestId);
       assert(nearestPage != null, "Unable to find nearest page to move");
+      if (nearestPage) {
+         //we can move pageOrder
+         //we move it into the array and send the complete collection to rest server
+         nearestPage.pageOrder = page.pageOrder;
+         page.pageOrder = nearestPageOrder;
 
-      //we can move pageOrder
-      //we move it into the array and send the complete collection to rest server
-      nearestPage.pageOrder = page.pageOrder;
-      page.pageOrder = nearestPageOrder;
-
-      //we make an array of pages to send to rest server
-      RestEngine.putJson("/rest/page", { data: JSON.stringify(PageManager.pages) })
-      .done(function () {
-         //we move the tab dynamically
-         var tabDomElement = page.$tab.detach();
-         if (direction === "right") {
-            tabDomElement.insertAfter(nearestPage.$tab);
-         } else {
-            tabDomElement.insertBefore(nearestPage.$tab);
-         }
-      })
-      .fail(function (error) {
-         notifyError($.t("mainPage.errors.errorDuringSavingPagePosition"), error);
-      });
+         //we make an array of pages to send to rest server
+         RestEngine.putJson("/rest/page", { data: JSON.stringify(PageManager.pages) })
+            .done(function() {
+               //we move the tab dynamically
+               var tabDomElement = page.$tab.detach();
+               if (direction === "right") {
+                  tabDomElement.insertAfter(nearestPage.$tab);
+               } else {
+                  tabDomElement.insertBefore(nearestPage.$tab);
+               }
+            })
+            .fail(function(error) {
+               notifyError($.t("mainPage.errors.errorDuringSavingPagePosition"), error);
+            });
+      }
    }
 };
 
@@ -340,8 +348,7 @@ PageManager.getCurrentPage = function () {
    return PageManager.getPage(pageId);
 };
 
-function widgetResized(event, ui) {
-   var grid = this;
+function widgetResized(event) {
    var $widget = $(event.target);
    var widgetObject = WidgetManager.getFromGridElement($widget);
    //we compute the target size
@@ -374,4 +381,13 @@ PageManager.enableCustomization = function (page, enable) {
       $(".customization-item").addClass("hidden");
       page.$tab.find("a").first().removeClass("pageCustomizationPill");
    }
+};
+
+/**
+ * Save a page customization to database
+ * @param {Object} page The page to save
+ * @returns {Promise} 
+ */
+PageManager.saveCustomization = function (page) {
+   return RestEngine.putJson("/rest/page/" + page.id + "/widget", { data: JSON.stringify(page.widgets) });
 };

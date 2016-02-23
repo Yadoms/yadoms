@@ -48,6 +48,18 @@ RestEngine.getScript = function (url, data) {
 };
 
 /**
+ * Send a REST GET asynchronous request
+ * @param {string} url The URL requested : "/devices/32"
+ * @param {JSON} data The $.ajax options (dataType will be overwritten by 'html')
+ * @return a promise
+*/
+RestEngine.getHtml = function (url, data) {
+    var completeData = data || {};
+    completeData.dataType = "html";
+    return RestEngine.get(url, completeData);
+};
+
+/**
  * Send a REST PUT asynchronous request
  * @param {string} url The URL to request : "/devices/32"
  * @param {JSON} data The $.ajax options

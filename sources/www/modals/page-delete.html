@@ -20,16 +20,16 @@
 <script>
    var pageToDelete = null;
 
-   function showDeletePageModal(pageId) {
+   Yadoms.showDeletePageModal = function(pageId) {
       assert(pageId !== undefined, "Page Id must be defined");
       pageToDelete = PageManager.getPage(pageId);
       assert(pageToDelete != null, "page Id doesn't exit");
 
-      $("div#delete-page-modal").find("div.modal-body").text($.t("modals.delete-page.text", { pageName : pageToDelete.name}));
+      $("div#delete-page-modal").find("div.modal-body").text($.t("modals.delete-page.text", { pageName: pageToDelete.name }));
 
       //we display the modal
       $('div#delete-page-modal').modal({ backdrop: 'static' });
-   }
+   };
 
    /**
     * Callback to the click of the button to confirm deletion of a page
@@ -43,10 +43,16 @@
       //we ask for deletion of the page
 
       PageManager.deletePage(pageToDelete)
-      .done(function() {
+      .done(function () {
+         pageToDelete.$tab.remove();
+         pageToDelete.$content.remove();
+         PageManager.pages.splice($.inArray(pageToDelete, PageManager.pages), 1);
+         PageManager.ensureOnePageIsSelected();
          notifySuccess($.t("modals.delete-page.pageSuccessfullyDeleted"));
       })
-      .fail(function (pageName) { return function () { notifyError($.t("modals.delete-page.errorDuringDeletingPageNamed", { "pageName": pageName })); }; }(pageToDelete.name))
+      .fail(function(error) {
+         notifyError($.t("modals.delete-page.errorDuringDeletingPageNamed", { "pageName": pageToDelete.name }), error); 
+      })
       .always(function () {
          //we clear the current id
          pageToDelete = null;

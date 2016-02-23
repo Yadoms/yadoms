@@ -22,7 +22,7 @@
 </div>
 
 <script>
-   function showNewAutomationRule(editors, callback) {
+   Yadoms.showNewAutomationRule = function(editors, callback) {
       assert($.isFunction(callback), "callback must be defined");
 
       var $modalBody = $("div#automation-rule-new-modal .modal-body");
@@ -30,12 +30,12 @@
       var $area = $modalBody.find("div.editor-btns");
       $area.empty();
 
-      $.each(editors, function (key, value) {
+      $.each(editors, function(key, value) {
          var tempUuid = createUUID();
-         $area.append("<button class=\"btn btn-primary btn-lg btn-editor-choice\" type=\"button\" id=\"" + tempUuid  + "\">" +
-                        "<span class=\"" + value.getClassIcon() + "\" id=\"" + value.getName() + "\"></span>&nbsp;&nbsp;" +
-                           $.t("modals.dashboard.sub-windows.automation-center.editors." + value.getName() + ".name") +
-                      "</button>");
+         $area.append("<button class=\"btn btn-primary btn-lg btn-editor-choice\" type=\"button\" id=\"" + tempUuid + "\">" +
+            "<span class=\"" + value.getClassIcon() + "\" id=\"" + value.getName() + "\"></span>&nbsp;&nbsp;" +
+            $.t("modals.dashboard.sub-windows.automation-center.editors." + value.getName() + ".name") +
+            "</button>");
 
          $area.find("button#" + tempUuid).bind("click", newAutomationRuleButtonClicked(value, callback));
       });
@@ -45,7 +45,7 @@
 
       //we display the modal
       $("div#automation-rule-new-modal").modal({ backdrop: 'static' });
-   }
+   };
 
    function newAutomationRuleButtonClicked(editor, callback) {
       return function() {

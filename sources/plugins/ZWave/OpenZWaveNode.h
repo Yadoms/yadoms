@@ -2,7 +2,7 @@
 
 #include "OpenZWaveNodeCapacity.h"
 #include "OpenZWaveCommandClass.h"
-#include <Value.h>
+#include <value_classes/Value.h>
 
 //--------------------------------------------------------------
 /// \brief     Class used to encapsulate a ZWave network node (from OpenZWave)

@@ -149,6 +149,7 @@ Blockly.Yadoms.Initialize = function ($domTarget, initialContent, maxTopBlocks) 
                     colour: "#ccc",
                     snap: true
                 },
+				media : "libs/blockly/media/",
                 readOnly: false,
                 realtime: false,
                 scrollbars: true,

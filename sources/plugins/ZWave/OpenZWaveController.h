@@ -2,8 +2,8 @@
 
 #include "IZWaveController.h"
 #include "OpenZWaveCommandClass.h"
-#include <CommandClasses.h>
-#include <CommandClass.h>
+#include <command_classes/CommandClasses.h>
+#include <command_classes/CommandClass.h>
 #include "OpenZWaveNode.h"
 
 class COpenZWaveController : public IZWaveController

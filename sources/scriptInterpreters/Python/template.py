@@ -7,35 +7,37 @@
 # This parameter is used in the rule to call Yadoms methods.
 #
 # This sample is a simple thermostat, reading a temperature to drive a heating.
-# Heating is ON when temperature is lower thant setPoint, and OFF if greater.
+# Heating is ON when temperature is lower than a setPoint, and OFF if greater.
 
 # The temperature setPoint.
 setPoint = 21.5
 
 # The main function, called by Yadoms. yApi is the Yadoms API context.
 def yMain(yApi):
-   # Usually, we first get all required keyword IDs (see Keyword page on the dashboard)
+   # Usually, we first get all required keyword IDs. The method getKeywordId
+   # takes the device name and keyword name as arguments (see Keyword page on the dashboard).
+   # Replace devices and keywords by your real sensor/actuator, or instantiate a fakePlugin.
    temperatureKw = yApi.getKeywordId('fakeSensor1', 'temp1')
    heatingKw = yApi.getKeywordId('fakeOnOffReadWriteSwitch', 'Switch')
    
-   # Our thermostat runs forever
+   # Our thermostat runs infinitely
    while(True):
    
-      # Wait for change on temperature. waitForNextAcquisition returns a string, we have to convert to float.
+      # Wait for change on temperature. waitForNextAcquisition returns a string, that we have to convert to float.
       newTemperature = float(yApi.waitForNextAcquisition(temperatureKw))
          
-      # We got a new temperature, log
+      # Log the new temperature
       print "New temperature : ", newTemperature
       
       # Now decide to drive or not heating
       if newTemperature >= setPoint:
          print "Enough hot ! ! ! STOP HEATING ! ! !"
          # Stop heating. Be careful, value must be set as string
-         yApi.writeKeyword(heatingKw, "0")
+         yApi.writeKeyword(heatingKw, '0')
       else:
-         print "Brrr... START CHAUFFAGE"
+         print "Brrr... START HEATING"
          # Start heating. Be careful, value must be set as string
-         yApi.writeKeyword(heatingKw, "1")
+         yApi.writeKeyword(heatingKw, '1')
 
       # Next iteration
 

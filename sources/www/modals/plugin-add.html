@@ -15,11 +15,13 @@
                   </div>
                </form>
             </div>
-            <div class="modal-footer">
-                <button id="btn-get-more-plugin" type="button" class="btn btn-primary pull-left" data-i18n="modals.add-plugin.getMore"></button>
-                <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="common.cancel"></button>
-                <button id="btn-confirm-add-plugin" type="button" class="btn btn-primary" data-i18n="common.ok"></button>
-            </div>
+           <div class="modal-footer">
+             <!-- Show button when something behind is available
+                  <button id="btn-get-more-plugin" type="button" class="btn btn-primary pull-left" data-i18n="modals.add-plugin.getMore"></button>
+              -->
+              <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="common.cancel"></button>
+              <button id="btn-confirm-add-plugin" type="button" class="btn btn-primary" data-i18n="common.ok"></button>
+           </div>
         </div>
     </div>
 </div>
@@ -28,29 +30,28 @@
     /**
      * Ask for plugin types to the REST server
      */
-    function askPluginTypes(callback)
-    {
-       $("select#pluginTypeList").empty();
+   Yadoms.askPluginTypes = function(callback) {
+      $("select#pluginTypeList").empty();
 
-       //foreach plugin-type
-       Object.keys(PluginManager.pluginTypes).forEach(function(key, index) {
-          var value = PluginManager.pluginTypes[key];
-          $("select#pluginTypeList").append("<option value=\"" + value.type + "\">" + $.t("plugins/" + value.type + ":name", { defaultValue: value.package.name }) + "</option>");
-       });
+      //foreach plugin-type
+      Object.keys(PluginManager.pluginTypes).forEach(function(key) {
+         var value = PluginManager.pluginTypes[key];
+         $("select#pluginTypeList").append("<option value=\"" + value.type + "\">" + $.t("plugins/" + value.type + ":name", { defaultValue: value.package.name }) + "</option>");
+      });
 
-       //event click on add plugin button
-       $("button#btn-confirm-add-plugin").unbind("click").bind("click", function() {
-          //we close the new plugin modal
-          $("div#new-plugin-modal").modal("hide");
-          var pluginType = $("select#pluginTypeList").val();
-          callback(PluginManager.pluginTypes[pluginType]);
-       });
+      //event click on add plugin button
+      $("button#btn-confirm-add-plugin").unbind("click").bind("click", function() {
+         //we close the new plugin modal
+         $("div#new-plugin-modal").modal("hide");
+         var pluginType = $("select#pluginTypeList").val();
+         callback(PluginManager.pluginTypes[pluginType]);
+      });
 
-       //i18n
-       $("div#new-plugin-modal .modal-body").i18n();
+      //i18n
+      $("div#new-plugin-modal .modal-body").i18n();
 
-       //we display the modal
-       $('div#new-plugin-modal').modal({ backdrop: 'static' });
-    }
+      //we display the modal
+      $('div#new-plugin-modal').modal({ backdrop: 'static' });
+   };
 
 </script>

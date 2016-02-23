@@ -144,20 +144,26 @@ int CYadomsServer::main(const Poco::Util::Application::ArgVec& args)
          case kTerminationRequested:
             //this event is launch by application stop handler
             //then just ask supervisor to stop and follow termination process
+            YADOMS_LOG(debug) << "Receive termination request : ask supervisor to stop...";
             supervisor.requestToStop();
+            YADOMS_LOG(debug) << "Supervisor stop asked";
             break;
          case kSupervisorIsStopped:
+            YADOMS_LOG(debug) << "Receive supervisor stop signal";
             stillRunning = false;
             break;
          default:
             break;
          }
       }
+      YADOMS_LOG(debug) << "Wait for supervisor finish...";
       supervisorThread.join();
+      YADOMS_LOG(debug) << "Supervisor finished";
 
       //restore Poco ErrorHandler
       Poco::ErrorHandler::set(pOldEH);
    }
+   YADOMS_LOG(debug) << "Yadoms is stopping, wait for supervisor finish...";
    return Poco::Util::Application::EXIT_OK;
 }
 

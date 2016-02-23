@@ -19,19 +19,21 @@
 <script>
    var widgetToDelete = null;
 
-   function showDeleteWidgetModal(pageId, widgetId) {
+   Yadoms.showDeleteWidgetModal = function(pageId, widgetId) {
       assert(pageId !== undefined, "Page Id must be defined");
       assert(widgetId !== undefined, "Widget Id must be defined");
 
       var page = PageManager.getPage(pageId);
       assert(page != null, "page Id doesn't exit");
-      widgetToDelete = page.getWidget(widgetId);
-      assert(widgetToDelete != null, "widget Id doesn't exit in the page");
+      if (page) {
+         widgetToDelete = page.getWidget(widgetId);
+         assert(widgetToDelete != null, "widget Id doesn't exit in the page");
 
-      $("div#delete-widget-modal").find("div.modal-body").text($.t("modals.delete-widget.text", { widgetType : $.t("widgets/" + widgetToDelete.type + ":name", { defaultValue : widgetToDelete.package.name})}));
+         $("div#delete-widget-modal").find("div.modal-body").text($.t("modals.delete-widget.text", { widgetType: $.t("widgets/" + widgetToDelete.type + ":name", { defaultValue: widgetToDelete.package.name }) }));
 
-      //we display the modal
-      $('div#delete-widget-modal').modal({ backdrop: 'static' });
+         //we display the modal
+         $('div#delete-widget-modal').modal({ backdrop: 'static' });
+      }
    }
 
    /**
@@ -43,29 +45,21 @@
       //we close the delete widget modal
       $("div#delete-widget-modal").modal("hide");
 
-      //we ask for deletion of the widget
-      $.ajax({
-         type: "DELETE",
-         url: "/rest/widget/" + widgetToDelete.id,
-         dataType: "json"
-      })
-      .done(function(data) {
-         //we parse the json answer
-         if (data.result != "true")
-         {
-            notifyError($.t("modals.delete-widget.errorDuringDeletingWidget"), JSON.stringify(data));
-            return;
-         }
-
+      WidgetManager.deleteWidget(widgetToDelete)
+      .done(function() {
          notifySuccess($.t("modals.delete-widget.widgetSuccessfullyDeleted"));
          //we delete the widget dynamically
          var page = PageManager.getPage(widgetToDelete.idPage);
-         assert(page != null, "page Id doesn't exit");
-
-         page.grid.remove_widget(widgetToDelete.$gridWidget, true);
-         page.widgets.splice($.inArray(widgetToDelete, page.widgets), 1);
+         if (page) {
+            page.grid.remove_widget(widgetToDelete.$gridWidget, true);
+            page.widgets.splice($.inArray(widgetToDelete, page.widgets), 1);
+         } else {
+            console.error("page Id doesn't exit");
+         }
+       })
+      .fail(function(error) {
+         notifyError($.t("modals.delete-page.errorDuringDeletingWidgetNamed", { "widgetType": widgetToDelete.name }), error);
       })
-      .fail(function(widgetName) { return function() {notifyError($.t("modals.delete-page.errorDuringDeletingWidgetNamed", {"widgetType" : widgetName}));};}(widgetToDelete.name))
       .always(function() {
         //we clear the current id
         widgetToDelete = null;

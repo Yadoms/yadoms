@@ -49,22 +49,31 @@ AcquisitionManager.getLastValue = function (keywordId) {
  */
 AcquisitionManager.getLastValues = function(keywords) {
    var d = new $.Deferred();
-   
-   //extract only keyword id
-   var allKeywordId = [];
-   $.each(keywords, function(index, keyword) {
-      allKeywordId.push(keyword.id);
-   });
-   
-   RestEngine.putJson("/rest/acquisition/keyword/lastdata", { data: JSON.stringify({ keywords: allKeywordId }) })
-      .done(function (data) {
-         var result = [];
-         $.each(data, function(index, keydata) {
-            result.push(AcquisitionManager.factory(keydata));
-         });
-         d.resolve(result);
-      })
-      .fail(d.reject);
 
+   if (keywords && keywords.length > 0) {
+
+      //extract only keyword id
+      var allKeywordId = [];
+      $.each(keywords, function(index, keyword) {
+         if (keyword) {
+            if (keyword.id)
+               allKeywordId.push(keyword.id);
+            else
+               allKeywordId.push(keyword);
+         }
+      });
+
+      RestEngine.putJson("/rest/acquisition/keyword/lastdata", { data: JSON.stringify({ keywords: allKeywordId }) })
+         .done(function(data) {
+            var result = [];
+            $.each(data, function(index, keydata) {
+               result.push(AcquisitionManager.factory(keydata));
+            });
+            d.resolve(result);
+         })
+         .fail(d.reject);
+   } else {
+      d.resolve();
+   }
    return d.promise();
 }

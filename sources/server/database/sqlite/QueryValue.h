@@ -109,15 +109,6 @@ namespace sqlite {
       void initialize(const std::string & value);
 
       //
-      /// \brief           Replace substring in a string
-      /// \param s         The input string
-      /// \param from      The substring to replace
-      /// \param to        The new substring
-      /// \return          The output string
-      //
-      static std::string replace(const std::string& s, const std::string& from, const std::string& to);
-
-      //
       /// \brief           Normalize the string (replacing ' by '')
       /// \param value     The input string
       /// \return          The normalized string
