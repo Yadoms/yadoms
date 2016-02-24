@@ -88,8 +88,7 @@ if(PYTHONLIBS_FOUND)
 
    #Ignore some warnings under VisualStudio for Protobuf generated files
    IF(WIN32)
-      set_property(SOURCE ${PROTO_SRCS} APPEND PROPERTY COMPILE_FLAGS "/wd4244 /wd4125")
-      set_property(TARGET python APPEND PROPERTY LINK_FLAGS "/ignore:4075")
+      set_property(SOURCE ${PROTO_SRCS} APPEND_STRING PROPERTY COMPILE_FLAGS "/wd4244 /wd4125")
    ENDIF()
 
    #########################################
