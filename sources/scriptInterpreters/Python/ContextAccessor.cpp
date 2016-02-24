@@ -252,6 +252,7 @@ void CContextAccessor::processWaitForEvent(const protobufMessage::Request_WaitFo
 void CContextAccessor::processWriteKeyword(const protobufMessage::Request_WriteKeyword& request, boost::interprocess::message_queue& messageQueue)
 {
    protobufMessage::Answer ans;
+   ans.mutable_writekeyword();
    try
    {
       m_scriptApi->writeKeyword(request.keywordid(), request.newstate());
@@ -266,6 +267,7 @@ void CContextAccessor::processWriteKeyword(const protobufMessage::Request_WriteK
 void CContextAccessor::processSendNotification(const protobufMessage::Request_SendNotification& request, boost::interprocess::message_queue& messageQueue)
 {
    protobufMessage::Answer ans;
+   ans.mutable_sendnotification();
    try
    {
       m_scriptApi->sendNotification(request.keywordid(), request.recipientid(), request.message());

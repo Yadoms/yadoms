@@ -6,7 +6,12 @@ include(findPython.cmake)
 if(PYTHONLIBS_FOUND)
 
    # include common script interpreters definitions
-   include("../YadomsScriptInterpertersCommon.cmake")
+   include("../YadomsScriptInterpertersCommon.cmake")   
+	  
+   #########################################
+   ## Messages static library
+   #########################################
+   add_subdirectory(messages)
 
    #########################################
    ## Place here all the source files
@@ -20,7 +25,7 @@ if(PYTHONLIBS_FOUND)
       IPythonExecutable.h
       IScriptFile.h
       IScriptProcess.h
-      Messages.hpp
+      Messages.h
       MessageQueueRemover.hpp
       Python.h
       Python.cpp
@@ -34,15 +39,9 @@ if(PYTHONLIBS_FOUND)
       ScriptProcess.h
       ScriptProcess.cpp
       
-      Messages.proto
-      
       scriptCaller.py
       scriptUtilities.py
    )
-
-   protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS Messages.proto)
-   set(PYTHON_SOURCES ${PYTHON_SOURCES} ${PROTO_SRCS} ${PROTO_HDRS})
-   set(PROTOBUF_GENERATED_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE INTERNAL "Path to generated protobuf files.")
    
    #Append platform specific files
    IF(WIN32)
@@ -83,13 +82,8 @@ if(PYTHONLIBS_FOUND)
    ## even if PYTHON_INCLDIR or PYTHON_LINK are empty
    #########################################
    SCRIPT_INTERPRETER_SOURCES(python ${PYTHON_SOURCES})
-   SCRIPT_INTERPRETER_INCLDIR(python ${PYTHON_INCLDIR} ${PLATFORM_SPECIFIC_INCL_DIR} ${PROTOBUF_INCLUDE_DIRS} ${PROTOBUF_GENERATED_DIR})
-   SCRIPT_INTERPRETER_LINK(python ${PYTHON_LINK} ${PROTOBUF_LIBRARIES})
-
-   #Ignore some warnings under VisualStudio for Protobuf generated files
-   IF(WIN32)
-      set_property(SOURCE ${PROTO_SRCS} APPEND_STRING PROPERTY COMPILE_FLAGS "/wd4244 /wd4125")
-   ENDIF()
+   SCRIPT_INTERPRETER_INCLDIR(python ${PYTHON_INCLDIR} ${PLATFORM_SPECIFIC_INCL_DIR} ${PROTOBUF_INCLUDE_DIRS} ${messages_GENERATED_DIR})
+   SCRIPT_INTERPRETER_LINK(python ${PYTHON_LINK} messages)
 
    #########################################
    ## Post-build commands
@@ -103,7 +97,7 @@ if(PYTHONLIBS_FOUND)
    SCRIPT_INTERPRETER_POST_BUILD_COPY_DIRECTORY(python locales)
 	  
    #########################################
-   ## Generate the associated yScriptApi wrapper
+   ## Generate the associated yScriptApiwrapper
    #########################################
    add_subdirectory(yScriptApiWrapper)
    

@@ -1,7 +1,8 @@
 #pragma once
 
 #include <shared/script/yScriptApi/IYScriptApi.h>
-#include "../Messages.hpp"
+#include "../Messages.h"
+
 
 //-----------------------------------------------------
 ///\brief The Yadoms script API implementation for the Python wrapper

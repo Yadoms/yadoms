@@ -13,7 +13,7 @@ set(PYTHON_WRAPPER_SOURCES
    
 	swigpyrun.h
      
-   ../Messages.hpp
+   ../Messages.h
    PythonLibInclude.h
    yScriptApiInstance.h
    yScriptApiInstance.cpp
@@ -21,10 +21,7 @@ set(PYTHON_WRAPPER_SOURCES
    yScriptApiImplementation.cpp
    
    yScriptApiDoc.json
-   
-   ${PROTO_SRCS}
-   ${PROTO_HDRS}
-)  
+)
   
 
 #########################################
@@ -72,13 +69,8 @@ endif()
 ## even if some variables are empty
 #########################################
 SCRIPT_API_WRAPPER_SOURCES(python ${PYTHON_WRAPPER_SOURCES})
-SCRIPT_API_WRAPPER_INCLDIR(${PYTHON_WRAPPER_INCLDIR} ${PROTOBUF_INCLUDE_DIRS} ${PROTOBUF_GENERATED_DIR})
-SCRIPT_API_WRAPPER_LINK(${PYTHON_WRAPPER_LINK} ${PROTOBUF_LIBRARIES})
-
-#Ignore some warnings under VisualStudio for Protobuf generated files
-IF(WIN32)
-   set_property(SOURCE ${PROTO_SRCS} APPEND PROPERTY COMPILE_FLAGS "/wd4244 /wd4125")
-ENDIF() 
+SCRIPT_API_WRAPPER_INCLDIR(${PYTHON_WRAPPER_INCLDIR} ${PROTOBUF_INCLUDE_DIRS} ${messages_GENERATED_DIR})
+SCRIPT_API_WRAPPER_LINK(${PYTHON_WRAPPER_LINK} messages)
 
 #########################################
 ## Add pre-build step to generate swigpyrun.h file

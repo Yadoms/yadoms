@@ -3,3 +3,4 @@ sources/scriptInterpreters/Python/yScriptApiWrapper/swigpyrun.h
 sources/resources/windows/yadoms-generated.rc
 *.pyc
 *.orig
+*.bak
