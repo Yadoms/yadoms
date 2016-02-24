@@ -58,7 +58,8 @@ void CYadomsCPULoad::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> contex
 
 void CYadomsCPULoad::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
-   BOOST_ASSERT_MSG(context, "context must be defined");
+   if (!context)
+      throw shared::exception::CException("context must be defined");
 
    if (m_InitializeOk)
    {

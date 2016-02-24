@@ -43,7 +43,8 @@ bool CRfxcomReceiveBufferHandler::isComplete() const
 
 boost::shared_ptr<const shared::communication::CByteBuffer> CRfxcomReceiveBufferHandler::popNextMessage()
 {
-   BOOST_ASSERT_MSG(isComplete(), "CRfxcomReceiveBufferHandler : Can not pop not completed message. Call isComplete to check if a message is available");
+   if (!isComplete())
+      throw shared::exception::CException("CRfxcomReceiveBufferHandler : Can not pop not completed message. Call isComplete to check if a message is available");
 
    // The message size is provided in the first byte of the message
    // (see RFXCom specifications). This value counts all bytes except itself.

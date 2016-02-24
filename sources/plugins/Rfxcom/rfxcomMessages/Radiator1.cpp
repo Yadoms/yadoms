@@ -60,7 +60,7 @@ CRadiator1::CRadiator1(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF&
    :m_subType(0), m_unitCode(0), m_id(0), m_day("day"), m_setPoint("setPoint"), m_rssi("rssi")
 {
    // Should not be called (transmitter-only device)
-   BOOST_ASSERT_MSG(false, "Constructing CRadiator1 object from received buffer is not possible, CRadiator1 is transmitter-only device");
+   throw shared::exception::CException("Constructing CRadiator1 object from received buffer is not possible, CRadiator1 is transmitter-only device");
 }
 
 CRadiator1::~CRadiator1()

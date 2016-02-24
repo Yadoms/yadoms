@@ -70,7 +70,8 @@ void CChime::createSubType(unsigned char subType)
 
 void CChime::declare(boost::shared_ptr<yApi::IYPluginApi> context)
 {
-   BOOST_ASSERT_MSG(!!m_subTypeManager, "m_subTypeManager must be initialized");
+   if (!m_subTypeManager)
+      throw shared::exception::CException("m_subTypeManager must be initialized");
 
    // Build device description
    buildDeviceName();
@@ -120,7 +121,7 @@ const std::string& CChime::getDeviceName() const
 void CChime::buildDeviceName()
 {
    std::ostringstream ssdeviceName;
-   ssdeviceName << (unsigned int)m_subType << "." << (unsigned int)m_id;
+   ssdeviceName << static_cast<unsigned int>(m_subType) << "." << static_cast<unsigned int>(m_id);
    m_deviceName = ssdeviceName.str();
 }
 

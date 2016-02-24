@@ -143,8 +143,7 @@ unsigned char CCamera1::toProtocolState(const yApi::historization::CCameraMove& 
    case yApi::historization::ECameraMoveCommand::kSweepValue : return camera_sSweep;
    case yApi::historization::ECameraMoveCommand::kProgramSweepValue : return camera_sProgramSweep;
    default:
-      BOOST_ASSERT_MSG(false, "Unsupported value");
-      throw shared::exception::CInvalidParameter(state.formatValue());
+      throw shared::exception::CInvalidParameter("state, " + boost::lexical_cast<std::string>(state.get()));
    }
 }
 
@@ -169,8 +168,7 @@ yApi::historization::ECameraMoveCommand CCamera1::fromProtocolState(unsigned cha
    case camera_sSweep : return yApi::historization::ECameraMoveCommand::kSweepValue;
    case camera_sProgramSweep : return yApi::historization::ECameraMoveCommand::kProgramSweepValue;
    default:
-      BOOST_ASSERT_MSG(false, "Invalid state");
-      throw shared::exception::CInvalidParameter("state");
+      throw shared::exception::CInvalidParameter("state, " + boost::lexical_cast<std::string>(protocolState));
    }
 }
 
