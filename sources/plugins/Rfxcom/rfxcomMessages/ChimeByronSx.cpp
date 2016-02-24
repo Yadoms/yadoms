@@ -96,7 +96,7 @@ void CChimeByronSx::toProtocolState(unsigned char& sound) const
    case kTubular2Notes: sound = chime_sound2; break;
    case kSolo         : sound = chime_sound3; break;
    default:
-      BOOST_ASSERT_MSG(false, "Unsupported sound value");
+      YADOMS_LOG(warning) << "CChimeByronSx::toProtocolState : Unsupported sound value : " << m_sound;
       sound = chime_sound0; break;
    }
 }

@@ -63,10 +63,7 @@ void CLighting5LightwaveRfKeyword::setFromProtocolState(unsigned char cmdByte, u
       m_keyword.set(levelByte * 100 / 0x1F);
        break;
    default:
-      {
-         BOOST_ASSERT_MSG(false, "Invalid state");
-         throw shared::exception::CInvalidParameter(m_keyword.getKeyword());
-      }
+         throw shared::exception::CInvalidParameter("state, " + boost::lexical_cast<std::string>(cmdByte));
    }
 }
 

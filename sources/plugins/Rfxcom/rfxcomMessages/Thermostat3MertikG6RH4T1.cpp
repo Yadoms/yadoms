@@ -86,10 +86,7 @@ void CThermostat3MertikG6RH4T1::setFromProtocolState(unsigned char cmd)
    case thermostat3_sStop     : m_UpDown.set(yApi::historization::EUpDownStopCommand::kStopValue); m_RunUpDown.set(yApi::historization::EUpDownStopCommand::kStopValue); break;
 
    default:
-      {
-         BOOST_ASSERT_MSG(false, "Invalid state");
-         throw shared::exception::CInvalidParameter("state");
-      }
+      throw shared::exception::CInvalidParameter("state, " + boost::lexical_cast<std::string>(m_statusByte));
    }
 }
 

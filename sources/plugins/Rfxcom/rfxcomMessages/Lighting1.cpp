@@ -169,8 +169,7 @@ bool CLighting1::fromProtocolState(unsigned char protocolState)
       return false;
 
    default:
-      BOOST_ASSERT_MSG(false, "Invalid state");
-      throw shared::exception::CInvalidParameter("state");
+      throw shared::exception::CInvalidParameter("state, " + boost::lexical_cast<std::string>(protocolState));
    }
 }
 

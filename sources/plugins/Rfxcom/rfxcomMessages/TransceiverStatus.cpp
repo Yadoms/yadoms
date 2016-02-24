@@ -80,7 +80,6 @@ CTransceiverStatus::~CTransceiverStatus()
 
 boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CTransceiverStatus::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
 {
-   BOOST_ASSERT_MSG(false, "Status is a read-only message, can not be encoded");
    throw shared::exception::CInvalidParameter("Status is a read-only message, can not be encoded");
 }
 

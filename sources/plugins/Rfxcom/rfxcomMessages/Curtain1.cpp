@@ -29,7 +29,7 @@ CCurtain1::CCurtain1(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char
    if (m_subType != sTypeHarrison)
       throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
 
-   m_houseCode = (unsigned char) manuallyDeviceCreationConfiguration.get<char>("houseCode");
+   m_houseCode = static_cast<unsigned char>(manuallyDeviceCreationConfiguration.get<char>("houseCode"));
    m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned char>("unitCode");
 
    Init(context);
@@ -121,8 +121,7 @@ unsigned char CCurtain1::toProtocolState(const yApi::historization::CCurtain& cu
    case yApi::historization::ECurtainCommand::kCloseValue: return curtain_sClose;
    case yApi::historization::ECurtainCommand::kStopValue: return curtain_sStop;
    default:
-      BOOST_ASSERT_MSG(false, "Unsupported value");
-      throw shared::exception::CInvalidParameter(curtainState.formatValue());
+      throw shared::exception::CInvalidParameter("state, " + boost::lexical_cast<std::string>(curtainState.get()()));
    }
 }
 

@@ -71,8 +71,7 @@ void CLighting2Dimmable::setFromProtocolState(unsigned char cmdByte, unsigned ch
       }
    default:
       {
-         BOOST_ASSERT_MSG(false, "Invalid state");
-         throw shared::exception::CInvalidParameter("state");
+         throw shared::exception::CInvalidParameter("state, " + boost::lexical_cast<std::string>(cmdByte));
       }
    }
 }

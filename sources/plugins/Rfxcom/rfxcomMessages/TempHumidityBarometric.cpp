@@ -58,7 +58,6 @@ void CTempHumidityBarometric::Init(boost::shared_ptr<yApi::IYPluginApi> context)
 
 boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CTempHumidityBarometric::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
 {
-   BOOST_ASSERT_MSG(false, "TempHumidityBarometric is a read-only message, can not be encoded");
    throw shared::exception::CInvalidParameter("TempHumidityBarometric is a read-only message, can not be encoded");
 }
 

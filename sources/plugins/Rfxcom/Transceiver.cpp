@@ -221,13 +221,11 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CTransceiver:
          return rfxcomMessages::CFS20(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
       default:
          YADOMS_LOG(error) << "Invalid command \"" << command->getBody() << "\" : " << " unknown type " << deviceType;
-         BOOST_ASSERT_MSG(false, "Invalid command (unknown type)");
          throw shared::exception::CInvalidParameter(command->getBody());
       }
    }
    catch (shared::exception::CException & e)
    {
-      BOOST_ASSERT_MSG(false, "Invalid command (parameter doesn't exist)");
       std::string message = (boost::format("Invalid command \"%1%\" : %2%") % command->getBody() % e.what()).str();
       throw shared::exception::CInvalidParameter(message);
    }

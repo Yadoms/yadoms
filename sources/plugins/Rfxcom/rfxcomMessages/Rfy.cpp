@@ -138,8 +138,7 @@ unsigned char CRfy::toProtocolState(const yApi::historization::CCurtain& curtain
    case yApi::historization::ECurtainCommand::kCloseValue: return rfy_sDown;
    case yApi::historization::ECurtainCommand::kStopValue: return rfy_sStop;
    default:
-      BOOST_ASSERT_MSG(false, "Unsupported value");
-      throw shared::exception::CInvalidParameter(curtainState.formatValue());
+      throw shared::exception::CInvalidParameter("state, " + boost::lexical_cast<std::string>(curtainState.get()()));
    }
 }
 

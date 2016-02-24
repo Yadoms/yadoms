@@ -161,9 +161,7 @@ int CLighting3::fromProtocolState(unsigned char protocolState)
    case light3_sLevel9: return 90;
    case light3_sOn    : return 100;
    default:
-      BOOST_ASSERT_MSG(false, "Invalid state");
-      throw shared::exception::CInvalidParameter("state");
-      break;
+      throw shared::exception::CInvalidParameter("state, " + boost::lexical_cast<std::string>(protocolState));
    }
 }
 
