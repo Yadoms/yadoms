@@ -51,9 +51,12 @@ function getTextWidth(text, font) {
          if (!$.isFunction($this.resizer)) {
             // Resizer() resizes items based on the object width divided by the compressor * 10
             $this.resizer = function() {
+               var text = $this.text();
+               if (text === "")
+                  text = "W";
 
                //determine the width for a large fontsize
-               var px300 = getTextWidth($this.text(), "300px " + $this.css("text-family"));
+               var px300 = getTextWidth(text, "300px " + $this.css("text-family"));
                //estimate the size relative to the item width, and apply a 0.8 factor to ensure the text will fit
                var fontSizeFromWidth = ($this.width() * 300 / px300) * 0.8;
 
