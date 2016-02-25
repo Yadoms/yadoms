@@ -10,7 +10,7 @@ MACRO(MAKE_SCRIPT_API_MESSAGES_LIBRARY target proto_file ide_folder)
    )
 
    protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS ${proto_file})
-   set(MESSAGES_LIBRARY_SOURCES ${PROTO_SRCS} ${PROTO_HDRS})
+   set(MESSAGES_LIBRARY_SOURCES ${MESSAGES_LIBRARY_SOURCES} ${PROTO_SRCS} ${PROTO_HDRS})
    set(${target}_GENERATED_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE INTERNAL "Path to generated protobuf files.")
 
    include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${PROTOBUF_INCLUDE_DIRS})
