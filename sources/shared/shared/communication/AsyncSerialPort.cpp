@@ -137,23 +137,27 @@ void CAsyncSerialPort::reconnectTimerHandler(const boost::system::error_code& er
 
 void CAsyncSerialPort::tryConnect()
 {
-   if (!isConnected())
-      throw exception::CException("Already connected");
-
-   if (!connect())
+   if (isConnected())
    {
-      // Fail to reconnect, retry after a certain delay
-      m_connectRetryTimer.expires_from_now(m_connectRetryDelay);
-      m_connectRetryTimer.async_wait(boost::bind(&CAsyncSerialPort::reconnectTimerHandler, this, boost::asio::placeholders::error));
-      return;
+      YADOMS_LOG(warning) << "Already connected";
    }
+   else
+   {
+      if (!connect())
+      {
+         // Fail to reconnect, retry after a certain delay
+         m_connectRetryTimer.expires_from_now(m_connectRetryDelay);
+         m_connectRetryTimer.async_wait(boost::bind(&CAsyncSerialPort::reconnectTimerHandler, this, boost::asio::placeholders::error));
+         return;
+      }
 
-   // Connected
-   notifyEventHandler(true);
+      // Connected
+      notifyEventHandler(true);
 
-   // Flush buffers if required
-   if (m_flushAtConnect)
-      flush();
+      // Flush buffers if required
+      if (m_flushAtConnect)
+         flush();
+   }
 
    // Start listening on the port
    startRead();
