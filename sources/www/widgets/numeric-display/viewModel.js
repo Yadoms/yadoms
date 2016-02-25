@@ -15,6 +15,13 @@ function numericDisplayViewModel() {
      */
     this.initialize = function () {
 
+       var self = this;
+       self.widgetApi.loadCss("widgets/numeric-display/widget.css")
+       .done(function () {
+          self.widgetApi.find(".widget-api-textfit").fitText();
+       });
+
+       //
         //we create the battery indicator
        this.widgetApi.toolbar.addBatteryIconToWidget();
     };

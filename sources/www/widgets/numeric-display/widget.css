@@ -3,19 +3,27 @@
     width: 100%;
     text-align: center;
 	position: relative;
-    display: table;
+    display: block;
 }
 
 
-.numeric-display-unit {
-	vertical-align:top;
-    display: table-cell;
-    width: 20%;
-}
 
 .numeric-display-value {
 	vertical-align:middle;
-    display: table-cell;
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
     width: 80%;
 }
 
+.numeric-display-unit {
+	vertical-align:top;
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 20%;
+}
