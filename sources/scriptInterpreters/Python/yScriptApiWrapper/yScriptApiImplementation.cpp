@@ -180,6 +180,7 @@ shared::script::yScriptApi::CWaitForEventResult CYScriptApiImplementation::waitF
    protobufMessage::Request_WaitForEvent* request = req.mutable_waitforevent();
    for (std::vector<int>::const_iterator it = keywordIdList.begin(); it != keywordIdList.end(); ++it)
       request->add_keywordid(*it);
+   request->set_receivedatetimeevent(receiveDateTimeEvent);
    if (!timeout.empty())
       request->set_timeout(timeout);
    sendRequest(req);
