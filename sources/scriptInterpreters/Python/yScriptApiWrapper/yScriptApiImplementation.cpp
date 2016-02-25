@@ -267,11 +267,11 @@ std::string CYScriptApiImplementation::getInfo(EInfoKeys key) const
    protobufMessage::Answer answer;
    receiveAnswer(answer);
 
-   if (!answer.has_sendnotification())
-      throw std::out_of_range("yScriptApiWrapper::sendNotification, wrong message received");
+   if (!answer.has_getinfo())
+      throw std::out_of_range("yScriptApiWrapper::getInfo, wrong message received");
 
    if (answer.has_error())
-      throw std::out_of_range(std::string("yScriptApiWrapper::sendNotification, error : ") + answer.error());
+      throw std::out_of_range(std::string("yScriptApiWrapper::getInfo, error : ") + answer.error());
 
    return answer.getinfo().value();
 }
