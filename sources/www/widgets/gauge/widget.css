@@ -1,0 +1,24 @@
+.widget-gauge .mainDiv {
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    margin: auto;
+    overflow: hidden;
+}
+
+.widget-gauge .innerDiv {
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    margin: auto;
+}
+
+.widget-gauge .unit {
+    color: silver;
+    text-align: center;
+}
+
+.widget-gauge .value {
+    color: black;
+    text-align: center;
+}

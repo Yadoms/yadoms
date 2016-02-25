@@ -6,33 +6,34 @@
 widgetViewModelCtor = function gaugeViewModel() {
 
     /**
-     * Widget identifier
-     */
-    this.widget = null;
-
-    /**
      * Initialization method
      * @param widget widget class object
      */
 
-    this.initialize = function (widget) {
-        this.widget = widget;
+    this.initialize = function () {
+        
         var self = this;
 
         //observable data
-        this.data = ko.observable(0).extend({ numeric: 1 });
-        this.unit = ko.observable("");
 
-        //simple data
-        this.WidgetHeight = "100px";
-        this.WidgetWidth = "200px";
+        self.fontLabelSize = ko.observable("1.5em");
+        self.fontUnitSize = ko.observable("1.5em");
 
-        this.isSmall = true;
+        this.fontLabelSizeCss = ko.computed(function () {
+            return { "font-size": self.fontLabelSize() };
+        }, this);
+        this.fontUnitSizeCss = ko.computed(function () {
+            return { "font-size": self.fontUnitSize() };
+        }, this);
 
-        this.stopsArray = null;
+        self.unit = "";
+
+        self.stopsArray = null;
+
+        self.$chart = self.widgetApi.find("div.innerDiv");
 
         var d = new $.Deferred();
-        WidgetApi.loadLibrary([
+        self.widgetApi.loadLibrary([
             "libs/highstock/js/highstock.js",
             "libs/highstock/js/highcharts-more.js",
             "libs/highstock/js/modules/exporting.js",
@@ -40,78 +41,6 @@ widgetViewModelCtor = function gaugeViewModel() {
             "libs/highcharts-export-clientside/js/highcharts-export-clientside.min.js"
         ]).done(function () {
             
-            self.gaugeOptions = {
-
-                chart: {
-                    type: "solidgauge"
-                },
-
-                title: null,
-                pane: {
-                    center: ["50%", "85%"],
-                    size: "140%",
-                    startAngle: -90,
-                    endAngle: 90,
-                    background: {
-                        backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || "#EEE",
-                        innerRadius: "60%",
-                        outerRadius: "100%",
-                        shape: "arc"
-                    }
-                },
-
-                tooltip: {
-                    enabled: false
-                },
-                credits: {
-                    enabled: false
-                },
-
-                // the value axis
-                yAxis: {
-                    //            stops are not defined here
-                    lineWidth: 0,
-                    minorTickInterval: null,
-                    tickPixelInterval: 400,
-                    tickWidth: 0,
-                    title: {
-                        y: -70
-                    },
-                    labels: {
-                        enabled: true,
-                        align: "left",
-                        x: -5,
-                        y: 16
-                    }
-                },
-
-                plotOptions: {
-                    solidgauge: {
-                        dataLabels: {
-                            enabled: true,
-                            y: 5,
-                            borderWidth: 0,
-                            useHTML: true
-                        }
-                    }
-                },
-
-                exporting: {
-                    enabled: false
-                }
-            };
-
-            var elementId = "widget-gauge-" + self.widget.id; // Unique ID
-
-            // Initialisation of a unique div associated to this widget
-            $('<div style="width: 193px; height: 100px; float: left;overflow: hidden;display: table;margin: auto;"></div>').attr({
-                id: elementId
-                //class: 'gaugeWidget'
-            }).appendTo("#widget-" + self.widget.id);
-
-            //This div is for rounds borders.
-            $('<div style="width: 193px; height: 5px; float: left"></div>').appendTo("#widget-" + self.widget.id);
-
             //we create the battery indicator
             self.widget.$toolbar.append("<div class=\"widget-toolbar-battery\" deviceId=\"\"></div>");
 
@@ -127,31 +56,11 @@ widgetViewModelCtor = function gaugeViewModel() {
     */
     this.onNewAcquisition = function (keywordId, data) {
         var self = this;
-
         if (keywordId === self.widget.configuration.device.keywordId) {
-            if (data.value !== self.data()) // refresh only when it's necessary.
-            {
-                //it is the good device
-                self.data(data.value);
-
-                self.refreshValue();
-            }
-        }
-    };
-
-    this.refreshValue = function () {
-        var self = this;
-
-        var elementId = "widget-gauge-" + self.widget.id; // Unique ID
-
-        var chart = $("#" + elementId).highcharts();
-
-        if (chart) {
-            if (chart.serie && chart.series.length > 0) {
-                if (chart.series[0].points && chart.series[0].points.length > 0) {
-                    var point = chart.series[0].points[0];
-                    point.update(self.data());
-                }
+            //it is the right device
+            if (self.chart) {
+                var point = self.chart.series[0].points[0];
+                point.update(parseFloat(data.value));
             }
         }
     };
@@ -165,11 +74,11 @@ widgetViewModelCtor = function gaugeViewModel() {
         //we register keyword new acquisition
         WidgetApi.keyword.registerKeywordAcquisitions(self.widget, self.widget.configuration.device.keywordId);
 
-        // Delete all elements in stopArray
-        this.stopsArray = new Array();
+        // Delete all elements in stopsArray
+        self.stopsArray = [];
 
         //we fill the deviceId of the battery indicator
-        this.widget.$toolbar.find(".widget-toolbar-battery").attr("deviceId", self.widget.configuration.device.deviceId);
+        WidgetApi.toolbar.configureBatteryIcon(self.widget, self.widget.configuration.device.deviceId);
 
         switch (self.widget.configuration.displayMode.activeSection) {
             case "solidColor":
@@ -196,99 +105,139 @@ widgetViewModelCtor = function gaugeViewModel() {
         //we get the unit of the keyword
         KeywordManager.get(self.widget.configuration.device.keywordId)
         .done(function (keyword) {
-            self.unit($.t(keyword.units));
-            //The following function should be here, otherwise, the unit, is not up to date
-            self.refresh();
-            self.refreshValue();
+            if (self.chart) {
+                var serie = self.chart.series[0];
+                serie.units = $.t(keyword.units);
+            }
         });
-    };
 
-    this.resized = function () {
-        // The square size is not supported by the widget. So size only used here 1x2 and 2x3.
+        var gaugeOptions = {
 
-        var self = this;
+            chart: {
+                type: "solidgauge"
+            },
 
-        //The maximum size
-        if (this.widget.height() <= 220 && this.widget.height() >= 180 && this.widget.width() <= 320 && this.widget.width() >= 280) {
-            //self.WidgetWidth  = "277px";
-            //self.WidgetHeight = "150px";
-            self.WidgetWidth = "277px";
-            self.WidgetHeight = "170px";
-
-            //To be painted only one time
-            if (self.isSmall === true) {
-                self.isSmall = false;
-                self.refresh();
-                self.refreshValue();
-            }
-        }
-        else {
-            self.WidgetWidth = "193px";
-            self.WidgetHeight = "130px";
-
-            //To be painted only one time
-            if (self.isSmall === false) {
-                self.isSmall = true;
-                self.refresh();
-                self.refreshValue();
-            }
-        }
-    };
-
-    this.refresh = function () {
-        var self = this;
-
-        var sizeValue;
-        var sizeUnit;
-        var titlePosition;
-
-        if (self.isSmall === true) {
-            sizeValue = 12;
-            sizeUnit = 8;
-            titlePosition = -33;
-        }
-        else {
-            sizeValue = 24;
-            sizeUnit = 12;
-            titlePosition = -70;
-        }
-
-        var elementId = "widget-gauge-" + self.widget.id; // Unique ID
-
-        //Attributes of div could only be changed trough theses variables. In an other way the div is stretched.	   
-        document.getElementById(elementId).style.height = self.WidgetHeight;
-        document.getElementById(elementId).style.width = self.WidgetWidth;
-
-        //we configured the chart !
-        $('#' + elementId).highcharts(Highcharts.merge(self.gaugeOptions, {
-            navigation: {
-                buttonOptions: {
-                    enabled: !self.isSmall
+            title: null,
+            pane: {
+                center: ["50%", "85%"],
+                size: "140%",
+                startAngle: -90,
+                endAngle: 90,
+                background: {
+                    backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || "#EEE",
+                    innerRadius: "60%",
+                    outerRadius: "100%",
+                    shape: "arc"
                 }
             },
+
+            tooltip: {
+                enabled: false
+            },
+            credits: {
+                enabled: false
+            },
+
+            // the value axis
             yAxis: {
+                lineWidth: 0,
+                minorTickInterval: null,
+                tickPixelInterval: 400,
+                tickWidth: 0,
+                labels: {
+                    enabled: true,
+                    align: "left",
+                    x: -5,
+                    y: 16
+                },
                 min: parseInt(self.widget.configuration.customYAxisMinMax.content.minimumValue), //Minimum value
                 max: parseInt(self.widget.configuration.customYAxisMinMax.content.maximumValue), //Maximal value
-                stops: self.stopsArray, // Stops for bar colors with thresholds
-                title: {
-                    enabled: "middle",
-                    text: self.widget.configuration.text,
-                    y: titlePosition
+                stops: self.stopsArray // Stops for bar colors with thresholds
+            },
+
+            plotOptions: {
+                solidgauge: {
+                    dataLabels: {
+                        enabled: true,
+                        y: 5,
+                        borderWidth: 0,
+                        useHTML: true
+                    }
                 }
+            },
+
+            exporting: {
+                enabled: false
             },
 
             series: [{
                 name: 'Data',
                 data: [1],
                 dataLabels: {
-                    format: '<div style="text-align:center"><span style="text-align:center;font-size:' + sizeValue + 'px;color:' +
-                             ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y:.1f}</span>' +  //<br/>
-                                '<span style="text-align:center;font-size:' + sizeUnit + 'px;color:silver"> ' + self.unit() + '</span></div>'
+                    formatter: function() {
+                        return '<div class="value" style="text-align:center"><span>' + this.y.toFixed(1) + '</span><br/>' +
+                                '<span class="unit">' + this.series.units + '</span></div>';
+                    }
                 },
-                tooltip: {
-                    valueSuffix: self.unit()
-                }
+                units : "" //custom field
             }]
-        }));
+        };
+        self.$chart.highcharts(gaugeOptions);
+        self.chart = self.$chart.highcharts();
+    };
+
+    this.resized = function () {
+        var self = this;
+        //debugger;
+        if (!isNullOrUndefined(self.chart)) {
+            //this.chart.setSize(self.widget.width() - 10, self.widget.height() - 10, true);
+            
+        }
+       
+        //we manage the font size of value and its unit
+        var width = this.widget.width();
+        var height = this.widget.height();
+        
+        if (width <= 100) {
+            self.fontLabelSize("1em");
+            self.fontUnitSize("1em");
+            this.chart.panes[0].options.size = "60%";
+        } else if (width <= 200) {
+            self.fontLabelSize("1em");
+            self.fontUnitSize("1em");
+            this.chart.panes[0].options.size = "80%";
+        } else if (width <= 300) {
+            self.fontLabelSize("1em");
+            self.fontUnitSize("1em");
+            this.chart.panes[0].options.size = "140%";
+        } else {
+            self.fontLabelSize("1em");
+            self.fontUnitSize("1em");
+            this.chart.panes[0].options.size = "200%";
+        }
+
+        $(window).trigger("resize");
+        /*else {
+            this.chart.panes[0].options.size = "140%";
+            //we look for height and width
+            if (width <= 200) {
+                if (height <= 100) {
+                    self.fontLabelSize("3em");
+                    self.fontUnitSize("4.5em");
+                } else {
+                    self.fontLabelSize("3em");
+                    self.fontUnitSize("4.5em");
+                }
+            } else {
+                if (height <= 100) {
+                    self.fontLabelSize("3em");
+                    self.fontUnitSize("4.5em");
+                } else {
+                    self.fontLabelSize("3em");
+                    self.fontUnitSize("4.5em");
+                }
+            }
+        }*/
+
     };
 };
