@@ -206,7 +206,18 @@ void CManager::updateScriptFile(boost::shared_ptr<const database::entities::CRul
 
    // First build directory tree
    boost::filesystem::remove_all(scriptProperties->scriptPath());
-   boost::filesystem::create_directories(scriptProperties->scriptPath());
+
+   // Create directory chain
+   boost::system::error_code ec;
+   int triesCount = 0;
+   do
+   {
+      // Under Windows, create_directories immediately called after remove_all can raise error. So retry until it works.
+      boost::filesystem::create_directories(scriptProperties->scriptPath(), ec);
+      if (++triesCount > 3)
+         throw shared::exception::CException("Unable to create directories");
+      boost::this_thread::sleep(boost::posix_time::milliseconds(200));
+   } while (ec != boost::system::errc::success);
 
    // Create the file and put the code in (delegated to the interpreter)
    boost::shared_ptr<shared::script::IInterpreter> scriptInterpreter = getAssociatedInterpreter(scriptProperties->interpreterName());
