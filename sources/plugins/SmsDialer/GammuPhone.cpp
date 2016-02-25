@@ -97,7 +97,6 @@ void CGammuPhone::unlock(const std::string& pin)
 
 void CGammuPhone::send(boost::shared_ptr<ISms> sms)
 {
-   BOOST_ASSERT_MSG(isConnected(), "Phone must be connected to send SMS");
    if (!isConnected())
       throw CPhoneException("Phone must be connected to send SMS");
 

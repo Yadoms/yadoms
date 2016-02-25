@@ -8,7 +8,8 @@ volatile sig_atomic_t CApplicationStopHandler::StopRequested = false;
 CApplicationStopHandler::CApplicationStopHandler(boost::shared_ptr<shared::event::CEventHandler> targetEventHandler, int eventId)
    :m_targetEventHandler(targetEventHandler), m_eventId(eventId), m_stopMode(kYadomsOnly)
 {
-   BOOST_ASSERT_MSG(!m_thread, "CApplicationStopHandler::configure must not be called twice");
+   if (m_thread)
+      throw shared::exception::CException("CApplicationStopHandler::configure must not be called twice");
 
    signal(SIGINT, handleInternal);   // CTRL+C signal
    signal(SIGTERM,handleInternal);   // Termination request

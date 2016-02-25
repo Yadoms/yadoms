@@ -144,11 +144,16 @@ bool CLighting6::fromProtocolState(unsigned char protocolState)
 {
    switch(protocolState)
    {
-   case light6_sOn: return true;
-   case light6_sOff: return false;
+   case light6_sOn:
+   case light6_sGroupOn:
+      return true;
+
+   case light6_sOff:
+   case light6_sGroupOff:
+      return false;
+
    default:
-      BOOST_ASSERT_MSG(false, "Invalid state");
-      throw shared::exception::CInvalidParameter("state");
+      throw shared::exception::CInvalidParameter("state, " + boost::lexical_cast<std::string>(protocolState));
    }
 }
 

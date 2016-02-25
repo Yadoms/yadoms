@@ -146,7 +146,8 @@ void CCPULoad::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context)
 
 void CCPULoad::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
-   BOOST_ASSERT_MSG(!!context, "context must be defined");
+   if (!context)
+      throw shared::exception::CException("context must be defined");
 
    if (m_InitializeOk)
       context->historizeData(m_device, *m_keyword);

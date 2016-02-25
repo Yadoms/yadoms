@@ -234,8 +234,7 @@ yApi::historization::ECurtainCommand CBlinds1::fromProtocolState(unsigned char p
    case blinds_sClose: return yApi::historization::ECurtainCommand::kClose;
    case blinds_sStop: return yApi::historization::ECurtainCommand::kStop;
    default:
-      BOOST_ASSERT_MSG(false, "Invalid state");
-      throw shared::exception::CInvalidParameter("state");
+      throw shared::exception::CInvalidParameter("state, " + boost::lexical_cast<std::string>(protocolCmnd));
    }
 }
 
@@ -247,8 +246,7 @@ unsigned char CBlinds1::toProtocolState(const yApi::historization::CCurtain& cur
    case yApi::historization::ECurtainCommand::kCloseValue: return blinds_sClose;
    case yApi::historization::ECurtainCommand::kStopValue: return blinds_sStop;
    default:
-      BOOST_ASSERT_MSG(false, "Unsupported value");
-      throw shared::exception::CInvalidParameter(curtainState.formatValue());
+      throw shared::exception::CInvalidParameter("state, " + boost::lexical_cast<std::string>(curtainState.get()()));
    }
 }
 

@@ -102,10 +102,7 @@ void CSecurity1X10R::setFromProtocolState(unsigned char statusByte)
    case sStatusLight2On:            m_light2.set(true);                                                           break;
 
    default:
-      {
-         BOOST_ASSERT_MSG(false, "Invalid state");
-         throw shared::exception::CInvalidParameter("state");
-      }
+      throw shared::exception::CInvalidParameter("state, " + boost::lexical_cast<std::string>(m_statusByte));
    }
 }
 

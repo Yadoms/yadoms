@@ -81,10 +81,7 @@ void CSecurity1Meiantech::setFromProtocolState(unsigned char statusByte)
    case sStatusDisarm :             m_armAlarm.set(yApi::historization::EArmingAlarmStatus::kDisarmedValue);      break;
 
    default:
-      {
-         BOOST_ASSERT_MSG(false, "Invalid state");
-         throw shared::exception::CInvalidParameter("state");
-      }
+      throw shared::exception::CInvalidParameter("state, " + boost::lexical_cast<std::string>(m_statusByte));
    }
 }
 

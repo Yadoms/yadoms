@@ -89,7 +89,8 @@ void CFakeSensor::read()
 
 void CFakeSensor::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
-   BOOST_ASSERT_MSG(context, "context must be defined");
+   if (!context)
+      throw shared::exception::CException("context must be defined");
 
    // If you need to historize several data, use the vector form of historizeData for performance
    context->historizeData(m_deviceName, m_historizers);

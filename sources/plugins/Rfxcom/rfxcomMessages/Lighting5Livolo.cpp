@@ -64,10 +64,7 @@ void CLighting5Livolo::setFromProtocolState(unsigned char cmdByte, unsigned char
       m_keyword.set(true);
        break;
    default:
-      {
-         BOOST_ASSERT_MSG(false, "Invalid state");
-         throw shared::exception::CInvalidParameter(m_keyword.getKeyword());
-      }
+      throw shared::exception::CInvalidParameter("state, " + boost::lexical_cast<std::string>(cmdByte));
    }
 }
 

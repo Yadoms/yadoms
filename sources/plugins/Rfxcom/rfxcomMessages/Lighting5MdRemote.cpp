@@ -68,10 +68,7 @@ void CLighting5MdRemoteKeyword::setFromProtocolState(unsigned char cmdByte, unsi
       m_keyword.set(25);
        break;
    default:
-      {
-         BOOST_ASSERT_MSG(false, "Invalid state");
-         throw shared::exception::CInvalidParameter(m_keyword.getKeyword());
-      }
+      throw shared::exception::CInvalidParameter("state, " + boost::lexical_cast<std::string>(cmdByte));
    }
 }
 

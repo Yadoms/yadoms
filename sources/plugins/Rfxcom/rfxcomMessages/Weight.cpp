@@ -53,7 +53,6 @@ void CWeight::Init(boost::shared_ptr<yApi::IYPluginApi> context)
 
 boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CWeight::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
 {
-   BOOST_ASSERT_MSG(false, "Weight is a read-only message, can not be encoded");
    throw shared::exception::CInvalidParameter("Weight is a read-only message, can not be encoded");
 }
 

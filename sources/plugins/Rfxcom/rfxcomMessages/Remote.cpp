@@ -63,7 +63,8 @@ void CRemote::createSubType(unsigned char subType)
 
 void CRemote::declare(boost::shared_ptr<yApi::IYPluginApi> context)
 {
-   BOOST_ASSERT_MSG(!!m_subTypeManager, "m_subTypeManager must be initialized");
+   if (!m_subTypeManager)
+      throw shared::exception::CException("m_subTypeManager must be initialized");
 
    // Build device description
    buildDeviceName();

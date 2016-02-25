@@ -52,7 +52,6 @@ void CRFXMeter::Init(boost::shared_ptr<yApi::IYPluginApi> context)
 
 boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CRFXMeter::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
 {
-   BOOST_ASSERT_MSG(false, "RFXMeter is a read-only message, can not be encoded");
    throw shared::exception::CInvalidParameter("RFXMeter is a read-only message, can not be encoded");
 }
 
