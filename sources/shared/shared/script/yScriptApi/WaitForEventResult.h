@@ -11,7 +11,7 @@ namespace shared { namespace script { namespace yScriptApi
       //-----------------------------------------------------
       ///\brief Constructor
       //-----------------------------------------------------
-      explicit CWaitForEventResult() {}
+      CWaitForEventResult() :m_type(kTimeout), m_keywordId(-1) {}
 
       //-----------------------------------------------------
       ///\brief Destructor
