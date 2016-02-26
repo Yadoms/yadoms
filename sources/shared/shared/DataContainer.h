@@ -194,7 +194,7 @@ namespace shared
       /// \brief		Constructor. 
       /// \param [in] initialData    Initial data for this container (will be deserialized)
       //--------------------------------------------------------------
-      CDataContainer(const std::string & initialData);
+      explicit CDataContainer(const std::string & initialData);
 
       //--------------------------------------------------------------
       /// \brief		Constructor. 

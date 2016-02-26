@@ -83,7 +83,7 @@ void CChime::declare(boost::shared_ptr<yApi::IYPluginApi> context)
       details.set("type", pTypeChime);
       details.set("subType", m_subType);
       details.set("id", m_id);
-      context->declareDevice(m_deviceName, m_subTypeManager->getModel(), details.serialize());
+      context->declareDevice(m_deviceName, m_subTypeManager->getModel(), details);
 
       m_subTypeManager->declare(context, m_deviceName);
       context->declareKeyword(m_deviceName, m_rssi);
