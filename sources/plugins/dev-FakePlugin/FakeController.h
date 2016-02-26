@@ -21,7 +21,7 @@ public:
    ///\brief                     Constructor
    ///\param[in] keywordName     Yadoms keyword name
    //-----------------------------------------------------
-   CControllerValue(const std::string& keywordName);
+   explicit CControllerValue(const std::string& keywordName);
 
    //-----------------------------------------------------
    ///\brief                     Destructor

@@ -13,7 +13,7 @@ namespace xplcore
       /// \brief	                        Constructor
       /// \param [in] message : Message to display
       //--------------------------------------------------------------
-      CXplException(const std::string & message) : m_message(message)
+      explicit CXplException(const std::string & message) : m_message(message)
       {
       }
 

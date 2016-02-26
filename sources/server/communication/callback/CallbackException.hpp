@@ -13,7 +13,7 @@ namespace communication { namespace callback {
       /// \brief	                        Constructor
       /// \param[in]  message             Exception message
       //--------------------------------------------------------------
-      CCallbackException(const std::string& message)
+      explicit CCallbackException(const std::string& message)
          :CException(message)
       {
       }

@@ -146,12 +146,11 @@ boost::shared_ptr<device::IDevice> CEngine::createDevice(const boost::filesystem
    // Device Id (6 chars after '.')
    std::string id = filename.substr(3, 6 * 2);
    // OWFS give us the device ID inverted, so reinvert it
-   char c;
    for (int i = 0; i<6 / 2; i++)
    {
       int left_position = i * 2;          // Point on first byte
       int right_position = (6 - i - 1) * 2;   // Point on last byte
-      c = id[left_position]; id[left_position] = id[right_position]; id[right_position] = c;
+      char c = id[left_position]; id[left_position] = id[right_position]; id[right_position] = c;
       c = id[left_position + 1]; id[left_position + 1] = id[right_position + 1]; id[right_position + 1] = c;
    }
 

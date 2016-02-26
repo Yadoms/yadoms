@@ -15,7 +15,7 @@ namespace notification { namespace summary {
       ///\brief Constructor
       ///\param [in] obj   The notification object
       //-----------------------------
-      CNotification(std::vector< boost::shared_ptr<database::entities::CAcquisitionSummary> > & acquisitionSummary)
+      explicit CNotification(std::vector< boost::shared_ptr<database::entities::CAcquisitionSummary> > & acquisitionSummary)
          :m_acquisitionSummary(acquisitionSummary)
       {
       }

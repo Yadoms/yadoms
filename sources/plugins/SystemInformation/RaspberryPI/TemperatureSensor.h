@@ -19,7 +19,7 @@ public:
    /// \brief	    Constructor
    /// \param[in] deviceId    The device ID
    //--------------------------------------------------------------
-   CTemperatureSensor(const std::string & deviceId);
+   explicit CTemperatureSensor(const std::string & deviceId);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor

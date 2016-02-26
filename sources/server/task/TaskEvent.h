@@ -12,7 +12,7 @@ namespace task {
       //------------------------------------------
       ///\brief   Constructor
       //------------------------------------------
-      CTaskEvent(const std::string & guid);
+      explicit CTaskEvent(const std::string & guid);
 
       //------------------------------------------
       ///\brief   Destructor

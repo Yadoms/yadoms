@@ -26,7 +26,7 @@ namespace teleInfoUSB { namespace specificHistorizers
       ///\param[in] accessMode      The access mode
       ///\param[in] measureType     The measure type (normally kAbsolute)
       //-----------------------------------------------------
-      CColor(const std::string& keywordName);
+      explicit CColor(const std::string& keywordName);
 
       //-----------------------------------------------------
       ///\brief                     Destructor

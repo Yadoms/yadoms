@@ -15,7 +15,7 @@ namespace automation { namespace script
       ///\param[in] interpreterPath Interpreter path
       ///\throw CInvalidParameter if unable to load interpreter
       //-----------------------------------------------------
-      CInterpreterLibrary(const boost::filesystem::path& interpreterPath);
+      explicit CInterpreterLibrary(const boost::filesystem::path& interpreterPath);
 
       //-----------------------------------------------------
       ///\brief               Destructor

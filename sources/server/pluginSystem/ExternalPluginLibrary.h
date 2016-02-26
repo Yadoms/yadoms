@@ -33,7 +33,7 @@ namespace pluginSystem
       /// \param [in] libraryPath: the plugin path
       /// \throw      CInvalidPluginException if plugin is not recognized
       //--------------------------------------------------------------
-      CExternalPluginLibrary(const boost::filesystem::path& libraryPath);
+      explicit CExternalPluginLibrary(const boost::filesystem::path& libraryPath);
 
       //--------------------------------------------------------------
       /// \brief	Destructor

@@ -25,9 +25,6 @@ void CTransceiver::decodeTeleInfoMessage(boost::shared_ptr<yApi::IYPluginApi> co
 {
    const unsigned char *buf = reinterpret_cast<const unsigned char *>(data.begin());
 
-	std::string value;
-	std::string checksum;
-
 	ParseData(context, PluginName, buf, data.size());
 }
 
@@ -159,17 +156,13 @@ void CTransceiver::MatchLine( const unsigned char *m_buffer, boost::shared_ptr<y
 	{  6 }  //TELEINFO_TYPE_MOTDETAT
     };
 
-	char value[20] = "";
-	char id[15] = "";
-	long lvalue = 0;
-	bool lvalueIsANumber = false;
-
 	//We get the id --> This function could be adjust for the following
 	unsigned char * pos = (unsigned char *)strchr((char*)m_buffer, ' ');
 	if (pos == NULL)
 		return;
 	int position = int(pos - m_buffer);
-	strncpy(id, (char*)m_buffer, position);
+   char id[15] = "";
+   strncpy(id, (char*)m_buffer, position);
 	id[position] = 0;
 
     EnumValuesTypes::const_iterator it = EEnumValuesTypes.find( id );
@@ -180,12 +173,15 @@ void CTransceiver::MatchLine( const unsigned char *m_buffer, boost::shared_ptr<y
 		if (pos == NULL)
 			return;
 		position = int(pos - (unsigned char*)m_buffer);
+      char value[20] = "";
 		strncpy(value, (const char*)(&m_buffer[position + 1]), t[it->second].width);
 		value[t[it->second].width] = 0;             
 
-		 try
+      long lvalue = 0;
+      bool lvalueIsANumber;
+      try
 		 {
-		    lvalue = boost::lexical_cast<long>( value );
+          lvalue = boost::lexical_cast<long>(value);
 		    lvalueIsANumber = true;
 		 }
 		 catch(...)

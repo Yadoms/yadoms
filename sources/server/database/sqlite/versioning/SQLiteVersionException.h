@@ -16,7 +16,7 @@
                /// \brief	                        Constructor
                /// \param[in]  message             Exception message
                //--------------------------------------------------------------
-               CSQLiteVersionException(const char * message)
+               explicit CSQLiteVersionException(const char * message)
                   :CException(message)
                {
                }

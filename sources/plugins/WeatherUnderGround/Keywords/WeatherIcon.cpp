@@ -25,22 +25,22 @@ CWeatherIcon::~CWeatherIcon()
 
 void CWeatherIcon::SetValue( const shared::CDataContainer & ValueContainer, const std::string & filter)
 {
-    try
-	{
-        weatherunderground::helper::EnumValuesNames::const_iterator it = weatherunderground::helper::EEnumTypeNames.find( ValueContainer.get<std::string>( filter ) );
-        if (it != weatherunderground::helper::EEnumTypeNames.end())
-	    {
-           m_weathercondition->set( (yApi::historization::EWeatherCondition)(it->second) );
+   try
+   {
+      weatherunderground::helper::EnumValuesNames::const_iterator it = weatherunderground::helper::EEnumTypeNames.find(ValueContainer.get<std::string>(filter));
+      if (it != weatherunderground::helper::EEnumTypeNames.end())
+      {
+         m_weathercondition->set((yApi::historization::EWeatherCondition)(it->second));
 
-		   YADOMS_LOG(debug) << m_weathercondition->getKeyword() << "=" << m_weathercondition->get();
-	    }
-	    else
-		   throw CKeywordException ("Keyword WeatherIcon could not be set");
-	}
-    catch (shared::exception::CException e)
-	{
-		YADOMS_LOG(warning) << e.what() << std::endl;
-	}
+         YADOMS_LOG(debug) << m_weathercondition->getKeyword() << "=" << m_weathercondition->get();
+      }
+      else
+         throw CKeywordException("Keyword WeatherIcon could not be set");
+   }
+   catch (shared::exception::CException& e)
+   {
+      YADOMS_LOG(warning) << e.what() << std::endl;
+   }
 }
 
 void CWeatherIcon::DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const

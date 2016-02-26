@@ -40,7 +40,7 @@ namespace web { namespace rest { namespace service {
 
 
 
-   shared::CDataContainer CRecipient::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const std::string & requestContent)
+   shared::CDataContainer CRecipient::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       boost::shared_ptr<database::ITransactionalProvider> pTransactionalEngine = m_dataProvider->getTransactionalEngine();
       shared::CDataContainer result;

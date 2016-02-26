@@ -12,7 +12,7 @@ namespace dataAccessLayer {
       /// \param [in] configurationRequester    The configuration requester
       /// \param [in] notifier                  The notifier
       //--------------------------------------------------------------
-      CConfigurationManager(boost::shared_ptr< database::IConfigurationRequester > configurationRequester);
+      explicit CConfigurationManager(boost::shared_ptr< database::IConfigurationRequester > configurationRequester);
    
       //--------------------------------------------------------------
       /// \brief       Destructor

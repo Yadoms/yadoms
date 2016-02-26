@@ -24,7 +24,7 @@ namespace owfs { namespace io {
       /// \param[in]	devicePath Device path
       /// \param[in]	unitRepresentation Unit representation type
       //--------------------------------------------------------------
-      CMultiSwitch(const boost::filesystem::path& devicePath, EUnitRepresentation unitRepresentation);
+      explicit CMultiSwitch(const boost::filesystem::path& devicePath, EUnitRepresentation unitRepresentation);
 
       //--------------------------------------------------------------
       /// \brief	Destructor

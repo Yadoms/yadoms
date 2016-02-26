@@ -86,7 +86,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       //-----------------------------------------------------
       ///\brief                     Set the city name
       //-----------------------------------------------------
-      void SetCityName ( const std::string CityName );
+      void SetCityName ( const std::string& CityName );
 
    private:
       //-----------------------------------------------------

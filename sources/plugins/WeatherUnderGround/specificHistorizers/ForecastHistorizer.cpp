@@ -80,7 +80,7 @@ void CForecastHistorizer::AddUnit(
       return CDataContainer();
    }
 	
-void CForecastHistorizer::SetCityName ( const std::string CityName )
+void CForecastHistorizer::SetCityName ( const std::string& CityName )
 {
    m_content->SetCityName ( CityName );
 }

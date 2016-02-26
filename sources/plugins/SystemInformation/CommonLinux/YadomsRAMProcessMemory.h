@@ -19,7 +19,7 @@ public:
    /// \brief	    Constructor
    /// \param[in] device    The device
    //--------------------------------------------------------------
-   CYadomsRAMProcessMemory(const std::string & device);
+   explicit CYadomsRAMProcessMemory(const std::string & device);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor

@@ -20,7 +20,7 @@ namespace database { namespace sqlite {
          /// \Brief		   Constructor
          /// \param [in]	pDatabaseHandler: the database handler
          //--------------------------------------------------------------
-         CWidget(boost::shared_ptr<CSQLiteRequester> & databaseRequester);
+         explicit CWidget(boost::shared_ptr<CSQLiteRequester> & databaseRequester);
 
          //--------------------------------------------------------------
          /// \Brief		   Destructor

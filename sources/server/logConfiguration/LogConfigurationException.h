@@ -10,7 +10,7 @@ public:
   /// \brief	                        Constructor
   /// \param [in] message : Message to display
   //--------------------------------------------------------------
-  CLogConfigurationException(const std::string & message) : m_message(message)
+  explicit CLogConfigurationException(const std::string & message) : m_message(message)
   {
   }
 

@@ -9,6 +9,11 @@ namespace shared { namespace script { namespace yScriptApi
    {
    public:
       //-----------------------------------------------------
+      ///\brief Constructor
+      //-----------------------------------------------------
+      explicit CWaitForEventResult() {}
+
+      //-----------------------------------------------------
       ///\brief Destructor
       //-----------------------------------------------------
       virtual ~CWaitForEventResult() {}

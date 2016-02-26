@@ -19,7 +19,7 @@ namespace database { namespace sqlite {
          /// \Brief		   Constructor
          /// \param [in]	pDatabaseHandler: the database handler
          //--------------------------------------------------------------
-         CRule(boost::shared_ptr<CSQLiteRequester> & databaseRequester);
+         explicit CRule(boost::shared_ptr<CSQLiteRequester> & databaseRequester);
 
          //--------------------------------------------------------------
          /// \Brief		   Destructor

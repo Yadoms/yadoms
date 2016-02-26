@@ -9,7 +9,7 @@ namespace web { namespace rest { namespace service {
    class CEventLogger : public IRestService
    {
    public:
-      CEventLogger(boost::shared_ptr<dataAccessLayer::IEventLogger> dataProvider);
+      explicit CEventLogger(boost::shared_ptr<dataAccessLayer::IEventLogger> dataProvider);
       virtual ~CEventLogger();
 
    public:

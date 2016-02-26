@@ -34,7 +34,7 @@ namespace shared
       /// \brief	Constructor (library is loaded)
       /// \throw CInvalidParameter if fail to load library
       //--------------------------------------------------------------
-      CDynamicLibrary(const std::string& libraryFile);
+      explicit CDynamicLibrary(const std::string& libraryFile);
 
       //--------------------------------------------------------------
       /// \brief	Destructor

@@ -14,7 +14,7 @@ namespace shared { namespace web { namespace exception
       //--------------------------------------------------------------
       /// \brief	                        Constructor
       //--------------------------------------------------------------
-      CInvalidHash(const Poco::Path & fileChecked)
+      explicit CInvalidHash(const Poco::Path & fileChecked)
          :shared::exception::CException(std::string("Invalid MD5 hash for  : " + fileChecked.toString()))
       {
       }   
