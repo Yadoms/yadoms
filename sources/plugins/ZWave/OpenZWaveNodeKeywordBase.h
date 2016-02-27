@@ -15,7 +15,7 @@ protected:
    //--------------------------------------------------------------
    /// \brief	    Constructor
    //--------------------------------------------------------------
-   COpenZWaveNodeKeywordBase(OpenZWave::ValueID & valueId);
+   explicit COpenZWaveNodeKeywordBase(OpenZWave::ValueID & valueId);
 
 public:
    //--------------------------------------------------------------

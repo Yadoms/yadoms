@@ -13,7 +13,7 @@ public:
    //--------------------------------------------------------------
    /// \brief	Constructor
    //--------------------------------------------------------------
-   CGammuPhone(const ISmsDialerConfiguration& configuration);
+   explicit CGammuPhone(const ISmsDialerConfiguration& configuration);
 
    //--------------------------------------------------------------
    /// \brief	Destructor

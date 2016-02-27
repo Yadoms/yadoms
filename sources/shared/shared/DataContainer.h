@@ -481,10 +481,10 @@ namespace shared
 
    protected:
       //--------------------------------------------------------------
-      /// \brief		Constructor. 
+      /// \brief		Constructor
       /// \param [in] initialData    Initial tree for this container
       //--------------------------------------------------------------
-      CDataContainer(const boost::property_tree::ptree & initialTree);
+      explicit CDataContainer(const boost::property_tree::ptree & initialTree);
 
       //--------------------------------------------------------------
       /// \brief		Print the content to log
