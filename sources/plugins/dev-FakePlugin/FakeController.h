@@ -40,7 +40,7 @@ public:
    /// \brief	    Constructor
    /// \param[in] deviceName    The device name
    //--------------------------------------------------------------
-   CFakeController(const std::string& deviceName);
+   explicit CFakeController(const std::string& deviceName);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
