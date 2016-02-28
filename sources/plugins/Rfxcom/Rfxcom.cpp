@@ -332,11 +332,11 @@ void CRfxcom::initRfxcom()
 
    // Send reset command to the RfxCom
    YADOMS_LOG(information) << "Reset the RFXCom...";
-   send(m_transceiver->buildResetCmd());
+   send(m_transceiver->buildResetCmd(), false);
    // No answer
 
    // RFXCom needs some time to recover after reset (see specifications)
-   boost::this_thread::sleep(boost::posix_time::milliseconds(100));
+   boost::this_thread::sleep(boost::posix_time::milliseconds(500));
 
    // Flush receive buffer according to RFXCom specifications
    m_port->flush();
