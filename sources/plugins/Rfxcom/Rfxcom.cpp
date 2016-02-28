@@ -237,7 +237,7 @@ void CRfxcom::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> context
 
       // Get status, to compare with new configuration
       YADOMS_LOG(information) << "Get the RFXCom status...";
-      m_currentState = kGettingRfxcomStatus;
+      m_currentState = kGettingRfxcomStatus;//TODO voir si faut appliquer nouvelle méthode de com
       send(m_transceiver->buildGetStatusCmd(), true);
       return;
    }
@@ -341,10 +341,9 @@ void CRfxcom::initRfxcom()
    // Flush receive buffer according to RFXCom specifications
    m_port->flush();
 
-   // Now get the actual RFXCom configuration to check if reconfiguration is needed
-   YADOMS_LOG(information) << "Get the RFXCom status...";
-   m_currentState = kGettingRfxcomStatus;
-   send(m_transceiver->buildGetStatusCmd(), true);
+   YADOMS_LOG(information) << "Start the RFXtrx receiver...";
+   m_currentState = kStartReceiver;
+   send(m_transceiver->buildStartReceiverCmd(), true);
 }
 
 void CRfxcom::processRfxcomCommandResponseMessage(boost::shared_ptr<yApi::IYPluginApi> context, const rfxcomMessages::CTransceiverStatus& status)
@@ -378,10 +377,9 @@ void CRfxcom::processRfxcomStatusMessage(boost::shared_ptr<yApi::IYPluginApi> co
       }
       else
       {
-         YADOMS_LOG(information) << "Start the RFXtrx receiver...";
-         m_currentState = kStartReceiver;
-         send(m_transceiver->buildStartReceiverCmd(), true);
-         // Expected reply is a response message
+         YADOMS_LOG(information) << "Receiver started";
+         context->setPluginState(yApi::historization::EPluginState::kRunning);
+         m_currentState = kRfxcomIsRunning;
       }
       break;
 
@@ -416,9 +414,10 @@ void CRfxcom::processRfxcomReceiverStartedMessage(boost::shared_ptr<yApi::IYPlug
    switch (m_currentState)
    {
    case kStartReceiver:
-      YADOMS_LOG(information) << "Receiver started";
-      context->setPluginState(yApi::historization::EPluginState::kRunning);
-      m_currentState = kRfxcomIsRunning;
+      // Now get the actual RFXCom configuration to check if reconfiguration is needed
+      YADOMS_LOG(information) << "Get the RFXCom status...";
+      m_currentState = kGettingRfxcomStatus;
+      send(m_transceiver->buildGetStatusCmd(), true);
       break;
 
    default:
