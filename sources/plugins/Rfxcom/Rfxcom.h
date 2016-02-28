@@ -38,7 +38,7 @@ protected:
    /// \param [in] buffer           Buffer to send
    /// \param [in] needAnswer       true if answer is needed. If true, a timeout will occur if no answer is received.
    //--------------------------------------------------------------
-   void send(const shared::communication::CByteBuffer& buffer, bool needAnswer = false);
+   void send(const shared::communication::CByteBuffer& buffer, bool needAnswer);
 
    //--------------------------------------------------------------
    /// \brief	                     Send several messages to the RFXCom
