@@ -18,7 +18,7 @@ namespace rfxcomMessages
       /// \brief	                        Constructor
       /// \param[in] model                The device model
       //--------------------------------------------------------------
-      CLighting5OnOff(const std::string& model);
+      explicit CLighting5OnOff(const std::string& model);
 
       //--------------------------------------------------------------
       /// \brief	Destructor

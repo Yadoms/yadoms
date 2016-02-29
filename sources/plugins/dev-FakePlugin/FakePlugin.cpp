@@ -137,7 +137,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
                std::string dyn = data->getData().getConfiguration().get<std::string>("dynamicSection.content.interval");
 
 					std::string devId = (boost::format("%1%_%2%_0x%3$08X") % sni % dyn % shared::tools::CRandom::generateNbBits(26, false)).str();
-               context->declareDevice(devId, "FakeDevice_" + devId, data->getData().getConfiguration().serialize());
+               context->declareDevice(devId, "FakeDevice_" + devId, data->getData().getConfiguration());
 
                yApi::historization::CSwitch manualSwitch("manualSwitch");
                context->declareKeyword(devId, manualSwitch);

@@ -18,7 +18,7 @@ namespace notification { namespace basic {
       ///\brief Constructor
       ///\param [in] action The action (what to do when the good notification appears)
       //-----------------------------
-      CObserver(boost::shared_ptr< action::IAction<T> > action)
+      explicit CObserver(boost::shared_ptr< action::IAction<T> > action)
          :m_action(action)
       {
       }

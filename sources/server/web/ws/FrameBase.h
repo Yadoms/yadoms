@@ -34,13 +34,13 @@ namespace web {   namespace ws {
          ///\brief Constructor
          ///\param [in]  content    A string that will be deserialized
          //-----------------------------
-         CFrameBase(const std::string & content);
+         explicit CFrameBase(const std::string & content);
 
          //-----------------------------
          ///\brief Constructor
          ///\param [in]  type    The type of frame
          //-----------------------------
-         CFrameBase(const EFrameType & type);
+         explicit CFrameBase(const EFrameType & type);
 
 
       public:

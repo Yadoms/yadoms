@@ -11,7 +11,7 @@ namespace dataAccessLayer {
       /// \brief        Constructor
       /// \param[in]    pDataProvider  The data provider (internal data access)
       //--------------------------------------------------------------
-      CDataAccessLayer(boost::shared_ptr<database::IDataProvider> pDataProvider);
+      explicit CDataAccessLayer(boost::shared_ptr<database::IDataProvider> pDataProvider);
       
       //--------------------------------------------------------------
       /// \brief       Destructor

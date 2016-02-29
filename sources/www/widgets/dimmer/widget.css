@@ -1,16 +1,151 @@
-.dimmerWidgetText {
-   display:table-cell;
+.dimmer-widget {
+    height: 100%;
+    width: 100%;
+    text-align: center;
+	position: relative;
+    display: block;
 }
 
-.dimmerWidgetData {
-    font-size : 3em;
-	text-align: center;
-	font-weight: bold;
+.dimmer-widget-buttons {
+    vertical-align:middle;
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 20%;
 }
 
-.dimmerWidgetValueArea {
-	width:150px;
-	height:150px;
-    display:table-cell;
-	vertical-align:middle;	
+.dimmer-widget-button {
+    height: 50%;
 }
+
+.dimmer-widget-value {
+	vertical-align:middle;
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    left: 20%;
+    bottom: 0;
+    width: 60%;
+}
+
+.dimmer-widget-unit {
+	vertical-align:top;
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 20%;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+.dimmer-widget {
+    height: 100%;
+    width: 100%;
+    text-align: center;
+	position: relative;
+}
+
+.dimmer-widget-value {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom:0;
+    width: 70%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dimmer-widget-value-inner {
+    white-space:nowrap;
+    order:1;
+    flex: 0 1 auto; 
+    -moz-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    overflow:hidden;
+    -moz-min-width:0;
+    -ms-min-width:0;
+    -o-min-width:0;
+    -webkit-min-width:0;
+    min-width:0; 
+}
+
+.dimmer-widget-value-inner-value {
+	position: relative;
+    display: inline-block;
+    vertical-align:middle;
+}
+
+
+
+.dimmer-widget-buttons {
+	vertical-align:middle;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom:0;
+    width: 30%;
+}
+
+.dimmer-widget-button {
+    height: 40%;
+    width: 100%;
+}
+
+
+*/
+/*
+.dimmer-widget {
+    height: 100%;
+    width: 100%;
+    text-align: center;
+	position: relative;
+}
+
+.dimmer-widget-value {
+    width: 70%;
+    display: table;
+    height: 100%;
+}
+
+.dimmer-widget-value-row {
+    display: table-row;
+    height: 100%;
+}
+
+.dimmer-widget-value-inner {
+    display: table-cell;
+   height: 100%;
+    width: 100%;
+    vertical-align:middle;
+}
+
+
+.dimmer-widget-buttons {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 30%;
+}
+
+.dimmer-widget-button {
+    height: 50%;
+    width: 100%;
+}
+
+    */

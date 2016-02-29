@@ -9,8 +9,8 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
 {
 
 CForecastFormatter::CForecastFormatter( const weatherunderground::helper::EPeriod & Period )
+   :m_PeriodString(Period.toString())
 {
-	m_PeriodString = Period.toString();
 }
 
 void CForecastFormatter::AddUnit(
@@ -22,7 +22,7 @@ void CForecastFormatter::AddUnit(
 	{
 		m_Units.get ( UnitName );
 	}
-	catch ( shared::exception::CException e )
+	catch ( shared::exception::CException& )
 	{  // If Exception, we create the unit
 		m_Units.set ( UnitName, UnitValue );
 	}

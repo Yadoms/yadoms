@@ -19,7 +19,7 @@ namespace task {
    ///\brief Constructor
    //------------------------------
    CInstance::CInstance(boost::shared_ptr<ITask> task, boost::shared_ptr<shared::event::CEventHandler> eventHandler, const int eventCode, const std::string & guid)
-      : CThreadBase("Task " + task->getName()), m_currentProgression(0.0f), m_currentMessage(""), m_task(task), m_eventHandler(eventHandler), m_eventCode(eventCode), 
+      : CThreadBase("Task " + task->getName()), m_currentIsRunning(false), m_currentProgression(0.0f), m_currentMessage(""), m_task(task), m_eventHandler(eventHandler), m_eventCode(eventCode),
       m_guid(guid), m_currentStatus(ETaskStatus::kStarted), 
       m_creationDate(shared::currentTime::Provider::now())
    {

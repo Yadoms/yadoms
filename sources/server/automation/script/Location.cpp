@@ -53,7 +53,7 @@ void CLocation::updateLocation(const shared::CDataContainer& location) const
 
 shared::CDataContainer CLocation::getLocation() const
 {
-   return m_configurationManager->getConfiguration("system", "location")->Value();
+   return shared::CDataContainer(m_configurationManager->getConfiguration("system", "location")->Value());
 }
 
 double CLocation::latitude() const

@@ -79,7 +79,7 @@ namespace database {  namespace sqlite { namespace requesters {
       return adapter.getResults()[0];
    }
 
-   std::vector<boost::shared_ptr<entities::CDevice> > CDevice::getDevicesIdFromFriendlyName(const std::string friendlyName) const
+   std::vector<boost::shared_ptr<entities::CDevice> > CDevice::getDevicesIdFromFriendlyName(const std::string& friendlyName) const
    {
       CQuery qSelect;
       qSelect.Select().

@@ -22,7 +22,7 @@ namespace notification { namespace action {
       ///\brief Constructor
       ///\param [in] functor  The function pointer
       //-----------------------------
-      CFunctionPointerNotifier(FunctionPtr functor)
+      explicit CFunctionPointerNotifier(FunctionPtr functor)
          :m_functor(functor)
       {
       }

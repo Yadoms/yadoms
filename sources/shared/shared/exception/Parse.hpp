@@ -14,7 +14,7 @@ namespace shared { namespace exception
       //--------------------------------------------------------------
       /// \brief	                        Constructor
       //--------------------------------------------------------------
-      CParse(const std::string& message)
+      explicit CParse(const std::string& message)
          :CException(message)
       {
       }

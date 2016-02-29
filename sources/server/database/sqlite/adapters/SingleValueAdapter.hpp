@@ -71,7 +71,7 @@ namespace adapters {
       //--------------------------------------------------------------
       /// \Brief		Constructor
       //--------------------------------------------------------------
-      CSingleValueAdapterWithContainer(std::vector<TValue> & c)
+      explicit CSingleValueAdapterWithContainer(std::vector<TValue> & c)
          :m_results(c)
       {
       }

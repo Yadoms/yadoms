@@ -23,7 +23,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       ///\param[in] yadomsCommand   Yadoms command
       ///\throw                     shared::exception::CInvalidParameter or COutOfRange if fail to parse command
       //-----------------------------------------------------
-      CMessageFormatter(const std::string& yadomsCommand);
+      explicit CMessageFormatter(const std::string& yadomsCommand);
 
       //-----------------------------------------------------
       ///\brief                     Destructor

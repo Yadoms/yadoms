@@ -19,7 +19,7 @@ void CConditionFormatter::AddUnit(
 	{
 		m_Units.get ( UnitName );
 	}
-	catch ( shared::exception::CException e )
+	catch ( shared::exception::CException& )
 	{  // If Exception, we create the unit
 		m_Units.set ( UnitName, UnitValue );
 	}

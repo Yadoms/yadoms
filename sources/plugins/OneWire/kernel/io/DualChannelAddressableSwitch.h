@@ -13,7 +13,7 @@ namespace kernel { namespace io {
       /// \brief	Constructor
       /// \param[in]	devicePath Device path
       //--------------------------------------------------------------
-      CDualChannelAddressableSwitch(const boost::filesystem::path& devicePath);
+      explicit CDualChannelAddressableSwitch(const boost::filesystem::path& devicePath);
 
       //--------------------------------------------------------------
       /// \brief	Destructor

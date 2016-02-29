@@ -14,7 +14,7 @@ namespace automation { namespace script
       ///\brief               Constructor
       ///\param[in] ruleData Rule data
       //-----------------------------------------------------
-      CProperties(boost::shared_ptr<const database::entities::CRule> ruleData);
+      explicit CProperties(boost::shared_ptr<const database::entities::CRule> ruleData);
 
       //-----------------------------------------------------
       ///\brief               Destructor

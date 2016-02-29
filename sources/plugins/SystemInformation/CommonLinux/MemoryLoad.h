@@ -14,7 +14,7 @@ public:
    /// \brief	    Constructor
    /// \param[in] deviceId    The device ID
    //--------------------------------------------------------------
-   CMemoryLoad(const std::string & device);
+   explicit CMemoryLoad(const std::string & device);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor

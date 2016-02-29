@@ -19,7 +19,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief	Constructor
       //--------------------------------------------------------------
-      CIdentityForQualifier(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation);
+      explicit CIdentityForQualifier(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation);
 
       //--------------------------------------------------------------
       /// \brief	Constructor

@@ -129,7 +129,7 @@ namespace update {
                catch (Poco::FileException & fileException)
                {
                   YADOMS_LOG(error) << "Operation fail :" << fileException.displayText();
-                  throw fileException;
+                  throw;
                }
                catch (std::exception & ex)
                {

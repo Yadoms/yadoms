@@ -45,7 +45,7 @@ void CUV::Init(boost::shared_ptr<yApi::IYPluginApi> context)
       details.set("type", pTypeUV);
       details.set("subType", m_subType);
       details.set("id", m_id);
-      context->declareDevice(m_deviceName, m_deviceModel, details.serialize());
+      context->declareDevice(m_deviceName, m_deviceModel, details);
 
       if (m_subType == sTypeUV3)
          context->declareKeyword(m_deviceName, m_temperature);

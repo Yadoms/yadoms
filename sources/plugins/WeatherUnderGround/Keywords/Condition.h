@@ -73,7 +73,7 @@ namespace yApi = shared::plugin::yPluginApi;
 	  virtual boost::shared_ptr<yApi::historization::IHistorizable> GetHistorizable() const;
       // [END] ICapacities implementation
      
-     void SetCityName ( const std::string CityName );
+     void SetCityName ( const std::string& CityName );
 
    protected:
 

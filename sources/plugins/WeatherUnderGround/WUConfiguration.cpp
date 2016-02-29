@@ -38,7 +38,7 @@ std::string CWUConfiguration::getLocalisation()
    {
       m_Localisation = m_data.get<std::string>("Localisation");
    }
-   catch (shared::exception::CException e)
+   catch (shared::exception::CException& e)
    {
 	   YADOMS_LOG(warning) << e.what() << std::endl;
    }
@@ -60,7 +60,7 @@ std::string CWUConfiguration::getCountryOrState()
 		     throw CNoStateException ("No State configured for United States of America");
       }
    }
-   catch (shared::exception::CException e)
+   catch (shared::exception::CException& e)
    {
 	   YADOMS_LOG(warning) << e.what() << std::endl;
    }

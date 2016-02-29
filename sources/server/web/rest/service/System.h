@@ -10,7 +10,7 @@ namespace web { namespace rest { namespace service {
    class CSystem : public IRestService
    {
    public:
-	  CSystem();
+      explicit CSystem();
       virtual ~CSystem();
 
    public:

@@ -25,7 +25,7 @@ namespace xplrules { namespace rfxLanXpl { namespace data {
       ///\brief                     Constructor
       ///\param[in] keywordName     Yadoms keyword name
       //-----------------------------------------------------
-      CDigimaxDemand(const std::string& keywordName);
+      explicit CDigimaxDemand(const std::string& keywordName);
 
       //-----------------------------------------------------
       ///\brief                     Destructor

@@ -8,7 +8,7 @@ namespace web { namespace rest { namespace service {
    class CConfiguration : public IRestService
    {
    public:
-      CConfiguration(boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager);
+      explicit CConfiguration(boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager);
       virtual ~CConfiguration();
 
    public:

@@ -11,7 +11,7 @@ public:
    /// \brief	                        Constructor
    /// \param[in]  message             Exception message
    //--------------------------------------------------------------
-   CEmptyParameterException(const std::string& message)
+   explicit CEmptyParameterException(const std::string& message)
       :CException(message)
    {
    }

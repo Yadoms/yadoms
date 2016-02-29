@@ -60,7 +60,7 @@ void CCurtain1::Init(boost::shared_ptr<yApi::IYPluginApi> context)
       details.set("subType", m_subType);
       details.set("houseCode", m_houseCode);
       details.set("unitCode", m_unitCode);
-      context->declareDevice(m_deviceName, m_deviceModel, details.serialize());
+      context->declareDevice(m_deviceName, m_deviceModel, details);
 
       context->declareKeyword(m_deviceName, m_state);
    }

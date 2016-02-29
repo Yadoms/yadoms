@@ -5,14 +5,14 @@
 //--------------------------------------------------------------
 /// \brief	Interface of SMTP server
 //--------------------------------------------------------------
-class CSmtpSslServiceProvider : ISmtpServiceProvider
+class CSmtpSslServiceProvider : public ISmtpServiceProvider
 {
 public:
    //--------------------------------------------------------------
    /// \brief	    Create the smtp server connection
    /// \param [in]   smtpConfiguration  The smtp server configuration
    //--------------------------------------------------------------
-   CSmtpSslServiceProvider(boost::shared_ptr<IMSConfiguration> & smtpConfiguration);
+   explicit CSmtpSslServiceProvider(boost::shared_ptr<IMSConfiguration> & smtpConfiguration);
    
    //--------------------------------------------------------------
    /// \brief	    Destructor

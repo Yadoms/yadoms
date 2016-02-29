@@ -13,7 +13,7 @@ namespace kernel { namespace io {
       /// \brief	Constructor
       /// \param[in]	devicePath Device path
       //--------------------------------------------------------------
-      C8ChannelAddressableSwitch(const boost::filesystem::path& devicePath);
+      explicit C8ChannelAddressableSwitch(const boost::filesystem::path& devicePath);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
