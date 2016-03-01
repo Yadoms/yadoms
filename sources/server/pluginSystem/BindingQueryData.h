@@ -13,7 +13,7 @@ namespace pluginSystem
       ///\brief                        Constructor
       ///\param[in] query              The query
       //-----------------------------------------------------
-      CBindingQueryData(const std::string& query);
+      explicit CBindingQueryData(const std::string& query);
 
       //-----------------------------------------------------
       ///\brief               Destructor

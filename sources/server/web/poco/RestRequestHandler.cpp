@@ -75,12 +75,12 @@ namespace web {
             std::string content;
             if (request.hasContentLength())
             {
-               content.resize((unsigned int)request.getContentLength());
-               request.stream().read((char*)content.c_str(), request.getContentLength());
+               content.resize(static_cast<unsigned int>(request.getContentLength()));
+               request.stream().read(const_cast<char*>(content.c_str()), request.getContentLength());
             }
 
             //dispatch url to rest dispatcher
-            shared::CDataContainer js = m_restDispatcher.dispath(request.getMethod(), parameters, content);
+            shared::CDataContainer js = m_restDispatcher.dispath(request.getMethod(), parameters, shared::CDataContainer(content));
             return js.serialize();
          }
 

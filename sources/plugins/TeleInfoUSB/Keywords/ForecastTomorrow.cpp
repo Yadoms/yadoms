@@ -20,27 +20,27 @@ CForecastTomorrow::CForecastTomorrow( boost::shared_ptr<yApi::IYPluginApi> conte
 void CForecastTomorrow::SetValue( std::string& Value )
 {
    static const EnumColorMap EEnumColorMap = boost::assign::map_list_of
-      ( "BLEU", teleInfoUSB::specificHistorizers::EColor::kBLUE )
-	  ( "BLAN", teleInfoUSB::specificHistorizers::EColor::kWHITE )
-	  ( "ROUG", teleInfoUSB::specificHistorizers::EColor::kRED )
-	  ;
+      ("BLEU", teleInfoUSB::specificHistorizers::EColor::kBLUE)
+      ("BLAN", teleInfoUSB::specificHistorizers::EColor::kWHITE)
+      ("ROUG", teleInfoUSB::specificHistorizers::EColor::kRED)
+      ;
 
-    try
-	{
-        EnumColorMap::const_iterator it = EEnumColorMap.find( Value );
-        if (it != EEnumColorMap.end())
-	    {
-			m_forecastPeriod->set( (teleInfoUSB::specificHistorizers::EColor)(it->second) );
+   try
+   {
+      EnumColorMap::const_iterator it = EEnumColorMap.find(Value);
+      if (it != EEnumColorMap.end())
+      {
+         m_forecastPeriod->set((teleInfoUSB::specificHistorizers::EColor)(it->second));
 
-		   YADOMS_LOG(debug) << m_forecastPeriod->getKeyword() << "=" << m_forecastPeriod->get();
-	    } 
-	    else
-		   throw CKeywordException ("Keyword " + m_forecastPeriod->getKeyword() + " could not be set");
-	}
-    catch (shared::exception::CException e)
-	{
-		YADOMS_LOG(warning) << e.what() << std::endl;
-	}
+         YADOMS_LOG(debug) << m_forecastPeriod->getKeyword() << "=" << m_forecastPeriod->get();
+      }
+      else
+         throw CKeywordException("Keyword " + m_forecastPeriod->getKeyword() + " could not be set");
+   }
+   catch (shared::exception::CException& e)
+   {
+      YADOMS_LOG(warning) << e.what() << std::endl;
+   }
 }
 
 CForecastTomorrow::~CForecastTomorrow()

@@ -76,7 +76,7 @@ void CRFXSensor::Init(boost::shared_ptr<yApi::IYPluginApi> context)
       details.set("type", pTypeRFXSensor);
       details.set("subType", m_subType);
       details.set("id", m_id);
-      context->declareDevice(m_deviceName, m_deviceModel, details.serialize());
+      context->declareDevice(m_deviceName, m_deviceModel, details);
 
       if (m_temperatureAvailable)
          context->declareKeyword(m_deviceName, m_temperature);

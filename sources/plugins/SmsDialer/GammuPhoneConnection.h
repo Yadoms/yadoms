@@ -11,7 +11,7 @@ public:
    //--------------------------------------------------------------
    /// \brief	Constructor, also try to establish the connection
    //--------------------------------------------------------------
-   CGammuPhoneConnection(const ISmsDialerConfiguration& configuration);
+   explicit CGammuPhoneConnection(const ISmsDialerConfiguration& configuration);
 
    //--------------------------------------------------------------
    /// \brief	Destructor, close the connection

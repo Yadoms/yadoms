@@ -570,7 +570,7 @@
         "defaultVarName": "newAcquisitionValue",
         "mutator": {
           "base": {
-            "title": "Wait for acqusition",
+            "title": "Wait for acquisition",
             "tooltip": "Wait for a new acquisition of one or more keywords."
           },
           "storeInVariable": {
@@ -583,7 +583,7 @@
           },
           "become": {
             "title": "Device : particular value",
-            "tooltip": "Add a block for monitoring new device acqusition matching a condition"
+            "tooltip": "Add a block for monitoring new device acquisition matching a condition"
           },
           "datetimeChange": {
             "title": "Date/time update",

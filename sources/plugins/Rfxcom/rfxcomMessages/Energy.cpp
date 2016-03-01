@@ -48,7 +48,7 @@ void CEnergy::Init(boost::shared_ptr<yApi::IYPluginApi> context)
       details.set("type", pTypeENERGY);
       details.set("subType", m_subType);
       details.set("id", m_id);
-      context->declareDevice(m_deviceName, m_deviceModel, details.serialize());
+      context->declareDevice(m_deviceName, m_deviceModel, details);
 
       context->declareKeyword(m_deviceName, m_instantPower);
       context->declareKeyword(m_deviceName, m_totalPower);

@@ -19,7 +19,7 @@ public:
    /// \brief	            Constructor from Gammu data
    /// \param[in] smsGammu Gammu SMS structure
    //--------------------------------------------------------------
-   CSms(const GSM_MultiSMSMessage& gammuSms);
+   explicit CSms(const GSM_MultiSMSMessage& gammuSms);
 
    //--------------------------------------------------------------
    /// \brief	Destructor

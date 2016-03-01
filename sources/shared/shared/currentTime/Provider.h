@@ -13,7 +13,7 @@ namespace shared { namespace currentTime
       //--------------------------------------------------------------
       /// \brief	   Constructor (initialize the static object)
       //--------------------------------------------------------------
-      Provider(boost::shared_ptr<ICurrentTime> currentTimeInstance);
+      explicit Provider(boost::shared_ptr<ICurrentTime> currentTimeInstance);
 
       //--------------------------------------------------------------
       /// \brief	   Destructor

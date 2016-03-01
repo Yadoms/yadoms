@@ -63,7 +63,7 @@ void CLighting4::Init(boost::shared_ptr<yApi::IYPluginApi> context)
       details.set("type", pTypeLighting4);
       details.set("subType", m_subType);
       details.set("id", m_id);
-      context->declareDevice(m_deviceName, m_deviceModel, details.serialize());
+      context->declareDevice(m_deviceName, m_deviceModel, details);
 
       context->declareKeyword(m_deviceName, m_keyword);
       context->declareKeyword(m_deviceName, m_rssi);

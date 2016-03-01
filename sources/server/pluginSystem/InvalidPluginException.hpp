@@ -20,7 +20,7 @@ namespace pluginSystem
       /// \brief	                        Constructor
       /// \param[in]  plugin              Plugin name
       //--------------------------------------------------------------
-      CInvalidPluginException(const std::string& plugin)
+      explicit CInvalidPluginException(const std::string& plugin)
          :CException(std::string("Invalid plugin found ") + plugin)
       {
       }

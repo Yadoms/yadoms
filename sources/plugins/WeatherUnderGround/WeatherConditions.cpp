@@ -30,7 +30,7 @@ CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> cont
 
 	   InitializeVariables ( context, WUConfiguration );
    }
-   catch (shared::exception::CException e)
+   catch (shared::exception::CException& e)
    {
       YADOMS_LOG(warning) << "Configuration or initialization error of Weather condition module :" << e.what() << std::endl;
    }
@@ -95,7 +95,7 @@ void CWeatherConditions::OnUpdate( boost::shared_ptr<yApi::IYPluginApi> context,
       m_URL.str("");
       m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/conditions/q/" << m_CountryOrState << "/" << m_Localisation << ".json";
    }
-   catch (shared::exception::CException e)
+   catch (shared::exception::CException& e)
 	{
 		YADOMS_LOG(warning) << e.what()  << std::endl;
 	}
@@ -113,7 +113,7 @@ void CWeatherConditions::Request( boost::shared_ptr<yApi::IYPluginApi> context )
 
 	   YADOMS_LOG(information) << "Observation location :" << m_data.get<std::string>("current_observation.observation_location.full");
 	}
-	catch (shared::exception::CException e)
+	catch (shared::exception::CException& e)
 	{
 		YADOMS_LOG(warning) << "Weather Conditions :" << e.what()  << std::endl;
 	}
@@ -204,7 +204,7 @@ void CWeatherConditions::Parse( boost::shared_ptr<yApi::IYPluginApi> context, co
 			context->historizeData(m_PluginName, KeywordList);
 		}
 	}
-	catch (shared::exception::CException e)
+	catch (shared::exception::CException& e)
 	{
       YADOMS_LOG(warning) << e.what() << std::endl;
 	}

@@ -19,7 +19,7 @@ public:
    /// \brief	    Constructor
    /// \param[in] device    The device
    //--------------------------------------------------------------
-   CRAMProcessMemory(const std::string & device);
+   explicit CRAMProcessMemory(const std::string & device);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor

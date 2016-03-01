@@ -16,7 +16,7 @@ namespace web { namespace rest { namespace service {
       /// \brief  Constructor
       /// \param [in] updateManager   The update manager
       //-----------------------------------------------------------------------------      
-      CUpdate(boost::shared_ptr<update::CUpdateManager> updateManager);
+      explicit CUpdate(boost::shared_ptr<update::CUpdateManager> updateManager);
 
       //-----------------------------------------------------------------------------
       /// \brief  Destructor

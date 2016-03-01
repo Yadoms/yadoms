@@ -15,7 +15,7 @@ namespace notification { namespace acquisition {
    {
    public:
       //-----------------------------
-      ///\brief Create an observer for any new acqusition on all keywords
+      ///\brief Create an observer for any new acquisition on all keywords
       ///\param [in] action The action (what to do when the good notification appears)
       //-----------------------------
       CObserver(boost::shared_ptr< action::IAction< CNotification > > action)

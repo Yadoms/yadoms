@@ -5,15 +5,11 @@
 
 CDisksList::CDisksList()
 {
-   DWORD cchBuffer;
-   LPSTR driveStrings, driveStringsInit;
-   UINT driveType;
-
    // Find out how big a buffer we need
-   cchBuffer = GetLogicalDriveStrings(0, NULL);
+   DWORD cchBuffer = GetLogicalDriveStrings(0, NULL);
 
-   driveStrings = (LPSTR)malloc((cchBuffer + 1) * sizeof(TCHAR));
-   driveStringsInit = driveStrings;
+   LPSTR driveStrings = static_cast<LPSTR>(malloc((cchBuffer + 1) * sizeof(TCHAR)));
+   LPSTR driveStringsInit = driveStrings;
 
    if (driveStrings == NULL || cchBuffer == NULL)
    {
@@ -34,8 +30,7 @@ CDisksList::CDisksList()
 
    while (*driveStrings)
    {
-      driveType = GetDriveType(driveStrings);
-      if (driveType == DRIVE_FIXED)
+      if (GetDriveType(driveStrings) == DRIVE_FIXED)
       {
          DrivesList.push_back( driveStrings );
       }

@@ -102,10 +102,10 @@ void CSecurity2ClassicKeyLoq::setFromProtocolState(const RBUF& Security2)
       | Security2.SECURITY2.id6 << 8
       | Security2.SECURITY2.id5;
 
-   m_button0.set(Security2.SECURITY2.id8 & 0x10 ? true : false);
-   m_button1.set(Security2.SECURITY2.id8 & 0x20 ? true : false);
-   m_button2.set(Security2.SECURITY2.id8 & 0x40 ? true : false);
-   m_button3.set(Security2.SECURITY2.id8 & 0x80 ? true : false);
+   m_button0.set((Security2.SECURITY2.id8 & 0x10) ? true : false);
+   m_button1.set((Security2.SECURITY2.id8 & 0x20) ? true : false);
+   m_button2.set((Security2.SECURITY2.id8 & 0x40) ? true : false);
+   m_button3.set((Security2.SECURITY2.id8 & 0x80) ? true : false);
 }
 
 void CSecurity2ClassicKeyLoq::toProtocolState(RBUF& Security2) const

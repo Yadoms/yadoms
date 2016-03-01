@@ -15,7 +15,7 @@ namespace shared { namespace exception
       //--------------------------------------------------------------
       /// \brief	                        Constructor
       //--------------------------------------------------------------
-      CNotImplemented(const std::string& function)
+      explicit CNotImplemented(const std::string& function)
          :CException(function + " is not yet implemented")
       {
       }

@@ -14,7 +14,7 @@ namespace shared { namespace exception
       //--------------------------------------------------------------
       /// \brief	                        Constructor
       //--------------------------------------------------------------
-      CEmptyResult(const std::string & message)
+      explicit CEmptyResult(const std::string & message)
          :CException(message)
       {
       }

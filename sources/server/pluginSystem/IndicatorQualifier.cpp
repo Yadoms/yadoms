@@ -113,7 +113,7 @@ int CIndicatorQualifier::computeQuality(const CIdentityForQualifier& identity) c
          }
       default:
          {
-            YADOMS_LOG(error) << "Compute plugin quality : unknown event type " << (*it)->EventType();
+            // Ignore other values
             break;
          }
       }

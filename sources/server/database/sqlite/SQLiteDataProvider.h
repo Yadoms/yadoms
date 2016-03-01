@@ -31,7 +31,7 @@ namespace sqlite {
       /// \param [in]	pConfig: startup configuration
       /// \throw        shared::exception::CNotSupported if the linked SQLIte library is compiled without ThreadSafe options
       //--------------------------------------------------------------
-      CSQLiteDataProvider(const std::string & dbFile);
+      explicit CSQLiteDataProvider(const std::string & dbFile);
       
       //--------------------------------------------------------------
       /// \Brief		   Destructor

@@ -13,7 +13,7 @@ public:
    /// \brief	                        Constructor
    /// \param[in]  message             Exception message
    //--------------------------------------------------------------
-   CRuleException(const std::string& message)
+   explicit CRuleException(const std::string& message)
       :CException(message)
    {
    }

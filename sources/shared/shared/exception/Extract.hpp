@@ -14,7 +14,7 @@ namespace shared { namespace exception
       //--------------------------------------------------------------
       /// \brief	                        Constructor
       //--------------------------------------------------------------
-      CExtract(const std::string& message)
+      explicit CExtract(const std::string& message)
          :CException(message)
       {
       }

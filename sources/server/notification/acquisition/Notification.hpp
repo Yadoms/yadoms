@@ -15,7 +15,7 @@ namespace notification { namespace acquisition {
       ///\brief Constructor
       ///\param [in] obj   The notification object
       //-----------------------------
-      CNotification(boost::shared_ptr<database::entities::CAcquisition> acquisition)
+      explicit CNotification(boost::shared_ptr<database::entities::CAcquisition> acquisition)
          :change::CNotification<database::entities::CAcquisition>(acquisition, notification::change::EChangeType::kCreate)
       {
       }

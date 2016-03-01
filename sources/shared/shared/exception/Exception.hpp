@@ -22,12 +22,12 @@ namespace shared { namespace exception
       /// \brief	                        Constructor
       /// \param[in]  message             Exception message
       //--------------------------------------------------------------
-      CException(const char * message)
+      explicit CException(const char * message)
       {
          if(message != NULL)
             m_message=std::string(message);
       }
-      CException(const std::string& message)
+      explicit CException(const std::string& message)
          :m_message(message)
       {
       }

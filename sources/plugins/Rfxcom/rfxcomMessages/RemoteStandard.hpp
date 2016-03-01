@@ -19,7 +19,7 @@ namespace rfxcomMessages
       /// \brief	                        Constructor
       /// \param[in] model                The device model
       //--------------------------------------------------------------
-      CRemoteStandard(const std::string& model)
+      explicit CRemoteStandard(const std::string& model)
          :m_model(model), m_keyword("command")
       {
       }

@@ -26,7 +26,7 @@ namespace xplrules { namespace rfxLanXpl { namespace data {
       ///\brief                     Constructor
       ///\param[in] keywordName     Yadoms keyword name
       //-----------------------------------------------------
-      CUvDescription(const std::string& keywordName);
+      explicit CUvDescription(const std::string& keywordName);
 
       //-----------------------------------------------------
       ///\brief                     Destructor

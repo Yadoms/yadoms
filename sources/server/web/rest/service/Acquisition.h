@@ -8,7 +8,7 @@ namespace web { namespace rest { namespace service {
    class CAcquisition : public IRestService
    {
    public:
-      CAcquisition(boost::shared_ptr<database::IDataProvider> dataProvider);
+      explicit CAcquisition(boost::shared_ptr<database::IDataProvider> dataProvider);
       virtual ~CAcquisition();
 
    public:

@@ -15,7 +15,7 @@ namespace owfs { namespace io {
       /// \brief	Constructor
       /// \param[in]	devicePath Device path
       //--------------------------------------------------------------
-      CTemperatureIo(const boost::filesystem::path& devicePath);
+      explicit CTemperatureIo(const boost::filesystem::path& devicePath);
 
       //--------------------------------------------------------------
       /// \brief	Destructor

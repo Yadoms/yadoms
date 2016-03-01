@@ -8,7 +8,7 @@ namespace web { namespace rest { namespace service {
    class CPluginEventLogger : public IRestService
    {
    public:
-      CPluginEventLogger(boost::shared_ptr<database::IDataProvider> dataProvider);
+      explicit CPluginEventLogger(boost::shared_ptr<database::IDataProvider> dataProvider);
       virtual ~CPluginEventLogger();
 
    public:

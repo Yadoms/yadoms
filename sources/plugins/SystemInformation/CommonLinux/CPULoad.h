@@ -14,7 +14,7 @@ public:
    /// \brief	    Constructor
    /// \param[in] deviceId    The device
    //--------------------------------------------------------------
-   CCPULoad(const std::string & device);
+   explicit CCPULoad(const std::string & device);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor

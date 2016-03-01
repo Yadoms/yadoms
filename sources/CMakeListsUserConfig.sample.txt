@@ -16,6 +16,9 @@ set(POCO_ROOT "path/to/poco/poco-1.6.0-all")
 #define OpenSSL ROOT
 #set(OPENSSL_ROOT_DIR "path/to/openssl")
 
+#define Protobuf ROOT
+set(PROTOBUF_ROOT "path/to/protobuf")
+
 
 
 #define CC_RPI_ROOT to cross compile for Raspberry PI (from a linux machine)

@@ -31,7 +31,7 @@ void CIdentification::declare(boost::shared_ptr<yApi::IYPluginApi> context) cons
 
       details.set("Serial", m_id);
 
-      context->declareDevice(m_deviceName, m_model, details.serialize());
+      context->declareDevice(m_deviceName, m_model, details);
    }
 }
 

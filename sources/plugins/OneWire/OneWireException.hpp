@@ -11,7 +11,7 @@ public:
    /// \brief	                        Constructor
    /// \param[in]  message             Exception message
    //--------------------------------------------------------------
-   COneWireException(const std::string& message)
+   explicit COneWireException(const std::string& message)
       :CException(message)
    {
    }

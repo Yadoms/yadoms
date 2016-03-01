@@ -17,7 +17,7 @@ namespace web { namespace ws {
       ///\brief Constructor
       ///\param [in]    logEvent     The log event data
       //-----------------------------
-      CLogEventFrame(boost::shared_ptr<const database::entities::CEventLogger> logEvent);
+      explicit CLogEventFrame(boost::shared_ptr<const database::entities::CEventLogger> logEvent);
 
       //-----------------------------
       ///\brief Destructor

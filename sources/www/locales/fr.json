@@ -568,7 +568,7 @@
                 },
                 "do": "Faire",
                 "tooltip": "Attend une évènement. cela peut être l'évolution d'une donnée, ou bien la date/heure qui change",
-                "defaultVarName": "nouvelleAcqusition",
+                "defaultVarName": "nouvelleAcquisition",
                 "mutator": {
                     "base": {
                         "title": "Attente d'acquisition",

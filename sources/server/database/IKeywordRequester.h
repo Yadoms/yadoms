@@ -54,7 +54,7 @@ namespace database {
       /// \return                         The list of found keywords
       /// \throw                          shared::exception::CEmptyResult if none found
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<entities::CKeyword> > getKeywordIdFromFriendlyName(int deviceId, const std::string friendlyName) const = 0;
+      virtual std::vector<boost::shared_ptr<entities::CKeyword> > getKeywordIdFromFriendlyName(int deviceId, const std::string& friendlyName) const = 0;
 
       //--------------------------------------------------------------
       /// \brief           List all keywords 

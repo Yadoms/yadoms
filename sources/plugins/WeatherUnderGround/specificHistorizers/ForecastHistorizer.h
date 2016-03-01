@@ -82,7 +82,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       //-----------------------------------------------------
       void ClearAllPeriods( void );
 
-      void SetCityName ( const std::string CityName );
+      void SetCityName ( const std::string& CityName );
 
    private:
       //-----------------------------------------------------

@@ -13,7 +13,7 @@ namespace shared { namespace event
       /// \brief	    Constructor
       /// \param[in] id Event id
       //--------------------------------------------------------------
-      CEventBase(int id)
+      explicit CEventBase(int id)
          :m_id(id)
       {
       }

@@ -3,7 +3,7 @@
  * @param condition condition which must be ok
  * @param message message which will be thrown in exception if condition is not ok
  */
-var assert = function(condition, message) {
+var assert = function (condition, message) {
    if (!condition)
       throw Error("Assert failed" + (typeof message !== "undefined" ? ": " + message : ""));
    return true;
@@ -19,13 +19,12 @@ var defaultNotyLayout = "bottomRight";
  * @returns {noty}
  * @param timeout timeout of the noty
  */
-function notify(message, gravity, timeout)
-{
+function notify(message, gravity, timeout) {
    if (timeout === undefined)
       timeout = defaultNotyTimeout;
    assert(message != undefined, "Message must be defined");
    assert(gravity != undefined, "Gravity must be defined");
-   return noty({text: message, timeout:timeout,  layout:defaultNotyLayout, type: gravity});
+   return noty({ text: message, timeout: timeout, layout: defaultNotyLayout, type: gravity });
 }
 
 /**
@@ -33,8 +32,7 @@ function notify(message, gravity, timeout)
  * @param message message to display
   * @returns {noty}
  */
-function notifyInformation(message)
-{
+function notifyInformation(message) {
    console.info(message);
    return notify(message, 'information', undefined);
 }
@@ -44,8 +42,7 @@ function notifyInformation(message)
  * @param message message to display
  * @returns {noty}
  */
-function notifyWarning(message)
-{
+function notifyWarning(message) {
    console.warn(message);
    return notify(message, 'warning', undefined);
 }
@@ -55,8 +52,7 @@ function notifyWarning(message)
  * @param message message to display
  * @returns {noty}
  */
-function notifySuccess(message)
-{
+function notifySuccess(message) {
    console.info(message);
    return notify(message, 'success', undefined);
 }
@@ -87,8 +83,7 @@ function notifyError(message, errorInfo) {
  * @param timeout
  * @returns {noty}
  */
-function notifyError(message, errorInfo, timeout)
-{
+function notifyError(message, errorInfo, timeout) {
    console.error(message, errorInfo);
    return notify(message, 'error', timeout);
 }
@@ -106,9 +101,9 @@ function parseBool(string, defaultValue) {
       return defaultValue;
    if (string == null)
       return defaultValue;
-   if (typeof(string)=='boolean')
+   if (typeof (string) == 'boolean')
       return string;
-   switch(string.toLowerCase()){
+   switch (string.toLowerCase()) {
       case "true": case "yes": case "1": return true;
       case "false": case "no": case "0": case null: return false;
       default: return defaultValue;
@@ -130,7 +125,7 @@ function notifyConfirm(message, gravity, confirmCallback, cancelCallback) {
 
    return noty({
       text: message,
-      layout:defaultNotyLayout,
+      layout: defaultNotyLayout,
       gravity: gravity,
       buttons: [
          {
@@ -183,18 +178,18 @@ function isNullOrUndefinedOrEmpty(object) {
 //We add extension method to String objects
 
 if (typeof String.prototype.startsWith != 'function') {
-   String.prototype.startsWith = function (str){
+   String.prototype.startsWith = function (str) {
       return this.slice(0, str.length) == str;
    };
 }
 
 if (typeof String.prototype.endsWith != 'function') {
-   String.prototype.endsWith = function (str){
+   String.prototype.endsWith = function (str) {
       return this.slice(-str.length) == str;
    };
 }
 
-Array.prototype.insert = function(index) {
+Array.prototype.insert = function (index) {
    this.splice.apply(this, [index, 0].concat(
       Array.prototype.slice.call(arguments, 1)));
    return this;
@@ -205,13 +200,13 @@ Array.prototype.insert = function(index) {
  * @param {object} arr  The array to treat
  * @returns {object} The resulting array without duplicates
  */
-function duplicateRemoval(arr){
-    var newArray = [];
-    for(var i=0, j=arr.length; i<j; i++){
-        if(newArray.indexOf(arr[i]) == -1)
-              newArray.push(arr[i]);  
-    }
-    return newArray;
+function duplicateRemoval(arr) {
+   var newArray = [];
+   for (var i = 0, j = arr.length; i < j; i++) {
+      if (newArray.indexOf(arr[i]) == -1)
+         newArray.push(arr[i]);
+   }
+   return newArray;
 }
 
 
@@ -223,21 +218,21 @@ function duplicateRemoval(arr){
  * @private
  */
 function concatenateUrl(url1, url2) {
-   if(url1 != undefined & url1.length>0 && url2 != undefined && url2.length>0) {
+   if (url1 != undefined & url1.length > 0 && url2 != undefined && url2.length > 0) {
 
       //case : no "/" trailing url1 or starting url2
       //then append "/" between url1 and url2
-      if(url1[url1.length - 1] != "/" && url2[0] != "/") {
+      if (url1[url1.length - 1] != "/" && url2[0] != "/") {
          return url1 + "/" + url2;
-      } 
-      
+      }
+
       //cas : "/" trailing url1 AND "/" starting url2
       //remove the url1 trailing slash and append url2
-      if(url1[url1.length - 1] == "/" && url2[0] == "/") {
+      if (url1[url1.length - 1] == "/" && url2[0] == "/") {
          return url1.slice(0, -1) + url2;
-      } 
+      }
    }
-   
+
    //default case : append the url
    return url1 + url2;
 }
@@ -249,50 +244,50 @@ var loadedJSLibs = [];
  * @param {string} url of the library
  */
 function asyncLoadJSLib(librayName) {
-    assert(librayName != undefined, "librayName must be defined");
+   assert(librayName != undefined, "librayName must be defined");
 
-    if (!loadedJSLibs[librayName]) {
+   if (!loadedJSLibs[librayName]) {
 
-        //we create a new deffered
-        var d = new $.Deferred();
-        var script = document.createElement("script");
-        script.type = "text/javascript";
-        script.src = librayName;
-        // ASYNC: load in parallel and execute as soon as possible
-        script.async = false;
-        // DEFER: load in parallel but maintain execution order
-        script.defer = false;
+      //we create a new deffered
+      var d = new $.Deferred();
+      var script = document.createElement("script");
+      script.type = "text/javascript";
+      script.src = librayName;
+      // ASYNC: load in parallel and execute as soon as possible
+      script.async = false;
+      // DEFER: load in parallel but maintain execution order
+      script.defer = false;
 
-        script.onload = script.onreadystatechange = function(event) {
-            //from headJS
-            if (event.type === "load" || (/loaded|complete/.test(script.readyState) && (!document.documentMode || document.documentMode < 9))) {
-                // release event listeners
-                script.onload = script.onreadystatechange = script.onerror = null;
-                console.debug(librayName + " loaded");
-                d.resolve();
-            }
-        };
-
-        script.onerror = function(event) {
-            console.error(event);
+      script.onload = script.onreadystatechange = function (event) {
+         //from headJS
+         if (event.type === "load" || (/loaded|complete/.test(script.readyState) && (!document.documentMode || document.documentMode < 9))) {
+            // release event listeners
             script.onload = script.onreadystatechange = script.onerror = null;
+            console.debug(librayName + " loaded");
             d.resolve();
-        }
+         }
+      };
 
-        console.debug("loading " + librayName + " ...");
+      script.onerror = function (event) {
+         console.error(event);
+         script.onload = script.onreadystatechange = script.onerror = null;
+         d.resolve();
+      }
 
-        //we insert into head (from HeadJS)
-        var head = document.head || document.getElementsByTagName("head")[0];
-        head.insertBefore(script, head.lastChild);
+      console.debug("loading " + librayName + " ...");
 
-        //the js has been ran, we save the information to prevent from other reloads
-        var promise = d.promise();
-        //we save the promise for other load requests
-        loadedJSLibs[librayName] = promise;
-        return promise;
-    } else {
-        return loadedJSLibs[librayName];
-    }
+      //we insert into head (from HeadJS)
+      var head = document.head || document.getElementsByTagName("head")[0];
+      head.insertBefore(script, head.lastChild);
+
+      //the js has been ran, we save the information to prevent from other reloads
+      var promise = d.promise();
+      //we save the promise for other load requests
+      loadedJSLibs[librayName] = promise;
+      return promise;
+   } else {
+      return loadedJSLibs[librayName];
+   }
 }
 
 /**
@@ -300,18 +295,92 @@ function asyncLoadJSLib(librayName) {
  * @param {array of string} urls of the libraries
  */
 function asyncLoadJSLibs(librayNames) {
-    assert(Array.isArray(librayNames), "librayNames must be an array of string");
+   assert(Array.isArray(librayNames), "librayNames must be an array of string");
 
-    var d = new $.Deferred();
-    var arrayOfDeffered = [];
+   var d = new $.Deferred();
+   var arrayOfDeffered = [];
 
-    $.each(librayNames, function(index, lib) {
-        arrayOfDeffered.push(asyncLoadJSLib(lib));
-    });
+   $.each(librayNames, function (index, lib) {
+      arrayOfDeffered.push(asyncLoadJSLib(lib));
+   });
 
-    $.whenAll(arrayOfDeffered).done(function () {
-        d.resolve();
-    });
+   $.whenAll(arrayOfDeffered).done(function () {
+      d.resolve();
+   });
 
-    return d.promise();
+   return d.promise();
+}
+
+
+
+var loadedCss = [];
+/**
+ * Load js library and return a promise
+ * @param {string} url of the library
+ */
+function asyncLoadCss(cssFile) {
+   assert(cssFile != undefined, "cssFile must be defined");
+
+   if (!loadedCss[cssFile]) {
+
+      //we create a new deffered
+      var d = new $.Deferred();
+
+      var script = document.createElement("link");
+      script.rel = "stylesheet";
+      script.href = cssFile;
+      // ASYNC: load in parallel and execute as soon as possible
+      script.async = false;
+      // DEFER: load in parallel but maintain execution order
+      script.defer = false;
+
+      script.onload = script.onreadystatechange = function (event) {
+         //from headJS
+         if (event.type === "load" || (/loaded|complete/.test(script.readyState) && (!document.documentMode || document.documentMode < 9))) {
+            // release event listeners
+            script.onload = script.onreadystatechange = script.onerror = null;
+            console.debug(cssFile + " loaded");
+            d.resolve();
+         }
+      };
+
+      script.onerror = function (event) {
+         console.error(event);
+         script.onload = script.onreadystatechange = script.onerror = null;
+         d.resolve();
+      }
+
+      //we insert into head (from HeadJS)
+      var head = document.head || document.getElementsByTagName("head")[0];
+      head.insertBefore(script, head.lastChild);
+
+      //the js has been ran, we save the information to prevent from other reloads
+      var promise = d.promise();
+      //we save the promise for other load requests
+      loadedCss[cssFile] = promise;
+      return promise;
+   } else {
+      return loadedCss[cssFile];
+   }
+}
+
+/**
+ * Load js libraries and return a promise
+ * @param {array of string} urls of the libraries
+ */
+function asyncLoadManyCss(cssNames) {
+   assert(Array.isArray(cssNames), "librayNames must be an array of string");
+
+   var d = new $.Deferred();
+   var arrayOfDeffered = [];
+
+   $.each(cssNames, function (index, lib) {
+      arrayOfDeffered.push(asyncLoadCss(lib));
+   });
+
+   $.whenAll(arrayOfDeffered).done(function () {
+      d.resolve();
+   });
+
+   return d.promise();
 }

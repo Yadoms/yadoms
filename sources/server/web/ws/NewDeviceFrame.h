@@ -16,7 +16,7 @@ namespace web { namespace ws {
       ///\brief Constructor
       ///\param [in]    content     The acquisition to send to GUI (shared_ptr)
       //-----------------------------
-      CNewDeviceFrame(boost::shared_ptr<const database::entities::CDevice> content);
+      explicit CNewDeviceFrame(boost::shared_ptr<const database::entities::CDevice> content);
 
       //-----------------------------
       ///\brief Destructor

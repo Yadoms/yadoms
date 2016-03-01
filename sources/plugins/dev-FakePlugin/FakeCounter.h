@@ -19,7 +19,7 @@ public:
    /// \brief	    Constructor
    /// \param[in] deviceName    The device name
    //--------------------------------------------------------------
-   CFakeCounter(const std::string& deviceName);
+   explicit CFakeCounter(const std::string& deviceName);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor

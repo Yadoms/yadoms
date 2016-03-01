@@ -16,7 +16,7 @@ namespace automation { namespace script
       ///\param[in] configurationManager  Configuration manager (to gain access to Yadoms configuration from rules scripts)
       /// \throw shared::exception::CEmptyResult if location is undefined
       //-----------------------------------------------------
-      CLocation(boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager);
+      explicit CLocation(boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager);
 
       //-----------------------------------------------------
       ///\brief               Destructor

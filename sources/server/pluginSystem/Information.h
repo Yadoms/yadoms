@@ -16,7 +16,7 @@ namespace pluginSystem
       /// \param[in]    pluginPath : plugin executing path
       /// \throw        exception::CInvalidParameter if file is not valid or complete
       //--------------------------------------------------------------
-      CInformation(const boost::filesystem::path& pluginPath);
+      explicit CInformation(const boost::filesystem::path& pluginPath);
 
       // shared::plugin::IInformation implementation
       virtual ~CInformation();

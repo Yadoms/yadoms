@@ -83,7 +83,7 @@ void CCondition::SetPeriod(const shared::CDataContainer & ValueContainer,
 		                 );
 }
 
-void CCondition::SetCityName ( const std::string CityName )
+void CCondition::SetCityName ( const std::string& CityName )
 {
    m_condition->SetCityName ( CityName );
 }

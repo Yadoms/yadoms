@@ -85,7 +85,7 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
                {
                   shared::CDataContainer deviceData = context->getEventHandler().getEventData<shared::CDataContainer>();
                   if (!context->deviceExists(deviceData.get<std::string>("name")))
-                     context->declareDevice(deviceData.get<std::string>("name"), deviceData.get<std::string>("friendlyName"), deviceData.get<shared::CDataContainer>("details").serialize());
+                     context->declareDevice(deviceData.get<std::string>("name"), deviceData.get<std::string>("friendlyName"), deviceData.get<shared::CDataContainer>("details"));
                }
                catch (shared::exception::CException & ex)
                {

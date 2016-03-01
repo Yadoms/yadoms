@@ -93,7 +93,7 @@ namespace rfxcomMessages { namespace specificHistorizers {
       ///\brief                     Constructor
       ///\param[in] keywordName     Yadoms keyword name
       //-----------------------------------------------------
-      CRemoteAtiWonderHistorizer(const std::string& keywordName);
+      explicit CRemoteAtiWonderHistorizer(const std::string& keywordName);
 
       //-----------------------------------------------------
       ///\brief                     Destructor

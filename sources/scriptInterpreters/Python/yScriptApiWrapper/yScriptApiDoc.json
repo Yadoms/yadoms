@@ -5,6 +5,31 @@
             "values": [
                 "kTimeout"
             ]
+        },
+        "class": {
+            "name": "CWaitForEventResult",
+            "brief": "Result type of a call to waitForEvent method",
+            "types": {
+                "enum": {
+                    "name": "EResultType",
+                    "values": [
+                        "kTimeout",
+                        "kKeyword",
+                        "kDateTime"
+                    ]
+                }
+            },
+            "members": {
+                "getType": {
+                    "brief": "Get the type of result (see EResultType)"
+                },
+                "getKeywordId": {
+                    "brief": "Get the signaled keyword ID"
+                },
+                "getValue": {
+                    "brief": "Get the value of the signaled event"
+                }
+            }
         }
     },
     "methods": {
@@ -77,6 +102,25 @@
                 }
             },
             "return": "Returned value is a pair of the keyword Id who changed, and its new value. The keyword Id is kTimeout if timeout.",
+            "throw": "Error if at least one keyword was not found"
+        },
+        "waitForEvent": {
+            "brief": "Wait for an event (acquisition, time event...)",
+            "params": {
+                "keywordIdList": {
+                    "direction": "in",
+                    "brief": "The keyword IDs list to watch"
+                },
+                "receiveDateTimeEvent": {
+                    "direction": "in",
+                    "brief": "True to receive date/time events (one per minute)"
+                },
+                "timeout": {
+                    "direction": "in",
+                    "brief": "Timeout to wait. Can be a duration (format \"hh:mm:ss\") or a dateTime (format \"YYYY-MM-DD hh:mm:ss\"). No timeout if empty (default).\nIf dateTime is used and specified in the past, the function will immediately return."
+                }
+            },
+            "return": "Returned value is a CWaitForEventResult instance, containing the event type and value.",
             "throw": "Error if at least one keyword was not found"
         },
         "writeKeyword": {
