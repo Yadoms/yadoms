@@ -5,16 +5,10 @@
  
 widgetViewModelCtor = function() {
    /**
-    * Widget identifier
-    */
-   this.widget = null;
-
-   /**
     * Initialization method
     * @param widget widget class object
     */
-   this.initialize = function(widget) {
-      this.widget = widget;
+   this.initialize = function() {
    };
 
    /**

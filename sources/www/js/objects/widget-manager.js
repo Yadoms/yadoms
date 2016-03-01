@@ -451,6 +451,7 @@ WidgetManager.addToDom_ = function (widget, ensureVisible) {
    widget.$gridWidget = WidgetManager.createGridstackWidget(widget);
    widget.$div = $("div#" + widgetDivId);
    widget.$toolbar = widget.$gridWidget.find("div.panel-widget-title-toolbar");
+   widget.$content = widget.$gridWidget.find("div.panel-widget-body");
 
    //we check if we are in customization we must apply customization on the new item
    WidgetManager.enableCustomization(widget, customization);

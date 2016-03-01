@@ -142,11 +142,16 @@ bool CHomeConfort::fromProtocolState(unsigned char protocolState)
 {
    switch(protocolState)
    {
-   case HomeConfort_sOn: return true;
-   case HomeConfort_sOff: return false;
+   case HomeConfort_sOn:
+   case HomeConfort_sGroupOn:
+      return true;
+
+   case HomeConfort_sOff: 
+   case HomeConfort_sGroupOff:
+      return false;
+
    default:
-      BOOST_ASSERT_MSG(false, "Invalid state");
-      throw shared::exception::CInvalidParameter("state");
+      throw shared::exception::CInvalidParameter("state, " + boost::lexical_cast<std::string>(protocolState));
    }
 }
 

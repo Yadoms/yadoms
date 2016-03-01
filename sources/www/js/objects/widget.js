@@ -88,6 +88,14 @@ Widget.prototype.width = function () {
     return parseInt(this.$gridWidget.css("width").replace('px', ''));
 };
 
+Widget.prototype.innerHeight = function () {
+    return parseInt(this.$content.css("height").replace('px', ''));
+};
+
+Widget.prototype.innerWidth = function () {
+    return parseInt(this.$content.css("width").replace('px', ''));
+};
+
 Widget.prototype.setHeight = function (newHeight) {
     return this.$gridWidget.css("height", newHeight + 'px');
 };

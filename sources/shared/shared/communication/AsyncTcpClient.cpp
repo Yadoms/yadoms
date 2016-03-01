@@ -95,14 +95,16 @@ void CAsyncTcpClient::flush()
 
 void CAsyncTcpClient::reconnectTimerHandler(const boost::system::error_code& error)
 {
-   BOOST_ASSERT_MSG(error == 0, "Error code should be 0 here");
+   if (error != 0)
+      throw exception::CException("Error code should be 0 here");
 
    tryConnect();
 }
 
 void CAsyncTcpClient::tryConnect()
 {
-   BOOST_ASSERT_MSG(!isConnected(), "Already connected");
+   if (!isConnected())
+      throw exception::CException("Already connected");
 
    m_serverAdressResolver.async_resolve(m_serverAdressResolverQuery,
       boost::bind(&CAsyncTcpClient::handleEndPointResolve, this, boost::asio::placeholders::error, boost::asio::placeholders::iterator));

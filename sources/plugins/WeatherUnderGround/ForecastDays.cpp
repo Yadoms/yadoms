@@ -50,7 +50,7 @@ void CForecastDays::InitializeForecastDays ( boost::shared_ptr<yApi::IYPluginApi
 
 		 if (WUConfiguration.IsRainIndividualKeywordsEnabled() )
 		 {
-			 for (unsigned char counter = 0; counter < 3; counter++)
+			 for (int counter = 0; counter < 3; ++counter)
 			 {
 				 std::stringstream TempString; 
 				 TempString << m_Prefix << "Rain_Day_" << counter;

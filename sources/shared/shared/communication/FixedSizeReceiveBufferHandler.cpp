@@ -7,7 +7,8 @@ namespace shared { namespace communication {
 CFixedSizeReceiveBufferHandler::CFixedSizeReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler, int receiveDataEventId, size_t messageSize)
    :m_receiveDataEventHandler(receiveDataEventHandler), m_receiveDataEventId(receiveDataEventId), m_messageSize(messageSize)
 {
-   BOOST_ASSERT_MSG(m_messageSize >= 1, "Invalid message size");
+   if (m_messageSize < 1)
+      throw exception::CException("Invalid message size");
 }
 
 CFixedSizeReceiveBufferHandler::~CFixedSizeReceiveBufferHandler()
@@ -42,7 +43,8 @@ bool CFixedSizeReceiveBufferHandler::isComplete() const
 
 boost::shared_ptr<const CByteBuffer> CFixedSizeReceiveBufferHandler::popNextMessage()
 {
-   BOOST_ASSERT_MSG(isComplete(), "CFixedSizeReceiveBufferHandler : Can not pop not completed message. Call isComplete to check if a message is available");
+   if (!isComplete())
+      throw exception::CException("CFixedSizeReceiveBufferHandler : Can not pop not completed message. Call isComplete to check if a message is available");
 
    boost::shared_ptr<CByteBuffer> extractedMessage(new CByteBuffer(m_messageSize));
    for (size_t idx = 0 ; idx < m_messageSize ; ++ idx)

@@ -43,7 +43,8 @@ bool CTeleInfoReceiveBufferHandler::isComplete() const
 
 boost::shared_ptr<const shared::communication::CByteBuffer> CTeleInfoReceiveBufferHandler::popNextMessage()
 {
-   BOOST_ASSERT_MSG(isComplete(), "CTeleInfoReceiveBufferHandler : Can not pop not completed message. Call isComplete to check if a message is available");
+   if (!isComplete())
+      throw shared::exception::CException("CTeleInfoReceiveBufferHandler : Can not pop not completed message. Call isComplete to check if a message is available");
 
    // The message size is provided in the first byte of the message.
    // This value counts all bytes except itself.

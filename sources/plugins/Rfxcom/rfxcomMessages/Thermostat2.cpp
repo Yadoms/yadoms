@@ -141,8 +141,7 @@ bool CThermostat2::fromProtocolState(unsigned char protocolState)
    case thermostat2_sOn: return true;
    case thermostat2_sOff: return false;
    default:
-      BOOST_ASSERT_MSG(false, "Invalid state");
-      throw shared::exception::CInvalidParameter("state");
+      throw shared::exception::CInvalidParameter("state, " + boost::lexical_cast<std::string>(protocolState));
    }
 }
 

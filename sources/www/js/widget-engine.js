@@ -28,11 +28,14 @@ function initializeWidgetEngine() {
         * Make lazy loading of the add widget modal
         */
    $("#btn-add-widget").click(function () {
-      Yadoms.modals.widgetAdd.loadAsync().done(Yadoms.askWidgetPackages);
+      Yadoms.modals.widgetAdd.loadAsync()
+       .done(function () {
+            Yadoms.askWidgetPackages();
+       })
+      .fail(function(error) {
+         notifyError($.t("objects.lazyLoaderManager.unableToLoadModal", { modalPath: self.modalPath }), error);
+      });
    });
-
-
-
 
    //we ask all widgets packages
    WidgetPackageManager.getAll()
@@ -266,7 +269,7 @@ function dispatchToWidgets(acq) {
                   var $battery = widget.$toolbar.find(".widget-toolbar-battery");
                   if ($battery) {
                      if ($battery.attr("keywordId") == acq.keywordId) {
-                        ToolbarApi.updateBatteryLevel(widget, acq.value);
+                        widget.viewModel.widgetApi.toolbar.updateBatteryLevel(acq.value);
                      }
                   }
                }

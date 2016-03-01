@@ -240,13 +240,13 @@ shared::CDataContainer CYPluginApiImplementation::getConfiguration() const
 void CYPluginApiImplementation::recordPluginEvent(PluginEventSeverity severity, const std::string& message)
 {
    database::entities::EEventType evenType;
-   switch(severity)
+   switch (severity)
    {
    case kError: evenType = database::entities::EEventType::kError; break;
    case kInfo: evenType = database::entities::EEventType::kInfo; break;
    default:
       {
-         BOOST_ASSERT_MSG(false, "Unknown plugin event severity type");
+         YADOMS_LOG(warning) << "Unknown plugin event severity type " << severity;
          evenType = database::entities::EEventType::kInfo; // Set a default value
          break;
       }

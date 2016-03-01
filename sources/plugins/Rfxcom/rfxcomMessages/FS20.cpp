@@ -246,9 +246,7 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CFS20::encode
          else if (m_state.switchLevel() < 94  ) { rbuf.FS20.cmd1 = 0x20 | 0x0F; }
          else if (m_state.switchLevel() <= 100) { rbuf.FS20.cmd1 = 0x20 | 0x10; }
          else
-         {
-            BOOST_ASSERT_MSG(false, "FS20 encoding : invalid switch level");
-         }
+            throw shared::exception::CException("FS20 encoding : invalid switch level");
 
          rbuf.FS20.cmd2 = 0;
          break;

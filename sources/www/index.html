@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="description" content="Yet Another DOMotic System">
     <meta name="author" content="yadoms team">
     <link rel="apple-touch-icon" sizes="57x57" href="img/favicon/apple-icon-57x57.png">
@@ -171,18 +171,19 @@
     
     <script src="libs/highcharts-export-clientside/js/highcharts-export-clientside.min.js"></script>
         -->
-    <script src="libs/bootstrap-colorpicker-master/js/bootstrap-colorpicker.min.js"></script>
+   <script src="libs/bootstrap-colorpicker-master/js/bootstrap-colorpicker.min.js"></script>
 	<script src="libs/bootstrap-iconpicker-1.7.0/js/iconset/iconset-glyphicon.min.js"></script>
-    <script src="libs/bootstrap-iconpicker-1.7.0/js/bootstrap-iconpicker.min.js"></script>
+   <script src="libs/bootstrap-iconpicker-1.7.0/js/bootstrap-iconpicker.min.js"></script>
 
-    <script src="js/objects/toolbar-api.js"></script>
+
+<script src="js/objects/toolbar-api.js"></script>
     <script src="js/objects/widget-api.js"></script>
 
     <script src="libs/jquery-MD5/js/jquery.md5.min.js"></script>
 
     <script src="libs/lodash/lodash.min.js"></script>
     <script src="libs/gridstack/js/gridstack.js"></script>
-    
+
     <div id="templates" class="hidden"></div>
 
     <script type="text/javascript">
@@ -202,9 +203,9 @@
            numberOfColumns: 12,
            gridWidth : 100,
            gridMargin : 5
-       };
+        };
 
-        
+
         /**
         * On page loaded
         */
@@ -287,9 +288,6 @@
                              .fail(function (error) {
                                 notifyError($.t("objects.ConfigurationManager.errorDuringGettingConfiguration", { section: ConfigurationManager.items.installSection, key: ConfigurationManager.items.install.firstStart }), error);
                              });
-
-
-
                           })
                           .fail(function (error) {
                              notifyError($.t("objects.ConfigurationManager.errorDuringGettingConfiguration", { section: ConfigurationManager.items.systemSection, key: ConfigurationManager.items.system.basicAuthentication }), error);

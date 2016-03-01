@@ -144,7 +144,8 @@ bool CManager::unloadPlugin(const std::string& pluginName)
       return false;  // No unload : plugin is still used by another instance
 
    // Signal qualifier that a plugin is about to be unloaded
-   BOOST_ASSERT_MSG(m_loadedPlugins.find(pluginName) != m_loadedPlugins.end(), "pluginName is not loaded");
+   if (m_loadedPlugins.find(pluginName) == m_loadedPlugins.end())
+      throw shared::exception::CException("pluginName is not loaded");
    m_qualifier->signalUnload(m_loadedPlugins.find(pluginName)->second->getInformation());
 
    // Effectively unload plugin

@@ -129,14 +129,16 @@ void CAsyncSerialPort::flush()
 
 void CAsyncSerialPort::reconnectTimerHandler(const boost::system::error_code& error)
 {
-   BOOST_ASSERT_MSG(error == 0, "Error code should be 0 here");
+   if (error != 0)
+      throw exception::CException("Error code should be 0 here");
 
    tryConnect();
 }
 
 void CAsyncSerialPort::tryConnect()
 {
-   BOOST_ASSERT_MSG(!isConnected(), "Already connected");
+   if (!isConnected())
+      throw exception::CException("Already connected");
 
    if (!connect())
    {

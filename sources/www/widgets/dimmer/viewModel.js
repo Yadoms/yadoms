@@ -9,8 +9,6 @@ widgetViewModelCtor = function DimmerViewModel() {
    this.DisplayValue = ko.observable("");
 
    //widget identifier
-   this.widget = null;
-
    this.step = ko.observable(0.1).extend({ numeric: 1 });
    this.DimmerText = ko.observable("");
 
@@ -29,8 +27,7 @@ widgetViewModelCtor = function DimmerViewModel() {
     * Initialization method
     * @param widget widget class object
     */
-   this.initialize = function (widget) {
-      this.widget = widget;
+   this.initialize = function () {
    };
 
    this.configurationChanged = function () {
@@ -40,7 +37,7 @@ widgetViewModelCtor = function DimmerViewModel() {
          return;
 
       //we register keyword new acquisition
-      WidgetApi.keyword.registerKeywordAcquisitions(self.widget, self.widget.configuration.device.keywordId);
+      self.widgetApi.registerKeywordAcquisitions(self.widget.configuration.device.keywordId);
 
       //Read the step
       self.step(self.widget.configuration.StepValue);
