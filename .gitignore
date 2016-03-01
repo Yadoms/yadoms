@@ -4,3 +4,4 @@ sources/resources/windows/yadoms-generated.rc
 *.pyc
 *.orig
 *.bak
+cppcheck_result
