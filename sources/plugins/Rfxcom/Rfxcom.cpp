@@ -339,11 +339,16 @@ void CRfxcom::initRfxcom()
    boost::this_thread::sleep(boost::posix_time::milliseconds(500));
 
    // Flush receive buffer according to RFXCom specifications
-   m_port->flush();
+//   m_port->flush();
 
    YADOMS_LOG(information) << "Start the RFXtrx receiver...";
    m_currentState = kStartReceiver;
    send(m_transceiver->buildStartReceiverCmd(), true);
+   boost::this_thread::sleep(boost::posix_time::milliseconds(50));
+
+   YADOMS_LOG(information) << "Get the RFXCom status...";
+   m_currentState = kGettingRfxcomStatus;
+   send(m_transceiver->buildGetStatusCmd(), true);
 }
 
 void CRfxcom::processRfxcomCommandResponseMessage(boost::shared_ptr<yApi::IYPluginApi> context, const rfxcomMessages::CTransceiverStatus& status)
@@ -410,6 +415,8 @@ void CRfxcom::processRfxcomStatusMessage(boost::shared_ptr<yApi::IYPluginApi> co
 void CRfxcom::processRfxcomReceiverStartedMessage(boost::shared_ptr<yApi::IYPluginApi> context, const rfxcomMessages::CTransceiverStatus& status)
 {
    YADOMS_LOG(information) << "RFXCom started message, device \"" << status.getValidMessage() << "\" detected";
+
+   return; // Ignored
 
    switch (m_currentState)
    {
