@@ -60,9 +60,20 @@ function getTextWidth(text, font) {
                //estimate the size relative to the item width, and apply a 0.8 factor to ensure the text will fit
                var fontSizeFromWidth = ($this.width() * 300 / px300) * 0.8;
 
+               
+
+               if ($this.parent().hasClass("center-area")) {
+                  fontSizeFromWidth = ($this.parent().width() * 300 / px300) * 0.8;
+               }
+
+
                $this.css('font-size', 1);
                var lh = parseFloat($this.css("line-height"));
                var fontSizeFromHeight = $this.height() / lh;
+               if ($this.parent().hasClass("center-area")) {
+                  fontSizeFromHeight = $this.parent().height() / lh;
+               }
+
                $this.css('font-size', Math.max(Math.min(fontSizeFromWidth, fontSizeFromHeight), minimumFontSize));
             };
             // Call on resize. Opera debounces their resize by default.
