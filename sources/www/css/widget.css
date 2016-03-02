@@ -61,6 +61,7 @@
     /*display: table-row;*/
     width: 100%;
     height: 25px;
+    border-radius: 0;
 }
 
 .panel-widget-body {
