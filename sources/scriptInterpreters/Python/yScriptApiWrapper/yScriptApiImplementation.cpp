@@ -42,7 +42,7 @@ void CYScriptApiImplementation::sendRequest(const protobufMessage::Request& requ
       if (!request.IsInitialized())
          throw std::overflow_error("CYScriptApiImplementation::sendRequest : request is not fully initialized");
 
-      if (request.ByteSize() > m_messageQueueMessageSize)
+      if (request.ByteSize() > static_cast<int>(m_messageQueueMessageSize))
          throw std::overflow_error("CYScriptApiImplementation::sendRequest : request is too big");
 
       if (!request.SerializeToArray(m_mqBuffer, m_messageQueueMessageSize))

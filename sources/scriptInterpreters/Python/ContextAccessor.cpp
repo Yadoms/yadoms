@@ -97,7 +97,7 @@ void CContextAccessor::sendAnswer(const protobufMessage::Answer& answer, boost::
    if (!answer.IsInitialized())
       throw std::overflow_error("CContextAccessor::sendAnswer : answer is not fully initialized");
 
-   if (answer.ByteSize() > m_messageQueueMessageSize)
+   if (answer.ByteSize() > static_cast<int>(m_messageQueueMessageSize))
       throw std::overflow_error("CContextAccessor::sendAnswer : answer is too big");
 
    if (!answer.SerializeToArray(m_mqBuffer, m_messageQueueMessageSize))
