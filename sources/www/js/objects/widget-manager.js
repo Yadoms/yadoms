@@ -633,7 +633,7 @@ WidgetManager.createGridstackWidget = function (widget) {
    //we put widget automatically at the first empty place if position has been undefined
    var autoPosition = ((!widget.positionX) || (!widget.positionY));
 
-   var item = page.grid.add_widget($(domWidget), widget.positionX, widget.positionY, widget.sizeX, widget.sizeY, autoPosition);
+   var item = page.grid.addWidget($(domWidget), widget.positionX, widget.positionY, widget.sizeX, widget.sizeY, autoPosition);
 
    //Calculate the overflow ! Theses values could be obtain, only after the application !
    var overflow = $("[widget-id=" + widget.id + "]").find(".panel-widget-title")[0].scrollWidth -
