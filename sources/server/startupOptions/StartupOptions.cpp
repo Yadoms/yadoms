@@ -5,6 +5,7 @@
 #include <Poco/Util/IntValidator.h>
 #include <Poco/Util/RegExpValidator.h>
 #include "MustExistPathValidator.h"
+#include "EnumValidator.h"
 
 namespace startupOptions
 {
@@ -53,12 +54,58 @@ namespace startupOptions
          .validator(new Poco::Util::RegExpValidator("^\\b(none|trace|debug|notice|information|warning|error|fatal|critical)\\b$"))
          .binding("server.logLevel", &m_configContainer));
 
+      std::string allDbEngines = EDatabaseEngine::toAllString(", ");
+
       options.addOption(
-         Poco::Util::Option("databaseFile", "D", "Use a specific dataBase file")
+         Poco::Util::Option("databaseEngine", "E", "Choose database engine, accepted values are : " + allDbEngines)
+         .required(false)
+         .repeatable(false)
+         .argument("engine")
+         .validator(new CEnumValidator<EDatabaseEngine>())
+         .binding("server.databaseEngine", &m_configContainer));    
+      
+      options.addOption(
+         Poco::Util::Option("databaseSqliteFile", "D", "Use a specific database file (only for sqlite database)")
          .required(false)
          .repeatable(false)
          .argument("file")
-         .binding("server.databasePath", &m_configContainer));
+         .binding("server.sqlite.databasePath", &m_configContainer));
+
+      options.addOption(
+         Poco::Util::Option("databasePostgresqlHost", "ph", "Specify PotgreSQL database host (only for postgresql database)")
+         .required(false)
+         .repeatable(false)
+         .argument("pgHost")
+         .binding("server.pgsql.host", &m_configContainer));
+
+      options.addOption(
+         Poco::Util::Option("databasePostgresqlPort", "pp", "Specify PotgreSQL database port (only for postgresql database)")
+         .required(false)
+         .repeatable(false)
+         .argument("pgPort")
+         .validator(new Poco::Util::IntValidator(1, 65535))
+         .binding("server.pgsql.port", &m_configContainer));
+
+      options.addOption(
+         Poco::Util::Option("databasePostgresqlDbName", "pn", "Specify PotgreSQL database name (only for postgresql database)")
+         .required(false)
+         .repeatable(false)
+         .argument("pgName")
+         .binding("server.pgsql.dbname", &m_configContainer));
+
+      options.addOption(
+         Poco::Util::Option("databasePostgresqlDbLogin", "pl", "Specify PotgreSQL database login (only for postgresql database)")
+         .required(false)
+         .repeatable(false)
+         .argument("pgLogin")
+         .binding("server.pgsql.login", &m_configContainer));
+
+      options.addOption(
+         Poco::Util::Option("databasePostgresqlDbPassword", "pp", "Specify PotgreSQL database password (only for postgresql database)")
+         .required(false)
+         .repeatable(false)
+         .argument("pgPassword")
+         .binding("server.pgsql.password", &m_configContainer));
 
       options.addOption(
          Poco::Util::Option("debug", "d", "Activate the debug mode (log files are separated by thread)")
@@ -68,7 +115,7 @@ namespace startupOptions
          .binding("server.debug", &m_configContainer));
 
       options.addOption(
-         Poco::Util::Option("noPassword", "d", "Skip password authentication for this instance")
+         Poco::Util::Option("noPassword", "np", "Skip password authentication for this instance")
          .required(false)
          .repeatable(false)
          .noArgument()
@@ -88,9 +135,9 @@ namespace startupOptions
       return m_configContainer.getString("server.logLevel", "information");
    }
 
-   unsigned int CStartupOptions::getWebServerPortNumber() const
+   const unsigned int CStartupOptions::getWebServerPortNumber() const
    {
-      return m_configContainer.getInt("server.port", 8080);
+      return m_configContainer.getUInt("server.port", 8080);
    }
 
    const std::string CStartupOptions::getWebServerIPAddress() const
@@ -102,10 +149,43 @@ namespace startupOptions
    {
       return m_configContainer.getString("server.www", "www");
    }
-   const std::string CStartupOptions::getDatabaseFile() const
+
+
+   const EDatabaseEngine CStartupOptions::getDatabaseEngine() const
    {
-      return m_configContainer.getString("server.databasePath", "yadoms.db3");
+      return EDatabaseEngine(m_configContainer.getString("server.databaseEngine", EDatabaseEngine::kSqlite.toString()));
    }
+
+   const std::string CStartupOptions::getDatabaseSqliteFile() const
+   {
+      return m_configContainer.getString("server.sqlite.databasePath", "yadoms.db3");
+   }
+
+   const std::string CStartupOptions::getDatabasePostgresqlHost() const
+   {
+      return m_configContainer.getString("server.sqlite.server.pgsql.host", "127.0.0.1");
+   }
+
+   const unsigned int CStartupOptions::getDatabasePostgresqlPort() const
+   {
+      return m_configContainer.getUInt("server.sqlite.server.pgsql.port", 5432);
+   }
+
+   const std::string CStartupOptions::getDatabasePostgresqlDbName() const
+   {
+      return m_configContainer.getString("server.sqlite.server.pgsql.dbname", "Yadoms");
+   }
+
+   const std::string CStartupOptions::getDatabasePostgresqlLogin() const
+   {
+      return m_configContainer.getString("server.sqlite.server.pgsql.login", "posgres");
+   }
+
+   const std::string CStartupOptions::getDatabasePostgresqlPassword() const
+   {
+      return m_configContainer.getString("server.sqlite.server.pgsql.password", "");
+   }
+
    bool CStartupOptions::getNoPasswordFlag() const
    {
       return m_configContainer.getBool("server.noPassword", false);

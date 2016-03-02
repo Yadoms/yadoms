@@ -503,6 +503,7 @@ CCurtain::ECommand::ECommand()
 		static ENUM_CLASSNAME(_enumName) parse(const std::string & val);																	\
 		static bool isDefined(const std::string & stringValue);																				\
 		static bool isDefined(const int intValue);																							\
+      static std::string toAllString(const std::string separator); \
 	private:																									                            \
 		static std::string m_name;																											\
 		_type   m_value;																					                                \
@@ -603,6 +604,17 @@ CCurtain::ECommand::ECommand()
 /// \brief Macro used to declare the implementation of values lisiting method
 //
 #define ENUM_DECLARE_LIST_ALL_STRINGS_IMPL(_var, _seq) BOOST_PP_SEQ_FOR_EACH(ENUM_DECLARE_ADD_ONE_STRING, _var, _seq)     
+
+//
+/// \brief Macro used to declare the implementation of adding one enumeration value to a (multi)map
+//
+#define ENUM_DECLARE_ONE_TO_ALL_STRINGS_IMPL(r, _var, elem)  result += ENUM_EXTRACT_CONST_STRINGNAME(elem) + _var;
+
+
+//
+/// \brief Macro used to declare the implementation of values lisiting method
+//
+#define ENUM_DECLARE_LIST_TO_ALL_STRINGS_IMPL(_var, _seq) BOOST_PP_SEQ_FOR_EACH(ENUM_DECLARE_ONE_TO_ALL_STRINGS_IMPL, _var, _seq)     
 
 
 
@@ -759,7 +771,14 @@ CCurtain::ECommand::ECommand()
         ENUM_DECLARE_LIST_ALL_STRINGS_IMPL(allStrings, _seq)                                                                                    \
 		return allStrings;																														\
 	}																																			\
-	const std::string & _fullClassifiedEnumName::getName() const																				\
+   std::string _fullClassifiedEnumName::toAllString(const std::string separator)                            \
+   {                                                                                                        \
+      std::string result;                                                                                   \
+      ENUM_DECLARE_LIST_TO_ALL_STRINGS_IMPL(separator, _seq)                                                \
+      if(boost::algorithm::ends_with(result, separator)) result.erase(result.rfind(separator));             \
+      return result;                                                                                        \
+   }                                                                                                        \
+	const std::string & _fullClassifiedEnumName::getName() const															\
 	{																																			\
 		return m_name;																															\
 	}

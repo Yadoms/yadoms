@@ -38,10 +38,16 @@ namespace startupOptions
       //--------------------------------------------------------------
       // IStartupOptions implementation (see IStartupOptions declaration for details)
       virtual const std::string getLogLevel() const;
-      virtual unsigned int getWebServerPortNumber() const;
+      virtual const unsigned int getWebServerPortNumber() const;
       virtual const std::string getWebServerIPAddress() const;
       virtual const std::string getWebServerInitialPath() const;
-      virtual const std::string getDatabaseFile() const;
+      virtual const EDatabaseEngine getDatabaseEngine() const;
+      virtual const std::string getDatabaseSqliteFile() const;
+      virtual const std::string getDatabasePostgresqlHost() const;
+      virtual const unsigned int getDatabasePostgresqlPort() const;
+      virtual const std::string getDatabasePostgresqlDbName() const;
+      virtual const std::string getDatabasePostgresqlLogin() const;
+      virtual const std::string getDatabasePostgresqlPassword() const;
       virtual const std::string getPluginsPath() const;
       virtual const std::string getScriptInterpretersPath() const;
       virtual bool getNoPasswordFlag() const;

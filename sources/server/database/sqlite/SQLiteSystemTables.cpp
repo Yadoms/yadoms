@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "SQLiteSystemTables.h"
-#include "database/sqlite/SQLiteDatabaseTablesHelpers.hpp"
+#include "database/common/DatabaseTablesHelpers.hpp"
 
 
 namespace database { 
@@ -13,8 +13,6 @@ namespace sqlite {
       ((RootPage)("rootpage"))
       ((Sql)("sql"))
    )
-
-   DECLARE_STATIC_TABLE_CREATION_SCRIPT(SqliteMaster, "cannot create system tables")
 
 } //namespace sqlite
 } //namespace database 

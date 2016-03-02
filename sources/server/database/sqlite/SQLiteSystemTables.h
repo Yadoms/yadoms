@@ -1,6 +1,6 @@
 #pragma once
 
-#include "database/sqlite/SQLiteDatabaseTablesHelpers.hpp"
+#include "database/common/DatabaseTablesHelpers.hpp"
 
 
 namespace database { 

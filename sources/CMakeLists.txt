@@ -204,6 +204,8 @@ set(LIBS ${LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${RT_LIBRARY} ${Po
 
 #Use Sqlite database system
 set(USE_SQLITE_DATABASE TRUE)
+#Use PostgreSQL database system
+set(USE_PGSQL_DATABASE TRUE)
 #Use Poco web server
 set(USE_POCO_WEBSERVER TRUE)
 
@@ -317,6 +319,10 @@ set(YADOMS_SRC
 	server/database/IConfigurationRequester.h
 	server/database/IAcquisitionRequester.h
 	server/database/IDataProvider.h
+	server/database/Factory.h
+	server/database/Factory.cpp
+	server/database/IDatabaseEngine.h
+	server/database/IDatabaseRequester.h
 	server/database/IDataBackup.h
 	server/database/IDeviceRequester.h
 	server/database/IEventLoggerRequester.h
@@ -326,6 +332,7 @@ set(YADOMS_SRC
 	server/database/IPluginEventLoggerRequester.h
 	server/database/IPluginRequester.h
 	server/database/IRecipientRequester.h
+	server/database/ITableCreationScriptProvider.h
 	server/database/ITransactionalProvider.h
 	server/database/IWidgetRequester.h
 
@@ -409,6 +416,9 @@ set(YADOMS_SRC
    
    server/notification/summary/Notification.hpp
    
+	server/startupOptions/DatabaseEngine.h
+	server/startupOptions/DatabaseEngine.cpp
+	server/startupOptions/EnumValidator.h
 	server/startupOptions/IStartupOptions.h
 	server/startupOptions/StartupOptions.h
 	server/startupOptions/StartupOptions.cpp
@@ -604,79 +614,118 @@ source_group(server\\tools\\platformSpecific\\windows\\service server/tools/wind
 source_group(server\\tools\\platformSpecific\\linux server/tools/linux/tools/*.*)
 source_group(server\\tools\\platformSpecific\\mac server/tools/mac/tools/*.*)
 
+################################################
+#### Database (common)
+################################################
+set(YADOMS_SRC ${YADOMS_SRC}
+   server/database/common/Query.h
+   server/database/common/Query.cpp
+   server/database/common/QueryValue.h
+   server/database/common/QueryValue.cpp
+	server/database/common/DataProvider.h
+	server/database/common/DataProvider.cpp
+   server/database/common/DatabaseTables.h
+   server/database/common/DatabaseTables.cpp
+   server/database/common/DatabaseTablesHelpers.hpp
+   server/database/common/SummaryDataTask.h
+   server/database/common/SummaryDataTask.cpp      
+   server/database/common/PurgeTask.h
+   server/database/common/PurgeTask.cpp      
+   server/database/common/adapters/AdapterHelpers.hpp
+   server/database/common/adapters/DatabaseAdapters.h
+   server/database/common/adapters/DatabaseAdapters.cpp
+   server/database/common/adapters/GenericAdapter.h
+   server/database/common/adapters/GenericAdapter.cpp
+   server/database/common/adapters/HighchartValueAdapter.hpp
+   server/database/common/adapters/IResultAdapter.h
+   server/database/common/adapters/MultipleValueAdapter.hpp
+   server/database/common/adapters/SingleValueAdapter.hpp
+   server/database/common/adapters/SqlExtension.hpp
+   server/database/common/requesters/Plugin.h
+   server/database/common/requesters/Plugin.cpp
+   server/database/common/requesters/Configuration.h
+   server/database/common/requesters/Configuration.cpp
+   server/database/common/requesters/Keyword.h
+   server/database/common/requesters/Keyword.cpp
+   server/database/common/requesters/Device.h
+   server/database/common/requesters/Device.cpp		
+   server/database/common/requesters/Rule.h
+   server/database/common/requesters/Rule.cpp		
+   server/database/common/requesters/Page.h
+   server/database/common/requesters/Page.cpp		
+   server/database/common/requesters/Recipient.h
+   server/database/common/requesters/Recipient.cpp		
+   server/database/common/requesters/Widget.h
+   server/database/common/requesters/Widget.cpp		
+   server/database/common/requesters/PluginEventLogger.h
+   server/database/common/requesters/PluginEventLogger.cpp
+   server/database/common/requesters/EventLogger.h
+   server/database/common/requesters/EventLogger.cpp
+   server/database/common/requesters/Acquisition.h
+   server/database/common/requesters/Acquisition.cpp
+   server/database/common/versioning/IVersionUpgrade.h
+   server/database/common/versioning/Version1.h
+   server/database/common/versioning/Version1.cpp
+   server/database/common/versioning/VersionUpgraderFactory.h
+   server/database/common/versioning/VersionUpgraderFactory.cpp
+   server/database/common/versioning/VersionException.h
+                   
+   server/database/common/IResultHandler.h
+)
 
-#Database
+source_group(server\\database\\common  server/database/common/*.*)
+source_group(server\\database\\common\\adapters  server/database/common/adapters/*.*)
+source_group(server\\database\\common\\requesters  server/database/common/requesters/*.*)
+source_group(server\\database\\common\\versioning  server/database/common/versioning/*.*)
+
+################################################
+#### Database (SQlite)
+################################################
+
 IF(USE_SQLITE_DATABASE)
 	set(YADOMS_SRC ${YADOMS_SRC}
-		server/database/sqlite/Query.h
-		server/database/sqlite/Query.cpp
-		server/database/sqlite/QueryValue.h
-		server/database/sqlite/QueryValue.cpp
-		server/database/sqlite/SQLiteDataProvider.h
-		server/database/sqlite/SQLiteDataProvider.cpp
 		server/database/sqlite/SQLiteRequester.h
 		server/database/sqlite/SQLiteRequester.cpp
-		server/database/sqlite/SQLiteDatabaseTables.h
-		server/database/sqlite/SQLiteDatabaseTables.cpp
+		server/database/sqlite/SQLiteResultHandler.h
+		server/database/sqlite/SQLiteResultHandler.cpp
 		server/database/sqlite/SQLiteSystemTables.h
 		server/database/sqlite/SQLiteSystemTables.cpp
-		server/database/sqlite/SQLiteDatabaseTablesHelpers.hpp
-		server/database/sqlite/SQLiteTablesScripts.cpp
-      server/database/sqlite/SQLiteSummaryDataTask.h
-      server/database/sqlite/SQLiteSummaryDataTask.cpp      
-      server/database/sqlite/SQLitePurgeTask.h
-      server/database/sqlite/SQLitePurgeTask.cpp      
-		server/database/sqlite/requesters/Plugin.h
-		server/database/sqlite/requesters/Plugin.cpp
-		server/database/sqlite/requesters/Configuration.h
-		server/database/sqlite/requesters/Configuration.cpp
-		server/database/sqlite/requesters/Keyword.h
-		server/database/sqlite/requesters/Keyword.cpp
-		server/database/sqlite/requesters/Device.h
-		server/database/sqlite/requesters/Device.cpp		
-		server/database/sqlite/requesters/Rule.h
-		server/database/sqlite/requesters/Rule.cpp		
-		server/database/sqlite/requesters/Page.h
-		server/database/sqlite/requesters/Page.cpp		
-		server/database/sqlite/requesters/Recipient.h
-		server/database/sqlite/requesters/Recipient.cpp		
-		server/database/sqlite/requesters/Widget.h
-		server/database/sqlite/requesters/Widget.cpp		
-		server/database/sqlite/requesters/PluginEventLogger.h
-		server/database/sqlite/requesters/PluginEventLogger.cpp
-		server/database/sqlite/requesters/EventLogger.h
-		server/database/sqlite/requesters/EventLogger.cpp
-		server/database/sqlite/requesters/Acquisition.h
-		server/database/sqlite/requesters/Acquisition.cpp
-		
-		server/database/sqlite/adapters/SQLite3Extension.hpp
-		server/database/sqlite/adapters/SQLiteDatabaseAdapters.h
-		server/database/sqlite/adapters/SQLiteDatabaseAdapters.cpp
-		server/database/sqlite/adapters/AdapterHelpers.hpp
-		server/database/sqlite/adapters/ISQLiteResultAdapter.h
-		server/database/sqlite/adapters/GenericAdapter.h
-		server/database/sqlite/adapters/GenericAdapter.cpp
-		server/database/sqlite/adapters/SingleValueAdapter.hpp
-		server/database/sqlite/adapters/HighchartValueAdapter.hpp
-		server/database/sqlite/adapters/MultipleValueAdapter.hpp
-      
-		server/database/sqlite/versioning/ISQLiteVersionUpgrade.h
-		server/database/sqlite/versioning/SQLiteVersion1.h
-		server/database/sqlite/versioning/SQLiteVersion1.cpp
-		server/database/sqlite/versioning/SQLiteVersionUpgraderFactory.h
-		server/database/sqlite/versioning/SQLiteVersionUpgraderFactory.cpp
-		server/database/sqlite/versioning/SQLiteVersionException.h
-		
+		server/database/sqlite/SQLiteTableCreationScriptProvider.h
+		server/database/sqlite/SQLiteTableCreationScriptProvider.cpp
 	)
 	
 	source_group(server\\database\\sqlite  server/database/sqlite/*.*)
-	source_group(server\\database\\sqlite\\adapters  server/database/sqlite/adapters/*.*)
-	source_group(server\\database\\sqlite\\requesters  server/database/sqlite/requesters/*.*)
-	source_group(server\\database\\sqlite\\versioning  server/database/sqlite/versioning/*.*)
 	
-	set(YADOMS_EXTERNAL_LINK sqlite)
+	set(YADOMS_EXTERNAL_LINK ${YADOMS_EXTERNAL_LINK} sqlite)
 	set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${SQLITE_INCLUDE_DIRECTORY})
 ENDIF()
+
+################################################
+#### Database (PostgreSQL)
+################################################
+
+IF(USE_PGSQL_DATABASE)
+   find_package(PostgreSQL REQUIRED)
+   message(STATUS "Found postgresql ${PostgreSQL_VERSION_STRING}")
+
+	set(YADOMS_SRC ${YADOMS_SRC}
+		server/database/pgsql/PgsqlRequester.h
+		server/database/pgsql/PgsqlRequester.cpp
+		server/database/pgsql/PgsqlResultHandler.h
+		server/database/pgsql/PgsqlResultHandler.cpp
+		server/database/pgsql/PgsqlSystemTables.h
+		server/database/pgsql/PgsqlSystemTables.cpp
+		server/database/pgsql/Query.h
+		server/database/pgsql/Query.cpp
+		server/database/pgsql/PgsqlTableCreationScriptProvider.h
+		server/database/pgsql/PgsqlTableCreationScriptProvider.cpp
+	)
+	
+	source_group(server\\database\\pgsql  server/database/pgsql/*.*)
+	
+	set(YADOMS_EXTERNAL_LINK ${YADOMS_EXTERNAL_LINK} ${PostgreSQL_LIBRARY})
+	set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${PostgreSQL_INCLUDE_DIRS})
+ENDIF(USE_PGSQL_DATABASE)
 
 #Web server
 IF(USE_POCO_WEBSERVER)

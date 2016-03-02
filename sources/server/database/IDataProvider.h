@@ -15,9 +15,6 @@
 
 namespace database { 
 
-
-
-
    class IDataProvider
    {
    public:

@@ -3,9 +3,9 @@
 //
 #pragma once
 
-namespace startupOptions
-{
+#include "DatabaseEngine.h"
 
+namespace startupOptions {
    class IStartupOptions
    {
    public:
@@ -24,7 +24,7 @@ namespace startupOptions
       /// \brief	    Get the port number
       /// \return     Configured port number
       //--------------------------------------------------------------
-      virtual unsigned int getWebServerPortNumber() const = 0;
+      virtual const unsigned int getWebServerPortNumber() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Get the web server ip address
@@ -39,12 +39,48 @@ namespace startupOptions
       virtual const std::string getWebServerInitialPath() const = 0;
 
       //--------------------------------------------------------------
-      /// \brief	    Get the path of the database file
+      /// \brief	    Get the database engine to use
+      /// \return     The database engine (sqlite|postgresql)
+      //--------------------------------------------------------------
+      virtual const EDatabaseEngine getDatabaseEngine() const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief	    Get the path of the database file (sqlite only)
       /// \return     Database file path
       /// \note       If not exist, Yadoms will create the file
       //--------------------------------------------------------------
-      virtual const std::string getDatabaseFile() const = 0;    
-      
+      virtual const std::string getDatabaseSqliteFile() const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief	    Get the database host (PostgreSQL database only)
+      /// \return     The database host (host name or ip)
+      //--------------------------------------------------------------
+      virtual const std::string getDatabasePostgresqlHost() const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief	    Get the database port (PostgreSQL database only)
+      /// \return     The database port
+      //--------------------------------------------------------------
+      virtual const unsigned int getDatabasePostgresqlPort() const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief	    Get the database name (PostgreSQL database only)
+      /// \return     The database name
+      //--------------------------------------------------------------
+      virtual const std::string getDatabasePostgresqlDbName() const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief	    Get the database login (PostgreSQL database only)
+      /// \return     The database login
+      //--------------------------------------------------------------
+      virtual const std::string getDatabasePostgresqlLogin() const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief	    Get the database password (PostgreSQL database only)
+      /// \return     The database password
+      //--------------------------------------------------------------
+      virtual const std::string getDatabasePostgresqlPassword() const = 0;
+
       //--------------------------------------------------------------
       /// \brief	    Get the plugin path
       /// \return     The plugin path

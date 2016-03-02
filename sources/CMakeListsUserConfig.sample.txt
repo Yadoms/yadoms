@@ -17,6 +17,9 @@ set(POCO_ROOT "path/to/poco/poco-1.6.0-all")
 #set(OPENSSL_ROOT_DIR "path/to/openssl")
 
 
+#define PostgreSQL ROOT
+#set(PostgreSQL_ROOT "F:/ProjetsPerso/postgresql-9.4.6-1-windows-binaries/pgsql")
+
 
 #define CC_RPI_ROOT to cross compile for Raspberry PI (from a linux machine)
 #depending on linux machine architecture (32/64), choose from the first or second line
