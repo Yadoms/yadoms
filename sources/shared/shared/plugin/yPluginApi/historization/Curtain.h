@@ -25,7 +25,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       ///\brief                     Constructor
       ///\param[in] keywordName     Yadoms keyword name
       //-----------------------------------------------------
-      CCurtain(const std::string& keywordName);
+      explicit CCurtain(const std::string& keywordName);
 
       //-----------------------------------------------------
       ///\brief                     Destructor
