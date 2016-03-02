@@ -30,15 +30,15 @@ function numericDisplayViewModel() {
        var self = this;
 
        //we get the unit of the keyword
-        self.widgetApi.getKeywordInformation(self.widget.configuration.device.keywordId).done(function (keyword) {
-            self.unit($.t(keyword.units));
-        });
+       self.widgetApi.getKeywordInformation(self.widget.configuration.device.keywordId).done(function (keyword) {
+           self.unit($.t(keyword.units));
+       });
 
-        //we register keyword new acquisition
-        self.widgetApi.registerKeywordAcquisitions(self.widget.configuration.device.keywordId);
+       //we register keyword new acquisition
+       self.widgetApi.registerKeywordAcquisitions(self.widget.configuration.device.keywordId);
 
-        //we fill the deviceId of the battery indicator
-        self.widgetApi.toolbar.configureBatteryIcon(self.widget.configuration.device.deviceId);
+       //we fill the deviceId of the battery indicator
+       self.widgetApi.toolbar.configureBatteryIcon(self.widget.configuration.device.deviceId);
     }
 
     /**

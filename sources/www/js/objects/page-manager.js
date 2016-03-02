@@ -152,9 +152,11 @@ PageManager.addToDom = function (page) {
    //we save the content of the page dom node
    page.$content = container.find("div#" + tabIdAsText);
 
+    //we compute the number of columns based on the width of the screen
+   var numberOfColumns = Math.floor(window.innerWidth / (Yadoms.gridWidth + Yadoms.gridMargin));
    var options = {
-      width: Yadoms.numberOfColumns,
-      float: true,
+      width: numberOfColumns,
+      float: false,
       always_show_resize_handle: true,
       cell_height: Yadoms.gridWidth,
       vertical_margin: Yadoms.gridMargin,

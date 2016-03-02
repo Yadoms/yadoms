@@ -450,6 +450,7 @@ WidgetManager.addToDom_ = function (widget, ensureVisible) {
    var widgetDivId = "widget-" + widget.id;
    widget.$gridWidget = WidgetManager.createGridstackWidget(widget);
    widget.$div = $("div#" + widgetDivId);
+   widget.$header = widget.$gridWidget.find("div.panel-widget-header");
    widget.$toolbar = widget.$gridWidget.find("div.panel-widget-title-toolbar");
    widget.$content = widget.$gridWidget.find("div.panel-widget-body");
 

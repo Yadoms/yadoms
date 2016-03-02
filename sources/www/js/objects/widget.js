@@ -97,11 +97,13 @@ Widget.prototype.innerWidth = function () {
 };
 
 Widget.prototype.setHeight = function (newHeight) {
-    return this.$gridWidget.css("height", newHeight + 'px');
+    this.$gridWidget.css("height", newHeight + 'px');
+    this.$content.css("height", (newHeight - parseInt(this.$header.css("height").replace('px', ''))) + 'px');
 };
 
 Widget.prototype.setWidth = function (newWidth) {
-    return this.$gridWidget.css("width", newWidth + 'px');
+    this.$gridWidget.css("width", newWidth + 'px');
+    this.$content.css("width", newWidth + 'px');
 };
 
 Widget.prototype.title = function () {

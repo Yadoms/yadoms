@@ -6,7 +6,6 @@ widgetViewModelCtor =
  */
    function chartViewModel() {
 
-       //widget identifier
        this.refreshingData = false;
        this.seriesUuid = [];
 
@@ -134,6 +133,19 @@ widgetViewModelCtor =
 
                self.$chart.highcharts('StockChart', self.chartOption);
                self.chart = self.$chart.highcharts();
+               /*
+               self.widgetApi.toolbar({
+                   activated: true,
+                   title : {
+                       useStandard: false,
+                       text:"TITRE DE MON WIDGET"
+                   },
+                   items: [
+                       { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"HOUR\"><span data-i18n=\"widgets/chart:navigator.hour\"/></div>" },
+                       { separator : "" },
+                       { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"DAY\"><span data-i18n=\"widgets/chart:navigator.day\"/></div>" }
+                   ]
+               });*/
 
                //we manage toolbar buttons
                self.widgetApi.toolbar.appendCustom("<div class=\"widget-toolbar-button range-btn\" interval=\"HOUR\"><span data-i18n=\"widgets/chart:navigator.hour\"/></div>");
