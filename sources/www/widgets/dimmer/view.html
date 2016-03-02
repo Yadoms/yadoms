@@ -4,7 +4,9 @@
          <button class="btn btn-default dimmer-widget-button widget-api-textfit" data-bind="event: {click: commandClickPlus}"><span class="glyphicon glyphicon-plus"></span></button>
          <button class="btn btn-default dimmer-widget-button widget-api-textfit" data-bind="event: {click: commandClickMinus}"><span class="glyphicon glyphicon-minus"></span></button>
       </div>
-      <div class="dimmer-widget-value widget-api-textfit" data-bind="text: data()"></div>
+      <div class="center-area">
+         <div class="dimmer-widget-value widget-api-textfit" style="height: auto" data-bind="text: data()"></div>
+      </div>
       <div class="dimmer-widget-unit widget-api-textfit" data-bind="text: unit()"></div>
    </div>
 </script>
