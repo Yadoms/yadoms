@@ -52,27 +52,48 @@ def start():
 def isProcessRunning(pid):  
    """Check if the process is running"""
 
-   try:
-      os.kill(pid, 0)
-   except OSError as err:
-      if err.errno == errno.ESRCH:
-         return False
-   return True
-    
-   
+   if (platform.system() == "Windows"):
+		try:
+		   os.kill(pid, 0)
+		except OSError as err:
+		   if err.errno == errno.ESRCH:
+		      return False
+		return True
+   else:
+      return os.path.exists("/proc/" + str(pid))
+      
+      
+def doKill(pid):
+   if (platform.system() == "Windows"):
+      os.kill(pid, signal.SIGINT)
+   else:
+      os.kill(pid, signal.SIGKILL)
+      
+  
 def stop(yadomsProcess):
    """Kill Yadoms server with its sup-processes"""
 
+   print "######## TRY TO STOP YADOMS ########"
    parent = psutil.Process(yadomsProcess.pid)
    
+   print "Kill Yadoms..."
    for child in parent.children(True):
-      os.kill(child.pid, signal.SIGINT)
-      while not isProcessRunning(child.pid):
+      doKill(child.pid)
+      while isProcessRunning(child.pid):
          time.sleep(1)
          
-   os.kill(parent.pid, signal.SIGINT)
-   while not isProcessRunning(parent.pid):
+   if (platform.system() != "Windows"):
+      parent = yadomsProcess
+
+   doKill(parent.pid)
+   counter = 0
+   while isProcessRunning(parent.pid):
+      counter += 1
       time.sleep(1)
+      if counter > 2:
+         break
+
+   print "Yadoms killed"
 
            
 def restart():

@@ -5,3 +5,4 @@ sources/resources/windows/yadoms-generated.rc
 *.orig
 *.bak
 cppcheck_result
+tests/unit/sources/CMakeListsUserConfig.txt
