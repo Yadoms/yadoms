@@ -69,7 +69,7 @@ endif()
 ## even if some variables are empty
 #########################################
 SCRIPT_API_WRAPPER_SOURCES(python ${PYTHON_WRAPPER_SOURCES})
-SCRIPT_API_WRAPPER_INCLDIR(${PYTHON_WRAPPER_INCLDIR} ${PROTOBUF_INCLUDE_DIRS} ${message_GENERATED_DIR})
+SCRIPT_API_WRAPPER_INCLDIR(${PYTHON_WRAPPER_INCLDIR} ${PROTOBUF_INCLUDE_DIRS} ${messages_GENERATED_DIR})
 SCRIPT_API_WRAPPER_LINK(${PYTHON_WRAPPER_LINK} messages)
 
 #########################################
