@@ -14,7 +14,7 @@ public:
    ///\brief               Constructor
    ///\param[in] yScriptApiAccessorId  The context accessor ID provided by Yadoms
    //-----------------------------------------------------
-   CYScriptApiImplementation(const std::string& yScriptApiAccessorId);
+   explicit CYScriptApiImplementation(const std::string& yScriptApiAccessorId);
 
    //-----------------------------------------------------
    ///\brief               Destructor

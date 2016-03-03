@@ -15,7 +15,7 @@ public:
    /// \brief	Constructor
    /// \param[in] context IYScriptApi context instance
    //--------------------------------------------------------------
-   CContextAccessor(boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi);
+   explicit CContextAccessor(boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi);
 
    //--------------------------------------------------------------
    /// \brief	Destructor

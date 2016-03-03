@@ -5,14 +5,18 @@
 
 namespace device {
 
-CIdentification::CIdentification(EOneWireFamily family, const std::string& id, const std::string& model)
-   :m_family(family), m_id(id), m_model(model)
+std::string buildDeviceName(const std::string& family)
 {
    std::stringstream ss;
    ss << std::hex << m_family;
    ss << '-';
    ss << id;
-   m_deviceName = ss.str();
+   return std::string(ss.str());
+}
+
+CIdentification::CIdentification(EOneWireFamily family, const std::string& id, const std::string& model)
+   :m_family(family), m_id(id), m_deviceName(buildDeviceName(family)), m_model(model)
+{
 }
 
 CIdentification::~CIdentification()
