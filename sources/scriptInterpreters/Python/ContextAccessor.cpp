@@ -117,26 +117,20 @@ void CContextAccessor::processMessage(const void* message, size_t messageSize, b
       throw shared::exception::CInvalidParameter("message");
 
    // Process message
-   if (request.has_getkeywordid())
-      processGetKeywordId(request.getkeywordid(), messageQueue);
-   else if (request.has_getrecipientid())
-      processGetRecipientId(request.getrecipientid(), messageQueue);
-   else if (request.has_readkeyword())
-      processReadKeyword(request.readkeyword(), messageQueue);
-   else if (request.has_waitfornextacquisition())
-      processWaitForNextAcquisition(request.waitfornextacquisition(), messageQueue);
-   else if (request.has_waitfornextacquisitions())
-      processWaitForNextAcquisitions(request.waitfornextacquisitions(), messageQueue);
-   else if (request.has_waitforevent())
-      processWaitForEvent(request.waitforevent(), messageQueue);
-   else if (request.has_writekeyword())
-      processWriteKeyword(request.writekeyword(), messageQueue);
-   else if (request.has_sendnotification())
-      processSendNotification(request.sendnotification(), messageQueue);
-   else if (request.has_getinfo())
-      processGetInfo(request.getinfo(), messageQueue);
-   else
+   switch(request.OneOf_case())
+   {
+   case pbRequest::msg::kGetKeywordId: processGetKeywordId(request.getkeywordid(), messageQueue); break;
+   case pbRequest::msg::kGetRecipientId: processGetRecipientId(request.getrecipientid(), messageQueue); break;
+   case pbRequest::msg::kReadKeyword: processReadKeyword(request.readkeyword(), messageQueue); break;
+   case pbRequest::msg::kWaitForNextAcquisition: processWaitForNextAcquisition(request.waitfornextacquisition(), messageQueue); break;
+   case pbRequest::msg::kWaitForNextAcquisitions: processWaitForNextAcquisitions(request.waitfornextacquisitions(), messageQueue); break;
+   case pbRequest::msg::kWaitForEvent: processWaitForEvent(request.waitforevent(), messageQueue); break;
+   case pbRequest::msg::kWriteKeyword: processWriteKeyword(request.writekeyword(), messageQueue); break;
+   case pbRequest::msg::kSendNotification: processSendNotification(request.sendnotification(), messageQueue); break;
+   case pbRequest::msg::kGetInfo: processGetInfo(request.getinfo(), messageQueue); break;
+   default:
       throw shared::exception::CInvalidParameter("message");
+   }
 }
 
 void CContextAccessor::processGetKeywordId(const pbRequest::GetKeywordId& request, boost::interprocess::message_queue& messageQueue)
