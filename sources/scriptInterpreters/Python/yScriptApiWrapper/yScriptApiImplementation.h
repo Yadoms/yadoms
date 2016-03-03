@@ -38,7 +38,7 @@ protected:
    /// \brief	Send a request
    /// \param[in] request Request to send
    //--------------------------------------------------------------
-   void sendRequest(const protobufMessage::Request& request) const;
+   void sendRequest(const pbRequest::msg& request) const;
 
    //--------------------------------------------------------------
    /// \brief	Wait for an answer
@@ -46,7 +46,7 @@ protected:
    /// \throw std::runtime_error if message queue error
    /// \throw shared::exception::CInvalidParameter if error parsing message
    //--------------------------------------------------------------
-   void receiveAnswer(protobufMessage::Answer& answer) const;
+   void receiveAnswer(pbAnswer::msg& answer) const;
 
 private:
    //-----------------------------------------------------
