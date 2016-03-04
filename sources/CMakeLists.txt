@@ -723,6 +723,34 @@ IF(USE_PGSQL_DATABASE)
 	
 	source_group(server\\database\\pgsql  server/database/pgsql/*.*)
 	
+   #in case of OpenSSL use
+   if(PostgreSQL_FOUND)
+      IF(WIN32)
+         #add libpq.dll and intl.dll as dependencies
+         IF(EXISTS "${PostgreSQL_ROOT}/bin/libpq.dll")
+            SET(PostgreSqlDepends "${PostgreSQL_ROOT}/bin/libpq.dll")
+         ENDIF()        
+
+         IF(EXISTS "${PostgreSQL_ROOT}/bin/intl.dll")
+            SET(PostgreSqlDepends ${PostgreSqlDepends} "${PostgreSQL_ROOT}/bin/intl.dll")
+         ENDIF()
+          
+                   
+         IF(NOT ${PocoNetSSLFound})
+            #add libeay32.dll and ssleay32.dll as dependencies
+            IF(EXISTS "${PostgreSQL_ROOT}/bin/libeay32.dll")
+               SET(PostgreSqlDepends ${PostgreSqlDepends} "${PostgreSQL_ROOT}/bin/libeay32.dll")
+            ENDIF()
+             
+            IF(EXISTS "${PostgreSQL_ROOT}/bin/ssleay32.dll")
+               SET(PostgreSqlDepends ${PostgreSqlDepends} "${PostgreSQL_ROOT}/bin/ssleay32.dll")
+            ENDIF()
+         ENDIF()
+      ENDIF(WIN32)
+   ENDIF()
+
+   
+   
 	set(YADOMS_EXTERNAL_LINK ${YADOMS_EXTERNAL_LINK} ${PostgreSQL_LIBRARY})
 	set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${PostgreSQL_INCLUDE_DIRS})
 ENDIF(USE_PGSQL_DATABASE)
@@ -869,6 +897,13 @@ FOREACH (PocoNetSSLDepend ${PocoNetSSLDepends})
                           ${PocoNetSSLDepend} $<TARGET_FILE_DIR:yadoms>/)
 ENDFOREACH(PocoNetSSLDepend)
 
+#copy PostgreSql depends
+FOREACH (PostgreSqlDepend ${PostgreSqlDepends})
+   add_custom_command(TARGET yadoms POST_BUILD
+                      COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                          ${PostgreSqlDepend} $<TARGET_FILE_DIR:yadoms>/)
+ENDFOREACH(PostgreSqlDepend)
+
 
 #copy www directory into build directory
 add_custom_command(TARGET yadoms POST_BUILD
@@ -931,6 +966,11 @@ ENDFOREACH(POCOLIBRARY)
 FOREACH (PocoNetSSLDepend ${PocoNetSSLDepends})
 	install(FILES ${PocoNetSSLDepend} CONFIGURATIONS Debug;Release;RelWithDebInfo;MinSizeRel RUNTIME DESTINATION ${INSTALL_BINDIR})
 ENDFOREACH(PocoNetSSLDepend)
+
+#add depends
+FOREACH (PostgreSqlDepend ${PostgreSqlDepends})
+	install(FILES ${PostgreSqlDepend} CONFIGURATIONS Debug;Release;RelWithDebInfo;MinSizeRel RUNTIME DESTINATION ${INSTALL_BINDIR})
+ENDFOREACH(PostgreSqlDepend)
 
 
 #add www directory

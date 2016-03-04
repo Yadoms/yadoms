@@ -19,6 +19,14 @@ namespace database { namespace pgsql {
       return Append(ss); 
    }
 
+   common::CQuery & CQuery::CreateDatabase(const std::string & name)
+   {
+      ChangeQueryType(kCreate);
+      std::ostringstream ss;
+      ss << "CREATE DATABASE " << name;
+      return Append(ss);
+   }
+
 
 } //namespace pgsql
 } //namespace database 

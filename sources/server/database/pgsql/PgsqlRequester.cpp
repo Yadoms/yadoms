@@ -38,19 +38,102 @@ namespace pgsql {
       return std::string(PQerrorMessage(m_pConnection));
    }
 
+   const std::string CPgsqlRequester::createConnectionString(const EConnectionStringMode mode)
+   {
+      switch (mode)
+      {
+      case kPing:
+         return (boost::format("host=%1% port=%2% application_name=Yadoms") % m_host % m_port).str();
+      case kMasterDb:
+         return (boost::format("host=%1% port=%2% user=%3% password=%4% dbname=postgres application_name=Yadoms") % m_host % m_port % m_login % m_password).str();
+      case kNormal:
+      default:
+         return (boost::format("host=%1% port=%2% user=%3% password=%4% dbname=%5% application_name=Yadoms") % m_host % m_port % m_login % m_password % m_dbName).str();
+      }
+   }
+
+   void CPgsqlRequester::pingServer()
+   {
+      //fails to connect database
+      PGPing serverStatus = PQping(createConnectionString(kPing).c_str());
+      switch (serverStatus)
+      {
+      case PQPING_REJECT:
+         throw CDatabaseException("Fail to connect database : REJECT : The server is running but is in a state that disallows connections (startup, shutdown, or crash recovery) " , getLastErrorMessage());
+      case PQPING_NO_RESPONSE:
+         throw CDatabaseException("Fail to connect database : NO_RESPONSE : The server could not be contacted. This might indicate that the server is not running, or that there is something wrong with the given connection parameters (for example, wrong port number), or that there is a network connectivity problem (for example, a firewall blocking the connection request) " , getLastErrorMessage());
+      case PQPING_NO_ATTEMPT:
+         throw CDatabaseException("Fail to connect database : PQPING_NO_ATTEMPT : No attempt was made to contact the server, because the supplied parameters were obviously incorrect or there was some client-side problem (for example, out of memory) " , getLastErrorMessage());
+      }
+   }
+
    // IDatabaseEngine implementation
    void CPgsqlRequester::initialize()
    {
-      YADOMS_LOG(information) << "Load database";
+      YADOMS_LOG(information) << "Connect to database";
       try
       {
          //connect to postgresql engine
-         m_pConnection = PQsetdbLogin(m_host.c_str(), boost::lexical_cast<std::string>(m_port).c_str(), NULL, NULL, m_dbName.c_str(), m_login.c_str(), m_password.c_str());
+         m_pConnection = PQconnectdb(createConnectionString().c_str());
 
          //Check to see that the backend connection was successfully made 
          if (PQstatus(m_pConnection) != CONNECTION_OK)
          {
-            throw CDatabaseException("Connection to database failed : " + getLastErrorMessage());
+            //save the error message
+            std::string firstError = getLastErrorMessage();
+
+            //clear connection
+            PQfinish(m_pConnection);
+
+            YADOMS_LOG(information) << "Fail to connect the database.";
+
+            //ping the server (throws if ping failed)
+            YADOMS_LOG(information) << "Check server availability";
+            pingServer();
+         
+            //retry with "postgres" database to be able to list db
+            YADOMS_LOG(information) << "Server is available. Checking database existance";
+            m_pConnection = PQconnectdb(createConnectionString(kMasterDb).c_str());
+            if (PQstatus(m_pConnection) != CONNECTION_OK)
+            {
+               throw CDatabaseException("Fail to connect database", getLastErrorMessage());
+            }
+            else
+            {
+               //list all databases
+               CQuery dbList;
+               
+               dbList.SelectCount().From(CPgDatabaseTable::getTableName()).Where(CPgDatabaseTable::getDatabaseNameColumnName(), CQUERY_OP_EQUAL, m_dbName);
+               int count = queryCount(dbList);
+               if (count == 0)
+               {
+                  YADOMS_LOG(information) << "Database do not exists, try to create it";
+                  //create database
+                  int result = queryStatement(CQuery().CreateDatabase(m_dbName));
+                  if (result == 0)
+                  {
+                     YADOMS_LOG(information) << "Database created";
+
+                     //terminate master connection
+                     PQfinish(m_pConnection);
+                     
+                     //retry connection to database
+                     m_pConnection = PQconnectdb(createConnectionString().c_str());
+
+                     //Check to see that the backend connection was successfully made 
+                     if (PQstatus(m_pConnection) != CONNECTION_OK)
+                        throw CDatabaseException("Fail to connect the newly createed database.", getLastErrorMessage());
+                  }
+                  else
+                  {
+                     throw CDatabaseException("Fail to create database.", getLastErrorMessage());
+                  }
+               }
+               else
+               {
+                  throw CDatabaseException("Database exists, but connection fails. (credentials for database ?)", firstError);
+               }
+            }
          }
       }
       catch (...)
@@ -78,7 +161,8 @@ namespace pgsql {
             //execute query
             res = PQexec(m_pConnection, querytoExecute.c_str());
 
-            if (PQresultStatus(res) != PGRES_COMMAND_OK)
+            ExecStatusType resultCode = PQresultStatus(res);
+            if (resultCode != PGRES_TUPLES_OK)
             {
                //make a copy of the err message
                std::string errMessage(PQerrorMessage(m_pConnection));
@@ -160,12 +244,27 @@ namespace pgsql {
       BOOST_ASSERT(querytoExecute.GetQueryType() != CQuery::kNotYetDefined);
       BOOST_ASSERT(querytoExecute.GetQueryType() == CQuery::kSelect);
 
-      database::common::adapters::CSingleValueAdapter<int> countAdapter;
-      queryEntities(&countAdapter, querytoExecute);
+      //execute query
+      PGresult *res = PQexec(m_pConnection, querytoExecute.c_str());
 
-      if(countAdapter.getResults().size() >= 1)
-         return countAdapter.getResults()[0];
-      return -1;
+      if (PQresultStatus(res) != PGRES_TUPLES_OK)
+      {
+         //make a copy of the err message
+         std::string errMessage(PQerrorMessage(m_pConnection));
+
+         //log the message
+         YADOMS_LOG(error) << "Query failed : " << std::endl << "Query: " << querytoExecute.str() << std::endl << "Error : " << errMessage;
+
+         //free memory
+         PQclear(res);
+
+         //throw
+         throw CDatabaseException(errMessage);
+      }
+
+      CPgsqlResultHandler handler(res);
+      handler.next_step();
+      return handler.extractValueAsInt(0);
    }
 
    CPgsqlRequester::QueryRow CPgsqlRequester::querySingleLine(const database::common::CQuery & querytoExecute)

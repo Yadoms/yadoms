@@ -26,6 +26,13 @@ namespace database { namespace pgsql {
       /// \return          A reference to itself to allow method chaining
       //
       common::CQuery & SelectExists(common::CQuery & subQuery);
+
+      //
+      /// \brief        Start a create databse query
+      /// \param [in]   name  The database name to create
+      /// \return       A reference to itself to allow method chaining
+      //
+      common::CQuery & CreateDatabase(const std::string & name);
    };
 
 

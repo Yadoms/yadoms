@@ -163,27 +163,27 @@ namespace startupOptions
 
    const std::string CStartupOptions::getDatabasePostgresqlHost() const
    {
-      return m_configContainer.getString("server.sqlite.server.pgsql.host", "127.0.0.1");
+      return m_configContainer.getString("server.pgsql.host", "127.0.0.1");
    }
 
    const unsigned int CStartupOptions::getDatabasePostgresqlPort() const
    {
-      return m_configContainer.getUInt("server.sqlite.server.pgsql.port", 5432);
+      return m_configContainer.getUInt("server.pgsql.port", 5432);
    }
 
    const std::string CStartupOptions::getDatabasePostgresqlDbName() const
    {
-      return m_configContainer.getString("server.sqlite.server.pgsql.dbname", "Yadoms");
+      return boost::to_lower_copy(m_configContainer.getString("server.pgsql.dbname", "yadoms"));
    }
 
    const std::string CStartupOptions::getDatabasePostgresqlLogin() const
    {
-      return m_configContainer.getString("server.sqlite.server.pgsql.login", "posgres");
+      return m_configContainer.getString("server.pgsql.login", "");
    }
 
    const std::string CStartupOptions::getDatabasePostgresqlPassword() const
    {
-      return m_configContainer.getString("server.sqlite.server.pgsql.password", "");
+      return m_configContainer.getString("server.pgsql.password", "");
    }
 
    bool CStartupOptions::getNoPasswordFlag() const

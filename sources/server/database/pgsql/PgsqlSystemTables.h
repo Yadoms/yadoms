@@ -21,6 +21,10 @@ namespace pgsql {
       (CommitAction)
    )
 
+   DECLARE_TABLE(PgDatabase,
+      (DatabaseName)
+   )
+
 } //namespace pgsql
 } //namespace database 
 

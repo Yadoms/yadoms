@@ -5,6 +5,7 @@
 
 #include <Poco/ByteOrder.h>
 
+
 namespace database { namespace pgsql {
 
    CPgsqlResultHandler::CPgsqlResultHandler(PGresult *res)
@@ -44,9 +45,30 @@ namespace database { namespace pgsql {
    int CPgsqlResultHandler::extractValueAsInt(const int columnIndex)
    {
       char * valuePoint = PQgetvalue(m_res, m_currentResultIndex, columnIndex);
-      //return Poco::ByteOrder::fromNetwork(*((Poco::UInt32 *)valuePoint));
-      return valuePoint[0] == 't' || valuePoint[0] == '1';
-      
+      int result = 0;
+      if (PQbinaryTuples(m_res) == 1)
+      {
+         int nbBytes = PQfsize(m_res, columnIndex);
+
+         switch (nbBytes)
+         {
+         case 8:
+            result = Poco::ByteOrder::fromNetwork(*((Poco::Int64 *)valuePoint));
+            break;
+         default:
+         case 4:
+            result = Poco::ByteOrder::fromNetwork(*((Poco::Int32 *)valuePoint));
+            break;
+         case 2:
+            result = Poco::ByteOrder::fromNetwork(*((Poco::Int16 *)valuePoint));
+            break;
+         }
+      }
+      else
+      {
+         result = atoi(valuePoint);
+      }
+      return result;
    }
 
    float CPgsqlResultHandler::extractValueAsFloat(const int columnIndex)
@@ -80,7 +102,8 @@ namespace database { namespace pgsql {
 
    bool CPgsqlResultHandler::extractValueAsBool(const int columnIndex)
    {
-      return extractValueAsInt(columnIndex) == 1;
+      char * valuePoint = PQgetvalue(m_res, m_currentResultIndex, columnIndex);
+      return valuePoint[0] == 't' || valuePoint[0] == '1';
    }
 
    bool CPgsqlResultHandler::isValueNull(const int columnIndex)

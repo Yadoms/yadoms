@@ -49,6 +49,27 @@ namespace pgsql {
       // [END] IDataBackup implementation
 
    private:
+      
+      //--------------------------------------------------------------
+      /// \Brief		Try to ping PostgreSQL server
+      /// \throws    CDatabaseException If ping failed
+      //--------------------------------------------------------------
+      void pingServer();
+
+      typedef enum
+      {
+         kNormal, /// full connection string
+         kPing,   ///ping connection string
+         kMasterDb   //light connection string, with targetting postgres database
+      }EConnectionStringMode;
+
+      //--------------------------------------------------------------
+      /// \Brief		         Create the connection string
+      /// \param [in]	mode  The connection string mode.
+      /// \return             The connection string
+      //--------------------------------------------------------------
+      const std::string createConnectionString(const EConnectionStringMode mode = kNormal);
+
       void terminateConnection();
       std::string getLastErrorMessage();
 

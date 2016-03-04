@@ -10,6 +10,7 @@
 #include <Poco/DateTime.h>
 #include <shared/Log.h>
 #include <shared/exception/NotSupported.hpp>
+#include "database/DatabaseException.hpp"
 
 namespace database { namespace common {
 
@@ -31,20 +32,23 @@ namespace database { namespace common {
 
       try
       {
-         CQuery qVersion;
-         qVersion.Select(CConfigurationTable::getValueColumnName()).
-            From(CConfigurationTable::getTableName()).
-            Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_EQUAL, "Database").
-            And(CConfigurationTable::getNameColumnName(), CQUERY_OP_EQUAL, "Version");
-
-         adapters::CSingleValueAdapter<std::string> adapter;
-         m_databaseRequester->queryEntities(&adapter, qVersion);
-         std::vector<std::string> results = adapter.getResults();
-
-
-         if (results.size() >= 1)
+         if (m_databaseRequester->checkTableExists(CConfigurationTable::getTableName()))
          {
-            currentVersion = shared::versioning::CVersion(results[0]);
+            CQuery qVersion;
+            qVersion.Select(CConfigurationTable::getValueColumnName()).
+               From(CConfigurationTable::getTableName()).
+               Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_EQUAL, "Database").
+               And(CConfigurationTable::getNameColumnName(), CQUERY_OP_EQUAL, "Version");
+
+            adapters::CSingleValueAdapter<std::string> adapter;
+            m_databaseRequester->queryEntities(&adapter, qVersion);
+            std::vector<std::string> results = adapter.getResults();
+
+
+            if (results.size() >= 1)
+            {
+               currentVersion = shared::versioning::CVersion(results[0]);
+            }
          }
       }
       catch (std::exception & ex)
@@ -88,6 +92,16 @@ namespace database { namespace common {
       catch (versioning::CVersionException & exc)
       {
          YADOMS_LOG(error) << "Fail to load database (upgrade error) : " << std::endl << exc.what();
+         result = false;
+      }
+      catch (database::CDatabaseException &dbex)
+      {
+         YADOMS_LOG(error) << "Database exception while loading database" << std::endl << dbex.what();
+         result = false;
+      }
+      catch (std::exception &ex)
+      {
+         YADOMS_LOG(error) << "Exception while loading database" << std::endl << ex.what();
          result = false;
       }
       catch (...)

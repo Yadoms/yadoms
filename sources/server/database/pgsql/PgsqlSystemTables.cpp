@@ -20,6 +20,10 @@ namespace pgsql {
       ((CommitAction)("commit_action"))
    )
 
+   DECLARE_TABLE_COLUMN_NAMES(PgDatabase, "pg_catalog.pg_database",
+      ((DatabaseName)("datname"))
+   )
+
 
 } //namespace pgsql
 } //namespace database 

@@ -20,7 +20,7 @@ namespace database { namespace pgsql {
                   value TEXT NOT NULL,                                  \
                   defaultValue TEXT,                                    \
                   description TEXT,                                     \
-                  securityAccess  TEXT DEFAULT \"none\",                \
+                  securityAccess  TEXT DEFAULT 'none',                  \
                   lastModificationDate TEXT,                            \
                   PRIMARY KEY(section,name)                             \
             )";
