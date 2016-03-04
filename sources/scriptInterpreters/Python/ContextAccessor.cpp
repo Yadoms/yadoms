@@ -9,6 +9,7 @@ const size_t CContextAccessor::m_maxMessages(100);
 CContextAccessor::CContextAccessor(boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi)
    :CThreadBase(createId()), m_scriptApi(yScriptApi), m_id(createId()), m_readyBarrier(2)
 {
+   memset(m_mqBuffer, 0, sizeof(m_mqBuffer));
    start();
    m_readyBarrier.wait();
 }
