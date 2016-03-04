@@ -14,18 +14,18 @@ set(SYSTEMINFORMATION_PLUGIN_SOURCES
 	stdafx.h
 	stdafx.cpp
 	ILoad.h
-        ISIConfiguration.h
-        SIConfiguration.h
-        SIConfiguration.cpp
-	SystemInformation.h
-	SystemInformation.cpp
-        specificHistorizers/Byte.cpp
-        specificHistorizers/Byte.h
-        specificHistorizers/KByte.cpp
-        specificHistorizers/KByte.h
+   ISIConfiguration.h
+   SIConfiguration.h
+   SIConfiguration.cpp
+   SystemInformation.h
+   SystemInformation.cpp
+   specificHistorizers/Byte.cpp
+   specificHistorizers/Byte.h
+   specificHistorizers/KByte.cpp
+   specificHistorizers/KByte.h
 	)
 
-        source_group(specificHistorizers specificHistorizers/*.*)
+   source_group(specificHistorizers specificHistorizers/*.*)
 
 IF (WIN32)
     set(SYSTEMINFORMATION_PLUGIN_SOURCES ${SYSTEMINFORMATION_PLUGIN_SOURCES}
@@ -61,8 +61,8 @@ IF (UNIX AND NOT APPLE)
 	CommonLinux/DisksList.cpp
 	CommonLinux/DiskUsage.h
 	CommonLinux/DiskUsage.cpp
-        CommonLinux/LinuxHelpers.h
-        CommonLinux/LinuxHelpers.cpp
+   CommonLinux/LinuxHelpers.h
+   CommonLinux/LinuxHelpers.cpp
 	CommonLinux/MemoryLoad.h
 	CommonLinux/MemoryLoad.cpp	
 	CommonLinux/YadomsCPULoad.h
@@ -77,31 +77,31 @@ IF (UNIX AND NOT APPLE)
 ENDIF()
 
 IF (UNIX AND NOT APPLE AND NOT (CMAKE_YADOMS_PLATFORM STREQUAL "Raspberry"))
-    set(SYSTEMINFORMATION_PLUGIN_SOURCES ${SYSTEMINFORMATION_PLUGIN_SOURCES}
-	Linux/SystemFactory.h
-        Linux/SystemFactory.cpp
-       )
+   set(SYSTEMINFORMATION_PLUGIN_SOURCES ${SYSTEMINFORMATION_PLUGIN_SOURCES}
+      Linux/SystemFactory.h
+      Linux/SystemFactory.cpp
+      )
 
     source_group(Linux Linux/*.*)
 ENDIF()
 
 IF (APPLE)
-    set(SYSTEMINFORMATION_PLUGIN_SOURCES ${SYSTEMINFORMATION_PLUGIN_SOURCES}
-        Mac/SystemFactory.h
-        Mac/SystemFactory.cpp
-    )
+   set(SYSTEMINFORMATION_PLUGIN_SOURCES ${SYSTEMINFORMATION_PLUGIN_SOURCES}
+      Mac/SystemFactory.h
+      Mac/SystemFactory.cpp
+      )
 
     source_group(Mac Mac/*.*)
 ENDIF(APPLE)
 
 IF(CMAKE_YADOMS_PLATFORM STREQUAL "Raspberry")
-    set(SYSTEMINFORMATION_PLUGIN_SOURCES ${SYSTEMINFORMATION_PLUGIN_SOURCES}
+   set(SYSTEMINFORMATION_PLUGIN_SOURCES ${SYSTEMINFORMATION_PLUGIN_SOURCES}
 	# Add RaspberryPi Specific sources
-	RaspberryPI/SystemFactory.h
-	RaspberryPI/SystemFactory.cpp
-	RaspberryPI/TemperatureSensor.cpp
-	RaspberryPI/TemperatureSensor.h
-	)
+      RaspberryPI/SystemFactory.h
+      RaspberryPI/SystemFactory.cpp
+      RaspberryPI/TemperatureSensor.cpp
+      RaspberryPI/TemperatureSensor.h
+      )
 	
 	source_group(RaspberryPI RaspberryPI/*.*)
 ENDIF()
@@ -120,20 +120,20 @@ ENDIF()
 IF (UNIX AND NOT APPLE)
    set(SYSTEMINFORMATION_PLUGIN_INCLDIR
 	   ${CMAKE_CURRENT_SOURCE_DIR}/CommonLinux
-           ${CMAKE_CURRENT_SOURCE_DIR}/Linux
+      ${CMAKE_CURRENT_SOURCE_DIR}/Linux
    )
 ENDIF()
 
 IF (APPLE)
-set(SYSTEMINFORMATION_PLUGIN_INCLDIR
-    ${CMAKE_CURRENT_SOURCE_DIR}/Mac
-)
+   set(SYSTEMINFORMATION_PLUGIN_INCLDIR
+      ${CMAKE_CURRENT_SOURCE_DIR}/Mac
+   )
 ENDIF()
 
 
 IF (CMAKE_YADOMS_PLATFORM STREQUAL "Raspberry")
    set(SYSTEMINFORMATION_PLUGIN_INCLDIR
-           ${CMAKE_CURRENT_SOURCE_DIR}/CommonLinux
+      ${CMAKE_CURRENT_SOURCE_DIR}/CommonLinux
 	   ${CMAKE_CURRENT_SOURCE_DIR}/RaspberryPI
 	   )
 ENDIF()	

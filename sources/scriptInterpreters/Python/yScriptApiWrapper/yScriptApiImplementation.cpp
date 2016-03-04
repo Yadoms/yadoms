@@ -12,6 +12,8 @@ CYScriptApiImplementation::CYScriptApiImplementation(const std::string& yScriptA
    // compatible with the version of the headers we compiled against.
    GOOGLE_PROTOBUF_VERIFY_VERSION;
 
+   memset(m_mqBuffer, 0, sizeof(m_mqBuffer));
+
    try
    {
       const std::string sendMessageQueueId(yScriptApiAccessorId + ".toYadoms");
