@@ -19,13 +19,13 @@ void CheckReceivedMessage(const RBUF& rbuf, size_t rbufSize, BYTE expectedType, 
       throw shared::exception::CException((boost::format("Wrong message size, received : %1% byte(s), expected : %2%") % rbufSize % expectedSize).str());
 
    if (rbuf.RXRESPONSE.packettype != expectedType)
-      throw shared::exception::CException((boost::format("Wrong message type, received : %1%, expected : %2%") % rbuf.RXRESPONSE.packettype % expectedType).str());
+      throw shared::exception::CException((boost::format("Wrong message type, received : %1%, expected : %2%") % static_cast<unsigned int>(rbuf.RXRESPONSE.packettype) % expectedType).str());
 
    if (rbuf.RXRESPONSE.packetlength != (expectedSize - 1))
-      throw shared::exception::CException((boost::format("Wrong message length, received : %1%, expected : %2% (total_message_size - 1)") % rbuf.RXRESPONSE.packetlength % (expectedSize - 1)).str());
+      throw shared::exception::CException((boost::format("Wrong message length, received : %1%, expected : %2% (total_message_size - 1)") % static_cast<unsigned int>(rbuf.RXRESPONSE.packetlength) % (expectedSize - 1)).str());
 
    if (expectedSeqNumber != DONT_CHECK_SEQUENCE_NUMBER && rbuf.RXRESPONSE.seqnbr != expectedSeqNumber)
-      YADOMS_LOG(warning) << "Wrong message sequence number, received : " << rbuf.RXRESPONSE.seqnbr << ", expected : " << expectedSeqNumber;
+      YADOMS_LOG(warning) << "Wrong message sequence number, received : " << static_cast<unsigned int>(rbuf.RXRESPONSE.seqnbr) << ", expected : " << expectedSeqNumber;
 }
 
 shared::communication::CByteBuffer toBuffer(const RBUF& rbuf, size_t subStructureSize)
@@ -48,7 +48,7 @@ void CheckReceivedMessage(const RBUF& rbuf, size_t rbufSize, BYTE expectedType, 
 
    // Add subType check
    if (rbuf.RXRESPONSE.subtype != expectedSubType)
-      throw shared::exception::CException((boost::format("Wrong message subtype, received : %1%, expected : %2%") % rbuf.RXRESPONSE.subtype % expectedSubType).str());
+      throw shared::exception::CException((boost::format("Wrong message subtype, received : %1%, expected : %2%") % static_cast<unsigned int>(rbuf.RXRESPONSE.subtype) % expectedSubType).str());
 }
 
 int NormalizeBatteryLevel(unsigned char fromRfxcom)
