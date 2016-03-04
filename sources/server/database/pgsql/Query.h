@@ -5,6 +5,8 @@
 
 namespace database { namespace pgsql { 
 
+#define CQUERY_OP_ILIKE " ILIKE "
+
    //
    /// \brief  Class used to create queries
    //

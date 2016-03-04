@@ -103,7 +103,7 @@ namespace pgsql {
                //list all databases
                CQuery dbList;
                
-               dbList.SelectCount().From(CPgDatabaseTable::getTableName()).Where(CPgDatabaseTable::getDatabaseNameColumnName(), CQUERY_OP_EQUAL, m_dbName);
+               dbList.SelectCount().From(CPgDatabaseTable::getTableName()).Where(CPgDatabaseTable::getDatabaseNameColumnName(), CQUERY_OP_ILIKE, m_dbName);
                int count = queryCount(dbList);
                if (count == 0)
                {
@@ -233,7 +233,10 @@ namespace pgsql {
          throw CDatabaseException(errMessage);
       }
       
-      int affectedRows = PQntuples(res);
+      int affectedRows = 0;
+      std::string affectedRowsString = PQcmdTuples(res);
+      if (!affectedRowsString.empty())
+         affectedRows = atoi(affectedRowsString.c_str());
       PQclear(res);
       return affectedRows;
    }
@@ -380,8 +383,7 @@ namespace pgsql {
       sCheckForTableExists.SelectExists(CQuery().
          Select().
          From(CPgsqlTablesTable::getTableName()).
-         Where(CPgsqlTablesTable::getSchemaColumnName(), CQUERY_OP_EQUAL, "yadoms")
-         .And(CPgsqlTablesTable::getTableColumnName(), CQUERY_OP_EQUAL, tableName));
+         Where(CPgsqlTablesTable::getTableColumnName(), CQUERY_OP_ILIKE, tableName));
 
 
       database::common::adapters::CSingleValueAdapter<bool> existsAdapter;

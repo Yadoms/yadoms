@@ -30,7 +30,7 @@ namespace database { namespace pgsql {
    {
       return "  CREATE TABLE Device                                           \
                (                                                              \
-                  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,              \
+                  id SERIAL NOT NULL PRIMARY KEY,                             \
                   pluginId INTEGER NOT NULL,                                  \
                   name TEXT NOT NULL,                                         \
                   friendlyName TEXT NOT NULL,                                 \
@@ -42,12 +42,12 @@ namespace database { namespace pgsql {
    std::string CPgsqlTableCreationScriptProvider::getTablePlugin()
    {
       return  "CREATE TABLE Plugin                                               \
-               (  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,                 \
+               (  id SERIAL NOT NULL PRIMARY KEY,                                \
                   displayName TEXT NOT NULL,                                     \
                   type TEXT NOT NULL,                                            \
                   configuration  TEXT,                                           \
                   autoStart  INTEGER DEFAULT 1,                                  \
-                  category TEXT NOT NULL DEFAULT \"user\"                        \
+                  category TEXT NOT NULL DEFAULT 'user'                          \
                )";
    }
 
@@ -55,7 +55,7 @@ namespace database { namespace pgsql {
    {
       return " CREATE TABLE Keyword                                              \
                (                                                                 \
-                  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,                 \
+                  id SERIAL NOT NULL PRIMARY KEY,                                \
                   deviceId INTEGER NOT NULL,                                     \
                   capacityName TEXT NOT NULL,                                    \
                   accessMode TEXT NOT NULL,                                      \
@@ -73,7 +73,7 @@ namespace database { namespace pgsql {
    {
       return " CREATE TABLE Page                                                 \
                (                                                                 \
-                  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,                 \
+                  id SERIAL NOT NULL PRIMARY KEY,                                \
                   name TEXT NOT NULL,                                            \
                   pageOrder  INTEGER DEFAULT 0                                   \
                )";
@@ -82,7 +82,7 @@ namespace database { namespace pgsql {
    std::string CPgsqlTableCreationScriptProvider::getTableWidget()
    {
       return " CREATE TABLE Widget                                               \
-               (  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,                 \
+               (  id SERIAL NOT NULL PRIMARY KEY,                                \
                   idPage  INTEGER NOT NULL,                                      \
                   type TEXT NOT NULL,                                            \
                   sizeX  INTEGER DEFAULT 1,                                      \
@@ -97,12 +97,12 @@ namespace database { namespace pgsql {
    std::string CPgsqlTableCreationScriptProvider::getTablePluginEventLogger()
    {
       return "CREATE TABLE PluginEventLogger                         \
-               (  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,     \
+               (  id SERIAL NOT NULL PRIMARY KEY,                    \
                   eventDate  TEXT NOT NULL,                          \
                   pluginName TEXT NOT NULL,                          \
                   pluginVersion TEXT NOT NULL,                       \
-                  pluginRelease INTEGER,                             \
-                  eventType  TEXT DEFAULT \"unload\",                \
+                  pluginRelease TEXT,                                \
+                  eventType  TEXT DEFAULT 'unload',                  \
                   message  TEXT                                      \
                )";
    }
@@ -110,9 +110,9 @@ namespace database { namespace pgsql {
    std::string CPgsqlTableCreationScriptProvider::getTableEventLogger()
    {
       return "CREATE TABLE EventLogger                               \
-               (  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,     \
+               (  id SERIAL NOT NULL PRIMARY KEY,                    \
                   date  TEXT NOT NULL,                               \
-                  code TEXT NOT NULL DEFAULT \"defaultcode\",        \
+                  code TEXT NOT NULL DEFAULT 'defaultcode',          \
                   who  TEXT,                                         \
                   what TEXT                                          \
                )";
@@ -125,7 +125,7 @@ namespace database { namespace pgsql {
                   keywordId INTEGER NOT NULL,                              \
                   value TEXT NOT NULL,                                     \
                   PRIMARY KEY (date, keywordId)                            \
-               )WITHOUT ROWID";
+               )";
    }
 
    std::string CPgsqlTableCreationScriptProvider::getTableAcquisitionSummary()
@@ -138,13 +138,13 @@ namespace database { namespace pgsql {
                   minValue REAL NOT NULL,                            \
                   maxValue REAL NOT NULL,                            \
                   PRIMARY KEY (type, date, keywordId)                \
-               )WITHOUT ROWID";
+               )";
    }
 
    std::string CPgsqlTableCreationScriptProvider::getTableRule()
    {
       return "CREATE TABLE Rule                                                     \
-               (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,                      \
+               (SERIAL INTEGER NOT NULL PRIMARY KEY,                                \
                name TEXT NOT NULL,                                                  \
                description TEXT,                                                    \
                interpreter TEXT NOT NULL,                                           \
@@ -161,9 +161,9 @@ namespace database { namespace pgsql {
 
    std::string CPgsqlTableCreationScriptProvider::getTableRecipient()
    {
-      return "  CREATE TABLE Recipient                                \
-                (  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,     \
-                   firstName TEXT NOT NULL,                           \
+      return "  CREATE TABLE Recipient                                  \
+                (  id SERIAL NOT NULL PRIMARY KEY,                      \
+                   firstName TEXT NOT NULL,                             \
                    lastName TEXT)";
    }
 
