@@ -26,7 +26,7 @@ void CWindDirection::SetValue(const shared::CDataContainer & ValueContainer, con
 {
 	m_windDirection->set((int) ValueContainer.get<double>( filterWindDirection ));
 
-	YADOMS_LOG(debug) << m_windDirection->getKeyword() << "=" << m_windDirection->get() << "°";
+	YADOMS_LOG(debug) << m_windDirection->getKeyword() << "=" << m_windDirection->get() << " degrees";
 }
 
 void CWindDirection::DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const

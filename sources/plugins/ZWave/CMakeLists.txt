@@ -59,6 +59,9 @@ if ( WIN32 )
 		${ZWAVE_PLUGIN_ADDITIONAL_LIB}
 		Setupapi.lib
 	)
+ELSEIF(APPLE)
+		set(ZWAVE_PLUGIN_ADDITIONAL_LIB
+			${ZWAVE_PLUGIN_ADDITIONAL_LIB})
 else()
 	include(FindUDev.cmake)
 	if(UDEV_FOUND)

@@ -7,7 +7,7 @@
 /// \brief	The code of RFXtrx.h helpers
 //--------------------------------------------------------------
 
-const RBUF dummyRbufToComputeSizes = { 0 };
+const RBUF dummyRbufToComputeSizes = { {0} };
 
 const size_t RFXMESSAGE_maxSize = sizeof(dummyRbufToComputeSizes);
 

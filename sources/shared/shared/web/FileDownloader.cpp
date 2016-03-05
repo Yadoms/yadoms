@@ -68,7 +68,7 @@ namespace shared { namespace web {
          }
          if (status_code != 200)
          {
-            throw exception::CDownloadFailed(uri.toString(), "Response returned with status code : " + status_code);
+             throw exception::CDownloadFailed(uri.toString(), "Response returned with status code : " + boost::lexical_cast<std::string>(status_code));
          }
 
          // Read the response headers, which are terminated by a blank line.
@@ -130,7 +130,7 @@ namespace shared { namespace web {
                //update progress if needed (minimum step of 1% to avoid too much calls)
                //then flush by 1% minimum steps
                float progress = (currentReadSize*100.0f / (float)contentLength);
-               if (abs(currentprogress - progress) >= 1.0)
+               if (fabs(currentprogress - progress) >= 1.0)
                {
                   currentprogress = progress;
                   reporter(uri.getPath(), currentprogress);
