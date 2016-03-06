@@ -49,6 +49,14 @@ namespace pgsql {
       // [END] IDataBackup implementation
 
    private:
+      virtual void queryEntities(database::common::adapters::IResultAdapter * pAdapter, const database::common::CQuery & querytoExecute, PGconn * pConnection);
+      virtual int queryStatement(const database::common::CQuery & querytoExecute, PGconn * pConnection);
+      virtual int queryCount(const database::common::CQuery & querytoExecute, PGconn * pConnection);
+      virtual void transactionBegin(PGconn * pConnection);
+      virtual void transactionCommit(PGconn * pConnection);
+      virtual void transactionRollback(PGconn * pConnection);
+      
+
       
       //--------------------------------------------------------------
       /// \Brief		Try to ping PostgreSQL server
@@ -70,8 +78,24 @@ namespace pgsql {
       //--------------------------------------------------------------
       const std::string createConnectionString(const EConnectionStringMode mode = kNormal);
 
-      void terminateConnection();
-      std::string getLastErrorMessage();
+      //--------------------------------------------------------------
+      /// \Brief		         Create a new connection (one for each thread; testing one for each request)
+      /// \return             A connection pointer
+      //--------------------------------------------------------------
+      PGconn * createNewConnection();
+       
+      //--------------------------------------------------------------
+      /// \Brief		         Terminate a connection (one for each thread; testing one for each request)
+      /// \param [in] pConnection   The connection pointer to close
+      //--------------------------------------------------------------
+      void terminateConnection(PGconn * pConnection);
+      
+      //--------------------------------------------------------------
+      /// \Brief		         Obtain the last error message
+      /// \param [in] pConnection   The connection pointer to retreive the last error message
+      /// \return                   The last error message above the specified connection
+      //--------------------------------------------------------------
+      std::string getLastErrorMessage(PGconn * pConnection);
 
    private:
       const std::string m_host;
@@ -79,11 +103,6 @@ namespace pgsql {
       const std::string m_dbName;
       const std::string m_login;
       const std::string m_password;
-      const std::string m_schema;
-      //--------------------------------------------------------------
-      /// \Brief		database handler
-      //--------------------------------------------------------------
-      PGconn     *m_pConnection;
 
       //--------------------------------------------------------------
       /// \Brief		true if a transaction is already begin

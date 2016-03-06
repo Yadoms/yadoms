@@ -16,27 +16,53 @@ namespace pgsql {
 
 
    CPgsqlRequester::CPgsqlRequester(const std::string &host, const unsigned int port, const std::string &dbName, const std::string &login, const std::string &password)
-      :m_host(host), m_port(port), m_dbName(dbName), m_login(login), m_password(password), m_pConnection(NULL), m_bOneTransactionActive(false), m_schema("yadoms")
+      :m_host(host), m_port(port), m_dbName(dbName), m_login(login), m_password(password), m_bOneTransactionActive(false)
    {
    }
 
    CPgsqlRequester::~CPgsqlRequester()
    {
-      terminateConnection();
+
    }
-   void CPgsqlRequester::terminateConnection()
+   
+   PGconn * CPgsqlRequester::createNewConnection()
    {
-      if (m_pConnection != NULL)
+      //connect to postgresql engine
+      PGconn * result = PQconnectdb(createConnectionString().c_str());
+      
+      //Check to see that the backend connection was successfully made
+      if (PQstatus(result) != CONNECTION_OK)
       {
-         PQfinish(m_pConnection);
-         m_pConnection = NULL;
+         //save the error message
+         std::string error = getLastErrorMessage(result);
+         
+         //clear connection
+         PQfinish(result);
+         
+         throw CDatabaseException("Fail to connect database", error);
+      }
+      return result;
+   }
+   
+   //--------------------------------------------------------------
+   /// \Brief		         Terminate a connection (one for each thread; testing one for each request)
+   /// \param [in] pConnection   The connection pointer to close
+   //--------------------------------------------------------------
+   
+   void CPgsqlRequester::terminateConnection(PGconn * pConnection)
+   {
+      if(pConnection != NULL)
+      {
+         PQfinish(pConnection);
+         pConnection = NULL;
       }
    }
 
-   std::string CPgsqlRequester::getLastErrorMessage()
+   std::string CPgsqlRequester::getLastErrorMessage(PGconn * pConnection)
    {
-      return std::string(PQerrorMessage(m_pConnection));
+      return std::string(PQerrorMessage(pConnection));
    }
+   
 
    const std::string CPgsqlRequester::createConnectionString(const EConnectionStringMode mode)
    {
@@ -59,11 +85,11 @@ namespace pgsql {
       switch (serverStatus)
       {
       case PQPING_REJECT:
-         throw CDatabaseException("Fail to connect database : REJECT : The server is running but is in a state that disallows connections (startup, shutdown, or crash recovery) " , getLastErrorMessage());
+         throw CDatabaseException("Fail to connect database : REJECT : The server is running but is in a state that disallows connections (startup, shutdown, or crash recovery) ");
       case PQPING_NO_RESPONSE:
-         throw CDatabaseException("Fail to connect database : NO_RESPONSE : The server could not be contacted. This might indicate that the server is not running, or that there is something wrong with the given connection parameters (for example, wrong port number), or that there is a network connectivity problem (for example, a firewall blocking the connection request) " , getLastErrorMessage());
+         throw CDatabaseException("Fail to connect database : NO_RESPONSE : The server could not be contacted. This might indicate that the server is not running, or that there is something wrong with the given connection parameters (for example, wrong port number), or that there is a network connectivity problem (for example, a firewall blocking the connection request) ");
       case PQPING_NO_ATTEMPT:
-         throw CDatabaseException("Fail to connect database : PQPING_NO_ATTEMPT : No attempt was made to contact the server, because the supplied parameters were obviously incorrect or there was some client-side problem (for example, out of memory) " , getLastErrorMessage());
+         throw CDatabaseException("Fail to connect database : PQPING_NO_ATTEMPT : No attempt was made to contact the server, because the supplied parameters were obviously incorrect or there was some client-side problem (for example, out of memory) ");
       }
    }
 
@@ -74,16 +100,16 @@ namespace pgsql {
       try
       {
          //connect to postgresql engine
-         m_pConnection = PQconnectdb(createConnectionString().c_str());
+         PGconn * pConnection = PQconnectdb(createConnectionString().c_str());
 
          //Check to see that the backend connection was successfully made 
-         if (PQstatus(m_pConnection) != CONNECTION_OK)
+         if (PQstatus(pConnection) != CONNECTION_OK)
          {
             //save the error message
-            std::string firstError = getLastErrorMessage();
+            std::string firstError = getLastErrorMessage(pConnection);
 
             //clear connection
-            PQfinish(m_pConnection);
+            PQfinish(pConnection);
 
             YADOMS_LOG(information) << "Fail to connect the database.";
 
@@ -93,10 +119,10 @@ namespace pgsql {
          
             //retry with "postgres" database to be able to list db
             YADOMS_LOG(information) << "Server is available. Checking database existance";
-            m_pConnection = PQconnectdb(createConnectionString(kMasterDb).c_str());
-            if (PQstatus(m_pConnection) != CONNECTION_OK)
+            pConnection = PQconnectdb(createConnectionString(kMasterDb).c_str());
+            if (PQstatus(pConnection) != CONNECTION_OK)
             {
-               throw CDatabaseException("Fail to connect database", getLastErrorMessage());
+               throw CDatabaseException("Fail to connect database", getLastErrorMessage(pConnection));
             }
             else
             {
@@ -104,29 +130,32 @@ namespace pgsql {
                CQuery dbList;
                
                dbList.SelectCount().From(CPgDatabaseTable::getTableName()).Where(CPgDatabaseTable::getDatabaseNameColumnName(), CQUERY_OP_ILIKE, m_dbName);
-               int count = queryCount(dbList);
+               int count = queryCount(dbList, pConnection);
                if (count == 0)
                {
                   YADOMS_LOG(information) << "Database do not exists, try to create it";
                   //create database
-                  int result = queryStatement(CQuery().CreateDatabase(m_dbName));
+                  int result = queryStatement(CQuery().CreateDatabase(m_dbName), pConnection);
                   if (result == 0)
                   {
                      YADOMS_LOG(information) << "Database created";
 
                      //terminate master connection
-                     PQfinish(m_pConnection);
+                     PQfinish(pConnection);
                      
                      //retry connection to database
-                     m_pConnection = PQconnectdb(createConnectionString().c_str());
+                     pConnection = PQconnectdb(createConnectionString().c_str());
 
                      //Check to see that the backend connection was successfully made 
-                     if (PQstatus(m_pConnection) != CONNECTION_OK)
-                        throw CDatabaseException("Fail to connect the newly createed database.", getLastErrorMessage());
+                     if (PQstatus(pConnection) != CONNECTION_OK)
+                        throw CDatabaseException("Fail to connect the newly createed database.", getLastErrorMessage(pConnection));
+                     
+                     //terminate master connection
+                     PQfinish(pConnection);
                   }
                   else
                   {
-                     throw CDatabaseException("Fail to create database.", getLastErrorMessage());
+                     throw CDatabaseException("Fail to create database.", getLastErrorMessage(pConnection));
                   }
                }
                else
@@ -138,18 +167,32 @@ namespace pgsql {
       }
       catch (...)
       {
-         terminateConnection();
          throw;
       }
    }
 
    void CPgsqlRequester::finalize()
    {
-      //close database access
-      terminateConnection();
    }
 
    void CPgsqlRequester::queryEntities(database::common::adapters::IResultAdapter * pAdapter, const database::common::CQuery & querytoExecute)
+   {
+      PGconn * pConnection = NULL;
+      
+      try
+      {
+         pConnection = createNewConnection();
+         queryEntities(pAdapter, querytoExecute, pConnection);
+         PQfinish(pConnection);
+
+      } catch (database::CDatabaseException & ex)
+      {
+         PQfinish(pConnection);
+         throw;
+      }
+   }
+   
+   void CPgsqlRequester::queryEntities(database::common::adapters::IResultAdapter * pAdapter, const database::common::CQuery & querytoExecute, PGconn * pConnection)
    {
       BOOST_ASSERT(pAdapter != NULL);
 
@@ -158,14 +201,15 @@ namespace pgsql {
          PGresult *res = NULL;
          try
          {
+
             //execute query
-            res = PQexec(m_pConnection, querytoExecute.c_str());
+            res = PQexec(pConnection, querytoExecute.c_str());
 
             ExecStatusType resultCode = PQresultStatus(res);
             if (resultCode != PGRES_TUPLES_OK)
             {
                //make a copy of the err message
-               std::string errMessage(PQerrorMessage(m_pConnection));
+               std::string errMessage(PQerrorMessage(pConnection));
 
                //log the message
                YADOMS_LOG(error) << "Query failed : " << std::endl << "Query: " << querytoExecute.str() << std::endl << "Error : " << errMessage;
@@ -207,21 +251,38 @@ namespace pgsql {
          throw shared::exception::CNullReference("pAdapter");
       }
    }
-
-
+   
    int CPgsqlRequester::queryStatement(const database::common::CQuery & querytoExecute)
+   {
+      PGconn * pConnection = NULL;
+      
+      try
+      {
+         pConnection = createNewConnection();
+         int result = queryStatement(querytoExecute, pConnection);
+         PQfinish(pConnection);
+         return result;
+         
+      } catch (database::CDatabaseException & ex)
+      {
+         PQfinish(pConnection);
+         throw;
+      }
+   }
+
+   int CPgsqlRequester::queryStatement(const database::common::CQuery & querytoExecute, PGconn * pConnection)
    {
       BOOST_ASSERT(querytoExecute.GetQueryType() != CQuery::kNotYetDefined);
       BOOST_ASSERT(querytoExecute.GetQueryType() != CQuery::kSelect);
 
 
       //execute query
-      PGresult *res = PQexec(m_pConnection, querytoExecute.c_str());
+      PGresult *res = PQexec(pConnection, querytoExecute.c_str());
 
       if (PQresultStatus(res) != PGRES_COMMAND_OK)
       {
          //make a copy of the err message
-         std::string errMessage(PQerrorMessage(m_pConnection));
+         std::string errMessage(PQerrorMessage(pConnection));
             
          //log the message
          YADOMS_LOG(error) << "Query failed : " << std::endl << "Query: " << querytoExecute.str() << std::endl << "Error : " << errMessage;
@@ -241,19 +302,36 @@ namespace pgsql {
       return affectedRows;
    }
 
-
    int CPgsqlRequester::queryCount(const database::common::CQuery & querytoExecute)
+   {
+      PGconn * pConnection = NULL;
+      
+      try
+      {
+         pConnection = createNewConnection();
+         int result = queryCount(querytoExecute, pConnection);
+         PQfinish(pConnection);
+         return result;
+         
+      } catch (database::CDatabaseException & ex)
+      {
+         PQfinish(pConnection);
+         throw;
+      }
+   }
+   
+   int CPgsqlRequester::queryCount(const database::common::CQuery & querytoExecute, PGconn * pConnection)
    {
       BOOST_ASSERT(querytoExecute.GetQueryType() != CQuery::kNotYetDefined);
       BOOST_ASSERT(querytoExecute.GetQueryType() == CQuery::kSelect);
 
       //execute query
-      PGresult *res = PQexec(m_pConnection, querytoExecute.c_str());
+      PGresult *res = PQexec(pConnection, querytoExecute.c_str());
 
       if (PQresultStatus(res) != PGRES_TUPLES_OK)
       {
          //make a copy of the err message
-         std::string errMessage(PQerrorMessage(m_pConnection));
+         std::string errMessage(PQerrorMessage(pConnection));
 
          //log the message
          YADOMS_LOG(error) << "Query failed : " << std::endl << "Query: " << querytoExecute.str() << std::endl << "Error : " << errMessage;
@@ -270,6 +348,7 @@ namespace pgsql {
       return handler.extractValueAsInt(0);
    }
 
+
    CPgsqlRequester::QueryRow CPgsqlRequester::querySingleLine(const database::common::CQuery & querytoExecute)
    {
       BOOST_ASSERT(querytoExecute.GetQueryType() != CQuery::kNotYetDefined);
@@ -282,7 +361,7 @@ namespace pgsql {
       return QueryRow(); //returns empty data
    }
 
-
+   
    CPgsqlRequester::QueryResults CPgsqlRequester::query(const database::common::CQuery & querytoExecute)
    {
       BOOST_ASSERT(querytoExecute.GetQueryType() != CQuery::kNotYetDefined);
@@ -304,12 +383,28 @@ namespace pgsql {
       return true;
    }
 
-
    void CPgsqlRequester::transactionBegin()
+   {
+      PGconn * pConnection = NULL;
+      
+      try
+      {
+         pConnection = createNewConnection();
+         transactionBegin(pConnection);
+         PQfinish(pConnection);
+      }
+      catch (database::CDatabaseException & ex)
+      {
+         PQfinish(pConnection);
+         throw;
+      }
+   }
+   
+   void CPgsqlRequester::transactionBegin(PGconn * pConnection)
    {
       if(!m_bOneTransactionActive)
       {
-         PGresult   * res = PQexec(m_pConnection, "BEGIN");
+         PGresult   * res = PQexec(pConnection, "BEGIN");
          if (PQresultStatus(res) == PGRES_COMMAND_OK)
          {
             m_bOneTransactionActive = true;
@@ -317,7 +412,7 @@ namespace pgsql {
          else 
          {
             //make a copy of the err message
-            std::string errMessage(PQerrorMessage(m_pConnection));
+            std::string errMessage(PQerrorMessage(pConnection));
 
             //log the message
             YADOMS_LOG(error) << "Fail to start transaction : " << std::endl << "Error : " << errMessage;
@@ -329,9 +424,26 @@ namespace pgsql {
 
    void CPgsqlRequester::transactionCommit()
    {
+      PGconn * pConnection = NULL;
+      
+      try
+      {
+         pConnection = createNewConnection();
+         transactionCommit(pConnection);
+         PQfinish(pConnection);
+      }
+      catch (database::CDatabaseException & ex)
+      {
+         PQfinish(pConnection);
+         throw;
+      }
+   }
+   
+   void CPgsqlRequester::transactionCommit(PGconn * pConnection)
+   {
       if (m_bOneTransactionActive)
       {
-         PGresult   * res = PQexec(m_pConnection, "COMMIT");
+         PGresult   * res = PQexec(pConnection, "COMMIT");
          if (PQresultStatus(res) == PGRES_COMMAND_OK)
          {
             m_bOneTransactionActive = false;
@@ -339,7 +451,7 @@ namespace pgsql {
          else
          {
             //make a copy of the err message
-            std::string errMessage(PQerrorMessage(m_pConnection));
+            std::string errMessage(PQerrorMessage(pConnection));
 
             //log the message
             YADOMS_LOG(error) << "Fail to commit transaction : " << std::endl << "Error : " << errMessage;
@@ -351,9 +463,27 @@ namespace pgsql {
 
    void CPgsqlRequester::transactionRollback()
    {
+        PGconn * pConnection = NULL;
+         
+         try
+         {
+            pConnection = createNewConnection();
+            transactionRollback(pConnection);
+            PQfinish(pConnection);
+         }
+         catch (database::CDatabaseException & ex)
+         {
+            PQfinish(pConnection);
+            throw;
+         }
+   
+   }
+   
+   void CPgsqlRequester::transactionRollback(PGconn * pConnection)
+   {
       if (m_bOneTransactionActive)
       {
-         PGresult   * res = PQexec(m_pConnection, "ROLLBACK");
+         PGresult   * res = PQexec(pConnection, "ROLLBACK");
          if (PQresultStatus(res) == PGRES_COMMAND_OK)
          {
             m_bOneTransactionActive = false;
@@ -361,7 +491,7 @@ namespace pgsql {
          else
          {
             //make a copy of the err message
-            std::string errMessage(PQerrorMessage(m_pConnection));
+            std::string errMessage(PQerrorMessage(pConnection));
 
             //log the message
             YADOMS_LOG(error) << "Fail to rollback transaction : " << std::endl << "Error : " << errMessage;

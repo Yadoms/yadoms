@@ -3,7 +3,7 @@
 #include "sqlite3.h"
 #include <shared/exception/NullReference.hpp>
 #include <shared/Log.h>
-#include "Query.h"
+#include "database/common/Query.h"
 #include "database/IDatabaseRequester.h"
 
 
