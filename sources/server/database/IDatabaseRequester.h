@@ -104,6 +104,15 @@ namespace database {
       //--------------------------------------------------------------
       virtual std::string generateSqlIsoDateFormat(const std::string &columnName) = 0;
 
+      //--------------------------------------------------------------
+      /// \Brief	      Generate SQL coalesce function
+      /// \param [in]   columnName:  the column name
+      /// \param [in]   columnName:  the default value if columnName is null
+      /// \return       the sql function
+      //--------------------------------------------------------------
+      virtual std::string coalesce(const std::string & columnName, std::string defaultValue) = 0;
+      
+      
       // ITransactionalProvider implementation
       virtual bool transactionSupport() = 0;
       virtual void transactionBegin() = 0;

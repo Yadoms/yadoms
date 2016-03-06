@@ -67,11 +67,12 @@ namespace database { namespace common { namespace requesters {
       {
          if (recipient.FirstName.isDefined() && recipient.LastName.isDefined())
          {
-            CQuery qInsert;
-            qInsert.InsertOrReplaceInto(CRecipientTable::getTableName(), CRecipientTable::getIdColumnName(), CRecipientTable::getFirstNameColumnName(), CRecipientTable::getLastNameColumnName()).
-               Values(recipient.Id(), recipient.FirstName(), recipient.LastName());
-
-            if (m_databaseRequester->queryStatement(qInsert) <= 0)
+            CQuery qUpdate;
+            qUpdate.Update(CRecipientTable::getTableName())
+            .Set(CRecipientTable::getFirstNameColumnName(), recipient.FirstName(), CRecipientTable::getLastNameColumnName(), recipient.LastName())
+            .Where(CRecipientTable::getIdColumnName(), CQUERY_OP_EQUAL,recipient.Id());
+            
+            if (m_databaseRequester->queryStatement(qUpdate) <= 0)
                throw shared::exception::CEmptyResult("Fail to update recipient");
 
             //find the db id from first and last name
@@ -299,7 +300,7 @@ namespace database { namespace common { namespace requesters {
 			{
 				//insert or update value in RecipientFieldsTable
 				CQuery qInsert;
-				qInsert.InsertOrReplaceInto(CRecipientFieldTable::getTableName(), CRecipientFieldTable::getIdRecipientColumnName(), CRecipientFieldTable::getPluginTypeColumnName(), CRecipientFieldTable::getFieldNameColumnName(), CRecipientFieldTable::getValueColumnName()).
+				qInsert.InsertInto(CRecipientFieldTable::getTableName(), CRecipientFieldTable::getIdRecipientColumnName(), CRecipientFieldTable::getPluginTypeColumnName(), CRecipientFieldTable::getFieldNameColumnName(), CRecipientFieldTable::getValueColumnName()).
                Values(recipientId, (*i)->PluginType(), (*i)->FieldName(), (*i)->Value());
 
 				if (m_databaseRequester->queryStatement(qInsert) <= 0)

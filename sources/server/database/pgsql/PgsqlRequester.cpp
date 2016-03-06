@@ -377,7 +377,11 @@ namespace pgsql {
       return "to_char(" + columnName + ", 'YYYY\"-\"MM\"-\"DD\"T\"HH24\":\"MI\":\"SS')";
    }
 
-
+   std::string CPgsqlRequester::coalesce(const std::string & columnName, std::string defaultValue)
+   {
+      return "coalesce(" + columnName + ", " + defaultValue + ")";
+   }
+   
    bool CPgsqlRequester::transactionSupport()
    {
       return true;

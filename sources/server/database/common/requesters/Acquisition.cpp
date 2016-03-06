@@ -31,7 +31,7 @@ namespace database {  namespace common {  namespace requesters {
       if(m_keywordRequester->getKeyword(keywordId))
       {
          CQuery q;
-         q.InsertOrReplaceInto(CAcquisitionTable::getTableName(), CAcquisitionTable::getDateColumnName(), CAcquisitionTable::getKeywordIdColumnName(), CAcquisitionTable::getValueColumnName()).
+         q.InsertInto(CAcquisitionTable::getTableName(), CAcquisitionTable::getDateColumnName(), CAcquisitionTable::getKeywordIdColumnName(), CAcquisitionTable::getValueColumnName()).
             Values(dataTime, keywordId, data);
 
          if(m_databaseRequester->queryStatement(q) <= 0)
@@ -60,12 +60,25 @@ namespace database {  namespace common {  namespace requesters {
          Limit(1);
 
       CQuery q;
-      q.InsertOrReplaceInto(CAcquisitionTable::getTableName(), CAcquisitionTable::getDateColumnName(), CAcquisitionTable::getKeywordIdColumnName(), CAcquisitionTable::getValueColumnName()).
-         Select(CQueryValue(dataTime).str(), CQueryValue(keywordId).str(), "ifnull( (" + qLastKeywordValue.str() + "), 0) + " + increment);
 
+
+      //insert first (if fails, update )
+      q.InsertInto(CAcquisitionTable::getTableName(), CAcquisitionTable::getDateColumnName(), CAcquisitionTable::getKeywordIdColumnName(), CAcquisitionTable::getValueColumnName()).
+      Values(dataTime, keywordId, m_databaseRequester->coalesce(qLastKeywordValue.str(), "0") + " + " + increment);
+      
       if (m_databaseRequester->queryStatement(q) <= 0)
-         throw shared::exception::CEmptyResult("Fail to insert new incremental data");
+      {
+        //update
+         q.Clear().Update(CAcquisitionTable::getTableName())
+         .Set(CAcquisitionTable::getValueColumnName(),m_databaseRequester->coalesce(qLastKeywordValue.str(), "0") + " + " + increment).
+         Where(CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId).
+         And(CAcquisitionTable::getDateColumnName(), CQUERY_OP_EQUAL, dataTime);
+         
+         if (m_databaseRequester->queryStatement(q) <= 0)
+            throw shared::exception::CEmptyResult("Fail to insert new incremental data");
 
+      }
+      
       return getAcquisitionByKeywordAndDate(keywordId, dataTime);
 
    }
@@ -330,7 +343,7 @@ namespace database {  namespace common {  namespace requesters {
 
             //process the request
             CQuery q;
-            q.InsertOrReplaceInto(CAcquisitionSummaryTable::getTableName(), CAcquisitionSummaryTable::getTypeColumnName(), CAcquisitionSummaryTable::getDateColumnName(), CAcquisitionSummaryTable::getKeywordIdColumnName(), CAcquisitionSummaryTable::getAvgColumnName(), CAcquisitionSummaryTable::getMinColumnName(), CAcquisitionSummaryTable::getMaxColumnName()).
+            q.InsertInto(CAcquisitionSummaryTable::getTableName(), CAcquisitionSummaryTable::getTypeColumnName(), CAcquisitionSummaryTable::getDateColumnName(), CAcquisitionSummaryTable::getKeywordIdColumnName(), CAcquisitionSummaryTable::getAvgColumnName(), CAcquisitionSummaryTable::getMinColumnName(), CAcquisitionSummaryTable::getMaxColumnName()).
                Select(CQueryValue(curType.toString()).str(), CQueryValue(fromDate).str(), CQueryValue(keywordId).str(), "avg(cast(" + CAcquisitionTable::getValueColumnName() + " as real))", "min(cast(" + CAcquisitionTable::getValueColumnName() + " as real))", "max(cast(" + CAcquisitionTable::getValueColumnName() + " as real))").
                From(CAcquisitionTable::getTableName() + " as acq").
                Where("acq." + CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId).
@@ -338,7 +351,32 @@ namespace database {  namespace common {  namespace requesters {
                And("acq." + CAcquisitionTable::getDateColumnName(), CQUERY_OP_INF_EQUAL, toDate);
 
             if (m_databaseRequester->queryStatement(q) <= 0)
-               throw shared::exception::CEmptyResult("Fail to insert new summary " + curType.toString() + " data");
+            {
+               //the insertion fails, try to update
+               CQuery compute;
+               
+               compute.
+                  Select("avg(cast(" + CAcquisitionTable::getValueColumnName() + " as real)) as avg", "min(cast(" + CAcquisitionTable::getValueColumnName() + " as real)) as min", "max(cast(" + CAcquisitionTable::getValueColumnName() + " as real)) as max").
+                  From(CAcquisitionTable::getTableName()).
+                  Where(CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId).
+                  And(CAcquisitionTable::getDateColumnName(), CQUERY_OP_SUP_EQUAL, fromDate).
+                  And(CAcquisitionTable::getDateColumnName(), CQUERY_OP_INF_EQUAL, toDate);
+               
+               
+               q.With("acq", compute).
+                 Update(CAcquisitionSummaryTable::getTableName())
+               .Set(CAcquisitionSummaryTable::getAvgColumnName(), "acq.avg",
+                    CAcquisitionSummaryTable::getMinColumnName(), "acq.min",
+                    CAcquisitionSummaryTable::getMaxColumnName(), "acq.max")
+               .Where(CAcquisitionSummaryTable::getTypeColumnName(), CQUERY_OP_EQUAL, curType.toString())
+               .And(CAcquisitionSummaryTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL,keywordId)
+               .And(CAcquisitionSummaryTable::getDateColumnName(), CQUERY_OP_EQUAL,fromDate);
+               
+               if (m_databaseRequester->queryStatement(q) <= 0)
+                  throw shared::exception::CEmptyResult("Fail to insert new summary " + curType.toString() + " data");
+               
+
+            }
 
             //get the result
             std::vector< boost::shared_ptr<entities::CAcquisitionSummary> > all;

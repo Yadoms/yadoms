@@ -277,25 +277,6 @@ namespace database { namespace common {
          return Append(ss); 
       }  
 
-      CQuery & CQuery::InsertOrReplaceInto(const std::string & table, const std::string & field1, const std::string & field2/* = EMPTY_STR*/, const std::string & field3/* = EMPTY_STR*/, const std::string & field4/* = EMPTY_STR*/, const std::string & field5/* = EMPTY_STR*/, const std::string & field6/* = EMPTY_STR*/, const std::string & field7/* = EMPTY_STR*/, const std::string & field8/* = EMPTY_STR*/, const std::string & field9/* = EMPTY_STR*/, const std::string & field10/* = EMPTY_STR*/) 
-      {
-         ChangeQueryType(kInsert);
-         std::ostringstream ss;
-         ss << " INSERT OR REPLACE INTO " << table << " (" << field1;
-         AppendField(ss, field2);
-         AppendField(ss, field3);
-         AppendField(ss, field4);
-         AppendField(ss, field5);
-         AppendField(ss, field6);
-         AppendField(ss, field7);
-         AppendField(ss, field8);
-         AppendField(ss, field9);
-         AppendField(ss, field10);
-         ss << ") ";
-         return Append(ss); 
-      }
-
-
       CQuery & CQuery::Values(const CQueryValue & value1, const CQueryValue & value2, const CQueryValue & value3 , const CQueryValue & value4 , const CQueryValue & value5 , const CQueryValue & value6 , const CQueryValue & value7 , const CQueryValue & value8 , const CQueryValue & value9 , const CQueryValue & value10 ) 
       {
          std::ostringstream ss;
