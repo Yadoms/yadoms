@@ -96,7 +96,7 @@ function requestWidgets(page) {
    var loadWidgetsNotification = notifyInformation($.t("mainPage.actions.loadingWidgetsOfPage", { pageName: page.name }));
 
    //before making anything we empty the gridstack
-   page.grid.removeAll();
+    //TOFIX //page.grid.removeAll();
 
    var d = WidgetManager.getWidgetOfPageFromServer(page)
    .done(function (list) {

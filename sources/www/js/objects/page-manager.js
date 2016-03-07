@@ -153,21 +153,28 @@ PageManager.addToDom = function (page) {
     page.$content = container.find("div#" + tabIdAsText);
 
     //we compute the number of columns based on the width of the screen
-    var numberOfColumns = Math.min(12, Math.floor(window.innerWidth / (Yadoms.gridWidth + Yadoms.gridMargin)));
-    var options = {
+    //var numberOfColumns = Math.min(12, Math.floor(window.innerWidth / (Yadoms.gridWidth + Yadoms.gridMargin)));
+    /*var options = {
         width: numberOfColumns,
         float: false,
         alwaysShowResizeHandle: true,
         cellHeight: Yadoms.gridWidth,
         verticalMargin: Yadoms.gridMargin,
         minWidth: 0
-    };
+    };*/
 
-    page.$grid = page.$content.find(".grid-stack");
-    page.grid = page.$grid.gridstack(options).data('gridstack');
+    page.$grid = page.$content.find(".grid");
+    //page.grid = page.$grid.gridstack(options).data('gridstack');
+    page.$grid.packery({
+        itemSelector: ".widget",
+        columnWidth: 100,
+        //transitionDuration: '0.6s',
+        gutter: 0
+        //rowHeight: 100
+    });
 
-    page.$grid.on('resizestop', widgetResized);
-
+    //page.$grid.on('resizestop', widgetResized);
+    
     page.$grid.on('dragstop', function (event) {
         //we remove the page overlay
         $(".tabPagePills .tabPagePillsDropper").addClass("hidden");
@@ -198,7 +205,8 @@ PageManager.addToDom = function (page) {
         widgetToMove.idPage = targetPageId;
 
         //we remove it from current page
-        page.grid.remove_widget(widgetToMove.$gridWidget, true);
+        page.$grid.packery("remove", $widget);
+        
         page.widgets.splice($.inArray(widgetToMove, page.widgets), 1);
 
         //we update the widget on the server
@@ -228,13 +236,7 @@ PageManager.addToDom = function (page) {
             $(".tabPagePills").not("[page-id=\"" + page.id + "\"]").find(".tabPagePillsDropper").removeClass("hidden");
         }
     });
-
-    $(window).resize(function () {
-        //we update the number of columns
-        var numberOfColumns = Math.min(12, Math.floor(window.innerWidth / (Yadoms.gridWidth + Yadoms.gridMargin)));
-        page.grid.setGridWidth(numberOfColumns);
-    });
-
+    
     PageManager.enableCustomization(page, customization);
 
     //we initialize page events
@@ -355,25 +357,6 @@ PageManager.getCurrentPage = function () {
         return null;
     return PageManager.getPage(pageId);
 };
-
-function widgetResized(event) {
-    var $widget = $(event.target);
-    var widgetObject = WidgetManager.getFromGridElement($widget);
-    //we compute the target size
-    var newWidth = Math.round(widgetObject.width() / 100.0) * 100;
-    var newHeight = Math.round(widgetObject.height() / 100.0) * 100;
-    //we change the size of grid element to allow widget to use the end size not the dropped element size (388px -> 400px)
-    widgetObject.setWidth(newWidth);
-    widgetObject.setHeight(newHeight);
-    try {
-        if (widgetObject.viewModel.resized !== undefined)
-            widgetObject.viewModel.resized();
-    }
-    catch (e) {
-        notifyWarning($.t("widgets.errors.widgetHasGeneratedAnExceptionDuringCallingMethod", { widgetName: widgetObject.type, methodName: 'resized' }));
-        console.warn(e);
-    }
-}
 
 /**
  * Enable or disable customization on widget

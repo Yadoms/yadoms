@@ -1,5 +1,15 @@
 .widget {
    background-color: transparent;
+   float: left;
+   width: 100px;
+   height: 100px;
+}
+
+.widget .is-dragging,
+.widget .is-positioning-post-drag,
+.widget .ui-draggable-dragging {
+  background: #C90;
+  z-index: 20;
 }
 
 .ui-resizable-se {
