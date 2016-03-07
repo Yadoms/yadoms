@@ -1114,7 +1114,8 @@
 			"connecting": "Connecting...",
          "initializing": "RFXCom initializing...",
          "connectionLost": "RFXCom connection was lost",
-			"updateConfiguration": "Configuration updating..."
+			"updateConfiguration": "Configuration updating...",
+         "failToConfigure": "Unable to set configuration as expected, maybe incompatible protocols were selected, see RFXCom manual"
 		}
 	}
 }

@@ -38,7 +38,7 @@ protected:
    /// \param [in] buffer           Buffer to send
    /// \param [in] needAnswer       true if answer is needed. If true, a timeout will occur if no answer is received.
    //--------------------------------------------------------------
-   void send(const shared::communication::CByteBuffer& buffer, bool needAnswer = false);
+   void send(const shared::communication::CByteBuffer& buffer, bool needAnswer);
 
    //--------------------------------------------------------------
    /// \brief	                     Send several messages to the RFXCom
@@ -172,16 +172,12 @@ private:
    //--------------------------------------------------------------
    /// \brief	The state machine
    //--------------------------------------------------------------
-   enum EStateMachine
-   {
-      kNotInitialized = 0,    // RFXCom not initialized
-      kResettingRfxcom,       // Resetting RFXCom is in progress
-      kGettingRfxcomStatus,   // Getting the current RFXCom status (active protocols, etc...)
-      kSettingRfxcomMode,     // Update the RFXCom mode (active protocols, etc...)
-      kStartReceiver,         // Start RFXtrx receiver (new command from SDK v7.00)
-      kRfxcomIsRunning        // RFXCom is fully initialized, and is running
-   };
-   mutable EStateMachine m_currentState;
+   bool m_configurationUpdated;
+
+   //--------------------------------------------------------------
+   /// \brief  The last sent message
+   //--------------------------------------------------------------
+   shared::communication::CByteBuffer m_lastRequest;
 };
 
 

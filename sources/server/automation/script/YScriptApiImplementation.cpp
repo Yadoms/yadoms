@@ -181,7 +181,7 @@ std::pair<int, std::string> CYScriptApiImplementation::waitForNextAcquisitions(c
       boost::shared_ptr<notification::acquisition::CNotification> newAcquisition = waitForAction(waitAction, timeout);
 
       if (!newAcquisition)
-         return std::make_pair(kTimeout, std::string()); // Timeout
+          return std::make_pair<int, std::string>(kTimeout, std::string()); // Timeout
 
       return std::pair<int, std::string>(newAcquisition->getAcquisition()->KeywordId, newAcquisition->getAcquisition()->Value);
    }
