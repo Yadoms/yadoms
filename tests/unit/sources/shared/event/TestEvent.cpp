@@ -178,8 +178,8 @@ BOOST_AUTO_TEST_CASE(EventWithDataFromSeparateThread)
    CEventData data(42, "Yadoms test");
    CEventData receivedData;
 
-   boost::thread postEventWithDataThreaded(postEventWithDataThreaded, &evtHandler, data, 1);
-   postEventWithDataThreaded.join();
+   boost::thread postEventWithDataThread(postEventWithDataThreaded, &evtHandler, data, 1);
+   postEventWithDataThread.join();
    BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), idEvent);
    BOOST_REQUIRE_NO_THROW(receivedData = evtHandler.getEventData<CEventData>());
    BOOST_CHECK_EQUAL(receivedData.intValue(), 42);
