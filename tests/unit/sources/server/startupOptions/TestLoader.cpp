@@ -551,7 +551,7 @@ BOOST_AUTO_TEST_CASE(Unknow_Log_l_Error1)
 
 BOOST_AUTO_TEST_CASE(Unknow_option_NoError)
 {
-   char *argv[] = { "./TestLoader", "-ainfo" };
+   char *argv[] = { "./TestLoader", "-binfo" };
    BOOST_CHECK_THROW(CStartupOptionMokeup loader(2, argv, true), Poco::Util::UnknownOptionException);
 }
 
