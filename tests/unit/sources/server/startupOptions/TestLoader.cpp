@@ -147,11 +147,15 @@ BOOST_AUTO_TEST_CASE(Initialisation_Test)
 
    BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information");
    BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), (unsigned int)8080);
-   BOOST_CHECK_EQUAL(loader.options().getDatabaseFile(), "yadoms.db3");
    BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www");
-   BOOST_CHECK_EQUAL(loader.options().getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(loader.options().getDatabaseFile(), "yadoms.db3");
+   BOOST_CHECK_EQUAL(loader.options().getPluginsPath(), "plugins");
+   BOOST_CHECK_EQUAL(loader.options().getScriptInterpretersPath(), "scriptInterpreters");
    BOOST_CHECK_EQUAL(loader.options().getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(loader.options().getIsRunningAsService(), false);
+   BOOST_CHECK_EQUAL(loader.options().getUpdateSiteUri(), "http://www.yadoms.com/downloads/update/");
+   BOOST_CHECK_EQUAL(loader.options().getDatabaseAcquisitionLifetime(), 30);
 }
 
 //--------------------------------------------------------------
@@ -162,7 +166,7 @@ BOOST_AUTO_TEST_CASE(Initialisation_Test)
 BOOST_AUTO_TEST_CASE(helpRequest)
 {
    char *argv[] = { "./TestLoader", "-help" };
-   BOOST_CHECK_THROW(CStartupOptionMokeup app(2, argv, true), std::exception);
+   BOOST_CHECK_THROW(CStartupOptionMokeup loader(2, argv, true), std::exception);
 }
 
 //--------------------------------------------------------------
@@ -173,7 +177,7 @@ BOOST_AUTO_TEST_CASE(helpRequest)
 BOOST_AUTO_TEST_CASE(helpRequestShort)
 {
    char *argv[] = { "./TestLoader", "-h" };
-   BOOST_CHECK_THROW(CStartupOptionMokeup app(2, argv, true), std::exception);
+   BOOST_CHECK_THROW(CStartupOptionMokeup loader(2, argv, true), std::exception);
 }
 
 
@@ -186,11 +190,15 @@ BOOST_AUTO_TEST_CASE(Different_Port_p_Initialisation)
 
    BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information");
    BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), (unsigned int)2000);
-   BOOST_CHECK_EQUAL(loader.options().getDatabaseFile(), "yadoms.db3");
    BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www");
-   BOOST_CHECK_EQUAL(loader.options().getDebugFlag(), false);
+   BOOST_CHECK_EQUAL(loader.options().getDatabaseFile(), "yadoms.db3");
+   BOOST_CHECK_EQUAL(loader.options().getPluginsPath(), "plugins");
+   BOOST_CHECK_EQUAL(loader.options().getScriptInterpretersPath(), "scriptInterpreters");
    BOOST_CHECK_EQUAL(loader.options().getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(loader.options().getIsRunningAsService(), false);
+   BOOST_CHECK_EQUAL(loader.options().getUpdateSiteUri(), "http://www.yadoms.com/downloads/update/");
+   BOOST_CHECK_EQUAL(loader.options().getDatabaseAcquisitionLifetime(), 30);
 }
 
 //--------------------------------------------------------------
@@ -202,15 +210,19 @@ BOOST_AUTO_TEST_CASE(Different_Port_port_Initialisation)
 {
    char *argv[] = { "./TestLoader", "--port", "2000" };
 
-   CStartupOptionMokeup app(3, argv, true);
+   CStartupOptionMokeup loader(3, argv, true);
 
-   BOOST_CHECK_EQUAL(app.options().getLogLevel(), "information");
-   BOOST_CHECK_EQUAL(app.options().getWebServerPortNumber(), (unsigned int)2000);
-   BOOST_CHECK_EQUAL(app.options().getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(app.options().getWebServerIPAddress(), "0.0.0.0");
-   BOOST_CHECK_EQUAL(app.options().getWebServerInitialPath(), "www");
-   BOOST_CHECK_EQUAL(app.options().getDebugFlag(), false);
-   BOOST_CHECK_EQUAL(app.options().getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information");
+   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), (unsigned int)2000);
+   BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0");
+   BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(loader.options().getDatabaseFile(), "yadoms.db3");
+   BOOST_CHECK_EQUAL(loader.options().getPluginsPath(), "plugins");
+   BOOST_CHECK_EQUAL(loader.options().getScriptInterpretersPath(), "scriptInterpreters");
+   BOOST_CHECK_EQUAL(loader.options().getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(loader.options().getIsRunningAsService(), false);
+   BOOST_CHECK_EQUAL(loader.options().getUpdateSiteUri(), "http://www.yadoms.com/downloads/update/");
+   BOOST_CHECK_EQUAL(loader.options().getDatabaseAcquisitionLifetime(), 30);
 }
 
 //--------------------------------------------------------------
@@ -222,15 +234,19 @@ BOOST_AUTO_TEST_CASE(Different_Port_por_Initialisation)
 {
    char *argv[] = { "./TestLoader", "--por", "2000" };
 
-   CStartupOptionMokeup app(3, argv, true);
+   CStartupOptionMokeup loader(3, argv, true);
 
-   BOOST_CHECK_EQUAL(app.options().getLogLevel(), "information");
-   BOOST_CHECK_EQUAL(app.options().getWebServerPortNumber(), (unsigned int)2000);
-   BOOST_CHECK_EQUAL(app.options().getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(app.options().getWebServerIPAddress(), "0.0.0.0");
-   BOOST_CHECK_EQUAL(app.options().getWebServerInitialPath(), "www");
-   BOOST_CHECK_EQUAL(app.options().getDebugFlag(), false);
-   BOOST_CHECK_EQUAL(app.options().getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information");
+   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), (unsigned int)2000);
+   BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0");
+   BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(loader.options().getDatabaseFile(), "yadoms.db3");
+   BOOST_CHECK_EQUAL(loader.options().getPluginsPath(), "plugins");
+   BOOST_CHECK_EQUAL(loader.options().getScriptInterpretersPath(), "scriptInterpreters");
+   BOOST_CHECK_EQUAL(loader.options().getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(loader.options().getIsRunningAsService(), false);
+   BOOST_CHECK_EQUAL(loader.options().getUpdateSiteUri(), "http://www.yadoms.com/downloads/update/");
+   BOOST_CHECK_EQUAL(loader.options().getDatabaseAcquisitionLifetime(), 30);
 }
 
 //--------------------------------------------------------------
@@ -242,7 +258,7 @@ BOOST_AUTO_TEST_CASE(Port_Initialisation_Error1)
 {
    char *argv[] = { "./TestLoader", "--webServer", "192.168.1.1" };
 
-   BOOST_CHECK_THROW(CStartupOptionMokeup app(3, argv, true), Poco::Exception);
+   BOOST_CHECK_THROW(CStartupOptionMokeup loader(3, argv, true), Poco::Exception);
 }
 
 //--------------------------------------------------------------
@@ -255,7 +271,7 @@ BOOST_AUTO_TEST_CASE(Port_Initialisation_Error2)
    char *argv[] = { "./TestLoader", "-port", "2000" };
 
    //Test the exception, and if this one is the correct one !
-   BOOST_CHECK_THROW(CStartupOptionMokeup app(3, argv, true), Poco::Exception);
+   BOOST_CHECK_THROW(CStartupOptionMokeup loader(3, argv, true), Poco::Exception);
 }
 
 //--------------------------------------------------------------
@@ -267,15 +283,19 @@ BOOST_AUTO_TEST_CASE(Different_Database_databaseFile_Initialisation)
 {
    char *argv[] = { "./TestLoader", "--databaseFile:toto.db3"  };
 
-   CStartupOptionMokeup app(2, argv, true);
+   CStartupOptionMokeup loader(2, argv, true);
 
-   BOOST_CHECK_EQUAL(app.options().getLogLevel(), "information");
-   BOOST_CHECK_EQUAL(app.options().getWebServerPortNumber(), (unsigned int)8080);
-   BOOST_CHECK_EQUAL(app.options().getDatabaseFile(), "toto.db3");
-   BOOST_CHECK_EQUAL(app.options().getWebServerIPAddress(), "0.0.0.0");
-   BOOST_CHECK_EQUAL(app.options().getWebServerInitialPath(), "www");
-   BOOST_CHECK_EQUAL(app.options().getDebugFlag(), false);
-   BOOST_CHECK_EQUAL(app.options().getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information");
+   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), (unsigned int)8080);
+   BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0");
+   BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(loader.options().getDatabaseFile(), "toto.db3");
+   BOOST_CHECK_EQUAL(loader.options().getPluginsPath(), "plugins");
+   BOOST_CHECK_EQUAL(loader.options().getScriptInterpretersPath(), "scriptInterpreters");
+   BOOST_CHECK_EQUAL(loader.options().getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(loader.options().getIsRunningAsService(), false);
+   BOOST_CHECK_EQUAL(loader.options().getUpdateSiteUri(), "http://www.yadoms.com/downloads/update/");
+   BOOST_CHECK_EQUAL(loader.options().getDatabaseAcquisitionLifetime(), 30);
 }
 
 //--------------------------------------------------------------
@@ -287,15 +307,19 @@ BOOST_AUTO_TEST_CASE(Different_Database_d_Initialisation)
 {
    char *argv[] = { "./TestLoader", "-Dtoto.db3" };
 
-   CStartupOptionMokeup app(2, argv, true);
+   CStartupOptionMokeup loader(2, argv, true);
 
-   BOOST_CHECK_EQUAL(app.options().getLogLevel(), "information");
-   BOOST_CHECK_EQUAL(app.options().getWebServerPortNumber(), (unsigned int)8080);
-   BOOST_CHECK_EQUAL(app.options().getDatabaseFile(), "toto.db3");
-   BOOST_CHECK_EQUAL(app.options().getWebServerIPAddress(), "0.0.0.0");
-   BOOST_CHECK_EQUAL(app.options().getWebServerInitialPath(), "www");
-   BOOST_CHECK_EQUAL(app.options().getDebugFlag(), false);
-   BOOST_CHECK_EQUAL(app.options().getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information");
+   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), (unsigned int)8080);
+   BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0");
+   BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(loader.options().getDatabaseFile(), "toto.db3");
+   BOOST_CHECK_EQUAL(loader.options().getPluginsPath(), "plugins");
+   BOOST_CHECK_EQUAL(loader.options().getScriptInterpretersPath(), "scriptInterpreters");
+   BOOST_CHECK_EQUAL(loader.options().getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(loader.options().getIsRunningAsService(), false);
+   BOOST_CHECK_EQUAL(loader.options().getUpdateSiteUri(), "http://www.yadoms.com/downloads/update/");
+   BOOST_CHECK_EQUAL(loader.options().getDatabaseAcquisitionLifetime(), 30);
 }
 
 //--------------------------------------------------------------
@@ -307,15 +331,19 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_trace_Initialisation)
 {
    char *argv[] = { "./TestLoader", "-ltrace" };
 
-   CStartupOptionMokeup app(2, argv, true);
+   CStartupOptionMokeup loader(2, argv, true);
 
-   BOOST_CHECK_EQUAL(app.options().getLogLevel(), "trace");
-   BOOST_CHECK_EQUAL(app.options().getWebServerPortNumber(), (unsigned int)8080);
-   BOOST_CHECK_EQUAL(app.options().getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(app.options().getWebServerIPAddress(), "0.0.0.0");
-   BOOST_CHECK_EQUAL(app.options().getWebServerInitialPath(), "www");
-   BOOST_CHECK_EQUAL(app.options().getDebugFlag(), false);
-   BOOST_CHECK_EQUAL(app.options().getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "trace");
+   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), (unsigned int)8080);
+   BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0");
+   BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(loader.options().getDatabaseFile(), "yadoms.db3");
+   BOOST_CHECK_EQUAL(loader.options().getPluginsPath(), "plugins");
+   BOOST_CHECK_EQUAL(loader.options().getScriptInterpretersPath(), "scriptInterpreters");
+   BOOST_CHECK_EQUAL(loader.options().getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(loader.options().getIsRunningAsService(), false);
+   BOOST_CHECK_EQUAL(loader.options().getUpdateSiteUri(), "http://www.yadoms.com/downloads/update/");
+   BOOST_CHECK_EQUAL(loader.options().getDatabaseAcquisitionLifetime(), 30);
 }
 
 //--------------------------------------------------------------
@@ -327,15 +355,19 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_debug_Initialisation)
 {
    char *argv[] = { "./TestLoader", "-ldebug" };
 
-   CStartupOptionMokeup app(2, argv, true);
+   CStartupOptionMokeup loader(2, argv, true);
 
-   BOOST_CHECK_EQUAL(app.options().getLogLevel(), "debug");
-   BOOST_CHECK_EQUAL(app.options().getWebServerPortNumber(), (unsigned int)8080);
-   BOOST_CHECK_EQUAL(app.options().getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(app.options().getWebServerIPAddress(), "0.0.0.0");
-   BOOST_CHECK_EQUAL(app.options().getWebServerInitialPath(), "www");
-   BOOST_CHECK_EQUAL(app.options().getDebugFlag(), false);
-   BOOST_CHECK_EQUAL(app.options().getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "debug");
+   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), (unsigned int)8080);
+   BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0");
+   BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(loader.options().getDatabaseFile(), "yadoms.db3");
+   BOOST_CHECK_EQUAL(loader.options().getPluginsPath(), "plugins");
+   BOOST_CHECK_EQUAL(loader.options().getScriptInterpretersPath(), "scriptInterpreters");
+   BOOST_CHECK_EQUAL(loader.options().getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(loader.options().getIsRunningAsService(), false);
+   BOOST_CHECK_EQUAL(loader.options().getUpdateSiteUri(), "http://www.yadoms.com/downloads/update/");
+   BOOST_CHECK_EQUAL(loader.options().getDatabaseAcquisitionLifetime(), 30);
 }
 
 //--------------------------------------------------------------
@@ -347,15 +379,19 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_info_Initialisation)
 {
    char *argv[] = { "./TestLoader", "-linformation"};
 
-   CStartupOptionMokeup app(2, argv, true);
+   CStartupOptionMokeup loader(2, argv, true);
 
-   BOOST_CHECK_EQUAL(app.options().getLogLevel(), "information");
-   BOOST_CHECK_EQUAL(app.options().getWebServerPortNumber(), (unsigned int)8080);
-   BOOST_CHECK_EQUAL(app.options().getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(app.options().getWebServerIPAddress(), "0.0.0.0");
-   BOOST_CHECK_EQUAL(app.options().getWebServerInitialPath(), "www");
-   BOOST_CHECK_EQUAL(app.options().getDebugFlag(), false);
-   BOOST_CHECK_EQUAL(app.options().getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information");
+   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), (unsigned int)8080);
+   BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0");
+   BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(loader.options().getDatabaseFile(), "yadoms.db3");
+   BOOST_CHECK_EQUAL(loader.options().getPluginsPath(), "plugins");
+   BOOST_CHECK_EQUAL(loader.options().getScriptInterpretersPath(), "scriptInterpreters");
+   BOOST_CHECK_EQUAL(loader.options().getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(loader.options().getIsRunningAsService(), false);
+   BOOST_CHECK_EQUAL(loader.options().getUpdateSiteUri(), "http://www.yadoms.com/downloads/update/");
+   BOOST_CHECK_EQUAL(loader.options().getDatabaseAcquisitionLifetime(), 30);
 }
 
 //--------------------------------------------------------------
@@ -367,15 +403,19 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_warning_Initialisation)
 {
    char *argv[] = { "./TestLoader", "-lwarning" };
 
-   CStartupOptionMokeup app(2, argv, true);
+   CStartupOptionMokeup loader(2, argv, true);
 
-   BOOST_CHECK_EQUAL(app.options().getLogLevel(), "warning");
-   BOOST_CHECK_EQUAL(app.options().getWebServerPortNumber(), (unsigned int)8080);
-   BOOST_CHECK_EQUAL(app.options().getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(app.options().getWebServerIPAddress(), "0.0.0.0");
-   BOOST_CHECK_EQUAL(app.options().getWebServerInitialPath(), "www");
-   BOOST_CHECK_EQUAL(app.options().getDebugFlag(), false);
-   BOOST_CHECK_EQUAL(app.options().getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "warning");
+   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), (unsigned int)8080);
+   BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0");
+   BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(loader.options().getDatabaseFile(), "yadoms.db3");
+   BOOST_CHECK_EQUAL(loader.options().getPluginsPath(), "plugins");
+   BOOST_CHECK_EQUAL(loader.options().getScriptInterpretersPath(), "scriptInterpreters");
+   BOOST_CHECK_EQUAL(loader.options().getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(loader.options().getIsRunningAsService(), false);
+   BOOST_CHECK_EQUAL(loader.options().getUpdateSiteUri(), "http://www.yadoms.com/downloads/update/");
+   BOOST_CHECK_EQUAL(loader.options().getDatabaseAcquisitionLifetime(), 30);
 }
 
 //--------------------------------------------------------------
@@ -387,15 +427,19 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_error_Initialisation)
 {
    char *argv[] = { "./TestLoader", "-lerror" };
 
-   CStartupOptionMokeup app(2, argv, true);
+   CStartupOptionMokeup loader(2, argv, true);
 
-   BOOST_CHECK_EQUAL(app.options().getLogLevel(), "error");
-   BOOST_CHECK_EQUAL(app.options().getWebServerPortNumber(), (unsigned int)8080);
-   BOOST_CHECK_EQUAL(app.options().getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(app.options().getWebServerIPAddress(), "0.0.0.0");
-   BOOST_CHECK_EQUAL(app.options().getWebServerInitialPath(), "www");
-   BOOST_CHECK_EQUAL(app.options().getDebugFlag(), false);
-   BOOST_CHECK_EQUAL(app.options().getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "error");
+   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), (unsigned int)8080);
+   BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0");
+   BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(loader.options().getDatabaseFile(), "yadoms.db3");
+   BOOST_CHECK_EQUAL(loader.options().getPluginsPath(), "plugins");
+   BOOST_CHECK_EQUAL(loader.options().getScriptInterpretersPath(), "scriptInterpreters");
+   BOOST_CHECK_EQUAL(loader.options().getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(loader.options().getIsRunningAsService(), false);
+   BOOST_CHECK_EQUAL(loader.options().getUpdateSiteUri(), "http://www.yadoms.com/downloads/update/");
+   BOOST_CHECK_EQUAL(loader.options().getDatabaseAcquisitionLifetime(), 30);
 }
 
 //--------------------------------------------------------------
@@ -407,15 +451,19 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_fatal_Initialisation)
 {
    char *argv[] = { "./TestLoader", "-lfatal" };
 
-   CStartupOptionMokeup app(2, argv, true);
+   CStartupOptionMokeup loader(2, argv, true);
 
-   BOOST_CHECK_EQUAL(app.options().getLogLevel(), "fatal");
-   BOOST_CHECK_EQUAL(app.options().getWebServerPortNumber(), (unsigned int)8080);
-   BOOST_CHECK_EQUAL(app.options().getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(app.options().getWebServerIPAddress(), "0.0.0.0");
-   BOOST_CHECK_EQUAL(app.options().getWebServerInitialPath(), "www");
-   BOOST_CHECK_EQUAL(app.options().getDebugFlag(), false);
-   BOOST_CHECK_EQUAL(app.options().getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "fatal");
+   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), (unsigned int)8080);
+   BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0");
+   BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(loader.options().getDatabaseFile(), "yadoms.db3");
+   BOOST_CHECK_EQUAL(loader.options().getPluginsPath(), "plugins");
+   BOOST_CHECK_EQUAL(loader.options().getScriptInterpretersPath(), "scriptInterpreters");
+   BOOST_CHECK_EQUAL(loader.options().getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(loader.options().getIsRunningAsService(), false);
+   BOOST_CHECK_EQUAL(loader.options().getUpdateSiteUri(), "http://www.yadoms.com/downloads/update/");
+   BOOST_CHECK_EQUAL(loader.options().getDatabaseAcquisitionLifetime(), 30);
 }
 
 
@@ -428,15 +476,19 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_notice_Initialisation)
 {
    char *argv[] = { "./TestLoader", "-lnotice" };
 
-   CStartupOptionMokeup app(2, argv, true);
+   CStartupOptionMokeup loader(2, argv, true);
 
-   BOOST_CHECK_EQUAL(app.options().getLogLevel(), "notice");
-   BOOST_CHECK_EQUAL(app.options().getWebServerPortNumber(), (unsigned int)8080);
-   BOOST_CHECK_EQUAL(app.options().getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(app.options().getWebServerIPAddress(), "0.0.0.0");
-   BOOST_CHECK_EQUAL(app.options().getWebServerInitialPath(), "www");
-   BOOST_CHECK_EQUAL(app.options().getDebugFlag(), false);
-   BOOST_CHECK_EQUAL(app.options().getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "notice");
+   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), (unsigned int)8080);
+   BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0");
+   BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(loader.options().getDatabaseFile(), "yadoms.db3");
+   BOOST_CHECK_EQUAL(loader.options().getPluginsPath(), "plugins");
+   BOOST_CHECK_EQUAL(loader.options().getScriptInterpretersPath(), "scriptInterpreters");
+   BOOST_CHECK_EQUAL(loader.options().getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(loader.options().getIsRunningAsService(), false);
+   BOOST_CHECK_EQUAL(loader.options().getUpdateSiteUri(), "http://www.yadoms.com/downloads/update/");
+   BOOST_CHECK_EQUAL(loader.options().getDatabaseAcquisitionLifetime(), 30);
 }
 
 //--------------------------------------------------------------
@@ -448,15 +500,19 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_critical_Initialisation)
 {
    char *argv[] = { "./TestLoader", "-lcritical" };
 
-   CStartupOptionMokeup app(2, argv, true);
+   CStartupOptionMokeup loader(2, argv, true);
 
-   BOOST_CHECK_EQUAL(app.options().getLogLevel(), "critical");
-   BOOST_CHECK_EQUAL(app.options().getWebServerPortNumber(), (unsigned int)8080);
-   BOOST_CHECK_EQUAL(app.options().getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(app.options().getWebServerIPAddress(), "0.0.0.0");
-   BOOST_CHECK_EQUAL(app.options().getWebServerInitialPath(), "www");
-   BOOST_CHECK_EQUAL(app.options().getDebugFlag(), false);
-   BOOST_CHECK_EQUAL(app.options().getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "critical");
+   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), (unsigned int)8080);
+   BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0");
+   BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(loader.options().getDatabaseFile(), "yadoms.db3");
+   BOOST_CHECK_EQUAL(loader.options().getPluginsPath(), "plugins");
+   BOOST_CHECK_EQUAL(loader.options().getScriptInterpretersPath(), "scriptInterpreters");
+   BOOST_CHECK_EQUAL(loader.options().getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(loader.options().getIsRunningAsService(), false);
+   BOOST_CHECK_EQUAL(loader.options().getUpdateSiteUri(), "http://www.yadoms.com/downloads/update/");
+   BOOST_CHECK_EQUAL(loader.options().getDatabaseAcquisitionLifetime(), 30);
 }
 
 //--------------------------------------------------------------
@@ -472,8 +528,8 @@ BOOST_AUTO_TEST_CASE(All_Loggerlevels)
       std::string opt("-l");
       opt += *it;
       char *argv[] = { "./TestLoader", (char*)opt.c_str() };
-      CStartupOptionMokeup app(2, argv, true);
-      BOOST_CHECK_EQUAL(app.options().getLogLevel(), *it);
+      CStartupOptionMokeup loader(2, argv, true);
+      BOOST_CHECK_EQUAL(loader.options().getLogLevel(), *it);
    }
 }
 
@@ -485,7 +541,7 @@ BOOST_AUTO_TEST_CASE(All_Loggerlevels)
 BOOST_AUTO_TEST_CASE(Unknow_Log_l_Error1)
 {
    char *argv[] = { "./TestLoader", "-ltoto" };
-   BOOST_CHECK_THROW(CStartupOptionMokeup app(2, argv, true), Poco::Util::InvalidArgumentException);
+   BOOST_CHECK_THROW(CStartupOptionMokeup loader(2, argv, true), Poco::Util::InvalidArgumentException);
 }
 
 //--------------------------------------------------------------
@@ -496,7 +552,7 @@ BOOST_AUTO_TEST_CASE(Unknow_Log_l_Error1)
 BOOST_AUTO_TEST_CASE(Unknow_option_NoError)
 {
    char *argv[] = { "./TestLoader", "-ainfo" };
-   BOOST_CHECK_THROW(CStartupOptionMokeup app(2, argv, true), Poco::Util::UnknownOptionException);
+   BOOST_CHECK_THROW(CStartupOptionMokeup loader(2, argv, true), Poco::Util::UnknownOptionException);
 }
 
 //--------------------------------------------------------------
@@ -508,15 +564,19 @@ BOOST_AUTO_TEST_CASE(Different_IP_i_Initialisation)
 {
    char *argv[] = { "./TestLoader", "-i192.168.1.1" };
 
-   CStartupOptionMokeup app(2, argv, true);
+   CStartupOptionMokeup loader(2, argv, true);
 
-   BOOST_CHECK_EQUAL(app.options().getLogLevel(), "information");
-   BOOST_CHECK_EQUAL(app.options().getWebServerPortNumber(), (unsigned int)8080);
-   BOOST_CHECK_EQUAL(app.options().getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(app.options().getWebServerIPAddress(), "192.168.1.1");
-   BOOST_CHECK_EQUAL(app.options().getWebServerInitialPath(), "www");
-   BOOST_CHECK_EQUAL(app.options().getDebugFlag(), false);
-   BOOST_CHECK_EQUAL(app.options().getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information");
+   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), (unsigned int)8080);
+   BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "192.168.1.1");
+   BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(loader.options().getDatabaseFile(), "yadoms.db3");
+   BOOST_CHECK_EQUAL(loader.options().getPluginsPath(), "plugins");
+   BOOST_CHECK_EQUAL(loader.options().getScriptInterpretersPath(), "scriptInterpreters");
+   BOOST_CHECK_EQUAL(loader.options().getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(loader.options().getIsRunningAsService(), false);
+   BOOST_CHECK_EQUAL(loader.options().getUpdateSiteUri(), "http://www.yadoms.com/downloads/update/");
+   BOOST_CHECK_EQUAL(loader.options().getDatabaseAcquisitionLifetime(), 30);
 }
 
 //--------------------------------------------------------------
@@ -528,15 +588,19 @@ BOOST_AUTO_TEST_CASE(Different_IP_webServerIp_Initialisation)
 {
    char *argv[] = { "./TestLoader", "--webServerIp:192.168.1.1" };
 
-   CStartupOptionMokeup app(2, argv, true);
+   CStartupOptionMokeup loader(2, argv, true);
 
-   BOOST_CHECK_EQUAL(app.options().getLogLevel(), "information");
-   BOOST_CHECK_EQUAL(app.options().getWebServerPortNumber(), (unsigned int)8080);
-   BOOST_CHECK_EQUAL(app.options().getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(app.options().getWebServerIPAddress(), "192.168.1.1");
-   BOOST_CHECK_EQUAL(app.options().getWebServerInitialPath(), "www");
-   BOOST_CHECK_EQUAL(app.options().getDebugFlag(), false);
-   BOOST_CHECK_EQUAL(app.options().getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information");
+   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), (unsigned int)8080);
+   BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "192.168.1.1");
+   BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www");
+   BOOST_CHECK_EQUAL(loader.options().getDatabaseFile(), "yadoms.db3");
+   BOOST_CHECK_EQUAL(loader.options().getPluginsPath(), "plugins");
+   BOOST_CHECK_EQUAL(loader.options().getScriptInterpretersPath(), "scriptInterpreters");
+   BOOST_CHECK_EQUAL(loader.options().getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(loader.options().getIsRunningAsService(), false);
+   BOOST_CHECK_EQUAL(loader.options().getUpdateSiteUri(), "http://www.yadoms.com/downloads/update/");
+   BOOST_CHECK_EQUAL(loader.options().getDatabaseAcquisitionLifetime(), 30);
 }
 
 //--------------------------------------------------------------
@@ -548,7 +612,7 @@ BOOST_AUTO_TEST_CASE(Different_IP_webServerIp_Error1)
 {
    char *argv[] = { "./TestLoader", "--webServe:192.168.1.1" };
 
-   BOOST_CHECK_THROW(CStartupOptionMokeup app(2, argv, true), Poco::Exception);
+   BOOST_CHECK_THROW(CStartupOptionMokeup loader(2, argv, true), Poco::Exception);
 }
 
 //--------------------------------------------------------------
@@ -560,7 +624,7 @@ BOOST_AUTO_TEST_CASE(Different_IP_webServerIp_Error2)
 {
    char *argv[] = { "./TestLoader", "-i:192.168.1." };
 
-   BOOST_CHECK_THROW(CStartupOptionMokeup app(2, argv, true), Poco::Exception);
+   BOOST_CHECK_THROW(CStartupOptionMokeup loader(2, argv, true), Poco::Exception);
 }
 
 //--------------------------------------------------------------
@@ -576,15 +640,19 @@ BOOST_AUTO_TEST_CASE(Different_WebServer_w_Initialisation)
 
    char *argv[] = { "./TestLoader", (char*)arg.c_str() };
 
-   CStartupOptionMokeup app(2, argv, true);
+   CStartupOptionMokeup loader(2, argv, true);
 
-   BOOST_CHECK_EQUAL(app.options().getLogLevel(), "information");
-   BOOST_CHECK_EQUAL(app.options().getWebServerPortNumber(), (unsigned int)8080);
-   BOOST_CHECK_EQUAL(app.options().getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(app.options().getWebServerIPAddress(), "0.0.0.0");
-   BOOST_CHECK_EQUAL(app.options().getWebServerInitialPath(), testNewWebServerPath);
-   BOOST_CHECK_EQUAL(app.options().getDebugFlag(), false);
-   BOOST_CHECK_EQUAL(app.options().getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information");
+   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), (unsigned int)8080);
+   BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0");
+   BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), testNewWebServerPath);
+   BOOST_CHECK_EQUAL(loader.options().getDatabaseFile(), "yadoms.db3");
+   BOOST_CHECK_EQUAL(loader.options().getPluginsPath(), "plugins");
+   BOOST_CHECK_EQUAL(loader.options().getScriptInterpretersPath(), "scriptInterpreters");
+   BOOST_CHECK_EQUAL(loader.options().getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(loader.options().getIsRunningAsService(), false);
+   BOOST_CHECK_EQUAL(loader.options().getUpdateSiteUri(), "http://www.yadoms.com/downloads/update/");
+   BOOST_CHECK_EQUAL(loader.options().getDatabaseAcquisitionLifetime(), 30);
 }
 
 //--------------------------------------------------------------
@@ -599,15 +667,19 @@ BOOST_AUTO_TEST_CASE(Different_WebServer_webServerPath_Initialisation)
    arg += testNewWebServerPath;
    char *argv[] = { "./TestLoader", (char*)arg.c_str() };
    
-   CStartupOptionMokeup app(2, argv, true);
+   CStartupOptionMokeup loader(2, argv, true);
 
-   BOOST_CHECK_EQUAL(app.options().getLogLevel(), "information");
-   BOOST_CHECK_EQUAL(app.options().getWebServerPortNumber(), (unsigned int)8080);
-   BOOST_CHECK_EQUAL(app.options().getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(app.options().getWebServerIPAddress(), "0.0.0.0");
-   BOOST_CHECK_EQUAL(app.options().getWebServerInitialPath(), testNewWebServerPath);
-   BOOST_CHECK_EQUAL(app.options().getDebugFlag(), false);
-   BOOST_CHECK_EQUAL(app.options().getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information");
+   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), (unsigned int)8080);
+   BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0");
+   BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), testNewWebServerPath);
+   BOOST_CHECK_EQUAL(loader.options().getDatabaseFile(), "yadoms.db3");
+   BOOST_CHECK_EQUAL(loader.options().getPluginsPath(), "plugins");
+   BOOST_CHECK_EQUAL(loader.options().getScriptInterpretersPath(), "scriptInterpreters");
+   BOOST_CHECK_EQUAL(loader.options().getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(loader.options().getIsRunningAsService(), false);
+   BOOST_CHECK_EQUAL(loader.options().getUpdateSiteUri(), "http://www.yadoms.com/downloads/update/");
+   BOOST_CHECK_EQUAL(loader.options().getDatabaseAcquisitionLifetime(), 30);
 }
 
 //--------------------------------------------------------------
@@ -624,7 +696,7 @@ BOOST_AUTO_TEST_CASE(Different_WebServer_webServerPath_WrongPath)
    
    char *argv[] = { "./TestLoader", (char*)arg.c_str() };
 
-   BOOST_CHECK_THROW(CStartupOptionMokeup app(2, argv, true), Poco::Exception);
+   BOOST_CHECK_THROW(CStartupOptionMokeup loader(2, argv, true), Poco::Exception);
 }
 
 //--------------------------------------------------------------
@@ -646,15 +718,19 @@ BOOST_AUTO_TEST_CASE(All_Options1)
       "--logLevel", "warning"
    };
 
-   CStartupOptionMokeup app(11, argv, true);
+   CStartupOptionMokeup loader(11, argv, true);
 
-   BOOST_CHECK_EQUAL(app.options().getLogLevel(), "warning");
-   BOOST_CHECK_EQUAL(app.options().getWebServerPortNumber(), (unsigned int)8085);
-   BOOST_CHECK_EQUAL(app.options().getDatabaseFile(), "test.db3");
-   BOOST_CHECK_EQUAL(app.options().getWebServerIPAddress(), "192.168.1.3");
-   BOOST_CHECK_EQUAL(app.options().getWebServerInitialPath(), testNewWebServerPath);
-   BOOST_CHECK_EQUAL(app.options().getDebugFlag(), false);
-   BOOST_CHECK_EQUAL(app.options().getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "warning");
+   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), (unsigned int)8085);
+   BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "192.168.1.3");
+   BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), testNewWebServerPath);
+   BOOST_CHECK_EQUAL(loader.options().getDatabaseFile(), "test.db3");
+   BOOST_CHECK_EQUAL(loader.options().getPluginsPath(), "plugins");
+   BOOST_CHECK_EQUAL(loader.options().getScriptInterpretersPath(), "scriptInterpreters");
+   BOOST_CHECK_EQUAL(loader.options().getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(loader.options().getIsRunningAsService(), false);
+   BOOST_CHECK_EQUAL(loader.options().getUpdateSiteUri(), "http://www.yadoms.com/downloads/update/");
+   BOOST_CHECK_EQUAL(loader.options().getDatabaseAcquisitionLifetime(), 30);
 }
 
 //--------------------------------------------------------------
@@ -679,15 +755,19 @@ BOOST_AUTO_TEST_CASE(All_Options2)
       (char*)arg.c_str()
    };
 
-   CStartupOptionMokeup app(6, argv, true);
+   CStartupOptionMokeup loader(6, argv, true);
 
-   BOOST_CHECK_EQUAL(app.options().getLogLevel(), "warning");
-   BOOST_CHECK_EQUAL(app.options().getWebServerPortNumber(), (unsigned int)8085);
-   BOOST_CHECK_EQUAL(app.options().getDatabaseFile(), "test.db3");
-   BOOST_CHECK_EQUAL(app.options().getWebServerIPAddress(), "192.168.1.3");
-   BOOST_CHECK_EQUAL(app.options().getWebServerInitialPath(), testNewWebServerPath);
-   BOOST_CHECK_EQUAL(app.options().getDebugFlag(), false);
-   BOOST_CHECK_EQUAL(app.options().getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "warning");
+   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), (unsigned int)8085);
+   BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "192.168.1.3");
+   BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), testNewWebServerPath);
+   BOOST_CHECK_EQUAL(loader.options().getDatabaseFile(), "test.db3");
+   BOOST_CHECK_EQUAL(loader.options().getPluginsPath(), "plugins");
+   BOOST_CHECK_EQUAL(loader.options().getScriptInterpretersPath(), "scriptInterpreters");
+   BOOST_CHECK_EQUAL(loader.options().getNoPasswordFlag(), false);
+   BOOST_CHECK_EQUAL(loader.options().getIsRunningAsService(), false);
+   BOOST_CHECK_EQUAL(loader.options().getUpdateSiteUri(), "http://www.yadoms.com/downloads/update/");
+   BOOST_CHECK_EQUAL(loader.options().getDatabaseAcquisitionLifetime(), 30);
 }
 
 //--------------------------------------------------------------
