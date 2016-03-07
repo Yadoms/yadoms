@@ -169,7 +169,7 @@ void CTeleInfo::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> context
 
 void CTeleInfo::processTeleInfoConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> context)
 {
-   YADOMS_LOG(debug) << "TeleInfo is now connected";
+   YADOMS_LOG(debug) << "TeleInfo port opened";
    context->setPluginState(yApi::historization::EPluginState::kRunning);
 
    try
