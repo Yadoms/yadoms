@@ -173,6 +173,11 @@ private:
    /// \brief	The state machine
    //--------------------------------------------------------------
    bool m_configurationUpdated;
+
+   //--------------------------------------------------------------
+   /// \brief  The last sent message
+   //--------------------------------------------------------------
+   shared::communication::CByteBuffer m_lastRequest;
 };
 
 

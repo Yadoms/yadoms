@@ -26,7 +26,7 @@ enum
 
 
 CRfxcom::CRfxcom()
-   :m_configurationUpdated(false)
+   :m_configurationUpdated(false), m_lastRequest(sizeof(RBUF))
 {
 }
 
@@ -173,6 +173,7 @@ void CRfxcom::send(const shared::communication::CByteBuffer& buffer, bool needAn
 
    m_logger.logSent(buffer);
    m_port->send(buffer);
+   m_lastRequest = buffer;
    if (needAnswer)
       m_waitForAnswerTimer->start();
 }
@@ -236,8 +237,8 @@ void CRfxcom::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> context
       m_configuration.initializeWith(newConfigurationData);
       m_configurationUpdated = false;
 
-      // Get status, to compare with new configuration
-      YADOMS_LOG(information) << "Get the RFXCom status...";
+      // Ask status, to compare with new configuration
+      YADOMS_LOG(information) << "Ask the RFXCom status...";
       send(m_transceiver->buildGetStatusCmd(), true);
       return;
    }
@@ -341,10 +342,6 @@ void CRfxcom::initRfxcom()
 
    YADOMS_LOG(information) << "Start the RFXtrx receiver...";
    send(m_transceiver->buildStartReceiverCmd(), true);
-   boost::this_thread::sleep(boost::posix_time::milliseconds(50));
-
-   YADOMS_LOG(information) << "Get the RFXCom status...";
-   send(m_transceiver->buildGetStatusCmd(), true);
 }
 
 void CRfxcom::processRfxcomCommandResponseMessage(boost::shared_ptr<yApi::IYPluginApi> context, const rfxcomMessages::CTransceiverStatus& status)
@@ -394,11 +391,27 @@ void CRfxcom::processRfxcomStatusMessage(boost::shared_ptr<yApi::IYPluginApi> co
 void CRfxcom::processRfxcomReceiverStartedMessage(boost::shared_ptr<yApi::IYPluginApi> context, const rfxcomMessages::CTransceiverStatus& status)
 {
    YADOMS_LOG(information) << "RFXCom started message, device \"" << status.getValidMessage() << "\" detected";
+
+   YADOMS_LOG(information) << "Ask the RFXCom status...";
+   send(m_transceiver->buildGetStatusCmd(), true);
 }
 
 void CRfxcom::processRfxcomWrongCommandMessage(boost::shared_ptr<yApi::IYPluginApi> context, const rfxcomMessages::CTransceiverStatus& status)
 {
-   YADOMS_LOG(information) << "RFXCom wrong command response (is your firmware up-to-date ?)";
+   const RBUF * const lastRequest = reinterpret_cast<const RBUF* const>(m_lastRequest.begin());
+
+   if (lastRequest->ICMND.packettype == pTypeInterfaceControl &&
+      lastRequest->ICMND.subtype == sTypeInterfaceCommand &&
+      lastRequest->ICMND.cmnd == cmdStartRec)
+   {
+      // Message "start receiver" is not supported by old firmwares, so ignore wrong answer
+      YADOMS_LOG(information) << "Ask the RFXCom status...";
+      send(m_transceiver->buildGetStatusCmd(), true);
+   }
+   else
+   {
+      YADOMS_LOG(warning) << "RFXCom wrong command response (is your firmware up-to-date ?)";
+   }
 }
 
 void CRfxcom::processRfxcomAckMessage(const rfxcomMessages::CAck& ack) const
