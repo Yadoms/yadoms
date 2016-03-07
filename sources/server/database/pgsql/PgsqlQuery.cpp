@@ -1,30 +1,32 @@
 #include "stdafx.h"
-#include "Query.h"
+#include "PgsqlQuery.h"
 
 namespace database { namespace pgsql { 
 
-   CQuery::CQuery()
+   CPgsqlQuery::CPgsqlQuery()
    {
    }
 
-   CQuery::~CQuery()
+   CPgsqlQuery::~CPgsqlQuery()
    {
    }
 
-   common::CQuery & CQuery::SelectExists(common::CQuery & subQuery)
+   CPgsqlQuery & CPgsqlQuery::SelectExists(common::CQuery & subQuery)
    {
       ChangeQueryType(kSelect);
       std::ostringstream ss;
       ss << "SELECT EXISTS( " << subQuery.str() << ") ";
-      return Append(ss); 
+      Append(ss); 
+      return *this;
    }
 
-   common::CQuery & CQuery::CreateDatabase(const std::string & name)
+   CPgsqlQuery & CPgsqlQuery::CreateDatabase(const std::string & name)
    {
       ChangeQueryType(kCreate);
       std::ostringstream ss;
       ss << "CREATE DATABASE " << name;
-      return Append(ss);
+      Append(ss);
+      return *this;
    }
 
 

@@ -22,7 +22,7 @@ namespace database { namespace common { namespace requesters {
    // IPluginRequester implementation
    int CPlugin::addInstance(const entities::CPlugin& newPlugin)
    {
-      CQuery qInsert;
+      CQuery qInsert = m_databaseRequester->newQuery();
 
       qInsert.InsertInto(CPluginTable::getTableName(), CPluginTable::getDisplayNameColumnName(), CPluginTable::getTypeColumnName(), CPluginTable::getConfigurationColumnName(), CPluginTable::getAutoStartColumnName() ).
          Values(newPlugin.DisplayName(),
@@ -34,7 +34,7 @@ namespace database { namespace common { namespace requesters {
          throw shared::exception::CEmptyResult("No lines affected");
 
 
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
       qSelect. Select(CPluginTable::getIdColumnName()).
          From(CPluginTable::getTableName()).
          Where(CPluginTable::getDisplayNameColumnName(), CQUERY_OP_EQUAL, newPlugin.DisplayName()).
@@ -53,7 +53,7 @@ namespace database { namespace common { namespace requesters {
    {
       adapters::CPluginAdapter adapter;
 
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
 
       qSelect.Select().
          From(CPluginTable::getTableName()).
@@ -73,7 +73,7 @@ namespace database { namespace common { namespace requesters {
    {
       adapters::CPluginAdapter adapter;
 
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
 
       qSelect.Select().
          From(CPluginTable::getTableName()).
@@ -93,7 +93,7 @@ namespace database { namespace common { namespace requesters {
    {
       adapters::CPluginAdapter adapter;
 
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
       qSelect.Select().From(CPluginTable::getTableName());
 
       m_databaseRequester->queryEntities(&adapter, qSelect);
@@ -102,7 +102,7 @@ namespace database { namespace common { namespace requesters {
 
    void CPlugin::updateInstance(const entities::CPlugin & updatedPluginData)
    {
-      CQuery qUpdate;
+      CQuery qUpdate = m_databaseRequester->newQuery();
 
       if(!updatedPluginData.Id.isDefined())
          throw CDatabaseException("Need an id to update");
@@ -143,7 +143,7 @@ namespace database { namespace common { namespace requesters {
 
    void CPlugin::removeInstance(int pluginId)
    {
-      CQuery qUpdate;
+      CQuery qUpdate = m_databaseRequester->newQuery();
       qUpdate. DeleteFrom(CPluginTable::getTableName()).
          Where(CPluginTable::getIdColumnName(), CQUERY_OP_EQUAL, pluginId);
 
@@ -153,7 +153,7 @@ namespace database { namespace common { namespace requesters {
 
    void CPlugin::disableAutoStartForAllPluginInstances(const std::string& pluginName)
    {
-      CQuery qUpdate;
+      CQuery qUpdate = m_databaseRequester->newQuery();
       qUpdate. Update(CPluginTable::getTableName()).
          Set(CPluginTable::getAutoStartColumnName(), false).
          Where(CPluginTable::getTypeColumnName(), CQUERY_OP_EQUAL, pluginName);

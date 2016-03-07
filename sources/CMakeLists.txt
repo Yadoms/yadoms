@@ -622,6 +622,8 @@ set(YADOMS_SRC ${YADOMS_SRC}
    server/database/common/Query.cpp
    server/database/common/QueryValue.h
    server/database/common/QueryValue.cpp
+   server/database/common/QueryFunctions.h
+   server/database/common/QueryFunctions.cpp
 	server/database/common/DataProvider.h
 	server/database/common/DataProvider.cpp
    server/database/common/DatabaseTables.h
@@ -684,6 +686,10 @@ source_group(server\\database\\common\\versioning  server/database/common/versio
 
 IF(USE_SQLITE_DATABASE)
 	set(YADOMS_SRC ${YADOMS_SRC}
+		server/database/sqlite/SQLiteQuery.h
+		server/database/sqlite/SQLiteQuery.cpp
+		server/database/sqlite/SQLiteQueryFunctions.h
+		server/database/sqlite/SQLiteQueryFunctions.cpp
 		server/database/sqlite/SQLiteRequester.h
 		server/database/sqlite/SQLiteRequester.cpp
 		server/database/sqlite/SQLiteResultHandler.h
@@ -709,14 +715,16 @@ IF(USE_PGSQL_DATABASE)
    message(STATUS "Found postgresql ${PostgreSQL_VERSION_STRING}")
 
 	set(YADOMS_SRC ${YADOMS_SRC}
+		server/database/pgsql/PgsqlQuery.h
+		server/database/pgsql/PgsqlQuery.cpp
+		server/database/pgsql/PgsqlQueryFunctions.h
+		server/database/pgsql/PgsqlQueryFunctions.cpp
 		server/database/pgsql/PgsqlRequester.h
 		server/database/pgsql/PgsqlRequester.cpp
 		server/database/pgsql/PgsqlResultHandler.h
 		server/database/pgsql/PgsqlResultHandler.cpp
 		server/database/pgsql/PgsqlSystemTables.h
 		server/database/pgsql/PgsqlSystemTables.cpp
-		server/database/pgsql/Query.h
-		server/database/pgsql/Query.cpp
 		server/database/pgsql/PgsqlTableCreationScriptProvider.h
 		server/database/pgsql/PgsqlTableCreationScriptProvider.cpp
 	)

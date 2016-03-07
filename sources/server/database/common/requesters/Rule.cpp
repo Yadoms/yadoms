@@ -23,7 +23,7 @@ namespace database { namespace common { namespace requesters {
 
    std::vector<boost::shared_ptr<entities::CRule> > CRule::getRules() const
    {
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
       qSelect. Select().
          From(CRuleTable::getTableName());
 
@@ -34,7 +34,7 @@ namespace database { namespace common { namespace requesters {
 
    std::vector<boost::shared_ptr<entities::CRule> > CRule::getRules(const std::string & interpreterName) const
    {
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
       qSelect.Select().
          From(CRuleTable::getTableName()).
          Where(CRuleTable::getInterpreterColumnName(), CQUERY_OP_EQUAL, interpreterName);
@@ -48,7 +48,7 @@ namespace database { namespace common { namespace requesters {
    {
       adapters::CRuleAdapter adapter;
 
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
 
       qSelect.Select().
          From(CRuleTable::getTableName()).
@@ -66,7 +66,7 @@ namespace database { namespace common { namespace requesters {
 
    int CRule::addRule(boost::shared_ptr<const entities::CRule> ruleData)
    {
-      CQuery qInsert;
+      CQuery qInsert = m_databaseRequester->newQuery();
 
       qInsert.InsertInto(CRuleTable::getTableName(), CRuleTable::getNameColumnName(), CRuleTable::getDescriptionColumnName(), CRuleTable::getInterpreterColumnName(), CRuleTable::getEditorColumnName(), CRuleTable::getModelColumnName(), CRuleTable::getContentColumnName(), CRuleTable::getConfigurationColumnName(), CRuleTable::getStateColumnName()).
          Values(ruleData->Name(), 
@@ -82,7 +82,7 @@ namespace database { namespace common { namespace requesters {
          throw shared::exception::CEmptyResult("No lines affected");
 
 
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
       qSelect. Select(CRuleTable::getIdColumnName()).
          From(CRuleTable::getTableName()).
          Where(CRuleTable::getNameColumnName(), CQUERY_OP_EQUAL, ruleData->Name()).
@@ -96,7 +96,7 @@ namespace database { namespace common { namespace requesters {
          int createdId = adapter.getResults()[0];
 
          //update all optional flags 
-         CQuery qUpdate;
+         CQuery qUpdate = m_databaseRequester->newQuery();
 
          //update error message
          if (ruleData->ErrorMessage.isDefined())
@@ -139,7 +139,7 @@ namespace database { namespace common { namespace requesters {
    
    void CRule::updateRule(boost::shared_ptr<const entities::CRule> ruleData)
    {
-      CQuery qUpdate;
+      CQuery qUpdate = m_databaseRequester->newQuery();
 
       if(!ruleData->Id.isDefined())
          throw CDatabaseException("Need an id to update");
@@ -268,7 +268,7 @@ namespace database { namespace common { namespace requesters {
 
    void CRule::deleteRule(int ruleId)
    {
-      CQuery qUpdate;
+      CQuery qUpdate = m_databaseRequester->newQuery();
       qUpdate. DeleteFrom(CRuleTable::getTableName()).
          Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, ruleId);
 

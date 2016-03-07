@@ -9,6 +9,7 @@
 #include "database/DatabaseException.hpp"
 #include "SQLiteResultHandler.h"
 #include "SQLiteTableCreationScriptProvider.h"
+#include "SQLiteQuery.h"
 
 namespace database { 
 namespace sqlite { 
@@ -115,6 +116,17 @@ namespace sqlite {
 
 
    // IDatabaseProvider implementation
+   database::common::CQuery CSQLiteRequester::newQuery()
+   {
+      return CSQLiteQuery();
+   }
+   
+
+   database::common::CQueryFunctions & CSQLiteRequester::queryFunc()
+   {
+      return m_functionsHelper;
+   }
+
 
    //--------------------------------------------------------------
    /// \Brief		    query for entities (the result is a vector of typed objects, accessible by a call to pAdapter->GetResult())
@@ -321,7 +333,7 @@ namespace sqlite {
    bool CSQLiteRequester::checkTableExists(const std::string & tableName)
    {
       //check that table Configuration exists
-      database::common::CQuery sCheckForTableExists;
+      CSQLiteQuery sCheckForTableExists;
       sCheckForTableExists.SelectCount().
          From(CSqliteMasterTable::getTableName()).
          Where(CSqliteMasterTable::getTypeColumnName(), CQUERY_OP_EQUAL, SQLITEMASTER_TABLE).
@@ -335,7 +347,7 @@ namespace sqlite {
    {
       if(checkTableExists(tableName))
       {
-         database::common::CQuery drop;
+         CSQLiteQuery drop;
          queryStatement(drop.DropTable(tableName));
          return !checkTableExists(tableName);
       }
@@ -437,7 +449,7 @@ namespace sqlite {
       if (waitLoopCount >= maxLoopWait || m_bOneTransactionActive)
          YADOMS_LOG(warning) << "Fail to execute vacuum, one transaction is still active";
       else
-         queryStatement(database::common::CQuery().Vacuum());
+         queryStatement(CSQLiteQuery().Vacuum());
    }
 
    boost::shared_ptr<ITableCreationScriptProvider> CSQLiteRequester::getTableCreationScriptProvider()

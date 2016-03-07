@@ -10,34 +10,34 @@ namespace database { namespace pgsql {
    //
    /// \brief  Class used to create queries
    //
-   class CQuery : public common::CQuery
+   class CPgsqlQuery : public common::CQuery
    {
    public:
       //
       /// \brief           Constructor
       //
-      CQuery();
+      CPgsqlQuery();
 
       //
       /// \brief           Destructor
       //
-      virtual ~CQuery();
+      virtual ~CPgsqlQuery();
 
       //
       /// \brief           Start a query with 'SELECT EXISTS(subquery)'
       /// \return          A reference to itself to allow method chaining
       //
-      common::CQuery & SelectExists(common::CQuery & subQuery);
+      CPgsqlQuery & SelectExists(common::CQuery & subQuery);
 
       //
       /// \brief        Start a create databse query
       /// \param [in]   name  The database name to create
       /// \return       A reference to itself to allow method chaining
       //
-      common::CQuery & CreateDatabase(const std::string & name);
+      CPgsqlQuery & CreateDatabase(const std::string & name);
    };
 
 
-} //namespace common
+} //namespace pgsql
 } //namespace database 
 

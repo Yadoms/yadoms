@@ -5,7 +5,7 @@
 #include <shared/Log.h>
 #include "database/common/Query.h"
 #include "database/IDatabaseRequester.h"
-
+#include "SQLiteQueryFunctions.h"
 
 namespace database { 
 namespace sqlite { 
@@ -22,6 +22,8 @@ namespace sqlite {
       // [END] IDatabaseEngine implementation
 
       // IDatabaseRequester implementation
+      virtual database::common::CQuery newQuery();
+      virtual database::common::CQueryFunctions & queryFunc();
       virtual void queryEntities(database::common::adapters::IResultAdapter * pAdapter, const database::common::CQuery & querytoExecute);
       virtual int queryStatement(const database::common::CQuery & querytoExecute);
       virtual int queryCount(const database::common::CQuery & querytoExecute);
@@ -74,6 +76,11 @@ namespace sqlite {
       /// \Brief		In case of some errors, (database locked,...) the query may be retried
       //--------------------------------------------------------------
       static int m_maxTries;
+
+      //--------------------------------------------------------------
+      /// \Brief		The sql functions helpers for SQLite database
+      //--------------------------------------------------------------
+      CSQLiteQueryFunctions m_functionsHelper;
    };
 
 } //namespace sqlite

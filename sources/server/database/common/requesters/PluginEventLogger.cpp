@@ -26,14 +26,14 @@ namespace database { namespace common { namespace requesters {
    {
       boost::posix_time::ptime insertDate = shared::currentTime::Provider::now();
 
-      CQuery qInsert;
+      CQuery qInsert = m_databaseRequester->newQuery();
       qInsert. InsertInto(CPluginEventLoggerTable::getTableName(), CPluginEventLoggerTable::getPluginNameColumnName(), CPluginEventLoggerTable::getPluginVersionColumnName(), CPluginEventLoggerTable::getPluginReleaseColumnName(), CPluginEventLoggerTable::getEventTypeColumnName(), CPluginEventLoggerTable::getMessageColumnName(), CPluginEventLoggerTable::getEventDateColumnName()).
          Values(pluginName, pluginVersion, pluginReleaseType, eventType, message, insertDate);
 
       if(m_databaseRequester->queryStatement(qInsert) <= 0)
          throw shared::exception::CEmptyResult("No lines affected");
 
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
       qSelect. Select(CPluginEventLoggerTable::getIdColumnName()).
          From(CPluginEventLoggerTable::getTableName()).
          Where(CPluginEventLoggerTable::getPluginNameColumnName(), CQUERY_OP_EQUAL, pluginName).
@@ -58,7 +58,7 @@ namespace database { namespace common { namespace requesters {
 
    std::vector<boost::shared_ptr<entities::CPluginEventLogger> > CPluginEventLogger::getPluginEvents(const std::string & pluginName, const std::string & pluginVersion, const shared::versioning::EReleaseType & pluginReleaseType)
    {
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
       qSelect. Select().
          From(CPluginEventLoggerTable::getTableName()).
          Where(CPluginEventLoggerTable::getPluginNameColumnName(), CQUERY_OP_EQUAL, pluginName).
@@ -74,7 +74,7 @@ namespace database { namespace common { namespace requesters {
 
    std::vector<boost::shared_ptr<entities::CPluginEventLogger> > CPluginEventLogger::getPluginEvents(const std::string & pluginName, const std::string & pluginVersion, const shared::versioning::EReleaseType & pluginReleaseType, const boost::posix_time::ptime & fromDate)
    {
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
       qSelect. Select().
          From(CPluginEventLoggerTable::getTableName()).
          Where(CPluginEventLoggerTable::getPluginNameColumnName(), CQUERY_OP_EQUAL, pluginName).

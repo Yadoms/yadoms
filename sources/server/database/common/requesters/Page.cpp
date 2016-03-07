@@ -23,7 +23,7 @@ namespace database {  namespace common { namespace requesters {
    int CPage::addPage(const entities::CPage & page)
    {
 
-      CQuery qInsert;
+      CQuery qInsert = m_databaseRequester->newQuery();
       if(page.Id.isDefined())
       {
          qInsert. InsertInto(CPageTable::getTableName(), CPageTable::getIdColumnName(), CPageTable::getNameColumnName(), CPageTable::getPageOrderColumnName()).
@@ -38,7 +38,7 @@ namespace database {  namespace common { namespace requesters {
       if(m_databaseRequester->queryStatement(qInsert) <= 0)
          throw shared::exception::CEmptyResult("No lines affected");
 
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
       qSelect. Select(CPageTable::getIdColumnName()).
          From(CPageTable::getTableName()).
          Where(CPageTable::getNameColumnName(), CQUERY_OP_EQUAL, page.Name()).
@@ -54,13 +54,13 @@ namespace database {  namespace common { namespace requesters {
 
    int CPage::addPage(const std::string& name, const int pageOrder)
    {
-      CQuery qInsert;
+      CQuery qInsert = m_databaseRequester->newQuery();
       qInsert. InsertInto(CPageTable::getTableName(), CPageTable::getNameColumnName(), CPageTable::getPageOrderColumnName()).
          Values(name, pageOrder);
       if(m_databaseRequester->queryStatement(qInsert) <= 0)
          throw shared::exception::CEmptyResult("No lines affected");
 
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
       qSelect. Select(CPageTable::getIdColumnName()).
          From(CPageTable::getTableName()).
          Where(CPageTable::getNameColumnName(), CQUERY_OP_EQUAL, name).
@@ -77,7 +77,7 @@ namespace database {  namespace common { namespace requesters {
 
    boost::shared_ptr<entities::CPage> CPage::getPage(int pageId)
    {
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
       qSelect. Select().
          From(CPageTable::getTableName()).
          Where(CPageTable::getIdColumnName(), CQUERY_OP_EQUAL, pageId);
@@ -93,7 +93,7 @@ namespace database {  namespace common { namespace requesters {
 
    std::vector<boost::shared_ptr<entities::CPage> > CPage::getPages()
    {
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
       qSelect. Select().
          From(CPageTable::getTableName()).
          OrderBy(CPageTable::getPageOrderColumnName());
@@ -105,7 +105,7 @@ namespace database {  namespace common { namespace requesters {
 
    void CPage::updatePage(int pageId, const std::string& name, const int pageOrder)
    {
-      CQuery qUpdate;
+      CQuery qUpdate = m_databaseRequester->newQuery();
       qUpdate.Update(CPageTable::getTableName()).
          Set(CPageTable::getNameColumnName(), name, CPageTable::getPageOrderColumnName(), pageOrder).
          Where(CPageTable::getIdColumnName(), CQUERY_OP_EQUAL, pageId);
@@ -116,7 +116,7 @@ namespace database {  namespace common { namespace requesters {
 
    void CPage::removePage(int pageId)
    {
-      CQuery qDelete;
+      CQuery qDelete = m_databaseRequester->newQuery();
       qDelete. DeleteFrom(CPageTable::getTableName()).
          Where(CPageTable::getIdColumnName(), CQUERY_OP_EQUAL, pageId);
       if(m_databaseRequester->queryStatement(qDelete) <= 0)
@@ -125,7 +125,7 @@ namespace database {  namespace common { namespace requesters {
 
    void CPage::removeAllPages()
    {
-      CQuery qDelete;
+      CQuery qDelete = m_databaseRequester->newQuery();
       qDelete. DeleteFrom(CPageTable::getTableName());
       m_databaseRequester->queryStatement(qDelete);
    }

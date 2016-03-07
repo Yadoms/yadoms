@@ -30,7 +30,7 @@ namespace database {  namespace common {  namespace requesters {
    {
       if(m_keywordRequester->getKeyword(keywordId))
       {
-         CQuery q;
+         CQuery q = m_databaseRequester->newQuery();
          q.InsertOrReplaceInto(CAcquisitionTable::getTableName(), CAcquisitionTable::getDateColumnName(), CAcquisitionTable::getKeywordIdColumnName(), CAcquisitionTable::getValueColumnName()).
             Values(dataTime, keywordId, data);
 
@@ -52,14 +52,14 @@ namespace database {  namespace common {  namespace requesters {
       if (keywordEntity->Type() != shared::plugin::yPluginApi::EKeywordDataType::kNumeric)
          throw shared::exception::CEmptyResult("The keyword is not numeric, cannot increment data");
 
-      CQuery qLastKeywordValue;
+      CQuery qLastKeywordValue = m_databaseRequester->newQuery();
       qLastKeywordValue.Select("acq." + CAcquisitionTable::getValueColumnName()).
          From(CAcquisitionTable::getTableName() + " as acq").
          Where("acq." + CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId).
          OrderBy("acq." + CAcquisitionTable::getDateColumnName(), CQUERY_ORDER_DESC).
          Limit(1);
 
-      CQuery q;
+      CQuery q = m_databaseRequester->newQuery();
       q.InsertOrReplaceInto(CAcquisitionTable::getTableName(), CAcquisitionTable::getDateColumnName(), CAcquisitionTable::getKeywordIdColumnName(), CAcquisitionTable::getValueColumnName()).
          Select(CQueryValue(dataTime).str(), CQueryValue(keywordId).str(), "ifnull( (" + qLastKeywordValue.str() + "), 0) + " + increment);
 
@@ -74,13 +74,13 @@ namespace database {  namespace common {  namespace requesters {
    {
       if(m_keywordRequester->getKeyword(keywordId))
       {
-         CQuery q;
+         CQuery q = m_databaseRequester->newQuery();
          q.DeleteFrom(CAcquisitionTable::getTableName()).
             Where(CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId);
 
          m_databaseRequester->queryStatement(q);
 
-         CQuery qSummary;
+         CQuery qSummary = m_databaseRequester->newQuery();
          qSummary.DeleteFrom(CAcquisitionSummaryTable::getTableName()).
             Where(CAcquisitionSummaryTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId);
          m_databaseRequester->queryStatement(qSummary);
@@ -93,7 +93,7 @@ namespace database {  namespace common {  namespace requesters {
 
    boost::shared_ptr<entities::CAcquisition> CAcquisition::getAcquisitionByKeywordAndDate(const int keywordId, boost::posix_time::ptime time)
    {
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
       qSelect.Select().
          From(CAcquisitionTable::getTableName()).
          Where(CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId).
@@ -113,7 +113,7 @@ namespace database {  namespace common {  namespace requesters {
 
    boost::shared_ptr<entities::CAcquisition> CAcquisition::getKeywordLastData(const int keywordId)
    {
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
       qSelect. Select().
                From(CAcquisitionTable::getTableName()).
                Where(CAcquisitionTable::getKeywordIdColumnName() , CQUERY_OP_EQUAL, keywordId).
@@ -133,7 +133,7 @@ namespace database {  namespace common {  namespace requesters {
 
    std::vector<boost::tuple<boost::posix_time::ptime, std::string>  > CAcquisition::getKeywordData(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
    {
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
       qSelect. Select(CAcquisitionTable::getDateColumnName(), CAcquisitionTable::getValueColumnName()).
          From(CAcquisitionTable::getTableName()).
          Where(CAcquisitionTable::getKeywordIdColumnName() , CQUERY_OP_EQUAL, keywordId);
@@ -173,7 +173,7 @@ namespace database {  namespace common {  namespace requesters {
 
    std::vector<boost::shared_ptr<entities::CAcquisitionSummary> > CAcquisition::getKeywordSummaryDataByType(const entities::EAcquisitionSummaryType & type, int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
    {
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
       qSelect.Select().
          From(CAcquisitionSummaryTable::getTableName()).
          Where(CAcquisitionSummaryTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId).
@@ -210,7 +210,7 @@ namespace database {  namespace common {  namespace requesters {
    {
       //this query is optimized to get only one field to read
       //the output data is a single column (without brackets):  ["dateiso",value]
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
       
       qSelect.Select(m_databaseRequester->generateSqlIsoDateFormat(CAcquisitionTable::getDateColumnName()) + " ||','|| " + CAcquisitionTable::getValueColumnName()).
          From(CAcquisitionTable::getTableName()).
@@ -237,7 +237,7 @@ namespace database {  namespace common {  namespace requesters {
    {
       //this query is optimized to get only one field to read
       //the output data is a single column (without brackets):  ["dateiso",value]
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
       qSelect.Select(m_databaseRequester->generateSqlIsoDateFormat(CAcquisitionSummaryTable::getDateColumnName()) + " ||','|| " + CAcquisitionSummaryTable::getAvgColumnName()).
          From(CAcquisitionSummaryTable::getTableName()).
          Where(CAcquisitionSummaryTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId).
@@ -282,7 +282,7 @@ namespace database {  namespace common {  namespace requesters {
       and date < '20151105T110000'
 
       */
-      CQuery q;
+      CQuery q = m_databaseRequester->newQuery();
       q.Select(CQUERY_DISTINCT(CAcquisitionTable::getKeywordIdColumnName()))
          .From(CAcquisitionTable::getTableName())
          .Where(CAcquisitionTable::getDateColumnName(), CQUERY_OP_SUP_EQUAL, CQueryValue(timeFrom, false).str())
@@ -329,7 +329,7 @@ namespace database {  namespace common {  namespace requesters {
             }
 
             //process the request
-            CQuery q;
+            CQuery q = m_databaseRequester->newQuery();
             q.InsertOrReplaceInto(CAcquisitionSummaryTable::getTableName(), CAcquisitionSummaryTable::getTypeColumnName(), CAcquisitionSummaryTable::getDateColumnName(), CAcquisitionSummaryTable::getKeywordIdColumnName(), CAcquisitionSummaryTable::getAvgColumnName(), CAcquisitionSummaryTable::getMinColumnName(), CAcquisitionSummaryTable::getMaxColumnName()).
                Select(CQueryValue(curType.toString()).str(), CQueryValue(fromDate).str(), CQueryValue(keywordId).str(), "avg(cast(" + CAcquisitionTable::getValueColumnName() + " as real))", "min(cast(" + CAcquisitionTable::getValueColumnName() + " as real))", "max(cast(" + CAcquisitionTable::getValueColumnName() + " as real))").
                From(CAcquisitionTable::getTableName() + " as acq").
@@ -369,7 +369,7 @@ namespace database {  namespace common {  namespace requesters {
          fromDate = boost::posix_time::ptime(dataTime.date());
       }
 
-      CQuery checkq;
+      CQuery checkq = m_databaseRequester->newQuery();
       checkq.SelectCount().
          From(CAcquisitionSummaryTable::getTableName()).
          Where(CAcquisitionSummaryTable::getTypeColumnName(), CQUERY_OP_EQUAL, CQueryValue(curType.toString(), false).str()).
@@ -381,7 +381,7 @@ namespace database {  namespace common {  namespace requesters {
 
    int CAcquisition::purgeAcquisitions(boost::posix_time::ptime purgeDate)
    {
-      CQuery q;
+      CQuery q = m_databaseRequester->newQuery();
       q.DeleteFrom(CAcquisitionTable::getTableName()).
          Where(CAcquisitionTable::getDateColumnName(), CQUERY_OP_INF, CQueryValue(purgeDate));
 

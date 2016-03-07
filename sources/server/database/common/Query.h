@@ -50,11 +50,18 @@ namespace database { namespace common {
          kCreate,
          kVacuum
       };
-   public:
+   protected:
       //
       /// \brief           Constructor
       //
       CQuery();
+
+   public:
+      //
+      /// \brief           Copy constructor
+      //
+      CQuery(const CQuery &toCopy);
+
 
       //
       /// \brief           Destructor

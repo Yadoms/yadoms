@@ -15,6 +15,12 @@ namespace database { namespace common {
       {
       }
 
+      CQuery::CQuery(const CQuery &toCopy)
+         :m_currentQuery(toCopy.m_currentQuery), m_queryType(toCopy.m_queryType)
+      {
+
+      }
+
       CQuery &  CQuery::Clear()
       {
          m_queryType = kNotYetDefined;

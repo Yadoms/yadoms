@@ -34,7 +34,7 @@ namespace database { namespace common {
       {
          if (m_databaseRequester->checkTableExists(CConfigurationTable::getTableName()))
          {
-            CQuery qVersion;
+            CQuery qVersion = m_databaseRequester->newQuery();
             qVersion.Select(CConfigurationTable::getValueColumnName()).
                From(CConfigurationTable::getTableName()).
                Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_EQUAL, "Database").

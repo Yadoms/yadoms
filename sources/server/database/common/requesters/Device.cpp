@@ -48,7 +48,7 @@ namespace database {  namespace common { namespace requesters {
 
    boost::shared_ptr<entities::CDevice> CDevice::getDevice(int deviceId) const
    {
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
       qSelect. Select().
          From(CDeviceTable::getTableName()).
          Where(CDeviceTable::getIdColumnName(), CQUERY_OP_EQUAL, deviceId);
@@ -64,7 +64,7 @@ namespace database {  namespace common { namespace requesters {
    boost::shared_ptr<entities::CDevice> CDevice::getDevice(const int pluginId, const std::string & name) const
    {
       //search for such a device
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
       qSelect. Select().
          From(CDeviceTable::getTableName()).
          Where(CDeviceTable::getPluginIdColumnName(), CQUERY_OP_EQUAL, pluginId).
@@ -80,7 +80,7 @@ namespace database {  namespace common { namespace requesters {
 
    std::vector<boost::shared_ptr<entities::CDevice> > CDevice::getDevicesIdFromFriendlyName(const std::string friendlyName) const
    {
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
       qSelect.Select().
          From(CDeviceTable::getTableName()).
          Where(CDeviceTable::getFriendlyNameColumnName(), CQUERY_OP_EQUAL, friendlyName);
@@ -92,7 +92,7 @@ namespace database {  namespace common { namespace requesters {
 
    std::vector<boost::shared_ptr<entities::CDevice> > CDevice::getDeviceWithCapacity(const std::string & capacityName, const shared::plugin::yPluginApi::EKeywordAccessMode & accessMode) const
    {
-      CQuery subQuery;
+      CQuery subQuery = m_databaseRequester->newQuery();
       subQuery.Select(CKeywordTable::getDeviceIdColumnName()).
          From(CKeywordTable::getTableName()).
          Where(CKeywordTable::getCapacityNameColumnName(), CQUERY_OP_EQUAL, capacityName);
@@ -103,7 +103,7 @@ namespace database {  namespace common { namespace requesters {
          subQuery.And(CKeywordTable::getAccessModeColumnName(), CQUERY_OP_EQUAL, accessMode);
       }
 
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
       qSelect. Select().
          From(CDeviceTable::getTableName()).
          Where(CDeviceTable::getIdColumnName(), CQUERY_OP_IN, subQuery);
@@ -115,7 +115,7 @@ namespace database {  namespace common { namespace requesters {
 
    std::vector<boost::shared_ptr<entities::CDevice> > CDevice::getDeviceWithCapacityType(const shared::plugin::yPluginApi::EKeywordAccessMode & capacityAccessMode, const shared::plugin::yPluginApi::EKeywordDataType & capacityType) const
    {
-		CQuery subQuery;
+		CQuery subQuery = m_databaseRequester->newQuery();
 		subQuery.Select(CKeywordTable::getDeviceIdColumnName()).
 			From(CKeywordTable::getTableName()).
          Where(CKeywordTable::getTypeColumnName(), CQUERY_OP_EQUAL, capacityType);
@@ -126,7 +126,7 @@ namespace database {  namespace common { namespace requesters {
          subQuery.And(CKeywordTable::getAccessModeColumnName(), CQUERY_OP_EQUAL, capacityAccessMode);
       }
 
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
       qSelect. Select().
          From(CDeviceTable::getTableName()).
          Where(CDeviceTable::getIdColumnName(), CQUERY_OP_IN, subQuery);
@@ -150,7 +150,7 @@ namespace database {  namespace common { namespace requesters {
          realFriendlyName = name;
 
       //insert in db
-      CQuery qInsert;
+      CQuery qInsert = m_databaseRequester->newQuery();
 	  qInsert.InsertInto(CDeviceTable::getTableName(), CDeviceTable::getPluginIdColumnName(), CDeviceTable::getNameColumnName(), CDeviceTable::getFriendlyNameColumnName(), CDeviceTable::getModelColumnName(), CDeviceTable::getDetailsColumnName()).
 		  Values(pluginId, name, realFriendlyName, model, details.serialize());
       if(m_databaseRequester->queryStatement(qInsert) <= 0)
@@ -175,7 +175,7 @@ namespace database {  namespace common { namespace requesters {
       if(newFriendlyName != shared::CStringExtension::EmptyString)
       {
          //insert in db
-         CQuery qUpdate;
+         CQuery qUpdate = m_databaseRequester->newQuery();
          qUpdate. Update(CDeviceTable::getTableName()).
             Set(CDeviceTable::getFriendlyNameColumnName(), newFriendlyName).
             Where(CDeviceTable::getIdColumnName(), CQUERY_OP_EQUAL, deviceId);
@@ -187,7 +187,7 @@ namespace database {  namespace common { namespace requesters {
 
    std::vector<boost::shared_ptr<entities::CDevice> > CDevice::getDevices() const
    {
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
       qSelect. Select().
          From(CDeviceTable::getTableName());
 
@@ -198,7 +198,7 @@ namespace database {  namespace common { namespace requesters {
 
    std::vector<boost::shared_ptr<entities::CDevice> >CDevice::getDevices(int pluginId) const
    {
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
       qSelect.Select().
          From(CDeviceTable::getTableName()).
          Where(CDeviceTable::getPluginIdColumnName(), CQUERY_OP_EQUAL, pluginId);
@@ -211,7 +211,7 @@ namespace database {  namespace common { namespace requesters {
 
    void CDevice::removeDevice(int deviceId)
    {
-      CQuery qDelete;
+      CQuery qDelete = m_databaseRequester->newQuery();
       qDelete.DeleteFrom(CDeviceTable::getTableName()).
          Where(CDeviceTable::getIdColumnName(), CQUERY_OP_EQUAL, deviceId);
       if(m_databaseRequester->queryStatement(qDelete) <= 0)
@@ -224,7 +224,7 @@ namespace database {  namespace common { namespace requesters {
 
    void CDevice::removeAllDeviceForPlugin(int pluginId)
    {
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
          qSelect.Select().
          From(CDeviceTable::getTableName()).Where(CDeviceTable::getPluginIdColumnName(), CQUERY_OP_EQUAL, pluginId);
 

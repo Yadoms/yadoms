@@ -2,6 +2,7 @@
 
 #include "entities/Entities.h"
 #include "common/Query.h"
+#include "common/QueryFunctions.h"
 #include "common/adapters/IResultAdapter.h"
 #include "ITransactionalProvider.h"
 #include "IDataBackup.h"
@@ -25,6 +26,19 @@ namespace database {
       /// \brief	Use do define a list of rows from database
       //--------------------------------------------------------------
       typedef std::vector<QueryRow>  QueryResults;
+
+      //--------------------------------------------------------------
+      /// \Brief  Create a new CQuery object
+      /// \return The created CQuery
+      //--------------------------------------------------------------
+      virtual database::common::CQuery newQuery() = 0;
+
+      //--------------------------------------------------------------
+      /// \Brief  Create a new CQueryFunctions function object
+      /// \return The created CQueryFunctions function 
+      //--------------------------------------------------------------
+      virtual database::common::CQueryFunctions & queryFunc() = 0;
+      
 
       //--------------------------------------------------------------
       /// \Brief		    query for entities (the result is a vector of typed objects, accessible by a call to pAdapter->GetResult())

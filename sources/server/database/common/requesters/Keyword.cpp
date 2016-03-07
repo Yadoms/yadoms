@@ -73,7 +73,7 @@ namespace database { namespace common { namespace requesters {
 
 
 
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
 
       qSelect. SelectCount().
          From(CKeywordTable::getTableName()).
@@ -84,7 +84,7 @@ namespace database { namespace common { namespace requesters {
       if(count == 0)
       {
          //create the database entry with needed fields
-         CQuery qInsert;
+         CQuery qInsert = m_databaseRequester->newQuery();
          qInsert.InsertInto(CKeywordTable::getTableName(), CKeywordTable::getDeviceIdColumnName(), CKeywordTable::getCapacityNameColumnName(), CKeywordTable::getAccessModeColumnName(), CKeywordTable::getNameColumnName(), CKeywordTable::getTypeColumnName(), CKeywordTable::getMeasureColumnName()).
             Values(newKeyword.DeviceId(), newKeyword.CapacityName(), newKeyword.AccessMode(), newKeyword.Name(), newKeyword.Type(), newKeyword.Measure());
 
@@ -96,7 +96,7 @@ namespace database { namespace common { namespace requesters {
          if(newKeyword.FriendlyName.isDefined())
             friendlyName =newKeyword.FriendlyName();
          
-         CQuery update;
+         CQuery update = m_databaseRequester->newQuery();
          update.Update(CKeywordTable::getTableName()).Set(CKeywordTable::getFriendlyNameColumnName(), friendlyName).
             Where(CKeywordTable::getDeviceIdColumnName(),  CQUERY_OP_EQUAL, newKeyword.DeviceId()).
             And(CKeywordTable::getNameColumnName(),  CQUERY_OP_EQUAL, newKeyword.Name());
@@ -107,7 +107,7 @@ namespace database { namespace common { namespace requesters {
 
          if(newKeyword.Details.isDefined())
          {
-            CQuery updateDetails;
+            CQuery updateDetails = m_databaseRequester->newQuery();
             updateDetails.Update(CKeywordTable::getTableName()).Set(CKeywordTable::getDetailsColumnName(), newKeyword.Details()).
                Where(CKeywordTable::getDeviceIdColumnName(),  CQUERY_OP_EQUAL, newKeyword.DeviceId()).
                And(CKeywordTable::getNameColumnName(),  CQUERY_OP_EQUAL, newKeyword.Name());
@@ -118,7 +118,7 @@ namespace database { namespace common { namespace requesters {
          
          if(newKeyword.Units.isDefined())
          {
-            CQuery updateUnits;
+            CQuery updateUnits = m_databaseRequester->newQuery();
             updateUnits.Update(CKeywordTable::getTableName()).Set(CKeywordTable::getUnitsColumnName(), newKeyword.Units()).
                Where(CKeywordTable::getDeviceIdColumnName(),  CQUERY_OP_EQUAL, newKeyword.DeviceId()).
                And(CKeywordTable::getNameColumnName(),  CQUERY_OP_EQUAL, newKeyword.Name());
@@ -129,7 +129,7 @@ namespace database { namespace common { namespace requesters {
          
 		 if (newKeyword.TypeInfo.isDefined())
          {
-            CQuery updateValues;
+            CQuery updateValues = m_databaseRequester->newQuery();
             updateValues.Update(CKeywordTable::getTableName()).Set(CKeywordTable::getTypeInfoColumnName(), newKeyword.TypeInfo()).
                Where(CKeywordTable::getDeviceIdColumnName(),  CQUERY_OP_EQUAL, newKeyword.DeviceId()).
                And(CKeywordTable::getNameColumnName(),  CQUERY_OP_EQUAL, newKeyword.Name());
@@ -148,7 +148,7 @@ namespace database { namespace common { namespace requesters {
    {
       adapters::CKeywordAdapter adapter;
 
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
 
       qSelect. Select().
          From(CKeywordTable::getTableName()).
@@ -166,7 +166,7 @@ namespace database { namespace common { namespace requesters {
    {
       adapters::CKeywordAdapter adapter;
 
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
       qSelect. Select().
          From(CKeywordTable::getTableName()).
          Where(CKeywordTable::getIdColumnName(), CQUERY_OP_EQUAL, keywordId);
@@ -180,7 +180,7 @@ namespace database { namespace common { namespace requesters {
 
    std::vector<boost::shared_ptr<entities::CKeyword> > CKeyword::getKeywordIdFromFriendlyName(int deviceId, const std::string friendlyName) const
    {
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
       qSelect.Select().
          From(CKeywordTable::getTableName()).
          Where(CKeywordTable::getDeviceIdColumnName(), CQUERY_OP_EQUAL, deviceId).
@@ -194,7 +194,7 @@ namespace database { namespace common { namespace requesters {
    std::vector<boost::shared_ptr<entities::CKeyword> > CKeyword::getKeywords(int deviceId) const
    {
       adapters::CKeywordAdapter adapter;
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
       qSelect. Select().
          From(CKeywordTable::getTableName()).
          Where(CKeywordTable::getDeviceIdColumnName(), CQUERY_OP_EQUAL, deviceId);
@@ -205,7 +205,7 @@ namespace database { namespace common { namespace requesters {
    std::vector<boost::shared_ptr<entities::CKeyword> > CKeyword::getAllKeywords() const
 	{
       adapters::CKeywordAdapter adapter;
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
       qSelect.Select().From(CKeywordTable::getTableName());
       m_databaseRequester->queryEntities(&adapter, qSelect);
       return adapter.getResults();
@@ -214,7 +214,7 @@ namespace database { namespace common { namespace requesters {
    std::vector<boost::shared_ptr<entities::CKeyword> > CKeyword::getDeviceKeywordsWithCapacity(int deviceId, const std::string & capacityName, const shared::plugin::yPluginApi::EKeywordAccessMode & accessMode) const
    {
       adapters::CKeywordAdapter adapter;
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
       qSelect. Select().
          From(CKeywordTable::getTableName()).
          Where(CKeywordTable::getDeviceIdColumnName(), CQUERY_OP_EQUAL, deviceId).
@@ -240,7 +240,7 @@ namespace database { namespace common { namespace requesters {
       m_acquisitionRequester->removeKeywordData(keywordId);
 
       //delete keyword
-      CQuery qDelete;
+      CQuery qDelete = m_databaseRequester->newQuery();
       qDelete. DeleteFrom(CKeywordTable::getTableName()).
          Where(CKeywordTable::getIdColumnName(), CQUERY_OP_EQUAL, keywordId);
       if(m_databaseRequester->queryStatement(qDelete) <= 0)
@@ -256,7 +256,7 @@ namespace database { namespace common { namespace requesters {
          if(keywordToUpdate)
          {
             //insert in db
-            CQuery qUpdate;
+            CQuery qUpdate = m_databaseRequester->newQuery();
             qUpdate. Update(CKeywordTable::getTableName()).
                Set(CKeywordTable::getFriendlyNameColumnName(), newFriendlyName).
                Where(CKeywordTable::getIdColumnName(), CQUERY_OP_EQUAL, keywordId);

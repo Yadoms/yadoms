@@ -25,7 +25,7 @@ namespace database { namespace common { namespace requesters {
    void CConfiguration::create(entities::CConfiguration& configurationToCreate)
    {
       boost::posix_time::ptime insertDate = shared::currentTime::Provider::now();
-      CQuery qInsert;
+      CQuery qInsert = m_databaseRequester->newQuery();
       qInsert. InsertInto(CConfigurationTable::getTableName(), CConfigurationTable::getSectionColumnName(), CConfigurationTable::getNameColumnName(), CConfigurationTable::getValueColumnName(), CConfigurationTable::getDescriptionColumnName(), CConfigurationTable::getDefaultValueColumnName(), CConfigurationTable::getLastModificationDateColumnName()).
          Values(configurationToCreate.Section(), configurationToCreate.Name(), configurationToCreate.Value(), configurationToCreate.Description(), configurationToCreate.DefaultValue(), insertDate);
       if(m_databaseRequester->queryStatement(qInsert) <= 0)
@@ -34,7 +34,7 @@ namespace database { namespace common { namespace requesters {
 
    bool CConfiguration::exists(const std::string & section, const std::string & name)
    {
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
       qSelect.SelectCount().
          From(CConfigurationTable::getTableName()).
          Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_LIKE, section).
@@ -45,7 +45,7 @@ namespace database { namespace common { namespace requesters {
 
    boost::shared_ptr<entities::CConfiguration> CConfiguration::getConfiguration(const std::string & section, const std::string & name)
    {
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
       qSelect. Select().
          From(CConfigurationTable::getTableName()).
          Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_LIKE, section).
@@ -62,7 +62,7 @@ namespace database { namespace common { namespace requesters {
 
    std::vector<boost::shared_ptr<entities::CConfiguration> > CConfiguration::getConfigurations(const std::string & section)
    {
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
       qSelect. Select().
          From(CConfigurationTable::getTableName()).
          Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_LIKE, section).
@@ -75,7 +75,7 @@ namespace database { namespace common { namespace requesters {
 
    std::vector<boost::shared_ptr<entities::CConfiguration> > CConfiguration::getConfigurations()
    {
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
       qSelect. Select().
          From(CConfigurationTable::getTableName()).
          OrderBy(CConfigurationTable::getSectionColumnName(), CQUERY_ORDER_ASC, CConfigurationTable::getNameColumnName(), CQUERY_ORDER_ASC);
@@ -92,7 +92,7 @@ namespace database { namespace common { namespace requesters {
 
       if (exists(configurationToUpdate.Section(), configurationToUpdate.Name()))
       {
-         CQuery qUpdate;
+         CQuery qUpdate = m_databaseRequester->newQuery();
          qUpdate.Update(CConfigurationTable::getTableName()).
             Set(CConfigurationTable::getValueColumnName(), configurationToUpdate.Value(),
             CConfigurationTable::getLastModificationDateColumnName(), updateDate).
@@ -110,7 +110,7 @@ namespace database { namespace common { namespace requesters {
 
    void CConfiguration::removeConfiguration(entities::CConfiguration& configurationToRemove)
    {
-      CQuery qDelete;
+      CQuery qDelete = m_databaseRequester->newQuery();
       qDelete. DeleteFrom(CConfigurationTable::getTableName()).
          Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_LIKE, configurationToRemove.Section()).
          And(CConfigurationTable::getNameColumnName(), CQUERY_OP_LIKE, configurationToRemove.Name());

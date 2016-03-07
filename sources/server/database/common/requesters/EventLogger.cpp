@@ -27,14 +27,14 @@ namespace database { namespace common { namespace requesters {
    {
       boost::posix_time::ptime insertDate = shared::currentTime::Provider::now();
 
-      CQuery qInsert;
+      CQuery qInsert = m_databaseRequester->newQuery();
       qInsert. InsertInto(CEventLoggerTable::getTableName(), CEventLoggerTable::getCodeColumnName(), CEventLoggerTable::getWhoColumnName(), CEventLoggerTable::getWhatColumnName(), CEventLoggerTable::getDateColumnName()).
          Values(eventCode, who, what, insertDate);
 
       if(m_databaseRequester->queryStatement(qInsert) <= 0)
          throw shared::exception::CEmptyResult("No lines affected");
 
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
       qSelect. Select(CEventLoggerTable::getIdColumnName()).
          From(CEventLoggerTable::getTableName()).
          Where(CEventLoggerTable::getCodeColumnName(), CQUERY_OP_EQUAL, eventCode).
@@ -52,7 +52,7 @@ namespace database { namespace common { namespace requesters {
 
    std::vector<boost::shared_ptr<entities::CEventLogger> > CEventLogger::getEvents()
    {
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
       qSelect. Select().
          From(CEventLoggerTable::getTableName()).
          OrderBy(CEventLoggerTable::getIdColumnName(), CQUERY_ORDER_DESC);
@@ -64,7 +64,7 @@ namespace database { namespace common { namespace requesters {
 
    boost::shared_ptr<entities::CEventLogger>  CEventLogger::getEvent(const int eventId)
    {
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
       qSelect. Select().
          From(CEventLoggerTable::getTableName()).
          Where(CEventLoggerTable::getIdColumnName(), CQUERY_OP_EQUAL, eventId).
@@ -79,7 +79,7 @@ namespace database { namespace common { namespace requesters {
 
    boost::shared_ptr<entities::CEventLogger>  CEventLogger::getLastEvent()
    {
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
       qSelect. Select().
          From(CEventLoggerTable::getTableName()).
          OrderBy(CEventLoggerTable::getIdColumnName(), CQUERY_ORDER_DESC).
@@ -96,7 +96,7 @@ namespace database { namespace common { namespace requesters {
 
    std::vector<boost::shared_ptr<entities::CEventLogger> >  CEventLogger::getEventsFrom(const int eventId)
    {
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
       qSelect. Select().
          From(CEventLoggerTable::getTableName()).
          Where(CEventLoggerTable::getIdColumnName(), CQUERY_OP_SUP, eventId).
@@ -109,7 +109,7 @@ namespace database { namespace common { namespace requesters {
 
    std::vector<boost::shared_ptr<entities::CEventLogger> >  CEventLogger::getEventsRange(const int offset, const int count)
    {
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
       qSelect. Select().
          From(CEventLoggerTable::getTableName()).
          OrderBy(CEventLoggerTable::getIdColumnName(), CQUERY_ORDER_DESC, CEventLoggerTable::getDateColumnName(), CQUERY_ORDER_DESC).

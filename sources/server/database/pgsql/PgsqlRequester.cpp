@@ -8,7 +8,7 @@
 #include "PgsqlSystemTables.h"
 #include "database/DatabaseException.hpp"
 #include "PgsqlResultHandler.h"
-#include "Query.h"
+#include "PgsqlQuery.h"
 #include "PgsqlTableCreationScriptProvider.h"
 
 namespace database { 
@@ -43,11 +43,6 @@ namespace pgsql {
       }
       return result;
    }
-   
-   //--------------------------------------------------------------
-   /// \Brief		         Terminate a connection (one for each thread; testing one for each request)
-   /// \param [in] pConnection   The connection pointer to close
-   //--------------------------------------------------------------
    
    void CPgsqlRequester::terminateConnection(PGconn * pConnection)
    {
@@ -94,6 +89,16 @@ namespace pgsql {
    }
 
    // IDatabaseEngine implementation
+   database::common::CQuery CPgsqlRequester::newQuery()
+   {
+      return CPgsqlQuery();
+   }
+
+   database::common::CQueryFunctions & CPgsqlRequester::queryFunc()
+   {
+      return m_functionsHelper;
+   }
+
    void CPgsqlRequester::initialize()
    {
       YADOMS_LOG(information) << "Connect to database";
@@ -127,7 +132,7 @@ namespace pgsql {
             else
             {
                //list all databases
-               CQuery dbList;
+               CPgsqlQuery dbList;
                
                dbList.SelectCount().From(CPgDatabaseTable::getTableName()).Where(CPgDatabaseTable::getDatabaseNameColumnName(), CQUERY_OP_ILIKE, m_dbName);
                int count = queryCount(dbList, pConnection);
@@ -135,7 +140,7 @@ namespace pgsql {
                {
                   YADOMS_LOG(information) << "Database do not exists, try to create it";
                   //create database
-                  int result = queryStatement(CQuery().CreateDatabase(m_dbName), pConnection);
+                  int result = queryStatement(CPgsqlQuery().CreateDatabase(m_dbName), pConnection);
                   if (result == 0)
                   {
                      YADOMS_LOG(information) << "Database created";
@@ -272,8 +277,8 @@ namespace pgsql {
 
    int CPgsqlRequester::queryStatement(const database::common::CQuery & querytoExecute, PGconn * pConnection)
    {
-      BOOST_ASSERT(querytoExecute.GetQueryType() != CQuery::kNotYetDefined);
-      BOOST_ASSERT(querytoExecute.GetQueryType() != CQuery::kSelect);
+      BOOST_ASSERT(querytoExecute.GetQueryType() != CPgsqlQuery::kNotYetDefined);
+      BOOST_ASSERT(querytoExecute.GetQueryType() != CPgsqlQuery::kSelect);
 
 
       //execute query
@@ -322,8 +327,8 @@ namespace pgsql {
    
    int CPgsqlRequester::queryCount(const database::common::CQuery & querytoExecute, PGconn * pConnection)
    {
-      BOOST_ASSERT(querytoExecute.GetQueryType() != CQuery::kNotYetDefined);
-      BOOST_ASSERT(querytoExecute.GetQueryType() == CQuery::kSelect);
+      BOOST_ASSERT(querytoExecute.GetQueryType() != CPgsqlQuery::kNotYetDefined);
+      BOOST_ASSERT(querytoExecute.GetQueryType() == CPgsqlQuery::kSelect);
 
       //execute query
       PGresult *res = PQexec(pConnection, querytoExecute.c_str());
@@ -351,8 +356,8 @@ namespace pgsql {
 
    CPgsqlRequester::QueryRow CPgsqlRequester::querySingleLine(const database::common::CQuery & querytoExecute)
    {
-      BOOST_ASSERT(querytoExecute.GetQueryType() != CQuery::kNotYetDefined);
-      BOOST_ASSERT(querytoExecute.GetQueryType() == CQuery::kSelect);
+      BOOST_ASSERT(querytoExecute.GetQueryType() != CPgsqlQuery::kNotYetDefined);
+      BOOST_ASSERT(querytoExecute.GetQueryType() == CPgsqlQuery::kSelect);
 
       QueryResults results = query(querytoExecute);
       if(results.size() >= 1)
@@ -364,8 +369,8 @@ namespace pgsql {
    
    CPgsqlRequester::QueryResults CPgsqlRequester::query(const database::common::CQuery & querytoExecute)
    {
-      BOOST_ASSERT(querytoExecute.GetQueryType() != CQuery::kNotYetDefined);
-      BOOST_ASSERT(querytoExecute.GetQueryType() == CQuery::kSelect);
+      BOOST_ASSERT(querytoExecute.GetQueryType() != CPgsqlQuery::kNotYetDefined);
+      BOOST_ASSERT(querytoExecute.GetQueryType() == CPgsqlQuery::kSelect);
 
       database::common::adapters::CGenericAdapter genericAdapter;
       queryEntities(&genericAdapter, querytoExecute);
@@ -509,8 +514,8 @@ namespace pgsql {
    bool CPgsqlRequester::checkTableExists(const std::string & tableName)
    {
       //check that table Configuration exists
-      CQuery sCheckForTableExists;
-      sCheckForTableExists.SelectExists(CQuery().
+      CPgsqlQuery sCheckForTableExists;
+      sCheckForTableExists.SelectExists(CPgsqlQuery().
          Select().
          From(CPgsqlTablesTable::getTableName()).
          Where(CPgsqlTablesTable::getTableColumnName(), CQUERY_OP_ILIKE, tableName));
@@ -528,7 +533,7 @@ namespace pgsql {
    {
       if(checkTableExists(tableName))
       {
-         CQuery drop;
+         CPgsqlQuery drop;
          queryStatement(drop.DropTable(tableName));
          return !checkTableExists(tableName);
       }
@@ -540,7 +545,7 @@ namespace pgsql {
    {
       if (!checkTableExists(tableName))
       {
-         queryStatement(CQuery::CustomQuery(tableScript, CQuery::kCreate));
+         queryStatement(CPgsqlQuery::CustomQuery(tableScript, CPgsqlQuery::kCreate));
          return checkTableExists(tableName);
       }
       return true;
@@ -548,7 +553,7 @@ namespace pgsql {
 
    void CPgsqlRequester::createIndex(const std::string & tableName, const std::string & indexScript)
    {
-      queryStatement(CQuery::CustomQuery(indexScript, CQuery::kCreate));
+      queryStatement(CPgsqlQuery::CustomQuery(indexScript, CPgsqlQuery::kCreate));
    }
 
    void CPgsqlRequester::vacuum()
@@ -568,7 +573,7 @@ namespace pgsql {
       if (waitLoopCount >= maxLoopWait || m_bOneTransactionActive)
          YADOMS_LOG(warning) << "Fail to execute vacuum, one transaction is still active";
       else
-         queryStatement(CQuery().Vacuum());
+         queryStatement(CPgsqlQuery().Vacuum());
    }
 
    boost::shared_ptr<ITableCreationScriptProvider> CPgsqlRequester::getTableCreationScriptProvider()

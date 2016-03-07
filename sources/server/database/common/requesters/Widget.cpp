@@ -23,7 +23,7 @@ namespace database { namespace common { namespace requesters {
    // IWidgetRequester implementation
    int CWidget::addWidget(const entities::CWidget & newWidget)
    {
-      CQuery qInsert;
+      CQuery qInsert = m_databaseRequester->newQuery();
       if(newWidget.Id() != 0)
       {
          qInsert.InsertInto(CWidgetTable::getTableName(), CWidgetTable::getIdColumnName(), CWidgetTable::getIdPageColumnName(), CWidgetTable::getTypeColumnName(), CWidgetTable::getSizeXColumnName(), CWidgetTable::getSizeYColumnName(), CWidgetTable::getPositionXColumnName(), CWidgetTable::getPositionYColumnName(), CWidgetTable::getTitleColumnName(), CWidgetTable::getConfigurationColumnName()).
@@ -37,7 +37,7 @@ namespace database { namespace common { namespace requesters {
       if(m_databaseRequester->queryStatement(qInsert) <= 0)
          throw shared::exception::CEmptyResult("No lines affected");
 
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
       qSelect. Select(CWidgetTable::getIdColumnName()).
          From(CWidgetTable::getTableName()).
          Where(CWidgetTable::getIdPageColumnName(), CQUERY_OP_EQUAL, newWidget.IdPage()).
@@ -59,7 +59,7 @@ namespace database { namespace common { namespace requesters {
 
    boost::shared_ptr<entities::CWidget> CWidget::getWidget(int widgetId)
    {
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
       qSelect. Select().
          From(CWidgetTable::getTableName()).
          Where(CWidgetTable::getIdColumnName(), CQUERY_OP_EQUAL, widgetId);
@@ -75,7 +75,7 @@ namespace database { namespace common { namespace requesters {
 
    std::vector<boost::shared_ptr<entities::CWidget> > CWidget::getWidgets()
    {
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
       qSelect. Select().
          From(CWidgetTable::getTableName());
 
@@ -86,7 +86,7 @@ namespace database { namespace common { namespace requesters {
 
    std::vector<boost::shared_ptr<entities::CWidget> > CWidget::getWidgetsForPage(int pageId)
    {
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
       qSelect. Select().
          From(CWidgetTable::getTableName()).
          Where(CWidgetTable::getIdPageColumnName(), CQUERY_OP_EQUAL, pageId);
@@ -98,7 +98,7 @@ namespace database { namespace common { namespace requesters {
 
    void CWidget::updateWidgetConfiguration(int widgetId, const std::string& newConfiguration)
    {
-      CQuery qUpdate;
+      CQuery qUpdate = m_databaseRequester->newQuery();
       qUpdate. Update(CPluginTable::getTableName()).
          Set(CWidgetTable::getConfigurationColumnName(), newConfiguration).
          Where(CWidgetTable::getIdColumnName(), CQUERY_OP_EQUAL, widgetId);
@@ -109,7 +109,7 @@ namespace database { namespace common { namespace requesters {
 
    void CWidget::updateWidgetSize(int widgetId, int sizeX, int sizeY)
    {
-      CQuery qUpdate;
+      CQuery qUpdate = m_databaseRequester->newQuery();
       qUpdate. Update(CPluginTable::getTableName()).
          Set(CWidgetTable::getSizeXColumnName(), sizeX, CWidgetTable::getSizeYColumnName(), sizeY).
          Where(CWidgetTable::getIdColumnName(), CQUERY_OP_EQUAL, widgetId);
@@ -120,7 +120,7 @@ namespace database { namespace common { namespace requesters {
 
    void CWidget::updateWidgetPosition(int widgetId, int positionX, int positionY)
    {
-      CQuery qUpdate;
+      CQuery qUpdate = m_databaseRequester->newQuery();
       qUpdate. Update(CWidgetTable::getTableName()).
          Set(CWidgetTable::getPositionXColumnName(), positionX, CWidgetTable::getPositionYColumnName(), positionY).
          Where(CWidgetTable::getIdColumnName(), CQUERY_OP_EQUAL, widgetId);
@@ -131,14 +131,14 @@ namespace database { namespace common { namespace requesters {
 
    void CWidget::updateWidget(const entities::CWidget & widgetToUpdate, bool createIfNotExists)
    {
-      CQuery qUpdate;
+      CQuery qUpdate = m_databaseRequester->newQuery();
 
       //in all cases the Id must be filled
       if(!widgetToUpdate.Id.isDefined())
          throw CDatabaseException("Need an id to update");
 
       //search for the widget
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
       qSelect. Select().
          From(CWidgetTable::getTableName()).
          Where(CWidgetTable::getIdColumnName(), CQUERY_OP_EQUAL, widgetToUpdate.Id());
@@ -248,7 +248,7 @@ namespace database { namespace common { namespace requesters {
 
    void CWidget::removeWidget(int widgetId)
    {
-      CQuery qDelete;
+      CQuery qDelete = m_databaseRequester->newQuery();
       qDelete. DeleteFrom(CWidgetTable::getTableName()).
          Where(CWidgetTable::getIdColumnName(), CQUERY_OP_EQUAL, widgetId);
       if(m_databaseRequester->queryStatement(qDelete) <= 0)
@@ -257,12 +257,12 @@ namespace database { namespace common { namespace requesters {
 
    void CWidget::removeWidgetsInPage(int pageId)
    {
-      CQuery qSelect;
+      CQuery qSelect = m_databaseRequester->newQuery();
       qSelect. Select().
          From(CWidgetTable::getTableName()).
          Where(CWidgetTable::getIdPageColumnName(), CQUERY_OP_EQUAL, pageId);
 
-      CQuery qDelete;
+      CQuery qDelete = m_databaseRequester->newQuery();
       qDelete. DeleteFrom(CWidgetTable::getTableName()).
          Where(CWidgetTable::getIdPageColumnName(), CQUERY_OP_EQUAL, pageId);
 
@@ -271,7 +271,7 @@ namespace database { namespace common { namespace requesters {
 
    void CWidget::removeAllWidgets()
    {
-      CQuery qDelete;
+      CQuery qDelete = m_databaseRequester->newQuery();
       qDelete. DeleteFrom(CWidgetTable::getTableName());
       m_databaseRequester->queryStatement(qDelete);
    }

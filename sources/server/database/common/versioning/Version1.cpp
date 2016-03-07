@@ -139,7 +139,7 @@ namespace database { namespace common { namespace versioning {
             throw CVersionException("Failed to create RecipientFields table");
 
          //set the database version
-         CQuery qInsert;
+         CQuery qInsert = pRequester->newQuery();
          qInsert.InsertInto(CConfigurationTable::getTableName(), CConfigurationTable::getSectionColumnName(), CConfigurationTable::getNameColumnName(), CConfigurationTable::getValueColumnName(), CConfigurationTable::getDescriptionColumnName()).
             Values("Database", "Version", m_version.toString(), "Database version");
          pRequester->queryStatement(qInsert);              
