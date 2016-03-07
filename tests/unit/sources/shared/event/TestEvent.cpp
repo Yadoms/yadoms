@@ -358,7 +358,7 @@ BOOST_AUTO_TEST_CASE(SeveralEventWithDataFromSeveralThreads)
    shared::event::CEventHandler evtHandler;
    std::vector<CEventData> data;
    std::map<int, int> expectedDataIntValueCounters;
-   for (int i = 0; i < nbthreads; ++i)
+   for (unsigned int i = 0; i < nbthreads; ++i)
    {
       data.push_back(CEventData(42 + i, "Yadoms test"));
       expectedDataIntValueCounters[42 + i] = nbMessagesPerThread;
@@ -366,11 +366,11 @@ BOOST_AUTO_TEST_CASE(SeveralEventWithDataFromSeveralThreads)
 
    // nbthreads threads sending each nbMessagesPerThread events
    std::vector<boost::thread> threads;
-   for (int i = 0; i < nbthreads; ++i)
+   for (unsigned int i = 0; i < nbthreads; ++i)
       threads.push_back(boost::thread(postEventWithDataThreaded, &evtHandler, data[i], nbMessagesPerThread));
 
    // Note that received event are not ncessary in sent order
-   for (int i = 0; i < nbthreads * nbMessagesPerThread; ++i)
+   for (unsigned int i = 0; i < nbthreads * nbMessagesPerThread; ++i)
    {
       CEventData receivedData;
       BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::posix_time::milliseconds(100)), idEvent);
@@ -409,7 +409,7 @@ BOOST_AUTO_TEST_CASE(ShutdownWhenSending)
 
    // nbthreads threads sending each nbMessagesPerThread events
    std::vector<boost::thread> threads;
-   for (int i = 0; i < nbthreads; ++i)
+   for (unsigned int i = 0; i < nbthreads; ++i)
       threads.push_back(boost::thread(shutdownWhenSendingThreaded, evtHandler, nbMessagesPerThread));
 
    // Note that received event are not ncessary in sent order
