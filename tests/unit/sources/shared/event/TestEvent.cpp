@@ -86,26 +86,26 @@ BOOST_AUTO_TEST_CASE(EventFromSeparateThread)
    shared::event::CEventHandler evtHandler;
 
    {
-      boost::thread postEventThreaded(postEventThreaded, &evtHandler, 1);
-      postEventThreaded.join();
+      boost::thread postEventThread(postEventThreaded, &evtHandler, 1);
+      postEventThread.join();
       BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), idEvent);
    }
 
    {
-      boost::thread postEventThreaded(postEventThreaded, &evtHandler, 1);
-      postEventThreaded.join();
+      boost::thread postEventThread(postEventThreaded, &evtHandler, 1);
+      postEventThread.join();
       BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::posix_time::seconds(1)), idEvent);
    }
 
    {
-      boost::thread postEventThreaded(postEventThreaded, &evtHandler, 1);
-      postEventThreaded.join();
+      boost::thread postEventThread(postEventThreaded, &evtHandler, 1);
+      postEventThread.join();
       BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::posix_time::milliseconds(1)), idEvent);
    }
 
    {
-      boost::thread postEventThreaded(postEventThreaded, &evtHandler, 1);
-      postEventThreaded.join();
+      boost::thread postEventThread(postEventThreaded, &evtHandler, 1);
+      postEventThread.join();
       BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::pos_infin), idEvent);
    }
 
@@ -137,14 +137,14 @@ BOOST_AUTO_TEST_CASE(_100EventsFromSeparateThread)
 {
    shared::event::CEventHandler evtHandler;
 
-   boost::thread postEventThreaded(postEventThreaded, &evtHandler, 100);
+   boost::thread postEventThread(postEventThreaded, &evtHandler, 100);
 
    for (int i = 0; i < 100; ++i)
       BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::posix_time::seconds(1)), idEvent);
 
    BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::posix_time::milliseconds(1)), shared::event::kTimeout);
 
-   postEventThreaded.join();
+   postEventThread.join();
 }
 
 //--------------------------------------------------------------
