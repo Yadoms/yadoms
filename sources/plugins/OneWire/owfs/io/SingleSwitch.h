@@ -13,7 +13,7 @@ namespace owfs { namespace io {
       /// \brief	Constructor
       /// \param[in]	devicePath Device path
       //--------------------------------------------------------------
-      CSingleSwitch(const boost::filesystem::path& devicePath);
+      explicit CSingleSwitch(const boost::filesystem::path& devicePath);
 
       //--------------------------------------------------------------
       /// \brief	Destructor

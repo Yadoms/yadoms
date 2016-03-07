@@ -76,7 +76,7 @@ void CThermostat3::Init(boost::shared_ptr<yApi::IYPluginApi> context)
       details.set("type", pTypeThermostat3);
       details.set("subType", m_subType);
       details.set("unitCode", m_unitCode);
-      context->declareDevice(m_deviceName, m_subTypeManager->getModel(), details.serialize());
+      context->declareDevice(m_deviceName, m_subTypeManager->getModel(), details);
 
       m_subTypeManager->declare(context, m_deviceName);
       context->declareKeyword(m_deviceName, m_rssi);

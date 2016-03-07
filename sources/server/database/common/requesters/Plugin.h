@@ -15,7 +15,7 @@ namespace database { namespace common { namespace requesters {
          /// \Brief		   Constructor
          /// \param [in]	pDatabaseHandler: the database handler
          //--------------------------------------------------------------
-         CPlugin(boost::shared_ptr<IDatabaseRequester> databaseRequester);
+         explicit CPlugin(boost::shared_ptr<IDatabaseRequester> databaseRequester);
 
          //--------------------------------------------------------------
          /// \Brief		   Destructor

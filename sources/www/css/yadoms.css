@@ -2,7 +2,7 @@
 
 body {
     padding-bottom: 20px;
-    background: url('../img/background2.png');
+    background: rgb(234, 234, 234);
     -moz-background-size: 100% 100%; /* Gecko 1.9.2 (Firefox 3.6) */
     -o-background-size: 100% 100%; /* Opera 9.5 */
     -webkit-background-size: 100% 100%; /* Safari 3.0 */
@@ -260,6 +260,10 @@ body {
     -ms-resize: none;
     -o-resize: none;
     resize: none;
+}
+
+.tabPagePills > a {
+    border-radius: 0!important;
 }
 
 .tabPagePillsDropper {

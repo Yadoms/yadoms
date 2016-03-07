@@ -24,7 +24,7 @@ CAstronomy::CAstronomy(boost::shared_ptr<yApi::IYPluginApi> context, IWUConfigur
                                       );
 	   }
    }
-   catch (shared::exception::CException e)
+   catch (shared::exception::CException& e)
    {
 	   YADOMS_LOG(warning) << "Configuration or initialization error of Astronomy module :" << e.what() << std::endl;
    }
@@ -48,7 +48,7 @@ void CAstronomy::Request( boost::shared_ptr<yApi::IYPluginApi> context )
 	{
 	   m_data = m_webServer.SendGetRequest( m_URL.str() );
 	}
-	catch (shared::exception::CException e)
+   catch (shared::exception::CException& e)
 	{
       YADOMS_LOG(warning) << "Astronomy :" << e.what()  << std::endl;
 	}
@@ -80,7 +80,7 @@ void CAstronomy::Parse( boost::shared_ptr<yApi::IYPluginApi> context, const IWUC
 			context->historizeData(m_PluginName, KeywordList);
 		}
 	}
-	catch (shared::exception::CException e)
+   catch (shared::exception::CException& e)
 	{
       YADOMS_LOG(warning) << e.what() << std::endl;
 	}

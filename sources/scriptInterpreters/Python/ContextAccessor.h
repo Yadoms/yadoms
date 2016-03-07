@@ -2,8 +2,7 @@
 #include "IContextAccessor.h"
 #include <shared/script/yScriptApi/IYScriptApi.h>
 #include <shared/ThreadBase.h>
-#include <shared/DataContainer.h>
-#include "Messages.hpp"
+#include "Messages.h"
 
 
 //--------------------------------------------------------------
@@ -16,7 +15,7 @@ public:
    /// \brief	Constructor
    /// \param[in] context IYScriptApi context instance
    //--------------------------------------------------------------
-   CContextAccessor(boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi);
+   explicit CContextAccessor(boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi);
 
    //--------------------------------------------------------------
    /// \brief	Destructor
@@ -43,46 +42,40 @@ protected:
    /// \param[in] messageSize The message size
    /// \param[in] boost::interprocess::message_queue Message queue used to send answer
    //--------------------------------------------------------------
-   void processMessage(const char* message, size_t messageSize, boost::interprocess::message_queue& messageQueue);
+   void processMessage(const void* message, size_t messageSize, boost::interprocess::message_queue& messageQueue);
 
    //--------------------------------------------------------------
    /// \brief	Process messages
    /// \param[in] request Received requests
    /// \param[in] messageQueue Message Queue used for answer
    //--------------------------------------------------------------
-   void processGetKeywordId            (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
-   void processGetRecipientId          (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
-   void processReadKeyword             (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
-   void processWaitForNextAcquisition  (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
-   void processWaitForNextAcquisitions (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
-   void processWaitForEvent            (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
-   void processWriteKeyword            (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
-   void processSendNotification        (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
-   void processGetInfo                 (const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue);
+   void processGetKeywordId(const pbRequest::GetKeywordId& request, boost::interprocess::message_queue& messageQueue);
+   void processGetRecipientId(const pbRequest::GetRecipientId& request, boost::interprocess::message_queue& messageQueue);
+   void processReadKeyword(const pbRequest::ReadKeyword& request, boost::interprocess::message_queue& messageQueue);
+   void processWaitForNextAcquisition(const pbRequest::WaitForNextAcquisition& request, boost::interprocess::message_queue& messageQueue);
+   void processWaitForNextAcquisitions(const pbRequest::WaitForNextAcquisitions& request, boost::interprocess::message_queue& messageQueue);
+   void processWaitForEvent(const pbRequest::WaitForEvent& request, boost::interprocess::message_queue& messageQueue);
+   void processWriteKeyword(const pbRequest::WriteKeyword& request, boost::interprocess::message_queue& messageQueue);
+   void processSendNotification(const pbRequest::SendNotification& request, boost::interprocess::message_queue& messageQueue);
+   void processGetInfo(const pbRequest::GetInfo& request, boost::interprocess::message_queue& messageQueue);
 
    //--------------------------------------------------------------
    /// \brief	Send an answer
-   /// \param[in] answerId The answer message identifier
    /// \param[in] answer The answer
    /// \param[in] boost::interprocess::message_queue Message queue used to send answer
    //--------------------------------------------------------------
-   void sendAnswer(EAnswerIdentifier answerId, const shared::CDataContainer& answer, boost::interprocess::message_queue& messageQueue);
-
-   //--------------------------------------------------------------
-   /// \brief	   Wait that context is ready
-   //--------------------------------------------------------------
-   void waitForReady();
-
-   //--------------------------------------------------------------
-   /// \brief	   Set context as ready
-   //--------------------------------------------------------------
-   void setReady();
+   void sendAnswer(const pbAnswer::msg& answer, boost::interprocess::message_queue& messageQueue);
 
 private:
    //--------------------------------------------------------------
    /// \brief	Message queue max message number
    //--------------------------------------------------------------
    static const size_t m_maxMessages;
+
+   //-----------------------------------------------------
+   ///\brief               The message queue buffer, localy used but defined here to be allocated only once
+   //-----------------------------------------------------
+   unsigned char m_mqBuffer[m_messageQueueMessageSize];
 
    //--------------------------------------------------------------
    /// \brief	IYScriptApi context instance

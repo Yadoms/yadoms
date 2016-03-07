@@ -18,7 +18,7 @@ namespace xplrules {
       ///\brief Constructor of a protocol container
       ///\param [in] protocolIdentifier : the protocol identifier (i.e. "x10.basic")
       //------------------------------------
-      CProtocol(const std::string & protocolIdentifier)
+      explicit CProtocol(const std::string & protocolIdentifier)
          :m_protocolIdentifier(protocolIdentifier)
       {
       }
@@ -27,7 +27,7 @@ namespace xplrules {
       ///\brief Constructor of a protocol container
       ///\param [in] protocolIdentifier : the protocol identifier (i.e. "x10.basic")
       //------------------------------------
-      CProtocol(const xplcore::CXplMessageSchemaIdentifier & protocolIdentifier)
+      explicit CProtocol(const xplcore::CXplMessageSchemaIdentifier & protocolIdentifier)
          :m_protocolIdentifier(protocolIdentifier.toString())
       {
       }

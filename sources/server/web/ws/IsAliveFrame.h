@@ -13,7 +13,7 @@ namespace web { namespace ws {
       //-----------------------------
       ///\brief Constructor
       //-----------------------------
-      CIsAliveFrame();
+      explicit CIsAliveFrame();
 
       //-----------------------------
       ///\brief Destructor

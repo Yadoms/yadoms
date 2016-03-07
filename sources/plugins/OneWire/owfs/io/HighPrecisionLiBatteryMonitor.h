@@ -16,7 +16,7 @@ namespace owfs { namespace io {
       /// \brief	Constructor
       /// \param[in]	devicePath Device path
       //--------------------------------------------------------------
-      CHighPrecisionLiBatteryMonitor(const boost::filesystem::path& devicePath);
+      explicit CHighPrecisionLiBatteryMonitor(const boost::filesystem::path& devicePath);
 
       //--------------------------------------------------------------
       /// \brief	Destructor

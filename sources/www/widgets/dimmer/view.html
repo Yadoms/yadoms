@@ -1,20 +1,12 @@
 <script type="text/html" id="dimmer-template">
-   <link href="widgets/dimmer/widget.css" rel="stylesheet">
-   <table>
-      <tr>
-         <td>
-            <div class="dimmerWidgetValueArea" align="center">
-               <span class="dimmerWidgetData" data-bind="text: DisplayValue"></span>
-               &nbsp
-               <span class="dimmerWidgetData" data-bind="translatedText: unit"></span>
-            </div>
-         </td>
-         <td>
-            <div class="btn-group-vertical btn-toggle">
-               <button class="btn btn-lg btn-default" data-bind="event: {click: function() {commandClick( step() )}}"><span class="glyphicon glyphicon-plus"></span></button>
-               <button class="btn btn-lg btn-default" data-bind="event: {click: function() {commandClick( -step() )}}"><span class="glyphicon glyphicon-minus"></span></button>
-            </div>
-         </td>
-      </tr>
-   </table>
+   <div class="dimmer-widget">
+      <div class="dimmer-widget-buttons btn-group-vertical btn-toggle">
+         <button class="btn btn-default dimmer-widget-button widget-api-textfit" data-bind="event: {click: commandClickPlus}"><span class="glyphicon glyphicon-plus"></span></button>
+         <button class="btn btn-default dimmer-widget-button widget-api-textfit" data-bind="event: {click: commandClickMinus}"><span class="glyphicon glyphicon-minus"></span></button>
+      </div>
+      <div class="center-area">
+         <div class="dimmer-widget-value widget-api-textfit" style="height: auto" data-bind="text: data()"></div>
+      </div>
+      <div class="dimmer-widget-unit widget-api-textfit" data-bind="text: unit()"></div>
+   </div>
 </script>

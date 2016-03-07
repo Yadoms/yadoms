@@ -15,7 +15,7 @@ namespace xplrules {
       ///\brief Constructor
       ///\param [in] deviceIdentifier  The device identifier
       //------------------------------------
-      CDeviceContainer(const CDeviceIdentifier & deviceIdentifier);
+      explicit CDeviceContainer(const CDeviceIdentifier & deviceIdentifier);
 
       //------------------------------------
       ///\brief Destructor

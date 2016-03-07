@@ -14,7 +14,7 @@ public:
    /// \brief Constructor
    /// \param [in] keywordName   The keyword name
    //--------------------------------------------------------------
-   CSmsKeyword(const std::string & keywordName);
+   explicit CSmsKeyword(const std::string & keywordName);
 
    //--------------------------------------------------------------
    /// \brief Destructor

@@ -1,8 +1,10 @@
 # Gammu library Finder
-# This module defines
-#  GAMMU_FOUND, true if Gammu was found
-#  GAMMU_INCLUDE_DIRS, where to find gammu.h
-#  GAMMU_LIBRARIES, where to find libraries needed to build with Gammu
+# Inputs :
+#   - GAMMU_ROOT : Gammu root directory
+# Outputs : this module defines :
+#   - GAMMU_FOUND, true if Gammu was found
+#   - GAMMU_INCLUDE_DIRS, where to find gammu.h
+#   - GAMMU_LIBRARIES, where to find libraries needed to build with Gammu
 
 include (SelectLibraryConfigurations)
 
@@ -66,14 +68,14 @@ else(GAMMU_USE_PKGCONFIG AND CMAKE_COMPILER_IS_GNUCXX AND NOT CMAKE_COMPILER_IS_
    # Use GAMMU_ROOT defined in CMakeListsUserConfig.txt
    
    if(APPLE)
-      set(GAMMU_PKG_INCLUDE_DIRS ${GAMMU_ROOT}/include/gammu)
-      set(GAMMU_PKG_LIBRARY_DIRS  ${GAMMU_ROOT}/lib)
+      set(GAMMU_PKG_INCLUDE_DIRS ${GAMMU_ROOT}/build/include/gammu)
+      set(GAMMU_PKG_LIBRARY_DIRS  ${GAMMU_ROOT}/build/lib)
       set(GAMMU_PKG_LIBRARIES libGammu.dylib)
-   else(APPLE)
-      set(GAMMU_PKG_INCLUDE_DIRS ${GAMMU_ROOT}/include)
-      set(GAMMU_PKG_LIBRARY_DIRS  ${GAMMU_ROOT}/libgammu)
+   else()
+      set(GAMMU_PKG_INCLUDE_DIRS ${GAMMU_ROOT}/build/include)
+      set(GAMMU_PKG_LIBRARY_DIRS  ${GAMMU_ROOT}/build/libgammu)
       set(GAMMU_PKG_LIBRARIES libGammu.so)
-   endif(APPLE)
+   endif()
    
    find_library(GAMMU_LIBRARIES NAMES ${GAMMU_PKG_LIBRARIES} PATHS ${GAMMU_PKG_LIBRARY_DIRS} NO_DEFAULT_PATH)
    

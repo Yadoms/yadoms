@@ -43,7 +43,7 @@ void CHumidity::Init(boost::shared_ptr<yApi::IYPluginApi> context)
       details.set("type", pTypeHUM);
       details.set("subType", m_subType);
       details.set("id", m_id);
-      context->declareDevice(m_deviceName, m_deviceModel, details.serialize());
+      context->declareDevice(m_deviceName, m_deviceModel, details);
 
       context->declareKeyword(m_deviceName, m_humidity);
       context->declareKeyword(m_deviceName, m_batteryLevel);

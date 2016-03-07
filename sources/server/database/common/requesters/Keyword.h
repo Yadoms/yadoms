@@ -19,7 +19,7 @@ namespace database { namespace common { namespace requesters {
          /// \Brief		   Constructor
          /// \param [in]	pDatabaseHandler: the database handler
          //--------------------------------------------------------------
-         CKeyword(boost::shared_ptr<IDatabaseRequester> databaseRequester, boost::shared_ptr<CAcquisition> acquisitionRequester);
+         explicit CKeyword(boost::shared_ptr<IDatabaseRequester> databaseRequester, boost::shared_ptr<CAcquisition> acquisitionRequester);
 
          //--------------------------------------------------------------
          /// \Brief		   Destructor
@@ -32,7 +32,7 @@ namespace database { namespace common { namespace requesters {
          virtual void addKeyword(const entities::CKeyword& newKeyword);
          virtual boost::shared_ptr<entities::CKeyword> getKeyword(int deviceId, const std::string & keyword) const;
          virtual boost::shared_ptr<entities::CKeyword> getKeyword(int keywordId) const;
-         virtual std::vector<boost::shared_ptr<entities::CKeyword> > getKeywordIdFromFriendlyName(int deviceId, const std::string friendlyName) const;
+         virtual std::vector<boost::shared_ptr<entities::CKeyword> > getKeywordIdFromFriendlyName(int deviceId, const std::string & friendlyName) const;
          virtual std::vector<boost::shared_ptr<entities::CKeyword> > getKeywords(int deviceId) const;
          virtual std::vector<boost::shared_ptr<entities::CKeyword> > getAllKeywords() const;
          virtual std::vector<boost::shared_ptr<entities::CKeyword> > getDeviceKeywordsWithCapacity(int deviceId, const std::string & capacityName, const shared::plugin::yPluginApi::EKeywordAccessMode & accessMode) const;

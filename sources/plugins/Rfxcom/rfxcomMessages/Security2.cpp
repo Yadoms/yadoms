@@ -80,7 +80,7 @@ void CSecurity2::declare(boost::shared_ptr<yApi::IYPluginApi> context)
       details.set("subType", m_subType);
       details.set("id", m_subTypeManager->getId());
 
-      context->declareDevice(m_deviceName, m_subTypeManager->getModel(), details.serialize());
+      context->declareDevice(m_deviceName, m_subTypeManager->getModel(), details);
 
       context->declareKeyword(m_deviceName, m_batteryLevel);
       context->declareKeyword(m_deviceName, m_rssi);

@@ -49,7 +49,7 @@ CFan::CFan(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_
    :m_subType(0), m_id(0), m_lightCmd(false), m_light("light"), m_fan("fan")
 {
    // Should not be called (transmitter-only device)
-   throw shared::exception::CException("Constructing CFan object from received buffer is not possible, Cfan is transmitter-only device");
+   BOOST_ASSERT_MSG(false, "Constructing CFan object from received buffer is not possible, Cfan is transmitter-only device");
 }
 
 CFan::~CFan()
@@ -69,7 +69,7 @@ void CFan::Init(boost::shared_ptr<yApi::IYPluginApi> context)
       details.set("type", pTypeFan);
       details.set("subType", m_subType);
       details.set("id", m_id);
-      context->declareDevice(m_deviceName, m_deviceModel, details.serialize());
+      context->declareDevice(m_deviceName, m_deviceModel, details);
 
       context->declareKeyword(m_deviceName, m_light);
       context->declareKeyword(m_deviceName, m_fan);

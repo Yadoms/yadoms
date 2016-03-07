@@ -16,7 +16,7 @@ namespace web { namespace ws {
       ///\brief Constructor
       ///\param [in]    taskProgression     The task progression data
       //-----------------------------
-      CTaskUpdateNotificationFrame(boost::shared_ptr<task::CInstanceNotificationData> taskProgression);
+      explicit CTaskUpdateNotificationFrame(boost::shared_ptr<task::CInstanceNotificationData> taskProgression);
 
       //-----------------------------
       ///\brief Destructor

@@ -24,7 +24,8 @@ namespace rfxcomMessages
       /// \brief	                        Constructor
       /// \param[in] secondaryContact     Secondary contact
       //--------------------------------------------------------------
-      CSecurity1PowerCodeSensor(bool secondaryContact);
+      explicit CSecurity1PowerCodeSensor(bool secondaryContact);
+
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------

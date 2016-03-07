@@ -33,9 +33,8 @@ namespace xplcore
 
    CXplServiceTask::CXplServiceTask(Poco::Net::NetworkInterface & networkInterface , const std::string & vendorId, const std::string & deviceId, const std::string & instanceId,
       shared::event::CEventHandler * pHubFoundEventHandler, int hubFoundEventCode)
-      : Poco::Task(networkInterface.address().toString()), m_pHubFoundEventHandler(pHubFoundEventHandler), m_hubFoundEventCode(hubFoundEventCode)
+      : Poco::Task(networkInterface.address().toString()), m_pHubFoundEventHandler(pHubFoundEventHandler), m_hubFoundEventCode(hubFoundEventCode), m_source(CXplActor::createActor(vendorId, deviceId, instanceId))
    {
-      m_source = CXplActor::createActor(vendorId, deviceId, instanceId);
       initializeConnector(networkInterface);
    }
 

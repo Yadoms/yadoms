@@ -25,13 +25,13 @@ namespace common {
       /// \brief        Constructor
       /// \param value  A string used as value
       //
-      CQueryValue(const std::string & value, bool secure = true);
+      explicit CQueryValue(const std::string & value, bool secure = true);
 
       //
       /// \brief        Constructor
       /// \param value  A boolean used as value
       //
-      CQueryValue(const bool value) ;
+      explicit CQueryValue(const bool value) ;
 
       //
       /// \brief           Constructor
@@ -43,19 +43,19 @@ namespace common {
       /// \brief           Constructor
       /// \param anyValue  a posix time
       //
-      CQueryValue(const boost::posix_time::ptime & anyValue, bool secure = true);    
+      explicit CQueryValue(const boost::posix_time::ptime & anyValue, bool secure = true);
       
       //
       /// \brief           Constructor
       /// \param anyValue  a Poco::DateTime
       //
-      CQueryValue(const Poco::DateTime & anyValue, bool secure = true);
+      explicit CQueryValue(const Poco::DateTime & anyValue, bool secure = true);
 
       //
       /// \brief           Constructor
       /// \param anyValue  a Poco::Timestamp
       //
-      CQueryValue(const Poco::Timestamp & anyValue, bool secure = true);
+      explicit CQueryValue(const Poco::Timestamp & anyValue, bool secure = true);
 
       //
       /// \brief  Destructor

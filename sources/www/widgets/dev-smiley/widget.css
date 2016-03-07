@@ -1,15 +1,18 @@
-.smileyWidget {
-   /*We allow to these elements to be vertical aligned*/
-   display:inline-block;
-   vertical-align:middle;
-}
-
-.smileyWidget {
-    width: 95%;
+.smiley-widget-container {
+    height: 100%;
+    width: 100%;
     text-align: center;
-    margin: auto;
+	position: relative;
+    display: block;
 }
 
-.smileyWidget > span {
-   font-size: 7em;
+.smiley-widget-symbol {
+	vertical-align:middle;
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    padding: 5px;
 }

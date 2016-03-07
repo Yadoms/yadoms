@@ -70,7 +70,7 @@ void CLighting3::Init(boost::shared_ptr<yApi::IYPluginApi> context)
       details.set("subType", m_subType);
       details.set("system", m_system);
       details.set("channel", m_channel);
-      context->declareDevice(m_deviceName, m_deviceModel, details.serialize());
+      context->declareDevice(m_deviceName, m_deviceModel, details);
 
       context->declareKeyword(m_deviceName, m_state);
       context->declareKeyword(m_deviceName, m_rssi);

@@ -76,7 +76,7 @@ void CRemote::declare(boost::shared_ptr<yApi::IYPluginApi> context)
       details.set("type", pTypeRemote);
       details.set("subType", m_subType);
       details.set("id", m_id);
-      context->declareDevice(m_deviceName, m_subTypeManager->getModel(), details.serialize());
+      context->declareDevice(m_deviceName, m_subTypeManager->getModel(), details);
 
       context->declareKeyword(m_deviceName, m_rssi);
    }

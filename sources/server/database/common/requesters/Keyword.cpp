@@ -178,7 +178,7 @@ namespace database { namespace common { namespace requesters {
       return adapter.getResults().at(0);
    }
 
-   std::vector<boost::shared_ptr<entities::CKeyword> > CKeyword::getKeywordIdFromFriendlyName(int deviceId, const std::string friendlyName) const
+   std::vector<boost::shared_ptr<entities::CKeyword> > CKeyword::getKeywordIdFromFriendlyName(int deviceId, const std::string & friendlyName) const
    {
       CQuery qSelect = m_databaseRequester->newQuery();
       qSelect.Select().

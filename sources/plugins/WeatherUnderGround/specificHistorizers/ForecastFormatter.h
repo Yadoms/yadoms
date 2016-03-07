@@ -15,7 +15,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       ///\brief                     Constructor, from individual parameters
       ///\param[in] Period          The period time between messages
       //-----------------------------------------------------
-      CForecastFormatter( const weatherunderground::helper::EPeriod & Period );
+      explicit CForecastFormatter( const weatherunderground::helper::EPeriod & Period );
 
       //-----------------------------------------------------
       ///\brief                      Add a new unit to be send to the widget

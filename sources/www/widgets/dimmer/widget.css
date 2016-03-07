@@ -1,16 +1,55 @@
-.dimmerWidgetText {
-   display:table-cell;
+.dimmer-widget {
+    height: 100%;
+    width: 100%;
+    text-align: center;
+    display: block;
+    position: relative;
 }
 
-.dimmerWidgetData {
-    font-size : 3em;
-	text-align: center;
-	font-weight: bold;
+.dimmer-widget-buttons {
+    vertical-align:middle;
+    display: inline-block;
+    float: left;
+    width: 20%;
+
 }
 
-.dimmerWidgetValueArea {
-	width:150px;
-	height:150px;
-    display:table-cell;
-	vertical-align:middle;	
+.dimmer-widget-button {
+    height: 50%;
+}
+
+.dimmer-widget-value {
+
+}
+
+.dimmer-widget-unit {
+	vertical-align:top;
+    display: inline-block;
+    float: left;
+    width: 20%;
+}
+
+
+.dimmer-widget-clear {
+	clear: both;
+	height: 0;
+}
+
+.center-area {
+    /* let it fill the whole container */
+    float: left;
+    width: 60%;
+    height: 100%;
+  }
+
+.center-area:before {
+content: '';
+display: inline-block;
+vertical-align: middle;
+height: 100%;
+}
+
+.dimmer-widget-value {
+display: inline-block;
+vertical-align: middle;
 }

@@ -30,7 +30,7 @@ namespace database { namespace common {
       /// \Brief		   Constructor
       /// \param [in]	databaseRequester: The database engine
       //--------------------------------------------------------------
-      CDataProvider(boost::shared_ptr<database::IDatabaseRequester> databaseRequester);
+      explicit CDataProvider(boost::shared_ptr<database::IDatabaseRequester> databaseRequester);
       
       //--------------------------------------------------------------
       /// \Brief		   Destructor

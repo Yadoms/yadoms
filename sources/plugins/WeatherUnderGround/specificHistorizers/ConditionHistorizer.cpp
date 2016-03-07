@@ -76,7 +76,7 @@ void CConditionHistorizer::AddUnit(
       return CDataContainer();
    }
 	
-void CConditionHistorizer::SetCityName ( const std::string CityName )
+void CConditionHistorizer::SetCityName ( const std::string& CityName )
 {
    m_content->SetCityName ( CityName );
 }

@@ -14,7 +14,7 @@ namespace shared { namespace exception
       //--------------------------------------------------------------
       /// \brief	                        Constructor
       //--------------------------------------------------------------
-      CInvalidParameter(const std::string& parameter)
+      explicit CInvalidParameter(const std::string& parameter)
          :CException(std::string("Invalid parameter " + parameter))
       {
       }

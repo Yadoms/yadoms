@@ -19,7 +19,7 @@ public:
    /// \brief	    Constructor
    /// \param[in] deviceName    The device name
    //--------------------------------------------------------------
-   CFakeSensor(const std::string& deviceName);
+   explicit CFakeSensor(const std::string& deviceName);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor

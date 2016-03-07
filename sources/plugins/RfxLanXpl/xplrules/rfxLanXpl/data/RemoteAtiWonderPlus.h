@@ -95,7 +95,7 @@ namespace xplrules { namespace rfxLanXpl { namespace data {
       ///\brief                     Constructor
       ///\param[in] keywordName     Yadoms keyword name
       //-----------------------------------------------------
-      CRemoteAtiWonderPlus(const std::string& keywordName);
+      explicit CRemoteAtiWonderPlus(const std::string& keywordName);
 
       //-----------------------------------------------------
       ///\brief                     Destructor

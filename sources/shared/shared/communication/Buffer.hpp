@@ -18,7 +18,7 @@ namespace shared { namespace communication {
       /// \brief	                     Empty buffer constructor
       /// \param[in] size              Buffer size
       //--------------------------------------------------------------
-      CBuffer(std::size_t size) :
+      explicit CBuffer(std::size_t size) :
          m_buffer(size)
       {
       }

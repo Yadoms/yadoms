@@ -11,7 +11,7 @@ namespace dataAccessLayer {
       /// \brief                          Constructor
       /// \param [in] deviceRequester     The device requester
       //--------------------------------------------------------------
-      CDeviceManager(boost::shared_ptr<database::IDeviceRequester> deviceRequester);
+      explicit CDeviceManager(boost::shared_ptr<database::IDeviceRequester> deviceRequester);
    
       //--------------------------------------------------------------
       /// \brief       Destructor

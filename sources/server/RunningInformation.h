@@ -12,7 +12,7 @@ public:
    /// \brief		      Constructor
    /// \param [in] path The executable path
    //-----------------------------------------------------------------------------
-   CRunningInformation(const std::string & path);
+   explicit CRunningInformation(const std::string & path);
 
    //-----------------------------------------------------------------------------
    /// \brief		                     Destructor

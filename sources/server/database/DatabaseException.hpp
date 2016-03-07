@@ -13,7 +13,7 @@ namespace database {
       //--------------------------------------------------------------
       /// \brief	                        Constructor
       //--------------------------------------------------------------
-      CDatabaseException(const std::string & errMsg)
+      explicit CDatabaseException(const std::string & errMsg)
           :CException(std::string(errMsg))
       {
       }

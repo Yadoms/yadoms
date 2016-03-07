@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="description" content="Yet Another DOMotic System">
     <meta name="author" content="yadoms team">
     <link rel="apple-touch-icon" sizes="57x57" href="img/favicon/apple-icon-57x57.png">
@@ -203,7 +203,7 @@
            numberOfColumns: 12,
            gridWidth : 100,
            gridMargin : 5
-       };
+        };
 
 
         /**
@@ -288,9 +288,6 @@
                              .fail(function (error) {
                                 notifyError($.t("objects.ConfigurationManager.errorDuringGettingConfiguration", { section: ConfigurationManager.items.installSection, key: ConfigurationManager.items.install.firstStart }), error);
                              });
-
-
-
                           })
                           .fail(function (error) {
                              notifyError($.t("objects.ConfigurationManager.errorDuringGettingConfiguration", { section: ConfigurationManager.items.systemSection, key: ConfigurationManager.items.system.basicAuthentication }), error);

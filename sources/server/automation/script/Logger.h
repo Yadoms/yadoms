@@ -13,7 +13,7 @@ namespace automation { namespace script
       ///\brief               Constructor
       ///\param[in] scriptPath The script path where to log in
       //-----------------------------------------------------
-      CLogger(const boost::filesystem::path& scriptPath);
+      explicit CLogger(const boost::filesystem::path& scriptPath);
 
       //-----------------------------------------------------
       ///\brief               Destructor

@@ -16,7 +16,7 @@ namespace notification { namespace basic {
       ///\brief Constructor
       ///\param [in] obj   The notification object
       //-----------------------------
-      CNotification(boost::shared_ptr<T> obj)
+      explicit CNotification(boost::shared_ptr<T> obj)
          :m_obj(obj)
       {
       }

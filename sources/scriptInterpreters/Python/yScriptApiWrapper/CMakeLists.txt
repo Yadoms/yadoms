@@ -13,7 +13,7 @@ set(PYTHON_WRAPPER_SOURCES
    
 	swigpyrun.h
      
-   ../Messages.hpp
+   ../Messages.h
    PythonLibInclude.h
    yScriptApiInstance.h
    yScriptApiInstance.cpp
@@ -22,6 +22,7 @@ set(PYTHON_WRAPPER_SOURCES
    
    yScriptApiDoc.json
 )
+  
 
 #########################################
 ## Active to wrap C++ code
@@ -68,9 +69,8 @@ endif()
 ## even if some variables are empty
 #########################################
 SCRIPT_API_WRAPPER_SOURCES(python ${PYTHON_WRAPPER_SOURCES})
-SCRIPT_API_WRAPPER_INCLDIR(${PYTHON_WRAPPER_INCLDIR})
-SCRIPT_API_WRAPPER_LINK(${PYTHON_WRAPPER_LINK})
-
+SCRIPT_API_WRAPPER_INCLDIR(${PYTHON_WRAPPER_INCLDIR} ${PROTOBUF_INCLUDE_DIRS} ${messages_GENERATED_DIR})
+SCRIPT_API_WRAPPER_LINK(${PYTHON_WRAPPER_LINK} messages)
 
 #########################################
 ## Add pre-build step to generate swigpyrun.h file

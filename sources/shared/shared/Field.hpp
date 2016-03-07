@@ -23,7 +23,7 @@ namespace shared {
       ///\brief Constructor. With this signature the field is not yet defined
       ///\param [in] value the field value
       //-----------------------------
-      CField(const T & value)
+      explicit CField(const T & value)
          :m_defined(false), m_value(value)
       {
       }

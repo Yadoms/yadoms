@@ -18,7 +18,7 @@ namespace web { namespace poco {
        * Ctor
        * @param m_requestHandler : HTTP handler to encapsulate
        */
-      CHttpRequestHandlerContainer(boost::shared_ptr<Poco::Net::HTTPRequestHandler> & m_requestHandler);
+      explicit CHttpRequestHandlerContainer(boost::shared_ptr<Poco::Net::HTTPRequestHandler> & m_requestHandler);
 
       /**
        * Dtor

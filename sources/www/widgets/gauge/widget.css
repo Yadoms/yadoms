@@ -1,14 +1,24 @@
-.widget-gauge-main {
-    width: 193px; 
-    height: 100px; 
-    float: left;
+.widget-gauge .mainDiv {
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    margin: auto;
     overflow: hidden;
-    display: table;
+}
+
+.widget-gauge .innerDiv {
+    width: 100%;
+    height: 100%;
+    text-align: center;
     margin: auto;
 }
 
-.widget-gauge-round-border {
-    width: 193px; 
-    height: 5px; 
-    float: left    
+.widget-gauge .unit {
+    color: silver;
+    text-align: center;
+}
+
+.widget-gauge .value {
+    color: black;
+    text-align: center;
 }

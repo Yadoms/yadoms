@@ -11,7 +11,7 @@ namespace dataAccessLayer {
       /// \brief                          Constructor
       /// \param [in] requester           The event logger requester
       //--------------------------------------------------------------
-      CEventLogger(boost::shared_ptr<database::IEventLoggerRequester> requester);
+      explicit CEventLogger(boost::shared_ptr<database::IEventLoggerRequester> requester);
    
       //--------------------------------------------------------------
       /// \brief       Destructor

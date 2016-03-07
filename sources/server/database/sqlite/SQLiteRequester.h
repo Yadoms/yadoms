@@ -13,7 +13,7 @@ namespace sqlite {
    class CSQLiteRequester : public IDatabaseRequester
    {
    public:
-      CSQLiteRequester(const std::string &dbFile);
+      explicit CSQLiteRequester(const std::string &dbFile);
       virtual ~CSQLiteRequester();
 
       // IDatabaseEngine implementation

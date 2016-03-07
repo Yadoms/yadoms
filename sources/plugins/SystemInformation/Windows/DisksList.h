@@ -11,7 +11,7 @@ public:
    /// \brief	    Constructor
    /// \param[in] deviceId    The device ID
    //--------------------------------------------------------------
-   CDisksList();
+   explicit CDisksList();
 
    //--------------------------------------------------------------
    /// \brief	    Destructor

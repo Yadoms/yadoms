@@ -37,7 +37,7 @@ namespace xplrules { namespace rfxLanXpl { namespace data {
       ///\brief                     Constructor
       ///\param[in] keywordName     Yadoms keyword name
       //-----------------------------------------------------
-      CMertickCommand(const std::string& keywordName);
+      explicit CMertickCommand(const std::string& keywordName);
 
       //-----------------------------------------------------
       ///\brief                     Destructor

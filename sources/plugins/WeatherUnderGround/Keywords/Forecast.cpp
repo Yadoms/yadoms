@@ -84,7 +84,7 @@ void CForecast::ClearAllPeriods( void )
    m_forecast->ClearAllPeriods();
 }
 
-void CForecast::SetCityName ( const std::string CityName )
+void CForecast::SetCityName ( const std::string& CityName )
 {
    m_forecast->SetCityName ( CityName );
 }
