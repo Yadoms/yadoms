@@ -1114,7 +1114,8 @@
 			"connecting": "Connexion en cours...",
          "initializing": "Initialisation RFXCom...",
          "connectionLost": "Connexion perdue",
-			"updateConfiguration": "Mise à jour de la configuration..."
+			"updateConfiguration": "Mise à jour de la configuration...",
+         "failToConfigure": "Impossible de configurer le RFXCom, des protocoles incompatibles ont propablement été sélectionnés. Voir le manuel du RFXCom."
 		}
 	}
 }

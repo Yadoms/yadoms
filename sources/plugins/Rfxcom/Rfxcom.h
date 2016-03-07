@@ -172,16 +172,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	The state machine
    //--------------------------------------------------------------
-   enum EStateMachine
-   {
-      kNotInitialized = 0,    // RFXCom not initialized
-      kResettingRfxcom,       // Resetting RFXCom is in progress
-      kGettingRfxcomStatus,   // Getting the current RFXCom status (active protocols, etc...)
-      kSettingRfxcomMode,     // Update the RFXCom mode (active protocols, etc...)
-      kStartReceiver,         // Start RFXtrx receiver (new command from SDK v7.00)
-      kRfxcomIsRunning        // RFXCom is fully initialized, and is running
-   };
-   mutable EStateMachine m_currentState;
+   bool m_configurationUpdated;
 };
 
 
