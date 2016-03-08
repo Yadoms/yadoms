@@ -136,7 +136,7 @@ namespace web { namespace rest { namespace service {
          if(parameters.size()>3)
          {
             shared::plugin::yPluginApi::EKeywordAccessMode cam(parameters[2]);
-            shared::plugin::yPluginApi::EKeywordDataType typ = parameters[3];
+            shared::plugin::yPluginApi::EKeywordDataType typ(parameters[3]);
 
             //run query
             std::vector< boost::shared_ptr<database::entities::CDevice> > result = m_dataProvider->getDeviceRequester()->getDeviceWithCapacityType(cam, typ);

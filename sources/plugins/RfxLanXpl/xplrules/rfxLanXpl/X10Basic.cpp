@@ -145,7 +145,7 @@ namespace xplrules { namespace rfxLanXpl {
       if (msg.getBody().find(m_keywordProtocol) != msg.getBody().end())
          protocol = msg.getBodyValue(m_keywordProtocol);
 
-      ECommands command = msg.getBodyValue(m_keywordCommand);
+      ECommands command(msg.getBodyValue(m_keywordCommand));
 
       switch (protocol)
       {
@@ -279,7 +279,7 @@ namespace xplrules { namespace rfxLanXpl {
          case EProtocol::kHarrisonValue:
          {
             shared::plugin::yPluginApi::historization::CCurtain curtainCommand(m_keywordCommand);
-            curtainCommand.set(commandData->getBody());
+            curtainCommand.set(shared::plugin::yPluginApi::historization::ECurtainCommand(commandData->getBody()));
 
             newMessage->addToBody(m_keywordProtocol, EProtocol::kHarrison.toString());
             switch (curtainCommand.get())
