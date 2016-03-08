@@ -24,8 +24,8 @@ namespace yApi = shared::plugin::yPluginApi;
 class CHistorizableMock : public shared::plugin::yPluginApi::historization::IHistorizable
 {
 public:
-   CHistorizableMock() : m_keyword(std::string()), m_capacity(std::string(), std::string(), shared::plugin::yPluginApi::EKeywordDataType::kNoDataValue),
-      m_accessMode(shared::plugin::yPluginApi::EKeywordAccessMode::kNoAccessValue), m_measure_type(shared::plugin::yPluginApi::historization::EMeasureType::kAbsoluteValue){}
+   CHistorizableMock() : m_keyword(std::string()), m_capacity(std::string(), std::string(), shared::plugin::yPluginApi::EKeywordDataType::kNoData),
+      m_accessMode(shared::plugin::yPluginApi::EKeywordAccessMode::kNoAccess), m_measure_type(shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute){}
    virtual ~CHistorizableMock(){}
 
    // IHistorizable implementation
