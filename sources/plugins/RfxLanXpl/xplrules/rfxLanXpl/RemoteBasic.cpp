@@ -80,28 +80,28 @@ namespace xplrules { namespace rfxLanXpl {
       if (boost::istarts_with(fullDevice, ERemoteType::kPC.toString()))
       {
          boost::shared_ptr< data::CRemotePC > remote(new data::CRemotePC("pcremote"));
-         data::ERemotePCCodes code = boost::lexical_cast<int>(msg.getBodyValue(m_keywordKeys));
+         data::ERemotePCCodes code(boost::lexical_cast<int>(msg.getBodyValue(m_keywordKeys)));
          remote->set(code);
          data.push_back(remote);
       }
       else if (boost::istarts_with(fullDevice, ERemoteType::kMedion.toString()))
       {
          boost::shared_ptr< data::CRemoteMedion > remote(new data::CRemoteMedion("medionremote"));
-         data::ERemoteMedionCodes code = boost::lexical_cast<int>(msg.getBodyValue(m_keywordKeys));
+         data::ERemoteMedionCodes code(boost::lexical_cast<int>(msg.getBodyValue(m_keywordKeys)));
          remote->set(code);
          data.push_back(remote);
       }
       else if (boost::istarts_with(fullDevice, ERemoteType::kAtiPlus.toString()))
       {
          boost::shared_ptr< data::CRemoteAtiWonderPlus > remote(new data::CRemoteAtiWonderPlus("atiplusremote"));
-         data::ERemoteAtiWonderPlusCodes code = boost::lexical_cast<int>(msg.getBodyValue(m_keywordKeys));
+         data::ERemoteAtiWonderPlusCodes code(boost::lexical_cast<int>(msg.getBodyValue(m_keywordKeys)));
          remote->set(code);
          data.push_back(remote);
       }
       else if (boost::istarts_with(fullDevice, ERemoteType::kAti.toString()))
       {
          boost::shared_ptr< data::CRemoteAtiWonder > remote(new data::CRemoteAtiWonder("atiremote"));
-         data::ERemoteAtiWonderCodes code = boost::lexical_cast<int>(msg.getBodyValue(m_keywordKeys));
+         data::ERemoteAtiWonderCodes code(boost::lexical_cast<int>(msg.getBodyValue(m_keywordKeys)));
          remote->set(code);
          data.push_back(remote);
       }
@@ -143,14 +143,12 @@ namespace xplrules { namespace rfxLanXpl {
       int code = 0;
       if (boost::istarts_with(device, ERemoteType::kPC.toString()))
       {
-         data::CRemotePC remote("pcremote");
-         remote.set(commandData->getBody());
+         data::CRemotePC remote(commandData->getBody());
          code = remote.get().toInteger();
       }
       else if (boost::istarts_with(device, ERemoteType::kMedion.toString()))
       {
-         data::CRemoteMedion remote("medionremote");
-         remote.set(commandData->getBody());
+         data::CRemoteMedion remote(commandData->getBody());
          code = remote.get().toInteger();
       }
       else if (boost::istarts_with(device, ERemoteType::kAtiPlus.toString()))
@@ -164,8 +162,7 @@ namespace xplrules { namespace rfxLanXpl {
       }
       else if (boost::istarts_with(device, ERemoteType::kAti.toString()))
       {
-         data::CRemoteAtiWonder remote("atiremote");
-         remote.set(commandData->getBody());
+         data::CRemoteAtiWonder remote(commandData->getBody());
          code = remote.get().toInteger();
       }
       else

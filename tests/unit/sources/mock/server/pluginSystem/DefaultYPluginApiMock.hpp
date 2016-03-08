@@ -15,8 +15,9 @@ public:
    virtual ~CDefaultYPluginApiMock() {}
    // IYPluginApi implementation
    virtual shared::event::CEventHandler & getEventHandler() { return m_defaultEventHandler; }
+   virtual void setPluginState(const shared::plugin::yPluginApi::historization::EPluginState& state, const std::string & customMessageId = std::string()) { }
    virtual bool deviceExists(const std::string& device) const { return m_devices.find(device) != m_devices.end(); }
-   virtual const shared::CDataContainer getDeviceDetails(const std::string& device) const { return m_devices.find(device)->second.m_details; }
+   virtual shared::CDataContainer getDeviceDetails(const std::string& device) const { return m_devices.find(device)->second.m_details; }
    virtual void declareDevice(const std::string& device, const std::string& model, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer)
    {
       Device dev = { model, details }; m_devices[device] = dev;
@@ -45,7 +46,6 @@ public:
    virtual const shared::plugin::information::IInformation& getInformation() const { return m_defaultInformation; }
    virtual const boost::filesystem::path getPluginPath() const { return boost::filesystem::initial_path<boost::filesystem::path>(); }
    virtual shared::CDataContainer getConfiguration() const { return m_defaultConfiguration; }
-   virtual void recordPluginEvent(PluginEventSeverity severity, const std::string & message) {}
    // [END] IYPluginApi implementation
 
    const std::map<std::string, Device>& getDevices() const { return m_devices; }

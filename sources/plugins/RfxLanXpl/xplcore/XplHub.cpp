@@ -160,7 +160,7 @@ namespace xplcore
                catch (std::exception & ex)
                {
                   //it's a new peripheral, so we add it to the list
-                  YADOMS_LOG(error) << "Impossible d'ajouter le périphérique : " << ex.what();
+                  YADOMS_LOG(error) << "Fail to add peripheral : " << ex.what();
 
                }
             }

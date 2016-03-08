@@ -154,7 +154,7 @@ std::string CYScriptApiImplementation::waitForNextAcquisition(int keywordId, con
    return answer.waitfornextacquisition().acquisition();
 }
 
-std::pair<int, std::string> CYScriptApiImplementation::waitForNextAcquisitions(const std::vector<int> keywordIdList, const std::string& timeout) const
+std::pair<int, std::string> CYScriptApiImplementation::waitForNextAcquisitions(const std::vector<int> & keywordIdList, const std::string& timeout) const
 {
    pbRequest::msg req;
    pbRequest::WaitForNextAcquisitions* request = req.mutable_waitfornextacquisitions();
@@ -176,7 +176,7 @@ std::pair<int, std::string> CYScriptApiImplementation::waitForNextAcquisitions(c
    return std::pair<int, std::string>(answer.waitfornextacquisitions().keywordid(), answer.waitfornextacquisitions().has_acquisition() ? answer.waitfornextacquisitions().acquisition() : std::string());
 }
 
-shared::script::yScriptApi::CWaitForEventResult CYScriptApiImplementation::waitForEvent(const std::vector<int> keywordIdList, bool receiveDateTimeEvent, const std::string& timeout) const
+shared::script::yScriptApi::CWaitForEventResult CYScriptApiImplementation::waitForEvent(const std::vector<int> & keywordIdList, bool receiveDateTimeEvent, const std::string& timeout) const
 {
    pbRequest::msg req;
    pbRequest::WaitForEvent* request = req.mutable_waitforevent();

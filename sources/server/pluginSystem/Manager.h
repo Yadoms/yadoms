@@ -142,10 +142,18 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief           Get the state of a particular instance of plugin
       /// \param [in] id   Instance Id
+      /// \return          The instance state
+      /// \throw           CInvalidParameter if id is unknown
+      //--------------------------------------------------------------
+      shared::plugin::yPluginApi::historization::EPluginState getInstanceState(int id) const;
+
+      //--------------------------------------------------------------
+      /// \brief           Get the state of a particular instance of plugin (with message Id if any)
+      /// \param [in] id   Instance Id
       /// \return          The instance state data
       /// \throw           CInvalidParameter if id is unknown
       //--------------------------------------------------------------
-      shared::CDataContainer getInstanceState(int id) const;
+      shared::CDataContainer getInstanceFullState(int id) const;
 
 
       //--------------------------------------------------------------

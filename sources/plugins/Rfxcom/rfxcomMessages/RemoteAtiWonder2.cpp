@@ -43,8 +43,9 @@ void CRemoteAtiWonder2::set(const std::string& yadomsCommand)
 
 void CRemoteAtiWonder2::setFromProtocolState(const RBUF& remoteRbuf)
 {
-   m_keywordCmnd.set(remoteRbuf.REMOTE.cmnd);
-   m_keywordCmndtype.set(remoteRbuf.REMOTE.cmndtype);
+   
+   m_keywordCmnd.set(specificHistorizers::ERemoteAtiWonder2Codes(remoteRbuf.REMOTE.cmnd));
+   m_keywordCmndtype.set(specificHistorizers::ERemoteAtiWonder2TypesCodes(remoteRbuf.REMOTE.cmndtype));
 }
 
 void CRemoteAtiWonder2::toProtocolState(RBUF& remoteRbuf) const

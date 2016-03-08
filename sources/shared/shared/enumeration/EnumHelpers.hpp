@@ -482,9 +482,9 @@ CCurtain::ECommand::ECommand()
 		DECLARE_ENUM_STATIC_VALUES(_enumName, _seq)						    																\
 		ENUM_CLASSNAME(_enumName)();																										\
 		ENUM_CLASSNAME(_enumName)(const ENUM_CLASSNAME(_enumName) & valueTocopy);															\
-		ENUM_CLASSNAME(_enumName)(const std::string & valueAsString);	    																\
-		ENUM_CLASSNAME(_enumName)(const char * valueAsString);	    																		\
-		ENUM_CLASSNAME(_enumName)(const _type valueAsInt);	    																			\
+		explicit ENUM_CLASSNAME(_enumName)(const std::string & valueAsString);	    																\
+		explicit ENUM_CLASSNAME(_enumName)(const char * valueAsString);	    																		\
+		explicit ENUM_CLASSNAME(_enumName)(const _type valueAsInt);	    																			\
 		virtual ~ENUM_CLASSNAME(_enumName)();																								\
 		operator _type() const;																												\
 		operator std::string() const;																										\
@@ -503,7 +503,7 @@ CCurtain::ECommand::ECommand()
 		static ENUM_CLASSNAME(_enumName) parse(const std::string & val);																	\
 		static bool isDefined(const std::string & stringValue);																				\
 		static bool isDefined(const int intValue);																							\
-      static std::string toAllString(const std::string separator); \
+      static std::string toAllString(const std::string & separator); \
 	private:																									                            \
 		static std::string m_name;																											\
 		_type   m_value;																					                                \
@@ -696,7 +696,7 @@ CCurtain::ECommand::ECommand()
    _fullClassifiedEnumName::operator _type() const { return m_value; }                                                                          \
    const int _fullClassifiedEnumName::toInteger() const { return m_value; }                                                                     \
    _fullClassifiedEnumName::operator std::string() const { return toString(); }                                                                 \
-   _fullClassifiedEnumName const _fullClassifiedEnumName::operator() () const { return m_value; }						                        \
+   _fullClassifiedEnumName const _fullClassifiedEnumName::operator() () const { return _fullClassifiedEnumName(m_value); }				            \
    _fullClassifiedEnumName & _fullClassifiedEnumName::operator=(_type const& obj)                                                               \
       {                                                                                                                                         \
       m_value = obj;                                                                                                                            \
@@ -771,7 +771,7 @@ CCurtain::ECommand::ECommand()
         ENUM_DECLARE_LIST_ALL_STRINGS_IMPL(allStrings, _seq)                                                                                    \
 		return allStrings;																														\
 	}																																			\
-   std::string _fullClassifiedEnumName::toAllString(const std::string separator)                            \
+   std::string _fullClassifiedEnumName::toAllString(const std::string & separator)                            \
    {                                                                                                        \
       std::string result;                                                                                   \
       ENUM_DECLARE_LIST_TO_ALL_STRINGS_IMPL(separator, _seq)                                                \

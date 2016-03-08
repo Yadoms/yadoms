@@ -353,8 +353,9 @@ void CManager::signalEvent(const CManagerEvent& event)
             // Don't restart if event occurs when instance was stopping
             if (!event.getStopping())
             {
-               // Still safe, try to restart it
-               startInstance(event.getInstanceId());
+               // Still safe, try to restart it (only if it was a plugin crash. If it's a plugin error, user have to restart plugin manually)
+               if (getInstanceState(event.getInstanceId()) != shared::plugin::yPluginApi::historization::EPluginState::kError)
+                  startInstance(event.getInstanceId());
             }
          }
          else
@@ -497,15 +498,54 @@ bool CManager::isInstanceRunning(int id) const
    return m_runningInstances.find(id) != m_runningInstances.end();
 }
 
-shared::CDataContainer CManager::getInstanceState(int id) const
+shared::CDataContainer CManager::getInstanceFullState(int id) const
 {
    if (!isInstanceRunning(id))
    {
-      shared::CDataContainer defaultState;
-      defaultState.set("state", "Stopped");
-      return defaultState;
+      // Instance is not running, so can be in error or stopped state
+      boost::shared_ptr<database::entities::CDevice> device;
+      try
+      {
+         // First find the pluginState device associated with the plugin
+         device = m_dataProvider->getDeviceRequester()->getDevice(id, "pluginState");
+      }
+      catch (shared::exception::CEmptyResult&)
+      {
+         // Device doesn't exist, probably not supported by plugin. Plugin is then considered as stopped.
+         shared::CDataContainer defaultState;
+         defaultState.set("state", shared::plugin::yPluginApi::historization::EPluginState::kStopped);
+         return defaultState;
+      }
+
+      try
+      {
+         boost::shared_ptr<database::entities::CKeyword> stateKw = m_dataProvider->getKeywordRequester()->getKeyword(device->Id, "state");
+         shared::plugin::yPluginApi::historization::EPluginState state(m_dataProvider->getAcquisitionRequester()->getKeywordLastData(stateKw->Id)->Value());
+         if (state == shared::plugin::yPluginApi::historization::EPluginState::kError)
+         {
+            // In error state
+            boost::shared_ptr<database::entities::CKeyword> customMessageIdKw = m_dataProvider->getKeywordRequester()->getKeyword(device->Id, "customMessageId");
+            shared::CDataContainer defaultState;
+            defaultState.set("state", state);
+            defaultState.set("messageId", m_dataProvider->getAcquisitionRequester()->getKeywordLastData(customMessageIdKw->Id)->Value());
+            return defaultState;
+         }
+
+         // Normaly stopped
+         shared::CDataContainer defaultState;
+         defaultState.set("state", shared::plugin::yPluginApi::historization::EPluginState::kStopped);
+         return defaultState;
+      }
+      catch (shared::exception::CEmptyResult&)
+      {
+         // pluginState keyword exist, but was never historized, so considered as stopped.
+         shared::CDataContainer defaultState;
+         defaultState.set("state", shared::plugin::yPluginApi::historization::EPluginState::kStopped);
+         return defaultState;
+      }
    }
 
+   // Instance is running
    boost::shared_ptr<database::entities::CDevice> device;
    try
    {
@@ -536,6 +576,12 @@ shared::CDataContainer CManager::getInstanceState(int id) const
       defaultState.set("state", shared::plugin::yPluginApi::historization::EPluginState::kUnknown);
       return defaultState;
    }
+}
+
+shared::plugin::yPluginApi::historization::EPluginState CManager::getInstanceState(int id) const
+{
+   shared::CDataContainer fullState = getInstanceFullState(id);
+   return fullState.get<shared::plugin::yPluginApi::historization::EPluginState>("state");
 }
 
 void CManager::postCommand(int id, boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command)

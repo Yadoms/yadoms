@@ -11,7 +11,7 @@ namespace rfxcomMessages
    //--------------------------------------------------------------
    /// \brief	The Remote standard subtype
    //--------------------------------------------------------------
-   template <class THistorizer>
+   template <class THistorizer, class TEnum>
    class CRemoteStandard : public IRemoteSubtype
    {
    public:
@@ -55,7 +55,7 @@ namespace rfxcomMessages
 
       virtual void setFromProtocolState(const RBUF& remoteRbuf)
       {
-         m_keyword.set(remoteRbuf.REMOTE.cmnd);
+         m_keyword.set(TEnum(remoteRbuf.REMOTE.cmnd));
       }
 
       virtual void toProtocolState(RBUF& remoteRbuf) const

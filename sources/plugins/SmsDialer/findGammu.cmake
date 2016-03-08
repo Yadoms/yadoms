@@ -71,7 +71,7 @@ else(GAMMU_USE_PKGCONFIG AND CMAKE_COMPILER_IS_GNUCXX AND NOT CMAKE_COMPILER_IS_
       set(GAMMU_PKG_INCLUDE_DIRS ${GAMMU_ROOT}/build/include/gammu)
       set(GAMMU_PKG_LIBRARY_DIRS  ${GAMMU_ROOT}/build/lib)
       set(GAMMU_PKG_LIBRARIES libGammu.dylib)
-   else()
+   elseif(UNIX)
       set(GAMMU_PKG_INCLUDE_DIRS ${GAMMU_ROOT}/build/include)
       set(GAMMU_PKG_LIBRARY_DIRS  ${GAMMU_ROOT}/build/libgammu)
       set(GAMMU_PKG_LIBRARIES libGammu.so)
