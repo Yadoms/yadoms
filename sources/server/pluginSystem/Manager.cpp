@@ -592,6 +592,9 @@ void CManager::postCommand(int id, boost::shared_ptr<const shared::plugin::yPlug
       return;     // Instance is stopped, nothing to do
 
    boost::shared_ptr<CInstance> instance(m_runningInstances.find(id)->second);
+
+   YADOMS_LOG(debug) << "Send command " << command->toString() << " to plugin " << instance->getName();
+
    instance->postCommand(command);
 }
 
