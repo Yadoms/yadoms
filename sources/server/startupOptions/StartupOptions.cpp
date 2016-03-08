@@ -54,7 +54,9 @@ namespace startupOptions
          .validator(new Poco::Util::RegExpValidator("^\\b(none|trace|debug|notice|information|warning|error|fatal|critical)\\b$"))
          .binding("server.logLevel", &m_configContainer));
 
-      std::string allDbEngines = EDatabaseEngine::toAllString(", ");
+      //use separator as variable, because toAllString expect a reference
+      std::string separator = ", ";
+      std::string allDbEngines = EDatabaseEngine::toAllString(separator);
 
       options.addOption(
          Poco::Util::Option("databaseEngine", "E", "Choose database engine, accepted values are : " + allDbEngines)
