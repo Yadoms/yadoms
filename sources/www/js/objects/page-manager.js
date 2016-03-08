@@ -152,29 +152,15 @@ PageManager.addToDom = function (page) {
     //we save the content of the page dom node
     page.$content = container.find("div#" + tabIdAsText);
 
-    //we compute the number of columns based on the width of the screen
-    //var numberOfColumns = Math.min(12, Math.floor(window.innerWidth / (Yadoms.gridWidth + Yadoms.gridMargin)));
-    /*var options = {
-        width: numberOfColumns,
-        float: false,
-        alwaysShowResizeHandle: true,
-        cellHeight: Yadoms.gridWidth,
-        verticalMargin: Yadoms.gridMargin,
-        minWidth: 0
-    };*/
-
     page.$grid = page.$content.find(".grid");
-    //page.grid = page.$grid.gridstack(options).data('gridstack');
+    
     page.$grid.packery({
         itemSelector: ".widget",
         columnWidth: 100,
         //transitionDuration: '0.6s',
         gutter: 0
-        //rowHeight: 100
     });
 
-    //page.$grid.on('resizestop', widgetResized);
-    
     page.$grid.on('dragstop', function (event) {
         //we remove the page overlay
         $(".tabPagePills .tabPagePillsDropper").addClass("hidden");
@@ -200,8 +186,7 @@ PageManager.addToDom = function (page) {
         //we move the widget to the other pill
         var widgetId = $widget.attr("widget-id");
         var widgetToMove = page.getWidget(widgetId);
-        widgetToMove.positionX = -1;
-        widgetToMove.positionY = -1;
+        widgetToMove.setInitialPosition(1000); //we indicate that the widget has never been placed and must be placed to the end
         widgetToMove.idPage = targetPageId;
 
         //we remove it from current page
@@ -381,4 +366,14 @@ PageManager.enableCustomization = function (page, enable) {
  */
 PageManager.saveCustomization = function (page) {
     return RestEngine.putJson("/rest/page/" + page.id + "/widget", { data: JSON.stringify(page.widgets) });
+};
+
+/**
+ * Update the layout of all widgets on the page
+ * @param {Object} page The page to update
+ */
+PageManager.updateWidgetLayout = function (page) {
+    $.each(page.widgets, function (index, value) {
+        WidgetManager.updateWidgetLayout(value);
+    });
 };

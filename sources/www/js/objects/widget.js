@@ -8,30 +8,31 @@
  * @param title title of the widget
  * @param sizeX x size of the widget
  * @param sizeY y size of the widget
- * @param positionX x position of the widget
- * @param positionY y position of the widget
+ * @param position position of the widget
  * @param configuration configuration of the widget
  * @constructor
  */
-function Widget(id, idPage, type, title, sizeX, sizeY, positionX, positionY, configuration) {
+function Widget(id, idPage, type, title, sizeX, sizeY, position, configuration) {
     assert(id !== undefined, "id of a widget must be defined");
     assert(idPage !== undefined, "idPage of a widget must be defined");
     assert(type !== undefined, "type of a widget must be defined");
     assert(title !== undefined, "type of a widget must be defined");
     assert(sizeX !== undefined, "sizeX of a widget must be defined");
     assert(sizeY !== undefined, "sizeY of a widget must be defined");
-    assert(positionX !== undefined, "positionX of a widget must be defined");
-    assert(positionY !== undefined, "positionY of a widget must be defined");
+    assert(position !== undefined, "position of a widget must be defined");
     //configuration can be undefined
 
     this.id = id;
     this.idPage = idPage;
     this.type = type;
     this.title = title;
-    this.sizeX = sizeX;
-    this.sizeY = sizeY;
-    this.positionX = positionX;
-    this.positionY = positionY;
+
+    //we save initial values that could change over the time
+    this.initialValues = {};
+    this.initialValues.sizeX = sizeX;
+    this.initialValues.sizeY = sizeY;
+    this.initialValues.position = position;
+
     this.configuration = configuration;
 
     this.viewModel = null;
@@ -62,48 +63,58 @@ Widget.prototype.toJSON = function () {
         idPage: this.idPage,
         type: this.type,
         title: this.title,
-        sizeX: this.sizeX,
-        sizeY: this.sizeY,
-        positionX: this.positionX,
-        positionY: this.positionY,
+        sizeX: this.getWidth() || this.initialValues.sizeX,
+        sizeY: this.getHeight() || this.initialValues.sizeY,
+        position: this.getPosition() || this.initialValues.position,
         configuration: this.configuration
     };
 };
 
 /**
- * Synchronize data from grister object and properties of the class
+ * Get the position of the current widget in the page
+ * @returns {int} return the position begining by 0. -1 if element is not on a page 
  */
-Widget.prototype.updateDataFromGrid = function () {
-    this.sizeX = parseInt(this.$gridWidget.attr("data-gs-width"));
-    this.sizeY = parseInt(this.$gridWidget.attr("data-gs-height"));
-    this.positionX = parseInt(this.$gridWidget.attr("data-gs-x"));
-    this.positionY = parseInt(this.$gridWidget.attr("data-gs-y"));
+Widget.prototype.getPosition = function () {
+    var page = PageManager.getPage(this.idPage);
+    if (!page)
+        return null;
+    
+    var value = $(page.$grid.packery('getItemElements')).index(this.$gridWidget);
+    return (value !== -1) ? value : null;
 };
 
-Widget.prototype.height = function () {
-    return parseInt(this.$gridWidget.css("height").replace('px', ''));
+Widget.prototype.getHeight = function () {
+    return (this.$gridWidget)?parseInt(this.$gridWidget.css("height").replace('px', '')):null;
 };
 
-Widget.prototype.width = function () {
-    return parseInt(this.$gridWidget.css("width").replace('px', ''));
+Widget.prototype.getWidth = function () {
+    return (this.$gridWidget)?parseInt(this.$gridWidget.css("width").replace('px', '')):null;
 };
 
-Widget.prototype.innerHeight = function () {
-    return parseInt(this.$content.css("height").replace('px', ''));
+Widget.prototype.getInnerHeight = function () {
+    return (this.$gridWidget)?parseInt(this.$content.css("height").replace('px', '')):null;
 };
 
-Widget.prototype.innerWidth = function () {
-    return parseInt(this.$content.css("width").replace('px', ''));
+Widget.prototype.getInnerWidth = function () {
+    return (this.$gridWidget) ? parseInt(this.$content.css("width").replace('px', '')) : null;
 };
 
 Widget.prototype.setHeight = function (newHeight) {
-    this.$gridWidget.css("height", newHeight + 'px');
-    this.$content.css("height", (newHeight - parseInt(this.$header.css("height").replace('px', ''))) + 'px');
+    if ((this.$gridWidget)) {
+        this.$gridWidget.height(newHeight);
+        this.$content.height(newHeight - this.$gridWidget.find("div.panel-widget-header").height());
+    }
 };
 
 Widget.prototype.setWidth = function (newWidth) {
-    this.$gridWidget.css("width", newWidth + 'px');
-    this.$content.css("width", newWidth + 'px');
+    if ((this.$gridWidget)) {
+        this.$gridWidget.width(newWidth);
+        this.$content.width(newWidth);
+    }
+};
+
+Widget.prototype.setInitialPosition = function (position) {
+    this.initialValues.position = position;
 };
 
 Widget.prototype.title = function () {

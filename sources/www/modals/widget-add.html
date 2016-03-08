@@ -231,8 +231,8 @@
    function createWidget(newWidget, currentPage) {
       WidgetManager.createWidget(newWidget)
       .done(function(w) {
-         w.positionX = undefined;
-         w.positionY = undefined;
+         //we indicate taht the widget has never been placed on   
+         w.position = 1000;
          WidgetManager.loadWidget(w, currentPage, true)
          .done(function () {
           	//we update the filter for the websocket

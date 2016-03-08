@@ -23,11 +23,10 @@ WidgetManager.factory = function (json) {
     assert(!isNullOrUndefined(json.title), "json.title must be defined");
     assert(!isNullOrUndefined(json.sizeX), "json.sizeX must be defined");
     assert(!isNullOrUndefined(json.sizeY), "json.sizeY must be defined");
-    assert(!isNullOrUndefined(json.positionX), "json.positionX must be defined");
-    assert(!isNullOrUndefined(json.positionY), "json.positionY must be defined");
+    assert(!isNullOrUndefined(json.position), "json.position must be defined");
     assert(!isNullOrUndefined(json.configuration), "json.configuration must be defined");
 
-    return new Widget(json.id, json.idPage, json.type, json.title, json.sizeX, json.sizeY, json.positionX, json.positionY, json.configuration);
+    return new Widget(json.id, json.idPage, json.type, json.title, json.sizeX, json.sizeY, json.position, json.configuration);
 };
 
 /**
@@ -173,7 +172,7 @@ WidgetManager.createWidget = function (newWidget) {
 
     var d = new $.Deferred();
 
-    var data = JSON.stringify({ idPage: newWidget.idPage, type: newWidget.type, title: newWidget.title, sizeX: newWidget.sizeX, sizeY: newWidget.sizeY, positionX: newWidget.positionX, positionY: newWidget.positionY, configuration: newWidget.configuration });
+    var data = JSON.stringify({ idPage: newWidget.idPage, type: newWidget.type, title: newWidget.title, sizeX: newWidget.sizeX, sizeY: newWidget.sizeY, position: newWidget.position, configuration: newWidget.configuration });
 
     RestEngine.postJson("/rest/widget", { data: data })
     .done(function (widgetData) {
@@ -447,12 +446,7 @@ WidgetManager.instanciateDowngradedWidgetToPage_ = function (pageWhereToAdd, wid
 WidgetManager.addToDom_ = function (widget, ensureVisible) {
     assert(!isNullOrUndefined(widget), "widget must be defined");
 
-    var widgetDivId = "widget-" + widget.id;
-    widget.$gridWidget = WidgetManager.createGridstackWidget(widget);
-    widget.$div = $("div#" + widgetDivId);
-    widget.$header = widget.$gridWidget.find("div.panel-widget-header");
-    widget.$toolbar = widget.$gridWidget.find("div.panel-widget-title-toolbar");
-    widget.$content = widget.$gridWidget.find("div.panel-widget-body");
+    WidgetManager.createGridWidget(widget);
 
     //we check if we are in customization we must apply customization on the new item
     WidgetManager.enableCustomization(widget, customization);
@@ -464,7 +458,7 @@ WidgetManager.addToDom_ = function (widget, ensureVisible) {
     assert(!isNullOrUndefined(page), "page doesn't exist in PageManager");
 
     //we apply binding to the view
-    ko.applyBindings(widget.viewModel, widget.$div[0]);
+    ko.applyBindings(widget.viewModel, widget.$gridWidget[0]);
 
     //we listen click event on configure click
     widget.$gridWidget.find('div.btn-configure-widget').bind('click', function (e) {
@@ -551,39 +545,18 @@ WidgetManager.enableCustomization = function (widget, enable) {
     }
     page.$grid.packery('layout');
     
-    //the widget is resizable only if is allowed in its configuration
-    var minX = 0;
-    var maxX = Number.MAX_VALUE;
-    var minY = 0;
-    var maxY = Number.MAX_VALUE;
-
-    if (!isNullOrUndefined(widget.package.dimensions)) {
-        if (!isNullOrUndefined(widget.package.dimensions.min)) {
-            if (!isNullOrUndefined(widget.package.dimensions.min.x))
-                minX = widget.package.dimensions.min.x;
-            if (!isNullOrUndefined(widget.package.dimensions.min.y))
-                minY = widget.package.dimensions.min.y;
-        }
-        if (!isNullOrUndefined(widget.package.dimensions.max)) {
-            if (!isNullOrUndefined(widget.package.dimensions.max.x))
-                maxX = widget.package.dimensions.max.x;
-            if (!isNullOrUndefined(widget.package.dimensions.max.y))
-                maxY = widget.package.dimensions.max.y;
-        }
-    }
-
-    if ((enable) && ((minX !== maxX) || (minY !== maxY)))
+    if ((enable) && (widget.resizable))
         widget.$gridWidget.resizable("enable");
     else
         widget.$gridWidget.resizable("disable");
 };
 
 /**
- * Create a new graphic Widget and add it to the corresponding gridstack
+ * Create a new graphic Widget and add it to the grid
  * @param {Widget} widget The widget to add
- * @returns {object} The gridstack item
+ * @returns {object} The dom $(item)
  */
-WidgetManager.createGridstackWidget = function (widget) {
+WidgetManager.createGridWidget = function (widget) {
     assert(widget !== undefined, "widget must be defined");
 
     var page = PageManager.getPage(widget.idPage);
@@ -610,6 +583,9 @@ WidgetManager.createGridstackWidget = function (widget) {
                 maxY = widget.package.dimensions.max.y;
         }
     }
+
+    //we save the information that says if we can resize the widget
+    widget.resizable = ((minX !== maxX) || (minY !== maxY));
 
     domWidget += ">\n" +
         "<div class=\"grid-stack-item-content\">\n" +
@@ -638,26 +614,35 @@ WidgetManager.createGridstackWidget = function (widget) {
         "</div>\n" +
     "</div>\n";
 
-    //we put widget automatically at the first empty place if position has been undefined
-    var autoPosition = ((!widget.positionX) || (!widget.positionY));
-    
     var $domWidget = $(domWidget);
     page.$grid.append($domWidget).packery("appended", $domWidget);
 
+    //we save the $dom infos into the object
+    widget.$gridWidget = page.$grid.find(".widget[widget-id=" + widget.id + "]");
+    widget.$header = widget.$gridWidget.find("div.panel-widget-header");
+    widget.$toolbar = widget.$gridWidget.find("div.panel-widget-title-toolbar");
+    widget.$content = widget.$gridWidget.find("div.panel-widget-body");
+
+    widget.setHeight(widget.initialValues.sizeY);
+    widget.setWidth(widget.initialValues.sizeX);
+
     //we manage draggablility and resizability
-    var $item = page.$grid.find(".widget[widget-id=" + widget.id + "]");
-    $item.draggable({
+
+    widget.$gridWidget.draggable({
         handle: ".panel-widget-customization-overlay",
-        //TODO : manage resize event
         stop: function () {
             page.$grid.packery("layout");
+            /*// debounce
+            setTimeout(function () {
+                page.$grid.packery("layout");
+            }, 10);*/
         }
     });
 
-    page.$grid.packery('bindUIDraggableEvents', $item);
+    page.$grid.packery('bindUIDraggableEvents', widget.$gridWidget);
 
     var resizeTimeout;
-    $item.resizable({
+    widget.$gridWidget.resizable({
         grid: [Yadoms.gridWidth, Yadoms.gridHeight],
         minHeight: minY * Yadoms.gridHeight,
         minWidth: minX * Yadoms.gridWidth,
@@ -697,8 +682,12 @@ WidgetManager.createGridstackWidget = function (widget) {
         $("[widget-id=" + widget.id + "]").find(".panel-widget-title").addClass("panel-widget-title-" + widget.id);
     }
 
-    $item.i18n();
-    return $item;
+    widget.$gridWidget.i18n();
 };
 
-
+/**
+ * Update the layout of the widget
+ */
+WidgetManager.updateWidgetLayout = function(widget) {
+    widget.$gridWidget.find(".widget-api-textfit").fitText();
+};
