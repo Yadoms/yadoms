@@ -85,8 +85,7 @@ namespace database { namespace entities {
       ((Type)(std::string)("")("type"))
       ((SizeX)(int)(1)("sizeX"))
       ((SizeY)(int)(1)("sizeY"))
-      ((PositionX)(int)(1)("positionX"))
-      ((PositionY)(int)(1)("positionY"))
+      ((Position)(int)(0)("position"))
       ((Title)(std::string)("")("title"))
       ((Configuration)(shared::CDataContainer)(shared::CDataContainer())("configuration"))
       );
