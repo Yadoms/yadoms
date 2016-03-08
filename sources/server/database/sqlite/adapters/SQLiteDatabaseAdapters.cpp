@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "SQLiteDatabaseAdapters.h"
-#include "sqlite3.h"
+#include <sqlite3.h>
 #include <shared/currentTime/Provider.h>
 #include <shared/Log.h>
 #include "AdapterHelpers.hpp"

@@ -3,7 +3,7 @@
 #include "SQLiteDataProvider.h"
 #include "requesters/Plugin.h"
 #include "requesters/Configuration.h"
-#include "sqlite3.h"
+#include <sqlite3.h>
 #include <boost/filesystem.hpp>
 #include "SQLiteRequester.h"
 #include <shared/Log.h>

@@ -14,7 +14,7 @@
 #include "requesters/Acquisition.h"
 #include "requesters/Recipient.h"
 #include "SQLiteRequester.h"
-#include "sqlite3.h"
+#include <sqlite3.h>
 #include <Poco/Util/Timer.h>
 
 namespace database { 

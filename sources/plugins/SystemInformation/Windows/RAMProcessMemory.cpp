@@ -4,8 +4,8 @@
 #include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/plugin/yPluginApi/StandardUnits.h>
 #include <shared/Log.h>
-#include "windows.h"
-#include "psapi.h"
+#include <windows.h>
+#include <psapi.h>
 
 CRAMProcessMemory::CRAMProcessMemory(const std::string & device)
    :m_device(device), 

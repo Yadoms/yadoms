@@ -1,6 +1,6 @@
 #pragma once
 
-#include "sqlite3.h"
+#include <sqlite3.h>
 #include <shared/StringExtension.h>
 #include <shared/plugin/information/IInformation.h>
 #include "database/entities/Entities.h"
