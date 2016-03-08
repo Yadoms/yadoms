@@ -479,4 +479,14 @@ BOOST_AUTO_TEST_CASE(Path)
 
 }
 
+
+
+BOOST_AUTO_TEST_CASE(SimpleConstruction)
+{
+   shared::CDataContainer dc("1");
+   BOOST_CHECK_EQUAL(dc.containsValue(), true);
+   BOOST_CHECK_EQUAL(dc.containsChild(), false);
+   BOOST_CHECK_EQUAL(dc.serialize(), "1");
+}
+
 BOOST_AUTO_TEST_SUITE_END()
