@@ -6,7 +6,7 @@
 #include <shared/communication/PortException.hpp>
 #include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include "TeleInfoFactory.h"
-#include "boost/date_time/posix_time/posix_time.hpp"
+#include <boost/date_time/posix_time/posix_time.hpp>
 
 //
 #include "TeleInfotrxHelpers.h"
