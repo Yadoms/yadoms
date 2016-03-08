@@ -29,17 +29,17 @@ namespace web { namespace rest {
       ///\param [in]    requestContent    request content (put, post or delete request)
       ///\return        the data in Json format
       //-------------------------------------- 
-      shared::CDataContainer dispath(const std::string & requestType, const std::vector<std::string> & url, const shared::CDataContainer & requestContent);
+      shared::CDataContainer dispath(const std::string & requestType, const std::vector<std::string> & url, const std::string & requestContent);
 
       //--------------------------------------   
       ///\brief   Define a function pointer on a REST handler method
       //--------------------------------------  
-      typedef boost::function2<shared::CDataContainer, const std::vector<std::string> & /*urlData*/, const shared::CDataContainer & /*requestContent*/> CRestMethodHandler;
+      typedef boost::function2<shared::CDataContainer, const std::vector<std::string> & /*urlData*/, const std::string & /*requestContent*/> CRestMethodHandler;
 
       //--------------------------------------   
       ///\brief   Define a function pointer on a REST handler method with indirector
       //--------------------------------------  
-      typedef boost::function3<shared::CDataContainer, CRestMethodHandler, const std::vector<std::string> &, const shared::CDataContainer & /*requestContent*/> CRestMethodIndirector;
+      typedef boost::function3<shared::CDataContainer, CRestMethodHandler, const std::vector<std::string> &, const std::string & /*requestContent*/> CRestMethodIndirector;
 
       //--------------------------------------   
       ///\brief         register a rest handler
@@ -140,7 +140,8 @@ namespace web { namespace rest {
       ///\param [in]    requestContent    the request content
       ///\return        the data in Json format
       //-------------------------------------- 
-      shared::CDataContainer callRealMethod(CRestMethodHandler realMethod, CRestMethodIndirector encapsulatedMethod, const std::vector<std::string> & url, const shared::CDataContainer & requestContent);
+      shared::CDataContainer callRealMethod(CRestMethodHandler realMethod, CRestMethodIndirector encapsulatedMethod,
+         const std::vector<std::string> & url, const std::string & requestContent);
 
       //--------------------------------------   
       ///\brief   All the registered handle

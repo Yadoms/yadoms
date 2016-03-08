@@ -36,7 +36,7 @@ namespace web {
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*"), CWidget::deleteOneWidget, CWidget::transactionalMethod);
          }
 
-         shared::CDataContainer CWidget::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+         shared::CDataContainer CWidget::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const std::string & requestContent)
          {
             boost::shared_ptr<database::ITransactionalProvider> pTransactionalEngine = m_dataProvider->getTransactionalEngine();
             shared::CDataContainer result;
@@ -72,7 +72,7 @@ namespace web {
          }
 
 
-         shared::CDataContainer CWidget::getOneWidget(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+         shared::CDataContainer CWidget::getOneWidget(const std::vector<std::string> & parameters, const std::string & requestContent)
          {
             try
             {
@@ -94,7 +94,7 @@ namespace web {
             }
          }
 
-         shared::CDataContainer CWidget::getAllWidgets(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+         shared::CDataContainer CWidget::getAllWidgets(const std::vector<std::string> & parameters, const std::string & requestContent)
          {
             std::vector< boost::shared_ptr<database::entities::CWidget> > widgetList = m_dataProvider->getWidgetRequester()->getWidgets();
             shared::CDataContainer collection;
@@ -103,12 +103,12 @@ namespace web {
          }
 
 
-         shared::CDataContainer CWidget::addWidget(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+         shared::CDataContainer CWidget::addWidget(const std::vector<std::string> & parameters, const std::string & requestContent)
          {
             try
             {
                database::entities::CWidget widgetToAdd;
-               widgetToAdd.fillFromContent(requestContent);
+               widgetToAdd.fillFromContent(shared::CDataContainer(requestContent));
                int idCreated = m_dataProvider->getWidgetRequester()->addWidget(widgetToAdd);
                boost::shared_ptr<database::entities::CWidget> widgetFound = m_dataProvider->getWidgetRequester()->getWidget(idCreated);
                return CResult::GenerateSuccess(widgetFound);
@@ -123,12 +123,12 @@ namespace web {
             }
          }
 
-         shared::CDataContainer CWidget::updateOneWidget(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+         shared::CDataContainer CWidget::updateOneWidget(const std::vector<std::string> & parameters, const std::string & requestContent)
          {
             try
             {
                database::entities::CWidget widgetToUpdate;
-               widgetToUpdate.fillFromContent(requestContent);
+               widgetToUpdate.fillFromContent(shared::CDataContainer(requestContent));
 
 
                if (parameters.size() > 1)
@@ -157,7 +157,7 @@ namespace web {
          }
 
 
-         shared::CDataContainer CWidget::deleteOneWidget(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+         shared::CDataContainer CWidget::deleteOneWidget(const std::vector<std::string> & parameters, const std::string & requestContent)
          {
             try
             {
@@ -180,13 +180,13 @@ namespace web {
          }
 
 
-         shared::CDataContainer CWidget::replaceAllWidgets(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+         shared::CDataContainer CWidget::replaceAllWidgets(const std::vector<std::string> & parameters, const std::string & requestContent)
          {
             try
             {
                m_dataProvider->getWidgetRequester()->removeAllWidgets();
 
-               std::vector<boost::shared_ptr<database::entities::CWidget> > widgetsToAdd = requestContent.get<std::vector<boost::shared_ptr<database::entities::CWidget> > >(getRestKeyword());
+               std::vector<boost::shared_ptr<database::entities::CWidget> > widgetsToAdd = shared::CDataContainer(requestContent).get<std::vector<boost::shared_ptr<database::entities::CWidget> > >(getRestKeyword());
 
                for (std::vector<boost::shared_ptr<database::entities::CWidget> >::iterator i = widgetsToAdd.begin(); i != widgetsToAdd.end(); ++i)
                {
@@ -205,7 +205,7 @@ namespace web {
             }
          }
 
-         shared::CDataContainer CWidget::deleteAllWidgets(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+         shared::CDataContainer CWidget::deleteAllWidgets(const std::vector<std::string> & parameters, const std::string & requestContent)
          {
             try
             {
@@ -223,7 +223,7 @@ namespace web {
          }
 
 
-         shared::CDataContainer CWidget::findWidgetPackages(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+         shared::CDataContainer CWidget::findWidgetPackages(const std::vector<std::string> & parameters, const std::string & requestContent)
          {
             try
             {
