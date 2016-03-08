@@ -13,7 +13,7 @@ public:
    /// \brief	                        Constructor
    /// \param[in]  message             Exception message
    //--------------------------------------------------------------
-   CManuallyDeviceCreationException(const std::string& message)
+   explicit CManuallyDeviceCreationException(const std::string& message)
       :CException(message)
    {
    }

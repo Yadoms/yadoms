@@ -77,7 +77,11 @@ endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
 ## Externals libraries (Boost, Thread, RT) only linked with
 ##################################################################################################
 
-# Boost (dynamic linking)
+
+###############################################
+# Boost
+#
+###############################################
 set(Boost_USE_STATIC_LIBS OFF)
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
@@ -116,11 +120,11 @@ if(APPLE)
 	include("mac.cmake")
 	
 	if(NOT IOKIT_FOUND)
-		message(SEND_ERROR "Unable to find the requested IOKit libraries")
+		message(SEND_ERROR "Unable to find the required IOKit libraries")
 	endif()
 
 	if(NOT CARBON_FOUND)
-		message(SEND_ERROR "Unable to find the requested Carbon libraries")
+		message(SEND_ERROR "Unable to find the required Carbon libraries")
 	endif()
 	set(LIBS ${LIBS} ${IOKIT_LIBRARY} ${CARBON_LIBRARY})
 endif()
@@ -167,7 +171,7 @@ set( POCO_REQUIRE_MINIMUM_VERSION "1.6.1")
 include(FindPoco.cmake)
 
 IF(NOT ${Poco_FOUND})
-	message(FATAL_ERROR "Unable to find the requested POCO libraries")
+	message(FATAL_ERROR "Unable to find the required POCO libraries")
 ENDIF()
 
 if(${OPENSSL_FOUND})
@@ -195,8 +199,26 @@ IF(${PocoNetSSLFound})
 ENDIF()
 
 
+###############################################
+# Protobuf
+#
+###############################################
+set (PROTOBUF_SRC_ROOT_FOLDER ${PROTOBUF_ROOT})
+find_package(Protobuf 2.5.0 REQUIRED)
+
+if(NOT ${PROTOBUF_FOUND})
+	message(FATAL_ERROR "Unable to find the required Protobuf tool")
+endif()
+
+
+
+###############################################
 # define libraries to link with
+#
+###############################################
 set(LIBS ${LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${RT_LIBRARY} ${Poco_FOUND_LIBS})
+
+
 
 ##################################################################################################
 ## Internal libraries (SQlite, Webem) completly build from sources

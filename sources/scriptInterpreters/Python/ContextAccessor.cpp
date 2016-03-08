@@ -9,6 +9,7 @@ const size_t CContextAccessor::m_maxMessages(100);
 CContextAccessor::CContextAccessor(boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi)
    :CThreadBase(createId()), m_scriptApi(yScriptApi), m_id(createId()), m_readyBarrier(2)
 {
+   memset(m_mqBuffer, 0, sizeof(m_mqBuffer));
    start();
    m_readyBarrier.wait();
 }
@@ -31,6 +32,10 @@ std::string CContextAccessor::createId()
 
 void CContextAccessor::doWork()
 {
+   // Verify that the version of the library that we linked against is
+   // compatible with the version of the headers we compiled against.
+   GOOGLE_PROTOBUF_VERIFY_VERSION;
+
    const std::string sendMessageQueueId(m_id + ".toScript");
    const std::string receiveMessageQueueId(m_id + ".toYadoms");
    const CMessageQueueRemover sendMessageQueueRemover(sendMessageQueueId);
@@ -43,7 +48,7 @@ void CContextAccessor::doWork()
 
       m_readyBarrier.wait();
 
-      char message[m_messageQueueMessageSize];
+      unsigned char message[m_messageQueueMessageSize];
       size_t messageSize;
       unsigned int messagePriority;
       while (true)
@@ -83,176 +88,217 @@ void CContextAccessor::doWork()
    }
 
    YADOMS_LOG(debug) << "Close message queues";
+
+   // Delete all global objects allocated by libprotobuf.
+   google::protobuf::ShutdownProtobufLibrary();
 }
 
-void CContextAccessor::sendAnswer(EAnswerIdentifier answerId, const shared::CDataContainer& answer, boost::interprocess::message_queue& messageQueue)
+void CContextAccessor::sendAnswer(const pbAnswer::msg& answer, boost::interprocess::message_queue& messageQueue)
 {
-   shared::CDataContainer mainAnswerContainer;
-   mainAnswerContainer.set("type", answerId);
-   mainAnswerContainer.set("content", answer);
+   if (!answer.IsInitialized())
+      throw std::overflow_error("CContextAccessor::sendAnswer : answer is not fully initialized");
 
-   const std::string serializedRequest(mainAnswerContainer.serialize());
-   if (serializedRequest.size() > m_messageQueueMessageSize)
-      throw std::overflow_error("sendRequest : answer is too big");
-   messageQueue.send(serializedRequest.c_str(), serializedRequest.size(), 0);
+   if (answer.ByteSize() > static_cast<int>(m_messageQueueMessageSize))
+      throw std::overflow_error("CContextAccessor::sendAnswer : answer is too big");
+
+   if (!answer.SerializeToArray(m_mqBuffer, m_messageQueueMessageSize))
+      throw std::overflow_error("CContextAccessor::sendAnswer : fail to serialize answer (too big ?)");
+
+   messageQueue.send(m_mqBuffer, answer.GetCachedSize(), 0);
 }
 
-void CContextAccessor::processMessage(const char* message, size_t messageSize, boost::interprocess::message_queue& messageQueue)
+void CContextAccessor::processMessage(const void* message, size_t messageSize, boost::interprocess::message_queue& messageQueue)
 {
    if (messageSize < 1)
       throw shared::exception::CInvalidParameter("messageSize");
 
    // Unserialize message
-   shared::CDataContainer mainRequestContainer(std::string(message, messageSize));
-   if (!mainRequestContainer.exists("type") || !mainRequestContainer.exists("content"))
-      throw shared::exception::CInvalidParameter("message"); 
+   pbRequest::msg request;
+   if (!request.ParseFromArray(message, messageSize))
+      throw shared::exception::CInvalidParameter("message");
 
    // Process message
-   shared::CDataContainer request = mainRequestContainer.get<shared::CDataContainer>("content");
-   switch (mainRequestContainer.get<ERequestIdentifier>("type"))
+   switch(request.OneOf_case())
    {
-   case kReqGetKeywordId            : processGetKeywordId(request, messageQueue); break;
-   case kReqGetRecipientId          : processGetRecipientId(request, messageQueue); break;
-   case kReqReadKeyword             : processReadKeyword(request, messageQueue); break;
-   case kReqWaitForNextAcquisition  : processWaitForNextAcquisition(request, messageQueue); break;
-   case kReqWaitForNextAcquisitions : processWaitForNextAcquisitions(request, messageQueue); break;
-   case kReqWaitForEvent            : processWaitForEvent(request, messageQueue); break;
-   case kReqWriteKeyword            : processWriteKeyword(request, messageQueue); break;
-   case kReqSendNotification        : processSendNotification(request, messageQueue); break;
-   case kReqGetInfo                 : processGetInfo(request, messageQueue); break;
+   case pbRequest::msg::kGetKeywordId: processGetKeywordId(request.getkeywordid(), messageQueue); break;
+   case pbRequest::msg::kGetRecipientId: processGetRecipientId(request.getrecipientid(), messageQueue); break;
+   case pbRequest::msg::kReadKeyword: processReadKeyword(request.readkeyword(), messageQueue); break;
+   case pbRequest::msg::kWaitForNextAcquisition: processWaitForNextAcquisition(request.waitfornextacquisition(), messageQueue); break;
+   case pbRequest::msg::kWaitForNextAcquisitions: processWaitForNextAcquisitions(request.waitfornextacquisitions(), messageQueue); break;
+   case pbRequest::msg::kWaitForEvent: processWaitForEvent(request.waitforevent(), messageQueue); break;
+   case pbRequest::msg::kWriteKeyword: processWriteKeyword(request.writekeyword(), messageQueue); break;
+   case pbRequest::msg::kSendNotification: processSendNotification(request.sendnotification(), messageQueue); break;
+   case pbRequest::msg::kGetInfo: processGetInfo(request.getinfo(), messageQueue); break;
    default:
       throw shared::exception::CInvalidParameter("message");
    }
 }
 
-void CContextAccessor::processGetKeywordId(const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue)
+void CContextAccessor::processGetKeywordId(const pbRequest::GetKeywordId& request, boost::interprocess::message_queue& messageQueue)
 {
-   shared::CDataContainer answer;
+   pbAnswer::msg ans;
+   pbAnswer::GetKeywordId* answer = ans.mutable_getkeywordid();
    try
    {
-      answer.set("returnValue", m_scriptApi->getKeywordId(request.get<std::string>("device"), request.get<std::string>("keyword")));
+      answer->set_id(m_scriptApi->getKeywordId(request.devicename(), request.keywordname()));
    }
    catch (std::exception& ex)
    {
-      answer.set("error", ex.what());
+      ans.set_error(ex.what());
    }
-   sendAnswer(kAnsGetKeywordId, answer, messageQueue);
+   sendAnswer(ans, messageQueue);
 }
 
-void CContextAccessor::processGetRecipientId(const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue)
+void CContextAccessor::processGetRecipientId(const pbRequest::GetRecipientId& request, boost::interprocess::message_queue& messageQueue)
 {
-   shared::CDataContainer answer;
+   pbAnswer::msg ans;
+   pbAnswer::GetRecipientId* answer = ans.mutable_getrecipientid();
    try
    {
-      answer.set("returnValue", m_scriptApi->getRecipientId(request.get<std::string>("firstName"), request.get<std::string>("lastName")));
+      answer->set_id(m_scriptApi->getRecipientId(request.firstname(), request.lastname()));
    }
    catch (std::exception& ex)
    {
-      answer.set("error", ex.what());
+      ans.set_error(ex.what());
    }
-   sendAnswer(kAnsGetRecipientId, answer, messageQueue);
+   sendAnswer(ans, messageQueue);
 }
 
-void CContextAccessor::processReadKeyword(const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue)
+void CContextAccessor::processReadKeyword(const pbRequest::ReadKeyword& request, boost::interprocess::message_queue& messageQueue)
 {
-   shared::CDataContainer answer;
+   pbAnswer::msg ans;
+   pbAnswer::ReadKeyword* answer = ans.mutable_readkeyword();
    try
    {
-      answer.set("returnValue", m_scriptApi->readKeyword(request.get<int>("keywordId")));
+      answer->set_value(m_scriptApi->readKeyword(request.keywordid()));
    }
    catch (std::exception& ex)
    {
-      answer.set("error", ex.what());
+      ans.set_error(ex.what());
    }
-   sendAnswer(kAnsReadKeyword, answer, messageQueue);
+   sendAnswer(ans, messageQueue);
 }
 
-void CContextAccessor::processWaitForNextAcquisition(const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue)
+void CContextAccessor::processWaitForNextAcquisition(const pbRequest::WaitForNextAcquisition& request, boost::interprocess::message_queue& messageQueue)
 {
-   shared::CDataContainer answer;
+   pbAnswer::msg ans;
+   pbAnswer::WaitForNextAcquisition* answer = ans.mutable_waitfornextacquisition();
    try
    {
-      answer.set("returnValue", m_scriptApi->waitForNextAcquisition(request.get<int>("keywordId"), request.get<std::string>("timeout")));
+      answer->set_acquisition(m_scriptApi->waitForNextAcquisition(request.keywordid(), request.has_timeout() ? request.timeout() : std::string()));
    }
    catch (std::exception& ex)
    {
-      answer.set("error", ex.what());
+      ans.set_error(ex.what());
    }
-   sendAnswer(kAnsWaitForAcquisition, answer, messageQueue);
+   sendAnswer(ans, messageQueue);
 }
 
-void CContextAccessor::processWaitForNextAcquisitions(const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue)
+void CContextAccessor::processWaitForNextAcquisitions(const pbRequest::WaitForNextAcquisitions& request, boost::interprocess::message_queue& messageQueue)
 {
-   shared::CDataContainer answer;
+   pbAnswer::msg ans;
+   pbAnswer::WaitForNextAcquisitions* answer = ans.mutable_waitfornextacquisitions();
    try
    {
-      std::pair<int, std::string> returnValue = m_scriptApi->waitForNextAcquisitions(request.get<std::vector<int> >("keywordIdList"), request.get<std::string>("timeout"));
-      answer.set("key", returnValue.first);
-      answer.set("value", returnValue.second);
+      std::vector<int> keywordIdList;
+      for (google::protobuf::RepeatedField<google::protobuf::int32>::const_iterator it = request.keywordid().begin(); it != request.keywordid().end(); ++it)
+         keywordIdList.push_back(*it);
+      std::pair<int, std::string> result = m_scriptApi->waitForNextAcquisitions(keywordIdList, request.has_timeout() ? request.timeout() : std::string());
+      answer->set_keywordid(result.first);
+      if (!result.second.empty())
+         answer->set_acquisition(result.second);
    }
    catch (std::exception& ex)
    {
-      answer.set("error", ex.what());
+      ans.set_error(ex.what());
    }
-   sendAnswer(kAnsWaitForAcquisitions, answer, messageQueue);
+   sendAnswer(ans, messageQueue);
 }
 
-void CContextAccessor::processWaitForEvent(const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue)
+void CContextAccessor::processWaitForEvent(const pbRequest::WaitForEvent& request, boost::interprocess::message_queue& messageQueue)
 {
-   shared::CDataContainer answer;
+   pbAnswer::msg ans;
+   pbAnswer::WaitForEvent* answer = ans.mutable_waitforevent();
    try
    {
-      shared::script::yScriptApi::CWaitForEventResult returnValue = m_scriptApi->waitForEvent(request.get<std::vector<int> >("keywordIdList"), request.get<bool>("receiveDateTimeEvent"), request.get<std::string>("timeout"));
-      
-      answer.set("type", returnValue.getType());
-      answer.set("keywordId", returnValue.getKeywordId());
-      answer.set("value", returnValue.getValue());
+      std::vector<int> keywordIdList;
+      for (google::protobuf::RepeatedField<google::protobuf::int32>::const_iterator it = request.keywordid().begin(); it != request.keywordid().end(); ++it)
+         keywordIdList.push_back(*it);
+      shared::script::yScriptApi::CWaitForEventResult result = m_scriptApi->waitForEvent(keywordIdList, request.receivedatetimeevent(), request.has_timeout() ? request.timeout() : std::string());
+      switch (result.getType())
+      {
+      case shared::script::yScriptApi::CWaitForEventResult::kTimeout:answer->set_type(pbAnswer::WaitForEvent_EventType_kTimeout); break;
+      case shared::script::yScriptApi::CWaitForEventResult::kKeyword:answer->set_type(pbAnswer::WaitForEvent_EventType_kKeyword); break;
+      case shared::script::yScriptApi::CWaitForEventResult::kDateTime:answer->set_type(pbAnswer::WaitForEvent_EventType_kDateTime); break;
+      default:
+         throw shared::exception::CInvalidParameter("CWaitForEventResult::type");
+      }
+      answer->set_keywordid(result.getKeywordId());
+      if (!result.getValue().empty())
+         answer->set_acquisition(result.getValue());
    }
    catch (std::exception& ex)
    {
-      answer.set("error", ex.what());
+      ans.set_error(ex.what());
    }
-   sendAnswer(kAnsWaitForEvent, answer, messageQueue);
+   sendAnswer(ans, messageQueue);
 }
 
-void CContextAccessor::processWriteKeyword(const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue)
+void CContextAccessor::processWriteKeyword(const pbRequest::WriteKeyword& request, boost::interprocess::message_queue& messageQueue)
 {
-   shared::CDataContainer answer;
+   pbAnswer::msg ans;
+   ans.mutable_writekeyword();
    try
    {
-      m_scriptApi->writeKeyword(request.get<int>("keywordId"), request.get<std::string>("newState"));
+      m_scriptApi->writeKeyword(request.keywordid(), request.newstate());
    }
    catch (std::exception& ex)
    {
-      answer.set("error", ex.what());
+      ans.set_error(ex.what());
    }
-   sendAnswer(kAnsWriteKeyword, answer, messageQueue);
+   sendAnswer(ans, messageQueue);
 }
 
-void CContextAccessor::processSendNotification(const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue)
+void CContextAccessor::processSendNotification(const pbRequest::SendNotification& request, boost::interprocess::message_queue& messageQueue)
 {
-   shared::CDataContainer answer;
+   pbAnswer::msg ans;
+   ans.mutable_sendnotification();
    try
    {
-      m_scriptApi->sendNotification(request.get<int>("keywordId"), request.get<int>("recipientId"), request.get<std::string>("message"));
+      m_scriptApi->sendNotification(request.keywordid(), request.recipientid(), request.message());
    }
    catch (std::exception& ex)
    {
-      answer.set("error", ex.what());
+      ans.set_error(ex.what());
    }
-   sendAnswer(kAnsSendNotification, answer, messageQueue);
+   sendAnswer(ans, messageQueue);
 }
 
-void CContextAccessor::processGetInfo(const shared::CDataContainer& request, boost::interprocess::message_queue& messageQueue)
+void CContextAccessor::processGetInfo(const pbRequest::GetInfo& request, boost::interprocess::message_queue& messageQueue)
 {
-   shared::CDataContainer answer;
+   pbAnswer::msg ans;
+   pbAnswer::GetInfo* answer = ans.mutable_getinfo();
    try
    {
-      answer.set("returnValue", m_scriptApi->getInfo(request.get<shared::script::yScriptApi::IYScriptApi::EInfoKeys>("key")));
+      shared::script::yScriptApi::IYScriptApi::EInfoKeys key;
+      switch (request.key())
+      {
+      case pbRequest::GetInfo_Key_kSunrise: key = shared::script::yScriptApi::IYScriptApi::kSunrise; break;
+      case pbRequest::GetInfo_Key_kSunset: key = shared::script::yScriptApi::IYScriptApi::kSunset; break;
+      case pbRequest::GetInfo_Key_kLatitude: key = shared::script::yScriptApi::IYScriptApi::kLatitude; break;
+      case pbRequest::GetInfo_Key_kLongitude: key = shared::script::yScriptApi::IYScriptApi::kLongitude; break;
+      case pbRequest::GetInfo_Key_kAltitude: key = shared::script::yScriptApi::IYScriptApi::kAltitude; break;
+      case pbRequest::GetInfo_Key_kYadomsServerOS: key = shared::script::yScriptApi::IYScriptApi::kYadomsServerOS; break;
+      case pbRequest::GetInfo_Key_kYadomsServerVersion: key = shared::script::yScriptApi::IYScriptApi::kYadomsServerVersion; break;
+      default:
+         throw shared::exception::CInvalidParameter("answer.waitforeventrequestanswer.type");
+      }
+
+      answer->set_value(m_scriptApi->getInfo(key));
    }
    catch (std::exception& ex)
    {
-      answer.set("error", ex.what());
+      ans.set_error(ex.what());
    }
-   sendAnswer(kAnsGetInfo, answer, messageQueue);
+   sendAnswer(ans, messageQueue);
 }

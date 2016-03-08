@@ -13,7 +13,7 @@ namespace owfs { namespace io {
       /// \brief	Constructor
       /// \param[in]	devicePath Device path
       //--------------------------------------------------------------
-      CDigitalPotentiometer(const boost::filesystem::path& devicePath);
+      explicit CDigitalPotentiometer(const boost::filesystem::path& devicePath);
 
       //--------------------------------------------------------------
       /// \brief	Destructor

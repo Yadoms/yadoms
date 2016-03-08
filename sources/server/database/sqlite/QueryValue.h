@@ -25,13 +25,13 @@ namespace sqlite {
       /// \brief        Constructor
       /// \param value  A string used as value
       //
-      CQueryValue(const std::string & value, bool secure = true);
+      explicit CQueryValue(const std::string & value, bool secure = true);
 
       //
       /// \brief        Constructor
       /// \param value  A boolean used as value
       //
-      CQueryValue(const bool value) ;
+      explicit CQueryValue(const bool value) ;
 
       //
       /// \brief           Constructor

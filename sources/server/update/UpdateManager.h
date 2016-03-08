@@ -14,7 +14,7 @@ namespace update
       /// \brief  Constructor
       /// \param [in]   taskScheduler        The task scheduler
       //-----------------------------------------------------------------------------   
-      CUpdateManager(boost::shared_ptr<task::CScheduler> & taskScheduler);
+      explicit CUpdateManager(boost::shared_ptr<task::CScheduler> & taskScheduler);
 
       //-----------------------------------------------------------------------------
       /// \brief  Destructor

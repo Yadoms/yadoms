@@ -1,8 +1,8 @@
 #pragma once
 
 #include <shared/script/yScriptApi/IYScriptApi.h>
-#include <shared/DataContainer.h>
-#include "../Messages.hpp"
+#include "../Messages.h"
+
 
 //-----------------------------------------------------
 ///\brief The Yadoms script API implementation for the Python wrapper
@@ -14,7 +14,7 @@ public:
    ///\brief               Constructor
    ///\param[in] yScriptApiAccessorId  The context accessor ID provided by Yadoms
    //-----------------------------------------------------
-   CYScriptApiImplementation(const std::string& yScriptApiAccessorId);
+   explicit CYScriptApiImplementation(const std::string& yScriptApiAccessorId);
 
    //-----------------------------------------------------
    ///\brief               Destructor
@@ -36,19 +36,17 @@ public:
 protected:
    //--------------------------------------------------------------
    /// \brief	Send a request
-   /// \param[in] requestId The request message identifier
-   /// \param[in] request The request
+   /// \param[in] request Request to send
    //--------------------------------------------------------------
-   void sendRequest(ERequestIdentifier requestId, const shared::CDataContainer& request) const;
+   void sendRequest(const pbRequest::msg& request) const;
 
    //--------------------------------------------------------------
    /// \brief	Wait for an answer
-   /// \param[in] expectedAnswerId The expected answer message identifier
-   /// \return The answer
+   /// \param[in] answer Received answer from Yadoms
    /// \throw std::runtime_error if message queue error
-   /// \throw std::out_of_range if wrong answer message identifier received
+   /// \throw shared::exception::CInvalidParameter if error parsing message
    //--------------------------------------------------------------
-   shared::CDataContainer receiveAnswer(EAnswerIdentifier expectedAnswerId) const;
+   void receiveAnswer(pbAnswer::msg& answer) const;
 
 private:
    //-----------------------------------------------------
@@ -57,4 +55,9 @@ private:
    //-----------------------------------------------------
    mutable boost::shared_ptr<boost::interprocess::message_queue> m_sendMessageQueue;
    mutable boost::shared_ptr<boost::interprocess::message_queue> m_receiveMessageQueue;
+
+   //-----------------------------------------------------
+   ///\brief               The message queue buffer, localy used but defined here to be allocated only once
+   //-----------------------------------------------------
+   mutable unsigned char m_mqBuffer[m_messageQueueMessageSize];
 };

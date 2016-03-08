@@ -214,10 +214,13 @@ add_precompiled_header(yadomsTests stdafx.h)
 include_directories(${BOOST_INCL_DIR} . mock ${YADOMS_PATH}/server ${YADOMS_PATH}/shared ${YADOMS_PATH}/server/tools ${Poco_INCLUDE_DIRS})
 IF(WIN32)
    include_directories(${YADOMS_PATH}/server/tools/windows)
+   include_directories(${YADOMS_PATH}/shared/windows)
 ELSEIF(APPLE)
    include_directories(${YADOMS_PATH}/server/tools/mac)
+   include_directories(${YADOMS_PATH}/shared/mac)
 ELSE()
    include_directories(${YADOMS_PATH}/server/tools/linux)
+   include_directories(${YADOMS_PATH}/shared/linux)
 ENDIF()
 
 

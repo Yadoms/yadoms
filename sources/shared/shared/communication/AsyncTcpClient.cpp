@@ -104,7 +104,7 @@ void CAsyncTcpClient::reconnectTimerHandler(const boost::system::error_code& err
 void CAsyncTcpClient::tryConnect()
 {
    if (!isConnected())
-      throw exception::CException("Already connected");
+      YADOMS_LOG(warning) << "Already connected";
 
    m_serverAdressResolver.async_resolve(m_serverAdressResolverQuery,
       boost::bind(&CAsyncTcpClient::handleEndPointResolve, this, boost::asio::placeholders::error, boost::asio::placeholders::iterator));

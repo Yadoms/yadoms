@@ -11,7 +11,7 @@ public:
    /// \brief	                        Constructor
    /// \param[in]  message             Exception message
    //--------------------------------------------------------------
-   CKeywordException(const std::string& message)
+   explicit CKeywordException(const std::string& message)
       :CException(message)
    {
    }

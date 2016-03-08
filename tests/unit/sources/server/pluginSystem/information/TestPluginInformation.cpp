@@ -121,7 +121,7 @@ BOOST_AUTO_TEST_CASE(ReadDefaultInformation)
 
    BOOST_CHECK_EQUAL(info.getType(), "FakePackage");
    BOOST_CHECK_EQUAL(info.getVersion(), "0.1");
-   BOOST_CHECK_EQUAL(info.getReleaseType(), shared::plugin::information::EReleaseType::kBetaValue);
+   BOOST_CHECK_EQUAL(info.getReleaseType(), shared::versioning::EReleaseType::kBetaValue);
    BOOST_CHECK_EQUAL(info.getAuthor(), "yadoms-team");
    BOOST_CHECK_EQUAL(info.getUrl(), "https://github.com/Yadoms/yadoms/");
    BOOST_CHECK_EQUAL(info.getIdentity(), "FakePackage v0.1[Beta]");

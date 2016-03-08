@@ -26,7 +26,7 @@ namespace xplcore
       /// \brief			Construct a filter to apply to the received messages
       /// \param [in]   filter to apply. It must be formed like : [msgtype].[vendor].[device].[instance].[class].[type] (* is allowed for each param)
       //--------------------------------------------------------------
-      CXplMessageFilter(const std::string & filter);
+      explicit CXplMessageFilter(const std::string & filter);
 
       //--------------------------------------------------------------
       /// \brief			Destructor

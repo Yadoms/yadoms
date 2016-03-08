@@ -216,7 +216,7 @@ void CMegatecUps::onCommandShutdown(boost::shared_ptr<yApi::IYPluginApi> context
 
 void CMegatecUps::processConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> context)
 {
-   YADOMS_LOG(debug) << "UPS is now connected";
+   YADOMS_LOG(debug) << "UPS port opened";
    context->setPluginState(yApi::historization::EPluginState::kRunning);
 
    try

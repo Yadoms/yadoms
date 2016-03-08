@@ -19,7 +19,7 @@ public:
    /// \brief	    Constructor
    /// \param[in] device    The device
    //--------------------------------------------------------------
-   CVirtualProcessMemory(const std::string & device);
+   explicit CVirtualProcessMemory(const std::string & device);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor

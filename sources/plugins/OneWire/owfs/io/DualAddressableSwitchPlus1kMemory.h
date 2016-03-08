@@ -14,7 +14,7 @@ namespace owfs { namespace io {
       /// \param[in]	devicePath Device path
       /// \param[in]	unitRepresentation Unit representation type
       //--------------------------------------------------------------
-      CDualAddressableSwitchPlus1kMemory(const boost::filesystem::path& devicePath);
+      explicit CDualAddressableSwitchPlus1kMemory(const boost::filesystem::path& devicePath);
 
       //--------------------------------------------------------------
       /// \brief	Destructor

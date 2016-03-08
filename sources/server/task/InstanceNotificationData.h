@@ -14,7 +14,7 @@ namespace task {
       //------------------------------
       ///\brief Constructor
       //------------------------------
-      CInstanceNotificationData(const IInstance & instance);
+      explicit CInstanceNotificationData(const IInstance & instance);
       
       //------------------------------
       ///\brief public destructor

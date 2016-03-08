@@ -9,7 +9,7 @@ namespace web { namespace rest { namespace service {
    class CRecipient : public IRestService
    {
    public:
-      CRecipient(boost::shared_ptr<database::IDataProvider> dataProvider);
+      explicit CRecipient(boost::shared_ptr<database::IDataProvider> dataProvider);
       virtual ~CRecipient();
 
    public:
@@ -32,7 +32,7 @@ namespace web { namespace rest { namespace service {
       static std::string m_restKeyword;
       static std::string m_restFieldKeyword;
       boost::shared_ptr<database::IDataProvider> m_dataProvider;
-      shared::CDataContainer transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const std::string & requestContent);
+      shared::CDataContainer transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
    };
 
 

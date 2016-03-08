@@ -7,9 +7,7 @@
 
 CWUConfiguration::CWUConfiguration() :
 	     m_Localisation   (""),
-         m_CountryOrState (""),
-		 m_isWindEnabled  ( false ),
-		 m_isStandardInformationEnabled (false )
+         m_CountryOrState ("")
 {}
 
 CWUConfiguration::~CWUConfiguration()
@@ -38,7 +36,7 @@ std::string CWUConfiguration::getLocalisation()
    {
       m_Localisation = m_data.get<std::string>("Localisation");
    }
-   catch (shared::exception::CException e)
+   catch (shared::exception::CException& e)
    {
 	   YADOMS_LOG(warning) << e.what() << std::endl;
    }
@@ -60,7 +58,7 @@ std::string CWUConfiguration::getCountryOrState()
 		     throw CNoStateException ("No State configured for United States of America");
       }
    }
-   catch (shared::exception::CException e)
+   catch (shared::exception::CException& e)
    {
 	   YADOMS_LOG(warning) << e.what() << std::endl;
    }

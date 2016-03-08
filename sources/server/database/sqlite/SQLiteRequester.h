@@ -14,7 +14,7 @@ namespace sqlite {
    class CSQLiteRequester : public ITransactionalProvider
    {
    public:
-      CSQLiteRequester(sqlite3 * pDatabaseHandler);
+      explicit CSQLiteRequester(sqlite3 * pDatabaseHandler);
       virtual ~CSQLiteRequester();
 
       //--------------------------------------------------------------

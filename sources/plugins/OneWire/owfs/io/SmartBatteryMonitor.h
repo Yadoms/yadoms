@@ -19,7 +19,7 @@ namespace owfs { namespace io {
       /// \brief	Constructor
       /// \param[in]	devicePath Device path
       //--------------------------------------------------------------
-      CSmartBatteryMonitor(const boost::filesystem::path& devicePath);
+      explicit CSmartBatteryMonitor(const boost::filesystem::path& devicePath);
 
       //--------------------------------------------------------------
       /// \brief	Destructor

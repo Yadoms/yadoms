@@ -20,7 +20,7 @@ namespace shared { namespace versioning {
       ///\brief Contructor from a string version
       ///\param [in] stringVersion the version as a string. Separtors between version digits must be . or ,
       //---------------------------------------------
-      CVersion(const std::string & stringVersion);
+      explicit CVersion(const std::string & stringVersion);
 
       //---------------------------------------------
       ///\brief Contructor

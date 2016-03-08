@@ -13,7 +13,7 @@ namespace shared { namespace exception
       //--------------------------------------------------------------
       /// \brief	                        Constructor
       //--------------------------------------------------------------
-      CNotSupported(const std::string& function)
+      explicit CNotSupported(const std::string& function)
          :CException(function + " is not supported")
       {
       }

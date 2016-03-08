@@ -13,7 +13,7 @@ namespace shared { namespace exception
       //--------------------------------------------------------------
       /// \brief	                        Constructor
       //--------------------------------------------------------------
-      CNullReference(const char * reference = NULL)
+      explicit CNullReference(const char * reference = NULL)
       {
          std::ostringstream s;
          s << "Null reference exception" << std::endl;

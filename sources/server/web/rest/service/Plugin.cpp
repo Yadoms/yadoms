@@ -47,7 +47,7 @@ namespace web { namespace rest { namespace service {
    }
 
 
-   shared::CDataContainer CPlugin::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const std::string & requestContent)
+   shared::CDataContainer CPlugin::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       boost::shared_ptr<database::ITransactionalProvider> pTransactionalEngine = m_dataProvider->getTransactionalEngine();
       shared::CDataContainer result;
@@ -288,7 +288,7 @@ namespace web { namespace rest { namespace service {
 
             boost::shared_ptr<database::entities::CPlugin> pluginInstanceFound = m_pluginManager->getInstance(instanceId);
             if (pluginInstanceFound)
-               return CResult::GenerateSuccess(m_pluginManager->getInstanceState(instanceId));
+               return CResult::GenerateSuccess(m_pluginManager->getInstanceFullState(instanceId));
 
             return CResult::GenerateError("invalid parameter. Can not retreive instance id");
          }

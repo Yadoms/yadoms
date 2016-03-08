@@ -214,7 +214,7 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-   shared::CDataContainer CDevice::sendDeviceCommand(const std::vector<std::string> & parameters, const std::string & requestContent)
+   shared::CDataContainer CDevice::sendDeviceCommand(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       try
       {
@@ -225,7 +225,7 @@ namespace web { namespace rest { namespace service {
 
             try
             {
-               m_messageSender.sendCommandAsync(keywordId, requestContent);
+               m_messageSender.sendCommandAsync(keywordId, requestContent.serialize());
                return CResult::GenerateSuccess();
             }
             catch (shared::exception::CEmptyResult&)
@@ -358,7 +358,7 @@ namespace web { namespace rest { namespace service {
 
 
 
-   shared::CDataContainer CDevice::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const std::string & requestContent)
+   shared::CDataContainer CDevice::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       boost::shared_ptr<database::ITransactionalProvider> pTransactionalEngine = m_dataProvider->getTransactionalEngine();
       shared::CDataContainer result;

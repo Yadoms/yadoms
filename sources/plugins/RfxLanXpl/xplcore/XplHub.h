@@ -12,7 +12,7 @@ namespace xplcore
    class CXplHub : public shared::CThreadBase
    {
    public:
-      CXplHub(const std::string & localIPOfTheInterfaceToUse);
+      explicit CXplHub(const std::string & localIPOfTheInterfaceToUse);
 
       virtual ~CXplHub();
 

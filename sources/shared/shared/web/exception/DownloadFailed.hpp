@@ -13,7 +13,7 @@ namespace shared { namespace web { namespace exception {
       //--------------------------------------------------------------
       /// \brief	                        Constructor
       //--------------------------------------------------------------
-      CDownloadFailed(const Poco::URI & failToDownload)
+      explicit CDownloadFailed(const Poco::URI & failToDownload)
          :shared::exception::CException(std::string("Fail to download " + failToDownload.toString()))
       {
       }      
@@ -21,7 +21,7 @@ namespace shared { namespace web { namespace exception {
       //--------------------------------------------------------------
       /// \brief	                        Constructor
       //--------------------------------------------------------------
-      CDownloadFailed(const std::string & failToDownload)
+      explicit CDownloadFailed(const std::string & failToDownload)
          :shared::exception::CException(std::string("Fail to download " + failToDownload))
       {
       }    

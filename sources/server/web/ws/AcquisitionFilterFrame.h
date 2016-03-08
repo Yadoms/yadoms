@@ -14,7 +14,7 @@ namespace web { namespace ws {
       ///\brief Constructor (deserialization)
       ///\param [in]    content     The frame content that will be deserialized
       //-----------------------------
-      CAcquisitionFilterFrame(const std::string & content);
+      explicit CAcquisitionFilterFrame(const std::string & content);
 
       //-----------------------------
       ///\brief Destructor

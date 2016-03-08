@@ -13,7 +13,7 @@ namespace owfs { namespace io {
       /// \brief	Constructor
       /// \param[in]	devicePath Device path
       //--------------------------------------------------------------
-      CMultiCounter(const boost::filesystem::path& devicePath);
+      explicit CMultiCounter(const boost::filesystem::path& devicePath);
 
       //--------------------------------------------------------------
       /// \brief	Destructor

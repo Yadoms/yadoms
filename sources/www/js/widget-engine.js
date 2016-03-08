@@ -37,9 +37,6 @@ function initializeWidgetEngine() {
       });
    });
 
-
-
-
    //we ask all widgets packages
    WidgetPackageManager.getAll()
    .done(function () {

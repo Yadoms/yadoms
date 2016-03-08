@@ -48,11 +48,4 @@ private:
    /// \brief	    The country or the american state code
    //--------------------------------------------------------------
    std::string m_CountryOrState;
-
-   //--------------------------------------------------------------
-   /// \brief	    State of each option
-   //--------------------------------------------------------------
-
-   bool m_isWindEnabled;
-   bool m_isStandardInformationEnabled;
 };

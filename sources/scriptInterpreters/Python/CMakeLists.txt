@@ -6,7 +6,12 @@ include(findPython.cmake)
 if(PYTHONLIBS_FOUND)
 
    # include common script interpreters definitions
-   include("../YadomsScriptInterpertersCommon.cmake")
+   include("../YadomsScriptInterpertersCommon.cmake")   
+	  
+   #########################################
+   ## Messages static library
+   #########################################
+   add_subdirectory(messages)
 
    #########################################
    ## Place here all the source files
@@ -20,7 +25,7 @@ if(PYTHONLIBS_FOUND)
       IPythonExecutable.h
       IScriptFile.h
       IScriptProcess.h
-      Messages.hpp
+      Messages.h
       MessageQueueRemover.hpp
       Python.h
       Python.cpp
@@ -37,8 +42,7 @@ if(PYTHONLIBS_FOUND)
       scriptCaller.py
       scriptUtilities.py
    )
-
-
+   
    #Append platform specific files
    IF(WIN32)
    set(PYTHON_SOURCES	
@@ -78,8 +82,8 @@ if(PYTHONLIBS_FOUND)
    ## even if PYTHON_INCLDIR or PYTHON_LINK are empty
    #########################################
    SCRIPT_INTERPRETER_SOURCES(python ${PYTHON_SOURCES})
-   SCRIPT_INTERPRETER_INCLDIR(python ${PYTHON_INCLDIR} ${PLATFORM_SPECIFIC_INCL_DIR})
-   SCRIPT_INTERPRETER_LINK(python ${PYTHON_LINK})
+   SCRIPT_INTERPRETER_INCLDIR(python ${PYTHON_INCLDIR} ${PLATFORM_SPECIFIC_INCL_DIR} ${PROTOBUF_INCLUDE_DIRS} ${messages_GENERATED_DIR})
+   SCRIPT_INTERPRETER_LINK(python ${PYTHON_LINK} messages)
 
    #########################################
    ## Post-build commands
@@ -93,7 +97,7 @@ if(PYTHONLIBS_FOUND)
    SCRIPT_INTERPRETER_POST_BUILD_COPY_DIRECTORY(python locales)
 	  
    #########################################
-   ## Generate the associated yScriptApi wrapper
+   ## Generate the associated yScriptApiwrapper
    #########################################
    add_subdirectory(yScriptApiWrapper)
    

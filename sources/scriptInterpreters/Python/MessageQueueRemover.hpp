@@ -13,7 +13,7 @@ struct CMessageQueueRemover
    /// \brief	Constructor
    /// \param[in] messageQueueId The message queue ID (unique system-wide)
    //--------------------------------------------------------------
-   CMessageQueueRemover(const std::string& messageQueueId)
+   explicit CMessageQueueRemover(const std::string& messageQueueId)
       :m_messageQueueId(messageQueueId)
    {
       boost::interprocess::message_queue::remove(m_messageQueueId.c_str());

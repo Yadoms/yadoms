@@ -13,7 +13,7 @@ namespace owfs { namespace io {
       /// \brief	Constructor
       /// \param[in]	devicePath Device path
       //--------------------------------------------------------------
-      CMicrolanCoupler(const boost::filesystem::path& devicePath);
+      explicit CMicrolanCoupler(const boost::filesystem::path& devicePath);
 
       //--------------------------------------------------------------
       /// \brief	Destructor

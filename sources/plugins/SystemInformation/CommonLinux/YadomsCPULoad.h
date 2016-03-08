@@ -15,7 +15,7 @@ public:
    /// \brief	    Constructor
    /// \param[in] deviceId    The device ID
    //--------------------------------------------------------------
-   CYadomsCPULoad(const std::string & device);
+   explicit CYadomsCPULoad(const std::string & device);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor

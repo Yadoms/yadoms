@@ -47,7 +47,7 @@ namespace database {
       /// \return                         The list of found devices
       /// \throw                          shared::exception::CEmptyResult if none found
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<entities::CDevice> > getDevicesIdFromFriendlyName(const std::string friendlyName) const = 0;
+      virtual std::vector<boost::shared_ptr<entities::CDevice> > getDevicesIdFromFriendlyName(const std::string& friendlyName) const = 0;
 
 
       //--------------------------------------------------------------

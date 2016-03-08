@@ -11,7 +11,7 @@ public:
    /// \brief	                        Constructor
    /// \param[in]  message             Exception message
    //--------------------------------------------------------------
-   CPhoneException(const std::string& message)
+   explicit CPhoneException(const std::string& message)
       :CException(message.c_str())
    {
    }
@@ -20,7 +20,7 @@ public:
    /// \brief	                        Constructor
    /// \param[in]  message             Exception message
    //--------------------------------------------------------------
-   CPhoneException(const char * message)
+   explicit CPhoneException(const char * message)
       :CException(message)
    {
    }

@@ -61,7 +61,7 @@ namespace shared { namespace script { namespace yScriptApi
     
 
       //-----------------------------------------------------
-      ///\brief Wait for a new acquisition on a keyword list
+      ///\brief Wait for an event (acquisition, time event...)
       ///\param[in] keywordIdList The keyword IDs list to watch
       ///\param[in] receiveDateTimeEvent true to receive date/time events (one per minute)
       ///\param[in] timeout Timeout to wait.

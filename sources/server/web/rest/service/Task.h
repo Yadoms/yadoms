@@ -8,7 +8,7 @@ namespace web { namespace rest { namespace service {
    class CTask : public IRestService
    {
    public:
-      CTask(boost::shared_ptr<task::CScheduler> taskManager);
+      explicit CTask(boost::shared_ptr<task::CScheduler> taskManager);
       virtual ~CTask();
 
    public:

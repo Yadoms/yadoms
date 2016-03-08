@@ -2,7 +2,7 @@
 #include "DualChannelAddressableSwitch.h"
 #include "Common.h"
 #include <shared/Log.h>
-#include "OneWireException.hpp"
+#include <OneWireException.hpp>
 
 namespace kernel { namespace io {
 
@@ -18,9 +18,9 @@ CDualChannelAddressableSwitch::~CDualChannelAddressableSwitch()
 unsigned char CDualChannelAddressableSwitch::readPort() const
 {
    static const unsigned char cmdReadPioRegisters[] = { 0xF5 };
-   unsigned char answer[1];
    try
    {
+      unsigned char answer[1];
       CCommon::sendAndReceive(m_devicePath, cmdReadPioRegisters, sizeof(cmdReadPioRegisters), answer, sizeof(answer));
 
       // Check received data : datasheet says that b[7-4] is complement to b[3-0]

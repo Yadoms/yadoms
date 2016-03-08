@@ -72,7 +72,7 @@ namespace rfxcomMessages { namespace specificHistorizers {
       ///\brief                     Constructor
       ///\param[in] keywordName     Yadoms keyword name
       //-----------------------------------------------------
-      CRemotePCHistorizer(const std::string& keywordName);
+      explicit CRemotePCHistorizer(const std::string& keywordName);
 
       //-----------------------------------------------------
       ///\brief                     Destructor

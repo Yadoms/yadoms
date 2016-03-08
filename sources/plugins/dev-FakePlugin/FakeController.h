@@ -21,7 +21,7 @@ public:
    ///\brief                     Constructor
    ///\param[in] keywordName     Yadoms keyword name
    //-----------------------------------------------------
-   CControllerValue(const std::string& keywordName);
+   explicit CControllerValue(const std::string& keywordName);
 
    //-----------------------------------------------------
    ///\brief                     Destructor
@@ -40,7 +40,7 @@ public:
    /// \brief	    Constructor
    /// \param[in] deviceName    The device name
    //--------------------------------------------------------------
-   CFakeController(const std::string& deviceName);
+   explicit CFakeController(const std::string& deviceName);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor

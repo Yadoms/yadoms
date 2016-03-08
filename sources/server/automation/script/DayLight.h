@@ -14,7 +14,7 @@ namespace automation { namespace script
       ///\brief               Constructor
       ///\param[in] location  The current location
       //-----------------------------------------------------
-      CDayLight(boost::shared_ptr<ILocation> location);
+      explicit CDayLight(boost::shared_ptr<ILocation> location);
 
       //-----------------------------------------------------
       ///\brief               Destructor

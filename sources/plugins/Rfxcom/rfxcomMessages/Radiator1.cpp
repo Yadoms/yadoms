@@ -35,7 +35,7 @@ CRadiator1::CRadiator1(boost::shared_ptr<yApi::IYPluginApi> context, const std::
 }
 
 CRadiator1::CRadiator1(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
-   :m_day("day"), m_setPoint("setPoint"), m_rssi("rssi")
+   :m_dayNightCmd(false), m_day("day"), m_setPoint("setPoint"), m_rssi("rssi")
 {
    m_day.set(false);
    m_setPoint.set(0.0);
@@ -57,10 +57,10 @@ CRadiator1::CRadiator1(boost::shared_ptr<yApi::IYPluginApi> context, unsigned ch
 }
 
 CRadiator1::CRadiator1(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
-   :m_subType(0), m_unitCode(0), m_id(0), m_day("day"), m_setPoint("setPoint"), m_rssi("rssi")
+   :m_subType(0), m_unitCode(0), m_id(0), m_dayNightCmd(false), m_day("day"), m_setPoint("setPoint"), m_rssi("rssi")
 {
    // Should not be called (transmitter-only device)
-   throw shared::exception::CException("Constructing CRadiator1 object from received buffer is not possible, CRadiator1 is transmitter-only device");
+   BOOST_ASSERT_MSG(false, "Constructing CRadiator1 object from received buffer is not possible, CRadiator1 is transmitter-only device");
 }
 
 CRadiator1::~CRadiator1()
@@ -81,7 +81,7 @@ void CRadiator1::Init(boost::shared_ptr<yApi::IYPluginApi> context)
       details.set("subType", m_subType);
       details.set("id", m_id);
       details.set("unitCode", m_unitCode);
-      context->declareDevice(m_deviceName, m_deviceModel, details.serialize());
+      context->declareDevice(m_deviceName, m_deviceModel, details);
 
       context->declareKeyword(m_deviceName, m_day);
       context->declareKeyword(m_deviceName, m_setPoint);

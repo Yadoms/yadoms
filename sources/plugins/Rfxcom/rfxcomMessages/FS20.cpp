@@ -181,7 +181,7 @@ void CFS20::Init(boost::shared_ptr<yApi::IYPluginApi> context)
       details.set("groupAddress", m_groupAddress);
       details.set("subAddress", m_subAddress);
 
-      context->declareDevice(m_deviceName, m_deviceModel, details.serialize());
+      context->declareDevice(m_deviceName, m_deviceModel, details);
 
       context->declareKeyword(m_deviceName, m_state);
       context->declareKeyword(m_deviceName, m_rssi);

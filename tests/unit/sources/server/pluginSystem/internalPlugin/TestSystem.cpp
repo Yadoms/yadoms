@@ -142,10 +142,9 @@ BOOST_AUTO_TEST_CASE(Nominal)
    // Check devices/keywords declared by systemPlugin
    BOOST_CHECK(context->getDevices().size() == 1);
    BOOST_CHECK(context->deviceExists("system"));
-   BOOST_CHECK(context->getKeywords().size() == 3);
+   BOOST_CHECK(context->getKeywords().size() == 2);
    BOOST_CHECK(context->keywordExists("system", "shutdown"));
    BOOST_CHECK(context->keywordExists("system", "restart"));
-   BOOST_CHECK(context->keywordExists("system", "daylight"));
 
    // Check commands
    boost::shared_ptr<const yApi::IDeviceCommand> shutdownCommand(boost::make_shared<CCommandMock>("system", "shutdown"));

@@ -24,7 +24,7 @@ namespace xplrules { namespace rfxLanXpl { namespace data {
       ///\brief                     Constructor
       ///\param[in] keywordName     Yadoms keyword name
       //-----------------------------------------------------
-      CDigitalIoCommand(const std::string& keywordName);
+      explicit CDigitalIoCommand(const std::string& keywordName);
 
       //-----------------------------------------------------
       ///\brief                     Destructor

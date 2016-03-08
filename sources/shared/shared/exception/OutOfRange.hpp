@@ -14,7 +14,7 @@ namespace shared { namespace exception
       //--------------------------------------------------------------
       /// \brief	                        Constructor
       //--------------------------------------------------------------
-      COutOfRange(const std::string& message)
+      explicit COutOfRange(const std::string& message)
          :CException(std::string("Out of range " + message))
       {
       }

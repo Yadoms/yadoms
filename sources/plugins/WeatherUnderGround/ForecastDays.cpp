@@ -60,7 +60,7 @@ void CForecastDays::InitializeForecastDays ( boost::shared_ptr<yApi::IYPluginApi
 		 }
       }
    }
-   catch (shared::exception::CException e)
+   catch (shared::exception::CException& e)
    {
       YADOMS_LOG(warning) << "Configuration or initialization error of Forecast 3 Days module :" << e.what()  << std::endl;
    }
@@ -88,7 +88,7 @@ void CForecastDays::Request( boost::shared_ptr<yApi::IYPluginApi> context )
 	{
 	   m_data = m_webServer.SendGetRequest( m_URL.str() );
 	}
-	catch (shared::exception::CException e)
+	catch (shared::exception::CException& e)
 	{
 		YADOMS_LOG(warning) << "Forecast 10 days :"  << e.what() << std::endl;
 	}
@@ -151,7 +151,7 @@ void CForecastDays::Parse( boost::shared_ptr<yApi::IYPluginApi> context, const I
 			YADOMS_LOG(debug) << "Forecast Updated !";
 		}
 	}
-	catch (shared::exception::CException e)
+	catch (shared::exception::CException& e)
 	{
       YADOMS_LOG(warning) << "Error during the parsing of the element ! : " << e.what() << std::endl;
 	}

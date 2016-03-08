@@ -24,7 +24,8 @@ namespace rfxcomMessages
       /// \brief	                        Constructor
       /// \param[in] model                The device model
       //--------------------------------------------------------------
-      CSecurity1KD101_SA30(const std::string& model);
+      explicit CSecurity1KD101_SA30(const std::string& model);
+
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
