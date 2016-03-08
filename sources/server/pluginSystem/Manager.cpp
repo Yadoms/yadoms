@@ -354,7 +354,7 @@ void CManager::signalEvent(const CManagerEvent& event)
             if (!event.getStopping())
             {
                // Still safe, try to restart it (only if it was a plugin crash. If it's a plugin error, user have to restart plugin manually)
-               if (getInstanceState(event.getInstanceId()) != shared::plugin::yPluginApi::historization::EPluginState::kErrorValue)
+               if (getInstanceState(event.getInstanceId()) != shared::plugin::yPluginApi::historization::EPluginState::kError)
                   startInstance(event.getInstanceId());
             }
          }
