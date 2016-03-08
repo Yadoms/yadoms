@@ -23,7 +23,7 @@ CCurtain1::CCurtain1(boost::shared_ptr<yApi::IYPluginApi> context, const std::st
 CCurtain1::CCurtain1(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
    :m_subType(0), m_houseCode(0), m_unitCode(0), m_state("state")
 {
-   m_state.set(yApi::historization::ECurtainCommand::kStopValue);
+   m_state.set(yApi::historization::ECurtainCommand::kStop);
 
    m_subType = subType;
    if (m_subType != sTypeHarrison)

@@ -24,7 +24,7 @@ CCamera1::CCamera1(boost::shared_ptr<yApi::IYPluginApi> context, const std::stri
 CCamera1::CCamera1(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
    :m_camera("camera"), m_rssi("rssi")
 {
-   m_camera.set(yApi::historization::ECameraMoveCommand::kCenterPositionValue);
+   m_camera.set(yApi::historization::ECameraMoveCommand::kCenterPosition);
    m_rssi.set(0);
 
    m_subType = subType;
@@ -151,22 +151,22 @@ yApi::historization::ECameraMoveCommand CCamera1::fromProtocolState(unsigned cha
 {
    switch(protocolState)
    {
-   case camera_sLeft : return yApi::historization::ECameraMoveCommand::kLeftValue;
-   case camera_sRight : return yApi::historization::ECameraMoveCommand::kRightValue;
-   case camera_sUp : return yApi::historization::ECameraMoveCommand::kUpValue;
-   case camera_sDown : return yApi::historization::ECameraMoveCommand::kDownValue;
-   case camera_sPosition1 : return yApi::historization::ECameraMoveCommand::kPosition1Value;
-   case camera_sProgramPosition1 : return yApi::historization::ECameraMoveCommand::kProgramPosition1Value;
-   case camera_sPosition2 : return yApi::historization::ECameraMoveCommand::kPosition2Value;
-   case camera_sProgramPosition2 : return yApi::historization::ECameraMoveCommand::kProgramPosition2Value;
-   case camera_sPosition3 : return yApi::historization::ECameraMoveCommand::kPosition3Value;
-   case camera_sProgramPosition3 : return yApi::historization::ECameraMoveCommand::kProgramPosition3Value;
-   case camera_sPosition4 : return yApi::historization::ECameraMoveCommand::kPosition4Value;
-   case camera_sProgramPosition4 : return yApi::historization::ECameraMoveCommand::kProgramPosition4Value;
-   case camera_sCenter : return yApi::historization::ECameraMoveCommand::kCenterPositionValue;
-   case camera_sProgramCenterPosition : return yApi::historization::ECameraMoveCommand::kProgramCenterPositionValue;
-   case camera_sSweep : return yApi::historization::ECameraMoveCommand::kSweepValue;
-   case camera_sProgramSweep : return yApi::historization::ECameraMoveCommand::kProgramSweepValue;
+   case camera_sLeft : return yApi::historization::ECameraMoveCommand::kLeft;
+   case camera_sRight : return yApi::historization::ECameraMoveCommand::kRight;
+   case camera_sUp : return yApi::historization::ECameraMoveCommand::kUp;
+   case camera_sDown : return yApi::historization::ECameraMoveCommand::kDown;
+   case camera_sPosition1 : return yApi::historization::ECameraMoveCommand::kPosition1;
+   case camera_sProgramPosition1 : return yApi::historization::ECameraMoveCommand::kProgramPosition1;
+   case camera_sPosition2 : return yApi::historization::ECameraMoveCommand::kPosition2;
+   case camera_sProgramPosition2 : return yApi::historization::ECameraMoveCommand::kProgramPosition2;
+   case camera_sPosition3 : return yApi::historization::ECameraMoveCommand::kPosition3;
+   case camera_sProgramPosition3 : return yApi::historization::ECameraMoveCommand::kProgramPosition3;
+   case camera_sPosition4 : return yApi::historization::ECameraMoveCommand::kPosition4;
+   case camera_sProgramPosition4 : return yApi::historization::ECameraMoveCommand::kProgramPosition4;
+   case camera_sCenter : return yApi::historization::ECameraMoveCommand::kCenterPosition;
+   case camera_sProgramCenterPosition : return yApi::historization::ECameraMoveCommand::kProgramCenterPosition;
+   case camera_sSweep : return yApi::historization::ECameraMoveCommand::kSweep;
+   case camera_sProgramSweep : return yApi::historization::ECameraMoveCommand::kProgramSweep;
    default:
       throw shared::exception::CInvalidParameter("state, " + boost::lexical_cast<std::string>(protocolState));
    }

@@ -61,7 +61,7 @@ void CThermostat3MertikG6RH4TB::reset()
 {
    m_onOff.set(false);
    m_onOff2.set(false);
-   m_UpDown.set(yApi::historization::EUpDownStopCommand::kStopValue);
+   m_UpDown.set(yApi::historization::EUpDownStopCommand::kStop);
 }
 
 void CThermostat3MertikG6RH4TB::setFromProtocolState(unsigned char cmd)
@@ -75,9 +75,9 @@ void CThermostat3MertikG6RH4TB::setFromProtocolState(unsigned char cmd)
    case thermostat3_Off2nd    : m_onOff2.set(false); break;
    case thermostat3_On2nd     : m_onOff2.set(true); break;
 
-   case thermostat3_sUp       : m_UpDown.set(yApi::historization::EUpDownStopCommand::kUpValue); break;
-   case thermostat3_sDown     : m_UpDown.set(yApi::historization::EUpDownStopCommand::kDownValue); break;
-   case thermostat3_sStop     : m_UpDown.set(yApi::historization::EUpDownStopCommand::kStopValue); break;
+   case thermostat3_sUp       : m_UpDown.set(yApi::historization::EUpDownStopCommand::kUp); break;
+   case thermostat3_sDown     : m_UpDown.set(yApi::historization::EUpDownStopCommand::kDown); break;
+   case thermostat3_sStop     : m_UpDown.set(yApi::historization::EUpDownStopCommand::kStop); break;
 
    default:
       throw shared::exception::CInvalidParameter("state, " + boost::lexical_cast<std::string>(m_statusByte));

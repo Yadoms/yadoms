@@ -25,7 +25,7 @@ CRfy::CRfy(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& comm
 CRfy::CRfy(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
    :m_state("state")
 {
-   m_state.set(yApi::historization::ECurtainCommand::kStopValue);
+   m_state.set(yApi::historization::ECurtainCommand::kStop);
 
    m_subType = subType;
    switch(m_subType)

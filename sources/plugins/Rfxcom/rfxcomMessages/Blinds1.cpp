@@ -25,7 +25,7 @@ CBlinds1::CBlinds1(boost::shared_ptr<yApi::IYPluginApi> context, const std::stri
 CBlinds1::CBlinds1(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
    :m_state("state"), m_batteryLevel("battery"), m_rssi("rssi")
 {
-   m_state.set(yApi::historization::ECurtainCommand::kStopValue);
+   m_state.set(yApi::historization::ECurtainCommand::kStop);
    m_batteryLevel.set(100);
    m_rssi.set(0);
 

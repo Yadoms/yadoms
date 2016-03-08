@@ -63,7 +63,7 @@ void CSecurity1Meiantech::reset()
 {
    m_statusByte = 0;
    m_panic.set(false);
-   m_armAlarm.set(yApi::historization::EArmingAlarmStatus::kDisarmedValue);
+   m_armAlarm.set(yApi::historization::EArmingAlarmStatus::kDisarmed);
 }
 
 void CSecurity1Meiantech::setFromProtocolState(unsigned char statusByte)
@@ -75,10 +75,10 @@ void CSecurity1Meiantech::setFromProtocolState(unsigned char statusByte)
    case sStatusPanic   :            m_panic.set(true);                                                            break;
 
    case sStatusArmAway :
-   case sStatusArmAwayDelayed :     m_armAlarm.set(yApi::historization::EArmingAlarmStatus::kArmedAwayValue);     break;
+   case sStatusArmAwayDelayed :     m_armAlarm.set(yApi::historization::EArmingAlarmStatus::kArmedAway);          break;
    case sStatusArmHome :
-   case sStatusArmHomeDelayed :     m_armAlarm.set(yApi::historization::EArmingAlarmStatus::kArmedAtHomeValue);   break;
-   case sStatusDisarm :             m_armAlarm.set(yApi::historization::EArmingAlarmStatus::kDisarmedValue);      break;
+   case sStatusArmHomeDelayed :     m_armAlarm.set(yApi::historization::EArmingAlarmStatus::kArmedAtHome);        break;
+   case sStatusDisarm :             m_armAlarm.set(yApi::historization::EArmingAlarmStatus::kDisarmed);           break;
 
    default:
       throw shared::exception::CInvalidParameter("state, " + boost::lexical_cast<std::string>(m_statusByte));
