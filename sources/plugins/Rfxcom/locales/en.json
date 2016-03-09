@@ -668,6 +668,18 @@
                   }              
                }
             },
+            "lucciAir":
+            {
+               "name": "Lucci Air fan",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "The device ID (0-16777215)"
+                  }              
+               }
+            },
             
             "harrisonCurtain":
             {

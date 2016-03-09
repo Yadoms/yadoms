@@ -741,6 +741,19 @@
                   }              
                }
             },
+            "lucciAir":
+            {
+               "type": "section",
+               "content":
+               {
+                  "id":
+                  {
+                     "type": "int",
+                     "minimumValue": "0",
+                     "maximumValue": "16777215"
+                  }              
+               }
+            },
             
             "harrisonCurtain":
             {

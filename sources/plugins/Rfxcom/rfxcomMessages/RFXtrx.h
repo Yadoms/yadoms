@@ -551,12 +551,26 @@ SDK version 4.9
 
 #define pTypeFan 0x17
 #define sTypeSiemensSF01 0x0
+#define sTypeItho 0x1
+#define sTypeLucciAir 0x2
 #define fan_sTimer 0x1
 #define fan_sMin 0x2
 #define fan_sLearn 0x3
 #define fan_sPlus 0x4
 #define fan_sConfirm 0x5
 #define fan_sLight 0x6
+#define fan_Itho1 0x1
+#define fan_Itho2 0x2
+#define fan_Itho3 0x3
+#define fan_IthoTimer 0x4
+#define fan_IthoNotAtHome 0x5
+#define fan_IthoLearn 0x6
+#define fan_IthoEraseAll 0x7
+#define fan_LucciHi 0x1
+#define fan_LucciMed 0x2
+#define fan_LucciLow 0x3
+#define fan_LucciOff 0x4
+#define fan_LucciLight 0x5
 
 //types for Curtain
 #define pTypeCurtain 0x18
