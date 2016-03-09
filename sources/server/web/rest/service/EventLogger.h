@@ -23,27 +23,27 @@ namespace web { namespace rest { namespace service {
       //-----------------------------------------
       ///\brief   get events
       //-----------------------------------------
-      shared::CDataContainer getEvents(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  
+      shared::CDataContainer getEvents(const std::vector<std::string> & parameters, const std::string & requestContent);  
 
       //-----------------------------------------
       ///\brief   get the last event
       //-----------------------------------------
-      shared::CDataContainer getLastEvent(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  
+      shared::CDataContainer getLastEvent(const std::vector<std::string> & parameters, const std::string & requestContent);  
 
       //-----------------------------------------
       ///\brief   get the events from
       //-----------------------------------------
-      shared::CDataContainer getEventsFrom(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  
+      shared::CDataContainer getEventsFrom(const std::vector<std::string> & parameters, const std::string & requestContent);  
 
       //-----------------------------------------
       ///\brief   get the events in a range
       //-----------------------------------------
-      shared::CDataContainer getEventsRange(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  
+      shared::CDataContainer getEventsRange(const std::vector<std::string> & parameters, const std::string & requestContent);  
 
       //-----------------------------------------
       ///\brief   create an event entry
       //-----------------------------------------
-      shared::CDataContainer addEvent(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  
+      shared::CDataContainer addEvent(const std::vector<std::string> & parameters, const std::string & requestContent);  
 
    private:
       boost::shared_ptr<dataAccessLayer::IEventLogger> m_dataProvider;

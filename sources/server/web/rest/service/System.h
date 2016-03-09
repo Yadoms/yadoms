@@ -21,8 +21,8 @@ namespace web { namespace rest { namespace service {
       const std::string & getRestKeyword();
 
    public:
-      shared::CDataContainer getBinding(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
-      shared::CDataContainer getSystemInformation(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer getBinding(const std::vector<std::string> & parameters, const std::string & requestContent);
+      shared::CDataContainer getSystemInformation(const std::vector<std::string> & parameters, const std::string & requestContent);
 
    private:
       shared::CDataContainer getSerialPorts();

@@ -46,7 +46,7 @@ namespace web { namespace rest { namespace service {
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)(m_restSubKeywordRule)("*")("code"), CAutomationRule::updateRuleCode, CAutomationRule::transactionalMethod);
    }
 
-   shared::CDataContainer CAutomationRule::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   shared::CDataContainer CAutomationRule::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       boost::shared_ptr<database::ITransactionalProvider> pTransactionalEngine = m_dataProvider->getTransactionalEngine();
       shared::CDataContainer result;
@@ -75,21 +75,21 @@ namespace web { namespace rest { namespace service {
       return result;
    }
 
-   shared::CDataContainer CAutomationRule::getAllInterpreters(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   shared::CDataContainer CAutomationRule::getAllInterpreters(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       shared::CDataContainer t;
       t.set("interpreters", m_rulesManager->getAvailableInterpreters());
       return CResult::GenerateSuccess(t);
    }
 
-   shared::CDataContainer CAutomationRule::getAllRules(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   shared::CDataContainer CAutomationRule::getAllRules(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       shared::CDataContainer t;
       t.set("rules", m_rulesManager->getRules());
       return CResult::GenerateSuccess(t);
    }
 
-   shared::CDataContainer CAutomationRule::getRule(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   shared::CDataContainer CAutomationRule::getRule(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       try
       {
@@ -112,7 +112,7 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-   shared::CDataContainer CAutomationRule::getRuleCode(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   shared::CDataContainer CAutomationRule::getRuleCode(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       try
       {
@@ -137,7 +137,7 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-   shared::CDataContainer CAutomationRule::getRuleCodeTemplate(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   shared::CDataContainer CAutomationRule::getRuleCodeTemplate(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       try
       {
@@ -162,7 +162,7 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-   shared::CDataContainer CAutomationRule::getRuleLog(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   shared::CDataContainer CAutomationRule::getRuleLog(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       try
       {
@@ -187,7 +187,7 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-   shared::CDataContainer CAutomationRule::startRule(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   shared::CDataContainer CAutomationRule::startRule(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       try
       {
@@ -216,7 +216,7 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-   shared::CDataContainer CAutomationRule::stopRule(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   shared::CDataContainer CAutomationRule::stopRule(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       try
       {
@@ -246,14 +246,15 @@ namespace web { namespace rest { namespace service {
    }
 
 
-   shared::CDataContainer CAutomationRule::createRule(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   shared::CDataContainer CAutomationRule::createRule(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       try
       {
          boost::shared_ptr<database::entities::CRule> ruleData(boost::make_shared<database::entities::CRule>());
-         ruleData->fillFromContent(requestContent);
+         shared::CDataContainer content(requestContent);
+         ruleData->fillFromContent(content);
 
-         int idCreated = m_rulesManager->createRule(ruleData, requestContent.get<std::string>("code"));
+         int idCreated = m_rulesManager->createRule(ruleData, content.get<std::string>("code"));
 
          boost::shared_ptr<const database::entities::CRule> ruleFound = m_rulesManager->getRule(idCreated);
          return CResult::GenerateSuccess(ruleFound);
@@ -272,7 +273,7 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-   shared::CDataContainer CAutomationRule::updateRule(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   shared::CDataContainer CAutomationRule::updateRule(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       try
       {
@@ -281,7 +282,7 @@ namespace web { namespace rest { namespace service {
 
          int ruleId = boost::lexical_cast<int>(parameters[2]);
          boost::shared_ptr<database::entities::CRule> ruleData(boost::make_shared<database::entities::CRule>());
-         ruleData->fillFromContent(requestContent);
+         ruleData->fillFromContent(shared::CDataContainer(requestContent));
 
          // Check for supported modifications
          if (ruleData->Id.isDefined() && ruleData->Id != ruleId)
@@ -307,7 +308,7 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-   shared::CDataContainer CAutomationRule::updateRuleCode(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   shared::CDataContainer CAutomationRule::updateRuleCode(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       try
       {
@@ -316,13 +317,14 @@ namespace web { namespace rest { namespace service {
 
          int ruleId = boost::lexical_cast<int>(parameters[2]);
          boost::shared_ptr<database::entities::CRule> ruleData(boost::make_shared<database::entities::CRule>());
-         ruleData->fillFromContent(requestContent);
+         shared::CDataContainer content(requestContent);
+         ruleData->fillFromContent(content);
 
          // Check for supported modifications
          if (ruleData->Id.isDefined())
             throw CRuleException("Rule Id is not modifiable");
 
-         std::string code = requestContent.get<std::string>("code");
+         std::string code = content.get<std::string>("code");
          if (code.empty())
             throw CRuleException("No code provided for the rule");
 
@@ -347,7 +349,7 @@ namespace web { namespace rest { namespace service {
    }
 
 
-   shared::CDataContainer CAutomationRule::deleteRule(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   shared::CDataContainer CAutomationRule::deleteRule(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       try
       {

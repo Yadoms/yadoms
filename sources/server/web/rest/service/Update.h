@@ -48,7 +48,7 @@ namespace web { namespace rest { namespace service {
       /// \param [in]   requestContent    The url content
       /// \return the request result
       //-----------------------------------------------------------------------------         
-      shared::CDataContainer availableYadomsVersions(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer availableYadomsVersions(const std::vector<std::string> & parameters, const std::string & requestContent);
 
       //-----------------------------------------------------------------------------
       /// \brief  Update Yadoms to another version (upgrade or downgrade)
@@ -56,7 +56,7 @@ namespace web { namespace rest { namespace service {
       /// \param [in]   requestContent    The url content
       /// \return the request result
       //-----------------------------------------------------------------------------         
-      shared::CDataContainer updateYadoms(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer updateYadoms(const std::vector<std::string> & parameters, const std::string & requestContent);
       
       //-----------------------------------------------------------------------------
       /// \brief  Update Yadoms to last version
@@ -64,7 +64,7 @@ namespace web { namespace rest { namespace service {
       /// \param [in]   requestContent    The url content
       /// \return the request result
       //-----------------------------------------------------------------------------         
-      shared::CDataContainer updateYadomsToLastVersion(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer updateYadomsToLastVersion(const std::vector<std::string> & parameters, const std::string & requestContent);
 
 
 
@@ -75,7 +75,7 @@ namespace web { namespace rest { namespace service {
       /// \param [in]   requestContent    The url content
       /// \return the request result
       //-----------------------------------------------------------------------------         
-      shared::CDataContainer availableWidgets(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer availableWidgets(const std::vector<std::string> & parameters, const std::string & requestContent);
 
       //-----------------------------------------------------------------------------
       /// \brief  Update a widget to another version (upgrade or downgrade)
@@ -83,7 +83,7 @@ namespace web { namespace rest { namespace service {
       /// \param [in]   requestContent    The url content
       /// \return the request result
       //-----------------------------------------------------------------------------   
-      shared::CDataContainer updateWidget(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer updateWidget(const std::vector<std::string> & parameters, const std::string & requestContent);
 
       //-----------------------------------------------------------------------------
       /// \brief  Install a new widget
@@ -91,7 +91,7 @@ namespace web { namespace rest { namespace service {
       /// \param [in]   requestContent    The url content
       /// \return the request result
       //-----------------------------------------------------------------------------    
-      shared::CDataContainer installWidget(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer installWidget(const std::vector<std::string> & parameters, const std::string & requestContent);
 
       //-----------------------------------------------------------------------------
       /// \brief  Remove a widget
@@ -99,7 +99,7 @@ namespace web { namespace rest { namespace service {
       /// \param [in]   requestContent    The url content
       /// \return the request result
       //-----------------------------------------------------------------------------   
-      shared::CDataContainer removeWidget(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer removeWidget(const std::vector<std::string> & parameters, const std::string & requestContent);
 
 
 
@@ -111,7 +111,7 @@ namespace web { namespace rest { namespace service {
       /// \param [in]   requestContent    The url content
       /// \return the request result
       //-----------------------------------------------------------------------------         
-      shared::CDataContainer availablePlugins(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer availablePlugins(const std::vector<std::string> & parameters, const std::string & requestContent);
 
       //-----------------------------------------------------------------------------
       /// \brief  Update a plugin to another version (upgrade or downgrade)
@@ -119,7 +119,7 @@ namespace web { namespace rest { namespace service {
       /// \param [in]   requestContent    The url content
       /// \return the request result
       //-----------------------------------------------------------------------------         
-      shared::CDataContainer updatePlugin(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer updatePlugin(const std::vector<std::string> & parameters, const std::string & requestContent);
 
       //-----------------------------------------------------------------------------
       /// \brief  Install a new plugin
@@ -127,7 +127,7 @@ namespace web { namespace rest { namespace service {
       /// \param [in]   requestContent    The url content
       /// \return the request result
       //-----------------------------------------------------------------------------         
-      shared::CDataContainer installPlugin(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer installPlugin(const std::vector<std::string> & parameters, const std::string & requestContent);
 
       //-----------------------------------------------------------------------------
       /// \brief  Remove a plugin
@@ -135,7 +135,7 @@ namespace web { namespace rest { namespace service {
       /// \param [in]   requestContent    The url content
       /// \return the request result
       //-----------------------------------------------------------------------------         
-      shared::CDataContainer removePlugin(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer removePlugin(const std::vector<std::string> & parameters, const std::string & requestContent);
 
      
 
@@ -145,7 +145,7 @@ namespace web { namespace rest { namespace service {
       /// \param [in]   requestContent    The url content
       /// \return the request result
       //-----------------------------------------------------------------------------         
-      shared::CDataContainer availableScriptInterpreters(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer availableScriptInterpreters(const std::vector<std::string> & parameters, const std::string & requestContent);
 
       //-----------------------------------------------------------------------------
       /// \brief  Update a scriptInterpreter to another version (upgrade or downgrade)
@@ -153,7 +153,7 @@ namespace web { namespace rest { namespace service {
       /// \param [in]   requestContent    The url content
       /// \return the request result
       //-----------------------------------------------------------------------------         
-      shared::CDataContainer updateScriptInterpreter(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer updateScriptInterpreter(const std::vector<std::string> & parameters, const std::string & requestContent);
 
       //-----------------------------------------------------------------------------
       /// \brief  Install a new scriptInterpreter
@@ -161,7 +161,7 @@ namespace web { namespace rest { namespace service {
       /// \param [in]   requestContent    The url content
       /// \return the request result
       //-----------------------------------------------------------------------------         
-      shared::CDataContainer installScriptInterpreter(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer installScriptInterpreter(const std::vector<std::string> & parameters, const std::string & requestContent);
 
       //-----------------------------------------------------------------------------
       /// \brief  Remove a scriptInterpreter
@@ -169,7 +169,7 @@ namespace web { namespace rest { namespace service {
       /// \param [in]   requestContent    The url content
       /// \return the request result
       //-----------------------------------------------------------------------------         
-      shared::CDataContainer removeScriptInterpreter(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer removeScriptInterpreter(const std::vector<std::string> & parameters, const std::string & requestContent);
 
 
       //-----------------------------------------------------------------------------
