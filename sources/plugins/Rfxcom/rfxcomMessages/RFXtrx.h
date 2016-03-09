@@ -9,7 +9,7 @@
 
 /*
                                                                    
-Copyright 2011-2015, RFXCOM
+Copyright 2011-2016, RFXCOM
 
 ALL RIGHTS RESERVED. This code is owned by RFXCOM, and is protected under
 Netherlands Copyright Laws and Treaties and shall be subject to the 
@@ -27,6 +27,20 @@ portions of this file.
 */
 
 /*
+SDK version 9.07
+	Lighting5 IT added
+	BlindsT12 Confexx added
+
+SDK version 9.06
+	Lighting1 HQ COCO-20 added
+	Lighting5 Avantek added
+	BlindsT11 ASP added
+
+SDK version 9.05
+	Itho CVE RFT fan added
+	LucciAir fan added
+	HUM3 Inovalley S80 plant humidity sensor added
+
 SDK version 9.04A
 	Lighting5 Legrand CAD added
 	msg6-HC HomeConfort protocol enable added
@@ -791,6 +805,7 @@ SDK version 4.9
 #define pTypeHUM 0x51
 #define sTypeHUM1 0x1  //LaCrosse TX3
 #define sTypeHUM2 0x2  //LaCrosse WS2300
+#define sTypeHUM3 0x03  //Inovalley S80 plant humidity sensor
 
 //status types for humidity
 #define humstat_normal 0x0
