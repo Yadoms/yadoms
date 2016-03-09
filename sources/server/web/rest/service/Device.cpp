@@ -300,7 +300,7 @@ namespace web { namespace rest { namespace service {
             int deviceId = boost::lexical_cast<int>(parameters[1]);
 
             database::entities::CDevice deviceToUpdate;
-            deviceToUpdate.fillFromContent(shared::CDataContainer(requestContent));
+            deviceToUpdate.fillFromSerializedString(requestContent);
             if(deviceToUpdate.FriendlyName.isDefined())
             {
                //update data in base
@@ -335,7 +335,7 @@ namespace web { namespace rest { namespace service {
             int keywordId = boost::lexical_cast<int>(parameters[2]);
 
             database::entities::CKeyword keywordToUpdate;
-            keywordToUpdate.fillFromContent(shared::CDataContainer(requestContent));
+            keywordToUpdate.fillFromSerializedString(requestContent);
             if(keywordToUpdate.FriendlyName.isDefined())
             {
                m_dataProvider->getKeywordRequester()->updateKeywordFriendlyName(keywordId, keywordToUpdate.FriendlyName());

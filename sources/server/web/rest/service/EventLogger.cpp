@@ -129,7 +129,7 @@ namespace web { namespace rest { namespace service {
       try
       {
          database::entities::CEventLogger entityToAdd;
-         entityToAdd.fillFromContent(shared::CDataContainer(requestContent));
+         entityToAdd.fillFromSerializedString(requestContent);
          m_dataProvider->addEvent(entityToAdd);
          return CResult::GenerateSuccess();
       }

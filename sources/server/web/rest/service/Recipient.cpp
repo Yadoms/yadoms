@@ -112,7 +112,7 @@ namespace web { namespace rest { namespace service {
       try
       {
          database::entities::CRecipient toAdd;
-         toAdd.fillFromContent(shared::CDataContainer(requestContent));
+         toAdd.fillFromSerializedString(requestContent);
          boost::shared_ptr<database::entities::CRecipient> recipientFound = m_dataProvider->getRecipientRequester()->addRecipient(toAdd);
          return CResult::GenerateSuccess(recipientFound);
       }
@@ -135,11 +135,7 @@ namespace web { namespace rest { namespace service {
       try
       {
          database::entities::CRecipient toUpdate;
-
-         shared::CDataContainer content(requestContent);
-         content.printToLog();
-
-         toUpdate.fillFromContent(content);
+         toUpdate.fillFromSerializedString(requestContent);
          if (!toUpdate.Id.isDefined() || toUpdate.Id() != recipientId)
             return CResult::GenerateError("The recipient id in url do not match request content recipient id");
 

@@ -282,7 +282,7 @@ namespace web { namespace rest { namespace service {
 
          int ruleId = boost::lexical_cast<int>(parameters[2]);
          boost::shared_ptr<database::entities::CRule> ruleData(boost::make_shared<database::entities::CRule>());
-         ruleData->fillFromContent(shared::CDataContainer(requestContent));
+         ruleData->fillFromSerializedString(requestContent);
 
          // Check for supported modifications
          if (ruleData->Id.isDefined() && ruleData->Id != ruleId)

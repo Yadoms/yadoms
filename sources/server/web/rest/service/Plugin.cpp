@@ -202,7 +202,7 @@ namespace web { namespace rest { namespace service {
       try
       {
          database::entities::CPlugin p;
-         p.fillFromContent(shared::CDataContainer(requestContent));
+         p.fillFromSerializedString(requestContent);
          int idCreated = m_pluginManager->createInstance(p);
 
          boost::shared_ptr<database::entities::CPlugin> pluginFound = m_pluginManager->getInstance(idCreated);
@@ -223,7 +223,7 @@ namespace web { namespace rest { namespace service {
       try
       {
          database::entities::CPlugin instanceToUpdate;
-         instanceToUpdate.fillFromContent(shared::CDataContainer(requestContent));
+         instanceToUpdate.fillFromSerializedString(requestContent);
 
          m_pluginManager->updateInstance(instanceToUpdate);
 

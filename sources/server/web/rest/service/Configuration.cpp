@@ -87,7 +87,7 @@ namespace web { namespace rest { namespace service {
    {
       //get data from request content
       database::entities::CConfiguration configToCreate;
-      configToCreate.fillFromContent(shared::CDataContainer(requestContent));
+      configToCreate.fillFromSerializedString(requestContent);
 
       //check that configuration entry do not already exists
       if (m_configurationManager->exists(configToCreate.Section(), configToCreate.Name()))
@@ -106,7 +106,7 @@ namespace web { namespace rest { namespace service {
       try
       {
          database::entities::CConfiguration configToUpdate;
-         configToUpdate.fillFromContent(shared::CDataContainer(requestContent));
+         configToUpdate.fillFromSerializedString(requestContent);
 
          std::string section = "";
          std::string keyname = "";

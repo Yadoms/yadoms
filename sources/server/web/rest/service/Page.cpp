@@ -113,7 +113,7 @@ namespace web { namespace rest { namespace service {
       try
       {
          database::entities::CPage pageToAdd;
-         pageToAdd.fillFromContent(shared::CDataContainer(requestContent));
+         pageToAdd.fillFromSerializedString(requestContent);
          int idCreated = m_dataProvider->getPageRequester()->addPage(pageToAdd.Name(), pageToAdd.PageOrder());
          boost::shared_ptr<database::entities::CPage> pageFound =  m_dataProvider->getPageRequester()->getPage(idCreated);
          return CResult::GenerateSuccess(pageFound);
@@ -137,7 +137,7 @@ namespace web { namespace rest { namespace service {
             int pageId = boost::lexical_cast<int>(parameters[1].c_str());
 
             database::entities::CPage pageToReplace;
-            pageToReplace.fillFromContent(shared::CDataContainer(requestContent));
+            pageToReplace.fillFromSerializedString(requestContent);
 
             if(pageToReplace.Id() > 0 && pageId == pageToReplace.Id())
             {
@@ -242,7 +242,7 @@ namespace web { namespace rest { namespace service {
       try
       {
          database::entities::CWidget widgetToAdd;
-         widgetToAdd.fillFromContent(shared::CDataContainer(requestContent));
+         widgetToAdd.fillFromSerializedString(requestContent);
          int idCreated = m_dataProvider->getWidgetRequester()->addWidget(widgetToAdd);
          boost::shared_ptr<database::entities::CWidget> widgetFound =  m_dataProvider->getWidgetRequester()->getWidget(idCreated);
          return CResult::GenerateSuccess(widgetFound);

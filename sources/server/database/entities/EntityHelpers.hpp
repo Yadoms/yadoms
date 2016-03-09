@@ -139,7 +139,9 @@
 //
 #define DECLARE_ENTITY_DATACONTAINABLE_HEADER()                                     \
       virtual void extractContent(shared::CDataContainer & containerToFill) const;  \
-      virtual void fillFromContent(const shared::CDataContainer & initialData);
+      virtual void fillFromContent(const shared::CDataContainer & initialData);     \
+      virtual void fillFromSerializedString(const std::string & serializedData);
+
 
 
 
@@ -194,11 +196,17 @@
 ///\brief   Declare the JSON deserializer IMPLEMENTATION
 ///       write the deserialize() method
 //-------------------------------------------------------
-#define DECLARE_ENTITY_FILL_CONTENT(_classname, _seq)                                              \
+#define DECLARE_ENTITY_FILL_CONTENT(_classname, _seq)                                                 \
    void ENTITY_CLASSNAME(_classname)::fillFromContent(const shared::CDataContainer & initialData)     \
    {                                                                                                  \
       BOOST_PP_SEQ_FOR_EACH(DECLARE_ENTITY_FILL_FIELD_CONTENT, _classname, _seq)                      \
+   }                                                                                                  \
+   void ENTITY_CLASSNAME(_classname)::fillFromSerializedString(const std::string & serializedData)    \
+   {                                                                                                  \
+      shared::CDataContainer deserializeData(serializedData);                                         \
+      fillFromContent(deserializeData);                                                               \
    }
+
 
 
 

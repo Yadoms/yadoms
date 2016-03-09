@@ -108,7 +108,7 @@ namespace web {
             try
             {
                database::entities::CWidget widgetToAdd;
-               widgetToAdd.fillFromContent(shared::CDataContainer(requestContent));
+               widgetToAdd.fillFromSerializedString(requestContent);
                int idCreated = m_dataProvider->getWidgetRequester()->addWidget(widgetToAdd);
                boost::shared_ptr<database::entities::CWidget> widgetFound = m_dataProvider->getWidgetRequester()->getWidget(idCreated);
                return CResult::GenerateSuccess(widgetFound);
@@ -128,7 +128,7 @@ namespace web {
             try
             {
                database::entities::CWidget widgetToUpdate;
-               widgetToUpdate.fillFromContent(shared::CDataContainer(requestContent));
+               widgetToUpdate.fillFromSerializedString(requestContent);
 
 
                if (parameters.size() > 1)
