@@ -33,14 +33,14 @@ namespace database { namespace common { namespace requesters {
 
 
 			//insert recipient
-			CQuery qInsert = m_databaseRequester->newQuery();
+			CQuery qInsert;
 			qInsert.InsertInto(CRecipientTable::getTableName(), CRecipientTable::getFirstNameColumnName(), CRecipientTable::getLastNameColumnName()).
 				Values(recipient.FirstName(), recipient.LastName());
 			if (m_databaseRequester->queryStatement(qInsert) <= 0)
 				throw shared::exception::CEmptyResult("Fail to insert recipient");
 
 			//retreive inserted recipient
-			CQuery qSelect = m_databaseRequester->newQuery();
+			CQuery qSelect;
 			qSelect.Select(CRecipientTable::getIdColumnName()).
 				From(CRecipientTable::getTableName()).
 				Where(CRecipientTable::getFirstNameColumnName(), CQUERY_OP_EQUAL, recipient.FirstName()).
@@ -67,11 +67,12 @@ namespace database { namespace common { namespace requesters {
       {
          if (recipient.FirstName.isDefined() && recipient.LastName.isDefined())
          {
-            CQuery qInsert = m_databaseRequester->newQuery();
-            qInsert.InsertOrReplaceInto(CRecipientTable::getTableName(), CRecipientTable::getIdColumnName(), CRecipientTable::getFirstNameColumnName(), CRecipientTable::getLastNameColumnName()).
-               Values(recipient.Id(), recipient.FirstName(), recipient.LastName());
-
-            if (m_databaseRequester->queryStatement(qInsert) <= 0)
+            CQuery qUpdate;
+            qUpdate.Update(CRecipientTable::getTableName())
+            .Set(CRecipientTable::getFirstNameColumnName(), recipient.FirstName(), CRecipientTable::getLastNameColumnName(), recipient.LastName())
+            .Where(CRecipientTable::getIdColumnName(), CQUERY_OP_EQUAL,recipient.Id());
+            
+            if (m_databaseRequester->queryStatement(qUpdate) <= 0)
                throw shared::exception::CEmptyResult("Fail to update recipient");
 
             //find the db id from first and last name
@@ -89,7 +90,7 @@ namespace database { namespace common { namespace requesters {
 
    std::vector<boost::shared_ptr<entities::CRecipient> > CRecipient::getRecipients()
    {
-      CQuery qSelect = m_databaseRequester->newQuery();
+      CQuery qSelect;
       qSelect.Select().
          From(CRecipientTable::getTableName()).
          OrderBy(CRecipientTable::getFirstNameColumnName(), CQUERY_ORDER_ASC,
@@ -111,7 +112,7 @@ namespace database { namespace common { namespace requesters {
 
 	boost::shared_ptr<entities::CRecipient> CRecipient::getRecipient(const int recipientId)
 	{
-		CQuery qSelect = m_databaseRequester->newQuery();
+		CQuery qSelect;
 		qSelect.Select().
 			From(CRecipientTable::getTableName()).
 			Where(CRecipientTable::getIdColumnName(), CQUERY_OP_EQUAL, recipientId).
@@ -138,7 +139,7 @@ namespace database { namespace common { namespace requesters {
 
 	boost::shared_ptr<entities::CRecipient> CRecipient::getRecipient(const std::string & firstName, const std::string & lastName)
 	{
-		CQuery qSelect = m_databaseRequester->newQuery();
+		CQuery qSelect;
 		qSelect.Select().
 			From(CRecipientTable::getTableName()).
 			Where(CRecipientTable::getFirstNameColumnName(), CQUERY_OP_EQUAL, firstName).
@@ -165,7 +166,7 @@ namespace database { namespace common { namespace requesters {
 
 	std::vector<boost::shared_ptr<entities::CRecipient> > CRecipient::findRecipientsFromField(const std::string& fieldName, const std::string& expectedFieldValue)
 	{
-		CQuery qSelect = m_databaseRequester->newQuery(), qubQuery = m_databaseRequester->newQuery();
+		CQuery qSelect, qubQuery;
 		qubQuery.Select(CRecipientFieldTable::getIdRecipientColumnName()).
 			From(CRecipientFieldTable::getTableName()).
 			Where(CRecipientFieldTable::getFieldNameColumnName(), CQUERY_OP_EQUAL, fieldName).
@@ -190,7 +191,7 @@ namespace database { namespace common { namespace requesters {
 
    std::vector<boost::shared_ptr<entities::CRecipientField> > CRecipient::getFields()
 	{
-      CQuery qSelect = m_databaseRequester->newQuery();
+      CQuery qSelect;
       qSelect.Select().
          From(CRecipientFieldTable::getTableName());
 
@@ -202,7 +203,7 @@ namespace database { namespace common { namespace requesters {
 
    std::vector<boost::shared_ptr<entities::CRecipientField> > CRecipient::getFieldsByName(const std::string& fieldName)
    {
-      CQuery qSelect = m_databaseRequester->newQuery();
+      CQuery qSelect;
       qSelect.Select().
          From(CRecipientFieldTable::getTableName()).
          Where(CRecipientFieldTable::getFieldNameColumnName(), CQUERY_OP_EQUAL, fieldName);
@@ -215,7 +216,7 @@ namespace database { namespace common { namespace requesters {
 
 	bool CRecipient::exists(const std::string & firstName, const std::string & lastName)
 	{
-		CQuery qSelect = m_databaseRequester->newQuery();
+		CQuery qSelect;
 		qSelect.SelectCount().
 			From(CRecipientTable::getTableName()).
 			Where(CRecipientTable::getFirstNameColumnName(), CQUERY_OP_EQUAL, firstName).
@@ -227,7 +228,7 @@ namespace database { namespace common { namespace requesters {
 
 	bool CRecipient::exists(const int id)
 	{
-		CQuery qSelect = m_databaseRequester->newQuery();
+		CQuery qSelect;
 		qSelect.SelectCount().
 			From(CRecipientTable::getTableName()).
 			Where(CRecipientTable::getIdColumnName(), CQUERY_OP_EQUAL, id);
@@ -240,7 +241,7 @@ namespace database { namespace common { namespace requesters {
 	void CRecipient::removeRecipient(int recipientId)
 	{
 		//delete recipient
-		CQuery qDelete = m_databaseRequester->newQuery();
+		CQuery qDelete;
 		qDelete.DeleteFrom(CRecipientTable::getTableName()).
 			Where(CRecipientTable::getIdColumnName(), CQUERY_OP_EQUAL, recipientId);
 		if (m_databaseRequester->queryStatement(qDelete) <= 0)
@@ -255,7 +256,7 @@ namespace database { namespace common { namespace requesters {
 	void CRecipient::removeAllRecipients()
 	{
 		//delete recipient
-		CQuery qDelete = m_databaseRequester->newQuery();
+		CQuery qDelete;
 		qDelete.DeleteFrom(CRecipientTable::getTableName());
 		m_databaseRequester->queryStatement(qDelete);
 
@@ -267,7 +268,7 @@ namespace database { namespace common { namespace requesters {
 
 	void CRecipient::ReadRecipientFields(boost::shared_ptr<entities::CRecipient> & recipientToComplete)
 	{
-		CQuery qSelect = m_databaseRequester->newQuery();
+		CQuery qSelect;
 		qSelect.Select().
 			From(CRecipientFieldTable::getTableName()).
 			Where(CRecipientFieldTable::getIdRecipientColumnName(), CQUERY_OP_EQUAL, recipientToComplete->Id());
@@ -287,7 +288,7 @@ namespace database { namespace common { namespace requesters {
 	void CRecipient::WriteRecipientFields(const int recipientId, const std::vector< boost::shared_ptr<entities::CRecipientField> > & fields)
 	{
 		//remove all existing fields
-		CQuery removeFields = m_databaseRequester->newQuery();
+		CQuery removeFields;
 		removeFields.DeleteFrom(CRecipientFieldTable::getTableName()).
 			Where(CRecipientFieldTable::getIdRecipientColumnName(), CQUERY_OP_EQUAL, recipientId);
 		m_databaseRequester->queryStatement(removeFields);
@@ -298,8 +299,8 @@ namespace database { namespace common { namespace requesters {
 			if ((*i)->Value.isDefined() && !(*i)->Value().empty())
 			{
 				//insert or update value in RecipientFieldsTable
-				CQuery qInsert = m_databaseRequester->newQuery();
-				qInsert.InsertOrReplaceInto(CRecipientFieldTable::getTableName(), CRecipientFieldTable::getIdRecipientColumnName(), CRecipientFieldTable::getPluginTypeColumnName(), CRecipientFieldTable::getFieldNameColumnName(), CRecipientFieldTable::getValueColumnName()).
+				CQuery qInsert;
+				qInsert.InsertInto(CRecipientFieldTable::getTableName(), CRecipientFieldTable::getIdRecipientColumnName(), CRecipientFieldTable::getPluginTypeColumnName(), CRecipientFieldTable::getFieldNameColumnName(), CRecipientFieldTable::getValueColumnName()).
                Values(recipientId, (*i)->PluginType(), (*i)->FieldName(), (*i)->Value());
 
 				if (m_databaseRequester->queryStatement(qInsert) <= 0)
@@ -314,7 +315,7 @@ namespace database { namespace common { namespace requesters {
 
    bool CRecipient::fieldExists(const std::string& fieldName, const std::string& pluginName) const
 	{
-      CQuery qSelect = m_databaseRequester->newQuery();
+      CQuery qSelect;
       qSelect.SelectCount().
          From(CRecipientFieldTable::getTableName()).
          Where(CRecipientFieldTable::getFieldNameColumnName(), CQUERY_OP_EQUAL, fieldName).
@@ -334,14 +335,14 @@ namespace database { namespace common { namespace requesters {
          throw shared::exception::CInvalidParameter((boost::format("Fail to insert recipient field %1% (already exists)") % field.FieldName()).str());
 
       //insert field
-      CQuery qInsert = m_databaseRequester->newQuery();
+      CQuery qInsert;
       qInsert.InsertInto(CRecipientFieldTable::getTableName(), CRecipientFieldTable::getFieldNameColumnName(), CRecipientFieldTable::getPluginTypeColumnName()).
          Values(field.FieldName(), field.PluginType());
       if (m_databaseRequester->queryStatement(qInsert) <= 0)
          throw shared::exception::CEmptyResult("Fail to insert recipient field");
 
       //retreive inserted field
-      CQuery qSelect = m_databaseRequester->newQuery();
+      CQuery qSelect;
       qSelect.Select().
          From(CRecipientFieldTable::getTableName()).
          Where(CRecipientFieldTable::getFieldNameColumnName(), CQUERY_OP_EQUAL, field.FieldName()).

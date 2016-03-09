@@ -370,23 +370,6 @@ namespace database { namespace common {
       //         
       CQuery & InsertInto(const std::string & table, const std::string & field1, const std::string & field2 = EMPTY_STR, const std::string & field3 = EMPTY_STR, const std::string & field4 = EMPTY_STR, const std::string & field5 = EMPTY_STR, const std::string & field6 = EMPTY_STR, const std::string & field7 = EMPTY_STR, const std::string & field8 = EMPTY_STR, const std::string & field9 = EMPTY_STR, const std::string & field10 = EMPTY_STR);
 
-      //
-      /// \brief           Append 'INSERT OR REPLACE INTO table (field1 [,field2 [,field3...]])'
-      /// \param  table    the target table 
-      /// \param  field1   a field name to append to the insert into clause
-      /// \param  field2   a field name to append to the insert into clause
-      /// \param  field3   a field name to append to the insert into clause
-      /// \param  field4   a field name to append to the insert into clause
-      /// \param  field5   a field name to append to the insert into clause
-      /// \param  field6   a field name to append to the insert into clause
-      /// \param  field7   a field name to append to the insert into clause
-      /// \param  field8   a field name to append to the insert into clause
-      /// \param  field9   a field name to append to the insert into clause
-      /// \param  field10  a field name to append to the insert into clause
-      /// \return          A reference to itself to allow method chaining
-      //         
-      CQuery & InsertOrReplaceInto(const std::string & table, const std::string & field1, const std::string & field2 = EMPTY_STR, const std::string & field3 = EMPTY_STR, const std::string & field4 = EMPTY_STR, const std::string & field5 = EMPTY_STR, const std::string & field6 = EMPTY_STR, const std::string & field7 = EMPTY_STR, const std::string & field8 = EMPTY_STR, const std::string & field9 = EMPTY_STR, const std::string & field10 = EMPTY_STR);
-
 
       //
       /// \brief           Append 'VALUES (field1 [,field2 [,field3...]])'

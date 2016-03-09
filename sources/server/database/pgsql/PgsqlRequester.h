@@ -34,6 +34,7 @@ namespace pgsql {
       virtual bool createTableIfNotExists(const std::string & tableName, const std::string & tableScript);
       virtual void createIndex(const std::string & tableName, const std::string & indexScript);
       virtual std::string generateSqlIsoDateFormat(const std::string &columnName);
+      virtual std::string coalesce(const std::string & columnName, std::string defaultValue);
       virtual void vacuum();
       virtual boost::shared_ptr<ITableCreationScriptProvider> getTableCreationScriptProvider();
       // [END] IDatabaseRequester implementation

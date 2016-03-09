@@ -457,6 +457,10 @@ namespace sqlite {
       return boost::shared_ptr<ITableCreationScriptProvider>(new CSQLiteTableCreationScriptProvider());
    }
 
+   std::string CSQLiteRequester::coalesce(const std::string & columnName, std::string defaultValue)
+   {
+      return "ifnull( (" + columnName + "), " + defaultValue + ")";
+   }
 
 
 } //namespace sqlite
