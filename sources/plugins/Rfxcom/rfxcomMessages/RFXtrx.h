@@ -465,6 +465,8 @@ SDK version 4.9
 #define sTypeRGB432W 0x0B
 #define sTypeMDREMOTE107 0x0C
 #define sTypeLegrandCAD 0x0D
+#define sTypeAvantek 0x0E
+#define sTypeIT 0x0F
 
 #define light5_sOff 0x0
 #define light5_sOn 0x1

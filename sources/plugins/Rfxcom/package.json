@@ -622,6 +622,32 @@
                   }             
                }
             },
+            "avantek":
+            {
+               "type": "section",
+               "content":
+               {
+                  "id":
+                  {
+                     "type": "int",
+                     "minimumValue": "1",
+                     "maximumValue": "1048575"
+                  }             
+               }
+            },
+            "it":
+            {
+               "type": "section",
+               "content":
+               {
+                  "id":
+                  {
+                     "type": "int",
+                     "minimumValue": "1",
+                     "maximumValue": "65535"
+                  }             
+               }
+            },
             
             "blyss":
             {
