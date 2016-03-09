@@ -37,8 +37,14 @@ CFan::CFan(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char subType, 
    m_fan.set(false);
 
    m_subType = subType;
-   if (m_subType != sTypeSiemensSF01)
+   switch (m_subType)
+   {
+   case sTypeSiemensSF01:
+   case sTypeLucciAir:
+      break;
+   default:
       throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
+   }
 
    m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
 
@@ -85,8 +91,8 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CFan::encode(
    buffer.FAN.packettype = pTypeFan;
    buffer.FAN.subtype = m_subType;
    buffer.FAN.seqnbr = seqNumberProvider->next();
-   buffer.FAN.id1 = (unsigned char) (0xFF & (m_id >> 8));
-   buffer.FAN.id2 = (unsigned char) (0xFF & m_id);
+   buffer.FAN.id1 = static_cast<unsigned char>(0xFF & (m_id >> 8));
+   buffer.FAN.id2 = static_cast<unsigned char>(0xFF & m_id);
    buffer.FAN.cmnd = toProtocolState();
    buffer.FAN.filler = 0;
 
@@ -106,7 +112,7 @@ const std::string& CFan::getDeviceName() const
 void CFan::buildDeviceName()
 {
    std::ostringstream ssdeviceName;
-   ssdeviceName << m_deviceModel << "." << (unsigned int)m_id;
+   ssdeviceName << m_deviceModel << "." << static_cast<unsigned int>(m_id);
    m_deviceName = ssdeviceName.str();
 }
 
@@ -117,6 +123,7 @@ void CFan::buildDeviceModel()
    switch(m_subType)
    {
    case sTypeSiemensSF01: ssModel << "Siemens SF01"; break;
+   case sTypeLucciAir: ssModel << "Lucci Air fan"; break;
    default: ssModel << boost::lexical_cast<std::string>(m_subType); break;
    }
 
@@ -125,10 +132,20 @@ void CFan::buildDeviceModel()
 
 unsigned char CFan::toProtocolState() const
 {
-   if (m_lightCmd)
-      return m_light.get() ? fan_sLight : 0x00;
-   else
+   switch (m_subType)
+   {
+   case sTypeSiemensSF01:
+      if (m_lightCmd)
+         return m_light.get() ? fan_sLight : 0x00;
       return m_fan.get() ? fan_sPlus : fan_sMin;
-}
 
+   case sTypeLucciAir:
+      if (m_lightCmd)
+         return m_light.get() ? fan_LucciLight : 0x00;
+      return m_fan.get() ? fan_LucciMed : fan_LucciOff;
+
+   default:
+      throw shared::exception::COutOfRange("CFan : command to unsupported device");
+   }
+}
 } // namespace rfxcomMessages

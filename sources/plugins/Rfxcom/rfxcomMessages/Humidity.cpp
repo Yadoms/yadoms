@@ -71,7 +71,7 @@ const std::string& CHumidity::getDeviceName() const
 void CHumidity::buildDeviceName()
 {
    std::ostringstream ssdeviceName;
-   ssdeviceName << (unsigned int)m_subType << "." << (unsigned int)m_id;
+   ssdeviceName << static_cast<unsigned int>(m_subType) << "." << static_cast<unsigned int>(m_id);
    m_deviceName = ssdeviceName.str();
 }
 
@@ -83,6 +83,7 @@ void CHumidity::buildDeviceModel()
    {
    case sTypeHUM1: ssModel << "La Crosse TX3"; break;
    case sTypeHUM2: ssModel << "La Crosse WS2300"; break;
+   case sTypeHUM3: ssModel << "Inovalley S80 plant humidity sensor"; break;
    default: ssModel << boost::lexical_cast<std::string>(m_subType); break;
    }
 

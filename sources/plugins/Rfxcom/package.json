@@ -262,14 +262,33 @@
                   "houseCode":
                   {
                      "type": "string",
-                     "regex" : "[A-P]",
+                     "regex" : "[A-D]",
                      "defaultValue": "A"
                   },
                   "unitCode":
                   {
                      "type": "int",
                      "minimumValue": "1",
-                     "maximumValue": "16"
+                     "maximumValue": "4"
+                  }               
+               }
+            }, 
+            "hqCoco20":
+            {
+               "type": "section",
+               "content":
+               {
+                  "houseCode":
+                  {
+                     "type": "string",
+                     "regex" : "[A-D]",
+                     "defaultValue": "A"
+                  },
+                  "unitCode":
+                  {
+                     "type": "int",
+                     "minimumValue": "1",
+                     "maximumValue": "4"
                   }               
                }
             },        
@@ -603,6 +622,32 @@
                   }             
                }
             },
+            "avantek":
+            {
+               "type": "section",
+               "content":
+               {
+                  "id":
+                  {
+                     "type": "int",
+                     "minimumValue": "1",
+                     "maximumValue": "1048575"
+                  }             
+               }
+            },
+            "it":
+            {
+               "type": "section",
+               "content":
+               {
+                  "id":
+                  {
+                     "type": "int",
+                     "minimumValue": "1",
+                     "maximumValue": "65535"
+                  }             
+               }
+            },
             
             "blyss":
             {
@@ -693,6 +738,19 @@
                      "type": "int",
                      "minimumValue": "0",
                      "maximumValue": "32767"
+                  }              
+               }
+            },
+            "lucciAir":
+            {
+               "type": "section",
+               "content":
+               {
+                  "id":
+                  {
+                     "type": "int",
+                     "minimumValue": "0",
+                     "maximumValue": "16777215"
                   }              
                }
             },
@@ -894,6 +952,38 @@
                      "minimumValue": "1",
                      "maximumValue": "16777215"
                   }            
+               }
+            },
+            "asp":
+            {
+               "type": "section",
+               "content":
+               {
+                  "id":
+                  {
+                     "type": "int",
+                     "minimumValue": "1",
+                     "maximumValue": "16777215"
+                  }            
+               }
+            },
+            "confexx":
+            {
+               "type": "section",
+               "content":
+               {
+                  "id":
+                  {
+                     "type": "int",
+                     "minimumValue": "1",
+                     "maximumValue": "65535"
+                  },
+                  "unitCode":
+                  {
+                     "type": "int",
+                     "minimumValue": "1",
+                     "maximumValue": "15"
+                  }               
                }
             },
             

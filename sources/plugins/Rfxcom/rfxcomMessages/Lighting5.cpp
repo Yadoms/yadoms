@@ -67,7 +67,7 @@ void CLighting5::createSubType(unsigned char subType)
    case sTypeBBSB             : m_subTypeManager.reset(new CLighting5OnOff("BBSB new types")); break;
    case sTypeRSL              : m_subTypeManager.reset(new CLighting5OnOff("Conrad RSL2")); break;
    case sTypeMDREMOTE         : m_subTypeManager.reset(new CLighting5MdRemoteKeyword()); break;
-   case sTypeLivolo           : m_subTypeManager.reset(new CLighting5Livolo()); break; // Limited support of Livolo (just ON/OFF), as we can't now exact type of module
+   case sTypeLivolo           : m_subTypeManager.reset(new CLighting5Livolo()); break; // Limited support of Livolo (just ON/OFF), as we can't know exact type of module
    case sTypeTRC02            : m_subTypeManager.reset(new CLighting5OnOff("RGB TRC02 (2 batt)")); break;
    case sTypeAoke             : m_subTypeManager.reset(new CLighting5OnOff("Aoke Relay")); break;
    case sTypeTRC02_2          : m_subTypeManager.reset(new CLighting5OnOff("RGB TRC02 (3 batt)")); break;
@@ -76,6 +76,8 @@ void CLighting5::createSubType(unsigned char subType)
    case sTypeRGB432W          : m_subTypeManager.reset(new CLighting5OnOff("RGB432W")); break;
    case sTypeMDREMOTE107      : m_subTypeManager.reset(new CLighting5OnOff("MD remote 107 LED")); break;
    case sTypeLegrandCAD       : m_subTypeManager.reset(new CLighting5OnOff("Legrand CAD")); break;
+   case sTypeAvantek          : m_subTypeManager.reset(new CLighting5OnOff("Avantek")); break;
+   case sTypeIT               : m_subTypeManager.reset(new CLighting5OnOff("IT (Intertek,FA500,PROmax…)")); break;
    default:
       throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
    }
@@ -113,9 +115,9 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CLighting5::e
    rbuf.LIGHTING5.packettype = pTypeLighting5;
    rbuf.LIGHTING5.subtype = m_subType;
    rbuf.LIGHTING5.seqnbr = seqNumberProvider->next();
-   rbuf.LIGHTING5.id1 = (unsigned char) (0xFF & (m_id >> 16));
-   rbuf.LIGHTING5.id2 = (unsigned char) (0xFF & (m_id >> 8));
-   rbuf.LIGHTING5.id3 = (unsigned char) (0xFF & m_id);
+   rbuf.LIGHTING5.id1 = static_cast<unsigned char>(0xFF & (m_id >> 16));
+   rbuf.LIGHTING5.id2 = static_cast<unsigned char>(0xFF & (m_id >> 8));
+   rbuf.LIGHTING5.id3 = static_cast<unsigned char>(0xFF & m_id);
    rbuf.LIGHTING5.unitcode = m_unitCode;
    rbuf.LIGHTING5.rssi = 0;
    rbuf.LIGHTING5.filler = 0;
@@ -144,7 +146,7 @@ const std::string& CLighting5::getDeviceName() const
 void CLighting5::buildDeviceName()
 {
    std::ostringstream ssdeviceName;
-   ssdeviceName << (unsigned int)m_subType << "." << (unsigned int)m_id << "." << (unsigned int)m_unitCode;
+   ssdeviceName << static_cast<unsigned int>(m_subType) << "." << static_cast<unsigned int>(m_id) << "." << static_cast<unsigned int>(m_unitCode);
    m_deviceName = ssdeviceName.str();
 }
 
