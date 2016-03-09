@@ -17,22 +17,22 @@ namespace web { namespace rest { namespace service {
       // [END] IRestService implementation
 
       static const std::string & getRestKeyword();
-      shared::CDataContainer getOnePage(const std::vector<std::string> & parameters, const std::string & requestContent);   
-      shared::CDataContainer getAllPages(const std::vector<std::string> & parameters, const std::string & requestContent);  
-      shared::CDataContainer getPageWidget(const std::vector<std::string> & parameters, const std::string & requestContent);   
+      shared::CDataContainer getOnePage(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
+      shared::CDataContainer getAllPages(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  
+      shared::CDataContainer getPageWidget(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
 
-      shared::CDataContainer addPage(const std::vector<std::string> & parameters, const std::string & requestContent);   
-      shared::CDataContainer updatePage(const std::vector<std::string> & parameters, const std::string & requestContent);   
-      shared::CDataContainer updateAllPages(const std::vector<std::string> & parameters, const std::string & requestContent);   
-      shared::CDataContainer deletePage(const std::vector<std::string> & parameters, const std::string & requestContent);   
-      shared::CDataContainer deleteAllPages(const std::vector<std::string> & parameters, const std::string & requestContent);   
+      shared::CDataContainer addPage(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
+      shared::CDataContainer updatePage(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
+      shared::CDataContainer updateAllPages(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
+      shared::CDataContainer deletePage(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
+      shared::CDataContainer deleteAllPages(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
 
 
-      shared::CDataContainer addWidgetForPage(const std::vector<std::string> & parameters, const std::string & requestContent);   
-      shared::CDataContainer replaceAllWidgetsForPage(const std::vector<std::string> & parameters, const std::string & requestContent);   
-      shared::CDataContainer deleteAllWidgetsForPage(const std::vector<std::string> & parameters, const std::string & requestContent);   
+      shared::CDataContainer addWidgetForPage(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
+      shared::CDataContainer replaceAllWidgetsForPage(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
+      shared::CDataContainer deleteAllWidgetsForPage(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
 
-      shared::CDataContainer transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const std::string & requestContent);
+      shared::CDataContainer transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
 
    private:
       boost::shared_ptr<database::IDataProvider> m_dataProvider;

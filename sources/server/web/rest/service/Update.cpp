@@ -50,7 +50,7 @@ namespace web { namespace rest { namespace service {
       REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("scriptInterpreter")("remove")("*"), CUpdate::removeScriptInterpreter);
    }
 
-   shared::CDataContainer CUpdate::availableYadomsVersions(const std::vector<std::string> & parameters, const std::string & requestContent)
+   shared::CDataContainer CUpdate::availableYadomsVersions(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       std::string lang = "";
 
@@ -61,12 +61,11 @@ namespace web { namespace rest { namespace service {
       return CResult::GenerateSuccess(update::info::CUpdateSite::getAllYadomsVersions(lang));
    }   
    
-   shared::CDataContainer CUpdate::updateYadoms(const std::vector<std::string> & parameters, const std::string & requestContent)
+   shared::CDataContainer CUpdate::updateYadoms(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
-      shared::CDataContainer content(requestContent);
-      if (content.containsChild("versionData"))
+      if (requestContent.containsChild("versionData"))
       {
-         shared::CDataContainer versionData = content.get<shared::CDataContainer>("versionData");
+         shared::CDataContainer versionData = requestContent.get<shared::CDataContainer>("versionData");
          std::string taskId = m_updateManager->updateYadomsAsync(versionData);
          shared::CDataContainer result;
          result.set("taskId", taskId);
@@ -74,12 +73,12 @@ namespace web { namespace rest { namespace service {
       }
       else
       {
-         content.printToLog();
+         requestContent.printToLog();
          return web::rest::CResult::GenerateError("The request should contains the versionData.");
       }
    }
    
-   shared::CDataContainer CUpdate::availablePlugins(const std::vector<std::string> & parameters, const std::string & requestContent)
+   shared::CDataContainer CUpdate::availablePlugins(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       std::string lang = "";
          
@@ -92,7 +91,7 @@ namespace web { namespace rest { namespace service {
 
 
 
-   shared::CDataContainer CUpdate::updatePlugin(const std::vector<std::string> & parameters, const std::string & requestContent)
+   shared::CDataContainer CUpdate::updatePlugin(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       //the request url should contain the pluginName
       //the request content should contain the downloadURL
@@ -100,10 +99,9 @@ namespace web { namespace rest { namespace service {
       {
          std::string pluginName = parameters[3];
 
-         shared::CDataContainer content(requestContent);
-         if (content.containsValue("downloadUrl"))
+         if (requestContent.containsValue("downloadUrl"))
          {
-            std::string downloadUrl = content.get<std::string>("downloadUrl");
+            std::string downloadUrl = requestContent.get<std::string>("downloadUrl");
             std::string taskId = m_updateManager->updatePluginAsync(pluginName, downloadUrl);
             shared::CDataContainer result;
             result.set("taskId", taskId);
@@ -121,13 +119,12 @@ namespace web { namespace rest { namespace service {
    }
 
      
-   shared::CDataContainer CUpdate::installPlugin(const std::vector<std::string> & parameters, const std::string & requestContent)
+   shared::CDataContainer CUpdate::installPlugin(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       //the request content should contain the downloadURL
-      shared::CDataContainer content(requestContent);
-      if (content.containsValue("downloadUrl"))
+      if (requestContent.containsValue("downloadUrl"))
       {
-         std::string downloadUrl = content.get<std::string>("downloadUrl");
+         std::string downloadUrl = requestContent.get<std::string>("downloadUrl");
          std::string taskId = m_updateManager->installPluginAsync(downloadUrl);
          shared::CDataContainer result;
          result.set("taskId", taskId);
@@ -139,7 +136,7 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-   shared::CDataContainer CUpdate::removePlugin(const std::vector<std::string> & parameters, const std::string & requestContent)
+   shared::CDataContainer CUpdate::removePlugin(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       //the request url should contain the pluginName
       if (parameters.size() > 3)
@@ -158,7 +155,7 @@ namespace web { namespace rest { namespace service {
 
 
 
-   shared::CDataContainer CUpdate::availableWidgets(const std::vector<std::string> & parameters, const std::string & requestContent)
+   shared::CDataContainer CUpdate::availableWidgets(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       std::string lang = "";
 
@@ -171,7 +168,7 @@ namespace web { namespace rest { namespace service {
 
 
 
-   shared::CDataContainer CUpdate::updateWidget(const std::vector<std::string> & parameters, const std::string & requestContent)
+   shared::CDataContainer CUpdate::updateWidget(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       //the request url should contain the widgetName
       //the request content should contain the downloadURL
@@ -179,10 +176,9 @@ namespace web { namespace rest { namespace service {
       {
          std::string widgetName = parameters[3];
 
-         shared::CDataContainer content(requestContent);
-         if (content.containsValue("downloadUrl"))
+         if (requestContent.containsValue("downloadUrl"))
          {
-            std::string downloadUrl = content.get<std::string>("downloadUrl");
+            std::string downloadUrl = requestContent.get<std::string>("downloadUrl");
             std::string taskId = m_updateManager->updateWidgetAsync(widgetName, downloadUrl);
             shared::CDataContainer result;
             result.set("taskId", taskId);
@@ -200,13 +196,12 @@ namespace web { namespace rest { namespace service {
    }
 
 
-   shared::CDataContainer CUpdate::installWidget(const std::vector<std::string> & parameters, const std::string & requestContent)
+   shared::CDataContainer CUpdate::installWidget(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       //the request content should contain the downloadURL
-      shared::CDataContainer content(requestContent);
-      if (content.containsValue("downloadUrl"))
+      if (requestContent.containsValue("downloadUrl"))
       {
-         std::string downloadUrl = content.get<std::string>("downloadUrl");
+         std::string downloadUrl = requestContent.get<std::string>("downloadUrl");
          std::string taskId = m_updateManager->installWidgetAsync(downloadUrl);
          shared::CDataContainer result;
          result.set("taskId", taskId);
@@ -218,7 +213,7 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-   shared::CDataContainer CUpdate::removeWidget(const std::vector<std::string> & parameters, const std::string & requestContent)
+   shared::CDataContainer CUpdate::removeWidget(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       //the request url should contain the pluginName
       if (parameters.size() > 3)
@@ -235,7 +230,7 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-   shared::CDataContainer CUpdate::availableScriptInterpreters(const std::vector<std::string> & parameters, const std::string & requestContent)
+   shared::CDataContainer CUpdate::availableScriptInterpreters(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       std::string lang = "";
 
@@ -248,7 +243,7 @@ namespace web { namespace rest { namespace service {
 
 
 
-   shared::CDataContainer CUpdate::updateScriptInterpreter(const std::vector<std::string> & parameters, const std::string & requestContent)
+   shared::CDataContainer CUpdate::updateScriptInterpreter(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       //the request url should contain the scriptInterpreterName
       //the request content should contain the downloadURL
@@ -256,10 +251,9 @@ namespace web { namespace rest { namespace service {
       {
          std::string scriptInterpreterName = parameters[3];
 
-         shared::CDataContainer content(requestContent);
-         if (content.containsValue("downloadUrl"))
+         if (requestContent.containsValue("downloadUrl"))
          {
-            std::string downloadUrl = content.get<std::string>("downloadUrl");
+            std::string downloadUrl = requestContent.get<std::string>("downloadUrl");
             std::string taskId = m_updateManager->updateScriptInterpreterAsync(scriptInterpreterName, downloadUrl);
             shared::CDataContainer result;
             result.set("taskId", taskId);
@@ -277,13 +271,12 @@ namespace web { namespace rest { namespace service {
    }
 
 
-   shared::CDataContainer CUpdate::installScriptInterpreter(const std::vector<std::string> & parameters, const std::string & requestContent)
+   shared::CDataContainer CUpdate::installScriptInterpreter(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       //the request content should contain the downloadURL
-      shared::CDataContainer content(requestContent);
-      if (content.containsValue("downloadUrl"))
+      if (requestContent.containsValue("downloadUrl"))
       {
-         std::string downloadUrl = content.get<std::string>("downloadUrl");
+         std::string downloadUrl = requestContent.get<std::string>("downloadUrl");
          std::string taskId = m_updateManager->installScriptInterpreterAsync(downloadUrl);
          shared::CDataContainer result;
          result.set("taskId", taskId);
@@ -295,7 +288,7 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-   shared::CDataContainer CUpdate::removeScriptInterpreter(const std::vector<std::string> & parameters, const std::string & requestContent)
+   shared::CDataContainer CUpdate::removeScriptInterpreter(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       //the request url should contain the scriptInterpreterName
       if (parameters.size() > 3)

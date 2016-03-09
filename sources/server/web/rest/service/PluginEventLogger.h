@@ -18,8 +18,8 @@ namespace web { namespace rest { namespace service {
 
       const std::string & getRestKeyword();
 
-      shared::CDataContainer getLogsForPluginName(const std::vector<std::string> & parameters, const std::string & requestContent);  
-      shared::CDataContainer getLogsForPluginNameFromDate(const std::vector<std::string> & parameters, const std::string & requestContent);  
+      shared::CDataContainer getLogsForPluginName(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  
+      shared::CDataContainer getLogsForPluginNameFromDate(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  
 
    private:
       boost::shared_ptr<database::IDataProvider> m_dataProvider;

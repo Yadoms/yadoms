@@ -41,7 +41,7 @@ namespace web { namespace rest { namespace service {
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*")("*"), CDevice::cleanupDevice, CDevice::transactionalMethod);
    }
 
-   shared::CDataContainer CDevice::getOneDevice(const std::vector<std::string> & parameters, const std::string & requestContent)
+   shared::CDataContainer CDevice::getOneDevice(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       std::string objectId = "";
       if(parameters.size()>1)
@@ -51,7 +51,7 @@ namespace web { namespace rest { namespace service {
       return CResult::GenerateSuccess(deviceFound);
    }
 
-   shared::CDataContainer CDevice::getAllDevices(const std::vector<std::string> & parameters, const std::string & requestContent)
+   shared::CDataContainer CDevice::getAllDevices(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       std::vector< boost::shared_ptr<database::entities::CDevice> > dvList = m_dataProvider->getDeviceRequester()->getDevices();
       shared::CDataContainer collection;
@@ -59,7 +59,7 @@ namespace web { namespace rest { namespace service {
       return CResult::GenerateSuccess(collection);
    }
 
-   shared::CDataContainer CDevice::getKeyword(const std::vector<std::string> & parameters, const std::string & requestContent)
+   shared::CDataContainer CDevice::getKeyword(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       try
       {
@@ -82,7 +82,7 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-   shared::CDataContainer CDevice::getAllKeywords(const std::vector<std::string> & parameters, const std::string & requestContent)
+   shared::CDataContainer CDevice::getAllKeywords(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       try
       {
@@ -101,7 +101,7 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-   shared::CDataContainer CDevice::getDevicesWithCapacity(const std::vector<std::string> & parameters, const std::string & requestContent)
+   shared::CDataContainer CDevice::getDevicesWithCapacity(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       try
       {
@@ -129,7 +129,7 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-   shared::CDataContainer CDevice::getDeviceWithCapacityType(const std::vector<std::string> & parameters, const std::string & requestContent)
+   shared::CDataContainer CDevice::getDeviceWithCapacityType(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       try
       {
@@ -156,7 +156,7 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-   shared::CDataContainer CDevice::getDeviceKeywordsForCapacity(const std::vector<std::string> & parameters, const std::string & requestContent)
+   shared::CDataContainer CDevice::getDeviceKeywordsForCapacity(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       try
       {
@@ -184,7 +184,7 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-   shared::CDataContainer CDevice::getDeviceKeywords(const std::vector<std::string> & parameters, const std::string & requestContent)
+   shared::CDataContainer CDevice::getDeviceKeywords(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       try
       {
@@ -214,7 +214,7 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-   shared::CDataContainer CDevice::sendDeviceCommand(const std::vector<std::string> & parameters, const std::string & requestContent)
+   shared::CDataContainer CDevice::sendDeviceCommand(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       try
       {
@@ -225,7 +225,7 @@ namespace web { namespace rest { namespace service {
 
             try
             {
-               m_messageSender.sendCommandAsync(keywordId, requestContent);
+               m_messageSender.sendCommandAsync(keywordId, requestContent.serialize());
                return CResult::GenerateSuccess();
             }
             catch (shared::exception::CEmptyResult&)
@@ -248,7 +248,7 @@ namespace web { namespace rest { namespace service {
 
 
 
-   shared::CDataContainer CDevice::cleanupDevice(const std::vector<std::string> & parameters, const std::string & requestContent)
+   shared::CDataContainer CDevice::cleanupDevice(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       try
       {
@@ -290,7 +290,7 @@ namespace web { namespace rest { namespace service {
 
 
 
-   shared::CDataContainer CDevice::updateDeviceFriendlyName(const std::vector<std::string> & parameters, const std::string & requestContent)
+   shared::CDataContainer CDevice::updateDeviceFriendlyName(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       try
       {
@@ -300,7 +300,7 @@ namespace web { namespace rest { namespace service {
             int deviceId = boost::lexical_cast<int>(parameters[1]);
 
             database::entities::CDevice deviceToUpdate;
-            deviceToUpdate.fillFromContent(shared::CDataContainer(requestContent));
+            deviceToUpdate.fillFromContent(requestContent);
             if(deviceToUpdate.FriendlyName.isDefined())
             {
                //update data in base
@@ -325,7 +325,7 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-   shared::CDataContainer CDevice::updateKeywordFriendlyName(const std::vector<std::string> & parameters, const std::string & requestContent)
+   shared::CDataContainer CDevice::updateKeywordFriendlyName(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       try
       {
@@ -335,7 +335,7 @@ namespace web { namespace rest { namespace service {
             int keywordId = boost::lexical_cast<int>(parameters[2]);
 
             database::entities::CKeyword keywordToUpdate;
-            keywordToUpdate.fillFromContent(shared::CDataContainer(requestContent));
+            keywordToUpdate.fillFromContent(requestContent);
             if(keywordToUpdate.FriendlyName.isDefined())
             {
                m_dataProvider->getKeywordRequester()->updateKeywordFriendlyName(keywordId, keywordToUpdate.FriendlyName());
@@ -358,7 +358,7 @@ namespace web { namespace rest { namespace service {
 
 
 
-   shared::CDataContainer CDevice::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const std::string & requestContent)
+   shared::CDataContainer CDevice::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       boost::shared_ptr<database::ITransactionalProvider> pTransactionalEngine = m_dataProvider->getTransactionalEngine();
       shared::CDataContainer result;

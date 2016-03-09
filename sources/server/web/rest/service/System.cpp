@@ -36,7 +36,7 @@ namespace web { namespace rest { namespace service {
       return m_restKeyword;
    }
 
-   shared::CDataContainer CSystem::getBinding(const std::vector<std::string> & parameters, const std::string & requestContent)
+   shared::CDataContainer CSystem::getBinding(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       if (parameters.size() > 2)
       {
@@ -107,7 +107,7 @@ namespace web { namespace rest { namespace service {
       }
    }
    
-   shared::CDataContainer CSystem::getSystemInformation(const std::vector<std::string> & parameters, const std::string & requestContent)
+   shared::CDataContainer CSystem::getSystemInformation(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       try
       {

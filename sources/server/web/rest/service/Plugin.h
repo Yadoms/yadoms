@@ -19,26 +19,26 @@ namespace web { namespace rest { namespace service {
       // [END] IRestService implementation
 
       const std::string & getRestKeyword();
-      shared::CDataContainer getOnePlugin(const std::vector<std::string> & parameters, const std::string & requestContent);   
-      shared::CDataContainer getAllPluginsInstance(const std::vector<std::string> & parameters, const std::string & requestContent);  
-      shared::CDataContainer getAllPluginsInstanceForManualDeviceCreation(const std::vector<std::string> & parameters, const std::string & requestContent);
-      shared::CDataContainer getAllAvailablePlugins(const std::vector<std::string> & parameters, const std::string & requestContent);  
-      shared::CDataContainer getAllAvailablePluginsWithPackage(const std::vector<std::string> & parameters, const std::string & requestContent);
-      shared::CDataContainer getPluginDevices(const std::vector<std::string> & parameters, const std::string & requestContent);
-      shared::CDataContainer createPlugin(const std::vector<std::string> & parameters, const std::string & requestContent);  
-      shared::CDataContainer updatePlugin(const std::vector<std::string> & parameters, const std::string & requestContent);  
-      shared::CDataContainer deletePlugin(const std::vector<std::string> & parameters, const std::string & requestContent);  
-      shared::CDataContainer deleteAllPlugins(const std::vector<std::string> & parameters, const std::string & requestContent);  
+      shared::CDataContainer getOnePlugin(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
+      shared::CDataContainer getAllPluginsInstance(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  
+      shared::CDataContainer getAllPluginsInstanceForManualDeviceCreation(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer getAllAvailablePlugins(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  
+      shared::CDataContainer getAllAvailablePluginsWithPackage(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer getPluginDevices(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer createPlugin(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  
+      shared::CDataContainer updatePlugin(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  
+      shared::CDataContainer deletePlugin(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  
+      shared::CDataContainer deleteAllPlugins(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  
 
-      shared::CDataContainer getInstanceState(const std::vector<std::string> & parameters, const std::string & requestContent);
-      shared::CDataContainer startInstance(const std::vector<std::string> & parameters, const std::string & requestContent);
-      shared::CDataContainer stopInstance(const std::vector<std::string> & parameters, const std::string & requestContent);   
+      shared::CDataContainer getInstanceState(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer startInstance(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer stopInstance(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
 
-      shared::CDataContainer createDevice(const std::vector<std::string> & parameters, const std::string & requestContent);
+      shared::CDataContainer createDevice(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
       
-      shared::CDataContainer getBinding(const std::vector<std::string> & parameters, const std::string & requestContent);
+      shared::CDataContainer getBinding(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
 
-      shared::CDataContainer transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const std::string & requestContent);
+      shared::CDataContainer transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
 
    private:
       boost::shared_ptr<database::IDataProvider> m_dataProvider;

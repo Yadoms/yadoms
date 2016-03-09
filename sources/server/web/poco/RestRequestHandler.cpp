@@ -80,7 +80,7 @@ namespace web {
             }
 
             //dispatch url to rest dispatcher
-            shared::CDataContainer js = m_restDispatcher.dispath(request.getMethod(), parameters, content);
+            shared::CDataContainer js = m_restDispatcher.dispath(request.getMethod(), parameters, shared::CDataContainer(content));
             return js.serialize();
          }
 

@@ -17,20 +17,20 @@ namespace web { namespace rest { namespace service {
       // [END] IRestService implementation
 
       const std::string & getRestKeyword();
-      shared::CDataContainer getAllInterpreters(const std::vector<std::string> & parameters, const std::string & requestContent);  
-      shared::CDataContainer getAllRules(const std::vector<std::string> & parameters, const std::string & requestContent);  
-      shared::CDataContainer getRule(const std::vector<std::string> & parameters, const std::string & requestContent);
-      shared::CDataContainer getRuleCode(const std::vector<std::string> & parameters, const std::string & requestContent);
-      shared::CDataContainer getRuleCodeTemplate(const std::vector<std::string> & parameters, const std::string & requestContent);
-      shared::CDataContainer getRuleLog(const std::vector<std::string> & parameters, const std::string & requestContent);
-      shared::CDataContainer startRule(const std::vector<std::string> & parameters, const std::string & requestContent);
-      shared::CDataContainer stopRule(const std::vector<std::string> & parameters, const std::string & requestContent);
-      shared::CDataContainer createRule(const std::vector<std::string> & parameters, const std::string & requestContent);
-      shared::CDataContainer updateRule(const std::vector<std::string> & parameters, const std::string & requestContent);
-      shared::CDataContainer updateRuleCode(const std::vector<std::string> & parameters, const std::string & requestContent);
-      shared::CDataContainer deleteRule(const std::vector<std::string> & parameters, const std::string & requestContent);
+      shared::CDataContainer getAllInterpreters(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  
+      shared::CDataContainer getAllRules(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  
+      shared::CDataContainer getRule(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer getRuleCode(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer getRuleCodeTemplate(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer getRuleLog(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer startRule(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer stopRule(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer createRule(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer updateRule(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer updateRuleCode(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer deleteRule(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
 
-      shared::CDataContainer transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const std::string & requestContent);
+      shared::CDataContainer transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
 
    private:
       boost::shared_ptr<database::IDataProvider> m_dataProvider;

@@ -20,14 +20,14 @@ namespace web { namespace rest { namespace service {
       static const std::string & getRestKeyword();
 
    public:
-      shared::CDataContainer getConfiguration(const std::vector<std::string> & parameters, const std::string & requestContent);
-      shared::CDataContainer getSectionConfigurations(const std::vector<std::string> & parameters, const std::string & requestContent);
-      shared::CDataContainer getAllConfigurations(const std::vector<std::string> & parameters, const std::string & requestContent);
+      shared::CDataContainer getConfiguration(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer getSectionConfigurations(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer getAllConfigurations(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
 
-      shared::CDataContainer createOneConfiguration(const std::vector<std::string> & parameters, const std::string & requestContent);
-      shared::CDataContainer updateOneConfiguration(const std::vector<std::string> & parameters, const std::string & requestContent);
-      shared::CDataContainer updateAllConfigurations(const std::vector<std::string> & parameters, const std::string & requestContent);
-      shared::CDataContainer deleteOneConfiguration(const std::vector<std::string> & parameters, const std::string & requestContent);
+      shared::CDataContainer createOneConfiguration(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer updateOneConfiguration(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer updateAllConfigurations(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer deleteOneConfiguration(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
 
    private:
       boost::shared_ptr<dataAccessLayer::IConfigurationManager> m_configurationManager;

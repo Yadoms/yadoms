@@ -24,67 +24,67 @@ namespace web { namespace rest { namespace service {
       //-----------------------------------------
       ///\brief   get a device
       //-----------------------------------------
-      shared::CDataContainer getOneDevice(const std::vector<std::string> & parameters, const std::string & requestContent);   
+      shared::CDataContainer getOneDevice(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
 
       //-----------------------------------------
       ///\brief   get all devices
       //-----------------------------------------
-      shared::CDataContainer getAllDevices(const std::vector<std::string> & parameters, const std::string & requestContent);  
+      shared::CDataContainer getAllDevices(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  
 
       //-----------------------------------------
       ///\brief   get all devices which supports a capacity
       //-----------------------------------------
-      shared::CDataContainer getDevicesWithCapacity(const std::vector<std::string> & parameters, const std::string & requestContent);  
+      shared::CDataContainer getDevicesWithCapacity(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  
 
       //-----------------------------------------
       ///\brief   get all the keywords which implement a device capacity
       //-----------------------------------------
-      shared::CDataContainer getDeviceKeywordsForCapacity(const std::vector<std::string> & parameters, const std::string & requestContent);  
+      shared::CDataContainer getDeviceKeywordsForCapacity(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  
 
       //-----------------------------------------
       ///\brief   get all the keywords which match a capacity type
       //-----------------------------------------
-      shared::CDataContainer getDeviceWithCapacityType(const std::vector<std::string> & parameters, const std::string & requestContent);
+      shared::CDataContainer getDeviceWithCapacityType(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
 
       //-----------------------------------------
       ///\brief   get all the keywords of a device
       //-----------------------------------------
-      shared::CDataContainer getDeviceKeywords(const std::vector<std::string> & parameters, const std::string & requestContent);  
+      shared::CDataContainer getDeviceKeywords(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  
 
       //-----------------------------------------
       ///\brief   get a keyword
       //-----------------------------------------
-      shared::CDataContainer getKeyword(const std::vector<std::string> & parameters, const std::string & requestContent);  
+      shared::CDataContainer getKeyword(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  
 
       //-----------------------------------------
       ///\brief   get all keywords
       //-----------------------------------------
-      shared::CDataContainer getAllKeywords(const std::vector<std::string> & parameters, const std::string & requestContent);
+      shared::CDataContainer getAllKeywords(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
       
       //-----------------------------------------
       ///\brief   send a command to a device
       //-----------------------------------------
-      shared::CDataContainer sendDeviceCommand(const std::vector<std::string> & parameters, const std::string & requestContent);
+      shared::CDataContainer sendDeviceCommand(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
 
       //-----------------------------------------
       ///\brief   cleanup a device in database
       //-----------------------------------------
-      shared::CDataContainer cleanupDevice(const std::vector<std::string> & parameters, const std::string & requestContent);
+      shared::CDataContainer cleanupDevice(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
 
       //-----------------------------------------
       ///\brief   update a device friendly name
       //-----------------------------------------
-      shared::CDataContainer updateDeviceFriendlyName(const std::vector<std::string> & parameters, const std::string & requestContent);   
+      shared::CDataContainer updateDeviceFriendlyName(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
 
       //-----------------------------------------
       ///\brief   update a keyword friendly name
       //-----------------------------------------
-      shared::CDataContainer updateKeywordFriendlyName(const std::vector<std::string> & parameters, const std::string & requestContent);   
+      shared::CDataContainer updateKeywordFriendlyName(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
    private:
       //-----------------------------------------
       ///\brief   Transactional method used to encapsulate operation in transactions
       //-----------------------------------------
-      shared::CDataContainer transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const std::string & requestContent);
+      shared::CDataContainer transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
 
       //-----------------------------------------
       ///\brief   Data provider

@@ -17,10 +17,10 @@ namespace web { namespace rest { namespace service {
       // [END] IRestService implementation
 
       static const std::string & getRestKeyword();
-      shared::CDataContainer getOneTask(const std::vector<std::string> & parameters, const std::string & requestContent);   
-      shared::CDataContainer getAllTasks(const std::vector<std::string> & parameters, const std::string & requestContent);  
+      shared::CDataContainer getOneTask(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
+      shared::CDataContainer getAllTasks(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  
       
-      shared::CDataContainer addTask(const std::vector<std::string> & parameters, const std::string & requestContent);   
+      shared::CDataContainer addTask(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
 
    private:
       boost::shared_ptr<task::CScheduler> m_taskManager;
