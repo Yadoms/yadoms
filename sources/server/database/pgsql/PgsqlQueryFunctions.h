@@ -20,6 +20,12 @@ namespace pgsql {
       ///\brief Destructor
       //-----------------------------
       virtual ~CPgsqlQueryFunctions();
+
+      // database::common::CQueryFunctions implemententation/overloading
+      virtual const std::string dateToIsoString(const std::string &columnName);
+      virtual const std::string castNumeric(const std::string & fieldOrQuery);
+      // [END] - database::common::CQueryFunctions implemententation/overloading
+
    };
 
 } //namespace pgsql

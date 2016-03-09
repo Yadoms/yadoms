@@ -21,13 +21,12 @@ namespace database {  namespace sqlite {
       virtual ~CSQLiteQueryFunctions();
 
 
-      //--------------------------------------------------------------
-      ///\brief	generate coalesce function ( ie: ifnull(field0, default) )
-      ///\param [in]	field       The field or query
-      ///\param [in]	valueIfNull The fallback value
-      ///\return The query function
-      //--------------------------------------------------------------
+      // database::common::CQueryFunctions implemententation/overloading
       virtual const std::string coalesce(const std::string & fieldOrQuery, const std::string & valueIfNull);
+      virtual const std::string dateToIsoString(const std::string &columnName);
+      virtual const std::string castNumeric(const std::string & fieldOrQuery);
+      // [END] - database::common::CQueryFunctions implemententation/overloading
+
    };
 
 } //namespace sqlite

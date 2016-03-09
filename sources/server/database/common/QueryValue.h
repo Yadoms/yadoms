@@ -204,6 +204,13 @@ namespace common {
    }
 
    template<>
+   inline CQueryValue::CQueryValue(const int & anyValue, bool secure)
+   {
+      std::string value = helper<int>::getAsString(anyValue);
+      initialize(value);
+   }
+
+   template<>
    inline CQueryValue::CQueryValue(const shared::CDataContainer & anyValue, bool secure)
    {
       std::string valueAsString = anyValue.serialize();

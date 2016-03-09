@@ -25,7 +25,7 @@ namespace pgsql {
       virtual database::common::CQuery newQuery();
       virtual database::common::CQueryFunctions & queryFunc();
       virtual void queryEntities(database::common::adapters::IResultAdapter * pAdapter, const database::common::CQuery & querytoExecute);
-      virtual int queryStatement(const database::common::CQuery & querytoExecute);
+      virtual int queryStatement(const database::common::CQuery & querytoExecute, bool throwIfFails = true);
       virtual int queryCount(const database::common::CQuery & querytoExecute);
       virtual QueryRow querySingleLine(const database::common::CQuery & querytoExecute);
       virtual QueryResults query(const database::common::CQuery & querytoExecute);
@@ -33,8 +33,6 @@ namespace pgsql {
       virtual bool dropTableIfExists(const std::string & tableName);
       virtual bool createTableIfNotExists(const std::string & tableName, const std::string & tableScript);
       virtual void createIndex(const std::string & tableName, const std::string & indexScript);
-      virtual std::string generateSqlIsoDateFormat(const std::string &columnName);
-      virtual std::string coalesce(const std::string & columnName, std::string defaultValue);
       virtual void vacuum();
       virtual boost::shared_ptr<ITableCreationScriptProvider> getTableCreationScriptProvider();
       // [END] IDatabaseRequester implementation
@@ -54,7 +52,7 @@ namespace pgsql {
 
    private:
       virtual void queryEntities(database::common::adapters::IResultAdapter * pAdapter, const database::common::CQuery & querytoExecute, PGconn * pConnection);
-      virtual int queryStatement(const database::common::CQuery & querytoExecute, PGconn * pConnection);
+      virtual int queryStatement(const database::common::CQuery & querytoExecute, bool throwIfFails, PGconn * pConnection);
       virtual int queryCount(const database::common::CQuery & querytoExecute, PGconn * pConnection);
       virtual void transactionBegin(PGconn * pConnection);
       virtual void transactionCommit(PGconn * pConnection);

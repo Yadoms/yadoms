@@ -197,7 +197,7 @@ namespace sqlite {
    }
 
 
-   int CSQLiteRequester::queryStatement(const database::common::CQuery & querytoExecute)
+   int CSQLiteRequester::queryStatement(const database::common::CQuery & querytoExecute, bool throwIfFails)
    {
       BOOST_ASSERT(querytoExecute.GetQueryType() != database::common::CQuery::kNotYetDefined);
       BOOST_ASSERT(querytoExecute.GetQueryType() != database::common::CQuery::kSelect);
@@ -241,8 +241,9 @@ namespace sqlite {
             }
             else
             {
-               //throw
-               throw CDatabaseException(errMessage);
+               if(throwIfFails)
+                  throw CDatabaseException(errMessage);
+               return -1;
             }
          }
          else
@@ -370,10 +371,7 @@ namespace sqlite {
       queryStatement(database::common::CQuery::CustomQuery(indexScript, database::common::CQuery::kCreate));
    }
 
-   std::string CSQLiteRequester::generateSqlIsoDateFormat(const std::string &columnName)
-   {
-      return "(strftime('%s', isodate(" + columnName + ")) * 1000)";
-   }
+   
 
    bool CSQLiteRequester::backupSupported()
    {
@@ -456,12 +454,6 @@ namespace sqlite {
    {
       return boost::shared_ptr<ITableCreationScriptProvider>(new CSQLiteTableCreationScriptProvider());
    }
-
-   std::string CSQLiteRequester::coalesce(const std::string & columnName, std::string defaultValue)
-   {
-      return "ifnull( (" + columnName + "), " + defaultValue + ")";
-   }
-
 
 } //namespace sqlite
 } //namespace database 

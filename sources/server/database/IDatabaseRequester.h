@@ -51,9 +51,10 @@ namespace database {
       //--------------------------------------------------------------
       /// \brief		      execute a single statement (create, update, delete) which returns the number of affected lines
       /// \param [in]	   the query (with vaargs)
+      /// \param [in]	   throwIfFails If true, generate an exception when it fails; else return -1 (= number of afected rows)
       /// \return 	      the number of affected lines
       //--------------------------------------------------------------  
-      virtual int queryStatement(const database::common::CQuery & querytoExecute) = 0;
+      virtual int queryStatement(const database::common::CQuery & querytoExecute, bool throwIfFails = true) = 0;
 
       //--------------------------------------------------------------
       /// \brief		      execute a count statement
@@ -111,22 +112,6 @@ namespace database {
       //--------------------------------------------------------------
       virtual void vacuum() = 0;
 
-      //--------------------------------------------------------------
-      /// \Brief	      Generate SQL query part to format date as ISO string
-      /// \param [in]   columnName:  the column name
-      /// \return       the sql part which formats date in ISO format
-      //--------------------------------------------------------------
-      virtual std::string generateSqlIsoDateFormat(const std::string &columnName) = 0;
-
-      //--------------------------------------------------------------
-      /// \Brief	      Generate SQL coalesce function
-      /// \param [in]   columnName:  the column name
-      /// \param [in]   columnName:  the default value if columnName is null
-      /// \return       the sql function
-      //--------------------------------------------------------------
-      virtual std::string coalesce(const std::string & columnName, std::string defaultValue) = 0;
-      
-      
       // ITransactionalProvider implementation
       virtual bool transactionSupport() = 0;
       virtual void transactionBegin() = 0;

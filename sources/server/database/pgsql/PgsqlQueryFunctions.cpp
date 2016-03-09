@@ -12,6 +12,18 @@ namespace pgsql {
    {
    }
 
+
+   const std::string CPgsqlQueryFunctions::dateToIsoString(const std::string &fieldOrQuery)
+   {
+      return "to_char(" + fieldOrQuery + ", 'YYYY\"-\"MM\"-\"DD\"T\"HH24\":\"MI\":\"SS')";
+   }
+
+   const std::string CPgsqlQueryFunctions::castNumeric(const std::string & fieldOrQuery)
+   {
+      return cast(fieldOrQuery, "numeric");
+   }
+
+
 } //namespace pgsql
 } //namespace database 
 

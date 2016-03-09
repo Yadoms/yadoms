@@ -17,7 +17,16 @@ namespace sqlite {
       return (boost::format("ifnull(%1%, %2%)") % fieldOrQuery % valueIfNull).str();
    }
 
-      
+   const std::string CSQLiteQueryFunctions::dateToIsoString(const std::string &columnName)
+   {
+      return "(strftime('%s', isodate(" + columnName + ")) * 1000)";
+   }
+
+   const std::string CSQLiteQueryFunctions::castNumeric(const std::string & fieldOrQuery)
+   {
+      return cast(fieldOrQuery, "real");
+   }
+
 
 
 } //namespace sqlite

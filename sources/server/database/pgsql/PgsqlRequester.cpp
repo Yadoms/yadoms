@@ -190,7 +190,7 @@ namespace pgsql {
          queryEntities(pAdapter, querytoExecute, pConnection);
          PQfinish(pConnection);
 
-      } catch (database::CDatabaseException & ex)
+      } catch (database::CDatabaseException & )
       {
          PQfinish(pConnection);
          throw;
@@ -208,6 +208,7 @@ namespace pgsql {
          {
 
             //execute query
+            YADOMS_LOG(debug) << "[REQUEST] queryEntities - " << querytoExecute.str();
             res = PQexec(pConnection, querytoExecute.c_str());
 
             ExecStatusType resultCode = PQresultStatus(res);
@@ -257,31 +258,34 @@ namespace pgsql {
       }
    }
    
-   int CPgsqlRequester::queryStatement(const database::common::CQuery & querytoExecute)
+   int CPgsqlRequester::queryStatement(const database::common::CQuery & querytoExecute, bool throwIfFails)
    {
       PGconn * pConnection = NULL;
       
       try
       {
          pConnection = createNewConnection();
-         int result = queryStatement(querytoExecute, pConnection);
+         int result = queryStatement(querytoExecute, throwIfFails, pConnection);
          PQfinish(pConnection);
          return result;
          
-      } catch (database::CDatabaseException & ex)
+      } catch (database::CDatabaseException &)
       {
          PQfinish(pConnection);
-         throw;
+         if(throwIfFails)
+            throw;
+         return -1;
       }
    }
 
-   int CPgsqlRequester::queryStatement(const database::common::CQuery & querytoExecute, PGconn * pConnection)
+   int CPgsqlRequester::queryStatement(const database::common::CQuery & querytoExecute, bool throwIfFails, PGconn * pConnection)
    {
       BOOST_ASSERT(querytoExecute.GetQueryType() != CPgsqlQuery::kNotYetDefined);
       BOOST_ASSERT(querytoExecute.GetQueryType() != CPgsqlQuery::kSelect);
 
 
       //execute query
+      YADOMS_LOG(debug) << "[REQUEST] queryStatement - " << querytoExecute.str();
       PGresult *res = PQexec(pConnection, querytoExecute.c_str());
 
       if (PQresultStatus(res) != PGRES_COMMAND_OK)
@@ -295,8 +299,9 @@ namespace pgsql {
          //free memory
          PQclear(res);
 
-         //throw
-         throw CDatabaseException(errMessage);
+         if(throwIfFails)
+            throw CDatabaseException(errMessage);
+         return -1;
       }
       
       int affectedRows = 0;
@@ -318,7 +323,7 @@ namespace pgsql {
          PQfinish(pConnection);
          return result;
          
-      } catch (database::CDatabaseException & ex)
+      } catch (database::CDatabaseException &)
       {
          PQfinish(pConnection);
          throw;
@@ -331,6 +336,7 @@ namespace pgsql {
       BOOST_ASSERT(querytoExecute.GetQueryType() == CPgsqlQuery::kSelect);
 
       //execute query
+      YADOMS_LOG(debug) << "[REQUEST] queryCount - " << querytoExecute.str();
       PGresult *res = PQexec(pConnection, querytoExecute.c_str());
 
       if (PQresultStatus(res) != PGRES_TUPLES_OK)
@@ -377,19 +383,11 @@ namespace pgsql {
       return genericAdapter.getResults();
    }
 
-   std::string CPgsqlRequester::generateSqlIsoDateFormat(const std::string &columnName)
-   {
-      return "to_char(" + columnName + ", 'YYYY\"-\"MM\"-\"DD\"T\"HH24\":\"MI\":\"SS')";
-   }
 
-   std::string CPgsqlRequester::coalesce(const std::string & columnName, std::string defaultValue)
-   {
-      return "coalesce(" + columnName + ", " + defaultValue + ")";
-   }
    
    bool CPgsqlRequester::transactionSupport()
    {
-      return true;
+      return false;
    }
 
    void CPgsqlRequester::transactionBegin()
@@ -402,7 +400,7 @@ namespace pgsql {
          transactionBegin(pConnection);
          PQfinish(pConnection);
       }
-      catch (database::CDatabaseException & ex)
+      catch (database::CDatabaseException &)
       {
          PQfinish(pConnection);
          throw;
@@ -441,7 +439,7 @@ namespace pgsql {
          transactionCommit(pConnection);
          PQfinish(pConnection);
       }
-      catch (database::CDatabaseException & ex)
+      catch (database::CDatabaseException &)
       {
          PQfinish(pConnection);
          throw;
@@ -480,7 +478,7 @@ namespace pgsql {
             transactionRollback(pConnection);
             PQfinish(pConnection);
          }
-         catch (database::CDatabaseException & ex)
+         catch (database::CDatabaseException &)
          {
             PQfinish(pConnection);
             throw;
