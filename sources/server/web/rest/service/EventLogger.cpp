@@ -30,7 +30,7 @@ namespace web { namespace rest { namespace service {
       REGISTER_DISPATCHER_HANDLER(dispatcher, "POST",  (m_restKeyword), CEventLogger::addEvent);
    }
 
-   shared::CDataContainer CEventLogger::getEvents(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   shared::CDataContainer CEventLogger::getEvents(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       try
       {
@@ -53,7 +53,7 @@ namespace web { namespace rest { namespace service {
 
 
 
-   shared::CDataContainer CEventLogger::getLastEvent(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   shared::CDataContainer CEventLogger::getLastEvent(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       try
       {
@@ -70,7 +70,7 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-   shared::CDataContainer CEventLogger::getEventsFrom(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   shared::CDataContainer CEventLogger::getEventsFrom(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       try
       {
@@ -94,7 +94,7 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-   shared::CDataContainer CEventLogger::getEventsRange(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   shared::CDataContainer CEventLogger::getEventsRange(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       try
       {
@@ -124,12 +124,12 @@ namespace web { namespace rest { namespace service {
 
 
 
-   shared::CDataContainer CEventLogger::addEvent(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   shared::CDataContainer CEventLogger::addEvent(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       try
       {
          database::entities::CEventLogger entityToAdd;
-         entityToAdd.fillFromContent(requestContent);
+         entityToAdd.fillFromSerializedString(requestContent);
          m_dataProvider->addEvent(entityToAdd);
          return CResult::GenerateSuccess();
       }

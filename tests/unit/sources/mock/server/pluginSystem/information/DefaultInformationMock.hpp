@@ -10,7 +10,7 @@ public:
    // shared::plugin::IInformation implementation
    virtual const std::string& getType() const { static const std::string str("mock"); return str; }
    virtual const std::string& getVersion() const { static const std::string str("99"); return str; }
-   virtual const shared::versioning::EReleaseType getReleaseType() const { return shared::versioning::EReleaseType::kBetaValue; }
+   virtual const shared::versioning::EReleaseType getReleaseType() const { return shared::versioning::EReleaseType::kBeta; }
    virtual const std::string& getAuthor() const { static const std::string str("YadomsTeam"); return str; }
    virtual const std::string& getUrl() const { static const std::string str("www.yadoms.com"); return str; }
    virtual std::string getIdentity() const { std::ostringstream formatedInformations; formatedInformations << getType() << " v" << getVersion() << "[" << boost::lexical_cast<std::string>(getReleaseType()) << "]"; return formatedInformations.str(); }

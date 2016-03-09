@@ -194,7 +194,7 @@ namespace shared
    inline bool CStringExtension::parse(const char * value)
    {
       std::istringstream iss(value);
-      bool result;
+      bool result = false;
       iss >> std::boolalpha >> result;      
       return result;
    }

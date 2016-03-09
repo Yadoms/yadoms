@@ -47,7 +47,7 @@ namespace web { namespace rest { namespace service {
    }
 
 
-   shared::CDataContainer CPlugin::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   shared::CDataContainer CPlugin::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       boost::shared_ptr<database::ITransactionalProvider> pTransactionalEngine = m_dataProvider->getTransactionalEngine();
       shared::CDataContainer result;
@@ -77,7 +77,7 @@ namespace web { namespace rest { namespace service {
    }
 
 
-   shared::CDataContainer CPlugin::getOnePlugin(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   shared::CDataContainer CPlugin::getOnePlugin(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       try
       {
@@ -102,7 +102,7 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-   shared::CDataContainer CPlugin::getAllPluginsInstance(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   shared::CDataContainer CPlugin::getAllPluginsInstance(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       std::vector< boost::shared_ptr<database::entities::CPlugin> > hwList = m_pluginManager->getInstanceList();
       shared::CDataContainer t;
@@ -110,7 +110,7 @@ namespace web { namespace rest { namespace service {
       return CResult::GenerateSuccess(t);
    }
 
-   shared::CDataContainer CPlugin::getAllPluginsInstanceForManualDeviceCreation(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   shared::CDataContainer CPlugin::getAllPluginsInstanceForManualDeviceCreation(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       std::vector< boost::shared_ptr<database::entities::CPlugin> > result;
 
@@ -140,7 +140,7 @@ namespace web { namespace rest { namespace service {
       return CResult::GenerateSuccess(t);
    }
 
-   shared::CDataContainer CPlugin::getAllAvailablePlugins(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   shared::CDataContainer CPlugin::getAllAvailablePlugins(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       try
       {
@@ -167,7 +167,7 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-   shared::CDataContainer CPlugin::getAllAvailablePluginsWithPackage(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   shared::CDataContainer CPlugin::getAllAvailablePluginsWithPackage(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       try
       {
@@ -197,12 +197,12 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-   shared::CDataContainer CPlugin::createPlugin(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   shared::CDataContainer CPlugin::createPlugin(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       try
       {
          database::entities::CPlugin p;
-         p.fillFromContent(requestContent);
+         p.fillFromSerializedString(requestContent);
          int idCreated = m_pluginManager->createInstance(p);
 
          boost::shared_ptr<database::entities::CPlugin> pluginFound = m_pluginManager->getInstance(idCreated);
@@ -218,12 +218,12 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-   shared::CDataContainer CPlugin::updatePlugin(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   shared::CDataContainer CPlugin::updatePlugin(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       try
       {
          database::entities::CPlugin instanceToUpdate;
-         instanceToUpdate.fillFromContent(requestContent);
+         instanceToUpdate.fillFromSerializedString(requestContent);
 
          m_pluginManager->updateInstance(instanceToUpdate);
 
@@ -241,7 +241,7 @@ namespace web { namespace rest { namespace service {
    }
 
 
-   shared::CDataContainer CPlugin::deletePlugin(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   shared::CDataContainer CPlugin::deletePlugin(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       try
       {
@@ -266,7 +266,7 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-   shared::CDataContainer CPlugin::deleteAllPlugins(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   shared::CDataContainer CPlugin::deleteAllPlugins(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       std::vector< boost::shared_ptr<database::entities::CPlugin> > hwList = m_pluginManager->getInstanceList();
       
@@ -278,7 +278,7 @@ namespace web { namespace rest { namespace service {
       return CResult::GenerateSuccess();
    }
 
-   shared::CDataContainer CPlugin::getInstanceState(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   shared::CDataContainer CPlugin::getInstanceState(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       try
       {
@@ -305,7 +305,7 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-   shared::CDataContainer CPlugin::getPluginDevices(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   shared::CDataContainer CPlugin::getPluginDevices(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       try
       {
@@ -333,7 +333,7 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-   shared::CDataContainer CPlugin::startInstance(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   shared::CDataContainer CPlugin::startInstance(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       try
       {
@@ -368,7 +368,7 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-   shared::CDataContainer CPlugin::stopInstance(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   shared::CDataContainer CPlugin::stopInstance(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       try
       {
@@ -403,7 +403,7 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-   shared::CDataContainer CPlugin::createDevice(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   shared::CDataContainer CPlugin::createDevice(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       try
       {
@@ -411,7 +411,8 @@ namespace web { namespace rest { namespace service {
          {
             int pluginId = boost::lexical_cast<int>(parameters[1]);
 
-            if (!requestContent.exists("name") || !requestContent.exists("configuration"))
+            shared::CDataContainer content(requestContent);
+            if (!content.exists("name") || !content.exists("configuration"))
                return CResult::GenerateError("invalid request content. There must be a name and a configuration field");
 
             try
@@ -420,13 +421,12 @@ namespace web { namespace rest { namespace service {
                communication::callback::CSynchronousCallback<std::string> cb;
 
                //create the data container to send to plugin
-               pluginSystem::CManuallyDeviceCreationData data(requestContent.get<std::string>("name"), requestContent.get<shared::CDataContainer>("configuration"));
+               pluginSystem::CManuallyDeviceCreationData data(content.get<std::string>("name"), content.get<shared::CDataContainer>("configuration"));
 
                //send request to plugin
                m_messageSender.sendManuallyDeviceCreationRequest(pluginId, data, cb);
 
                //wait for result
-               //communication::callback::CSynchronousCallback< std::string >::CSynchronousResult res = cb.waitForResult();
                switch (cb.waitForResult())
                {
                case communication::callback::CSynchronousCallback< std::string >::kResult:
@@ -439,7 +439,7 @@ namespace web { namespace rest { namespace service {
                            boost::shared_ptr<database::entities::CDevice> createdDevice = m_dataProvider->getDeviceRequester()->getDevice(pluginId, res.Result);
 
                         //update friendly name
-                        m_dataProvider->getDeviceRequester()->updateDeviceFriendlyName(createdDevice->Id(), requestContent.get<std::string>("name"));
+                        m_dataProvider->getDeviceRequester()->updateDeviceFriendlyName(createdDevice->Id(), content.get<std::string>("name"));
 
                         //get device with friendly name updated
                         createdDevice = m_dataProvider->getDeviceRequester()->getDevice(pluginId, res.Result);
@@ -476,7 +476,7 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-   shared::CDataContainer CPlugin::getBinding(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   shared::CDataContainer CPlugin::getBinding(const std::vector<std::string> & parameters, const std::string & requestContent)
 	{
 		try
 		{

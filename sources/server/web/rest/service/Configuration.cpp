@@ -41,7 +41,7 @@ namespace web { namespace rest { namespace service {
    }
 
 
-   shared::CDataContainer CConfiguration::getConfiguration(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   shared::CDataContainer CConfiguration::getConfiguration(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       std::string section = "";
       std::string keyname = "";
@@ -62,7 +62,7 @@ namespace web { namespace rest { namespace service {
 
    }
 
-   shared::CDataContainer CConfiguration::getSectionConfigurations(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   shared::CDataContainer CConfiguration::getSectionConfigurations(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       std::string section = "";
       if(parameters.size()>1)
@@ -75,7 +75,7 @@ namespace web { namespace rest { namespace service {
       return CResult::GenerateSuccess(collection);
    }
 
-   shared::CDataContainer CConfiguration::getAllConfigurations(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   shared::CDataContainer CConfiguration::getAllConfigurations(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       std::vector< boost::shared_ptr<database::entities::CConfiguration> > hwList = m_configurationManager->getConfigurations();
       shared::CDataContainer collection;
@@ -83,11 +83,11 @@ namespace web { namespace rest { namespace service {
       return CResult::GenerateSuccess(collection);
    }
 
-   shared::CDataContainer CConfiguration::createOneConfiguration(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   shared::CDataContainer CConfiguration::createOneConfiguration(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       //get data from request content
       database::entities::CConfiguration configToCreate;
-      configToCreate.fillFromContent(requestContent);
+      configToCreate.fillFromSerializedString(requestContent);
 
       //check that configuration entry do not already exists
       if (m_configurationManager->exists(configToCreate.Section(), configToCreate.Name()))
@@ -101,12 +101,12 @@ namespace web { namespace rest { namespace service {
    }
 
 
-   shared::CDataContainer CConfiguration::updateOneConfiguration(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   shared::CDataContainer CConfiguration::updateOneConfiguration(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       try
       {
          database::entities::CConfiguration configToUpdate;
-         configToUpdate.fillFromContent(requestContent);
+         configToUpdate.fillFromSerializedString(requestContent);
 
          std::string section = "";
          std::string keyname = "";
@@ -145,11 +145,11 @@ namespace web { namespace rest { namespace service {
 
 
 
-   shared::CDataContainer CConfiguration::updateAllConfigurations(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   shared::CDataContainer CConfiguration::updateAllConfigurations(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       try
       {
-         std::vector<boost::shared_ptr<database::entities::CConfiguration> > listToUpdate = requestContent.get< std::vector<boost::shared_ptr<database::entities::CConfiguration> > >(getRestKeyword());
+         std::vector<boost::shared_ptr<database::entities::CConfiguration> > listToUpdate = shared::CDataContainer(requestContent).get< std::vector<boost::shared_ptr<database::entities::CConfiguration> > >(getRestKeyword());
 
          for (std::vector<boost::shared_ptr<database::entities::CConfiguration> >::iterator i = listToUpdate.begin(); i != listToUpdate.end(); ++i)
          {
@@ -170,7 +170,7 @@ namespace web { namespace rest { namespace service {
 
 
 
-   shared::CDataContainer CConfiguration::deleteOneConfiguration(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   shared::CDataContainer CConfiguration::deleteOneConfiguration(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       std::string section = "";
       std::string keyname = "";

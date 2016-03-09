@@ -57,7 +57,7 @@ namespace web {
             return m_restKeyword;
          }
 
-         shared::CDataContainer CAcquisition::getKeywordLastData(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+         shared::CDataContainer CAcquisition::getKeywordLastData(const std::vector<std::string> & parameters, const std::string & requestContent)
          {
             try
             {
@@ -84,15 +84,16 @@ namespace web {
             }
          }
 
-         shared::CDataContainer CAcquisition::getKeywordListLastData(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+         shared::CDataContainer CAcquisition::getKeywordListLastData(const std::vector<std::string> & parameters, const std::string & requestContent)
          {
             try
             {
                if (parameters.size() > 1)
                {
-                  if (requestContent.containsChild("keywords"))
+                  shared::CDataContainer content(requestContent);
+                  if (content.containsChild("keywords"))
                   {
-                     std::vector<int> list = requestContent.get< std::vector<int> >("keywords");
+                     std::vector<int> list = content.get< std::vector<int> >("keywords");
 
                      shared::CDataContainer result;
                      for (std::vector<int>::iterator i = list.begin(); i != list.end(); ++i)
@@ -112,7 +113,7 @@ namespace web {
                      return CResult::GenerateSuccess(result);
 
                   }
-                  requestContent.printToLog();
+                  content.printToLog();
                   return CResult::GenerateError("invalid parameter. Can not retreive keywords in request content");
                }
                return CResult::GenerateError("invalid parameter.");
@@ -127,7 +128,7 @@ namespace web {
             }
          }
 
-         shared::CDataContainer CAcquisition::getKeywordData(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+         shared::CDataContainer CAcquisition::getKeywordData(const std::vector<std::string> & parameters, const std::string & requestContent)
          {
             try
             {
@@ -175,7 +176,7 @@ namespace web {
          }
 
 
-         shared::CDataContainer CAcquisition::getKeywordDataByDay(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+         shared::CDataContainer CAcquisition::getKeywordDataByDay(const std::vector<std::string> & parameters, const std::string & requestContent)
          {
             try
             {
@@ -211,7 +212,7 @@ namespace web {
             }
          }
 
-         shared::CDataContainer CAcquisition::getKeywordDataByHour(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+         shared::CDataContainer CAcquisition::getKeywordDataByHour(const std::vector<std::string> & parameters, const std::string & requestContent)
          {
             try
             {
@@ -248,7 +249,7 @@ namespace web {
          }
 
 
-         shared::CDataContainer CAcquisition::getHighchartKeywordData(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+         shared::CDataContainer CAcquisition::getHighchartKeywordData(const std::vector<std::string> & parameters, const std::string & requestContent)
          {
             try
             {
@@ -286,7 +287,7 @@ namespace web {
             }
          }
 
-         shared::CDataContainer CAcquisition::getHighchartKeywordDataByDay(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+         shared::CDataContainer CAcquisition::getHighchartKeywordDataByDay(const std::vector<std::string> & parameters, const std::string & requestContent)
          {
             try
             {
@@ -324,7 +325,7 @@ namespace web {
             }
          }
 
-         shared::CDataContainer CAcquisition::getHighchartKeywordDataByHour(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+         shared::CDataContainer CAcquisition::getHighchartKeywordDataByHour(const std::vector<std::string> & parameters, const std::string & requestContent)
          {
             try
             {
