@@ -43,6 +43,8 @@ CBlinds1::CBlinds1(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char s
    case sTypeBlindsT8 :
    case sTypeBlindsT9 :
    case sTypeBlindsT10:
+   case sTypeBlindsT11:
+   case sTypeBlindsT12:
       break;
    default:
       throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
@@ -65,6 +67,7 @@ CBlinds1::CBlinds1(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbu
    {
    case sTypeBlindsT0:
    case sTypeBlindsT1:
+   case sTypeBlindsT12:
       m_id = rbuf.BLINDS1.id2 << 8 | rbuf.BLINDS1.id3;
       break;
 
@@ -74,6 +77,7 @@ CBlinds1::CBlinds1(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbu
    case sTypeBlindsT5:
    case sTypeBlindsT8:
    case sTypeBlindsT10:
+   case sTypeBlindsT11:
       m_id = rbuf.BLINDS1.id1 << 16 | rbuf.BLINDS1.id2 << 8 | rbuf.BLINDS1.id3;
       break;
 
@@ -139,6 +143,7 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CBlinds1::enc
    {
    case sTypeBlindsT0:
    case sTypeBlindsT1:
+   case sTypeBlindsT12:
       buffer.BLINDS1.id1 = 0;
       buffer.BLINDS1.id2 = static_cast<unsigned char>(0xFF & (m_id >> 8));
       buffer.BLINDS1.id3 = static_cast<unsigned char>(0xFF & m_id);
@@ -151,6 +156,7 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CBlinds1::enc
    case sTypeBlindsT5:
    case sTypeBlindsT8:
    case sTypeBlindsT10:
+   case sTypeBlindsT11:
       buffer.BLINDS1.id1 = static_cast<unsigned char>(0xFF & (m_id >> 16));
       buffer.BLINDS1.id2 = static_cast<unsigned char>(0xFF & (m_id >> 8));
       buffer.BLINDS1.id3 = static_cast<unsigned char>(0xFF & m_id);
@@ -220,6 +226,8 @@ void CBlinds1::buildDeviceModel()
    case sTypeBlindsT8: ssModel << "Chamberlain CS4330CN"; break;
    case sTypeBlindsT9: ssModel << "Sunpery/BTX"; break;
    case sTypeBlindsT10: ssModel << "Dolat DLM-1, Topstar"; break;
+   case sTypeBlindsT11: ssModel << "ASP"; break;
+   case sTypeBlindsT12: ssModel << "Confexx CNF24-2435"; break;
    default: ssModel << boost::lexical_cast<std::string>(m_subType); break;
    }
 

@@ -593,6 +593,8 @@ SDK version 4.9
 #define sTypeBlindsT8 0x8	//Chamberlain CS4330CN
 #define sTypeBlindsT9 0x9	//Sunpery
 #define sTypeBlindsT10 0xA	//Dolat DLM-1
+#define sTypeBlindsT11 0xB	//ASP
+#define sTypeBlindsT12 0xC	//Confexx
 
 #define blinds_sOpen 0x0
 #define blinds_sClose 0x1

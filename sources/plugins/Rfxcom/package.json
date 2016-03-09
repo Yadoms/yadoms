@@ -954,6 +954,38 @@
                   }            
                }
             },
+            "asp":
+            {
+               "type": "section",
+               "content":
+               {
+                  "id":
+                  {
+                     "type": "int",
+                     "minimumValue": "1",
+                     "maximumValue": "16777215"
+                  }            
+               }
+            },
+            "confexx":
+            {
+               "type": "section",
+               "content":
+               {
+                  "id":
+                  {
+                     "type": "int",
+                     "minimumValue": "1",
+                     "maximumValue": "65535"
+                  },
+                  "unitCode":
+                  {
+                     "type": "int",
+                     "minimumValue": "1",
+                     "maximumValue": "15"
+                  }               
+               }
+            },
             
             "rfy":
             {

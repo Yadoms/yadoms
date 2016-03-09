@@ -861,6 +861,35 @@
                   }             
                }
             },
+            "asp":
+            {
+               "name": "ASP",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "The device ID (1-16777215)"
+                  }             
+               }
+            },
+            "confexx":
+            {
+               "name": "Confexx CNF24-2435",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "The device ID (0-65535)"
+                  },
+                  "unitCode":
+                  {
+                     "name": "Unit Code",
+                     "description": "The unit code (1-15)"
+                  }               
+               }
+            },
             
             "rfy":
             {
