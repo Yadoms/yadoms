@@ -16,11 +16,11 @@ class Test_Suite(unittest.TestCase):
          # unittest.defaultTestLoader.loadTestsFromTestCase(dashboard.testMenuEntries.MenuEntries)
          # ])
 
-      with open("hello.html", 'w') as outFile:
+      with open("report.html", 'w') as outFile:
          runner = HTMLTestRunner.HTMLTestRunner(
             stream=outFile,
-            title='<Demo Test>',
-            description='This demonstrates the report output by HTMLTestRunner.'
+            title='Yadoms user tests',
+            description='Tests covering Yadoms usage from the web client'
          )
          runner.run(suite)
 
