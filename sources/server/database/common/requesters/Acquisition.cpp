@@ -53,7 +53,7 @@ namespace database {  namespace common {  namespace requesters {
          throw shared::exception::CEmptyResult("The keyword is not numeric, cannot increment data");
 
       CQuery qLastKeywordValue = m_databaseRequester->newQuery();
-      qLastKeywordValue.Select("acq." + CAcquisitionTable::getValueColumnName()).
+      qLastKeywordValue.Select(m_databaseRequester->queryFunc().castNumeric("acq." + CAcquisitionTable::getValueColumnName())).
          From(CAcquisitionTable::getTableName() + " as acq").
          Where("acq." + CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId).
          OrderBy("acq." + CAcquisitionTable::getDateColumnName(), CQUERY_ORDER_DESC).
@@ -62,9 +62,10 @@ namespace database {  namespace common {  namespace requesters {
       CQuery q = m_databaseRequester->newQuery();
 
       
+      
       //insert first (if fails, update )
       q.InsertInto(CAcquisitionTable::getTableName(), CAcquisitionTable::getDateColumnName(), CAcquisitionTable::getKeywordIdColumnName(), CAcquisitionTable::getValueColumnName()).
-      Values(dataTime, keywordId, m_databaseRequester->queryFunc().coalesceNumeric(qLastKeywordValue, 0) + " + " + increment);
+      Values(dataTime, keywordId, m_databaseRequester->queryFunc().coalesce(qLastKeywordValue, 0) + " + " + increment);
       
       if (m_databaseRequester->queryStatement(q, false) <= 0)
       {

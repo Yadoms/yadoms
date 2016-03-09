@@ -140,7 +140,7 @@ namespace pgsql {
                {
                   YADOMS_LOG(information) << "Database do not exists, try to create it";
                   //create database
-                  int result = queryStatement(CPgsqlQuery().CreateDatabase(m_dbName), pConnection);
+                  int result = queryStatement(CPgsqlQuery().CreateDatabase(m_dbName), true, pConnection);
                   if (result == 0)
                   {
                      YADOMS_LOG(information) << "Database created";

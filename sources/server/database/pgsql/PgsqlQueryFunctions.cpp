@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "PgsqlQueryFunctions.h"
 
+#include <shared/Log.h>
+
 namespace database { 
 namespace pgsql {
 
