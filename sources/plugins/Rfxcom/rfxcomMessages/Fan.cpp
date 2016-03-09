@@ -146,12 +146,6 @@ unsigned char CFan::toProtocolState() const
 
    default:
       throw shared::exception::COutOfRange("CFan : command to unsupported device");
-
    }
-
-   if (m_lightCmd)
-      return m_light.get() ? fan_sLight : 0x00;
-   
-   return m_fan.get() ? fan_sPlus : fan_sMin;
 }
 } // namespace rfxcomMessages
