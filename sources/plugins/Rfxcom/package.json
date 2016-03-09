@@ -262,14 +262,33 @@
                   "houseCode":
                   {
                      "type": "string",
-                     "regex" : "[A-P]",
+                     "regex" : "[A-D]",
                      "defaultValue": "A"
                   },
                   "unitCode":
                   {
                      "type": "int",
                      "minimumValue": "1",
-                     "maximumValue": "16"
+                     "maximumValue": "4"
+                  }               
+               }
+            }, 
+            "hqCoco20":
+            {
+               "type": "section",
+               "content":
+               {
+                  "houseCode":
+                  {
+                     "type": "string",
+                     "regex" : "[A-D]",
+                     "defaultValue": "A"
+                  },
+                  "unitCode":
+                  {
+                     "type": "int",
+                     "minimumValue": "1",
+                     "maximumValue": "4"
                   }               
                }
             },        

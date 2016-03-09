@@ -234,15 +234,32 @@
                   "houseCode":
                   {
                      "name": "Bâtiment",
-                     "description": "L'identifiant du bâtiment (A-P)"
+                     "description": "L'identifiant du bâtiment (A-D)"
                   },
                   "unitCode":
                   {
                      "name": "Equipement",
-                     "description": "L'identifiant de l'équipement (1-16)"
+                     "description": "L'identifiant de l'équipement (1-4)"
                   }               
                }
-            },        
+            },   
+            "hqCoco20":
+            {
+               "name": "HQ COCO-20",
+               "content":
+               {
+                  "houseCode":
+                  {
+                     "name": "Bâtiment",
+                     "description": "L'identifiant du bâtiment (A-D)"
+                  },
+                  "unitCode":
+                  {
+                     "name": "Equipement",
+                     "description": "L'identifiant de l'équipement (1-4)"
+                  }               
+               }
+            },      
 
             "ac":
             {

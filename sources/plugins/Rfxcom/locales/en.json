@@ -234,13 +234,30 @@
                   "houseCode":
                   {
                      "name": "House Code",
-                     "description": "The house code (A-P)"
+                     "description": "The house code (A-D)"
                   },
                   "unitCode":
                   {
                      "name": "Unit Code",
-                     "description": "The unit code (1-16)"
+                     "description": "The unit code (1-4)"
                   }               
+               }
+            },  
+            "hqCoco20":
+            {
+               "name": "HQ COCO-20",
+               "content":
+               {
+                  "houseCode":
+                  {
+                     "name": "House Code",
+                     "description": "The house code (A-D)"
+                  },
+                  "unitCode":
+                  {
+                     "name": "Unit Code",
+                     "description": "The unit code (1-4)"
+                  }              
                }
             },        
 

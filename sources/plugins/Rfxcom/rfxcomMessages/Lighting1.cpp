@@ -42,6 +42,7 @@ CLighting1::CLighting1(boost::shared_ptr<yApi::IYPluginApi> context, unsigned ch
    case sTypeEnergenie  :
    case sTypeEnergenie5 :
    case sTypeGDR2       :
+   case sTypeHQ         :
       break;
    default:
       throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
@@ -145,6 +146,7 @@ void CLighting1::buildDeviceModel()
    case sTypeEnergenie  : ssModel << "Energenie ENER010"; break;
    case sTypeEnergenie5 : ssModel << "Energenie 5-gang"; break;
    case sTypeGDR2       : ssModel << "COCO GDR2-2000R"; break;
+   case sTypeHQ         : ssModel << "HQ COCO-20 "; break;
    default: ssModel << boost::lexical_cast<std::string>(m_subType); break;
    }
 

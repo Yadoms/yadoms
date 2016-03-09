@@ -407,6 +407,7 @@ SDK version 4.9
 #define sTypeEnergenie 0x8
 #define sTypeEnergenie5 0x9
 #define sTypeGDR2 0x0A
+#define sTypeHQ 0x0B
 
 #define light1_sOff 0x0
 #define light1_sOn 0x1
