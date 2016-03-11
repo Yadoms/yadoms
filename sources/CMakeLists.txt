@@ -709,8 +709,6 @@ IF(USE_SQLITE_DATABASE)
 	set(YADOMS_SRC ${YADOMS_SRC}
 		server/database/sqlite/SQLiteQuery.h
 		server/database/sqlite/SQLiteQuery.cpp
-		server/database/sqlite/SQLiteQueryFunctions.h
-		server/database/sqlite/SQLiteQueryFunctions.cpp
 		server/database/sqlite/SQLiteRequester.h
 		server/database/sqlite/SQLiteRequester.cpp
 		server/database/sqlite/SQLiteResultHandler.h
@@ -738,8 +736,6 @@ IF(USE_PGSQL_DATABASE)
 	set(YADOMS_SRC ${YADOMS_SRC}
 		server/database/pgsql/PgsqlQuery.h
 		server/database/pgsql/PgsqlQuery.cpp
-		server/database/pgsql/PgsqlQueryFunctions.h
-		server/database/pgsql/PgsqlQueryFunctions.cpp
 		server/database/pgsql/PgsqlRequester.h
 		server/database/pgsql/PgsqlRequester.cpp
 		server/database/pgsql/PgsqlResultHandler.h

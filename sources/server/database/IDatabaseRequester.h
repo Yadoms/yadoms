@@ -2,7 +2,6 @@
 
 #include "entities/Entities.h"
 #include "common/Query.h"
-#include "common/QueryFunctions.h"
 #include "common/adapters/IResultAdapter.h"
 #include "ITransactionalProvider.h"
 #include "IDataBackup.h"
