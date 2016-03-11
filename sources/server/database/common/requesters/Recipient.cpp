@@ -45,7 +45,7 @@ namespace database { namespace common { namespace requesters {
 				From(CRecipientTable::getTableName()).
 				Where(CRecipientTable::getFirstNameColumnName(), CQUERY_OP_EQUAL, recipient.FirstName()).
 				And(CRecipientTable::getLastNameColumnName(), CQUERY_OP_EQUAL, recipient.LastName()).
-				OrderBy(CRecipientTable::getIdColumnName(), CQUERY_ORDER_DESC);
+				OrderBy(CRecipientTable::getIdColumnName(), CQuery::kDesc);
 
 			adapters::CSingleValueAdapter<int> adapter;
 			m_databaseRequester->queryEntities(&adapter, qSelect);
@@ -93,8 +93,8 @@ namespace database { namespace common { namespace requesters {
       CQuery qSelect = m_databaseRequester->newQuery();
       qSelect.Select().
          From(CRecipientTable::getTableName()).
-         OrderBy(CRecipientTable::getFirstNameColumnName(), CQUERY_ORDER_ASC,
-         CRecipientTable::getLastNameColumnName(), CQUERY_ORDER_ASC);
+         OrderBy(CRecipientTable::getFirstNameColumnName(), CQuery::kAsc,
+         CRecipientTable::getLastNameColumnName(), CQuery::kAsc);
 
       adapters::CRecipientAdapter adapter;
       m_databaseRequester->queryEntities(&adapter, qSelect);
@@ -116,8 +116,8 @@ namespace database { namespace common { namespace requesters {
 		qSelect.Select().
 			From(CRecipientTable::getTableName()).
 			Where(CRecipientTable::getIdColumnName(), CQUERY_OP_EQUAL, recipientId).
-			OrderBy(CRecipientTable::getFirstNameColumnName(), CQUERY_ORDER_ASC,
-			CRecipientTable::getLastNameColumnName(), CQUERY_ORDER_ASC);
+			OrderBy(CRecipientTable::getFirstNameColumnName(), CQuery::kAsc,
+			CRecipientTable::getLastNameColumnName(), CQuery::kAsc);
 
 		adapters::CRecipientAdapter adapter;
 		m_databaseRequester->queryEntities(&adapter, qSelect);
@@ -144,8 +144,8 @@ namespace database { namespace common { namespace requesters {
 			From(CRecipientTable::getTableName()).
 			Where(CRecipientTable::getFirstNameColumnName(), CQUERY_OP_EQUAL, firstName).
 			And(CRecipientTable::getLastNameColumnName(), CQUERY_OP_EQUAL, lastName).
-			OrderBy(CRecipientTable::getFirstNameColumnName(), CQUERY_ORDER_ASC,
-			CRecipientTable::getLastNameColumnName(), CQUERY_ORDER_ASC);
+			OrderBy(CRecipientTable::getFirstNameColumnName(), CQuery::kAsc,
+			CRecipientTable::getLastNameColumnName(), CQuery::kAsc);
 
 		adapters::CRecipientAdapter adapter;
 		m_databaseRequester->queryEntities(&adapter, qSelect);

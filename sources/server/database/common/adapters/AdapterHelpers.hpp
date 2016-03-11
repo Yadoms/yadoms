@@ -175,7 +175,7 @@
 //-------------------------------------------------------------------
 #define ADAPT_COLUMN(r, data, idx, elem) \
    BOOST_PP_IF(BOOST_PP_EQUAL(idx,0), BOOST_PP_EMPTY(), else) \
-   if(boost::iequals(BOOST_PP_CAT(C##data##Table::get,BOOST_PP_CAT(BOOST_PP_SEQ_ELEM(ADAPTER_COLUMN_ID, elem), ColumnName())), cols[nCol])) \
+   if(boost::iequals(BOOST_PP_CAT(C##data##Table::get,BOOST_PP_CAT(BOOST_PP_SEQ_ELEM(ADAPTER_COLUMN_ID, elem), ColumnName().GetName())), cols[nCol])) \
 	{ \
       if(resultHandler->isValueNull(nCol)) \
    	newEntity-> BOOST_PP_SEQ_ELEM(ADAPTER_COLUMN_ID, elem) = BOOST_PP_SEQ_ELEM(ADAPTER_COLUMN_DEFAULT, elem); \

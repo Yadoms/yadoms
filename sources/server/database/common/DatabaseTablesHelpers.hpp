@@ -16,20 +16,20 @@
 //         class CPluginTable
 //         {
 //         public:
-//            static const std::string & getTableName() { return m_TableName; }
-//            static const std::string & getIdColumn() { return m_ColumnId; }
-//            static const std::string & getNameColumn() { return m_ColumnName; }
-//            static const std::string & getPluginNameColumn() { return m_ColumnPluginName; }
-//            static const std::string & getConfigurationColumn() { return m_ColumnConfiguration; }
-//            static const std::string & getEnabledColumn() { return m_ColumnEnabled; }
+//            static const database::common::CDatabaseColumn & getTableName() { return m_TableName; }
+//            static const database::common::CDatabaseColumn & getIdColumn() { return m_ColumnId; }
+//            static const database::common::CDatabaseColumn & getNameColumn() { return m_ColumnName; }
+//            static const database::common::CDatabaseColumn & getPluginNameColumn() { return m_ColumnPluginName; }
+//            static const database::common::CDatabaseColumn & getConfigurationColumn() { return m_ColumnConfiguration; }
+//            static const database::common::CDatabaseColumn & getEnabledColumn() { return m_ColumnEnabled; }
 //         
 //         private:
-//            static std::string m_TableName;
-//            static std::string m_ColumnId;
-//            static std::string m_ColumnName;
-//            static std::string m_ColumnPluginName;
-//            static std::string m_ColumnConfiguration;
-//            static std::string m_ColumnEnabled;
+//            static database::common::CDatabaseColumn m_TableName;
+//            static database::common::CDatabaseColumn m_ColumnId;
+//            static database::common::CDatabaseColumn m_ColumnName;
+//            static database::common::CDatabaseColumn m_ColumnPluginName;
+//            static database::common::CDatabaseColumn m_ColumnConfiguration;
+//            static database::common::CDatabaseColumn m_ColumnEnabled;
 //         };
 //         
 //  Example:
@@ -64,13 +64,13 @@
 //
 /// \brief Macro which declares the static member
 //
-#define DECLARE_COLUMN_NAME(r, data, elem) static std::string BOOST_PP_CAT(m_Column, elem);
+#define DECLARE_COLUMN_NAME(r, data, elem) static database::common::CDatabaseColumn BOOST_PP_CAT(m_Column, elem);
 
 //
 /// \brief Macro which declares a getter (used by foreach)
 //
 #define DECLARE_COLUMN_NAME_GETTER(r, data, elem) \
-   static const std::string & BOOST_PP_CAT(BOOST_PP_CAT(get, elem), ColumnName()) { return BOOST_PP_CAT(m_Column, elem); }
+   static const database::common::CDatabaseColumn & BOOST_PP_CAT(BOOST_PP_CAT(get, elem), ColumnName()) { return BOOST_PP_CAT(m_Column, elem); }
 
 //
 /// \brief  Macro which declares all the getters
@@ -95,7 +95,7 @@
 /// \brief  Declare one static value (used by BOOST_PP_SEQ_FOR_EACH_I)
 //
 #define DECLARE_STATIC_VALUE(r, classname, i, elem) \
-   std::string BOOST_PP_CAT(C##classname##Table::m_Column,BOOST_PP_SEQ_ELEM(COLUMN_IDENTIFIER, elem)) = BOOST_PP_SEQ_ELEM(COLUMN_NAME, elem);
+   database::common::CDatabaseColumn BOOST_PP_CAT(C##classname##Table::m_Column,BOOST_PP_SEQ_ELEM(COLUMN_IDENTIFIER, elem))(BOOST_PP_SEQ_ELEM(COLUMN_NAME, elem));
 
  //
 //

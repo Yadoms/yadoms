@@ -42,7 +42,7 @@ namespace database {  namespace common { namespace requesters {
       qSelect. Select(CPageTable::getIdColumnName()).
          From(CPageTable::getTableName()).
          Where(CPageTable::getNameColumnName(), CQUERY_OP_EQUAL, page.Name()).
-         OrderBy(CPageTable::getIdColumnName(), CQUERY_ORDER_DESC);
+         OrderBy(CPageTable::getIdColumnName(), CQuery::kDesc);
 
       adapters::CSingleValueAdapter<int> adapter;
       m_databaseRequester->queryEntities(&adapter, qSelect);
@@ -64,7 +64,7 @@ namespace database {  namespace common { namespace requesters {
       qSelect. Select(CPageTable::getIdColumnName()).
          From(CPageTable::getTableName()).
          Where(CPageTable::getNameColumnName(), CQUERY_OP_EQUAL, name).
-         OrderBy(CPageTable::getIdColumnName(), CQUERY_ORDER_DESC);
+         OrderBy(CPageTable::getIdColumnName(), CQuery::kDesc);
 
       adapters::CSingleValueAdapter<int> adapter;
       m_databaseRequester->queryEntities(&adapter, qSelect);

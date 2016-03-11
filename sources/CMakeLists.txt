@@ -645,6 +645,8 @@ set(YADOMS_SRC ${YADOMS_SRC}
    server/database/common/QuerySpecializations.h
 	server/database/common/DataProvider.h
 	server/database/common/DataProvider.cpp
+   server/database/common/DatabaseColumn.h
+   server/database/common/DatabaseColumn.cpp
    server/database/common/DatabaseTables.h
    server/database/common/DatabaseTables.cpp
    server/database/common/DatabaseTablesHelpers.hpp

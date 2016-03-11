@@ -6,6 +6,7 @@
 #include <shared/Field.hpp>
 #include <shared/enumeration/IExtendedEnum.h>
 #include "database/DatabaseException.hpp"
+#include "DatabaseColumn.h"
 
 namespace database { namespace common {
 
@@ -13,7 +14,6 @@ namespace database { namespace common {
 
 #define CQUERY_OP_EQUAL "="
 #define CQUERY_OP_LIKE " LIKE "
-#define CQUERY_DISTINCT(_x) "DISTINCT(" +  _x  + ")"
 #define CQUERY_OP_IN " IN "
 #define CQUERY_OP_SUP ">"
 #define CQUERY_OP_INF "<"
@@ -27,8 +27,7 @@ namespace database { namespace common {
 #define CQUERY_OP_MUL "*"
 
 
-#define CQUERY_ORDER_ASC ""
-#define CQUERY_ORDER_DESC "DESC"
+
 
 
    /*
@@ -60,6 +59,13 @@ namespace database { namespace common {
          kCreate,
          kVacuum
       };
+
+      enum E_OrderWay
+      {
+         kAsc = 0,
+         kDesc
+      };
+
    protected:
       //
       /// \brief           Constructor
@@ -145,7 +151,8 @@ namespace database { namespace common {
       /// \param  field10  a table name to append to the from clause
       /// \return          A reference to itself to allow method chaining
       //   
-      CQuery & From(const std::string & table1, const std::string & table2 = EMPTY_STR, const std::string & table3 = EMPTY_STR, const std::string & table4 = EMPTY_STR, const std::string & table5 = EMPTY_STR, const std::string & table6 = EMPTY_STR, const std::string & table7 = EMPTY_STR, const std::string & table8 = EMPTY_STR, const std::string & table9 = EMPTY_STR, const std::string & table10 = EMPTY_STR) ;
+      template<class T1, class T2 = CNotUsedTemplateField, class T3 = CNotUsedTemplateField, class T4 = CNotUsedTemplateField, class T5 = CNotUsedTemplateField, class T6 = CNotUsedTemplateField, class T7 = CNotUsedTemplateField, class T8 = CNotUsedTemplateField, class T9 = CNotUsedTemplateField, class T10 = CNotUsedTemplateField>
+      inline CQuery & From(const T1 & table1, const T2 & table2 = T2(), const T3 & table3 = T3(), const T4 & table4 = T4(), const T5 & table5 = T5(), const T6 & table6 = T6(), const T7 & table7 = T7(), const T8 & table8 = T8(), const T9 & table9 = T9(), const T10 & table10 = T10());
 
 		//
       /// \brief           Append 'From subquery'
@@ -176,8 +183,8 @@ namespace database { namespace common {
       /// \param  field    the value
       /// \return          A reference to itself to allow method chaining
       //     
-      template<class T>
-      inline CQuery & Where(const std::string & field, const std::string & op, const T & value);
+      template<class T1, class T2>
+      inline CQuery & Where(const T1 & field, const std::string & op, const T2 & value);
 
 		
 		//
@@ -188,8 +195,8 @@ namespace database { namespace common {
       /// \param  value    the value
       /// \return          A reference to itself to allow method chaining
       //     
-      template<class T>
-      inline CQuery & WhereParenthesis(const std::string & field, const std::string & op, const T & value);
+      template<class T1, class T2>
+      inline CQuery & WhereParenthesis(const T1 & field, const std::string & op, const T2 & value);
 
 
       //
@@ -207,8 +214,8 @@ namespace database { namespace common {
       /// \param  value    the value
       /// \return          A reference to itself to allow method chaining
       //     
-      template<class T>
-      inline CQuery & And(const std::string & field, const std::string & op, const T & value);
+      template<class T1, class T2>
+      inline CQuery & And(const T1 & field, const std::string & op, const T2 & value);
 
 	
 		//
@@ -219,8 +226,8 @@ namespace database { namespace common {
       /// \param  value    the value
       /// \return          A reference to itself to allow method chaining
       //     
-      template<class T>
-      inline CQuery & AndParenthesis(const std::string & field, const std::string & op, const T & value);
+      template<class T1, class T2>
+      inline CQuery & AndParenthesis(const T1 & field, const std::string & op, const T2 & value);
 
       //
       /// \brief           Append the OR clause
@@ -237,8 +244,8 @@ namespace database { namespace common {
       /// \param  value    the value
       /// \return          A reference to itself to allow method chaining
       //        
-      template<class T>
-      inline CQuery & Or(const std::string & field, const std::string & op, const T & value);
+      template<class T1, class T2>
+      inline CQuery & Or(const T1 & field, const std::string & op, const T2 & value);
       		
 		//
       /// \brief           Append the Or clause  with a start parenthesis
@@ -248,8 +255,8 @@ namespace database { namespace common {
       /// \param  value    the value
       /// \return          A reference to itself to allow method chaining
       //        
-      template<class T>
-      inline CQuery & OrParenthesis(const std::string & field, const std::string & op, const T & value);
+      template<class T1, class T2>
+      inline CQuery & OrParenthesis(const T1 & field, const std::string & op, const T2 & value);
 
 		//
 		/// \brief           Append  a closing parenthesis
@@ -281,16 +288,18 @@ namespace database { namespace common {
       /// \param  way10    the way of field10 (values can be ASC or DESC, empty do not append the way)   
       /// \return          A reference to itself to allow method chaining
       //     
-      CQuery & OrderBy( const std::string & field1, const std::string & way1 = EMPTY_STR, 
-         const std::string & field2  = EMPTY_STR, const std::string &  way2  =EMPTY_STR,
-         const std::string & field3  = EMPTY_STR, const std::string &  way3  =EMPTY_STR,
-         const std::string & field4  = EMPTY_STR, const std::string &  way4  =EMPTY_STR,
-         const std::string & field5  = EMPTY_STR, const std::string &  way5  =EMPTY_STR,
-         const std::string & field6  = EMPTY_STR, const std::string &  way6  =EMPTY_STR,
-         const std::string & field7  = EMPTY_STR, const std::string &  way7  =EMPTY_STR,
-         const std::string & field8  = EMPTY_STR, const std::string &  way8  =EMPTY_STR,
-         const std::string & field9  = EMPTY_STR, const std::string &  way9  =EMPTY_STR,
-         const std::string & field10 = EMPTY_STR, const std::string & way10 =EMPTY_STR);
+      template<class T1, class T2 = CNotUsedTemplateField, class T3 = CNotUsedTemplateField, class T4 = CNotUsedTemplateField, class T5 = CNotUsedTemplateField, class T6 = CNotUsedTemplateField, class T7 = CNotUsedTemplateField, class T8 = CNotUsedTemplateField, class T9 = CNotUsedTemplateField, class T10 = CNotUsedTemplateField>
+      inline CQuery & OrderBy(const T1 & value1, const E_OrderWay way1 = kAsc, 
+                              const T2 & value2 = T2(), const E_OrderWay way2 = kAsc, 
+                              const T3 & value3 = T3(), const E_OrderWay way3 = kAsc,
+                              const T4 & value4 = T4(), const E_OrderWay way4 = kAsc,
+                              const T5 & value5 = T5(), const E_OrderWay way5 = kAsc,
+                              const T6 & value6 = T6(), const E_OrderWay way6 = kAsc,
+                              const T7 & value7 = T7(), const E_OrderWay way7 = kAsc,
+                              const T8 & value8 = T8(), const E_OrderWay way8 = kAsc,
+                              const T9 & value9 = T9(), const E_OrderWay way9 = kAsc,
+                              const T10 & value10 = T10(), const E_OrderWay way10 = kAsc);
+
 
       //
       /// \brief           Append 'GROUP BY field1 [,field2 [,field3...]]'
@@ -306,7 +315,17 @@ namespace database { namespace common {
       /// \param  field10  a field name to append to the group by clause
       /// \return          A reference to itself to allow method chaining
       //      
-      CQuery & GroupBy(const std::string & field1, const std::string & field2 = EMPTY_STR, const std::string & field3 = EMPTY_STR, const std::string & field4 = EMPTY_STR, const std::string & field5 = EMPTY_STR, const std::string & field6 = EMPTY_STR, const std::string & field7 = EMPTY_STR, const std::string & field8 = EMPTY_STR, const std::string & field9 = EMPTY_STR, const std::string & field10 = EMPTY_STR);
+      template<class T1, class T2 = CNotUsedTemplateField, class T3 = CNotUsedTemplateField, class T4 = CNotUsedTemplateField, class T5 = CNotUsedTemplateField, class T6 = CNotUsedTemplateField, class T7 = CNotUsedTemplateField, class T8 = CNotUsedTemplateField, class T9 = CNotUsedTemplateField, class T10 = CNotUsedTemplateField>
+      inline CQuery & GroupBy(const T1 & field1,
+                              const T2 & field2 = T2(), 
+                              const T3 & field3 = T3(), 
+                              const T4 & field4 = T4(), 
+                              const T5 & field5 = T5(), 
+                              const T6 & field6 = T6(), 
+                              const T7 & field7 = T7(), 
+                              const T8 & field8 = T8(), 
+                              const T9 & field9 = T9(), 
+                              const T10 & field10 = T10());
 
       //
       /// \brief           Append 'INSERT INTO table (field1 [,field2 [,field3...]])'
@@ -323,8 +342,18 @@ namespace database { namespace common {
       /// \param  field10  a field name to append to the insert into clause
       /// \return          A reference to itself to allow method chaining
       //         
-      CQuery & InsertInto(const std::string & table, const std::string & field1, const std::string & field2 = EMPTY_STR, const std::string & field3 = EMPTY_STR, const std::string & field4 = EMPTY_STR, const std::string & field5 = EMPTY_STR, const std::string & field6 = EMPTY_STR, const std::string & field7 = EMPTY_STR, const std::string & field8 = EMPTY_STR, const std::string & field9 = EMPTY_STR, const std::string & field10 = EMPTY_STR);
-
+      template<class T1, class T2 = CNotUsedTemplateField, class T3 = CNotUsedTemplateField, class T4 = CNotUsedTemplateField, class T5 = CNotUsedTemplateField, class T6 = CNotUsedTemplateField, class T7 = CNotUsedTemplateField, class T8 = CNotUsedTemplateField, class T9 = CNotUsedTemplateField, class T10 = CNotUsedTemplateField>
+      inline CQuery & InsertInto(const std::string & table, 
+         const T1 & field1,
+         const T2 & field2 = T2(),
+         const T3 & field3 = T3(),
+         const T4 & field4 = T4(),
+         const T5 & field5 = T5(),
+         const T6 & field6 = T6(),
+         const T7 & field7 = T7(),
+         const T8 & field8 = T8(),
+         const T9 & field9 = T9(),
+         const T10 & field10 = T10());
 
       //
       /// \brief           Append 'VALUES (field1 [,field2 [,field3...]])'
@@ -374,17 +403,26 @@ namespace database { namespace common {
       /// \param  value10  the value of field10   
       /// \return          A reference to itself to allow method chaining
       //     
-      template<class T1, class T2 = CNotUsedTemplateField, class T3 = CNotUsedTemplateField, class T4 = CNotUsedTemplateField, class T5 = CNotUsedTemplateField, class T6 = CNotUsedTemplateField, class T7 = CNotUsedTemplateField, class T8 = CNotUsedTemplateField, class T9 = CNotUsedTemplateField, class T10 = CNotUsedTemplateField>
-      inline CQuery & Set(const std::string & field1, const T1 & value1,
-         const std::string & field2 = EMPTY_STR, const T2  &  value2 = T2(),
-         const std::string & field3 = EMPTY_STR, const T3  &  value3 = T3(),
-         const std::string & field4 = EMPTY_STR, const T4  &  value4 = T4(),
-         const std::string & field5 = EMPTY_STR, const T5  &  value5 = T5(),
-         const std::string & field6 = EMPTY_STR, const T6  &  value6 = T6(),
-         const std::string & field7 = EMPTY_STR, const T7  &  value7 = T7(),
-         const std::string & field8 = EMPTY_STR, const T8  &  value8 = T8(),
-         const std::string & field9 = EMPTY_STR, const T9  &  value9 = T9(),
-         const std::string & field10 = EMPTY_STR, const T10 &  value10 = T10());
+      template<class T01, class T1, 
+               class T02 = CNotUsedTemplateField, class T2 = CNotUsedTemplateField,
+               class T03 = CNotUsedTemplateField, class T3 = CNotUsedTemplateField, 
+               class T04 = CNotUsedTemplateField, class T4 = CNotUsedTemplateField, 
+               class T05 = CNotUsedTemplateField, class T5 = CNotUsedTemplateField, 
+               class T06 = CNotUsedTemplateField, class T6 = CNotUsedTemplateField, 
+               class T07 = CNotUsedTemplateField, class T7 = CNotUsedTemplateField, 
+               class T08 = CNotUsedTemplateField, class T8 = CNotUsedTemplateField, 
+               class T09 = CNotUsedTemplateField, class T9 = CNotUsedTemplateField, 
+               class T11 = CNotUsedTemplateField, class T10 = CNotUsedTemplateField>
+      inline CQuery & Set( const T01 & field1, const T1 & value1,
+                           const T02 & field2 = T02(), const T2  &  value2 = T2(),
+                           const T03 & field3 = T03(), const T3  &  value3 = T3(),
+                           const T04 & field4 = T04(), const T4  &  value4 = T4(),
+                           const T05 & field5 = T05(), const T5  &  value5 = T5(),
+                           const T06 & field6 = T06(), const T6  &  value6 = T6(),
+                           const T07 & field7 = T07(), const T7  &  value7 = T7(),
+                           const T08 & field8 = T08(), const T8  &  value8 = T8(),
+                           const T09 & field9 = T09(), const T9  &  value9 = T9(),
+                           const T11 & field10 = T11(), const T10 &  value10 = T10());
 
 
       //
@@ -578,6 +616,7 @@ namespace database { namespace common {
       virtual const std::string functionConcatenate(const std::string & sqlPart1, const std::string & sqlPart2);
       virtual const std::string functionAs(const std::string & sqlPart, const std::string &name);
       virtual const std::string functionFromSubquery(const std::string & subQueryName, const std::string &subQueryFieldName);
+      virtual const std::string functionDistinct(const std::string & field);
 
       class CFunction
       {
@@ -711,8 +750,16 @@ namespace database { namespace common {
       //--------------------------------------------------------------
       template<class T>
       inline const CFunction as(const T & fieldOrQuery, const std::string & columnName);
+      
+      //--------------------------------------------------------------
+      ///\brief	generate distinct sql
+      ///\param [in]	fieldOrQuery       The field or query
+      ///\return The query function
+      //--------------------------------------------------------------
+      template<class T>
+      inline const CFunction distinct(const T & fieldOrQuery);
 
-
+      
       //--------------------------------------------------------------
       ///\brief	generate column naming sql
       ///\param [in]	subQueryName       The subquery name
@@ -720,6 +767,14 @@ namespace database { namespace common {
       ///\return The query function
       //--------------------------------------------------------------
       const CFunction fromSubquery(const std::string& subQueryName, const std::string & subQueryFieldName);
+
+      //--------------------------------------------------------------
+      ///\brief	generate column naming sql
+      ///\param [in]	subQueryName     The subquery name
+      ///\param [in]	column           The subquery column
+      ///\return The query function
+      //--------------------------------------------------------------
+      const CFunction fromSubquery(const std::string& subQueryName, const CDatabaseColumn & column);
 
       //--------------------------------------------------------------
       ///\brief	generate concatenation function 
@@ -760,9 +815,9 @@ namespace database { namespace common {
       /// \brief              Append a order field to the current query stream
       /// \param  ss          the stream containing current query
       /// \param  field       the field name
-      /// \param  value       the way for order by (ASC or DESC)
+      /// \param  value       the way for order by (kAsc or kDesc)
       //
-      void AppendOrderField(std::ostringstream & ss, const std::string & field, const std::string & way);
+      void AppendOrderField(std::ostringstream & ss, const std::string & field, const E_OrderWay way);
 
       //
       /// \brief              Append a set(field=value) to the current query stream

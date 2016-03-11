@@ -39,7 +39,7 @@ namespace database { namespace common { namespace requesters {
          From(CPluginTable::getTableName()).
          Where(CPluginTable::getDisplayNameColumnName(), CQUERY_OP_EQUAL, newPlugin.DisplayName()).
          And(CPluginTable::getTypeColumnName(), CQUERY_OP_EQUAL, newPlugin.Type()).
-         OrderBy(CPluginTable::getIdColumnName(), CQUERY_ORDER_DESC);
+         OrderBy(CPluginTable::getIdColumnName(), CQuery::kDesc);
 
       adapters::CSingleValueAdapter<int> adapter;
       m_databaseRequester->queryEntities(&adapter, qSelect);

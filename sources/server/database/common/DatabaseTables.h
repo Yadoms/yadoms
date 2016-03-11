@@ -1,5 +1,6 @@
 #pragma once
 
+#include "DatabaseColumn.h"
 #include "DatabaseTablesHelpers.hpp"
 #include "database/entities/Entities.h"
 

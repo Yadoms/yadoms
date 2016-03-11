@@ -245,6 +245,19 @@ struct queryhelper < CQuery::CFunction >
 };
 
 
+//--------------------------------------------------------------
+/// \brief	    Helper structure for converting column to its name in queries
+//--------------------------------------------------------------
+template <>
+struct queryhelper < CDatabaseColumn >
+{
+   static const std::string format(CQuery * obj, const CDatabaseColumn & anyValue)
+   {
+      return anyValue.GetName();
+   }
+};
+
+
 
 
 //--------------------------------------------------------------
@@ -319,6 +332,24 @@ inline CQuery & CQuery::SelectCount(const T1 & field1, const T2 & field2, const 
 }
 
 
+template<class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10>
+inline CQuery & CQuery::From(const T1 & table1, const T2 & table2, const T3 & table3, const T4 & table4, const T5 & table5, const T6 & table6, const T7 & table7, const T8 & table8, const T9 & table9, const T10 & table10)
+{
+   std::ostringstream ss;
+   ss << " FROM " << queryhelper<T1>::format(this, table1);
+   AppendField(ss, queryhelper<T2>::format(this, table2));
+   AppendField(ss, queryhelper<T3>::format(this, table3));
+   AppendField(ss, queryhelper<T4>::format(this, table4));
+   AppendField(ss, queryhelper<T5>::format(this, table5));
+   AppendField(ss, queryhelper<T6>::format(this, table6));
+   AppendField(ss, queryhelper<T7>::format(this, table7));
+   AppendField(ss, queryhelper<T8>::format(this, table8));
+   AppendField(ss, queryhelper<T9>::format(this, table9));
+   AppendField(ss, queryhelper<T10>::format(this, table10));
+   ss << " ";
+   return Append(ss);
+}
+
 
 
 template<class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10>
@@ -348,79 +379,176 @@ inline CQuery & CQuery::Values(const T1 & value1, const T2 & value2, const T3 & 
    return Append(ss);
 }
 
-template<class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10>
-inline CQuery & CQuery::Set(const std::string & field1, const T1 & value1,
-   const std::string & field2, const T2  &  value2,
-   const std::string & field3, const T3  &  value3,
-   const std::string & field4, const T4  &  value4,
-   const std::string & field5, const T5  &  value5,
-   const std::string & field6, const T6  &  value6,
-   const std::string & field7, const T7  &  value7,
-   const std::string & field8, const T8  &  value8,
-   const std::string & field9, const T9  &  value9,
-   const std::string & field10, const T10 &  value10)
+template<class T01, class T1, class T02, class T2,class T03, class T3,class T04, class T4,class T05, class T5,
+         class T06, class T6,class T07, class T7,class T08, class T8,class T09, class T9,class T11, class T10>
+inline CQuery & CQuery::Set(const T01 & field1, const T1 & value1,
+   const T02 & field2, const T2  &  value2,
+   const T03 & field3, const T3  &  value3,
+   const T04 & field4, const T4  &  value4,
+   const T05 & field5, const T5  &  value5,
+   const T06 & field6, const T6  &  value6,
+   const T07 & field7, const T7  &  value7,
+   const T08 & field8, const T8  &  value8,
+   const T09 & field9, const T9  &  value9,
+   const T11 & field10, const T10 &  value10)
 {
    std::ostringstream ss;
-   ss << " SET  " << field1 << " = " << queryhelper<T1 >::format(this, value1);
+   ss << " SET  " << queryhelper<T01>::format(this, field1) << " = " << queryhelper<T1 >::format(this, value1);
    if (typeid(value2) != typeid(CNotUsedTemplateField))
-      AppendSet(ss, field2, queryhelper<T2 >::format(this, value2));
+      AppendSet(ss, queryhelper<T02>::format(this, field2), queryhelper<T2 >::format(this, value2));
    if (typeid(value3) != typeid(CNotUsedTemplateField))
-      AppendSet(ss, field3, queryhelper<T3 >::format(this, value3));
+      AppendSet(ss, queryhelper<T03>::format(this, field3), queryhelper<T3 >::format(this, value3));
    if (typeid(value4) != typeid(CNotUsedTemplateField))
-      AppendSet(ss, field4, queryhelper<T4 >::format(this, value4));
+      AppendSet(ss, queryhelper<T04>::format(this, field4), queryhelper<T4 >::format(this, value4));
    if (typeid(value5) != typeid(CNotUsedTemplateField))
-      AppendSet(ss, field5, queryhelper<T5 >::format(this, value5));
+      AppendSet(ss, queryhelper<T05>::format(this, field5), queryhelper<T5 >::format(this, value5));
    if (typeid(value6) != typeid(CNotUsedTemplateField))
-      AppendSet(ss, field6, queryhelper<T6 >::format(this, value6));
+      AppendSet(ss, queryhelper<T06>::format(this, field6), queryhelper<T6 >::format(this, value6));
    if (typeid(value7) != typeid(CNotUsedTemplateField))
-      AppendSet(ss, field7, queryhelper<T7 >::format(this, value7));
+      AppendSet(ss, queryhelper<T07>::format(this, field7), queryhelper<T7 >::format(this, value7));
    if (typeid(value8) != typeid(CNotUsedTemplateField))
-      AppendSet(ss, field8, queryhelper<T8 >::format(this, value8));
+      AppendSet(ss, queryhelper<T08>::format(this, field8), queryhelper<T8 >::format(this, value8));
    if (typeid(value9) != typeid(CNotUsedTemplateField))
-      AppendSet(ss, field9, queryhelper<T9 >::format(this, value9));
+      AppendSet(ss, queryhelper<T09>::format(this, field9), queryhelper<T9 >::format(this, value9));
    if (typeid(value10) != typeid(CNotUsedTemplateField))
-      AppendSet(ss, field10, queryhelper<T10>::format(this, value10));
+      AppendSet(ss, queryhelper<T11>::format(this, field10), queryhelper<T10>::format(this, value10));
    ss << " ";
    return Append(ss);
 }
 
 
 
-template<class T>
-CQuery & CQuery::Where(const std::string & field, const std::string & op, const T & value)
+template<class T1, class T2>
+CQuery & CQuery::Where(const T1 & field, const std::string & op, const T2 & value)
 {
-   return PredicateInternal("WHERE ", field, op, queryhelper<T>::format(this, value));
+   return PredicateInternal("WHERE ", queryhelper<T1>::format(this, field), op, queryhelper<T2>::format(this, value));
 }
     
-template<class T>
-CQuery & CQuery::WhereParenthesis(const std::string & field, const std::string & op, const T & value)
+template<class T1, class T2>
+CQuery & CQuery::WhereParenthesis(const T1 & field, const std::string & op, const T2 & value)
 {
-   return PredicateInternal("WHERE (", field, op, queryhelper<T>::format(this, value));
+   return PredicateInternal("WHERE (", queryhelper<T1>::format(this, field), op, queryhelper<T2>::format(this, value));
 }
 
-template<class T>
-CQuery & CQuery::And(const std::string & field, const std::string & op, const T & value)
+template<class T1, class T2>
+CQuery & CQuery::And(const T1 & field, const std::string & op, const T2 & value)
 {
-   return PredicateInternal("AND ", field, op, queryhelper<T>::format(this, value));
+   return PredicateInternal("AND ", queryhelper<T1>::format(this, field), op, queryhelper<T2>::format(this, value));
 }
 
-template<class T>
-CQuery & CQuery::AndParenthesis(const std::string & field, const std::string & op, const T & value)
+template<class T1, class T2>
+CQuery & CQuery::AndParenthesis(const T1 & field, const std::string & op, const T2 & value)
 {
-   return PredicateInternal("AND (", field, op, queryhelper<T>::format(this, value));
+   return PredicateInternal("AND (", queryhelper<T1>::format(this, field), op, queryhelper<T2>::format(this, value));
 }
 
-template<class T>
-CQuery & CQuery::Or(const std::string & field, const std::string & op, const T & value)
+template<class T1, class T2>
+CQuery & CQuery::Or(const T1 & field, const std::string & op, const T2 & value)
 {
-   return PredicateInternal("OR ", field, op, queryhelper<T>::format(this, value));
+   return PredicateInternal("OR ", queryhelper<T1>::format(this, field), op, queryhelper<T2>::format(this, value));
 }
 
-template<class T>
-CQuery & CQuery::OrParenthesis(const std::string & field, const std::string & op, const T & value)
+template<class T1, class T2>
+CQuery & CQuery::OrParenthesis(const T1 & field, const std::string & op, const T2 & value)
 {
-   return PredicateInternal("OR (", field, op, queryhelper<T>::format(this, value));
+   return PredicateInternal("OR (", queryhelper<T1>::format(this, field), op, queryhelper<T2>::format(this, value));
 }
+
+
+template<class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10>
+inline CQuery & CQuery::OrderBy(const T1 & value1, const CQuery::E_OrderWay way1,
+   const T2 & value2, const CQuery::E_OrderWay way2,
+   const T3 & value3, const CQuery::E_OrderWay way3,
+   const T4 & value4, const CQuery::E_OrderWay way4,
+   const T5 & value5, const CQuery::E_OrderWay way5,
+   const T6 & value6, const CQuery::E_OrderWay way6,
+   const T7 & value7, const CQuery::E_OrderWay way7,
+   const T8 & value8, const CQuery::E_OrderWay way8,
+   const T9 & value9, const CQuery::E_OrderWay way9,
+   const T10 & value10, const CQuery::E_OrderWay way10)
+{
+   std::ostringstream ss;
+   ss << " ORDER BY " << queryhelper<T1>::format(this, value1);
+
+   if (way1 == CQuery::kDesc)
+      ss << " DESC";
+
+   if (typeid(value2) != typeid(CNotUsedTemplateField))
+      AppendOrderField(ss, queryhelper<T2>::format(this, value2), way2);
+   if (typeid(value3) != typeid(CNotUsedTemplateField))
+      AppendOrderField(ss, queryhelper<T3>::format(this, value3), way3);
+   if (typeid(value4) != typeid(CNotUsedTemplateField))
+      AppendOrderField(ss, queryhelper<T4>::format(this, value4), way4);
+   if (typeid(value5) != typeid(CNotUsedTemplateField))
+      AppendOrderField(ss, queryhelper<T5>::format(this, value5), way5);
+   if (typeid(value6) != typeid(CNotUsedTemplateField))
+      AppendOrderField(ss, queryhelper<T6>::format(this, value6), way6);
+   if (typeid(value7) != typeid(CNotUsedTemplateField))
+      AppendOrderField(ss, queryhelper<T7>::format(this, value7), way7);
+   if (typeid(value8) != typeid(CNotUsedTemplateField))
+      AppendOrderField(ss, queryhelper<T8>::format(this, value8), way8);
+   if (typeid(value9) != typeid(CNotUsedTemplateField))
+      AppendOrderField(ss, queryhelper<T9>::format(this, value9), way9);
+   if (typeid(value10) != typeid(CNotUsedTemplateField))
+      AppendOrderField(ss, queryhelper<T10>::format(this, value10), way10);
+   return Append(ss);
+}
+
+
+template<class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10>
+inline CQuery & CQuery::GroupBy(const T1 & field1,
+   const T2 & field2,
+   const T3 & field3,
+   const T4 & field4,
+   const T5 & field5,
+   const T6 & field6,
+   const T7 & field7,
+   const T8 & field8,
+   const T9 & field9,
+   const T10 & field10)
+{
+   std::ostringstream ss;
+   ss << " GROUP BY " << queryhelper<T1>::format(this, field1);
+   AppendField(ss, queryhelper<T2>::format(this, field2));
+   AppendField(ss, queryhelper<T3>::format(this, field3));
+   AppendField(ss, queryhelper<T4>::format(this, field4));
+   AppendField(ss, queryhelper<T5>::format(this, field5));
+   AppendField(ss, queryhelper<T6>::format(this, field6));
+   AppendField(ss, queryhelper<T7>::format(this, field7));
+   AppendField(ss, queryhelper<T8>::format(this, field8));
+   AppendField(ss, queryhelper<T9>::format(this, field9));
+   AppendField(ss, queryhelper<T10>::format(this, field10));
+   return Append(ss);
+}
+
+template<class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10>
+inline CQuery & CQuery::InsertInto(const std::string & table, 
+   const T1 & field1,
+   const T2 & field2,
+   const T3 & field3,
+   const T4 & field4,
+   const T5 & field5,
+   const T6 & field6,
+   const T7 & field7,
+   const T8 & field8,
+   const T9 & field9,
+   const T10 & field10)
+{
+   std::ostringstream ss;
+   ss << " INSERT INTO " << table << " (" << queryhelper<T1>::format(this, field1);
+   AppendField(ss, queryhelper<T2>::format(this, field2));
+   AppendField(ss, queryhelper<T3>::format(this, field3));
+   AppendField(ss, queryhelper<T4>::format(this, field4));
+   AppendField(ss, queryhelper<T5>::format(this, field5));
+   AppendField(ss, queryhelper<T6>::format(this, field6));
+   AppendField(ss, queryhelper<T7>::format(this, field7));
+   AppendField(ss, queryhelper<T8>::format(this, field8));
+   AppendField(ss, queryhelper<T9>::format(this, field9));
+   AppendField(ss, queryhelper<T10>::format(this, field10));
+   ss << ") ";
+   return Append(ss);
+}
+
 
 
 template<class T>
@@ -429,6 +557,15 @@ inline const CQuery::CFunction CQuery::as(const T & fieldOrQuery, const std::str
    return CFunction(functionAs(queryhelper<T>::format(this, fieldOrQuery), columnName));
    
 }
+
+template<class T>
+inline const CQuery::CFunction CQuery::distinct(const T & fieldOrQuery)
+{
+   return CFunction(functionDistinct(queryhelper<T>::format(this, fieldOrQuery)));
+   
+}
+
+
 
 template<class T1, class T2>
 inline const CQuery::CFunction CQuery::math(const T1 & value1, const std::string & op, const T2 & value2)

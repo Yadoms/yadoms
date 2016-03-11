@@ -49,24 +49,6 @@ namespace database { namespace common {
 
       
 
-
-      CQuery & CQuery::From(const std::string & table1, const std::string & table2/* = EMPTY_STR*/, const std::string & table3/* = EMPTY_STR*/, const std::string & table4/* = EMPTY_STR*/, const std::string & table5/* = EMPTY_STR*/, const std::string & table6/* = EMPTY_STR*/, const std::string & table7/* = EMPTY_STR*/, const std::string & table8/* = EMPTY_STR*/, const std::string & table9/* = EMPTY_STR*/, const std::string & table10/* = EMPTY_STR*/)  
-      {
-         std::ostringstream ss;
-         ss << " FROM " << table1;
-         AppendField(ss, table2);
-         AppendField(ss, table3);
-         AppendField(ss, table4);
-         AppendField(ss, table5);
-         AppendField(ss, table6);
-         AppendField(ss, table7);
-         AppendField(ss, table8);
-         AppendField(ss, table9);
-         AppendField(ss, table10);   
-         ss << " ";      
-         return Append(ss); 
-      }
-
 		//
 		/// \brief           Append 'From subquery'
 		/// \param  subquery   the subquery
@@ -116,66 +98,6 @@ namespace database { namespace common {
 		}
 
 
-      CQuery & CQuery::OrderBy( const std::string & field1, const std::string & way1, 
-         const std::string & field2 /* = EMPTY_STR*/, const std::string &  way2 /* = EMPTY_STR*/,
-         const std::string & field3 /* = EMPTY_STR*/, const std::string &  way3 /* = EMPTY_STR*/,
-         const std::string & field4 /* = EMPTY_STR*/, const std::string &  way4 /* = EMPTY_STR*/,
-         const std::string & field5 /* = EMPTY_STR*/, const std::string &  way5 /* = EMPTY_STR*/,
-         const std::string & field6 /* = EMPTY_STR*/, const std::string &  way6 /* = EMPTY_STR*/,
-         const std::string & field7 /* = EMPTY_STR*/, const std::string &  way7 /* = EMPTY_STR*/,
-         const std::string & field8 /* = EMPTY_STR*/, const std::string &  way8 /* = EMPTY_STR*/,
-         const std::string & field9 /* = EMPTY_STR*/, const std::string &  way9 /* = EMPTY_STR*/,
-         const std::string & field10/* = EMPTY_STR*/, const std::string & way10/* = EMPTY_STR*/)
-      {
-         std::ostringstream ss;
-         ss << " ORDER BY " << field1;
-         if(way1.size()>0) 
-            ss << " " << way1;
-         AppendOrderField(ss, field2 , way2 );
-         AppendOrderField(ss, field3 , way3 );
-         AppendOrderField(ss, field4 , way4 );
-         AppendOrderField(ss, field5 , way5 );
-         AppendOrderField(ss, field6 , way6 );
-         AppendOrderField(ss, field7 , way7 );
-         AppendOrderField(ss, field8 , way8 );
-         AppendOrderField(ss, field9 , way9 );
-         AppendOrderField(ss, field10, way10);
-         return Append(ss); 
-      } 
-
-      CQuery & CQuery::GroupBy(const std::string & field1, const std::string & field2/* = EMPTY_STR*/, const std::string & field3/* = EMPTY_STR*/, const std::string & field4/* = EMPTY_STR*/, const std::string & field5/* = EMPTY_STR*/, const std::string & field6/* = EMPTY_STR*/, const std::string & field7/* = EMPTY_STR*/, const std::string & field8/* = EMPTY_STR*/, const std::string & field9/* = EMPTY_STR*/, const std::string & field10/* = EMPTY_STR*/) 
-      {
-         std::ostringstream ss;
-         ss << " GROUP BY " << field1;
-         AppendField(ss, field2);
-         AppendField(ss, field3);
-         AppendField(ss, field4);
-         AppendField(ss, field5);
-         AppendField(ss, field6);
-         AppendField(ss, field7);
-         AppendField(ss, field8);
-         AppendField(ss, field9);
-         AppendField(ss, field10);      
-         return Append(ss); 
-      } 
-
-      CQuery & CQuery::InsertInto(const std::string & table, const std::string & field1, const std::string & field2/* = EMPTY_STR*/, const std::string & field3/* = EMPTY_STR*/, const std::string & field4/* = EMPTY_STR*/, const std::string & field5/* = EMPTY_STR*/, const std::string & field6/* = EMPTY_STR*/, const std::string & field7/* = EMPTY_STR*/, const std::string & field8/* = EMPTY_STR*/, const std::string & field9/* = EMPTY_STR*/, const std::string & field10/* = EMPTY_STR*/) 
-      {
-         ChangeQueryType(kInsert);
-         std::ostringstream ss;
-         ss << " INSERT INTO " << table << " (" << field1;
-         AppendField(ss, field2);
-         AppendField(ss, field3);
-         AppendField(ss, field4);
-         AppendField(ss, field5);
-         AppendField(ss, field6);
-         AppendField(ss, field7);
-         AppendField(ss, field8);
-         AppendField(ss, field9);
-         AppendField(ss, field10);
-         ss << ") ";
-         return Append(ss); 
-      }  
 
       CQuery & CQuery::Update(const std::string & table) 
       {
@@ -358,13 +280,13 @@ namespace database { namespace common {
             ss << "," << field;
       }
 
-      void CQuery::AppendOrderField(std::ostringstream & ss, const std::string & field, const std::string & way)
+      void CQuery::AppendOrderField(std::ostringstream & ss, const std::string & field, const E_OrderWay way)
       {
          if(field.size()>0) 
          { 
             ss << "," << field; 
-            if(way.size()>0)
-               ss << " " << way; 
+            if (way == CQuery::kDesc)
+               ss << " DESC";
          }
       }
 
@@ -533,6 +455,17 @@ namespace database { namespace common {
       const CQuery::CFunction CQuery::fromSubquery(const std::string& subQueryName, const std::string & subQueryFieldName)
       {
          return CFunction(functionFromSubquery(subQueryName, subQueryFieldName));
+      }
+
+      const CQuery::CFunction CQuery::fromSubquery(const std::string& subQueryName, const CDatabaseColumn & column)
+      {
+         return fromSubquery(subQueryName, column.GetName());
+      }
+
+
+      const std::string CQuery::functionDistinct(const std::string & field)
+      {
+         return (boost::format("DISTINCT(%1%)") % field).str();
       }
 
 } //namespace common

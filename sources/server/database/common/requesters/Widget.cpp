@@ -48,7 +48,7 @@ namespace database { namespace common { namespace requesters {
          And(CWidgetTable::getPositionYColumnName(), CQUERY_OP_EQUAL, newWidget.PositionY()).
          And(CWidgetTable::getTitleColumnName(), CQUERY_OP_EQUAL, newWidget.Title()).
          And(CWidgetTable::getConfigurationColumnName(), CQUERY_OP_EQUAL, newWidget.Configuration()).
-         OrderBy(CWidgetTable::getIdColumnName(), CQUERY_ORDER_DESC);
+         OrderBy(CWidgetTable::getIdColumnName(), CQuery::kDesc);
 
       adapters::CSingleValueAdapter<int> adapter;
       m_databaseRequester->queryEntities(&adapter, qSelect);

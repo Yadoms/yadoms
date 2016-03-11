@@ -66,7 +66,7 @@ namespace database { namespace common { namespace requesters {
       qSelect. Select().
          From(CConfigurationTable::getTableName()).
          Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_LIKE, section).
-         OrderBy(CConfigurationTable::getNameColumnName(), CQUERY_ORDER_ASC);
+         OrderBy(CConfigurationTable::getNameColumnName());
 
       adapters::CConfigurationAdapter adapter;
       m_databaseRequester->queryEntities(&adapter, qSelect);
@@ -78,7 +78,7 @@ namespace database { namespace common { namespace requesters {
       CQuery qSelect = m_databaseRequester->newQuery();
       qSelect. Select().
          From(CConfigurationTable::getTableName()).
-         OrderBy(CConfigurationTable::getSectionColumnName(), CQUERY_ORDER_ASC, CConfigurationTable::getNameColumnName(), CQUERY_ORDER_ASC);
+         OrderBy(CConfigurationTable::getSectionColumnName(), CQuery::kAsc, CConfigurationTable::getNameColumnName(), CQuery::kAsc);
 
       adapters::CConfigurationAdapter adapter;
       m_databaseRequester->queryEntities(&adapter, qSelect);

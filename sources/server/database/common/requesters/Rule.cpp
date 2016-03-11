@@ -86,7 +86,7 @@ namespace database { namespace common { namespace requesters {
       qSelect. Select(CRuleTable::getIdColumnName()).
          From(CRuleTable::getTableName()).
          Where(CRuleTable::getNameColumnName(), CQUERY_OP_EQUAL, ruleData->Name()).
-         OrderBy(CRuleTable::getIdColumnName(), CQUERY_ORDER_DESC);
+         OrderBy(CRuleTable::getIdColumnName(), CQuery::kDesc);
 
       adapters::CSingleValueAdapter<int> adapter;
       m_databaseRequester->queryEntities(&adapter, qSelect);

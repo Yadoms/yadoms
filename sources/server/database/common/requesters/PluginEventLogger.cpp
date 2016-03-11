@@ -41,7 +41,7 @@ namespace database { namespace common { namespace requesters {
          And(CPluginEventLoggerTable::getPluginReleaseColumnName(), CQUERY_OP_EQUAL, pluginReleaseType).
          And(CPluginEventLoggerTable::getEventTypeColumnName(), CQUERY_OP_EQUAL, eventType).
          And(CPluginEventLoggerTable::getEventDateColumnName(), CQUERY_OP_EQUAL, insertDate).
-         OrderBy(CPluginEventLoggerTable::getIdColumnName(), CQUERY_ORDER_DESC);
+         OrderBy(CPluginEventLoggerTable::getIdColumnName(), CQuery::kDesc);
 
       adapters::CSingleValueAdapter<int> adapter;
       m_databaseRequester->queryEntities(&adapter, qSelect);
@@ -64,7 +64,7 @@ namespace database { namespace common { namespace requesters {
          Where(CPluginEventLoggerTable::getPluginNameColumnName(), CQUERY_OP_EQUAL, pluginName).
          And(CPluginEventLoggerTable::getPluginVersionColumnName(), CQUERY_OP_EQUAL, pluginVersion).
          And(CPluginEventLoggerTable::getPluginReleaseColumnName(), CQUERY_OP_EQUAL, pluginReleaseType).
-         OrderBy(CPluginEventLoggerTable::getEventDateColumnName(), CQUERY_ORDER_DESC);
+         OrderBy(CPluginEventLoggerTable::getEventDateColumnName(), CQuery::kDesc);
 
       adapters::CPluginEventLoggerAdapter adapter;
       m_databaseRequester->queryEntities(&adapter, qSelect);
@@ -81,7 +81,7 @@ namespace database { namespace common { namespace requesters {
          And(CPluginEventLoggerTable::getPluginVersionColumnName(), CQUERY_OP_EQUAL, pluginVersion).
          And(CPluginEventLoggerTable::getPluginReleaseColumnName(), CQUERY_OP_EQUAL, pluginReleaseType).
          And(CPluginEventLoggerTable::getEventDateColumnName(), CQUERY_OP_SUP, fromDate).
-         OrderBy(CPluginEventLoggerTable::getEventDateColumnName(), CQUERY_ORDER_DESC);
+         OrderBy(CPluginEventLoggerTable::getEventDateColumnName(), CQuery::kDesc);
 
       adapters::CPluginEventLoggerAdapter adapter;
       m_databaseRequester->queryEntities(&adapter, qSelect);

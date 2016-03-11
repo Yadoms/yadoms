@@ -39,7 +39,7 @@ namespace database { namespace common { namespace requesters {
          From(CEventLoggerTable::getTableName()).
          Where(CEventLoggerTable::getCodeColumnName(), CQUERY_OP_EQUAL, eventCode).
          And(CEventLoggerTable::getDateColumnName(), CQUERY_OP_EQUAL, insertDate).
-         OrderBy(CEventLoggerTable::getIdColumnName(), CQUERY_ORDER_DESC);
+         OrderBy(CEventLoggerTable::getIdColumnName(), CQuery::kDesc);
 
       adapters::CSingleValueAdapter<int> adapter;
       m_databaseRequester->queryEntities(&adapter, qSelect);
@@ -55,7 +55,7 @@ namespace database { namespace common { namespace requesters {
       CQuery qSelect = m_databaseRequester->newQuery();
       qSelect. Select().
          From(CEventLoggerTable::getTableName()).
-         OrderBy(CEventLoggerTable::getIdColumnName(), CQUERY_ORDER_DESC);
+         OrderBy(CEventLoggerTable::getIdColumnName(), CQuery::kDesc);
 
       adapters::CEventLoggerAdapter adapter;
       m_databaseRequester->queryEntities(&adapter, qSelect);
@@ -82,7 +82,7 @@ namespace database { namespace common { namespace requesters {
       CQuery qSelect = m_databaseRequester->newQuery();
       qSelect. Select().
          From(CEventLoggerTable::getTableName()).
-         OrderBy(CEventLoggerTable::getIdColumnName(), CQUERY_ORDER_DESC).
+         OrderBy(CEventLoggerTable::getIdColumnName(), CQuery::kDesc).
          Limit(1);
 
       adapters::CEventLoggerAdapter adapter;
@@ -100,7 +100,7 @@ namespace database { namespace common { namespace requesters {
       qSelect. Select().
          From(CEventLoggerTable::getTableName()).
          Where(CEventLoggerTable::getIdColumnName(), CQUERY_OP_SUP, eventId).
-         OrderBy(CEventLoggerTable::getIdColumnName(), CQUERY_ORDER_DESC, CEventLoggerTable::getDateColumnName(), CQUERY_ORDER_DESC);
+         OrderBy(CEventLoggerTable::getIdColumnName(), CQuery::kDesc, CEventLoggerTable::getDateColumnName(), CQuery::kDesc);
 
       adapters::CEventLoggerAdapter adapter;
       m_databaseRequester->queryEntities(&adapter, qSelect);
@@ -112,7 +112,7 @@ namespace database { namespace common { namespace requesters {
       CQuery qSelect = m_databaseRequester->newQuery();
       qSelect. Select().
          From(CEventLoggerTable::getTableName()).
-         OrderBy(CEventLoggerTable::getIdColumnName(), CQUERY_ORDER_DESC, CEventLoggerTable::getDateColumnName(), CQUERY_ORDER_DESC).
+         OrderBy(CEventLoggerTable::getIdColumnName(), CQuery::kDesc, CEventLoggerTable::getDateColumnName(), CQuery::kDesc).
          Limit(count, offset);
 
       adapters::CEventLoggerAdapter adapter;

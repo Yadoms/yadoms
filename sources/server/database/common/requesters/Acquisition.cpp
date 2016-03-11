@@ -56,7 +56,7 @@ namespace database {  namespace common {  namespace requesters {
       qLastKeywordValue.Select(qLastKeywordValue.castNumeric(CAcquisitionTable::getValueColumnName())).
          From(CAcquisitionTable::getTableName()).
          Where(CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId).
-         OrderBy(CAcquisitionTable::getDateColumnName(), CQUERY_ORDER_DESC).
+         OrderBy(CAcquisitionTable::getDateColumnName(), CQuery::kDesc).
          Limit(1);
 
       CQuery q = m_databaseRequester->newQuery();
@@ -134,7 +134,7 @@ namespace database {  namespace common {  namespace requesters {
       qSelect. Select().
                From(CAcquisitionTable::getTableName()).
                Where(CAcquisitionTable::getKeywordIdColumnName() , CQUERY_OP_EQUAL, keywordId).
-               OrderBy(CAcquisitionTable::getDateColumnName(), CQUERY_ORDER_DESC).
+               OrderBy(CAcquisitionTable::getDateColumnName(), CQuery::kDesc).
                Limit(1);
 
       adapters::CAcquisitionAdapter adapter;
@@ -299,7 +299,7 @@ namespace database {  namespace common {  namespace requesters {
 
       */
       CQuery q = m_databaseRequester->newQuery();
-      q.Select(CQUERY_DISTINCT(CAcquisitionTable::getKeywordIdColumnName()))
+      q.Select(q.distinct(CAcquisitionTable::getKeywordIdColumnName()))
          .From(CAcquisitionTable::getTableName())
          .Where(CAcquisitionTable::getDateColumnName(), CQUERY_OP_SUP_EQUAL, timeFrom)
          .And(CAcquisitionTable::getDateColumnName(), CQUERY_OP_INF, timeTo);

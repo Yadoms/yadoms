@@ -1,5 +1,6 @@
 #pragma once
 
+#include "database/common/DatabaseColumn.h"
 #include "database/common/DatabaseTablesHelpers.hpp"
 
 
