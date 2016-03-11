@@ -94,11 +94,6 @@ namespace pgsql {
       return CPgsqlQuery();
    }
 
-   database::common::CQueryFunctions & CPgsqlRequester::queryFunc()
-   {
-      return m_functionsHelper;
-   }
-
    void CPgsqlRequester::initialize()
    {
       YADOMS_LOG(information) << "Connect to database";

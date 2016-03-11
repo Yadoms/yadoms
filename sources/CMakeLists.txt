@@ -642,10 +642,7 @@ source_group(server\\tools\\platformSpecific\\mac server/tools/mac/tools/*.*)
 set(YADOMS_SRC ${YADOMS_SRC}
    server/database/common/Query.h
    server/database/common/Query.cpp
-   server/database/common/QueryValue.h
-   server/database/common/QueryValue.cpp
-   server/database/common/QueryFunctions.h
-   server/database/common/QueryFunctions.cpp
+   server/database/common/QuerySpecializations.h
 	server/database/common/DataProvider.h
 	server/database/common/DataProvider.cpp
    server/database/common/DatabaseTables.h

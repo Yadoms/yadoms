@@ -1,7 +1,11 @@
 #pragma once
 
-#include "QueryValue.h"
-
+#include <Poco/Types.h>
+#include <Poco/DateTime.h>
+#include <Poco/Timestamp.h>
+#include <shared/Field.hpp>
+#include <shared/enumeration/IExtendedEnum.h>
+#include "database/DatabaseException.hpp"
 
 namespace database { namespace common {
 
@@ -16,6 +20,12 @@ namespace database { namespace common {
 #define CQUERY_OP_NOT_EQUAL "<>"
 #define CQUERY_OP_SUP_EQUAL ">="
 #define CQUERY_OP_INF_EQUAL "<="
+
+#define CQUERY_OP_PLUS "+"
+#define CQUERY_OP_MINUS "-"
+#define CQUERY_OP_DIVIDE "/"
+#define CQUERY_OP_MUL "*"
+
 
 #define CQUERY_ORDER_ASC ""
 #define CQUERY_ORDER_DESC "DESC"
@@ -32,7 +42,7 @@ namespace database { namespace common {
    Values(1, "test");
 
    */
-
+   
    //
    /// \brief  Class used to create queries
    //
@@ -94,7 +104,8 @@ namespace database { namespace common {
       /// \param  field10  a field to append to the select fields
       /// \return          A reference to itself to allow method chaining
       //
-      CQuery & Select(const std::string & field1, const std::string & field2 = EMPTY_STR, const std::string & field3 = EMPTY_STR, const std::string & field4 = EMPTY_STR, const std::string & field5 = EMPTY_STR, const std::string & field6 = EMPTY_STR, const std::string & field7 = EMPTY_STR, const std::string & field8 = EMPTY_STR, const std::string & field9 = EMPTY_STR, const std::string & field10 = EMPTY_STR);
+      template<class T1, class T2 = CNotUsedTemplateField, class T3 = CNotUsedTemplateField, class T4 = CNotUsedTemplateField, class T5 = CNotUsedTemplateField, class T6 = CNotUsedTemplateField, class T7 = CNotUsedTemplateField, class T8 = CNotUsedTemplateField, class T9 = CNotUsedTemplateField, class T10 = CNotUsedTemplateField>
+      inline CQuery & Select(const T1 & field1, const T2 & field2 = T2(), const T3 & field3 = T3(), const T4 & field4 = T4(), const T5 & field5 = T5(), const T6 & field6 = T6(), const T7 & field7 = T7(), const T8 & field8 = T8(), const T9 & field9 = T9(), const T10 & field10 = T10());
 
 
       //
@@ -117,7 +128,8 @@ namespace database { namespace common {
       /// \param  field10  a field to append to the select fields
       /// \return          A reference to itself to allow method chaining
       //
-      CQuery & SelectCount(const std::string & field1, const std::string & field2 = EMPTY_STR, const std::string & field3 = EMPTY_STR, const std::string & field4 = EMPTY_STR, const std::string & field5 = EMPTY_STR, const std::string & field6 = EMPTY_STR, const std::string & field7 = EMPTY_STR, const std::string & field8 = EMPTY_STR, const std::string & field9 = EMPTY_STR, const std::string & field10 = EMPTY_STR);
+      template<class T1, class T2 = CNotUsedTemplateField, class T3 = CNotUsedTemplateField, class T4 = CNotUsedTemplateField, class T5 = CNotUsedTemplateField, class T6 = CNotUsedTemplateField, class T7 = CNotUsedTemplateField, class T8 = CNotUsedTemplateField, class T9 = CNotUsedTemplateField, class T10 = CNotUsedTemplateField>
+      inline CQuery & SelectCount(const T1 & field1, const T2 & field2 = T2(), const T3 & field3 = T3(), const T4 & field4 = T4(), const T5 & field5 = T5(), const T6 & field6 = T6(), const T7 & field7 = T7(), const T8 & field8 = T8(), const T9 & field9 = T9(), const T10 & field10 = T10());
 
       //
       /// \brief           Append 'From table1 [,table2 [,table3.. ]]'
@@ -161,21 +173,12 @@ namespace database { namespace common {
       ///                  Where("id", "=", "12")
       /// \param  field    the field name
       /// \param  op       the operator
-      /// \param  value    the value
+      /// \param  field    the value
       /// \return          A reference to itself to allow method chaining
       //     
-      CQuery & Where(const std::string & field, const std::string & op, const CQueryValue & value);
+      template<class T>
+      inline CQuery & Where(const std::string & field, const std::string & op, const T & value);
 
-      //
-      /// \brief           Append the where clause with a subquery
-      ///                  CQuery q2 = ... ; //SELECT id FROM table WHERE...
-      ///                  Where("id", "in", q2)
-      /// \param  field    the field name
-      /// \param  op       the operator
-      /// \param  value    the subquery
-      /// \return          A reference to itself to allow method chaining
-      //    
-      CQuery & Where(const std::string & field, const std::string & op, CQuery & subQuery);     
 		
 		//
       /// \brief           Append the where clause with a start parenthesis
@@ -185,18 +188,9 @@ namespace database { namespace common {
       /// \param  value    the value
       /// \return          A reference to itself to allow method chaining
       //     
-		CQuery & WhereParenthesis(const std::string & field, const std::string & op, const CQueryValue & value);
+      template<class T>
+      inline CQuery & WhereParenthesis(const std::string & field, const std::string & op, const T & value);
 
-      //
-      /// \brief           Append the where clause with a subquery  with a start parenthesis
-      ///                  CQuery q2 = ... ; //SELECT id FROM table WHERE...
-      ///                  Where("id", "in", q2)
-      /// \param  field    the field name
-      /// \param  op       the operator
-      /// \param  value    the subquery
-      /// \return          A reference to itself to allow method chaining
-      //    
-		CQuery & WhereParenthesis(const std::string & field, const std::string & op, CQuery & subQuery);
 
       //
       /// \brief           Append the AND clause
@@ -213,19 +207,10 @@ namespace database { namespace common {
       /// \param  value    the value
       /// \return          A reference to itself to allow method chaining
       //     
-      CQuery & And(const std::string & field, const std::string & op, const CQueryValue & value);
+      template<class T>
+      inline CQuery & And(const std::string & field, const std::string & op, const T & value);
 
-      //
-      /// \brief           Append the AND clause with a subquery
-      ///                  CQuery q2 = ... ; //SELECT id FROM table WHERE...
-      ///                  AND("id", "in", q2)
-      /// \param  field    the field name
-      /// \param  op       the operator
-      /// \param  value    the subquery
-      /// \return          A reference to itself to allow method chaining
-      //    
-      CQuery & And(const std::string & field, const std::string & op, CQuery & subQuery); 
-		
+	
 		//
       /// \brief           Append the And clause with a start parenthesis
       ///                  And("id", "=", "12")
@@ -234,18 +219,8 @@ namespace database { namespace common {
       /// \param  value    the value
       /// \return          A reference to itself to allow method chaining
       //     
-		CQuery & AndParenthesis(const std::string & field, const std::string & op, const CQueryValue & value);
-
-      //
-      /// \brief           Append the AND clause with a subquery with a start parenthesis
-      ///                  CQuery q2 = ... ; //SELECT id FROM table WHERE...
-      ///                  AND("id", "in", q2)
-      /// \param  field    the field name
-      /// \param  op       the operator
-      /// \param  value    the subquery
-      /// \return          A reference to itself to allow method chaining
-      //    
-		CQuery & AndParenthesis(const std::string & field, const std::string & op, CQuery & subQuery);
+      template<class T>
+      inline CQuery & AndParenthesis(const std::string & field, const std::string & op, const T & value);
 
       //
       /// \brief           Append the OR clause
@@ -262,19 +237,9 @@ namespace database { namespace common {
       /// \param  value    the value
       /// \return          A reference to itself to allow method chaining
       //        
-      CQuery & Or(const std::string & field, const std::string & op, const CQueryValue & value);
-
-      //
-      /// \brief           Append the OR clause with a subquery
-      ///                  CQuery q2 = ... ; //SELECT id FROM table WHERE...
-      ///                  OR("id", "in", q2)
-      /// \param  field    the field name
-      /// \param  op       the operator
-      /// \param  value    the subquery
-      /// \return          A reference to itself to allow method chaining
-      //       
-      CQuery & Or(const std::string & field, const std::string & op, CQuery & subQuery);  
-		
+      template<class T>
+      inline CQuery & Or(const std::string & field, const std::string & op, const T & value);
+      		
 		//
       /// \brief           Append the Or clause  with a start parenthesis
       ///                  Or("id", "=", "12")
@@ -283,18 +248,8 @@ namespace database { namespace common {
       /// \param  value    the value
       /// \return          A reference to itself to allow method chaining
       //        
-		CQuery & OrParenthesis(const std::string & field, const std::string & op, const CQueryValue & value);
-
-      //
-      /// \brief           Append the OR clause with a subquery  with a start parenthesis
-      ///                  CQuery q2 = ... ; //SELECT id FROM table WHERE...
-      ///                  OR("id", "in", q2)
-      /// \param  field    the field name
-      /// \param  op       the operator
-      /// \param  value    the subquery
-      /// \return          A reference to itself to allow method chaining
-      //       
-		CQuery & OrParenthesis(const std::string & field, const std::string & op, CQuery & subQuery);
+      template<class T>
+      inline CQuery & OrParenthesis(const std::string & field, const std::string & op, const T & value);
 
 		//
 		/// \brief           Append  a closing parenthesis
@@ -385,10 +340,8 @@ namespace database { namespace common {
       /// \param  value10  a value of the field
       /// \return          A reference to itself to allow method chaining
       //      
-      CQuery & Values(const CQueryValue & value1, const CQueryValue & value2 = CQueryValue(), const CQueryValue & value3 = CQueryValue(), const CQueryValue & value4 = CQueryValue(), const CQueryValue & value5 = CQueryValue(), const CQueryValue & value6 = CQueryValue(), const CQueryValue & value7 = CQueryValue(), const CQueryValue & value8 = CQueryValue(), const CQueryValue & value9 = CQueryValue(), const CQueryValue & value10 = CQueryValue()) ;
-
-
-
+      template<class T1, class T2 = CNotUsedTemplateField, class T3 = CNotUsedTemplateField, class T4 = CNotUsedTemplateField, class T5 = CNotUsedTemplateField, class T6 = CNotUsedTemplateField, class T7 = CNotUsedTemplateField, class T8 = CNotUsedTemplateField, class T9 = CNotUsedTemplateField, class T10 = CNotUsedTemplateField>
+      inline CQuery & Values(const T1 & value1, const T2 & value2 = T2(), const T3 & value3 = T3(), const T4 & value4 = T4(), const T5 & value5 = T5(), const T6 & value6 = T6(), const T7 & value7 = T7(), const T8 & value8 = T8(), const T9 & value9 = T9(), const T10 & value10 = T10());
 
       //
       /// \brief           Append the UPDATE clause
@@ -421,16 +374,17 @@ namespace database { namespace common {
       /// \param  value10  the value of field10   
       /// \return          A reference to itself to allow method chaining
       //     
-      CQuery & Set(const std::string & field1, const CQueryValue & value1, 
-         const std::string & field2  = EMPTY_STR, const CQueryValue &  value2  =CQueryValue(),
-         const std::string & field3  = EMPTY_STR, const CQueryValue &  value3  =CQueryValue(),
-         const std::string & field4  = EMPTY_STR, const CQueryValue &  value4  =CQueryValue(),
-         const std::string & field5  = EMPTY_STR, const CQueryValue &  value5  =CQueryValue(),
-         const std::string & field6  = EMPTY_STR, const CQueryValue &  value6  =CQueryValue(),
-         const std::string & field7  = EMPTY_STR, const CQueryValue &  value7  =CQueryValue(),
-         const std::string & field8  = EMPTY_STR, const CQueryValue &  value8  =CQueryValue(),
-         const std::string & field9  = EMPTY_STR, const CQueryValue &  value9  =CQueryValue(),
-         const std::string & field10 = EMPTY_STR, const CQueryValue &  value10 =CQueryValue());
+      template<class T1, class T2 = CNotUsedTemplateField, class T3 = CNotUsedTemplateField, class T4 = CNotUsedTemplateField, class T5 = CNotUsedTemplateField, class T6 = CNotUsedTemplateField, class T7 = CNotUsedTemplateField, class T8 = CNotUsedTemplateField, class T9 = CNotUsedTemplateField, class T10 = CNotUsedTemplateField>
+      inline CQuery & Set(const std::string & field1, const T1 & value1,
+         const std::string & field2 = EMPTY_STR, const T2  &  value2 = T2(),
+         const std::string & field3 = EMPTY_STR, const T3  &  value3 = T3(),
+         const std::string & field4 = EMPTY_STR, const T4  &  value4 = T4(),
+         const std::string & field5 = EMPTY_STR, const T5  &  value5 = T5(),
+         const std::string & field6 = EMPTY_STR, const T6  &  value6 = T6(),
+         const std::string & field7 = EMPTY_STR, const T7  &  value7 = T7(),
+         const std::string & field8 = EMPTY_STR, const T8  &  value8 = T8(),
+         const std::string & field9 = EMPTY_STR, const T9  &  value9 = T9(),
+         const std::string & field10 = EMPTY_STR, const T10 &  value10 = T10());
 
 
       //
@@ -581,34 +535,218 @@ namespace database { namespace common {
       //
       static CQuery EmptyQuery;
 
+   public:
+      class CNotUsedTemplateField
+      {
+      public:
+         CNotUsedTemplateField()
+         {
+
+         }
+         virtual ~CNotUsedTemplateField()
+         {
+
+         }
+      };
+      //================================================================================================
+      //====== Formatters
+      //================================================================================================
+      virtual const std::string formatStringToSql(const std::string & anyStringValue);
+      virtual const std::string formatInt8ToSql(const Poco::Int8 & anyStringValue);
+      virtual const std::string formatUInt8ToSql(const Poco::UInt8 & anyStringValue);
+      virtual const std::string formatInt16ToSql(const Poco::Int16 & anyStringValue);
+      virtual const std::string formatUInt16ToSql(const Poco::UInt16 & anyStringValue);
+      virtual const std::string formatInt32ToSql(const Poco::Int32 & anyStringValue);
+      virtual const std::string formatUInt32ToSql(const Poco::UInt32 & anyStringValue);
+      virtual const std::string formatInt64ToSql(const Poco::Int64 & anyStringValue);
+      virtual const std::string formatUInt64ToSql(const Poco::UInt64 & anyStringValue);
+      virtual const std::string formatFloatToSql(const float & anyStringValue);
+      virtual const std::string formatDoubleToSql(const double & anyStringValue);
+      virtual const std::string formatBooleanToSql(const bool & anyStringValue);
+      virtual const std::string formatDateToSql(const boost::posix_time::ptime & time);
+      virtual const std::string formatDateToSql(const Poco::DateTime & time);
+      virtual const std::string formatDateToSql(const Poco::Timestamp & time);
+      virtual const std::string formatEnumToSql(const shared::enumeration::IExtendedEnum & enumValue);
+      virtual const std::string formatSubQueryToSql(const CQuery & subQuery);
+      virtual const std::string functionMin(const std::string & sqlPart);
+      virtual const std::string functionMax(const std::string & sqlPart);
+      virtual const std::string functionAvg(const std::string & sqlPart);
+      virtual const std::string functionCoalesce(const std::string & sqlPart, const std::string & defaultValue);
+      virtual const std::string functionCast(const std::string & sqlPart, const std::string & destinationType);
+      virtual const std::string functionCastNumeric(const std::string & sqlPart);
+      virtual const std::string functionDateToIsoString(const std::string &sqlPart);
+      virtual const std::string functionConcatenate(const std::string & sqlPart1, const std::string & sqlPart2);
+      virtual const std::string functionAs(const std::string & sqlPart, const std::string &name);
+      virtual const std::string functionFromSubquery(const std::string & subQueryName, const std::string &subQueryFieldName);
+
+      class CFunction
+      {
+      public:
+         CFunction()
+         {
+
+         }
+
+         CFunction(const std::string & sql)
+            :m_sql(sql)
+         {
+
+         } 
+         
+         CFunction(const CFunction & cpy)
+            :m_sql(cpy.m_sql)
+         {
+
+         }
+
+         virtual ~CFunction()
+         {
+
+         }
+
+         const std::string toSql() const
+         {
+            return m_sql;
+         }
+
+      private:
+         std::string m_sql;
+      };
+
+      //--------------------------------------------------------------
+      ///\brief	generate min function ( ie: min(field0) )
+      ///\param [in]	field    The field or query
+      ///\return The query function
+      //--------------------------------------------------------------
+      template<class T1, class T2>
+      inline const CFunction math(const T1 & value, const std::string & op, const T2 & value2);
+
+      //--------------------------------------------------------------
+      ///\brief	generate min function ( ie: min(field0) )
+      ///\param [in]	field    The field or query
+      ///\return The query function
+      //--------------------------------------------------------------
+      template<class T>
+      inline const CFunction min(const T & value);
+
+      //--------------------------------------------------------------
+      ///\brief	generate min function ( ie: min(field0) ) with numeric cast
+      ///\param [in]	field    The field or query
+      ///\return The query function
+      //--------------------------------------------------------------
+      template<class T>
+      inline  const CFunction minWithCast(const T & fieldOrQuery);
+
+      //--------------------------------------------------------------
+      ///\brief	generate max function ( ie: max(field0) )
+      ///\param [in]	field    The field or query
+      ///\return The query function
+      //--------------------------------------------------------------
+      template<class T>
+      inline  const CFunction max(const T & fieldOrQuery);
+
+      //--------------------------------------------------------------
+      ///\brief	generate max function ( ie: max(field0) ) with numeric cast
+      ///\param [in]	field    The field or query
+      ///\return The query function
+      //--------------------------------------------------------------
+      template<class T>
+      inline  const CFunction maxWithCast(const T & fieldOrQuery);
+
+      //--------------------------------------------------------------
+      ///\brief	generate average function ( ie: average(field0) )
+      ///\param [in]	field    The field or query
+      ///\return The query function
+      //--------------------------------------------------------------
+      template<class T>
+      inline  const CFunction average(const T & fieldOrQuery);
+
+      //--------------------------------------------------------------
+      ///\brief	generate average function ( ie: average(field0) ) with numeric cast
+      ///\param [in]	field    The field or query
+      ///\return The query function
+      //--------------------------------------------------------------
+      template<class T>
+      inline  const CFunction averageWithCast(const T & fieldOrQuery);
+
+      //--------------------------------------------------------------
+      ///\brief	generate coalesce function ( ie: coalesce(field0, default) )
+      ///\param [in]	field       The field or query
+      ///\param [in]	valueIfNull The fallback value
+      ///\return The query function
+      //--------------------------------------------------------------
+      template<class T, class T2>
+      inline  const CFunction coalesce(const T & field, const T2 & valueIfNull);  
+
+      //--------------------------------------------------------------
+      ///\brief	generate cast function ( ie: CAST (field0 AS numeric) )
+      ///\param [in]	field       The field or query
+      ///\param [in]	type        The typing cast
+      ///\return The query function
+      //--------------------------------------------------------------
+      template<class T>
+      inline  const CFunction cast(const T & fieldOrQuery, const std::string & type);
+
+      //--------------------------------------------------------------
+      ///\brief	generate cast function ( ie: CAST (field0 AS numeric) )
+      ///\param [in]	field       The field or query
+      ///\return The query function
+      //--------------------------------------------------------------
+      template<class T>
+      inline const CFunction castNumeric(const T & fieldOrQuery);
+
+      //--------------------------------------------------------------
+      ///\brief	generate date to iso string function 
+      ///\param [in]	field       The field or query
+      ///\return The query function
+      //--------------------------------------------------------------
+      template<class T>
+      inline const CFunction dateToIsoString(const T & fieldOrQuery);
+
+
+      //--------------------------------------------------------------
+      ///\brief	generate column naming sql
+      ///\param [in]	field       The field or query
+      ///\return The query function
+      //--------------------------------------------------------------
+      template<class T>
+      inline const CFunction as(const T & fieldOrQuery, const std::string & columnName);
+
+
+      //--------------------------------------------------------------
+      ///\brief	generate column naming sql
+      ///\param [in]	subQueryName       The subquery name
+      ///\param [in]	subQueryFieldName  The subquery field name
+      ///\return The query function
+      //--------------------------------------------------------------
+      const CFunction fromSubquery(const std::string& subQueryName, const std::string & subQueryFieldName);
+
+      //--------------------------------------------------------------
+      ///\brief	generate concatenation function 
+      ///\param [in]	field       The field or query
+      ///\return The query function
+      //--------------------------------------------------------------
+      template<class T1, class T2, class T3 = CNotUsedTemplateField, class T4 = CNotUsedTemplateField, class T5 = CNotUsedTemplateField, class T6 = CNotUsedTemplateField, class T7 = CNotUsedTemplateField, class T8 = CNotUsedTemplateField, class T9 = CNotUsedTemplateField, class T10 = CNotUsedTemplateField>
+      inline const CFunction concatenate(const T1 & field1, const T2 & field2, const T3 & field3 = T3(), const T4 & field4 = T4(), const T5 & field5 = T5(), const T6 & field6 = T6(), const T7 & field7 = T7(), const T8 & field8 = T8(), const T9 & field9 = T9(), const T10 & field10 = T10());
+
    private:
       //
-      /// \brief              Append the where clause
+      /// \brief              Append a predicate clause
       /// \param  predicate   the predicate to use (can be WHERE, AND or OR)
       /// \param  condition   the  condition
       /// \return             A reference to itself to allow method chaining
       //    
-      CQuery & WhereInternal(const std::string & predicate, const std::string & condition);
+      CQuery & PredicateInternal(const std::string & predicate, const std::string & condition);
 
       //
-      /// \brief              Append the where clause
+      /// \brief              Append a predicate clause
       /// \param  predicate   the predicate to use (can be WHERE, AND or OR)
       /// \param  field       the field name
       /// \param  op          the operator
       /// \param  value       the value
       /// \return             A reference to itself to allow method chaining
       //   
-      CQuery & WhereInternal(const std::string & predicate, const std::string & field, const std::string & op, const CQueryValue & value);
-
-      //
-      /// \brief              Append the where clause with a subquery
-      /// \param  predicate   the predicate to use (can be WHERE, AND or OR)
-      /// \param  field       the field name
-      /// \param  op          the operator
-      /// \param  value       the subquery
-      /// \return             A reference to itself to allow method chaining
-      //     
-      CQuery & WhereInternal(const std::string & predicate, const std::string & field, const std::string & op, CQuery & subQuery);
+      CQuery & PredicateInternal(const std::string & predicate, const std::string & field, const std::string & op, const std::string & value);
 
 
       //
@@ -632,15 +770,17 @@ namespace database { namespace common {
       /// \param  field       the field name
       /// \param  value       the value
       //
-      void AppendSet(std::ostringstream & ss, const std::string & field, const CQueryValue & value);
+      void AppendSet(std::ostringstream & ss, const std::string & field, const std::string & value);
 
       //
       /// \brief              Append a value to the current query stream
       /// \param  ss          the stream containing current query
       /// \param  value       the value
       //
-      void AppendValue(std::ostringstream & ss, const CQueryValue & value);
+      void AppendValue(std::ostringstream & ss, const std::string & value);
 
+
+      
    protected:
       //
       /// \brief              Change the type of the query
@@ -649,7 +789,6 @@ namespace database { namespace common {
       /// \return             A reference to itself to allow method chaining
       //
       CQuery & ChangeQueryType(const EQueryType newType, bool changeOnlyIfNeverSet = true);
-
 
    private:
       //
@@ -663,8 +802,11 @@ namespace database { namespace common {
       //
       EQueryType m_queryType;
 
+
    };
 
+   //include template specializations
+   #include "QuerySpecializations.h"
 
 } //namespace common
 } //namespace database 

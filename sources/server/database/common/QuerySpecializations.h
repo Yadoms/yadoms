@@ -1,0 +1,577 @@
+//============================================================================
+//============================================================================
+//============================================================================
+//============================================================================
+//============================================================================
+//============================================================================
+//============================================================================
+//==== This file must not be included (only Query.h)
+//============================================================================
+//============================================================================
+//============================================================================
+//============================================================================
+//============================================================================
+//============================================================================
+//============================================================================
+//============================================================================
+//============================================================================
+//============================================================================
+
+//==== This contains all template specializations methods for CQuery class
+
+//--------------------------------------------------------------
+/// \brief	    Helper structure for converting values
+//--------------------------------------------------------------
+template <typename T, class Enable = void>
+struct queryhelper
+{
+   static const std::string format(CQuery * obj, const T & anyValue)
+   {
+      return queryhelper<std::string>::format(obj, boost::lexical_cast<std::string>(anyValue));
+   }
+
+};
+
+//--------------------------------------------------------------
+/// \brief	    Helper structure for converting std::string to sql string
+//--------------------------------------------------------------
+template <>
+struct queryhelper <std::string>
+{
+   static const std::string format(CQuery * obj, const std::string & anyValue)
+   {
+      return obj->formatStringToSql(anyValue);
+   }
+}; 
+
+
+//--------------------------------------------------------------
+/// \brief	    Helper structure for converting Poco::Int8 (or any int) to sql string
+//--------------------------------------------------------------
+template <>
+struct queryhelper <Poco::Int8>
+{
+   static const std::string format(CQuery * obj, const Poco::Int8 & anyValue)
+   {
+      return obj->formatInt8ToSql(anyValue);
+   }
+};
+
+//--------------------------------------------------------------
+/// \brief	    Helper structure for converting Poco::UInt8 (or any unsigned int) to sql string
+//--------------------------------------------------------------
+template <>
+struct queryhelper <Poco::UInt8>
+{
+   static const std::string format(CQuery * obj, const Poco::UInt8 & anyValue)
+   {
+      return obj->formatUInt8ToSql(anyValue);
+   }
+};
+
+
+//--------------------------------------------------------------
+/// \brief	    Helper structure for converting Poco::Int16 (or any int) to sql string
+//--------------------------------------------------------------
+template <>
+struct queryhelper <Poco::Int16>
+{
+   static const std::string format(CQuery * obj, const Poco::Int16 & anyValue)
+   {
+      return obj->formatInt16ToSql(anyValue);
+   }
+};
+
+//--------------------------------------------------------------
+/// \brief	    Helper structure for converting Poco::UInt16 (or any unsigned int) to sql string
+//--------------------------------------------------------------
+template <>
+struct queryhelper <Poco::UInt16>
+{
+   static const std::string format(CQuery * obj, const Poco::UInt16 & anyValue)
+   {
+      return obj->formatUInt16ToSql(anyValue);
+   }
+};
+
+
+//--------------------------------------------------------------
+/// \brief	    Helper structure for converting Poco::Int32 (or any int) to sql string
+//--------------------------------------------------------------
+template <>
+struct queryhelper <Poco::Int32>
+{
+   static const std::string format(CQuery * obj, const Poco::Int32 & anyValue)
+   {
+      return obj->formatInt32ToSql(anyValue);
+   }
+};
+
+//--------------------------------------------------------------
+/// \brief	    Helper structure for converting Poco::UInt32 (or any unsigned int) to sql string
+//--------------------------------------------------------------
+template <>
+struct queryhelper <Poco::UInt32>
+{
+   static const std::string format(CQuery * obj, const Poco::UInt32 & anyValue)
+   {
+      return obj->formatUInt32ToSql(anyValue);
+   }
+};
+
+
+//--------------------------------------------------------------
+/// \brief	    Helper structure for converting Poco::Int64 (or any int) to sql string
+//--------------------------------------------------------------
+template <>
+struct queryhelper <Poco::Int64>
+{
+   static const std::string format(CQuery * obj, const Poco::Int64 & anyValue)
+   {
+      return obj->formatInt64ToSql(anyValue);
+   }
+};
+
+//--------------------------------------------------------------
+/// \brief	    Helper structure for converting Poco::UInt64 (or any unsigned int) to sql string
+//--------------------------------------------------------------
+template <>
+struct queryhelper <Poco::UInt64>
+{
+   static const std::string format(CQuery * obj, const Poco::UInt64 & anyValue)
+   {
+      return obj->formatUInt64ToSql(anyValue);
+   }
+};
+//--------------------------------------------------------------
+/// \brief	    Helper structure for converting Boost DateTime to sql string
+//--------------------------------------------------------------
+template <>
+struct queryhelper <boost::posix_time::ptime>
+{
+   static const std::string format(CQuery * obj, const boost::posix_time::ptime & anyValue)
+   {
+      return obj->formatDateToSql(anyValue);
+   }
+};
+
+//--------------------------------------------------------------
+/// \brief	    Helper structure for converting Poco DateTime to sql string
+//--------------------------------------------------------------
+template <>
+struct queryhelper <Poco::DateTime>
+{
+   static const std::string format(CQuery * obj, const Poco::DateTime & anyValue)
+   {
+      return obj->formatDateToSql(anyValue);
+   }
+};
+
+//--------------------------------------------------------------
+/// \brief	    Helper structure for converting Poco Timestamp to sql string
+//--------------------------------------------------------------
+template <>
+struct queryhelper <Poco::Timestamp>
+{
+   static const std::string format(CQuery * obj, const Poco::Timestamp & anyValue)
+   {
+      return obj->formatDateToSql(anyValue);
+   }
+};
+
+//--------------------------------------------------------------
+/// \brief	    Helper structure for converting CQuery to sql string
+//--------------------------------------------------------------
+template <>
+struct queryhelper <CQuery>
+{
+   static const std::string format(CQuery * obj, const CQuery & anyValue)
+   {
+      return obj->formatSubQueryToSql(anyValue);
+   }
+};
+
+
+
+//--------------------------------------------------------------
+/// \brief	    Helper structure for converting IExtendedEnum to sql string
+//--------------------------------------------------------------
+template <typename T>
+struct queryhelper < T, typename boost::enable_if< boost::is_base_of< shared::enumeration::IExtendedEnum, T > >::type >
+{
+   static const std::string format(CQuery * obj, const T & anyValue)
+   {
+      return obj->formatEnumToSql(anyValue);
+   }
+};
+
+
+//-------------------------------------------------------------- 
+/// \brief	    Helper structure for converting boost::shared_ptr<T> to sql string
+//--------------------------------------------------------------
+template <typename T>
+struct queryhelper < boost::shared_ptr< T > >
+{
+   static const std::string format(CQuery * obj, const T & anyValue)
+   {
+      return queryhelper<T>::format(obj, *anyValue.get());
+   }
+};
+
+//--------------------------------------------------------------
+/// \brief	    Helper structure for converting with CField<T> to sql string
+//--------------------------------------------------------------
+template <typename T>
+struct queryhelper < shared::CField< T > >
+{
+   static const std::string format(CQuery * obj, const T & anyValue)
+   {
+      return queryhelper<T>::format(obj, anyValue());
+   }
+};
+
+
+
+//--------------------------------------------------------------
+/// \brief	    Helper structure for converting with CField<T> to sql string
+//--------------------------------------------------------------
+template <>
+struct queryhelper < CQuery::CFunction >
+{
+   static const std::string format(CQuery * obj, const CQuery::CFunction & anyValue)
+   {
+      return anyValue.toSql();
+   }
+};
+
+
+
+
+//--------------------------------------------------------------
+/// \brief	    Helper structure for get/set with an IExtendedEnum object
+//--------------------------------------------------------------
+template <>
+struct queryhelper <CQuery::CNotUsedTemplateField>
+{
+   static const std::string format(CQuery * obj, const CQuery::CNotUsedTemplateField & anyValue)
+   {
+      throw CDatabaseException("CNotUsedTemplateField must not be used");
+   }
+};
+
+
+
+template<class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10>
+inline CQuery & CQuery::Select(const T1 & field1, const T2 & field2, const T3 & field3, const T4 & field4, const T5 & field5, const T6 & field6, const T7 & field7, const T8 & field8, const T9 & field9, const T10 & field10)
+{
+   ChangeQueryType(kSelect);
+   std::ostringstream ss;
+   ss << "SELECT " << queryhelper<T1>::format(this, field1);
+   if (typeid(field2) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T2>::format(this, field2));
+   if (typeid(field3) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T3>::format(this, field3));
+   if (typeid(field4) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T4>::format(this, field4));
+   if (typeid(field5) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T5>::format(this, field5));
+   if (typeid(field6) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T6>::format(this, field6));
+   if (typeid(field7) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T7>::format(this, field7));
+   if (typeid(field8) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T8>::format(this, field8));
+   if (typeid(field9) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T9>::format(this, field9));
+   if (typeid(field10) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T10>::format(this, field10));
+   ss << " ";
+   return Append(ss);
+}
+
+
+template<class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10>
+inline CQuery & CQuery::SelectCount(const T1 & field1, const T2 & field2, const T3 & field3, const T4 & field4, const T5 & field5, const T6 & field6, const T7 & field7, const T8 & field8, const T9 & field9, const T10 & field10)
+{
+   ChangeQueryType(kSelect);
+   std::ostringstream ss;
+   ss << "SELECT COUNT(" << queryhelper<T1>::format(this, field1);
+   if (typeid(field2) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T2>::format(this, field2));
+   if (typeid(field3) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T3>::format(this, field3));
+   if (typeid(field4) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T4>::format(this, field4));
+   if (typeid(field5) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T5>::format(this, field5));
+   if (typeid(field6) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T6>::format(this, field6));
+   if (typeid(field7) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T7>::format(this, field7));
+   if (typeid(field8) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T8>::format(this, field8));
+   if (typeid(field9) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T9>::format(this, field9));
+   if (typeid(field10) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T10>::format(this, field10));
+   ss << ") ";
+   return Append(ss);
+}
+
+
+
+
+template<class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10>
+inline CQuery & CQuery::Values(const T1 & value1, const T2 & value2, const T3 & value3, const T4 & value4, const T5 & value5, const T6 & value6, const T7 & value7, const T8 & value8, const T9 & value9, const T10 & value10)
+{
+   std::ostringstream ss;
+   ss << " VALUES  (" << queryhelper<T1>::format(this, value1);
+   if(typeid(value2) != typeid(CNotUsedTemplateField))
+      AppendValue(ss, queryhelper<T2>::format(this, value2));
+   if (typeid(value3) != typeid(CNotUsedTemplateField))
+      AppendValue(ss, queryhelper<T3>::format(this, value3));
+   if (typeid(value4) != typeid(CNotUsedTemplateField))
+      AppendValue(ss, queryhelper<T4>::format(this, value4));
+   if (typeid(value5) != typeid(CNotUsedTemplateField))
+      AppendValue(ss, queryhelper<T5>::format(this, value5));
+   if (typeid(value6) != typeid(CNotUsedTemplateField))
+      AppendValue(ss, queryhelper<T6>::format(this, value6));
+   if (typeid(value7) != typeid(CNotUsedTemplateField))
+      AppendValue(ss, queryhelper<T7>::format(this, value7));
+   if (typeid(value8) != typeid(CNotUsedTemplateField))
+      AppendValue(ss, queryhelper<T8>::format(this, value8));
+   if (typeid(value9) != typeid(CNotUsedTemplateField))
+      AppendValue(ss, queryhelper<T9>::format(this, value9));
+   if (typeid(value10) != typeid(CNotUsedTemplateField))
+      AppendValue(ss, queryhelper<T10>::format(this, value10));
+   ss << ") ";
+   return Append(ss);
+}
+
+template<class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10>
+inline CQuery & CQuery::Set(const std::string & field1, const T1 & value1,
+   const std::string & field2, const T2  &  value2,
+   const std::string & field3, const T3  &  value3,
+   const std::string & field4, const T4  &  value4,
+   const std::string & field5, const T5  &  value5,
+   const std::string & field6, const T6  &  value6,
+   const std::string & field7, const T7  &  value7,
+   const std::string & field8, const T8  &  value8,
+   const std::string & field9, const T9  &  value9,
+   const std::string & field10, const T10 &  value10)
+{
+   std::ostringstream ss;
+   ss << " SET  " << field1 << " = " << queryhelper<T1 >::format(this, value1);
+   if (typeid(value2) != typeid(CNotUsedTemplateField))
+      AppendSet(ss, field2, queryhelper<T2 >::format(this, value2));
+   if (typeid(value3) != typeid(CNotUsedTemplateField))
+      AppendSet(ss, field3, queryhelper<T3 >::format(this, value3));
+   if (typeid(value4) != typeid(CNotUsedTemplateField))
+      AppendSet(ss, field4, queryhelper<T4 >::format(this, value4));
+   if (typeid(value5) != typeid(CNotUsedTemplateField))
+      AppendSet(ss, field5, queryhelper<T5 >::format(this, value5));
+   if (typeid(value6) != typeid(CNotUsedTemplateField))
+      AppendSet(ss, field6, queryhelper<T6 >::format(this, value6));
+   if (typeid(value7) != typeid(CNotUsedTemplateField))
+      AppendSet(ss, field7, queryhelper<T7 >::format(this, value7));
+   if (typeid(value8) != typeid(CNotUsedTemplateField))
+      AppendSet(ss, field8, queryhelper<T8 >::format(this, value8));
+   if (typeid(value9) != typeid(CNotUsedTemplateField))
+      AppendSet(ss, field9, queryhelper<T9 >::format(this, value9));
+   if (typeid(value10) != typeid(CNotUsedTemplateField))
+      AppendSet(ss, field10, queryhelper<T10>::format(this, value10));
+   ss << " ";
+   return Append(ss);
+}
+
+
+
+template<class T>
+CQuery & CQuery::Where(const std::string & field, const std::string & op, const T & value)
+{
+   return PredicateInternal("WHERE ", field, op, queryhelper<T>::format(this, value));
+}
+    
+template<class T>
+CQuery & CQuery::WhereParenthesis(const std::string & field, const std::string & op, const T & value)
+{
+   return PredicateInternal("WHERE (", field, op, queryhelper<T>::format(this, value));
+}
+
+template<class T>
+CQuery & CQuery::And(const std::string & field, const std::string & op, const T & value)
+{
+   return PredicateInternal("AND ", field, op, queryhelper<T>::format(this, value));
+}
+
+template<class T>
+CQuery & CQuery::AndParenthesis(const std::string & field, const std::string & op, const T & value)
+{
+   return PredicateInternal("AND (", field, op, queryhelper<T>::format(this, value));
+}
+
+template<class T>
+CQuery & CQuery::Or(const std::string & field, const std::string & op, const T & value)
+{
+   return PredicateInternal("OR ", field, op, queryhelper<T>::format(this, value));
+}
+
+template<class T>
+CQuery & CQuery::OrParenthesis(const std::string & field, const std::string & op, const T & value)
+{
+   return PredicateInternal("OR (", field, op, queryhelper<T>::format(this, value));
+}
+
+
+template<class T>
+inline const CQuery::CFunction CQuery::as(const T & fieldOrQuery, const std::string & columnName)
+{
+   return CFunction(functionAs(queryhelper<T>::format(this, fieldOrQuery), columnName));
+   
+}
+
+template<class T1, class T2>
+inline const CQuery::CFunction CQuery::math(const T1 & value1, const std::string & op, const T2 & value2)
+{
+   return CFunction(queryhelper<T1>::format(this, value1) + " " + op + " " + queryhelper<T2>::format(this, value2));
+}
+
+//--------------------------------------------------------------
+///\brief	generate min function ( ie: min(field0) )
+///\param [in]	field    The field or query
+///\return The query function
+//--------------------------------------------------------------
+template<class T>
+inline const CQuery::CFunction CQuery::min(const T & value)
+{
+   return CFunction(this->functionMin(queryhelper<T>::format(this, value)));
+}
+
+//--------------------------------------------------------------
+///\brief	generate min function ( ie: min(field0) ) with numeric cast
+///\param [in]	field    The field or query
+///\return The query function
+//--------------------------------------------------------------
+template<class T>
+inline  const CQuery::CFunction CQuery::minWithCast(const T & fieldOrQuery)
+{
+   return min(castNumeric(fieldOrQuery));
+
+}
+
+
+//--------------------------------------------------------------
+///\brief	generate max function ( ie: max(field0) )
+///\param [in]	field    The field or query
+///\return The query function
+//--------------------------------------------------------------
+template<class T>
+inline  const CQuery::CFunction CQuery::max(const T & value)
+{
+   return CFunction(this->functionMax(queryhelper<T>::format(this, value)));
+}
+
+
+//--------------------------------------------------------------
+///\brief	generate max function ( ie: max(field0) ) with numeric cast
+///\param [in]	field    The field or query
+///\return The query function
+//--------------------------------------------------------------
+template<class T>
+inline  const CQuery::CFunction CQuery::maxWithCast(const T & fieldOrQuery)
+{
+   return max(castNumeric(fieldOrQuery));
+}
+
+
+//--------------------------------------------------------------
+///\brief	generate average function ( ie: average(field0) )
+///\param [in]	field    The field or query
+///\return The query function
+//--------------------------------------------------------------
+template<class T>
+inline  const CQuery::CFunction CQuery::average(const T & value)
+{
+   return CFunction(this->functionAvg(queryhelper<T>::format(this, value)));
+}
+
+
+//--------------------------------------------------------------
+///\brief	generate average function ( ie: average(field0) ) with numeric cast
+///\param [in]	field    The field or query
+///\return The query function
+//--------------------------------------------------------------
+template<class T>
+inline  const CQuery::CFunction CQuery::averageWithCast(const T & fieldOrQuery)
+{
+   return average(castNumeric(fieldOrQuery));
+}
+
+
+//--------------------------------------------------------------
+///\brief	generate coalesce function ( ie: coalesce(field0, default) )
+///\param [in]	field       The field or query
+///\param [in]	valueIfNull The fallback value
+///\return The query function
+//--------------------------------------------------------------
+template<class T, class T2>
+inline const CQuery::CFunction CQuery::coalesce(const T & value, const T2 & valueIfNull)
+{
+   return CFunction(this->functionCoalesce(queryhelper<T>::format(this, value), queryhelper<T2>::format(this, valueIfNull)));
+}
+
+
+//--------------------------------------------------------------
+///\brief	generate cast function ( ie: CAST (field0 AS numeric) )
+///\param [in]	field       The field or query
+///\param [in]	type        The typing cast
+///\return The query function
+//--------------------------------------------------------------
+template<class T>
+inline  const CQuery::CFunction CQuery::cast(const T & fieldOrQuery, const std::string & type)
+{
+   return CFunction(this->functionCast(queryhelper<T>::format(this, fieldOrQuery)), type);
+}
+
+//--------------------------------------------------------------
+///\brief	generate cast function ( ie: CAST (field0 AS numeric) )
+///\param [in]	field       The field or query
+///\return The query function
+//--------------------------------------------------------------
+template<class T>
+inline  const CQuery::CFunction CQuery::castNumeric(const T & fieldOrQuery)
+{
+   return CFunction(this->functionCastNumeric(queryhelper<T>::format(this, fieldOrQuery)));
+}
+
+template<class T>
+inline const CQuery::CFunction CQuery::dateToIsoString(const T & fieldOrQuery)
+{
+   return CFunction(this->functionDateToIsoString(queryhelper<T>::format(this, fieldOrQuery)));
+}
+
+template<class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10>
+inline const CQuery::CFunction CQuery::concatenate(const T1 & field1, const T2 & field2, const T3 & field3, const T4 & field4, const T5 & field5, const T6 & field6, const T7 & field7, const T8 & field8, const T9 & field9, const T10 & field10)
+{
+   std::string current = functionConcatenate(queryhelper<T1>::format(this, field1), queryhelper<T2>::format(this, field2));
+   if (typeid(field3) != typeid(CNotUsedTemplateField))
+      current = functionConcatenate(current, queryhelper<T3>::format(this, field3));
+   if (typeid(field4) != typeid(CNotUsedTemplateField))
+      current = functionConcatenate(current, queryhelper<T4>::format(this, field4));
+   if (typeid(field5) != typeid(CNotUsedTemplateField))
+      current = functionConcatenate(current, queryhelper<T5>::format(this, field5));
+   if (typeid(field6) != typeid(CNotUsedTemplateField))
+      current = functionConcatenate(current, queryhelper<T6>::format(this, field6));
+   if (typeid(field7) != typeid(CNotUsedTemplateField))
+      current = functionConcatenate(current, queryhelper<T7>::format(this, field7));
+   if (typeid(field8) != typeid(CNotUsedTemplateField))
+      current = functionConcatenate(current, queryhelper<T8>::format(this, field8));
+   if (typeid(field9) != typeid(CNotUsedTemplateField))
+      current = functionConcatenate(current, queryhelper<T9>::format(this, field9));
+   if (typeid(field10) != typeid(CNotUsedTemplateField))
+      current = functionConcatenate(current, queryhelper<T10>::format(this, field10));
+   return CFunction(current);
+}
+
+
+

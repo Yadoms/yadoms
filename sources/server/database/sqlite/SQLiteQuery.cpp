@@ -11,6 +11,10 @@ namespace database { namespace sqlite {
    {
    }
 
+   const std::string CSQLiteQuery::functionDateToIsoString(const std::string &sqlPart)
+   {
+      return (boost::format("(strftime('%s', isodate(%1%)) * 1000)") % sqlPart).str();
+   }
 
 
 } //namespace sqlite

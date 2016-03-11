@@ -35,6 +35,10 @@ namespace database { namespace pgsql {
       /// \return       A reference to itself to allow method chaining
       //
       CPgsqlQuery & CreateDatabase(const std::string & name);
+
+      // Overriding common::CQuery
+      virtual const std::string functionDateToIsoString(const std::string &sqlPart);
+      // [END] - Overriding common::CQuery 
    };
 
 

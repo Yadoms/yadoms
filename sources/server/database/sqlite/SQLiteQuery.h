@@ -21,6 +21,11 @@ namespace database { namespace sqlite {
       /// \brief           Destructor
       //
       virtual ~CSQLiteQuery();
+
+      // Overriding common::CQuery
+      virtual const std::string functionDateToIsoString(const std::string &sqlPart);
+      // [END] - Overriding common::CQuery 
+
    };
 
 

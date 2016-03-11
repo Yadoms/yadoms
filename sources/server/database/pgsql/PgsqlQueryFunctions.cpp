@@ -5,7 +5,7 @@
 
 namespace database { 
 namespace pgsql {
-
+   /*
    CPgsqlQueryFunctions::CPgsqlQueryFunctions()
    { 
    }
@@ -24,7 +24,7 @@ namespace pgsql {
    {
       return cast(fieldOrQuery, "numeric");
    }
-
+   */
 
 } //namespace pgsql
 } //namespace database 

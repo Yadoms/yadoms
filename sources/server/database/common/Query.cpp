@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "Query.h"
+#include <Poco/DateTimeFormatter.h>
+#include <Poco/DateTimeFormat.h>
 
 
 namespace database { namespace common { 
@@ -34,23 +36,6 @@ namespace database { namespace common {
          return Append("SELECT * "); 
       }
 
-      CQuery & CQuery::Select(const std::string & field1, const std::string & field2/* = EMPTY_STR*/, const std::string & field3/* = EMPTY_STR*/, const std::string & field4/* = EMPTY_STR*/, const std::string & field5/* = EMPTY_STR*/, const std::string & field6/* = EMPTY_STR*/, const std::string & field7/* = EMPTY_STR*/, const std::string & field8/* = EMPTY_STR*/, const std::string & field9/* = EMPTY_STR*/, const std::string & field10/* = EMPTY_STR*/) 
-      { 
-         ChangeQueryType(kSelect);
-         std::ostringstream ss;
-         ss << "SELECT " << field1;
-         AppendField(ss, field2);
-         AppendField(ss, field3);
-         AppendField(ss, field4);
-         AppendField(ss, field5);
-         AppendField(ss, field6);
-         AppendField(ss, field7);
-         AppendField(ss, field8);
-         AppendField(ss, field9);
-         AppendField(ss, field10);     
-         ss << " ";      
-         return Append(ss); 
-      }
 
       //
       /// \brief           Start a query with 'SELECT COUNT(*)'
@@ -62,37 +47,7 @@ namespace database { namespace common {
          return Append("SELECT COUNT(*) "); 
       }
 
-      //
-      /// \brief           Start a query with 'SELECT COUNT(field1 [,field2[, field3...]])'
-      /// \param  field1   a field to append to the select fields
-      /// \param  field2   a field to append to the select fields
-      /// \param  field3   a field to append to the select fields
-      /// \param  field4   a field to append to the select fields
-      /// \param  field5   a field to append to the select fields
-      /// \param  field6   a field to append to the select fields
-      /// \param  field7   a field to append to the select fields
-      /// \param  field8   a field to append to the select fields
-      /// \param  field9   a field to append to the select fields
-      /// \param  field10  a field to append to the select fields
-      /// \return          A reference to itself to allow method chaining
-      //
-      CQuery & CQuery::SelectCount(const std::string & field1, const std::string & field2 /*= EMPTY_STR*/, const std::string & field3 /*= EMPTY_STR*/, const std::string & field4 /*= EMPTY_STR*/, const std::string & field5 /*= EMPTY_STR*/, const std::string & field6 /*= EMPTY_STR*/, const std::string & field7 /*= EMPTY_STR*/, const std::string & field8 /*= EMPTY_STR*/, const std::string & field9 /*= EMPTY_STR*/, const std::string & field10 /*= EMPTY_STR*/)
-      {
-         ChangeQueryType(kSelect);
-         std::ostringstream ss;
-         ss << "SELECT COUNT(" << field1;
-         AppendField(ss, field2);
-         AppendField(ss, field3);
-         AppendField(ss, field4);
-         AppendField(ss, field5);
-         AppendField(ss, field6);
-         AppendField(ss, field7);
-         AppendField(ss, field8);
-         AppendField(ss, field9);
-         AppendField(ss, field10);
-         ss << ") ";      
-         return Append(ss); 
-      }
+      
 
 
       CQuery & CQuery::From(const std::string & table1, const std::string & table2/* = EMPTY_STR*/, const std::string & table3/* = EMPTY_STR*/, const std::string & table4/* = EMPTY_STR*/, const std::string & table5/* = EMPTY_STR*/, const std::string & table6/* = EMPTY_STR*/, const std::string & table7/* = EMPTY_STR*/, const std::string & table8/* = EMPTY_STR*/, const std::string & table9/* = EMPTY_STR*/, const std::string & table10/* = EMPTY_STR*/)  
@@ -140,79 +95,18 @@ namespace database { namespace common {
 
       CQuery & CQuery::Where(const std::string & condition) 
       {
-         return WhereInternal("WHERE ", condition);
+         return PredicateInternal("WHERE ", condition);
       } 
-
-      CQuery & CQuery::Where(const std::string & field, const std::string & op, const CQueryValue & value) 
-      {
-         return WhereInternal("WHERE ", field, op, value);
-      }   
-
-      CQuery & CQuery::Where(const std::string & field, const std::string & op, CQuery & subQuery) 
-      {
-         return WhereInternal("WHERE ", field, op, subQuery);
-      }   
-
-		CQuery & CQuery::WhereParenthesis(const std::string & field, const std::string & op, const CQueryValue & value)
-		{
-			return WhereInternal("WHERE (", field, op, value);
-		}
-
-
-		CQuery & CQuery::WhereParenthesis(const std::string & field, const std::string & op, CQuery & subQuery)
-		{
-			return WhereInternal("WHERE (", field, op, subQuery);
-		}
 
       CQuery & CQuery::And(const std::string & condition) 
       {
-         return WhereInternal("AND ", condition);
+         return PredicateInternal("AND ", condition);
       } 
-
-      CQuery & CQuery::And(const std::string & field, const std::string & op, const CQueryValue & value) 
-      {
-         return WhereInternal("AND ", field, op, value);
-      } 
-
-      CQuery & CQuery::And(const std::string & field, const std::string & op, CQuery & subQuery) 
-      {
-         return WhereInternal("AND ", field, op, subQuery);
-      }    
-		
-		CQuery & CQuery::AndParenthesis(const std::string & field, const std::string & op, const CQueryValue & value)
-      {
-         return WhereInternal("AND (", field, op, value);
-      } 
-
-		CQuery & CQuery::AndParenthesis(const std::string & field, const std::string & op, CQuery & subQuery)
-      {
-         return WhereInternal("AND (", field, op, subQuery);
-      }     
 
       CQuery & CQuery::Or(const std::string & condition) 
       {
-         return WhereInternal("OR ", condition);
+         return PredicateInternal("OR ", condition);
       } 
-
-      CQuery & CQuery::Or(const std::string & field, const std::string & op, const CQueryValue & value) 
-      {
-         return WhereInternal("OR ", field, op, value);
-      } 
-
-      CQuery & CQuery::Or(const std::string & field, const std::string & op, CQuery & subQuery) 
-      {
-         return WhereInternal("OR ", field, op, subQuery);
-      }   
-
-		CQuery & CQuery::OrParenthesis(const std::string & field, const std::string & op, const CQueryValue & value)
-      {
-         return WhereInternal("OR (", field, op, value);
-      } 
-
-		CQuery & CQuery::OrParenthesis(const std::string & field, const std::string & op, CQuery & subQuery)
-      {
-         return WhereInternal("OR (", field, op, subQuery);
-      }   
 
 		CQuery & CQuery::EndParenthesis()
 		{
@@ -283,23 +177,6 @@ namespace database { namespace common {
          return Append(ss); 
       }  
 
-      CQuery & CQuery::Values(const CQueryValue & value1, const CQueryValue & value2, const CQueryValue & value3 , const CQueryValue & value4 , const CQueryValue & value5 , const CQueryValue & value6 , const CQueryValue & value7 , const CQueryValue & value8 , const CQueryValue & value9 , const CQueryValue & value10 ) 
-      {
-         std::ostringstream ss;
-         ss << " VALUES  (" << value1.str();
-         AppendValue(ss, value2);
-         AppendValue(ss, value3);
-         AppendValue(ss, value4);
-         AppendValue(ss, value5);
-         AppendValue(ss, value6);
-         AppendValue(ss, value7);
-         AppendValue(ss, value8);
-         AppendValue(ss, value9);
-         AppendValue(ss, value10);
-         ss << ") ";
-         return Append(ss); 
-      }
-
       CQuery & CQuery::Update(const std::string & table) 
       {
          ChangeQueryType(kUpdate);
@@ -307,33 +184,6 @@ namespace database { namespace common {
          ss << " UPDATE  " << table << " ";
          return Append(ss); 
       }
-
-      CQuery & CQuery::Set(const std::string & field1, const CQueryValue & value1, 
-         const std::string & field2 /* = EMPTY_STR*/, const CQueryValue &  value2 /* = CQueryValue()*/,
-         const std::string & field3 /* = EMPTY_STR*/, const CQueryValue &  value3 /* = CQueryValue()*/,
-         const std::string & field4 /* = EMPTY_STR*/, const CQueryValue &  value4 /* = CQueryValue()*/,
-         const std::string & field5 /* = EMPTY_STR*/, const CQueryValue &  value5 /* = CQueryValue()*/,
-         const std::string & field6 /* = EMPTY_STR*/, const CQueryValue &  value6 /* = CQueryValue()*/,
-         const std::string & field7 /* = EMPTY_STR*/, const CQueryValue &  value7 /* = CQueryValue()*/,
-         const std::string & field8 /* = EMPTY_STR*/, const CQueryValue &  value8 /* = CQueryValue()*/,
-         const std::string & field9 /* = EMPTY_STR*/, const CQueryValue &  value9 /* = CQueryValue()*/,
-         const std::string & field10/* = EMPTY_STR*/, const CQueryValue &  value10/* = CQueryValue()*/)
-      {
-         std::ostringstream ss;
-         ss << " SET  " << field1 << " = " << value1.str();
-         AppendSet(ss, field2 , value2 );
-         AppendSet(ss, field3 , value3 );
-         AppendSet(ss, field4 , value4 );
-         AppendSet(ss, field5 , value5 );
-         AppendSet(ss, field6 , value6 );
-         AppendSet(ss, field7 , value7 );
-         AppendSet(ss, field8 , value8 );
-         AppendSet(ss, field9 , value9 );
-         AppendSet(ss, field10, value10);      
-         ss << " ";
-         return Append(ss); 
-      }
-
 
       CQuery & CQuery::With(const std::string & tableName1, const CQuery & subQuery1,
          const std::string & tableName2, const CQuery & subQuery2,
@@ -487,26 +337,20 @@ namespace database { namespace common {
       }
 
 
-      CQuery & CQuery::WhereInternal(const std::string & predicate, const std::string & condition) 
+      CQuery & CQuery::PredicateInternal(const std::string & predicate, const std::string & condition) 
       {
          std::ostringstream ss;
          ss << predicate << condition << " ";
          return Append(ss); 
       } 
 
-      CQuery & CQuery::WhereInternal(const std::string & predicate, const std::string & field, const std::string & op, const CQueryValue & value) 
+      CQuery & CQuery::PredicateInternal(const std::string & predicate, const std::string & field, const std::string & op, const std::string & value)
       {
          std::ostringstream ss;
-         ss << predicate << field << " " << op << " " << value.str() << " ";
+         ss << predicate << field << " " << op << " " << value << " ";
          return Append(ss); 
       } 
 
-      CQuery & CQuery::WhereInternal(const std::string & predicate, const std::string & field, const std::string & op, CQuery & subQuery) 
-      {
-         std::ostringstream ss;
-         ss << predicate << field << " " << op << " (" << subQuery.str() << ") ";
-         return Append(ss); 
-      }   
 
       void CQuery::AppendField(std::ostringstream & ss, const std::string & field)
       {
@@ -524,16 +368,16 @@ namespace database { namespace common {
          }
       }
 
-      void CQuery::AppendSet(std::ostringstream & ss, const std::string & field, const CQueryValue & value)
+      void CQuery::AppendSet(std::ostringstream & ss, const std::string & field, const std::string & value)
       {
-         if(field.size()>0 && value.isDefined()) 
-            ss << "," << field << "=" << value.str();
+         if(field.size()>0) 
+            ss << "," << field << "=" << value;
       }
 
-      void CQuery::AppendValue(std::ostringstream & ss, const CQueryValue & value)
+      void CQuery::AppendValue(std::ostringstream & ss, const std::string & value)
       {
-         if(value.isDefined()) 
-            ss << "," << value.str();
+         if(!value.empty()) 
+            ss << "," << value;
       }
 
 
@@ -545,6 +389,150 @@ namespace database { namespace common {
                m_queryType = newType;
          }
          return *this;
+      }
+
+
+      const std::string CQuery::formatStringToSql(const std::string & anystringValue)
+      {
+         return (boost::format("'%1%'") % boost::replace_all_copy(anystringValue, "'", "\\'")).str();
+      }
+
+      const std::string CQuery::formatDateToSql(const boost::posix_time::ptime & ptime)
+      {
+         return boost::posix_time::to_iso_string(ptime);
+      }
+
+      const std::string CQuery::formatDateToSql(const Poco::DateTime & datetime)
+      {
+         return Poco::DateTimeFormatter::format(datetime, "%Y%m%dT%H%M%S");
+      }
+
+      const std::string CQuery::formatDateToSql(const Poco::Timestamp & timestamp)
+      {
+         return Poco::DateTimeFormatter::format(timestamp, "%Y%m%dT%H%M%S");
+      }
+
+      const std::string CQuery::formatEnumToSql(const shared::enumeration::IExtendedEnum & enumValue)
+      {
+         return enumValue.toString();
+      }
+
+      const std::string CQuery::formatSubQueryToSql(const CQuery & subQuery)
+      {
+         return (boost::format("(%1%)") % subQuery.str()).str();
+      }
+
+
+      const std::string CQuery::formatInt8ToSql(const Poco::Int8 & anyStringValue)
+      {
+         return boost::lexical_cast<std::string>(anyStringValue);
+      }
+
+      const std::string CQuery::formatUInt8ToSql(const Poco::UInt8 & anyStringValue)
+      {
+         return boost::lexical_cast<std::string>(anyStringValue);
+      }
+
+      const std::string CQuery::formatInt16ToSql(const Poco::Int16 & anyStringValue)
+      {
+         return boost::lexical_cast<std::string>(anyStringValue);
+      }
+
+      const std::string CQuery::formatUInt16ToSql(const Poco::UInt16 & anyStringValue)
+      {
+         return boost::lexical_cast<std::string>(anyStringValue);
+      }
+
+      const std::string CQuery::formatInt32ToSql(const Poco::Int32 & anyStringValue)
+      {
+         return boost::lexical_cast<std::string>(anyStringValue);
+      }
+
+      const std::string CQuery::formatUInt32ToSql(const Poco::UInt32 & anyStringValue)
+      {
+         return boost::lexical_cast<std::string>(anyStringValue);
+      }
+
+      const std::string CQuery::formatInt64ToSql(const Poco::Int64 & anyStringValue)
+      {
+         return boost::lexical_cast<std::string>(anyStringValue);
+      }
+
+      const std::string CQuery::formatUInt64ToSql(const Poco::UInt64 & anyStringValue)
+      {
+         return boost::lexical_cast<std::string>(anyStringValue);
+      }
+
+
+
+      const std::string CQuery::formatFloatToSql(const float & anyValue)
+      {
+         return boost::lexical_cast<std::string>(anyValue);
+      }
+
+      const std::string CQuery::formatDoubleToSql(const double & anyValue)
+      {
+         return boost::lexical_cast<std::string>(anyValue);
+      }
+
+      const std::string CQuery::formatBooleanToSql(const bool & anyValue)
+      {
+         return boost::lexical_cast<std::string>(anyValue);
+      }
+
+      const std::string CQuery::functionMin(const std::string & sqlPart)
+      {
+         return (boost::format("min(%1%)") % sqlPart).str();
+      }
+
+      const std::string CQuery::functionMax(const std::string & sqlPart)
+      {
+         return (boost::format("max(%1%)") % sqlPart).str();
+      }
+
+      const std::string CQuery::functionAvg(const std::string & sqlPart)
+      {
+         return (boost::format("avg(%1%)") % sqlPart).str();
+      }
+
+      const std::string CQuery::functionCoalesce(const std::string & sqlPart, const std::string & defaultValue)
+      {
+         return (boost::format("coalesce(%1%, %2%)") % sqlPart % defaultValue).str();
+      }
+
+      const std::string CQuery::functionCast(const std::string & sqlPart, const std::string & destinationType)
+      {
+         return (boost::format("cast(%1% AS %2%)") % sqlPart % destinationType).str();
+      }
+      const std::string CQuery::functionCastNumeric(const std::string & sqlPart)
+      {
+         return functionCast(sqlPart, "numeric");
+      }
+
+      const std::string CQuery::functionDateToIsoString(const std::string &sqlPart)
+      {
+         return sqlPart;
+      }
+
+      const std::string CQuery::functionConcatenate(const std::string &sqlPart1, const std::string &sqlPart2)
+      {
+         return (boost::format("%1% || %2%") % sqlPart1 % sqlPart2).str();
+      }      
+
+      const std::string CQuery::functionAs(const std::string & sqlPart, const std::string &name)
+      {
+         return (boost::format("%1% AS %2%") % sqlPart % name).str();
+      }
+
+
+      const std::string CQuery::functionFromSubquery(const std::string & subQueryName, const std::string &subQueryFieldName)
+      {
+         return (boost::format("%1%.%2%") % subQueryName % subQueryFieldName).str();
+      }
+      
+      const CQuery::CFunction CQuery::fromSubquery(const std::string& subQueryName, const std::string & subQueryFieldName)
+      {
+         return CFunction(functionFromSubquery(subQueryName, subQueryFieldName));
       }
 
 } //namespace common

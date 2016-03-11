@@ -53,10 +53,10 @@ namespace database {  namespace common {  namespace requesters {
          throw shared::exception::CEmptyResult("The keyword is not numeric, cannot increment data");
 
       CQuery qLastKeywordValue = m_databaseRequester->newQuery();
-      qLastKeywordValue.Select(m_databaseRequester->queryFunc().castNumeric("acq." + CAcquisitionTable::getValueColumnName())).
-         From(CAcquisitionTable::getTableName() + " as acq").
-         Where("acq." + CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId).
-         OrderBy("acq." + CAcquisitionTable::getDateColumnName(), CQUERY_ORDER_DESC).
+      qLastKeywordValue.Select(qLastKeywordValue.castNumeric(CAcquisitionTable::getValueColumnName())).
+         From(CAcquisitionTable::getTableName()).
+         Where(CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId).
+         OrderBy(CAcquisitionTable::getDateColumnName(), CQUERY_ORDER_DESC).
          Limit(1);
 
       CQuery q = m_databaseRequester->newQuery();
@@ -65,13 +65,16 @@ namespace database {  namespace common {  namespace requesters {
       
       //insert first (if fails, update )
       q.InsertInto(CAcquisitionTable::getTableName(), CAcquisitionTable::getDateColumnName(), CAcquisitionTable::getKeywordIdColumnName(), CAcquisitionTable::getValueColumnName()).
-      Values(dataTime, keywordId, m_databaseRequester->queryFunc().coalesce(qLastKeywordValue, 0) + " + " + increment);
+      Values(dataTime, keywordId, q.math(q.coalesce(qLastKeywordValue, 0), CQUERY_OP_PLUS, increment));
+
+      //q.InsertInto(CAcquisitionTable::getTableName(), CAcquisitionTable::getDateColumnName(), CAcquisitionTable::getKeywordIdColumnName(), CAcquisitionTable::getValueColumnName()).
+      //Values(dataTime, keywordId, m_databaseRequester->queryFunc().coalesce(qLastKeywordValue, "0") + " + " + increment);
       
       if (m_databaseRequester->queryStatement(q, false) <= 0)
       {
         //update
          q.Clear().Update(CAcquisitionTable::getTableName())
-         .Set(CAcquisitionTable::getValueColumnName(), m_databaseRequester->queryFunc().coalesceNumeric(qLastKeywordValue, 0) + " + " + increment).
+         .Set(CAcquisitionTable::getValueColumnName(), q.math(q.coalesce(qLastKeywordValue, 0), CQUERY_OP_PLUS, increment)).
          Where(CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId).
          And(CAcquisitionTable::getDateColumnName(), CQUERY_OP_EQUAL, dataTime);
          
@@ -225,7 +228,7 @@ namespace database {  namespace common {  namespace requesters {
       //this query is optimized to get only one field to read
       //the output data is a single column (without brackets):  ["dateiso",value]
       CQuery qSelect = m_databaseRequester->newQuery();
-      qSelect.Select(m_databaseRequester->queryFunc().dateToIsoString(CAcquisitionTable::getDateColumnName()) + " ||','|| " + CAcquisitionTable::getValueColumnName()).
+      qSelect.Select(qSelect.concatenate(qSelect.dateToIsoString(CAcquisitionTable::getDateColumnName()), "," , CAcquisitionTable::getValueColumnName())).
          From(CAcquisitionTable::getTableName()).
          Where(CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId);
 
@@ -251,7 +254,7 @@ namespace database {  namespace common {  namespace requesters {
       //this query is optimized to get only one field to read
       //the output data is a single column (without brackets):  ["dateiso",value]
       CQuery qSelect = m_databaseRequester->newQuery();
-      qSelect.Select(m_databaseRequester->queryFunc().dateToIsoString(CAcquisitionSummaryTable::getDateColumnName()) + " ||','|| " + CAcquisitionSummaryTable::getAvgColumnName()).
+      qSelect.Select(qSelect.concatenate(qSelect.dateToIsoString(CAcquisitionSummaryTable::getDateColumnName()),  ",", CAcquisitionSummaryTable::getAvgColumnName())).
          From(CAcquisitionSummaryTable::getTableName()).
          Where(CAcquisitionSummaryTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId).
          And(CAcquisitionSummaryTable::getTypeColumnName(), CQUERY_OP_EQUAL, type);
@@ -298,8 +301,8 @@ namespace database {  namespace common {  namespace requesters {
       CQuery q = m_databaseRequester->newQuery();
       q.Select(CQUERY_DISTINCT(CAcquisitionTable::getKeywordIdColumnName()))
          .From(CAcquisitionTable::getTableName())
-         .Where(CAcquisitionTable::getDateColumnName(), CQUERY_OP_SUP_EQUAL, CQueryValue(timeFrom, false).str())
-         .And(CAcquisitionTable::getDateColumnName(), CQUERY_OP_INF, CQueryValue(timeTo, false).str());
+         .Where(CAcquisitionTable::getDateColumnName(), CQUERY_OP_SUP_EQUAL, timeFrom)
+         .And(CAcquisitionTable::getDateColumnName(), CQUERY_OP_INF, timeTo);
 
       database::common::adapters::CSingleValueAdapterWithContainer<int> intVectorAdapter(results);
       m_databaseRequester->queryEntities(&intVectorAdapter, q);
@@ -344,19 +347,20 @@ namespace database {  namespace common {  namespace requesters {
             //process the request
             CQuery q = m_databaseRequester->newQuery();
             q.InsertInto(CAcquisitionSummaryTable::getTableName(), CAcquisitionSummaryTable::getTypeColumnName(), CAcquisitionSummaryTable::getDateColumnName(), CAcquisitionSummaryTable::getKeywordIdColumnName(), CAcquisitionSummaryTable::getAvgColumnName(), CAcquisitionSummaryTable::getMinColumnName(), CAcquisitionSummaryTable::getMaxColumnName()).
-               Select(CQueryValue(curType.toString()).str(), CQueryValue(fromDate).str(), CQueryValue(keywordId).str(), m_databaseRequester->queryFunc().averageWithCast(CAcquisitionTable::getValueColumnName()), m_databaseRequester->queryFunc().minWithCast(CAcquisitionTable::getValueColumnName()), m_databaseRequester->queryFunc().maxWithCast(CAcquisitionTable::getValueColumnName())).
-               From(CAcquisitionTable::getTableName() + " as acq").
-               Where("acq." + CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId).
-               And("acq." + CAcquisitionTable::getDateColumnName(), CQUERY_OP_SUP_EQUAL, fromDate).
-               And("acq." + CAcquisitionTable::getDateColumnName(), CQUERY_OP_INF_EQUAL, toDate);
-
+               Select(curType, fromDate, keywordId, q.averageWithCast(CAcquisitionTable::getValueColumnName()), q.minWithCast(CAcquisitionTable::getValueColumnName()), q.maxWithCast(CAcquisitionTable::getValueColumnName())).
+               From(q.as(CAcquisitionTable::getTableName(), "acq")).
+               Where(q.fromSubquery("acq", CAcquisitionTable::getKeywordIdColumnName()), CQUERY_OP_EQUAL, keywordId).
+               And(q.fromSubquery("acq", CAcquisitionTable::getDateColumnName()), CQUERY_OP_SUP_EQUAL, fromDate).
+               And(q.fromSubquery("acq", CAcquisitionTable::getDateColumnName()), CQUERY_OP_INF_EQUAL, toDate);
+            
             if (m_databaseRequester->queryStatement(q, false) <= 0)
             {
                //the insertion fails, try to update
                CQuery compute = m_databaseRequester->newQuery();
                
-               compute.
-                  Select(m_databaseRequester->queryFunc().averageWithCast(CAcquisitionTable::getValueColumnName()) + " as avg", m_databaseRequester->queryFunc().minWithCast(CAcquisitionTable::getValueColumnName()) + " as min", m_databaseRequester->queryFunc().maxWithCast(CAcquisitionTable::getValueColumnName()) + " as max").
+               compute.Select(compute.as(compute.averageWithCast(CAcquisitionTable::getValueColumnName()), "avg"), 
+                              compute.as(compute.minWithCast(CAcquisitionTable::getValueColumnName()), "min"), 
+                              compute.as(compute.maxWithCast(CAcquisitionTable::getValueColumnName()), "max")).
                   From(CAcquisitionTable::getTableName()).
                   Where(CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId).
                   And(CAcquisitionTable::getDateColumnName(), CQUERY_OP_SUP_EQUAL, fromDate).
@@ -365,9 +369,9 @@ namespace database {  namespace common {  namespace requesters {
                
                q.With("acq", compute).
                  Update(CAcquisitionSummaryTable::getTableName())
-               .Set(CAcquisitionSummaryTable::getAvgColumnName(), "acq.avg",
-                    CAcquisitionSummaryTable::getMinColumnName(), "acq.min",
-                    CAcquisitionSummaryTable::getMaxColumnName(), "acq.max")
+               .Set(CAcquisitionSummaryTable::getAvgColumnName(),  q.fromSubquery("acq", "avg"),
+                    CAcquisitionSummaryTable::getMinColumnName(), q.fromSubquery("acq", "min"),
+                    CAcquisitionSummaryTable::getMaxColumnName(), q.fromSubquery("acq", "max"))
                .Where(CAcquisitionSummaryTable::getTypeColumnName(), CQUERY_OP_EQUAL, curType.toString())
                .And(CAcquisitionSummaryTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL,keywordId)
                .And(CAcquisitionSummaryTable::getDateColumnName(), CQUERY_OP_EQUAL,fromDate);
@@ -410,9 +414,9 @@ namespace database {  namespace common {  namespace requesters {
       CQuery checkq = m_databaseRequester->newQuery();
       checkq.SelectCount().
          From(CAcquisitionSummaryTable::getTableName()).
-         Where(CAcquisitionSummaryTable::getTypeColumnName(), CQUERY_OP_EQUAL, CQueryValue(curType.toString(), false).str()).
-         And(CAcquisitionSummaryTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, CQueryValue(keywordId, false).str()).
-         And(CAcquisitionSummaryTable::getDateColumnName(), CQUERY_OP_EQUAL, CQueryValue(fromDate, false).str());
+         Where(CAcquisitionSummaryTable::getTypeColumnName(), CQUERY_OP_EQUAL, curType).
+         And(CAcquisitionSummaryTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId).
+         And(CAcquisitionSummaryTable::getDateColumnName(), CQUERY_OP_EQUAL, fromDate);
 
       return (m_databaseRequester->queryCount(checkq) > 0);
    }
@@ -421,7 +425,7 @@ namespace database {  namespace common {  namespace requesters {
    {
       CQuery q = m_databaseRequester->newQuery();
       q.DeleteFrom(CAcquisitionTable::getTableName()).
-         Where(CAcquisitionTable::getDateColumnName(), CQUERY_OP_INF, CQueryValue(purgeDate));
+         Where(CAcquisitionTable::getDateColumnName(), CQUERY_OP_INF, purgeDate);
 
       int count = m_databaseRequester->queryStatement(q);
       if (count < 0)

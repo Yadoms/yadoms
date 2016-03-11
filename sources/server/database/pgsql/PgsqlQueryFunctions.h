@@ -4,7 +4,7 @@
 
 namespace database { 
 namespace pgsql { 
-
+   /*
    //-----------------------------
    ///\brief  Provide specific queries functions (could be used inside queries, like "sum", "min", "coalesce", ...
    //-----------------------------
@@ -27,7 +27,7 @@ namespace pgsql {
       // [END] - database::common::CQueryFunctions implemententation/overloading
 
    };
-
+   */
 } //namespace pgsql
 } //namespace database 
 

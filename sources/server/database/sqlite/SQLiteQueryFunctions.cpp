@@ -3,7 +3,8 @@
 
 namespace database { 
 namespace sqlite {
-
+   /*
+   
    CSQLiteQueryFunctions::CSQLiteQueryFunctions()
    { 
    }
@@ -27,7 +28,7 @@ namespace sqlite {
       return cast(fieldOrQuery, "real");
    }
 
-
+   */
 
 } //namespace sqlite
 } //namespace database 

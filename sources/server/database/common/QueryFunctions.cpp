@@ -1,9 +1,10 @@
 #include "stdafx.h"
+#include "Query.h"
 #include "QueryFunctions.h"
 
 namespace database { 
 namespace common {
-
+   /*
    CQueryFunctions::CQueryFunctions() 
    { 
    }
@@ -67,7 +68,11 @@ namespace common {
       return (boost::format("cast(%1% AS %2%)") % fieldOrQuery % type).str();
    }
 
-
+   const std::string CQueryFunctions::formatDateToSql(const boost::posix_time::ptime & time)
+   {
+      return boost::posix_time::to_iso_string(time);
+   }
+   */
 } //namespace common
 } //namespace database 
 

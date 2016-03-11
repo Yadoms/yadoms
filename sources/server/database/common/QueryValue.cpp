@@ -5,7 +5,7 @@
 
 namespace database { 
 namespace common {
-
+   /*
    CQueryValue::CQueryValue() 
       :m_bIsDefined(false)
    { 
@@ -20,7 +20,7 @@ namespace common {
       return boost::replace_all_copy(value, "'", "''");
    }
 
-   CQueryValue::CQueryValue(const std::string & value, bool secure /*= true*/) 
+   CQueryValue::CQueryValue(const std::string & value, bool secure) 
    { 
       std::string normalizedValue = normalize(value);
       if (secure)
@@ -97,7 +97,7 @@ namespace common {
       m_valueAsString = value; 
       m_bIsDefined = true; 
    }
-
+   */
 
 } //namespace common
 } //namespace database 

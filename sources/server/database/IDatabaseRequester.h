@@ -32,14 +32,7 @@ namespace database {
       /// \return The created CQuery
       //--------------------------------------------------------------
       virtual database::common::CQuery newQuery() = 0;
-
-      //--------------------------------------------------------------
-      /// \Brief  Create a new CQueryFunctions function object
-      /// \return The created CQueryFunctions function 
-      //--------------------------------------------------------------
-      virtual database::common::CQueryFunctions & queryFunc() = 0;
-      
-
+     
       //--------------------------------------------------------------
       /// \Brief		    query for entities (the result is a vector of typed objects, accessible by a call to pAdapter->GetResult())
       /// \param [in]	 adapter:  pointer to the adapter to use to map raw values to a new entity

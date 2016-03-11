@@ -4,7 +4,7 @@
 
 namespace database { 
 namespace common { 
-
+   /*
    //-----------------------------
    ///\brief  Provide queries functions (could be used inside queries, like "sum", "min", "coalesce", ...
    //-----------------------------
@@ -118,8 +118,12 @@ namespace common {
       ///\return The query function
       //--------------------------------------------------------------
       virtual const std::string castNumeric(const std::string & fieldOrQuery) = 0;
-   };
 
+
+      virtual const std::string formatDateToSql(const boost::posix_time::ptime & time);
+      
+   };
+*/
 } //namespace common
 } //namespace database 
 

@@ -8,7 +8,7 @@
 
 namespace database { 
 namespace common { 
-
+   /*
    //
    /// \brief  Class used to handle query values (manage types for database).
    ///         The real aim is to use any input value in queries without specifying the type
@@ -219,6 +219,7 @@ namespace common {
       else
          initialize(valueAsString);
    }
+   */
 } //namespace common
 } //namespace database 
 

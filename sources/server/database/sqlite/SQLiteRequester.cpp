@@ -122,12 +122,6 @@ namespace sqlite {
    }
    
 
-   database::common::CQueryFunctions & CSQLiteRequester::queryFunc()
-   {
-      return m_functionsHelper;
-   }
-
-
    //--------------------------------------------------------------
    /// \Brief		    query for entities (the result is a vector of typed objects, accessible by a call to pAdapter->GetResult())
    /// \param [in]	 adapter:  pointer to the adapter to use to map raw values to a new entity

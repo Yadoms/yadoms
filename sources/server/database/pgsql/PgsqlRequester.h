@@ -3,9 +3,7 @@
 #include "libpq-fe.h"
 #include <shared/exception/NullReference.hpp>
 #include <shared/Log.h>
-#include "Query.h"
 #include "database/IDatabaseRequester.h"
-#include "PgsqlQueryFunctions.h"
 
 namespace database { 
 namespace pgsql { 
@@ -23,7 +21,6 @@ namespace pgsql {
 
       // IDatabaseRequester implementation
       virtual database::common::CQuery newQuery();
-      virtual database::common::CQueryFunctions & queryFunc();
       virtual void queryEntities(database::common::adapters::IResultAdapter * pAdapter, const database::common::CQuery & querytoExecute);
       virtual int queryStatement(const database::common::CQuery & querytoExecute, bool throwIfFails = true);
       virtual int queryCount(const database::common::CQuery & querytoExecute);
@@ -110,11 +107,6 @@ namespace pgsql {
       /// \Brief		true if a transaction is already begin
       //--------------------------------------------------------------
       bool m_bOneTransactionActive;
-
-      //--------------------------------------------------------------
-      /// \Brief		The sql functions helpers for SQLite database
-      //--------------------------------------------------------------
-      CPgsqlQueryFunctions m_functionsHelper;
    };
 
 } //namespace pgsql

@@ -3,7 +3,7 @@
 #include "database/common/QueryFunctions.h"
 
 namespace database {  namespace sqlite {
-
+   /*
    //-----------------------------
    ///\brief  Provide specific SQLite queries functions (could be used inside queries, like "sum", "min", "coalesce", ...
    //-----------------------------
@@ -28,7 +28,7 @@ namespace database {  namespace sqlite {
       // [END] - database::common::CQueryFunctions implemententation/overloading
 
    };
-
+   */
 } //namespace sqlite
 } //namespace database 
 
