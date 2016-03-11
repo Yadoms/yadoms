@@ -113,7 +113,6 @@ class ConfigureWidgetModal():
       return self.__configureWidgetModalWebElement.find_element_by_id("btn-confirm-configure-widget")
       
    def waitForClosed(self):
-      # TODO à garder ?
       assert tools.waitUntil(lambda: 'display: none;' in self.__configureWidgetModalWebElement.get_attribute('style'))
       print "self.__configureWidgetModalWebElement.get_attribute('style')", self.__configureWidgetModalWebElement.get_attribute('style')
 
