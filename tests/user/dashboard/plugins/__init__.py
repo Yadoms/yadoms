@@ -114,8 +114,8 @@ class NewPluginModal():
       print "selectPlugin : Nothing to select, ", expectedPluginName, " not found"
       assert False
          
-   def getConfirmButton(self, browser):
-      return browser.find_element_by_id("btn-confirm-add-plugin")
+   def getConfirmButton(self):
+      return self.__newPluginModalWebElement.find_element_by_id("btn-confirm-add-plugin")
             
             
             
@@ -155,6 +155,6 @@ class ConfigurePluginModal():
       nameField.send_keys(Keys.DELETE)
       nameField.send_keys(newName)
          
-   def getConfirmButton(self, browser):
-      return browser.find_element_by_id("btn-confirm-configure-plugin")
+   def getConfirmButton(self):
+      return self.__configurePluginModalWebElement.find_element_by_id("btn-confirm-configure-plugin")
       

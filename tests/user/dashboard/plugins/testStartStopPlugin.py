@@ -36,14 +36,14 @@ class StartStopPlugin(unittest.TestCase):
       self.assertEqual(dashboard.plugins.getPluginState(pluginsTable, pluginNumber), dashboard.plugins.PluginState.Running)
 
       # Stop plugin
-      tools.waitUntil(lambda: startStopButton.is_enabled())
+      self.assertTrue(tools.waitUntil(lambda: startStopButton.is_enabled()))
       startStopButton.click()
-      tools.waitUntil(lambda: dashboard.plugins.getPluginState(pluginsTable, pluginNumber) is dashboard.plugins.PluginState.Stopped)
+      self.assertTrue(tools.waitUntil(lambda: dashboard.plugins.getPluginState(pluginsTable, pluginNumber) is dashboard.plugins.PluginState.Stopped))
 
       # Start plugin
-      tools.waitUntil(lambda: startStopButton.is_enabled())
+      self.assertTrue(tools.waitUntil(lambda: startStopButton.is_enabled()))
       startStopButton.click()
-      tools.waitUntil(lambda: dashboard.plugins.getPluginState(pluginsTable, pluginNumber) is dashboard.plugins.PluginState.Running)
+      self.assertTrue(tools.waitUntil(lambda: dashboard.plugins.getPluginState(pluginsTable, pluginNumber) is dashboard.plugins.PluginState.Running))
             
       
    def tearDown(self):

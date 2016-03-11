@@ -35,7 +35,7 @@ class ConfigurePlugin(unittest.TestCase):
       pluginNewName = "This is the new plugin name"
       configurePluginModal = dashboard.plugins.waitConfigurePluginModal(self.browser)
       configurePluginModal.replacePluginName(pluginNewName)
-      configurePluginModal.getConfirmButton(self.browser).click()
+      configurePluginModal.getConfirmButton().click()
       
       # Check modified plugin
       

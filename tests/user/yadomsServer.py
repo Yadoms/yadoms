@@ -44,7 +44,7 @@ def start():
    """Start the Yadoms server"""
    
    if (platform.system() == "Windows"):
-      return subprocess.Popen(os.path.join(binaryPath(), "yadoms.exe"))
+      return subprocess.Popen(os.path.join(binaryPath(), "yadoms.exe --logLevel=none"))
    else:
       return subprocess.Popen(os.path.join(binaryPath(), "yadoms"))
    

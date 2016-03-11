@@ -75,7 +75,7 @@ class CreatePlugin(unittest.TestCase):
       dashboard.plugins.getCreatePluginButton(self.browser).click()
       newPluginModal = dashboard.plugins.waitNewPluginModal(self.browser)
       newPluginModal.selectPlugin(pluginType).click()
-      newPluginModal.getConfirmButton(self.browser).click()
+      newPluginModal.getConfirmButton().click()
 
       # - Plugin configuration
       editPluginModal = dashboard.plugins.waitConfigurePluginModal(self.browser)
@@ -83,7 +83,7 @@ class CreatePlugin(unittest.TestCase):
          
 
       # Click OK
-      editPluginModal.getConfirmButton(self.browser).click()
+      editPluginModal.getConfirmButton().click()
       
       
       # Check created plugin
