@@ -6,6 +6,8 @@
 #include "../../../../sources/server/database/entities/Entities.h"
 #include "../../../../sources/shared/shared/enumeration/IExtendedEnum.h"
 #include "../../../../sources/server/database/common/Query.h"
+#include "../../../../sources/server/database/pgsql/PgsqlQuery.h"
+#include "../../../../sources/server/database/common/DatabaseTables.h"
 
 
 
@@ -17,6 +19,12 @@ BOOST_AUTO_TEST_SUITE(TestQuery)
 
 BOOST_AUTO_TEST_CASE(Simple)
 {
+   database::pgsql::CPgsqlQuery test;
+   test.Select().From(database::common::CPluginTable::getTableName());
+   
+   BOOST_CHECK_EQUAL(test.str(), "SELECT * FROM '" + database::common::CPluginTable::getTableName() + "'");
+                     
+   
 	/*
    database::entities::ESecurityAccess ev;
 	

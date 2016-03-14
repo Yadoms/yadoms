@@ -338,15 +338,33 @@ inline CQuery & CQuery::From(const T1 & table1, const T2 & table2, const T3 & ta
 {
    std::ostringstream ss;
    ss << " FROM " << queryhelper<T1>::format(this, table1);
-   AppendField(ss, queryhelper<T2>::format(this, table2));
-   AppendField(ss, queryhelper<T3>::format(this, table3));
-   AppendField(ss, queryhelper<T4>::format(this, table4));
-   AppendField(ss, queryhelper<T5>::format(this, table5));
-   AppendField(ss, queryhelper<T6>::format(this, table6));
-   AppendField(ss, queryhelper<T7>::format(this, table7));
-   AppendField(ss, queryhelper<T8>::format(this, table8));
-   AppendField(ss, queryhelper<T9>::format(this, table9));
-   AppendField(ss, queryhelper<T10>::format(this, table10));
+   
+   if (typeid(table2) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T2>::format(this, table2));
+   
+   if (typeid(table3) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T3>::format(this, table3));
+
+   if (typeid(table4) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T4>::format(this, table4));
+   
+   if (typeid(table5) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T5>::format(this, table5));
+
+   if (typeid(table6) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T6>::format(this, table6));
+
+   if (typeid(table7) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T7>::format(this, table7));
+   
+   if (typeid(table8) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T8>::format(this, table8));
+
+   if (typeid(table9) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T9>::format(this, table9));
+
+   if (typeid(table10) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T10>::format(this, table10));
    ss << " ";
    return Append(ss);
 }
