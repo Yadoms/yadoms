@@ -206,7 +206,7 @@
             var sizeY = Math.min(maxY, Math.max(defaultY, minY));
 
             //we create a fake widget to display configuration form
-            var newWidget = new Widget(-1, currentPage.id, packageName, "", sizeX, sizeY, 0, 0, "");
+            var newWidget = new Widget(-1, currentPage.id, packageName, "", sizeX * Yadoms.gridWidth, sizeY * Yadoms.gridHeight, 0, 0, "");
 
             newWidget.package = package;
 

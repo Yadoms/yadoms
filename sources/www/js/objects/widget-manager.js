@@ -584,11 +584,16 @@ WidgetManager.createGridWidget = function (widget) {
         }
     }
 
+    minX *= Yadoms.gridWidth;
+    maxX *= Yadoms.gridWidth;
+    minY *= Yadoms.gridHeight;
+    maxY *= Yadoms.gridHeight;
+
     //we save the information that says if we can resize the widget
     widget.resizable = ((minX !== maxX) || (minY !== maxY));
 
     domWidget += ">\n" +
-        "<div class=\"grid-stack-item-content\">\n" +
+        "<div class=\"grid-item-content\">\n" +
           "<div class=\"panel-widget-customization-overlay customization-item hidden\">\n" +
              "<div class=\"customizationToolbar widgetCustomizationToolbar\">";
 
@@ -623,8 +628,9 @@ WidgetManager.createGridWidget = function (widget) {
     widget.$toolbar = widget.$gridWidget.find("div.panel-widget-title-toolbar");
     widget.$content = widget.$gridWidget.find("div.panel-widget-body");
 
-    widget.setHeight(widget.initialValues.sizeY);
-    widget.setWidth(widget.initialValues.sizeX);
+    //we check that the actual size fit allowed size
+    widget.setHeight(Math.min(maxY, Math.max(widget.initialValues.sizeY, minY)));
+    widget.setWidth(Math.min(maxX, Math.max(widget.initialValues.sizeX, minX)));
 
     //we manage draggablility and resizability
 
@@ -644,10 +650,10 @@ WidgetManager.createGridWidget = function (widget) {
     var resizeTimeout;
     widget.$gridWidget.resizable({
         grid: [Yadoms.gridWidth, Yadoms.gridHeight],
-        minHeight: minY * Yadoms.gridHeight,
-        minWidth: minX * Yadoms.gridWidth,
-        maxHeight: maxY * Yadoms.gridHeight,
-        maxWidth: maxX * Yadoms.gridWidth,
+        minHeight: minY,
+        minWidth: minX,
+        maxHeight: maxY,
+        maxWidth: maxX,
         disabled: true,
         resize: function () {
             // debounce

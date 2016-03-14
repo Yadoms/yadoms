@@ -39,7 +39,7 @@
 
 /*Widget container management*/
 
-.grid-stack-item-content {
+.grid-item-content {
     height: 100%;
     width: 100% !important;
     left: 0 !important;

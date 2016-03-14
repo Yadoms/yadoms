@@ -84,19 +84,19 @@ Widget.prototype.getPosition = function () {
 };
 
 Widget.prototype.getHeight = function () {
-    return (this.$gridWidget)?parseInt(this.$gridWidget.css("height").replace('px', '')):null;
+    return (this.$gridWidget) ? this.$gridWidget.height() : null;
 };
 
 Widget.prototype.getWidth = function () {
-    return (this.$gridWidget)?parseInt(this.$gridWidget.css("width").replace('px', '')):null;
+    return (this.$gridWidget) ? this.$gridWidget.width() : null;
 };
 
 Widget.prototype.getInnerHeight = function () {
-    return (this.$gridWidget)?parseInt(this.$content.css("height").replace('px', '')):null;
+    return (this.$gridWidget) ? this.$content.height() : null;
 };
 
 Widget.prototype.getInnerWidth = function () {
-    return (this.$gridWidget) ? parseInt(this.$content.css("width").replace('px', '')) : null;
+    return (this.$gridWidget) ? this.$content.width() : null;
 };
 
 Widget.prototype.setHeight = function (newHeight) {

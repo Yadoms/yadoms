@@ -145,7 +145,7 @@ PageManager.addToDom = function (page) {
     //page creation
     var container = $("div#tabContainer").find(".tab-content").append(
        "<div class=\"widgetPage tab-pane active\" id=\"" + tabIdAsText + "\" page-id=\"" + page.id + "\">" +
-          "<div class=\"grid grid-stack\">" +
+          "<div class=\"grid\">" +
           "</div>" +
           "</div>");
 
