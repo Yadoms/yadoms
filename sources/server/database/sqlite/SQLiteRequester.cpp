@@ -21,7 +21,7 @@ namespace sqlite {
 
 
    CSQLiteRequester::CSQLiteRequester(const std::string &dbFile)
-      :m_dbFile(dbFile), m_pDatabaseHandler(NULL), m_bOneTransactionActive(false)
+      :m_pDatabaseHandler(NULL), m_dbFile(dbFile), m_bOneTransactionActive(false)
    {
    }
 

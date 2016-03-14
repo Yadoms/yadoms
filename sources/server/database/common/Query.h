@@ -65,6 +65,19 @@ namespace database { namespace common {
          kAsc = 0,
          kDesc
       };
+      
+      class CNotUsedTemplateField
+      {
+      public:
+         CNotUsedTemplateField()
+         {
+            
+         }
+         virtual ~CNotUsedTemplateField()
+         {
+            
+         }
+      };
 
    protected:
       //
@@ -574,18 +587,7 @@ namespace database { namespace common {
       static CQuery EmptyQuery;
 
    public:
-      class CNotUsedTemplateField
-      {
-      public:
-         CNotUsedTemplateField()
-         {
 
-         }
-         virtual ~CNotUsedTemplateField()
-         {
-
-         }
-      };
       //================================================================================================
       //====== Formatters
       //================================================================================================

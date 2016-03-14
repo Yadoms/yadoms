@@ -72,12 +72,13 @@ if(CMAKE_COMPILER_IS_GNUCXX)
 	
 endif()
 
-
-if (CMAKE_COMPILER_IS_CLANG)
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+   message("Using CLang")
 	add_definitions("-Wall -Wextra -pedantic")
-	add_definitions("-std=c++0x")
+set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11 -stdlib=libc++")
    add_definitions("-Woverloaded-virtual")
    add_definitions("-Wunused-variable")
+   add_definitions("-Wno-c++11-narrowing")
 endif()
 
 #Cross compiling for Raspberry

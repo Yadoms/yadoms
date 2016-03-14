@@ -85,6 +85,9 @@ namespace pgsql {
          throw CDatabaseException("Fail to connect database : NO_RESPONSE : The server could not be contacted. This might indicate that the server is not running, or that there is something wrong with the given connection parameters (for example, wrong port number), or that there is a network connectivity problem (for example, a firewall blocking the connection request) ");
       case PQPING_NO_ATTEMPT:
          throw CDatabaseException("Fail to connect database : PQPING_NO_ATTEMPT : No attempt was made to contact the server, because the supplied parameters were obviously incorrect or there was some client-side problem (for example, out of memory) ");
+         default:
+            //ping success
+            break;
       }
    }
 
