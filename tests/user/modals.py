@@ -2,7 +2,7 @@
 
 
 class RemoveObjectConfirmationModal():
-   """ Operations on delete object (plugind, rule...) confirmation modal """
+   """ Operations on delete object (plugins, rule...) confirmation modal """
    
    def __init__(self, removeObjectConfirmationModalWebElement):
        self.__removeObjectConfirmationModalWebElement = removeObjectConfirmationModalWebElement
