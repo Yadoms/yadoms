@@ -29,45 +29,40 @@ std::string beautifyQuery(database::common::CQuery & q)
 }
 
 
-BOOST_AUTO_TEST_CASE(Simple)
+BOOST_AUTO_TEST_CASE(Select)
 {
-   database::pgsql::CPgsqlQuery test;
-   test.Select().From(database::common::CPluginTable::getTableName());
-   BOOST_CHECK_EQUAL(beautifyQuery(test), "SELECT * FROM " + database::common::CPluginTable::getTableName().GetName());
+   database::pgsql::CPgsqlQuery test1;
+   test1.Select().From(database::common::CPluginTable::getTableName());
+   BOOST_CHECK_EQUAL(beautifyQuery(test1), (boost::format("SELECT * FROM %1%") % database::common::CPluginTable::getTableName().GetName()).str());
+      
+   database::pgsql::CPgsqlQuery test2;
+   test2.Select(database::common::CPluginTable::getIdColumnName()).From(database::common::CPluginTable::getTableName());
+   BOOST_CHECK_EQUAL(beautifyQuery(test2), (boost::format("SELECT %1% FROM %2%") % database::common::CPluginTable::getIdColumnName().GetName() % database::common::CPluginTable::getTableName().GetName()).str());
 
+   database::pgsql::CPgsqlQuery test3;
+   test3.Select(database::common::CPluginTable::getIdColumnName(), database::common::CPluginTable::getDisplayNameColumnName()).From(database::common::CPluginTable::getTableName());
+   BOOST_CHECK_EQUAL(beautifyQuery(test3), (boost::format("SELECT %1%,%2% FROM %3%") % database::common::CPluginTable::getIdColumnName().GetName() % database::common::CPluginTable::getDisplayNameColumnName().GetName() % database::common::CPluginTable::getTableName().GetName()).str());
 
+   database::pgsql::CPgsqlQuery test4;
+   test4.SelectCount().From(database::common::CPluginTable::getTableName());
+   BOOST_CHECK_EQUAL(beautifyQuery(test4), (boost::format("SELECT COUNT(*) FROM %1%") % database::common::CPluginTable::getTableName().GetName()).str());
 
+   database::pgsql::CPgsqlQuery test5;
+   test5.SelectCount(database::common::CPluginTable::getIdColumnName()).From(database::common::CPluginTable::getTableName());
+   BOOST_CHECK_EQUAL(beautifyQuery(test5), (boost::format("SELECT COUNT(%1%) FROM %2%") % database::common::CPluginTable::getIdColumnName().GetName() % database::common::CPluginTable::getTableName().GetName()).str());
 
-   
-	/*
-   database::entities::ESecurityAccess ev;
-	
-   //check data are correctly retreived
-   ev = database::entities::ESecurityAccess::kNone;
-   BOOST_CHECK_EQUAL(ev, database::entities::ESecurityAccess::kNone);
-   BOOST_CHECK_EQUAL(ev, (int)database::entities::ESecurityAccess::kNone);
-   BOOST_CHECK(boost::iequals((std::string)ev, "None"));
-	BOOST_CHECK(boost::iequals(ev.toString(), "None"));   
-   
-   ev = 2;
-   BOOST_CHECK_EQUAL(ev, 2);
-   BOOST_CHECK_EQUAL(ev, database::entities::ESecurityAccess::kUser);
-   BOOST_CHECK(boost::iequals((std::string)ev, "User"));
-	BOOST_CHECK(boost::iequals(ev.toString(), "User"));
-   
-	BOOST_CHECK_NO_THROW(ev = "Admin");
-	BOOST_CHECK_NO_THROW(ev = "None");
-	BOOST_CHECK_NO_THROW(ev = "User");
-	BOOST_CHECK_NO_THROW(ev = "admin");
-	BOOST_CHECK_NO_THROW(ev = "none");
-	BOOST_CHECK_NO_THROW(ev = "user");
-	BOOST_CHECK_THROW(ev = "unknownvalue", std::exception);
-	BOOST_CHECK_THROW(ev = "Admin ", std::exception);
+   database::pgsql::CPgsqlQuery test6;
+   test6.Select(test6.math(database::common::CPluginTable::getIdColumnName(), "+", 5)).From(database::common::CPluginTable::getTableName());
+   BOOST_CHECK_EQUAL(beautifyQuery(test6), (boost::format("SELECT %1% + 5 FROM %2%") % database::common::CPluginTable::getIdColumnName().GetName() % database::common::CPluginTable::getTableName().GetName()).str());
 
-   BOOST_CHECK_EQUAL(testhelper<database::entities::ESecurityAccess>::checkGoodType(), true);
-   BOOST_CHECK_EQUAL(testhelper<EClassicEnum>::checkGoodType(), false);
+   database::pgsql::CPgsqlQuery test7;
+   test7.Select(test7.math(database::common::CPluginTable::getIdColumnName(), "||", ",")).From(database::common::CPluginTable::getTableName());
+   BOOST_CHECK_EQUAL(beautifyQuery(test7), (boost::format("SELECT %1% || ',' FROM %2%") % database::common::CPluginTable::getIdColumnName().GetName() % database::common::CPluginTable::getTableName().GetName()).str());
 
- */
+   database::pgsql::CPgsqlQuery test8;
+   test8.Select(test8.math(database::common::CPluginTable::getIdColumnName(), "-", database::common::CPluginTable::getDisplayNameColumnName())).From(database::common::CPluginTable::getTableName());
+   BOOST_CHECK_EQUAL(beautifyQuery(test8), (boost::format("SELECT %1% - %2% FROM %3%") % database::common::CPluginTable::getIdColumnName().GetName() % database::common::CPluginTable::getDisplayNameColumnName().GetName() % database::common::CPluginTable::getTableName().GetName()).str());
+
 }
 
 
