@@ -108,7 +108,7 @@
 /// \brief  Declare table name static value
 //
 #define DECLARE_STATIC_TABLENAME_VALUE(_classname, _tablename) \
-   const std::string C##_classname##Table::m_tableName = _tablename;
+   const database::common::CDatabaseTable C##_classname##Table::m_tableName(_tablename);
 
 //
 /// \brief  Declare a table
@@ -120,11 +120,11 @@ class BOOST_PP_CAT(C, BOOST_PP_CAT(name, Table)) \
 { \
 public:\
    virtual BOOST_PP_CAT(~C, BOOST_PP_CAT(name, Table))() {} \
-   static const std::string & getTableName() { return m_tableName; } \
+   static const database::common::CDatabaseTable & getTableName() { return m_tableName; } \
    DECLARE_GETTERS(_seq) \
    \
 private:\
-   static const std::string m_tableName; \
+   static const database::common::CDatabaseTable m_tableName; \
    DECLARE_MEMBERS(_seq) \
 };
 

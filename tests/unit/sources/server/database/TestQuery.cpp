@@ -13,17 +13,31 @@
 
 BOOST_AUTO_TEST_SUITE(TestQuery)
 
+bool BothAreSpaces(char lhs, char rhs) { return (lhs == rhs) && (lhs == ' '); }
 
 
+std::string beautifyQuery(database::common::CQuery & q)
+{
+   //trim spaces
+   std::string trimm = boost::trim_copy(q.str());
+   
+   //replace any double space by only one
+   std::string::iterator new_end = std::unique(trimm.begin(), trimm.end(), BothAreSpaces);
+   trimm.erase(new_end, trimm.end());
+
+   return trimm;
+}
 
 
 BOOST_AUTO_TEST_CASE(Simple)
 {
    database::pgsql::CPgsqlQuery test;
    test.Select().From(database::common::CPluginTable::getTableName());
-   
-   BOOST_CHECK_EQUAL(test.str(), "SELECT * FROM '" + database::common::CPluginTable::getTableName() + "'");
-                     
+   BOOST_CHECK_EQUAL(beautifyQuery(test), "SELECT * FROM " + database::common::CPluginTable::getTableName().GetName());
+
+
+
+
    
 	/*
    database::entities::ESecurityAccess ev;

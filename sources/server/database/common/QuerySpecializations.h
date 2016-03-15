@@ -260,6 +260,20 @@ struct queryhelper < CDatabaseColumn >
 
 
 
+//--------------------------------------------------------------
+/// \brief	    Helper structure for converting column to its name in queries
+//--------------------------------------------------------------
+template <>
+struct queryhelper < CDatabaseTable >
+{
+   static const std::string format(CQuery * obj, const CDatabaseTable & tableInfo)
+   {
+      return tableInfo.GetName();
+   }
+};
+
+
+
 
 //--------------------------------------------------------------
 /// \brief	    Helper structure for get/set with an IExtendedEnum object

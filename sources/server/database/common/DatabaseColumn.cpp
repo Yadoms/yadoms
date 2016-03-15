@@ -18,6 +18,21 @@ namespace common {
    {
       return m_name;
    }
+      
+   
+   CDatabaseTable::CDatabaseTable(const std::string & name)
+      :m_name(name)
+   {
+   }
+   
+   CDatabaseTable::~CDatabaseTable()
+   {
+   }
+   
+   const std::string & CDatabaseTable::GetName() const
+   {
+      return m_name;
+   }
    
 } //namespace common
 } //namespace database 

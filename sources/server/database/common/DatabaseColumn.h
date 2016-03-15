@@ -32,6 +32,37 @@ namespace common {
       //--------------------------------------------------------------   
       std::string m_name;
    };
+
+
+   //--------------------------------------------------------------
+   /// \Brief		   Handle a database table
+   //--------------------------------------------------------------
+   class CDatabaseTable
+   {
+   public:
+      //--------------------------------------------------------------
+      /// \Brief		   Constructor
+      /// \param [in]	name: The database table name
+      //--------------------------------------------------------------   
+      CDatabaseTable(const std::string & name);
+      
+      //--------------------------------------------------------------
+      /// \Brief		   Destructor
+      //--------------------------------------------------------------      
+      virtual ~CDatabaseTable();
+      
+      //--------------------------------------------------------------
+      /// \Brief		   Obtain the table name in database
+      /// \return	      The database table name
+      //--------------------------------------------------------------   
+      const std::string & GetName() const;
+      
+   private:
+      //--------------------------------------------------------------
+      /// \Brief		   The table name in database
+      //--------------------------------------------------------------   
+      std::string m_name;
+   };
 } //namespace common
 } //namespace database 
 

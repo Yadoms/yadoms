@@ -57,8 +57,7 @@ namespace database { namespace common {
 		CQuery & CQuery::From(const CQuery & subquery)
 		{
 			std::ostringstream ss;
-			ss << " FROM " << subquery.str();
-			ss << " ";
+			ss << " FROM " << subquery.str() << " ";
 			return Append(ss);
 		}
 
