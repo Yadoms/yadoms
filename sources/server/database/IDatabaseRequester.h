@@ -75,14 +75,14 @@ namespace database {
       /// \param [in]	 tableName:  the table name to check
       /// \return	       true if table exists
       //--------------------------------------------------------------
-      virtual bool checkTableExists(const std::string & tableName) = 0;
+      virtual bool checkTableExists(const database::common::CDatabaseTable & tableName) = 0;
 
       //--------------------------------------------------------------
       /// \Brief	      Drop a table if exists
       /// \param [in]   tableName:  the table name to delete
       /// \return	      true if table no more exists
       //--------------------------------------------------------------
-      virtual bool dropTableIfExists(const std::string & tableName) = 0;
+      virtual bool dropTableIfExists(const database::common::CDatabaseTable & tableName) = 0;
 
       //--------------------------------------------------------------
       /// \Brief	      Create a table if not exists
@@ -90,14 +90,14 @@ namespace database {
       /// \param [in]   tableScript:  the sql script to create the table
       /// \return	      true if table exists
       //--------------------------------------------------------------
-      virtual bool createTableIfNotExists(const std::string & tableName, const std::string & tableScript) = 0;
+      virtual bool createTableIfNotExists(const database::common::CDatabaseTable & tableName, const std::string & tableScript) = 0;
 
       //--------------------------------------------------------------
       /// \Brief	      Create an index if not exists
       /// \param [in]   tableName:  the table name to create
       /// \param [in]   indexScript:  the sql script to create the index
       //--------------------------------------------------------------
-      virtual void createIndex(const std::string & tableName, const std::string & indexScript) = 0;
+      virtual void createIndex(const database::common::CDatabaseTable & tableName, const std::string & indexScript) = 0;
 
       //--------------------------------------------------------------
       /// \Brief	      Vacuum the database (compact it)

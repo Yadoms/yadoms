@@ -576,6 +576,7 @@ inline CQuery & CQuery::InsertInto(const database::common::CDatabaseTable & tabl
    const T9 & field9,
    const T10 & field10)
 {
+   ChangeQueryType(kInsert);
    std::ostringstream ss;
    ss << " INSERT INTO " << table.GetName() << " (" << queryhelper<T1>::format(this, field1);
    if (typeid(field2) != typeid(CNotUsedTemplateField))

@@ -16,7 +16,7 @@ namespace pgsql {
 
 
    CPgsqlRequester::CPgsqlRequester(const std::string &host, const unsigned int port, const std::string &dbName, const std::string &login, const std::string &password)
-      :m_host(host), m_port(port), m_dbName(dbName), m_login(login), m_password(password), m_bOneTransactionActive(false)
+      :m_host(host), m_port(port), m_dbName(dbName), m_login(login), m_password(password)
    {
    }
 
@@ -44,6 +44,34 @@ namespace pgsql {
       return result;
    }
    
+   PGconn * CPgsqlRequester::getConnection()
+   {
+      try
+      {
+         //obtain thread id
+         std::string threadId = boost::lexical_cast<std::string>(boost::this_thread::get_id());
+         unsigned long threadNumber = 0;
+         sscanf(threadId.c_str(), "%lx", &threadNumber);
+
+         //if connection do not exists for this thread, then create a new one
+         if (m_connectionList.find(threadNumber) == m_connectionList.end())
+            m_connectionList[threadNumber] = createNewConnection();
+
+         //return it
+         return m_connectionList[threadNumber];
+      }
+      catch (std::exception & ex)
+      {
+         YADOMS_LOG(error) << "Fail to get connection :" << ex.what();
+         throw;
+      }
+      catch (...)
+      {
+         YADOMS_LOG(error) << "Fail to get connection : unknown exception";
+         throw;
+      }
+   }
+
    void CPgsqlRequester::terminateConnection(PGconn * pConnection)
    {
       if(pConnection != NULL)
@@ -176,23 +204,19 @@ namespace pgsql {
 
    void CPgsqlRequester::finalize()
    {
+      //clear transactions
+      //do not do anything, let pgsql engine manage it
+      m_activeTransactionsList.clear();
+
+      //close all connection
+      for (std::map<unsigned long, PGconn*>::iterator i = m_connectionList.begin(); i != m_connectionList.end(); i++)
+         PQfinish(i->second);
+      m_connectionList.clear();
    }
 
    void CPgsqlRequester::queryEntities(database::common::adapters::IResultAdapter * pAdapter, const database::common::CQuery & querytoExecute)
    {
-      PGconn * pConnection = NULL;
-      
-      try
-      {
-         pConnection = createNewConnection();
-         queryEntities(pAdapter, querytoExecute, pConnection);
-         PQfinish(pConnection);
-
-      } catch (database::CDatabaseException & )
-      {
-         PQfinish(pConnection);
-         throw;
-      }
+      queryEntities(pAdapter, querytoExecute, getConnection());
    }
    
    void CPgsqlRequester::queryEntities(database::common::adapters::IResultAdapter * pAdapter, const database::common::CQuery & querytoExecute, PGconn * pConnection)
@@ -258,22 +282,7 @@ namespace pgsql {
    
    int CPgsqlRequester::queryStatement(const database::common::CQuery & querytoExecute, bool throwIfFails)
    {
-      PGconn * pConnection = NULL;
-      
-      try
-      {
-         pConnection = createNewConnection();
-         int result = queryStatement(querytoExecute, throwIfFails, pConnection);
-         PQfinish(pConnection);
-         return result;
-         
-      } catch (database::CDatabaseException &)
-      {
-         PQfinish(pConnection);
-         if(throwIfFails)
-            throw;
-         return -1;
-      }
+      return queryStatement(querytoExecute, throwIfFails, getConnection());
    }
 
    int CPgsqlRequester::queryStatement(const database::common::CQuery & querytoExecute, bool throwIfFails, PGconn * pConnection)
@@ -312,20 +321,7 @@ namespace pgsql {
 
    int CPgsqlRequester::queryCount(const database::common::CQuery & querytoExecute)
    {
-      PGconn * pConnection = NULL;
-      
-      try
-      {
-         pConnection = createNewConnection();
-         int result = queryCount(querytoExecute, pConnection);
-         PQfinish(pConnection);
-         return result;
-         
-      } catch (database::CDatabaseException &)
-      {
-         PQfinish(pConnection);
-         throw;
-      }
+      return queryCount(querytoExecute, getConnection());
    }
    
    int CPgsqlRequester::queryCount(const database::common::CQuery & querytoExecute, PGconn * pConnection)
@@ -385,34 +381,22 @@ namespace pgsql {
    
    bool CPgsqlRequester::transactionSupport()
    {
-      return false;
+      return true;
    }
 
    void CPgsqlRequester::transactionBegin()
    {
-      PGconn * pConnection = NULL;
-      
-      try
-      {
-         pConnection = createNewConnection();
-         transactionBegin(pConnection);
-         PQfinish(pConnection);
-      }
-      catch (database::CDatabaseException &)
-      {
-         PQfinish(pConnection);
-         throw;
-      }
+      transactionBegin(getConnection());
    }
    
    void CPgsqlRequester::transactionBegin(PGconn * pConnection)
    {
-      if(!m_bOneTransactionActive)
+      if(!transactionIsAlreadyCreated(pConnection))
       {
          PGresult   * res = PQexec(pConnection, "BEGIN");
          if (PQresultStatus(res) == PGRES_COMMAND_OK)
          {
-            m_bOneTransactionActive = true;
+            m_activeTransactionsList[pConnection] = true;
          }
          else 
          {
@@ -429,29 +413,17 @@ namespace pgsql {
 
    void CPgsqlRequester::transactionCommit()
    {
-      PGconn * pConnection = NULL;
-      
-      try
-      {
-         pConnection = createNewConnection();
-         transactionCommit(pConnection);
-         PQfinish(pConnection);
-      }
-      catch (database::CDatabaseException &)
-      {
-         PQfinish(pConnection);
-         throw;
-      }
+      transactionCommit(getConnection());
    }
    
    void CPgsqlRequester::transactionCommit(PGconn * pConnection)
    {
-      if (m_bOneTransactionActive)
+      if (transactionIsAlreadyCreated(pConnection))
       {
          PGresult   * res = PQexec(pConnection, "COMMIT");
          if (PQresultStatus(res) == PGRES_COMMAND_OK)
          {
-            m_bOneTransactionActive = false;
+            m_activeTransactionsList[pConnection] = false;
          }
          else
          {
@@ -468,30 +440,17 @@ namespace pgsql {
 
    void CPgsqlRequester::transactionRollback()
    {
-        PGconn * pConnection = NULL;
-         
-         try
-         {
-            pConnection = createNewConnection();
-            transactionRollback(pConnection);
-            PQfinish(pConnection);
-         }
-         catch (database::CDatabaseException &)
-         {
-            PQfinish(pConnection);
-            throw;
-         }
-   
+      transactionRollback(getConnection());
    }
    
    void CPgsqlRequester::transactionRollback(PGconn * pConnection)
    {
-      if (m_bOneTransactionActive)
+      if (transactionIsAlreadyCreated(pConnection))
       {
          PGresult   * res = PQexec(pConnection, "ROLLBACK");
          if (PQresultStatus(res) == PGRES_COMMAND_OK)
          {
-            m_bOneTransactionActive = false;
+            m_activeTransactionsList[pConnection] = false;
          }
          else
          {
@@ -506,19 +465,27 @@ namespace pgsql {
       }
    }
 
-   bool CPgsqlRequester::transactionIsAlreadyCreated()
+   bool CPgsqlRequester::transactionIsAlreadyCreated(PGconn * pConnection)
    {
-      return m_bOneTransactionActive;
+      std::map<PGconn*, bool>::iterator findIter = m_activeTransactionsList.find(pConnection);
+      if (findIter != m_activeTransactionsList.end())
+         return findIter->second;
+      return false;
    }
 
-   bool CPgsqlRequester::checkTableExists(const std::string & tableName)
+   bool CPgsqlRequester::transactionIsAlreadyCreated()
+   {
+      return transactionIsAlreadyCreated(getConnection());
+   }
+
+   bool CPgsqlRequester::checkTableExists(const database::common::CDatabaseTable & tableName)
    {
       //check that table Configuration exists
       CPgsqlQuery sCheckForTableExists;
       sCheckForTableExists.SelectExists(CPgsqlQuery().
          Select().
          From(CPgsqlTablesTable::getTableName()).
-         Where(CPgsqlTablesTable::getTableColumnName(), CQUERY_OP_ILIKE, tableName));
+         Where(CPgsqlTablesTable::getTableColumnName(), CQUERY_OP_ILIKE, tableName.GetName()));
 
 
       database::common::adapters::CSingleValueAdapter<bool> existsAdapter;
@@ -529,7 +496,7 @@ namespace pgsql {
    }
 
 
-   bool CPgsqlRequester::dropTableIfExists(const std::string & tableName)
+   bool CPgsqlRequester::dropTableIfExists(const database::common::CDatabaseTable & tableName)
    {
       if(checkTableExists(tableName))
       {
@@ -541,7 +508,7 @@ namespace pgsql {
    }
 
 
-   bool CPgsqlRequester::createTableIfNotExists(const std::string & tableName, const std::string & tableScript)
+   bool CPgsqlRequester::createTableIfNotExists(const database::common::CDatabaseTable & tableName, const std::string & tableScript)
    {
       if (!checkTableExists(tableName))
       {
@@ -551,29 +518,14 @@ namespace pgsql {
       return true;
    }
 
-   void CPgsqlRequester::createIndex(const std::string & tableName, const std::string & indexScript)
+   void CPgsqlRequester::createIndex(const database::common::CDatabaseTable & tableName, const std::string & indexScript)
    {
       queryStatement(CPgsqlQuery::CustomQuery(indexScript, CPgsqlQuery::kCreate));
    }
 
    void CPgsqlRequester::vacuum()
    {
-      //we ensure that no transaction is active
-      //is a transaction is active, hust wait for the transaction to end (timetout 20sec)
-      int waitLoopCount = 0;
-      int maxLoopWait = 600; //2 min
-
-      while(m_bOneTransactionActive && waitLoopCount < maxLoopWait)
-      {
-         boost::this_thread::sleep(boost::posix_time::milliseconds(200));
-         waitLoopCount++;
-      }
-
-      //if no timeout, execute vacuum
-      if (waitLoopCount >= maxLoopWait || m_bOneTransactionActive)
-         YADOMS_LOG(warning) << "Fail to execute vacuum, one transaction is still active";
-      else
-         queryStatement(CPgsqlQuery().Vacuum());
+      queryStatement(CPgsqlQuery().Vacuum());
    }
 
    boost::shared_ptr<ITableCreationScriptProvider> CPgsqlRequester::getTableCreationScriptProvider()

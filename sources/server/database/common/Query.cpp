@@ -320,17 +320,17 @@ namespace database { namespace common {
 
       const std::string CQuery::formatDateToSql(const boost::posix_time::ptime & ptime)
       {
-         return boost::posix_time::to_iso_string(ptime);
+         return formatStringToSql(boost::posix_time::to_iso_string(ptime));
       }
 
       const std::string CQuery::formatDateToSql(const Poco::DateTime & datetime)
       {
-         return Poco::DateTimeFormatter::format(datetime, "%Y%m%dT%H%M%S");
+         return formatStringToSql(Poco::DateTimeFormatter::format(datetime, "%Y%m%dT%H%M%S"));
       }
 
       const std::string CQuery::formatDateToSql(const Poco::Timestamp & timestamp)
       {
-         return Poco::DateTimeFormatter::format(timestamp, "%Y%m%dT%H%M%S");
+         return formatStringToSql(Poco::DateTimeFormatter::format(timestamp, "%Y%m%dT%H%M%S"));
       }
 
       const std::string CQuery::formatEnumToSql(const shared::enumeration::IExtendedEnum & enumValue)

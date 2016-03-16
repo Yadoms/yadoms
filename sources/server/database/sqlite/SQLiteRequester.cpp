@@ -325,7 +325,7 @@ namespace sqlite {
       return m_bOneTransactionActive;
    }
 
-   bool CSQLiteRequester::checkTableExists(const std::string & tableName)
+   bool CSQLiteRequester::checkTableExists(const database::common::CDatabaseTable & tableName)
    {
       //check that table Configuration exists
       CSQLiteQuery sCheckForTableExists;
@@ -338,7 +338,7 @@ namespace sqlite {
    }
 
 
-   bool CSQLiteRequester::dropTableIfExists(const std::string & tableName)
+   bool CSQLiteRequester::dropTableIfExists(const database::common::CDatabaseTable & tableName)
    {
       if(checkTableExists(tableName))
       {
@@ -350,7 +350,7 @@ namespace sqlite {
    }
 
 
-   bool CSQLiteRequester::createTableIfNotExists(const std::string & tableName, const std::string & tableScript)
+   bool CSQLiteRequester::createTableIfNotExists(const database::common::CDatabaseTable & tableName, const std::string & tableScript)
    {
       if (!checkTableExists(tableName))
       {
@@ -360,7 +360,7 @@ namespace sqlite {
       return true;
    }
 
-   void CSQLiteRequester::createIndex(const std::string & tableName, const std::string & indexScript)
+   void CSQLiteRequester::createIndex(const database::common::CDatabaseTable & tableName, const std::string & indexScript)
    {
       queryStatement(database::common::CQuery::CustomQuery(indexScript, database::common::CQuery::kCreate));
    }

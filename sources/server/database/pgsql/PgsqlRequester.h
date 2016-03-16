@@ -26,10 +26,10 @@ namespace pgsql {
       virtual int queryCount(const database::common::CQuery & querytoExecute);
       virtual QueryRow querySingleLine(const database::common::CQuery & querytoExecute);
       virtual QueryResults query(const database::common::CQuery & querytoExecute);
-      virtual bool checkTableExists(const std::string & tableName);
-      virtual bool dropTableIfExists(const std::string & tableName);
-      virtual bool createTableIfNotExists(const std::string & tableName, const std::string & tableScript);
-      virtual void createIndex(const std::string & tableName, const std::string & indexScript);
+      virtual bool checkTableExists(const database::common::CDatabaseTable & tableName);
+      virtual bool dropTableIfExists(const database::common::CDatabaseTable & tableName);
+      virtual bool createTableIfNotExists(const database::common::CDatabaseTable & tableName, const std::string & tableScript);
+      virtual void createIndex(const database::common::CDatabaseTable & tableName, const std::string & indexScript);
       virtual void vacuum();
       virtual boost::shared_ptr<ITableCreationScriptProvider> getTableCreationScriptProvider();
       // [END] IDatabaseRequester implementation
@@ -54,7 +54,7 @@ namespace pgsql {
       virtual void transactionBegin(PGconn * pConnection);
       virtual void transactionCommit(PGconn * pConnection);
       virtual void transactionRollback(PGconn * pConnection);
-      
+      virtual bool transactionIsAlreadyCreated(PGconn * pConnection);
 
       
       //--------------------------------------------------------------
@@ -81,7 +81,13 @@ namespace pgsql {
       /// \Brief		         Create a new connection (one for each thread; testing one for each request)
       /// \return             A connection pointer
       //--------------------------------------------------------------
-      PGconn * createNewConnection();
+      PGconn * createNewConnection();  
+      
+      //--------------------------------------------------------------
+      /// \Brief		         Get the current thread connection (create it if necessary)
+      /// \return             A connection pointer
+      //--------------------------------------------------------------
+      PGconn * getConnection();
        
       //--------------------------------------------------------------
       /// \Brief		         Terminate a connection (one for each thread; testing one for each request)
@@ -104,9 +110,15 @@ namespace pgsql {
       const std::string m_password;
 
       //--------------------------------------------------------------
-      /// \Brief		true if a transaction is already begin
+      /// \Brief		List all connections (one per thread)
       //--------------------------------------------------------------
-      bool m_bOneTransactionActive;
+      std::map<unsigned long, PGconn*> m_connectionList;
+
+      //--------------------------------------------------------------
+      /// \Brief		List all transactions (one per connection)
+      //--------------------------------------------------------------
+      std::map<PGconn*, bool> m_activeTransactionsList;
+
    };
 
 } //namespace pgsql

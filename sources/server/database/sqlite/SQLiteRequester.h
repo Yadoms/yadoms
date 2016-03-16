@@ -27,10 +27,10 @@ namespace sqlite {
       virtual int queryCount(const database::common::CQuery & querytoExecute);
       virtual QueryRow querySingleLine(const database::common::CQuery & querytoExecute);
       virtual QueryResults query(const database::common::CQuery & querytoExecute);
-      virtual bool checkTableExists(const std::string & tableName);
-      virtual bool dropTableIfExists(const std::string & tableName);
-      virtual bool createTableIfNotExists(const std::string & tableName, const std::string & tableScript);
-      virtual void createIndex(const std::string & tableName, const std::string & indexScript);
+      virtual bool checkTableExists(const database::common::CDatabaseTable & tableName);
+      virtual bool dropTableIfExists(const database::common::CDatabaseTable & tableName);
+      virtual bool createTableIfNotExists(const database::common::CDatabaseTable & tableName, const std::string & tableScript);
+      virtual void createIndex(const database::common::CDatabaseTable & tableName, const std::string & indexScript);
       virtual void vacuum();
       virtual boost::shared_ptr<ITableCreationScriptProvider> getTableCreationScriptProvider();
       // [END] IDatabaseRequester implementation
