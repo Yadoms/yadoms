@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import unittest
-import HTMLTestRunner
 import StringIO
+import xmlrunner
 from pyvirtualdisplay import Display 
  
 class Test_Suite(unittest.TestCase):
@@ -11,15 +11,10 @@ class Test_Suite(unittest.TestCase):
       display.start()
 
       loader = unittest.TestLoader()
-         
       suite = loader.discover('.')
 
-      with open("report/index.html", 'w') as outFile:
-         runner = HTMLTestRunner.HTMLTestRunner(
-            stream=outFile,
-            title='Yadoms user tests report',
-            description='Tests covering Yadoms usage from the web client'
-         )
+      with open('report/output.xml', 'wb') as outFile:
+         runner = xmlrunner.XMLTestRunner(output=outFile)
          runner.run(suite)
          
       display.stop()
