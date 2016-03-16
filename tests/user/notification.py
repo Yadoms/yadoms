@@ -3,6 +3,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import NoSuchElementException
 import tools
+import time
 
    
 class Type:
@@ -30,14 +31,14 @@ class Notification:
       
       
 def readType(notificationElement):
-   divElement = notificationElement.find_element_by_tag_name("div")
-   if "noty_type_success" in divElement.get_attribute("class"):
+   notificationElementClasses = notificationElement.find_element_by_tag_name("div").get_attribute("class")
+   if "noty_type_success" in notificationElementClasses:
       return Type.Success
-   elif "noty_type_information" in divElement.get_attribute("class"):
+   elif "noty_type_information" in notificationElementClasses:
       return Type.Information
-   elif "noty_type_warning" in divElement.get_attribute("class"):
+   elif "noty_type_warning" in notificationElementClasses:
       return Type.Warning
-   elif "noty_type_error" in divElement.get_attribute("class"):
+   elif "noty_type_error" in notificationElementClasses:
       return Type.Error
    else:
       assert False
@@ -50,16 +51,16 @@ def readText(notificationElement):
    
 def getCurrentNotifications(browser):
    """Return a list containing currently displayed notifications"""
-   notifications = []
    
    try:
       notificationContainer = browser.find_element_by_id("noty_bottomRight_layout_container")
    except NoSuchElementException:
-      return notifications
+      return []
       
    if not notificationContainer.is_displayed():
-      return notifications
+      return []
       
+   notifications = []
    for notificationElement in notificationContainer.find_elements_by_tag_name("li"):
       notifications.append(Notification(readType(notificationElement), readText(notificationElement)))
    return notifications
@@ -104,6 +105,6 @@ def waitSubText(browser, expectedType, expectedSubText):
    WebDriverWait(browser, 10).until(lambda driver: isNotificationContainingText(browser, expectedType, expectedSubText))
    
    
-def noNotification(browser, timeout = 5):
-   """ Check that no notification is pushed for the timeout"""
-   return tools.waitUntil(lambda: len(getCurrentNotifications(browser)) != 0, timeout) == False
+def noNotification(browser):
+   """ Check that no notification is pushed for the timeout (set by implicitly_wait) """
+   return len(getCurrentNotifications(browser)) == 0
