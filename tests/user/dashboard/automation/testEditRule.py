@@ -31,21 +31,23 @@ class EditRule(unittest.TestCase):
          
       
    def test_editStoppedRule(self):
+      print '=== Edit of a stopped rule test ==='
       ruleNumber = 0
      
       # Edit the first rule
+      print 'Open the rule edit modal'
       rulesTable = dashboard.automation.waitRulesTableHasNRules(self.browser, 1)
       tools.waitUntil(lambda: dashboard.automation.getRuleEditButton(rulesTable, ruleNumber).is_enabled())
       dashboard.automation.getRuleEditButton(rulesTable, ruleNumber).click()
       
-      # Modify rule description
+      print 'Change rule description'
       ruleNewDescription = "This is the new rule description"
       editRuleModal = dashboard.automation.waitEditRuleModal(self.browser)
       editRuleModal.getRuleDescription(self.browser).clear()
       editRuleModal.getRuleDescription(self.browser).send_keys(ruleNewDescription)
       editRuleModal.getConfirmConfigureRuleButton(self.browser).click()
       
-      # Check modified rule
+      print 'Check modified rule'
       notification.waitText(self.browser, notification.Type.Success, i18n.get()["modals"]["dashboard"]["sub-windows"]["automation-center"]["ruleSuccessfullyUpdated"])
       
       rulesTable = dashboard.automation.waitRulesTableHasNRules(self.browser, 1)
@@ -56,18 +58,21 @@ class EditRule(unittest.TestCase):
          
       
    def test_editRunningRule(self):
+      print '=== Edit of a running rule test ==='
       ruleNumber = 0
 
-      # Start the rule
+      print 'Start the rule'
       rulesTable = dashboard.automation.waitRulesTableHasNRules(self.browser, 1)
       tools.waitUntil(lambda: dashboard.automation.getRuleStartStopButton(rulesTable, ruleNumber).is_enabled())
       dashboard.automation.getRuleStartStopButton(rulesTable, ruleNumber).click()
       WebDriverWait(self.browser, 10).until(lambda driver: dashboard.automation.getRuleState(rulesTable, ruleNumber) is dashboard.automation.RuleState.Running)
       
       # Edit the first rule
+      print 'Open the rule edit modal'
       dashboard.automation.getRuleEditButton(rulesTable, ruleNumber).click()
       
       # Modify rule description
+      print 'Change rule description'
       ruleNewDescription = "This is the new rule description"
       editRuleModal = dashboard.automation.waitEditRuleModal(self.browser)
       editRuleModal.getRuleDescription(self.browser).clear()
@@ -75,6 +80,7 @@ class EditRule(unittest.TestCase):
       editRuleModal.getConfirmConfigureRuleButton(self.browser).click()
       
       # Check modified rule
+      print 'Check modified rule'
       notification.waitText(self.browser, notification.Type.Success, i18n.get()["modals"]["dashboard"]["sub-windows"]["automation-center"]["ruleSuccessfullyUpdated"])
       
       rulesTable = dashboard.automation.waitRulesTableHasNRules(self.browser, 1)
