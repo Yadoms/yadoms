@@ -11,12 +11,10 @@ def getCreateRuleButton(browser):
    return browser.find_element_by_id("btn-add-new-automation-rule")
    
 def waitNewRuleModal(browser):
-   editorButtonsContainer = WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "automation-rule-new-modal")))
    return NewRuleModal(browser.find_element_by_id("automation-rule-new-modal"))
    
       
 def waitRulesTable(browser):
-   WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "automation-rule-list")))
    return browser.find_element_by_id("automation-rule-list")
 
 def waitRulesTableHasNRules(browser, rulesNumberExpected):
@@ -75,12 +73,10 @@ def getRuleRemoveButton(rulesTable, ruleNumber):
    
 
 def waitEditRuleModal(browser):
-   editorButtonsContainer = WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "edit-automation-rule-modal")))
-   return EditRuleModal(browser.find_element_by_id("edit-automation-rule-modal"))
+   return EditRuleModal(browser.find_element_by_id('edit-automation-rule-modal'))
 
 def waitRemoveRuleConfirmationModal(browser):
-   editorButtonsContainer = WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "confirmation-modal")))
-   return RemoveRuleConfirmationModal(browser.find_element_by_id("confirmation-modal"))
+   return RemoveRuleConfirmationModal(browser.find_element_by_id('confirmation-modal'))
    
    
    
@@ -89,12 +85,12 @@ class RuleState:
    
 def getRuleState(rulesTable, ruleNumber):
    ruleStateCell = getRuleDatas(rulesTable, ruleNumber)[4]
-   classes = ruleStateCell.find_element_by_class_name("label-status").get_attribute("class")
-   if "label-warning" in classes:
+   classes = ruleStateCell.find_element_by_class_name('label-status').get_attribute('class')
+   if 'label-warning' in classes:
       return RuleState.Stopped
-   if "label-success" in classes:
+   if 'label-success' in classes:
       return RuleState.Running
-   if "label-danger" in classes:
+   if 'label-danger' in classes:
       return RuleState.Error
    print 'Not expected class for label-status : ', classes
    assert False   
