@@ -12,17 +12,21 @@ def getCustomizeButton(browser):
 
 
 def isCustomizing(browser):
-   return getAddWidgetButton(browser).is_displayed()
+   pageTabsElement = browser.find_element_by_class_name('page-tabs')
+   customizableElement = pageTabsElement.find_element_by_class_name('customization-item')
+   return customizableElement.is_displayed()
 
 
 def enterCustomizingMode(browser):
-   getCustomizeButton(browser).click()
-   assert tools.waitUntil(lambda: isCustomizing(browser))
+   if not isCustomizing(browser):
+      getCustomizeButton(browser).click()
+      assert tools.waitUntil(lambda: isCustomizing(browser))
 
 
 def exitCustomizingMode(browser):
-   getCustomizeButton(browser).click()
-   assert tools.waitUntil(lambda: not isCustomizing(browser))
+   if isCustomizing(browser):
+      getCustomizeButton(browser).click()
+      assert tools.waitUntil(lambda: not isCustomizing(browser))
 
 
 def getAddWidgetButton(browser):
@@ -80,13 +84,20 @@ class NewWidgetModal():
             return item
       print "selectWidget : Nothing to select, ", expectedWidgetName, " not found"
       assert False
+      
+   def waitForClosed(self):
+      assert tools.waitUntil(lambda: 'display: none;' in self.__newWidgetModalWebElement.get_attribute('style'))
 
    def getConfirmButton(self):
       WebDriverWait(self.__newWidgetModalWebElement, 10).until(Condition.visibility_of_element_located((By.ID, "btn-confirm-add-widget")))
       return self.__newWidgetModalWebElement.find_element_by_id("btn-confirm-add-widget")
          
    def getCloseButton(self):
-      return self.__newWidgetModalWebElement.find_element_by_id("btn-close-details")
+      buttons = self.__newWidgetModalWebElement.find_elements_by_tag_name('button')
+      for button in buttons:
+         if button.get_attribute('data-i18n') is not None and 'common.close' in button.get_attribute('data-i18n'):
+            return button
+      assert False
 
 
 
@@ -114,7 +125,6 @@ class ConfigureWidgetModal():
       
    def waitForClosed(self):
       assert tools.waitUntil(lambda: 'display: none;' in self.__configureWidgetModalWebElement.get_attribute('style'))
-      print "self.__configureWidgetModalWebElement.get_attribute('style')", self.__configureWidgetModalWebElement.get_attribute('style')
 
    def ok(self):
       self.getConfirmButton().click()
