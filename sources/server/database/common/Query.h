@@ -356,7 +356,7 @@ namespace database { namespace common {
       /// \return          A reference to itself to allow method chaining
       //         
       template<class T1, class T2 = CNotUsedTemplateField, class T3 = CNotUsedTemplateField, class T4 = CNotUsedTemplateField, class T5 = CNotUsedTemplateField, class T6 = CNotUsedTemplateField, class T7 = CNotUsedTemplateField, class T8 = CNotUsedTemplateField, class T9 = CNotUsedTemplateField, class T10 = CNotUsedTemplateField>
-      inline CQuery & InsertInto(const std::string & table, 
+      inline CQuery & InsertInto(const database::common::CDatabaseTable & table, 
          const T1 & field1,
          const T2 & field2 = T2(),
          const T3 & field3 = T3(),
@@ -390,7 +390,7 @@ namespace database { namespace common {
       /// \param  table    the table name
       /// \return          A reference to itself to allow method chaining
       //        
-      CQuery & Update(const std::string & table);
+      CQuery & Update(const database::common::CDatabaseTable & table);
 
       //
       /// \brief           Append 'SET field1=value1 [,field2=value2...]]'
@@ -478,7 +478,7 @@ namespace database { namespace common {
       /// \param  table    the table name
       /// \return          A reference to itself to allow method chaining
       //     
-      CQuery & DeleteFrom(const std::string & table);
+      CQuery & DeleteFrom(const database::common::CDatabaseTable & table);
 
       //
       /// \brief              append text to query
@@ -519,7 +519,7 @@ namespace database { namespace common {
       /// \param  tableIdentifier   the table identifier (ex: "A" -> LEFT JOIN myTable A )
       /// \return             A reference to itself to allow method chaining
       //   
-      CQuery & JoinLeft(const std::string & tableName, const std::string & tableIdentifier = EMPTY_STR);
+      CQuery & JoinLeft(const database::common::CDatabaseTable & tableName, const std::string & tableIdentifier = EMPTY_STR);
 
       //
       /// \brief              append "ON tableIdentifier.columnName = table2Identifier.column2Name"
@@ -573,7 +573,7 @@ namespace database { namespace common {
       /// \param  tableName   the table name to delete
       /// \return             A reference to itself to allow method chaining
       //   
-      CQuery & DropTable(const std::string & tableName);
+      CQuery & DropTable(const database::common::CDatabaseTable & tableName);
 
       //
       /// \brief              get the query type

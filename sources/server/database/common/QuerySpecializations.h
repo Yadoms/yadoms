@@ -542,20 +542,29 @@ inline CQuery & CQuery::GroupBy(const T1 & field1,
 {
    std::ostringstream ss;
    ss << " GROUP BY " << queryhelper<T1>::format(this, field1);
-   AppendField(ss, queryhelper<T2>::format(this, field2));
-   AppendField(ss, queryhelper<T3>::format(this, field3));
-   AppendField(ss, queryhelper<T4>::format(this, field4));
-   AppendField(ss, queryhelper<T5>::format(this, field5));
-   AppendField(ss, queryhelper<T6>::format(this, field6));
-   AppendField(ss, queryhelper<T7>::format(this, field7));
-   AppendField(ss, queryhelper<T8>::format(this, field8));
-   AppendField(ss, queryhelper<T9>::format(this, field9));
-   AppendField(ss, queryhelper<T10>::format(this, field10));
+   if (typeid(field2) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T2>::format(this, field2));
+   if (typeid(field3) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T3>::format(this, field3));
+   if (typeid(field4) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T4>::format(this, field4));
+   if (typeid(field5) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T5>::format(this, field5));
+   if (typeid(field6) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T6>::format(this, field6));
+   if (typeid(field7) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T7>::format(this, field7));
+   if (typeid(field8) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T8>::format(this, field8));
+   if (typeid(field9) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T9>::format(this, field9));
+   if (typeid(field10) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T10>::format(this, field10));
    return Append(ss);
 }
 
 template<class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10>
-inline CQuery & CQuery::InsertInto(const std::string & table, 
+inline CQuery & CQuery::InsertInto(const database::common::CDatabaseTable & table,
    const T1 & field1,
    const T2 & field2,
    const T3 & field3,
@@ -568,16 +577,25 @@ inline CQuery & CQuery::InsertInto(const std::string & table,
    const T10 & field10)
 {
    std::ostringstream ss;
-   ss << " INSERT INTO " << table << " (" << queryhelper<T1>::format(this, field1);
-   AppendField(ss, queryhelper<T2>::format(this, field2));
-   AppendField(ss, queryhelper<T3>::format(this, field3));
-   AppendField(ss, queryhelper<T4>::format(this, field4));
-   AppendField(ss, queryhelper<T5>::format(this, field5));
-   AppendField(ss, queryhelper<T6>::format(this, field6));
-   AppendField(ss, queryhelper<T7>::format(this, field7));
-   AppendField(ss, queryhelper<T8>::format(this, field8));
-   AppendField(ss, queryhelper<T9>::format(this, field9));
-   AppendField(ss, queryhelper<T10>::format(this, field10));
+   ss << " INSERT INTO " << table.GetName() << " (" << queryhelper<T1>::format(this, field1);
+   if (typeid(field2) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T2>::format(this, field2));
+   if (typeid(field3) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T3>::format(this, field3));
+   if (typeid(field4) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T4>::format(this, field4));
+   if (typeid(field5) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T5>::format(this, field5));
+   if (typeid(field6) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T6>::format(this, field6));
+   if (typeid(field7) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T7>::format(this, field7));
+   if (typeid(field8) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T8>::format(this, field8));
+   if (typeid(field9) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T9>::format(this, field9));
+   if (typeid(field10) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T10>::format(this, field10));
    ss << ") ";
    return Append(ss);
 }

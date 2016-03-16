@@ -98,11 +98,11 @@ namespace database { namespace common {
 
 
 
-      CQuery & CQuery::Update(const std::string & table) 
+      CQuery & CQuery::Update(const database::common::CDatabaseTable & table)
       {
          ChangeQueryType(kUpdate);
          std::ostringstream ss;
-         ss << " UPDATE  " << table << " ";
+         ss << " UPDATE  " << table.GetName() << " ";
          return Append(ss); 
       }
 
@@ -157,11 +157,11 @@ namespace database { namespace common {
          return Append(ss); 
       }
 
-      CQuery & CQuery::DeleteFrom(const std::string & table) 
+      CQuery & CQuery::DeleteFrom(const database::common::CDatabaseTable & table)
       {
          ChangeQueryType(kDelete);
          std::ostringstream ss;
-         ss << " DELETE FROM  " << table << " ";
+         ss << " DELETE FROM  " << table.GetName() << " ";
          return Append(ss); 
       }
 
@@ -202,10 +202,10 @@ namespace database { namespace common {
 		}
 
 
-      CQuery & CQuery::JoinLeft(const std::string & tableName, const std::string & tableIdentifier)
+      CQuery & CQuery::JoinLeft(const database::common::CDatabaseTable & tableName, const std::string & tableIdentifier)
       {
          std::ostringstream ss;
-         ss << " LEFT JOIN " << tableName << " " << tableIdentifier << " ";
+         ss << " LEFT JOIN " << tableName.GetName() << " " << tableIdentifier << " ";
          return Append(ss);
       }
 
@@ -249,11 +249,11 @@ namespace database { namespace common {
          return CQuery().Append(customQuery).ChangeQueryType(typeOfQuery);
       }
 
-      CQuery & CQuery::DropTable(const std::string & tableName)
+      CQuery & CQuery::DropTable(const database::common::CDatabaseTable & tableName)
       {
          ChangeQueryType(kDrop);
          std::ostringstream ss;
-         ss << "DROP TABLE " << tableName;
+         ss << "DROP TABLE " << tableName.GetName();
          return Append(ss);
       }
 
@@ -335,7 +335,7 @@ namespace database { namespace common {
 
       const std::string CQuery::formatEnumToSql(const shared::enumeration::IExtendedEnum & enumValue)
       {
-         return enumValue.toString();
+         return formatStringToSql(enumValue.toString());
       }
 
       const std::string CQuery::formatSubQueryToSql(const CQuery & subQuery)
