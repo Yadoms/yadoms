@@ -4,6 +4,7 @@ from selenium.webdriver.support import expected_conditions as Condition
 from selenium.webdriver.common.keys import Keys
 from configurationPanel import ConfigurationPanel
 import modals
+import tools
 
 
 """ Operations on automation dashboard page """
@@ -130,23 +131,7 @@ class EditRuleModal():
    
    def __init__(self, editRuleModalWebElement):
       self.__editRuleModalWebElement = editRuleModalWebElement
-      self.__configurationPanel = ConfigurationPanel(self.__editRuleModalWebElement)
-
-   def __getConfigurationItem(self, configurationPanel, dataI18nString):
-      """ Find a configuration item by its "data-i18n" field """
-      controlGroups = configurationPanel.find_elements_by_class_name("control-group")
-      for controlGroup in controlGroups:
-         control = controlGroup.find_element_by_class_name("configuration-control")
-
-         controlContents = control.find_elements_by_xpath("./child::*")
-         assert len(controlContents) > 0
-         controlContent = controlContents[0] # Can be select, input, etc...
-         
-         if (controlContent.get_attribute("data-i18n") == dataI18nString):
-            return controlContent
-               
-      # Not found
-      assert False      
+      self.__configurationPanel = ConfigurationPanel(self.__editRuleModalWebElement)   
 
    def getRuleName(self):
       return self.__configurationPanel.getItemByName('modals.edit-automation-rule.name-rule.name')
@@ -169,8 +154,15 @@ class EditRuleModal():
    def getRuleCodeEditor(self):
       return AceCodeEditor(self.__editRuleModalWebElement.find_element_by_class_name("ace_text-input"))
          
-   def getConfirmConfigureRuleButton(self):
+   def getConfirmButton(self):
       return self.__editRuleModalWebElement.find_element_by_id("btn-confirm-configure-rule")
+      
+   def waitForClosed(self):
+      assert tools.waitUntil(lambda: 'display: none;' in self.__editRuleModalWebElement.get_attribute('style'))
+
+   def ok(self):
+      self.getConfirmButton().click()
+      self.waitForClosed()
       
 
 

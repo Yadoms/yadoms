@@ -148,7 +148,7 @@ class CreateRule(unittest.TestCase):
 
 
       print 'Confirm'
-      editRuleModal.getConfirmConfigureRuleButton().click()
+      editRuleModal.ok()
       
       
       print 'Check created rule'
