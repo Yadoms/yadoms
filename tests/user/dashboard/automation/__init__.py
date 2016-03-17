@@ -2,6 +2,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as Condition
 from selenium.webdriver.common.keys import Keys
+from configurationPanel import ConfigurationPanel
 import modals
 
 
@@ -73,9 +74,11 @@ def getRuleRemoveButton(rulesTable, ruleNumber):
    
 
 def waitEditRuleModal(browser):
+   WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, 'edit-automation-rule-modal')))
    return EditRuleModal(browser.find_element_by_id('edit-automation-rule-modal'))
 
 def waitRemoveRuleConfirmationModal(browser):
+   WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, 'confirmation-modal')))
    return RemoveRuleConfirmationModal(browser.find_element_by_id('confirmation-modal'))
    
    
@@ -126,7 +129,8 @@ class EditRuleModal():
    """ Operations on rule edition modal """
    
    def __init__(self, editRuleModalWebElement):
-       self.__editRuleModalWebElement = editRuleModalWebElement
+      self.__editRuleModalWebElement = editRuleModalWebElement
+      self.__configurationPanel = ConfigurationPanel(self.__editRuleModalWebElement)
 
    def __getConfigurationItem(self, configurationPanel, dataI18nString):
       """ Find a configuration item by its "data-i18n" field """
@@ -144,19 +148,29 @@ class EditRuleModal():
       # Not found
       assert False      
 
-   def getRuleName(self, browser):
-      ruleConfigurationPanel = browser.find_element_by_id("automation-rule-configuration")
-      return self.__getConfigurationItem(ruleConfigurationPanel, "[data-content]modals.edit-automation-rule.name-rule.description")
+   def getRuleName(self):
+      return self.__configurationPanel.getItemByName('modals.edit-automation-rule.name-rule.name')
 
-   def getRuleDescription(self, browser):
-      ruleConfigurationPanel = browser.find_element_by_id("automation-rule-configuration")
-      return self.__getConfigurationItem(ruleConfigurationPanel, "[data-content]modals.edit-automation-rule.description-rule.description")
+   def setRuleName(self, newName):
+      field = self.getRuleName()
+      field.send_keys(Keys.CONTROL + "a")
+      field.send_keys(Keys.DELETE)
+      field.send_keys(newName)
 
-   def getRuleCodeEditor(self, browser):
-      return AceCodeEditor(browser.find_element_by_class_name("ace_text-input"))
+   def getRuleDescription(self):
+      return self.__configurationPanel.getItemByName('modals.edit-automation-rule.description-rule.name')
+
+   def setRuleDescription(self, newDescription):
+      field = self.getRuleDescription()
+      field.send_keys(Keys.CONTROL + "a")
+      field.send_keys(Keys.DELETE)
+      field.send_keys(newDescription)
+
+   def getRuleCodeEditor(self):
+      return AceCodeEditor(self.__editRuleModalWebElement.find_element_by_class_name("ace_text-input"))
          
-   def getConfirmConfigureRuleButton(self, browser):
-      return browser.find_element_by_id("btn-confirm-configure-rule")
+   def getConfirmConfigureRuleButton(self):
+      return self.__editRuleModalWebElement.find_element_by_id("btn-confirm-configure-rule")
       
 
 

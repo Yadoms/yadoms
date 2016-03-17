@@ -35,7 +35,6 @@ class ConfigurationPanel():
       return self.__findSection(dataI18nString).find_element_by_tag_name('button')
       
    def getItemByName(self, dataI18nString):
-      # TODO remplacer __getConfigurationItemByName
       """ Find a configuration single item by its "data-i18n" field """
       return self.__findField(dataI18nString).find_element_by_class_name('configuration-control').find_element_by_class_name('form-control')
 

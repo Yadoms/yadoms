@@ -138,17 +138,17 @@ class CreateRule(unittest.TestCase):
       print 'Configure rule'
       editRuleModal = dashboard.automation.waitEditRuleModal(self.browser)
       print '  Set rule name'
-      editRuleModal.getRuleName(self.browser).send_keys(ruleName)
+      editRuleModal.setRuleName(ruleName)
       print '  Set rule description'
-      editRuleModal.getRuleDescription(self.browser).send_keys(ruleDescription)
+      editRuleModal.setRuleDescription(ruleDescription)
          
       print '  Set rule code'
-      editRuleModal.getRuleCodeEditor(self.browser).clear()
-      editRuleModal.getRuleCodeEditor(self.browser).writeCode(ruleCode)
+      editRuleModal.getRuleCodeEditor().clear()
+      editRuleModal.getRuleCodeEditor().writeCode(ruleCode)
 
 
       print 'Confirm'
-      editRuleModal.getConfirmConfigureRuleButton(self.browser).click()
+      editRuleModal.getConfirmConfigureRuleButton().click()
       
       
       print 'Check created rule'

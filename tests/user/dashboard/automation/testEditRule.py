@@ -45,13 +45,14 @@ class EditRule(unittest.TestCase):
       editRuleModal = dashboard.automation.waitEditRuleModal(self.browser)
       editRuleModal.getRuleDescription(self.browser).clear()
       editRuleModal.getRuleDescription(self.browser).send_keys(ruleNewDescription)
-      editRuleModal.getConfirmConfigureRuleButton(self.browser).click()
+      editRuleModal.getConfirmConfigureRuleButton().click()
       
       print 'Check modified rule'
       notification.waitText(self.browser, notification.Type.Success, i18n.get()["modals"]["dashboard"]["sub-windows"]["automation-center"]["ruleSuccessfullyUpdated"])
       
       rulesTable = dashboard.automation.waitRulesTableHasNRules(self.browser, 1)
       ruleDatas = dashboard.automation.getRuleDatas(rulesTable, ruleNumber)
+      tools.waitUntil(lambda: len(ruleDatas[1].text) > 0)
       self.assertEqual(ruleDatas[1].text, ruleNewDescription)
       self.assertEqual(dashboard.automation.getRuleState(rulesTable, ruleNumber), dashboard.automation.RuleState.Stopped)
       self.assertFalse(dashboard.automation.getRuleAutoStart(rulesTable, ruleNumber))
@@ -75,9 +76,9 @@ class EditRule(unittest.TestCase):
       print 'Change rule description'
       ruleNewDescription = "This is the new rule description"
       editRuleModal = dashboard.automation.waitEditRuleModal(self.browser)
-      editRuleModal.getRuleDescription(self.browser).clear()
-      editRuleModal.getRuleDescription(self.browser).send_keys(ruleNewDescription)
-      editRuleModal.getConfirmConfigureRuleButton(self.browser).click()
+      editRuleModal.getRuleDescription().clear()
+      editRuleModal.getRuleDescription().send_keys(ruleNewDescription)
+      editRuleModal.getConfirmConfigureRuleButton().click()
       
       # Check modified rule
       print 'Check modified rule'
@@ -85,6 +86,7 @@ class EditRule(unittest.TestCase):
       
       rulesTable = dashboard.automation.waitRulesTableHasNRules(self.browser, 1)
       ruleDatas = dashboard.automation.getRuleDatas(rulesTable, ruleNumber)
+      tools.waitUntil(lambda: len(ruleDatas[1].text) > 0)
       self.assertEqual(ruleDatas[1].text, ruleNewDescription)
       self.assertEqual(dashboard.automation.getRuleState(rulesTable, ruleNumber), dashboard.automation.RuleState.Running)
       self.assertFalse(dashboard.automation.getRuleAutoStart(rulesTable, ruleNumber))
