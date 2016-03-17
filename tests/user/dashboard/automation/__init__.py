@@ -76,7 +76,7 @@ def getRuleRemoveButton(rulesTable, ruleNumber):
 
 def waitEditRuleModal(browser):
    WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, 'edit-automation-rule-modal')))
-   return EditRuleModal(browser.find_element_by_id('edit-automation-rule-modal'))
+   return EditRuleModal(browser.find_element_by_id('edit-automation-rule-modal'), browser)
 
 def waitRemoveRuleConfirmationModal(browser):
    WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, 'confirmation-modal')))
@@ -129,15 +129,20 @@ class RemoveRuleConfirmationModal(modals.RemoveObjectConfirmationModal):
 class EditRuleModal():
    """ Operations on rule edition modal """
    
-   def __init__(self, editRuleModalWebElement):
+   def __init__(self, editRuleModalWebElement, browser):
       self.__editRuleModalWebElement = editRuleModalWebElement
       self.__configurationPanel = ConfigurationPanel(self.__editRuleModalWebElement)   
+      self.__browser = browser
+      
+   def __waitFocus(self, element):
+      tools.waitUntil(lambda: element == self.__browser.switch_to_active_element())
+      return element
 
    def getRuleName(self):
       return self.__configurationPanel.getItemByName('modals.edit-automation-rule.name-rule.name')
 
    def setRuleName(self, newName):
-      field = self.getRuleName()
+      field = self.__waitFocus(self.getRuleName())
       field.send_keys(Keys.CONTROL + "a")
       field.send_keys(Keys.DELETE)
       field.send_keys(newName)
@@ -146,7 +151,7 @@ class EditRuleModal():
       return self.__configurationPanel.getItemByName('modals.edit-automation-rule.description-rule.name')
 
    def setRuleDescription(self, newDescription):
-      field = self.getRuleDescription()
+      field = self.__waitFocus(self.getRuleDescription())
       field.send_keys(Keys.CONTROL + "a")
       field.send_keys(Keys.DELETE)
       field.send_keys(newDescription)

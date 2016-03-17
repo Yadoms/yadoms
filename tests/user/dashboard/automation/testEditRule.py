@@ -43,9 +43,8 @@ class EditRule(unittest.TestCase):
       print 'Change rule description'
       ruleNewDescription = "This is the new rule description"
       editRuleModal = dashboard.automation.waitEditRuleModal(self.browser)
-      editRuleModal.getRuleDescription(self.browser).clear()
-      editRuleModal.getRuleDescription(self.browser).send_keys(ruleNewDescription)
-      editRuleModal.getConfirmConfigureRuleButton().click()
+      editRuleModal.setRuleDescription(ruleNewDescription)
+      editRuleModal.ok()
       
       print 'Check modified rule'
       notification.waitText(self.browser, notification.Type.Success, i18n.get()["modals"]["dashboard"]["sub-windows"]["automation-center"]["ruleSuccessfullyUpdated"])
@@ -76,9 +75,8 @@ class EditRule(unittest.TestCase):
       print 'Change rule description'
       ruleNewDescription = "This is the new rule description"
       editRuleModal = dashboard.automation.waitEditRuleModal(self.browser)
-      editRuleModal.getRuleDescription().clear()
-      editRuleModal.getRuleDescription().send_keys(ruleNewDescription)
-      editRuleModal.getConfirmConfigureRuleButton().click()
+      editRuleModal.setRuleDescription(ruleNewDescription)
+      editRuleModal.ok()
       
       # Check modified rule
       print 'Check modified rule'
