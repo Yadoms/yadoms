@@ -740,6 +740,8 @@ IF(USE_PGSQL_DATABASE)
 		server/database/pgsql/PgsqlRequester.cpp
 		server/database/pgsql/PgsqlResultHandler.h
 		server/database/pgsql/PgsqlResultHandler.cpp
+		server/database/pgsql/PgsqlSqlState.h
+		server/database/pgsql/PgsqlSqlState.cpp
 		server/database/pgsql/PgsqlSystemTables.h
 		server/database/pgsql/PgsqlSystemTables.cpp
 		server/database/pgsql/PgsqlTableCreationScriptProvider.h

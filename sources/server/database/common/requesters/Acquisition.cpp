@@ -367,7 +367,7 @@ namespace database {  namespace common {  namespace requesters {
                   And(CAcquisitionTable::getDateColumnName(), CQUERY_OP_INF_EQUAL, toDate);
                
                
-               q.With("acq", compute).
+               q.Clear().With("acq", compute).
                  Update(CAcquisitionSummaryTable::getTableName())
                .Set(CAcquisitionSummaryTable::getAvgColumnName(),  q.fromSubquery("acq", "avg"),
                     CAcquisitionSummaryTable::getMinColumnName(), q.fromSubquery("acq", "min"),

@@ -56,7 +56,22 @@ namespace pgsql {
       virtual void transactionRollback(PGconn * pConnection);
       virtual bool transactionIsAlreadyCreated(PGconn * pConnection);
 
-      
+      //--------------------------------------------------------------
+      /// \Brief		Close all active connections
+      //--------------------------------------------------------------
+      void closeAllConnections();
+
+      //--------------------------------------------------------------
+      /// \Brief		Execute a query
+      /// \param [in] pConnection         The connection to use
+      /// \param [in] querytoExecute      The query to execute
+      /// \param [in] expectedResultCode  The expected result code (might differ depending on the statement type)
+      /// \param [in] throwIfFails        If true an exception is thrown on error, else the PGresult is returned
+      /// \return    The PGresult data (must be cleared)
+      /// \throws    CDatabaseException If failed. In case of disconnection, close any active connection
+      //--------------------------------------------------------------
+      PGresult * executeQuery(PGconn * pConnection, const std::string & querytoExecute, ExecStatusType expectedResultCode, bool throwIfFails);
+
       //--------------------------------------------------------------
       /// \Brief		Try to ping PostgreSQL server
       /// \throws    CDatabaseException If ping failed

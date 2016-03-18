@@ -10,6 +10,7 @@
 #include "PgsqlResultHandler.h"
 #include "PgsqlQuery.h"
 #include "PgsqlTableCreationScriptProvider.h"
+#include "PgsqlSqlState.h"
 
 namespace database { 
 namespace pgsql { 
@@ -204,6 +205,11 @@ namespace pgsql {
 
    void CPgsqlRequester::finalize()
    {
+      closeAllConnections();
+   }
+
+   void CPgsqlRequester::closeAllConnections()
+   {
       //clear transactions
       //do not do anything, let pgsql engine manage it
       m_activeTransactionsList.clear();
@@ -212,6 +218,69 @@ namespace pgsql {
       for (std::map<unsigned long, PGconn*>::iterator i = m_connectionList.begin(); i != m_connectionList.end(); i++)
          PQfinish(i->second);
       m_connectionList.clear();
+   }
+
+   PGresult * CPgsqlRequester::executeQuery(PGconn * pConnection, const std::string & querytoExecute, ExecStatusType expectedResultCode, bool throwIfFails)
+   {
+      YADOMS_LOG(debug) << "[REQUEST] executeQuery - " << querytoExecute;
+      PGresult * res = PQexec(pConnection, querytoExecute.c_str());
+
+      ExecStatusType resultCode = PQresultStatus(res);
+      if (resultCode != expectedResultCode)
+      {
+         //make a copy of the err message
+         std::string errMessage(PQerrorMessage(pConnection));
+
+         //log the message
+         YADOMS_LOG(error) << "Query failed : " << "result code =" << resultCode << std::endl << "Query: " << querytoExecute << std::endl << "Error : " << errMessage;
+
+         const CPgsqlSqlState & realError = CPgsqlSqlState::Parse(PQresultErrorField(res, PG_DIAG_SQLSTATE));
+
+         //free memory
+         PQclear(res);
+         res = NULL;
+
+
+         if (resultCode == PGRES_FATAL_ERROR)
+         {
+            if (realError.GetClass() == ESqlErrorClass::kConnectionException)
+            {
+               try
+               {
+                  YADOMS_LOG(information) << "Check if server is still alive...";
+                  pingServer();
+
+                  //the server is still alive, just throw exception
+                  if (throwIfFails)
+                     throw CDatabaseException(errMessage);
+               }
+               catch (CDatabaseException & pingex)
+               {
+                  YADOMS_LOG(information) << "Cannot ping server. ";
+
+                  //we cannot ping PostgreSQL server engine
+                  //clear all active connections
+                  closeAllConnections();
+
+                  //always throws, because of server disconnection
+                  throw CDatabaseException(errMessage, pingex.what());
+               }
+            }
+            else
+            {
+               YADOMS_LOG(information) << "SQL ERROR " << realError.GetDescription() << " [" << realError.GetCode() << "]";
+               if (throwIfFails)
+                  throw CDatabaseException(errMessage);
+            }
+         }
+         else
+         {
+            if(throwIfFails)
+               throw CDatabaseException(errMessage);
+         }
+      }
+
+      return res;
    }
 
    void CPgsqlRequester::queryEntities(database::common::adapters::IResultAdapter * pAdapter, const database::common::CQuery & querytoExecute)
@@ -230,27 +299,7 @@ namespace pgsql {
          {
 
             //execute query
-            YADOMS_LOG(debug) << "[REQUEST] queryEntities - " << querytoExecute.str();
-            res = PQexec(pConnection, querytoExecute.c_str());
-
-            ExecStatusType resultCode = PQresultStatus(res);
-            if (resultCode != PGRES_TUPLES_OK)
-            {
-               //make a copy of the err message
-               std::string errMessage(PQerrorMessage(pConnection));
-
-               //log the message
-               YADOMS_LOG(error) << "Query failed : " << std::endl << "Query: " << querytoExecute.str() << std::endl << "Error : " << errMessage;
-
-               //free memory
-               PQclear(res);
-               res = NULL;
-
-               //throw
-               throw CDatabaseException(errMessage);
-            }
-
-
+            res = executeQuery(pConnection, querytoExecute.c_str(), PGRES_TUPLES_OK, true);
             boost::shared_ptr<CPgsqlResultHandler> handler(new CPgsqlResultHandler(res));
             if (!pAdapter->adapt(handler))
             {
@@ -292,24 +341,10 @@ namespace pgsql {
 
 
       //execute query
-      YADOMS_LOG(debug) << "[REQUEST] queryStatement - " << querytoExecute.str();
-      PGresult *res = PQexec(pConnection, querytoExecute.c_str());
-
-      if (PQresultStatus(res) != PGRES_COMMAND_OK)
-      {
-         //make a copy of the err message
-         std::string errMessage(PQerrorMessage(pConnection));
-            
-         //log the message
-         YADOMS_LOG(error) << "Query failed : " << std::endl << "Query: " << querytoExecute.str() << std::endl << "Error : " << errMessage;
-
-         //free memory
-         PQclear(res);
-
-         if(throwIfFails)
-            throw CDatabaseException(errMessage);
+      PGresult *res = executeQuery(pConnection, querytoExecute.c_str(), PGRES_COMMAND_OK, throwIfFails);
+      ExecStatusType resultCode = PQresultStatus(res);
+      if (resultCode != PGRES_COMMAND_OK)
          return -1;
-      }
       
       int affectedRows = 0;
       std::string affectedRowsString = PQcmdTuples(res);
@@ -331,22 +366,7 @@ namespace pgsql {
 
       //execute query
       YADOMS_LOG(debug) << "[REQUEST] queryCount - " << querytoExecute.str();
-      PGresult *res = PQexec(pConnection, querytoExecute.c_str());
-
-      if (PQresultStatus(res) != PGRES_TUPLES_OK)
-      {
-         //make a copy of the err message
-         std::string errMessage(PQerrorMessage(pConnection));
-
-         //log the message
-         YADOMS_LOG(error) << "Query failed : " << std::endl << "Query: " << querytoExecute.str() << std::endl << "Error : " << errMessage;
-
-         //free memory
-         PQclear(res);
-
-         //throw
-         throw CDatabaseException(errMessage);
-      }
+      PGresult *res = executeQuery(pConnection, querytoExecute.c_str(), PGRES_TUPLES_OK, true);
 
       CPgsqlResultHandler handler(res);
       handler.next_step();
@@ -393,19 +413,10 @@ namespace pgsql {
    {
       if(!transactionIsAlreadyCreated(pConnection))
       {
-         PGresult   * res = PQexec(pConnection, "BEGIN");
+         PGresult *res = executeQuery(pConnection, "BEGIN", PGRES_COMMAND_OK, false);
          if (PQresultStatus(res) == PGRES_COMMAND_OK)
          {
             m_activeTransactionsList[pConnection] = true;
-         }
-         else 
-         {
-            //make a copy of the err message
-            std::string errMessage(PQerrorMessage(pConnection));
-
-            //log the message
-            YADOMS_LOG(error) << "Fail to start transaction : " << std::endl << "Error : " << errMessage;
-
          }
          PQclear(res);
       }
@@ -420,19 +431,10 @@ namespace pgsql {
    {
       if (transactionIsAlreadyCreated(pConnection))
       {
-         PGresult   * res = PQexec(pConnection, "COMMIT");
+         PGresult *res = executeQuery(pConnection, "COMMIT", PGRES_COMMAND_OK, false);
          if (PQresultStatus(res) == PGRES_COMMAND_OK)
          {
             m_activeTransactionsList[pConnection] = false;
-         }
-         else
-         {
-            //make a copy of the err message
-            std::string errMessage(PQerrorMessage(pConnection));
-
-            //log the message
-            YADOMS_LOG(error) << "Fail to commit transaction : " << std::endl << "Error : " << errMessage;
-
          }
          PQclear(res);
       }
@@ -447,19 +449,10 @@ namespace pgsql {
    {
       if (transactionIsAlreadyCreated(pConnection))
       {
-         PGresult   * res = PQexec(pConnection, "ROLLBACK");
+         PGresult *res = executeQuery(pConnection, "ROLLBACK", PGRES_COMMAND_OK, false);
          if (PQresultStatus(res) == PGRES_COMMAND_OK)
          {
             m_activeTransactionsList[pConnection] = false;
-         }
-         else
-         {
-            //make a copy of the err message
-            std::string errMessage(PQerrorMessage(pConnection));
-
-            //log the message
-            YADOMS_LOG(error) << "Fail to rollback transaction : " << std::endl << "Error : " << errMessage;
-
          }
          PQclear(res);
       }
