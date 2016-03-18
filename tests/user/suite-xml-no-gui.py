@@ -2,11 +2,14 @@
 import unittest
 import StringIO
 import xmlrunner
-from pyvirtualdisplay import Display 
+from pyvirtualdisplay import Display
+import tools
+
  
 class Test_Suite(unittest.TestCase):
 
    def test_main(self):
+      tools.deleteContext()
       display = Display(visible=0, size=(1024, 768))
       display.start()
 

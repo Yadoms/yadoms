@@ -1,8 +1,6 @@
 ﻿import yadomsServer
 import resources
-import os
 import os.path
-import shutil
 
 def new():
    """Use a new database (= delete database if exist)"""
@@ -12,5 +10,5 @@ def new():
          
 def deploy(databaseName):
    """Deploy a specific database"""
-      
-   shutil.copyfile(os.path.join("resources", "databases", databaseName + ".db3"), yadomsServer.databasePath())
+
+   resources.deployFile(os.path.join("resources", "databases", databaseName + ".db3"), yadomsServer.databasePath())

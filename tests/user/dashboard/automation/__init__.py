@@ -76,10 +76,12 @@ def getRuleRemoveButton(rulesTable, ruleNumber):
 
 def waitEditRuleModal(browser):
    WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, 'edit-automation-rule-modal')))
-   return EditRuleModal(browser.find_element_by_id('edit-automation-rule-modal'), browser)
+   modals.waitForOpened(browser.find_element_by_id('edit-automation-rule-modal'))
+   return EditRuleModal(browser.find_element_by_id('edit-automation-rule-modal'))
 
 def waitRemoveRuleConfirmationModal(browser):
    WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, 'confirmation-modal')))
+   modals.waitForOpened(browser.find_element_by_id('confirmation-modal'))
    return RemoveRuleConfirmationModal(browser.find_element_by_id('confirmation-modal'))
    
    
@@ -129,21 +131,16 @@ class RemoveRuleConfirmationModal(modals.RemoveObjectConfirmationModal):
 class EditRuleModal():
    """ Operations on rule edition modal """
    
-   def __init__(self, editRuleModalWebElement, browser):
+   def __init__(self, editRuleModalWebElement):
       self.__editRuleModalWebElement = editRuleModalWebElement
-      self.__configurationPanel = ConfigurationPanel(self.__editRuleModalWebElement)   
-      self.__browser = browser
-      
-   def __waitFocus(self, element):
-      tools.waitUntil(lambda: element == self.__browser.switch_to_active_element())
-      return element
+      self.__configurationPanel = ConfigurationPanel(self.__editRuleModalWebElement)
 
    def getRuleName(self):
       return self.__configurationPanel.getItemByName('modals.edit-automation-rule.name-rule.name')
 
    def setRuleName(self, newName):
-      field = self.__waitFocus(self.getRuleName())
-      field.send_keys(Keys.CONTROL + "a")
+      field = self.getRuleName()
+      field.send_keys(Keys.CONTROL + 'a')
       field.send_keys(Keys.DELETE)
       field.send_keys(newName)
 
@@ -151,8 +148,8 @@ class EditRuleModal():
       return self.__configurationPanel.getItemByName('modals.edit-automation-rule.description-rule.name')
 
    def setRuleDescription(self, newDescription):
-      field = self.__waitFocus(self.getRuleDescription())
-      field.send_keys(Keys.CONTROL + "a")
+      field = self.getRuleDescription()
+      field.send_keys(Keys.CONTROL + 'a')
       field.send_keys(Keys.DELETE)
       field.send_keys(newDescription)
 
@@ -161,13 +158,10 @@ class EditRuleModal():
          
    def getConfirmButton(self):
       return self.__editRuleModalWebElement.find_element_by_id("btn-confirm-configure-rule")
-      
-   def waitForClosed(self):
-      assert tools.waitUntil(lambda: 'display: none;' in self.__editRuleModalWebElement.get_attribute('style'))
 
    def ok(self):
       self.getConfirmButton().click()
-      self.waitForClosed()
+      modals.waitForClosed(self.__editRuleModalWebElement)
       
 
 
@@ -175,11 +169,13 @@ class AceCodeEditor:
    """ Class used to deal with an ACE editor web element """
    
    def __init__(self, codeEditorWebElement):
-       self.__codeEditorWebElement = codeEditorWebElement
+      self.__codeEditorWebElement = codeEditorWebElement
           
    def clear(self):
       """ Remove the existing code """
    
+      tools.waitReadyForInput(self.__codeEditorWebElement)
+      
       self.__codeEditorWebElement.send_keys(Keys.CONTROL + "a")
       self.__codeEditorWebElement.send_keys(Keys.DELETE)
       
@@ -187,6 +183,8 @@ class AceCodeEditor:
    def writeCode(self, code):
       """ Write code into codeEditor """
       """ code must be provided as list of code lines """
+
+      tools.waitReadyForInput(self.__codeEditorWebElement)
    
       # Need a workaround for Selenium bug #1723 (Left parenthesis don't work, see https://code.google.com/p/selenium/issues/detail?id=1723)
       for codeLine in code:

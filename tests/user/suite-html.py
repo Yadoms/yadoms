@@ -1,13 +1,14 @@
 import unittest
 import HTMLTestRunner
 import StringIO
+import tools
  
  
 class Test_Suite(unittest.TestCase):
 
    def test_main(self):
-      loader = unittest.TestLoader()
-         
+      tools.deleteContext()      
+      loader = unittest.TestLoader()         
       suite = loader.discover('.')
 
       with open("report/index.html", 'w') as outFile:

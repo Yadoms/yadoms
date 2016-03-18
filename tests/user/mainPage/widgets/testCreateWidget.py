@@ -84,7 +84,7 @@ class CreateWidget(unittest.TestCase):
       
       print 'Select widget'
       newWidgetModal.selectWidget(widgetType).click()
-      newWidgetModal.getConfirmButton().click()
+      newWidgetModal.ok()
 
       print 'Configure widget'
       configureWidgetFct(mainPage.widgets.waitConfigureWidgetModal(self.browser), widgetTitle)

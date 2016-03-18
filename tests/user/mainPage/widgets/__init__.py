@@ -5,6 +5,7 @@ from selenium.webdriver.common.keys import Keys
 from configurationPanel import ConfigurationPanel
 import tools
 import re
+import modals
 
    
 def getCustomizeButton(browser):
@@ -84,9 +85,6 @@ class NewWidgetModal():
             return item
       print "selectWidget : Nothing to select, ", expectedWidgetName, " not found"
       assert False
-      
-   def waitForClosed(self):
-      assert tools.waitUntil(lambda: 'display: none;' in self.__newWidgetModalWebElement.get_attribute('style'))
 
    def getConfirmButton(self):
       WebDriverWait(self.__newWidgetModalWebElement, 10).until(Condition.visibility_of_element_located((By.ID, "btn-confirm-add-widget")))
@@ -98,6 +96,14 @@ class NewWidgetModal():
          if button.get_attribute('data-i18n') is not None and 'common.close' in button.get_attribute('data-i18n'):
             return button
       assert False
+      
+   def ok(self):
+      self.getConfirmButton().click()
+      modals.waitForClosed(self.__newWidgetModalWebElement)
+      
+   def close(self):
+      self.getCloseButton().click()
+      modals.waitForClosed(self.__newWidgetModalWebElement)
 
 
 
@@ -122,13 +128,10 @@ class ConfigureWidgetModal():
          
    def getConfirmButton(self):
       return self.__configureWidgetModalWebElement.find_element_by_id("btn-confirm-configure-widget")
-      
-   def waitForClosed(self):
-      assert tools.waitUntil(lambda: 'display: none;' in self.__configureWidgetModalWebElement.get_attribute('style'))
 
    def ok(self):
       self.getConfirmButton().click()
-      self.waitForClosed()
+      modals.waitForClosed(self.__configureWidgetModalWebElement)
       
       
 class Widget():

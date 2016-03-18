@@ -25,10 +25,10 @@ class CreatePlugin(unittest.TestCase):
       
 
    def checkCreateOkPlugin(self, pluginInstanceName, pluginType):
-      # - notification
+      print '  Check notification'
       notification.waitText(self.browser, notification.Type.Success, i18n.get()["modals"]["configure-plugin"]["pluginSuccessfullyCreated"])
       
-      # - in web client
+      print '  Check plugins table'
       pluginsTable = dashboard.plugins.waitPluginsTableHasNPlugins(self.browser, 1)
 
       pluginNumber = 0
@@ -57,7 +57,7 @@ class CreatePlugin(unittest.TestCase):
             
             
    def test_createOkPlugin(self):
-      """Nominal test of plugin creation"""
+      print '=== Nominal test of plugin creation ==='
       self.doTest(
          "My fakePlugin instance",
          i18n.getPlugin("fakePlugin")["name"],
@@ -66,27 +66,27 @@ class CreatePlugin(unittest.TestCase):
          
       
    def doTest(self, pluginInstanceName, pluginType, checkPluginFct):
-      # Open plugin dashboard
+      print 'Open plugin dashboard'
       dashboard.open(self.browser)
       dashboard.openPlugin(self.browser)
 
-      # Create new plugin
+      print 'Create new plugin'
       tools.waitUntil(lambda: dashboard.plugins.getCreatePluginButton(self.browser).is_enabled())
       dashboard.plugins.getCreatePluginButton(self.browser).click()
       newPluginModal = dashboard.plugins.waitNewPluginModal(self.browser)
       newPluginModal.selectPlugin(pluginType).click()
-      newPluginModal.getConfirmButton().click()
+      newPluginModal.ok()
 
-      # - Plugin configuration
+      print 'Plugin configuration'
       editPluginModal = dashboard.plugins.waitConfigurePluginModal(self.browser)
-      editPluginModal.replacePluginName(pluginInstanceName)
+      editPluginModal.setPluginName(pluginInstanceName)
          
 
-      # Click OK
-      editPluginModal.getConfirmButton().click()
+      print 'Click OK'
+      editPluginModal.ok()
       
       
-      # Check created plugin
+      print 'Check created plugin'
       checkPluginFct(pluginInstanceName, pluginType)
       
       

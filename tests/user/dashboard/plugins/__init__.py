@@ -117,6 +117,10 @@ class NewPluginModal():
          
    def getConfirmButton(self):
       return self.__newPluginModalWebElement.find_element_by_id("btn-confirm-add-plugin")
+         
+   def ok(self):
+      self.getConfirmButton().click()
+      modals.waitForClosed(self.__newPluginModalWebElement)
             
             
             
@@ -137,8 +141,8 @@ class ConfigurePluginModal():
    def getPluginName(self):
       return ConfigurationPanel(self.__configurePluginModalWebElement).getItemByName("modals.configure-plugin.name-configuration.name")
       
-   def replacePluginName(self, newName):
-      tools.waitUntil(lambda: self.getPluginName().is_enabled())
+   def setPluginName(self, newName):
+      tools.waitReadyForInput(self.getPluginName())
       nameField = self.getPluginName()
       nameField.send_keys(Keys.CONTROL + "a")
       nameField.send_keys(Keys.DELETE)
@@ -146,4 +150,8 @@ class ConfigurePluginModal():
          
    def getConfirmButton(self):
       return self.__configurePluginModalWebElement.find_element_by_id("btn-confirm-configure-plugin")
+         
+   def ok(self):
+      self.getConfirmButton().click()
+      modals.waitForClosed(self.__configurePluginModalWebElement)
       

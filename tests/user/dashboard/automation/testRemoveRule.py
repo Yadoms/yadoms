@@ -60,7 +60,7 @@ class RemoveRule(unittest.TestCase):
       print '  Remove rule'
       removeButton.click()
       confirmationModal = dashboard.automation.waitRemoveRuleConfirmationModal(self.browser)
-      confirmationModal.getOkButton().click()
+      confirmationModal.ok()
       
       print '  Expect notification'
       notification.waitText(self.browser, notification.Type.Success, i18n.get()["modals"]["dashboard"]["sub-windows"]["automation-center"]["ruleDeleted"])
@@ -86,7 +86,8 @@ class RemoveRule(unittest.TestCase):
       print '  Remove rule'
       removeButton.click()
       confirmationModal = dashboard.automation.waitRemoveRuleConfirmationModal(self.browser)
-      confirmationModal.getCancelButton().click()
+      print '  Cancel'
+      confirmationModal.cancel()
       
       print '  Expect no notification'
       self.assertTrue(notification.noNotification(self.browser))

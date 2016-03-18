@@ -24,21 +24,21 @@ class ConfigurePlugin(unittest.TestCase):
       
 
    def test_configurePlugin(self):
+      print '=== Configure plugin test ==='
       pluginNumber = 0
      
-      # Configure the first plugin
+      print '  Configure the first plugin'
       pluginsTable = dashboard.plugins.waitPluginsTableHasNPlugins(self.browser, 1)
       tools.waitUntil(lambda: dashboard.plugins.getPluginConfigureButton(pluginsTable, pluginNumber).is_enabled())
       dashboard.plugins.getPluginConfigureButton(pluginsTable, pluginNumber).click()
       
-      # Modify plugin name
+      print '  Modify plugin name'
       pluginNewName = "This is the new plugin name"
       configurePluginModal = dashboard.plugins.waitConfigurePluginModal(self.browser)
-      configurePluginModal.replacePluginName(pluginNewName)
-      configurePluginModal.getConfirmButton().click()
+      configurePluginModal.setPluginName(pluginNewName)
+      configurePluginModal.ok()
       
-      # Check modified plugin
-      
+      print '  Check modified plugin'
       pluginsTable = dashboard.plugins.waitPluginsTableHasNPlugins(self.browser, 1)
       pluginDatas = dashboard.plugins.getPluginDatas(pluginsTable, pluginNumber)
       self.assertTrue(tools.waitUntil(lambda: dashboard.plugins.getPluginName(pluginsTable, pluginNumber) == pluginNewName))
