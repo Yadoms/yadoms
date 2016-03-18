@@ -1,11 +1,14 @@
-.widget-clock .time-field {
-    text-align: center;
-    top: 10%;
-    bottom: 0px;
-    left: 0px;
-    right: 0px;
+.widget-clock .date-field {
+    flex: 0 1 5%;
+    font-size: 1px;
+    overflow-x: hidden;
+    white-space: nowrap;
 }
 
-.widget-clock .date-field {
-    margin-left: 10px;
+.widget-clock .time-field {
+    margin: auto;
+    flex: 1;
+    width: 100%;
+    text-align: center;
 }
+

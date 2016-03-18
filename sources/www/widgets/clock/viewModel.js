@@ -9,6 +9,7 @@ function clockViewModel() {
      * Observable data
      */
     this.time = ko.observable("00:00");
+    this.date = ko.observable("");
 
 
     /**
@@ -17,7 +18,7 @@ function clockViewModel() {
      */
     function updateTime_(target) {
         target.time(moment().format("LT"));
-        //target.$dateField.text(moment().format("LL"));
+        target.date(moment().format("LL"));
     }
 
     /**
@@ -30,8 +31,6 @@ function clockViewModel() {
         self.widgetApi.toolbar({
             activated: false
         });
-
-        //self.$dateField = self.widgetApi.find(".date-field");
 
         setInterval(function () {
             updateTime_(self);

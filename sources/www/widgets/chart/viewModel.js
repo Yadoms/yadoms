@@ -146,10 +146,10 @@ widgetViewModelCtor =
                    { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"YEAR\"><span data-i18n=\"widgets/chart:navigator.year\"/></div>" },
                    { separator: ""},
                    { custom: "<div class=\"widget-toolbar-button export-btn dropdown\">" +
-                                "<span class=\"dropdown-toggle\" id=\"chartExportMenu\"  type=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"true\">" +
+                                "<a id=\"chartExportMenu" + self.widget.id + "\" class=\"dropdown-toggle\" href=\"#\" role=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">" +
                                     "<span class=\"fa fa-bars\"/>" +
-                                "</span>" +
-                                "<ul class=\"dropdown-menu\" aria-labelledby=\"chartExportMenu\">" +
+                                "</a>" +
+                                "<ul class=\"dropdown-menu\" aria-labelledby=\"chartExportMenu" + self.widget.id + "\">" +
                                     "<li><span class=\"print-command\" data-i18n=\"widgets/chart:export.print\"></span></li>" +
                                     "<li role=\"separator\" class=\"divider\"></li>" +
                                     "<li><span class=\"export-command\" data-i18n=\"widgets/chart:export.png\" mime-type=\"image/png\"></span></li>" +

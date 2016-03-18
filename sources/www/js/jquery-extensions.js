@@ -41,7 +41,7 @@ function getTextWidth(text, font) {
     * @returns {} 
     */
    $.fn.fitText = function (minFont) {
-      var minimumFontSize = minFont || 14;
+      var minimumFontSize = minFont || 10;
 
       return this.each(function () {
 

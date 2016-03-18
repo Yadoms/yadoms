@@ -103,17 +103,13 @@ Widget.prototype.getInnerWidth = function () {
 Widget.prototype.setHeight = function (newHeight) {
     if ((this.$gridWidget)) {
         this.$gridWidget.height(newHeight);
-        if (this.toolbarActivated)
-            this.$content.height(newHeight - this.$gridWidget.find("div.panel-widget-header").height());
-        else
-            this.$content.height(newHeight);
     }
 };
 
 Widget.prototype.setWidth = function (newWidth) {
     if ((this.$gridWidget)) {
         this.$gridWidget.width(newWidth);
-        this.$content.width(newWidth);
+        //this.$content.width(newWidth);
     }
 };
 
