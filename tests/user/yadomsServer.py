@@ -71,16 +71,20 @@ def killProcTree(pid, including_parent=True):
       child.kill()
       psutil.wait_procs(children, timeout=5)
    if including_parent:
-      parent.kill()
-      parent.wait(5)         
+      try:
+         parent.kill()
+         parent.wait(20)
+         print 'Process killed'
+      except:
+         print 'Error : process still alive'
+         raise
       
   
 def stop(yadomsProcess):
    """Kill Yadoms server with its sup-processes"""
 
-   print "Kill Yadoms..."
+   print 'Kill Yadoms...'
    killProcTree(yadomsProcess.pid)
-   print "Yadoms killed"
 
            
 def restart():

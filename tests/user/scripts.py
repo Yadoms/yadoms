@@ -5,15 +5,14 @@ import shutil
 import re
 
 def deleteAll():
-   """Remove all existing rules"""
-   
+   print 'Remove all scripts '
    resources.deleteTree(yadomsServer.scriptsPath())
             
          
 def deploy(scripts):
-   """Deploy scripts into Yadoms runtime path. Scripts are deployed in order"""
    
    deleteAll()
+   print 'Deploy scripts ', scripts
    
    for index, script in enumerate(scripts):
       ruleTargetPath = os.path.join(yadomsServer.scriptsPath(), "locals", "rule_" + str(index + 1))
