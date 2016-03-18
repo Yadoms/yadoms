@@ -17,7 +17,7 @@ function clockViewModel() {
      */
     function updateTime_(target) {
         target.time(moment().format("LT"));
-        target.$dateField.text(moment().format("LL"));
+        //target.$dateField.text(moment().format("LL"));
     }
 
     /**
@@ -27,10 +27,11 @@ function clockViewModel() {
     this.initialize = function () {
         var self = this;
 
-        //we set the date into toolbar
-        self.widgetApi.toolbar.appendCustom("<span class=\"date-field\"></span>");
+        self.widgetApi.toolbar({
+            activated: false
+        });
 
-        self.$dateField = self.widgetApi.find(".date-field");
+        //self.$dateField = self.widgetApi.find(".date-field");
 
         setInterval(function () {
             updateTime_(self);

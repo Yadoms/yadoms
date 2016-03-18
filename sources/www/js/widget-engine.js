@@ -273,7 +273,7 @@ function dispatchToWidgets(acq) {
                   var $battery = widget.$toolbar.find(".widget-toolbar-battery");
                   if ($battery) {
                      if ($battery.attr("keywordId") == acq.keywordId) {
-                        widget.viewModel.widgetApi.toolbar.updateBatteryLevel(acq.value);
+                        widget.viewModel.widgetApi.updateBatteryLevel(acq.value);
                      }
                   }
                }

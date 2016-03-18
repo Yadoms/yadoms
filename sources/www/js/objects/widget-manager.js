@@ -241,7 +241,7 @@ WidgetManager.updateWidgetConfiguration_ = function (widget) {
             widget.viewModel.configurationChanged();
 
         //we manage the toolbar api specific icons
-        widget.viewModel.widgetApi.toolbar.manageBatteryConfiguration();
+        widget.viewModel.widgetApi.manageBatteryConfiguration();
     }
     catch (e) {
         notifyWarning($.t("objects.widgetManager.widgetHasGeneratedAnExceptionDuringCallingMethod", { widgetName: widget.type, methodName: 'configurationChanged' }));

@@ -35,7 +35,7 @@ function counterDisplayViewModel() {
       });
 
       //we create the battery indicator
-      this.widgetApi.toolbar.addBatteryIconToWidget();
+      this.widgetApi.addBatteryIconToWidget();
    };
 
 

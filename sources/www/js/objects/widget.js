@@ -26,6 +26,7 @@ function Widget(id, idPage, type, title, sizeX, sizeY, position, configuration) 
     this.idPage = idPage;
     this.type = type;
     this.title = title;
+    this.toolbarActivated = true; //by default the toolbar is activated
 
     //we save initial values that could change over the time
     this.initialValues = {};
@@ -102,7 +103,10 @@ Widget.prototype.getInnerWidth = function () {
 Widget.prototype.setHeight = function (newHeight) {
     if ((this.$gridWidget)) {
         this.$gridWidget.height(newHeight);
-        this.$content.height(newHeight - this.$gridWidget.find("div.panel-widget-header").height());
+        if (this.toolbarActivated)
+            this.$content.height(newHeight - this.$gridWidget.find("div.panel-widget-header").height());
+        else
+            this.$content.height(newHeight);
     }
 };
 
