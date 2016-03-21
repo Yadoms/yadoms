@@ -25,10 +25,10 @@ CCurrentEnergy::CCurrentEnergy(boost::shared_ptr<yApi::IYPluginApi> context, con
    if (rbuf.CURRENT_ENERGY.count == 0)
    {
       m_totalPowerAvailable = true;
-      unsigned long totalPower = (unsigned long) (rbuf.CURRENT_ENERGY.total3 << 24 | rbuf.CURRENT_ENERGY.total4 << 16 | rbuf.CURRENT_ENERGY.total5 << 8 | rbuf.CURRENT_ENERGY.total6);
+      unsigned long totalPower = static_cast<unsigned long>(rbuf.CURRENT_ENERGY.total3 << 24 | rbuf.CURRENT_ENERGY.total4 << 16 | rbuf.CURRENT_ENERGY.total5 << 8 | rbuf.CURRENT_ENERGY.total6);
       totalPower += rbuf.CURRENT_ENERGY.total2 * 2 ^ 32;
       totalPower += rbuf.CURRENT_ENERGY.total1 * 2 ^ 40;
-      m_totalPower.set((unsigned long) (totalPower / 223.666));
+      m_totalPower.set(static_cast<unsigned long>(totalPower / 223.666));
    }
 
    m_batteryLevel.set(NormalizeBatteryLevel(rbuf.CURRENT_ENERGY.battery_level));
@@ -86,7 +86,7 @@ const std::string& CCurrentEnergy::getDeviceName() const
 void CCurrentEnergy::buildDeviceName()
 {
    std::ostringstream ssdeviceName;
-   ssdeviceName << (unsigned int)m_subType << "." << (unsigned int)m_id;
+   ssdeviceName << static_cast<unsigned int>(m_subType) << "." << static_cast<unsigned int>(m_id);
    m_deviceName = ssdeviceName.str();
 }
 
