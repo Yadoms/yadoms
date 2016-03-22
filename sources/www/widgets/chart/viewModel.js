@@ -146,7 +146,7 @@ widgetViewModelCtor =
                    { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"YEAR\"><span data-i18n=\"widgets/chart:navigator.year\"/></div>" },
                    { separator: ""},
                    { custom: "<div class=\"widget-toolbar-button export-btn dropdown\">" +
-                                "<a id=\"chartExportMenu" + self.widget.id + "\" class=\"dropdown-toggle\" href=\"#\" role=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">" +
+                                "<a id=\"chartExportMenu" + self.widget.id + "\" data-target=\"#\" class=\"widget-toolbar-button export-btn dropdown\" role=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">" +
                                     "<span class=\"fa fa-bars\"/>" +
                                 "</a>" +
                                 "<ul class=\"dropdown-menu\" aria-labelledby=\"chartExportMenu" + self.widget.id + "\">" +

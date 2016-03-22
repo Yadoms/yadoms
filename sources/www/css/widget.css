@@ -65,8 +65,8 @@
 
 .panel-widget-header {
     text-align: center;
-    overflow: hidden;
     white-space: nowrap;
+    max-height: 25px;
     -moz-text-overflow: ellipsis;
     text-overflow: ellipsis;
     padding: 1px 0;
@@ -149,6 +149,10 @@
     margin-left: 4px;
     margin-right: 4px;
     cursor: pointer;
+}
+
+.widget-toolbar-button:hover {
+    color: white;
 }
 
 .widget-toolbar-separator {
