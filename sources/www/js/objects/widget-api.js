@@ -106,9 +106,9 @@ WidgetApi.prototype.toolbar = function (options) {
 
         //we manage title
         if (self.widget.displayTitle)
-            self.find(".panel-widget-title").addClass("hidden");
-        else
             self.find(".panel-widget-title").removeClass("hidden");
+        else
+            self.find(".panel-widget-title").addClass("hidden");
 
         //battery
         if (options.batteryItem) {

@@ -230,9 +230,11 @@ WidgetManager.updateToServer = function (widget) {
  */
 WidgetManager.updateWidgetConfiguration_ = function (widget) {
     try {
-        //Update the widget title
-        widget.$gridWidget.find('div.panel-widget-title').text(widget.title);
-
+        //Update the widget title if displayed
+        if (widget.displayTitle)
+            widget.$gridWidget.find('div.panel-widget-title').text(widget.title);
+        else
+            widget.$gridWidget.find('div.panel-widget-title').text("");
         //we clear the listened device list before call the configuration
         widget.listenedKeywords = [];
 
@@ -597,10 +599,10 @@ WidgetManager.createGridWidget = function (widget) {
           "<div class=\"panel-widget-customization-overlay customization-item hidden\">\n" +
              "<div class=\"customizationToolbar widgetCustomizationToolbar\">";
 
-    //TODO : check is title is defined. If yes always show cog else show cog only if there is configuration
-    //if (!isNullOrUndefined(widget.package.configurationSchema)) {
+    //the configuration button is visible only if there is a custom title or a confgiuration for this widget
+    if ((parseBool(widget.package.hasTitle)) || (widget.package.configurationSchema)) {
         domWidget += "<div class=\"customizationButton widgetCustomizationButton btn-configure-widget\"><i class=\"fa fa-cog\"></i></div>\n";
-    //}
+    }
 
     var type = widget.type;
     if (!isNullOrUndefined(widget.downgraded)) {

@@ -33,15 +33,23 @@
             var $modalBody = $('div#configure-widget-modal .modal-body');
             $modalBody.empty();
             $('div#configure-widget-modal form').unbind("submit");
+            debugger;
+            //we display title text field only if the widget allows it in its package.json
+            if (parseBool(widgetToConfigure.package.hasTitle)) {
+                //we append the text title section
+                var nameParameter = new StringParameterHandler("modals.configure-widget.", "titleName", { required: "false" }, widgetToConfigure.title);
+                $modalBody.append(nameParameter.getDOMObject());
+                //we finish title instantiation
+                if ($.isFunction(nameParameter.applyScript))
+                    nameParameter.applyScript();
 
-            //we append the text title section
-            var nameParameter = new StringParameterHandler("modals.configure-widget.", "titleName", { required: "false" }, widgetToConfigure.title);
-            $modalBody.append(nameParameter.getDOMObject());
-            //we finish friendlyNameParameter instantiation
-            if ($.isFunction(nameParameter.applyScript))
-                nameParameter.applyScript();
+            }
 
-            var configMgr = new ConfigurationControlManager(widgetToConfigure.package.configurationSchema, widgetToConfigure.configuration, "widgets/" + widgetToConfigure.type + ":configurationSchema.", $modalBody);
+            var configMgr = null;
+
+            if (widgetToConfigure.package.configurationSchema) {
+                configMgr = new ConfigurationControlManager(widgetToConfigure.package.configurationSchema, widgetToConfigure.configuration, "widgets/" + widgetToConfigure.type + ":configurationSchema.", $modalBody);
+            }
 
             //i18n
             $modalBody.i18n();
@@ -55,9 +63,14 @@
                 },
                 submitSuccess: function($form, event) {
                     event.preventDefault();
-                    widgetToConfigure.configuration = configMgr.getCurrentConfiguration();
 
-                    widgetToConfigure.title = $form.find("input")[0].value;
+                    if (configMgr)
+                        widgetToConfigure.configuration = configMgr.getCurrentConfiguration();
+
+                    if (parseBool(widgetToConfigure.package.hasTitle))
+                        widgetToConfigure.title = $form.find("input")[0].value;
+                    else
+                        widgetToConfigure.title = "";
 
                     //we clear the current id
                     widgetToConfigure = undefined;
