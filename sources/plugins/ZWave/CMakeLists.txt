@@ -25,6 +25,8 @@ set(ZWAVE_PLUGIN_SOURCES
 	OpenZWaveNodeKeywordBase.cpp 
 	OpenZWaveNodeKeywordSwitch.h
 	OpenZWaveNodeKeywordSwitch.cpp 
+	OpenZWaveNodeKeywordSensorMultilevelValue.h
+	OpenZWaveNodeKeywordSensorMultilevelValue.cpp 
 	OpenZWaveNodeKeywordFactory.h
 	OpenZWaveNodeKeywordFactory.cpp 
 	KeywordContainer.h

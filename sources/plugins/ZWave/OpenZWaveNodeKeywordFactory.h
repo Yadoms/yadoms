@@ -3,6 +3,8 @@
 #include "OpenZWaveCommandClass.h"
 #include <value_classes/Value.h>
 #include "IOpenZWaveNodeKeyword.h"
+#include <shared/plugin/yPluginApi/historization/IHistorizable.h>
+#include <Notification.h>
 
 class COpenZWaveNodeKeywordFactory
 {
@@ -16,6 +18,7 @@ public:
    //--------------------------------------------------------------
    static boost::shared_ptr<IOpenZWaveNodeKeyword> createKeyword(ECommandClass commandClass, const std::string & keyword, OpenZWave::ValueID & value);
 
+   static boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> generateHistoriser(OpenZWave::Notification const* _notification);
 };
 
 
