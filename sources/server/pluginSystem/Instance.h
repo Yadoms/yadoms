@@ -9,6 +9,7 @@
 #include <shared/event/EventHandler.hpp>
 #include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
 #include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
+#include "IInstance.h"
 #include "ILibrary.h"
 #include "ManagerEvent.h"
 #include "IQualifier.h"
@@ -27,7 +28,7 @@ namespace pluginSystem
    //--------------------------------------------------------------
    /// \brief	this class is used to manage a plugin instance. 
    //--------------------------------------------------------------
-   class CInstance : public shared::CThreadBase
+   class CInstance : public IInstance, /*TODO virer ?*/shared::CThreadBase
    {
    public:
       //--------------------------------------------------------------

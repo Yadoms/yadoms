@@ -122,7 +122,7 @@ namespace automation
       //-----------------------------------------------------
       ///\brief               Method of the thread managing rule asynchronous events
       //-----------------------------------------------------
-      void ruleEventsThreadDoWord();
+      void ruleEventsThreadDoWork();
 
    private:
       //-----------------------------------------------------
@@ -131,7 +131,7 @@ namespace automation
       boost::shared_ptr<database::IRuleRequester> m_ruleRequester;
 
       //-----------------------------------------------------
-      ///\brief               Flag indicating that Yadoms is being shutdown, so don't record rules stop in database
+      ///\brief               Event handler to manage events on all rules
       //-----------------------------------------------------
       boost::shared_ptr<shared::event::CEventHandler> m_ruleEventHandler;
 
@@ -164,8 +164,8 @@ namespace automation
       //-----------------------------------------------------
       ///\brief               The handlers to notify when a rule stop (potentially several handlers for one rule)
       //-----------------------------------------------------
-      mutable boost::recursive_mutex m_ruleStopNotififersMutex;
-      std::map<int, std::set<boost::shared_ptr<shared::event::CEventHandler> > > m_ruleStopNotififers;
+      mutable boost::recursive_mutex m_ruleStopNotifiersMutex;
+      std::map<int, std::set<boost::shared_ptr<shared::event::CEventHandler> > > m_ruleStopNotifiers;
    };
 	
 } // namespace automation	

@@ -15,7 +15,6 @@ private:
    enum
    {
       kStopRequested = shared::event::kUserFirstId,   // Yadoms stop was required
-      kPluginManagerEvent,                            // Event from plugin manager
       kSystemEvent,                                   // Event from system
    };
 

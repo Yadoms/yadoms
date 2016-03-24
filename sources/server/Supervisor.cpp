@@ -77,7 +77,7 @@ void CSupervisor::run()
       // Create the Plugin manager
       const std::string pluginsPath = startupOptions->getPluginsPath();
       boost::shared_ptr<pluginSystem::CManager> pluginManager(new pluginSystem::CManager(
-         pluginsPath, pDataProvider, dal, m_EventHandler, kPluginManagerEvent));
+         pluginsPath, pDataProvider, dal, m_EventHandler, dal->getEventLogger()));
       shared::CServiceLocator::instance().push<pluginSystem::CManager>(pluginManager);
 
       // Start the plugin gateway
@@ -135,10 +135,6 @@ void CSupervisor::run()
          {
          case kStopRequested:
             stopIsRequested = true;
-            break;
-
-         case kPluginManagerEvent:
-            pluginManager->signalEvent(m_EventHandler->getEventData<pluginSystem::CManagerEvent>());
             break;
 
          case kSystemEvent:

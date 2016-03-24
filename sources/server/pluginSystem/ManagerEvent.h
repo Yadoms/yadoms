@@ -11,7 +11,7 @@ namespace pluginSystem
    //--------------------------------------------------------------
    /// \brief	    Event in the plugin manager
    //--------------------------------------------------------------
-   class CManagerEvent
+   class CManagerEvent //TODO virer ?
    {
    public:
       //--------------------------------------------------------------

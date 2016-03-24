@@ -24,7 +24,7 @@ CRuleManager::CRuleManager(boost::shared_ptr<database::IRuleRequester> dbRequest
    m_scriptManager(boost::make_shared<script::CManager>("scriptInterpreters", pluginGateway, configurationManager, dbAcquisitionRequester, dbDeviceRequester, dbKeywordRequester, dbRecipientRequester)),
    m_ruleStateHandler(boost::make_shared<CRuleStateHandler>(dbRequester, eventLogger, m_ruleEventHandler)),
    m_yadomsShutdown(false),
-   m_ruleEventsThread(boost::make_shared<boost::thread>(boost::bind(&CRuleManager::ruleEventsThreadDoWord, this)))
+   m_ruleEventsThread(boost::make_shared<boost::thread>(boost::bind(&CRuleManager::ruleEventsThreadDoWork, this)))
 {
    startAllRules();
 }
@@ -138,8 +138,8 @@ void CRuleManager::stopRuleAndWaitForStopped(int ruleId)
 {
    boost::shared_ptr<shared::event::CEventHandler> waitForStoppedRuleHandler(boost::make_shared<shared::event::CEventHandler>());
    {
-      boost::lock_guard<boost::recursive_mutex> lock(m_ruleStopNotififersMutex);
-      m_ruleStopNotififers[ruleId].insert(waitForStoppedRuleHandler);
+      boost::lock_guard<boost::recursive_mutex> lock(m_ruleStopNotifiersMutex);
+      m_ruleStopNotifiers[ruleId].insert(waitForStoppedRuleHandler);
    }
 
    if (isRuleStarted(ruleId))
@@ -153,8 +153,8 @@ void CRuleManager::stopRuleAndWaitForStopped(int ruleId)
    }
 
    {
-      boost::lock_guard<boost::recursive_mutex> lock(m_ruleStopNotififersMutex);
-      m_ruleStopNotififers[ruleId].erase(waitForStoppedRuleHandler);
+      boost::lock_guard<boost::recursive_mutex> lock(m_ruleStopNotifiersMutex);
+      m_ruleStopNotifiers[ruleId].erase(waitForStoppedRuleHandler);
    }
 }
 
@@ -175,9 +175,9 @@ void CRuleManager::onRuleStopped(int ruleId, const std::string& error)
 
    {
       // Notify all handlers for this rule
-      boost::lock_guard<boost::recursive_mutex> lock(m_ruleStopNotififersMutex);
-      std::map<int, std::set<boost::shared_ptr<shared::event::CEventHandler> > >::const_iterator itEventHandlerSetToNotify = m_ruleStopNotififers.find(ruleId);
-      if (itEventHandlerSetToNotify != m_ruleStopNotififers.end())
+      boost::lock_guard<boost::recursive_mutex> lock(m_ruleStopNotifiersMutex);
+      std::map<int, std::set<boost::shared_ptr<shared::event::CEventHandler> > >::const_iterator itEventHandlerSetToNotify = m_ruleStopNotifiers.find(ruleId);
+      if (itEventHandlerSetToNotify != m_ruleStopNotifiers.end())
          for (std::set<boost::shared_ptr<shared::event::CEventHandler> >::const_iterator itHandler = itEventHandlerSetToNotify->second.begin(); itHandler != itEventHandlerSetToNotify->second.end(); ++itHandler)
             (*itHandler)->postEvent(shared::event::kUserFirstId);
    }
@@ -312,7 +312,7 @@ void CRuleManager::deleteRule(int id)
    }
 }
 
-void CRuleManager::ruleEventsThreadDoWord()
+void CRuleManager::ruleEventsThreadDoWork()
 {
    try
    {

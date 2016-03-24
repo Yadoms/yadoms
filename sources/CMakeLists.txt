@@ -1,7 +1,7 @@
 ##################################################################################################
 ## CMakeList.txt for YADOMS
 ##
-## This file generates projects/makefiles for the compete Yadoms software
+## This file generates projects/makefiles for the complete Yadoms software
 ##
 ## This file actually works for
 ##   Windows 7 x64, MSVC 12
@@ -374,7 +374,9 @@ set(YADOMS_SRC
 	server/pluginSystem/DummyQualifier.cpp
 	server/pluginSystem/IdentityForQualifier.cpp
 	server/pluginSystem/IdentityForQualifier.h
+	server/pluginSystem/IInstance.h
 	server/pluginSystem/ILibrary.h
+	server/pluginSystem/IPluginStateHandler.h
 	server/pluginSystem/IndicatorQualifier.h
 	server/pluginSystem/IndicatorQualifier.cpp
 	server/pluginSystem/Information.cpp
@@ -398,6 +400,8 @@ set(YADOMS_SRC
    server/pluginSystem/BindingQueryRequest.h
    server/pluginSystem/ManuallyDeviceCreationTestData.cpp
    server/pluginSystem/ManuallyDeviceCreationTestData.h
+	server/pluginSystem/PluginStateHandler.h
+	server/pluginSystem/PluginStateHandler.cpp
    server/pluginSystem/yPluginApiImplementation.h
    server/pluginSystem/yPluginApiImplementation.cpp
 	server/pluginSystem/internalPlugin/System.h

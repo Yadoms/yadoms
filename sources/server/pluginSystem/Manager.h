@@ -7,6 +7,7 @@
 
 #include "ILibrary.h"
 #include "Instance.h"
+#include "IPluginStateHandler.h"
 #include "ManagerEvent.h"
 #include "database/IDataProvider.h"
 #include "database/IPluginRequester.h"
@@ -14,6 +15,7 @@
 #include <shared/StringExtension.h>
 #include <shared/event/EventHandler.hpp>
 #include "dataAccessLayer/IDataAccessLayer.h"
+#include "dataAccessLayer/IEventLogger.h"
 #include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
 
 namespace pluginSystem
@@ -23,7 +25,7 @@ namespace pluginSystem
    /// \brief	this class is used to manage plugin. 
    ///         It search for plugins into directories and generate plugin factories
    //--------------------------------------------------------------
-   class CManager
+   class CManager //TODO faire le ménage dans les méthodes et membres
    {
    public:
       //--------------------------------------------------------------
@@ -38,14 +40,14 @@ namespace pluginSystem
       /// \param [in]   dataProvider            Database link
       /// \param [in]   dataAccessLayer         The database access layer
       /// \param [in]   supervisor              The supervisor event handler
-      /// \param [in]   pluginManagerEventId    The ID to use to send events to supervisor
+      /// \param[in]    eventLogger             Main event logger
       //--------------------------------------------------------------
       CManager(
          const std::string & initialDir,
          boost::shared_ptr<database::IDataProvider> dataProvider,
          boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
          boost::shared_ptr<shared::event::CEventHandler> supervisor,
-         int pluginManagerEventId);
+         boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger);
 
       //--------------------------------------------------------------
       /// \brief			Initialization, used for the 2-steps construction
@@ -157,12 +159,6 @@ namespace pluginSystem
 
 
       //--------------------------------------------------------------
-      /// \brief           Signal an asynchronous event on plugin manager
-      /// \param [in] event   Event data
-      //--------------------------------------------------------------
-      void signalEvent(const CManagerEvent& event);
-
-      //--------------------------------------------------------------
       /// \brief        Update the plugin list if needed (after plugin installation for example)
       //--------------------------------------------------------------
       void updatePluginList();
@@ -200,7 +196,44 @@ namespace pluginSystem
       //--------------------------------------------------------------
       void stopAllInstancesOfPlugin(const std::string& pluginName);
 
+      //-----------------------------------------------------
+      ///\brief               Method of the thread managing plugin asynchronous events
+      //-----------------------------------------------------
+      void pluginEventsThreadDoWork();
+
    private:
+
+      //-----------------------------------------------------
+      ///\brief               Start all instances
+      //-----------------------------------------------------
+      void startAllInstances();
+
+      //-----------------------------------------------------
+      ///\brief               Start all specified instances
+      ///\param[in] instances Instances to start
+      ///\return              true if all instances were successfully started
+      //-----------------------------------------------------
+      bool startInstances(const std::vector<boost::shared_ptr<database::entities::CPlugin> >& instances);
+
+      //-----------------------------------------------------
+      ///\brief               Stop all started instances
+      //-----------------------------------------------------
+      void stopInstances();
+
+      //-----------------------------------------------------
+      ///\brief               Stop the instance and wait for stopped
+      ///\param[in] id        The instance ID
+      ///\throw               CPluginException if timeout
+      //-----------------------------------------------------
+      void stopInstanceAndWaitForStopped(int id);
+
+      //-----------------------------------------------------
+      ///\brief               Called when instance is stopped
+      ///\param[in] id        The instance ID
+      ///\param[in] error     Error associated to event (empty if not error)
+      //-----------------------------------------------------
+      void onInstanceStopped(int id, const std::string& error = std::string());
+
       //--------------------------------------------------------------
       /// \brief        Returns all plugin directories installed
       /// \return       a list of all found plugin directories
@@ -259,7 +292,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief			Map of all running instances (key are plugin instance id)
       //--------------------------------------------------------------
-      typedef std::map<int, boost::shared_ptr<CInstance> > PluginInstanceMap;
+      typedef std::map<int, boost::shared_ptr<IInstance> > PluginInstanceMap;
       PluginInstanceMap m_runningInstances;
 
       //--------------------------------------------------------------
@@ -288,14 +321,30 @@ namespace pluginSystem
       boost::shared_ptr<shared::event::CEventHandler> m_supervisor;
 
       //--------------------------------------------------------------
-      /// \brief			ID to use to send events to supervisor
-      //--------------------------------------------------------------
-      const int m_pluginManagerEventId;
-
-      //--------------------------------------------------------------
       /// \brief			Data access layer
       //--------------------------------------------------------------
       boost::shared_ptr<dataAccessLayer::IDataAccessLayer> m_dataAccessLayer;
+
+      //-----------------------------------------------------
+      ///\brief               The plugin state handler
+      //-----------------------------------------------------
+      boost::shared_ptr<IPluginStateHandler> m_pluginStateHandler;
+
+      //-----------------------------------------------------
+      ///\brief               Event handler to manage events on all plugins
+      //-----------------------------------------------------
+      boost::shared_ptr<shared::event::CEventHandler> m_pluginEventHandler;
+
+      //-----------------------------------------------------
+      ///\brief               Thread managing plugin asynchronous events
+      //-----------------------------------------------------
+      boost::shared_ptr<boost::thread> m_pluginEventsThread;
+
+      //-----------------------------------------------------
+      ///\brief               The handlers to notify when an instance stop (potentially several handlers for one instance)
+      //-----------------------------------------------------
+      mutable boost::recursive_mutex m_instanceStopNotifiersMutex;
+      std::map<int, std::set<boost::shared_ptr<shared::event::CEventHandler> > > m_instanceStopNotifiers;
    };
 
 } // namespace pluginSystem
