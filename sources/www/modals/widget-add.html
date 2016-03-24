@@ -11,50 +11,49 @@
             <div class="modal-body">
                 <div id="add-widget-details" widget-type="">
                     <div class="row header">
-                       <div class="col-md-4 cell">
-                          <img alt=""/>
-                       </div>
-                       <div class="col-md-4 cell">
-                          <h1><span class="widget-name"></span></h1>
-                       </div>
-                       <div class="col-md-4 cell">
-                          <button id="btn-confirm-add-widget" type="button" class="btn btn-success">
+                        <div class="col-md-4 cell">
+                            <img alt="" />
+                        </div>
+                        <div class="col-md-4 cell">
+                            <h1><span class="widget-name"></span></h1>
+                        </div>
+                        <div class="col-md-4 cell">
+                            <button id="btn-confirm-add-widget" type="button" class="btn btn-success disabled">
                                 <i class="fa fa-plus"></i>&nbsp;
-                             <span data-i18n="modals.add-widget.add"></span>
-                          </button>
-                       </div>
+                                <span data-i18n="modals.add-widget.add"></span>
+                            </button>
+                        </div>
                     </div>
-                    <div  class="row">
-                       <div class="table-responsive">
-                          <table class="table">
-                             <tr>
-                                <td class="header-info" data-i18n="modals.add-widget.descriptionHeader"></td>
-                                <td class="detail-info widget-description"></td>
-                             </tr>
-                             <tr>
-                                <td class="header-info" data-i18n="modals.add-widget.versionHeader"></td>
-                                <td class="detail-info widget-version"></td>
-                             </tr>
-                             <tr>
-                                <td class="header-info" data-i18n="modals.add-widget.authorHeader"></td>
-                                <td class="detail-info widget-author"></td>
-                             </tr>
-                          </table>
-                       </div>
+                    <div class="row">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <tr>
+                                    <td class="header-info" data-i18n="modals.add-widget.descriptionHeader"></td>
+                                    <td class="detail-info widget-description"></td>
+                                </tr>
+                                <tr>
+                                    <td class="header-info" data-i18n="modals.add-widget.versionHeader"></td>
+                                    <td class="detail-info widget-version"></td>
+                                </tr>
+                                <tr>
+                                    <td class="header-info" data-i18n="modals.add-widget.authorHeader"></td>
+                                    <td class="detail-info widget-author"></td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
                 </div>
                 <div id="add-widget-list">
-                    <ul id="ul-add-widget">
-                    </ul>
+                    <ul id="ul-add-widget"></ul>
                 </div>
             </div>
-           <div class="modal-footer">
-              <!-- Show button when something behind is available (see similar comments)
-                  <button id="btn-get-more-widget" type="button" class="btn btn-primary pull-left" data-i18n="modals.add-widget.getMore"></button>
-              -->
-              <button id="btn-close-details" type="button" class="btn btn-default pull-left hidden"><i class="fa fa-reply"></i>&nbsp;<span data-i18n="modals.add-widget.goBack"></span></button>
-              <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="common.close">Close</button>
-           </div>
+            <div class="modal-footer">
+                <!-- Show button when something behind is available (see similar comments)
+                    <button id="btn-get-more-widget" type="button" class="btn btn-primary pull-left" data-i18n="modals.add-widget.getMore"></button>
+                -->
+                <button id="btn-close-details" type="button" class="btn btn-default pull-left hidden"><i class="fa fa-reply"></i>&nbsp;<span data-i18n="modals.add-widget.goBack"></span></button>
+                <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="common.close">Close</button>
+            </div>
         </div>
     </div>
 </div>
@@ -64,187 +63,208 @@
     /**
      * Ask for widget packages to the REST server
      */
-   Yadoms.askWidgetPackages = function() {
-      WidgetPackageManager.getAll()
-         .done(requestWidgetsTypeDone)
-         .fail(function(error) {
-            notifyError($.t("objects.widgetPackageManager.errorDuringGettingPackages"), error);
-         });
-   };
+    Yadoms.askWidgetPackages = function () {
+        WidgetPackageManager.getAll()
+           .done(requestWidgetsTypeDone)
+           .fail(function (error) {
+               notifyError($.t("objects.widgetPackageManager.errorDuringGettingPackages"), error);
+           });
+    };
 
     /**
      * Callback of the request widget packages
      * @returns {Function}
      */
-    function requestWidgetsTypeDone()
-    {
+    function requestWidgetsTypeDone() {
         //if the details is visible, we must hide it
         var $detailsDiv = $("div#add-widget-details");
         $detailsDiv.hide();
 
-       //we replace the "go back" button by the "Get more" one
-        
-       /*Show button when something behind is available (see similar comments)
-       $("button#btn-get-more-widget").removeClass("hidden");
-       */
-       $("button#btn-close-details").addClass("hidden");
+        //we replace the "go back" button by the "Get more" one
+
+        /*Show button when something behind is available (see similar comments)
+        $("button#btn-get-more-widget").removeClass("hidden");
+        */
+        $("button#btn-close-details").addClass("hidden");
 
         $("ul#ul-add-widget").empty();
-        for(var index in WidgetPackageManager.widgetPackages) {
-          if (WidgetPackageManager.widgetPackages.hasOwnProperty(index)) {
-             var value = WidgetPackageManager.widgetPackages[index].package;
-             //if the widget begin with dev-, it's a developer widget use only
-             if ((value) && (!value.type.startsWith("dev-"))) {
-                var i18NContext = value.type + ":";
-                $("ul#ul-add-widget").append(
-                   "<li>" +
-                   "<button type=\"button\" class=\"btn-select-widget btn btn-default\" widget-type=\"" + value.type + "\">" +
-                   "<div class=\"widget-preview\" ><img src=\"/widgets/" + value.type + "/preview.png\"></div>" +
-                   "<span class=\"widget-name\" data-i18n=\"widgets/" + i18NContext + "name\"></span>" +
-                   "</button>" +
-                   "</li>"
-                );
-             }
-          }
-       }
 
-       $("button.btn-select-widget").unbind().bind('click', function (e) {
-            var type = $(e.currentTarget).attr("widget-type");
-            if (!isNullOrUndefined(type)) {
-                var value = WidgetPackageManager.widgetPackages[type].package;
-                if (!isNullOrUndefined(value)) {
-                   //we replace the "Get more" button by the "go back" one
-                    /*Show button when something behind is available (see similar comments)
-                    $("button#btn-get-more-widget").addClass("hidden");
-                    */
-                    $("button#btn-close-details").removeClass("hidden");
-
-                    //we show more details about the widget
-                    var $detailsDiv = $("div#add-widget-details");
-                    $detailsDiv.attr("widget-type", type);
-
-                    //we fill the details div
-                    $detailsDiv.find("img").attr("src", "/widgets/" + value.type + "/preview.png");
-                    $detailsDiv.find("span.widget-name").text($.t("widgets/" + type + ":name", { defaultValue: value.name }));
-                    $detailsDiv.find("td.widget-description").text($.t("widgets/" + type + ":description", { defaultValue: value.description }));
-                    $detailsDiv.find("td.widget-version").text(value.version);
-                    $detailsDiv.find("td.widget-author").text(value.author);
-
-                    $detailsDiv.fadeIn();
-                }
-            }
-        });
-
+        //we translate the container
         $("ul#ul-add-widget").i18n();
 
         //we display the modal
         $('div#new-widget-modal').modal({ backdrop: 'static' });
-    }
+        
+        var deferredArray = [];
 
-    /**
-     * Callback to the click of the button to return to the list of widgets
-     */
-    $("button#btn-close-details").click(function () {
-       var $detailsDiv = $("div#add-widget-details");
-       $detailsDiv.fadeOut();
-       //we replace the "go back" button by the "Get more" one
-       /*Show button when something behind is available (see similar comments)
-       $("button#btn-get-more-widget").removeClass("hidden");
-       */
-       $("button#btn-close-details").addClass("hidden");
-    });
+        for (var index in WidgetPackageManager.widgetPackages) {
+            if (WidgetPackageManager.widgetPackages.hasOwnProperty(index)) {
+                var value = WidgetPackageManager.widgetPackages[index].package;
 
-    /**
-     * Callback to the click of the button to confirm an add of a new widget
-     */
-    $("button#btn-confirm-add-widget").click(function () {
-       var currentPage = PageManager.getCurrentPage();
-       assert(!isNullOrUndefined(currentPage), "A page must be selected");
+                var deferred = YadomsInformationManager.getList();
+                deferredArray.push(deferred);
+                deferred.done(function (currPakage) {
+                    var currentPackage = currPakage;
+                    return function (data) {
+                        //TODO : Remove and adapt when REST query will be updated
+                        data.developperMode = true;
 
-       //we replace the "go back" button by the "Get more" one for next display
-       /*Show button when something behind is available (see similar comments)
-       $("button#btn-get-more-widget").removeClass("hidden");
-       */
-       $("button#btn-close-details").addClass("hidden");
+                        if ((!currentPackage.type.startsWith("system-")) && ((data.developperMode) || (!currentPackage.type.startsWith("dev-")))) {
+                            var i18NContext = currentPackage.type + ":";
+                            $("ul#ul-add-widget").append(
+                                "<li>" +
+                                "<button type=\"button\" class=\"btn-select-widget btn btn-default\" widget-type=\"" + currentPackage.type + "\">" +
+                                "<div class=\"widget-preview\" ><img src=\"/widgets/" + currentPackage.type + "/preview.png\"></div>" +
+                                "<span class=\"widget-name\" data-i18n=\"widgets/" + i18NContext + "name\"></span>" +
+                                "</button>" +
+                                "</li>"
+                            );
+                        }
 
-       //we close the new widget modal and wait for the modal being closed before continuing
+                        //we translate the new item
+                        $("ul#ul-add-widget:last-child").i18n();
+                    }
+                }(value));
+            }
+        }
 
-        $("div#new-widget-modal").on("hidden.bs.modal", function() {
+        //when we have finished request all widget we can enable buttons
+        $.whenAll(deferredArray)
+            .done(function () {
+                $("button.btn-select-widget").unbind().bind('click', function (e) {
+                    var type = $(e.currentTarget).attr("widget-type");
+                    if (!isNullOrUndefined(type)) {
+                        var value = WidgetPackageManager.widgetPackages[type].package;
+                        if (!isNullOrUndefined(value)) {
+                            $("button#btn-close-details").removeClass("hidden");
+
+                            //we show more details about the widget
+                            var $detailsDiv = $("div#add-widget-details");
+                            $detailsDiv.attr("widget-type", type);
+
+                            //we fill the details div
+                            $detailsDiv.find("img").attr("src", "/widgets/" + value.type + "/preview.png");
+                            $detailsDiv.find("span.widget-name").text($.t("widgets/" + type + ":name", { defaultValue: value.name }));
+                            $detailsDiv.find("td.widget-description").text($.t("widgets/" + type + ":description", { defaultValue: value.description }));
+                            $detailsDiv.find("td.widget-version").text(value.version);
+                            $detailsDiv.find("td.widget-author").text(value.author);
+
+                            $detailsDiv.fadeIn();
+                        }
+                    }
+                });
+
+                $("button#btn-confirm-add-widget").removeClass("disabled");
+            });
+
+        /**
+         * Callback to the click of the button to return to the list of widgets
+         */
+        $("button#btn-close-details").click(function () {
+            var $detailsDiv = $("div#add-widget-details");
+            $detailsDiv.fadeOut();
+            //we replace the "go back" button by the "Get more" one
+            /*Show button when something behind is available (see similar comments)
+            $("button#btn-get-more-widget").removeClass("hidden");
+            */
+            $("button#btn-close-details").addClass("hidden");
+        });
+
+        /**
+         * Callback to the click of the button to confirm an add of a new widget
+         */
+        $("button#btn-confirm-add-widget").click(function () {
+            var currentPage = PageManager.getCurrentPage();
+            assert(!isNullOrUndefined(currentPage), "A page must be selected");
+
+            //we replace the "go back" button by the "Get more" one for next display
+            /*Show button when something behind is available (see similar comments)
+            $("button#btn-get-more-widget").removeClass("hidden");
+            */
+            $("button#btn-close-details").addClass("hidden");
+            //we close the new widget modal and wait for the modal being closed before continuing
+            $("div#new-widget-modal").modal("hide");
+        });
+
+        $("div#new-widget-modal").on("hidden.bs.modal", function () {
             var $detailsDiv = $("div#add-widget-details");
 
             var packageName = $detailsDiv.attr("widget-type");
 
-            //we get default size of the widget
-            var minX = 1;
-            var minY = 1;
+            if (packageName) {
 
-            var package = WidgetPackageManager.widgetPackages[packageName].package;
+                //we get default size of the widget
+                var minX = 1;
+                var minY = 1;
 
-            try {
-                minX = package.dimensions.min.x;
-                minY = package.dimensions.min.y;
-            }
-            catch (err) { }
+                var pkg = WidgetPackageManager.widgetPackages[packageName].package;
 
-            var maxX = Infinity;
-            var maxY = Infinity;
-            try {
-                maxX = package.dimensions.max.x;
-                maxY = package.dimensions.max.y;
-            }
-            catch (err) { }
+                try {
+                    minX = pkg.dimensions.min.x;
+                    minY = pkg.dimensions.min.y;
+                } catch (err) {
+                }
 
-            var defaultX = 1;
-            var defaultY = 1;
-            try {
-                defaultX = package.dimensions.default.x;
-                defaultY = package.dimensions.default.y;
-            }
-            catch (err) { }
+                var maxX = Infinity;
+                var maxY = Infinity;
+                try {
+                    maxX = pkg.dimensions.max.x;
+                    maxY = pkg.dimensions.max.y;
+                } catch (err) {
+                }
 
-            var sizeX = Math.min(maxX, Math.max(defaultX, minX));
-            var sizeY = Math.min(maxY, Math.max(defaultY, minY));
+                var defaultX = 1;
+                var defaultY = 1;
+                try {
+                    defaultX = pkg.dimensions.default.x;
+                    defaultY = pkg.dimensions.default.y;
+                } catch (err) {
+                }
 
-            //we create a fake widget to display configuration form
-            var newWidget = new Widget(-1, currentPage.id, packageName, "", sizeX * Yadoms.gridWidth, sizeY * Yadoms.gridHeight, 0, 0, "");
+                var sizeX = Math.min(maxX, Math.max(defaultX, minX));
+                var sizeY = Math.min(maxY, Math.max(defaultY, minY));
 
-            newWidget.package = package;
+                var currentPage = PageManager.getCurrentPage();
+                assert(!isNullOrUndefined(currentPage), "A page must be selected");
 
-            //we load configuration window only if the widget has a configuration
-            if (!isNullOrUndefined(newWidget.package.configurationSchema)) {
-               Yadoms.modals.widgetConfiguration.loadAsync()
-               .done(function () {
-                  Yadoms.configureWidget(newWidget, function () {
-                        //if the configuration has been validated we can create the widget
-                        createWidget(newWidget, currentPage);
-                    });
-                });
-            }
-            else {
-                //we directly create the widget
-                createWidget(newWidget, currentPage);
+                //we create a fake widget to display configuration form
+                var newWidget = new Widget(-1, currentPage.id, packageName, "", sizeX * Yadoms.gridWidth, sizeY * Yadoms.gridHeight, 0, 0, "");
+
+                newWidget.package = pkg;
+                //we load configuration window only if the widget has a configuration
+                if (!isNullOrUndefined(newWidget.package.configurationSchema)) {
+                    Yadoms.modals.widgetConfiguration.loadAsync()
+                        .done(function () {
+                            Yadoms.configureWidget(newWidget, function () {
+                                //if the configuration has been validated we can create the widget
+                                deb(newWidget, currentPage);
+                            });
+                        });
+                } else {
+                    //we directly create the widget
+                    createWidget(newWidget, currentPage);
+                }
             }
         });
-        $("div#new-widget-modal").modal("hide");
-    });
+    }
 
-   function createWidget(newWidget, currentPage) {
-      WidgetManager.createWidget(newWidget)
-      .done(function(w) {
-         //we indicate taht the widget has never been placed on   
-         w.position = 1000;
-         WidgetManager.loadWidget(w, currentPage, true)
-         .done(function () {
-          	//we update the filter for the websocket
-          	updateWebSocketFilter();
-         })
-		   .fail(function (errorMessage) {
-		      notifyError($.t("modals.add-widget.unableToCreateWidgetOfType", { "widgetType": newWidget.type }), errorMessage);
-		   });
-       })
-      .fail(function (errorMessage) {
-         notifyError($.t("modals.add-widget.unableToCreateWidgetOfType", { "widgetType": newWidget.type }), errorMessage);
-      });
-   }
+    function createWidget(newWidget, currentPage) {
+        WidgetManager.createWidget(newWidget)
+        .done(function (w) {
+            //we indicate taht the widget has never been placed on
+            w.position = 1000;
+            WidgetManager.loadWidget(w, currentPage, true)
+            .done(function () {
+                //we update the filter for the websocket
+                updateWebSocketFilter();
+            })
+              .fail(function (errorMessage) {
+                  notifyError($.t("modals.add-widget.unableToCreateWidgetOfType", { "widgetType": newWidget.type }), errorMessage);
+              });
+        })
+        .fail(function (errorMessage) {
+            notifyError($.t("modals.add-widget.unableToCreateWidgetOfType", { "widgetType": newWidget.type }), errorMessage);
+        });
+    }
 
 </script>

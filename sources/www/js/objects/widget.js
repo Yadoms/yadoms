@@ -34,7 +34,7 @@ function Widget(id, idPage, type, title, sizeX, sizeY, position, configuration) 
     this.initialValues.sizeY = sizeY;
     this.initialValues.position = position;
 
-    this.configuration = configuration;
+    this.configuration = configuration || "";
 
     this.viewModel = null;
 

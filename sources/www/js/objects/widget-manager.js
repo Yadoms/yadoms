@@ -8,7 +8,7 @@
  */
 function WidgetManager() { }
 
-WidgetManager.DeactivatedWidgetPackageName = "dev-deactivated-widget";
+WidgetManager.DeactivatedWidgetPackageName = "system-deactivated-widget";
 
 /**
  * Create a Widget instance
@@ -606,7 +606,7 @@ WidgetManager.createGridWidget = function (widget) {
 
     var type = widget.type;
     if (!isNullOrUndefined(widget.downgraded)) {
-        type = "dev-deactivated-widget";
+        type = WidgetManager.DeactivatedWidgetPackageNam;
     }
 
     domWidget += "<div class=\"customizationButton widgetCustomizationButton btn-delete-widget\"><i class=\"fa fa-trash-o\"></i></div>\n" +

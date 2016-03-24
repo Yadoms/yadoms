@@ -1,0 +1,6 @@
+{
+   "name": "Widget désactivé",
+   "description": "",
+   "deactivated" : "widget désactivé",
+   "deactivatedWithType" : "widget désactivé :  __widgetType__"
+}

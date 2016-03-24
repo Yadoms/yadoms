@@ -33,7 +33,7 @@
             var $modalBody = $('div#configure-widget-modal .modal-body');
             $modalBody.empty();
             $('div#configure-widget-modal form').unbind("submit");
-            debugger;
+
             //we display title text field only if the widget allows it in its package.json
             if (parseBool(widgetToConfigure.package.hasTitle)) {
                 //we append the text title section
