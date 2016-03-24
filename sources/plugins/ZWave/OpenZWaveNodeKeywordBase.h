@@ -25,7 +25,7 @@ public:
    
    // IOpenZWaveKeyword implementation
    virtual bool sendCommand(const std::string & commandData) = 0;
-   virtual const shared::plugin::yPluginApi::historization::IHistorizable & getLastKeywordValue() = 0;
+   virtual boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> getLastKeywordValue() = 0;
    // [END] IOpenZWaveKeyword implementation
       
 protected:

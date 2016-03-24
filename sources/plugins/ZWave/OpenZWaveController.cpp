@@ -273,9 +273,9 @@ void COpenZWaveController::OnNotification(OpenZWave::Notification const* _notifi
    {
    case OpenZWave::Notification::Type_ValueAdded:
    {
-      COpenZWaveNodeKeywordFactory::generateHistoriser(_notification);
+      COpenZWaveNodeKeywordFactory::generateHistoriser(_notification->GetValueID(), _notification->GetHomeId(), _notification->GetNodeId(), m_configuration->getIncludeSystemKeywords());
 
-      boost::shared_ptr<COpenZWaveNode> node = GetNode(_notification);
+      boost::shared_ptr<COpenZWaveNode> node = GetNode(_notification->GetValueID(), _notification->GetHomeId(), _notification->GetNodeId(), m_configuration->getIncludeSystemKeywords());
       if (node)
          node->registerCapacity(commandClass);
       break;
@@ -286,9 +286,9 @@ void COpenZWaveController::OnNotification(OpenZWave::Notification const* _notifi
 
    case OpenZWave::Notification::Type_ValueChanged:
    {
-      COpenZWaveNodeKeywordFactory::generateHistoriser(_notification);
+      COpenZWaveNodeKeywordFactory::generateHistoriser(_notification->GetValueID(), _notification->GetHomeId(), _notification->GetNodeId(), m_configuration->getIncludeSystemKeywords());
 
-      boost::shared_ptr<COpenZWaveNode> node = GetNode(_notification);
+      boost::shared_ptr<COpenZWaveNode> node = GetNode(_notification->GetValueID(), _notification->GetHomeId(), _notification->GetNodeId(), m_configuration->getIncludeSystemKeywords());
       if (node)
       {
          OpenZWave::ValueID::ValueGenre vGenre = vID.GetGenre();

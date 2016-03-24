@@ -16,7 +16,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
    template<class T>
    class CSingleHistorizableData : public IHistorizable
    {
-   protected:
+   public:
       //-----------------------------------------------------
       ///\brief                        Constructor
       ///\param[in] keywordName        the keyword name
@@ -42,7 +42,6 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       {
       }
 
-   public:
       //-----------------------------------------------------
       ///\brief                     Destructor
       //-----------------------------------------------------
@@ -94,7 +93,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       //-----------------------------------------------------
       virtual void setCommand(const std::string& yadomsCommand)
       {
-         m_value = Normalize(helper<T>::getInternal(yadomsCommand));
+         set(helper<T>::getInternal(yadomsCommand));
       }
 
       //-----------------------------------------------------
