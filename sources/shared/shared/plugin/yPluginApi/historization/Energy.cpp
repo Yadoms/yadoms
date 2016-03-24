@@ -6,7 +6,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
 {
 
    CEnergy::CEnergy(const std::string& keywordName, const EKeywordAccessMode& accessMode, const EMeasureType& measureType, typeInfo::CDoubleTypeInfo & additionalInfo)
-      :CSingleHistorizableData<long long>(keywordName, CStandardCapacities::Energy, accessMode, 0, measureType, additionalInfo)
+      :CSingleHistorizableData<Poco::Int64>(keywordName, CStandardCapacities::Energy, accessMode, 0, measureType, additionalInfo)
    {
    }
 

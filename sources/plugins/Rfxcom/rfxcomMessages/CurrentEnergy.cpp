@@ -24,10 +24,10 @@ CCurrentEnergy::CCurrentEnergy(boost::shared_ptr<yApi::IYPluginApi> context, con
 
    if (rbuf.CURRENT_ENERGY.count == 0)
    {
-      long long totalPower = rbuf.CURRENT_ENERGY.total3 << 24 | rbuf.CURRENT_ENERGY.total4 << 16 | rbuf.CURRENT_ENERGY.total5 << 8 | rbuf.CURRENT_ENERGY.total6;
+      Poco::Int64 totalPower = rbuf.CURRENT_ENERGY.total3 << 24 | rbuf.CURRENT_ENERGY.total4 << 16 | rbuf.CURRENT_ENERGY.total5 << 8 | rbuf.CURRENT_ENERGY.total6;
       totalPower += rbuf.CURRENT_ENERGY.total2 * 2 ^ 32;
       totalPower += rbuf.CURRENT_ENERGY.total1 * 2 ^ 40;
-      m_totalPower->set(static_cast<long long>(totalPower / 223.666));
+      m_totalPower->set(static_cast<Poco::Int64>(totalPower / 223.666));
    }
    else
    {
