@@ -5,7 +5,12 @@
 		"Serial Port": {
 			"name": "Serial port",
 			"description": "The serial port connected to the ZWave controller (stick,...)"
-		}
+		},
+		"IncludeSystemKeywords":
+		{
+			"name": "Include system keywords",
+			"description": "Define system keywords in yadoms"
+		}		
 	},
 	"customLabels": {
 		"pluginState": {
