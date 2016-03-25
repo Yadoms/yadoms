@@ -6,7 +6,7 @@
 #pragma once
 
 #include "ILibrary.h"
-#include "Instance.h"
+#include "IInstance.h"
 #include "IPluginStateHandler.h"
 #include "ManagerEvent.h"
 #include "database/IDataProvider.h"
@@ -89,11 +89,11 @@ namespace pluginSystem
       int createInstance(const database::entities::CPlugin& data);
     
       //--------------------------------------------------------------
-      /// \brief                          Delete a plugin instance
-      /// \param [in] instanceToDelete    Instance to delete
-      /// \throw                          CInvalidParameter if instance id is unknown fails
+      /// \brief           Delete a plugin instance
+      /// \param [in] id   Instance to delete
+      /// \throw           CInvalidParameter if instance id is unknown
       //--------------------------------------------------------------
-      void deleteInstance(boost::shared_ptr<database::entities::CPlugin> instanceToDelete);
+      void deleteInstance(int id);
 
       //--------------------------------------------------------------
       /// \brief           Get the plugin instances list
@@ -234,6 +234,19 @@ namespace pluginSystem
       //-----------------------------------------------------
       void onInstanceStopped(int id, const std::string& error = std::string());
 
+      //-----------------------------------------------------
+      ///\brief               Record instance started in base
+      ///\param[in] id        The instance ID
+      //-----------------------------------------------------
+      void recordInstanceStarted(int id);
+
+      //-----------------------------------------------------
+      ///\brief               Record instance stopped in base
+      ///\param[in] id        The instance ID
+      ///\param[in] error     Error associated to event (empty if not error)
+      //-----------------------------------------------------
+      void recordInstanceStopped(int id, const std::string& error = std::string());
+
       //--------------------------------------------------------------
       /// \brief        Returns all plugin directories installed
       /// \return       a list of all found plugin directories
@@ -274,11 +287,6 @@ namespace pluginSystem
 
    private:
       //--------------------------------------------------------------
-      /// \brief			The plugin manager mutex
-      //--------------------------------------------------------------
-      mutable boost::recursive_mutex m_mutex;
-
-      //--------------------------------------------------------------
       /// \brief			The available plugin map
       //--------------------------------------------------------------
       AvalaiblePluginMap m_availablePlugins;
@@ -288,12 +296,6 @@ namespace pluginSystem
       //--------------------------------------------------------------
       typedef std::map<std::string, boost::shared_ptr<ILibrary> > PluginMap;
       PluginMap m_loadedPlugins;
-
-      //--------------------------------------------------------------
-      /// \brief			Map of all running instances (key are plugin instance id)
-      //--------------------------------------------------------------
-      typedef std::map<int, boost::shared_ptr<IInstance> > PluginInstanceMap;
-      PluginInstanceMap m_runningInstances;
 
       //--------------------------------------------------------------
       /// \brief			Global database accessor
@@ -339,6 +341,13 @@ namespace pluginSystem
       ///\brief               Thread managing plugin asynchronous events
       //-----------------------------------------------------
       boost::shared_ptr<boost::thread> m_pluginEventsThread;
+
+      //--------------------------------------------------------------
+      /// \brief			Map of all running instances, and its mutex (key are plugin instance id)
+      //--------------------------------------------------------------
+      typedef std::map<int, boost::shared_ptr<IInstance> > PluginInstanceMap;
+      PluginInstanceMap m_runningInstances;
+      mutable boost::recursive_mutex m_runningInstancesMutex;
 
       //-----------------------------------------------------
       ///\brief               The handlers to notify when an instance stop (potentially several handlers for one instance)

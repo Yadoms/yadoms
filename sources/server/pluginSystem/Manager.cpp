@@ -18,6 +18,7 @@
 #include "InternalPluginLibrary.h"
 
 #include <shared/Log.h>
+#include "PluginException.hpp"
 
 namespace pluginSystem
 {
@@ -48,7 +49,7 @@ CManager::~CManager()
 
 void CManager::start()
 {
-   boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
+   boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
 
    // Initialize the plugin list (detect available plugins)
    updatePluginList();
@@ -177,7 +178,7 @@ bool CManager::unloadPlugin(const std::string& pluginName)
 
 void CManager::buildAvailablePluginList()
 {
-   boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
+   boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
 
    // Empty the list
    m_availablePlugins.clear();
@@ -252,7 +253,7 @@ int CManager::getPluginQualityIndicator(const std::string& pluginName) const
 
 int CManager::createInstance(const database::entities::CPlugin& data)
 {
-   boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
+   boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
 
    // First step, record instance in database, to get its ID
    int instanceId = m_pluginDBTable->addInstance(data);
@@ -263,52 +264,48 @@ int CManager::createInstance(const database::entities::CPlugin& data)
    return instanceId;
 }
 
-void CManager::deleteInstance(boost::shared_ptr<database::entities::CPlugin> instanceToDelete)
+void CManager::deleteInstance(int id)
 {
-   boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
-
    try
    {
-      if (instanceToDelete->Category() != database::entities::EPluginCategory::kSystem)
-      {
-         // First step, disable and stop instance
-         stopInstance(instanceToDelete->Id());
+      boost::shared_ptr<database::entities::CPlugin> instanceData = m_pluginDBTable->getInstance(id);
+      if (instanceData->Category() == database::entities::EPluginCategory::kSystem)
+         return;
 
-         // Next, delete in database
-         m_pluginDBTable->removeInstance(instanceToDelete->Id());
-      }
+      boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+
+      // Stop the rule
+      stopInstanceAndWaitForStopped(id);
+
+      // Remove in database
+      m_pluginDBTable->removeInstance(id);
    }
    catch (shared::exception::CException& e)
    {
-      YADOMS_LOG(error) << "Unable to delete plugin instance (" << instanceToDelete->Id() << ") : " << e.what();
-      throw shared::exception::CInvalidParameter(boost::lexical_cast<std::string>(instanceToDelete->Id()));
+      YADOMS_LOG(error) << "Unable to delete plugin (" << id << ") : " << e.what();
+      throw shared::exception::CInvalidParameter(boost::lexical_cast<std::string>(id));
    }
 }
 
 std::vector<boost::shared_ptr<database::entities::CPlugin> > CManager::getInstanceList() const
 {
-   boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
-
+   boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
    return m_pluginDBTable->getInstances();
 }
 
 boost::shared_ptr<database::entities::CPlugin> CManager::getInstance(int id) const
 {
-   boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
-
+   boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
    return m_pluginDBTable->getInstance(id);
 }
 
 void CManager::updateInstance(const database::entities::CPlugin& newData)
 {
-   boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
+   boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
 
    // Check for supported modifications
    if (!newData.Id.isDefined())
-   {
-      BOOST_ASSERT(false); // ID must be provided
       throw new shared::exception::CException("Update instance : instance ID was not provided");
-   }
 
    // First get old configuration from database
    boost::shared_ptr<const database::entities::CPlugin> previousData = m_pluginDBTable->getInstance(newData.Id());
@@ -318,9 +315,9 @@ void CManager::updateInstance(const database::entities::CPlugin& newData)
 
    // Last, apply modifications
    if (newData.Configuration.isDefined()
-      && previousData->Configuration() != newData.Configuration()) // No need to notify configuration if instance was enabled/disabled
+      && previousData->Configuration() != newData.Configuration()) // No need to notify configuration if instance was just enabled/disabled
    {
-      // Configuration was updated, notify the instance, if running
+      // Configuration was updated, notify the instance if running
       if (m_runningInstances.find(newData.Id()) != m_runningInstances.end())
          m_runningInstances[newData.Id()]->updateConfiguration(newData.Configuration());
    }
@@ -750,6 +747,28 @@ void CManager::postBindingQueryRequest(int id, boost::shared_ptr<shared::plugin:
 
    boost::shared_ptr<CInstance> instance(m_runningInstances.find(id)->second);
    instance->postBindingQueryRequest(request);
+}
+
+void CManager::recordInstanceStarted(int id)
+{
+   //TODO positionner le keyword state
+   //boost::shared_ptr<database::entities::CPlugin> instanceData(boost::make_shared<database::entities::CPlugin>());
+   //instanceData->Id = id;
+   //instanceData->State = database::entities::ERuleState::kRunning;
+   //instanceData->StartDate = shared::currentTime::Provider::now();
+   //instanceData->ErrorMessage = std::string();
+   //m_pluginDBTable->updateInstance(instanceData);
+}
+
+void CManager::recordInstanceStopped(int id, const std::string& error)
+{
+   //TODO positionner le keyword state
+   //boost::shared_ptr<database::entities::CRule> ruleData(new database::entities::CRule);
+   //ruleData->Id = id;
+   //ruleData->State = error.empty() ? database::entities::ERuleState::kStopped : database::entities::ERuleState::kError;
+   //ruleData->StopDate = shared::currentTime::Provider::now();
+   //ruleData->ErrorMessage = error;
+   //m_ruleRequester->updateRule(ruleData);
 }
 
 } // namespace pluginSystem

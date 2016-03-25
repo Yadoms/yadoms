@@ -400,6 +400,7 @@ set(YADOMS_SRC
    server/pluginSystem/BindingQueryRequest.h
    server/pluginSystem/ManuallyDeviceCreationTestData.cpp
    server/pluginSystem/ManuallyDeviceCreationTestData.h
+	server/pluginSystem/PluginException.hpp
 	server/pluginSystem/PluginStateHandler.h
 	server/pluginSystem/PluginStateHandler.cpp
    server/pluginSystem/yPluginApiImplementation.h

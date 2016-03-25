@@ -266,10 +266,7 @@ void CRuleManager::updateRule(boost::shared_ptr<const database::entities::CRule>
 {
    // Check for supported modifications
    if (!ruleData->Id.isDefined())
-   {
-      BOOST_ASSERT(false); // ID must be provided
       throw new shared::exception::CException("Update rule : rule ID was not provided");
-   }
 
    m_ruleRequester->updateRule(ruleData);
 }

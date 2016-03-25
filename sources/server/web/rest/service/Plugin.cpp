@@ -250,7 +250,7 @@ namespace web { namespace rest { namespace service {
             int instanceId = boost::lexical_cast<int>(parameters[1]);
 
             m_dataProvider->getDeviceRequester()->removeAllDeviceForPlugin(instanceId);
-            m_pluginManager->deleteInstance(m_pluginManager->getInstance(instanceId));
+            m_pluginManager->deleteInstance(instanceId);
             return CResult::GenerateSuccess();
          }
          
@@ -270,10 +270,8 @@ namespace web { namespace rest { namespace service {
    {
       std::vector< boost::shared_ptr<database::entities::CPlugin> > hwList = m_pluginManager->getInstanceList();
       
-      for (std::vector<boost::shared_ptr<database::entities::CPlugin> >::iterator i = hwList.begin(); i != hwList.end(); ++i)
-      {
-         m_pluginManager->deleteInstance(*i);
-      }
+      while (!m_pluginManager->getInstanceList().empty())
+         m_pluginManager->deleteInstance(m_pluginManager->getInstanceList().front()->Id());
 
       return CResult::GenerateSuccess();
    }
