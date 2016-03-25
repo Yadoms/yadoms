@@ -2,14 +2,10 @@
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <shared/plugin/information/IInformation.h>
 #include <shared/DataContainer.h>
-#include "database/IPluginEventLoggerRequester.h"
-#include "database/IDeviceRequester.h"
-#include "database/IKeywordRequester.h"
-#include "database/IRecipientRequester.h"
-#include "database/IAcquisitionRequester.h"
 #include "dataAccessLayer/IAcquisitionHistorizer.h"
 #include "dataAccessLayer/IDeviceManager.h"
 #include "database/entities/Entities.h"
+#include "database/IDataProvider.h"
 
 
 namespace pluginSystem
@@ -25,6 +21,7 @@ namespace pluginSystem
       /// \param [in]   pluginInformations         the plugin informations (name, description, version, author...)
       /// \param [in]   libraryPath                the library path
       /// \param [in]   pluginData                 the plugin data
+      /// \param [in]   dataProvider               the database accessor
       /// \param [in]   pluginEventLoggerRequester the plugin event logger requester
       /// \param [in]   deviceManager            the device manager
       /// \param [in]   keywordRequester           the keyword requester
@@ -34,11 +31,8 @@ namespace pluginSystem
       CYPluginApiImplementation(boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformations,
          const boost::filesystem::path libraryPath,
          const boost::shared_ptr<const database::entities::CPlugin> pluginData,
-         boost::shared_ptr<database::IPluginEventLoggerRequester> pluginEventLoggerRequester,
+         boost::shared_ptr<database::IDataProvider> dataProvider,
          boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
-         boost::shared_ptr<database::IKeywordRequester> keywordRequester,
-         boost::shared_ptr<database::IRecipientRequester> recipientRequester,
-         boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester,
          boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer);
       
       //-----------------------------------------------------

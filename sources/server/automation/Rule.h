@@ -55,7 +55,7 @@ namespace automation
       //-----------------------------------------------------
       ///\brief               The script runner
       //-----------------------------------------------------
-      boost::shared_ptr<shared::script::IRunner> m_runner;
+      boost::shared_ptr<shared::process::IRunner> m_runner;
 
       //-----------------------------------------------------
       ///\brief               The rule state handler

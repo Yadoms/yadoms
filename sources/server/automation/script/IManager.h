@@ -1,5 +1,5 @@
 #pragma once
-#include <shared/script/IRunner.h>
+#include <shared/process/IRunner.h>
 #include "IProperties.h"
 #include "../../database/sqlite/requesters/Rule.h"
 #include <shared/script/ILogger.h>
@@ -85,7 +85,7 @@ namespace automation { namespace script
       ///\return              A new script runner instance
       ///\throw CInvalidParameter if unable to create script runner
       //-----------------------------------------------------
-      virtual boost::shared_ptr<shared::script::IRunner> createScriptRunner(
+      virtual boost::shared_ptr<shared::process::IRunner> createScriptRunner(
          boost::shared_ptr<const IProperties> scriptProperties,
          boost::shared_ptr<shared::script::ILogger> scriptLogger,
          boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,

@@ -12,20 +12,17 @@ CYPluginApiImplementation::CYPluginApiImplementation(
    boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformations,
    const boost::filesystem::path libraryPath, 
    const boost::shared_ptr<const database::entities::CPlugin> pluginData,
-   boost::shared_ptr<database::IPluginEventLoggerRequester> pluginEventLoggerRequester,
+   boost::shared_ptr<database::IDataProvider> dataProvider,
    boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
-   boost::shared_ptr<database::IKeywordRequester> keywordRequester,
-   boost::shared_ptr<database::IRecipientRequester> recipientRequester,
-   boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester,
    boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer)
    :m_informations(pluginInformations),
    m_libraryPath(libraryPath),
    m_pluginData(pluginData),
-   m_pluginEventLoggerRequester(pluginEventLoggerRequester),
+   m_pluginEventLoggerRequester(dataProvider->getPluginEventLoggerRequester()),
    m_deviceManager(deviceManager),
-   m_keywordRequester(keywordRequester),
-   m_recipientRequester(recipientRequester),
-   m_acquisitionRequester(acquisitionRequester),
+   m_keywordRequester(dataProvider->getKeywordRequester()),
+   m_recipientRequester(dataProvider->getRecipientRequester()),
+   m_acquisitionRequester(dataProvider->getAcquisitionRequester()),
    m_acquisitionHistorizer(acquisitionHistorizer)   
 {
 }

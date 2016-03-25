@@ -5,20 +5,15 @@
 //
 #pragma once
 
-#include <shared/ThreadBase.h>
 #include <shared/event/EventHandler.hpp>
-#include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
+#include <shared/process/IRunner.h>
 #include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
 #include "IInstance.h"
 #include "ILibrary.h"
 #include "ManagerEvent.h"
-#include "IQualifier.h"
 #include "yPluginApiImplementation.h"
 #include "database/entities/Entities.h"
-#include "database/IPluginEventLoggerRequester.h"
-#include "database/IDeviceRequester.h"
-#include "database/IKeywordRequester.h"
-#include "database/IAcquisitionRequester.h"
+#include "database/IDataProvider.h"
 #include "dataAccessLayer/IAcquisitionHistorizer.h"
 #include "dataAccessLayer/IDeviceManager.h"
 
@@ -28,37 +23,42 @@ namespace pluginSystem
    //--------------------------------------------------------------
    /// \brief	this class is used to manage a plugin instance. 
    //--------------------------------------------------------------
-   class CInstance : public IInstance, /*TODO virer ?*/shared::CThreadBase
+   class CInstance : public IInstance
    {
    public:
       //--------------------------------------------------------------
       /// \brief	Constructor
       /// \param [in]	plugin                     the plugin used for this instance
       /// \param [in]   pluginData                 the database entity
-      /// \param [in]   pluginEventLoggerRequester the plugin event logger requester
-      /// \param [in]   deviceRequester            the device requester
-      /// \param [in]   keywordRequester           the keyword requester
-      /// \param [in]   recipientRequester         the recipient requester
-      /// \param [in]   acquisitionRequester       the acquisition requester
+      /// \param [in]   dataProvider               the database accessor
+      /// \param [in]   deviceManager              the device manager
+      /// \param [in]   acquisitionHistorizer      the acquisition historizer
       /// \param [in]   qualifier                  the plugin qualifier
       /// \param [in]   supervisor                 the supervisor event handler
       /// \param [in]   pluginManagerEventId       The ID to use to send events to supervisor
       //--------------------------------------------------------------
-      CInstance(const boost::shared_ptr<const ILibrary> plugin, const boost::shared_ptr<const database::entities::CPlugin> pluginData,
-         boost::shared_ptr<database::IPluginEventLoggerRequester> pluginEventLoggerRequester,
+      CInstance(const boost::shared_ptr<const ILibrary> plugin,
+         boost::shared_ptr<const database::entities::CPlugin> pluginData,
+         boost::shared_ptr<database::IDataProvider> dataProvider,
          boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
-         boost::shared_ptr<database::IKeywordRequester> keywordRequester,
-         boost::shared_ptr<database::IRecipientRequester> recipientRequester,
-         boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester,
          boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer,
          const boost::shared_ptr<IQualifier> qualifier,
          boost::shared_ptr<shared::event::CEventHandler> supervisor,
-         int pluginManagerEventId);
+         int pluginManagerEventId);//TODO faire le ménage dans les paramètres
 
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
       virtual ~CInstance();
+
+
+      // IInstance Implementation
+      virtual void updateConfiguration(const shared::CDataContainer & newConfiguration) const;
+      virtual void requestStop();
+      virtual std::string getPluginName() const;
+      // [END] IInstance Implementation
+
+
 
       //--------------------------------------------------------------
       /// \brief			            Post a command to the plugin
@@ -78,28 +78,37 @@ namespace pluginSystem
 		//--------------------------------------------------------------
       virtual void postBindingQueryRequest(boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> & request) const;
 
-      //--------------------------------------------------------------
-      /// \brief			            Notify the plugin about its configuration changed
-      /// \param  newConfiguration  The new configuration to apply
-      //--------------------------------------------------------------
-      virtual void updateConfiguration(const shared::CDataContainer & newConfiguration) const;
-
-      //--------------------------------------------------------------
-      /// \brief			Get the plugin name of this instance
-      //--------------------------------------------------------------
-      std::string getPluginName() const;
-
    protected:
-      //--------------------------------------------------------------
-      /// \brief			The main plugin work
-      //--------------------------------------------------------------
-      virtual void doWork();
+      //-----------------------------------------------------
+      ///\brief               Start the instance
+      //-----------------------------------------------------
+      void start();
 
    private:
       //--------------------------------------------------------------
-      /// \brief			The plugin used for this instance
+      /// \brief			      The plugin used for this instance
       //--------------------------------------------------------------
-      const boost::shared_ptr<const ILibrary> m_pPlugin;
+      const boost::shared_ptr<const ILibrary> m_PluginLibrary;
+
+      //-----------------------------------------------------
+      ///\brief               Plugin data
+      //-----------------------------------------------------
+      boost::shared_ptr<const database::entities::CPlugin> m_pluginData;
+
+      //-----------------------------------------------------
+      ///\brief               The data provider
+      //-----------------------------------------------------
+      boost::shared_ptr<database::IDataProvider> m_dataProvider;
+
+      //-----------------------------------------------------
+      ///\brief               The device manager
+      //-----------------------------------------------------
+      boost::shared_ptr<dataAccessLayer::IDeviceManager> m_deviceManager;
+
+      //-----------------------------------------------------
+      ///\brief               The acquisition historizer
+      //-----------------------------------------------------
+      boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> m_acquisitionHistorizer;
 
       //--------------------------------------------------------------
       /// \brief			The plugin instance
@@ -121,10 +130,10 @@ namespace pluginSystem
       //--------------------------------------------------------------
       const int m_pluginManagerEventId;
 
-      //--------------------------------------------------------------
-      /// \brief			Plugin context (Yadoms plugin API)
-      //--------------------------------------------------------------
-      boost::shared_ptr<CYPluginApiImplementation> m_context;
+      //-----------------------------------------------------
+      ///\brief               The script runner
+      //-----------------------------------------------------
+      boost::shared_ptr<shared::process::IRunner> m_runner;
    };
 
 } // namespace pluginSystem

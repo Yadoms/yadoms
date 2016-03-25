@@ -38,13 +38,15 @@ CManager::CManager(
    m_supervisor(supervisor), m_dataAccessLayer(dataAccessLayer),
    m_pluginEventHandler(boost::make_shared<shared::event::CEventHandler>()),
    m_pluginStateHandler(boost::make_shared<CPluginStateHandler>(m_pluginDBTable, eventLogger, m_pluginEventHandler)),
+   m_yadomsShutdown(false),
    m_pluginEventsThread(boost::make_shared<boost::thread>(boost::bind(&CManager::pluginEventsThreadDoWork, this)))
 {
 }
 
 CManager::~CManager()
 {
-   stop();
+   if (!m_yadomsShutdown)
+      stop();
 }
 
 void CManager::start()
@@ -59,6 +61,7 @@ void CManager::start()
 
 void CManager::stop()
 {
+   m_yadomsShutdown = true;
    stopInstances();
 
    m_pluginEventsThread->interrupt();
@@ -131,7 +134,8 @@ std::vector<boost::filesystem::path> CManager::findPluginDirectories()
 
 boost::shared_ptr<ILibrary> CManager::loadPlugin(const std::string& pluginName)
 {
-   boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
+   boost::lock_guard<boost::recursive_mutex> lock(m_loadedPluginsMutex);
+   boost::lock_guard<boost::recursive_mutex> lock2(m_availablePluginsMutex);
 
    // Check if already loaded
    PluginMap::const_iterator itLoadedPlugin = m_loadedPlugins.find(pluginName);
@@ -154,7 +158,8 @@ boost::shared_ptr<ILibrary> CManager::loadPlugin(const std::string& pluginName)
 
 bool CManager::unloadPlugin(const std::string& pluginName)
 {
-   boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
+   boost::lock_guard<boost::recursive_mutex> lock(m_loadedPluginsMutex);
+   boost::lock_guard<boost::recursive_mutex> lock2(m_runningInstancesMutex);
 
    PluginInstanceMap::const_iterator instance;
    for (instance = m_runningInstances.begin() ; instance != m_runningInstances.end() ; ++instance)
@@ -179,6 +184,7 @@ bool CManager::unloadPlugin(const std::string& pluginName)
 void CManager::buildAvailablePluginList()
 {
    boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+   boost::lock_guard<boost::recursive_mutex> lock2(m_availablePluginsMutex);
 
    // Empty the list
    m_availablePlugins.clear();
@@ -228,14 +234,14 @@ void CManager::buildAvailablePluginList()
 
 void CManager::updatePluginList()
 {
-   // Plugin directory have change, so re-build plugin available list
+   // Plugin directory have changed, so re-build available plugins list
    buildAvailablePluginList();
 }
 
 
 CManager::AvalaiblePluginMap CManager::getPluginList()
 {
-   boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
+   boost::lock_guard<boost::recursive_mutex> lock(m_availablePluginsMutex);
 
    AvalaiblePluginMap mapCopy = m_availablePlugins;
    return mapCopy;
@@ -243,7 +249,7 @@ CManager::AvalaiblePluginMap CManager::getPluginList()
 
 int CManager::getPluginQualityIndicator(const std::string& pluginName) const
 {
-   boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
+   boost::lock_guard<boost::recursive_mutex> lock(m_availablePluginsMutex);
 
    if (m_availablePlugins.find(pluginName) == m_availablePlugins.end())
       throw CInvalidPluginException(pluginName);   // Invalid plugin
@@ -341,6 +347,8 @@ void CManager::startAllInstancesOfPlugin(const std::string& pluginName)
 
 void CManager::stopAllInstancesOfPlugin(const std::string& pluginName)
 {
+   boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+
    // Find instances to stop
    std::vector<int> instancesToStop;
    for (PluginInstanceMap::const_iterator instance = m_runningInstances.begin(); instance != m_runningInstances.end(); ++instance)
@@ -480,51 +488,52 @@ void CManager::onInstanceStopped(int id, const std::string& error)
    }
 }
 
-void CManager::signalEvent(const CManagerEvent& event)//TODO à virer ?
-{
-   switch (event.getSubEventId())
-   {
-   case CManagerEvent::kPluginInstanceAbnormalStopped:
-   {
-      // The thread of an instance has stopped in a non-conventional way (probably crashed)
-
-      // First perform the full stop
-      stopInstance(event.getInstanceId());
-
-      // Now, evaluate if it is still safe
-      if (m_qualifier->isSafe(event.getPluginInformation()))
-      {
-         // Don't restart if event occurs when instance was stopping
-         if (!event.getStopping())
-         {
-            // Still safe, try to restart it (only if it was a plugin crash. If it's a plugin error, user have to restart plugin manually)
-            if (getInstanceState(event.getInstanceId()) != shared::plugin::yPluginApi::historization::EPluginState::kError)
-               startInstance(event.getInstanceId());
-         }
-      }
-      else
-      {
-         // Not safe anymore. Disable plugin autostart mode (user will just be able to start it manually)
-         // Not that this won't stop other instances of this plugin
-         YADOMS_LOG(warning) << " plugin " << event.getPluginInformation()->getType() << " was evaluated as not safe and will not start automatically anymore.";
-         m_pluginDBTable->disableAutoStartForAllPluginInstances(event.getPluginInformation()->getType());
-
-         // Log this event in the main event logger
-         m_dataAccessLayer->getEventLogger()->addEvent(database::entities::ESystemEventCode::kPluginDisabled,
-            event.getPluginInformation()->getIdentity(),
-            "Plugin " + event.getPluginInformation()->getIdentity() + " was evaluated as not safe and will not start automatically anymore.");
-      }
-
-      break;
-   }
-   default:
-   {
-      YADOMS_LOG(error) << "Unknown message id";
-      BOOST_ASSERT(false);
-      break;
-   }
-   }
-}
+//TODO à virer ?
+//void CManager::signalEvent(const CManagerEvent& event)
+//{
+//   switch (event.getSubEventId())
+//   {
+//   case CManagerEvent::kPluginInstanceAbnormalStopped:
+//   {
+//      // The thread of an instance has stopped in a non-conventional way (probably crashed)
+//
+//      // First perform the full stop
+//      stopInstance(event.getInstanceId());
+//
+//      // Now, evaluate if it is still safe
+//      if (m_qualifier->isSafe(event.getPluginInformation()))
+//      {
+//         // Don't restart if event occurs when instance was stopping
+//         if (!event.getStopping())
+//         {
+//            // Still safe, try to restart it (only if it was a plugin crash. If it's a plugin error, user have to restart plugin manually)
+//            if (getInstanceState(event.getInstanceId()) != shared::plugin::yPluginApi::historization::EPluginState::kError)
+//               startInstance(event.getInstanceId());
+//         }
+//      }
+//      else
+//      {
+//         // Not safe anymore. Disable plugin autostart mode (user will just be able to start it manually)
+//         // Not that this won't stop other instances of this plugin
+//         YADOMS_LOG(warning) << " plugin " << event.getPluginInformation()->getType() << " was evaluated as not safe and will not start automatically anymore.";
+//         m_pluginDBTable->disableAutoStartForAllPluginInstances(event.getPluginInformation()->getType());
+//
+//         // Log this event in the main event logger
+//         m_dataAccessLayer->getEventLogger()->addEvent(database::entities::ESystemEventCode::kPluginDisabled,
+//            event.getPluginInformation()->getIdentity(),
+//            "Plugin " + event.getPluginInformation()->getIdentity() + " was evaluated as not safe and will not start automatically anymore.");
+//      }
+//
+//      break;
+//   }
+//   default:
+//   {
+//      YADOMS_LOG(error) << "Unknown message id";
+//      BOOST_ASSERT(false);
+//      break;
+//   }
+//   }
+//}
 
 boost::filesystem::path CManager::toPath(const std::string& pluginName) const
 {
@@ -537,8 +546,8 @@ boost::filesystem::path CManager::toPath(const std::string& pluginName) const
 
 void CManager::startInternalPlugin()
 {
-   boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
-
+   //TODO revoir la gestion du plugin interne
+   boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
 
    try
    {
@@ -554,8 +563,7 @@ void CManager::startInternalPlugin()
       // Create instance
       BOOST_ASSERT(plugin); // Plugin not loaded
       boost::shared_ptr<CInstance> pluginInstance(new CInstance(
-         plugin, databasePluginInstance, m_dataProvider->getPluginEventLoggerRequester(), m_dataAccessLayer->getDeviceManager(), m_dataProvider->getKeywordRequester(),
-         m_dataProvider->getRecipientRequester(), m_dataProvider->getAcquisitionRequester(), m_dataAccessLayer->getAcquisitionHistorizer(),
+         plugin, databasePluginInstance, m_dataProvider, m_dataAccessLayer->getDeviceManager(), m_dataAccessLayer->getAcquisitionHistorizer(),
          m_qualifier, m_supervisor, m_pluginManagerEventId));
       m_runningInstances[databasePluginInstance->Id()] = pluginInstance;
    }
@@ -572,7 +580,7 @@ void CManager::startInternalPlugin()
 
 void CManager::stopInternalPlugin()
 {
-   boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
+   boost::lock_guard<boost::recursive_mutex> lock(m_runningInstances);
 
    //get the plugin info from db
    boost::shared_ptr<database::entities::CPlugin> databasePluginInstance(m_pluginDBTable->getSystemInstance());
@@ -587,7 +595,7 @@ void CManager::stopInternalPlugin()
 
 bool CManager::isInstanceRunning(int id) const
 {
-   boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
+   boost::lock_guard<boost::recursive_mutex> lock(m_runningInstances);
    return m_runningInstances.find(id) != m_runningInstances.end();
 }
 
@@ -714,7 +722,7 @@ void CManager::pluginEventsThreadDoWork()
 
 void CManager::postCommand(int id, boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command)
 {
-   boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
+   boost::lock_guard<boost::recursive_mutex> lock(m_runningInstances);
 
    if (!isInstanceRunning(id))
       return;     // Instance is stopped, nothing to do
@@ -729,7 +737,7 @@ void CManager::postCommand(int id, boost::shared_ptr<const shared::plugin::yPlug
 
 void CManager::postManuallyDeviceCreationRequest(int id, boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> & request)
 {
-   boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
+   boost::lock_guard<boost::recursive_mutex> lock(m_runningInstances);
 
    if (!isInstanceRunning(id))
       return;     // Instance is stopped, nothing to do
@@ -740,7 +748,7 @@ void CManager::postManuallyDeviceCreationRequest(int id, boost::shared_ptr<share
 
 void CManager::postBindingQueryRequest(int id, boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> & request)
 {
-   boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
+   boost::lock_guard<boost::recursive_mutex> lock(m_runningInstances);
 
    if (!isInstanceRunning(id))
       return;     // Instance is stopped, nothing to do

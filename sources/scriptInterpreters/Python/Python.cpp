@@ -60,7 +60,7 @@ void CPython::saveScriptContent(const std::string& scriptPath, const std::string
    file.write(content);
 }
 
-boost::shared_ptr<shared::script::IRunner> CPython::createRunner(
+boost::shared_ptr<shared::process::IRunner> CPython::createRunner(
    const std::string& scriptPath,
    boost::shared_ptr<shared::script::ILogger> scriptLogger,
    boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
@@ -69,12 +69,12 @@ boost::shared_ptr<shared::script::IRunner> CPython::createRunner(
 {
    try
    {
-      boost::shared_ptr<shared::script::IRunner> runner(boost::make_shared<CRunner>(scriptPath, m_executable, scriptLogger, yScriptApi, stopNotifier, scriptConfiguration));
+      boost::shared_ptr<shared::process::IRunner> runner(boost::make_shared<CRunner>(scriptPath, m_executable, scriptLogger, yScriptApi, stopNotifier, scriptConfiguration));
       return runner;
    }
    catch (CPythonException& ex)
    {
       YADOMS_LOG(error) << "Unable to create the Python runner object, " << ex.what();
-      return boost::shared_ptr<shared::script::IRunner>();
+      return boost::shared_ptr<shared::process::IRunner>();
    }
 }

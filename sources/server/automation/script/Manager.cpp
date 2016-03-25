@@ -256,7 +256,7 @@ std::string CManager::getScriptLogFile(boost::shared_ptr<const database::entitie
    return std::string(std::istreambuf_iterator<char>(file), eos);
 }
 
-boost::shared_ptr<shared::script::IRunner> CManager::createScriptRunner(
+boost::shared_ptr<shared::process::IRunner> CManager::createScriptRunner(
    boost::shared_ptr<const IProperties> scriptProperties,
    boost::shared_ptr<shared::script::ILogger> scriptLogger,
    boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,

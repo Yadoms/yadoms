@@ -290,12 +290,14 @@ namespace pluginSystem
       /// \brief			The available plugin map
       //--------------------------------------------------------------
       AvalaiblePluginMap m_availablePlugins;
+      mutable boost::recursive_mutex m_availablePluginsMutex;
 
       //--------------------------------------------------------------
       /// \brief			Map of all found factories (key are plugin file names)
       //--------------------------------------------------------------
       typedef std::map<std::string, boost::shared_ptr<ILibrary> > PluginMap;
       PluginMap m_loadedPlugins;
+      mutable boost::recursive_mutex m_loadedPluginsMutex;
 
       //--------------------------------------------------------------
       /// \brief			Global database accessor
@@ -331,6 +333,11 @@ namespace pluginSystem
       ///\brief               The plugin state handler
       //-----------------------------------------------------
       boost::shared_ptr<IPluginStateHandler> m_pluginStateHandler;
+
+      //-----------------------------------------------------
+      ///\brief               Flag indicating that Yadoms is being shutdown, so don't record rules stop in database
+      //-----------------------------------------------------
+      bool m_yadomsShutdown;
 
       //-----------------------------------------------------
       ///\brief               Event handler to manage events on all plugins

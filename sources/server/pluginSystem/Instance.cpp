@@ -11,28 +11,58 @@ namespace pluginSystem
 
 CInstance::CInstance(
    const boost::shared_ptr<const ILibrary> plugin,
-   const boost::shared_ptr<const database::entities::CPlugin> pluginData,
-   boost::shared_ptr<database::IPluginEventLoggerRequester> pluginEventLoggerRequester,
+   boost::shared_ptr<const database::entities::CPlugin> pluginData,
+   boost::shared_ptr<database::IDataProvider> dataProvider,
    boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
-   boost::shared_ptr<database::IKeywordRequester> keywordRequester,
-   boost::shared_ptr<database::IRecipientRequester> recipientRequester,
-   boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester,
    boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer,
    const boost::shared_ptr<IQualifier> qualifier,
    boost::shared_ptr<shared::event::CEventHandler> supervisor,
    int pluginManagerEventId)
-    : CThreadBase(pluginData->Type()), m_pPlugin(plugin), m_qualifier(qualifier), m_supervisor(supervisor), m_pluginManagerEventId(pluginManagerEventId),
-    m_context(new CYPluginApiImplementation(plugin->getInformation(), m_pPlugin->getLibraryPath(), pluginData, pluginEventLoggerRequester, deviceManager, keywordRequester, recipientRequester, acquisitionRequester, acquisitionHistorizer))
+   : m_PluginLibrary(plugin),
+    m_pluginData(pluginData),
+    m_dataProvider(dataProvider),
+    m_deviceManager(deviceManager),
+    m_acquisitionHistorizer(acquisitionHistorizer),
+    m_qualifier(qualifier),
+    m_supervisor(supervisor),
+    m_pluginManagerEventId(pluginManagerEventId)
 {
-	BOOST_ASSERT(m_pPlugin);
-   m_pPluginInstance.reset(m_pPlugin->construct());
-
    start();
 }
 
 CInstance::~CInstance()
 {
-   stop();
+}
+
+void CInstance::start()
+{
+   if (!!m_runner)
+   {
+      YADOMS_LOG(warning) << "Can not start plugin " << m_pluginData->DisplayName() << " : already started";
+      return;
+   }
+
+   m_pPluginInstance.reset(m_PluginLibrary->construct());
+
+   boost::shared_ptr<shared::process::ILogger> scriptLogger = m_factory->createProcessLogger(); // TODO m_factory est l'équivalent du automation::script::IManager
+
+   boost::shared_ptr<CYPluginApiImplementation> yPluginApi(boost::make_shared<CYPluginApiImplementation>( //TODO déplacer la construction dans m_factory
+      m_PluginLibrary->getInformation(),
+      m_PluginLibrary->getLibraryPath(),
+      m_pluginData,
+      m_dataProvider,
+      m_deviceManager,
+      m_acquisitionHistorizer));
+
+   boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi = m_scriptManager->createScriptContext(scriptLogger);
+   boost::shared_ptr<shared::script::IStopNotifier> stopNotifier = m_scriptManager->createStopNotifier(m_ruleStateHandler, m_ruleData->Id());
+
+   m_runner = m_scriptManager->createScriptRunner(scriptProperties, scriptLogger, yScriptApi, stopNotifier);
+}
+
+void CInstance::requestStop()
+{
+   m_runner->requestStop();
 }
 
 void CInstance::doWork()

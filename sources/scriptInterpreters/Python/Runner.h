@@ -2,7 +2,7 @@
 #include "IPythonExecutable.h"
 #include "IScriptFile.h"
 #include <shared/DataContainer.h>
-#include <shared/script/IRunner.h>
+#include <shared/process/IRunner.h>
 #include <shared/script/IStopNotifier.h>
 #include "IContextAccessor.h"
 #include "IScriptProcess.h"
@@ -10,7 +10,7 @@
 //--------------------------------------------------------------
 /// \brief	Python initializer interface (RAII support)
 //--------------------------------------------------------------
-class CRunner : public shared::script::IRunner
+class CRunner : public shared::process::IRunner
 {
 public:
    //--------------------------------------------------------------
@@ -36,9 +36,9 @@ public:
    //--------------------------------------------------------------
    virtual ~CRunner();
 
-   // shared::script::IRunner Implementation
+   // shared::process::IRunner Implementation
    void requestStop();
-   // [END] shared::script::IRunner Implementation
+   // [END] shared::process::IRunner Implementation
 
 protected:
    //-----------------------------------------------------
