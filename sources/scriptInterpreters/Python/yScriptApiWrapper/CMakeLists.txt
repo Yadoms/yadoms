@@ -20,7 +20,7 @@ set(PYTHON_WRAPPER_SOURCES
    yScriptApiImplementation.h
    yScriptApiImplementation.cpp
    
-   yScriptApiDoc.json
+   yScriptApiDoc.md
 )
   
 
