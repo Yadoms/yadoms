@@ -94,5 +94,5 @@ add_custom_command(TARGET _yScriptApiWrapper POST_BUILD
 ## Add post-build step to deploy Api doc file
 #########################################
 add_custom_command(TARGET _yScriptApiWrapper POST_BUILD
-   COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/yScriptApiDoc.json $<TARGET_FILE_DIR:_yScriptApiWrapper>/yScriptApiDoc.json)
+   COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/yScriptApiDoc.md $<TARGET_FILE_DIR:_yScriptApiWrapper>/yScriptApiDoc.md)
 
