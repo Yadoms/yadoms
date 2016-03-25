@@ -42,6 +42,11 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       {
       }
 
+      CSingleHistorizableData(const CSingleHistorizableData<T> & rhs)
+         :m_keywordName(rhs.m_keywordName), m_capacity(rhs.m_capacity), m_value(rhs.m_value), m_accessMode(rhs.m_accessMode), m_measureType(rhs.m_measureType), m_typeInfo(rhs.m_typeInfo)
+      {
+      }
+
       //-----------------------------------------------------
       ///\brief                     Destructor
       //-----------------------------------------------------
@@ -165,8 +170,9 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
 
       //-----------------------------------------------------
       ///\brief               The access mode
+      ///\note Should not be kept as reference
       //-----------------------------------------------------
-      const EKeywordAccessMode& m_accessMode;
+      const EKeywordAccessMode m_accessMode;
 
       //-----------------------------------------------------
       ///\brief               The measure type

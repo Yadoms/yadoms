@@ -19,8 +19,8 @@ set(ZWAVE_PLUGIN_SOURCES
 	IOpenZWaveNodeKeyword.h
 	OpenZWaveNode.h
 	OpenZWaveNode.cpp 
-	OpenZWaveNodeCapacity.h
-	OpenZWaveNodeCapacity.cpp 
+	OpenZWaveHelpers.h
+	OpenZWaveHelpers.cpp 
 	OpenZWaveNodeKeywordBase.h
 	OpenZWaveNodeKeywordBase.cpp 
 	OpenZWaveNodeKeywordFactory.h

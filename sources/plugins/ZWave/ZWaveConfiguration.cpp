@@ -20,7 +20,7 @@ std::string CZWaveConfiguration::getSerialPort() const
 
 bool CZWaveConfiguration::getIncludeSystemKeywords() const
 {
-   return m_container.get<bool>("IncludeSystemKeywords");
+   return m_container.getWithDefault<bool>("IncludeSystemKeywords", false);
 }
 
 const std::string CZWaveConfiguration::getPath()

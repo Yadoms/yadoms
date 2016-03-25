@@ -26,6 +26,7 @@ public:
    // IOpenZWaveKeyword implementation
    virtual bool sendCommand(const std::string & commandData) = 0;
    virtual boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> getLastKeywordValue() = 0;
+   virtual void updateValue(OpenZWave::ValueID & value);
    // [END] IOpenZWaveKeyword implementation
       
 protected:
@@ -36,26 +37,7 @@ protected:
    /// \note	      T the type of data
    //--------------------------------------------------------------
    template<class T>
-   bool realSendCommand(const T & data)
-   {
-      try
-      {
-         return OpenZWave::Manager::Get()->SetValue(m_valueId, data);
-      }
-      catch (OpenZWave::OZWException & ex)
-      {
-         YADOMS_LOG(fatal) << "Fail to send command : OpenZWave exception : " << ex.what();
-      }
-      catch (std::exception & ex)
-      {
-         YADOMS_LOG(fatal) << "Fail to send command : std::exception : " << ex.what();
-      }
-      catch (...)
-      {
-         YADOMS_LOG(fatal) << "Fail to send command : unknown exception";
-      }
-      return false;
-   }
+   inline bool realSendCommand(const T & data);
 
 
    template<class T>
@@ -69,10 +51,101 @@ private:
    OpenZWave::ValueID m_valueId;   
 };
 
+
+//--------------------------------------------------------------
+template<class T>
+inline bool COpenZWaveNodeKeywordBase::realSendCommand(const T & data)
+{
+   try
+   {
+      return OpenZWave::Manager::Get()->SetValue(m_valueId, data);
+   }
+   catch (OpenZWave::OZWException & ex)
+   {
+      YADOMS_LOG(fatal) << "Fail to send command : OpenZWave exception : " << ex.what();
+   }
+   catch (std::exception & ex)
+   {
+      YADOMS_LOG(fatal) << "Fail to send command : std::exception : " << ex.what();
+   }
+   catch (...)
+   {
+      YADOMS_LOG(fatal) << "Fail to send command : unknown exception";
+   }
+   return false;
+}
+
+template<>
+inline bool COpenZWaveNodeKeywordBase::realSendCommand(const Poco::UInt64 & data)
+{
+   try
+   {
+      return OpenZWave::Manager::Get()->SetValue(m_valueId, (Poco::Int32)data);
+   }
+   catch (OpenZWave::OZWException & ex)
+   {
+      YADOMS_LOG(fatal) << "Fail to send command : OpenZWave exception : " << ex.what();
+   }
+   catch (std::exception & ex)
+   {
+      YADOMS_LOG(fatal) << "Fail to send command : std::exception : " << ex.what();
+   }
+   catch (...)
+   {
+      YADOMS_LOG(fatal) << "Fail to send command : unknown exception";
+   }
+   return false;
+}
+
+template<>
+inline bool COpenZWaveNodeKeywordBase::realSendCommand(const Poco::Int64 & data)
+{
+   try
+   {
+      return OpenZWave::Manager::Get()->SetValue(m_valueId, (Poco::Int32)data);
+   }
+   catch (OpenZWave::OZWException & ex)
+   {
+      YADOMS_LOG(fatal) << "Fail to send command : OpenZWave exception : " << ex.what();
+   }
+   catch (std::exception & ex)
+   {
+      YADOMS_LOG(fatal) << "Fail to send command : std::exception : " << ex.what();
+   }
+   catch (...)
+   {
+      YADOMS_LOG(fatal) << "Fail to send command : unknown exception";
+   }
+   return false;
+}
+
+template<>
+inline bool COpenZWaveNodeKeywordBase::realSendCommand(const double & data)
+{
+   try
+   {
+      return OpenZWave::Manager::Get()->SetValue(m_valueId, (float)data);
+   }
+   catch (OpenZWave::OZWException & ex)
+   {
+      YADOMS_LOG(fatal) << "Fail to send command : OpenZWave exception : " << ex.what();
+   }
+   catch (std::exception & ex)
+   {
+      YADOMS_LOG(fatal) << "Fail to send command : std::exception : " << ex.what();
+   }
+   catch (...)
+   {
+      YADOMS_LOG(fatal) << "Fail to send command : unknown exception";
+   }
+   return false;
+}
+
+
 template<class T>
 inline T COpenZWaveNodeKeywordBase::extractLastValue()
 {
-   throw shared::exception::COutOfRange("This type is not supported");
+   throw shared::exception::COutOfRange("COpenZWaveNodeKeywordBase::extractLastValue : generic type is not supported. Only overriden types are allowed");
 }
 
 template<>
@@ -80,6 +153,59 @@ inline bool COpenZWaveNodeKeywordBase::extractLastValue()
 {
    bool value;
    OpenZWave::Manager::Get()->GetValueAsBool(m_valueId, &value);
+   return value;
+}
+
+template<>
+inline Poco::UInt8 COpenZWaveNodeKeywordBase::extractLastValue()
+{
+   Poco::UInt8 value;
+   OpenZWave::Manager::Get()->GetValueAsByte(m_valueId, &value);
+   return value;
+}
+
+template<>
+inline float COpenZWaveNodeKeywordBase::extractLastValue()
+{
+   float value;
+   OpenZWave::Manager::Get()->GetValueAsFloat(m_valueId, &value);
+   return value;
+}
+
+
+template<>
+inline double COpenZWaveNodeKeywordBase::extractLastValue()
+{
+   float value;
+   OpenZWave::Manager::Get()->GetValueAsFloat(m_valueId, &value);
+   return value;
+}
+
+
+template<>
+inline Poco::Int32 COpenZWaveNodeKeywordBase::extractLastValue()
+{
+   Poco::Int32 value;
+   OpenZWave::Manager::Get()->GetValueAsInt(m_valueId, &value);
+   return value;
+}
+
+
+
+template<>
+inline Poco::Int16 COpenZWaveNodeKeywordBase::extractLastValue()
+{
+   Poco::Int16 value;
+   OpenZWave::Manager::Get()->GetValueAsShort(m_valueId, &value);
+   return value;
+}
+
+
+template<>
+inline std::string COpenZWaveNodeKeywordBase::extractLastValue()
+{
+   std::string value;
+   OpenZWave::Manager::Get()->GetValueAsString(m_valueId, &value);
    return value;
 }
 

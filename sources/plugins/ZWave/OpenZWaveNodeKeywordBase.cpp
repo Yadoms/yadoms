@@ -10,5 +10,8 @@ COpenZWaveNodeKeywordBase::~COpenZWaveNodeKeywordBase()
 {
 }   
    
-
+void COpenZWaveNodeKeywordBase::updateValue(OpenZWave::ValueID & value)
+{
+   m_valueId = value;
+}
 

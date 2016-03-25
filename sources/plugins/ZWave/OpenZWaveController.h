@@ -43,23 +43,7 @@ private:
    //-----------------------------------------------------------------------------   
    boost::shared_ptr<COpenZWaveNode> GetNode(const int homeId, const uint8 nodeId);
 
-   //--------------------------------------------------------------
-   /// \brief	   Generate the deviceId from homeId&nodeId
-   /// \param     homeId	   the home id
-   /// \param     nodeId	   the node id
-   /// \return	   the device id
-   //--------------------------------------------------------------
-   std::string GenerateDeviceStringID(uint32 homeId, uint8 nodeId);
-
-   //--------------------------------------------------------------
-   /// \brief	   Generate the keywordId from label&instance
-   /// \param     label	            the keyword label
-   /// \param     commandClass	   the command class
-   /// \return	   the keyword id
-   //--------------------------------------------------------------
-   //std::string GenerateKeywordStringID(const std::string & label, const ECommandClass & commandClass);
-
-   
+  
    //--------------------------------------------------------------
    /// \brief	   Retreive openzwave ids from yadoms data
    /// \param [in]    device	            the yadoms device
