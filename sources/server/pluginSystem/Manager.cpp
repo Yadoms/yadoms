@@ -14,6 +14,7 @@
 #include <shared/ServiceLocator.h>
 #include <shared/plugin/yPluginApi/historization/PluginState.h>
 
+#include "Factory.h"
 #include "ExternalPluginLibrary.h"
 #include "InternalPluginLibrary.h"
 
@@ -29,7 +30,11 @@ CManager::CManager(
    boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
    boost::shared_ptr<shared::event::CEventHandler> supervisor,
    boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger)
-   :m_dataProvider(dataProvider), m_pluginDBTable(dataProvider->getPluginRequester()), m_pluginPath(initialDir),
+   :
+   m_factory(boost::make_shared<CFactory>()),
+   m_dataProvider(dataProvider),
+   m_pluginDBTable(dataProvider->getPluginRequester()),
+   m_pluginPath(initialDir),
 #ifdef _DEBUG //TODO faut-il conserver les qualifiers ?
    m_qualifier(new CBasicQualifier(dataProvider->getPluginEventLoggerRequester(), dataAccessLayer->getEventLogger())),
 #else
@@ -132,55 +137,6 @@ std::vector<boost::filesystem::path> CManager::findPluginDirectories()
    return plugins;
 }
 
-boost::shared_ptr<ILibrary> CManager::loadPlugin(const std::string& pluginName)
-{
-   boost::lock_guard<boost::recursive_mutex> lock(m_loadedPluginsMutex);
-   boost::lock_guard<boost::recursive_mutex> lock2(m_availablePluginsMutex);
-
-   // Check if already loaded
-   PluginMap::const_iterator itLoadedPlugin = m_loadedPlugins.find(pluginName);
-   if (itLoadedPlugin != m_loadedPlugins.end())
-      return itLoadedPlugin->second;  // Plugin already loaded
-
-   // Check if plugin is available
-   if (m_availablePlugins.find(pluginName) == m_availablePlugins.end())
-      throw CInvalidPluginException(pluginName);   // Invalid plugin
-
-   // Load the plugin
-   boost::shared_ptr<ILibrary> pNewFactory(new CExternalPluginLibrary(toPath(pluginName)));
-   m_loadedPlugins[pluginName] = pNewFactory;
-
-   // Signal qualifier that a plugin was loaded
-   m_qualifier->signalLoad(pNewFactory->getInformation());
-
-   return pNewFactory;
-}
-
-bool CManager::unloadPlugin(const std::string& pluginName)
-{
-   boost::lock_guard<boost::recursive_mutex> lock(m_loadedPluginsMutex);
-   boost::lock_guard<boost::recursive_mutex> lock2(m_runningInstancesMutex);
-
-   PluginInstanceMap::const_iterator instance;
-   for (instance = m_runningInstances.begin() ; instance != m_runningInstances.end() ; ++instance)
-   {
-      if ((*instance).second->getPluginName() == pluginName)
-         break;
-   }
-   if (instance != m_runningInstances.end())
-      return false;  // No unload : plugin is still used by another instance
-
-   // Signal qualifier that a plugin is about to be unloaded
-   if (m_loadedPlugins.find(pluginName) == m_loadedPlugins.end())
-      throw shared::exception::CException("pluginName is not loaded");
-   m_qualifier->signalUnload(m_loadedPlugins.find(pluginName)->second->getInformation());
-
-   // Effectively unload plugin
-   m_loadedPlugins.erase(pluginName);
-
-   return true;
-}
-
 void CManager::buildAvailablePluginList()
 {
    boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
@@ -200,19 +156,15 @@ void CManager::buildAvailablePluginList()
          // Get informations for current found plugin
          std::string pluginName = (*libPathIt).filename().string();
 
-         // If plugin is already loaded, use its information
-         if (m_loadedPlugins.find(pluginName) != m_loadedPlugins.end())
-            m_availablePlugins[pluginName] = m_loadedPlugins[pluginName]->getInformation();
-         else
+         boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation = m_factory->createInformation(toPath(pluginName));
+         if (!pluginInformation->isSupportedOnThisPlatform())
          {
-            boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation = CExternalPluginLibrary::getInformation(toPath(pluginName));
-            if (pluginInformation->isSupportedOnThisPlatform())
-               m_availablePlugins[pluginName] = pluginInformation;
-            else
-               YADOMS_LOG(warning) << "Plugin " << pluginName << " found but unsupported on this platform";
+            YADOMS_LOG(warning) << "Plugin " << pluginName << " found but unsupported on this platform";
+            return;
          }
 
-         YADOMS_LOG(information) << "Plugin " << pluginName << " successfully loaded";
+         m_availablePlugins[pluginName] = pluginInformation;
+         YADOMS_LOG(information) << "Plugin " << pluginName << " found";
       }
       catch (CInvalidPluginException& e)
       {
@@ -375,11 +327,6 @@ void CManager::startInstance(int id)
 
       YADOMS_LOG(information) << "Start plugin instance " << instanceData->DisplayName();
 
-      // Load the plugin
-      boost::shared_ptr<ILibrary> plugin(loadPlugin(instanceData->Type()));
-      if (!plugin)
-         throw CPluginException("Fail to load plugin"); // Plugin not loaded
-
       // Create instance
       boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
       boost::shared_ptr<CInstance> pluginInstance(boost::make_shared<CInstance>(
@@ -471,8 +418,6 @@ void CManager::onInstanceStopped(int id, const std::string& error)
       std::string pluginName = instance->second->getPluginName();
 
       m_runningInstances.erase(instance);
-      
-      unloadPlugin(pluginName);
 
       if (!m_yadomsShutdown)
          recordInstanceStopped(id, error);
@@ -580,7 +525,7 @@ void CManager::startInternalPlugin()
 
 void CManager::stopInternalPlugin()
 {
-   boost::lock_guard<boost::recursive_mutex> lock(m_runningInstances);
+   boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
 
    //get the plugin info from db
    boost::shared_ptr<database::entities::CPlugin> databasePluginInstance(m_pluginDBTable->getSystemInstance());
@@ -595,7 +540,7 @@ void CManager::stopInternalPlugin()
 
 bool CManager::isInstanceRunning(int id) const
 {
-   boost::lock_guard<boost::recursive_mutex> lock(m_runningInstances);
+   boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
    return m_runningInstances.find(id) != m_runningInstances.end();
 }
 
@@ -722,7 +667,7 @@ void CManager::pluginEventsThreadDoWork()
 
 void CManager::postCommand(int id, boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command)
 {
-   boost::lock_guard<boost::recursive_mutex> lock(m_runningInstances);
+   boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
 
    if (!isInstanceRunning(id))
       return;     // Instance is stopped, nothing to do
@@ -737,7 +682,7 @@ void CManager::postCommand(int id, boost::shared_ptr<const shared::plugin::yPlug
 
 void CManager::postManuallyDeviceCreationRequest(int id, boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> & request)
 {
-   boost::lock_guard<boost::recursive_mutex> lock(m_runningInstances);
+   boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
 
    if (!isInstanceRunning(id))
       return;     // Instance is stopped, nothing to do
@@ -748,7 +693,7 @@ void CManager::postManuallyDeviceCreationRequest(int id, boost::shared_ptr<share
 
 void CManager::postBindingQueryRequest(int id, boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> & request)
 {
-   boost::lock_guard<boost::recursive_mutex> lock(m_runningInstances);
+   boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
 
    if (!isInstanceRunning(id))
       return;     // Instance is stopped, nothing to do

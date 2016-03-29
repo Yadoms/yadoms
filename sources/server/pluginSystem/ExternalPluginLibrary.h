@@ -1,7 +1,7 @@
 //
 // Factory.h
 //
-// yadoms-plugin factory
+// yadoms-plugin factory //TODO à conserver ?
 //
 #pragma once
 #include "ILibrary.h"

@@ -5,6 +5,9 @@
 #include <shared/plugin/information/IInformation.h>
 #include <shared/Log.h>
 #include <shared/DynamicLibrary.h>
+#include <shared/process/ILogger.h>
+#include <shared/script/yScriptApi/IYScriptApi.h>
+#include <shared/process/IStopNotifier.h>
 
 namespace pluginSystem
 {
@@ -44,7 +47,7 @@ void CInstance::start()
 
    m_pPluginInstance.reset(m_PluginLibrary->construct());
 
-   boost::shared_ptr<shared::process::ILogger> scriptLogger = m_factory->createProcessLogger(); // TODO m_factory est l'équivalent du automation::script::IManager
+   boost::shared_ptr<shared::process::ILogger> scriptLogger = boost::shared_ptr<shared::process::ILogger>(); // TODO remettre "m_factory->createProcessLogger()"; // TODO m_factory est l'équivalent du automation::script::IManager
 
    boost::shared_ptr<CYPluginApiImplementation> yPluginApi(boost::make_shared<CYPluginApiImplementation>( //TODO déplacer la construction dans m_factory
       m_PluginLibrary->getInformation(),
@@ -55,7 +58,7 @@ void CInstance::start()
       m_acquisitionHistorizer));
 
    boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi = m_scriptManager->createScriptContext(scriptLogger);
-   boost::shared_ptr<shared::script::IStopNotifier> stopNotifier = m_scriptManager->createStopNotifier(m_ruleStateHandler, m_ruleData->Id());
+   boost::shared_ptr<shared::process::IStopNotifier> stopNotifier = m_scriptManager->createStopNotifier(m_ruleStateHandler, m_ruleData->Id());
 
    m_runner = m_scriptManager->createScriptRunner(scriptProperties, scriptLogger, yScriptApi, stopNotifier);
 }

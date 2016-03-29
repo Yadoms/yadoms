@@ -5,6 +5,7 @@
 //
 #pragma once
 
+#include "IFactory.h"
 #include "ILibrary.h"
 #include "IInstance.h"
 #include "IPluginStateHandler.h"
@@ -261,21 +262,6 @@ namespace pluginSystem
       void buildAvailablePluginList();
 
       //--------------------------------------------------------------
-      /// \brief			Load a plugin (do nothing if already loaded)
-      /// \param [in] pluginName Plugin name
-      /// \return       Loaded plugin
-      /// \throw        CInvalidPluginException if plugin is not available
-      //--------------------------------------------------------------
-      boost::shared_ptr<ILibrary> loadPlugin(const std::string& pluginName);
-
-      //--------------------------------------------------------------
-      /// \brief			Try to unload a plugin if no more used
-      /// \param [in] pluginName Plugin name
-      /// \return       true if plugin was unloaded
-      //--------------------------------------------------------------
-      bool unloadPlugin(const std::string& pluginName);
-
-      //--------------------------------------------------------------
       /// \brief			Get the plugin library path from the plugin name
       /// \param [in] pluginName Plugin name
       /// \return       The full plugin library path
@@ -287,17 +273,15 @@ namespace pluginSystem
 
    private:
       //--------------------------------------------------------------
+      /// \brief			The plugin system factory
+      //--------------------------------------------------------------
+      boost::shared_ptr<IFactory> m_factory;
+
+      //--------------------------------------------------------------
       /// \brief			The available plugin map
       //--------------------------------------------------------------
       AvalaiblePluginMap m_availablePlugins;
       mutable boost::recursive_mutex m_availablePluginsMutex;
-
-      //--------------------------------------------------------------
-      /// \brief			Map of all found factories (key are plugin file names)
-      //--------------------------------------------------------------
-      typedef std::map<std::string, boost::shared_ptr<ILibrary> > PluginMap;
-      PluginMap m_loadedPlugins;
-      mutable boost::recursive_mutex m_loadedPluginsMutex;
 
       //--------------------------------------------------------------
       /// \brief			Global database accessor

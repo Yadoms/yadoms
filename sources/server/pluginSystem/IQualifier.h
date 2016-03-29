@@ -26,13 +26,13 @@ namespace pluginSystem
       /// \brief			         Signal that plugin was loaded
       /// \param[in]  pluginInformation     Plugin information (name, version...)
       //--------------------------------------------------------------
-      virtual void signalLoad(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation) = 0;
+      virtual void signalLoad(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation) = 0;//TODO virer ? (plus de notion de load/unload)
 
       //--------------------------------------------------------------
       /// \brief			         Signal that plugin was unloaded
       /// \param[in]  pluginInformation     Plugin information (name, version...)
       //--------------------------------------------------------------
-      virtual void signalUnload(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation) = 0;
+      virtual void signalUnload(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation) = 0;//TODO virer ? (plus de notion de load/unload)
 
       //--------------------------------------------------------------
       /// \brief			         Signal that plugin has crashed

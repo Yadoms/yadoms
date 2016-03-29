@@ -374,6 +374,7 @@ set(YADOMS_SRC
 	server/pluginSystem/DummyQualifier.cpp
 	server/pluginSystem/IdentityForQualifier.cpp
 	server/pluginSystem/IdentityForQualifier.h
+	server/pluginSystem/IFactory.h
 	server/pluginSystem/IInstance.h
 	server/pluginSystem/ILibrary.h
 	server/pluginSystem/IPluginStateHandler.h
@@ -389,6 +390,8 @@ set(YADOMS_SRC
 	server/pluginSystem/InternalPluginLibrary.cpp
 	server/pluginSystem/ExternalPluginLibrary.h
 	server/pluginSystem/ExternalPluginLibrary.cpp
+	server/pluginSystem/Factory.cpp
+	server/pluginSystem/Factory.h
 	server/pluginSystem/Manager.h
 	server/pluginSystem/Manager.cpp
 	server/pluginSystem/ManagerEvent.h

@@ -12,7 +12,7 @@
 namespace pluginSystem
 {
 
-   class ILibrary 
+   class ILibrary //TODO virer ?
    {
    public:
       //--------------------------------------------------------------
