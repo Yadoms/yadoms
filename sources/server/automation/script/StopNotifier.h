@@ -1,5 +1,5 @@
 #pragma once
-#include <shared/script/IStopNotifier.h>
+#include <shared/process/IStopNotifier.h>
 #include "../IRuleStateHandler.h"
 
 namespace automation { namespace script
@@ -7,7 +7,7 @@ namespace automation { namespace script
    //-----------------------------------------------------
    ///\brief The script stop notifier
    //-----------------------------------------------------
-   class StopNotifier : public shared::script::IStopNotifier
+   class StopNotifier : public shared::process::IStopNotifier
    {
    public:
       //-----------------------------------------------------

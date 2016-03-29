@@ -62,9 +62,9 @@ void CPython::saveScriptContent(const std::string& scriptPath, const std::string
 
 boost::shared_ptr<shared::process::IRunner> CPython::createRunner(
    const std::string& scriptPath,
-   boost::shared_ptr<shared::script::ILogger> scriptLogger,
+   boost::shared_ptr<shared::process::ILogger> scriptLogger,
    boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
-   boost::shared_ptr<shared::script::IStopNotifier> stopNotifier,
+   boost::shared_ptr<shared::process::IStopNotifier> stopNotifier,
    const shared::CDataContainer& scriptConfiguration) const
 {
    try

@@ -15,7 +15,7 @@ namespace automation { namespace script
 {
 
 CYScriptApiImplementation::CYScriptApiImplementation(
-   boost::shared_ptr<shared::script::ILogger> ruleLogger,
+   boost::shared_ptr<shared::process::ILogger> ruleLogger,
    boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
    boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
    boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,

@@ -1,5 +1,5 @@
 #pragma once
-#include <shared/script/ILogger.h>
+#include <shared/process/ILogger.h>
 #include "IScriptFile.h"
 
 //--------------------------------------------------------------

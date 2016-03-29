@@ -9,7 +9,7 @@ CScriptProcess::CScriptProcess(
    boost::shared_ptr<IPythonExecutable> executable,
    boost::shared_ptr<const IScriptFile> scriptFile,
    const std::string& contextAccessorId,
-   boost::shared_ptr<shared::script::ILogger> scriptLogger)
+   boost::shared_ptr<shared::process::ILogger> scriptLogger)
    :m_executable(executable),
    m_scriptFile(scriptFile),
    m_contextAccessorId(contextAccessorId),
@@ -109,7 +109,7 @@ std::string CScriptProcess::getError() const
 }
 
 void CScriptProcess::stdRedirectWorker(const std::string& ruleName,
-   boost::shared_ptr<Poco::PipeInputStream> moduleStdOut, boost::shared_ptr<shared::script::ILogger> scriptLogger, boost::shared_ptr<std::string> lastError)
+   boost::shared_ptr<Poco::PipeInputStream> moduleStdOut, boost::shared_ptr<shared::process::ILogger> scriptLogger, boost::shared_ptr<std::string> lastError)
 {
    char line[1024];
    YADOMS_LOG_CONFIGURE(ruleName + " rule");

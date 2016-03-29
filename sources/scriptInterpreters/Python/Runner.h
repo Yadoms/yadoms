@@ -3,7 +3,8 @@
 #include "IScriptFile.h"
 #include <shared/DataContainer.h>
 #include <shared/process/IRunner.h>
-#include <shared/script/IStopNotifier.h>
+#include <shared/process/IStopNotifier.h>
+#include <shared/script/yScriptApi/IYScriptApi.h>
 #include "IContextAccessor.h"
 #include "IScriptProcess.h"
 
@@ -26,9 +27,9 @@ public:
    //--------------------------------------------------------------
    CRunner(const std::string& scriptPath,
       boost::shared_ptr<IPythonExecutable> executable,
-      boost::shared_ptr<shared::script::ILogger> scriptLogger,
+      boost::shared_ptr<shared::process::ILogger> scriptLogger,
       boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
-      boost::shared_ptr<shared::script::IStopNotifier> stopNotifier,
+      boost::shared_ptr<shared::process::IStopNotifier> stopNotifier,
       const shared::CDataContainer& scriptConfiguration = shared::CDataContainer());
 
    //--------------------------------------------------------------
@@ -53,8 +54,8 @@ protected:
    ///\param[in] scriptLogger The rule script logger
    //-----------------------------------------------------
    static void monitorThreaded(boost::shared_ptr<IScriptProcess> process,
-      boost::shared_ptr<shared::script::IStopNotifier> stopNotifier,
-      boost::shared_ptr<shared::script::ILogger> scriptLogger);
+      boost::shared_ptr<shared::process::IStopNotifier> stopNotifier,
+      boost::shared_ptr<shared::process::ILogger> scriptLogger);
 
 private:
    //--------------------------------------------------------------
@@ -70,7 +71,7 @@ private:
    //--------------------------------------------------------------
    ///\brief   The rule logger
    //--------------------------------------------------------------
-   boost::shared_ptr<shared::script::ILogger> m_scriptLogger;
+   boost::shared_ptr<shared::process::ILogger> m_scriptLogger;
 
    //--------------------------------------------------------------
    ///\brief   The rule context
@@ -80,7 +81,7 @@ private:
    //--------------------------------------------------------------
    ///\brief   The rule stop notifier
    //--------------------------------------------------------------
-   boost::shared_ptr<shared::script::IStopNotifier> m_stopNotifier;
+   boost::shared_ptr<shared::process::IStopNotifier> m_stopNotifier;
       
    //--------------------------------------------------------------
    ///\brief   Configuration of the script

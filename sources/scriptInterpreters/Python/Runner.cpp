@@ -9,9 +9,9 @@
 
 CRunner::CRunner(const std::string& scriptPath,
    boost::shared_ptr<IPythonExecutable> executable,
-   boost::shared_ptr<shared::script::ILogger> scriptLogger,
+   boost::shared_ptr<shared::process::ILogger> scriptLogger,
    boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
-   boost::shared_ptr<shared::script::IStopNotifier> stopNotifier,
+   boost::shared_ptr<shared::process::IStopNotifier> stopNotifier,
    const shared::CDataContainer& scriptConfiguration)
    :m_scriptFile(boost::make_shared<CScriptFile>(scriptPath)),
    m_executable(executable),
@@ -57,8 +57,8 @@ void CRunner::requestStop()
 
 void CRunner::monitorThreaded(
    boost::shared_ptr<IScriptProcess> process,
-   boost::shared_ptr<shared::script::IStopNotifier> stopNotifier,
-   boost::shared_ptr<shared::script::ILogger> scriptLogger)
+   boost::shared_ptr<shared::process::IStopNotifier> stopNotifier,
+   boost::shared_ptr<shared::process::ILogger> scriptLogger)
 {
    if (process->waitForStop() == 0)
       stopNotifier->notifyNormalStop();

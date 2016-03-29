@@ -1,7 +1,9 @@
 #pragma once
 #include <shared/process/IRunner.h>
 #include <shared/DataContainer.h>
-#include <shared/script/IStopNotifier.h>
+#include <shared/process/ILogger.h>
+#include <shared/process/IStopNotifier.h>
+#include <shared/script/yScriptApi/IYScriptApi.h>
 
 namespace shared { namespace script
 {
@@ -60,9 +62,9 @@ namespace shared { namespace script
       //-----------------------------------------------------
       virtual boost::shared_ptr<process::IRunner> createRunner(
          const std::string& scriptPath,
-         boost::shared_ptr<ILogger> scriptLogger,
+         boost::shared_ptr<process::ILogger> scriptLogger,
          boost::shared_ptr<yScriptApi::IYScriptApi> yScriptApi,
-         boost::shared_ptr<IStopNotifier> stopNotifier,
+         boost::shared_ptr<process::IStopNotifier> stopNotifier,
          const shared::CDataContainer& scriptConfiguration) const = 0;
    };
 	

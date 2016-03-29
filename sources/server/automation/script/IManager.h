@@ -2,8 +2,9 @@
 #include <shared/process/IRunner.h>
 #include "IProperties.h"
 #include "../../database/sqlite/requesters/Rule.h"
-#include <shared/script/ILogger.h>
-#include <shared/script/IStopNotifier.h>
+#include <shared/process/ILogger.h>
+#include <shared/process/IStopNotifier.h>
+#include <shared/script/yScriptApi/IYScriptApi.h>
 #include <server/automation/IRuleStateHandler.h>
 
 namespace automation { namespace script
@@ -87,23 +88,23 @@ namespace automation { namespace script
       //-----------------------------------------------------
       virtual boost::shared_ptr<shared::process::IRunner> createScriptRunner(
          boost::shared_ptr<const IProperties> scriptProperties,
-         boost::shared_ptr<shared::script::ILogger> scriptLogger,
+         boost::shared_ptr<shared::process::ILogger> scriptLogger,
          boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
-         boost::shared_ptr<shared::script::IStopNotifier> stopNotifier) = 0;
+         boost::shared_ptr<shared::process::IStopNotifier> stopNotifier) = 0;
 
       //-----------------------------------------------------
       ///\brief               Create the script logger
       ///\param[in] scriptPath The script path where to log in
       ///\return              A script logger instance
       //-----------------------------------------------------
-      virtual boost::shared_ptr<shared::script::ILogger> createScriptLogger(const std::string& scriptPath) = 0;
+      virtual boost::shared_ptr<shared::process::ILogger> createScriptLogger(const std::string& scriptPath) = 0;
 
       //-----------------------------------------------------
       ///\brief               Create the script context (IYScriptApi implementation)
       ///\param[in] scriptLogger The logger used for rule
       ///\return              A script context instance
       //-----------------------------------------------------
-      virtual boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> createScriptContext(boost::shared_ptr<shared::script::ILogger> scriptLogger) = 0;
+      virtual boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> createScriptContext(boost::shared_ptr<shared::process::ILogger> scriptLogger) = 0;
 
       //-----------------------------------------------------
       ///\brief               Create the stop notifier
@@ -111,7 +112,7 @@ namespace automation { namespace script
       ///\param[in] ruleId    The rule ID
       ///\return              A stop notifier instance
       //-----------------------------------------------------
-      virtual boost::shared_ptr<shared::script::IStopNotifier> createStopNotifier(boost::shared_ptr<IRuleStateHandler> ruleStateHandler, int ruleId) = 0;
+      virtual boost::shared_ptr<shared::process::IStopNotifier> createStopNotifier(boost::shared_ptr<IRuleStateHandler> ruleStateHandler, int ruleId) = 0;
    };
 
 } } // namespace automation::script

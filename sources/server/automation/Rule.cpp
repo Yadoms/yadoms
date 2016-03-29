@@ -28,9 +28,9 @@ void CRule::start()
    }
 
    boost::shared_ptr<script::IProperties> scriptProperties = m_scriptManager->createScriptProperties(m_ruleData);
-   boost::shared_ptr<shared::script::ILogger> scriptLogger = m_scriptManager->createScriptLogger(scriptProperties->scriptPath());
+   boost::shared_ptr<shared::process::ILogger> scriptLogger = m_scriptManager->createScriptLogger(scriptProperties->scriptPath());
    boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi = m_scriptManager->createScriptContext(scriptLogger);
-   boost::shared_ptr<shared::script::IStopNotifier> stopNotifier = m_scriptManager->createStopNotifier(m_ruleStateHandler, m_ruleData->Id());
+   boost::shared_ptr<shared::process::IStopNotifier> stopNotifier = m_scriptManager->createStopNotifier(m_ruleStateHandler, m_ruleData->Id());
 
    m_runner = m_scriptManager->createScriptRunner(scriptProperties, scriptLogger, yScriptApi, stopNotifier);
 }

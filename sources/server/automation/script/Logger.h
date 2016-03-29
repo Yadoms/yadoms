@@ -1,12 +1,12 @@
 #pragma once
-#include <shared/script/ILogger.h>
+#include <shared/process/ILogger.h>
 
 namespace automation { namespace script
 {
    //-----------------------------------------------------
    ///\brief The rule logger
    //-----------------------------------------------------
-   class CLogger : public shared::script::ILogger
+   class CLogger : public shared::process::ILogger
    {
    public:
       //-----------------------------------------------------

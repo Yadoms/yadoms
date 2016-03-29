@@ -54,12 +54,12 @@ namespace automation { namespace script
       virtual std::string getScriptLogFile(boost::shared_ptr<const database::entities::CRule> ruleData);
       virtual boost::shared_ptr<shared::process::IRunner> createScriptRunner(
          boost::shared_ptr<const IProperties> scriptProperties,
-         boost::shared_ptr<shared::script::ILogger> scriptLogger,
+         boost::shared_ptr<shared::process::ILogger> scriptLogger,
          boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
-         boost::shared_ptr<shared::script::IStopNotifier> stopNotifier);
-      virtual boost::shared_ptr<shared::script::ILogger> createScriptLogger(const std::string& scriptPath);
-      virtual boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> createScriptContext(boost::shared_ptr<shared::script::ILogger> scriptLogger);
-      virtual boost::shared_ptr<shared::script::IStopNotifier> createStopNotifier(boost::shared_ptr<IRuleStateHandler> ruleStateHandler, int ruleId);
+         boost::shared_ptr<shared::process::IStopNotifier> stopNotifier);
+      virtual boost::shared_ptr<shared::process::ILogger> createScriptLogger(const std::string& scriptPath);
+      virtual boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> createScriptContext(boost::shared_ptr<shared::process::ILogger> scriptLogger);
+      virtual boost::shared_ptr<shared::process::IStopNotifier> createStopNotifier(boost::shared_ptr<IRuleStateHandler> ruleStateHandler, int ruleId);
       // [END] IManager Implementation
 
       //-----------------------------------------------------

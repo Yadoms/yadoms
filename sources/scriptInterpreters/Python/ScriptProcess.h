@@ -1,7 +1,7 @@
 #pragma once
 #include "IScriptProcess.h"
 #include "IPythonExecutable.h"
-#include <shared/script/ILogger.h>
+#include <shared/process/ILogger.h>
 
 //--------------------------------------------------------------
 /// \brief	Python executable
@@ -20,7 +20,7 @@ public:
    CScriptProcess(boost::shared_ptr<IPythonExecutable> executable,
       boost::shared_ptr<const IScriptFile> scriptFile,
       const std::string& contextAccessorId,
-      boost::shared_ptr<shared::script::ILogger> scriptLogger);
+      boost::shared_ptr<shared::process::ILogger> scriptLogger);
 
    //--------------------------------------------------------------
    /// \brief	Destructor
@@ -48,7 +48,7 @@ protected:
    /// \param[inout] lastError      Last error string
    //--------------------------------------------------------------
    void stdRedirectWorker(const std::string& ruleName,
-      boost::shared_ptr<Poco::PipeInputStream> moduleStdOut, boost::shared_ptr<shared::script::ILogger> scriptLogger, boost::shared_ptr<std::string> lastError);
+      boost::shared_ptr<Poco::PipeInputStream> moduleStdOut, boost::shared_ptr<shared::process::ILogger> scriptLogger, boost::shared_ptr<std::string> lastError);
 
 private:
    //--------------------------------------------------------------
@@ -74,7 +74,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	The script logger
    //--------------------------------------------------------------
-   boost::shared_ptr<shared::script::ILogger> m_scriptLogger;
+   boost::shared_ptr<shared::process::ILogger> m_scriptLogger;
 
    //--------------------------------------------------------------
    /// \brief	The process of the running script, and its mutex

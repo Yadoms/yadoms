@@ -258,9 +258,9 @@ std::string CManager::getScriptLogFile(boost::shared_ptr<const database::entitie
 
 boost::shared_ptr<shared::process::IRunner> CManager::createScriptRunner(
    boost::shared_ptr<const IProperties> scriptProperties,
-   boost::shared_ptr<shared::script::ILogger> scriptLogger,
+   boost::shared_ptr<shared::process::ILogger> scriptLogger,
    boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
-   boost::shared_ptr<shared::script::IStopNotifier> stopNotifier)
+   boost::shared_ptr<shared::process::IStopNotifier> stopNotifier)
 {
    try
    {
@@ -281,20 +281,20 @@ boost::shared_ptr<shared::process::IRunner> CManager::createScriptRunner(
    }
 }
 
-boost::shared_ptr<shared::script::ILogger> CManager::createScriptLogger(const std::string& scriptPath)
+boost::shared_ptr<shared::process::ILogger> CManager::createScriptLogger(const std::string& scriptPath)
 {
-   boost::shared_ptr<shared::script::ILogger> logger(new CLogger(scriptPath));
+   boost::shared_ptr<shared::process::ILogger> logger(new CLogger(scriptPath));
    return logger;
 }
 
-boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> CManager::createScriptContext(boost::shared_ptr<shared::script::ILogger> scriptLogger)
+boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> CManager::createScriptContext(boost::shared_ptr<shared::process::ILogger> scriptLogger)
 {
    boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi(
       boost::make_shared<CYScriptApiImplementation>(scriptLogger, m_pluginGateway, m_configurationManager, m_dbAcquisitionRequester, m_dbDeviceRequester, m_dbKeywordRequester, m_dbRecipientRequester, m_generalInfo));
    return yScriptApi;
 }
 
-boost::shared_ptr<shared::script::IStopNotifier> CManager::createStopNotifier(boost::shared_ptr<IRuleStateHandler> ruleStateHandler, int ruleId)
+boost::shared_ptr<shared::process::IStopNotifier> CManager::createStopNotifier(boost::shared_ptr<IRuleStateHandler> ruleStateHandler, int ruleId)
 {
    return boost::make_shared<StopNotifier>(ruleStateHandler, ruleId);
 }
