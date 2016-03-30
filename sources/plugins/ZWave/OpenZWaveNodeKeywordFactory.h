@@ -19,7 +19,7 @@ private:
    static boost::shared_ptr<IOpenZWaveNodeKeyword> generateSpecificKeyword(const std::string & vLabel, const std::string & unit, OpenZWave::ValueID & value, shared::plugin::yPluginApi::EKeywordAccessMode accessMode);
    
 
-   static std::vector<shared::plugin::yPluginApi::CStandardCapacity> m_declaredCapacities;
+   static std::vector< boost::shared_ptr<shared::plugin::yPluginApi::CStandardCapacity> > m_declaredCapacities;
 };
 
 

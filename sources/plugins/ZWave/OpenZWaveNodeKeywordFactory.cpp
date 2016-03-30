@@ -1,15 +1,19 @@
 #include "stdafx.h"
 #include "OpenZWaveNodeKeywordFactory.h"
 #include <shared/exception/NotSupported.hpp>
+#include <shared/enumeration/IExtendedEnum.h>
 #include "OpenZWaveCommandClass.h"
 
 
 #include <value_classes/ValueBool.h>
 #include <value_classes/ValueDecimal.h>
+#include <value_classes/ValueList.h>
 #include <Manager.h>
 
 #include <shared/Log.h>
 #include "OpenZWaveNodeKeywordBase.h"
+#include "OpenZWaveNodeKeywordGeneric.h"
+#include "OpenZWaveNodeKeywordDimmable.h"
 
 #include <shared/plugin/yPluginApi/KeywordAccessMode.h>
 #include <shared/plugin/yPluginApi/historization/Temperature.h>
@@ -31,97 +35,14 @@
 #include <shared/plugin/yPluginApi/historization/Energy.h>
 #include <shared/plugin/yPluginApi/historization/Counter.h>
 #include <shared/plugin/yPluginApi/historization/PowerFactor.h>
+#include <shared/plugin/yPluginApi/StandardUnits.h>
 
 #include "OpenZWaveHelpers.h"
 
-std::vector<shared::plugin::yPluginApi::CStandardCapacity> COpenZWaveNodeKeywordFactory::m_declaredCapacities;
-
-template<class T>
-class COpenZWaveNodeKeywordGeneric : public COpenZWaveNodeKeywordBase
-{
-public:
-   //--------------------------------------------------------------
-   /// \brief	    Constructor
-   //--------------------------------------------------------------
-   COpenZWaveNodeKeywordGeneric(boost::shared_ptr< shared::plugin::yPluginApi::historization::CSingleHistorizableData<T> > keyword, OpenZWave::ValueID & valueId)
-      : COpenZWaveNodeKeywordBase(valueId), m_keyword(keyword)
-   {
-
-   }
-
-   virtual ~COpenZWaveNodeKeywordGeneric()
-   {
-
-   }
-
-   // IOpenZWaveKeyword implementation
-   virtual bool sendCommand(const std::string & commandData)
-   {
-      m_keyword->setCommand(commandData);
-      return realSendCommand<T>(m_keyword->get());
-   }
-
-   virtual boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> getLastKeywordValue()
-   {
-      m_keyword->set(extractLastValue<T>());
-      return m_keyword;
-   }
-   // [END] IOpenZWaveKeyword implementation
-
-   static boost::shared_ptr<IOpenZWaveNodeKeyword> create(boost::shared_ptr< shared::plugin::yPluginApi::historization::CSingleHistorizableData<T> > historizer, OpenZWave::ValueID & vID)
-   {
-      return boost::shared_ptr<IOpenZWaveNodeKeyword>(new COpenZWaveNodeKeywordGeneric<T>(historizer, vID));
-   }
-
-   static boost::shared_ptr<IOpenZWaveNodeKeyword> createFromDataType(OpenZWave::ValueID & vID, const std::string & vLabel, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, const std::string &units, shared::plugin::yPluginApi::EKeywordDataType dataType, shared::plugin::yPluginApi::historization::EMeasureType measureType = shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute)
-   {
-      boost::shared_ptr< shared::plugin::yPluginApi::historization::CSingleHistorizableData<T> > historizer(new shared::plugin::yPluginApi::historization::CSingleHistorizableData<T>(COpenZWaveHelpers::GenerateKeywordName(vID), COpenZWaveNodeKeywordFactory::getCapacity(vLabel, units, dataType), accessMode, measureType));
-      return boost::shared_ptr<IOpenZWaveNodeKeyword>(new COpenZWaveNodeKeywordGeneric<T>(historizer, vID));
-   }
+std::vector< boost::shared_ptr<shared::plugin::yPluginApi::CStandardCapacity> > COpenZWaveNodeKeywordFactory::m_declaredCapacities;
 
 
-private:
-   //--------------------------------------------------------------
-   /// \brief	    Switch value handler
-   //--------------------------------------------------------------
-   boost::shared_ptr< shared::plugin::yPluginApi::historization::CSingleHistorizableData<T> > m_keyword;
-};
 
-
-class COpenZWaveNodeKeywordDimmable : public COpenZWaveNodeKeywordBase
-{
-public:
-   //--------------------------------------------------------------
-   /// \brief	    Constructor
-   //--------------------------------------------------------------
-   COpenZWaveNodeKeywordDimmable(OpenZWave::ValueID & valueId, const std::string & vLabel, shared::plugin::yPluginApi::EKeywordAccessMode accessMode)
-      : COpenZWaveNodeKeywordBase(valueId), m_keyword(new shared::plugin::yPluginApi::historization::CDimmable(COpenZWaveHelpers::GenerateKeywordName(valueId), accessMode))
-   {
-
-   }
-
-   virtual ~COpenZWaveNodeKeywordDimmable()
-   {
-
-   }
-
-   // IOpenZWaveKeyword implementation
-   virtual bool sendCommand(const std::string & commandData)
-   {
-      m_keyword->set(commandData);
-      return realSendCommand<int>(m_keyword->switchLevel());
-   }
-
-   virtual boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> getLastKeywordValue()
-   {
-      m_keyword->set(extractLastValue<int>());
-      return m_keyword;
-   }
-   // [END] IOpenZWaveKeyword implementation
-
-private:
-   boost::shared_ptr<shared::plugin::yPluginApi::historization::CDimmable> m_keyword;
-};
 
 boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::createKeyword(OpenZWave::ValueID & vID, Poco::UInt32 homeId, Poco::UInt8 nodeId, bool includeSystemKeywords)
 {
@@ -146,6 +67,9 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateH
          bool awake = OpenZWave::Manager::Get()->IsNodeAwake(homeId, nodeId);
          bool failed = OpenZWave::Manager::Get()->IsNodeFailed(homeId, nodeId);
          bool zwavePlus = OpenZWave::Manager::Get()->IsNodeZWavePlus(homeId, nodeId);
+
+         if (units.empty())
+            units = shared::plugin::yPluginApi::CStandardUnits::NoUnits;
 
          std::string genre = "";
 
@@ -409,7 +333,7 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateS
 
       case  OpenZWave::ValueID::ValueType_List:			// List from which one item can be selected
       {
-         return COpenZWaveNodeKeywordGeneric<std::string>::createFromDataType(vID, vLabel, accessMode, units, shared::plugin::yPluginApi::EKeywordDataType::kEnum);
+         return COpenZWaveNodeKeywordGeneric< COpenZWaveEnumHandler >::createFromDataType(vID, vLabel, accessMode, units, shared::plugin::yPluginApi::EKeywordDataType::kEnum);
       }
 
       case  OpenZWave::ValueID::ValueType_Schedule:			// Complex type used with the Climate Control Schedule command class
@@ -443,6 +367,6 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateS
 
 const shared::plugin::yPluginApi::CStandardCapacity& COpenZWaveNodeKeywordFactory::getCapacity(const std::string & name, const std::string & unit, shared::plugin::yPluginApi::EKeywordDataType dataType)
 {
-   m_declaredCapacities.push_back(shared::plugin::yPluginApi::CStandardCapacity(name, unit, dataType));
-   return m_declaredCapacities.back();
+   m_declaredCapacities.push_back(boost::shared_ptr<shared::plugin::yPluginApi::CStandardCapacity>(new shared::plugin::yPluginApi::CStandardCapacity(name, unit, dataType)));
+   return *(m_declaredCapacities.back().get());
 }

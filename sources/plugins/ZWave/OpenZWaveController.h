@@ -50,14 +50,11 @@ private:
    /// \param [in]    keyword	            the yadoms keyword
    /// \param [out]   homeId	            the openzwave homeid
    /// \param [out]   nodeId	            the openzwave nodeId
-   /// \param [out]   keywordName	      the openzwave keywordName
-   /// \param [out]   keywordClass	      the openzwave keyword class
    /// \throw shared::exception::CException if any yadoms data do not match pattern
    /// \note:  patterns:   device = homeId.nodeId
    /// \note:  patterns:   keyword = keywordName.keywordClass
    //--------------------------------------------------------------
-   void RetreiveOpenZWaveIds(const std::string & device, const std::string & keyword,
-      int & homeId, uint8 & nodeId, std::string & keywordName, ECommandClass & keywordClass);
+   void RetreiveOpenZWaveIds(const std::string & device, const std::string & keyword, int & homeId, uint8 & nodeId);
 
    //--------------------------------------------------------------
    /// \brief	   Mutex protecting the configuration content

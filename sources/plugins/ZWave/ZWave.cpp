@@ -49,7 +49,7 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
             {
                // Command was received from Yadoms
                boost::shared_ptr<const yApi::IDeviceCommand> command = context->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
-               
+
                YADOMS_LOG(debug) << "Command received from Yadoms :" << command->toString();
                try
                {
@@ -59,7 +59,14 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
                {
                   YADOMS_LOG(error) << "Fail to send command : " << ex.what();
                }
-
+               catch (std::exception & ex)
+               {
+                  YADOMS_LOG(fatal) << "Fail to send command. exception : " << ex.what();
+               }
+               catch (...)
+               {
+                  YADOMS_LOG(fatal) << "Fail to send command. unknown exception";
+               }
                break;
             }
             case yApi::IYPluginApi::kEventUpdateConfiguration:
@@ -91,7 +98,14 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
                {
                   YADOMS_LOG(error) << "Fail to declare device : " << ex.what();
                }
-
+               catch (std::exception & ex)
+               {
+                  YADOMS_LOG(fatal) << "Fail to declare device. exception : " << ex.what();
+               }
+               catch (...)
+               {
+                  YADOMS_LOG(fatal) << "Fail to declare device. unknown exception";
+               }
                break;
             }
 
@@ -100,7 +114,7 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
                try
                {
 
-                  boost::shared_ptr<CKeywordContainer> keywordData  = context->getEventHandler().getEventData< boost::shared_ptr<CKeywordContainer> >();
+                  boost::shared_ptr<CKeywordContainer> keywordData = context->getEventHandler().getEventData< boost::shared_ptr<CKeywordContainer> >();
 
                   std::string deviceId = keywordData->getDeviceId();
                   std::string keywordId = keywordData->getKeyword().getKeyword();
@@ -114,10 +128,16 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
                {
                   YADOMS_LOG(error) << "Fail to update keyword : " << ex.what();
                }
-
-               break;
+               catch (std::exception & ex)
+               {
+                  YADOMS_LOG(fatal) << "Fail to update keyword. exception : " << ex.what();
+               }
+               catch (...)
+               {
+                  YADOMS_LOG(fatal) << "Fail to update keyword. unknown exception";
+               }
             }
-               break;
+            break;
 
             default:
             {
@@ -141,7 +161,15 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
    }
    catch (shared::exception::CException & ex)
    {
-      YADOMS_LOG(fatal) << "The XPL plugin fails. Unknown expcetion : " << ex.what();
+      YADOMS_LOG(fatal) << "The ZWave plugin fails. shared exception : " << ex.what();
+   }
+   catch (std::exception & ex)
+   {
+      YADOMS_LOG(fatal) << "The ZWave plugin fails. exception : " << ex.what();
+   }
+   catch (...)
+   {
+      YADOMS_LOG(fatal) << "The ZWave plugin fails. unknown exception";
    }
 }
 

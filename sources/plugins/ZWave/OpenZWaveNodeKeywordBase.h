@@ -5,7 +5,7 @@
 #include <Manager.h>
 #include <shared/exception/OutOfRange.hpp>
 #include <shared/Log.h>
-
+#include "OpenZWaveEnumHandler.h"
 //--------------------------------------------------------------
 /// \brief	    Base class for keywords
 //--------------------------------------------------------------
@@ -59,6 +59,28 @@ inline bool COpenZWaveNodeKeywordBase::realSendCommand(const T & data)
    try
    {
       return OpenZWave::Manager::Get()->SetValue(m_valueId, data);
+   }
+   catch (OpenZWave::OZWException & ex)
+   {
+      YADOMS_LOG(fatal) << "Fail to send command : OpenZWave exception : " << ex.what();
+   }
+   catch (std::exception & ex)
+   {
+      YADOMS_LOG(fatal) << "Fail to send command : std::exception : " << ex.what();
+   }
+   catch (...)
+   {
+      YADOMS_LOG(fatal) << "Fail to send command : unknown exception";
+   }
+   return false;
+}
+
+template<>
+inline bool COpenZWaveNodeKeywordBase::realSendCommand(const COpenZWaveEnumHandler & data)
+{
+   try
+   {
+      return OpenZWave::Manager::Get()->SetValueListSelection(m_valueId, data.toString());
    }
    catch (OpenZWave::OZWException & ex)
    {
@@ -207,6 +229,13 @@ inline std::string COpenZWaveNodeKeywordBase::extractLastValue()
    std::string value;
    OpenZWave::Manager::Get()->GetValueAsString(m_valueId, &value);
    return value;
+}
+
+
+template<>
+inline COpenZWaveEnumHandler COpenZWaveNodeKeywordBase::extractLastValue()
+{
+   return COpenZWaveEnumHandler(m_valueId);
 }
 
 

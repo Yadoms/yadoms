@@ -463,8 +463,7 @@ bool COpenZWaveController::GetValueByCommandClass(const int homeId, const int no
 }
 */
 
-void COpenZWaveController::RetreiveOpenZWaveIds(const std::string & device, const std::string & keyword,
-   int & homeId, uint8 & nodeId, std::string & keywordName, ECommandClass & keywordClass)
+void COpenZWaveController::RetreiveOpenZWaveIds(const std::string & device, const std::string & keyword,  int & homeId, uint8 & nodeId)
 {
    std::vector<std::string> splittedDevice;
    boost::split(splittedDevice, device, boost::is_any_of("."), boost::token_compress_on);
@@ -474,16 +473,6 @@ void COpenZWaveController::RetreiveOpenZWaveIds(const std::string & device, cons
    }
    homeId = boost::lexical_cast<int>(splittedDevice[0]);
    nodeId = static_cast<uint8>(atoi(splittedDevice[1].c_str())); //dont use lexical cast for uint8, because it realize a string to char conversion: "2" is transform in '2' = 0x32
-
-   std::vector<std::string> splittedKeyword;
-   boost::split(splittedKeyword, keyword, boost::is_any_of("."), boost::token_compress_on);
-   if (splittedKeyword.size() != 2)
-   {
-      throw shared::exception::CException("The keyword id is invalid : not matching pattern : <label>-<class> ");
-   }
-   keywordName = splittedKeyword[0];
-   keywordClass.fromString(splittedKeyword[1]);
-
 }
 
 void COpenZWaveController::SendCommand(const std::string & device, const std::string & keyword, const std::string & value)
@@ -492,16 +481,15 @@ void COpenZWaveController::SendCommand(const std::string & device, const std::st
 
    int homeId;
    uint8 nodeId;
-   std::string keywordName;
    ECommandClass keywordClass;
 
-   RetreiveOpenZWaveIds(device, keyword, homeId, nodeId, keywordName, keywordClass);
+   RetreiveOpenZWaveIds(device, keyword, homeId, nodeId);
 
    //TODO : gerer les autres type
    boost::shared_ptr<COpenZWaveNode> node = GetNode(homeId, nodeId);
    if (node)
    {
-      node->sendCommand(keywordName, value);
+      node->sendCommand(keyword, value);
    }
 }
 

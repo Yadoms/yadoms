@@ -14,6 +14,8 @@ set(ZWAVE_PLUGIN_SOURCES
 	ZWaveControllerFactory.cpp 	
 	OpenZWaveController.h
 	OpenZWaveController.cpp 
+	OpenZWaveEnumHandler.h
+	OpenZWaveEnumHandler.cpp 
 	OpenZWaveCommandClass.h
 	OpenZWaveCommandClass.cpp 	
 	IOpenZWaveNodeKeyword.h
@@ -23,6 +25,9 @@ set(ZWAVE_PLUGIN_SOURCES
 	OpenZWaveHelpers.cpp 
 	OpenZWaveNodeKeywordBase.h
 	OpenZWaveNodeKeywordBase.cpp 
+	OpenZWaveNodeKeywordDimmable.h
+	OpenZWaveNodeKeywordDimmable.cpp 
+   OpenZWaveNodeKeywordGeneric.h
 	OpenZWaveNodeKeywordFactory.h
 	OpenZWaveNodeKeywordFactory.cpp 
 	KeywordContainer.h
