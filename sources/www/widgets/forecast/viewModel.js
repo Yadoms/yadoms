@@ -49,7 +49,6 @@ function forecastViewModel() {
     * @WindPosition Direction from the Wind
     * @WindSpeed    Speed of the Wind
     */
-
    this.canvasload = function (data, windPosition, windSpeed) {
       //get a reference to the canvas
       var ctx = this.widgetApi.find("#" + data).get(0).getContext("2d");
@@ -123,7 +122,6 @@ function forecastViewModel() {
       if (keywordId === self.widget.configuration.device.keywordId) {
          if (data.value && data.value !== "") {
             var obj = jQuery.parseJSON(data.value);
-
             //We only keep the city name
             var res = obj.city.split(",");
             self.city(res[0]);
@@ -241,7 +239,7 @@ function forecastViewModel() {
          else
             self.RainDayVisible(false);
       }
-      else if ((self.SizePainted !== 3) && (self.widget.height() > 220)) {
+      else if ((self.SizePainted !== 3) && (self.widget.getHeight() > 220)) {
          //In three cases : we enable automatically temperatures. All others information are read from the configuration
          self.MaxTempVisible(true);
          self.MinTempVisible(true);
