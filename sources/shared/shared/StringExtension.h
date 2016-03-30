@@ -215,7 +215,7 @@ namespace shared
    }
 
    //
-   /// \brief               To string converter : used to convert data to string, locale-independently
+   /// \brief               To string converter : used to convert data to string, locale-independently. For unsigned char, it force a cast to int to avoid implicit convertion to char
    /// \param[in] value     Value to convert
    /// \return              Converted value, using the C locale
    //
