@@ -31,7 +31,7 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
       // Load configuration values (provided by database)
       m_configuration.initializeWith(context->getConfiguration());
 
-      m_configuration.setPath(context->getPluginPath().string());
+      m_configuration.setPath(context->getInformation().getPath().string());
 
       // the main loop
       YADOMS_LOG(debug) << "CZWave is running...";

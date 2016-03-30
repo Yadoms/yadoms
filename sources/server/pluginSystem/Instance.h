@@ -10,12 +10,11 @@
 #include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
 #include "IInstance.h"
 #include "ILibrary.h"
-#include "ManagerEvent.h"
-#include "yPluginApiImplementation.h"
 #include "database/entities/Entities.h"
 #include "database/IDataProvider.h"
 #include "dataAccessLayer/IAcquisitionHistorizer.h"
 #include "dataAccessLayer/IDeviceManager.h"
+#include "IFactory.h"
 
 namespace pluginSystem
 {
@@ -28,7 +27,8 @@ namespace pluginSystem
    public:
       //--------------------------------------------------------------
       /// \brief	Constructor
-      /// \param [in]	plugin                     the plugin used for this instance
+      /// \param [in]	factory                    The factory
+      /// \param [in]	pluginInformation          Information on the plugin
       /// \param [in]   pluginData                 the database entity
       /// \param [in]   dataProvider               the database accessor
       /// \param [in]   deviceManager              the device manager
@@ -37,7 +37,9 @@ namespace pluginSystem
       /// \param [in]   supervisor                 the supervisor event handler
       /// \param [in]   pluginManagerEventId       The ID to use to send events to supervisor
       //--------------------------------------------------------------
-      CInstance(const boost::shared_ptr<const ILibrary> plugin,
+      CInstance(
+         boost::shared_ptr<const IFactory> factory,
+         const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
          boost::shared_ptr<const database::entities::CPlugin> pluginData,
          boost::shared_ptr<database::IDataProvider> dataProvider,
          boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
@@ -86,14 +88,19 @@ namespace pluginSystem
 
    private:
       //--------------------------------------------------------------
-      /// \brief			      The plugin used for this instance
+      /// \brief			      The factory
       //--------------------------------------------------------------
-      const boost::shared_ptr<const ILibrary> m_PluginLibrary;
+      boost::shared_ptr<const IFactory> m_factory;
+
+      //--------------------------------------------------------------
+      /// \brief			      The plugin information
+      //--------------------------------------------------------------
+      const boost::shared_ptr<const shared::plugin::information::IInformation> m_pluginInformation;
 
       //-----------------------------------------------------
-      ///\brief               Plugin data
+      ///\brief               Instance data
       //-----------------------------------------------------
-      boost::shared_ptr<const database::entities::CPlugin> m_pluginData;
+      boost::shared_ptr<const database::entities::CPlugin> m_instanceData;
 
       //-----------------------------------------------------
       ///\brief               The data provider

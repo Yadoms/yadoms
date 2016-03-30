@@ -11,7 +11,7 @@ namespace pluginSystem
 
 
    CInformation::CInformation(const boost::filesystem::path& pluginPath)
-      :m_path(pluginPath), m_isSupportedOnThisPlatform(true)
+      :m_path(pluginPath.parent_path()), m_isSupportedOnThisPlatform(true)
    {
       try
       {
@@ -140,5 +140,11 @@ namespace pluginSystem
    {
       return m_package;
    }
+
+   const boost::filesystem::path& CInformation::getPath() const
+   {
+      return m_path;
+   }
+
 
 } // namespace pluginSystem

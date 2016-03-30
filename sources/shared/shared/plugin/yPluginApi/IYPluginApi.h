@@ -1,14 +1,8 @@
 #pragma once
 #include <shared/event/EventHandler.hpp>
 #include <shared/plugin/information/IInformation.h>
-#include <shared/StringExtension.h>
 #include <shared/DataContainer.h>
 #include "IDeviceCommand.h"
-#include "IManuallyDeviceCreationData.h"
-#include "IManuallyDeviceCreationTestData.h"
-#include <shared/plugin/yPluginApi/StandardCapacity.h>
-#include <shared/plugin/yPluginApi/KeywordAccessMode.h>
-#include <shared/plugin/yPluginApi/KeywordDataType.h>
 #include "historization/Historizers.h"
 
 
@@ -267,12 +261,6 @@ namespace shared { namespace plugin { namespace yPluginApi
       ///\return The current plugin information
       //-----------------------------------------------------      
       virtual const information::IInformation& getInformation() const = 0;
-
-      //-----------------------------------------------------
-      ///\brief Get the plugin binary path
-      ///\return the plugin binary path
-      //-----------------------------------------------------      
-      virtual const boost::filesystem::path getPluginPath() const = 0;
 
 
       //----------------------------------------------------------------------------------------------------------------

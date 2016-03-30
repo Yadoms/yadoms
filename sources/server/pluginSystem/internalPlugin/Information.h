@@ -29,6 +29,7 @@ namespace pluginSystem {   namespace internalPlugin {
       virtual bool isSupportedOnThisPlatform() const;
       virtual bool getSupportManuallyCreatedDevice() const;
       virtual shared::CDataContainer getPackage() const;
+      virtual const boost::filesystem::path& getPath() const;
       // [END] shared::plugin::IInformation implementation
 
    private:

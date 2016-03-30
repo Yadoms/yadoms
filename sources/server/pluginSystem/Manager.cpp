@@ -1,6 +1,5 @@
 #include "stdafx.h"//TODO faire ménage dans les include
 #include "Manager.h"
-#include "Instance.h"
 #include "PluginStateHandler.h"
 #ifdef _DEBUG
 #include "BasicQualifier.h"
@@ -36,15 +35,15 @@ CManager::CManager(
    m_pluginDBTable(dataProvider->getPluginRequester()),
    m_pluginPath(initialDir),
 #ifdef _DEBUG //TODO faut-il conserver les qualifiers ?
-   m_qualifier(new CBasicQualifier(dataProvider->getPluginEventLoggerRequester(), dataAccessLayer->getEventLogger())),
+   m_qualifier(boost::make_shared<CBasicQualifier>(dataProvider->getPluginEventLoggerRequester(), dataAccessLayer->getEventLogger())),//TODO passer par la factory
 #else
-   m_qualifier(new CIndicatorQualifier(dataProvider->getPluginEventLoggerRequester(), dataAccessLayer->getEventLogger())),
+   m_qualifier(boost::make_shared<CIndicatorQualifier>(dataProvider->getPluginEventLoggerRequester(), dataAccessLayer->getEventLogger())),//TODO passer par la factory
 #endif
    m_supervisor(supervisor), m_dataAccessLayer(dataAccessLayer),
    m_pluginEventHandler(boost::make_shared<shared::event::CEventHandler>()),
-   m_pluginStateHandler(boost::make_shared<CPluginStateHandler>(m_pluginDBTable, eventLogger, m_pluginEventHandler)),
+   m_pluginStateHandler(boost::make_shared<CPluginStateHandler>(m_pluginDBTable, eventLogger, m_pluginEventHandler)),//TODO passer par la factory
    m_yadomsShutdown(false),
-   m_pluginEventsThread(boost::make_shared<boost::thread>(boost::bind(&CManager::pluginEventsThreadDoWork, this)))
+   m_pluginEventsThread(boost::make_shared<boost::thread>(boost::bind(&CManager::pluginEventsThreadDoWork, this)))//TODO passer par la factory
 {
 }
 
@@ -263,7 +262,7 @@ void CManager::updateInstance(const database::entities::CPlugin& newData)
 
    // Check for supported modifications
    if (!newData.Id.isDefined())
-      throw new shared::exception::CException("Update instance : instance ID was not provided");
+      throw shared::exception::CException("Update instance : instance ID was not provided");
 
    // First get old configuration from database
    boost::shared_ptr<const database::entities::CPlugin> previousData = m_pluginDBTable->getInstance(newData.Id());
@@ -329,10 +328,14 @@ void CManager::startInstance(int id)
 
       // Create instance
       boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
-      boost::shared_ptr<CInstance> pluginInstance(boost::make_shared<CInstance>(
-         plugin, instanceData, m_dataProvider->getPluginEventLoggerRequester(), m_dataAccessLayer->getDeviceManager(), m_dataProvider->getKeywordRequester(),
-         m_dataProvider->getRecipientRequester(), m_dataProvider->getAcquisitionRequester(), m_dataAccessLayer->getAcquisitionHistorizer(),
-         m_qualifier, m_supervisor, m_pluginManagerEventId));
+      boost::shared_ptr<IInstance> pluginInstance(m_factory->createInstance(
+         instanceData,
+         m_dataProvider,
+         m_dataAccessLayer->getDeviceManager(),
+         m_dataAccessLayer->getAcquisitionHistorizer(),
+         m_qualifier,
+         m_supervisor,
+         m_pluginManagerEventId));
       m_runningInstances[instanceData->Id()] = pluginInstance;
    }
    catch (shared::exception::CEmptyResult& e)
@@ -503,13 +506,14 @@ void CManager::startInternalPlugin()
 
 
       // Load the plugin
-      boost::shared_ptr<ILibrary> plugin(new CInternalPluginLibrary());
+      boost::shared_ptr<ILibrary> plugin(boost::make_shared<CInternalPluginLibrary>());//TODO à virer probablement
 
       // Create instance
       BOOST_ASSERT(plugin); // Plugin not loaded
-      boost::shared_ptr<CInstance> pluginInstance(new CInstance(
-         plugin, databasePluginInstance, m_dataProvider, m_dataAccessLayer->getDeviceManager(), m_dataAccessLayer->getAcquisitionHistorizer(),
-         m_qualifier, m_supervisor, m_pluginManagerEventId));
+      boost::shared_ptr<IInstance> pluginInstance(m_factory->createInstance(
+         plugin,
+         databasePluginInstance, m_dataProvider, m_dataAccessLayer->getDeviceManager(), m_dataAccessLayer->getAcquisitionHistorizer(),
+         m_qualifier, m_supervisor, 0));
       m_runningInstances[databasePluginInstance->Id()] = pluginInstance;
    }
    catch (shared::exception::CEmptyResult& e)
@@ -705,7 +709,7 @@ void CManager::postBindingQueryRequest(int id, boost::shared_ptr<shared::plugin:
 void CManager::recordInstanceStarted(int id)
 {
    //TODO positionner le keyword state
-   //boost::shared_ptr<database::entities::CPlugin> instanceData(boost::make_shared<database::entities::CPlugin>());
+   //boost::shared_ptr<database::entities::CPlugin> instanceData(boost::make_shared<database::entities::CPlugin>());//TODO passer par la factory
    //instanceData->Id = id;
    //instanceData->State = database::entities::ERuleState::kRunning;
    //instanceData->StartDate = shared::currentTime::Provider::now();
@@ -716,12 +720,12 @@ void CManager::recordInstanceStarted(int id)
 void CManager::recordInstanceStopped(int id, const std::string& error)
 {
    //TODO positionner le keyword state
-   //boost::shared_ptr<database::entities::CRule> ruleData(new database::entities::CRule);
-   //ruleData->Id = id;
-   //ruleData->State = error.empty() ? database::entities::ERuleState::kStopped : database::entities::ERuleState::kError;
-   //ruleData->StopDate = shared::currentTime::Provider::now();
-   //ruleData->ErrorMessage = error;
-   //m_ruleRequester->updateRule(ruleData);
+   //boost::shared_ptr<database::entities::CPlugin> instanceData(boost::make_shared<database::entities::CPlugin>());//TODO passer par la factory
+   //instanceData->Id = id;
+   //instanceData->State = error.empty() ? database::entities::ERuleState::kStopped : database::entities::ERuleState::kError;
+   //instanceData->StartDate = shared::currentTime::Provider::now();
+   //instanceData->ErrorMessage = error;
+   //m_pluginDBTable->updateInstance(instanceData);
 }
 
 } // namespace pluginSystem

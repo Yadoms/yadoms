@@ -7,7 +7,6 @@
 #include <shared/exception/EmptyResult.hpp>
 #include <shared/Log.h>
 #include "RuleException.hpp"
-#include <shared/exception/NotImplemented.hpp>
 
 namespace automation
 {

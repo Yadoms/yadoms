@@ -1,6 +1,5 @@
 #pragma once
 
-#include <string>
 #include <shared/DataContainer.h>
 #include <shared/versioning/ReleaseType.h>
 
@@ -84,5 +83,11 @@ namespace shared { namespace plugin { namespace information
       /// \return     the package.json content
       //--------------------------------------------------------------
       virtual shared::CDataContainer getPackage() const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief	    Get the plugin path
+      /// \return     the plugin path (folder)
+      //--------------------------------------------------------------
+      virtual const boost::filesystem::path& getPath() const = 0;
    };
 } } } // namespace shared::plugin::information

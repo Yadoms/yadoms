@@ -10,14 +10,12 @@ namespace pluginSystem
 
 CYPluginApiImplementation::CYPluginApiImplementation(
    boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformations,
-   const boost::filesystem::path libraryPath, 
-   const boost::shared_ptr<const database::entities::CPlugin> pluginData,
+   const boost::shared_ptr<const database::entities::CPlugin> instanceData,
    boost::shared_ptr<database::IDataProvider> dataProvider,
    boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
    boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer)
    :m_informations(pluginInformations),
-   m_libraryPath(libraryPath),
-   m_pluginData(pluginData),
+   m_instanceData(instanceData),
    m_pluginEventLoggerRequester(dataProvider->getPluginEventLoggerRequester()),
    m_deviceManager(deviceManager),
    m_keywordRequester(dataProvider->getKeywordRequester()),
@@ -110,7 +108,7 @@ std::string CYPluginApiImplementation::pluginStateDevice()
    static const std::string PluginStateDeviceName("pluginState");
 
    if (!deviceExists(PluginStateDeviceName))
-      m_deviceManager->createDevice(getPluginId(), PluginStateDeviceName, m_pluginData->DisplayName() + " plugin state", "Plugin state", shared::CDataContainer::EmptyContainer);
+      m_deviceManager->createDevice(getPluginId(), PluginStateDeviceName, m_instanceData->DisplayName() + " plugin state", "Plugin state", shared::CDataContainer::EmptyContainer);
 
    return PluginStateDeviceName;
 }
@@ -152,7 +150,7 @@ std::string CYPluginApiImplementation::getRecipientValue(int recipientId, const 
 
    // Search for from plugin fields
    for (std::vector<boost::shared_ptr<database::entities::CRecipientField> >::const_iterator itField = recipient->Fields().begin(); itField != recipient->Fields().end(); ++itField)
-      if ((*itField)->PluginType == m_pluginData->Type && (*itField)->FieldName == fieldName)
+      if ((*itField)->PluginType == m_instanceData->Type && (*itField)->FieldName == fieldName)
          return (*itField)->Value;
 
    // If not found from plugin fields, looking for general fields
@@ -224,14 +222,9 @@ const shared::plugin::information::IInformation& CYPluginApiImplementation::getI
    return *m_informations;
 }
 
-const boost::filesystem::path CYPluginApiImplementation::getPluginPath() const
-{
-   return m_libraryPath;
-}
-
 shared::CDataContainer CYPluginApiImplementation::getConfiguration() const
 {
-   return m_pluginData->Configuration;
+   return m_instanceData->Configuration;
 }
         
 void CYPluginApiImplementation::recordPluginEvent(PluginEventSeverity severity, const std::string& message)
@@ -258,7 +251,7 @@ shared::event::CEventHandler & CYPluginApiImplementation::getEventHandler()
 
 int CYPluginApiImplementation::getPluginId() const
 {
-   return m_pluginData->Id;
+   return m_instanceData->Id;
 }
 
 } // namespace pluginSystem	

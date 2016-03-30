@@ -28,6 +28,7 @@ namespace pluginSystem {   namespace internalPlugin {
    {
       return m_version;
    }
+
    const shared::versioning::EReleaseType CInformation::getReleaseType() const
    {
       return m_releaseType;
@@ -79,6 +80,11 @@ namespace pluginSystem {   namespace internalPlugin {
    shared::CDataContainer CInformation::getPackage() const
    {
       return m_package;
+   }
+
+   const boost::filesystem::path& CInformation::getPath() const
+   {
+      return std::string();
    }
 
 }} // namespace pluginSystem::internalPlugin

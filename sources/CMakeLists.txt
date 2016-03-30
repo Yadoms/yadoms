@@ -376,14 +376,17 @@ set(YADOMS_SRC
 	server/pluginSystem/IdentityForQualifier.h
 	server/pluginSystem/IFactory.h
 	server/pluginSystem/IInstance.h
+	server/pluginSystem/IInstanceStateHandler.h
 	server/pluginSystem/ILibrary.h
 	server/pluginSystem/IPluginStateHandler.h
 	server/pluginSystem/IndicatorQualifier.h
 	server/pluginSystem/IndicatorQualifier.cpp
-	server/pluginSystem/Information.cpp
 	server/pluginSystem/Information.h
+	server/pluginSystem/Information.cpp
 	server/pluginSystem/Instance.h
 	server/pluginSystem/Instance.cpp
+	server/pluginSystem/InstanceStateHandler.h
+	server/pluginSystem/InstanceStateHandler.cpp
 	server/pluginSystem/IQualifier.h
 	server/pluginSystem/InvalidPluginException.hpp
 	server/pluginSystem/InternalPluginLibrary.h
