@@ -29,8 +29,8 @@ function forecastViewModel() {
    this.dateformat = "";
    this.lastUpdate = "";
 
-   //Nbre of day to be displayed
-   this.DayNbre = ko.observable(10);
+   //Number of day to be displayed
+   this.DayNumber = ko.observable(10);
 
    //Height of the widget.
    this.height = 0;
@@ -133,7 +133,7 @@ function forecastViewModel() {
                self.TempPeriod.pop();
             }
 
-            self.DayNbre(obj.forecast.length);
+            self.DayNumber(obj.forecast.length);
 
             //Copy of all object into the temporary array
             $.each(obj.forecast, function (i) {
@@ -207,7 +207,7 @@ function forecastViewModel() {
    this.resized = function () {
       var self = this;
 
-      if (self.widget.height() <= 150) {
+      if (self.widget.getHeight() <= 150) {
          //In one case : we keep only the icon
          self.MaxTempVisible(false);
          self.MinTempVisible(false);
@@ -215,7 +215,7 @@ function forecastViewModel() {
          self.AveWindVisible(false);
          self.MaxWindVisible(false);
       }
-      else if ((self.widget.height() <= 220) && (self.widget.height() > 190)) {
+      else if ((self.widget.getHeight() <= 220) && (self.widget.getHeight() > 190)) {
          self.height = 20; // Location 
          self.height = self.height + 20; // Size of the day
          self.height = self.height + 40; //Size of the icon of the day
@@ -250,35 +250,35 @@ function forecastViewModel() {
          self.RainDayVisible(parseBool(self.widget.configuration.Information.content.RainDay));
       }
 
-      if (self.widget.width() <= 100) {
-         self.DayNbre(1);
+      if (self.widget.getWidth() <= 100) {
+          self.DayNumber(1);
       }
-      else if (self.widget.width() <= 200) // if length = 2 cases -> 2 days
+      else if (self.widget.getWidth() <= 200) // if length = 2 cases -> 2 days
       {
-         self.DayNbre(3);
+          self.DayNumber(3);
       }
-      else if (self.widget.width() <= 300) // if length = 3 cases -> 3 days
+      else if (self.widget.getWidth() <= 300) // if length = 3 cases -> 3 days
       {
-         self.DayNbre(4);
+          self.DayNumber(4);
       }
-      else if (self.widget.width() <= 400) // if length = 4 cases -> 5 days
+      else if (self.widget.getWidth() <= 400) // if length = 4 cases -> 5 days
       {
-         self.DayNbre(6);
+          self.DayNumber(6);
       }
-      else if (self.widget.width() <= 500) // if length = 5 cases -> 6 days
+      else if (self.widget.getWidth() <= 500) // if length = 5 cases -> 6 days
       {
-         self.DayNbre(6);
+          self.DayNumber(6);
       }
-      else if (self.widget.width() <= 600) // if length = 6 cases -> 8 days
+      else if (self.widget.getWidth() <= 600) // if length = 6 cases -> 8 days
       {
-         self.DayNbre(8);
+          self.DayNumber(8);
       }
-      else if (self.DayNbre() !== 10)  // Otherwise 10 days
+      else if (self.DayNumber() !== 10)  // Otherwise 10 days
       {
-         self.DayNbre(10);
+          self.DayNumber(10);
       }
 
       self.period.removeAll();
-      self.period(self.TempPeriod.slice(0, self.DayNbre()));
+      self.period(self.TempPeriod.slice(0, self.DayNumber()));
    };
 };

@@ -566,9 +566,9 @@ WidgetManager.createGridWidget = function (widget) {
 
     var domWidget = "<div class=\"widget\" page-id=\"" + widget.idPage + "\" widget-id=\"" + widget.id + "\"";
 
-    var minX = 0;
+    var minX = 1;
     var maxX = Number.MAX_VALUE;
-    var minY = 0;
+    var minY = 1;
     var maxY = Number.MAX_VALUE;
 
     if (!isNullOrUndefined(widget.package.dimensions)) {
@@ -606,7 +606,7 @@ WidgetManager.createGridWidget = function (widget) {
 
     var type = widget.type;
     if (!isNullOrUndefined(widget.downgraded)) {
-        type = WidgetManager.DeactivatedWidgetPackageNam;
+        type = WidgetManager.DeactivatedWidgetPackageName;
     }
 
     domWidget += "<div class=\"customizationButton widgetCustomizationButton btn-delete-widget\"><i class=\"fa fa-trash-o\"></i></div>\n" +

@@ -220,7 +220,7 @@
                     defaultY = pkg.dimensions.default.y;
                 } catch (err) {
                 }
-
+                debugger;
                 var sizeX = Math.min(maxX, Math.max(defaultX, minX));
                 var sizeY = Math.min(maxY, Math.max(defaultY, minY));
 
@@ -237,7 +237,7 @@
                         .done(function () {
                             Yadoms.configureWidget(newWidget, function () {
                                 //if the configuration has been validated we can create the widget
-                                deb(newWidget, currentPage);
+                                createWidget(newWidget, currentPage);
                             });
                         });
                 } else {
