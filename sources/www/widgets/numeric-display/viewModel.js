@@ -14,31 +14,30 @@ function numericDisplayViewModel() {
      * @param widget widget class object
      */
     this.initialize = function () {
-
-       var self = this;
-       self.widgetApi.loadCss("widgets/numeric-display/widget.css")
-       .done(function () {
-          self.widgetApi.find(".widget-api-textfit").fitText();
-       });
-
-       //
-        //we create the battery indicator
-       this.widgetApi.toolbar.addBatteryIconToWidget();
+        var self = this;
+        var d = new $.Deferred();
+        self.widgetApi.loadCss("widgets/numeric-display/widget.css")
+        .done(function () {
+            //we create the battery indicator
+            this.widgetApi.toolbar.addBatteryIconToWidget();
+            d.resolve();
+        });
+        return d.promise();
     };
 
     this.configurationChanged = function () {
-       var self = this;
+        var self = this;
 
-       //we get the unit of the keyword
-       self.widgetApi.getKeywordInformation(self.widget.configuration.device.keywordId).done(function (keyword) {
-           self.unit($.t(keyword.units));
-       });
+        //we get the unit of the keyword
+        self.widgetApi.getKeywordInformation(self.widget.configuration.device.keywordId).done(function (keyword) {
+            self.unit($.t(keyword.units));
+        });
 
-       //we register keyword new acquisition
-       self.widgetApi.registerKeywordAcquisitions(self.widget.configuration.device.keywordId);
+        //we register keyword new acquisition
+        self.widgetApi.registerKeywordAcquisitions(self.widget.configuration.device.keywordId);
 
-       //we fill the deviceId of the battery indicator
-       self.widgetApi.toolbar.configureBatteryIcon(self.widget.configuration.device.deviceId);
+        //we fill the deviceId of the battery indicator
+        self.widgetApi.toolbar.configureBatteryIcon(self.widget.configuration.device.deviceId);
     }
 
     /**
@@ -51,8 +50,8 @@ function numericDisplayViewModel() {
 
         if (keywordId === self.widget.configuration.device.keywordId) {
             //it is the right device
-           self.data(data.value);
-           self.widgetApi.find(".widget-api-textfit").fitText();
+            self.data(data.value);
+            self.widgetApi.find(".widget-api-textfit").fitText();
         }
     };
 };

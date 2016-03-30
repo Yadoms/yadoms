@@ -229,6 +229,7 @@ WidgetManager.updateToServer = function (widget) {
  * @private
  */
 WidgetManager.updateWidgetConfiguration_ = function (widget) {
+    var d = new $.Deferred();
     try {
         //Update the widget title if displayed
         if (widget.displayTitle)
@@ -239,16 +240,25 @@ WidgetManager.updateWidgetConfiguration_ = function (widget) {
         widget.listenedKeywords = [];
 
         // Update widget specific values
-        if (!isNullOrUndefined(widget.viewModel.configurationChanged))
-            widget.viewModel.configurationChanged();
-
-        //we manage the toolbar api specific icons
-        widget.viewModel.widgetApi.manageBatteryConfiguration();
+        if (!isNullOrUndefined(widget.viewModel.configurationChanged)) {
+            var defferedResult = widget.viewModel.configurationChanged();
+            //we manage answer if it is a promise or not
+            defferedResult = defferedResult || new $.Deferred().resolve();
+            defferedResult.done(function() {
+                //we manage the toolbar api specific icons
+                widget.viewModel.widgetApi.manageBatteryConfiguration();
+                d.resolve();
+            });
+        } else {
+            d.resolve();
+        }
     }
     catch (e) {
         notifyWarning($.t("objects.widgetManager.widgetHasGeneratedAnExceptionDuringCallingMethod", { widgetName: widget.type, methodName: 'configurationChanged' }));
         console.warn(e);
+        d.reject();
     }
+    return d.promise();
 };
 
 /**
@@ -498,30 +508,34 @@ WidgetManager.addToDom_ = function (widget, ensureVisible) {
             defferedResult = defferedResult || new $.Deferred().resolve();
             defferedResult.done(function () {
                 //we notify that configuration has changed
-                WidgetManager.updateWidgetConfiguration_(widget);
-
-                //we notify that widget has been resized
-                try {
-                    if (widget.viewModel.resized !== undefined) {
-                        widget.viewModel.resized();
+                WidgetManager.updateWidgetConfiguration_(widget).done(function() {
+                    //we notify that widget has been resized
+                    var defferedResized;
+                    try {
+                        if (widget.viewModel.resized !== undefined) {
+                            defferedResized = widget.viewModel.resized();
+                        }
                     }
-                }
-                catch (e) {
-                    notifyWarning($.t("widgets.errors.widgetHasGeneratedAnExceptionDuringCallingMethod", { widgetName: widget.type, methodName: 'resized' }));
-                    console.warn(e);
-                }
+                    catch (e) {
+                        notifyWarning($.t("widgets.errors.widgetHasGeneratedAnExceptionDuringCallingMethod", { widgetName: widget.type, methodName: 'resized' }));
+                        console.warn(e);
+                    }
 
-                widget.$gridWidget.i18n();
+                    //we manage answer if it is a promise or not
+                    defferedResized = defferedResized || new $.Deferred().resolve();
+                    defferedResized.done(function() {
+                        widget.$gridWidget.i18n();
 
-                if (ensureVisible === true) {
-                    //ensure the item is completly visible
-                    widget.$gridWidget.ensureVisible(true);
-                }
+                        if (ensureVisible === true) {
+                            //ensure the item is completly visible
+                            widget.$gridWidget.ensureVisible(true);
+                        }
+                        widget.$gridWidget.find(".widget-api-textfit").fitText();
 
-                widget.$gridWidget.find(".widget-api-textfit").fitText();
-
-                //we ask for widget refresh data
-                updateWidgetPolling(widget);
+                        //we ask for widget refresh data
+                        updateWidgetPolling(widget);
+                    });
+                });
             });
         }
     }
