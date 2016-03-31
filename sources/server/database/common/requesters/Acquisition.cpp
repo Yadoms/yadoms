@@ -345,41 +345,48 @@ namespace database {  namespace common {  namespace requesters {
             }
 
             //process the request
-            CQuery q = m_databaseRequester->newQuery();
-            q.InsertInto(CAcquisitionSummaryTable::getTableName(), CAcquisitionSummaryTable::getTypeColumnName(), CAcquisitionSummaryTable::getDateColumnName(), CAcquisitionSummaryTable::getKeywordIdColumnName(), CAcquisitionSummaryTable::getAvgColumnName(), CAcquisitionSummaryTable::getMinColumnName(), CAcquisitionSummaryTable::getMaxColumnName()).
-               Select(curType, fromDate, keywordId, q.averageWithCast(CAcquisitionTable::getValueColumnName()), q.minWithCast(CAcquisitionTable::getValueColumnName()), q.maxWithCast(CAcquisitionTable::getValueColumnName())).
-               From(q.as(CAcquisitionTable::getTableName(), "acq")).
-               Where(q.fromSubquery("acq", CAcquisitionTable::getKeywordIdColumnName()), CQUERY_OP_EQUAL, keywordId).
-               And(q.fromSubquery("acq", CAcquisitionTable::getDateColumnName()), CQUERY_OP_SUP_EQUAL, fromDate).
-               And(q.fromSubquery("acq", CAcquisitionTable::getDateColumnName()), CQUERY_OP_INF_EQUAL, toDate);
-            
-            if (m_databaseRequester->queryStatement(q, false) <= 0)
+            if (summaryDataExists(keywordId, curType, fromDate))
             {
-               //the insertion fails, try to update
+               //insert
+               CQuery q = m_databaseRequester->newQuery();
+               q.InsertInto(CAcquisitionSummaryTable::getTableName(), CAcquisitionSummaryTable::getTypeColumnName(), CAcquisitionSummaryTable::getDateColumnName(), CAcquisitionSummaryTable::getKeywordIdColumnName(), CAcquisitionSummaryTable::getAvgColumnName(), CAcquisitionSummaryTable::getMinColumnName(), CAcquisitionSummaryTable::getMaxColumnName()).
+                  Select(curType, fromDate, keywordId,q.averageWithCast(q.fromSubquery("acq", CAcquisitionTable::getValueColumnName())),
+                                                      q.minWithCast(q.fromSubquery("acq", CAcquisitionTable::getValueColumnName())),
+                                                      q.maxWithCast(q.fromSubquery("acq", CAcquisitionTable::getValueColumnName()))).
+                  From(q.as(CAcquisitionTable::getTableName(), "acq")).
+                  Where(q.fromSubquery("acq", CAcquisitionTable::getKeywordIdColumnName()), CQUERY_OP_EQUAL, keywordId).
+                  And(q.fromSubquery("acq", CAcquisitionTable::getDateColumnName()), CQUERY_OP_SUP_EQUAL, fromDate).
+                  And(q.fromSubquery("acq", CAcquisitionTable::getDateColumnName()), CQUERY_OP_INF_EQUAL, toDate);
+
+               if (m_databaseRequester->queryStatement(q) <= 0)
+                  throw shared::exception::CEmptyResult("Fail to insert summary value " + curType.toString() + " data");
+            }
+            else
+            {
+               //update
                CQuery compute = m_databaseRequester->newQuery();
-               
-               compute.Select(compute.as(compute.averageWithCast(CAcquisitionTable::getValueColumnName()), "avg"), 
-                              compute.as(compute.minWithCast(CAcquisitionTable::getValueColumnName()), "min"), 
-                              compute.as(compute.maxWithCast(CAcquisitionTable::getValueColumnName()), "max")).
+
+               compute.Select(compute.as(compute.averageWithCast(CAcquisitionTable::getValueColumnName()), "avg"),
+                  compute.as(compute.minWithCast(CAcquisitionTable::getValueColumnName()), "min"),
+                  compute.as(compute.maxWithCast(CAcquisitionTable::getValueColumnName()), "max")).
                   From(CAcquisitionTable::getTableName()).
                   Where(CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId).
                   And(CAcquisitionTable::getDateColumnName(), CQUERY_OP_SUP_EQUAL, fromDate).
                   And(CAcquisitionTable::getDateColumnName(), CQUERY_OP_INF_EQUAL, toDate);
-               
-               
-               q.Clear().With("acq", compute).
-                 Update(CAcquisitionSummaryTable::getTableName())
-               .Set(CAcquisitionSummaryTable::getAvgColumnName(),  q.fromSubquery("acq", "avg"),
-                    CAcquisitionSummaryTable::getMinColumnName(), q.fromSubquery("acq", "min"),
-                    CAcquisitionSummaryTable::getMaxColumnName(), q.fromSubquery("acq", "max"))
-               .Where(CAcquisitionSummaryTable::getTypeColumnName(), CQUERY_OP_EQUAL, curType.toString())
-               .And(CAcquisitionSummaryTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL,keywordId)
-               .And(CAcquisitionSummaryTable::getDateColumnName(), CQUERY_OP_EQUAL,fromDate);
-               
-               if (m_databaseRequester->queryStatement(q) <= 0)
-                  throw shared::exception::CEmptyResult("Fail to insert new summary " + curType.toString() + " data");
-               
 
+               CQuery q = m_databaseRequester->newQuery();
+
+               q.With("acq", compute).
+                  Update(CAcquisitionSummaryTable::getTableName())
+                  .Set(CAcquisitionSummaryTable::getAvgColumnName(), q.fromSubquery("acq", "avg"),
+                     CAcquisitionSummaryTable::getMinColumnName(), q.fromSubquery("acq", "min"),
+                     CAcquisitionSummaryTable::getMaxColumnName(), q.fromSubquery("acq", "max"))
+                  .Where(CAcquisitionSummaryTable::getTypeColumnName(), CQUERY_OP_EQUAL, curType.toString())
+                  .And(CAcquisitionSummaryTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId)
+                  .And(CAcquisitionSummaryTable::getDateColumnName(), CQUERY_OP_EQUAL, fromDate);
+
+               if (m_databaseRequester->queryStatement(q) <= 0)
+                  throw shared::exception::CEmptyResult("Fail to update summary value " + curType.toString() + " data");
             }
 
             //get the result
