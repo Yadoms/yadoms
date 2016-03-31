@@ -23,21 +23,25 @@ class RemovePlugin(unittest.TestCase):
       dashboard.openPlugin(self.browser)
       
 
-   def test_configurePlugin(self):
+   def test_removePlugin(self):
+      print '=== Remove plugin test ==='
       pluginNumber = 0
 
       pluginsTable = dashboard.plugins.waitPluginsTableHasNPlugins(self.browser, 1)
-      tools.waitUntil(lambda: dashboard.plugins.getPluginRemoveButton(pluginsTable, pluginNumber).is_enabled())
+      self.assertTrue(tools.waitUntil(lambda: dashboard.plugins.getPluginRemoveButton(pluginsTable, pluginNumber).is_enabled()))
       removeButton = dashboard.plugins.getPluginRemoveButton(pluginsTable, pluginNumber)
       
-      self.assertEqual(dashboard.plugins.getPluginState(pluginsTable, pluginNumber), dashboard.plugins.PluginState.Running)
-      
-      # Remove plugin
+      # TODO nettoyer
+      if not tools.waitUntil(lambda: dashboard.plugins.getPluginState(pluginsTable, pluginNumber) is dashboard.plugins.PluginState.Running):
+         saveContext(self.browser)
+         self.assertTrue(False)
+   
+      print 'Remove plugin'
       removeButton.click()
       confirmationModal = dashboard.plugins.waitRemovePluginConfirmationModal(self.browser)
-      confirmationModal.getOkButton().click()
+      confirmationModal.ok()
       
-      # Table should be updated
+      print 'Check table updated'
       self.assertTrue(tools.waitUntil(lambda: dashboard.plugins.getPluginNumberInTable(self.browser, pluginsTable) == 0, 5))
       
       

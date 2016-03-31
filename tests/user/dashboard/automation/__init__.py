@@ -2,7 +2,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as Condition
 from selenium.webdriver.common.keys import Keys
+from configurationPanel import ConfigurationPanel
 import modals
+import tools
 
 
 """ Operations on automation dashboard page """
@@ -11,12 +13,10 @@ def getCreateRuleButton(browser):
    return browser.find_element_by_id("btn-add-new-automation-rule")
    
 def waitNewRuleModal(browser):
-   editorButtonsContainer = WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "automation-rule-new-modal")))
    return NewRuleModal(browser.find_element_by_id("automation-rule-new-modal"))
    
       
 def waitRulesTable(browser):
-   WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "automation-rule-list")))
    return browser.find_element_by_id("automation-rule-list")
 
 def waitRulesTableHasNRules(browser, rulesNumberExpected):
@@ -75,12 +75,14 @@ def getRuleRemoveButton(rulesTable, ruleNumber):
    
 
 def waitEditRuleModal(browser):
-   editorButtonsContainer = WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "edit-automation-rule-modal")))
-   return EditRuleModal(browser.find_element_by_id("edit-automation-rule-modal"))
+   WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, 'edit-automation-rule-modal')))
+   modals.waitForOpened(browser.find_element_by_id('edit-automation-rule-modal'))
+   return EditRuleModal(browser.find_element_by_id('edit-automation-rule-modal'))
 
 def waitRemoveRuleConfirmationModal(browser):
-   editorButtonsContainer = WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "confirmation-modal")))
-   return RemoveRuleConfirmationModal(browser.find_element_by_id("confirmation-modal"))
+   WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, 'confirmation-modal')))
+   modals.waitForOpened(browser.find_element_by_id('confirmation-modal'))
+   return RemoveRuleConfirmationModal(browser.find_element_by_id('confirmation-modal'))
    
    
    
@@ -89,12 +91,12 @@ class RuleState:
    
 def getRuleState(rulesTable, ruleNumber):
    ruleStateCell = getRuleDatas(rulesTable, ruleNumber)[4]
-   classes = ruleStateCell.find_element_by_class_name("label-status").get_attribute("class")
-   if "label-warning" in classes:
+   classes = ruleStateCell.find_element_by_class_name('label-status').get_attribute('class')
+   if 'label-warning' in classes:
       return RuleState.Stopped
-   if "label-success" in classes:
+   if 'label-success' in classes:
       return RuleState.Running
-   if "label-danger" in classes:
+   if 'label-danger' in classes:
       return RuleState.Error
    print 'Not expected class for label-status : ', classes
    assert False   
@@ -130,37 +132,36 @@ class EditRuleModal():
    """ Operations on rule edition modal """
    
    def __init__(self, editRuleModalWebElement):
-       self.__editRuleModalWebElement = editRuleModalWebElement
+      self.__editRuleModalWebElement = editRuleModalWebElement
+      self.__configurationPanel = ConfigurationPanel(self.__editRuleModalWebElement)
 
-   def __getConfigurationItem(self, configurationPanel, dataI18nString):
-      """ Find a configuration item by its "data-i18n" field """
-      controlGroups = configurationPanel.find_elements_by_class_name("control-group")
-      for controlGroup in controlGroups:
-         control = controlGroup.find_element_by_class_name("configuration-control")
+   def getRuleName(self):
+      return self.__configurationPanel.getItemByName('modals.edit-automation-rule.name-rule.name')
 
-         controlContents = control.find_elements_by_xpath("./child::*")
-         assert len(controlContents) > 0
-         controlContent = controlContents[0] # Can be select, input, etc...
+   def setRuleName(self, newName):
+      field = self.getRuleName()
+      field.send_keys(Keys.CONTROL + 'a')
+      field.send_keys(Keys.DELETE)
+      field.send_keys(newName)
+
+   def getRuleDescription(self):
+      return self.__configurationPanel.getItemByName('modals.edit-automation-rule.description-rule.name')
+
+   def setRuleDescription(self, newDescription):
+      field = self.getRuleDescription()
+      field.send_keys(Keys.CONTROL + 'a')
+      field.send_keys(Keys.DELETE)
+      field.send_keys(newDescription)
+
+   def getRuleCodeEditor(self):
+      return AceCodeEditor(self.__editRuleModalWebElement.find_element_by_class_name("ace_text-input"))
          
-         if (controlContent.get_attribute("data-i18n") == dataI18nString):
-            return controlContent
-               
-      # Not found
-      assert False      
+   def getConfirmButton(self):
+      return self.__editRuleModalWebElement.find_element_by_id("btn-confirm-configure-rule")
 
-   def getRuleName(self, browser):
-      ruleConfigurationPanel = browser.find_element_by_id("automation-rule-configuration")
-      return self.__getConfigurationItem(ruleConfigurationPanel, "[data-content]modals.edit-automation-rule.name-rule.description")
-
-   def getRuleDescription(self, browser):
-      ruleConfigurationPanel = browser.find_element_by_id("automation-rule-configuration")
-      return self.__getConfigurationItem(ruleConfigurationPanel, "[data-content]modals.edit-automation-rule.description-rule.description")
-
-   def getRuleCodeEditor(self, browser):
-      return AceCodeEditor(browser.find_element_by_class_name("ace_text-input"))
-         
-   def getConfirmConfigureRuleButton(self, browser):
-      return browser.find_element_by_id("btn-confirm-configure-rule")
+   def ok(self):
+      self.getConfirmButton().click()
+      modals.waitForClosed(self.__editRuleModalWebElement)
       
 
 
@@ -168,11 +169,13 @@ class AceCodeEditor:
    """ Class used to deal with an ACE editor web element """
    
    def __init__(self, codeEditorWebElement):
-       self.__codeEditorWebElement = codeEditorWebElement
+      self.__codeEditorWebElement = codeEditorWebElement
           
    def clear(self):
       """ Remove the existing code """
    
+      tools.waitReadyForInput(self.__codeEditorWebElement)
+      
       self.__codeEditorWebElement.send_keys(Keys.CONTROL + "a")
       self.__codeEditorWebElement.send_keys(Keys.DELETE)
       
@@ -180,6 +183,8 @@ class AceCodeEditor:
    def writeCode(self, code):
       """ Write code into codeEditor """
       """ code must be provided as list of code lines """
+
+      tools.waitReadyForInput(self.__codeEditorWebElement)
    
       # Need a workaround for Selenium bug #1723 (Left parenthesis don't work, see https://code.google.com/p/selenium/issues/detail?id=1723)
       for codeLine in code:

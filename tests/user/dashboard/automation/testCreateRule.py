@@ -24,14 +24,15 @@ class CreateRule(unittest.TestCase):
       
 
    def checkCreateOkRule(self, ruleName, ruleDescription, ruleCode, ruleLog):
-      # - notification
+      print '  Check notification'
       notification.waitText(self.browser, notification.Type.Success, i18n.get()["modals"]["dashboard"]["sub-windows"]["automation-center"]["ruleSuccessfullyCreated"])
       
-      # - in web client
+      print '  Check rule was inserted in rules table'
       rulesTable = dashboard.automation.waitRulesTableHasNRules(self.browser, 1)
 
       ruleNumber = 0
       
+      print '  Check rule data in rules table'
       self.assertEqual(len(dashboard.automation.getRuleDatas(rulesTable, ruleNumber)), 5)
       self.assertEqual(dashboard.automation.getRuleName(rulesTable, ruleNumber), ruleName)
       self.assertEqual(dashboard.automation.getRuleDescription(rulesTable, ruleNumber), ruleDescription)
@@ -46,13 +47,13 @@ class CreateRule(unittest.TestCase):
       self.assertEqual(dashboard.automation.getRuleState(rulesTable, ruleNumber), dashboard.automation.RuleState.Running)
       
       
-      # - on disk (corresponding script file)
+      print '  Check rule was created on disk (corresponding script file)'
       self.assertTrue(scripts.checkLocalRuleCodeById(1, ruleCode))
       self.assertTrue(tools.waitUntil(lambda: scripts.checkLocalRuleLogById(1, ruleLog)))
             
             
    def test_createOkRule(self):
-      """Nominal test of creation rule"""
+      print '=== Nominal test of creation rule ==='
       self.doTest(
          "TestingOkRule",
          "This rule is just for testing",
@@ -70,15 +71,16 @@ class CreateRule(unittest.TestCase):
 
 
    def checkCreateErroneousRule(self, ruleName, ruleDescription, ruleCode, ruleLog):
-      # - notifications
+      print '  Check notifications'
       notification.waitText(self.browser, notification.Type.Success, i18n.get()["modals"]["dashboard"]["sub-windows"]["automation-center"]["ruleSuccessfullyCreated"])
       notification.waitSubText(self.browser, notification.Type.Error, i18n.get()["eventLogger"]["RuleFailed"].replace("__who__", ruleName))
       
-      # - in web client
+      print '  Check rule was inserted in rules table'
       rulesTable = dashboard.automation.waitRulesTableHasNRules(self.browser, 1)
 
       ruleNumber = 0
       
+      print '  Check rule data in rules table'
       self.assertEqual(len(dashboard.automation.getRuleDatas(rulesTable, ruleNumber)), 5)
       self.assertEqual(dashboard.automation.getRuleName(rulesTable, ruleNumber), ruleName)
       self.assertEqual(dashboard.automation.getRuleDescription(rulesTable, ruleNumber), ruleDescription)
@@ -92,13 +94,13 @@ class CreateRule(unittest.TestCase):
       
       self.assertTrue(tools.waitUntil(lambda: dashboard.automation.getRuleState(rulesTable, ruleNumber) == dashboard.automation.RuleState.Error))
       
-      # - on disk (corresponding script file)
+      print '  Check rule was created on disk (corresponding script file)'
       self.assertTrue(scripts.checkLocalRuleCodeById(1, ruleCode))
       self.assertTrue(tools.waitUntil(lambda: scripts.checkLocalRuleLogById(1, ruleLog)))
       
       
    def test_createErroneousRule(self):
-      """Test of rule creation, with error in code"""
+      print '=== Test of rule creation, with error in code ==='
       self.doTest(
          "TestingErroneousRule",
          "This rule is just for testing",
@@ -121,31 +123,35 @@ class CreateRule(unittest.TestCase):
          
       
    def doTest(self, ruleName, ruleDescription, ruleCode, checkRuleFct):
-      # Open rules dashboard
+      print 'Open rules dashboard'
       dashboard.open(self.browser)
       dashboard.openAutomation(self.browser)
 
-      # Create new rule
+      print 'Create new rule'
       tools.waitUntil(lambda: dashboard.automation.getCreateRuleButton(self.browser).is_enabled())
       dashboard.automation.getCreateRuleButton(self.browser).click()
       newRuleModal = dashboard.automation.waitNewRuleModal(self.browser)
-      newRuleModal.getEditorSelectionButton("code").click()
+      
+      print 'Select code'
+      newRuleModal.getEditorSelectionButton('code').click()
 
-      # - Rule configuration
+      print 'Configure rule'
       editRuleModal = dashboard.automation.waitEditRuleModal(self.browser)
-      editRuleModal.getRuleName(self.browser).send_keys(ruleName)
-      editRuleModal.getRuleDescription(self.browser).send_keys(ruleDescription)
+      print '  Set rule name'
+      editRuleModal.setRuleName(ruleName)
+      print '  Set rule description'
+      editRuleModal.setRuleDescription(ruleDescription)
          
-      # - Rule code
-      editRuleModal.getRuleCodeEditor(self.browser).clear()
-      editRuleModal.getRuleCodeEditor(self.browser).writeCode(ruleCode)
+      print '  Set rule code'
+      editRuleModal.getRuleCodeEditor().clear()
+      editRuleModal.getRuleCodeEditor().writeCode(ruleCode)
 
 
-      # Click OK
-      editRuleModal.getConfirmConfigureRuleButton(self.browser).click()
+      print 'Confirm'
+      editRuleModal.ok()
       
       
-      # Check created rule
+      print 'Check created rule'
       checkRuleFct(ruleName, ruleDescription, ruleCode)
       
       

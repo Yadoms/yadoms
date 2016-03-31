@@ -288,7 +288,7 @@ void CRfxcom::processRfxcomUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi
    YADOMS_LOG(debug) << "RFXCom connection was lost";
    context->setPluginState(yApi::historization::EPluginState::kCustom, "connectionLost");
 
-   destroyConnection();
+   errorProcess(context);
 }
 
 void CRfxcom::processRfxcomDataReceived(boost::shared_ptr<yApi::IYPluginApi> context, const shared::communication::CByteBuffer& data)

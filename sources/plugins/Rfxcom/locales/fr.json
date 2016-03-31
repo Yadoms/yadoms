@@ -234,15 +234,32 @@
                   "houseCode":
                   {
                      "name": "Bâtiment",
-                     "description": "L'identifiant du bâtiment (A-P)"
+                     "description": "L'identifiant du bâtiment (A-D)"
                   },
                   "unitCode":
                   {
                      "name": "Equipement",
-                     "description": "L'identifiant de l'équipement (1-16)"
+                     "description": "L'identifiant de l'équipement (1-4)"
                   }               
                }
-            },        
+            },   
+            "hqCoco20":
+            {
+               "name": "HQ COCO-20",
+               "content":
+               {
+                  "houseCode":
+                  {
+                     "name": "Bâtiment",
+                     "description": "L'identifiant du bâtiment (A-D)"
+                  },
+                  "unitCode":
+                  {
+                     "name": "Equipement",
+                     "description": "L'identifiant de l'équipement (1-4)"
+                  }               
+               }
+            },      
 
             "ac":
             {
@@ -542,6 +559,30 @@
                   }              
                }
             },
+            "avantek":
+            {
+               "name": "Avantek",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "L'identifiant de l'équipement (1-1048575)"
+                  }              
+               }
+            },
+            "it":
+            {
+               "name": " IT(Intertek, FA500, PROmax...)",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "L'identifiant de l'équipement (1-65535)"
+                  }              
+               }
+            },
             
             "blyss":
             {
@@ -624,6 +665,18 @@
                   {
                      "name": "ID",
                      "description": "The device ID (0-32767)"
+                  }              
+               }
+            },
+            "lucciAir":
+            {
+               "name": "Lucci Air fan",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "The device ID (0-16777215)"
                   }              
                }
             },
@@ -806,6 +859,35 @@
                      "name": "ID",
                      "description": "L'identifiant de l'équipement (1-16777215)"
                   }             
+               }
+            },
+            "asp":
+            {
+               "name": "ASP",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "L'identifiant de l'équipement (1-16777215)"
+                  }             
+               }
+            },
+            "confexx":
+            {
+               "name": "Confexx CNF24-2435",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "L'identifiant de l'équipement (0-65535)"
+                  },
+                  "unitCode":
+                  {
+                     "name": "Unité",
+                     "description": "L'identifiant de la fonction de l'équipement (1-15)"
+                  }               
                }
             },
             

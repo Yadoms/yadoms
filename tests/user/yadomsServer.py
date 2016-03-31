@@ -44,7 +44,7 @@ def start():
    """Start the Yadoms server"""
    
    if (platform.system() == "Windows"):
-      return subprocess.Popen(os.path.join(binaryPath(), "yadoms.exe"))
+      return subprocess.Popen(os.path.join(binaryPath(), "yadoms.exe --logLevel=none"))
    else:
       return subprocess.Popen(os.path.join(binaryPath(), "yadoms"))
    
@@ -61,39 +61,30 @@ def isProcessRunning(pid):
 		return True
    else:
       return os.path.exists("/proc/" + str(pid))
+         
       
-      
-def doKill(pid):
-   if (platform.system() == "Windows"):
-      os.kill(pid, signal.SIGINT)
-   else:
-      os.kill(pid, signal.SIGKILL)
+def killProcTree(pid, including_parent=True):
+   """Kill a parent process with its children"""
+   parent = psutil.Process(pid)
+   children = parent.children(recursive=True)
+   for child in children:
+      child.kill()
+      psutil.wait_procs(children, timeout=5)
+   if including_parent:
+      try:
+         parent.kill()
+         parent.wait(20)
+         print 'Process killed'
+      except:
+         print 'Error : process still alive'
+         raise
       
   
 def stop(yadomsProcess):
    """Kill Yadoms server with its sup-processes"""
 
-   print "######## TRY TO STOP YADOMS ########"
-   parent = psutil.Process(yadomsProcess.pid)
-   
-   print "Kill Yadoms..."
-   for child in parent.children(True):
-      doKill(child.pid)
-      while isProcessRunning(child.pid):
-         time.sleep(1)
-         
-   if (platform.system() != "Windows"):
-      parent = yadomsProcess
-
-   doKill(parent.pid)
-   counter = 0
-   while isProcessRunning(parent.pid):
-      counter += 1
-      time.sleep(1)
-      if counter > 2:
-         break
-
-   print "Yadoms killed"
+   print 'Kill Yadoms...'
+   killProcTree(yadomsProcess.pid)
 
            
 def restart():

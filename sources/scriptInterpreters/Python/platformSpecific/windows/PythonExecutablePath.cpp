@@ -21,10 +21,22 @@ void CPythonExecutablePath::getCommonPythonPaths(std::vector<boost::filesystem::
          paths.push_back(boost::filesystem::path(pythonPath));
    }
    
-   paths.push_back(boost::filesystem::path("C:") / "python27");
-   paths.push_back(boost::filesystem::path(Poco::Environment::get("ProgramFiles")) / "python27");
-   paths.push_back(boost::filesystem::path(Poco::Environment::get("ProgramFiles(x86)")) / "python27");
+   paths.push_back(boost::filesystem::path("C:\\python27"));
 
+   try
+   {
+      paths.push_back(boost::filesystem::path(Poco::Environment::get("ProgramFiles")) / "python27");
+   }
+   catch (Poco::NotFoundException&)
+   {
+   }
 
+   try
+   {
+      paths.push_back(boost::filesystem::path(Poco::Environment::get("ProgramFiles(x86)")) / "python27");
+   }
+   catch (Poco::NotFoundException&)
+   {
+   }
 }
 

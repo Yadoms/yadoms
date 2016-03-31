@@ -10,7 +10,7 @@ namespace rfxcomMessages
 {
 
 CCurrentEnergy::CCurrentEnergy(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
-   :m_current1("channel_1"), m_current2("channel_2"), m_current3("channel_3"), m_instantPower("instant"), m_totalPowerAvailable(false), m_totalPower("total"), m_batteryLevel("battery"), m_rssi("rssi")
+   :m_current1("channel_1"), m_current2("channel_2"), m_current3("channel_3"), m_instantPower("instant"), m_totalPower("total"), m_batteryLevel("battery"), m_rssi("rssi")
 {
    CheckReceivedMessage(rbuf, rbufSize, pTypeCURRENTENERGY, GET_RBUF_STRUCT_SIZE(CURRENT_ENERGY), DONT_CHECK_SEQUENCE_NUMBER);
 
@@ -24,11 +24,15 @@ CCurrentEnergy::CCurrentEnergy(boost::shared_ptr<yApi::IYPluginApi> context, con
 
    if (rbuf.CURRENT_ENERGY.count == 0)
    {
-      m_totalPowerAvailable = true;
-      unsigned long totalPower = (unsigned long) (rbuf.CURRENT_ENERGY.total3 << 24 | rbuf.CURRENT_ENERGY.total4 << 16 | rbuf.CURRENT_ENERGY.total5 << 8 | rbuf.CURRENT_ENERGY.total6);
+      Poco::Int64 totalPower = rbuf.CURRENT_ENERGY.total3 << 24 | rbuf.CURRENT_ENERGY.total4 << 16 | rbuf.CURRENT_ENERGY.total5 << 8 | rbuf.CURRENT_ENERGY.total6;
       totalPower += rbuf.CURRENT_ENERGY.total2 * 2 ^ 32;
       totalPower += rbuf.CURRENT_ENERGY.total1 * 2 ^ 40;
-      m_totalPower.set((unsigned long) (totalPower / 223.666));
+      m_totalPower->set(static_cast<Poco::Int64>(totalPower / 223.666));
+   }
+   else
+   {
+      // No total power on CM180 if count > 0
+      m_totalPower = boost::none;
    }
 
    m_batteryLevel.set(NormalizeBatteryLevel(rbuf.CURRENT_ENERGY.battery_level));
@@ -57,8 +61,8 @@ void CCurrentEnergy::Init(boost::shared_ptr<yApi::IYPluginApi> context)
       context->declareDevice(m_deviceName, m_deviceModel, details);
 
       context->declareKeyword(m_deviceName, m_instantPower);
-      if (m_totalPowerAvailable)
-         context->declareKeyword(m_deviceName, m_totalPower);
+      if (m_totalPower)
+         context->declareKeyword(m_deviceName, *m_totalPower);
       context->declareKeyword(m_deviceName, m_batteryLevel);
       context->declareKeyword(m_deviceName, m_rssi);
    }
@@ -72,8 +76,8 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CCurrentEnerg
 void CCurrentEnergy::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    context->historizeData(m_deviceName, m_instantPower);
-   if (m_totalPowerAvailable)
-      context->historizeData(m_deviceName, m_totalPower);
+   if (m_totalPower)
+      context->historizeData(m_deviceName, *m_totalPower);
    context->historizeData(m_deviceName, m_batteryLevel);
    context->historizeData(m_deviceName, m_rssi);
 }
@@ -86,7 +90,7 @@ const std::string& CCurrentEnergy::getDeviceName() const
 void CCurrentEnergy::buildDeviceName()
 {
    std::ostringstream ssdeviceName;
-   ssdeviceName << (unsigned int)m_subType << "." << (unsigned int)m_id;
+   ssdeviceName << static_cast<unsigned int>(m_subType) << "." << static_cast<unsigned int>(m_id);
    m_deviceName = ssdeviceName.str();
 }
 

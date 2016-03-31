@@ -5,10 +5,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as Condition
 
    
-def getDropDownButton(browser):
-   return browser.find_element_by_id("dropDownButton")
-
-
 def getShowDashboardButton(browser):
    return browser.find_element_by_id("btn-show-dashboard")
       
