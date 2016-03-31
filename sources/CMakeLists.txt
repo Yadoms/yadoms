@@ -378,6 +378,7 @@ set(YADOMS_SRC
 	server/pluginSystem/IInstance.h
 	server/pluginSystem/IInstanceStateHandler.h
 	server/pluginSystem/ILibrary.h
+	server/pluginSystem/ILoader.h
 	server/pluginSystem/IPluginStateHandler.h
 	server/pluginSystem/IndicatorQualifier.h
 	server/pluginSystem/IndicatorQualifier.cpp
@@ -406,6 +407,8 @@ set(YADOMS_SRC
    server/pluginSystem/BindingQueryRequest.h
    server/pluginSystem/ManuallyDeviceCreationTestData.cpp
    server/pluginSystem/ManuallyDeviceCreationTestData.h
+   server/pluginSystem/NativeExecutableLoader.cpp
+   server/pluginSystem/NativeExecutableLoader.h
 	server/pluginSystem/PluginException.hpp
 	server/pluginSystem/PluginStateHandler.h
 	server/pluginSystem/PluginStateHandler.cpp

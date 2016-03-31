@@ -1,16 +1,10 @@
 #include "stdafx.h"
-
 #include "Instance.h"
-#include <shared/Log.h>
-#include <shared/process/ILogger.h>
-#include <shared/script/yScriptApi/IYScriptApi.h>
-#include <shared/process/IStopNotifier.h>
 
 namespace pluginSystem
 {
 
 CInstance::CInstance(
-   boost::shared_ptr<const IFactory> factory,
    const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,//TODO utile ?
    boost::shared_ptr<const database::entities::CPlugin> instanceData,
    boost::shared_ptr<database::IDataProvider> dataProvider,
@@ -18,44 +12,22 @@ CInstance::CInstance(
    boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer,
    const boost::shared_ptr<IQualifier> qualifier,
    boost::shared_ptr<shared::event::CEventHandler> supervisor,
-   int pluginManagerEventId)
-   : m_factory(factory),
-     m_pluginInformation(pluginInformation),
+   int pluginManagerEventId,
+   boost::shared_ptr<shared::process::IRunner> runner)
+   : m_pluginInformation(pluginInformation),
      m_instanceData(instanceData),
      m_dataProvider(dataProvider),
      m_deviceManager(deviceManager),
      m_acquisitionHistorizer(acquisitionHistorizer),
      m_qualifier(qualifier),
      m_supervisor(supervisor),
-     m_pluginManagerEventId(pluginManagerEventId)
+     m_pluginManagerEventId(pluginManagerEventId),
+     m_runner(runner)
 {
-   start();
 }
 
 CInstance::~CInstance()
 {
-}
-
-void CInstance::start()
-{
-   if (!!m_runner)
-   {
-      YADOMS_LOG(warning) << "Can not start plugin " << m_instanceData->DisplayName() << " : already started";
-      return;
-   }
-
-   boost::shared_ptr<shared::process::ILogger> scriptLogger = boost::shared_ptr<shared::process::ILogger>(); // TODO remettre "m_factory->createProcessLogger()"; // TODO m_factory est l'équivalent du automation::script::IManager
-
-   boost::shared_ptr<CYPluginApiImplementation> yPluginApi(boost::make_shared<CYPluginApiImplementation>( //TODO déplacer la construction dans m_factory
-      m_pluginInformation,
-      m_instanceData,
-      m_dataProvider,
-      m_deviceManager,
-      m_acquisitionHistorizer));
-
-   boost::shared_ptr<shared::process::IStopNotifier> stopNotifier = m_factory->createInstanceStateHandler(m_ruleStateHandler, m_ruleData->Id());
-
-   m_runner = m_factory->createPluginRunner(scriptProperties, scriptLogger, yScriptApi, stopNotifier);
 }
 
 void CInstance::requestStop()

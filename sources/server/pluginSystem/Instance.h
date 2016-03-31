@@ -14,7 +14,7 @@
 #include "database/IDataProvider.h"
 #include "dataAccessLayer/IAcquisitionHistorizer.h"
 #include "dataAccessLayer/IDeviceManager.h"
-#include "IFactory.h"
+#include "IQualifier.h"
 
 namespace pluginSystem
 {
@@ -27,7 +27,6 @@ namespace pluginSystem
    public:
       //--------------------------------------------------------------
       /// \brief	Constructor
-      /// \param [in]	factory                    The factory
       /// \param [in]	pluginInformation          Information on the plugin
       /// \param [in]   pluginData                 the database entity
       /// \param [in]   dataProvider               the database accessor
@@ -36,9 +35,9 @@ namespace pluginSystem
       /// \param [in]   qualifier                  the plugin qualifier
       /// \param [in]   supervisor                 the supervisor event handler
       /// \param [in]   pluginManagerEventId       The ID to use to send events to supervisor
+      /// \param [in]   runner                     The instance runner
       //--------------------------------------------------------------
       CInstance(
-         boost::shared_ptr<const IFactory> factory,
          const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
          boost::shared_ptr<const database::entities::CPlugin> pluginData,
          boost::shared_ptr<database::IDataProvider> dataProvider,
@@ -46,7 +45,8 @@ namespace pluginSystem
          boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer,
          const boost::shared_ptr<IQualifier> qualifier,
          boost::shared_ptr<shared::event::CEventHandler> supervisor,
-         int pluginManagerEventId);//TODO faire le ménage dans les paramètres
+         int pluginManagerEventId,
+         boost::shared_ptr<shared::process::IRunner> runner);//TODO faire le ménage dans les paramètres
 
       //--------------------------------------------------------------
       /// \brief	Destructor
@@ -55,9 +55,9 @@ namespace pluginSystem
 
 
       // IInstance Implementation
-      virtual void updateConfiguration(const shared::CDataContainer & newConfiguration) const;
-      virtual void requestStop();
-      virtual std::string getPluginName() const;
+      void updateConfiguration(const shared::CDataContainer & newConfiguration) const override;
+      void requestStop() override;
+      std::string getPluginName() const override;
       // [END] IInstance Implementation
 
 
@@ -79,12 +79,6 @@ namespace pluginSystem
 		/// \param [in] request    Request data
 		//--------------------------------------------------------------
       virtual void postBindingQueryRequest(boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> & request) const;
-
-   protected:
-      //-----------------------------------------------------
-      ///\brief               Start the instance
-      //-----------------------------------------------------
-      void start();
 
    private:
       //--------------------------------------------------------------

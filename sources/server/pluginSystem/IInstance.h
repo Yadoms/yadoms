@@ -1,8 +1,5 @@
 #pragma once
 
-#include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
-#include "IQualifier.h"
-
 namespace pluginSystem
 {
    //-----------------------------------------------------
