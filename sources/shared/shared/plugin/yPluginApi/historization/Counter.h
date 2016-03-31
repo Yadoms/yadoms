@@ -1,5 +1,6 @@
 #pragma once
 #include <shared/Export.h>
+#include <Poco/Types.h>
 #include "SingleHistorizableData.hpp"
 #include "typeInfo/IntTypeInfo.h"
 

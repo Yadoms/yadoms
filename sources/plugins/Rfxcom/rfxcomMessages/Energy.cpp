@@ -18,12 +18,21 @@ CEnergy::CEnergy(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf,
 
    m_id = rbuf.ENERGY.id1 | (rbuf.ENERGY.id2 << 8);
 
-   m_instantPower.set(rbuf.ENERGY.instant1 << 24 | rbuf.ENERGY.instant2 << 16 | rbuf.ENERGY.instant3 << 8 | rbuf.ENERGY.instant4);
+   long instantPower = rbuf.ENERGY.instant1 << 24 | rbuf.ENERGY.instant2 << 16 | rbuf.ENERGY.instant3 << 8 | rbuf.ENERGY.instant4;
+   m_instantPower.set(instantPower);
 
-   long totalPower = (long) (rbuf.ENERGY.total3 << 24 | rbuf.ENERGY.total4 << 16 | rbuf.ENERGY.total5 << 8 | rbuf.ENERGY.total6);
-   totalPower += rbuf.ENERGY.total2 * 2 ^ 32;
-   totalPower += rbuf.ENERGY.total1 * 2 ^ 40;
-   m_totalPower.set(static_cast<long>(totalPower / 223.666));
+   if (m_subType != sTypeELEC3 && rbuf.ENERGY.count > 0)
+   {
+      // No total power on CM180 if count > 0
+      m_totalPower = boost::none;
+   }
+   else
+   {
+      Poco::Int64 totalPower = rbuf.ENERGY.total3 << 24 | rbuf.ENERGY.total4 << 16 | rbuf.ENERGY.total5 << 8 | rbuf.ENERGY.total6;
+      totalPower += rbuf.ENERGY.total2 * 2 ^ 32;
+      totalPower += rbuf.ENERGY.total1 * 2 ^ 40;
+      m_totalPower->set(static_cast<Poco::Int64>(totalPower / 223.666));
+   }
 
    m_batteryLevel.set(NormalizeBatteryLevel(rbuf.ENERGY.battery_level));
    m_rssi.set(NormalizeRssiLevel(rbuf.ENERGY.rssi));
@@ -51,7 +60,8 @@ void CEnergy::Init(boost::shared_ptr<yApi::IYPluginApi> context)
       context->declareDevice(m_deviceName, m_deviceModel, details);
 
       context->declareKeyword(m_deviceName, m_instantPower);
-      context->declareKeyword(m_deviceName, m_totalPower);
+      if (m_totalPower)
+         context->declareKeyword(m_deviceName, *m_totalPower);
       context->declareKeyword(m_deviceName, m_batteryLevel);
       context->declareKeyword(m_deviceName, m_rssi);
    }
@@ -65,7 +75,8 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CEnergy::enco
 void CEnergy::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    context->historizeData(m_deviceName, m_instantPower);
-   context->historizeData(m_deviceName, m_totalPower);
+   if (m_totalPower)
+      context->historizeData(m_deviceName, *m_totalPower);
    context->historizeData(m_deviceName, m_batteryLevel);
    context->historizeData(m_deviceName, m_rssi);
 }
@@ -78,7 +89,7 @@ const std::string& CEnergy::getDeviceName() const
 void CEnergy::buildDeviceName()
 {
    std::ostringstream ssdeviceName;
-   ssdeviceName << (unsigned int)m_subType << "." << (unsigned int)m_id;
+   ssdeviceName << static_cast<unsigned int>(m_subType) << "." << static_cast<unsigned int>(m_id);
    m_deviceName = ssdeviceName.str();
 }
 

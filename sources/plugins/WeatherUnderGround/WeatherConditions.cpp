@@ -25,6 +25,8 @@ CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> cont
 {
    try
    {
+	   m_CatchError = false;
+
 	   m_URL.str("");
 	   m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/conditions/q/" << m_CountryOrState << "/" << m_Localisation << ".json";
 
@@ -33,6 +35,11 @@ CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> cont
    catch (shared::exception::CException& e)
    {
       YADOMS_LOG(warning) << "Configuration or initialization error of Weather condition module :" << e.what() << std::endl;
+
+	  // Informs Yadoms about the plugin actual state
+      context->setPluginState(yApi::historization::EPluginState::kCustom, "InitializationError" );
+
+	  m_CatchError = true;
    }
 }
 
@@ -84,6 +91,8 @@ void CWeatherConditions::OnUpdate( boost::shared_ptr<yApi::IYPluginApi> context,
 {
    try
    {
+	   m_CatchError = false;
+
 	   InitializeVariables ( context, WUConfiguration );
 
       //read the localisation
@@ -98,25 +107,68 @@ void CWeatherConditions::OnUpdate( boost::shared_ptr<yApi::IYPluginApi> context,
    catch (shared::exception::CException& e)
 	{
 		YADOMS_LOG(warning) << e.what()  << std::endl;
+		context->setPluginState(yApi::historization::EPluginState::kCustom, "Initialization Error" );
+
+		m_CatchError = true;
 	}
 }
 
-void CWeatherConditions::Request( boost::shared_ptr<yApi::IYPluginApi> context )
+bool CWeatherConditions::Request( boost::shared_ptr<yApi::IYPluginApi> context )
 {
 	try
 	{
+	   m_CatchError = false;
+
 	   m_data = m_webServer.SendGetRequest( m_URL.str() );
 
-      m_CityConditions = m_data.get<std::string>("current_observation.observation_location.city");
-
-      m_LiveConditions.SetCityName ( m_CityConditions );
-
-	   YADOMS_LOG(information) << "Observation location :" << m_data.get<std::string>("current_observation.observation_location.full");
+	   m_data.printToLog ();
 	}
 	catch (shared::exception::CException& e)
 	{
 		YADOMS_LOG(warning) << "Weather Conditions :" << e.what()  << std::endl;
+		context->setPluginState(yApi::historization::EPluginState::kCustom, "NoConnection" );
+		m_CatchError = true;
 	}
+
+	if (!m_CatchError)
+	{
+		try
+		{
+			std::string error = m_data.getWithDefault<std::string>("response.error.description","");
+
+			// Si on passe alors c'est qu'il y a une erreur, sinon on sort.
+			if (!error.empty())
+			{
+				m_CatchError = true;
+
+				if (error.compare ("No cities match your search query") == 0)
+				{
+				   context->setPluginState(yApi::historization::EPluginState::kCustom, "CityNotFound" );
+				}
+			}
+		}
+		catch(...)
+		{
+		}
+	}
+
+	if (!m_CatchError)
+	{
+		try
+		{
+		  m_CityConditions = m_data.get<std::string>("current_observation.observation_location.city");
+
+		  m_LiveConditions.SetCityName ( m_CityConditions );
+
+		  YADOMS_LOG(information) << "Observation location :" << m_data.get<std::string>("current_observation.observation_location.full");
+		}
+		catch (shared::exception::CException& e)
+		{
+			YADOMS_LOG(warning) << "Weather Conditions :" << e.what()  << std::endl;
+			m_CatchError = true;
+		}
+	}
+	return m_CatchError;
 }
 
 std::string CWeatherConditions::GetCityName ()
@@ -208,6 +260,11 @@ void CWeatherConditions::Parse( boost::shared_ptr<yApi::IYPluginApi> context, co
 	{
       YADOMS_LOG(warning) << e.what() << std::endl;
 	}
+}
+
+bool CWeatherConditions::IsModuleInFault ( void )
+{
+	return m_CatchError;
 }
 
 CWeatherConditions::~CWeatherConditions()
