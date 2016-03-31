@@ -135,19 +135,19 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateS
       if (vLabel == "Instant energy production")
       {
          boost::shared_ptr<shared::plugin::yPluginApi::historization::CEnergy> historizer(new shared::plugin::yPluginApi::historization::CEnergy(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
-         return COpenZWaveNodeKeywordGeneric<long>::create(historizer, vID);
+         return COpenZWaveNodeKeywordGeneric<Poco::Int64>::create(historizer, vID);
       }
       if (vLabel == "Total energy production" || vLabel == "Energy production today")
       {
          boost::shared_ptr<shared::plugin::yPluginApi::historization::CEnergy> historizer(new shared::plugin::yPluginApi::historization::CEnergy(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode, shared::plugin::yPluginApi::historization::EMeasureType::kCumulative));
-         return COpenZWaveNodeKeywordGeneric<long>::create(historizer, vID);
+         return COpenZWaveNodeKeywordGeneric<Poco::Int64>::create(historizer, vID);
       }
       break;
    case ECommandClass::kMeterValue:
       if (vLabel == "Energy")
       {
          boost::shared_ptr<shared::plugin::yPluginApi::historization::CEnergy> historizer(new shared::plugin::yPluginApi::historization::CEnergy(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
-         return COpenZWaveNodeKeywordGeneric<long>::create(historizer, vID);
+         return COpenZWaveNodeKeywordGeneric<Poco::Int64>::create(historizer, vID);
       }
       if (vLabel == "Power")
       {
