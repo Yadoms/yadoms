@@ -155,24 +155,9 @@ BOOST_AUTO_TEST_CASE(Enums)
    BOOST_CHECK_NO_THROW(database::entities::ESecurityAccess c2("User"));
    BOOST_CHECK_THROW(database::entities::ESecurityAccess c3("failure"), std::exception);
 
-   BOOST_CHECK_NO_THROW(database::entities::ESecurityAccess d0 = 0);
-   BOOST_CHECK_NO_THROW(database::entities::ESecurityAccess d1 = 1);
-   BOOST_CHECK_NO_THROW(database::entities::ESecurityAccess d2 = 2);
-   BOOST_CHECK_THROW(database::entities::ESecurityAccess d3 = 3, std::exception);
-   BOOST_CHECK_NO_THROW(database::entities::ESecurityAccess d4 = database::entities::ESecurityAccess::kAdmin);
-
-   BOOST_CHECK_NO_THROW(database::entities::ESecurityAccess e0 = "none");
-   BOOST_CHECK_NO_THROW(database::entities::ESecurityAccess e1 = "Admin");
-   BOOST_CHECK_NO_THROW(database::entities::ESecurityAccess e2 = "User");
-   BOOST_CHECK_THROW(database::entities::ESecurityAccess e3 = "failure", std::exception);
-   BOOST_CHECK_NO_THROW(database::entities::ESecurityAccess e4 = database::entities::ESecurityAccess::kUser.toString());
-
    database::entities::ESecurityAccess f0(0);
    testEnumAsParameter(f0);
    testEnumAsParameter(database::entities::ESecurityAccess::kAdmin);
-   testEnumAsParameter(1);
-   testEnumAsParameter(std::string("admin"));
-   testEnumAsParameter("admin");
 
    for (int i = 0; i < 10; i++)
    {

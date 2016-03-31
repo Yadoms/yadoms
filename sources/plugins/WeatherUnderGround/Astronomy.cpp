@@ -9,6 +9,7 @@ CAstronomy::CAstronomy(boost::shared_ptr<yApi::IYPluginApi> context, IWUConfigur
            m_PluginName           ( PluginName ),
            m_MoonCharacteristics  ( PluginName, Prefix + "Moon" )
 {
+	m_CatchError = false;
 	m_URL.str("");
 	m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/astronomy/q/" << m_CountryOrState << "/" << m_Localisation << ".json";
 
@@ -27,6 +28,9 @@ CAstronomy::CAstronomy(boost::shared_ptr<yApi::IYPluginApi> context, IWUConfigur
    catch (shared::exception::CException& e)
    {
 	   YADOMS_LOG(warning) << "Configuration or initialization error of Astronomy module :" << e.what() << std::endl;
+
+       context->setPluginState(yApi::historization::EPluginState::kCustom, "InitializationError" );
+	   m_CatchError = true;
    }
 }
 
@@ -42,16 +46,21 @@ void CAstronomy::OnUpdate( IWUConfiguration& WUConfiguration )
 	m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/astronomy/q/" << m_CountryOrState << "/" << m_Localisation << ".json";
 }
 
-void CAstronomy::Request( boost::shared_ptr<yApi::IYPluginApi> context )
+bool CAstronomy::Request( boost::shared_ptr<yApi::IYPluginApi> context )
 {
 	try
 	{
+		m_CatchError = false;
 	   m_data = m_webServer.SendGetRequest( m_URL.str() );
 	}
-   catch (shared::exception::CException& e)
+    catch (shared::exception::CException& e)
 	{
       YADOMS_LOG(warning) << "Astronomy :" << e.what()  << std::endl;
+	  context->setPluginState(yApi::historization::EPluginState::kCustom, "NoConnection" );
+	  m_CatchError = true;
 	}
+
+   return m_CatchError;
 }
 
 void CAstronomy::Parse( boost::shared_ptr<yApi::IYPluginApi> context, const IWUConfiguration& WUConfiguration )
@@ -62,7 +71,13 @@ void CAstronomy::Parse( boost::shared_ptr<yApi::IYPluginApi> context, const IWUC
 
 		if (!error.empty())
 		{
+			m_CatchError = true;
 			YADOMS_LOG(error) << "ERROR : " << error  << std::endl;
+
+			if (error.compare ("No cities match your search query") == 0)
+			{
+				context->setPluginState(yApi::historization::EPluginState::kCustom, "CityNotFound" );
+			}
 		}
 		else
 		{
@@ -84,6 +99,11 @@ void CAstronomy::Parse( boost::shared_ptr<yApi::IYPluginApi> context, const IWUC
 	{
       YADOMS_LOG(warning) << e.what() << std::endl;
 	}
+}
+
+bool CAstronomy::IsModuleInFault ( void )
+{
+	return m_CatchError;
 }
 
 CAstronomy::~CAstronomy()

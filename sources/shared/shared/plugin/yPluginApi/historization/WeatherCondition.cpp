@@ -24,7 +24,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
 
 
 CWeatherCondition::CWeatherCondition(const std::string& keywordName, const EKeywordAccessMode& accessMode, const EMeasureType& measureType)
-   :CSingleHistorizableData<EWeatherCondition>(keywordName, CStandardCapacities::WeatherCondition, accessMode, EWeatherCondition::kCloudyValue, measureType)
+   :CSingleHistorizableData<EWeatherCondition>(keywordName, CStandardCapacities::WeatherCondition, accessMode, EWeatherCondition::kCloudy, measureType)
 {
 }
 

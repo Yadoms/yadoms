@@ -9,22 +9,22 @@ boost::shared_ptr<ISmtpServiceProvider> CSmtpServiceProviderFactory::CreateSmtpS
    switch (smtpConfiguration->getSecurityMode())
    {
    case ESecurityMode::kNoneValue:
-      return boost::make_shared<CSmtpUnsecureServiceProvider>(smtpConfiguration);
+      return boost::shared_ptr<CSmtpUnsecureServiceProvider>(new CSmtpUnsecureServiceProvider(smtpConfiguration));
    case ESecurityMode::kSSLValue:
-      return boost::make_shared<CSmtpSslServiceProvider>(smtpConfiguration);
+      return boost::shared_ptr<CSmtpSslServiceProvider>(new CSmtpSslServiceProvider(smtpConfiguration));
    case ESecurityMode::kTLSValue:
-      return boost::make_shared<CSmtpTlsServiceProvider>(smtpConfiguration);
+      return boost::shared_ptr<CSmtpTlsServiceProvider>(new CSmtpTlsServiceProvider(smtpConfiguration));
    default:
       switch(smtpConfiguration->getPort())
       {
       case 465: //default ssl port
-         return boost::make_shared<CSmtpSslServiceProvider>(smtpConfiguration);
+         return boost::shared_ptr<CSmtpSslServiceProvider>(new CSmtpSslServiceProvider(smtpConfiguration));
 
       case 587: //default tsl port
-         return boost::make_shared<CSmtpTlsServiceProvider>(smtpConfiguration);
+         return boost::shared_ptr<CSmtpTlsServiceProvider>(new CSmtpTlsServiceProvider(smtpConfiguration));
 
       default: //25, 26 or other
-         return boost::make_shared<CSmtpUnsecureServiceProvider>(smtpConfiguration);
+         return boost::shared_ptr<CSmtpUnsecureServiceProvider>(new CSmtpUnsecureServiceProvider(smtpConfiguration));
       }
    }
 }

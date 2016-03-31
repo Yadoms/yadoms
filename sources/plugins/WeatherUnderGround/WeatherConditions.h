@@ -34,7 +34,7 @@ public:
    /// \brief	  Send the request and receive the response from the web site
    /// \param[in] context    pointer to the API
    //--------------------------------------------------------------
-   void Request( boost::shared_ptr<yApi::IYPluginApi> context );
+   bool Request( boost::shared_ptr<yApi::IYPluginApi> context );
 
    //--------------------------------------------------------------
    /// \brief	  Parse the answer from the web Site
@@ -55,6 +55,12 @@ public:
    /// \brief	  Return the conditions city name
    //--------------------------------------------------------------
    std::string GetCityName ();
+
+   //--------------------------------------------------------------
+   /// \brief	  Return true if an error occured during the request
+   /// \return    The state of this request
+   //--------------------------------------------------------------
+   bool IsModuleInFault ( void );
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -124,5 +130,10 @@ private:
    CTemp        m_FeelsLike;
    CTemp        m_Windchill;
    CCondition   m_LiveConditions;
+
+   //--------------------------------------------------------------
+   /// \brief	    Error Detecting ?
+   //--------------------------------------------------------------
+   bool         m_CatchError;
 };
 

@@ -86,26 +86,26 @@ BOOST_AUTO_TEST_CASE(EventFromSeparateThread)
    shared::event::CEventHandler evtHandler;
 
    {
-      boost::thread postEventThreaded(postEventThreaded, &evtHandler, 1);
-      postEventThreaded.join();
+      boost::thread postEventThread(postEventThreaded, &evtHandler, 1);
+      postEventThread.join();
       BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), idEvent);
    }
 
    {
-      boost::thread postEventThreaded(postEventThreaded, &evtHandler, 1);
-      postEventThreaded.join();
+      boost::thread postEventThread(postEventThreaded, &evtHandler, 1);
+      postEventThread.join();
       BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::posix_time::seconds(1)), idEvent);
    }
 
    {
-      boost::thread postEventThreaded(postEventThreaded, &evtHandler, 1);
-      postEventThreaded.join();
+      boost::thread postEventThread(postEventThreaded, &evtHandler, 1);
+      postEventThread.join();
       BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::posix_time::milliseconds(1)), idEvent);
    }
 
    {
-      boost::thread postEventThreaded(postEventThreaded, &evtHandler, 1);
-      postEventThreaded.join();
+      boost::thread postEventThread(postEventThreaded, &evtHandler, 1);
+      postEventThread.join();
       BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::pos_infin), idEvent);
    }
 
@@ -137,14 +137,14 @@ BOOST_AUTO_TEST_CASE(_100EventsFromSeparateThread)
 {
    shared::event::CEventHandler evtHandler;
 
-   boost::thread postEventThreaded(postEventThreaded, &evtHandler, 100);
+   boost::thread postEventThread(postEventThreaded, &evtHandler, 100);
 
    for (int i = 0; i < 100; ++i)
       BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::posix_time::seconds(1)), idEvent);
 
    BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::posix_time::milliseconds(1)), shared::event::kTimeout);
 
-   postEventThreaded.join();
+   postEventThread.join();
 }
 
 //--------------------------------------------------------------
@@ -178,8 +178,8 @@ BOOST_AUTO_TEST_CASE(EventWithDataFromSeparateThread)
    CEventData data(42, "Yadoms test");
    CEventData receivedData;
 
-   boost::thread postEventWithDataThreaded(postEventWithDataThreaded, &evtHandler, data, 1);
-   postEventWithDataThreaded.join();
+   boost::thread postEventWithDataThread(postEventWithDataThreaded, &evtHandler, data, 1);
+   postEventWithDataThread.join();
    BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), idEvent);
    BOOST_REQUIRE_NO_THROW(receivedData = evtHandler.getEventData<CEventData>());
    BOOST_CHECK_EQUAL(receivedData.intValue(), 42);
@@ -358,7 +358,7 @@ BOOST_AUTO_TEST_CASE(SeveralEventWithDataFromSeveralThreads)
    shared::event::CEventHandler evtHandler;
    std::vector<CEventData> data;
    std::map<int, int> expectedDataIntValueCounters;
-   for (int i = 0; i < nbthreads; ++i)
+   for (unsigned int i = 0; i < nbthreads; ++i)
    {
       data.push_back(CEventData(42 + i, "Yadoms test"));
       expectedDataIntValueCounters[42 + i] = nbMessagesPerThread;
@@ -366,11 +366,11 @@ BOOST_AUTO_TEST_CASE(SeveralEventWithDataFromSeveralThreads)
 
    // nbthreads threads sending each nbMessagesPerThread events
    std::vector<boost::thread> threads;
-   for (int i = 0; i < nbthreads; ++i)
+   for (unsigned int i = 0; i < nbthreads; ++i)
       threads.push_back(boost::thread(postEventWithDataThreaded, &evtHandler, data[i], nbMessagesPerThread));
 
    // Note that received event are not ncessary in sent order
-   for (int i = 0; i < nbthreads * nbMessagesPerThread; ++i)
+   for (unsigned int i = 0; i < nbthreads * nbMessagesPerThread; ++i)
    {
       CEventData receivedData;
       BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::posix_time::milliseconds(100)), idEvent);
@@ -409,7 +409,7 @@ BOOST_AUTO_TEST_CASE(ShutdownWhenSending)
 
    // nbthreads threads sending each nbMessagesPerThread events
    std::vector<boost::thread> threads;
-   for (int i = 0; i < nbthreads; ++i)
+   for (unsigned int i = 0; i < nbthreads; ++i)
       threads.push_back(boost::thread(shutdownWhenSendingThreaded, evtHandler, nbMessagesPerThread));
 
    // Note that received event are not ncessary in sent order

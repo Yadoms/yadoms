@@ -7,9 +7,7 @@
 
 CWUConfiguration::CWUConfiguration() :
 	     m_Localisation   (""),
-         m_CountryOrState (""),
-		 m_isWindEnabled  ( false ),
-		 m_isStandardInformationEnabled (false )
+         m_CountryOrState ("")
 {}
 
 CWUConfiguration::~CWUConfiguration()

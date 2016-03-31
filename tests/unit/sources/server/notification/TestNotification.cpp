@@ -54,19 +54,10 @@ public:
 };
 
 
-
-
-
-
-
-
 void ThreadNotificationListener(boost::shared_ptr<notification::CNotificationCenter> center, int * notifReceivedCount)
 {
    try
    {
-      
-      bool receiveNotificationEnd = false;
-
       boost::shared_ptr<notification::action::CWaitAction<CCustomNotif> > waitActionCustomNotif(new notification::action::CWaitAction<CCustomNotif>());
       
       //create the acquisition observer
@@ -94,12 +85,7 @@ void ThreadNotificationListener(boost::shared_ptr<notification::CNotificationCen
       if (notifInt && notifInt->m_integer == 666)
       {
          (*notifReceivedCount)++;
-      }
-
-      if (*notifReceivedCount == 2)
-         receiveNotificationEnd = true;
-
-      
+      }      
    }
    catch (...)
    {

@@ -348,7 +348,13 @@ public:
       m_dValue = initialData.get<double>("Value2");
       m_sValue = initialData.get<std::string>("Value3");
    }
-	
+
+   virtual void fillFromSerializedString(const std::string & serializedData)
+   {
+      shared::CDataContainer deserializeData(serializedData);
+      fillFromContent(deserializeData);
+   }
+
 	bool equals(const CTestClass & rhs)
 	{
 		return m_aIntValue == rhs.m_aIntValue && m_dValue == rhs.m_dValue && m_sValue == rhs.m_sValue;
@@ -373,14 +379,14 @@ private:
 BOOST_AUTO_TEST_CASE(DataContainable)
 {
 	//containeur simple de IDataContainable
-	CTestClass obj(1, 42.0, "test de datacontainble");
+	CTestClass obj(1, 42.0, "test of datacontainable");
 	shared::CDataContainer cont;
 	cont.set("myobject", obj);
 	CTestClass result = cont.get<CTestClass>("myobject");
 	BOOST_CHECK_EQUAL(obj.equals(result), true);
 
 	//containeur de boost::shared_ptr<IDataContainable>
-	boost::shared_ptr<CTestClass> sp(new CTestClass(2, 43.0, "chaine1"));
+	boost::shared_ptr<CTestClass> sp(new CTestClass(2, 43.0, "string1"));
 	shared::CDataContainer cont2;
 	cont2.set("myobject", sp);
 	boost::shared_ptr<CTestClass> result2 = cont2.get< boost::shared_ptr<CTestClass> >("myobject");
@@ -391,7 +397,7 @@ BOOST_AUTO_TEST_CASE(DataContainable)
 	//containeur simple de std::vector<IDataContainable>
 	std::vector<CTestClass> vc;
 	for (int i = 0; i < 10; ++i)
-		vc.push_back(CTestClass(i, 42.0 * i, "test de std::vector<IDataContainable>"));
+		vc.push_back(CTestClass(i, 42.0 * i, "test of std::vector<IDataContainable>"));
 	shared::CDataContainer contvec;
 	contvec.set("mycollection", vc);
 	std::vector<CTestClass> vc2 = contvec.get< std::vector<CTestClass> >("mycollection");
@@ -400,7 +406,7 @@ BOOST_AUTO_TEST_CASE(DataContainable)
    //containeur simple de std::vector< boost::shared_ptr<IDataContainable> >
    std::vector< boost::shared_ptr<CTestClass> > vcsh;
    for (int i = 0; i < 10; ++i)
-      vcsh.push_back(boost::shared_ptr<CTestClass>(new CTestClass(i, 42.0 * i, "test de std::vector<IDataContainable>")));
+      vcsh.push_back(boost::shared_ptr<CTestClass>(new CTestClass(i, 42.0 * i, "test of std::vector<IDataContainable>")));
    shared::CDataContainer contvecsh;
    contvecsh.set("mycollectionofshared", vcsh);
    std::vector< boost::shared_ptr<CTestClass> >  vcsh2 = contvecsh.get< std::vector< boost::shared_ptr<CTestClass> > >("mycollectionofshared");
@@ -425,7 +431,7 @@ BOOST_AUTO_TEST_CASE(Field)
    shared::CField<double> fd(12.3);
    shared::CField<std::string> fs("this is a test");
    shared::CField<EEnumType> fe(kEnumValue2);
-   shared::CField<CTestClass> fdc(CTestClass(5, 42.0, "test de datacontainble"));
+   shared::CField<CTestClass> fdc(CTestClass(5, 42.0, "test of datacontainble"));
 
    
    shared::CDataContainer dc;
@@ -477,6 +483,13 @@ BOOST_AUTO_TEST_CASE(Path)
 
    dc.printToLog();
 
+}
+
+
+
+BOOST_AUTO_TEST_CASE(SimpleConstruction)
+{
+   BOOST_CHECK_THROW(shared::CDataContainer dc("1"), std::exception);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

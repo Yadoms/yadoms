@@ -36,7 +36,7 @@ bool CPythonExecutable::findPythonDirectory(boost::filesystem::path& pythonDirec
    if (isPythonIn(boost::filesystem::path(), pythonDirectory))// Empty directory to search in system path
       return true;
 
-   //retrevie common path for the system
+   //retrieve common path for the system
    std::vector<boost::filesystem::path> commonPaths;
    CPythonExecutablePath::getCommonPythonPaths(commonPaths);
 

@@ -2,6 +2,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as Condition
 from selenium.webdriver.common.keys import Keys
+from configurationPanel import ConfigurationPanel
 import modals
 import i18n
 import tools
@@ -114,8 +115,12 @@ class NewPluginModal():
       print "selectPlugin : Nothing to select, ", expectedPluginName, " not found"
       assert False
          
-   def getConfirmButton(self, browser):
-      return browser.find_element_by_id("btn-confirm-add-plugin")
+   def getConfirmButton(self):
+      return self.__newPluginModalWebElement.find_element_by_id("btn-confirm-add-plugin")
+         
+   def ok(self):
+      self.getConfirmButton().click()
+      modals.waitForClosed(self.__newPluginModalWebElement)
             
             
             
@@ -133,28 +138,20 @@ class ConfigurePluginModal():
    def __init__(self, configurePluginModalWebElement):
       self.__configurePluginModalWebElement = configurePluginModalWebElement
 
-   def __getConfigurationItemByName(self, dataI18nString):
-      """ Find a configuration item by its "data-i18n" field """
-      controlGroups = self.__configurePluginModalWebElement.find_elements_by_class_name("control-group")
-      for controlGroup in controlGroups:
-         label = controlGroup.find_element_by_class_name("configuration-label")
-         name = label.find_element_by_class_name("configuration-label-name")
-         if (name.get_attribute("data-i18n") == dataI18nString):
-            return controlGroup.find_element_by_class_name("configuration-control").find_elements_by_xpath("./child::*")[0]
-               
-      # Not found
-      assert False      
-
    def getPluginName(self):
-      return self.__getConfigurationItemByName("modals.configure-plugin.name-configuration.name")
+      return ConfigurationPanel(self.__configurePluginModalWebElement).getItemByName("modals.configure-plugin.name-configuration.name")
       
-   def replacePluginName(self, newName):
-      tools.waitUntil(lambda: self.getPluginName().is_enabled())
+   def setPluginName(self, newName):
+      tools.waitReadyForInput(self.getPluginName())
       nameField = self.getPluginName()
       nameField.send_keys(Keys.CONTROL + "a")
       nameField.send_keys(Keys.DELETE)
       nameField.send_keys(newName)
          
-   def getConfirmButton(self, browser):
-      return browser.find_element_by_id("btn-confirm-configure-plugin")
+   def getConfirmButton(self):
+      return self.__configurePluginModalWebElement.find_element_by_id("btn-confirm-configure-plugin")
+         
+   def ok(self):
+      self.getConfirmButton().click()
+      modals.waitForClosed(self.__configurePluginModalWebElement)
       

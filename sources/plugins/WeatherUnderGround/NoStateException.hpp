@@ -11,7 +11,7 @@ public:
    /// \brief	                        Constructor
    /// \param[in]  message             Exception message
    //--------------------------------------------------------------
-   CNoStateException(const std::string& message)
+   explicit CNoStateException(const std::string& message)
       :CException(message)
    {
    }

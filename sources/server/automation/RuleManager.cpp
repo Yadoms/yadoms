@@ -62,7 +62,7 @@ bool CRuleManager::startRules(const std::vector<boost::shared_ptr<database::enti
       try
       {
          // Start only autoStarted rules if not in error state
-         if ((*it)->AutoStart() && (*it)->State() != database::entities::ERuleState::kErrorValue)
+         if ((*it)->AutoStart() && (*it)->State() != database::entities::ERuleState::kError)
             startRule((*it)->Id);
       }
       catch (CRuleException&)
@@ -382,7 +382,7 @@ void CRuleManager::recordRuleStarted(int ruleId)
 {
    boost::shared_ptr<database::entities::CRule> ruleData(boost::make_shared<database::entities::CRule>());
    ruleData->Id = ruleId;
-   ruleData->State = database::entities::ERuleState::kRunningValue;
+   ruleData->State = database::entities::ERuleState::kRunning;
    ruleData->StartDate = shared::currentTime::Provider::now();
    ruleData->ErrorMessage = std::string();
    m_ruleRequester->updateRule(ruleData);
@@ -392,7 +392,7 @@ void CRuleManager::recordRuleStopped(int ruleId, const std::string& error)
 {
    boost::shared_ptr<database::entities::CRule> ruleData(new database::entities::CRule);
    ruleData->Id = ruleId;
-   ruleData->State = error.empty() ? database::entities::ERuleState::kStoppedValue : database::entities::ERuleState::kErrorValue;
+   ruleData->State = error.empty() ? database::entities::ERuleState::kStopped : database::entities::ERuleState::kError;
    ruleData->StopDate = shared::currentTime::Provider::now();
    ruleData->ErrorMessage = error;
    m_ruleRequester->updateRule(ruleData);

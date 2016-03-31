@@ -33,6 +33,7 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
    try
    {
       YADOMS_LOG(debug) << "CWeatherUnderground is starting...";
+//	  context->setPluginState(yApi::historization::EPluginState::kCustom, "toto");
 
       // Load configuration values (provided by database)
       m_configuration.initializeWith(context->getConfiguration());
@@ -75,8 +76,15 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
             {
                YADOMS_LOG(debug) << "Refresh Weather Conditions";
 
-			      m_WeatherConditionsRequester.Request( context );
-			      m_WeatherConditionsRequester.Parse  ( context, m_configuration );
+			      if ( !m_WeatherConditionsRequester.Request( context ) )
+				  {
+					  m_WeatherConditionsRequester.Parse  ( context, m_configuration );
+				  }
+
+				  if (!m_WeatherConditionsRequester.IsModuleInFault ())
+				  {
+					  context->setPluginState(yApi::historization::EPluginState::kRunning);
+				  }
 
                break;
             }
@@ -84,18 +92,32 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
             {
 			      YADOMS_LOG(debug) << "Refresh Astronomy Information";
 
-			      m_AstronomyRequester.Request( context );
-			      m_AstronomyRequester.Parse  ( context, m_configuration );
+			      if ( !m_AstronomyRequester.Request( context ) )
+				  {
+			         m_AstronomyRequester.Parse  ( context, m_configuration );
+				  }
+
+				  if (!m_WeatherConditionsRequester.IsModuleInFault ())
+				  {
+					  context->setPluginState(yApi::historization::EPluginState::kRunning);
+				  }
 
 			      break;
             }
 		 case kEvtTimerRefreshForecast10Days:
             {
-			      YADOMS_LOG(debug) << "Refresh Forecast 10 Days Information";
+			    YADOMS_LOG(debug) << "Refresh Forecast 10 Days Information";
 
-			      m_Forecast10Days.Request( context );
-                  m_Forecast10Days.SetCityName ( m_WeatherConditionsRequester.GetCityName() );
-			      m_Forecast10Days.Parse  ( context, m_configuration );
+			      if ( !m_Forecast10Days.Request( context ) )
+				  {
+                     m_Forecast10Days.SetCityName ( m_WeatherConditionsRequester.GetCityName() );
+			         m_Forecast10Days.Parse  ( context, m_configuration );
+				  }
+
+				  if (!m_WeatherConditionsRequester.IsModuleInFault ())
+				  {
+					  context->setPluginState(yApi::historization::EPluginState::kRunning);
+				  }
 
 			      break;
             }
@@ -106,21 +128,33 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 
                m_WeatherConditionsRequester.OnUpdate ( context, m_configuration );
 			   
-               m_WeatherConditionsRequester.Request( context );
-               m_WeatherConditionsRequester.Parse  ( context, m_configuration );
+               if (!m_WeatherConditionsRequester.Request( context ) )
+			   {
+                  m_WeatherConditionsRequester.Parse  ( context, m_configuration );
+			   }
 
                m_AstronomyRequester.OnUpdate ( m_configuration );
 
-               m_AstronomyRequester.Request( context );
-               m_AstronomyRequester.Parse  ( context, m_configuration );
+               if ( !m_AstronomyRequester.Request( context ) )
+			   {
+                  m_AstronomyRequester.Parse  ( context, m_configuration );
+			   }
 
-			      m_Forecast10Days.OnUpdate ( context, m_configuration );
+			   m_Forecast10Days.OnUpdate ( context, m_configuration );
 
                m_Forecast10Days.SetCityName ( m_WeatherConditionsRequester.GetCityName());
-               m_Forecast10Days.Request( context );
-               m_Forecast10Days.Parse  ( context, m_configuration );
 
-               context->setPluginState(yApi::historization::EPluginState::kRunning);
+			   if ( !m_Forecast10Days.Request( context ))
+			   {
+                  m_Forecast10Days.Parse  ( context, m_configuration );
+			   }
+
+			   if ( !m_WeatherConditionsRequester.IsModuleInFault () && 
+				    !m_Forecast10Days.IsModuleInFault() && 
+					!m_AstronomyRequester.IsModuleInFault() )
+			   {
+                  context->setPluginState(yApi::historization::EPluginState::kRunning);
+			   }
                break;
             }
 

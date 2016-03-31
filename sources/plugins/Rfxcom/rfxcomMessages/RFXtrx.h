@@ -9,7 +9,7 @@
 
 /*
                                                                    
-Copyright 2011-2015, RFXCOM
+Copyright 2011-2016, RFXCOM
 
 ALL RIGHTS RESERVED. This code is owned by RFXCOM, and is protected under
 Netherlands Copyright Laws and Treaties and shall be subject to the 
@@ -27,6 +27,20 @@ portions of this file.
 */
 
 /*
+SDK version 9.07
+	Lighting5 IT added
+	BlindsT12 Confexx added
+
+SDK version 9.06
+	Lighting1 HQ COCO-20 added
+	Lighting5 Avantek added
+	BlindsT11 ASP added
+
+SDK version 9.05
+	Itho CVE RFT fan added
+	LucciAir fan added
+	HUM3 Inovalley S80 plant humidity sensor added
+
 SDK version 9.04A
 	Lighting5 Legrand CAD added
 	msg6-HC HomeConfort protocol enable added
@@ -407,6 +421,7 @@ SDK version 4.9
 #define sTypeEnergenie 0x8
 #define sTypeEnergenie5 0x9
 #define sTypeGDR2 0x0A
+#define sTypeHQ 0x0B
 
 #define light1_sOff 0x0
 #define light1_sOn 0x1
@@ -464,6 +479,8 @@ SDK version 4.9
 #define sTypeRGB432W 0x0B
 #define sTypeMDREMOTE107 0x0C
 #define sTypeLegrandCAD 0x0D
+#define sTypeAvantek 0x0E
+#define sTypeIT 0x0F
 
 #define light5_sOff 0x0
 #define light5_sOn 0x1
@@ -548,12 +565,26 @@ SDK version 4.9
 
 #define pTypeFan 0x17
 #define sTypeSiemensSF01 0x0
+#define sTypeItho 0x1
+#define sTypeLucciAir 0x2
 #define fan_sTimer 0x1
 #define fan_sMin 0x2
 #define fan_sLearn 0x3
 #define fan_sPlus 0x4
 #define fan_sConfirm 0x5
 #define fan_sLight 0x6
+#define fan_Itho1 0x1
+#define fan_Itho2 0x2
+#define fan_Itho3 0x3
+#define fan_IthoTimer 0x4
+#define fan_IthoNotAtHome 0x5
+#define fan_IthoLearn 0x6
+#define fan_IthoEraseAll 0x7
+#define fan_LucciHi 0x1
+#define fan_LucciMed 0x2
+#define fan_LucciLow 0x3
+#define fan_LucciOff 0x4
+#define fan_LucciLight 0x5
 
 //types for Curtain
 #define pTypeCurtain 0x18
@@ -576,6 +607,8 @@ SDK version 4.9
 #define sTypeBlindsT8 0x8	//Chamberlain CS4330CN
 #define sTypeBlindsT9 0x9	//Sunpery
 #define sTypeBlindsT10 0xA	//Dolat DLM-1
+#define sTypeBlindsT11 0xB	//ASP
+#define sTypeBlindsT12 0xC	//Confexx
 
 #define blinds_sOpen 0x0
 #define blinds_sClose 0x1
@@ -772,6 +805,7 @@ SDK version 4.9
 #define pTypeHUM 0x51
 #define sTypeHUM1 0x1  //LaCrosse TX3
 #define sTypeHUM2 0x2  //LaCrosse WS2300
+#define sTypeHUM3 0x03  //Inovalley S80 plant humidity sensor
 
 //status types for humidity
 #define humstat_normal 0x0

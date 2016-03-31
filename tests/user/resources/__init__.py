@@ -2,6 +2,7 @@
 import shutil
 import time
 import tools
+import sys
 
 
 def deleteTree(directory):
@@ -24,4 +25,17 @@ def deleteFile(file):
       except:
          print "Unable to delete ", file, " file"
          raise
-         
+
+
+def deployFile(srcFile, targetFile):
+   """Deploy a file"""
+   
+   # In some case (at least under Windows), if target file is in use, copyFile does nothing without any error
+   # So try to delete target file previously (will fail if not possible)
+   try:
+      deleteFile(targetFile)
+      shutil.copyfile(srcFile, targetFile)
+   except:
+      print 'Unable to deploy database file ', srcFile, ', ', sys.exc_info()[0]
+      raise
+   

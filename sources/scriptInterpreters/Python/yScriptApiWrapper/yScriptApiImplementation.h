@@ -14,7 +14,7 @@ public:
    ///\brief               Constructor
    ///\param[in] yScriptApiAccessorId  The context accessor ID provided by Yadoms
    //-----------------------------------------------------
-   CYScriptApiImplementation(const std::string& yScriptApiAccessorId);
+   explicit CYScriptApiImplementation(const std::string& yScriptApiAccessorId);
 
    //-----------------------------------------------------
    ///\brief               Destructor
@@ -26,8 +26,8 @@ public:
    virtual int getRecipientId(const std::string& firstName, const std::string& lastName) const;
    virtual std::string readKeyword(int keywordId) const;
    virtual std::string waitForNextAcquisition(int keywordId, const std::string& timeout = std::string()) const;
-   virtual std::pair<int, std::string> waitForNextAcquisitions(const std::vector<int> keywordIdList, const std::string& timeout) const;
-   virtual shared::script::yScriptApi::CWaitForEventResult waitForEvent(const std::vector<int> keywordIdList, bool receiveDateTimeEvent, const std::string& timeout = std::string()) const;
+   virtual std::pair<int, std::string> waitForNextAcquisitions(const std::vector<int> & keywordIdList, const std::string& timeout) const;
+   virtual shared::script::yScriptApi::CWaitForEventResult waitForEvent(const std::vector<int> & keywordIdList, bool receiveDateTimeEvent, const std::string& timeout = std::string()) const;
    virtual void writeKeyword(int keywordId, const std::string& newState);
    virtual void sendNotification(int keywordId, int recipientId, const std::string& message);
    virtual std::string getInfo(EInfoKeys key) const;
@@ -38,7 +38,7 @@ protected:
    /// \brief	Send a request
    /// \param[in] request Request to send
    //--------------------------------------------------------------
-   void sendRequest(const protobufMessage::Request& request) const;
+   void sendRequest(const pbRequest::msg& request) const;
 
    //--------------------------------------------------------------
    /// \brief	Wait for an answer
@@ -46,7 +46,7 @@ protected:
    /// \throw std::runtime_error if message queue error
    /// \throw shared::exception::CInvalidParameter if error parsing message
    //--------------------------------------------------------------
-   void receiveAnswer(protobufMessage::Answer& answer) const;
+   void receiveAnswer(pbAnswer::msg& answer) const;
 
 private:
    //-----------------------------------------------------

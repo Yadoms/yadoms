@@ -89,8 +89,7 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	The total power (Wh)
       //--------------------------------------------------------------
-      bool m_totalPowerAvailable;
-      yApi::historization::CEnergy m_totalPower;
+      boost::optional<yApi::historization::CEnergy> m_totalPower;
 
       //--------------------------------------------------------------
       /// \brief	The battery level (percent)

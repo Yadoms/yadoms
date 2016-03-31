@@ -51,10 +51,10 @@ void CRemote::createSubType(unsigned char subType)
    m_subType = subType;
    switch(m_subType)
    {
-   case sTypeATI : m_subTypeManager.reset(new CRemoteStandard<specificHistorizers::CRemoteAtiWonderHistorizer>("ATI Remote Wonder")); break;
-   case sTypeATIplus : m_subTypeManager.reset(new CRemoteStandard<specificHistorizers::CRemoteAtiWonderPlusHistorizer>("ATI Remote Wonder Plus")); break;
-   case sTypeMedion : m_subTypeManager.reset(new CRemoteStandard<specificHistorizers::CRemoteMedionHistorizer>("Medion Remote")); break;
-   case sTypePCremote : m_subTypeManager.reset(new CRemoteStandard<specificHistorizers::CRemotePCHistorizer>("X10 PC Remote")); break;
+   case sTypeATI : m_subTypeManager.reset(new CRemoteStandard<specificHistorizers::CRemoteAtiWonderHistorizer, specificHistorizers::ERemoteAtiWonderCodes>("ATI Remote Wonder")); break;
+   case sTypeATIplus : m_subTypeManager.reset(new CRemoteStandard<specificHistorizers::CRemoteAtiWonderPlusHistorizer, specificHistorizers::ERemoteAtiWonderPlusCodes>("ATI Remote Wonder Plus")); break;
+   case sTypeMedion : m_subTypeManager.reset(new CRemoteStandard<specificHistorizers::CRemoteMedionHistorizer, specificHistorizers::ERemoteMedionCodes>("Medion Remote")); break;
+   case sTypePCremote : m_subTypeManager.reset(new CRemoteStandard<specificHistorizers::CRemotePCHistorizer, specificHistorizers::ERemotePCCodes>("X10 PC Remote")); break;
    case sTypeATIrw2 : m_subTypeManager.reset(new CRemoteAtiWonder2()); break;
    default:
       throw shared::exception::COutOfRange("Manually device creation : subType is not supported");

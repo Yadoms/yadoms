@@ -14,6 +14,7 @@ CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> context,
            m_PluginName                ( PluginName ),
            m_Forecast                  ( PluginName, "Forecast", weatherunderground::helper::EPeriod::kDay)
 {
+	m_CatchError = false;
 	m_URL.str("");
 	m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/" << m_Prefix << "/q/" << m_CountryOrState << "/" << m_Localisation << ".json";
 
@@ -63,6 +64,11 @@ void CForecastDays::InitializeForecastDays ( boost::shared_ptr<yApi::IYPluginApi
    catch (shared::exception::CException& e)
    {
       YADOMS_LOG(warning) << "Configuration or initialization error of Forecast 3 Days module :" << e.what()  << std::endl;
+
+	  // Informs Yadoms about the plugin actual state
+      context->setPluginState(yApi::historization::EPluginState::kCustom, "InitializationError" );
+
+	  m_CatchError = true;
    }
 }
 
@@ -82,16 +88,21 @@ void CForecastDays::OnUpdate(   boost::shared_ptr<yApi::IYPluginApi> context,
 	InitializeForecastDays ( context, WUConfiguration );
 }
 
-void CForecastDays::Request( boost::shared_ptr<yApi::IYPluginApi> context )
+bool CForecastDays::Request( boost::shared_ptr<yApi::IYPluginApi> context )
 {
 	try
 	{
+	   m_CatchError = false;
 	   m_data = m_webServer.SendGetRequest( m_URL.str() );
 	}
 	catch (shared::exception::CException& e)
 	{
 		YADOMS_LOG(warning) << "Forecast 10 days :"  << e.what() << std::endl;
+		context->setPluginState(yApi::historization::EPluginState::kCustom, "NoConnection" );
+		m_CatchError = true;
 	}
+
+	return m_CatchError;
 }
 
 void CForecastDays::Parse( boost::shared_ptr<yApi::IYPluginApi> context, const IWUConfiguration& WUConfiguration )
@@ -102,7 +113,14 @@ void CForecastDays::Parse( boost::shared_ptr<yApi::IYPluginApi> context, const I
 
 		if (!error.empty())
 		{
+			m_CatchError = true;
+
 			YADOMS_LOG(error) << "ERROR : " << error  << std::endl;
+
+			if (error.compare ("No cities match your search query") == 0)
+			{
+				context->setPluginState(yApi::historization::EPluginState::kCustom, "CityNotFound" );
+			}
 		}
 		else
 		{
@@ -160,6 +178,11 @@ void CForecastDays::Parse( boost::shared_ptr<yApi::IYPluginApi> context, const I
 void CForecastDays::SetCityName ( const std::string & CityName )
 {
    m_Forecast.SetCityName ( CityName );
+}
+
+bool CForecastDays::IsModuleInFault ( void )
+{
+	return m_CatchError;
 }
 
 CForecastDays::~CForecastDays()

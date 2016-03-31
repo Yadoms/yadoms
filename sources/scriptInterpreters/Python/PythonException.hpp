@@ -11,7 +11,7 @@ public:
    //--------------------------------------------------------------
    /// \brief	                        Constructor
    //--------------------------------------------------------------
-   CPythonException(const std::string& message)
+   explicit CPythonException(const std::string& message)
       :CException(message)
    {
    }

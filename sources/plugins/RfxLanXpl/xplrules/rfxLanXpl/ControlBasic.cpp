@@ -38,7 +38,7 @@ namespace xplrules { namespace rfxLanXpl {
    {
       std::string commercialName = msg.getBodyValue(m_keywordDevice);
 
-      EType type = msg.getBodyValue(m_keywordType);
+      EType type(msg.getBodyValue(m_keywordType));
       switch (type)
       {
       case EType::kNinjaValue:
@@ -61,7 +61,7 @@ namespace xplrules { namespace rfxLanXpl {
    {
       KeywordList keywords;
       
-      EType type = msg.getBodyValue(m_keywordType);
+      EType type(msg.getBodyValue(m_keywordType));
       switch (type)
       {
       case EType::kNinjaValue:
@@ -116,7 +116,7 @@ namespace xplrules { namespace rfxLanXpl {
          case EType::kMertikValue:
          {
             data::CMertickCommand command("mertik");
-            command.set(commandData->getBody());
+            command.set(data::CMertickCommand(commandData->getBody()));
             newMessage->addToBody(m_keywordType, type.toString());
             newMessage->addToBody(m_keywordCurrent, command.get().toString());
          }
@@ -125,7 +125,7 @@ namespace xplrules { namespace rfxLanXpl {
          case EType::kNinjaValue:
          {
             data::CNinja command("ninja");
-            command.set(commandData->getBody());
+            command.set(data::CNinja(commandData->getBody()));
             newMessage->addToBody(m_keywordType, type.toString());
             newMessage->addToBody(m_keywordCurrent, command.get().toString());
          }
@@ -133,7 +133,7 @@ namespace xplrules { namespace rfxLanXpl {
          case EType::kOutputValue:
          {
             data::CDigitalIoCommand command("digitalio");
-            command.set(commandData->getBody());
+            command.set(data::CDigitalIoCommand(commandData->getBody()));
             newMessage->addToBody(m_keywordType, type.toString());
             newMessage->addToBody(m_keywordCurrent, command.get().toString());
          }

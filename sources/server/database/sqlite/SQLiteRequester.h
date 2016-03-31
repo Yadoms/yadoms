@@ -1,6 +1,6 @@
 #pragma once
 
-#include "sqlite3.h"
+#include <sqlite3.h>
 #include "adapters/ISQLiteResultAdapter.h"
 #include <shared/exception/NullReference.hpp>
 #include <shared/Log.h>

@@ -1,5 +1,6 @@
 #pragma once
 #include <shared/Export.h>
+#include <Poco/Types.h>
 #include "SingleHistorizableData.hpp"
 #include "typeInfo/DoubleTypeInfo.h"
 
@@ -8,7 +9,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
    //-----------------------------------------------------
    ///\brief A energy historizable object
    //-----------------------------------------------------
-   class YADOMS_SHARED_EXPORT CEnergy : public CSingleHistorizableData<long>
+   class YADOMS_SHARED_EXPORT CEnergy : public CSingleHistorizableData<Poco::Int64>
    {
    public:
       //-----------------------------------------------------

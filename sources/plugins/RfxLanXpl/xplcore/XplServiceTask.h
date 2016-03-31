@@ -135,9 +135,6 @@ namespace xplcore
       void notifySubscribers(CXplMessage & msg);
 
    private:
-      //xpl data
-      CXplActor m_source;
-
       //info
       boost::posix_time::ptime m_startDate;
 
@@ -174,5 +171,8 @@ namespace xplcore
       //--------------------------------------------------------------
       typedef boost::tuple< boost::shared_ptr< CXplMessageFilter >, shared::event::CEventHandler *, int, bool > FilterConfiguration;
       std::vector< FilterConfiguration > m_filteringSystem;
+
+      //xpl data
+      CXplActor m_source;
    };
 } // namespace xplcore

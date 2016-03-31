@@ -4,14 +4,14 @@ IF(NOT DISABLE_TEST_PLUGIN_INFORMATION)
       shared/shared/StringExtension.h
       shared/shared/StringExtension.cpp
       shared/shared/plugin/information/IInformation.h
-      shared/shared/plugin/information/ReleaseType.h
-      shared/shared/plugin/information/ReleaseType.cpp
+      shared/shared/versioning/ReleaseType.h
+      shared/shared/versioning/ReleaseType.cpp
+      shared/shared/versioning/Version.h
+      shared/shared/versioning/Version.cpp
       server/pluginSystem/Information.h
       server/pluginSystem/Information.cpp
       server/tools/tools/SupportedPlatformsChecker.h
-      server/tools/tools/SupportedPlatformsChecker.cpp  
-      server/tools/tools/Version.h
-      server/tools/tools/Version.cpp  
+      server/tools/tools/SupportedPlatformsChecker.cpp
    )
    
    

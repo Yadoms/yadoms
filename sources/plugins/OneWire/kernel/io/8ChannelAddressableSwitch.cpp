@@ -2,7 +2,7 @@
 #include "8ChannelAddressableSwitch.h"
 #include "Common.h"
 #include <shared/Log.h>
-#include "OneWireException.hpp"
+#include <OneWireException.hpp>
 
 namespace kernel { namespace io {
 

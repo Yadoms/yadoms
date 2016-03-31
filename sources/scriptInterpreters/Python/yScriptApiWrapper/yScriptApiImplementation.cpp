@@ -12,6 +12,8 @@ CYScriptApiImplementation::CYScriptApiImplementation(const std::string& yScriptA
    // compatible with the version of the headers we compiled against.
    GOOGLE_PROTOBUF_VERIFY_VERSION;
 
+   memset(m_mqBuffer, 0, sizeof(m_mqBuffer));
+
    try
    {
       const std::string sendMessageQueueId(yScriptApiAccessorId + ".toYadoms");
@@ -35,14 +37,14 @@ CYScriptApiImplementation::~CYScriptApiImplementation()
    google::protobuf::ShutdownProtobufLibrary();
 }
 
-void CYScriptApiImplementation::sendRequest(const protobufMessage::Request& request) const
+void CYScriptApiImplementation::sendRequest(const pbRequest::msg& request) const
 {
    try
    {
       if (!request.IsInitialized())
          throw std::overflow_error("CYScriptApiImplementation::sendRequest : request is not fully initialized");
 
-      if (request.ByteSize() > m_messageQueueMessageSize)
+      if (request.ByteSize() > static_cast<int>(m_messageQueueMessageSize))
          throw std::overflow_error("CYScriptApiImplementation::sendRequest : request is too big");
 
       if (!request.SerializeToArray(m_mqBuffer, m_messageQueueMessageSize))
@@ -56,7 +58,7 @@ void CYScriptApiImplementation::sendRequest(const protobufMessage::Request& requ
    }
 }
 
-void CYScriptApiImplementation::receiveAnswer(protobufMessage::Answer& answer) const
+void CYScriptApiImplementation::receiveAnswer(pbAnswer::msg& answer) const
 {
    // Wait answer
    char message[m_messageQueueMessageSize];
@@ -74,13 +76,13 @@ void CYScriptApiImplementation::receiveAnswer(protobufMessage::Answer& answer) c
 
 int CYScriptApiImplementation::getKeywordId(const std::string& deviceName, const std::string& keywordName) const
 {
-   protobufMessage::Request req;
-   protobufMessage::Request_GetKeywordId* request = req.mutable_getkeywordid();
+   pbRequest::msg req;
+   pbRequest::GetKeywordId* request = req.mutable_getkeywordid();
    request->set_devicename(deviceName);
    request->set_keywordname(keywordName);
    sendRequest(req);
 
-   protobufMessage::Answer answer;
+   pbAnswer::msg answer;
    receiveAnswer(answer);
 
    if (!answer.has_getkeywordid())
@@ -94,13 +96,13 @@ int CYScriptApiImplementation::getKeywordId(const std::string& deviceName, const
 
 int CYScriptApiImplementation::getRecipientId(const std::string& firstName, const std::string& lastName) const
 {
-   protobufMessage::Request req;
-   protobufMessage::Request_GetRecipientId* request = req.mutable_getrecipientid();
+   pbRequest::msg req;
+   pbRequest::GetRecipientId* request = req.mutable_getrecipientid();
    request->set_firstname(firstName);
    request->set_lastname(lastName);
    sendRequest(req);
 
-   protobufMessage::Answer answer;
+   pbAnswer::msg answer;
    receiveAnswer(answer);
 
    if (!answer.has_getrecipientid())
@@ -114,12 +116,12 @@ int CYScriptApiImplementation::getRecipientId(const std::string& firstName, cons
 
 std::string CYScriptApiImplementation::readKeyword(int keywordId) const
 {
-   protobufMessage::Request req;
-   protobufMessage::Request_ReadKeyword* request = req.mutable_readkeyword();
+   pbRequest::msg req;
+   pbRequest::ReadKeyword* request = req.mutable_readkeyword();
    request->set_keywordid(keywordId);
    sendRequest(req);
 
-   protobufMessage::Answer answer;
+   pbAnswer::msg answer;
    receiveAnswer(answer);
 
    if (!answer.has_readkeyword())
@@ -133,14 +135,14 @@ std::string CYScriptApiImplementation::readKeyword(int keywordId) const
 
 std::string CYScriptApiImplementation::waitForNextAcquisition(int keywordId, const std::string& timeout) const
 {
-   protobufMessage::Request req;
-   protobufMessage::Request_WaitForNextAcquisition* request = req.mutable_waitfornextacquisition();
+   pbRequest::msg req;
+   pbRequest::WaitForNextAcquisition* request = req.mutable_waitfornextacquisition();
    request->set_keywordid(keywordId);
    if (!timeout.empty())
       request->set_timeout(timeout);
    sendRequest(req);
 
-   protobufMessage::Answer answer;
+   pbAnswer::msg answer;
    receiveAnswer(answer);
 
    if (!answer.has_waitfornextacquisition())
@@ -152,17 +154,17 @@ std::string CYScriptApiImplementation::waitForNextAcquisition(int keywordId, con
    return answer.waitfornextacquisition().acquisition();
 }
 
-std::pair<int, std::string> CYScriptApiImplementation::waitForNextAcquisitions(const std::vector<int> keywordIdList, const std::string& timeout) const
+std::pair<int, std::string> CYScriptApiImplementation::waitForNextAcquisitions(const std::vector<int> & keywordIdList, const std::string& timeout) const
 {
-   protobufMessage::Request req;
-   protobufMessage::Request_WaitForNextAcquisitions* request = req.mutable_waitfornextacquisitions();
+   pbRequest::msg req;
+   pbRequest::WaitForNextAcquisitions* request = req.mutable_waitfornextacquisitions();
    for (std::vector<int>::const_iterator it = keywordIdList.begin(); it != keywordIdList.end(); ++it)
       request->add_keywordid(*it);
    if (!timeout.empty())
       request->set_timeout(timeout);
    sendRequest(req);
 
-   protobufMessage::Answer answer;
+   pbAnswer::msg answer;
    receiveAnswer(answer);
 
    if (!answer.has_waitfornextacquisitions())
@@ -174,10 +176,10 @@ std::pair<int, std::string> CYScriptApiImplementation::waitForNextAcquisitions(c
    return std::pair<int, std::string>(answer.waitfornextacquisitions().keywordid(), answer.waitfornextacquisitions().has_acquisition() ? answer.waitfornextacquisitions().acquisition() : std::string());
 }
 
-shared::script::yScriptApi::CWaitForEventResult CYScriptApiImplementation::waitForEvent(const std::vector<int> keywordIdList, bool receiveDateTimeEvent, const std::string& timeout) const
+shared::script::yScriptApi::CWaitForEventResult CYScriptApiImplementation::waitForEvent(const std::vector<int> & keywordIdList, bool receiveDateTimeEvent, const std::string& timeout) const
 {
-   protobufMessage::Request req;
-   protobufMessage::Request_WaitForEvent* request = req.mutable_waitforevent();
+   pbRequest::msg req;
+   pbRequest::WaitForEvent* request = req.mutable_waitforevent();
    for (std::vector<int>::const_iterator it = keywordIdList.begin(); it != keywordIdList.end(); ++it)
       request->add_keywordid(*it);
    request->set_receivedatetimeevent(receiveDateTimeEvent);
@@ -185,7 +187,7 @@ shared::script::yScriptApi::CWaitForEventResult CYScriptApiImplementation::waitF
       request->set_timeout(timeout);
    sendRequest(req);
 
-   protobufMessage::Answer answer;
+   pbAnswer::msg answer;
    receiveAnswer(answer);
 
    if (!answer.has_waitforevent())
@@ -197,9 +199,9 @@ shared::script::yScriptApi::CWaitForEventResult CYScriptApiImplementation::waitF
    shared::script::yScriptApi::CWaitForEventResult result;
    switch (answer.waitforevent().type())
    {
-   case protobufMessage::Answer_WaitForEvent_EventType::Answer_WaitForEvent_EventType_kTimeout:result.setType(shared::script::yScriptApi::CWaitForEventResult::kTimeout); break;
-   case protobufMessage::Answer_WaitForEvent_EventType::Answer_WaitForEvent_EventType_kKeyword:result.setType(shared::script::yScriptApi::CWaitForEventResult::kKeyword); break;
-   case protobufMessage::Answer_WaitForEvent_EventType::Answer_WaitForEvent_EventType_kDateTime:result.setType(shared::script::yScriptApi::CWaitForEventResult::kDateTime); break;
+   case pbAnswer::WaitForEvent_EventType_kTimeout : result.setType(shared::script::yScriptApi::CWaitForEventResult::kTimeout); break;
+   case pbAnswer::WaitForEvent_EventType_kKeyword : result.setType(shared::script::yScriptApi::CWaitForEventResult::kKeyword); break;
+   case pbAnswer::WaitForEvent_EventType_kDateTime : result.setType(shared::script::yScriptApi::CWaitForEventResult::kDateTime); break;
    default:
       throw shared::exception::CInvalidParameter("answer.waitforevent.type");
    }
@@ -211,13 +213,13 @@ shared::script::yScriptApi::CWaitForEventResult CYScriptApiImplementation::waitF
 
 void CYScriptApiImplementation::writeKeyword(int keywordId, const std::string& newState)
 {
-   protobufMessage::Request req;
-   protobufMessage::Request_WriteKeyword* request = req.mutable_writekeyword();
+   pbRequest::msg req;
+   pbRequest::WriteKeyword* request = req.mutable_writekeyword();
    request->set_keywordid(keywordId);
    request->set_newstate(newState);
    sendRequest(req);
 
-   protobufMessage::Answer answer;
+   pbAnswer::msg answer;
    receiveAnswer(answer);
 
    if (!answer.has_writekeyword())
@@ -229,14 +231,14 @@ void CYScriptApiImplementation::writeKeyword(int keywordId, const std::string& n
 
 void CYScriptApiImplementation::sendNotification(int keywordId, int recipientId, const std::string& message)
 {
-   protobufMessage::Request req;
-   protobufMessage::Request_SendNotification* request = req.mutable_sendnotification();
+   pbRequest::msg req;
+   pbRequest::SendNotification* request = req.mutable_sendnotification();
    request->set_keywordid(keywordId);
    request->set_recipientid(recipientId);
    request->set_message(message);
    sendRequest(req);
 
-   protobufMessage::Answer answer;
+   pbAnswer::msg answer;
    receiveAnswer(answer);
 
    if (!answer.has_sendnotification())
@@ -248,23 +250,23 @@ void CYScriptApiImplementation::sendNotification(int keywordId, int recipientId,
 
 std::string CYScriptApiImplementation::getInfo(EInfoKeys key) const
 {
-   protobufMessage::Request req;
-   protobufMessage::Request_GetInfo* request = req.mutable_getinfo();
+   pbRequest::msg req;
+   pbRequest::GetInfo* request = req.mutable_getinfo();
    switch (key)
    {
-   case kSunrise:request->set_key(protobufMessage::Request_GetInfo_Key::Request_GetInfo_Key_kSunrise); break;
-   case kSunset:request->set_key(protobufMessage::Request_GetInfo_Key::Request_GetInfo_Key_kSunset); break;
-   case kLatitude:request->set_key(protobufMessage::Request_GetInfo_Key::Request_GetInfo_Key_kLatitude); break;
-   case kLongitude:request->set_key(protobufMessage::Request_GetInfo_Key::Request_GetInfo_Key_kLongitude); break;
-   case kAltitude:request->set_key(protobufMessage::Request_GetInfo_Key::Request_GetInfo_Key_kAltitude); break;
-   case kYadomsServerOS:request->set_key(protobufMessage::Request_GetInfo_Key::Request_GetInfo_Key_kYadomsServerOS); break;
-   case kYadomsServerVersion:request->set_key(protobufMessage::Request_GetInfo_Key::Request_GetInfo_Key_kYadomsServerVersion); break;
+   case kSunrise:request->set_key(pbRequest::GetInfo_Key_kSunrise); break;
+   case kSunset:request->set_key(pbRequest::GetInfo_Key_kSunset); break;
+   case kLatitude:request->set_key(pbRequest::GetInfo_Key_kLatitude); break;
+   case kLongitude:request->set_key(pbRequest::GetInfo_Key_kLongitude); break;
+   case kAltitude:request->set_key(pbRequest::GetInfo_Key_kAltitude); break;
+   case kYadomsServerOS:request->set_key(pbRequest::GetInfo_Key_kYadomsServerOS); break;
+   case kYadomsServerVersion:request->set_key(pbRequest::GetInfo_Key_kYadomsServerVersion); break;
    default:
       throw shared::exception::CInvalidParameter("answer.waitforevent.type");
    }
    sendRequest(req);
 
-   protobufMessage::Answer answer;
+   pbAnswer::msg answer;
    receiveAnswer(answer);
 
    if (!answer.has_getinfo())

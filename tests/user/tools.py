@@ -1,5 +1,8 @@
 ﻿import time
-
+import inspect
+import os.path
+import shutil
+import yadomsServer
 
 def doUntil(actionFct, conditionFct, timeout = 10):
    """Do a action every second until a condition. Returns True if conditionFct was satisfed, False if timeout"""
@@ -38,3 +41,32 @@ def tryWhile(actionFct, timeout = 10):
          if tries > 10:
             print "Try ", timeout, " times to do ", actionFct, ", unsuccessfull"
             raise
+
+
+def waitReadyForInput(element):
+   """Wait that element is ready for an input"""
+   assert waitUntil(lambda: element.is_enabled())
+
+
+def deleteContext():
+   contexteMainDirectory = os.path.join('report', 'debug')
+   if os.path.exists(contexteMainDirectory):
+      try:
+         tryWhile(lambda : shutil.rmtree(contexteMainDirectory))
+      except:
+         print 'Unable to delete context backup directory'
+         raise
+
+
+def saveContext(browser):
+   callerFonctionName = inspect.stack()[1][3]
+   contexteDirectory = os.path.join('report', 'debug', callerFonctionName)
+   print 'Save contexte to ', contexteDirectory
+   if not os.path.exists(contexteDirectory):
+      os.makedir(contexteDirectory)
+      
+   browser.save_screenshot(os.path.join(contexteDirectory, 'screenshot.png'))
+   if os.path.exists(yadomsServer.databasePath()):
+      shutil.copyfile(yadomsServer.databasePath(), os.path.join(contexteDirectory, os.path.basename(yadomsServer.databasePath())))
+   if os.path.exists(yadomsServer.scriptsPath()):
+      shutil.copytree(yadomsServer.scriptsPath(), os.path.join(contexteDirectory))

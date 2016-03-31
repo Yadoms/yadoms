@@ -15,7 +15,7 @@ public:
    /// \brief	Constructor
    /// \param[in] context IYScriptApi context instance
    //--------------------------------------------------------------
-   CContextAccessor(boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi);
+   explicit CContextAccessor(boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi);
 
    //--------------------------------------------------------------
    /// \brief	Destructor
@@ -49,22 +49,22 @@ protected:
    /// \param[in] request Received requests
    /// \param[in] messageQueue Message Queue used for answer
    //--------------------------------------------------------------
-   void processGetKeywordId(const protobufMessage::Request_GetKeywordId& request, boost::interprocess::message_queue& messageQueue);
-   void processGetRecipientId(const protobufMessage::Request_GetRecipientId& request, boost::interprocess::message_queue& messageQueue);
-   void processReadKeyword(const protobufMessage::Request_ReadKeyword& request, boost::interprocess::message_queue& messageQueue);
-   void processWaitForNextAcquisition(const protobufMessage::Request_WaitForNextAcquisition& request, boost::interprocess::message_queue& messageQueue);
-   void processWaitForNextAcquisitions(const protobufMessage::Request_WaitForNextAcquisitions& request, boost::interprocess::message_queue& messageQueue);
-   void processWaitForEvent(const protobufMessage::Request_WaitForEvent& request, boost::interprocess::message_queue& messageQueue);
-   void processWriteKeyword(const protobufMessage::Request_WriteKeyword& request, boost::interprocess::message_queue& messageQueue);
-   void processSendNotification(const protobufMessage::Request_SendNotification& request, boost::interprocess::message_queue& messageQueue);
-   void processGetInfo(const protobufMessage::Request_GetInfo& request, boost::interprocess::message_queue& messageQueue);
+   void processGetKeywordId(const pbRequest::GetKeywordId& request, boost::interprocess::message_queue& messageQueue);
+   void processGetRecipientId(const pbRequest::GetRecipientId& request, boost::interprocess::message_queue& messageQueue);
+   void processReadKeyword(const pbRequest::ReadKeyword& request, boost::interprocess::message_queue& messageQueue);
+   void processWaitForNextAcquisition(const pbRequest::WaitForNextAcquisition& request, boost::interprocess::message_queue& messageQueue);
+   void processWaitForNextAcquisitions(const pbRequest::WaitForNextAcquisitions& request, boost::interprocess::message_queue& messageQueue);
+   void processWaitForEvent(const pbRequest::WaitForEvent& request, boost::interprocess::message_queue& messageQueue);
+   void processWriteKeyword(const pbRequest::WriteKeyword& request, boost::interprocess::message_queue& messageQueue);
+   void processSendNotification(const pbRequest::SendNotification& request, boost::interprocess::message_queue& messageQueue);
+   void processGetInfo(const pbRequest::GetInfo& request, boost::interprocess::message_queue& messageQueue);
 
    //--------------------------------------------------------------
    /// \brief	Send an answer
    /// \param[in] answer The answer
    /// \param[in] boost::interprocess::message_queue Message queue used to send answer
    //--------------------------------------------------------------
-   void sendAnswer(const protobufMessage::Answer& answer, boost::interprocess::message_queue& messageQueue);
+   void sendAnswer(const pbAnswer::msg& answer, boost::interprocess::message_queue& messageQueue);
 
 private:
    //--------------------------------------------------------------

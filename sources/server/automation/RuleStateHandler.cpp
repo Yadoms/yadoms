@@ -29,7 +29,7 @@ void CRuleStateHandler::signalRuleError(int ruleId, const std::string& error)
 {
    // Signal error
    YADOMS_LOG(error) << error;
-   m_eventLogger->addEvent(database::entities::ESystemEventCode::kRuleFailedValue, m_ruleRequester->getRule(ruleId)->Name(), error);
+   m_eventLogger->addEvent(database::entities::ESystemEventCode::kRuleFailed, m_ruleRequester->getRule(ruleId)->Name(), error);
 
    // Signal the abnormal stop to asynchronously remove from list
    m_ruleEventHandler->postEvent(kRuleAbnormalStopped, std::pair<int, std::string>(ruleId, error));
@@ -39,7 +39,7 @@ void CRuleStateHandler::signalRulesStartError(int ruleId, const std::string& err
 {
    // Signal error
    YADOMS_LOG(error) << error;
-   m_eventLogger->addEvent(database::entities::ESystemEventCode::kRuleFailedValue, "Automation rules", error);
+   m_eventLogger->addEvent(database::entities::ESystemEventCode::kRuleFailed, "Automation rules", error);
 
    // Signal the abnormal stop to asynchronously remove from list
    m_ruleEventHandler->postEvent(kRuleAbnormalStopped, std::pair<int, std::string>(ruleId, error));

@@ -160,7 +160,7 @@ std::string CYScriptApiImplementation::waitForNextAcquisition(int keywordId, con
    }
 }
 
-std::pair<int, std::string> CYScriptApiImplementation::waitForNextAcquisitions(const std::vector<int> keywordIdList, const std::string& timeout) const
+std::pair<int, std::string> CYScriptApiImplementation::waitForNextAcquisitions(const std::vector<int> & keywordIdList, const std::string& timeout) const
 {
    for (std::vector<int>::const_iterator kwId = keywordIdList.begin(); kwId != keywordIdList.end(); ++ kwId)
       assertExistingKeyword(*kwId);
@@ -181,7 +181,7 @@ std::pair<int, std::string> CYScriptApiImplementation::waitForNextAcquisitions(c
       boost::shared_ptr<notification::acquisition::CNotification> newAcquisition = waitForAction(waitAction, timeout);
 
       if (!newAcquisition)
-         return std::make_pair(kTimeout, std::string()); // Timeout
+          return std::make_pair<int, std::string>(kTimeout, std::string()); // Timeout
 
       return std::pair<int, std::string>(newAcquisition->getAcquisition()->KeywordId, newAcquisition->getAcquisition()->Value);
    }
@@ -192,7 +192,7 @@ std::pair<int, std::string> CYScriptApiImplementation::waitForNextAcquisitions(c
    }
 }
 
-shared::script::yScriptApi::CWaitForEventResult CYScriptApiImplementation::waitForEvent(const std::vector<int> keywordIdList, bool receiveDateTimeEvent, const std::string& timeout) const
+shared::script::yScriptApi::CWaitForEventResult CYScriptApiImplementation::waitForEvent(const std::vector<int> & keywordIdList, bool receiveDateTimeEvent, const std::string& timeout) const
 {
 
    for (std::vector<int>::const_iterator kwId = keywordIdList.begin(); kwId != keywordIdList.end(); ++kwId)

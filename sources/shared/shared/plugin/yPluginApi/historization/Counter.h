@@ -1,5 +1,6 @@
 #pragma once
 #include <shared/Export.h>
+#include <Poco/Types.h>
 #include "SingleHistorizableData.hpp"
 #include "typeInfo/IntTypeInfo.h"
 
@@ -8,7 +9,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
    //-----------------------------------------------------
    ///\brief A temperature historizable object
    //-----------------------------------------------------
-   class YADOMS_SHARED_EXPORT CCounter : public CSingleHistorizableData<long long>
+   class YADOMS_SHARED_EXPORT CCounter : public CSingleHistorizableData<Poco::Int64>
    {
    public:
       //-----------------------------------------------------
