@@ -319,7 +319,7 @@
 			"description": "Informations sur le temps actuel"
 		},
 		"IndividualKeywordsLiveConditions": {
-			"name": "Conditions actuelles",
+			"name": "Paramètres individuelles des conditions actuelles",
 			"description": "Toutes les informations sont individuellement sauvegardées dans la base de données"
 		},
 		"Astronomy": {

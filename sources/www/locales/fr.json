@@ -280,7 +280,7 @@
                     "platform": "Platforme",
                     "softwareVersion": "Version logicielle",
                     "databaseVersion": "Version base de donnée",
-                    "startedFrom": "Démmarré depuis",
+                    "startedFrom": "Démarré depuis",
                     "errorRequestingDatabaseVersion": "Erreur lors de la récupération de la version de la base de donnée",
                     "errorRequestingSystemInformation": "Erreur lors de la récupération de la version logicielle"
                 },
