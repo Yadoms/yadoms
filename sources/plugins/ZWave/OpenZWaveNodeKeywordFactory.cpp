@@ -14,6 +14,7 @@
 #include "OpenZWaveNodeKeywordBase.h"
 #include "OpenZWaveNodeKeywordGeneric.h"
 #include "OpenZWaveNodeKeywordDimmable.h"
+#include "OpenZWaveEnumHandlerTypeInfo.h"
 
 #include <shared/plugin/yPluginApi/KeywordAccessMode.h>
 #include <shared/plugin/yPluginApi/historization/Temperature.h>
@@ -333,7 +334,8 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateS
 
       case  OpenZWave::ValueID::ValueType_List:			// List from which one item can be selected
       {
-         return COpenZWaveNodeKeywordGeneric< COpenZWaveEnumHandler >::createFromDataType(vID, vLabel, accessMode, units, shared::plugin::yPluginApi::EKeywordDataType::kEnum);
+         COpenZWaveEnumHandlerTypeInfo ti(vID);
+         return COpenZWaveNodeKeywordGeneric< COpenZWaveEnumHandler >::createFromDataType(vID, vLabel, accessMode, units, shared::plugin::yPluginApi::EKeywordDataType::kEnum, shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute, ti);
       }
 
       case  OpenZWave::ValueID::ValueType_Schedule:			// Complex type used with the Climate Control Schedule command class

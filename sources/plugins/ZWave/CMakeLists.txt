@@ -16,6 +16,8 @@ set(ZWAVE_PLUGIN_SOURCES
 	OpenZWaveController.cpp 
 	OpenZWaveEnumHandler.h
 	OpenZWaveEnumHandler.cpp 
+	OpenZWaveEnumHandlerTypeInfo.h
+	OpenZWaveEnumHandlerTypeInfo.cpp 
 	OpenZWaveCommandClass.h
 	OpenZWaveCommandClass.cpp 	
 	IOpenZWaveNodeKeyword.h

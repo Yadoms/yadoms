@@ -62,9 +62,9 @@ public:
    /// \param [in] measureType   The keyword measure type (absolute, cumulative,..)
    /// \return    A IOpenZWaveNodeKeyword shared pointer
    //--------------------------------------------------------------
-   static boost::shared_ptr<IOpenZWaveNodeKeyword> createFromDataType(OpenZWave::ValueID & vID, const std::string & vLabel, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, const std::string &units, shared::plugin::yPluginApi::EKeywordDataType dataType, shared::plugin::yPluginApi::historization::EMeasureType measureType = shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute)
+   static boost::shared_ptr<IOpenZWaveNodeKeyword> createFromDataType(OpenZWave::ValueID & vID, const std::string & vLabel, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, const std::string &units, shared::plugin::yPluginApi::EKeywordDataType dataType, shared::plugin::yPluginApi::historization::EMeasureType measureType = shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute, shared::plugin::yPluginApi::historization::typeInfo::ITypeInfo & ti = shared::plugin::yPluginApi::historization::typeInfo::CEmptyTypeInfo::Empty)
    {
-      boost::shared_ptr< shared::plugin::yPluginApi::historization::CSingleHistorizableData<T> > historizer(new shared::plugin::yPluginApi::historization::CSingleHistorizableData<T>(COpenZWaveHelpers::GenerateKeywordName(vID), COpenZWaveNodeKeywordFactory::getCapacity(vLabel, units, dataType), accessMode, measureType));
+      boost::shared_ptr< shared::plugin::yPluginApi::historization::CSingleHistorizableData<T> > historizer(new shared::plugin::yPluginApi::historization::CSingleHistorizableData<T>(COpenZWaveHelpers::GenerateKeywordName(vID), COpenZWaveNodeKeywordFactory::getCapacity(vLabel, units, dataType), accessMode, measureType, ti));
       return boost::shared_ptr<IOpenZWaveNodeKeyword>(new COpenZWaveNodeKeywordGeneric<T>(historizer, vID));
    }
 
