@@ -1,12 +1,12 @@
 #pragma once
-#include "IScriptProcess.h"
 #include "IPythonExecutable.h"
 #include <shared/process/ILogger.h>
+#include <shared/process/IProcess.h>
 
 //--------------------------------------------------------------
 /// \brief	Python executable
 //--------------------------------------------------------------
-class CScriptProcess : public IScriptProcess
+class CScriptProcess : public shared::process::IProcess
 {
 public:
    //--------------------------------------------------------------
@@ -27,11 +27,11 @@ public:
    //--------------------------------------------------------------
    virtual ~CScriptProcess();
 
-   // IScriptProcess Implementation
+   // shared::process::IProcess Implementation
    virtual void interrupt();
    virtual int waitForStop();
    virtual std::string getError() const;
-   // [END] IScriptProcess Implementation
+   // [END] shared::process::IProcess Implementation
 
 protected:
    //--------------------------------------------------------------

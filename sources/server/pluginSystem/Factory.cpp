@@ -7,7 +7,9 @@
 #include "IQualifier.h"
 #include "PluginException.hpp"
 #include <shared/Log.h>
-#include "NativeExecutableLoader.h"
+#include "NativeExecutableCommandLine.h"
+#include "Process.h"
+#include "Runner.h"
 
 namespace pluginSystem
 {
@@ -22,7 +24,7 @@ CFactory::~CFactory()
 
 boost::shared_ptr<const shared::plugin::information::IInformation> CFactory::createInformation(const boost::filesystem::path& pluginPath) const
 {
-   return boost::make_shared<pluginSystem::CInformation>(pluginPath);
+   return boost::make_shared<CInformation>(pluginPath);
 }
 
 boost::shared_ptr<IInstance> CFactory::createInstance(
@@ -35,9 +37,9 @@ boost::shared_ptr<IInstance> CFactory::createInstance(
    boost::shared_ptr<shared::event::CEventHandler> supervisor,
    int pluginManagerEventId) const
 {
-   boost::shared_ptr<IInstanceStateHandler> stopNotifier = createInstanceStateHandler(m_ruleStateHandler, m_ruleData->Id());
+   boost::shared_ptr<IInstanceStateHandler> instanceStateHandler = createInstanceStateHandler(m_ruleStateHandler, m_ruleData->Id());
 
-   boost::shared_ptr<shared::process::ILogger> logger = boost::shared_ptr<shared::process::ILogger>(); // TODO remettre "m_factory->createProcessLogger()"; // TODO m_factory est l'équivalent du automation::script::IManager
+   boost::shared_ptr<shared::process::ILogger> logger = createProcessLogger();
 
    boost::shared_ptr<CYPluginApiImplementation> yPluginApi(boost::make_shared<CYPluginApiImplementation>( //TODO déplacer la construction dans m_factory
       pluginInformation,
@@ -46,10 +48,11 @@ boost::shared_ptr<IInstance> CFactory::createInstance(
       deviceManager,
       acquisitionHistorizer));
 
-   boost::shared_ptr<shared::process::IRunner> runner = createInstanceRunner(pluginInformation,
+   boost::shared_ptr<ICommandLine> createCommandLine(pluginInformation, std::string()/*TODO*/);
+
+   boost::shared_ptr<shared::process::IRunner> runner = createInstanceRunner(createCommandLine,
                                                                              logger,
-                                                                             std::string(), //TODO voir ID des règles
-                                                                             stopNotifier);
+                                                                             instanceStateHandler);
 
    return boost::make_shared<CInstance>(pluginInformation,
                                         pluginData,
@@ -83,30 +86,42 @@ boost::shared_ptr<IInstanceStateHandler> CFactory::createInstanceStateHandler(
                                                     instanceId);
 }
 
-boost::shared_ptr<shared::process::IRunner> CFactory::createInstanceRunner(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
-                                                                           boost::shared_ptr<shared::process::ILogger> logger,
-                                                                           const std::string& apiContextId,
-                                                                           boost::shared_ptr<IInstanceStateHandler> stopNotifier) const
+boost::shared_ptr<ICommandLine> CFactory::createCommandLine(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
+                                                            const std::string& messageQueueId)
+{
+   std::vector<std::string> args;
+   args.push_back(messageQueueId);
+
+   return boost::make_shared<CNativeExecutableCommandLine>(pluginInformation->getPath(),
+                                                           pluginInformation->getType(),
+                                                           args);
+}
+
+boost::shared_ptr<shared::process::IProcess> CFactory::createProcess(boost::shared_ptr<ICommandLine> commandLine,
+                                                                     boost::shared_ptr<shared::process::ILogger> logger,
+                                                                     boost::shared_ptr<IInstanceStateHandler> stopNotifier) const
 {
    try
    {
-      return getAssociatedLoader(pluginInformation)->createRunner(pluginInformation,
-                                                                  logger,
-                                                                  apiContextId,
-                                                                  stopNotifier);
+      return boost::make_shared<CProcess>(commandLine, logger);
+
    }
-   catch (shared::exception::COutOfRange& e)
+   catch (CPluginException& e)
    {
-      YADOMS_LOG(error) << "Plugin type is not supported : " << e.what();
-      throw CPluginException("plugin type is not supported");
+      logger->log((boost::format("Error starting plugin %1% : %2%") % commandLine->executable() % e.what()).str());
+      stopNotifier->signalStartError(e.what());
+      throw;
    }
 }
 
-boost::shared_ptr<ILoader> CFactory::getAssociatedLoader(
-   const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation) const
+boost::shared_ptr<shared::process::IRunner> CFactory::createInstanceRunner(boost::shared_ptr<ICommandLine> commandLine,
+                                                                           boost::shared_ptr<shared::process::ILogger> logger,
+                                                                           boost::shared_ptr<IInstanceStateHandler> stopNotifier) const
 {
-   //TODO actualy only one loader supported
-   return boost::make_shared<CNativeExecutableLoader>();
+   logger->log("#### START ####");
+
+   boost::shared_ptr<shared::process::IProcess> process = createProcess(commandLine, logger, stopNotifier);
+   return boost::make_shared<CRunner>(process, logger, stopNotifier);
 }
 
 } // namespace pluginSystem

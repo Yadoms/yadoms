@@ -2,11 +2,11 @@
 #include "IPythonExecutable.h"
 #include "IScriptFile.h"
 #include <shared/DataContainer.h>
+#include <shared/process/IProcess.h>
 #include <shared/process/IRunner.h>
 #include <shared/process/IStopNotifier.h>
 #include <shared/script/yScriptApi/IYScriptApi.h>
 #include "IContextAccessor.h"
-#include "IScriptProcess.h"
 
 //--------------------------------------------------------------
 /// \brief	Python initializer interface (RAII support)
@@ -53,7 +53,7 @@ protected:
    ///\param[in] stopNotifier The rule stop notifier
    ///\param[in] scriptLogger The rule script logger
    //-----------------------------------------------------
-   static void monitorThreaded(boost::shared_ptr<IScriptProcess> process,
+   static void monitorThreaded(boost::shared_ptr<shared::process::IProcess> process,
       boost::shared_ptr<shared::process::IStopNotifier> stopNotifier,
       boost::shared_ptr<shared::process::ILogger> scriptLogger);
 
@@ -96,7 +96,7 @@ private:
    //--------------------------------------------------------------
    ///\brief   The process
    //--------------------------------------------------------------
-   boost::shared_ptr<IScriptProcess> m_process;
+   boost::shared_ptr<shared::process::IProcess> m_process;
 
    //--------------------------------------------------------------
    /// \brief	Thread monitoring the rule

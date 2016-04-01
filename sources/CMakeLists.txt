@@ -374,11 +374,11 @@ set(YADOMS_SRC
 	server/pluginSystem/DummyQualifier.cpp
 	server/pluginSystem/IdentityForQualifier.cpp
 	server/pluginSystem/IdentityForQualifier.h
+   server/pluginSystem/ICommandLine.h
 	server/pluginSystem/IFactory.h
 	server/pluginSystem/IInstance.h
 	server/pluginSystem/IInstanceStateHandler.h
 	server/pluginSystem/ILibrary.h
-	server/pluginSystem/ILoader.h
 	server/pluginSystem/IPluginStateHandler.h
 	server/pluginSystem/IndicatorQualifier.h
 	server/pluginSystem/IndicatorQualifier.cpp
@@ -392,7 +392,7 @@ set(YADOMS_SRC
 	server/pluginSystem/InvalidPluginException.hpp
 	server/pluginSystem/InternalPluginLibrary.h
 	server/pluginSystem/InternalPluginLibrary.cpp
-	server/pluginSystem/ExternalPluginLibrary.h
+	server/pluginSystem/InternalPluginLibrary.cpp
 	server/pluginSystem/ExternalPluginLibrary.cpp
 	server/pluginSystem/Factory.cpp
 	server/pluginSystem/Factory.h
@@ -407,11 +407,13 @@ set(YADOMS_SRC
    server/pluginSystem/BindingQueryRequest.h
    server/pluginSystem/ManuallyDeviceCreationTestData.cpp
    server/pluginSystem/ManuallyDeviceCreationTestData.h
-   server/pluginSystem/NativeExecutableLoader.cpp
-   server/pluginSystem/NativeExecutableLoader.h
+   server/pluginSystem/NativeExecutableCommandLine.cpp
+   server/pluginSystem/NativeExecutableCommandLine.h
 	server/pluginSystem/PluginException.hpp
 	server/pluginSystem/PluginStateHandler.h
 	server/pluginSystem/PluginStateHandler.cpp
+	server/pluginSystem/Process.h
+	server/pluginSystem/Process.cpp
    server/pluginSystem/yPluginApiImplementation.h
    server/pluginSystem/yPluginApiImplementation.cpp
 	server/pluginSystem/internalPlugin/System.h
@@ -420,7 +422,9 @@ set(YADOMS_SRC
 	server/pluginSystem/internalPlugin/Information.cpp
 	server/pluginSystem/ManuallyDeviceCreationRequest.h
 	server/pluginSystem/ManuallyDeviceCreationRequest.cpp
-  
+  	server/pluginSystem/Runner.h
+	server/pluginSystem/Runner.cpp
+
 	server/notification/NotificationCenter.h
 	server/notification/NotificationCenter.cpp
 	server/notification/Helpers.hpp

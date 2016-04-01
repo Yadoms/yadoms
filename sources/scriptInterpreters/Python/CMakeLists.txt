@@ -24,7 +24,6 @@ if(PYTHONLIBS_FOUND)
       IContextAccessor.h
       IPythonExecutable.h
       IScriptFile.h
-      IScriptProcess.h
       Messages.h
       MessageQueueRemover.hpp
       Python.h

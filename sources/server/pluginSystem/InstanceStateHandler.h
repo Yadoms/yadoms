@@ -14,12 +14,12 @@ namespace pluginSystem
    public:
       //-----------------------------------------------------
       ///\brief               Constructor
-      ///\param[in] dbRequester  Database requester
+      ///\param[in] pluginRequester  Database requester
       ///\param[in] eventLogger  Main event logger
       ///\param[in] managerEventHandler  the manager event handler
       ///\param[in] instanceId  the plugin instance ID
       //-----------------------------------------------------
-      CInstanceStateHandler(boost::shared_ptr<database::IPluginRequester> dbRequester,
+      CInstanceStateHandler(boost::shared_ptr<database::IPluginRequester> pluginRequester,
          boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger,
          boost::shared_ptr<shared::event::CEventHandler> managerEventHandler,
          int instanceId);

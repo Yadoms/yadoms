@@ -5,11 +5,11 @@
 namespace pluginSystem
 {
 
-CInstanceStateHandler::CInstanceStateHandler(boost::shared_ptr<database::IPluginRequester> dbRequester,
+CInstanceStateHandler::CInstanceStateHandler(boost::shared_ptr<database::IPluginRequester> pluginRequester,
    boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger,
    boost::shared_ptr<shared::event::CEventHandler> managerEventHandler,
    int instanceId)
-   :m_pluginRequester(dbRequester), m_eventLogger(eventLogger), m_managerEventHandler(managerEventHandler), m_instanceId(instanceId)
+   :m_pluginRequester(pluginRequester), m_eventLogger(eventLogger), m_managerEventHandler(managerEventHandler), m_instanceId(instanceId)
 {
 }
 

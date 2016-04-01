@@ -1,5 +1,8 @@
 #pragma once
 #include "IFactory.h"
+#include "ICommandLine.h"
+#include <shared/shared/process/IRunner.h>
+#include <shared/shared/process/IProcess.h>
 
 namespace pluginSystem
 {
@@ -40,14 +43,17 @@ namespace pluginSystem
       // [END] IFactory Implementation
 
    private:
-      boost::shared_ptr<shared::process::IRunner> CFactory::createInstanceRunner(
+      boost::shared_ptr<ICommandLine> CFactory::createCommandLine(
          const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
+         const std::string& messageQueueId);
+      boost::shared_ptr<shared::process::IProcess> CFactory::createProcess(
+         boost::shared_ptr<ICommandLine> commandLine,
          boost::shared_ptr<shared::process::ILogger> logger,
-         const std::string& apiContextId,
          boost::shared_ptr<IInstanceStateHandler> stopNotifier) const;
-
-      boost::shared_ptr<ILoader> getAssociatedLoader(
-         const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation) const;
+      boost::shared_ptr<shared::process::IRunner> CFactory::createInstanceRunner(
+         boost::shared_ptr<ICommandLine> commandLine,
+         boost::shared_ptr<shared::process::ILogger> logger,
+         boost::shared_ptr<IInstanceStateHandler> stopNotifier) const;
 
    };
 

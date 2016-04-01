@@ -56,7 +56,7 @@ void CRunner::requestStop()
 }
 
 void CRunner::monitorThreaded(
-   boost::shared_ptr<IScriptProcess> process,
+   boost::shared_ptr<shared::process::IProcess> process,
    boost::shared_ptr<shared::process::IStopNotifier> stopNotifier,
    boost::shared_ptr<shared::process::ILogger> scriptLogger)
 {
