@@ -112,7 +112,7 @@ EnumParameterHandler.prototype.updateValues = function () {
       var languagelanguageDisplayNameCode = value[1];
 
       var line = "<option value=\"" + languageCode + "\"";
-      if (languageCode === self.value)
+      if (languageCode === self.value || languagelanguageDisplayNameCode === self.value)
          line += " selected";
 	 
       line += " >" + languagelanguageDisplayNameCode + "</option>";

@@ -223,6 +223,11 @@
                      "<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.configure\"><span class=\"fa fa-pencil\"></span></button>\n" +
                      "</div>";
 
+            var actionsBtnsWithEdit = "<div class=\"btn-group\">\n" +
+                     "<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.configure\"><span class=\"fa fa-pencil\"></span></button>\n" +
+                     "<button type=\"button\" class=\"btn btn-success btn-setvalue\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.setvalue\"><span class=\"fa fa-edit\"></span></button>\n" +
+                     "</div>";
+
             $.each(device.keywords, function (index, keyword) {
                $deviceDetailsTable.append("<tr keyword-id=\"" + keyword.id + "\"><td class=\"keyword-friendlyName vert-align\"></td><td class=\"keyword-value vert-align\"><td class=\"keyword-units vert-align\"><td class=\"keyword-update vert-align\"></td><td class=\"keyword-actions vert-align\"></td></tr>");
 
@@ -236,8 +241,12 @@
                $keywordRow.find("td.keyword-units").html(units);
 
                //we add actions to the keyword
-               $keywordRow.find("td.keyword-actions").append(actionsBtns);
-
+			   if(keyword.accessMode && keyword.accessMode.toLowerCase() === "getset") {
+				  $keywordRow.find("td.keyword-actions").append(actionsBtnsWithEdit);
+			   } else {
+				  $keywordRow.find("td.keyword-actions").append(actionsBtns);
+			   }
+			   
                //we prevent from renaming keywords on system devices
                if ((!isNullOrUndefined(device.attachedPlugin)) && (device.attachedPlugin.isSystemCategory())) {
                   $keywordRow.find("button.btn-configure").addClass("disabled");
@@ -246,6 +255,10 @@
                   //we bind event on the different actions
                   $keywordRow.find("button.btn-configure").unbind('click').bind('click', function() { configureKeyword(keyword); });
                }
+			   
+			   if($keywordRow.find("button.btn-setvalue")) {
+			      $keywordRow.find("button.btn-setvalue").unbind('click').bind('click', function() { setKeywordValue(keyword); });
+			   }
             });
 
             //we re-enable the auto update task
@@ -277,6 +290,23 @@
             });
          });
       });
+   }
+   
+   function setKeywordValue(keyword) {
+	  var $keywordRow = getKeywordDomRow(keyword);
+      var value = $keywordRow.find("td.keyword-value span").html();
+	  
+	  Yadoms.modals.keywordSetValue.loadAsync()
+      .done(function () {
+		  Yadoms.showSetKeywordValueModal(keyword, value)
+		  .done(function (keyword, newValue) {
+			//TODO: send keyword command
+			debugger;
+		  })
+		  .fail(function () {
+			//cancelled
+		  });
+	  });
    }
 
    function addNewDevice() {

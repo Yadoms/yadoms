@@ -218,6 +218,13 @@
         "regexErrorMessage": "The name of the keyword must contains at least one character"
       }
     },
+    "set-value-keyword": {
+      "title": "Set data",
+      "keyword-configuration": {
+        "name": "New value",
+        "description": "Set a new value data"
+      }
+    },
     "configure-manually-device": {
       "title": "Add a new device",
       "friendlyName-configuration": {
