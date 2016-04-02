@@ -372,6 +372,8 @@ set(YADOMS_SRC
    server/pluginSystem/DeviceCommand.h
 	server/pluginSystem/DummyQualifier.h
 	server/pluginSystem/DummyQualifier.cpp
+	server/pluginSystem/ExtraCommand.h
+	server/pluginSystem/ExtraCommand.cpp
 	server/pluginSystem/IdentityForQualifier.cpp
 	server/pluginSystem/IdentityForQualifier.h
 	server/pluginSystem/ILibrary.h

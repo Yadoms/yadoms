@@ -2,6 +2,7 @@
 #include "PluginGateway.h"
 #include <shared/Log.h>
 #include "pluginSystem/DeviceCommand.h"
+#include "pluginSystem/ExtraCommand.h"
 #include "pluginSystem/ManuallyDeviceCreationData.h"
 #include "pluginSystem/ManuallyDeviceCreationRequest.h"
 #include "pluginSystem/BindingQueryData.h"
@@ -36,6 +37,16 @@ namespace communication {
       // Historize the command
       m_acquisitionHistorizer->saveData(keywordId, command->getHistorizableObject());
    }
+
+   void CPluginGateway::sendExtraCommandAsync(int pluginId, const std::string & command, const shared::CDataContainer & data)
+   {
+      // Create the command
+      boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> extraCommand(new pluginSystem::CExtraCommand(command, data));
+
+      // Dispatch command to the right plugin
+      m_pluginManager->postExtraCommand(pluginId, extraCommand);
+   }
+
 
    void CPluginGateway::sendManuallyDeviceCreationRequest(int pluginId, const shared::plugin::yPluginApi::IManuallyDeviceCreationData & data, callback::ISynchronousCallback<std::string> & callback)
    {

@@ -34,4 +34,6 @@ public:
 
 
    virtual void SendCommand(const std::string & device, const std::string & keyword, const std::string & value) = 0;
+
+   virtual void StartInclusionMode() = 0;
 };

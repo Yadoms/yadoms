@@ -4,6 +4,7 @@
 #include <shared/StringExtension.h>
 #include <shared/DataContainer.h>
 #include "IDeviceCommand.h"
+#include "IExtraCommand.h"
 #include "IManuallyDeviceCreationData.h"
 #include "IManuallyDeviceCreationTestData.h"
 #include <shared/plugin/yPluginApi/StandardCapacity.h>
@@ -50,6 +51,7 @@ namespace shared { namespace plugin { namespace yPluginApi
          kEventDeviceCommand,                                     // Yadoms send a command to a device managed by this plugin
          kEventManuallyDeviceCreationTest,                        // Yadoms ask the plugin to test a device with provided parameters, before to create it
          kEventManuallyDeviceCreation,                            // Yadoms ask the plugin to create a device
+         kEventExtraCommand,													// Yadoms send extra command to plugin
          kBindingQuery,															// Yadoms ask the plugin a binding query
          kPluginFirstEventId                                      // The next usable event ID for the plugin code
       };

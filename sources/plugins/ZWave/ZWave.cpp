@@ -69,6 +69,21 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
                }
                break;
             }
+            case yApi::IYPluginApi::kEventExtraCommand:
+            {
+               // Command was received from Yadoms
+               boost::shared_ptr<const yApi::IExtraCommand> extraCommand = context->getEventHandler().getEventData<boost::shared_ptr<const yApi::IExtraCommand> >();
+
+               if (extraCommand)
+               {
+                  if (extraCommand->getCommand() == "inlusionMode")
+                  {
+                     m_controller->StartInclusionMode();
+                  }
+               }
+               break;
+            }
+
             case yApi::IYPluginApi::kEventUpdateConfiguration:
             {
                // Configuration was updated

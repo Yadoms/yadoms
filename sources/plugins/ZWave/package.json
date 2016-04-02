@@ -21,5 +21,24 @@
 			"type": "bool",
 			"defaultValue": "false"
 		}
-	}
+	},
+	"extraCommands" : [
+		{
+			"command" : "inclusionMode",
+			"icon" : "fa fa-plus"
+		},
+		{
+			"command" : "exclusionMode",
+			"icon" : "fa fa-minus"
+		},
+		{
+			"command" : "newGroup",
+			"icon" : "fa fa-group",
+			"data" : {
+				"groupeName": {
+					"type": "string"
+				}			
+			}
+		}
+	]
 }

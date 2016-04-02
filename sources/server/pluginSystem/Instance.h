@@ -9,6 +9,7 @@
 #include <shared/event/EventHandler.hpp>
 #include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
 #include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
+#include <shared/plugin/yPluginApi/IExtraCommand.h>
 #include "ILibrary.h"
 #include "ManagerEvent.h"
 #include "IQualifier.h"
@@ -64,6 +65,12 @@ namespace pluginSystem
       /// \param  command           Command to post
       //--------------------------------------------------------------
       virtual void postCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command) const;
+
+        //--------------------------------------------------------------
+      /// \brief			            Post an extra command to the plugin
+      /// \param  command           Extra command to post
+      //--------------------------------------------------------------
+      virtual void postExtraCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> extraCommand) const;
 
       //--------------------------------------------------------------
       /// \brief			            Post a manually device creation request to the plugin

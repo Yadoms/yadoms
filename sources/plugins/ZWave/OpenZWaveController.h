@@ -24,6 +24,7 @@ public:
    virtual bool start();
    virtual void stop();
    virtual void SendCommand(const std::string & device, const std::string & keyword, const std::string & value);
+   virtual void StartInclusionMode();
    // [END] IZWaveController implementation
 
 
@@ -32,6 +33,7 @@ public:
    //-----------------------------------------------------------------------------
    void OnNotification(OpenZWave::Notification const* _notification, void* _context);
 
+   
 private:
    //-----------------------------------------------------------------------------
    /// \brief	Return the NodeInfo object associated with this notification

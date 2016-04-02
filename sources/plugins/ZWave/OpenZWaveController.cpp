@@ -423,4 +423,9 @@ void COpenZWaveController::SendCommand(const std::string & device, const std::st
    }
 }
 
+void COpenZWaveController::StartInclusionMode()
+{
+   OpenZWave::Manager::Get()->AddNode(m_homeId);
+}
+
 

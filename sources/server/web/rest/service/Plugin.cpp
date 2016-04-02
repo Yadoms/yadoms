@@ -42,6 +42,7 @@ namespace web { namespace rest { namespace service {
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword), CPlugin::createPlugin, CPlugin::transactionalMethod);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("createDevice"), CPlugin::createDevice, CPlugin::transactionalMethod);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*"), CPlugin::updatePlugin, CPlugin::transactionalMethod);
+      REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("extraCommand")("*"), CPlugin::sendExtraCommand, CPlugin::transactionalMethod);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword), CPlugin::deleteAllPlugins, CPlugin::transactionalMethod);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*"), CPlugin::deletePlugin, CPlugin::transactionalMethod);
    }
@@ -240,6 +241,29 @@ namespace web { namespace rest { namespace service {
       }
    }
 
+   shared::CDataContainer CPlugin::sendExtraCommand(const std::vector<std::string> & parameters, const std::string & requestContent)
+   {
+      try
+      {
+         if (parameters.size()>=4)
+         {
+            int instanceId = boost::lexical_cast<int>(parameters[1]);
+            std::string command = parameters[3];
+            shared::CDataContainer commandData(requestContent);
+            m_messageSender.sendExtraCommandAsync(instanceId, command, commandData);
+            return CResult::GenerateSuccess();
+         }
+         return CResult::GenerateError("invalid parameter. Not enough parameters in url");
+      }
+      catch (std::exception &ex)
+      {
+         return CResult::GenerateError(ex);
+      }
+      catch (...)
+      {
+         return CResult::GenerateError("unknown exception in sending extra command to plugin");
+      }
+   }
 
    shared::CDataContainer CPlugin::deletePlugin(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
