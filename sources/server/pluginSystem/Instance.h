@@ -82,11 +82,6 @@ namespace pluginSystem
 
    private:
       //--------------------------------------------------------------
-      /// \brief			      The factory
-      //--------------------------------------------------------------
-      boost::shared_ptr<const IFactory> m_factory;
-
-      //--------------------------------------------------------------
       /// \brief			      The plugin information
       //--------------------------------------------------------------
       const boost::shared_ptr<const shared::plugin::information::IInformation> m_pluginInformation;

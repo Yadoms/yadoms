@@ -418,8 +418,6 @@ void CManager::onInstanceStopped(int id, const std::string& error)
       if (instance == m_runningInstances.end())
          return;     // Already stopped ==> nothing more to do
 
-      std::string pluginName = instance->second->getPluginName();
-
       m_runningInstances.erase(instance);
 
       if (!m_yadomsShutdown)

@@ -45,7 +45,7 @@ namespace pluginSystem
    private:
       boost::shared_ptr<ICommandLine> CFactory::createCommandLine(
          const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
-         const std::string& messageQueueId);
+         const std::string& messageQueueId) const;
       boost::shared_ptr<shared::process::IProcess> CFactory::createProcess(
          boost::shared_ptr<ICommandLine> commandLine,
          boost::shared_ptr<shared::process::ILogger> logger,

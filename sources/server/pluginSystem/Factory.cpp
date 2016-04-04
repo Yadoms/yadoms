@@ -37,7 +37,8 @@ boost::shared_ptr<IInstance> CFactory::createInstance(
    boost::shared_ptr<shared::event::CEventHandler> supervisor,
    int pluginManagerEventId) const
 {
-   boost::shared_ptr<IInstanceStateHandler> instanceStateHandler = createInstanceStateHandler(m_ruleStateHandler, m_ruleData->Id());
+   boost::shared_ptr<IInstanceStateHandler> instanceStateHandler = createInstanceStateHandler(dataProvider->getPluginRequester(),
+                                                                                              instanceData->Id());
 
    boost::shared_ptr<shared::process::ILogger> logger = createProcessLogger();
 
@@ -48,20 +49,14 @@ boost::shared_ptr<IInstance> CFactory::createInstance(
       deviceManager,
       acquisitionHistorizer));
 
-   boost::shared_ptr<ICommandLine> createCommandLine(pluginInformation, std::string()/*TODO*/);
+   boost::shared_ptr<ICommandLine> commandLine = createCommandLine(pluginInformation,
+                                                                   std::string()/*TODO*/);
 
-   boost::shared_ptr<shared::process::IRunner> runner = createInstanceRunner(createCommandLine,
+   boost::shared_ptr<shared::process::IRunner> runner = createInstanceRunner(commandLine,
                                                                              logger,
                                                                              instanceStateHandler);
 
    return boost::make_shared<CInstance>(pluginInformation,
-                                        pluginData,
-                                        dataProvider,
-                                        deviceManager,
-                                        acquisitionHistorizer,
-                                        qualifier,
-                                        supervisor,
-                                        pluginManagerEventId,
                                         runner);
 }
 
@@ -87,7 +82,7 @@ boost::shared_ptr<IInstanceStateHandler> CFactory::createInstanceStateHandler(
 }
 
 boost::shared_ptr<ICommandLine> CFactory::createCommandLine(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
-                                                            const std::string& messageQueueId)
+                                                            const std::string& messageQueueId) const
 {
    std::vector<std::string> args;
    args.push_back(messageQueueId);
