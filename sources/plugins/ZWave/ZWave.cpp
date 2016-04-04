@@ -76,9 +76,21 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 
                if (extraCommand)
                {
+                  YADOMS_LOG(debug) << "Extra command received : " << extraCommand->getCommand();
+
                   if (extraCommand->getCommand() == "inclusionMode")
                   {
                      m_controller->StartInclusionMode();
+                  }
+                  if (extraCommand->getCommand() == "exclusionMode")
+                  {
+                     //m_controller->StartExclusionMode();
+                  }
+                  if (extraCommand->getCommand() == "newGroup")
+                  {
+                     std::string newGroupName = extraCommand->getData().get<std::string>("groupName");
+                     YADOMS_LOG(debug) << "Group name: " << newGroupName;
+                     //m_controller->StartExclusionMode();
                   }
                }
                break;
