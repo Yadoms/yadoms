@@ -41,6 +41,10 @@ function forecastViewModel() {
     * @param widget widget class object
     */
    this.initialize = function () {
+       var self = this;
+       self.widgetApi.toolbar({
+           activated: false
+       });
    };
 
    /**
