@@ -76,7 +76,7 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 
                if (extraCommand)
                {
-                  if (extraCommand->getCommand() == "inlusionMode")
+                  if (extraCommand->getCommand() == "inclusionMode")
                   {
                      m_controller->StartInclusionMode();
                   }

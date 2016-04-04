@@ -16,5 +16,23 @@
 		"pluginState": {
 			"updateConfiguration": "Configuration updating..."
 		}
-	}
+	},
+	"extraCommands" : {
+		"inclusionMode" : {
+			"name" : "Start inclusion mode"
+		},
+		"exclusionMode" : {
+			"name" : "Start exclusion mode"
+		},
+		"newGroup" : {
+			"name" : "Create new group",
+			"data" : {
+				"groupeName": {
+					"name" : "The new group name",
+					"description" : "Enter the new group name"
+				}			
+			}
+		}
+	}	
+	
 }

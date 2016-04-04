@@ -22,23 +22,25 @@
 			"defaultValue": "false"
 		}
 	},
-	"extraCommands" : [
-		{
-			"command" : "inclusionMode",
-			"icon" : "fa fa-plus"
+	"extraCommands" : {
+		"inclusionMode" : {
+			"name" : "Start inclusion mode",
+			"cssClass" : "fa fa-plus"
 		},
-		{
-			"command" : "exclusionMode",
-			"icon" : "fa fa-minus"
+		"exclusionMode" : {
+			"name" : "Start exclusion mode",
+			"cssClass" : "fa fa-minus"
 		},
-		{
-			"command" : "newGroup",
-			"icon" : "fa fa-group",
+		"newGroup" : {
+			"name" : "Create new group",
+			"cssClass" : "fa fa-group",
 			"data" : {
 				"groupeName": {
+					"name" : "The new group name",
+					"description" : "Enter the new group name",
 					"type": "string"
 				}			
 			}
 		}
-	]
+	}
 }

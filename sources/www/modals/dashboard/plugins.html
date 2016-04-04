@@ -61,9 +61,9 @@
        var actionsBtns = "<div class=\"btn-group\">\n" +
               ((failToLoadPluginPackage === true)?"":"<button type=\"button\" class=\"btn btn-startStop\" data-i18n=\"[title]modals.dashboard.sub-windows.plugins.startStop\"><span class=\"fa fa-power-off\"></span></button>\n") +
               ((failToLoadPluginPackage === true)?"":"<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.plugins.configure\"><span class=\"fa fa-cog\"></span></button>\n");
-              
-      $.each(pi.package.extraCommands, function(index, values) {
-         actionsBtns += "<button type=\"button\" class=\"btn btn-success btn-extraCommand btn-extraCommand-" + values.command + "\"><span class=\"" + values.icon +"\"></span></button>\n";
+      
+       $.each(pi.package.extraCommands, function (index, values) {
+          actionsBtns += "<button type=\"button\" class=\"btn btn-success btn-extraCommand btn-extraCommand-" + index + "\" data-i18n=\"[title]plugins/" + pi.type + ":extraCommands." + index + ".name\"><span class=\"" + values.cssClass + "\"></span></button>\n";
       });
    
        actionsBtns += "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.plugins.delete\"><span class=\"fa fa-trash\"></span></button>\n" +
