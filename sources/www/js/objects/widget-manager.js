@@ -530,7 +530,7 @@ WidgetManager.addToDom_ = function (widget, ensureVisible) {
                             //ensure the item is completly visible
                             widget.$gridWidget.ensureVisible(true);
                         }
-                        widget.$gridWidget.find(".widget-api-textfit").fitText();
+                        widget.$gridWidget.find(".textfit").fitText();
 
                         //we ask for widget refresh data
                         updateWidgetPolling(widget);
@@ -711,5 +711,5 @@ WidgetManager.createGridWidget = function (widget) {
  * Update the layout of the widget
  */
 WidgetManager.updateWidgetLayout = function(widget) {
-    widget.$gridWidget.find(".widget-api-textfit").fitText();
+    widget.$gridWidget.find(".textfit").fitText();
 };

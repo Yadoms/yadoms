@@ -200,7 +200,7 @@ WidgetApi.prototype.updateBatteryLevel = function (batteryLevel) {
 };
 
 /**
- * Define the keyword Id of the battery toolbar icon. (ToolbarApi.addBatteryIconToWidget must have been called before)
+ * Define the keyword Id of the battery toolbar icon. 
  */
 WidgetApi.prototype.configureBatteryIcon = function (deviceId) {
     assert(!isNullOrUndefined(deviceId), "deviceId must be defined");
@@ -210,3 +210,11 @@ WidgetApi.prototype.configureBatteryIcon = function (deviceId) {
     }
 }
 
+/**
+ * Make the text which has class "textfit" fit into the widget
+ */
+WidgetApi.prototype.fitText = function () {
+    var $texts = this.find(".textfit");
+    if ($texts)
+        $texts.fitText();
+}

@@ -51,7 +51,7 @@ function numericDisplayViewModel() {
         if (keywordId === self.widget.configuration.device.keywordId) {
             //it is the right device
             self.data(data.value);
-            self.widgetApi.find(".widget-api-textfit").fitText();
+            self.widgetApi.find(".textfit").fitText();
         }
     };
 };
