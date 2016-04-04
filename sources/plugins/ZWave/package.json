@@ -24,20 +24,15 @@
 	},
 	"extraCommands" : {
 		"inclusionMode" : {
-			"name" : "Start inclusion mode",
-			"cssClass" : "fa fa-plus"
+			"iconClass" : "fa fa-plus"
 		},
 		"exclusionMode" : {
-			"name" : "Start exclusion mode",
-			"cssClass" : "fa fa-minus"
+			"iconClass" : "fa fa-minus"
 		},
 		"newGroup" : {
-			"name" : "Create new group",
-			"cssClass" : "fa fa-group",
-			"data" : {
+			"iconClass" : "fa fa-group",
+			"commandData" : {
 				"groupeName": {
-					"name" : "The new group name",
-					"description" : "Enter the new group name",
 					"type": "string"
 				}			
 			}

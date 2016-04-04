@@ -404,3 +404,6 @@ Fix dropdown menus hidden by bootstrap modal
     max-height: 60px;
 }
 
+.extra-command-icon {
+    margin-right: 5px;
+}

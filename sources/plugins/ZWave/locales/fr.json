@@ -14,7 +14,10 @@
 	},
 	"customLabels": {
 		"pluginState": {
-			"updateConfiguration": "Mise à jour de la configuration..."
+			"Wating": "En attente...",
+			"Completed": "Terminé",
+			"DriverReady": "Prêt",
+			"DriverFailed": "Erreur de driver"
 		}
 	},
 	"extraCommands" : {
@@ -26,7 +29,7 @@
 		},
 		"newGroup" : {
 			"name" : "Création d'un nouveau groupe",
-			"data" : {
+			"commandData" : {
 				"groupeName": {
 					"name" : "Le nom du groupe",
 					"description" : "Le nouveau groupe à créer"

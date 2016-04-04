@@ -31,6 +31,7 @@ void OnGlobalNotification(OpenZWave::Notification const* _notification, void* _c
    try
    {
       YADOMS_LOG(debug) << "OpenZWave notification : " << _notification->GetAsString();
+
       COpenZWaveController * pPlugin = static_cast<COpenZWaveController *>(_context);
       if (pPlugin != NULL)
          pPlugin->OnNotification(_notification, _context);
@@ -351,6 +352,7 @@ void COpenZWaveController::OnNotification(OpenZWave::Notification const* _notifi
    {
       // We have received an event from the node, caused by a
       // basic_set or hail message.
+
       break;
    }
 
@@ -366,12 +368,18 @@ void COpenZWaveController::OnNotification(OpenZWave::Notification const* _notifi
 
    case OpenZWave::Notification::Type_DriverReady:
    {
+      if (m_handler != NULL)
+         m_handler->postEvent<std::string>(CZWave::kInternalStateChange, "DriverReady");
+      
       m_homeId = _notification->GetHomeId();
       break;
    }
 
    case OpenZWave::Notification::Type_DriverFailed:
    {
+      if (m_handler != NULL)
+         m_handler->postEvent<std::string>(CZWave::kInternalStateChange, "DriverFailed");
+
       m_initFailed = true;
       break;
    }
@@ -383,6 +391,50 @@ void COpenZWaveController::OnNotification(OpenZWave::Notification const* _notifi
       m_nodesQueried = true;
       break;
    }
+
+   case OpenZWave::Notification::Type_ControllerCommand:
+      switch (_notification->GetEvent())
+      {
+      case OpenZWave::Driver::ControllerState_Normal:
+         //str = "ControlerCommand - Normal";
+         if (m_handler != NULL)
+            m_handler->postEvent<std::string>(CZWave::kInternalStateChange, "Normal");
+         break;
+      case OpenZWave::Driver::ControllerState_Starting:
+         //str = "ControllerComand - Starting";
+         break;
+      case OpenZWave::Driver::ControllerState_Cancel:
+         //str = "ControllerCommand - Canceled";
+         break;
+      case OpenZWave::Driver::ControllerState_Error:
+         break;
+      case OpenZWave::Driver::ControllerState_Waiting:
+         //str = "ControllerCommand - Waiting";
+         if (m_handler != NULL)
+            m_handler->postEvent<std::string>(CZWave::kInternalStateChange, "Waiting");
+
+         break;
+      case OpenZWave::Driver::ControllerState_Sleeping:
+         //str = "ControllerCommand - Sleeping";
+         break;
+      case OpenZWave::Driver::ControllerState_InProgress:
+         //str = "ControllerCommand - InProgress";
+         break;
+      case OpenZWave::Driver::ControllerState_Completed:
+         //str = "ControllerCommand - Completed";
+         if (m_handler != NULL)
+            m_handler->postEvent<std::string>(CZWave::kInternalStateChange, "Completed");
+         break;
+      case OpenZWave::Driver::ControllerState_Failed:
+         //str = "ControllerCommand - Failed";
+         break;
+      case OpenZWave::Driver::ControllerState_NodeOK:
+         //str = "ControllerCommand - NodeOK";
+         break;
+      case OpenZWave::Driver::ControllerState_NodeFailed:
+         break;
+      }
+      break;
 
    case OpenZWave::Notification::Type_DriverReset:
    case OpenZWave::Notification::Type_NodeQueriesComplete:
@@ -426,6 +478,11 @@ void COpenZWaveController::SendCommand(const std::string & device, const std::st
 void COpenZWaveController::StartInclusionMode()
 {
    OpenZWave::Manager::Get()->AddNode(m_homeId);
+}
+
+void COpenZWaveController::StartExclusionMode()
+{
+   OpenZWave::Manager::Get()->RemoveNode(m_homeId);
 }
 
 

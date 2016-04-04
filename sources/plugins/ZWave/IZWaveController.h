@@ -32,8 +32,21 @@ public:
    //--------------------------------------------------------------
    virtual void stop() = 0;
 
-
+   //--------------------------------------------------------------
+   /// \brief	Send a command to a device
+   /// \param [in] 	device   the targetted device
+   /// \param [in] 	keyword  the targetted keyword
+   /// \param [in] 	value    the value
+   //--------------------------------------------------------------
    virtual void SendCommand(const std::string & device, const std::string & keyword, const std::string & value) = 0;
 
+   //--------------------------------------------------------------
+   /// \brief	Start the inclusion mode
+   //--------------------------------------------------------------
    virtual void StartInclusionMode() = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	Start the exclusion mode
+   //--------------------------------------------------------------
+   virtual void StartExclusionMode() = 0;
 };

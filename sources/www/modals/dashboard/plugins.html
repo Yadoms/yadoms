@@ -63,9 +63,18 @@
              ((failToLoadPluginPackage === true) ? "" : "<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.plugins.configure\"><span class=\"fa fa-cog\"></span></button>\n");
 
       if (failToLoadPluginPackage !== true) {
-         $.each(pi.package.extraCommands, function (index, values) {
-            actionsBtns += "<button type=\"button\" class=\"btn btn-success btn-extraCommand btn-extraCommand-" + index + "\" data-i18n=\"[title]plugins/" + pi.type + ":extraCommands." + index + ".name\"><span class=\"" + values.cssClass + "\"></span></button>\n";
-         });
+         
+         if (pi.package.extraCommands && Object.keys(pi.package.extraCommands).length > 0) {
+            actionsBtns += "<button type=\"button\" class=\"btn btn-success btn-extraCommand\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">";
+            actionsBtns += "<span class=\"fa fa-navicon\"></span></button>";
+            actionsBtns += "<ul class=\"dropdown-menu\">";
+
+            $.each(pi.package.extraCommands, function (index, values) {
+               actionsBtns += "<li><a class=\"btn-extraCommand-" + index + "\"><span class=\"extra-command-icon " + values.iconClass + "\"></span>&nbsp;<span data-i18n=\"plugins/" + pi.type + ":extraCommands." + index + ".name\"></span>" + (values.commandData ? "..." : "") + "</a></li>";
+            });
+
+            actionsBtns += "</ul>";
+         }
       }
 
       actionsBtns += "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.plugins.delete\"><span class=\"fa fa-trash\"></span></button>\n" +
@@ -106,7 +115,7 @@
       $pluginInstanceRow.find("button.btn-delete").unbind('click').bind('click', function () { deletePlugin(pi); });
 
       $.each(pi.package.extraCommands, function (index, values) {
-         $pluginInstanceRow.find("button.btn-extraCommand-" + index).unbind('click').bind('click', function () { onExtraCommand(pi, index, values); });
+         $pluginInstanceRow.find("a.btn-extraCommand-" + index).unbind('click').bind('click', function () { onExtraCommand(pi, index, values); });
       });
 
       $pluginInstanceRow.i18n();
@@ -200,7 +209,7 @@
    }
 
    function onExtraCommand(pi, commandName, commandConfig) {
-      if (commandConfig && commandConfig.data) {
+      if (commandConfig && commandConfig.commandData) {
          Yadoms.modals.pluginExtraCommandsConfigure.loadAsync()
             .done(function() {
                Yadoms.ConfigureExtraCommands(commandName, commandConfig.data, pi)

@@ -28,6 +28,8 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
    {
       YADOMS_LOG_CONFIGURE("ZWave");
 
+      context->setPluginState(yApi::historization::EPluginState::kCustom, "Initialization");
+
       // Load configuration values (provided by database)
       m_configuration.initializeWith(context->getConfiguration());
 
@@ -36,8 +38,10 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
       // the main loop
       YADOMS_LOG(debug) << "CZWave is running...";
 
+      context->setPluginState(yApi::historization::EPluginState::kCustom, "Configuring");
       m_controller = CZWaveControllerFactory::Create();
       m_controller->configure(&m_configuration, &context->getEventHandler());
+      context->setPluginState(yApi::historization::EPluginState::kCustom, "Starting");
       if (m_controller->start())
       {
          while (1)
@@ -90,7 +94,7 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
                   {
                      std::string newGroupName = extraCommand->getData().get<std::string>("groupName");
                      YADOMS_LOG(debug) << "Group name: " << newGroupName;
-                     //m_controller->StartExclusionMode();
+                     //m_controller->StartExclusionMode(); 
                   }
                }
                break;
@@ -166,6 +170,12 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
             }
             break;
 
+            case kInternalStateChange:
+            {
+               std::string s = context->getEventHandler().getEventData<std::string>();
+               context->setPluginState(yApi::historization::EPluginState::kCustom, s);
+               break;
+            }
             default:
             {
                YADOMS_LOG(error) << "Unknown message id";

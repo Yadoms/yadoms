@@ -25,6 +25,7 @@ public:
    virtual void stop();
    virtual void SendCommand(const std::string & device, const std::string & keyword, const std::string & value);
    virtual void StartInclusionMode();
+   virtual void StartExclusionMode();
    // [END] IZWaveController implementation
 
 
