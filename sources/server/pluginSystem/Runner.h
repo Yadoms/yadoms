@@ -1,14 +1,12 @@
 #pragma once
-#include <shared/DataContainer.h>
 #include <shared/process/IRunner.h>
 #include <shared/process/IStopNotifier.h>
-#include <shared/script/yScriptApi/IYScriptApi.h>
 #include <shared/process/IProcess.h>
-#include <shared/process/ILogger.h>
 #include "IInstanceStateHandler.h"
-#include <shared/process/ILogger.h>
 
-namespace pluginSystem {
+namespace pluginSystem
+{
+   //TODO rechercher la chaîne "rule" dans tout le répertoire pluginSystem et la virer
 
    //--------------------------------------------------------------
    /// \brief	Python initializer interface (RAII support)
@@ -19,12 +17,10 @@ namespace pluginSystem {
       //--------------------------------------------------------------
       /// \brief	Constructor
       ///\param[in] process               The associated process
-      ///\param[in] logger                The logger
-      ///\param[in] stopNotifier          The stop notifier
+      ///\param[in] instanceStateHandler  The instance state handler
       //--------------------------------------------------------------
       CRunner(boost::shared_ptr<shared::process::IProcess> process,
-         boost::shared_ptr<shared::process::ILogger> logger,
-         boost::shared_ptr<IInstanceStateHandler> stopNotifier);
+              boost::shared_ptr<IInstanceStateHandler> instanceStateHandler);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
@@ -45,27 +41,25 @@ namespace pluginSystem {
       ///\brief               Rule montoring thread function
       ///\param[in] process      The process to monitor
       ///\param[in] stopNotifier The rule stop notifier
-      ///\param[in] scriptLogger The rule script logger
       //-----------------------------------------------------
       static void monitorThreaded(boost::shared_ptr<shared::process::IProcess> process,
-         boost::shared_ptr<shared::process::IStopNotifier> stopNotifier,
-         boost::shared_ptr<shared::process::ILogger> scriptLogger);
+                                  boost::shared_ptr<IInstanceStateHandler> instanceStateHandler);
 
    private:
-      boost::shared_ptr<shared::process::IProcess> m_process;
-      boost::shared_ptr<shared::process::ILogger> m_logger;
-      boost::shared_ptr<IInstanceStateHandler> m_stopNotifier;
-
       //--------------------------------------------------------------
       ///\brief   The process
       //--------------------------------------------------------------
       boost::shared_ptr<shared::process::IProcess> m_process;
 
       //--------------------------------------------------------------
-      /// \brief	Thread monitoring the rule
+      ///\brief   The stop notifier
+      //--------------------------------------------------------------
+      boost::shared_ptr<IInstanceStateHandler> m_instanceStateHandler;
+
+      //--------------------------------------------------------------
+      /// \brief	Thread monitoring the plugin execution
       //--------------------------------------------------------------
       boost::thread m_monitor;
    };
-
 } // namespace pluginSystem
 

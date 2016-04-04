@@ -5,16 +5,11 @@
 //
 #pragma once
 
-#include <shared/event/EventHandler.hpp>
 #include <shared/process/IRunner.h>
 #include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
+#include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
 #include "IInstance.h"
 #include "ILibrary.h"
-#include "database/entities/Entities.h"
-#include "database/IDataProvider.h"
-#include "dataAccessLayer/IAcquisitionHistorizer.h"
-#include "dataAccessLayer/IDeviceManager.h"
-#include "IQualifier.h"
 
 namespace pluginSystem
 {
@@ -47,69 +42,30 @@ namespace pluginSystem
 
 
 
-      //--------------------------------------------------------------
-      /// \brief			            Post a command to the plugin
-      /// \param  command           Command to post
-      //--------------------------------------------------------------
-      virtual void postCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command) const;
+      //TODO
+  //    //--------------------------------------------------------------
+  //    /// \brief			            Post a command to the plugin
+  //    /// \param  command           Command to post
+  //    //--------------------------------------------------------------
+  //    virtual void postCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command) const;
 
-      //--------------------------------------------------------------
-      /// \brief			            Post a manually device creation request to the plugin
-      /// \param  request           Request data
-      //--------------------------------------------------------------
-      virtual void postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> & request) const;
+  //    //--------------------------------------------------------------
+  //    /// \brief			            Post a manually device creation request to the plugin
+  //    /// \param  request           Request data
+  //    //--------------------------------------------------------------
+  //    virtual void postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> & request) const;
 
-		//--------------------------------------------------------------
-		/// \brief                 Post a custom query request to a plugin
-		/// \param [in] request    Request data
-		//--------------------------------------------------------------
-      virtual void postBindingQueryRequest(boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> & request) const;
+		////--------------------------------------------------------------
+		///// \brief                 Post a custom query request to a plugin
+		///// \param [in] request    Request data
+		////--------------------------------------------------------------
+  //    virtual void postBindingQueryRequest(boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> & request) const;
 
    private:
       //--------------------------------------------------------------
       /// \brief			      The plugin information
       //--------------------------------------------------------------
       const boost::shared_ptr<const shared::plugin::information::IInformation> m_pluginInformation;
-
-      //-----------------------------------------------------
-      ///\brief               Instance data
-      //-----------------------------------------------------
-      boost::shared_ptr<const database::entities::CPlugin> m_instanceData;
-
-      //-----------------------------------------------------
-      ///\brief               The data provider
-      //-----------------------------------------------------
-      boost::shared_ptr<database::IDataProvider> m_dataProvider;
-
-      //-----------------------------------------------------
-      ///\brief               The device manager
-      //-----------------------------------------------------
-      boost::shared_ptr<dataAccessLayer::IDeviceManager> m_deviceManager;
-
-      //-----------------------------------------------------
-      ///\brief               The acquisition historizer
-      //-----------------------------------------------------
-      boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> m_acquisitionHistorizer;
-
-      //--------------------------------------------------------------
-      /// \brief			The plugin instance
-      //--------------------------------------------------------------
-      boost::shared_ptr<shared::plugin::IPlugin> m_pPluginInstance;
-
-      //--------------------------------------------------------------
-      /// \brief			The plugin qualifier
-      //--------------------------------------------------------------
-      const boost::shared_ptr<IQualifier> m_qualifier;
-
-      //--------------------------------------------------------------
-      /// \brief			The supervisor event handler
-      //--------------------------------------------------------------
-      boost::shared_ptr<shared::event::CEventHandler> m_supervisor;
-
-      //--------------------------------------------------------------
-      /// \brief			ID to use to send events to supervisor
-      //--------------------------------------------------------------
-      const int m_pluginManagerEventId;
 
       //-----------------------------------------------------
       ///\brief               The script runner

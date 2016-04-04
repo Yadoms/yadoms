@@ -20,9 +20,9 @@ namespace pluginSystem
       ///\param[in] instanceId  the plugin instance ID
       //-----------------------------------------------------
       CInstanceStateHandler(boost::shared_ptr<database::IPluginRequester> pluginRequester,
-         boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger,
-         boost::shared_ptr<shared::event::CEventHandler> managerEventHandler,
-         int instanceId);
+                            boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger,
+                            boost::shared_ptr<shared::event::CEventHandler> managerEventHandler,
+                            int instanceId);
 
       //-----------------------------------------------------
       ///\brief               Destructor

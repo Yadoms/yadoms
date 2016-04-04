@@ -9,31 +9,23 @@
 #include "ILibrary.h"
 #include "IInstance.h"
 #include "IPluginStateHandler.h"
-#include "ManagerEvent.h"
 #include "database/IDataProvider.h"
 #include "database/IPluginRequester.h"
-#include "database/IPluginEventLoggerRequester.h"
-#include <shared/StringExtension.h>
 #include <shared/event/EventHandler.hpp>
 #include "dataAccessLayer/IDataAccessLayer.h"
 #include "dataAccessLayer/IEventLogger.h"
 #include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
+#include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
+#include <shared/plugin/yPluginApi/IDeviceCommand.h>
 
 namespace pluginSystem
 {
-
    //--------------------------------------------------------------
    /// \brief	this class is used to manage plugin. 
    ///         It search for plugins into directories and generate plugin factories
    //--------------------------------------------------------------
    class CManager //TODO faire le ménage dans les méthodes et membres
    {
-   public:
-      //--------------------------------------------------------------
-      /// \brief			Map of all valid plugins (key are plugin file names, values are plugin information)
-      //--------------------------------------------------------------
-      typedef std::map<std::string, boost::shared_ptr<const shared::plugin::information::IInformation> > AvalaiblePluginMap;
-
    public:
       //--------------------------------------------------------------
       /// \brief			Constructor (protected, use newManager to create instance)
@@ -44,7 +36,7 @@ namespace pluginSystem
       /// \param[in]    eventLogger             Main event logger
       //--------------------------------------------------------------
       CManager(
-         const std::string & initialDir,
+         const std::string& initialDir,
          boost::shared_ptr<database::IDataProvider> dataProvider,
          boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
          boost::shared_ptr<shared::event::CEventHandler> supervisor,
@@ -69,7 +61,7 @@ namespace pluginSystem
       /// \brief           Read the available plugin list
       /// \return          The available plugin map (with informations)
       //--------------------------------------------------------------
-      AvalaiblePluginMap getPluginList();
+      IFactory::AvailablePluginMap getPluginList() const;
 
       //--------------------------------------------------------------
       /// \brief           Read the plugin quality indicator
@@ -88,7 +80,7 @@ namespace pluginSystem
       /// \throw           CDatabaseException if duplicate record (instance name must be unique)
       //--------------------------------------------------------------
       int createInstance(const database::entities::CPlugin& data);
-    
+
       //--------------------------------------------------------------
       /// \brief           Delete a plugin instance
       /// \param [in] id   Instance to delete
@@ -100,7 +92,7 @@ namespace pluginSystem
       /// \brief           Get the plugin instances list
       /// \return          List of instances ID of all known instances, started or not
       //--------------------------------------------------------------
-      std::vector<boost::shared_ptr<database::entities::CPlugin> > getInstanceList () const;
+      std::vector<boost::shared_ptr<database::entities::CPlugin>> getInstanceList() const;
 
       //--------------------------------------------------------------
       /// \brief           Get the instance configuration
@@ -109,7 +101,7 @@ namespace pluginSystem
       /// \throw           CException if fails
       //--------------------------------------------------------------
       boost::shared_ptr<database::entities::CPlugin> getInstance(int id) const;
-      
+
       //--------------------------------------------------------------
       /// \brief           Get the instance configuration
       /// \param [in] id   Instance Id
@@ -176,14 +168,14 @@ namespace pluginSystem
       /// \param [in] id         Plugin instance Id
       /// \param [in] request    Request data
       //--------------------------------------------------------------
-      void postManuallyDeviceCreationRequest(int id, boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> & request);
+      void postManuallyDeviceCreationRequest(int id, boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest>& request);
 
       //--------------------------------------------------------------
       /// \brief                 Post a binding query request to a plugin
       /// \param [in] id         Plugin instance Id
       /// \param [in] request    Request data
       //--------------------------------------------------------------
-      void postBindingQueryRequest(int id, boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> & request);
+      void postBindingQueryRequest(int id, boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest>& request);
 
       //--------------------------------------------------------------
       /// \brief                 Start all instances matching the plugin name
@@ -214,7 +206,7 @@ namespace pluginSystem
       ///\param[in] instances Instances to start
       ///\return              true if all instances were successfully started
       //-----------------------------------------------------
-      bool startInstances(const std::vector<boost::shared_ptr<database::entities::CPlugin> >& instances);
+      bool startInstances(const std::vector<boost::shared_ptr<database::entities::CPlugin>>& instances);
 
       //-----------------------------------------------------
       ///\brief               Stop all started instances
@@ -248,26 +240,6 @@ namespace pluginSystem
       //-----------------------------------------------------
       void recordInstanceStopped(int id, const std::string& error = std::string());
 
-      //--------------------------------------------------------------
-      /// \brief        Returns all plugin directories installed
-      /// \return       a list of all found plugin directories
-      /// \note         This function just lists plugin directory names.
-      ///               It doesn't check if plugin is valid (export expected functions)
-      //--------------------------------------------------------------
-      std::vector<boost::filesystem::path> findPluginDirectories();
-
-      //--------------------------------------------------------------
-      /// \brief        Build the available plugin map (update m_availablePlugins)
-      //--------------------------------------------------------------
-      void buildAvailablePluginList();
-
-      //--------------------------------------------------------------
-      /// \brief			Get the plugin library path from the plugin name
-      /// \param [in] pluginName Plugin name
-      /// \return       The full plugin library path
-      //--------------------------------------------------------------
-      boost::filesystem::path toPath(const std::string& pluginName) const;
-
       void startInternalPlugin();
       void stopInternalPlugin();
 
@@ -280,7 +252,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief			The available plugin map
       //--------------------------------------------------------------
-      AvalaiblePluginMap m_availablePlugins;
+      IFactory::AvailablePluginMap m_availablePlugins;
       mutable boost::recursive_mutex m_availablePluginsMutex;
 
       //--------------------------------------------------------------
@@ -292,11 +264,6 @@ namespace pluginSystem
       /// \brief			Shortcut to plugins in database
       //--------------------------------------------------------------
       boost::shared_ptr<database::IPluginRequester> m_pluginDBTable;
-
-      //--------------------------------------------------------------
-      /// \brief			Plugin path
-      //--------------------------------------------------------------
-      boost::filesystem::path m_pluginPath;
 
       //--------------------------------------------------------------
       /// \brief			Plugin qualifier
@@ -336,7 +303,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief			Map of all running instances, and its mutex (key are plugin instance id)
       //--------------------------------------------------------------
-      typedef std::map<int, boost::shared_ptr<IInstance> > PluginInstanceMap;
+      typedef std::map<int, boost::shared_ptr<IInstance>> PluginInstanceMap;
       PluginInstanceMap m_runningInstances;
       mutable boost::recursive_mutex m_runningInstancesMutex;
 
@@ -344,7 +311,6 @@ namespace pluginSystem
       ///\brief               The handlers to notify when an instance stop (potentially several handlers for one instance)
       //-----------------------------------------------------
       mutable boost::recursive_mutex m_instanceStopNotifiersMutex;
-      std::map<int, std::set<boost::shared_ptr<shared::event::CEventHandler> > > m_instanceStopNotifiers;
+      std::map<int, std::set<boost::shared_ptr<shared::event::CEventHandler>>> m_instanceStopNotifiers;
    };
-
 } // namespace pluginSystem

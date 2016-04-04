@@ -84,7 +84,8 @@ namespace pluginSystem {   namespace internalPlugin {
 
    const boost::filesystem::path& CInformation::getPath() const
    {
-      return std::string();
+      static const boost::filesystem::path dummy;
+      return dummy;
    }
 
 }} // namespace pluginSystem::internalPlugin

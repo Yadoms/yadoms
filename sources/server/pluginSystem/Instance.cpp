@@ -8,13 +8,6 @@ CInstance::CInstance(
    const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
    boost::shared_ptr<shared::process::IRunner> runner)
    : m_pluginInformation(pluginInformation),
-     m_instanceData(instanceData),
-     m_dataProvider(dataProvider),
-     m_deviceManager(deviceManager),
-     m_acquisitionHistorizer(acquisitionHistorizer),
-     m_qualifier(qualifier),
-     m_supervisor(supervisor),
-     m_pluginManagerEventId(pluginManagerEventId),
      m_runner(runner)
 {
 }
