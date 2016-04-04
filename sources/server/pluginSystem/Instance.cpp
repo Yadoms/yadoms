@@ -5,14 +5,7 @@ namespace pluginSystem
 {
 
 CInstance::CInstance(
-   const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,//TODO utile ?
-   boost::shared_ptr<const database::entities::CPlugin> instanceData,
-   boost::shared_ptr<database::IDataProvider> dataProvider,
-   boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
-   boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer,
-   const boost::shared_ptr<IQualifier> qualifier,
-   boost::shared_ptr<shared::event::CEventHandler> supervisor,
-   int pluginManagerEventId,
+   const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
    boost::shared_ptr<shared::process::IRunner> runner)
    : m_pluginInformation(pluginInformation),
      m_instanceData(instanceData),
@@ -116,7 +109,7 @@ void CInstance::updateConfiguration(const shared::CDataContainer & newConfigurat
 
 std::string CInstance::getPluginName() const
 {
-   return m_instanceData->Type();
+   return m_pluginInformation->getType();
 }
 
 } // namespace pluginSystem

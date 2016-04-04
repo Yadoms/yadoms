@@ -28,25 +28,10 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief	Constructor
       /// \param [in]	pluginInformation          Information on the plugin
-      /// \param [in]   pluginData                 the database entity
-      /// \param [in]   dataProvider               the database accessor
-      /// \param [in]   deviceManager              the device manager
-      /// \param [in]   acquisitionHistorizer      the acquisition historizer
-      /// \param [in]   qualifier                  the plugin qualifier
-      /// \param [in]   supervisor                 the supervisor event handler
-      /// \param [in]   pluginManagerEventId       The ID to use to send events to supervisor
       /// \param [in]   runner                     The instance runner
       //--------------------------------------------------------------
-      CInstance(
-         const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
-         boost::shared_ptr<const database::entities::CPlugin> pluginData,
-         boost::shared_ptr<database::IDataProvider> dataProvider,
-         boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
-         boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer,
-         const boost::shared_ptr<IQualifier> qualifier,
-         boost::shared_ptr<shared::event::CEventHandler> supervisor,
-         int pluginManagerEventId,
-         boost::shared_ptr<shared::process::IRunner> runner);//TODO faire le ménage dans les paramètres
+      CInstance(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
+         boost::shared_ptr<shared::process::IRunner> runner);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
