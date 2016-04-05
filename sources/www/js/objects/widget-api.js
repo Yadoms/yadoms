@@ -218,3 +218,18 @@ WidgetApi.prototype.fitText = function () {
     if ($texts)
         $texts.fitText();
 }
+
+/**
+ * Notify a message to the window using noty library
+ * @param message message to display
+ * @param gravity gravity of the message
+ * @returns {noty}
+ * @param timeout timeout of the noty
+ */
+WidgetApi.prototype.notify = function(message, gravity, timeout) {
+    assert(message != undefined, "Message must be defined");
+    gravity = gravity || "information";
+    timeout = timeout || defaultNotyTimeout;
+    
+    return noty({ text: message, timeout: timeout, layout: defaultNotyLayout, type: gravity });
+}
