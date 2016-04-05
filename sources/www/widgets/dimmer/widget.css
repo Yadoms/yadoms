@@ -1,4 +1,4 @@
-.dimmer-widget {
+.widget-dimmer .main-div {
     flex: 1;
     width: 100%;
     text-align: center;
@@ -6,17 +6,17 @@
     flex-direction: row;
 }
 
-.dimmer-widget-buttons {
+.widget-dimmer .btn-group-vertical {
     vertical-align:middle;
     margin: auto;
     width: 30%;
 }
 
-.dimmer-widget-button {
+.widget-dimmer .btn {
     height: 50%;
 }
 
-.dimmer-widget-value {
+.widget-dimmer .value {
     vertical-align:middle;
     flex: 2;
     align-items: stretch;
@@ -25,7 +25,7 @@
     order: 1;
 }
 
-.dimmer-widget-unit {
+.widget-dimmer .unit {
 	vertical-align:top;
     flex: 0 0 10%;
     align-items: stretch;

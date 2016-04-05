@@ -1,12 +1,12 @@
 <script type="text/html" id="dimmer-template">
-    <div class="dimmer-widget">
-        <div class="dimmer-widget-buttons btn-group-vertical btn-toggle">
-            <button class="btn btn-default dimmer-widget-button textfit" data-bind="event: {click: commandClickPlus}"><span class="glyphicon glyphicon-plus"></span></button>
-            <button class="btn btn-default dimmer-widget-button textfit" data-bind="event: {click: commandClickMinus}"><span class="glyphicon glyphicon-minus"></span></button>
+    <div class="main-div">
+        <div class="btn-group-vertical btn-toggle" role="group">
+            <button class="btn btn-default textfit" data-bind="event: {click: commandClickPlus}"><span class="glyphicon glyphicon-plus"></span></button>
+            <button class="btn btn-default textfit" data-bind="event: {click: commandClickMinus}"><span class="glyphicon glyphicon-minus"></span></button>
         </div>
-        <div class="dimmer-widget-value">
+        <div class="value">
             <div class="textfit textfit-in-parent" data-bind="text: data()"></div>
         </div>
-            <div class="dimmer-widget-unit textfit" data-bind="text: unit()" min-font="14"></div>
+        <div class="unit textfit" data-bind="text: unit()" min-font="14"></div>
     </div>
 </script>

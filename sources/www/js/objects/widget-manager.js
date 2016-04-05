@@ -108,22 +108,27 @@ WidgetManager.getWidgetOfPageFromServer = function (page) {
 WidgetManager.getViewFromServer_ = function (widgetType) {
     assert(!isNullOrUndefined(widgetType), "widgetType must be defined");
     var d = new $.Deferred();
-    RestEngine.get("widgets/" + widgetType + "/view.html")
-    .done(function (view) {
-        if (!isNullOrUndefined(view) && view.match(".*<script.*id=\"" + widgetType + "-template\">.*")) {
-            $("div#templates").append(view);
-            d.resolve();
-        } else {
-            d.reject("Fail to load view.html of widget " + widgetType);
-        }
 
-    })
-    .fail(function (errorMessage) {
-        console.error("Fail to get view from server : " + errorMessage);
-        d.reject(errorMessage);
-    });
+    //we try to download "widget.css" first if present
+    asyncLoadCss("widgets/" + widgetType + "/widget.css")
+        .always(function () {
+            //wherever the result we continue
+            RestEngine.get("widgets/" + widgetType + "/view.html")
+            .done(function (view) {
+                if (!isNullOrUndefined(view) && view.match(".*<script.*id=\"" + widgetType + "-template\">.*")) {
+                    $("div#templates").append(view);
+                    d.resolve();
+                } else {
+                    d.reject("Fail to load view.html of widget " + widgetType);
+                }
+
+            })
+            .fail(function (errorMessage) {
+                console.error("Fail to get view from server : " + errorMessage);
+                d.reject(errorMessage);
+            });
+        });
     return d.promise();
-
 };
 
 
@@ -244,7 +249,7 @@ WidgetManager.updateWidgetConfiguration_ = function (widget) {
             var defferedResult = widget.viewModel.configurationChanged();
             //we manage answer if it is a promise or not
             defferedResult = defferedResult || new $.Deferred().resolve();
-            defferedResult.done(function() {
+            defferedResult.done(function () {
                 //we manage the toolbar api specific icons
                 widget.viewModel.widgetApi.manageBatteryConfiguration();
                 d.resolve();
@@ -508,7 +513,7 @@ WidgetManager.addToDom_ = function (widget, ensureVisible) {
             defferedResult = defferedResult || new $.Deferred().resolve();
             defferedResult.done(function () {
                 //we notify that configuration has changed
-                WidgetManager.updateWidgetConfiguration_(widget).done(function() {
+                WidgetManager.updateWidgetConfiguration_(widget).done(function () {
                     //we notify that widget has been resized
                     var defferedResized;
                     try {
@@ -523,7 +528,7 @@ WidgetManager.addToDom_ = function (widget, ensureVisible) {
 
                     //we manage answer if it is a promise or not
                     defferedResized = defferedResized || new $.Deferred().resolve();
-                    defferedResized.done(function() {
+                    defferedResized.done(function () {
                         widget.$gridWidget.i18n();
 
                         if (ensureVisible === true) {
@@ -553,14 +558,14 @@ WidgetManager.addToDom_ = function (widget, ensureVisible) {
 WidgetManager.enableCustomization = function (widget, enable) {
     var page = PageManager.getPage(widget.idPage);
     assert(!isNullOrUndefined(page), "page doesn't exist in PageManager");
-    
+
     if (enable) {
         widget.$gridWidget.draggable("enable");
     } else {
         widget.$gridWidget.draggable("disable");
     }
     page.$grid.packery('layout');
-    
+
     if ((enable) && (widget.resizable))
         widget.$gridWidget.resizable("enable");
     else
@@ -710,6 +715,6 @@ WidgetManager.createGridWidget = function (widget) {
 /**
  * Update the layout of the widget
  */
-WidgetManager.updateWidgetLayout = function(widget) {
+WidgetManager.updateWidgetLayout = function (widget) {
     widget.$gridWidget.find(".textfit").fitText();
 };
