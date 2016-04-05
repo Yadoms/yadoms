@@ -70,7 +70,7 @@
             actionsBtns += "<ul class=\"dropdown-menu\">";
 
             $.each(pi.package.extraCommands, function (index, values) {
-               actionsBtns += "<li><a class=\"btn-extraCommand-" + index + "\"><span class=\"extra-command-icon " + values.iconClass + "\"></span>&nbsp;<span data-i18n=\"plugins/" + pi.type + ":extraCommands." + index + ".name\"></span>" + (values.commandData ? "..." : "") + "</a></li>";
+               actionsBtns += "<li><a href=\"#\" class=\"btn-extraCommand-" + index + "\"><span class=\"extra-command-icon " + values.iconClass + "\"></span>&nbsp;<span data-i18n=\"plugins/" + pi.type + ":extraCommands." + index + ".name\"></span>" + (values.commandData ? "..." : "") + "</a></li>";
             });
 
             actionsBtns += "</ul>";
@@ -209,10 +209,11 @@
    }
 
    function onExtraCommand(pi, commandName, commandConfig) {
+   debugger;
       if (commandConfig && commandConfig.commandData) {
          Yadoms.modals.pluginExtraCommandsConfigure.loadAsync()
             .done(function() {
-               Yadoms.ConfigureExtraCommands(commandName, commandConfig.data, pi)
+               Yadoms.ConfigureExtraCommands(commandName, commandConfig.commandData, pi)
                .done(function (result) {
                   PluginInstanceManager.postExtraCommand(pi, commandName, result);
                });
