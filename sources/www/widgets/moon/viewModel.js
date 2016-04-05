@@ -13,6 +13,9 @@ widgetViewModelCtor = function moonViewModel() {
     * @param widget widget class object
     */
    this.initialize = function () {
+       this.widgetApi.toolbar({
+           activated: false
+       });
    };
 
    /**
@@ -24,7 +27,7 @@ widgetViewModelCtor = function moonViewModel() {
       var self = this;
 
       if (keywordId === self.widget.configuration.device.keywordId) {
-         var obj = jQuery.parseJSON(data.value);
+          var obj = jQuery.parseJSON(data.value);
          if (obj) {
             //parse as integers
             var illuminatedMoon = parseInt(obj.IlluminatedMoon || 0);
@@ -59,10 +62,7 @@ widgetViewModelCtor = function moonViewModel() {
                self.moonPicture("widgets/moon/images/full.png");
          }
       }
-
-      this.widgetApi.find(".moonPercentage").fitText();
    }
-
 
    this.configurationChanged = function () {
       //we register keyword new acquisition
