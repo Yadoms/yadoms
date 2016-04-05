@@ -158,7 +158,7 @@ WidgetApi.prototype.manageBatteryConfiguration = function () {
                     //we ask immediately for the battery value
                     AcquisitionManager.getLastValue(batteryLevel.id)
                     .done(function (lastValue) {
-                        self.widget.viewModel.widgetApi.toolbar.updateBatteryLevel(lastValue.value);
+                        self.widget.viewModel.widgetApi.updateBatteryLevel(lastValue.value);
                     })
                     .fail(function (error) {
                         notifyError($.t("objects.generic.errorGetting", { objectName: "Acquisition KeywordId = " + batteryLevel.id }), error);
@@ -181,6 +181,7 @@ WidgetApi.prototype.manageBatteryConfiguration = function () {
  */
 WidgetApi.prototype.updateBatteryLevel = function (batteryLevel) {
     assert(!isNullOrUndefined(batteryLevel), "batteryLevel must be defined");
+    var self = this;
 
     //we compute the battery fill
     var fill;
@@ -204,7 +205,7 @@ WidgetApi.prototype.updateBatteryLevel = function (batteryLevel) {
  */
 WidgetApi.prototype.configureBatteryIcon = function (deviceId) {
     assert(!isNullOrUndefined(deviceId), "deviceId must be defined");
-    var $batteryIcon = this.widget.$toolbar.find("." + self.widgetBatteryClass);
+    var $batteryIcon = this.widget.$toolbar.find("." + this.widgetBatteryClass);
     if ($batteryIcon) {
         $batteryIcon.attr("deviceId", deviceId);
     }

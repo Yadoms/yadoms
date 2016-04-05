@@ -14,15 +14,12 @@ function numericDisplayViewModel() {
      * @param widget widget class object
      */
     this.initialize = function () {
-        var self = this;
-        var d = new $.Deferred();
-        self.widgetApi.loadCss("widgets/numeric-display/widget.css")
-        .done(function () {
-            //we create the battery indicator
-            this.widgetApi.toolbar.addBatteryIconToWidget();
-            d.resolve();
+        //we configure the toolbar
+        this.widgetApi.toolbar({
+            activated: true,
+            displayTitle: true,
+            batteryItem: true
         });
-        return d.promise();
     };
 
     this.configurationChanged = function () {
@@ -35,9 +32,9 @@ function numericDisplayViewModel() {
 
         //we register keyword new acquisition
         self.widgetApi.registerKeywordAcquisitions(self.widget.configuration.device.keywordId);
-
+        
         //we fill the deviceId of the battery indicator
-        self.widgetApi.toolbar.configureBatteryIcon(self.widget.configuration.device.deviceId);
+        self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);
     }
 
     /**
@@ -51,7 +48,7 @@ function numericDisplayViewModel() {
         if (keywordId === self.widget.configuration.device.keywordId) {
             //it is the right device
             self.data(data.value);
-            self.widgetApi.find(".textfit").fitText();
+            self.widgetApi.fitText();
         }
     };
 };
