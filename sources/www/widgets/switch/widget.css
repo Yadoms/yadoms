@@ -1,5 +1,14 @@
-.switchWidget {
+.widget-switch .main {
+    padding: 0;
+    overflow: hidden;
+    flex: 1;
     width: 100%;
-    text-align: center;
-    display:block;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.widget-switch .action {
+    flex: 1;
+    margin: auto;
 }

@@ -5,20 +5,21 @@
 	"author": "yadoms team",
 	"url": "http://www.yadoms.com/wiki/widgets/switch.html",
 	"credits": "",
-	"dimensions": {
-		"min": {
-			"x": 1,
-			"y": 1
-		},
-		"max": {
-			"x": 1,
-			"y": 1
-		},
-		"default": {
-			"x": 1,
-			"y": 1
-		}
-	},
+  "dimensions": {
+    "min": {
+      "x": 1,
+      "y": 1
+    },
+    "max": {
+      "x": 1,
+      "y": 1
+    },
+    "default": {
+      "x": 1,
+      "y": 1
+    }
+  },
+  "hasTitle" :  true,
 	"configurationSchema": {
 		"devices": {
 			"type": "list",
