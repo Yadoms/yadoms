@@ -34,7 +34,7 @@ public:
    /// \brief	  Send the request and receive the response from the web site
    /// \param[in] context    pointer to the API
    //--------------------------------------------------------------
-   void Request( boost::shared_ptr<yApi::IYPluginApi> context );
+   bool Request( boost::shared_ptr<yApi::IYPluginApi> context );
 
    //--------------------------------------------------------------
    /// \brief	  Parse the answer from the web Site
@@ -57,6 +57,12 @@ public:
    /// \param[in] WUConfiguration    The Plugin configuration
    //--------------------------------------------------------------
    void SetCityName ( const std::string & CityName );
+
+   //--------------------------------------------------------------
+   /// \brief	  Return true if an error occured during the request
+   /// \return    The state of this request
+   //--------------------------------------------------------------
+   bool IsModuleInFault ( void );
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -118,5 +124,10 @@ private:
    /// \brief	    Tab of rain keywords for 3 next days
    //--------------------------------------------------------------
    boost::shared_ptr<CRain>        m_Forecast_Rain[NB_RAIN_FORECAST_DAY];
+
+   //--------------------------------------------------------------
+   /// \brief	    Error Detecting ?
+   //--------------------------------------------------------------
+   bool m_CatchError;
 };
 

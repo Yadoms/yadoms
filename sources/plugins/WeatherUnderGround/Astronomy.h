@@ -27,7 +27,7 @@ public:
    /// \brief	  Send the request and receive the response from the web site
    /// \param[in] context    pointer to the API
    //--------------------------------------------------------------
-   void Request( boost::shared_ptr<yApi::IYPluginApi> context );
+   bool Request( boost::shared_ptr<yApi::IYPluginApi> context );
 
    //--------------------------------------------------------------
    /// \brief	  Parse the answer from the web Site
@@ -42,6 +42,12 @@ public:
    /// \param[in] WUConfiguration    The Plugin configuration
    //--------------------------------------------------------------
    void OnUpdate( IWUConfiguration& WUConfiguration );
+
+   //--------------------------------------------------------------
+   /// \brief	  Return true if an error occured during the request
+   /// \return    The state of this request
+   //--------------------------------------------------------------
+   bool IsModuleInFault ( void );
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -84,5 +90,10 @@ private:
    /// \brief	    Keywords
    //--------------------------------------------------------------
    CMoon     m_MoonCharacteristics;
+
+   //--------------------------------------------------------------
+   /// \brief	    Error Detecting ?
+   //--------------------------------------------------------------
+   bool m_CatchError;
 };
 
