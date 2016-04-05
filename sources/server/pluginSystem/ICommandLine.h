@@ -21,7 +21,7 @@ namespace pluginSystem
 
       //--------------------------------------------------------------
       /// \brief	                     Get the working directory to use to call executable
-      /// \return                      The working directory
+      /// \return                      The working directory (full path)
       //--------------------------------------------------------------
       virtual const boost::filesystem::path& workingDirectory() const = 0;
 

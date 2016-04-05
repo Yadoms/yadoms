@@ -1,7 +1,5 @@
 #include "stdafx.h"
 #include "PythonExecutable.h"
-#include "PythonException.hpp"
-#include <shared/FileSystemExtension.h>
 #include <shared/Log.h>
 #include "PythonExecutablePath.h"
 

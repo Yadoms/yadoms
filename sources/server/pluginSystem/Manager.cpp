@@ -1,7 +1,6 @@
 #include "stdafx.h"//TODO faire ménage dans les include
 
 #include "Manager.h"
-#include "PluginStateHandler.h"
 #ifdef _DEBUG
 #include "BasicQualifier.h"
 #else
@@ -24,7 +23,7 @@ namespace pluginSystem
                       boost::shared_ptr<database::IDataProvider> dataProvider,
                       boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
                       boost::shared_ptr<shared::event::CEventHandler> supervisor,
-                      boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger)
+                      boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger/*TODO utile ?*/)
       :
       m_factory(boost::make_shared<CFactory>(initialDir)),
       m_dataProvider(dataProvider),
@@ -33,12 +32,11 @@ namespace pluginSystem
 
       m_qualifier(boost::make_shared<CBasicQualifier>(dataProvider->getPluginEventLoggerRequester(), dataAccessLayer->getEventLogger())),//TODO passer par la factory
 #else
-   m_qualifier(boost::make_shared<CIndicatorQualifier>(dataProvider->getPluginEventLoggerRequester(), dataAccessLayer->getEventLogger())),//TODO passer par la factory
+      m_qualifier(boost::make_shared<CIndicatorQualifier>(dataProvider->getPluginEventLoggerRequester(), dataAccessLayer->getEventLogger())),//TODO passer par la factory
 #endif
       m_supervisor(supervisor), m_dataAccessLayer(dataAccessLayer),
-      m_pluginStateHandler(boost::make_shared<CPluginStateHandler>(m_pluginDBTable, eventLogger, m_pluginEventHandler)),
+      m_pluginManagerEventHandler(boost::make_shared<shared::event::CEventHandler>()),
       m_yadomsShutdown(false),//TODO passer par la factory
-      m_pluginEventHandler(boost::make_shared<shared::event::CEventHandler>()),
       m_pluginEventsThread(boost::make_shared<boost::thread>(boost::bind(&CManager::pluginEventsThreadDoWork, this)))//TODO passer par la factory
    {
    }
@@ -75,7 +73,7 @@ namespace pluginSystem
          throw shared::exception::CException("Some plugins are already started, are you sure that manager was successfuly stopped ?");
 
       if (!startInstances(getInstanceList()))
-      YADOMS_LOG(error) << "One or more plugins failed to start, check plugins page for details";
+         YADOMS_LOG(error) << "One or more plugins failed to start, check plugins page for details";
 
       //start the internal plugin
       startInternalPlugin();
@@ -83,8 +81,8 @@ namespace pluginSystem
 
    bool CManager::startInstances(const std::vector<boost::shared_ptr<database::entities::CPlugin>>& instances)
    {
-      bool allInstancesStarted = true;
-      for (std::vector<boost::shared_ptr<database::entities::CPlugin>>::const_iterator it = instances.begin(); it != instances.end(); ++it)
+      auto allInstancesStarted = true;
+      for (auto it = instances.begin(); it != instances.end(); ++it)
       {
          try
          {
@@ -133,7 +131,7 @@ namespace pluginSystem
       boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
 
       // First step, record instance in database, to get its ID
-      int instanceId = m_pluginDBTable->addInstance(data);
+      auto instanceId = m_pluginDBTable->addInstance(data);
 
       // Next create instance
       startInstance(instanceId);
@@ -237,7 +235,7 @@ namespace pluginSystem
    {
       try
       {
-         boost::shared_ptr<database::entities::CPlugin> instanceData(getInstance(id));
+         auto instanceData(getInstance(id));
 
          if (isInstanceRunning(instanceData->Id()))
             return; // Already started ==> nothing more to do
@@ -248,29 +246,28 @@ namespace pluginSystem
 
          // Create instance
          boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
-         boost::shared_ptr<IInstance> pluginInstance(m_factory->createInstance(instanceData,
-                                                                               m_dataProvider,
-                                                                               m_dataAccessLayer,
-                                                                               m_qualifier,
-                                                                               m_pluginEventHandler));
-         m_runningInstances[instanceData->Id()] = pluginInstance;
+         m_runningInstances[instanceData->Id()] = m_factory->createInstance(instanceData,
+                                                                            m_dataProvider,
+                                                                            m_dataAccessLayer,
+                                                                            m_qualifier,
+                                                                            m_pluginManagerEventHandler);
       }
       catch (shared::exception::CEmptyResult& e)
       {
-         const std::string& error((boost::format("Invalid plugin instance %1%, element not found in database : %2%") % id % e.what()).str());
-         m_pluginStateHandler->signalError(id, error);
+         const auto& error((boost::format("Invalid plugin instance %1%, element not found in database : %2%") % id % e.what()).str());
+         //TODO utile ?         m_pluginStateHandler->signalError(id, error);
          throw CPluginException(error);
       }
       catch (CInvalidPluginException& e)
       {
-         const std::string& error((boost::format("Invalid plugin instance %1% configuration, invalid parameter : %2%") % id % e.what()).str());
-         m_pluginStateHandler->signalError(id, error);
+         const auto& error((boost::format("Invalid plugin instance %1% configuration, invalid parameter : %2%") % id % e.what()).str());
+         //TODO utile ?         m_pluginStateHandler->signalError(id, error);
          throw CPluginException(error);
       }
       catch (shared::exception::COutOfRange& e)
       {
-         const std::string& error((boost::format("Invalid plugin instance %1% configuration, out of range : %2%") % id % e.what()).str());
-         m_pluginStateHandler->signalError(id, error);
+         const auto& error((boost::format("Invalid plugin instance %1% configuration, out of range : %2%") % id % e.what()).str());
+         //TODO utile ?         m_pluginStateHandler->signalError(id, error);
          throw CPluginException(error);
       }
    }
@@ -293,7 +290,7 @@ namespace pluginSystem
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
 
-      std::map<int, boost::shared_ptr<IInstance>>::iterator instance = m_runningInstances.find(id);
+      auto instance = m_runningInstances.find(id);
 
       if (instance == m_runningInstances.end())
          return; // Already stopped ==> nothing more to do
@@ -303,7 +300,7 @@ namespace pluginSystem
 
    void CManager::stopInstanceAndWaitForStopped(int id)
    {
-      boost::shared_ptr<shared::event::CEventHandler> waitForStoppedInstanceHandler(boost::make_shared<shared::event::CEventHandler>());
+      auto waitForStoppedInstanceHandler(boost::make_shared<shared::event::CEventHandler>());
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_instanceStopNotifiersMutex);
          m_instanceStopNotifiers[id].insert(waitForStoppedInstanceHandler);
@@ -330,7 +327,7 @@ namespace pluginSystem
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
 
-         std::map<int, boost::shared_ptr<IInstance>>::iterator instance = m_runningInstances.find(id);
+         auto instance = m_runningInstances.find(id);
 
          if (instance == m_runningInstances.end())
             return; // Already stopped ==> nothing more to do
@@ -406,7 +403,7 @@ namespace pluginSystem
 
       try
       {
-         boost::shared_ptr<database::entities::CPlugin> databasePluginInstance(m_pluginDBTable->getSystemInstance());
+         auto databasePluginInstance(m_pluginDBTable->getSystemInstance());
 
          if (m_runningInstances.find(databasePluginInstance->Id()) != m_runningInstances.end())
             return; // Already started ==> nothing more to do
@@ -427,7 +424,6 @@ namespace pluginSystem
       catch (shared::exception::CEmptyResult& e)
       {
          YADOMS_LOG(error) << "startInternalPlugin : unable to find internal plugin : " << e.what();
-         return;
       }
       catch (CInvalidPluginException& e)
       {
@@ -440,7 +436,7 @@ namespace pluginSystem
       boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
 
       //get the plugin info from db
-      boost::shared_ptr<database::entities::CPlugin> databasePluginInstance(m_pluginDBTable->getSystemInstance());
+      auto databasePluginInstance(m_pluginDBTable->getSystemInstance());
 
       // Already stopped ==> nothing more to do
       if (m_runningInstances.find(databasePluginInstance->Id()) == m_runningInstances.end())
@@ -477,12 +473,12 @@ namespace pluginSystem
 
          try
          {
-            boost::shared_ptr<database::entities::CKeyword> stateKw = m_dataProvider->getKeywordRequester()->getKeyword(device->Id, "state");
+            auto stateKw = m_dataProvider->getKeywordRequester()->getKeyword(device->Id, "state");
             shared::plugin::yPluginApi::historization::EPluginState state(m_dataProvider->getAcquisitionRequester()->getKeywordLastData(stateKw->Id)->Value());
             if (state == shared::plugin::yPluginApi::historization::EPluginState::kError)
             {
                // In error state
-               boost::shared_ptr<database::entities::CKeyword> customMessageIdKw = m_dataProvider->getKeywordRequester()->getKeyword(device->Id, "customMessageId");
+               auto customMessageIdKw = m_dataProvider->getKeywordRequester()->getKeyword(device->Id, "customMessageId");
                shared::CDataContainer defaultState;
                defaultState.set("state", state);
                defaultState.set("messageId", m_dataProvider->getAcquisitionRequester()->getKeywordLastData(customMessageIdKw->Id)->Value());
@@ -520,8 +516,8 @@ namespace pluginSystem
 
       try
       {
-         boost::shared_ptr<database::entities::CKeyword> stateKw = m_dataProvider->getKeywordRequester()->getKeyword(device->Id, "state");
-         boost::shared_ptr<database::entities::CKeyword> customMessageIdKw = m_dataProvider->getKeywordRequester()->getKeyword(device->Id, "customMessageId");
+         auto stateKw = m_dataProvider->getKeywordRequester()->getKeyword(device->Id, "state");
+         auto customMessageIdKw = m_dataProvider->getKeywordRequester()->getKeyword(device->Id, "customMessageId");
          shared::CDataContainer defaultState;
          defaultState.set("state", m_dataProvider->getAcquisitionRequester()->getKeywordLastData(stateKw->Id)->Value());
          defaultState.set("messageId", m_dataProvider->getAcquisitionRequester()->getKeywordLastData(customMessageIdKw->Id)->Value());
@@ -538,7 +534,7 @@ namespace pluginSystem
 
    shared::plugin::yPluginApi::historization::EPluginState CManager::getInstanceState(int id) const
    {
-      shared::CDataContainer fullState = getInstanceFullState(id);
+      auto fullState = getInstanceFullState(id);
       return fullState.get<shared::plugin::yPluginApi::historization::EPluginState>("state");
    }
 
@@ -548,18 +544,18 @@ namespace pluginSystem
       {
          while (true)
          {
-            switch (m_pluginEventHandler->waitForEvents())
+            switch (m_pluginManagerEventHandler->waitForEvents())
             {
-            case CPluginStateHandler::kAbnormalStopped:
+            case IInstanceStateHandler::kAbnormalStopped:
                {
-                  // The rule has stopped in a non-conventional way (probably crashed)
-                  std::pair<int, std::string> data = m_pluginEventHandler->getEventData<std::pair<int, std::string>>();
+                  // The plugin has stopped in a non-conventional way (probably crashed)
+                  auto data = m_pluginManagerEventHandler->getEventData<std::pair<int, std::string>>();
                   onInstanceStopped(data.first, data.second);
                   break;
                }
-            case CPluginStateHandler::kStopped:
+            case IInstanceStateHandler::kStopped:
                {
-                  onInstanceStopped(m_pluginEventHandler->getEventData<int>());
+                  onInstanceStopped(m_pluginManagerEventHandler->getEventData<int>());
                   break;
                }
 
@@ -618,7 +614,7 @@ namespace pluginSystem
       //instance->postBindingQueryRequest(request);
    }
 
-   void CManager::recordInstanceStarted(int id)
+   void CManager::recordInstanceStarted(int id) //TODO utile ?
    {
       //TODO positionner le keyword state
       //boost::shared_ptr<database::entities::CPlugin> instanceData(boost::make_shared<database::entities::CPlugin>());//TODO passer par la factory
@@ -629,7 +625,7 @@ namespace pluginSystem
       //m_pluginDBTable->updateInstance(instanceData);
    }
 
-   void CManager::recordInstanceStopped(int id, const std::string& error)
+   void CManager::recordInstanceStopped(int id, const std::string& error) //TODO utile ?
    {
       //TODO positionner le keyword state
       //boost::shared_ptr<database::entities::CPlugin> instanceData(boost::make_shared<database::entities::CPlugin>());//TODO passer par la factory

@@ -61,12 +61,6 @@ namespace pluginSystem
                                                           boost::shared_ptr<shared::event::CEventHandler> managerEventHandler) const = 0;
 
       //--------------------------------------------------------------
-      /// \brief	                     Create the process logger
-      /// \return                      The process logger
-      //--------------------------------------------------------------
-      virtual boost::shared_ptr<shared::process::ILogger> createProcessLogger() const = 0;
-
-      //--------------------------------------------------------------
       /// \brief	                     Create the instance state handler
       ///\param [in] dbRequester                   Database requester
       ///\param [in] eventLogger                   Main event logger

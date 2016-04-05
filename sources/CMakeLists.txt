@@ -379,7 +379,6 @@ set(YADOMS_SRC
 	server/pluginSystem/IInstance.h
 	server/pluginSystem/IInstanceStateHandler.h
 	server/pluginSystem/ILibrary.h
-	server/pluginSystem/IPluginStateHandler.h
 	server/pluginSystem/IndicatorQualifier.h
 	server/pluginSystem/IndicatorQualifier.cpp
 	server/pluginSystem/Information.h
@@ -396,6 +395,8 @@ set(YADOMS_SRC
 	server/pluginSystem/ExternalPluginLibrary.cpp
 	server/pluginSystem/Factory.cpp
 	server/pluginSystem/Factory.h
+	server/pluginSystem/Logger.h
+	server/pluginSystem/Logger.cpp
 	server/pluginSystem/Manager.h
 	server/pluginSystem/Manager.cpp
 	server/pluginSystem/ManagerEvent.h
@@ -410,8 +411,6 @@ set(YADOMS_SRC
    server/pluginSystem/NativeExecutableCommandLine.cpp
    server/pluginSystem/NativeExecutableCommandLine.h
 	server/pluginSystem/PluginException.hpp
-	server/pluginSystem/PluginStateHandler.h
-	server/pluginSystem/PluginStateHandler.cpp
 	server/pluginSystem/Process.h
 	server/pluginSystem/Process.cpp
    server/pluginSystem/yPluginApiImplementation.h

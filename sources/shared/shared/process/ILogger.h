@@ -1,5 +1,4 @@
 #pragma once
-#include <Poco/LogStream.h>
 
 namespace shared { namespace process
 {

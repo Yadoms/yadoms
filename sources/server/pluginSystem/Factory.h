@@ -28,8 +28,6 @@ namespace pluginSystem
 
       boost::shared_ptr<const shared::plugin::information::IInformation> createInformation(const std::string& pluginName) const override;
 
-      boost::shared_ptr<shared::process::ILogger> createProcessLogger() const override;
-
       boost::shared_ptr<IInstance> createInstance(boost::shared_ptr<const database::entities::CPlugin> instanceData,
                                                   boost::shared_ptr<database::IDataProvider> dataProvider,
                                                   boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
@@ -43,6 +41,8 @@ namespace pluginSystem
       // [END] IFactory Implementation
 
    private:
+      boost::shared_ptr<shared::process::ILogger> createProcessLogger(const std::string& pluginName) const;
+
       boost::shared_ptr<ICommandLine> createCommandLine(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
                                                         const std::string& messageQueueId) const;
 
@@ -56,9 +56,10 @@ namespace pluginSystem
 
       boost::filesystem::path getPluginPath(const std::string& pluginName) const;
 
+      bool isValidPlugin(const boost::filesystem::path& directory) const;
       std::vector<boost::filesystem::path> findPluginDirectories() const;
 
 
-      const boost::filesystem::path& m_pluginPath;
+      const boost::filesystem::path m_pluginPath;
    };
 } // namespace pluginSystem

@@ -27,7 +27,6 @@
 #include "automation/RuleManager.h"
 #include <shared/ServiceLocator.h>
 #include "startupOptions/IStartupOptions.h"
-#include "Version.h"
 #include "dateTime/DateTimeNotifier.h"
 
 
@@ -102,20 +101,20 @@ void CSupervisor::run()
       boost::shared_ptr<web::poco::CWebServer> webServer(new web::poco::CWebServer(webServerIp, webServerPort, webServerPath, "/rest/", "/ws"));
       webServer->getConfigurator()->websiteHandlerAddAlias("plugins", pluginsPath);
       webServer->getConfigurator()->websiteHandlerAddAlias("scriptInterpreters", scriptInterpretersPath);
-      webServer->getConfigurator()->configureAuthentication(boost::shared_ptr<authentication::IAuthentication>(new authentication::CBasicAuthentication(dal->getConfigurationManager(), startupOptions->getNoPasswordFlag())));
-      webServer->getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPlugin(pDataProvider, pluginManager, *pluginGateway)));
-      webServer->getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CDevice(pDataProvider, *pluginGateway)));
-      webServer->getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPage(pDataProvider)));
-      webServer->getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CWidget(pDataProvider, webServerPath)));
-      webServer->getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CConfiguration(dal->getConfigurationManager())));
-      webServer->getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPluginEventLogger(pDataProvider)));
-      webServer->getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CEventLogger(dal->getEventLogger())));
-      webServer->getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CSystem()));
-      webServer->getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CAcquisition(pDataProvider)));
-      webServer->getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CAutomationRule(pDataProvider, automationRulesManager)));
-      webServer->getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CTask(taskManager)));
-      webServer->getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CRecipient(pDataProvider)));
-      webServer->getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CUpdate(updateManager)));
+      webServer->getConfigurator()->configureAuthentication(boost::make_shared<authentication::CBasicAuthentication>(dal->getConfigurationManager(), startupOptions->getNoPasswordFlag()));
+      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CPlugin>(pDataProvider, pluginManager, *pluginGateway));
+      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CDevice>(pDataProvider, *pluginGateway));
+      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CPage>(pDataProvider));
+      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CWidget>(pDataProvider, webServerPath));
+      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CConfiguration>(dal->getConfigurationManager()));
+      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CPluginEventLogger>(pDataProvider));
+      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CEventLogger>(dal->getEventLogger()));
+      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CSystem>());
+      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CAcquisition>(pDataProvider));
+      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CAutomationRule>(pDataProvider, automationRulesManager));
+      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CTask>(taskManager));
+      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CRecipient>(pDataProvider));
+      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CUpdate>(updateManager));
 
       webServer->start();
 
@@ -201,7 +200,7 @@ void CSupervisor::run()
    }
 }
 
-void CSupervisor::requestToStop()
+void CSupervisor::requestToStop() const
 {
    if (m_EventHandler)
       m_EventHandler->postEvent(kStopRequested);

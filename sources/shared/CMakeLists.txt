@@ -246,6 +246,8 @@ set(SHARED_LIB_SRC
 	${SHARED_LIB_SRC}
 	windows/shared/DynamicLibrary.h
 	windows/shared/DynamicLibrary.cpp
+	windows/shared/Executable.h
+	windows/shared/Executable.cpp
 	windows/shared/Export.h
    windows/shared/FileSystemExtension.h
 	windows/shared/FileSystemExtension.cpp
@@ -263,6 +265,8 @@ set(SHARED_LIB_SRC
 	${SHARED_LIB_SRC}
 	mac/shared/DynamicLibrary.h
 	mac/shared/DynamicLibrary.cpp
+	mac/shared/Executable.h
+	mac/shared/Executable.cpp
 	mac/shared/Export.h
    mac/shared/FileSystemExtension.h
 	mac/shared/FileSystemExtension.cpp
@@ -280,6 +284,8 @@ set(SHARED_LIB_SRC
 	${SHARED_LIB_SRC}
 	linux/shared/DynamicLibrary.h
 	linux/shared/DynamicLibrary.cpp
+	linux/shared/Executable.h
+	linux/shared/Executable.cpp
 	linux/shared/Export.h
    linux/shared/FileSystemExtension.h
 	linux/shared/FileSystemExtension.cpp

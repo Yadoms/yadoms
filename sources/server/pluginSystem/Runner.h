@@ -1,6 +1,5 @@
 #pragma once
 #include <shared/process/IRunner.h>
-#include <shared/process/IStopNotifier.h>
 #include <shared/process/IProcess.h>
 #include "IInstanceStateHandler.h"
 

@@ -1,12 +1,13 @@
 #include "stdafx.h"
 #include "NativeExecutableCommandLine.h"
+#include <shared/Executable.h>
 
 namespace pluginSystem
 {
    CNativeExecutableCommandLine::CNativeExecutableCommandLine(const boost::filesystem::path& workingDirectory,
-                                                              const std::string& executableName,
+                                                              const std::string& pluginName,
                                                               const std::vector<std::string> parameters)
-      :m_workingDirectory(workingDirectory), m_executableName(executableName), m_args(parameters)
+      : m_workingDirectory(workingDirectory), m_pluginName(pluginName), m_args(parameters)
    {
    }
 
@@ -16,7 +17,7 @@ namespace pluginSystem
 
    std::string CNativeExecutableCommandLine::executable() const
    {
-      return m_executableName;
+      return shared::CExecutable::ToFileName(m_pluginName);
    }
 
    const boost::filesystem::path& CNativeExecutableCommandLine::workingDirectory() const
@@ -33,5 +34,4 @@ namespace pluginSystem
    {
       return std::string();//TODO (si utile)
    }
-
 } // namespace pluginSystem

@@ -30,7 +30,7 @@ namespace pluginSystem
 
    private:
       const boost::filesystem::path m_workingDirectory;
-      const std::string m_executableName;
+      const std::string m_pluginName;
       const std::vector<std::string> m_args;
    };
 

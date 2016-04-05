@@ -8,7 +8,6 @@
 #include "IFactory.h"
 #include "ILibrary.h"
 #include "IInstance.h"
-#include "IPluginStateHandler.h"
 #include "database/IDataProvider.h"
 #include "database/IPluginRequester.h"
 #include <shared/event/EventHandler.hpp>
@@ -281,11 +280,6 @@ namespace pluginSystem
       boost::shared_ptr<dataAccessLayer::IDataAccessLayer> m_dataAccessLayer;
 
       //-----------------------------------------------------
-      ///\brief               The plugin state handler
-      //-----------------------------------------------------
-      boost::shared_ptr<IPluginStateHandler> m_pluginStateHandler;
-
-      //-----------------------------------------------------
       ///\brief               Flag indicating that Yadoms is being shutdown, so don't record rules stop in database
       //-----------------------------------------------------
       bool m_yadomsShutdown;
@@ -293,7 +287,7 @@ namespace pluginSystem
       //-----------------------------------------------------
       ///\brief               Event handler to manage events on all plugins
       //-----------------------------------------------------
-      boost::shared_ptr<shared::event::CEventHandler> m_pluginEventHandler;
+      boost::shared_ptr<shared::event::CEventHandler> m_pluginManagerEventHandler;
 
       //-----------------------------------------------------
       ///\brief               Thread managing plugin asynchronous events

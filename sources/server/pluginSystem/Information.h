@@ -13,7 +13,7 @@ namespace pluginSystem
    public:
       //--------------------------------------------------------------
       /// \brief	      Constructor
-      /// \param[in]    pluginPath : plugin full path (includes executable name)
+      /// \param[in]    pluginPath : plugin path
       /// \throw        exception::CInvalidParameter if file is not valid or complete
       //--------------------------------------------------------------
       explicit CInformation(const boost::filesystem::path& pluginPath);

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Factory.h"
 #include <shared/Log.h>
-#include <shared/DynamicLibrary.h>
+#include <shared/Executable.h>
 #include "Information.h"
 #include "Instance.h"
 #include "InstanceStateHandler.h"
@@ -12,6 +12,7 @@
 #include "Process.h"
 #include "Runner.h"
 #include "InvalidPluginException.hpp"
+#include "Logger.h"
 
 namespace pluginSystem
 {
@@ -42,7 +43,7 @@ namespace pluginSystem
                                                              managerEventHandler,
                                                              instanceData->Id());
 
-      auto logger = createProcessLogger();
+      auto logger = createProcessLogger(instanceData->Type());
 
       auto yPluginApi(boost::make_shared<CYPluginApiImplementation>(pluginInformation, //TODO déplacer la construction dans m_factory
                                                                     instanceData,
@@ -61,13 +62,9 @@ namespace pluginSystem
                                            runner);
    }
 
-   boost::shared_ptr<shared::process::ILogger> CFactory::createProcessLogger() const
+   boost::shared_ptr<shared::process::ILogger> CFactory::createProcessLogger(const std::string& pluginName) const
    {
-      return boost::shared_ptr<shared::process::ILogger>();
-
-      //TODO
-      //boost::shared_ptr<shared::process::ILogger> logger(new CLogger(scriptPath));
-      //return logger;
+      return boost::make_shared<CLogger>(pluginName);
    }
 
    boost::shared_ptr<IInstanceStateHandler> CFactory::createInstanceStateHandler(boost::shared_ptr<database::IPluginRequester> dbRequester,
@@ -122,8 +119,22 @@ namespace pluginSystem
    {
       auto path(m_pluginPath);
       path /= pluginName;
-      path /= shared::CDynamicLibrary::ToFileName(pluginName);
       return path;
+   }
+
+   bool CFactory::isValidPlugin(const boost::filesystem::path& directory) const
+   {
+      // Check if plugin is a native executable plugin //TODO ça serait mieux dans une classe à part
+      const auto expectedLibName(shared::CExecutable::ToFileName(directory.filename().string()));
+
+      for (boost::filesystem::directory_iterator fileIterator(directory); fileIterator != boost::filesystem::directory_iterator(); ++fileIterator)
+      {
+         if (boost::filesystem::is_regular_file(fileIterator->status()) && // It's a file...
+            boost::iequals(fileIterator->path().filename().string(), expectedLibName)) // ...with the same name as sub-directory...
+            return true;
+      }
+
+      return false;
    }
 
    std::vector<boost::filesystem::path> CFactory::findPluginDirectories() const
@@ -137,19 +148,8 @@ namespace pluginSystem
          // Check all subdirectories in m_pluginPath
          for (boost::filesystem::directory_iterator subDirIterator(m_pluginPath); subDirIterator != boost::filesystem::directory_iterator(); ++subDirIterator)
          {
-            if (boost::filesystem::is_directory(subDirIterator->status()))
-            {
-               // Subdirectory, check if it is a plugin (= contains a dynamic library with same name)
-               const auto expectedLibName(shared::CDynamicLibrary::ToFileName(subDirIterator->path().filename().string()));
-               for (boost::filesystem::directory_iterator fileIterator(subDirIterator->path()); fileIterator != boost::filesystem::directory_iterator(); ++fileIterator)
-               {
-                  if (boost::filesystem::is_regular_file(fileIterator->status()) && // It's a file...
-                     boost::iequals(fileIterator->path().filename().string(), expectedLibName)) // ...with the same name as sub-directory...
-                  {
-                     pluginDirectories.push_back(subDirIterator->path());
-                  }
-               }
-            }
+            if (boost::filesystem::is_directory(subDirIterator->status()) && isValidPlugin(subDirIterator->path()))
+               pluginDirectories.push_back(subDirIterator->path());
          }
       }
 

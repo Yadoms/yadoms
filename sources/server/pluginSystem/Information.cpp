@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Information.h"
-#include <shared/exception/NotImplemented.hpp>
 #include <shared/StringExtension.h>
 #include <boost/regex.hpp>
 #include "tools/SupportedPlatformsChecker.h"
@@ -11,7 +10,7 @@ namespace pluginSystem
 
 
    CInformation::CInformation(const boost::filesystem::path& pluginPath)
-      :m_path(pluginPath.parent_path()), m_isSupportedOnThisPlatform(true)
+      :m_path(pluginPath), m_isSupportedOnThisPlatform(true)
    {
       try
       {

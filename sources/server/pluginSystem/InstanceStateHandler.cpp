@@ -38,7 +38,7 @@ void CInstanceStateHandler::signalStartError(const std::string& error)
 {
    // Signal error
    YADOMS_LOG(error) << error;
-   m_eventLogger->addEvent(database::entities::ESystemEventCode::kRuleFailed, "Automation rules", error);
+   m_eventLogger->addEvent(database::entities::ESystemEventCode::kRuleFailed, (boost::format("Plugin instance #%1%") % m_instanceId).str(), error);
 
    // Signal the abnormal stop to asynchronously remove from list
    m_managerEventHandler->postEvent(kAbnormalStopped, std::pair<int, std::string>(m_instanceId, error));
