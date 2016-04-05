@@ -27,21 +27,15 @@ function clockViewModel() {
      */
     this.initialize = function () {
         var self = this;
-        var d = new $.Deferred();
-
-        self.widgetApi.loadCss("widgets/clock/widget.css")
-        .done(function () {
-            self.widgetApi.toolbar({
-                activated: false
-            });
-
-            setInterval(function () {
-                updateTime_(self);
-            }, 1000);
-            updateTime_(self);
-            d.resolve();
+        
+        self.widgetApi.toolbar({
+            activated: false
         });
 
-        return d.promise();
+        setInterval(function () {
+            updateTime_(self);
+        }, 1000);
+        updateTime_(self);
+
     };
 };

@@ -35,20 +35,13 @@ widgetViewModelCtor = function dimmerViewModel() {
      * @param widget widget class object
      */
     this.initialize = function () {
-        var self = this;
-        var d = new $.Deferred();
-        self.widgetApi.loadCss("widgets/dimmer/widget.css")
-        .done(function () {
-            //we configure the toolbar
-            self.widgetApi.toolbar({
-                activated: true,
-                displayTitle: true,
-                batteryItem: true
-            });
-            d.resolve();
+        
+        //we configure the toolbar
+        this.widgetApi.toolbar({
+            activated: true,
+            displayTitle: true,
+            batteryItem: true
         });
-
-        return d.promise();
     };
 
     this.configurationChanged = function () {
