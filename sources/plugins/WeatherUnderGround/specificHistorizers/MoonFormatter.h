@@ -1,13 +1,12 @@
 #pragma once
 #include <shared/Export.h>
 #include <shared/plugin/yPluginApi/historization/IHistorizable.h>
+#include <shared/DataContainer.h>
 
-namespace shared { namespace plugin { namespace yPluginApi { namespace historization
-{
    //-----------------------------------------------------
    ///\brief The message formatter
    //-----------------------------------------------------
-   class /*YADOMS_SHARED_EXPORT*/ CMoonFormatter
+   class CMoonFormatter
    {
    public:
       //-----------------------------------------------------
@@ -58,7 +57,5 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       //-----------------------------------------------------
       ///\brief               L'ensemble des unités
       //-----------------------------------------------------
-      CDataContainer m_Units;
+      shared::CDataContainer m_Units;
    };
-
-} } } } // namespace shared::plugin::yPluginApi::historization

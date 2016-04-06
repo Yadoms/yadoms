@@ -75,9 +75,7 @@ void CAstronomy::Parse( boost::shared_ptr<yApi::IYPluginApi> context, const IWUC
 			YADOMS_LOG(error) << "ERROR : " << error  << std::endl;
 
 			if (error.compare ("No cities match your search query") == 0)
-			{
 				context->setPluginState(yApi::historization::EPluginState::kCustom, "CityNotFound" );
-			}
 		}
 		else
 		{

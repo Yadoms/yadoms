@@ -3,8 +3,6 @@
 #include <shared/plugin/yPluginApi/historization/IHistorizable.h>
 #include "ForecastHelpers.h"
 
-namespace shared { namespace plugin { namespace yPluginApi { namespace historization
-{
    //-----------------------------------------------------
    ///\brief The message formatter
    //-----------------------------------------------------
@@ -87,12 +85,10 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       //-----------------------------------------------------
       ///\brief               The body value
       //-----------------------------------------------------
-      CDataContainer m_ConditionFrame;
+      shared::CDataContainer m_ConditionFrame;
 
       //-----------------------------------------------------
       ///\brief               L'ensemble des unités
       //-----------------------------------------------------
-      CDataContainer m_Units;
+      shared::CDataContainer m_Units;
    };
-
-} } } } // namespace shared::plugin::yPluginApi::historization

@@ -6,13 +6,12 @@
 #include <shared/plugin/yPluginApi/KeywordAccessMode.h>
 #include "ConditionFormatter.h"
 
-namespace shared { namespace plugin { namespace yPluginApi { namespace historization
-{
-   
+namespace yApi = shared::plugin::yPluginApi;
+
    //-----------------------------------------------------
    ///\brief A remote pc code historizable object
    //-----------------------------------------------------
-   class CConditionHistorizer : public IHistorizable
+   class CConditionHistorizer : public yApi::historization::IHistorizable
    {
    public:
       //-----------------------------------------------------
@@ -22,7 +21,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       ///\param[in] Period       Period time between each element
       //-----------------------------------------------------
       CConditionHistorizer(const std::string& keywordName, 
-                          const EKeywordAccessMode& accessMode);
+                          const yApi::EKeywordAccessMode& accessMode);
 
       //-----------------------------------------------------
       ///\brief                     Destructor
@@ -31,11 +30,11 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
 	  
       // IHistorizable implementation
       virtual const std::string& getKeyword() const;
-      virtual const CStandardCapacity& getCapacity() const;
-      virtual const EKeywordAccessMode& getAccessMode() const;
+      virtual const yApi::CStandardCapacity& getCapacity() const;
+      virtual const yApi::EKeywordAccessMode& getAccessMode() const;
       virtual std::string formatValue() const;
-      virtual const EMeasureType& getMeasureType() const;
-      virtual CDataContainer getTypeInfo() const;
+      virtual const yApi::historization::EMeasureType& getMeasureType() const;
+      virtual shared::CDataContainer getTypeInfo() const;
       // [END] IHistorizable implementation;	  
 
       //-----------------------------------------------------
@@ -97,7 +96,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       //-----------------------------------------------------
       ///\brief                     The access mode
       //-----------------------------------------------------
-      const EKeywordAccessMode& m_accessMode;
+      const yApi::EKeywordAccessMode& m_accessMode;
 
       //-----------------------------------------------------
       ///\brief                     The message content
@@ -105,5 +104,3 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       boost::shared_ptr<CConditionFormatter> m_content;
 	  
    };
-} } } } // namespace shared::plugin::yPluginApi::historization
-

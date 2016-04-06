@@ -11,7 +11,7 @@
 namespace yApi = shared::plugin::yPluginApi;
 
 CCondition::CCondition( std::string PluginName, std::string KeyWordName )
-   :m_PluginName ( PluginName ), m_condition( new yApi::historization::CConditionHistorizer(KeyWordName, yApi::EKeywordAccessMode::kGet ) )
+   :m_PluginName ( PluginName ), m_condition( new CConditionHistorizer(KeyWordName, yApi::EKeywordAccessMode::kGet ) )
 {}
 
 void CCondition::Initialize( boost::shared_ptr<yApi::IYPluginApi> context ) const

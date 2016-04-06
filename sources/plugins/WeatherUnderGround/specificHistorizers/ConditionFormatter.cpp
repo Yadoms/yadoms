@@ -4,9 +4,6 @@
 #include <shared/DataContainer.h>
 #include <shared/Log.h>
 
-namespace shared { namespace plugin { namespace yPluginApi { namespace historization
-{
-
 CConditionFormatter::CConditionFormatter( void )
 {}
 
@@ -68,7 +65,7 @@ CConditionFormatter::~CConditionFormatter()
 
 std::string CConditionFormatter::formatValue() const
 {
-   CDataContainer Temp;
+   shared::CDataContainer Temp;
 
    Temp.set ("Units", m_Units);
    Temp.set ("city", m_Localisation);
@@ -76,6 +73,4 @@ std::string CConditionFormatter::formatValue() const
 
    return Temp.serialize();
 }
-
-} } } } // namespace shared::plugin::yPluginApi::historization
 

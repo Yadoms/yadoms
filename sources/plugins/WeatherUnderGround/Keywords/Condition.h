@@ -86,5 +86,5 @@ namespace yApi = shared::plugin::yPluginApi;
       //--------------------------------------------------------------
       /// \brief	The pressure (hPa)
       //--------------------------------------------------------------
-      boost::shared_ptr<yApi::historization::CConditionHistorizer> m_condition;
+      boost::shared_ptr<CConditionHistorizer> m_condition;
    };
