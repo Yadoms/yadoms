@@ -25,8 +25,12 @@ function thermometerViewModel()
 	
    this.initialize = function() 
    {
-        //we create the battery indicator
-        this.widgetApi.toolbar.addBatteryIconToWidget();		
+       //we configure the toolbar
+       this.widgetApi.toolbar({
+           activated: true,
+           displayTitle: true,
+           batteryItem: true
+       });
    };
    
     /**
@@ -152,14 +156,14 @@ function thermometerViewModel()
        self.widgetApi.registerKeywordAcquisitions(self.widget.configuration.device.keywordId);
 	   
       //we fill the deviceId of the battery indicator
-       self.widgetApi.toolbar.configureBatteryIcon(self.widget.configuration.device.deviceId);
+       self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);
    };
 
    this.resized = function() 
    {
        var self = this;
 	   
-	   if (this.widget.height() <= 250 && this.widget.height() >= 150 && this.widget.width() <= 250 && this.widget.width() >= 150 )
+       if (this.widget.getHeight() <= 250 && this.widget.getHeight() >= 150 && this.widget.getWidth() <= 250 && this.widget.getWidth() >= 150)
 	   {
 		   self.WidgetWidth  = 190;
 		   self.WidgetHeight = 170;
@@ -167,7 +171,7 @@ function thermometerViewModel()
 		   self.refresh();
 		   isSmall = false;
 	   }
-	   else if (this.widget.height() <= 250 && this.widget.height() >= 150 && this.widget.width() >= 80 && this.widget.width() <= 110 )
+       else if (this.widget.getHeight() <= 250 && this.widget.getHeight() >= 150 && this.widget.getWidth() >= 80 && this.widget.getWidth() <= 110)
 	   {
 		   self.WidgetWidth  = 95;
 		   self.WidgetHeight = 170;
@@ -175,7 +179,7 @@ function thermometerViewModel()
 		   //To be painted only one time
 		   self.refresh();
 	   }	   
-	   else if (this.widget.height() <= 350 && this.widget.height() >= 250 && this.widget.width() >= 80 && this.widget.width() <= 110 )
+       else if (this.widget.getHeight() <= 350 && this.widget.getHeight() >= 250 && this.widget.getWidth() >= 80 && this.widget.getWidth() <= 110)
 	   {
 		   self.WidgetWidth  = 95;
 		   self.WidgetHeight = 272;
@@ -183,7 +187,7 @@ function thermometerViewModel()
 		   //To be painted only one time
 		   self.refresh();
 	   }  
-	   else if (this.widget.height() <= 350 && this.widget.height() >= 250 && this.widget.width() >= 180 && this.widget.width() <= 210 )
+       else if (this.widget.getHeight() <= 350 && this.widget.getHeight() >= 250 && this.widget.getWidth() >= 180 && this.widget.getWidth() <= 210)
 	   {
 		   self.WidgetWidth  = 190;
 		   self.WidgetHeight = 272;
@@ -191,7 +195,7 @@ function thermometerViewModel()
 		   //To be painted only one time
 		   self.refresh();
 	   }
-	   else if (this.widget.height() <= 450 && this.widget.height() >= 350 && this.widget.width() >= 180 && this.widget.width() <= 210 )
+       else if (this.widget.getHeight() <= 450 && this.widget.getHeight() >= 350 && this.widget.getWidth() >= 180 && this.widget.getWidth() <= 210)
 	   {
 		   self.WidgetWidth  = 190;
 		   self.WidgetHeight = 368;

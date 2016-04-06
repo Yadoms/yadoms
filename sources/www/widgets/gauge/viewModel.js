@@ -5,6 +5,15 @@
  */
 widgetViewModelCtor = function gaugeViewModel() {
 
+    var self = this;
+    //observable data
+    self.value = ko.observable("");
+    self.unit = ko.observable("");
+
+    this.valueAndUnit = ko.computed(function () {
+        return self.value() + " " + self.unit();
+    });
+
     /**
      * Initialization method
      * @param widget widget class object
@@ -14,23 +23,10 @@ widgetViewModelCtor = function gaugeViewModel() {
         
         var self = this;
 
-        //observable data
-
-        self.fontLabelSize = ko.observable("1.5em");
-        self.fontUnitSize = ko.observable("1.5em");
-
-        this.fontLabelSizeCss = ko.computed(function () {
-            return { "font-size": self.fontLabelSize() };
-        }, this);
-        this.fontUnitSizeCss = ko.computed(function () {
-            return { "font-size": self.fontUnitSize() };
-        }, this);
-
-        self.unit = "";
-
         self.stopsArray = null;
 
         self.$chart = self.widgetApi.find("div.innerDiv");
+        self.$value = self.widgetApi.find("div.value");
 
         var d = new $.Deferred();
         self.widgetApi.loadLibrary([
@@ -42,7 +38,12 @@ widgetViewModelCtor = function gaugeViewModel() {
         ]).done(function () {
             
             //we create the battery indicator
-            self.widget.$toolbar.append("<div class=\"widget-toolbar-battery\" deviceId=\"\"></div>");
+            self.widgetApi.toolbar.addBatteryIconToWidget();
+
+            //we get the unit of the keyword
+            self.widgetApi.getKeywordInformation(self.widget.configuration.device.keywordId).done(function (keyword) {
+                self.unit($.t(keyword.units));
+            });
 
             d.resolve();
         });
@@ -61,6 +62,7 @@ widgetViewModelCtor = function gaugeViewModel() {
             if (self.chart) {
                 var point = self.chart.series[0].points[0];
                 point.update(parseFloat(data.value));
+                self.value(data.value);
             }
         }
     };
@@ -72,13 +74,13 @@ widgetViewModelCtor = function gaugeViewModel() {
             return;
 
         //we register keyword new acquisition
-        WidgetApi.keyword.registerKeywordAcquisitions(self.widget, self.widget.configuration.device.keywordId);
+        self.widgetApi.registerKeywordAcquisitions(self.widget.configuration.device.keywordId);
 
         // Delete all elements in stopsArray
         self.stopsArray = [];
 
         //we fill the deviceId of the battery indicator
-        WidgetApi.toolbar.configureBatteryIcon(self.widget, self.widget.configuration.device.deviceId);
+        self.widgetApi.toolbar.configureBatteryIcon(self.widget.configuration.device.deviceId);
 
         switch (self.widget.configuration.displayMode.activeSection) {
             case "solidColor":
@@ -119,15 +121,15 @@ widgetViewModelCtor = function gaugeViewModel() {
 
             title: null,
             pane: {
-                center: ["50%", "85%"],
-                size: "140%",
-                startAngle: -90,
-                endAngle: 90,
+                //center: ["50%", "50%"],
+                size: "100%",
+                startAngle: 0,
+                endAngle: 360,
                 background: {
-                    backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || "#EEE",
-                    innerRadius: "60%",
+                    backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || "#EEE",  //TODO : change background color to adapt to color with opacity addded (ie Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0.3).get())
+                    innerRadius: "70%",
                     outerRadius: "100%",
-                    shape: "arc"
+                    borderWidth: 0
                 }
             },
 
@@ -135,21 +137,13 @@ widgetViewModelCtor = function gaugeViewModel() {
                 enabled: false
             },
             credits: {
-                enabled: false
+                enabled: true
             },
 
             // the value axis
             yAxis: {
                 lineWidth: 0,
-                minorTickInterval: null,
-                tickPixelInterval: 400,
-                tickWidth: 0,
-                labels: {
-                    enabled: true,
-                    align: "left",
-                    x: -5,
-                    y: 16
-                },
+                tickPositions: [],
                 min: parseInt(self.widget.configuration.customYAxisMinMax.content.minimumValue), //Minimum value
                 max: parseInt(self.widget.configuration.customYAxisMinMax.content.maximumValue), //Maximal value
                 stops: self.stopsArray // Stops for bar colors with thresholds
@@ -157,12 +151,11 @@ widgetViewModelCtor = function gaugeViewModel() {
 
             plotOptions: {
                 solidgauge: {
+                    borderWidth: '40px',
                     dataLabels: {
-                        enabled: true,
-                        y: 5,
-                        borderWidth: 0,
-                        useHTML: true
-                    }
+                        enabled: false
+                    },
+                    linecap: 'round'
                 }
             },
 
@@ -173,12 +166,12 @@ widgetViewModelCtor = function gaugeViewModel() {
             series: [{
                 name: 'Data',
                 data: [1],
-                dataLabels: {
+                /*dataLabels: {
                     formatter: function() {
                         return '<div class="value" style="text-align:center"><span>' + this.y.toFixed(1) + '</span><br/>' +
                                 '<span class="unit">' + this.series.units + '</span></div>';
                     }
-                },
+                },*/
                 units : "" //custom field
             }]
         };
@@ -188,56 +181,11 @@ widgetViewModelCtor = function gaugeViewModel() {
 
     this.resized = function () {
         var self = this;
-        //debugger;
+        debugger;
         if (!isNullOrUndefined(self.chart)) {
-            //this.chart.setSize(self.widget.width() - 10, self.widget.height() - 10, true);
-            
+            this.chart.setSize(self.widget.innerWidth() - 10, self.widget.innerHeight() - self.$value.height(), true);
         }
-       
-        //we manage the font size of value and its unit
-        var width = this.widget.width();
-        var height = this.widget.height();
-        
-        if (width <= 100) {
-            self.fontLabelSize("1em");
-            self.fontUnitSize("1em");
-            this.chart.panes[0].options.size = "60%";
-        } else if (width <= 200) {
-            self.fontLabelSize("1em");
-            self.fontUnitSize("1em");
-            this.chart.panes[0].options.size = "80%";
-        } else if (width <= 300) {
-            self.fontLabelSize("1em");
-            self.fontUnitSize("1em");
-            this.chart.panes[0].options.size = "140%";
-        } else {
-            self.fontLabelSize("1em");
-            self.fontUnitSize("1em");
-            this.chart.panes[0].options.size = "200%";
-        }
-
+        a = this;
         $(window).trigger("resize");
-        /*else {
-            this.chart.panes[0].options.size = "140%";
-            //we look for height and width
-            if (width <= 200) {
-                if (height <= 100) {
-                    self.fontLabelSize("3em");
-                    self.fontUnitSize("4.5em");
-                } else {
-                    self.fontLabelSize("3em");
-                    self.fontUnitSize("4.5em");
-                }
-            } else {
-                if (height <= 100) {
-                    self.fontLabelSize("3em");
-                    self.fontUnitSize("4.5em");
-                } else {
-                    self.fontLabelSize("3em");
-                    self.fontUnitSize("4.5em");
-                }
-            }
-        }*/
-
     };
 };

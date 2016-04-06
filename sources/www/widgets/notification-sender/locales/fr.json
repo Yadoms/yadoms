@@ -10,6 +10,8 @@
 	"text": "Envoyer une notification",
 	"sendNotificationButton": "Envoyer",
 	"message": "Message",
-	"to": "À",
-	"errorDuringSending": "Echec à l'envoi de la notification"
+  "to": "À",
+  "notificationSent" :  "Notification envoyée avec succés",
+  "errorDuringSending": "Echec à l'envoi de la notification",
+  "sending": "Envoi de la notification ..."
 }

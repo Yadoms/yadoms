@@ -1,0 +1,6 @@
+.widget-system-deactivated-widget, .deactivatedWidget {
+    margin: auto;
+    width: 100%;
+    text-align: center;
+    flex: 1;
+}

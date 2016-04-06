@@ -2,13 +2,18 @@
  * @license 
  * Highcharts funnel module
  *
- * (c) 2010-2014 Torstein Honsi
+ * (c) 2010-2016 Torstein Honsi
  *
  * License: www.highcharts.com/license
  */
-
-/*global Highcharts */
-(function (Highcharts) {
+/* eslint indent:0 */
+(function (factory) {
+    if (typeof module === 'object' && module.exports) {
+        module.exports = factory;
+    } else {
+        factory(Highcharts);
+    }
+}(function (Highcharts) {
 	
 'use strict';
 
@@ -82,7 +87,7 @@ seriesTypes.funnel = Highcharts.extendClass(seriesTypes.pie, {
 			height = getLength(options.height, plotHeight),
 			neckWidth = getLength(options.neckWidth, plotWidth),
 			neckHeight = getLength(options.neckHeight, plotHeight),
-			neckY = height - neckHeight,
+			neckY = (centerY - height / 2) + height - neckHeight,
 			data = series.data,
 			path,
 			fraction,
@@ -98,12 +103,14 @@ seriesTypes.funnel = Highcharts.extendClass(seriesTypes.pie, {
 
 		// Return the width at a specific y coordinate
 		series.getWidthAt = getWidthAt = function (y) {
-			return y > height - neckHeight || height === neckHeight ?
+			var top = (centerY - height / 2);
+			
+			return y > neckY || height === neckHeight ?
 				neckWidth :
-				neckWidth + (width - neckWidth) * ((height - neckHeight - y) / (height - neckHeight));
+				neckWidth + (width - neckWidth) * (1 - (y - top) / (height - neckHeight));
 		};
 		series.getX = function (y, half) {
-					return centerX + (half ? -1 : 1) * ((getWidthAt(reversed ? plotHeight - y : y) / 2) + options.dataLabels.distance);
+			return centerX + (half ? -1 : 1) * ((getWidthAt(reversed ? plotHeight - y : y) / 2) + options.dataLabels.distance);
 		};
 
 		// Expose
@@ -224,24 +231,30 @@ seriesTypes.funnel = Highcharts.extendClass(seriesTypes.pie, {
 		var series = this,
 			options = series.options,
 			chart = series.chart,
-			renderer = chart.renderer;
+			renderer = chart.renderer,
+			pointOptions,
+			pointAttr,
+			shapeArgs,
+			graphic;
 
 		each(series.data, function (point) {
-			var pointOptions = point.options,
-				graphic = point.graphic,
-				shapeArgs = point.shapeArgs;
+			pointOptions = point.options;
+			graphic = point.graphic;
+			shapeArgs = point.shapeArgs;
+
+			pointAttr = {
+				fill: point.color,
+				stroke: pick(pointOptions.borderColor, options.borderColor),
+				'stroke-width': pick(pointOptions.borderWidth, options.borderWidth)
+			};
 
 			if (!graphic) { // Create the shapes				
-				point.graphic = renderer.path(shapeArgs).
-					attr({
-						fill: point.color,
-						stroke: pick(pointOptions.borderColor, options.borderColor),
-						'stroke-width': pick(pointOptions.borderWidth, options.borderWidth)
-					}).
-					add(series.group);
+				point.graphic = renderer.path(shapeArgs)
+					.attr(pointAttr)
+					.add(series.group);
 					
 			} else { // Update the shapes
-				graphic.animate(shapeArgs);
+				graphic.attr(pointAttr).animate(shapeArgs);
 			}
 		});
 	},
@@ -312,4 +325,4 @@ Highcharts.seriesTypes.pyramid = Highcharts.extendClass(Highcharts.seriesTypes.f
 	type: 'pyramid'
 });
 
-}(Highcharts));
+}));
