@@ -5,20 +5,21 @@
 	"author": "yadoms team",
 	"url": "http://www.yadoms.com/wiki/widgets/chart.html",
 	"credits": "",
-	"dimensions": {
-		"min": {
-			"x": 3,
-			"y": 3
-		},
-		"max": {
-			"x": 10,
-			"y": 4
-		},
-		"default": {
-			"x": 3,
-			"y": 3
-		}
-	},
+  "dimensions": {
+    "min": {
+      "x": 3,
+      "y": 3
+    },
+    "max": {
+      "x": 10,
+      "y": 4
+    },
+    "default": {
+      "x": 3,
+      "y": 3
+    }
+  },
+  "hasTitle" :  true,
 	"configurationSchema": {
 		"interval": {
 			"type": "enum",
@@ -92,13 +93,5 @@
 				}
 			}
 		}
-	},
-	"navigator": {
-		"hour": "",
-		"day": "",
-		"week": "",
-		"month": "",
-		"half_month": "",
-		"year": ""
 	}
 }

@@ -1,8 +1,7 @@
 <script type="text/html" id="notification-sender-template">
-   <link href="widgets/notification-sender/widget.css" rel="stylesheet">
    <div class="notificationSenderWidget">
       <div class="sendNotificationText"><span data-i18n="widgets/notification-sender:text"></span> :</div>
-      <select class="to" data-bind="options: toList, optionsCaption: toCaption, optionsAfterRender: optionsAfterRender, optionsText: 'name', optionsValue: 'id', value: toSelected" data-i18n="[placeholder]widgets/notification-sender:to" required/>
+      <select class="to" data-bind="options: toList, optionsCaption: toCaption, optionsAfterRender: optionsAfterRender, optionsText: 'name', optionsValue: 'id', value: toSelected" data-i18n="[placeholder]widgets/notification-sender:to" required></select>
       <input class="body" data-bind="value: body" data-i18n="[placeholder]widgets/notification-sender:message">
       <button class="btn btn-lg btn-primary" data-bind="event: {click: function() {send()}}">
          <span class="glyphicon glyphicon-send"></span>

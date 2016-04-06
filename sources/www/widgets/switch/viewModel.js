@@ -43,6 +43,12 @@ widgetViewModelCtor =
            * @param widget widget class object
            */
           this.initialize = function () {
+              //we configure the toolbar
+              this.widgetApi.toolbar({
+                  activated: true,
+                  displayTitle: true,
+                  batteryItem: false
+              });
           };
 
           this.configurationChanged = function () {

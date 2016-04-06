@@ -35,8 +35,11 @@ function notificationSenderViewModel() {
          notification.to = self.toSelected();
          notification.body = self.body();
          notification.acknowledgment = 'true';
-      
-         KeywordManager.sendCommand(this.widget.configuration.device.keywordId, JSON.stringify(notification));
+
+          KeywordManager.sendCommand(this.widget.configuration.device.keywordId, JSON.stringify(notification))
+              .done(function() {
+                  self.widgetApi.notify($.t("widgets/notification-sender:notificationSent"), "success");
+              });
       }
    };
 
@@ -44,7 +47,10 @@ function notificationSenderViewModel() {
     * Initialization method
     * @param widget widget class object
     */
-   this.initialize = function() {
+   this.initialize = function () {
+       this.widgetApi.toolbar({
+           activated: false
+       });
    };
    
    /**

@@ -36,10 +36,7 @@
 
     <link href="libs/bootstrap-colorpicker-master/css/bootstrap-colorpicker.min.css" rel="stylesheet">
     <link rel="stylesheet" href="libs/bootstrap-iconpicker-1.7.0/css/bootstrap-iconpicker.min.css"/>
-
-    <!-- Gridstack includes -->
-    <link rel="stylesheet" href="libs/gridstack/css/gridstack.css"/>
-    <link rel="stylesheet" href="libs/gridstack/css/gridstack-extra.css"/>
+    <link rel="stylesheet" href="libs/jquery-ui/css/jquery-ui.min.css"/>
 </head>
 
 <body>
@@ -88,13 +85,15 @@
 
     <div id="tabContainer" class="container">
         <div class="tab-content">
-            <!-- Gridstack tabs will be inserted here -->
+            <!-- widget grids tabs will be inserted here -->
         </div>
         <footer class="footer">
             <button class="btn btn-primary" id="btn-show-qrcode"><i class="fa fa-qrcode"></i></button>
             <label id="copyrightLabel" class="label label-default">&copy; Yadoms 2016</label>
         </footer>
     </div>
+
+    <div id="templates" class="hidden"></div>
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
@@ -104,15 +103,19 @@
     <script src="libs/jquery-ui/js/jquery-ui.min.js"></script>
     <script src="libs/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js"></script>
     <script src="libs/bootstrap/js/bootstrap.min.js"></script>
-
     <script src="libs/knockout/js/knockout-3.0.0.js"></script>
-
     <script src="libs/i18next/js/i18next-1.7.2.min.js"></script>
     <script src="libs/lazyload/js/lazyload.js"></script>
-
     <script src="libs/moment.js/js/moment-with-langs.min.js"></script>
     <script src="libs/moment.js/js/moment-timezone.min.js"></script>
     <script src="libs/moment.js/js/moment-timezone-data.min.js"></script>
+    <script src="libs/jqBootstrapValidation/js/jqBootstrapValidation.min.js"></script>
+    <script src="libs/noty/js/packaged/jquery.noty.packaged.js"></script>
+    <script src="libs/bootstrap-colorpicker-master/js/bootstrap-colorpicker.min.js"></script>
+    <script src="libs/bootstrap-iconpicker-1.7.0/js/iconset/iconset-glyphicon.min.js"></script>
+    <script src="libs/bootstrap-iconpicker-1.7.0/js/bootstrap-iconpicker.min.js"></script>
+    <script src="libs/jquery-MD5/js/jquery.md5.min.js"></script>
+    <script src="libs/packery/packery.pkgd.min.js"></script>
 
     <script src="js/jquery-extensions.js"></script>
     <script src="js/knock-out-extenders.js"></script>
@@ -148,46 +151,16 @@
     <script src="js/objects/update/update-information-manager.js"></script>
     <script src="js/objects/update/update-information.js"></script>
     <script src="js/objects/update/yadoms-update-information-manager.js"></script>
-
-    <script src="libs/jqBootstrapValidation/js/jqBootstrapValidation.min.js"></script>
-    
     <script src="js/objects/configuration/configuration-helper.js"></script>
-
     <script src="js/objects/event-logger-manager.js"></script>
-
     <script src="js/rest-engine.js"></script>
     <script src="js/websocket-engine.js"></script>
     <script src="js/widget-engine.js"></script>
     <script src="js/widget-customization.js"></script>
-
     <script src="js/objects/date-time.js"></script>
-
-    <script src="libs/noty/js/packaged/jquery.noty.packaged.js"></script>
-    <!--
-    <script src="libs/highstock/js/highstock.js"></script>
-    <script src="libs/highstock/js/highcharts-more.js"></script>
-    <script src="libs/highstock/js/modules/exporting.js"></script>
-    <script src="libs/export-csv/js/export-csv.min.js"></script>
-    
-    <script src="libs/highcharts-export-clientside/js/highcharts-export-clientside.min.js"></script>
-        -->
-   <script src="libs/bootstrap-colorpicker-master/js/bootstrap-colorpicker.min.js"></script>
-	<script src="libs/bootstrap-iconpicker-1.7.0/js/iconset/iconset-glyphicon.min.js"></script>
-   <script src="libs/bootstrap-iconpicker-1.7.0/js/bootstrap-iconpicker.min.js"></script>
-
-
-<script src="js/objects/toolbar-api.js"></script>
     <script src="js/objects/widget-api.js"></script>
 
-    <script src="libs/jquery-MD5/js/jquery.md5.min.js"></script>
-
-    <script src="libs/lodash/lodash.min.js"></script>
-    <script src="libs/gridstack/js/gridstack.js"></script>
-
-    <div id="templates" class="hidden"></div>
-
     <script type="text/javascript">
-
         //base configuration
         $.ajaxSetup({ contentType: "application/json; charset=utf-8" });
 
@@ -201,7 +174,8 @@
            updateInterval: 5000,
            periodicDashboardTask : {},
            numberOfColumns: 12,
-           gridWidth : 100,
+           gridWidth: 100,
+           gridHeight: 100,
            gridMargin : 5
         };
 

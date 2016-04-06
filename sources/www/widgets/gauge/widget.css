@@ -8,17 +8,21 @@
 
 .widget-gauge .innerDiv {
     width: 100%;
-    height: 100%;
+    height: 80%;
     text-align: center;
     margin: auto;
 }
 
-.widget-gauge .unit {
-    color: silver;
-    text-align: center;
-}
-
 .widget-gauge .value {
-    color: black;
+    /*position: absolute;
+    margin: auto;
+    width: 40%;
+    left: 0;
+    top: 0;
+    right: 0;
+    text-align: center;*/
+    margin: auto;
     text-align: center;
+    width: 100%;
+    height: 20%;
 }

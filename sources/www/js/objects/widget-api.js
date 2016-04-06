@@ -10,7 +10,7 @@ function WidgetApi(widget) {
    assert(!isNullOrUndefined(widget), "widget must be defined");
 
    this.widget = widget;
-   this.toolbar = new ToolbarApi(widget);
+   this.widgetBatteryClass = "widget-toolbar-battery";
 }
 
 /**
@@ -81,3 +81,156 @@ WidgetApi.prototype.loadCss = function (cssFiles) {
       return asyncLoadCss(cssFiles);
    }
 };
+
+/**
+ * Configure toolbar
+ * @param {} options : json options (see wiki for help)
+ */
+WidgetApi.prototype.toolbar = function (options) {
+    assert(!isNullOrUndefined(options), "options must be defined");
+
+    var self = this;
+
+    //we define default values
+    options.activated = options.activated || false;
+    options.displayTitle = options.displayTitle || true;
+    options.items = options.items || [];
+    options.batteryItem = options.batteryItem || false;
+
+    //we manage options
+    self.widget.toolbarActivated = options.activated;
+
+    if (self.widget.toolbarActivated) {
+        self.find(".panel-widget-header").removeClass("hidden");
+        self.widget.displayTitle = options.displayTitle;
+
+        //we manage title
+        if (self.widget.displayTitle)
+            self.find(".panel-widget-title").removeClass("hidden");
+        else
+            self.find(".panel-widget-title").addClass("hidden");
+
+        //battery
+        if (options.batteryItem) {
+            self.widget.$toolbar.append("<div class=\"" + self.widgetBatteryClass + "\" deviceId=\"\"></div>");
+        }
+
+        //all other items
+        $.each(options.items, function(index, value) {
+            if (value.hasOwnProperty("custom")) {
+                self.widget.$toolbar.append(value["custom"]);
+            } else if (value.hasOwnProperty("separator")) {
+                //for the moment value has no effect. Reserved for future use with options like margin, ...
+                self.widget.$toolbar.append("<div class=\"widget-toolbar-separator\"></div>");
+
+            } else {
+                console.error("Unknown item type: " + index);
+            }
+        });
+    } else {
+        self.find(".panel-widget-header").addClass("hidden");
+    }
+};
+
+/**
+ * Check if the widget use battery item and configure it
+ */
+WidgetApi.prototype.manageBatteryConfiguration = function () {
+
+    var self = this;
+    var $battery = self.widget.$toolbar.find("." + self.widgetBatteryClass);
+    if ($battery.length > 0) {
+        //we clear the div that will contain the battery indicator
+        $battery.empty();
+        var deviceId = $battery.attr("deviceId");
+        if (deviceId) {
+            //we check for the device to look if it has battery keyword
+            DeviceManager.getKeywordsByDeviceId(deviceId)
+            .done(function (keywords) {
+                var batteryLevel = keywords.find(function (element) { return element.capacityName === "batteryLevel"; });
+                if (batteryLevel) {
+                    //it has capacity
+                    $battery.append("<span class=\"\"/>");
+                    $battery.attr("keywordId", batteryLevel.id);
+                    //we add it to the filter of keyword for websockets
+                    self.widget.viewModel.widgetApi.registerKeywordAcquisitions(batteryLevel.id);
+
+                    //we ask immediately for the battery value
+                    AcquisitionManager.getLastValue(batteryLevel.id)
+                    .done(function (lastValue) {
+                        self.widget.viewModel.widgetApi.updateBatteryLevel(lastValue.value);
+                    })
+                    .fail(function (error) {
+                        notifyError($.t("objects.generic.errorGetting", { objectName: "Acquisition KeywordId = " + batteryLevel.id }), error);
+                    });
+                }
+                else {
+                    //we can hide the div to prevent margin spaces before the title
+                    $battery.hide();
+                }
+            })
+            .fail(function (error) {
+                notifyError($.t("objects.generic.errorGetting", { objectName: "keyword for device = " + deviceId }), error);
+            });
+        }
+    }
+}
+
+/**
+ * Apply batterylevel onto the icon of the toolbar
+ */
+WidgetApi.prototype.updateBatteryLevel = function (batteryLevel) {
+    assert(!isNullOrUndefined(batteryLevel), "batteryLevel must be defined");
+    var self = this;
+
+    //we compute the battery fill
+    var fill;
+    var lvl = parseInt(batteryLevel);
+    if (lvl < 20.0)
+        fill = 0;
+    else if (lvl < 40.0)
+        fill = 1;
+    else if (lvl < 60.0)
+        fill = 2;
+    else if (lvl < 80.0)
+        fill = 3;
+    else
+        fill = 4;
+
+    this.widget.$toolbar.find("div." + self.widgetBatteryClass + " span").removeClass().addClass("fa fa-battery-" + fill);
+};
+
+/**
+ * Define the keyword Id of the battery toolbar icon. 
+ */
+WidgetApi.prototype.configureBatteryIcon = function (deviceId) {
+    assert(!isNullOrUndefined(deviceId), "deviceId must be defined");
+    var $batteryIcon = this.widget.$toolbar.find("." + this.widgetBatteryClass);
+    if ($batteryIcon) {
+        $batteryIcon.attr("deviceId", deviceId);
+    }
+}
+
+/**
+ * Make the text which has class "textfit" fit into the widget
+ */
+WidgetApi.prototype.fitText = function () {
+    var $texts = this.find(".textfit");
+    if ($texts)
+        $texts.fitText();
+}
+
+/**
+ * Notify a message to the window using noty library
+ * @param message message to display
+ * @param gravity gravity of the message
+ * @returns {noty}
+ * @param timeout timeout of the noty
+ */
+WidgetApi.prototype.notify = function(message, gravity, timeout) {
+    assert(message != undefined, "Message must be defined");
+    gravity = gravity || "information";
+    timeout = timeout || defaultNotyTimeout;
+    
+    return noty({ text: message, timeout: timeout, layout: defaultNotyLayout, type: gravity });
+}

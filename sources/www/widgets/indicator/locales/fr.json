@@ -7,10 +7,6 @@
 			"name": "Périphérique interrupteur",
 			"description": "Périphérique à afficher"
 		},
-		"showDeviceName": {
-			"name": "Affichage du nom du device",
-			"description": "Activation de l'affichage du nom du device"
-		},
 		"icon": {
 			"name": "Icône du voyant",
 			"description": "Sélectionner la représentation du voyant à afficher"

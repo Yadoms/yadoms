@@ -63,7 +63,6 @@ function exitCustomization(saveCustomization) {
         if (currentPage.loaded) {
             $.each(currentPage.widgets, function (index, currentWidget) {
                 WidgetManager.enableCustomization(currentWidget, false);
-                currentWidget.updateDataFromGrid();
             });
 
             if (saveCustomization) {
