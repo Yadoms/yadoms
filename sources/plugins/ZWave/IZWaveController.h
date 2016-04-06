@@ -38,31 +38,31 @@ public:
    /// \param [in] 	keyword  the targetted keyword
    /// \param [in] 	value    the value
    //--------------------------------------------------------------
-   virtual void SendCommand(const std::string & device, const std::string & keyword, const std::string & value) = 0;
+   virtual void sendCommand(const std::string & device, const std::string & keyword, const std::string & value) = 0;
 
    //--------------------------------------------------------------
    /// \brief	Start the inclusion mode
    //--------------------------------------------------------------
-   virtual void StartInclusionMode() = 0;
+   virtual void startInclusionMode() = 0;
 
    //--------------------------------------------------------------
    /// \brief	Start the exclusion mode
    //--------------------------------------------------------------
-   virtual void StartExclusionMode() = 0;
+   virtual void startExclusionMode() = 0;
 
    //--------------------------------------------------------------
    /// \brief	Reset controller and erase network configuration (all associations)
    //--------------------------------------------------------------
-   virtual void HardResetController() = 0;
+   virtual void hardResetController() = 0;
 
    //--------------------------------------------------------------
    /// \brief	Reset controller without erasing network (reboot controller)
    //--------------------------------------------------------------
-   virtual void SoftResetController() = 0;
+   virtual void softResetController() = 0;
 
    //--------------------------------------------------------------
    /// \brief	Test the network
    //--------------------------------------------------------------
-   virtual void TestNetwork() = 0;
+   virtual void testNetwork() = 0;
 
 };

@@ -26,7 +26,7 @@ COpenZWaveController::~COpenZWaveController()
 
 }
 
-void OnGlobalNotification(OpenZWave::Notification const* _notification, void* _context)
+void onGlobalNotification(OpenZWave::Notification const* _notification, void* _context)
 {
    try
    {
@@ -34,7 +34,7 @@ void OnGlobalNotification(OpenZWave::Notification const* _notification, void* _c
 
       COpenZWaveController * pPlugin = static_cast<COpenZWaveController *>(_context);
       if (pPlugin != NULL)
-         pPlugin->OnNotification(_notification, _context);
+         pPlugin->onNotification(_notification, _context);
    }
    catch (OpenZWave::OZWException & ex)
    {
@@ -103,7 +103,7 @@ bool COpenZWaveController::start()
       // is passed to the OnNotification method.  If the OnNotification is a method of
       // a class, the context would usually be a pointer to that class object, to
       // avoid the need for the notification handler to be a static.
-      OpenZWave::Manager::Get()->AddWatcher(OnGlobalNotification, this);
+      OpenZWave::Manager::Get()->AddWatcher(onGlobalNotification, this);
 
       // Add a Z-Wave Driver
       
@@ -189,14 +189,14 @@ void COpenZWaveController::stop()
 }
 
 
-boost::shared_ptr<COpenZWaveNode> COpenZWaveController::GetNode(OpenZWave::Notification const* _notification)
+boost::shared_ptr<COpenZWaveNode> COpenZWaveController::getNode(OpenZWave::Notification const* _notification)
 {
    uint32 const homeId = _notification->GetHomeId();
    uint8 const nodeId = _notification->GetNodeId();
-   return GetNode(homeId, nodeId);
+   return getNode(homeId, nodeId);
 }
 
-boost::shared_ptr<COpenZWaveNode> COpenZWaveController::GetNode(const int homeId, const uint8 nodeId)
+boost::shared_ptr<COpenZWaveNode> COpenZWaveController::getNode(const int homeId, const uint8 nodeId)
 {
    for (NodeListType::iterator it = m_nodes.begin(); it != m_nodes.end(); ++it)
    {
@@ -211,7 +211,7 @@ boost::shared_ptr<COpenZWaveNode> COpenZWaveController::GetNode(const int homeId
 
 
 
-void COpenZWaveController::OnNotification(OpenZWave::Notification const* _notification, void* _context)
+void COpenZWaveController::onNotification(OpenZWave::Notification const* _notification, void* _context)
 {
    // Must do this inside a critical section to avoid conflicts with the main thread
    boost::lock_guard<boost::mutex> lock(m_treeMutex);
@@ -225,7 +225,7 @@ void COpenZWaveController::OnNotification(OpenZWave::Notification const* _notifi
    {
    case OpenZWave::Notification::Type_ValueAdded:
    {
-      boost::shared_ptr<COpenZWaveNode> node = GetNode(_notification);
+      boost::shared_ptr<COpenZWaveNode> node = getNode(_notification);
       if (node)
          node->registerKeyword(vID, m_configuration->getIncludeSystemKeywords());
       break;
@@ -236,7 +236,7 @@ void COpenZWaveController::OnNotification(OpenZWave::Notification const* _notifi
 
    case OpenZWave::Notification::Type_ValueChanged:
    {
-      boost::shared_ptr<COpenZWaveNode> node = GetNode(_notification);
+      boost::shared_ptr<COpenZWaveNode> node = getNode(_notification);
       if (node)
       {
          boost::shared_ptr<IOpenZWaveNodeKeyword> kw = node->getKeyword(vID, m_configuration->getIncludeSystemKeywords());
@@ -276,7 +276,7 @@ void COpenZWaveController::OnNotification(OpenZWave::Notification const* _notifi
 
    case OpenZWave::Notification::Type_NodeProtocolInfo:
    {
-      boost::shared_ptr<COpenZWaveNode> node = GetNode(_notification);
+      boost::shared_ptr<COpenZWaveNode> node = getNode(_notification);
       if (node)
       {
          //OpenZWave::Manager::Get()->GetControllerInterfaceType()
@@ -289,7 +289,7 @@ void COpenZWaveController::OnNotification(OpenZWave::Notification const* _notifi
 
    case OpenZWave::Notification::Type_NodeNaming:
    {
-      boost::shared_ptr<COpenZWaveNode> nodeInfo = GetNode(_notification);
+      boost::shared_ptr<COpenZWaveNode> nodeInfo = getNode(_notification);
       if (nodeInfo)
       {
          std::string sNodeName = OpenZWave::Manager::Get()->GetNodeName(nodeInfo->getHomeId(), nodeInfo->getNodeId());
@@ -446,7 +446,7 @@ void COpenZWaveController::OnNotification(OpenZWave::Notification const* _notifi
 }
 
 
-void COpenZWaveController::RetreiveOpenZWaveIds(const std::string & device, const std::string & keyword,  int & homeId, uint8 & nodeId)
+void COpenZWaveController::retreiveOpenZWaveIds(const std::string & device, const std::string & keyword,  int & homeId, uint8 & nodeId)
 {
    std::vector<std::string> splittedDevice;
    boost::split(splittedDevice, device, boost::is_any_of("."), boost::token_compress_on);
@@ -458,7 +458,7 @@ void COpenZWaveController::RetreiveOpenZWaveIds(const std::string & device, cons
    nodeId = static_cast<uint8>(atoi(splittedDevice[1].c_str())); //dont use lexical cast for uint8, because it realize a string to char conversion: "2" is transform in '2' = 0x32
 }
 
-void COpenZWaveController::SendCommand(const std::string & device, const std::string & keyword, const std::string & value)
+void COpenZWaveController::sendCommand(const std::string & device, const std::string & keyword, const std::string & value)
 {
    boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
@@ -466,37 +466,37 @@ void COpenZWaveController::SendCommand(const std::string & device, const std::st
    uint8 nodeId;
    ECommandClass keywordClass;
 
-   RetreiveOpenZWaveIds(device, keyword, homeId, nodeId);
+   retreiveOpenZWaveIds(device, keyword, homeId, nodeId);
 
-   boost::shared_ptr<COpenZWaveNode> node = GetNode(homeId, nodeId);
+   boost::shared_ptr<COpenZWaveNode> node = getNode(homeId, nodeId);
    if (node)
    {
       node->sendCommand(keyword, value);
    }
 }
 
-void COpenZWaveController::StartInclusionMode()
+void COpenZWaveController::startInclusionMode()
 {
    OpenZWave::Manager::Get()->AddNode(m_homeId);
    
 }
 
-void COpenZWaveController::StartExclusionMode()
+void COpenZWaveController::startExclusionMode()
 {
    OpenZWave::Manager::Get()->RemoveNode(m_homeId);
 }
 
-void COpenZWaveController::HardResetController()
+void COpenZWaveController::hardResetController()
 {
    OpenZWave::Manager::Get()->ResetController(m_homeId);
 }
 
-void COpenZWaveController::SoftResetController()
+void COpenZWaveController::softResetController()
 {
    OpenZWave::Manager::Get()->SoftReset(m_homeId);
 }
 
-void COpenZWaveController::TestNetwork()
+void COpenZWaveController::testNetwork()
 {
    OpenZWave::Manager::Get()->TestNetwork(m_homeId, 10); //send 10 frames to each node
 }

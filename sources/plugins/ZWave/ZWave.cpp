@@ -57,7 +57,7 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
                YADOMS_LOG(debug) << "Command received from Yadoms :" << command->toString();
                try
                {
-                  m_controller->SendCommand(command->getTargetDevice(), command->getKeyword(), command->getBody());
+                  m_controller->sendCommand(command->getTargetDevice(), command->getKeyword(), command->getBody());
                }
                catch (shared::exception::CException & ex)
                {
@@ -84,23 +84,23 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 
                   if (extraCommand->getCommand() == "inclusionMode")
                   {
-                     m_controller->StartInclusionMode();
+                     m_controller->startInclusionMode();
                   } 
                   else if (extraCommand->getCommand() == "exclusionMode")
                   {
-                     m_controller->StartExclusionMode();
+                     m_controller->startExclusionMode();
                   }
                   else if (extraCommand->getCommand() == "hardReset")
                   {
-                     m_controller->HardResetController();
+                     m_controller->hardResetController();
                   }
                   else if (extraCommand->getCommand() == "softReset")
                   {
-                     m_controller->SoftResetController();
+                     m_controller->softResetController();
                   }
                   else if (extraCommand->getCommand() == "testNetwork")
                   {
-                     m_controller->TestNetwork();
+                     m_controller->testNetwork();
                   }
                }
                break;
