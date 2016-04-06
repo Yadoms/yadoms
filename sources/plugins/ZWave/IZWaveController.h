@@ -49,4 +49,20 @@ public:
    /// \brief	Start the exclusion mode
    //--------------------------------------------------------------
    virtual void StartExclusionMode() = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	Reset controller and erase network configuration (all associations)
+   //--------------------------------------------------------------
+   virtual void HardResetController() = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	Reset controller without erasing network (reboot controller)
+   //--------------------------------------------------------------
+   virtual void SoftResetController() = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	Test the network
+   //--------------------------------------------------------------
+   virtual void TestNetwork() = 0;
+
 };

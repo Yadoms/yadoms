@@ -186,6 +186,33 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
             }
             break;
          }
+
+         case yApi::IYPluginApi::kEventExtraCommand:
+         {
+            // Command was received from Yadoms
+            boost::shared_ptr<const yApi::IExtraCommand> extraCommand = context->getEventHandler().getEventData<boost::shared_ptr<const yApi::IExtraCommand> >();
+
+            if (extraCommand)
+            {
+               YADOMS_LOG(debug) << "Extra command received : " << extraCommand->getCommand();
+
+               if (extraCommand->getCommand() == "simpleCommand")
+               {
+                  YADOMS_LOG(information) << "Simple command received";
+               }
+               else if (extraCommand->getCommand() == "dataCommand")
+               {
+                  std::string s = extraCommand->getData().get<std::string>("testValue");
+                  YADOMS_LOG(information) << "Command with data received : data=" << s;
+               }
+               else if (extraCommand->getCommand() == "dataBindingCommand")
+               {
+                  std::string value = extraCommand->getData().get<std::string>("networkInterface");
+                  YADOMS_LOG(information) << "Command with data received : value=" << value;
+               }
+            }
+            break;
+         }
          default:
             {
                YADOMS_LOG(error) << "Unknown or unsupported message id " << context->getEventHandler().getEventId();

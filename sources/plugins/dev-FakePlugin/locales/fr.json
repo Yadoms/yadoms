@@ -91,5 +91,28 @@
 			"connecting": "Connexion en cours...",
 			"updateConfiguration": "Mise à jour de la configuration..."
 		}
+	},
+	"extraCommands" : {
+		"simpleCommand" : {
+			"name" : "Commande simple"
+		},
+		"dataCommand" : {
+			"name" : "Commande avec des données",
+			"commandData" : {
+				"testValue": {
+					"name": "UnTexte",
+					"description": "Description du texte à saisir"
+				}			
+			}
+		},	
+		"dataBindingCommand" : {
+			"name" : "Commande avec des données liées",
+			"commandData" : {
+				"networkInterface": {
+					"name": "Interface réseau",
+					"description": "Choisir l'interface réseau (liste issue d'une requête serveur)"
+				}			
+			}
+		}
 	}
 }

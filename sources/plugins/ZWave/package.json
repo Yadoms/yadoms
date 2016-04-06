@@ -29,13 +29,14 @@
 		"exclusionMode" : {
 			"iconClass" : "fa fa-minus"
 		},
-		"newGroup" : {
-			"iconClass" : "fa fa-group",
-			"commandData" : {
-				"groupeName": {
-					"type": "string"
-				}			
-			}
+		"softReset" : {
+			"iconClass" : "fa fa-refresh"
+		},
+		"testNetwork" : {
+			"iconClass" : "fa fa-check"
+		},
+		"hardReset" : {
+			"iconClass" : "fa fa-legal"
 		}
 	}
 }

@@ -85,16 +85,22 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
                   if (extraCommand->getCommand() == "inclusionMode")
                   {
                      m_controller->StartInclusionMode();
-                  }
-                  if (extraCommand->getCommand() == "exclusionMode")
+                  } 
+                  else if (extraCommand->getCommand() == "exclusionMode")
                   {
-                     //m_controller->StartExclusionMode();
+                     m_controller->StartExclusionMode();
                   }
-                  if (extraCommand->getCommand() == "newGroup")
+                  else if (extraCommand->getCommand() == "hardReset")
                   {
-                     std::string newGroupName = extraCommand->getData().get<std::string>("groupName");
-                     YADOMS_LOG(debug) << "Group name: " << newGroupName;
-                     //m_controller->StartExclusionMode(); 
+                     m_controller->HardResetController();
+                  }
+                  else if (extraCommand->getCommand() == "softReset")
+                  {
+                     m_controller->SoftResetController();
+                  }
+                  else if (extraCommand->getCommand() == "testNetwork")
+                  {
+                     m_controller->TestNetwork();
                   }
                }
                break;

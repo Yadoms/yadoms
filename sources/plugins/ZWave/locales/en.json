@@ -27,14 +27,14 @@
 		"exclusionMode" : {
 			"name" : "Start exclusion mode"
 		},
-		"newGroup" : {
-			"name" : "Create new group",
-			"commandData" : {
-				"groupeName": {
-					"name" : "The new group name",
-					"description" : "Enter the new group name"
-				}			
-			}
+		"softReset" : {
+			"name" : "Restart the ZWave controller"
+		},
+		"testNetwork" : {
+			"name" : "Test ZWave network"
+		},
+		"hardReset" : {
+			"name" : "Reset controller and erase network"
 		}
 	}	
 	

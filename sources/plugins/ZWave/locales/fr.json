@@ -27,14 +27,14 @@
 		"exclusionMode" : {
 			"name" : "Passage en mode exclusion"
 		},
-		"newGroup" : {
-			"name" : "Création d'un nouveau groupe",
-			"commandData" : {
-				"groupeName": {
-					"name" : "Le nom du groupe",
-					"description" : "Le nouveau groupe à créer"
-				}			
-			}
+		"softReset" : {
+			"name" : "Redémarre le contrôlleur ZWave"
+		},
+		"testNetwork" : {
+			"name" : "Test du réseau ZWave"
+		},
+		"hardReset" : {
+			"name" : "Réinitialise le contrôlleur et efface le réseau"
 		}
 	}	
 }

@@ -478,11 +478,27 @@ void COpenZWaveController::SendCommand(const std::string & device, const std::st
 void COpenZWaveController::StartInclusionMode()
 {
    OpenZWave::Manager::Get()->AddNode(m_homeId);
+   
 }
 
 void COpenZWaveController::StartExclusionMode()
 {
    OpenZWave::Manager::Get()->RemoveNode(m_homeId);
+}
+
+void COpenZWaveController::HardResetController()
+{
+   OpenZWave::Manager::Get()->ResetController(m_homeId);
+}
+
+void COpenZWaveController::SoftResetController()
+{
+   OpenZWave::Manager::Get()->SoftReset(m_homeId);
+}
+
+void COpenZWaveController::TestNetwork()
+{
+   OpenZWave::Manager::Get()->TestNetwork(m_homeId, 10); //send 10 frames to each node
 }
 
 
