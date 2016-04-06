@@ -2,6 +2,7 @@
 #include "IPythonExecutable.h"
 #include <shared/process/ILogger.h>
 #include <shared/process/IProcess.h>
+#include "IScriptFile.h"
 
 //--------------------------------------------------------------
 /// \brief	Python executable

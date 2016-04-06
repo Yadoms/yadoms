@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "yPluginApiImplementation.h"
-#include <shared/exception/InvalidParameter.hpp>
 #include <shared/exception/EmptyResult.hpp>
 #include <shared/Log.h>
 #include <shared/plugin/yPluginApi/historization/SingleHistorizableData.hpp>

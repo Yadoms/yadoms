@@ -1,6 +1,7 @@
 #pragma once
 #include "IFactory.h"
 #include "ICommandLine.h"
+#include "IContextAccessor.h"
 #include <shared/shared/process/IRunner.h>
 #include <shared/shared/process/IProcess.h>
 
@@ -53,6 +54,11 @@ namespace pluginSystem
       boost::shared_ptr<shared::process::IRunner> createInstanceRunner(boost::shared_ptr<ICommandLine> commandLine,
                                                                        boost::shared_ptr<shared::process::ILogger> logger,
                                                                        boost::shared_ptr<IInstanceStateHandler> stopNotifier) const;
+
+      boost::shared_ptr<IContextAccessor> createInstanceRunningContext(boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
+                                                                       boost::shared_ptr<const database::entities::CPlugin> instanceData,
+                                                                       boost::shared_ptr<database::IDataProvider> dataProvider,
+                                                                       boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer) const;
 
       boost::filesystem::path getPluginPath(const std::string& pluginName) const;
 

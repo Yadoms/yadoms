@@ -45,6 +45,7 @@ set(SHARED_LIB_SRC
    shared/communication/IAsyncPort.h
    shared/communication/IBufferLogger.h
    shared/communication/IReceiveBufferHandler.h
+   shared/communication/MessageQueueRemover.hpp
    shared/communication/PortException.hpp
 	
 	shared/compression/Extract.h

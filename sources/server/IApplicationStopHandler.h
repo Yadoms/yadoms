@@ -16,12 +16,19 @@ public:
    //--------------------------------------------------------------
    enum EStopMode
    {
-      kYadomsOnly,         ///< Stops only Yadoms
-      kStopSystem,         ///< Stops Yadoms + halts system
-      kRestartSystem,      ///< Stops Yadoms + reboot system
+      kYadomsOnly, ///< Stops only Yadoms
+      kStopSystem, ///< Stops Yadoms + halts system
+      kRestartSystem, ///< Stops Yadoms + reboot system
    };
 
-public:
+
+   //--------------------------------------------------------------
+   /// \brief	    Destructor
+   //--------------------------------------------------------------
+   virtual ~IApplicationStopHandler()
+   {
+   }
+
    //-----------------------------------------------------------------------------
    /// \brief		                     Constructor
    /// \param[in] targetEventHandler   Event handler to notify
@@ -33,5 +40,5 @@ public:
    /// \brief		                     Register a callback used when app is about to end
    /// \param[in] callbackAfterStopped Callback
    //-----------------------------------------------------------------------------
-   virtual void registerForAppEnds(boost::shared_ptr<shared::event::CEventHandler> & handler, const int code) = 0;
+   virtual void registerForAppEnds(boost::shared_ptr<shared::event::CEventHandler>& handler, const int code) = 0;
 };

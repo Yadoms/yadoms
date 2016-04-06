@@ -221,7 +221,7 @@ set(LIBS ${LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${RT_LIBRARY} ${Po
 
 
 ##################################################################################################
-## Internal libraries (SQlite, Webem) completly build from sources
+## Internal libraries (SQlite, Webem) completely build from sources
 ##################################################################################################
 
 #Use Sqlite database system
@@ -366,15 +366,18 @@ set(YADOMS_SRC
    
 	server/pluginSystem/BasicQualifier.h
 	server/pluginSystem/BasicQualifier.cpp
-   server/pluginSystem/CommandHistorizer.cpp
    server/pluginSystem/CommandHistorizer.h
-   server/pluginSystem/DeviceCommand.cpp
+   server/pluginSystem/CommandHistorizer.cpp
+   server/pluginSystem/ContextAccessor.h
+   server/pluginSystem/ContextAccessor.cpp
    server/pluginSystem/DeviceCommand.h
+   server/pluginSystem/DeviceCommand.cpp
 	server/pluginSystem/DummyQualifier.h
 	server/pluginSystem/DummyQualifier.cpp
-	server/pluginSystem/IdentityForQualifier.cpp
 	server/pluginSystem/IdentityForQualifier.h
+	server/pluginSystem/IdentityForQualifier.cpp
    server/pluginSystem/ICommandLine.h
+   server/pluginSystem/IContextAccessor.h
 	server/pluginSystem/IFactory.h
 	server/pluginSystem/IInstance.h
 	server/pluginSystem/IInstanceStateHandler.h
@@ -387,11 +390,11 @@ set(YADOMS_SRC
 	server/pluginSystem/Instance.cpp
 	server/pluginSystem/InstanceStateHandler.h
 	server/pluginSystem/InstanceStateHandler.cpp
-	server/pluginSystem/IQualifier.h
 	server/pluginSystem/InvalidPluginException.hpp
 	server/pluginSystem/InternalPluginLibrary.h
 	server/pluginSystem/InternalPluginLibrary.cpp
 	server/pluginSystem/InternalPluginLibrary.cpp
+	server/pluginSystem/IQualifier.h
 	server/pluginSystem/ExternalPluginLibrary.cpp
 	server/pluginSystem/Factory.cpp
 	server/pluginSystem/Factory.h
@@ -408,6 +411,7 @@ set(YADOMS_SRC
    server/pluginSystem/BindingQueryRequest.h
    server/pluginSystem/ManuallyDeviceCreationTestData.cpp
    server/pluginSystem/ManuallyDeviceCreationTestData.h
+   server/pluginSystem/Messages.h
    server/pluginSystem/NativeExecutableCommandLine.cpp
    server/pluginSystem/NativeExecutableCommandLine.h
 	server/pluginSystem/PluginException.hpp
@@ -798,8 +802,15 @@ ELSEIF(APPLE)
 	set(SHARED_INCL_DIR ${SHARED_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/shared/mac)
 ELSE()
 	set(SHARED_INCL_DIR ${SHARED_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/shared/linux)
-ENDIF()
+ENDIF()   
+	
 
+
+##################################################################################################
+## IPC messages static library for plugins
+##################################################################################################
+add_subdirectory(plugin_IPC)
+set(PLUGIN_IPC_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/plugin_IPC)
 
 ##################################################################################################
 ## Plugins
@@ -826,6 +837,8 @@ set(YADOMS_INCL_DIR
 	${CMAKE_CURRENT_SOURCE_DIR}/server
 	${YADOMS_INCL_DIR}
 	${SHARED_INCL_DIR}
+   ${PROTOBUF_INCLUDE_DIRS}
+   ${plugin_IPC_GENERATED_DIR}
 )
 
 set(YADOMS_ALL_INCL_DIR
@@ -840,7 +853,7 @@ set_property( TARGET yadoms PROPERTY INCLUDE_DIRECTORIES ${YADOMS_ALL_INCL_DIR})
 ##################################################################################################
 ## Link
 ##################################################################################################
-target_link_libraries(yadoms yadoms-shared ${YADOMS_EXTERNAL_LINK} ${LIBS} ${CMAKE_DL_LIBS})
+target_link_libraries(yadoms yadoms-shared plugin_IPC ${YADOMS_EXTERNAL_LINK} ${LIBS} ${CMAKE_DL_LIBS})
 
 
 

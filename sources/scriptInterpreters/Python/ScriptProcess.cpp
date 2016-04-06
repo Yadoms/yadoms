@@ -21,7 +21,7 @@ CScriptProcess::CScriptProcess(
 
 CScriptProcess::~CScriptProcess()
 {
-   interrupt();
+   CScriptProcess::interrupt();
 }
 
 void CScriptProcess::start()

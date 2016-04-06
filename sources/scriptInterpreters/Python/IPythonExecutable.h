@@ -1,6 +1,4 @@
 #pragma once
-#include <shared/process/ILogger.h>
-#include "IScriptFile.h"
 
 //--------------------------------------------------------------
 /// \brief	Python executable interface

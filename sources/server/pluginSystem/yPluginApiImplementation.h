@@ -39,21 +39,21 @@ namespace pluginSystem
       virtual ~CYPluginApiImplementation();
 
       // IYPluginApi implementation
-      virtual void setPluginState(const shared::plugin::yPluginApi::historization::EPluginState& state, const std::string & customMessageId = std::string());
-      virtual bool deviceExists(const std::string& device) const;
-      virtual shared::CDataContainer getDeviceDetails(const std::string& device) const;
-      virtual void declareDevice(const std::string& device, const std::string& model, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer);
-      virtual bool keywordExists(const std::string& device, const std::string& keyword) const;
-      virtual bool keywordExists(const std::string& device, const shared::plugin::yPluginApi::historization::IHistorizable& keyword) const;
-      virtual void declareKeyword(const std::string& device, const shared::plugin::yPluginApi::historization::IHistorizable& keyword, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer);
-      virtual std::string getRecipientValue(int recipientId, const std::string& fieldName) const;
-      virtual std::vector<int> findRecipientsFromField(const std::string& fieldName, const std::string& expectedFieldValue) const;
-      virtual bool recipientFieldExists(const std::string& fieldName) const;
-      virtual void historizeData(const std::string& device, const shared::plugin::yPluginApi::historization::IHistorizable& data);
-      virtual void historizeData(const std::string& device, const std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > & dataVect);
-      virtual const shared::plugin::information::IInformation& getInformation() const;
-      virtual shared::CDataContainer getConfiguration() const;
-      virtual shared::event::CEventHandler & getEventHandler();
+      void setPluginState(const shared::plugin::yPluginApi::historization::EPluginState& state, const std::string & customMessageId = std::string()) override;
+      bool deviceExists(const std::string& device) const override;
+      shared::CDataContainer getDeviceDetails(const std::string& device) const override;
+      void declareDevice(const std::string& device, const std::string& model, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) override;
+      bool keywordExists(const std::string& device, const std::string& keyword) const override;
+      bool keywordExists(const std::string& device, const shared::plugin::yPluginApi::historization::IHistorizable& keyword) const override;
+      void declareKeyword(const std::string& device, const shared::plugin::yPluginApi::historization::IHistorizable& keyword, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) override;
+      std::string getRecipientValue(int recipientId, const std::string& fieldName) const override;
+      std::vector<int> findRecipientsFromField(const std::string& fieldName, const std::string& expectedFieldValue) const override;
+      bool recipientFieldExists(const std::string& fieldName) const override;
+      void historizeData(const std::string& device, const shared::plugin::yPluginApi::historization::IHistorizable& data) override;
+      void historizeData(const std::string& device, const std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > & dataVect) override;
+      const shared::plugin::information::IInformation& getInformation() const override;
+      shared::CDataContainer getConfiguration() const override;
+      shared::event::CEventHandler & getEventHandler() override;
       // [END] IYPluginApi implementation 
       
       //-----------------------------------------------------

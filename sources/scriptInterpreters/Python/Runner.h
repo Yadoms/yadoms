@@ -2,6 +2,7 @@
 #include "IPythonExecutable.h"
 #include "IScriptFile.h"
 #include <shared/DataContainer.h>
+#include <shared/process/ILogger.h>
 #include <shared/process/IProcess.h>
 #include <shared/process/IRunner.h>
 #include <shared/process/IStopNotifier.h>

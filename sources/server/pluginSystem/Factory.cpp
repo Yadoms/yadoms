@@ -13,6 +13,7 @@
 #include "Runner.h"
 #include "InvalidPluginException.hpp"
 #include "Logger.h"
+#include "ContextAccessor.h"
 
 namespace pluginSystem
 {
@@ -45,11 +46,10 @@ namespace pluginSystem
 
       auto logger = createProcessLogger(instanceData->Type());
 
-      auto yPluginApi(boost::make_shared<CYPluginApiImplementation>(pluginInformation, //TODO déplacer la construction dans m_factory
-                                                                    instanceData,
-                                                                    dataProvider,
-                                                                    dataAccessLayer->getDeviceManager(),
-                                                                    dataAccessLayer->getAcquisitionHistorizer()));
+      auto yPluginApi = createInstanceRunningContext(pluginInformation,
+                                                     instanceData,
+                                                     dataProvider,
+                                                     dataAccessLayer);
 
       auto commandLine = createCommandLine(pluginInformation,
                                            std::string()/*TODO*/);
@@ -114,6 +114,21 @@ namespace pluginSystem
       auto process = createProcess(commandLine, logger, stopNotifier);
       return boost::make_shared<CRunner>(process, stopNotifier);
    }
+
+   boost::shared_ptr<IContextAccessor> CFactory::createInstanceRunningContext(boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
+                                                                              boost::shared_ptr<const database::entities::CPlugin> instanceData,
+                                                                              boost::shared_ptr<database::IDataProvider> dataProvider,
+                                                                              boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer) const
+   {
+      auto apiImplementation(boost::make_shared<CYPluginApiImplementation>(pluginInformation,
+                                                                           instanceData,
+                                                                           dataProvider,
+                                                                           dataAccessLayer->getDeviceManager(),
+                                                                           dataAccessLayer->getAcquisitionHistorizer()));
+
+      return boost::make_shared<CContextAccessor>(apiImplementation);
+   }
+
 
    boost::filesystem::path CFactory::getPluginPath(const std::string& pluginName) const
    {

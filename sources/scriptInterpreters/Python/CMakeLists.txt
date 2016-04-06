@@ -25,7 +25,6 @@ if(PYTHONLIBS_FOUND)
       IPythonExecutable.h
       IScriptFile.h
       Messages.h
-      MessageQueueRemover.hpp
       Python.h
       Python.cpp
       PythonException.hpp
