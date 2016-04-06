@@ -119,7 +119,7 @@
 /// \brief  Declare indexes script static value
 //
 #define DECLARE_STATIC_INDEXES_CREATION_SCRIPT(_classname, _indexSeq) \
-   const std::vector<std::string> C##_classname##Table::m_indexesCreationScript = boost::assign::list_of(_indexSeq);
+   const std::vector<std::string> C##_classname##Table::m_indexesCreationScript = boost::assign::list_of##_indexSeq;
 
 
 //

@@ -111,8 +111,7 @@ namespace database {  namespace sqlite {  namespace requesters {
       throw shared::exception::CEmptyResult(sEx);
    }
 
-
-   boost::shared_ptr<entities::CAcquisition> CAcquisition::getKeywordLastData(const int keywordId)
+   boost::shared_ptr<entities::CAcquisition> CAcquisition::getKeywordLastData(const int keywordId, bool throwIfNotExists)
    {
       CQuery qSelect;
       qSelect. Select().
@@ -128,8 +127,12 @@ namespace database {  namespace sqlite {  namespace requesters {
       {
          return adapter.getResults()[0];
       }
-      std::string sEx = (boost::format("Cannot retrieve any acquisition for the keyword id=%1% in database") % keywordId).str(); 
-      throw shared::exception::CEmptyResult(sEx);
+      if (throwIfNotExists)
+      {
+         std::string sEx = (boost::format("Cannot retrieve any acquisition for the keyword id=%1% in database") % keywordId).str();
+         throw shared::exception::CEmptyResult(sEx);
+      }
+      return boost::shared_ptr<entities::CAcquisition>();
    }
 
    std::vector<boost::tuple<boost::posix_time::ptime, std::string>  > CAcquisition::getKeywordData(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)

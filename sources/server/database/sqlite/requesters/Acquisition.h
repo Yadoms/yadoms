@@ -35,7 +35,7 @@ namespace database { namespace sqlite {
          virtual bool summaryDataExists(const int keywordId, database::entities::EAcquisitionSummaryType curType, boost::posix_time::ptime & date);
          virtual void removeKeywordData(const int keywordId);
          virtual boost::shared_ptr<entities::CAcquisition> getAcquisitionByKeywordAndDate(const int keywordId, boost::posix_time::ptime time);
-         virtual boost::shared_ptr<entities::CAcquisition> getKeywordLastData(const int keywordId);
+         virtual boost::shared_ptr<entities::CAcquisition> getKeywordLastData(const int keywordId, bool throwIfNotExists = true);
          virtual std::vector<boost::tuple<boost::posix_time::ptime, std::string>  > getKeywordData(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo);
          virtual std::vector<boost::shared_ptr<entities::CAcquisitionSummary> > getKeywordDataByDay(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo);
          virtual std::vector<boost::shared_ptr<entities::CAcquisitionSummary> > getKeywordDataByHour(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo);
