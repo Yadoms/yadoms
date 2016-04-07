@@ -4,7 +4,7 @@
 #include "Messages.h"
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 
-namespace pluginSystem
+namespace pluginSystem //TODO refactorer pour factoriser avec le CContextAccessor des scripts (y'a moyen)
 {
    //--------------------------------------------------------------
    /// \brief	yScriptApi context accessor, based on message queues

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "FakePlugin.h"
-#include <shared/plugin/ImplementationHelper.h>
+#include <plugin_cpp_api/ImplementationHelper.h>
 #include <shared/Log.h>
 #include "FakeSensor.h"
 #include "FakeCounter.h"
@@ -11,7 +11,7 @@
 #include <boost/random/independent_bits.hpp>
 #include "FakeController.h"
 
-// Use this macro to define all necessary to make your library a Yadoms valid plugin.
+// Use this macro to define all necessary to make your plugin a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
 IMPLEMENT_PLUGIN(CFakePlugin)
 
@@ -30,17 +30,17 @@ enum
    kSendSensorsStateTimerEventId = yApi::IYPluginApi::kPluginFirstEventId,   // Always start from yApi::IYPluginApi::kPluginFirstEventId
 };
 
-void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
+void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    try
    {
       // Informs Yadoms about the plugin actual state
-      context->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
+      api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
 
       YADOMS_LOG(debug) << "CFakePlugin is starting...";
 
       // Load configuration values (provided by database)
-      m_configuration.initializeWith(context->getConfiguration());
+      m_configuration.initializeWith(api->getConfiguration());
       // Trace the configuration (just for test)
       m_configuration.trace();
 
@@ -56,38 +56,38 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 
 
       // Declare these sensors to Yadoms (devices and associated keywords) if not already declared
-      fakeSensor1.declareDevice(context);
-      fakeSensor2.declareDevice(context);
-      fakeCounter.declareDevice(context);
-      fakeOnOffReadOnlySwitch.declareDevice(context);
-      fakeOnOffReadWriteSwitch.declareDevice(context);
-      fakeDimmableReadOnlySwitch.declareDevice(context);
-      fakeDimmableReadWriteSwitch.declareDevice(context);
-      fakeController.declareDevice(context);
+      fakeSensor1.declareDevice(api);
+      fakeSensor2.declareDevice(api);
+      fakeCounter.declareDevice(api);
+      fakeOnOffReadOnlySwitch.declareDevice(api);
+      fakeOnOffReadWriteSwitch.declareDevice(api);
+      fakeDimmableReadOnlySwitch.declareDevice(api);
+      fakeDimmableReadWriteSwitch.declareDevice(api);
+      fakeController.declareDevice(api);
 
       // Timer used to send fake sensor states periodically
-      context->getEventHandler().createTimer(kSendSensorsStateTimerEventId, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(10));
+      api->getEventHandler().createTimer(kSendSensorsStateTimerEventId, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(10));
 
-      context->setPluginState(yApi::historization::EPluginState::kRunning);
+      api->setPluginState(yApi::historization::EPluginState::kRunning);
 
       // the main loop
       while (1)
       {
          // Wait for an event
-         switch(context->getEventHandler().waitForEvents())
+         switch(api->getEventHandler().waitForEvents())
          {
          case yApi::IYPluginApi::kEventDeviceCommand:
             {
                // A command was received from Yadoms
-               boost::shared_ptr<const yApi::IDeviceCommand> command = context->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
+               boost::shared_ptr<const yApi::IDeviceCommand> command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
                YADOMS_LOG(debug) << "Command received from Yadoms :" << command->toString();
                break;
             }
          case yApi::IYPluginApi::kEventUpdateConfiguration:
             {
                // Configuration was updated
-               context->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
-               shared::CDataContainer newConfiguration = context->getEventHandler().getEventData<shared::CDataContainer>();
+               api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
+               shared::CDataContainer newConfiguration = api->getEventHandler().getEventData<shared::CDataContainer>();
                YADOMS_LOG(debug) << "Update configuration...";
                BOOST_ASSERT(!newConfiguration.empty());  // newConfigurationValues shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
@@ -100,7 +100,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
                // Trace the configuration
                m_configuration.trace();
 
-               context->setPluginState(yApi::historization::EPluginState::kRunning);
+               api->setPluginState(yApi::historization::EPluginState::kRunning);
 
                break;
             }
@@ -117,19 +117,19 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
                fakeController.read();
 
                YADOMS_LOG(debug) << "Send the periodically sensors state...";
-               fakeSensor1.historizeData(context);
-               fakeSensor2.historizeData(context);
-               fakeCounter.historizeData(context);
-               fakeOnOffReadOnlySwitch.historizeData(context);
-               fakeDimmableReadOnlySwitch.historizeData(context);
-               fakeController.historizeData(context);
+               fakeSensor1.historizeData(api);
+               fakeSensor2.historizeData(api);
+               fakeCounter.historizeData(api);
+               fakeOnOffReadOnlySwitch.historizeData(api);
+               fakeDimmableReadOnlySwitch.historizeData(api);
+               fakeController.historizeData(api);
 
                break;
             }
 
          case yApi::IYPluginApi::kEventManuallyDeviceCreation:
          {
-            boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> data = context->getEventHandler().getEventData< boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> >();
+            boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> data = api->getEventHandler().getEventData< boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> >();
             try
             {
                // Yadoms asks for device creation
@@ -137,10 +137,10 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
                std::string dyn = data->getData().getConfiguration().get<std::string>("dynamicSection.content.interval");
 
 					std::string devId = (boost::format("%1%_%2%_0x%3$08X") % sni % dyn % shared::tools::CRandom::generateNbBits(26, false)).str();
-               context->declareDevice(devId, "FakeDevice_" + devId, data->getData().getConfiguration());
+               api->declareDevice(devId, "FakeDevice_" + devId, data->getData().getConfiguration());
 
                yApi::historization::CSwitch manualSwitch("manualSwitch");
-               context->declareKeyword(devId, manualSwitch);
+               api->declareKeyword(devId, manualSwitch);
 
                data->sendSuccess(devId);
 
@@ -155,7 +155,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
          case yApi::IYPluginApi::kBindingQuery:
          {
             // Yadoms ask for a binding query 
-            boost::shared_ptr<yApi::IBindingQueryRequest> data = context->getEventHandler().getEventData< boost::shared_ptr<yApi::IBindingQueryRequest> >();
+            boost::shared_ptr<yApi::IBindingQueryRequest> data = api->getEventHandler().getEventData< boost::shared_ptr<yApi::IBindingQueryRequest> >();
             if (data->getData().getQuery() == "test")
             {
                shared::CDataContainer ev;
@@ -188,7 +188,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
          }
          default:
             {
-               YADOMS_LOG(error) << "Unknown or unsupported message id " << context->getEventHandler().getEventId();
+               YADOMS_LOG(error) << "Unknown or unsupported message id " << api->getEventHandler().getEventId();
                break;
             }
          }
@@ -202,5 +202,5 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
       YADOMS_LOG(information) << "Thread is stopping...";
    }
 
-   context->setPluginState(yApi::historization::EPluginState::kStopped);
+   api->setPluginState(yApi::historization::EPluginState::kStopped);
 }

@@ -94,9 +94,6 @@ set(SHARED_LIB_SRC
    shared/http/HttpMethods.h
    shared/http/HttpMethods.cpp
 
-   shared/plugin/ImplementationHelper.h
-   shared/plugin/IPlugin.h
-	
    shared/plugin/information/IInformation.h
 
    shared/plugin/yPluginApi/commonIncludes.h

@@ -381,7 +381,6 @@ set(YADOMS_SRC
 	server/pluginSystem/IFactory.h
 	server/pluginSystem/IInstance.h
 	server/pluginSystem/IInstanceStateHandler.h
-	server/pluginSystem/ILibrary.h
 	server/pluginSystem/IndicatorQualifier.h
 	server/pluginSystem/IndicatorQualifier.cpp
 	server/pluginSystem/Information.h
@@ -817,6 +816,7 @@ set(PLUGIN_IPC_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/plugin_IPC)
 ##################################################################################################
 
 #include Plugins CMake file
+add_subdirectory(plugin_cpp_api)
 add_subdirectory(plugins)
 
 

@@ -1,5 +1,5 @@
 #pragma once
-#include <shared/plugin/IPlugin.h>
+#include <plugin_cpp_api/IPlugin.h>
 #include "FakePluginConfiguration.h"
 
 // Shortcut to yPluginApi namespace
@@ -12,7 +12,7 @@ namespace yApi = shared::plugin::yPluginApi;
 ///         - process a command from Yadoms
 ///         - send sensor state to Yadoms
 //--------------------------------------------------------------
-class CFakePlugin : public shared::plugin::IPlugin
+class CFakePlugin : public plugin_cpp_api::IPlugin
 {
 public:
    //--------------------------------------------------------------
@@ -26,8 +26,8 @@ public:
    virtual ~CFakePlugin();
 
    // IPlugin implementation
-   virtual void doWork(boost::shared_ptr<yApi::IYPluginApi> context);
-  // [END] IPlugin implementation
+   virtual void doWork(boost::shared_ptr<yApi::IYPluginApi> api);
+   // [END] IPlugin implementation
 
 private:
    //--------------------------------------------------------------
@@ -35,6 +35,4 @@ private:
    //--------------------------------------------------------------
    CFakePluginConfiguration m_configuration;
 };
-
-
 

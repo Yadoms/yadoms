@@ -40,13 +40,13 @@ CFakeController::~CFakeController()
 {
 }
 
-void CFakeController::declareDevice(boost::shared_ptr<yApi::IYPluginApi> context)
+void CFakeController::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   if (!context->deviceExists(m_deviceName))
-      context->declareDevice(m_deviceName, getModel());
+   if (!api->deviceExists(m_deviceName))
+      api->declareDevice(m_deviceName, getModel());
 
-   if (!context->keywordExists(m_deviceName, m_currentValues))
-      context->declareKeyword(m_deviceName, m_currentValues);
+   if (!api->keywordExists(m_deviceName, m_currentValues))
+      api->declareKeyword(m_deviceName, m_currentValues);
 }
 
 void CFakeController::read()
@@ -63,12 +63,12 @@ void CFakeController::read()
       m_currentValues.set(EFakeControllerValues::kStop);
 }
 
-void CFakeController::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
+void CFakeController::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
-   if (!context)
-      throw shared::exception::CException("context must be defined");
+   if (!api)
+      throw shared::exception::CException("api must be defined");
 
-   context->historizeData(m_deviceName, m_currentValues);
+   api->historizeData(m_deviceName, m_currentValues);
 }
 
 const std::string& CFakeController::getDeviceName() const

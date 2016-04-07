@@ -4,7 +4,6 @@
 // yadoms-plugin factory //TODO à conserver ?
 //
 #pragma once
-#include "ILibrary.h"
 #include <shared/DynamicLibrary.h>
 #include <shared/plugin/IPlugin.h>
 #include <shared/plugin/information/IInformation.h>
@@ -16,7 +15,7 @@ namespace pluginSystem
    //--------------------------------------------------------------
    /// \brief	this class is used to load a plugin file library and construct instance
    //--------------------------------------------------------------
-   class CExternalPluginLibrary : public shared::CDynamicLibrary, public ILibrary
+   class CExternalPluginLibrary : public shared::CDynamicLibrary
    {
    public:
       //--------------------------------------------------------------
@@ -40,7 +39,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       virtual ~CExternalPluginLibrary();
 
-      // ILibrary implementation
+      // ILibrary implementation //TODO virer ?
       virtual shared::plugin::IPlugin* construct() const;
       virtual const boost::filesystem::path& getLibraryPath() const;
       virtual boost::shared_ptr<const shared::plugin::information::IInformation> getInformation() const;

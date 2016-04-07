@@ -6,7 +6,6 @@
 #pragma once
 
 #include <shared/plugin/information/IInformation.h>
-#include "ILibrary.h"
 
 namespace pluginSystem
 {

@@ -1,13 +1,15 @@
 # Macros for setting up a plugin
 #
 
+#TODO virer les liens vers protobuf et plugin_IPC ? (car dans plugin_cpp_api)
+
 MACRO(PLUGIN_SOURCES _targetName)
    set( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${youroutputdirectory}/plugins/${_targetName} )
    foreach( OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES} )
        string( TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG )
        set( CMAKE_LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${youroutputdirectory}/${OUTPUTCONFIG}/plugins/${_targetName} )
    endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
-	add_library(${_targetName} MODULE ${ARGN})
+   add_executable(${_targetName} ${ARGN})
 	
 	IF(MSVC OR XCODE)
 		SET_PROPERTY(TARGET ${_targetName} PROPERTY FOLDER "plugins")
@@ -17,7 +19,16 @@ ENDMACRO()
 MACRO(PLUGIN_INCLDIR _targetName)
 
    #define the list of all include dirs
-   set(PLUGINS_ALL_INCLUDE_DIRS ${SHARED_INCL_DIR} ${BOOST_INCL_DIR}  ${Poco_INCLUDE_DIRS} ${ARGN})
+   set(PLUGINS_ALL_INCLUDE_DIRS
+      ${SHARED_INCL_DIR}
+      ${BOOST_INCL_DIR}
+      ${Poco_INCLUDE_DIRS}
+      ${PROTOBUF_INCLUDE_DIRS}
+      ${plugin_IPC_GENERATED_DIR}
+      ${plugin_cpp_api_INCLUDE_DIR}
+      ${ARGN}
+      )
+         
    #in case of OpenSSL found, just add openssl include dir
    if(${OPENSSL_FOUND})
       set(PLUGINS_ALL_INCLUDE_DIRS  ${PLUGINS_ALL_INCLUDE_DIRS} ${OPENSSL_INCLUDE_DIR})
@@ -27,11 +38,18 @@ MACRO(PLUGIN_INCLDIR _targetName)
 ENDMACRO()
 
 MACRO(PLUGIN_LINK _targetName)
-	target_link_libraries(${_targetName} yadoms-shared ${LIBS} ${CMAKE_DL_LIBS} ${ARGN})
+	target_link_libraries(${_targetName}
+      yadoms-shared
+      plugin_IPC
+      plugin_cpp_api
+      ${LIBS}
+      ${CMAKE_DL_LIBS}
+      ${ARGN}
+      )
 	
    #configure plugin as installable component
 	install(TARGETS ${_targetName} 
-		LIBRARY DESTINATION ${INSTALL_BINDIR}/plugins/${_targetName}
+		RUNTIME DESTINATION ${INSTALL_BINDIR}/plugins/${_targetName}
 		COMPONENT  ${_targetName})
       
    set(PLUGINLIST

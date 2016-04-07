@@ -28,9 +28,9 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	            Declare device and associated keywords if necessary
-   /// \param[in] context  yPluginApi context
+   /// \param[in] api      yPluginApi context
    //--------------------------------------------------------------
-   void declareDevice(boost::shared_ptr<yApi::IYPluginApi> context);
+   void declareDevice(boost::shared_ptr<yApi::IYPluginApi> api);
 
    //--------------------------------------------------------------
    /// \brief	    Make a sensor read (compute new values)
@@ -39,9 +39,9 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	            Send all sensor data to Yadoms
-   /// \param[in] context  yPluginApi context to which historize data
+   /// \param[in] api      yPluginApi context to which historize data
    //--------------------------------------------------------------
-   void historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const;
+   void historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const;
 
    //--------------------------------------------------------------
    /// \brief	    Returns the fake sensor device name

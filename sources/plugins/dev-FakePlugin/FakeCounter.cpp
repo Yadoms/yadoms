@@ -20,16 +20,16 @@ CFakeCounter::~CFakeCounter()
 {
 }
 
-void CFakeCounter::declareDevice(boost::shared_ptr<yApi::IYPluginApi> context)
+void CFakeCounter::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   if (!context->deviceExists(m_deviceName))
-      context->declareDevice(m_deviceName, getModel());
+   if (!api->deviceExists(m_deviceName))
+      api->declareDevice(m_deviceName, getModel());
 
    // Declare associated keywords (= values managed by this device)
-   if (!context->keywordExists(m_deviceName, *m_incrementCount))
-      context->declareKeyword(m_deviceName, *m_incrementCount);
-   if (!context->keywordExists(m_deviceName, *m_totalCount))
-      context->declareKeyword(m_deviceName, *m_totalCount);
+   if (!api->keywordExists(m_deviceName, *m_incrementCount))
+      api->declareKeyword(m_deviceName, *m_incrementCount);
+   if (!api->keywordExists(m_deviceName, *m_totalCount))
+      api->declareKeyword(m_deviceName, *m_totalCount);
 }
 
 void CFakeCounter::read()
@@ -41,12 +41,12 @@ void CFakeCounter::read()
    m_totalCount->set(m_totalCount->get() + m_dist(m_gen));
 }
 
-void CFakeCounter::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
+void CFakeCounter::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
-   if (!context)
-      throw shared::exception::CException("context must be defined");
+   if (!api)
+      throw shared::exception::CException("api must be defined");
 
-   context->historizeData(m_deviceName, m_historizers);
+   api->historizeData(m_deviceName, m_historizers);
 }
 
 const std::string& CFakeCounter::getDeviceName() const

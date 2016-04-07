@@ -34,24 +34,24 @@ CFakeSensor::~CFakeSensor()
 {
 }
 
-void CFakeSensor::declareDevice(boost::shared_ptr<yApi::IYPluginApi> context)
+void CFakeSensor::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   if (!context->deviceExists(m_deviceName))
-      context->declareDevice(m_deviceName, getModel());
+   if (!api->deviceExists(m_deviceName))
+      api->declareDevice(m_deviceName, getModel());
 
    // Declare associated keywords (= values managed by this device)
-   if (!context->keywordExists(m_deviceName, *m_temperature1))
-      context->declareKeyword(m_deviceName, *m_temperature1);
-   if (!context->keywordExists(m_deviceName, *m_temperature2))
-      context->declareKeyword(m_deviceName, *m_temperature2);
-   if (!context->keywordExists(m_deviceName, *m_current))
-      context->declareKeyword(m_deviceName, *m_current);
-   if (!context->keywordExists(m_deviceName, *m_batteryLevel))
-      context->declareKeyword(m_deviceName, *m_batteryLevel);
-   if (!context->keywordExists(m_deviceName, *m_rssi))
-      context->declareKeyword(m_deviceName, *m_rssi);
-   if (!context->keywordExists(m_deviceName, *m_dateTime))
-      context->declareKeyword(m_deviceName, *m_dateTime);
+   if (!api->keywordExists(m_deviceName, *m_temperature1))
+      api->declareKeyword(m_deviceName, *m_temperature1);
+   if (!api->keywordExists(m_deviceName, *m_temperature2))
+      api->declareKeyword(m_deviceName, *m_temperature2);
+   if (!api->keywordExists(m_deviceName, *m_current))
+      api->declareKeyword(m_deviceName, *m_current);
+   if (!api->keywordExists(m_deviceName, *m_batteryLevel))
+      api->declareKeyword(m_deviceName, *m_batteryLevel);
+   if (!api->keywordExists(m_deviceName, *m_rssi))
+      api->declareKeyword(m_deviceName, *m_rssi);
+   if (!api->keywordExists(m_deviceName, *m_dateTime))
+      api->declareKeyword(m_deviceName, *m_dateTime);
 }
 
 void CFakeSensor::read()
@@ -87,13 +87,13 @@ void CFakeSensor::read()
    m_current->set(static_cast<int>(current * 10) / 10.0);
 }
 
-void CFakeSensor::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
+void CFakeSensor::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
-   if (!context)
-      throw shared::exception::CException("context must be defined");
+   if (!api)
+      throw shared::exception::CException("api must be defined");
 
    // If you need to historize several data, use the vector form of historizeData for performance
-   context->historizeData(m_deviceName, m_historizers);
+   api->historizeData(m_deviceName, m_historizers);
 }
 
 const std::string& CFakeSensor::getDeviceName() const

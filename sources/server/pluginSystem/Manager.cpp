@@ -410,10 +410,10 @@ namespace pluginSystem
 
 
          // Load the plugin
-         boost::shared_ptr<ILibrary> plugin(boost::make_shared<CInternalPluginLibrary>());//TODO à virer probablement
+         //TODO boost::shared_ptr<ILibrary> plugin(boost::make_shared<CInternalPluginLibrary>());//TODO à virer probablement
 
          // Create instance
-         BOOST_ASSERT(plugin); // Plugin not loaded
+         //TODO BOOST_ASSERT(plugin); // Plugin not loaded
          //TODO
          //boost::shared_ptr<IInstance> pluginInstance(m_factory->createInstance(
          //   plugin,
