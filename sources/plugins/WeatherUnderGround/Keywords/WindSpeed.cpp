@@ -11,12 +11,10 @@ CWindSpeed::CWindSpeed( std::string PluginName, std::string Name ):
    m_windSpeed( new yApi::historization::CSpeed( Name ))
 {}
 
-void CWindSpeed::Initialize( boost::shared_ptr<yApi::IYPluginApi> context ) const
+void CWindSpeed::Initialize( boost::shared_ptr<yApi::IYPluginApi> context, shared::CDataContainer details ) const
 {
    if (!context->keywordExists( m_PluginName, m_windSpeed->getKeyword()))
-	{
-      context->declareKeyword(m_PluginName, *m_windSpeed);
-	}
+      context->declareKeyword(m_PluginName, *m_windSpeed, details );
 }
 
 CWindSpeed::~CWindSpeed()
@@ -29,9 +27,6 @@ void CWindSpeed::SetValue(const shared::CDataContainer & ValueContainer, const s
 	m_windSpeed->set(ValueContainer.get<double>( filter )*1000 / 3600);
 	YADOMS_LOG(debug) << m_windSpeed->getKeyword() << "=" << m_windSpeed->get() << "m/s";
 }
-
-void CWindSpeed::DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const
-{}
 
 boost::shared_ptr<yApi::historization::IHistorizable> CWindSpeed::GetHistorizable() const
 {

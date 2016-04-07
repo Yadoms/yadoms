@@ -14,21 +14,16 @@ CCondition::CCondition( std::string PluginName, std::string KeyWordName )
    :m_PluginName ( PluginName ), m_condition( new CConditionHistorizer(KeyWordName, yApi::EKeywordAccessMode::kGet ) )
 {}
 
-void CCondition::Initialize( boost::shared_ptr<yApi::IYPluginApi> context ) const
+void CCondition::Initialize( boost::shared_ptr<yApi::IYPluginApi> context, shared::CDataContainer details ) const
 {
    if (!context->keywordExists( m_PluginName, m_condition->getKeyword()))
    {
-      DeclareKeywords ( context );
+      context->declareKeyword(m_PluginName, *m_condition, details);
    }
 }
 
 CCondition::~CCondition()
 {}
-
-void CCondition::DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const
-{
-   context->declareKeyword(m_PluginName, *m_condition);
-}
 
 void CCondition::AddUnit(
             const std::string& UnitName,

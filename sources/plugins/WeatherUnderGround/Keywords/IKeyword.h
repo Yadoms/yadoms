@@ -17,16 +17,10 @@ public:
 virtual ~IKeyword() {}
 
 //--------------------------------------------------------------
-/// \brief	                      Declaration of Keyword(s)
-/// \param[in] context              Yadoms APi context
-//--------------------------------------------------------------
-virtual void DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const =0;
-
-//--------------------------------------------------------------
 /// \brief	                      Initialize the keyword (Declaration)
 /// \param[in] context              Yadoms APi context
 //--------------------------------------------------------------
-virtual void Initialize( boost::shared_ptr<yApi::IYPluginApi> context ) const = 0;
+virtual void Initialize( boost::shared_ptr<yApi::IYPluginApi> context, shared::CDataContainer details ) const = 0;
 
 //--------------------------------------------------------------
 /// \brief	                      Get the IHistorizable variable

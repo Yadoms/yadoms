@@ -47,36 +47,40 @@ void CWeatherConditions::InitializeVariables ( boost::shared_ptr<yApi::IYPluginA
 	                                           IWUConfiguration& WUConfiguration
 								                  )
 {
+		shared::CDataContainer details;
+		details.set("provider", "weather-underground");
+		details.set("shortProvider", "wu");
+
 	   if (WUConfiguration.IsConditionsIndividualKeywordsEnabled())
 	   {
-		  m_Temp.Initialize                ( context );
+		  m_Temp.Initialize                ( context, details );
 
 		  if (!context->keywordExists( m_PluginName, m_pressure->getKeyword()))
-              context->declareKeyword(m_PluginName, *m_pressure);
+              context->declareKeyword(m_PluginName, *m_pressure, details);
 
 		  if (!context->keywordExists( m_PluginName, m_humidity->getKeyword()))
-			context->declareKeyword(m_PluginName, *m_humidity);
+			context->declareKeyword(m_PluginName, *m_humidity, details);
 
 		  if (!context->keywordExists( m_PluginName, m_visibility->getKeyword()))
-			context->declareKeyword(m_PluginName, *m_visibility);
+			context->declareKeyword(m_PluginName, *m_visibility, details);
 
 		  if (!context->keywordExists( m_PluginName, m_uv->getKeyword()))
-		     context->declareKeyword(m_PluginName, *m_uv);
+		     context->declareKeyword(m_PluginName, *m_uv, details);
 
-		  m_DewPoint.Initialize            ( context );
+		  m_DewPoint.Initialize            ( context, details );
 
-		  m_Rain_1hr.Initialize            ( context );
-		  m_WeatherConditionUrl.Initialize ( context );
-		  m_WindDirection.Initialize       ( context );
-		  m_WindAverageSpeed.Initialize    ( context );
-		  m_WindMaxSpeed.Initialize        ( context );
-		  m_FeelsLike.Initialize           ( context );
-		  m_Windchill.Initialize           ( context );
+		  m_Rain_1hr.Initialize            ( context, details );
+		  m_WeatherConditionUrl.Initialize ( context, details );
+		  m_WindDirection.Initialize       ( context, details );
+		  m_WindAverageSpeed.Initialize    ( context, details );
+		  m_WindMaxSpeed.Initialize        ( context, details );
+		  m_FeelsLike.Initialize           ( context, details );
+		  m_Windchill.Initialize           ( context, details );
 		}
 
 	if (WUConfiguration.IsLiveConditionsEnabled())
 	{
-		m_LiveConditions.Initialize ( context );
+		m_LiveConditions.Initialize ( context, details );
 
 		m_LiveConditions.AddUnit (
 							shared::plugin::yPluginApi::CStandardCapacities::Temperature.getName(),

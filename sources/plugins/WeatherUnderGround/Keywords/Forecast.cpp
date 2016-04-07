@@ -14,21 +14,16 @@ CForecast::CForecast( std::string PluginName, std::string KeyWordName, const wea
    :m_PluginName ( PluginName ), m_forecast( new yApi::historization::CForecastHistorizer(KeyWordName, yApi::EKeywordAccessMode::kGet, Period ) )
 {}
 
-void CForecast::Initialize( boost::shared_ptr<yApi::IYPluginApi> context ) const
+void CForecast::Initialize( boost::shared_ptr<yApi::IYPluginApi> context, shared::CDataContainer details ) const
 {
    if (!context->keywordExists( m_PluginName, m_forecast->getKeyword()))
    {
-      DeclareKeywords ( context );
+      context->declareKeyword( m_PluginName, *m_forecast, details );
    }
 }
 
 CForecast::~CForecast()
 {}
-
-void CForecast::DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const
-{
-   context->declareKeyword(m_PluginName, *m_forecast);
-}
 
 void CForecast::AddUnit(
             const std::string& UnitName,

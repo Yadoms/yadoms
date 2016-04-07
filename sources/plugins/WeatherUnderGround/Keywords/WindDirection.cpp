@@ -11,12 +11,10 @@ CWindDirection::CWindDirection( std::string PluginName, std::string Name ):
    m_windDirection( new yApi::historization::CDirection( Name ))
 {}
 
-void CWindDirection::Initialize( boost::shared_ptr<yApi::IYPluginApi> context ) const
+void CWindDirection::Initialize( boost::shared_ptr<yApi::IYPluginApi> context, shared::CDataContainer details ) const
 {
    if (!context->keywordExists( m_PluginName, m_windDirection->getKeyword()))
-	{
-	   context->declareKeyword(m_PluginName,*m_windDirection);
-	}
+	   context->declareKeyword(m_PluginName,*m_windDirection, details);
 }
 
 CWindDirection::~CWindDirection()
@@ -28,9 +26,6 @@ void CWindDirection::SetValue(const shared::CDataContainer & ValueContainer, con
 
 	YADOMS_LOG(debug) << m_windDirection->getKeyword() << "=" << m_windDirection->get() << " degrees";
 }
-
-void CWindDirection::DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const
-{}
 
 boost::shared_ptr<yApi::historization::IHistorizable> CWindDirection::GetHistorizable() const
 {

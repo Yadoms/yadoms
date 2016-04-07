@@ -119,7 +119,7 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
                if (!m_WeatherConditionsRequester.Request( context ))
                   m_WeatherConditionsRequester.Parse  ( context, m_configuration );
 
-               m_AstronomyRequester.OnUpdate ( m_configuration );
+               m_AstronomyRequester.OnUpdate ( context, m_configuration );
 
                if ( !m_AstronomyRequester.Request( context ))
                   m_AstronomyRequester.Parse  ( context, m_configuration );
