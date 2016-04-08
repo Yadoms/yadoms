@@ -1,0 +1,36 @@
+{
+	"name": "Shutter",
+	"description": "A widget that provide buttons to make actions",
+	"errorDuringGettingDeviceInformation": "Error during getting device information",
+	"errorDuringSendingCommand": "Error sending command",
+	"configurationSchema": {
+		"device": {
+			"name": "Devices",
+			"description": " Select below the shutter to drive",
+			"item": {
+				"name": "",
+				"description": "",
+				"content": {
+					"source": {
+						"name": "Switch device",
+						"description": "device to drive"
+					}
+				}
+            }				
+		},
+		"kind": {
+			"name": "Kind of switch",
+			"description": "Select the kind of switch to be used. Permit to change interactions in function of the kind of switch.",
+			"content": {
+				"pushButton": {
+					"name": "Blind push button",
+					"description": "A simple push button that represents a roller shutter"
+				},			
+				"verticalInverter": {
+					"name": "Vertical inverter",
+					"description": "A vertical dual-buttons shutter switch"
+				}
+			}
+		}
+	}
+}
