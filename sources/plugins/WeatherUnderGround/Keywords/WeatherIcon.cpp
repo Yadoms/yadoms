@@ -11,12 +11,10 @@ CWeatherIcon::CWeatherIcon( std::string PluginName, std::string KeyWordName )
    :m_PluginName ( PluginName ), m_weathercondition( new yApi::historization::CWeatherCondition(KeyWordName) )
 {}
 
-void CWeatherIcon::Initialize( boost::shared_ptr<yApi::IYPluginApi> context ) const
+void CWeatherIcon::Initialize( boost::shared_ptr<yApi::IYPluginApi> context, shared::CDataContainer details ) const
 {
    if (!context->keywordExists( m_PluginName, m_weathercondition->getKeyword()))
-	{
-      DeclareKeywords ( context );
-	}
+      context->declareKeyword(m_PluginName, *m_weathercondition, details);
 }
 
 CWeatherIcon::~CWeatherIcon()
@@ -41,11 +39,6 @@ void CWeatherIcon::SetValue( const shared::CDataContainer & ValueContainer, cons
    {
       YADOMS_LOG(warning) << e.what() << std::endl;
    }
-}
-
-void CWeatherIcon::DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const
-{
-	context->declareKeyword(m_PluginName, *m_weathercondition);
 }
 
 boost::shared_ptr<yApi::historization::IHistorizable> CWeatherIcon::GetHistorizable() const

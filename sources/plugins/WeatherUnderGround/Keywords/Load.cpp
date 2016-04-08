@@ -12,21 +12,16 @@ CLoad::CLoad( std::string PluginName, std::string KeyWordName )
 {}
 
 
-void CLoad::Initialize( boost::shared_ptr<yApi::IYPluginApi> context ) const
+void CLoad::Initialize( boost::shared_ptr<yApi::IYPluginApi> context, shared::CDataContainer details ) const
 {
    if (!context->keywordExists( m_PluginName, m_pourcentage->getKeyword()))
 	{
-      DeclareKeywords ( context );
+      context->declareKeyword(m_PluginName, *m_pourcentage, details);
 	}
 }
 
 CLoad::~CLoad()
 {}
-
-void CLoad::DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const
-{
-	context->declareKeyword(m_PluginName, *m_pourcentage);
-}
 
 void CLoad::SetValue( const shared::CDataContainer & ValueContainer, const std::string & filter)
 {

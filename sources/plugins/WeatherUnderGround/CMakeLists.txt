@@ -23,16 +23,12 @@ set(WUNDERGROUND_SOURCES
    WeatherConditions.h
    WUConfiguration.cpp
    WUConfiguration.h
-   Keywords/Barometric.h
-   Keywords/Barometric.cpp
    Keywords/Condition.h
    Keywords/Condition.cpp   
    Keywords/Duration.h
    Keywords/Duration.cpp
    Keywords/Forecast.h
    Keywords/Forecast.cpp   
-   Keywords/Humidity.h
-   Keywords/Humidity.cpp
    Keywords/IKeyword.h 
    Keywords/KeywordException.hpp
    Keywords/Load.h
@@ -43,10 +39,6 @@ set(WUNDERGROUND_SOURCES
    Keywords/Rain.cpp
    Keywords/Temp.h
    Keywords/Temp.cpp   
-   Keywords/UV.h
-   Keywords/UV.cpp
-   Keywords/Visibility.h
-   Keywords/Visibility.cpp
    Keywords/WeatherIcon.h
    Keywords/WeatherIcon.cpp   
    Keywords/WindDirection.h

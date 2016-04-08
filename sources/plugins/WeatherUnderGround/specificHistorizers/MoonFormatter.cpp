@@ -1,11 +1,9 @@
 #include "stdafx.h"
 #include "MoonFormatter.h"
 #include <shared/exception/InvalidParameter.hpp>
-#include <shared/DataContainer.h>
 
-
-namespace shared { namespace plugin { namespace yPluginApi { namespace historization
-{
+// Shortcut to yPluginApi namespace
+namespace yApi = shared::plugin::yPluginApi;
 
 CMoonFormatter::CMoonFormatter( )
 {}
@@ -32,7 +30,7 @@ CMoonFormatter::~CMoonFormatter()
 
 std::string CMoonFormatter::formatValue() const
 {
-   CDataContainer Temp;
+   shared::CDataContainer Temp;
 
    Temp.set ("Units", m_Units);
    Temp.set ("IlluminatedMoon", m_IlluminatedMoon);
@@ -40,6 +38,3 @@ std::string CMoonFormatter::formatValue() const
 
    return Temp.serialize();
 }
-
-} } } } // namespace shared::plugin::yPluginApi::historization
-

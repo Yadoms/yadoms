@@ -1,14 +1,11 @@
 #include "stdafx.h"
 #include "ConditionHistorizer.h"
 #include <shared/plugin/yPluginApi/StandardUnits.h>
-
-namespace shared { namespace plugin { namespace yPluginApi { namespace historization
-{
    
-   const CStandardCapacity& ConditionCapacity = CStandardCapacity("Condition", CStandardUnits::NoUnits, EKeywordDataType::kNoData);
+   const yApi::CStandardCapacity& ConditionCapacity = yApi::CStandardCapacity("Condition", yApi::CStandardUnits::NoUnits, yApi::EKeywordDataType::kNoData);
 
    CConditionHistorizer::CConditionHistorizer(const std::string& keywordName, 
-                                            const EKeywordAccessMode& accessMode)
+                                            const yApi::EKeywordAccessMode& accessMode)
    :m_keywordName(keywordName), m_accessMode(accessMode)
    {
 	   m_content.reset(new CConditionFormatter( ));
@@ -22,12 +19,12 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
 	   return m_keywordName;
 	}
 
-	const CStandardCapacity& CConditionHistorizer::getCapacity() const
+	const yApi::CStandardCapacity& CConditionHistorizer::getCapacity() const
 	{
 	   return ConditionCapacity;
 	}
 	
-	const EKeywordAccessMode& CConditionHistorizer::getAccessMode() const
+	const yApi::EKeywordAccessMode& CConditionHistorizer::getAccessMode() const
 	{
 	   return m_accessMode;
 	}
@@ -65,21 +62,18 @@ void CConditionHistorizer::AddUnit(
 	   return !m_content ? std::string() : m_content->formatValue();
 	}
 
-	const EMeasureType& CConditionHistorizer::getMeasureType() const
+	const yApi::historization::EMeasureType& CConditionHistorizer::getMeasureType() const
 	{
-	   static const EMeasureType MeasureType(EMeasureType::kAbsolute);
+	   static const yApi::historization::EMeasureType MeasureType(yApi::historization::EMeasureType::kAbsolute);
 	   return MeasureType;
 	}	
 
-   CDataContainer CConditionHistorizer::getTypeInfo() const
+   shared::CDataContainer CConditionHistorizer::getTypeInfo() const
    {
-      return CDataContainer();
+      return shared::CDataContainer();
    }
 	
 void CConditionHistorizer::SetCityName ( const std::string& CityName )
 {
    m_content->SetCityName ( CityName );
 }
-
-} } } } // namespace shared::plugin::yPluginApi::historization
-
