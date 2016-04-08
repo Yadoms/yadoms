@@ -13,6 +13,7 @@
 #include "KeywordContainer.h"
 #include "OpenZWaveNodeKeywordFactory.h"
 #include "OpenZWaveHelpers.h"
+#include "ZWaveInternalState.h"
 
 COpenZWaveController::COpenZWaveController()
    :m_homeId(0), m_initFailed(false), m_nodesQueried(false), m_handler(NULL), m_configuration(NULL)
@@ -196,7 +197,7 @@ boost::shared_ptr<COpenZWaveNode> COpenZWaveController::getNode(OpenZWave::Notif
    return getNode(homeId, nodeId);
 }
 
-boost::shared_ptr<COpenZWaveNode> COpenZWaveController::getNode(const int homeId, const uint8 nodeId)
+boost::shared_ptr<COpenZWaveNode> COpenZWaveController::getNode(const uint32 homeId, const uint8 nodeId)
 {
    for (NodeListType::iterator it = m_nodes.begin(); it != m_nodes.end(); ++it)
    {
@@ -369,7 +370,7 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
    case OpenZWave::Notification::Type_DriverReady:
    {
       if (m_handler != NULL)
-         m_handler->postEvent<std::string>(CZWave::kInternalStateChange, "DriverReady");
+         m_handler->postEvent<std::string>(CZWave::kInternalStateChange, EZWaveInteralState::kDriverReady);
       
       m_homeId = _notification->GetHomeId();
       break;
@@ -378,7 +379,7 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
    case OpenZWave::Notification::Type_DriverFailed:
    {
       if (m_handler != NULL)
-         m_handler->postEvent<std::string>(CZWave::kInternalStateChange, "DriverFailed");
+         m_handler->postEvent<std::string>(CZWave::kInternalStateChange, EZWaveInteralState::kDriverFailed);
 
       m_initFailed = true;
       break;
@@ -398,7 +399,7 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
       case OpenZWave::Driver::ControllerState_Normal:
          //str = "ControlerCommand - Normal";
          if (m_handler != NULL)
-            m_handler->postEvent<std::string>(CZWave::kInternalStateChange, "Normal");
+            m_handler->postEvent<std::string>(CZWave::kInternalStateChange, EZWaveInteralState::kRunning);
          break;
       case OpenZWave::Driver::ControllerState_Starting:
          //str = "ControllerComand - Starting";
@@ -411,7 +412,7 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
       case OpenZWave::Driver::ControllerState_Waiting:
          //str = "ControllerCommand - Waiting";
          if (m_handler != NULL)
-            m_handler->postEvent<std::string>(CZWave::kInternalStateChange, "Waiting");
+            m_handler->postEvent<std::string>(CZWave::kInternalStateChange, EZWaveInteralState::kWaiting);
 
          break;
       case OpenZWave::Driver::ControllerState_Sleeping:
@@ -423,7 +424,7 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
       case OpenZWave::Driver::ControllerState_Completed:
          //str = "ControllerCommand - Completed";
          if (m_handler != NULL)
-            m_handler->postEvent<std::string>(CZWave::kInternalStateChange, "Completed");
+            m_handler->postEvent<std::string>(CZWave::kInternalStateChange, EZWaveInteralState::kCompleted);
          break;
       case OpenZWave::Driver::ControllerState_Failed:
          //str = "ControllerCommand - Failed";
@@ -446,7 +447,7 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
 }
 
 
-void COpenZWaveController::retreiveOpenZWaveIds(const std::string & device, const std::string & keyword,  int & homeId, uint8 & nodeId)
+void COpenZWaveController::retreiveOpenZWaveIds(const std::string & device, const std::string & keyword, uint32 & homeId, uint8 & nodeId)
 {
    std::vector<std::string> splittedDevice;
    boost::split(splittedDevice, device, boost::is_any_of("."), boost::token_compress_on);
@@ -454,7 +455,7 @@ void COpenZWaveController::retreiveOpenZWaveIds(const std::string & device, cons
    {
       throw shared::exception::CException("The device id is invalid : not matching pattern : <homeId>-<nodeId> ");
    }
-   homeId = boost::lexical_cast<int>(splittedDevice[0]);
+   homeId = boost::lexical_cast<uint32>(splittedDevice[0]);
    nodeId = static_cast<uint8>(atoi(splittedDevice[1].c_str())); //dont use lexical cast for uint8, because it realize a string to char conversion: "2" is transform in '2' = 0x32
 }
 
@@ -462,7 +463,7 @@ void COpenZWaveController::sendCommand(const std::string & device, const std::st
 {
    boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
-   int homeId;
+   uint32 homeId;
    uint8 nodeId;
    ECommandClass keywordClass;
 
@@ -496,9 +497,19 @@ void COpenZWaveController::softResetController()
    OpenZWave::Manager::Get()->SoftReset(m_homeId);
 }
 
-void COpenZWaveController::testNetwork()
+void COpenZWaveController::testNetwork(int count)
 {
-   OpenZWave::Manager::Get()->TestNetwork(m_homeId, 10); //send 10 frames to each node
+   OpenZWave::Manager::Get()->TestNetwork(m_homeId, count); //send count frames to each node
+}
+
+void COpenZWaveController::cancelCurrentCommand() 
+{
+   OpenZWave::Manager::Get()->CancelControllerCommand(m_homeId);
+}
+
+void COpenZWaveController::healNetwork()
+{
+   OpenZWave::Manager::Get()->HealNetwork(m_homeId, true);
 }
 
 

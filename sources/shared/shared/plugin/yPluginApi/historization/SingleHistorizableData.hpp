@@ -198,6 +198,20 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
 		  {
            return CDataContainer();
 		  }
+	  };	  
+     
+     
+     template <>
+	  struct helper<bool>
+	  {
+        static bool getInternal(const std::string& value)
+		  {
+           return(value == "1" || boost::to_lower_copy(value) == "true");
+		  }
+        static CDataContainer createDefaultTypeInfo()
+		  {
+           return CDataContainer();
+		  }
 	  };
 
      template <typename TData>

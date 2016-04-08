@@ -12,6 +12,8 @@ set(ZWAVE_PLUGIN_SOURCES
 	IZWaveController.h
 	ZWaveControllerFactory.h
 	ZWaveControllerFactory.cpp 	
+	ZWaveInternalState.h
+	ZWaveInternalState.cpp 	
 	OpenZWaveController.h
 	OpenZWaveController.cpp 
 	OpenZWaveEnumHandler.h

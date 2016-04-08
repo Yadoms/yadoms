@@ -33,10 +33,22 @@
 			"iconClass" : "fa fa-refresh"
 		},
 		"testNetwork" : {
-			"iconClass" : "fa fa-check"
+			"iconClass" : "fa fa-check",
+			"commandData" : {
+				"frameCount": {
+					"type": "numeric"
+				}			
+			}
+			
+		},
+		"healNetowrk" : {
+			"iconClass" : "fa fa-flask"
+		},
+		"cancelCommand" : {
+			"iconClass" : "fa fa-undo"
 		},
 		"hardReset" : {
-			"iconClass" : "fa fa-legal"
+			"iconClass" : "fa fa-fire"
 		}
 	}
 }

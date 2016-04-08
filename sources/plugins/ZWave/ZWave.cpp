@@ -2,10 +2,10 @@
 #include "ZWave.h"
 #include <shared/plugin/ImplementationHelper.h>
 #include <shared/Log.h>
-#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/Exception.hpp>
 #include "ZWaveControllerFactory.h"
 #include "KeywordContainer.h"
+#include "ZWaveInternalState.h"
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -41,7 +41,9 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
       context->setPluginState(yApi::historization::EPluginState::kCustom, "Configuring");
       m_controller = CZWaveControllerFactory::Create();
       m_controller->configure(&m_configuration, &context->getEventHandler());
-      context->setPluginState(yApi::historization::EPluginState::kCustom, "Starting");
+
+      context->setPluginState(yApi::historization::EPluginState::kRunning);
+
       if (m_controller->start())
       {
          while (1)
@@ -100,7 +102,15 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
                   }
                   else if (extraCommand->getCommand() == "testNetwork")
                   {
-                     m_controller->testNetwork();
+                     m_controller->testNetwork(extraCommand->getData().get<int>("frameCount"));
+                  }
+                  else if (extraCommand->getCommand() == "healNetowrk")
+                  {
+                     m_controller->healNetwork();
+                  }
+                  else if (extraCommand->getCommand() == "cancelCommand")
+                  {
+                     m_controller->cancelCurrentCommand();
                   }
                }
                break;
@@ -114,13 +124,17 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
                YADOMS_LOG(debug) << "Update configuration...";
                BOOST_ASSERT(!newConfiguration.empty());  // newConfigurationValues shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
-               // Take into account the new configuration
-               // - Restart the plugin if necessary,
-               // - Update some resources,
-               // - etc...
+               if (m_controller)
+                  m_controller->stop();
+
                m_configuration.initializeWith(newConfiguration);
 
-               context->setPluginState(yApi::historization::EPluginState::kRunning);
+               m_controller->configure(&m_configuration, &context->getEventHandler());
+
+               if (m_controller->start())
+                   context->setPluginState(yApi::historization::EPluginState::kRunning);
+               else
+                  context->setPluginState(yApi::historization::EPluginState::kError);
                break;
             }
             case kDeclareDevice:
@@ -178,8 +192,18 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 
             case kInternalStateChange:
             {
-               std::string s = context->getEventHandler().getEventData<std::string>();
-               context->setPluginState(yApi::historization::EPluginState::kCustom, s);
+               EZWaveInteralState s = EZWaveInteralState(context->getEventHandler().getEventData<std::string>());
+
+               switch (s)
+               {
+               case EZWaveInteralState::kCompletedValue:
+               case EZWaveInteralState::kRunningValue:
+                  context->setPluginState(yApi::historization::EPluginState::kRunning);
+                  break;
+               default:
+                  context->setPluginState(yApi::historization::EPluginState::kCustom, s.toString());
+                  break;
+               }
                break;
             }
             default:
@@ -214,6 +238,22 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
    {
       YADOMS_LOG(fatal) << "The ZWave plugin fails. unknown exception";
    }
+
+   YADOMS_LOG(information) << "Ending ZWave plugin";
+   try
+   {
+      if(m_controller)
+         m_controller->stop();
+   }
+   catch (std::exception & ex)
+   {
+      YADOMS_LOG(fatal) << "The ZWave plugin fail to stop. exception : " << ex.what();
+   }
+   catch (...)
+   {
+      YADOMS_LOG(fatal) << "The ZWave plugin fail to stop. unknown exception";
+   }
+
 }
 
 

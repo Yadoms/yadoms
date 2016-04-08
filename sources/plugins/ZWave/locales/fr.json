@@ -14,9 +14,9 @@
 	},
 	"customLabels": {
 		"pluginState": {
-			"Wating": "En attente...",
+			"Waiting": "En attente...",
 			"Completed": "Terminé",
-			"DriverReady": "Prêt",
+			"DriverReady": "Contrôleur prêt",
 			"DriverFailed": "Erreur de driver"
 		}
 	},
@@ -31,7 +31,19 @@
 			"name" : "Redémarre le contrôlleur ZWave"
 		},
 		"testNetwork" : {
-			"name" : "Test du réseau ZWave"
+			"name" : "Test du réseau ZWave",
+			"commandData" : {
+				"frameCount": {
+					"name": "Nombre de trame",
+					"description": "Nombre de trames à envoyer à chaque équipement"
+				}			
+			}				
+		},
+		"healNetowrk" : {
+			"name" : "Corrige/soigne le réseau ZWave"
+		},
+		"cancelCommand" : {
+			"name" : "Annule l'opération en cours (appairage, exclusion,...)"
 		},
 		"hardReset" : {
 			"name" : "Réinitialise le contrôlleur et efface le réseau"

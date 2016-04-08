@@ -28,7 +28,9 @@ public:
    virtual void startExclusionMode();
    virtual void hardResetController();
    virtual void softResetController();
-   virtual void testNetwork();
+   virtual void testNetwork(int count);
+   virtual void cancelCurrentCommand();
+   virtual void healNetwork();
    // [END] IZWaveController implementation
 
 
@@ -48,7 +50,7 @@ private:
    //-----------------------------------------------------------------------------
    /// \brief	Return the NodeInfo object matching homeId and nodeId
    //-----------------------------------------------------------------------------   
-   boost::shared_ptr<COpenZWaveNode> getNode(const int homeId, const uint8 nodeId);
+   boost::shared_ptr<COpenZWaveNode> getNode(const uint32 homeId, const uint8 nodeId);
 
    //--------------------------------------------------------------
    /// \brief	   Retreive openzwave ids from yadoms data
@@ -60,7 +62,7 @@ private:
    /// \note:  patterns:   device = homeId.nodeId
    /// \note:  patterns:   keyword = keywordName.keywordClass
    //--------------------------------------------------------------
-   void retreiveOpenZWaveIds(const std::string & device, const std::string & keyword, int & homeId, uint8 & nodeId);
+   void retreiveOpenZWaveIds(const std::string & device, const std::string & keyword, uint32 & homeId, uint8 & nodeId);
 
    //--------------------------------------------------------------
    /// \brief	   Mutex protecting the configuration content
@@ -71,7 +73,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	   The current HomeId
    //--------------------------------------------------------------
-   int    m_homeId;
+   uint32    m_homeId;
 
    //--------------------------------------------------------------
    /// \brief	   Tells if initialization failed

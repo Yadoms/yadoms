@@ -62,7 +62,18 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	Test the network
+   /// \param [in] count   The number of test frame to send
    //--------------------------------------------------------------
-   virtual void testNetwork() = 0;
+   virtual void testNetwork(int count) = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	Cancel the current active command
+   //--------------------------------------------------------------
+   virtual void cancelCurrentCommand() = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	Heal network
+   //--------------------------------------------------------------
+   virtual void healNetwork() = 0;
 
 };

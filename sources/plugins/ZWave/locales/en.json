@@ -31,7 +31,19 @@
 			"name" : "Restart the ZWave controller"
 		},
 		"testNetwork" : {
-			"name" : "Test ZWave network"
+			"name" : "Test ZWave network",
+			"commandData" : {
+				"frameCount": {
+					"name": "Frame count",
+					"description": "Number of frames to send to each zwave equipment"
+				}			
+			}			
+		},
+		"healNetowrk" : {
+			"name" : "Heal the ZWave network"
+		},
+		"cancelCommand" : {
+			"name" : "Cancel any pending operation (inclusion, exclusion,...)"
 		},
 		"hardReset" : {
 			"name" : "Reset controller and erase network"

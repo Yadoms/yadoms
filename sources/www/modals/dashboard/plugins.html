@@ -209,7 +209,6 @@
    }
 
    function onExtraCommand(pi, commandName, commandConfig) {
-   debugger;
       if (commandConfig && commandConfig.commandData) {
          Yadoms.modals.pluginExtraCommandsConfigure.loadAsync()
             .done(function() {
@@ -245,6 +244,8 @@
                      // Update state label
                      var $label = $row.find("span.label-status");
                      if ($label) {
+                        
+                        console.log(pluginInstance.name + " -> status.messageId=" + status.messageId);
                         switch (status.state) {
                            case "Error":
                               $label.removeClass("label-success").removeClass("label-warning").addClass("label-danger").text(getCustomMessage(pluginInstance, status.messageId, "modals.dashboard.sub-windows.plugins.error"));
