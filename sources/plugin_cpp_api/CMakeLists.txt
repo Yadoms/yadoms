@@ -6,11 +6,15 @@ set(plugin_cpp_api_SOURCES
 	plugin_cpp_api/stdafx.cpp
 	plugin_cpp_api/stdafx.h
 
+   plugin_cpp_api/ICommandLine.h
    plugin_cpp_api/ImplementationHelper.h
    plugin_cpp_api/IPlugin.h
+   plugin_cpp_api/IPluginContext.h
 
    plugin_cpp_api/ApiImplementation.h
    plugin_cpp_api/ApiImplementation.cpp
+   plugin_cpp_api/CommandLine.h
+   plugin_cpp_api/CommandLine.cpp
 
    plugin_cpp_api/PluginContext.h
    plugin_cpp_api/PluginContext.cpp

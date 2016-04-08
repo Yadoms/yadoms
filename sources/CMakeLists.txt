@@ -390,11 +390,7 @@ set(YADOMS_SRC
 	server/pluginSystem/InstanceStateHandler.h
 	server/pluginSystem/InstanceStateHandler.cpp
 	server/pluginSystem/InvalidPluginException.hpp
-	server/pluginSystem/InternalPluginLibrary.h
-	server/pluginSystem/InternalPluginLibrary.cpp
-	server/pluginSystem/InternalPluginLibrary.cpp
 	server/pluginSystem/IQualifier.h
-	server/pluginSystem/ExternalPluginLibrary.cpp
 	server/pluginSystem/Factory.cpp
 	server/pluginSystem/Factory.h
 	server/pluginSystem/Logger.h

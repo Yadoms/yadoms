@@ -1,12 +1,8 @@
 ﻿#include "stdafx.h"
 #include "PluginGateway.h"
-#include <shared/Log.h>
 #include "pluginSystem/DeviceCommand.h"
-#include "pluginSystem/ManuallyDeviceCreationData.h"
 #include "pluginSystem/ManuallyDeviceCreationRequest.h"
-#include "pluginSystem/BindingQueryData.h"
 #include "pluginSystem/BindingQueryRequest.h"
-#include "communication/callback/CallbackRequest.h"
 
 namespace communication {
 

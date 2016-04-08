@@ -1,8 +1,6 @@
 #pragma once
 
-#include "IPlugin.h"
-#include "PluginContext.h"
-
+#include "IPluginContext.h"
 
 //--------------------------------------------------------------
 /// \brief		                  Plugin implementation helper
@@ -10,11 +8,10 @@
 /// \note                        This macro create main function that initialize plugin
 //--------------------------------------------------------------
 //TODO à revoir
-//TODO virer paramètre pluginClassName ?
 #define IMPLEMENT_PLUGIN(pluginClassName)                                                                                  \
    int main(int argc, char **argv) \
-{\
-   auto pluginContext(argc, argv); \
-   pluginClassName().doWork(pluginContext.context()); \
-   return 0;\
-}
+   { \
+      auto pluginContext = CreatePluginContext(argc, argv, boost::make_shared<pluginClassName>()); \
+      pluginContext->run(); \
+      return static_cast<int>(pluginContext->getReturnCode());\
+   }

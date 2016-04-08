@@ -6,7 +6,6 @@
 #pragma once
 
 #include "IFactory.h"
-#include "ILibrary.h"
 #include "IInstance.h"
 #include "database/IDataProvider.h"
 #include "database/IPluginRequester.h"
@@ -16,6 +15,7 @@
 #include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
 #include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
 #include <shared/plugin/yPluginApi/IDeviceCommand.h>
+#include <shared/plugin/yPluginApi/historization/PluginState.h>
 
 namespace pluginSystem
 {

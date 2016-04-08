@@ -8,7 +8,7 @@
 #include <shared/process/IRunner.h>
 #include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
 #include "IInstance.h"
-#include "ILibrary.h"
+#include <shared/plugin/information/IInformation.h>
 
 namespace pluginSystem
 {

@@ -1,14 +1,10 @@
 ﻿#include "stdafx.h"
 #include "System.h"
-#include <shared/plugin/ImplementationHelper.h>
 #include <shared/Log.h>
-#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/Exception.hpp>
-#include <shared/exception/EmptyResult.hpp>
 #include <shared/plugin/yPluginApi/historization/Historizers.h>
 #include "../../IApplicationStopHandler.h"
 #include <shared/ServiceLocator.h>
-#include "../../automation/script/IObjectFactory.h"
 
 namespace pluginSystem {
    namespace internalPlugin {

@@ -2,8 +2,9 @@
 #include "IFactory.h"
 #include "ICommandLine.h"
 #include "IContextAccessor.h"
-#include <shared/shared/process/IRunner.h>
-#include <shared/shared/process/IProcess.h>
+#include <shared/process/IRunner.h>
+#include <shared/process/IProcess.h>
+#include <shared/process/ILogger.h>
 
 namespace pluginSystem
 {

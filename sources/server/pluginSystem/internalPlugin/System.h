@@ -1,5 +1,6 @@
 #pragma once
-#include <shared/plugin/IPlugin.h>
+//TODO #include <shared/plugin/IPlugin.h>
+#include <shared/plugin/yPluginApi/IYPluginApi.h>
 
 
 // Shortcut to yPluginApi namespace
@@ -10,7 +11,7 @@ namespace pluginSystem { namespace internalPlugin {
       //--------------------------------------------------------------
       /// \brief	This class is the internal system plugin entry point
       //--------------------------------------------------------------
-      class CSystem : public shared::plugin::IPlugin
+      class CSystem/*TODO : public shared::plugin::IPlugin*/
       {
       public:
          //--------------------------------------------------------------

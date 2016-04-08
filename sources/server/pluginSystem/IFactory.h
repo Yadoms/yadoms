@@ -1,6 +1,5 @@
 #pragma once
 #include <shared/plugin/information/IInformation.h>
-#include <shared/process/ILogger.h>
 #include "IInstance.h"
 #include "IInstanceStateHandler.h"
 #include "database/sqlite/requesters/Plugin.h"
@@ -8,6 +7,7 @@
 #include "dataAccessLayer/IDataAccessLayer.h"
 #include "dataAccessLayer/IEventLogger.h"
 #include "IQualifier.h"
+#include <shared/event/EventHandler.hpp>
 
 namespace pluginSystem
 {

@@ -11,11 +11,10 @@
 #include <shared/plugin/yPluginApi/historization/PluginState.h>
 
 #include "Factory.h"
-#include "ExternalPluginLibrary.h"
-#include "InternalPluginLibrary.h"
 
 #include <shared/Log.h>
 #include "PluginException.hpp"
+#include "InvalidPluginException.hpp"
 
 namespace pluginSystem
 {

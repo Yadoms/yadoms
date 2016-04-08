@@ -1,5 +1,11 @@
 package toPlugin;
 
+message System
+{
+   enum EventType { kRequestStop = 0; }
+   required EventType type = 1;
+}
+
 message GetKeywordId
 {
    required int32 id = 1;
@@ -55,7 +61,7 @@ message msg
    
    oneof OneOf
    {
-      GetKeywordId getKeywordId = 2;
+      System system = 2;
       GetRecipientId getRecipientId = 3;
       ReadKeyword readKeyword = 4;
       WaitForNextAcquisition waitForNextAcquisition = 5;
