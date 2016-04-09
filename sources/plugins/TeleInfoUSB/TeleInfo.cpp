@@ -97,12 +97,14 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 
                break;
             }
-		 case kEvtTimerRefreshTeleInfoData:
-			 {
-				 // When received this timer, we restart the reception through the serial port
-				 m_port->start();
-				 break;
-			 }
+         case kEvtTimerRefreshTeleInfoData:
+            {
+               // When received this timer, we restart the reception through the serial port
+               YADOMS_LOG(debug) << "Teleinfo plugin :  Start COM";
+               m_transceiver->ResetRefreshTags();
+               m_port->start();
+               break;
+            }
          case yApi::IYPluginApi::kEventUpdateConfiguration:
             {
                context->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");

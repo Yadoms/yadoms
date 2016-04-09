@@ -32,4 +32,9 @@ public:
    /// \return                      If all information have been updated
    //--------------------------------------------------------------
    virtual bool IsInformationUpdated ( void ) = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	                     Refresh update boolean information
+   //--------------------------------------------------------------
+   virtual void ResetRefreshTags ( void ) = 0;
 };

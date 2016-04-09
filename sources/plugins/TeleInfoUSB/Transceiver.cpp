@@ -8,8 +8,6 @@
 #include <shared/communication/PortException.hpp>
 #include "TeleInfotrxHelpers.h"
 
-#define NB_MESSAGES_RECEIVED 20 // Nearly 30 seconds
-
 CTransceiver::CTransceiver()
    :m_seqNumberProvider(new CIncrementSequenceNumber())
 {

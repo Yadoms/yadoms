@@ -32,6 +32,7 @@ public:
 	                                  std::string & PluginName,
                                       const shared::communication::CByteBuffer& data);
    virtual bool IsInformationUpdated ( void );
+   virtual void ResetRefreshTags ( void );
    // [END] ITransceiver implementation
 
 private:
@@ -73,12 +74,6 @@ private:
 
    template <class T>
    void HistorizeTeleInfoData ( std::string KeywordName, long Value );
-
-   //--------------------------------------------------------------
-   /// \brief	                     Refresh update boolean information
-   //--------------------------------------------------------------
-
-   void ResetRefreshTags ( void );
 
    //--------------------------------------------------------------
    /// \brief  Keywords list
