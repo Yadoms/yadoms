@@ -25,7 +25,10 @@ void CTransceiver::decodeTeleInfoMessage(boost::shared_ptr<yApi::IYPluginApi> co
 {
    const unsigned char *buf = reinterpret_cast<const unsigned char *>(data.begin());
 
-	ParseData(context, PluginName, buf, data.size());
+   m_context = context;
+   m_PluginName = PluginName;
+
+	ParseData( buf, data.size() );
 }
 
 /* Explanation of the checksum computation issued from the official EDF specification
@@ -58,7 +61,7 @@ bool CTransceiver::isCheckSumOk(const unsigned char *m_buffer) const
 	return (checksum == m_buffer[strlen((char*)m_buffer) - 1]);
 }
 
-void CTransceiver::ParseData(boost::shared_ptr<yApi::IYPluginApi> context, std::string & PluginName, const unsigned char *pData, int Len)
+void CTransceiver::ParseData( const unsigned char *pData, int Len )
 {
 	int ii = 0;
    	unsigned char m_buffer[readBufferSize];
@@ -84,7 +87,7 @@ void CTransceiver::ParseData(boost::shared_ptr<yApi::IYPluginApi> context, std::
 
 			//We check the line only if the checksum is ok
 			if (isCheckSumOk( m_buffer ))
-				MatchLine( m_buffer, context, PluginName );
+				MatchLine( m_buffer );
 
 			m_bufferpos = 0;
 		}
@@ -95,13 +98,41 @@ void CTransceiver::ParseData(boost::shared_ptr<yApi::IYPluginApi> context, std::
 		ii++;
 	}
 	//historizing all information push in the list
-	context->historizeData(PluginName, m_KeywordList);
+	m_context->historizeData(m_PluginName, m_KeywordList);
 
 	//Clear the vector
 	m_KeywordList.clear();
 }
 
-void CTransceiver::MatchLine( const unsigned char *m_buffer, boost::shared_ptr<yApi::IYPluginApi> context, std::string & PluginName )
+void CTransceiver::HistorizeEnergy ( std::string KeywordName, long Value )
+{
+	boost::shared_ptr<yApi::historization::CEnergy> m_energy;
+
+	m_energy.reset ( new yApi::historization::CEnergy( KeywordName) );
+
+	if (!m_context->keywordExists( m_PluginName, m_energy->getKeyword()))
+		m_context->declareKeyword ( m_PluginName, *m_energy );
+
+	m_energy->set( Value );
+	YADOMS_LOG(debug) << m_energy->getKeyword() << "=" << m_energy->get() << "W";
+	m_KeywordList.push_back ( m_energy );
+}
+
+void CTransceiver::HistorizeCurrent ( std::string KeywordName, long Value )
+{
+	boost::shared_ptr<yApi::historization::CCurrent> m_current;
+
+	m_current.reset ( new yApi::historization::CCurrent( KeywordName) );
+
+	if (!m_context->keywordExists( m_PluginName, m_current->getKeyword()))
+		m_context->declareKeyword ( m_PluginName, *m_current );
+
+	m_current->set( Value );
+	YADOMS_LOG(debug) << m_current->getKeyword() << "=" << m_current->get() << "A";
+	m_KeywordList.push_back ( m_current );
+}
+
+void CTransceiver::MatchLine( const unsigned char *m_buffer )
 {
 	static const EnumValuesTypes EEnumValuesTypes = boost::assign::map_list_of
 		( TE_ADCO    , TELEINFO_TYPE_ADCO )
@@ -243,9 +274,7 @@ void CTransceiver::MatchLine( const unsigned char *m_buffer, boost::shared_ptr<y
 			if ( lvalueIsANumber && baseCounter >= NB_MESSAGES_RECEIVED )
 			{
 				YADOMS_LOG(debug) << "BASE" << "=" << lvalue;
-				m_Base.reset( new CPowerMeter( context, PluginName, "BaseCounter" ));
-				m_Base->SetValue ( lvalue );
-				m_KeywordList.push_back ( m_Base->GetHistorizable() );
+				HistorizeEnergy ( "BaseCounter", lvalue );
 				baseCounter = 0;
 			}
 			++baseCounter;
@@ -254,9 +283,7 @@ void CTransceiver::MatchLine( const unsigned char *m_buffer, boost::shared_ptr<y
 			if ( lvalueIsANumber && LowCostCounter>=NB_MESSAGES_RECEIVED )
 			{
 				YADOMS_LOG(debug) << "HCHC" << "=" << lvalue;
-				m_LowCost.reset( new CPowerMeter( context, PluginName, "LowCostCounter" ));
-				m_LowCost->SetValue ( lvalue );
-				m_KeywordList.push_back ( m_LowCost->GetHistorizable() );
+				HistorizeEnergy ( "LowCostCounter", lvalue );
 				LowCostCounter = 0;
 			}
 			++LowCostCounter;
@@ -265,9 +292,7 @@ void CTransceiver::MatchLine( const unsigned char *m_buffer, boost::shared_ptr<y
 			if ( lvalueIsANumber && NormalCostCounter>=NB_MESSAGES_RECEIVED )
 			{
 				YADOMS_LOG(debug) << "HCHP" << "=" << lvalue;
-				m_NormalCost.reset( new CPowerMeter( context, PluginName, "NormalCostCounter" ));
-				m_NormalCost->SetValue ( lvalue );
-				m_KeywordList.push_back ( m_NormalCost->GetHistorizable() );
+				HistorizeEnergy ( "NormalCostCounter", lvalue );
 				NormalCostCounter = 0;
 			}
 			++NormalCostCounter;
@@ -276,9 +301,7 @@ void CTransceiver::MatchLine( const unsigned char *m_buffer, boost::shared_ptr<y
 			if ( lvalueIsANumber && EJPPeakPeriodCounter>=NB_MESSAGES_RECEIVED )
 			{
 				YADOMS_LOG(debug) << "EJPHPM" << "=" << lvalue;
-				m_EJPPeakPeriod.reset( new CPowerMeter( context, PluginName, "EJPPeakPeriod" ));
-				m_EJPPeakPeriod->SetValue ( lvalue );
-				m_KeywordList.push_back ( m_EJPPeakPeriod->GetHistorizable() );
+				HistorizeEnergy ( "EJPPeakPeriod", lvalue );
 				EJPPeakPeriodCounter = 0;
 			}
 			++EJPPeakPeriodCounter;
@@ -287,9 +310,7 @@ void CTransceiver::MatchLine( const unsigned char *m_buffer, boost::shared_ptr<y
 			if ( lvalueIsANumber && EJPNormalPeriodCounter>=NB_MESSAGES_RECEIVED )
 			{
 				YADOMS_LOG(debug) << "EJPHPN" << "=" << lvalue;
-				m_EJPNormalPeriod.reset( new CPowerMeter( context, PluginName, "EJPNormalPeriod" ));
-				m_EJPNormalPeriod->SetValue ( lvalue );
-				m_KeywordList.push_back ( m_EJPNormalPeriod->GetHistorizable() );
+				HistorizeEnergy ( "EJPNormalPeriod", lvalue );
 				EJPNormalPeriodCounter = 0;
 			}
 			++EJPNormalPeriodCounter;
@@ -298,9 +319,7 @@ void CTransceiver::MatchLine( const unsigned char *m_buffer, boost::shared_ptr<y
 			if ( lvalueIsANumber && TempoBlueDaysLowCostCounter>=NB_MESSAGES_RECEIVED )
 			{
 				YADOMS_LOG(debug) << "BBRHCJB" << "=" << lvalue;
-				m_TempoBlueDaysLowCostPeriod.reset( new CPowerMeter( context, PluginName, "TempoBlueDaysLowCostPeriod" ));
-				m_TempoBlueDaysLowCostPeriod->SetValue ( lvalue );
-				m_KeywordList.push_back ( m_TempoBlueDaysLowCostPeriod->GetHistorizable() );
+				HistorizeEnergy ( "TempoBlueDaysLowCostPeriod", lvalue );
 				TempoBlueDaysLowCostCounter = 0;
 			}
 			++TempoBlueDaysLowCostCounter;
@@ -309,9 +328,7 @@ void CTransceiver::MatchLine( const unsigned char *m_buffer, boost::shared_ptr<y
 			if ( lvalueIsANumber && TempoBlueDaysNormalCostCounter>=NB_MESSAGES_RECEIVED )
 			{
 				YADOMS_LOG(debug) << "BBRHPJB" << "=" << lvalue;
-				m_TempoBlueDaysNormalCostPeriod.reset( new CPowerMeter( context, PluginName, "TempoBlueDaysNormalCostPeriod" ));
-				m_TempoBlueDaysNormalCostPeriod->SetValue ( lvalue );
-				m_KeywordList.push_back ( m_TempoBlueDaysNormalCostPeriod->GetHistorizable() );
+				HistorizeEnergy ( "TempoBlueDaysNormalCostPeriod", lvalue );
 				TempoBlueDaysNormalCostCounter = 0;
 			}
 			++TempoBlueDaysNormalCostCounter;
@@ -320,9 +337,7 @@ void CTransceiver::MatchLine( const unsigned char *m_buffer, boost::shared_ptr<y
 			if ( lvalueIsANumber && TempoWhiteDaysLowCostCounter>=NB_MESSAGES_RECEIVED )
 			{
 				YADOMS_LOG(debug) << "BBRHCJW" << "=" << lvalue;
-				m_TempoWhiteDaysLowCostPeriod.reset( new CPowerMeter( context, PluginName, "TempoWhiteDaysLowCostPeriod" ));
-				m_TempoWhiteDaysLowCostPeriod->SetValue ( lvalue );
-				m_KeywordList.push_back ( m_TempoWhiteDaysLowCostPeriod->GetHistorizable() );
+				HistorizeEnergy ( "TempoWhiteDaysLowCostPeriod", lvalue );
 				TempoWhiteDaysLowCostCounter = 0;
 			}
 			++TempoWhiteDaysLowCostCounter;
@@ -331,9 +346,7 @@ void CTransceiver::MatchLine( const unsigned char *m_buffer, boost::shared_ptr<y
 			if ( lvalueIsANumber && TempoWhiteDaysNormalCostCounter>=NB_MESSAGES_RECEIVED )
 			{
 				YADOMS_LOG(debug) << "BBRHPJW" << "=" << lvalue;
-				m_TempoWhiteDaysNormalCostPeriod.reset( new CPowerMeter( context, PluginName, "TempoWhiteDaysNormalCostPeriod" ));
-				m_TempoWhiteDaysNormalCostPeriod->SetValue ( lvalue );
-				m_KeywordList.push_back ( m_TempoWhiteDaysNormalCostPeriod->GetHistorizable() );
+				HistorizeEnergy ( "TempoWhiteDaysNormalCostPeriod", lvalue );
 				TempoWhiteDaysNormalCostCounter = 0;
 			}
 			++TempoWhiteDaysNormalCostCounter;
@@ -342,9 +355,7 @@ void CTransceiver::MatchLine( const unsigned char *m_buffer, boost::shared_ptr<y
 			if ( lvalueIsANumber && TempoRedDaysLowCostCounter>=NB_MESSAGES_RECEIVED )
 			{
 				YADOMS_LOG(debug) << "BBRHCJR" << "=" << lvalue;
-				m_TempoRedDaysLowCostPeriod.reset( new CPowerMeter( context, PluginName, "TempoRedDaysLowCostPeriod" ));
-				m_TempoRedDaysLowCostPeriod->SetValue ( lvalue );
-				m_KeywordList.push_back ( m_TempoRedDaysLowCostPeriod->GetHistorizable() );
+				HistorizeEnergy ( "TempoRedDaysLowCostPeriod", lvalue );
 				TempoRedDaysLowCostCounter = 0;
 			}
 			++TempoRedDaysLowCostCounter;
@@ -353,9 +364,7 @@ void CTransceiver::MatchLine( const unsigned char *m_buffer, boost::shared_ptr<y
 			if ( lvalueIsANumber && TempoRedDaysNormalCostCounter>=NB_MESSAGES_RECEIVED )
 			{
 				YADOMS_LOG(debug) << "BBRHPJR" << "=" << lvalue;
-				m_TempoRedDaysNormalCostPeriod.reset( new CPowerMeter( context, PluginName, "TempoRedDaysNormalCostPeriod" ));
-				m_TempoRedDaysNormalCostPeriod->SetValue ( lvalue );
-				m_KeywordList.push_back ( m_TempoRedDaysNormalCostPeriod->GetHistorizable() );
+				HistorizeEnergy ( "TempoRedDaysNormalCostPeriod", lvalue );
 				TempoRedDaysNormalCostCounter = 0;
 			}
 			++TempoRedDaysNormalCostCounter;
@@ -364,7 +373,7 @@ void CTransceiver::MatchLine( const unsigned char *m_buffer, boost::shared_ptr<y
 			if ( TimePeriodCounter>=NB_MESSAGES_RECEIVED )
 			{
 				YADOMS_LOG(debug) << "PTEC" << "=" << value;
-				m_TimePeriod.reset( new CRunningPeriod( context, PluginName, "RunningPeriod" ));
+				m_TimePeriod.reset( new CRunningPeriod( m_context, m_PluginName, "RunningPeriod" ));
 				std::string temp(value);
 				m_TimePeriod->SetValue ( temp );
 				m_KeywordList.push_back ( m_TimePeriod->GetHistorizable() );
@@ -376,9 +385,7 @@ void CTransceiver::MatchLine( const unsigned char *m_buffer, boost::shared_ptr<y
 			if ( lvalueIsANumber && InstantCurrentCounter>=NB_MESSAGES_RECEIVED )
 			{
 				YADOMS_LOG(debug) << "IINST" << "=" << value;
-				m_InstantCurrent.reset( new CCurrentMeter( context, PluginName, "InstantCurrent" ));
-				m_InstantCurrent->SetValue ( lvalue );
-				m_KeywordList.push_back ( m_InstantCurrent->GetHistorizable() );
+				HistorizeCurrent ( "InstantCurrent", lvalue );
 				InstantCurrentCounter = 0;
 			}
 			++InstantCurrentCounter;
@@ -386,10 +393,8 @@ void CTransceiver::MatchLine( const unsigned char *m_buffer, boost::shared_ptr<y
 		case TELEINFO_TYPE_IMAX:
 			if ( lvalueIsANumber && MaxCurrentCounter>= NB_MESSAGES_RECEIVED)
 			{
-				YADOMS_LOG(debug) << "IMAX" << "=" << value;
-				m_MaxCurrent.reset( new CCurrentMeter( context, PluginName, "MaxCurrent" ));
-				m_MaxCurrent->SetValue ( lvalue );
-				m_KeywordList.push_back ( m_MaxCurrent->GetHistorizable() );
+				YADOMS_LOG(debug) << "IMAX" << "=" << lvalue;
+				HistorizeCurrent ( "MaxCurrent", lvalue );
 				MaxCurrentCounter = 0;
 			}
 			++MaxCurrentCounter;
@@ -398,9 +403,15 @@ void CTransceiver::MatchLine( const unsigned char *m_buffer, boost::shared_ptr<y
 			if ( lvalueIsANumber && ApparentPowerCounter >= NB_MESSAGES_RECEIVED )
 			{
 				YADOMS_LOG(debug) << "PAPP" << "=" << lvalue;
-				m_ApparentPower.reset( new CApparentPowerMeter( context, PluginName, "ApparentPower" ));
-				m_ApparentPower->SetValue ( lvalue );
-				m_KeywordList.push_back ( m_ApparentPower->GetHistorizable() );
+				m_apparentpower.reset( new yApi::historization::CApparentPower("ApparentPower"));
+
+                if (!m_context->keywordExists( m_PluginName, m_apparentpower->getKeyword()))
+		           m_context->declareKeyword( m_PluginName, *m_apparentpower );
+
+			    m_apparentpower->set( lvalue );
+			    YADOMS_LOG(debug) << m_apparentpower->getKeyword() << "=" << m_apparentpower->get() << "VA";
+				m_KeywordList.push_back ( m_apparentpower );
+
 				ApparentPowerCounter = 0;
 			}
 			++ApparentPowerCounter;
@@ -414,7 +425,7 @@ void CTransceiver::MatchLine( const unsigned char *m_buffer, boost::shared_ptr<y
 			if ( ForecastPeriodCounter >= NB_MESSAGES_RECEIVED )
 			{
 				YADOMS_LOG(debug) << "DEMAIN" << "=" << value;
-				m_ForecastPeriod.reset( new CForecastTomorrow( context, PluginName, "ForecastColor" ));
+				m_ForecastPeriod.reset( new CForecastTomorrow( m_context, m_PluginName, "ForecastColor" ));
 				std::string temp(value);
 				m_ForecastPeriod->SetValue ( temp );
 				m_KeywordList.push_back ( m_ForecastPeriod->GetHistorizable() );

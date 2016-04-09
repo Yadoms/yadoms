@@ -56,13 +56,13 @@ void CWeatherConditions::InitializeVariables ( boost::shared_ptr<yApi::IYPluginA
 		  m_Temp.Initialize                ( context, details );
 
 		  if (!context->keywordExists( m_PluginName, m_pressure->getKeyword()))
-              context->declareKeyword(m_PluginName, *m_pressure, details);
+             context->declareKeyword(m_PluginName, *m_pressure, details);
 
 		  if (!context->keywordExists( m_PluginName, m_humidity->getKeyword()))
-			context->declareKeyword(m_PluginName, *m_humidity, details);
+			 context->declareKeyword(m_PluginName, *m_humidity, details);
 
 		  if (!context->keywordExists( m_PluginName, m_visibility->getKeyword()))
-			context->declareKeyword(m_PluginName, *m_visibility, details);
+			 context->declareKeyword(m_PluginName, *m_visibility, details);
 
 		  if (!context->keywordExists( m_PluginName, m_uv->getKeyword()))
 		     context->declareKeyword(m_PluginName, *m_uv, details);
@@ -263,20 +263,44 @@ void CWeatherConditions::Parse( boost::shared_ptr<yApi::IYPluginApi> context, co
                 m_Rain_1hr.SetValue                ( m_data, "current_observation.precip_today_metric" );
 			    KeywordList.push_back              ( m_Rain_1hr.GetHistorizable() );
 
+				//
+				//Visual condition
+				//
+
 				m_WeatherConditionUrl.SetValue     ( m_data, "current_observation.icon");
 				KeywordList.push_back              ( m_WeatherConditionUrl.GetHistorizable() );
+
+				//
+				//Wind (degrees)
+				//
 
 			    m_WindDirection.SetValue           ( m_data, "current_observation.wind_degrees");
 			    KeywordList.push_back              ( m_WindDirection.GetHistorizable() );
 
+				//
+				//Wind (speed)
+				//
+
 			    m_WindAverageSpeed.SetValue        ( m_data, "current_observation.wind_kph");
 			    KeywordList.push_back              ( m_WindAverageSpeed.GetHistorizable() );
+
+				//
+				//Wind (Max speed)
+				//
 
 			    m_WindMaxSpeed.SetValue            ( m_data, "current_observation.wind_gust_kph");
 			    KeywordList.push_back              ( m_WindMaxSpeed.GetHistorizable() );
 
+				//
+				//Feelslike
+				//
+
 			    m_FeelsLike.SetValue               ( m_data, "current_observation.feelslike_c" );
 			    KeywordList.push_back              ( m_FeelsLike.GetHistorizable() );
+
+				//
+				//Windchill
+				//
 
 			    m_Windchill.SetValue               ( m_data, "current_observation.windchill_c" );
 			    KeywordList.push_back              ( m_Windchill.GetHistorizable() );

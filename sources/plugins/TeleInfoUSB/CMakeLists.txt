@@ -25,16 +25,10 @@ set(CARTELECTRONIC_TELEINFO_USB_SOURCES
    TeleInfotrxHelpers.h
    Transceiver.h
    Transceiver.cpp
-   Keywords/ApparentPowerMeter.cpp
-   Keywords/ApparentPowerMeter.h
-   Keywords/CurrentMeter.cpp
-   Keywords/CurrentMeter.h
    Keywords/ForecastTomorrow.cpp
    Keywords/ForecastTomorrow.h
    Keywords/IKeyword.h
    Keywords/KeywordException.hpp
-   Keywords/PowerMeter.cpp
-   Keywords/PowerMeter.h
    Keywords/RunningPeriod.cpp
    Keywords/RunningPeriod.h
    specificHistorizer/Color.h

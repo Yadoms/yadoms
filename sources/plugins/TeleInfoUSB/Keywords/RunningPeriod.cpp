@@ -12,9 +12,7 @@ CRunningPeriod::CRunningPeriod( boost::shared_ptr<yApi::IYPluginApi> context, st
    :m_PluginName ( PluginName ), m_runningPeriod( new teleInfoUSB::specificHistorizers::CPeriod(KeyWordName) )
 {
    if (!context->keywordExists( m_PluginName, m_runningPeriod->getKeyword()))
-	{
       context->declareKeyword ( m_PluginName, *m_runningPeriod );
-	}
 }
 
 void CRunningPeriod::SetValue( std::string& Value )
