@@ -2,6 +2,7 @@
 
 #include "OpenZWaveNodeKeywordBase.h"
 #include <shared/plugin/yPluginApi/historization/SingleHistorizableData.hpp>
+#include "OpenZWaveHelpers.h"
 
 //--------------------------------------------------------------
 /// \brief	    ZWave keyword based on generic historizer
