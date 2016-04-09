@@ -31,8 +31,9 @@ public:
    virtual void decodeTeleInfoMessage(boost::shared_ptr<yApi::IYPluginApi> context,
 	                                  std::string & PluginName,
                                       const shared::communication::CByteBuffer& data);
+   virtual bool IsInformationUpdated ( void );
    // [END] ITransceiver implementation
-   
+
 private:
    //--------------------------------------------------------------
    /// \brief  The message sequence number
@@ -65,21 +66,19 @@ private:
    void MatchLine( const unsigned char* m_buffer );
 
    //--------------------------------------------------------------
-   /// \brief	                     Historize Energy
+   /// \brief	                     Historize TeleInfoData
    /// \param [in] KeywordName       The keyword Name
-   /// \param [in] Value             The value of the energy
+   /// \param [in] Value             The value of the data
    //--------------------------------------------------------------
-   void HistorizeEnergy ( std::string KeywordName, long Value );
-
-   //--------------------------------------------------------------
-   /// \brief	                     Historize Current
-   /// \param [in] KeywordName       The keyword Name
-   /// \param [in] Value             The value of the energy
-   //--------------------------------------------------------------
-   void HistorizeCurrent ( std::string KeywordName, long Value );
 
    template <class T>
    void HistorizeTeleInfoData ( std::string KeywordName, long Value );
+
+   //--------------------------------------------------------------
+   /// \brief	                     Refresh update boolean information
+   //--------------------------------------------------------------
+
+   void ResetRefreshTags ( void );
 
    //--------------------------------------------------------------
    /// \brief  Keywords list
@@ -96,4 +95,36 @@ private:
 
 	boost::shared_ptr<yApi::IYPluginApi> m_context;
 	std::string m_PluginName;
+
+	//Contract Options -> Abonnement
+	typedef enum {
+	   OP_BASE = 1,
+	   OP_CREUSE,
+	   OP_EJP,
+	   OP_TEMPO
+	} Abonnement;
+
+	bool baseUpdated;
+	bool LowCostUpdated;
+	bool NormalCostUpdated;
+	bool InstantCurrentUpdated;
+	bool MaxCurrentUpdated;
+	bool ApparentPowerUpdated;
+
+	bool EJPPeakPeriodUpdated;
+	bool EJPNormalPeriodUpdated;
+
+	bool TempoBlueDaysLowCostUpdated;
+	bool TempoBlueDaysNormalCostUpdated;
+
+	bool TempoWhiteDaysLowCostUpdated;
+	bool TempoWhiteDaysNormalCostUpdated;
+
+	bool TempoRedDaysLowCostUpdated;
+	bool TempoRedDaysNormalCostUpdated;
+
+	bool TimePeriodUpdated;
+	bool ForecastPeriodUpdated;
+
+	Abonnement Optarif;
 };

@@ -34,6 +34,7 @@ enum
 {
    kEvtPortConnection = yApi::IYPluginApi::kPluginFirstEventId,   // Always start from shared::event::CEventHandler::kUserFirstId
    kEvtPortDataReceived,
+   kEvtTimerRefreshTeleInfoData,
    kAnswerTimeout
 };
 
@@ -68,6 +69,9 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 		  context->declareDevice(m_deviceName, m_URL);
 	   }
 
+      // Timer used to read periodically information
+      context->getEventHandler().createTimer(kEvtTimerRefreshTeleInfoData , shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(15));
+
       while(1)
       {
          // Wait for an event
@@ -93,6 +97,12 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 
                break;
             }
+		 case kEvtTimerRefreshTeleInfoData:
+			 {
+				 // When received this timer, we restart the reception through the serial port
+				 m_port->start();
+				 break;
+			 }
          case yApi::IYPluginApi::kEventUpdateConfiguration:
             {
                context->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
@@ -165,6 +175,10 @@ void CTeleInfo::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> context
    m_transceiver->decodeTeleInfoMessage(context,
 	                                    m_deviceName,
 	        							data);
+
+   // When all information are updated we stopped the reception !
+   if (m_transceiver->IsInformationUpdated())
+	   m_port->stop ();
 }
 
 void CTeleInfo::processTeleInfoConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> context)
