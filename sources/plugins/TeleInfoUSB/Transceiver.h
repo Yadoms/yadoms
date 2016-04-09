@@ -78,6 +78,9 @@ private:
    //--------------------------------------------------------------
    void HistorizeCurrent ( std::string KeywordName, long Value );
 
+   template <class T>
+   void HistorizeTeleInfoData ( std::string KeywordName, long Value );
+
    //--------------------------------------------------------------
    /// \brief  Keywords list
    //--------------------------------------------------------------
