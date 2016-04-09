@@ -199,10 +199,12 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
            return CDataContainer();
 		  }
 	  };	  
-     
-     
-     template <>
-	  struct helper<bool>
+      
+	  //-----------------------------------------------------
+	  ///\brief     Helpers specialization for bool
+	  //-----------------------------------------------------      
+      template<typename TData>
+      struct helper<TData, typename boost::enable_if<boost::is_base_of<bool, TData > >::type>
 	  {
         static bool getInternal(const std::string& value)
 		  {
@@ -214,6 +216,9 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
 		  }
 	  };
 
+	  //-----------------------------------------------------
+	  ///\brief     Helpers specialization for ExtendedEnum
+	  //-----------------------------------------------------      
      template <typename TData>
      struct helper<TData, typename boost::enable_if<boost::is_base_of<enumeration::IExtendedEnum, TData > >::type >
 	  {
@@ -229,8 +234,11 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
 
 	  };
 
-     template <typename TData>
-     struct helper<TData, typename boost::enable_if<boost::is_base_of<boost::posix_time::ptime, TData > >::type >
+	  //-----------------------------------------------------
+	  ///\brief     Helpers specialization for boost::posix_time::ptime
+	  //-----------------------------------------------------      
+      template <typename TData>
+      struct helper<TData, typename boost::enable_if<boost::is_base_of<boost::posix_time::ptime, TData > >::type >
 	  {
         static TData getInternal(const std::string& value)
 		  {
@@ -241,8 +249,10 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
            return CDataContainer();
         }
 	  };
+     
+	  
    };
 
-
+   
 
 } } } } // namespace shared::plugin::yPluginApi::historization
