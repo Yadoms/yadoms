@@ -91,8 +91,6 @@ private:
    /// \brief  Keywords
    //--------------------------------------------------------------
 
-	boost::shared_ptr<yApi::historization::CApparentPower> m_apparentpower;
-
 	boost::shared_ptr<CRunningPeriod> m_TimePeriod;
 	boost::shared_ptr<CForecastTomorrow> m_ForecastPeriod;
 

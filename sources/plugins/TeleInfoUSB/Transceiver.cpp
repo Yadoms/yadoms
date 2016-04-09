@@ -104,8 +104,6 @@ void CTransceiver::ParseData( const unsigned char *pData, int Len )
 	m_KeywordList.clear();
 }
 
-//TODO : A tester !!
-
 template <class T>
 void CTransceiver::HistorizeTeleInfoData ( std::string KeywordName, long Value )
 {
@@ -117,7 +115,7 @@ void CTransceiver::HistorizeTeleInfoData ( std::string KeywordName, long Value )
 		m_context->declareKeyword ( m_PluginName, *m_energy );
 
 	m_energy->set( Value );
-	YADOMS_LOG(debug) << m_energy->getKeyword() << "=" << m_energy->get() << m_apparentpower->getCapacity().getUnit();
+	YADOMS_LOG(debug) << m_energy->getKeyword() << "=" << m_energy->get();
 	m_KeywordList.push_back ( m_energy );
 }
 
