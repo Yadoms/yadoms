@@ -31,8 +31,6 @@ set(WUNDERGROUND_SOURCES
    Keywords/Forecast.cpp   
    Keywords/IKeyword.h 
    Keywords/KeywordException.hpp
-   Keywords/Load.h
-   Keywords/Load.cpp
    Keywords/Moon.h
    Keywords/Moon.cpp
    Keywords/Rain.h
