@@ -5,7 +5,6 @@
 #include "WUConfiguration.h"
 #include "Keywords/Temp.h"
 #include "Keywords/WeatherIcon.h"
-#include "Keywords/WindDirection.h"
 #include "Keywords/WindSpeed.h"
 #include "Keywords/Condition.h"
 #include "Keywords/Rain.h"
@@ -121,11 +120,12 @@ private:
    boost::shared_ptr<yApi::historization::CHumidity>  m_humidity;
    boost::shared_ptr<yApi::historization::CDistance>  m_visibility;
    boost::shared_ptr<yApi::historization::CDirection> m_uv;
+   boost::shared_ptr<yApi::historization::CDirection> m_WindDirection;
 
    CTemp        m_DewPoint;
    CRain        m_Rain_1hr;
    CWeatherIcon m_WeatherConditionUrl;
-   CWindDirection  m_WindDirection;
+   //CWindDirection  m_WindDirection;
    CWindSpeed  m_WindAverageSpeed;
    CWindSpeed  m_WindMaxSpeed;
    CTemp        m_FeelsLike;

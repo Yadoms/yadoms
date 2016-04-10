@@ -105,16 +105,16 @@ void CTransceiver::ParseData( const unsigned char *pData, int Len )
 template <class T>
 void CTransceiver::HistorizeTeleInfoData ( std::string KeywordName, long Value )
 {
-	boost::shared_ptr<T> m_energy;
+	boost::shared_ptr<T> m_keyword;
 
-	m_energy.reset ( new T( KeywordName) );
+	m_keyword.reset ( new T( KeywordName) );
 
-	if (!m_context->keywordExists( m_PluginName, m_energy->getKeyword()))
-		m_context->declareKeyword ( m_PluginName, *m_energy );
+	if (!m_context->keywordExists( m_PluginName, m_keyword->getKeyword()))
+		m_context->declareKeyword ( m_PluginName, *m_keyword );
 
-	m_energy->set( Value );
-	YADOMS_LOG(debug) << m_energy->getKeyword() << "=" << m_energy->get();
-	m_KeywordList.push_back ( m_energy );
+	m_keyword->set( Value );
+	YADOMS_LOG(debug) << m_keyword->getKeyword() << "=" << m_keyword->get();
+	m_KeywordList.push_back ( m_keyword );
 }
 
 void CTransceiver::ResetRefreshTags ( void )

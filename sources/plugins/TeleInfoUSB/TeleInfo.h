@@ -38,7 +38,7 @@ public:
    /// \brief	                     Create the connection to the TeleInfo USB Reader
    /// \param [in] eventHandler     Event handler to be notified on events on the connection
    //--------------------------------------------------------------
-   void createConnection(shared::event::CEventHandler& eventHandler);
+   void createConnection(boost::shared_ptr<yApi::IYPluginApi> context);
 
    //--------------------------------------------------------------
    /// \brief	                     Create the connection to the TeleInfo USB Reader

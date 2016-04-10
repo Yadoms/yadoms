@@ -41,8 +41,6 @@ set(WUNDERGROUND_SOURCES
    Keywords/Temp.cpp   
    Keywords/WeatherIcon.h
    Keywords/WeatherIcon.cpp   
-   Keywords/WindDirection.h
-   Keywords/WindDirection.cpp
    Keywords/WindSpeed.h
    Keywords/WindSpeed.cpp
    specificHistorizers/ConditionHistorizer.h

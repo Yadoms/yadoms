@@ -44,6 +44,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
    try
    {
       YADOMS_LOG(debug) << "Teleinfo is starting...";
+	  context->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
 
       // Load configuration values (provided by database)
       m_configuration.initializeWith(context->getConfiguration());
@@ -55,7 +56,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
       m_waitForAnswerTimer->stop();
 
       // Create the connection
-      createConnection(context->getEventHandler());
+      createConnection( context );
 
       YADOMS_LOG(debug) << "Teleinfo is running...";
 
@@ -130,10 +131,11 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
    }
 }
 
-void CTeleInfo::createConnection(shared::event::CEventHandler& eventHandler)
+void CTeleInfo::createConnection(boost::shared_ptr<yApi::IYPluginApi> context)
 {
+   context->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
    // Create the port instance
-   m_port = CTeleInfoFactory::constructPort(m_configuration, eventHandler, kEvtPortConnection, kEvtPortDataReceived);
+   m_port = CTeleInfoFactory::constructPort(m_configuration, context->getEventHandler(), kEvtPortConnection, kEvtPortDataReceived);
    m_port->setReceiveBufferMaxSize(TeleInfoMESSAGE_maxSize);
    m_port->start();
 }
@@ -166,7 +168,7 @@ void CTeleInfo::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> conte
    m_configuration.initializeWith(newConfigurationData);
 
    // Create new connection
-   createConnection(context->getEventHandler());
+   createConnection( context );
 }
 
 void CTeleInfo::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> context, 

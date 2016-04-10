@@ -15,7 +15,7 @@ CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> cont
            m_DewPoint            ( PluginName, Prefix + "DewPoint"),
 		   m_Rain_1hr            ( PluginName, Prefix + "Rain_1hr"),
            m_WeatherConditionUrl ( PluginName, Prefix + "WeatherCondition" ),
-           m_WindDirection       ( PluginName, Prefix + "WindDirection" ),
+		   m_WindDirection       ( new yApi::historization::CDirection( Prefix + "WindDirection" )),
            m_WindAverageSpeed    ( PluginName, Prefix + "windAverageSpeed"),
            m_WindMaxSpeed        ( PluginName, Prefix + "windMaxSpeed"),
            m_FeelsLike           ( PluginName, Prefix + "FeelsLike" ),
@@ -53,25 +53,16 @@ void CWeatherConditions::InitializeVariables ( boost::shared_ptr<yApi::IYPluginA
 
 	   if (WUConfiguration.IsConditionsIndividualKeywordsEnabled())
 	   {
+		  if (!context->keywordExists( m_PluginName, m_pressure->getKeyword()))      context->declareKeyword(m_PluginName, *m_pressure, details);
+		  if (!context->keywordExists( m_PluginName, m_humidity->getKeyword()))      context->declareKeyword(m_PluginName, *m_humidity, details);
+		  if (!context->keywordExists( m_PluginName, m_visibility->getKeyword()))    context->declareKeyword(m_PluginName, *m_visibility, details);
+		  if (!context->keywordExists( m_PluginName, m_uv->getKeyword()))            context->declareKeyword(m_PluginName, *m_uv, details);
+		  if (!context->keywordExists( m_PluginName, m_WindDirection->getKeyword())) context->declareKeyword(m_PluginName, *m_WindDirection, details);
+
 		  m_Temp.Initialize                ( context, details );
-
-		  if (!context->keywordExists( m_PluginName, m_pressure->getKeyword()))
-             context->declareKeyword(m_PluginName, *m_pressure, details);
-
-		  if (!context->keywordExists( m_PluginName, m_humidity->getKeyword()))
-			 context->declareKeyword(m_PluginName, *m_humidity, details);
-
-		  if (!context->keywordExists( m_PluginName, m_visibility->getKeyword()))
-			 context->declareKeyword(m_PluginName, *m_visibility, details);
-
-		  if (!context->keywordExists( m_PluginName, m_uv->getKeyword()))
-		     context->declareKeyword(m_PluginName, *m_uv, details);
-
 		  m_DewPoint.Initialize            ( context, details );
-
 		  m_Rain_1hr.Initialize            ( context, details );
 		  m_WeatherConditionUrl.Initialize ( context, details );
-		  m_WindDirection.Initialize       ( context, details );
 		  m_WindAverageSpeed.Initialize    ( context, details );
 		  m_WindMaxSpeed.Initialize        ( context, details );
 		  m_FeelsLike.Initialize           ( context, details );
@@ -274,8 +265,9 @@ void CWeatherConditions::Parse( boost::shared_ptr<yApi::IYPluginApi> context, co
 				//Wind (degrees)
 				//
 
-			    m_WindDirection.SetValue           ( m_data, "current_observation.wind_degrees");
-			    KeywordList.push_back              ( m_WindDirection.GetHistorizable() );
+				m_WindDirection->set((int) m_data.get<double>( "current_observation.wind_degrees" ));
+				YADOMS_LOG(debug) << m_WindDirection->getKeyword() << "=" << m_WindDirection->get() << " degrees";
+			    KeywordList.push_back              ( m_WindDirection );
 
 				//
 				//Wind (speed)
