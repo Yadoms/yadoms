@@ -29,6 +29,9 @@ public:
    virtual void flush();
    // [END] ITeleInfoReceiveBufferHandler implementation
 
+   void suspend ( void );
+   void resume  ( void );
+
 protected:
    //--------------------------------------------------------------
    /// \brief	                     Check if we got a complete message
@@ -63,6 +66,8 @@ private:
    /// \brief	The event id to notify for received data event  
    //--------------------------------------------------------------
    int m_receiveDataEventId;
+
+   bool m_receptionSuspended;
 };
 
 

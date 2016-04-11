@@ -52,6 +52,9 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
       // Create the transceiver
       m_transceiver = CTeleInfoFactory::constructTransceiver();
 
+	  // Create the buffer handler
+	  m_receiveBufferHandler = CTeleInfoFactory::GetBufferHandler( context->getEventHandler(), kEvtPortDataReceived );
+
       m_waitForAnswerTimer = context->getEventHandler().createTimer(kAnswerTimeout, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(5));
       m_waitForAnswerTimer->stop();
 
@@ -103,7 +106,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
                // When received this timer, we restart the reception through the serial port
                YADOMS_LOG(debug) << "Teleinfo plugin :  Start COM";
                m_transceiver->ResetRefreshTags();
-               m_port->start();
+			   m_receiveBufferHandler->resume ();
                break;
             }
          case yApi::IYPluginApi::kEventUpdateConfiguration:
@@ -135,8 +138,8 @@ void CTeleInfo::createConnection(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    context->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
    // Create the port instance
-   m_port = CTeleInfoFactory::constructPort(m_configuration, context->getEventHandler(), kEvtPortConnection, kEvtPortDataReceived);
-   m_port->setReceiveBufferMaxSize(TeleInfoMESSAGE_maxSize);
+   m_port = CTeleInfoFactory::constructPort(m_configuration, context->getEventHandler(), m_receiveBufferHandler, kEvtPortConnection);
+   //m_port->setReceiveBufferMaxSize(TeleInfoMESSAGE_maxSize);
    m_port->start();
 }
 
@@ -182,7 +185,7 @@ void CTeleInfo::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> context
 
    // When all information are updated we stopped the reception !
    if (m_transceiver->IsInformationUpdated())
-	   m_port->stop ();
+	   m_receiveBufferHandler->suspend ();
 }
 
 void CTeleInfo::processTeleInfoConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> context)

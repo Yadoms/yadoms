@@ -3,7 +3,7 @@
 
 
 CTeleInfoReceiveBufferHandler::CTeleInfoReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler, int receiveDataEventId)
-   :m_receiveDataEventHandler(receiveDataEventHandler), m_receiveDataEventId(receiveDataEventId)
+   :m_receiveDataEventHandler(receiveDataEventHandler), m_receiveDataEventId(receiveDataEventId), m_receptionSuspended ( false )
 {
 }
 
@@ -13,11 +13,26 @@ CTeleInfoReceiveBufferHandler::~CTeleInfoReceiveBufferHandler()
 
 void CTeleInfoReceiveBufferHandler::push(const shared::communication::CByteBuffer& buffer)
 {
-   for (size_t idx = 0 ; idx < buffer.size() ; ++ idx)
-      m_content.push_back(buffer[idx]);
+   if (!m_receptionSuspended)
+   {
+	   for (size_t idx = 0 ; idx < buffer.size() ; ++ idx)
+		  m_content.push_back(buffer[idx]);
 
-   if (isComplete())
-      notifyEventHandler(popNextMessage());
+	   if (isComplete())
+		  notifyEventHandler(popNextMessage());
+   }
+   else
+	   flush(); // If the reception is suspended we flush the content
+}
+
+void CTeleInfoReceiveBufferHandler::suspend ( void )
+{
+	m_receptionSuspended = true;
+}
+
+void CTeleInfoReceiveBufferHandler::resume  ( void )
+{
+	m_receptionSuspended = false;
 }
 
 void CTeleInfoReceiveBufferHandler::flush()

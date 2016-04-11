@@ -2,6 +2,7 @@
 
 #include "ITeleInfoConfiguration.h"
 #include <shared/communication/IAsyncPort.h>
+#include "TeleInfoReceiveBufferHandler.h"
 #include "ITransceiver.h"
 
 //--------------------------------------------------------------
@@ -25,14 +26,20 @@ public:
    //--------------------------------------------------------------
    static boost::shared_ptr<shared::communication::IAsyncPort> constructPort(
       const ITeleInfoConfiguration& configuration,
-      shared::event::CEventHandler& eventHandler,
-      int evtPortConnectionId,
-      int evtPortDataReceived);
+	  shared::event::CEventHandler& eventHandler,
+      boost::shared_ptr<CTeleInfoReceiveBufferHandler> receiveBufferHandler,
+      int evtPortConnectionId);
 
    //--------------------------------------------------------------
    /// \brief	                           Create a transceiver instance
    /// \return                            The created transceiver
    //--------------------------------------------------------------
    static boost::shared_ptr<ITransceiver> constructTransceiver();
+
+   //--------------------------------------------------------------
+   /// \brief	                          Return the buffer handler of the teleInfo
+   /// \return                            The Buffer handler
+   //--------------------------------------------------------------
+   static boost::shared_ptr<CTeleInfoReceiveBufferHandler> GetBufferHandler( shared::event::CEventHandler& eventHandler, int evtPortDataReceived );
 };
 

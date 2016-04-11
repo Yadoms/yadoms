@@ -4,11 +4,12 @@
 #include <shared/communication/IAsyncPort.h>
 #include <shared/communication/BufferLogger.h>
 #include "Transceiver.h"
+#include "TeleInfoReceiveBufferHandler.h"
 
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-#define TeleInfoMESSAGE_maxSize 16
+//#define TeleInfoMESSAGE_maxSize 16
 
 //--------------------------------------------------------------
 /// \brief	This class is the TeleInfo plugin
@@ -104,4 +105,9 @@ private:
    /// \brief  The communication port
    //--------------------------------------------------------------
    shared::communication::CBufferLogger m_logger;
+
+   //--------------------------------------------------------------
+   /// \brief  The receiver buffer
+   //--------------------------------------------------------------
+   boost::shared_ptr<CTeleInfoReceiveBufferHandler> m_receiveBufferHandler;
 };
