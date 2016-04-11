@@ -4,35 +4,41 @@
  */
 widgetViewModelCtor = function weatherViewModel() {
 
+    var self = this;
     //observable data
     this.data = ko.observable("");
     this.city = ko.observable("");
-    this.WeatherIcon = ko.observable("");
-    this.Temp = ko.observable("");
-    this.WindCanvasId = ko.observable("");
+    this.temperature = ko.observable("");
 
-    this.dateformat = "";
+    this.condition = ko.observable("sunny");
+
+    this.conditionClass = ko.computed(function () {
+        return "wi wi-wu-" + self.condition().toLowerCase();
+    });
+
     this.lastUpdate = "";
-
-    //Height of the widget.
-    this.height = 0;
-
-    this.WidgetWidth = 180;
-    this.WidgetHeight = 62;
 
     /**
      * Initialization method
      * @param widget widget class object
      */
     this.initialize = function () {
-        //we configure the toolbar
-        this.widgetApi.toolbar({
-            activated: false
-        });
+        var self = this;
+        var d = new $.Deferred();
 
-        var element = this.widgetApi.find(".weather-canvas");
-        element.attr("width", this.WidgetWidth);
-        element.attr("height", this.WidgetHeight);
+        // create the chart
+        self.$chart = self.widgetApi.find("div.container");
+
+        self.widgetApi.loadCss("libs/weather-icons/css/weather-icons.min.css").done(function() {
+
+            //we configure the toolbar
+            self.widgetApi.toolbar({
+                activated: false
+            });
+
+            d.resolve();
+        });
+        return d.promise();
     };
 
     /**
@@ -50,47 +56,10 @@ widgetViewModelCtor = function weatherViewModel() {
             var res = obj.city.split(",");
             self.city(res[0]);
 
-            self.WeatherIcon("widgets/weather/images/Icons1/" + obj.Conditions.WeatherCondition + ".png");
-            self.Temp(obj.Conditions.Temp + $.t(obj.Units.temperature));
-
-            self.paint();
-
-            //Send update information to the HMI, on if the date is new
-            if (self.lastUpdate !== data.date._i) {
-                self.lastUpdate = data.date._i;
-            }
+            self.condition(obj.Conditions.WeatherCondition);
+            self.temperature(obj.Conditions.Temp + $.t(obj.Units.temperature));
+            self.widgetApi.fitText();
         }
-    };
-
-    this.paint = function () {
-        var self = this;
-
-        var element = this.widgetApi.find(".weather-canvas");
-
-        //get a reference to the canvas
-        var ctx = element.get(0).getContext("2d");
-
-        // Refresh the canvas, clear all existing information
-        ctx.clearRect(0, 0, self.WidgetWidth, self.WidgetHeight);
-
-        //Attributes of canvas could only be changed trough theses variables. In an other way the canvas is stretched.
-        element.attr('width', self.WidgetWidth);
-        element.attr('height', self.WidgetHeight);
-
-        //Draw the image
-        var imageObj = new Image();
-        imageObj.src = self.WeatherIcon();
-        imageObj.onload = function () {
-            ctx.drawImage(imageObj, 0, 0, self.WidgetHeight, self.WidgetHeight);
-        }
-
-        //write the text at the same position as the height of the column
-        ctx.font = "bold 20px Georgia";
-        ctx.fillText(self.Temp(), 6 * self.WidgetWidth / 10, self.WidgetHeight / 2);
-
-        //write the text at the same position as the height of the column
-        ctx.font = "18px Georgia";
-        ctx.fillText(self.city(), (self.WidgetWidth - 50) / 2, 9 * self.WidgetHeight / 10);
     };
 
     this.configurationChanged = function () {
@@ -101,32 +70,5 @@ widgetViewModelCtor = function weatherViewModel() {
 
         //we register keyword new acquisition
         self.widgetApi.registerKeywordAcquisitions(self.widget.configuration.device.keywordId);
-
-        try {
-            //Read the date format
-            self.dateformat = self.widget.configuration.DateFormat;
-        }
-        catch (err) {
-            console.debug(err.message);
-        }
     }
-
-    this.resized = function () {
-        var self = this;
-
-        if (self.widget.getHeight() <= 120) {
-            self.WidgetWidth = 180;
-            self.WidgetHeight = 62;
-        }
-        else if ((self.widget.getHeight() <= 220) && (self.widget.getHeight() > 190)) {
-            self.WidgetWidth = 280;
-            self.WidgetHeight = 165;
-        }
-        else {
-            self.WidgetWidth = 180;
-            self.WidgetHeight = 62;
-        }
-
-        self.paint();
-    };
 };
