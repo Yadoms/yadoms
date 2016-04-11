@@ -1,13 +1,15 @@
 #include "stdafx.h"
 #include "Instance.h"
+#include <shared/plugin/yPluginApi/IYPluginApi.h>
 
 namespace pluginSystem
 {
-   CInstance::CInstance(
-      const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
-      boost::shared_ptr<shared::process::IRunner> runner)
+   CInstance::CInstance(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
+                        boost::shared_ptr<shared::process::IProcess> process,
+                        boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> yPluginApi)
       : m_pluginInformation(pluginInformation),
-        m_runner(runner)
+        m_process(process),
+        m_yPluginApi(yPluginApi)
    {
    }
 
@@ -17,7 +19,18 @@ namespace pluginSystem
 
    void CInstance::requestStop()
    {
-      m_runner->requestStop();
+      postStopRequest();
+   }
+
+   void CInstance::kill()
+   {
+      m_process->kill();
+   }
+
+   void CInstance::postStopRequest() const
+   {
+      // Post event to the plugin
+      m_yPluginApi->getEventHandler().postEvent(shared::plugin::yPluginApi::IYPluginApi::kEventStopRequested);
    }
 
    //TODO

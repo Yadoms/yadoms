@@ -52,7 +52,7 @@ void CRunner::start()
 void CRunner::requestStop()
 {
    if (m_process)
-      m_process->interrupt();
+      m_process->kill();
 }
 
 void CRunner::monitorThreaded(

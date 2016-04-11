@@ -1,5 +1,5 @@
 #pragma once
-#include <shared/process/IRunner.h>
+#include "IRunner.h"
 #include <shared/DataContainer.h>
 #include <shared/process/ILogger.h>
 #include <shared/process/IStopNotifier.h>
@@ -60,8 +60,7 @@ namespace shared { namespace script
       ///\param[in] scriptConfiguration   Configuration of the script
       ///\return                 The created script instance
       //-----------------------------------------------------
-      virtual boost::shared_ptr<process::IRunner> createRunner(
-         const std::string& scriptPath,
+      virtual boost::shared_ptr<IRunner> createRunner(const std::string& scriptPath,
          boost::shared_ptr<process::ILogger> scriptLogger,
          boost::shared_ptr<yScriptApi::IYScriptApi> yScriptApi,
          boost::shared_ptr<process::IStopNotifier> stopNotifier,

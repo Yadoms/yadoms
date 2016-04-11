@@ -1,11 +1,9 @@
 #pragma once
 #include <shared/plugin/information/IInformation.h>
 #include "IInstance.h"
-#include "IInstanceStateHandler.h"
 #include "database/sqlite/requesters/Plugin.h"
 #include "database/IDataProvider.h"
 #include "dataAccessLayer/IDataAccessLayer.h"
-#include "dataAccessLayer/IEventLogger.h"
 #include "IQualifier.h"
 #include <shared/event/EventHandler.hpp>
 
@@ -37,14 +35,6 @@ namespace pluginSystem
       virtual AvailablePluginMap findAvailablePlugins() const = 0;
 
       //--------------------------------------------------------------
-      /// \brief	                     Get plugin informations
-      /// \param [in] pluginName       The plugin name
-      /// \return                      The plugin information
-      /// \throw                       CInvalidPluginException if plugin is not recognized
-      //--------------------------------------------------------------
-      virtual boost::shared_ptr<const shared::plugin::information::IInformation> createInformation(const std::string& pluginName) const = 0;
-
-      //--------------------------------------------------------------
       /// \brief	                     Create a plugin instance
       /// \param [in]	pluginInformation          Information on the plugin
       /// \param [in]   instanceData               the plugin instance data
@@ -52,25 +42,16 @@ namespace pluginSystem
       /// \param [in]   dataAccessLayer            the data access layer
       /// \param [in]   qualifier                  the plugin qualifier
       /// \param [in]   managerEventHandler        the manager event handler
+      /// \param [in]   normalStopEventId          Id of the normal instance stop event
+      /// \param [in]   abnormalStopEventId        Id of the abnormal instance stop event
       /// \return                      The plugin instance
       //--------------------------------------------------------------
       virtual boost::shared_ptr<IInstance> createInstance(boost::shared_ptr<const database::entities::CPlugin> instanceData,
                                                           boost::shared_ptr<database::IDataProvider> dataProvider,
                                                           boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
                                                           const boost::shared_ptr<IQualifier> qualifier,
-                                                          boost::shared_ptr<shared::event::CEventHandler> managerEventHandler) const = 0;
-
-      //--------------------------------------------------------------
-      /// \brief	                     Create the instance state handler
-      ///\param [in] dbRequester                   Database requester
-      ///\param [in] eventLogger                   Main event logger
-      ///\param [in] managerEventHandler           the manager event handler
-      ///\param [in] instanceId                    the plugin instance ID
-      /// \return                      The state handler
-      //--------------------------------------------------------------
-      virtual boost::shared_ptr<IInstanceStateHandler> createInstanceStateHandler(boost::shared_ptr<database::IPluginRequester> dbRequester,
-                                                                                  boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger,
-                                                                                  boost::shared_ptr<shared::event::CEventHandler> managerEventHandler,
-                                                                                  int instanceId) const = 0;
+                                                          boost::shared_ptr<shared::event::CEventHandler> managerEventHandler,
+                                                          int normalStopEventId,
+                                                          int abnormalStopEventId) const = 0;
    };
 } // namespace pluginSystem

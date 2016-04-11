@@ -37,7 +37,7 @@ void CRule::start()
 
 void CRule::requestStop()
 {
-   m_runner->requestStop();
+//TODO corriger   m_runner->requestStop();
 }
 
 } // namespace automation	

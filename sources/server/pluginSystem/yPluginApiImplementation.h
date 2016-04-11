@@ -28,10 +28,10 @@ namespace pluginSystem
       /// \param [in]   acquisitionRequester       the acquisition requester
       //-----------------------------------------------------
       CYPluginApiImplementation(boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformations,
-         const boost::shared_ptr<const database::entities::CPlugin> instanceData,
-         boost::shared_ptr<database::IDataProvider> dataProvider,
-         boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
-         boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer);
+                                const boost::shared_ptr<const database::entities::CPlugin> instanceData,
+                                boost::shared_ptr<database::IDataProvider> dataProvider,
+                                boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
+                                boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer);
       
       //-----------------------------------------------------
       ///\brief Destructor
@@ -76,11 +76,11 @@ namespace pluginSystem
       ///\throw shared::exception::CEmptyResult if creation failed
       //-----------------------------------------------------   
       virtual void declareCustomKeyword(const std::string& device, const std::string& keyword, const std::string& capacity,
-         const shared::plugin::yPluginApi::EKeywordAccessMode& accessMode, const shared::plugin::yPluginApi::EKeywordDataType& type,
-         const std::string & units = shared::CStringExtension::EmptyString,
-         const shared::plugin::yPluginApi::historization::EMeasureType & measure = shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute,
-		   const shared::CDataContainer& typeInfo = shared::CDataContainer::EmptyContainer,
-         const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer);
+                                        const shared::plugin::yPluginApi::EKeywordAccessMode& accessMode, const shared::plugin::yPluginApi::EKeywordDataType& type,
+                                        const std::string& units = shared::CStringExtension::EmptyString,
+                                        const shared::plugin::yPluginApi::historization::EMeasureType& measure = shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute,
+                                        const shared::CDataContainer& typeInfo = shared::CDataContainer::EmptyContainer,
+                                        const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer);
 
       //--------------------------------------------------------------
       /// \brief	      Get the plugin state device/keywords (create if not exists)

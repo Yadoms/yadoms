@@ -256,15 +256,14 @@ std::string CManager::getScriptLogFile(boost::shared_ptr<const database::entitie
    return std::string(std::istreambuf_iterator<char>(file), eos);
 }
 
-boost::shared_ptr<shared::process::IRunner> CManager::createScriptRunner(
-   boost::shared_ptr<const IProperties> scriptProperties,
-   boost::shared_ptr<shared::process::ILogger> scriptLogger,
-   boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
-   boost::shared_ptr<shared::process::IStopNotifier> stopNotifier)
+boost::shared_ptr<shared::script::IRunner> CManager::createScriptRunner(boost::shared_ptr<const IProperties> scriptProperties,
+                                                                        boost::shared_ptr<shared::process::ILogger> scriptLogger,
+                                                                        boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
+                                                                        boost::shared_ptr<shared::process::IStopNotifier> stopNotifier)
 {
    try
    {
-      boost::shared_ptr<shared::script::IInterpreter> scriptInterpreter = getAssociatedInterpreter(scriptProperties->interpreterName());
+      auto scriptInterpreter = getAssociatedInterpreter(scriptProperties->interpreterName());
 
       return scriptInterpreter->createRunner(scriptProperties->scriptPath(),
          scriptLogger, yScriptApi, stopNotifier, scriptProperties->configuration());

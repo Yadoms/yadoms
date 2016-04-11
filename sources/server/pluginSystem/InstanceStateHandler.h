@@ -1,39 +1,51 @@
 #pragma once
-#include "IInstanceStateHandler.h"
+#include <shared/process/IEndOfProcessObserver.h>
 #include <server/dataAccessLayer/IEventLogger.h>
 #include <server/database/IPluginRequester.h>
 #include <shared/event/EventHandler.hpp>
+#include "IInstanceStartErrorObserver.h"
 
 namespace pluginSystem
 {
    //-----------------------------------------------------
    ///\brief The instance error handler
    //-----------------------------------------------------
-   class CInstanceStateHandler : public IInstanceStateHandler
+   class CInstanceStateHandler : public IInstanceStartErrorObserver, public shared::process::IEndOfProcessObserver
    {
    public:
       //-----------------------------------------------------
       ///\brief               Constructor
-      ///\param[in] pluginRequester  Database requester
-      ///\param[in] eventLogger  Main event logger
-      ///\param[in] managerEventHandler  the manager event handler
-      ///\param[in] instanceId  the plugin instance ID
+      ///\param[in] pluginRequester          Database requester
+      ///\param[in] eventLogger              Main event logger
+      ///\param[in] managerEventHandler      The manager event handler
+      ///\param[in] instanceId               The plugin instance ID
+      ///\param[in] normalStopEventId        Id of the normal instance stop event
+      ///\param[in] abnormalStopEventId      Id of the abnormal instance stop event
       //-----------------------------------------------------
       CInstanceStateHandler(boost::shared_ptr<database::IPluginRequester> pluginRequester,
                             boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger,
                             boost::shared_ptr<shared::event::CEventHandler> managerEventHandler,
-                            int instanceId);
+                            int instanceId,
+                            int normalStopEventId,
+                            int abnormalStopEventId);
 
       //-----------------------------------------------------
       ///\brief               Destructor
       //-----------------------------------------------------
       virtual ~CInstanceStateHandler();
 
-      // IInstanceStateHandler Implementation
-      void signalNormalStop() override;
-      void signalError(const std::string& error) override;
+      // IInstanceStartErrorObserver Implementation
       void signalStartError(const std::string& error) override;
-      // [END] IInstanceStateHandler Implementation
+      // [END] IInstanceStartErrorObserver Implementation
+
+      // process::IEndOfProcessObserver Implementation
+      void onEndOfProcess(int returnCode, const std::string& error) override;
+      // [END] process::IEndOfProcessObserver Implementation
+
+
+   protected:
+      void signalNormalStop() const;
+      void signalError(const std::string& error);
 
 
    private:
@@ -56,6 +68,12 @@ namespace pluginSystem
       ///\brief               The instance ID
       //-----------------------------------------------------
       int m_instanceId;
+
+      //-----------------------------------------------------
+      ///\brief               Stop event IDs
+      //-----------------------------------------------------
+      int m_normalStopEventId;
+      int m_abnormalStopEventId;
    };
 	
 } // namespace pluginSystem

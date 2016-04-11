@@ -29,7 +29,7 @@ public:
    virtual ~CScriptProcess();
 
    // shared::process::IProcess Implementation
-   virtual void interrupt();
+   virtual void kill();
    virtual int waitForStop();
    virtual std::string getError() const;
    // [END] shared::process::IProcess Implementation

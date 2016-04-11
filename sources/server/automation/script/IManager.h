@@ -1,11 +1,11 @@
 #pragma once
-#include <shared/process/IRunner.h>
 #include "IProperties.h"
 #include "../../database/sqlite/requesters/Rule.h"
 #include <shared/process/ILogger.h>
 #include <shared/process/IStopNotifier.h>
 #include <shared/script/yScriptApi/IYScriptApi.h>
 #include <server/automation/IRuleStateHandler.h>
+#include <shared/script/IRunner.h> //TODO à virer
 
 namespace automation { namespace script
 {
@@ -86,11 +86,10 @@ namespace automation { namespace script
       ///\return              A new script runner instance
       ///\throw CInvalidParameter if unable to create script runner
       //-----------------------------------------------------
-      virtual boost::shared_ptr<shared::process::IRunner> createScriptRunner(
-         boost::shared_ptr<const IProperties> scriptProperties,
-         boost::shared_ptr<shared::process::ILogger> scriptLogger,
-         boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
-         boost::shared_ptr<shared::process::IStopNotifier> stopNotifier) = 0;
+      virtual boost::shared_ptr<shared::script::IRunner> createScriptRunner(boost::shared_ptr<const IProperties> scriptProperties,
+                                                                            boost::shared_ptr<shared::process::ILogger> scriptLogger,
+                                                                            boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
+                                                                            boost::shared_ptr<shared::process::IStopNotifier> stopNotifier) = 0;
 
       //-----------------------------------------------------
       ///\brief               Create the script logger

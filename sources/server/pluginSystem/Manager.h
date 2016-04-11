@@ -27,6 +27,16 @@ namespace pluginSystem
    {
    public:
       //--------------------------------------------------------------
+      /// \brief	    Type of instance stop event
+      //--------------------------------------------------------------
+      enum EInstanceStopEventType
+      {
+         kNormal = 0,      // Instance abnormal stopped
+         kAbnormal
+      };
+
+
+      //--------------------------------------------------------------
       /// \brief			Constructor (protected, use newManager to create instance)
       /// \param [in]   initialDir              Initial plugins search directory
       /// \param [in]   dataProvider            Database link
@@ -123,7 +133,14 @@ namespace pluginSystem
       /// \param [in] id   Instance Id
       /// \throw           CInvalidParameter if id is unknown
       //--------------------------------------------------------------
-      void stopInstance(int id);
+      void requestStopInstance(int id);
+
+      //--------------------------------------------------------------
+      /// \brief           Kill a running instance of plugin
+      /// \param [in] id   Instance Id
+      /// \throw           CInvalidParameter if id is unknown
+      //--------------------------------------------------------------
+      void killInstance(int id);
 
       //--------------------------------------------------------------
       /// \brief           Get the running state of a particular instance of plugin

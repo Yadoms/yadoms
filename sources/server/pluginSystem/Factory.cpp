@@ -9,11 +9,13 @@
 #include "IQualifier.h"
 #include "PluginException.hpp"
 #include "NativeExecutableCommandLine.h"
-#include "Process.h"
-#include "Runner.h"
 #include "InvalidPluginException.hpp"
 #include "Logger.h"
 #include "ContextAccessor.h"
+#include <shared/process/Process.h>
+
+//TODO rechercer la châine shared/shared/ dans les include
+//TODO rechercher la chaîne "rule" dans tout le répertoire pluginSystem et la virer
 
 namespace pluginSystem
 {
@@ -35,14 +37,18 @@ namespace pluginSystem
                                                          boost::shared_ptr<database::IDataProvider> dataProvider,
                                                          boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
                                                          const boost::shared_ptr<IQualifier> qualifier, //TODO faut s'en servir !
-                                                         boost::shared_ptr<shared::event::CEventHandler> managerEventHandler) const
+                                                         boost::shared_ptr<shared::event::CEventHandler> managerEventHandler,
+                                                         int normalStopEventId,
+                                                         int abnormalStopEventId) const
    {
       auto pluginInformation = createInformation(instanceData->Type());
 
       auto instanceStateHandler = createInstanceStateHandler(dataProvider->getPluginRequester(),
                                                              dataAccessLayer->getEventLogger(),
                                                              managerEventHandler,
-                                                             instanceData->Id());
+                                                             instanceData->Id(),
+                                                             normalStopEventId,
+                                                             abnormalStopEventId);
 
       auto logger = createProcessLogger(instanceData->Type());
 
@@ -52,14 +58,15 @@ namespace pluginSystem
                                                      dataAccessLayer);
 
       auto commandLine = createCommandLine(pluginInformation,
-                                           std::string()/*TODO*/);
+                                           yPluginApi->id());
 
-      auto runner = createInstanceRunner(commandLine,
-                                         logger,
-                                         instanceStateHandler);
+      auto process = createInstanceProcess(commandLine,
+                                           logger,
+                                           instanceStateHandler);
 
       return boost::make_shared<CInstance>(pluginInformation,
-                                           runner);
+                                           process,
+                                           yPluginApi->api());
    }
 
    boost::shared_ptr<shared::process::ILogger> CFactory::createProcessLogger(const std::string& pluginName) const
@@ -67,19 +74,23 @@ namespace pluginSystem
       return boost::make_shared<CLogger>(pluginName);
    }
 
-   boost::shared_ptr<IInstanceStateHandler> CFactory::createInstanceStateHandler(boost::shared_ptr<database::IPluginRequester> dbRequester,
+   boost::shared_ptr<CInstanceStateHandler> CFactory::createInstanceStateHandler(boost::shared_ptr<database::IPluginRequester> dbRequester,
                                                                                  boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger,
                                                                                  boost::shared_ptr<shared::event::CEventHandler> managerEventHandler,
-                                                                                 int instanceId) const
+                                                                                 int instanceId,
+                                                                                 int normalStopEventId,
+                                                                                 int abnormalStopEventId) const
    {
       return boost::make_shared<CInstanceStateHandler>(dbRequester,
                                                        eventLogger,
                                                        managerEventHandler,
-                                                       instanceId);
+                                                       instanceId,
+                                                       normalStopEventId,
+                                                       abnormalStopEventId);
    }
 
-   boost::shared_ptr<ICommandLine> CFactory::createCommandLine(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
-                                                               const std::string& messageQueueId) const
+   boost::shared_ptr<shared::process::ICommandLine> CFactory::createCommandLine(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
+                                                                                const std::string& messageQueueId) const
    {
       std::vector<std::string> args;
       args.push_back(messageQueueId);
@@ -89,30 +100,24 @@ namespace pluginSystem
                                                               args);
    }
 
-   boost::shared_ptr<shared::process::IProcess> CFactory::createProcess(boost::shared_ptr<ICommandLine> commandLine,
-                                                                        boost::shared_ptr<shared::process::ILogger> logger,
-                                                                        boost::shared_ptr<IInstanceStateHandler> stopNotifier) const
+   boost::shared_ptr<shared::process::IProcess> CFactory::createInstanceProcess(boost::shared_ptr<shared::process::ICommandLine> commandLine,
+                                                                                boost::shared_ptr<shared::process::ILogger> logger,
+                                                                                boost::shared_ptr<CInstanceStateHandler> instanceStateHandler) const
    {
+      logger->log("#### START ####");
+
       try
       {
-         return boost::make_shared<CProcess>(commandLine, logger);
+         return boost::make_shared<shared::process::CProcess>(commandLine,
+                                                              instanceStateHandler,
+                                                              logger);
       }
       catch (CPluginException& e)
       {
          logger->log((boost::format("Error starting plugin %1% : %2%") % commandLine->executable() % e.what()).str());
-         stopNotifier->signalStartError(e.what());
+         instanceStateHandler->signalStartError(e.what());
          throw;
       }
-   }
-
-   boost::shared_ptr<shared::process::IRunner> CFactory::createInstanceRunner(boost::shared_ptr<ICommandLine> commandLine,
-                                                                              boost::shared_ptr<shared::process::ILogger> logger,
-                                                                              boost::shared_ptr<IInstanceStateHandler> stopNotifier) const
-   {
-      logger->log("#### START ####");
-
-      auto process = createProcess(commandLine, logger, stopNotifier);
-      return boost::make_shared<CRunner>(process, stopNotifier);
    }
 
    boost::shared_ptr<IContextAccessor> CFactory::createInstanceRunningContext(boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,

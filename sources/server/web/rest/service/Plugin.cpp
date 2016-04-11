@@ -370,12 +370,8 @@ namespace web { namespace rest { namespace service {
             if(pluginInstanceFound)
             {
                //stop instance
-               m_pluginManager->stopInstance(instanceId);
-               //check for instance status
-               auto state = m_pluginManager->isInstanceRunning(instanceId);
-               if(!state)
-                  return CResult::GenerateSuccess();
-               return CResult::GenerateError("Fail to stop the plugin instance");
+               m_pluginManager->requestStopInstance(instanceId);
+               return CResult::GenerateSuccess();
             }
             
             return CResult::GenerateError("invalid parameter. Can not retreive instance id");

@@ -376,11 +376,10 @@ set(YADOMS_SRC
 	server/pluginSystem/DummyQualifier.cpp
 	server/pluginSystem/IdentityForQualifier.h
 	server/pluginSystem/IdentityForQualifier.cpp
-   server/pluginSystem/ICommandLine.h
    server/pluginSystem/IContextAccessor.h
 	server/pluginSystem/IFactory.h
 	server/pluginSystem/IInstance.h
-	server/pluginSystem/IInstanceStateHandler.h
+	server/pluginSystem/IInstanceStartErrorObserver.h
 	server/pluginSystem/IndicatorQualifier.h
 	server/pluginSystem/IndicatorQualifier.cpp
 	server/pluginSystem/Information.h
@@ -410,8 +409,6 @@ set(YADOMS_SRC
    server/pluginSystem/NativeExecutableCommandLine.cpp
    server/pluginSystem/NativeExecutableCommandLine.h
 	server/pluginSystem/PluginException.hpp
-	server/pluginSystem/Process.h
-	server/pluginSystem/Process.cpp
    server/pluginSystem/yPluginApiImplementation.h
    server/pluginSystem/yPluginApiImplementation.cpp
 	server/pluginSystem/internalPlugin/System.h
@@ -420,8 +417,6 @@ set(YADOMS_SRC
 	server/pluginSystem/internalPlugin/Information.cpp
 	server/pluginSystem/ManuallyDeviceCreationRequest.h
 	server/pluginSystem/ManuallyDeviceCreationRequest.cpp
-  	server/pluginSystem/Runner.h
-	server/pluginSystem/Runner.cpp
 
 	server/notification/NotificationCenter.h
 	server/notification/NotificationCenter.cpp

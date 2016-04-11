@@ -5,7 +5,7 @@ namespace shared
    namespace process
    {
       //--------------------------------------------------------------
-      /// \brief	Python executable
+      /// \brief	Process manager interface
       //--------------------------------------------------------------
       class IProcess
       {
@@ -21,7 +21,7 @@ namespace shared
          /// \brief	Ask for module stop
          /// \throw CPythonException if error
          //--------------------------------------------------------------
-         virtual void interrupt() = 0;
+         virtual void kill() = 0;
 
          //--------------------------------------------------------------
          /// \brief	Wait for module stop (blocking)

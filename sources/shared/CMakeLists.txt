@@ -205,16 +205,20 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/historization/typeInfo/StringTypeInfo.cpp
    shared/plugin/yPluginApi/historization/typeInfo/EnumTypeInfo.hpp
 
+   shared/process/IEndOfProcessObserver.h
+   shared/process/ICommandLine.h
    shared/process/IProcess.h
-   shared/process/IRunner.h
    shared/process/ILogger.h
    shared/process/IStopNotifier.h
+   shared/process/Process.h
+   shared/process/Process.cpp
 
    shared/serialization/IDataSerializable.h
    shared/serialization/IDataFileSerializable.h
 
    shared/script/ImplementationHelper.h
    shared/script/IInterpreter.h
+   shared/script/IRunner.h
 
    shared/script/yScriptApi/commonIncludes.h
    shared/script/yScriptApi/IYScriptApi.h
@@ -314,6 +318,7 @@ source_group(plugin\\information shared/shared/plugin/information/*.* )
 source_group(plugin\\yPluginApi shared/shared/plugin/yPluginApi/*.* )	
 source_group(plugin\\yPluginApi\\historization shared/shared/plugin/yPluginApi/historization/*.* )	
 source_group(plugin\\yPluginApi\\historization\\typeInfo shared/shared/plugin/yPluginApi/historization/typeInfo/*.* )	
+source_group(process process/*.* )	
 source_group(notification shared/shared/notification/*.* )	
 source_group(serialization shared/shared/serialization/*.* )	
 source_group(script shared/shared/script/*.* )	

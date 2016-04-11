@@ -4,15 +4,15 @@
 #include <shared/DataContainer.h>
 #include <shared/process/ILogger.h>
 #include <shared/process/IProcess.h>
-#include <shared/process/IRunner.h>
 #include <shared/process/IStopNotifier.h>
 #include <shared/script/yScriptApi/IYScriptApi.h>
+#include <shared/script/IRunner.h>
 #include "IContextAccessor.h"
 
 //--------------------------------------------------------------
 /// \brief	Python initializer interface (RAII support)
 //--------------------------------------------------------------
-class CRunner : public shared::process::IRunner
+class CRunner : public shared::script::IRunner
 {
 public:
    //--------------------------------------------------------------
@@ -27,11 +27,11 @@ public:
    /// \throw CRunnerException if unable to load script
    //--------------------------------------------------------------
    CRunner(const std::string& scriptPath,
-      boost::shared_ptr<IPythonExecutable> executable,
-      boost::shared_ptr<shared::process::ILogger> scriptLogger,
-      boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
-      boost::shared_ptr<shared::process::IStopNotifier> stopNotifier,
-      const shared::CDataContainer& scriptConfiguration = shared::CDataContainer());
+           boost::shared_ptr<IPythonExecutable> executable,
+           boost::shared_ptr<shared::process::ILogger> scriptLogger,
+           boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
+           boost::shared_ptr<shared::process::IStopNotifier> stopNotifier,
+           const shared::CDataContainer& scriptConfiguration = shared::CDataContainer());
 
    //--------------------------------------------------------------
    /// \brief	Destructor

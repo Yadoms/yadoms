@@ -30,6 +30,7 @@ namespace pluginSystem //TODO refactorer pour factoriser avec le CContextAccesso
 
       // CThreadBase Implementation
       void doWork() override;
+      boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> api() const override;
       // [END] CThreadBase Implementation
 
       //--------------------------------------------------------------

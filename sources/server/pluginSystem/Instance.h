@@ -5,10 +5,11 @@
 //
 #pragma once
 
-#include <shared/process/IRunner.h>
+#include <shared/process/IProcess.h>
 #include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
-#include "IInstance.h"
 #include <shared/plugin/information/IInformation.h>
+#include "IInstance.h"
+#include "yPluginApiImplementation.h"
 
 namespace pluginSystem
 {
@@ -21,10 +22,12 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief	Constructor
       /// \param [in]	pluginInformation          Information on the plugin
-      /// \param [in]   runner                     The instance runner
+      /// \param [in]   process                    The instance process
+      /// \param [in]   yPluginApi                 The api context accessor
       //--------------------------------------------------------------
       CInstance(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
-                boost::shared_ptr<shared::process::IRunner> runner);
+                boost::shared_ptr<shared::process::IProcess> process,
+                boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> yPluginApi);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
@@ -35,9 +38,13 @@ namespace pluginSystem
       // IInstance Implementation
       void updateConfiguration(const shared::CDataContainer& newConfiguration) const override;
       void requestStop() override;
+      void kill() override;
       std::string getPluginName() const override;
       // [END] IInstance Implementation
 
+
+   protected:
+      void postStopRequest() const;
 
       //TODO
       //    //--------------------------------------------------------------
@@ -65,8 +72,13 @@ namespace pluginSystem
       const boost::shared_ptr<const shared::plugin::information::IInformation> m_pluginInformation;
 
       //-----------------------------------------------------
-      ///\brief               The script runner
+      ///\brief               The script process
       //-----------------------------------------------------
-      boost::shared_ptr<shared::process::IRunner> m_runner;
+      boost::shared_ptr<shared::process::IProcess> m_process;
+
+      //-----------------------------------------------------
+      ///\brief               The api context accessor
+      //-----------------------------------------------------
+      boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> m_yPluginApi;
    };
 } // namespace pluginSystem

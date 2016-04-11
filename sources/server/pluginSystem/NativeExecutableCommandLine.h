@@ -1,12 +1,12 @@
 #pragma once
-#include "ICommandLine.h"
+#include <shared/process/ICommandLine.h>
 
 namespace pluginSystem
 {
    //--------------------------------------------------------------
    /// \brief	Command line generator
    //--------------------------------------------------------------
-   class CNativeExecutableCommandLine : public ICommandLine
+   class CNativeExecutableCommandLine : public shared::process::ICommandLine
    {
    public:
       //--------------------------------------------------------------

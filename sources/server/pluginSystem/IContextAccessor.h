@@ -1,4 +1,5 @@
 #pragma once
+#include <shared/plugin/yPluginApi/IYPluginApi.h>
 
 
 namespace pluginSystem
@@ -21,6 +22,12 @@ namespace pluginSystem
       /// \return The context accessor ID
       //--------------------------------------------------------------
       virtual std::string id() const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief	Get the plugin API
+      /// \return The plugin API
+      //--------------------------------------------------------------
+      virtual boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> api() const = 0;
    };
 } // namespace pluginSystem
 

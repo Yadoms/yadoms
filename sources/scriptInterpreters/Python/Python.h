@@ -25,7 +25,7 @@ public:
    virtual bool isAvailable() const;
    virtual std::string loadScriptContent(const std::string& scriptPath) const;
    virtual void saveScriptContent(const std::string& scriptPath, const std::string& content) const;
-   virtual boost::shared_ptr<shared::process::IRunner> createRunner(
+   virtual boost::shared_ptr<shared::script::IRunner> createRunner(
       const std::string& scriptPath,
       boost::shared_ptr<shared::process::ILogger> scriptLogger,
       boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,

@@ -77,6 +77,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       {
       case yApi::IYPluginApi::kEventStopRequested:
       {
+         // Yadoms request the plugin to stop. Note that plugin must be stop in 10 seconds max, otherwise it will be killed.
          YADOMS_LOG(debug) << "Stop requested";
          api->setPluginState(yApi::historization::EPluginState::kStopped);
          return;
@@ -84,7 +85,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case yApi::IYPluginApi::kEventDeviceCommand:
       {
          // A command was received from Yadoms
-         boost::shared_ptr<const yApi::IDeviceCommand> command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
+         auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
          YADOMS_LOG(debug) << "Command received from Yadoms :" << command->toString();
          break;
       }
@@ -92,9 +93,8 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       {
          // Configuration was updated
          api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
-         shared::CDataContainer newConfiguration = api->getEventHandler().getEventData<shared::CDataContainer>();
+         auto newConfiguration = api->getEventHandler().getEventData<shared::CDataContainer>();
          YADOMS_LOG(debug) << "Update configuration...";
-         BOOST_ASSERT(!newConfiguration.empty());  // newConfigurationValues shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
          // Take into account the new configuration
          // - Restart the plugin if necessary,

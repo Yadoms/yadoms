@@ -18,6 +18,11 @@ namespace pluginSystem
       //-----------------------------------------------------
       virtual void requestStop() = 0;
 
+      //-----------------------------------------------------
+      ///\brief               Kill the instance
+      //-----------------------------------------------------
+      virtual void kill() = 0;
+
       //--------------------------------------------------------------
       /// \brief			            Notify the plugin about its configuration changed
       /// \param  newConfiguration  The new configuration to apply

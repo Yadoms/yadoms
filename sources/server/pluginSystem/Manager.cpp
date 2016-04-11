@@ -227,7 +227,7 @@ namespace pluginSystem
 
       // Stop all instances of this plugin
       for (std::vector<int>::const_iterator instanceToStop = instancesToStop.begin(); instanceToStop != instancesToStop.end(); ++instanceToStop)
-         stopInstance(*instanceToStop);
+         requestStopInstance(*instanceToStop);
    }
 
    void CManager::startInstance(int id)
@@ -249,7 +249,9 @@ namespace pluginSystem
                                                                             m_dataProvider,
                                                                             m_dataAccessLayer,
                                                                             m_qualifier,
-                                                                            m_pluginManagerEventHandler);
+                                                                            m_pluginManagerEventHandler,
+                                                                            kNormal,
+                                                                            kAbnormal);
       }
       catch (shared::exception::CEmptyResult& e)
       {
@@ -285,7 +287,7 @@ namespace pluginSystem
       YADOMS_LOG(information) << "pluginSystem::CManager all plugins are stopped";
    }
 
-   void CManager::stopInstance(int id)
+   void CManager::requestStopInstance(int id)
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
 
@@ -295,6 +297,18 @@ namespace pluginSystem
          return; // Already stopped ==> nothing more to do
 
       instance->second->requestStop();
+   }
+
+   void CManager::killInstance(int id)
+   {
+      boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+
+      auto instance = m_runningInstances.find(id);
+
+      if (instance == m_runningInstances.end())
+         return; // Already stopped ==> nothing more to do
+
+      instance->second->kill();
    }
 
    void CManager::stopInstanceAndWaitForStopped(int id)
@@ -307,12 +321,13 @@ namespace pluginSystem
 
       if (isInstanceRunning(id))
       {
-         // Stop the instance
-         stopInstance(id);
-
-         // Wait for instance stopped
+         requestStopInstance(id);
          if (waitForStoppedInstanceHandler->waitForEvents(boost::posix_time::seconds(10)) == shared::event::kTimeout)
-            throw CPluginException("Unable to stop instance");
+            YADOMS_LOG(warning) << "pluginSystem::CManager, instance #" << id << " didn't stop when requested. Will be killed.";
+
+         killInstance(id);
+         if (waitForStoppedInstanceHandler->waitForEvents(boost::posix_time::seconds(10)) == shared::event::kTimeout)
+            throw CPluginException((boost::format("pluginSystem::CManager, unable to stop instance #%1%") % id).str());
       }
 
       {
@@ -342,7 +357,7 @@ namespace pluginSystem
          boost::lock_guard<boost::recursive_mutex> lock(m_instanceStopNotifiersMutex);
          std::map<int, std::set<boost::shared_ptr<shared::event::CEventHandler>>>::const_iterator itEventHandlerSetToNotify = m_instanceStopNotifiers.find(id);
          if (itEventHandlerSetToNotify != m_instanceStopNotifiers.end())
-            for (std::set<boost::shared_ptr<shared::event::CEventHandler>>::const_iterator itHandler = itEventHandlerSetToNotify->second.begin(); itHandler != itEventHandlerSetToNotify->second.end(); ++itHandler)
+            for (auto itHandler = itEventHandlerSetToNotify->second.begin(); itHandler != itEventHandlerSetToNotify->second.end(); ++itHandler)
                (*itHandler)->postEvent(shared::event::kUserFirstId);
       }
    }
@@ -357,7 +372,7 @@ namespace pluginSystem
    //      // The thread of an instance has stopped in a non-conventional way (probably crashed)
    //
    //      // First perform the full stop
-   //      stopInstance(event.getInstanceId());
+   //      requestStopInstance(event.getInstanceId());
    //
    //      // Now, evaluate if it is still safe
    //      if (m_qualifier->isSafe(event.getPluginInformation()))
@@ -545,14 +560,14 @@ namespace pluginSystem
          {
             switch (m_pluginManagerEventHandler->waitForEvents())
             {
-            case IInstanceStateHandler::kAbnormalStopped:
+            case kAbnormal:
                {
                   // The plugin has stopped in a non-conventional way (probably crashed)
                   auto data = m_pluginManagerEventHandler->getEventData<std::pair<int, std::string>>();
                   onInstanceStopped(data.first, data.second);
                   break;
                }
-            case IInstanceStateHandler::kStopped:
+            case kNormal:
                {
                   onInstanceStopped(m_pluginManagerEventHandler->getEventData<int>());
                   break;

@@ -1,24 +1,24 @@
 #pragma once
 
-namespace shared { namespace process
+namespace pluginSystem
 {
    //-----------------------------------------------------
-   ///\brief The process runner interface
+   ///\brief A plugin instance
    //-----------------------------------------------------
-   class IRunner
+   class IInstanceStartErrorObserver
    {
    public:
       //-----------------------------------------------------
       ///\brief               Destructor
       //-----------------------------------------------------
-      virtual ~IRunner() {}
+      virtual ~IInstanceStartErrorObserver() {}
 
       //-----------------------------------------------------
-      ///\brief               Request to stop process
+      ///\brief               Signal that instance failed to start
+      //\param[in] error      Error description
       //-----------------------------------------------------
-      virtual void requestStop() = 0;
+      virtual void signalStartError(const std::string& error) = 0;
    };
-	
-} } // namespace shared::process
-	
-	
+
+} // namespace pluginSystem	
+

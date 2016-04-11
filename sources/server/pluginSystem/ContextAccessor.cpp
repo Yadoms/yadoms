@@ -96,6 +96,11 @@ void CContextAccessor::doWork()
    google::protobuf::ShutdownProtobufLibrary();
 }
 
+boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> CContextAccessor::api() const
+{
+   return m_pluginApi;
+}
+
 void CContextAccessor::sendAnswer(const toPlugin::msg& answer, boost::interprocess::message_queue& messageQueue)
 {
    if (!answer.IsInitialized())

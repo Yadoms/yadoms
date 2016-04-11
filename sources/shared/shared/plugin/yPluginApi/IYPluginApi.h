@@ -40,7 +40,7 @@ namespace shared { namespace plugin { namespace yPluginApi
       //-----------------------------------------------------
       enum
       {
-         kEventStopRequested = event::kUserFirstId,               // Yadoms notify the plugin that its configuration was changed
+         kEventStopRequested = event::kUserFirstId,               // Yadoms requests the plugin to stop
          kEventUpdateConfiguration,                               // Yadoms notify the plugin that its configuration was changed
          kEventDeviceCommand,                                     // Yadoms send a command to a device managed by this plugin
          kEventManuallyDeviceCreationTest,                        // Yadoms ask the plugin to test a device with provided parameters, before to create it

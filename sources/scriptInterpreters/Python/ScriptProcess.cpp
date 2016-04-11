@@ -21,7 +21,7 @@ CScriptProcess::CScriptProcess(
 
 CScriptProcess::~CScriptProcess()
 {
-   CScriptProcess::interrupt();
+   CScriptProcess::kill();
 }
 
 void CScriptProcess::start()
@@ -52,7 +52,7 @@ void CScriptProcess::start()
    }
 }
 
-void CScriptProcess::interrupt()
+void CScriptProcess::kill()
 {
    try
    {
