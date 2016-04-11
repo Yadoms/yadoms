@@ -48,7 +48,16 @@ function getTextWidth(text, font) {
             if (!$.isFunction($this.resizer)) {
                 // Resizer() resizes items based on the object width divided by the compressor * 10
                 $this.resizer = function () {
-                    var text = $this.text();
+                    //we get full text of $this including :bfore and :after content for font awesome icons
+                    var text = "";
+                    var before = getComputedStyle($this[0], ':before');
+                    if ((before) && (before.content))
+                        text += before.content[1];
+                    text += $this.text();
+                    var after = getComputedStyle($this[0], ':after');
+                    if ((after) && (after.content))
+                        text += after.content[1];
+
                     var minFont = $this.attr("min-font") || 10;
                     if (text === "")
                         text = "W";
@@ -56,7 +65,7 @@ function getTextWidth(text, font) {
                     $this.css('font-size', 1);
 
                     //determine the width for a large fontsize
-                    var px300 = getTextWidth(text, "300px " + $this.css("text-family"));
+                    var px300 = getTextWidth(text, "300px " + $this.css("font-family"));
                     //estimate the size relative to the item width, and apply a 0.8 factor to ensure the text will fit
                     var fontSizeFromWidth = ($this.width() * 300 / px300) * .8;
 
@@ -64,10 +73,9 @@ function getTextWidth(text, font) {
                         fontSizeFromWidth = ($this.parent().width() * 300 / px300) * .8;
                     }
 
-                    var lh = parseFloat($this.css("line-height"));
-                    var fontSizeFromHeight = $this.height() / lh;
+                    var fontSizeFromHeight = $this.height() / 1.42857143;
                     if ($this.hasClass("textfit-in-parent")) {
-                        fontSizeFromHeight = $this.parent().height() / lh;
+                        fontSizeFromHeight = $this.parent().height() / 1.42857143;
                     }
 
                     $this.css('font-size', Math.max(Math.min(fontSizeFromWidth, fontSizeFromHeight), minFont));
