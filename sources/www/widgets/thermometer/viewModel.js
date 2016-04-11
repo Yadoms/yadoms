@@ -65,12 +65,14 @@ function thermometerViewModel()
       var ctx = element.get(0).getContext("2d");
 		
 		// Refresh the canvas, clear all existing information
-		ctx.clearRect(0, 0, self.WidgetWidth, self.WidgetHeight );
+		ctx.clearRect(0, 0, element.width, element.height);
 		
 		//Attributes of canvas could only be changed trough theses variables. In an other way the canvas is stretched.
 		element.attr('width', self.WidgetWidth);
 		element.attr('height', self.WidgetHeight);
-
+		element.css('width', self.WidgetWidth);
+		element.css('height', self.WidgetHeight);
+		
 		//x  : initial x shouldn't change
 		//y  : position y for the height of the column. 0 is the top of the frame
 		//dx : the thickness of the column. should not change
@@ -163,7 +165,7 @@ function thermometerViewModel()
    {
        var self = this;
 	   
-       if (this.widget.getHeight() <= 250 && this.widget.getHeight() >= 150 && this.widget.getWidth() <= 250 && this.widget.getWidth() >= 150)
+       if ( this.widget.getHeight() == 200 && this.widget.getWidth() == 200 )
 	   {
 		   self.WidgetWidth  = 190;
 		   self.WidgetHeight = 170;
@@ -171,7 +173,7 @@ function thermometerViewModel()
 		   self.refresh();
 		   isSmall = false;
 	   }
-       else if (this.widget.getHeight() <= 250 && this.widget.getHeight() >= 150 && this.widget.getWidth() >= 80 && this.widget.getWidth() <= 110)
+       else if ( this.widget.getHeight() == 200 && this.widget.getWidth() == 100 )
 	   {
 		   self.WidgetWidth  = 95;
 		   self.WidgetHeight = 170;
@@ -179,7 +181,7 @@ function thermometerViewModel()
 		   //To be painted only one time
 		   self.refresh();
 	   }	   
-       else if (this.widget.getHeight() <= 350 && this.widget.getHeight() >= 250 && this.widget.getWidth() >= 80 && this.widget.getWidth() <= 110)
+       else if ( this.widget.getHeight() == 300 && this.widget.getWidth() == 100 )
 	   {
 		   self.WidgetWidth  = 95;
 		   self.WidgetHeight = 272;
@@ -187,7 +189,7 @@ function thermometerViewModel()
 		   //To be painted only one time
 		   self.refresh();
 	   }  
-       else if (this.widget.getHeight() <= 350 && this.widget.getHeight() >= 250 && this.widget.getWidth() >= 180 && this.widget.getWidth() <= 210)
+       else if ( this.widget.getHeight() == 300 && this.widget.getWidth() == 200 )
 	   {
 		   self.WidgetWidth  = 190;
 		   self.WidgetHeight = 272;
@@ -195,7 +197,7 @@ function thermometerViewModel()
 		   //To be painted only one time
 		   self.refresh();
 	   }
-       else if (this.widget.getHeight() <= 450 && this.widget.getHeight() >= 350 && this.widget.getWidth() >= 180 && this.widget.getWidth() <= 210)
+       else if (this.widget.getHeight() == 400 && this.widget.getWidth() == 200 )
 	   {
 		   self.WidgetWidth  = 190;
 		   self.WidgetHeight = 368;
