@@ -69,12 +69,8 @@ widgetViewModelCtor =
 			  
               if (!isNullOrUndefined(this.widget.configuration.kind)) {
                   this.kind(this.widget.configuration.kind.activeSection);
-              }			  
-
-              //if (!isNullOrUndefined(this.widget.configuration.showDeviceName)) {
-              //    this.showDeviceName(parseBool(this.widget.configuration.showDeviceName));
-              //}
-
+              }
+			  
               //we ask for device information
               if ((!isNullOrUndefined(this.widget.configuration.device))) {
 
@@ -82,12 +78,6 @@ widgetViewModelCtor =
 						  
                           //Initialisation initiale
                           self.command(0);
-						  
-						  console.log ( self.widget.getHeight() );
-						  console.log ( self.widget.getWidth() );
-						  
-						   $("#shutterWidget").css("height", this.WidgetHeight + "px");						  
-						   $("#shutterWidget").css("width", this.WidgetWidth + "px");
                       }
               }
           };
@@ -110,105 +100,23 @@ widgetViewModelCtor =
 						  else
 							  self.command(0);
                       }
-					  
-					  // Dans le cas du pushbutton, on fait le refresh du canvas
-					  //if (self.kind() === 'pushButton')
-					  //{
-						  //console.log ( "valeur :", data.value );
-						  //self.refresh();
-					  //}
               }
           };
-/*		  
-   this.refresh = function()
-   {
-	   var self = this;
-   
-	   var element = self.widgetApi.find(".centerimage");
-	   element.get(0).addEventListener("mousedown", mouseDown, false);
-	   
-	   function mouseDown() {
-		  if ( self.command() == 0)
-			 self.command(1);
-		  else
-			 self.command(0);
-
-		  console.log ("mousedown");	
-	   }		   
- 
-	   if ( self.command() == 0 )
-	      self.shutterIcon("widgets/shutter/icons/close.png");
-	   else
-		   self.shutterIcon("widgets/shutter/icons/open.png");
-*/
-/*
-	   //get a reference to the canvas
-       var ctx = element.get(0).getContext("2d");
-		
-	   // Refresh the canvas, clear all existing information
-	   ctx.clearRect(0, 0, self.WidgetWidth, self.WidgetHeight );
-		
-	   //Attributes of canvas could only be changed trough theses variables. In an other way the canvas is stretched.
-	   element.attr('width', self.WidgetWidth);
-	   element.attr('height', self.WidgetHeight);
-	   
-       //Draw the window
-	   
-	   //ctx.fillStyle="#20E0FF";
-	   ctx.fillStyle="#337ab7";
-       //ctx.fillRect(10,10,50,50);
-	   
-       ctx.strokeStyle="black";//"#000000";
-	   ctx.lineWidth=1;
-       ctx.strokeRect(1,1,68,68);	   
-	   
-	   ctx.strokeRect(5,5,27,60);
-	   ctx.fillRect  (5,5,27,60);
-	   
-	   ctx.strokeRect(38,5,27,60);
-	   ctx.fillRect  (38,5,27,60);
-	   
-		ctx.beginPath();
-		ctx.moveTo(5,45);
-		ctx.lineTo(32,25);
-		ctx.stroke();	   
-	   
-        ctx.beginPath();
-		ctx.moveTo(38,22);
-		ctx.lineTo(63,5);
-		ctx.stroke();	   
-	   */
-	   /*
-       ctx.fillStyle = "rgb(" + Math.round(255 - (tempMax - self.data()) * 255 / 90) + ",0," + Math.round(255 - (self.data() - tempMin) * 255 / 90) + ")";
-		 
-		//draw a circle
-		ctx.beginPath();
-		         // position x         position y             diameter
-		ctx.arc(self.WidgetWidth / 2, posCenterBall , 8 * self.WidgetWidth / 100, 0, Math.PI*2, true); 
-		ctx.closePath();
-		ctx.fill();
-		
-   
-		//write the text at the same position as the height of the column
-		ctx.fillText(self.data() + "°",self.WidgetWidth / 2 + 15*self.WidgetWidth / 100, initialPositionY );
-		  
-        // Draw the thermometer
-		//draw a circle
-		ctx.beginPath();
-		
-		//black color
-        ctx.fillStyle = "rgb(0,0,0)";
-		ctx.lineWidth = 3;		
-		
-		//bubble
-		         // position x        position y             diameter
-		ctx.arc(self.WidgetWidth / 2, posCenterBall, 12 * self.WidgetWidth / 100, Math.PI*1.3, Math.PI*1.7, true);
-		
-		//top
-		ctx.arc(self.WidgetWidth / 2, 10 * self.WidgetHeight / 100, 7 * self.WidgetWidth / 100, Math.PI*2, Math.PI*1, true);
-		
-		ctx.closePath();
-		ctx.stroke();
-   }	*/	  
-      };
+		  		  
+    this.resized = function () {
+		var self = this;
+		if ( this.widget.getHeight() == 100 || this.widget.getWidth() == 100 )
+		{
+		   $(".shutter-image").css( "height", this.WidgetHeight );
+           $(".shutter-image").css( "width",  this.WidgetWidth  );
+           $(".shutter-image").removeAttr( "flex"  );
+		}
+		else 
+		{
+			$(".shutter-image").css( "width",  "100%" );	
+			$(".shutter-image").css( "height", "auto" );
+			$(".shutter-image").attr( "flex",  "auto" );
+		}
+	}
+};
 	
