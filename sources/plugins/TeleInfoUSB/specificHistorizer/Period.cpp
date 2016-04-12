@@ -23,7 +23,7 @@ DECLARE_ENUM_IMPLEMENTATION(EPeriod,
 const shared::plugin::yPluginApi::CStandardCapacity& PeriodCapacity = shared::plugin::yPluginApi::CStandardCapacity("Period", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
 CPeriod::CPeriod(const std::string& keywordName)
-   :CSingleHistorizableData<EPeriod>(keywordName, PeriodCapacity, shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)
+   :CSingleHistorizableData<EPeriod>(keywordName, PeriodCapacity, shared::plugin::yPluginApi::EKeywordAccessMode::kGet)
 {
 }
 
@@ -31,4 +31,3 @@ CPeriod::~CPeriod()
 {}
 
 } } // namespace teleInfoUSB::specificHistorizer
-

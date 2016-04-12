@@ -43,4 +43,3 @@ namespace teleInfoUSB { namespace specificHistorizers
    };
 
 } } // namespace teleInfoUSB::specificHistorizer
-
