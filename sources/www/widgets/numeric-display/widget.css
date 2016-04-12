@@ -14,6 +14,6 @@
 }
 
 .widget-numeric-display .unit {
-    flex: 0 0 10%;
+    flex: 0 0 20%;
     vertical-align:top;
 }
