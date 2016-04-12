@@ -195,7 +195,7 @@ Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function (thisBlock, on
         }
     }
 
-    deviceDd.changeHandler_(deviceDd.getValue());
+    deviceDd.setValue(deviceDd.getValue());
     thisBlock.isValid();
     return result;
 };
