@@ -14,12 +14,13 @@ namespace automation
    public:
       //-----------------------------------------------------
       ///\brief               Constructor
-      ///\param[in] ruleData   Rule data (ID, name, conditions, actions...)
-      ///\param[in] scriptManager The script manager
-      ///\param[in] ruleStateHandler The rule state handler
+      ///\param[in] ruleData           Rule data (ID, name, conditions, actions...)
+      ///\param[in] scriptManager      The script manager
+      ///\param[in] ruleStateHandler   The rule state handler
       //-----------------------------------------------------
       CRule(boost::shared_ptr<const database::entities::CRule> ruleData,
-         boost::shared_ptr<script::IManager> scriptManager, boost::shared_ptr<IRuleStateHandler> ruleStateHandler);
+         boost::shared_ptr<script::IManager> scriptManager,
+         boost::shared_ptr<IRuleStateHandler> ruleStateHandler);
 
       //-----------------------------------------------------
       ///\brief               Destructor
@@ -53,9 +54,9 @@ namespace automation
       boost::shared_ptr<script::IManager> m_scriptManager;
 
       //-----------------------------------------------------
-      ///\brief               The script runner
+      ///\brief               The script process
       //-----------------------------------------------------
-      boost::shared_ptr<shared::script::IRunner> m_runner;
+      boost::shared_ptr<shared::process::IProcess> m_process;
 
       //-----------------------------------------------------
       ///\brief               The rule state handler

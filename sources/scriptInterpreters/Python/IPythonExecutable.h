@@ -28,4 +28,10 @@ public:
    /// \return the full (relative) Python executable path
    //--------------------------------------------------------------
    virtual boost::filesystem::path path() const = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	Get executable filename
+   /// \return the Python executable filename (with extension)
+   //--------------------------------------------------------------
+   virtual std::string filename() const = 0;
 };

@@ -212,13 +212,13 @@ set(SHARED_LIB_SRC
    shared/process/IStopNotifier.h
    shared/process/Process.h
    shared/process/Process.cpp
+   shared/process/ProcessException.hpp
 
    shared/serialization/IDataSerializable.h
    shared/serialization/IDataFileSerializable.h
 
    shared/script/ImplementationHelper.h
    shared/script/IInterpreter.h
-   shared/script/IRunner.h
 
    shared/script/yScriptApi/commonIncludes.h
    shared/script/yScriptApi/IYScriptApi.h

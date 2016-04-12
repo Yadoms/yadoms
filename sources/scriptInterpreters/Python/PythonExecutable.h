@@ -19,9 +19,10 @@ public:
 
 protected:
    // IPythonExecutable Implementation
-   virtual bool found() const;
-   virtual std::string version() const;
-   virtual boost::filesystem::path path() const;
+   bool found() const override;
+   std::string version() const override;
+   boost::filesystem::path path() const override;
+   std::string filename() const override;
    // [END] IPythonExecutable Implementation
 
 protected:

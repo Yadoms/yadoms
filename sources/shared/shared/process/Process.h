@@ -1,4 +1,5 @@
 #pragma once
+#include <shared/Export.h>
 #include "ILogger.h"
 #include "IProcess.h"
 #include "ICommandLine.h"
@@ -13,7 +14,7 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	Python executable
       //--------------------------------------------------------------
-      class CProcess : public shared::process::IProcess
+      class YADOMS_SHARED_EXPORT CProcess : public shared::process::IProcess
       {
       public:
          //--------------------------------------------------------------
@@ -53,11 +54,8 @@ namespace shared
 
          //-----------------------------------------------------
          ///\brief               Rule montoring thread function
-         ///\param[in] process               The process to monitor
-         ///\param[in] endOfProcessObserver  The end of process event observer
          //-----------------------------------------------------
-         void monitorThreaded(boost::shared_ptr<shared::process::IProcess> process,
-                              boost::shared_ptr<shared::process::IEndOfProcessObserver> endOfProcessObserver) const;
+         void monitorThreaded();
 
          //--------------------------------------------------------------
          /// \brief	Thread redirecting standard outputs

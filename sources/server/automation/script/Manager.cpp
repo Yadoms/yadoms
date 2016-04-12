@@ -256,17 +256,20 @@ std::string CManager::getScriptLogFile(boost::shared_ptr<const database::entitie
    return std::string(std::istreambuf_iterator<char>(file), eos);
 }
 
-boost::shared_ptr<shared::script::IRunner> CManager::createScriptRunner(boost::shared_ptr<const IProperties> scriptProperties,
-                                                                        boost::shared_ptr<shared::process::ILogger> scriptLogger,
-                                                                        boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
-                                                                        boost::shared_ptr<shared::process::IStopNotifier> stopNotifier)
+boost::shared_ptr<shared::process::IProcess> CManager::createScriptProcess(boost::shared_ptr<const IProperties> scriptProperties, //TODO virer la fonction
+                                                                           boost::shared_ptr<shared::process::ILogger> scriptLogger,
+                                                                           boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
+                                                                           boost::shared_ptr<shared::process::IEndOfProcessObserver> stopNotifier)
 {
    try
    {
       auto scriptInterpreter = getAssociatedInterpreter(scriptProperties->interpreterName());
 
-      return scriptInterpreter->createRunner(scriptProperties->scriptPath(),
-         scriptLogger, yScriptApi, stopNotifier, scriptProperties->configuration());
+      return scriptInterpreter->createProcess(scriptProperties->scriptPath(),
+                                              scriptLogger,
+                                              yScriptApi,
+                                              stopNotifier,
+                                              scriptProperties->configuration());
    }
    catch (CInterpreterNotFound& e)
    {
@@ -288,12 +291,18 @@ boost::shared_ptr<shared::process::ILogger> CManager::createScriptLogger(const s
 
 boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> CManager::createScriptContext(boost::shared_ptr<shared::process::ILogger> scriptLogger)
 {
-   boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi(
-      boost::make_shared<CYScriptApiImplementation>(scriptLogger, m_pluginGateway, m_configurationManager, m_dbAcquisitionRequester, m_dbDeviceRequester, m_dbKeywordRequester, m_dbRecipientRequester, m_generalInfo));
+   boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi(boost::make_shared<CYScriptApiImplementation>(scriptLogger,
+                                                                                                                       m_pluginGateway,
+                                                                                                                       m_configurationManager,
+                                                                                                                       m_dbAcquisitionRequester,
+                                                                                                                       m_dbDeviceRequester,
+                                                                                                                       m_dbKeywordRequester,
+                                                                                                                       m_dbRecipientRequester,
+                                                                                                                       m_generalInfo));
    return yScriptApi;
 }
 
-boost::shared_ptr<shared::process::IStopNotifier> CManager::createStopNotifier(boost::shared_ptr<IRuleStateHandler> ruleStateHandler, int ruleId)
+boost::shared_ptr<shared::process::IEndOfProcessObserver> CManager::createStopNotifier(boost::shared_ptr<IRuleStateHandler> ruleStateHandler, int ruleId)
 {
    return boost::make_shared<StopNotifier>(ruleStateHandler, ruleId);
 }

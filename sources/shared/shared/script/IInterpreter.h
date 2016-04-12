@@ -1,9 +1,9 @@
 #pragma once
-#include "IRunner.h"
 #include <shared/DataContainer.h>
+#include <shared/process/IProcess.h>
 #include <shared/process/ILogger.h>
-#include <shared/process/IStopNotifier.h>
 #include <shared/script/yScriptApi/IYScriptApi.h>
+#include <shared/process/IEndOfProcessObserver.h>
 
 namespace shared { namespace script
 {
@@ -52,19 +52,19 @@ namespace shared { namespace script
       virtual void saveScriptContent(const std::string& scriptPath, const std::string& content) const = 0;
 
       //-----------------------------------------------------
-      ///\brief                  Create a script runner with associated file
-      ///\param[in] scriptPath            Script path (without name)
+      ///\brief                  Create a script process with associated file
+      ///\param[in] scriptPath            The script path
       ///\param[in] scriptLogger          The rule logger
       ///\param[in] yScriptApi            The rule context
       ///\param[in] stopNotifier          The stop notifier
       ///\param[in] scriptConfiguration   Configuration of the script
-      ///\return                 The created script instance
+      ///\return                 The created script process
       //-----------------------------------------------------
-      virtual boost::shared_ptr<IRunner> createRunner(const std::string& scriptPath,
-         boost::shared_ptr<process::ILogger> scriptLogger,
-         boost::shared_ptr<yScriptApi::IYScriptApi> yScriptApi,
-         boost::shared_ptr<process::IStopNotifier> stopNotifier,
-         const shared::CDataContainer& scriptConfiguration) const = 0;
+      virtual boost::shared_ptr<shared::process::IProcess> createProcess(const std::string& scriptPath,
+                                                                         boost::shared_ptr<shared::process::ILogger> scriptLogger,
+                                                                         boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
+                                                                         boost::shared_ptr<shared::process::IEndOfProcessObserver> stopNotifier,
+                                                                         const shared::CDataContainer& scriptConfiguration) const = 0;
    };
 	
 } } // namespace shared::script

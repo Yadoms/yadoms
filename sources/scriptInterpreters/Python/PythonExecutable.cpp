@@ -4,9 +4,9 @@
 #include "PythonExecutablePath.h"
 
 CPythonExecutable::CPythonExecutable()
-   :m_executableDirectory(boost::filesystem::path()),
-   m_found(findPythonDirectory(m_executableDirectory)),
-   m_version(readPythonVersion(m_executableDirectory))
+   : m_executableDirectory(boost::filesystem::path()),
+     m_found(findPythonDirectory(m_executableDirectory)),
+     m_version(readPythonVersion(m_executableDirectory))
 {
 }
 
@@ -26,7 +26,12 @@ std::string CPythonExecutable::version() const
 
 boost::filesystem::path CPythonExecutable::path() const
 {
-   return m_executableDirectory / "python";
+   return m_executableDirectory / filename();
+}
+
+std::string CPythonExecutable::filename() const
+{
+   return "python";
 }
 
 bool CPythonExecutable::findPythonDirectory(boost::filesystem::path& pythonDirectory)

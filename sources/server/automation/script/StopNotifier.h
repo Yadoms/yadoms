@@ -1,43 +1,52 @@
 #pragma once
-#include <shared/process/IStopNotifier.h>
+#include <shared/process/IEndOfProcessObserver.h>
+#include "../IRuleStartErrorObserver.h"
 #include "../IRuleStateHandler.h"
 
-namespace automation { namespace script
+namespace automation
 {
-   //-----------------------------------------------------
-   ///\brief The script stop notifier
-   //-----------------------------------------------------
-   class StopNotifier : public shared::process::IStopNotifier
+   namespace script
    {
-   public:
       //-----------------------------------------------------
-      ///\brief               Constructor
-      ///\param[in] ruleStateHandler   The global state handler
-      ///\param[in] ruleId    The associated rule ID
+      ///\brief The script stop notifier
       //-----------------------------------------------------
-      StopNotifier(boost::shared_ptr<IRuleStateHandler> ruleStateHandler, int ruleId);
+      class StopNotifier : public IRuleStartErrorObserver, public shared::process::IEndOfProcessObserver
+      {
+      public:
+         //-----------------------------------------------------
+         ///\brief               Constructor
+         ///\param[in] ruleStateHandler   The global state handler
+         ///\param[in] ruleId    The associated rule ID
+         //-----------------------------------------------------
+         StopNotifier(boost::shared_ptr<IRuleStateHandler> ruleStateHandler, int ruleId);
 
-      //-----------------------------------------------------
-      ///\brief               Destructor
-      //-----------------------------------------------------
-      virtual ~StopNotifier();
+         //-----------------------------------------------------
+         ///\brief               Destructor
+         //-----------------------------------------------------
+         virtual ~StopNotifier();
 
-      // IStopNotifier Implementation
-      virtual void notifyNormalStop();
-      virtual void notifyError(const std::string& error);
-      virtual void notifyStartError(const std::string& error);
-      // [END] IStopNotifier Implementation
+         // IRuleStartErrorObserver Implementation
+         void notifyStartError(const std::string& error) override;
+         // [END] IRuleStartErrorObserver Implementation
 
-   private:
-      //-----------------------------------------------------
-      ///\brief               The global rule state handler
-      //-----------------------------------------------------
-      boost::shared_ptr<IRuleStateHandler> m_ruleStateHandler;
+         // IStopNotifier Implementation
+         void onEndOfProcess(int returnCode, const std::string& error) override;
+         // [END] IStopNotifier Implementation
 
-      //-----------------------------------------------------
-      ///\brief               The concerned rule ID
-      //-----------------------------------------------------
-      int m_ruleId;
-   };
+      protected:
+         virtual void notifyNormalStop();
+         virtual void notifyError(const std::string& error);
 
-} } // namespace automation::script
+      private:
+         //-----------------------------------------------------
+         ///\brief               The global rule state handler
+         //-----------------------------------------------------
+         boost::shared_ptr<IRuleStateHandler> m_ruleStateHandler;
+
+         //-----------------------------------------------------
+         ///\brief               The concerned rule ID
+         //-----------------------------------------------------
+         int m_ruleId;
+      };
+   }
+} // namespace automation::script

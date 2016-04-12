@@ -7,12 +7,12 @@
 #include "InstanceStateHandler.h"
 #include "yPluginApiImplementation.h"
 #include "IQualifier.h"
-#include "PluginException.hpp"
 #include "NativeExecutableCommandLine.h"
 #include "InvalidPluginException.hpp"
 #include "Logger.h"
 #include "ContextAccessor.h"
 #include <shared/process/Process.h>
+#include <shared/process/ProcessException.hpp>
 
 //TODO rechercer la châine shared/shared/ dans les include
 //TODO rechercher la chaîne "rule" dans tout le répertoire pluginSystem et la virer
@@ -112,7 +112,7 @@ namespace pluginSystem
                                                               instanceStateHandler,
                                                               logger);
       }
-      catch (CPluginException& e)
+      catch (shared::process::CProcessException& e)
       {
          logger->log((boost::format("Error starting plugin %1% : %2%") % commandLine->executable() % e.what()).str());
          instanceStateHandler->signalStartError(e.what());

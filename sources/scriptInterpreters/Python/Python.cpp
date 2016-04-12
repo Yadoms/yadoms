@@ -2,10 +2,10 @@
 #include "Python.h"
 #include <shared/script/ImplementationHelper.h>
 #include <shared/Log.h>
-#include "Runner.h"
-#include "PythonException.hpp"
 #include "PythonExecutable.h"
 #include "ScriptFile.h"
+#include "ScriptProcess.h"
+#include <shared/process/ProcessException.hpp>
 
 // Declare the script interpreter
 IMPLEMENT_SCRIPT_INTERPRETER(CPython)
@@ -60,21 +60,23 @@ void CPython::saveScriptContent(const std::string& scriptPath, const std::string
    file.write(content);
 }
 
-boost::shared_ptr<shared::process::IRunner> CPython::createRunner(
-   const std::string& scriptPath,
-   boost::shared_ptr<shared::process::ILogger> scriptLogger,
-   boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
-   boost::shared_ptr<shared::process::IStopNotifier> stopNotifier,
-   const shared::CDataContainer& scriptConfiguration) const
+boost::shared_ptr<shared::process::IProcess> CPython::createProcess(const std::string& scriptPath,
+                                                                    boost::shared_ptr<shared::process::ILogger> scriptLogger,
+                                                                    boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
+                                                                    boost::shared_ptr<shared::process::IEndOfProcessObserver> stopNotifier,
+                                                                    const shared::CDataContainer& scriptConfiguration) const
 {
    try
    {
-      boost::shared_ptr<shared::process::IRunner> runner(boost::make_shared<CRunner>(scriptPath, m_executable, scriptLogger, yScriptApi, stopNotifier, scriptConfiguration));
-      return runner;
+      return boost::make_shared<CScriptProcess>(m_executable,
+                                                boost::make_shared<CScriptFile>(scriptPath),
+                                                yScriptApi,
+                                                scriptLogger,
+                                                stopNotifier);
    }
-   catch (CPythonException& ex)
+   catch (shared::process::CProcessException& ex)
    {
-      YADOMS_LOG(error) << "Unable to create the Python runner object, " << ex.what();
-      return boost::shared_ptr<shared::process::IRunner>();
+      YADOMS_LOG(error) << "Unable to create the Python process, " << ex.what();
+      return boost::shared_ptr<shared::process::IProcess>();
    }
 }

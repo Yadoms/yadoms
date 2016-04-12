@@ -31,7 +31,7 @@ CRuleManager::CRuleManager(boost::shared_ptr<database::IRuleRequester> dbRequest
 CRuleManager::~CRuleManager()
 {
    if(!m_yadomsShutdown)
-      stop();
+      CRuleManager::stop();
 }
 
 void CRuleManager::stop()
@@ -93,7 +93,7 @@ void CRuleManager::startRule(int ruleId)
       YADOMS_LOG(information) << "Start rule #" << ruleId;
 
       boost::lock_guard<boost::recursive_mutex> lock(m_startedRulesMutex);
-      boost::shared_ptr<IRule> newRule(boost::make_shared<CRule>(ruleData, m_scriptManager, m_ruleStateHandler));
+      auto newRule(boost::make_shared<CRule>(ruleData, m_scriptManager, m_ruleStateHandler));
       m_startedRules[ruleId] = newRule;
    }
    catch(shared::exception::CEmptyResult& e)

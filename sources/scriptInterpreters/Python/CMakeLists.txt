@@ -27,11 +27,11 @@ if(PYTHONLIBS_FOUND)
       Messages.h
       Python.h
       Python.cpp
+      PythonCommandLine.h
+      PythonCommandLine.cpp
       PythonException.hpp
       PythonExecutable.h
       PythonExecutable.cpp
-      Runner.h
-      Runner.cpp
       ScriptFile.h
       ScriptFile.cpp
       ScriptProcess.h

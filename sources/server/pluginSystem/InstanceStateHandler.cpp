@@ -11,11 +11,11 @@ namespace pluginSystem
                                                 int normalStopEventId,
                                                 int abnormalStopEventId)
       : m_pluginRequester(pluginRequester),
-      m_eventLogger(eventLogger),
-      m_managerEventHandler(managerEventHandler),
-      m_instanceId(instanceId),
-      m_normalStopEventId(normalStopEventId),
-      m_abnormalStopEventId(abnormalStopEventId)
+        m_eventLogger(eventLogger),
+        m_managerEventHandler(managerEventHandler),
+        m_instanceId(instanceId),
+        m_normalStopEventId(normalStopEventId),
+        m_abnormalStopEventId(abnormalStopEventId)
    {
    }
 

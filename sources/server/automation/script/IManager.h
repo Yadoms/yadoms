@@ -5,7 +5,8 @@
 #include <shared/process/IStopNotifier.h>
 #include <shared/script/yScriptApi/IYScriptApi.h>
 #include <server/automation/IRuleStateHandler.h>
-#include <shared/script/IRunner.h> //TODO à virer
+#include <shared/shared/process/IProcess.h>
+#include <shared/shared/script/IInterpreter.h>
 
 namespace automation { namespace script
 {
@@ -25,6 +26,14 @@ namespace automation { namespace script
       ///\return              The list of available interpreters
       //-----------------------------------------------------
       virtual std::vector<std::string> getAvailableInterpreters() = 0;
+
+      //-----------------------------------------------------
+      ///\brief               Get the interpreter needed to run a script
+      ///\param[in] interpreterName The interpreter name
+      ///\return              The first interpreter found supporting this script
+      ///\throw CScriptInterpreterNotFound No corresponding script interpreter was found
+      //-----------------------------------------------------
+      virtual boost::shared_ptr<shared::script::IInterpreter> getAssociatedInterpreter(const std::string& interpreterName) = 0;
 
       //-----------------------------------------------------
       ///\brief               Unload an interpreter (do nothing if interpreter not loaded)
@@ -78,18 +87,18 @@ namespace automation { namespace script
       virtual std::string getScriptLogFile(boost::shared_ptr<const database::entities::CRule> ruleData) = 0;
       
       //-----------------------------------------------------
-      ///\brief               Create a script runner
+      ///\brief               Create a script process
       ///\param[in] scriptProperties      The script properties
       ///\param[in] scriptLogger          The rule logger
       ///\param[in] yScriptApi            The rule context
       ///\param[in] stopNotifier          The rule stop notifier
-      ///\return              A new script runner instance
-      ///\throw CInvalidParameter if unable to create script runner
+      ///\return              A new script process instance
+      ///\throw CInvalidParameter if unable to create script process
       //-----------------------------------------------------
-      virtual boost::shared_ptr<shared::script::IRunner> createScriptRunner(boost::shared_ptr<const IProperties> scriptProperties,
-                                                                            boost::shared_ptr<shared::process::ILogger> scriptLogger,
-                                                                            boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
-                                                                            boost::shared_ptr<shared::process::IStopNotifier> stopNotifier) = 0;
+      virtual boost::shared_ptr<shared::process::IProcess> createScriptProcess(boost::shared_ptr<const IProperties> scriptProperties,
+                                                                               boost::shared_ptr<shared::process::ILogger> scriptLogger,
+                                                                               boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
+                                                                               boost::shared_ptr<shared::process::IEndOfProcessObserver> stopNotifier) = 0;
 
       //-----------------------------------------------------
       ///\brief               Create the script logger
@@ -111,7 +120,7 @@ namespace automation { namespace script
       ///\param[in] ruleId    The rule ID
       ///\return              A stop notifier instance
       //-----------------------------------------------------
-      virtual boost::shared_ptr<shared::process::IStopNotifier> createStopNotifier(boost::shared_ptr<IRuleStateHandler> ruleStateHandler, int ruleId) = 0;
+      virtual boost::shared_ptr<shared::process::IEndOfProcessObserver> createStopNotifier(boost::shared_ptr<IRuleStateHandler> ruleStateHandler, int ruleId) = 0;
    };
 
 } } // namespace automation::script

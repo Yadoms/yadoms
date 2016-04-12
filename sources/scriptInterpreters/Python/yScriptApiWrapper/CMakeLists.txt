@@ -61,7 +61,7 @@ endif()
 
 ## Remove some warnings on generated code
 if(MSVC)
-   add_definitions( "/wd4706 /wd4701" )
+   add_definitions( "/wd4706 /wd4701 /wd4459 /wd4456 /wd4702" )
 endif()
 
 #########################################

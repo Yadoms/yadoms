@@ -1,7 +1,7 @@
 #pragma once
 
 #include <shared/exception/Exception.hpp>
-
+//TODO virer ?
 //--------------------------------------------------------------
 /// \class Exception raised by Python error
 //--------------------------------------------------------------

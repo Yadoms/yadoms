@@ -9,7 +9,9 @@ public:
    //--------------------------------------------------------------
    /// \brief	Destructor
    //--------------------------------------------------------------
-   virtual ~IScriptFile() {}
+   virtual ~IScriptFile()
+   {
+   }
 
    //--------------------------------------------------------------
    /// \brief	Get the path name
@@ -21,7 +23,7 @@ public:
    /// \brief	Get the parent path, as absolute path
    /// \return The parent path
    //--------------------------------------------------------------
-   virtual const boost::filesystem::path abslouteParentPath() const = 0;
+   virtual boost::filesystem::path abslouteParentPath() const = 0;
 
    //--------------------------------------------------------------
    /// \brief	Get the Python module name

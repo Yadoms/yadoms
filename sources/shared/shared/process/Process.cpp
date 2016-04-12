@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Process.h"
+#include "ProcessException.hpp"
 #include <shared/FileSystemExtension.h>
 
 //TODO utiliser cette classe pour les scripts
@@ -58,21 +59,20 @@ namespace shared
 		   }
 		   catch (Poco::Exception& ex)
 		   {
-			   throw CPluginException(std::string("Unable to start plugin, ") + ex.what());
+			   throw CProcessException(std::string("Unable to start plugin, ") + ex.what());
 		   }
 	   }
 
       void CProcess::createEndOfProcessObserver()
       {
-         m_endOfProcessMonitorThread = boost::make_shared<boost::thread>(&CProcess::monitorThreaded, m_process, m_endOfProcessObserver);
+         m_endOfProcessMonitorThread = boost::make_shared<boost::thread>(&CProcess::monitorThreaded, this);
       }
 
-      void CProcess::monitorThreaded(boost::shared_ptr<shared::process::IProcess> process,
-                                     boost::shared_ptr<shared::process::IEndOfProcessObserver> endOfProcessObserver) const
+      void CProcess::monitorThreaded()
       {
-         auto rc = process->waitForStop();
-         if (!!endOfProcessObserver)
-            endOfProcessObserver->onEndOfProcess(rc, getError());
+         auto rc = waitForStop();
+         if (!!m_endOfProcessObserver)
+            m_endOfProcessObserver->onEndOfProcess(rc, getError());
       }
 
 	   void CProcess::kill()

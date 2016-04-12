@@ -6,7 +6,6 @@
 #include "../../database/IKeywordRequester.h"
 #include "../../database/IRecipientRequester.h"
 #include "../../communication/ISendMessageAsync.h"
-#include "notification/NotificationCenter.h"
 #include "../../dataAccessLayer/IConfigurationManager.h"
 #include "IGeneralInfo.h"
 
@@ -44,21 +43,22 @@ namespace automation { namespace script
 
    protected:
       // IManager Implementation
-      virtual std::vector<std::string> getAvailableInterpreters();
-      virtual void unloadInterpreter(const std::string& interpreterName);
-      virtual boost::shared_ptr<IProperties> createScriptProperties(boost::shared_ptr<const database::entities::CRule> ruleData);
-      virtual std::string getScriptFile(boost::shared_ptr<const database::entities::CRule> ruleData);
-      virtual std::string getScriptTemplateFile(const std::string& interpreterName);
-      virtual void updateScriptFile(boost::shared_ptr<const database::entities::CRule> ruleData, const std::string& code);
-      virtual void deleteScriptFile(boost::shared_ptr<const database::entities::CRule> ruleData, bool doBackup = true);
-      virtual std::string getScriptLogFile(boost::shared_ptr<const database::entities::CRule> ruleData);
-      virtual boost::shared_ptr<shared::script::IRunner> createScriptRunner(boost::shared_ptr<const IProperties> scriptProperties,
-         boost::shared_ptr<shared::process::ILogger> scriptLogger,
-         boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
-         boost::shared_ptr<shared::process::IStopNotifier> stopNotifier);
-      virtual boost::shared_ptr<shared::process::ILogger> createScriptLogger(const std::string& scriptPath);
-      virtual boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> createScriptContext(boost::shared_ptr<shared::process::ILogger> scriptLogger);
-      virtual boost::shared_ptr<shared::process::IStopNotifier> createStopNotifier(boost::shared_ptr<IRuleStateHandler> ruleStateHandler, int ruleId);
+      std::vector<std::string> getAvailableInterpreters() override;
+      boost::shared_ptr<shared::script::IInterpreter> getAssociatedInterpreter(const std::string& interpreterName) override;
+      void unloadInterpreter(const std::string& interpreterName) override;
+      boost::shared_ptr<IProperties> createScriptProperties(boost::shared_ptr<const database::entities::CRule> ruleData) override;
+      std::string getScriptFile(boost::shared_ptr<const database::entities::CRule> ruleData) override;
+      std::string getScriptTemplateFile(const std::string& interpreterName) override;
+      void updateScriptFile(boost::shared_ptr<const database::entities::CRule> ruleData, const std::string& code) override;
+      void deleteScriptFile(boost::shared_ptr<const database::entities::CRule> ruleData, bool doBackup = true) override;
+      std::string getScriptLogFile(boost::shared_ptr<const database::entities::CRule> ruleData) override;
+      boost::shared_ptr<shared::process::IProcess> createScriptProcess(boost::shared_ptr<const IProperties> scriptProperties,
+                                                                       boost::shared_ptr<shared::process::ILogger> scriptLogger,
+                                                                       boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
+                                                                       boost::shared_ptr<shared::process::IEndOfProcessObserver> stopNotifier) override;
+      boost::shared_ptr<shared::process::ILogger> createScriptLogger(const std::string& scriptPath) override;
+      boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> createScriptContext(boost::shared_ptr<shared::process::ILogger> scriptLogger) override;
+      boost::shared_ptr<shared::process::IEndOfProcessObserver> createStopNotifier(boost::shared_ptr<IRuleStateHandler> ruleStateHandler, int ruleId) override;
       // [END] IManager Implementation
 
       //-----------------------------------------------------
@@ -88,14 +88,6 @@ namespace automation { namespace script
       ///               It doesn't check if interpreter is valid (export expected functions)
       //--------------------------------------------------------------
       std::vector<boost::filesystem::path> findInterpreterDirectories();
-
-      //-----------------------------------------------------
-      ///\brief               Get the interpreter needed to run a script
-      ///\param[in] interpreterName The interpreter name
-      ///\return              The first interpreter found supporting this script
-      ///\throw CScriptInterpreterNotFound No corresponding script interpreter was found
-      //-----------------------------------------------------
-      boost::shared_ptr<shared::script::IInterpreter> getAssociatedInterpreter(const std::string& interpreterName);
 
    private:
       //-----------------------------------------------------
