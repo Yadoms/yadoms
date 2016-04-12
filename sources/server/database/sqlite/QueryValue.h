@@ -221,6 +221,16 @@ namespace sqlite {
    }
 
    template<>
+   inline CQueryValue::CQueryValue(const std::string & anyValue, bool secure)
+   {
+      std::string value = normalize(anyValue);
+      if (secure)
+         initialize("'" + value + "'");
+      else
+         initialize(value);
+   }
+
+   template<>
    inline CQueryValue::CQueryValue(const shared::CDataContainer & anyValue, bool secure)
    {
       std::string valueAsString = anyValue.serialize();
