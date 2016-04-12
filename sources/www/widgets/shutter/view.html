@@ -1,11 +1,10 @@
 <script type="text/html" id="shutter-template">
-   <link href="widgets/shutter/widget.css" rel="stylesheet">
-   <div class="shutterWidget" >
-      <div class="btn-group-vertical btn-toggle hidden" data-bind="css: { hidden: kind() != 'verticalInverter'}">
+   <div class="mainDiv" >
+      <div class="vertical-inverter btn-group-vertical btn-toggle hidden" data-bind="css: { hidden: kind() != 'verticalInverter'}">
          <button class="btn btn-default" data-bind="css: { active: command() == 1, 'btn-primary': command() == 1, 'btn-default': command() != 1 }, event: {click: function() {commandClick(1)}}"><span class="glyphicon glyphicon-chevron-up"></span></button>
          <button class="btn btn-primary active" data-bind="css: { active: command() == 0, 'btn-primary': command() == 0, 'btn-default': command() != 0 }, event: {click: function() {commandClick(0)}}"><span class="glyphicon glyphicon-chevron-down"></span></button>
       </div>
       <!--<div data-bind="css: { hidden: kind() != 'pushButton'}">--> <!-- class="btn-group btn-group-sm btn-toggle hidden"-->
-	  <img class="shutter-image textfit" data-bind="css: { hidden: kind() != 'pushButton'}, attr:{ src: shutterIcon }, click: shutterClick" ><!--height="70" width="70"-->
-   <!--</div>-->
+	  <div class="shutter-image" data-bind="css: { hidden: kind() != 'pushButton'}, style: {backgroundImage: 'url(' + shutterIcon() + ')'}, click: shutterClick" ></div>
+   </div>
 </script>

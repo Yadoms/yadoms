@@ -1,10 +1,16 @@
-.shutterWidget {
-    -ms-flex-wrap: wrap;
-    -ms-flex-direction: column;
+.widget-shutter .mainDiv {
+    flex: 1;
     display: flex;
-    -webkit-box-flex: auto;
 }
 
-.shutter-image {
-  height: auto;
+.widget-shutter .shutter-image {
+    flex: 1;
+    width: 100%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.widget-shutter .vertical-inverter {
+    margin: auto;
 }
