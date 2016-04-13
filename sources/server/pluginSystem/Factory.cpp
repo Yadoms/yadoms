@@ -13,6 +13,7 @@
 #include "ContextAccessor.h"
 #include <shared/process/Process.h>
 #include <shared/process/ProcessException.hpp>
+#include <shared/FileSystemExtension.h>
 
 //TODO rechercer la châine shared/shared/ dans les include
 //TODO rechercher la chaîne "rule" dans tout le répertoire pluginSystem et la virer
@@ -109,6 +110,7 @@ namespace pluginSystem
       try
       {
          return boost::make_shared<shared::process::CProcess>(commandLine,
+                                                              shared::CFileSystemExtension::getModulePath().string(),
                                                               instanceStateHandler,
                                                               logger);
       }

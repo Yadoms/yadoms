@@ -29,9 +29,4 @@ namespace pluginSystem
    {
       return m_args;
    }
-
-   const std::string& CNativeExecutableCommandLine::toString() const
-   {
-      return std::string();//TODO (si utile)
-   }
 } // namespace pluginSystem

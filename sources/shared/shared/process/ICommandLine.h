@@ -32,12 +32,6 @@ namespace shared
          /// \return                      The args
          //--------------------------------------------------------------
          virtual const std::vector<std::string>& args() const = 0;
-
-         //--------------------------------------------------------------
-         /// \brief	                     Get The command line to execute
-         /// \return                      The command line
-         //--------------------------------------------------------------
-         virtual const std::string& toString() const = 0;
       };
 
    }

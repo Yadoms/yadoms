@@ -2,6 +2,7 @@
 #include "ScriptProcess.h"
 #include "PythonCommandLine.h"
 #include <shared/process/Process.h>
+#include <shared/FileSystemExtension.h>
 
 
 CScriptProcess::CScriptProcess(boost::shared_ptr<IPythonExecutable> executable,
@@ -42,6 +43,7 @@ void CScriptProcess::start()
    auto commandLine = createCommandLine(m_contextAccessor->id());
 
    m_process = boost::make_shared<shared::process::CProcess>(commandLine,
+                                                             shared::CFileSystemExtension::getModulePath().string(),
                                                              m_stopNotifier,
                                                              m_scriptLogger);
 }
@@ -51,9 +53,9 @@ void CScriptProcess::kill()
    m_process->kill();
 }
 
-int CScriptProcess::waitForStop()
+int CScriptProcess::getReturnCode() const
 {
-   return m_process->waitForStop();
+   return m_process->getReturnCode();
 }
 
 std::string CScriptProcess::getError() const

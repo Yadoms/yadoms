@@ -3,8 +3,9 @@
 
 
 set(plugin_cpp_api_SOURCES
-	plugin_cpp_api/stdafx.cpp
-	plugin_cpp_api/stdafx.h
+   plugin_cpp_api/stdafx.cpp
+   plugin_cpp_api/stdafx.h
+   plugin_cpp_api/PluginMain.h
 
    plugin_cpp_api/ICommandLine.h
    plugin_cpp_api/ImplementationHelper.h

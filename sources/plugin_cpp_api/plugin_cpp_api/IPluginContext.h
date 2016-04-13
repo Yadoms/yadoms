@@ -1,5 +1,5 @@
 #pragma once
-#include "IPlugin.h"
+#include "PluginMain.h"
 
 
 namespace plugin_cpp_api
@@ -21,15 +21,7 @@ namespace plugin_cpp_api
       /// \brief                 Get the return code, after run() returned
       /// \return                The return code
       //--------------------------------------------------------------
-      enum EReturnCode
-      {
-         kOk = 0,
-         kRuntimeError,
-         kUnexpectedStop
-      };
       virtual EReturnCode getReturnCode() const = 0;
    };
-
-   boost::shared_ptr<IPluginContext> CreatePluginContext(int argc, char **argv, boost::shared_ptr<IPlugin> plugin);
 
 } // namespace plugin_cpp_api

@@ -4,10 +4,10 @@
 #TODO virer les liens vers protobuf et plugin_IPC ? (car dans plugin_cpp_api)
 
 MACRO(PLUGIN_SOURCES _targetName)
-   set( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${youroutputdirectory}/plugins/${_targetName} )
+   set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${youroutputdirectory}/plugins/${_targetName} )
    foreach( OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES} )
        string( TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG )
-       set( CMAKE_LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${youroutputdirectory}/${OUTPUTCONFIG}/plugins/${_targetName} )
+       set( CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${youroutputdirectory}/${OUTPUTCONFIG}/plugins/${_targetName} )
    endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
    add_executable(${_targetName} ${ARGN})
 	

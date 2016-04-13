@@ -11,6 +11,9 @@ namespace pluginSystem
    public:
       //--------------------------------------------------------------
       /// \brief	Constructor
+      /// \param[in] workingDirectory  Working directory
+      /// \param[in] executableName    Executable name
+      /// \param[in] parameters        Command line arguments
       //--------------------------------------------------------------
       CNativeExecutableCommandLine(const boost::filesystem::path& workingDirectory,
                                    const std::string& executableName,
@@ -25,7 +28,6 @@ namespace pluginSystem
       std::string executable() const override;
       const boost::filesystem::path& workingDirectory() const override;
       const std::vector<std::string>& args() const override;
-      const std::string& toString() const override;
       // [END] ICommandLine Implementation
 
    private:

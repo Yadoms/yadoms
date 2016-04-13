@@ -18,16 +18,16 @@ namespace shared
          }
 
          //--------------------------------------------------------------
-         /// \brief	Ask for module stop
+         /// \brief	Ask for process stop
          /// \throw CPythonException if error
          //--------------------------------------------------------------
          virtual void kill() = 0;
 
          //--------------------------------------------------------------
-         /// \brief	Wait for module stop (blocking)
-         /// \return Process return code
+         /// \brief	Get the process return code
+         /// \return Return code
          //--------------------------------------------------------------
-         virtual int waitForStop() = 0;
+         virtual int getReturnCode() const = 0;
 
          //--------------------------------------------------------------
          /// \brief	Get the process error

@@ -14,19 +14,21 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	Python executable
       //--------------------------------------------------------------
-      class YADOMS_SHARED_EXPORT CProcess : public shared::process::IProcess
+      class YADOMS_SHARED_EXPORT CProcess : public IProcess
       {
       public:
          //--------------------------------------------------------------
          /// \brief	Constructor
          /// \param[in] commandLine             Process command line
+         /// \param[in] workingDirectory        Working directory to use. If null, use the current working directory.
          /// \param[in] endOfProcessObserver    The end of process event observer (can be NULL is no observer needed)
          /// \param[in] logger                  Process out/err logger (can be NULL is no logger needed)
          /// \throw CPluginException if error //TODO revoir le type
          //--------------------------------------------------------------
          CProcess(boost::shared_ptr<ICommandLine> commandLine,
-                  boost::shared_ptr<shared::process::IEndOfProcessObserver> endOfProcessObserver,
-                  boost::shared_ptr<shared::process::ILogger> logger);
+                  const std::string& workingDirectory,
+                  boost::shared_ptr<IEndOfProcessObserver> endOfProcessObserver,
+                  boost::shared_ptr<ILogger> logger);
 
          //--------------------------------------------------------------
          /// \brief	Destructor
@@ -35,7 +37,7 @@ namespace shared
 
          // shared::process::IProcess Implementation
          void kill() override;
-         int waitForStop() override;
+         int getReturnCode() const override;
          std::string getError() const override;
          // [END] shared::process::IProcess Implementation
 
@@ -45,7 +47,6 @@ namespace shared
          /// \throw CPythonException if error
          //--------------------------------------------------------------
          void start();
-
 
          //-----------------------------------------------------
          ///\brief               Create the process observer 
@@ -64,11 +65,19 @@ namespace shared
          /// \param[inout] lastError      Last error string
          //--------------------------------------------------------------
          static void stdRedirectWorker(boost::shared_ptr<Poco::PipeInputStream> moduleStdOut,
-                                       boost::shared_ptr<shared::process::ILogger> scriptLogger,
+                                       boost::shared_ptr<ILogger> scriptLogger,
                                        boost::shared_ptr<std::string> lastError);
 
       private:
+         //--------------------------------------------------------------
+         /// \brief	The command line to execute
+         //--------------------------------------------------------------
          boost::shared_ptr<ICommandLine> m_commandLine;
+
+         //--------------------------------------------------------------
+         /// \brief	The working directory
+         //--------------------------------------------------------------
+         const std::string m_workingDirectory;
 
          //--------------------------------------------------------------
          /// \brief	The process of the running script, and its mutex
@@ -79,19 +88,24 @@ namespace shared
          //--------------------------------------------------------------
          ///\brief   The end of process observer
          //--------------------------------------------------------------
-         boost::shared_ptr<shared::process::IEndOfProcessObserver> m_endOfProcessObserver;
+         boost::shared_ptr<IEndOfProcessObserver> m_endOfProcessObserver;
          boost::shared_ptr<boost::thread> m_endOfProcessMonitorThread;
 
          //--------------------------------------------------------------
          ///\brief   The logger
          //--------------------------------------------------------------
-         boost::shared_ptr<shared::process::ILogger> m_logger;
+         boost::shared_ptr<ILogger> m_logger;
 
          //--------------------------------------------------------------
          /// \brief	Thread redirecting standard outputs
          //--------------------------------------------------------------
-         boost::thread m_StdOutRedirectingThread;
-         boost::thread m_StdErrRedirectingThread;
+         boost::shared_ptr<boost::thread> m_StdOutRedirectingThread;
+         boost::shared_ptr<boost::thread> m_StdErrRedirectingThread;
+
+         //--------------------------------------------------------------
+         /// \brief	The process return code
+         //--------------------------------------------------------------
+         int m_returnCode;
 
          //--------------------------------------------------------------
          /// \brief	The last error

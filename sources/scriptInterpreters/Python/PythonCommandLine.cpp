@@ -29,8 +29,3 @@ const std::vector<std::string>& CPythonCommandLine::args() const
    return m_args;
 }
 
-const std::string& CPythonCommandLine::toString() const
-{
-   return std::string();//TODO (si utile)
-}
-

@@ -35,7 +35,7 @@ public:
 
    // shared::process::IProcess Implementation
    void kill() override;
-   int waitForStop() override;
+   int getReturnCode() const override;
    std::string getError() const override;
    // [END] shared::process::IProcess Implementation
 

@@ -24,7 +24,6 @@ class CPythonCommandLine : public shared::process::ICommandLine
    std::string executable() const override;
    const boost::filesystem::path& workingDirectory() const override;
    const std::vector<std::string>& args() const override;
-   const std::string& toString() const override;
    // [END] ICommandLine Implementation
 
    private:

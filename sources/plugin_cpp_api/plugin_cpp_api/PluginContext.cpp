@@ -6,9 +6,25 @@
 
 namespace plugin_cpp_api
 {
-   boost::shared_ptr<IPluginContext> CreatePluginContext(int argc, char **argv, boost::shared_ptr<IPlugin> plugin)
+   int doMain(int argc, char **argv, boost::shared_ptr<IPlugin> plugin)
    {
-      return boost::make_shared<CPluginContext>(argc, argv, plugin);
+      try
+      {
+         while (1) boost::this_thread::sleep(boost::posix_time::seconds(1));
+         auto pluginContext = boost::make_shared<CPluginContext>(argc, argv, plugin);
+         pluginContext->run();
+         return static_cast<int>(pluginContext->getReturnCode());
+      }
+      catch (std::invalid_argument& e)
+      {
+         std::cerr << "Unable to start plugin : " << e.what();
+         return kStartError;
+      }
+      catch (...)
+      {
+         std::cerr << "Plugin crashed";
+         return kRuntimeError;
+      }
    }
 
 
@@ -42,7 +58,6 @@ namespace plugin_cpp_api
 
          if (!api->stopRequested())
          {
-            // Plugin has stopped without stop requested
             m_returnCode = kUnexpectedStop;
             std::cerr << api->getInformation().getType() << " has stopped itself.";
          }
@@ -51,13 +66,11 @@ namespace plugin_cpp_api
       }
       catch (std::exception& e)
       {
-         // Plugin crashed
          m_returnCode = kRuntimeError;
          std::cerr << api->getInformation().getType() << " crashed with exception : " << e.what();
       }
       catch (...)
       {
-         // Plugin crashed
          m_returnCode = kRuntimeError;
          std::cerr << api->getInformation().getType() << " crashed with unknown exception";
       }
@@ -71,7 +84,7 @@ namespace plugin_cpp_api
       m_returnCode = kOk;
    }
 
-   IPluginContext::EReturnCode CPluginContext::getReturnCode() const
+   EReturnCode CPluginContext::getReturnCode() const
    {
       return m_returnCode;
    }

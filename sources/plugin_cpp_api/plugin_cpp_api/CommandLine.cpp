@@ -6,10 +6,12 @@ namespace plugin_cpp_api
 {
    CCommandLine::CCommandLine(int argc, char **argv)
    {
-      if (argc != 1)
-         throw std::invalid_argument("Invalid arguments number");
+      static const auto NbExpectedArguments = 2;
 
-      m_yPluginApiAccessorId = argv[0];
+      if (argc != NbExpectedArguments)
+         throw std::invalid_argument((boost::format("Invalid arguments number (%1%), %2% expected") % argc % NbExpectedArguments).str());
+
+      m_yPluginApiAccessorId = argv[1];
    }
 
    CCommandLine::~CCommandLine()

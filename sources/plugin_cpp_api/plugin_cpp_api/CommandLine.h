@@ -14,10 +14,6 @@ namespace plugin_cpp_api
 
 		virtual ~CCommandLine();
 
-		//--------------------------------------------------------------
-		/// \brief              Get the plugin execution context (Yadoms API)
-		/// \return             Plugin execution context (Yadoms API)
-		//--------------------------------------------------------------
 		std::string yPluginApiAccessorId() const override;
 
 	private:
