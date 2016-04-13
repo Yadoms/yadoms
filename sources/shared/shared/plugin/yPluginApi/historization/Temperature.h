@@ -23,6 +23,33 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       ///\brief                     Destructor
       //-----------------------------------------------------
       virtual ~CTemperature();
+
+
+      // CSingleHistorizableData<double> override ------------------------
+      virtual void setWithUnits(double value, const std::string & unit);
+      virtual double getWithUnits(const std::string & unit) const;
+      // [END] - CSingleHistorizableData<double> override ------------------------
+
+   private:
+      //-----------------------------------------------------
+      ///\brief  Check if given unit match fahrenheit
+      ///\param[in] unit  The unit 
+      ///\return  true if the unit is recognized as Fahrenheit 
+      //-----------------------------------------------------
+      bool isUnitFahrenheit(const std::string & unit) const;
+
+      //-----------------------------------------------------
+      ///\brief  Set temperature from a Fahrenheit  value
+      ///\param[in] value  The temperature value in Fahrenheit 
+      //-----------------------------------------------------
+      void setFahrenheit(double value);
+
+      //-----------------------------------------------------
+      ///\brief  Get the temperature as Fahrenheit value
+      ///\return The temeprature in Fahrenheit
+      //-----------------------------------------------------
+      double getFahrenheit() const;
+
    };
 
 

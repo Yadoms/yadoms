@@ -3,6 +3,7 @@
 #include "OpenZWaveNodeKeywordBase.h"
 #include <shared/plugin/yPluginApi/historization/SingleHistorizableData.hpp>
 #include "OpenZWaveHelpers.h"
+#include "OpenZWaveNodeKeywordGenericByType.h"
 
 //--------------------------------------------------------------
 /// \brief	    ZWave keyword based on generic historizer
@@ -32,12 +33,12 @@ public:
    virtual bool sendCommand(const std::string & commandData)
    {
       m_keyword->setCommand(commandData);
-      return realSendCommand<T>(m_keyword->get());
+      return realSendCommand<T>(m_keyword->getWithUnits(m_keyword->getCapacity().getUnit()));
    }
 
    virtual boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> getLastKeywordValue()
    {
-      m_keyword->set(extractLastValue<T>());
+      m_keyword->setWithUnits(extractLastValue<T>(), getUnit());
       return m_keyword;
    }
    // [END] IOpenZWaveKeyword implementation
@@ -65,7 +66,7 @@ public:
    //--------------------------------------------------------------
    static boost::shared_ptr<IOpenZWaveNodeKeyword> createFromDataType(OpenZWave::ValueID & vID, const std::string & vLabel, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, const std::string &units, shared::plugin::yPluginApi::EKeywordDataType dataType, shared::plugin::yPluginApi::historization::EMeasureType measureType = shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute, shared::plugin::yPluginApi::historization::typeInfo::ITypeInfo & ti = shared::plugin::yPluginApi::historization::typeInfo::CEmptyTypeInfo::Empty)
    {
-      boost::shared_ptr< shared::plugin::yPluginApi::historization::CSingleHistorizableData<T> > historizer(new shared::plugin::yPluginApi::historization::CSingleHistorizableData<T>(COpenZWaveHelpers::GenerateKeywordName(vID), COpenZWaveNodeKeywordFactory::getCapacity(vLabel, units, dataType), accessMode, measureType, ti));
+      boost::shared_ptr< COpenZWaveNodeKeywordGenericByType<T> > historizer(new COpenZWaveNodeKeywordGenericByType<T>(COpenZWaveHelpers::GenerateKeywordName(vID), COpenZWaveNodeKeywordFactory::getCapacity(vLabel, units, dataType), accessMode, measureType, ti));
       return boost::shared_ptr<IOpenZWaveNodeKeyword>(new COpenZWaveNodeKeywordGeneric<T>(historizer, vID));
    }
 

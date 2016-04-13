@@ -16,7 +16,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
    template<class T>
    class CSingleHistorizableData : public IHistorizable
    {
-   public:
+   protected:
       //-----------------------------------------------------
       ///\brief                        Constructor
       ///\param[in] keywordName        the keyword name
@@ -42,6 +42,11 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       {
       }
 
+   public:
+      //-----------------------------------------------------
+      ///\brief                        Constructor (copy)
+      ///\param[in] rhs                the object to copy
+      //-----------------------------------------------------
       CSingleHistorizableData(const CSingleHistorizableData<T> & rhs)
          :m_keywordName(rhs.m_keywordName), m_capacity(rhs.m_capacity), m_value(rhs.m_value), m_accessMode(rhs.m_accessMode), m_measureType(rhs.m_measureType), m_typeInfo(rhs.m_typeInfo)
       {
@@ -103,7 +108,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
 
       //-----------------------------------------------------
       ///\brief                     Set value
-      ///\param[in] command         
+      ///\param[in] value           The value         
       //-----------------------------------------------------
       virtual void set(T value)
       {
@@ -117,6 +122,27 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       virtual T get() const
       {
          return m_value;
+      }
+
+      //-----------------------------------------------------
+      ///\brief                  Set value specifying the unit
+      ///\param[in] value        The value         
+      ///\param[in] unit         The value units
+      //-----------------------------------------------------
+      virtual void setWithUnits(T value, const std::string & unit)
+      {
+         //default behavior do not manage units
+         set(value);
+      }
+
+      //-----------------------------------------------------
+      ///\brief                  Get the value in the specified units
+      ///\param[in] unit         The units
+      ///\return                 The value
+      //-----------------------------------------------------
+      virtual T getWithUnits(const std::string & unit) const
+      {
+         return get();
       }
 
 
