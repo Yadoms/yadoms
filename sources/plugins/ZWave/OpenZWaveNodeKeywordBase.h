@@ -39,10 +39,19 @@ protected:
    template<class T>
    inline bool realSendCommand(const T & data);
 
-
+   //--------------------------------------------------------------
+   /// \brief	      Extract a typed value from the OpenZWave::ValueID container 
+   /// \return       The data contained in OpenZWave::ValueID, in the goot type
+   /// \note	      T the type of data
+   //--------------------------------------------------------------
    template<class T>
    inline T extractLastValue();
 
+   //--------------------------------------------------------------
+   /// \brief	      Get the unit of the data
+   /// \return       The data unit
+   //--------------------------------------------------------------
+   const std::string getUnit();
    
 private:
    //--------------------------------------------------------------
