@@ -202,6 +202,9 @@
       "pluginFailToDelete": "Fail to delete plugin __pluginName__",
       "pluginFailToConfigure": "Fail to configure plugin __pluginName__"
     },
+	"extra-commands" : {
+      "title": "Send extra command to plugin"
+	},
     "configure-device": {
       "title": "Device configuration",
       "friendlyName-configuration": {
