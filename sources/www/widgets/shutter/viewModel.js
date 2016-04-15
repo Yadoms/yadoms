@@ -28,10 +28,13 @@ widgetViewModelCtor =
           };
 
           this.shutterIcon = ko.computed(function () {
+			  
+			  console.log ( "widgets/shutter/icons/" + self.kind() + "-close.png" );
+			  
               if (self.command() === 0)
-                  return "widgets/shutter/icons/close.png";
+                  return "widgets/shutter/icons/" + self.kind() + "-close.png";
               else
-                  return "widgets/shutter/icons/open.png";
+                  return "widgets/shutter/icons/" + self.kind() + "-open.png";
           });
 
           /**

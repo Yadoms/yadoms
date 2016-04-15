@@ -22,10 +22,14 @@
 			"name": "Kind of switch",
 			"description": "Select the kind of switch to be used. Permit to change interactions in function of the kind of switch.",
 			"content": {
-				"pushButton": {
-					"name": "Blind push button",
-					"description": "A simple push button that represents a roller shutter"
-				},			
+				"window": {
+					"name": "Blind window push button",
+					"description": "A simple push button that represents a roller shutter for window"
+				},
+				"door": {
+					"name": "Blind door push button",
+					"description": "A simple push button that represents a roller shutter for door"
+				},				
 				"verticalInverter": {
 					"name": "Vertical inverter",
 					"description": "A vertical dual-buttons shutter switch"

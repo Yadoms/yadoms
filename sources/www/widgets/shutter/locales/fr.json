@@ -22,10 +22,14 @@
 			"name": "Type d'interrupteur",
 			"description": "Sélection du type d'interrupteur. Le type d'interrupteur influe sur le mode de fonctionnement du périphérique piloté.",
 			"content": {
-				"pushButton": {
-					"name": "Bounton poussoir volet",
-					"description": "Un bouton poussoir représentant un volet électrique"
-				},			
+				"windows": {
+					"name": "Bouton poussoir fenêtre",
+					"description": "Un bouton poussoir représentant un volet électrique pour une fenêtre"
+				},
+				"door": {
+					"name": "Bouton poussoir porte",
+					"description": "Un bouton poussoir représentant un volet électrique pour une porte"
+				},
 				"verticalInverter": {
 					"name": "Inverseur vertical",
 					"description": "Deux boutons (Montée/Descente) présentés verticalement"

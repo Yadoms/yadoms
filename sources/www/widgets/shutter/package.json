@@ -29,9 +29,12 @@
 		"kind": {
 			"type": "radioSection",
 			"content": {
-				"pushButton": {
+				"window": {
 					"type": "section"
-				},			
+				},
+				"door": {
+					"type": "section"
+				},				
 				"verticalInverter": {
 					"type": "section"
 				}
