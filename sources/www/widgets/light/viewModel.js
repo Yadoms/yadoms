@@ -1,14 +1,13 @@
 widgetViewModelCtor =
 
    /**
-    * Create a Shutter ViewModel
+    * Create a light ViewModel
     * @constructor
     */
-      function shutterViewModel() {
+      function lightViewModel() {
           var self = this;
           //observable data
           this.command = ko.observable(1);
-          this.kind = ko.observable("simple");
           this.icon = ko.observable("");
 
           // default size
@@ -27,11 +26,11 @@ widgetViewModelCtor =
               }
           };
 
-          this.shutterIcon = ko.computed(function () {
+          this.LightIcon = ko.computed(function () {
               if (self.command() === 0)
-                  return "widgets/shutter/icons/close.png";
+                  return "widgets/light/icons/on.png";
               else
-                  return "widgets/shutter/icons/open.png";
+                  return "widgets/light/icons/off.png";
           });
 
           /**
@@ -47,7 +46,7 @@ widgetViewModelCtor =
               });
           };
 
-          this.shutterClick = function () {
+          this.LightClick = function () {
               self = this;
 
               if (self.command() === 0)
@@ -67,10 +66,6 @@ widgetViewModelCtor =
 
               if ((!isNullOrUndefined(this.widget.configuration)) && (!isNullOrUndefined(this.widget.configuration.device))) {
                   self.widgetApi.registerKeywordAcquisitions(this.widget.configuration.device.keywordId);
-              }
-
-              if (!isNullOrUndefined(this.widget.configuration.kind)) {
-                  this.kind(this.widget.configuration.kind.activeSection);
               }
 
               //we ask for device information

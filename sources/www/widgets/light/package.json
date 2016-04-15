@@ -1,9 +1,9 @@
 {
-	"type": "shutter",
+	"type": "light",
 	"version": "0.1",
 	"releaseType": "beta",
 	"author": "yadoms team",
-	"url": "http://www.yadoms.com/wiki/widgets/shutter.html",
+	"url": "http://www.yadoms.com/wiki/widgets/light.html",
 	"credits": "",
 	"dimensions": {
 		"min": {
@@ -25,17 +25,6 @@
 			"type": "device",
 			"expectedCapacity": "switch",
 			"expectedKeywordAccess": "getset"
-		},
-		"kind": {
-			"type": "radioSection",
-			"content": {
-				"pushButton": {
-					"type": "section"
-				},			
-				"verticalInverter": {
-					"type": "section"
-				}
-			}
 		}
 	}
 }

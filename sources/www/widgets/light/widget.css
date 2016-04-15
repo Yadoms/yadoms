@@ -1,0 +1,16 @@
+.widget-light .mainDiv {
+    flex: 1;
+    display: flex;
+}
+
+.widget-light .light-image {
+    flex: 1;
+    width: 100%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.widget-light .vertical-inverter {
+    margin: auto;
+}

@@ -1,0 +1,22 @@
+{
+	"name": "Lumière",
+	"description": "Un widget permettant d'allumer et d'éteindre la lumière",
+	"errorDuringGettingDeviceInformation": "Erreur lors de la récupération des informations de l'équipement",
+	"errorDuringSendingCommand": "Erreur lors de l'envoi de la commande",
+	"configurationSchema": {
+		"device": {
+			"name": "Equipement",
+			"description": "Sélectionner ici l'équipement à piloter",
+			"item": {
+				"name": "",
+				"description": "",
+				"content": {
+					"source": {
+						"name": "Equipement",
+						"description": "Equipement à piloter"
+					}
+				}
+            }			
+		}
+	}
+}
