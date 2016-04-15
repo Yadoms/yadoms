@@ -201,6 +201,9 @@
       "pluginFailToDelete": "Impossible de supprimer le plugin __pluginName__",
       "pluginFailToConfigure": "Impossible de configurer le plugin __pluginName__"
     },
+	"extra-commands" : {
+      "title": "Envoi d'une extra commande au plugin"
+	},
     "configure-device": {
       "title": "Configuration de l'équipement",
       "friendlyName-configuration": {
@@ -504,7 +507,8 @@
             "minValueExceeded": "La valeur ne peut être inférieure à __minValue__",
             "minNumberItemsRequired": "La liste doit contenir au moins __minValue__ éléments",
             "maxNumberItemsAllowed": "La liste ne peut contenir plus de __maxValue__ éléments"
-        }
+        },
+		"iconpicker-search-prompt" : "Rechercher une icone..."
     },
     "blockly": {
         "toolbox": {

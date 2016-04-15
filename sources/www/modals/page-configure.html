@@ -44,6 +44,9 @@
 
    $('div#modify-page-modal').on('shown.bs.modal', function () {
       $('input#modify-page-text').focus();
+
+      //fix additional sub modals input (like icon picker search box)
+      $(document).off('focusin.modal');
    });
 
    /**

@@ -113,6 +113,15 @@
 					"description": "Choisir l'interface réseau (liste issue d'une requête serveur)"
 				}			
 			}
+		},
+		"dataBindingPluginCommand" : {
+			"name" : "Commande avec des données liées au plugin",
+			"commandData" : {
+				"dynamicSection": {
+					"name": "A dynamic section",
+					"description": "Exemple de section renseignée par la méthode 'test' du plugin en utilisant le binding."
+				}
+			}
 		}
 	}
 }

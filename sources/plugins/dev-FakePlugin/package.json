@@ -125,6 +125,20 @@
 				  }
 				}			
 			}
+		},
+		"dataBindingPluginCommand" : {
+			"iconClass" : "fa fa-rocket",
+			"commandData" : {
+				"dynamicSection": {
+				  "type": "section",
+				  "content": {
+					"__Binding__": {
+					  "type": "plugin",
+					  "query": "test"
+					}
+				  }
+				}
+			}
 		}
 	}  
 }

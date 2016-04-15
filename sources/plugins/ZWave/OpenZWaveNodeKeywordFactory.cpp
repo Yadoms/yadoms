@@ -16,33 +16,29 @@
 #include "OpenZWaveNodeKeywordDimmable.h"
 #include "OpenZWaveEnumHandlerTypeInfo.h"
 
-#include <shared/plugin/yPluginApi/KeywordAccessMode.h>
-#include <shared/plugin/yPluginApi/historization/Temperature.h>
-#include <shared/plugin/yPluginApi/historization/Illumination.h>
-#include <shared/plugin/yPluginApi/historization/Power.h>
-#include <shared/plugin/yPluginApi/historization/Humidity.h>
-#include <shared/plugin/yPluginApi/historization/Speed.h>
-#include <shared/plugin/yPluginApi/historization/Direction.h>
-#include <shared/plugin/yPluginApi/historization/Pressure.h>
-#include <shared/plugin/yPluginApi/historization/RainRate.h>
-#include <shared/plugin/yPluginApi/historization/Weight.h>
-#include <shared/plugin/yPluginApi/historization/Voltage.h>
-#include <shared/plugin/yPluginApi/historization/Current.h>
-#include <shared/plugin/yPluginApi/historization/Distance.h>
-#include <shared/plugin/yPluginApi/historization/Uv.h>
-#include <shared/plugin/yPluginApi/historization/Humidity.h>
-#include <shared/plugin/yPluginApi/historization/Switch.h>
-#include <shared/plugin/yPluginApi/historization/Dimmable.h>
-#include <shared/plugin/yPluginApi/historization/Energy.h>
-#include <shared/plugin/yPluginApi/historization/Counter.h>
-#include <shared/plugin/yPluginApi/historization/PowerFactor.h>
-#include <shared/plugin/yPluginApi/StandardUnits.h>
+#include "historizers/Counter.h"
+#include "historizers/Current.h"
+#include "historizers/Direction.h"
+#include "historizers/Distance.h"
+#include "historizers/Energy.h"
+#include "historizers/Humidity.h"
+#include "historizers/Illumination.h"
+#include "historizers/Power.h"
+#include "historizers/PowerFactor.h"
+#include "historizers/Pressure.h"
+#include "historizers/RainRate.h"
+#include "historizers/Speed.h"
+#include "historizers/Switch.h"
+#include "historizers/Temperature.h"
+#include "historizers/Uv.h"
+#include "historizers/Voltage.h"
+#include "historizers/Weight.h"
 
+#include <shared/plugin/yPluginApi/KeywordAccessMode.h>
+#include <shared/plugin/yPluginApi/StandardUnits.h>
 #include "OpenZWaveHelpers.h"
 
 std::vector< boost::shared_ptr<shared::plugin::yPluginApi::CStandardCapacity> > COpenZWaveNodeKeywordFactory::m_declaredCapacities;
-
-
 
 
 boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::createKeyword(OpenZWave::ValueID & vID, Poco::UInt32 homeId, Poco::UInt8 nodeId, bool includeSystemKeywords)
@@ -135,44 +131,44 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateS
    case ECommandClass::kEnergyProductionValue:
       if (vLabel == "Instant energy production")
       {
-         boost::shared_ptr<shared::plugin::yPluginApi::historization::CEnergy> historizer(new shared::plugin::yPluginApi::historization::CEnergy(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
+         boost::shared_ptr<historizers::CEnergy> historizer(new historizers::CEnergy(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
          return COpenZWaveNodeKeywordGeneric<Poco::Int64>::create(historizer, vID);
       }
       if (vLabel == "Total energy production" || vLabel == "Energy production today")
       {
-         boost::shared_ptr<shared::plugin::yPluginApi::historization::CEnergy> historizer(new shared::plugin::yPluginApi::historization::CEnergy(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode, shared::plugin::yPluginApi::historization::EMeasureType::kCumulative));
+         boost::shared_ptr<historizers::CEnergy> historizer(new historizers::CEnergy(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode, shared::plugin::yPluginApi::historization::EMeasureType::kCumulative));
          return COpenZWaveNodeKeywordGeneric<Poco::Int64>::create(historizer, vID);
       }
       break;
    case ECommandClass::kMeterValue:
       if (vLabel == "Energy")
       {
-         boost::shared_ptr<shared::plugin::yPluginApi::historization::CEnergy> historizer(new shared::plugin::yPluginApi::historization::CEnergy(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
+         boost::shared_ptr<historizers::CEnergy> historizer(new historizers::CEnergy(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
          return COpenZWaveNodeKeywordGeneric<Poco::Int64>::create(historizer, vID);
       }
       if (vLabel == "Power")
       {
-         boost::shared_ptr<shared::plugin::yPluginApi::historization::CPower> historizer(new shared::plugin::yPluginApi::historization::CPower(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
+         boost::shared_ptr<historizers::CPower> historizer(new historizers::CPower(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
          return COpenZWaveNodeKeywordGeneric<double>::create(historizer, vID);
       }
       if (vLabel == "Count")
       {
-         boost::shared_ptr<shared::plugin::yPluginApi::historization::CCounter> historizer(new shared::plugin::yPluginApi::historization::CCounter(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
+         boost::shared_ptr<historizers::CCounter> historizer(new historizers::CCounter(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
          return COpenZWaveNodeKeywordGeneric<Poco::Int64>::create(historizer, vID);
       }
       if (vLabel == "Voltage")
       {
-         boost::shared_ptr<shared::plugin::yPluginApi::historization::CVoltage> historizer(new shared::plugin::yPluginApi::historization::CVoltage(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
+         boost::shared_ptr<historizers::CVoltage> historizer(new historizers::CVoltage(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
          return COpenZWaveNodeKeywordGeneric<double>::create(historizer, vID);
       }
       if (vLabel == "Current")
       {
-         boost::shared_ptr<shared::plugin::yPluginApi::historization::CCurrent> historizer(new shared::plugin::yPluginApi::historization::CCurrent(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
+         boost::shared_ptr<historizers::CCurrent> historizer(new historizers::CCurrent(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
          return COpenZWaveNodeKeywordGeneric<double>::create(historizer, vID);
       }
       if (vLabel == "Power Factor")
       {
-         boost::shared_ptr<shared::plugin::yPluginApi::historization::CPowerFactor> historizer(new shared::plugin::yPluginApi::historization::CPowerFactor(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
+         boost::shared_ptr<historizers::CPowerFactor> historizer(new historizers::CPowerFactor(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
          return COpenZWaveNodeKeywordGeneric<double>::create(historizer, vID);
       }
       break;
@@ -180,7 +176,7 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateS
    case ECommandClass::kMeterPulseValue:
       if (vLabel == "Count")
       {
-         boost::shared_ptr<shared::plugin::yPluginApi::historization::CCounter> historizer(new shared::plugin::yPluginApi::historization::CCounter(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
+         boost::shared_ptr<historizers::CCounter> historizer(new historizers::CCounter(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
          return COpenZWaveNodeKeywordGeneric<Poco::Int64>::create(historizer, vID);
       }
       break;
@@ -189,86 +185,92 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateS
 
       if (vLabel == "Temperature" || vLabel == "Water Temperature" || vLabel == "Soil Temperature")
       {
-         boost::shared_ptr<shared::plugin::yPluginApi::historization::CTemperature> historizer(new shared::plugin::yPluginApi::historization::CTemperature(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
+         boost::shared_ptr<historizers::CTemperature> historizer(new historizers::CTemperature(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
          return COpenZWaveNodeKeywordGeneric<double>::create(historizer, vID);
       }
 
       if (vLabel == "Luminance")
       {
-         boost::shared_ptr<shared::plugin::yPluginApi::historization::CIllumination> historizer(new shared::plugin::yPluginApi::historization::CIllumination(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
-         return COpenZWaveNodeKeywordGeneric<double>::create(historizer, vID);
+         if (OpenZWave::Manager::Get()->GetValueUnits(vID) == "lux")
+         {
+            boost::shared_ptr<historizers::CIllumination> historizer(new historizers::CIllumination(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
+            return COpenZWaveNodeKeywordGeneric<double>::create(historizer, vID);
+         }
       }
 
       if (vLabel == "Power")
       {
-         boost::shared_ptr<shared::plugin::yPluginApi::historization::CPower> historizer(new shared::plugin::yPluginApi::historization::CPower(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
+         boost::shared_ptr<historizers::CPower> historizer(new historizers::CPower(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
          return COpenZWaveNodeKeywordGeneric<double>::create(historizer, vID);
       }
 
       if (vLabel == "Relative Humidity")
       {
-         boost::shared_ptr<shared::plugin::yPluginApi::historization::CHumidity> historizer(new shared::plugin::yPluginApi::historization::CHumidity(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
+         boost::shared_ptr<historizers::CHumidity> historizer(new historizers::CHumidity(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
          return COpenZWaveNodeKeywordGeneric<double>::create(historizer, vID);
       }
 
       if (vLabel == "Velocity")
       {
-         boost::shared_ptr<shared::plugin::yPluginApi::historization::CSpeed> historizer(new shared::plugin::yPluginApi::historization::CSpeed(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
+         boost::shared_ptr<historizers::CSpeed> historizer(new historizers::CSpeed(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
          return COpenZWaveNodeKeywordGeneric<double>::create(historizer, vID);
       }
 
       if (vLabel == "Direction")
       {
-         boost::shared_ptr<shared::plugin::yPluginApi::historization::CDirection> historizer(new shared::plugin::yPluginApi::historization::CDirection(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
+         boost::shared_ptr<historizers::CDirection> historizer(new historizers::CDirection(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
          return COpenZWaveNodeKeywordGeneric<Poco::Int32>::create(historizer, vID);
       }
 
       if (vLabel == "Barometric Pressure")
       {
-         boost::shared_ptr<shared::plugin::yPluginApi::historization::CPressure> historizer(new shared::plugin::yPluginApi::historization::CPressure(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
+         boost::shared_ptr<historizers::CPressure> historizer(new historizers::CPressure(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
          return COpenZWaveNodeKeywordGeneric<double>::create(historizer, vID);
       }
 
       if (vLabel == "Rain Rate")
       {
-         boost::shared_ptr<shared::plugin::yPluginApi::historization::CRainRate> historizer(new shared::plugin::yPluginApi::historization::CRainRate(COpenZWaveHelpers::GenerateKeywordName(vID)));
+         boost::shared_ptr<historizers::CRainRate> historizer(new historizers::CRainRate(COpenZWaveHelpers::GenerateKeywordName(vID)));
          return COpenZWaveNodeKeywordGeneric<double>::create(historizer, vID);
       }
 
       if (vLabel == "Weight")
       {
-         boost::shared_ptr<shared::plugin::yPluginApi::historization::CWeight> historizer(new shared::plugin::yPluginApi::historization::CWeight(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
+         boost::shared_ptr<historizers::CWeight> historizer(new historizers::CWeight(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
          return COpenZWaveNodeKeywordGeneric<double>::create(historizer, vID);
       }
 
       if (vLabel == "Voltage")
       {
-         boost::shared_ptr<shared::plugin::yPluginApi::historization::CVoltage> historizer(new shared::plugin::yPluginApi::historization::CVoltage(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
+         boost::shared_ptr<historizers::CVoltage> historizer(new historizers::CVoltage(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
          return COpenZWaveNodeKeywordGeneric<double>::create(historizer, vID);
       }
       
       if (vLabel == "Current")
       {
-         boost::shared_ptr<shared::plugin::yPluginApi::historization::CCurrent> historizer(new shared::plugin::yPluginApi::historization::CCurrent(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
+         boost::shared_ptr<historizers::CCurrent> historizer(new historizers::CCurrent(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
          return COpenZWaveNodeKeywordGeneric<double>::create(historizer, vID);
       }
 
       if (vLabel == "Distance")
       {
-         boost::shared_ptr<shared::plugin::yPluginApi::historization::CDistance> historizer(new shared::plugin::yPluginApi::historization::CDistance(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
+         boost::shared_ptr<historizers::CDistance> historizer(new historizers::CDistance(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
          return COpenZWaveNodeKeywordGeneric<double>::create(historizer, vID);
       }
 
       if (vLabel == "Ultraviolet")
       {
-         boost::shared_ptr<shared::plugin::yPluginApi::historization::CUv> historizer(new shared::plugin::yPluginApi::historization::CUv(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
+         boost::shared_ptr<historizers::CUv> historizer(new historizers::CUv(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
          return COpenZWaveNodeKeywordGeneric<double>::create(historizer, vID);
       }
 
       if (vLabel == "Moisture")
       {
-         boost::shared_ptr<shared::plugin::yPluginApi::historization::CHumidity> historizer(new shared::plugin::yPluginApi::historization::CHumidity(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
-         return COpenZWaveNodeKeywordGeneric<double>::create(historizer, vID);
+         if (OpenZWave::Manager::Get()->GetValueUnits(vID) == "%")
+         {
+            boost::shared_ptr<historizers::CHumidity> historizer(new historizers::CHumidity(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
+            return COpenZWaveNodeKeywordGeneric<double>::create(historizer, vID);
+         }
       }
 
       break;
@@ -276,7 +278,7 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateS
    case ECommandClass::kSwitchBinaryValue:
       if (vLabel == "Switch")
       {
-         boost::shared_ptr<shared::plugin::yPluginApi::historization::CSwitch> historizer(new shared::plugin::yPluginApi::historization::CSwitch(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
+         boost::shared_ptr<historizers::CSwitch> historizer(new historizers::CSwitch(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
          return COpenZWaveNodeKeywordGeneric<bool>::create(historizer, vID);
       }
       break;
@@ -289,7 +291,7 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateS
    case ECommandClass::kSwitchToggleBinaryValue:
       if (vLabel == "Toggle Switch")
       {
-         boost::shared_ptr<shared::plugin::yPluginApi::historization::CSwitch> historizer(new shared::plugin::yPluginApi::historization::CSwitch(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
+         boost::shared_ptr<historizers::CSwitch> historizer(new historizers::CSwitch(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
          return COpenZWaveNodeKeywordGeneric<bool>::create(historizer, vID);
       }
       break;

@@ -113,6 +113,15 @@
 					"description": "Choose a network interface (from server binding)"
 				}			
 			}
+		},
+		"dataBindingPluginCommand" : {
+			"name" : "Command with binded data to plugin",
+			"commandData" : {
+				"dynamicSection": {
+					"name": "A dynamic section",
+					"description": "Example of section filled by 'test' method from the plugin using binding."
+				}
+			}
 		}
 	}  	
 }
