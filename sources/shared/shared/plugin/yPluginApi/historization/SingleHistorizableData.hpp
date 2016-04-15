@@ -125,28 +125,6 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       }
 
       //-----------------------------------------------------
-      ///\brief                  Set value specifying the unit
-      ///\param[in] value        The value         
-      ///\param[in] unit         The value units
-      //-----------------------------------------------------
-      virtual void setWithUnits(T value, const std::string & unit)
-      {
-         //default behavior do not manage units
-         set(value);
-      }
-
-      //-----------------------------------------------------
-      ///\brief                  Get the value in the specified units
-      ///\param[in] unit         The units
-      ///\return                 The value
-      //-----------------------------------------------------
-      virtual T getWithUnits(const std::string & unit) const
-      {
-         return get();
-      }
-
-
-      //-----------------------------------------------------
       ///\brief                     Implicit operator
       ///\return                    The value
       //-----------------------------------------------------
