@@ -63,6 +63,9 @@
          }
       });
 
+      //fix additional sub modals input (like icon picker search box)
+      $('div#configure-keyword-modal').on('shown.bs.modal', function (e) { $(document).off('focusin.modal'); });
+
       //we display the modal
       $('div#configure-keyword-modal').modal({ backdrop: 'static' });
 
