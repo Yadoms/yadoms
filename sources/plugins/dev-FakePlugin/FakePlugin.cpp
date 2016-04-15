@@ -10,6 +10,7 @@
 #include <shared/tools/Random.h>
 #include <boost/random/independent_bits.hpp>
 #include "FakeController.h"
+#include <Poco/Net/NetworkInterface.h>
 
 // Use this macro to define all necessary to make your library a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -208,7 +209,12 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
                else if (extraCommand->getCommand() == "dataBindingCommand")
                {
                   std::string value = extraCommand->getData().get<std::string>("networkInterface");
-                  YADOMS_LOG(information) << "Command with data received : value=" << value;
+                  YADOMS_LOG(information) << "Command with binded data received : value=" << value << " text=" << Poco::Net::NetworkInterface::forName(value).displayName();
+               }
+               else if (extraCommand->getCommand() == "dataBindingPluginCommand")
+               {
+                  std::string interval = extraCommand->getData().get<std::string>("dynamicSection.content.interval");
+                  YADOMS_LOG(information) << "Command with plugin binded data received : value=" << interval;
                }
             }
             break;
