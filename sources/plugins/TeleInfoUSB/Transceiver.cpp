@@ -9,8 +9,10 @@
 #include "TeleInfotrxHelpers.h"
 
 CTransceiver::CTransceiver()
-   :m_seqNumberProvider(new CIncrementSequenceNumber())
+   :m_seqNumberProvider(new CIncrementSequenceNumber()),
+    Optarif ( OP_NOT_DEFINED )
 {
+	ResetRefreshTags ();
 }
 
 CTransceiver::~CTransceiver()

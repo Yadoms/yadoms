@@ -43,7 +43,7 @@ widgetViewModelCtor =
               this.widgetApi.toolbar({
                   activated: true,
                   displayTitle: true,
-                  batteryItem: false
+                  batteryItem: true
               });
           };
 
@@ -54,6 +54,9 @@ widgetViewModelCtor =
                   self.command(1);
               else
                   self.command(0);
+			  
+			  //Send the command
+			  this.commandClick ( self.command() );
           }
 
           this.configurationChanged = function () {
