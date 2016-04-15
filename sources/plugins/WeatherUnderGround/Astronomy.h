@@ -61,9 +61,9 @@ private:
    /// \param[in] context    pointer to the API
    /// \param[in] WUConfiguration    The Plugin configuration
    //--------------------------------------------------------------
-   void CAstronomy::InitializeVariables ( boost::shared_ptr<yApi::IYPluginApi> context, 
-	                                           IWUConfiguration& WUConfiguration
-								        );
+   void InitializeVariables ( boost::shared_ptr<yApi::IYPluginApi> context, 
+	                          IWUConfiguration& WUConfiguration
+		    		        );
 
    //--------------------------------------------------------------
    /// \brief	    Your Location to received custom information from the web site

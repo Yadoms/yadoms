@@ -93,7 +93,8 @@ private:
 
 	//Contract Options -> Abonnement
 	typedef enum {
-	   OP_BASE = 1,
+	   OP_NOT_DEFINED,
+	   OP_BASE,
 	   OP_CREUSE,
 	   OP_EJP,
 	   OP_TEMPO
