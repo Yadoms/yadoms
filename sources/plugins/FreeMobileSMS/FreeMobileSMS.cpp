@@ -97,15 +97,15 @@ void CFreeMobileSms::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 
 void CFreeMobileSms::sendSms(boost::shared_ptr<yApi::IYPluginApi> context, const int recipientId, const std::string & smsContent)
 {
-   //retreive recipient parameters (login & key)
-   std::string userId = context->getRecipientValue(recipientId, "userId");
-   std::string key = context->getRecipientValue(recipientId, "apiKey");
-
-   //format url
-   std::string uriStr = (boost::format(m_freeMobileApiUrl) % userId % key % smsContent).str();
-
    try
    {
+      //retreive recipient parameters (login & key)
+      std::string userId = context->getRecipientValue(recipientId, "userId");
+      std::string key = context->getRecipientValue(recipientId, "apiKey");
+
+      //format url
+      std::string uriStr = (boost::format(m_freeMobileApiUrl) % userId % key % smsContent).str();
+
       //parse url
       Poco::URI uri(uriStr);
       std::string path(uri.getPathAndQuery());
@@ -141,5 +141,13 @@ void CFreeMobileSms::sendSms(boost::shared_ptr<yApi::IYPluginApi> context, const
    catch (Poco::Exception & ex)
    {
       YADOMS_LOG(error) << "Error " << ex.displayText();
+   }
+   catch (std::exception & ex)
+   {
+      YADOMS_LOG(error) << "Error " << ex.what();
+   }
+   catch (...)
+   {
+      YADOMS_LOG(error) << "Unknown exception in sendSms";
    }
 }
