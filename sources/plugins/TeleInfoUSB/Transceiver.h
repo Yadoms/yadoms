@@ -104,7 +104,6 @@ private:
 	bool LowCostUpdated;
 	bool NormalCostUpdated;
 	bool InstantCurrentUpdated;
-	bool MaxCurrentUpdated;
 	bool ApparentPowerUpdated;
 
 	bool EJPPeakPeriodUpdated;

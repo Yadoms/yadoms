@@ -125,7 +125,6 @@ void CTransceiver::ResetRefreshTags ( void )
 	LowCostUpdated = false;
 	NormalCostUpdated = false;
 	InstantCurrentUpdated = false;
-	MaxCurrentUpdated = false;
 	ApparentPowerUpdated = false;
 
 	EJPPeakPeriodUpdated = false;
@@ -155,7 +154,6 @@ bool CTransceiver::IsInformationUpdated ( void )
 	   )
 		&& ( TimePeriodUpdated )
 		&& ( InstantCurrentUpdated )
-		&& ( MaxCurrentUpdated )
 	   )
 	   return true;
 	else
@@ -403,13 +401,7 @@ void CTransceiver::MatchLine( const unsigned char *m_buffer )
 				InstantCurrentUpdated = true;
 			}
 			break;
-		case TELEINFO_TYPE_IMAX:
-			if ( lvalueIsANumber && !MaxCurrentUpdated )
-			{
-				YADOMS_LOG(debug) << "IMAX" << "=" << lvalue;
-				HistorizeTeleInfoData<yApi::historization::CCurrent> ( "MaxCurrent", lvalue );
-				MaxCurrentUpdated = true;
-			}
+		case TELEINFO_TYPE_IMAX: //We do not use this one also
 			break;
 		case TELEINFO_TYPE_PAPP:
 			if ( lvalueIsANumber && !ApparentPowerUpdated )
