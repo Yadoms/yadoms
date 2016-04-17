@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "TeleInfoReceiveBufferHandler.h"
 
+#define TELEINFO_BUFFER 512
 
 CTeleInfoReceiveBufferHandler::CTeleInfoReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler, int receiveDataEventId)
    :m_receiveDataEventHandler(receiveDataEventHandler), m_receiveDataEventId(receiveDataEventId), m_receptionSuspended ( false )
@@ -42,14 +43,7 @@ void CTeleInfoReceiveBufferHandler::flush()
 
 bool CTeleInfoReceiveBufferHandler::isComplete() const
 {
-   if (m_content.empty())
-      return false;
-
-   // The message size is provided in the first byte of the message.
-   // This value counts all bytes except itself.
-   // So a message is considered complete if its size is at least the value indicated
-   // in the first byte + 1.
-   if (m_content.size() < ((size_t)m_content[0] + 1))
+   if ( m_content.size() < TELEINFO_BUFFER )
       return false;
 
    // A message is complete
@@ -61,10 +55,7 @@ boost::shared_ptr<const shared::communication::CByteBuffer> CTeleInfoReceiveBuff
    if (!isComplete())
       throw shared::exception::CException("CTeleInfoReceiveBufferHandler : Can not pop not completed message. Call isComplete to check if a message is available");
 
-   // The message size is provided in the first byte of the message.
-   // This value counts all bytes except itself.
-   // So the message size is this value + 1.
-   const size_t extractedMessageSize = m_content[0] + 1;
+   const size_t extractedMessageSize = TELEINFO_BUFFER;
    boost::shared_ptr<unsigned char[]> extractedMessage(new unsigned char[extractedMessageSize]);
    for (size_t idx = 0 ; idx < extractedMessageSize ; ++ idx)
       extractedMessage[idx] = m_content[idx];

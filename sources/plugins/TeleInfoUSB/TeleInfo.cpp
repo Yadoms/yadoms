@@ -104,9 +104,9 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
          case kEvtTimerRefreshTeleInfoData:
             {
                // When received this timer, we restart the reception through the serial port
-               YADOMS_LOG(debug) << "Teleinfo plugin :  Start COM";
+               YADOMS_LOG(debug) << "Teleinfo plugin :  Resume COM";
                m_transceiver->ResetRefreshTags();
-			   m_receiveBufferHandler->resume ();
+	           m_receiveBufferHandler->resume ();
                break;
             }
          case yApi::IYPluginApi::kEventUpdateConfiguration:
@@ -185,7 +185,10 @@ void CTeleInfo::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> context
 
    // When all information are updated we stopped the reception !
    if (m_transceiver->IsInformationUpdated())
-	   m_receiveBufferHandler->suspend ();
+   {
+      YADOMS_LOG(debug) << "Suspend COM";
+      m_receiveBufferHandler->suspend ();
+   }
 }
 
 void CTeleInfo::processTeleInfoConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> context)
