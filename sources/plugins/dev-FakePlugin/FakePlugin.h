@@ -26,7 +26,7 @@ public:
    virtual ~CFakePlugin();
 
    // IPlugin implementation
-   virtual void doWork(boost::shared_ptr<yApi::IYPluginApi> api);
+   void doWork(boost::shared_ptr<yApi::IYPluginApi> api) override;
    // [END] IPlugin implementation
 
 private:

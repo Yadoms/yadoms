@@ -3,6 +3,7 @@
 #include "ApiImplementation.h"
 #include "CommandLine.h"
 
+//TODO      Ajouter ce lien dans le wiki plugin/how to debug my plugin : https://msdn.microsoft.com/en-us/library/a329t4ed(v=vs.90).aspx
 
 namespace plugin_cpp_api
 {
@@ -10,7 +11,6 @@ namespace plugin_cpp_api
    {
       try
       {
-         while (1) boost::this_thread::sleep(boost::posix_time::seconds(1));
          auto pluginContext = boost::make_shared<CPluginContext>(argc, argv, plugin);
          pluginContext->run();
          return static_cast<int>(pluginContext->getReturnCode());

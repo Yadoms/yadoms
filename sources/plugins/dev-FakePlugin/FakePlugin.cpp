@@ -8,7 +8,6 @@
 #include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
 #include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
 #include <shared/tools/Random.h>
-#include <boost/random/independent_bits.hpp>
 #include "FakeController.h"
 
 // Use this macro to define all necessary to make your plugin a Yadoms valid plugin.
