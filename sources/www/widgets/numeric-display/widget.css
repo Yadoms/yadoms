@@ -1,29 +1,19 @@
-.numeric-display-widget {
-    height: 100%;
+.widget-numeric-display .main-div {
+    flex: 1;
     width: 100%;
     text-align: center;
-	position: relative;
-    display: block;
+    display: flex;
+    flex-direction: row;
+}
+.widget-numeric-display .value {
+    vertical-align:middle;
+    flex: 2;
+    align-items: stretch;
+    display: flex;
+    flex-direction: row;
 }
 
-
-
-.numeric-display-value {
-	vertical-align:middle;
-    display: inline-block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: 80%;
-}
-
-.numeric-display-unit {
-	vertical-align:top;
-    display: inline-block;
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: 20%;
+.widget-numeric-display .unit {
+    flex: 0 0 20%;
+    vertical-align:top;
 }

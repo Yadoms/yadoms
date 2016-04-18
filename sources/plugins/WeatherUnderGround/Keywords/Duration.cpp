@@ -13,21 +13,16 @@ CDuration::CDuration( std::string PluginName, std::string KeyWordName )
 {}
 
 
-void CDuration::Initialize( boost::shared_ptr<yApi::IYPluginApi> context ) const
+void CDuration::Initialize( boost::shared_ptr<yApi::IYPluginApi> context, shared::CDataContainer details ) const
 {
    if (!context->keywordExists( m_PluginName, m_duration->getKeyword()))
 	{
-      DeclareKeywords ( context );
+      context->declareKeyword( m_PluginName, *m_duration, details );
 	}
 }
 
 CDuration::~CDuration()
 {}
-
-void CDuration::DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const
-{
-	context->declareKeyword(m_PluginName, *m_duration);
-}
 
 void CDuration::SetValue( const shared::CDataContainer & ValueContainer, const std::string & filter)
 {

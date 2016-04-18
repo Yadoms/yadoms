@@ -29,7 +29,7 @@ namespace web { namespace rest { namespace service {
       shared::CDataContainer updatePlugin(const std::vector<std::string> & parameters, const std::string & requestContent);  
       shared::CDataContainer deletePlugin(const std::vector<std::string> & parameters, const std::string & requestContent);  
       shared::CDataContainer deleteAllPlugins(const std::vector<std::string> & parameters, const std::string & requestContent);  
-
+      shared::CDataContainer sendExtraCommand(const std::vector<std::string> & parameters, const std::string & requestContent);
       shared::CDataContainer getInstanceState(const std::vector<std::string> & parameters, const std::string & requestContent);
       shared::CDataContainer startInstance(const std::vector<std::string> & parameters, const std::string & requestContent);
       shared::CDataContainer stopInstance(const std::vector<std::string> & parameters, const std::string & requestContent);   

@@ -12,24 +12,69 @@ set(ZWAVE_PLUGIN_SOURCES
 	IZWaveController.h
 	ZWaveControllerFactory.h
 	ZWaveControllerFactory.cpp 	
+	ZWaveInternalState.h
+	ZWaveInternalState.cpp 	
 	OpenZWaveController.h
 	OpenZWaveController.cpp 
+	OpenZWaveEnumHandler.h
+	OpenZWaveEnumHandler.cpp 
+	OpenZWaveEnumHandlerTypeInfo.h
+	OpenZWaveEnumHandlerTypeInfo.cpp 
 	OpenZWaveCommandClass.h
 	OpenZWaveCommandClass.cpp 	
 	IOpenZWaveNodeKeyword.h
 	OpenZWaveNode.h
 	OpenZWaveNode.cpp 
-	OpenZWaveNodeCapacity.h
-	OpenZWaveNodeCapacity.cpp 
+	OpenZWaveHelpers.h
+	OpenZWaveHelpers.cpp 
 	OpenZWaveNodeKeywordBase.h
 	OpenZWaveNodeKeywordBase.cpp 
-	OpenZWaveNodeKeywordSwitch.h
-	OpenZWaveNodeKeywordSwitch.cpp 
+	OpenZWaveNodeKeywordDimmable.h
+	OpenZWaveNodeKeywordDimmable.cpp 
+   OpenZWaveNodeKeywordGeneric.h
+   OpenZWaveNodeKeywordGenericByType.h
 	OpenZWaveNodeKeywordFactory.h
 	OpenZWaveNodeKeywordFactory.cpp 
 	KeywordContainer.h
+   OpenZWaveSingleHistorizableData.h
+   historizers/Temperature.h
+   historizers/Temperature.cpp
+   historizers/Energy.h
+   historizers/Energy.cpp
+   historizers/Counter.h
+   historizers/Counter.cpp
+	historizers/Power.h
+   historizers/Power.cpp
+	historizers/Voltage.h
+   historizers/Voltage.cpp
+	historizers/Current.h
+   historizers/Current.cpp
+	historizers/PowerFactor.h
+   historizers/PowerFactor.cpp
+	historizers/Illumination.h
+   historizers/Illumination.cpp
+	historizers/Humidity.h
+   historizers/Humidity.cpp
+	historizers/Direction.h
+   historizers/Direction.cpp
+	historizers/Speed.h
+   historizers/Speed.cpp
+	historizers/Pressure.h
+   historizers/Pressure.cpp
+	historizers/RainRate.h
+   historizers/RainRate.cpp
+	historizers/Weight.h
+   historizers/Weight.cpp
+	historizers/Distance.h
+   historizers/Distance.cpp
+	historizers/Uv.h
+   historizers/Uv.cpp
+	historizers/Switch.h
+   historizers/Switch.cpp
 	${OPENZWAVE_MAIN_SOURCES}
 )
+
+source_group(historizers historizers/*.*)
 
 ADD_SUBDIRECTORY(OpenZWave)
 IF(MSVC OR XCODE)

@@ -180,6 +180,13 @@ namespace pluginSystem
       void postCommand(int id, boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command);
 
       //--------------------------------------------------------------
+      /// \brief                 Post an extra command to a device on a specific plugin
+      /// \param [in] id         Plugin instance Id
+      /// \param [in] command    The command to post
+      //--------------------------------------------------------------
+      void postExtraCommand(int id, boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> command);
+
+      //--------------------------------------------------------------
       /// \brief                 Post a manually device creation request to a plugin
       /// \param [in] id         Plugin instance Id
       /// \param [in] request    Request data

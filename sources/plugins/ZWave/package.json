@@ -15,6 +15,40 @@
 					"query": "serialPorts"
 				}
 			}
+		},
+		"IncludeSystemKeywords":
+		{
+			"type": "bool",
+			"defaultValue": "false"
+		}
+	},
+	"extraCommands" : {
+		"inclusionMode" : {
+			"iconClass" : "fa fa-plus"
+		},
+		"exclusionMode" : {
+			"iconClass" : "fa fa-minus"
+		},
+		"softReset" : {
+			"iconClass" : "fa fa-refresh"
+		},
+		"testNetwork" : {
+			"iconClass" : "fa fa-check",
+			"commandData" : {
+				"frameCount": {
+					"type": "numeric"
+				}			
+			}
+			
+		},
+		"healNetowrk" : {
+			"iconClass" : "fa fa-flask"
+		},
+		"cancelCommand" : {
+			"iconClass" : "fa fa-undo"
+		},
+		"hardReset" : {
+			"iconClass" : "fa fa-fire"
 		}
 	}
 }

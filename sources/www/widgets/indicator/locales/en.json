@@ -7,10 +7,6 @@
 			"name": "Switch device",
 			"description": "Device to show"
 		},
-		"showDeviceName": {
-			"name": "Show device name",
-			"description": "Determine if you want to see the device name on the widget"
-		},
 		"icon": {
 			"name": "Icon of the indicator",
 			"description": "Choose the icon to display inside the indicator"

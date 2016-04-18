@@ -1,7 +1,6 @@
 #pragma once
 
-#include "OpenZWaveNodeCapacity.h"
-#include "OpenZWaveCommandClass.h"
+#include "IOpenZWaveNodeKeyword.h"
 #include <value_classes/Value.h>
 
 //--------------------------------------------------------------
@@ -30,40 +29,40 @@ public:
    virtual ~COpenZWaveNode();
    
    //--------------------------------------------------------------
-   /// \brief	      Get a capacity
-   /// \param [in]   classIdentifier   The class identifier
-   /// \return       The class identifier
+   /// \brief	      Register a keyword
+   /// \param [in]   value                   The ValueID associated to the keyword
+   /// \param [in]   includeSystemKeywords   true if system keywords are supported
    //--------------------------------------------------------------   
-   boost::shared_ptr<COpenZWaveNodeCapacity> getCapacity(ECommandClass classIdentifier);
+   void registerKeyword(OpenZWave::ValueID & value, bool includeSystemKeywords);
    
    //--------------------------------------------------------------
-   /// \brief	      Register a capacity for this node
-   /// \param [in]   classIdentifier   The class identifier to register
+   /// \brief	      Update a keyword value
+   /// \param [in]   value                   The ValueID associated to the keyword
+   /// \param [in]   includeSystemKeywords   true if system keywords are supported
    //--------------------------------------------------------------   
-   void registerCapacity(ECommandClass classIdentifier);
+   boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> updateKeywordValue(OpenZWave::ValueID & value, bool includeSystemKeywords);
 
    //--------------------------------------------------------------
-   /// \brief	      Register a keyword
-   /// \param [in]   classIdentifier   The class identifier to register
-   /// \param [in]   keyword           The keyword to register
-   /// \param [in]   value             The ValueID associated to the keyword
+   /// \brief	      Get the keyword matching the ValueID, or create it if needed
+   /// \param [in]   value                   The ValueID associated to the keyword
+   /// \param [in]   includeSystemKeywords   true if system keywords are supported
    //--------------------------------------------------------------   
-   void registerKeyword(ECommandClass classIdentifier, const std::string & keyword, OpenZWave::ValueID & value);
-   
+   boost::shared_ptr<IOpenZWaveNodeKeyword> getKeyword(OpenZWave::ValueID & value, bool includeSystemKeywords);
+
    //--------------------------------------------------------------
    /// \brief	      Send a command to a keyword
    /// \param [in]   classIdentifier   The class identifier for the keyword
    /// \param [in]   keyword           The keyword name
    /// \param [in]   commandData       The command data
    //--------------------------------------------------------------   
-   bool sendCommand(ECommandClass classIdentifier, const std::string & keyword, const std::string & commandData);
+   bool sendCommand(const std::string & keyword, const std::string & commandData);
 
    //--------------------------------------------------------------
    /// \brief	      get the last value of a keyword
    /// \param [in]   classIdentifier   The class identifier for the keyword
    /// \param [in]   keyword           The keyword name
    //--------------------------------------------------------------   
-   const shared::plugin::yPluginApi::historization::IHistorizable & getLastKeywordValue(ECommandClass classIdentifier, const std::string & keyword);
+   const boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> getLastKeywordValue(const std::string & keyword);
 
    //--------------------------------------------------------------
    /// \brief	      Check if this node match to a pair [home,node]
@@ -96,14 +95,14 @@ private:
    uint8			m_nodeId;
 
    //--------------------------------------------------------------
-   /// \brief	      Type for capacity list
-   //--------------------------------------------------------------      
-   typedef std::map<ECommandClass, boost::shared_ptr<COpenZWaveNodeCapacity> > CapacityListType;
+   /// \brief	      Type for keyword list
+   //--------------------------------------------------------------    
+   typedef std::map< std::string, boost::shared_ptr<IOpenZWaveNodeKeyword> > KeywordsContainer;
 
    //--------------------------------------------------------------
-   /// \brief	      The capacity list
-   //--------------------------------------------------------------      
-   CapacityListType m_nodeCapacities;
+   /// \brief	      The keyword list
+   //--------------------------------------------------------------    
+   KeywordsContainer m_keywords;
 };
 
 

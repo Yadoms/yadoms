@@ -35,8 +35,7 @@ namespace yApi = shared::plugin::yPluginApi;
       virtual ~CWeatherIcon();
 
       // IKeyword implementation
-	  virtual void DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const;
-      virtual void Initialize( boost::shared_ptr<yApi::IYPluginApi> context ) const;
+      virtual void Initialize( boost::shared_ptr<yApi::IYPluginApi> context, shared::CDataContainer details ) const;
 	  virtual boost::shared_ptr<yApi::historization::IHistorizable> GetHistorizable() const;
       // [END] IKeyword implementation
       

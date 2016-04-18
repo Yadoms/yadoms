@@ -5,9 +5,6 @@
 #include <shared/DataContainer.h>
 #include <shared/Log.h>
 
-namespace shared { namespace plugin { namespace yPluginApi { namespace historization
-{
-
 CForecastFormatter::CForecastFormatter( const weatherunderground::helper::EPeriod & Period )
    :m_PeriodString(Period.toString())
 {
@@ -43,7 +40,7 @@ void CForecastFormatter::AddPeriod(
 			const std::string& SnowDay
 				)
 {
-   CDataContainer Temp;
+   shared::CDataContainer Temp;
 
    Temp.set ("Year", Year);
    Temp.set ("Month", Month);
@@ -76,7 +73,7 @@ CForecastFormatter::~CForecastFormatter()
 
 std::string CForecastFormatter::formatValue() const
 {
-   CDataContainer Temp;
+   shared::CDataContainer Temp;
 
    Temp.set ("Units", m_Units);
 
@@ -90,6 +87,3 @@ std::string CForecastFormatter::formatValue() const
 
    return Temp.serialize();
 }
-
-} } } } // namespace shared::plugin::yPluginApi::historization
-

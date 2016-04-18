@@ -143,6 +143,23 @@ namespace sqlite {
 
    };
 
+   //--------------------------------------------------------------
+   /// \brief	    Helper structure for get/set with CField<T>
+   //--------------------------------------------------------------
+   template <>
+   struct helper < Poco::UInt8 >
+   {
+      //--------------------------------------------------------------
+      /// \brief	    GET Method for shared::CField< T >
+      //--------------------------------------------------------------
+      static const std::string getAsString(const Poco::UInt8 & anyValue)
+      {
+         return boost::lexical_cast<std::string>((int)anyValue);
+      }
+   };
+
+
+
 
    //--------------------------------------------------------------
    /// \brief	    Helper structure for get/set with an IExtendedEnum object
@@ -197,6 +214,16 @@ namespace sqlite {
    inline CQueryValue::CQueryValue(const T & anyValue, bool secure)
    {
       std::string value =  helper<T>::getAsString(anyValue);
+      if (secure)
+         initialize("'" + value + "'");
+      else
+         initialize(value);
+   }
+
+   template<>
+   inline CQueryValue::CQueryValue(const std::string & anyValue, bool secure)
+   {
+      std::string value = normalize(anyValue);
       if (secure)
          initialize("'" + value + "'");
       else

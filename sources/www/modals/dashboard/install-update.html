@@ -548,6 +548,7 @@
       UpdateInformationManager.getList(objectType)
       .done(function (serverList) {
          //we get installed plugin List
+         var deferredArray = [];
          if (!isNullOrUndefined(serverList)) {
             mergeLists(localList, serverList, function (mergedList) {
                //we sort the list by name
@@ -556,19 +557,29 @@
                });
                //we display the result
                Object.keys(mergedList).forEach(function (key) {
-                  if (!key.startsWith("dev-")) {
-                     //the actual item does nothing
-                     mergedList[key].processing = false;
-                     createInstallUpdateItemLine(objectType, mergedList[key]);
-                     //we set the visibility to the allowed buttons
-                     updateLine(objectType, mergedList[key]);
-                  }
+                   var deferred = YadomsInformationManager.getList();
+                   deferredArray.push(deferred);
+                   deferred.done(function (data) {
+                           //TODO : Remove and adapt when REST query will be updated
+                           debugger;
+                           data.developperMode = true;
+                           if ((!key.startsWith("system-")) && ((data.developperMode) || (!key.startsWith("dev-")))) {
+                               //the actual item does nothing
+                               mergedList[key].processing = false;
+                               createInstallUpdateItemLine(objectType, mergedList[key]);
+                               //we set the visibility to the allowed buttons
+                               updateLine(objectType, mergedList[key]);
+                           }
+                   });
                });
             });
-            d.resolve();
          }
          //we enable the release type list
          $cbReleaseType.removeClass("disabled");
+         $.whenAll(deferredArray)
+              .done(function () {
+                  d.resolve();
+         });
       })
       .fail(function (error) {
          notifyError($.t("objects.update-information.errorListing"), error);

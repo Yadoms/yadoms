@@ -44,6 +44,15 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
 
    public:
       //-----------------------------------------------------
+      ///\brief                        Constructor (copy)
+      ///\param[in] rhs                the object to copy
+      //-----------------------------------------------------
+      CSingleHistorizableData(const CSingleHistorizableData<T> & rhs)
+         :m_keywordName(rhs.m_keywordName), m_capacity(rhs.m_capacity), m_value(rhs.m_value), m_accessMode(rhs.m_accessMode), m_measureType(rhs.m_measureType), m_typeInfo(rhs.m_typeInfo)
+      {
+      }
+
+      //-----------------------------------------------------
       ///\brief                     Destructor
       //-----------------------------------------------------
       virtual ~CSingleHistorizableData()
@@ -94,12 +103,12 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       //-----------------------------------------------------
       virtual void setCommand(const std::string& yadomsCommand)
       {
-         m_value = Normalize(helper<T>::getInternal(yadomsCommand));
+         set(helper<T>::getInternal(yadomsCommand));
       }
 
       //-----------------------------------------------------
       ///\brief                     Set value
-      ///\param[in] command         
+      ///\param[in] value           The value         
       //-----------------------------------------------------
       virtual void set(T value)
       {
@@ -114,7 +123,6 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       {
          return m_value;
       }
-
 
       //-----------------------------------------------------
       ///\brief                     Implicit operator
@@ -166,8 +174,9 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
 
       //-----------------------------------------------------
       ///\brief               The access mode
+      ///\note Should not be kept as reference
       //-----------------------------------------------------
-      const EKeywordAccessMode& m_accessMode;
+      const EKeywordAccessMode m_accessMode;
 
       //-----------------------------------------------------
       ///\brief               The measure type
@@ -193,8 +202,27 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
 		  {
            return CDataContainer();
 		  }
+	  };	  
+      
+	  //-----------------------------------------------------
+	  ///\brief     Helpers specialization for bool
+	  //-----------------------------------------------------      
+      template<typename TData>
+      struct helper<TData, typename boost::enable_if<boost::is_base_of<bool, TData > >::type>
+	  {
+        static bool getInternal(const std::string& value)
+		  {
+           return(value == "1" || boost::to_lower_copy(value) == "true");
+		  }
+        static CDataContainer createDefaultTypeInfo()
+		  {
+           return CDataContainer();
+		  }
 	  };
 
+	  //-----------------------------------------------------
+	  ///\brief     Helpers specialization for ExtendedEnum
+	  //-----------------------------------------------------      
      template <typename TData>
      struct helper<TData, typename boost::enable_if<boost::is_base_of<enumeration::IExtendedEnum, TData > >::type >
 	  {
@@ -210,8 +238,11 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
 
 	  };
 
-     template <typename TData>
-     struct helper<TData, typename boost::enable_if<boost::is_base_of<boost::posix_time::ptime, TData > >::type >
+	  //-----------------------------------------------------
+	  ///\brief     Helpers specialization for boost::posix_time::ptime
+	  //-----------------------------------------------------      
+      template <typename TData>
+      struct helper<TData, typename boost::enable_if<boost::is_base_of<boost::posix_time::ptime, TData > >::type >
 	  {
         static TData getInternal(const std::string& value)
 		  {
@@ -222,8 +253,10 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
            return CDataContainer();
         }
 	  };
+     
+	  
    };
 
-
+   
 
 } } } } // namespace shared::plugin::yPluginApi::historization

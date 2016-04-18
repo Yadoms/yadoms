@@ -338,7 +338,6 @@
 	},
 	"customLabels": {
 		"pluginState": {
-			"updateConfiguration": "Configuration updating...",
 			"InitializationError": "Initialization error",
 			"CityNotFound": "City not found",
 			"NoConnection": "No Internet connection..."

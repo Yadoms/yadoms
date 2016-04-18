@@ -2,6 +2,7 @@
 #include <shared/Export.h>
 #include "exception/Exception.hpp"
 #include <stdarg.h>
+#include <Poco/Types.h>
 
 namespace shared
 {
@@ -210,6 +211,20 @@ namespace shared
       std::ostringstream ss;
       ss.imbue(std::locale::classic()); // Use the C locale 
       ss << value;
+      return ss.str();
+   }
+
+   //
+   /// \brief               To string converter : used to convert data to string, locale-independently. For unsigned char, it force a cast to int to avoid implicit convertion to char
+   /// \param[in] value     Value to convert
+   /// \return              Converted value, using the C locale
+   //
+   template<>
+   inline std::string CStringExtension::cultureInvariantToString(const Poco::UInt8& value)
+   {
+      std::ostringstream ss;
+      ss.imbue(std::locale::classic()); // Use the C locale 
+      ss << (int)value;
       return ss.str();
    }
 

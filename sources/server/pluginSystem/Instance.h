@@ -8,6 +8,7 @@
 #include <shared/process/IProcess.h>
 #include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
 #include <shared/plugin/information/IInformation.h>
+#include <shared/plugin/yPluginApi/IExtraCommand.h>
 #include "IInstance.h"
 #include "yPluginApiImplementation.h"
 
@@ -34,6 +35,12 @@ namespace pluginSystem
       //--------------------------------------------------------------
       virtual ~CInstance();
 
+
+        //--------------------------------------------------------------
+      /// \brief			            Post an extra command to the plugin
+      /// \param  command           Extra command to post
+      //--------------------------------------------------------------
+      virtual void postExtraCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> extraCommand) const;
 
       // IInstance Implementation
       void updateConfiguration(const shared::CDataContainer& newConfiguration) const override;

@@ -100,9 +100,19 @@ namespace web {
                      {
                         try
                         {
-                           result.set(boost::lexical_cast<std::string>(*i), m_dataProvider->getAcquisitionRequester()->getKeywordLastData(*i));
+                           boost::shared_ptr<database::entities::CAcquisition> lastData = m_dataProvider->getAcquisitionRequester()->getKeywordLastData(*i, false);
+                           if (lastData)
+                           {
+                              result.set(boost::lexical_cast<std::string>(*i), lastData);
+                           }
+                           else
+                           {
+                              shared::CDataContainer emptyResult;
+                              emptyResult.set("keywordId", *i);
+                              result.set(boost::lexical_cast<std::string>(*i), emptyResult);
+                           }
                         }
-                        catch (shared::exception::CEmptyResult & /*noData*/)
+                        catch (std::exception & /*noData*/)
                         {
                            //ensure returning entity object, because we need to indicate that a keyword have no data, not others (in case of multiple keyword without data)
                            shared::CDataContainer emptyResult;

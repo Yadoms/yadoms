@@ -57,6 +57,7 @@ Blockly.Yadoms.CreateToolbox_ = function () {
     toolbox += "     <block type=\"logic_negate\"></block>";
     toolbox += "     <block type=\"logic_boolean\"></block>";
     toolbox += "     <block type=\"logic_null\"></block>";
+    toolbox += "     <block type=\"logic_ternary\"></block>";
     toolbox += "  </category>";
     toolbox += "  <category name=\"" + catLoops + "\" colour=\"120\">";
     toolbox += "     <block type=\"infinite-loop\"></block>";

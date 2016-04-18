@@ -15,7 +15,7 @@ Blockly.Yadoms = function () {
 /**
  * Common HSV hue for all "Yadoms" blocks.
  */
-Blockly.Yadoms.blockColour = { HUE : 20 }
+Blockly.Yadoms.blockColour = { HUE: 20 }
 
 
 /**
@@ -90,24 +90,24 @@ Blockly.Yadoms.BooleanOperators_ = [
  */
 Blockly.Yadoms.LoadLanguageScript_ = function (callback) {
 
-    //first try to load user specific language
-    var currentLng = i18n.options.lng.substring(0, 2);
-    $.getScript("libs/blockly/js/locales/" + currentLng + ".js")
-        .done(function () {
-            callback();
-        })
-        .fail(function () {
-            console.warn("Fail to load Blockly for " + currentLng);
-            //if it fails, load english one
-            $.getScript("libs/blockly/js/locales/" + i18n.options.fallbackLng + ".js")
-                .done(function () {
-                    callback();
-                })
-                .fail(function () {
-                    console.error("Fail to load Blockly for " + i18n.options.fallbackLng);
-                    callback();
-                });
-        });
+   //first try to load user specific language
+   var currentLng = i18n.options.lng.substring(0, 2);
+   $.getScript("libs/blockly/js/locales/" + currentLng + ".js")
+       .done(function () {
+          callback();
+       })
+       .fail(function () {
+          console.warn("Fail to load Blockly for " + currentLng);
+          //if it fails, load english one
+          $.getScript("libs/blockly/js/locales/" + i18n.options.fallbackLng + ".js")
+              .done(function () {
+                 callback();
+              })
+              .fail(function () {
+                 console.error("Fail to load Blockly for " + i18n.options.fallbackLng);
+                 callback();
+              });
+       });
 };
 
 
@@ -116,7 +116,7 @@ Blockly.Yadoms.LoadLanguageScript_ = function (callback) {
  * @private
  */
 Blockly.Yadoms.DefaultTemplate_ = "<xml xmlns=\"http://www.w3.org/1999/xhtml\"><block type=\"infinite-loop\" x=\"87\" y=\"38\"><statement name=\"DO\"><block type=\"yadoms_wait_for_event\"><mutation storeinvariable=\"false\"></mutation><comment pinned=\"true\" h=\"89\" w=\"235\">__help__</comment></block></statement></block></xml>";
-    
+
 /**
  * Initialize blockly for Yadoms
  * @param $domTarget The div in which inject Blockly
@@ -125,65 +125,65 @@ Blockly.Yadoms.DefaultTemplate_ = "<xml xmlns=\"http://www.w3.org/1999/xhtml\"><
  * @constructor
  */
 Blockly.Yadoms.Initialize = function ($domTarget, initialContent, maxTopBlocks) {
-    Blockly.Yadoms.LoadDataForBlocklyCustomBlocks_()
-    .done(function(data) {
-        Blockly.Yadoms.data = data;
-        Blockly.Python.INDENT = "\t";
+   Blockly.Yadoms.LoadDataForBlocklyCustomBlocks_()
+   .done(function (data) {
+      Blockly.Yadoms.data = data;
+      Blockly.Python.INDENT = "\t";
 
-        Blockly.Yadoms.EnumerationsHelper.initialize();
+      Blockly.Yadoms.EnumerationsHelper.initialize();
 
-        $domTarget.append("<div class=\"blockly-container\"></div>");
+      $domTarget.append("<div class=\"blockly-container\"></div>");
 
-        Blockly.Yadoms.LoadLanguageScript_(function() {
-            //inject blockly dom+js
-            var blocklyArea = $("#automation-rule-editor")[0];
-            var blocklyDiv = $domTarget.find("div.blockly-container")[0];
-            Blockly.Yadoms.CurrentWorkspace = Blockly.inject(blocklyDiv,
+      Blockly.Yadoms.LoadLanguageScript_(function () {
+         //inject blockly dom+js
+         var blocklyArea = $("#automation-rule-editor")[0];
+         var blocklyDiv = $domTarget.find("div.blockly-container")[0];
+         Blockly.Yadoms.CurrentWorkspace = Blockly.inject(blocklyDiv,
+         {
+            comments: true,
+            disable: true,
+            collapse: true,
+            grid: {
+               spacing: 25,
+               length: 3,
+               colour: "#ccc",
+               snap: true
+            },
+            media: "libs/blockly/media/",
+            readOnly: false,
+            realtime: false,
+            scrollbars: true,
+            toolbox: Blockly.Yadoms.CreateToolbox_(),
+            zoom:
             {
-                comments: true,
-                disable: true,
-                collapse: true,
-                grid: {
-                    spacing: 25,
-                    length: 3,
-                    colour: "#ccc",
-                    snap: true
-                },
-				media : "libs/blockly/media/",
-                readOnly: false,
-                realtime: false,
-                scrollbars: true,
-                toolbox: Blockly.Yadoms.CreateToolbox_(),
-                zoom:
-                {
-                    enabled: true,
-                    controls: true,
-                    wheel: true,
-                    maxScale: 2,
-                    minScale: .1,
-                    scaleSpeed: 1.1
-                }
-            });
-
-            Blockly.Yadoms.isLoadingFromXml = true;
-            //load initial content if exists
-            if (!isNullOrUndefinedOrEmpty(initialContent)) {
-                var xml = Blockly.Xml.textToDom(initialContent);
-                if (xml)
-                    Blockly.Xml.domToWorkspace(Blockly.Yadoms.CurrentWorkspace, xml);
-            } else {
-                //load default template if no content is found
-                var templateWithTranslatedHelp = Blockly.Yadoms.DefaultTemplate_.replace("__help__", $.t("blockly.templateHelp"));
-                var defaultXml = Blockly.Xml.textToDom(templateWithTranslatedHelp);
-                if (defaultXml)
-                    Blockly.Xml.domToWorkspace(Blockly.Yadoms.CurrentWorkspace, defaultXml);
+               enabled: true,
+               controls: true,
+               wheel: true,
+               maxScale: 2,
+               minScale: .1,
+               scaleSpeed: 1.1
             }
-            Blockly.Yadoms.isLoadingFromXml = false;
+         });
 
-            //initialize validation
-            Blockly.Validation.Init(Blockly.Yadoms.CurrentWorkspace, maxTopBlocks);
-        });
-    });
+         Blockly.Yadoms.isLoadingFromXml = true;
+         //load initial content if exists
+         if (!isNullOrUndefinedOrEmpty(initialContent)) {
+            var xml = Blockly.Xml.textToDom(initialContent);
+            if (xml)
+               Blockly.Xml.domToWorkspace(xml, Blockly.Yadoms.CurrentWorkspace);
+         } else {
+            //load default template if no content is found
+            var templateWithTranslatedHelp = Blockly.Yadoms.DefaultTemplate_.replace("__help__", $.t("blockly.templateHelp"));
+            var defaultXml = Blockly.Xml.textToDom(templateWithTranslatedHelp);
+            if (defaultXml)
+               Blockly.Xml.domToWorkspace(defaultXml, Blockly.Yadoms.CurrentWorkspace);
+         }
+         Blockly.Yadoms.isLoadingFromXml = false;
+
+         //initialize validation
+         Blockly.Validation.Init(Blockly.Yadoms.CurrentWorkspace, maxTopBlocks);
+      });
+   });
 };
 
 
@@ -197,21 +197,21 @@ Blockly.Yadoms.Initialize = function ($domTarget, initialContent, maxTopBlocks) 
  * @param yadomsTypeName The yadoms type name. In case of enum, this is the internal enum name
  */
 Blockly.Yadoms.GetBlocklyType_ = function (yadomsKeywordType, yadomsTypeName) {
-    switch (yadomsKeywordType.toLowerCase()) {
-        case "numeric":
-            return "Number";
-        case "string":
-        case "json":
-            return "String";
-        case "bool":
-            return "Boolean";
-        case "datetime":
-            return "datetime";
-        case "enum":
-            return "enum_" + yadomsTypeName;
-        default:
-            return null; //is not known allow any type
-    }
+   switch (yadomsKeywordType.toLowerCase()) {
+      case "numeric":
+         return "Number";
+      case "string":
+      case "json":
+         return "String";
+      case "bool":
+         return "Boolean";
+      case "datetime":
+         return "datetime";
+      case "enum":
+         return "enum_" + yadomsTypeName;
+      default:
+         return null; //is not known allow any type
+   }
 };
 
 
@@ -223,34 +223,34 @@ Blockly.Yadoms.GetBlocklyType_ = function (yadomsKeywordType, yadomsTypeName) {
  * @param yadomsTypeName The yadoms type name. In case of enum, this is the internal enum name
  */
 Blockly.Yadoms.GetDefaultBlock_ = function (keyword, workspace) {
-	var createdBlock = null;
-	
-    switch (keyword.type.toLowerCase()) {
-        case "numeric":
-			createdBlock = Blockly.Block.obtain(workspace, 'math_number');
-			//childBlock.setFieldValue('NUM', 42);
-			break;
-        case "string":
-			createdBlock = Blockly.Block.obtain(workspace, 'text');
-			createdBlock.setFieldValue('Hello', 'TEXT');		
-			break;
+   var createdBlock = null;
 
-        case "bool":
-			createdBlock = Blockly.Block.obtain(workspace, 'logic_boolean');
-            break;
-			
-        case "enum":
-			createdBlock = Blockly.Block.obtain(workspace, keyword.typeInfo.name);
-		    break
-			
-        case "datetime":
-			createdBlock = Blockly.Block.obtain(workspace, 'yadoms_date_datetime');
-            break;
+   switch (keyword.type.toLowerCase()) {
+      case "numeric":
+         createdBlock = workspace.newBlock('math_number');
+         //childBlock.setFieldValue('NUM', 42);
+         break;
+      case "string":
+         createdBlock = workspace.newBlock('text');
+         createdBlock.setFieldValue('Hello', 'TEXT');
+         break;
 
-        default:
-            break; //all other blocks do nothing
-    }
-	return createdBlock;
+      case "bool":
+         createdBlock = workspace.newBlock('logic_boolean');
+         break;
+
+      case "enum":
+         createdBlock = workspace.newBlock(keyword.typeInfo.name);
+         break
+
+      case "datetime":
+         createdBlock = workspace.newBlock('yadoms_date_datetime');
+         break;
+
+      default:
+         break; //all other blocks do nothing
+   }
+   return createdBlock;
 };
 
 
@@ -262,16 +262,16 @@ Blockly.Yadoms.GetDefaultBlock_ = function (keyword, workspace) {
  * @constructor
  */
 Blockly.Yadoms.UpdateBlockColour_ = function (self, type) {
-    if (type === "String")
-        self.setColour(Blockly.Blocks.texts.HUE);
-    else if (type === "Boolean")
-        self.setColour(Blockly.Blocks.logic.HUE);
-    else if (type === "Number")
-        self.setColour(Blockly.Blocks.math.HUE);
-    else if (type === "datetime")
-        self.setColour(Blockly.Yadoms.Dates.datetime.HUE);
-    else //if (type === "null" || type == null)
-        self.setColour(Blockly.Blocks.math.HUE);
+   if (type === "String")
+      self.setColour(Blockly.Blocks.texts.HUE);
+   else if (type === "Boolean")
+      self.setColour(Blockly.Blocks.logic.HUE);
+   else if (type === "Number")
+      self.setColour(Blockly.Blocks.math.HUE);
+   else if (type === "datetime")
+      self.setColour(Blockly.Yadoms.Dates.datetime.HUE);
+   else //if (type === "null" || type == null)
+      self.setColour(Blockly.Blocks.math.HUE);
 };
 
 
@@ -283,20 +283,20 @@ Blockly.Yadoms.UpdateBlockColour_ = function (self, type) {
  * @param tryToSelectValue The value of new values to select
  */
 Blockly.FieldDropdown.prototype.refresh = function (data, tryToSelectValue) {
-    if (data != undefined && data.length > 0) {
-        this.menuGenerator_ = data;
+   if (data != undefined && data.length > 0) {
+      this.menuGenerator_ = data;
 
-        var valueFound = false;
-        $.each(data, function (index, val) {
-            if (val[1] === tryToSelectValue)
-                valueFound = true;
-        });
+      var valueFound = false;
+      $.each(data, function (index, val) {
+         if (val[1] === tryToSelectValue)
+            valueFound = true;
+      });
 
-        if (isNullOrUndefined(tryToSelectValue) || !valueFound)
-            this.setValue(data[0][1]);
-        else
-            this.setValue(tryToSelectValue);
-    }
+      if (isNullOrUndefined(tryToSelectValue) || !valueFound)
+         this.setValue(data[0][1]);
+      else
+         this.setValue(tryToSelectValue);
+   }
 };
 
 
@@ -307,21 +307,21 @@ Blockly.FieldDropdown.prototype.refresh = function (data, tryToSelectValue) {
  * @constructor
  */
 Blockly.Yadoms.GetResult = function (language, callback) {
-    assert(!isNullOrUndefined(callback), "callback must be defined");
+   assert(!isNullOrUndefined(callback), "callback must be defined");
 
-    //get xml code
-    var xmlDomString = Blockly.Xml.workspaceToDom(Blockly.Yadoms.CurrentWorkspace);
-    var xmlString = Blockly.Xml.domToText(xmlDomString);
+   //get xml code
+   var xmlDomString = Blockly.Xml.workspaceToDom(Blockly.Yadoms.CurrentWorkspace);
+   var xmlString = Blockly.Xml.domToText(xmlDomString);
 
-    var generatedCode = "";
-    switch(language) {
-        case "python":
-            generatedCode = Blockly.Yadoms.GetPythonOutput_();
-            break;
+   var generatedCode = "";
+   switch (language) {
+      case "python":
+         generatedCode = Blockly.Yadoms.GetPythonOutput_();
+         break;
 
-        default:
-            console.error("Unsupported generation language : " + language);
-            break;
-    }
-    callback(xmlString, generatedCode);
+      default:
+         console.error("Unsupported generation language : " + language);
+         break;
+   }
+   callback(xmlString, generatedCode);
 };

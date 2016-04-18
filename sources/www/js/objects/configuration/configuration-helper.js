@@ -129,3 +129,44 @@ ConfigurationHelper.createParameterHandler = function (i18nContext, paramName, c
          break;
    }
 };
+
+
+
+/**
+ * Factory of parameter Handler
+  * @param i18NContext
+ * @param paramName
+ * @param keyword
+ * @param currentValue
+ * @returns {*}
+ */
+ConfigurationHelper.createKeywordValueParameterHandler = function (i18NContext, paramName, keyword, currentValue) {
+   assert(paramName !== undefined, "paramName must be defined");
+   assert(keyword !== undefined, "keyword must be defined in " + paramName + " parameter");
+   assert(keyword.type !== undefined, "type field must be found in " + paramName + " parameter");
+   assert(i18NContext !== undefined, "i18nContext must contain path of i18n " + paramName + " parameter");
+
+   var obj  = {
+      name: keyword.friendlyName,
+      description: $.t(keyword.units, { defaultValue: keyword.units }),
+      type: keyword.type,
+      values : keyword.typeInfo.values
+   }
+   
+   switch (keyword.type.toLowerCase()) {
+      case "numeric":
+         return new DecimalParameterHandler(i18NContext, paramName, obj, currentValue);
+
+      case "enum":
+         return new EnumParameterHandler(i18NContext, paramName, obj, currentValue);
+
+      case "string":
+         return new StringParameterHandler(i18NContext, paramName, obj, currentValue);
+
+      case "bool":
+         return new BoolParameterHandler(i18NContext, paramName, obj, currentValue);
+
+      default:
+         return null;
+   }
+};

@@ -12,15 +12,10 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	      Constructor
-   //--------------------------------------------------------------
-   CKeywordContainer();
-   
-   //--------------------------------------------------------------
-   /// \brief	      Constructor
    /// \param [in]   deviceId   The device id
    /// \param [in]   keyword    The keyword
    //--------------------------------------------------------------
-   CKeywordContainer(const std::string & deviceId, const yApi::historization::IHistorizable & keyword)
+   CKeywordContainer(const std::string & deviceId, const shared::plugin::yPluginApi::historization::IHistorizable & keyword)
       :m_deviceId(deviceId), m_keyword(keyword)
    {
    }
@@ -36,7 +31,7 @@ public:
    /// \brief	      Get the keyword
    /// \return       The keyword
    //--------------------------------------------------------------   
-   const yApi::historization::IHistorizable & getKeyword() const { return m_keyword; } 
+   const shared::plugin::yPluginApi::historization::IHistorizable & getKeyword() const { return m_keyword; }
    
    //--------------------------------------------------------------
    /// \brief	      Get the device id
@@ -54,7 +49,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	      The keyword
    //--------------------------------------------------------------      
-   const yApi::historization::IHistorizable &	m_keyword;
+   const shared::plugin::yPluginApi::historization::IHistorizable & m_keyword;
 };
 
 

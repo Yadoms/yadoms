@@ -99,5 +99,46 @@
       "type" : "bool",
       "defaultValue" : "true"
     }
-  }
+  },
+	"extraCommands" : {
+		"simpleCommand" : {
+			"iconClass" : "fa fa-bolt"
+		},
+		"dataCommand" : {
+			"iconClass" : "fa fa-edit",
+			"commandData" : {
+				"testValue": {
+					"type": "string"
+				}			
+			}
+		},	
+		"dataBindingCommand" : {
+			"iconClass" : "fa fa-sitemap",
+			"commandData" : {
+				"networkInterface": {
+				  "type": "enum",
+				  "values": {
+					"__Binding__": {
+					  "type": "system",
+					  "query": "networkInterfaces"
+					}
+				  }
+				}			
+			}
+		},
+		"dataBindingPluginCommand" : {
+			"iconClass" : "fa fa-rocket",
+			"commandData" : {
+				"dynamicSection": {
+				  "type": "section",
+				  "content": {
+					"__Binding__": {
+					  "type": "plugin",
+					  "query": "test"
+					}
+				  }
+				}
+			}
+		}
+	}  
 }

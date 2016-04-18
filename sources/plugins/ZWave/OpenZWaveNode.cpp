@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "OpenZWaveNode.h"
 #include <shared/Log.h>
-
+#include "OpenZWaveNodeKeywordFactory.h"
+#include "OpenZWaveHelpers.h"
 
 COpenZWaveNode::COpenZWaveNode()
    :m_homeId(0), m_nodeId(0)
@@ -18,42 +19,51 @@ COpenZWaveNode::~COpenZWaveNode()
 {
 }
 
-boost::shared_ptr<COpenZWaveNodeCapacity> COpenZWaveNode::getCapacity(ECommandClass classIdentifier)
+void COpenZWaveNode::registerKeyword(OpenZWave::ValueID & value, bool includeSystemKeywords)
 {
-   if (m_nodeCapacities.find(classIdentifier) == m_nodeCapacities.end())
-      registerCapacity(classIdentifier);
-   return m_nodeCapacities[classIdentifier];
+   std::string keyword = COpenZWaveHelpers::GenerateKeywordName(value);
+   if (m_keywords.find(keyword) == m_keywords.end())
+      m_keywords[keyword] = COpenZWaveNodeKeywordFactory::createKeyword(value, m_homeId, m_nodeId, includeSystemKeywords);
 }
 
-void COpenZWaveNode::registerCapacity(ECommandClass classIdentifier)
+boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNode::getKeyword(OpenZWave::ValueID & value, bool includeSystemKeywords)
 {
-   if (m_nodeCapacities.find(classIdentifier) == m_nodeCapacities.end())
-      m_nodeCapacities[classIdentifier] = boost::shared_ptr<COpenZWaveNodeCapacity>(new COpenZWaveNodeCapacity(m_homeId, m_nodeId, classIdentifier));
+   std::string keyword = COpenZWaveHelpers::GenerateKeywordName(value);
+   if (m_keywords.find(keyword) == m_keywords.end())
+   {
+      registerKeyword(value, includeSystemKeywords);
+      if (m_keywords.find(keyword) != m_keywords.end())
+      {
+         return boost::shared_ptr<IOpenZWaveNodeKeyword>();
+      }
+   }
+   return m_keywords[keyword];
 }
 
-void COpenZWaveNode::registerKeyword(ECommandClass classIdentifier, const std::string & keyword, OpenZWave::ValueID & value)
+
+boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> COpenZWaveNode::updateKeywordValue(OpenZWave::ValueID & value, bool includeSystemKeywords)
 {
-   getCapacity(classIdentifier)->registerKeyword(keyword, value);
+   boost::shared_ptr<IOpenZWaveNodeKeyword> kw = getKeyword(value, includeSystemKeywords);
+   kw->updateValue(value);
+   return kw->getLastKeywordValue();
 }
 
-//OpenZWave::ValueID& COpenZWaveNode::getValueId(ECommandClass classIdentifier, const std::string & keyword)
-//{
-//   return getCapacity(classIdentifier)->getValueId(keyword);
-//}
-
-bool COpenZWaveNode::sendCommand(ECommandClass classIdentifier, const std::string & keyword, const std::string & commandData)
+bool COpenZWaveNode::sendCommand(const std::string & keyword, const std::string & commandData)
 {
-   if (m_nodeCapacities.find(classIdentifier) == m_nodeCapacities.end())
-      throw shared::exception::CException("The capacity is not registered for this zwave node");
-   return m_nodeCapacities[classIdentifier]->sendCommand(keyword, commandData);
+   if (m_keywords.find(keyword) == m_keywords.end())
+      throw shared::exception::CException("The keyword is not registered for this zwave node");
+   return m_keywords[keyword]->sendCommand(commandData);
 }
 
-const shared::plugin::yPluginApi::historization::IHistorizable & COpenZWaveNode::getLastKeywordValue(ECommandClass classIdentifier, const std::string & keyword)
+const boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> COpenZWaveNode::getLastKeywordValue(const std::string & keyword)
 {
-   if (m_nodeCapacities.find(classIdentifier) == m_nodeCapacities.end())
-      throw shared::exception::CException("The capacity is not registered for this zwave node");
-   return m_nodeCapacities[classIdentifier]->getLastKeywordValue(keyword);
+   if (m_keywords.find(keyword) == m_keywords.end())
+      throw shared::exception::CException("The keyword is not registered for this zwave node");
+   return m_keywords[keyword]->getLastKeywordValue();
 }
+
+
+
 
 
 const bool COpenZWaveNode::match(const uint32 homeId, const uint8 nodeId)

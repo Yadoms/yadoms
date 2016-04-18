@@ -1,3 +1,32 @@
-.weather-canvas {
-    overflow : hidden
+.widget-weather .mainDiv {
+    flex: 1;
+    width: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: row;
+}
+
+.widget-weather .city {
+    height: 25%;
+    width: 100%;
+    text-align: center;
+}
+
+.widget-weather .condition {
+    flex: 3;
+    text-align: center;
+    display: flex;
+    flex-direction: row;
+}
+
+.widget-weather .condition i {
+    margin: auto;
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+}
+
+.widget-weather .temperature {
+    flex: 1;
+    text-align: center;
 }

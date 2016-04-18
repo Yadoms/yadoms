@@ -10,28 +10,19 @@ CTemp::CTemp( std::string PluginName ,std::string KeyWordName )
    :m_PluginName ( PluginName ), m_temperature( new yApi::historization::CTemperature(KeyWordName, yApi::EKeywordAccessMode::kGet) )
 {}
 
-void CTemp::Initialize( boost::shared_ptr<yApi::IYPluginApi> context ) const
+void CTemp::Initialize( boost::shared_ptr<yApi::IYPluginApi> context, shared::CDataContainer details ) const
 {
    if (!context->keywordExists( m_PluginName, m_temperature->getKeyword()))
-	{
-      DeclareKeywords ( context );
-	}
+      context->declareKeyword( m_PluginName, *m_temperature, details );
 }
 
 CTemp::~CTemp()
 {}
 
-void CTemp::DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const
-{
-	context->declareKeyword(m_PluginName, *m_temperature);
-}
-
 void CTemp::SetValue( const shared::CDataContainer & ValueContainer, const std::string & filter)
 {
    if (ValueContainer.get<std::string>( filter ) == "NA")
-   {
       YADOMS_LOG(information) << m_temperature->getKeyword() << " : NA => Value not registered";
-   }
    else
    {
 	   m_temperature->set(ValueContainer.get<double>( filter ));

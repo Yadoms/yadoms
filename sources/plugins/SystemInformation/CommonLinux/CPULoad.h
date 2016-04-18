@@ -42,7 +42,10 @@ private:
    void ReadFromFile(unsigned long long *dtotalUser,
                      unsigned long long *dtotalUserLow,
                      unsigned long long *dtotalSys,
-                     unsigned long long *dtotalIdle);
+                     unsigned long long *dtotalIdle,
+                     unsigned long long *dtotalIowait,
+                     unsigned long long *dtotalIrq,
+                     unsigned long long *dtotalSoftIrq);
 
    //--------------------------------------------------------------
    /// \brief	    Device
@@ -56,6 +59,9 @@ private:
    unsigned long long m_lastTotalUserLow; 
    unsigned long long m_lastTotalSys; 
    unsigned long long m_lastTotalIdle;
+   unsigned long long m_lastTotalIowait; 
+   unsigned long long m_lastTotalIrq;   
+   unsigned long long m_lastTotalSoftIrq;
 
    //--------------------------------------------------------------
    /// \brief	    Keyword

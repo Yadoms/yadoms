@@ -375,6 +375,8 @@ set(YADOMS_SRC
    server/pluginSystem/DeviceCommand.cpp
 	server/pluginSystem/DummyQualifier.h
 	server/pluginSystem/DummyQualifier.cpp
+	server/pluginSystem/ExtraCommand.h
+	server/pluginSystem/ExtraCommand.cpp
 	server/pluginSystem/IdentityForQualifier.h
 	server/pluginSystem/IdentityForQualifier.cpp
    server/pluginSystem/IContextAccessor.h
@@ -793,8 +795,8 @@ ELSEIF(APPLE)
 	set(SHARED_INCL_DIR ${SHARED_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/shared/mac)
 ELSE()
 	set(SHARED_INCL_DIR ${SHARED_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/shared/linux)
-ENDIF()   
-	
+ENDIF()
+
 
 
 ##################################################################################################

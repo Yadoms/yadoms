@@ -49,11 +49,10 @@ namespace yApi = shared::plugin::yPluginApi;
             const std::string& filterDayofMoon
             );
 
-      // ICapacities implementation
-	  virtual void DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const;
-      virtual void Initialize( boost::shared_ptr<yApi::IYPluginApi> context ) const;
+      // IKeyword implementation
+      virtual void Initialize( boost::shared_ptr<yApi::IYPluginApi> context, shared::CDataContainer details ) const;
 	  virtual boost::shared_ptr<yApi::historization::IHistorizable> GetHistorizable() const;
-      // [END] ICapacities implementation
+      // [END] IKeyword implementation
 
    protected:
 

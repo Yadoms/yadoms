@@ -1,0 +1,40 @@
+{
+	"name": "Ouverture",
+	"description": "Un widget permettant d'ouvrir et fermer une ouverture",
+	"errorDuringGettingDeviceInformation": "Erreur lors de la récupération des informations de l'équipement",
+	"errorDuringSendingCommand": "Erreur lors de l'envoi de la commande",
+	"configurationSchema": {
+		"device": {
+			"name": "Equipements",
+			"description": "Sélectionner ici l'ouverture à piloter",
+			"item": {
+				"name": "",
+				"description": "",
+				"content": {
+					"source": {
+						"name": "Equipement",
+						"description": "Equipement à piloter"
+					}
+				}
+            }			
+		},
+		"kind": {
+			"name": "Type d'interrupteur",
+			"description": "Sélection du type d'interrupteur. Le type d'interrupteur influe sur le mode de fonctionnement du périphérique piloté.",
+			"content": {
+				"windows": {
+					"name": "Bouton poussoir fenêtre",
+					"description": "Un bouton poussoir représentant un volet électrique pour une fenêtre"
+				},
+				"door": {
+					"name": "Bouton poussoir porte",
+					"description": "Un bouton poussoir représentant un volet électrique pour une porte"
+				},
+				"verticalInverter": {
+					"name": "Inverseur vertical",
+					"description": "Deux boutons (Montée/Descente) présentés verticalement"
+				}
+			}
+		}
+	}
+}

@@ -43,8 +43,7 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(Widget, "CREATE TABLE Widget               
                                                    type TEXT NOT NULL,                                            \
                                                    sizeX  INTEGER DEFAULT 1,                                      \
                                                    sizeY  INTEGER DEFAULT 1,                                      \
-                                                   positionX  INTEGER DEFAULT 1,                                  \
-                                                   positionY  INTEGER DEFAULT 1,                                  \
+                                                   position  INTEGER DEFAULT 0,                                   \
                                                    title  TEXT,                                                   \
                                                    configuration  TEXT                                            \
                                                 )")
@@ -147,6 +146,7 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(RecipientField,       "CREATE TABLE Recipie
                                                                value TEXT,                                        \
                                                                PRIMARY KEY (idRecipient, pluginType, fieldName))")
 
+DECLARE_STATIC_INDEXES_CREATION_SCRIPT(Acquisition, ("CREATE INDEX acqKeywordIdIndex ON Acquisition(keywordId)")("create index if not exists acqKeywordIdDateIndex on Acquisition(keywordId,date)") )
 
       } //namespace sqlite
    } //namespace database 

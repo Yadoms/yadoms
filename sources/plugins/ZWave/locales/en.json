@@ -5,11 +5,49 @@
 		"Serial Port": {
 			"name": "Serial port",
 			"description": "The serial port connected to the ZWave controller (stick,...)"
-		}
+		},
+		"IncludeSystemKeywords":
+		{
+			"name": "Include system keywords",
+			"description": "Define system keywords in yadoms"
+		}		
 	},
 	"customLabels": {
 		"pluginState": {
-			"updateConfiguration": "Configuration updating..."
+			"Wating": "Waiting...",
+			"Completed": "Terminated",
+			"DriverReady": "Ready",
+			"DriverFailed": "Driver error"
 		}
-	}
+	},
+	"extraCommands" : {
+		"inclusionMode" : {
+			"name" : "Start inclusion mode"
+		},
+		"exclusionMode" : {
+			"name" : "Start exclusion mode"
+		},
+		"softReset" : {
+			"name" : "Restart the ZWave controller"
+		},
+		"testNetwork" : {
+			"name" : "Test ZWave network",
+			"commandData" : {
+				"frameCount": {
+					"name": "Frame count",
+					"description": "Number of frames to send to each zwave equipment"
+				}			
+			}			
+		},
+		"healNetowrk" : {
+			"name" : "Heal the ZWave network"
+		},
+		"cancelCommand" : {
+			"name" : "Cancel any pending operation (inclusion, exclusion,...)"
+		},
+		"hardReset" : {
+			"name" : "Reset controller and erase network"
+		}
+	}	
+	
 }

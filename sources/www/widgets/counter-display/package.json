@@ -1,29 +1,30 @@
 {
-   "type": "counter-display",
-   "version": "0.1",
-   "releaseType": "beta",
-   "author": "yadoms team",
-   "url" : "http://www.yadoms.com/wiki/widgets/counter-display.html",
-   "credits": "",
-   "dimensions": {
-      "min": {
-         "x": 2,
-         "y": 1
-      },
-      "max": {
-         "x": 3,
-         "y": 1
-      },
-      "default": {
-         "x": 2,
-         "y": 1
-      }
-   },
-   "configurationSchema": {
-      "device" : {
-         "type" : "device",
-         "expectedCapacity" : ["voltage", "energy","current","power","apparentpower","weight","pressure","load"],
-         "expectedKeywordAccess" : "get"
-      }
-   }
+  "type": "counter-display",
+  "version": "0.1",
+  "releaseType": "beta",
+  "author": "yadoms team",
+  "url": "http://www.yadoms.com/wiki/widgets/counter-display.html",
+  "credits": "",
+  "dimensions": {
+    "min": {
+      "x": 2,
+      "y": 1
+    },
+    "max": {
+      "x": 3,
+      "y": 1
+    },
+    "default": {
+      "x": 2,
+      "y": 1
+    }
+  },
+  "hasTitle": true,
+  "configurationSchema": {
+    "device": {
+      "type": "device",
+      "expectedCapacity": [ "voltage", "energy", "current", "power", "apparentpower", "weight", "pressure", "load" ],
+      "expectedKeywordAccess": "get"
+    }
+  }
 }

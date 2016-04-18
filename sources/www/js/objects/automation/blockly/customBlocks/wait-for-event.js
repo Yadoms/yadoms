@@ -250,7 +250,7 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
             if (valueConnection) {
                 bValueInput.connection.connect(valueConnection);
             } else if(Blockly.Yadoms.isLoadingFromXml === false) {
-                var newChildBlock = Blockly.Block.obtain(this.workspace, 'yadoms_date_datetime');
+               var newChildBlock = this.workspace.newBlock('yadoms_date_datetime');
                 if (newChildBlock) {
                     newChildBlock.setShadow(true);
                     newChildBlock.initSvg();
@@ -454,13 +454,13 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
     * @this Blockly.Block
     */
     decompose: function (workspace) {
-        var topBlock = Blockly.Block.obtain(workspace, "yadoms_wait_for_event_base");
+       var topBlock = workspace.newBlock("yadoms_wait_for_event_base");
         topBlock.initSvg();
 
         var connection = topBlock.getInput("STACK").connection;
 
         if (this.mutationData_.storeInVariable === true) {
-            var additionalBlock = Blockly.Block.obtain(workspace, "yadoms_wait_for_event_mutator_store_in_variable");
+           var additionalBlock = workspace.newBlock("yadoms_wait_for_event_mutator_store_in_variable");
             additionalBlock.initSvg();
             connection.connect(additionalBlock.previousConnection);
             connection = additionalBlock.nextConnection;
@@ -468,7 +468,7 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
 
         $.each(this.mutationData_.additionalBlocks, function (index, blockType) {
             if (blockType != null && blockType !== "") {
-                var additionalBlock = Blockly.Block.obtain(workspace, blockType);
+               var additionalBlock = workspace.newBlock(blockType);
                 additionalBlock.initSvg();
                 connection.connect(additionalBlock.previousConnection);
                 connection = additionalBlock.nextConnection;

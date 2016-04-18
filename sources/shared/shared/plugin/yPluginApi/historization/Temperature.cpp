@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Temperature.h"
 #include "../StandardCapacities.h"
+#include <Poco/RegularExpression.h>
 
 namespace shared { namespace plugin { namespace yPluginApi { namespace historization
 {
@@ -13,6 +14,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
    CTemperature::~CTemperature()
    {
    }
+
 
 } } } } // namespace shared::plugin::yPluginApi::historization
 
