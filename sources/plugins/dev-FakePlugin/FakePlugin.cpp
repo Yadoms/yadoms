@@ -138,10 +138,10 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          try
          {
             // Yadoms asks for device creation
-            std::string sni = data->getData().getConfiguration().get<std::string>("networkInterface");
-            std::string dyn = data->getData().getConfiguration().get<std::string>("dynamicSection.content.interval");
+            auto sni = data->getData().getConfiguration().get<std::string>("networkInterface");
+            auto dyn = data->getData().getConfiguration().get<std::string>("dynamicSection.content.interval");
 
-            std::string devId = (boost::format("%1%_%2%_0x%3$08X") % sni % dyn % shared::tools::CRandom::generateNbBits(26, false)).str();
+            auto devId = (boost::format("%1%_%2%_0x%3$08X") % sni % dyn % shared::tools::CRandom::generateNbBits(26, false)).str();
             api->declareDevice(devId, "FakeDevice_" + devId, data->getData().getConfiguration());
 
             yApi::historization::CSwitch manualSwitch("manualSwitch");
@@ -195,7 +195,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          case yApi::IYPluginApi::kEventExtraCommand:
          {
             // Command was received from Yadoms
-            boost::shared_ptr<const yApi::IExtraCommand> extraCommand = context->getEventHandler().getEventData<boost::shared_ptr<const yApi::IExtraCommand> >();
+            auto extraCommand = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IExtraCommand> >();
 
             if (extraCommand)
             {

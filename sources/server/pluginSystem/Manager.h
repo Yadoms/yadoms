@@ -15,6 +15,7 @@
 #include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
 #include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
 #include <shared/plugin/yPluginApi/IDeviceCommand.h>
+#include <shared/plugin/yPluginApi/IExtraCommand.h>
 #include <shared/plugin/yPluginApi/historization/PluginState.h>
 
 namespace pluginSystem

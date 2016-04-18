@@ -28,22 +28,13 @@ namespace pluginSystem
    }
 
    void CInstance::postStopRequest() const
-{
-   BOOST_ASSERT(m_context);
-   // Post event to the plugin
-   m_context->getEventHandler().postEvent<boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> >(shared::plugin::yPluginApi::IYPluginApi::kEventExtraCommand, extraCommand);
-}
-
-void CInstance::postExtraCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> extraCommand) const
-{
-   BOOST_ASSERT(m_context);
-   // Post event to the plugin
-   m_context->getEventHandler().postEvent<boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> >(shared::plugin::yPluginApi::IYPluginApi::kEventExtraCommand, extraCommand);
-}
-
    {
-      // Post event to the plugin
       m_yPluginApi->getEventHandler().postEvent(shared::plugin::yPluginApi::IYPluginApi::kEventStopRequested);
+   }
+
+   void CInstance::postExtraCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> extraCommand) const
+   {
+      m_yPluginApi->getEventHandler().postEvent<boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> >(shared::plugin::yPluginApi::IYPluginApi::kEventExtraCommand, extraCommand);
    }
 
    //TODO

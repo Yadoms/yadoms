@@ -594,7 +594,7 @@ namespace pluginSystem
       if (!isInstanceRunning(id))
          return; // Instance is stopped, nothing to do
 
-      boost::shared_ptr<IInstance> instance(m_runningInstances.find(id)->second);
+      auto instance(m_runningInstances.find(id)->second);
 
       //TODO
       //YADOMS_LOG(debug) << "Send command " << command->toString() << " to plugin " << instance->getName();
@@ -603,20 +603,21 @@ namespace pluginSystem
       //instance->postCommand(command);
    }
 
-void CManager::postExtraCommand(int id, boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> command)
-{
-   boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
+   void CManager::postExtraCommand(int id, boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> command)
+   {
+      boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
 
-   if (!isInstanceRunning(id))
-      return;     // Instance is stopped, nothing to do
+      if (!isInstanceRunning(id))
+         return;     // Instance is stopped, nothing to do
 
-   boost::shared_ptr<CInstance> instance(m_runningInstances.find(id)->second);
+      auto instance(m_runningInstances.find(id)->second);
 
-   YADOMS_LOG(debug) << "Send extra command " << command->getCommand() << " to plugin " << instance->getName();
+      //TODO
+      //YADOMS_LOG(debug) << "Send extra command " << command->getCommand() << " to plugin " << instance->getName();
 
-   instance->postExtraCommand(command);
-}
-
+      //TODO
+      //instance->postExtraCommand(command);
+   }
 
    void CManager::postManuallyDeviceCreationRequest(int id, boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest>& request)
    {
