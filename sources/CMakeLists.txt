@@ -381,12 +381,15 @@ set(YADOMS_SRC
 	server/pluginSystem/IdentityForQualifier.cpp
    server/pluginSystem/IContextAccessor.h
 	server/pluginSystem/IFactory.h
+   server/pluginSystem/IInformationSerializer.h
 	server/pluginSystem/IInstance.h
 	server/pluginSystem/IInstanceStartErrorObserver.h
 	server/pluginSystem/IndicatorQualifier.h
 	server/pluginSystem/IndicatorQualifier.cpp
 	server/pluginSystem/Information.h
 	server/pluginSystem/Information.cpp
+	server/pluginSystem/InformationSerializer.h
+	server/pluginSystem/InformationSerializer.cpp
 	server/pluginSystem/Instance.h
 	server/pluginSystem/Instance.cpp
 	server/pluginSystem/InstanceStateHandler.h

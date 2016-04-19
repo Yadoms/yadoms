@@ -65,9 +65,10 @@ namespace pluginSystem
                                            logger,
                                            instanceStateHandler);
 
-      return boost::make_shared<CInstance>(pluginInformation,
+      return boost::make_shared<CInstance>(instanceData,
+                                           pluginInformation,
                                            process,
-                                           yPluginApi->api());
+                                           yPluginApi);
    }
 
    boost::shared_ptr<shared::process::ILogger> CFactory::createProcessLogger(const std::string& pluginName) const

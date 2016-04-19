@@ -101,16 +101,16 @@ boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> CContextAccessor::api
    return m_pluginApi;
 }
 
-void CContextAccessor::sendAnswer(const toPlugin::msg& answer, boost::interprocess::message_queue& messageQueue)
+void CContextAccessor::send(const toPlugin::msg& answer, boost::interprocess::message_queue& messageQueue)
 {
    if (!answer.IsInitialized())
-      throw std::overflow_error("CContextAccessor::sendAnswer : answer is not fully initialized");
+      throw std::overflow_error("CContextAccessor::send : answer is not fully initialized");
 
    if (answer.ByteSize() > static_cast<int>(m_messageQueueMessageSize))
-      throw std::overflow_error("CContextAccessor::sendAnswer : answer is too big");
+      throw std::overflow_error("CContextAccessor::send : answer is too big");
 
    if (!answer.SerializeToArray(m_mqBuffer, m_messageQueueMessageSize))
-      throw std::overflow_error("CContextAccessor::sendAnswer : fail to serialize answer (too big ?)");
+      throw std::overflow_error("CContextAccessor::send : fail to serialize answer (too big ?)");
 
    messageQueue.send(m_mqBuffer, answer.GetCachedSize(), 0);
 }
@@ -156,7 +156,7 @@ void CContextAccessor::processMessage(const void* message, size_t messageSize, b
 //   {
 //      ans.set_error(ex.what());
 //   }
-//   sendAnswer(ans, messageQueue);
+//   send(ans, messageQueue);
 //}
 //
 //void CContextAccessor::processGetRecipientId(const pbRequest::GetRecipientId& request, boost::interprocess::message_queue& messageQueue)
@@ -171,7 +171,7 @@ void CContextAccessor::processMessage(const void* message, size_t messageSize, b
 //   {
 //      ans.set_error(ex.what());
 //   }
-//   sendAnswer(ans, messageQueue);
+//   send(ans, messageQueue);
 //}
 //
 //void CContextAccessor::processReadKeyword(const pbRequest::ReadKeyword& request, boost::interprocess::message_queue& messageQueue)
@@ -186,7 +186,7 @@ void CContextAccessor::processMessage(const void* message, size_t messageSize, b
 //   {
 //      ans.set_error(ex.what());
 //   }
-//   sendAnswer(ans, messageQueue);
+//   send(ans, messageQueue);
 //}
 //
 //void CContextAccessor::processWaitForNextAcquisition(const pbRequest::WaitForNextAcquisition& request, boost::interprocess::message_queue& messageQueue)
@@ -201,7 +201,7 @@ void CContextAccessor::processMessage(const void* message, size_t messageSize, b
 //   {
 //      ans.set_error(ex.what());
 //   }
-//   sendAnswer(ans, messageQueue);
+//   send(ans, messageQueue);
 //}
 //
 //void CContextAccessor::processWaitForNextAcquisitions(const pbRequest::WaitForNextAcquisitions& request, boost::interprocess::message_queue& messageQueue)
@@ -222,7 +222,7 @@ void CContextAccessor::processMessage(const void* message, size_t messageSize, b
 //   {
 //      ans.set_error(ex.what());
 //   }
-//   sendAnswer(ans, messageQueue);
+//   send(ans, messageQueue);
 //}
 //
 //void CContextAccessor::processWaitForEvent(const pbRequest::WaitForEvent& request, boost::interprocess::message_queue& messageQueue)
@@ -251,7 +251,7 @@ void CContextAccessor::processMessage(const void* message, size_t messageSize, b
 //   {
 //      ans.set_error(ex.what());
 //   }
-//   sendAnswer(ans, messageQueue);
+//   send(ans, messageQueue);
 //}
 //
 //void CContextAccessor::processWriteKeyword(const pbRequest::WriteKeyword& request, boost::interprocess::message_queue& messageQueue)
@@ -266,7 +266,7 @@ void CContextAccessor::processMessage(const void* message, size_t messageSize, b
 //   {
 //      ans.set_error(ex.what());
 //   }
-//   sendAnswer(ans, messageQueue);
+//   send(ans, messageQueue);
 //}
 //
 //void CContextAccessor::processSendNotification(const pbRequest::SendNotification& request, boost::interprocess::message_queue& messageQueue)
@@ -281,7 +281,7 @@ void CContextAccessor::processMessage(const void* message, size_t messageSize, b
 //   {
 //      ans.set_error(ex.what());
 //   }
-//   sendAnswer(ans, messageQueue);
+//   send(ans, messageQueue);
 //}
 //
 //void CContextAccessor::processGetInfo(const pbRequest::GetInfo& request, boost::interprocess::message_queue& messageQueue)
@@ -310,7 +310,7 @@ void CContextAccessor::processMessage(const void* message, size_t messageSize, b
 //   {
 //      ans.set_error(ex.what());
 //   }
-//   sendAnswer(ans, messageQueue);
+//   send(ans, messageQueue);
 //}
 
 } // namespace pluginSystem

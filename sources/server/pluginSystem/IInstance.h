@@ -1,4 +1,5 @@
 #pragma once
+#include <server/database/sqlite/requesters/Plugin.h>
 
 namespace pluginSystem
 {
@@ -30,10 +31,16 @@ namespace pluginSystem
       virtual void updateConfiguration(const shared::CDataContainer & newConfiguration) const = 0;
 
       //-----------------------------------------------------
-      ///\brief               Get the plugin associated with this instance
-      ///\return              Associated plugin name
+      ///\brief               Get information about this instance
+      ///\return              Instance information
       //-----------------------------------------------------
-      virtual std::string getPluginName() const = 0;
+      virtual boost::shared_ptr<const database::entities::CPlugin> about() const = 0;
+
+      //-----------------------------------------------------
+      ///\brief               Get information about the plugin associated with this instance
+      ///\return              Plugin information
+      //-----------------------------------------------------
+      virtual boost::shared_ptr<const shared::plugin::information::IInformation> aboutPlugin() const = 0;
    };
 	
 } // namespace pluginSystem	

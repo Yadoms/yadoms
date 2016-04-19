@@ -1,6 +1,5 @@
 #pragma once
 #include <shared/DataContainer.h>
-#include <shared/plugin/yPluginApi/historization/IHistorizable.h>
 
 namespace shared { namespace plugin { namespace yPluginApi
 {
@@ -25,7 +24,7 @@ namespace shared { namespace plugin { namespace yPluginApi
       ///\brief Obtain the command data
       ///\return a datacontainer
       //-----------------------------------------------------
-      virtual const shared::CDataContainer & getData() const = 0;
+      virtual const CDataContainer & getData() const = 0;
 };
 	
 } } } // namespace shared::plugin::yPluginApi	

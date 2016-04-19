@@ -23,7 +23,7 @@ namespace pluginSystem
       // shared::plugin::IInformation implementation
       const std::string& getType() const override;
       const std::string& getVersion() const override;
-      const shared::versioning::EReleaseType getReleaseType() const override;
+      shared::versioning::EReleaseType getReleaseType() const override;
       const std::string& getAuthor() const override;
       const std::string& getUrl() const override;
       std::string getIdentity() const override;

@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "ApiImplementation.h"
 #include <shared/DataContainer.h>
+#include "PluginInformation.h"
+#include <toYadoms.pb.h>
 
 
 CApiImplementation::CApiImplementation()
@@ -118,6 +120,13 @@ void CApiImplementation::historizeData(const std::string& device, const std::vec
 {}
 const shared::plugin::information::IInformation& CApiImplementation::getInformation() const
 {
+   toYadoms::msg req;
+   auto request = req.mutable_getplugininformation();
+   sendRequest(req);
+
+   //TODO attendre la réponse sans négliger que d'autres messages puissent arriver
+
+   auto information(boost::make_shared<CPluginInformation>());
    boost::shared_ptr<shared::plugin::information::IInformation> i;
    return *i;
 }

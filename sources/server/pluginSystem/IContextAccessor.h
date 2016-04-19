@@ -2,6 +2,10 @@
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 
 
+namespace toPlugin{
+   class msg;
+}
+
 namespace pluginSystem
 {
    //--------------------------------------------------------------
@@ -28,6 +32,12 @@ namespace pluginSystem
       /// \return The plugin API
       //--------------------------------------------------------------
       virtual boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> api() const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief	Send an message to plugin
+      /// \param[in] pbMsg The message
+      //--------------------------------------------------------------
+      virtual void send(const toPlugin::msg& pbMsg) = 0;
    };
 } // namespace pluginSystem
 

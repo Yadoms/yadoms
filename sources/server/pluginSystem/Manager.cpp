@@ -173,6 +173,17 @@ namespace pluginSystem
       return m_pluginDBTable->getInstance(id);
    }
 
+   boost::shared_ptr<IInstance> CManager::getRunningInstance(int id) const
+   {
+      boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+
+      auto instance = m_runningInstances.find(id);
+      if (instance == m_runningInstances.end())
+         throw CPluginException((boost::format("Instance #%1% is not running") % id).str());
+
+      return instance->second;
+   }
+
    void CManager::updateInstance(const database::entities::CPlugin& newData)
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
@@ -221,7 +232,7 @@ namespace pluginSystem
       std::vector<int> instancesToStop;
       for (PluginInstanceMap::const_iterator instance = m_runningInstances.begin(); instance != m_runningInstances.end(); ++instance)
       {
-         if (instance->second && boost::iequals(instance->second->getPluginName(), pluginName))
+         if (instance->second && boost::iequals(instance->second->aboutPlugin()->getType(), pluginName))
             instancesToStop.push_back(instance->first);
       }
 
@@ -375,7 +386,7 @@ namespace pluginSystem
    //      requestStopInstance(event.getInstanceId());
    //
    //      // Now, evaluate if it is still safe
-   //      if (m_qualifier->isSafe(event.getPluginInformation()))
+   //      if (m_qualifier->isSafe(event.aboutPlugin()))
    //      {
    //         // Don't restart if event occurs when instance was stopping
    //         if (!event.getStopping())
@@ -389,13 +400,13 @@ namespace pluginSystem
    //      {
    //         // Not safe anymore. Disable plugin autostart mode (user will just be able to start it manually)
    //         // Not that this won't stop other instances of this plugin
-   //         YADOMS_LOG(warning) << " plugin " << event.getPluginInformation()->getType() << " was evaluated as not safe and will not start automatically anymore.";
-   //         m_pluginDBTable->disableAutoStartForAllPluginInstances(event.getPluginInformation()->getType());
+   //         YADOMS_LOG(warning) << " plugin " << event.aboutPlugin()->getType() << " was evaluated as not safe and will not start automatically anymore.";
+   //         m_pluginDBTable->disableAutoStartForAllPluginInstances(event.aboutPlugin()->getType());
    //
    //         // Log this event in the main event logger
    //         m_dataAccessLayer->getEventLogger()->addEvent(database::entities::ESystemEventCode::kPluginDisabled,
-   //            event.getPluginInformation()->getIdentity(),
-   //            "Plugin " + event.getPluginInformation()->getIdentity() + " was evaluated as not safe and will not start automatically anymore.");
+   //            event.aboutPlugin()->getIdentity(),
+   //            "Plugin " + event.aboutPlugin()->getIdentity() + " was evaluated as not safe and will not start automatically anymore.");
    //      }
    //
    //      break;
@@ -590,14 +601,9 @@ namespace pluginSystem
    void CManager::postCommand(int id, boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command)
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+      auto instance(getRunningInstance(id));
 
-      if (!isInstanceRunning(id))
-         return; // Instance is stopped, nothing to do
-
-      auto instance(m_runningInstances.find(id)->second);
-
-      //TODO
-      //YADOMS_LOG(debug) << "Send command " << command->toString() << " to plugin " << instance->getName();
+      YADOMS_LOG(debug) << "Send command " << command->toString() << " to plugin " << instance->about()->DisplayName();
 
       //TODO
       //instance->postCommand(command);
@@ -606,14 +612,9 @@ namespace pluginSystem
    void CManager::postExtraCommand(int id, boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> command)
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+      auto instance(getRunningInstance(id));
 
-      if (!isInstanceRunning(id))
-         return;     // Instance is stopped, nothing to do
-
-      auto instance(m_runningInstances.find(id)->second);
-
-      //TODO
-      //YADOMS_LOG(debug) << "Send extra command " << command->getCommand() << " to plugin " << instance->getName();
+      YADOMS_LOG(debug) << "Send extra command " << command->getCommand() << " to plugin " << instance->about()->DisplayName();
 
       //TODO
       //instance->postExtraCommand(command);

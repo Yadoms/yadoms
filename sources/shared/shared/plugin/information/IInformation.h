@@ -37,7 +37,7 @@ namespace shared { namespace plugin { namespace information
       /// \brief	    get the plugin release type
       /// \return     the plugin release type
       //--------------------------------------------------------------
-      virtual const shared::versioning::EReleaseType getReleaseType() const = 0;
+      virtual versioning::EReleaseType getReleaseType() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    get the plugin author
@@ -82,7 +82,7 @@ namespace shared { namespace plugin { namespace information
       /// \brief	    Provide the package.json content
       /// \return     the package.json content
       //--------------------------------------------------------------
-      virtual shared::CDataContainer getPackage() const = 0;
+      virtual CDataContainer getPackage() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Get the plugin path

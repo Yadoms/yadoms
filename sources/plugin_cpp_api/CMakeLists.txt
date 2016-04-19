@@ -17,6 +17,9 @@ set(plugin_cpp_api_SOURCES
    plugin_cpp_api/CommandLine.h
    plugin_cpp_api/CommandLine.cpp
 
+   plugin_cpp_api/PluginInformation.h
+   plugin_cpp_api/PluginInformation.cpp
+
    plugin_cpp_api/PluginContext.h
    plugin_cpp_api/PluginContext.cpp
 )

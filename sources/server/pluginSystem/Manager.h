@@ -113,6 +113,14 @@ namespace pluginSystem
       boost::shared_ptr<database::entities::CPlugin> getInstance(int id) const;
 
       //--------------------------------------------------------------
+      /// \brief           Get a running instance
+      /// \param [in] id   Instance Id
+      /// \return          The corresponding instance
+      /// \throw           CPluginException if instance is unknown or not running
+      //--------------------------------------------------------------
+      boost::shared_ptr<IInstance> CManager::getRunningInstance(int id) const;
+
+      //--------------------------------------------------------------
       /// \brief           Get the instance configuration
       /// \param [in] id   Instance Id
       /// \param [in] newConfiguration   The instance new configuration

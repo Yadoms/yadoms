@@ -29,7 +29,7 @@ namespace pluginSystem {   namespace internalPlugin {
       return m_version;
    }
 
-   const shared::versioning::EReleaseType CInformation::getReleaseType() const
+   shared::versioning::EReleaseType CInformation::getReleaseType() const
    {
       return m_releaseType;
    }

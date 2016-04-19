@@ -54,7 +54,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    CFakeController fakeController("fakeController1");
 
 
-   // Declare these sensors to Yadoms (devices and associated keywords) if not already declared
+   // Declare these sensors to Yadoms (devices and associated keywords) ifn ot already declared
    fakeSensor1.declareDevice(api);
    fakeSensor2.declareDevice(api);
    fakeCounter.declareDevice(api);

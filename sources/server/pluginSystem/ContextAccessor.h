@@ -31,6 +31,7 @@ namespace pluginSystem //TODO refactorer pour factoriser avec le CContextAccesso
       // CThreadBase Implementation
       void doWork() override;
       boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> api() const override;
+      void send(const toPlugin::msg& pbMsg) override;
       // [END] CThreadBase Implementation
 
       //--------------------------------------------------------------
@@ -67,7 +68,7 @@ namespace pluginSystem //TODO refactorer pour factoriser avec le CContextAccesso
       /// \param[in] answer The answer
       /// \param[in] boost::interprocess::message_queue Message queue used to send answer
       //--------------------------------------------------------------
-      void sendAnswer(const toPlugin::msg& answer, boost::interprocess::message_queue& messageQueue);
+      void send(const toPlugin::msg& pbMsg, boost::interprocess::message_queue& messageQueue);
 
    private:
       //--------------------------------------------------------------

@@ -141,7 +141,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief			The plugin event handler
       //--------------------------------------------------------------
-      shared::event::CEventHandler m_pluginEventHandler;
+      shared::event::CEventHandler m_pluginEventHandler; //TODO à virer ?
 
       //--------------------------------------------------------------
       /// \brief	      The plugin state keyword

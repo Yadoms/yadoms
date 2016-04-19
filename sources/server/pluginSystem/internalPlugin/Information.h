@@ -21,7 +21,7 @@ namespace pluginSystem {   namespace internalPlugin {
       virtual ~CInformation();
       virtual const std::string& getType() const;
       virtual const std::string& getVersion() const;
-      virtual const shared::versioning::EReleaseType getReleaseType() const;
+      virtual shared::versioning::EReleaseType getReleaseType() const;
       virtual const std::string& getAuthor() const;
       virtual const std::string& getUrl() const;
       virtual std::string toString() const;

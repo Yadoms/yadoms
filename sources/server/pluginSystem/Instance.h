@@ -10,7 +10,7 @@
 #include <shared/plugin/information/IInformation.h>
 #include <shared/plugin/yPluginApi/IExtraCommand.h>
 #include "IInstance.h"
-#include "yPluginApiImplementation.h"
+#include "IContextAccessor.h"
 
 namespace pluginSystem
 {
@@ -22,13 +22,15 @@ namespace pluginSystem
    public:
       //--------------------------------------------------------------
       /// \brief	Constructor
+      /// \param [in]	instanceInformation        Information on the instance
       /// \param [in]	pluginInformation          Information on the plugin
       /// \param [in]   process                    The instance process
-      /// \param [in]   yPluginApi                 The api context accessor
+      /// \param [in]   contextAccessor            The api context accessor
       //--------------------------------------------------------------
-      CInstance(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
+      CInstance(boost::shared_ptr<const database::entities::CPlugin> instanceInformation,
+                const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
                 boost::shared_ptr<shared::process::IProcess> process,
-                boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> yPluginApi);
+                boost::shared_ptr<IContextAccessor> contextAccessor);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
@@ -36,17 +38,30 @@ namespace pluginSystem
       virtual ~CInstance();
 
 
-        //--------------------------------------------------------------
+      //--------------------------------------------------------------
+      /// \brief			            Post the plugin information
+      /// \param  information       Plugin information
+      //--------------------------------------------------------------
+      void postPluginInformation(boost::shared_ptr<const shared::plugin::information::IInformation> information) const;
+
+      //--------------------------------------------------------------
+      /// \brief			            Post a device command to the plugin
+      /// \param  information       Device command
+      //--------------------------------------------------------------
+      void postDeviceCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> deviceCommand) const;
+
+      //--------------------------------------------------------------
       /// \brief			            Post an extra command to the plugin
       /// \param  command           Extra command to post
       //--------------------------------------------------------------
-      virtual void postExtraCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> extraCommand) const;
+      void postExtraCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> extraCommand) const;
 
       // IInstance Implementation
       void updateConfiguration(const shared::CDataContainer& newConfiguration) const override;
       void requestStop() override;
       void kill() override;
-      std::string getPluginName() const override;
+      boost::shared_ptr<const database::entities::CPlugin> about() const override;
+      boost::shared_ptr<const shared::plugin::information::IInformation> aboutPlugin() const override;
       // [END] IInstance Implementation
 
 
@@ -76,6 +91,11 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief			      The plugin information
       //--------------------------------------------------------------
+      const boost::shared_ptr<const database::entities::CPlugin> m_instanceInformation;
+
+      //--------------------------------------------------------------
+      /// \brief			      The plugin information
+      //--------------------------------------------------------------
       const boost::shared_ptr<const shared::plugin::information::IInformation> m_pluginInformation;
 
       //-----------------------------------------------------
@@ -86,6 +106,6 @@ namespace pluginSystem
       //-----------------------------------------------------
       ///\brief               The api context accessor
       //-----------------------------------------------------
-      boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> m_yPluginApi;
+      boost::shared_ptr<IContextAccessor> m_contextAccessor;
    };
 } // namespace pluginSystem
