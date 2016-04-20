@@ -2,6 +2,7 @@
 
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <toPlugin.pb.h>
+#include <toYadoms.pb.h>
 
 
 //-----------------------------------------------------
@@ -19,6 +20,8 @@ public:
    ///\brief               Destructor
    //-----------------------------------------------------
    virtual ~CApiImplementation();
+
+   void setSendingMessageQueue(boost::shared_ptr<boost::interprocess::message_queue> sendMessageQueue);
 
    bool stopRequested() const;
 
@@ -47,10 +50,19 @@ protected:
    /// \brief	Send a request
    /// \param[in] request Request to send
    //--------------------------------------------------------------
-//TODO   void sendRequest(const toYadoms::msg& request) const;
+   void send(const toYadoms::msg& msg);
 
    void processSystem(const toPlugin::System& msg);
+   void processPluginInformation(const pbPluginInformation::Information& msg);
 
 private:
+   bool m_initialized;
    bool m_stopRequested;
+
+
+   // The message queue buffer, localy used but defined here to be allocated only once
+   boost::shared_ptr<unsigned char[]> m_mqBuffer;
+   boost::shared_ptr<boost::interprocess::message_queue> m_sendMessageQueue;
+
+   boost::shared_ptr<shared::plugin::information::IInformation> m_pluginInformation;
 };

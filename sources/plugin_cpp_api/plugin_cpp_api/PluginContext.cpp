@@ -29,11 +29,10 @@ namespace plugin_cpp_api
 
 
    CPluginContext::CPluginContext(int argc, char** argv, boost::shared_ptr<IPlugin> plugin)
-      :m_commandLine(boost::make_shared<CCommandLine>(argc, argv)),
-      m_plugin(plugin),
-      m_returnCode(kOk)
+      : m_commandLine(boost::make_shared<CCommandLine>(argc, argv)),
+        m_plugin(plugin),
+        m_returnCode(kOk)
    {
-      
    }
 
    CPluginContext::~CPluginContext()
@@ -45,13 +44,13 @@ namespace plugin_cpp_api
       auto api = boost::make_shared<CApiImplementation>();
       std::cout << api->getInformation().getType() << " is starting...";
 
-      boost::barrier readyBarrier(2);
-
       auto msgReceiverThread = boost::thread(&CPluginContext::msgReceiverThreaded, this, api);
 
       try
       {
          openMessageQueues();
+
+         api->setSendingMessageQueue(m_sendMessageQueue);
 
          // Execute plugin code
          m_plugin->doWork(api);
@@ -94,8 +93,6 @@ namespace plugin_cpp_api
       // Verify that the version of the library that we linked against is
       // compatible with the version of the headers we compiled against.
       GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-      memset(m_mqBuffer, 0, sizeof(m_mqBuffer));
 
       try
       {

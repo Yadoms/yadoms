@@ -3,6 +3,7 @@
 #include <shared/ThreadBase.h>
 #include "Messages.h"
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
+#include <shared/communication/MessageQueueRemover.hpp>
 
 namespace pluginSystem //TODO refactorer pour factoriser avec le CContextAccessor des scripts (y'a moyen)
 {
@@ -43,15 +44,15 @@ namespace pluginSystem //TODO refactorer pour factoriser avec le CContextAccesso
       /// \brief	Process a received message
       /// \param[in] message The message data
       /// \param[in] messageSize The message size
-      /// \param[in] boost::interprocess::message_queue Message queue used to send answer
       //--------------------------------------------------------------
-      void processMessage(const void* message, size_t messageSize, boost::interprocess::message_queue& messageQueue);
+      void processMessage(const void* message, size_t messageSize) const;
 
       //--------------------------------------------------------------
       /// \brief	Process messages
       /// \param[in] request Received requests
       /// \param[in] messageQueue Message Queue used for answer
       //--------------------------------------------------------------
+      void processSetPluginState(const toYadoms::SetPluginState& request) const;
       //TODO
       //void processGetKeywordId(const pbRequest::GetKeywordId& request, boost::interprocess::message_queue& messageQueue);
       //void processGetRecipientId(const pbRequest::GetRecipientId& request, boost::interprocess::message_queue& messageQueue);
@@ -62,13 +63,6 @@ namespace pluginSystem //TODO refactorer pour factoriser avec le CContextAccesso
       //void processWriteKeyword(const pbRequest::WriteKeyword& request, boost::interprocess::message_queue& messageQueue);
       //void processSendNotification(const pbRequest::SendNotification& request, boost::interprocess::message_queue& messageQueue);
       //void processGetInfo(const pbRequest::GetInfo& request, boost::interprocess::message_queue& messageQueue);
-
-      //--------------------------------------------------------------
-      /// \brief	Send an answer
-      /// \param[in] answer The answer
-      /// \param[in] boost::interprocess::message_queue Message queue used to send answer
-      //--------------------------------------------------------------
-      void send(const toPlugin::msg& pbMsg, boost::interprocess::message_queue& messageQueue);
 
    private:
       //--------------------------------------------------------------
@@ -91,10 +85,12 @@ namespace pluginSystem //TODO refactorer pour factoriser avec le CContextAccesso
       //--------------------------------------------------------------
       std::string m_id;
 
-      //--------------------------------------------------------------
-      /// \brief	   Barrier waiting that context is ready
-      //--------------------------------------------------------------
-      mutable boost::barrier m_readyBarrier;
+      const std::string m_sendMessageQueueId;
+      const std::string m_receiveMessageQueueId;
+      const shared::communication::CMessageQueueRemover m_sendMessageQueueRemover;
+      const shared::communication::CMessageQueueRemover m_receiveMessageQueueRemover;
+      boost::interprocess::message_queue m_sendMessageQueue;
+      boost::interprocess::message_queue m_receiveMessageQueue;
    };
 
 } // namespace pluginSystem

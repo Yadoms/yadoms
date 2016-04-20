@@ -2,11 +2,11 @@
 #include "ApiImplementation.h"
 #include <shared/DataContainer.h>
 #include "PluginInformation.h"
-#include <toYadoms.pb.h>
 
 
 CApiImplementation::CApiImplementation()
-   :m_stopRequested(false)
+   : m_initialized(false),
+     m_stopRequested(false)
 {
 }
 
@@ -14,45 +14,66 @@ CApiImplementation::~CApiImplementation()
 {
 }
 
+void CApiImplementation::setSendingMessageQueue(boost::shared_ptr<boost::interprocess::message_queue> sendMessageQueue)
+{
+   m_sendMessageQueue = sendMessageQueue;
+   m_mqBuffer = boost::make_shared<unsigned char[]>(m_sendMessageQueue->get_max_msg_size());
+}
+
 bool CApiImplementation::stopRequested() const
 {
    return m_stopRequested;
 }
 
-//TODO
-//void CApiImplementation::sendRequest(const toYadoms::msg& request) const
-//{
-//   try
-//   {
-//      if (!request.IsInitialized())
-//         throw std::overflow_error("CApiImplementation::sendRequest : request is not fully initialized");
-//
-//      if (request.ByteSize() > static_cast<int>(m_messageQueueMessageSize))
-//         throw std::overflow_error("CApiImplementation::sendRequest : request is too big");
-//
-//      if (!request.SerializeToArray(m_mqBuffer, m_messageQueueMessageSize))
-//         throw std::overflow_error("CApiImplementation::sendRequest : fail to serialize request (too big ?)");
-//
-//      m_sendMessageQueue->send(m_mqBuffer, request.GetCachedSize(), 0);
-//   }
-//   catch (boost::interprocess::interprocess_exception& ex)
-//   {
-//      throw std::overflow_error(std::string("yScriptApiWrapper::sendRequest : Error at IYScriptApi method call, ") + ex.what());
-//   }
-//}
+void CApiImplementation::send(const toYadoms::msg& msg)
+{
+   try
+   {
+      if (!m_sendMessageQueue)
+         throw std::runtime_error("CApiImplementation::send : plugin API not ready to send message");
+
+      if (!msg.IsInitialized())
+         throw std::overflow_error("CApiImplementation::sendRequest : request is not fully initialized");
+
+      if (msg.ByteSize() > static_cast<int>(m_sendMessageQueue->get_max_msg_size()))
+         throw std::overflow_error("CApiImplementation::sendRequest : request is too big");
+
+      if (!msg.SerializeToArray(m_mqBuffer.get(), m_sendMessageQueue->get_max_msg_size()))
+         throw std::overflow_error("CApiImplementation::sendRequest : fail to serialize request (too big ?)");
+
+      m_sendMessageQueue->send(m_mqBuffer.get(), msg.GetCachedSize(), 0);
+   }
+   catch (boost::interprocess::interprocess_exception& ex)
+   {
+      throw std::overflow_error((boost::format("CApiImplementation::send : %1%") % ex.what()).str());
+   }
+}
 
 void CApiImplementation::onReceive(const unsigned char* message, size_t messageSize)
 {
    if (messageSize < 1)
-      throw std::runtime_error("CApiImplementation::processMessage : received Yadoms answer is zero length");
+      throw std::runtime_error("CApiImplementation::onReceive : received Yadoms answer is zero length");
 
    toPlugin::msg toPluginProtoBuffer;
    if (!toPluginProtoBuffer.ParseFromArray(message, messageSize))
       throw shared::exception::CInvalidParameter("message");
 
+   if (!m_initialized)
+   {
+      switch (toPluginProtoBuffer.OneOf_case())
+      {
+      case toPlugin::msg::kPluginInformation: processPluginInformation(toPluginProtoBuffer.plugininformation()); break;
+      default:
+         throw shared::exception::CInvalidParameter((boost::format("Unexpected message %1% when initialization") % toPluginProtoBuffer.OneOf_case()).str());
+      }
+
+      return;
+   }
+
    switch (toPluginProtoBuffer.OneOf_case())
    {
    case toPlugin::msg::kSystem: processSystem(toPluginProtoBuffer.system()); break;
+   case toPlugin::msg::kPluginInformation: processPluginInformation(toPluginProtoBuffer.plugininformation()); break;
       //TODO
    //case toPlugin::msg::kGetKeywordId: processGetKeywordId(toPluginProtoBuffer.getkeywordid(), messageQueue); break;
    //case toPlugin::msg::kGetRecipientId: processGetRecipientId(toPluginProtoBuffer.getrecipientid(), messageQueue); break;
@@ -80,8 +101,29 @@ void CApiImplementation::processSystem(const toPlugin::System& msg)
    }
 }
 
+void CApiImplementation::processPluginInformation(const pbPluginInformation::Information& msg)
+{
+   m_pluginInformation = boost::make_shared<CPluginInformation>(boost::make_shared<const pbPluginInformation::Information>(msg));
+   m_initialized = true;
+}
+
 void CApiImplementation::setPluginState(const shared::plugin::yPluginApi::historization::EPluginState& state, const std::string & customMessageId)
-{}
+{
+   toYadoms::msg req;
+   toYadoms::SetPluginState* request = req.mutable_pluginstate();
+   switch(state)
+   {
+   case shared::plugin::yPluginApi::historization::EPluginState::kUnknownValue:request->set_pluginstate(toYadoms::SetPluginState_EPluginState_kUnknown); break;
+   case shared::plugin::yPluginApi::historization::EPluginState::kErrorValue:request->set_pluginstate(toYadoms::SetPluginState_EPluginState_kError); break;
+   case shared::plugin::yPluginApi::historization::EPluginState::kStoppedValue:request->set_pluginstate(toYadoms::SetPluginState_EPluginState_kStopped); break;
+   case shared::plugin::yPluginApi::historization::EPluginState::kRunningValue:request->set_pluginstate(toYadoms::SetPluginState_EPluginState_kRunning); break;
+   case shared::plugin::yPluginApi::historization::EPluginState::kCustomValue:request->set_pluginstate(toYadoms::SetPluginState_EPluginState_kCustom); break;
+   default:
+      throw std::out_of_range((boost::format("CApiImplementation::setPluginState, unknown state %1%") % state).str());
+   }
+   request->set_custommessageid(customMessageId);
+   send(req);
+}
 bool CApiImplementation::deviceExists(const std::string& device) const
 {
    return false;
@@ -120,15 +162,7 @@ void CApiImplementation::historizeData(const std::string& device, const std::vec
 {}
 const shared::plugin::information::IInformation& CApiImplementation::getInformation() const
 {
-   toYadoms::msg req;
-   auto request = req.mutable_getplugininformation();
-   sendRequest(req);
-
-   //TODO attendre la réponse sans négliger que d'autres messages puissent arriver
-
-   auto information(boost::make_shared<CPluginInformation>());
-   boost::shared_ptr<shared::plugin::information::IInformation> i;
-   return *i;
+   return *m_pluginInformation;
 }
 shared::CDataContainer CApiImplementation::getConfiguration() const
 {

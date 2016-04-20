@@ -10,15 +10,31 @@ namespace pluginSystem
 const size_t CContextAccessor::m_maxMessages(100);
 
 CContextAccessor::CContextAccessor(boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> yPluginApi)
-   :CThreadBase(createId()), m_pluginApi(yPluginApi), m_id(createId()), m_readyBarrier(2)
+   :CThreadBase(createId()), //TODO embarquer un boost::thread plutôt que d'hériter de CThreadBase
+   m_pluginApi(yPluginApi),
+   m_id(createId()),
+   m_sendMessageQueueId(m_id + ".toPlugin"),
+   m_receiveMessageQueueId(m_id + ".toYadoms"),
+   m_sendMessageQueueRemover(m_sendMessageQueueId),
+   m_receiveMessageQueueRemover(m_receiveMessageQueueId),
+   m_sendMessageQueue(boost::interprocess::create_only, m_sendMessageQueueId.c_str(), m_maxMessages, m_messageQueueMessageSize),
+   m_receiveMessageQueue(boost::interprocess::create_only, m_receiveMessageQueueId.c_str(), m_maxMessages, m_messageQueueMessageSize)
 {
+   // Verify that the version of the library that we linked against is
+   // compatible with the version of the headers we compiled against.
+   GOOGLE_PROTOBUF_VERIFY_VERSION;
+
    memset(m_mqBuffer, 0, sizeof(m_mqBuffer));
+
    CThreadBase::start();
-   m_readyBarrier.wait();
 }
 
 CContextAccessor::~CContextAccessor()
 {
+   CThreadBase::stop();
+
+   // Delete all global objects allocated by libprotobuf.
+   google::protobuf::ShutdownProtobufLibrary();
 }
 
 std::string CContextAccessor::id() const
@@ -35,22 +51,8 @@ std::string CContextAccessor::createId()
 
 void CContextAccessor::doWork()
 {
-   // Verify that the version of the library that we linked against is
-   // compatible with the version of the headers we compiled against.
-   GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-   const std::string sendMessageQueueId(m_id + ".toPlugin");
-   const std::string receiveMessageQueueId(m_id + ".toYadoms");
-   const shared::communication::CMessageQueueRemover sendMessageQueueRemover(sendMessageQueueId);
-   const shared::communication::CMessageQueueRemover receiveMessageQueueRemover(receiveMessageQueueId);
    try
    {
-      YADOMS_LOG(debug) << "Open message queues";
-      boost::interprocess::message_queue sendMessageQueue   (boost::interprocess::create_only, sendMessageQueueId.c_str()   , m_maxMessages, m_messageQueueMessageSize);
-      boost::interprocess::message_queue receiveMessageQueue(boost::interprocess::create_only, receiveMessageQueueId.c_str(), m_maxMessages, m_messageQueueMessageSize);
-
-      m_readyBarrier.wait();
-
       unsigned char message[m_messageQueueMessageSize];
       size_t messageSize;
       unsigned int messagePriority;
@@ -61,14 +63,14 @@ void CContextAccessor::doWork()
             // boost::interprocess::message_queue::receive is not responding to boost thread interruption, so we need to do some
             // polling and call boost::this_thread::interruption_point to exit properly
             // Note that boost::interprocess::message_queue::timed_receive requires universal time to work (can not use shared::currentTime::Provider)
-            auto messageWasReceived = receiveMessageQueue.timed_receive(message, m_messageQueueMessageSize, messageSize, messagePriority,
+            auto messageWasReceived = m_receiveMessageQueue.timed_receive(message, m_messageQueueMessageSize, messageSize, messagePriority,
                boost::posix_time::ptime(boost::posix_time::microsec_clock::universal_time() + boost::posix_time::seconds(1)));
             boost::this_thread::interruption_point();
 
             if (messageWasReceived)
-               processMessage(message, messageSize, sendMessageQueue);
+               processMessage(message, messageSize);
          }
-         catch (shared::exception::CInvalidParameter& ex)
+         catch (std::exception& ex)
          {
             YADOMS_LOG(error) << "Error receiving/processing queue message : " << ex.what();
          }
@@ -91,9 +93,6 @@ void CContextAccessor::doWork()
    }
 
    YADOMS_LOG(debug) << "Close message queues";
-
-   // Delete all global objects allocated by libprotobuf.
-   google::protobuf::ShutdownProtobufLibrary();
 }
 
 boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> CContextAccessor::api() const
@@ -101,21 +100,21 @@ boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> CContextAccessor::api
    return m_pluginApi;
 }
 
-void CContextAccessor::send(const toPlugin::msg& answer, boost::interprocess::message_queue& messageQueue)
+void CContextAccessor::send(const toPlugin::msg& pbMsg)
 {
-   if (!answer.IsInitialized())
-      throw std::overflow_error("CContextAccessor::send : answer is not fully initialized");
+   if (!pbMsg.IsInitialized())
+      throw std::overflow_error("CContextAccessor::send : message is not fully initialized");
 
-   if (answer.ByteSize() > static_cast<int>(m_messageQueueMessageSize))
-      throw std::overflow_error("CContextAccessor::send : answer is too big");
+   if (pbMsg.ByteSize() > static_cast<int>(m_messageQueueMessageSize))
+      throw std::overflow_error((boost::format("CContextAccessor::send : message is too big (%1% bytes)") % pbMsg.ByteSize()).str());
 
-   if (!answer.SerializeToArray(m_mqBuffer, m_messageQueueMessageSize))
-      throw std::overflow_error("CContextAccessor::send : fail to serialize answer (too big ?)");
+   if (!pbMsg.SerializeToArray(m_mqBuffer, m_messageQueueMessageSize))
+      throw std::overflow_error("CContextAccessor::send : fail to serialize message (too big ?)");
 
-   messageQueue.send(m_mqBuffer, answer.GetCachedSize(), 0);
+   m_sendMessageQueue.send(m_mqBuffer, pbMsg.GetCachedSize(), 0);
 }
 
-void CContextAccessor::processMessage(const void* message, size_t messageSize, boost::interprocess::message_queue& messageQueue)
+void CContextAccessor::processMessage(const void* message, size_t messageSize) const
 {
    if (messageSize < 1)
       throw shared::exception::CInvalidParameter("messageSize");
@@ -128,6 +127,7 @@ void CContextAccessor::processMessage(const void* message, size_t messageSize, b
    // Process message
    switch(request.OneOf_case())
    {
+      case toYadoms::msg::kPluginState: processSetPluginState(request.pluginstate()); break;
       //TODO
    //case pbRequest::msg::kGetKeywordId: processGetKeywordId(request.getkeywordid(), messageQueue); break;
    //case pbRequest::msg::kGetRecipientId: processGetRecipientId(request.getrecipientid(), messageQueue); break;
@@ -141,6 +141,23 @@ void CContextAccessor::processMessage(const void* message, size_t messageSize, b
    default:
       throw shared::exception::CInvalidParameter("message");
    }
+}
+
+void CContextAccessor::processSetPluginState(const toYadoms::SetPluginState& request) const
+{
+   shared::plugin::yPluginApi::historization::EPluginState state;
+   switch (request.pluginstate())
+   {
+   case toYadoms::SetPluginState_EPluginState_kUnknown: state = shared::plugin::yPluginApi::historization::EPluginState::kUnknownValue; break;
+   case toYadoms::SetPluginState_EPluginState_kError: state = shared::plugin::yPluginApi::historization::EPluginState::kErrorValue;  break;
+   case toYadoms::SetPluginState_EPluginState_kStopped: state = shared::plugin::yPluginApi::historization::EPluginState::kStoppedValue;  break;
+   case toYadoms::SetPluginState_EPluginState_kRunning: state = shared::plugin::yPluginApi::historization::EPluginState::kRunningValue;  break;
+   case toYadoms::SetPluginState_EPluginState_kCustom: state = shared::plugin::yPluginApi::historization::EPluginState::kCustomValue;  break;
+   default:
+      throw std::out_of_range((boost::format("Unsupported plugin state received : %1%") % request.pluginstate()).str());
+   }
+
+   m_pluginApi->setPluginState(state, request.custommessageid());
 }
 
 //TODO

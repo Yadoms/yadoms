@@ -14,6 +14,7 @@ namespace pluginSystem
         m_process(process),
         m_contextAccessor(contextAccessor)
    {
+      postPluginInformation(m_pluginInformation);
    }
 
    CInstance::~CInstance()
@@ -42,25 +43,27 @@ namespace pluginSystem
    void CInstance::postPluginInformation(boost::shared_ptr<const shared::plugin::information::IInformation> information) const
    {
       toPlugin::msg msg;
-      msg.set_allocated_plugininformation(CInformationSerializer(information).toPb().get());
+      CInformationSerializer(information).toPb(msg.mutable_plugininformation());
 
       m_contextAccessor->send(msg);
    }
 
    void CInstance::postDeviceCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> deviceCommand) const
    {
-      toPlugin::msg msg;
-      msg.set_allocated_devicecommand(CDeviceCommandSerializer(deviceCommand).toPb().get());
+      //TODO
+      //toPlugin::msg msg;
+      //msg.set_allocated_devicecommand(CDeviceCommandSerializer(deviceCommand).toPb().get());
 
-      m_contextAccessor->send(msg);
+      //m_contextAccessor->send(msg);
    }
 
    void CInstance::postExtraCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> extraCommand) const
    {
-      toPlugin::msg msg;
-      msg.set_allocated_extracommand(CExtraCommandSerializer(extraCommand).toPb().get());
+      //TODO
+      //toPlugin::msg msg;
+      //msg.set_allocated_extracommand(CExtraCommandSerializer(extraCommand).toPb().get());
 
-      m_contextAccessor->send(msg);
+      //m_contextAccessor->send(msg);
    }
 
    //TODO

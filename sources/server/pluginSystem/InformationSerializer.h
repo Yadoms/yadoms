@@ -13,7 +13,7 @@ namespace pluginSystem
       virtual ~CInformationSerializer();
 
       // IInformationSerializer implementation
-      boost::shared_ptr<pbPluginInformation::Information> toPb() const override;
+      void toPb(pbPluginInformation::Information* pb) const override;
       // [END] IInformationSerializer implementation
 
    private:

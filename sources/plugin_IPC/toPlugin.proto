@@ -3,32 +3,31 @@ package toPlugin;
 import "pluginInformation.proto";
 
 
-message System
-{
-   enum EventType { kRequestStop = 0; }
-   required EventType type = 1;
+message System {
+	enum EventType {
+		kRequestStop = 0;
+	}
+	required EventType type = 1;
 }
 
-message DeviceCommand
-{
+message DeviceCommand {
+
 }
 
-message ExtraCommand
-{
+message ExtraCommand {
+
 }
 
 
-   
-message msg
-{
-   optional string error = 1;
-   
-   oneof OneOf
-   {
-      System system = 2;
-	  DeviceCommand deviceCommand = 3;
-	  ExtraCommand extraCommand = 4;
-	  pbPluginInformation.Information pluginInformation = 5;
-   }
+
+message msg {
+	optional string error = 1;
+
+	oneof OneOf {
+		System system = 2;
+		DeviceCommand deviceCommand = 3;
+		ExtraCommand extraCommand = 4;
+		pbPluginInformation.Information pluginInformation = 5;
+	}
 }
 

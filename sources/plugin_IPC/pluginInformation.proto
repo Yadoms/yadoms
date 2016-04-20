@@ -1,19 +1,20 @@
 package pbPluginInformation;
 
-message Information
-{
-   required string type = 1;
-   required string version = 2;
-   
-   enum EReleaseType { kStable = 0; kTesting = 1; kBeta = 2; }
-   required EReleaseType releaseType = 3;
+message Information {
+	required string type = 1;
+	required string version = 2;
 
-   required string author = 4;
-   required string url = 5;
-   required string identity = 6;
-   required string toString = 7;
-   required bool supportedOnThisPlatform = 8;
-   required bool supportManuallyCreatedDevice = 9;
-   required string packageFileContent = 10;
-   required string path = 11;
+	enum EReleaseType {
+		kStable = 0; kTesting = 1; kBeta = 2;
+	}
+	required EReleaseType releaseType = 3;
+
+	required string author = 4;
+	required string url = 5;
+	required string identity = 6;
+	required string toString = 7;
+	required bool supportedOnThisPlatform = 8;
+	required bool supportManuallyCreatedDevice = 9;
+	required string packageFileContent = 10;
+	required string path = 11;
 }

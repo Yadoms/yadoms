@@ -13,9 +13,8 @@ namespace pluginSystem
    {
    }
 
-   boost::shared_ptr<pbPluginInformation::Information> CInformationSerializer::toPb() const
+   void CInformationSerializer::toPb(pbPluginInformation::Information* pb) const
    {
-      auto pb(boost::make_shared<pbPluginInformation::Information>());
       pb->set_type(m_information->getType());
       pb->set_version(m_information->getVersion());
       switch(m_information->getReleaseType())
@@ -35,8 +34,6 @@ namespace pluginSystem
 
       if (!pb->IsInitialized())
          throw CPluginException("unable to serialize plugin information");
-
-      return pb;
    }
 
 } // namespace pluginSystem

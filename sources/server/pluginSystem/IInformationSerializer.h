@@ -13,7 +13,7 @@ namespace pluginSystem
    public:
       virtual ~IInformationSerializer() {}
 
-      virtual boost::shared_ptr<pbPluginInformation::Information> toPb() const = 0;
+      virtual void toPb(pbPluginInformation::Information* pb) const = 0;
    };
 
 } // namespace pluginSystem

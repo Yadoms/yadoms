@@ -282,6 +282,18 @@ namespace pluginSystem
          //TODO utile ?         m_pluginStateHandler->signalError(id, error);
          throw CPluginException(error);
       }
+      catch (std::exception& e)
+      {
+         const auto& error((boost::format("Unable to start instance %1% %2%") % id % e.what()).str());
+         //TODO utile ?         m_pluginStateHandler->signalError(id, error);
+         throw CPluginException(error);
+      }
+      catch (...)
+      {
+         const auto& error((boost::format("Unable to start instance %1%, unknown error") % id).str());
+         //TODO utile ?         m_pluginStateHandler->signalError(id, error);
+         throw CPluginException(error);
+      }
    }
 
    void CManager::stopInstances()

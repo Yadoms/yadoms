@@ -40,11 +40,6 @@ namespace plugin_cpp_api
       void msgReceiverThreaded(boost::shared_ptr<CApiImplementation> api) const;
 
       //-----------------------------------------------------
-      ///\brief               The message queue buffer, localy used but defined here to be allocated only once
-      //-----------------------------------------------------
-      mutable unsigned char m_mqBuffer[m_messageQueueMessageSize];
-
-      //-----------------------------------------------------
       ///\brief               The message queues used to exchange data with Yadoms
       //\details These objects must be mutable to preserve IYScriptApi const interface
       //-----------------------------------------------------
