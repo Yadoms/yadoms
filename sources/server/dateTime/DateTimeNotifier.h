@@ -1,5 +1,7 @@
 #pragma once
 #include <Poco/Util/Timer.h>
+#include <Poco/DateTime.h>
+#include <Poco/Timespan.h>
 
 namespace dateTime {
 
@@ -28,7 +30,19 @@ namespace dateTime {
       /// \brief		                     Stop the date/time notification service
       //-----------------------------------------------------------------------------
       void stop();
+
+      //-----------------------------------------------------------------------------
+      /// \brief		                     Task runner
+      //-----------------------------------------------------------------------------
+      void taskRun(Poco::Util::TimerTask& task);
+
    private:
+      //-----------------------------------------------------------------------------
+      /// \brief		                     Schedule the next occurence
+      //-----------------------------------------------------------------------------
+      void scheduleOnNextMinute();
+
+
       //--------------------------------------------------------------
       /// \Brief		The datetime task
       //--------------------------------------------------------------
@@ -38,6 +52,16 @@ namespace dateTime {
       /// \Brief		The datetime timer
       //--------------------------------------------------------------
       Poco::Util::Timer m_dateTimeTimer;
+
+      //--------------------------------------------------------------
+      /// \Brief		The next minute to wait
+      //--------------------------------------------------------------
+      Poco::DateTime m_nextMinute;
+
+      //--------------------------------------------------------------
+      /// \Brief		One minute offset
+      //--------------------------------------------------------------
+      static Poco::Timespan m_oneMinuteOffset;
 
    };
 

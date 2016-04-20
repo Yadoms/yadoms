@@ -176,7 +176,10 @@ inline bool COpenZWaveNodeKeywordBase::realSendCommand(const double & data)
 template<class T>
 inline T COpenZWaveNodeKeywordBase::extractLastValue()
 {
-   throw shared::exception::COutOfRange("COpenZWaveNodeKeywordBase::extractLastValue : generic type is not supported. Only overriden types are allowed");
+   YADOMS_LOG(warning) << "COpenZWaveNodeKeywordBase::extractLastValue : generic type is not supported. Only overriden types are allowed";
+   std::string value;
+   OpenZWave::Manager::Get()->GetValueAsString(m_valueId, &value);
+   return boost::lexical_cast<T>(value);
 }
 
 template<>
@@ -220,6 +223,8 @@ inline Poco::Int32 COpenZWaveNodeKeywordBase::extractLastValue()
    OpenZWave::Manager::Get()->GetValueAsInt(m_valueId, &value);
    return value;
 }
+
+
 
 
 

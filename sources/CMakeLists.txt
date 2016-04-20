@@ -261,8 +261,6 @@ set(YADOMS_SRC
    server/authentication/BasicAuthentication.h
    server/authentication/BasicAuthentication.cpp
 
-   server/dateTime/DateTimeTask.h
-   server/dateTime/DateTimeTask.cpp
    server/dateTime/DateTimeNotifier.h
    server/dateTime/DateTimeNotifier.cpp
    

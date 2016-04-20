@@ -55,7 +55,7 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateH
       {
          ECommandClass commandClass((int)vID.GetCommandClassId());
          std::string vLabel = OpenZWave::Manager::Get()->GetValueLabel(vID);
-
+         uint8 commandClassInt = vID.GetCommandClassId();
          bool readOnly = OpenZWave::Manager::Get()->IsValueReadOnly(vID);
          bool writeOnly = OpenZWave::Manager::Get()->IsValueWriteOnly(vID);
          bool polled = OpenZWave::Manager::Get()->IsValuePolled(vID);
@@ -91,6 +91,7 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateH
 
          YADOMS_LOG(debug) << "[" << homeId << "." << nodeId << "] " << vLabel << ":" << commandClass.toString()
             << " [Genre=" << genre << "]"
+            << " [CommandClass=" << (int)commandClassInt << "]"
             << " [ReadOnly=" << readOnly << "]"
             << " [WriteOnly= " << writeOnly << "]"
             << " [Polled= " << polled << "]"
@@ -132,19 +133,19 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateS
       if (vLabel == "Instant energy production")
       {
          boost::shared_ptr<historizers::CEnergy> historizer(new historizers::CEnergy(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
-         return COpenZWaveNodeKeywordGeneric<Poco::Int64>::create(historizer, vID);
+         return COpenZWaveNodeKeywordGeneric<double>::create(historizer, vID);
       }
       if (vLabel == "Total energy production" || vLabel == "Energy production today")
       {
          boost::shared_ptr<historizers::CEnergy> historizer(new historizers::CEnergy(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode, shared::plugin::yPluginApi::historization::EMeasureType::kCumulative));
-         return COpenZWaveNodeKeywordGeneric<Poco::Int64>::create(historizer, vID);
+         return COpenZWaveNodeKeywordGeneric<double>::create(historizer, vID);
       }
       break;
    case ECommandClass::kMeterValue:
       if (vLabel == "Energy")
       {
          boost::shared_ptr<historizers::CEnergy> historizer(new historizers::CEnergy(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
-         return COpenZWaveNodeKeywordGeneric<Poco::Int64>::create(historizer, vID);
+         return COpenZWaveNodeKeywordGeneric<double>::create(historizer, vID);
       }
       if (vLabel == "Power")
       {

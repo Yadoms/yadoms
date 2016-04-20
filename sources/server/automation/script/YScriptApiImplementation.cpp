@@ -250,11 +250,14 @@ shared::script::yScriptApi::CWaitForEventResult CYScriptApiImplementation::waitF
 
          case kTime:
          {
+            YADOMS_LOG(information) << "CYScriptApiImplementation : kTime";
             boost::shared_ptr< shared::dateTime::CDateTimeContainer> timeNotif = eventHandler->getEventData< boost::shared_ptr<shared::dateTime::CDateTimeContainer> > ();
+
 
             result.setType(shared::script::yScriptApi::CWaitForEventResult::kDateTime);
             if (timeNotif)
             {
+               YADOMS_LOG(information) << "CYScriptApiImplementation : kTime" << timeNotif->getBoostDateTime();
                result.setValue(boost::posix_time::to_iso_string(timeNotif->getBoostDateTime()));
             }
             break;

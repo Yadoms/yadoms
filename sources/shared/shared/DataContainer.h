@@ -7,10 +7,7 @@
 #include "serialization/IDataFileSerializable.h"
 #include "IDataContainable.h"
 #include "enumeration/IExtendedEnum.h"
-#include <boost/utility/enable_if.hpp>
-#include <boost/type_traits/is_enum.hpp>
 #include "Field.hpp"
-#include <boost/make_shared.hpp>
 #include "StringExtension.h"
 namespace shared
 {
