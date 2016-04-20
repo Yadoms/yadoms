@@ -5,12 +5,12 @@
 namespace historizers {
 
    CEnergy::CEnergy(const std::string & name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode)
-      : COpenZWaveSingleHistorizableData<Poco::Int64>(boost::shared_ptr< shared::plugin::yPluginApi::historization::CSingleHistorizableData<Poco::Int64> >(new shared::plugin::yPluginApi::historization::CEnergy(name, accessMode)))
+      : COpenZWaveSingleHistorizableData<double>(boost::shared_ptr< shared::plugin::yPluginApi::historization::CSingleHistorizableData<double> >(new shared::plugin::yPluginApi::historization::CEnergyDouble(name, accessMode)))
    {
    }
 
    CEnergy::CEnergy(const std::string & name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, shared::plugin::yPluginApi::historization::EMeasureType measureType)
-      : COpenZWaveSingleHistorizableData<Poco::Int64>(boost::shared_ptr< shared::plugin::yPluginApi::historization::CSingleHistorizableData<Poco::Int64> >(new shared::plugin::yPluginApi::historization::CEnergy(name, accessMode, measureType)))
+      : COpenZWaveSingleHistorizableData<double>(boost::shared_ptr< shared::plugin::yPluginApi::historization::CSingleHistorizableData<double> >(new shared::plugin::yPluginApi::historization::CEnergyDouble(name, accessMode, measureType)))
    {
 
    }
