@@ -61,13 +61,6 @@ namespace startupOptions
          .binding("server.databasePath", &m_configContainer));
 
       options.addOption(
-         Poco::Util::Option("debug", "d", "Activate the debug mode (log files are separated by thread)")
-         .required(false)
-         .repeatable(false)
-         .noArgument()
-         .binding("server.debug", &m_configContainer));
-
-      options.addOption(
          Poco::Util::Option("noPassword", "d", "Skip password authentication for this instance")
          .required(false)
          .repeatable(false)
@@ -81,6 +74,13 @@ namespace startupOptions
          .argument("acquisitionLifetime")
          .validator(new Poco::Util::IntValidator(0, 3650)) //from 0 (unlimited), to 10 years
          .binding("server.acquisitionLifetime", &m_configContainer));
+
+      options.addOption(
+         Poco::Util::Option("developerMode", "d", "Activate the developer mode")
+         .required(false)
+         .repeatable(false)
+         .noArgument()
+         .binding("server.developerMode", &m_configContainer));
    }
 
    const std::string CStartupOptions::getLogLevel() const
@@ -134,5 +134,11 @@ namespace startupOptions
    int CStartupOptions::getDatabaseAcquisitionLifetime() const
    {
       return m_configContainer.getInt("server.acquisitionLifetime", 30);
+   }  
+
+   bool CStartupOptions::getDeveloperMode() const
+   {
+      return m_configContainer.getBool("server.developerMode", false);
    }
+
 } // namespace startupOptions

@@ -8,6 +8,7 @@
 #include <shared/Peripherals.h>
 #include <Poco/Net/NetworkInterface.h>
 #include <shared/ServiceLocator.h>
+#include <startupOptions/IStartupOptions.h>
 
 namespace web { namespace rest { namespace service {
 
@@ -116,6 +117,10 @@ namespace web { namespace rest { namespace service {
          result.set("yadoms", m_runningInformation->getSoftwareVersion().getContainer());
          result.set("startupTime", m_runningInformation->getStartupDateTime());
          result.set("executablePath", m_runningInformation->getExecutablePath());
+
+         if(shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>()->getDeveloperMode())
+            result.set("developerMode", "true");
+
          return CResult::GenerateSuccess(result);
       }
       catch (std::exception &ex)
