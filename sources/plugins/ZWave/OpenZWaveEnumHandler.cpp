@@ -72,5 +72,18 @@ const std::vector<std::string> COpenZWaveEnumHandler::getAllStrings() const
    return m_strings;
 }
 
+bool COpenZWaveEnumHandler::getTextOfValue(const std::string & integerValueInString, std::string & result)
+{
+   int value = atoi(integerValueInString.c_str());
+   for (int i = 0; i < m_strings.size(); ++i)
+   {
+      if (m_integers[i] == value)
+      {
+         result = m_strings[i];
+         return true;
+      }
+   }
+   return false;
+}
 
 

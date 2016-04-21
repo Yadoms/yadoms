@@ -492,7 +492,10 @@ void COpenZWaveController::sendCommand(const std::string & device, const std::st
    boost::shared_ptr<COpenZWaveNode> node = getNode(homeId, nodeId);
    if (node)
    {
-      node->sendCommand(keyword, value);
+      if (!node->sendCommand(keyword, value))
+      {
+         throw shared::exception::CException( (boost::format("Fail to send command keyword[%1%] = %2% ") % keyword % value).str());
+      }
    }
 }
 
