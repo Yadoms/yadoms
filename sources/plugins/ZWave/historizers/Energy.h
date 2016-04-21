@@ -3,7 +3,7 @@
 
 namespace historizers {
 
-   class CEnergy : public COpenZWaveSingleHistorizableData<Poco::Int64>
+   class CEnergy : public COpenZWaveSingleHistorizableData<double>
    {
    public:
       //-----------------------------------------------------

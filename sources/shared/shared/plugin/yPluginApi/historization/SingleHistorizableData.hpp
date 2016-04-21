@@ -208,7 +208,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
 	  ///\brief     Helpers specialization for bool
 	  //-----------------------------------------------------      
       template<typename TData>
-      struct helper<TData, typename boost::enable_if<boost::is_base_of<bool, TData > >::type>
+      struct helper<TData, typename boost::enable_if<boost::is_same<bool, TData > >::type>
 	  {
         static bool getInternal(const std::string& value)
 		  {
