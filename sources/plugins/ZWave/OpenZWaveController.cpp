@@ -148,6 +148,8 @@ bool COpenZWaveController::start()
 
       if (!m_initFailed)
       {
+         RequestConfigurationParameters();
+
          OpenZWave::Manager::Get()->WriteConfig(m_homeId);
       }
 
@@ -206,6 +208,15 @@ boost::shared_ptr<COpenZWaveNode> COpenZWaveController::getNode(const uint32 hom
    }
    return boost::shared_ptr<COpenZWaveNode>();
 }
+
+void COpenZWaveController::RequestConfigurationParameters()
+{
+   for (NodeListType::iterator it = m_nodes.begin(); it != m_nodes.end(); ++it)
+   {
+      OpenZWave::Manager::Get()->RequestAllConfigParams((*it)->getHomeId(), (*it)->getNodeId());
+   }
+}
+
 
 
 
@@ -268,7 +279,6 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
 
    case OpenZWave::Notification::Type_NodeAdded:
    {
-      
       m_nodes.push_back( boost::shared_ptr<COpenZWaveNode>( new COpenZWaveNode(_notification->GetHomeId(), _notification->GetNodeId())));
       break;
    }
@@ -338,6 +348,7 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
    {
       uint32 const homeId = _notification->GetHomeId();
       uint8 const nodeId = _notification->GetNodeId();
+
       for (NodeListType::iterator i = m_nodes.begin(); i != m_nodes.end(); ++i)
       {
          if ((*i)->match(homeId, nodeId))
@@ -438,7 +449,11 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
       break;
 
    case OpenZWave::Notification::Type_DriverReset:
+      break;
+
    case OpenZWave::Notification::Type_NodeQueriesComplete:
+      break;
+
    default:
       break;
 
@@ -447,16 +462,20 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
 }
 
 
-void COpenZWaveController::retreiveOpenZWaveIds(const std::string & device, const std::string & keyword, uint32 & homeId, uint8 & nodeId)
+void COpenZWaveController::retreiveOpenZWaveIds(const std::string & device, const std::string & keyword, uint32 & homeId, uint8 & nodeId, uint8 & instance)
 {
    std::vector<std::string> splittedDevice;
    boost::split(splittedDevice, device, boost::is_any_of("."), boost::token_compress_on);
-   if (splittedDevice.size() != 2)
+   if (splittedDevice.size() < 2)
    {
-      throw shared::exception::CException("The device id is invalid : not matching pattern : <homeId>-<nodeId> ");
+      throw shared::exception::CException("The device id is invalid : not matching pattern : <homeId>.<nodeId>.<instance>");
    }
    homeId = boost::lexical_cast<uint32>(splittedDevice[0]);
    nodeId = static_cast<uint8>(atoi(splittedDevice[1].c_str())); //dont use lexical cast for uint8, because it realize a string to char conversion: "2" is transform in '2' = 0x32
+   if (splittedDevice.size() > 2)
+      instance = static_cast<uint8>(atoi(splittedDevice[2].c_str())); //dont use lexical cast for uint8, because it realize a string to char conversion: "2" is transform in '2' = 0x32
+   else
+      instance = 1; //default instance value in OpenZWave
 }
 
 void COpenZWaveController::sendCommand(const std::string & device, const std::string & keyword, const std::string & value)
@@ -465,9 +484,10 @@ void COpenZWaveController::sendCommand(const std::string & device, const std::st
 
    uint32 homeId;
    uint8 nodeId;
+   uint8 instance;
    ECommandClass keywordClass;
 
-   retreiveOpenZWaveIds(device, keyword, homeId, nodeId);
+   retreiveOpenZWaveIds(device, keyword, homeId, nodeId, instance);
 
    boost::shared_ptr<COpenZWaveNode> node = getNode(homeId, nodeId);
    if (node)
