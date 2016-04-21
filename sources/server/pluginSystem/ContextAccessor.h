@@ -1,7 +1,6 @@
 #pragma once
 #include "IContextAccessor.h"
-#include <shared/ThreadBase.h>
-#include "Messages.h"
+#include <plugin_IPC/plugin_IPC.h>
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <shared/communication/MessageQueueRemover.hpp>
 
@@ -10,7 +9,7 @@ namespace pluginSystem //TODO refactorer pour factoriser avec le CContextAccesso
    //--------------------------------------------------------------
    /// \brief	yScriptApi context accessor, based on message queues
    //--------------------------------------------------------------
-   class CContextAccessor : public IContextAccessor, protected shared::CThreadBase
+   class CContextAccessor : public IContextAccessor
    {
    public:
       //--------------------------------------------------------------
@@ -27,13 +26,9 @@ namespace pluginSystem //TODO refactorer pour factoriser avec le CContextAccesso
    protected:
       // IContextAccessor Implementation
       std::string id() const override;
-      // [END] IContextAccessor Implementation
-
-      // CThreadBase Implementation
-      void doWork() override;
       boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> api() const override;
       void send(const toPlugin::msg& pbMsg) override;
-      // [END] CThreadBase Implementation
+      // [END] IContextAccessor Implementation
 
       //--------------------------------------------------------------
       /// \brief	Create a unique context accessor ID (unique on full system)
@@ -41,11 +36,16 @@ namespace pluginSystem //TODO refactorer pour factoriser avec le CContextAccesso
       static std::string createId();
 
       //--------------------------------------------------------------
+      /// \brief	Message queue receive thread
+      //--------------------------------------------------------------
+      void messageQueueReceiveThreaded();
+
+      //--------------------------------------------------------------
       /// \brief	Process a received message
       /// \param[in] message The message data
       /// \param[in] messageSize The message size
       //--------------------------------------------------------------
-      void processMessage(const void* message, size_t messageSize) const;
+      void processMessage(boost::shared_ptr<const unsigned char[]> message, size_t messageSize) const;
 
       //--------------------------------------------------------------
       /// \brief	Process messages
@@ -66,14 +66,10 @@ namespace pluginSystem //TODO refactorer pour factoriser avec le CContextAccesso
 
    private:
       //--------------------------------------------------------------
-      /// \brief	Message queue max message number
+      /// \brief	Message queue max message size & number
       //--------------------------------------------------------------
       static const size_t m_maxMessages;
-
-      //-----------------------------------------------------
-      ///\brief               The message queue buffer, localy used but defined here to be allocated only once
-      //-----------------------------------------------------
-      unsigned char m_mqBuffer[m_messageQueueMessageSize];
+      static const size_t m_maxMessageSize;
 
       //--------------------------------------------------------------
       /// \brief	IYPluginApi context instance
@@ -91,6 +87,13 @@ namespace pluginSystem //TODO refactorer pour factoriser avec le CContextAccesso
       const shared::communication::CMessageQueueRemover m_receiveMessageQueueRemover;
       boost::interprocess::message_queue m_sendMessageQueue;
       boost::interprocess::message_queue m_receiveMessageQueue;
+
+      //-----------------------------------------------------
+      ///\brief               The message queue buffer for sending, localy used but defined here to be allocated only once
+      //-----------------------------------------------------
+      boost::shared_ptr<unsigned char[]> m_sendBuffer;
+
+      boost::thread m_messageQueueReceiveThread;
    };
 
 } // namespace pluginSystem

@@ -49,13 +49,13 @@ void CApiImplementation::send(const toYadoms::msg& msg)
    }
 }
 
-void CApiImplementation::onReceive(const unsigned char* message, size_t messageSize)
+void CApiImplementation::onReceive(boost::shared_ptr<const unsigned char[]> message, size_t messageSize)
 {
    if (messageSize < 1)
       throw std::runtime_error("CApiImplementation::onReceive : received Yadoms answer is zero length");
 
    toPlugin::msg toPluginProtoBuffer;
-   if (!toPluginProtoBuffer.ParseFromArray(message, messageSize))
+   if (!toPluginProtoBuffer.ParseFromArray(message.get(), messageSize))
       throw shared::exception::CInvalidParameter("message");
 
    if (!m_initialized)
@@ -89,6 +89,14 @@ void CApiImplementation::onReceive(const unsigned char* message, size_t messageS
    }
 }
 
+
+void CApiImplementation::waitInitialized() const
+{
+   std::unique_lock<std::mutex> lock(m_initializationConditionMutex);
+   if(!m_initialized)
+      m_initializationCondition.wait(lock);
+}
+
 void CApiImplementation::processSystem(const toPlugin::System& msg)
 {
    if (msg.type() == toPlugin::System_EventType_kRequestStop)
@@ -104,7 +112,10 @@ void CApiImplementation::processSystem(const toPlugin::System& msg)
 void CApiImplementation::processPluginInformation(const pbPluginInformation::Information& msg)
 {
    m_pluginInformation = boost::make_shared<CPluginInformation>(boost::make_shared<const pbPluginInformation::Information>(msg));
+
+   std::unique_lock<std::mutex> lock(m_initializationConditionMutex);
    m_initialized = true;
+   m_initializationCondition.notify_one();
 }
 
 void CApiImplementation::setPluginState(const shared::plugin::yPluginApi::historization::EPluginState& state, const std::string & customMessageId)
@@ -160,9 +171,12 @@ void CApiImplementation::historizeData(const std::string& device, const shared::
 {}
 void CApiImplementation::historizeData(const std::string& device, const std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > & dataVect)
 {}
-const shared::plugin::information::IInformation& CApiImplementation::getInformation() const
+boost::shared_ptr<const shared::plugin::information::IInformation> CApiImplementation::getInformation() const
 {
-   return *m_pluginInformation;
+   if (!m_pluginInformation)
+      throw std::exception("Plugin information not available");
+
+   return m_pluginInformation;
 }
 shared::CDataContainer CApiImplementation::getConfiguration() const
 {

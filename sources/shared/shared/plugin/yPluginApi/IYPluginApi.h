@@ -263,7 +263,7 @@ namespace shared { namespace plugin { namespace yPluginApi
       ///\brief Get the current plugin information (extracted from package.json file)
       ///\return The current plugin information
       //-----------------------------------------------------      
-      virtual const information::IInformation& getInformation() const = 0;
+      virtual boost::shared_ptr<const information::IInformation> getInformation() const = 0;
 
 
       //----------------------------------------------------------------------------------------------------------------

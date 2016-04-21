@@ -1,8 +1,6 @@
 # Macros for setting up a plugin
 #
 
-#TODO virer les liens vers protobuf et plugin_IPC ? (car dans plugin_cpp_api)
-
 MACRO(PLUGIN_SOURCES _targetName)
    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${youroutputdirectory}/plugins/${_targetName} )
    foreach( OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES} )
@@ -23,8 +21,6 @@ MACRO(PLUGIN_INCLDIR _targetName)
       ${SHARED_INCL_DIR}
       ${BOOST_INCL_DIR}
       ${Poco_INCLUDE_DIRS}
-      ${PROTOBUF_INCLUDE_DIRS}
-      ${plugin_IPC_GENERATED_DIR}
       ${plugin_cpp_api_INCLUDE_DIR}
       ${ARGN}
       )
@@ -40,10 +36,11 @@ ENDMACRO()
 MACRO(PLUGIN_LINK _targetName)
 	target_link_libraries(${_targetName}
       yadoms-shared
-      plugin_IPC
       plugin_cpp_api
       ${LIBS}
       ${CMAKE_DL_LIBS}
+      ${PROTOBUF_LIBRARIES}
+      ${plugin_IPC_LIBRARY}
       ${ARGN}
       )
 	

@@ -409,7 +409,6 @@ set(YADOMS_SRC
    server/pluginSystem/BindingQueryRequest.h
    server/pluginSystem/ManuallyDeviceCreationTestData.cpp
    server/pluginSystem/ManuallyDeviceCreationTestData.h
-   server/pluginSystem/Messages.h
    server/pluginSystem/NativeExecutableCommandLine.cpp
    server/pluginSystem/NativeExecutableCommandLine.h
 	server/pluginSystem/PluginException.hpp
@@ -804,7 +803,6 @@ ENDIF()
 ## IPC messages static library for plugins
 ##################################################################################################
 add_subdirectory(plugin_IPC)
-set(PLUGIN_IPC_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/plugin_IPC)
 
 ##################################################################################################
 ## Plugins
@@ -833,7 +831,7 @@ set(YADOMS_INCL_DIR
 	${YADOMS_INCL_DIR}
 	${SHARED_INCL_DIR}
    ${PROTOBUF_INCLUDE_DIRS}
-   ${plugin_IPC_GENERATED_DIR}
+   ${plugin_IPC_INCLUDE_DIRS}
 )
 
 set(YADOMS_ALL_INCL_DIR

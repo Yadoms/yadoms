@@ -1,8 +1,7 @@
 #pragma once
 
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
-#include <toPlugin.pb.h>
-#include <toYadoms.pb.h>
+#include <plugin_IPC/plugin_IPC.h>
 
 
 //-----------------------------------------------------
@@ -38,12 +37,14 @@ public:
    bool recipientFieldExists(const std::string& fieldName) const override;
    void historizeData(const std::string& device, const shared::plugin::yPluginApi::historization::IHistorizable& data) override;
    void historizeData(const std::string& device, const std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > & dataVect) override;
-   const shared::plugin::information::IInformation& getInformation() const override;
+   boost::shared_ptr<const shared::plugin::information::IInformation> getInformation() const override;
    shared::CDataContainer getConfiguration() const override;
    shared::event::CEventHandler & getEventHandler() override;
    // [END] shared::script::yScriptApi::IYScriptApi implementation
 
-   void onReceive(const unsigned char* message, size_t messageSize);
+   void onReceive(boost::shared_ptr<const unsigned char[]> message, size_t messageSize);
+
+   void waitInitialized() const;
 
 protected:
    //--------------------------------------------------------------
@@ -56,7 +57,10 @@ protected:
    void processPluginInformation(const pbPluginInformation::Information& msg);
 
 private:
+   mutable std::condition_variable m_initializationCondition;
+   mutable std::mutex m_initializationConditionMutex;
    bool m_initialized;
+
    bool m_stopRequested;
 
 

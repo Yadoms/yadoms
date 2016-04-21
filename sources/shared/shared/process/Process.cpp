@@ -37,9 +37,6 @@ namespace shared
 			   for (auto cmdLineArg = m_commandLine->args().begin(); cmdLineArg != m_commandLine->args().end(); ++cmdLineArg)
 				   args.push_back(*cmdLineArg);
 
-            if (!!m_endOfProcessObserver)
-               createEndOfProcessObserver();
-
             auto executableFullPath = CFileSystemExtension::getModulePath() / m_commandLine->workingDirectory() / m_commandLine->executable();
 
             if (!m_logger)
@@ -69,6 +66,9 @@ namespace shared
                                                                              m_logger,
                                                                              m_lastError);               
             }
+
+            if (!!m_endOfProcessObserver)
+               createEndOfProcessObserver();
 		   }
 		   catch (Poco::Exception& ex)
 		   {

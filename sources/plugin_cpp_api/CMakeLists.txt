@@ -39,7 +39,7 @@ set(plugin_cpp_api_ALL_INCLUDE_DIRS
    ${BOOST_INCL_DIR}
    ${Poco_INCLUDE_DIRS}
    ${PROTOBUF_INCLUDE_DIRS}
-   ${plugin_IPC_GENERATED_DIR}
+   ${plugin_IPC_INCLUDE_DIRS}
    )
 
 set_property(TARGET plugin_cpp_api PROPERTY INCLUDE_DIRECTORIES ${plugin_cpp_api_ALL_INCLUDE_DIRS})

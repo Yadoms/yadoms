@@ -8,33 +8,26 @@ namespace pluginSystem
 {
 
 const size_t CContextAccessor::m_maxMessages(100);
+const size_t CContextAccessor::m_maxMessageSize(10000);
 
-CContextAccessor::CContextAccessor(boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> yPluginApi)
-   :CThreadBase(createId()), //TODO embarquer un boost::thread plutôt que d'hériter de CThreadBase
-   m_pluginApi(yPluginApi),
-   m_id(createId()),
-   m_sendMessageQueueId(m_id + ".toPlugin"),
-   m_receiveMessageQueueId(m_id + ".toYadoms"),
-   m_sendMessageQueueRemover(m_sendMessageQueueId),
-   m_receiveMessageQueueRemover(m_receiveMessageQueueId),
-   m_sendMessageQueue(boost::interprocess::create_only, m_sendMessageQueueId.c_str(), m_maxMessages, m_messageQueueMessageSize),
-   m_receiveMessageQueue(boost::interprocess::create_only, m_receiveMessageQueueId.c_str(), m_maxMessages, m_messageQueueMessageSize)
+   CContextAccessor::CContextAccessor(boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> yPluginApi)
+      : m_pluginApi(yPluginApi),
+        m_id(createId()),
+        m_sendMessageQueueId(m_id + ".toPlugin"),
+        m_receiveMessageQueueId(m_id + ".toYadoms"),
+        m_sendMessageQueueRemover(m_sendMessageQueueId),
+        m_receiveMessageQueueRemover(m_receiveMessageQueueId),
+        m_sendMessageQueue(boost::interprocess::create_only, m_sendMessageQueueId.c_str(), m_maxMessages, m_maxMessageSize),
+        m_receiveMessageQueue(boost::interprocess::create_only, m_receiveMessageQueueId.c_str(), m_maxMessages, m_maxMessageSize),
+        m_sendBuffer(boost::make_shared<unsigned char[]>(m_sendMessageQueue.get_max_msg_size())),
+        m_messageQueueReceiveThread(boost::thread(&CContextAccessor::messageQueueReceiveThreaded, this))
 {
-   // Verify that the version of the library that we linked against is
-   // compatible with the version of the headers we compiled against.
-   GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-   memset(m_mqBuffer, 0, sizeof(m_mqBuffer));
-
-   CThreadBase::start();
 }
 
 CContextAccessor::~CContextAccessor()
 {
-   CThreadBase::stop();
-
-   // Delete all global objects allocated by libprotobuf.
-   google::protobuf::ShutdownProtobufLibrary();
+   m_messageQueueReceiveThread.interrupt();
+   m_messageQueueReceiveThread.join();
 }
 
 std::string CContextAccessor::id() const
@@ -49,11 +42,17 @@ std::string CContextAccessor::createId()
    return ss.str();
 }
 
-void CContextAccessor::doWork()
+void CContextAccessor::messageQueueReceiveThreaded()
 {
+   // Verify that the version of the library that we linked against is
+   // compatible with the version of the headers we compiled against.
+   GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+   YADOMS_LOG(information) << "Message queue ID : " << m_id;
+
    try
    {
-      unsigned char message[m_messageQueueMessageSize];
+      auto message(boost::make_shared<unsigned char[]>(m_receiveMessageQueue.get_max_msg_size()));
       size_t messageSize;
       unsigned int messagePriority;
       while (true)
@@ -63,7 +62,7 @@ void CContextAccessor::doWork()
             // boost::interprocess::message_queue::receive is not responding to boost thread interruption, so we need to do some
             // polling and call boost::this_thread::interruption_point to exit properly
             // Note that boost::interprocess::message_queue::timed_receive requires universal time to work (can not use shared::currentTime::Provider)
-            auto messageWasReceived = m_receiveMessageQueue.timed_receive(message, m_messageQueueMessageSize, messageSize, messagePriority,
+            auto messageWasReceived = m_receiveMessageQueue.timed_receive(message.get(), m_receiveMessageQueue.get_max_msg_size(), messageSize, messagePriority,
                boost::posix_time::ptime(boost::posix_time::microsec_clock::universal_time() + boost::posix_time::seconds(1)));
             boost::this_thread::interruption_point();
 
@@ -93,6 +92,9 @@ void CContextAccessor::doWork()
    }
 
    YADOMS_LOG(debug) << "Close message queues";
+
+   // Delete all global objects allocated by libprotobuf.
+   google::protobuf::ShutdownProtobufLibrary();
 }
 
 boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> CContextAccessor::api() const
@@ -105,23 +107,23 @@ void CContextAccessor::send(const toPlugin::msg& pbMsg)
    if (!pbMsg.IsInitialized())
       throw std::overflow_error("CContextAccessor::send : message is not fully initialized");
 
-   if (pbMsg.ByteSize() > static_cast<int>(m_messageQueueMessageSize))
+   if (pbMsg.ByteSize() > static_cast<int>(m_sendMessageQueue.get_max_msg_size()))
       throw std::overflow_error((boost::format("CContextAccessor::send : message is too big (%1% bytes)") % pbMsg.ByteSize()).str());
 
-   if (!pbMsg.SerializeToArray(m_mqBuffer, m_messageQueueMessageSize))
+   if (!pbMsg.SerializeToArray(m_sendBuffer.get(), m_sendMessageQueue.get_max_msg_size()))
       throw std::overflow_error("CContextAccessor::send : fail to serialize message (too big ?)");
 
-   m_sendMessageQueue.send(m_mqBuffer, pbMsg.GetCachedSize(), 0);
+   m_sendMessageQueue.send(m_sendBuffer.get(), pbMsg.GetCachedSize(), 0);
 }
 
-void CContextAccessor::processMessage(const void* message, size_t messageSize) const
+void CContextAccessor::processMessage(boost::shared_ptr<const unsigned char[]> message, size_t messageSize) const
 {
    if (messageSize < 1)
       throw shared::exception::CInvalidParameter("messageSize");
 
    // Unserialize message
    toYadoms::msg request;
-   if (!request.ParseFromArray(message, messageSize))
+   if (!request.ParseFromArray(message.get(), messageSize))
       throw shared::exception::CInvalidParameter("message");
 
    // Process message

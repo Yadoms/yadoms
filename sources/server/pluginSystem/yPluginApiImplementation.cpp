@@ -173,7 +173,7 @@ std::vector<int> CYPluginApiImplementation::findRecipientsFromField(const std::s
 
 bool CYPluginApiImplementation::recipientFieldExists(const std::string& fieldName) const
 {
-   return m_recipientRequester->fieldExists(fieldName, getInformation().getType());
+   return m_recipientRequester->fieldExists(fieldName, getInformation()->getType());
 }
 
 
@@ -216,9 +216,9 @@ void CYPluginApiImplementation::historizeData(const std::string& device, const s
    }
 }
 
-const shared::plugin::information::IInformation& CYPluginApiImplementation::getInformation() const
+boost::shared_ptr<const shared::plugin::information::IInformation> CYPluginApiImplementation::getInformation() const
 {
-   return *m_informations;
+   return m_informations;
 }
 
 shared::CDataContainer CYPluginApiImplementation::getConfiguration() const

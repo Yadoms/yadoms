@@ -42,9 +42,6 @@ namespace plugin_cpp_api
    void CPluginContext::run()
    {
       auto api = boost::make_shared<CApiImplementation>();
-      std::cout << api->getInformation().getType() << " is starting...";
-
-      auto msgReceiverThread = boost::thread(&CPluginContext::msgReceiverThreaded, this, api);
 
       try
       {
@@ -52,35 +49,40 @@ namespace plugin_cpp_api
 
          api->setSendingMessageQueue(m_sendMessageQueue);
 
+         m_msgReceiverThread = boost::thread(&CPluginContext::msgReceiverThreaded, this, api);
+
+         api->waitInitialized();
+
+         std::cout << api->getInformation()->getType() << " started";
+
          // Execute plugin code
          m_plugin->doWork(api);
 
          if (!api->stopRequested())
          {
             m_returnCode = kUnexpectedStop;
-            std::cerr << api->getInformation().getType() << " has stopped itself.";
+            std::cerr << api->getInformation()->getType() << " has stopped itself.";
          }
 
          // Normal stop
+         std::cout << api->getInformation()->getType() << " is stopped";
+         m_returnCode = kOk;
       }
       catch (std::exception& e)
       {
          m_returnCode = kRuntimeError;
-         std::cerr << api->getInformation().getType() << " crashed with exception : " << e.what();
+         std::cerr << api->getInformation()->getType() << " crashed with exception : " << e.what();
       }
       catch (...)
       {
          m_returnCode = kRuntimeError;
-         std::cerr << api->getInformation().getType() << " crashed with unknown exception";
+         std::cerr << api->getInformation()->getType() << " crashed with unknown exception";
       }
 
-      msgReceiverThread.interrupt();
-      msgReceiverThread.timed_join(boost::posix_time::seconds(20));
+      m_msgReceiverThread.interrupt();
+      m_msgReceiverThread.timed_join(boost::posix_time::seconds(20));
 
       closeMessageQueues();
-
-      std::cout << api->getInformation().getType() << " is stopped";
-      m_returnCode = kOk;
    }
 
    EReturnCode CPluginContext::getReturnCode() const
@@ -99,7 +101,7 @@ namespace plugin_cpp_api
          const auto sendMessageQueueId(m_commandLine->yPluginApiAccessorId() + ".toYadoms");
          const auto receiveMessageQueueId(m_commandLine->yPluginApiAccessorId() + ".toPlugin");
 
-         std::cout << "Opening message queues";
+         std::cout << "Opening message queues id " << m_commandLine->yPluginApiAccessorId();
 
          m_sendMessageQueue = boost::make_shared<boost::interprocess::message_queue>(boost::interprocess::open_only, sendMessageQueueId.c_str());
          m_receiveMessageQueue = boost::make_shared<boost::interprocess::message_queue>(boost::interprocess::open_only, receiveMessageQueueId.c_str());
@@ -124,7 +126,7 @@ namespace plugin_cpp_api
 
    void CPluginContext::msgReceiverThreaded(boost::shared_ptr<CApiImplementation> api) const
    {
-      unsigned char message[m_messageQueueMessageSize];
+      auto message(boost::make_shared<unsigned char[]>(m_receiveMessageQueue->get_max_msg_size()));
       size_t messageSize;
       unsigned int messagePriority;
 
@@ -137,7 +139,7 @@ namespace plugin_cpp_api
                // boost::interprocess::message_queue::receive is not responding to boost thread interruption, so we need to do some
                // polling and call boost::this_thread::interruption_point to exit properly
                // Note that boost::interprocess::message_queue::timed_receive requires universal time to work (can not use shared::currentTime::Provider)
-               auto messageWasReceived = m_receiveMessageQueue->timed_receive(message, m_messageQueueMessageSize, messageSize, messagePriority,
+               auto messageWasReceived = m_receiveMessageQueue->timed_receive(message.get(), m_receiveMessageQueue->get_max_msg_size(), messageSize, messagePriority,
                   boost::posix_time::ptime(boost::posix_time::microsec_clock::universal_time() + boost::posix_time::seconds(1)));
                boost::this_thread::interruption_point();
 

@@ -3,11 +3,7 @@
 #include "IPluginContext.h"
 #include "IPlugin.h"
 #include "ICommandLine.h"
-
-// TODO faire un include dans plugin_IPC qui contient ces 3 lignes
 #include "ApiImplementation.h"
-const size_t m_messageQueueMessageSize(1000); //TODO déplacer
-
 
 namespace plugin_cpp_api
 {

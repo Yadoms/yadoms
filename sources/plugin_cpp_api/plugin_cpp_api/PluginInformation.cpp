@@ -68,5 +68,5 @@ shared::CDataContainer CPluginInformation::getPackage() const
 
 const boost::filesystem::path& CPluginInformation::getPath() const
 {
-   return m_buffer->path();
+   return boost::filesystem::path(m_buffer->path());
 }
