@@ -3,7 +3,7 @@
 #include "ILogger.h"
 #include "IProcess.h"
 #include "ICommandLine.h"
-#include "IEndOfProcessObserver.h"
+#include "IProcessObserver.h"
 #include <Poco/Process.h>
 #include <Poco/PipeStream.h>
 
@@ -21,13 +21,13 @@ namespace shared
          /// \brief	Constructor
          /// \param[in] commandLine             Process command line
          /// \param[in] workingDirectory        Working directory to use. If null, use the current working directory.
-         /// \param[in] endOfProcessObserver    The end of process event observer (can be NULL is no observer needed)
+         /// \param[in] processObserver         The process life observer (can be NULL is no observer needed)
          /// \param[in] logger                  Process out/err logger (can be NULL is no logger needed)
          /// \throw CPluginException if error //TODO revoir le type
          //--------------------------------------------------------------
          CProcess(boost::shared_ptr<ICommandLine> commandLine,
                   const std::string& workingDirectory,
-                  boost::shared_ptr<IEndOfProcessObserver> endOfProcessObserver,
+                  boost::shared_ptr<IProcessObserver> processObserver,
                   boost::shared_ptr<ILogger> logger);
 
          //--------------------------------------------------------------
@@ -51,7 +51,7 @@ namespace shared
          //-----------------------------------------------------
          ///\brief               Create the process observer 
          //-----------------------------------------------------
-         void createEndOfProcessObserver();
+         void createProcessObserver();
 
          //-----------------------------------------------------
          ///\brief               Rule montoring thread function
@@ -88,8 +88,8 @@ namespace shared
          //--------------------------------------------------------------
          ///\brief   The end of process observer
          //--------------------------------------------------------------
-         boost::shared_ptr<IEndOfProcessObserver> m_endOfProcessObserver;
-         boost::shared_ptr<boost::thread> m_endOfProcessMonitorThread;
+         boost::shared_ptr<IProcessObserver> m_processObserver;
+         boost::shared_ptr<boost::thread> m_processMonitorThread;
 
          //--------------------------------------------------------------
          ///\brief   The logger

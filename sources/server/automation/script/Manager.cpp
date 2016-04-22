@@ -259,7 +259,7 @@ std::string CManager::getScriptLogFile(boost::shared_ptr<const database::entitie
 boost::shared_ptr<shared::process::IProcess> CManager::createScriptProcess(boost::shared_ptr<const IProperties> scriptProperties, //TODO virer la fonction
                                                                            boost::shared_ptr<shared::process::ILogger> scriptLogger,
                                                                            boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
-                                                                           boost::shared_ptr<shared::process::IEndOfProcessObserver> stopNotifier)
+                                                                           boost::shared_ptr<shared::process::IProcessObserver> stopNotifier)
 {
    try
    {
@@ -302,7 +302,7 @@ boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> CManager::createScrip
    return yScriptApi;
 }
 
-boost::shared_ptr<shared::process::IEndOfProcessObserver> CManager::createStopNotifier(boost::shared_ptr<IRuleStateHandler> ruleStateHandler, int ruleId)
+boost::shared_ptr<shared::process::IProcessObserver> CManager::createStopNotifier(boost::shared_ptr<IRuleStateHandler> ruleStateHandler, int ruleId)
 {
    return boost::make_shared<StopNotifier>(ruleStateHandler, ruleId);
 }

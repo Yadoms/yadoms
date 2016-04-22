@@ -3,7 +3,7 @@
 #include <shared/process/IProcess.h>
 #include <shared/process/ILogger.h>
 #include <shared/script/yScriptApi/IYScriptApi.h>
-#include <shared/process/IEndOfProcessObserver.h>
+#include <shared/process/IProcessObserver.h>
 
 namespace shared { namespace script
 {
@@ -56,14 +56,14 @@ namespace shared { namespace script
       ///\param[in] scriptPath            The script path
       ///\param[in] scriptLogger          The rule logger
       ///\param[in] yScriptApi            The rule context
-      ///\param[in] stopNotifier          The stop notifier
+      ///\param[in] processObserver       The process life notifier
       ///\param[in] scriptConfiguration   Configuration of the script
       ///\return                 The created script process
       //-----------------------------------------------------
       virtual boost::shared_ptr<shared::process::IProcess> createProcess(const std::string& scriptPath,
                                                                          boost::shared_ptr<shared::process::ILogger> scriptLogger,
                                                                          boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
-                                                                         boost::shared_ptr<shared::process::IEndOfProcessObserver> stopNotifier,
+                                                                         boost::shared_ptr<shared::process::IProcessObserver> processObserver,
                                                                          const shared::CDataContainer& scriptConfiguration) const = 0;
    };
 	

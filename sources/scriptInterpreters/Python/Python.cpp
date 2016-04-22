@@ -63,7 +63,7 @@ void CPython::saveScriptContent(const std::string& scriptPath, const std::string
 boost::shared_ptr<shared::process::IProcess> CPython::createProcess(const std::string& scriptPath,
                                                                     boost::shared_ptr<shared::process::ILogger> scriptLogger,
                                                                     boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
-                                                                    boost::shared_ptr<shared::process::IEndOfProcessObserver> stopNotifier,
+                                                                    boost::shared_ptr<shared::process::IProcessObserver> processObserver,
                                                                     const shared::CDataContainer& scriptConfiguration) const
 {
    try
@@ -72,7 +72,7 @@ boost::shared_ptr<shared::process::IProcess> CPython::createProcess(const std::s
                                                 boost::make_shared<CScriptFile>(scriptPath),
                                                 yScriptApi,
                                                 scriptLogger,
-                                                stopNotifier);
+                                                processObserver);
    }
    catch (shared::process::CProcessException& ex)
    {

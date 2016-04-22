@@ -42,8 +42,7 @@ namespace pluginSystem
       /// \param [in]   dataAccessLayer            the data access layer
       /// \param [in]   qualifier                  the plugin qualifier
       /// \param [in]   managerEventHandler        the manager event handler
-      /// \param [in]   normalStopEventId          Id of the normal instance stop event
-      /// \param [in]   abnormalStopEventId        Id of the abnormal instance stop event
+      /// \param [in]   instanceStopEventId        Id of the instance stop event
       /// \return                      The plugin instance
       //--------------------------------------------------------------
       virtual boost::shared_ptr<IInstance> createInstance(boost::shared_ptr<const database::entities::CPlugin> instanceData,
@@ -51,7 +50,6 @@ namespace pluginSystem
                                                           boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
                                                           const boost::shared_ptr<IQualifier> qualifier,
                                                           boost::shared_ptr<shared::event::CEventHandler> managerEventHandler,
-                                                          int normalStopEventId,
-                                                          int abnormalStopEventId) const = 0;
+                                                          int instanceStopEventId) const = 0;
    };
 } // namespace pluginSystem

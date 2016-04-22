@@ -10,11 +10,11 @@ namespace shared
    {
       CProcess::CProcess(boost::shared_ptr<ICommandLine> commandLine,
                          const std::string& workingDirectory,
-                         boost::shared_ptr<IEndOfProcessObserver> endOfProcessObserver,
+                         boost::shared_ptr<IProcessObserver> processObserver,
                          boost::shared_ptr<ILogger> logger)
          : m_commandLine(commandLine),
            m_workingDirectory(workingDirectory),
-           m_endOfProcessObserver(endOfProcessObserver),
+           m_processObserver(processObserver),
            m_logger(logger),
            m_returnCode(0),
            m_lastError(boost::make_shared<std::string>())
@@ -67,8 +67,8 @@ namespace shared
                                                                              m_lastError);               
             }
 
-            if (!!m_endOfProcessObserver)
-               createEndOfProcessObserver();
+            if (!!m_processObserver)
+               createProcessObserver();
 		   }
 		   catch (Poco::Exception& ex)
 		   {
@@ -76,13 +76,16 @@ namespace shared
 		   }
 	   }
 
-      void CProcess::createEndOfProcessObserver()
+      void CProcess::createProcessObserver()
       {
-         m_endOfProcessMonitorThread = boost::make_shared<boost::thread>(&CProcess::monitorThreaded, this);
+         m_processMonitorThread = boost::make_shared<boost::thread>(&CProcess::monitorThreaded, this);
       }
 
       void CProcess::monitorThreaded()
       {
+         if (!!m_processObserver)
+            m_processObserver->onStart();
+
          if (!m_process)
             m_returnCode = 0;
          else
@@ -103,8 +106,8 @@ namespace shared
          if (!!m_StdErrRedirectingThread)
             m_StdErrRedirectingThread->join();
 
-         if (!!m_endOfProcessObserver)
-            m_endOfProcessObserver->onEndOfProcess(m_returnCode, getError());
+         if (!!m_processObserver)
+            m_processObserver->onFinish(m_returnCode, getError());
       }
 
 	   void CProcess::kill()

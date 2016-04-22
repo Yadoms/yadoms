@@ -507,7 +507,6 @@ namespace web { namespace rest { namespace service {
 					m_messageSender.sendBindingQueryRequest(pluginId, data, cb);
 
 					//wait for result
-					//communication::callback::CSynchronousCallback< std::string >::CSynchronousResult res = cb.waitForResult();
 					switch (cb.waitForResult())
 					{
                case communication::callback::CSynchronousCallback< shared::CDataContainer >::kResult:

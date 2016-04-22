@@ -79,6 +79,7 @@ namespace shared { namespace plugin { namespace yPluginApi
       ///\brief Set the current plugin state
       ///\param    [in]    state           The new state
       ///\param    [in]    customMessageId The associated message ID (translatable in the locales file of the plugin). Ignored if state != kCustom or kError.
+      ///\note In case of setting states kError or kStopped, plugin must be effectively stopped within 10 seconds or it will be killed.
       //-----------------------------------------------------
       virtual void setPluginState(const historization::EPluginState& state, const std::string & customMessageId = std::string()) = 0;
 

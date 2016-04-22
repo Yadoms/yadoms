@@ -55,10 +55,10 @@ namespace automation { namespace script
       boost::shared_ptr<shared::process::IProcess> createScriptProcess(boost::shared_ptr<const IProperties> scriptProperties,
                                                                        boost::shared_ptr<shared::process::ILogger> scriptLogger,
                                                                        boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
-                                                                       boost::shared_ptr<shared::process::IEndOfProcessObserver> stopNotifier) override;
+                                                                       boost::shared_ptr<shared::process::IProcessObserver> stopNotifier) override;
       boost::shared_ptr<shared::process::ILogger> createScriptLogger(const std::string& scriptPath) override;
       boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> createScriptContext(boost::shared_ptr<shared::process::ILogger> scriptLogger) override;
-      boost::shared_ptr<shared::process::IEndOfProcessObserver> createStopNotifier(boost::shared_ptr<IRuleStateHandler> ruleStateHandler, int ruleId) override;
+      boost::shared_ptr<shared::process::IProcessObserver> createStopNotifier(boost::shared_ptr<IRuleStateHandler> ruleStateHandler, int ruleId) override;
       // [END] IManager Implementation
 
       //-----------------------------------------------------

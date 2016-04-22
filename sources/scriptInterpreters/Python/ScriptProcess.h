@@ -5,7 +5,7 @@
 #include "IScriptFile.h"
 #include "ContextAccessor.h"
 #include <shared/process/ICommandLine.h>
-#include <shared/process/IEndOfProcessObserver.h>
+#include <shared/process/IProcessObserver.h>
 
 //--------------------------------------------------------------
 /// \brief	Python process
@@ -26,7 +26,7 @@ public:
                   boost::shared_ptr<const IScriptFile> scriptFile,
                   boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
                   boost::shared_ptr<shared::process::ILogger> scriptLogger,
-                  boost::shared_ptr<shared::process::IEndOfProcessObserver> stopNotifier);
+                  boost::shared_ptr<shared::process::IProcessObserver> stopNotifier);
 
    //--------------------------------------------------------------
    /// \brief	Destructor
@@ -73,7 +73,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	Object to notify when process stops
    //--------------------------------------------------------------
-   boost::shared_ptr<shared::process::IEndOfProcessObserver> m_stopNotifier;
+   boost::shared_ptr<shared::process::IProcessObserver> m_stopNotifier;
 
    //--------------------------------------------------------------
    /// \brief	The context accessor

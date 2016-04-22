@@ -32,8 +32,7 @@ namespace pluginSystem
                                                   boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
                                                   const boost::shared_ptr<IQualifier> qualifier,
                                                   boost::shared_ptr<shared::event::CEventHandler> managerEventHandler,
-                                                  int normalStopEventId,
-                                                  int abnormalStopEventId) const override;
+                                                  int instanceStopEventId) const override;
       // [END] IFactory Implementation
 
    private:
@@ -44,12 +43,12 @@ namespace pluginSystem
       boost::shared_ptr<shared::process::ICommandLine> createCommandLine(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
                                                                          const std::string& messageQueueId) const;
 
-      boost::shared_ptr<CInstanceStateHandler> createInstanceStateHandler(boost::shared_ptr<database::IPluginRequester> dbRequester,
-                                                                          boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger,
+      boost::shared_ptr<CInstanceStateHandler> createInstanceStateHandler(boost::shared_ptr<const database::entities::CPlugin> instanceData,
+                                                                          boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
+                                                                          boost::shared_ptr<database::IDataProvider> dataProvider,
+                                                                          boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
                                                                           boost::shared_ptr<shared::event::CEventHandler> managerEventHandler,
-                                                                          int instanceId,
-                                                                          int normalStopEventId,
-                                                                          int abnormalStopEventId) const;
+                                                                          int instanceStopEventId) const;
 
       boost::shared_ptr<shared::process::IProcess> createInstanceProcess(boost::shared_ptr<shared::process::ICommandLine> commandLine,
                                                                          boost::shared_ptr<shared::process::ILogger> logger,
@@ -57,6 +56,7 @@ namespace pluginSystem
 
       boost::shared_ptr<IContextAccessor> createInstanceRunningContext(boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
                                                                        boost::shared_ptr<const database::entities::CPlugin> instanceData,
+                                                                       boost::shared_ptr<IInstanceStateHandler> instanceStateHandler,
                                                                        boost::shared_ptr<database::IDataProvider> dataProvider,
                                                                        boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer) const;
 

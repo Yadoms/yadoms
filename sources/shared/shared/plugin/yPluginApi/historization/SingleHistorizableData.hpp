@@ -5,7 +5,6 @@
 #include "typeInfo/ITypeInfo.h"
 #include "typeInfo/EnumTypeInfo.hpp"
 #include "typeInfo/EmptyTypeInfo.h"
-#include <shared/exception/InvalidParameter.hpp>
 #include <shared/StringExtension.h>
 
 namespace shared { namespace plugin { namespace yPluginApi { namespace historization

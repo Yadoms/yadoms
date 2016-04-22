@@ -27,7 +27,7 @@ public:
    boost::shared_ptr<shared::process::IProcess> createProcess(const std::string& scriptPath,
                                                               boost::shared_ptr<shared::process::ILogger> scriptLogger,
                                                               boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
-                                                              boost::shared_ptr<shared::process::IEndOfProcessObserver> stopNotifier,
+                                                              boost::shared_ptr<shared::process::IProcessObserver> processObserver,
                                                               const shared::CDataContainer& scriptConfiguration) const override;
   // [END] IInterpreter implementation
 

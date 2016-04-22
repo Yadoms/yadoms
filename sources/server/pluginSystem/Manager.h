@@ -32,8 +32,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       enum EInstanceStopEventType
       {
-         kNormal = 0,      // Instance abnormal stopped
-         kAbnormal
+         kInstanceStopped = shared::event::kUserFirstId,      // Instance stopped
       };
 
 
@@ -257,20 +256,7 @@ namespace pluginSystem
       ///\param[in] id        The instance ID
       ///\param[in] error     Error associated to event (empty if not error)
       //-----------------------------------------------------
-      void onInstanceStopped(int id, const std::string& error = std::string());
-
-      //-----------------------------------------------------
-      ///\brief               Record instance started in base
-      ///\param[in] id        The instance ID
-      //-----------------------------------------------------
-      void recordInstanceStarted(int id);
-
-      //-----------------------------------------------------
-      ///\brief               Record instance stopped in base
-      ///\param[in] id        The instance ID
-      ///\param[in] error     Error associated to event (empty if not error)
-      //-----------------------------------------------------
-      void recordInstanceStopped(int id, const std::string& error = std::string());
+      void onInstanceStopped(int id);
 
       void startInternalPlugin();
       void stopInternalPlugin();
@@ -311,11 +297,6 @@ namespace pluginSystem
       /// \brief			Data access layer
       //--------------------------------------------------------------
       boost::shared_ptr<dataAccessLayer::IDataAccessLayer> m_dataAccessLayer;
-
-      //-----------------------------------------------------
-      ///\brief               Flag indicating that Yadoms is being shutdown, so don't record rules stop in database
-      //-----------------------------------------------------
-      bool m_yadomsShutdown;
 
       //-----------------------------------------------------
       ///\brief               Event handler to manage events on all plugins

@@ -39,22 +39,22 @@ namespace pluginSystem
                                                          boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
                                                          const boost::shared_ptr<IQualifier> qualifier, //TODO faut s'en servir !
                                                          boost::shared_ptr<shared::event::CEventHandler> managerEventHandler,
-                                                         int normalStopEventId,
-                                                         int abnormalStopEventId) const
+                                                         int instanceStopEventId) const
    {
       auto pluginInformation = createInformation(instanceData->Type());
 
-      auto instanceStateHandler = createInstanceStateHandler(dataProvider->getPluginRequester(),
-                                                             dataAccessLayer->getEventLogger(),
+      auto instanceStateHandler = createInstanceStateHandler(instanceData,
+                                                             pluginInformation,
+                                                             dataProvider,
+                                                             dataAccessLayer,
                                                              managerEventHandler,
-                                                             instanceData->Id(),
-                                                             normalStopEventId,
-                                                             abnormalStopEventId);
+                                                             instanceStopEventId);
 
       auto logger = createProcessLogger(instanceData->Type());
 
       auto yPluginApi = createInstanceRunningContext(pluginInformation,
                                                      instanceData,
+                                                     instanceStateHandler,
                                                      dataProvider,
                                                      dataAccessLayer);
 
@@ -76,19 +76,23 @@ namespace pluginSystem
       return boost::make_shared<CLogger>(pluginName);
    }
 
-   boost::shared_ptr<CInstanceStateHandler> CFactory::createInstanceStateHandler(boost::shared_ptr<database::IPluginRequester> dbRequester,
-                                                                                 boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger,
+   boost::shared_ptr<CInstanceStateHandler> CFactory::createInstanceStateHandler(boost::shared_ptr<const database::entities::CPlugin> instanceData,
+                                                                                 boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
+                                                                                 boost::shared_ptr<database::IDataProvider> dataProvider,
+                                                                                 boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
                                                                                  boost::shared_ptr<shared::event::CEventHandler> managerEventHandler,
-                                                                                 int instanceId,
-                                                                                 int normalStopEventId,
-                                                                                 int abnormalStopEventId) const
+                                                                                 int instanceStopEventId) const
    {
-      return boost::make_shared<CInstanceStateHandler>(dbRequester,
-                                                       eventLogger,
+      return boost::make_shared<CInstanceStateHandler>(instanceData,
+                                                       pluginInformation,
+                                                       dataProvider->getPluginRequester(),
+                                                       dataAccessLayer->getEventLogger(),
+                                                       dataProvider->getPluginEventLoggerRequester(),
+                                                       dataAccessLayer->getAcquisitionHistorizer(),
                                                        managerEventHandler,
-                                                       instanceId,
-                                                       normalStopEventId,
-                                                       abnormalStopEventId);
+                                                       dataAccessLayer->getDeviceManager(),
+                                                       dataProvider->getKeywordRequester(),
+                                                       instanceStopEventId);
    }
 
    boost::shared_ptr<shared::process::ICommandLine> CFactory::createCommandLine(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
@@ -125,11 +129,13 @@ namespace pluginSystem
 
    boost::shared_ptr<IContextAccessor> CFactory::createInstanceRunningContext(boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
                                                                               boost::shared_ptr<const database::entities::CPlugin> instanceData,
+                                                                              boost::shared_ptr<IInstanceStateHandler> instanceStateHandler,
                                                                               boost::shared_ptr<database::IDataProvider> dataProvider,
                                                                               boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer) const
    {
       auto apiImplementation(boost::make_shared<CYPluginApiImplementation>(pluginInformation,
                                                                            instanceData,
+                                                                           instanceStateHandler,
                                                                            dataProvider,
                                                                            dataAccessLayer->getDeviceManager(),
                                                                            dataAccessLayer->getAcquisitionHistorizer()));

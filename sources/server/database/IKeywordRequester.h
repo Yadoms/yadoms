@@ -29,7 +29,18 @@ namespace database {
       /// \param [in] newKeywords   New keyword informations
       /// \throw                    shared::exception::CEmptyResult if deviceId is unknown
       //--------------------------------------------------------------
-      virtual void addKeyword(const database::entities::CKeyword& newKeyword) = 0;
+      virtual void addKeyword(const entities::CKeyword& newKeyword) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief                    Add new keyword
+      /// \param [in] deviceId      ID of device owner
+      /// \param [in] keyword       Historizable keyword
+      /// \param [in] details       Keyword details
+      /// \throw                    shared::exception::CEmptyResult if device is unknown
+      //--------------------------------------------------------------
+      virtual void addKeyword(int deviceId,
+                              const shared::plugin::yPluginApi::historization::IHistorizable& keyword,
+                              const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) = 0;
 
       //--------------------------------------------------------------
       /// \brief           Get a keyword

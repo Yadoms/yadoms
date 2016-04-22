@@ -143,6 +143,25 @@ namespace database { namespace sqlite { namespace requesters {
       }
    }
 
+   void CKeyword::addKeyword(int deviceId,
+                             const shared::plugin::yPluginApi::historization::IHistorizable& keyword,
+                             const shared::CDataContainer& details)
+   {
+      entities::CKeyword keywordEntity;
+      keywordEntity.DeviceId = deviceId;
+      keywordEntity.CapacityName = keyword.getCapacity().getName();
+      keywordEntity.AccessMode = keyword.getAccessMode();
+      keywordEntity.Type = keyword.getCapacity().getType();
+      keywordEntity.Units = keyword.getCapacity().getUnit();
+      keywordEntity.Name = keyword.getKeyword();
+      keywordEntity.FriendlyName = keyword.getKeyword();
+      keywordEntity.Measure = keyword.getMeasureType();
+      keywordEntity.TypeInfo = keyword.getTypeInfo();
+      keywordEntity.Details = details;
+
+      addKeyword(keywordEntity);
+   }
+
    boost::shared_ptr<entities::CKeyword> CKeyword::getKeyword(int deviceId, const std::string & keyword) const
    {
       adapters::CKeywordAdapter adapter;

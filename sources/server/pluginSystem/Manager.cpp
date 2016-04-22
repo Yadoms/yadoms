@@ -35,15 +35,13 @@ namespace pluginSystem
 #endif
       m_supervisor(supervisor), m_dataAccessLayer(dataAccessLayer),
       m_pluginManagerEventHandler(boost::make_shared<shared::event::CEventHandler>()),
-      m_yadomsShutdown(false),//TODO passer par la factory
       m_pluginEventsThread(boost::make_shared<boost::thread>(boost::bind(&CManager::pluginEventsThreadDoWork, this)))//TODO passer par la factory
    {
    }
 
    CManager::~CManager()
    {
-      if (!m_yadomsShutdown)
-         stop();
+      stop();
    }
 
    void CManager::start()
@@ -58,7 +56,6 @@ namespace pluginSystem
 
    void CManager::stop()
    {
-      m_yadomsShutdown = true;
       stopInstances();
 
       m_pluginEventsThread->interrupt();
@@ -250,8 +247,6 @@ namespace pluginSystem
          if (isInstanceRunning(instanceData->Id()))
             return; // Already started ==> nothing more to do
 
-         recordInstanceStarted(id);
-
          YADOMS_LOG(information) << "Start plugin instance " << instanceData->DisplayName();
 
          // Create instance
@@ -261,8 +256,7 @@ namespace pluginSystem
                                                                             m_dataAccessLayer,
                                                                             m_qualifier,
                                                                             m_pluginManagerEventHandler,
-                                                                            kNormal,
-                                                                            kAbnormal);
+                                                                            kInstanceStopped);
       }
       catch (shared::exception::CEmptyResult& e)
       {
@@ -359,7 +353,7 @@ namespace pluginSystem
       }
    }
 
-   void CManager::onInstanceStopped(int id, const std::string& error)
+   void CManager::onInstanceStopped(int id)
    {
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
@@ -370,9 +364,6 @@ namespace pluginSystem
             return; // Already stopped ==> nothing more to do
 
          m_runningInstances.erase(instance);
-
-         if (!m_yadomsShutdown)
-            recordInstanceStopped(id, error);
       }
 
       {
@@ -583,14 +574,7 @@ namespace pluginSystem
          {
             switch (m_pluginManagerEventHandler->waitForEvents())
             {
-            case kAbnormal:
-               {
-                  // The plugin has stopped in a non-conventional way (probably crashed)
-                  auto data = m_pluginManagerEventHandler->getEventData<std::pair<int, std::string>>();
-                  onInstanceStopped(data.first, data.second);
-                  break;
-               }
-            case kNormal:
+            case kInstanceStopped:
                {
                   onInstanceStopped(m_pluginManagerEventHandler->getEventData<int>());
                   break;
@@ -649,32 +633,35 @@ namespace pluginSystem
       boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
 
       if (!isInstanceRunning(id))
-         return; // Instance is stopped, nothing to do
+      {
+         request->sendError("Plugin instance is not running");
+         return;
+      }
 
       //TODO
       //boost::shared_ptr<CInstance> instance(m_runningInstances.find(id)->second);
       //instance->postBindingQueryRequest(request);
-   }
 
-   void CManager::recordInstanceStarted(int id) //TODO utile ?
-   {
-      //TODO positionner le keyword state
-      //boost::shared_ptr<database::entities::CPlugin> instanceData(boost::make_shared<database::entities::CPlugin>());//TODO passer par la factory
-      //instanceData->Id = id;
-      //instanceData->State = database::entities::ERuleState::kRunning;
-      //instanceData->StartDate = shared::currentTime::Provider::now();
-      //instanceData->ErrorMessage = std::string();
-      //m_pluginDBTable->updateInstance(instanceData);
-   }
 
-   void CManager::recordInstanceStopped(int id, const std::string& error) //TODO utile ?
-   {
-      //TODO positionner le keyword state
-      //boost::shared_ptr<database::entities::CPlugin> instanceData(boost::make_shared<database::entities::CPlugin>());//TODO passer par la factory
-      //instanceData->Id = id;
-      //instanceData->State = error.empty() ? database::entities::ERuleState::kStopped : database::entities::ERuleState::kError;
-      //instanceData->StartDate = shared::currentTime::Provider::now();
-      //instanceData->ErrorMessage = error;
-      //m_pluginDBTable->updateInstance(instanceData);
+      //TODO pour test
+      shared::CDataContainer ev;
+      ev.set("HOUR", "1 hour");
+      ev.set("DAY", "1 day");
+      ev.set("WEEK", "1 week");
+      ev.set("MONTH", "1 month");
+      ev.set("HALF_YEAR", "6 months");
+      ev.set("YEAR", "1 year");
+
+      shared::CDataContainer en;
+      en.set("name", "Interval of the chart");
+      en.set("description", "Permit to change the interval of all the chart");
+      en.set("type", "enum");
+      en.set("values", ev);
+      en.set("defaultValue", "DAY");
+
+      shared::CDataContainer result;
+      result.set("interval", en);
+
+      request->sendSuccess(result);
    }
 } // namespace pluginSystem

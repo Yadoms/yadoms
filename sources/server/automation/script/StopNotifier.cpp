@@ -17,7 +17,11 @@ namespace automation
       {
       }
 
-      void StopNotifier::onEndOfProcess(int returnCode, const std::string& error)
+      void StopNotifier::onStart()
+      {
+      }
+
+      void StopNotifier::onFinish(int returnCode, const std::string& error)
       {
          if (returnCode == 0)
             notifyNormalStop();

@@ -382,6 +382,7 @@ set(YADOMS_SRC
    server/pluginSystem/IInformationSerializer.h
 	server/pluginSystem/IInstance.h
 	server/pluginSystem/IInstanceStartErrorObserver.h
+	server/pluginSystem/IInstanceStateHandler.h
 	server/pluginSystem/IndicatorQualifier.h
 	server/pluginSystem/IndicatorQualifier.cpp
 	server/pluginSystem/Information.h

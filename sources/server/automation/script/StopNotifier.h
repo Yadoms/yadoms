@@ -1,5 +1,5 @@
 #pragma once
-#include <shared/process/IEndOfProcessObserver.h>
+#include <shared/process/IProcessObserver.h>
 #include "../IRuleStartErrorObserver.h"
 #include "../IRuleStateHandler.h"
 
@@ -10,7 +10,7 @@ namespace automation
       //-----------------------------------------------------
       ///\brief The script stop notifier
       //-----------------------------------------------------
-      class StopNotifier : public IRuleStartErrorObserver, public shared::process::IEndOfProcessObserver
+      class StopNotifier : public IRuleStartErrorObserver, public shared::process::IProcessObserver
       {
       public:
          //-----------------------------------------------------
@@ -29,9 +29,10 @@ namespace automation
          void notifyStartError(const std::string& error) override;
          // [END] IRuleStartErrorObserver Implementation
 
-         // IStopNotifier Implementation
-         void onEndOfProcess(int returnCode, const std::string& error) override;
-         // [END] IStopNotifier Implementation
+         // IProcessObserver Implementation
+         void onStart() override;
+         void onFinish(int returnCode, const std::string& error) override;
+         // [END] IProcessObserver Implementation
 
       protected:
          virtual void notifyNormalStop();

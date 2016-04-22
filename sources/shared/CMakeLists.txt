@@ -206,7 +206,7 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/historization/typeInfo/StringTypeInfo.cpp
    shared/plugin/yPluginApi/historization/typeInfo/EnumTypeInfo.hpp
 
-   shared/process/IEndOfProcessObserver.h
+   shared/process/IProcessObserver.h
    shared/process/ICommandLine.h
    shared/process/IProcess.h
    shared/process/ILogger.h

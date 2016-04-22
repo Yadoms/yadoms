@@ -98,7 +98,7 @@ namespace automation { namespace script
       virtual boost::shared_ptr<shared::process::IProcess> createScriptProcess(boost::shared_ptr<const IProperties> scriptProperties,
                                                                                boost::shared_ptr<shared::process::ILogger> scriptLogger,
                                                                                boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
-                                                                               boost::shared_ptr<shared::process::IEndOfProcessObserver> stopNotifier) = 0;
+                                                                               boost::shared_ptr<shared::process::IProcessObserver> stopNotifier) = 0;
 
       //-----------------------------------------------------
       ///\brief               Create the script logger
@@ -120,7 +120,7 @@ namespace automation { namespace script
       ///\param[in] ruleId    The rule ID
       ///\return              A stop notifier instance
       //-----------------------------------------------------
-      virtual boost::shared_ptr<shared::process::IEndOfProcessObserver> createStopNotifier(boost::shared_ptr<IRuleStateHandler> ruleStateHandler, int ruleId) = 0;
+      virtual boost::shared_ptr<shared::process::IProcessObserver> createStopNotifier(boost::shared_ptr<IRuleStateHandler> ruleStateHandler, int ruleId) = 0;
    };
 
 } } // namespace automation::script
