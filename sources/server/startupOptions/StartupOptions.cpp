@@ -61,7 +61,7 @@ namespace startupOptions
          .binding("server.databasePath", &m_configContainer));
 
       options.addOption(
-         Poco::Util::Option("noPassword", "d", "Skip password authentication for this instance")
+         Poco::Util::Option("noPassword", "n", "Skip password authentication for this instance")
          .required(false)
          .repeatable(false)
          .noArgument()

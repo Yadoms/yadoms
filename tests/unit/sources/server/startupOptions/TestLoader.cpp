@@ -156,6 +156,7 @@ BOOST_AUTO_TEST_CASE(Initialisation_Test)
    BOOST_CHECK_EQUAL(loader.options().getIsRunningAsService(), false);
    BOOST_CHECK_EQUAL(loader.options().getUpdateSiteUri(), "http://www.yadoms.com/downloads/update/");
    BOOST_CHECK_EQUAL(loader.options().getDatabaseAcquisitionLifetime(), 30);
+   BOOST_CHECK_EQUAL(loader.options().getDeveloperMode(), false);
 }
 
 //--------------------------------------------------------------
@@ -199,6 +200,7 @@ BOOST_AUTO_TEST_CASE(Different_Port_p_Initialisation)
    BOOST_CHECK_EQUAL(loader.options().getIsRunningAsService(), false);
    BOOST_CHECK_EQUAL(loader.options().getUpdateSiteUri(), "http://www.yadoms.com/downloads/update/");
    BOOST_CHECK_EQUAL(loader.options().getDatabaseAcquisitionLifetime(), 30);
+   BOOST_CHECK_EQUAL(loader.options().getDeveloperMode(), false);
 }
 
 //--------------------------------------------------------------
@@ -223,6 +225,7 @@ BOOST_AUTO_TEST_CASE(Different_Port_port_Initialisation)
    BOOST_CHECK_EQUAL(loader.options().getIsRunningAsService(), false);
    BOOST_CHECK_EQUAL(loader.options().getUpdateSiteUri(), "http://www.yadoms.com/downloads/update/");
    BOOST_CHECK_EQUAL(loader.options().getDatabaseAcquisitionLifetime(), 30);
+   BOOST_CHECK_EQUAL(loader.options().getDeveloperMode(), false);
 }
 
 //--------------------------------------------------------------
@@ -247,6 +250,7 @@ BOOST_AUTO_TEST_CASE(Different_Port_por_Initialisation)
    BOOST_CHECK_EQUAL(loader.options().getIsRunningAsService(), false);
    BOOST_CHECK_EQUAL(loader.options().getUpdateSiteUri(), "http://www.yadoms.com/downloads/update/");
    BOOST_CHECK_EQUAL(loader.options().getDatabaseAcquisitionLifetime(), 30);
+   BOOST_CHECK_EQUAL(loader.options().getDeveloperMode(), false);
 }
 
 //--------------------------------------------------------------
@@ -296,6 +300,7 @@ BOOST_AUTO_TEST_CASE(Different_Database_databaseFile_Initialisation)
    BOOST_CHECK_EQUAL(loader.options().getIsRunningAsService(), false);
    BOOST_CHECK_EQUAL(loader.options().getUpdateSiteUri(), "http://www.yadoms.com/downloads/update/");
    BOOST_CHECK_EQUAL(loader.options().getDatabaseAcquisitionLifetime(), 30);
+   BOOST_CHECK_EQUAL(loader.options().getDeveloperMode(), false);
 }
 
 //--------------------------------------------------------------
@@ -320,6 +325,7 @@ BOOST_AUTO_TEST_CASE(Different_Database_d_Initialisation)
    BOOST_CHECK_EQUAL(loader.options().getIsRunningAsService(), false);
    BOOST_CHECK_EQUAL(loader.options().getUpdateSiteUri(), "http://www.yadoms.com/downloads/update/");
    BOOST_CHECK_EQUAL(loader.options().getDatabaseAcquisitionLifetime(), 30);
+   BOOST_CHECK_EQUAL(loader.options().getDeveloperMode(), false);
 }
 
 //--------------------------------------------------------------
@@ -344,6 +350,7 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_trace_Initialisation)
    BOOST_CHECK_EQUAL(loader.options().getIsRunningAsService(), false);
    BOOST_CHECK_EQUAL(loader.options().getUpdateSiteUri(), "http://www.yadoms.com/downloads/update/");
    BOOST_CHECK_EQUAL(loader.options().getDatabaseAcquisitionLifetime(), 30);
+   BOOST_CHECK_EQUAL(loader.options().getDeveloperMode(), false);
 }
 
 //--------------------------------------------------------------
@@ -368,6 +375,7 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_debug_Initialisation)
    BOOST_CHECK_EQUAL(loader.options().getIsRunningAsService(), false);
    BOOST_CHECK_EQUAL(loader.options().getUpdateSiteUri(), "http://www.yadoms.com/downloads/update/");
    BOOST_CHECK_EQUAL(loader.options().getDatabaseAcquisitionLifetime(), 30);
+   BOOST_CHECK_EQUAL(loader.options().getDeveloperMode(), false);
 }
 
 //--------------------------------------------------------------
@@ -392,6 +400,7 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_info_Initialisation)
    BOOST_CHECK_EQUAL(loader.options().getIsRunningAsService(), false);
    BOOST_CHECK_EQUAL(loader.options().getUpdateSiteUri(), "http://www.yadoms.com/downloads/update/");
    BOOST_CHECK_EQUAL(loader.options().getDatabaseAcquisitionLifetime(), 30);
+   BOOST_CHECK_EQUAL(loader.options().getDeveloperMode(), false);
 }
 
 //--------------------------------------------------------------
@@ -416,6 +425,7 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_warning_Initialisation)
    BOOST_CHECK_EQUAL(loader.options().getIsRunningAsService(), false);
    BOOST_CHECK_EQUAL(loader.options().getUpdateSiteUri(), "http://www.yadoms.com/downloads/update/");
    BOOST_CHECK_EQUAL(loader.options().getDatabaseAcquisitionLifetime(), 30);
+   BOOST_CHECK_EQUAL(loader.options().getDeveloperMode(), false);
 }
 
 //--------------------------------------------------------------
@@ -440,6 +450,7 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_error_Initialisation)
    BOOST_CHECK_EQUAL(loader.options().getIsRunningAsService(), false);
    BOOST_CHECK_EQUAL(loader.options().getUpdateSiteUri(), "http://www.yadoms.com/downloads/update/");
    BOOST_CHECK_EQUAL(loader.options().getDatabaseAcquisitionLifetime(), 30);
+   BOOST_CHECK_EQUAL(loader.options().getDeveloperMode(), false);
 }
 
 //--------------------------------------------------------------
@@ -464,6 +475,7 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_fatal_Initialisation)
    BOOST_CHECK_EQUAL(loader.options().getIsRunningAsService(), false);
    BOOST_CHECK_EQUAL(loader.options().getUpdateSiteUri(), "http://www.yadoms.com/downloads/update/");
    BOOST_CHECK_EQUAL(loader.options().getDatabaseAcquisitionLifetime(), 30);
+   BOOST_CHECK_EQUAL(loader.options().getDeveloperMode(), false);
 }
 
 
@@ -489,6 +501,7 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_notice_Initialisation)
    BOOST_CHECK_EQUAL(loader.options().getIsRunningAsService(), false);
    BOOST_CHECK_EQUAL(loader.options().getUpdateSiteUri(), "http://www.yadoms.com/downloads/update/");
    BOOST_CHECK_EQUAL(loader.options().getDatabaseAcquisitionLifetime(), 30);
+   BOOST_CHECK_EQUAL(loader.options().getDeveloperMode(), false);
 }
 
 //--------------------------------------------------------------
@@ -513,6 +526,7 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_critical_Initialisation)
    BOOST_CHECK_EQUAL(loader.options().getIsRunningAsService(), false);
    BOOST_CHECK_EQUAL(loader.options().getUpdateSiteUri(), "http://www.yadoms.com/downloads/update/");
    BOOST_CHECK_EQUAL(loader.options().getDatabaseAcquisitionLifetime(), 30);
+   BOOST_CHECK_EQUAL(loader.options().getDeveloperMode(), false);
 }
 
 //--------------------------------------------------------------
@@ -577,6 +591,7 @@ BOOST_AUTO_TEST_CASE(Different_IP_i_Initialisation)
    BOOST_CHECK_EQUAL(loader.options().getIsRunningAsService(), false);
    BOOST_CHECK_EQUAL(loader.options().getUpdateSiteUri(), "http://www.yadoms.com/downloads/update/");
    BOOST_CHECK_EQUAL(loader.options().getDatabaseAcquisitionLifetime(), 30);
+   BOOST_CHECK_EQUAL(loader.options().getDeveloperMode(), false);
 }
 
 //--------------------------------------------------------------
@@ -601,6 +616,7 @@ BOOST_AUTO_TEST_CASE(Different_IP_webServerIp_Initialisation)
    BOOST_CHECK_EQUAL(loader.options().getIsRunningAsService(), false);
    BOOST_CHECK_EQUAL(loader.options().getUpdateSiteUri(), "http://www.yadoms.com/downloads/update/");
    BOOST_CHECK_EQUAL(loader.options().getDatabaseAcquisitionLifetime(), 30);
+   BOOST_CHECK_EQUAL(loader.options().getDeveloperMode(), false);
 }
 
 //--------------------------------------------------------------
@@ -653,6 +669,7 @@ BOOST_AUTO_TEST_CASE(Different_WebServer_w_Initialisation)
    BOOST_CHECK_EQUAL(loader.options().getIsRunningAsService(), false);
    BOOST_CHECK_EQUAL(loader.options().getUpdateSiteUri(), "http://www.yadoms.com/downloads/update/");
    BOOST_CHECK_EQUAL(loader.options().getDatabaseAcquisitionLifetime(), 30);
+   BOOST_CHECK_EQUAL(loader.options().getDeveloperMode(), false);
 }
 
 //--------------------------------------------------------------
@@ -680,6 +697,7 @@ BOOST_AUTO_TEST_CASE(Different_WebServer_webServerPath_Initialisation)
    BOOST_CHECK_EQUAL(loader.options().getIsRunningAsService(), false);
    BOOST_CHECK_EQUAL(loader.options().getUpdateSiteUri(), "http://www.yadoms.com/downloads/update/");
    BOOST_CHECK_EQUAL(loader.options().getDatabaseAcquisitionLifetime(), 30);
+   BOOST_CHECK_EQUAL(loader.options().getDeveloperMode(), false);
 }
 
 //--------------------------------------------------------------
@@ -731,6 +749,7 @@ BOOST_AUTO_TEST_CASE(All_Options1)
    BOOST_CHECK_EQUAL(loader.options().getIsRunningAsService(), false);
    BOOST_CHECK_EQUAL(loader.options().getUpdateSiteUri(), "http://www.yadoms.com/downloads/update/");
    BOOST_CHECK_EQUAL(loader.options().getDatabaseAcquisitionLifetime(), 30);
+   BOOST_CHECK_EQUAL(loader.options().getDeveloperMode(), false);
 }
 
 //--------------------------------------------------------------
@@ -768,6 +787,7 @@ BOOST_AUTO_TEST_CASE(All_Options2)
    BOOST_CHECK_EQUAL(loader.options().getIsRunningAsService(), false);
    BOOST_CHECK_EQUAL(loader.options().getUpdateSiteUri(), "http://www.yadoms.com/downloads/update/");
    BOOST_CHECK_EQUAL(loader.options().getDatabaseAcquisitionLifetime(), 30);
+   BOOST_CHECK_EQUAL(loader.options().getDeveloperMode(), false);
 }
 
 //--------------------------------------------------------------
