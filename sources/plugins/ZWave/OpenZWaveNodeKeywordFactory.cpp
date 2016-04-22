@@ -51,7 +51,7 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateH
 {
    try
    {
-      if (vID.GetGenre() == OpenZWave::ValueID::ValueGenre_User || (vID.GetGenre() == OpenZWave::ValueID::ValueGenre_System && includeSystemKeywords))
+      if (vID.GetGenre() == OpenZWave::ValueID::ValueGenre_User || ( (vID.GetGenre() == OpenZWave::ValueID::ValueGenre_System || vID.GetGenre() == OpenZWave::ValueID::ValueGenre_Config)&& includeSystemKeywords))
       {
          ECommandClass commandClass((int)vID.GetCommandClassId());
          std::string vLabel = OpenZWave::Manager::Get()->GetValueLabel(vID);
@@ -64,6 +64,7 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateH
          bool awake = OpenZWave::Manager::Get()->IsNodeAwake(homeId, nodeId);
          bool failed = OpenZWave::Manager::Get()->IsNodeFailed(homeId, nodeId);
          bool zwavePlus = OpenZWave::Manager::Get()->IsNodeZWavePlus(homeId, nodeId);
+         uint8 instance = vID.GetInstance();
 
          if (units.empty())
             units = shared::plugin::yPluginApi::CStandardUnits::NoUnits;
@@ -92,6 +93,7 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateH
          YADOMS_LOG(debug) << "[" << homeId << "." << nodeId << "] " << vLabel << ":" << commandClass.toString()
             << " [Genre=" << genre << "]"
             << " [CommandClass=" << (int)commandClassInt << "]"
+            << " [Instance=" << (int)instance << "]"
             << " [ReadOnly=" << readOnly << "]"
             << " [WriteOnly= " << writeOnly << "]"
             << " [Polled= " << polled << "]"

@@ -8,6 +8,8 @@
 #include "pluginSystem/BindingQueryData.h"
 #include "communication/callback/CallbackRequest.h"
 #include "communication/callback/SynchronousCallback.h"
+#include <shared/ServiceLocator.h>
+#include <startupOptions/IStartupOptions.h>
 
 namespace web { namespace rest { namespace service {
 
@@ -150,9 +152,13 @@ namespace web { namespace rest { namespace service {
          pluginSystem::CManager::AvalaiblePluginMap::iterator i;
          shared::CDataContainer result;
          std::vector<std::string> pluginCollection;
+
+         bool developerMode = shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>()->getDeveloperMode();
+
          for(i=pluginList.begin(); i!=pluginList.end(); ++i)
          {
-            pluginCollection.push_back(i->first);
+            if(developerMode || (!developerMode && !boost::istarts_with(i->first, "dev-")))
+               pluginCollection.push_back(i->first);
          }
 
          result.set("plugins", pluginCollection);

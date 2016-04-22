@@ -89,7 +89,17 @@ inline bool COpenZWaveNodeKeywordBase::realSendCommand(const COpenZWaveEnumHandl
 {
    try
    {
-      return OpenZWave::Manager::Get()->SetValueListSelection(m_valueId, data.toString());
+      
+      
+      if (!OpenZWave::Manager::Get()->SetValueListSelection(m_valueId, data.toString()))
+      {
+         std::string value;
+         if (COpenZWaveEnumHandler(m_valueId).getTextOfValue(data.toString(), value))
+         {
+            //in some cases the data do not contains the text, it contains the value
+            return OpenZWave::Manager::Get()->SetValueListSelection(m_valueId, value);
+         }
+      }
    }
    catch (OpenZWave::OZWException & ex)
    {

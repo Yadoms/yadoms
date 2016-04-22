@@ -23,6 +23,10 @@
             <td class="header" data-i18n="modals.dashboard.sub-windows.summary.startedFrom"></td>
             <td id="dashboard-summary-started-from">2 days 4 hours 21 minutes 34 seconds</td>
          </tr>
+         <tr class="line-developer-mode">
+            <td class="header" data-i18n="modals.dashboard.sub-windows.summary.developerMode"></td>
+            <td id="dashboard-summary-developerMode"><input type="checkbox" disabled readonly checked/></td>
+         </tr>
       </table>
    </div>
 </div>
@@ -31,6 +35,8 @@
    
 
    //we update all fields
+   $("tr.line-developer-mode").hide();
+
    RestEngine.getJson("rest/configuration/Database/Version")
    .done(function(data) {
       $("td#dashboard-summary-database-version").text(data.value);
@@ -46,6 +52,9 @@
          $("td#dashboard-summary-software-version").text(data.yadoms.version + " " + data.yadoms.releaseType);
          $("td#dashboard-summary-started-from").text(DateTimeFormatter.isoDateToDate(data.startupTime).fromNow());
 
+         if (data.developerMode) {
+            $("tr.line-developer-mode").show();
+         }
       })
       .fail(function (error) {
          notifyError($.t("objects.generic.errorGetting", { objectName: $.t("core.yadoms.information") }), error);

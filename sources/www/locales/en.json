@@ -292,6 +292,7 @@
           "softwareVersion": "Software Version",
           "databaseVersion": "Database Version",
           "startedFrom": "Started from",
+          "developerMode": "Developer mode",
           "errorRequestingDatabaseVersion": "Error requesting Database Version"
         },
         "user-management": {

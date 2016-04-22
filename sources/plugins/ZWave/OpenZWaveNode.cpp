@@ -81,4 +81,3 @@ const uint8	COpenZWaveNode::getNodeId()
    return m_nodeId;
 }
 
-
