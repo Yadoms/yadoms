@@ -41,7 +41,7 @@ namespace sqlite {
    
    CQueryValue::CQueryValue(const Poco::DateTime & anyValue, bool secure)
    {
-      std::string dateAsString = Poco::DateTimeFormatter::format(anyValue, "%Y%m%dT%H%M%S");
+      std::string dateAsString = Poco::DateTimeFormatter::format(Poco::LocalDateTime(anyValue), "%Y%m%dT%H%M%S");
 
       if (secure)
          initialize("'" + dateAsString + "'");
@@ -52,7 +52,7 @@ namespace sqlite {
    
    CQueryValue::CQueryValue(const Poco::Timestamp & anyValue, bool secure)
    {
-      std::string dateAsString = Poco::DateTimeFormatter::format(anyValue, "%Y%m%dT%H%M%S");
+      std::string dateAsString = Poco::DateTimeFormatter::format(Poco::LocalDateTime(Poco::DateTime(anyValue)), "%Y%m%dT%H%M%S");
 
       if (secure)
          initialize("'" + dateAsString + "'");

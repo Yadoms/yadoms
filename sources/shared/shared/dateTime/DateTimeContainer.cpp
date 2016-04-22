@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "DateTimeContainer.h"
 #include <shared/currentTime/Provider.h>
+#include <Poco/LocalDateTime.h>
 
 namespace shared { namespace dateTime {
 
@@ -15,9 +16,9 @@ namespace shared { namespace dateTime {
    }
 
    CDateTimeContainer::CDateTimeContainer(Poco::DateTime & time)
-      :m_time(boost::posix_time::from_time_t(time.timestamp().epochTime()))
+      :m_time(boost::posix_time::from_time_t(Poco::LocalDateTime(time).timestamp().epochTime()))
    {
-
+      
    }
 
    CDateTimeContainer::~CDateTimeContainer()
