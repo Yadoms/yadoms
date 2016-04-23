@@ -107,8 +107,8 @@ function forecastViewModel() {
 
       ctx.fillStyle = "rgb(0,0,255)"; // black
 
-      //TODO : Voir pour récupérer la valeur de la classe font-family et font size tout simplement !
-      ctx.font = "14px Georgia";
+      // We use the same font as in the css file
+      ctx.font = $( ".cases" ).css( "font-size" ) + " " + $( ".cases" ).css( "font-family" );
 
       //write the text at the same position as the height of the column
       ctx.fillText(rainValue, 20 - (7 * String(rainValue).match(/\d/g).length) / 2, 23);
