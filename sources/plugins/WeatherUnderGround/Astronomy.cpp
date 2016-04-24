@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Astronomy.h"
+#include "ErrorAnswerHandler.h"
 #include <shared/Log.h>
 #include <shared/exception/Exception.hpp>
 
@@ -90,17 +91,10 @@ void CAstronomy::Parse( boost::shared_ptr<yApi::IYPluginApi> context, const IWUC
 {
 	try
 	{
-		std::string error = m_data.getWithDefault<std::string>( "response.error.description","" );
+		ErrorAnswerHandler Response( context, m_data );
+		m_CatchError = Response.ContainError();
 
-		if (!error.empty())
-		{
-			m_CatchError = true;
-			YADOMS_LOG(error) << "ERROR : " << error  << std::endl;
-
-			if (error.compare ("No cities match your search query") == 0)
-				context->setPluginState(yApi::historization::EPluginState::kCustom, "CityNotFound" );
-		}
-		else
+		if ( !m_CatchError )
 		{
 			std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > KeywordList;
 

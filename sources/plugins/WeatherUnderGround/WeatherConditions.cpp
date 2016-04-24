@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "WeatherConditions.h"
+#include "ErrorAnswerHandler.h"
 #include <shared/Log.h>
 #include <shared/exception/Exception.hpp>
 
@@ -138,16 +139,11 @@ bool CWeatherConditions::Request( boost::shared_ptr<yApi::IYPluginApi> context )
 	{
 		try
 		{
-			std::string error = m_data.getWithDefault<std::string>("response.error.description","");
+			m_data.printToLog ();
 
-			// Si on passe alors c'est qu'il y a une erreur, sinon on sort.
-			if (!error.empty())
-			{
-				m_CatchError = true;
+		    ErrorAnswerHandler Response( context, m_data );
 
-				if (error.compare ("No cities match your search query") == 0)
-				   context->setPluginState(yApi::historization::EPluginState::kCustom, "CityNotFound" );
-			}
+			m_CatchError = Response.ContainError();
 		}
 		catch(...)
 		{

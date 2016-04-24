@@ -9,8 +9,6 @@
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-//#define TeleInfoMESSAGE_maxSize 16
-
 //--------------------------------------------------------------
 /// \brief	This class is the TeleInfo plugin
 /// \note   This plugin receive information from a specific USB module that read some security devices from TeleInfo

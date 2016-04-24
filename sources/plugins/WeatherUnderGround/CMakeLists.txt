@@ -9,6 +9,8 @@ include("../YadomsPluginsCommon.cmake")
 set(WUNDERGROUND_SOURCES
    Astronomy.cpp
    Astronomy.h
+   ErrorAnswerHandler.cpp
+   ErrorAnswerHandler.h
    ForecastDays.cpp
    ForecastDays.h
    IWUConfiguration.h
