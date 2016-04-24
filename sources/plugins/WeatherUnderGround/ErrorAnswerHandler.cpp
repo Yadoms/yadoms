@@ -30,6 +30,8 @@ ErrorAnswerHandler::ErrorAnswerHandler(boost::shared_ptr<yApi::IYPluginApi> cont
 			//We use the same tag name that must be defined into the language package
 			context->setPluginState(yApi::historization::EPluginState::kCustom, (const std::string &) *it );
 		}
+		else
+		   YADOMS_LOG(warning) << "This error tag is not handled yet by YADOMS" << error  << std::endl;
 	}
 }
 

@@ -18,6 +18,7 @@ function PluginInstance(id, displayName, type, configuration, autoStart, categor
     this.configuration = configuration;
     this.autoStart = autoStart;
     this.lastState = null;
+	this.lastMessageId = null;
     this.category = category;
 }
 

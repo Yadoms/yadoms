@@ -139,8 +139,6 @@ bool CWeatherConditions::Request( boost::shared_ptr<yApi::IYPluginApi> context )
 	{
 		try
 		{
-			m_data.printToLog ();
-
 		    ErrorAnswerHandler Response( context, m_data );
 
 			m_CatchError = Response.ContainError();

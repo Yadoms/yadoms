@@ -339,7 +339,7 @@
 	"customLabels": {
 		"pluginState": {
 			"InitializationError": "Initialization error",
-			"citynotfound": "City not found",
+			"querynotfound": "City not found",
 			"keynotfound": "This key does not exist",
 			"NoConnection": "No Internet connection..."
 		}
