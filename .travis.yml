@@ -67,13 +67,12 @@ before_install:
 - cd ..
 
 # Yadoms configuration file
-- echo "set(BOOST_ROOT \"`pwd`/boost_1_60_0\")" >> sources/CMakeListsUserConfig.txt
-- echo "set(POCO_ROOT \"`pwd`/poco-.7.2-all\")" >> sources/CMakeListsUserConfig.txt
-- echo "SET(COTIRE_USE ON)" >> sources/CMakeListsUserConfig.txt
-- echo "set(PROTOBUF_ROOT \"`pwd`/protobuf-2.6.1\")" >> sources/CMakeListsUserConfig.txt
-- echo "set(GAMMU_ROOT \"`pwd`/gammu-1.36.8\")" >> sources/CMakeListsUserConfig.txt
-- echo "set(SWIG_ROOT \"`pwd`/swig-3.0.8\")" >> sources/CMakeListsUserConfig.txt
-
+- echo 'set(BOOST_ROOT "'$PWD'/boost_1_60_0")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(POCO_ROOT "'$PWD'/poco-.7.2-all")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(COTIRE_USE ON)' >> sources/CMakeListsUserConfig.txt
+- echo 'set(PROTOBUF_ROOT "'$PWD'/protobuf-2.6.1")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(GAMMU_ROOT "'$PWD'/gammu-1.36.8")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(SWIG_ROOT "'$PWD'/swig-3.0.8")' >> sources/CMakeListsUserConfig.txt
 
 # Yadoms
 - ./cmake_linux.sh
