@@ -1,6 +1,22 @@
 language: cpp
 
 before_install:
+
+# Yadoms configuration file
+- ls
+- ls Yadoms
+- ls Yadoms/yadoms
+- ls Yadoms/yadoms/sources
+- cp Yadoms/yadoms/sources/CMakeListsUserConfig.sample.txt Yadoms/yadoms/sources/CMakeListsUserConfig.txt 
+- echo 'set(BOOST_ROOT "'$PWD'/boost_1_60_0")' > Yadoms/yadoms/sources/CMakeListsUserConfig.txt
+- echo 'set(POCO_ROOT "'$PWD'/poco-.7.2-all")' >> Yadoms/yadoms/sources/CMakeListsUserConfig.txt
+- echo 'set(COTIRE_USE ON)' >> Yadoms/yadoms/sources/CMakeListsUserConfig.txt
+- echo 'set(PROTOBUF_ROOT "'$PWD'/protobuf-2.6.1")' >> Yadoms/yadoms/sources/CMakeListsUserConfig.txt
+- echo 'set(GAMMU_ROOT "'$PWD'/gammu-1.36.8")' >> Yadoms/yadoms/sources/CMakeListsUserConfig.txt
+- echo 'set(SWIG_ROOT "'$PWD'/swig-3.0.8")' >> Yadoms/yadoms/sources/CMakeListsUserConfig.txt
+
+
+
 #g++ 4.8
 - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
 - sudo apt-get update -qq
@@ -65,15 +81,6 @@ before_install:
 - make
 - sudo make install
 - cd ..
-
-# Yadoms configuration file
-- cp Yadoms/yadoms/sources/CMakeListsUserConfig.sample.txt Yadoms/yadoms/sources/CMakeListsUserConfig.txt 
-- echo 'set(BOOST_ROOT "'$PWD'/boost_1_60_0")' > Yadoms/yadoms/sources/CMakeListsUserConfig.txt
-- echo 'set(POCO_ROOT "'$PWD'/poco-.7.2-all")' >> Yadoms/yadoms/sources/CMakeListsUserConfig.txt
-- echo 'set(COTIRE_USE ON)' >> Yadoms/yadoms/sources/CMakeListsUserConfig.txt
-- echo 'set(PROTOBUF_ROOT "'$PWD'/protobuf-2.6.1")' >> Yadoms/yadoms/sources/CMakeListsUserConfig.txt
-- echo 'set(GAMMU_ROOT "'$PWD'/gammu-1.36.8")' >> Yadoms/yadoms/sources/CMakeListsUserConfig.txt
-- echo 'set(SWIG_ROOT "'$PWD'/swig-3.0.8")' >> Yadoms/yadoms/sources/CMakeListsUserConfig.txt
 
 # Yadoms
 - cd Yadoms/yadoms
