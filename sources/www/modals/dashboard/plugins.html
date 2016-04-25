@@ -238,7 +238,7 @@
                if (status) {
                   var $row = getPluginDomRow(pluginInstance);
                   if (status.state !== pluginInstance.lastState || 
-				      status.state === "Custom" && status.messageId !== pluginInstance.lastMessageId) {
+				      status.messageId !== pluginInstance.lastMessageId) {
 
                      // Update start/stop button
                      var $startStopButton = $row.find("button.btn-startStop");
