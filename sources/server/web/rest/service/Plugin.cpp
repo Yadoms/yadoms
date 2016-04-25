@@ -139,22 +139,21 @@ namespace web { namespace rest { namespace service {
       return CResult::GenerateSuccess(t);
    }
 
-   shared::CDataContainer CPlugin::getAllAvailablePlugins(const std::vector<std::string> & parameters, const std::string & requestContent)
+   shared::CDataContainer CPlugin::getAllAvailablePlugins(const std::vector<std::string> & parameters, const std::string & requestContent) const
    {
       try
       {
-         pluginSystem::CManager::AvalaiblePluginMap pluginList = m_pluginManager->getPluginList();
+         auto pluginList = m_pluginManager->getPluginList();
 
-         pluginSystem::CManager::AvalaiblePluginMap::iterator i;
          shared::CDataContainer result;
          std::vector<std::string> pluginCollection;
 
-         bool developerMode = shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>()->getDeveloperMode();
+         auto developerMode = shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>()->getDeveloperMode();
 
-         for(i=pluginList.begin(); i!=pluginList.end(); ++i)
+         for (auto plugin = pluginList.begin(); plugin != pluginList.end(); ++plugin)
          {
-            if(developerMode || (!developerMode && !boost::istarts_with(i->first, "dev-")))
-               pluginCollection.push_back(i->first);
+            if(developerMode || (!developerMode && !boost::istarts_with(plugin->first, "dev-")))
+               pluginCollection.push_back(plugin->first);
          }
 
          result.set("plugins", pluginCollection);
