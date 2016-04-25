@@ -52,17 +52,23 @@ private:
    //-----------------------------------------------------------------------------   
    boost::shared_ptr<COpenZWaveNode> getNode(const uint32 homeId, const uint8 nodeId);
 
+   //-----------------------------------------------------------------------------
+   /// \brief	Ask configuration parameters to each found node
+   //-----------------------------------------------------------------------------   
+   void RequestConfigurationParameters();
+
    //--------------------------------------------------------------
    /// \brief	   Retreive openzwave ids from yadoms data
    /// \param [in]    device	            the yadoms device
    /// \param [in]    keyword	            the yadoms keyword
    /// \param [out]   homeId	            the openzwave homeid
    /// \param [out]   nodeId	            the openzwave nodeId
+   /// \param [out]   instance            the openzwave instance
    /// \throw shared::exception::CException if any yadoms data do not match pattern
    /// \note:  patterns:   device = homeId.nodeId
    /// \note:  patterns:   keyword = keywordName.keywordClass
    //--------------------------------------------------------------
-   void retreiveOpenZWaveIds(const std::string & device, const std::string & keyword, uint32 & homeId, uint8 & nodeId);
+   void retreiveOpenZWaveIds(const std::string & device, const std::string & keyword, uint32 & homeId, uint8 & nodeId, uint8 & instance);
 
    //--------------------------------------------------------------
    /// \brief	   Mutex protecting the configuration content

@@ -101,7 +101,7 @@ private:
    CMoon     m_MoonCharacteristics;
 
    //--------------------------------------------------------------
-   /// \brief	    Error Detecting ?
+   /// \brief	    Error Detecting
    //--------------------------------------------------------------
    bool m_CatchError;
 };

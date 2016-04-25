@@ -338,7 +338,8 @@
 	"customLabels": {
 		"pluginState": {
 			"InitializationError": "Erreur d'initialisation",
-			"CityNotFound": "Localisation non trouvée",
+			"querynotfound": "Localisation non trouvée",
+			"keynotfound": "Clé API incorrecte",
 			"NoConnection": "Pas de connexion Internet"
 		}
 	}

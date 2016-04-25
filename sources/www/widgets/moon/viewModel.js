@@ -38,8 +38,7 @@ widgetViewModelCtor = function moonViewModel() {
                 //dayOfMoon goes from 0 to 30
                 //so we make following association
                 // 0  1 ----- 13  14  15  16 -------- 29  30
-                //'0' dayOfMoon   '1' '1' '1' dayOfMoon  '0' 
-
+                //'0' dayOfMoon   '@' '@' '@' dayOfMoon  '0'
 
                 //update value binding
                 self.illuminatedMoonValue(illuminatedMoon);
@@ -49,7 +48,7 @@ widgetViewModelCtor = function moonViewModel() {
                 else if (dayOfMoon < 14)
                     text = String.fromCharCode(("A").charCodeAt(0) + dayOfMoon - 1);
                 else if ((dayOfMoon >= 14) && (dayOfMoon <= 16))
-                    text = "1";
+                    text = "@";
                 else if (dayOfMoon < 30)
                     text = String.fromCharCode(("A").charCodeAt(0) + dayOfMoon - 1 - 3);
 

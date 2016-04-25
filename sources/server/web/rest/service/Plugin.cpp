@@ -5,6 +5,8 @@
 #include "pluginSystem/ManuallyDeviceCreationData.h"
 #include "pluginSystem/BindingQueryData.h"
 #include "communication/callback/SynchronousCallback.h"
+#include <shared/ServiceLocator.h>
+#include <startupOptions/IStartupOptions.h>
 
 namespace web { namespace rest { namespace service {
 
@@ -141,12 +143,19 @@ namespace web { namespace rest { namespace service {
    {
       try
       {
-         auto pluginList = m_pluginManager->getPluginList();
+         pluginSystem::CManager::AvalaiblePluginMap pluginList = m_pluginManager->getPluginList();
 
+         pluginSystem::CManager::AvalaiblePluginMap::iterator i;
          shared::CDataContainer result;
          std::vector<std::string> pluginCollection;
-         for (auto plugin = pluginList.begin(); plugin != pluginList.end(); ++plugin)
-            pluginCollection.push_back(plugin->first);
+
+         bool developerMode = shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>()->getDeveloperMode();
+
+         for(i=pluginList.begin(); i!=pluginList.end(); ++i)
+         {
+            if(developerMode || (!developerMode && !boost::istarts_with(i->first, "dev-")))
+               pluginCollection.push_back(i->first);
+         }
 
          result.set("plugins", pluginCollection);
          return CResult::GenerateSuccess(result);

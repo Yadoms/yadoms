@@ -45,6 +45,14 @@ public:
    virtual const std::vector<std::string> getAllStrings() const;
    //[END] - shared::enumeration::IExtendedEnum implementation
 
+   //--------------------------------------------------------------
+   /// \brief	    Get the text associated to a value
+   /// \param [in]   integerValueInString   The enum value as string : "0", "4",...
+   /// \param [out]  result                  The associated text
+   /// \return true if value has been found, false otherwize
+   //--------------------------------------------------------------
+   bool getTextOfValue(const std::string & integerValueInString, std::string & result);
+
 private:
    //--------------------------------------------------------------
    /// \brief	The enumeration type name

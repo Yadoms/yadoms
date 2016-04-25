@@ -2,6 +2,8 @@
 #include "DateTimeNotifier.h"
 #include <shared/Log.h>
 #include <Poco/DateTimeFormatter.h>
+#include <Poco/Timezone.h>
+#include <Poco/LocalDateTime.h>
 #include <Poco/Util/TimerTaskAdapter.h>
 #include "notification/Helpers.hpp"
 
@@ -30,7 +32,6 @@ namespace dateTime {
       //iniitalize the current minute (with second=0 and millisecond=0)
       Poco::DateTime now;
       m_nextMinute = Poco::DateTime(now.year(), now.month(), now.day(), now.hour(), now.minute());
-
       //schedule next minute
       scheduleOnNextMinute();
    }
@@ -44,7 +45,8 @@ namespace dateTime {
 
       //reschedule the task
       m_nextMinute += m_oneMinuteOffset;//+1minute
-      YADOMS_LOG(information) << "DateTimeNotifier : schedule the task @" << Poco::DateTimeFormatter::format(m_nextMinute, "%H:%M:%S.%i");
+
+      YADOMS_LOG(information) << "DateTimeNotifier : schedule the task @" << Poco::DateTimeFormatter::format(Poco::LocalDateTime(m_nextMinute), "%H:%M:%S.%i");
       m_dateTimeTimer.schedule(m_dateTimeTask, m_nextMinute.timestamp());
    }
 
