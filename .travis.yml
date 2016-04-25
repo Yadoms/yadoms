@@ -4,17 +4,17 @@ before_install:
 - sudo apt-get install libbz2-dev python-dev
 
 # boost
-- wget http://netcologne.dl.sourceforge.net/project/boost/boost/1.60.0/boost_1_60_0.zip
-- tar xvjf boost_1_60_0.tar.bz2
+- wget http://netcologne.dl.sourceforge.net/project/boost/boost/1.60.0/boost_1_60_0.tar.bz2
+- tar xjf boost_1_60_0.tar.bz2
 - cd boost_1_60_0
 - ./bootstrap.sh
 - ./b2 --with-atomic --with-chrono --with-date_time --with-filesystem --with-regex --with-thread --with-system link=shared
 
 # poco
 - wget http://pocoproject.org/releases/poco-1.7.2/poco-1.7.2.tar.gz
-- tar xzf poco-1.6.1-all.tar.gz
+- tar xzf poco-1.7.2-all.tar.gz
 - sudo apt-get install libssl-dev
-- cd poco-1.6.1-all/
+- cd poco-1.7.2-all/
 - ./configure --omit=CppUnit,CppUnit/WinTestRunner,Data,Data/SQLite,Data/ODBCData/MySQL,MongoDB,PageCompiler,PageCompiler/File2Page  --no-samples --no-tests
 - make
 - cd ..
