@@ -4,16 +4,15 @@ before_install:
 
 # Yadoms configuration file
 - ls
-- ls Yadoms
-- ls Yadoms/yadoms
-- ls Yadoms/yadoms/sources
-- cp Yadoms/yadoms/sources/CMakeListsUserConfig.sample.txt Yadoms/yadoms/sources/CMakeListsUserConfig.txt 
-- echo 'set(BOOST_ROOT "'$PWD'/boost_1_60_0")' > Yadoms/yadoms/sources/CMakeListsUserConfig.txt
-- echo 'set(POCO_ROOT "'$PWD'/poco-.7.2-all")' >> Yadoms/yadoms/sources/CMakeListsUserConfig.txt
-- echo 'set(COTIRE_USE ON)' >> Yadoms/yadoms/sources/CMakeListsUserConfig.txt
-- echo 'set(PROTOBUF_ROOT "'$PWD'/protobuf-2.6.1")' >> Yadoms/yadoms/sources/CMakeListsUserConfig.txt
-- echo 'set(GAMMU_ROOT "'$PWD'/gammu-1.36.8")' >> Yadoms/yadoms/sources/CMakeListsUserConfig.txt
-- echo 'set(SWIG_ROOT "'$PWD'/swig-3.0.8")' >> Yadoms/yadoms/sources/CMakeListsUserConfig.txt
+- ls sources
+- ls -al sources
+- cp sources/CMakeListsUserConfig.sample.txt sources/CMakeListsUserConfig.txt 
+- echo 'set(BOOST_ROOT "'$PWD'/boost_1_60_0")' > sources/CMakeListsUserConfig.txt
+- echo 'set(POCO_ROOT "'$PWD'/poco-.7.2-all")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(COTIRE_USE ON)' >> sources/CMakeListsUserConfig.txt
+- echo 'set(PROTOBUF_ROOT "'$PWD'/protobuf-2.6.1")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(GAMMU_ROOT "'$PWD'/gammu-1.36.8")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(SWIG_ROOT "'$PWD'/swig-3.0.8")' >> sources/CMakeListsUserConfig.txt
 
 
 
