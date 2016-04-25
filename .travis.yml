@@ -2,20 +2,6 @@ language: cpp
 
 before_install:
 
-# Yadoms configuration file
-- ls
-- ls sources
-- ls -al sources
-- cp sources/CMakeListsUserConfig.sample.txt sources/CMakeListsUserConfig.txt 
-- echo 'set(BOOST_ROOT "'$PWD'/boost_1_60_0")' > sources/CMakeListsUserConfig.txt
-- echo 'set(POCO_ROOT "'$PWD'/poco-.7.2-all")' >> sources/CMakeListsUserConfig.txt
-- echo 'set(COTIRE_USE ON)' >> sources/CMakeListsUserConfig.txt
-- echo 'set(PROTOBUF_ROOT "'$PWD'/protobuf-2.6.1")' >> sources/CMakeListsUserConfig.txt
-- echo 'set(GAMMU_ROOT "'$PWD'/gammu-1.36.8")' >> sources/CMakeListsUserConfig.txt
-- echo 'set(SWIG_ROOT "'$PWD'/swig-3.0.8")' >> sources/CMakeListsUserConfig.txt
-
-
-
 #g++ 4.8
 - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
 - sudo apt-get update -qq
@@ -32,6 +18,7 @@ before_install:
 - cd boost_1_60_0
 - ./bootstrap.sh
 - ./b2 --with-atomic --with-chrono --with-date_time --with-filesystem --with-regex --with-thread --with-system link=shared
+- cd ..
 
 # poco
 - wget http://pocoproject.org/releases/poco-1.7.2/poco-1.7.2-all.tar.gz
@@ -81,9 +68,19 @@ before_install:
 - sudo make install
 - cd ..
 
+script:
+# Yadoms configuration file
+- cp sources/CMakeListsUserConfig.sample.txt sources/CMakeListsUserConfig.txt 
+- echo 'set(BOOST_ROOT "'$PWD'/boost_1_60_0")' > sources/CMakeListsUserConfig.txt
+- echo 'set(POCO_ROOT "'$PWD'/poco-.7.2-all")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(COTIRE_USE ON)' >> sources/CMakeListsUserConfig.txt
+- echo 'set(PROTOBUF_ROOT "'$PWD'/protobuf-2.6.1")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(GAMMU_ROOT "'$PWD'/gammu-1.36.8")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(SWIG_ROOT "'$PWD'/swig-3.0.8")' >> sources/CMakeListsUserConfig.txt
+
 # Yadoms
-- cd Yadoms/yadoms
 - ./cmake_linux.sh
 - cd projects
 - make
 - cd ..
+
