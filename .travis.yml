@@ -1,20 +1,30 @@
 language: cpp
 
 before_install:
+
+#g++ 4.8
+- sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+- sudo apt-get update -qq
+- if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-4.8; fi
+- if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
+- sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 90
+
+# deps
 - sudo apt-get install libbz2-dev python-dev
 
 # boost
-- wget http://netcologne.dl.sourceforge.net/project/boost/boost/1.60.0/boost_1_60_0.zip
-- tar xvjf boost_1_60_0.tar.bz2
+- wget http://netcologne.dl.sourceforge.net/project/boost/boost/1.60.0/boost_1_60_0.tar.bz2
+- tar xjf boost_1_60_0.tar.bz2
 - cd boost_1_60_0
 - ./bootstrap.sh
 - ./b2 --with-atomic --with-chrono --with-date_time --with-filesystem --with-regex --with-thread --with-system link=shared
+- cd ..
 
 # poco
-- wget http://pocoproject.org/releases/poco-1.7.2/poco-1.7.2.tar.gz
-- tar xzf poco-1.6.1-all.tar.gz
+- wget http://pocoproject.org/releases/poco-1.7.2/poco-1.7.2-all.tar.gz
+- tar xzf poco-1.7.2-all.tar.gz
 - sudo apt-get install libssl-dev
-- cd poco-1.6.1-all/
+- cd poco-1.7.2-all/
 - ./configure --omit=CppUnit,CppUnit/WinTestRunner,Data,Data/SQLite,Data/ODBCData/MySQL,MongoDB,PageCompiler,PageCompiler/File2Page  --no-samples --no-tests
 - make
 - cd ..
@@ -58,20 +68,19 @@ before_install:
 - sudo make install
 - cd ..
 
-# Python
-- sudo apt-get install python-dev
-
+script:
 # Yadoms configuration file
-- echo "set(BOOST_ROOT \"`pwd`/boost_1_60_0\")" >> sources/CMakeListsUserConfig.txt
-- echo "set(POCO_ROOT \"`pwd`/poco-.7.2-all\")" >> sources/CMakeListsUserConfig.txt
-- echo "SET(COTIRE_USE ON)" >> sources/CMakeListsUserConfig.txt
-- echo "set(PROTOBUF_ROOT \"`pwd`/protobuf-2.6.1\")" >> sources/CMakeListsUserConfig.txt
-- echo "set(GAMMU_ROOT \"`pwd`/gammu-1.36.8\")" >> sources/CMakeListsUserConfig.txt
-- echo "set(SWIG_ROOT \"`pwd`/swig-3.0.8\")" >> sources/CMakeListsUserConfig.txt
-
+- cp sources/CMakeListsUserConfig.sample.txt sources/CMakeListsUserConfig.txt 
+- echo 'set(BOOST_ROOT "'$PWD'/boost_1_60_0")' > sources/CMakeListsUserConfig.txt
+- echo 'set(POCO_ROOT "'$PWD'/poco-.7.2-all")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(COTIRE_USE ON)' >> sources/CMakeListsUserConfig.txt
+- echo 'set(PROTOBUF_ROOT "'$PWD'/protobuf-2.6.1")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(GAMMU_ROOT "'$PWD'/gammu-1.36.8")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(SWIG_ROOT "'$PWD'/swig-3.0.8")' >> sources/CMakeListsUserConfig.txt
 
 # Yadoms
-- ./cmake_linux.sh
+- sh cmake_linux.sh
 - cd projects
 - make
 - cd ..
+
