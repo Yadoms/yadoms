@@ -1,6 +1,14 @@
 language: cpp
 
 before_install:
+#g++ 4.8
+- sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+- sudo apt-get update -qq
+- if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-4.8; fi
+- if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
+- sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 90
+
+# deps
 - sudo apt-get install libbz2-dev python-dev
 
 # boost
@@ -11,7 +19,7 @@ before_install:
 - ./b2 --with-atomic --with-chrono --with-date_time --with-filesystem --with-regex --with-thread --with-system link=shared
 
 # poco
-- wget http://pocoproject.org/releases/poco-1.7.2/poco-1.7.2.tar.gz
+- wget http://pocoproject.org/releases/poco-1.7.2/poco-1.7.2-all.tar.gz
 - tar xzf poco-1.7.2-all.tar.gz
 - sudo apt-get install libssl-dev
 - cd poco-1.7.2-all/
@@ -57,9 +65,6 @@ before_install:
 - make
 - sudo make install
 - cd ..
-
-# Python
-- sudo apt-get install python-dev
 
 # Yadoms configuration file
 - echo "set(BOOST_ROOT \"`pwd`/boost_1_60_0\")" >> sources/CMakeListsUserConfig.txt
