@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/Yadoms/yadoms.svg?branch=master)](https://travis-ci.org/Yadoms/yadoms)
+
 # yadoms
 Yadoms is an open source project. 
 
@@ -24,3 +26,4 @@ http://www.yadoms.com/forum
 * Mac OSX
 * Raspberry PI 1&2
 * *probably most of unix based systems*
+
