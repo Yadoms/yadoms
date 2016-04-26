@@ -79,7 +79,7 @@ script:
 - echo 'set(SWIG_ROOT "'$PWD'/swig-3.0.8")' >> sources/CMakeListsUserConfig.txt
 
 # Yadoms
-- sh cmake_linux.sh
+- sh cmake_linux.sh m
 - cd projects
 - make
 - cd ..
