@@ -43,7 +43,8 @@ public:
    enum
    {
       kDeclareDevice = yApi::IYPluginApi::kPluginFirstEventId,
-      kUpdateKeyword
+      kUpdateKeyword,
+      kInternalStateChange
    };
    
 };

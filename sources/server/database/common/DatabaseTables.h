@@ -5,8 +5,8 @@
 #include "database/entities/Entities.h"
 
 
-namespace database { 
-namespace common { 
+namespace database {
+namespace common {
 
    DECLARE_TABLE(Plugin,
       (Id)
@@ -42,8 +42,7 @@ namespace common {
       (Type)
       (SizeX)
       (SizeY)
-      (PositionX)
-      (PositionY)
+      (Position)
       (Title)
       (Configuration)
    )
@@ -72,7 +71,7 @@ namespace common {
       (Name)
       (FriendlyName)
       (Model)
-	  (Details)
+      (Details)
    )
 
    DECLARE_TABLE(Keyword,
@@ -84,7 +83,7 @@ namespace common {
       (FriendlyName)
       (Type)
       (Units)
-	  (TypeInfo)
+      (TypeInfo)
       (Measure)
       (Details)
    )
@@ -93,7 +92,7 @@ namespace common {
       (Date)
       (KeywordId)
       (Value)
-   )   
+   )
 
    DECLARE_TABLE(AcquisitionSummary,
       (Type)
@@ -120,18 +119,18 @@ namespace common {
       (StopDate)
    )   
 
-	DECLARE_TABLE(Recipient,
-	   (Id)
-		(FirstName)
-		(LastName)
-	)   
-   
-	DECLARE_TABLE(RecipientField,
-	   (IdRecipient)
-		(PluginType)
-		(FieldName)
-		(Value)
-	)   
+   DECLARE_TABLE(Recipient,
+      (Id)
+      (FirstName)
+      (LastName)
+   )
+
+   DECLARE_TABLE(RecipientField,
+      (IdRecipient)
+      (PluginType)
+      (FieldName)
+      (Value)
+   )
 
 
 } //namespace common

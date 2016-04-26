@@ -246,6 +246,18 @@ PluginInstanceManager.updateToServer = function (pluginInstance) {
 };
 
 /**
+ * Send an extra command to a plugin instance
+ * @param pluginInstance The plugin instance
+ * @param extraCommand   The extraCommand
+ * @return {Promise} A promise for the result
+ */
+PluginInstanceManager.postExtraCommand= function (pluginInstance, commandName, commandData) {
+	assert(!isNullOrUndefined(pluginInstance), "pluginInstance must be defined");
+	return RestEngine.postJson("/rest/plugin/" + pluginInstance.id + "/extraCommand/" + commandName, { data: JSON.stringify(commandData) });
+};
+
+
+/**
  * Download a plugin package for an instance
  * @param pluginInstance The plugin instance
  * @return {Promise} A promise for the result

@@ -91,5 +91,37 @@
 			"connecting": "Connecting...",
 			"updateConfiguration": "Configuration updating..."
 		}
-	}
+	},
+	"extraCommands" : {
+		"simpleCommand" : {
+			"name" : "Simple command"
+		},
+		"dataCommand" : {
+			"name" : "Command with data",
+			"commandData" : {
+				"testValue": {
+					"name": "SomeString",
+					"description": "Description of Somestring"
+				}			
+			}
+		},	
+		"dataBindingCommand" : {
+			"name" : "Command with binded data",
+			"commandData" : {
+				"networkInterface": {
+					"name": "Network interface",
+					"description": "Choose a network interface (from server binding)"
+				}			
+			}
+		},
+		"dataBindingPluginCommand" : {
+			"name" : "Command with binded data to plugin",
+			"commandData" : {
+				"dynamicSection": {
+					"name": "A dynamic section",
+					"description": "Example of section filled by 'test' method from the plugin using binding."
+				}
+			}
+		}
+	}  	
 }

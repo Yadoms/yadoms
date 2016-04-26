@@ -2,10 +2,10 @@
 #include "ZWave.h"
 #include <shared/plugin/ImplementationHelper.h>
 #include <shared/Log.h>
-#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/Exception.hpp>
 #include "ZWaveControllerFactory.h"
 #include "KeywordContainer.h"
+#include "ZWaveInternalState.h"
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -28,6 +28,8 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
    {
       YADOMS_LOG_CONFIGURE("ZWave");
 
+      context->setPluginState(yApi::historization::EPluginState::kCustom, "Initialization");
+
       // Load configuration values (provided by database)
       m_configuration.initializeWith(context->getConfiguration());
 
@@ -36,8 +38,12 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
       // the main loop
       YADOMS_LOG(debug) << "CZWave is running...";
 
+      context->setPluginState(yApi::historization::EPluginState::kCustom, "Configuring");
       m_controller = CZWaveControllerFactory::Create();
       m_controller->configure(&m_configuration, &context->getEventHandler());
+
+      context->setPluginState(yApi::historization::EPluginState::kRunning);
+
       if (m_controller->start())
       {
          while (1)
@@ -49,19 +55,67 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
             {
                // Command was received from Yadoms
                boost::shared_ptr<const yApi::IDeviceCommand> command = context->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
-               
+
                YADOMS_LOG(debug) << "Command received from Yadoms :" << command->toString();
                try
                {
-                  m_controller->SendCommand(command->getTargetDevice(), command->getKeyword(), command->getBody());
+                  m_controller->sendCommand(command->getTargetDevice(), command->getKeyword(), command->getBody());
                }
                catch (shared::exception::CException & ex)
                {
                   YADOMS_LOG(error) << "Fail to send command : " << ex.what();
                }
-
+               catch (std::exception & ex)
+               {
+                  YADOMS_LOG(fatal) << "Fail to send command. exception : " << ex.what();
+               }
+               catch (...)
+               {
+                  YADOMS_LOG(fatal) << "Fail to send command. unknown exception";
+               }
                break;
             }
+            case yApi::IYPluginApi::kEventExtraCommand:
+            {
+               // Command was received from Yadoms
+               boost::shared_ptr<const yApi::IExtraCommand> extraCommand = context->getEventHandler().getEventData<boost::shared_ptr<const yApi::IExtraCommand> >();
+
+               if (extraCommand)
+               {
+                  YADOMS_LOG(debug) << "Extra command received : " << extraCommand->getCommand();
+
+                  if (extraCommand->getCommand() == "inclusionMode")
+                  {
+                     m_controller->startInclusionMode();
+                  } 
+                  else if (extraCommand->getCommand() == "exclusionMode")
+                  {
+                     m_controller->startExclusionMode();
+                  }
+                  else if (extraCommand->getCommand() == "hardReset")
+                  {
+                     m_controller->hardResetController();
+                  }
+                  else if (extraCommand->getCommand() == "softReset")
+                  {
+                     m_controller->softResetController();
+                  }
+                  else if (extraCommand->getCommand() == "testNetwork")
+                  {
+                     m_controller->testNetwork(extraCommand->getData().get<int>("frameCount"));
+                  }
+                  else if (extraCommand->getCommand() == "healNetowrk")
+                  {
+                     m_controller->healNetwork();
+                  }
+                  else if (extraCommand->getCommand() == "cancelCommand")
+                  {
+                     m_controller->cancelCurrentCommand();
+                  }
+               }
+               break;
+            }
+
             case yApi::IYPluginApi::kEventUpdateConfiguration:
             {
                // Configuration was updated
@@ -70,13 +124,17 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
                YADOMS_LOG(debug) << "Update configuration...";
                BOOST_ASSERT(!newConfiguration.empty());  // newConfigurationValues shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
-               // Take into account the new configuration
-               // - Restart the plugin if necessary,
-               // - Update some resources,
-               // - etc...
+               if (m_controller)
+                  m_controller->stop();
+
                m_configuration.initializeWith(newConfiguration);
 
-               context->setPluginState(yApi::historization::EPluginState::kRunning);
+               m_controller->configure(&m_configuration, &context->getEventHandler());
+
+               if (m_controller->start())
+                   context->setPluginState(yApi::historization::EPluginState::kRunning);
+               else
+                  context->setPluginState(yApi::historization::EPluginState::kError);
                break;
             }
             case kDeclareDevice:
@@ -91,7 +149,14 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
                {
                   YADOMS_LOG(error) << "Fail to declare device : " << ex.what();
                }
-
+               catch (std::exception & ex)
+               {
+                  YADOMS_LOG(fatal) << "Fail to declare device. exception : " << ex.what();
+               }
+               catch (...)
+               {
+                  YADOMS_LOG(fatal) << "Fail to declare device. unknown exception";
+               }
                break;
             }
 
@@ -100,7 +165,7 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
                try
                {
 
-                  boost::shared_ptr<CKeywordContainer> keywordData  = context->getEventHandler().getEventData< boost::shared_ptr<CKeywordContainer> >();
+                  boost::shared_ptr<CKeywordContainer> keywordData = context->getEventHandler().getEventData< boost::shared_ptr<CKeywordContainer> >();
 
                   std::string deviceId = keywordData->getDeviceId();
                   std::string keywordId = keywordData->getKeyword().getKeyword();
@@ -114,11 +179,33 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
                {
                   YADOMS_LOG(error) << "Fail to update keyword : " << ex.what();
                }
+               catch (std::exception & ex)
+               {
+                  YADOMS_LOG(fatal) << "Fail to update keyword. exception : " << ex.what();
+               }
+               catch (...)
+               {
+                  YADOMS_LOG(fatal) << "Fail to update keyword. unknown exception";
+               }
+            }
+            break;
 
+            case kInternalStateChange:
+            {
+               EZWaveInteralState s = EZWaveInteralState(context->getEventHandler().getEventData<std::string>());
+
+               switch (s)
+               {
+               case EZWaveInteralState::kCompletedValue:
+               case EZWaveInteralState::kRunningValue:
+                  context->setPluginState(yApi::historization::EPluginState::kRunning);
+                  break;
+               default:
+                  context->setPluginState(yApi::historization::EPluginState::kCustom, s.toString());
+                  break;
+               }
                break;
             }
-               break;
-
             default:
             {
                YADOMS_LOG(error) << "Unknown message id";
@@ -141,8 +228,32 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
    }
    catch (shared::exception::CException & ex)
    {
-      YADOMS_LOG(fatal) << "The XPL plugin fails. Unknown expcetion : " << ex.what();
+      YADOMS_LOG(fatal) << "The ZWave plugin fails. shared exception : " << ex.what();
    }
+   catch (std::exception & ex)
+   {
+      YADOMS_LOG(fatal) << "The ZWave plugin fails. exception : " << ex.what();
+   }
+   catch (...)
+   {
+      YADOMS_LOG(fatal) << "The ZWave plugin fails. unknown exception";
+   }
+
+   YADOMS_LOG(information) << "Ending ZWave plugin";
+   try
+   {
+      if(m_controller)
+         m_controller->stop();
+   }
+   catch (std::exception & ex)
+   {
+      YADOMS_LOG(fatal) << "The ZWave plugin fail to stop. exception : " << ex.what();
+   }
+   catch (...)
+   {
+      YADOMS_LOG(fatal) << "The ZWave plugin fail to stop. unknown exception";
+   }
+
 }
 
 

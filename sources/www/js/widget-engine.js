@@ -95,8 +95,8 @@ function requestWidgets(page) {
    //we request widgets for the first page
    var loadWidgetsNotification = notifyInformation($.t("mainPage.actions.loadingWidgetsOfPage", { pageName: page.name }));
 
-   //before making anything we empty the gridstack
-   page.grid.remove_all();
+   //before making anything we empty the grid
+   page.$grid.empty();
 
    var d = WidgetManager.getWidgetOfPageFromServer(page)
    .done(function (list) {
@@ -112,7 +112,6 @@ function requestWidgets(page) {
 
             //we update the filter of the websocket
             updateWebSocketFilter();
-
          })
          .fail(function (errorMessage) {
             console.error(errorMessage);
@@ -141,13 +140,18 @@ function tabClick(pageId) {
       //and if it's not loaded for the moment
       if (!page.loaded) {
          requestWidgets(page).done(function() {
-            //we poll all widget data
-            updateWidgetsPolling();
+             //we poll all widget data
+             updateWidgetsPolling();
          });
       } else {
-         //we poll all widget data
-         updateWidgetsPolling();
+          //we poll all widget data
+          updateWidgetsPolling();
       }
+      //debounce
+      setTimeout(function () {
+          PageManager.updateWidgetLayout(page);
+          page.$grid.packery("layout");
+      }, 10);
    }
 }
 
@@ -269,7 +273,7 @@ function dispatchToWidgets(acq) {
                   var $battery = widget.$toolbar.find(".widget-toolbar-battery");
                   if ($battery) {
                      if ($battery.attr("keywordId") == acq.keywordId) {
-                        widget.viewModel.widgetApi.toolbar.updateBatteryLevel(acq.value);
+                        widget.viewModel.widgetApi.updateBatteryLevel(acq.value);
                      }
                   }
                }

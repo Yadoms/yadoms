@@ -87,8 +87,7 @@ namespace database { namespace sqlite {
                   type TEXT NOT NULL,                                            \
                   sizeX  INTEGER DEFAULT 1,                                      \
                   sizeY  INTEGER DEFAULT 1,                                      \
-                  positionX  INTEGER DEFAULT 1,                                  \
-                  positionY  INTEGER DEFAULT 1,                                  \
+                  position  INTEGER DEFAULT 0,                                   \
                   title  TEXT,                                                   \
                   configuration  TEXT                                            \
                )";
@@ -177,6 +176,12 @@ namespace database { namespace sqlite {
                   PRIMARY KEY (idRecipient, pluginType, fieldName))";
    }
 
+   void CSQLiteTableCreationScriptProvider::getTableAcquisitionIndexes(std::vector<std::string> & indexScripts)
+   {
+      indexScripts.clear();
+      indexScripts.push_back("CREATE INDEX acqKeywordIdIndex ON Acquisition(keywordId)");
+      indexScripts.push_back("create index if not exists acqKeywordIdDateIndex on Acquisition(keywordId,date)");
+   }
  
 } //namespace sqlite
 } //namespace database 

@@ -319,7 +319,7 @@
 			"description": "Informations sur le temps actuel"
 		},
 		"IndividualKeywordsLiveConditions": {
-			"name": "Conditions actuelles",
+			"name": "Paramètres individuelles des conditions actuelles",
 			"description": "Toutes les informations sont individuellement sauvegardées dans la base de données"
 		},
 		"Astronomy": {
@@ -337,9 +337,9 @@
 	},
 	"customLabels": {
 		"pluginState": {
-			"updateConfiguration": "Mise à jour de la configuration...",
 			"InitializationError": "Erreur d'initialisation",
-			"CityNotFound": "Ville pas trouvée",
+			"querynotfound": "Localisation non trouvée",
+			"keynotfound": "Clé API incorrecte",
 			"NoConnection": "Pas de connexion Internet"
 		}
 	}

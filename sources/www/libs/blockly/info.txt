@@ -1,4 +1,5 @@
-Blockly version pull-request du 29-09/2015 (up to date avec la master)
+Version issue de:
 
-https://github.com/jano42/blockly/commit/044aaf92ff8a8c097d8945236a35f8d08507c573
+https://github.com/jano42/blockly/tree/with_dates_and_forceInputLine
 
+avec la regénération python effectuée (car les fichiers compressed ne sont pas mis à jour dans le repo)

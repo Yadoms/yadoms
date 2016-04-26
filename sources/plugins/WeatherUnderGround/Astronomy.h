@@ -3,7 +3,6 @@
 #include <shared/DataContainer.h>
 #include <shared/http/HttpMethods.h>
 #include "WUConfiguration.h"
-#include "Keywords/Load.h"
 #include "Keywords/Duration.h"
 #include "Keywords/Moon.h"
 
@@ -39,9 +38,10 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	  Update the configuration when something change from the HMI
+   /// \param[in] context            pointer to the API
    /// \param[in] WUConfiguration    The Plugin configuration
    //--------------------------------------------------------------
-   void OnUpdate( IWUConfiguration& WUConfiguration );
+   void OnUpdate( boost::shared_ptr<yApi::IYPluginApi> context, IWUConfiguration& WUConfiguration );
 
    //--------------------------------------------------------------
    /// \brief	  Return true if an error occured during the request
@@ -55,6 +55,15 @@ public:
    virtual ~CAstronomy();
 
 private:
+
+   //--------------------------------------------------------------
+   /// \brief	  Initialise LiveConditions variables
+   /// \param[in] context    pointer to the API
+   /// \param[in] WUConfiguration    The Plugin configuration
+   //--------------------------------------------------------------
+   void InitializeVariables ( boost::shared_ptr<yApi::IYPluginApi> context, 
+	                          IWUConfiguration& WUConfiguration
+		    		        );
 
    //--------------------------------------------------------------
    /// \brief	    Your Location to received custom information from the web site
@@ -92,7 +101,7 @@ private:
    CMoon     m_MoonCharacteristics;
 
    //--------------------------------------------------------------
-   /// \brief	    Error Detecting ?
+   /// \brief	    Error Detecting
    //--------------------------------------------------------------
    bool m_CatchError;
 };

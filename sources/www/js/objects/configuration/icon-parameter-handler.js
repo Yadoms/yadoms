@@ -39,7 +39,7 @@ IconParameterHandler.prototype.getDOMObject = function () {
    var input = "<div class=\"input-group\" >" +
                   "<button class=\"btn btn-default\" data-iconset=\"glyphicon\" role=\"iconpicker\" " +
                      "id=\"" + this.uuid + "\"" +
-                     "data-icon=\"" + this.value + "\" data-rows=\"3\" data-cols=\"6\" >" +
+                     "data-icon=\"" + this.value + "\" data-rows=\"3\" data-cols=\"6\" data-placement=\"top\" data-search=\"true\" data-search-text=\"" + $.t("configuration.iconpicker-search-prompt", {defaultValue:"Search icon..."}) + "\" >" +
                   "</button>" +
                "</div>";
 

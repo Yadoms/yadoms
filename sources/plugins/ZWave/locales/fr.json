@@ -5,11 +5,48 @@
 		"Serial Port": {
 			"name": "Port série",
 			"description": "Le port série connecté au matériel ZWave (adaptateur USB par exemple)."
-		}
+		},
+		"IncludeSystemKeywords":
+		{
+			"name": "Ajout des keywords systèmes",
+			"description": "Défini les keywords systèmes"
+		}		
 	},
 	"customLabels": {
 		"pluginState": {
-			"updateConfiguration": "Mise à jour de la configuration..."
+			"Waiting": "En attente...",
+			"Completed": "Terminé",
+			"DriverReady": "Contrôleur prêt",
+			"DriverFailed": "Erreur de driver"
 		}
-	}
+	},
+	"extraCommands" : {
+		"inclusionMode" : {
+			"name" : "Passage en mode appairage"
+		},
+		"exclusionMode" : {
+			"name" : "Passage en mode exclusion"
+		},
+		"softReset" : {
+			"name" : "Redémarre le contrôlleur ZWave"
+		},
+		"testNetwork" : {
+			"name" : "Test du réseau ZWave",
+			"commandData" : {
+				"frameCount": {
+					"name": "Nombre de trame",
+					"description": "Nombre de trames à envoyer à chaque équipement"
+				}			
+			}				
+		},
+		"healNetowrk" : {
+			"name" : "Corrige/soigne le réseau ZWave"
+		},
+		"cancelCommand" : {
+			"name" : "Annule l'opération en cours (appairage, exclusion,...)"
+		},
+		"hardReset" : {
+			"name" : "Réinitialise le contrôlleur et efface le réseau"
+		}
+	}	
 }

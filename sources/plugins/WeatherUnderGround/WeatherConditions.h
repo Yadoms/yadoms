@@ -3,16 +3,11 @@
 #include <shared/DataContainer.h>
 #include <shared/http/HttpMethods.h>
 #include "WUConfiguration.h"
-#include "Keywords/Barometric.h"
-#include "Keywords/Humidity.h"
-#include "Keywords/Rain.h"
 #include "Keywords/Temp.h"
-#include "Keywords/UV.h"
-#include "Keywords/Visibility.h"
 #include "Keywords/WeatherIcon.h"
-#include "Keywords/WindDirection.h"
 #include "Keywords/WindSpeed.h"
 #include "Keywords/Condition.h"
+#include "Keywords/Rain.h"
 
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -117,14 +112,20 @@ private:
    /// \brief	    Keywords
    //--------------------------------------------------------------
    CTemp        m_Temp;
-   CBarometric  m_Pressure;
-   CHumidity    m_Humidity;
-   CVisibility  m_Visibility;
-   CUV          m_UV;
+
+   //--------------------------------------------------------------
+   /// \brief	The pressure (hPa)
+   //--------------------------------------------------------------
+   boost::shared_ptr<yApi::historization::CPressure>  m_pressure;
+   boost::shared_ptr<yApi::historization::CHumidity>  m_humidity;
+   boost::shared_ptr<yApi::historization::CDistance>  m_visibility;
+   boost::shared_ptr<yApi::historization::CDirection> m_uv;
+   boost::shared_ptr<yApi::historization::CDirection> m_WindDirection;
+
    CTemp        m_DewPoint;
    CRain        m_Rain_1hr;
    CWeatherIcon m_WeatherConditionUrl;
-   CWindDirection  m_WindDirection;
+   //CWindDirection  m_WindDirection;
    CWindSpeed  m_WindAverageSpeed;
    CWindSpeed  m_WindMaxSpeed;
    CTemp        m_FeelsLike;

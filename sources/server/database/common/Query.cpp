@@ -325,12 +325,12 @@ namespace database { namespace common {
 
       const std::string CQuery::formatDateToSql(const Poco::DateTime & datetime)
       {
-         return formatStringToSql(Poco::DateTimeFormatter::format(datetime, "%Y%m%dT%H%M%S"));
+         return formatStringToSql(Poco::DateTimeFormatter::format(Poco::LocalDateTime(datetime), "%Y%m%dT%H%M%S"));
       }
 
       const std::string CQuery::formatDateToSql(const Poco::Timestamp & timestamp)
       {
-         return formatStringToSql(Poco::DateTimeFormatter::format(timestamp, "%Y%m%dT%H%M%S"));
+         return formatStringToSql(Poco::DateTimeFormatter::format(Poco::LocalDateTime(Poco::DateTime(timestamp)), "%Y%m%dT%H%M%S"));
       }
 
       const std::string CQuery::formatEnumToSql(const shared::enumeration::IExtendedEnum & enumValue)

@@ -54,6 +54,7 @@ namespace startupOptions
       virtual bool getIsRunningAsService() const;
       virtual const std::string getUpdateSiteUri() const;
       virtual int getDatabaseAcquisitionLifetime() const;
+      virtual bool getDeveloperMode() const;
       // [END] IStartupOptions implementation
       //--------------------------------------------------------------
 

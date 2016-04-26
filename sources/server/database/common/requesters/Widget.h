@@ -29,7 +29,7 @@ namespace database { namespace common { namespace requesters {
          virtual std::vector<boost::shared_ptr<entities::CWidget> > getWidgetsForPage(int pageId);
          virtual void updateWidgetConfiguration(int widgetId, const std::string& newConfiguration);
          virtual void updateWidgetSize(int widgetId, int sizeX, int sizeY);
-         virtual void updateWidgetPosition(int widgetId, int positionX, int positionY);
+         virtual void updateWidgetPosition(int widgetId, int position);
          virtual void updateWidget(const entities::CWidget & widget, bool createIfNotExists);
          virtual void removeWidget(int widgetId);
          virtual void removeWidgetsInPage(int pageId);

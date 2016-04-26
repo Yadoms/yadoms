@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Astronomy.h"
+#include "ErrorAnswerHandler.h"
 #include <shared/Log.h>
 #include <shared/exception/Exception.hpp>
 
@@ -15,15 +16,7 @@ CAstronomy::CAstronomy(boost::shared_ptr<yApi::IYPluginApi> context, IWUConfigur
 
    try 
    {
-	   if (WUConfiguration.IsAstronomyEnabled())
-	   {
-         m_MoonCharacteristics.Initialize  ( context );
-
-         m_MoonCharacteristics.AddUnit(
-                                          shared::plugin::yPluginApi::CStandardCapacities::Load.getName(),
-                                          shared::plugin::yPluginApi::CStandardCapacities::Load.getUnit() 
-                                      );
-	   }
+	   InitializeVariables( context, WUConfiguration );
    }
    catch (shared::exception::CException& e)
    {
@@ -34,16 +27,47 @@ CAstronomy::CAstronomy(boost::shared_ptr<yApi::IYPluginApi> context, IWUConfigur
    }
 }
 
-void CAstronomy::OnUpdate( IWUConfiguration& WUConfiguration )
+void CAstronomy::InitializeVariables ( boost::shared_ptr<yApi::IYPluginApi> context, 
+	                                           IWUConfiguration& WUConfiguration
+								     )
 {
-   m_Localisation = WUConfiguration.getLocalisation();
+	   if (WUConfiguration.IsAstronomyEnabled())
+	   {
+		shared::CDataContainer details;
+		details.set("provider", "weather-underground");
+		details.set("shortProvider", "wu");
 
-   //read the country or State code
-   m_CountryOrState = WUConfiguration.getCountryOrState();
+         m_MoonCharacteristics.Initialize  ( context, details );
+
+         m_MoonCharacteristics.AddUnit(
+                                          shared::plugin::yPluginApi::CStandardCapacities::Load.getName(),
+                                          shared::plugin::yPluginApi::CStandardCapacities::Load.getUnit() 
+                                      );
+	   }
+}
+
+void CAstronomy::OnUpdate( boost::shared_ptr<yApi::IYPluginApi> context, IWUConfiguration& WUConfiguration )
+{
+	try
+	{
+	  m_Localisation = WUConfiguration.getLocalisation();
+
+	  //read the country or State code
+	  m_CountryOrState = WUConfiguration.getCountryOrState();
 	
-	m_URL.str("");
+	  m_URL.str("");
 
-	m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/astronomy/q/" << m_CountryOrState << "/" << m_Localisation << ".json";
+	  m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/astronomy/q/" << m_CountryOrState << "/" << m_Localisation << ".json";
+
+      InitializeVariables ( context, WUConfiguration );
+   }
+   catch (shared::exception::CException& e)
+   {
+	   YADOMS_LOG(warning) << "Configuration or initialization error of Astronomy module :" << e.what() << std::endl;
+
+       context->setPluginState(yApi::historization::EPluginState::kCustom, "InitializationError" );
+	   m_CatchError = true;
+   }
 }
 
 bool CAstronomy::Request( boost::shared_ptr<yApi::IYPluginApi> context )
@@ -67,19 +91,10 @@ void CAstronomy::Parse( boost::shared_ptr<yApi::IYPluginApi> context, const IWUC
 {
 	try
 	{
-		std::string error = m_data.getWithDefault<std::string>( "response.error.description","" );
+		ErrorAnswerHandler Response( context, m_data );
+		m_CatchError = Response.ContainError();
 
-		if (!error.empty())
-		{
-			m_CatchError = true;
-			YADOMS_LOG(error) << "ERROR : " << error  << std::endl;
-
-			if (error.compare ("No cities match your search query") == 0)
-			{
-				context->setPluginState(yApi::historization::EPluginState::kCustom, "CityNotFound" );
-			}
-		}
-		else
+		if ( !m_CatchError )
 		{
 			std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > KeywordList;
 

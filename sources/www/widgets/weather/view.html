@@ -1,4 +1,7 @@
 <script type="text/html" id="weather-template">
-   <link href="widgets/weather/widget.css" rel="stylesheet">
-   <canvas class="weather-canvas"></canvas>
+    <div class="mainDiv">
+        <div class="condition"><i class="textfit textfit-in-parent" data-bind="css: conditionClass"></i></div>
+        <div class="temperature textfit" data-bind="text: temperature"></div>
+    </div>
+    <div class="city textfit" data-bind="text: city"></div>
 </script>

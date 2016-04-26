@@ -8,6 +8,8 @@
 #include "pluginSystem/BindingQueryData.h"
 #include "communication/callback/CallbackRequest.h"
 #include "communication/callback/SynchronousCallback.h"
+#include <shared/ServiceLocator.h>
+#include <startupOptions/IStartupOptions.h>
 
 namespace web { namespace rest { namespace service {
 
@@ -42,6 +44,7 @@ namespace web { namespace rest { namespace service {
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword), CPlugin::createPlugin, CPlugin::transactionalMethod);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("createDevice"), CPlugin::createDevice, CPlugin::transactionalMethod);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*"), CPlugin::updatePlugin, CPlugin::transactionalMethod);
+      REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("extraCommand")("*"), CPlugin::sendExtraCommand, CPlugin::transactionalMethod);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword), CPlugin::deleteAllPlugins, CPlugin::transactionalMethod);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*"), CPlugin::deletePlugin, CPlugin::transactionalMethod);
    }
@@ -149,9 +152,13 @@ namespace web { namespace rest { namespace service {
          pluginSystem::CManager::AvalaiblePluginMap::iterator i;
          shared::CDataContainer result;
          std::vector<std::string> pluginCollection;
+
+         bool developerMode = shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>()->getDeveloperMode();
+
          for(i=pluginList.begin(); i!=pluginList.end(); ++i)
          {
-            pluginCollection.push_back(i->first);
+            if(developerMode || (!developerMode && !boost::istarts_with(i->first, "dev-")))
+               pluginCollection.push_back(i->first);
          }
 
          result.set("plugins", pluginCollection);
@@ -240,6 +247,29 @@ namespace web { namespace rest { namespace service {
       }
    }
 
+   shared::CDataContainer CPlugin::sendExtraCommand(const std::vector<std::string> & parameters, const std::string & requestContent)
+   {
+      try
+      {
+         if (parameters.size()>=4)
+         {
+            int instanceId = boost::lexical_cast<int>(parameters[1]);
+            std::string command = parameters[3];
+            shared::CDataContainer commandData(requestContent);
+            m_messageSender.sendExtraCommandAsync(instanceId, command, commandData);
+            return CResult::GenerateSuccess();
+         }
+         return CResult::GenerateError("invalid parameter. Not enough parameters in url");
+      }
+      catch (std::exception &ex)
+      {
+         return CResult::GenerateError(ex);
+      }
+      catch (...)
+      {
+         return CResult::GenerateError("unknown exception in sending extra command to plugin");
+      }
+   }
 
    shared::CDataContainer CPlugin::deletePlugin(const std::vector<std::string> & parameters, const std::string & requestContent)
    {

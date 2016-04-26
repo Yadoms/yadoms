@@ -12,9 +12,7 @@ CForecastTomorrow::CForecastTomorrow( boost::shared_ptr<yApi::IYPluginApi> conte
    :m_PluginName ( PluginName ), m_forecastPeriod( new teleInfoUSB::specificHistorizers::CColor(KeyWordName) )
 {
    if (!context->keywordExists( m_PluginName, m_forecastPeriod->getKeyword()))
-	{
       context->declareKeyword ( m_PluginName, *m_forecastPeriod );
-	}
 }
 
 void CForecastTomorrow::SetValue( std::string& Value )

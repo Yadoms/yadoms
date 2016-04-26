@@ -263,8 +263,6 @@ set(YADOMS_SRC
    server/authentication/BasicAuthentication.h
    server/authentication/BasicAuthentication.cpp
 
-   server/dateTime/DateTimeTask.h
-   server/dateTime/DateTimeTask.cpp
    server/dateTime/DateTimeNotifier.h
    server/dateTime/DateTimeNotifier.cpp
    
@@ -379,6 +377,8 @@ set(YADOMS_SRC
    server/pluginSystem/DeviceCommand.h
 	server/pluginSystem/DummyQualifier.h
 	server/pluginSystem/DummyQualifier.cpp
+	server/pluginSystem/ExtraCommand.h
+	server/pluginSystem/ExtraCommand.cpp
 	server/pluginSystem/IdentityForQualifier.cpp
 	server/pluginSystem/IdentityForQualifier.h
 	server/pluginSystem/ILibrary.h

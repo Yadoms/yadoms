@@ -240,7 +240,7 @@ DeviceParameterHandler.prototype.applyScript = function () {
          }
          else {
             //we have only one capacity
-            RestEngine.getJsongetJSON("/rest/device/matchcapacity/" + self.expectedKeywordAccess + "/" + self.expectedCapacity)
+            RestEngine.getJson("/rest/device/matchcapacity/" + self.expectedKeywordAccess + "/" + self.expectedCapacity)
                .done(populateDeviceList(self))
                .fail(function(error) {
                   notifyError($.t("modals.configure-widget.errorDuringGettingDeviceListMatchCapacity", {expectedKeywordAccess : self.expectedKeywordAccess, expectedCapacity : self.expectedCapacity}), error);

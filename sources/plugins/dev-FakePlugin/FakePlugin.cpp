@@ -10,6 +10,7 @@
 #include <shared/tools/Random.h>
 #include <boost/random/independent_bits.hpp>
 #include "FakeController.h"
+#include <Poco/Net/NetworkInterface.h>
 
 // Use this macro to define all necessary to make your library a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -183,6 +184,38 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
                std::string errorMessage = (boost::format("unknown query : %1%") % data->getData().getQuery()).str();
                data->sendError(errorMessage);
                YADOMS_LOG(error) << errorMessage;
+            }
+            break;
+         }
+
+         case yApi::IYPluginApi::kEventExtraCommand:
+         {
+            // Command was received from Yadoms
+            boost::shared_ptr<const yApi::IExtraCommand> extraCommand = context->getEventHandler().getEventData<boost::shared_ptr<const yApi::IExtraCommand> >();
+
+            if (extraCommand)
+            {
+               YADOMS_LOG(debug) << "Extra command received : " << extraCommand->getCommand();
+
+               if (extraCommand->getCommand() == "simpleCommand")
+               {
+                  YADOMS_LOG(information) << "Simple command received";
+               }
+               else if (extraCommand->getCommand() == "dataCommand")
+               {
+                  std::string s = extraCommand->getData().get<std::string>("testValue");
+                  YADOMS_LOG(information) << "Command with data received : data=" << s;
+               }
+               else if (extraCommand->getCommand() == "dataBindingCommand")
+               {
+                  std::string value = extraCommand->getData().get<std::string>("networkInterface");
+                  YADOMS_LOG(information) << "Command with binded data received : value=" << value << " text=" << Poco::Net::NetworkInterface::forName(value).displayName();
+               }
+               else if (extraCommand->getCommand() == "dataBindingPluginCommand")
+               {
+                  std::string interval = extraCommand->getData().get<std::string>("dynamicSection.content.interval");
+                  YADOMS_LOG(information) << "Command with plugin binded data received : value=" << interval;
+               }
             }
             break;
          }

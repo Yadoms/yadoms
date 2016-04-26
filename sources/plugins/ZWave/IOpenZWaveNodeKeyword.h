@@ -1,6 +1,7 @@
 #pragma once
 
 #include <shared/plugin/yPluginApi/historization/IHistorizable.h>
+#include <value_classes/ValueID.h>
 
 //--------------------------------------------------------------
 /// \brief	    Interface for keywords
@@ -25,6 +26,12 @@ public:
    //--------------------------------------------------------------
    /// \brief	      get the last value of a keyword (as string)
    //--------------------------------------------------------------   
-   virtual const shared::plugin::yPluginApi::historization::IHistorizable & getLastKeywordValue() = 0;
+   virtual boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> getLastKeywordValue() = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	    Update the keyword value 
+   /// \param [in]   value    The new keyword value
+   //--------------------------------------------------------------
+   virtual void updateValue(OpenZWave::ValueID & value) = 0;
 };
 

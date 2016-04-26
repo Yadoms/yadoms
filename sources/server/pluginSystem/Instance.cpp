@@ -91,6 +91,13 @@ void CInstance::postCommand(boost::shared_ptr<const shared::plugin::yPluginApi::
    m_context->getEventHandler().postEvent<boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> >(shared::plugin::yPluginApi::IYPluginApi::kEventDeviceCommand, command);
 }
 
+void CInstance::postExtraCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> extraCommand) const
+{
+   BOOST_ASSERT(m_context);
+   // Post event to the plugin
+   m_context->getEventHandler().postEvent<boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> >(shared::plugin::yPluginApi::IYPluginApi::kEventExtraCommand, extraCommand);
+}
+
 void CInstance::postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> & request) const
 {
    BOOST_ASSERT(m_context);

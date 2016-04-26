@@ -40,8 +40,7 @@ namespace common {
       ((Type)("type"))
       ((SizeX)("sizeX"))
       ((SizeY)("sizeY"))
-      ((PositionX)("positionX"))
-      ((PositionY)("positionY"))
+      ((Position)("position"))
       ((Title)("title"))
       ((Configuration)("configuration"))
    )
@@ -122,19 +121,19 @@ namespace common {
    )
 
 
-	DECLARE_TABLE_COLUMN_NAMES(Recipient, "Recipient",
-	   ((Id)("id"))
-		((FirstName)("firstName"))
-		((LastName)("lastName"))
-	)
+   DECLARE_TABLE_COLUMN_NAMES(Recipient, "Recipient",
+      ((Id)("id"))
+      ((FirstName)("firstName"))
+      ((LastName)("lastName"))
+   )
 
 
    DECLARE_TABLE_COLUMN_NAMES(RecipientField, "RecipientField",
-		((IdRecipient)("idRecipient"))
-		((PluginType)("pluginType"))
+      ((IdRecipient)("idRecipient"))
+      ((PluginType)("pluginType"))
       ((FieldName)("fieldName"))
-		((Value)("value"))
-	)
+      ((Value)("value"))
+   )
 
 
 

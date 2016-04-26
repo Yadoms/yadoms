@@ -3,8 +3,6 @@
 #include <shared/Log.h>
 #include <shared/communication/AsyncSerialPort.h>
 #include "Transceiver.h"
-#include "TeleInfoReceiveBufferHandler.h"
-
 
 CTeleInfoFactory::~CTeleInfoFactory()
 {
@@ -14,8 +12,8 @@ CTeleInfoFactory::~CTeleInfoFactory()
 boost::shared_ptr<shared::communication::IAsyncPort> CTeleInfoFactory::constructPort(
    const ITeleInfoConfiguration& configuration,
    shared::event::CEventHandler& eventHandler,
-   int evtPortConnectionId,
-   int evtPortDataReceived)
+   boost::shared_ptr<CTeleInfoReceiveBufferHandler> receiveBufferHandler,
+   int evtPortConnectionId)
 {
    boost::shared_ptr<shared::communication::IAsyncPort> port;
 
@@ -31,10 +29,15 @@ boost::shared_ptr<shared::communication::IAsyncPort> CTeleInfoFactory::construct
 
    port->subscribeForConnectionEvents(eventHandler, evtPortConnectionId);
 
-   boost::shared_ptr<shared::communication::IReceiveBufferHandler> receiveBufferHandler(new CTeleInfoReceiveBufferHandler(eventHandler, evtPortDataReceived));
    port->setReceiveBufferHandler(receiveBufferHandler);
 
    return port;
+}
+
+boost::shared_ptr<CTeleInfoReceiveBufferHandler> CTeleInfoFactory::GetBufferHandler( shared::event::CEventHandler& eventHandler, int evtPortDataReceived )
+{
+	boost::shared_ptr<CTeleInfoReceiveBufferHandler> receiveBufferHandler(new CTeleInfoReceiveBufferHandler(eventHandler, evtPortDataReceived));
+	return receiveBufferHandler;
 }
 
 boost::shared_ptr<ITransceiver> CTeleInfoFactory::constructTransceiver()

@@ -32,6 +32,7 @@ namespace database { namespace sqlite {
       virtual std::string getTableRule();
       virtual std::string getTableRecipient();
       virtual std::string getTableRecipientField();
+      virtual void getTableAcquisitionIndexes(std::vector<std::string> & indexScripts);
       // [END] ITableCreationScriptProvider implementation
    };
  

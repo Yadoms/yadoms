@@ -121,373 +121,384 @@
         "goingToHome": "Retour à l'accueil ...",
         "takeMeHome": "Retourner à l'accueil"
     },
-    "modals": {
-        "add-widget": {
-            "title": "Ajouter un nouveau widget",
-            "getMore": "Obtenir des widgets",
-            "add": "Ajouter",
-            "goBack": "Retour",
-            "errorDuringCreatingWidget": "Erreur à la création du widget",
-            "widgetSuccessfullyCreated": "Widget créé",
-            "unableToCreateWidgetOfType": "Impossible de créer le widget du type __widgetType__",
-            "descriptionHeader": "Description:",
-            "versionHeader": "Version:",
-            "authorHeader": "Auteur:"
-        },
-        "configure-widget": {
-            "title": "Configuration du widget",
-            "titleName": {
-                "name": "Titre",
-                "description": "Texte affiché au-dessus du widget"
-            },
-            "errorDuringGettingDeviceList": "Error lors de la récupération de la liste des équipements",
-            "errorDuringGettingDeviceListMatchCapacity": "Erreur lors de la récupération de la liste des équipements ayant la capacité __expectedCapacityAccess__ __expectedCapacity__",
-            "errorDuringGettingDeviceListMatchCapacityType": "Erreur lors de la récupération de la liste des équipements ayant la capacité __expectedCapacityAccess__ __expectedCapacityType__",
-            "errorDuringGettingKeywordList": "Erreur lors de la récupération de la liste des données",
-            "errorDuringGettingKeywordListMatchCapacity": "Erreur lors de la récupération de la liste des données équipement ayant la capacité __expectedCapacityAccess__ __expectedCapacity__",
-            "errorDuringGettingSerialPortList": "Erreur lors de la récupération de la liste des ports série"
-        },
-        "delete-widget": {
-            "title": "Confirmation de la suppression du widget",
-            "text": "Cette opération va supprimer le widget de type __widgetType__. Continuer tout de même ?",
-            "widgetSuccessfullyDeleted": "Widget supprimé avec succès",
-            "errorDuringDeletingWidget": "Erreur pendant la suppression du widget",
-            "errorDuringDeletingWidgetNamed": "Erreur pendant la suppression du widget de type __widgetType__"
-        },
-        "delete-page": {
-            "title": "Confirmation de la suppression d'une page",
-            "text": "Cette opération va supprimer la page __pageName__ ainsi que tous les widgets qu'elle contient. Continuer tout de même ?",
-            "pageSuccessfullyDeleted": "Page supprimée avec succès",
-            "errorDuringDeletingPage": "Erreur pendant la suppression de la page",
-            "errorDuringDeletingPageNamed": "Erreur pendant la suppression de la page __pageName__"
-        },
-        "modify-page": {
-            "renamePageTitle": "Renommer une page",
-            "renamePageValidationButton": "Renommer",
-            "createNewPageTitle": "Créer une nouvelle page",
-            "createNewPageValidationButton": "Créer",
-            "errorDuringModifyingPage": "Erreur pendant la modification de la page",
-            "errorDuringModifyingPageNamed": "Erreur pendant la modification de la page __pageName__",
-            "errorDuringCreatingPage": "Erreur pendant la creation de la page",
-            "errorDuringCreatingPageNamed": "Erreur pendant la creation de la page __pageName__",
-            "placeholder": "Saisissez un nom de page"
-        },
-        "add-plugin": {
-            "title": "Ajouter un plugin",
-            "getMore": "Obtenir plus de plugins",
-            "pluginType": "Type de plugin",
-            "errorDuringGettingPluginTypes": "Erreur lors de la récupération de la liste des plugins"
-        },
-        "add-manually-device": {
-            "title": "Ajouter un équipement",
-            "attachedPlugin": "Plugin attaché",
-            "errorDuringGettingPluginTypes": "Erreur lors de la récupération de la liste des types de plugins"
-        },
-        "delete-device": {
-            "title": "Confirmation de l'historique de l'équipement",
-            "text": "Cette opération va supprimer l'historique associé à l'équipement __deviceName__. Voulez-vous continuer ?",
-            "checkDeleteDevice": "Supprimer l'équipement",
-            "checkDeleteDeviceNote": "Attention, l'équipement sera re-créé si Yadoms reçoit à nouveau un message provenant du capteur associé."
-        },
-        "configure-plugin": {
-            "title": "Configuration du plugin",
-            "name-configuration": {
-                "name": "Nom",
-                "description": "Nom personnalisable du plugin",
-                "regexErrorMessage": "Le nom du plugin doit contenir au minimum 1 caractère"
-            },
-            "pluginSuccessfullyCreated": "Plugin créé",
-            "pluginFailToCreate": "Impossible de créer le plugin __pluginName__",
-            "pluginFailToDelete": "Impossible de supprimer le plugin __pluginName__",
-            "pluginFailToConfigure": "Impossible de configurer le plugin __pluginName__"
-        },
-        "configure-device": {
-            "title": "Configuration de l'équipement",
-            "friendlyName-configuration": {
-                "name": "Nom",
-                "description": "Nom l'équipement",
-                "regexErrorMessage": "Le nom de l'équipement doit contenir au minimum 1 caractère"
-            }
-        },
-        "configure-keyword": {
-            "title": "Configuration d'une donnée de l'équipement",
-            "friendlyName-configuration": {
-                "name": "Nom",
-                "description": "Nom de la donnée",
-                "regexErrorMessage": "Le nom de la donnée doit contenir au minimum 1 caractère"
-            }
-        },
-        "configure-manually-device": {
-            "title": "Ajouter un équipement",
-            "friendlyName-configuration": {
-                "name": "Nom",
-                "description": "Nom de l'équipement",
-                "regexErrorMessage": "Le nom de l'équipement doit contenir au minimum 1 caractère"
-            }
-        },
-        "new-automation-rule": {
-            "title": "Création d'une règle d'automatisation",
-            "newRule": "Creer une règle",
-            "choose-editor": "Sélectionner un éditeur"
-        },
-        "edit-automation-rule": {
-            "title": "Edition d'une règle d'automatisation",
-            "show-help": "Afficher l'aide pour l'API Script",
-            "interpreter-rule": {
-                "name": "Interpréteur",
-                "description": "Interpréteur de la règle"
-            },
-            "name-rule": {
-                "name": "Nom",
-                "description": "Nom de la règle"
-            },
-            "description-rule": {
-                "name": "Description",
-                "description": "Description de la règle"
-            }
-        },
-        "show-log-automation-rule": {
-            "title": "Journal d'une règle d'automatisation"
-        },
-        "qrcode": {
-            "title": "QR Code de Yadoms",
-            "text": "Voici le QRCode de Yadoms. Vous pouvez le flasher avec votre téléphone pour accéder à Yadoms de partout."
-        },
-        "recipient_configure": {
-            "title": "Edition d'un destinataire",
-            "firstName": {
-                "name": "Prénom",
-                "description": "Le prénom du destinataire",
-                "regexErrorMessage": ""
-            },
-            "lastName": {
-                "name": "Nom",
-                "description": "Le nom du destinataire",
-                "regexErrorMessage": ""
-            },
-            "pluginSection": {
-                "name": "Champs additionnels pour le plugin ",
-                "description": ""
-            }
-        },
-        "dashboard": {
-            "title": "Tableau de bord",
-            "sub-windows": {
-                "summary": {
-                    "title": "Résumé",
-                    "information": "Informations",
-                    "connectedUser": "Utilisateur connecté",
-                    "platform": "Platforme",
-                    "softwareVersion": "Version logicielle",
-                    "databaseVersion": "Version base de donnée",
-                    "startedFrom": "Démmarré depuis",
-                    "errorRequestingDatabaseVersion": "Erreur lors de la récupération de la version de la base de donnée",
-                    "errorRequestingSystemInformation": "Erreur lors de la récupération de la version logicielle"
-                },
-                "user-management": {
-                    "title": "Gestion des utilisateurs"
-                },
-                "system-configuration": {
-                    "title": "Configuration système",
-                    "configuration-items": {
-                        "language": {
-                            "name": "Langue par défaut",
-                            "description": "Langue par défaut pour tous les utilisateurs."
-                        },
-                        "timezone": {
-                            "name": "Fuseau horaire",
-                            "description": "Définissez ici votre fuseau horaire."
-                        },
-                        "basicAuthentication": {
-                            "name": "Autentification",
-                            "description": "Méthode d'autentification pour accéder à Yadoms."
-                        },
-                        "basicAuthenticationUser": {
-                            "name": "Utilisateur",
-                            "description": "Nom de l'utilisateur"
-                        },
-                        "basicAuthenticationPassword": {
-                            "name": "Mot de passe",
-                            "description": "Mot de passe de l'utilisateur"
-                        },
-                        "basicAuthenticationPassword2": {
-                            "name": "Vérification du mot de passe",
-                            "description": "Répétition du mot de passe pour éviter les erreurs de frappe",
-                            "matchToErrorMessage": "Les mots de passe ne correspondent pas"
-                        },
-                        "advancedParameters": {
-                            "name": "Paramètres avancés",
-                            "description": "Configuration avancée de Yadoms. Cette section est réservée aux utilisateurs expérimentés."
-                        },
-                        "dateFormatString": {
-                            "name": "Format de la date",
-                            "description": "Vous pouvez changer le format de la date en utilisant la syntaxe mount.js (ex \"LLL\" ou \"'MMMM Do YYYY, h:mm:ss a\")"
-                        }
-                    },
-                    "confirmResetToDefault": "Cette opération va restaurer la configuration par défaut. Continuer ?",
-                    "configurationSaved": "Configuration système sauvegardée",
-                    "defaultConfigurationRestored": "Configuration par défaut restaurée",
-                    "errorDuringSavingConfiguration": "Erreur lors de la sauvegarde de la configuration système"
-                },
-                "user-configuration": {
-                    "title": "Configuration utilisateur"
-                },
-                "plugins": {
-                    "title": "Plugins",
-                    "pluginInstanceListDescription": "Gérer, ajouter et supprimer des plugins",
-                    "new": "Créer un plugin",
-                    "table": {
-                        "displayName": "Nom",
-                        "status": "Etat",
-                        "launchAtStartup": "Démarrer automatiquement",
-                        "type": "Type de plugin",
-                        "actions": "Actions"
-                    },
-                    "enableDisable": "Activer / désactiver le plugin",
-                    "startStop": "Démarrer / arrêter le plugin",
-                    "running": "Démarré",
-                    "starting": "Démarrage...",
-                    "stopped": "Arrêté",
-                    "error": "Erreur",
-                    "packageError": "Plugin invalide",
-                    "configure": "Configurer le plugin",
-                    "delete": "Supprimer le plugin",
-                    "errorGettingPluginList": "Erreur lors de la récupération de la liste des plugins",
-                    "confirmPluginDeletion": "Confirmez-vous la suppression du plugin __pluginName__ ?"
-                },
-                "recipients": {
-                    "title": "Destinataires",
-                    "recipientListDescription": "Gérer, ajouter et supprimer des destinataires de notification",
-                    "new": "Créer un destinataire",
-                    "edit": "Modifier le destinataire",
-                    "delete": "Supprimer le destinataire",
-                    "confirmRecipientDeletion": "Confirmez-vous la suppression du destinataire __firstName__ __lastName__ ?",
-                    "table": {
-                        "firstName": "Prénom",
-                        "lastName": "Nom",
-                        "actions": "Actions"
-                    }
-                },
-                "devices": {
-                    "title": "Equipements",
-                    "deviceListDescription": "Gestion des équipements",
-                    "new": "Créer un équipement",
-                    "table": {
-                        "name": "Nom",
-                        "attachedTo": "Attaché au plugin",
-                        "model": "Modèle",
-                        "actions": "Actions"
-                    },
-                    "details": {
-                        "table": {
-                            "name": "Nom de la donnée",
-                            "value": "Valeur",
-                            "units": "Unité",
-                            "update": "Dernier état",
-                            "actions": "Actions"
-                        }
-                    },
-                    "configure": "Configuration de l'équipement",
-                    "delete": "Suppression de l'équipement",
-                    "errorGettingDeviceList": "Erreur lors de la récupération de la liste des équipements",
-                    "errorGettingDeviceDetailsList": "Erreur lors de la récupération des détails de l'équipement",
-                    "errorUpdatingKeyword": "Erreur lors de la la mise à jour de la donnée __keyword__",
-                    "noAcquisition": "Aucune acquisition"
-                },
-              "automation-center": {
-                "title": "Centre d'automatisation",
-                "description": "Gérer, ajouter et supprimer des règles d'automatisation",
-                "new": "Création d'une règle",
-                "table": {
-                  "name": "Nom",
-                  "description": "Description",
-                  "autoStart": "Démarrer automatiquement",
-                  "actions": "Actions",
-                  "state": "Etat"
-                },
-                "startStop": "Démarrer / Arrêter la règle",
-                "ruleState": {
-                  "stopped": "Arrêtée",
-                  "running": "En cours",
-                  "error": "Erreur"
-                },
-                "edit": "Modifier la règle",
-                "delete": "Supprimer la règle",
-                "confirmDeletion": "Confirmez-vous la suppression de la règle __name__ ?",
-                "log": "Consulter le journal",
-                "ruleSuccessfullyCreated": "Règle créée",
-                "ruleSuccessfullyUpdated": "Règle mise à jour",
-                "ruleDeleted": "Règle supprimée",
-                "ruleCreationError": "Impossible de créer la règle __rule__.",
-                "ruleUpdateError": "Impossible de mettre à jour la règle __rule__.",
-                "ruleEditError": "Impossible d'éditer la règle __rule__.",
-                "ruleDeletionError": "Impossible de supprimer la règle __rule__.",
-                "ruleStopError": "Impossible d'arrêter la règle __rule__.",
-                "ruleStartError": "Impossible de démarrer la règle __rule__.",
-                "ruleListingError": "Impossible de lister les règles.",
-                "ruleInterpreterListingError": "Impossible de lister les interpréteurs de règles.",
-                "ruleGetLogError": "Impossible d'obtenir le log de la règle __rule__.",
-                "editors": {
-                  "code": {
-                    "name": "Code"
-                  },
-                  "blockly": {
-                    "name": "Blockly"
-                  }
-                }
-              },
-                "install-update": {
-                    "title": "Installation & Mise à jour",
-                    "description": "Installation et mise à jour des composants de Yadoms",
-                    "releaseTypeChoice": "Choisir le type de version à modifier",
-                    "releaseType": {
-                        "beta": "Beta - pour développeur",
-                        "testing": "Test - version en cours de test, utiliser à vos propres risques",
-                        "stable": "Stable - Recommandée"
-                    },
-                    "yadoms": {
-                        "title": "Mise à jour de Yadoms",
-                        "currentVersion": "Version courante",
-                        "availableVersion": "Version disponible",
-                        "update": "Mise à jour de Yadoms"
-                    },
-                    "generic": {
-                        "name": "Nom",
-                        "icon": "Icône",
-                        "description": "Description",
-                        "actualVersion": "Version courante",
-                        "availableVersion": "Version plus récente",
-                        "actions": "Actions",
-                        "update": "Mise à jour",
-                        "install": "Installation",
-                        "uninstall": "Désinstallation",
-                        "confirmUpdateTitle": "Confirmation de mise à jour",
-                        "confirmUpdate": "Mettre à jour __objectName__ en version __version__ ?",
-                        "confirmInstallTitle": "Confirmation d'installation",
-                        "confirmInstall": "Installer __objectName__ en version __version__ ?",
-                        "confirmRemoveTitle": "Confirmer la désinstallation",
-                        "confirmRemove": "Désinstaller __objectName__ ?"
-                    },
-                    "plugins": {
-                        "title": "Plugins"
-                    },
-                    "widgets": {
-                        "title": "Widgets"
-                    },
-                    "script-interpreters": {
-                        "title": "Interpréteur de règle"
-                    }
-                },
-                "about": {
-                    "title": "A propos"
-                }
-            },
-            "unableToLoadSubWindow": "Impossible d'afficher la fenêtre __subWindowPath__"
-        },
-        "confirmation": {
-            "title": "Confirmation"
-        }
+  "modals": {
+    "add-widget": {
+      "title": "Ajouter un nouveau widget",
+      "getMore": "Obtenir des widgets",
+      "add": "Ajouter",
+      "goBack": "Retour",
+      "errorDuringCreatingWidget": "Erreur à la création du widget",
+      "widgetSuccessfullyCreated": "Widget créé",
+      "unableToCreateWidgetOfType": "Impossible de créer le widget du type __widgetType__",
+      "descriptionHeader": "Description:",
+      "versionHeader": "Version:",
+      "authorHeader": "Auteur:"
     },
+    "configure-widget": {
+      "title": "Configuration du widget",
+      "titleName": {
+        "name": "Titre",
+        "description": "Texte affiché au-dessus du widget"
+      },
+      "errorDuringGettingDeviceList": "Error lors de la récupération de la liste des équipements",
+      "errorDuringGettingDeviceListMatchCapacity": "Erreur lors de la récupération de la liste des équipements ayant la capacité __expectedCapacityAccess__ __expectedCapacity__",
+      "errorDuringGettingDeviceListMatchCapacityType": "Erreur lors de la récupération de la liste des équipements ayant la capacité __expectedCapacityAccess__ __expectedCapacityType__",
+      "errorDuringGettingKeywordList": "Erreur lors de la récupération de la liste des données",
+      "errorDuringGettingKeywordListMatchCapacity": "Erreur lors de la récupération de la liste des données équipement ayant la capacité __expectedCapacityAccess__ __expectedCapacity__",
+      "errorDuringGettingSerialPortList": "Erreur lors de la récupération de la liste des ports série"
+    },
+    "delete-widget": {
+      "title": "Confirmation de la suppression du widget",
+      "text": "Cette opération va supprimer le widget de type __widgetType__. Continuer tout de même ?",
+      "widgetSuccessfullyDeleted": "Widget supprimé avec succès",
+      "errorDuringDeletingWidget": "Erreur pendant la suppression du widget",
+      "errorDuringDeletingWidgetNamed": "Erreur pendant la suppression du widget de type __widgetType__"
+    },
+    "delete-page": {
+      "title": "Confirmation de la suppression d'une page",
+      "text": "Cette opération va supprimer la page __pageName__ ainsi que tous les widgets qu'elle contient. Continuer tout de même ?",
+      "pageSuccessfullyDeleted": "Page supprimée avec succès",
+      "errorDuringDeletingPage": "Erreur pendant la suppression de la page",
+      "errorDuringDeletingPageNamed": "Erreur pendant la suppression de la page __pageName__"
+    },
+    "modify-page": {
+      "renamePageTitle": "Renommer une page",
+      "renamePageValidationButton": "Renommer",
+      "createNewPageTitle": "Créer une nouvelle page",
+      "createNewPageValidationButton": "Créer",
+      "errorDuringModifyingPage": "Erreur pendant la modification de la page",
+      "errorDuringModifyingPageNamed": "Erreur pendant la modification de la page __pageName__",
+      "errorDuringCreatingPage": "Erreur pendant la creation de la page",
+      "errorDuringCreatingPageNamed": "Erreur pendant la creation de la page __pageName__",
+      "placeholder": "Saisissez un nom de page"
+    },
+    "add-plugin": {
+      "title": "Ajouter un plugin",
+      "getMore": "Obtenir plus de plugins",
+      "pluginType": "Type de plugin",
+      "errorDuringGettingPluginTypes": "Erreur lors de la récupération de la liste des plugins"
+    },
+    "add-manually-device": {
+      "title": "Ajouter un équipement",
+      "attachedPlugin": "Plugin attaché",
+      "errorDuringGettingPluginTypes": "Erreur lors de la récupération de la liste des types de plugins"
+    },
+    "delete-device": {
+      "title": "Confirmation de l'historique de l'équipement",
+      "text": "Cette opération va supprimer l'historique associé à l'équipement __deviceName__. Voulez-vous continuer ?",
+      "checkDeleteDevice": "Supprimer l'équipement",
+      "checkDeleteDeviceNote": "Attention, l'équipement sera re-créé si Yadoms reçoit à nouveau un message provenant du capteur associé."
+    },
+    "configure-plugin": {
+      "title": "Configuration du plugin",
+      "name-configuration": {
+        "name": "Nom",
+        "description": "Nom personnalisable du plugin",
+        "regexErrorMessage": "Le nom du plugin doit contenir au minimum 1 caractère"
+      },
+      "pluginSuccessfullyCreated": "Plugin créé",
+      "pluginFailToCreate": "Impossible de créer le plugin __pluginName__",
+      "pluginFailToDelete": "Impossible de supprimer le plugin __pluginName__",
+      "pluginFailToConfigure": "Impossible de configurer le plugin __pluginName__"
+    },
+	"extra-commands" : {
+      "title": "Envoi d'une extra commande au plugin"
+	},
+    "configure-device": {
+      "title": "Configuration de l'équipement",
+      "friendlyName-configuration": {
+        "name": "Nom",
+        "description": "Nom l'équipement",
+        "regexErrorMessage": "Le nom de l'équipement doit contenir au minimum 1 caractère"
+      }
+    },
+    "configure-keyword": {
+      "title": "Configuration d'une donnée de l'équipement",
+      "friendlyName-configuration": {
+        "name": "Nom",
+        "description": "Nom de la donnée",
+        "regexErrorMessage": "Le nom de la donnée doit contenir au minimum 1 caractère"
+      }
+    },
+    "set-value-keyword": {
+      "title": "Modification d'une donnée",
+      "keyword-configuration": {
+        "name": "Nouvelle donnée",
+        "description": "Saisir la nouvelle valeur à définir"
+      }
+    },
+    "configure-manually-device": {
+      "title": "Ajouter un équipement",
+      "friendlyName-configuration": {
+        "name": "Nom",
+        "description": "Nom de l'équipement",
+        "regexErrorMessage": "Le nom de l'équipement doit contenir au minimum 1 caractère"
+      }
+    },
+    "new-automation-rule": {
+      "title": "Création d'une règle d'automatisation",
+      "newRule": "Creer une règle",
+      "choose-editor": "Sélectionner un éditeur"
+    },
+    "edit-automation-rule": {
+      "title": "Edition d'une règle d'automatisation",
+      "show-help": "Afficher l'aide pour l'API Script",
+      "interpreter-rule": {
+        "name": "Interpréteur",
+        "description": "Interpréteur de la règle"
+      },
+      "name-rule": {
+        "name": "Nom",
+        "description": "Nom de la règle"
+      },
+      "description-rule": {
+        "name": "Description",
+        "description": "Description de la règle"
+      }
+    },
+    "show-log-automation-rule": {
+      "title": "Journal d'une règle d'automatisation"
+    },
+    "qrcode": {
+      "title": "QR Code de Yadoms",
+      "text": "Voici le QRCode de Yadoms. Vous pouvez le flasher avec votre téléphone pour accéder à Yadoms de partout."
+    },
+    "recipient_configure": {
+      "title": "Edition d'un destinataire",
+      "firstName": {
+        "name": "Prénom",
+        "description": "Le prénom du destinataire",
+        "regexErrorMessage": ""
+      },
+      "lastName": {
+        "name": "Nom",
+        "description": "Le nom du destinataire",
+        "regexErrorMessage": ""
+      },
+      "pluginSection": {
+        "name": "Champs additionnels pour le plugin ",
+        "description": ""
+      }
+    },
+    "dashboard": {
+      "title": "Tableau de bord",
+      "sub-windows": {
+        "summary": {
+          "title": "Résumé",
+          "information": "Informations",
+          "connectedUser": "Utilisateur connecté",
+          "platform": "Platforme",
+          "softwareVersion": "Version logicielle",
+          "databaseVersion": "Version base de donnée",
+          "startedFrom": "Démarré depuis",
+          "developerMode": "Mode développeur",
+          "errorRequestingDatabaseVersion": "Erreur lors de la récupération de la version de la base de donnée",
+          "errorRequestingSystemInformation": "Erreur lors de la récupération de la version logicielle"
+        },
+        "user-management": {
+          "title": "Gestion des utilisateurs"
+        },
+        "system-configuration": {
+          "title": "Configuration système",
+          "configuration-items": {
+            "language": {
+              "name": "Langue par défaut",
+              "description": "Langue par défaut pour tous les utilisateurs."
+            },
+            "timezone": {
+              "name": "Fuseau horaire",
+              "description": "Définissez ici votre fuseau horaire."
+            },
+            "basicAuthentication": {
+              "name": "Autentification",
+              "description": "Méthode d'autentification pour accéder à Yadoms."
+            },
+            "basicAuthenticationUser": {
+              "name": "Utilisateur",
+              "description": "Nom de l'utilisateur"
+            },
+            "basicAuthenticationPassword": {
+              "name": "Mot de passe",
+              "description": "Mot de passe de l'utilisateur"
+            },
+            "basicAuthenticationPassword2": {
+              "name": "Vérification du mot de passe",
+              "description": "Répétition du mot de passe pour éviter les erreurs de frappe",
+              "matchToErrorMessage": "Les mots de passe ne correspondent pas"
+            },
+            "advancedParameters": {
+              "name": "Paramètres avancés",
+              "description": "Configuration avancée de Yadoms. Cette section est réservée aux utilisateurs expérimentés."
+            },
+            "dateFormatString": {
+              "name": "Format de la date",
+              "description": "Vous pouvez changer le format de la date en utilisant la syntaxe mount.js (ex \"LLL\" ou \"'MMMM Do YYYY, h:mm:ss a\")"
+            }
+          },
+          "confirmResetToDefault": "Cette opération va restaurer la configuration par défaut. Continuer ?",
+          "configurationSaved": "Configuration système sauvegardée",
+          "defaultConfigurationRestored": "Configuration par défaut restaurée",
+          "errorDuringSavingConfiguration": "Erreur lors de la sauvegarde de la configuration système"
+        },
+        "user-configuration": {
+          "title": "Configuration utilisateur"
+        },
+        "plugins": {
+          "title": "Plugins",
+          "pluginInstanceListDescription": "Gérer, ajouter et supprimer des plugins",
+          "new": "Créer un plugin",
+          "table": {
+            "displayName": "Nom",
+            "status": "Etat",
+            "launchAtStartup": "Démarrer automatiquement",
+            "type": "Type de plugin",
+            "actions": "Actions"
+          },
+          "enableDisable": "Activer / désactiver le plugin",
+          "startStop": "Démarrer / arrêter le plugin",
+          "running": "Démarré",
+          "starting": "Démarrage...",
+          "stopped": "Arrêté",
+          "error": "Erreur",
+          "packageError": "Plugin invalide",
+          "configure": "Configurer le plugin",
+          "delete": "Supprimer le plugin",
+          "errorGettingPluginList": "Erreur lors de la récupération de la liste des plugins",
+          "confirmPluginDeletion": "Confirmez-vous la suppression du plugin __pluginName__ ?"
+        },
+        "recipients": {
+          "title": "Destinataires",
+          "recipientListDescription": "Gérer, ajouter et supprimer des destinataires de notification",
+          "new": "Créer un destinataire",
+          "edit": "Modifier le destinataire",
+          "delete": "Supprimer le destinataire",
+          "confirmRecipientDeletion": "Confirmez-vous la suppression du destinataire __firstName__ __lastName__ ?",
+          "table": {
+            "firstName": "Prénom",
+            "lastName": "Nom",
+            "actions": "Actions"
+          }
+        },
+        "devices": {
+          "title": "Equipements",
+          "deviceListDescription": "Gestion des équipements",
+          "new": "Créer un équipement",
+          "table": {
+            "name": "Nom",
+            "attachedTo": "Attaché au plugin",
+            "model": "Modèle",
+            "actions": "Actions"
+          },
+          "details": {
+            "table": {
+              "name": "Nom de la donnée",
+              "value": "Valeur",
+              "units": "Unité",
+              "update": "Dernier état",
+              "actions": "Actions"
+            }
+          },
+          "configure": "Configuration de l'équipement",
+          "delete": "Suppression de l'équipement",
+          "errorGettingDeviceList": "Erreur lors de la récupération de la liste des équipements",
+          "errorGettingDeviceDetailsList": "Erreur lors de la récupération des détails de l'équipement",
+          "errorUpdatingKeyword": "Erreur lors de la la mise à jour de la donnée __keyword__",
+          "noAcquisition": "Aucune acquisition"
+        },
+        "automation-center": {
+          "title": "Centre d'automatisation",
+          "description": "Gérer, ajouter et supprimer des règles d'automatisation",
+          "new": "Création d'une règle",
+          "table": {
+            "name": "Nom",
+            "description": "Description",
+            "autoStart": "Démarrer automatiquement",
+            "actions": "Actions",
+            "state": "Etat"
+          },
+          "startStop": "Démarrer / Arrêter la règle",
+          "ruleState": {
+            "stopped": "Arrêtée",
+            "running": "En cours",
+            "error": "Erreur"
+          },
+          "edit": "Modifier la règle",
+          "delete": "Supprimer la règle",
+          "confirmDeletion": "Confirmez-vous la suppression de la règle __name__ ?",
+          "log": "Consulter le journal",
+          "ruleSuccessfullyCreated": "Règle créée",
+          "ruleSuccessfullyUpdated": "Règle mise à jour",
+          "ruleDeleted": "Règle supprimée",
+          "ruleCreationError": "Impossible de créer la règle __rule__.",
+          "ruleUpdateError": "Impossible de mettre à jour la règle __rule__.",
+          "ruleEditError": "Impossible d'éditer la règle __rule__.",
+          "ruleDeletionError": "Impossible de supprimer la règle __rule__.",
+          "ruleStopError": "Impossible d'arrêter la règle __rule__.",
+          "ruleStartError": "Impossible de démarrer la règle __rule__.",
+          "ruleListingError": "Impossible de lister les règles.",
+          "ruleInterpreterListingError": "Impossible de lister les interpréteurs de règles.",
+          "ruleGetLogError": "Impossible d'obtenir le log de la règle __rule__.",
+          "editors": {
+            "code": {
+              "name": "Code"
+            },
+            "blockly": {
+              "name": "Blockly"
+            }
+          }
+        },
+        "install-update": {
+          "title": "Installation & Mise à jour",
+          "description": "Installation et mise à jour des composants de Yadoms",
+          "releaseTypeChoice": "Choisir le type de version à modifier",
+          "releaseType": {
+            "beta": "Beta - pour développeur",
+            "testing": "Test - version en cours de test, utiliser à vos propres risques",
+            "stable": "Stable - Recommandée"
+          },
+          "yadoms": {
+            "title": "Mise à jour de Yadoms",
+            "currentVersion": "Version courante",
+            "availableVersion": "Version disponible",
+            "update": "Mise à jour de Yadoms"
+          },
+          "generic": {
+            "name": "Nom",
+            "icon": "Icône",
+            "description": "Description",
+            "actualVersion": "Version courante",
+            "availableVersion": "Version plus récente",
+            "actions": "Actions",
+            "update": "Mise à jour",
+            "install": "Installation",
+            "uninstall": "Désinstallation",
+            "confirmUpdateTitle": "Confirmation de mise à jour",
+            "confirmUpdate": "Mettre à jour __objectName__ en version __version__ ?",
+            "confirmInstallTitle": "Confirmation d'installation",
+            "confirmInstall": "Installer __objectName__ en version __version__ ?",
+            "confirmRemoveTitle": "Confirmer la désinstallation",
+            "confirmRemove": "Désinstaller __objectName__ ?"
+          },
+          "plugins": {
+            "title": "Plugins"
+          },
+          "widgets": {
+            "title": "Widgets"
+          },
+          "script-interpreters": {
+            "title": "Interpréteur de règle"
+          }
+        },
+        "about": {
+          "title": "A propos"
+        }
+      },
+      "unableToLoadSubWindow": "Impossible d'afficher la fenêtre __subWindowPath__"
+    },
+    "confirmation": {
+      "title": "Confirmation"
+    }
+  },
     "configuration": {
         "validationForm": {
             "incorrectValue": "Valeur incorrecte",
@@ -497,7 +508,8 @@
             "minValueExceeded": "La valeur ne peut être inférieure à __minValue__",
             "minNumberItemsRequired": "La liste doit contenir au moins __minValue__ éléments",
             "maxNumberItemsAllowed": "La liste ne peut contenir plus de __maxValue__ éléments"
-        }
+        },
+		"iconpicker-search-prompt" : "Rechercher une icone..."
     },
     "blockly": {
         "toolbox": {

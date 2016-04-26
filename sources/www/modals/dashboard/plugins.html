@@ -8,7 +8,7 @@
          <td data-i18n="modals.dashboard.sub-windows.plugins.table.type"></td>
          <td data-i18n="modals.dashboard.sub-windows.plugins.table.launchAtStartup"></td>
          <td data-i18n="modals.dashboard.sub-windows.plugins.table.actions"></td>
-          <td data-i18n="modals.dashboard.sub-windows.plugins.table.status"></td>
+         <td data-i18n="modals.dashboard.sub-windows.plugins.table.status"></td>
       </tr>
       <!-- plugin instance will be listed here-->
    </table>
@@ -16,18 +16,18 @@
 <script>
    var pluginInstanceList = [];
 
-   Yadoms.initializePluginDashboard = function() {
+   Yadoms.initializePluginDashboard = function () {
       //we remove all rows except header
       $("table#plugin-instance-list").find("tr:gt(0)").remove();
       //we clear pluginInstance array
       pluginInstanceList = [];
 
-      $("#btn-add-new-plugin").unbind("click").bind("click", function() { addNewPlugin(); });
+      $("#btn-add-new-plugin").unbind("click").bind("click", function () { addNewPlugin(); });
 
       //we dynamically ask for plugins (async)
-      PluginInstanceManager.getAll().done(function(allInstances) {
+      PluginInstanceManager.getAll().done(function (allInstances) {
          //foreach result we append a <tr>
-         $.each(allInstances, function(index, value) {
+         $.each(allInstances, function (index, value) {
             pluginInstanceList.push(value);
             //we don't show system plugins to user
             if (!value.isSystemCategory()) {
@@ -47,58 +47,84 @@
    }
 
    function addPluginInstanceToDom(pi) {
-       var name = "<span>" + pi.displayName + "</span>";
+      var name = "<span>" + pi.displayName + "</span>";
 
-       var failToLoadPluginPackage =  pi.package === null ||  pi.package === undefined || pi.package.failToLoad === true;
+      var failToLoadPluginPackage = pi.package === null || pi.package === undefined || pi.package.failToLoad === true;
 
-       var type = "<img src=\"plugins/" + pi.type + "/icon.png\" class=\"img-thumbnail dashboard-table-icon\">&nbsp;&nbsp;" +
-                   "<span>" + $.t("plugins/" + pi.type + ":name", { defaultValue: pi.package.name }) + "</span>";
+      var type = "<img src=\"plugins/" + pi.type + "/icon.png\" class=\"img-thumbnail dashboard-table-icon\">&nbsp;&nbsp;" +
+                  "<span>" + $.t("plugins/" + pi.type + ":name", { defaultValue: pi.package.name }) + "</span>";
 
-       var autoStartCommand = "<input class=\"cb-autoStart\" type=\"checkbox\">";
-       if (failToLoadPluginPackage === true)
-           autoStartCommand = "";
+      var autoStartCommand = "<input class=\"cb-autoStart\" type=\"checkbox\">";
+      if (failToLoadPluginPackage === true)
+         autoStartCommand = "";
 
-       var actionsBtns = "<div class=\"btn-group\">\n" +
-              ((failToLoadPluginPackage === true)?"":"<button type=\"button\" class=\"btn btn-startStop\" data-i18n=\"[title]modals.dashboard.sub-windows.plugins.startStop\"><span class=\"fa fa-power-off\"></span></button>\n") +
-              ((failToLoadPluginPackage === true)?"":"<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.plugins.configure\"><span class=\"fa fa-cog\"></span></button>\n") +
-              "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.plugins.delete\"><span class=\"fa fa-trash\"></span></button>\n" +
-              "</div>";
+      var actionsBtns = "<div class=\"btn-group\">\n" +
+             ((failToLoadPluginPackage === true) ? "" : "<button type=\"button\" class=\"btn btn-startStop\" data-i18n=\"[title]modals.dashboard.sub-windows.plugins.startStop\"><span class=\"fa fa-power-off\"></span></button>\n") +
+             ((failToLoadPluginPackage === true) ? "" : "<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.plugins.configure\"><span class=\"fa fa-cog\"></span></button>\n");
 
-       var statusField = "<span class=\"label label-success label-status\"></span>\n";
-       if (failToLoadPluginPackage === true)
-           statusField = "<span class=\"label label-danger\" data-i18n=\"modals.dashboard.sub-windows.plugins.packageError\"></span>\n";
+      pi.getBoundExtraCommand()
+      .done(function(extraCommands) {
+             
+         if (failToLoadPluginPackage !== true) {
+            
+            if (extraCommands && Object.keys(extraCommands).length > 0) {
+               actionsBtns += "<button type=\"button\" class=\"btn btn-success btn-extraCommand\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">";
+               actionsBtns += "<span class=\"fa fa-navicon\"></span></button>";
+               actionsBtns += "<ul class=\"dropdown-menu\">";
 
-      //we add it to the DOM
-      var $pluginInstanceList = $("table#plugin-instance-list");
+               $.each(extraCommands, function (index, values) {
+                  actionsBtns += "<li><a href=\"#\" class=\"btn-extraCommand-" + index + "\"><span class=\"extra-command-icon " + values.iconClass + "\"></span>&nbsp;<span data-i18n=\"plugins/" + pi.type + ":extraCommands." + index + ".name\"></span>" + (values.commandData ? "..." : "") + "</a></li>";
+               });
 
-      $pluginInstanceList.append("<tr plugin-id=\"" + pi.id + "\">" +
-          "<td class=\"plugin-displayName vert-align\"></td>" +
-          "<td class=\"plugin-type vert-align\" align=\"left\"></td>" +
-          "<td class=\"plugin-autoStart vert-align\"></td>" +
-          "<td class=\"plugin-actions vert-align\"></td>" +
-          "<td class=\"plugin-status vert-align\"></td>" +
-          "</tr>");
+               actionsBtns += "</ul>";
+            }
+         }
 
-      var $pluginInstanceRow = getPluginDomRow(pi);
-      //we fill the data
-      $pluginInstanceRow.find("td.plugin-displayName").html(name);
-      $pluginInstanceRow.find("td.plugin-type").html(type);
-      $pluginInstanceRow.find("td.plugin-autoStart").html(autoStartCommand);
-      $pluginInstanceRow.find("td.plugin-actions").append(actionsBtns);
-      $pluginInstanceRow.find("td.plugin-status").html(statusField);
+         actionsBtns += "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.plugins.delete\"><span class=\"fa fa-trash\"></span></button>\n" +
+                 "</div>";
 
-      //we set autostart value
-      $pluginInstanceRow.find("input.cb-autoStart").prop("checked", pi.autoStart);
+         var statusField = "<span class=\"label label-success label-status\"></span>\n";
+         if (failToLoadPluginPackage === true)
+            statusField = "<span class=\"label label-danger\" data-i18n=\"modals.dashboard.sub-windows.plugins.packageError\"></span>\n";
 
-      //we bind event on the different actions
-       if (!failToLoadPluginPackage) {
-          $pluginInstanceRow.find("button.btn-startStop").unbind('click').bind('click', function () {startStopPlugin(pi); });
-          $pluginInstanceRow.find("button.btn-configure").unbind('click').bind('click', function () {configurePlugin(pi); });
-          $pluginInstanceRow.find("input.cb-autoStart").unbind('change').bind('change', function () {autoStartChange(pi); });
-       }
-       $pluginInstanceRow.find("button.btn-delete").unbind('click').bind('click', function() { deletePlugin(pi); });
+         //we add it to the DOM
+         var $pluginInstanceList = $("table#plugin-instance-list");
 
-      $pluginInstanceRow.i18n();
+         $pluginInstanceList.append("<tr plugin-id=\"" + pi.id + "\">" +
+             "<td class=\"plugin-displayName vert-align\"></td>" +
+             "<td class=\"plugin-type vert-align\" align=\"left\"></td>" +
+             "<td class=\"plugin-autoStart vert-align\"></td>" +
+             "<td class=\"plugin-actions vert-align\"></td>" +
+             "<td class=\"plugin-status vert-align\"></td>" +
+             "</tr>");
+
+         var $pluginInstanceRow = getPluginDomRow(pi);
+         //we fill the data
+         $pluginInstanceRow.find("td.plugin-displayName").html(name);
+         $pluginInstanceRow.find("td.plugin-type").html(type);
+         $pluginInstanceRow.find("td.plugin-autoStart").html(autoStartCommand);
+         $pluginInstanceRow.find("td.plugin-actions").append(actionsBtns);
+         $pluginInstanceRow.find("td.plugin-status").html(statusField);
+
+         //we set autostart value
+         $pluginInstanceRow.find("input.cb-autoStart").prop("checked", pi.autoStart);
+
+         //we bind event on the different actions
+         if (!failToLoadPluginPackage) {
+            $pluginInstanceRow.find("button.btn-startStop").unbind('click').bind('click', function () { startStopPlugin(pi); });
+            $pluginInstanceRow.find("button.btn-configure").unbind('click').bind('click', function () { configurePlugin(pi); });
+            $pluginInstanceRow.find("input.cb-autoStart").unbind('change').bind('change', function () { autoStartChange(pi); });
+         }
+         $pluginInstanceRow.find("button.btn-delete").unbind('click').bind('click', function () { deletePlugin(pi); });
+
+         $.each(extraCommands, function (index, values) {
+            $pluginInstanceRow.find("a.btn-extraCommand-" + index).unbind('click').bind('click', function () { onExtraCommand(pi, index, values); });
+         });
+
+         $pluginInstanceRow.i18n();
+      })
+      .fail(function(error) {
+      });
    }
 
    function startStopPlugin(pi) {
@@ -123,20 +149,20 @@
    function configurePlugin(pi) {
       //pi represent the pluginInstance concerned
       //we get package.json
-      PluginInstanceManager.downloadPackage(pi).done(function() {
+      PluginInstanceManager.downloadPackage(pi).done(function () {
          //we ask for configuration modal async
          Yadoms.modals.pluginConfigure.loadAsync()
          .done(function () {
-            Yadoms.configurePluginInstance(pi, function() {
-                  PluginInstanceManager.updateToServer(pi)
-                     .done(function() {
-                        //We update the information that can have changed after the configuration
-                        var $row = getPluginDomRow(pi);
-                        $row.find("td.plugin-displayName").html(pi.displayName);
-                     })
-                     .fail(function(error) {
-                        notifyError($.t("modals.configure-plugin.pluginFailToConfigure", { pluginName: pi.displayName }), error);
-                     });
+            Yadoms.configurePluginInstance(pi, function () {
+               PluginInstanceManager.updateToServer(pi)
+                  .done(function () {
+                     //We update the information that can have changed after the configuration
+                     var $row = getPluginDomRow(pi);
+                     $row.find("td.plugin-displayName").html(pi.displayName);
+                  })
+                  .fail(function (error) {
+                     notifyError($.t("modals.configure-plugin.pluginFailToConfigure", { pluginName: pi.displayName }), error);
+                  });
             });
          });
       });
@@ -188,80 +214,98 @@
       });
    }
 
+   function onExtraCommand(pi, commandName, commandConfig) {
+      if (commandConfig && commandConfig.commandData) {
+         Yadoms.modals.pluginExtraCommandsConfigure.loadAsync()
+            .done(function() {
+               Yadoms.ConfigureExtraCommands(commandName, commandConfig.commandData, pi)
+               .done(function (result) {
+                  PluginInstanceManager.postExtraCommand(pi, commandName, result);
+               });
+            });
+      } else {
+         PluginInstanceManager.postExtraCommand(pi, commandName);
+      }
+   }
+
    function periodicDashboardPluginTask() {
-       //periodically we check the status of each plugin
-       if (serverIsOnline) {
-           $.each(pluginInstanceList, function (index, pluginInstance) {
+      //periodically we check the status of each plugin
+      if (serverIsOnline) {
+         $.each(pluginInstanceList, function (index, pluginInstance) {
 
-               PluginInstanceManager.getState(pluginInstance)
-               .done(function (status) {
-                       if (status) {
-                           var $row = getPluginDomRow(pluginInstance);
-                           if (status.state !== pluginInstance.lastState) {
+            PluginInstanceManager.getState(pluginInstance)
+            .done(function (status) {
+               if (status) {
+                  var $row = getPluginDomRow(pluginInstance);
+                  if (status.state !== pluginInstance.lastState || 
+				      status.messageId !== pluginInstance.lastMessageId) {
 
-                               // Update start/stop button
-                               var $startStopButton = $row.find("button.btn-startStop");
-                               if (status.state === "Stopped") {
-                                   $startStopButton.addClass("btn-success").removeClass("btn-warning");
-                               } else {
-                                   $startStopButton.removeClass("btn-success").addClass("btn-warning");
-                               }
+                     // Update start/stop button
+                     var $startStopButton = $row.find("button.btn-startStop");
+                     if (status.state === "Stopped") {
+                        $startStopButton.addClass("btn-success").removeClass("btn-warning");
+                     } else {
+                        $startStopButton.removeClass("btn-success").addClass("btn-warning");
+                     }
 
-                               // Update state label
-                               var $label = $row.find("span.label-status");
-                               if ($label) {
-                                   switch (status.state) {
-                                   case "Error":
-                                       $label.removeClass("label-success").removeClass("label-warning").addClass("label-danger").text(getCustomMessage(pluginInstance, status.messageId, "modals.dashboard.sub-windows.plugins.error"));
-                                       break;
-                                   case "Stopped":
-                                       $label.removeClass("label-success").addClass("label-warning").removeClass("label-danger").text($.t("modals.dashboard.sub-windows.plugins.stopped"));
-                                       break;
-                                   case "Running":
-                                       $label.addClass("label-success").removeClass("label-warning").removeClass("label-danger").text($.t("modals.dashboard.sub-windows.plugins.running"));
-                                       break;
-                                   case "Custom":
-                                       $label.removeClass("label-success").addClass("label-warning").removeClass("label-danger").text(getCustomMessage(pluginInstance, status.messageId, "modals.dashboard.sub-windows.plugins.starting"));
-                                       break;
-                                   default:
-                                       $label.removeClass("label-danger").text("");
-                                       break;
-                                   }
-                               }
-                           }
-                           pluginInstance.lastState = status.state;
-                       }
-                   });
-           });
-       }
+                     // Update state label
+                     var $label = $row.find("span.label-status");
+                     if ($label) {
+                        
+                        console.log(pluginInstance.name + " -> status.messageId=" + status.messageId);
+                        switch (status.state) {
+                           case "Error":
+                              $label.removeClass("label-success").removeClass("label-warning").addClass("label-danger").text(getCustomMessage(pluginInstance, status.messageId, "modals.dashboard.sub-windows.plugins.error"));
+                              break;
+                           case "Stopped":
+                              $label.removeClass("label-success").addClass("label-warning").removeClass("label-danger").text($.t("modals.dashboard.sub-windows.plugins.stopped"));
+                              break;
+                           case "Running":
+                              $label.addClass("label-success").removeClass("label-warning").removeClass("label-danger").text($.t("modals.dashboard.sub-windows.plugins.running"));
+                              break;
+                           case "Custom":
+                              $label.removeClass("label-success").addClass("label-warning").removeClass("label-danger").text(getCustomMessage(pluginInstance, status.messageId, "modals.dashboard.sub-windows.plugins.starting"));
+                              break;
+                           default:
+                              $label.removeClass("label-danger").text("");
+                              break;
+                        }
+                     }
+                  }
+                  pluginInstance.lastState = status.state;
+				  pluginInstance.lastMessageId = status.messageId;
+               }
+            });
+         });
+      }
    }
 
    function getCustomMessage(pluginInstance, messageId, defaultMessage) {
-       return $.t("plugins/" + pluginInstance.type + ":customLabels.pluginState." + messageId, { defaultValue: $.t(defaultMessage) });
+      return $.t("plugins/" + pluginInstance.type + ":customLabels.pluginState." + messageId, { defaultValue: $.t(defaultMessage) });
    }
 
    function addNewPlugin() {
       Yadoms.modals.pluginAdd.loadAsync()
-      .done(function() {
-         Yadoms.askPluginTypes(function(pluginType) {
-            var pi = new PluginInstance(null, $.t("plugins/" + pluginType.type + ":name", {defaultValue : pluginType.package.name}), pluginType.type, "", 1, "user");
+      .done(function () {
+         Yadoms.askPluginTypes(function (pluginType) {
+            var pi = new PluginInstance(null, $.t("plugins/" + pluginType.type + ":name", { defaultValue: pluginType.package.name }), pluginType.type, "", 1, "user");
             //we get package.json
-            PluginInstanceManager.downloadPackage(pi).done(function() {
+            PluginInstanceManager.downloadPackage(pi).done(function () {
                //we ask for configuration modal async
                Yadoms.modals.pluginConfigure.loadAsync()
-               .done(function() {
+               .done(function () {
                   //we launch configureInstance GUI
                   Yadoms.configurePluginInstance(pi, function () {
                      //we ask for pluginInstance creation
-                      PluginInstanceManager.createToServer(pi)
-                          .done(function() {
-                              notifySuccess($.t("modals.configure-plugin.pluginSuccessfullyCreated"));
-                              addPluginInstanceToDom(pi);
-                              pluginInstanceList.push(pi);
-                          })
-                          .fail(function(error) {
-                              notifyError($.t("modals.configure-plugin.pluginFailToCreate", { pluginName: pi.displayName }), error);
-                          });
+                     PluginInstanceManager.createToServer(pi)
+                         .done(function () {
+                            notifySuccess($.t("modals.configure-plugin.pluginSuccessfullyCreated"));
+                            addPluginInstanceToDom(pi);
+                            pluginInstanceList.push(pi);
+                         })
+                         .fail(function (error) {
+                            notifyError($.t("modals.configure-plugin.pluginFailToCreate", { pluginName: pi.displayName }), error);
+                         });
                   });
                });
             });

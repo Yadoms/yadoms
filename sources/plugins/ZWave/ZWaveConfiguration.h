@@ -20,6 +20,11 @@ public:
    std::string getSerialPort() const;
 
    //--------------------------------------------------------------
+   /// \brief	    Include system keywords
+   //--------------------------------------------------------------
+   bool getIncludeSystemKeywords() const;
+   
+   //--------------------------------------------------------------
    /// \brief	    Initialize configuration
    //--------------------------------------------------------------
    void initializeWith(shared::CDataContainer container);

@@ -10,11 +10,11 @@ CRain::CRain( std::string PluginName, std::string KeyWordName )
    :m_PluginName ( PluginName ), m_rain( new yApi::historization::CRain(KeyWordName) )
 {}
 
-void CRain::Initialize( boost::shared_ptr<yApi::IYPluginApi> context ) const
+void CRain::Initialize( boost::shared_ptr<yApi::IYPluginApi> context, shared::CDataContainer details ) const
 {
    if (!context->keywordExists( m_PluginName, m_rain->getKeyword()))
 	{
-      DeclareKeywords ( context );
+      context->declareKeyword(m_PluginName, *m_rain, details);
 	}
 }
 
@@ -33,11 +33,6 @@ void CRain::SetValue( const shared::CDataContainer & ValueContainer, const std::
 	   m_rain->set(ValueContainer.get<double>( filter ));
 	   YADOMS_LOG(debug) << m_rain->getKeyword() << "=" << m_rain->get() << "mm";
    }
-}
-
-void CRain::DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const
-{
-	context->declareKeyword(m_PluginName, *m_rain);
 }
 
 boost::shared_ptr<yApi::historization::IHistorizable> CRain::GetHistorizable() const

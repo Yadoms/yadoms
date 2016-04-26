@@ -39,9 +39,8 @@ namespace database {   namespace common {  namespace adapters {
       ((Type)(std::string)(""))
       ((SizeX)(int)(1))
       ((SizeY)(int)(1))
-      ((PositionX)(int)(1))
-      ((PositionY)(int)(1))
-	  ((Title)(std::string)(""))
+      ((Position)(int)(0))
+      ((Title)(std::string)(""))
       ((Configuration)(shared::CDataContainer)(shared::CDataContainer()))
    );
 

@@ -138,6 +138,15 @@ namespace database { namespace common { namespace versioning {
 			if (!pRequester->createTableIfNotExists(CRecipientFieldTable::getTableName(), scriptProvider->getTableRecipientField()))
             throw CVersionException("Failed to create RecipientFields table");
 
+         std::vector<std::string> indexScripts;
+         scriptProvider->getTableAcquisitionIndexes(indexScripts);
+
+         //indexes
+         for (std::vector<std::string>::const_iterator i = indexScripts.begin(); i != indexScripts.end(); ++i)
+         {
+            pRequester->createIndex(CAcquisitionTable::getTableName(), *i);
+         }
+
          //set the database version
          CQuery qInsert = pRequester->newQuery();
          qInsert.InsertInto(CConfigurationTable::getTableName(), CConfigurationTable::getSectionColumnName(), CConfigurationTable::getNameColumnName(), CConfigurationTable::getValueColumnName(), CConfigurationTable::getDescriptionColumnName()).

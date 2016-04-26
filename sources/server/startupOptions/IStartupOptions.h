@@ -119,6 +119,12 @@ namespace startupOptions {
       /// \return     The acquisition lifetime
       //--------------------------------------------------------------
       virtual int getDatabaseAcquisitionLifetime() const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief	    Tell if the developer pode is enabled
+      /// \return     true the developer pode is enabled
+      //--------------------------------------------------------------
+      virtual bool getDeveloperMode() const = 0;
    };
 
 } // namespace startupOptions

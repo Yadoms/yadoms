@@ -18,6 +18,7 @@ function PluginInstance(id, displayName, type, configuration, autoStart, categor
     this.configuration = configuration;
     this.autoStart = autoStart;
     this.lastState = null;
+	this.lastMessageId = null;
     this.category = category;
 }
 
@@ -52,10 +53,16 @@ PluginInstance.prototype.getBoundPackageConfigurationSchema = function() {
    var d = new $.Deferred();
 
    if (!isNullOrUndefined(this.package)) {
-      var tmp = this.package.configurationSchema;
-      this.applyBindingPrivate(tmp, ["system"])
-         .done(d.resolve)
-         .fail(d.reject);
+      if (this.package.configurationSchema && Object.keys(this.package.configurationSchema).length > 0) {
+         var tmp = this.package.configurationSchema;
+         this.applyBindingPrivate(tmp, ["system"])
+            .done(d.resolve)
+            .fail(d.reject);
+      } else {
+         //if configurationSchema is not defined, to not try to do any binding...
+         //just resolve with undefined configurationSchema
+         d.resolve();
+      }
    } else {
       d.reject("undefined package");
    }
@@ -70,15 +77,47 @@ PluginInstance.prototype.getBoundManuallyDeviceCreationConfigurationSchema = fun
    var d = new $.Deferred();
 
    if (!isNullOrUndefined(this.package)) {
-      var tmp = this.package.manuallyDeviceCreationConfigurationSchema;
-      this.applyBindingPrivate(tmp, ["plugin", "system"])
-      .done(d.resolve)
-      .fail(d.reject);
+      if (this.package.manuallyDeviceCreationConfigurationSchema && Object.keys(this.package.manuallyDeviceCreationConfigurationSchema).length > 0) {
+         var tmp = this.package.manuallyDeviceCreationConfigurationSchema;
+         this.applyBindingPrivate(tmp, ["plugin", "system"])
+         .done(d.resolve)
+         .fail(d.reject);
+      } else {
+         //if manuallyDeviceCreationConfigurationSchema is not defined, to not try to do any binding...
+         //just resolve with undefined manuallyDeviceCreationConfigurationSchema
+         d.resolve();
+      }
    } else {
       d.reject("undefined package");
    }
    return d.promise();
 };
+
+
+/**
+ *  Get the bound manually device creation configuration schema
+ * @returns {*}
+ */
+PluginInstance.prototype.getBoundExtraCommand = function () {
+   var d = new $.Deferred();
+
+   if (!isNullOrUndefined(this.package)) {
+      if (this.package.extraCommands && Object.keys(this.package.extraCommands).length > 0) {
+         var tmp = this.package.extraCommands;
+         this.applyBindingPrivate(tmp, ["plugin", "system"])
+            .done(d.resolve)
+            .fail(d.reject);
+      } else {
+         //if extra commands are not defined, to not try to do any binding...
+         //just resolve with undefined extraCommands
+         d.resolve();
+      }
+   } else {
+      d.reject("undefined package");
+   }
+   return d.promise();
+};
+
 
 /**
  * Apply binding

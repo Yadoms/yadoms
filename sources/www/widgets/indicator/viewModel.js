@@ -2,7 +2,7 @@
  * Create a Indicator ViewModel
  * @constructor
  */
-widgetViewModelCtor = function IndicatorViewModel() {
+widgetViewModelCtor = function indicatorViewModel() {
 
    //observable data
    this.command = ko.observable(1);
@@ -23,9 +23,11 @@ widgetViewModelCtor = function IndicatorViewModel() {
     * Initialization method
     */
    this.initialize = function () {
-      //we create the battery indicator
-      this.widgetApi.toolbar.addBatteryIconToWidget();
-
+       this.widgetApi.toolbar({
+           activated: true,
+           displayTitle: true,
+           batteryItem: true
+       });
    };
 
    this.configurationChanged = function () {
@@ -35,7 +37,7 @@ widgetViewModelCtor = function IndicatorViewModel() {
       self.widgetApi.registerKeywordAcquisitions(self.widget.configuration.device.keywordId);
 
       //we fill the deviceId of the battery indicator
-      self.widgetApi.toolbar.configureBatteryIcon(self.widget.configuration.device.deviceId);
+      self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);
 
       try {
          self.showDeviceName(parseBool(self.widget.configuration.showDeviceName));

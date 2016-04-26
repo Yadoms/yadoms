@@ -1,0 +1,22 @@
+{
+	"name": "Light",
+	"description": "A widget that provide buttons to light on/off a lamp",
+	"errorDuringGettingDeviceInformation": "Error during getting device information",
+	"errorDuringSendingCommand": "Error sending command",
+	"configurationSchema": {
+		"device": {
+			"name": "Device",
+			"description": " Select below the lamp to drive",
+			"item": {
+				"name": "",
+				"description": "",
+				"content": {
+					"source": {
+						"name": "Switch device",
+						"description": "device to drive"
+					}
+				}
+            }
+		}
+	}
+}

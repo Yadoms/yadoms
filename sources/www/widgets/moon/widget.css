@@ -1,19 +1,16 @@
-.moonContainer {
+.widget-moon .moonImage {
     width: 100%;
-    height: 100%;
+    flex: 1;
+    font-family: "moon phases";
+    text-align: center;
 }
 
-.moonImage {
-    width: 100%;
-    height: 70%;
-    background-repeat: no-repeat;
-    background-position: center center;
-    -ms-background-size: contain;
-    background-size: contain;
-}
-
-.moonPercentage {
+.widget-moon .moonPercentage {
     width: 100%;
     height: 30%;
     text-align: center
+}
+@font-face {
+    font-family: "moon phases";
+    src: url('font/moon_phases.ttf');
 }

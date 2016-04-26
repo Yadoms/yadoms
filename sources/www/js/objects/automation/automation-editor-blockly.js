@@ -80,7 +80,7 @@ AutomationEditorBlockly.prototype.onModalShown = function() {
    $(document).off('focusin.modal');
 
    //load content
-   var content = self.rule.content;
+   var content = decodeURIComponent(self.rule.content);
 
    //clear main div (content and css classes)
    $mainDiv.empty().removeClass();
@@ -108,7 +108,7 @@ AutomationEditorBlockly.prototype.updateRule = function() {
    self.rule.code = "";
 
    Blockly.Yadoms.GetResult(self.rule.interpreter.toLowerCase(), function(xmlString,code){
-      self.rule.content = xmlString;
+      self.rule.content = encodeURIComponent(xmlString);
       self.rule.code = code;
 
       console.log("------------------> START");

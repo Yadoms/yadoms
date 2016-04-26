@@ -202,6 +202,9 @@
       "pluginFailToDelete": "Fail to delete plugin __pluginName__",
       "pluginFailToConfigure": "Fail to configure plugin __pluginName__"
     },
+	"extra-commands" : {
+      "title": "Send extra command to plugin"
+	},
     "configure-device": {
       "title": "Device configuration",
       "friendlyName-configuration": {
@@ -216,6 +219,13 @@
         "name": "Name",
         "description": "Friendly name of your keyword",
         "regexErrorMessage": "The name of the keyword must contains at least one character"
+      }
+    },
+    "set-value-keyword": {
+      "title": "Set data",
+      "keyword-configuration": {
+        "name": "New value",
+        "description": "Set a new value data"
       }
     },
     "configure-manually-device": {
@@ -282,6 +292,7 @@
           "softwareVersion": "Software Version",
           "databaseVersion": "Database Version",
           "startedFrom": "Started from",
+          "developerMode": "Developer mode",
           "errorRequestingDatabaseVersion": "Error requesting Database Version"
         },
         "user-management": {
@@ -495,7 +506,8 @@
       "minValueExceeded": "The value can't be lower than __minValue__",
       "minNumberItemsRequired": "the list must have at least __minValue__ items",
       "maxNumberItemsAllowed": "the list can't have more than __maxValue__ items"
-    }
+    },
+	"iconpicker-search-prompt" : "Search icon..."
   },
   "blockly": {
     "toolbox": {

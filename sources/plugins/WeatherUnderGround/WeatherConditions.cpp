@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "WeatherConditions.h"
+#include "ErrorAnswerHandler.h"
 #include <shared/Log.h>
 #include <shared/exception/Exception.hpp>
 
@@ -8,14 +9,14 @@ CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> cont
            m_CountryOrState      ( WUConfiguration.getCountryOrState() ),
            m_PluginName          ( PluginName),
            m_Temp                ( PluginName, Prefix + "temperature" ),
-           m_Pressure            ( PluginName, Prefix + "pressure" ),
-           m_Humidity            ( PluginName, Prefix + "Humidity" ),
-           m_Visibility          ( PluginName, Prefix + "Visibility" ),
-           m_UV                  ( PluginName, Prefix + "UV" ),
+		   m_pressure            ( new yApi::historization::CPressure( Prefix + "pressure" )),
+		   m_humidity            ( new yApi::historization::CHumidity ( Prefix + "Humidity" )),
+		   m_visibility          ( new yApi::historization::CDistance ( Prefix + "Visibility" )),
+		   m_uv                  ( new yApi::historization::CDirection( Prefix + "UV" )),
            m_DewPoint            ( PluginName, Prefix + "DewPoint"),
-           m_Rain_1hr            ( PluginName, Prefix + "Rain_1hr"),
+		   m_Rain_1hr            ( PluginName, Prefix + "Rain_1hr"),
            m_WeatherConditionUrl ( PluginName, Prefix + "WeatherCondition" ),
-           m_WindDirection       ( PluginName, Prefix + "WindDirection" ),
+		   m_WindDirection       ( new yApi::historization::CDirection( Prefix + "WindDirection" )),
            m_WindAverageSpeed    ( PluginName, Prefix + "windAverageSpeed"),
            m_WindMaxSpeed        ( PluginName, Prefix + "windMaxSpeed"),
            m_FeelsLike           ( PluginName, Prefix + "FeelsLike" ),
@@ -47,26 +48,31 @@ void CWeatherConditions::InitializeVariables ( boost::shared_ptr<yApi::IYPluginA
 	                                           IWUConfiguration& WUConfiguration
 								                  )
 {
+		shared::CDataContainer details;
+		details.set("provider", "weather-underground");
+		details.set("shortProvider", "wu");
+
 	   if (WUConfiguration.IsConditionsIndividualKeywordsEnabled())
 	   {
-		  m_Temp.Initialize                ( context );
-		  m_Pressure.Initialize            ( context );
-		  m_Humidity.Initialize            ( context );
-		  m_Visibility.Initialize          ( context );
-		  m_UV.Initialize                  ( context );
-		  m_DewPoint.Initialize            ( context );
-		  m_Rain_1hr.Initialize            ( context );
-		  m_WeatherConditionUrl.Initialize ( context );
-		  m_WindDirection.Initialize       ( context );
-		  m_WindAverageSpeed.Initialize    ( context );
-		  m_WindMaxSpeed.Initialize        ( context );
-		  m_FeelsLike.Initialize           ( context );
-		  m_Windchill.Initialize           ( context );
+		  if (!context->keywordExists( m_PluginName, m_pressure->getKeyword()))      context->declareKeyword(m_PluginName, *m_pressure, details);
+		  if (!context->keywordExists( m_PluginName, m_humidity->getKeyword()))      context->declareKeyword(m_PluginName, *m_humidity, details);
+		  if (!context->keywordExists( m_PluginName, m_visibility->getKeyword()))    context->declareKeyword(m_PluginName, *m_visibility, details);
+		  if (!context->keywordExists( m_PluginName, m_uv->getKeyword()))            context->declareKeyword(m_PluginName, *m_uv, details);
+		  if (!context->keywordExists( m_PluginName, m_WindDirection->getKeyword())) context->declareKeyword(m_PluginName, *m_WindDirection, details);
+
+		  m_Temp.Initialize                ( context, details );
+		  m_DewPoint.Initialize            ( context, details );
+		  m_Rain_1hr.Initialize            ( context, details );
+		  m_WeatherConditionUrl.Initialize ( context, details );
+		  m_WindAverageSpeed.Initialize    ( context, details );
+		  m_WindMaxSpeed.Initialize        ( context, details );
+		  m_FeelsLike.Initialize           ( context, details );
+		  m_Windchill.Initialize           ( context, details );
 		}
 
 	if (WUConfiguration.IsLiveConditionsEnabled())
 	{
-		m_LiveConditions.Initialize ( context );
+		m_LiveConditions.Initialize ( context, details );
 
 		m_LiveConditions.AddUnit (
 							shared::plugin::yPluginApi::CStandardCapacities::Temperature.getName(),
@@ -115,37 +121,27 @@ void CWeatherConditions::OnUpdate( boost::shared_ptr<yApi::IYPluginApi> context,
 
 bool CWeatherConditions::Request( boost::shared_ptr<yApi::IYPluginApi> context )
 {
-	try
+	if (!m_CatchError)
 	{
-	   m_CatchError = false;
-
-	   m_data = m_webServer.SendGetRequest( m_URL.str() );
-
-	   m_data.printToLog ();
-	}
-	catch (shared::exception::CException& e)
-	{
-		YADOMS_LOG(warning) << "Weather Conditions :" << e.what()  << std::endl;
-		context->setPluginState(yApi::historization::EPluginState::kCustom, "NoConnection" );
-		m_CatchError = true;
+		try
+		{
+		   m_data = m_webServer.SendGetRequest( m_URL.str() );
+		}
+		catch (shared::exception::CException& e)
+		{
+			YADOMS_LOG(warning) << "Weather Conditions :" << e.what()  << std::endl;
+			context->setPluginState(yApi::historization::EPluginState::kCustom, "NoConnection" );
+			m_CatchError = true;
+		}
 	}
 
 	if (!m_CatchError)
 	{
 		try
 		{
-			std::string error = m_data.getWithDefault<std::string>("response.error.description","");
+		    ErrorAnswerHandler Response( context, m_data );
 
-			// Si on passe alors c'est qu'il y a une erreur, sinon on sort.
-			if (!error.empty())
-			{
-				m_CatchError = true;
-
-				if (error.compare ("No cities match your search query") == 0)
-				{
-				   context->setPluginState(yApi::historization::EPluginState::kCustom, "CityNotFound" );
-				}
-			}
+			m_CatchError = Response.ContainError();
 		}
 		catch(...)
 		{
@@ -192,41 +188,105 @@ void CWeatherConditions::Parse( boost::shared_ptr<yApi::IYPluginApi> context, co
 
 			if (WUConfiguration.IsConditionsIndividualKeywordsEnabled())
 			{
+				//
+				//Temperature
+				//
 				m_Temp.SetValue          ( m_data, "current_observation.temp_c" );
 				KeywordList.push_back    ( m_Temp.GetHistorizable() );
 
-               m_Pressure.SetValue       ( m_data, "current_observation.pressure_mb" );
-			   KeywordList.push_back     ( m_Pressure.GetHistorizable() );
+				//
+				//Pressure
+				//
+			    m_pressure->set(m_data.get<double>( "current_observation.pressure_mb" ));
+			    YADOMS_LOG(debug) << m_pressure->getKeyword() << "=" << m_pressure->get() << "mbar";
+			    KeywordList.push_back     ( m_pressure );
 
-			   m_Humidity.SetValue       ( m_data, "current_observation.relative_humidity" );
-			   KeywordList.push_back     ( m_Humidity.GetHistorizable() );
+				//
+				//Humidity
+				//
 
-			   m_Visibility.SetValue     ( m_data, "current_observation.visibility_km" );
-			   KeywordList.push_back     ( m_Visibility.GetHistorizable() );
+			    std::string str_humidity = m_data.get<std::string>( "current_observation.relative_humidity" );
+			    str_humidity.erase( str_humidity.end()-1 );
+			    double d_humidity = (double)atof(str_humidity.c_str());
+			    m_humidity->set( d_humidity );
+			    YADOMS_LOG(debug) << m_humidity->getKeyword() << "=" << m_humidity->get() << "%";
+			    KeywordList.push_back     ( m_humidity );
 
-			   m_UV.SetValue             ( m_data, "current_observation.UV" );
-			   KeywordList.push_back     ( m_UV.GetHistorizable() );
+				//
+				//Visibility
+				//
 
-			   m_DewPoint.SetValue       ( m_data, "current_observation.dewpoint_c" );
-			   KeywordList.push_back     ( m_DewPoint.GetHistorizable() );
+				if (m_data.get<std::string>( "current_observation.visibility_km" ) == "N/A")
+					YADOMS_LOG(information) << m_visibility->getKeyword() << " : N/A => Value not registered";
+				else
+				{
+					// x 1000 -> The visibility from the web site is in kilometer
+					m_visibility->set(m_data.get<double>( "current_observation.visibility_km" ) * 1000 );
+					YADOMS_LOG(debug) << m_visibility->getKeyword() << "=" << m_visibility->get() << "m";
+				}
+			    KeywordList.push_back     ( m_visibility );
 
-			   m_Rain_1hr.SetValue       ( m_data, "current_observation.precip_today_metric" );
-			   KeywordList.push_back     ( m_Rain_1hr.GetHistorizable() );
+				//
+				//UV
+				//
 
-				m_WeatherConditionUrl.SetValue ( m_data, "current_observation.icon");
-				KeywordList.push_back          ( m_WeatherConditionUrl.GetHistorizable() );
+	            m_uv->set((int) m_data.get<double>( "current_observation.UV" ));
+	            YADOMS_LOG(debug) << m_uv->getKeyword() << "=" << m_uv->get();
+			    KeywordList.push_back     ( m_uv );
 
-			    m_WindDirection.SetValue           ( m_data, "current_observation.wind_degrees");
-			    KeywordList.push_back              ( m_WindDirection.GetHistorizable() );
+				//
+				//DewPoint
+				//
+
+			    m_DewPoint.SetValue       ( m_data, "current_observation.dewpoint_c" );
+			    KeywordList.push_back     ( m_DewPoint.GetHistorizable() );
+
+				//
+				//Rain
+				//
+
+                m_Rain_1hr.SetValue                ( m_data, "current_observation.precip_today_metric" );
+			    KeywordList.push_back              ( m_Rain_1hr.GetHistorizable() );
+
+				//
+				//Visual condition
+				//
+
+				m_WeatherConditionUrl.SetValue     ( m_data, "current_observation.icon");
+				KeywordList.push_back              ( m_WeatherConditionUrl.GetHistorizable() );
+
+				//
+				//Wind (degrees)
+				//
+
+				m_WindDirection->set((int) m_data.get<double>( "current_observation.wind_degrees" ));
+				YADOMS_LOG(debug) << m_WindDirection->getKeyword() << "=" << m_WindDirection->get() << " degrees";
+			    KeywordList.push_back              ( m_WindDirection );
+
+				//
+				//Wind (speed)
+				//
 
 			    m_WindAverageSpeed.SetValue        ( m_data, "current_observation.wind_kph");
 			    KeywordList.push_back              ( m_WindAverageSpeed.GetHistorizable() );
 
+				//
+				//Wind (Max speed)
+				//
+
 			    m_WindMaxSpeed.SetValue            ( m_data, "current_observation.wind_gust_kph");
 			    KeywordList.push_back              ( m_WindMaxSpeed.GetHistorizable() );
 
+				//
+				//Feelslike
+				//
+
 			    m_FeelsLike.SetValue               ( m_data, "current_observation.feelslike_c" );
 			    KeywordList.push_back              ( m_FeelsLike.GetHistorizable() );
+
+				//
+				//Windchill
+				//
 
 			    m_Windchill.SetValue               ( m_data, "current_observation.windchill_c" );
 			    KeywordList.push_back              ( m_Windchill.GetHistorizable() );

@@ -1,5 +1,15 @@
 .widget {
    background-color: transparent;
+   float: left;
+   width: 100px;
+   height: 100px;
+}
+
+.widget .is-dragging,
+.widget .is-positioning-post-drag,
+.widget .ui-draggable-dragging {
+  background: #C90;
+  z-index: 20;
 }
 
 .ui-resizable-se {
@@ -29,7 +39,7 @@
 
 /*Widget container management*/
 
-.grid-stack-item-content {
+.grid-item-content {
     height: 100%;
     width: 100% !important;
     left: 0 !important;
@@ -40,8 +50,8 @@
 
 .panel-widget {
     margin-bottom: 0;
-    display: table;
-    table-layout: fixed;
+    /*display: table;*/
+    /*table-layout: fixed;*/
     width: 100%;
     height: 100%;
     /*-webkit-box-shadow: 1px 1px 3px 0 rgb(193, 193, 193);
@@ -49,26 +59,32 @@
     box-shadow: 1px 1px 3px 0 rgb(193, 193, 193);*/
     border: none;
     border-radius: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .panel-widget-header {
     text-align: center;
-    overflow: hidden;
     white-space: nowrap;
+    max-height: 25px;
     -moz-text-overflow: ellipsis;
     text-overflow: ellipsis;
-    padding: 5px 8px;
-    display: table-row;
+    padding: 1px 0;
     width: 100%;
-    height: 25px;
+    border-radius: 0;
+    flex: 0 0 25px;
 }
 
 .panel-widget-body {
     padding: 0;
     overflow: hidden;
-    height: 100%;
-    display: table;
+    flex: 1;
     width: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
 .panel-widget-customization-overlay {
@@ -137,6 +153,10 @@
     cursor: pointer;
 }
 
+.widget-toolbar-button:hover {
+    color: white;
+}
+
 .widget-toolbar-separator {
     float: left;
     height: 20px;
@@ -165,9 +185,13 @@
 	color: red;
 }
 
-.widget-api-textfit {
-    height: 100%;
+.textfit {
     min-height: 20px;   /* min font height is 14, so min height is 14*1.41 ~= 20*/
+}
+
+.textfit-in-parent {
+    margin: auto;
+    flex: 1;
 }
 
 /*Permit to use a span instead of a <a> in a dropdown menu*/

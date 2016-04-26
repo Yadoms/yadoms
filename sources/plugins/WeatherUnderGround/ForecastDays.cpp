@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "ForecastDays.h"
+#include "ErrorAnswerHandler.h"
 #include <shared/Log.h>
 #include <shared/exception/Exception.hpp>
 
@@ -14,11 +15,23 @@ CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> context,
            m_PluginName                ( PluginName ),
            m_Forecast                  ( PluginName, "Forecast", weatherunderground::helper::EPeriod::kDay)
 {
-	m_CatchError = false;
-	m_URL.str("");
-	m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/" << m_Prefix << "/q/" << m_CountryOrState << "/" << m_Localisation << ".json";
+   try
+   {
+	  m_CatchError = false;
+	  m_URL.str("");
+	  m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/" << m_Prefix << "/q/" << m_CountryOrState << "/" << m_Localisation << ".json";
 
-	InitializeForecastDays ( context, WUConfiguration );
+	  InitializeForecastDays ( context, WUConfiguration );
+   }
+   catch (shared::exception::CException& e)
+   {
+      YADOMS_LOG(warning) << "Configuration or initialization error of Forecast 3 Days module :" << e.what()  << std::endl;
+
+	  // Informs Yadoms about the plugin actual state
+      context->setPluginState(yApi::historization::EPluginState::kCustom, "InitializationError" );
+
+	  m_CatchError = true;
+   }
 }
 
 void CForecastDays::InitializeForecastDays ( boost::shared_ptr<yApi::IYPluginApi> context, 
@@ -30,7 +43,11 @@ void CForecastDays::InitializeForecastDays ( boost::shared_ptr<yApi::IYPluginApi
    {
 	   if (WUConfiguration.IsForecast10DaysEnabled())
 	   {
-         m_Forecast.Initialize ( context );
+		shared::CDataContainer details;
+		details.set("provider", "weather-underground");
+		details.set("shortProvider", "wu");
+
+         m_Forecast.Initialize ( context, details );
 
 		m_Forecast.AddUnit (
 							shared::plugin::yPluginApi::CStandardCapacities::Temperature.getName(),
@@ -56,7 +73,7 @@ void CForecastDays::InitializeForecastDays ( boost::shared_ptr<yApi::IYPluginApi
 				 std::stringstream TempString; 
 				 TempString << m_Prefix << "Rain_Day_" << counter;
 				 m_Forecast_Rain[counter].reset (new CRain( m_PluginName, TempString.str() ));
-				 m_Forecast_Rain[counter]->Initialize ( context );
+				 m_Forecast_Rain[counter]->Initialize ( context, details );
 			 }
 		 }
       }
@@ -109,20 +126,10 @@ void CForecastDays::Parse( boost::shared_ptr<yApi::IYPluginApi> context, const I
 {
 	try
 	{
-		std::string error = m_data.getWithDefault<std::string>( "response.error.description","" );
+		ErrorAnswerHandler Response( context, m_data );
+		m_CatchError = Response.ContainError();
 
-		if (!error.empty())
-		{
-			m_CatchError = true;
-
-			YADOMS_LOG(error) << "ERROR : " << error  << std::endl;
-
-			if (error.compare ("No cities match your search query") == 0)
-			{
-				context->setPluginState(yApi::historization::EPluginState::kCustom, "CityNotFound" );
-			}
-		}
-		else
+		if ( !m_CatchError )
 		{
 			std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > KeywordList;
 
