@@ -89,7 +89,7 @@ script:
 - echo 'Configuring Yadoms CMakeListsUserConfig.txt'
 - cp sources/CMakeListsUserConfig.sample.txt sources/CMakeListsUserConfig.txt 
 - echo 'set(BOOST_ROOT "'$PWD'/boost_1_60_0")' > sources/CMakeListsUserConfig.txt
-- echo 'set(POCO_ROOT "'$PWD'/poco-.7.2-all")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(POCO_ROOT "'$PWD'/poco-1.7.2-all")' >> sources/CMakeListsUserConfig.txt
 - echo 'set(COTIRE_USE ON)' >> sources/CMakeListsUserConfig.txt
 - echo 'set(PROTOBUF_ROOT "'$PWD'/protobuf-2.6.1")' >> sources/CMakeListsUserConfig.txt
 - echo 'set(GAMMU_ROOT "'$PWD'/gammu-1.36.8")' >> sources/CMakeListsUserConfig.txt
