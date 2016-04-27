@@ -1,3 +1,131 @@
+/**
+ * Configure a custom block by adding the dropdowns allowing selecting a capacity
+ * @param thisBlock The block to configure
+ * @param callbackCapacitySelectionChanged A callback for capacity notification change
+ * @param capacityDropdownName The name of the capacities DropDown
+ * @constructor
+ */
+Blockly.Yadoms.ConfigureBlockForYadomsCapacitySelection = function(thisBlock, callbackCapacitySelectionChanged, capacityDropdownName, inputType, inputName, workspace) {
+	thisBlock.emptyCapacityDropDownItem_ = [$.t("blockly.chooseCapacityHelper"), "__inv@lid__"];
+
+	var capacityDd = new Blockly.FieldDropdown(function () {
+        var capacityList = Blockly.Yadoms.LoadCapacities_();
+        if (capacityList == null || capacityList.length === 0) {
+            //thisBlock.setDisabled(true);
+            capacityList = [thisBlock.emptyCapacityDropDownItem_];
+        } else {
+            capacityList.splice(0, 0, thisBlock.emptyCapacityDropDownItem_);
+        }
+
+        return capacityList;
+    }, function (capacity) {
+        if (!thisBlock.disabled) {
+
+            var yadomsTypeName = "";
+
+
+            if (Blockly.Yadoms.data.capacities[capacity]) {
+                if (!isNullOrUndefined(Blockly.Yadoms.data.capacities[capacity].typeInfo) && !isNullOrUndefined(Blockly.Yadoms.data.capacities[capacity].typeInfo.name))
+                    yadomsTypeName = Blockly.Yadoms.data.capacities[capacity].typeInfo.name;
+
+                var type = Blockly.Yadoms.GetBlocklyType_(Blockly.Yadoms.data.capacities[capacity].type, yadomsTypeName);
+
+                if (inputType && inputType.type === Blockly.INPUT_VALUE) {
+
+                    //if the input is connected to shadow block, then just remove it
+                    var connection = inputType.connection;
+                    var connectionIsNull = connection && !connection.targetConnection;
+                    if (!connectionIsNull) {
+                        var childBlock = connection.targetBlock();
+                        if (childBlock) {
+                            if (childBlock.isShadow()) {
+                                childBlock.dispose();
+                            }
+                        }
+                    }
+
+                    inputType.setCheck(type);
+
+                    //if connection is empty, add good default block
+                    if (!connection.targetConnection && Blockly.Yadoms.isLoadingFromXml === false) {
+                        var newChildBlock = Blockly.Yadoms.GetDefaultBlock_(Blockly.Yadoms.data.capacities[capacity], workspace);
+                        if (newChildBlock) {
+                            newChildBlock.setShadow(true);
+                            newChildBlock.initSvg();
+                            newChildBlock.render();
+                            connection.connect(newChildBlock.outputConnection);
+                        }
+                    }
+                }
+
+
+                if (callbackCapacitySelectionChanged) {
+                    callbackCapacitySelectionChanged(capacity, type);
+                }
+            } else {
+                //not defined capacity
+                if (inputType && inputType.type === Blockly.INPUT_VALUE) {
+                    inputType.setCheck(null); //any type allowed
+                }
+            }
+
+            thisBlock.isValid();
+        }
+    });
+	
+	    //add event fire value changed
+    capacityDd.setValue = function (newValue) {
+        if (!Blockly.Yadoms.data.capacities[newValue]) {
+            newValue = thisBlock.emptyCapacityDropDownItem_[1]; //use default value
+        }
+
+        var result = Blockly.FieldDropdown.prototype.setValue.call(this, newValue);
+        if (!isNullOrUndefined(this.changeHandler_) && $.isFunction(this.changeHandler_))
+            this.changeHandler_(this.getValue());
+        return result;
+    };
+	
+	thisBlock.getSelectedCapacity = function () {
+        return capacityDd.getValue();
+    };
+	
+	thisBlock.isValid = function () {
+        var capacityValid = thisBlock.getSelectedCapacity() !== thisBlock.emptyCapacityDropDownItem_[1];
+        if (capacityDd.textElement_) {
+            if (!capacityValid) {
+                Blockly.addClass_(capacityDd.textElement_, "blocklyValidationDropdownError");
+            } else {
+                Blockly.removeClass_(capacityDd.textElement_, "blocklyValidationDropdownError");
+            }
+        }
+        return capacityValid;
+    };
+
+    var inputNameToUse = inputName;
+    if (isNullOrUndefined(inputName)) {
+        inputNameToUse = "YadomsCapacitySelection";
+    }
+
+    var result;
+    if (inputType === "statement") {
+        result = thisBlock.appendStatementInput(inputNameToUse)
+            .appendField(capacityDd, capacityDropdownName);
+    }
+    else {
+        if (!isNullOrUndefined(inputType)) {
+            result = inputType
+                .appendField(capacityDd, capacityDropdownName);
+        } else {
+            result = thisBlock.appendDummyInput(inputNameToUse)
+                .appendField(capacityDd, capacityDropdownName);
+        }
+    }
+
+    capacityDd.setValue(capacityDd.getValue());
+    thisBlock.isValid();
+    return result;	
+	
+};
 
 /**
  * Configure a custom block by adding the dropdowns allowing selecting a keyword

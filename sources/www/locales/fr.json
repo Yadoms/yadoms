@@ -538,6 +538,7 @@
         "templateHelp": "Cliquer sur l'icone engrenage bleu pour configurer les évènements",
         "chooseDeviceHelper": "Choisir un équipement",
         "chooseKeywordHelper": "Choisir une donnée",
+        "chooseCapacityHelper": "Choisir une capacité",
         "blocks": {
             "yadoms_wait": {
                 "title": "Attendre",
@@ -572,10 +573,16 @@
                 "titleLine1": "Attendre un évènement",
                 "titleLine2": "Stocker sa valeur dans",
                 "case": "Lorsque",
+                "caseCapacity": "Lorsqu'une donnée de type",
                 "datetime": "la date/heure",
+                "capacity": "la capacité",
                 "triggered": "change",
                 "triggeredType": {
                     "change": "envoie une donnée",
+                    "become": ""
+                },      
+				"triggeredCapacityType": {
+                    "change": "est reçue",
                     "become": ""
                 },
                 "do": "Faire",
@@ -597,6 +604,14 @@
                     "become": {
                         "title": "Equipement : donnée particulière",
                         "tooltip": "Ajoute un nouveau block pour observer une condition particulière de changement d'une donnée d'un équipement"
+                    },
+                    "capacityChange": {
+                        "title": "Capacité : chaque nouvelle donnée",
+                        "tooltip": "Ajoute un nouveau block pour observer un changement d'une donnée correspondant à une capacité"
+                    },
+                    "capacityBecome": {
+                        "title": "Capacité : donnée particulière",
+                        "tooltip": "Ajoute un nouveau block pour observer une condition particulière de changement d'une donnée correspondant à une capacité"
                     },
                     "datetimeChange": {
                         "title": "Date/heure : mise à jour",

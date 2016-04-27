@@ -537,6 +537,7 @@
     "templateHelp": "Click on the blue cog icon, to configure the trigger",
     "chooseDeviceHelper" :  "Choose device",
     "chooseKeywordHelper" :  "Choose keyword",
+	"chooseCapacityHelper": "Choose a capacity",
     "blocks": {
       "yadoms_wait": {
         "title": "At",
@@ -571,12 +572,18 @@
         "titleLine1": "Wait for event",
         "titleLine2": "Save value in",
         "case": "When",
+		"caseCapacity": "When a data of type",
         "datetime": "date/time",
+		"capacity": "capacity",
         "triggered": "is triggered",
         "triggeredType": {
           "change": "change",
           "become": "become"
         },
+		"triggeredCapacityType": {
+			"change": "is received",
+			"become": ""
+		},
         "do": "Then do",
         "tooltip": "Wait for an event. It can be a device acquisition update or the date/time change",
         "defaultVarName": "newAcquisitionValue",
@@ -597,6 +604,14 @@
             "title": "Device : particular value",
             "tooltip": "Add a block for monitoring new device acquisition matching a condition"
           },
+		  "capacityChange": {
+			"title": "Capacity : any new acquisition",
+			"tooltip": "Add a block for monitoring acquisitions matching a capacity"
+		  },
+		  "capacityBecome": {
+			"title": "Capacity : particular value",
+			"tooltip": "Add a block for monitoring acquisitions matching a capacity and a particular value (example: battery level < 10%)"
+		  },
           "datetimeChange": {
             "title": "Date/time update",
             "tooltip": "Add a block for monitoring date/time changes (every minutes)"

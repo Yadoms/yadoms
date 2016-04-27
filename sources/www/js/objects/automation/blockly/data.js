@@ -15,6 +15,7 @@ Blockly.Yadoms.LoadDataForBlocklyCustomBlocks_ = function () {
         keywords: {},
         recipients: {},
         enumerations: {},
+		capacities : {},
 
         getPluginIdFromKeywordId: function (keywordId) {
             if (this.keywords[keywordId] && this.devices[this.keywords[keywordId].deviceId])
@@ -38,6 +39,7 @@ Blockly.Yadoms.LoadDataForBlocklyCustomBlocks_ = function () {
           .done(function (listKeywords) {
              $.each(listKeywords, function (keywordKey, keyword) {
                 result.keywords[keyword.id] = keyword;
+				result.capacities[keyword.capacityName] = keyword;
              });
 
              RecipientManager.getAll()
@@ -264,6 +266,17 @@ Blockly.Yadoms.LoadKeywords_ = function (selectedDeviceId, onlyWritableKeywords,
     return keywordList;
 };
 
+/**
+ * Return an array of capacities (Array: [name, name]) 
+ * @private
+ */
+Blockly.Yadoms.LoadCapacities_ = function() {
+    var capacityList = [];
+    $.each(Blockly.Yadoms.data.capacities, function (index, keyword) {
+		capacityList.push([index, index]);
+    });
+    return capacityList;	
+};
 
 /**
  * Return an array of recipients (Array: [name, id])
