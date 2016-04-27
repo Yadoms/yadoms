@@ -28,10 +28,11 @@ message WaitForNextAcquisitions
 
 message WaitForEvent
 {
-   enum EventType { kTimeout = 0; kKeyword = 1; kDateTime = 2; }
+   enum EventType { kTimeout = 0; kKeyword = 1; kDateTime = 2; kCapacity = 3; }
    required EventType type = 1;
    required int32 keywordId = 2;
-   optional string acquisition = 3;
+   required string capacity = 3;
+   optional string acquisition = 4;
 }
 
 message WriteKeyword

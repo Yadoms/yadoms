@@ -192,7 +192,7 @@ std::pair<int, std::string> CYScriptApiImplementation::waitForNextAcquisitions(c
    }
 }
 
-shared::script::yScriptApi::CWaitForEventResult CYScriptApiImplementation::waitForEvent(const std::vector<int> & keywordIdList, bool receiveDateTimeEvent, const std::string& timeout) const
+shared::script::yScriptApi::CWaitForEventResult CYScriptApiImplementation::waitForEvent(const std::vector<int> & keywordIdList, const std::vector<std::string> & capacities, bool receiveDateTimeEvent, const std::string& timeout) const
 {
 
    for (std::vector<int>::const_iterator kwId = keywordIdList.begin(); kwId != keywordIdList.end(); ++kwId)
@@ -203,6 +203,7 @@ shared::script::yScriptApi::CWaitForEventResult CYScriptApiImplementation::waitF
    enum
    {
       kKeyword = shared::event::kUserFirstId,
+      kCapacity,
       kTime
    };
 
@@ -216,6 +217,25 @@ shared::script::yScriptApi::CWaitForEventResult CYScriptApiImplementation::waitF
 
    //register the observer
    notification::CHelpers::CCustomSubscriber subscriber(observer);
+
+
+   //create the action (= what to do when notification is observed)
+   boost::shared_ptr< notification::action::CEventPtrAction<notification::acquisition::CNotification> > capacityEventAction(new notification::action::CEventPtrAction<notification::acquisition::CNotification>(eventHandler, kCapacity));
+
+   //create the acquisition observer
+   boost::shared_ptr<notification::acquisition::CObserver> capacityObserver(boost::make_shared<notification::acquisition::CObserver>(capacityEventAction));
+
+   std::vector<int> keywordToCheck;
+   for (std::vector<std::string>::const_iterator i = capacities.begin(); i != capacities.end(); ++i)
+   {
+      std::vector<boost::shared_ptr<database::entities::CKeyword> > matchingKeywords = m_dbKeywordRequester->getKeywordsMatchingOneOfCapacities(*i);
+      for (std::vector<boost::shared_ptr<database::entities::CKeyword> >::iterator k = matchingKeywords.begin(); k != matchingKeywords.end(); ++k)
+         keywordToCheck.push_back((*k)->Id);
+   }
+   capacityObserver->resetKeywordIdFilter(keywordToCheck);
+
+   //register the observer
+   notification::CHelpers::CCustomSubscriber subscriberCapacity(capacityObserver);
 
 
    boost::shared_ptr< notification::IObserver > dateTimeObserver;
@@ -243,6 +263,19 @@ shared::script::yScriptApi::CWaitForEventResult CYScriptApiImplementation::waitF
             if (newAcquisition)
             {
                result.setKeywordId(newAcquisition->getAcquisition()->KeywordId);
+               result.setValue(newAcquisition->getAcquisition()->Value);
+            }
+            break;
+         }
+
+         case kCapacity:
+         {
+            boost::shared_ptr<notification::acquisition::CNotification> newAcquisition = eventHandler->getEventData< boost::shared_ptr<notification::acquisition::CNotification> >();
+            result.setType(shared::script::yScriptApi::CWaitForEventResult::kCapacity);
+            if (newAcquisition)
+            {
+               result.setKeywordId(newAcquisition->getAcquisition()->KeywordId);
+               result.setCapacity(m_dbKeywordRequester->getKeyword(newAcquisition->getAcquisition()->KeywordId)->CapacityName);
                result.setValue(newAcquisition->getAcquisition()->Value);
             }
             break;

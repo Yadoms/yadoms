@@ -32,8 +32,9 @@ message WaitForNextAcquisitions
 message WaitForEvent
 {
    repeated int32 keywordId = 1;
-   required bool receiveDateTimeEvent = 2;
-   optional string timeout = 3;
+   repeated string capacities = 2;
+   required bool receiveDateTimeEvent = 3;
+   optional string timeout = 4;
 }
 
 message WriteKeyword

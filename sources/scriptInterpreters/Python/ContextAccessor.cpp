@@ -224,16 +224,23 @@ void CContextAccessor::processWaitForEvent(const pbRequest::WaitForEvent& reques
       std::vector<int> keywordIdList;
       for (google::protobuf::RepeatedField<google::protobuf::int32>::const_iterator it = request.keywordid().begin(); it != request.keywordid().end(); ++it)
          keywordIdList.push_back(*it);
-      shared::script::yScriptApi::CWaitForEventResult result = m_scriptApi->waitForEvent(keywordIdList, request.receivedatetimeevent(), request.has_timeout() ? request.timeout() : std::string());
+
+      std::vector<std::string> capacityList;
+      for (google::protobuf::RepeatedPtrField<google::protobuf::string>::const_iterator itC = request.capacities().begin(); itC != request.capacities().end(); ++itC)
+         capacityList.push_back(*itC);
+
+      shared::script::yScriptApi::CWaitForEventResult result = m_scriptApi->waitForEvent(keywordIdList, capacityList, request.receivedatetimeevent(), request.has_timeout() ? request.timeout() : std::string());
       switch (result.getType())
       {
       case shared::script::yScriptApi::CWaitForEventResult::kTimeout:answer->set_type(pbAnswer::WaitForEvent_EventType_kTimeout); break;
       case shared::script::yScriptApi::CWaitForEventResult::kKeyword:answer->set_type(pbAnswer::WaitForEvent_EventType_kKeyword); break;
       case shared::script::yScriptApi::CWaitForEventResult::kDateTime:answer->set_type(pbAnswer::WaitForEvent_EventType_kDateTime); break;
+      case shared::script::yScriptApi::CWaitForEventResult::kCapacity:answer->set_type(pbAnswer::WaitForEvent_EventType_kCapacity); break;
       default:
          throw shared::exception::CInvalidParameter("CWaitForEventResult::type");
       }
       answer->set_keywordid(result.getKeywordId());
+      answer->set_capacity(result.getCapacity());
       if (!result.getValue().empty())
          answer->set_acquisition(result.getValue());
    }

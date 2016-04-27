@@ -63,12 +63,13 @@ namespace shared { namespace script { namespace yScriptApi
       //-----------------------------------------------------
       ///\brief Wait for an event (acquisition, time event...)
       ///\param[in] keywordIdList The keyword IDs list to watch
+      ///\param[in] capacities   The capacities name to watch
       ///\param[in] receiveDateTimeEvent true to receive date/time events (one per minute)
       ///\param[in] timeout Timeout to wait.
       ///\return Returned value is a pair of the keyword Id who changed, and its new value. The keyword Id is kTimeout if timeout.
       ///\throw std::out_of_range if one of the keyword is not found
       //-----------------------------------------------------
-      virtual shared::script::yScriptApi::CWaitForEventResult waitForEvent(const std::vector<int> & keywordIdList, bool receiveDateTimeEvent, const std::string& timeout = std::string()) const = 0;
+      virtual shared::script::yScriptApi::CWaitForEventResult waitForEvent(const std::vector<int> & keywordIdList, const std::vector<std::string> & capacities, bool receiveDateTimeEvent, const std::string& timeout = std::string()) const = 0;
 
       //-----------------------------------------------------
       ///\brief Change state of a keyword

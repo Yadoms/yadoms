@@ -783,6 +783,28 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
             }
         }
         return keywodArray;
+    }    
+	
+	/**
+    * Get the list of capacities in a python compatible list
+    * @returns {Array of Number} The list of capacities name (ie: [temeprature,powerLvel,rssi] )
+    */
+    getCapacityList: function () {
+        //list all capacities in a list
+        var capacityArray = [];
+
+        var i;
+        var capacity;
+        for (i = 0; i < this.mutationData_.additionalBlocks.length; i++) {
+            capacity = this.getFieldValue("capacityDd" + i);
+            if (capacity) {
+                //check if not already added to list
+                if ($.inArray(capacity, capacityArray) === -1) {
+                    capacityArray.push(capacity);
+                }
+            }
+        }
+        return capacityArray;
     }
 
 };
