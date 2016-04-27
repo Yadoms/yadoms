@@ -39,7 +39,7 @@ public:
    void historizeData(const std::string& device, const std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > & dataVect) override;
    boost::shared_ptr<const shared::plugin::information::IInformation> getInformation() const override;
    shared::CDataContainer getConfiguration() const override;
-   shared::event::CEventHandler & getEventHandler() override;
+   shared::event::CEventHandler& getEventHandler() override;
    // [END] shared::script::yScriptApi::IYScriptApi implementation
 
    void onReceive(boost::shared_ptr<const unsigned char[]> message, size_t messageSize);
@@ -55,6 +55,7 @@ protected:
 
    void processSystem(const toPlugin::System& msg);
    void processPluginInformation(const pbPluginInformation::Information& msg);
+   void processBindingQuery(const toPlugin::BindingQuery& msg);
 
 private:
    mutable std::condition_variable m_initializationCondition;
@@ -62,6 +63,8 @@ private:
    bool m_initialized;
 
    bool m_stopRequested;
+
+   shared::event::CEventHandler m_pluginEventHandler;
 
 
    // The message queue buffer, localy used but defined here to be allocated only once

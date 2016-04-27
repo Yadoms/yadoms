@@ -379,7 +379,6 @@ set(YADOMS_SRC
 	server/pluginSystem/IdentityForQualifier.cpp
    server/pluginSystem/IContextAccessor.h
 	server/pluginSystem/IFactory.h
-   server/pluginSystem/IInformationSerializer.h
 	server/pluginSystem/IInstance.h
 	server/pluginSystem/IInstanceStartErrorObserver.h
 	server/pluginSystem/IInstanceStateHandler.h
@@ -388,8 +387,6 @@ set(YADOMS_SRC
 	server/pluginSystem/IndicatorQualifier.cpp
 	server/pluginSystem/Information.h
 	server/pluginSystem/Information.cpp
-	server/pluginSystem/InformationSerializer.h
-	server/pluginSystem/InformationSerializer.cpp
 	server/pluginSystem/Instance.h
 	server/pluginSystem/Instance.cpp
    server/pluginSystem/InstanceRemover.h
@@ -425,6 +422,10 @@ set(YADOMS_SRC
 	server/pluginSystem/ManuallyDeviceCreationRequest.h
 	server/pluginSystem/ManuallyDeviceCreationRequest.cpp
 
+   server/pluginSystem/serializers/IInformation.h
+	server/pluginSystem/serializers/Information.h
+	server/pluginSystem/serializers/Information.cpp
+   
 	server/notification/NotificationCenter.h
 	server/notification/NotificationCenter.cpp
 	server/notification/Helpers.hpp
@@ -574,6 +575,7 @@ source_group(server\\notification\\change  server/notification/change/*.*)
 source_group(server\\notification\\acquisition  server/notification/acquisition/*.*)
 source_group(server\\notification\\summary  server/notification/summary/*.*)
 source_group(server\\pluginSystem server/pluginSystem/*.* )
+source_group(server\\pluginSystem\\serializers server/pluginSystem/serializers/*.* )
 source_group(server\\pluginSystem\\internalPlugin server/pluginSystem/internalPlugin/*.* )
 source_group(server\\startupOptions  server/startupOptions/*.*)
 source_group(server\\task  server/task/*.*)

@@ -15,10 +15,12 @@
 //
 // ! please keep for full list alphabetic ordered !!
 ////////////////////////////////////////
+#include <boost/bind.hpp>
 #include <boost/interprocess/ipc/message_queue.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/format.hpp>
+#include <boost/function.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/preprocessor.hpp>
 #include <boost/property_tree/ptree.hpp>

@@ -6,8 +6,9 @@
 #pragma once
 
 #include <shared/process/IProcess.h>
-#include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
 #include <shared/plugin/information/IInformation.h>
+#include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
+#include <shared/plugin/yPluginApi/IDeviceCommand.h>
 #include <shared/plugin/yPluginApi/IExtraCommand.h>
 #include "IInstance.h"
 #include "IContextAccessor.h"
@@ -62,6 +63,7 @@ namespace pluginSystem
       void kill() override;
       boost::shared_ptr<const database::entities::CPlugin> about() const override;
       boost::shared_ptr<const shared::plugin::information::IInformation> aboutPlugin() const override;
+      void postBindingQueryRequest(boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> & request) const override;
       // [END] IInstance Implementation
 
 
@@ -81,11 +83,6 @@ namespace pluginSystem
       //    //--------------------------------------------------------------
       //    virtual void postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> & request) const;
 
-      ////--------------------------------------------------------------
-      ///// \brief                 Post a custom query request to a plugin
-      ///// \param [in] request    Request data
-      ////--------------------------------------------------------------
-      //    virtual void postBindingQueryRequest(boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> & request) const;
 
    private:
       //--------------------------------------------------------------

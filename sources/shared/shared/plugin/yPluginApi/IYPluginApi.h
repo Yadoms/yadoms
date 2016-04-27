@@ -56,7 +56,7 @@ namespace shared { namespace plugin { namespace yPluginApi
       ///       to received, wait for, or post events from/to Yadoms
       ///\return The plugin event handler
       //-----------------------------------------------------   
-      virtual event::CEventHandler & getEventHandler() = 0;
+      virtual event::CEventHandler& getEventHandler() = 0;
 
 
       //----------------------------------------------------------------------------------------------------------------

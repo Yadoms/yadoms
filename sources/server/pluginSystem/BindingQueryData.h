@@ -20,9 +20,9 @@ namespace pluginSystem
       //-----------------------------------------------------
       virtual ~CBindingQueryData();
 
-      // IManuallyDeviceCreationData implementation
+      // IBindingQueryData implementation
       virtual const std::string& getQuery() const;
-      // [END] IManuallyDeviceCreationData implementation
+      // [END] IBindingQueryData implementation
 
    private:
       //-----------------------------------------------------

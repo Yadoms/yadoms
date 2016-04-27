@@ -1,17 +1,16 @@
 #pragma once
-#include <shared/plugin/yPluginApi/IYPluginApi.h>
 
+#include <plugin_IPC/plugin_IPC.h>
+#include <shared/plugin/information/IInformation.h>
+#include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
 
-namespace toPlugin{
-   class msg;
-}
 
 namespace pluginSystem
 {
    //--------------------------------------------------------------
    /// \brief	yScriptApi context accessor, used by script to interact with Yadoms
    //--------------------------------------------------------------
-   class IContextAccessor
+   class IContextAccessor//TODO renommer (et son implémentation) en IPluginDialer ?
    {
    public:
       //--------------------------------------------------------------
@@ -28,16 +27,28 @@ namespace pluginSystem
       virtual std::string id() const = 0;
 
       //--------------------------------------------------------------
-      /// \brief	Get the plugin API
-      /// \return The plugin API
-      //--------------------------------------------------------------
-      virtual boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> api() const = 0;
-
-      //--------------------------------------------------------------
       /// \brief	Send an message to plugin
       /// \param[in] pbMsg The message
       //--------------------------------------------------------------
-      virtual void send(const toPlugin::msg& pbMsg) = 0;
+      virtual void send(const toPlugin::msg& pbMsg) = 0; //TODO utile ?
+
+      //--------------------------------------------------------------
+      /// \brief	Post the plugin stop request
+      //--------------------------------------------------------------
+      virtual void postStopRequest() = 0;
+
+      //--------------------------------------------------------------
+      /// \brief	Post the plugin information
+      /// \param[in] information The plugin information
+      //--------------------------------------------------------------
+      virtual void postPluginInformation(boost::shared_ptr<const shared::plugin::information::IInformation> information) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief                 Post a custom query request to a plugin
+      /// \param [in] request    Request data
+      //--------------------------------------------------------------
+      virtual void postBindingQueryRequest(boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> request) = 0;
+
    };
 } // namespace pluginSystem
 

@@ -1,7 +1,5 @@
 #include "stdafx.h"
 #include "Instance.h"
-#include <toPlugin.pb.h>
-#include "InformationSerializer.h"
 
 namespace pluginSystem
 {
@@ -33,19 +31,19 @@ namespace pluginSystem
 
    void CInstance::postStopRequest() const
    {
-      toPlugin::msg msg;
-      auto message = msg.mutable_system();
-      message->set_type(toPlugin::System_EventType_kRequestStop);
-
-      m_contextAccessor->send(msg);
+      m_contextAccessor->postStopRequest();
    }
 
    void CInstance::postPluginInformation(boost::shared_ptr<const shared::plugin::information::IInformation> information) const
    {
-      toPlugin::msg msg;
-      CInformationSerializer(information).toPb(msg.mutable_plugininformation());
+      m_contextAccessor->postPluginInformation(information);
+   }
 
-      m_contextAccessor->send(msg);
+   void CInstance::postBindingQueryRequest(boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> & request) const
+   {
+      m_contextAccessor->postBindingQueryRequest(request);
+
+      //TODO gérer la réponse
    }
 
    void CInstance::postDeviceCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> deviceCommand) const
@@ -128,13 +126,6 @@ namespace pluginSystem
    //   BOOST_ASSERT(m_context);
    //   // Post event to the plugin
    //   m_context->getEventHandler().postEvent< boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> >(shared::plugin::yPluginApi::IYPluginApi::kEventManuallyDeviceCreation, request);
-   //}
-   //
-   //void CInstance::postBindingQueryRequest(boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> & request) const
-   //{
-   //	BOOST_ASSERT(m_context);
-   //	// Post event to the plugin
-   //   m_context->getEventHandler().postEvent< boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> >(shared::plugin::yPluginApi::IYPluginApi::kBindingQuery, request);
    //}
 
    void CInstance::updateConfiguration(const shared::CDataContainer& newConfiguration) const

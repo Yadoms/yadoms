@@ -2,6 +2,7 @@
 #include "ApiImplementation.h"
 #include <shared/DataContainer.h>
 #include "PluginInformation.h"
+#include "BindingQuery.h"
 
 
 CApiImplementation::CApiImplementation()
@@ -74,6 +75,7 @@ void CApiImplementation::onReceive(boost::shared_ptr<const unsigned char[]> mess
    {
    case toPlugin::msg::kSystem: processSystem(toPluginProtoBuffer.system()); break;
    case toPlugin::msg::kPluginInformation: processPluginInformation(toPluginProtoBuffer.plugininformation()); break;
+   case toPlugin::msg::kBindingQuery: processBindingQuery(toPluginProtoBuffer.bindingquery()); break;
       //TODO
    //case toPlugin::msg::kGetKeywordId: processGetKeywordId(toPluginProtoBuffer.getkeywordid(), messageQueue); break;
    //case toPlugin::msg::kGetRecipientId: processGetRecipientId(toPluginProtoBuffer.getrecipientid(), messageQueue); break;
@@ -118,10 +120,36 @@ void CApiImplementation::processPluginInformation(const pbPluginInformation::Inf
    m_initializationCondition.notify_one();
 }
 
+void CApiImplementation::processBindingQuery(const toPlugin::BindingQuery& msg)
+{
+   bool success;
+   std::string result;
+
+   CBindingQuery query(msg,
+                       getEventHandler(),
+                       [&](const shared::CDataContainer& r)
+                       {
+                          success = true;
+                          result = r.serialize();
+                       },
+                       [&](const std::string& r)
+                       {
+                          success = false;
+                          result = r;
+                       });
+   query.askToPlugin();
+
+   toYadoms::msg ans;
+   auto answer = ans.mutable_bindingqueryanswer();
+   answer->set_success(success);
+   answer->set_result(result);
+   send(ans);
+}
+
 void CApiImplementation::setPluginState(const shared::plugin::yPluginApi::historization::EPluginState& state, const std::string & customMessageId)
 {
    toYadoms::msg req;
-   toYadoms::SetPluginState* request = req.mutable_pluginstate();
+   auto request = req.mutable_pluginstate();
    switch(state)
    {
    case shared::plugin::yPluginApi::historization::EPluginState::kUnknownValue:request->set_pluginstate(toYadoms::SetPluginState_EPluginState_kUnknown); break;
@@ -182,9 +210,9 @@ shared::CDataContainer CApiImplementation::getConfiguration() const
 {
    return shared::CDataContainer();
 }
-shared::event::CEventHandler & CApiImplementation::getEventHandler()
+shared::event::CEventHandler& CApiImplementation::getEventHandler()
 {
-   return shared::event::CEventHandler();
+   return m_pluginEventHandler;
 }
 
 //int CApiImplementation::getKeywordId(const std::string& deviceName, const std::string& keywordName) const

@@ -1,5 +1,6 @@
 #pragma once
 #include <server/database/sqlite/requesters/Plugin.h>
+#include <shared/shared/plugin/yPluginApi/IBindingQueryRequest.h>
 
 namespace pluginSystem
 {
@@ -41,6 +42,12 @@ namespace pluginSystem
       ///\return              Plugin information
       //-----------------------------------------------------
       virtual boost::shared_ptr<const shared::plugin::information::IInformation> aboutPlugin() const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief                 Post a custom query request to a plugin
+      /// \param [in] request    Request data
+      //--------------------------------------------------------------
+      virtual void postBindingQueryRequest(boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> & request) const = 0;
    };
 	
 } // namespace pluginSystem	

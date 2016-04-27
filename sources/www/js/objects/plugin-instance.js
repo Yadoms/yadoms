@@ -159,6 +159,7 @@ PluginInstance.prototype.applyBindingPrivate = function(item, allowedTypes) {
                break;
             case "plugin":
                //we ask synchronously the binded value
+                     debugger;
 
                var defferedPlugin = RestEngine.getJson("/rest/plugin/" + self.id + "/binding/" + confItem.__Binding__.query);
                arrayOfDeffered.push(defferedPlugin);

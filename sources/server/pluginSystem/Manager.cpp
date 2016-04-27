@@ -570,38 +570,15 @@ namespace pluginSystem
 
    void CManager::postBindingQueryRequest(int id, boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest>& request)
    {
-      boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
-
-      if (!isInstanceRunning(id))
+      try
       {
-         request->sendError("Plugin instance is not running");
-         return;
+         boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+         auto instance = getRunningInstance(id);
+         instance->postBindingQueryRequest(request);
       }
-
-      //TODO
-      //boost::shared_ptr<CInstance> instance(m_runningInstances.find(id)->second);
-      //instance->postBindingQueryRequest(request);
-
-
-      //TODO pour test
-      shared::CDataContainer ev;
-      ev.set("HOUR", "1 hour");
-      ev.set("DAY", "1 day");
-      ev.set("WEEK", "1 week");
-      ev.set("MONTH", "1 month");
-      ev.set("HALF_YEAR", "6 months");
-      ev.set("YEAR", "1 year");
-
-      shared::CDataContainer en;
-      en.set("name", "Interval of the chart");
-      en.set("description", "Permit to change the interval of all the chart");
-      en.set("type", "enum");
-      en.set("values", ev);
-      en.set("defaultValue", "DAY");
-
-      shared::CDataContainer result;
-      result.set("interval", en);
-
-      request->sendSuccess(result);
+      catch (CPluginException& e)
+      {
+         request->sendError((boost::format("Error when requesting binding query %1%") % e.what()).str());
+      }
    }
 } // namespace pluginSystem

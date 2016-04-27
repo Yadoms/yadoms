@@ -10,6 +10,10 @@ message System {
 	required EventType type = 1;
 }
 
+message BindingQuery {
+	required string query = 1;
+}
+
 message DeviceCommand {
 
 }
@@ -25,9 +29,10 @@ message msg {
 
 	oneof OneOf {
 		System system = 2;
-		DeviceCommand deviceCommand = 3;
-		ExtraCommand extraCommand = 4;
-		pbPluginInformation.Information pluginInformation = 5;
+		pbPluginInformation.Information pluginInformation = 3;
+		BindingQuery bindingQuery = 4;
+		DeviceCommand deviceCommand = 5;
+		ExtraCommand extraCommand = 6;
 	}
 }
 

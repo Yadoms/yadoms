@@ -17,6 +17,10 @@ set(plugin_cpp_api_SOURCES
    plugin_cpp_api/CommandLine.h
    plugin_cpp_api/CommandLine.cpp
 
+   plugin_cpp_api/BindingQuery.h
+   plugin_cpp_api/BindingQuery.cpp
+   plugin_cpp_api/BindingQueryData.h
+   plugin_cpp_api/BindingQueryData.cpp
    plugin_cpp_api/PluginInformation.h
    plugin_cpp_api/PluginInformation.cpp
 

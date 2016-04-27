@@ -1,6 +1,5 @@
 #pragma once
 #include "IContextAccessor.h"
-#include <plugin_IPC/plugin_IPC.h>
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <shared/communication/MessageQueueRemover.hpp>
 
@@ -26,8 +25,10 @@ namespace pluginSystem //TODO refactorer pour factoriser avec le CContextAccesso
    protected:
       // IContextAccessor Implementation
       std::string id() const override;
-      boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> api() const override;
       void send(const toPlugin::msg& pbMsg) override;
+      void postStopRequest() override;
+      void postPluginInformation(boost::shared_ptr<const shared::plugin::information::IInformation> information) override;
+      void postBindingQueryRequest(boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> request) override;
       // [END] IContextAccessor Implementation
 
       //--------------------------------------------------------------
@@ -45,14 +46,14 @@ namespace pluginSystem //TODO refactorer pour factoriser avec le CContextAccesso
       /// \param[in] message The message data
       /// \param[in] messageSize The message size
       //--------------------------------------------------------------
-      void processMessage(boost::shared_ptr<const unsigned char[]> message, size_t messageSize) const;
+      void processMessage(boost::shared_ptr<const unsigned char[]> message, size_t messageSize);
 
       //--------------------------------------------------------------
       /// \brief	Process messages
       /// \param[in] request Received requests
       /// \param[in] messageQueue Message Queue used for answer
       //--------------------------------------------------------------
-      void processSetPluginState(const toYadoms::SetPluginState& request) const;
+      void processSetPluginState(const toYadoms::SetPluginState& msg) const;
       //TODO
       //void processGetKeywordId(const pbRequest::GetKeywordId& request, boost::interprocess::message_queue& messageQueue);
       //void processGetRecipientId(const pbRequest::GetRecipientId& request, boost::interprocess::message_queue& messageQueue);
@@ -94,6 +95,9 @@ namespace pluginSystem //TODO refactorer pour factoriser avec le CContextAccesso
       boost::shared_ptr<unsigned char[]> m_sendBuffer;
 
       boost::thread m_messageQueueReceiveThread;
+
+      mutable boost::recursive_mutex m_processMessageHookMutex;
+      boost::function1<bool, const toYadoms::msg&> m_processMessageHook;
    };
 
 } // namespace pluginSystem

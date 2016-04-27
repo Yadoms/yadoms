@@ -3,6 +3,7 @@
 #include <shared/communication/MessageQueueRemover.hpp>
 #include <shared/Log.h>
 #include <shared/exception/InvalidParameter.hpp>
+#include "serializers/Information.h"
 
 namespace pluginSystem
 {
@@ -97,11 +98,6 @@ void CContextAccessor::messageQueueReceiveThreaded()
    google::protobuf::ShutdownProtobufLibrary();
 }
 
-boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> CContextAccessor::api() const
-{
-   return m_pluginApi;
-}
-
 void CContextAccessor::send(const toPlugin::msg& pbMsg)
 {
    if (!pbMsg.IsInitialized())
@@ -116,7 +112,7 @@ void CContextAccessor::send(const toPlugin::msg& pbMsg)
    m_sendMessageQueue.send(m_sendBuffer.get(), pbMsg.GetCachedSize(), 0);
 }
 
-void CContextAccessor::processMessage(boost::shared_ptr<const unsigned char[]> message, size_t messageSize) const
+void CContextAccessor::processMessage(boost::shared_ptr<const unsigned char[]> message, size_t messageSize)
 {
    if (messageSize < 1)
       throw shared::exception::CInvalidParameter("messageSize");
@@ -125,6 +121,16 @@ void CContextAccessor::processMessage(boost::shared_ptr<const unsigned char[]> m
    toYadoms::msg request;
    if (!request.ParseFromArray(message.get(), messageSize))
       throw shared::exception::CInvalidParameter("message");
+
+   {
+      boost::lock_guard<boost::recursive_mutex> lock(m_processMessageHookMutex);
+      if (m_processMessageHook)
+         if (m_processMessageHook(request))
+         {
+            m_processMessageHook.clear();
+            return;
+         }
+   }
 
    // Process message
    switch(request.OneOf_case())
@@ -145,10 +151,10 @@ void CContextAccessor::processMessage(boost::shared_ptr<const unsigned char[]> m
    }
 }
 
-void CContextAccessor::processSetPluginState(const toYadoms::SetPluginState& request) const
+void CContextAccessor::processSetPluginState(const toYadoms::SetPluginState& msg) const
 {
    shared::plugin::yPluginApi::historization::EPluginState state;
-   switch (request.pluginstate())
+   switch (msg.pluginstate())
    {
    case toYadoms::SetPluginState_EPluginState_kUnknown: state = shared::plugin::yPluginApi::historization::EPluginState::kUnknownValue; break;
    case toYadoms::SetPluginState_EPluginState_kError: state = shared::plugin::yPluginApi::historization::EPluginState::kErrorValue;  break;
@@ -156,10 +162,10 @@ void CContextAccessor::processSetPluginState(const toYadoms::SetPluginState& req
    case toYadoms::SetPluginState_EPluginState_kRunning: state = shared::plugin::yPluginApi::historization::EPluginState::kRunningValue;  break;
    case toYadoms::SetPluginState_EPluginState_kCustom: state = shared::plugin::yPluginApi::historization::EPluginState::kCustomValue;  break;
    default:
-      throw std::out_of_range((boost::format("Unsupported plugin state received : %1%") % request.pluginstate()).str());
+      throw std::out_of_range((boost::format("Unsupported plugin state received : %1%") % msg.pluginstate()).str());
    }
 
-   m_pluginApi->setPluginState(state, request.custommessageid());
+   m_pluginApi->setPluginState(state, msg.custommessageid());
 }
 
 //TODO
@@ -331,5 +337,61 @@ void CContextAccessor::processSetPluginState(const toYadoms::SetPluginState& req
 //   }
 //   send(ans, messageQueue);
 //}
+
+
+
+   void CContextAccessor::postStopRequest()
+   {
+      toPlugin::msg msg;
+      auto message = msg.mutable_system();
+      message->set_type(toPlugin::System_EventType_kRequestStop);
+
+      send(msg);
+   }
+
+   void CContextAccessor::postPluginInformation(boost::shared_ptr<const shared::plugin::information::IInformation> information)
+   {
+      toPlugin::msg msg;
+      serializers::CInformation(information).toPb(msg.mutable_plugininformation());
+
+      send(msg);
+   }
+
+   void CContextAccessor::postBindingQueryRequest(boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> request)
+   {
+      toPlugin::msg msg;
+      auto message = msg.mutable_bindingquery();
+      message->set_query(request->getData().getQuery());
+
+      bool success;
+      std::string result;
+
+      {
+         boost::lock_guard<boost::recursive_mutex> lock(m_processMessageHookMutex);
+         m_processMessageHook = [&](const toYadoms::msg& answer)-> bool
+            {
+               if (answer.OneOf_case() != toYadoms::msg::kBindingQueryAnswer)
+                  return false;
+               if (answer.bindingqueryanswer().IsInitialized())
+               {
+                  success = answer.bindingqueryanswer().success();
+                  result = answer.bindingqueryanswer().result();
+               }
+               else
+               {
+                  YADOMS_LOG(error) << "Unable to process bindingQueryAnswer message";
+               }
+               return true;
+            };
+      }
+
+      send(msg);
+
+      //TODO attendre la réponse
+      if (success)
+         request->sendSuccess(shared::CDataContainer(result));
+      else
+         request->sendError(result);
+   }
 
 } // namespace pluginSystem

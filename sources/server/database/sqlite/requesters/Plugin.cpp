@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Plugin.h"
-#include <shared/exception/NotImplemented.hpp>
 #include "database/sqlite/SQLiteDataProvider.h"
 #include "database/sqlite/adapters/SingleValueAdapter.hpp"
 #include "database/sqlite/adapters/SQLiteDatabaseAdapters.h"

@@ -2,14 +2,20 @@ package toYadoms;
 
 message SetPluginState {
 	enum EPluginState {
-		kUnknown = 0;kError = 1;kStopped = 2;kRunning = 3;kCustom = 4;
+		kUnknown = 0; kError = 1; kStopped = 2; kRunning = 3; kCustom = 4;
 	}
 	required EPluginState pluginState = 1;
 	optional string customMessageId = 2;
 }
 
+message BindingQueryAnswer {
+	required bool success = 1;
+	required string result = 2;
+}
+
 message msg {
 	oneof OneOf {
 		SetPluginState pluginState = 1;
+		BindingQueryAnswer bindingQueryAnswer = 2;
 	}
 }
