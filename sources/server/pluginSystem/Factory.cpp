@@ -38,8 +38,7 @@ namespace pluginSystem
                                                          boost::shared_ptr<database::IDataProvider> dataProvider,
                                                          boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
                                                          const boost::shared_ptr<IQualifier> qualifier, //TODO faut s'en servir !
-                                                         boost::shared_ptr<shared::event::CEventHandler> managerEventHandler,
-                                                         int instanceStopEventId) const
+                                                         boost::shared_ptr<IInstanceStoppedListener> instanceStoppedListener) const
    {
       auto pluginInformation = createInformation(instanceData->Type());
 
@@ -47,8 +46,7 @@ namespace pluginSystem
                                                              pluginInformation,
                                                              dataProvider,
                                                              dataAccessLayer,
-                                                             managerEventHandler,
-                                                             instanceStopEventId);
+                                                             instanceStoppedListener);
 
       auto logger = createProcessLogger(instanceData->Type());
 
@@ -80,8 +78,7 @@ namespace pluginSystem
                                                                                  boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
                                                                                  boost::shared_ptr<database::IDataProvider> dataProvider,
                                                                                  boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
-                                                                                 boost::shared_ptr<shared::event::CEventHandler> managerEventHandler,
-                                                                                 int instanceStopEventId) const
+                                                                                 boost::shared_ptr<IInstanceStoppedListener> instanceStoppedListener) const
    {
       return boost::make_shared<CInstanceStateHandler>(instanceData,
                                                        pluginInformation,
@@ -89,10 +86,9 @@ namespace pluginSystem
                                                        dataAccessLayer->getEventLogger(),
                                                        dataProvider->getPluginEventLoggerRequester(),
                                                        dataAccessLayer->getAcquisitionHistorizer(),
-                                                       managerEventHandler,
+                                                       instanceStoppedListener,
                                                        dataAccessLayer->getDeviceManager(),
-                                                       dataProvider->getKeywordRequester(),
-                                                       instanceStopEventId);
+                                                       dataProvider->getKeywordRequester());
    }
 
    boost::shared_ptr<shared::process::ICommandLine> CFactory::createCommandLine(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,

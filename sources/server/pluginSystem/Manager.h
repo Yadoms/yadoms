@@ -17,6 +17,7 @@
 #include <shared/plugin/yPluginApi/IDeviceCommand.h>
 #include <shared/plugin/yPluginApi/IExtraCommand.h>
 #include <shared/plugin/yPluginApi/historization/PluginState.h>
+#include "InstanceRemover.h"
 
 namespace pluginSystem
 {
@@ -27,15 +28,6 @@ namespace pluginSystem
    class CManager //TODO faire le ménage dans les méthodes et membres
    {
    public:
-      //--------------------------------------------------------------
-      /// \brief	    Type of instance stop event
-      //--------------------------------------------------------------
-      enum EInstanceStopEventType
-      {
-         kInstanceStopped = shared::event::kUserFirstId,      // Instance stopped
-      };
-
-
       //--------------------------------------------------------------
       /// \brief			Constructor (protected, use newManager to create instance)
       /// \param [in]   initialDir              Initial plugins search directory
@@ -220,13 +212,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       void stopAllInstancesOfPlugin(const std::string& pluginName);
 
-      //-----------------------------------------------------
-      ///\brief               Method of the thread managing plugin asynchronous events
-      //-----------------------------------------------------
-      void pluginEventsThreadDoWork();
-
    private:
-
       //-----------------------------------------------------
       ///\brief               Start all instances
       //-----------------------------------------------------
@@ -250,13 +236,6 @@ namespace pluginSystem
       ///\throw               CPluginException if timeout
       //-----------------------------------------------------
       void stopInstanceAndWaitForStopped(int id);
-
-      //-----------------------------------------------------
-      ///\brief               Called when instance is stopped
-      ///\param[in] id        The instance ID
-      ///\param[in] error     Error associated to event (empty if not error)
-      //-----------------------------------------------------
-      void onInstanceStopped(int id);
 
       void startInternalPlugin();
       void stopInternalPlugin();
@@ -299,14 +278,9 @@ namespace pluginSystem
       boost::shared_ptr<dataAccessLayer::IDataAccessLayer> m_dataAccessLayer;
 
       //-----------------------------------------------------
-      ///\brief               Event handler to manage events on all plugins
+      ///\brief         Instance remover when instance is stopped
       //-----------------------------------------------------
-      boost::shared_ptr<shared::event::CEventHandler> m_pluginManagerEventHandler;
-
-      //-----------------------------------------------------
-      ///\brief               Thread managing plugin asynchronous events
-      //-----------------------------------------------------
-      boost::shared_ptr<boost::thread> m_pluginEventsThread;
+      boost::shared_ptr<InstanceRemover> m_instanceRemover;
 
       //--------------------------------------------------------------
       /// \brief			Map of all running instances, and its mutex (key are plugin instance id)
@@ -314,11 +288,5 @@ namespace pluginSystem
       typedef std::map<int, boost::shared_ptr<IInstance>> PluginInstanceMap;
       PluginInstanceMap m_runningInstances;
       mutable boost::recursive_mutex m_runningInstancesMutex;
-
-      //-----------------------------------------------------
-      ///\brief               The handlers to notify when an instance stop (potentially several handlers for one instance)
-      //-----------------------------------------------------
-      mutable boost::recursive_mutex m_instanceStopNotifiersMutex;
-      std::map<int, std::set<boost::shared_ptr<shared::event::CEventHandler>>> m_instanceStopNotifiers;
    };
 } // namespace pluginSystem

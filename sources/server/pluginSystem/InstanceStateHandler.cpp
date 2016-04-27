@@ -10,22 +10,20 @@ namespace pluginSystem
                                                 boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger,
                                                 boost::shared_ptr<database::IPluginEventLoggerRequester> pluginEventLoggerRequester,
                                                 boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer,
-                                                boost::shared_ptr<shared::event::CEventHandler> managerEventHandler,
+                                                boost::shared_ptr<IInstanceStoppedListener> instanceStoppedListener,
                                                 boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
-                                                boost::shared_ptr<database::IKeywordRequester> keywordRequester,
-                                                int instanceStopEventId)
+                                                boost::shared_ptr<database::IKeywordRequester> keywordRequester)
       : m_instanceData(instanceData),
         m_pluginInformation(pluginInformation),
         m_pluginRequester(pluginRequester),
         m_eventLogger(eventLogger),
         m_pluginEventLoggerRequester(pluginEventLoggerRequester),
         m_acquisitionHistorizer(acquisitionHistorizer),
-        m_managerEventHandler(managerEventHandler),
+        m_instanceStoppedListener(instanceStoppedListener),
         m_deviceManager(deviceManager),
         m_keywordRequester(keywordRequester),
         m_pluginStateKeywordId(pluginStateKeywordId()),
-        m_pluginStateMessageIdKeywordId(pluginStateMessageIdKeywordId()),
-        m_instanceStopEventId(instanceStopEventId)
+        m_pluginStateMessageIdKeywordId(pluginStateMessageIdKeywordId())
    {
    }
 
@@ -52,8 +50,7 @@ namespace pluginSystem
 
       setState(shared::plugin::yPluginApi::historization::EPluginState::kStopped);
 
-      // Signal the stop to asynchronously remove from running instances list
-      m_managerEventHandler->postEvent(m_instanceStopEventId, m_instanceData->Id());
+      m_instanceStoppedListener->onStopped(m_instanceData->Id());
    }
 
    void CInstanceStateHandler::signalError(const std::string& error)
@@ -64,8 +61,7 @@ namespace pluginSystem
 
       m_eventLogger->addEvent(database::entities::ESystemEventCode::kRuleFailed, m_pluginRequester->getInstance(m_instanceData->Id())->DisplayName(), error);
 
-      // Signal the stop to asynchronously remove from list
-      m_managerEventHandler->postEvent(m_instanceStopEventId, m_instanceData->Id());
+      m_instanceStoppedListener->onStopped(m_instanceData->Id());
    }
 
    void CInstanceStateHandler::signalStartError(const std::string& error)
@@ -76,8 +72,7 @@ namespace pluginSystem
 
       m_eventLogger->addEvent(database::entities::ESystemEventCode::kRuleFailed, (boost::format("Plugin instance #%1%") % m_instanceData->Id()).str(), error);
 
-      // Signal the stop to asynchronously remove from list
-      m_managerEventHandler->postEvent(m_instanceStopEventId, m_instanceData->Id());
+      m_instanceStoppedListener->onStopped(m_instanceData->Id());
    }
 
    void CInstanceStateHandler::setState(const shared::plugin::yPluginApi::historization::EPluginState& state, const std::string & customMessageId)

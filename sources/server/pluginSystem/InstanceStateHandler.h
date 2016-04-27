@@ -3,6 +3,7 @@
 #include <shared/event/EventHandler.hpp>
 #include "IInstanceStartErrorObserver.h"
 #include "IInstanceStateHandler.h"
+#include "IInstanceStoppedListener.h"
 #include <shared/plugin/yPluginApi/historization/Text.h>
 #include <server/database/IPluginRequester.h>
 #include <server/database/IKeywordRequester.h>
@@ -27,10 +28,9 @@ namespace pluginSystem
       ///\param[in] eventLogger              Main event logger
       ///\param[in] pluginEventLoggerRequester Plugin event logger
       ///\param[in] acquisitionHistorizer    Acquisition recorder
-      ///\param[in] managerEventHandler      The manager event handler
+      ///\param[in] instanceStoppedListener  The listener to call when an instance is stopped
       ///\param[in] deviceManager            Device manager
       ///\param[in] keywordRequester         Keyword requester
-      ///\param[in] instanceStopEventId      Id of the instance stop event
       //-----------------------------------------------------
       CInstanceStateHandler(boost::shared_ptr<const database::entities::CPlugin> instanceData,
                             boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
@@ -38,10 +38,9 @@ namespace pluginSystem
                             boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger,
                             boost::shared_ptr<database::IPluginEventLoggerRequester> pluginEventLoggerRequester,
                             boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer,
-                            boost::shared_ptr<shared::event::CEventHandler> managerEventHandler,
+                            boost::shared_ptr<IInstanceStoppedListener> instanceStoppedListener,
                             boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
-                            boost::shared_ptr<database::IKeywordRequester> keywordRequester,
-                            int instanceStopEventId);
+                            boost::shared_ptr<database::IKeywordRequester> keywordRequester);
 
       //-----------------------------------------------------
       ///\brief               Destructor
@@ -113,9 +112,9 @@ namespace pluginSystem
       boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> m_acquisitionHistorizer;
 
       //--------------------------------------------------------------
-      /// \brief			The plugin manager event handler
+      /// \brief			The listener to call when an instance is stopped
       //--------------------------------------------------------------
-      boost::shared_ptr<shared::event::CEventHandler> m_managerEventHandler;
+      boost::shared_ptr<IInstanceStoppedListener> m_instanceStoppedListener;
 
       //--------------------------------------------------------------
       /// \brief			The device requester
@@ -135,11 +134,6 @@ namespace pluginSystem
       int m_pluginStateKeywordId;
       boost::shared_ptr<shared::plugin::yPluginApi::historization::CText> m_pluginStateMessageIdKeyword;
       int m_pluginStateMessageIdKeywordId;
-
-      //-----------------------------------------------------
-      ///\brief               Stop event ID
-      //-----------------------------------------------------
-      int m_instanceStopEventId;
    };
 	
 } // namespace pluginSystem

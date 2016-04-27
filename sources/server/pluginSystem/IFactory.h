@@ -5,7 +5,7 @@
 #include "database/IDataProvider.h"
 #include "dataAccessLayer/IDataAccessLayer.h"
 #include "IQualifier.h"
-#include <shared/event/EventHandler.hpp>
+#include "IInstanceStoppedListener.h"
 
 namespace pluginSystem
 {
@@ -41,15 +41,13 @@ namespace pluginSystem
       /// \param [in]   dataProvider               the database accessor
       /// \param [in]   dataAccessLayer            the data access layer
       /// \param [in]   qualifier                  the plugin qualifier
-      /// \param [in]   managerEventHandler        the manager event handler
-      /// \param [in]   instanceStopEventId        Id of the instance stop event
+      /// \param [in]   instanceStoppedListener    Listener to call when instance stopped
       /// \return                      The plugin instance
       //--------------------------------------------------------------
       virtual boost::shared_ptr<IInstance> createInstance(boost::shared_ptr<const database::entities::CPlugin> instanceData,
                                                           boost::shared_ptr<database::IDataProvider> dataProvider,
                                                           boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
                                                           const boost::shared_ptr<IQualifier> qualifier,
-                                                          boost::shared_ptr<shared::event::CEventHandler> managerEventHandler,
-                                                          int instanceStopEventId) const = 0;
+                                                          boost::shared_ptr<IInstanceStoppedListener> instanceStoppedListener) const = 0;
    };
 } // namespace pluginSystem

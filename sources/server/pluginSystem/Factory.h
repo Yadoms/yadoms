@@ -31,8 +31,7 @@ namespace pluginSystem
                                                   boost::shared_ptr<database::IDataProvider> dataProvider,
                                                   boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
                                                   const boost::shared_ptr<IQualifier> qualifier,
-                                                  boost::shared_ptr<shared::event::CEventHandler> managerEventHandler,
-                                                  int instanceStopEventId) const override;
+                                                  boost::shared_ptr<IInstanceStoppedListener> instanceStoppedListener) const override;
       // [END] IFactory Implementation
 
    private:
@@ -47,8 +46,7 @@ namespace pluginSystem
                                                                           boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
                                                                           boost::shared_ptr<database::IDataProvider> dataProvider,
                                                                           boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
-                                                                          boost::shared_ptr<shared::event::CEventHandler> managerEventHandler,
-                                                                          int instanceStopEventId) const;
+                                                                          boost::shared_ptr<IInstanceStoppedListener> instanceStoppedListener) const;
 
       boost::shared_ptr<shared::process::IProcess> createInstanceProcess(boost::shared_ptr<shared::process::ICommandLine> commandLine,
                                                                          boost::shared_ptr<shared::process::ILogger> logger,

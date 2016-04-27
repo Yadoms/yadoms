@@ -15,6 +15,7 @@
 #include <shared/Log.h>
 #include "PluginException.hpp"
 #include "InvalidPluginException.hpp"
+#include "InstanceRemover.h"
 
 namespace pluginSystem
 {
@@ -28,14 +29,12 @@ namespace pluginSystem
       m_dataProvider(dataProvider),
       m_pluginDBTable(dataProvider->getPluginRequester()),
 #ifdef _DEBUG //TODO faut-il conserver les qualifiers ?
-
       m_qualifier(boost::make_shared<CBasicQualifier>(dataProvider->getPluginEventLoggerRequester(), dataAccessLayer->getEventLogger())),//TODO passer par la factory
 #else
       m_qualifier(boost::make_shared<CIndicatorQualifier>(dataProvider->getPluginEventLoggerRequester(), dataAccessLayer->getEventLogger())),//TODO passer par la factory
 #endif
       m_supervisor(supervisor), m_dataAccessLayer(dataAccessLayer),
-      m_pluginManagerEventHandler(boost::make_shared<shared::event::CEventHandler>()),
-      m_pluginEventsThread(boost::make_shared<boost::thread>(boost::bind(&CManager::pluginEventsThreadDoWork, this)))//TODO passer par la factory
+      m_instanceRemover(boost::make_shared<InstanceRemover>(m_runningInstancesMutex, m_runningInstances))//TODO passer par la factory ?
    {
    }
 
@@ -57,9 +56,6 @@ namespace pluginSystem
    void CManager::stop()
    {
       stopInstances();
-
-      m_pluginEventsThread->interrupt();
-      m_pluginEventsThread->join();
    }
 
    void CManager::startAllInstances()
@@ -255,8 +251,7 @@ namespace pluginSystem
                                                                             m_dataProvider,
                                                                             m_dataAccessLayer,
                                                                             m_qualifier,
-                                                                            m_pluginManagerEventHandler,
-                                                                            kInstanceStopped);
+                                                                            m_instanceRemover);
       }
       catch (shared::exception::CEmptyResult& e)
       {
@@ -330,49 +325,22 @@ namespace pluginSystem
 
    void CManager::stopInstanceAndWaitForStopped(int id)
    {
-      auto waitForStoppedInstanceHandler(boost::make_shared<shared::event::CEventHandler>());
-      {
-         boost::lock_guard<boost::recursive_mutex> lock(m_instanceStopNotifiersMutex);
-         m_instanceStopNotifiers[id].insert(waitForStoppedInstanceHandler);
-      }
-
       if (isInstanceRunning(id))
       {
+         auto waitForStoppedInstanceHandler(boost::make_shared<shared::event::CEventHandler>());
+         m_instanceRemover->addWaiterOn(id, waitForStoppedInstanceHandler);
+
          requestStopInstance(id);
          if (waitForStoppedInstanceHandler->waitForEvents(boost::posix_time::seconds(10)) == shared::event::kTimeout)
             YADOMS_LOG(warning) << "pluginSystem::CManager, instance #" << id << " didn't stop when requested. Will be killed.";
 
          killInstance(id);
          if (waitForStoppedInstanceHandler->waitForEvents(boost::posix_time::seconds(10)) == shared::event::kTimeout)
+         {
+            m_instanceRemover->removeWaiterOn(id, waitForStoppedInstanceHandler);
             throw CPluginException((boost::format("pluginSystem::CManager, unable to stop instance #%1%") % id).str());
-      }
-
-      {
-         boost::lock_guard<boost::recursive_mutex> lock(m_instanceStopNotifiersMutex);
-         m_instanceStopNotifiers[id].erase(waitForStoppedInstanceHandler);
-      }
-   }
-
-   void CManager::onInstanceStopped(int id)
-   {
-      {
-         boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
-
-         auto instance = m_runningInstances.find(id);
-
-         if (instance == m_runningInstances.end())
-            return; // Already stopped ==> nothing more to do
-
-         m_runningInstances.erase(instance);
-      }
-
-      {
-         // Notify all handlers for this instance
-         boost::lock_guard<boost::recursive_mutex> lock(m_instanceStopNotifiersMutex);
-         std::map<int, std::set<boost::shared_ptr<shared::event::CEventHandler>>>::const_iterator itEventHandlerSetToNotify = m_instanceStopNotifiers.find(id);
-         if (itEventHandlerSetToNotify != m_instanceStopNotifiers.end())
-            for (auto itHandler = itEventHandlerSetToNotify->second.begin(); itHandler != itEventHandlerSetToNotify->second.end(); ++itHandler)
-               (*itHandler)->postEvent(shared::event::kUserFirstId);
+         }
+         m_instanceRemover->removeWaiterOn(id, waitForStoppedInstanceHandler);
       }
    }
 
@@ -564,34 +532,6 @@ namespace pluginSystem
    {
       auto fullState = getInstanceFullState(id);
       return fullState.get<shared::plugin::yPluginApi::historization::EPluginState>("state");
-   }
-
-   void CManager::pluginEventsThreadDoWork()
-   {
-      try
-      {
-         while (true)
-         {
-            switch (m_pluginManagerEventHandler->waitForEvents())
-            {
-            case kInstanceStopped:
-               {
-                  onInstanceStopped(m_pluginManagerEventHandler->getEventData<int>());
-                  break;
-               }
-
-            default:
-               {
-                  YADOMS_LOG(error) << "Unknown message id";
-                  BOOST_ASSERT(false);
-                  break;
-               }
-            }
-         }
-      }
-      catch (boost::thread_interrupted&)
-      {
-      }
    }
 
    void CManager::postCommand(int id, boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command)
