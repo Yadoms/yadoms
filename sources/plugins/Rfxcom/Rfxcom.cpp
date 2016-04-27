@@ -59,79 +59,87 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
       // the main loop
       while (1)
       {
-         // Wait for an event
-         switch(context->getEventHandler().waitForEvents())
-         {
-         case yApi::IYPluginApi::kEventDeviceCommand:
-            {
-               // Command received from Yadoms
-               boost::shared_ptr<const yApi::IDeviceCommand> command(context->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >());
-               onCommand(context, command);
+		  try
+		  {
+			 // Wait for an event
+			 switch(context->getEventHandler().waitForEvents())
+			 {
+			 case yApi::IYPluginApi::kEventDeviceCommand:
+				{
+				   // Command received from Yadoms
+				   boost::shared_ptr<const yApi::IDeviceCommand> command(context->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >());
+				   onCommand(context, command);
 
-               break;
-            }
-         case yApi::IYPluginApi::kEventManuallyDeviceCreationTest:
-            {
-               // Yadoms asks for test device parameters to check if it works before creating it. So just send command, don't declare anything.
-               boost::shared_ptr<const yApi::IManuallyDeviceCreationTestData> data = context->getEventHandler().getEventData<const boost::shared_ptr<yApi::IManuallyDeviceCreationTestData> >();
-               onCommand(context, data->getCommand());
+				   break;
+				}
+			 case yApi::IYPluginApi::kEventManuallyDeviceCreationTest:
+				{
+				   // Yadoms asks for test device parameters to check if it works before creating it. So just send command, don't declare anything.
+				   boost::shared_ptr<const yApi::IManuallyDeviceCreationTestData> data = context->getEventHandler().getEventData<const boost::shared_ptr<yApi::IManuallyDeviceCreationTestData> >();
+				   onCommand(context, data->getCommand());
 
-               break;
-            }
-         case yApi::IYPluginApi::kEventManuallyDeviceCreation:
-            {
-               // Yadoms asks for device creation
-               boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> request = context->getEventHandler().getEventData< boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> >();
-               YADOMS_LOG(debug) << "Manually device creation request received for device :" << request->getData().getDeviceName();
-               try
-               {
-                  request->sendSuccess(m_transceiver->createDeviceManually(context, request->getData()));
-               }
-               catch (CManuallyDeviceCreationException& e)
-               {
-                  request->sendError(e.what());
-               }
+				   break;
+				}
+			 case yApi::IYPluginApi::kEventManuallyDeviceCreation:
+				{
+				   // Yadoms asks for device creation
+				   boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> request = context->getEventHandler().getEventData< boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> >();
+				   YADOMS_LOG(debug) << "Manually device creation request received for device :" << request->getData().getDeviceName();
+				   try
+				   {
+					  request->sendSuccess(m_transceiver->createDeviceManually(context, request->getData()));
+				   }
+				   catch (CManuallyDeviceCreationException& e)
+				   {
+					  request->sendError(e.what());
+				   }
                
-               break;
-            }
-         case yApi::IYPluginApi::kEventUpdateConfiguration:
-            {
-               context->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
-               onUpdateConfiguration(context, context->getEventHandler().getEventData<shared::CDataContainer>());
+				   break;
+				}
+			 case yApi::IYPluginApi::kEventUpdateConfiguration:
+				{
+				   context->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
+				   onUpdateConfiguration(context, context->getEventHandler().getEventData<shared::CDataContainer>());
 
-               break;
-            }
-         case kEvtPortConnection:
-            {
-               if (context->getEventHandler().getEventData<bool>())
-                  processRfxcomConnectionEvent(context);
-               else
-                  processRfxcomUnConnectionEvent(context);
+				   break;
+				}
+			 case kEvtPortConnection:
+				{
+				   if (context->getEventHandler().getEventData<bool>())
+					  processRfxcomConnectionEvent(context);
+				   else
+					  processRfxcomUnConnectionEvent(context);
 
-               break;
-            }
-         case kEvtPortDataReceived:
-            {
-               processRfxcomDataReceived(context, context->getEventHandler().getEventData<const shared::communication::CByteBuffer>());
-               break;
-            }
-         case kAnswerTimeout:
-            {
-               YADOMS_LOG(error) << "No answer received, try to reconnect in a while...";
-               errorProcess(context);
-               break;
-            }
-         case kProtocolErrorRetryTimer:
-            {
-               createConnection(context->getEventHandler());
-               break;
-            }
-         default:
-            {
-               YADOMS_LOG(error) << "Unknown message id";
-               break;
-            }
-         }
+				   break;
+				}
+			 case kEvtPortDataReceived:
+				{
+				   processRfxcomDataReceived(context, context->getEventHandler().getEventData<const shared::communication::CByteBuffer>());
+				   break;
+				}
+			 case kAnswerTimeout:
+				{
+				   YADOMS_LOG(error) << "No answer received, try to reconnect in a while...";
+				   errorProcess(context);
+				   break;
+				}
+			 case kProtocolErrorRetryTimer:
+				{
+				   createConnection(context->getEventHandler());
+				   break;
+				}
+			 default:
+				{
+				   YADOMS_LOG(error) << "Unknown message id";
+				   break;
+				}
+			 }
+		  }
+		  catch (shared::communication::CPortException& e)
+		  {
+			  YADOMS_LOG(error) << "The message is not sent and will be discarded";
+			  errorProcess ( context );
+		  }
       }
    }
    catch (boost::thread_interrupted&)
@@ -183,20 +191,12 @@ void CRfxcom::send(boost::shared_ptr<yApi::IYPluginApi> context, boost::shared_p
    if (!m_port)
       return;
 
-   try
-   {
-	   // Send all messages
-	   while (!buffers->empty())
-	   {
-		  send(buffers->front(), false);
-		  buffers->pop();
-	   }
-   }
-   catch (shared::communication::CPortException& e)
-   {
-	   YADOMS_LOG(error) << "The message is not sent and will be discarded";
-	   errorProcess ( context );
-   }
+	// Send all messages
+	while (!buffers->empty())
+	{
+		send(buffers->front(), false);
+		buffers->pop();
+	}
 }
 
 void CRfxcom::onCommand(boost::shared_ptr<yApi::IYPluginApi> context, boost::shared_ptr<const yApi::IDeviceCommand> command)
@@ -277,11 +277,6 @@ void CRfxcom::processRfxcomConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> 
 
       // Stop the communication, and try later
       errorProcess(context);
-   }
-   catch (shared::communication::CPortException& e)
-   {
-      YADOMS_LOG(error) << "Error connecting to RFXCom transceiver : " << e.what();
-      // Disconnection will be notified, we just have to wait...
    }
 }
 
