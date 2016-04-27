@@ -135,7 +135,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 				}
 			 }
 		  }
-		  catch (shared::communication::CPortException& e)
+		  catch (shared::communication::CPortException&)
 		  {
 			  YADOMS_LOG(error) << "The message is not sent and will be discarded";
 			  errorProcess ( context );
@@ -186,7 +186,7 @@ void CRfxcom::send(const shared::communication::CByteBuffer& buffer, bool needAn
       m_waitForAnswerTimer->start();
 }
 
-void CRfxcom::send(boost::shared_ptr<yApi::IYPluginApi> context, boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > buffers)
+void CRfxcom::send( boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > buffers )
 {
    if (!m_port)
       return;
@@ -210,13 +210,13 @@ void CRfxcom::onCommand(boost::shared_ptr<yApi::IYPluginApi> context, boost::sha
    }
 
    boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > message(m_transceiver->buildMessageToDevice(context, command));
-   send(context, message);
+   send(message);
 
    // Manage repetitions
    for (unsigned int repetition = 0; repetition < m_configuration.getSendRepetitions(); ++repetition)
    {
       boost::this_thread::sleep(boost::posix_time::milliseconds(200));
-      send(context, message);
+      send(message);
    }
 }
 
