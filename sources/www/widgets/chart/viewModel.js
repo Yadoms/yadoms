@@ -318,7 +318,7 @@ widgetViewModelCtor =
                            default:
                            case "DAY":
                                dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf('hour').subtract(1, 'seconds'));
-                               dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'days').startOf('hour'));
+                               dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'days').startOf('hour').add(1, 'hour'));
                                //we request hour summary data
                                prefixUri = "/hour";
                                timeBetweenTwoConsecutiveValues = 1000 * 3600;
@@ -326,7 +326,7 @@ widgetViewModelCtor =
                                break;
                            case "WEEK":
                                dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf('hour').subtract(1, 'seconds'));
-                               dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'weeks').startOf('hour'));
+                               dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'weeks').startOf('hour').add(1, 'hour'));
                                //we request hour summary data
                                prefixUri = "/hour";
                                timeBetweenTwoConsecutiveValues = 1000 * 3600;
@@ -334,7 +334,7 @@ widgetViewModelCtor =
                                break;
                            case "MONTH":
                                dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf('day').subtract(1, 'seconds'));
-                               dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'months').startOf('day'));
+                               dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'months').startOf('day').add(1, 'day'));
                                //we request day summary data
                                prefixUri = "/day";
                                timeBetweenTwoConsecutiveValues = 1000 * 3600 * 24;
@@ -342,7 +342,7 @@ widgetViewModelCtor =
                                break;
                            case "HALF_YEAR":
                                dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf('day').subtract(1, 'seconds'));
-                               dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(6, 'months').startOf('day'));
+                               dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(6, 'months').startOf('day').add(1, 'day'));
                                //we request day summary data
                                prefixUri = "/day";
                                timeBetweenTwoConsecutiveValues = 1000 * 3600 * 24;
@@ -350,7 +350,7 @@ widgetViewModelCtor =
                                break;
                            case "YEAR":
                                dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf('day').subtract(1, 'seconds'));
-                               dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'years').startOf('day'));
+                               dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'years').startOf('day').add(1, 'day'));
                                //we request day summary data
                                prefixUri = "/day";
                                timeBetweenTwoConsecutiveValues = 1000 * 3600 * 24;
