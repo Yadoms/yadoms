@@ -54,23 +54,26 @@ void CApiImplementation::send(const toYadoms::msg& msg,
                               boost::function1<bool, const toPlugin::msg&> checkExpectedMessageFunction,
                               boost::function1<void, const toPlugin::msg&> onReceiveFunction)
 {
+   shared::event::CEventHandler receivedEvtHandler;
+
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
-      m_onReceiveHook = checkExpectedMessageFunction;
+      m_onReceiveHook = [&](const toPlugin::msg& receivedMsg)->bool
+      {
+         if (!checkExpectedMessageFunction(receivedMsg))
+            return false;
+
+         receivedEvtHandler.postEvent<const toPlugin::msg>(shared::event::kUserFirstId, receivedMsg);
+         return true;
+      };
    }
 
    send(msg);
-   auto eventId = m_hookEventHandler.waitForEvents(boost::posix_time::seconds(10));
 
-   {
-      boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
-      m_onReceiveHook.clear();
-   }
-
-   if (eventId == shared::event::kTimeout)
+   if (receivedEvtHandler.waitForEvents(boost::posix_time::seconds(10)) == shared::event::kTimeout)
       throw std::runtime_error((boost::format("No answer from Yadoms when sending message %1%") % msg.OneOf_case()).str());
 
-   onReceiveFunction(m_hookEventHandler.getEventData<const toPlugin::msg&>());
+   onReceiveFunction(receivedEvtHandler.getEventData<const toPlugin::msg>());
 }
 
 void CApiImplementation::onReceive(boost::shared_ptr<const unsigned char[]> message, size_t messageSize)
@@ -93,7 +96,7 @@ void CApiImplementation::onReceive(boost::shared_ptr<const unsigned char[]> mess
 
       return;
    }
-   
+
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
       if (m_onReceiveHook && m_onReceiveHook(toPluginProtoBuffer))

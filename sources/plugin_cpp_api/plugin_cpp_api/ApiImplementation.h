@@ -78,7 +78,6 @@ private:
 
    mutable boost::recursive_mutex m_onReceiveHookMutex;
    boost::function1<bool, const toPlugin::msg&> m_onReceiveHook;
-   shared::event::CEventHandler m_hookEventHandler;
 
    boost::shared_ptr<shared::plugin::information::IInformation> m_pluginInformation;
 };
