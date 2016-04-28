@@ -287,7 +287,7 @@ namespace shared { namespace plugin { namespace yPluginApi
       ///\brief Get the current plugin configuration
       ///\return The current plugin configuration
       //-----------------------------------------------------      
-      virtual CDataContainer getConfiguration() const = 0;
+      virtual CDataContainer getConfiguration() = 0;
    };
 
 } } } // namespace shared::plugin::yPluginApi	

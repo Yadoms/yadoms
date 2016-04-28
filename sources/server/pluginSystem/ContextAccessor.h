@@ -54,6 +54,7 @@ namespace pluginSystem //TODO refactorer pour factoriser avec le CContextAccesso
       /// \param[in] messageQueue Message Queue used for answer
       //--------------------------------------------------------------
       void processSetPluginState(const toYadoms::SetPluginState& msg) const;
+      void processGetConfiguration(const toYadoms::ConfigurationRequest& msg);
       //TODO
       //void processGetKeywordId(const pbRequest::GetKeywordId& request, boost::interprocess::message_queue& messageQueue);
       //void processGetRecipientId(const pbRequest::GetRecipientId& request, boost::interprocess::message_queue& messageQueue);
@@ -63,7 +64,6 @@ namespace pluginSystem //TODO refactorer pour factoriser avec le CContextAccesso
       //void processWaitForEvent(const pbRequest::WaitForEvent& request, boost::interprocess::message_queue& messageQueue);
       //void processWriteKeyword(const pbRequest::WriteKeyword& request, boost::interprocess::message_queue& messageQueue);
       //void processSendNotification(const pbRequest::SendNotification& request, boost::interprocess::message_queue& messageQueue);
-      //void processGetInfo(const pbRequest::GetInfo& request, boost::interprocess::message_queue& messageQueue);
 
    private:
       //--------------------------------------------------------------

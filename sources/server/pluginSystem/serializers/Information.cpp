@@ -15,17 +15,17 @@ namespace pluginSystem
       {
       }
 
-      void CInformation::toPb(pbPluginInformation::Information* pb) const
+      void CInformation::toPb(toPlugin::Information* pb) const
       {
          pb->set_type(m_information->getType());
          pb->set_version(m_information->getVersion());
          switch (m_information->getReleaseType())
          {
-         case shared::versioning::EReleaseType::kStableValue: pb->set_releasetype(pbPluginInformation::Information_EReleaseType_kStable);
+         case shared::versioning::EReleaseType::kStableValue: pb->set_releasetype(toPlugin::Information_EReleaseType_kStable);
             break;
-         case shared::versioning::EReleaseType::kTestingValue: pb->set_releasetype(pbPluginInformation::Information_EReleaseType_kTesting);
+         case shared::versioning::EReleaseType::kTestingValue: pb->set_releasetype(toPlugin::Information_EReleaseType_kTesting);
             break;
-         default: pb->set_releasetype(pbPluginInformation::Information_EReleaseType_kBeta);
+         default: pb->set_releasetype(toPlugin::Information_EReleaseType_kBeta);
             break;
          }
          pb->set_author(m_information->getAuthor());

@@ -50,6 +50,29 @@ void CApiImplementation::send(const toYadoms::msg& msg)
    }
 }
 
+void CApiImplementation::send(const toYadoms::msg& msg,
+                              boost::function1<bool, const toPlugin::msg&> checkExpectedMessageFunction,
+                              boost::function1<void, const toPlugin::msg&> onReceiveFunction)
+{
+   {
+      boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
+      m_onReceiveHook = checkExpectedMessageFunction;
+   }
+
+   send(msg);
+   auto eventId = m_hookEventHandler.waitForEvents(boost::posix_time::seconds(10));
+
+   {
+      boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
+      m_onReceiveHook.clear();
+   }
+
+   if (eventId == shared::event::kTimeout)
+      throw std::runtime_error((boost::format("No answer from Yadoms when sending message %1%") % msg.OneOf_case()).str());
+
+   onReceiveFunction(m_hookEventHandler.getEventData<const toPlugin::msg&>());
+}
+
 void CApiImplementation::onReceive(boost::shared_ptr<const unsigned char[]> message, size_t messageSize)
 {
    if (messageSize < 1)
@@ -59,7 +82,7 @@ void CApiImplementation::onReceive(boost::shared_ptr<const unsigned char[]> mess
    if (!toPluginProtoBuffer.ParseFromArray(message.get(), messageSize))
       throw shared::exception::CInvalidParameter("message");
 
-   if (!m_initialized)
+   if (!m_initialized) //TODO voir si possible utiliser les hook plutôt que de faire un cas particulier
    {
       switch (toPluginProtoBuffer.OneOf_case())
       {
@@ -70,11 +93,21 @@ void CApiImplementation::onReceive(boost::shared_ptr<const unsigned char[]> mess
 
       return;
    }
+   
+   {
+      boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
+      if (m_onReceiveHook && m_onReceiveHook(toPluginProtoBuffer))
+      {
+         m_onReceiveHook.clear();
+         return;
+      }
+   }
 
    switch (toPluginProtoBuffer.OneOf_case())
    {
    case toPlugin::msg::kSystem: processSystem(toPluginProtoBuffer.system()); break;
    case toPlugin::msg::kPluginInformation: processPluginInformation(toPluginProtoBuffer.plugininformation()); break;
+      //TODO ajouter toPlugin::msg::kConfiguration
    case toPlugin::msg::kBindingQuery: processBindingQuery(toPluginProtoBuffer.bindingquery()); break;
       //TODO
    //case toPlugin::msg::kGetKeywordId: processGetKeywordId(toPluginProtoBuffer.getkeywordid(), messageQueue); break;
@@ -111,13 +144,20 @@ void CApiImplementation::processSystem(const toPlugin::System& msg)
    }
 }
 
-void CApiImplementation::processPluginInformation(const pbPluginInformation::Information& msg)
+void CApiImplementation::processPluginInformation(const toPlugin::Information& msg)
 {
-   m_pluginInformation = boost::make_shared<CPluginInformation>(boost::make_shared<const pbPluginInformation::Information>(msg));
+   m_pluginInformation = boost::make_shared<CPluginInformation>(boost::make_shared<const toPlugin::Information>(msg));
+   setInitialized();
+}
 
-   std::unique_lock<std::mutex> lock(m_initializationConditionMutex);
-   m_initialized = true;
-   m_initializationCondition.notify_one();
+void CApiImplementation::setInitialized()
+{
+   if (!!m_pluginInformation)
+   {
+      std::unique_lock<std::mutex> lock(m_initializationConditionMutex);
+      m_initialized = true;
+      m_initializationCondition.notify_one();
+   }
 }
 
 void CApiImplementation::processBindingQuery(const toPlugin::BindingQuery& msg)
@@ -206,10 +246,26 @@ boost::shared_ptr<const shared::plugin::information::IInformation> CApiImplement
 
    return m_pluginInformation;
 }
-shared::CDataContainer CApiImplementation::getConfiguration() const
+
+shared::CDataContainer CApiImplementation::getConfiguration()
 {
-   return shared::CDataContainer();
+   toYadoms::msg req;
+   req.mutable_configurationrequest();
+
+   shared::CDataContainer configuration;
+   send(req,
+        [&](const toPlugin::msg& ans) -> bool
+        {
+           return ans.has_configurationanswer();
+        },
+        [&](const toPlugin::msg& ans) -> void
+        {
+           configuration.deserialize(ans.configurationanswer().configuration());
+        });
+
+   return configuration;
 }
+
 shared::event::CEventHandler& CApiImplementation::getEventHandler()
 {
    return m_pluginEventHandler;

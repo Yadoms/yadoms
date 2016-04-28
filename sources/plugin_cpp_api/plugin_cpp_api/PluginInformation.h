@@ -10,7 +10,7 @@ public:
    /// \brief	      Constructor
    /// \param[in]    buffer : Protobuf buffer
    //--------------------------------------------------------------
-   explicit CPluginInformation(boost::shared_ptr<const pbPluginInformation::Information> buffer);
+   explicit CPluginInformation(boost::shared_ptr<const toPlugin::Information> buffer);
 
    virtual ~CPluginInformation();
 
@@ -29,5 +29,6 @@ public:
    // [END] shared::plugin::IInformation implementation
 
 private:
-   boost::shared_ptr<const pbPluginInformation::Information> m_buffer;
+   boost::shared_ptr<const toPlugin::Information> m_buffer;
+   const boost::filesystem::path m_path;
 };

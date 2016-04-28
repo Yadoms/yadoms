@@ -2,8 +2,9 @@
 #include "PluginInformation.h"
 
 
-CPluginInformation::CPluginInformation(boost::shared_ptr<const pbPluginInformation::Information> buffer)
-   : m_buffer(buffer)
+CPluginInformation::CPluginInformation(boost::shared_ptr<const toPlugin::Information> buffer)
+   : m_buffer(buffer),
+     m_path(m_buffer->path())
 {
 }
 
@@ -25,8 +26,8 @@ shared::versioning::EReleaseType CPluginInformation::getReleaseType() const
 {
    switch (m_buffer->releasetype())
    {
-   case pbPluginInformation::Information_EReleaseType_kStable: return shared::versioning::EReleaseType::kStable;
-   case pbPluginInformation::Information_EReleaseType_kTesting: return shared::versioning::EReleaseType::kTesting;
+   case toPlugin::Information_EReleaseType_kStable: return shared::versioning::EReleaseType::kStable;
+   case toPlugin::Information_EReleaseType_kTesting: return shared::versioning::EReleaseType::kTesting;
    default: return shared::versioning::EReleaseType::kBeta;
    }
 }
@@ -68,5 +69,5 @@ shared::CDataContainer CPluginInformation::getPackage() const
 
 const boost::filesystem::path& CPluginInformation::getPath() const
 {
-   return boost::filesystem::path(m_buffer->path());
+   return m_path;
 }

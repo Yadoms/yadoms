@@ -2,8 +2,10 @@
 #include "PluginContext.h"
 #include "ApiImplementation.h"
 #include "CommandLine.h"
+#include <shared/currentTime/Local.h>
 
 //TODO      Ajouter ce lien dans le wiki plugin/how to debug my plugin : https://msdn.microsoft.com/en-us/library/a329t4ed(v=vs.90).aspx
+shared::currentTime::Provider timeProvider(boost::make_shared<shared::currentTime::Local>());
 
 namespace plugin_cpp_api
 {

@@ -38,7 +38,7 @@ public:
    void historizeData(const std::string& device, const shared::plugin::yPluginApi::historization::IHistorizable& data) override;
    void historizeData(const std::string& device, const std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > & dataVect) override;
    boost::shared_ptr<const shared::plugin::information::IInformation> getInformation() const override;
-   shared::CDataContainer getConfiguration() const override;
+   shared::CDataContainer getConfiguration() override;
    shared::event::CEventHandler& getEventHandler() override;
    // [END] shared::script::yScriptApi::IYScriptApi implementation
 
@@ -52,10 +52,15 @@ protected:
    /// \param[in] request Request to send
    //--------------------------------------------------------------
    void send(const toYadoms::msg& msg);
+   void send(const toYadoms::msg& msg,
+             boost::function1<bool, const toPlugin::msg&> checkExpectedMessageFunction,
+             boost::function1<void, const toPlugin::msg&> onReceiveFunction);
 
    void processSystem(const toPlugin::System& msg);
-   void processPluginInformation(const pbPluginInformation::Information& msg);
+   void processPluginInformation(const toPlugin::Information& msg);
    void processBindingQuery(const toPlugin::BindingQuery& msg);
+
+   void setInitialized();
 
 private:
    mutable std::condition_variable m_initializationCondition;
@@ -70,6 +75,10 @@ private:
    // The message queue buffer, localy used but defined here to be allocated only once
    boost::shared_ptr<unsigned char[]> m_mqBuffer;
    boost::shared_ptr<boost::interprocess::message_queue> m_sendMessageQueue;
+
+   mutable boost::recursive_mutex m_onReceiveHookMutex;
+   boost::function1<bool, const toPlugin::msg&> m_onReceiveHook;
+   shared::event::CEventHandler m_hookEventHandler;
 
    boost::shared_ptr<shared::plugin::information::IInformation> m_pluginInformation;
 };

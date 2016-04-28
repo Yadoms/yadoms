@@ -14,6 +14,10 @@ message BindingQuery {
 	required string query = 1;
 }
 
+message ConfigurationAnswer {
+	required string configuration = 1;
+}
+
 message DeviceCommand {
 
 }
@@ -29,10 +33,11 @@ message msg {
 
 	oneof OneOf {
 		System system = 2;
-		pbPluginInformation.Information pluginInformation = 3;
-		BindingQuery bindingQuery = 4;
-		DeviceCommand deviceCommand = 5;
-		ExtraCommand extraCommand = 6;
+		Information pluginInformation = 3;
+		ConfigurationAnswer configurationAnswer = 4;
+		BindingQuery bindingQuery = 5;
+		DeviceCommand deviceCommand = 6;
+		ExtraCommand extraCommand = 7;
 	}
 }
 

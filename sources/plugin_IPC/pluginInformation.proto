@@ -1,4 +1,4 @@
-package pbPluginInformation;
+package toPlugin;
 
 message Information {
 	required string type = 1;
@@ -15,6 +15,6 @@ message Information {
 	required string toString = 7;
 	required bool supportedOnThisPlatform = 8;
 	required bool supportManuallyCreatedDevice = 9;
-	required string packageFileContent = 10;
+	required string packageFileContent = 10;//TODO utile ? Normalement déjà accessible par l'ApiImplementation car on a le path
 	required string path = 11;
 }

@@ -15,7 +15,7 @@ namespace pluginSystem
          virtual ~CInformation();
 
          // IInformationSerializer implementation
-         void toPb(pbPluginInformation::Information* pb) const override;
+         void toPb(toPlugin::Information* pb) const override;
          // [END] IInformationSerializer implementation
 
       private:

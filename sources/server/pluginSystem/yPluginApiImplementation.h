@@ -55,7 +55,7 @@ namespace pluginSystem
       void historizeData(const std::string& device, const shared::plugin::yPluginApi::historization::IHistorizable& data) override;
       void historizeData(const std::string& device, const std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > & dataVect) override;
       boost::shared_ptr<const shared::plugin::information::IInformation> getInformation() const override;
-      shared::CDataContainer getConfiguration() const override;
+      shared::CDataContainer getConfiguration() override;
       shared::event::CEventHandler & getEventHandler() override;
       // [END] IYPluginApi implementation 
       

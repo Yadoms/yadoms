@@ -12,7 +12,7 @@ namespace shared { namespace currentTime
       virtual ~Local();
       
       // ICurrentTime Implementation
-      virtual boost::posix_time::ptime now() const;
+      boost::posix_time::ptime now() const override;
       // [END] ICurrentTime Implementation
    };   
 

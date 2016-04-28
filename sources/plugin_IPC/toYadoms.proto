@@ -8,6 +8,9 @@ message SetPluginState {
 	optional string customMessageId = 2;
 }
 
+message ConfigurationRequest {
+}
+
 message BindingQueryAnswer {
 	required bool success = 1;
 	required string result = 2;
@@ -16,6 +19,7 @@ message BindingQueryAnswer {
 message msg {
 	oneof OneOf {
 		SetPluginState pluginState = 1;
-		BindingQueryAnswer bindingQueryAnswer = 2;
+		ConfigurationRequest configurationRequest = 2;
+		BindingQueryAnswer bindingQueryAnswer = 3;
 	}
 }

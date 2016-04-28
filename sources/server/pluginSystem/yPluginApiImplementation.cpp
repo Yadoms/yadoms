@@ -148,7 +148,7 @@ namespace pluginSystem
       return m_informations;
    }
 
-   shared::CDataContainer CYPluginApiImplementation::getConfiguration() const
+   shared::CDataContainer CYPluginApiImplementation::getConfiguration()
    {
       return m_instanceData->Configuration;
    }
