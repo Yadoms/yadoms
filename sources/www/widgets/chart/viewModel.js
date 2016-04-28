@@ -318,7 +318,7 @@ widgetViewModelCtor =
                            default:
                            case "DAY":
                                dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf('hour').subtract(1, 'seconds'));
-                               dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'days').startOf('hour').add(1, 'hour'));
+                               dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'days').startOf('hour'));
                                //we request hour summary data
                                prefixUri = "/hour";
                                timeBetweenTwoConsecutiveValues = 1000 * 3600;
@@ -326,7 +326,7 @@ widgetViewModelCtor =
                                break;
                            case "WEEK":
                                dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf('hour').subtract(1, 'seconds'));
-                               dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'weeks').startOf('hour').add(1, 'hour'));
+                               dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'weeks').startOf('hour'));
                                //we request hour summary data
                                prefixUri = "/hour";
                                timeBetweenTwoConsecutiveValues = 1000 * 3600;
@@ -334,7 +334,7 @@ widgetViewModelCtor =
                                break;
                            case "MONTH":
                                dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf('day').subtract(1, 'seconds'));
-                               dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'months').startOf('day').add(1, 'day'));
+                               dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'months').startOf('day'));
                                //we request day summary data
                                prefixUri = "/day";
                                timeBetweenTwoConsecutiveValues = 1000 * 3600 * 24;
@@ -342,7 +342,7 @@ widgetViewModelCtor =
                                break;
                            case "HALF_YEAR":
                                dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf('day').subtract(1, 'seconds'));
-                               dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(6, 'months').startOf('day').add(1, 'day'));
+                               dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(6, 'months').startOf('day'));
                                //we request day summary data
                                prefixUri = "/day";
                                timeBetweenTwoConsecutiveValues = 1000 * 3600 * 24;
@@ -350,7 +350,7 @@ widgetViewModelCtor =
                                break;
                            case "YEAR":
                                dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf('day').subtract(1, 'seconds'));
-                               dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'years').startOf('day').add(1, 'day'));
+                               dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'years').startOf('day'));
                                //we request day summary data
                                prefixUri = "/day";
                                timeBetweenTwoConsecutiveValues = 1000 * 3600 * 24;
@@ -682,7 +682,7 @@ widgetViewModelCtor =
 
            self.chart.redraw(false); //without animation
        };
-
+	   
        this.DisplaySummary = function (index, nb, device, range, prefix) {
            var self = this;
 
@@ -698,12 +698,23 @@ widgetViewModelCtor =
                       try {
                           if (data.data[0] != undefined) {
                               self.chart.hideLoading(); // If a text was displayed before
-                              self.chart.get(self.seriesUuid[index]).addPoint([DateTimeFormatter.isoDateToDate(data.data[0].date)._d.getTime().valueOf(), parseFloat(data.data[0].avg)], true, false, true);
+							  
+                              var serie = self.chart.get(self.seriesUuid[index]);
+                              var serieRange = self.chart.get('range_' + self.seriesUuid[index]);							  
+							  
+                              serie.addPoint([DateTimeFormatter.isoDateToDate(data.data[0].date)._d.getTime().valueOf(), parseFloat(data.data[0].avg)], true, false, true);
 
+                              // If a serie is available  // Clean points > cleanValue for serie
+                              if (!isNullOrUndefined(serie))
+                                 self.cleanUpChart(serie, dateTo.date, cleanValue);
+
+                               // Clean points > cleanValue for ranges, if any
+                              if (!isNullOrUndefined(serieRange))
+                                 self.cleanUpChart(serieRange, dateTo.date, cleanValue);							  
+						      
                               //Add also for ranges if any
-                              var serie = self.chart.get('range_' + self.seriesUuid[index]);
-                              if (serie)
-                                  serie.addPoint([DateTimeFormatter.isoDateToDate(data.data[0].date)._d.getTime().valueOf(), parseFloat(data.data[0].min), parseFloat(data.data[0].max)], true, false, true);
+                              if (serieRange)
+                                  serieRange.addPoint([DateTimeFormatter.isoDateToDate(data.data[0].date)._d.getTime().valueOf(), parseFloat(data.data[0].min), parseFloat(data.data[0].max)], true, false, true);
                           }
                       } catch (err) {
                           console.error(err.message);
@@ -758,16 +769,9 @@ widgetViewModelCtor =
                            }
 
                            var serie = self.chart.get(self.seriesUuid[index]);
-                           var serieRange = self.chart.get('range_' + self.seriesUuid[index]);
 
                            // If a serie is available
                            if (!isNullOrUndefined(serie)) {
-                               // Clean points > cleanValue for serie
-                               self.cleanUpChart(serie, data.date, cleanValue);
-
-                               // Clean points > cleanValue for ranges, if any
-                               if (!isNullOrUndefined(serieRange))
-                                   self.cleanUpChart(serieRange, data.date, cleanValue);
 
                                // Add new point depending of the interval
                                switch (self.interval) {
