@@ -1,4 +1,3 @@
-
 /**
  * Define a condition block which is true when a keyword match a value (not a front value)
  * @type {{init: Function}}
@@ -96,7 +95,7 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
         this.removeAllAdditionalInputs_();
         if (inputList != undefined) {
             $.each(inputList, function (index, inputToShow) {
-                switch(inputToShow) {
+                switch(inputToShow.toLowerCase()) {
                     case "yadoms_wait_for_event_mutator_change":
                         self.appendKeywordSelectorStatementChange_(index);
                         break;
@@ -490,7 +489,6 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
         var container = document.createElement("mutation");
         container.setAttribute("storeInVariable".toLowerCase(), this.mutationData_.storeInVariable);
 
-        //container.setAttribute("additionalBlockCount".toLowerCase(), this.mutationData_.additionalBlocks.length);
         $.each(this.mutationData_.additionalBlocks, function (index, blockType) {
             var addBlock = document.createElement("additional" + index);
             addBlock.setAttribute("type", blockType);
@@ -510,7 +508,7 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
         this.mutationData_.additionalBlocks = [];
 
         for (var i = 0, childNode; childNode = xmlElement.childNodes[i]; i++) {
-            if (childNode.nodeName.startsWith("additional")) {
+			if (childNode.nodeName.toLowerCase().startsWith("additional")) {
                 this.mutationData_.additionalBlocks.push(childNode.getAttribute("type"));
             }
         }
@@ -591,7 +589,7 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
         var additionalBlockCount = 0;
         
         while (clauseBlock) {
-            switch (clauseBlock.type) {
+            switch (clauseBlock.type.toLowerCase()) {
                 case "yadoms_wait_for_event_mutator_store_in_variable":
                     if (this.mutationData_.storeInVariable === true)
                         storeInVariableMoreThanOnce = true;
@@ -679,7 +677,7 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
         while (clauseBlock) {
             var inputPart1;
             var inputPart2;
-            switch (clauseBlock.type) {
+            switch (clauseBlock.type.toLowerCase()) {
                 case "yadoms_wait_for_event_mutator_change":
                     //save deviceId, KeywordId
                     clauseBlock.part1DeviceId_ = this.getFieldValue("deviceDd" + i);
@@ -783,7 +781,7 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
             }
         }
         return keywodArray;
-    }    
+    },    
 	
 	/**
     * Get the list of capacities in a python compatible list

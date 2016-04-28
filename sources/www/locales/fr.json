@@ -524,7 +524,11 @@
             "catDevices": "Equipements",
             "catEnumerations": "Enums",
             "catVariables": "Variables",
-            "catFunctions": "Fonctions"
+            "catFunctions": "Fonctions",
+            "catTemplate": "Exemples",
+		    "samples" : {
+			    "actionAfterSunset" : "Action après le coucher du soleil"
+		    }
         },
         "invalid": "Invalide",
         "global": {

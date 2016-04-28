@@ -522,8 +522,11 @@
       "catDevices": "Devices",
       "catEnumerations": "Enumerations",
       "catVariables": "Variables",
-      "catFunctions": "Functions"
-
+      "catFunctions": "Functions",
+      "catTemplate": "Samples",
+	  "samples" : {
+	    "actionAfterSunset" : "Do something after sunset"
+	  }
     },
     "invalid": "invalid",
     "global": {

@@ -18,12 +18,13 @@ Blockly.Yadoms.CreateToolbox_ = function () {
     var catEnumerations = $.t("blockly.toolbox.catEnumerations");
     var catVariables = $.t("blockly.toolbox.catVariables");
     var catFunctions = $.t("blockly.toolbox.catFunctions");
+    var catTemplate = $.t("blockly.toolbox.catTemplate");
 
     var toolbox = "<xml>";
 
-    //evenement
     toolbox += "  <category name=\"" + catActions + "\" colour=\"20\">";
     toolbox += "    <block type=\"yadoms_wait_for_event\"></block>";
+
     toolbox += "    <block type=\"yadoms_notification_simple\">";
 
     toolbox += "        <value name=\"Value\">";
@@ -40,13 +41,11 @@ Blockly.Yadoms.CreateToolbox_ = function () {
     toolbox += "    </block>";
     toolbox += "  </category>";
 
-    //materiel
     toolbox += "  <category name=\"" + catDevices + "\" colour=\"20\">";
     toolbox += "    <block type=\"keyword-value-get\"></block>";
     toolbox += "    <block type=\"keyword-value-set\"></block>";
     toolbox += "  </category>";
 
-    //destinataires
     toolbox += "  <sep></sep>";
     
 
@@ -403,6 +402,14 @@ Blockly.Yadoms.CreateToolbox_ = function () {
     toolbox += "     </block>";
     toolbox += "  </category>";
 
+    toolbox += "  <sep></sep>";
+
+    toolbox += "  <category name=\"" + catTemplate + "\" colour=\"0\">";
+    toolbox += "    <category name=\"" + $.t("blockly.toolbox.samples.actionAfterSunset") + "\" colour=\"0\">";
+	toolbox += '      <block type="infinite-loop" id="QgA3R8,a~o)yAe}Q*_pJ" x="87" y="38"><statement name="DO"><block type="yadoms_wait_for_event" id=":ds_^%I`sHcvckT!~O|}"><mutation storeinvariable="false"><additional0 type="yadoms_wait_for_event_mutator_datetime_become"></additional0></mutation><field name="operatorDd0">EQ</field><value name="additionalInput_part1_0"><shadow type="yadoms_date_datetime" id="I~K(HI-;yvp@WN})9|-3"></shadow><block type="yadoms_date_arithmetic" id=",(|H~LMuHnARwh^/ge2T"><field name="operator">ADD</field><value name="A"><block type="yadoms_date_sunset" id="Me%3#6y:m.1FwsAw+PEg"></block></value><value name="B"><block type="yadoms_date_timespan" id="#v)=GfQI8M}Ns;CkjE@g"><value name="hourInput"><shadow type="math_number" id="mjgbEV;|zAL7Ik]G,*H/"><field name="NUM">0</field></shadow></value><value name="minuteInput"><shadow type="math_number" id="hh,:q[%!dhSc5H},Ye/v"><field name="NUM">30</field></shadow></value></block></value></block></value><statement name="additionalInput_part2_0"><block type="yadoms_log" id="Fs77ix)wP83BVn/8jBfB"><value name="LogContent"><shadow type="text" id="Mc38`Gu*SOt;Q]%MN74K"><field name="TEXT">' + $.t("blockly.toolbox.samples.actionAfterSunset") + '</field></shadow></value><next><block type="keyword-value-set" id="x7.{67czG=42[.nDVdWI"><mutation input_shown="true"></mutation><field name="Device">-1</field><field name="Keyword">-1</field><value name="Value"><shadow type="logic_boolean" id="@s8vp%6/SC%178=7=|#P"><field name="BOOL">TRUE</field></shadow></value><next></next></block></next></block></statement></block></statement></block>';
+    toolbox += "    </category>";
+    toolbox += "  </category>";
+	
     toolbox += "  <sep></sep>";
     toolbox += "  <category name=\"" + catVariables + "\" colour=\"330\" custom=\"VARIABLE\"></category>";
     toolbox += "  <category name=\"" + catFunctions + "\" colour=\"290\" custom=\"PROCEDURE\"></category>";
