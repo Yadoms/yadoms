@@ -17,63 +17,6 @@
 
    Yadoms.initializeAutomationCenterDashboard = function() {
       asyncLoadJSLibs([
-         "libs/blockly/js/blockly_compressed.js",
-         "libs/blockly/js/blocks_compressed.js",
-         "libs/blockly/js/python_compressed.js",
-         "js/objects/automation/blockly/common.js",
-         "js/objects/automation/blockly/data.js",
-         "js/objects/automation/blockly/python.js",
-         "js/objects/automation/blockly/toolbox.js",
-         "js/objects/automation/blockly/validation.js",
-         "js/objects/automation/blockly/customBlocks/enumeration.js",
-         "js/objects/automation/blockly/customBlocks/get-info.js",
-         "js/objects/automation/blockly/customBlocks/helper.js",
-         "js/objects/automation/blockly/customBlocks/infinite-loop.js",
-         "js/objects/automation/blockly/customBlocks/keyword-value-get.js",
-         "js/objects/automation/blockly/customBlocks/keyword-value-set.js",
-         "js/objects/automation/blockly/customBlocks/log.js",
-         "js/objects/automation/blockly/customBlocks/notification-simple.js",
-         "js/objects/automation/blockly/customBlocks/sleep.js",
-         "js/objects/automation/blockly/customBlocks/wait.js",
-         "js/objects/automation/blockly/customBlocks/wait-for-event.js",
-         "js/objects/automation/blockly/customBlocks/dates/helper.js",
-         "js/objects/automation/blockly/customBlocks/dates/yadoms_date_arithmetic.js",
-         "js/objects/automation/blockly/customBlocks/dates/yadoms_date_date.js",
-         "js/objects/automation/blockly/customBlocks/dates/yadoms_date_datetime.js",
-         "js/objects/automation/blockly/customBlocks/dates/yadoms_date_everyDay.js",
-         "js/objects/automation/blockly/customBlocks/dates/yadoms_date_extract.js",
-         "js/objects/automation/blockly/customBlocks/dates/yadoms_date_time.js",
-         "js/objects/automation/blockly/customBlocks/dates/yadoms_date_timespan.js",
-         "js/objects/automation/blockly/customBlocks/dates/yadoms_date_weekDay.js",
-         "js/objects/automation/blockly/customBlocks/dates/yadoms_date_today.js",
-         "js/objects/automation/blockly/customBlocks/dates/yadoms_date_now.js",
-         "js/objects/automation/blockly/customBlocks/dates/yadoms_date_sunrise.js",
-         "js/objects/automation/blockly/customBlocks/dates/yadoms_date_sunset.js",
-         "js/objects/automation/blockly/customBlocks/generator/python/enumeration.js",
-         "js/objects/automation/blockly/customBlocks/generator/python/get-info.js",
-         "js/objects/automation/blockly/customBlocks/generator/python/helper.js",
-         "js/objects/automation/blockly/customBlocks/generator/python/infinite-loop.js",
-         "js/objects/automation/blockly/customBlocks/generator/python/keyword-value-get.js",
-         "js/objects/automation/blockly/customBlocks/generator/python/keyword-value-set.js",
-         "js/objects/automation/blockly/customBlocks/generator/python/log.js",
-         "js/objects/automation/blockly/customBlocks/generator/python/notification-simple.js",
-         "js/objects/automation/blockly/customBlocks/generator/python/sleep.js",
-         "js/objects/automation/blockly/customBlocks/generator/python/wait.js",
-         "js/objects/automation/blockly/customBlocks/generator/python/wait-for-event.js",
-         "js/objects/automation/blockly/customBlocks/generator/python/dates/yadoms_date_arithmetic.js",
-         "js/objects/automation/blockly/customBlocks/generator/python/dates/yadoms_date_date.js",
-         "js/objects/automation/blockly/customBlocks/generator/python/dates/yadoms_date_datetime.js",
-         "js/objects/automation/blockly/customBlocks/generator/python/dates/yadoms_date_everyDay.js",
-         "js/objects/automation/blockly/customBlocks/generator/python/dates/yadoms_date_extract.js",
-         "js/objects/automation/blockly/customBlocks/generator/python/dates/yadoms_date_time.js",
-         "js/objects/automation/blockly/customBlocks/generator/python/dates/yadoms_date_timespan.js",
-         "js/objects/automation/blockly/customBlocks/generator/python/dates/yadoms_date_weekDay.js",
-         "js/objects/automation/blockly/customBlocks/generator/python/dates/yadoms_date_today.js",
-         "js/objects/automation/blockly/customBlocks/generator/python/dates/yadoms_date_now.js",
-         "js/objects/automation/blockly/customBlocks/generator/python/dates/yadoms_date_sunrise.js",
-         "js/objects/automation/blockly/customBlocks/generator/python/dates/yadoms_date_sunset.js",
-         "libs/ace/js/src-min/ace.js",
-         "libs/ace/js/src-min/ext-language_tools.js",
          "js/objects/automation/i-automation-rule-editor.js",
          "js/objects/automation/automation-editor-code.js",
          "js/objects/automation/automation-editor-blockly.js",
@@ -215,7 +158,24 @@
       }
    }
 
+   
    function editAutomationRule(rule) {
+      var $btnEdit;
+      var $rule = getAutomationRuleDomRow(rule);
+      if($rule) {
+         $btnEdit = $rule.find(".btn-edit");
+         if($btnEdit) {
+            $("table#automation-rule-list").find(".btn-edit").prop('disabled', true);
+            setTimeout(function() {
+               //after time, only show spinner if button is still disabled
+               //if the button is enabled (=the modal is shown), then do not show spinner
+               if($btnEdit.prop('disabled') === true) {
+                  $btnEdit.find("span").removeClass("fa-pencil").addClass("fa-spinner fa-pulse");
+               }
+            }, 200);
+         }
+      }
+      
       //rule represent the automation rule concerned
       rule.downloadEditor()
       .done(function () {
@@ -251,6 +211,13 @@
       })
       .fail(function (error) {
          notifyError($.t("modals.dashboard.sub-windows.automation-center.ruleEditError", { rule: rule.name }), error);
+      })
+      .always(function() {
+         //restore btn edit icon
+         if($btnEdit) {
+            $("table#automation-rule-list").find(".btn-edit").prop('disabled', false);
+            $btnEdit.find("span").addClass("fa-pencil").removeClass("fa-spinner fa-pulse");
+         }
       });
    }
 
@@ -329,7 +296,20 @@
          Yadoms.modals.automationRuleNew.loadAsync()
          .done(function () {
             //we launch new rule GUI
-            Yadoms.showNewAutomationRule(editors, function (rule) {
+            Yadoms.showNewAutomationRule(editors, function (rule, $modal, $button) {
+               
+               if($modal) {
+                  $modal.find(".btn-editor-choice").prop('disabled', true);
+                  if($button) {
+                     setTimeout(function() {
+                        //after time, only show spinner if button is still disabled
+                        //if the button is enabled (=the modal is shown), then do not show spinner
+                        $button.find("span").removeClass().addClass("fa fa-spinner fa-pulse");
+                     }, 200);
+                  }
+               }
+               
+            
                rule.downloadEditor()
                .done(function () {
                   Yadoms.modals.automationRuleEdit.loadAsync()
@@ -356,6 +336,10 @@
                })
                .fail(function (error) {
                   notifyError($.t("modals.dashboard.sub-windows.automation-center.ruleCreationError", { rule: rule.name }), error);
+               })
+               .always(function() {
+                  //we hide the current modal
+                  $modal.modal("hide");
                });
             });
          });

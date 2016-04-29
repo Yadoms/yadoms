@@ -35,6 +35,73 @@ AutomationEditorBlockly.prototype.getActiveSupportedInterpreters = function() {
 };
 
 /**
+ * Obtain the list of all required js files to load
+ * @returns {Array{string}}
+ */
+AutomationEditorBlockly.prototype.getRequiredJsFiles = function() {
+   return ["libs/blockly/js/blockly_compressed.js",
+         "libs/blockly/js/blocks_compressed.js",
+         "libs/blockly/js/python_compressed.js",
+         "js/objects/automation/blockly/common.js",
+         "js/objects/automation/blockly/data.js",
+         "js/objects/automation/blockly/python.js",
+         "js/objects/automation/blockly/toolbox.js",
+         "js/objects/automation/blockly/validation.js",
+         "js/objects/automation/blockly/customBlocks/enumeration.js",
+         "js/objects/automation/blockly/customBlocks/get-info.js",
+         "js/objects/automation/blockly/customBlocks/helper.js",
+         "js/objects/automation/blockly/customBlocks/infinite-loop.js",
+         "js/objects/automation/blockly/customBlocks/keyword-value-get.js",
+         "js/objects/automation/blockly/customBlocks/keyword-value-set.js",
+         "js/objects/automation/blockly/customBlocks/log.js",
+         "js/objects/automation/blockly/customBlocks/notification-simple.js",
+         "js/objects/automation/blockly/customBlocks/sleep.js",
+         "js/objects/automation/blockly/customBlocks/wait.js",
+         "js/objects/automation/blockly/customBlocks/wait-for-event.js",
+         "js/objects/automation/blockly/customBlocks/dates/helper.js",
+         "js/objects/automation/blockly/customBlocks/dates/yadoms_date_arithmetic.js",
+         "js/objects/automation/blockly/customBlocks/dates/yadoms_date_date.js",
+         "js/objects/automation/blockly/customBlocks/dates/yadoms_date_datetime.js",
+         "js/objects/automation/blockly/customBlocks/dates/yadoms_date_everyDay.js",
+         "js/objects/automation/blockly/customBlocks/dates/yadoms_date_extract.js",
+         "js/objects/automation/blockly/customBlocks/dates/yadoms_date_time.js",
+         "js/objects/automation/blockly/customBlocks/dates/yadoms_date_timespan.js",
+         "js/objects/automation/blockly/customBlocks/dates/yadoms_date_weekDay.js",
+         "js/objects/automation/blockly/customBlocks/dates/yadoms_date_today.js",
+         "js/objects/automation/blockly/customBlocks/dates/yadoms_date_now.js",
+         "js/objects/automation/blockly/customBlocks/dates/yadoms_date_sunrise.js",
+         "js/objects/automation/blockly/customBlocks/dates/yadoms_date_sunset.js",
+         "js/objects/automation/blockly/customBlocks/generator/python/enumeration.js",
+         "js/objects/automation/blockly/customBlocks/generator/python/get-info.js",
+         "js/objects/automation/blockly/customBlocks/generator/python/helper.js",
+         "js/objects/automation/blockly/customBlocks/generator/python/infinite-loop.js",
+         "js/objects/automation/blockly/customBlocks/generator/python/keyword-value-get.js",
+         "js/objects/automation/blockly/customBlocks/generator/python/keyword-value-set.js",
+         "js/objects/automation/blockly/customBlocks/generator/python/log.js",
+         "js/objects/automation/blockly/customBlocks/generator/python/notification-simple.js",
+         "js/objects/automation/blockly/customBlocks/generator/python/sleep.js",
+         "js/objects/automation/blockly/customBlocks/generator/python/wait.js",
+         "js/objects/automation/blockly/customBlocks/generator/python/wait-for-event.js",
+         "js/objects/automation/blockly/customBlocks/generator/python/dates/yadoms_date_arithmetic.js",
+         "js/objects/automation/blockly/customBlocks/generator/python/dates/yadoms_date_date.js",
+         "js/objects/automation/blockly/customBlocks/generator/python/dates/yadoms_date_datetime.js",
+         "js/objects/automation/blockly/customBlocks/generator/python/dates/yadoms_date_everyDay.js",
+         "js/objects/automation/blockly/customBlocks/generator/python/dates/yadoms_date_extract.js",
+         "js/objects/automation/blockly/customBlocks/generator/python/dates/yadoms_date_time.js",
+         "js/objects/automation/blockly/customBlocks/generator/python/dates/yadoms_date_timespan.js",
+         "js/objects/automation/blockly/customBlocks/generator/python/dates/yadoms_date_weekDay.js",
+         "js/objects/automation/blockly/customBlocks/generator/python/dates/yadoms_date_today.js",
+         "js/objects/automation/blockly/customBlocks/generator/python/dates/yadoms_date_now.js",
+         "js/objects/automation/blockly/customBlocks/generator/python/dates/yadoms_date_sunrise.js",
+         "js/objects/automation/blockly/customBlocks/generator/python/dates/yadoms_date_sunset.js",
+         "js/objects/automation/i-automation-rule-editor.js",
+         "js/objects/automation/automation-editor-code.js",
+         "js/objects/automation/automation-editor-blockly.js",
+         "js/objects/automation/automation-editor-manager.js"
+   ];
+};
+
+/**
  * Obtain Unique identifier of the editor
  */
 AutomationEditorBlockly.prototype.getUuid = function() {
