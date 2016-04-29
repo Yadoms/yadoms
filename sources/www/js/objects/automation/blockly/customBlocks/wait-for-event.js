@@ -15,8 +15,7 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
         this.setTooltip($.t("blockly.blocks.yadoms_wait_for_event.tooltip"));
         this.setHelpUrl("http://www.example.com/");
         this.setInputsInline(true);
-        this.setMutator(new Blockly.Mutator(["yadoms_wait_for_event_mutator_store_in_variable",
-                                            "yadoms_wait_for_event_mutator_change",
+        this.setMutator(new Blockly.Mutator(["yadoms_wait_for_event_mutator_change",
                                             "yadoms_wait_for_event_mutator_become",
 											"yadoms_wait_for_event_mutator_capacity_change",
 											"yadoms_wait_for_event_mutator_capacity_become",
@@ -529,10 +528,7 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
         var connection = topBlock.getInput("STACK").connection;
 
         if (this.mutationData_.storeInVariable === true) {
-           var additionalBlock = workspace.newBlock("yadoms_wait_for_event_mutator_store_in_variable");
-            additionalBlock.initSvg();
-            connection.connect(additionalBlock.previousConnection);
-            connection = additionalBlock.nextConnection;
+			topBlock.setFieldValue('TRUE', 'storeInVariableField');
         }
 
         $.each(this.mutationData_.additionalBlocks, function (index, blockType) {
@@ -588,8 +584,14 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
         var storeInVariableMoreThanOnce = false;
         var additionalBlockCount = 0;
         
+		if(containerBlock.getFieldValue('storeInVariableField') == "TRUE") {
+			this.mutationData_.storeInVariable = true;
+			this.updateStoreVariableInput_(this.mutationData_.storeInVariable, clauseBlock.storeVariableName_);
+		}
+		
         while (clauseBlock) {
             switch (clauseBlock.type.toLowerCase()) {
+				//keep this case for backward compatibility
                 case "yadoms_wait_for_event_mutator_store_in_variable":
                     if (this.mutationData_.storeInVariable === true)
                         storeInVariableMoreThanOnce = true;
@@ -673,6 +675,8 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
      */
     saveConnections: function (containerBlock) {
         var clauseBlock = containerBlock.getInputTargetBlock('STACK');
+		clauseBlock.storeVariableName_ = this.getFieldValue("outVar");
+		
         var i = 0;
         while (clauseBlock) {
             var inputPart1;
@@ -748,11 +752,6 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
                     i++;
                     break;
 
-
-                case 'yadoms_wait_for_event_mutator_store_in_variable':
-                    //save variable name
-                    clauseBlock.storeVariableName_ = this.getFieldValue("outVar");
-                    break;
                 default:
                     throw 'Unknown block type.';
             }
@@ -815,25 +814,17 @@ Blockly.Blocks["yadoms_wait_for_event_base"] = {
      */
     init: function () {
         this.setColour(Blockly.Yadoms.blockColour.HUE);
-        this.appendDummyInput().appendField($.t("blockly.blocks.yadoms_wait_for_event.mutator.base.title"));
+        this.appendDummyInput()
+			.appendField($.t("blockly.blocks.yadoms_wait_for_event.mutator.base.title"));
+			
         this.appendStatementInput("STACK");
+
+        this.appendDummyInput()
+			.appendField($.t("blockly.blocks.yadoms_wait_for_event.mutator.base.storeInVariable"))
+			.appendField(new Blockly.FieldCheckbox('TRUE'), 'storeInVariableField');
+			
         this.setTooltip($.t("blockly.blocks.yadoms_wait_for_event.mutator.base.tooltip"));
         this.contextMenu = false;
-    }
-};
-
-Blockly.Blocks["yadoms_wait_for_event_mutator_store_in_variable"] = {
-    /**
-     * Mutator block "store in variable".
-     * @this Blockly.Block
-     */
-    init: function () {
-        this.setColour(Blockly.Yadoms.blockColour.HUE);
-        this.appendDummyInput().appendField($.t("blockly.blocks.yadoms_wait_for_event.mutator.storeInVariable.title"));
-        this.setTooltip($.t("blockly.blocks.yadoms_wait_for_event.mutator.storeInVariable.tooltip"));
-        this.contextMenu = false;
-        this.setPreviousStatement(true, null);
-        this.setNextStatement(true, null);
     }
 };
 

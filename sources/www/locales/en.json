@@ -593,11 +593,8 @@
         "mutator": {
           "base": {
             "title": "Wait for acquisition",
-            "tooltip": "Wait for a new acquisition of one or more keywords."
-          },
-          "storeInVariable": {
-            "title": "Store value",
-            "tooltip": "Store the event value in the specified variable"
+            "tooltip": "Wait for a new acquisition of one or more keywords.",
+			"storeInVariable" : "Store the new acquisition in a variable"
           },
           "change": {
             "title": "Device : any new acquisition",

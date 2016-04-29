@@ -595,11 +595,8 @@
                 "mutator": {
                     "base": {
                         "title": "Attente d'acquisition",
-                        "tooltip": "Attend une nouvelle acquisition d'un ou plusieurs keyword."
-                    },
-                    "storeInVariable": {
-                        "title": "Stocker sa valeur",
-                        "tooltip": "Enregistre la valeur de l'événement dans une variable"
+                        "tooltip": "Attend une nouvelle acquisition d'un ou plusieurs keyword.",
+						"storeInVariable" : "Stocker la nouvelle acquisition dans une variable"
                     },
                     "change": {
                         "title": "Equipement : chaque nouvelle donnée",
