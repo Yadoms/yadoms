@@ -5,7 +5,7 @@
 #include <shared/plugin/yPluginApi/StandardUnits.h>
 #include <shared/Log.h>
 
-CSystemFactory::CSystemFactory(boost::shared_ptr<yApi::IYPluginApi> context, const std::string & device, const ISIConfiguration& configuration):
+CSystemFactory::CSystemFactory(boost::shared_ptr<yApi::IYPluginApi> context, const std::string & device, const ISIConfiguration& configuration, shared::CDataContainer details):
    m_PluginName                    (device),
    m_MemoryLoad                    (device),
    m_CPULoad                       (device),
@@ -13,11 +13,7 @@ CSystemFactory::CSystemFactory(boost::shared_ptr<yApi::IYPluginApi> context, con
    m_TemperatureSensor             (device),
    m_YadomsRAMProcessMemory        (device),
    m_YadomsVirtualProcessMemory    (device)
-{
-	  shared::CDataContainer details;
-	  details.set("provider", "SystemInformation");
-	  details.set("shortProvider", "si");		
-	
+{	
       // Keywords declaration, if needed
       m_MemoryLoad.declareKeywords           (context, details);
       m_CPULoad.declareKeywords              (context, details);
@@ -98,15 +94,11 @@ void CSystemFactory::OnSlowUpdate ( boost::shared_ptr<yApi::IYPluginApi> context
     context->historizeData(m_PluginName, KeywordList);
 }
 
-void CSystemFactory::OnConfigurationUpdate ( boost::shared_ptr<yApi::IYPluginApi> context, const ISIConfiguration& configuration )
+void CSystemFactory::OnConfigurationUpdate ( boost::shared_ptr<yApi::IYPluginApi> context, const ISIConfiguration& configuration, shared::CDataContainer details )
 {
       if (configuration.IsAdvancedEnabled())
       {
          std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > KeywordList;
-
-	     shared::CDataContainer details;
-	     details.set("provider", "SystemInformation");
-	     details.set("shortProvider", "si");			 
 		 
          m_YadomsCPULoad.declareKeywords              (context, details);
          m_YadomsRAMProcessMemory.declareKeywords     (context, details);

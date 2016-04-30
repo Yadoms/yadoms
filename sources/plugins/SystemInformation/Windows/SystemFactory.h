@@ -24,7 +24,7 @@ public:
    /// \brief	    Constructor
    /// \param[in] device    The device
    //--------------------------------------------------------------
-   CSystemFactory(boost::shared_ptr<yApi::IYPluginApi> context, const std::string & device,const ISIConfiguration& configuration);
+   CSystemFactory(boost::shared_ptr<yApi::IYPluginApi> context, const std::string & device,const ISIConfiguration& configuration, shared::CDataContainer details);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -33,10 +33,9 @@ public:
 
    void OnSpeedUpdate ( boost::shared_ptr<yApi::IYPluginApi> context, const ISIConfiguration& configuration );
    void OnSlowUpdate  ( boost::shared_ptr<yApi::IYPluginApi> context, const ISIConfiguration& configuration );
-   void OnConfigurationUpdate ( boost::shared_ptr<yApi::IYPluginApi> context, const ISIConfiguration& configuration );
+   void OnConfigurationUpdate ( boost::shared_ptr<yApi::IYPluginApi> context, const ISIConfiguration& configuration, shared::CDataContainer details );
 
 private:
-
    //--------------------------------------------------------------
    /// \brief	    Plugin name
    //--------------------------------------------------------------

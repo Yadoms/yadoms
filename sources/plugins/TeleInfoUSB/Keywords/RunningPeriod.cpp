@@ -8,11 +8,11 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-CRunningPeriod::CRunningPeriod( boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName, std::string KeyWordName )
+CRunningPeriod::CRunningPeriod( boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName, std::string KeyWordName, shared::CDataContainer details )
    :m_PluginName ( PluginName ), m_runningPeriod( new teleInfoUSB::specificHistorizers::CPeriod(KeyWordName) )
 {
    if (!context->keywordExists( m_PluginName, m_runningPeriod->getKeyword()))
-      context->declareKeyword ( m_PluginName, *m_runningPeriod );
+      context->declareKeyword ( m_PluginName, *m_runningPeriod, details );
 }
 
 void CRunningPeriod::SetValue( std::string& Value )

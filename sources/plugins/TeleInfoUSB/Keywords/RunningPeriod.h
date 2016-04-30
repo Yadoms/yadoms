@@ -19,7 +19,7 @@ namespace yApi = shared::plugin::yPluginApi;
 	  /// \param[in] KeyWordName          The keyword name
       /// \note                           Use this constructor initialising the keyword for this plugin
       //--------------------------------------------------------------
-      CRunningPeriod( boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName,std::string KeyWordName );
+      CRunningPeriod( boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName,std::string KeyWordName, shared::CDataContainer details );
 
       //--------------------------------------------------------------
       /// \brief	                      Set the value of the keyword
