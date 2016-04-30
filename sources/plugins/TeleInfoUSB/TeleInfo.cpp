@@ -130,7 +130,6 @@ void CTeleInfo::createConnection(boost::shared_ptr<yApi::IYPluginApi> context)
    context->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
    // Create the port instance
    m_port = CTeleInfoFactory::constructPort(m_configuration, context->getEventHandler(), m_receiveBufferHandler, kEvtPortConnection);
-   //m_port->setReceiveBufferMaxSize(TeleInfoMESSAGE_maxSize);
    m_port->start();
 }
 

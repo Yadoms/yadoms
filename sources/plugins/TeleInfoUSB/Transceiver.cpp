@@ -10,8 +10,8 @@
 
 CTransceiver::CTransceiver()
    :m_seqNumberProvider(new CIncrementSequenceNumber()),
-    Optarif ( OP_NOT_DEFINED ),
-	m_deviceCreated ( false )
+   m_deviceCreated ( false ),
+    Optarif ( OP_NOT_DEFINED )
 {
 	ResetRefreshTags ();
 
