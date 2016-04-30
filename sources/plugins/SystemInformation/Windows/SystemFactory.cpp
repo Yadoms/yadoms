@@ -13,15 +13,19 @@ CSystemFactory::CSystemFactory(boost::shared_ptr<yApi::IYPluginApi> context, con
    m_RAMProcessMemory     (device),
    m_VirtualProcessMemory (device)
 {
+	  shared::CDataContainer details;
+	  details.set("provider", "SystemInformation");
+	  details.set("shortProvider", "si");
+
       // Keywords declaration, if needed
-      m_MemoryLoad.declareKeywords           (context);
-      m_CPULoad.declareKeywords              (context);
-      m_YadomsCPULoad.declareKeywords        (context);
+      m_MemoryLoad.declareKeywords           (context, details);
+      m_CPULoad.declareKeywords              (context, details);
+      m_YadomsCPULoad.declareKeywords        (context, details);
 
       if (configuration.IsAdvancedEnabled())
       {
-         m_RAMProcessMemory.declareKeywords     (context);
-         m_VirtualProcessMemory.declareKeywords (context);
+         m_RAMProcessMemory.declareKeywords     (context, details);
+         m_VirtualProcessMemory.declareKeywords (context, details);
       }
 
 	  // As disk list can change (add a disk), update it each time Yadoms starts
@@ -35,9 +39,7 @@ CSystemFactory::CSystemFactory(boost::shared_ptr<yApi::IYPluginApi> context, con
          std::string diskKeywordName = disksListIterator->substr(0, 1) + "_DiskUsage";
          CDiskUsage DiskUsage(device, diskKeywordName, *disksListIterator);
          DiskUsageList.push_back(DiskUsage);
-
-         if (!context->keywordExists(device, diskKeywordName))
-            DiskUsage.declareKeywords(context);
+         DiskUsage.declareKeywords(context, details);
       }
 }
 
@@ -91,7 +93,11 @@ void CSystemFactory::OnConfigurationUpdate ( boost::shared_ptr<yApi::IYPluginApi
 {
       if (configuration.IsAdvancedEnabled())
       {
-         m_RAMProcessMemory.declareKeywords     (context);
-         m_VirtualProcessMemory.declareKeywords (context);
+	     shared::CDataContainer details;
+	     details.set("provider", "SystemInformation");
+	     details.set("shortProvider", "si");
+
+         m_RAMProcessMemory.declareKeywords     (context, details);
+         m_VirtualProcessMemory.declareKeywords (context, details);
       }
 }

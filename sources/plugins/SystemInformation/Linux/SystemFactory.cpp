@@ -13,15 +13,19 @@ CSystemFactory::CSystemFactory(boost::shared_ptr<yApi::IYPluginApi> context, con
    m_YadomsRAMProcessMemory           (device),
    m_YadomsVirtualProcessMemory       (device)
 {
+	  shared::CDataContainer details;
+	  details.set("provider", "SystemInformation");
+	  details.set("shortProvider", "si");	
+	
       // Keywords declaration, if needed
-      m_MemoryLoad.declareKeywords           (context);
-      m_CPULoad.declareKeywords              (context);
+      m_MemoryLoad.declareKeywords           (context, details);
+      m_CPULoad.declareKeywords              (context, details);
 
       if (configuration.IsAdvancedEnabled())
       {
-         m_YadomsCPULoad.declareKeywords              (context);
-         m_YadomsRAMProcessMemory.declareKeywords     (context);
-         m_YadomsVirtualProcessMemory.declareKeywords (context);
+         m_YadomsCPULoad.declareKeywords              (context, details);
+         m_YadomsRAMProcessMemory.declareKeywords     (context, details);
+         m_YadomsVirtualProcessMemory.declareKeywords (context, details);
       }
 
       // As disk list can change (add a disk), update it each time Yadoms starts
@@ -36,8 +40,7 @@ CSystemFactory::CSystemFactory(boost::shared_ptr<yApi::IYPluginApi> context, con
          boost::shared_ptr<CDiskUsage> DiskUsage;
          DiskUsage.reset (new CDiskUsage( device, *disksListIterator, diskKeywordName ));
          m_DiskUsageList.push_back(DiskUsage);
-         if (!context->keywordExists(device, diskKeywordName))
-            DiskUsage->declareKeywords(context);
+         DiskUsage->declareKeywords(context, details);
       }
 }
 
@@ -96,9 +99,13 @@ void CSystemFactory::OnConfigurationUpdate ( boost::shared_ptr<yApi::IYPluginApi
       {
          std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > KeywordList;
 
-         m_YadomsCPULoad.declareKeywords              (context);
-         m_YadomsRAMProcessMemory.declareKeywords     (context);
-         m_YadomsVirtualProcessMemory.declareKeywords (context);
+	     shared::CDataContainer details;
+	     details.set("provider", "SystemInformation");
+	     details.set("shortProvider", "si");			 
+		 
+         m_YadomsCPULoad.declareKeywords              (context, details);
+         m_YadomsRAMProcessMemory.declareKeywords     (context, details);
+         m_YadomsVirtualProcessMemory.declareKeywords (context, details);
 
          // We read immediately values to avoid the wait of timers
          m_YadomsCPULoad.read();
