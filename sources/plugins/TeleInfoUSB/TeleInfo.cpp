@@ -21,7 +21,7 @@ namespace yApi = shared::plugin::yPluginApi;
 IMPLEMENT_PLUGIN(CTeleInfo)
 
 
-CTeleInfo::CTeleInfo(): m_deviceName("TeleInfoUSB")
+CTeleInfo::CTeleInfo()
 {}
 
 CTeleInfo::~CTeleInfo()
@@ -169,9 +169,7 @@ void CTeleInfo::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> context
 {
    m_logger.logReceived(data);
 
-   m_transceiver->decodeTeleInfoMessage(context,
-	                                    m_deviceName,
-	        							data);
+   m_transceiver->decodeTeleInfoMessage(context, data);
 
    // When all information are updated we stopped the reception !
    if (m_transceiver->IsInformationUpdated())
