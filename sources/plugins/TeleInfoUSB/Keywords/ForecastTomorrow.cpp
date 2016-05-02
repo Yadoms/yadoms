@@ -18,6 +18,7 @@ CForecastTomorrow::CForecastTomorrow( boost::shared_ptr<yApi::IYPluginApi> conte
 void CForecastTomorrow::SetValue( std::string& Value )
 {
    static const EnumColorMap EEnumColorMap = boost::assign::map_list_of
+      ("----", teleInfoUSB::specificHistorizers::EColor::kNOTDEFINED)
       ("BLEU", teleInfoUSB::specificHistorizers::EColor::kBLUE)
       ("BLAN", teleInfoUSB::specificHistorizers::EColor::kWHITE)
       ("ROUG", teleInfoUSB::specificHistorizers::EColor::kRED)

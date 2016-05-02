@@ -125,7 +125,7 @@ void CTransceiver::CreateDevice ( std::string CounterId )
 	m_DeviceName = CounterId;
 
 	if (!m_context->deviceExists(CounterId))
-		m_context->declareDevice(CounterId, "TeleInfoUSB", m_DeviceDetails);
+		m_context->declareDevice(CounterId, "TeleInfoUSB : Id = " + CounterId, m_DeviceDetails);
 
 	//Set the counter id for each keyword
 	m_KeywordDetails.set("id", CounterId );
