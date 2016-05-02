@@ -252,15 +252,41 @@ shared::CDataContainer CApiImplementation::getDeviceDetails(const std::string& d
 }
 
 void CApiImplementation::declareDevice(const std::string& device, const std::string& model, const shared::CDataContainer& details)
-{}
+{
+   toYadoms::msg req;
+   auto request = req.mutable_declaredevice();
+   request->set_device(device);
+   request->set_model(model);
+   request->set_details(details.serialize());
+   send(req);
+}
+
 bool CApiImplementation::keywordExists(const std::string& device, const std::string& keyword) const
 {
-   return false;
+   toYadoms::msg req;
+   auto request = req.mutable_keywordexists();
+   request->set_device(device);
+   request->set_keyword(keyword);
+
+   auto exists = false;
+   send(req,
+        [](const toPlugin::msg& ans) -> bool
+        {
+           return ans.has_keywordexists();
+        },
+        [&](const toPlugin::msg& ans) -> void
+        {
+           exists = ans.keywordexists().exists();
+        });
+
+   return exists;
 }
+
 bool CApiImplementation::keywordExists(const std::string& device, const shared::plugin::yPluginApi::historization::IHistorizable& keyword) const
 {
-   return false;
+   return keywordExists(device, keyword.getKeyword());
 }
+
 void CApiImplementation::declareKeyword(const std::string& device, const shared::plugin::yPluginApi::historization::IHistorizable& keyword, const shared::CDataContainer& details)
 {}
 std::string CApiImplementation::getRecipientValue(int recipientId, const std::string& fieldName) const

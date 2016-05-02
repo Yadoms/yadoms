@@ -167,6 +167,10 @@ namespace pluginSystem
          break;
       case toYadoms::msg::kDeviceDetails: processDeviceDetailsRequest(toYadomsProtoBuffer.devicedetails());
          break;
+      case toYadoms::msg::kKeywordExists: processKeywordExistsRequest(toYadomsProtoBuffer.keywordexists());
+         break;
+      case toYadoms::msg::kDeclareDevice: processDeclareDevice(toYadomsProtoBuffer.declaredevice());
+         break;
          //TODO
          //case pbRequest::msg::kGetKeywordId: processGetKeywordId(toYadomsProtoBuffer.getkeywordid(), messageQueue); break;
          //case pbRequest::msg::kGetRecipientId: processGetRecipientId(toYadomsProtoBuffer.getrecipientid(), messageQueue); break;
@@ -225,6 +229,19 @@ namespace pluginSystem
       auto answer = ans.mutable_devicedetails();
       answer->set_details(m_pluginApi->getDeviceDetails(msg.device()).serialize());
       send(ans);
+   }
+
+   void CContextAccessor::processKeywordExistsRequest(const toYadoms::KeywordExitsRequest& msg)
+   {
+      toPlugin::msg ans;
+      auto answer = ans.mutable_keywordexists();
+      answer->set_exists(m_pluginApi->keywordExists(msg.device(), msg.keyword()));
+      send(ans);
+   }
+
+   void CContextAccessor::processDeclareDevice(const toYadoms::DeclareDevice& msg) const
+   {
+      m_pluginApi->declareDevice(msg.device(), msg.model(), shared::CDataContainer(msg.details()));
    }
 
    //TODO

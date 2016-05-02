@@ -34,6 +34,10 @@ message DeviceDetailsAnswer {
 	required string details = 1;
 }
 
+message KeywordExitsAnswer {
+	required bool exists = 1;
+}
+
 
 message msg {
 	optional string error = 1;
@@ -47,6 +51,7 @@ message msg {
 		ExtraCommand extraCommand = 7;
 		DeviceExitsAnswer deviceExists = 8;
 		DeviceDetailsAnswer deviceDetails = 9;
+		KeywordExitsAnswer keywordExists = 10;
 	}
 }
 

@@ -73,6 +73,8 @@ namespace pluginSystem //TODO refactorer pour factoriser avec le CContextAccesso
       void processGetConfiguration(const toYadoms::ConfigurationRequest& msg);
       void processDeviceExistsRequest(const toYadoms::DeviceExitsRequest& msg);
       void processDeviceDetailsRequest(const toYadoms::DeviceDetailsRequest& msg);
+      void processKeywordExistsRequest(const toYadoms::KeywordExitsRequest& msg);
+      void processDeclareDevice(const toYadoms::DeclareDevice& msg) const;
       //TODO
       //void processGetKeywordId(const pbRequest::GetKeywordId& request, boost::interprocess::message_queue& messageQueue);
       //void processGetRecipientId(const pbRequest::GetRecipientId& request, boost::interprocess::message_queue& messageQueue);

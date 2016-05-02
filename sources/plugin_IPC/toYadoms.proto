@@ -24,6 +24,17 @@ message DeviceDetailsRequest {
 	required string device = 1;
 }
 
+message KeywordExitsRequest {
+	required string device = 1;
+	required string keyword = 2;
+}
+
+message DeclareDevice {
+	required string device = 1;
+	required string model = 2;
+	required string details = 3;
+}
+
 message msg {
 	oneof OneOf {
 		SetPluginState pluginState = 1;
@@ -31,5 +42,7 @@ message msg {
 		BindingQueryAnswer bindingQueryAnswer = 3;
 		DeviceExitsRequest deviceExists = 4;
 		DeviceDetailsRequest deviceDetails = 5;
+		KeywordExitsRequest keywordExists = 6;
+		DeclareDevice declareDevice = 7;
 	}
 }
