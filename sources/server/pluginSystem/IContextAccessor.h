@@ -27,12 +27,6 @@ namespace pluginSystem
       virtual std::string id() const = 0;
 
       //--------------------------------------------------------------
-      /// \brief	Send an message to plugin
-      /// \param[in] pbMsg The message
-      //--------------------------------------------------------------
-      virtual void send(const toPlugin::msg& pbMsg) = 0; //TODO utile ?
-
-      //--------------------------------------------------------------
       /// \brief	Post the plugin stop request
       //--------------------------------------------------------------
       virtual void postStopRequest() = 0;

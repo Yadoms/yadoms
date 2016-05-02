@@ -33,7 +33,7 @@ void CBindingQuery::sendError(const std::string& errorMessage)
    m_errorCallback(errorMessage);
 }
 
-void CBindingQuery::askToPlugin() const
+void CBindingQuery::askToPlugin() const//TODO virer ? (avec m_pluginEventHandler)
 {
    m_pluginEventHandler.postEvent(shared::plugin::yPluginApi::IYPluginApi::kBindingQuery, m_query);
 }

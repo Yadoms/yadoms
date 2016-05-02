@@ -165,28 +165,26 @@ void CApiImplementation::setInitialized()
 
 void CApiImplementation::processBindingQuery(const toPlugin::BindingQuery& msg)
 {
-   bool success;
-   std::string result;
-
-   CBindingQuery query(msg,
+   boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> query = boost::make_shared<CBindingQuery>(msg,
                        getEventHandler(),
                        [&](const shared::CDataContainer& r)
                        {
-                          success = true;
-                          result = r.serialize();
+                           toYadoms::msg ans;
+                           auto answer = ans.mutable_bindingqueryanswer();
+                           answer->set_success(true);
+                           answer->set_result(r.serialize());
+                           send(ans);
                        },
                        [&](const std::string& r)
                        {
-                          success = false;
-                          result = r;
+                          toYadoms::msg ans;
+                          auto answer = ans.mutable_bindingqueryanswer();
+                          answer->set_success(false);
+                          answer->set_result(r);
+                          send(ans);
                        });
-   query.askToPlugin();
 
-   toYadoms::msg ans;
-   auto answer = ans.mutable_bindingqueryanswer();
-   answer->set_success(success);
-   answer->set_result(result);
-   send(ans);
+   m_pluginEventHandler.postEvent(shared::plugin::yPluginApi::IYPluginApi::kBindingQuery, query);
 }
 
 void CApiImplementation::setPluginState(const shared::plugin::yPluginApi::historization::EPluginState& state, const std::string & customMessageId)

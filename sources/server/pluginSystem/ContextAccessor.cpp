@@ -112,39 +112,65 @@ void CContextAccessor::send(const toPlugin::msg& pbMsg)
    m_sendMessageQueue.send(m_sendBuffer.get(), pbMsg.GetCachedSize(), 0);
 }
 
+void CContextAccessor::send(const toPlugin::msg& pbMsg,
+                            boost::function1<bool, const toYadoms::msg&> checkExpectedMessageFunction,
+                            boost::function1<void, const toYadoms::msg&> onReceiveFunction)
+{
+   shared::event::CEventHandler receivedEvtHandler;
+
+   {
+      boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
+      m_onReceiveHook = [&](const toYadoms::msg& receivedMsg)->bool
+      {
+         if (!checkExpectedMessageFunction(receivedMsg))
+            return false;
+
+         receivedEvtHandler.postEvent<const toYadoms::msg>(shared::event::kUserFirstId, receivedMsg);
+         return true;
+      };
+   }
+
+   send(pbMsg);
+
+   if (receivedEvtHandler.waitForEvents(boost::posix_time::seconds(10)) == shared::event::kTimeout)
+      throw std::runtime_error((boost::format("No answer from Yadoms when sending message %1%") % pbMsg.OneOf_case()).str());
+
+   onReceiveFunction(receivedEvtHandler.getEventData<const toYadoms::msg>());
+}
+
 void CContextAccessor::processMessage(boost::shared_ptr<const unsigned char[]> message, size_t messageSize)
 {
    if (messageSize < 1)
       throw shared::exception::CInvalidParameter("messageSize");
 
    // Unserialize message
-   toYadoms::msg request;
-   if (!request.ParseFromArray(message.get(), messageSize))
+   toYadoms::msg toYadomsProtoBuffer;
+   if (!toYadomsProtoBuffer.ParseFromArray(message.get(), messageSize))
       throw shared::exception::CInvalidParameter("message");
 
    {
-      boost::lock_guard<boost::recursive_mutex> lock(m_processMessageHookMutex);
-      if (m_processMessageHook && m_processMessageHook(request))
+      boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
+      if (m_onReceiveHook && m_onReceiveHook(toYadomsProtoBuffer))
       {
-         m_processMessageHook.clear();
+         m_onReceiveHook.clear();
          return;
       }
    }
 
    // Process message
-   switch(request.OneOf_case())
+   switch(toYadomsProtoBuffer.OneOf_case())
    {
-      case toYadoms::msg::kPluginState: processSetPluginState(request.pluginstate()); break;
-      case toYadoms::msg::kConfigurationRequest: processGetConfiguration(request.configurationrequest()); break;
+      case toYadoms::msg::kPluginState: processSetPluginState(toYadomsProtoBuffer.pluginstate()); break;
+      case toYadoms::msg::kConfigurationRequest: processGetConfiguration(toYadomsProtoBuffer.configurationrequest()); break;
       //TODO
-   //case pbRequest::msg::kGetKeywordId: processGetKeywordId(request.getkeywordid(), messageQueue); break;
-   //case pbRequest::msg::kGetRecipientId: processGetRecipientId(request.getrecipientid(), messageQueue); break;
-   //case pbRequest::msg::kReadKeyword: processReadKeyword(request.readkeyword(), messageQueue); break;
-   //case pbRequest::msg::kWaitForNextAcquisition: processWaitForNextAcquisition(request.waitfornextacquisition(), messageQueue); break;
-   //case pbRequest::msg::kWaitForNextAcquisitions: processWaitForNextAcquisitions(request.waitfornextacquisitions(), messageQueue); break;
-   //case pbRequest::msg::kWaitForEvent: processWaitForEvent(request.waitforevent(), messageQueue); break;
-   //case pbRequest::msg::kWriteKeyword: processWriteKeyword(request.writekeyword(), messageQueue); break;
-   //case pbRequest::msg::kSendNotification: processSendNotification(request.sendnotification(), messageQueue); break;
+   //case pbRequest::msg::kGetKeywordId: processGetKeywordId(toYadomsProtoBuffer.getkeywordid(), messageQueue); break;
+   //case pbRequest::msg::kGetRecipientId: processGetRecipientId(toYadomsProtoBuffer.getrecipientid(), messageQueue); break;
+   //case pbRequest::msg::kReadKeyword: processReadKeyword(toYadomsProtoBuffer.readkeyword(), messageQueue); break;
+   //case pbRequest::msg::kWaitForNextAcquisition: processWaitForNextAcquisition(toYadomsProtoBuffer.waitfornextacquisition(), messageQueue); break;
+   //case pbRequest::msg::kWaitForNextAcquisitions: processWaitForNextAcquisitions(toYadomsProtoBuffer.waitfornextacquisitions(), messageQueue); break;
+   //case pbRequest::msg::kWaitForEvent: processWaitForEvent(toYadomsProtoBuffer.waitforevent(), messageQueue); break;
+   //case pbRequest::msg::kWriteKeyword: processWriteKeyword(toYadomsProtoBuffer.writekeyword(), messageQueue); break;
+   //case pbRequest::msg::kSendNotification: processSendNotification(toYadomsProtoBuffer.sendnotification(), messageQueue); break;
    default:
       throw shared::exception::CInvalidParameter("message");
    }
@@ -365,42 +391,30 @@ void CContextAccessor::processGetConfiguration(const toYadoms::ConfigurationRequ
    }
 
    void CContextAccessor::postBindingQueryRequest(boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> request)
-   {//TODO harmoniser la méthode d'envoi avec réception avec celle côté plugin
-      toPlugin::msg msg;
-      auto message = msg.mutable_bindingquery();
+   {
+      toPlugin::msg req;
+      auto message = req.mutable_bindingquery();
       message->set_query(request->getData().getQuery());
 
       bool success;
       std::string result;
 
-      shared::event::CEventHandler evtHandler;
-
+      try
       {
-         boost::lock_guard<boost::recursive_mutex> lock(m_processMessageHookMutex);
-         m_processMessageHook = [&](const toYadoms::msg& answer)-> bool
-            {
-               if (answer.OneOf_case() != toYadoms::msg::kBindingQueryAnswer)
-                  return false;
-               if (answer.bindingqueryanswer().IsInitialized())
-               {
-                  success = answer.bindingqueryanswer().success();
-                  result = answer.bindingqueryanswer().result();
-                  evtHandler.postEvent(shared::event::kUserFirstId);
-               }
-               else
-               {
-                  YADOMS_LOG(error) << "Unable to process bindingQueryAnswer message";
-               }
-               return true;
-            };
+         send(req,
+              [&](const toYadoms::msg& ans) -> bool
+              {
+                 return ans.has_bindingqueryanswer();
+              },
+              [&](const toYadoms::msg& ans) -> void
+              {
+                 success = ans.bindingqueryanswer().success();
+                 result = ans.bindingqueryanswer().result();
+              });
       }
-
-      send(msg);
-
-      if (evtHandler.waitForEvents(boost::posix_time::seconds(10)) == shared::event::kTimeout)
+      catch (std::exception& e)
       {
-         YADOMS_LOG(error) << "Plugin doesn't answer to binding query";
-         request->sendError("Plugin doesn't answer to binding query");
+         request->sendError((boost::format("Plugin doesn't answer to binding query : %1%") % e.what()).str());
       }
 
       if (success)

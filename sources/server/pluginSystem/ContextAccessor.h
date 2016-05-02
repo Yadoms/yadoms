@@ -25,7 +25,6 @@ namespace pluginSystem //TODO refactorer pour factoriser avec le CContextAccesso
    protected:
       // IContextAccessor Implementation
       std::string id() const override;
-      void send(const toPlugin::msg& pbMsg) override;
       void postStopRequest() override;
       void postPluginInformation(boost::shared_ptr<const shared::plugin::information::IInformation> information) override;
       void postBindingQueryRequest(boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> request) override;
@@ -40,6 +39,22 @@ namespace pluginSystem //TODO refactorer pour factoriser avec le CContextAccesso
       /// \brief	Message queue receive thread
       //--------------------------------------------------------------
       void messageQueueReceiveThreaded();
+
+      //--------------------------------------------------------------
+      /// \brief	Send a message to plugin
+      /// \param[in] pbMsg The message
+      //--------------------------------------------------------------
+      void send(const toPlugin::msg& pbMsg);
+
+      //--------------------------------------------------------------
+      /// \brief	Send a message to plugin and wait answer
+      /// \param[in] pbMsg The message
+      /// \param[in] checkExpectedMessageFunction Callback checking that answer is the expected one
+      /// \param[in] onReceiveFunction Callback to process the received message
+      //--------------------------------------------------------------
+      void send(const toPlugin::msg& pbMsg,
+                boost::function1<bool, const toYadoms::msg&> checkExpectedMessageFunction,
+                boost::function1<void, const toYadoms::msg&> onReceiveFunction);
 
       //--------------------------------------------------------------
       /// \brief	Process a received message
@@ -96,8 +111,8 @@ namespace pluginSystem //TODO refactorer pour factoriser avec le CContextAccesso
 
       boost::thread m_messageQueueReceiveThread;
 
-      mutable boost::recursive_mutex m_processMessageHookMutex;
-      boost::function1<bool, const toYadoms::msg&> m_processMessageHook;
+      mutable boost::recursive_mutex m_onReceiveHookMutex;
+      boost::function1<bool, const toYadoms::msg&> m_onReceiveHook;
    };
 
 } // namespace pluginSystem
