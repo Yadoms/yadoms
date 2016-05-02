@@ -4,7 +4,7 @@ include(CheckIncludeFile)
 include(CheckFunctionExists)
 
 
-set(SQLITE_DIR_NAME sqlite-amalgamation-3100000 )
+set(SQLITE_DIR_NAME sqlite-amalgamation-3120200)
 #
 # Static and shared library version of sqlite3.
 # libgpkg is not linked against this version of sqlite3, it is only used to:
