@@ -233,8 +233,24 @@ bool CApiImplementation::deviceExists(const std::string& device) const
 
 shared::CDataContainer CApiImplementation::getDeviceDetails(const std::string& device) const
 {
-   return shared::CDataContainer();
+   toYadoms::msg req;
+   auto request = req.mutable_devicedetails();
+   request->set_device(device);
+
+   shared::CDataContainer details;
+   send(req,
+        [](const toPlugin::msg& ans) -> bool
+        {
+           return ans.has_devicedetails();
+        },
+        [&](const toPlugin::msg& ans) -> void
+        {
+           details.deserialize(ans.devicedetails().details());
+        });
+
+   return details;
 }
+
 void CApiImplementation::declareDevice(const std::string& device, const std::string& model, const shared::CDataContainer& details)
 {}
 bool CApiImplementation::keywordExists(const std::string& device, const std::string& keyword) const

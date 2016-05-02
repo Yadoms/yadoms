@@ -165,6 +165,8 @@ namespace pluginSystem
          break;
       case toYadoms::msg::kDeviceExists: processDeviceExistsRequest(toYadomsProtoBuffer.deviceexists());
          break;
+      case toYadoms::msg::kDeviceDetails: processDeviceDetailsRequest(toYadomsProtoBuffer.devicedetails());
+         break;
          //TODO
          //case pbRequest::msg::kGetKeywordId: processGetKeywordId(toYadomsProtoBuffer.getkeywordid(), messageQueue); break;
          //case pbRequest::msg::kGetRecipientId: processGetRecipientId(toYadomsProtoBuffer.getrecipientid(), messageQueue); break;
@@ -214,6 +216,14 @@ namespace pluginSystem
       toPlugin::msg ans;
       auto answer = ans.mutable_deviceexists();
       answer->set_exists(m_pluginApi->deviceExists(msg.device()));
+      send(ans);
+   }
+
+   void CContextAccessor::processDeviceDetailsRequest(const toYadoms::DeviceDetailsRequest& msg)
+   {
+      toPlugin::msg ans;
+      auto answer = ans.mutable_devicedetails();
+      answer->set_details(m_pluginApi->getDeviceDetails(msg.device()).serialize());
       send(ans);
    }
 

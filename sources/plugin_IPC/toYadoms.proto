@@ -20,11 +20,16 @@ message DeviceExitsRequest {
 	required string device = 1;
 }
 
+message DeviceDetailsRequest {
+	required string device = 1;
+}
+
 message msg {
 	oneof OneOf {
 		SetPluginState pluginState = 1;
 		ConfigurationRequest configurationRequest = 2;
 		BindingQueryAnswer bindingQueryAnswer = 3;
 		DeviceExitsRequest deviceExists = 4;
+		DeviceDetailsRequest deviceDetails = 5;
 	}
 }
