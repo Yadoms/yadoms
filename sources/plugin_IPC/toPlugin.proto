@@ -26,6 +26,9 @@ message ExtraCommand {
 
 }
 
+message DeviceExitsAnswer {
+	required bool exists = 1;
+}
 
 
 message msg {
@@ -38,6 +41,7 @@ message msg {
 		BindingQuery bindingQuery = 5;
 		DeviceCommand deviceCommand = 6;
 		ExtraCommand extraCommand = 7;
+		DeviceExitsAnswer deviceExists = 8;
 	}
 }
 

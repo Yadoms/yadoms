@@ -26,7 +26,7 @@ bool CApiImplementation::stopRequested() const
    return m_stopRequested;
 }
 
-void CApiImplementation::send(const toYadoms::msg& msg)
+void CApiImplementation::send(const toYadoms::msg& msg) const
 {
    try
    {
@@ -52,7 +52,7 @@ void CApiImplementation::send(const toYadoms::msg& msg)
 
 void CApiImplementation::send(const toYadoms::msg& msg,
                               boost::function1<bool, const toPlugin::msg&> checkExpectedMessageFunction,
-                              boost::function1<void, const toPlugin::msg&> onReceiveFunction)
+                              boost::function1<void, const toPlugin::msg&> onReceiveFunction) const
 {
    shared::event::CEventHandler receivedEvtHandler;
 
@@ -210,10 +210,27 @@ void CApiImplementation::setPluginState(const shared::plugin::yPluginApi::histor
    request->set_custommessageid(customMessageId);
    send(req);
 }
+
 bool CApiImplementation::deviceExists(const std::string& device) const
 {
-   return false;
+   toYadoms::msg req;
+   auto request = req.mutable_deviceexists();
+   request->set_device(device);
+
+   auto exists = false;
+   send(req,
+        [](const toPlugin::msg& ans) -> bool
+        {
+           return ans.has_deviceexists();
+        },
+        [&](const toPlugin::msg& ans) -> void
+        {
+           exists = ans.deviceexists().exists();
+        });
+
+   return exists;
 }
+
 shared::CDataContainer CApiImplementation::getDeviceDetails(const std::string& device) const
 {
    return shared::CDataContainer();
@@ -261,7 +278,7 @@ shared::CDataContainer CApiImplementation::getConfiguration()
 
    shared::CDataContainer configuration;
    send(req,
-        [&](const toPlugin::msg& ans) -> bool
+        [](const toPlugin::msg& ans) -> bool
         {
            return ans.has_configuration();
         },

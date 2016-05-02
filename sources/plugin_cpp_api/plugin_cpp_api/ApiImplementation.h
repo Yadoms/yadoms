@@ -51,10 +51,10 @@ protected:
    /// \brief	Send a request
    /// \param[in] request Request to send
    //--------------------------------------------------------------
-   void send(const toYadoms::msg& msg);
+   void send(const toYadoms::msg& msg) const;
    void send(const toYadoms::msg& msg,
              boost::function1<bool, const toPlugin::msg&> checkExpectedMessageFunction,
-             boost::function1<void, const toPlugin::msg&> onReceiveFunction);
+             boost::function1<void, const toPlugin::msg&> onReceiveFunction) const;
 
    void processSystem(const toPlugin::System& msg);
    void processPluginInformation(const toPlugin::Information& msg);
@@ -78,7 +78,7 @@ private:
    boost::shared_ptr<boost::interprocess::message_queue> m_sendMessageQueue;
 
    mutable boost::recursive_mutex m_onReceiveHookMutex;
-   boost::function1<bool, const toPlugin::msg&> m_onReceiveHook;
+   mutable boost::function1<bool, const toPlugin::msg&> m_onReceiveHook;
 
    boost::shared_ptr<shared::plugin::information::IInformation> m_pluginInformation;
 };
