@@ -76,10 +76,22 @@ private:
    void HistorizeTeleInfoData ( std::string KeywordName, long Value );
 
    //--------------------------------------------------------------
+   /// \brief	                     Create the Device with the counter Id
+   /// \param [in] CounterId         The counter Id
+   //--------------------------------------------------------------
+   void CreateDevice ( std::string CounterId );
+
+   //--------------------------------------------------------------
    /// \brief  Keywords list
    //--------------------------------------------------------------
 
    std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > m_KeywordList;
+
+   //--------------------------------------------------------------
+   /// \brief  Details of keywords
+   //--------------------------------------------------------------
+
+   shared::CDataContainer m_details;
 
    //--------------------------------------------------------------
    /// \brief  Keywords
@@ -120,6 +132,8 @@ private:
 
 	bool TimePeriodUpdated;
 	bool ForecastPeriodUpdated;
+
+	bool m_deviceCreated;
 
 	Abonnement Optarif;
 };

@@ -17,10 +17,10 @@ CDiskUsage::CDiskUsage(const std::string & device, const std::string & driveName
 CDiskUsage::~CDiskUsage()
 {}
 
-void CDiskUsage::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context)
+void CDiskUsage::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context, shared::CDataContainer details)
 {
-   // Declare associated keywords (= values managed by this device)
-   context->declareKeyword(m_device, *m_keyword);
+   if (!context->keywordExists( m_device, m_keyword->getKeyword()))
+      context->declareKeyword(m_device, *m_keyword, details);
 }
 
 void CDiskUsage::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const

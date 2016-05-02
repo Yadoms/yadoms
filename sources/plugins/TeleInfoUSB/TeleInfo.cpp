@@ -22,12 +22,10 @@ IMPLEMENT_PLUGIN(CTeleInfo)
 
 
 CTeleInfo::CTeleInfo(): m_deviceName("TeleInfoUSB")
-{
-}
+{}
 
 CTeleInfo::~CTeleInfo()
-{
-}
+{}
 
 // Event IDs
 enum
@@ -65,13 +63,6 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 
       // the main loop
       YADOMS_LOG(debug) << "Teleinfo plugin is running...";
-
-	   if (!context->deviceExists(m_deviceName))
-	   {
-		  std::string m_URL = m_deviceName;
-
-		  context->declareDevice(m_deviceName, m_URL);
-	   }
 
       // Timer used to read periodically information
       context->getEventHandler().createTimer(kEvtTimerRefreshTeleInfoData , shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(15));

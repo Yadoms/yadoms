@@ -9,15 +9,13 @@
 namespace yApi = shared::plugin::yPluginApi;
 
 CMoon::CMoon( std::string PluginName, std::string KeyWordName )
-   :m_PluginName ( PluginName ), m_moonCharacteristics( new yApi::historization::CMoonHistorizer(KeyWordName, yApi::EKeywordAccessMode::kGetSet ) )
+   :m_PluginName ( PluginName ), m_moonCharacteristics( new yApi::historization::CMoonHistorizer(KeyWordName, yApi::EKeywordAccessMode::kGet ) )
 {}
 
 void CMoon::Initialize( boost::shared_ptr<yApi::IYPluginApi> context, shared::CDataContainer details ) const
 {
    if (!context->keywordExists( m_PluginName, m_moonCharacteristics->getKeyword()))
-	{
       context->declareKeyword(m_PluginName, *m_moonCharacteristics, details);
-	}
 }
 
 CMoon::~CMoon()

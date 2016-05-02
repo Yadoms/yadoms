@@ -35,11 +35,13 @@ void CSystemInformation::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 
       // Device declaration, if needed
       if (!context->deviceExists(m_deviceName))
-      {
          context->declareDevice(m_deviceName, "SystemInformation");
-      }
 
-      CSystemFactory Factory (context, m_deviceName, m_configuration);
+	  shared::CDataContainer details;
+	  details.set("provider", "SystemInformation");
+	  details.set("shortProvider", "si");
+
+      CSystemFactory Factory (context, m_deviceName, m_configuration, details);
 
       // Event to be sent immediately for the first value
       context->getEventHandler().createTimer(kEvtTimerRefreshCPULoad      , shared::event::CEventTimer::kOneShot , boost::posix_time::seconds(0));
@@ -74,7 +76,7 @@ void CSystemInformation::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
             {
                context->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
                onUpdateConfiguration(context, context->getEventHandler().getEventData<shared::CDataContainer>());
-               Factory.OnConfigurationUpdate (context, m_configuration );
+               Factory.OnConfigurationUpdate (context, m_configuration, details );
                context->setPluginState(yApi::historization::EPluginState::kRunning);
                break;
             }

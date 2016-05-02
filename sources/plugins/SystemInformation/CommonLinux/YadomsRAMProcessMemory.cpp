@@ -13,12 +13,10 @@ CYadomsRAMProcessMemory::CYadomsRAMProcessMemory(const std::string & device)
 CYadomsRAMProcessMemory::~CYadomsRAMProcessMemory()
 {}
 
-void CYadomsRAMProcessMemory::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context)
+void CYadomsRAMProcessMemory::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context, shared::CDataContainer details)
 {
       if (!context->keywordExists( m_device, m_keyword->getKeyword()))
-      {
-         context->declareKeyword(m_device, *m_keyword);
-      }
+         context->declareKeyword(m_device, *m_keyword, details);
 }
 
 void CYadomsRAMProcessMemory::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
