@@ -38,6 +38,12 @@ namespace pluginSystem
       virtual void postPluginInformation(boost::shared_ptr<const shared::plugin::information::IInformation> information) = 0;
 
       //--------------------------------------------------------------
+      /// \brief                 Post a configuration update to plugin instance
+      /// \param [in] newConfiguration The new configuration
+      //--------------------------------------------------------------
+      virtual void postUpdateConfiguration(const shared::CDataContainer& newConfiguration) = 0;
+
+      //--------------------------------------------------------------
       /// \brief                 Post a custom query request to a plugin
       /// \param [in] request    Request data
       //--------------------------------------------------------------

@@ -58,6 +58,7 @@ protected:
 
    void processSystem(const toPlugin::System& msg);
    void processPluginInformation(const toPlugin::Information& msg);
+   void processUpdateConfiguration(const toPlugin::Configuration& msg);
    void processBindingQuery(const toPlugin::BindingQuery& msg);
 
    void setInitialized();

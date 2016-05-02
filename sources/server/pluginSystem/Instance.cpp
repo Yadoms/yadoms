@@ -130,6 +130,7 @@ namespace pluginSystem
 
    void CInstance::updateConfiguration(const shared::CDataContainer& newConfiguration) const
    {
+      m_contextAccessor->postUpdateConfiguration(newConfiguration);
       //TODO
       //BOOST_ASSERT(m_context);
       //// Post event to the plugin

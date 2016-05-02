@@ -14,7 +14,7 @@ message BindingQuery {
 	required string query = 1;
 }
 
-message ConfigurationAnswer {
+message Configuration {
 	required string configuration = 1;
 }
 
@@ -34,7 +34,7 @@ message msg {
 	oneof OneOf {
 		System system = 2;
 		Information pluginInformation = 3;
-		ConfigurationAnswer configurationAnswer = 4;
+		Configuration configuration = 4;
 		BindingQuery bindingQuery = 5;
 		DeviceCommand deviceCommand = 6;
 		ExtraCommand extraCommand = 7;

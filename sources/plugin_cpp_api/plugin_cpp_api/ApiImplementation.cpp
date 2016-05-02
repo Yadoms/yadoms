@@ -110,6 +110,7 @@ void CApiImplementation::onReceive(boost::shared_ptr<const unsigned char[]> mess
    {
    case toPlugin::msg::kSystem: processSystem(toPluginProtoBuffer.system()); break;
    case toPlugin::msg::kPluginInformation: processPluginInformation(toPluginProtoBuffer.plugininformation()); break;
+   case toPlugin::msg::kConfiguration: processUpdateConfiguration(toPluginProtoBuffer.configuration()); break;
       //TODO ajouter toPlugin::msg::kConfiguration
    case toPlugin::msg::kBindingQuery: processBindingQuery(toPluginProtoBuffer.bindingquery()); break;
       //TODO
@@ -153,6 +154,11 @@ void CApiImplementation::processPluginInformation(const toPlugin::Information& m
    setInitialized();
 }
 
+void CApiImplementation::processUpdateConfiguration(const toPlugin::Configuration& msg)
+{
+   m_pluginEventHandler.postEvent(kEventUpdateConfiguration, shared::CDataContainer(msg.configuration()));
+}
+
 void CApiImplementation::setInitialized()
 {
    if (!!m_pluginInformation)
@@ -184,7 +190,7 @@ void CApiImplementation::processBindingQuery(const toPlugin::BindingQuery& msg)
                           send(ans);
                        });
 
-   m_pluginEventHandler.postEvent(shared::plugin::yPluginApi::IYPluginApi::kBindingQuery, query);
+   m_pluginEventHandler.postEvent(kBindingQuery, query);
 }
 
 void CApiImplementation::setPluginState(const shared::plugin::yPluginApi::historization::EPluginState& state, const std::string & customMessageId)
@@ -257,11 +263,11 @@ shared::CDataContainer CApiImplementation::getConfiguration()
    send(req,
         [&](const toPlugin::msg& ans) -> bool
         {
-           return ans.has_configurationanswer();
+           return ans.has_configuration();
         },
         [&](const toPlugin::msg& ans) -> void
         {
-           configuration.deserialize(ans.configurationanswer().configuration());
+           configuration.deserialize(ans.configuration().configuration());
         });
 
    return configuration;

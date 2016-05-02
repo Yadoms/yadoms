@@ -27,6 +27,7 @@ namespace pluginSystem //TODO refactorer pour factoriser avec le CContextAccesso
       std::string id() const override;
       void postStopRequest() override;
       void postPluginInformation(boost::shared_ptr<const shared::plugin::information::IInformation> information) override;
+      void postUpdateConfiguration(const shared::CDataContainer& newConfiguration) override;
       void postBindingQueryRequest(boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> request) override;
       // [END] IContextAccessor Implementation
 
