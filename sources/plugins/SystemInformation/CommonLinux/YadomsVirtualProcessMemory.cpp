@@ -13,12 +13,10 @@ CYadomsVirtualProcessMemory::CYadomsVirtualProcessMemory(const std::string & dev
 CYadomsVirtualProcessMemory::~CYadomsVirtualProcessMemory()
 {}
 
-void CYadomsVirtualProcessMemory::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context)
+void CYadomsVirtualProcessMemory::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context, shared::CDataContainer details)
 {
       if (!context->keywordExists( m_device, m_keyword->getKeyword()))
-      {
-         context->declareKeyword(m_device, *m_keyword);
-      }
+         context->declareKeyword(m_device, *m_keyword, details);
 }
 
 void CYadomsVirtualProcessMemory::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const

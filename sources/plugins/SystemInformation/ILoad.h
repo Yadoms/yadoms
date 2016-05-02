@@ -21,7 +21,7 @@ public:
    /// \brief	            Declare the keywords
    /// \param[in] context  yPluginApi context
    //--------------------------------------------------------------
-   virtual void declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context) = 0;
+   virtual void declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context, shared::CDataContainer details) = 0;
 
    //--------------------------------------------------------------
    /// \brief	    Read actual value
