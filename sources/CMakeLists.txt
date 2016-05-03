@@ -375,6 +375,8 @@ set(YADOMS_SRC
 	server/pluginSystem/DummyQualifier.cpp
 	server/pluginSystem/ExtraCommand.h
 	server/pluginSystem/ExtraCommand.cpp
+   server/pluginSystem/FromPluginHistorizer.h
+   server/pluginSystem/FromPluginHistorizer.cpp
 	server/pluginSystem/IdentityForQualifier.h
 	server/pluginSystem/IdentityForQualifier.cpp
    server/pluginSystem/IContextAccessor.h

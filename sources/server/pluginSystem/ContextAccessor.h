@@ -75,15 +75,11 @@ namespace pluginSystem //TODO refactorer pour factoriser avec le CContextAccesso
       void processDeviceDetailsRequest(const toYadoms::DeviceDetailsRequest& msg);
       void processKeywordExistsRequest(const toYadoms::KeywordExitsRequest& msg);
       void processDeclareDevice(const toYadoms::DeclareDevice& msg) const;
-      //TODO
-      //void processGetKeywordId(const pbRequest::GetKeywordId& request, boost::interprocess::message_queue& messageQueue);
-      //void processGetRecipientId(const pbRequest::GetRecipientId& request, boost::interprocess::message_queue& messageQueue);
-      //void processReadKeyword(const pbRequest::ReadKeyword& request, boost::interprocess::message_queue& messageQueue);
-      //void processWaitForNextAcquisition(const pbRequest::WaitForNextAcquisition& request, boost::interprocess::message_queue& messageQueue);
-      //void processWaitForNextAcquisitions(const pbRequest::WaitForNextAcquisitions& request, boost::interprocess::message_queue& messageQueue);
-      //void processWaitForEvent(const pbRequest::WaitForEvent& request, boost::interprocess::message_queue& messageQueue);
-      //void processWriteKeyword(const pbRequest::WriteKeyword& request, boost::interprocess::message_queue& messageQueue);
-      //void processSendNotification(const pbRequest::SendNotification& request, boost::interprocess::message_queue& messageQueue);
+      void processDeclareKeyword(const toYadoms::DeclareKeyword& msg) const;
+      void processRecipientValueRequest(const toYadoms::RecipientValueRequest& msg);
+      void processFindRecipientsFromFieldRequest(const toYadoms::FindRecipientsFromFieldRequest& msg);
+      void processRecipientFieldExitsRequest(const toYadoms::RecipientFieldExitsRequest& msg);
+      void processHistorizeData(const toYadoms::HistorizeData& msg) const;
 
    private:
       //--------------------------------------------------------------

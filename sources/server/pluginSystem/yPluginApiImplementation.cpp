@@ -63,13 +63,39 @@ namespace pluginSystem
       return keywordExists(device, keyword.getKeyword());
    }
 
-   void CYPluginApiImplementation::declareKeyword(const std::string& device, const shared::plugin::yPluginApi::historization::IHistorizable& keyword, const shared::CDataContainer& details)
+   void CYPluginApiImplementation::declareKeyword(const std::string& device, //TODO virer la fonction ?
+                                                  const shared::plugin::yPluginApi::historization::IHistorizable& keyword,
+                                                  const shared::CDataContainer& details)
    {
       if (keywordExists(device, keyword))
          throw shared::exception::CEmptyResult((boost::format("Fail to declare %1% keyword : keyword already exists") % keyword.getKeyword()).str());
 
       m_keywordRequester->addKeyword(m_deviceManager->getDevice(getPluginId(), device)->Id(),
                                      keyword,
+                                     details);
+   }
+
+   void CYPluginApiImplementation::declareKeyword(const std::string& device,
+                                                  const std::string& capacityName,
+                                                  const shared::plugin::yPluginApi::EKeywordAccessMode& accessMode,
+                                                  const std::string& name,
+                                                  const shared::plugin::yPluginApi::EKeywordDataType& type,
+                                                  const std::string& units,
+                                                  const shared::CDataContainer& typeInfo,
+                                                  const shared::plugin::yPluginApi::historization::EMeasureType& measure,
+                                                  const shared::CDataContainer& details)
+   {
+      if (keywordExists(device, name))
+         throw shared::exception::CEmptyResult((boost::format("Fail to declare %1% keyword : keyword already exists") % name).str());
+
+      m_keywordRequester->addKeyword(m_deviceManager->getDevice(getPluginId(), device)->Id(),
+                                     capacityName,
+                                     accessMode,
+                                     name,
+                                     type,
+                                     units,
+                                     typeInfo,
+                                     measure,
                                      details);
    }
 
@@ -107,7 +133,8 @@ namespace pluginSystem
    }
 
 
-   void CYPluginApiImplementation::historizeData(const std::string& device, const shared::plugin::yPluginApi::historization::IHistorizable& data)
+   void CYPluginApiImplementation::historizeData(const std::string& device,
+                                                 const shared::plugin::yPluginApi::historization::IHistorizable& data)
    {
       try
       {
@@ -122,7 +149,8 @@ namespace pluginSystem
       }
    }
 
-   void CYPluginApiImplementation::historizeData(const std::string& device, const std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable>>& dataVect)
+   void CYPluginApiImplementation::historizeData(const std::string& device,
+                                                 const std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> >& dataVect)
    {
       try
       {

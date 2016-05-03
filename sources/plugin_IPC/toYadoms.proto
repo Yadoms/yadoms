@@ -32,7 +32,45 @@ message KeywordExitsRequest {
 message DeclareDevice {
 	required string device = 1;
 	required string model = 2;
+	optional string details = 3;
+}
+
+message Historizable {
+	required string device = 1;
+	required string capacityName = 2;
+	required string accessMode = 3;
+	required string name = 4;
+	required string type = 5;
+	required string units = 6;
+	required string typeInfo = 7;
+	required string measure = 8;
+	optional string details = 9;
+	optional string formattedValue = 10;
+}
+
+message DeclareKeyword {
+	required string device = 1;
+	required Historizable keyword = 2;
 	required string details = 3;
+}
+
+message RecipientValueRequest {
+	required int32 recipientId = 1;
+	required string fieldName = 2;
+}
+
+message FindRecipientsFromFieldRequest {
+	required string fieldName = 1;
+	required string expectedFieldValue = 2;
+}
+
+message RecipientFieldExitsRequest {
+	required string fieldName = 1;
+}
+
+message HistorizeData {
+	required string device = 1;
+	repeated Historizable historizable = 2;
 }
 
 message msg {
@@ -44,5 +82,10 @@ message msg {
 		DeviceDetailsRequest deviceDetails = 5;
 		KeywordExitsRequest keywordExists = 6;
 		DeclareDevice declareDevice = 7;
+		DeclareKeyword declareKeyword = 8;
+		RecipientValueRequest recipientValueRequest = 9;
+		FindRecipientsFromFieldRequest findRecipientsFromFieldRequest = 10;
+		RecipientFieldExitsRequest recipientFieldExitsRequest = 11;
+		HistorizeData historizeData = 12;
 	}
 }

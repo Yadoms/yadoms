@@ -42,21 +42,40 @@ namespace pluginSystem
       virtual ~CYPluginApiImplementation();
 
       // IYPluginApi implementation
-      void setPluginState(const shared::plugin::yPluginApi::historization::EPluginState& state, const std::string & customMessageId = std::string()) override;
+      void setPluginState(const shared::plugin::yPluginApi::historization::EPluginState& state, const std::string& customMessageId = std::string()) override;
       bool deviceExists(const std::string& device) const override;
       shared::CDataContainer getDeviceDetails(const std::string& device) const override;
-      void declareDevice(const std::string& device, const std::string& model, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) override;
-      bool keywordExists(const std::string& device, const std::string& keyword) const override;
-      bool keywordExists(const std::string& device, const shared::plugin::yPluginApi::historization::IHistorizable& keyword) const override;
-      void declareKeyword(const std::string& device, const shared::plugin::yPluginApi::historization::IHistorizable& keyword, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) override;
-      std::string getRecipientValue(int recipientId, const std::string& fieldName) const override;
-      std::vector<int> findRecipientsFromField(const std::string& fieldName, const std::string& expectedFieldValue) const override;
+      void declareDevice(const std::string& device,
+                         const std::string& model,
+                         const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) override;
+      bool keywordExists(const std::string& device,
+                         const std::string& keyword) const override;
+      bool keywordExists(const std::string& device,
+                         const shared::plugin::yPluginApi::historization::IHistorizable& keyword) const override;
+      void declareKeyword(const std::string& device,
+                          const shared::plugin::yPluginApi::historization::IHistorizable& keyword,
+                          const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) override;
+      void declareKeyword(const std::string& device,
+                          const std::string& capacityName,
+                          const shared::plugin::yPluginApi::EKeywordAccessMode& accessMode,
+                          const std::string& name,
+                          const shared::plugin::yPluginApi::EKeywordDataType& type,
+                          const std::string& units,
+                          const shared::CDataContainer& typeInfo,
+                          const shared::plugin::yPluginApi::historization::EMeasureType& measure,
+                          const shared::CDataContainer& details) override;
+      std::string getRecipientValue(int recipientId,
+                                    const std::string& fieldName) const override;
+      std::vector<int> findRecipientsFromField(const std::string& fieldName,
+                                               const std::string& expectedFieldValue) const override;
       bool recipientFieldExists(const std::string& fieldName) const override;
-      void historizeData(const std::string& device, const shared::plugin::yPluginApi::historization::IHistorizable& data) override;
-      void historizeData(const std::string& device, const std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > & dataVect) override;
+      void historizeData(const std::string& device,
+                         const shared::plugin::yPluginApi::historization::IHistorizable& data) override;
+      void historizeData(const std::string& device,
+                         const std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable>>& dataVect) override;
       boost::shared_ptr<const shared::plugin::information::IInformation> getInformation() const override;
       shared::CDataContainer getConfiguration() override;
-      shared::event::CEventHandler & getEventHandler() override;
+      shared::event::CEventHandler& getEventHandler() override;
       // [END] IYPluginApi implementation 
       
       //-----------------------------------------------------

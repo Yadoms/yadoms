@@ -4,6 +4,7 @@
 #include <shared/Log.h>
 #include <shared/exception/InvalidParameter.hpp>
 #include "serializers/Information.h"
+#include "FromPluginHistorizer.h"
 
 namespace pluginSystem
 {
@@ -171,15 +172,16 @@ namespace pluginSystem
          break;
       case toYadoms::msg::kDeclareDevice: processDeclareDevice(toYadomsProtoBuffer.declaredevice());
          break;
-         //TODO
-         //case pbRequest::msg::kGetKeywordId: processGetKeywordId(toYadomsProtoBuffer.getkeywordid(), messageQueue); break;
-         //case pbRequest::msg::kGetRecipientId: processGetRecipientId(toYadomsProtoBuffer.getrecipientid(), messageQueue); break;
-         //case pbRequest::msg::kReadKeyword: processReadKeyword(toYadomsProtoBuffer.readkeyword(), messageQueue); break;
-         //case pbRequest::msg::kWaitForNextAcquisition: processWaitForNextAcquisition(toYadomsProtoBuffer.waitfornextacquisition(), messageQueue); break;
-         //case pbRequest::msg::kWaitForNextAcquisitions: processWaitForNextAcquisitions(toYadomsProtoBuffer.waitfornextacquisitions(), messageQueue); break;
-         //case pbRequest::msg::kWaitForEvent: processWaitForEvent(toYadomsProtoBuffer.waitforevent(), messageQueue); break;
-         //case pbRequest::msg::kWriteKeyword: processWriteKeyword(toYadomsProtoBuffer.writekeyword(), messageQueue); break;
-         //case pbRequest::msg::kSendNotification: processSendNotification(toYadomsProtoBuffer.sendnotification(), messageQueue); break;
+      case toYadoms::msg::kDeclareKeyword: processDeclareKeyword(toYadomsProtoBuffer.declarekeyword());
+         break;
+      case toYadoms::msg::kRecipientValueRequest: processRecipientValueRequest(toYadomsProtoBuffer.recipientvaluerequest());
+         break;
+      case toYadoms::msg::kFindRecipientsFromFieldRequest: processFindRecipientsFromFieldRequest(toYadomsProtoBuffer.findrecipientsfromfieldrequest());
+         break;
+      case toYadoms::msg::kRecipientFieldExitsRequest: processRecipientFieldExitsRequest(toYadomsProtoBuffer.recipientfieldexitsrequest());
+         break;
+      case toYadoms::msg::kHistorizeData: processHistorizeData(toYadomsProtoBuffer.historizedata());
+         break;
       default:
          throw shared::exception::CInvalidParameter("message");
       }
@@ -241,178 +243,58 @@ namespace pluginSystem
 
    void CContextAccessor::processDeclareDevice(const toYadoms::DeclareDevice& msg) const
    {
-      m_pluginApi->declareDevice(msg.device(), msg.model(), shared::CDataContainer(msg.details()));
+      m_pluginApi->declareDevice(msg.device(),
+                                 msg.model(),
+                                 msg.has_details() ? shared::CDataContainer(msg.details()) : shared::CDataContainer::EmptyContainer);
    }
 
-   //TODO
-   //void CContextAccessor::processGetKeywordId(const pbRequest::GetKeywordId& request, boost::interprocess::message_queue& messageQueue)
-   //{
-   //   pbAnswer::msg ans;
-   //   pbAnswer::GetKeywordId* answer = ans.mutable_getkeywordid();
-   //   try
-   //   {
-   //      answer->set_id(m_scriptApi->getKeywordId(request.devicename(), request.keywordname()));
-   //   }
-   //   catch (std::exception& ex)
-   //   {
-   //      ans.set_error(ex.what());
-   //   }
-   //   send(ans, messageQueue);
-   //}
-   //
-   //void CContextAccessor::processGetRecipientId(const pbRequest::GetRecipientId& request, boost::interprocess::message_queue& messageQueue)
-   //{
-   //   pbAnswer::msg ans;
-   //   pbAnswer::GetRecipientId* answer = ans.mutable_getrecipientid();
-   //   try
-   //   {
-   //      answer->set_id(m_scriptApi->getRecipientId(request.firstname(), request.lastname()));
-   //   }
-   //   catch (std::exception& ex)
-   //   {
-   //      ans.set_error(ex.what());
-   //   }
-   //   send(ans, messageQueue);
-   //}
-   //
-   //void CContextAccessor::processReadKeyword(const pbRequest::ReadKeyword& request, boost::interprocess::message_queue& messageQueue)
-   //{
-   //   pbAnswer::msg ans;
-   //   pbAnswer::ReadKeyword* answer = ans.mutable_readkeyword();
-   //   try
-   //   {
-   //      answer->set_value(m_scriptApi->readKeyword(request.keywordid()));
-   //   }
-   //   catch (std::exception& ex)
-   //   {
-   //      ans.set_error(ex.what());
-   //   }
-   //   send(ans, messageQueue);
-   //}
-   //
-   //void CContextAccessor::processWaitForNextAcquisition(const pbRequest::WaitForNextAcquisition& request, boost::interprocess::message_queue& messageQueue)
-   //{
-   //   pbAnswer::msg ans;
-   //   pbAnswer::WaitForNextAcquisition* answer = ans.mutable_waitfornextacquisition();
-   //   try
-   //   {
-   //      answer->set_acquisition(m_scriptApi->waitForNextAcquisition(request.keywordid(), request.has_timeout() ? request.timeout() : std::string()));
-   //   }
-   //   catch (std::exception& ex)
-   //   {
-   //      ans.set_error(ex.what());
-   //   }
-   //   send(ans, messageQueue);
-   //}
-   //
-   //void CContextAccessor::processWaitForNextAcquisitions(const pbRequest::WaitForNextAcquisitions& request, boost::interprocess::message_queue& messageQueue)
-   //{
-   //   pbAnswer::msg ans;
-   //   pbAnswer::WaitForNextAcquisitions* answer = ans.mutable_waitfornextacquisitions();
-   //   try
-   //   {
-   //      std::vector<int> keywordIdList;
-   //      for (google::protobuf::RepeatedField<google::protobuf::int32>::const_iterator it = request.keywordid().begin(); it != request.keywordid().end(); ++it)
-   //         keywordIdList.push_back(*it);
-   //      std::pair<int, std::string> result = m_scriptApi->waitForNextAcquisitions(keywordIdList, request.has_timeout() ? request.timeout() : std::string());
-   //      answer->set_keywordid(result.first);
-   //      if (!result.second.empty())
-   //         answer->set_acquisition(result.second);
-   //   }
-   //   catch (std::exception& ex)
-   //   {
-   //      ans.set_error(ex.what());
-   //   }
-   //   send(ans, messageQueue);
-   //}
-   //
-   //void CContextAccessor::processWaitForEvent(const pbRequest::WaitForEvent& request, boost::interprocess::message_queue& messageQueue)
-   //{
-   //   pbAnswer::msg ans;
-   //   pbAnswer::WaitForEvent* answer = ans.mutable_waitforevent();
-   //   try
-   //   {
-   //      std::vector<int> keywordIdList;
-   //      for (google::protobuf::RepeatedField<google::protobuf::int32>::const_iterator it = request.keywordid().begin(); it != request.keywordid().end(); ++it)
-   //         keywordIdList.push_back(*it);
-   //      shared::script::yScriptApi::CWaitForEventResult result = m_scriptApi->waitForEvent(keywordIdList, request.receivedatetimeevent(), request.has_timeout() ? request.timeout() : std::string());
-   //      switch (result.getType())
-   //      {
-   //      case shared::script::yScriptApi::CWaitForEventResult::kTimeout:answer->set_type(pbAnswer::WaitForEvent_EventType_kTimeout); break;
-   //      case shared::script::yScriptApi::CWaitForEventResult::kKeyword:answer->set_type(pbAnswer::WaitForEvent_EventType_kKeyword); break;
-   //      case shared::script::yScriptApi::CWaitForEventResult::kDateTime:answer->set_type(pbAnswer::WaitForEvent_EventType_kDateTime); break;
-   //      default:
-   //         throw shared::exception::CInvalidParameter("CWaitForEventResult::type");
-   //      }
-   //      answer->set_keywordid(result.getKeywordId());
-   //      if (!result.getValue().empty())
-   //         answer->set_acquisition(result.getValue());
-   //   }
-   //   catch (std::exception& ex)
-   //   {
-   //      ans.set_error(ex.what());
-   //   }
-   //   send(ans, messageQueue);
-   //}
-   //
-   //void CContextAccessor::processWriteKeyword(const pbRequest::WriteKeyword& request, boost::interprocess::message_queue& messageQueue)
-   //{
-   //   pbAnswer::msg ans;
-   //   ans.mutable_writekeyword();
-   //   try
-   //   {
-   //      m_scriptApi->writeKeyword(request.keywordid(), request.newstate());
-   //   }
-   //   catch (std::exception& ex)
-   //   {
-   //      ans.set_error(ex.what());
-   //   }
-   //   send(ans, messageQueue);
-   //}
-   //
-   //void CContextAccessor::processSendNotification(const pbRequest::SendNotification& request, boost::interprocess::message_queue& messageQueue)
-   //{
-   //   pbAnswer::msg ans;
-   //   ans.mutable_sendnotification();
-   //   try
-   //   {
-   //      m_scriptApi->sendNotification(request.keywordid(), request.recipientid(), request.message());
-   //   }
-   //   catch (std::exception& ex)
-   //   {
-   //      ans.set_error(ex.what());
-   //   }
-   //   send(ans, messageQueue);
-   //}
-   //
-   //void CContextAccessor::processGetInfo(const pbRequest::GetInfo& request, boost::interprocess::message_queue& messageQueue)
-   //{
-   //   pbAnswer::msg ans;
-   //   pbAnswer::GetInfo* answer = ans.mutable_getinfo();
-   //   try
-   //   {
-   //      shared::script::yScriptApi::IYScriptApi::EInfoKeys key;
-   //      switch (request.key())
-   //      {
-   //      case pbRequest::GetInfo_Key_kSunrise: key = shared::script::yScriptApi::IYScriptApi::kSunrise; break;
-   //      case pbRequest::GetInfo_Key_kSunset: key = shared::script::yScriptApi::IYScriptApi::kSunset; break;
-   //      case pbRequest::GetInfo_Key_kLatitude: key = shared::script::yScriptApi::IYScriptApi::kLatitude; break;
-   //      case pbRequest::GetInfo_Key_kLongitude: key = shared::script::yScriptApi::IYScriptApi::kLongitude; break;
-   //      case pbRequest::GetInfo_Key_kAltitude: key = shared::script::yScriptApi::IYScriptApi::kAltitude; break;
-   //      case pbRequest::GetInfo_Key_kYadomsServerOS: key = shared::script::yScriptApi::IYScriptApi::kYadomsServerOS; break;
-   //      case pbRequest::GetInfo_Key_kYadomsServerVersion: key = shared::script::yScriptApi::IYScriptApi::kYadomsServerVersion; break;
-   //      default:
-   //         throw shared::exception::CInvalidParameter("answer.waitforeventrequestanswer.type");
-   //      }
-   //
-   //      answer->set_value(m_scriptApi->getInfo(key));
-   //   }
-   //   catch (std::exception& ex)
-   //   {
-   //      ans.set_error(ex.what());
-   //   }
-   //   send(ans, messageQueue);
-   //}
+   void CContextAccessor::processDeclareKeyword(const toYadoms::DeclareKeyword& msg) const
+   {
+      m_pluginApi->declareKeyword(msg.device(),
+                                  msg.keyword().capacityname(),
+                                  shared::plugin::yPluginApi::EKeywordAccessMode(msg.keyword().accessmode()),
+                                  msg.keyword().name(),
+                                  shared::plugin::yPluginApi::EKeywordDataType(msg.keyword().type()),
+                                  msg.keyword().units(),
+                                  shared::CDataContainer(msg.keyword().typeinfo()),
+                                  shared::plugin::yPluginApi::historization::EMeasureType(msg.keyword().measure()),
+                                  msg.has_details() ? shared::CDataContainer(msg.details()) : shared::CDataContainer::EmptyContainer);
+   }
+
+   void CContextAccessor::processRecipientValueRequest(const toYadoms::RecipientValueRequest& msg)
+   {
+      toPlugin::msg ans;
+      auto answer = ans.mutable_recipientvalue();
+      answer->set_value(m_pluginApi->getRecipientValue(msg.recipientid(), msg.fieldname()));
+      send(ans);
+   }
+
+   void CContextAccessor::processFindRecipientsFromFieldRequest(const toYadoms::FindRecipientsFromFieldRequest& msg)
+   {
+      toPlugin::msg ans;
+      auto answer = ans.mutable_findrecipientsfromfieldanswer();
+      auto recipientIds = m_pluginApi->findRecipientsFromField(msg.fieldname(), msg.expectedfieldvalue());
+      std::copy(recipientIds.begin(), recipientIds.end(), RepeatedFieldBackInserter(answer->mutable_recipientids()));
+      send(ans);
+   }
+
+   void CContextAccessor::processRecipientFieldExitsRequest(const toYadoms::RecipientFieldExitsRequest& msg)
+   {
+      toPlugin::msg ans;
+      auto answer = ans.mutable_recipientfieldexitsanswer();
+      answer->set_exists(m_pluginApi->recipientFieldExists(msg.fieldname()));
+      send(ans);
+   }
+
+   void CContextAccessor::processHistorizeData(const toYadoms::HistorizeData& msg) const
+   {
+      std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > dataVect;
+      for (auto historizable = msg.historizable().begin(); historizable != msg.historizable().end(); ++historizable)
+      {
+         dataVect.push_back(boost::make_shared<CFromPluginHistorizer>(*historizable));
+      }
+      m_pluginApi->historizeData(msg.device(), dataVect);
+   }
 
 
    void CContextAccessor::postStopRequest()

@@ -38,6 +38,18 @@ message KeywordExitsAnswer {
 	required bool exists = 1;
 }
 
+message RecipientValueAnswer {
+	required string value = 1;
+}
+
+message FindRecipientsFromFieldAnswer {
+	repeated int32 recipientIds = 1 [packed=true];
+}
+
+message RecipientFieldExitsAnswer {
+	required bool exists = 1;
+}
+
 
 message msg {
 	optional string error = 1;
@@ -52,6 +64,9 @@ message msg {
 		DeviceExitsAnswer deviceExists = 8;
 		DeviceDetailsAnswer deviceDetails = 9;
 		KeywordExitsAnswer keywordExists = 10;
+		RecipientValueAnswer recipientValue = 11;
+		FindRecipientsFromFieldAnswer findRecipientsFromFieldAnswer = 12;
+		RecipientFieldExitsAnswer recipientFieldExitsAnswer = 13;
 	}
 }
 
