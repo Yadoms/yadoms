@@ -8,6 +8,7 @@
 #include <mutex>
 #include <queue>
 #include <string>
+#include <condition_variable>
 
 
 ////////////////////////////////////////

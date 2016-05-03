@@ -1,31 +1,30 @@
 # Make a static library to link with C++ plugins
-#TODO plugin_cpp_api à garder ? ? ?
-
 
 set(plugin_cpp_api_SOURCES
-   plugin_cpp_api/stdafx.cpp
-   plugin_cpp_api/stdafx.h
-   plugin_cpp_api/PluginMain.h
+   stdafx.cpp
+   stdafx.h
+   PluginMain.h
 
-   plugin_cpp_api/ICommandLine.h
+   ICommandLine.h
+   IPluginContext.h
+
+   ApiImplementation.h
+   ApiImplementation.cpp
+   CommandLine.h
+   CommandLine.cpp
+
+   BindingQuery.h
+   BindingQuery.cpp
+   BindingQueryData.h
+   BindingQueryData.cpp
+   PluginInformation.h
+   PluginInformation.cpp
+
+   PluginContext.h
+   PluginContext.cpp
+   
    plugin_cpp_api/ImplementationHelper.h
    plugin_cpp_api/IPlugin.h
-   plugin_cpp_api/IPluginContext.h
-
-   plugin_cpp_api/ApiImplementation.h
-   plugin_cpp_api/ApiImplementation.cpp
-   plugin_cpp_api/CommandLine.h
-   plugin_cpp_api/CommandLine.cpp
-
-   plugin_cpp_api/BindingQuery.h
-   plugin_cpp_api/BindingQuery.cpp
-   plugin_cpp_api/BindingQueryData.h
-   plugin_cpp_api/BindingQueryData.cpp
-   plugin_cpp_api/PluginInformation.h
-   plugin_cpp_api/PluginInformation.cpp
-
-   plugin_cpp_api/PluginContext.h
-   plugin_cpp_api/PluginContext.cpp
 )
 
 add_library(plugin_cpp_api STATIC ${plugin_cpp_api_SOURCES})
@@ -44,6 +43,7 @@ set(plugin_cpp_api_ALL_INCLUDE_DIRS
    ${Poco_INCLUDE_DIRS}
    ${PROTOBUF_INCLUDE_DIRS}
    ${plugin_IPC_INCLUDE_DIRS}
+   ${CMAKE_CURRENT_SOURCE_DIR}/plugin_cpp_api
    )
 
 set_property(TARGET plugin_cpp_api PROPERTY INCLUDE_DIRECTORIES ${plugin_cpp_api_ALL_INCLUDE_DIRS})
