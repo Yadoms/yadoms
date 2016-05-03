@@ -180,16 +180,6 @@ namespace shared
                                         const historization::IHistorizable& keyword,
                                         const CDataContainer& details = CDataContainer::EmptyContainer) = 0;
 
-            virtual void declareKeyword(const std::string& device,
-                                        const std::string& capacityName,
-                                        const EKeywordAccessMode& accessMode,
-                                        const std::string& name,
-                                        const EKeywordDataType& type,
-                                        const std::string& units,
-                                        const CDataContainer& typeInfo,
-                                        const historization::EMeasureType& measure,
-                                        const CDataContainer& details = CDataContainer::EmptyContainer) = 0; //TODO virer une des 2 ?
-
 
             ////----------------------------------------------------------------------------------------------------------------
             ////----------------------------------------------------------------------------------------------------------------

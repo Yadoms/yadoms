@@ -251,13 +251,7 @@ namespace pluginSystem
    void CContextAccessor::processDeclareKeyword(const toYadoms::DeclareKeyword& msg) const
    {
       m_pluginApi->declareKeyword(msg.device(),
-                                  msg.keyword().capacityname(),
-                                  shared::plugin::yPluginApi::EKeywordAccessMode(msg.keyword().accessmode()),
-                                  msg.keyword().name(),
-                                  shared::plugin::yPluginApi::EKeywordDataType(msg.keyword().type()),
-                                  msg.keyword().units(),
-                                  shared::CDataContainer(msg.keyword().typeinfo()),
-                                  shared::plugin::yPluginApi::historization::EMeasureType(msg.keyword().measure()),
+                                  CFromPluginHistorizer(msg.keyword()),
                                   msg.has_details() ? shared::CDataContainer(msg.details()) : shared::CDataContainer::EmptyContainer);
    }
 

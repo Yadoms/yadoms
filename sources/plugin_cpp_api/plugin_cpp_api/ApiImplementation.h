@@ -39,18 +39,6 @@ public:
    void declareKeyword(const std::string& device,
                        const shared::plugin::yPluginApi::historization::IHistorizable& keyword,
                        const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) override;
-   void declareKeyword(const std::string& device,
-                       const std::string& capacityName,
-                       const shared::plugin::yPluginApi::EKeywordAccessMode& accessMode,
-                       const std::string& name,
-                       const shared::plugin::yPluginApi::EKeywordDataType& type,
-                       const std::string& units,
-                       const shared::CDataContainer& typeInfo,
-                       const shared::plugin::yPluginApi::historization::EMeasureType& measure,
-                       const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) override
-   {
-   }; //TODO à virer
-
    std::string getRecipientValue(int recipientId,
                                  const std::string& fieldName) const override;
    std::vector<int> findRecipientsFromField(const std::string& fieldName,
@@ -85,6 +73,11 @@ protected:
    void processBindingQuery(const toPlugin::BindingQuery& msg);
 
    void setInitialized();
+
+   static void fillHistorizable(const shared::plugin::yPluginApi::historization::IHistorizable& in,
+                                toYadoms::Historizable* out);
+   static void fillCapacity(const shared::plugin::yPluginApi::CStandardCapacity& in,
+                            toYadoms::Capacity* out);
 
 private:
    mutable std::condition_variable m_initializationCondition;

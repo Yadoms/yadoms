@@ -32,6 +32,7 @@ namespace pluginSystem
 
    private:
       const std::string m_keyword;
+      const shared::plugin::yPluginApi::CStandardCapacity m_capacity;
       const shared::plugin::yPluginApi::EKeywordAccessMode m_accessMode;
       const shared::plugin::yPluginApi::historization::EMeasureType m_measureType;
       const shared::CDataContainer m_typeInfo;

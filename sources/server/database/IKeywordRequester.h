@@ -30,15 +30,6 @@ namespace database {
       /// \throw                    shared::exception::CEmptyResult if deviceId is unknown
       //--------------------------------------------------------------
       virtual void addKeyword(const entities::CKeyword& newKeyword) = 0;
-      virtual void addKeyword(int deviceId,
-                              const std::string& capacityName,
-                              const shared::plugin::yPluginApi::EKeywordAccessMode& accessMode,
-                              const std::string& name,
-                              const shared::plugin::yPluginApi::EKeywordDataType& type,
-                              const std::string& units,
-                              const shared::CDataContainer& typeInfo,
-                              const shared::plugin::yPluginApi::historization::EMeasureType& measure,
-                              const shared::CDataContainer& details) = 0;
 
       //--------------------------------------------------------------
       /// \brief                    Add new keyword

@@ -35,15 +35,6 @@ namespace database { namespace sqlite {
          void addKeyword(int deviceId,
                          const shared::plugin::yPluginApi::historization::IHistorizable& keyword,
                          const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) override;
-         void addKeyword(int deviceId,
-                         const std::string& capacityName,
-                         const shared::plugin::yPluginApi::EKeywordAccessMode& accessMode,
-                         const std::string& name,
-                         const shared::plugin::yPluginApi::EKeywordDataType& type,
-                         const std::string& units,
-                         const shared::CDataContainer& typeInfo,
-                         const shared::plugin::yPluginApi::historization::EMeasureType& measure,
-                         const shared::CDataContainer& details) override;
          boost::shared_ptr<entities::CKeyword> getKeyword(int deviceId,
                                                           const std::string& keyword) const override;
          boost::shared_ptr<entities::CKeyword> getKeyword(int keywordId) const override;

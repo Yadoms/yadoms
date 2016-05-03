@@ -58,14 +58,14 @@ void CApiImplementation::send(const toYadoms::msg& msg,
 
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
-      m_onReceiveHook = [&](const toPlugin::msg& receivedMsg)->bool
-      {
-         if (!checkExpectedMessageFunction(receivedMsg))
-            return false;
+      m_onReceiveHook = [&](const toPlugin::msg& receivedMsg)-> bool
+         {
+            if (!checkExpectedMessageFunction(receivedMsg))
+               return false;
 
-         receivedEvtHandler.postEvent<const toPlugin::msg>(shared::event::kUserFirstId, receivedMsg);
-         return true;
-      };
+            receivedEvtHandler.postEvent<const toPlugin::msg>(shared::event::kUserFirstId, receivedMsg);
+            return true;
+         };
    }
 
    send(msg);
@@ -76,7 +76,8 @@ void CApiImplementation::send(const toYadoms::msg& msg,
    onReceiveFunction(receivedEvtHandler.getEventData<const toPlugin::msg>());
 }
 
-void CApiImplementation::onReceive(boost::shared_ptr<const unsigned char[]> message, size_t messageSize)
+void CApiImplementation::onReceive(boost::shared_ptr<const unsigned char[]> message,
+                                   size_t messageSize)
 {
    if (messageSize < 1)
       throw std::runtime_error("CApiImplementation::onReceive : received Yadoms answer is zero length");
@@ -105,10 +106,14 @@ void CApiImplementation::onReceive(boost::shared_ptr<const unsigned char[]> mess
 
    switch (toPluginProtoBuffer.OneOf_case())
    {
-   case toPlugin::msg::kSystem: processSystem(toPluginProtoBuffer.system()); break;
-   case toPlugin::msg::kPluginInformation: processPluginInformation(toPluginProtoBuffer.plugininformation()); break;
-   case toPlugin::msg::kConfiguration: processUpdateConfiguration(toPluginProtoBuffer.configuration()); break;
-   case toPlugin::msg::kBindingQuery: processBindingQuery(toPluginProtoBuffer.bindingquery()); break;
+   case toPlugin::msg::kSystem: processSystem(toPluginProtoBuffer.system());
+      break;
+   case toPlugin::msg::kPluginInformation: processPluginInformation(toPluginProtoBuffer.plugininformation());
+      break;
+   case toPlugin::msg::kConfiguration: processUpdateConfiguration(toPluginProtoBuffer.configuration());
+      break;
+   case toPlugin::msg::kBindingQuery: processBindingQuery(toPluginProtoBuffer.bindingquery());
+      break;
    default:
       throw shared::exception::CInvalidParameter("message");
    }
@@ -118,7 +123,7 @@ void CApiImplementation::onReceive(boost::shared_ptr<const unsigned char[]> mess
 void CApiImplementation::waitInitialized() const
 {
    std::unique_lock<std::mutex> lock(m_initializationConditionMutex);
-   if(!m_initialized)
+   if (!m_initialized)
       m_initializationCondition.wait(lock);
 }
 
@@ -158,38 +163,44 @@ void CApiImplementation::setInitialized()
 void CApiImplementation::processBindingQuery(const toPlugin::BindingQuery& msg)
 {
    boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> query = boost::make_shared<CBindingQuery>(msg,
-                       getEventHandler(),
-                       [&](const shared::CDataContainer& r)
-                       {
-                           toYadoms::msg ans;
-                           auto answer = ans.mutable_bindingqueryanswer();
-                           answer->set_success(true);
-                           answer->set_result(r.serialize());
-                           send(ans);
-                       },
-                       [&](const std::string& r)
-                       {
-                          toYadoms::msg ans;
-                          auto answer = ans.mutable_bindingqueryanswer();
-                          answer->set_success(false);
-                          answer->set_result(r);
-                          send(ans);
-                       });
+                                                                                                                 getEventHandler(),
+                                                                                                                 [&](const shared::CDataContainer& r)
+                                                                                                                 {
+                                                                                                                    toYadoms::msg ans;
+                                                                                                                    auto answer = ans.mutable_bindingqueryanswer();
+                                                                                                                    answer->set_success(true);
+                                                                                                                    answer->set_result(r.serialize());
+                                                                                                                    send(ans);
+                                                                                                                 },
+                                                                                                                 [&](const std::string& r)
+                                                                                                                 {
+                                                                                                                    toYadoms::msg ans;
+                                                                                                                    auto answer = ans.mutable_bindingqueryanswer();
+                                                                                                                    answer->set_success(false);
+                                                                                                                    answer->set_result(r);
+                                                                                                                    send(ans);
+                                                                                                                 });
 
    m_pluginEventHandler.postEvent(kBindingQuery, query);
 }
 
-void CApiImplementation::setPluginState(const shared::plugin::yPluginApi::historization::EPluginState& state, const std::string & customMessageId)
+void CApiImplementation::setPluginState(const shared::plugin::yPluginApi::historization::EPluginState& state,
+                                        const std::string& customMessageId)
 {
    toYadoms::msg req;
    auto request = req.mutable_pluginstate();
-   switch(state)
+   switch (state)
    {
-   case shared::plugin::yPluginApi::historization::EPluginState::kUnknownValue:request->set_pluginstate(toYadoms::SetPluginState_EPluginState_kUnknown); break;
-   case shared::plugin::yPluginApi::historization::EPluginState::kErrorValue:request->set_pluginstate(toYadoms::SetPluginState_EPluginState_kError); break;
-   case shared::plugin::yPluginApi::historization::EPluginState::kStoppedValue:request->set_pluginstate(toYadoms::SetPluginState_EPluginState_kStopped); break;
-   case shared::plugin::yPluginApi::historization::EPluginState::kRunningValue:request->set_pluginstate(toYadoms::SetPluginState_EPluginState_kRunning); break;
-   case shared::plugin::yPluginApi::historization::EPluginState::kCustomValue:request->set_pluginstate(toYadoms::SetPluginState_EPluginState_kCustom); break;
+   case shared::plugin::yPluginApi::historization::EPluginState::kUnknownValue: request->set_pluginstate(toYadoms::SetPluginState_EPluginState_kUnknown);
+      break;
+   case shared::plugin::yPluginApi::historization::EPluginState::kErrorValue: request->set_pluginstate(toYadoms::SetPluginState_EPluginState_kError);
+      break;
+   case shared::plugin::yPluginApi::historization::EPluginState::kStoppedValue: request->set_pluginstate(toYadoms::SetPluginState_EPluginState_kStopped);
+      break;
+   case shared::plugin::yPluginApi::historization::EPluginState::kRunningValue: request->set_pluginstate(toYadoms::SetPluginState_EPluginState_kRunning);
+      break;
+   case shared::plugin::yPluginApi::historization::EPluginState::kCustomValue: request->set_pluginstate(toYadoms::SetPluginState_EPluginState_kCustom);
+      break;
    default:
       throw std::out_of_range((boost::format("CApiImplementation::setPluginState, unknown state %1%") % state).str());
    }
@@ -237,7 +248,8 @@ shared::CDataContainer CApiImplementation::getDeviceDetails(const std::string& d
    return details;
 }
 
-void CApiImplementation::declareDevice(const std::string& device, const std::string& model, const shared::CDataContainer& details)
+void CApiImplementation::declareDevice(const std::string& device,
+                                       const std::string& model, const shared::CDataContainer& details)
 {
    toYadoms::msg req;
    auto request = req.mutable_declaredevice();
@@ -248,7 +260,8 @@ void CApiImplementation::declareDevice(const std::string& device, const std::str
    send(req);
 }
 
-bool CApiImplementation::keywordExists(const std::string& device, const std::string& keyword) const
+bool CApiImplementation::keywordExists(const std::string& device,
+                                       const std::string& keyword) const
 {
    toYadoms::msg req;
    auto request = req.mutable_keywordexists();
@@ -269,30 +282,47 @@ bool CApiImplementation::keywordExists(const std::string& device, const std::str
    return exists;
 }
 
-bool CApiImplementation::keywordExists(const std::string& device, const shared::plugin::yPluginApi::historization::IHistorizable& keyword) const
+bool CApiImplementation::keywordExists(const std::string& device,
+                                       const shared::plugin::yPluginApi::historization::IHistorizable& keyword) const
 {
    return keywordExists(device, keyword.getKeyword());
 }
 
-void CApiImplementation::declareKeyword(const std::string& device, const shared::plugin::yPluginApi::historization::IHistorizable& keyword, const shared::CDataContainer& details)
+void CApiImplementation::declareKeyword(const std::string& device,
+                                        const shared::plugin::yPluginApi::historization::IHistorizable& keyword,
+                                        const shared::CDataContainer& details)
 {
    toYadoms::msg req;
    auto request = req.mutable_declarekeyword();
    request->set_device(device);
-   auto kw = request->mutable_keyword();
-   kw->set_capacityname(keyword.getCapacity().getName());
-   kw->set_accessmode(keyword.getAccessMode().toString());
-   kw->set_name(keyword.getKeyword());
-   kw->set_type(keyword.getCapacity().getType().toString());
-   kw->set_units(keyword.getCapacity().getUnit());
-   kw->set_typeinfo(keyword.getTypeInfo().serialize());
-   kw->set_measure(keyword.getMeasureType().toString());
+   fillHistorizable(keyword, request->mutable_keyword());
    if (!details.empty())
       request->set_details(details.serialize());
    send(req);
 }
 
-std::string CApiImplementation::getRecipientValue(int recipientId, const std::string& fieldName) const
+void CApiImplementation::fillHistorizable(const shared::plugin::yPluginApi::historization::IHistorizable& in,
+                                          toYadoms::Historizable* out)
+{
+   fillCapacity(in.getCapacity(), out->mutable_capacity());
+   out->set_accessmode(in.getAccessMode().toString());
+   out->set_name(in.getKeyword());
+   out->set_type(in.getCapacity().getType().toString());
+   out->set_units(in.getCapacity().getUnit());
+   out->set_typeinfo(in.getTypeInfo().serialize());
+   out->set_measure(in.getMeasureType().toString());
+}
+
+void CApiImplementation::fillCapacity(const shared::plugin::yPluginApi::CStandardCapacity& in,
+                                      toYadoms::Capacity* out)
+{
+   out->set_name(in.getName());
+   out->set_unit(in.getUnit());
+   out->set_type(in.getType().toString());
+}
+
+std::string CApiImplementation::getRecipientValue(int recipientId,
+                                                  const std::string& fieldName) const
 {
    toYadoms::msg req;
    auto request = req.mutable_recipientvaluerequest();
@@ -313,7 +343,8 @@ std::string CApiImplementation::getRecipientValue(int recipientId, const std::st
    return value;
 }
 
-std::vector<int> CApiImplementation::findRecipientsFromField(const std::string& fieldName, const std::string& expectedFieldValue) const
+std::vector<int> CApiImplementation::findRecipientsFromField(const std::string& fieldName,
+                                                             const std::string& expectedFieldValue) const
 {
    toYadoms::msg req;
    auto request = req.mutable_findrecipientsfromfieldrequest();
@@ -354,24 +385,18 @@ bool CApiImplementation::recipientFieldExists(const std::string& fieldName) cons
    return exists;
 }
 
-void CApiImplementation::historizeData(const std::string& device, const shared::plugin::yPluginApi::historization::IHistorizable& data)
+void CApiImplementation::historizeData(const std::string& device,
+                                       const shared::plugin::yPluginApi::historization::IHistorizable& data)
 {
    toYadoms::msg msg;
    auto message = msg.mutable_historizedata();
    message->set_device(device);
-   auto historizable = message->add_historizable();
-   historizable->set_device(device);
-   historizable->set_capacityname(data.getCapacity().getName());
-   historizable->set_accessmode(data.getAccessMode().toString());
-   historizable->set_name(data.getKeyword());
-   historizable->set_type(data.getCapacity().getType().toString());
-   historizable->set_units(data.getCapacity().getUnit());
-   historizable->set_typeinfo(data.getTypeInfo().serialize());
-   historizable->set_measure(data.getMeasureType().toString());
+   fillHistorizable(data, message->add_historizable());
    send(msg);
 }
 
-void CApiImplementation::historizeData(const std::string& device, const std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > & dataVect)
+void CApiImplementation::historizeData(const std::string& device,
+                                       const std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> >& dataVect)
 {
    toYadoms::msg msg;
    auto message = msg.mutable_historizedata();
@@ -380,11 +405,7 @@ void CApiImplementation::historizeData(const std::string& device, const std::vec
    {
       auto historizable = message->add_historizable();
       historizable->set_device(device);
-      historizable->set_capacityname((*data)->getCapacity().getName());
-      historizable->set_accessmode((*data)->getAccessMode().toString());
-      historizable->set_name((*data)->getKeyword());
-      historizable->set_typeinfo((*data)->getTypeInfo().serialize());
-      historizable->set_measure((*data)->getMeasureType().toString());
+      fillHistorizable(**data, historizable);
       historizable->set_formattedvalue((*data)->formatValue());
    }
    send(msg);
@@ -421,3 +442,4 @@ shared::event::CEventHandler& CApiImplementation::getEventHandler()
 {
    return m_pluginEventHandler;
 }
+

@@ -35,9 +35,15 @@ message DeclareDevice {
 	optional string details = 3;
 }
 
+message Capacity {
+	required string name = 1;
+	required string unit = 2;
+	required string type = 3;
+}
+
 message Historizable {
 	required string device = 1;
-	required string capacityName = 2;
+	required Capacity capacity = 2;
 	required string accessMode = 3;
 	required string name = 4;
 	required string type = 5;
