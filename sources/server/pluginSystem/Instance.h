@@ -45,25 +45,16 @@ namespace pluginSystem
       //--------------------------------------------------------------
       void postPluginInformation(boost::shared_ptr<const shared::plugin::information::IInformation> information) const;
 
-      //--------------------------------------------------------------
-      /// \brief			            Post a device command to the plugin
-      /// \param  information       Device command
-      //--------------------------------------------------------------
-      void postDeviceCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> deviceCommand) const;
-
-      //--------------------------------------------------------------
-      /// \brief			            Post an extra command to the plugin
-      /// \param  command           Extra command to post
-      //--------------------------------------------------------------
-      void postExtraCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> extraCommand) const;
-
       // IInstance Implementation
       void updateConfiguration(const shared::CDataContainer& newConfiguration) const override;
       void requestStop() override;
       void kill() override;
       boost::shared_ptr<const database::entities::CPlugin> about() const override;
       boost::shared_ptr<const shared::plugin::information::IInformation> aboutPlugin() const override;
-      void postBindingQueryRequest(boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> & request) const override;
+      void postDeviceCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> deviceCommand) const;
+      void postExtraCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> extraCommand) const;
+      void postBindingQueryRequest(boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> request) const override;
+      void postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request) const override;
       // [END] IInstance Implementation
 
 

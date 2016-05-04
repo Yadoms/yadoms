@@ -2,16 +2,21 @@
 #include "BindingQueryData.h"
 
 
-CBindingQueryData::CBindingQueryData(const std::string& query)
-   :m_query(query)
+namespace plugin_cpp_api
 {
-}
+   CBindingQueryData::CBindingQueryData(const std::string& query)
+      : m_query(query)
+   {
+   }
 
-CBindingQueryData::~CBindingQueryData()
-{
-}
+   CBindingQueryData::~CBindingQueryData()
+   {
+   }
 
-const std::string& CBindingQueryData::getQuery() const
-{
-   return m_query;
-}
+   const std::string& CBindingQueryData::getQuery() const
+   {
+      return m_query;
+   }
+} // namespace plugin_cpp_api	
+
+

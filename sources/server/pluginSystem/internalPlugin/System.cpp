@@ -66,7 +66,7 @@ namespace pluginSystem {
                   }
                   else
                   {
-                     YADOMS_LOG(warning) << "Received command for unknown keyword from Yadoms : " << command->toString();
+                     YADOMS_LOG(warning) << "Received command for unknown keyword from Yadoms : " << command->getKeyword();
                   }
                   break;
                }

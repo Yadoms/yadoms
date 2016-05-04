@@ -54,7 +54,8 @@ namespace shared
                kEventManuallyDeviceCreation, // Yadoms ask the plugin to create a device
                kEventExtraCommand, // Yadoms send extra command to plugin
                kBindingQuery, // Yadoms ask the plugin a binding query
-               kPluginFirstEventId // The next usable event ID for the plugin code
+
+               kPluginFirstEventId = event::kUserFirstId + 100 // The next usable event ID for the plugin code
             };
 
             //-----------------------------------------------------

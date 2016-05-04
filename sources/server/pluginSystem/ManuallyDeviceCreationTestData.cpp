@@ -26,7 +26,7 @@ const std::string& CManuallyDeviceCreationTestData::getDeviceParameters() const
 const std::string CManuallyDeviceCreationTestData::toString() const
 {
    std::stringstream str;
-   str << m_command->toString() << " = " << m_parameters;
+   str << m_command->getDevice() << "." << m_command->getKeyword() << " = " << m_command->getBody() << "(" << m_parameters << ")";
    return str.str();
 }
 

@@ -17,6 +17,14 @@ set(plugin_cpp_api_SOURCES
    BindingQuery.cpp
    BindingQueryData.h
    BindingQueryData.cpp
+   DeviceCommand.h
+   DeviceCommand.cpp
+   ExtraCommand.h
+   ExtraCommand.cpp
+   ManuallyDeviceCreation.h
+   ManuallyDeviceCreation.cpp
+   ManuallyDeviceCreationData.h
+   ManuallyDeviceCreationData.cpp
    PluginInformation.h
    PluginInformation.cpp
 

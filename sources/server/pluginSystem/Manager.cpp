@@ -539,10 +539,9 @@ namespace pluginSystem
       boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
       auto instance(getRunningInstance(id));
 
-      YADOMS_LOG(debug) << "Send command " << command->toString() << " to plugin " << instance->about()->DisplayName();
+      YADOMS_LOG(debug) << "Send command " << command->getDevice() << "." << command->getKeyword() << "=" << command->getBody() << " to plugin " << instance->about()->DisplayName();
 
-      //TODO
-      //instance->postCommand(command);
+      instance->postDeviceCommand(command);
    }
 
    void CManager::postExtraCommand(int id, boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> command)
@@ -552,20 +551,24 @@ namespace pluginSystem
 
       YADOMS_LOG(debug) << "Send extra command " << command->getCommand() << " to plugin " << instance->about()->DisplayName();
 
-      //TODO
-      //instance->postExtraCommand(command);
+      instance->postExtraCommand(command);
    }
 
    void CManager::postManuallyDeviceCreationRequest(int id, boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest>& request)
    {
-      boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+      try
+      {
+         boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+         auto instance = getRunningInstance(id);
 
-      if (!isInstanceRunning(id))
-         return; // Instance is stopped, nothing to do
+         YADOMS_LOG(debug) << "Send manually device (" << request->getData().getDeviceName() << ") creation request " << " to plugin " << instance->about()->DisplayName();
 
-      //TODO
-      //boost::shared_ptr<CInstance> instance(m_runningInstances.find(id)->second);
-      //instance->postManuallyDeviceCreationRequest(request);
+         instance->postManuallyDeviceCreationRequest(request);
+      }
+      catch (CPluginException& e)
+      {
+         request->sendError((boost::format("Error when requesting binding query %1%") % e.what()).str());
+      }
    }
 
    void CManager::postBindingQueryRequest(int id, boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest>& request)
@@ -574,6 +577,9 @@ namespace pluginSystem
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
          auto instance = getRunningInstance(id);
+
+         YADOMS_LOG(debug) << "Send binding query " << request->getData().getQuery() << " to plugin " << instance->about()->DisplayName();
+
          instance->postBindingQueryRequest(request);
       }
       catch (CPluginException& e)

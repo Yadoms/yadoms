@@ -16,7 +16,7 @@ namespace pluginSystem
       ///\param[in] keyword      The target keyword (ex "dim")
       ///\param[in] body         The details of the command (value)
       //-----------------------------------------------------
-      CDeviceCommand(const std::string& targetDevice, const std::string& keyword, const std::string & body);
+      CDeviceCommand(const std::string& targetDevice, const std::string& keyword, const std::string& body);
 
       //-----------------------------------------------------
       ///\brief               Destructor
@@ -24,19 +24,18 @@ namespace pluginSystem
       virtual ~CDeviceCommand();
 
       // IDeviceCommand implementation
-      virtual const std::string& getTargetDevice() const;
-      virtual const std::string& getKeyword() const;
-      virtual const std::string& getBody() const;
-      virtual const std::string toString() const;
-      virtual const shared::plugin::yPluginApi::historization::IHistorizable& getHistorizableObject() const;
-      virtual shared::CDataContainer getTypeInfo() const;
+      virtual const std::string& getDevice() const;
+      const std::string& getKeyword() const override;
+      const std::string& getBody() const override;
       // [END] IDeviceCommand implementation
+
+      virtual const shared::plugin::yPluginApi::historization::IHistorizable& getHistorizableObject() const;
 
    private:
       //-----------------------------------------------------
       ///\brief               Target device
       //-----------------------------------------------------
-      std::string m_targetDevice;
+      std::string m_device;
 
       //-----------------------------------------------------
       ///\brief               Target keyword
@@ -52,7 +51,7 @@ namespace pluginSystem
       ///\brief               Historizable object
       //-----------------------------------------------------
       CCommandHistorizer m_historizableObject;
-   };  
+   };
 } // namespace pluginSystem	
-	
-	
+
+

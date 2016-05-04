@@ -1,8 +1,9 @@
 #pragma once
-
-#include <plugin_IPC/plugin_IPC.h>
 #include <shared/plugin/information/IInformation.h>
 #include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
+#include <shared/plugin/yPluginApi/IDeviceCommand.h>
+#include <shared/plugin/yPluginApi/IExtraCommand.h>
+#include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
 
 
 namespace pluginSystem
@@ -10,7 +11,7 @@ namespace pluginSystem
    //--------------------------------------------------------------
    /// \brief	yScriptApi context accessor, used by script to interact with Yadoms
    //--------------------------------------------------------------
-   class IContextAccessor//TODO renommer (et son implémentation) en IPluginDialer ?
+   class IContextAccessor//TODO renommer (et son implémentation) en IPluginDialer ou IpcAdapter ?
    {
    public:
       //--------------------------------------------------------------
@@ -48,6 +49,24 @@ namespace pluginSystem
       /// \param [in] request    Request data
       //--------------------------------------------------------------
       virtual void postBindingQueryRequest(boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> request) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief                 Post a device command to a plugin
+      /// \param [in] deviceCommand The command
+      //--------------------------------------------------------------
+      virtual void postDeviceCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> deviceCommand) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief                 Post an extra command to a plugin
+      /// \param [in] extraCommand The command
+      //--------------------------------------------------------------
+      virtual void postExtraCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> extraCommand) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief                 Post a manually device creation request to a plugin
+      /// \param [in] request    Request data
+      //--------------------------------------------------------------
+      virtual void postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request) = 0;
 
    };
 } // namespace pluginSystem

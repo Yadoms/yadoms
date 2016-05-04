@@ -86,7 +86,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       {
          // A command was received from Yadoms
          auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
-         YADOMS_LOG(debug) << "Command received from Yadoms :" << command->toString();
+         YADOMS_LOG(debug) << "Command received from Yadoms :" << command->getDevice() << "." << command->getKeyword() << "=" << command->getBody();
          break;
       }
       case yApi::IYPluginApi::kEventUpdateConfiguration:
@@ -134,25 +134,25 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
       case yApi::IYPluginApi::kEventManuallyDeviceCreation:
       {
-         boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> data = api->getEventHandler().getEventData< boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> >();
+         boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> creation = api->getEventHandler().getEventData< boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> >();
          try
          {
             // Yadoms asks for device creation
-            auto sni = data->getData().getConfiguration().get<std::string>("networkInterface");
-            auto dyn = data->getData().getConfiguration().get<std::string>("dynamicSection.content.interval");
+            auto sni = creation->getData().getConfiguration().get<std::string>("networkInterface");
+            auto dyn = creation->getData().getConfiguration().get<std::string>("dynamicSection.content.interval");
 
             auto devId = (boost::format("%1%_%2%_0x%3$08X") % sni % dyn % shared::tools::CRandom::generateNbBits(26, false)).str();
-            api->declareDevice(devId, "FakeDevice_" + devId, data->getData().getConfiguration());
+            api->declareDevice(devId, "FakeDevice_" + devId, creation->getData().getConfiguration());
 
             yApi::historization::CSwitch manualSwitch("manualSwitch");
             api->declareKeyword(devId, manualSwitch);
 
-            data->sendSuccess(devId);
+            creation->sendSuccess(devId);
 
          }
          catch (std::exception &ex)
          {
-            data->sendError(ex.what());
+            creation->sendError(ex.what());
          }
          break;
       }

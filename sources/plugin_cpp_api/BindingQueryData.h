@@ -2,16 +2,21 @@
 
 #include <shared/plugin/yPluginApi/IBindingQueryData.h>
 
-class CBindingQueryData : public shared::plugin::yPluginApi::IBindingQueryData
+namespace plugin_cpp_api
 {
-public:
-   explicit CBindingQueryData(const std::string& query);
-   virtual ~CBindingQueryData();
+   class CBindingQueryData : public shared::plugin::yPluginApi::IBindingQueryData
+   {
+   public:
+      explicit CBindingQueryData(const std::string& query);
+      virtual ~CBindingQueryData();
 
-   // IBindingQueryData Implementation
-   const std::string& getQuery() const override;
-   // [END] IBindingQueryData Implementation
+      // IBindingQueryData Implementation
+      const std::string& getQuery() const override;
+      // [END] IBindingQueryData Implementation
 
-private:
-   const std::string m_query;
-};
+   private:
+      const std::string m_query;
+   };
+} // namespace plugin_cpp_api	
+
+

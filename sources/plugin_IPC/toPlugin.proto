@@ -19,11 +19,14 @@ message Configuration {
 }
 
 message DeviceCommand {
-
+	required string device = 1;
+	required string keyword = 2;
+	required string body = 3;
 }
 
 message ExtraCommand {
-
+	required string command = 1;
+	required string data = 2;
 }
 
 message DeviceExitsAnswer {
@@ -50,6 +53,11 @@ message RecipientFieldExitsAnswer {
 	required bool exists = 1;
 }
 
+message ManuallyDeviceCreation {
+	required string name = 1;
+	optional string configuration = 2;
+}
+
 
 message msg {
 	optional string error = 1;
@@ -67,6 +75,7 @@ message msg {
 		RecipientValueAnswer recipientValue = 11;
 		FindRecipientsFromFieldAnswer findRecipientsFromFieldAnswer = 12;
 		RecipientFieldExitsAnswer recipientFieldExitsAnswer = 13;
+		ManuallyDeviceCreation manuallyDeviceCreation = 14;
 	}
 }
 

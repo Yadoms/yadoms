@@ -79,6 +79,20 @@ message HistorizeData {
 	repeated Historizable historizable = 2;
 }
 
+message ManuallyDeviceCreationAnswer {
+	message Success {
+		required string NewDeviceName = 1;
+	}
+	message Error {
+		required string Message = 1;
+	}
+
+	oneof OneOf {
+		Success sucess = 1;
+		Error error = 2;
+	}
+}
+
 message msg {
 	oneof OneOf {
 		SetPluginState pluginState = 1;
@@ -93,5 +107,6 @@ message msg {
 		FindRecipientsFromFieldRequest findRecipientsFromFieldRequest = 10;
 		RecipientFieldExitsRequest recipientFieldExitsRequest = 11;
 		HistorizeData historizeData = 12;
+		ManuallyDeviceCreationAnswer manuallyDeviceCreationAnswer = 13;
 	}
 }

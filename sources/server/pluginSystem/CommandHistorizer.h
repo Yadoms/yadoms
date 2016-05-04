@@ -1,5 +1,5 @@
 #pragma once
-#include <shared/plugin/yPluginApi/IDeviceCommand.h>
+#include <shared/plugin/yPluginApi/historization/IHistorizable.h>
 
 namespace pluginSystem
 {

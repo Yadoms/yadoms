@@ -2,8 +2,9 @@
 #include "IContextAccessor.h"
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <shared/communication/MessageQueueRemover.hpp>
+#include <plugin_IPC/plugin_IPC.h>
 
-namespace pluginSystem //TODO refactorer pour factoriser avec le CContextAccessor des scripts (y'a moyen)
+namespace pluginSystem
 {
    //--------------------------------------------------------------
    /// \brief	yScriptApi context accessor, based on message queues
@@ -29,6 +30,9 @@ namespace pluginSystem //TODO refactorer pour factoriser avec le CContextAccesso
       void postPluginInformation(boost::shared_ptr<const shared::plugin::information::IInformation> information) override;
       void postUpdateConfiguration(const shared::CDataContainer& newConfiguration) override;
       void postBindingQueryRequest(boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> request) override;
+      void postDeviceCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> deviceCommand) override;
+      void postExtraCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> extraCommand) override;
+      void postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request) override;
       // [END] IContextAccessor Implementation
 
       //--------------------------------------------------------------

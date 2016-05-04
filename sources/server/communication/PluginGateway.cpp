@@ -21,11 +21,11 @@ namespace communication {
 
    void CPluginGateway::sendCommandAsync(int keywordId, const std::string& body)
    {
-      boost::shared_ptr<database::entities::CKeyword> keyword = m_dataProvider->getKeywordRequester()->getKeyword(keywordId);
-      boost::shared_ptr<database::entities::CDevice> device = m_dataProvider->getDeviceRequester()->getDevice(keyword->DeviceId);
+      auto keyword = m_dataProvider->getKeywordRequester()->getKeyword(keywordId);
+      auto device = m_dataProvider->getDeviceRequester()->getDevice(keyword->DeviceId);
 
       // Create the command
-      boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command(new pluginSystem::CDeviceCommand(device->Name, keyword->Name, body));
+      auto command(boost::make_shared<pluginSystem::CDeviceCommand>(device->Name, keyword->Name, body));
 
       // Dispatch command to the right plugin
       m_pluginManager->postCommand(device->PluginId, command);

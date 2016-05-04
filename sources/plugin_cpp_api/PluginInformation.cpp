@@ -2,72 +2,77 @@
 #include "PluginInformation.h"
 
 
-CPluginInformation::CPluginInformation(boost::shared_ptr<const toPlugin::Information> buffer)
-   : m_buffer(buffer),
-     m_path(m_buffer->path())
+namespace plugin_cpp_api
 {
-}
-
-CPluginInformation::~CPluginInformation()
-{
-}
-
-const std::string& CPluginInformation::getType() const
-{
-   return m_buffer->type();
-}
-
-const std::string& CPluginInformation::getVersion() const
-{
-   return m_buffer->version();
-}
-
-shared::versioning::EReleaseType CPluginInformation::getReleaseType() const
-{
-   switch (m_buffer->releasetype())
+   CPluginInformation::CPluginInformation(boost::shared_ptr<const toPlugin::Information> buffer)
+      : m_buffer(buffer),
+        m_path(m_buffer->path())
    {
-   case toPlugin::Information_EReleaseType_kStable: return shared::versioning::EReleaseType::kStable;
-   case toPlugin::Information_EReleaseType_kTesting: return shared::versioning::EReleaseType::kTesting;
-   default: return shared::versioning::EReleaseType::kBeta;
    }
-}
 
-const std::string& CPluginInformation::getAuthor() const
-{
-   return m_buffer->author();
-}
+   CPluginInformation::~CPluginInformation()
+   {
+   }
 
-const std::string& CPluginInformation::getUrl() const
-{
-   return m_buffer->url();
-}
+   const std::string& CPluginInformation::getType() const
+   {
+      return m_buffer->type();
+   }
 
-std::string CPluginInformation::getIdentity() const
-{
-   return m_buffer->identity();
-}
+   const std::string& CPluginInformation::getVersion() const
+   {
+      return m_buffer->version();
+   }
 
-std::string CPluginInformation::toString() const
-{
-   return m_buffer->tostring();
-}
+   shared::versioning::EReleaseType CPluginInformation::getReleaseType() const
+   {
+      switch (m_buffer->releasetype())
+      {
+      case toPlugin::Information_EReleaseType_kStable: return shared::versioning::EReleaseType::kStable;
+      case toPlugin::Information_EReleaseType_kTesting: return shared::versioning::EReleaseType::kTesting;
+      default: return shared::versioning::EReleaseType::kBeta;
+      }
+   }
 
-bool CPluginInformation::isSupportedOnThisPlatform() const
-{
-   return m_buffer->supportedonthisplatform();
-}
+   const std::string& CPluginInformation::getAuthor() const
+   {
+      return m_buffer->author();
+   }
 
-bool CPluginInformation::getSupportManuallyCreatedDevice() const
-{
-   return m_buffer->supportmanuallycreateddevice();
-}
+   const std::string& CPluginInformation::getUrl() const
+   {
+      return m_buffer->url();
+   }
 
-shared::CDataContainer CPluginInformation::getPackage() const
-{
-   return shared::CDataContainer(m_buffer->packagefilecontent());
-}
+   std::string CPluginInformation::getIdentity() const
+   {
+      return m_buffer->identity();
+   }
 
-const boost::filesystem::path& CPluginInformation::getPath() const
-{
-   return m_path;
-}
+   std::string CPluginInformation::toString() const
+   {
+      return m_buffer->tostring();
+   }
+
+   bool CPluginInformation::isSupportedOnThisPlatform() const
+   {
+      return m_buffer->supportedonthisplatform();
+   }
+
+   bool CPluginInformation::getSupportManuallyCreatedDevice() const
+   {
+      return m_buffer->supportmanuallycreateddevice();
+   }
+
+   shared::CDataContainer CPluginInformation::getPackage() const
+   {
+      return shared::CDataContainer(m_buffer->packagefilecontent());
+   }
+
+   const boost::filesystem::path& CPluginInformation::getPath() const
+   {
+      return m_path;
+   }
+} // namespace plugin_cpp_api	
+
+

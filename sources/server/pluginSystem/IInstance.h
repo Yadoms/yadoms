@@ -1,6 +1,9 @@
 #pragma once
 #include <server/database/sqlite/requesters/Plugin.h>
-#include <shared/shared/plugin/yPluginApi/IBindingQueryRequest.h>
+#include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
+#include <shared/plugin/yPluginApi/IDeviceCommand.h>
+#include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
+#include <shared/plugin/yPluginApi/IExtraCommand.h>
 
 namespace pluginSystem
 {
@@ -44,10 +47,28 @@ namespace pluginSystem
       virtual boost::shared_ptr<const shared::plugin::information::IInformation> aboutPlugin() const = 0;
 
       //--------------------------------------------------------------
+      /// \brief			            Post a device command to the plugin
+      /// \param  information       Device command
+      //--------------------------------------------------------------
+      virtual void postDeviceCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> deviceCommand) const = 0;
+
+      //--------------------------------------------------------------
       /// \brief                 Post a custom query request to a plugin
       /// \param [in] request    Request data
       //--------------------------------------------------------------
-      virtual void postBindingQueryRequest(boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> & request) const = 0;
+      virtual void postBindingQueryRequest(boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> request) const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief			            Post a device command to the plugin
+      /// \param  information       Device command
+      //--------------------------------------------------------------
+      virtual void postExtraCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> extraCommand) const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief                 Post a manually device creation request to plugin
+      /// \param [in] request    Request data
+      //--------------------------------------------------------------
+      virtual void postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request) const = 0;
    };
 	
 } // namespace pluginSystem	

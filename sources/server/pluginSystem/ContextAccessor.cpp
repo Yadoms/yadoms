@@ -348,5 +348,61 @@ namespace pluginSystem
       else
          request->sendError(result);
    }
+
+   void CContextAccessor::postDeviceCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> deviceCommand)
+   {
+      toPlugin::msg msg;
+      auto message = msg.mutable_devicecommand();
+      message->set_device(deviceCommand->getDevice());
+      message->set_keyword(deviceCommand->getKeyword());
+      message->set_body(deviceCommand->getBody());
+      send(msg);
+   }
+
+   void CContextAccessor::postExtraCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> extraCommand)
+   {
+      toPlugin::msg msg;
+      auto message = msg.mutable_extracommand();
+      message->set_command(extraCommand->getCommand());
+      message->set_data(extraCommand->getData().serialize());
+      send(msg);
+   }
+
+   void CContextAccessor::postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request)
+   {
+      toPlugin::msg req;
+      auto message = req.mutable_manuallydevicecreation();
+      message->set_name(request->getData().getDeviceName());
+      message->set_configuration(request->getData().getConfiguration().serialize());
+
+      bool success;
+      std::string result;
+
+      try
+      {
+         send(req,
+              [&](const toYadoms::msg& ans) -> bool
+              {
+                 return ans.has_manuallydevicecreationanswer();
+              },
+              [&](const toYadoms::msg& ans) -> void
+              {
+                 success = ans.manuallydevicecreationanswer().has_sucess();
+                 result = success ?
+                             ans.manuallydevicecreationanswer().sucess().newdevicename() :
+                             ans.manuallydevicecreationanswer().error().message();
+              });
+      }
+      catch (std::exception& e)
+      {
+         request->sendError((boost::format("Plugin doesn't answer to binding query : %1%") % e.what()).str());
+      }
+
+      if (success)
+         request->sendSuccess(result);
+      else
+         request->sendError(result);
+   }
+
 } // namespace pluginSystem
 
