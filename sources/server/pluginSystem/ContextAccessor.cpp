@@ -133,7 +133,11 @@ namespace pluginSystem
       send(pbMsg);
 
       if (receivedEvtHandler.waitForEvents(boost::posix_time::seconds(10)) == shared::event::kTimeout)
+      {
+         boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
+         m_onReceiveHook.clear();
          throw std::runtime_error((boost::format("No answer from Yadoms when sending message %1%") % pbMsg.OneOf_case()).str());
+      }
 
       onReceiveFunction(receivedEvtHandler.getEventData<const toYadoms::msg>());
    }

@@ -76,7 +76,11 @@ namespace plugin_cpp_api
       send(msg);
 
       if (receivedEvtHandler.waitForEvents(boost::posix_time::seconds(10)) == shared::event::kTimeout)
+      {
+         boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
+         m_onReceiveHook.clear();
          throw std::runtime_error((boost::format("No answer from Yadoms when sending message %1%") % msg.OneOf_case()).str());
+      }
 
       onReceiveFunction(receivedEvtHandler.getEventData<const toPlugin::msg>());
    }
@@ -196,12 +200,14 @@ namespace plugin_cpp_api
 
    void CApiImplementation::processDeviceCommand(const toPlugin::DeviceCommand& msg)
    {
-      m_pluginEventHandler.postEvent(kEventDeviceCommand, boost::make_shared<CDeviceCommand>(msg));
+      boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command = boost::make_shared<CDeviceCommand>(msg);
+      m_pluginEventHandler.postEvent(kEventDeviceCommand, command);
    }
 
    void CApiImplementation::processExtraCommand(const toPlugin::ExtraCommand& msg)
    {
-      m_pluginEventHandler.postEvent(kEventExtraCommand, boost::make_shared<CExtraCommand>(msg));
+      boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> command = boost::make_shared<CExtraCommand>(msg);
+      m_pluginEventHandler.postEvent(kEventExtraCommand, command);
    }
 
    void CApiImplementation::processManuallyDeviceCreation(const toPlugin::ManuallyDeviceCreation& msg)
