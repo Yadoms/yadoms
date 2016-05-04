@@ -36,22 +36,22 @@ namespace plugin_cpp_api
       try
       {
          if (!m_sendMessageQueue)
-            throw std::runtime_error("CApiImplementation::send : plugin API not ready to send message");
+            throw std::runtime_error((boost::format("CApiImplementation::send \"%1%\", plugin API not ready to send message") % msg.descriptor()->full_name()).str());
 
          if (!msg.IsInitialized())
-            throw std::overflow_error("CApiImplementation::sendRequest : request is not fully initialized");
+            throw std::runtime_error((boost::format("CApiImplementation::send \"%1%\", request is not fully initialized") % msg.descriptor()->full_name()).str());
 
          if (msg.ByteSize() > static_cast<int>(m_sendMessageQueue->get_max_msg_size()))
-            throw std::overflow_error("CApiImplementation::sendRequest : request is too big");
+            throw std::runtime_error((boost::format("CApiImplementation::send \"%1%\", request is too big") % msg.descriptor()->full_name()).str());
 
          if (!msg.SerializeToArray(m_mqBuffer.get(), m_sendMessageQueue->get_max_msg_size()))
-            throw std::overflow_error("CApiImplementation::sendRequest : fail to serialize request (too big ?)");
+            throw std::runtime_error((boost::format("CApiImplementation::send \"%1%\", fail to serialize request (too big ?)") % msg.descriptor()->full_name()).str());
 
          m_sendMessageQueue->send(m_mqBuffer.get(), msg.GetCachedSize(), 0);
       }
       catch (boost::interprocess::interprocess_exception& ex)
       {
-         throw std::overflow_error((boost::format("CApiImplementation::send : %1%") % ex.what()).str());
+         throw std::runtime_error((boost::format("CApiImplementation::send \"%1%\" : error :%2%") % msg.descriptor()->full_name() % ex.what()).str());
       }
    }
 
@@ -435,7 +435,9 @@ namespace plugin_cpp_api
       toYadoms::msg msg;
       auto message = msg.mutable_historizedata();
       message->set_device(device);
-      fillHistorizable(data, message->add_historizable());
+      auto value = message->add_value();
+      fillHistorizable(data, value->mutable_historizable());
+      value->set_formattedvalue(data.formatValue());
       send(msg);
    }
 
@@ -447,10 +449,9 @@ namespace plugin_cpp_api
       message->set_device(device);
       for (auto data = dataVect.begin(); data != dataVect.end(); ++data)
       {
-         auto historizable = message->add_historizable();
-         historizable->set_device(device);
-         fillHistorizable(**data, historizable);
-         historizable->set_formattedvalue((*data)->formatValue());
+         auto value = message->add_value();
+         fillHistorizable(**data, value->mutable_historizable());
+         value->set_formattedvalue((*data)->formatValue());
       }
       send(msg);
    }

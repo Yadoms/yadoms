@@ -13,21 +13,22 @@ namespace pluginSystem
       //-----------------------------------------------------
       ///\brief                     Constructor
       ///\param[in] historizable    Historizable data from Protobuf buffer
+      ///\param[in] formatValue     Value (for historization, not need for keyword declaration)
       //-----------------------------------------------------
-      explicit CFromPluginHistorizer(const toYadoms::Historizable& historizable);
-
+      CFromPluginHistorizer(const toYadoms::Historizable& historizable,
+                            const std::string& formatValue = std::string());
       //-----------------------------------------------------
       ///\brief                     Destructor
       //-----------------------------------------------------
       virtual ~CFromPluginHistorizer();
 
       // IHistorizable implementation
-      virtual const std::string& getKeyword() const;
-      virtual const shared::plugin::yPluginApi::CStandardCapacity& getCapacity() const;
-      virtual const shared::plugin::yPluginApi::EKeywordAccessMode& getAccessMode() const;
-      virtual std::string formatValue() const;
-      virtual const shared::plugin::yPluginApi::historization::EMeasureType& getMeasureType() const;
-      virtual shared::CDataContainer getTypeInfo() const;
+      const std::string& getKeyword() const override;
+      const shared::plugin::yPluginApi::CStandardCapacity& getCapacity() const override;
+      const shared::plugin::yPluginApi::EKeywordAccessMode& getAccessMode() const override;
+      std::string formatValue() const override;
+      const shared::plugin::yPluginApi::historization::EMeasureType& getMeasureType() const override;
+      shared::CDataContainer getTypeInfo() const override;
       // [END] IHistorizable implementation
 
    private:
@@ -38,7 +39,6 @@ namespace pluginSystem
       const shared::CDataContainer m_typeInfo;
       const std::string m_value;
    };
-
 } // namespace pluginSystem	
-	
-	
+
+

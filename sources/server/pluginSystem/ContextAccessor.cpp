@@ -283,9 +283,9 @@ namespace pluginSystem
    void CContextAccessor::processHistorizeData(const toYadoms::HistorizeData& msg) const
    {
       std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > dataVect;
-      for (auto historizable = msg.historizable().begin(); historizable != msg.historizable().end(); ++historizable)
+      for (auto value = msg.value().begin(); value != msg.value().end(); ++value)
       {
-         dataVect.push_back(boost::make_shared<CFromPluginHistorizer>(*historizable));
+         dataVect.push_back(boost::make_shared<CFromPluginHistorizer>(value->historizable(), value->formattedvalue()));
       }
       m_pluginApi->historizeData(msg.device(), dataVect);
    }

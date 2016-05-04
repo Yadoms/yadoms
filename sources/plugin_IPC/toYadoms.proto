@@ -42,22 +42,19 @@ message Capacity {
 }
 
 message Historizable {
-	required string device = 1;
-	required Capacity capacity = 2;
-	required string accessMode = 3;
-	required string name = 4;
-	required string type = 5;
-	required string units = 6;
-	required string typeInfo = 7;
-	required string measure = 8;
-	optional string details = 9;
-	optional string formattedValue = 10;
+	required Capacity capacity = 1;
+	required string accessMode = 2;
+	required string name = 3;
+	required string type = 4;
+	required string units = 5;
+	required string typeInfo = 6;
+	required string measure = 7;
 }
 
 message DeclareKeyword {
 	required string device = 1;
 	required Historizable keyword = 2;
-	required string details = 3;
+	optional string details = 3;
 }
 
 message RecipientValueRequest {
@@ -75,8 +72,13 @@ message RecipientFieldExitsRequest {
 }
 
 message HistorizeData {
+	message Value {
+		required Historizable historizable = 1;
+		required string formattedValue = 2;
+	}
+
 	required string device = 1;
-	repeated Historizable historizable = 2;
+	repeated Value value = 2;
 }
 
 message ManuallyDeviceCreationAnswer {

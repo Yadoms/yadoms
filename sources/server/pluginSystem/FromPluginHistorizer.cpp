@@ -3,7 +3,8 @@
 
 namespace pluginSystem
 {
-   CFromPluginHistorizer::CFromPluginHistorizer(const toYadoms::Historizable& historizable)
+   CFromPluginHistorizer::CFromPluginHistorizer(const toYadoms::Historizable& historizable,
+                                                const std::string& formatValue)
       : m_keyword(historizable.name()),
         m_capacity(shared::plugin::yPluginApi::CStandardCapacity(historizable.capacity().name(),
                                                                  historizable.capacity().unit(),
@@ -11,7 +12,7 @@ namespace pluginSystem
         m_accessMode(shared::plugin::yPluginApi::EKeywordAccessMode(historizable.accessmode())),
         m_measureType(shared::plugin::yPluginApi::historization::EMeasureType(historizable.measure())),
         m_typeInfo(historizable.typeinfo().empty() ? shared::CDataContainer::EmptyContainer : shared::CDataContainer(historizable.typeinfo())),
-        m_value(historizable.has_formattedvalue() ? historizable.formattedvalue() : std::string())
+        m_value(formatValue)
    {
    }
 
