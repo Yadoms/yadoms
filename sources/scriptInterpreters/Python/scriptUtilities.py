@@ -7,7 +7,6 @@ from time import strptime, mktime
 WAITFOREVENT_TIMEOUT = 0
 WAITFOREVENT_KEYWORD = 1
 WAITFOREVENT_DATETIME = 2
-WAITFOREVENT_CAPACITY = 3
 
 # Get the next weekeday
 # If d the weekday, then d is returned

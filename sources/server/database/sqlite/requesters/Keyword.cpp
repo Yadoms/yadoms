@@ -201,7 +201,7 @@ namespace database { namespace sqlite { namespace requesters {
       return adapter.getResults();
    }
 
-   std::vector<boost::shared_ptr<entities::CKeyword> > CKeyword::getKeywordsMatchingOneOfCapacities(const std::string & capacity) const
+   std::vector<boost::shared_ptr<entities::CKeyword> > CKeyword::getKeywordsMatchingCapacity(const std::string & capacity) const
    {
       adapters::CKeywordAdapter adapter;
       CQuery qSelect;

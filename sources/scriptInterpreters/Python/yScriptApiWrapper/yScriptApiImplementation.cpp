@@ -176,14 +176,12 @@ std::pair<int, std::string> CYScriptApiImplementation::waitForNextAcquisitions(c
    return std::pair<int, std::string>(answer.waitfornextacquisitions().keywordid(), answer.waitfornextacquisitions().has_acquisition() ? answer.waitfornextacquisitions().acquisition() : std::string());
 }
 
-shared::script::yScriptApi::CWaitForEventResult CYScriptApiImplementation::waitForEvent(const std::vector<int> & keywordIdList, const std::vector<std::string> & capacities, bool receiveDateTimeEvent, const std::string& timeout) const
+shared::script::yScriptApi::CWaitForEventResult CYScriptApiImplementation::waitForEvent(const std::vector<int> & keywordIdList, bool receiveDateTimeEvent, const std::string& timeout) const
 {
    pbRequest::msg req;
    pbRequest::WaitForEvent* request = req.mutable_waitforevent();
    for (std::vector<int>::const_iterator it = keywordIdList.begin(); it != keywordIdList.end(); ++it)
       request->add_keywordid(*it);
-   for (std::vector<std::string>::const_iterator itC = capacities.begin(); itC != capacities.end(); ++itC)
-      request->add_capacities(*itC);
    request->set_receivedatetimeevent(receiveDateTimeEvent);
    if (!timeout.empty())
       request->set_timeout(timeout);
@@ -204,15 +202,35 @@ shared::script::yScriptApi::CWaitForEventResult CYScriptApiImplementation::waitF
    case pbAnswer::WaitForEvent_EventType_kTimeout : result.setType(shared::script::yScriptApi::CWaitForEventResult::kTimeout); break;
    case pbAnswer::WaitForEvent_EventType_kKeyword : result.setType(shared::script::yScriptApi::CWaitForEventResult::kKeyword); break;
    case pbAnswer::WaitForEvent_EventType_kDateTime : result.setType(shared::script::yScriptApi::CWaitForEventResult::kDateTime); break;
-   case pbAnswer::WaitForEvent_EventType_kCapacity : result.setType(shared::script::yScriptApi::CWaitForEventResult::kCapacity); break;
    default:
       throw shared::exception::CInvalidParameter("answer.waitforevent.type");
    }
 
    result.setKeywordId(answer.waitforevent().keywordid());
-   result.setCapacity(answer.waitforevent().capacity());
    result.setValue(answer.waitforevent().has_acquisition() ? answer.waitforevent().acquisition() : std::string());
    return result;
+}
+
+std::vector<int> CYScriptApiImplementation::getKeywordsByCapacity(const std::string & capacity) const
+{
+   pbRequest::msg req;
+   pbRequest::GetKeywordsByCapacity * request = req.mutable_getkeywordsbycapacity();
+   request->set_capacity(capacity);
+   sendRequest(req);
+
+   pbAnswer::msg answer;
+   receiveAnswer(answer);
+
+   if (answer.has_error())
+      throw std::out_of_range(std::string("yScriptApiWrapper::getKeywordsByCapacity, error : ") + answer.error());
+
+   if (!answer.has_getkeywordsbycapacity())
+      throw std::out_of_range("yScriptApiWrapper::getKeywordsByCapacity, wrong message received");
+
+   std::vector<int> keywordIdList;
+   for (google::protobuf::RepeatedField<google::protobuf::int32>::const_iterator it = answer.getkeywordsbycapacity().keywordids().begin(); it != answer.getkeywordsbycapacity().keywordids().end(); ++it)
+      keywordIdList.push_back(*it);
+   return keywordIdList;
 }
 
 void CYScriptApiImplementation::writeKeyword(int keywordId, const std::string& newState)

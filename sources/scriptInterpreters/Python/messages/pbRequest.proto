@@ -32,9 +32,13 @@ message WaitForNextAcquisitions
 message WaitForEvent
 {
    repeated int32 keywordId = 1;
-   repeated string capacities = 2;
-   required bool receiveDateTimeEvent = 3;
+   required bool receiveDateTimeEvent = 2;
    optional string timeout = 4;
+}
+
+message GetKeywordsByCapacity
+{
+   required string capacity = 1;
 }
 
 message WriteKeyword
@@ -69,5 +73,6 @@ message msg
       WriteKeyword writeKeyword = 7;
       SendNotification sendNotification = 8;
       GetInfo getInfo = 9;
+	  GetKeywordsByCapacity getKeywordsByCapacity = 10;
    }
 }

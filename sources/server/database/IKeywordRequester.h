@@ -74,7 +74,7 @@ namespace database {
       /// \param [in]      capacity   the capacity
       /// \return          List of registered keywords
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<entities::CKeyword> > getKeywordsMatchingOneOfCapacities(const std::string & capacity) const = 0;  
+      virtual std::vector<boost::shared_ptr<entities::CKeyword> > getKeywordsMatchingCapacity(const std::string & capacity) const = 0;  
       
       //--------------------------------------------------------------
       /// \brief           List all keywords which match capacity for a device

@@ -11,7 +11,7 @@ namespace shared { namespace script { namespace yScriptApi
       //-----------------------------------------------------
       ///\brief Constructor
       //-----------------------------------------------------
-      CWaitForEventResult() :m_type(kTimeout), m_keywordId(-1), m_capacity("") {}
+      CWaitForEventResult() :m_type(kTimeout), m_keywordId(-1) {}
 
       //-----------------------------------------------------
       ///\brief Destructor
@@ -34,11 +34,7 @@ namespace shared { namespace script { namespace yScriptApi
          //--------------------------------------------------------------
          /// \brief		Wait for event returns from a date/time update
          //--------------------------------------------------------------
-         kDateTime = 2,
-         //--------------------------------------------------------------
-         /// \brief		Wait for event returns from a capacity update
-         //--------------------------------------------------------------
-         kCapacity = 3
+         kDateTime = 2
       }EResultType;
 
       //--------------------------------------------------------------
@@ -78,24 +74,6 @@ namespace shared { namespace script { namespace yScriptApi
       }
 
       //--------------------------------------------------------------
-      /// \brief		Get the result capacity (only available for type=kCapacity)
-      /// \return		The result capacity
-      //--------------------------------------------------------------
-      std::string getCapacity() const
-      {
-         return m_capacity;
-      }
-
-      //--------------------------------------------------------------
-      /// \brief		               Set the Capacity
-      /// \param [in]   keywordId	The result capacity
-      //--------------------------------------------------------------
-      void setCapacity(const std::string & capacity)
-      {
-         m_capacity = capacity;
-      }
-
-      //--------------------------------------------------------------
       /// \brief		Get the result value
       /// \return		The result value
       //--------------------------------------------------------------
@@ -125,11 +103,6 @@ namespace shared { namespace script { namespace yScriptApi
       /// \brief		Result keywordId
       //--------------------------------------------------------------
       int m_keywordId;
-
-      //--------------------------------------------------------------
-      /// \brief		Result capacity
-      //--------------------------------------------------------------
-      std::string m_capacity;
 
       //--------------------------------------------------------------
       /// \brief		Result value (maybe keywordValue, or datetime value, depending on the type)

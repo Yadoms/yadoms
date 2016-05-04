@@ -58,7 +58,7 @@ protected:
    void processWriteKeyword(const pbRequest::WriteKeyword& request, boost::interprocess::message_queue& messageQueue);
    void processSendNotification(const pbRequest::SendNotification& request, boost::interprocess::message_queue& messageQueue);
    void processGetInfo(const pbRequest::GetInfo& request, boost::interprocess::message_queue& messageQueue);
-
+   void processGetKeywordsByCapacity(const pbRequest::GetKeywordsByCapacity& request, boost::interprocess::message_queue& messageQueue);
    //--------------------------------------------------------------
    /// \brief	Send an answer
    /// \param[in] answer The answer
