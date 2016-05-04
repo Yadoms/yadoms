@@ -15,7 +15,8 @@ namespace pluginSystem
       ///\param[in] device       The command to send
       ///\param[in] parameters   The parameters of the device (JSON string)
       //-----------------------------------------------------
-      CManuallyDeviceCreationTestData(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command, const std::string& parameters);
+      CManuallyDeviceCreationTestData(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command,
+                                      const std::string& parameters);
 
       //-----------------------------------------------------
       ///\brief               Destructor
@@ -38,7 +39,7 @@ namespace pluginSystem
       ///\brief               Device parameters (JSON string)
       //-----------------------------------------------------
       const std::string m_parameters;
-   };  
+   };
 } // namespace pluginSystem	
-	
-	
+
+
