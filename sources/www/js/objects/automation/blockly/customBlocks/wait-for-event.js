@@ -228,6 +228,11 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
 		Blockly.Yadoms.ConfigureBlockForYadomsCapacitySelection(this, function (newCapacity, type) { self.onCapacityChange_(no, newCapacity, type); }, "capacityDd" + no, bValueInput, "", self.workspace)
         .appendField($.t("blockly.blocks.yadoms_wait_for_event.triggeredCapacityType.change"));
 		bValueInput.setForceNewlineInput(true);
+		
+		if (capacity) {
+            var capacityDd = this.getField("capacityDd" + no);
+            capacityDd.setValue(capacity);
+        }
         this.appendInputPart2_(no, statementConnection);
     },   
 
@@ -714,7 +719,6 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
                     //save statement
                     inputPart2 = this.getInput("additionalInput_part2_" + i);
                     clauseBlock.part2Connection_ = this.getTargetConnectionIfNotShadow_(inputPart2);
-
                     i++;
                     break;
 
@@ -755,6 +759,7 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
                 default:
                     throw 'Unknown block type.';
             }
+			
             clauseBlock = clauseBlock.nextConnection &&
                 clauseBlock.nextConnection.targetBlock();
         }
@@ -788,7 +793,7 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
     */
     getCapacityList: function () {
         //list all capacities in a list
-        var capacityArray = [];
+        var capacityArray = {};
 
         var i;
         var capacity;
@@ -797,7 +802,7 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
             if (capacity) {
                 //check if not already added to list
                 if ($.inArray(capacity, capacityArray) === -1) {
-                    capacityArray.push(capacity);
+                    capacityArray[i] = capacity;
                 }
             }
         }

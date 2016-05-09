@@ -102,24 +102,34 @@ Blockly.Yadoms.Python.getOperatorCode = function(operator) {
 
 
 Blockly.Yadoms.Python.addDateTimeFunctions_ = false;
+Blockly.Yadoms.Python.scriptUtilities_ = false;
 
 Blockly.Yadoms.Python.clearAdditionalImports = function() {
     Blockly.Yadoms.Python.addDateTimeFunctions_ = false;
+	Blockly.Yadoms.Python.scriptUtilities_ = false;
 }
 
 Blockly.Yadoms.Python.AddDateTimeFunctions = function() {
     Blockly.Yadoms.Python.addDateTimeFunctions_ = true;
+	Blockly.Yadoms.Python.AddUtilitiesFunctions();
 }
 
-Blockly.Yadoms.Python.HasDateTimeFunctions = function() {
-    return Blockly.Yadoms.Python.addDateTimeFunctions_;
+Blockly.Yadoms.Python.AddUtilitiesFunctions = function() {
+    Blockly.Yadoms.Python.scriptUtilities_ = true;
 }
+
 
 
 Blockly.Yadoms.Python.GenerateDateTimePythonCode_ = function() {
-    var additionalCode = "# datetime helpers\n";
-    additionalCode += "import scriptUtilities\n";
-    additionalCode += "from datetime import datetime, date, time, timedelta\n";
+    var additionalCode = "#Imports helpers\n";
+	
+	if(Blockly.Yadoms.Python.scriptUtilities_)
+		additionalCode += "import scriptUtilities\n";
+	
+	if(Blockly.Yadoms.Python.addDateTimeFunctions_)
+		additionalCode += "from datetime import datetime, date, time, timedelta\n";
+	else
+		additionalCode += "import time\n";
     additionalCode += "\n";
     return additionalCode;
 }
