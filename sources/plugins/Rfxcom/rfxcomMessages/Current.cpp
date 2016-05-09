@@ -12,7 +12,12 @@ namespace rfxcomMessages
 CCurrent::CCurrent(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_current1("channel_1"), m_current2("channel_2"), m_current3("channel_3"), m_batteryLevel("battery"), m_rssi("rssi")
 {
-   CheckReceivedMessage(rbuf, rbufSize, pTypeCURRENT, GET_RBUF_STRUCT_SIZE(CURRENT), DONT_CHECK_SEQUENCE_NUMBER);
+   CheckReceivedMessage(rbuf,
+                        rbufSize,
+                        pTypeCURRENT,
+                        DONT_CHECK_SUBTYPE,
+                        GET_RBUF_STRUCT_SIZE(CURRENT),
+                        DONT_CHECK_SEQUENCE_NUMBER);
 
    m_subType = rbuf.CURRENT.subtype;
 

@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Rain.h"
 #include <shared/Log.h>
-#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/InvalidParameter.hpp>
 
 // Shortcut to yPluginApi namespace
@@ -13,7 +12,12 @@ namespace rfxcomMessages
 CRain::CRain(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_batteryLevel("battery"), m_rssi("rssi")
 {
-   CheckReceivedMessage(rbuf, rbufSize, pTypeRAIN, GET_RBUF_STRUCT_SIZE(RAIN), DONT_CHECK_SEQUENCE_NUMBER);
+   CheckReceivedMessage(rbuf,
+                        rbufSize,
+                        pTypeRAIN,
+                        DONT_CHECK_SUBTYPE,
+                        GET_RBUF_STRUCT_SIZE(RAIN),
+                        DONT_CHECK_SEQUENCE_NUMBER);
 
    m_subType = rbuf.RAIN.subtype;
 
