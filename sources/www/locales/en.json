@@ -525,7 +525,14 @@
       "catFunctions": "Functions",
       "catTemplate": "Samples",
 	  "samples" : {
-	    "actionAfterSunset" : "Do something after sunset"
+		"actionAfterSunset" : {
+			"title" : "Do something after sunset",
+			"logMessage" : "Define here actions to realize after sunset"
+		},
+		"lowBatteryLevel" : {
+			"title" : "Low battery",
+			"logMessage" : "Define here actions to realize when any device battery level is low"
+		}
 	  }
     },
     "invalid": "invalid",

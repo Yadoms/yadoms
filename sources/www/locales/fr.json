@@ -527,7 +527,14 @@
             "catFunctions": "Fonctions",
             "catTemplate": "Exemples",
 		    "samples" : {
-			    "actionAfterSunset" : "Action après le coucher du soleil"
+			    "actionAfterSunset" : {
+					"title" : "Action après le coucher du soleil",
+					"logMessage" : "Définir ici les actions à effectuer après le coucher du soleil"
+				},
+			    "lowBatteryLevel" : {
+					"title" : "Niveau de batterie faible",
+					"logMessage" : "Définir ici les actions à effectuer lorsque le niveau de batterie est faible (envoi d'email, de sms,...)"
+				}
 		    }
         },
         "invalid": "Invalide",
