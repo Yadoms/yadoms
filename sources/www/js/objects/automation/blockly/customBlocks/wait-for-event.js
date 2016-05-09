@@ -530,7 +530,9 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
        var topBlock = workspace.newBlock("yadoms_wait_for_event_base");
         topBlock.initSvg();
 
-        var connection = topBlock.getInput("STACK").connection;
+        var connection = topBlock.nextConnection;
+		if(!connection)
+			connection =topBlock.getInput("STACK").connection;
 
         if (this.mutationData_.storeInVariable === true) {
 			topBlock.setFieldValue('TRUE', 'storeInVariableField');
@@ -585,13 +587,19 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
         this.mutationData_.additionalBlocks = [];
 
         // Rebuild the block's optional inputs.
-        var clauseBlock = containerBlock.getInputTargetBlock("STACK");
+        var clauseBlock = null;
+
+		if(containerBlock && containerBlock.nextConnection)
+			clauseBlock =containerBlock.nextConnection.targetBlock();
+		if(!clauseBlock)
+			clauseBlock = containerBlock.getInputTargetBlock("STACK");
+		
         var storeInVariableMoreThanOnce = false;
         var additionalBlockCount = 0;
         
 		if(containerBlock.getFieldValue('storeInVariableField') == "TRUE") {
 			this.mutationData_.storeInVariable = true;
-			this.updateStoreVariableInput_(this.mutationData_.storeInVariable, clauseBlock.storeVariableName_);
+			this.updateStoreVariableInput_(this.mutationData_.storeInVariable, (clauseBlock?clauseBlock.storeVariableName_:undefined));
 		}
 		
         while (clauseBlock) {
@@ -679,90 +687,94 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
      * @this Blockly.Block
      */
     saveConnections: function (containerBlock) {
-        var clauseBlock = containerBlock.getInputTargetBlock('STACK');
-		clauseBlock.storeVariableName_ = this.getFieldValue("outVar");
+        var clauseBlock = null;
 		
-        var i = 0;
-        while (clauseBlock) {
-            var inputPart1;
-            var inputPart2;
-            switch (clauseBlock.type.toLowerCase()) {
-                case "yadoms_wait_for_event_mutator_change":
-                    //save deviceId, KeywordId
-                    clauseBlock.part1DeviceId_ = this.getFieldValue("deviceDd" + i);
-                    clauseBlock.part1KeywordId_ = this.getFieldValue("keywordDd" + i);
-                    //save statement
-                    inputPart2 = this.getInput("additionalInput_part2_" + i);
-                    clauseBlock.part2Connection_ = this.getTargetConnectionIfNotShadow_(inputPart2);
+		if(containerBlock && containerBlock.nextConnection) {
+			clauseBlock = containerBlock.nextConnection.targetBlock();
+			clauseBlock.storeVariableName_ = this.getFieldValue("outVar");
+		
+			var i = 0;
+			while (clauseBlock) {
+				var inputPart1;
+				var inputPart2;
+				switch (clauseBlock.type.toLowerCase()) {
+					case "yadoms_wait_for_event_mutator_change":
+						//save deviceId, KeywordId
+						clauseBlock.part1DeviceId_ = this.getFieldValue("deviceDd" + i);
+						clauseBlock.part1KeywordId_ = this.getFieldValue("keywordDd" + i);
+						//save statement
+						inputPart2 = this.getInput("additionalInput_part2_" + i);
+						clauseBlock.part2Connection_ = this.getTargetConnectionIfNotShadow_(inputPart2);
 
-                    i++;
-                    break;
+						i++;
+						break;
 
-                case "yadoms_wait_for_event_mutator_become":
-                    //save deviceId, KeywordId, operator, value
-                    inputPart1 = this.getInput("additionalInput_part1_" + i);
+					case "yadoms_wait_for_event_mutator_become":
+						//save deviceId, KeywordId, operator, value
+						inputPart1 = this.getInput("additionalInput_part1_" + i);
 
-                    clauseBlock.part1DeviceId_ = this.getFieldValue("deviceDd" + i);
-                    clauseBlock.part1KeywordId_ = this.getFieldValue("keywordDd" + i);
-                    clauseBlock.part1Operator_ = this.getFieldValue("operatorDd" + i);
-                    clauseBlock.part1Connection_ = this.getTargetConnectionIfNotShadow_(inputPart1); 
+						clauseBlock.part1DeviceId_ = this.getFieldValue("deviceDd" + i);
+						clauseBlock.part1KeywordId_ = this.getFieldValue("keywordDd" + i);
+						clauseBlock.part1Operator_ = this.getFieldValue("operatorDd" + i);
+						clauseBlock.part1Connection_ = this.getTargetConnectionIfNotShadow_(inputPart1); 
 
-                    //save statement
-                    inputPart2 = this.getInput("additionalInput_part2_" + i);
-                    clauseBlock.part2Connection_ = this.getTargetConnectionIfNotShadow_(inputPart2); 
-                    i++;
-                    break;
+						//save statement
+						inputPart2 = this.getInput("additionalInput_part2_" + i);
+						clauseBlock.part2Connection_ = this.getTargetConnectionIfNotShadow_(inputPart2); 
+						i++;
+						break;
 
-                case "yadoms_wait_for_event_mutator_capacity_change":
-                    //save deviceId, KeywordId
-                    clauseBlock.part1Capacity_ = this.getFieldValue("capacityDd" + i);
-                    //save statement
-                    inputPart2 = this.getInput("additionalInput_part2_" + i);
-                    clauseBlock.part2Connection_ = this.getTargetConnectionIfNotShadow_(inputPart2);
-                    i++;
-                    break;
+					case "yadoms_wait_for_event_mutator_capacity_change":
+						//save deviceId, KeywordId
+						clauseBlock.part1Capacity_ = this.getFieldValue("capacityDd" + i);
+						//save statement
+						inputPart2 = this.getInput("additionalInput_part2_" + i);
+						clauseBlock.part2Connection_ = this.getTargetConnectionIfNotShadow_(inputPart2);
+						i++;
+						break;
 
-                case "yadoms_wait_for_event_mutator_capacity_become":
-                    //save deviceId, KeywordId, operator, value
-                    inputPart1 = this.getInput("additionalInput_part1_" + i);
+					case "yadoms_wait_for_event_mutator_capacity_become":
+						//save deviceId, KeywordId, operator, value
+						inputPart1 = this.getInput("additionalInput_part1_" + i);
 
-                    clauseBlock.part1Capacity_ = this.getFieldValue("capacityDd" + i);
-                    clauseBlock.part1Operator_ = this.getFieldValue("operatorDd" + i);
-                    clauseBlock.part1Connection_ = this.getTargetConnectionIfNotShadow_(inputPart1); 
+						clauseBlock.part1Capacity_ = this.getFieldValue("capacityDd" + i);
+						clauseBlock.part1Operator_ = this.getFieldValue("operatorDd" + i);
+						clauseBlock.part1Connection_ = this.getTargetConnectionIfNotShadow_(inputPart1); 
 
-                    //save statement
-                    inputPart2 = this.getInput("additionalInput_part2_" + i);
-                    clauseBlock.part2Connection_ = this.getTargetConnectionIfNotShadow_(inputPart2); 
-                    i++;
-                    break;
-					
-                case "yadoms_wait_for_event_mutator_datetime_change":
-                    //save statement
-                    inputPart2 = this.getInput("additionalInput_part2_" + i);
-                    clauseBlock.part2Connection_ = this.getTargetConnectionIfNotShadow_(inputPart2);
-                    i++;
-                    break;
+						//save statement
+						inputPart2 = this.getInput("additionalInput_part2_" + i);
+						clauseBlock.part2Connection_ = this.getTargetConnectionIfNotShadow_(inputPart2); 
+						i++;
+						break;
+						
+					case "yadoms_wait_for_event_mutator_datetime_change":
+						//save statement
+						inputPart2 = this.getInput("additionalInput_part2_" + i);
+						clauseBlock.part2Connection_ = this.getTargetConnectionIfNotShadow_(inputPart2);
+						i++;
+						break;
 
-                case "yadoms_wait_for_event_mutator_datetime_become":
-                    //save operator, connection
-                    inputPart1 = this.getInput("additionalInput_part1_" + i);
+					case "yadoms_wait_for_event_mutator_datetime_become":
+						//save operator, connection
+						inputPart1 = this.getInput("additionalInput_part1_" + i);
 
-                    clauseBlock.part1Operator_ = this.getFieldValue("operatorDd" + i);
-                    clauseBlock.part1Connection_ = this.getTargetConnectionIfNotShadow_(inputPart1);
+						clauseBlock.part1Operator_ = this.getFieldValue("operatorDd" + i);
+						clauseBlock.part1Connection_ = this.getTargetConnectionIfNotShadow_(inputPart1);
 
-                    //save statement
-                    inputPart2 = this.getInput("additionalInput_part2_" + i);
-                    clauseBlock.part2Connection_ = this.getTargetConnectionIfNotShadow_(inputPart2);
-                    i++;
-                    break;
+						//save statement
+						inputPart2 = this.getInput("additionalInput_part2_" + i);
+						clauseBlock.part2Connection_ = this.getTargetConnectionIfNotShadow_(inputPart2);
+						i++;
+						break;
 
-                default:
-                    throw 'Unknown block type.';
-            }
-			
-            clauseBlock = clauseBlock.nextConnection &&
-                clauseBlock.nextConnection.targetBlock();
-        }
+					default:
+						throw 'Unknown block type.';
+				}
+				
+				clauseBlock = clauseBlock.nextConnection &&
+					clauseBlock.nextConnection.targetBlock();
+			}
+		}
     },
 
     /**
@@ -826,7 +838,7 @@ Blockly.Blocks["yadoms_wait_for_event_base"] = {
 
         this.appendDummyInput()
 			.appendField($.t("blockly.blocks.yadoms_wait_for_event.mutator.base.storeInVariable"))
-			.appendField(new Blockly.FieldCheckbox('TRUE'), 'storeInVariableField');
+			.appendField(new Blockly.FieldCheckbox('FALSE'), 'storeInVariableField');
 			
         this.setTooltip($.t("blockly.blocks.yadoms_wait_for_event.mutator.base.tooltip"));
         this.contextMenu = false;
