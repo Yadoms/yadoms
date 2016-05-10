@@ -69,14 +69,11 @@ CCartelectronicTIC::~CCartelectronicTIC()
 
 void CCartelectronicTIC::declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
 {
-   // Create device and keywords if needed
-   if (!context->deviceExists(deviceName))
-   {
-      context->declareKeyword(deviceName, *m_Counter1);
+   // Create keywords if needed
+   context->declareKeyword(deviceName, *m_Counter1);
 
-	  if (m_SubscribeContract != OP_BASE)
-	     context->declareKeyword(deviceName, *m_Counter2);
-   }
+   if (m_SubscribeContract != OP_BASE)
+	 context->declareKeyword(deviceName, *m_Counter2);
 }
 
 void CCartelectronicTIC::historize(std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > KeywordList) const
@@ -87,6 +84,7 @@ void CCartelectronicTIC::historize(std::vector<boost::shared_ptr<yApi::historiza
       KeywordList.push_back ( m_Counter2 );
 }
 
+// TODO : Not working
 const std::string& CCartelectronicTIC::idFromProtocol( const RBUF& rbuf )
 {
 	unsigned long long i_id;

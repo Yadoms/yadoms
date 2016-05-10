@@ -77,6 +77,7 @@ void CCartelectronic::historizeData(boost::shared_ptr<yApi::IYPluginApi> context
    KeywordList.push_back ( m_batteryLevel );
    KeywordList.push_back ( m_rssi );
 
+   // TODO : Not working
    m_subTypeManager->historize( KeywordList );
 
    context->historizeData(m_id, KeywordList);

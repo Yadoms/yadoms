@@ -41,7 +41,7 @@ namespace rfxcomMessages
          CheckReceivedMessage(rbuf,
                               rbufSize,
                               pTypeInterfaceMessage,
-                              DONT_CHECK_SUBTYPE, 0x0D + 1,
+                              DONT_CHECK_SUBTYPE, 0x14 + 1, // TODO : 0x0D != 0x14 Pourquoi 0x14 ou lieu de Ox0D !
                               seqNumberProvider->last());
       }
 
