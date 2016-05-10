@@ -119,7 +119,7 @@ namespace plugin_cpp_api
          break;
       case toPlugin::msg::kPluginInformation: processPluginInformation(toPluginProtoBuffer.plugininformation());
          break;
-      case toPlugin::msg::kConfiguration: processUpdateConfiguration(toPluginProtoBuffer.configuration());
+      case toPlugin::msg::kUpdateConfiguration: processUpdateConfiguration(toPluginProtoBuffer.updateconfiguration());
          break;
       case toPlugin::msg::kBindingQuery: processBindingQuery(toPluginProtoBuffer.bindingquery());
          break;
@@ -479,11 +479,11 @@ namespace plugin_cpp_api
       send(req,
            [](const toPlugin::msg& ans) -> bool
            {
-              return ans.has_configuration();
+              return ans.has_configurationanswer();
            },
            [&](const toPlugin::msg& ans) -> void
            {
-              configuration.deserialize(ans.configuration().configuration());
+              configuration.deserialize(ans.configurationanswer().configuration());
            });
 
       return configuration;

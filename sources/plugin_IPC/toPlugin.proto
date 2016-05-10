@@ -65,17 +65,18 @@ message msg {
 	oneof OneOf {
 		System system = 2;
 		Information pluginInformation = 3;
-		Configuration configuration = 4; //TODO faire 2 messages distincts avec l'updateConfiguration
-		BindingQuery bindingQuery = 5;
-		DeviceCommand deviceCommand = 6;
-		ExtraCommand extraCommand = 7;
-		DeviceExitsAnswer deviceExists = 8;
-		DeviceDetailsAnswer deviceDetails = 9;
-		KeywordExitsAnswer keywordExists = 10;
-		RecipientValueAnswer recipientValue = 11;
-		FindRecipientsFromFieldAnswer findRecipientsFromFieldAnswer = 12;
-		RecipientFieldExitsAnswer recipientFieldExitsAnswer = 13;
-		ManuallyDeviceCreation manuallyDeviceCreation = 14;
+		Configuration configurationAnswer = 4;
+		Configuration updateConfiguration = 5;
+		BindingQuery bindingQuery = 6;
+		DeviceCommand deviceCommand = 7;
+		ExtraCommand extraCommand = 8;
+		DeviceExitsAnswer deviceExists = 9;
+		DeviceDetailsAnswer deviceDetails = 10;
+		KeywordExitsAnswer keywordExists = 11;
+		RecipientValueAnswer recipientValue = 12;
+		FindRecipientsFromFieldAnswer findRecipientsFromFieldAnswer = 13;
+		RecipientFieldExitsAnswer recipientFieldExitsAnswer = 14;
+		ManuallyDeviceCreation manuallyDeviceCreation = 15;
 	}
 }
 

@@ -216,7 +216,7 @@ namespace pluginSystem
    void CContextAccessor::processGetConfiguration(const toYadoms::ConfigurationRequest& msg)
    {
       toPlugin::msg ans;
-      auto answer = ans.mutable_configuration();
+      auto answer = ans.mutable_configurationanswer();
       answer->set_configuration(m_pluginApi->getConfiguration().serialize());
       send(ans);
    }
@@ -315,7 +315,7 @@ namespace pluginSystem
    void CContextAccessor::postUpdateConfiguration(const shared::CDataContainer& newConfiguration)
    {
       toPlugin::msg msg;
-      auto message = msg.mutable_configuration();
+      auto message = msg.mutable_updateconfiguration();
       message->set_configuration(newConfiguration.serialize());
       send(msg);
    }
