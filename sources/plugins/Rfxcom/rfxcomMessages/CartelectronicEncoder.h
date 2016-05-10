@@ -31,10 +31,11 @@ namespace rfxcomMessages
       virtual ~CCartelectronicEncoder();
 
       // ICartelectronicSubtype implementation
-      virtual void declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const;
-      virtual void historize(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const;
-      virtual unsigned int idFromProtocol(unsigned char id1, unsigned char id2, unsigned char sound);
-      virtual void setFromProtocolState(unsigned char cmd);
+      void declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const override;
+      void historize(std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > KeywordList) const override;
+      const std::string& idFromProtocol( const RBUF& rbuf ) override;
+      const char BatteryLevelFromProtocol( const RBUF& rbuf ) override;
+	  const char RssiFromProtocol( const RBUF& rbuf ) override;
       // [END] ICartelectronicSubtype implementation
 
    private:
@@ -47,16 +48,11 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	The keyword Counter 1
       //--------------------------------------------------------------
-      yApi::historization::CCounter m_Counter1;
+      boost::shared_ptr<yApi::historization::CCounter> m_Counter1;
 
       //--------------------------------------------------------------
       /// \brief	The keyword Counter 2
       //--------------------------------------------------------------
-      yApi::historization::CCounter m_Counter2;
-
-      //--------------------------------------------------------------
-      /// \brief	The keyword associated with rssi
-      //--------------------------------------------------------------
-      yApi::historization::CRssi m_rssi;
+      boost::shared_ptr<yApi::historization::CCounter> m_Counter2;
    };
 } // namespace rfxcomMessages

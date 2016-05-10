@@ -12,17 +12,19 @@ namespace yApi = shared::plugin::yPluginApi;
 namespace rfxcomMessages
 {
 
-CCartelectronic::CCartelectronic(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CCartelectronic::CCartelectronic(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider):
+        	m_rssi(new yApi::historization::CRssi ("rssi")), 
+	        m_batteryLevel(new yApi::historization::CBatteryLevel("battery"))
 {
    createSubType(rbuf.TIC.subtype, rbuf, rbufSize);
-   //m_id = m_subTypeManager->idFromProtocol(rbuf.CHIME.id1, rbuf.CHIME.id2, rbuf.CHIME.sound);
-   //m_subTypeManager->setFromProtocolState(rbuf.CHIME.sound);
+   m_id = m_subTypeManager->idFromProtocol( rbuf );
+   m_batteryLevel->set(NormalizeBatteryLevel(m_subTypeManager->BatteryLevelFromProtocol(rbuf)));
+   m_rssi->set(NormalizeRssiLevel(m_subTypeManager->RssiFromProtocol(rbuf)));
    declare(context);
 }
 
 CCartelectronic::~CCartelectronic()
-{
-}
+{}
 
 void CCartelectronic::createSubType( unsigned char subType, const RBUF& rbuf, size_t rbufSize )
 {
@@ -42,19 +44,19 @@ void CCartelectronic::declare(boost::shared_ptr<yApi::IYPluginApi> context)
    if (!m_subTypeManager)
       throw shared::exception::CException("m_subTypeManager must be initialized");
 
-   // Build device description
-   buildDeviceName();
-
    // Create device and keywords if needed
-   if (!context->deviceExists(m_deviceName))
+   if (!context->deviceExists(m_id))
    {
       shared::CDataContainer details;
       details.set("type", pTypeCARTELECTRONIC);
       details.set("subType", m_subType);
       details.set("id", m_id);
-      context->declareDevice(m_deviceName, getModel(), details);
 
-      m_subTypeManager->declare(context, m_deviceName);
+      context->declareDevice(m_id, getModel(), details);
+
+      m_subTypeManager->declare(context, m_id);
+	  context->declareKeyword(m_id, *m_batteryLevel);
+	  context->declareKeyword(m_id, *m_rssi);
    }
 }
 
@@ -70,20 +72,19 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CCartelectron
 
 void CCartelectronic::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
-   m_subTypeManager->historize(context, m_deviceName);
+   std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > KeywordList;
+
+   KeywordList.push_back ( m_batteryLevel );
+   KeywordList.push_back ( m_rssi );
+
+   m_subTypeManager->historize( KeywordList );
+
+   context->historizeData(m_id, KeywordList);
 }
 
 const std::string& CCartelectronic::getDeviceName() const
 {
-   return m_deviceName;
-}                     
-
-void CCartelectronic::buildDeviceName()
-{
-   std::ostringstream ssdeviceName;
-   //TODO : JMB -> A modifier
-   ssdeviceName << static_cast<unsigned int>(m_subType) << "." << static_cast<unsigned int>(m_id);
-   m_deviceName = ssdeviceName.str();
+   return m_id;
 }
 
 } // namespace rfxcomMessages

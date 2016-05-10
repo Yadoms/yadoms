@@ -49,7 +49,7 @@
              "HomeEasy EU" : { "type" : "bool", "defaultValue" : "true" },
              "Meiantech" : { "type" : "bool", "defaultValue" : "false" },
              "Oregon Scientific" : { "type" : "bool", "defaultValue" : "true" },
-             "ATI" : { "type" : "bool", "defaultValue" : "false" },
+             "ATI/Cartelectronic" : { "type" : "bool", "defaultValue" : "false" },
              "Visonic" : { "type" : "bool", "defaultValue" : "false" },
              "KeeLoq" : { "type" : "bool", "defaultValue" : "false" },
              "HomeConfort" : { "type" : "bool", "defaultValue" : "false" }

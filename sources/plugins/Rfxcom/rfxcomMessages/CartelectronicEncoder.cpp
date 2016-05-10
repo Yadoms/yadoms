@@ -6,27 +6,17 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-//TODO : Voir pour l'intégration de l'encoder dans la même classe
-
 namespace rfxcomMessages
 {
 
 CCartelectronicEncoder::CCartelectronicEncoder( const RBUF& rbuf, size_t rbufSize )
-   :m_Counter1("counter1"), m_Counter2("counter2"), m_rssi("rssi")
+   :m_Counter1(new yApi::historization::CCounter ("counter1")), 
+    m_Counter2(new yApi::historization::CCounter ("counter2"))
 {
-   m_Counter1.set(0);
-   m_Counter2.set(0);
-
    CheckReceivedMessage(rbuf, rbufSize, pTypeCARTELECTRONIC, sTypeCEencoder, GET_RBUF_STRUCT_SIZE(CEENCODER), DONT_CHECK_SEQUENCE_NUMBER);
 
-   //Mettre en place ici
-
-   /*m_subType = rbuf.TIC.subtype;
-   m_id = (rbuf.TIC.id1 << 16) | (rbuf.TIC.id2 << 8) | rbuf.TIC.id3;
-   m_houseCode = rbuf.TIC.housecode;
-   m_unitCode = rbuf.TIC.unitcode;
-   m_state.set(fromProtocolState(rbuf.TIC.cmnd));*/
-   m_rssi.set(NormalizeRssiLevel(rbuf.CEENCODER.rssi));
+   m_Counter1->set( (rbuf.CEENCODER.counter1_3<<24) + (rbuf.CEENCODER.counter1_2<<16) + (rbuf.CEENCODER.counter1_1<<8) + (rbuf.CEENCODER.counter1_0) );
+   m_Counter2->set( (rbuf.CEENCODER.counter2_3<<24) + (rbuf.CEENCODER.counter2_2<<16) + (rbuf.CEENCODER.counter2_1<<8) + (rbuf.CEENCODER.counter2_0) );
 }
 
 CCartelectronicEncoder::~CCartelectronicEncoder()
@@ -37,47 +27,36 @@ void CCartelectronicEncoder::declare(boost::shared_ptr<yApi::IYPluginApi> contex
    // Create device and keywords if needed
    if (!context->deviceExists(deviceName))
    {
-      shared::CDataContainer details;
-      //details.set("type", pTypeHomeConfort);
-      //details.set("subType", m_subType);
-      //details.set("id", m_id);
-
-      //context->declareDevice(deviceName, m_deviceModel, details);
-
-      context->declareKeyword(deviceName, m_Counter1);
-	  context->declareKeyword(deviceName, m_Counter2);
-	  context->declareKeyword(deviceName, m_rssi);
+      context->declareKeyword(deviceName, *m_Counter1);
+	  context->declareKeyword(deviceName, *m_Counter2);
    }
 }
 
-void CCartelectronicEncoder::historize(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
+void CCartelectronicEncoder::historize(std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > KeywordList) const
 {
-   context->historizeData(deviceName, m_Counter1);
-   context->historizeData(deviceName, m_Counter2);
-   context->historizeData(deviceName, m_rssi);
+   KeywordList.push_back ( m_Counter1 );
+   KeywordList.push_back ( m_Counter2 );
 }
 
-unsigned int CCartelectronicEncoder::idFromProtocol(unsigned char id1, unsigned char id2, unsigned char sound)
+const std::string& CCartelectronicEncoder::idFromProtocol( const RBUF& rbuf )
 {
-	return 0;
+	unsigned long i_id;
+	std::stringstream s_id;
+
+	i_id = (unsigned long long)(rbuf.CEENCODER.id1 << 24) + (rbuf.TIC.id2 << 16) + (rbuf.TIC.id3 << 8) + rbuf.TIC.id4;
+	s_id << static_cast<unsigned long>(i_id);
+
+	return s_id.str();
 }
 
-void CCartelectronicEncoder::setFromProtocolState(unsigned char cmd)
+const char CCartelectronicEncoder::BatteryLevelFromProtocol( const RBUF& rbuf )
 {
-/*
-   switch(protocolState)
-   {
-   case HomeConfort_sOn:
-   case HomeConfort_sGroupOn:
-      return true;
+	return rbuf.CEENCODER.battery_level;
+}
 
-   case HomeConfort_sOff: 
-   case HomeConfort_sGroupOff:
-      return false;
-
-   default:
-      throw shared::exception::CInvalidParameter("state, " + boost::lexical_cast<std::string>(protocolState));
-   }*/
+const char CCartelectronicEncoder::RssiFromProtocol( const RBUF& rbuf )
+{
+	return rbuf.CEENCODER.rssi;
 }
 
 } // namespace rfxcomMessages

@@ -47,11 +47,6 @@ namespace rfxcomMessages
       void createSubType( unsigned char subType, const RBUF& rbuf, size_t rbufSize );
 
       //--------------------------------------------------------------
-      /// \brief	                        Build the device name
-      //--------------------------------------------------------------
-      void buildDeviceName();
-
-      //--------------------------------------------------------------
       /// \brief	Declare the device
       /// \param[in] context              Yadoms APi context
       //--------------------------------------------------------------
@@ -72,16 +67,21 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	The device id
       //--------------------------------------------------------------
-      unsigned int m_id;
-
-      //--------------------------------------------------------------
-      /// \brief	The device name
-      //--------------------------------------------------------------
-      std::string m_deviceName;
+      std::string m_id;
 
       //--------------------------------------------------------------
       /// \brief	The sub-type management
       //--------------------------------------------------------------
       boost::shared_ptr<ICartelectronicSubtype> m_subTypeManager;
+
+      //--------------------------------------------------------------
+      /// \brief	The keyword associated with rssi
+      //--------------------------------------------------------------
+      boost::shared_ptr<yApi::historization::CRssi> m_rssi;
+
+      //--------------------------------------------------------------
+      /// \brief	The battery level (percent)
+      //--------------------------------------------------------------
+      boost::shared_ptr<yApi::historization::CBatteryLevel> m_batteryLevel;
    };
 } // namespace rfxcomMessages

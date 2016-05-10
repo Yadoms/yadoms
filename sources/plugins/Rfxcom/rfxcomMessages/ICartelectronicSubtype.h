@@ -28,23 +28,28 @@ namespace rfxcomMessages
       virtual void declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const = 0;
 
       //--------------------------------------------------------------
-      /// \brief	                        Historize data
-      /// \param[in] context              Yadoms APi context
-      /// \param[in] command              The device name associated to keyword
+      /// \brief	                        Enter a keyword in a list to historize
+      /// \param[in] KeywordList          The keywordList
       //--------------------------------------------------------------
-      virtual void historize(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const = 0;
+      virtual void historize(std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > KeywordList) const = 0;
 
       //--------------------------------------------------------------
       /// \brief	                        Get ID from protocol data
-      /// \param[in] id1                  ID1 unsigned long
+      /// \param[in] buf                  buffer of the message
       //--------------------------------------------------------------
-      virtual unsigned int idFromProtocol(unsigned char id1, unsigned char id2, unsigned char sound) = 0;
+      virtual const std::string& idFromProtocol( const RBUF& rbuf ) = 0;
 
       //--------------------------------------------------------------
-      /// \brief	                        Set keyword state from protocol data
-      /// \param[in] cmd                  Command
+      /// \brief	                        Get battery Level from protocol data
+      /// \param[in] buf                  buffer of the message
       //--------------------------------------------------------------
-      virtual void setFromProtocolState(unsigned char cmd) = 0;
+      virtual const char BatteryLevelFromProtocol( const RBUF& rbuf ) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief	                        Get rssi from protocol data
+      /// \param[in] buf                  buffer of the message
+      //--------------------------------------------------------------
+      virtual const char RssiFromProtocol( const RBUF& rbuf ) = 0;
    };
 
 } // namespace rfxcomMessages
