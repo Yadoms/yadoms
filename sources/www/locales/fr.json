@@ -583,6 +583,7 @@
             "yadoms_wait_for_event": {
                 "titleLine1": "Attendre un évènement",
                 "titleLine2": "Stocker sa valeur dans",
+                "titleLine3": "Stocker le nom de l'équipement dans",
                 "case": "Lorsque",
                 "caseCapacity": "Lorsqu'une donnée de type",
                 "datetime": "la date/heure",
@@ -599,11 +600,13 @@
                 "do": "Faire",
                 "tooltip": "Attend une évènement. cela peut être l'évolution d'une donnée, ou bien la date/heure qui change",
                 "defaultVarName": "nouvelleAcquisition",
+                "defaultDeviceVarName": "équipementCible",
                 "mutator": {
                     "base": {
                         "title": "Attente d'acquisition",
                         "tooltip": "Attend une nouvelle acquisition d'un ou plusieurs keyword.",
-						"storeInVariable" : "Stocker la nouvelle acquisition dans une variable"
+						"storeValueInVariable" : "Stocker la nouvelle acquisition dans une variable",
+						"storeDeviceNameInVariable" : "Stocker le nom de l'écquipement dans une variable"
                     },
                     "change": {
                         "title": "Equipement : chaque nouvelle donnée",

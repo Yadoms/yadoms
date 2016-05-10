@@ -581,6 +581,7 @@
       "yadoms_wait_for_event": {
         "titleLine1": "Wait for event",
         "titleLine2": "Save value in",
+		"titleLine3": "Save device name in",
         "case": "When",
 		"caseCapacity": "When a data of type",
         "datetime": "date/time",
@@ -597,11 +598,13 @@
         "do": "Then do",
         "tooltip": "Wait for an event. It can be a device acquisition update or the date/time change",
         "defaultVarName": "newAcquisitionValue",
+		"defaultDeviceVarName": "targetDevice",
         "mutator": {
           "base": {
             "title": "Wait for acquisition",
             "tooltip": "Wait for a new acquisition of one or more keywords.",
-			"storeInVariable" : "Store the new acquisition in a variable"
+			"storeValueInVariable" : "Store the new acquisition in a variable",
+			"storeDeviceNameInVariable" : "Store the device name in a variable"
           },
           "change": {
             "title": "Device : any new acquisition",
