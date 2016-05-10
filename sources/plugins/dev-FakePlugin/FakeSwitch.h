@@ -21,7 +21,9 @@ public:
    /// \param[in] isDimmable    ON/OFF switch if false, dimmable switch if true
    /// \param[in] isSettable    get/set acces if true, get-only if false
    //--------------------------------------------------------------
-   CFakeSwitch(const std::string& deviceName, bool isDimmable, bool isSettable);
+   CFakeSwitch(const std::string& deviceName,
+               bool isDimmable,
+               bool isSettable);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -32,7 +34,7 @@ public:
    /// \brief	            Declare device and associated keywords if necessary
    /// \param[in] api      yPluginApi context
    //--------------------------------------------------------------
-   void declareDevice(boost::shared_ptr<yApi::IYPluginApi> api);
+   void declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const;
 
    //--------------------------------------------------------------
    /// \brief	    Make a sensor read (compute new values)
@@ -79,6 +81,5 @@ private:
    //--------------------------------------------------------------
    boost::random::mt19937 m_gen;
    boost::random::uniform_int_distribution<> m_dist;
-
 };
 

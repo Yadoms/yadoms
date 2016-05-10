@@ -22,20 +22,20 @@ namespace shared
          start();
       }
 
-	   CProcess::~CProcess()
-	  { 
-		   CProcess::kill();
-	   }
+      CProcess::~CProcess()
+      {
+         CProcess::kill();
+      }
 
-	   void CProcess::start()
-	   {
-		   boost::lock_guard<boost::recursive_mutex> lock(m_processMutex);
+      void CProcess::start()
+      {
+         boost::lock_guard<boost::recursive_mutex> lock(m_processMutex);
 
-		   try
-		   {
-			   Poco::Process::Args args;
-			   for (auto cmdLineArg = m_commandLine->args().begin(); cmdLineArg != m_commandLine->args().end(); ++cmdLineArg)
-				   args.push_back(*cmdLineArg);
+         try
+         {
+            Poco::Process::Args args;
+            for (auto cmdLineArg = m_commandLine->args().begin(); cmdLineArg != m_commandLine->args().end(); ++cmdLineArg)
+               args.push_back(*cmdLineArg);
 
             auto executableFullPath = CFileSystemExtension::getModulePath() / m_commandLine->workingDirectory() / m_commandLine->executable();
 
@@ -57,24 +57,23 @@ namespace shared
 
                auto moduleStdOut = boost::make_shared<Poco::PipeInputStream>(outPipe);
                auto moduleStdErr = boost::make_shared<Poco::PipeInputStream>(errPipe);
-               m_StdOutRedirectingThread = boost::make_shared<boost::thread>(&CProcess::stdRedirectWorker,
+               m_StdOutRedirectingThread = boost::make_shared<boost::thread>(&CProcess::stdOutRedirectWorker,
                                                                              moduleStdOut,
-                                                                             m_logger,
-                                                                             boost::shared_ptr<std::string>());
-               m_StdErrRedirectingThread = boost::make_shared<boost::thread>(&CProcess::stdRedirectWorker,
+                                                                             m_logger);
+               m_StdErrRedirectingThread = boost::make_shared<boost::thread>(&CProcess::stdErrRedirectWorker,
                                                                              moduleStdErr,
                                                                              m_logger,
-                                                                             m_lastError);               
+                                                                             m_lastError);
             }
 
             if (!!m_processObserver)
                createProcessObserver();
-		   }
-		   catch (Poco::Exception& ex)
-		   {
-			   throw CProcessException(std::string("Unable to start plugin, ") + ex.what());
-		   }
-	   }
+         }
+         catch (Poco::Exception& ex)
+         {
+            throw CProcessException(std::string("Unable to start plugin, ") + ex.what());
+         }
+      }
 
       void CProcess::createProcessObserver()
       {
@@ -110,59 +109,68 @@ namespace shared
             m_processObserver->onFinish(m_returnCode, getError());
       }
 
-	   void CProcess::kill()
-	   {
-		   try
-		   {
-			   boost::lock_guard<boost::recursive_mutex> lock(m_processMutex);
-			   if (!!m_process)
-			   {
-				   Poco::Process::kill(*m_process);
+      void CProcess::kill()
+      {
+         try
+         {
+            boost::lock_guard<boost::recursive_mutex> lock(m_processMutex);
+            if (!!m_process)
+            {
+               Poco::Process::kill(*m_process);
 
-				   if (Poco::Process::isRunning(*m_process))
-					   m_process->wait();
-			   }
-		   }
-		   catch (Poco::NotFoundException&)
-		   {
-			   // Nothing to do. This exception can occur when process is already stopped
-		   }
-		   catch (Poco::RuntimeException&)
-		   {
-			   // Nothing to do. This exception can occur when process is already stopped
-		   }
-	   }
+               if (Poco::Process::isRunning(*m_process))
+                  m_process->wait();
+            }
+         }
+         catch (Poco::NotFoundException&)
+         {
+            // Nothing to do. This exception can occur when process is already stopped
+         }
+         catch (Poco::RuntimeException&)
+         {
+            // Nothing to do. This exception can occur when process is already stopped
+         }
+      }
 
       int CProcess::getReturnCode() const
       {
          return m_returnCode;
       }
 
-	   std::string CProcess::getError() const
-	   {
-		   return *m_lastError;
-	   }
+      std::string CProcess::getError() const
+      {
+         return *m_lastError;
+      }
 
-	   void CProcess::stdRedirectWorker(boost::shared_ptr<Poco::PipeInputStream> moduleStdOut,
-	                                    boost::shared_ptr<ILogger> scriptLogger,
-	                                    boost::shared_ptr<std::string> lastError)
-	   {
-		   char line[1024];
-		   while (moduleStdOut->getline(line, sizeof(line)))
-		   {
-			   if (!!lastError)
-				   *lastError += line;
+      void CProcess::stdOutRedirectWorker(boost::shared_ptr<Poco::PipeInputStream> moduleStdOut,
+                                          boost::shared_ptr<ILogger> scriptLogger)
+      {
+         scriptLogger->init();
+         scriptLogger->information("#### START ####");
 
-			   // Remove EOL characters to log in script logger
-			   auto len = strlen(line);
-			   if (len > 1 && line[len - 2] == '\r' && line[len - 1] == '\n')
-				   line[len - 2] = 0;
-			   else if (len > 0 && (line[len - 1] == '\r' || line[len - 1] == '\n'))
-				   line[len - 1] = 0;
+         char line[1024];
+         while (moduleStdOut->getline(line, sizeof(line)))
+         {
+            scriptLogger->information(line);
+         }
+      }
 
-			   scriptLogger->log(line);
-		   }
-	   }
+      void CProcess::stdErrRedirectWorker(boost::shared_ptr<Poco::PipeInputStream> moduleStdErr,
+                                          boost::shared_ptr<ILogger> scriptLogger,
+                                          boost::shared_ptr<std::string> lastError)
+      {
+         scriptLogger->init();
+
+         char line[1024];
+         while (moduleStdErr->getline(line, sizeof(line)))
+         {
+            if (!!lastError)
+               *lastError += line;
+
+            scriptLogger->error(line);
+         }
+      }
    }
 } // namespace shared::process
+
 

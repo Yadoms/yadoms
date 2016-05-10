@@ -210,6 +210,8 @@ set(SHARED_LIB_SRC
    shared/process/ICommandLine.h
    shared/process/IProcess.h
    shared/process/ILogger.h
+	shared/process/Logger.h
+	shared/process/Logger.cpp
    shared/process/IStopNotifier.h
    shared/process/Process.h
    shared/process/Process.cpp

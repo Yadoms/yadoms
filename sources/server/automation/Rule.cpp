@@ -34,10 +34,11 @@ namespace automation
 
       auto scriptInterpreter = m_scriptManager->getAssociatedInterpreter(scriptProperties->interpreterName());
 
-      scriptLogger->log("#### START ####");
-
-
-      m_process = scriptInterpreter->createProcess(scriptProperties->scriptPath(), scriptLogger, yScriptApi, stopNotifier, shared::CDataContainer());
+      m_process = scriptInterpreter->createProcess(scriptProperties->scriptPath(),
+                                                   scriptLogger,
+                                                   yScriptApi,
+                                                   stopNotifier,
+                                                   shared::CDataContainer());
    }
 
    void CRule::requestStop()

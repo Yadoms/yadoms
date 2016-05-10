@@ -4,7 +4,7 @@
 #include "database/sqlite/adapters/SQLiteDatabaseAdapters.h"
 #include "database/sqlite/SQLiteDatabaseTables.h"
 #include "database/sqlite/Query.h"
-#include <shared/shared/exception/EmptyResult.hpp>
+#include <shared/exception/EmptyResult.hpp>
 #include "../adapters/SingleValueAdapter.hpp"
 #include "../../DatabaseException.hpp"
 

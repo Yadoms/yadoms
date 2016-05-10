@@ -89,6 +89,12 @@ namespace automation { namespace script
       //--------------------------------------------------------------
       std::vector<boost::filesystem::path> findInterpreterDirectories();
 
+      //-----------------------------------------------------
+      ///\brief               Get the full path of the script log file 
+      ///\return              Full path of the script log file
+      //-----------------------------------------------------
+      static boost::filesystem::path scriptLogFile(const boost::filesystem::path& scriptPath);
+
    private:
       //-----------------------------------------------------
       ///\brief               Path where are located interpreters

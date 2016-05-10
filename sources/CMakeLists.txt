@@ -296,8 +296,6 @@ set(YADOMS_SRC
 	server/automation/script/IProperties.h
 	server/automation/script/Location.h
 	server/automation/script/Location.cpp
-	server/automation/script/Logger.h
-	server/automation/script/Logger.cpp
 	server/automation/script/Manager.h
 	server/automation/script/Manager.cpp
    server/automation/script/ObjectFactory.h
@@ -399,8 +397,6 @@ set(YADOMS_SRC
 	server/pluginSystem/IQualifier.h
 	server/pluginSystem/Factory.cpp
 	server/pluginSystem/Factory.h
-	server/pluginSystem/Logger.h
-	server/pluginSystem/Logger.cpp
 	server/pluginSystem/Manager.h
 	server/pluginSystem/Manager.cpp
 	server/pluginSystem/ManagerEvent.h

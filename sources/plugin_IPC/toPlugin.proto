@@ -65,7 +65,7 @@ message msg {
 	oneof OneOf {
 		System system = 2;
 		Information pluginInformation = 3;
-		Configuration configuration = 4;
+		Configuration configuration = 4; //TODO faire 2 messages distincts avec l'updateConfiguration
 		BindingQuery bindingQuery = 5;
 		DeviceCommand deviceCommand = 6;
 		ExtraCommand extraCommand = 7;

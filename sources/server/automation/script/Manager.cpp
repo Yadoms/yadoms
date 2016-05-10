@@ -11,8 +11,8 @@
 #include "YScriptApiImplementation.h"
 #include "GeneralInfo.h"
 #include "Properties.h"
-#include "Logger.h"
 #include "tools/SupportedPlatformsChecker.h"
+#include <shared/process/Logger.h>
 
 namespace automation { namespace script
 {
@@ -243,14 +243,14 @@ void CManager::deleteScriptFile(boost::shared_ptr<const database::entities::CRul
 std::string CManager::getScriptLogFile(boost::shared_ptr<const database::entities::CRule> ruleData)
 {
    boost::shared_ptr<IProperties> scriptProperties(createScriptProperties(ruleData));
-   const boost::filesystem::path scriptLogFile(CLogger::logFile(scriptProperties->scriptPath()));
+   const boost::filesystem::path logFile(scriptLogFile(scriptProperties->scriptPath()));
 
-   if (!boost::filesystem::exists(scriptLogFile))
-      throw shared::exception::CInvalidParameter(scriptLogFile.string());
+   if (!boost::filesystem::exists(logFile))
+      throw shared::exception::CInvalidParameter(logFile.string());
 
-   std::ifstream file(scriptLogFile.string().c_str());
+   std::ifstream file(logFile.string().c_str());
    if (!file.is_open())
-      throw shared::exception::CInvalidParameter(scriptLogFile.string());
+      throw shared::exception::CInvalidParameter(logFile.string());
 
    std::istreambuf_iterator<char> eos;
    return std::string(std::istreambuf_iterator<char>(file), eos);
@@ -283,10 +283,15 @@ boost::shared_ptr<shared::process::IProcess> CManager::createScriptProcess(boost
    }
 }
 
+boost::filesystem::path CManager::scriptLogFile(const boost::filesystem::path& scriptPath)
+{
+   return scriptPath / "yadomsScript.log";
+}
+
 boost::shared_ptr<shared::process::ILogger> CManager::createScriptLogger(const std::string& scriptPath)
 {
-   boost::shared_ptr<shared::process::ILogger> logger(new CLogger(scriptPath));
-   return logger;
+   return boost::make_shared<shared::process::CLogger>("script/" + scriptPath,
+                                                       scriptLogFile(scriptPath));
 }
 
 boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> CManager::createScriptContext(boost::shared_ptr<shared::process::ILogger> scriptLogger)

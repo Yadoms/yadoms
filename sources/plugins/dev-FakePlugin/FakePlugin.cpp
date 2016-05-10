@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "FakePlugin.h"
 #include <plugin_cpp_api/ImplementationHelper.h>
-#include <shared/Log.h>
 #include "FakeSensor.h"
 #include "FakeCounter.h"
 #include "FakeSwitch.h"
@@ -16,7 +15,6 @@
 IMPLEMENT_PLUGIN(CFakePlugin)
 
 
-
 CFakePlugin::CFakePlugin()
 {
 }
@@ -28,7 +26,7 @@ CFakePlugin::~CFakePlugin()
 // Event IDs
 enum
 {
-   kSendSensorsStateTimerEventId = yApi::IYPluginApi::kPluginFirstEventId,   // Always start from yApi::IYPluginApi::kPluginFirstEventId
+   kSendSensorsStateTimerEventId = yApi::IYPluginApi::kPluginFirstEventId, // Always start from yApi::IYPluginApi::kPluginFirstEventId
 };
 
 void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
@@ -36,7 +34,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    // Informs Yadoms about the plugin actual state
    api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
 
-   YADOMS_LOG(debug) << "CFakePlugin is starting...";
+   std::cout << "CFakePlugin is starting..." << std::endl;
 
    // Load configuration values (provided by database)
    m_configuration.initializeWith(api->getConfiguration());
@@ -65,7 +63,9 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    fakeController.declareDevice(api);
 
    // Timer used to send fake sensor states periodically
-   api->getEventHandler().createTimer(kSendSensorsStateTimerEventId, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(10));
+   api->getEventHandler().createTimer(kSendSensorsStateTimerEventId,
+                                      shared::event::CEventTimer::kPeriodic,
+                                      boost::posix_time::seconds(10));
 
    api->setPluginState(yApi::historization::EPluginState::kRunning);
 
@@ -76,158 +76,158 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       switch (api->getEventHandler().waitForEvents())
       {
       case yApi::IYPluginApi::kEventStopRequested:
-      {
-         // Yadoms request the plugin to stop. Note that plugin must be stop in 10 seconds max, otherwise it will be killed.
-         YADOMS_LOG(debug) << "Stop requested";
-         api->setPluginState(yApi::historization::EPluginState::kStopped);
-         return;
-      }
+         {
+            // Yadoms request the plugin to stop. Note that plugin must be stop in 10 seconds max, otherwise it will be killed.
+            std::cout << "Stop requested" << std::endl;
+            api->setPluginState(yApi::historization::EPluginState::kStopped);
+            return;
+         }
       case yApi::IYPluginApi::kEventDeviceCommand:
-      {
-         // A command was received from Yadoms
-         auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
-         YADOMS_LOG(debug) << "Command received from Yadoms :" << command->getDevice() << "." << command->getKeyword() << "=" << command->getBody();
-         break;
-      }
+         {
+            // A command was received from Yadoms
+            auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
+            std::cout << "Command received from Yadoms :" << command->getDevice() << "." << command->getKeyword() << "=" << command->getBody() << std::endl;
+            break;
+         }
       case yApi::IYPluginApi::kEventUpdateConfiguration:
-      {
-         // Configuration was updated
-         api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
-         auto newConfiguration = api->getEventHandler().getEventData<shared::CDataContainer>();
-         YADOMS_LOG(debug) << "Update configuration...";
+         {
+            // Configuration was updated
+            api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
+            auto newConfiguration = api->getEventHandler().getEventData<shared::CDataContainer>();
+            std::cout << "Update configuration..." << std::endl;
 
-         // Take into account the new configuration
-         // - Restart the plugin if necessary,
-         // - Update some resources,
-         // - etc...
-         m_configuration.initializeWith(newConfiguration);
+            // Take into account the new configuration
+            // - Restart the plugin if necessary,
+            // - Update some resources,
+            // - etc...
+            m_configuration.initializeWith(newConfiguration);
 
-         // Trace the configuration
-         m_configuration.trace();
+            // Trace the configuration
+            m_configuration.trace();
 
-         api->setPluginState(yApi::historization::EPluginState::kRunning);
+            api->setPluginState(yApi::historization::EPluginState::kRunning);
 
-         break;
-      }
+            break;
+         }
       case kSendSensorsStateTimerEventId:
-      {
-         // Timer used here to send sensors state to Yadoms periodically
+         {
+            // Timer used here to send sensors state to Yadoms periodically
 
-         // Read sensor value and send data to Yadoms (temperatures, battery level, Rssi measure...)
-         fakeSensor1.read();
-         fakeSensor2.read();
-         fakeCounter.read();
-         fakeOnOffReadOnlySwitch.read();
-         fakeDimmableReadOnlySwitch.read();
-         fakeController.read();
+            // Read sensor value and send data to Yadoms (temperatures, battery level, Rssi measure...)
+            fakeSensor1.read();
+            fakeSensor2.read();
+            fakeCounter.read();
+            fakeOnOffReadOnlySwitch.read();
+            fakeDimmableReadOnlySwitch.read();
+            fakeController.read();
 
-         YADOMS_LOG(debug) << "Send the periodically sensors state...";
-         fakeSensor1.historizeData(api);
-         fakeSensor2.historizeData(api);
-         fakeCounter.historizeData(api);
-         fakeOnOffReadOnlySwitch.historizeData(api);
-         fakeDimmableReadOnlySwitch.historizeData(api);
-         fakeController.historizeData(api);
+            std::cout << "Send the periodically sensors state..." << std::endl;
+            fakeSensor1.historizeData(api);
+            fakeSensor2.historizeData(api);
+            fakeCounter.historizeData(api);
+            fakeOnOffReadOnlySwitch.historizeData(api);
+            fakeDimmableReadOnlySwitch.historizeData(api);
+            fakeController.historizeData(api);
 
-         break;
-      }
+            break;
+         }
 
       case yApi::IYPluginApi::kEventManuallyDeviceCreation:
-      {
-         boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> creation = api->getEventHandler().getEventData< boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> >();
-         try
          {
-            // Yadoms asks for device creation
-            auto sni = creation->getData().getConfiguration().get<std::string>("networkInterface");
-            auto dyn = creation->getData().getConfiguration().get<std::string>("dynamicSection.content.interval");
+            boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> creation = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest>>();
+            try
+            {
+               // Yadoms asks for device creation
+               auto sni = creation->getData().getConfiguration().get<std::string>("networkInterface");
+               auto dyn = creation->getData().getConfiguration().get<std::string>("dynamicSection.content.interval");
 
-            auto devId = (boost::format("%1%_%2%_0x%3$08X") % sni % dyn % shared::tools::CRandom::generateNbBits(26, false)).str();
-            api->declareDevice(devId, "FakeDevice_" + devId, creation->getData().getConfiguration());
+               auto devId = (boost::format("%1%_%2%_0x%3$08X") % sni % dyn % shared::tools::CRandom::generateNbBits(26, false)).str();
+               api->declareDevice(devId, "FakeDevice_" + devId, creation->getData().getConfiguration());
 
-            yApi::historization::CSwitch manualSwitch("manualSwitch");
-            api->declareKeyword(devId, manualSwitch);
+               yApi::historization::CSwitch manualSwitch("manualSwitch");
+               api->declareKeyword(devId, manualSwitch);
 
-            creation->sendSuccess(devId);
-
-         }
-         catch (std::exception &ex)
-         {
-            creation->sendError(ex.what());
-         }
-         break;
-      }
-
-      case yApi::IYPluginApi::kBindingQuery:
-      {
-         // Yadoms ask for a binding query 
-         boost::shared_ptr<yApi::IBindingQueryRequest> data = api->getEventHandler().getEventData< boost::shared_ptr<yApi::IBindingQueryRequest> >();
-         if (data->getData().getQuery() == "test")
-         {
-            shared::CDataContainer ev;
-            ev.set("HOUR", "1 hour");
-            ev.set("DAY", "1 day");
-            ev.set("WEEK", "1 week");
-            ev.set("MONTH", "1 month");
-            ev.set("HALF_YEAR", "6 months");
-            ev.set("YEAR", "1 year");
-
-            shared::CDataContainer en;
-            en.set("name", "Interval of the chart");
-            en.set("description", "Permit to change the interval of all the chart");
-            en.set("type", "enum");
-            en.set("values", ev);
-            en.set("defaultValue", "DAY");
-
-            shared::CDataContainer result;
-            result.set("interval", en);
-
-            data->sendSuccess(result);
-         }
-         else
-         {
-            std::string errorMessage = (boost::format("unknown query : %1%") % data->getData().getQuery()).str();
-            data->sendError(errorMessage);
-            YADOMS_LOG(error) << errorMessage;
+               creation->sendSuccess(devId);
+            }
+            catch (std::exception& ex)
+            {
+               creation->sendError(ex.what());
             }
             break;
          }
 
-         case yApi::IYPluginApi::kEventExtraCommand:
+      case yApi::IYPluginApi::kBindingQuery:
+         {
+            // Yadoms ask for a binding query 
+            boost::shared_ptr<yApi::IBindingQueryRequest> data = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IBindingQueryRequest>>();
+            if (data->getData().getQuery() == "test")
+            {
+               shared::CDataContainer ev;
+               ev.set("HOUR", "1 hour");
+               ev.set("DAY", "1 day");
+               ev.set("WEEK", "1 week");
+               ev.set("MONTH", "1 month");
+               ev.set("HALF_YEAR", "6 months");
+               ev.set("YEAR", "1 year");
+
+               shared::CDataContainer en;
+               en.set("name", "Interval of the chart");
+               en.set("description", "Permit to change the interval of all the chart");
+               en.set("type", "enum");
+               en.set("values", ev);
+               en.set("defaultValue", "DAY");
+
+               shared::CDataContainer result;
+               result.set("interval", en);
+
+               data->sendSuccess(result);
+            }
+            else
+            {
+               std::string errorMessage = (boost::format("unknown query : %1%") % data->getData().getQuery()).str();
+               data->sendError(errorMessage);
+               std::cerr << errorMessage << std::endl;
+            }
+            break;
+         }
+
+      case yApi::IYPluginApi::kEventExtraCommand:
          {
             // Command was received from Yadoms
-            auto extraCommand = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IExtraCommand> >();
+            auto extraCommand = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IExtraCommand>>();
 
             if (extraCommand)
             {
-               YADOMS_LOG(debug) << "Extra command received : " << extraCommand->getCommand();
+               std::cout << "Extra command received : " << extraCommand->getCommand() << std::endl;
 
                if (extraCommand->getCommand() == "simpleCommand")
                {
-                  YADOMS_LOG(information) << "Simple command received";
+                  std::cout << "Simple command received" << std::endl;
                }
                else if (extraCommand->getCommand() == "dataCommand")
                {
                   std::string s = extraCommand->getData().get<std::string>("testValue");
-                  YADOMS_LOG(information) << "Command with data received : data=" << s;
+                  std::cout << "Command with data received : data=" << s << std::endl;
                }
                else if (extraCommand->getCommand() == "dataBindingCommand")
                {
                   std::string value = extraCommand->getData().get<std::string>("networkInterface");
-                  YADOMS_LOG(information) << "Command with binded data received : value=" << value << " text=" << Poco::Net::NetworkInterface::forName(value).displayName();
+                  std::cout << "Command with binded data received : value=" << value << " text=" << Poco::Net::NetworkInterface::forName(value).displayName() << std::endl;
                }
                else if (extraCommand->getCommand() == "dataBindingPluginCommand")
                {
                   std::string interval = extraCommand->getData().get<std::string>("dynamicSection.content.interval");
-                  YADOMS_LOG(information) << "Command with plugin binded data received : value=" << interval;
+                  std::cout << "Command with plugin binded data received : value=" << interval << std::endl;
                }
+            }
+            break;
          }
-         break;
-      }
       default:
-      {
-         YADOMS_LOG(error) << "Unknown or unsupported message id " << api->getEventHandler().getEventId();
-         break;
+         {
+            std::cerr << "Unknown or unsupported message id " << api->getEventHandler().getEventId() << std::endl;
+            break;
+         }
       }
-      }
-   }   
+   }
 }
+

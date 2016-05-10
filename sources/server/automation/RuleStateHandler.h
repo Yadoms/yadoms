@@ -2,7 +2,7 @@
 #include "IRuleStateHandler.h"
 #include "database/IRuleRequester.h"
 #include "dataAccessLayer/IEventLogger.h"
-#include <shared/shared/event/EventHandler.hpp>
+#include <shared/event/EventHandler.hpp>
 
 namespace automation
 {

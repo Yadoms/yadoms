@@ -1,8 +1,7 @@
 #include "stdafx.h"
 #include "IpApiAutoLocation.h"
-#include <shared/Log.h>
 #include <shared/exception/EmptyResult.hpp>
-#include <shared/shared/http/HttpMethods.h>
+#include <shared/http/HttpMethods.h>
 
 
 namespace automation { namespace script

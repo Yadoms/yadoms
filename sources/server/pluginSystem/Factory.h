@@ -37,6 +37,8 @@ namespace pluginSystem
    private:
       boost::shared_ptr<const shared::plugin::information::IInformation> createInformation(const std::string& pluginName) const;
 
+      boost::filesystem::path pluginLogFile(const std::string& pluginName) const;
+
       boost::shared_ptr<shared::process::ILogger> createProcessLogger(const std::string& pluginName) const;
 
       boost::shared_ptr<shared::process::ICommandLine> createCommandLine(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,

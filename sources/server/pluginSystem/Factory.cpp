@@ -9,14 +9,12 @@
 #include "IQualifier.h"
 #include "NativeExecutableCommandLine.h"
 #include "InvalidPluginException.hpp"
-#include "Logger.h"
 #include "ContextAccessor.h"
 #include <shared/process/Process.h>
 #include <shared/process/ProcessException.hpp>
 #include <shared/FileSystemExtension.h>
+#include <shared/process/Logger.h>
 
-//TODO rechercer la châine shared/shared/ dans les include
-//TODO rechercher la chaîne "rule" dans tout le répertoire pluginSystem et la virer
 
 namespace pluginSystem
 {
@@ -69,9 +67,15 @@ namespace pluginSystem
                                            yPluginApi);
    }
 
+   boost::filesystem::path CFactory::pluginLogFile(const std::string& pluginName) const
+   {
+      return m_pluginPath / pluginName / "yadomsPlugin.log";
+   }
+
    boost::shared_ptr<shared::process::ILogger> CFactory::createProcessLogger(const std::string& pluginName) const
    {
-      return boost::make_shared<CLogger>(pluginName);
+      return boost::make_shared<shared::process::CLogger>("plugin/" + pluginName,
+                                                          pluginLogFile(pluginName));
    }
 
    boost::shared_ptr<CInstanceStateHandler> CFactory::createInstanceStateHandler(boost::shared_ptr<const database::entities::CPlugin> instanceData,
@@ -106,8 +110,6 @@ namespace pluginSystem
                                                                                 boost::shared_ptr<shared::process::ILogger> logger,
                                                                                 boost::shared_ptr<CInstanceStateHandler> instanceStateHandler) const
    {
-      logger->log("#### START ####");
-
       try
       {
          return boost::make_shared<shared::process::CProcess>(commandLine,
@@ -117,7 +119,7 @@ namespace pluginSystem
       }
       catch (shared::process::CProcessException& e)
       {
-         logger->log((boost::format("Error starting plugin %1% : %2%") % commandLine->executable() % e.what()).str());
+         YADOMS_LOG(error) << "Error starting plugin " << commandLine->executable() << " : " << e.what();
          instanceStateHandler->signalStartError(e.what());
          throw;
       }

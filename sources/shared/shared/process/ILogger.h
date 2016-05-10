@@ -1,24 +1,36 @@
 #pragma once
+#include <shared/Export.h>
 
-namespace shared { namespace process
+namespace shared
 {
-   //-----------------------------------------------------
-   ///\brief The process logger interface
-   //-----------------------------------------------------
-   class ILogger
+   namespace process
    {
-   public:
       //-----------------------------------------------------
-      ///\brief               Destructor
+      ///\brief The process logger interface
       //-----------------------------------------------------
-      virtual ~ILogger() {}
+      class YADOMS_SHARED_EXPORT ILogger
+      {
+      public:
+         //-----------------------------------------------------
+         ///\brief               Destructor
+         //-----------------------------------------------------
+         virtual ~ILogger()
+         {
+         }
 
-      //-----------------------------------------------------
-      ///\brief               Log the message
-      ///\param[in] msg       Message to log
-      //-----------------------------------------------------
-      virtual void log(const std::string& msg) = 0;
-   };
+         //-----------------------------------------------------
+         ///\brief               Init the logger
+         ///\note Must be called in the thread where log function will be called
+         //-----------------------------------------------------
+         virtual void init() = 0;
 
-} } // namespace shared::process
+         //-----------------------------------------------------
+         ///\brief               Log a line
+         ///\param[in] line      Line to log
+         //-----------------------------------------------------
+         virtual void information(const std::string& line) = 0;
+         virtual void error(const std::string& line) = 0;
+      };
+   }
+} // namespace shared::process
 

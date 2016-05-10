@@ -155,7 +155,7 @@ std::string CYScriptApiImplementation::waitForNextAcquisition(int keywordId, con
    }
    catch (std::exception& exception)
    {
-      m_ruleLogger->log(std::string("waitForNextAcquisition : ") + exception.what());
+      m_ruleLogger->error(std::string("waitForNextAcquisition : ") + exception.what());
       throw;
    }
 }
@@ -187,7 +187,7 @@ std::pair<int, std::string> CYScriptApiImplementation::waitForNextAcquisitions(c
    }
    catch (std::exception& exception)
    {
-      m_ruleLogger->log(std::string("waitForNextAcquisitions : ") + exception.what());
+      m_ruleLogger->error(std::string("waitForNextAcquisitions : ") + exception.what());
       throw;
    }
 }
@@ -271,7 +271,7 @@ shared::script::yScriptApi::CWaitForEventResult CYScriptApiImplementation::waitF
    }
    catch (std::exception& exception)
    {
-      m_ruleLogger->log(std::string("waitForEvent : ") + exception.what());
+      m_ruleLogger->error(std::string("waitForEvent : ") + exception.what());
 
       if (dateTimeObserver)
          notification::CHelpers::unsubscribeObserver(dateTimeObserver);

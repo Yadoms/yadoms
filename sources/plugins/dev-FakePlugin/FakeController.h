@@ -12,7 +12,7 @@ DECLARE_ENUM_HEADER(EFakeControllerValues,
    ((Back))
    ((Left))
    ((Right))
-)   
+)
 
 class CControllerValue : public yApi::historization::CSingleHistorizableData<EFakeControllerValues>
 {
@@ -51,7 +51,7 @@ public:
    /// \brief	            Declare device and associated keywords if necessary
    /// \param[in] api      yPluginApi context
    //--------------------------------------------------------------
-   void declareDevice(boost::shared_ptr<yApi::IYPluginApi> api);
+   void declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const;
 
    //--------------------------------------------------------------
    /// \brief	    Make a sensor read (compute new values)
@@ -83,13 +83,9 @@ private:
    const std::string m_deviceName;
 
 
-
-
    //--------------------------------------------------------------
    /// \brief	    Current values
    //--------------------------------------------------------------
    CControllerValue m_currentValues;
-
-
 };
 

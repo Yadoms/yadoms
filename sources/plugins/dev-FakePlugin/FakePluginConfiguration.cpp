@@ -1,13 +1,12 @@
 #include "stdafx.h"
 #include "FakePluginConfiguration.h"
-#include <shared/Log.h>
 
 
 CFakePluginConfiguration::~CFakePluginConfiguration()
 {
 }
 
-void CFakePluginConfiguration::initializeWith(const shared::CDataContainer &data)
+void CFakePluginConfiguration::initializeWith(const shared::CDataContainer& data)
 {
    m_configuration.initializeWith(data);
 }
@@ -23,29 +22,34 @@ EEnumType CFakePluginConfiguration::getEnumParameter() const
    return m_configuration.getEnumValue<EEnumType>("EnumParameter", EEnumTypeNames);
 }
 
-void CFakePluginConfiguration::trace()
+void CFakePluginConfiguration::trace() const
 {
    try
    {
       // Get simple parameters
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'StringParameter' is " << m_configuration.get<std::string>("StringParameter");
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'BoolParameter' is " << m_configuration.get<bool>("BoolParameter");
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'DecimalParameter' is " << m_configuration.get<double>("DecimalParameter");
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'IntParameter' is " << m_configuration.get<int>("IntParameter");
+      std::cout << "CFakePlugin::doWork, parameter 'StringParameter' is "
+         << (m_configuration.get<std::string>("StringParameter").empty() ? "empty" : m_configuration.get<std::string>("StringParameter"))
+         << std::endl;
+      std::cout << "CFakePlugin::doWork, parameter 'BoolParameter' is " << m_configuration.get<bool>("BoolParameter") << std::endl;
+      std::cout << "CFakePlugin::doWork, parameter 'DecimalParameter' is " << m_configuration.get<double>("DecimalParameter") << std::endl;
+      std::cout << "CFakePlugin::doWork, parameter 'IntParameter' is " << m_configuration.get<int>("IntParameter") << std::endl;
 
       // Enum
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'EnumParameter' is " << getEnumParameter();
+      std::cout << "CFakePlugin::doWork, parameter 'EnumParameter' is " << getEnumParameter() << std::endl;
 
       // Parameters in sections
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'MySection.SubIntParameter' is " << m_configuration.get<int>("MySection.content.SubIntParameter");
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'MySection.SubStringParameter' is " << m_configuration.get<std::string>("MySection.content.SubStringParameter");
+      std::cout << "CFakePlugin::doWork, parameter 'MySection.SubIntParameter' is " << m_configuration.get<int>("MySection.content.SubIntParameter") << std::endl;
+      std::cout << "CFakePlugin::doWork, parameter 'MySection.SubStringParameter' is "
+         << (m_configuration.get<std::string>("MySection.content.SubStringParameter").empty() ? "empty" : m_configuration.get<std::string>("MySection.content.SubStringParameter"))
+         << std::endl;
    }
    catch (const shared::exception::CInvalidParameter& e)
    {
-      YADOMS_LOG(error) << "Parameter not found : " << e.what();
+      std::cerr << "Parameter not found : " << e.what() << std::endl;
    }
    catch (const shared::exception::COutOfRange& e)
    {
-      YADOMS_LOG(error) << "Parameter value out of range : " << e.what();
+      std::cerr << "Parameter value out of range : " << e.what() << std::endl;
    }
 }
+

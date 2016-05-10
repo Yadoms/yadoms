@@ -141,7 +141,7 @@ namespace pluginSystem
 
          boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
 
-         // Stop the rule
+         // Stop plugin instance
          stopInstanceAndWaitForStopped(id);
 
          // Remove in database

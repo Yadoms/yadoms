@@ -1,23 +1,26 @@
 #include "stdafx.h"
 #include "FakeSwitch.h"
-#include <shared/plugin/yPluginApi/StandardCapacities.h>
-#include <shared/StringExtension.h>
-#include <shared/Log.h>
 
-CFakeSwitch::CFakeSwitch(const std::string& deviceName, bool isDimmable, bool isSettable)
-   :m_deviceName(deviceName), m_isDimmable(isDimmable), m_dist(0, 100)
+CFakeSwitch::CFakeSwitch(const std::string& deviceName,
+                         bool isDimmable,
+                         bool isSettable)
+   : m_deviceName(deviceName),
+     m_isDimmable(isDimmable),
+     m_dist(0, 100)
 {
    if (m_isDimmable)
-      m_dimmableSwitch.reset(new yApi::historization::CDimmable("DimmableSwitch", isSettable ? yApi::EKeywordAccessMode::kGetSet : yApi::EKeywordAccessMode::kGet));
+      m_dimmableSwitch = boost::make_shared<yApi::historization::CDimmable>("DimmableSwitch",
+                                                                            isSettable ? yApi::EKeywordAccessMode::kGetSet : yApi::EKeywordAccessMode::kGet);
    else
-      m_switch.reset(new yApi::historization::CSwitch("Switch", isSettable ? yApi::EKeywordAccessMode::kGetSet : yApi::EKeywordAccessMode::kGet));
+      m_switch = boost::make_shared<yApi::historization::CSwitch>("Switch",
+                                                                  isSettable ? yApi::EKeywordAccessMode::kGetSet : yApi::EKeywordAccessMode::kGet);
 }
 
 CFakeSwitch::~CFakeSwitch()
 {
 }
 
-void CFakeSwitch::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api)
+void CFakeSwitch::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
    if (!api->deviceExists(m_deviceName))
       api->declareDevice(m_deviceName, getModel());
@@ -70,3 +73,4 @@ const std::string& CFakeSwitch::getModel()
    static const std::string model("Fake switch");
    return model;
 }
+

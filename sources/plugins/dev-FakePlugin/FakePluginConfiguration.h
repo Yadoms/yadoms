@@ -32,12 +32,12 @@ public:
    /// \brief		   Load configuration data
    /// \param [in] data The data container
    //--------------------------------------------------------------
-   void initializeWith(const shared::CDataContainer &data);
+   void initializeWith(const shared::CDataContainer& data);
 
    //--------------------------------------------------------------
    /// \brief	    Just for test, not needed for real plugin
    //--------------------------------------------------------------
-   void trace();
+   void trace() const;
 
    //--------------------------------------------------------------
    //--------------------------------------------------------------

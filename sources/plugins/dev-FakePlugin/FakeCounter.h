@@ -30,7 +30,7 @@ public:
    /// \brief	            Declare device and associated keywords if necessary
    /// \param[in] api      yPluginApi context
    //--------------------------------------------------------------
-   void declareDevice(boost::shared_ptr<yApi::IYPluginApi> api);
+   void declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const;
 
    //--------------------------------------------------------------
    /// \brief	    Make a sensor read (compute new values)
@@ -74,13 +74,12 @@ private:
    //--------------------------------------------------------------
    /// \brief	Historizers vector
    //--------------------------------------------------------------
-   std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > m_historizers;
+   std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable>> m_historizers;
 
    //--------------------------------------------------------------
    /// \brief	    Random number generator, used to simulate increments
    //--------------------------------------------------------------
    boost::random::mt19937 m_gen;
    boost::random::uniform_int_distribution<> m_dist;
-
 };
 

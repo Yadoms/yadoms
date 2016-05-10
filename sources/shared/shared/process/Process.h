@@ -64,9 +64,11 @@ namespace shared
          /// \param[in] targetStream      Target stream
          /// \param[inout] lastError      Last error string
          //--------------------------------------------------------------
-         static void stdRedirectWorker(boost::shared_ptr<Poco::PipeInputStream> moduleStdOut,
-                                       boost::shared_ptr<ILogger> scriptLogger,
-                                       boost::shared_ptr<std::string> lastError);
+         static void stdOutRedirectWorker(boost::shared_ptr<Poco::PipeInputStream> moduleStdOut,
+                                          boost::shared_ptr<ILogger> scriptLogger);
+         static void stdErrRedirectWorker(boost::shared_ptr<Poco::PipeInputStream> moduleStdErr,
+                                          boost::shared_ptr<ILogger> scriptLogger,
+                                          boost::shared_ptr<std::string> lastError);
 
       private:
          //--------------------------------------------------------------

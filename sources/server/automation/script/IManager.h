@@ -2,11 +2,10 @@
 #include "IProperties.h"
 #include "../../database/sqlite/requesters/Rule.h"
 #include <shared/process/ILogger.h>
-#include <shared/process/IStopNotifier.h>
 #include <shared/script/yScriptApi/IYScriptApi.h>
 #include <server/automation/IRuleStateHandler.h>
-#include <shared/shared/process/IProcess.h>
-#include <shared/shared/script/IInterpreter.h>
+#include <shared/process/IProcess.h>
+#include <shared/script/IInterpreter.h>
 
 namespace automation { namespace script
 {

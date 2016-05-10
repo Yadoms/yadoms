@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "FakeController.h"
 #include <shared/plugin/yPluginApi/StandardCapacities.h>
-#include <shared/StringExtension.h>
-#include <shared/Log.h>
 #include <shared/plugin/yPluginApi/StandardUnits.h>
 
 DECLARE_ENUM_IMPLEMENTATION(EFakeControllerValues,
@@ -14,11 +12,15 @@ DECLARE_ENUM_IMPLEMENTATION(EFakeControllerValues,
 )
 
 
-const shared::plugin::yPluginApi::CStandardCapacity& FakeControllerCapacity = shared::plugin::yPluginApi::CStandardCapacity("fakecontroller_capacity", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kEnum);
+const shared::plugin::yPluginApi::CStandardCapacity& FakeControllerCapacity = shared::plugin::yPluginApi::CStandardCapacity("fakecontroller_capacity",
+                                                                                                                            shared::plugin::yPluginApi::CStandardUnits::NoUnits,
+                                                                                                                            shared::plugin::yPluginApi::EKeywordDataType::kEnum);
 
 
 CControllerValue::CControllerValue(const std::string& keywordName)
-   :yApi::historization::CSingleHistorizableData<EFakeControllerValues>(keywordName, FakeControllerCapacity, shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)
+   : CSingleHistorizableData<EFakeControllerValues>(keywordName,
+                                                    FakeControllerCapacity,
+                                                    shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)
 {
 }
 
@@ -27,20 +29,16 @@ CControllerValue::~CControllerValue()
 }
 
 
-
-
-
 CFakeController::CFakeController(const std::string& deviceName)
-   :m_deviceName(deviceName), m_currentValues("controllerValue")
+   : m_deviceName(deviceName), m_currentValues("controllerValue")
 {
-
 }
 
 CFakeController::~CFakeController()
 {
 }
 
-void CFakeController::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api)
+void CFakeController::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
    if (!api->deviceExists(m_deviceName))
       api->declareDevice(m_deviceName, getModel());
@@ -56,7 +54,7 @@ void CFakeController::read()
    else if (m_currentValues() == EFakeControllerValues::kRun)
       m_currentValues.set(EFakeControllerValues::kBack);
    else if (m_currentValues() == EFakeControllerValues::kBack)
-      m_currentValues.set(EFakeControllerValues::kLeft); 
+      m_currentValues.set(EFakeControllerValues::kLeft);
    else if (m_currentValues() == EFakeControllerValues::kLeft)
       m_currentValues.set(EFakeControllerValues::kRight);
    else if (m_currentValues() == EFakeControllerValues::kRight)
@@ -81,3 +79,4 @@ const std::string& CFakeController::getModel()
    static const std::string model("Fake controller");
    return model;
 }
+

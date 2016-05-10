@@ -59,7 +59,7 @@ namespace pluginSystem
 
       setState(shared::plugin::yPluginApi::historization::EPluginState::kError, error);
 
-      m_eventLogger->addEvent(database::entities::ESystemEventCode::kRuleFailed, m_pluginRequester->getInstance(m_instanceData->Id())->DisplayName(), error);
+      m_eventLogger->addEvent(database::entities::ESystemEventCode::kPluginCrash, m_pluginRequester->getInstance(m_instanceData->Id())->DisplayName(), error);
 
       m_instanceStoppedListener->onStopped(m_instanceData->Id());
    }
@@ -70,7 +70,7 @@ namespace pluginSystem
 
       setState(shared::plugin::yPluginApi::historization::EPluginState::kError, error);
 
-      m_eventLogger->addEvent(database::entities::ESystemEventCode::kRuleFailed, (boost::format("Plugin instance #%1%") % m_instanceData->Id()).str(), error);
+      m_eventLogger->addEvent(database::entities::ESystemEventCode::kPluginCrash, (boost::format("Plugin instance #%1%") % m_instanceData->Id()).str(), error);
 
       m_instanceStoppedListener->onStopped(m_instanceData->Id());
    }

@@ -1,14 +1,13 @@
 #include "stdafx.h"
 #include "FakeCounter.h"
-#include <shared/plugin/yPluginApi/StandardCapacities.h>
-#include <shared/StringExtension.h>
-#include <shared/Log.h>
 
 CFakeCounter::CFakeCounter(const std::string& deviceName)
-   :m_deviceName(deviceName),
-   m_incrementCount(boost::make_shared<yApi::historization::CCounter>("incrementCount", yApi::EKeywordAccessMode::kGet, yApi::historization::EMeasureType::kIncrement)),
-   m_totalCount(boost::make_shared<yApi::historization::CCounter>("totalCounter")),
-   m_dist(0, 15)
+   : m_deviceName(deviceName),
+     m_incrementCount(boost::make_shared<yApi::historization::CCounter>("incrementCount",
+                                                                        yApi::EKeywordAccessMode::kGet,
+                                                                        yApi::historization::EMeasureType::kIncrement)),
+     m_totalCount(boost::make_shared<yApi::historization::CCounter>("totalCounter")),
+     m_dist(0, 15)
 {
    m_totalCount->set(0);
 
@@ -20,7 +19,7 @@ CFakeCounter::~CFakeCounter()
 {
 }
 
-void CFakeCounter::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api)
+void CFakeCounter::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
    if (!api->deviceExists(m_deviceName))
       api->declareDevice(m_deviceName, getModel());
@@ -59,3 +58,4 @@ const std::string& CFakeCounter::getModel()
    static const std::string model("Fake counter");
    return model;
 }
+

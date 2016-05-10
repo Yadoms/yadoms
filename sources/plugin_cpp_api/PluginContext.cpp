@@ -19,12 +19,12 @@ namespace plugin_cpp_api
       }
       catch (std::invalid_argument& e)
       {
-         std::cerr << "Unable to start plugin : " << e.what();
+         std::cerr << "Unable to start plugin : " << e.what() << std::endl;
          return kStartError;
       }
       catch (...)
       {
-         std::cerr << "Plugin crashed";
+         std::cerr << "Plugin crashed" << std::endl;
          return kRuntimeError;
       }
    }
@@ -55,7 +55,7 @@ namespace plugin_cpp_api
 
          api->waitInitialized();
 
-         std::cout << api->getInformation()->getType() << " started";
+         std::cout << api->getInformation()->getType() << " started" << std::endl;
 
          // Execute plugin code
          m_plugin->doWork(api);
@@ -63,11 +63,11 @@ namespace plugin_cpp_api
          if (!api->stopRequested())
          {
             m_returnCode = kUnexpectedStop;
-            std::cerr << api->getInformation()->getType() << " has stopped itself.";
+            std::cerr << api->getInformation()->getType() << " has stopped itself." << std::endl;
          }
 
          // Normal stop
-         std::cout << api->getInformation()->getType() << " is stopped";
+         std::cout << api->getInformation()->getType() << " is stopped" << std::endl;
          m_returnCode = kOk;
       }
       catch (std::exception& e)
@@ -78,7 +78,7 @@ namespace plugin_cpp_api
       catch (...)
       {
          m_returnCode = kRuntimeError;
-         std::cerr << api->getInformation()->getType() << " crashed with unknown exception";
+         std::cerr << api->getInformation()->getType() << " crashed with unknown exception" << std::endl;
       }
 
       m_msgReceiverThread.interrupt();
@@ -103,7 +103,7 @@ namespace plugin_cpp_api
          const auto sendMessageQueueId(m_commandLine->yPluginApiAccessorId() + ".toYadoms");
          const auto receiveMessageQueueId(m_commandLine->yPluginApiAccessorId() + ".toPlugin");
 
-         std::cout << "Opening message queues id " << m_commandLine->yPluginApiAccessorId();
+         std::cout << "Opening message queues id " << m_commandLine->yPluginApiAccessorId() << std::endl;
 
          m_sendMessageQueue = boost::make_shared<boost::interprocess::message_queue>(boost::interprocess::open_only, sendMessageQueueId.c_str());
          m_receiveMessageQueue = boost::make_shared<boost::interprocess::message_queue>(boost::interprocess::open_only, receiveMessageQueueId.c_str());
@@ -120,7 +120,7 @@ namespace plugin_cpp_api
 
    void CPluginContext::closeMessageQueues()
    {
-      std::cout << "Close message queues";
+      std::cout << "Close message queues" << std::endl;
 
       // Delete all global objects allocated by libprotobuf.
       google::protobuf::ShutdownProtobufLibrary();
@@ -150,7 +150,7 @@ namespace plugin_cpp_api
             }
             catch (shared::exception::CInvalidParameter& ex)
             {
-               std::cerr << "Error receiving/processing queue message : " << ex.what();
+               std::cerr << "Error receiving/processing queue message : " << ex.what() << std::endl;
             }
          }
       }
