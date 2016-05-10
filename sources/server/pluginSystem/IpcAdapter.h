@@ -1,5 +1,5 @@
 #pragma once
-#include "IContextAccessor.h"
+#include "IIpcAdapter.h"
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <shared/communication/MessageQueueRemover.hpp>
 #include <plugin_IPC/plugin_IPC.h>
@@ -7,24 +7,24 @@
 namespace pluginSystem
 {
    //--------------------------------------------------------------
-   /// \brief	yScriptApi context accessor, based on message queues
+   /// \brief	yPluginApi IPC adapter, based on message queues
    //--------------------------------------------------------------
-   class CContextAccessor : public IContextAccessor
+   class CIpcAdapter : public IIpcAdapter
    {
    public:
       //--------------------------------------------------------------
       /// \brief	Constructor
       /// \param[in] context yPluginApi context instance
       //--------------------------------------------------------------
-      explicit CContextAccessor(boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> yPluginApi);
+      explicit CIpcAdapter(boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> yPluginApi);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
-      virtual ~CContextAccessor();
+      virtual ~CIpcAdapter();
 
    protected:
-      // IContextAccessor Implementation
+      // IIpcAdapter Implementation
       std::string id() const override;
       void postStopRequest() override;
       void postPluginInformation(boost::shared_ptr<const shared::plugin::information::IInformation> information) override;
@@ -33,7 +33,7 @@ namespace pluginSystem
       void postDeviceCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> deviceCommand) override;
       void postExtraCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> extraCommand) override;
       void postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request) override;
-      // [END] IContextAccessor Implementation
+      // [END] IIpcAdapter Implementation
 
       //--------------------------------------------------------------
       /// \brief	Create a unique context accessor ID (unique on full system)

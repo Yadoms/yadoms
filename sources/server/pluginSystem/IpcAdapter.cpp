@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "ContextAccessor.h"
+#include "IpcAdapter.h"
 #include <shared/communication/MessageQueueRemover.hpp>
 #include <shared/Log.h>
 #include <shared/exception/InvalidParameter.hpp>
@@ -8,10 +8,10 @@
 
 namespace pluginSystem
 {
-   const size_t CContextAccessor::m_maxMessages(100);
-   const size_t CContextAccessor::m_maxMessageSize(10000);
+   const size_t CIpcAdapter::m_maxMessages(100);
+   const size_t CIpcAdapter::m_maxMessageSize(10000);
 
-   CContextAccessor::CContextAccessor(boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> yPluginApi)
+   CIpcAdapter::CIpcAdapter(boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> yPluginApi)
       : m_pluginApi(yPluginApi),
         m_id(createId()),
         m_sendMessageQueueId(m_id + ".toPlugin"),
@@ -21,29 +21,29 @@ namespace pluginSystem
         m_sendMessageQueue(boost::interprocess::create_only, m_sendMessageQueueId.c_str(), m_maxMessages, m_maxMessageSize),
         m_receiveMessageQueue(boost::interprocess::create_only, m_receiveMessageQueueId.c_str(), m_maxMessages, m_maxMessageSize),
         m_sendBuffer(boost::make_shared<unsigned char[]>(m_sendMessageQueue.get_max_msg_size())),
-        m_messageQueueReceiveThread(boost::thread(&CContextAccessor::messageQueueReceiveThreaded, this))
+        m_messageQueueReceiveThread(boost::thread(&CIpcAdapter::messageQueueReceiveThreaded, this))
    {
    }
 
-   CContextAccessor::~CContextAccessor()
+   CIpcAdapter::~CIpcAdapter()
    {
       m_messageQueueReceiveThread.interrupt();
       m_messageQueueReceiveThread.join();
    }
 
-   std::string CContextAccessor::id() const
+   std::string CIpcAdapter::id() const
    {
       return m_id;
    }
 
-   std::string CContextAccessor::createId()
+   std::string CIpcAdapter::createId()
    {
       std::stringstream ss;
       ss << "yPlugin." << boost::uuids::random_generator()();
       return ss.str();
    }
 
-   void CContextAccessor::messageQueueReceiveThreaded()
+   void CIpcAdapter::messageQueueReceiveThreaded()
    {
       // Verify that the version of the library that we linked against is
       // compatible with the version of the headers we compiled against.
@@ -98,23 +98,23 @@ namespace pluginSystem
       google::protobuf::ShutdownProtobufLibrary();
    }
 
-   void CContextAccessor::send(const toPlugin::msg& pbMsg)
+   void CIpcAdapter::send(const toPlugin::msg& pbMsg)
    {
       if (!pbMsg.IsInitialized())
-         throw std::overflow_error("CContextAccessor::send : message is not fully initialized");
+         throw std::overflow_error("CIpcAdapter::send : message is not fully initialized");
 
       if (pbMsg.ByteSize() > static_cast<int>(m_sendMessageQueue.get_max_msg_size()))
-         throw std::overflow_error((boost::format("CContextAccessor::send : message is too big (%1% bytes)") % pbMsg.ByteSize()).str());
+         throw std::overflow_error((boost::format("CIpcAdapter::send : message is too big (%1% bytes)") % pbMsg.ByteSize()).str());
 
       if (!pbMsg.SerializeToArray(m_sendBuffer.get(), m_sendMessageQueue.get_max_msg_size()))
-         throw std::overflow_error("CContextAccessor::send : fail to serialize message (too big ?)");
+         throw std::overflow_error("CIpcAdapter::send : fail to serialize message (too big ?)");
 
       m_sendMessageQueue.send(m_sendBuffer.get(), pbMsg.GetCachedSize(), 0);
    }
 
-   void CContextAccessor::send(const toPlugin::msg& pbMsg,
-                               boost::function1<bool, const toYadoms::msg&> checkExpectedMessageFunction,
-                               boost::function1<void, const toYadoms::msg&> onReceiveFunction)
+   void CIpcAdapter::send(const toPlugin::msg& pbMsg,
+                          boost::function1<bool, const toYadoms::msg&> checkExpectedMessageFunction,
+                          boost::function1<void, const toYadoms::msg&> onReceiveFunction)
    {
       shared::event::CEventHandler receivedEvtHandler;
 
@@ -142,7 +142,7 @@ namespace pluginSystem
       onReceiveFunction(receivedEvtHandler.getEventData<const toYadoms::msg>());
    }
 
-   void CContextAccessor::processMessage(boost::shared_ptr<const unsigned char[]> message, size_t messageSize)
+   void CIpcAdapter::processMessage(boost::shared_ptr<const unsigned char[]> message, size_t messageSize)
    {
       if (messageSize < 1)
          throw shared::exception::CInvalidParameter("messageSize");
@@ -191,7 +191,7 @@ namespace pluginSystem
       }
    }
 
-   void CContextAccessor::processSetPluginState(const toYadoms::SetPluginState& msg) const
+   void CIpcAdapter::processSetPluginState(const toYadoms::SetPluginState& msg) const
    {
       shared::plugin::yPluginApi::historization::EPluginState state;
       switch (msg.pluginstate())
@@ -213,7 +213,7 @@ namespace pluginSystem
       m_pluginApi->setPluginState(state, msg.custommessageid());
    }
 
-   void CContextAccessor::processGetConfiguration(const toYadoms::ConfigurationRequest& msg)
+   void CIpcAdapter::processGetConfiguration(const toYadoms::ConfigurationRequest& msg)
    {
       toPlugin::msg ans;
       auto answer = ans.mutable_configurationanswer();
@@ -221,7 +221,7 @@ namespace pluginSystem
       send(ans);
    }
 
-   void CContextAccessor::processDeviceExistsRequest(const toYadoms::DeviceExitsRequest& msg)
+   void CIpcAdapter::processDeviceExistsRequest(const toYadoms::DeviceExitsRequest& msg)
    {
       toPlugin::msg ans;
       auto answer = ans.mutable_deviceexists();
@@ -229,7 +229,7 @@ namespace pluginSystem
       send(ans);
    }
 
-   void CContextAccessor::processDeviceDetailsRequest(const toYadoms::DeviceDetailsRequest& msg)
+   void CIpcAdapter::processDeviceDetailsRequest(const toYadoms::DeviceDetailsRequest& msg)
    {
       toPlugin::msg ans;
       auto answer = ans.mutable_devicedetails();
@@ -237,7 +237,7 @@ namespace pluginSystem
       send(ans);
    }
 
-   void CContextAccessor::processKeywordExistsRequest(const toYadoms::KeywordExitsRequest& msg)
+   void CIpcAdapter::processKeywordExistsRequest(const toYadoms::KeywordExitsRequest& msg)
    {
       toPlugin::msg ans;
       auto answer = ans.mutable_keywordexists();
@@ -245,21 +245,21 @@ namespace pluginSystem
       send(ans);
    }
 
-   void CContextAccessor::processDeclareDevice(const toYadoms::DeclareDevice& msg) const
+   void CIpcAdapter::processDeclareDevice(const toYadoms::DeclareDevice& msg) const
    {
       m_pluginApi->declareDevice(msg.device(),
                                  msg.model(),
                                  msg.has_details() ? shared::CDataContainer(msg.details()) : shared::CDataContainer::EmptyContainer);
    }
 
-   void CContextAccessor::processDeclareKeyword(const toYadoms::DeclareKeyword& msg) const
+   void CIpcAdapter::processDeclareKeyword(const toYadoms::DeclareKeyword& msg) const
    {
       m_pluginApi->declareKeyword(msg.device(),
                                   CFromPluginHistorizer(msg.keyword()),
                                   msg.has_details() ? shared::CDataContainer(msg.details()) : shared::CDataContainer::EmptyContainer);
    }
 
-   void CContextAccessor::processRecipientValueRequest(const toYadoms::RecipientValueRequest& msg)
+   void CIpcAdapter::processRecipientValueRequest(const toYadoms::RecipientValueRequest& msg)
    {
       toPlugin::msg ans;
       auto answer = ans.mutable_recipientvalue();
@@ -267,7 +267,7 @@ namespace pluginSystem
       send(ans);
    }
 
-   void CContextAccessor::processFindRecipientsFromFieldRequest(const toYadoms::FindRecipientsFromFieldRequest& msg)
+   void CIpcAdapter::processFindRecipientsFromFieldRequest(const toYadoms::FindRecipientsFromFieldRequest& msg)
    {
       toPlugin::msg ans;
       auto answer = ans.mutable_findrecipientsfromfieldanswer();
@@ -276,7 +276,7 @@ namespace pluginSystem
       send(ans);
    }
 
-   void CContextAccessor::processRecipientFieldExitsRequest(const toYadoms::RecipientFieldExitsRequest& msg)
+   void CIpcAdapter::processRecipientFieldExitsRequest(const toYadoms::RecipientFieldExitsRequest& msg)
    {
       toPlugin::msg ans;
       auto answer = ans.mutable_recipientfieldexitsanswer();
@@ -284,7 +284,7 @@ namespace pluginSystem
       send(ans);
    }
 
-   void CContextAccessor::processHistorizeData(const toYadoms::HistorizeData& msg) const
+   void CIpcAdapter::processHistorizeData(const toYadoms::HistorizeData& msg) const
    {
       std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > dataVect;
       for (auto value = msg.value().begin(); value != msg.value().end(); ++value)
@@ -295,7 +295,7 @@ namespace pluginSystem
    }
 
 
-   void CContextAccessor::postStopRequest()
+   void CIpcAdapter::postStopRequest()
    {
       toPlugin::msg msg;
       auto message = msg.mutable_system();
@@ -304,7 +304,7 @@ namespace pluginSystem
       send(msg);
    }
 
-   void CContextAccessor::postPluginInformation(boost::shared_ptr<const shared::plugin::information::IInformation> information)
+   void CIpcAdapter::postPluginInformation(boost::shared_ptr<const shared::plugin::information::IInformation> information)
    {
       toPlugin::msg msg;
       serializers::CInformation(information).toPb(msg.mutable_plugininformation());
@@ -312,7 +312,7 @@ namespace pluginSystem
       send(msg);
    }
 
-   void CContextAccessor::postUpdateConfiguration(const shared::CDataContainer& newConfiguration)
+   void CIpcAdapter::postUpdateConfiguration(const shared::CDataContainer& newConfiguration)
    {
       toPlugin::msg msg;
       auto message = msg.mutable_updateconfiguration();
@@ -320,7 +320,7 @@ namespace pluginSystem
       send(msg);
    }
 
-   void CContextAccessor::postBindingQueryRequest(boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> request)
+   void CIpcAdapter::postBindingQueryRequest(boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> request)
    {
       toPlugin::msg req;
       auto message = req.mutable_bindingquery();
@@ -353,7 +353,7 @@ namespace pluginSystem
          request->sendError(result);
    }
 
-   void CContextAccessor::postDeviceCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> deviceCommand)
+   void CIpcAdapter::postDeviceCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> deviceCommand)
    {
       toPlugin::msg msg;
       auto message = msg.mutable_devicecommand();
@@ -363,7 +363,7 @@ namespace pluginSystem
       send(msg);
    }
 
-   void CContextAccessor::postExtraCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> extraCommand)
+   void CIpcAdapter::postExtraCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> extraCommand)
    {
       toPlugin::msg msg;
       auto message = msg.mutable_extracommand();
@@ -372,7 +372,7 @@ namespace pluginSystem
       send(msg);
    }
 
-   void CContextAccessor::postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request)
+   void CIpcAdapter::postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request)
    {
       toPlugin::msg req;
       auto message = req.mutable_manuallydevicecreation();

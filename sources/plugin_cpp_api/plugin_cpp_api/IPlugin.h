@@ -1,6 +1,6 @@
 #pragma once
 
-// Include directly CPP yPluginApi interface //TODO conserver l'interface en commun avec shared ?
+// Include directly CPP yPluginApi interface
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 
 

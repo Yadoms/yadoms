@@ -1,7 +1,6 @@
 #pragma once
 #include "ICommandLine.h"
 
-//TODO virer
 namespace plugin_cpp_api
 {
 	//--------------------------------------------------------------

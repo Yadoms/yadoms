@@ -3,18 +3,18 @@
 
 namespace pluginSystem
 {
-   InstanceRemover::InstanceRemover(boost::recursive_mutex& runningInstancesMutex,
-                                    std::map<int, boost::shared_ptr<IInstance> >& runningInstances)
+   CInstanceRemover::CInstanceRemover(boost::recursive_mutex& runningInstancesMutex,
+                                      std::map<int, boost::shared_ptr<IInstance> >& runningInstances)
       : m_runningInstancesMutex(runningInstancesMutex),
         m_runningInstances(runningInstances)
    {
    }
 
-   InstanceRemover::~InstanceRemover()
+   CInstanceRemover::~CInstanceRemover()
    {
    }
 
-   void InstanceRemover::onStopped(int instanceId)
+   void CInstanceRemover::onStopped(int instanceId)
    {
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
@@ -30,7 +30,7 @@ namespace pluginSystem
       {
          // Notify all handlers for this instance
          boost::lock_guard<boost::recursive_mutex> lock(m_instanceStopNotifiersMutex);
-         std::map<int, std::set<boost::shared_ptr<shared::event::CEventHandler>>>::const_iterator itEventHandlerSetToNotify = m_instanceStopNotifiers.find(instanceId);
+         std::map<int, std::set<boost::shared_ptr<shared::event::CEventHandler> > >::const_iterator itEventHandlerSetToNotify = m_instanceStopNotifiers.find(instanceId);
          if (itEventHandlerSetToNotify != m_instanceStopNotifiers.end())
             for (auto itHandler = itEventHandlerSetToNotify->second.begin(); itHandler != itEventHandlerSetToNotify->second.end(); ++itHandler)
                (*itHandler)->postEvent(shared::event::kUserFirstId);
@@ -38,17 +38,19 @@ namespace pluginSystem
    }
 
 
-   void InstanceRemover::addWaiterOn(int instanceId, boost::shared_ptr<shared::event::CEventHandler> waiter)
+   void CInstanceRemover::addWaiterOn(int instanceId,
+                                      boost::shared_ptr<shared::event::CEventHandler> waiter)
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_instanceStopNotifiersMutex);
       m_instanceStopNotifiers[instanceId].insert(waiter);
    }
 
-   void InstanceRemover::removeWaiterOn(int instanceId, boost::shared_ptr<shared::event::CEventHandler> waiter)
+   void CInstanceRemover::removeWaiterOn(int instanceId,
+                                         boost::shared_ptr<shared::event::CEventHandler> waiter)
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_instanceStopNotifiersMutex);
       m_instanceStopNotifiers[instanceId].erase(waiter);
    }
-
 } // namespace pluginSystem
+
 

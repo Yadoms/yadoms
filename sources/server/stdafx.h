@@ -24,8 +24,6 @@
 #include <boost/asio.hpp>
 #include <boost/assert.hpp>
 #include <boost/assign.hpp>
-#include <boost/bind.hpp>
-#include <boost/chrono/thread_clock.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/date_time/posix_time/time_formatters.hpp>
 #include <boost/filesystem.hpp>

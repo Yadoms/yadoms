@@ -9,7 +9,6 @@
 
 namespace pluginSystem
 {
-   //TODO réellement utile ?
    //--------------------------------------------------------------
    /// \class Configuration loading error exception
    //--------------------------------------------------------------

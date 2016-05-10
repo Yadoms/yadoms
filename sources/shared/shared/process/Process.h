@@ -44,7 +44,6 @@ namespace shared
       protected:
          //--------------------------------------------------------------
          /// \brief	Start a module (in separated process)
-         /// \throw CPythonException if error
          //--------------------------------------------------------------
          void start();
 

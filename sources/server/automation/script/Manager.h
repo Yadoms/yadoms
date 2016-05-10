@@ -52,10 +52,6 @@ namespace automation { namespace script
       void updateScriptFile(boost::shared_ptr<const database::entities::CRule> ruleData, const std::string& code) override;
       void deleteScriptFile(boost::shared_ptr<const database::entities::CRule> ruleData, bool doBackup = true) override;
       std::string getScriptLogFile(boost::shared_ptr<const database::entities::CRule> ruleData) override;
-      boost::shared_ptr<shared::process::IProcess> createScriptProcess(boost::shared_ptr<const IProperties> scriptProperties,
-                                                                       boost::shared_ptr<shared::process::ILogger> scriptLogger,
-                                                                       boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
-                                                                       boost::shared_ptr<shared::process::IProcessObserver> stopNotifier) override;
       boost::shared_ptr<shared::process::ILogger> createScriptLogger(const std::string& scriptPath) override;
       boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> createScriptContext(boost::shared_ptr<shared::process::ILogger> scriptLogger) override;
       boost::shared_ptr<shared::process::IProcessObserver> createStopNotifier(boost::shared_ptr<IRuleStateHandler> ruleStateHandler, int ruleId) override;

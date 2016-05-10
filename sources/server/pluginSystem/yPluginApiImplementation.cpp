@@ -31,7 +31,6 @@ namespace pluginSystem
       m_instanceStateHandler->setState(state, customMessageId);
    }
 
-
    bool CYPluginApiImplementation::deviceExists(const std::string& device) const
    {
       return m_deviceManager->deviceExists(getPluginId(), device);

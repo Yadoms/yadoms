@@ -6,11 +6,11 @@ namespace pluginSystem
    CInstance::CInstance(boost::shared_ptr<const database::entities::CPlugin> instanceInformation,
                         const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
                         boost::shared_ptr<shared::process::IProcess> process,
-                        boost::shared_ptr<IContextAccessor> contextAccessor)
+                        boost::shared_ptr<IIpcAdapter> ipcAdapter)
       : m_instanceInformation(instanceInformation),
         m_pluginInformation(pluginInformation),
         m_process(process),
-        m_contextAccessor(contextAccessor)
+        m_ipcAdapter(ipcAdapter)
    {
       postPluginInformation(m_pluginInformation);
    }
@@ -31,37 +31,37 @@ namespace pluginSystem
 
    void CInstance::postStopRequest() const
    {
-      m_contextAccessor->postStopRequest();
+      m_ipcAdapter->postStopRequest();
    }
 
    void CInstance::postPluginInformation(boost::shared_ptr<const shared::plugin::information::IInformation> information) const
    {
-      m_contextAccessor->postPluginInformation(information);
+      m_ipcAdapter->postPluginInformation(information);
    }
 
    void CInstance::postDeviceCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> deviceCommand) const
    {
-      m_contextAccessor->postDeviceCommand(deviceCommand);
+      m_ipcAdapter->postDeviceCommand(deviceCommand);
    }
 
    void CInstance::postBindingQueryRequest(boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> request) const
    {
-      m_contextAccessor->postBindingQueryRequest(request);
+      m_ipcAdapter->postBindingQueryRequest(request);
    }
 
    void CInstance::postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request) const
    {
-      m_contextAccessor->postManuallyDeviceCreationRequest(request);
+      m_ipcAdapter->postManuallyDeviceCreationRequest(request);
    }
 
    void CInstance::postExtraCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> extraCommand) const
    {
-      m_contextAccessor->postExtraCommand(extraCommand);
+      m_ipcAdapter->postExtraCommand(extraCommand);
    }
 
    void CInstance::updateConfiguration(const shared::CDataContainer& newConfiguration) const
    {
-      m_contextAccessor->postUpdateConfiguration(newConfiguration);
+      m_ipcAdapter->postUpdateConfiguration(newConfiguration);
    }
 
    boost::shared_ptr<const database::entities::CPlugin> CInstance::about() const

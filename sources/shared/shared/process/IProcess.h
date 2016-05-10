@@ -19,7 +19,6 @@ namespace shared
 
          //--------------------------------------------------------------
          /// \brief	Ask for process stop
-         /// \throw CPythonException if error
          //--------------------------------------------------------------
          virtual void kill() = 0;
 

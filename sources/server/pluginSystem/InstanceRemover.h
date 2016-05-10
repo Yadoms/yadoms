@@ -8,7 +8,7 @@ namespace pluginSystem
    //--------------------------------------------------------------
    /// \brief	Instance remover when stopped
    //--------------------------------------------------------------
-   class InstanceRemover /*TODO renommer*/ : public IInstanceStoppedListener
+   class CInstanceRemover : public IInstanceStoppedListener
    {
    public:
       //--------------------------------------------------------------
@@ -16,13 +16,13 @@ namespace pluginSystem
       /// \param[in] runningInstancesMutex  Mutex on running instance list
       /// \param[in] runningInstances  Running instance list
       //--------------------------------------------------------------
-      InstanceRemover(boost::recursive_mutex& runningInstancesMutex,
-                      std::map<int, boost::shared_ptr<IInstance> >& runningInstances);
+      CInstanceRemover(boost::recursive_mutex& runningInstancesMutex,
+                       std::map<int, boost::shared_ptr<IInstance> >& runningInstances);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
-      virtual ~InstanceRemover();
+      virtual ~CInstanceRemover();
 
       // IInstanceStoppedListener Implementation
       void onStopped(int instanceId) override;

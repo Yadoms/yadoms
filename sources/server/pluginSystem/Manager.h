@@ -280,7 +280,7 @@ namespace pluginSystem
       //-----------------------------------------------------
       ///\brief         Instance remover when instance is stopped
       //-----------------------------------------------------
-      boost::shared_ptr<InstanceRemover> m_instanceRemover;
+      boost::shared_ptr<CInstanceRemover> m_instanceRemover;
 
       //--------------------------------------------------------------
       /// \brief			Map of all running instances, and its mutex (key are plugin instance id)

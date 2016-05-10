@@ -1,4 +1,4 @@
-#include "stdafx.h"//TODO faire ménage dans les include
+#include "stdafx.h"
 
 #include "Manager.h"
 #ifdef _DEBUG
@@ -29,12 +29,12 @@ namespace pluginSystem
       m_dataProvider(dataProvider),
       m_pluginDBTable(dataProvider->getPluginRequester()),
 #ifdef _DEBUG //TODO faut-il conserver les qualifiers ?
-      m_qualifier(boost::make_shared<CBasicQualifier>(dataProvider->getPluginEventLoggerRequester(), dataAccessLayer->getEventLogger())),//TODO passer par la factory
+      m_qualifier(boost::make_shared<CBasicQualifier>(dataProvider->getPluginEventLoggerRequester(), dataAccessLayer->getEventLogger())),
 #else
-      m_qualifier(boost::make_shared<CIndicatorQualifier>(dataProvider->getPluginEventLoggerRequester(), dataAccessLayer->getEventLogger())),//TODO passer par la factory
+      m_qualifier(boost::make_shared<CIndicatorQualifier>(dataProvider->getPluginEventLoggerRequester(), dataAccessLayer->getEventLogger())),
 #endif
       m_supervisor(supervisor), m_dataAccessLayer(dataAccessLayer),
-      m_instanceRemover(boost::make_shared<InstanceRemover>(m_runningInstancesMutex, m_runningInstances))//TODO passer par la factory ?
+      m_instanceRemover(boost::make_shared<CInstanceRemover>(m_runningInstancesMutex, m_runningInstances))
    {
    }
 
@@ -261,7 +261,7 @@ namespace pluginSystem
       }
       catch (CInvalidPluginException& e)
       {
-         const auto& error((boost::format("Invalid plugin instance %1% configuration, invalid parameter : %2%") % id % e.what()).str());
+         const auto& error((boost::format("Invalid plugin instance %1%, because of an invalid plugin : %2%") % id % e.what()).str());
          //TODO utile ?         m_pluginStateHandler->signalError(id, error);
          throw CPluginException(error);
       }

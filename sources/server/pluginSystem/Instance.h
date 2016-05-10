@@ -11,7 +11,7 @@
 #include <shared/plugin/yPluginApi/IDeviceCommand.h>
 #include <shared/plugin/yPluginApi/IExtraCommand.h>
 #include "IInstance.h"
-#include "IContextAccessor.h"
+#include "IIpcAdapter.h"
 
 namespace pluginSystem
 {
@@ -26,12 +26,12 @@ namespace pluginSystem
       /// \param [in]	instanceInformation        Information on the instance
       /// \param [in]	pluginInformation          Information on the plugin
       /// \param [in]   process                    The instance process
-      /// \param [in]   contextAccessor            The api context accessor
+      /// \param [in]   ipcAdapter                 The api IPC adapter
       //--------------------------------------------------------------
       CInstance(boost::shared_ptr<const database::entities::CPlugin> instanceInformation,
                 const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
                 boost::shared_ptr<shared::process::IProcess> process,
-                boost::shared_ptr<IContextAccessor> contextAccessor);
+                boost::shared_ptr<IIpcAdapter> ipcAdapter);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
@@ -51,8 +51,8 @@ namespace pluginSystem
       void kill() override;
       boost::shared_ptr<const database::entities::CPlugin> about() const override;
       boost::shared_ptr<const shared::plugin::information::IInformation> aboutPlugin() const override;
-      void postDeviceCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> deviceCommand) const;
-      void postExtraCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> extraCommand) const;
+      void postDeviceCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> deviceCommand) const override;
+      void postExtraCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> extraCommand) const override;
       void postBindingQueryRequest(boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> request) const override;
       void postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request) const override;
       // [END] IInstance Implementation
@@ -60,19 +60,6 @@ namespace pluginSystem
 
    protected:
       void postStopRequest() const;
-
-      //TODO
-      //    //--------------------------------------------------------------
-      //    /// \brief			            Post a command to the plugin
-      //    /// \param  command           Command to post
-      //    //--------------------------------------------------------------
-      //    virtual void postCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command) const;
-
-      //    //--------------------------------------------------------------
-      //    /// \brief			            Post a manually device creation request to the plugin
-      //    /// \param  request           Request data
-      //    //--------------------------------------------------------------
-      //    virtual void postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> & request) const;
 
 
    private:
@@ -94,6 +81,6 @@ namespace pluginSystem
       //-----------------------------------------------------
       ///\brief               The api context accessor
       //-----------------------------------------------------
-      boost::shared_ptr<IContextAccessor> m_contextAccessor;
+      boost::shared_ptr<IIpcAdapter> m_ipcAdapter;
    };
 } // namespace pluginSystem

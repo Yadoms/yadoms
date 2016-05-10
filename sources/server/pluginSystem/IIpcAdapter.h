@@ -9,15 +9,15 @@
 namespace pluginSystem
 {
    //--------------------------------------------------------------
-   /// \brief	yScriptApi context accessor, used by script to interact with Yadoms
+   /// \brief	yScriptApi IPC adapter interface, used by plugin to dial with Yadoms
    //--------------------------------------------------------------
-   class IContextAccessor//TODO renommer (et son implémentation) en IPluginDialer ou IpcAdapter ?
+   class IIpcAdapter
    {
    public:
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
-      virtual ~IContextAccessor()
+      virtual ~IIpcAdapter()
       {
       }
 

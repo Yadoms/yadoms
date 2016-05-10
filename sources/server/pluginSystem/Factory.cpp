@@ -9,7 +9,7 @@
 #include "IQualifier.h"
 #include "NativeExecutableCommandLine.h"
 #include "InvalidPluginException.hpp"
-#include "ContextAccessor.h"
+#include "IpcAdapter.h"
 #include <shared/process/Process.h>
 #include <shared/process/ProcessException.hpp>
 #include <shared/FileSystemExtension.h>
@@ -125,11 +125,11 @@ namespace pluginSystem
       }
    }
 
-   boost::shared_ptr<IContextAccessor> CFactory::createInstanceRunningContext(boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
-                                                                              boost::shared_ptr<const database::entities::CPlugin> instanceData,
-                                                                              boost::shared_ptr<IInstanceStateHandler> instanceStateHandler,
-                                                                              boost::shared_ptr<database::IDataProvider> dataProvider,
-                                                                              boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer) const
+   boost::shared_ptr<IIpcAdapter> CFactory::createInstanceRunningContext(boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
+                                                                         boost::shared_ptr<const database::entities::CPlugin> instanceData,
+                                                                         boost::shared_ptr<IInstanceStateHandler> instanceStateHandler,
+                                                                         boost::shared_ptr<database::IDataProvider> dataProvider,
+                                                                         boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer) const
    {
       auto apiImplementation(boost::make_shared<CYPluginApiImplementation>(pluginInformation,
                                                                            instanceData,
@@ -138,7 +138,7 @@ namespace pluginSystem
                                                                            dataAccessLayer->getDeviceManager(),
                                                                            dataAccessLayer->getAcquisitionHistorizer()));
 
-      return boost::make_shared<CContextAccessor>(apiImplementation);
+      return boost::make_shared<CIpcAdapter>(apiImplementation);
    }
 
 
@@ -151,13 +151,13 @@ namespace pluginSystem
 
    bool CFactory::isValidPlugin(const boost::filesystem::path& directory) const
    {
-      // Check if plugin is a native executable plugin //TODO ça serait mieux dans une classe à part
-      const auto expectedLibName(shared::CExecutable::ToFileName(directory.filename().string()));
+      // Check if plugin is a native executable plugin
+      const auto expectedExecutableName(shared::CExecutable::ToFileName(directory.filename().string()));
 
       for (boost::filesystem::directory_iterator fileIterator(directory); fileIterator != boost::filesystem::directory_iterator(); ++fileIterator)
       {
          if (boost::filesystem::is_regular_file(fileIterator->status()) && // It's a file...
-            boost::iequals(fileIterator->path().filename().string(), expectedLibName)) // ...with the same name as sub-directory...
+            boost::iequals(fileIterator->path().filename().string(), expectedExecutableName)) // ...with the same name as sub-directory...
             return true;
       }
 

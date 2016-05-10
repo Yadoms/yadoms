@@ -20,7 +20,6 @@ public:
    /// \param[in] yScriptApi The context, used by script to interact with Yadoms
    /// \param[in] scriptLogger The script logger
    /// \param[in] stopNotifier The stop notifier
-   /// \throw CPythonException if error
    //--------------------------------------------------------------
    CScriptProcess(boost::shared_ptr<IPythonExecutable> executable,
                   boost::shared_ptr<const IScriptFile> scriptFile,
@@ -42,7 +41,6 @@ public:
 protected:
    //--------------------------------------------------------------
    /// \brief	Start a module
-   /// \throw CPythonException if error
    //--------------------------------------------------------------
    void start();
 

@@ -84,20 +84,6 @@ namespace automation { namespace script
       ///\throw CInvalidParameter if rule ID not found
       //-----------------------------------------------------
       virtual std::string getScriptLogFile(boost::shared_ptr<const database::entities::CRule> ruleData) = 0;
-      
-      //-----------------------------------------------------
-      ///\brief               Create a script process
-      ///\param[in] scriptProperties      The script properties
-      ///\param[in] scriptLogger          The rule logger
-      ///\param[in] yScriptApi            The rule context
-      ///\param[in] stopNotifier          The rule stop notifier
-      ///\return              A new script process instance
-      ///\throw CInvalidParameter if unable to create script process
-      //-----------------------------------------------------
-      virtual boost::shared_ptr<shared::process::IProcess> createScriptProcess(boost::shared_ptr<const IProperties> scriptProperties,
-                                                                               boost::shared_ptr<shared::process::ILogger> scriptLogger,
-                                                                               boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
-                                                                               boost::shared_ptr<shared::process::IProcessObserver> stopNotifier) = 0;
 
       //-----------------------------------------------------
       ///\brief               Create the script logger

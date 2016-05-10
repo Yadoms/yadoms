@@ -365,8 +365,8 @@ set(YADOMS_SRC
 	server/pluginSystem/BasicQualifier.cpp
    server/pluginSystem/CommandHistorizer.h
    server/pluginSystem/CommandHistorizer.cpp
-   server/pluginSystem/ContextAccessor.h
-   server/pluginSystem/ContextAccessor.cpp
+   server/pluginSystem/IpcAdapter.h
+   server/pluginSystem/IpcAdapter.cpp
    server/pluginSystem/DeviceCommand.h
    server/pluginSystem/DeviceCommand.cpp
 	server/pluginSystem/DummyQualifier.h
@@ -377,12 +377,12 @@ set(YADOMS_SRC
    server/pluginSystem/FromPluginHistorizer.cpp
 	server/pluginSystem/IdentityForQualifier.h
 	server/pluginSystem/IdentityForQualifier.cpp
-   server/pluginSystem/IContextAccessor.h
 	server/pluginSystem/IFactory.h
 	server/pluginSystem/IInstance.h
 	server/pluginSystem/IInstanceStartErrorObserver.h
 	server/pluginSystem/IInstanceStateHandler.h
    server/pluginSystem/IInstanceStoppedListener.h
+   server/pluginSystem/IIpcAdapter.h
 	server/pluginSystem/IndicatorQualifier.h
 	server/pluginSystem/IndicatorQualifier.cpp
 	server/pluginSystem/Information.h

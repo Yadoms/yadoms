@@ -256,33 +256,6 @@ std::string CManager::getScriptLogFile(boost::shared_ptr<const database::entitie
    return std::string(std::istreambuf_iterator<char>(file), eos);
 }
 
-boost::shared_ptr<shared::process::IProcess> CManager::createScriptProcess(boost::shared_ptr<const IProperties> scriptProperties, //TODO virer la fonction
-                                                                           boost::shared_ptr<shared::process::ILogger> scriptLogger,
-                                                                           boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
-                                                                           boost::shared_ptr<shared::process::IProcessObserver> stopNotifier)
-{
-   try
-   {
-      auto scriptInterpreter = getAssociatedInterpreter(scriptProperties->interpreterName());
-
-      return scriptInterpreter->createProcess(scriptProperties->scriptPath(),
-                                              scriptLogger,
-                                              yScriptApi,
-                                              stopNotifier,
-                                              scriptProperties->configuration());
-   }
-   catch (CInterpreterNotFound& e)
-   {
-      YADOMS_LOG(error) << "Unable to run script : " << e.what();
-      throw shared::exception::CInvalidParameter("Unable to run script");
-   }
-   catch (shared::exception::COutOfRange& e)
-   {
-      YADOMS_LOG(error) << "Script type is not supported : " << e.what();
-      throw shared::exception::CInvalidParameter("script type");
-   }
-}
-
 boost::filesystem::path CManager::scriptLogFile(const boost::filesystem::path& scriptPath)
 {
    return scriptPath / "yadomsScript.log";

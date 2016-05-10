@@ -29,7 +29,6 @@ if(PYTHONLIBS_FOUND)
       Python.cpp
       PythonCommandLine.h
       PythonCommandLine.cpp
-      PythonException.hpp
       PythonExecutable.h
       PythonExecutable.cpp
       ScriptFile.h
