@@ -27,6 +27,7 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
         */
         this.mutationData_ = {
             storeInVariable: false,
+            storeDeviceInVariable: false,
             additionalBlocks: []
         };
     },
@@ -50,6 +51,24 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
 					.appendField($.t("blockly.blocks.yadoms_wait_for_event.titleLine2"))
 					.appendField(" ")
 					.appendField(new Blockly.FieldVariable(this.generateVariable_(varName)), "outVar")
+					.setForceNewlineInput(true);
+            }
+        } else {
+            if (input !== null) {
+                this.removeInput(input);
+            }
+        }
+    },
+	
+    updateStoreDeviceVariableInput_: function (showInput, varName) {
+        var input = this.getInput("storeDeviceVariableInput");
+
+        if (showInput === true) {
+            if (input == null) {
+                this.appendDummyInput("storeDeviceVariableInput")
+					.appendField($.t("blockly.blocks.yadoms_wait_for_event.titleLine3"))
+					.appendField(" ")
+					.appendField(new Blockly.FieldVariable(this.generateVariable_(varName)), "outDeviceVar")
 					.setForceNewlineInput(true);
             }
         } else {
@@ -450,7 +469,7 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
        * @this Blockly.Block
        */
     getVars: function () {
-        return [this.getFieldValue("outVar")];
+        return [this.getFieldValue("outVar"), this.getFieldValue("outDeviceVar")];
     },
     /**
      * Notification that a variable is renaming.
@@ -465,18 +484,28 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
                 this.setFieldValue(newName, "outVar");
             }
         }
+        if (this.getFieldValue("outDeviceVar")) {
+            if (Blockly.Names.equals(oldName, this.getFieldValue("outDeviceVar"))) {
+                this.setFieldValue(newName, "outDeviceVar");
+            }
+        }
     },
 
+	defaultVarName : $.t("blockly.blocks.yadoms_wait_for_event.defaultVarName", {defaultValue : "acquisitionValue" }),
+	defaultDeviceVarName : $.t("blockly.blocks.yadoms_wait_for_event.defaultDeviceVarName", {defaultValue : "deviceValue" }),
+	
     /**
      * Update the block depending on the mutation
      * @this Blockly.Block
      */
     updateShape_: function () {
         if (this.mutationData_) {
-            this.updateStoreVariableInput_(this.mutationData_.storeInVariable);
+            this.updateStoreVariableInput_(this.mutationData_.storeInVariable, this.mutationData_.storeVariableName_ || this.defaultVarName);
+            this.updateStoreDeviceVariableInput_(this.mutationData_.storeDeviceInVariable, this.mutationData_.storeDeviceVariableName_ || this.defaultDeviceVarName);
             this.updateAdditionalInputs_(this.mutationData_.additionalBlocks);
         } else {
             this.updateStoreVariableInput_(false);
+            this.updateStoreDeviceVariableInput_(false);
             this.updateAdditionalInputs_();
         }
     },
@@ -492,6 +521,7 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
         }
         var container = document.createElement("mutation");
         container.setAttribute("storeInVariable".toLowerCase(), this.mutationData_.storeInVariable);
+        container.setAttribute("storeDeviceInVariable".toLowerCase(), this.mutationData_.storeDeviceInVariable);
 
         $.each(this.mutationData_.additionalBlocks, function (index, blockType) {
             var addBlock = document.createElement("additional" + index);
@@ -509,6 +539,7 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
      */
     domToMutation: function (xmlElement) {
         this.mutationData_.storeInVariable = (xmlElement.getAttribute("storeInVariable".toLowerCase()) === "true");
+        this.mutationData_.storeDeviceInVariable = (xmlElement.getAttribute("storeDeviceInVariable".toLowerCase()) === "true");
         this.mutationData_.additionalBlocks = [];
 
         for (var i = 0, childNode; childNode = xmlElement.childNodes[i]; i++) {
@@ -537,6 +568,9 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
         if (this.mutationData_.storeInVariable === true) {
 			topBlock.setFieldValue('TRUE', 'storeInVariableField');
         }
+        if (this.mutationData_.storeDeviceInVariable === true) {
+			topBlock.setFieldValue('TRUE', 'storeDeviceInVariableField');
+        }
 
         $.each(this.mutationData_.additionalBlocks, function (index, blockType) {
             if (blockType != null && blockType !== "") {
@@ -560,6 +594,9 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
         var inputVar = this.getInput("storeVariableInput");
         if (inputVar)
             this.removeInput("storeVariableInput");
+        inputVar = this.getInput("storeDeviceVariableInput");
+        if (inputVar)
+            this.removeInput("storeDeviceVariableInput");
         this.removeAllAdditionalInputs_();
 
         //remove any shadow item on workspace
@@ -584,6 +621,7 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
 
         //reset mutation data
         this.mutationData_.storeInVariable = false;
+		this.mutationData_.storeDeviceInVariable = false;
         this.mutationData_.additionalBlocks = [];
 
         // Rebuild the block's optional inputs.
@@ -599,7 +637,11 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
         
 		if(containerBlock.getFieldValue('storeInVariableField') == "TRUE") {
 			this.mutationData_.storeInVariable = true;
-			this.updateStoreVariableInput_(this.mutationData_.storeInVariable, (clauseBlock?clauseBlock.storeVariableName_:undefined));
+			this.updateStoreVariableInput_(this.mutationData_.storeInVariable, (clauseBlock?(clauseBlock.storeVariableName_ || this.defaultVarName):this.defaultVarName));
+		}	
+		if(containerBlock.getFieldValue('storeDeviceInVariableField') == "TRUE") {
+			this.mutationData_.storeDeviceInVariable = true;
+			this.updateStoreDeviceVariableInput_(this.mutationData_.storeDeviceInVariable, (clauseBlock?(clauseBlock.storeDeviceVariableName_||this.defaultDeviceVarName):this.defaultDeviceVarName));
 		}
 		
         while (clauseBlock) {
@@ -688,10 +730,11 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
      */
     saveConnections: function (containerBlock) {
         var clauseBlock = null;
-		
+
 		if(containerBlock && containerBlock.nextConnection) {
 			clauseBlock = containerBlock.nextConnection.targetBlock();
-			clauseBlock.storeVariableName_ = this.getFieldValue("outVar");
+			clauseBlock.storeVariableName_ = containerBlock.getFieldValue("outVar");
+			clauseBlock.storeDeviceVariableName_ = containerBlock.getFieldValue("outDeviceVar");
 		
 			var i = 0;
 			while (clauseBlock) {
@@ -837,8 +880,12 @@ Blockly.Blocks["yadoms_wait_for_event_base"] = {
         this.appendStatementInput("STACK");
 
         this.appendDummyInput()
-			.appendField($.t("blockly.blocks.yadoms_wait_for_event.mutator.base.storeInVariable"))
+			.appendField($.t("blockly.blocks.yadoms_wait_for_event.mutator.base.storeValueInVariable"))
 			.appendField(new Blockly.FieldCheckbox('FALSE'), 'storeInVariableField');
+
+		this.appendDummyInput()
+			.appendField($.t("blockly.blocks.yadoms_wait_for_event.mutator.base.storeDeviceNameInVariable"))
+			.appendField(new Blockly.FieldCheckbox('FALSE'), 'storeDeviceInVariableField');
 			
         this.setTooltip($.t("blockly.blocks.yadoms_wait_for_event.mutator.base.tooltip"));
         this.contextMenu = false;

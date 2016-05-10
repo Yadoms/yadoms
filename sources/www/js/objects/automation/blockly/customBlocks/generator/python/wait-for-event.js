@@ -43,6 +43,13 @@ Blockly.Python["yadoms_wait_for_event"] = function (block) {
         outVar = block.generateVariable_("keywordValue");
     }
 
+	
+    if (block.mutationData_.storeDeviceInVariable === true) {
+        outDeviceVar = block.getFieldValue("outDeviceVar");
+    } else {
+        outDeviceVar = block.generateVariable_("deviceName");
+    }
+
     var endOfLoopVar = block.generateVariable_("endOfLoop");
     var waitForEventResultVar = block.generateVariable_("waitForEventResult");
     var keywordIdVar = block.generateVariable_("keywordId");
