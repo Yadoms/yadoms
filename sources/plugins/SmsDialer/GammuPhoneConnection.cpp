@@ -1,17 +1,16 @@
 #include "stdafx.h"
-#include <shared/Log.h>
 #include "PhoneException.hpp"
 #include "GammuPhoneConnection.h"
 
 
 CGammuPhoneConnection::CGammuPhoneConnection(const ISmsDialerConfiguration& configuration)
-   :m_configuration(configuration)
+   : m_configuration(configuration)
 {
-   GSM_InitLocales(NULL);
+   GSM_InitLocales(nullptr);
 
    // Initialize Gammu context
    m_gsmContext = GSM_AllocStateMachine();
-   if (m_gsmContext == NULL)
+   if (m_gsmContext == nullptr)
       throw CPhoneException("Unable to initialize the Gammu library context");
 
    // Configure Gammu
@@ -37,18 +36,19 @@ CGammuPhoneConnection::~CGammuPhoneConnection()
    GSM_FreeStateMachine(m_gsmContext);
 }
 
-GSM_StateMachine* CGammuPhoneConnection::getGsmContext()
+GSM_StateMachine* CGammuPhoneConnection::getGsmContext() const
 {
    return m_gsmContext;
 }
 
-void CGammuPhoneConnection::handleGammuError(GSM_Error gsmError, const std::string& errorMessage) const
+void CGammuPhoneConnection::handleGammuError(GSM_Error gsmError,
+                                             const std::string& errorMessage)
 {
    if (gsmError != ERR_NONE)
-      throw CPhoneException(std::string ("Phone connection : ") + errorMessage + std::string(" : ") + std::string(GSM_ErrorString(gsmError)));
+      throw CPhoneException(std::string("Phone connection : ") + errorMessage + std::string(" : ") + std::string(GSM_ErrorString(gsmError)));
 }
 
-bool CGammuPhoneConnection::connect()
+bool CGammuPhoneConnection::connect() const
 {
    if (isConnected())
       return true;
@@ -62,7 +62,7 @@ bool CGammuPhoneConnection::connect()
    }
    catch (CPhoneException& e)
    {
-      YADOMS_LOG(error) << e.what();
+      std::cerr << e.what() << std::endl;
       disconnect();
       return false;
    }
@@ -70,7 +70,7 @@ bool CGammuPhoneConnection::connect()
    return isConnected();
 }
 
-void CGammuPhoneConnection::disconnect()
+void CGammuPhoneConnection::disconnect() const
 {
    try
    {
@@ -78,7 +78,7 @@ void CGammuPhoneConnection::disconnect()
    }
    catch (CPhoneException& e)
    {
-      YADOMS_LOG(error) << e.what();
+      std::cerr << e.what() << std::endl;
    }
 }
 
@@ -87,6 +87,7 @@ bool CGammuPhoneConnection::isConnected() const
    // Check if serial port is open, and if get the phone manufacturer (to check if a phone is really connected)
    if (GSM_IsConnected(m_gsmContext) != TRUE)
       return false;
-   
+
    return GSM_GetManufacturer(m_gsmContext, NULL) == ERR_NONE;
 }
+
