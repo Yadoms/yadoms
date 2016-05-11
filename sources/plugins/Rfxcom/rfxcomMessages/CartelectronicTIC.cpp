@@ -20,7 +20,6 @@ CCartelectronicTIC::CCartelectronicTIC( const RBUF& rbuf, size_t rbufSize ) : m_
 
    //TODO : Ajouter La période tarifaire en cours et l'historiser
    //TODO : Récupérer le Tag DEMAIN et l'historiser
-   //TODO : Apparent Power à ajouter
 
    switch ( m_SubscribeContract )
    {

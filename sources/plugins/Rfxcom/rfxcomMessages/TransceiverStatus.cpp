@@ -42,7 +42,7 @@ namespace rfxcomMessages
                               rbufSize,
                               pTypeInterfaceMessage,
                               DONT_CHECK_SUBTYPE, 
-							  DONT_CHECK_SIZE, //DONT_CHECK_SIZE
+							  DONT_CHECK_SIZE,
                               seqNumberProvider->last());
       }
 
