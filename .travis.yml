@@ -1,77 +1,108 @@
 language: cpp
 
 before_install:
-- sudo apt-get install libbz2-dev python-dev
+
+#g++ 4.8
+- echo 'Installing G++ 4.8'
+- sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+- sudo apt-get update -qq
+- if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-4.8; fi
+- if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
+- sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 90
+
+# deps
+- echo 'Installing some dependencies'
+- sudo apt-get install libbz2-dev python-dev libudev-dev
+
+#CMake
+- echo 'Installing CMake 3.4.3'
+- sudo apt-get remove cmake
+- wget --no-check-certificate https://cmake.org/files/v3.4/cmake-3.4.3.tar.gz
+- tar zxf cmake-3.4.3.tar.gz
+- cd cmake-3.4.3 
+- ./bootstrap  > yadoms_cmake.log
+- make  > yadoms_boost.log
+- sudo make install  > yadoms_boost.log
+- cd ..
 
 # boost
-- wget http://netcologne.dl.sourceforge.net/project/boost/boost/1.60.0/boost_1_60_0.zip
-- tar xvjf boost_1_60_0.tar.bz2
+- echo 'Building Boost 1.60.0'
+- wget http://netcologne.dl.sourceforge.net/project/boost/boost/1.60.0/boost_1_60_0.tar.bz2
+- tar xjf boost_1_60_0.tar.bz2
 - cd boost_1_60_0
-- ./bootstrap.sh
-- ./b2 --with-atomic --with-chrono --with-date_time --with-filesystem --with-regex --with-thread --with-system link=shared
+- ./bootstrap.sh > yadoms_boost.log
+- ./b2 --with-atomic --with-chrono --with-date_time --with-filesystem --with-regex --with-thread --with-system link=shared > yadoms_boost.log
+- cd ..
 
 # poco
-- wget http://pocoproject.org/releases/poco-1.7.2/poco-1.7.2.tar.gz
-- tar xzf poco-1.6.1-all.tar.gz
+- echo 'Building Poco 1.7.2-all'
+- wget http://pocoproject.org/releases/poco-1.7.2/poco-1.7.2-all.tar.gz
+- tar xzf poco-1.7.2-all.tar.gz
 - sudo apt-get install libssl-dev
-- cd poco-1.6.1-all/
-- ./configure --omit=CppUnit,CppUnit/WinTestRunner,Data,Data/SQLite,Data/ODBCData/MySQL,MongoDB,PageCompiler,PageCompiler/File2Page  --no-samples --no-tests
-- make
+- cd poco-1.7.2-all/
+- ./configure --omit=CppUnit,CppUnit/WinTestRunner,Data,Data/SQLite,Data/ODBCData/MySQL,MongoDB,PageCompiler,PageCompiler/File2Page  --no-samples --no-tests > yadoms_poco.log
+- make > yadoms_poco.log
 - cd ..
 
 # protobuf
+- echo 'Building Protobuf 2.6.1'
 - sudo apt-get install autoconf libtool
 - wget https://github.com/google/protobuf/releases/download/v2.6.1/protobuf-2.6.1.tar.gz
 - tar xzf protobuf-2.6.1.tar.gz
 - cd protobuf-2.6.1
-- ./autogen.sh
-- ./configure
-- make
-- sudo make install
+- ./autogen.sh > yadoms_protobuf.log
+- ./configure > yadoms_protobuf.log
+- make > yadoms_protobuf.log
+- sudo make install > yadoms_protobuf.log
 - sudo ldconfig
 - cd ..
 
-# libudev
-- sudo apt-get install libudev-dev
-
 #gammu
+- echo 'Building Gammu 1.36.8'
 - wget http://dl.cihar.com/gammu/releases/gammu-1.36.8.tar.gz
-- tar zxvf gammu-1.36.8.tar.gz
+- tar zxf gammu-1.36.8.tar.gz
 - cd gammu-1.36.8
 - mkdir build
 - cd build
-- cmake .. -DBUILD_SHARED_LIBS=ON
-- make
+- cmake .. -DBUILD_SHARED_LIBS=ON > yadoms_gammu.log
+- make > yadoms_gammu.log
 - cd ..
 - cd ..
 
 
 # PCRE
+- echo 'Installing PRCE'
 - sudo apt-get install libpcre3 libpcre3-dev
 
 # SWIG
+- echo 'Building Swig 3.0.8'
 - wget http://prdownloads.sourceforge.net/swig/swig-3.0.8.tar.gz
 - tar xzf swig-3.0.8.tar.gz
 - cd swig-3.0.8
-- ./configure
-- make
-- sudo make install
+- ./configure > yadoms_swig.log
+- make> yadoms_swig.log
+- sudo make install > yadoms_swig.log
 - cd ..
 
-# Python
-- sudo apt-get install python-dev
-
+script:
 # Yadoms configuration file
-- echo "set(BOOST_ROOT \"`pwd`/boost_1_60_0\")" >> sources/CMakeListsUserConfig.txt
-- echo "set(POCO_ROOT \"`pwd`/poco-.7.2-all\")" >> sources/CMakeListsUserConfig.txt
-- echo "SET(COTIRE_USE ON)" >> sources/CMakeListsUserConfig.txt
-- echo "set(PROTOBUF_ROOT \"`pwd`/protobuf-2.6.1\")" >> sources/CMakeListsUserConfig.txt
-- echo "set(GAMMU_ROOT \"`pwd`/gammu-1.36.8\")" >> sources/CMakeListsUserConfig.txt
-- echo "set(SWIG_ROOT \"`pwd`/swig-3.0.8\")" >> sources/CMakeListsUserConfig.txt
-
+- echo 'Configuring Yadoms CMakeListsUserConfig.txt'
+- cp sources/CMakeListsUserConfig.sample.txt sources/CMakeListsUserConfig.txt 
+- echo 'set(BOOST_ROOT "'$PWD'/boost_1_60_0")' > sources/CMakeListsUserConfig.txt
+- echo 'set(POCO_ROOT "'$PWD'/poco-1.7.2-all")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(COTIRE_USE ON)' >> sources/CMakeListsUserConfig.txt
+- echo 'set(COTIRE_USE_UNITY ON)' >> sources/CMakeListsUserConfig.txt
+- echo 'set(PROTOBUF_ROOT "'$PWD'/protobuf-2.6.1")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(GAMMU_ROOT "'$PWD'/gammu-1.36.8")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(SWIG_ROOT "'$PWD'/swig-3.0.8")' >> sources/CMakeListsUserConfig.txt
+- echo 'Result:'
+- cat sources/CMakeListsUserConfig.txt
 
 # Yadoms
-- ./cmake_linux.sh
+- echo 'Generating makefile'
+- sh cmake_linux.sh m
 - cd projects
-- make
+- echo 'Building Yadoms'
+- make all_unity
 - cd ..
+

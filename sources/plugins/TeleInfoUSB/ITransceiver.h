@@ -24,7 +24,6 @@ public:
    /// \param [in] data             Data received
    //--------------------------------------------------------------
    virtual void decodeTeleInfoMessage(boost::shared_ptr<yApi::IYPluginApi> context, 
-	                                  std::string & PluginName,
                                       const shared::communication::CByteBuffer& data) = 0;
 
    //--------------------------------------------------------------

@@ -8,25 +8,23 @@
 #include <shared/communication/PortException.hpp>
 #include "TeleInfotrxHelpers.h"
 
-CTransceiver::CTransceiver()
+CTransceiver::CTransceiver( )
    :m_seqNumberProvider(new CIncrementSequenceNumber()),
+    m_deviceCreated ( false ),
     Optarif ( OP_NOT_DEFINED )
 {
 	ResetRefreshTags ();
 }
 
 CTransceiver::~CTransceiver()
-{
-}
+{}
 
 void CTransceiver::decodeTeleInfoMessage(boost::shared_ptr<yApi::IYPluginApi> context,
-	                                     std::string & PluginName,
                                          const shared::communication::CByteBuffer& data)
 {
    const unsigned char *buf = reinterpret_cast<const unsigned char *>(data.begin());
 
    m_context = context;
-   m_PluginName = PluginName;
 
 	ParseData( buf, data.size() );
 }
@@ -98,7 +96,7 @@ void CTransceiver::ParseData( const unsigned char *pData, int Len )
 		ii++;
 	}
 	//historizing all information push in the list
-	m_context->historizeData(m_PluginName, m_KeywordList);
+	m_context->historizeData(m_DeviceName, m_KeywordList);
 
 	//Clear the vector
 	m_KeywordList.clear();
@@ -107,16 +105,32 @@ void CTransceiver::ParseData( const unsigned char *pData, int Len )
 template <class T>
 void CTransceiver::HistorizeTeleInfoData ( std::string KeywordName, long Value )
 {
-	boost::shared_ptr<T> m_keyword;
+	if (m_deviceCreated)
+	{
+		boost::shared_ptr<T> m_keyword;
 
-	m_keyword.reset ( new T( KeywordName) );
+		m_keyword.reset ( new T( KeywordName) );
 
-	if (!m_context->keywordExists( m_PluginName, m_keyword->getKeyword()))
-		m_context->declareKeyword ( m_PluginName, *m_keyword );
+		if (!m_context->keywordExists( m_DeviceName, m_keyword->getKeyword()))
+			m_context->declareKeyword ( m_DeviceName, *m_keyword, m_KeywordDetails );
 
-	m_keyword->set( Value );
-	YADOMS_LOG(debug) << m_keyword->getKeyword() << "=" << m_keyword->get();
-	m_KeywordList.push_back ( m_keyword );
+		m_keyword->set( Value );
+		YADOMS_LOG(debug) << m_keyword->getKeyword() << "=" << m_keyword->get();
+		m_KeywordList.push_back ( m_keyword );
+	}
+}
+
+void CTransceiver::CreateDevice ( std::string CounterId )
+{
+	m_DeviceName = CounterId;
+
+	if (!m_context->deviceExists(CounterId))
+		m_context->declareDevice(CounterId, "TeleInfoUSB : Id = " + CounterId, m_DeviceDetails);
+
+	//Set the counter id for each keyword
+	m_KeywordDetails.set("id", CounterId );
+
+	m_deviceCreated = true;
 }
 
 void CTransceiver::ResetRefreshTags ( void )
@@ -258,6 +272,9 @@ void CTransceiver::MatchLine( const unsigned char *m_buffer )
 			if (!ADCORead)
 			{
 				YADOMS_LOG(information) << "ADCO" << "=" << value;
+				
+				CreateDevice ( value );
+
 				ADCORead = true;
 			}
 			break;
@@ -383,10 +400,11 @@ void CTransceiver::MatchLine( const unsigned char *m_buffer )
 			}
 			break;
 		case TELEINFO_TYPE_PTEC:
-			if ( !TimePeriodUpdated )
+			if ( !TimePeriodUpdated && m_deviceCreated)
 			{
 				YADOMS_LOG(debug) << "PTEC" << "=" << value;
-				m_TimePeriod.reset( new CRunningPeriod( m_context, m_PluginName, "RunningPeriod" ));
+
+				m_TimePeriod.reset( new CRunningPeriod( m_context, m_DeviceName, "RunningPeriod", m_KeywordDetails ));
 				std::string temp(value);
 				m_TimePeriod->SetValue ( temp );
 				m_KeywordList.push_back ( m_TimePeriod->GetHistorizable() );
@@ -417,11 +435,11 @@ void CTransceiver::MatchLine( const unsigned char *m_buffer )
 			break;
 
 		case TELEINFO_TYPE_DEMAIN:
-			if ( !ForecastPeriodUpdated )
+			if ( !ForecastPeriodUpdated && m_deviceCreated)
 			{
 				YADOMS_LOG(debug) << "DEMAIN" << "=" << value;
 				
-				m_ForecastPeriod.reset( new CForecastTomorrow( m_context, m_PluginName, "ForecastColor" ));
+				m_ForecastPeriod.reset( new CForecastTomorrow( m_context, m_DeviceName, "ForecastColor", m_KeywordDetails ));
 				std::string temp(value);
 				m_ForecastPeriod->SetValue ( temp );
 				m_KeywordList.push_back ( m_ForecastPeriod->GetHistorizable() );

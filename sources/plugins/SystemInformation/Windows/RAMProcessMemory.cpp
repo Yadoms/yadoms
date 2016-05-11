@@ -9,18 +9,16 @@
 
 CRAMProcessMemory::CRAMProcessMemory(const std::string & device)
    :m_device(device), 
-    m_keyword(new yApi::historization::CKByte("RAMProcessMemory"))
+    m_keyword(new yApi::historization::CKByte("YadomsRAMProcessMemory"))
 {}
 
 CRAMProcessMemory::~CRAMProcessMemory()
 {}
 
-void CRAMProcessMemory::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context)
+void CRAMProcessMemory::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context, shared::CDataContainer details)
 {
       if (!context->keywordExists( m_device, m_keyword->getKeyword()))
-      {
-         context->declareKeyword(m_device, *m_keyword);
-      }
+         context->declareKeyword(m_device, *m_keyword, details);
 }
 
 void CRAMProcessMemory::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const

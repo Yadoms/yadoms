@@ -41,7 +41,7 @@ protected:
    void send(const shared::communication::CByteBuffer& buffer, bool needAnswer);
 
    //--------------------------------------------------------------
-   /// \brief	                     Send several messages to the RFXCom
+   /// \brief	                    Send several messages to the RFXCom
    /// \param [in] buffers          Buffers to send
    //--------------------------------------------------------------
    void send(boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > buffers);

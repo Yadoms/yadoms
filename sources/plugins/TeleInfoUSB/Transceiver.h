@@ -20,7 +20,7 @@ public:
    //--------------------------------------------------------------
    /// \brief	                           Constructor
    //--------------------------------------------------------------
-   CTransceiver();
+   CTransceiver( );
 
    //--------------------------------------------------------------
    /// \brief	                           Destructor
@@ -29,7 +29,6 @@ public:
 
    // ITransceiver implementation
    virtual void decodeTeleInfoMessage(boost::shared_ptr<yApi::IYPluginApi> context,
-	                                  std::string & PluginName,
                                       const shared::communication::CByteBuffer& data);
    virtual bool IsInformationUpdated ( void );
    virtual void ResetRefreshTags ( void );
@@ -76,10 +75,28 @@ private:
    void HistorizeTeleInfoData ( std::string KeywordName, long Value );
 
    //--------------------------------------------------------------
+   /// \brief	                     Create the Device with the counter Id
+   /// \param [in] CounterId         The counter Id
+   //--------------------------------------------------------------
+   void CreateDevice ( std::string CounterId );
+
+   //--------------------------------------------------------------
    /// \brief  Keywords list
    //--------------------------------------------------------------
 
    std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > m_KeywordList;
+
+   //--------------------------------------------------------------
+   /// \brief  Details for keywords
+   //--------------------------------------------------------------
+
+   shared::CDataContainer m_KeywordDetails;
+
+   //--------------------------------------------------------------
+   /// \brief  Details for the device
+   //--------------------------------------------------------------
+
+   shared::CDataContainer m_DeviceDetails;
 
    //--------------------------------------------------------------
    /// \brief  Keywords
@@ -89,7 +106,7 @@ private:
 	boost::shared_ptr<CForecastTomorrow> m_ForecastPeriod;
 
 	boost::shared_ptr<yApi::IYPluginApi> m_context;
-	std::string m_PluginName;
+	std::string m_DeviceName;
 
 	//Contract Options -> Abonnement
 	typedef enum {
@@ -120,6 +137,8 @@ private:
 
 	bool TimePeriodUpdated;
 	bool ForecastPeriodUpdated;
+
+	bool m_deviceCreated;
 
 	Abonnement Optarif;
 };

@@ -8,16 +8,17 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-CForecastTomorrow::CForecastTomorrow( boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName, std::string KeyWordName )
+CForecastTomorrow::CForecastTomorrow( boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName, std::string KeyWordName, shared::CDataContainer details )
    :m_PluginName ( PluginName ), m_forecastPeriod( new teleInfoUSB::specificHistorizers::CColor(KeyWordName) )
 {
    if (!context->keywordExists( m_PluginName, m_forecastPeriod->getKeyword()))
-      context->declareKeyword ( m_PluginName, *m_forecastPeriod );
+      context->declareKeyword ( m_PluginName, *m_forecastPeriod, details );
 }
 
 void CForecastTomorrow::SetValue( std::string& Value )
 {
    static const EnumColorMap EEnumColorMap = boost::assign::map_list_of
+      ("----", teleInfoUSB::specificHistorizers::EColor::kNOTDEFINED)
       ("BLEU", teleInfoUSB::specificHistorizers::EColor::kBLUE)
       ("BLAN", teleInfoUSB::specificHistorizers::EColor::kWHITE)
       ("ROUG", teleInfoUSB::specificHistorizers::EColor::kRED)

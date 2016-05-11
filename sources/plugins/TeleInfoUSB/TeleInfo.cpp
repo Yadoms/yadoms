@@ -21,13 +21,11 @@ namespace yApi = shared::plugin::yPluginApi;
 IMPLEMENT_PLUGIN(CTeleInfo)
 
 
-CTeleInfo::CTeleInfo(): m_deviceName("TeleInfoUSB")
-{
-}
+CTeleInfo::CTeleInfo()
+{}
 
 CTeleInfo::~CTeleInfo()
-{
-}
+{}
 
 // Event IDs
 enum
@@ -65,13 +63,6 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 
       // the main loop
       YADOMS_LOG(debug) << "Teleinfo plugin is running...";
-
-	   if (!context->deviceExists(m_deviceName))
-	   {
-		  std::string m_URL = m_deviceName;
-
-		  context->declareDevice(m_deviceName, m_URL);
-	   }
 
       // Timer used to read periodically information
       context->getEventHandler().createTimer(kEvtTimerRefreshTeleInfoData , shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(15));
@@ -139,7 +130,6 @@ void CTeleInfo::createConnection(boost::shared_ptr<yApi::IYPluginApi> context)
    context->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
    // Create the port instance
    m_port = CTeleInfoFactory::constructPort(m_configuration, context->getEventHandler(), m_receiveBufferHandler, kEvtPortConnection);
-   //m_port->setReceiveBufferMaxSize(TeleInfoMESSAGE_maxSize);
    m_port->start();
 }
 
@@ -179,9 +169,7 @@ void CTeleInfo::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> context
 {
    m_logger.logReceived(data);
 
-   m_transceiver->decodeTeleInfoMessage(context,
-	                                    m_deviceName,
-	        							data);
+   m_transceiver->decodeTeleInfoMessage(context, data);
 
    // When all information are updated we stopped the reception !
    if (m_transceiver->IsInformationUpdated())

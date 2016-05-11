@@ -19,11 +19,11 @@ CCPULoad::~CCPULoad()
 {
 }
 
-void CCPULoad::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context)
+void CCPULoad::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context, shared::CDataContainer details)
 {
    // Declare associated keywords (= values managed by this device)
    if (!context->keywordExists( m_device, m_keyword->getKeyword()))
-      context->declareKeyword(m_device, *m_keyword);
+      context->declareKeyword(m_device, *m_keyword, details);
 }
 
 void CCPULoad::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const

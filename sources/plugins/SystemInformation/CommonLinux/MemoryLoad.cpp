@@ -20,12 +20,10 @@ CMemoryLoad::CMemoryLoad(const std::string & device)
 CMemoryLoad::~CMemoryLoad()
 {}
 
-void CMemoryLoad::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context)
+void CMemoryLoad::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context, shared::CDataContainer details)
 {
    if (!context->keywordExists( m_device, m_keyword->getKeyword()))
-   {
-      context->declareKeyword(m_device, *m_keyword);
-   }
+      context->declareKeyword(m_device, *m_keyword, details);
 }
 
 void CMemoryLoad::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
