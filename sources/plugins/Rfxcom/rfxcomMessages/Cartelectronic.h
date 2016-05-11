@@ -52,12 +52,6 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       void declare(boost::shared_ptr<yApi::IYPluginApi> context);
 
-      //--------------------------------------------------------------
-      /// \brief	                        Get device model
-      /// \return                         The device model
-      //--------------------------------------------------------------
-	  std::string getModel() const;
-
    private:
       //--------------------------------------------------------------
       /// \brief	The device sub-type

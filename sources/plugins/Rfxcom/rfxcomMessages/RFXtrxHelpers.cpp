@@ -36,7 +36,7 @@ void CheckReceivedMessage(const RBUF& rbuf,
                           size_t expectedSize,
                           unsigned int expectedSeqNumber)
 {
-   if (rbufSize != expectedSize)
+   if (rbufSize != expectedSize && expectedSize != DONT_CHECK_SIZE)
       throw shared::exception::CException((boost::format("Wrong message size, received : %1% byte(s), expected : %2%") % rbufSize % expectedSize).str());
 
    if (expectedType != rbuf.RXRESPONSE.packettype)

@@ -32,10 +32,11 @@ namespace rfxcomMessages
 
       // ICartelectronicSubtype implementation
       void declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const override;
-      void historize(std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > KeywordList) const override;
-      const std::string& idFromProtocol( const RBUF& rbuf ) override;
+      void historize(boost::shared_ptr<std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > > KeywordList) const override;
+      const std::string idFromProtocol( const RBUF& rbuf ) override;
       const char BatteryLevelFromProtocol( const RBUF& rbuf ) override;
 	  const char RssiFromProtocol( const RBUF& rbuf ) override;
+	  std::string getModel() const override;
       // [END] ICartelectronicSubtype implementation
 
    private:
@@ -79,5 +80,10 @@ namespace rfxcomMessages
       /// \brief	The keyword Counter 2
       //--------------------------------------------------------------
       boost::shared_ptr<yApi::historization::CEnergy> m_Counter2;
+
+      //--------------------------------------------------------------
+      /// \brief	The keyword Counter 2
+      //--------------------------------------------------------------
+      boost::shared_ptr<yApi::historization::CApparentPower> m_ApparentePower;
    };
 } // namespace rfxcomMessages

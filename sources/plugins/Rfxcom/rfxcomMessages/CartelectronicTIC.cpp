@@ -9,7 +9,7 @@ namespace yApi = shared::plugin::yPluginApi;
 namespace rfxcomMessages
 {
 
-CCartelectronicTIC::CCartelectronicTIC( const RBUF& rbuf, size_t rbufSize )
+CCartelectronicTIC::CCartelectronicTIC( const RBUF& rbuf, size_t rbufSize ) : m_ApparentePower (new yApi::historization::CApparentPower("ApparentPower") )
 {
    std::string NameCounter1="";
    std::string NameCounter2="";
@@ -20,6 +20,7 @@ CCartelectronicTIC::CCartelectronicTIC( const RBUF& rbuf, size_t rbufSize )
 
    //TODO : Ajouter La période tarifaire en cours et l'historiser
    //TODO : Récupérer le Tag DEMAIN et l'historiser
+   //TODO : Apparent Power à ajouter
 
    switch ( m_SubscribeContract )
    {
@@ -60,8 +61,10 @@ CCartelectronicTIC::CCartelectronicTIC( const RBUF& rbuf, size_t rbufSize )
    m_Counter1.reset(new yApi::historization::CEnergy ( NameCounter1 ));
    m_Counter2.reset(new yApi::historization::CEnergy ( NameCounter2 ));
 
-   m_Counter1->set( (rbuf.TIC.counter1_3<<24) + (rbuf.TIC.counter1_2<<16) + (rbuf.TIC.counter1_1<<8) + (rbuf.TIC.counter1_0) );
-   m_Counter2->set( (rbuf.TIC.counter2_3<<24) + (rbuf.TIC.counter2_2<<16) + (rbuf.TIC.counter2_1<<8) + (rbuf.TIC.counter2_0) );
+   m_Counter1->set( (rbuf.TIC.counter1_0<<24) + (rbuf.TIC.counter1_1<<16) + (rbuf.TIC.counter1_2<<8) + (rbuf.TIC.counter1_3) );
+   m_Counter2->set( (rbuf.TIC.counter2_0<<24) + (rbuf.TIC.counter2_1<<16) + (rbuf.TIC.counter2_2<<8) + (rbuf.TIC.counter2_3) );
+
+   m_ApparentePower->set ( (rbuf.TIC.power_H << 8) + rbuf.TIC.power_L );
 }
 
 CCartelectronicTIC::~CCartelectronicTIC()
@@ -71,26 +74,27 @@ void CCartelectronicTIC::declare(boost::shared_ptr<yApi::IYPluginApi> context, c
 {
    // Create keywords if needed
    context->declareKeyword(deviceName, *m_Counter1);
+   context->declareKeyword(deviceName, *m_ApparentePower);
 
    if (m_SubscribeContract != OP_BASE)
 	 context->declareKeyword(deviceName, *m_Counter2);
 }
 
-void CCartelectronicTIC::historize(std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > KeywordList) const
+void CCartelectronicTIC::historize(boost::shared_ptr<std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > > KeywordList) const
 {
-   KeywordList.push_back ( m_Counter1 );
+   KeywordList->push_back ( m_Counter1 );
+   KeywordList->push_back ( m_ApparentePower );
 
    if (m_SubscribeContract != OP_BASE)
-      KeywordList.push_back ( m_Counter2 );
+      KeywordList->push_back ( m_Counter2 );
 }
 
-// TODO : Not working
-const std::string& CCartelectronicTIC::idFromProtocol( const RBUF& rbuf )
+const std::string CCartelectronicTIC::idFromProtocol( const RBUF& rbuf )
 {
 	unsigned long long i_id;
 	std::stringstream s_id;
 
-	i_id = (unsigned long long)(rbuf.TIC.id1 << 32) + (rbuf.TIC.id2 << 24) + (rbuf.TIC.id3 << 16) + (rbuf.TIC.id4 << 8) + (rbuf.TIC.id5);
+	i_id = ((unsigned long long)(rbuf.TIC.id1) << 32) + (rbuf.TIC.id2 << 24) + (rbuf.TIC.id3 << 16) + (rbuf.TIC.id4 << 8) + (rbuf.TIC.id5);
 	s_id << static_cast<unsigned long long>(i_id);
 
 	return s_id.str();
@@ -104,6 +108,11 @@ const char CCartelectronicTIC::BatteryLevelFromProtocol( const RBUF& rbuf )
 const char CCartelectronicTIC::RssiFromProtocol( const RBUF& rbuf )
 {
 	return rbuf.TIC.rssi;
+}
+
+std::string CCartelectronicTIC::getModel() const
+{
+	return "TeleInfo Module";
 }
 
 } // namespace rfxcomMessages

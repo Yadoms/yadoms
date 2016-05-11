@@ -52,17 +52,12 @@ void CCartelectronic::declare(boost::shared_ptr<yApi::IYPluginApi> context)
       details.set("subType", m_subType);
       details.set("id", m_id);
 
-      context->declareDevice(m_id, getModel(), details);
+      context->declareDevice(m_id, m_subTypeManager->getModel(), details);
 
       m_subTypeManager->declare(context, m_id);
 	  context->declareKeyword(m_id, *m_batteryLevel);
 	  context->declareKeyword(m_id, *m_rssi);
    }
-}
-
-std::string CCartelectronic::getModel() const
-{
-   return "Cartelectronic Module";
 }
 
 boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CCartelectronic::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
@@ -72,15 +67,16 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CCartelectron
 
 void CCartelectronic::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
-   std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > KeywordList;
+   boost::shared_ptr<std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > > KeywordList;
 
-   KeywordList.push_back ( m_batteryLevel );
-   KeywordList.push_back ( m_rssi );
+   KeywordList.reset ( new std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > );
 
-   // TODO : Not working
+   KeywordList->push_back ( m_batteryLevel );
+   KeywordList->push_back ( m_rssi );
+
    m_subTypeManager->historize( KeywordList );
 
-   context->historizeData(m_id, KeywordList);
+   context->historizeData(m_id, *KeywordList);
 }
 
 const std::string& CCartelectronic::getDeviceName() const
