@@ -39,7 +39,12 @@ CCamera1::CCamera1(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char s
 CCamera1::CCamera1(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_camera("camera"), m_rssi("rssi")
 {
-   CheckReceivedMessage(rbuf, rbufSize, pTypeCamera, GET_RBUF_STRUCT_SIZE(CAMERA1), DONT_CHECK_SEQUENCE_NUMBER);
+   CheckReceivedMessage(rbuf,
+                        rbufSize,
+                        pTypeCamera,
+                        DONT_CHECK_SUBTYPE,
+                        GET_RBUF_STRUCT_SIZE(CAMERA1),
+                        DONT_CHECK_SEQUENCE_NUMBER);
 
    m_subType = rbuf.CAMERA1.subtype;
    m_houseCode = rbuf.CAMERA1.housecode;

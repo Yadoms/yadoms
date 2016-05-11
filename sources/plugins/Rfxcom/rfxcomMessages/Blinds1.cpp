@@ -59,7 +59,12 @@ CBlinds1::CBlinds1(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char s
 CBlinds1::CBlinds1(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_state("state"), m_batteryLevel("battery"), m_rssi("rssi")
 {
-   CheckReceivedMessage(rbuf, rbufSize, pTypeBlinds, GET_RBUF_STRUCT_SIZE(BLINDS1), DONT_CHECK_SEQUENCE_NUMBER);
+   CheckReceivedMessage(rbuf,
+                        rbufSize,
+                        pTypeBlinds,
+                        DONT_CHECK_SUBTYPE,
+                        GET_RBUF_STRUCT_SIZE(BLINDS1),
+                        DONT_CHECK_SEQUENCE_NUMBER);
 
    m_subType = rbuf.BLINDS1.subtype;
 

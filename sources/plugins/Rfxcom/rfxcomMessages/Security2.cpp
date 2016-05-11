@@ -39,7 +39,12 @@ CSecurity2::CSecurity2(boost::shared_ptr<yApi::IYPluginApi> context, unsigned ch
 CSecurity2::CSecurity2(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_batteryLevel("battery"), m_rssi("rssi")
 {
-   CheckReceivedMessage(rbuf, rbufSize, pTypeSecurity2, GET_RBUF_STRUCT_SIZE(SECURITY2), DONT_CHECK_SEQUENCE_NUMBER);
+   CheckReceivedMessage(rbuf,
+                        rbufSize,
+                        pTypeSecurity2,
+                        DONT_CHECK_SUBTYPE,
+                        GET_RBUF_STRUCT_SIZE(SECURITY2),
+                        DONT_CHECK_SEQUENCE_NUMBER);
 
    createSubType(rbuf.SECURITY2.subtype);
    m_subTypeManager->setFromProtocolState(rbuf);

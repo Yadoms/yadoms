@@ -43,7 +43,13 @@ CHomeConfort::CHomeConfort(boost::shared_ptr<yApi::IYPluginApi> context, unsigne
 CHomeConfort::CHomeConfort(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_state("state"), m_rssi("rssi")
 {
-   CheckReceivedMessage(rbuf, rbufSize, pTypeHomeConfort, GET_RBUF_STRUCT_SIZE(HOMECONFORT), DONT_CHECK_SEQUENCE_NUMBER);
+   CheckReceivedMessage(rbuf,
+                        rbufSize,
+                        pTypeHomeConfort,
+                        DONT_CHECK_SUBTYPE,
+                        GET_RBUF_STRUCT_SIZE(HOMECONFORT),
+                        DONT_CHECK_SEQUENCE_NUMBER);
+
    m_subType = rbuf.HOMECONFORT.subtype;
    m_id = (rbuf.HOMECONFORT.id1 << 16) | (rbuf.HOMECONFORT.id2 << 8) | rbuf.HOMECONFORT.id3;
    m_houseCode = rbuf.HOMECONFORT.housecode;

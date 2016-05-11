@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Power.h"
-#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/InvalidParameter.hpp>
 
 // Shortcut to yPluginApi namespace
@@ -12,7 +11,12 @@ namespace rfxcomMessages
 CPower::CPower(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_voltage("voltage"), m_current("current"), m_instantPower("instant"), m_totalPower("total"), m_powerFactor("powerFactor"), m_frequency("frequency"), m_rssi("rssi")
 {
-   CheckReceivedMessage(rbuf, rbufSize, pTypePOWER, GET_RBUF_STRUCT_SIZE(POWER), DONT_CHECK_SEQUENCE_NUMBER);
+   CheckReceivedMessage(rbuf,
+                        rbufSize,
+                        pTypePOWER,
+                        DONT_CHECK_SUBTYPE,
+                        GET_RBUF_STRUCT_SIZE(POWER),
+                        DONT_CHECK_SEQUENCE_NUMBER);
 
    m_subType = rbuf.POWER.subtype;
 
@@ -88,7 +92,7 @@ const std::string& CPower::getDeviceName() const
 void CPower::buildDeviceName()
 {
    std::ostringstream ssdeviceName;
-   ssdeviceName << (unsigned int)m_subType << "." << (unsigned int)m_id;
+   ssdeviceName << static_cast<unsigned int>(m_subType) << "." << static_cast<unsigned int>(m_id);
    m_deviceName = ssdeviceName.str();
 }
 
