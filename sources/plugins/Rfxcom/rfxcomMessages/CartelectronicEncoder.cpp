@@ -32,13 +32,13 @@ void CCartelectronicEncoder::declare(boost::shared_ptr<yApi::IYPluginApi> contex
    }
 }
 
-void CCartelectronicEncoder::historize(boost::shared_ptr<std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > > KeywordList) const
+void CCartelectronicEncoder::historize(std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > &KeywordList) const
 {
-   KeywordList->push_back ( m_Counter1 );
-   KeywordList->push_back ( m_Counter2 );
+   KeywordList.push_back ( m_Counter1 );
+   KeywordList.push_back ( m_Counter2 );
 }
 
-const std::string CCartelectronicEncoder::idFromProtocol( const RBUF& rbuf )
+std::string CCartelectronicEncoder::idFromProtocol( const RBUF& rbuf ) const
 {
 	unsigned long i_id;
 	std::stringstream s_id;

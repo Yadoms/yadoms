@@ -67,16 +67,14 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CCartelectron
 
 void CCartelectronic::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
-   boost::shared_ptr<std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > > KeywordList;
+   std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > KeywordList;
 
-   KeywordList.reset ( new std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > );
-
-   KeywordList->push_back ( m_batteryLevel );
-   KeywordList->push_back ( m_rssi );
+   KeywordList.push_back ( m_batteryLevel );
+   KeywordList.push_back ( m_rssi );
 
    m_subTypeManager->historize( KeywordList );
 
-   context->historizeData(m_id, *KeywordList);
+   context->historizeData(m_id, KeywordList);
 }
 
 const std::string& CCartelectronic::getDeviceName() const

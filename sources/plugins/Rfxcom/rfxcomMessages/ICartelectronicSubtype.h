@@ -31,13 +31,13 @@ namespace rfxcomMessages
       /// \brief	                        Enter a keyword in a list to historize
       /// \param[in] KeywordList          The keywordList
       //--------------------------------------------------------------
-      virtual void historize(boost::shared_ptr<std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > > KeywordList) const = 0;
+      virtual void historize(std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > &KeywordList) const = 0;
 
       //--------------------------------------------------------------
       /// \brief	                        Get ID from protocol data
       /// \param[in] buf                  buffer of the message
       //--------------------------------------------------------------
-      virtual const std::string idFromProtocol( const RBUF& rbuf ) = 0;
+      virtual std::string idFromProtocol( const RBUF& rbuf ) const = 0;
 
       //--------------------------------------------------------------
       /// \brief	                        Get battery Level from protocol data

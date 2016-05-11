@@ -79,16 +79,16 @@ void CCartelectronicTIC::declare(boost::shared_ptr<yApi::IYPluginApi> context, c
 	 context->declareKeyword(deviceName, *m_Counter2);
 }
 
-void CCartelectronicTIC::historize(boost::shared_ptr<std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > > KeywordList) const
+void CCartelectronicTIC::historize(std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > &KeywordList) const
 {
-   KeywordList->push_back ( m_Counter1 );
-   KeywordList->push_back ( m_ApparentePower );
+   KeywordList.push_back ( m_Counter1 );
+   KeywordList.push_back ( m_ApparentePower );
 
    if (m_SubscribeContract != OP_BASE)
-      KeywordList->push_back ( m_Counter2 );
+      KeywordList.push_back ( m_Counter2 );
 }
 
-const std::string CCartelectronicTIC::idFromProtocol( const RBUF& rbuf )
+std::string CCartelectronicTIC::idFromProtocol( const RBUF& rbuf ) const
 {
 	unsigned long long i_id;
 	std::stringstream s_id;
