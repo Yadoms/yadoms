@@ -47,7 +47,7 @@ namespace pluginSystem
       virtual boost::shared_ptr<IInstance> createInstance(boost::shared_ptr<const database::entities::CPlugin> instanceData,
                                                           boost::shared_ptr<database::IDataProvider> dataProvider,
                                                           boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
-                                                          const boost::shared_ptr<IQualifier> qualifier,
+                                                          boost::shared_ptr<IQualifier> qualifier,
                                                           boost::shared_ptr<IInstanceStoppedListener> instanceStoppedListener) const = 0;
    };
 } // namespace pluginSystem

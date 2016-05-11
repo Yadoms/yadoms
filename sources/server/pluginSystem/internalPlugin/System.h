@@ -1,5 +1,4 @@
 #pragma once
-//TODO #include <shared/plugin/IPlugin.h>
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 
 
@@ -13,22 +12,24 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief	This class is the internal system plugin entry point
       //--------------------------------------------------------------
-      class CSystem/*TODO : public shared::plugin::IPlugin*/
+      class CSystem
       {
       public:
          //--------------------------------------------------------------
-         /// \brief	Constructor
+         /// \brief	            Constructor
          //--------------------------------------------------------------
          CSystem();
 
          //--------------------------------------------------------------
-         /// \brief	Destructor
+         /// \brief	            Destructor
          //--------------------------------------------------------------
          virtual ~CSystem();
 
-         // IPlugin implementation
+         //--------------------------------------------------------------
+         /// \brief	            Main job
+         /// \param[in] api      The plugin API used to dial with Yadoms
+         //--------------------------------------------------------------
          virtual void doWork(boost::shared_ptr<yApi::IYPluginApi> api);
-         // [END] IPlugin implementation
       };
    }
 } // namespace pluginSystem::internalPlugin

@@ -1,6 +1,4 @@
 #pragma once
-#include <server/dataAccessLayer/IEventLogger.h>
-#include <shared/event/EventHandler.hpp>
 #include "IInstanceStartErrorObserver.h"
 #include "IInstanceStateHandler.h"
 #include "IInstanceStoppedListener.h"
@@ -11,6 +9,7 @@
 #include <server/dataAccessLayer/IDeviceManager.h>
 #include <server/dataAccessLayer/IAcquisitionHistorizer.h>
 #include <shared/process/IProcessObserver.h>
+#include "IQualifier.h"
 
 namespace pluginSystem
 {
@@ -25,7 +24,7 @@ namespace pluginSystem
       ///\param[in] instanceData             Plugin instance data
       ///\param[in] pluginInformation        Plugin information
       ///\param[in] pluginRequester          Database requester
-      ///\param[in] eventLogger              Main event logger
+      ///\param[in] qualifier                Event qualifier
       ///\param[in] pluginEventLoggerRequester Plugin event logger
       ///\param[in] acquisitionHistorizer    Acquisition recorder
       ///\param[in] instanceStoppedListener  The listener to call when an instance is stopped
@@ -35,7 +34,7 @@ namespace pluginSystem
       CInstanceStateHandler(boost::shared_ptr<const database::entities::CPlugin> instanceData,
                             boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
                             boost::shared_ptr<database::IPluginRequester> pluginRequester,
-                            boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger,
+                            boost::shared_ptr<IQualifier> qualifier,
                             boost::shared_ptr<database::IPluginEventLoggerRequester> pluginEventLoggerRequester,
                             boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer,
                             boost::shared_ptr<IInstanceStoppedListener> instanceStoppedListener,
@@ -80,7 +79,7 @@ namespace pluginSystem
       ///\param    [in]    message            The message
       //-----------------------------------------------------      
       enum PluginEventSeverity { kInfo, kError };
-      virtual void recordPluginEvent(PluginEventSeverity severity, const std::string & message);//TODO à virer ?
+      virtual void recordPluginEvent(PluginEventSeverity severity, const std::string & message);
 
    private:
       //-----------------------------------------------------
@@ -99,9 +98,9 @@ namespace pluginSystem
       boost::shared_ptr<database::IPluginRequester> m_pluginRequester;
 
       //-----------------------------------------------------
-      ///\brief               The event logger
+      ///\brief               The plugin qualifier
       //-----------------------------------------------------
-      boost::shared_ptr<dataAccessLayer::IEventLogger> m_eventLogger;
+      boost::shared_ptr<IQualifier> m_qualifier;
 
       //--------------------------------------------------------------
       /// \brief			The plugin event logger requester

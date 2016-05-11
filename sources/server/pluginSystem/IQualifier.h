@@ -9,7 +9,6 @@
 
 namespace pluginSystem
 {
-
    //--------------------------------------------------------------
    /// \brief	this class is used to qualify a plugin
    //--------------------------------------------------------------
@@ -19,26 +18,29 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
-      virtual ~IQualifier() {}
+      virtual ~IQualifier()
+      {
+      }
 
       //--------------------------------------------------------------
       /// \brief			         Signal that plugin was loaded
       /// \param[in]  pluginInformation     Plugin information (name, version...)
       //--------------------------------------------------------------
-      virtual void signalLoad(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation) = 0;//TODO virer ? (plus de notion de load/unload)
+      virtual void signalLoad(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation) = 0;
 
       //--------------------------------------------------------------
       /// \brief			         Signal that plugin was unloaded
       /// \param[in]  pluginInformation     Plugin information (name, version...)
       //--------------------------------------------------------------
-      virtual void signalUnload(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation) = 0;//TODO virer ? (plus de notion de load/unload)
+      virtual void signalUnload(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation) = 0;
 
       //--------------------------------------------------------------
       /// \brief			         Signal that plugin has crashed
       /// \param[in]  pluginInformation     Plugin information (name, version...)
       /// \param[in]  reason     Crash cause (exception...)
       //--------------------------------------------------------------
-      virtual void signalCrash(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation, const std::string& reason) = 0;
+      virtual void signalCrash(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
+                               const std::string& reason) = 0;
 
       //--------------------------------------------------------------
       /// \brief			         Check if plugin is safe
@@ -53,8 +55,13 @@ namespace pluginSystem
       /// \return                Plugin quality level, value from 0 (very bad) to 100 (perfect, never crashed).
       //                         Can be kNoEnoughData if evaluation is not significative (plugin doesn't run for enough time)
       //--------------------------------------------------------------
-      enum { kNoEnoughData = -1 };
+      enum
+      {
+         kNoEnoughData = -1
+      };
+
       virtual int getQualityLevel(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation) = 0;
    };
-
 } // namespace pluginSystem
+
+

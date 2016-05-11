@@ -31,7 +31,7 @@ namespace pluginSystem
       boost::shared_ptr<IInstance> createInstance(boost::shared_ptr<const database::entities::CPlugin> instanceData,
                                                   boost::shared_ptr<database::IDataProvider> dataProvider,
                                                   boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
-                                                  const boost::shared_ptr<IQualifier> qualifier,
+                                                  boost::shared_ptr<IQualifier> qualifier,
                                                   boost::shared_ptr<IInstanceStoppedListener> instanceStoppedListener) const override;
       // [END] IFactory Implementation
 
@@ -39,6 +39,7 @@ namespace pluginSystem
       boost::shared_ptr<IInstance> createInternalPluginInstance(boost::shared_ptr<const database::entities::CPlugin> instanceData,
                                                                 boost::shared_ptr<database::IDataProvider> dataProvider,
                                                                 boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
+                                                                boost::shared_ptr<IQualifier> qualifier,
                                                                 boost::shared_ptr<IInstanceStoppedListener> instanceStoppedListener) const;
 
       boost::shared_ptr<const shared::plugin::information::IInformation> createInformation(const std::string& pluginName) const;
@@ -54,6 +55,7 @@ namespace pluginSystem
                                                                           boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
                                                                           boost::shared_ptr<database::IDataProvider> dataProvider,
                                                                           boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
+                                                                          boost::shared_ptr<IQualifier> qualifier,
                                                                           boost::shared_ptr<IInstanceStoppedListener> instanceStoppedListener) const;
 
       boost::shared_ptr<shared::process::IProcess> createInstanceProcess(boost::shared_ptr<shared::process::ICommandLine> commandLine,

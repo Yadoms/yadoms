@@ -7,7 +7,7 @@ namespace pluginSystem
    CInstanceStateHandler::CInstanceStateHandler(boost::shared_ptr<const database::entities::CPlugin> instanceData,
                                                 boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
                                                 boost::shared_ptr<database::IPluginRequester> pluginRequester,
-                                                boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger,
+                                                boost::shared_ptr<IQualifier> qualifier,
                                                 boost::shared_ptr<database::IPluginEventLoggerRequester> pluginEventLoggerRequester,
                                                 boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer,
                                                 boost::shared_ptr<IInstanceStoppedListener> instanceStoppedListener,
@@ -16,7 +16,7 @@ namespace pluginSystem
       : m_instanceData(instanceData),
         m_pluginInformation(pluginInformation),
         m_pluginRequester(pluginRequester),
-        m_eventLogger(eventLogger),
+        m_qualifier(qualifier),
         m_pluginEventLoggerRequester(pluginEventLoggerRequester),
         m_acquisitionHistorizer(acquisitionHistorizer),
         m_instanceStoppedListener(instanceStoppedListener),
@@ -59,8 +59,6 @@ namespace pluginSystem
 
       setState(shared::plugin::yPluginApi::historization::EPluginState::kError, error);
 
-      m_eventLogger->addEvent(database::entities::ESystemEventCode::kPluginCrash, m_pluginRequester->getInstance(m_instanceData->Id())->DisplayName(), error);
-
       m_instanceStoppedListener->onStopped(m_instanceData->Id());
    }
 
@@ -69,8 +67,6 @@ namespace pluginSystem
       YADOMS_LOG(error) << "Fail to start plugin instance #" << m_instanceData->Id() << " : " << error;
 
       setState(shared::plugin::yPluginApi::historization::EPluginState::kError, error);
-
-      m_eventLogger->addEvent(database::entities::ESystemEventCode::kPluginCrash, (boost::format("Plugin instance #%1%") % m_instanceData->Id()).str(), error);
 
       m_instanceStoppedListener->onStopped(m_instanceData->Id());
    }
@@ -87,10 +83,21 @@ namespace pluginSystem
 
       switch (state)
       {
-      case shared::plugin::yPluginApi::historization::EPluginState::kErrorValue: recordPluginEvent(kError, "error"); break;
-      case shared::plugin::yPluginApi::historization::EPluginState::kStoppedValue: recordPluginEvent(kInfo, "stopped"); break;
-      case shared::plugin::yPluginApi::historization::EPluginState::kRunningValue: recordPluginEvent(kInfo, "started"); break;
-      case shared::plugin::yPluginApi::historization::EPluginState::kCustomValue: recordPluginEvent(kInfo, std::string("custom event (") + customMessageId + std::string(")")); break;
+      case shared::plugin::yPluginApi::historization::EPluginState::kErrorValue:
+         m_qualifier->signalCrash(m_pluginInformation, customMessageId);
+         recordPluginEvent(kError, "error");
+         break;
+      case shared::plugin::yPluginApi::historization::EPluginState::kStoppedValue:
+         m_qualifier->signalUnload(m_pluginInformation);
+         recordPluginEvent(kInfo, "stopped");
+         break;
+      case shared::plugin::yPluginApi::historization::EPluginState::kRunningValue:
+         m_qualifier->signalLoad(m_pluginInformation);
+         recordPluginEvent(kInfo, "started");
+         break;
+      case shared::plugin::yPluginApi::historization::EPluginState::kCustomValue:
+         recordPluginEvent(kInfo, std::string("custom event (") + customMessageId + std::string(")"));
+         break;
       default: break;
       }
    }

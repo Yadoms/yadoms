@@ -37,13 +37,14 @@ namespace pluginSystem
    boost::shared_ptr<IInstance> CFactory::createInstance(boost::shared_ptr<const database::entities::CPlugin> instanceData,
                                                          boost::shared_ptr<database::IDataProvider> dataProvider,
                                                          boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
-                                                         const boost::shared_ptr<IQualifier> qualifier, //TODO faut s'en servir !
+                                                         boost::shared_ptr<IQualifier> qualifier,
                                                          boost::shared_ptr<IInstanceStoppedListener> instanceStoppedListener) const
    {
       if (instanceData->Id() == dataProvider->getPluginRequester()->getSystemInstance()->Id())
          return createInternalPluginInstance(instanceData,
                                              dataProvider,
                                              dataAccessLayer,
+                                             qualifier,
                                              instanceStoppedListener);
 
       auto pluginInformation = createInformation(instanceData->Type());
@@ -52,6 +53,7 @@ namespace pluginSystem
                                                              pluginInformation,
                                                              dataProvider,
                                                              dataAccessLayer,
+                                                             qualifier,
                                                              instanceStoppedListener);
 
       auto logger = createProcessLogger(instanceData->Type());
@@ -78,6 +80,7 @@ namespace pluginSystem
    boost::shared_ptr<IInstance> CFactory::createInternalPluginInstance(boost::shared_ptr<const database::entities::CPlugin> instanceData,
                                                                        boost::shared_ptr<database::IDataProvider> dataProvider,
                                                                        boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
+                                                                       boost::shared_ptr<IQualifier> qualifier,
                                                                        boost::shared_ptr<IInstanceStoppedListener> instanceStoppedListener) const
    {
       auto pluginInformation = boost::make_shared<internalPlugin::CInformation>();
@@ -86,6 +89,7 @@ namespace pluginSystem
                                                              pluginInformation,
                                                              dataProvider,
                                                              dataAccessLayer,
+                                                             qualifier,
                                                              instanceStoppedListener);
 
       auto apiImplementation = createApiPluginImplemenation(pluginInformation,
@@ -115,12 +119,13 @@ namespace pluginSystem
                                                                                  boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
                                                                                  boost::shared_ptr<database::IDataProvider> dataProvider,
                                                                                  boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
+                                                                                 boost::shared_ptr<IQualifier> qualifier,
                                                                                  boost::shared_ptr<IInstanceStoppedListener> instanceStoppedListener) const
    {
       return boost::make_shared<CInstanceStateHandler>(instanceData,
                                                        pluginInformation,
                                                        dataProvider->getPluginRequester(),
-                                                       dataAccessLayer->getEventLogger(),
+                                                       qualifier,
                                                        dataProvider->getPluginEventLoggerRequester(),
                                                        dataAccessLayer->getAcquisitionHistorizer(),
                                                        instanceStoppedListener,

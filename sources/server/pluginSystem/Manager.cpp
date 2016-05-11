@@ -255,33 +255,23 @@ namespace pluginSystem
       }
       catch (shared::exception::CEmptyResult& e)
       {
-         const auto& error((boost::format("Invalid plugin instance %1%, element not found in database : %2%") % id % e.what()).str());
-         //TODO utile ?         m_pluginStateHandler->signalError(id, error);
-         throw CPluginException(error);
+         throw CPluginException((boost::format("Invalid plugin instance %1%, element not found in database : %2%") % id % e.what()).str());
       }
       catch (CInvalidPluginException& e)
       {
-         const auto& error((boost::format("Invalid plugin instance %1%, because of an invalid plugin : %2%") % id % e.what()).str());
-         //TODO utile ?         m_pluginStateHandler->signalError(id, error);
-         throw CPluginException(error);
+         throw CPluginException((boost::format("Invalid plugin instance %1%, because of an invalid plugin : %2%") % id % e.what()).str());
       }
       catch (shared::exception::COutOfRange& e)
       {
-         const auto& error((boost::format("Invalid plugin instance %1% configuration, out of range : %2%") % id % e.what()).str());
-         //TODO utile ?         m_pluginStateHandler->signalError(id, error);
-         throw CPluginException(error);
+         throw CPluginException((boost::format("Invalid plugin instance %1% configuration, out of range : %2%") % id % e.what()).str());
       }
       catch (std::exception& e)
       {
-         const auto& error((boost::format("Unable to start instance %1% %2%") % id % e.what()).str());
-         //TODO utile ?         m_pluginStateHandler->signalError(id, error);
-         throw CPluginException(error);
+         throw CPluginException((boost::format("Unable to start instance %1% %2%") % id % e.what()).str());
       }
       catch (...)
       {
-         const auto& error((boost::format("Unable to start instance %1%, unknown error") % id).str());
-         //TODO utile ?         m_pluginStateHandler->signalError(id, error);
-         throw CPluginException(error);
+         throw CPluginException((boost::format("Unable to start instance %1%, unknown error") % id).str());
       }
    }
 
