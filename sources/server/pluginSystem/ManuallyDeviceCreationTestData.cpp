@@ -24,10 +24,10 @@ const std::string& CManuallyDeviceCreationTestData::getDeviceParameters() const
    return m_parameters;
 }
 
-const std::string CManuallyDeviceCreationTestData::toString() const
+std::string CManuallyDeviceCreationTestData::toString() const
 {
    std::stringstream str;
-   str << m_command->getDevice() << "." << m_command->getKeyword() << " = " << m_command->getBody() << "(" << m_parameters << ")";
+   str << shared::plugin::yPluginApi::IDeviceCommand::toString(m_command);
    return str.str();
 }
 

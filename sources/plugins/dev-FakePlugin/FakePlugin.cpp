@@ -86,7 +86,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             // A command was received from Yadoms
             auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
-            std::cout << "Command received from Yadoms :" << command->getDevice() << "." << command->getKeyword() << "=" << command->getBody() << std::endl;
+            std::cout << "Command received from Yadoms : " << yApi::IDeviceCommand::toString(command) << std::endl;
             break;
          }
       case yApi::IYPluginApi::kEventUpdateConfiguration:

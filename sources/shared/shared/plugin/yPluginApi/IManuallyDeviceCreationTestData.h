@@ -1,5 +1,4 @@
 #pragma once
-#include "IManuallyDeviceCreationData.h"
 #include "IDeviceCommand.h"
 
 
@@ -32,7 +31,7 @@ namespace shared { namespace plugin { namespace yPluginApi
       ///\brief Describe the command as string
       ///\return Human-readable string representing the command
       //-----------------------------------------------------
-      virtual const std::string toString() const = 0;
+      virtual std::string toString() const = 0;
 
 };
 	

@@ -2,7 +2,6 @@
 #include "SmtpUnsecureServiceProvider.h"
 #include <Poco/Net/SMTPClientSession.h>
 #include <Poco/Net/NetException.h>
-#include <shared/Log.h>
 
 CSmtpUnsecureServiceProvider::CSmtpUnsecureServiceProvider(boost::shared_ptr<IMSConfiguration> & smtpConfiguration)
    :m_smtpConfiguration(smtpConfiguration)
@@ -31,19 +30,19 @@ bool CSmtpUnsecureServiceProvider::sendMail(const Poco::Net::MailMessage & messa
       }
       catch (Poco::Net::SMTPException &e) 
       {
-         YADOMS_LOG(error) << "Fail to send email : SMTPException :";
-         YADOMS_LOG(error) << e.displayText();
+         std::cerr << "Fail to send email : SMTPException :" << std::endl;
+         std::cerr << e.displayText() << std::endl;
          session.close();
       }
    }
    catch (Poco::Net::NetException &e) 
    {
-      YADOMS_LOG(error) << "Fail to send email : NetException :";
-      YADOMS_LOG(error) << e.displayText();
+      std::cerr << "Fail to send email : NetException :" << std::endl;
+      std::cerr << e.displayText();
    }  
    catch (...) 
    {
-      YADOMS_LOG(error) << "Fail to send email : unknown error";
+      std::cerr << "Fail to send email : unknown error" << std::endl;
    }   
    return false;
 }

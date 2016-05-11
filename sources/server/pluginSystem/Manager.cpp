@@ -489,7 +489,7 @@ namespace pluginSystem
       boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
       auto instance(getRunningInstance(id));
 
-      YADOMS_LOG(debug) << "Send command " << command->getDevice() << "." << command->getKeyword() << "=" << command->getBody() << " to plugin " << instance->about()->DisplayName();
+      YADOMS_LOG(debug) << "Send command " << shared::plugin::yPluginApi::IDeviceCommand::toString(command) << " to plugin " << instance->about()->DisplayName();
 
       instance->postDeviceCommand(command);
    }

@@ -19,11 +19,11 @@ public:
    virtual ~CMegatecUpsConfiguration();
 
    // IMegatecUpsConfiguration implementation
-   virtual void initializeWith(const shared::CDataContainer &data);
-   virtual std::string getSerialPort() const;
-   virtual bool upsBeepEnable() const;
-   virtual double outuputShutdownDelay() const;
-   virtual double outuputRestoreDelay() const;
+   void initializeWith(const shared::CDataContainer& data) override;
+   std::string getSerialPort() const override;
+   bool upsBeepEnable() const override;
+   double outuputShutdownDelay() const override;
+   double outuputRestoreDelay() const override;
    // [END] IMegatecUpsConfiguration implementation
 
 private:

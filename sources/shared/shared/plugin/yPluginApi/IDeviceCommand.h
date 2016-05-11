@@ -36,6 +36,17 @@ namespace shared
             ///\return              The command body, as string
             //-----------------------------------------------------
             virtual const std::string& getBody() const = 0;
+
+
+            //-----------------------------------------------------
+            ///\brief               To stirng transformer
+            ///\param[in] command   The commande to print out
+            ///\return              The formated string representine the command
+            //-----------------------------------------------------
+            static std::string toString(boost::shared_ptr<const IDeviceCommand> command)
+            {
+               return (boost::format("%1%.%2%=%3%") % command->getDevice() % command->getKeyword() % command->getBody()).str();
+            }
          };
       }
    }

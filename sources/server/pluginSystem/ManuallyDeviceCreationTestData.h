@@ -26,7 +26,7 @@ namespace pluginSystem
       // IManuallyDeviceCreationTestData implementation
       virtual boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> getCommand() const;
       virtual const std::string& getDeviceParameters() const;
-      virtual const std::string toString() const;
+      virtual std::string toString() const;
       // [END] IManuallyDeviceCreationTestData implementation
 
    private:

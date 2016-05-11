@@ -1,16 +1,11 @@
 #include "stdafx.h"
 #include "MailSender.h"
-#include <shared/Log.h>
 #include <shared/plugin/yPluginApi/historization/Message.h>
-#include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
-#include <shared/plugin/ImplementationHelper.h>
+#include <plugin_cpp_api/ImplementationHelper.h>
 #include <shared/exception/EmptyResult.hpp>
-#include "EmptyParameterException.hpp"
 #include <Poco/Net/MailMessage.h>
 #include <Poco/Net/MailRecipient.h>
 #include "SmtpServiceProviderFactory.h"
-#include <Poco/Net/NetException.h>
-#include "SecurityMode.h"
 #include "MSConfiguration.h"
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
@@ -28,47 +23,47 @@ m_messageKeyword("message", m_mailId, yApi::EKeywordAccessMode::kGetSet)
 CMailSender::~CMailSender()
 {}
 
-void CMailSender::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
+void CMailSender::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    try
    {
-      YADOMS_LOG(information) << "MailSender is starting...";
+      std::cout << "MailSender is starting..." << std::endl;
 
 
-      m_configuration->initializeWith(context->getConfiguration());
+      m_configuration->initializeWith(api->getConfiguration());
       // Declaration of the device and Associated keywords
-      declareDevice(context);
+      declareDevice(api);
 
       // the main loop
-      YADOMS_LOG(information) << "MailSender plugin is running...";
+      std::cout << "MailSender plugin is running..." << std::endl;
 
       while (1)
       {
          // Wait for an event
-         switch (context->getEventHandler().waitForEvents())
+         switch (api->getEventHandler().waitForEvents())
          {
             case yApi::IYPluginApi::kEventUpdateConfiguration:
             {
-               onUpdateConfiguration(context, context->getEventHandler().getEventData<shared::CDataContainer>());
+               onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
                break;
             }
 
             case yApi::IYPluginApi::kEventDeviceCommand:
             {
                // Command received
-               boost::shared_ptr<const yApi::IDeviceCommand> command = context->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
-               YADOMS_LOG(debug) << "Command received :" << command->toString();
+               auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
+               std::cout << "Command received :" << yApi::IDeviceCommand::toString(command) << std::endl;
 
                if (boost::iequals(command->getKeyword(), m_messageKeyword.getKeyword()))
-                  onSendMailRequest(context, command->getBody());
+                  onSendMailRequest(api, command->getBody());
                else
-                  YADOMS_LOG(warning) << "Received command for unknown keyword from Yadoms : " << command->toString();
+                  std::cout << "Received command for unknown keyword from Yadoms : " << yApi::IDeviceCommand::toString(command) << std::endl;
             }
             break;
 
             default:
             {
-               YADOMS_LOG(error) << "Unknown message id";
+               std::cerr << "Unknown message id" << std::endl;
                break;
             }
          }
@@ -79,40 +74,40 @@ void CMailSender::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
    // as a plugin failure.
    catch (boost::thread_interrupted&)
    {
-      YADOMS_LOG(information) << "MailSender is stopping..." << std::endl;
+      std::cout << "MailSender is stopping..." << std::endl;
    }
 }
 
-void CMailSender::declareDevice(boost::shared_ptr<yApi::IYPluginApi> context)
+void CMailSender::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
-   if (context->deviceExists(m_deviceName))
+   if (api->deviceExists(m_deviceName))
       return;
 
    // Declare the device
-   context->declareDevice(m_deviceName, m_deviceName);
+   api->declareDevice(m_deviceName, m_deviceName);
 
    // Declare associated keywords (= values managed by this device)
-   context->declareKeyword(m_deviceName, m_messageKeyword);
+   api->declareKeyword(m_deviceName, m_messageKeyword);
 }
 
-void CMailSender::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> context, const shared::CDataContainer& newConfigurationData)
+void CMailSender::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainer& newConfigurationData) const
 {
    // Configuration was updated
-   YADOMS_LOG(debug) << "Configuration was updated...";
+   std::cout << "Configuration was updated..." << std::endl;
    BOOST_ASSERT(!newConfigurationData.empty());  // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
    // Update configuration
    m_configuration->initializeWith(newConfigurationData);
 }
 
-void CMailSender::onSendMailRequest(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& sendMailRequest)
+void CMailSender::onSendMailRequest(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& sendMailRequest)
 {
    try
    {
       m_messageKeyword.setCommand(sendMailRequest);
 
       std::string from = m_configuration->getSenderEmail();
-      std::string to = getRecipientMail(context, m_messageKeyword.to());
+      std::string to = getRecipientMail(api, m_messageKeyword.to());
 
       std::string subject = "Yadoms Notification !";
       Poco::Net::MailMessage message;
@@ -125,30 +120,30 @@ void CMailSender::onSendMailRequest(boost::shared_ptr<yApi::IYPluginApi> context
       boost::shared_ptr<ISmtpServiceProvider>  mailServiceProvider = CSmtpServiceProviderFactory::CreateSmtpServer(m_configuration);
       if (mailServiceProvider->sendMail(message))
       {
-         YADOMS_LOG(debug) << "Email successfully sent to " << to;
+         std::cout << "Email successfully sent to " << to << std::endl;
       }
       else
       {
-         YADOMS_LOG(error) << "Fail to send email to " << to;
+         std::cerr << "Fail to send email to " << to << std::endl;
       }
    }
    catch (shared::exception::CInvalidParameter& e)
    {
-      YADOMS_LOG(error) << "Invalid Mail sending request \"" << sendMailRequest << "\" : " << e.what();
+      std::cerr << "Invalid Mail sending request \"" << sendMailRequest << "\" : " << e.what() << std::endl;
       return;
    }
    catch (...)
    {
-      YADOMS_LOG(error) << "Error sending Mail";
+      std::cerr << "Error sending Mail" << std::endl;
    }
 }
 
 
-std::string CMailSender::getRecipientMail(boost::shared_ptr<yApi::IYPluginApi> context, int recipientId)
+std::string CMailSender::getRecipientMail(boost::shared_ptr<yApi::IYPluginApi> api, int recipientId) const
 {
    try
    {
-      return context->getRecipientValue(recipientId, m_mailId);
+      return api->getRecipientValue(recipientId, m_mailId);
    }
    catch (shared::exception::CEmptyResult& e)
    {
