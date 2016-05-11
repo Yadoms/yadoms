@@ -47,23 +47,25 @@ namespace pluginSystem
       //-----------------------------------------------------
       virtual ~CInstanceStateHandler();
 
+
       // IInstanceStartErrorObserver Implementation
       void signalStartError(const std::string& error) override;
       // [END] IInstanceStartErrorObserver Implementation
-
-      // IInstanceStateHandler Implementation
-      void setState(const shared::plugin::yPluginApi::historization::EPluginState& state, const std::string & customMessageId = std::string()) override;
-      // [END] IInstanceStateHandler Implementation
 
       // process::IProcessObserver Implementation
       void onStart() override;
       void onFinish(int returnCode, const std::string& error) override;
       // [END] process::IProcessObserver Implementation
 
-
-
-
+      
    protected:
+
+      // IInstanceStateHandler Implementation
+      void setState(const shared::plugin::yPluginApi::historization::EPluginState& state,
+                    const std::string& customMessageId = std::string()) override;
+      // [END] IInstanceStateHandler Implementation
+
+
       void signalNormalStop();
       void signalError(const std::string& error);
 

@@ -394,52 +394,12 @@ namespace pluginSystem
 
    void CManager::startInternalPlugin()
    {
-      //TODO revoir la gestion du plugin interne
-      boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
-
-      try
-      {
-         auto databasePluginInstance(m_pluginDBTable->getSystemInstance());
-
-         if (m_runningInstances.find(databasePluginInstance->Id()) != m_runningInstances.end())
-            return; // Already started ==> nothing more to do
-
-
-         // Load the plugin
-         //TODO boost::shared_ptr<ILibrary> plugin(boost::make_shared<CInternalPluginLibrary>());//TODO à virer probablement
-
-         // Create instance
-         //TODO BOOST_ASSERT(plugin); // Plugin not loaded
-         //TODO
-         //boost::shared_ptr<IInstance> pluginInstance(m_factory->createInstance(
-         //   plugin,
-         //   databasePluginInstance, m_dataProvider, m_dataAccessLayer->getDeviceManager(), m_dataAccessLayer->getAcquisitionHistorizer(),
-         //   m_qualifier, m_supervisor, 0));
-         //m_runningInstances[databasePluginInstance->Id()] = pluginInstance;
-      }
-      catch (shared::exception::CEmptyResult& e)
-      {
-         YADOMS_LOG(error) << "startInternalPlugin : unable to find internal plugin : " << e.what();
-      }
-      catch (CInvalidPluginException& e)
-      {
-         YADOMS_LOG(error) << "startInternalPlugin : " << e.what();
-      }
+      startInstance(m_pluginDBTable->getSystemInstance()->Id());
    }
 
    void CManager::stopInternalPlugin()
    {
-      boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
-
-      //get the plugin info from db
-      auto databasePluginInstance(m_pluginDBTable->getSystemInstance());
-
-      // Already stopped ==> nothing more to do
-      if (m_runningInstances.find(databasePluginInstance->Id()) == m_runningInstances.end())
-         return;
-
-      // Remove (=stop) instance
-      m_runningInstances.erase(databasePluginInstance->Id());
+      stopInstanceAndWaitForStopped(m_pluginDBTable->getSystemInstance()->Id());
    }
 
    bool CManager::isInstanceRunning(int id) const

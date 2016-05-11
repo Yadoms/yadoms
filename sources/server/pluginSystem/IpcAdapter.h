@@ -14,7 +14,7 @@ namespace pluginSystem
    public:
       //--------------------------------------------------------------
       /// \brief	Constructor
-      /// \param[in] context yPluginApi context instance
+      /// \param[in] yPluginApi yPluginApi context instance
       //--------------------------------------------------------------
       explicit CIpcAdapter(boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> yPluginApi);
 

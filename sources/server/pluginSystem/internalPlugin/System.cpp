@@ -17,7 +17,7 @@ namespace pluginSystem {
    {
    }
 
-   void CSystem::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
+   void CSystem::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    {
       try
       {
@@ -32,27 +32,27 @@ namespace pluginSystem {
          yApi::historization::CEvent keywordRestart("restart");
 
          // Device creation if needed
-         if (!context->deviceExists(systemDevice))
-            context->declareDevice(systemDevice, "yadoms system");
+         if (!api->deviceExists(systemDevice))
+            api->declareDevice(systemDevice, "yadoms system");
 
          // Keywords creation if needed
-         if (!context->keywordExists(systemDevice, keywordShutdown.getKeyword()))
-            context->declareKeyword(systemDevice, keywordShutdown);
+         if (!api->keywordExists(systemDevice, keywordShutdown.getKeyword()))
+            api->declareKeyword(systemDevice, keywordShutdown);
 
-         if (!context->keywordExists(systemDevice, keywordRestart.getKeyword()))
-            context->declareKeyword(systemDevice, keywordRestart);
+         if (!api->keywordExists(systemDevice, keywordRestart.getKeyword()))
+            api->declareKeyword(systemDevice, keywordRestart);
 
          boost::shared_ptr<IApplicationStopHandler> applicationStopHandler = shared::CServiceLocator::instance().get<IApplicationStopHandler>();
 
          while (1)
          {
             // Wait for an event
-            switch (context->getEventHandler().waitForEvents())
+            switch (api->getEventHandler().waitForEvents())
             {
                case yApi::IYPluginApi::kEventDeviceCommand:
                {
                   // Command was received from Yadoms
-                  boost::shared_ptr<const yApi::IDeviceCommand> command = context->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
+                  auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
 
                   if (boost::iequals(command->getKeyword(), keywordShutdown.getKeyword()))
                   {

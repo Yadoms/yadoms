@@ -413,12 +413,15 @@ set(YADOMS_SRC
 	server/pluginSystem/PluginException.hpp
    server/pluginSystem/yPluginApiImplementation.h
    server/pluginSystem/yPluginApiImplementation.cpp
+	server/pluginSystem/ManuallyDeviceCreationRequest.h
+	server/pluginSystem/ManuallyDeviceCreationRequest.cpp
+   
 	server/pluginSystem/internalPlugin/System.h
 	server/pluginSystem/internalPlugin/System.cpp
 	server/pluginSystem/internalPlugin/Information.h
 	server/pluginSystem/internalPlugin/Information.cpp
-	server/pluginSystem/ManuallyDeviceCreationRequest.h
-	server/pluginSystem/ManuallyDeviceCreationRequest.cpp
+	server/pluginSystem/internalPlugin/Instance.h
+	server/pluginSystem/internalPlugin/Instance.cpp
 
    server/pluginSystem/serializers/IInformation.h
 	server/pluginSystem/serializers/Information.h

@@ -5,6 +5,7 @@
 #include <shared/process/ILogger.h>
 #include <shared/process/ICommandLine.h>
 #include "IIpcAdapter.h"
+#include <shared/shared/plugin/yPluginApi/IYPluginApi.h>
 
 namespace pluginSystem
 {
@@ -35,6 +36,11 @@ namespace pluginSystem
       // [END] IFactory Implementation
 
    private:
+      boost::shared_ptr<IInstance> createInternalPluginInstance(boost::shared_ptr<const database::entities::CPlugin> instanceData,
+                                                                boost::shared_ptr<database::IDataProvider> dataProvider,
+                                                                boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
+                                                                boost::shared_ptr<IInstanceStoppedListener> instanceStoppedListener) const;
+
       boost::shared_ptr<const shared::plugin::information::IInformation> createInformation(const std::string& pluginName) const;
 
       boost::filesystem::path pluginLogFile(const std::string& pluginName) const;
@@ -53,6 +59,12 @@ namespace pluginSystem
       boost::shared_ptr<shared::process::IProcess> createInstanceProcess(boost::shared_ptr<shared::process::ICommandLine> commandLine,
                                                                          boost::shared_ptr<shared::process::ILogger> logger,
                                                                          boost::shared_ptr<CInstanceStateHandler> instanceStatteHandler) const;
+
+      boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> createApiPluginImplemenation(boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
+                                                                                              boost::shared_ptr<const database::entities::CPlugin> instanceData,
+                                                                                              boost::shared_ptr<IInstanceStateHandler> instanceStateHandler,
+                                                                                              boost::shared_ptr<database::IDataProvider> dataProvider,
+                                                                                              boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer) const;
 
       boost::shared_ptr<IIpcAdapter> createInstanceRunningContext(boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
                                                                   boost::shared_ptr<const database::entities::CPlugin> instanceData,

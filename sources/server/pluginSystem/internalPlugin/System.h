@@ -6,8 +6,10 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-namespace pluginSystem { namespace internalPlugin {
-
+namespace pluginSystem
+{
+   namespace internalPlugin
+   {
       //--------------------------------------------------------------
       /// \brief	This class is the internal system plugin entry point
       //--------------------------------------------------------------
@@ -25,11 +27,10 @@ namespace pluginSystem { namespace internalPlugin {
          virtual ~CSystem();
 
          // IPlugin implementation
-         virtual void doWork(boost::shared_ptr<yApi::IYPluginApi> context);
+         virtual void doWork(boost::shared_ptr<yApi::IYPluginApi> api);
          // [END] IPlugin implementation
       };
-
-
-} } // namespace pluginSystem::internalPlugin
+   }
+} // namespace pluginSystem::internalPlugin
 
 

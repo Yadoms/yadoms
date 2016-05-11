@@ -38,13 +38,6 @@ namespace pluginSystem
       //--------------------------------------------------------------
       virtual ~CInstance();
 
-
-      //--------------------------------------------------------------
-      /// \brief			            Post the plugin information
-      /// \param  information       Plugin information
-      //--------------------------------------------------------------
-      void postPluginInformation(boost::shared_ptr<const shared::plugin::information::IInformation> information) const;
-
       // IInstance Implementation
       void updateConfiguration(const shared::CDataContainer& newConfiguration) const override;
       void requestStop() override;
@@ -57,10 +50,9 @@ namespace pluginSystem
       void postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request) const override;
       // [END] IInstance Implementation
 
-
    protected:
+      void postPluginInformation(boost::shared_ptr<const shared::plugin::information::IInformation> information) const;
       void postStopRequest() const;
-
 
    private:
       //--------------------------------------------------------------
