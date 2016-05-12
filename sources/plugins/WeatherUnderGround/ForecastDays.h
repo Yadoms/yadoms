@@ -4,8 +4,6 @@
 #include <shared/DataContainer.h>
 #include <shared/http/HttpMethods.h>
 #include "WUConfiguration.h"
-#include "Keywords/WeatherIcon.h"
-#include "Keywords/Temp.h"
 #include "Keywords/Forecast.h"
 #include "Keywords/Rain.h"
 
@@ -20,49 +18,49 @@ class CForecastDays
 public:
    //--------------------------------------------------------------
    /// \brief	  Constructor
-   /// \param[in] context          pointer to the API
+   /// \param[in] api              pointer to the API
    /// \param[in] WUConfiguration  The Configuration of the module
    /// \param[in] PluginName       The Name of the module
    /// \param[in] Prefix           Prefix Name used eventually to subname Keywords
    //--------------------------------------------------------------
-   CForecastDays(boost::shared_ptr<yApi::IYPluginApi> context, 
-                  IWUConfiguration& WUConfiguration, 
-                  std::string PluginName, 
-                  const std::string & Prefix);
+   CForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
+                 IWUConfiguration& WUConfiguration,
+                 std::string PluginName,
+                 const std::string& Prefix);
 
    //--------------------------------------------------------------
    /// \brief	  Send the request and receive the response from the web site
-   /// \param[in] context    pointer to the API
+   /// \param[in] api            pointer to the API
    //--------------------------------------------------------------
-   bool Request( boost::shared_ptr<yApi::IYPluginApi> context );
+   bool Request(boost::shared_ptr<yApi::IYPluginApi> api);
 
    //--------------------------------------------------------------
    /// \brief	  Parse the answer from the web Site
-   /// \param[in] context         pointer to the API
+   /// \param[in] api             pointer to the API
    /// \param[in] WUConfiguration The configuration of the module
    /// \param[in] PluginName      The name of the plugin module
    //--------------------------------------------------------------
-   void Parse( boost::shared_ptr<yApi::IYPluginApi> context, const IWUConfiguration& WUConfiguration);
+   void Parse(boost::shared_ptr<yApi::IYPluginApi> api, const IWUConfiguration& WUConfiguration);
 
    //--------------------------------------------------------------
    /// \brief	  Update the configuration when something change from the HMI
-   /// \param[in] context         pointer to the API
+   /// \param[in] api                pointer to the API
    /// \param[in] WUConfiguration    The Plugin configuration
    //--------------------------------------------------------------
-   void OnUpdate(  boost::shared_ptr<yApi::IYPluginApi> context, 
-	               IWUConfiguration& WUConfiguration );
+   void OnUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
+                 IWUConfiguration& WUConfiguration);
 
    //--------------------------------------------------------------
    /// \brief	  Set the city Name
    /// \param[in] WUConfiguration    The Plugin configuration
    //--------------------------------------------------------------
-   void SetCityName ( const std::string & CityName );
+   void SetCityName(const std::string& CityName);
 
    //--------------------------------------------------------------
    /// \brief	  Return true if an error occured during the request
    /// \return    The state of this request
    //--------------------------------------------------------------
-   bool IsModuleInFault ( void );
+   bool IsModuleInFault() const;
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -73,12 +71,12 @@ private:
 
    //--------------------------------------------------------------
    /// \brief	  Initialise Forecast 10 Days variables
-   /// \param[in] context    pointer to the API
+   /// \param[in] api                pointer to the API
    /// \param[in] WUConfiguration    The Plugin configuration
    //--------------------------------------------------------------
-   void InitializeForecastDays ( boost::shared_ptr<yApi::IYPluginApi> context, 
-	                             IWUConfiguration& WUConfiguration
-								);
+   void InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
+                               IWUConfiguration& WUConfiguration
+   );
 
    //--------------------------------------------------------------
    /// \brief	    Your Location to received custom information from the web site
@@ -118,12 +116,12 @@ private:
    //--------------------------------------------------------------
    /// \brief	    Keywords
    //--------------------------------------------------------------
-   CForecast    m_Forecast;
+   CForecast m_Forecast;
 
    //--------------------------------------------------------------
    /// \brief	    Tab of rain keywords for 3 next days
    //--------------------------------------------------------------
-   boost::shared_ptr<CRain>        m_Forecast_Rain[NB_RAIN_FORECAST_DAY];
+   boost::shared_ptr<CRain> m_Forecast_Rain[NB_RAIN_FORECAST_DAY];
 
    //--------------------------------------------------------------
    /// \brief	    Error Detecting ?

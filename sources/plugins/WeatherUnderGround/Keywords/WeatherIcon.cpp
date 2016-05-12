@@ -1,19 +1,21 @@
 #include "stdafx.h"
 #include "WeatherIcon.h"
-#include <shared/Log.h>
-#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include "KeywordException.hpp"
+#include "../ForecastDays.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-CWeatherIcon::CWeatherIcon( std::string PluginName, std::string KeyWordName )
-   :m_PluginName ( PluginName ), m_weathercondition( new yApi::historization::CWeatherCondition(KeyWordName) )
-{}
-
-void CWeatherIcon::Initialize( boost::shared_ptr<yApi::IYPluginApi> context, shared::CDataContainer details ) const
+CWeatherIcon::CWeatherIcon(std::string PluginName,
+                           std::string KeyWordName)
+   : m_PluginName(PluginName),
+     m_weathercondition(boost::make_shared<yApi::historization::CWeatherCondition>(KeyWordName))
 {
-   if (!context->keywordExists( m_PluginName, m_weathercondition->getKeyword()))
+}
+
+void CWeatherIcon::Initialize(boost::shared_ptr<yApi::IYPluginApi> context, shared::CDataContainer details) const
+{
+   if (!context->keywordExists(m_PluginName, m_weathercondition->getKeyword()))
       context->declareKeyword(m_PluginName, *m_weathercondition, details);
 }
 
@@ -21,27 +23,29 @@ CWeatherIcon::~CWeatherIcon()
 {
 }
 
-void CWeatherIcon::SetValue( const shared::CDataContainer & ValueContainer, const std::string & filter)
+void CWeatherIcon::SetValue(const shared::CDataContainer& ValueContainer,
+                            const std::string& filter) const
 {
    try
    {
-      weatherunderground::helper::EnumValuesNames::const_iterator it = weatherunderground::helper::EEnumTypeNames.find(ValueContainer.get<std::string>(filter));
+      auto it = weatherunderground::helper::EEnumTypeNames.find(ValueContainer.get<std::string>(filter));
       if (it != weatherunderground::helper::EEnumTypeNames.end())
       {
-         m_weathercondition->set((yApi::historization::EWeatherCondition)(it->second));
+         m_weathercondition->set(static_cast<yApi::historization::EWeatherCondition>(it->second));
 
-         YADOMS_LOG(debug) << m_weathercondition->getKeyword() << "=" << m_weathercondition->get();
+         std::cout << m_weathercondition->getKeyword() << "=" << m_weathercondition->get() << std::endl;
       }
       else
          throw CKeywordException("Keyword WeatherIcon could not be set");
    }
    catch (shared::exception::CException& e)
    {
-      YADOMS_LOG(warning) << e.what() << std::endl;
+      std::cout << e.what() << std::endl << std::endl;
    }
 }
 
 boost::shared_ptr<yApi::historization::IHistorizable> CWeatherIcon::GetHistorizable() const
 {
-	return m_weathercondition;
+   return m_weathercondition;
 }
+

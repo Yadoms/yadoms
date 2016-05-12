@@ -5,49 +5,50 @@
 
 namespace yApi = shared::plugin::yPluginApi;
 
+//--------------------------------------------------------------
+/// \brief	The Duration class
+//--------------------------------------------------------------
+class CDuration : public IKeyword
+{
+public:
    //--------------------------------------------------------------
-   /// \brief	The Duration class
+   /// \brief	                      Constructor
+   /// \param[in] PluginName           The name of the plugin
+   /// \param[in] KeyWordName          The keyword name
+   /// \note                           Use this constructor initialising the keyword for this plugin
    //--------------------------------------------------------------
-   class CDuration : public IKeyword
-   {
-   public:
-      //--------------------------------------------------------------
-      /// \brief	                      Constructor
-      /// \param[in] context              Yadoms APi context
-	   /// \param[in] PluginName           The name of the plugin
-	   /// \param[in] KeyWordName          The keyword name
-      /// \note                           Use this constructor initialising the keyword for this plugin
-      //--------------------------------------------------------------
-      CDuration( std::string PluginName,std::string KeyWordName );
+   CDuration(std::string PluginName,
+             std::string KeyWordName);
 
-      //--------------------------------------------------------------
-      /// \brief	Destructor
-      //--------------------------------------------------------------
-      virtual ~CDuration();
+   //--------------------------------------------------------------
+   /// \brief	Destructor
+   //--------------------------------------------------------------
+   virtual ~CDuration();
 
-      //--------------------------------------------------------------
-      /// \brief	                      Set the value from the container
-      /// \param[in] ValueContainer       The container where the value is stored
-	   /// \param[in] filter               The name of the information into the container
-      /// \note                           Use this constructor initialising the keyword for this plugin
-      //--------------------------------------------------------------
-	   void SetValue( const shared::CDataContainer & ValueContainer, const std::string & filter);
+   //--------------------------------------------------------------
+   /// \brief	                      Set the value from the container
+   /// \param[in] ValueContainer       The container where the value is stored
+   /// \param[in] filter               The name of the information into the container
+   /// \note                           Use this constructor initialising the keyword for this plugin
+   //--------------------------------------------------------------
+   void SetValue(const shared::CDataContainer& ValueContainer,
+                 const std::string& filter) const;
 
-      // IKeyword implementation
-      virtual void Initialize( boost::shared_ptr<yApi::IYPluginApi> context, shared::CDataContainer details ) const;
-	  virtual boost::shared_ptr<yApi::historization::IHistorizable> GetHistorizable() const;
-      // [END] IKeyword implementation
-      
-   protected:
+   // IKeyword implementation
+   void Initialize(boost::shared_ptr<yApi::IYPluginApi> api,
+                   shared::CDataContainer details) const override;
+   boost::shared_ptr<yApi::historization::IHistorizable> GetHistorizable() const override;
+   // [END] IKeyword implementation
 
-   private:
-      //--------------------------------------------------------------
-      /// \brief	The device name
-      //--------------------------------------------------------------
-      std::string m_PluginName;
+private:
+   //--------------------------------------------------------------
+   /// \brief	The device name
+   //--------------------------------------------------------------
+   std::string m_PluginName;
 
-      //--------------------------------------------------------------
-      /// \brief	The duration (boost::time_duration)
-      //--------------------------------------------------------------
-      boost::shared_ptr<yApi::historization::CDuration> m_duration;
-   };
+   //--------------------------------------------------------------
+   /// \brief	The duration (boost::time_duration)
+   //--------------------------------------------------------------
+   boost::shared_ptr<yApi::historization::CDuration> m_duration;
+};
+
