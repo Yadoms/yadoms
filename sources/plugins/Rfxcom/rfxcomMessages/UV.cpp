@@ -7,7 +7,7 @@ namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
-   CUV::CUV(boost::shared_ptr<yApi::IYPluginApi> context,
+   CUV::CUV(boost::shared_ptr<yApi::IYPluginApi> api,
             const RBUF& rbuf,
             size_t rbufSize,
             boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
@@ -33,34 +33,34 @@ namespace rfxcomMessages
       m_batteryLevel.set(NormalizeBatteryLevel(rbuf.UV.battery_level));
       m_rssi.set(NormalizeRssiLevel(rbuf.UV.rssi));
 
-      Init(context);
+      Init(api);
    }
 
    CUV::~CUV()
    {
    }
 
-   void CUV::Init(boost::shared_ptr<yApi::IYPluginApi> context)
+   void CUV::Init(boost::shared_ptr<yApi::IYPluginApi> api)
    {
       // Build device description
       buildDeviceModel();
       buildDeviceName();
 
       // Create device and keywords if needed
-      if (!context->deviceExists(m_deviceName))
+      if (!api->deviceExists(m_deviceName))
       {
          shared::CDataContainer details;
          details.set("type", pTypeUV);
          details.set("subType", m_subType);
          details.set("id", m_id);
-         context->declareDevice(m_deviceName, m_deviceModel, details);
+         api->declareDevice(m_deviceName, m_deviceModel, details);
 
          if (m_subType == sTypeUV3)
-            context->declareKeyword(m_deviceName, m_temperature);
+            api->declareKeyword(m_deviceName, m_temperature);
 
-         context->declareKeyword(m_deviceName, m_uv);
-         context->declareKeyword(m_deviceName, m_batteryLevel);
-         context->declareKeyword(m_deviceName, m_rssi);
+         api->declareKeyword(m_deviceName, m_uv);
+         api->declareKeyword(m_deviceName, m_batteryLevel);
+         api->declareKeyword(m_deviceName, m_rssi);
       }
    }
 
@@ -69,14 +69,14 @@ namespace rfxcomMessages
       throw shared::exception::CInvalidParameter("UV is a read-only message, can not be encoded");
    }
 
-   void CUV::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
+   void CUV::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
    {
       if (m_subType == sTypeUV3)
-         context->historizeData(m_deviceName, m_temperature);
+         api->historizeData(m_deviceName, m_temperature);
 
-      context->historizeData(m_deviceName, m_uv);
-      context->historizeData(m_deviceName, m_batteryLevel);
-      context->historizeData(m_deviceName, m_rssi);
+      api->historizeData(m_deviceName, m_uv);
+      api->historizeData(m_deviceName, m_batteryLevel);
+      api->historizeData(m_deviceName, m_rssi);
    }
 
    const std::string& CUV::getDeviceName() const

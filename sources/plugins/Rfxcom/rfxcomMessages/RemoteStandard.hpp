@@ -37,15 +37,15 @@ namespace rfxcomMessages
          return m_model;
       }
 
-      virtual void declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
+      virtual void declare(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const
       {
-         if (!context->keywordExists(deviceName, m_keyword))
-            context->declareKeyword(deviceName, m_keyword);
+         if (!api->keywordExists(deviceName, m_keyword))
+            api->declareKeyword(deviceName, m_keyword);
       }
 
-      virtual void historize(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
+      virtual void historize(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const
       {
-         context->historizeData(deviceName, m_keyword);
+         api->historizeData(deviceName, m_keyword);
       }
 
       virtual void set(const std::string& yadomsCommand)

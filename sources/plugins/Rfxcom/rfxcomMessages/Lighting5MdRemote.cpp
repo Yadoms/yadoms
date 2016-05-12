@@ -23,14 +23,14 @@ std::string CLighting5MdRemoteKeyword::getModel() const
    return "MDREMOTE LED dimmer";
 }
 
-void CLighting5MdRemoteKeyword::declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
+void CLighting5MdRemoteKeyword::declare(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const
 {
-   context->declareKeyword(deviceName, m_keyword);
+   api->declareKeyword(deviceName, m_keyword);
 }
 
-void CLighting5MdRemoteKeyword::historize(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
+void CLighting5MdRemoteKeyword::historize(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const
 {
-   context->historizeData(deviceName, m_keyword);
+   api->historizeData(deviceName, m_keyword);
 }
 
 void CLighting5MdRemoteKeyword::set(const std::string& yadomsCommand)

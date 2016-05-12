@@ -24,14 +24,14 @@ std::string CThermostat1DigimaxShort::getModel() const
    return "Digimax short (no set point)";
 }
 
-void CThermostat1DigimaxShort::declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
+void CThermostat1DigimaxShort::declare(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const
 {
-   context->declareKeyword(deviceName, m_currentTemperature);
+   api->declareKeyword(deviceName, m_currentTemperature);
 }
 
-void CThermostat1DigimaxShort::historize(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
+void CThermostat1DigimaxShort::historize(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const
 {
-   context->historizeData(deviceName, m_currentTemperature);
+   api->historizeData(deviceName, m_currentTemperature);
 }
 
 void CThermostat1DigimaxShort::set(const std::string& /*yadomsCommand*/)

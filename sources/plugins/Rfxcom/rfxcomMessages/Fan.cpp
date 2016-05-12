@@ -8,7 +8,7 @@ namespace yApi = shared::plugin::yPluginApi;
 namespace rfxcomMessages
 {
 
-CFan::CFan(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& keyword, const std::string& command, const shared::CDataContainer& deviceDetails)
+CFan::CFan(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& keyword, const std::string& command, const shared::CDataContainer& deviceDetails)
    :m_lightCmd(false), m_light("light"), m_fan("fan")
 {
    if (boost::iequals(keyword, m_light.getKeyword()))
@@ -27,10 +27,10 @@ CFan::CFan(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& keyw
    m_subType = deviceDetails.get<unsigned char>("subType");
    m_id = deviceDetails.get<unsigned int>("id");
 
-   Init(context);
+   Init(api);
 }
 
-CFan::CFan(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+CFan::CFan(boost::shared_ptr<yApi::IYPluginApi> api, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
    :m_lightCmd(false), m_light("light"), m_fan("fan")
 {
    m_light.set(false);
@@ -48,10 +48,10 @@ CFan::CFan(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char subType, 
 
    m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
 
-   Init(context);
+   Init(api);
 }
 
-CFan::CFan(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CFan::CFan(boost::shared_ptr<yApi::IYPluginApi> api, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_subType(0), m_id(0), m_lightCmd(false), m_light("light"), m_fan("fan")
 {
    // Should not be called (transmitter-only device)
@@ -62,23 +62,23 @@ CFan::~CFan()
 {
 }
 
-void CFan::Init(boost::shared_ptr<yApi::IYPluginApi> context)
+void CFan::Init(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    // Build device description
    buildDeviceModel();
    buildDeviceName();
 
    // Create device and keywords if needed
-   if (!context->deviceExists(m_deviceName))
+   if (!api->deviceExists(m_deviceName))
    {
       shared::CDataContainer details;
       details.set("type", pTypeFan);
       details.set("subType", m_subType);
       details.set("id", m_id);
-      context->declareDevice(m_deviceName, m_deviceModel, details);
+      api->declareDevice(m_deviceName, m_deviceModel, details);
 
-      context->declareKeyword(m_deviceName, m_light);
-      context->declareKeyword(m_deviceName, m_fan);
+      api->declareKeyword(m_deviceName, m_light);
+      api->declareKeyword(m_deviceName, m_fan);
    }
 }
 
@@ -99,7 +99,7 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CFan::encode(
    return toBufferQueue(buffer, GET_RBUF_STRUCT_SIZE(FAN));
 }
 
-void CFan::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
+void CFan::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
    // Nothing to historize (transmitter-only device)
 }

@@ -9,7 +9,7 @@ namespace yApi = shared::plugin::yPluginApi;
 namespace rfxcomMessages
 {
 
-CRadiator1::CRadiator1(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& keyword, const std::string& command, const shared::CDataContainer& deviceDetails)
+CRadiator1::CRadiator1(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& keyword, const std::string& command, const shared::CDataContainer& deviceDetails)
    :m_day("day"), m_setPoint("setPoint"), m_rssi("rssi")
 {
    if (boost::iequals(keyword, m_day.getKeyword()))
@@ -31,10 +31,10 @@ CRadiator1::CRadiator1(boost::shared_ptr<yApi::IYPluginApi> context, const std::
    m_id = deviceDetails.get<unsigned int>("id");
    m_unitCode = deviceDetails.get<unsigned char>("unitCode");
 
-   Init(context);
+   Init(api);
 }
 
-CRadiator1::CRadiator1(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+CRadiator1::CRadiator1(boost::shared_ptr<yApi::IYPluginApi> api, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
    :m_dayNightCmd(false), m_day("day"), m_setPoint("setPoint"), m_rssi("rssi")
 {
    m_day.set(false);
@@ -53,10 +53,10 @@ CRadiator1::CRadiator1(boost::shared_ptr<yApi::IYPluginApi> context, unsigned ch
    m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
    m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned char>("unitCode");
 
-   Init(context);
+   Init(api);
 }
 
-CRadiator1::CRadiator1(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CRadiator1::CRadiator1(boost::shared_ptr<yApi::IYPluginApi> api, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_subType(0), m_unitCode(0), m_id(0), m_dayNightCmd(false), m_day("day"), m_setPoint("setPoint"), m_rssi("rssi")
 {
    // Should not be called (transmitter-only device)
@@ -67,24 +67,24 @@ CRadiator1::~CRadiator1()
 {
 }
 
-void CRadiator1::Init(boost::shared_ptr<yApi::IYPluginApi> context)
+void CRadiator1::Init(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    // Build device description
    buildDeviceModel();
    buildDeviceName();
 
    // Create device and keywords if needed
-   if (!context->deviceExists(m_deviceName))
+   if (!api->deviceExists(m_deviceName))
    {
       shared::CDataContainer details;
       details.set("type", pTypeRadiator1);
       details.set("subType", m_subType);
       details.set("id", m_id);
       details.set("unitCode", m_unitCode);
-      context->declareDevice(m_deviceName, m_deviceModel, details);
+      api->declareDevice(m_deviceName, m_deviceModel, details);
 
-      context->declareKeyword(m_deviceName, m_day);
-      context->declareKeyword(m_deviceName, m_setPoint);
+      api->declareKeyword(m_deviceName, m_day);
+      api->declareKeyword(m_deviceName, m_setPoint);
    }
 }
 
@@ -109,7 +109,7 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CRadiator1::e
    return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(RADIATOR1));
 }
 
-void CRadiator1::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
+void CRadiator1::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
    // Nothing to historize (transmitter-only device)
 }

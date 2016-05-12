@@ -28,17 +28,17 @@ namespace rfxcomMessages
 
       //--------------------------------------------------------------
       /// \brief	                        Declare the keyword
-      /// \param[in] context              Yadoms APi context
+      /// \param[in] api                  Yadoms APi context
       /// \param[in] command              The device name associated to keyword
       //--------------------------------------------------------------
-      virtual void declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const = 0;
+      virtual void declare(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const = 0;
 
       //--------------------------------------------------------------
       /// \brief	                        Historize data
-      /// \param[in] context              Yadoms APi context
+      /// \param[in] api                  Yadoms APi context
       /// \param[in] command              The device name associated to keyword
       //--------------------------------------------------------------
-      virtual void historize(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const = 0;
+      virtual void historize(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const = 0;
 
       //--------------------------------------------------------------
       /// \brief	                        Set the ID of the keyword

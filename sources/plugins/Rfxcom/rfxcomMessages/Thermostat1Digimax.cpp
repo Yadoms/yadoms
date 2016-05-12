@@ -24,16 +24,16 @@ std::string CThermostat1Digimax::getModel() const
    return "Digimax TLX7506";
 }
 
-void CThermostat1Digimax::declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
+void CThermostat1Digimax::declare(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const
 {
-   context->declareKeyword(deviceName, m_currentTemperature);
-   context->declareKeyword(deviceName, m_setPoint);
+   api->declareKeyword(deviceName, m_currentTemperature);
+   api->declareKeyword(deviceName, m_setPoint);
 }
 
-void CThermostat1Digimax::historize(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
+void CThermostat1Digimax::historize(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const
 {
-   context->historizeData(deviceName, m_currentTemperature);
-   context->historizeData(deviceName, m_setPoint);
+   api->historizeData(deviceName, m_currentTemperature);
+   api->historizeData(deviceName, m_setPoint);
 }
 
 void CThermostat1Digimax::set(const std::string& yadomsCommand)

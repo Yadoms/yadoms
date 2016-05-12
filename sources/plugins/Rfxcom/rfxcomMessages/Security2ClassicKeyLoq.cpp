@@ -28,24 +28,24 @@ std::string CSecurity2ClassicKeyLoq::getModel() const
    return "Classic KeyLoq remote";
 }
 
-void CSecurity2ClassicKeyLoq::declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
+void CSecurity2ClassicKeyLoq::declare(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const
 {
-   if (!context->keywordExists(deviceName, m_button0))
-      context->declareKeyword(deviceName, m_button0);
-   if (!context->keywordExists(deviceName, m_button1))
-      context->declareKeyword(deviceName, m_button1);
-   if (!context->keywordExists(deviceName, m_button2))
-      context->declareKeyword(deviceName, m_button2);
-   if (!context->keywordExists(deviceName, m_button3))
-      context->declareKeyword(deviceName, m_button3);
+   if (!api->keywordExists(deviceName, m_button0))
+      api->declareKeyword(deviceName, m_button0);
+   if (!api->keywordExists(deviceName, m_button1))
+      api->declareKeyword(deviceName, m_button1);
+   if (!api->keywordExists(deviceName, m_button2))
+      api->declareKeyword(deviceName, m_button2);
+   if (!api->keywordExists(deviceName, m_button3))
+      api->declareKeyword(deviceName, m_button3);
 }
 
-void CSecurity2ClassicKeyLoq::historize(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
+void CSecurity2ClassicKeyLoq::historize(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const
 {
-   context->historizeData(deviceName, m_button0);
-   context->historizeData(deviceName, m_button1);
-   context->historizeData(deviceName, m_button2);
-   context->historizeData(deviceName, m_button3);
+   api->historizeData(deviceName, m_button0);
+   api->historizeData(deviceName, m_button1);
+   api->historizeData(deviceName, m_button2);
+   api->historizeData(deviceName, m_button3);
 }
 
 void CSecurity2ClassicKeyLoq::setId(unsigned int id)

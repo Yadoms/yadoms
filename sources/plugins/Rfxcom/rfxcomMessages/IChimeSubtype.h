@@ -1,7 +1,4 @@
 #pragma once
-
-#include "IRfxcomMessage.h"
-#include "RFXtrxHelpers.h"
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <shared/DataContainer.h>
 
@@ -18,7 +15,9 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
-      virtual ~IChimeSubtype() {}
+      virtual ~IChimeSubtype()
+      {
+      }
 
       //--------------------------------------------------------------
       /// \brief	                        Get device model
@@ -28,17 +27,17 @@ namespace rfxcomMessages
 
       //--------------------------------------------------------------
       /// \brief	                        Declare the keyword
-      /// \param[in] context              Yadoms APi context
+      /// \param[in] api                  Yadoms APi context
       /// \param[in] command              The device name associated to keyword
       //--------------------------------------------------------------
-      virtual void declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const = 0;
+      virtual void declare(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const = 0;
 
       //--------------------------------------------------------------
       /// \brief	                        Historize data
-      /// \param[in] context              Yadoms APi context
+      /// \param[in] api                  Yadoms APi context
       /// \param[in] command              The device name associated to keyword
       //--------------------------------------------------------------
-      virtual void historize(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const = 0;
+      virtual void historize(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const = 0;
 
       //--------------------------------------------------------------
       /// \brief	                        Set keyword state from Yadoms command
@@ -81,5 +80,6 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       virtual void toProtocolState(unsigned char& sound) const = 0;
    };
-
 } // namespace rfxcomMessages
+
+

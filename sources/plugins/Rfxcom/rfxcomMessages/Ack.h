@@ -25,7 +25,7 @@ namespace rfxcomMessages
 
       // IRfxcomMessage implementation
       virtual boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const;
-      virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const;
+      virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const;
       virtual const std::string& getDeviceName() const;
       // [END] IRfxcomMessage implementation
 

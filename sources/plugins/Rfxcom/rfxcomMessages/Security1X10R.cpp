@@ -25,24 +25,24 @@ std::string CSecurity1X10R::getModel() const
    return "X10 security remote";
 }
 
-void CSecurity1X10R::declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
+void CSecurity1X10R::declare(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const
 {
-   if (!context->keywordExists(deviceName, m_panic))
-      context->declareKeyword(deviceName, m_panic);
-   if (!context->keywordExists(deviceName, m_armAlarm))
-      context->declareKeyword(deviceName, m_armAlarm);
-   if (!context->keywordExists(deviceName, m_light1))
-      context->declareKeyword(deviceName, m_light1);
-   if (!context->keywordExists(deviceName, m_light2))
-      context->declareKeyword(deviceName, m_light2);
+   if (!api->keywordExists(deviceName, m_panic))
+      api->declareKeyword(deviceName, m_panic);
+   if (!api->keywordExists(deviceName, m_armAlarm))
+      api->declareKeyword(deviceName, m_armAlarm);
+   if (!api->keywordExists(deviceName, m_light1))
+      api->declareKeyword(deviceName, m_light1);
+   if (!api->keywordExists(deviceName, m_light2))
+      api->declareKeyword(deviceName, m_light2);
 }
 
-void CSecurity1X10R::historize(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
+void CSecurity1X10R::historize(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const
 {
-   context->historizeData(deviceName, m_panic);
-   context->historizeData(deviceName, m_armAlarm);
-   context->historizeData(deviceName, m_light1);
-   context->historizeData(deviceName, m_light2);
+   api->historizeData(deviceName, m_panic);
+   api->historizeData(deviceName, m_armAlarm);
+   api->historizeData(deviceName, m_light1);
+   api->historizeData(deviceName, m_light2);
 }
 
 void CSecurity1X10R::set(const std::string& keyword, const std::string& yadomsCommand)

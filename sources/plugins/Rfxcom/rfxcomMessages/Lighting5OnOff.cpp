@@ -24,14 +24,14 @@ std::string CLighting5OnOff::getModel() const
    return m_model;
 }
 
-void CLighting5OnOff::declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
+void CLighting5OnOff::declare(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const
 {
-   context->declareKeyword(deviceName, m_keyword);
+   api->declareKeyword(deviceName, m_keyword);
 }
 
-void CLighting5OnOff::historize(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
+void CLighting5OnOff::historize(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const
 {
-   context->historizeData(deviceName, m_keyword);
+   api->historizeData(deviceName, m_keyword);
 }
 
 void CLighting5OnOff::set(const std::string& yadomsCommand)

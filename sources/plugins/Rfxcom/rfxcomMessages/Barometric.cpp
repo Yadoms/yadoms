@@ -9,7 +9,7 @@ namespace yApi = shared::plugin::yPluginApi;
 namespace rfxcomMessages
 {
 
-CBarometric::CBarometric(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CBarometric::CBarometric(boost::shared_ptr<yApi::IYPluginApi> api, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_pressure("pressure"), m_batteryLevel("battery"), m_rssi("rssi")
 {
    CheckReceivedMessage(rbuf,
@@ -28,31 +28,31 @@ CBarometric::CBarometric(boost::shared_ptr<yApi::IYPluginApi> context, const RBU
    m_batteryLevel.set(NormalizeBatteryLevel(rbuf.BARO.battery_level));
    m_rssi.set(NormalizeRssiLevel(rbuf.BARO.rssi));
 
-   Init(context);
+   Init(api);
 }
 
 CBarometric::~CBarometric()
 {
 }
 
-void CBarometric::Init(boost::shared_ptr<yApi::IYPluginApi> context)
+void CBarometric::Init(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    // Build device description
    buildDeviceModel();
    buildDeviceName();
 
    // Create device and keywords if needed
-   if (!context->deviceExists(m_deviceName))
+   if (!api->deviceExists(m_deviceName))
    {
       shared::CDataContainer details;
       details.set("type", pTypeBARO);
       details.set("subType", m_subType);
       details.set("id", m_id);
-      context->declareDevice(m_deviceName, m_deviceModel, details);
+      api->declareDevice(m_deviceName, m_deviceModel, details);
 
-      context->declareKeyword(m_deviceName, m_pressure);
-      context->declareKeyword(m_deviceName, m_batteryLevel);
-      context->declareKeyword(m_deviceName, m_rssi);
+      api->declareKeyword(m_deviceName, m_pressure);
+      api->declareKeyword(m_deviceName, m_batteryLevel);
+      api->declareKeyword(m_deviceName, m_rssi);
    }
 }
 
@@ -61,11 +61,11 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CBarometric::
    throw shared::exception::CInvalidParameter("Barometric is a read-only message, can not be encoded");
 }
 
-void CBarometric::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
+void CBarometric::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
-   context->historizeData(m_deviceName, m_pressure);
-   context->historizeData(m_deviceName, m_batteryLevel);
-   context->historizeData(m_deviceName, m_rssi);
+   api->historizeData(m_deviceName, m_pressure);
+   api->historizeData(m_deviceName, m_batteryLevel);
+   api->historizeData(m_deviceName, m_rssi);
 }
 
 const std::string& CBarometric::getDeviceName() const

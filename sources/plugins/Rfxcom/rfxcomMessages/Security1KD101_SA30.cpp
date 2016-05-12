@@ -24,15 +24,15 @@ std::string CSecurity1KD101_SA30::getModel() const
    return m_model;
 }
 
-void CSecurity1KD101_SA30::declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
+void CSecurity1KD101_SA30::declare(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const
 {
-   if (!context->keywordExists(deviceName, m_alarm))
-      context->declareKeyword(deviceName, m_alarm);
+   if (!api->keywordExists(deviceName, m_alarm))
+      api->declareKeyword(deviceName, m_alarm);
 }
 
-void CSecurity1KD101_SA30::historize(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
+void CSecurity1KD101_SA30::historize(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const
 {
-   context->historizeData(deviceName, m_alarm);
+   api->historizeData(deviceName, m_alarm);
 }
 
 void CSecurity1KD101_SA30::set(const std::string& /*keyword*/, const std::string& /*yadomsCommand*/)

@@ -17,14 +17,14 @@ namespace rfxcomMessages
    public:
       //--------------------------------------------------------------
       /// \brief	                        Constructor
-      /// \param[in] context              Yadoms APi context
+      /// \param[in] api                  Yadoms APi context
       /// \param[in] rbuf                 The received buffer
       /// \param[in] rbufSize             Message size, received from Rfxcom
       /// \param[in] seqNumberProvider    The sequence number provider
       /// \note                           Use this constructor for received messages (to historize received data to Yadoms)
       /// \throw                          shared::exception::CInvalidParameter
       //--------------------------------------------------------------
-      CRFXMeter(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
+      CRFXMeter(boost::shared_ptr<yApi::IYPluginApi> api, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
@@ -33,16 +33,16 @@ namespace rfxcomMessages
 
       // IRfxcomMessage implementation
       virtual boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const;
-      virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const;
+      virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const;
       virtual const std::string& getDeviceName() const;
       // [END] IRfxcomMessage implementation
       
    protected:
       //--------------------------------------------------------------
       /// \brief	Global initialization method
-      /// \param[in] context              Yadoms APi context
+      /// \param[in] api                  Yadoms APi context
       //--------------------------------------------------------------
-      void Init(boost::shared_ptr<yApi::IYPluginApi> context);
+      void Init(boost::shared_ptr<yApi::IYPluginApi> api);
 
       //--------------------------------------------------------------
       /// \brief	                        Build the device name

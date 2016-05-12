@@ -9,7 +9,7 @@ namespace yApi = shared::plugin::yPluginApi;
 namespace rfxcomMessages
 {
 
-CTemp::CTemp(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CTemp::CTemp(boost::shared_ptr<yApi::IYPluginApi> api, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_temperature("temperature"), m_batteryLevel("battery"), m_rssi("rssi")
 {
    CheckReceivedMessage(rbuf,
@@ -27,31 +27,31 @@ CTemp::CTemp(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, siz
    m_batteryLevel.set(NormalizeBatteryLevel(rbuf.TEMP.battery_level));
    m_rssi.set(NormalizeRssiLevel(rbuf.TEMP.rssi));
 
-   Init(context);
+   Init(api);
 }
 
 CTemp::~CTemp()
 {
 }
 
-void CTemp::Init(boost::shared_ptr<yApi::IYPluginApi> context)
+void CTemp::Init(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    // Build device description
    buildDeviceModel();
    buildDeviceName();
 
    // Create device and keywords if needed
-   if (!context->deviceExists(m_deviceName))
+   if (!api->deviceExists(m_deviceName))
    {
       shared::CDataContainer details;
       details.set("type", pTypeTEMP);
       details.set("subType", m_subType);
       details.set("id", m_id);
-      context->declareDevice(m_deviceName, m_deviceModel, details);
+      api->declareDevice(m_deviceName, m_deviceModel, details);
 
-      context->declareKeyword(m_deviceName, m_temperature);
-      context->declareKeyword(m_deviceName, m_batteryLevel);
-      context->declareKeyword(m_deviceName, m_rssi);
+      api->declareKeyword(m_deviceName, m_temperature);
+      api->declareKeyword(m_deviceName, m_batteryLevel);
+      api->declareKeyword(m_deviceName, m_rssi);
    }
 }
 
@@ -60,11 +60,11 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CTemp::encode
    throw shared::exception::CInvalidParameter("Temp is a read-only message, can not be encoded");
 }
 
-void CTemp::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
+void CTemp::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
-   context->historizeData(m_deviceName, m_temperature);
-   context->historizeData(m_deviceName, m_batteryLevel);
-   context->historizeData(m_deviceName, m_rssi);
+   api->historizeData(m_deviceName, m_temperature);
+   api->historizeData(m_deviceName, m_batteryLevel);
+   api->historizeData(m_deviceName, m_rssi);
 }
 
 const std::string& CTemp::getDeviceName() const

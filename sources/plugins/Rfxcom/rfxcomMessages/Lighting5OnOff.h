@@ -27,8 +27,8 @@ namespace rfxcomMessages
        
       // ILighting5Subtype implementation
       virtual std::string getModel() const;
-      virtual void declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const;
-      virtual void historize(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const;
+      virtual void declare(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const;
+      virtual void historize(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const;
       virtual void set(const std::string& yadomsCommand);
       virtual void reset();
       virtual size_t getMessageNb() const;

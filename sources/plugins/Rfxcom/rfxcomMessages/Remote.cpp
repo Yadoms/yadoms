@@ -2,7 +2,6 @@
 #include "Remote.h"
 #include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/InvalidParameter.hpp>
-#include <shared/Log.h>
 #include "RemoteStandard.hpp"
 #include "RemoteAtiWonder2.h"
 #include "specificHistorizers/RemoteAtiWonderHistorizer.h"
@@ -16,7 +15,7 @@ namespace yApi = shared::plugin::yPluginApi;
 namespace rfxcomMessages
 {
 
-CRemote::CRemote(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& command, const shared::CDataContainer& deviceDetails)
+CRemote::CRemote(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& command, const shared::CDataContainer& deviceDetails)
    :m_rssi("rssi")
 {
    m_rssi.set(0);
@@ -24,11 +23,11 @@ CRemote::CRemote(boost::shared_ptr<yApi::IYPluginApi> context, const std::string
    createSubType(deviceDetails.get<unsigned char>("subType"));
    m_id = deviceDetails.get<unsigned int>("id");
 
-   declare(context);
+   declare(api);
    m_subTypeManager->set(command);
 }
 
-CRemote::CRemote(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CRemote::CRemote(boost::shared_ptr<yApi::IYPluginApi> api, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_rssi("rssi")
 {
    CheckReceivedMessage(rbuf,
@@ -44,7 +43,7 @@ CRemote::CRemote(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf,
 
    m_rssi.set(NormalizeRssiLevel(rbuf.REMOTE.rssi));
 
-   declare(context);
+   declare(api);
 }
 
 CRemote::~CRemote()
@@ -66,7 +65,7 @@ void CRemote::createSubType(unsigned char subType)
    }
 }
 
-void CRemote::declare(boost::shared_ptr<yApi::IYPluginApi> context)
+void CRemote::declare(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    if (!m_subTypeManager)
       throw shared::exception::CException("m_subTypeManager must be initialized");
@@ -75,18 +74,18 @@ void CRemote::declare(boost::shared_ptr<yApi::IYPluginApi> context)
    buildDeviceName();
 
    // Create device and keywords if needed
-   if (!context->deviceExists(m_deviceName))
+   if (!api->deviceExists(m_deviceName))
    {
       shared::CDataContainer details;
       details.set("type", pTypeRemote);
       details.set("subType", m_subType);
       details.set("id", m_id);
-      context->declareDevice(m_deviceName, m_subTypeManager->getModel(), details);
+      api->declareDevice(m_deviceName, m_subTypeManager->getModel(), details);
 
-      context->declareKeyword(m_deviceName, m_rssi);
+      api->declareKeyword(m_deviceName, m_rssi);
    }
 
-   m_subTypeManager->declare(context, m_deviceName);
+   m_subTypeManager->declare(api, m_deviceName);
 }
 
 boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CRemote::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
@@ -105,10 +104,10 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CRemote::enco
    return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(REMOTE));
 }
 
-void CRemote::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
+void CRemote::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
-   m_subTypeManager->historize(context, m_deviceName);
-   context->historizeData(m_deviceName, m_rssi);
+   m_subTypeManager->historize(api, m_deviceName);
+   api->historizeData(m_deviceName, m_rssi);
 }
 
 const std::string& CRemote::getDeviceName() const

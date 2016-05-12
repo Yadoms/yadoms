@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Rain.h"
-#include <shared/Log.h>
 #include <shared/exception/InvalidParameter.hpp>
 
 // Shortcut to yPluginApi namespace
@@ -9,7 +8,7 @@ namespace yApi = shared::plugin::yPluginApi;
 namespace rfxcomMessages
 {
 
-CRain::CRain(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CRain::CRain(boost::shared_ptr<yApi::IYPluginApi> api, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_batteryLevel("battery"), m_rssi("rssi")
 {
    CheckReceivedMessage(rbuf,
@@ -39,38 +38,38 @@ CRain::CRain(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, siz
       m_rain->set(rbuf.RAIN.raintotal3 * 0.266);
       break;
    default:
-      YADOMS_LOG(warning) << "Rain subtype is not supported : " << m_subType;
+      std::cout << "Rain subtype is not supported : " << m_subType << std::endl;
       break;
    }
 
    m_batteryLevel.set(NormalizeBatteryLevel(rbuf.RAIN.battery_level));
    m_rssi.set(NormalizeRssiLevel(rbuf.RAIN.rssi));
 
-   Init(context);
+   Init(api);
 }
 
 CRain::~CRain()
 {
 }
 
-void CRain::Init(boost::shared_ptr<yApi::IYPluginApi> context)
+void CRain::Init(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    // Build device description
    buildDeviceModel();
    buildDeviceName();
 
    // Create device and keywords if needed
-   if (!context->deviceExists(m_deviceName))
+   if (!api->deviceExists(m_deviceName))
    {
       shared::CDataContainer details;
       details.set("type", pTypeRAIN);
       details.set("subType", m_subType);
       details.set("id", m_id);
-      context->declareDevice(m_deviceName, m_deviceModel, details);
+      api->declareDevice(m_deviceName, m_deviceModel, details);
 
-      context->declareKeyword(m_deviceName, *m_rain);
-      context->declareKeyword(m_deviceName, m_batteryLevel);
-      context->declareKeyword(m_deviceName, m_rssi);
+      api->declareKeyword(m_deviceName, *m_rain);
+      api->declareKeyword(m_deviceName, m_batteryLevel);
+      api->declareKeyword(m_deviceName, m_rssi);
    }
 }
 
@@ -79,11 +78,11 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CRain::encode
    throw shared::exception::CInvalidParameter("Rain is a read-only message, can not be encoded");
 }
 
-void CRain::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
+void CRain::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
-   context->historizeData(m_deviceName, *m_rain);
-   context->historizeData(m_deviceName, m_batteryLevel);
-   context->historizeData(m_deviceName, m_rssi);
+   api->historizeData(m_deviceName, *m_rain);
+   api->historizeData(m_deviceName, m_batteryLevel);
+   api->historizeData(m_deviceName, m_rssi);
 }
 
 const std::string& CRain::getDeviceName() const

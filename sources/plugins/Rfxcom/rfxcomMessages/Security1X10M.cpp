@@ -24,18 +24,18 @@ std::string CSecurity1X10M::getModel() const
    return "X10 security motion sensor";
 }
 
-void CSecurity1X10M::declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
+void CSecurity1X10M::declare(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const
 {
-   if (!context->keywordExists(deviceName, m_alarm))
-      context->declareKeyword(deviceName, m_alarm);
-   if (!context->keywordExists(deviceName, m_tamper))
-      context->declareKeyword(deviceName, m_tamper);
+   if (!api->keywordExists(deviceName, m_alarm))
+      api->declareKeyword(deviceName, m_alarm);
+   if (!api->keywordExists(deviceName, m_tamper))
+      api->declareKeyword(deviceName, m_tamper);
 }
 
-void CSecurity1X10M::historize(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
+void CSecurity1X10M::historize(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const
 {
-   context->historizeData(deviceName, m_alarm);
-   context->historizeData(deviceName, m_tamper);
+   api->historizeData(deviceName, m_alarm);
+   api->historizeData(deviceName, m_tamper);
 }
 
 void CSecurity1X10M::set(const std::string& /*keyword*/, const std::string& /*yadomsCommand*/)

@@ -10,7 +10,7 @@ namespace yApi = shared::plugin::yPluginApi;
 namespace rfxcomMessages
 {
 
-CSecurity2::CSecurity2(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& keyword, const std::string& command, const shared::CDataContainer& deviceDetails)
+CSecurity2::CSecurity2(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& keyword, const std::string& command, const shared::CDataContainer& deviceDetails)
    :m_batteryLevel("battery"), m_rssi("rssi")
 {
    m_batteryLevel.set(100);
@@ -19,11 +19,11 @@ CSecurity2::CSecurity2(boost::shared_ptr<yApi::IYPluginApi> context, const std::
    createSubType(deviceDetails.get<unsigned char>("subType"));
    m_subTypeManager->setId(deviceDetails.get<unsigned int>("id"));
 
-   declare(context);
+   declare(api);
    m_subTypeManager->set(keyword, command);
 }
 
-CSecurity2::CSecurity2(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+CSecurity2::CSecurity2(boost::shared_ptr<yApi::IYPluginApi> api, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
    :m_batteryLevel("battery"), m_rssi("rssi")
 {
    m_batteryLevel.set(100);
@@ -32,11 +32,11 @@ CSecurity2::CSecurity2(boost::shared_ptr<yApi::IYPluginApi> context, unsigned ch
    createSubType(subType);
    m_subTypeManager->setId(manuallyDeviceCreationConfiguration.get<unsigned int>("id"));
 
-   declare(context);
+   declare(api);
    m_subTypeManager->resetState();
 }
 
-CSecurity2::CSecurity2(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CSecurity2::CSecurity2(boost::shared_ptr<yApi::IYPluginApi> api, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_batteryLevel("battery"), m_rssi("rssi")
 {
    CheckReceivedMessage(rbuf,
@@ -51,7 +51,7 @@ CSecurity2::CSecurity2(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF&
    m_batteryLevel.set(NormalizeBatteryLevel(rbuf.SECURITY2.battery_level));
    m_rssi.set(NormalizeRssiLevel(rbuf.SECURITY2.rssi));
 
-   declare(context);
+   declare(api);
 }
 
 CSecurity2::~CSecurity2()
@@ -69,7 +69,7 @@ void CSecurity2::createSubType(unsigned char subType)
    }
 }
 
-void CSecurity2::declare(boost::shared_ptr<yApi::IYPluginApi> context)
+void CSecurity2::declare(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    if (!m_subTypeManager)
       throw shared::exception::CException("m_subTypeManager must be initialized");
@@ -78,20 +78,20 @@ void CSecurity2::declare(boost::shared_ptr<yApi::IYPluginApi> context)
    buildDeviceName();
 
    // Create device and keywords if needed
-   if (!context->deviceExists(m_deviceName))
+   if (!api->deviceExists(m_deviceName))
    {
       shared::CDataContainer details;
       details.set("type", pTypeSecurity2);
       details.set("subType", m_subType);
       details.set("id", m_subTypeManager->getId());
 
-      context->declareDevice(m_deviceName, m_subTypeManager->getModel(), details);
+      api->declareDevice(m_deviceName, m_subTypeManager->getModel(), details);
 
-      context->declareKeyword(m_deviceName, m_batteryLevel);
-      context->declareKeyword(m_deviceName, m_rssi);
+      api->declareKeyword(m_deviceName, m_batteryLevel);
+      api->declareKeyword(m_deviceName, m_rssi);
    }
 
-   m_subTypeManager->declare(context, m_deviceName);
+   m_subTypeManager->declare(api, m_deviceName);
 }
 
 boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CSecurity2::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
@@ -109,11 +109,11 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CSecurity2::e
    return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(SECURITY2));
 }
 
-void CSecurity2::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
+void CSecurity2::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
-   m_subTypeManager->historize(context, m_deviceName);
-   context->historizeData(m_deviceName, m_batteryLevel);
-   context->historizeData(m_deviceName, m_rssi);
+   m_subTypeManager->historize(api, m_deviceName);
+   api->historizeData(m_deviceName, m_batteryLevel);
+   api->historizeData(m_deviceName, m_rssi);
 }
 
 const std::string& CSecurity2::getDeviceName() const

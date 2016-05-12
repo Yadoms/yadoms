@@ -18,24 +18,24 @@ namespace rfxcomMessages
    public:
       //--------------------------------------------------------------
       /// \brief	                        Constructor
-      /// \param[in] context              Yadoms APi context
+      /// \param[in] api                  Yadoms APi context
       /// \param[in] command              The command
       /// \param[in] deviceDetails        The device parameters
       /// \throw                          shared::exception::CInvalidParameter if fail to interpret command
       /// \note                           Use this constructor for command (to build RFXCom message)
       //--------------------------------------------------------------
-      CRemote(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& command, const shared::CDataContainer& deviceDetails);
+      CRemote(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& command, const shared::CDataContainer& deviceDetails);
 
       //--------------------------------------------------------------
       /// \brief	                        Constructor
-      /// \param[in] context              Yadoms APi context
+      /// \param[in] api                  Yadoms APi context
       /// \param[in] rbuf                 The received buffer
       /// \param[in] rbufSize             Message size, received from Rfxcom
       /// \param[in] seqNumberProvider    The sequence number provider
       /// \note                           Use this constructor for received messages (to historize received data to Yadoms)
       /// \throw                          shared::exception::CInvalidParameter
       //--------------------------------------------------------------
-      CRemote(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
+      CRemote(boost::shared_ptr<yApi::IYPluginApi> api, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
@@ -44,7 +44,7 @@ namespace rfxcomMessages
 
       // IRfxcomMessage implementation
       virtual boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const;
-      virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const;
+      virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const;
       virtual const std::string& getDeviceName() const;
       // [END] IRfxcomMessage implementation
 
@@ -62,9 +62,9 @@ namespace rfxcomMessages
 
       //--------------------------------------------------------------
       /// \brief	Declare the device
-      /// \param[in] context              Yadoms APi context
+      /// \param[in] api                  Yadoms APi context
       //--------------------------------------------------------------
-      void declare(boost::shared_ptr<yApi::IYPluginApi> context);
+      void declare(boost::shared_ptr<yApi::IYPluginApi> api);
 
    private:
       //--------------------------------------------------------------

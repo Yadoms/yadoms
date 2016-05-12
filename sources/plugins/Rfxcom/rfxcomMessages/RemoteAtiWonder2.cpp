@@ -21,18 +21,18 @@ const std::string& CRemoteAtiWonder2::getModel() const
    return model;
 }
 
-void CRemoteAtiWonder2::declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
+void CRemoteAtiWonder2::declare(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const
 {
-   if (!context->keywordExists(deviceName, m_keywordCmnd))
-      context->declareKeyword(deviceName, m_keywordCmnd);
-   if (!context->keywordExists(deviceName, m_keywordCmndtype))
-      context->declareKeyword(deviceName, m_keywordCmndtype);
+   if (!api->keywordExists(deviceName, m_keywordCmnd))
+      api->declareKeyword(deviceName, m_keywordCmnd);
+   if (!api->keywordExists(deviceName, m_keywordCmndtype))
+      api->declareKeyword(deviceName, m_keywordCmndtype);
 }
 
-void CRemoteAtiWonder2::historize(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
+void CRemoteAtiWonder2::historize(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const
 {
-   context->historizeData(deviceName, m_keywordCmnd);
-   context->historizeData(deviceName, m_keywordCmndtype);
+   api->historizeData(deviceName, m_keywordCmnd);
+   api->historizeData(deviceName, m_keywordCmndtype);
 }
 
 void CRemoteAtiWonder2::set(const std::string& yadomsCommand)

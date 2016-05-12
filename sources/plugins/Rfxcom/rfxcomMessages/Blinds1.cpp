@@ -8,7 +8,7 @@ namespace yApi = shared::plugin::yPluginApi;
 namespace rfxcomMessages
 {
 
-CBlinds1::CBlinds1(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& command, const shared::CDataContainer& deviceDetails)
+CBlinds1::CBlinds1(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& command, const shared::CDataContainer& deviceDetails)
    :m_state("state"), m_batteryLevel("battery"), m_rssi("rssi")
 {
    m_state.setCommand(command);
@@ -19,10 +19,10 @@ CBlinds1::CBlinds1(boost::shared_ptr<yApi::IYPluginApi> context, const std::stri
    m_id = deviceDetails.get<unsigned int>("id");
    m_unitCode = deviceDetails.get<unsigned char>("unitCode");
 
-   Init(context);
+   Init(api);
 }
 
-CBlinds1::CBlinds1(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+CBlinds1::CBlinds1(boost::shared_ptr<yApi::IYPluginApi> api, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
    :m_state("state"), m_batteryLevel("battery"), m_rssi("rssi")
 {
    m_state.set(yApi::historization::ECurtainCommand::kStop);
@@ -53,10 +53,10 @@ CBlinds1::CBlinds1(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char s
    m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
    m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned char>("unitCode", 0);
 
-   Init(context);
+   Init(api);
 }
 
-CBlinds1::CBlinds1(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CBlinds1::CBlinds1(boost::shared_ptr<yApi::IYPluginApi> api, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_state("state"), m_batteryLevel("battery"), m_rssi("rssi")
 {
    CheckReceivedMessage(rbuf,
@@ -104,21 +104,21 @@ CBlinds1::CBlinds1(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbu
    m_batteryLevel.set(NormalizeBatteryLevel(rbuf.BLINDS1.filler));   // filler is specified as battery level in RFXtrx SDF.pdf
    m_rssi.set(NormalizeRssiLevel(rbuf.BLINDS1.rssi));
 
-   Init(context);
+   Init(api);
 }
 
 CBlinds1::~CBlinds1()
 {
 }
 
-void CBlinds1::Init(boost::shared_ptr<yApi::IYPluginApi> context)
+void CBlinds1::Init(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    // Build device description
    buildDeviceModel();
    buildDeviceName();
 
    // Create device and keywords if needed
-   if (!context->deviceExists(m_deviceName))
+   if (!api->deviceExists(m_deviceName))
    {
       shared::CDataContainer details;
       details.set("type", pTypeBlinds);
@@ -126,11 +126,11 @@ void CBlinds1::Init(boost::shared_ptr<yApi::IYPluginApi> context)
       details.set("id", m_id);
       details.set("unitCode", m_unitCode);
 
-      context->declareDevice(m_deviceName, m_deviceModel, details);
+      api->declareDevice(m_deviceName, m_deviceModel, details);
 
-      context->declareKeyword(m_deviceName, m_state);
-      context->declareKeyword(m_deviceName, m_batteryLevel);
-      context->declareKeyword(m_deviceName, m_rssi);
+      api->declareKeyword(m_deviceName, m_state);
+      api->declareKeyword(m_deviceName, m_batteryLevel);
+      api->declareKeyword(m_deviceName, m_rssi);
    }
 }
 
@@ -195,11 +195,11 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CBlinds1::enc
    return toBufferQueue(buffer, GET_RBUF_STRUCT_SIZE(BLINDS1));
 }
 
-void CBlinds1::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
+void CBlinds1::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
-   context->historizeData(m_deviceName, m_state);
-   context->historizeData(m_deviceName, m_batteryLevel);
-   context->historizeData(m_deviceName, m_rssi);
+   api->historizeData(m_deviceName, m_state);
+   api->historizeData(m_deviceName, m_batteryLevel);
+   api->historizeData(m_deviceName, m_rssi);
 }
 
 const std::string& CBlinds1::getDeviceName() const

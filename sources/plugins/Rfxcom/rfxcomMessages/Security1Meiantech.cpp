@@ -26,18 +26,18 @@ std::string CSecurity1Meiantech::getModel() const
    return "Meiantech";
 }
 
-void CSecurity1Meiantech::declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
+void CSecurity1Meiantech::declare(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const
 {
-   if (!context->keywordExists(deviceName, m_panic))
-      context->declareKeyword(deviceName, m_panic);
-   if (!context->keywordExists(deviceName, m_armAlarm))
-      context->declareKeyword(deviceName, m_armAlarm);
+   if (!api->keywordExists(deviceName, m_panic))
+      api->declareKeyword(deviceName, m_panic);
+   if (!api->keywordExists(deviceName, m_armAlarm))
+      api->declareKeyword(deviceName, m_armAlarm);
 }
 
-void CSecurity1Meiantech::historize(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
+void CSecurity1Meiantech::historize(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const
 {
-   context->historizeData(deviceName, m_panic);
-   context->historizeData(deviceName, m_armAlarm);
+   api->historizeData(deviceName, m_panic);
+   api->historizeData(deviceName, m_armAlarm);
 }
 
 void CSecurity1Meiantech::set(const std::string& keyword, const std::string& yadomsCommand)

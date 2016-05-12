@@ -9,7 +9,7 @@ namespace yApi = shared::plugin::yPluginApi;
 namespace rfxcomMessages
 {
 
-CHomeConfort::CHomeConfort(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& command, const shared::CDataContainer& deviceDetails)
+CHomeConfort::CHomeConfort(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& command, const shared::CDataContainer& deviceDetails)
    :m_state("state"), m_rssi("rssi")
 {
    m_state.setCommand(command);
@@ -20,10 +20,10 @@ CHomeConfort::CHomeConfort(boost::shared_ptr<yApi::IYPluginApi> context, const s
    m_houseCode = deviceDetails.get<char>("houseCode");
    m_unitCode = deviceDetails.get<unsigned char>("unitCode");
 
-   Init(context);
+   Init(api);
 }
 
-CHomeConfort::CHomeConfort(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+CHomeConfort::CHomeConfort(boost::shared_ptr<yApi::IYPluginApi> api, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
    :m_state("state"), m_rssi("rssi")
 {
    m_state.set(false);
@@ -37,10 +37,10 @@ CHomeConfort::CHomeConfort(boost::shared_ptr<yApi::IYPluginApi> context, unsigne
    m_houseCode = manuallyDeviceCreationConfiguration.get<char>("houseCode");
    m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned char>("unitCode");
 
-   Init(context);
+   Init(api);
 }
 
-CHomeConfort::CHomeConfort(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CHomeConfort::CHomeConfort(boost::shared_ptr<yApi::IYPluginApi> api, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_state("state"), m_rssi("rssi")
 {
    CheckReceivedMessage(rbuf,
@@ -57,21 +57,21 @@ CHomeConfort::CHomeConfort(boost::shared_ptr<yApi::IYPluginApi> context, const R
    m_state.set(fromProtocolState(rbuf.HOMECONFORT.cmnd));
    m_rssi.set(NormalizeRssiLevel(rbuf.HOMECONFORT.rssi));
 
-   Init(context);
+   Init(api);
 }
 
 CHomeConfort::~CHomeConfort()
 {
 }
 
-void CHomeConfort::Init(boost::shared_ptr<yApi::IYPluginApi> context)
+void CHomeConfort::Init(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    // Build device description
    buildDeviceModel();
    buildDeviceName();
 
    // Create device and keywords if needed
-   if (!context->deviceExists(m_deviceName))
+   if (!api->deviceExists(m_deviceName))
    {
       shared::CDataContainer details;
       details.set("type", pTypeHomeConfort);
@@ -80,10 +80,10 @@ void CHomeConfort::Init(boost::shared_ptr<yApi::IYPluginApi> context)
       details.set("houseCode", m_houseCode);
       details.set("unitCode", m_unitCode);
 
-      context->declareDevice(m_deviceName, m_deviceModel, details);
+      api->declareDevice(m_deviceName, m_deviceModel, details);
 
-      context->declareKeyword(m_deviceName, m_state);
-      context->declareKeyword(m_deviceName, m_rssi);
+      api->declareKeyword(m_deviceName, m_state);
+      api->declareKeyword(m_deviceName, m_rssi);
    }
 }
 
@@ -108,10 +108,10 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CHomeConfort:
    return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(HOMECONFORT));
 }
 
-void CHomeConfort::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
+void CHomeConfort::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
-   context->historizeData(m_deviceName, m_state);
-   context->historizeData(m_deviceName, m_rssi);
+   api->historizeData(m_deviceName, m_state);
+   api->historizeData(m_deviceName, m_rssi);
 }
 
 const std::string& CHomeConfort::getDeviceName() const

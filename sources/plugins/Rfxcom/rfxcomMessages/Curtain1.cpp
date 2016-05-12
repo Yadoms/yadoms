@@ -8,7 +8,7 @@ namespace yApi = shared::plugin::yPluginApi;
 namespace rfxcomMessages
 {
 
-CCurtain1::CCurtain1(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& command, const shared::CDataContainer& deviceDetails)
+CCurtain1::CCurtain1(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& command, const shared::CDataContainer& deviceDetails)
    :m_state("state")
 {
    m_state.setCommand(command);
@@ -17,10 +17,10 @@ CCurtain1::CCurtain1(boost::shared_ptr<yApi::IYPluginApi> context, const std::st
    m_houseCode = deviceDetails.get<unsigned char>("houseCode");
    m_unitCode = deviceDetails.get<unsigned char>("unitCode");
 
-   Init(context);
+   Init(api);
 }
 
-CCurtain1::CCurtain1(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+CCurtain1::CCurtain1(boost::shared_ptr<yApi::IYPluginApi> api, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
    :m_subType(0), m_houseCode(0), m_unitCode(0), m_state("state")
 {
    m_state.set(yApi::historization::ECurtainCommand::kStop);
@@ -32,10 +32,10 @@ CCurtain1::CCurtain1(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char
    m_houseCode = static_cast<unsigned char>(manuallyDeviceCreationConfiguration.get<char>("houseCode"));
    m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned char>("unitCode");
 
-   Init(context);
+   Init(api);
 }
 
-CCurtain1::CCurtain1(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CCurtain1::CCurtain1(boost::shared_ptr<yApi::IYPluginApi> api, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_subType(0), m_houseCode(0), m_unitCode(0), m_state("state")
 {
    // Should not be called (transmitter-only device)
@@ -46,23 +46,23 @@ CCurtain1::~CCurtain1()
 {
 }
 
-void CCurtain1::Init(boost::shared_ptr<yApi::IYPluginApi> context)
+void CCurtain1::Init(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    // Build device description
    buildDeviceModel();
    buildDeviceName();
 
    // Create device and keywords if needed
-   if (!context->deviceExists(m_deviceName))
+   if (!api->deviceExists(m_deviceName))
    {
       shared::CDataContainer details;
       details.set("type", pTypeCurtain);
       details.set("subType", m_subType);
       details.set("houseCode", m_houseCode);
       details.set("unitCode", m_unitCode);
-      context->declareDevice(m_deviceName, m_deviceModel, details);
+      api->declareDevice(m_deviceName, m_deviceModel, details);
 
-      context->declareKeyword(m_deviceName, m_state);
+      api->declareKeyword(m_deviceName, m_state);
    }
 }
 
@@ -83,7 +83,7 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CCurtain1::en
    return toBufferQueue(buffer, GET_RBUF_STRUCT_SIZE(CURTAIN1));
 }
 
-void CCurtain1::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
+void CCurtain1::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
    // Nothing to historize (transmitter-only device)
 }

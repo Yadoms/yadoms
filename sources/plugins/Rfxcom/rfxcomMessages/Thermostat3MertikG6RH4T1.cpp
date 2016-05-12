@@ -20,18 +20,18 @@ std::string CThermostat3MertikG6RH4T1::getModel() const
    return "Mertik G6R-H4T1";
 }
 
-void CThermostat3MertikG6RH4T1::declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
+void CThermostat3MertikG6RH4T1::declare(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const
 {
-   context->declareKeyword(deviceName, m_onOff);
-   context->declareKeyword(deviceName, m_UpDown);
-   context->declareKeyword(deviceName, m_RunUpDown);
+   api->declareKeyword(deviceName, m_onOff);
+   api->declareKeyword(deviceName, m_UpDown);
+   api->declareKeyword(deviceName, m_RunUpDown);
 }
 
-void CThermostat3MertikG6RH4T1::historize(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
+void CThermostat3MertikG6RH4T1::historize(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const
 {
-   context->historizeData(deviceName, m_onOff);
-   context->historizeData(deviceName, m_UpDown);
-   context->historizeData(deviceName, m_RunUpDown);
+   api->historizeData(deviceName, m_onOff);
+   api->historizeData(deviceName, m_UpDown);
+   api->historizeData(deviceName, m_RunUpDown);
 }
 
 void CThermostat3MertikG6RH4T1::set(const std::string& keyword, const std::string& yadomsCommand)

@@ -7,7 +7,7 @@ namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
-   CWeight::CWeight(boost::shared_ptr<yApi::IYPluginApi> context,
+   CWeight::CWeight(boost::shared_ptr<yApi::IYPluginApi> api,
                     const RBUF& rbuf,
                     size_t rbufSize,
                     boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
@@ -31,31 +31,31 @@ namespace rfxcomMessages
       m_batteryLevel.set(NormalizeBatteryLevel(rbuf.WEIGHT.filler)); // In SDK specification battery_level is at filler location
       m_rssi.set(NormalizeRssiLevel(rbuf.WEIGHT.rssi));
 
-      Init(context);
+      Init(api);
    }
 
    CWeight::~CWeight()
    {
    }
 
-   void CWeight::Init(boost::shared_ptr<yApi::IYPluginApi> context)
+   void CWeight::Init(boost::shared_ptr<yApi::IYPluginApi> api)
    {
       // Build device description
       buildDeviceModel();
       buildDeviceName();
 
       // Create device and keywords if needed
-      if (!context->deviceExists(m_deviceName))
+      if (!api->deviceExists(m_deviceName))
       {
          shared::CDataContainer details;
          details.set("type", pTypeWEIGHT);
          details.set("subType", m_subType);
          details.set("id", m_id);
-         context->declareDevice(m_deviceName, m_deviceModel, details);
+         api->declareDevice(m_deviceName, m_deviceModel, details);
 
-         context->declareKeyword(m_deviceName, m_weight);
-         context->declareKeyword(m_deviceName, m_batteryLevel);
-         context->declareKeyword(m_deviceName, m_rssi);
+         api->declareKeyword(m_deviceName, m_weight);
+         api->declareKeyword(m_deviceName, m_batteryLevel);
+         api->declareKeyword(m_deviceName, m_rssi);
       }
    }
 
@@ -64,11 +64,11 @@ namespace rfxcomMessages
       throw shared::exception::CInvalidParameter("Weight is a read-only message, can not be encoded");
    }
 
-   void CWeight::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
+   void CWeight::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
    {
-      context->historizeData(m_deviceName, m_weight);
-      context->historizeData(m_deviceName, m_batteryLevel);
-      context->historizeData(m_deviceName, m_rssi);
+      api->historizeData(m_deviceName, m_weight);
+      api->historizeData(m_deviceName, m_batteryLevel);
+      api->historizeData(m_deviceName, m_rssi);
    }
 
    const std::string& CWeight::getDeviceName() const

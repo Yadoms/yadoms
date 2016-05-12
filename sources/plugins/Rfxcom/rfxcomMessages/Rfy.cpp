@@ -10,7 +10,7 @@ namespace yApi = shared::plugin::yPluginApi;
 namespace rfxcomMessages
 {
 
-CRfy::CRfy(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& command, const shared::CDataContainer& deviceDetails)
+CRfy::CRfy(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& command, const shared::CDataContainer& deviceDetails)
    :m_state("state")
 {
    m_state.setCommand(command);
@@ -19,10 +19,10 @@ CRfy::CRfy(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& comm
    m_id = deviceDetails.get<unsigned int>("id");
    m_unitCode = deviceDetails.get<unsigned char>("unitCode");
 
-   Init(context);
+   Init(api);
 }
 
-CRfy::CRfy(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+CRfy::CRfy(boost::shared_ptr<yApi::IYPluginApi> api, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
    :m_state("state")
 {
    m_state.set(yApi::historization::ECurtainCommand::kStop);
@@ -41,10 +41,10 @@ CRfy::CRfy(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char subType, 
    m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
    m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned char>("unitCode");
 
-   Init(context);
+   Init(api);
 }
 
-CRfy::CRfy(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CRfy::CRfy(boost::shared_ptr<yApi::IYPluginApi> api, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_subType(0), m_unitCode(0), m_id(0), m_state("state")
 {
    // Should not be called (transmitter-only device)
@@ -55,23 +55,23 @@ CRfy::~CRfy()
 {
 }
 
-void CRfy::Init(boost::shared_ptr<yApi::IYPluginApi> context)
+void CRfy::Init(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    // Build device description
    buildDeviceModel();
    buildDeviceName();
 
    // Create device and keywords if needed
-   if (!context->deviceExists(m_deviceName))
+   if (!api->deviceExists(m_deviceName))
    {
       shared::CDataContainer details;
       details.set("type", pTypeRFY);
       details.set("subType", m_subType);
       details.set("id", m_id);
       details.set("unitCode", m_unitCode);
-      context->declareDevice(m_deviceName, m_deviceModel, details);
+      api->declareDevice(m_deviceName, m_deviceModel, details);
 
-      context->declareKeyword(m_deviceName, m_state);
+      api->declareKeyword(m_deviceName, m_state);
    }
 }
 
@@ -98,7 +98,7 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CRfy::encode(
    return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(RFY));
 }
 
-void CRfy::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
+void CRfy::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
    // Nothing to historize (transmitter-only device)
 }

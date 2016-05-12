@@ -9,7 +9,7 @@ namespace yApi = shared::plugin::yPluginApi;
 namespace rfxcomMessages
 {
 
-CBbq::CBbq(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CBbq::CBbq(boost::shared_ptr<yApi::IYPluginApi> api, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_foodTemperature("food"), m_bbqTemperature("bbq"), m_batteryLevel("battery"), m_rssi("rssi")
 {
    CheckReceivedMessage(rbuf,
@@ -29,32 +29,32 @@ CBbq::CBbq(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_
    m_batteryLevel.set(NormalizeBatteryLevel(rbuf.BBQ.battery_level));
    m_rssi.set(NormalizeRssiLevel(rbuf.BBQ.rssi));
 
-   Init(context);
+   Init(api);
 }
 
 CBbq::~CBbq()
 {
 }
 
-void CBbq::Init(boost::shared_ptr<yApi::IYPluginApi> context)
+void CBbq::Init(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    // Build device description
    buildDeviceModel();
    buildDeviceName();
 
    // Create device and keywords if needed
-   if (!context->deviceExists(m_deviceName))
+   if (!api->deviceExists(m_deviceName))
    {
       shared::CDataContainer details;
       details.set("type", pTypeBBQ);
       details.set("subType", m_subType);
       details.set("id", m_id);
-      context->declareDevice(m_deviceName, m_deviceModel, details);
+      api->declareDevice(m_deviceName, m_deviceModel, details);
 
-      context->declareKeyword(m_deviceName, m_foodTemperature);
-      context->declareKeyword(m_deviceName, m_bbqTemperature);
-      context->declareKeyword(m_deviceName, m_batteryLevel);
-      context->declareKeyword(m_deviceName, m_rssi);
+      api->declareKeyword(m_deviceName, m_foodTemperature);
+      api->declareKeyword(m_deviceName, m_bbqTemperature);
+      api->declareKeyword(m_deviceName, m_batteryLevel);
+      api->declareKeyword(m_deviceName, m_rssi);
    }
 }
 
@@ -63,12 +63,12 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CBbq::encode(
    throw shared::exception::CInvalidParameter("Temp is a read-only message, can not be encoded");
 }
 
-void CBbq::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
+void CBbq::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
-   context->historizeData(m_deviceName, m_foodTemperature);
-   context->historizeData(m_deviceName, m_bbqTemperature);
-   context->historizeData(m_deviceName, m_batteryLevel);
-   context->historizeData(m_deviceName, m_rssi);
+   api->historizeData(m_deviceName, m_foodTemperature);
+   api->historizeData(m_deviceName, m_bbqTemperature);
+   api->historizeData(m_deviceName, m_batteryLevel);
+   api->historizeData(m_deviceName, m_rssi);
 }
 
 const std::string& CBbq::getDeviceName() const

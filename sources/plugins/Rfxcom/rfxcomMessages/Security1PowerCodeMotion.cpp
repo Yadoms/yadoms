@@ -25,18 +25,18 @@ std::string CSecurity1PowerCodeMotion::getModel() const
    return "Visonic PowerCode motion sensor";
 }
 
-void CSecurity1PowerCodeMotion::declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
+void CSecurity1PowerCodeMotion::declare(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const
 {
-   if (!context->keywordExists(deviceName, m_alarm))
-      context->declareKeyword(deviceName, m_alarm);
-   if (!context->keywordExists(deviceName, m_tamper))
-      context->declareKeyword(deviceName, m_tamper);
+   if (!api->keywordExists(deviceName, m_alarm))
+      api->declareKeyword(deviceName, m_alarm);
+   if (!api->keywordExists(deviceName, m_tamper))
+      api->declareKeyword(deviceName, m_tamper);
 }
 
-void CSecurity1PowerCodeMotion::historize(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
+void CSecurity1PowerCodeMotion::historize(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const
 {
-   context->historizeData(deviceName, m_alarm);
-   context->historizeData(deviceName, m_tamper);
+   api->historizeData(deviceName, m_alarm);
+   api->historizeData(deviceName, m_tamper);
 }
 
 void CSecurity1PowerCodeMotion::set(const std::string& /*keyword*/, const std::string& /*yadomsCommand*/)

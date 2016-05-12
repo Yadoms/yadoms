@@ -8,7 +8,7 @@ namespace yApi = shared::plugin::yPluginApi;
 namespace rfxcomMessages
 {
 
-CPower::CPower(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CPower::CPower(boost::shared_ptr<yApi::IYPluginApi> api, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_voltage("voltage"), m_current("current"), m_instantPower("instant"), m_totalPower("total"), m_powerFactor("powerFactor"), m_frequency("frequency"), m_rssi("rssi")
 {
    CheckReceivedMessage(rbuf,
@@ -36,35 +36,35 @@ CPower::CPower(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, s
 
    m_rssi.set(NormalizeRssiLevel(rbuf.POWER.rssi));
 
-   Init(context);
+   Init(api);
 }
 
 CPower::~CPower()
 {
 }
 
-void CPower::Init(boost::shared_ptr<yApi::IYPluginApi> context)
+void CPower::Init(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    // Build device description
    buildDeviceModel();
    buildDeviceName();
 
    // Create device and keywords if needed
-   if (!context->deviceExists(m_deviceName))
+   if (!api->deviceExists(m_deviceName))
    {
       shared::CDataContainer details;
       details.set("type", pTypePOWER);
       details.set("subType", m_subType);
       details.set("id", m_id);
-      context->declareDevice(m_deviceName, m_deviceModel, details);
+      api->declareDevice(m_deviceName, m_deviceModel, details);
 
-      context->declareKeyword(m_deviceName, m_voltage);
-      context->declareKeyword(m_deviceName, m_current);
-      context->declareKeyword(m_deviceName, m_instantPower);
-      context->declareKeyword(m_deviceName, m_totalPower);
-      context->declareKeyword(m_deviceName, m_powerFactor);
-      context->declareKeyword(m_deviceName, m_frequency);
-      context->declareKeyword(m_deviceName, m_rssi);
+      api->declareKeyword(m_deviceName, m_voltage);
+      api->declareKeyword(m_deviceName, m_current);
+      api->declareKeyword(m_deviceName, m_instantPower);
+      api->declareKeyword(m_deviceName, m_totalPower);
+      api->declareKeyword(m_deviceName, m_powerFactor);
+      api->declareKeyword(m_deviceName, m_frequency);
+      api->declareKeyword(m_deviceName, m_rssi);
    }
 }
 
@@ -73,15 +73,15 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CPower::encod
    throw shared::exception::CInvalidParameter("Power is a read-only message, can not be encoded");
 }
 
-void CPower::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
+void CPower::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
-   context->historizeData(m_deviceName, m_voltage);
-   context->historizeData(m_deviceName, m_current);
-   context->historizeData(m_deviceName, m_instantPower);
-   context->historizeData(m_deviceName, m_totalPower);
-   context->historizeData(m_deviceName, m_powerFactor);
-   context->historizeData(m_deviceName, m_frequency);
-   context->historizeData(m_deviceName, m_rssi);
+   api->historizeData(m_deviceName, m_voltage);
+   api->historizeData(m_deviceName, m_current);
+   api->historizeData(m_deviceName, m_instantPower);
+   api->historizeData(m_deviceName, m_totalPower);
+   api->historizeData(m_deviceName, m_powerFactor);
+   api->historizeData(m_deviceName, m_frequency);
+   api->historizeData(m_deviceName, m_rssi);
 }
 
 const std::string& CPower::getDeviceName() const

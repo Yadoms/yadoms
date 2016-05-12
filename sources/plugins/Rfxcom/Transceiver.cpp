@@ -1,9 +1,7 @@
 #include "stdafx.h"
 #include "Transceiver.h"
-#include <shared/Log.h>
 #include <shared/DataContainer.h>
 #include <shared/exception/InvalidParameter.hpp>
-#include "RfxcomFactory.h"
 #include "rfxcomMessages/Ack.h"
 #include "rfxcomMessages/Barometric.h"
 #include "rfxcomMessages/Blinds1.h"
@@ -47,8 +45,6 @@
 #include "rfxcomMessages/Weight.h"
 #include "rfxcomMessages/Wind.h"
 #include "IncrementSequenceNumber.h"
-#include <shared/communication/PortException.hpp>
-#include "ProtocolException.hpp"
 #include "ManuallyDeviceCreationException.hpp"
 
 //
@@ -168,60 +164,60 @@ shared::communication::CByteBuffer CTransceiver::buildStartReceiverCmd() const
 }
 
 
-boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CTransceiver::buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> context, boost::shared_ptr<const yApi::IDeviceCommand> command) const
+boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CTransceiver::buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<const yApi::IDeviceCommand> command) const
 {
    try
    {
-      const shared::CDataContainer& deviceDetails = context->getDeviceDetails(command->getTargetDevice());
+      const shared::CDataContainer& deviceDetails = api->getDeviceDetails(command->getDevice());
       unsigned char deviceType = deviceDetails.get<unsigned char>("type");
 
       // Create the RFXCom message
       switch(deviceType)
       {
       case pTypeLighting1:
-         return rfxcomMessages::CLighting1(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
+         return rfxcomMessages::CLighting1(api, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
       case pTypeLighting2:
-         return rfxcomMessages::CLighting2(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
+         return rfxcomMessages::CLighting2(api, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
       case pTypeLighting3:
-         return rfxcomMessages::CLighting3(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
+         return rfxcomMessages::CLighting3(api, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
       case pTypeLighting4:
-         return rfxcomMessages::CLighting4(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
+         return rfxcomMessages::CLighting4(api, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
       case pTypeLighting5:
-         return rfxcomMessages::CLighting5(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
+         return rfxcomMessages::CLighting5(api, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
       case pTypeLighting6:
-         return rfxcomMessages::CLighting6(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
+         return rfxcomMessages::CLighting6(api, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
       case pTypeChime:
-         return rfxcomMessages::CChime(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
+         return rfxcomMessages::CChime(api, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
       case pTypeCurtain:
-         return rfxcomMessages::CCurtain1(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
+         return rfxcomMessages::CCurtain1(api, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
       case pTypeFan:
-         return rfxcomMessages::CFan(context, command->getKeyword(), command->getBody(), deviceDetails).encode(m_seqNumberProvider);
+         return rfxcomMessages::CFan(api, command->getKeyword(), command->getBody(), deviceDetails).encode(m_seqNumberProvider);
       case pTypeBlinds:
-         return rfxcomMessages::CBlinds1(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
+         return rfxcomMessages::CBlinds1(api, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
       case pTypeRFY:
-         return rfxcomMessages::CRfy(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
+         return rfxcomMessages::CRfy(api, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
       case pTypeHomeConfort:
-         return rfxcomMessages::CHomeConfort(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
+         return rfxcomMessages::CHomeConfort(api, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
       case pTypeSecurity1:
-         return rfxcomMessages::CSecurity1(context, command->getKeyword(), command->getBody(), deviceDetails).encode(m_seqNumberProvider);
+         return rfxcomMessages::CSecurity1(api, command->getKeyword(), command->getBody(), deviceDetails).encode(m_seqNumberProvider);
       case pTypeSecurity2:
-         return rfxcomMessages::CSecurity2(context, command->getKeyword(), command->getBody(), deviceDetails).encode(m_seqNumberProvider);
+         return rfxcomMessages::CSecurity2(api, command->getKeyword(), command->getBody(), deviceDetails).encode(m_seqNumberProvider);
       case pTypeCamera:
-         return rfxcomMessages::CCamera1(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
+         return rfxcomMessages::CCamera1(api, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
       case pTypeRemote:
-         return rfxcomMessages::CRemote(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
+         return rfxcomMessages::CRemote(api, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
       case pTypeThermostat1:
-         return rfxcomMessages::CThermostat1(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
+         return rfxcomMessages::CThermostat1(api, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
       case pTypeThermostat2:
-         return rfxcomMessages::CThermostat2(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
+         return rfxcomMessages::CThermostat2(api, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
       case pTypeThermostat3:
-         return rfxcomMessages::CThermostat3(context, command->getKeyword(), command->getBody(), deviceDetails).encode(m_seqNumberProvider);
+         return rfxcomMessages::CThermostat3(api, command->getKeyword(), command->getBody(), deviceDetails).encode(m_seqNumberProvider);
       case pTypeRadiator1:
-         return rfxcomMessages::CRadiator1(context, command->getKeyword(), command->getBody(), deviceDetails).encode(m_seqNumberProvider);
+         return rfxcomMessages::CRadiator1(api, command->getKeyword(), command->getBody(), deviceDetails).encode(m_seqNumberProvider);
       case pTypeFS20:
-         return rfxcomMessages::CFS20(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
+         return rfxcomMessages::CFS20(api, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
       default:
-         YADOMS_LOG(error) << "Invalid command \"" << command->getBody() << "\" : " << " unknown type " << deviceType;
+         std::cerr << "Invalid command \"" << command->getBody() << "\" : " << " unknown type " << deviceType << std::endl;
          throw shared::exception::CInvalidParameter(command->getBody());
       }
    }
@@ -232,7 +228,7 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CTransceiver:
    }
 }
 
-boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMessage(boost::shared_ptr<yApi::IYPluginApi> context, const shared::communication::CByteBuffer& data) const
+boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMessage(boost::shared_ptr<yApi::IYPluginApi> api, const shared::communication::CByteBuffer& data) const
 {
    try
    {
@@ -244,49 +240,49 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMess
       {
       case pTypeInterfaceMessage: message.reset(new rfxcomMessages::CTransceiverStatus(*buf, bufSize, m_seqNumberProvider)); break;
       case pTypeRecXmitMessage: message.reset(new rfxcomMessages::CAck(*buf, bufSize, m_seqNumberProvider)); break;
-      case pTypeRFXMeter: message.reset(new rfxcomMessages::CRFXMeter(context, *buf, bufSize, m_seqNumberProvider)); break;
-      case pTypeLighting1: message.reset(new rfxcomMessages::CLighting1(context, *buf, bufSize, m_seqNumberProvider)); break;
-      case pTypeLighting2: message.reset(new rfxcomMessages::CLighting2(context, *buf, bufSize, m_seqNumberProvider)); break;
-      case pTypeLighting3: message.reset(new rfxcomMessages::CLighting3(context, *buf, bufSize, m_seqNumberProvider)); break;
-      case pTypeLighting4: message.reset(new rfxcomMessages::CLighting4(context, *buf, bufSize, m_seqNumberProvider)); break;
-      case pTypeLighting5: message.reset(new rfxcomMessages::CLighting5(context, *buf, bufSize, m_seqNumberProvider)); break;
-      case pTypeLighting6: message.reset(new rfxcomMessages::CLighting6(context, *buf, bufSize, m_seqNumberProvider)); break;
-      case pTypeChime: message.reset(new rfxcomMessages::CChime(context, *buf, bufSize, m_seqNumberProvider)); break;
-      case pTypeFan: message.reset(new rfxcomMessages::CFan(context, *buf, bufSize, m_seqNumberProvider)); break;
-      case pTypeCurtain: message.reset(new rfxcomMessages::CCurtain1(context, *buf, bufSize, m_seqNumberProvider)); break;
-      case pTypeBlinds: message.reset(new rfxcomMessages::CBlinds1(context, *buf, bufSize, m_seqNumberProvider)); break;
-      case pTypeRFY: message.reset(new rfxcomMessages::CRfy(context, *buf, bufSize, m_seqNumberProvider)); break;
-      case pTypeHomeConfort: message.reset(new rfxcomMessages::CHomeConfort(context, *buf, bufSize, m_seqNumberProvider)); break;
-      case pTypeTEMP_RAIN: message.reset(new rfxcomMessages::CTempRain(context, *buf, bufSize, m_seqNumberProvider)); break;
-      case pTypeTEMP: message.reset(new rfxcomMessages::CTemp(context, *buf, bufSize, m_seqNumberProvider)); break;
-      case pTypeHUM: message.reset(new rfxcomMessages::CHumidity(context, *buf, bufSize, m_seqNumberProvider)); break;
-      case pTypeTEMP_HUM: message.reset(new rfxcomMessages::CTempHumidity(context, *buf, bufSize, m_seqNumberProvider)); break;
-      case pTypeBARO: message.reset(new rfxcomMessages::CBarometric(context, *buf, bufSize, m_seqNumberProvider)); break;
-      case pTypeTEMP_HUM_BARO: message.reset(new rfxcomMessages::CTempHumidityBarometric(context, *buf, bufSize, m_seqNumberProvider)); break;
-      case pTypeRAIN: message.reset(new rfxcomMessages::CRain(context, *buf, bufSize, m_seqNumberProvider)); break;
-      case pTypeWIND: message.reset(new rfxcomMessages::CWind(context, *buf, bufSize, m_seqNumberProvider)); break;
-      case pTypeUV: message.reset(new rfxcomMessages::CUV(context, *buf, bufSize, m_seqNumberProvider)); break;
-      case pTypeDT: message.reset(new rfxcomMessages::CDateTime(context, *buf, bufSize, m_seqNumberProvider)); break;
-      case pTypeCURRENT: message.reset(new rfxcomMessages::CCurrent(context, *buf, bufSize, m_seqNumberProvider)); break;
-      case pTypeENERGY: message.reset(new rfxcomMessages::CEnergy(context, *buf, bufSize, m_seqNumberProvider)); break;
-      case pTypeCURRENTENERGY: message.reset(new rfxcomMessages::CCurrentEnergy(context, *buf, bufSize, m_seqNumberProvider)); break;
-      case pTypePOWER: message.reset(new rfxcomMessages::CPower(context, *buf, bufSize, m_seqNumberProvider)); break;
-      case pTypeWEIGHT: message.reset(new rfxcomMessages::CWeight(context, *buf, bufSize, m_seqNumberProvider)); break;
-      case pTypeCARTELECTRONIC: message.reset(new rfxcomMessages::CCartelectronic(context, *buf, bufSize, m_seqNumberProvider)); break;
-      case pTypeRFXSensor: message.reset(new rfxcomMessages::CRFXSensor(context, *buf, bufSize, m_seqNumberProvider)); break;
-      case pTypeSecurity1: message.reset(new rfxcomMessages::CSecurity1(context, *buf, bufSize, m_seqNumberProvider)); break;
-      case pTypeSecurity2: message.reset(new rfxcomMessages::CSecurity2(context, *buf, bufSize, m_seqNumberProvider)); break;
-      case pTypeCamera: message.reset(new rfxcomMessages::CCamera1(context, *buf, bufSize, m_seqNumberProvider)); break;
-      case pTypeRemote: message.reset(new rfxcomMessages::CRemote(context, *buf, bufSize, m_seqNumberProvider)); break;
-      case pTypeThermostat1: message.reset(new rfxcomMessages::CThermostat1(context, *buf, bufSize, m_seqNumberProvider)); break;
-      case pTypeThermostat2: message.reset(new rfxcomMessages::CThermostat2(context, *buf, bufSize, m_seqNumberProvider)); break;
-      case pTypeThermostat3: message.reset(new rfxcomMessages::CThermostat3(context, *buf, bufSize, m_seqNumberProvider)); break;
-      case pTypeRadiator1: message.reset(new rfxcomMessages::CRadiator1(context, *buf, bufSize, m_seqNumberProvider)); break;
-      case pTypeBBQ: message.reset(new rfxcomMessages::CBbq(context, *buf, bufSize, m_seqNumberProvider)); break;
-      case pTypeFS20: message.reset(new rfxcomMessages::CFS20(context, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeRFXMeter: message.reset(new rfxcomMessages::CRFXMeter(api, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeLighting1: message.reset(new rfxcomMessages::CLighting1(api, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeLighting2: message.reset(new rfxcomMessages::CLighting2(api, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeLighting3: message.reset(new rfxcomMessages::CLighting3(api, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeLighting4: message.reset(new rfxcomMessages::CLighting4(api, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeLighting5: message.reset(new rfxcomMessages::CLighting5(api, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeLighting6: message.reset(new rfxcomMessages::CLighting6(api, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeChime: message.reset(new rfxcomMessages::CChime(api, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeFan: message.reset(new rfxcomMessages::CFan(api, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeCurtain: message.reset(new rfxcomMessages::CCurtain1(api, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeBlinds: message.reset(new rfxcomMessages::CBlinds1(api, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeRFY: message.reset(new rfxcomMessages::CRfy(api, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeHomeConfort: message.reset(new rfxcomMessages::CHomeConfort(api, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeTEMP_RAIN: message.reset(new rfxcomMessages::CTempRain(api, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeTEMP: message.reset(new rfxcomMessages::CTemp(api, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeHUM: message.reset(new rfxcomMessages::CHumidity(api, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeTEMP_HUM: message.reset(new rfxcomMessages::CTempHumidity(api, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeBARO: message.reset(new rfxcomMessages::CBarometric(api, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeTEMP_HUM_BARO: message.reset(new rfxcomMessages::CTempHumidityBarometric(api, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeRAIN: message.reset(new rfxcomMessages::CRain(api, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeWIND: message.reset(new rfxcomMessages::CWind(api, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeUV: message.reset(new rfxcomMessages::CUV(api, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeDT: message.reset(new rfxcomMessages::CDateTime(api, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeCURRENT: message.reset(new rfxcomMessages::CCurrent(api, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeENERGY: message.reset(new rfxcomMessages::CEnergy(api, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeCURRENTENERGY: message.reset(new rfxcomMessages::CCurrentEnergy(api, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypePOWER: message.reset(new rfxcomMessages::CPower(api, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeWEIGHT: message.reset(new rfxcomMessages::CWeight(api, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeCARTELECTRONIC: message.reset(new rfxcomMessages::CCartelectronic(api, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeRFXSensor: message.reset(new rfxcomMessages::CRFXSensor(api, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeSecurity1: message.reset(new rfxcomMessages::CSecurity1(api, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeSecurity2: message.reset(new rfxcomMessages::CSecurity2(api, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeCamera: message.reset(new rfxcomMessages::CCamera1(api, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeRemote: message.reset(new rfxcomMessages::CRemote(api, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeThermostat1: message.reset(new rfxcomMessages::CThermostat1(api, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeThermostat2: message.reset(new rfxcomMessages::CThermostat2(api, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeThermostat3: message.reset(new rfxcomMessages::CThermostat3(api, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeRadiator1: message.reset(new rfxcomMessages::CRadiator1(api, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeBBQ: message.reset(new rfxcomMessages::CBbq(api, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeFS20: message.reset(new rfxcomMessages::CFS20(api, *buf, bufSize, m_seqNumberProvider)); break;
       default:
       {
-         YADOMS_LOG(error) << "Invalid RfxCom message received, unknown packet type " << std::setfill('0') << std::setw(sizeof(unsigned char) * 2) << std::hex << static_cast<int>(buf->RXRESPONSE.packettype);
+         std::cerr << "Invalid RfxCom message received, unknown packet type " << std::setfill('0') << std::setw(sizeof(unsigned char) * 2) << std::hex << static_cast<int>(buf->RXRESPONSE.packettype) << std::endl;
          break;
       }
       }
@@ -294,205 +290,205 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMess
    }
    catch (shared::exception::CException& exception)
    {
-      YADOMS_LOG(error) << "Invalid RfxCom message received : " << exception.what();
+      std::cerr << "Invalid RfxCom message received : " << exception.what() << std::endl;
       return boost::shared_ptr<rfxcomMessages::IRfxcomMessage>();
    }
 }
 
-std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYPluginApi> context, const yApi::IManuallyDeviceCreationData& data) const
+std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYPluginApi> api, const yApi::IManuallyDeviceCreationData& data) const
 {
    boost::shared_ptr<rfxcomMessages::IRfxcomMessage> msg;
    try
    {
       // Lighting1
       if      (data.getConfiguration().get<bool>("type.content.x10.radio"))
-         msg.reset(new rfxcomMessages::CLighting1(context, sTypeX10, data.getConfiguration().get<shared::CDataContainer>("type.content.x10.content")));
+         msg.reset(new rfxcomMessages::CLighting1(api, sTypeX10, data.getConfiguration().get<shared::CDataContainer>("type.content.x10.content")));
       else if (data.getConfiguration().get<bool>("type.content.arc.radio"))
-         msg.reset(new rfxcomMessages::CLighting1(context, sTypeARC, data.getConfiguration().get<shared::CDataContainer>("type.content.arc.content")));
+         msg.reset(new rfxcomMessages::CLighting1(api, sTypeARC, data.getConfiguration().get<shared::CDataContainer>("type.content.arc.content")));
       else if (data.getConfiguration().get<bool>("type.content.ab400d.radio"))
-         msg.reset(new rfxcomMessages::CLighting1(context, sTypeAB400D, data.getConfiguration().get<shared::CDataContainer>("type.content.ab400d.content")));
+         msg.reset(new rfxcomMessages::CLighting1(api, sTypeAB400D, data.getConfiguration().get<shared::CDataContainer>("type.content.ab400d.content")));
       else if (data.getConfiguration().get<bool>("type.content.waveman.radio"))
-         msg.reset(new rfxcomMessages::CLighting1(context, sTypeWaveman, data.getConfiguration().get<shared::CDataContainer>("type.content.waveman.content")));
+         msg.reset(new rfxcomMessages::CLighting1(api, sTypeWaveman, data.getConfiguration().get<shared::CDataContainer>("type.content.waveman.content")));
       else if (data.getConfiguration().get<bool>("type.content.emw200.radio"))
-         msg.reset(new rfxcomMessages::CLighting1(context, sTypeEMW200, data.getConfiguration().get<shared::CDataContainer>("type.content.emw200.content")));
+         msg.reset(new rfxcomMessages::CLighting1(api, sTypeEMW200, data.getConfiguration().get<shared::CDataContainer>("type.content.emw200.content")));
       else if (data.getConfiguration().get<bool>("type.content.impuls.radio"))
-         msg.reset(new rfxcomMessages::CLighting1(context, sTypeIMPULS, data.getConfiguration().get<shared::CDataContainer>("type.content.impuls.content")));
+         msg.reset(new rfxcomMessages::CLighting1(api, sTypeIMPULS, data.getConfiguration().get<shared::CDataContainer>("type.content.impuls.content")));
       else if (data.getConfiguration().get<bool>("type.content.risingSun.radio"))
-         msg.reset(new rfxcomMessages::CLighting1(context, sTypeRisingSun, data.getConfiguration().get<shared::CDataContainer>("type.content.risingSun.content")));
+         msg.reset(new rfxcomMessages::CLighting1(api, sTypeRisingSun, data.getConfiguration().get<shared::CDataContainer>("type.content.risingSun.content")));
       else if (data.getConfiguration().get<bool>("type.content.philips.radio"))
-         msg.reset(new rfxcomMessages::CLighting1(context, sTypePhilips, data.getConfiguration().get<shared::CDataContainer>("type.content.philips.content")));
+         msg.reset(new rfxcomMessages::CLighting1(api, sTypePhilips, data.getConfiguration().get<shared::CDataContainer>("type.content.philips.content")));
       else if (data.getConfiguration().get<bool>("type.content.energenie.radio"))
-         msg.reset(new rfxcomMessages::CLighting1(context, sTypeEnergenie, data.getConfiguration().get<shared::CDataContainer>("type.content.energenie.content")));
+         msg.reset(new rfxcomMessages::CLighting1(api, sTypeEnergenie, data.getConfiguration().get<shared::CDataContainer>("type.content.energenie.content")));
       else if (data.getConfiguration().get<bool>("type.content.energenie5.radio"))
-         msg.reset(new rfxcomMessages::CLighting1(context, sTypeEnergenie5, data.getConfiguration().get<shared::CDataContainer>("type.content.energenie5.content")));
+         msg.reset(new rfxcomMessages::CLighting1(api, sTypeEnergenie5, data.getConfiguration().get<shared::CDataContainer>("type.content.energenie5.content")));
       else if (data.getConfiguration().get<bool>("type.content.gdr2.radio"))
-         msg.reset(new rfxcomMessages::CLighting1(context, sTypeGDR2, data.getConfiguration().get<shared::CDataContainer>("type.content.gdr2.content")));
+         msg.reset(new rfxcomMessages::CLighting1(api, sTypeGDR2, data.getConfiguration().get<shared::CDataContainer>("type.content.gdr2.content")));
 
       // Lighting2
       else if (data.getConfiguration().get<bool>("type.content.ac.radio"))
-         msg.reset(new rfxcomMessages::CLighting2(context, sTypeX10, data.getConfiguration().get<shared::CDataContainer>("type.content.ac.content")));
+         msg.reset(new rfxcomMessages::CLighting2(api, sTypeX10, data.getConfiguration().get<shared::CDataContainer>("type.content.ac.content")));
       else if (data.getConfiguration().get<bool>("type.content.homeEasyEU.radio"))
-         msg.reset(new rfxcomMessages::CLighting2(context, sTypeARC, data.getConfiguration().get<shared::CDataContainer>("type.content.homeEasyEU.content")));
+         msg.reset(new rfxcomMessages::CLighting2(api, sTypeARC, data.getConfiguration().get<shared::CDataContainer>("type.content.homeEasyEU.content")));
       else if (data.getConfiguration().get<bool>("type.content.anslut.radio"))
-         msg.reset(new rfxcomMessages::CLighting2(context, sTypeARC, data.getConfiguration().get<shared::CDataContainer>("type.content.anslut.content")));
+         msg.reset(new rfxcomMessages::CLighting2(api, sTypeARC, data.getConfiguration().get<shared::CDataContainer>("type.content.anslut.content")));
       else if (data.getConfiguration().get<bool>("type.content.kambrookRf3672.radio"))
-         msg.reset(new rfxcomMessages::CLighting2(context, sTypeARC, data.getConfiguration().get<shared::CDataContainer>("type.content.KambrookRf3672.content")));
+         msg.reset(new rfxcomMessages::CLighting2(api, sTypeARC, data.getConfiguration().get<shared::CDataContainer>("type.content.KambrookRf3672.content")));
 
       // Lighting3
       else if (data.getConfiguration().get<bool>("type.content.koppla.radio"))
-         msg.reset(new rfxcomMessages::CLighting3(context, sTypeKoppla, data.getConfiguration().get<shared::CDataContainer>("type.content.koppla.content")));
+         msg.reset(new rfxcomMessages::CLighting3(api, sTypeKoppla, data.getConfiguration().get<shared::CDataContainer>("type.content.koppla.content")));
 
       // Lighting4
       else if (data.getConfiguration().get<bool>("type.content.pt2262.radio"))
-         msg.reset(new rfxcomMessages::CLighting4(context, sTypePT2262, data.getConfiguration().get<shared::CDataContainer>("type.content.pt2262.content")));
+         msg.reset(new rfxcomMessages::CLighting4(api, sTypePT2262, data.getConfiguration().get<shared::CDataContainer>("type.content.pt2262.content")));
 
       // Lighting5
       else if (data.getConfiguration().get<bool>("type.content.lightwaveRf.radio"))
-         msg.reset(new rfxcomMessages::CLighting5(context, sTypeLightwaveRF, data.getConfiguration().get<shared::CDataContainer>("type.content.lightwaveRf.content")));
+         msg.reset(new rfxcomMessages::CLighting5(api, sTypeLightwaveRF, data.getConfiguration().get<shared::CDataContainer>("type.content.lightwaveRf.content")));
       else if (data.getConfiguration().get<bool>("type.content.emw100.radio"))
-         msg.reset(new rfxcomMessages::CLighting5(context, sTypeEMW100, data.getConfiguration().get<shared::CDataContainer>("type.content.emw100.content")));
+         msg.reset(new rfxcomMessages::CLighting5(api, sTypeEMW100, data.getConfiguration().get<shared::CDataContainer>("type.content.emw100.content")));
       else if (data.getConfiguration().get<bool>("type.content.bbsb.radio"))
-         msg.reset(new rfxcomMessages::CLighting5(context, sTypeBBSB, data.getConfiguration().get<shared::CDataContainer>("type.content.bbsb.content")));
+         msg.reset(new rfxcomMessages::CLighting5(api, sTypeBBSB, data.getConfiguration().get<shared::CDataContainer>("type.content.bbsb.content")));
       else if (data.getConfiguration().get<bool>("type.content.mdRemote.radio"))
-         msg.reset(new rfxcomMessages::CLighting5(context, sTypeMDREMOTE, data.getConfiguration().get<shared::CDataContainer>("type.content.mdRemote.content")));
+         msg.reset(new rfxcomMessages::CLighting5(api, sTypeMDREMOTE, data.getConfiguration().get<shared::CDataContainer>("type.content.mdRemote.content")));
       else if (data.getConfiguration().get<bool>("type.content.rsl.radio"))
-         msg.reset(new rfxcomMessages::CLighting5(context, sTypeRSL, data.getConfiguration().get<shared::CDataContainer>("type.content.rsl.content")));
+         msg.reset(new rfxcomMessages::CLighting5(api, sTypeRSL, data.getConfiguration().get<shared::CDataContainer>("type.content.rsl.content")));
       else if (data.getConfiguration().get<bool>("type.content.livolo.radio"))
-         msg.reset(new rfxcomMessages::CLighting5(context, sTypeLivolo, data.getConfiguration().get<shared::CDataContainer>("type.content.livolo.content")));
+         msg.reset(new rfxcomMessages::CLighting5(api, sTypeLivolo, data.getConfiguration().get<shared::CDataContainer>("type.content.livolo.content")));
       else if (data.getConfiguration().get<bool>("type.content.trc02.radio"))
-         msg.reset(new rfxcomMessages::CLighting5(context, sTypeTRC02, data.getConfiguration().get<shared::CDataContainer>("type.content.trc02.content")));
+         msg.reset(new rfxcomMessages::CLighting5(api, sTypeTRC02, data.getConfiguration().get<shared::CDataContainer>("type.content.trc02.content")));
       else if (data.getConfiguration().get<bool>("type.content.aoke.radio"))
-         msg.reset(new rfxcomMessages::CLighting5(context, sTypeAoke, data.getConfiguration().get<shared::CDataContainer>("type.content.aoke.content")));
+         msg.reset(new rfxcomMessages::CLighting5(api, sTypeAoke, data.getConfiguration().get<shared::CDataContainer>("type.content.aoke.content")));
       else if (data.getConfiguration().get<bool>("type.content.trc02_2.radio"))
-         msg.reset(new rfxcomMessages::CLighting5(context, sTypeTRC02_2, data.getConfiguration().get<shared::CDataContainer>("type.content.trc02_2.content")));
+         msg.reset(new rfxcomMessages::CLighting5(api, sTypeTRC02_2, data.getConfiguration().get<shared::CDataContainer>("type.content.trc02_2.content")));
       else if (data.getConfiguration().get<bool>("type.content.eurodomest.radio"))
-         msg.reset(new rfxcomMessages::CLighting5(context, sTypeEurodomest, data.getConfiguration().get<shared::CDataContainer>("type.content.eurodomest.content")));
+         msg.reset(new rfxcomMessages::CLighting5(api, sTypeEurodomest, data.getConfiguration().get<shared::CDataContainer>("type.content.eurodomest.content")));
       else if (data.getConfiguration().get<bool>("type.content.livoloAppliance.radio"))
-         msg.reset(new rfxcomMessages::CLighting5(context, sTypeLivoloAppliance, data.getConfiguration().get<shared::CDataContainer>("type.content.livoloAppliance.content")));
+         msg.reset(new rfxcomMessages::CLighting5(api, sTypeLivoloAppliance, data.getConfiguration().get<shared::CDataContainer>("type.content.livoloAppliance.content")));
       else if (data.getConfiguration().get<bool>("type.content.rgb432w.radio"))
-         msg.reset(new rfxcomMessages::CLighting5(context, sTypeRGB432W, data.getConfiguration().get<shared::CDataContainer>("type.content.rgb432w.content")));
+         msg.reset(new rfxcomMessages::CLighting5(api, sTypeRGB432W, data.getConfiguration().get<shared::CDataContainer>("type.content.rgb432w.content")));
       else if (data.getConfiguration().get<bool>("type.content.mdremote107.radio"))
-         msg.reset(new rfxcomMessages::CLighting5(context, sTypeMDREMOTE107, data.getConfiguration().get<shared::CDataContainer>("type.content.mdremote107.content")));
+         msg.reset(new rfxcomMessages::CLighting5(api, sTypeMDREMOTE107, data.getConfiguration().get<shared::CDataContainer>("type.content.mdremote107.content")));
       else if (data.getConfiguration().get<bool>("type.content.legrandCad.radio"))
-         msg.reset(new rfxcomMessages::CLighting5(context, sTypeLegrandCAD, data.getConfiguration().get<shared::CDataContainer>("type.content.legrandCad.content")));
+         msg.reset(new rfxcomMessages::CLighting5(api, sTypeLegrandCAD, data.getConfiguration().get<shared::CDataContainer>("type.content.legrandCad.content")));
 
       // Lighting6
       else if (data.getConfiguration().get<bool>("type.content.blyss.radio"))
-         msg.reset(new rfxcomMessages::CLighting6(context, sTypeBlyss, data.getConfiguration().get<shared::CDataContainer>("type.content.blyss.content")));
+         msg.reset(new rfxcomMessages::CLighting6(api, sTypeBlyss, data.getConfiguration().get<shared::CDataContainer>("type.content.blyss.content")));
 
       // Chime
       else if (data.getConfiguration().get<bool>("type.content.byronSx.radio"))
-         msg.reset(new rfxcomMessages::CChime(context, sTypeByronSX, data.getConfiguration().get<shared::CDataContainer>("type.content.byronSx.content")));
+         msg.reset(new rfxcomMessages::CChime(api, sTypeByronSX, data.getConfiguration().get<shared::CDataContainer>("type.content.byronSx.content")));
       else if (data.getConfiguration().get<bool>("type.content.byronMp001.radio"))
-         msg.reset(new rfxcomMessages::CChime(context, sTypeByronMP001, data.getConfiguration().get<shared::CDataContainer>("type.content.byronMp001.content")));
+         msg.reset(new rfxcomMessages::CChime(api, sTypeByronMP001, data.getConfiguration().get<shared::CDataContainer>("type.content.byronMp001.content")));
       else if (data.getConfiguration().get<bool>("type.content.selectPlus.radio"))
-         msg.reset(new rfxcomMessages::CChime(context, sTypeSelectPlus, data.getConfiguration().get<shared::CDataContainer>("type.content.selectPlus.content")));
+         msg.reset(new rfxcomMessages::CChime(api, sTypeSelectPlus, data.getConfiguration().get<shared::CDataContainer>("type.content.selectPlus.content")));
       else if (data.getConfiguration().get<bool>("type.content.envivo.radio"))
-         msg.reset(new rfxcomMessages::CChime(context, sTypeEnvivo, data.getConfiguration().get<shared::CDataContainer>("type.content.envivo.content")));
+         msg.reset(new rfxcomMessages::CChime(api, sTypeEnvivo, data.getConfiguration().get<shared::CDataContainer>("type.content.envivo.content")));
 
       // Fan
       else if (data.getConfiguration().get<bool>("type.content.siemensSf01.radio"))
-         msg.reset(new rfxcomMessages::CFan(context, sTypeSiemensSF01, data.getConfiguration().get<shared::CDataContainer>("type.content.siemensSf01.content")));
+         msg.reset(new rfxcomMessages::CFan(api, sTypeSiemensSF01, data.getConfiguration().get<shared::CDataContainer>("type.content.siemensSf01.content")));
 
       // Curtain1
       else if (data.getConfiguration().get<bool>("type.content.harrisonCurtain.radio"))
-         msg.reset(new rfxcomMessages::CCurtain1(context, sTypeHarrison, data.getConfiguration().get<shared::CDataContainer>("type.content.harrisonCurtain.content")));
+         msg.reset(new rfxcomMessages::CCurtain1(api, sTypeHarrison, data.getConfiguration().get<shared::CDataContainer>("type.content.harrisonCurtain.content")));
 
       // Blinds1
       else if (data.getConfiguration().get<bool>("type.content.rollerTrolHastaNew.radio"))
-         msg.reset(new rfxcomMessages::CBlinds1(context, sTypeBlindsT0, data.getConfiguration().get<shared::CDataContainer>("type.content.rollerTrolHastaNew.content")));
+         msg.reset(new rfxcomMessages::CBlinds1(api, sTypeBlindsT0, data.getConfiguration().get<shared::CDataContainer>("type.content.rollerTrolHastaNew.content")));
       else if (data.getConfiguration().get<bool>("type.content.hastaOld.radio"))
-         msg.reset(new rfxcomMessages::CBlinds1(context, sTypeBlindsT1, data.getConfiguration().get<shared::CDataContainer>("type.content.hastaOld.content")));
+         msg.reset(new rfxcomMessages::CBlinds1(api, sTypeBlindsT1, data.getConfiguration().get<shared::CDataContainer>("type.content.hastaOld.content")));
       else if (data.getConfiguration().get<bool>("type.content.aOkRf01.radio"))
-         msg.reset(new rfxcomMessages::CBlinds1(context, sTypeBlindsT2, data.getConfiguration().get<shared::CDataContainer>("type.content.aOkRf01.content")));
+         msg.reset(new rfxcomMessages::CBlinds1(api, sTypeBlindsT2, data.getConfiguration().get<shared::CDataContainer>("type.content.aOkRf01.content")));
       else if (data.getConfiguration().get<bool>("type.content.aOkAc114.radio"))
-         msg.reset(new rfxcomMessages::CBlinds1(context, sTypeBlindsT3, data.getConfiguration().get<shared::CDataContainer>("type.content.aOkAc114.content")));
+         msg.reset(new rfxcomMessages::CBlinds1(api, sTypeBlindsT3, data.getConfiguration().get<shared::CDataContainer>("type.content.aOkAc114.content")));
       else if (data.getConfiguration().get<bool>("type.content.raex.radio"))
-         msg.reset(new rfxcomMessages::CBlinds1(context, sTypeBlindsT4, data.getConfiguration().get<shared::CDataContainer>("type.content.raex.content")));
+         msg.reset(new rfxcomMessages::CBlinds1(api, sTypeBlindsT4, data.getConfiguration().get<shared::CDataContainer>("type.content.raex.content")));
       else if (data.getConfiguration().get<bool>("type.content.mediaMount.radio"))
-         msg.reset(new rfxcomMessages::CBlinds1(context, sTypeBlindsT5, data.getConfiguration().get<shared::CDataContainer>("type.content.mediaMount.content")));
+         msg.reset(new rfxcomMessages::CBlinds1(api, sTypeBlindsT5, data.getConfiguration().get<shared::CDataContainer>("type.content.mediaMount.content")));
       else if (data.getConfiguration().get<bool>("type.content.dc106.radio"))
-         msg.reset(new rfxcomMessages::CBlinds1(context, sTypeBlindsT6, data.getConfiguration().get<shared::CDataContainer>("type.content.dc106.content")));
+         msg.reset(new rfxcomMessages::CBlinds1(api, sTypeBlindsT6, data.getConfiguration().get<shared::CDataContainer>("type.content.dc106.content")));
       else if (data.getConfiguration().get<bool>("type.content.forest.radio"))
-         msg.reset(new rfxcomMessages::CBlinds1(context, sTypeBlindsT7, data.getConfiguration().get<shared::CDataContainer>("type.content.forest.content")));
+         msg.reset(new rfxcomMessages::CBlinds1(api, sTypeBlindsT7, data.getConfiguration().get<shared::CDataContainer>("type.content.forest.content")));
       else if (data.getConfiguration().get<bool>("type.content.chamberlaincs4330cn.radio"))
-         msg.reset(new rfxcomMessages::CBlinds1(context, sTypeBlindsT8, data.getConfiguration().get<shared::CDataContainer>("type.content.chamberlaincs4330cn.content")));
+         msg.reset(new rfxcomMessages::CBlinds1(api, sTypeBlindsT8, data.getConfiguration().get<shared::CDataContainer>("type.content.chamberlaincs4330cn.content")));
       else if (data.getConfiguration().get<bool>("type.content.sunperyBtx.radio"))
-         msg.reset(new rfxcomMessages::CBlinds1(context, sTypeBlindsT9, data.getConfiguration().get<shared::CDataContainer>("type.content.sunperyBtx.content")));
+         msg.reset(new rfxcomMessages::CBlinds1(api, sTypeBlindsT9, data.getConfiguration().get<shared::CDataContainer>("type.content.sunperyBtx.content")));
       else if (data.getConfiguration().get<bool>("type.content.dolatDlm1.radio"))
-         msg.reset(new rfxcomMessages::CBlinds1(context, sTypeBlindsT10, data.getConfiguration().get<shared::CDataContainer>("type.content.dolatDlm1.content")));
+         msg.reset(new rfxcomMessages::CBlinds1(api, sTypeBlindsT10, data.getConfiguration().get<shared::CDataContainer>("type.content.dolatDlm1.content")));
 
       // Rfy
       else if (data.getConfiguration().get<bool>("type.content.rfy.radio"))
-         msg.reset(new rfxcomMessages::CRfy(context, sTypeRFY, data.getConfiguration().get<shared::CDataContainer>("type.content.rfy.content")));
+         msg.reset(new rfxcomMessages::CRfy(api, sTypeRFY, data.getConfiguration().get<shared::CDataContainer>("type.content.rfy.content")));
       else if (data.getConfiguration().get<bool>("type.content.rfyExt.radio"))
-         msg.reset(new rfxcomMessages::CRfy(context, sTypeRFYext, data.getConfiguration().get<shared::CDataContainer>("type.content.rfyExt.content")));
+         msg.reset(new rfxcomMessages::CRfy(api, sTypeRFYext, data.getConfiguration().get<shared::CDataContainer>("type.content.rfyExt.content")));
       else if (data.getConfiguration().get<bool>("type.content.asa.radio"))
-         msg.reset(new rfxcomMessages::CRfy(context, sTypeASA, data.getConfiguration().get<shared::CDataContainer>("type.content.asa.content")));
+         msg.reset(new rfxcomMessages::CRfy(api, sTypeASA, data.getConfiguration().get<shared::CDataContainer>("type.content.asa.content")));
 
       // HomeConfort
       else if (data.getConfiguration().get<bool>("type.content.homeConfort.radio"))
-         msg.reset(new rfxcomMessages::CHomeConfort(context, sTypeHomeConfortTEL010, data.getConfiguration().get<shared::CDataContainer>("type.content.homeConfort.content")));
+         msg.reset(new rfxcomMessages::CHomeConfort(api, sTypeHomeConfortTEL010, data.getConfiguration().get<shared::CDataContainer>("type.content.homeConfort.content")));
 
       // Security1
       else if (data.getConfiguration().get<bool>("type.content.x10SecurityR.radio"))
-         msg.reset(new rfxcomMessages::CSecurity1(context, sTypeSecX10R, data.getConfiguration().get<shared::CDataContainer>("type.content.x10SecurityR.content")));
+         msg.reset(new rfxcomMessages::CSecurity1(api, sTypeSecX10R, data.getConfiguration().get<shared::CDataContainer>("type.content.x10SecurityR.content")));
 
       // Security2
       else if (data.getConfiguration().get<bool>("type.content.keeLoq.radio"))
-         msg.reset(new rfxcomMessages::CSecurity2(context, sTypeSec2Classic, data.getConfiguration().get<shared::CDataContainer>("type.content.keeLoq.content")));
+         msg.reset(new rfxcomMessages::CSecurity2(api, sTypeSec2Classic, data.getConfiguration().get<shared::CDataContainer>("type.content.keeLoq.content")));
 
       // Camera1
       else if (data.getConfiguration().get<bool>("type.content.cameraX10Ninja.radio"))
-         msg.reset(new rfxcomMessages::CCamera1(context, sTypeNinja, data.getConfiguration().get<shared::CDataContainer>("type.content.cameraX10Ninja.content")));
+         msg.reset(new rfxcomMessages::CCamera1(api, sTypeNinja, data.getConfiguration().get<shared::CDataContainer>("type.content.cameraX10Ninja.content")));
 
       // Thermostat1
       else if (data.getConfiguration().get<bool>("type.content.digimax.radio"))
-         msg.reset(new rfxcomMessages::CThermostat1(context, sTypeDigimax, data.getConfiguration().get<shared::CDataContainer>("type.content.digimax.content")));
+         msg.reset(new rfxcomMessages::CThermostat1(api, sTypeDigimax, data.getConfiguration().get<shared::CDataContainer>("type.content.digimax.content")));
       else if (data.getConfiguration().get<bool>("type.content.digimaxShort.radio"))
-         msg.reset(new rfxcomMessages::CThermostat1(context, sTypeDigimaxShort, data.getConfiguration().get<shared::CDataContainer>("type.content.digimaxShort.content")));
+         msg.reset(new rfxcomMessages::CThermostat1(api, sTypeDigimaxShort, data.getConfiguration().get<shared::CDataContainer>("type.content.digimaxShort.content")));
 
       // Thermostat2
       else if (data.getConfiguration().get<bool>("type.content.he105.radio"))
-         msg.reset(new rfxcomMessages::CThermostat2(context, sTypeHE105, data.getConfiguration().get<shared::CDataContainer>("type.content.he105.content")));
+         msg.reset(new rfxcomMessages::CThermostat2(api, sTypeHE105, data.getConfiguration().get<shared::CDataContainer>("type.content.he105.content")));
       else if (data.getConfiguration().get<bool>("type.content.rts10.radio"))
-         msg.reset(new rfxcomMessages::CThermostat2(context, sTypeRTS10, data.getConfiguration().get<shared::CDataContainer>("type.content.rts10.content")));
+         msg.reset(new rfxcomMessages::CThermostat2(api, sTypeRTS10, data.getConfiguration().get<shared::CDataContainer>("type.content.rts10.content")));
 
       // Thermostat3
       else if (data.getConfiguration().get<bool>("type.content.g6rH4t1.radio"))
-         msg.reset(new rfxcomMessages::CThermostat3(context, sTypeMertikG6RH4T1, data.getConfiguration().get<shared::CDataContainer>("type.content.g6rH4t1.content")));
+         msg.reset(new rfxcomMessages::CThermostat3(api, sTypeMertikG6RH4T1, data.getConfiguration().get<shared::CDataContainer>("type.content.g6rH4t1.content")));
       else if (data.getConfiguration().get<bool>("type.content.g6rH4tb.radio"))
-         msg.reset(new rfxcomMessages::CThermostat3(context, sTypeMertikG6RH4TB, data.getConfiguration().get<shared::CDataContainer>("type.content.g6rH4tb.content")));
+         msg.reset(new rfxcomMessages::CThermostat3(api, sTypeMertikG6RH4TB, data.getConfiguration().get<shared::CDataContainer>("type.content.g6rH4tb.content")));
       else if (data.getConfiguration().get<bool>("type.content.g6rH4td.radio"))
-         msg.reset(new rfxcomMessages::CThermostat3(context, sTypeMertikG6RH4TD, data.getConfiguration().get<shared::CDataContainer>("type.content.g6rH4td.content")));
+         msg.reset(new rfxcomMessages::CThermostat3(api, sTypeMertikG6RH4TD, data.getConfiguration().get<shared::CDataContainer>("type.content.g6rH4td.content")));
       else if (data.getConfiguration().get<bool>("type.content.g6rH4s.radio"))
-         msg.reset(new rfxcomMessages::CThermostat3(context, sTypeMertikG6RH4S, data.getConfiguration().get<shared::CDataContainer>("type.content.g6rH4s.content")));
+         msg.reset(new rfxcomMessages::CThermostat3(api, sTypeMertikG6RH4S, data.getConfiguration().get<shared::CDataContainer>("type.content.g6rH4s.content")));
 
       // Radiator1
       else if (data.getConfiguration().get<bool>("type.content.smartwares.radio"))
-         msg.reset(new rfxcomMessages::CRadiator1(context, sTypeSmartwares, data.getConfiguration().get<shared::CDataContainer>("type.content.smartwares.content")));
+         msg.reset(new rfxcomMessages::CRadiator1(api, sTypeSmartwares, data.getConfiguration().get<shared::CDataContainer>("type.content.smartwares.content")));
 
       // FS20
       else if (data.getConfiguration().get<bool>("type.content.fs20.radio"))
-         msg.reset(new rfxcomMessages::CFS20(context, sTypeFS20, data.getConfiguration().get<shared::CDataContainer>("type.content.fs20.content")));
+         msg.reset(new rfxcomMessages::CFS20(api, sTypeFS20, data.getConfiguration().get<shared::CDataContainer>("type.content.fs20.content")));
       else if (data.getConfiguration().get<bool>("type.content.fht8v.radio"))
-         msg.reset(new rfxcomMessages::CFS20(context, sTypeFHT8V, data.getConfiguration().get<shared::CDataContainer>("type.content.fht8v.content")));
+         msg.reset(new rfxcomMessages::CFS20(api, sTypeFHT8V, data.getConfiguration().get<shared::CDataContainer>("type.content.fht8v.content")));
       else if (data.getConfiguration().get<bool>("type.content.fht80.radio"))
-         msg.reset(new rfxcomMessages::CFS20(context, sTypeFHT80, data.getConfiguration().get<shared::CDataContainer>("type.content.fht80.content")));
+         msg.reset(new rfxcomMessages::CFS20(api, sTypeFHT80, data.getConfiguration().get<shared::CDataContainer>("type.content.fht80.content")));
 
       else
          throw shared::exception::CInvalidParameter("Unknown device type");
    }
    catch(shared::exception::CInvalidParameter& e)
    {
-      YADOMS_LOG(error) << "Fail to create device manually, invalid parameter : " << e.what();
-      YADOMS_LOG(error) << "data : " << data.getConfiguration().get<shared::CDataContainer>("type.content").serialize();
+      std::cerr << "Fail to create device manually, invalid parameter : " << e.what() << std::endl;
+      std::cerr << "data : " << data.getConfiguration().get<shared::CDataContainer>("type.content").serialize() << std::endl;
       throw CManuallyDeviceCreationException("invalid parameter");
    }
    catch(shared::exception::COutOfRange& e)
    {
-      YADOMS_LOG(error) << "Fail to create device manually, out of range : " << e.what();
-      YADOMS_LOG(error) << "data : " << data.getConfiguration().get<shared::CDataContainer>("type.content").serialize();
+      std::cerr << "Fail to create device manually, out of range : " << e.what() << std::endl;
+      std::cerr << "data : " << data.getConfiguration().get<shared::CDataContainer>("type.content").serialize() << std::endl;
       throw CManuallyDeviceCreationException("out of range");
    }
 

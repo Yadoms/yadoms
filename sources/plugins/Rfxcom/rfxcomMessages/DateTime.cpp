@@ -9,7 +9,7 @@ namespace yApi = shared::plugin::yPluginApi;
 namespace rfxcomMessages
 {
 
-CDateTime::CDateTime(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CDateTime::CDateTime(boost::shared_ptr<yApi::IYPluginApi> api, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_dateTime("datetime"), m_batteryLevel("battery"), m_rssi("rssi")
 {
    CheckReceivedMessage(rbuf,
@@ -29,31 +29,31 @@ CDateTime::CDateTime(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& r
    m_batteryLevel.set(NormalizeBatteryLevel(rbuf.DT.battery_level));
    m_rssi.set(NormalizeRssiLevel(rbuf.DT.rssi));
 
-   Init(context);
+   Init(api);
 }
 
 CDateTime::~CDateTime()
 {
 }
 
-void CDateTime::Init(boost::shared_ptr<yApi::IYPluginApi> context)
+void CDateTime::Init(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    // Build device description
    buildDeviceModel();
    buildDeviceName();
 
    // Create device and keywords if needed
-   if (!context->deviceExists(m_deviceName))
+   if (!api->deviceExists(m_deviceName))
    {
       shared::CDataContainer details;
       details.set("type", pTypeDT);
       details.set("subType", m_subType);
       details.set("id", m_id);
-      context->declareDevice(m_deviceName, m_deviceModel, details);
+      api->declareDevice(m_deviceName, m_deviceModel, details);
 
-      context->declareKeyword(m_deviceName, m_dateTime);
-      context->declareKeyword(m_deviceName, m_batteryLevel);
-      context->declareKeyword(m_deviceName, m_rssi);
+      api->declareKeyword(m_deviceName, m_dateTime);
+      api->declareKeyword(m_deviceName, m_batteryLevel);
+      api->declareKeyword(m_deviceName, m_rssi);
    }
 }
 
@@ -62,11 +62,11 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CDateTime::en
    throw shared::exception::CInvalidParameter("Temp is a read-only message, can not be encoded");
 }
 
-void CDateTime::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
+void CDateTime::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
-   context->historizeData(m_deviceName, m_dateTime);
-   context->historizeData(m_deviceName, m_batteryLevel);
-   context->historizeData(m_deviceName, m_rssi);
+   api->historizeData(m_deviceName, m_dateTime);
+   api->historizeData(m_deviceName, m_batteryLevel);
+   api->historizeData(m_deviceName, m_rssi);
 }
 
 const std::string& CDateTime::getDeviceName() const

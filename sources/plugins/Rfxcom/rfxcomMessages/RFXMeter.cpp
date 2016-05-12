@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "RFXMeter.h"
 #include <shared/exception/InvalidParameter.hpp>
-#include <shared/Log.h>
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -9,7 +8,7 @@ namespace yApi = shared::plugin::yPluginApi;
 namespace rfxcomMessages
 {
 
-CRFXMeter::CRFXMeter(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CRFXMeter::CRFXMeter(boost::shared_ptr<yApi::IYPluginApi> api, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_counter("counter"), m_rssi("rssi")
 {
    CheckReceivedMessage(rbuf,
@@ -27,30 +26,30 @@ CRFXMeter::CRFXMeter(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& r
 
    m_rssi.set(NormalizeRssiLevel(rbuf.RFXMETER.rssi));
 
-   Init(context);
+   Init(api);
 }
 
 CRFXMeter::~CRFXMeter()
 {
 }
 
-void CRFXMeter::Init(boost::shared_ptr<yApi::IYPluginApi> context)
+void CRFXMeter::Init(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    // Build device description
    buildDeviceModel();
    buildDeviceName();
 
    // Create device and keywords if needed
-   if (!context->deviceExists(m_deviceName))
+   if (!api->deviceExists(m_deviceName))
    {
       shared::CDataContainer details;
       details.set("type", pTypeRFXMeter);
       details.set("subType", m_subType);
       details.set("id", m_id);
-      context->declareDevice(m_deviceName, m_deviceModel, details);
+      api->declareDevice(m_deviceName, m_deviceModel, details);
 
-      context->declareKeyword(m_deviceName, m_counter);
-      context->declareKeyword(m_deviceName, m_rssi);
+      api->declareKeyword(m_deviceName, m_counter);
+      api->declareKeyword(m_deviceName, m_rssi);
    }
 }
 
@@ -59,15 +58,15 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CRFXMeter::en
    throw shared::exception::CInvalidParameter("RFXMeter is a read-only message, can not be encoded");
 }
 
-void CRFXMeter::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
+void CRFXMeter::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
    if (m_subType != sTypeRFXMeterCount)
    {
-      YADOMS_LOG(warning) << "RFXMeter subtype " << m_subType << " actually not supported. Please report to Yadoms development team if needed";
+      std::cout << "RFXMeter subtype " << m_subType << " actually not supported. Please report to Yadoms development team if needed" << std::endl;
       return;
    }
-   context->historizeData(m_deviceName, m_counter);
-   context->historizeData(m_deviceName, m_rssi);
+   api->historizeData(m_deviceName, m_counter);
+   api->historizeData(m_deviceName, m_rssi);
 }
 
 const std::string& CRFXMeter::getDeviceName() const

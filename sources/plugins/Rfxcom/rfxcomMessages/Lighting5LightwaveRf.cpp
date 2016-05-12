@@ -24,14 +24,14 @@ std::string CLighting5LightwaveRfKeyword::getModel() const
    return "LightwaveRF, Siemens (AD protocol)";
 }
 
-void CLighting5LightwaveRfKeyword::declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
+void CLighting5LightwaveRfKeyword::declare(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const
 {
-   context->declareKeyword(deviceName, m_keyword);
+   api->declareKeyword(deviceName, m_keyword);
 }
 
-void CLighting5LightwaveRfKeyword::historize(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
+void CLighting5LightwaveRfKeyword::historize(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const
 {
-   context->historizeData(deviceName, m_keyword);
+   api->historizeData(deviceName, m_keyword);
 }
 
 void CLighting5LightwaveRfKeyword::set(const std::string& yadomsCommand)

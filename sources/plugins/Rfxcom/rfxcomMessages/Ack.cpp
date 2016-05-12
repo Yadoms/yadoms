@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include <shared/Log.h>
 #include "Ack.h"
 #include <shared/exception/NotImplemented.hpp>
 
@@ -22,7 +21,7 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CAck::encode(
    throw shared::exception::CInvalidParameter("Ack is a read-only message, can not be encoded");
 }
 
-void CAck::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
+void CAck::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
    // Nothing to historize
 }

@@ -1,5 +1,4 @@
 #pragma once
-
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <shared/DataContainer.h>
 #include "IChimeSubtype.h"
@@ -20,15 +19,15 @@ namespace rfxcomMessages
       CChimeByronMp001();
 
       // ILighting2Subtype implementation
-      virtual std::string getModel() const;
-      virtual void declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const;
-      virtual void historize(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const;
-      virtual void set(const std::string& yadomsCommand, const shared::CDataContainer& deviceDetails);
-      virtual void reset();
-      virtual unsigned int idFromProtocol(unsigned char id1, unsigned char id2, unsigned char sound);
-      virtual void idToProtocol(unsigned int id, unsigned char& id1, unsigned char& id2, unsigned char& sound) const;
-      virtual void setFromProtocolState(unsigned char cmd);
-      virtual void toProtocolState(unsigned char& sound) const;
+      std::string getModel() const override;
+      void declare(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const override;
+      void historize(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const override;
+      void set(const std::string& yadomsCommand, const shared::CDataContainer& deviceDetails) override;
+      void reset() override;
+      unsigned int idFromProtocol(unsigned char id1, unsigned char id2, unsigned char sound) override;
+      void idToProtocol(unsigned int id, unsigned char& id1, unsigned char& id2, unsigned char& sound) const override;
+      void setFromProtocolState(unsigned char cmd) override;
+      void toProtocolState(unsigned char& sound) const override;
       // [END] ILighting2Subtype implementation
 
    private:
@@ -37,5 +36,6 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       yApi::historization::CEvent m_event;
    };
-
 } // namespace rfxcomMessages
+
+

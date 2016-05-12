@@ -17,40 +17,40 @@ namespace rfxcomMessages
    public:
       //--------------------------------------------------------------
       /// \brief	                        Constructor
-      /// \param[in] context              Yadoms APi context
+      /// \param[in] api                  Yadoms APi context
       /// \param[in] keyword              Keyword concerned by the command
       /// \param[in] command              The command
       /// \param[in] deviceDetails        The device parameters
       /// \throw                          shared::exception::CInvalidParameter if fail to interpret command
       /// \note                           Use this constructor for command (to build RFXCom message)
       //--------------------------------------------------------------
-      CSecurity1(boost::shared_ptr<yApi::IYPluginApi> context,
+      CSecurity1(boost::shared_ptr<yApi::IYPluginApi> api,
                  const std::string& keyword,
                  const std::string& command,
                  const shared::CDataContainer& deviceDetails);
 
       //--------------------------------------------------------------
       /// \brief	                        Constructor
-      /// \param[in] context              Yadoms APi context
+      /// \param[in] api                  Yadoms APi context
       /// \param[in] subType              Device subType
       /// \param[in] manuallyDeviceCreationConfiguration The device concfiguration
       /// \throw                          shared::exception::CInvalidParameter or shared::exception::COutOfRange if fail to interpret configuration
       /// \note                           Use this constructor for manually device creation
       //--------------------------------------------------------------
-      CSecurity1(boost::shared_ptr<yApi::IYPluginApi> context,
+      CSecurity1(boost::shared_ptr<yApi::IYPluginApi> api,
                  unsigned char subType,
                  const shared::CDataContainer& manuallyDeviceCreationConfiguration);
 
       //--------------------------------------------------------------
       /// \brief	                        Constructor
-      /// \param[in] context              Yadoms APi context
+      /// \param[in] api                  Yadoms APi context
       /// \param[in] rbuf                 The received buffer
       /// \param[in] rbufSize             Message size, received from Rfxcom
       /// \param[in] seqNumberProvider    The sequence number provider
       /// \note                           Use this constructor for received messages (to historize received data to Yadoms)
       /// \throw                          shared::exception::CInvalidParameter
       //--------------------------------------------------------------
-      CSecurity1(boost::shared_ptr<yApi::IYPluginApi> context,
+      CSecurity1(boost::shared_ptr<yApi::IYPluginApi> api,
                  const RBUF& rbuf,
                  size_t rbufSize,
                  boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
@@ -62,7 +62,7 @@ namespace rfxcomMessages
 
       // IRfxcomMessage implementation
       boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const override;
-      void historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const override;
+      void historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const override;
       const std::string& getDeviceName() const override;
       // [END] IRfxcomMessage implementation
 
@@ -80,9 +80,9 @@ namespace rfxcomMessages
 
       //--------------------------------------------------------------
       /// \brief	Declare the device
-      /// \param[in] context              Yadoms APi context
+      /// \param[in] api                  Yadoms APi context
       //--------------------------------------------------------------
-      void declare(boost::shared_ptr<yApi::IYPluginApi> context);
+      void declare(boost::shared_ptr<yApi::IYPluginApi> api);
 
    private:
       //--------------------------------------------------------------

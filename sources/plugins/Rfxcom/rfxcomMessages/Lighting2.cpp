@@ -10,7 +10,7 @@ namespace yApi = shared::plugin::yPluginApi;
 namespace rfxcomMessages
 {
 
-CLighting2::CLighting2(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& command, const shared::CDataContainer& deviceDetails)
+CLighting2::CLighting2(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& command, const shared::CDataContainer& deviceDetails)
    :m_rssi("rssi")
 {
    m_rssi.set(0);
@@ -20,11 +20,11 @@ CLighting2::CLighting2(boost::shared_ptr<yApi::IYPluginApi> context, const std::
    m_id = deviceDetails.get<unsigned int>("id");
    m_unitCode = deviceDetails.get<unsigned char>("unitCode");
 
-   declare(context);
+   declare(api);
    m_subTypeManager->set(command);
 }
 
-CLighting2::CLighting2(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+CLighting2::CLighting2(boost::shared_ptr<yApi::IYPluginApi> api, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
    :m_rssi("rssi")
 {
    m_rssi.set(0);
@@ -35,11 +35,11 @@ CLighting2::CLighting2(boost::shared_ptr<yApi::IYPluginApi> context, unsigned ch
    m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
    m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned char>("unitCode");
 
-   declare(context);
+   declare(api);
    m_subTypeManager->reset();
 }
 
-CLighting2::CLighting2(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CLighting2::CLighting2(boost::shared_ptr<yApi::IYPluginApi> api, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_rssi("rssi")
 {
    CheckReceivedMessage(rbuf,
@@ -55,7 +55,7 @@ CLighting2::CLighting2(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF&
    m_unitCode = rbuf.LIGHTING2.unitcode;
    m_rssi.set(NormalizeRssiLevel(rbuf.LIGHTING2.rssi));
 
-   declare(context);
+   declare(api);
 }
 
 CLighting2::~CLighting2()
@@ -76,7 +76,7 @@ void CLighting2::createSubType(unsigned char subType)
    }
 }
 
-void CLighting2::declare(boost::shared_ptr<yApi::IYPluginApi> context)
+void CLighting2::declare(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    if (!m_subTypeManager)
       throw shared::exception::CException("m_subTypeManager must be initialized");
@@ -85,7 +85,7 @@ void CLighting2::declare(boost::shared_ptr<yApi::IYPluginApi> context)
    buildDeviceName();
 
    // Create device and keywords if needed
-   if (!context->deviceExists(m_deviceName))
+   if (!api->deviceExists(m_deviceName))
    {
       shared::CDataContainer details;
       details.set("type", pTypeLighting2);
@@ -93,10 +93,10 @@ void CLighting2::declare(boost::shared_ptr<yApi::IYPluginApi> context)
       details.set("houseCode", m_houseCode);
       details.set("id", m_id);
       details.set("unitCode", m_unitCode);
-      context->declareDevice(m_deviceName, m_subTypeManager->getModel(), details);
+      api->declareDevice(m_deviceName, m_subTypeManager->getModel(), details);
 
-      m_subTypeManager->declare(context, m_deviceName);
-      context->declareKeyword(m_deviceName, m_rssi);
+      m_subTypeManager->declare(api, m_deviceName);
+      api->declareKeyword(m_deviceName, m_rssi);
    }
 }
 
@@ -118,10 +118,10 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CLighting2::e
    return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(LIGHTING2));
 }
 
-void CLighting2::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
+void CLighting2::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
-   m_subTypeManager->historize(context, m_deviceName);
-   context->historizeData(m_deviceName, m_rssi);
+   m_subTypeManager->historize(api, m_deviceName);
+   api->historizeData(m_deviceName, m_rssi);
 }
 
 const std::string& CLighting2::getDeviceName() const

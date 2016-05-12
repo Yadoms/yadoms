@@ -9,7 +9,7 @@ namespace yApi = shared::plugin::yPluginApi;
 namespace rfxcomMessages
 {
 
-CThermostat2::CThermostat2(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& command, const shared::CDataContainer& deviceDetails)
+CThermostat2::CThermostat2(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& command, const shared::CDataContainer& deviceDetails)
    :m_state("state"), m_rssi("rssi")
 {
    m_state.setCommand(command);
@@ -18,10 +18,10 @@ CThermostat2::CThermostat2(boost::shared_ptr<yApi::IYPluginApi> context, const s
    m_subType = deviceDetails.get<unsigned char>("subType");
    m_unitCode = deviceDetails.get<unsigned int>("unitCode");
 
-   Init(context);
+   Init(api);
 }
 
-CThermostat2::CThermostat2(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+CThermostat2::CThermostat2(boost::shared_ptr<yApi::IYPluginApi> api, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
    :m_state("state"), m_rssi("rssi")
 {
    m_state.set(false);
@@ -39,10 +39,10 @@ CThermostat2::CThermostat2(boost::shared_ptr<yApi::IYPluginApi> context, unsigne
 
    m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned int>("unitCode");
 
-   Init(context);
+   Init(api);
 }
 
-CThermostat2::CThermostat2(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CThermostat2::CThermostat2(boost::shared_ptr<yApi::IYPluginApi> api, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_state("state"), m_rssi("rssi")
 {
    CheckReceivedMessage(rbuf,
@@ -57,31 +57,31 @@ CThermostat2::CThermostat2(boost::shared_ptr<yApi::IYPluginApi> context, const R
    m_state.set(fromProtocolState(rbuf.THERMOSTAT2.cmnd));
    m_rssi.set(NormalizeRssiLevel(rbuf.THERMOSTAT2.rssi));
 
-   Init(context);
+   Init(api);
 }
 
 CThermostat2::~CThermostat2()
 {
 }
 
-void CThermostat2::Init(boost::shared_ptr<yApi::IYPluginApi> context)
+void CThermostat2::Init(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    // Build device description
    buildDeviceModel();
    buildDeviceName();
 
    // Create device and keywords if needed
-   if (!context->deviceExists(m_deviceName))
+   if (!api->deviceExists(m_deviceName))
    {
       shared::CDataContainer details;
       details.set("type", pTypeThermostat2);
       details.set("subType", m_subType);
       details.set("unitCode", m_unitCode);
 
-      context->declareDevice(m_deviceName, m_deviceModel, details);
+      api->declareDevice(m_deviceName, m_deviceModel, details);
 
-      context->declareKeyword(m_deviceName, m_state);
-      context->declareKeyword(m_deviceName, m_rssi);
+      api->declareKeyword(m_deviceName, m_state);
+      api->declareKeyword(m_deviceName, m_rssi);
    }
 }
 
@@ -102,10 +102,10 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CThermostat2:
    return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(THERMOSTAT2));
 }
 
-void CThermostat2::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
+void CThermostat2::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
-   context->historizeData(m_deviceName, m_state);
-   context->historizeData(m_deviceName, m_rssi);
+   api->historizeData(m_deviceName, m_state);
+   api->historizeData(m_deviceName, m_rssi);
 }
 
 const std::string& CThermostat2::getDeviceName() const

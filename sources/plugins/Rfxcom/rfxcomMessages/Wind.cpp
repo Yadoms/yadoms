@@ -7,7 +7,7 @@ namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
-   CWind::CWind(boost::shared_ptr<yApi::IYPluginApi> context,
+   CWind::CWind(boost::shared_ptr<yApi::IYPluginApi> api,
                 const RBUF& rbuf,
                 size_t rbufSize,
                 boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
@@ -44,40 +44,40 @@ namespace rfxcomMessages
       m_batteryLevel.set(NormalizeBatteryLevel(rbuf.WIND.battery_level));
       m_rssi.set(NormalizeRssiLevel(rbuf.WIND.rssi));
 
-      Init(context);
+      Init(api);
    }
 
    CWind::~CWind()
    {
    }
 
-   void CWind::Init(boost::shared_ptr<yApi::IYPluginApi> context)
+   void CWind::Init(boost::shared_ptr<yApi::IYPluginApi> api)
    {
       // Build device description
       buildDeviceModel();
       buildDeviceName();
 
       // Create device and keywords if needed
-      if (!context->deviceExists(m_deviceName))
+      if (!api->deviceExists(m_deviceName))
       {
          shared::CDataContainer details;
          details.set("type", pTypeWIND);
          details.set("subType", m_subType);
          details.set("id", m_id);
-         context->declareDevice(m_deviceName, m_deviceModel, details);
+         api->declareDevice(m_deviceName, m_deviceModel, details);
 
-         context->declareKeyword(m_deviceName, m_windDirection);
-         context->declareKeyword(m_deviceName, m_windMaxSpeed);
-         context->declareKeyword(m_deviceName, m_batteryLevel);
-         context->declareKeyword(m_deviceName, m_rssi);
+         api->declareKeyword(m_deviceName, m_windDirection);
+         api->declareKeyword(m_deviceName, m_windMaxSpeed);
+         api->declareKeyword(m_deviceName, m_batteryLevel);
+         api->declareKeyword(m_deviceName, m_rssi);
 
          if (m_subType != sTypeWIND5)
-            context->declareKeyword(m_deviceName, m_windAverageSpeed);
+            api->declareKeyword(m_deviceName, m_windAverageSpeed);
 
          if (m_subType == sTypeWIND4)
          {
-            context->declareKeyword(m_deviceName, m_temperature);
-            context->declareKeyword(m_deviceName, m_chillTemperature);
+            api->declareKeyword(m_deviceName, m_temperature);
+            api->declareKeyword(m_deviceName, m_chillTemperature);
          }
       }
    }
@@ -87,20 +87,20 @@ namespace rfxcomMessages
       throw shared::exception::CInvalidParameter("Wind is a read-only message, can not be encoded");
    }
 
-   void CWind::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
+   void CWind::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
    {
-      context->historizeData(m_deviceName, m_windDirection);
-      context->historizeData(m_deviceName, m_windMaxSpeed);
-      context->historizeData(m_deviceName, m_batteryLevel);
-      context->historizeData(m_deviceName, m_rssi);
+      api->historizeData(m_deviceName, m_windDirection);
+      api->historizeData(m_deviceName, m_windMaxSpeed);
+      api->historizeData(m_deviceName, m_batteryLevel);
+      api->historizeData(m_deviceName, m_rssi);
 
       if (m_subType != sTypeWIND5)
-         context->historizeData(m_deviceName, m_windAverageSpeed);
+         api->historizeData(m_deviceName, m_windAverageSpeed);
 
       if (m_subType == sTypeWIND4)
       {
-         context->historizeData(m_deviceName, m_temperature);
-         context->historizeData(m_deviceName, m_chillTemperature);
+         api->historizeData(m_deviceName, m_temperature);
+         api->historizeData(m_deviceName, m_chillTemperature);
       }
    }
 

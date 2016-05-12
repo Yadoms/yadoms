@@ -9,7 +9,7 @@ namespace yApi = shared::plugin::yPluginApi;
 namespace rfxcomMessages
 {
 
-CTempHumidity::CTempHumidity(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CTempHumidity::CTempHumidity(boost::shared_ptr<yApi::IYPluginApi> api, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_temperature("temperature"), m_humidity("humidity"), m_batteryLevel("battery"), m_rssi("rssi")
 {
    CheckReceivedMessage(rbuf,
@@ -29,32 +29,32 @@ CTempHumidity::CTempHumidity(boost::shared_ptr<yApi::IYPluginApi> context, const
    m_batteryLevel.set(NormalizeBatteryLevel(rbuf.TEMP_HUM.battery_level));
    m_rssi.set(NormalizeRssiLevel(rbuf.TEMP_HUM.rssi));
 
-   Init(context);
+   Init(api);
 }
 
 CTempHumidity::~CTempHumidity()
 {
 }
 
-void CTempHumidity::Init(boost::shared_ptr<yApi::IYPluginApi> context)
+void CTempHumidity::Init(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    // Build device description
    buildDeviceModel();
    buildDeviceName();
 
    // Create device and keywords if needed
-   if (!context->deviceExists(m_deviceName))
+   if (!api->deviceExists(m_deviceName))
    {
       shared::CDataContainer details;
       details.set("type", pTypeTEMP_HUM);
       details.set("subType", m_subType);
       details.set("id", m_id);
-      context->declareDevice(m_deviceName, m_deviceModel, details);
+      api->declareDevice(m_deviceName, m_deviceModel, details);
 
-      context->declareKeyword(m_deviceName, m_temperature);
-      context->declareKeyword(m_deviceName, m_humidity);
-      context->declareKeyword(m_deviceName, m_batteryLevel);
-      context->declareKeyword(m_deviceName, m_rssi);
+      api->declareKeyword(m_deviceName, m_temperature);
+      api->declareKeyword(m_deviceName, m_humidity);
+      api->declareKeyword(m_deviceName, m_batteryLevel);
+      api->declareKeyword(m_deviceName, m_rssi);
    }
 }
 
@@ -63,12 +63,12 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CTempHumidity
    throw shared::exception::CInvalidParameter("TempHumidity is a read-only message, can not be encoded");
 }
 
-void CTempHumidity::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
+void CTempHumidity::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
-   context->historizeData(m_deviceName, m_temperature);
-   context->historizeData(m_deviceName, m_humidity);
-   context->historizeData(m_deviceName, m_batteryLevel);
-   context->historizeData(m_deviceName, m_rssi);
+   api->historizeData(m_deviceName, m_temperature);
+   api->historizeData(m_deviceName, m_humidity);
+   api->historizeData(m_deviceName, m_batteryLevel);
+   api->historizeData(m_deviceName, m_rssi);
 }
 
 const std::string& CTempHumidity::getDeviceName() const
