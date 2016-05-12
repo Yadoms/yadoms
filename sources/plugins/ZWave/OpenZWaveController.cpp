@@ -1,17 +1,12 @@
 #include "stdafx.h"
 #include "OpenZWaveController.h"
-#include <shared/Log.h>
 #include "ZWave.h"
 #include "OpenZWaveCommandClass.h"
-#include <shared/plugin/yPluginApi/StandardCapacities.h>
-#include <shared/plugin/yPluginApi/historization/Dimmable.h>
-#include <command_classes/SwitchBinary.h>
 #include <Options.h>
 #include <Manager.h>
 #include <Notification.h>
 #include <platform/Log.h>
 #include "KeywordContainer.h"
-#include "OpenZWaveNodeKeywordFactory.h"
 #include "OpenZWaveHelpers.h"
 #include "ZWaveInternalState.h"
 
@@ -31,7 +26,7 @@ void onGlobalNotification(OpenZWave::Notification const* _notification, void* _c
 {
    try
    {
-      YADOMS_LOG(debug) << "OpenZWave notification : " << _notification->GetAsString();
+      std::cout << "OpenZWave notification : " << _notification->GetAsString() << std::endl;
 
       COpenZWaveController * pPlugin = static_cast<COpenZWaveController *>(_context);
       if (pPlugin != NULL)
@@ -39,15 +34,15 @@ void onGlobalNotification(OpenZWave::Notification const* _notification, void* _c
    }
    catch (OpenZWave::OZWException & ex)
    {
-      YADOMS_LOG(fatal) << "OpenZWave exception (OnGlobalNotification) : " << ex.what();
+      std::cerr << "OpenZWave exception (OnGlobalNotification) : " << ex.what() << std::endl;
    }
    catch (std::exception & ex)
    {
-      YADOMS_LOG(fatal) << "OpenZWave std::exception (OnGlobalNotification) : " << ex.what();
+      std::cerr << "OpenZWave std::exception (OnGlobalNotification) : " << ex.what() << std::endl;
    }
    catch (...)
    {
-      YADOMS_LOG(fatal) << "OpenZWave unknown exception (OnGlobalNotification)";
+      std::cerr << "OpenZWave unknown exception (OnGlobalNotification)" << std::endl;
    }
 }
 
@@ -84,7 +79,7 @@ bool COpenZWaveController::start()
          if (returnedError)
          {
             //did not successfully create directories
-            YADOMS_LOG(error) << "Fali to create folder : " << dataFolder.string();
+            std::cerr << "Fali to create folder : " << dataFolder.string() << std::endl;
          }
       }
 
@@ -124,7 +119,7 @@ bool COpenZWaveController::start()
          else
          {
             //fail to open : then unlock mutex to allow configuration to be changed, then wait 1 sec
-            YADOMS_LOG(warning) << "Fail to open serial port : " << m_configuration->getSerialPort() << " port address : " << m_configuration->getSerialPort();
+            std::cout << "Fail to open serial port : " << m_configuration->getSerialPort() << " port address : " << m_configuration->getSerialPort() << std::endl;
             m_treeMutex.unlock();
             boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
          }
@@ -157,15 +152,15 @@ bool COpenZWaveController::start()
    }
    catch (OpenZWave::OZWException & ex)
    {
-      YADOMS_LOG(fatal) << "Fail to start OpenZWave controller : OpenZWave exception : " << ex.what();
+      std::cerr << "Fail to start OpenZWave controller : OpenZWave exception : " << ex.what() << std::endl;
    }
    catch (std::exception & ex)
    {
-      YADOMS_LOG(fatal) << "Fail to start OpenZWave controller : std::exception : " << ex.what();
+      std::cerr << "Fail to start OpenZWave controller : std::exception : " << ex.what() << std::endl;
    }
    catch (...)
    {
-      YADOMS_LOG(fatal) << "Fail to start OpenZWave controller unknown exception";
+      std::cerr << "Fail to start OpenZWave controller unknown exception" << std::endl;
    }
 
    return false;
@@ -179,15 +174,15 @@ void COpenZWaveController::stop()
    }
    catch (OpenZWave::OZWException & ex)
    {
-      YADOMS_LOG(fatal) << "Fail to stop OpenZWave controller : OpenZWave exception : " << ex.what();
+      std::cerr << "Fail to stop OpenZWave controller : OpenZWave exception : " << ex.what() << std::endl;
    }
    catch (std::exception & ex)
    {
-      YADOMS_LOG(fatal) << "Fail to stop OpenZWave controller : std::exception : " << ex.what();
+      std::cerr << "Fail to stop OpenZWave controller : std::exception : " << ex.what() << std::endl;
    }
    catch (...)
    {
-      YADOMS_LOG(fatal) << "Fail to stop OpenZWave controller unknown exception";
+      std::cerr << "Fail to stop OpenZWave controller unknown exception" << std::endl;
    }
 }
 
@@ -292,7 +287,7 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
       {
          //OpenZWave::Manager::Get()->GetControllerInterfaceType()
          std::string sNodeType = OpenZWave::Manager::Get()->GetNodeType(node->getHomeId(), node->getNodeId());
-         YADOMS_LOG(information) << "ZWave : NodeProtocolInfo : " << sNodeType;
+         std::cout << "ZWave : NodeProtocolInfo : " << sNodeType << std::endl;
          
       }
       break;
@@ -312,12 +307,12 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
          std::string sNodeType = OpenZWave::Manager::Get()->GetNodeType(nodeInfo->getHomeId(), nodeInfo->getNodeId());
          std::string id = COpenZWaveHelpers::GenerateDeviceName(nodeInfo->getHomeId(), nodeInfo->getNodeId());
 
-         YADOMS_LOG(debug) << "ZWave : NodeNaming : id = " << id;
-         YADOMS_LOG(debug) << "ZWave : NodeNaming : name = " << sNodeName;
-         YADOMS_LOG(debug) << "ZWave : NodeNaming : manufacturer = " << sNodeManufacturer;
-         YADOMS_LOG(debug) << "ZWave : NodeNaming : productName = " << sNodeProductName;
-         YADOMS_LOG(debug) << "ZWave : NodeNaming : productType = " << sNodeProductType;
-         YADOMS_LOG(debug) << "ZWave : NodeNaming : productId = " << sNodeProductId;
+         std::cout << "ZWave : NodeNaming : id = " << id << std::endl;
+         std::cout << "ZWave : NodeNaming : name = " << sNodeName << std::endl;
+         std::cout << "ZWave : NodeNaming : manufacturer = " << sNodeManufacturer << std::endl;
+         std::cout << "ZWave : NodeNaming : productName = " << sNodeProductName << std::endl;
+         std::cout << "ZWave : NodeNaming : productType = " << sNodeProductType << std::endl;
+         std::cout << "ZWave : NodeNaming : productId = " << sNodeProductId << std::endl;
 
          shared::CDataContainer d;
          d.set("name", id);

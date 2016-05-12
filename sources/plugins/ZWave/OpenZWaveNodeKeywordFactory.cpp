@@ -1,16 +1,10 @@
 #include "stdafx.h"
 #include "OpenZWaveNodeKeywordFactory.h"
-#include <shared/exception/NotSupported.hpp>
-#include <shared/enumeration/IExtendedEnum.h>
 #include "OpenZWaveCommandClass.h"
 
 
-#include <value_classes/ValueBool.h>
-#include <value_classes/ValueDecimal.h>
-#include <value_classes/ValueList.h>
 #include <Manager.h>
 
-#include <shared/Log.h>
 #include "OpenZWaveNodeKeywordBase.h"
 #include "OpenZWaveNodeKeywordGeneric.h"
 #include "OpenZWaveNodeKeywordDimmable.h"
@@ -90,7 +84,7 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateH
             break;
          }
 
-         YADOMS_LOG(debug) << "[" << homeId << "." << nodeId << "] " << vLabel << ":" << commandClass.toString()
+         std::cout << "[" << homeId << "." << nodeId << "] " << vLabel << ":" << commandClass.toString()
             << " [Genre=" << genre << "]"
             << " [CommandClass=" << (int)commandClassInt << "]"
             << " [Instance=" << (int)instance << "]"
@@ -101,7 +95,7 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateH
             << " [Units= " << units << "]"
             << " [Awake= " << awake << "]"
             << " [Failed= " << failed << "]"
-            << " [ZWave+= " << zwavePlus << "]";
+            << " [ZWave+= " << zwavePlus << "]" << std::endl;
 
          shared::plugin::yPluginApi::EKeywordAccessMode accessMode = shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet;
          if (readOnly)
@@ -115,11 +109,11 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateH
    }
    catch (OpenZWave::OZWException & ex)
    {
-      YADOMS_LOG(error) << "OpenZWave::OZWException : "  << ex.what();
+      std::cerr << "OpenZWave::OZWException : "  << ex.what() << std::endl;
    }
    catch (...)
    {
-      YADOMS_LOG(error) << "Unknown exception";
+      std::cerr << "Unknown exception" << std::endl;
    }
 
    return boost::shared_ptr<IOpenZWaveNodeKeyword>();
@@ -345,7 +339,7 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateS
 
       case  OpenZWave::ValueID::ValueType_Schedule:			// Complex type used with the Climate Control Schedule command class
       {
-         YADOMS_LOG(information) << "Value Schedule : ";
+         std::cout << "Value Schedule : " << std::endl;
          break;
       }
 

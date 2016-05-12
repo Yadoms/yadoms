@@ -33,7 +33,7 @@ public:
    /// \brief	    Get the library path
    /// \return	    The library path
    //--------------------------------------------------------------
-   const std::string getPath();
+   std::string getPath() const;
 
    //--------------------------------------------------------------
    /// \brief	    Set the library path
