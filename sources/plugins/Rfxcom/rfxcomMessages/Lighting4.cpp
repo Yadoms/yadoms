@@ -37,7 +37,12 @@ CLighting4::CLighting4(boost::shared_ptr<yApi::IYPluginApi> context, unsigned ch
 CLighting4::CLighting4(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_keyword("id"), m_rssi("rssi")
 {
-   CheckReceivedMessage(rbuf, rbufSize, pTypeLighting4, GET_RBUF_STRUCT_SIZE(LIGHTING4), DONT_CHECK_SEQUENCE_NUMBER);
+   CheckReceivedMessage(rbuf,
+                        rbufSize,
+                        pTypeLighting4,
+                        DONT_CHECK_SUBTYPE,
+                        GET_RBUF_STRUCT_SIZE(LIGHTING4),
+                        DONT_CHECK_SEQUENCE_NUMBER);
 
    m_subType = rbuf.LIGHTING4.subtype;
    m_id = rbuf.LIGHTING4.cmd1 << 16 | rbuf.LIGHTING4.cmd2 << 8 | rbuf.LIGHTING4.cmd3;

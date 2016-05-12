@@ -7,7 +7,7 @@
 namespace shared { namespace plugin { namespace yPluginApi { namespace historization
 {   
    //-----------------------------------------------------
-   ///\brief A temperature historizable object
+   ///\brief A counter historizable object
    //-----------------------------------------------------
    class YADOMS_SHARED_EXPORT CCounter : public CSingleHistorizableData<Poco::Int64>
    {

@@ -31,7 +31,12 @@ CRemote::CRemote(boost::shared_ptr<yApi::IYPluginApi> context, const std::string
 CRemote::CRemote(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_rssi("rssi")
 {
-   CheckReceivedMessage(rbuf, rbufSize, pTypeRemote, GET_RBUF_STRUCT_SIZE(REMOTE), DONT_CHECK_SEQUENCE_NUMBER);
+   CheckReceivedMessage(rbuf,
+                        rbufSize,
+                        pTypeRemote,
+                        DONT_CHECK_SUBTYPE,
+                        GET_RBUF_STRUCT_SIZE(REMOTE),
+                        DONT_CHECK_SEQUENCE_NUMBER);
 
    createSubType(rbuf.REMOTE.subtype);
    m_id = rbuf.REMOTE.id;

@@ -68,7 +68,12 @@ CFS20::CFS20(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char subType
 CFS20::CFS20(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_state("state"), m_rssi("rssi")
 {
-   CheckReceivedMessage(rbuf, rbufSize, pTypeFS20, GET_RBUF_STRUCT_SIZE(FS20), DONT_CHECK_SEQUENCE_NUMBER);
+   CheckReceivedMessage(rbuf,
+                        rbufSize,
+                        pTypeFS20,
+                        DONT_CHECK_SUBTYPE,
+                        GET_RBUF_STRUCT_SIZE(FS20),
+                        DONT_CHECK_SEQUENCE_NUMBER);
 
    m_subType = rbuf.FS20.subtype;
 

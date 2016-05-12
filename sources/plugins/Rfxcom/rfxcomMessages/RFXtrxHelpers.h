@@ -30,30 +30,25 @@ extern const size_t RFXMESSAGE_maxSize;
 
 
 //--------------------------------------------------------------
-/// \brief	                           Basic checks on received message : type, size, sequence number
-/// \param[in] rbuf                    Message received from Rfxcom
-/// \param[in] rbufSize                Message size, received from Rfxcom
-/// \param[in] expectedType            Expected message type (pType) : log and assert if not match
-/// \param[in] expectedSize            Expected message size : log if not match
-/// \param[in] expectedSeqNumber       Expected sequence number : log if not match. Use DONT_CHECK_SEQUENCE_NUMBER to skip this check
-/// \throw shared::exception::CException if one of check fails
-/// \note                              All checks are perform, even if one fails
-//--------------------------------------------------------------
-extern const unsigned int DONT_CHECK_SEQUENCE_NUMBER;
-void CheckReceivedMessage(const RBUF& rbuf, size_t rbufSize, BYTE expectedType, size_t expectedSize, unsigned int expectedSeqNumber);
-
-//--------------------------------------------------------------
 /// \brief	                           Basic checks on received message, including subType
 /// \param[in] rbuf                    Message received from Rfxcom
 /// \param[in] rbufSize                Message size, received from Rfxcom
 /// \param[in] expectedType            Expected message type (pType) : log and assert if not match
-/// \param[in] expectedSubType         Expected message subtype (sType) : log if not match
-/// \param[in] expectedSize            Expected message size : log if not match
+/// \param[in] expectedSubType         Expected message subtype (sType) : log if not match. Use DONT_CHECK_SUBTYPE to skip this check
+/// \param[in] expectedSize            Expected message size : log if not match. Use DONT_CHECK_SIZE to skip this check
 /// \param[in] expectedSeqNumber       Expected sequence number : log if not match. Use DONT_CHECK_SEQUENCE_NUMBER to skip this check
 /// \throw shared::exception::CException if one of check fails
 /// \note                              All checks are perform, even if one fails
 //--------------------------------------------------------------
-void CheckReceivedMessage(const RBUF& rbuf, size_t rbufSize, BYTE expectedType, BYTE expectedSubType, size_t expectedSize, unsigned int expectedSeqNumber);
+extern const BYTE DONT_CHECK_SUBTYPE;
+extern const unsigned int DONT_CHECK_SIZE;
+extern const unsigned int DONT_CHECK_SEQUENCE_NUMBER;
+void CheckReceivedMessage(const RBUF& rbuf,
+                          size_t rbufSize,
+                          BYTE expectedType,
+                          BYTE expectedSubType,
+                          size_t expectedSize,
+                          unsigned int expectedSeqNumber);
 
 //--------------------------------------------------------------
 /// \brief	                           Make a send buffer from RBUF structure

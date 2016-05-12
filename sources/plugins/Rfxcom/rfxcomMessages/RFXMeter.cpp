@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "RFXMeter.h"
-#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/InvalidParameter.hpp>
 #include <shared/Log.h>
 
@@ -13,7 +12,12 @@ namespace rfxcomMessages
 CRFXMeter::CRFXMeter(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_counter("counter"), m_rssi("rssi")
 {
-   CheckReceivedMessage(rbuf, rbufSize, pTypeRFXMeter, GET_RBUF_STRUCT_SIZE(RFXMETER), DONT_CHECK_SEQUENCE_NUMBER);
+   CheckReceivedMessage(rbuf,
+                        rbufSize,
+                        pTypeRFXMeter,
+                        DONT_CHECK_SUBTYPE,
+                        GET_RBUF_STRUCT_SIZE(RFXMETER),
+                        DONT_CHECK_SEQUENCE_NUMBER);
 
    m_subType = rbuf.RFXMETER.subtype;
 
@@ -74,7 +78,7 @@ const std::string& CRFXMeter::getDeviceName() const
 void CRFXMeter::buildDeviceName()
 {
    std::ostringstream ssdeviceName;
-   ssdeviceName << (unsigned int)m_id;
+   ssdeviceName << static_cast<unsigned int>(m_id);
    m_deviceName = ssdeviceName.str();
 }
 

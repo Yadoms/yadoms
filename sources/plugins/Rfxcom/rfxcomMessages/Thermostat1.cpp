@@ -38,7 +38,12 @@ CThermostat1::CThermostat1(boost::shared_ptr<yApi::IYPluginApi> context, unsigne
 CThermostat1::CThermostat1(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_rssi("rssi")
 {
-   CheckReceivedMessage(rbuf, rbufSize, pTypeThermostat1, GET_RBUF_STRUCT_SIZE(THERMOSTAT1), DONT_CHECK_SEQUENCE_NUMBER);
+   CheckReceivedMessage(rbuf,
+                        rbufSize,
+                        pTypeThermostat1,
+                        DONT_CHECK_SUBTYPE,
+                        GET_RBUF_STRUCT_SIZE(THERMOSTAT1),
+                        DONT_CHECK_SEQUENCE_NUMBER);
 
    createSubType(rbuf.THERMOSTAT1.subtype);
    m_id = rbuf.THERMOSTAT1.id1 << 8 | rbuf.THERMOSTAT1.id2;
