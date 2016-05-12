@@ -578,21 +578,26 @@
           "serverVersion": "Yadoms server version"
         }
       },
+      "yadoms_wait_for_event_result" : {
+			"title": "Last event : ",
+			"tooltip": "Get information about last event",
+			"value" : "get the value",
+			"deviceName" : "get the device name"
+		},
       "yadoms_wait_for_event": {
-        "titleLine1": "Wait for event",
-        "titleLine2": "Save value in",
-		"titleLine3": "Save device name in",
+        "title": "Wait for an event",
         "case": "When",
 		"caseCapacity": "When a data of type",
-        "datetime": "date/time",
+		"caseDateTimeEveryMinute" : "Every minutes",
+		"caseDateTimeCondition" : "When date/time",
 		"capacity": "capacity",
         "triggered": "is triggered",
         "triggeredType": {
-          "change": "change",
+          "change": "emits a data",
           "become": "become"
         },
 		"triggeredCapacityType": {
-			"change": "is received",
+			"change": "is sent",
 			"become": ""
 		},
         "do": "Then do",
@@ -606,6 +611,12 @@
 			"storeValueInVariable" : "Store the new acquisition in a variable",
 			"storeDeviceNameInVariable" : "Store the device name in a variable"
           },
+			"keyword": {
+				"title": "When a device send data",
+				"tooltip": "Add a block for monitoring any data of a device",
+				"condition" : "on condition"
+			},
+			
           "change": {
             "title": "Device : any new acquisition",
             "tooltip": "Add a block for monitoring any new acquisition of a device"
