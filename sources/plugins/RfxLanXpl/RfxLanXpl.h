@@ -1,5 +1,5 @@
 #pragma once
-#include <shared/plugin/IPlugin.h>
+#include <plugin_cpp_api/IPlugin.h>
 #include "RfxLanXplConfiguration.h"
 #include "xplcore/XplMessage.h"
 #include "xplcore/XplService.h"
@@ -19,7 +19,7 @@ namespace yApi = shared::plugin::yPluginApi;
 ///         - process a command from Yadoms
 ///         - send sensor state to Yadoms
 //--------------------------------------------------------------
-class CRfxLanXpl : public shared::plugin::IPlugin
+class CRfxLanXpl : public plugin_cpp_api::IPlugin
 {
 public:
    //--------------------------------------------------------------
@@ -33,37 +33,37 @@ public:
    virtual ~CRfxLanXpl();
 
    // IPlugin implementation
-   virtual void doWork(boost::shared_ptr<yApi::IYPluginApi> context);
+   void doWork(boost::shared_ptr<yApi::IYPluginApi> api) override;
    // [END] IPlugin implementation
 
 private:
    //----------------------------------------------
    ///\brief Function handler when receiving XplMessage
    ///\param [in] message The xpl message received
-   ///\param [in] context The plugin API
+   ///\param [in] api     The plugin API
    //----------------------------------------------
-   void OnXplMessageReceived(xplcore::CXplMessage & message, boost::shared_ptr<yApi::IYPluginApi> context);
+   void OnXplMessageReceived(xplcore::CXplMessage & message, boost::shared_ptr<yApi::IYPluginApi> api);
 
    //----------------------------------------------
    ///\brief Function handler use to send a command device
    ///\param [in] message The xpl message received
-   ///\param [in] context The plugin API
+   ///\param [in] api     The plugin API
    //----------------------------------------------
-   void OnSendDeviceCommand(boost::shared_ptr<const yApi::IDeviceCommand> command, boost::shared_ptr<yApi::IYPluginApi> context, xplcore::CXplService & xplService);
+   void OnSendDeviceCommand(boost::shared_ptr<const yApi::IDeviceCommand> command, boost::shared_ptr<yApi::IYPluginApi> api, xplcore::CXplService & xplService);
 
    //----------------------------------------------
    ///\brief Function handler use to create a device from a user configuration
    ///\param [in] configuration  the device configuration
-   ///\param [in] context The plugin API
+   ///\param [in] api            The plugin API
    //----------------------------------------------
-   void OnCreateDeviceRequest(boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> data, boost::shared_ptr<yApi::IYPluginApi> context);
+   void OnCreateDeviceRequest(boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> data, boost::shared_ptr<yApi::IYPluginApi> api);
 
 	//----------------------------------------------
    ///\brief Function handler use to answer custom queries
    ///\param [in] data  the custom query data
-   ///\param [in] context The plugin API
+   ///\param [in] api   The plugin API
    //----------------------------------------------
-   void OnBindingQueryRequest(boost::shared_ptr<yApi::IBindingQueryRequest> data, boost::shared_ptr<yApi::IYPluginApi> context);
+   void OnBindingQueryRequest(boost::shared_ptr<yApi::IBindingQueryRequest> data, boost::shared_ptr<yApi::IYPluginApi> api);
 
 
    //----------------------------------------------

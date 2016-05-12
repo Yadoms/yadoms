@@ -1,10 +1,6 @@
 #include "stdafx.h"
 #include "XplHubConnectedPeripheral.h"
 #include "XplMessage.h"
-#include "XplHelper.h"
-#include "XplException.h"
-#include <shared/Log.h>
-#include <Poco/Net/NetworkInterface.h>
 #include <shared/currentTime/Provider.h>
 
 namespace xplcore
@@ -18,7 +14,7 @@ namespace xplcore
       m_socket.setBroadcast(true);
       //m_socket.bind(Poco::Net::SocketAddress(sender.host(), portNumber));
       m_socket.connect(Poco::Net::SocketAddress(sender.host(), portNumber));
-      YADOMS_LOG(debug) << "Peripheral " << debugName << " found @" << sender.host().toString();
+      std::cout << "Peripheral " << debugName << " found @" << sender.host().toString() << std::endl;
    }
 
    CXplHubConnectedPeripheral::~CXplHubConnectedPeripheral()

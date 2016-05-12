@@ -92,7 +92,7 @@ namespace xplrules { namespace rfxLanXpl {
       ////////////////////////////
 
       //check the device address is valid
-      std::string address = commandData->getTargetDevice();
+      std::string address = commandData->getDevice();
       std::vector<std::string> splittedAddress;
       boost::split(splittedAddress, address, boost::is_any_of("-"), boost::token_compress_on);
 

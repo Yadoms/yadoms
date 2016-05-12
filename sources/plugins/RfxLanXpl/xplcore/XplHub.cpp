@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "XplHub.h"
 
-#include <shared/Log.h>
 #include "XplHelper.h"
 #include "XplMessage.h"
 #include "XplHubConnectedPeripheral.h"
@@ -23,7 +22,6 @@ namespace xplcore
    CXplHub::CXplHub(const std::string & localIPOfTheInterfaceToUse)
       : CThreadBase("XplHub"), m_socket(Poco::Net::SocketAddress(Poco::Net::IPAddress(), CXplHelper::XplProtocolPort)), m_stopHubRequested(false)
    {
-      YADOMS_LOG_CONFIGURE(getName());
       m_socket.setBroadcast(true);
       m_socket.setReuseAddress(true);
    }
@@ -42,8 +40,6 @@ namespace xplcore
    {
       try
       {
-         YADOMS_LOG_CONFIGURE(getName());
-
          runCheckApplicationLifeCycleTimeout();
          while (!m_stopHubRequested) //we don't need locking here - connected is just a boolean
          {
@@ -86,9 +82,9 @@ namespace xplcore
       }
       catch (shared::exception::CException & ex)
       {
-         YADOMS_LOG(fatal) << "The XPL hub fails. Unknown expcetion : " << ex.what();
+         std::cerr << "The XPL hub fails. Unknown expcetion : " << ex.what() << std::endl;
       }
-      YADOMS_LOG(information) << "Xpl Hub ends";
+      std::cout << "Xpl Hub ends" << std::endl;
    }
 
 
@@ -96,7 +92,7 @@ namespace xplcore
    void CXplHub::onXplMessageReceived(CXplMessage & msg, Poco::Net::SocketAddress & sender)
    {
       //the message is successfully parsed
-      YADOMS_LOG(debug) << "Received From : " << msg.getSource().toString() << "  message= " << msg.getMessageSchemaIdentifier().toString();
+      std::cout << "Received From : " << msg.getSource().toString() << "  message= " << msg.getMessageSchemaIdentifier().toString() << std::endl;
 
       if (CXplMessageSchemaIdentifier::isHeartbeatApp(msg.getMessageSchemaIdentifier()))
       {
@@ -117,7 +113,7 @@ namespace xplcore
       //the packet moves on to the delivery/rebroadcast step.
       //TODO : manage the "config.app" message (from above comment)
 
-      YADOMS_LOG(debug) << "Heartbeat message received";
+      std::cout << "Heartbeat message received" << std::endl;
       //we check if we already known this periph
       unsigned short port;
       if (!shared::CStringExtension::tryParse<unsigned short>(hbeatMessage.getBodyValue("port"), port))
@@ -144,7 +140,7 @@ namespace xplcore
             if (i < m_discoveredPeripherals.size())
             {
                //we already known the peripheral, so we update its interval and its last time seen
-               YADOMS_LOG(debug) << "Update peripheral information";
+               std::cout << "Update peripheral information" << std::endl;
                m_discoveredPeripherals[i]->setInterval(interval);
                m_discoveredPeripherals[i]->updateLastTimeSeenFromNow();
             }
@@ -153,14 +149,14 @@ namespace xplcore
                try
                {
                   //it's a new peripheral, so we add it to the list
-                  YADOMS_LOG(debug) << "New peripheral";
+                  std::cout << "New peripheral" << std::endl;
                   m_discoveredPeripherals.push_back(boost::shared_ptr<CXplHubConnectedPeripheral>(new CXplHubConnectedPeripheral(sender, port, interval, hbeatMessage.getSource().toString())));
 
                }
                catch (std::exception & ex)
                {
                   //it's a new peripheral, so we add it to the list
-                  YADOMS_LOG(error) << "Fail to add peripheral : " << ex.what();
+                  std::cerr << "Fail to add peripheral : " << ex.what() << std::endl;
 
                }
             }
@@ -180,16 +176,16 @@ namespace xplcore
          catch (Poco::Net::NetException & netex)
          {
             //it's a new peripheral, so we add it to the list
-            YADOMS_LOG(error) << "broadcastMessage failed : " << netex.message();
-            YADOMS_LOG(error) << netex.displayText();
+            std::cerr << "broadcastMessage failed : " << netex.message() << std::endl;
+            std::cerr << netex.displayText() << std::endl;
          }
          catch (std::exception & ex)
          {
-            YADOMS_LOG(error) << "broadcastMessage failed : " << ex.what();
+            std::cerr << "broadcastMessage failed : " << ex.what() << std::endl;
          }
          catch (...)
          {
-            YADOMS_LOG(error) << "broadcastMessage failed : unknown exception";
+            std::cerr << "broadcastMessage failed : unknown exception" << std::endl;
          }
       }
    }
@@ -214,7 +210,7 @@ namespace xplcore
             if (timeoutAt < shared::currentTime::Provider::now())
             {
                //we must delete the peripheral
-               YADOMS_LOG(debug) << "Delete peripheral with port " << m_discoveredPeripherals[i]->getPortNumber() << std::endl;
+               std::cout << "Delete peripheral with port " << m_discoveredPeripherals[i]->getPortNumber() << std::endl;
                m_discoveredPeripherals.erase(m_discoveredPeripherals.begin() + i);
             }
             i--;
