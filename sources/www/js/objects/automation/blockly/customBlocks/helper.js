@@ -98,7 +98,10 @@ Blockly.Yadoms.ConfigureBlockForYadomsCapacitySelection = function(thisBlock, ca
                 Blockly.removeClass_(capacityDd.textElement_, "blocklyValidationDropdownError");
             }
         }
-        return capacityValid;
+        return {
+			isValid : capacityValid,
+			message : "chooseItemInList"
+		};		
     };
 
     var inputNameToUse = inputName;
@@ -297,7 +300,10 @@ Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function (thisBlock, on
                 Blockly.removeClass_(keywordDd.textElement_, "blocklyValidationDropdownError");
             }
         }
-        return deviceValid && keywordValid;
+        return {
+			isValid : deviceValid && keywordValid,
+			message : "chooseItemInList"
+		};
     };
 
     var inputNameToUse = inputName;

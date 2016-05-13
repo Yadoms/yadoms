@@ -541,6 +541,11 @@
 	  }
     },
     "invalid": "invalid",
+	"validation" : {
+		"errorMaxTopBlock" : "Only 'top block' is allowed. Etiher chain them, or delete all but one",
+		"chooseItemInList" : "Please choose a correct value in list",
+		"missingInputBlock" : "Please complete the missing block"
+	},
     "global": {
       "durationUnits": {
         "seconds": "seconds",

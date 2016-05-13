@@ -543,6 +543,11 @@
 		    }
         },
         "invalid": "Invalide",
+		"validation" : {
+			"errorMaxTopBlock" : "Un seul 'top block' est autorisé. Il faut soit les chaîner, soit en supprimer un",
+			"chooseItemInList" : "Veuiller selectionner une valeur correcte dans la liste",
+			"missingInputBlock" : "Veuiller compléter le block manquant"
+		},
         "global": {
             "durationUnits": {
                 "seconds": "secondes",

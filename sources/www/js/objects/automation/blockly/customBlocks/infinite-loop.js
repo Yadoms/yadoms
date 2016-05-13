@@ -9,7 +9,7 @@ Blockly.Blocks['infinite-loop'] = {
     this.appendStatementInput('DO')
         .appendField($.t("blockly.blocks.infinite-loop.title"));
     this.setPreviousStatement(true);
-    this.setNextStatement(true);
+    this.setNextStatement(false);
         this.setTooltip($.t("blockly.blocks.infinite-loop.tooltip", { defaultValue: "" }));
     this.setHelpUrl("http://www.example.com/");
   }
