@@ -16,7 +16,9 @@ class CSystemFactory
 public:
    //--------------------------------------------------------------
    /// \brief	    Constructor
-   /// \param[in] device    The device
+   /// \param[in] api                 yPluginApi API
+   /// \param[in] device              The device
+   /// \param[in] configuration       Configuration
    //--------------------------------------------------------------
    CSystemFactory(boost::shared_ptr<yApi::IYPluginApi> api, const std::string & device,const ISIConfiguration& configuration);
 
