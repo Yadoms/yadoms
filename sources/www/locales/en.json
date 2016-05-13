@@ -531,8 +531,13 @@
 		},
 		"lowBatteryLevel" : {
 			"title" : "Low battery",
-			"logMessage" : "Define here actions to realize when any device battery level is low"
-		}
+			"logMessage1" : "Define here actions to realize when any device battery level is low",
+			"logMessage2" : {
+				"part1" : "For example : the battery level of ",
+				"part2" : "is low (",
+				"part3" : " %)"
+			}
+	    }
 	  }
     },
     "invalid": "invalid",

@@ -533,7 +533,12 @@
 				},
 			    "lowBatteryLevel" : {
 					"title" : "Niveau de batterie faible",
-					"logMessage" : "Définir ici les actions à effectuer lorsque le niveau de batterie est faible (envoi d'email, de sms,...)"
+					"logMessage1" : "Définir ici les actions à effectuer",
+					"logMessage2" : {
+						"part1" : "Le niveau de batterie de ",
+						"part2" : "est faible (",
+						"part3" : " %)"
+					}
 				}
 		    }
         },
