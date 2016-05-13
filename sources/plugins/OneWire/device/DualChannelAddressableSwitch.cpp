@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "DualChannelAddressableSwitch.h"
 #include "Identification.h"
-#include <shared/Log.h>
 
 namespace device {
    
@@ -60,13 +59,13 @@ void CDualChannelAddressableSwitch::set(const std::string& keyword, const std::s
    }
    else
    {
-      YADOMS_LOG(error) << "Unknown keyword " << keyword;
+      std::cerr << "Unknown keyword " << keyword << std::endl;
       return;
    }
 
    if (kw->getAccessMode() != yApi::EKeywordAccessMode::kGetSetValue)
    {
-      YADOMS_LOG(error) << "Try to drive the read-only keyword " << keyword;
+      std::cerr << "Try to drive the read-only keyword " << keyword << std::endl;
       return;
    }
    kw->setCommand(command);

@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "DualAddressableSwitchPlus1kMemory.h"
 #include "Identification.h"
-#include <shared/Log.h>
 
 namespace device {
    
@@ -68,19 +67,19 @@ void CDualAddressableSwitchPlus1kMemory::set(const std::string& keyword, const s
       }
       else
       {
-         YADOMS_LOG(error) << "Try to drive a non-active channel " << keyword;
+         std::cerr << "Try to drive a non-active channel " << keyword << std::endl;
          return;
       }
    }
    else
    {
-      YADOMS_LOG(error) << "Unknown keyword " << keyword;
+      std::cerr << "Unknown keyword " << keyword << std::endl;
       return;
    }
 
    if (kw->getAccessMode() != yApi::EKeywordAccessMode::kGetSetValue)
    {
-      YADOMS_LOG(error) << "Try to drive the read-only keyword " << keyword;
+      std::cerr << "Try to drive the read-only keyword " << keyword << std::endl;
       return;
    }
    kw->setCommand(command);

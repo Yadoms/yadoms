@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "AdressableSwitch.h"
 #include "Identification.h"
-#include <shared/Log.h>
 
 namespace device {
    
@@ -37,10 +36,10 @@ void CAdressableSwitch::historize()
 void CAdressableSwitch::set(const std::string& keyword, const std::string& command)
 {
    if (m_state.getKeyword() != keyword)
-      YADOMS_LOG(error) << "Unknown keyword " << keyword;
+      std::cerr << "Unknown keyword " << keyword << std::endl;
    
    if (m_state.getAccessMode() != yApi::EKeywordAccessMode::kGetSetValue)
-      YADOMS_LOG(error) << "Try to drive the read-only keyword " << keyword;
+      std::cerr << "Try to drive the read-only keyword " << keyword << std::endl;
    
    m_state.setCommand(command);
    m_io->write(m_state.get());

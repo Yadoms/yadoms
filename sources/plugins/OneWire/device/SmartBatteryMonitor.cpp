@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "SmartBatteryMonitor.h"
 #include "Identification.h"
-#include <shared/Log.h>
 
 namespace device {
 
@@ -80,7 +79,7 @@ void CSmartBatteryMonitor::historize()
 
 void CSmartBatteryMonitor::set(const std::string& keyword, const std::string& command)
 {
-   YADOMS_LOG(error) << "Try to drive the read-only keyword " << keyword;
+   std::cerr << "Try to drive the read-only keyword " << keyword << std::endl;
 }
 
 } // namespace device

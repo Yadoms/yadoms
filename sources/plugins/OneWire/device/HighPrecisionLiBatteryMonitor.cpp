@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "HighPrecisionLiBatteryMonitor.h"
 #include "Identification.h"
-#include <shared/Log.h>
 
 namespace device {
 
@@ -52,7 +51,7 @@ void CHighPrecisionLiBatteryMonitor::set(const std::string& keyword, const std::
 {
    if (m_kwIo->getKeyword() != keyword)
    {
-      YADOMS_LOG(error) << "Unknown keyword " << keyword;
+      std::cerr << "Unknown keyword " << keyword << std::endl;
       return;
    }
 

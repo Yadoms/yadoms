@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "HighPrecisionDigitalThermometer.h"
-#include <shared/Log.h>
 #include <fstream>
 
 namespace kernel { namespace io {
@@ -23,7 +22,7 @@ double CHighPrecisionDigitalThermometer::read() const
    std::ifstream file(m_devicePath.string());
    if (!file.is_open())
    {
-      YADOMS_LOG(error) << "1-Wire, Unable to read device " << m_devicePath;
+      std::cerr << "1-Wire, Unable to read device " << m_devicePath << std::endl;
       return 0.0;
    }
 
@@ -47,7 +46,7 @@ double CHighPrecisionDigitalThermometer::read() const
    if (bFoundCrcOk)
       return (float)atoi(data.c_str()) / 1000.0f; // Temperature given by kernel is in thousandths of degrees
 
-   YADOMS_LOG(error) << "1-Wire, wrong CRC when reading device value";
+   std::cerr << "1-Wire, wrong CRC when reading device value" << std::endl;
    return 0.0;
 }
 

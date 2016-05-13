@@ -3,9 +3,8 @@
 #include "Factory.h"
 #include "Configuration.h"
 #include "OneWireException.hpp"
-#include <shared/Log.h>
 #include <shared/event/EventTimer.h>
-#include <shared/plugin/ImplementationHelper.h>
+#include <plugin_cpp_api/ImplementationHelper.h>
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -15,7 +14,7 @@ IMPLEMENT_PLUGIN(COneWire)
 
 
 COneWire::COneWire()
-   :m_configuration(new CConfiguration())
+   :m_configuration(boost::make_shared<CConfiguration>())
 {
 }
 
@@ -29,30 +28,30 @@ enum
    kEvtTimerNetworkRefresh = yApi::IYPluginApi::kPluginFirstEventId,   // Always start from shared::event::CEventHandler::kUserFirstId
 };
 
-void COneWire::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
+void COneWire::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    try
    {
-      YADOMS_LOG(debug) << "OneWire is starting...";
+      std::cout << "OneWire is starting..." << std::endl;
 
-      m_configuration->initializeWith(context->getConfiguration());
-      m_engine = CFactory::createEngine(context, m_configuration);
+      m_configuration->initializeWith(api->getConfiguration());
+      m_engine = CFactory::createEngine(api, m_configuration);
 
       // 1-wire Network devices
       std::map<std::string, boost::shared_ptr<device::IDevice> > devices;
 
       // Periodic network refresh
-      context->getEventHandler().createTimer(kEvtTimerNetworkRefresh, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(5));
+      api->getEventHandler().createTimer(kEvtTimerNetworkRefresh, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(5));
 
       // the main loop
-      YADOMS_LOG(debug) << "OneWire plugin is running...";
+      std::cout << "OneWire plugin is running..." << std::endl;
 
       while (1)
       {
          try
          {
             // Wait for an event
-            switch (context->getEventHandler().waitForEvents())
+            switch (api->getEventHandler().waitForEvents())
             {
             case kEvtTimerNetworkRefresh:
             {
@@ -72,26 +71,26 @@ void COneWire::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
             case yApi::IYPluginApi::kEventDeviceCommand:
             {
                // A command was received from Yadoms
-               boost::shared_ptr<const yApi::IDeviceCommand> command = context->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
+               boost::shared_ptr<const yApi::IDeviceCommand> command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
                onCommand(devices, command);
 
                break;
             }
             case yApi::IYPluginApi::kEventUpdateConfiguration:
             {
-               onUpdateConfiguration(context, context->getEventHandler().getEventData<shared::CDataContainer>());
+               onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
                break;
             }
             default:
             {
-               YADOMS_LOG(error) << "Unknown message id";
+               std::cerr << "Unknown message id" << std::endl;
                break;
             }
             }
          }
          catch (COneWireException& e)
          {
-            YADOMS_LOG(error) << e.what();
+            std::cerr << e.what() << std::endl;
          }
       }
    }
@@ -100,18 +99,18 @@ void COneWire::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
    // as a plugin failure.
    catch (boost::thread_interrupted&)
    {
-      YADOMS_LOG(information) << "OneWire is stopping..."  << std::endl;
+      std::cout << "OneWire is stopping..."  << std::endl;
    }
 
    m_engine.reset();
 }
 
-void COneWire::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> context, const shared::CDataContainer& newConfigurationData)
+void COneWire::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainer& newConfigurationData)
 {
    BOOST_ASSERT(!newConfigurationData.empty());  // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
    // Configuration was updated
-   YADOMS_LOG(debug) << "Configuration was updated...";
+   std::cout << "Configuration was updated..." << std::endl;
 
    bool needToRestartEngine = m_engine->newConfigurationRequireRestart(newConfigurationData);
 
@@ -120,17 +119,17 @@ void COneWire::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> contex
 
    // If needed, rebuild engine
    if (needToRestartEngine)
-      m_engine = CFactory::createEngine(context, m_configuration);
+      m_engine = CFactory::createEngine(api, m_configuration);
 }
 
 void COneWire::onCommand(std::map<std::string, boost::shared_ptr<device::IDevice> >& devices, boost::shared_ptr<const yApi::IDeviceCommand> command)
 {
-   YADOMS_LOG(debug) << "Command received :" << command->toString();
+   std::cout << "Command received :" << command->toString() << std::endl;
 
    std::map<std::string, boost::shared_ptr<device::IDevice> >::iterator device = devices.find(command->getTargetDevice());
    if (device == devices.end())
    {
-      YADOMS_LOG(warning) << "Device " << command->getTargetDevice() << " not found on the 1-wire network";
+      std::cout << "Device " << command->getTargetDevice() << " not found on the 1-wire network" << std::endl;
       return;
    }
 

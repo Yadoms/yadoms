@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "DigitalPotentiometer.h"
 #include "Identification.h"
-#include <shared/Log.h>
 
 namespace device {
 
@@ -61,7 +60,7 @@ void CDigitalPotentiometer::set(const std::string& keyword, const std::string& c
    }
    else
    {
-      YADOMS_LOG(error) << "Unknown keyword " << keyword;
+      std::cerr << "Unknown keyword " << keyword << std::endl;
       return;
    }
 }

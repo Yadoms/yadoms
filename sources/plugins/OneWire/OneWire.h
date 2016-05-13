@@ -1,5 +1,5 @@
 #pragma once
-#include <shared/plugin/IPlugin.h>
+#include <plugin_cpp_api/IPlugin.h>
 #include "IConfiguration.h"
 #include "IEngine.h"
 
@@ -9,7 +9,7 @@ namespace yApi = shared::plugin::yPluginApi;
 //--------------------------------------------------------------
 /// \brief	OneWire plugin
 //--------------------------------------------------------------
-class COneWire : public shared::plugin::IPlugin
+class COneWire : public plugin_cpp_api::IPlugin
 {
 public:
    //--------------------------------------------------------------
@@ -24,15 +24,15 @@ public:
 
 protected:
    // IPlugin implementation
-   virtual void doWork(boost::shared_ptr<yApi::IYPluginApi> context);
+   void doWork(boost::shared_ptr<yApi::IYPluginApi> api) override;
    // [END] IPlugin implementation
 
    //--------------------------------------------------------------
    /// \brief Update the configuration of the plugin after change
-   /// \param[in] context               pointer to the API
+   /// \param[in] api                   pointer to the API
    /// \param[in] newConfigurationData  The new configuration of the module
    //--------------------------------------------------------------
-   void onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> context, const shared::CDataContainer& newConfigurationData);
+   void onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainer& newConfigurationData);
 
    //--------------------------------------------------------------
    /// \brief	                     Process a command received from Yadoms

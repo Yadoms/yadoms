@@ -210,7 +210,7 @@ const std::string& CBlinds1::getDeviceName() const
 void CBlinds1::buildDeviceName()
 {
    std::ostringstream ssdeviceName;
-   ssdeviceName << m_deviceModel << "." << (unsigned int)m_id << "." << (unsigned int)m_unitCode;
+   ssdeviceName << m_deviceModel << "." << static_cast<unsigned int>(m_id) << "." << static_cast<unsigned int>(m_unitCode);
    m_deviceName = ssdeviceName.str();
 }
 

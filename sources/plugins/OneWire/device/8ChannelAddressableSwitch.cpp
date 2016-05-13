@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "8ChannelAddressableSwitch.h"
 #include "Identification.h"
-#include <shared/Log.h>
 
 namespace device {
    
@@ -54,7 +53,7 @@ void C8ChannelAddressableSwitch::set(const std::string& keyword, const std::stri
       {
          if (m_keyword[i]->getAccessMode() != yApi::EKeywordAccessMode::kGetSetValue)
          {
-            YADOMS_LOG(error) << "Try to drive the read-only keyword " << keyword;
+            std::cerr << "Try to drive the read-only keyword " << keyword << std::endl;
             return;
          }
          m_keyword[i]->setCommand(command);

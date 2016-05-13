@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "4kRamWithCounter.h"
 #include "Identification.h"
-#include <shared/Log.h>
 
 namespace device {
    
@@ -45,7 +44,7 @@ void C4kRamWithCounter::historize()
 
 void C4kRamWithCounter::set(const std::string& keyword, const std::string& command)
 {
-   YADOMS_LOG(error) << "Try to drive the read-only keyword " << keyword;
+   std::cerr << "Try to drive the read-only keyword " << keyword << std::endl;
 }
 
 } // namespace device

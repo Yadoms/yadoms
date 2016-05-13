@@ -2,7 +2,6 @@
 #include "Engine.h"
 #include "../Configuration.h"
 #include <shared/exception/NotImplemented.hpp>
-#include <shared/Log.h>
 
 #include "../device/Identification.h"
 
@@ -59,7 +58,7 @@ void CEngine::scanNetworkNode(const boost::filesystem::path& slavesFile, std::ma
       std::ifstream infile(slavesFile.string());
       if (!infile.is_open())
       {
-         YADOMS_LOG(warning) << "1-Wire, Unable to read devices from " << slavesFile;
+         std::cout << "1-Wire, Unable to read devices from " << slavesFile << std::endl;
          return;
       }
 
@@ -71,7 +70,7 @@ void CEngine::scanNetworkNode(const boost::filesystem::path& slavesFile, std::ma
    }
    catch (...)
    {
-      YADOMS_LOG(error) << "1-Wire, OWFS mode, unable to scan 1-wire network : ";
+      std::cerr << "1-Wire, OWFS mode, unable to scan 1-wire network : " << std::endl;
    }
 }
 

@@ -2,7 +2,6 @@
 #include "Engine.h"
 #include "../Configuration.h"
 #include <shared/exception/NotImplemented.hpp>
-#include <shared/Log.h>
 
 #include "../device/Identification.h"
 
@@ -105,7 +104,7 @@ void CEngine::scanNetworkNode(const boost::filesystem::path& nodePath, std::map<
 			   const std::string unsupportedFamily(dir->path().filename().string().substr(0, 2));
 			   if (m_unsupporterFamilies.find(unsupportedFamily) == m_unsupporterFamilies.end())
 			   {
-			      YADOMS_LOG(warning) << "1-Wire, Device family 0x" << unsupportedFamily << " is not actually supported";
+			      std::cout << "1-Wire, Device family 0x" << unsupportedFamily << " is not actually supported" << std::endl;
 			      m_unsupporterFamilies.insert(unsupportedFamily);
 			   }
          }
@@ -113,7 +112,7 @@ void CEngine::scanNetworkNode(const boost::filesystem::path& nodePath, std::map<
    }
    catch (const boost::filesystem::filesystem_error& ex)
    {
-      YADOMS_LOG(error) << "1-Wire, OWFS mode, unable to scan 1-wire network : " << ex.what();
+      std::cerr << "1-Wire, OWFS mode, unable to scan 1-wire network : " << ex.what() << std::endl;
    }
 }
 

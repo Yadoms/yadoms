@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "4kEepromWithPio.h"
 #include "Identification.h"
-#include <shared/Log.h>
 
 namespace device {
    
@@ -60,13 +59,13 @@ void C4kEepromWithPio::set(const std::string& keyword, const std::string& comman
    }
    else
    {
-      YADOMS_LOG(error) << "Unknown keyword " << keyword;
+      std::cerr << "Unknown keyword " << keyword << std::endl;
       return;
    }
 
    if (kw->getAccessMode() != yApi::EKeywordAccessMode::kGetSetValue)
    {
-      YADOMS_LOG(error) << "Try to drive the read-only keyword " << keyword;
+      std::cerr << "Try to drive the read-only keyword " << keyword << std::endl;
       return;
    }
    kw->setCommand(command);
