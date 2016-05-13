@@ -52,6 +52,15 @@ message GetInfo
    required string value = 1;
 }
 
+message GetKeywordName
+{
+   required string keywordName = 1;
+}
+
+message GetKeywordDeviceName
+{
+   required string deviceName = 1;
+}
 
    
 message msg
@@ -70,6 +79,8 @@ message msg
       SendNotification sendNotification = 9;
       GetInfo getInfo = 10;
 	  GetKeywordsByCapacity getKeywordsByCapacity = 11;
+	  GetKeywordName getKeywordName = 12;
+	  GetKeywordDeviceName getKeywordDeviceName = 13;
    }
 }
 

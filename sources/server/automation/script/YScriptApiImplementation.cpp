@@ -318,6 +318,26 @@ std::string CYScriptApiImplementation::getInfo(EInfoKeys key) const
    }
 }
 
+std::string CYScriptApiImplementation::getKeywordName(int keywordId) const
+{
+   boost::shared_ptr<database::entities::CKeyword> keyword = m_dbKeywordRequester->getKeyword(keywordId);
+   if (keyword)
+      return keyword->FriendlyName();
+   throw std::out_of_range((boost::format("getKeywordName(%1%), error keyword not found") % keywordId).str());
+}
+
+std::string CYScriptApiImplementation::getKeywordDeviceName(int keywordId) const
+{
+   boost::shared_ptr<database::entities::CKeyword> keyword = m_dbKeywordRequester->getKeyword(keywordId);
+   if (keyword)
+   {
+      boost::shared_ptr<database::entities::CDevice> device = m_dbDeviceRequester->getDevice(keyword->DeviceId());
+      if (device)
+         return device->FriendlyName();
+      throw std::out_of_range((boost::format("getKeywordDeviceName(%1%), error device not found") % keywordId).str());
+   }
+   throw std::out_of_range((boost::format("getKeywordDeviceName(%1%), error keyword not found") % keywordId).str());
+}
 
 void CYScriptApiImplementation::ruleEnable(bool enable)
 {

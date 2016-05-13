@@ -58,6 +58,8 @@ namespace automation { namespace script
       virtual void sendNotification(int keywordId, int recipientId, const std::string& message);
       virtual std::string getInfo(EInfoKeys key) const;
       virtual void ruleEnable(bool enable = true);
+      virtual std::string getKeywordName(int keywordId) const;
+      virtual std::string getKeywordDeviceName(int keywordId) const;
       // [END] shared::script::yScriptApi::IYScriptApi implementation
 
    public: // Public methods, for Yadoms internal usage

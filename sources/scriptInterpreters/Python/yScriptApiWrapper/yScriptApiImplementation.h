@@ -32,6 +32,8 @@ public:
    virtual void writeKeyword(int keywordId, const std::string& newState);
    virtual void sendNotification(int keywordId, int recipientId, const std::string& message);
    virtual std::string getInfo(EInfoKeys key) const;
+   virtual std::string getKeywordName(int keywordId) const;
+   virtual std::string getKeywordDeviceName(int keywordId) const;
    // [END] shared::script::yScriptApi::IYScriptApi implementation
 
 protected:

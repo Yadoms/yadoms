@@ -98,6 +98,20 @@ namespace shared { namespace script { namespace yScriptApi
       virtual void sendNotification(int keywordId, int recipientId, const std::string& message) = 0;
 
       //-----------------------------------------------------
+      ///\brief Get a keyword friendly name
+      ///\param[in] keywordId The keyword ID
+      ///\return The friendly name of the keyword
+      //-----------------------------------------------------
+      virtual std::string getKeywordName(int keywordId) const = 0;
+      
+      //-----------------------------------------------------
+      ///\brief Get a device friendly name
+      ///\param[in] keywordId The keyword ID attached to the device
+      ///\return The friendly name of the device to which is attached the keyword
+      //-----------------------------------------------------
+      virtual std::string getKeywordDeviceName(int keywordId) const = 0;
+      
+      //-----------------------------------------------------
       ///\brief Get general information keys
       //-----------------------------------------------------
       enum EInfoKeys

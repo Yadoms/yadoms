@@ -60,6 +60,16 @@ message GetInfo
    required Key key = 1;
 }
    
+message GetKeywordName
+{
+   required int32 keywordId = 1;
+}
+
+message GetKeywordDeviceName
+{
+   required int32 keywordId = 1;
+}
+
 message msg
 {
    oneof OneOf
@@ -74,5 +84,7 @@ message msg
       SendNotification sendNotification = 8;
       GetInfo getInfo = 9;
 	  GetKeywordsByCapacity getKeywordsByCapacity = 10;
+	  GetKeywordName getKeywordName = 11;
+	  GetKeywordDeviceName getKeywordDeviceName = 12;
    }
 }

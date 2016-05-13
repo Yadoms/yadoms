@@ -130,6 +130,8 @@ void CContextAccessor::processMessage(const void* message, size_t messageSize, b
    case pbRequest::msg::kWriteKeyword: processWriteKeyword(request.writekeyword(), messageQueue); break;
    case pbRequest::msg::kSendNotification: processSendNotification(request.sendnotification(), messageQueue); break;
    case pbRequest::msg::kGetInfo: processGetInfo(request.getinfo(), messageQueue); break;
+   case pbRequest::msg::kGetKeywordName: processGetKeywordName(request.getkeywordname(), messageQueue); break;
+   case pbRequest::msg::kGetKeywordDeviceName: processGetKeywordDeviceName(request.getkeyworddevicename(), messageQueue); break;
    default:
       throw shared::exception::CInvalidParameter("message");
    }
@@ -315,6 +317,42 @@ void CContextAccessor::processGetInfo(const pbRequest::GetInfo& request, boost::
       }
 
       answer->set_value(m_scriptApi->getInfo(key));
+   }
+   catch (std::exception& ex)
+   {
+      ans.set_error(ex.what());
+   }
+   sendAnswer(ans, messageQueue);
+}
+
+void CContextAccessor::processGetKeywordName(const pbRequest::GetKeywordName& request, boost::interprocess::message_queue& messageQueue)
+{
+   pbAnswer::msg ans;
+   pbAnswer::GetKeywordName* answer = ans.mutable_getkeywordname();
+
+   try
+   {
+      answer->set_keywordname(""); //predefine with "", to ensure answer is complete. Even if an error occurs, it should always return ""
+      std::string name = m_scriptApi->getKeywordName(request.keywordid());
+      answer->set_keywordname(name);
+   }
+   catch (std::exception& ex)
+   {
+      ans.set_error(ex.what());
+   }
+   sendAnswer(ans, messageQueue);
+}
+
+void CContextAccessor::processGetKeywordDeviceName(const pbRequest::GetKeywordDeviceName& request, boost::interprocess::message_queue& messageQueue)
+{
+   pbAnswer::msg ans;
+   pbAnswer::GetKeywordDeviceName* answer = ans.mutable_getkeyworddevicename();
+
+   try
+   {
+      answer->set_devicename(""); //predefine with "", to ensure answer is complete. Even if an error occurs, it should always return ""
+      std::string name = m_scriptApi->getKeywordDeviceName(request.keywordid());
+      answer->set_devicename(name);
    }
    catch (std::exception& ex)
    {

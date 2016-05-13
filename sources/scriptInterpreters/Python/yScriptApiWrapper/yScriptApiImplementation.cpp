@@ -299,3 +299,43 @@ std::string CYScriptApiImplementation::getInfo(EInfoKeys key) const
 
    return answer.getinfo().value();
 }
+
+std::string CYScriptApiImplementation::getKeywordName(int keywordId) const
+{
+   pbRequest::msg req;
+   pbRequest::GetKeywordName* request = req.mutable_getkeywordname();
+   request->set_keywordid(keywordId);
+
+   sendRequest(req);
+
+   pbAnswer::msg answer;
+   receiveAnswer(answer);
+
+   if (!answer.has_getkeywordname())
+      throw std::out_of_range("yScriptApiWrapper::getKeywordName, wrong message received");
+
+   if (answer.has_error())
+      throw std::out_of_range(std::string("yScriptApiWrapper::getKeywordName, error : ") + answer.error());
+
+   return answer.getkeywordname().keywordname();
+}
+
+std::string CYScriptApiImplementation::getKeywordDeviceName(int keywordId) const
+{
+   pbRequest::msg req;
+   pbRequest::GetKeywordDeviceName* request = req.mutable_getkeyworddevicename();
+   request->set_keywordid(keywordId);
+
+   sendRequest(req);
+
+   pbAnswer::msg answer;
+   receiveAnswer(answer);
+
+   if (!answer.has_getkeyworddevicename())
+      throw std::out_of_range("yScriptApiWrapper::getKeywordDeviceName, wrong message received");
+
+   if (answer.has_error())
+      throw std::out_of_range(std::string("yScriptApiWrapper::getKeywordDeviceName, error : ") + answer.error());
+
+   return answer.getkeyworddevicename().devicename();
+}
