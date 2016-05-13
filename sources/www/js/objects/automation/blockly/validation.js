@@ -53,10 +53,12 @@ Blockly.Validation.setBlockInvalid = function (block, message) {
  */
 Blockly.Validation.clearInvalidBlocks = function () {
     $.each(Blockly.Validation.listErroneousBlocks, function (index, block) {
-        if (block != null && $.isFunction(block.removeError)) {
-            block.removeError();
+        if (block != null) {
+			if($.isFunction(block.removeError)) {
+				block.removeError();
+			}
+			block.setWarningText(null);
         }
-		block.setWarningText(null);
     });
 
     //clear the list
@@ -135,8 +137,10 @@ Blockly.Validation.Init = function (workspace, maxTopBlocks) {
     if (maxTopBlocks != undefined && $.isNumeric(maxTopBlocks))
         Blockly.Validation.maxTopBlocks_ = maxTopBlocks;
 
-    workspace.addChangeListener(function () {
-        Blockly.Validation.clearInvalidBlocks();
+    workspace.addChangeListener(function (event) {
+		if(event.element !== "warningOpen") {
+			Blockly.Validation.clearInvalidBlocks();
+		}
     });
 };
 
@@ -168,7 +172,6 @@ Blockly.Validation.getRealTopBlocks_ = function (workspace) {
  * @param callback The callback for the validation result
  */
 Blockly.Validation.validate = function (workspace, callback) {
-
     var topBlocks = Blockly.Validation.getRealTopBlocks_(workspace);
 
     if (topBlocks.length > Blockly.Validation.maxTopBlocks_) {
