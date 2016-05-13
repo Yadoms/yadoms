@@ -3,7 +3,6 @@
 #include <shared/exception/Exception.hpp>
 #include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/plugin/yPluginApi/StandardUnits.h>
-#include <shared/Log.h>
 
 CMemoryLoad::CMemoryLoad(const std::string & device)
    :m_device(device), 
@@ -13,18 +12,18 @@ CMemoryLoad::CMemoryLoad(const std::string & device)
 CMemoryLoad::~CMemoryLoad()
 {}
 
-void CMemoryLoad::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context, shared::CDataContainer details)
+void CMemoryLoad::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer details)
 {
-      if (!context->keywordExists( m_device, m_keyword->getKeyword()))
-         context->declareKeyword(m_device, *m_keyword, details);
+      if (!api->keywordExists( m_device, m_keyword->getKeyword()))
+         api->declareKeyword(m_device, *m_keyword, details);
 }
 
-void CMemoryLoad::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
+void CMemoryLoad::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
-   if (!context)
-      throw shared::exception::CException("context must be defined");
+   if (!api)
+      throw shared::exception::CException("api must be defined");
 
-   context->historizeData(m_device, *m_keyword);
+   api->historizeData(m_device, *m_keyword);
 }
 
 void CMemoryLoad::read()
@@ -45,7 +44,7 @@ void CMemoryLoad::read()
 
    m_keyword->set( MemoryLoad );
 
-   YADOMS_LOG(debug) << "Memory Load : " << m_keyword->formatValue();
+   std::cout << "Memory Load : " << m_keyword->formatValue() << std::endl;
 }
 
 boost::shared_ptr<yApi::historization::IHistorizable> CMemoryLoad::GetHistorizable() const

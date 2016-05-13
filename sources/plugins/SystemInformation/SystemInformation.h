@@ -1,5 +1,5 @@
 #pragma once
-#include <shared/plugin/IPlugin.h>
+#include <plugin_cpp_api/IPlugin.h>
 #include "SIConfiguration.h"
 
 // Shortcut to yPluginApi namespace
@@ -13,7 +13,7 @@ namespace yApi = shared::plugin::yPluginApi;
 /// \note   - The CPU load of Yadoms application
 /// \note   - Disks Usages of all fixed disks (HDD)
 //--------------------------------------------------------------
-class CSystemInformation : public shared::plugin::IPlugin
+class CSystemInformation : public plugin_cpp_api::IPlugin
 {
 public:
    //--------------------------------------------------------------
@@ -27,15 +27,15 @@ public:
    virtual ~CSystemInformation();
 
    // IPlugin implementation
-   virtual void doWork(boost::shared_ptr<yApi::IYPluginApi> context);
+   void doWork(boost::shared_ptr<yApi::IYPluginApi> api) override;
    // [END] IPlugin implementation
 
    //--------------------------------------------------------------
    /// \brief Update the configuration of the plugin after a change
-   /// \param[in] context               pointer to the API
+   /// \param[in] api                   pointer to the API
    /// \param[in] newConfigurationData  The new configuration of the module
    //--------------------------------------------------------------
-   void onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> context, const shared::CDataContainer& newConfigurationData);
+   void onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainer& newConfigurationData);
 
 private:
    std::string m_deviceName;
@@ -45,3 +45,4 @@ private:
    //--------------------------------------------------------------
    CSIConfiguration m_configuration;
 };
+

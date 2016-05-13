@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "YadomsCPULoad.h"
-#include <shared/Log.h>
 #include <shared/exception/Exception.hpp>
 
 CYadomsCPULoad::CYadomsCPULoad(const std::string & device)
@@ -45,23 +44,23 @@ CYadomsCPULoad::~CYadomsCPULoad()
 {
 }
 
-void CYadomsCPULoad::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context, shared::CDataContainer details)
+void CYadomsCPULoad::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer details)
 {
    if (m_InitializeOk)
    {
-      if (!context->keywordExists( m_device, m_keyword->getKeyword()))
-        context->declareKeyword(m_device, *m_keyword, details);
+      if (!api->keywordExists( m_device, m_keyword->getKeyword()))
+        api->declareKeyword(m_device, *m_keyword, details);
    }
 }
 
-void CYadomsCPULoad::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
+void CYadomsCPULoad::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
-   if (!context)
-      throw shared::exception::CException("context must be defined");
+   if (!api)
+      throw shared::exception::CException("api must be defined");
 
    if (m_InitializeOk)
    {
-      context->historizeData(m_device, *m_keyword);
+      api->historizeData(m_device, *m_keyword);
    }
 }
 
@@ -95,11 +94,11 @@ void CYadomsCPULoad::read()
 
       m_keyword->set( YadomsCPULoad );
 
-      YADOMS_LOG(debug) << "Yadoms CPU Load : " << m_keyword->formatValue();
+      std::cout << "Yadoms CPU Load : " << m_keyword->formatValue() << std::endl;
    }
    else
    {
-      YADOMS_LOG(trace) << m_device << " is desactivated";
+      std::cout << m_device << " is desactivated" << std::endl;
    }
 }
 

@@ -19,11 +19,11 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	            Declare the keywords
-   /// \param[in] context  yPluginApi context
+   /// \param[in] api      yPluginApi context
    /// \param[in] details  more information for the keyword
    //--------------------------------------------------------------
-   virtual void declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context, 
-	                            shared::CDataContainer details) = 0;
+   virtual void declareKeywords(boost::shared_ptr<yApi::IYPluginApi> api, 
+	                             shared::CDataContainer details) = 0;
 
    //--------------------------------------------------------------
    /// \brief	    Read actual value
@@ -32,9 +32,9 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	            Send all sensor data to Yadoms
-   /// \param[in] context  yPluginApi context to which historize data
+   /// \param[in] api      yPluginApi context to which historize data
    //--------------------------------------------------------------
-   virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const = 0;
+   virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const = 0;
 
    //--------------------------------------------------------------
    /// \brief	            Send all sensor data to Yadoms

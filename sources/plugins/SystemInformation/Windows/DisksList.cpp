@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "DisksList.h"
-#include <shared/Log.h>
 #include <shared/exception/Exception.hpp>
 
 CDisksList::CDisksList()

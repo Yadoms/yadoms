@@ -3,7 +3,6 @@
 #include <shared/exception/Exception.hpp>
 #include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/plugin/yPluginApi/StandardUnits.h>
-#include <shared/Log.h>
 
 CYadomsRAMProcessMemory::CYadomsRAMProcessMemory(const std::string & device)
    :m_device(device), 
@@ -13,17 +12,17 @@ CYadomsRAMProcessMemory::CYadomsRAMProcessMemory(const std::string & device)
 CYadomsRAMProcessMemory::~CYadomsRAMProcessMemory()
 {}
 
-void CYadomsRAMProcessMemory::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context, shared::CDataContainer details)
+void CYadomsRAMProcessMemory::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer details)
 {
-      if (!context->keywordExists( m_device, m_keyword->getKeyword()))
-         context->declareKeyword(m_device, *m_keyword, details);
+      if (!api->keywordExists( m_device, m_keyword->getKeyword()))
+         api->declareKeyword(m_device, *m_keyword, details);
 }
 
-void CYadomsRAMProcessMemory::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
+void CYadomsRAMProcessMemory::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
-   BOOST_ASSERT_MSG(!!context, "context must be defined");
+   BOOST_ASSERT_MSG(!!api, "api must be defined");
 
-   context->historizeData(m_device, *m_keyword);
+   api->historizeData(m_device, *m_keyword);
 }
 
 int CYadomsRAMProcessMemory::parseLine(char* line)
@@ -54,7 +53,7 @@ void CYadomsRAMProcessMemory::read()
     //Note: this value is in KB!
     m_keyword->set( result );
 
-   YADOMS_LOG(debug) << "RAM Memory Current Process : " << m_keyword->formatValue();
+   std::cout << "RAM Memory Current Process : " << m_keyword->formatValue() << std::endl;
 }
 
 boost::shared_ptr<yApi::historization::IHistorizable> CYadomsRAMProcessMemory::GetHistorizable() const

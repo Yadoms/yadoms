@@ -3,7 +3,6 @@
 #include <shared/exception/Exception.hpp>
 #include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/plugin/yPluginApi/StandardUnits.h>
-#include <shared/Log.h>
 #include <windows.h>
 #include <psapi.h>
 
@@ -15,18 +14,18 @@ CVirtualProcessMemory::CVirtualProcessMemory(const std::string & device)
 CVirtualProcessMemory::~CVirtualProcessMemory()
 {}
 
-void CVirtualProcessMemory::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context, shared::CDataContainer details)
+void CVirtualProcessMemory::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer details)
 {
-      if (!context->keywordExists( m_device, m_keyword->getKeyword()))
-         context->declareKeyword(m_device, *m_keyword, details);
+      if (!api->keywordExists( m_device, m_keyword->getKeyword()))
+         api->declareKeyword(m_device, *m_keyword, details);
 }
 
-void CVirtualProcessMemory::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
+void CVirtualProcessMemory::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
-   if (!context)
-      throw shared::exception::CException("context must be defined");
+   if (!api)
+      throw shared::exception::CException("api must be defined");
 
-   context->historizeData(m_device, *m_keyword);
+   api->historizeData(m_device, *m_keyword);
 }
 
 void CVirtualProcessMemory::read()
@@ -45,7 +44,7 @@ void CVirtualProcessMemory::read()
 
    m_keyword->set( VirtualProcessMemory );
 
-   YADOMS_LOG(debug) << "Virtual Memory for Current Process : " << m_keyword->formatValue();
+   std::cout << "Virtual Memory for Current Process : " << m_keyword->formatValue() << std::endl;
 }
 
 boost::shared_ptr<yApi::historization::IHistorizable> CVirtualProcessMemory::GetHistorizable() const

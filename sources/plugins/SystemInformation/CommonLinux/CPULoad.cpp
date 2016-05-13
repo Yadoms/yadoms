@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include <shared/Log.h>
 #include "CPULoad.h"
 #include <shared/exception/Exception.hpp>
 #include <shared/plugin/yPluginApi/StandardCapacities.h>
@@ -19,18 +18,18 @@ CCPULoad::~CCPULoad()
 {
 }
 
-void CCPULoad::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context, shared::CDataContainer details)
+void CCPULoad::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer details)
 {
    // Declare associated keywords (= values managed by this device)
-   if (!context->keywordExists( m_device, m_keyword->getKeyword()))
-      context->declareKeyword(m_device, *m_keyword, details);
+   if (!api->keywordExists( m_device, m_keyword->getKeyword()))
+      api->declareKeyword(m_device, *m_keyword, details);
 }
 
-void CCPULoad::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
+void CCPULoad::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
-   BOOST_ASSERT_MSG(!!context, "context must be defined");
+   BOOST_ASSERT_MSG(!!api, "api must be defined");
 
-   context->historizeData(m_device, *m_keyword);
+   api->historizeData(m_device, *m_keyword);
 }
 
 void CCPULoad::ReadFromFile(unsigned long long *dtotalUser,
@@ -39,8 +38,7 @@ void CCPULoad::ReadFromFile(unsigned long long *dtotalUser,
                             unsigned long long *dtotalIdle,
                             unsigned long long *dtotalIowait,
                             unsigned long long *dtotalIrq,
-                            unsigned long long *dtotalSoftIrq
-			   )
+                            unsigned long long *dtotalSoftIrq)
 {
    std::ifstream procFile("/proc/stat");
 
@@ -111,7 +109,7 @@ void CCPULoad::read()
 
       m_keyword->set (percent);
 
-      YADOMS_LOG(debug) << "CPU Load : " << m_keyword->formatValue();
+      std::cout << "CPU Load : " << m_keyword->formatValue() << std::endl;
     }
     m_lastTotalUser    = totalUser;
     m_lastTotalUserLow = totalUserLow;

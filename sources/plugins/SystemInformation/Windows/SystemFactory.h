@@ -22,12 +22,12 @@ class CSystemFactory
 public:
    //--------------------------------------------------------------
    /// \brief	    Constructor
-   /// \param[in] context             yPluginApi API
+   /// \param[in] api                 yPluginApi API
    /// \param[in] device              The device name
    /// \param[in] ISIConfiguration    The plugin configuration
    /// \param[in] details             Details information for keyword
    //--------------------------------------------------------------
-   CSystemFactory(boost::shared_ptr<yApi::IYPluginApi> context, 
+   CSystemFactory(boost::shared_ptr<yApi::IYPluginApi> api, 
 	              const std::string & device,
 				  const ISIConfiguration& configuration, 
 				  shared::CDataContainer details);
@@ -39,25 +39,25 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	    OnSpeedUpdate
-   /// \param[in] context             yPluginApi API
+   /// \param[in] api                 yPluginApi API
    //--------------------------------------------------------------
-   void OnSpeedUpdate ( boost::shared_ptr<yApi::IYPluginApi> context );
+   void OnSpeedUpdate ( boost::shared_ptr<yApi::IYPluginApi> api );
 
    //--------------------------------------------------------------
    /// \brief	    OnSlowUpdate
-   /// \param[in] context             yPluginApi API
+   /// \param[in] api                 yPluginApi API
    /// \param[in] ISIConfiguration    The configuration state
    //--------------------------------------------------------------
-   void OnSlowUpdate  ( boost::shared_ptr<yApi::IYPluginApi> context, 
+   void OnSlowUpdate  ( boost::shared_ptr<yApi::IYPluginApi> api, 
 	                    const ISIConfiguration& configuration );
 
    //--------------------------------------------------------------
    /// \brief	    OnConfigurationUpdate
-   /// \param[in] context             yPluginApi API
+   /// \param[in] api                 yPluginApi API
    /// \param[in] ISIConfiguration    The new configuration
    /// \param[in] details             Details information for keyword
    //--------------------------------------------------------------
-   void OnConfigurationUpdate ( boost::shared_ptr<yApi::IYPluginApi> context, 
+   void OnConfigurationUpdate ( boost::shared_ptr<yApi::IYPluginApi> api, 
 	                            const ISIConfiguration& configuration, shared::CDataContainer details );
 
 private:

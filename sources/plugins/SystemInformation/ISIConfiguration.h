@@ -10,17 +10,20 @@ public:
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
-   virtual ~ISIConfiguration() {}
+   virtual ~ISIConfiguration()
+   {
+   }
 
    //--------------------------------------------------------------
    /// \brief		   Load configuration data
    /// \param [in] data The data container
    //--------------------------------------------------------------
-   virtual void initializeWith(const shared::CDataContainer &data) = 0;
+   virtual void initializeWith(const shared::CDataContainer& data) = 0;
 
    //--------------------------------------------------------------
    /// \brief	    Get options enabled from the configuration
    //--------------------------------------------------------------
 
-   virtual bool IsAdvancedEnabled (void) const = 0;
+   virtual bool IsAdvancedEnabled() const = 0;
 };
+

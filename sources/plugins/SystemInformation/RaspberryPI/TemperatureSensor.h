@@ -27,9 +27,9 @@ public:
    virtual ~CTemperatureSensor();
 
    // ILoad Implementation
-   virtual void declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context, shared::CDataContainer details);
+   virtual void declareKeywords(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer details);
    virtual void read();
-   virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const;
+   virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const;
    virtual boost::shared_ptr<yApi::historization::IHistorizable> GetHistorizable() const;
    // [END] ILoad Implementation
 

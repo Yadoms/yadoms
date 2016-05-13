@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "DiskUsage.h"
-#include <shared/Log.h>
 #include <shared/exception/Exception.hpp>
 
 CDiskUsage::CDiskUsage(const std::string & device, const std::string & keywordName, const std::string & driveName)
@@ -12,18 +11,18 @@ CDiskUsage::CDiskUsage(const std::string & device, const std::string & keywordNa
 CDiskUsage::~CDiskUsage()
 {}
 
-void CDiskUsage::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context, shared::CDataContainer details)
+void CDiskUsage::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer details)
 {
-	if (!context->keywordExists( m_device, m_keyword->getKeyword()))
-       context->declareKeyword(m_device, *m_keyword, details);
+	if (!api->keywordExists( m_device, m_keyword->getKeyword()))
+       api->declareKeyword(m_device, *m_keyword, details);
 }
 
-void CDiskUsage::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
+void CDiskUsage::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
-   if (!context)
-      throw shared::exception::CException("context must be defined");
+   if (!api)
+      throw shared::exception::CException("api must be defined");
 
-   context->historizeData(m_device, *m_keyword);
+   api->historizeData(m_device, *m_keyword);
 }
 
 void CDiskUsage::read()
@@ -42,7 +41,7 @@ void CDiskUsage::read()
 
    m_keyword->set( DiskUsage );
 
-   YADOMS_LOG(debug) << m_driveName << " Disk Usage : " << m_keyword->formatValue();
+   std::cout << m_driveName << " Disk Usage : " << m_keyword->formatValue() << std::endl;
 }
 
 boost::shared_ptr<yApi::historization::IHistorizable> CDiskUsage::GetHistorizable() const

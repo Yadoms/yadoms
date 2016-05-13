@@ -18,16 +18,16 @@ public:
    /// \brief	    Constructor
    /// \param[in] device    The device
    //--------------------------------------------------------------
-   CSystemFactory(boost::shared_ptr<yApi::IYPluginApi> context, const std::string & device,const ISIConfiguration& configuration);
+   CSystemFactory(boost::shared_ptr<yApi::IYPluginApi> api, const std::string & device,const ISIConfiguration& configuration);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
    virtual ~CSystemFactory();
 
-   void OnSpeedUpdate ( boost::shared_ptr<yApi::IYPluginApi> context , const ISIConfiguration& configuration);
-   void OnSlowUpdate  ( boost::shared_ptr<yApi::IYPluginApi> context , const ISIConfiguration& configuration);
-   void OnConfigurationUpdate ( boost::shared_ptr<yApi::IYPluginApi> context, const ISIConfiguration& configuration );
+   void OnSpeedUpdate ( boost::shared_ptr<yApi::IYPluginApi> api , const ISIConfiguration& configuration);
+   void OnSlowUpdate  ( boost::shared_ptr<yApi::IYPluginApi> api , const ISIConfiguration& configuration);
+   void OnConfigurationUpdate ( boost::shared_ptr<yApi::IYPluginApi> api, const ISIConfiguration& configuration );
 
 private:
    //--------------------------------------------------------------

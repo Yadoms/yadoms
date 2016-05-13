@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "CPULoad.h"
-#include <shared/Log.h>
 #include <shared/exception/Exception.hpp>
 #include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/plugin/yPluginApi/StandardUnits.h>
@@ -25,7 +24,7 @@ CCPULoad::CCPULoad(const std::string & device)
    }
    catch (shared::exception::CException& e)
 	{
-      YADOMS_LOG(error) << "Error initializing CPULoad Keyword : "<< m_keyword->getKeyword() << "Error :" << e.what();
+      std::cerr << "Error initializing CPULoad Keyword : "<< m_keyword->getKeyword() << "Error :" << e.what() << std::endl;
 	}
 }
 
@@ -53,7 +52,7 @@ void CCPULoad::Initialize()
 
    if (Status != ERROR_SUCCESS) 
    {
-	  YADOMS_LOG(debug) << "ProcessorTimeString: " << ProcessorTimeString;
+	  std::cout << "ProcessorTimeString: " << ProcessorTimeString << std::endl;
       std::stringstream Message; 
       Message << "PdhLookupPerfNameByIndex failed with status:"; 
       Message << std::hex <<  Status;
@@ -65,7 +64,7 @@ void CCPULoad::Initialize()
 
    if (Status != ERROR_SUCCESS) 
    {
-	  YADOMS_LOG(debug) << "ProcessorObjectName: " << ProcessorObjectName;
+	  std::cout << "ProcessorObjectName: " << ProcessorObjectName << std::endl;
       std::stringstream Message; 
       Message << "PdhLookupPerfNameByIndex failed with status:"; 
       Message << std::hex <<  Status;
@@ -84,7 +83,7 @@ void CCPULoad::Initialize()
 
    if (Status != ERROR_SUCCESS) 
    {
-	  YADOMS_LOG(debug) << "CounterPath: " << CounterPath;
+	  std::cout << "CounterPath: " << CounterPath << std::endl;
       std::stringstream Message; 
       Message << "PdhMakeCounterPath failed with status:"; 
       Message << std::hex <<  Status;
@@ -128,27 +127,27 @@ CCPULoad::~CCPULoad()
          Message << "PdhCloseQuery failed with status:"; 
          Message << std::hex << GetLastError();
 
-         YADOMS_LOG(debug) << Message.str();
+         std::cout << Message.str() << std::endl;
       }
    }
 }
 
-void CCPULoad::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context, shared::CDataContainer details)
+void CCPULoad::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer details)
 {
    if (m_InitializeOk)
    {
-      if (!context->keywordExists( m_device, m_keyword->getKeyword()))
-         context->declareKeyword(m_device, *m_keyword, details);
+      if (!api->keywordExists( m_device, m_keyword->getKeyword()))
+         api->declareKeyword(m_device, *m_keyword, details);
    }
 }
 
-void CCPULoad::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
+void CCPULoad::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
-   if (!context)
-      throw shared::exception::CException("context must be defined");
+   if (!api)
+      throw shared::exception::CException("api must be defined");
 
    if (m_InitializeOk)
-      context->historizeData(m_device, *m_keyword);
+      api->historizeData(m_device, *m_keyword);
 }
 
 void CCPULoad::read()
@@ -189,11 +188,11 @@ void CCPULoad::read()
 
       m_keyword->set( CPULoad );
 
-      YADOMS_LOG(debug) << "CPU Load : " << m_keyword->formatValue();
+      std::cout << "CPU Load : " << m_keyword->formatValue() << std::endl;
    }
    else
    {
-      YADOMS_LOG(trace) << m_device << " is desactivated";
+      std::cout << m_device << " is desactivated" << std::endl;
    }
 }
 

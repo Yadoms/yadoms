@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include <shared/Log.h>
 #include "YadomsCPULoad.h"
 #include <shared/exception/Exception.hpp>
 #include <shared/plugin/yPluginApi/StandardCapacities.h>
@@ -31,18 +30,18 @@ CYadomsCPULoad::CYadomsCPULoad(const std::string & device)
 CYadomsCPULoad::~CYadomsCPULoad()
 {}
 
-void CYadomsCPULoad::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context, shared::CDataContainer details)
+void CYadomsCPULoad::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer details)
 {
    // Declare associated keywords (= values managed by this device)
-   if (!context->keywordExists( m_device, m_keyword->getKeyword()))
-      context->declareKeyword(m_device, *m_keyword, details);
+   if (!api->keywordExists( m_device, m_keyword->getKeyword()))
+      api->declareKeyword(m_device, *m_keyword, details);
 }
 
-void CYadomsCPULoad::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
+void CYadomsCPULoad::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
-   BOOST_ASSERT_MSG(context, "context must be defined");
+   BOOST_ASSERT_MSG(api, "api must be defined");
 
-   context->historizeData(m_device, *m_keyword);
+   api->historizeData(m_device, *m_keyword);
 }
 
 void CYadomsCPULoad::read()
@@ -73,7 +72,7 @@ void CYadomsCPULoad::read()
 
    m_keyword->set( percent );
 
-   YADOMS_LOG(debug) << "Yadoms CPU Load : " << m_keyword->formatValue();
+   std::cout << "Yadoms CPU Load : " << m_keyword->formatValue() << std::endl;
 }
 
 boost::shared_ptr<yApi::historization::IHistorizable> CYadomsCPULoad::GetHistorizable() const

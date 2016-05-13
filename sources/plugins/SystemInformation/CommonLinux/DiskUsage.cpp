@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "DiskUsage.h"
-#include <shared/Log.h>
 #include <shared/exception/Exception.hpp>
 #include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/plugin/yPluginApi/StandardUnits.h>
@@ -17,17 +16,17 @@ CDiskUsage::CDiskUsage(const std::string & device, const std::string & driveName
 CDiskUsage::~CDiskUsage()
 {}
 
-void CDiskUsage::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context, shared::CDataContainer details)
+void CDiskUsage::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer details)
 {
-   if (!context->keywordExists( m_device, m_keyword->getKeyword()))
-      context->declareKeyword(m_device, *m_keyword, details);
+   if (!api->keywordExists( m_device, m_keyword->getKeyword()))
+      api->declareKeyword(m_device, *m_keyword, details);
 }
 
-void CDiskUsage::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
+void CDiskUsage::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
-   BOOST_ASSERT_MSG(context, "context must be defined");
+   BOOST_ASSERT_MSG(api, "api must be defined");
 
-   context->historizeData(m_device, *m_keyword);
+   api->historizeData(m_device, *m_keyword);
 }
 
 void CDiskUsage::read()
@@ -47,11 +46,11 @@ void CDiskUsage::read()
              long long numblock    = boost::lexical_cast<long long>(match[2]);
              long long availblocks = boost::lexical_cast<long long>(match[4]);
 
-                YADOMS_LOG(debug) << "numblock    :  " << numblock;
-                YADOMS_LOG(debug) << "availblocks :  " << availblocks;
+                std::cout << "numblock    :  " << numblock << std::endl;
+                std::cout << "availblocks :  " << availblocks << std::endl;
 			 
              m_keyword->set ((numblock - availblocks)/double(numblock)*100);
-             YADOMS_LOG(debug) << "Disk Name :  " << m_driveName << " Disk Usage : " << m_keyword->formatValue();			 
+             std::cout << "Disk Name :  " << m_driveName << " Disk Usage : " << m_keyword->formatValue() << std::endl;
          }
        }
    }
