@@ -25,11 +25,8 @@ CCartelectronicEncoder::~CCartelectronicEncoder()
 void CCartelectronicEncoder::declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
 {
    // Create device and keywords if needed
-   if (!context->deviceExists(deviceName))
-   {
-      context->declareKeyword(deviceName, *m_Counter1);
-	  context->declareKeyword(deviceName, *m_Counter2);
-   }
+   context->declareKeyword(deviceName, *m_Counter1);
+   context->declareKeyword(deviceName, *m_Counter2);
 }
 
 void CCartelectronicEncoder::historize(std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > &KeywordList) const

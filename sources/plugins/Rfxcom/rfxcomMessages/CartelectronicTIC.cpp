@@ -94,6 +94,8 @@ std::string CCartelectronicTIC::idFromProtocol( const RBUF& rbuf ) const
 	std::stringstream s_id;
 
 	i_id = ((unsigned long long)(rbuf.TIC.id1) << 32) + (rbuf.TIC.id2 << 24) + (rbuf.TIC.id3 << 16) + (rbuf.TIC.id4 << 8) + (rbuf.TIC.id5);
+
+	// TODO : voir comment compléter à 12 caractères, pour le 0 devant
 	s_id << static_cast<unsigned long long>(i_id);
 
 	return s_id.str();

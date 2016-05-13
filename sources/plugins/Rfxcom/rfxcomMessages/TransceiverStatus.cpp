@@ -235,7 +235,7 @@ namespace rfxcomMessages
    std::string CTransceiverStatus::getValidMessage() const
    {
       if (m_statusType != kReceiverStarted)
-         throw std::out_of_range("RFXCom valid message not avaible in this message");
+         throw std::out_of_range("RFXCom valid message not available in this message");
 
       return m_validMessage;
    }
@@ -243,7 +243,7 @@ namespace rfxcomMessages
    bool CTransceiverStatus::needConfigurationUpdate(const IRfxcomConfiguration& configuration) const
    {
       if (m_statusType == kReceiverStarted)
-         throw std::out_of_range("RFXCom configuration not avaible in this message");
+         throw std::out_of_range("RFXCom configuration not available in this message");
 
       if (
          (configuration.isAEenabled() == m_AEenabled) &&

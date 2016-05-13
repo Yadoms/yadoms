@@ -41,7 +41,7 @@ extern const size_t RFXMESSAGE_maxSize;
 /// \note                              All checks are perform, even if one fails
 //--------------------------------------------------------------
 extern const BYTE DONT_CHECK_SUBTYPE;
-extern const unsigned int DONT_CHECK_SIZE;
+extern const size_t DONT_CHECK_SIZE;
 extern const unsigned int DONT_CHECK_SEQUENCE_NUMBER;
 void CheckReceivedMessage(const RBUF& rbuf,
                           size_t rbufSize,
