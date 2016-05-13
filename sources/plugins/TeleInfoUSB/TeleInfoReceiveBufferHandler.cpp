@@ -3,8 +3,11 @@
 
 #define TELEINFO_BUFFER 512
 
-CTeleInfoReceiveBufferHandler::CTeleInfoReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler, int receiveDataEventId)
-   :m_receiveDataEventHandler(receiveDataEventHandler), m_receiveDataEventId(receiveDataEventId), m_receptionSuspended ( false )
+CTeleInfoReceiveBufferHandler::CTeleInfoReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler,
+                                                             int receiveDataEventId)
+   : m_receiveDataEventHandler(receiveDataEventHandler),
+     m_receiveDataEventId(receiveDataEventId),
+     m_receptionSuspended(false)
 {
 }
 
@@ -16,24 +19,24 @@ void CTeleInfoReceiveBufferHandler::push(const shared::communication::CByteBuffe
 {
    if (!m_receptionSuspended)
    {
-	   for (size_t idx = 0 ; idx < buffer.size() ; ++ idx)
-		  m_content.push_back(buffer[idx]);
+      for (size_t idx = 0; idx < buffer.size(); ++ idx)
+         m_content.push_back(buffer[idx]);
 
-	   if (isComplete())
-		  notifyEventHandler(popNextMessage());
+      if (isComplete())
+         notifyEventHandler(popNextMessage());
    }
    else
-	   flush(); // If the reception is suspended we flush the content
+      flush(); // If the reception is suspended we flush the content
 }
 
-void CTeleInfoReceiveBufferHandler::suspend ( void )
+void CTeleInfoReceiveBufferHandler::suspend()
 {
-	m_receptionSuspended = true;
+   m_receptionSuspended = true;
 }
 
-void CTeleInfoReceiveBufferHandler::resume  ( void )
+void CTeleInfoReceiveBufferHandler::resume()
 {
-	m_receptionSuspended = false;
+   m_receptionSuspended = false;
 }
 
 void CTeleInfoReceiveBufferHandler::flush()
@@ -43,7 +46,7 @@ void CTeleInfoReceiveBufferHandler::flush()
 
 bool CTeleInfoReceiveBufferHandler::isComplete() const
 {
-   if ( m_content.size() < TELEINFO_BUFFER )
+   if (m_content.size() < TELEINFO_BUFFER)
       return false;
 
    // A message is complete
@@ -57,7 +60,7 @@ boost::shared_ptr<const shared::communication::CByteBuffer> CTeleInfoReceiveBuff
 
    const size_t extractedMessageSize = TELEINFO_BUFFER;
    boost::shared_ptr<unsigned char[]> extractedMessage(new unsigned char[extractedMessageSize]);
-   for (size_t idx = 0 ; idx < extractedMessageSize ; ++ idx)
+   for (size_t idx = 0; idx < extractedMessageSize; ++ idx)
       extractedMessage[idx] = m_content[idx];
 
    boost::shared_ptr<const shared::communication::CByteBuffer> nextMessage(new shared::communication::CByteBuffer(extractedMessage.get(), extractedMessageSize));
@@ -68,7 +71,8 @@ boost::shared_ptr<const shared::communication::CByteBuffer> CTeleInfoReceiveBuff
    return nextMessage;
 }
 
-void CTeleInfoReceiveBufferHandler::notifyEventHandler(boost::shared_ptr<const shared::communication::CByteBuffer> buffer)
+void CTeleInfoReceiveBufferHandler::notifyEventHandler(boost::shared_ptr<const shared::communication::CByteBuffer> buffer) const
 {
    m_receiveDataEventHandler.postEvent<const shared::communication::CByteBuffer>(m_receiveDataEventId, *buffer);
 }
+

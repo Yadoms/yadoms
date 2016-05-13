@@ -24,11 +24,10 @@ public:
    /// \param[in] evtPortDataReceived     The event id raised on data receive events
    /// \return                            The created port
    //--------------------------------------------------------------
-   static boost::shared_ptr<shared::communication::IAsyncPort> constructPort(
-      const ITeleInfoConfiguration& configuration,
-	  shared::event::CEventHandler& eventHandler,
-      boost::shared_ptr<CTeleInfoReceiveBufferHandler> receiveBufferHandler,
-      int evtPortConnectionId);
+   static boost::shared_ptr<shared::communication::IAsyncPort> constructPort(const ITeleInfoConfiguration& configuration,
+                                                                             shared::event::CEventHandler& eventHandler,
+                                                                             boost::shared_ptr<CTeleInfoReceiveBufferHandler> receiveBufferHandler,
+                                                                             int evtPortConnectionId);
 
    //--------------------------------------------------------------
    /// \brief	                           Create a transceiver instance
@@ -40,6 +39,7 @@ public:
    /// \brief	                          Return the buffer handler of the teleInfo
    /// \return                            The Buffer handler
    //--------------------------------------------------------------
-   static boost::shared_ptr<CTeleInfoReceiveBufferHandler> GetBufferHandler( shared::event::CEventHandler& eventHandler, int evtPortDataReceived );
+   static boost::shared_ptr<CTeleInfoReceiveBufferHandler> GetBufferHandler(shared::event::CEventHandler& eventHandler,
+                                                                            int evtPortDataReceived);
 };
 

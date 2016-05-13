@@ -35,7 +35,7 @@ public:
    virtual ~CRain();
 
    // IKeyword implementation
-   void Initialize(boost::shared_ptr<yApi::IYPluginApi> context, shared::CDataContainer details) const override;
+   void Initialize(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer details) const override;
    boost::shared_ptr<yApi::historization::IHistorizable> GetHistorizable() const override;
    // [END] IKeyword implementation
 

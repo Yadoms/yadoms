@@ -10,14 +10,15 @@
 /// A message is considered complete from its content (see protocol specification)
 //--------------------------------------------------------------
 class CTeleInfoReceiveBufferHandler : public shared::communication::IReceiveBufferHandler
-{  
+{
 public:
    //--------------------------------------------------------------
    /// \brief	                           Constructor
    /// \param[in] receiveDataEventHandler The event handler to notify for received data event
    /// \param[in] receiveDataEventId      The event id to notify for received data event
    //--------------------------------------------------------------
-   CTeleInfoReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler, int receiveDataEventId);
+   CTeleInfoReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler,
+                                 int receiveDataEventId);
 
    //--------------------------------------------------------------
    /// \brief	                           Destructor
@@ -25,12 +26,12 @@ public:
    virtual ~CTeleInfoReceiveBufferHandler();
 
    // ITeleInfoReceiveBufferHandler implementation
-   virtual void push(const shared::communication::CByteBuffer& buffer);
-   virtual void flush();
+   void push(const shared::communication::CByteBuffer& buffer) override;
+   void flush() override;
    // [END] ITeleInfoReceiveBufferHandler implementation
 
-   void suspend ( void );
-   void resume  ( void );
+   void suspend();
+   void resume();
 
 protected:
    //--------------------------------------------------------------
@@ -49,7 +50,7 @@ protected:
    /// \brief	                     Send a message to the target event handler
    /// \param[in] buffer            Buffer to send
    //--------------------------------------------------------------
-   void notifyEventHandler(boost::shared_ptr<const shared::communication::CByteBuffer> buffer);
+   void notifyEventHandler(boost::shared_ptr<const shared::communication::CByteBuffer> buffer) const;
 
 private:
    //--------------------------------------------------------------
@@ -69,6 +70,4 @@ private:
 
    bool m_receptionSuspended;
 };
-
-
 

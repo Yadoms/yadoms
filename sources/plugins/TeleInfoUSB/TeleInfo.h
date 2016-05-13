@@ -1,5 +1,5 @@
 #pragma once
-#include <shared/plugin/IPlugin.h>
+#include <plugin_cpp_api/IPlugin.h>
 #include "TeleInfoConfiguration.h"
 #include <shared/communication/IAsyncPort.h>
 #include <shared/communication/BufferLogger.h>
@@ -13,7 +13,7 @@ namespace yApi = shared::plugin::yPluginApi;
 /// \brief	This class is the TeleInfo plugin
 /// \note   This plugin receive information from a specific USB module that read some security devices from TeleInfo
 //--------------------------------------------------------------
-class CTeleInfo : public shared::plugin::IPlugin
+class CTeleInfo : public plugin_cpp_api::IPlugin
 {
 public:
    //--------------------------------------------------------------
@@ -31,18 +31,20 @@ public:
    /// \param [in] buffer           Buffer to send
    /// \param [in] needAnswer       true if answer is needed. If true, a timeout will occur if no answer is received.
    //--------------------------------------------------------------
-   void send(const shared::communication::CByteBuffer& buffer, bool needAnswer = false);
+   void send(const shared::communication::CByteBuffer& buffer,
+             bool needAnswer = false);
 
    //--------------------------------------------------------------
    /// \brief	                     Create the connection to the TeleInfo USB Reader
    /// \param [in] eventHandler     Event handler to be notified on events on the connection
    //--------------------------------------------------------------
-   void createConnection(boost::shared_ptr<yApi::IYPluginApi> context);
+   void createConnection(boost::shared_ptr<yApi::IYPluginApi> api);
 
    //--------------------------------------------------------------
    /// \brief	                     Create the connection to the TeleInfo USB Reader
    //--------------------------------------------------------------
-   void onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> context, const shared::CDataContainer& newConfigurationData);
+   void onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
+                              const shared::CDataContainer& newConfigurationData);
 
    //--------------------------------------------------------------
    /// \brief	                     Create the connection to the TeleInfo USB Reader
@@ -52,28 +54,28 @@ public:
    //--------------------------------------------------------------
    /// \brief	                     Create the connection to the TeleInfo USB Reader
    //--------------------------------------------------------------
-   void processDataReceived(boost::shared_ptr<yApi::IYPluginApi> context, 
-							const shared::communication::CByteBuffer& data);
+   void processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
+                            const shared::communication::CByteBuffer& data);
 
    //--------------------------------------------------------------
    /// \brief	                     Called when the TeleInfo Receiver becomes connected
-   /// \param [in] context          Plugin execution context (Yadoms API)
+   /// \param [in] api              Plugin execution context (Yadoms API)
    //--------------------------------------------------------------
-   void processTeleInfoConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> context);
+   void processTeleInfoConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api) const;
 
    //--------------------------------------------------------------
    /// \brief	                     Called when the TeleInfo Receiver becomes unconnected
-   /// \param [in] context          Plugin execution context (Yadoms API)
+   /// \param [in] api              Plugin execution context (Yadoms API)
    //--------------------------------------------------------------
-   void processTeleInfoUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> context);
+   void processTeleInfoUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api);
 
    //--------------------------------------------------------------
    /// \brief	                     Create the connection to the TeleInfo USB Reader
    //--------------------------------------------------------------
-   void initTeleInfoReceiver();
+   void initTeleInfoReceiver() const;
 
    // IPlugin implementation
-   virtual void doWork(boost::shared_ptr<yApi::IYPluginApi> context);
+   void doWork(boost::shared_ptr<yApi::IYPluginApi> api) override;
    // [END] IPlugin implementation
 
 private:
@@ -108,3 +110,4 @@ private:
    //--------------------------------------------------------------
    boost::shared_ptr<CTeleInfoReceiveBufferHandler> m_receiveBufferHandler;
 };
+

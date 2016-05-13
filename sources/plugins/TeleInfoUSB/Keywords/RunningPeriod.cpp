@@ -1,21 +1,22 @@
 #include "stdafx.h"
 #include "RunningPeriod.h"
 #include "KeywordException.hpp"
-#include <shared/plugin/yPluginApi/StandardCapacities.h>
-#include <shared/exception/InvalidParameter.hpp>
-#include <shared/Log.h>
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-CRunningPeriod::CRunningPeriod( boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName, std::string KeyWordName, shared::CDataContainer details )
-   :m_PluginName ( PluginName ), m_runningPeriod( new teleInfoUSB::specificHistorizers::CPeriod(KeyWordName) )
+CRunningPeriod::CRunningPeriod(boost::shared_ptr<yApi::IYPluginApi> api,
+                               std::string PluginName,
+                               std::string KeyWordName,
+                               shared::CDataContainer details)
+   : m_PluginName(PluginName),
+     m_runningPeriod(boost::make_shared<teleInfoUSB::specificHistorizers::CPeriod>(KeyWordName))
 {
-   if (!context->keywordExists( m_PluginName, m_runningPeriod->getKeyword()))
-      context->declareKeyword ( m_PluginName, *m_runningPeriod, details );
+   if (!api->keywordExists(m_PluginName, m_runningPeriod->getKeyword()))
+      api->declareKeyword(m_PluginName, *m_runningPeriod, details);
 }
 
-void CRunningPeriod::SetValue( std::string& Value )
+void CRunningPeriod::SetValue(std::string& Value) const
 {
    static const EnumPeriod EEnumPeriod = boost::assign::map_list_of
       ("TH..", teleInfoUSB::specificHistorizers::EPeriod::kAllHours)
@@ -28,8 +29,7 @@ void CRunningPeriod::SetValue( std::string& Value )
       ("HCJR", teleInfoUSB::specificHistorizers::EPeriod::kLowCostRedDays)
       ("HPJB", teleInfoUSB::specificHistorizers::EPeriod::kNormalCostBlueDays)
       ("HPJW", teleInfoUSB::specificHistorizers::EPeriod::kNormalCostWhiteDays)
-      ("HPJR", teleInfoUSB::specificHistorizers::EPeriod::kNormalCostRedDays)
-      ;
+      ("HPJR", teleInfoUSB::specificHistorizers::EPeriod::kNormalCostRedDays);
 
    try
    {
@@ -38,21 +38,23 @@ void CRunningPeriod::SetValue( std::string& Value )
       {
          m_runningPeriod->set(static_cast<teleInfoUSB::specificHistorizers::EPeriod>(it->second));
 
-         YADOMS_LOG(debug) << m_runningPeriod->getKeyword() << "=" << m_runningPeriod->get();
+         std::cout << m_runningPeriod->getKeyword() << "=" << m_runningPeriod->get() << std::endl;
       }
       else
          throw CKeywordException("Keyword " + m_runningPeriod->getKeyword() + " could not be set");
    }
    catch (shared::exception::CException& e)
    {
-      YADOMS_LOG(warning) << e.what() << std::endl;
+      std::cout << e.what() << std::endl << std::endl;
    }
 }
 
 CRunningPeriod::~CRunningPeriod()
-{}
+{
+}
 
 boost::shared_ptr<yApi::historization::IHistorizable> CRunningPeriod::GetHistorizable() const
 {
-	return m_runningPeriod;
+   return m_runningPeriod;
 }
+

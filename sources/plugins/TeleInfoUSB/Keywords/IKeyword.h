@@ -1,7 +1,6 @@
 #pragma once
 
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
-#include <shared/plugin/yPluginApi/IYPluginApi.h>
 
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -11,14 +10,17 @@ namespace yApi = shared::plugin::yPluginApi;
 class IKeyword
 {
 public:
-//--------------------------------------------------------------
-/// \brief	Destructor
-//--------------------------------------------------------------
-virtual ~IKeyword() {}
+   //--------------------------------------------------------------
+   /// \brief	Destructor
+   //--------------------------------------------------------------
+   virtual ~IKeyword()
+   {
+   }
 
-//--------------------------------------------------------------
-/// \brief	                      Get the IHistorizable variable
-/// \param[in] context              Yadoms APi context
-//--------------------------------------------------------------
-virtual boost::shared_ptr<yApi::historization::IHistorizable> GetHistorizable() const = 0;
+   //--------------------------------------------------------------
+   /// \brief	                      Get the IHistorizable variable
+   /// \return                       Historizable object
+   //--------------------------------------------------------------
+   virtual boost::shared_ptr<yApi::historization::IHistorizable> GetHistorizable() const = 0;
 };
+

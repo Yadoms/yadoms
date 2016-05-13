@@ -31,11 +31,11 @@ namespace rfxcomMessages
       virtual ~CCartelectronicEncoder();
 
       // ICartelectronicSubtype implementation
-      void declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const override;
+      void declare(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const override;
       void historize(std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > &KeywordList) const override;
       std::string idFromProtocol( const RBUF& rbuf ) const override;
-      const char BatteryLevelFromProtocol( const RBUF& rbuf ) override;
-	  const char RssiFromProtocol( const RBUF& rbuf ) override;
+      char BatteryLevelFromProtocol( const RBUF& rbuf ) override;
+	  char RssiFromProtocol( const RBUF& rbuf ) override;
 	  std::string getModel() const override;
       // [END] ICartelectronicSubtype implementation
 

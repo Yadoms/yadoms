@@ -28,9 +28,9 @@ namespace TeleInfoMessages
 
       //--------------------------------------------------------------
       /// \brief	                        Historize message data to Yadoms
-      /// \param[in] context              Yadoms APi context
+      /// \param[in] api                  Yadoms APi context
       //--------------------------------------------------------------
-      virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const = 0;
+      virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const = 0;
 
       //--------------------------------------------------------------
       /// \brief	                        Returns the device name

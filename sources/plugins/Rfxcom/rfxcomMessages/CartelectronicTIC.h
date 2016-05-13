@@ -1,5 +1,4 @@
 #pragma once
-
 #include "ICartelectronicSubtype.h"
 #include "RFXtrxHelpers.h"
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
@@ -8,11 +7,10 @@ namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
-
    //--------------------------------------------------------------
    /// \brief	The Cartelectronic-TIC protocol support
    //--------------------------------------------------------------
-   class CCartelectronicTIC  : public ICartelectronicSubtype
+   class CCartelectronicTIC : public ICartelectronicSubtype
    {
    public:
 
@@ -23,7 +21,7 @@ namespace rfxcomMessages
       /// \note                           Use this constructor for received messages (to historize received data to Yadoms)
       /// \throw                          shared::exception::CInvalidParameter
       //--------------------------------------------------------------
-      CCartelectronicTIC( const RBUF& rbuf, size_t rbufSize );
+      CCartelectronicTIC(const RBUF& rbuf, size_t rbufSize);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
@@ -31,40 +29,42 @@ namespace rfxcomMessages
       virtual ~CCartelectronicTIC();
 
       // ICartelectronicSubtype implementation
-      void declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const override;
-      void historize(std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > &KeywordList) const override;
-      std::string idFromProtocol( const RBUF& rbuf ) const override;
-      const char BatteryLevelFromProtocol( const RBUF& rbuf ) override;
-	  const char RssiFromProtocol( const RBUF& rbuf ) override;
-	  std::string getModel() const override;
+      void declare(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const override;
+      void historize(std::vector<boost::shared_ptr<yApi::historization::IHistorizable>>& KeywordList) const override;
+      std::string idFromProtocol(const RBUF& rbuf) const override;
+      char BatteryLevelFromProtocol(const RBUF& rbuf) override;
+      char RssiFromProtocol(const RBUF& rbuf) override;
+      std::string getModel() const override;
       // [END] ICartelectronicSubtype implementation
 
    private:
 
       //Contract Options
-      typedef enum {
-		   OP_NOT_DEFINED,
-		   OP_BASE,
-		   OP_CREUSE,
-		   OP_EJP,
-		   OP_TEMPO
+      typedef enum
+      {
+         OP_NOT_DEFINED,
+         OP_BASE,
+         OP_CREUSE,
+         OP_EJP,
+         OP_TEMPO
       } Contract;
 
-		typedef enum {
-			AllHours = 1,         //TH..
-			LowCostHours,         //HC..
-			PeakCostHours,        //HP..
-			NormalCostHours,      //HN..
-			MobilePeakCostHours,  //PM..
-			LowCostBlueDays,      //HCJB
-			LowCostWhiteDays,     //HCJW
-			LowCostRedDays,       //HCJR
-			NormalCostBlueDays,   //HPJB
-			NormalCostWhiteDays,  //HPJW
-			NormalCostRedDays     //HPJR
-		} RunningPeriod;
+      typedef enum
+      {
+         AllHours = 1, //TH..
+         LowCostHours, //HC..
+         PeakCostHours, //HP..
+         NormalCostHours, //HN..
+         MobilePeakCostHours, //PM..
+         LowCostBlueDays, //HCJB
+         LowCostWhiteDays, //HCJW
+         LowCostRedDays, //HCJR
+         NormalCostBlueDays, //HPJB
+         NormalCostWhiteDays, //HPJW
+         NormalCostRedDays //HPJR
+      } RunningPeriod;
 
-	  Contract m_SubscribeContract;
+      Contract m_SubscribeContract;
 
       //--------------------------------------------------------------
       /// \brief	The device id
@@ -87,3 +87,5 @@ namespace rfxcomMessages
       boost::shared_ptr<yApi::historization::CApparentPower> m_ApparentePower;
    };
 } // namespace rfxcomMessages
+
+

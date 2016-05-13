@@ -14,7 +14,7 @@ public:
    /// \brief	    Constructor
    //--------------------------------------------------------------
 
-	CTeleInfoConfiguration();
+   CTeleInfoConfiguration();
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -22,8 +22,8 @@ public:
    virtual ~CTeleInfoConfiguration();
 
    // ITeleInfoConfiguration implementation
-   virtual void initializeWith(const shared::CDataContainer &data);
-   virtual std::string getSerialPort() const;
+   void initializeWith(const shared::CDataContainer& data) override;
+   std::string getSerialPort() const override;
    // [END] ITeleInfoConfiguration implementation
 
 private:
@@ -32,3 +32,4 @@ private:
    //--------------------------------------------------------------
    shared::CDataContainer m_data;
 };
+
