@@ -64,8 +64,8 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
         var self = this;
         this.removeAllAdditionalInputs_();
         if (inputList != undefined) {
-            $.each(inputList, function (index, inputToShow) {
-                switch(inputToShow.toLowerCase()) {
+            $.each(inputList, function (index, inputInfo) {
+                switch(inputInfo.type.toLowerCase()) {
                     case "yadoms_wait_for_event_mutator_change":
                         self.appendKeywordSelectorStatementChange_(index);
                         break;
@@ -126,8 +126,8 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
         //browse all become inputs
         //if a connected block is an enuemration, then update enum matching the selected keyword
         var self = this;
-        $.each(this.mutationData_.additionalBlocks, function (index, blockType) {
-            if (blockType === "yadoms_wait_for_event_mutator_keyword" || blockType === "yadoms_wait_for_event_mutator_capacity") {
+        $.each(this.mutationData_.additionalBlocks, function (index, blockInfo) {
+            if (blockInfo.condition || blockInfo === "yadoms_wait_for_event_mutator_become" || blockInfo === "yadoms_wait_for_event_mutator_capacity_become") {
                 var input = self.getInput("additionalInput_part1_" + index);
                 if (input && input.connection) {
                     var block = input.connection.targetBlock();
@@ -462,10 +462,10 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
         }
 		var self= this;
         var container = document.createElement("mutation");
-        $.each(this.mutationData_.additionalBlocks, function (index, blockType) {
+        $.each(this.mutationData_.additionalBlocks, function (index, blockInfo) {
             var addBlock = document.createElement("additional" + index);
-            addBlock.setAttribute("type", blockType);
-			addBlock.setAttribute("condition", self.hasConditionForInput(index));
+            addBlock.setAttribute("type", blockInfo.type);
+			addBlock.setAttribute("condition", blockInfo.condition);
             container.appendChild(addBlock);
         });
 
@@ -483,7 +483,7 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
 			if (childNode.nodeName.toLowerCase().startsWith("additional")) {
 				
 				//childNode.getAttribute("condition")
-                this.mutationData_.additionalBlocks.push(childNode.getAttribute("type"));
+                this.mutationData_.additionalBlocks.push( { type : childNode.getAttribute("type"), condition : childNode.getAttribute("condition") });
             }
         }
 
@@ -523,16 +523,16 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
 		connection =topBlock.getInput("STACK").connection;
 
 		var self = this;
-        $.each(this.mutationData_.additionalBlocks, function (index, blockType) {
-            if (blockType != null && blockType !== "") {
-                var additionalBlock = workspace.newBlock(self.adaptBlockType(blockType));
+        $.each(this.mutationData_.additionalBlocks, function (index, blockInfo) {
+            if (blockInfo && blockInfo.type && blockInfo.type !== "") {
+                var additionalBlock = workspace.newBlock(self.adaptBlockType(blockInfo.type));
                 additionalBlock.initSvg();
-				if(blockType === "yadoms_wait_for_event_mutator_become" || blockType === "yadoms_wait_for_event_mutator_capacity_become")
+				if(blockInfo.condition && (blockInfo.condition === "true" || blockInfo.condition === true))
 					additionalBlock.checkCondition();
                 connection.connect(additionalBlock.previousConnection);
                 connection = additionalBlock.nextConnection;
             } else {
-                console.error("Blockly : yadoms_wait_for_event : decompose : unknown block type : " + blockType);
+                console.error("Blockly : yadoms_wait_for_event : decompose : unknown block type : " + blockInfo.type);
             }
         });
 
@@ -592,11 +592,11 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
 					
                 case "yadoms_wait_for_event_mutator_keyword":
 					if($.isFunction(clauseBlock.hasCondition) && clauseBlock.hasCondition()) {
-						this.mutationData_.additionalBlocks.push("yadoms_wait_for_event_mutator_become");
+						this.mutationData_.additionalBlocks.push( { type : "yadoms_wait_for_event_mutator_become", condition : true});
 						this.appendKeywordSelectorStatementBecome_(additionalBlockCount, clauseBlock.part1DeviceId_, clauseBlock.part1KeywordId_, clauseBlock.part1Operator_, clauseBlock.part1Connection_, clauseBlock.part2Connection_);
 					}
 					else {
-						this.mutationData_.additionalBlocks.push("yadoms_wait_for_event_mutator_change");
+						this.mutationData_.additionalBlocks.push( { type : "yadoms_wait_for_event_mutator_change", condition : false});
 						this.appendKeywordSelectorStatementChange_(additionalBlockCount, clauseBlock.part1DeviceId_, clauseBlock.part1KeywordId_, clauseBlock.part2Connection_);
 					}
 					additionalBlockCount++;
@@ -604,24 +604,24 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
 					
                 case "yadoms_wait_for_event_mutator_capacity":
 					if($.isFunction(clauseBlock.hasCondition) && clauseBlock.hasCondition()) {
-						this.mutationData_.additionalBlocks.push("yadoms_wait_for_event_mutator_capacity_become");
+						this.mutationData_.additionalBlocks.push( { type : "yadoms_wait_for_event_mutator_capacity_become", condition : true});
 						this.appendCapacityStatementBecome_(additionalBlockCount, clauseBlock.part1Capacity_, clauseBlock.part1Operator_, clauseBlock.part1Connection_, clauseBlock.part2Connection_);
 					}
 					else {	
-						this.mutationData_.additionalBlocks.push("yadoms_wait_for_event_mutator_capacity_change");
+						this.mutationData_.additionalBlocks.push( { type : "yadoms_wait_for_event_mutator_capacity_change", condition : false});
 						this.appendCapacityStatementChange_(additionalBlockCount, clauseBlock.part1Capacity_, clauseBlock.part2Connection_);
 					}
 					additionalBlockCount++;
 					break;
 					
                 case "yadoms_wait_for_event_mutator_datetime_change":
-                    this.mutationData_.additionalBlocks.push(clauseBlock.type);
+					this.mutationData_.additionalBlocks.push( { type : clauseBlock.type, condition : false});
                     this.appendDatetimeStatementChange_(additionalBlockCount, clauseBlock.part2Connection_);
                     additionalBlockCount++;
                     break;
 
                 case "yadoms_wait_for_event_mutator_datetime_become":
-                    this.mutationData_.additionalBlocks.push(clauseBlock.type);
+					this.mutationData_.additionalBlocks.push( { type : clauseBlock.type, condition : false});
                     this.appendDatetimeStatementBecome_(additionalBlockCount, clauseBlock.part1Operator_, clauseBlock.part1Connection_, clauseBlock.part2Connection_);
                     additionalBlockCount++;
                     break;
@@ -813,12 +813,14 @@ Blockly.Blocks["yadoms_wait_for_event_mutator_keyword"] = {
 		if(this.initValue) {
 			checkboxValue = 'TRUE';
 		}
+		this.checkBox = new Blockly.FieldCheckbox(checkboxValue);
+		
         this.setColour(Blockly.Yadoms.blockColour.HUE);
         this.appendDummyInput()
 			.appendField($.t("blockly.blocks.yadoms_wait_for_event.mutator.keyword.title"));
 		this.appendDummyInput()
 			.appendField("   ")
-			.appendField(new Blockly.FieldCheckbox(checkboxValue), this.mutatorTypeCheckboxField)
+			.appendField(this.checkBox, this.mutatorTypeCheckboxField)
 			.appendField($.t("blockly.blocks.yadoms_wait_for_event.mutator.keyword.condition"));
 			
         this.setTooltip($.t("blockly.blocks.yadoms_wait_for_event.mutator.keyword.tooltip"));
@@ -839,6 +841,9 @@ Blockly.Blocks["yadoms_wait_for_event_mutator_keyword"] = {
      */
 	checkCondition : function() {
 		this.initValue = true;
+		if(this.checkBox) {
+			this.checkBox.setValue('TRUE');
+		}		
 	}
 };
 
@@ -854,12 +859,14 @@ Blockly.Blocks["yadoms_wait_for_event_mutator_capacity"] = {
 			checkboxValue = 'TRUE';
 		}
 
+		this.checkBox = new Blockly.FieldCheckbox(checkboxValue);
+		
         this.setColour(Blockly.Yadoms.blockColour.HUE);
         this.appendDummyInput()
 			.appendField($.t("blockly.blocks.yadoms_wait_for_event.mutator.capacity.title"));
 		this.appendDummyInput()
 			.appendField("   ")
-			.appendField(new Blockly.FieldCheckbox(checkboxValue), this.mutatorTypeCheckboxField)
+			.appendField(this.checkBox, this.mutatorTypeCheckboxField)
 			.appendField($.t("blockly.blocks.yadoms_wait_for_event.mutator.capacity.condition"));
 			
         this.setTooltip($.t("blockly.blocks.yadoms_wait_for_event.mutator.capacity.tooltip"));
@@ -880,6 +887,9 @@ Blockly.Blocks["yadoms_wait_for_event_mutator_capacity"] = {
      */
 	checkCondition : function() {
 		this.initValue = true;
+		if(this.checkBox) {
+			this.checkBox.setValue('TRUE');
+		}
 	}
 };
 

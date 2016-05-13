@@ -582,7 +582,9 @@
 			"title": "Last event : ",
 			"tooltip": "Get information about last event",
 			"value" : "get the value",
-			"deviceName" : "get the device name"
+			"deviceName" : "get the device name",
+			"keywordName" : "get the sensor name",
+			"fullName" : "get the full name"			
 		},
       "yadoms_wait_for_event": {
         "title": "Wait for an event",

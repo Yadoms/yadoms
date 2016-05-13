@@ -584,7 +584,9 @@
                 "title": "Dernier évènement : ",
                 "tooltip": "Obtient les informations du dernier évènement",
 				"value" : "obtient la valeur",
-				"deviceName" : "obtient le nom de l'équipement"
+				"deviceName" : "obtient le nom de l'équipement",
+				"keywordName" : "obtient le nom du capteur",
+				"fullName" : "obtient le nom complet"
 			},
             "yadoms_wait_for_event": {
                 "title": "Attendre un évènement",

@@ -37,10 +37,11 @@ Blockly.Python["yadoms_wait_for_event"] = function (block) {
     var keywordIdVar = block.generateVariable_("keywordId");
 
     var listenForDateTime = "False";
-    if ($.inArray("yadoms_wait_for_event_mutator_datetime_change", this.mutationData_.additionalBlocks) !== -1 ||
-        $.inArray("yadoms_wait_for_event_mutator_datetime_become", this.mutationData_.additionalBlocks) !== -1) {
-        listenForDateTime = "True";
-    }
+	$.each(this.mutationData_.additionalBlocks, function(index, blockInfo) {
+		if(blockInfo.type === "yadoms_wait_for_event_mutator_datetime_change" ||
+		   blockInfo.type === "yadoms_wait_for_event_mutator_datetime_become")
+		   listenForDateTime = "True";
+	});
 
 
     //generate the waitForAcquisitions call
@@ -63,7 +64,8 @@ Blockly.Python["yadoms_wait_for_event"] = function (block) {
         //append specific conditions
         var operator;
         var argument1;
-        switch (this.mutationData_.additionalBlocks[i]) {
+		var currentBlockType = this.mutationData_.additionalBlocks[i].type || this.mutationData_.additionalBlocks[i];
+        switch (currentBlockType) {
 			case "yadoms_wait_for_event_mutator_change" : 
 				//nothing to add, watching anychanges
 				condition = waitForEventResultVar + ".getType() == scriptUtilities.WAITFOREVENT_KEYWORD and " +keywordIdVar + " == " + keyId;
@@ -90,7 +92,7 @@ Blockly.Python["yadoms_wait_for_event"] = function (block) {
 				
 			case "yadoms_wait_for_event_mutator_keyword" : 
 				console.error("Should not enter here"); //TODO : ensure never goes here, then remove this case
-				if(block.hasConditionForInput(i)) {
+				if(this.mutationData_.additionalBlocks[i].condition === "true" || this.mutationData_.additionalBlocks[i].condition === true) {
 					//add the become if
 					operator = Blockly.Yadoms.Python.getOperatorCode(block.getFieldValue("operatorDd" + i));
 					var keywordId = block.getFieldValue("keywordDd" + i);
@@ -140,7 +142,7 @@ Blockly.Python["yadoms_wait_for_event"] = function (block) {
 				
             case "yadoms_wait_for_event_mutator_capacity":
 				console.error("Should not enter here"); //TODO : ensure never goes here, then remove this case
-				if(block.hasConditionForInput(i)) {
+				if(this.mutationData_.additionalBlocks[i].condition === "true" || this.mutationData_.additionalBlocks[i].condition === true) {
 					operator = Blockly.Yadoms.Python.getOperatorCode(block.getFieldValue("operatorDd" + i));
 					//retreive keyword associated to the capacity (the first one), just to know the type of data
 					var capacityId = block.getFieldValue("capacityDd" + i);

@@ -1,20 +1,16 @@
 Blockly.Blocks["yadoms_wait_for_event_result"] = {
-   /**
-    * The dropdown name
-    */
-   dropdownName_ : "dropdown",
-
     init: function () {
 
 		this.dropDown = new Blockly.FieldDropdown([
 													[$.t("blockly.blocks.yadoms_wait_for_event_result.value"), "value"],
+													[$.t("blockly.blocks.yadoms_wait_for_event_result.keywordName"), "keywordName"],
 													[$.t("blockly.blocks.yadoms_wait_for_event_result.deviceName"), "deviceName"],
-													]);
+													[$.t("blockly.blocks.yadoms_wait_for_event_result.fullName"), "fullName"]
+												  ]);
 													
         this.appendDummyInput()
             .appendField($.t("blockly.blocks.yadoms_wait_for_event_result.title"))
-			.appendField(this.dropDown, this.dropdownName_);
-
+			.appendField(this.dropDown, "dropdown");
         this.setPreviousStatement(false, null);
         this.setNextStatement(false, null);
         this.setColour(Blockly.Yadoms.blockColour.HUE);

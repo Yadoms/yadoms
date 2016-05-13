@@ -10,12 +10,16 @@ Blockly.Python["yadoms_wait_for_event_result"] = function (block) {
 		case "value":
 			code = Blockly.Python.lastWaitForEventResultVar + ".getValue()";
 			break;
+		case "keywordName":
+			code = "yApi.getKeywordName(" + Blockly.Python.lastWaitForEventResultVar + ".getKeywordId())";
+			break;
 		case "deviceName":
-			code = Blockly.Python.lastWaitForEventResultVar + ".getDeviceName()"; //TODO: implement getDeviceName (or any get device info in yApiScript)
-			code = "";
+			code = "yApi.getKeywordDeviceName(" + Blockly.Python.lastWaitForEventResultVar + ".getKeywordId())";
+			break;
+		case "fullName":
+			code = "yApi.getKeywordDeviceName(" + Blockly.Python.lastWaitForEventResultVar + ".getKeywordId()) + '.' + yApi.getKeywordName(" + Blockly.Python.lastWaitForEventResultVar + ".getKeywordId())";
 			break;
 	}
-	
 	return [code, Blockly.Python.ORDER_ATOMIC];
 };
 
