@@ -8,11 +8,10 @@ namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
-
    //--------------------------------------------------------------
    /// \brief	The Cartelectronic-Encoder protocol support
    //--------------------------------------------------------------
-   class CCartelectronicEncoder  : public ICartelectronicSubtype
+   class CCartelectronicEncoder : public ICartelectronicSubtype
    {
    public:
 
@@ -23,7 +22,7 @@ namespace rfxcomMessages
       /// \note                           Use this constructor for received messages (to historize received data to Yadoms)
       /// \throw                          shared::exception::CInvalidParameter
       //--------------------------------------------------------------
-      CCartelectronicEncoder( const RBUF& rbuf, size_t rbufSize );
+      CCartelectronicEncoder(const RBUF& rbuf, size_t rbufSize);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
@@ -32,11 +31,11 @@ namespace rfxcomMessages
 
       // ICartelectronicSubtype implementation
       void declare(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const override;
-      void historize(std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > &KeywordList) const override;
-      std::string idFromProtocol( const RBUF& rbuf ) const override;
-      char BatteryLevelFromProtocol( const RBUF& rbuf ) override;
-	  char RssiFromProtocol( const RBUF& rbuf ) override;
-	  std::string getModel() const override;
+      void historize(std::vector<boost::shared_ptr<yApi::historization::IHistorizable>>& KeywordList) const override;
+      std::string idFromProtocol(const RBUF& rbuf) const override;
+      char BatteryLevelFromProtocol(const RBUF& rbuf) override;
+      char RssiFromProtocol(const RBUF& rbuf) override;
+      std::string getModel() const override;
       // [END] ICartelectronicSubtype implementation
 
    private:
@@ -57,3 +56,5 @@ namespace rfxcomMessages
       boost::shared_ptr<yApi::historization::CCounter> m_Counter2;
    };
 } // namespace rfxcomMessages
+
+

@@ -22,14 +22,12 @@ namespace rfxcomMessages
    {
    }
 
-   void CCartelectronicEncoder::declare(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const
+   void CCartelectronicEncoder::declare(boost::shared_ptr<yApi::IYPluginApi> api,
+                                        const std::string& deviceName) const
    {
       // Create device and keywords if needed
-      if (!api->deviceExists(deviceName))
-      {
-         api->declareKeyword(deviceName, *m_Counter1);
-         api->declareKeyword(deviceName, *m_Counter2);
-      }
+      api->declareKeyword(deviceName, *m_Counter1);
+      api->declareKeyword(deviceName, *m_Counter2);
    }
 
    void CCartelectronicEncoder::historize(std::vector<boost::shared_ptr<yApi::historization::IHistorizable>>& KeywordList) const
