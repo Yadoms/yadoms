@@ -9,8 +9,8 @@ Blockly.Blocks["yadoms_wait_for_event_result"] = {
 												  ]);
 													
         this.appendDummyInput()
-            .appendField($.t("blockly.blocks.yadoms_wait_for_event_result.title"))
-			.appendField(this.dropDown, "dropdown");
+			.appendField(this.dropDown, "dropdown")
+			.appendField($.t("blockly.blocks.yadoms_wait_for_event_result.title"));
         this.setPreviousStatement(false, null);
         this.setNextStatement(false, null);
         this.setColour(Blockly.Yadoms.blockColour.HUE);

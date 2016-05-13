@@ -589,12 +589,12 @@
         }
       },
       "yadoms_wait_for_event_result" : {
-			"title": "Last event : ",
+			"title": "from last event",
 			"tooltip": "Get information about last event",
-			"value" : "get the value",
-			"deviceName" : "get the device name",
-			"keywordName" : "get the sensor name",
-			"fullName" : "get the full name"			
+			"value" : "Get the value",
+			"deviceName" : "Get the device name",
+			"keywordName" : "Get the sensor name",
+			"fullName" : "Get the full name"			
 		},
       "yadoms_wait_for_event": {
         "title": "Wait for an event",

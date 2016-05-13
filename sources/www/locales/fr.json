@@ -591,12 +591,12 @@
                 }
             },
 			"yadoms_wait_for_event_result" : {
-                "title": "Dernier évènement : ",
+                "title": " du dernier évènement",
                 "tooltip": "Obtient les informations du dernier évènement",
-				"value" : "obtient la valeur",
-				"deviceName" : "obtient le nom de l'équipement",
-				"keywordName" : "obtient le nom du capteur",
-				"fullName" : "obtient le nom complet"
+				"value" : "Obtient la valeur",
+				"deviceName" : "Obtient le nom de l'équipement",
+				"keywordName" : "Obtient le nom du capteur",
+				"fullName" : "Obtient le nom complet"
 			},
             "yadoms_wait_for_event": {
                 "title": "Attendre un évènement",
