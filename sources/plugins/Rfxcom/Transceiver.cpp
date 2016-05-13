@@ -9,6 +9,7 @@
 #include "rfxcomMessages/Blinds1.h"
 #include "rfxcomMessages/Bbq.h"
 #include "rfxcomMessages/Camera1.h"
+#include "rfxcomMessages/Cartelectronic.h"
 #include "rfxcomMessages/Chime.h"
 #include "rfxcomMessages/Current.h"
 #include "rfxcomMessages/CurrentEnergy.h"
@@ -271,6 +272,7 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMess
       case pTypeCURRENTENERGY: message.reset(new rfxcomMessages::CCurrentEnergy(context, *buf, bufSize, m_seqNumberProvider)); break;
       case pTypePOWER: message.reset(new rfxcomMessages::CPower(context, *buf, bufSize, m_seqNumberProvider)); break;
       case pTypeWEIGHT: message.reset(new rfxcomMessages::CWeight(context, *buf, bufSize, m_seqNumberProvider)); break;
+      case pTypeCARTELECTRONIC: message.reset(new rfxcomMessages::CCartelectronic(context, *buf, bufSize, m_seqNumberProvider)); break;
       case pTypeRFXSensor: message.reset(new rfxcomMessages::CRFXSensor(context, *buf, bufSize, m_seqNumberProvider)); break;
       case pTypeSecurity1: message.reset(new rfxcomMessages::CSecurity1(context, *buf, bufSize, m_seqNumberProvider)); break;
       case pTypeSecurity2: message.reset(new rfxcomMessages::CSecurity2(context, *buf, bufSize, m_seqNumberProvider)); break;

@@ -12,7 +12,12 @@ namespace rfxcomMessages
 CDateTime::CDateTime(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_dateTime("datetime"), m_batteryLevel("battery"), m_rssi("rssi")
 {
-   CheckReceivedMessage(rbuf, rbufSize, pTypeDT, GET_RBUF_STRUCT_SIZE(DT), DONT_CHECK_SEQUENCE_NUMBER);
+   CheckReceivedMessage(rbuf,
+                        rbufSize,
+                        pTypeDT,
+                        DONT_CHECK_SUBTYPE,
+                        GET_RBUF_STRUCT_SIZE(DT),
+                        DONT_CHECK_SEQUENCE_NUMBER);
 
    m_subType = rbuf.DT.subtype;
 

@@ -7,9 +7,10 @@ namespace teleInfoUSB { namespace specificHistorizers
 {
 
 DECLARE_ENUM_IMPLEMENTATION(EColor,
+      ((NOTDEFINED))
       ((BLUE))
       ((WHITE))
-	  ((RED))
+      ((RED))
 );
 
 const shared::plugin::yPluginApi::CStandardCapacity& ColorCapacity = shared::plugin::yPluginApi::CStandardCapacity("ForecastPrice", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);

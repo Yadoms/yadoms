@@ -12,7 +12,12 @@ namespace rfxcomMessages
 CBbq::CBbq(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_foodTemperature("food"), m_bbqTemperature("bbq"), m_batteryLevel("battery"), m_rssi("rssi")
 {
-   CheckReceivedMessage(rbuf, rbufSize, pTypeBBQ, GET_RBUF_STRUCT_SIZE(BBQ), DONT_CHECK_SEQUENCE_NUMBER);
+   CheckReceivedMessage(rbuf,
+                        rbufSize,
+                        pTypeBBQ,
+                        DONT_CHECK_SUBTYPE,
+                        GET_RBUF_STRUCT_SIZE(BBQ),
+                        DONT_CHECK_SEQUENCE_NUMBER);
 
    m_subType = rbuf.BBQ.subtype;
 

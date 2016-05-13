@@ -16,6 +16,12 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/Blinds1.cpp
    rfxcomMessages/Camera1.h
    rfxcomMessages/Camera1.cpp
+   rfxcomMessages/Cartelectronic.h
+   rfxcomMessages/Cartelectronic.cpp
+   rfxcomMessages/CartelectronicEncoder.h
+   rfxcomMessages/CartelectronicEncoder.cpp
+   rfxcomMessages/CartelectronicTIC.h
+   rfxcomMessages/CartelectronicTIC.cpp
    rfxcomMessages/Chime.h
    rfxcomMessages/Chime.cpp
    rfxcomMessages/Current.h
@@ -41,6 +47,7 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/HomeConfort.cpp
    rfxcomMessages/Humidity.h
    rfxcomMessages/Humidity.cpp
+   rfxcomMessages/ICartelectronicSubtype.h
    rfxcomMessages/IChimeSubtype.h
    rfxcomMessages/ILighting2Subtype.h
    rfxcomMessages/ILighting5Subtype.h

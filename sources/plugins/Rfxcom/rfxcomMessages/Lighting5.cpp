@@ -42,7 +42,12 @@ CLighting5::CLighting5(boost::shared_ptr<yApi::IYPluginApi> context, unsigned ch
 CLighting5::CLighting5(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_rssi("rssi")
 {
-   CheckReceivedMessage(rbuf, rbufSize, pTypeLighting5, GET_RBUF_STRUCT_SIZE(LIGHTING5), DONT_CHECK_SEQUENCE_NUMBER);
+   CheckReceivedMessage(rbuf,
+                        rbufSize,
+                        pTypeLighting5,
+                        DONT_CHECK_SUBTYPE,
+                        GET_RBUF_STRUCT_SIZE(LIGHTING5),
+                        DONT_CHECK_SEQUENCE_NUMBER);
 
    createSubType(rbuf.LIGHTING5.subtype);
    m_id = rbuf.LIGHTING5.id1 << 16 | rbuf.LIGHTING5.id2 << 8 | rbuf.LIGHTING5.id3;

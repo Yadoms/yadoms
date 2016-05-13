@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Energy.h"
-#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/InvalidParameter.hpp>
 
 // Shortcut to yPluginApi namespace
@@ -12,7 +11,12 @@ namespace rfxcomMessages
 CEnergy::CEnergy(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_instantPower("instant"), m_totalPower("total"), m_batteryLevel("battery"), m_rssi("rssi")
 {
-   CheckReceivedMessage(rbuf, rbufSize, pTypeENERGY, GET_RBUF_STRUCT_SIZE(ENERGY), DONT_CHECK_SEQUENCE_NUMBER);
+   CheckReceivedMessage(rbuf,
+                        rbufSize,
+                        pTypeENERGY,
+                        DONT_CHECK_SUBTYPE,
+                        GET_RBUF_STRUCT_SIZE(ENERGY),
+                        DONT_CHECK_SEQUENCE_NUMBER);
 
    m_subType = rbuf.ENERGY.subtype;
 

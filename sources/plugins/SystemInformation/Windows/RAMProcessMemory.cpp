@@ -9,7 +9,7 @@
 
 CRAMProcessMemory::CRAMProcessMemory(const std::string & device)
    :m_device(device), 
-    m_keyword(new yApi::historization::CKByte("RAMProcessMemory"))
+    m_keyword(new yApi::historization::CKByte("YadomsRAMProcessMemory"))
 {}
 
 CRAMProcessMemory::~CRAMProcessMemory()
