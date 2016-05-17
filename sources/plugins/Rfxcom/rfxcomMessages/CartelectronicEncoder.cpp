@@ -9,31 +9,23 @@ namespace rfxcomMessages
    CCartelectronicEncoder::CCartelectronicEncoder(const RBUF& rbuf,
                                                   size_t rbufSize)
       : m_id(0),
-        m_Counter1(new yApi::historization::CCounter("counter1")),
-        m_Counter2(new yApi::historization::CCounter("counter2"))
+        m_counter1(boost::make_shared<yApi::historization::CCounter>("counter1")),
+        m_counter2(boost::make_shared<yApi::historization::CCounter>("counter2")),
+        m_keywords({m_counter1, m_counter2})
    {
       CheckReceivedMessage(rbuf, rbufSize, pTypeCARTELECTRONIC, sTypeCEencoder, GET_RBUF_STRUCT_SIZE(CEENCODER), DONT_CHECK_SEQUENCE_NUMBER);
 
-      m_Counter1->set((rbuf.CEENCODER.counter1_0 << 24) + (rbuf.CEENCODER.counter1_1 << 16) + (rbuf.CEENCODER.counter1_2 << 8) + (rbuf.CEENCODER.counter1_3));
-      m_Counter2->set((rbuf.CEENCODER.counter2_0 << 24) + (rbuf.CEENCODER.counter2_1 << 16) + (rbuf.CEENCODER.counter2_2 << 8) + (rbuf.CEENCODER.counter2_3));
+      m_counter1->set((rbuf.CEENCODER.counter1_0 << 24) + (rbuf.CEENCODER.counter1_1 << 16) + (rbuf.CEENCODER.counter1_2 << 8) + (rbuf.CEENCODER.counter1_3));
+      m_counter2->set((rbuf.CEENCODER.counter2_0 << 24) + (rbuf.CEENCODER.counter2_1 << 16) + (rbuf.CEENCODER.counter2_2 << 8) + (rbuf.CEENCODER.counter2_3));
    }
 
    CCartelectronicEncoder::~CCartelectronicEncoder()
    {
    }
 
-   void CCartelectronicEncoder::declare(boost::shared_ptr<yApi::IYPluginApi> api,
-                                        const std::string& deviceName) const
+   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CCartelectronicEncoder::keywords() const
    {
-      // Create device and keywords if needed
-      api->declareKeyword(deviceName, *m_Counter1);
-      api->declareKeyword(deviceName, *m_Counter2);
-   }
-
-   void CCartelectronicEncoder::historize(std::vector<boost::shared_ptr<yApi::historization::IHistorizable>>& KeywordList) const
-   {
-      KeywordList.push_back(m_Counter1);
-      KeywordList.push_back(m_Counter2);
+      return m_keywords;
    }
 
    std::string CCartelectronicEncoder::idFromProtocol(const RBUF& rbuf) const

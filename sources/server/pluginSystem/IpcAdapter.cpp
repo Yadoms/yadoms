@@ -187,7 +187,7 @@ namespace pluginSystem
       case toYadoms::msg::kHistorizeData: processHistorizeData(toYadomsProtoBuffer.historizedata());
          break;
       default:
-         throw shared::exception::CInvalidParameter("message");
+         throw shared::exception::CInvalidParameter("message : " + toYadomsProtoBuffer.GetDescriptor()->name());
       }
    }
 
@@ -247,8 +247,13 @@ namespace pluginSystem
 
    void CIpcAdapter::processDeclareDevice(const toYadoms::DeclareDevice& msg) const
    {
+      std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> > keywords;
+      for (auto keyword = msg.keywords().begin(); keyword != msg.keywords().end(); ++keyword)
+         keywords.push_back(boost::make_shared<CFromPluginHistorizer>(*keyword));
+
       m_pluginApi->declareDevice(msg.device(),
                                  msg.model(),
+                                 keywords,
                                  msg.has_details() ? shared::CDataContainer(msg.details()) : shared::CDataContainer::EmptyContainer);
    }
 
@@ -286,7 +291,7 @@ namespace pluginSystem
 
    void CIpcAdapter::processHistorizeData(const toYadoms::HistorizeData& msg) const
    {
-      std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > dataVect;
+      std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> > dataVect;
       for (auto value = msg.value().begin(); value != msg.value().end(); ++value)
       {
          dataVect.push_back(boost::make_shared<CFromPluginHistorizer>(value->historizable(), value->formattedvalue()));

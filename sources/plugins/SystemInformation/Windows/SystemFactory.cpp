@@ -46,7 +46,7 @@ void CSystemFactory::OnSpeedUpdate ( boost::shared_ptr<yApi::IYPluginApi> api )
 {
     std::cout << "Speed Updates" << std::endl;
 
-    std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > KeywordList;
+    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > KeywordList;
 
     m_CPULoad.read();
     m_YadomsCPULoad.read();
@@ -61,7 +61,7 @@ void CSystemFactory::OnSlowUpdate ( boost::shared_ptr<yApi::IYPluginApi> api , c
 {
     std::cout << "Slow Updates" << std::endl;
 
-    std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > KeywordList;
+    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > KeywordList;
 
     m_MemoryLoad.read();
     m_RAMProcessMemory.read();
@@ -88,7 +88,7 @@ void CSystemFactory::OnConfigurationUpdate ( boost::shared_ptr<yApi::IYPluginApi
 {
       if (configuration.IsAdvancedEnabled())
       {
-		 std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > KeywordList;
+		 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > KeywordList;
 
          m_RAMProcessMemory.declareKeywords     (api, details);
          m_VirtualProcessMemory.declareKeywords (api, details);

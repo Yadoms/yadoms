@@ -85,7 +85,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case yApi::IYPluginApi::kEventDeviceCommand:
          {
             // A command was received from Yadoms
-            auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
+            auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
             std::cout << "Command received from Yadoms : " << yApi::IDeviceCommand::toString(command) << std::endl;
             break;
          }
@@ -134,7 +134,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
       case yApi::IYPluginApi::kEventManuallyDeviceCreation:
          {
-            boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> creation = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest>>();
+            boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> creation = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> >();
             try
             {
                // Yadoms asks for device creation
@@ -142,7 +142,10 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                auto dyn = creation->getData().getConfiguration().get<std::string>("dynamicSection.content.interval");
 
                auto devId = (boost::format("%1%_%2%_0x%3$08X") % sni % dyn % shared::tools::CRandom::generateNbBits(26, false)).str();
-               api->declareDevice(devId, "FakeDevice_" + devId, creation->getData().getConfiguration());
+               api->declareDevice(devId,
+                                  "FakeDevice_" + devId,
+                                  std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >(),
+                                  creation->getData().getConfiguration());
 
                yApi::historization::CSwitch manualSwitch("manualSwitch");
                api->declareKeyword(devId, manualSwitch);
@@ -159,7 +162,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case yApi::IYPluginApi::kBindingQuery:
          {
             // Yadoms ask for a binding query 
-            boost::shared_ptr<yApi::IBindingQueryRequest> data = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IBindingQueryRequest>>();
+            boost::shared_ptr<yApi::IBindingQueryRequest> data = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IBindingQueryRequest> >();
             if (data->getData().getQuery() == "test")
             {
                shared::CDataContainer ev;
@@ -194,7 +197,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case yApi::IYPluginApi::kEventExtraCommand:
          {
             // Command was received from Yadoms
-            auto extraCommand = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IExtraCommand>>();
+            auto extraCommand = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IExtraCommand> >();
 
             if (extraCommand)
             {

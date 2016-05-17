@@ -6,7 +6,8 @@ namespace yApi = shared::plugin::yPluginApi;
 namespace rfxcomMessages
 {
    CChimeByronMp001::CChimeByronMp001()
-      : m_event("event")
+      : m_event(boost::make_shared<shared::plugin::yPluginApi::historization::CEvent>("event")),
+        m_keywords({m_event})
    {
    }
 
@@ -15,14 +16,9 @@ namespace rfxcomMessages
       return "Byron MP001";
    }
 
-   void CChimeByronMp001::declare(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const
+   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CChimeByronMp001::keywords() const
    {
-      api->declareKeyword(deviceName, m_event);
-   }
-
-   void CChimeByronMp001::historize(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const
-   {
-      api->historizeData(deviceName, m_event);
+      return m_keywords;
    }
 
    void CChimeByronMp001::set(const std::string& /*yadomsCommand*/, const shared::CDataContainer& /*deviceDetails*/)
@@ -40,9 +36,9 @@ namespace rfxcomMessages
 
    void CChimeByronMp001::idToProtocol(unsigned int id, unsigned char& id1, unsigned char& id2, unsigned char& sound) const
    {
-      sound = (unsigned char) (0xFF & (id >> 16));
-      id1 = (unsigned char) (0xFF & (id >> 8));
-      id2 = (unsigned char) (0xFF & id);
+      sound = static_cast<unsigned char>(0xFF & (id >> 16));
+      id1 = static_cast<unsigned char>(0xFF & (id >> 8));
+      id2 = static_cast<unsigned char>(0xFF & id);
    }
 
    void CChimeByronMp001::setFromProtocolState(unsigned char cmd)

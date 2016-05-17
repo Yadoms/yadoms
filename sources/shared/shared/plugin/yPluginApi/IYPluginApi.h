@@ -124,14 +124,16 @@ namespace shared
             virtual CDataContainer getDeviceDetails(const std::string& device) const = 0;
 
             //-----------------------------------------------------
-            ///\brief Declare new device to Yadoms
+            ///\brief Declare new device to Yadoms, with its keywords (all-in-one function)
             ///\param    [in]    device            The device name
-            ///\param    [in]    model              The device model or description (ex : "Oregon Scientific CN185")
+            ///\param    [in]    model             The device model or description (ex : "Oregon Scientific CN185")
+            ///\param    [in]    keywords          List of keywords to declare for this device
             ///\param    [in]    details           Device details
             ///\throw shared::exception::CEmptyResult if device already exist
             //-----------------------------------------------------
             virtual void declareDevice(const std::string& device,
                                        const std::string& model,
+                                       const std::vector<boost::shared_ptr<const historization::IHistorizable> >& keywords = std::vector<boost::shared_ptr<const historization::IHistorizable> >(),
                                        const CDataContainer& details = CDataContainer::EmptyContainer) = 0;
 
 
@@ -257,7 +259,7 @@ namespace shared
             ///\param    [in]    datalist          The list of historizable data
             //-----------------------------------------------------    
             virtual void historizeData(const std::string& device,
-                                       const std::vector<boost::shared_ptr<historization::IHistorizable> >& dataVect) = 0;
+                                       const std::vector<boost::shared_ptr<const historization::IHistorizable> >& dataVect) = 0;
 
             //----------------------------------------------------------------------------------------------------------------
             //----------------------------------------------------------------------------------------------------------------
@@ -309,3 +311,5 @@ namespace shared
 } // namespace shared::plugin::yPluginApi	
 
 
+// TODO harmoniser les types de passages de IHistorizable (tout en shared_ptr)
+// TODO ajouter un declareKeywords(const std::string& device, const std::vector<boost::shared_ptr<const historization::IHistorizable> >& keywords)

@@ -23,7 +23,10 @@ namespace rfxcomMessages
       /// \note                           Use this constructor for received messages (to historize received data to Yadoms)
       /// \throw                          shared::exception::CInvalidParameter
       //--------------------------------------------------------------
-      CBbq(boost::shared_ptr<yApi::IYPluginApi> api, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
+      CBbq(boost::shared_ptr<yApi::IYPluginApi> api,
+           const RBUF& rbuf,
+           size_t rbufSize,
+           boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
@@ -31,11 +34,11 @@ namespace rfxcomMessages
       virtual ~CBbq();
 
       // IRfxcomMessage implementation
-      virtual boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const;
-      virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const;
-      virtual const std::string& getDeviceName() const;
+      boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const override;
+      void historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const override;
+      const std::string& getDeviceName() const override;
       // [END] IRfxcomMessage implementation
-      
+
    protected:
       //--------------------------------------------------------------
       /// \brief	Global initialization method
@@ -77,21 +80,28 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	The food temperature (°C)
       //--------------------------------------------------------------
-      yApi::historization::CTemperature m_foodTemperature;
+      boost::shared_ptr<yApi::historization::CTemperature> m_foodTemperature;
 
       //--------------------------------------------------------------
       /// \brief	The BBQ temperature (°C)
       //--------------------------------------------------------------
-      yApi::historization::CTemperature m_bbqTemperature;
+      boost::shared_ptr<yApi::historization::CTemperature> m_bbqTemperature;
 
       //--------------------------------------------------------------
       /// \brief	The battery level (percent)
       //--------------------------------------------------------------
-      yApi::historization::CBatteryLevel m_batteryLevel;
+      boost::shared_ptr<yApi::historization::CBatteryLevel> m_batteryLevel;
 
       //--------------------------------------------------------------
       /// \brief	The RSSI (percent)
       //--------------------------------------------------------------
-      yApi::historization::CRssi m_rssi;
+      boost::shared_ptr<yApi::historization::CRssi> m_rssi;
+
+      //--------------------------------------------------------------
+      /// \brief	The keywords list to historize in one step for better performances
+      //--------------------------------------------------------------
+      mutable std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_keywords;
    };
 } // namespace rfxcomMessages
+
+

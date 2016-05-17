@@ -32,7 +32,8 @@ message KeywordExitsRequest {
 message DeclareDevice {
 	required string device = 1;
 	required string model = 2;
-	optional string details = 3;
+	repeated Historizable keywords = 3;
+	optional string details = 4;
 }
 
 message Capacity {

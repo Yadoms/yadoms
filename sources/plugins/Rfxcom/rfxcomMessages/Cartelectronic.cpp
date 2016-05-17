@@ -13,10 +13,12 @@ namespace rfxcomMessages
                                     const RBUF& rbuf,
                                     size_t rbufSize,
                                     boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider):
-      m_rssi(new yApi::historization::CRssi("rssi")),
-      m_batteryLevel(new yApi::historization::CBatteryLevel("battery"))
+      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+      m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
+      m_keywords({m_rssi, m_batteryLevel})
    {
       createSubType(rbuf.TIC.subtype, rbuf, rbufSize);
+
       m_id = m_subTypeManager->idFromProtocol(rbuf);
       m_batteryLevel->set(NormalizeBatteryLevel(m_subTypeManager->BatteryLevelFromProtocol(rbuf)));
       m_rssi->set(NormalizeRssiLevel(m_subTypeManager->RssiFromProtocol(rbuf)));
@@ -42,6 +44,7 @@ namespace rfxcomMessages
       default:
          throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
       }
+      m_keywords.insert(m_keywords.end(), m_subTypeManager->keywords().begin(), m_subTypeManager->keywords().end());
    }
 
    void CCartelectronic::declare(boost::shared_ptr<yApi::IYPluginApi> api) const
@@ -57,11 +60,7 @@ namespace rfxcomMessages
          details.set("subType", m_subType);
          details.set("id", m_id);
 
-         api->declareDevice(m_id, m_subTypeManager->getModel(), details);
-
-         m_subTypeManager->declare(api, m_id);
-         api->declareKeyword(m_id, *m_batteryLevel);
-         api->declareKeyword(m_id, *m_rssi);
+         api->declareDevice(m_id, m_subTypeManager->getModel(), m_keywords, details);
       }
    }
 
@@ -72,14 +71,7 @@ namespace rfxcomMessages
 
    void CCartelectronic::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
    {
-      std::vector<boost::shared_ptr<yApi::historization::IHistorizable>> KeywordList;
-
-      KeywordList.push_back(m_batteryLevel);
-      KeywordList.push_back(m_rssi);
-
-      m_subTypeManager->historize(KeywordList);
-
-      api->historizeData(m_id, KeywordList);
+      api->historizeData(m_id, m_keywords);
    }
 
    const std::string& CCartelectronic::getDeviceName() const

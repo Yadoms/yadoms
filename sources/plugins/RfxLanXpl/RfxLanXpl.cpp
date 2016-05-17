@@ -229,7 +229,10 @@ void CRfxLanXpl::OnXplMessageReceived(xplcore::CXplMessage & xplMessage, boost::
                details.set("writingProtocol", deviceAddress.getWritingXplProtocol().toString());
                details.set("innerDetails", deviceAddress.getInnerDetails());
                details.set("source", realSource);
-               api->declareDevice(deviceAddress.getId(), deviceAddress.getCommercialName(), details);
+               api->declareDevice(deviceAddress.getId(),
+                                  deviceAddress.getCommercialName(),
+                                  std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>(),
+                                  details);
             }
 
             //create message keywords in database
@@ -396,7 +399,10 @@ void CRfxLanXpl::OnCreateDeviceRequest(boost::shared_ptr<yApi::IManuallyDeviceCr
                details.set("readingProtocol", deviceAddress.getReadingXplProtocol().toString());
                details.set("writingProtocol", deviceAddress.getWritingXplProtocol().toString());
                details.set("source", std::string("yadomssource!"));
-               api->declareDevice(deviceAddress.getId(), deviceAddress.getCommercialName(), details);
+               api->declareDevice(deviceAddress.getId(),
+                                  deviceAddress.getCommercialName(),
+                                  std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>(),
+                                  details);
             }
 
             //create message keywords in database

@@ -29,8 +29,7 @@ namespace rfxcomMessages
       virtual ~CCartelectronicTIC();
 
       // ICartelectronicSubtype implementation
-      void declare(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const override;
-      void historize(std::vector<boost::shared_ptr<yApi::historization::IHistorizable>>& KeywordList) const override;
+      const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywords() const override;
       std::string idFromProtocol(const RBUF& rbuf) const override;
       char BatteryLevelFromProtocol(const RBUF& rbuf) override;
       char RssiFromProtocol(const RBUF& rbuf) override;
@@ -74,17 +73,22 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	The keyword Counter 1
       //--------------------------------------------------------------
-      boost::shared_ptr<yApi::historization::CEnergy> m_Counter1;
+      boost::shared_ptr<yApi::historization::CEnergy> m_counter1;
 
       //--------------------------------------------------------------
       /// \brief	The keyword Counter 2
       //--------------------------------------------------------------
-      boost::shared_ptr<yApi::historization::CEnergy> m_Counter2;
+      boost::shared_ptr<yApi::historization::CEnergy> m_counter2;
 
       //--------------------------------------------------------------
       /// \brief	The keyword Counter 2
       //--------------------------------------------------------------
-      boost::shared_ptr<yApi::historization::CApparentPower> m_ApparentePower;
+      boost::shared_ptr<yApi::historization::CApparentPower> m_apparentePower;
+
+      //--------------------------------------------------------------
+      /// \brief	The keywords list to historize in one step for better performances
+      //--------------------------------------------------------------
+      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
    };
 } // namespace rfxcomMessages
 

@@ -7,12 +7,10 @@ CFakeCounter::CFakeCounter(const std::string& deviceName)
                                                                         yApi::EKeywordAccessMode::kGet,
                                                                         yApi::historization::EMeasureType::kIncrement)),
      m_totalCount(boost::make_shared<yApi::historization::CCounter>("totalCounter")),
+     m_historizers({m_incrementCount , m_totalCount}),
      m_dist(0, 15)
 {
    m_totalCount->set(0);
-
-   m_historizers.push_back(m_incrementCount);
-   m_historizers.push_back(m_totalCount);
 }
 
 CFakeCounter::~CFakeCounter()
@@ -21,14 +19,9 @@ CFakeCounter::~CFakeCounter()
 
 void CFakeCounter::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
+   // Declare device and associated keywords (= values managed by this device)
    if (!api->deviceExists(m_deviceName))
-      api->declareDevice(m_deviceName, getModel());
-
-   // Declare associated keywords (= values managed by this device)
-   if (!api->keywordExists(m_deviceName, *m_incrementCount))
-      api->declareKeyword(m_deviceName, *m_incrementCount);
-   if (!api->keywordExists(m_deviceName, *m_totalCount))
-      api->declareKeyword(m_deviceName, *m_totalCount);
+      api->declareDevice(m_deviceName, getModel(), m_historizers);
 }
 
 void CFakeCounter::read()

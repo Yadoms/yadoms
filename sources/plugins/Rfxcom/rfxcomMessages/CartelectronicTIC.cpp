@@ -9,10 +9,11 @@ namespace rfxcomMessages
    CCartelectronicTIC::CCartelectronicTIC(const RBUF& rbuf,
                                           size_t rbufSize)
       : m_id(0),
-        m_ApparentePower(boost::make_shared<yApi::historization::CApparentPower>("ApparentPower"))
+        m_apparentePower(boost::make_shared<yApi::historization::CApparentPower>("ApparentPower")),
+        m_keywords({m_apparentePower})
    {
-      std::string NameCounter1 = "";
-      std::string NameCounter2 = "";
+      std::string NameCounter1;
+      std::string NameCounter2;
 
       CheckReceivedMessage(rbuf, rbufSize, pTypeCARTELECTRONIC, sTypeTIC, GET_RBUF_STRUCT_SIZE(TIC), DONT_CHECK_SEQUENCE_NUMBER);
 
@@ -56,37 +57,27 @@ namespace rfxcomMessages
          throw shared::exception::COutOfRange("Cartelectronic : SubscribeContract is not supported");
       }
 
-      m_Counter1 = boost::make_shared<yApi::historization::CEnergy>(NameCounter1);
-      m_Counter2 = boost::make_shared<yApi::historization::CEnergy>(NameCounter2);
+      m_counter1 = boost::make_shared<yApi::historization::CEnergy>(NameCounter1);
+      m_keywords.push_back(m_counter1);
+      if (!NameCounter2.empty())
+      {
+         m_counter2 = boost::make_shared<yApi::historization::CEnergy>(NameCounter2);
+         m_keywords.push_back(m_counter2);
+      }
 
-      m_Counter1->set((rbuf.TIC.counter1_0 << 24) + (rbuf.TIC.counter1_1 << 16) + (rbuf.TIC.counter1_2 << 8) + (rbuf.TIC.counter1_3));
-      m_Counter2->set((rbuf.TIC.counter2_0 << 24) + (rbuf.TIC.counter2_1 << 16) + (rbuf.TIC.counter2_2 << 8) + (rbuf.TIC.counter2_3));
+      m_counter1->set((rbuf.TIC.counter1_0 << 24) + (rbuf.TIC.counter1_1 << 16) + (rbuf.TIC.counter1_2 << 8) + (rbuf.TIC.counter1_3));
+      m_counter2->set((rbuf.TIC.counter2_0 << 24) + (rbuf.TIC.counter2_1 << 16) + (rbuf.TIC.counter2_2 << 8) + (rbuf.TIC.counter2_3));
 
-      m_ApparentePower->set((rbuf.TIC.power_H << 8) + rbuf.TIC.power_L);
+      m_apparentePower->set((rbuf.TIC.power_H << 8) + rbuf.TIC.power_L);
    }
 
    CCartelectronicTIC::~CCartelectronicTIC()
    {
    }
-
-   void CCartelectronicTIC::declare(boost::shared_ptr<yApi::IYPluginApi> api,
-                                    const std::string& deviceName) const
+   
+   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CCartelectronicTIC::keywords() const
    {
-      // Create keywords if needed
-      api->declareKeyword(deviceName, *m_Counter1);
-      api->declareKeyword(deviceName, *m_ApparentePower);
-
-      if (m_SubscribeContract != OP_BASE)
-         api->declareKeyword(deviceName, *m_Counter2);
-   }
-
-   void CCartelectronicTIC::historize(std::vector<boost::shared_ptr<yApi::historization::IHistorizable>>& KeywordList) const
-   {
-      KeywordList.push_back(m_Counter1);
-      KeywordList.push_back(m_ApparentePower);
-
-      if (m_SubscribeContract != OP_BASE)
-         KeywordList.push_back(m_Counter2);
+      return m_keywords;
    }
 
    std::string CCartelectronicTIC::idFromProtocol(const RBUF& rbuf) const

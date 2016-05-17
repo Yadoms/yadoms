@@ -41,12 +41,19 @@ namespace pluginSystem
       return m_deviceManager->getDevice(getPluginId(), device)->Details;
    }
 
-   void CYPluginApiImplementation::declareDevice(const std::string& device, const std::string& model, const shared::CDataContainer& details)
+   void CYPluginApiImplementation::declareDevice(const std::string& device,
+                                                 const std::string& model,
+                                                 const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >& keywords,
+                                                 const shared::CDataContainer& details)
    {
       if (deviceExists(device))
          throw shared::exception::CEmptyResult((boost::format("Error declaring device %1% : already exists") % device).str());
 
       m_deviceManager->createDevice(getPluginId(), device, device, model, details);
+
+      for (auto keyword = keywords.begin(); keyword != keywords.end(); ++keyword)
+         if (!keywordExists(device, *(keyword->get())))
+            declareKeyword(device, *(keyword->get()));
    }
 
    bool CYPluginApiImplementation::keywordExists(const std::string& device, const std::string& keyword) const
@@ -125,15 +132,14 @@ namespace pluginSystem
    }
 
    void CYPluginApiImplementation::historizeData(const std::string& device,
-                                                 const std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> >& dataVect)
+                                                 const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >& dataVect)
    {
       try
       {
          std::vector<int> keywordIdList;
-         std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable>>::const_iterator iter;
 
          boost::shared_ptr<const database::entities::CDevice> deviceEntity = m_deviceManager->getDevice(getPluginId(), device);
-         for (iter = dataVect.begin(); iter != dataVect.end(); ++iter)
+         for (auto iter = dataVect.begin(); iter != dataVect.end(); ++iter)
          {
             boost::shared_ptr<const database::entities::CKeyword> keywordEntity = m_keywordRequester->getKeyword(deviceEntity->Id, (*iter)->getKeyword());
             keywordIdList.push_back(keywordEntity->Id);

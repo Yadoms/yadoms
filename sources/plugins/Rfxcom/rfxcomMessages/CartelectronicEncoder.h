@@ -30,8 +30,7 @@ namespace rfxcomMessages
       virtual ~CCartelectronicEncoder();
 
       // ICartelectronicSubtype implementation
-      void declare(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const override;
-      void historize(std::vector<boost::shared_ptr<yApi::historization::IHistorizable>>& KeywordList) const override;
+      const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywords() const override;
       std::string idFromProtocol(const RBUF& rbuf) const override;
       char BatteryLevelFromProtocol(const RBUF& rbuf) override;
       char RssiFromProtocol(const RBUF& rbuf) override;
@@ -48,12 +47,17 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	The keyword Counter 1
       //--------------------------------------------------------------
-      boost::shared_ptr<yApi::historization::CCounter> m_Counter1;
+      boost::shared_ptr<yApi::historization::CCounter> m_counter1;
 
       //--------------------------------------------------------------
       /// \brief	The keyword Counter 2
       //--------------------------------------------------------------
-      boost::shared_ptr<yApi::historization::CCounter> m_Counter2;
+      boost::shared_ptr<yApi::historization::CCounter> m_counter2;
+
+      //--------------------------------------------------------------
+      /// \brief	The keywords list to historize in one step for better performances
+      //--------------------------------------------------------------
+      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
    };
 } // namespace rfxcomMessages
 

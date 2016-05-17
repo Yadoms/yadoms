@@ -122,7 +122,10 @@ void CTransceiver::CreateDevice(std::string CounterId)
    m_DeviceName = CounterId;
 
    if (!m_api->deviceExists(CounterId))
-      m_api->declareDevice(CounterId, "TeleInfoUSB : Id = " + CounterId, m_DeviceDetails);
+      m_api->declareDevice(CounterId,
+                           "TeleInfoUSB : Id = " + CounterId,
+                           std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >(),
+                           m_DeviceDetails);
 
    //Set the counter id for each keyword
    m_KeywordDetails.set("id", CounterId);

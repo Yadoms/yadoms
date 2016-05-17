@@ -80,6 +80,11 @@ namespace rfxcomMessages
       /// \brief	The battery level (percent)
       //--------------------------------------------------------------
       boost::shared_ptr<yApi::historization::CBatteryLevel> m_batteryLevel;
+
+      //--------------------------------------------------------------
+      /// \brief	The keywords list to historize in one step for better performances
+      //--------------------------------------------------------------
+      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
    };
 } // namespace rfxcomMessages
 

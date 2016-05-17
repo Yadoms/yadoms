@@ -186,7 +186,7 @@ void CWeatherConditions::Parse(boost::shared_ptr<yApi::IYPluginApi> api, const I
       }
       else
       {
-         std::vector<boost::shared_ptr<yApi::historization::IHistorizable>> KeywordList;
+         std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > KeywordList;
 
          if (WUConfiguration.IsConditionsIndividualKeywordsEnabled())
          {

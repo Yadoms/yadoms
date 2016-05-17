@@ -20,18 +20,10 @@ namespace rfxcomMessages
       }
 
       //--------------------------------------------------------------
-      /// \brief	                        Declare the keyword
-      /// \param[in] api                  Yadoms APi context
-      /// \param[in] command              The device name associated to keyword
+      /// \brief	                        Get the keywords
+      /// \return                         The keyword list
       //--------------------------------------------------------------
-      virtual void declare(boost::shared_ptr<yApi::IYPluginApi> api,
-                           const std::string& deviceName) const = 0;
-
-      //--------------------------------------------------------------
-      /// \brief	                        Enter a keyword in a list to historize
-      /// \param[in] KeywordList          The keywordList
-      //--------------------------------------------------------------
-      virtual void historize(std::vector<boost::shared_ptr<yApi::historization::IHistorizable>>& KeywordList) const = 0;
+      virtual const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywords() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	                        Get ID from protocol data

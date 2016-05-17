@@ -21,8 +21,7 @@ namespace rfxcomMessages
 
       // ILighting2Subtype implementation
       std::string getModel() const override;
-      void declare(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const override;
-      void historize(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const override;
+      const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywords() const override;
       void set(const std::string& yadomsCommand, const shared::CDataContainer& deviceDetails) override;
       void reset() override;
       unsigned int idFromProtocol(unsigned char id1, unsigned char id2, unsigned char sound) override;
@@ -35,7 +34,7 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	                        The keywords
       //--------------------------------------------------------------
-      yApi::historization::CEvent m_event;
+      boost::shared_ptr<yApi::historization::CEvent> m_event;
 
       //--------------------------------------------------------------
       /// \brief	The sound to play (non-historizable)
@@ -48,6 +47,11 @@ namespace rfxcomMessages
          kSolo,
          kDefaultSound = kTubular3Notes
       } m_sound;
+
+      //--------------------------------------------------------------
+      /// \brief	The keywords list to historize in one step for better performances
+      //--------------------------------------------------------------
+      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
    };
 } // namespace rfxcomMessages
 

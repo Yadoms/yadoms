@@ -121,7 +121,7 @@ void CForecastDays::Parse(boost::shared_ptr<yApi::IYPluginApi> api, const IWUCon
 
       if (!m_CatchError)
       {
-         std::vector<boost::shared_ptr<yApi::historization::IHistorizable>> KeywordList;
+         std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > KeywordList;
 
          if (WUConfiguration.IsForecast10DaysEnabled())
          {

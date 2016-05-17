@@ -30,7 +30,8 @@ CControllerValue::~CControllerValue()
 
 
 CFakeController::CFakeController(const std::string& deviceName)
-   : m_deviceName(deviceName), m_currentValues("controllerValue")
+   : m_deviceName(deviceName),
+     m_currentValues("controllerValue")
 {
 }
 

@@ -7,8 +7,9 @@ namespace yApi = shared::plugin::yPluginApi;
 namespace rfxcomMessages
 {
    CChimeByronSx::CChimeByronSx()
-      : m_event("event"),
-        m_sound(kDefaultSound)
+      : m_event(boost::make_shared<shared::plugin::yPluginApi::historization::CEvent>("event")),
+        m_sound(kDefaultSound),
+        m_keywords({m_event})
    {
    }
 
@@ -17,14 +18,9 @@ namespace rfxcomMessages
       return "Byron SX";
    }
 
-   void CChimeByronSx::declare(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const
+   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CChimeByronSx::keywords() const
    {
-      api->declareKeyword(deviceName, m_event);
-   }
-
-   void CChimeByronSx::historize(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const
-   {
-      api->historizeData(deviceName, m_event);
+      return m_keywords;
    }
 
    void CChimeByronSx::set(const std::string& /*yadomsCommand*/, const shared::CDataContainer& deviceDetails)

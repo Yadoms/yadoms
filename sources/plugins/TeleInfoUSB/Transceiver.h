@@ -75,7 +75,7 @@ private:
    /// \brief  Keywords list
    //--------------------------------------------------------------
 
-   std::vector<boost::shared_ptr<yApi::historization::IHistorizable>> m_KeywordList;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_KeywordList;
 
    //--------------------------------------------------------------
    /// \brief  Details for keywords
