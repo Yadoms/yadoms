@@ -9,9 +9,10 @@ namespace teleInfoUSB { namespace specificHistorizers
    ///\brief  The color of the next period
    //-----------------------------------------------------   
    DECLARE_ENUM_HEADER(EColor,
+      ((NOTDEFINED))
       ((BLUE))
       ((WHITE))
-	  ((RED))
+      ((RED))
    );
 
    //-----------------------------------------------------

@@ -33,9 +33,17 @@ Blockly.Validation.listErroneousBlocks = [];
  * Define a block as invalid
  * @param block The block to invalidate
  */
-Blockly.Validation.setBlockInvalid = function (block) {
-    if (block != null && $.isFunction(block.addError)) {
-        block.addError();
+Blockly.Validation.setBlockInvalid = function (block, message) {
+    if (block != null) {
+		if($.isFunction(block.addError)) {
+			block.addError();
+		}
+		
+		if(message && message !== "") {
+			block.setWarningText($.t("blockly.validation." + message));
+			block.warning.setVisible(true);
+		}
+
         Blockly.Validation.listErroneousBlocks.push(block);
     }
 };
@@ -44,9 +52,12 @@ Blockly.Validation.setBlockInvalid = function (block) {
  * Clear the invalidated blocks list
  */
 Blockly.Validation.clearInvalidBlocks = function () {
-    $.each(Blockly.Validation.listErroneousBlocks, function (index, value) {
-        if (value != null && $.isFunction(value.removeError)) {
-            value.removeError();
+    $.each(Blockly.Validation.listErroneousBlocks, function (index, block) {
+        if (block != null) {
+			if($.isFunction(block.removeError)) {
+				block.removeError();
+			}
+			block.setWarningText(null);
         }
     });
 
@@ -66,25 +77,31 @@ Blockly.Validation.isBlockValid = function (block) {
 
         if ($.isFunction(block.isValid)) {
             currentBlockValid = block.isValid();
-            if (!currentBlockValid) {
-                Blockly.Validation.setBlockInvalid(block);
+            if (!currentBlockValid.isValid) {
+                Blockly.Validation.setBlockInvalid(block, currentBlockValid.message);
             }
         }
 
-        if (currentBlockValid) {
-            $.each(block.inputList, function(index, subBlock) {
-                if (subBlock.connection != null && subBlock.isVisible()) {
-                    if ((subBlock.connection.targetConnection == null || subBlock.connection.targetConnection == undefined) && subBlock.type === Blockly.INPUT_VALUE) {
-                        Blockly.Validation.setBlockInvalid(subBlock.sourceBlock_);
-                        currentBlockValid = false;
-                    } else {
-                        if (subBlock.connection && subBlock.connection.targetConnection && !Blockly.Validation.isBlockValid(subBlock.connection.targetConnection.sourceBlock_))
-                            currentBlockValid = false;
-                    }
-                }
-                return currentBlockValid;
+         if (currentBlockValid) {
+				
+		    //check for any empty input
+		    $.each(block.inputList, function(index, subBlock) {
+			   if (subBlock.connection != null && subBlock.isVisible()) {
+			      if ((subBlock.connection.targetConnection == null || subBlock.connection.targetConnection == undefined) && subBlock.type === Blockly.INPUT_VALUE) {
+				     Blockly.Validation.setBlockInvalid(subBlock.sourceBlock_, "missingInputBlock");
+				     currentBlockValid = false;
+			      }
+			   }
+		    });		  
+			 
+			 
+			//check that all childs are valid
+			$.each(block.getChildren(), function(index, subBlock) {
+				if(!Blockly.Validation.isBlockValid(subBlock))
+					currentBlockValid = false;
             });
         }
+		
         return currentBlockValid;
     }
     return false;
@@ -120,8 +137,10 @@ Blockly.Validation.Init = function (workspace, maxTopBlocks) {
     if (maxTopBlocks != undefined && $.isNumeric(maxTopBlocks))
         Blockly.Validation.maxTopBlocks_ = maxTopBlocks;
 
-    workspace.addChangeListener(function () {
-        Blockly.Validation.clearInvalidBlocks();
+    workspace.addChangeListener(function (event) {
+		if(event.element !== "warningOpen") {
+			Blockly.Validation.clearInvalidBlocks();
+		}
     });
 };
 
@@ -153,13 +172,12 @@ Blockly.Validation.getRealTopBlocks_ = function (workspace) {
  * @param callback The callback for the validation result
  */
 Blockly.Validation.validate = function (workspace, callback) {
-
     var topBlocks = Blockly.Validation.getRealTopBlocks_(workspace);
 
     if (topBlocks.length > Blockly.Validation.maxTopBlocks_) {
 
         $.each(topBlocks, function (index, value) {
-            Blockly.Validation.setBlockInvalid(value);
+            Blockly.Validation.setBlockInvalid(value, "errorMaxTopBlock");
         });
         callback(false, "Only " + Blockly.Validation.maxTopBlocks_ + " max top block is allowed");
     }

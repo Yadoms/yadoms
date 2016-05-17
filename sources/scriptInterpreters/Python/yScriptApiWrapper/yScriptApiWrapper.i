@@ -26,7 +26,7 @@
 
 %include stl.i
 
-// Used by IYScriptApi::waitForNextAcquisitions
+// Used by IYScriptApi::waitForEvent
 %template() std::vector<int>;
 %template() std::pair<int, std::string>;
 

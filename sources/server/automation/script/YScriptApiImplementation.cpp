@@ -279,6 +279,17 @@ shared::script::yScriptApi::CWaitForEventResult CYScriptApiImplementation::waitF
    }
 }
 
+std::vector<int> CYScriptApiImplementation::getKeywordsByCapacity(const std::string & capacity) const
+{
+   //get list of keywords
+   std::vector<boost::shared_ptr<database::entities::CKeyword> > keywordMatchingCapacity = m_dbKeywordRequester->getKeywordsMatchingCapacity(capacity);
+
+   //extract only id
+   std::vector<int> result;
+   for (std::vector<boost::shared_ptr<database::entities::CKeyword> >::iterator i = keywordMatchingCapacity.begin(); i != keywordMatchingCapacity.end(); ++i)
+      result.push_back((*i)->Id());
+   return result;
+}
 
 void CYScriptApiImplementation::writeKeyword(int keywordId, const std::string& newState)
 {
@@ -307,6 +318,26 @@ std::string CYScriptApiImplementation::getInfo(EInfoKeys key) const
    }
 }
 
+std::string CYScriptApiImplementation::getKeywordName(int keywordId) const
+{
+   boost::shared_ptr<database::entities::CKeyword> keyword = m_dbKeywordRequester->getKeyword(keywordId);
+   if (keyword)
+      return keyword->FriendlyName();
+   throw std::out_of_range((boost::format("getKeywordName(%1%), error keyword not found") % keywordId).str());
+}
+
+std::string CYScriptApiImplementation::getKeywordDeviceName(int keywordId) const
+{
+   boost::shared_ptr<database::entities::CKeyword> keyword = m_dbKeywordRequester->getKeyword(keywordId);
+   if (keyword)
+   {
+      boost::shared_ptr<database::entities::CDevice> device = m_dbDeviceRequester->getDevice(keyword->DeviceId());
+      if (device)
+         return device->FriendlyName();
+      throw std::out_of_range((boost::format("getKeywordDeviceName(%1%), error device not found") % keywordId).str());
+   }
+   throw std::out_of_range((boost::format("getKeywordDeviceName(%1%), error keyword not found") % keywordId).str());
+}
 
 void CYScriptApiImplementation::ruleEnable(bool enable)
 {

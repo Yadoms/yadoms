@@ -63,7 +63,7 @@ void CSystemInformation::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
          {
          case kEvtTimerRefreshCPULoad:
             {
-			   Factory.OnSpeedUpdate ( context, m_configuration );
+			   Factory.OnSpeedUpdate ( context );
 
                break;
             }

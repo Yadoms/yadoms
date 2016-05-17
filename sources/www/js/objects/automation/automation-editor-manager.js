@@ -55,6 +55,25 @@ AutomationEditorManager.getAll = function() {
    return d.promise();
 };
 
+
+AutomationEditorManager.loadRequiredFile_ = function(editor) {
+  var d = new $.Deferred();
+  if(editor) {
+	 var toLoad = editor.getRequiredJsFiles();
+	 if(toLoad) {
+		asyncLoadJSLibs(toLoad)
+		   .done(d.resolve)
+		   .fail(d.reject);
+	 }
+	 else {
+		d.resolve();
+	 }         
+  } else {
+	 d.resolve();
+  }
+  return d.promise();
+}
+
 /**
  * Create the list of all IAutomationEditor managed
  * @constructor
@@ -70,11 +89,18 @@ AutomationEditorManager.getByName = function(name) {
          if (!editorFound) {
             if (value.getName().toLowerCase() == name.toLowerCase()) {
                editorFound = value;
+			   AutomationEditorManager.loadRequiredFile_(value)
+			   .done(function() {
+				   d.resolve(value);
+			   })
+			   .fail(d.reject);
             }
          }
       });
-      //if we reach this code, no matching editor has been found
-      d.resolve(editorFound);
+	  
+	  if (!editorFound) {
+		 d.reject();
+	  }
    })
    .fail(d.reject);
 

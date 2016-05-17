@@ -115,7 +115,7 @@ Blockly.Yadoms.LoadLanguageScript_ = function (callback) {
  * This is the template for a default rule
  * @private
  */
-Blockly.Yadoms.DefaultTemplate_ = "<xml xmlns=\"http://www.w3.org/1999/xhtml\"><block type=\"infinite-loop\" x=\"87\" y=\"38\"><statement name=\"DO\"><block type=\"yadoms_wait_for_event\"><mutation storeinvariable=\"false\"></mutation><comment pinned=\"true\" h=\"89\" w=\"235\">__help__</comment></block></statement></block></xml>";
+Blockly.Yadoms.DefaultTemplate_ = "<xml xmlns=\"http://www.w3.org/1999/xhtml\"><block type=\"infinite-loop\" x=\"87\" y=\"38\"><statement name=\"DO\"><block type=\"yadoms_wait_for_event\"><mutation storeinvariable=\"false\"></mutation></block></statement></block></xml>";
 
 /**
  * Initialize blockly for Yadoms

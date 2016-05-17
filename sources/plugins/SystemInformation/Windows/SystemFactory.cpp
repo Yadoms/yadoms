@@ -43,7 +43,7 @@ CSystemFactory::~CSystemFactory()
 {
 }
 
-void CSystemFactory::OnSpeedUpdate ( boost::shared_ptr<yApi::IYPluginApi> context , const ISIConfiguration& configuration)
+void CSystemFactory::OnSpeedUpdate ( boost::shared_ptr<yApi::IYPluginApi> context )
 {
     YADOMS_LOG(debug) << "Speed Updates";
 
@@ -51,8 +51,6 @@ void CSystemFactory::OnSpeedUpdate ( boost::shared_ptr<yApi::IYPluginApi> contex
 
     m_CPULoad.read();
     m_YadomsCPULoad.read();
-    m_RAMProcessMemory.read();
-    m_VirtualProcessMemory.read();
 
     KeywordList.push_back (m_CPULoad.GetHistorizable());
     KeywordList.push_back (m_YadomsCPULoad.GetHistorizable());
@@ -67,6 +65,8 @@ void CSystemFactory::OnSlowUpdate ( boost::shared_ptr<yApi::IYPluginApi> context
     std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > KeywordList;
 
     m_MemoryLoad.read();
+    m_RAMProcessMemory.read();
+    m_VirtualProcessMemory.read();
 
     KeywordList.push_back ( m_MemoryLoad.GetHistorizable() );
 
@@ -89,7 +89,19 @@ void CSystemFactory::OnConfigurationUpdate ( boost::shared_ptr<yApi::IYPluginApi
 {
       if (configuration.IsAdvancedEnabled())
       {
+		 std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > KeywordList;
+
          m_RAMProcessMemory.declareKeywords     (context, details);
          m_VirtualProcessMemory.declareKeywords (context, details);
+
+         // We read immediately values to avoid the wait of timers
+
+         m_RAMProcessMemory.read();
+         m_VirtualProcessMemory.read();
+
+         KeywordList.push_back (m_RAMProcessMemory.GetHistorizable());
+         KeywordList.push_back (m_VirtualProcessMemory.GetHistorizable());
+
+         context->historizeData(m_PluginName, KeywordList);
       }
 }

@@ -202,6 +202,17 @@ namespace database { namespace common { namespace requesters {
       return adapter.getResults();
    }
 
+   std::vector<boost::shared_ptr<entities::CKeyword> > CKeyword::getKeywordsMatchingCapacity(const std::string & capacity) const
+   {
+      adapters::CKeywordAdapter adapter;
+      CQuery qSelect = m_databaseRequester->newQuery();
+      qSelect.Select().
+         From(CKeywordTable::getTableName()).
+         Where(CKeywordTable::getCapacityNameColumnName(), CQUERY_OP_EQUAL, capacity);
+      m_databaseRequester->queryEntities(&adapter, qSelect);
+      return adapter.getResults();
+   }
+
    std::vector<boost::shared_ptr<entities::CKeyword> > CKeyword::getAllKeywords() const
 	{
       adapters::CKeywordAdapter adapter;

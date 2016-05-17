@@ -22,18 +22,43 @@ class CSystemFactory
 public:
    //--------------------------------------------------------------
    /// \brief	    Constructor
-   /// \param[in] device    The device
+   /// \param[in] context             yPluginApi API
+   /// \param[in] device              The device name
+   /// \param[in] ISIConfiguration    The plugin configuration
+   /// \param[in] details             Details information for keyword
    //--------------------------------------------------------------
-   CSystemFactory(boost::shared_ptr<yApi::IYPluginApi> context, const std::string & device,const ISIConfiguration& configuration, shared::CDataContainer details);
+   CSystemFactory(boost::shared_ptr<yApi::IYPluginApi> context, 
+	              const std::string & device,
+				  const ISIConfiguration& configuration, 
+				  shared::CDataContainer details);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
    virtual ~CSystemFactory();
 
-   void OnSpeedUpdate ( boost::shared_ptr<yApi::IYPluginApi> context, const ISIConfiguration& configuration );
-   void OnSlowUpdate  ( boost::shared_ptr<yApi::IYPluginApi> context, const ISIConfiguration& configuration );
-   void OnConfigurationUpdate ( boost::shared_ptr<yApi::IYPluginApi> context, const ISIConfiguration& configuration, shared::CDataContainer details );
+   //--------------------------------------------------------------
+   /// \brief	    OnSpeedUpdate
+   /// \param[in] context             yPluginApi API
+   //--------------------------------------------------------------
+   void OnSpeedUpdate ( boost::shared_ptr<yApi::IYPluginApi> context );
+
+   //--------------------------------------------------------------
+   /// \brief	    OnSlowUpdate
+   /// \param[in] context             yPluginApi API
+   /// \param[in] ISIConfiguration    The configuration state
+   //--------------------------------------------------------------
+   void OnSlowUpdate  ( boost::shared_ptr<yApi::IYPluginApi> context, 
+	                    const ISIConfiguration& configuration );
+
+   //--------------------------------------------------------------
+   /// \brief	    OnConfigurationUpdate
+   /// \param[in] context             yPluginApi API
+   /// \param[in] ISIConfiguration    The new configuration
+   /// \param[in] details             Details information for keyword
+   //--------------------------------------------------------------
+   void OnConfigurationUpdate ( boost::shared_ptr<yApi::IYPluginApi> context, 
+	                            const ISIConfiguration& configuration, shared::CDataContainer details );
 
 private:
    //--------------------------------------------------------------
@@ -50,6 +75,9 @@ private:
    CRAMProcessMemory     m_RAMProcessMemory;
    CVirtualProcessMemory m_VirtualProcessMemory;
 
+   //--------------------------------------------------------------
+   /// \brief	    List of keywords for disks
+   //--------------------------------------------------------------
    std::vector<CDiskUsage> DiskUsageList;
 };
 

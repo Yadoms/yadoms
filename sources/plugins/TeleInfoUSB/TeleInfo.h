@@ -77,7 +77,6 @@ public:
    // [END] IPlugin implementation
 
 private:
-   std::string m_deviceName;
 
    //--------------------------------------------------------------
    /// \brief  The communication port

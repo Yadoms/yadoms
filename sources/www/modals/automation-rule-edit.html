@@ -23,101 +23,102 @@
 </div>
 
 <script>
+
    Yadoms.showEditionAutomationRule = function(rule, callback) {
       assert(!isNullOrUndefined(rule), "rule must be defined");
       assert($.isFunction(callback), "callback must be defined");
 
-      var i18NContext = "modals.edit-automation-rule.";
+   var i18NContext = "modals.edit-automation-rule.";
 
-      var $modalBody = $("div#edit-automation-rule-modal .modal-body");
+   var $modalBody = $("div#edit-automation-rule-modal .modal-body");
 
-      var $editorSlot = $modalBody.find("#automation-rule-editor");
-      $editorSlot.empty().removeClass();
+   var $editorSlot = $modalBody.find("#automation-rule-editor");
+   $editorSlot.empty().removeClass();
 
-      var $modalConfiguration = $modalBody.find("#automation-rule-configuration");
-      $modalConfiguration.empty();
+   var $modalConfiguration = $modalBody.find("#automation-rule-configuration");
+   $modalConfiguration.empty();
 
-      var interpreterList = [];
-      $.each(rule.editor.getActiveSupportedInterpreters(), function(key, value) {
-         interpreterList.push(value.name);
+   var interpreterList = [];
+   $.each(rule.editor.getActiveSupportedInterpreters(), function(key, value) {
+      interpreterList.push(value.name);
+   });
+
+   if (interpreterList > 1) {
+      var interpreterParameter = new EnumParameterHandler(i18NContext, "interpreter-rule", { "values": interpreterList }, rule.interpreter);
+      $modalConfiguration.append(interpreterParameter.getDOMObject());
+      //we finish interpreterParameter instantiation
+      if ($.isFunction(interpreterParameter.applyScript))
+         interpreterParameter.applyScript();
+
+      //we must listen changed event of the interpreterList
+      interpreterParameter.locateInDOM().change(function() {
+         //we notify the editor that the interpreter has changed
+         rule.editor.setInterpreter(interpreterParameter.getCurrentConfiguration());
       });
+   }
 
-      if (interpreterList > 1) {
-         var interpreterParameter = new EnumParameterHandler(i18NContext, "interpreter-rule", { "values": interpreterList }, rule.interpreter);
-         $modalConfiguration.append(interpreterParameter.getDOMObject());
-         //we finish interpreterParameter instantiation
-         if ($.isFunction(interpreterParameter.applyScript))
-            interpreterParameter.applyScript();
+   var nameParameter = new StringParameterHandler(i18NContext, "name-rule", { required: "true" }, rule.name);
+   $modalConfiguration.append(nameParameter.getDOMObject());
+   //we finish nameParameter instantiation
+   if ($.isFunction(nameParameter.applyScript))
+      nameParameter.applyScript();
 
-         //we must listen changed event of the interpreterList
-         interpreterParameter.locateInDOM().change(function() {
-            //we notify the editor that the interpreter has changed
-            rule.editor.setInterpreter(interpreterParameter.getCurrentConfiguration());
+   var descriptionParameter = new StringParameterHandler(i18NContext, "description-rule", {}, rule.description);
+   $modalConfiguration.append(descriptionParameter.getDOMObject());
+   //we finish descriptionParameter instantiation
+   if ($.isFunction(descriptionParameter.applyScript))
+      descriptionParameter.applyScript();
+
+   $editorSlot.append(rule.editor.getDOMStructure());
+   rule.editor.applyScript();
+
+   //we set the rule to edit to the editor
+   rule.editor.setRule(rule)
+      .done(function() {
+         $("div#edit-automation-rule-modal").off("shown.bs.modal").on("shown.bs.modal", function() {
+            rule.editor.onModalShown($modalConfiguration);
          });
-      }
+         $("div#edit-automation-rule-modal").off("hidden.bs.modal").on("hidden.bs.modal", function() {
+            rule.editor.onModalHidden($modalConfiguration);
+         });
 
-      var nameParameter = new StringParameterHandler(i18NContext, "name-rule", { required: "true" }, rule.name);
-      $modalConfiguration.append(nameParameter.getDOMObject());
-      //we finish nameParameter instantiation
-      if ($.isFunction(nameParameter.applyScript))
-         nameParameter.applyScript();
+         //validation form
+         $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy").jqBootstrapValidation({
+            preventSubmit: true,
+            submitError: function($form, event, errors) {
+               console.warn("Unable to validate form: " + errors);
+            },
+            submitSuccess: function($form, event) {
+               event.preventDefault();
+               if (rule.editor.validate()) {
+                  rule.name = nameParameter.getCurrentConfiguration();
+                  rule.description = descriptionParameter.getCurrentConfiguration();
+                  rule.editor.updateRule();
 
-      var descriptionParameter = new StringParameterHandler(i18NContext, "description-rule", {}, rule.description);
-      $modalConfiguration.append(descriptionParameter.getDOMObject());
-      //we finish descriptionParameter instantiation
-      if ($.isFunction(descriptionParameter.applyScript))
-         descriptionParameter.applyScript();
+                  console.debug("End of Automation rule edition : " + JSON.stringify(rule));
 
-      $editorSlot.append(rule.editor.getDOMStructure());
-      rule.editor.applyScript();
+                  //we hide the current window and the wizard if opened previously
+                  $("div#edit-automation-rule-modal").modal("hide");
 
-      //we set the rule to edit to the editor
-      rule.editor.setRule(rule)
-         .done(function() {
-            $("div#edit-automation-rule-modal").off("shown.bs.modal").on("shown.bs.modal", function() {
-               rule.editor.onModalShown($modalConfiguration);
-            });
-            $("div#edit-automation-rule-modal").off("hidden.bs.modal").on("hidden.bs.modal", function() {
-               rule.editor.onModalHidden($modalConfiguration);
-            });
-
-            //validation form
-            $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy").jqBootstrapValidation({
-               preventSubmit: true,
-               submitError: function($form, event, errors) {
-                  console.warn("Unable to validate form: " + errors);
-               },
-               submitSuccess: function($form, event) {
-                  event.preventDefault();
-                  if (rule.editor.validate()) {
-                     rule.name = nameParameter.getCurrentConfiguration();
-                     rule.description = descriptionParameter.getCurrentConfiguration();
-                     rule.editor.updateRule();
-
-                     console.debug("End of Automation rule edition : " + JSON.stringify(rule));
-
-                     //we hide the current window and the wizard if opened previously
-                     $("div#edit-automation-rule-modal").modal("hide");
-
-                     callback();
-                  }
-               },
-               filter: function() {
-                  //we check only control that have class enable-validation and are visible
-                  return $(this).is(".enable-validation") && $(this).is(":visible");
+                  callback();
                }
-            });
-
-            //i18n
-            $modalBody.i18n();
-
-            //we display the modal
-            $('div#edit-automation-rule-modal').modal({ backdrop: 'static' });
-
-         })
-         .fail(function(error) {
-            notifyError($.t("modals.dashboard.sub-windows.automation-center.ruleEditError", { rule: "" }), error);
+            },
+            filter: function() {
+               //we check only control that have class enable-validation and are visible
+               return $(this).is(".enable-validation") && $(this).is(":visible");
+            }
          });
+
+         //i18n
+         $modalBody.i18n();
+
+         //we display the modal
+         $('div#edit-automation-rule-modal').modal({ backdrop: 'static' });
+
+      })
+      .fail(function(error) {
+         notifyError($.t("modals.dashboard.sub-windows.automation-center.ruleEditError", { rule: "" }), error);
+      });         
    };
    
 

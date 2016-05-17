@@ -522,10 +522,30 @@
       "catDevices": "Devices",
       "catEnumerations": "Enumerations",
       "catVariables": "Variables",
-      "catFunctions": "Functions"
-
+      "catFunctions": "Functions",
+      "catTemplate": "Samples",
+	  "samples" : {
+		"actionAfterSunset" : {
+			"title" : "Do something after sunset",
+			"logMessage" : "Define here actions to realize after sunset"
+		},
+		"lowBatteryLevel" : {
+			"title" : "Low battery",
+			"logMessage1" : "Define here actions to realize when any device battery level is low",
+			"logMessage2" : {
+				"part1" : "For example : the battery level of ",
+				"part2" : "is low (",
+				"part3" : " %)"
+			}
+	    }
+	  }
     },
     "invalid": "invalid",
+	"validation" : {
+		"errorMaxTopBlock" : "Only 'top block' is allowed. Etiher chain them, or delete all but one",
+		"chooseItemInList" : "Please choose a correct value in list",
+		"missingInputBlock" : "Please complete the missing block"
+	},
     "global": {
       "durationUnits": {
         "seconds": "seconds",
@@ -537,6 +557,7 @@
     "templateHelp": "Click on the blue cog icon, to configure the trigger",
     "chooseDeviceHelper" :  "Choose device",
     "chooseKeywordHelper" :  "Choose keyword",
+	"chooseCapacityHelper": "Choose a capacity",
     "blocks": {
       "yadoms_wait": {
         "title": "At",
@@ -567,28 +588,47 @@
           "serverVersion": "Yadoms server version"
         }
       },
+      "yadoms_wait_for_event_result" : {
+			"title": "from last event",
+			"tooltip": "Get information about last event",
+			"value" : "Get the value",
+			"deviceName" : "Get the device name",
+			"keywordName" : "Get the sensor name",
+			"fullName" : "Get the full name"			
+		},
       "yadoms_wait_for_event": {
-        "titleLine1": "Wait for event",
-        "titleLine2": "Save value in",
+        "title": "Wait for an event",
         "case": "When",
-        "datetime": "date/time",
+		"caseCapacity": "When a data of type",
+		"caseDateTimeEveryMinute" : "Every minutes",
+		"caseDateTimeCondition" : "When date/time",
+		"capacity": "capacity",
         "triggered": "is triggered",
         "triggeredType": {
-          "change": "change",
+          "change": "emits a data",
           "become": "become"
         },
+		"triggeredCapacityType": {
+			"change": "is sent",
+			"become": ""
+		},
         "do": "Then do",
         "tooltip": "Wait for an event. It can be a device acquisition update or the date/time change",
         "defaultVarName": "newAcquisitionValue",
+		"defaultDeviceVarName": "targetDevice",
         "mutator": {
           "base": {
             "title": "Wait for acquisition",
-            "tooltip": "Wait for a new acquisition of one or more keywords."
+            "tooltip": "Wait for a new acquisition of one or more keywords.",
+			"storeValueInVariable" : "Store the new acquisition in a variable",
+			"storeDeviceNameInVariable" : "Store the device name in a variable"
           },
-          "storeInVariable": {
-            "title": "Store value",
-            "tooltip": "Store the event value in the specified variable"
-          },
+			"keyword": {
+				"title": "When a device send data",
+				"tooltip": "Add a block for monitoring any data of a device",
+				"condition" : "on condition"
+			},
+			
           "change": {
             "title": "Device : any new acquisition",
             "tooltip": "Add a block for monitoring any new acquisition of a device"
@@ -597,6 +637,14 @@
             "title": "Device : particular value",
             "tooltip": "Add a block for monitoring new device acquisition matching a condition"
           },
+		  "capacityChange": {
+			"title": "Capacity : any new acquisition",
+			"tooltip": "Add a block for monitoring acquisitions matching a capacity"
+		  },
+		  "capacityBecome": {
+			"title": "Capacity : particular value",
+			"tooltip": "Add a block for monitoring acquisitions matching a capacity and a particular value (example: battery level < 10%)"
+		  },
           "datetimeChange": {
             "title": "Date/time update",
             "tooltip": "Add a block for monitoring date/time changes (every minutes)"

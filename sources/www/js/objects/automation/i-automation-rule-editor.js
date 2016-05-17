@@ -28,6 +28,15 @@ IAutomationRuleEditor.prototype.getClassIcon = function() {
 };
 
 /**
+ * Obtain the list of all required js files to load
+ * @returns {Array{string}}
+ */
+IAutomationRuleEditor.prototype.getRequiredJsFiles = function() {
+   return undefined; //nothing required to load
+};
+
+
+/**
  * Obtain name of editor
  * @returns {string}
  */

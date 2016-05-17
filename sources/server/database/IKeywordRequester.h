@@ -63,11 +63,18 @@ namespace database {
       virtual std::vector<boost::shared_ptr<entities::CKeyword> > getAllKeywords() const = 0;   
       
       //--------------------------------------------------------------
-      /// \brief           List all keywords 
+      /// \brief           List all keywords for a device
       /// \param [in]      deviceId   the device which own the keyword
       /// \return          List of registered keywords
       //--------------------------------------------------------------
       virtual std::vector<boost::shared_ptr<entities::CKeyword> > getKeywords(int deviceId) const = 0;  
+      
+      //--------------------------------------------------------------
+      /// \brief           List all keywords which match a capacity
+      /// \param [in]      capacity   the capacity
+      /// \return          List of registered keywords
+      //--------------------------------------------------------------
+      virtual std::vector<boost::shared_ptr<entities::CKeyword> > getKeywordsMatchingCapacity(const std::string & capacity) const = 0;  
       
       //--------------------------------------------------------------
       /// \brief           List all keywords which match capacity for a device

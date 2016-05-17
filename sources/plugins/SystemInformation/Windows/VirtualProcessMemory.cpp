@@ -9,7 +9,7 @@
 
 CVirtualProcessMemory::CVirtualProcessMemory(const std::string & device)
    :m_device(device), 
-    m_keyword(new yApi::historization::CKByte("VirtualProcessMemory") )
+    m_keyword(new yApi::historization::CKByte("YadomsVirtualProcessMemory") )
 {}
 
 CVirtualProcessMemory::~CVirtualProcessMemory()
