@@ -42,12 +42,17 @@ namespace rfxcomMessages
       m_sound = kDefaultSound;
    }
 
-   unsigned int CChimeByronSx::idFromProtocol(unsigned char id1, unsigned char id2, unsigned char /*sound*/)
+   unsigned int CChimeByronSx::idFromProtocol(unsigned char id1,
+                                              unsigned char id2,
+                                              unsigned char /*sound*/)
    {
       return id1 << 8 | id2;
    }
 
-   void CChimeByronSx::idToProtocol(unsigned int id, unsigned char& id1, unsigned char& id2, unsigned char& sound) const
+   void CChimeByronSx::idToProtocol(unsigned int id,
+                                    unsigned char& id1,
+                                    unsigned char& id2,
+                                    unsigned char& sound) const
    {
       id1 = static_cast<unsigned char>(0xFF & (id >> 8));
       id2 = static_cast<unsigned char>(0xFF & id);

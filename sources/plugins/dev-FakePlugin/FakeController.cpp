@@ -31,7 +31,7 @@ CControllerValue::~CControllerValue()
 
 CFakeController::CFakeController(const std::string& deviceName)
    : m_deviceName(deviceName),
-     m_currentValues("controllerValue")
+     m_currentValues(boost::make_shared<CControllerValue>("controllerValue"))
 {
 }
 
@@ -48,18 +48,18 @@ void CFakeController::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) co
       api->declareKeyword(m_deviceName, m_currentValues);
 }
 
-void CFakeController::read()
+void CFakeController::read() const
 {
-   if (m_currentValues() == EFakeControllerValues::kStop)
-      m_currentValues.set(EFakeControllerValues::kRun);
-   else if (m_currentValues() == EFakeControllerValues::kRun)
-      m_currentValues.set(EFakeControllerValues::kBack);
-   else if (m_currentValues() == EFakeControllerValues::kBack)
-      m_currentValues.set(EFakeControllerValues::kLeft);
-   else if (m_currentValues() == EFakeControllerValues::kLeft)
-      m_currentValues.set(EFakeControllerValues::kRight);
-   else if (m_currentValues() == EFakeControllerValues::kRight)
-      m_currentValues.set(EFakeControllerValues::kStop);
+   if ((*m_currentValues)() == EFakeControllerValues::kStop)
+      m_currentValues->set(EFakeControllerValues::kRun);
+   else if ((*m_currentValues)() == EFakeControllerValues::kRun)
+      m_currentValues->set(EFakeControllerValues::kBack);
+   else if ((*m_currentValues)() == EFakeControllerValues::kBack)
+      m_currentValues->set(EFakeControllerValues::kLeft);
+   else if ((*m_currentValues)() == EFakeControllerValues::kLeft)
+      m_currentValues->set(EFakeControllerValues::kRight);
+   else if ((*m_currentValues)() == EFakeControllerValues::kRight)
+      m_currentValues->set(EFakeControllerValues::kStop);
 }
 
 void CFakeController::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const

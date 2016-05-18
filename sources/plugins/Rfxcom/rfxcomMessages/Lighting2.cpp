@@ -1,7 +1,5 @@
 #include "stdafx.h"
 #include "Lighting2.h"
-#include <shared/plugin/yPluginApi/StandardCapacities.h>
-#include <shared/exception/InvalidParameter.hpp>
 #include "Lighting2Dimmable.h"
 #include "Lighting2OnOff.h"
 // Shortcut to yPluginApi namespace
@@ -10,10 +8,13 @@ namespace yApi = shared::plugin::yPluginApi;
 namespace rfxcomMessages
 {
 
-CLighting2::CLighting2(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& command, const shared::CDataContainer& deviceDetails)
-   :m_rssi("rssi")
+CLighting2::CLighting2(boost::shared_ptr<yApi::IYPluginApi> api,
+   const std::string& command,
+   const shared::CDataContainer& deviceDetails)
+   : m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+   m_keywords({ m_rssi })
 {
-   m_rssi.set(0);
+   m_rssi->set(0);
 
    createSubType(deviceDetails.get<unsigned char>("subType"));
    m_houseCode = deviceDetails.get<unsigned char>("houseCode");
@@ -24,10 +25,13 @@ CLighting2::CLighting2(boost::shared_ptr<yApi::IYPluginApi> api, const std::stri
    m_subTypeManager->set(command);
 }
 
-CLighting2::CLighting2(boost::shared_ptr<yApi::IYPluginApi> api, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
-   :m_rssi("rssi")
+CLighting2::CLighting2(boost::shared_ptr<yApi::IYPluginApi> api,
+   unsigned char subType,
+   const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+   : m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+   m_keywords({ m_rssi })
 {
-   m_rssi.set(0);
+   m_rssi->set(0);
 
    createSubType(subType);
 
@@ -39,8 +43,12 @@ CLighting2::CLighting2(boost::shared_ptr<yApi::IYPluginApi> api, unsigned char s
    m_subTypeManager->reset();
 }
 
-CLighting2::CLighting2(boost::shared_ptr<yApi::IYPluginApi> api, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
-   :m_rssi("rssi")
+CLighting2::CLighting2(boost::shared_ptr<yApi::IYPluginApi> api,
+   const RBUF& rbuf,
+   size_t rbufSize,
+   boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+   : m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+   m_keywords({ m_rssi })
 {
    CheckReceivedMessage(rbuf,
                         rbufSize,
@@ -53,7 +61,7 @@ CLighting2::CLighting2(boost::shared_ptr<yApi::IYPluginApi> api, const RBUF& rbu
    m_subTypeManager->idFromProtocol(rbuf.LIGHTING2.id1, rbuf.LIGHTING2.id2, rbuf.LIGHTING2.id3, rbuf.LIGHTING2.id4, m_houseCode, m_id);
    m_subTypeManager->setFromProtocolState(rbuf.LIGHTING2.cmnd, rbuf.LIGHTING2.level);
    m_unitCode = rbuf.LIGHTING2.unitcode;
-   m_rssi.set(NormalizeRssiLevel(rbuf.LIGHTING2.rssi));
+   m_rssi->set(NormalizeRssiLevel(rbuf.LIGHTING2.rssi));
 
    declare(api);
 }
@@ -74,6 +82,7 @@ void CLighting2::createSubType(unsigned char subType)
    default:
       throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
    }
+   m_keywords.push_back(m_subTypeManager->keyword());
 }
 
 void CLighting2::declare(boost::shared_ptr<yApi::IYPluginApi> api)
@@ -93,10 +102,7 @@ void CLighting2::declare(boost::shared_ptr<yApi::IYPluginApi> api)
       details.set("houseCode", m_houseCode);
       details.set("id", m_id);
       details.set("unitCode", m_unitCode);
-      api->declareDevice(m_deviceName, m_subTypeManager->getModel(), details);
-
-      m_subTypeManager->declare(api, m_deviceName);
-      api->declareKeyword(m_deviceName, m_rssi);
+      api->declareDevice(m_deviceName, m_subTypeManager->getModel(), m_keywords, details);
    }
 }
 
@@ -120,8 +126,7 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CLighting2::e
 
 void CLighting2::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
-   m_subTypeManager->historize(api, m_deviceName);
-   api->historizeData(m_deviceName, m_rssi);
+   api->historizeData(m_deviceName, m_keywords);
 }
 
 const std::string& CLighting2::getDeviceName() const
@@ -132,7 +137,10 @@ const std::string& CLighting2::getDeviceName() const
 void CLighting2::buildDeviceName()
 {
    std::ostringstream ssdeviceName;
-   ssdeviceName << (unsigned int)m_subType << "." << (unsigned int)m_houseCode << "." << (unsigned int)m_id << "." << (unsigned int)m_unitCode;
+   ssdeviceName << static_cast<unsigned int>(m_subType) <<
+      "." << static_cast<unsigned int>(m_houseCode) <<
+      "." << static_cast<unsigned int>(m_id) <<
+      "." << static_cast<unsigned int>(m_unitCode);
    m_deviceName = ssdeviceName.str();
 }
 

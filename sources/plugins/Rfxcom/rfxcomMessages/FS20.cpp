@@ -26,11 +26,12 @@ namespace rfxcomMessages
 {
    CFS20::CFS20(boost::shared_ptr<yApi::IYPluginApi> api,
                 const std::string& command, const shared::CDataContainer& deviceDetails)
-      : m_state("state"),
-        m_rssi("rssi")
+      : m_state(boost::make_shared<yApi::historization::CDimmable>("state")),
+        m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+        m_keywords({m_state , m_rssi})
    {
-      m_state.set(command);
-      m_rssi.set(0);
+      m_state->set(command);
+      m_rssi->set(0);
 
       m_subType = deviceDetails.get<unsigned char>("subType");
       m_houseCode = deviceDetails.get<std::string>("houseCode");
@@ -43,11 +44,12 @@ namespace rfxcomMessages
    CFS20::CFS20(boost::shared_ptr<yApi::IYPluginApi> api,
                 unsigned char subType,
                 const shared::CDataContainer& manuallyDeviceCreationConfiguration)
-      : m_state("state"),
-        m_rssi("rssi")
+      : m_state(boost::make_shared<yApi::historization::CDimmable>("state")),
+        m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+        m_keywords({m_state , m_rssi})
    {
-      m_state.set(0);
-      m_rssi.set(0);
+      m_state->set(0);
+      m_rssi->set(0);
 
       m_subType = subType;
       switch (m_subType)
@@ -71,8 +73,9 @@ namespace rfxcomMessages
                 const RBUF& rbuf,
                 size_t rbufSize,
                 boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
-      : m_state("state"),
-        m_rssi("rssi")
+      : m_state(boost::make_shared<yApi::historization::CDimmable>("state")),
+        m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+        m_keywords({m_state , m_rssi})
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -117,7 +120,7 @@ namespace rfxcomMessages
                std::cout << "FS20 unsupported command received (" << dimIndex << ")" << std::endl;
                return;
             }
-            m_state.set(dimValues[dimIndex]);
+            m_state->set(dimValues[dimIndex]);
             break;
          }
       case sTypeFHT8V:
@@ -129,13 +132,13 @@ namespace rfxcomMessages
             case FHT8V_SYNCRHONISE_NOW:
             case FHT8V_OPEN_VALVE_AT_LEVEL:
             case FHT8V_DECALCIFICATION_CYCLE:
-               m_state.set(static_cast<int>(level * 100 / 255));
+               m_state->set(static_cast<int>(level * 100 / 255));
                break;
             case FHT8V_OPEN_VALVE:
-               m_state.set(true);
+               m_state->set(true);
                break;
             case FHT8V_CLOSE_VALVE:
-               m_state.set(false);
+               m_state->set(false);
                break;
             default:
                std::cout << "FS20/FHT8V unsupported command received (" << cmd << ")" << std::endl;
@@ -149,10 +152,10 @@ namespace rfxcomMessages
             switch (cmd)
             {
             case FHT80_SENSOR_OPENED:
-               m_state.set(true);
+               m_state->set(true);
                break;
             case FHT80_SENSOR_CLOSED:
-               m_state.set(false);
+               m_state->set(false);
                break;
             default:
                std::cout << "FS20/FHT8V unsupported command received (" << cmd << ")" << std::endl;
@@ -167,7 +170,7 @@ namespace rfxcomMessages
          }
       }
 
-      m_rssi.set(NormalizeRssiLevel(rbuf.FS20.rssi));
+      m_rssi->set(NormalizeRssiLevel(rbuf.FS20.rssi));
 
       Init(api);
    }
@@ -192,10 +195,7 @@ namespace rfxcomMessages
          details.set("groupAddress", m_groupAddress);
          details.set("subAddress", m_subAddress);
 
-         api->declareDevice(m_deviceName, m_deviceModel, details);
-
-         api->declareKeyword(m_deviceName, m_state);
-         api->declareKeyword(m_deviceName, m_rssi);
+         api->declareDevice(m_deviceName, m_deviceModel, m_keywords, details);
       }
    }
 
@@ -239,71 +239,71 @@ namespace rfxcomMessages
       {
       case sTypeFS20:
          {
-            if (m_state.switchLevel() == 0)
+            if (m_state->switchLevel() == 0)
             {
                rbuf.FS20.cmd1 = 0x20 | 0 ;
             }
-            else if (m_state.switchLevel() < 7)
+            else if (m_state->switchLevel() < 7)
             {
                rbuf.FS20.cmd1 = 0x20 | 0x01;
             }
-            else if (m_state.switchLevel() < 13)
+            else if (m_state->switchLevel() < 13)
             {
                rbuf.FS20.cmd1 = 0x20 | 0x02;
             }
-            else if (m_state.switchLevel() < 19)
+            else if (m_state->switchLevel() < 19)
             {
                rbuf.FS20.cmd1 = 0x20 | 0x03;
             }
-            else if (m_state.switchLevel() < 26)
+            else if (m_state->switchLevel() < 26)
             {
                rbuf.FS20.cmd1 = 0x20 | 0x04;
             }
-            else if (m_state.switchLevel() < 32)
+            else if (m_state->switchLevel() < 32)
             {
                rbuf.FS20.cmd1 = 0x20 | 0x05;
             }
-            else if (m_state.switchLevel() < 38)
+            else if (m_state->switchLevel() < 38)
             {
                rbuf.FS20.cmd1 = 0x20 | 0x06;
             }
-            else if (m_state.switchLevel() < 44)
+            else if (m_state->switchLevel() < 44)
             {
                rbuf.FS20.cmd1 = 0x20 | 0x07;
             }
-            else if (m_state.switchLevel() < 51)
+            else if (m_state->switchLevel() < 51)
             {
                rbuf.FS20.cmd1 = 0x20 | 0x08;
             }
-            else if (m_state.switchLevel() < 57)
+            else if (m_state->switchLevel() < 57)
             {
                rbuf.FS20.cmd1 = 0x20 | 0x09;
             }
-            else if (m_state.switchLevel() < 63)
+            else if (m_state->switchLevel() < 63)
             {
                rbuf.FS20.cmd1 = 0x20 | 0x0A;
             }
-            else if (m_state.switchLevel() < 69)
+            else if (m_state->switchLevel() < 69)
             {
                rbuf.FS20.cmd1 = 0x20 | 0x0B;
             }
-            else if (m_state.switchLevel() < 76)
+            else if (m_state->switchLevel() < 76)
             {
                rbuf.FS20.cmd1 = 0x20 | 0x0C;
             }
-            else if (m_state.switchLevel() < 82)
+            else if (m_state->switchLevel() < 82)
             {
                rbuf.FS20.cmd1 = 0x20 | 0x0D;
             }
-            else if (m_state.switchLevel() < 88)
+            else if (m_state->switchLevel() < 88)
             {
                rbuf.FS20.cmd1 = 0x20 | 0x0E;
             }
-            else if (m_state.switchLevel() < 94)
+            else if (m_state->switchLevel() < 94)
             {
                rbuf.FS20.cmd1 = 0x20 | 0x0F;
             }
-            else if (m_state.switchLevel() <= 100)
+            else if (m_state->switchLevel() <= 100)
             {
                rbuf.FS20.cmd1 = 0x20 | 0x10;
             }
@@ -315,12 +315,12 @@ namespace rfxcomMessages
          }
       case sTypeFHT8V:
          {
-            if (m_state.switchLevel() == 0)
+            if (m_state->switchLevel() == 0)
             {
                rbuf.FS20.cmd1 = 0x30 | FHT8V_CLOSE_VALVE;
                rbuf.FS20.cmd2 = 0;
             }
-            else if (m_state.switchLevel() <= 100)
+            else if (m_state->switchLevel() <= 100)
             {
                rbuf.FS20.cmd1 = 0x30 | FHT8V_OPEN_VALVE;
                rbuf.FS20.cmd2 = 0;
@@ -328,7 +328,7 @@ namespace rfxcomMessages
             else
             {
                rbuf.FS20.cmd1 = 0x30 | FHT8V_OPEN_VALVE_AT_LEVEL;
-               rbuf.FS20.cmd2 = static_cast<BYTE>(m_state.switchLevel() * 0xFF / 100);
+               rbuf.FS20.cmd2 = static_cast<BYTE>(m_state->switchLevel() * 0xFF / 100);
             }
             break;
          }
@@ -348,8 +348,7 @@ namespace rfxcomMessages
 
    void CFS20::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
    {
-      api->historizeData(m_deviceName, m_state);
-      api->historizeData(m_deviceName, m_rssi);
+      api->historizeData(m_deviceName, m_keywords);
    }
 
    const std::string& CFS20::getDeviceName() const

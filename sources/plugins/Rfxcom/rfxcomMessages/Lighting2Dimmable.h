@@ -1,7 +1,6 @@
 #pragma once
 
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
-#include <shared/DataContainer.h>
 #include "ILighting2Subtype.h"
 
 namespace yApi = shared::plugin::yPluginApi;
@@ -20,22 +19,32 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       explicit CLighting2Dimmable(const std::string& model);
 
-       //--------------------------------------------------------------
-       /// \brief	Destructor
-       //--------------------------------------------------------------
-       virtual ~CLighting2Dimmable();
-       
-       
+      //--------------------------------------------------------------
+      /// \brief	Destructor
+      //--------------------------------------------------------------
+      virtual ~CLighting2Dimmable();
+
       // ILighting2Subtype implementation
-      virtual std::string getModel() const;
-      virtual void declare(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const;
-      virtual void historize(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const;
-      virtual void set(const std::string& yadomsCommand);
-      virtual void reset();
-      virtual void idFromProtocol(unsigned char id1Byte, unsigned char id2Byte, unsigned char id3Byte, unsigned char id4Byte, unsigned char& houseCode, unsigned int& id) const;
-      virtual void idToProtocol(unsigned char houseCode, unsigned int id, unsigned char& id1Byte, unsigned char& id2Byte, unsigned char& id3Byte, unsigned char& id4Byte) const;
-      virtual void setFromProtocolState(unsigned char cmdByte, unsigned char levelByte);
-      virtual void toProtocolState(unsigned char& cmdByte, unsigned char& levelByte) const;
+      std::string getModel() const override;
+      boost::shared_ptr<const yApi::historization::IHistorizable> keyword() const override;
+      void set(const std::string& yadomsCommand) override;
+      void reset() override;
+      void idFromProtocol(unsigned char id1Byte,
+                          unsigned char id2Byte,
+                          unsigned char id3Byte,
+                          unsigned char id4Byte,
+                          unsigned char& houseCode,
+                          unsigned int& id) const override;
+      void idToProtocol(unsigned char houseCode,
+                        unsigned int id,
+                        unsigned char& id1Byte,
+                        unsigned char& id2Byte,
+                        unsigned char& id3Byte,
+                        unsigned char& id4Byte) const override;
+      void setFromProtocolState(unsigned char cmdByte,
+                                unsigned char levelByte) override;
+      void toProtocolState(unsigned char& cmdByte,
+                           unsigned char& levelByte) const override;
       // [END] ILighting2Subtype implementation
 
    private:
@@ -47,7 +56,8 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	                        The keyword
       //--------------------------------------------------------------
-      yApi::historization::CDimmable m_keyword;
+      boost::shared_ptr<yApi::historization::CDimmable> m_keyword;
    };
-
 } // namespace rfxcomMessages
+
+

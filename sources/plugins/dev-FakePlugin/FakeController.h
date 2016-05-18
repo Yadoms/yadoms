@@ -56,7 +56,7 @@ public:
    //--------------------------------------------------------------
    /// \brief	    Make a sensor read (compute new values)
    //--------------------------------------------------------------
-   void read();
+   void read() const;
 
    //--------------------------------------------------------------
    /// \brief	            Send all sensor data to Yadoms
@@ -86,6 +86,6 @@ private:
    //--------------------------------------------------------------
    /// \brief	    Current values
    //--------------------------------------------------------------
-   CControllerValue m_currentValues;
+   boost::shared_ptr<CControllerValue> m_currentValues;
 };
 

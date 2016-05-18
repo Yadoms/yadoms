@@ -1,7 +1,5 @@
 #include "stdafx.h"
 #include "Lighting4.h"
-#include <shared/plugin/yPluginApi/StandardCapacities.h>
-#include <shared/exception/InvalidParameter.hpp>
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -9,10 +7,14 @@ namespace yApi = shared::plugin::yPluginApi;
 namespace rfxcomMessages
 {
 
-CLighting4::CLighting4(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& command, const shared::CDataContainer& deviceDetails)
-   :m_keyword("event"), m_rssi("rssi")
+CLighting4::CLighting4(boost::shared_ptr<yApi::IYPluginApi> api,
+   const std::string& command,
+   const shared::CDataContainer& deviceDetails)
+   : m_keyword(boost::make_shared<yApi::historization::CEvent>("event")),
+   m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+   m_keywords({ m_keyword , m_rssi })
 {
-   m_rssi.set(0);
+   m_rssi->set(0);
 
    m_subType = deviceDetails.get<unsigned char>("subType");
    m_id = deviceDetails.get<unsigned int>("id");
@@ -20,10 +22,14 @@ CLighting4::CLighting4(boost::shared_ptr<yApi::IYPluginApi> api, const std::stri
    Init(api);
 }
 
-CLighting4::CLighting4(boost::shared_ptr<yApi::IYPluginApi> api, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
-   :m_keyword("event"), m_rssi("rssi")
+CLighting4::CLighting4(boost::shared_ptr<yApi::IYPluginApi> api,
+   unsigned char subType,
+   const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+   : m_keyword(boost::make_shared<yApi::historization::CEvent>("event")),
+   m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+   m_keywords({ m_keyword , m_rssi })
 {
-   m_rssi.set(0);
+   m_rssi->set(0);
 
    m_subType = subType;
    if (m_subType != sTypePT2262)
@@ -34,8 +40,13 @@ CLighting4::CLighting4(boost::shared_ptr<yApi::IYPluginApi> api, unsigned char s
    Init(api);
 }
 
-CLighting4::CLighting4(boost::shared_ptr<yApi::IYPluginApi> api, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
-   :m_keyword("id"), m_rssi("rssi")
+CLighting4::CLighting4(boost::shared_ptr<yApi::IYPluginApi> api,
+   const RBUF& rbuf,
+   size_t rbufSize,
+   boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+   : m_keyword(boost::make_shared<yApi::historization::CEvent>("event")),
+   m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+   m_keywords({ m_keyword , m_rssi })
 {
    CheckReceivedMessage(rbuf,
                         rbufSize,
@@ -46,7 +57,7 @@ CLighting4::CLighting4(boost::shared_ptr<yApi::IYPluginApi> api, const RBUF& rbu
 
    m_subType = rbuf.LIGHTING4.subtype;
    m_id = rbuf.LIGHTING4.cmd1 << 16 | rbuf.LIGHTING4.cmd2 << 8 | rbuf.LIGHTING4.cmd3;
-   m_rssi.set(NormalizeRssiLevel(rbuf.LIGHTING4.rssi));
+   m_rssi->set(NormalizeRssiLevel(rbuf.LIGHTING4.rssi));
 
    Init(api);
 }
@@ -68,10 +79,7 @@ void CLighting4::Init(boost::shared_ptr<yApi::IYPluginApi> api)
       details.set("type", pTypeLighting4);
       details.set("subType", m_subType);
       details.set("id", m_id);
-      api->declareDevice(m_deviceName, m_deviceModel, details);
-
-      api->declareKeyword(m_deviceName, m_keyword);
-      api->declareKeyword(m_deviceName, m_rssi);
+      api->declareDevice(m_deviceName, m_deviceModel, m_keywords, details);
    }
 }
 
@@ -84,12 +92,12 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CLighting4::e
    rbuf.LIGHTING4.packettype = pTypeLighting4;
    rbuf.LIGHTING4.subtype = m_subType;
    rbuf.LIGHTING4.seqnbr = seqNumberProvider->next();
-   rbuf.LIGHTING4.cmd1 = (unsigned char) (0xFF & (m_id >> 16));
-   rbuf.LIGHTING4.cmd2 = (unsigned char) (0xFF & (m_id >> 8));
-   rbuf.LIGHTING4.cmd3 = (unsigned char) (0xFF & m_id);
+   rbuf.LIGHTING4.cmd1 = static_cast<unsigned char>(0xFF & (m_id >> 16));
+   rbuf.LIGHTING4.cmd2 = static_cast<unsigned char>(0xFF & (m_id >> 8));
+   rbuf.LIGHTING4.cmd3 = static_cast<unsigned char>(0xFF & m_id);
    unsigned short pulse = 1400;  // See RFXCom specification
-   rbuf.LIGHTING4.pulseHigh = (unsigned char) (0xFF & (pulse >> 8));
-   rbuf.LIGHTING4.pulseLow  = (unsigned char) (0xFF & pulse);
+   rbuf.LIGHTING4.pulseHigh = static_cast<unsigned char>(0xFF & (pulse >> 8));
+   rbuf.LIGHTING4.pulseLow  = static_cast<unsigned char>(0xFF & pulse);
    rbuf.LIGHTING4.rssi = 0;
    rbuf.LIGHTING4.filler = 0;
 
@@ -98,8 +106,7 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CLighting4::e
 
 void CLighting4::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
-   api->historizeData(m_deviceName, m_keyword);
-   api->historizeData(m_deviceName, m_rssi);
+   api->historizeData(m_deviceName, m_keywords);
 }
 
 const std::string& CLighting4::getDeviceName() const
@@ -110,7 +117,7 @@ const std::string& CLighting4::getDeviceName() const
 void CLighting4::buildDeviceName()
 {
    std::ostringstream ssdeviceName;
-   ssdeviceName << (unsigned int)m_subType << "." << (unsigned int)m_id;
+   ssdeviceName << static_cast<unsigned int>(m_subType) << "." << static_cast<unsigned int>(m_id);
    m_deviceName = ssdeviceName.str();
 }
 

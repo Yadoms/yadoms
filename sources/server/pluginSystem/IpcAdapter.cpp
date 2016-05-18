@@ -260,7 +260,7 @@ namespace pluginSystem
    void CIpcAdapter::processDeclareKeyword(const toYadoms::DeclareKeyword& msg) const
    {
       m_pluginApi->declareKeyword(msg.device(),
-                                  CFromPluginHistorizer(msg.keyword()),
+                                  boost::make_shared<CFromPluginHistorizer>(msg.keyword()),
                                   msg.has_details() ? shared::CDataContainer(msg.details()) : shared::CDataContainer::EmptyContainer);
    }
 

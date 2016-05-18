@@ -49,7 +49,9 @@ namespace rfxcomMessages
       /// \param[in] id2                  ID2 byte
       /// \param[in] sound                Sound byte, also used as ID3 in some cases
       //--------------------------------------------------------------
-      virtual unsigned int idFromProtocol(unsigned char id1, unsigned char id2, unsigned char sound) = 0;
+      virtual unsigned int idFromProtocol(unsigned char id1,
+                                          unsigned char id2,
+                                          unsigned char sound) = 0;
 
       //--------------------------------------------------------------
       /// \brief	                        Get protocol data from keyword state
@@ -58,7 +60,10 @@ namespace rfxcomMessages
       /// \param[out] id2                 ID2 byte
       /// \param[out] sound               Sound byte, also used as ID3 in some cases
       //--------------------------------------------------------------
-      virtual void idToProtocol(unsigned int id, unsigned char& id1, unsigned char& id2, unsigned char& sound) const = 0;
+      virtual void idToProtocol(unsigned int id,
+                                unsigned char& id1,
+                                unsigned char& id2,
+                                unsigned char& sound) const = 0;
 
       //--------------------------------------------------------------
       /// \brief	                        Set keyword state from protocol data

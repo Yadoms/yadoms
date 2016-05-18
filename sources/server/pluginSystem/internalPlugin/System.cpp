@@ -28,19 +28,15 @@ namespace pluginSystem {
 
          // Declare all device/keywords
          static const std::string& systemDevice("system");
-         yApi::historization::CEvent keywordShutdown("shutdown");
-         yApi::historization::CEvent keywordRestart("restart");
+         auto keywordShutdown(boost::make_shared<yApi::historization::CEvent>("shutdown"));
+         auto keywordRestart(boost::make_shared<yApi::historization::CEvent>("restart"));
+         std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> > keywords({ keywordShutdown, keywordRestart });
 
          // Device creation if needed
          if (!api->deviceExists(systemDevice))
-            api->declareDevice(systemDevice, "yadoms system");
-
-         // Keywords creation if needed
-         if (!api->keywordExists(systemDevice, keywordShutdown.getKeyword()))
-            api->declareKeyword(systemDevice, keywordShutdown);
-
-         if (!api->keywordExists(systemDevice, keywordRestart.getKeyword()))
-            api->declareKeyword(systemDevice, keywordRestart);
+            api->declareDevice(systemDevice,
+                               "yadoms system",
+                               keywords);
 
          boost::shared_ptr<IApplicationStopHandler> applicationStopHandler = shared::CServiceLocator::instance().get<IApplicationStopHandler>();
 
@@ -54,12 +50,12 @@ namespace pluginSystem {
                   // Command was received from Yadoms
                   auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
 
-                  if (boost::iequals(command->getKeyword(), keywordShutdown.getKeyword()))
+                  if (boost::iequals(command->getKeyword(), keywordShutdown->getKeyword()))
                   {
                      YADOMS_LOG(information) << "Shutdown the system";
                      applicationStopHandler->requestToStop(IApplicationStopHandler::kStopSystem);
                   }
-                  else if (boost::iequals(command->getKeyword(), keywordRestart.getKeyword()))
+                  else if (boost::iequals(command->getKeyword(), keywordRestart->getKeyword()))
                   {
                      YADOMS_LOG(information) << "Restart the system";
                      applicationStopHandler->requestToStop(IApplicationStopHandler::kRestartSystem);

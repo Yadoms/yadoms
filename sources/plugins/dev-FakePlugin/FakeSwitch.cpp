@@ -28,13 +28,13 @@ void CFakeSwitch::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
    // Declare associated keywords (= values managed by this device)
    if (m_isDimmable)
    {
-      if (!api->keywordExists(m_deviceName, *m_dimmableSwitch))
-         api->declareKeyword(m_deviceName, *m_dimmableSwitch);
+      if (!api->keywordExists(m_deviceName, m_dimmableSwitch))
+         api->declareKeyword(m_deviceName, m_dimmableSwitch);
    }
    else
    {
-      if (!api->keywordExists(m_deviceName, *m_switch))
-         api->declareKeyword(m_deviceName, *m_switch);
+      if (!api->keywordExists(m_deviceName, m_switch))
+         api->declareKeyword(m_deviceName, m_switch);
    }
 }
 
@@ -58,9 +58,9 @@ void CFakeSwitch::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
       throw shared::exception::CException("api must be defined");
 
    if (m_isDimmable)
-      api->historizeData(m_deviceName, *m_dimmableSwitch);
+      api->historizeData(m_deviceName, m_dimmableSwitch);
    else
-      api->historizeData(m_deviceName, *m_switch);
+      api->historizeData(m_deviceName, m_switch);
 }
 
 const std::string& CFakeSwitch::getDeviceName() const

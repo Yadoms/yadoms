@@ -124,6 +124,19 @@ namespace shared
             virtual CDataContainer getDeviceDetails(const std::string& device) const = 0;
 
             //-----------------------------------------------------
+            ///\brief Declare new device to Yadoms, with its keyword (all-in-one function)
+            ///\param    [in]    device            The device name
+            ///\param    [in]    model             The device model or description (ex : "Oregon Scientific CN185")
+            ///\param    [in]    keyword           Keyword to declare for this device
+            ///\param    [in]    details           Device details
+            ///\throw shared::exception::CEmptyResult if device already exist
+            //-----------------------------------------------------
+            virtual void declareDevice(const std::string& device,
+                                       const std::string& model,
+                                       boost::shared_ptr<const historization::IHistorizable> keyword,
+                                       const CDataContainer& details = CDataContainer::EmptyContainer) = 0;
+
+            //-----------------------------------------------------
             ///\brief Declare new device to Yadoms, with its keywords (all-in-one function)
             ///\param    [in]    device            The device name
             ///\param    [in]    model             The device model or description (ex : "Oregon Scientific CN185")
@@ -170,7 +183,7 @@ namespace shared
             ///\return true if the keyword exists, false if not
             //-----------------------------------------------------
             virtual bool keywordExists(const std::string& device,
-                                       const historization::IHistorizable& keyword) const = 0;
+                                       boost::shared_ptr<const historization::IHistorizable> keyword) const = 0;
 
             //-----------------------------------------------------
             ///\brief Declare a standard keyword
@@ -180,7 +193,7 @@ namespace shared
             ///\throw shared::exception::CEmptyResult if keyword already exist
             //-----------------------------------------------------   
             virtual void declareKeyword(const std::string& device,
-                                        const historization::IHistorizable& keyword,
+                                        boost::shared_ptr<const historization::IHistorizable> keyword,
                                         const CDataContainer& details = CDataContainer::EmptyContainer) = 0;
 
 
@@ -251,7 +264,7 @@ namespace shared
             ///\note If you need to historize several keyword at a time, prefer the historizeData method with vector, for better performances
             //-----------------------------------------------------     
             virtual void historizeData(const std::string& device,
-                                       const historization::IHistorizable& data) = 0;
+                                       boost::shared_ptr<const historization::IHistorizable> data) = 0;
 
             //-----------------------------------------------------
             ///\brief Historize a list of new data

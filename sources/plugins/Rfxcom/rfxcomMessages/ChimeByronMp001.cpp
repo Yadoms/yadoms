@@ -29,12 +29,17 @@ namespace rfxcomMessages
    {
    }
 
-   unsigned int CChimeByronMp001::idFromProtocol(unsigned char id1, unsigned char id2, unsigned char sound)
+   unsigned int CChimeByronMp001::idFromProtocol(unsigned char id1,
+                                                 unsigned char id2,
+                                                 unsigned char sound)
    {
       return sound << 16 | id1 << 8 | id2;
    }
 
-   void CChimeByronMp001::idToProtocol(unsigned int id, unsigned char& id1, unsigned char& id2, unsigned char& sound) const
+   void CChimeByronMp001::idToProtocol(unsigned int id,
+                                       unsigned char& id1,
+                                       unsigned char& id2,
+                                       unsigned char& sound) const
    {
       sound = static_cast<unsigned char>(0xFF & (id >> 16));
       id1 = static_cast<unsigned char>(0xFF & (id >> 8));

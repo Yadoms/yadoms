@@ -8,8 +8,14 @@ namespace yApi = shared::plugin::yPluginApi;
 namespace rfxcomMessages
 {
 
-CEnergy::CEnergy(boost::shared_ptr<yApi::IYPluginApi> api, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
-   :m_instantPower("instant"), m_totalPower("total"), m_batteryLevel("battery"), m_rssi("rssi")
+CEnergy::CEnergy(boost::shared_ptr<yApi::IYPluginApi> api,
+   const RBUF& rbuf,
+   size_t rbufSize,
+   boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+   : m_instantPower(boost::make_shared<yApi::historization::CPower>("instant")),
+   m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
+   m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+   m_keywords({ m_instantPower , m_batteryLevel , m_rssi })
 {
    CheckReceivedMessage(rbuf,
                         rbufSize,
@@ -23,23 +29,22 @@ CEnergy::CEnergy(boost::shared_ptr<yApi::IYPluginApi> api, const RBUF& rbuf, siz
    m_id = rbuf.ENERGY.id1 | (rbuf.ENERGY.id2 << 8);
 
    long instantPower = rbuf.ENERGY.instant1 << 24 | rbuf.ENERGY.instant2 << 16 | rbuf.ENERGY.instant3 << 8 | rbuf.ENERGY.instant4;
-   m_instantPower.set(instantPower);
+   m_instantPower->set(instantPower);
 
-   if (m_subType != sTypeELEC3 && rbuf.ENERGY.count > 0)
+   // No total power on CM180 if count > 0
+   if (m_subType != sTypeELEC3 || rbuf.ENERGY.count == 0)
    {
-      // No total power on CM180 if count > 0
-      m_totalPower = boost::none;
-   }
-   else
-   {
+      m_totalPower = boost::make_shared<yApi::historization::CEnergy>("total");
+      m_keywords.push_back(m_totalPower);
+
       Poco::Int64 totalPower = rbuf.ENERGY.total3 << 24 | rbuf.ENERGY.total4 << 16 | rbuf.ENERGY.total5 << 8 | rbuf.ENERGY.total6;
       totalPower += rbuf.ENERGY.total2 * 2 ^ 32;
       totalPower += rbuf.ENERGY.total1 * 2 ^ 40;
       m_totalPower->set(static_cast<Poco::Int64>(totalPower / 223.666));
    }
 
-   m_batteryLevel.set(NormalizeBatteryLevel(rbuf.ENERGY.battery_level));
-   m_rssi.set(NormalizeRssiLevel(rbuf.ENERGY.rssi));
+   m_batteryLevel->set(NormalizeBatteryLevel(rbuf.ENERGY.battery_level));
+   m_rssi->set(NormalizeRssiLevel(rbuf.ENERGY.rssi));
 
    Init(api);
 }
@@ -61,13 +66,7 @@ void CEnergy::Init(boost::shared_ptr<yApi::IYPluginApi> api)
       details.set("type", pTypeENERGY);
       details.set("subType", m_subType);
       details.set("id", m_id);
-      api->declareDevice(m_deviceName, m_deviceModel, details);
-
-      api->declareKeyword(m_deviceName, m_instantPower);
-      if (m_totalPower)
-         api->declareKeyword(m_deviceName, *m_totalPower);
-      api->declareKeyword(m_deviceName, m_batteryLevel);
-      api->declareKeyword(m_deviceName, m_rssi);
+      api->declareDevice(m_deviceName, m_deviceModel, m_keywords, details);
    }
 }
 
@@ -78,11 +77,7 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CEnergy::enco
 
 void CEnergy::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
-   api->historizeData(m_deviceName, m_instantPower);
-   if (m_totalPower)
-      api->historizeData(m_deviceName, *m_totalPower);
-   api->historizeData(m_deviceName, m_batteryLevel);
-   api->historizeData(m_deviceName, m_rssi);
+   api->historizeData(m_deviceName, m_keywords);
 }
 
 const std::string& CEnergy::getDeviceName() const

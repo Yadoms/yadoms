@@ -43,6 +43,20 @@ namespace pluginSystem
 
    void CYPluginApiImplementation::declareDevice(const std::string& device,
                                                  const std::string& model,
+                                                 boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,
+                                                 const shared::CDataContainer& details)
+   {
+      if (deviceExists(device))
+         throw shared::exception::CEmptyResult((boost::format("Error declaring device %1% : already exists") % device).str());
+
+      m_deviceManager->createDevice(getPluginId(), device, device, model, details);
+
+      if (!keywordExists(device, keyword))
+         declareKeyword(device, keyword);
+   }
+
+   void CYPluginApiImplementation::declareDevice(const std::string& device,
+                                                 const std::string& model,
                                                  const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >& keywords,
                                                  const shared::CDataContainer& details)
    {
@@ -52,11 +66,12 @@ namespace pluginSystem
       m_deviceManager->createDevice(getPluginId(), device, device, model, details);
 
       for (auto keyword = keywords.begin(); keyword != keywords.end(); ++keyword)
-         if (!keywordExists(device, *(keyword->get())))
-            declareKeyword(device, *(keyword->get()));
+         if (!keywordExists(device, *keyword))
+            declareKeyword(device, *keyword);
    }
 
-   bool CYPluginApiImplementation::keywordExists(const std::string& device, const std::string& keyword) const
+   bool CYPluginApiImplementation::keywordExists(const std::string& device,
+                                                 const std::string& keyword) const
    {
       if (!deviceExists(device))
          throw shared::exception::CEmptyResult("Fail to check if keyword exists : owner device doesn't exist.");
@@ -64,20 +79,21 @@ namespace pluginSystem
       return m_keywordRequester->keywordExists((m_deviceManager->getDevice(getPluginId(), device))->Id, keyword);
    }
 
-   bool CYPluginApiImplementation::keywordExists(const std::string& device, const shared::plugin::yPluginApi::historization::IHistorizable& keyword) const
+   bool CYPluginApiImplementation::keywordExists(const std::string& device,
+                                                 boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword) const
    {
-      return keywordExists(device, keyword.getKeyword());
+      return keywordExists(device, keyword->getKeyword());
    }
 
    void CYPluginApiImplementation::declareKeyword(const std::string& device,
-                                                  const shared::plugin::yPluginApi::historization::IHistorizable& keyword,
+                                                  boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,
                                                   const shared::CDataContainer& details)
    {
       if (keywordExists(device, keyword))
-         throw shared::exception::CEmptyResult((boost::format("Fail to declare %1% keyword : keyword already exists") % keyword.getKeyword()).str());
+         throw shared::exception::CEmptyResult((boost::format("Fail to declare %1% keyword : keyword already exists") % keyword->getKeyword()).str());
 
       m_keywordRequester->addKeyword(m_deviceManager->getDevice(getPluginId(), device)->Id(),
-                                     keyword,
+                                     *keyword,
                                      details);
    }
 
@@ -116,14 +132,14 @@ namespace pluginSystem
 
 
    void CYPluginApiImplementation::historizeData(const std::string& device,
-                                                 const shared::plugin::yPluginApi::historization::IHistorizable& data)
+                                                 boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> data)
    {
       try
       {
          boost::shared_ptr<const database::entities::CDevice> deviceEntity = m_deviceManager->getDevice(getPluginId(), device);
-         boost::shared_ptr<const database::entities::CKeyword> keywordEntity = m_keywordRequester->getKeyword(deviceEntity->Id, data.getKeyword());
+         boost::shared_ptr<const database::entities::CKeyword> keywordEntity = m_keywordRequester->getKeyword(deviceEntity->Id, data->getKeyword());
 
-         m_acquisitionHistorizer->saveData(keywordEntity->Id, data);
+         m_acquisitionHistorizer->saveData(keywordEntity->Id, *data);
       }
       catch (shared::exception::CEmptyResult& e)
       {

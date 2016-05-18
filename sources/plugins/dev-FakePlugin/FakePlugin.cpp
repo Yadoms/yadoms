@@ -147,8 +147,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                                   std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >(),
                                   creation->getData().getConfiguration());
 
-               yApi::historization::CSwitch manualSwitch("manualSwitch");
-               api->declareKeyword(devId, manualSwitch);
+               api->declareKeyword(devId, boost::make_shared<yApi::historization::CSwitch>("manualSwitch"));
 
                creation->sendSuccess(devId);
             }

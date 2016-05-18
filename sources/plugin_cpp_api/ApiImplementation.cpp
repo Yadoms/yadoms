@@ -300,6 +300,21 @@ namespace plugin_cpp_api
 
    void CApiImplementation::declareDevice(const std::string& device,
                                           const std::string& model,
+                                          boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,
+                                          const shared::CDataContainer& details)
+   {
+      toYadoms::msg req;
+      auto request = req.mutable_declaredevice();
+      request->set_device(device);
+      request->set_model(model);
+      fillHistorizable(keyword, request->add_keywords());
+      if (!details.empty())
+         request->set_details(details.serialize());
+      send(req);
+   }
+
+   void CApiImplementation::declareDevice(const std::string& device,
+                                          const std::string& model,
                                           const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >& keywords,
                                           const shared::CDataContainer& details)
    {
@@ -308,7 +323,7 @@ namespace plugin_cpp_api
       request->set_device(device);
       request->set_model(model);
       for (auto keyword = keywords.begin(); keyword != keywords.end(); ++keyword)
-         fillHistorizable(**keyword, request->add_keywords());
+         fillHistorizable(*keyword, request->add_keywords());
       if (!details.empty())
          request->set_details(details.serialize());
       send(req);
@@ -337,13 +352,13 @@ namespace plugin_cpp_api
    }
 
    bool CApiImplementation::keywordExists(const std::string& device,
-                                          const shared::plugin::yPluginApi::historization::IHistorizable& keyword) const
+                                          boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword) const
    {
-      return keywordExists(device, keyword.getKeyword());
+      return keywordExists(device, keyword->getKeyword());
    }
 
    void CApiImplementation::declareKeyword(const std::string& device,
-                                           const shared::plugin::yPluginApi::historization::IHistorizable& keyword,
+                                           boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,
                                            const shared::CDataContainer& details)
    {
       toYadoms::msg req;
@@ -355,16 +370,16 @@ namespace plugin_cpp_api
       send(req);
    }
 
-   void CApiImplementation::fillHistorizable(const shared::plugin::yPluginApi::historization::IHistorizable& in,
+   void CApiImplementation::fillHistorizable(boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> in,
                                              toYadoms::Historizable* out)
    {
-      fillCapacity(in.getCapacity(), out->mutable_capacity());
-      out->set_accessmode(in.getAccessMode().toString());
-      out->set_name(in.getKeyword());
-      out->set_type(in.getCapacity().getType().toString());
-      out->set_units(in.getCapacity().getUnit());
-      out->set_typeinfo(in.getTypeInfo().serialize());
-      out->set_measure(in.getMeasureType().toString());
+      fillCapacity(in->getCapacity(), out->mutable_capacity());
+      out->set_accessmode(in->getAccessMode().toString());
+      out->set_name(in->getKeyword());
+      out->set_type(in->getCapacity().getType().toString());
+      out->set_units(in->getCapacity().getUnit());
+      out->set_typeinfo(in->getTypeInfo().serialize());
+      out->set_measure(in->getMeasureType().toString());
    }
 
    void CApiImplementation::fillCapacity(const shared::plugin::yPluginApi::CStandardCapacity& in,
@@ -440,14 +455,14 @@ namespace plugin_cpp_api
    }
 
    void CApiImplementation::historizeData(const std::string& device,
-                                          const shared::plugin::yPluginApi::historization::IHistorizable& data)
+                                          boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> data)
    {
       toYadoms::msg msg;
       auto message = msg.mutable_historizedata();
       message->set_device(device);
       auto value = message->add_value();
       fillHistorizable(data, value->mutable_historizable());
-      value->set_formattedvalue(data.formatValue());
+      value->set_formattedvalue(data->formatValue());
       send(msg);
    }
 
@@ -460,7 +475,7 @@ namespace plugin_cpp_api
       for (auto data = dataVect.begin(); data != dataVect.end(); ++data)
       {
          auto value = message->add_value();
-         fillHistorizable(**data, value->mutable_historizable());
+         fillHistorizable(*data, value->mutable_historizable());
          value->set_formattedvalue((*data)->formatValue());
       }
       send(msg);

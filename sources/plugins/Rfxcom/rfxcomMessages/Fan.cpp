@@ -8,17 +8,23 @@ namespace yApi = shared::plugin::yPluginApi;
 namespace rfxcomMessages
 {
 
-CFan::CFan(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& keyword, const std::string& command, const shared::CDataContainer& deviceDetails)
-   :m_lightCmd(false), m_light("light"), m_fan("fan")
+CFan::CFan(boost::shared_ptr<yApi::IYPluginApi> api,
+   const std::string& keyword,
+   const std::string& command,
+   const shared::CDataContainer& deviceDetails)
+   :m_lightCmd(false),
+   m_light(boost::make_shared<yApi::historization::CSwitch>("light")),
+   m_fan(boost::make_shared<yApi::historization::CSwitch>("fan")),
+   m_keywords({ m_light , m_fan })
 {
-   if (boost::iequals(keyword, m_light.getKeyword()))
+   if (boost::iequals(keyword, m_light->getKeyword()))
    {
-      m_light.setCommand(command);
+      m_light->setCommand(command);
       m_lightCmd = true;
    }
-   else if (boost::iequals(keyword, m_fan.getKeyword()))
+   else if (boost::iequals(keyword, m_fan->getKeyword()))
    {
-      m_fan.setCommand(command);
+      m_fan->setCommand(command);
       m_lightCmd = false;
    }
    else
@@ -30,11 +36,16 @@ CFan::CFan(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& keyword,
    Init(api);
 }
 
-CFan::CFan(boost::shared_ptr<yApi::IYPluginApi> api, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
-   :m_lightCmd(false), m_light("light"), m_fan("fan")
+CFan::CFan(boost::shared_ptr<yApi::IYPluginApi> api,
+   unsigned char subType,
+   const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+   :m_lightCmd(false),
+   m_light(boost::make_shared<yApi::historization::CSwitch>("light")),
+   m_fan(boost::make_shared<yApi::historization::CSwitch>("fan")),
+   m_keywords({ m_light , m_fan })
 {
-   m_light.set(false);
-   m_fan.set(false);
+   m_light->set(false);
+   m_fan->set(false);
 
    m_subType = subType;
    switch (m_subType)
@@ -51,8 +62,16 @@ CFan::CFan(boost::shared_ptr<yApi::IYPluginApi> api, unsigned char subType, cons
    Init(api);
 }
 
-CFan::CFan(boost::shared_ptr<yApi::IYPluginApi> api, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
-   :m_subType(0), m_id(0), m_lightCmd(false), m_light("light"), m_fan("fan")
+CFan::CFan(boost::shared_ptr<yApi::IYPluginApi> api,
+   const RBUF& rbuf,
+   size_t rbufSize,
+   boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+   :m_subType(0),
+   m_id(0),
+   m_lightCmd(false),
+   m_light(boost::make_shared<yApi::historization::CSwitch>("light")),
+   m_fan(boost::make_shared<yApi::historization::CSwitch>("fan")),
+   m_keywords({ m_light , m_fan })
 {
    // Should not be called (transmitter-only device)
    BOOST_ASSERT_MSG(false, "Constructing CFan object from received buffer is not possible, Cfan is transmitter-only device");
@@ -75,10 +94,7 @@ void CFan::Init(boost::shared_ptr<yApi::IYPluginApi> api)
       details.set("type", pTypeFan);
       details.set("subType", m_subType);
       details.set("id", m_id);
-      api->declareDevice(m_deviceName, m_deviceModel, details);
-
-      api->declareKeyword(m_deviceName, m_light);
-      api->declareKeyword(m_deviceName, m_fan);
+      api->declareDevice(m_deviceName, m_deviceModel, m_keywords, details);
    }
 }
 
