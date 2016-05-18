@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Rfy.h"
-#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/plugin/yPluginApi/historization/Curtain.h>
 #include <shared/exception/InvalidParameter.hpp>
 
@@ -10,10 +9,12 @@ namespace yApi = shared::plugin::yPluginApi;
 namespace rfxcomMessages
 {
 
-CRfy::CRfy(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& command, const shared::CDataContainer& deviceDetails)
-   :m_state("state")
+CRfy::CRfy(boost::shared_ptr<yApi::IYPluginApi> api,
+   const std::string& command,
+   const shared::CDataContainer& deviceDetails)
+   :m_state(boost::make_shared<yApi::historization::CCurtain>("state"))
 {
-   m_state.setCommand(command);
+   m_state->setCommand(command);
 
    m_subType = deviceDetails.get<unsigned char>("subType");
    m_id = deviceDetails.get<unsigned int>("id");
@@ -22,10 +23,12 @@ CRfy::CRfy(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& command,
    Init(api);
 }
 
-CRfy::CRfy(boost::shared_ptr<yApi::IYPluginApi> api, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
-   :m_state("state")
+CRfy::CRfy(boost::shared_ptr<yApi::IYPluginApi> api,
+   unsigned char subType,
+   const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+   :m_state(boost::make_shared<yApi::historization::CCurtain>("state"))
 {
-   m_state.set(yApi::historization::ECurtainCommand::kStop);
+   m_state->set(yApi::historization::ECurtainCommand::kStop);
 
    m_subType = subType;
    switch(m_subType)
@@ -44,8 +47,14 @@ CRfy::CRfy(boost::shared_ptr<yApi::IYPluginApi> api, unsigned char subType, cons
    Init(api);
 }
 
-CRfy::CRfy(boost::shared_ptr<yApi::IYPluginApi> api, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
-   :m_subType(0), m_unitCode(0), m_id(0), m_state("state")
+CRfy::CRfy(boost::shared_ptr<yApi::IYPluginApi> api,
+   const RBUF& rbuf,
+   size_t rbufSize,
+   boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+   :m_subType(0),
+   m_unitCode(0),
+   m_id(0),
+   m_state(boost::make_shared<yApi::historization::CCurtain>("state"))
 {
    // Should not be called (transmitter-only device)
    BOOST_ASSERT_MSG(false, "Constructing CRfy object from received buffer is not possible, CRfy is transmitter-only device");
@@ -69,9 +78,7 @@ void CRfy::Init(boost::shared_ptr<yApi::IYPluginApi> api)
       details.set("subType", m_subType);
       details.set("id", m_id);
       details.set("unitCode", m_unitCode);
-      api->declareDevice(m_deviceName, m_deviceModel, details);
-
-      api->declareKeyword(m_deviceName, m_state);
+      api->declareDevice(m_deviceName, m_deviceModel, m_state, details);
    }
 }
 
@@ -84,11 +91,11 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CRfy::encode(
    rbuf.RFY.packettype = pTypeRFY;
    rbuf.RFY.subtype = m_subType;
    rbuf.RFY.seqnbr = seqNumberProvider->next();
-   rbuf.RFY.id1 = (unsigned char)((m_id & 0xFF0000) >> 16);
-   rbuf.RFY.id2 = (unsigned char)((m_id & 0xFF00) >> 8);
-   rbuf.RFY.id3 = (unsigned char)(m_id & 0xFF);
+   rbuf.RFY.id1 = static_cast<unsigned char>((m_id & 0xFF0000) >> 16);
+   rbuf.RFY.id2 = static_cast<unsigned char>((m_id & 0xFF00) >> 8);
+   rbuf.RFY.id3 = static_cast<unsigned char>(m_id & 0xFF);
    rbuf.RFY.unitcode = m_unitCode;
-   rbuf.RFY.cmnd = toProtocolState(m_state);
+   rbuf.RFY.cmnd = toProtocolState(*m_state);
    rbuf.RFY.rfu1 = 0;
    rbuf.RFY.rfu2 = 0;
    rbuf.RFY.rfu3 = 0;
@@ -111,7 +118,9 @@ const std::string& CRfy::getDeviceName() const
 void CRfy::buildDeviceName()
 {
    std::ostringstream ssdeviceName;
-   ssdeviceName << m_deviceModel << "." << (unsigned int)m_id << "." << (unsigned int)m_unitCode;
+   ssdeviceName << m_deviceModel <<
+      "." << static_cast<unsigned int>(m_id) <<
+      "." << static_cast<unsigned int>(m_unitCode);
    m_deviceName = ssdeviceName.str();
 }
 

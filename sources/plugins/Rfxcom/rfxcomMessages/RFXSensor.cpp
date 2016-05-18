@@ -11,13 +11,8 @@ namespace rfxcomMessages
                           const RBUF& rbuf,
                           size_t rbufSize,
                           boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
-      : m_temperature("temperature"),
-        m_temperatureAvailable(false),
-        m_adVoltage("adVoltage"),
-        m_adVoltageAvailable(false),
-        m_voltage("voltage"),
-        m_voltageAvailable(false),
-        m_rssi("rssi")
+      : m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+        m_keywords({m_rssi})
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -34,23 +29,29 @@ namespace rfxcomMessages
       {
       case sTypeRFXSensorTemp:
          {
-            m_temperatureAvailable = true;
-            int temperature = ((rbuf.RFXSENSOR.msg1 & 0x7F) << 8 | rbuf.RFXSENSOR.msg2);
+            m_temperature = boost::make_shared<yApi::historization::CTemperature>("temperature");
+            m_keywords.push_back(m_temperature);
+
+            auto temperature = ((rbuf.RFXSENSOR.msg1 & 0x7F) << 8 | rbuf.RFXSENSOR.msg2);
             if (rbuf.RFXSENSOR.msg1 & 0x80)
                temperature = -temperature;
-            m_temperature.set(temperature / 100);
+            m_temperature->set(temperature / 100);
             break;
          }
       case sTypeRFXSensorAD:
          {
-            m_adVoltageAvailable = true;
-            m_adVoltage.set((rbuf.RFXSENSOR.msg1 << 8 | rbuf.RFXSENSOR.msg2) / 1000);
+            m_adVoltage = boost::make_shared<yApi::historization::CVoltage>("adVoltage");
+            m_keywords.push_back(m_temperature);
+
+            m_adVoltage->set((rbuf.RFXSENSOR.msg1 << 8 | rbuf.RFXSENSOR.msg2) / 1000);
             break;
          }
       case sTypeRFXSensorVolt:
          {
-            m_voltageAvailable = true;
-            m_voltage.set((rbuf.RFXSENSOR.msg1 << 8 | rbuf.RFXSENSOR.msg2) / 1000);
+            m_voltage = boost::make_shared<yApi::historization::CVoltage>("voltage");
+            m_keywords.push_back(m_temperature);
+
+            m_voltage->set((rbuf.RFXSENSOR.msg1 << 8 | rbuf.RFXSENSOR.msg2) / 1000);
             break;
          }
       case sTypeRFXSensorMessage:
@@ -65,7 +66,7 @@ namespace rfxcomMessages
          }
       }
 
-      m_rssi.set(NormalizeRssiLevel(rbuf.RFXSENSOR.rssi));
+      m_rssi->set(NormalizeRssiLevel(rbuf.RFXSENSOR.rssi));
 
       Init(api);
    }
@@ -81,47 +82,24 @@ namespace rfxcomMessages
       buildDeviceName();
 
       // Create device and keywords if needed
-      if (!api->deviceExists(m_deviceName) && (m_temperatureAvailable || m_adVoltageAvailable || m_voltageAvailable))
+      if (!api->deviceExists(m_deviceName))
       {
          shared::CDataContainer details;
          details.set("type", pTypeRFXSensor);
          details.set("subType", m_subType);
          details.set("id", m_id);
-         api->declareDevice(m_deviceName, m_deviceModel, details);
-
-         if (m_temperatureAvailable)
-            api->declareKeyword(m_deviceName, m_temperature);
-
-         if (m_adVoltageAvailable)
-            api->declareKeyword(m_deviceName, m_adVoltage);
-
-         if (m_voltageAvailable)
-            api->declareKeyword(m_deviceName, m_voltage);
-
-         api->declareKeyword(m_deviceName, m_rssi);
+         api->declareDevice(m_deviceName, m_deviceModel, m_keywords, details);
       }
    }
 
-   boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CRFXSensor::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CRFXSensor::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
    {
       throw shared::exception::CInvalidParameter("RFXSensor is a read-only message, can not be encoded");
    }
 
    void CRFXSensor::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
    {
-      if (m_temperatureAvailable || m_adVoltageAvailable || m_voltageAvailable)
-      {
-         if (m_temperatureAvailable)
-            api->historizeData(m_deviceName, m_temperature);
-
-         if (m_adVoltageAvailable)
-            api->historizeData(m_deviceName, m_adVoltage);
-
-         if (m_voltageAvailable)
-            api->historizeData(m_deviceName, m_voltage);
-
-         api->historizeData(m_deviceName, m_rssi);
-      }
+      api->historizeData(m_deviceName, m_keywords);
    }
 
    const std::string& CRFXSensor::getDeviceName() const
@@ -159,7 +137,7 @@ namespace rfxcomMessages
          break;
       case 0x0085: std::cout << "RFXSensor received message \"1-Wire scratchpad CRC error\"" << std::endl;
          break;
-      default: std::cout << "RFXSensor invalid received message (unknown ID " << msgId << ")"  << std::endl;
+      default: std::cout << "RFXSensor invalid received message (unknown ID " << msgId << ")" << std::endl;
          break;
       }
    }

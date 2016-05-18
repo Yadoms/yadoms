@@ -1,7 +1,5 @@
 #pragma once
-
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
-#include <shared/DataContainer.h>
 #include "IRemoteSubtype.h"
 
 namespace yApi = shared::plugin::yPluginApi;
@@ -20,7 +18,9 @@ namespace rfxcomMessages
       /// \param[in] model                The device model
       //--------------------------------------------------------------
       explicit CRemoteStandard(const std::string& model)
-         :m_model(model), m_keyword("command")
+         : m_model(model),
+           m_keyword(boost::make_shared<THistorizer>("command")),
+           m_keywords({m_keyword})
       {
       }
 
@@ -30,38 +30,32 @@ namespace rfxcomMessages
       virtual ~CRemoteStandard()
       {
       }
-      
+
       // IRemoteSubtype implementation
-      virtual const std::string& getModel() const
+      const std::string& getModel() const override
       {
          return m_model;
       }
 
-      virtual void declare(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const
+      const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywords() const override
       {
-         if (!api->keywordExists(deviceName, m_keyword))
-            api->declareKeyword(deviceName, m_keyword);
+         return m_keywords;
       }
 
-      virtual void historize(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const
+      void set(const std::string& yadomsCommand) override
       {
-         api->historizeData(deviceName, m_keyword);
+         m_keyword->setCommand(yadomsCommand);
       }
 
-      virtual void set(const std::string& yadomsCommand)
+      void setFromProtocolState(const RBUF& remoteRbuf) override
       {
-         m_keyword.setCommand(yadomsCommand);
+         m_keyword->set(TEnum(remoteRbuf.REMOTE.cmnd));
       }
 
-      virtual void setFromProtocolState(const RBUF& remoteRbuf)
-      {
-         m_keyword.set(TEnum(remoteRbuf.REMOTE.cmnd));
-      }
-
-      virtual void toProtocolState(RBUF& remoteRbuf) const
+      void toProtocolState(RBUF& remoteRbuf) const override
       {
          remoteRbuf.REMOTE.cmndtype = 0;
-         remoteRbuf.REMOTE.cmnd = static_cast<unsigned char>(m_keyword.get().toInteger());
+         remoteRbuf.REMOTE.cmnd = static_cast<unsigned char>(m_keyword->get().toInteger());
       }
       // [END] IRemoteSubtype implementation
 
@@ -74,7 +68,13 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	                        The keyword
       //--------------------------------------------------------------
-      THistorizer m_keyword;
-   };
+      boost::shared_ptr<THistorizer> m_keyword;
 
+      //--------------------------------------------------------------
+      /// \brief	The keywords list to historize in one step for better performances
+      //--------------------------------------------------------------
+      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
+   };
 } // namespace rfxcomMessages
+
+

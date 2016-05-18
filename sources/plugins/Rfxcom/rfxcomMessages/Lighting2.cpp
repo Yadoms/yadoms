@@ -75,10 +75,10 @@ void CLighting2::createSubType(unsigned char subType)
    m_subType = subType;
    switch(m_subType)
    {
-   case sTypeAC : m_subTypeManager.reset(new CLighting2Dimmable("AC")); break;
-   case sTypeHEU : m_subTypeManager.reset(new CLighting2Dimmable("HomeEasy EU")); break;
-   case sTypeANSLUT : m_subTypeManager.reset(new CLighting2Dimmable("ANSLUT")); break;
-   case sTypeKambrook : m_subTypeManager.reset(new CLighting2OnOff("Kambrook RF3672 (Australia)")); break;
+   case sTypeAC : m_subTypeManager = boost::make_shared<CLighting2Dimmable>("AC"); break;
+   case sTypeHEU : m_subTypeManager = boost::make_shared<CLighting2Dimmable>("HomeEasy EU"); break;
+   case sTypeANSLUT : m_subTypeManager = boost::make_shared<CLighting2Dimmable>("ANSLUT"); break;
+   case sTypeKambrook : m_subTypeManager = boost::make_shared<CLighting2OnOff>("Kambrook RF3672 (Australia)"); break;
    default:
       throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
    }
