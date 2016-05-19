@@ -71,7 +71,7 @@ namespace pluginSystem
       startInternalPlugin();
    }
 
-   bool CManager::startInstances(const std::vector<boost::shared_ptr<database::entities::CPlugin>>& instances)
+   bool CManager::startInstances(const std::vector<boost::shared_ptr<database::entities::CPlugin> >& instances)
    {
       auto allInstancesStarted = true;
       for (auto it = instances.begin(); it != instances.end(); ++it)
@@ -154,7 +154,7 @@ namespace pluginSystem
       }
    }
 
-   std::vector<boost::shared_ptr<database::entities::CPlugin>> CManager::getInstanceList() const
+   std::vector<boost::shared_ptr<database::entities::CPlugin> > CManager::getInstanceList() const
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
       return m_pluginDBTable->getInstances();
@@ -205,8 +205,8 @@ namespace pluginSystem
    {
       // Find instances to start
       std::vector<int> instancesToStart;
-      std::vector<boost::shared_ptr<database::entities::CPlugin>> allInstances = getInstanceList();
-      for (std::vector<boost::shared_ptr<database::entities::CPlugin>>::const_iterator instance = allInstances.begin(); instance != allInstances.end(); ++instance)
+      std::vector<boost::shared_ptr<database::entities::CPlugin> > allInstances = getInstanceList();
+      for (std::vector<boost::shared_ptr<database::entities::CPlugin> >::const_iterator instance = allInstances.begin(); instance != allInstances.end(); ++instance)
       {
          if (boost::iequals((*instance)->Type(), pluginName) && (*instance)->AutoStart())
             instancesToStart.push_back((*instance)->Id());
@@ -484,7 +484,7 @@ namespace pluginSystem
       return fullState.get<shared::plugin::yPluginApi::historization::EPluginState>("state");
    }
 
-   void CManager::postCommand(int id, boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command)
+   void CManager::postCommand(int id, boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command) const
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
       auto instance(getRunningInstance(id));
@@ -494,7 +494,7 @@ namespace pluginSystem
       instance->postDeviceCommand(command);
    }
 
-   void CManager::postExtraCommand(int id, boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> command)
+   void CManager::postExtraCommand(int id, boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> command) const
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
       auto instance(getRunningInstance(id));
@@ -504,7 +504,7 @@ namespace pluginSystem
       instance->postExtraCommand(command);
    }
 
-   void CManager::postManuallyDeviceCreationRequest(int id, boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest>& request)
+   void CManager::postManuallyDeviceCreationRequest(int id, boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest>& request) const
    {
       try
       {

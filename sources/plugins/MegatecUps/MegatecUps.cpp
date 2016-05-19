@@ -115,7 +115,7 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             {
                // Configuration was updated
                api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
-               shared::CDataContainer newConfigurationData = api->getEventHandler().getEventData<shared::CDataContainer>();
+               auto newConfigurationData = api->getEventHandler().getEventData<shared::CDataContainer>();
                std::cout << "Update configuration..." << std::endl;
                BOOST_ASSERT(!newConfigurationData.empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
@@ -124,7 +124,7 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                newConfiguration.initializeWith(newConfigurationData);
 
                // If port has changed, destroy and recreate connection (if any)
-               bool needToReconnect = !connectionsAreEqual(m_configuration, newConfiguration) && !!m_port;
+               auto needToReconnect = !connectionsAreEqual(m_configuration, newConfiguration) && !!m_port;
 
                if (needToReconnect)
                   destroyConnection();
@@ -134,8 +134,9 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
                if (needToReconnect)
                   createConnection(api);
+               else
+                  api->setPluginState(yApi::historization::EPluginState::kRunning);
 
-               api->setPluginState(yApi::historization::EPluginState::kRunning);
                break;
             }
          case kEvtPortConnection:
@@ -251,7 +252,6 @@ void CMegatecUps::onCommandShutdown(boost::shared_ptr<yApi::IYPluginApi> api,
 void CMegatecUps::processConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    std::cout << "UPS port opened" << std::endl;
-   api->setPluginState(yApi::historization::EPluginState::kRunning);
 
    try
    {
@@ -344,7 +344,7 @@ void CMegatecUps::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
 
             // Count tokens
             unsigned int tokenCount = 0;
-            for (boost::tokenizer<boost::char_separator<char> >::const_iterator itToken = tokens.begin(); itToken != tokens.end(); ++itToken)
+            for (auto itToken = tokens.begin(); itToken != tokens.end(); ++itToken)
                ++tokenCount;
 
             if (tokenCount == 3)
@@ -358,6 +358,9 @@ void CMegatecUps::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
             {
                processReceivedRatingInformation(tokens);
 
+               // End of initialization, plugin is now running
+               api->setPluginState(yApi::historization::EPluginState::kRunning);
+
                // Now ask for status
                sendGetStatusCmd();
             }
@@ -368,7 +371,7 @@ void CMegatecUps::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
       default:
          {
             // Maybe some dummy data are at beginning of the string, try to remove them
-            size_t messageStartPos = message.find_first_of("(#");
+            auto messageStartPos = message.find_first_of("(#");
             if (messageStartPos == std::string::npos)
             {
                // None of starting characters found, the message is definitively bad...
@@ -529,14 +532,14 @@ void CMegatecUps::processReceivedInformation(boost::shared_ptr<yApi::IYPluginApi
 
 void CMegatecUps::processReceivedRatingInformation(const boost::tokenizer<boost::char_separator<char> >& tokens)
 {
-   boost::tokenizer<boost::char_separator<char> >::const_iterator itToken = tokens.begin();
-   double ratingVoltage = upsStr2Double(*itToken);
+   auto itToken = tokens.begin();
+   auto ratingVoltage = upsStr2Double(*itToken);
    ++itToken;
-   double ratingCurrent = upsStr2Double(*itToken);
+   auto ratingCurrent = upsStr2Double(*itToken);
    ++itToken;
    m_batteryNominalVoltage = upsStr2Double(*itToken);
    ++itToken;
-   double frequency = upsStr2Double(*itToken);
+   auto frequency = upsStr2Double(*itToken);
 
    std::cout << "UPS rating informations : voltage=" << ratingVoltage << ", current=" << ratingCurrent << ", batteryVoltage=" << m_batteryNominalVoltage << ", frequency=" << frequency << std::endl;
 }

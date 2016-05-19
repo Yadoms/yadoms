@@ -36,12 +36,11 @@ namespace pluginSystem
       /// \param [in]   supervisor              The supervisor event handler
       /// \param[in]    eventLogger             Main event logger
       //--------------------------------------------------------------
-      CManager(
-         const std::string& initialDir,
-         boost::shared_ptr<database::IDataProvider> dataProvider,
-         boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
-         boost::shared_ptr<shared::event::CEventHandler> supervisor,
-         boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger);
+      CManager(const std::string& initialDir,
+               boost::shared_ptr<database::IDataProvider> dataProvider,
+               boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
+               boost::shared_ptr<shared::event::CEventHandler> supervisor,
+               boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger);
 
       //--------------------------------------------------------------
       /// \brief			Initialization, used for the 2-steps construction
@@ -93,7 +92,7 @@ namespace pluginSystem
       /// \brief           Get the plugin instances list
       /// \return          List of instances ID of all known instances, started or not
       //--------------------------------------------------------------
-      std::vector<boost::shared_ptr<database::entities::CPlugin>> getInstanceList() const;
+      std::vector<boost::shared_ptr<database::entities::CPlugin> > getInstanceList() const;
 
       //--------------------------------------------------------------
       /// \brief           Get the instance configuration
@@ -177,21 +176,21 @@ namespace pluginSystem
       /// \param [in] id         Plugin instance Id
       /// \param [in] command    The command to post
       //--------------------------------------------------------------
-      void postCommand(int id, boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command);
+      void postCommand(int id, boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command) const;
 
       //--------------------------------------------------------------
       /// \brief                 Post an extra command to a device on a specific plugin
       /// \param [in] id         Plugin instance Id
       /// \param [in] command    The command to post
       //--------------------------------------------------------------
-      void postExtraCommand(int id, boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> command);
+      void postExtraCommand(int id, boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> command) const;
 
       //--------------------------------------------------------------
       /// \brief                 Post a manually device creation request to a plugin
       /// \param [in] id         Plugin instance Id
       /// \param [in] request    Request data
       //--------------------------------------------------------------
-      void postManuallyDeviceCreationRequest(int id, boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest>& request);
+      void postManuallyDeviceCreationRequest(int id, boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest>& request) const;
 
       //--------------------------------------------------------------
       /// \brief                 Post a binding query request to a plugin
@@ -223,7 +222,7 @@ namespace pluginSystem
       ///\param[in] instances Instances to start
       ///\return              true if all instances were successfully started
       //-----------------------------------------------------
-      bool startInstances(const std::vector<boost::shared_ptr<database::entities::CPlugin>>& instances);
+      bool startInstances(const std::vector<boost::shared_ptr<database::entities::CPlugin> >& instances);
 
       //-----------------------------------------------------
       ///\brief               Stop all started instances
