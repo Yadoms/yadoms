@@ -243,21 +243,17 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
 
    case OpenZWave::Notification::Type_ValueChanged:
    {
-      boost::shared_ptr<COpenZWaveNode> node = getNode(_notification);
+      auto node = getNode(_notification);
       if (node)
       {
-         boost::shared_ptr<IOpenZWaveNodeKeyword> kw = node->getKeyword(vID, m_configuration->getIncludeSystemKeywords());
+         auto kw = node->getKeyword(vID, m_configuration->getIncludeSystemKeywords());
          if (kw)
          {
-            boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> historizedData = node->updateKeywordValue(vID, m_configuration->getIncludeSystemKeywords());
-            boost::shared_ptr<CKeywordContainer> d(new CKeywordContainer(COpenZWaveHelpers::GenerateDeviceName(node->getHomeId(), node->getNodeId()), *historizedData.get()));
-            if (m_handler != NULL)
+            auto historizedData = node->updateKeywordValue(vID, m_configuration->getIncludeSystemKeywords());
+            auto d(boost::make_shared<CKeywordContainer>(COpenZWaveHelpers::GenerateDeviceName(node->getHomeId(), node->getNodeId()), historizedData));
+            if (m_handler != nullptr)
                m_handler->postEvent(CZWave::kUpdateKeyword, d);
          }
-
-         
-
-         
       }
       break;
    }

@@ -4,7 +4,10 @@
 #include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/plugin/yPluginApi/StandardUnits.h>
 
-CSystemFactory::CSystemFactory(boost::shared_ptr<yApi::IYPluginApi> api, const std::string & device, const ISIConfiguration& configuration, shared::CDataContainer details):
+CSystemFactory::CSystemFactory(boost::shared_ptr<yApi::IYPluginApi> api,
+                               const std::string & device,
+                               const ISIConfiguration& configuration,
+                               shared::CDataContainer details):
    m_PluginName                    (device),
    m_MemoryLoad                    (device),
    m_CPULoad                       (device),
@@ -42,7 +45,8 @@ CSystemFactory::CSystemFactory(boost::shared_ptr<yApi::IYPluginApi> api, const s
 }
 
 CSystemFactory::~CSystemFactory()
-{}
+{
+}
 
 void CSystemFactory::OnSpeedUpdate ( boost::shared_ptr<yApi::IYPluginApi> api )
 {

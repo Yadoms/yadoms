@@ -6,7 +6,7 @@
 
 CYadomsCPULoad::CYadomsCPULoad(const std::string & device)
    :m_device(device), 
-    m_keyword(new yApi::historization::CLoad("YadomsCPULoad"))
+    m_keyword(boost::make_shared<yApi::historization::CLoad>("YadomsCPULoad"))
 {
    FILE* file;
    struct tms timeSample;
@@ -33,15 +33,15 @@ CYadomsCPULoad::~CYadomsCPULoad()
 void CYadomsCPULoad::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer details)
 {
    // Declare associated keywords (= values managed by this device)
-   if (!api->keywordExists( m_device, m_keyword->getKeyword()))
-      api->declareKeyword(m_device, *m_keyword, details);
+   if (!api->keywordExists( m_device, m_keyword))
+      api->declareKeyword(m_device, m_keyword, details);
 }
 
 void CYadomsCPULoad::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
    BOOST_ASSERT_MSG(api, "api must be defined");
 
-   api->historizeData(m_device, *m_keyword);
+   api->historizeData(m_device, m_keyword);
 }
 
 void CYadomsCPULoad::read()

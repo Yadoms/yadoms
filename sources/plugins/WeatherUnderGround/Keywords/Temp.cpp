@@ -14,8 +14,8 @@ CTemp::CTemp(std::string PluginName,
 void CTemp::Initialize(boost::shared_ptr<yApi::IYPluginApi> api,
                        shared::CDataContainer details) const
 {
-   if (!api->keywordExists(m_PluginName, m_temperature->getKeyword()))
-      api->declareKeyword(m_PluginName, *m_temperature, details);
+   if (!api->keywordExists(m_PluginName, m_temperature))
+      api->declareKeyword(m_PluginName, m_temperature, details);
 }
 
 CTemp::~CTemp()

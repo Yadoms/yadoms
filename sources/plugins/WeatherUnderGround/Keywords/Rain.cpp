@@ -13,10 +13,8 @@ CRain::CRain(std::string PluginName,
 
 void CRain::Initialize(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer details) const
 {
-   if (!api->keywordExists(m_PluginName, m_rain->getKeyword()))
-   {
-      api->declareKeyword(m_PluginName, *m_rain, details);
-   }
+   if (!api->keywordExists(m_PluginName, m_rain))
+      api->declareKeyword(m_PluginName, m_rain, details);
 }
 
 CRain::~CRain()

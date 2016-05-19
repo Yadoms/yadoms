@@ -42,16 +42,26 @@ CMegatecUps::CMegatecUps()
      m_answerIsRequired(true),
      m_acPowerActive(true),
      m_batteryNominalVoltage(0.0),
-     m_inputVoltage("inputVoltage"),
-     m_inputfaultVoltage("inputfaultVoltage"),
-     m_outputVoltage("outputVoltage"),
-     m_outputLoad("outputLoad"),
-     m_inputFrequency("inputFrequency"),
-     m_batteryVoltage("batteryVoltage"),
-     m_temperature("temperature"),
-     m_acPowerHistorizer("acPowerActive", yApi::EKeywordAccessMode::kGet),
-     m_batteryLowHistorizer("batteryLow", yApi::EKeywordAccessMode::kGet),
-     m_upsShutdown("UpsShutdown")
+     m_inputVoltage(boost::make_shared<yApi::historization::CVoltage>("inputVoltage")),
+     m_inputfaultVoltage(boost::make_shared<yApi::historization::CVoltage>("inputfaultVoltage")),
+     m_outputVoltage(boost::make_shared<yApi::historization::CVoltage>("outputVoltage")),
+     m_outputLoad(boost::make_shared<yApi::historization::CLoad>("outputLoad")),
+     m_inputFrequency(boost::make_shared<yApi::historization::CFrequency>("inputFrequency")),
+     m_batteryVoltage(boost::make_shared<yApi::historization::CVoltage>("batteryVoltage")),
+     m_temperature(boost::make_shared<yApi::historization::CTemperature>("temperature")),
+     m_acPowerHistorizer(boost::make_shared<yApi::historization::CSwitch>("acPowerActive", yApi::EKeywordAccessMode::kGet)),
+     m_batteryLowHistorizer(boost::make_shared<yApi::historization::CSwitch>("batteryLow", yApi::EKeywordAccessMode::kGet)),
+     m_upsShutdown(boost::make_shared<yApi::historization::CEvent>("UpsShutdown")),
+     m_keywords({m_inputVoltage ,
+        m_inputfaultVoltage ,
+        m_outputVoltage ,
+        m_outputLoad ,
+        m_inputFrequency ,
+        m_batteryVoltage ,
+        m_temperature ,
+        m_acPowerHistorizer ,
+        m_batteryLowHistorizer ,
+        m_upsShutdown})
 {
 }
 
@@ -94,7 +104,7 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                auto command(api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >());
                std::cout << "Command received : " << yApi::IDeviceCommand::toString(command) << std::endl;
 
-               if (boost::iequals(command->getKeyword(), m_upsShutdown.getKeyword()))
+               if (boost::iequals(command->getKeyword(), m_upsShutdown->getKeyword()))
                   onCommandShutdown(api, command->getBody());
                else
                   std::cout << "Received command for unknown keyword from Yadoms : " << yApi::IDeviceCommand::toString(command) << std::endl;
@@ -442,19 +452,19 @@ void CMegatecUps::processReceivedStatus(boost::shared_ptr<yApi::IYPluginApi> api
                                         const boost::tokenizer<boost::char_separator<char> >& tokens)
 {
    boost::tokenizer<boost::char_separator<char> >::const_iterator itToken = tokens.begin();
-   m_inputVoltage.set(upsStr2Double(*itToken));
+   m_inputVoltage->set(upsStr2Double(*itToken));
    ++itToken;
-   m_inputfaultVoltage.set(upsStr2Double(*itToken));
+   m_inputfaultVoltage->set(upsStr2Double(*itToken));
    ++itToken;
-   m_outputVoltage.set(upsStr2Double(*itToken));
+   m_outputVoltage->set(upsStr2Double(*itToken));
    ++itToken;
-   m_outputLoad.set(upsStr2Double(*itToken));
+   m_outputLoad->set(upsStr2Double(*itToken));
    ++itToken;
-   m_inputFrequency.set(upsStr2Double(*itToken));
+   m_inputFrequency->set(upsStr2Double(*itToken));
    ++itToken;
-   m_batteryVoltage.set(upsStr2Double(*itToken));
+   m_batteryVoltage->set(upsStr2Double(*itToken));
    ++itToken;
-   m_temperature.set(upsStr2Double(*itToken));
+   m_temperature->set(upsStr2Double(*itToken));
    ++itToken;
 
    const std::string& status = *itToken;
@@ -469,10 +479,10 @@ void CMegatecUps::processReceivedStatus(boost::shared_ptr<yApi::IYPluginApi> api
    bool shutdownActive = status[6] == '1';
    bool beeperOn = status[7] == '1';
 
-   m_batteryLowHistorizer.set(batteryLow);
-   m_acPowerHistorizer.set(!utilityFail);
+   m_batteryLowHistorizer->set(batteryLow);
+   m_acPowerHistorizer->set(!utilityFail);
 
-   historizeData(api);
+   api->historizeData(DeviceName, m_keywords);
 
    std::cout << "UPS current informations : inputVoltage=" << m_inputVoltage.get() <<
       ", inputfaultVoltage=" << m_inputfaultVoltage.get() <<
@@ -499,7 +509,7 @@ void CMegatecUps::processReceivedStatus(boost::shared_ptr<yApi::IYPluginApi> api
 }
 
 void CMegatecUps::processReceivedInformation(boost::shared_ptr<yApi::IYPluginApi> api,
-                                             const boost::tokenizer<boost::char_separator<char> >& tokens)
+                                             const boost::tokenizer<boost::char_separator<char> >& tokens) const
 {
    boost::tokenizer<boost::char_separator<char> >::const_iterator itToken = tokens.begin();
    std::string company(*itToken);
@@ -547,42 +557,12 @@ double CMegatecUps::upsStr2Double(const std::string& str)
 void CMegatecUps::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                                 const std::string& model) const
 {
-   bool needFirstHistorization = false;
-
    if (!api->deviceExists(DeviceName))
    {
-      api->declareDevice(DeviceName, model);
-      needFirstHistorization = true;
-   }
+      api->declareDevice(DeviceName, model, m_keywords);
 
-   if (!api->keywordExists(DeviceName, m_inputVoltage)) api->declareKeyword(DeviceName, m_inputVoltage);
-   if (!api->keywordExists(DeviceName, m_inputfaultVoltage)) api->declareKeyword(DeviceName, m_inputfaultVoltage);
-   if (!api->keywordExists(DeviceName, m_outputVoltage)) api->declareKeyword(DeviceName, m_outputVoltage);
-   if (!api->keywordExists(DeviceName, m_outputLoad)) api->declareKeyword(DeviceName, m_outputLoad);
-   if (!api->keywordExists(DeviceName, m_inputFrequency)) api->declareKeyword(DeviceName, m_inputFrequency);
-   if (!api->keywordExists(DeviceName, m_batteryVoltage)) api->declareKeyword(DeviceName, m_batteryVoltage);
-   if (!api->keywordExists(DeviceName, m_temperature)) api->declareKeyword(DeviceName, m_temperature);
-   if (!api->keywordExists(DeviceName, m_acPowerHistorizer)) api->declareKeyword(DeviceName, m_acPowerHistorizer);
-   if (!api->keywordExists(DeviceName, m_batteryLowHistorizer)) api->declareKeyword(DeviceName, m_batteryLowHistorizer);
-   if (!api->keywordExists(DeviceName, m_upsShutdown)) api->declareKeyword(DeviceName, m_upsShutdown);
-
-   if (needFirstHistorization)
-   {
       // Force a first historization to let Yadoms know the shutdown state
       api->historizeData(DeviceName, m_upsShutdown);
    }
-}
-
-void CMegatecUps::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
-{
-   api->historizeData(DeviceName, m_inputVoltage);
-   api->historizeData(DeviceName, m_inputfaultVoltage);
-   api->historizeData(DeviceName, m_outputVoltage);
-   api->historizeData(DeviceName, m_outputLoad);
-   api->historizeData(DeviceName, m_inputFrequency);
-   api->historizeData(DeviceName, m_batteryVoltage);
-   api->historizeData(DeviceName, m_temperature);
-   api->historizeData(DeviceName, m_acPowerHistorizer);
-   api->historizeData(DeviceName, m_batteryLowHistorizer);
 }
 

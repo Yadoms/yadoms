@@ -10,10 +10,10 @@ CForecastTomorrow::CForecastTomorrow(boost::shared_ptr<yApi::IYPluginApi> api,
                                      std::string KeyWordName,
                                      shared::CDataContainer details)
    : m_PluginName(PluginName),
-     m_forecastPeriod(new teleInfoUSB::specificHistorizers::CColor(KeyWordName))
+     m_forecastPeriod(boost::make_shared<teleInfoUSB::specificHistorizers::CColor>(KeyWordName))
 {
-   if (!api->keywordExists(m_PluginName, m_forecastPeriod->getKeyword()))
-      api->declareKeyword(m_PluginName, *m_forecastPeriod, details);
+   if (!api->keywordExists(m_PluginName, m_forecastPeriod))
+      api->declareKeyword(m_PluginName, m_forecastPeriod, details);
 }
 
 void CForecastTomorrow::SetValue(std::string& Value) const

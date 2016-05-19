@@ -11,11 +11,11 @@ CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> api,
      m_CountryOrState(WUConfiguration.getCountryOrState()),
      m_PluginName(PluginName),
      m_Temp(PluginName, Prefix + "temperature"),
-     m_pressure(new yApi::historization::CPressure(Prefix + "pressure")),
-     m_humidity(new yApi::historization::CHumidity(Prefix + "Humidity")),
-     m_visibility(new yApi::historization::CDistance(Prefix + "Visibility")),
-     m_uv(new yApi::historization::CDirection(Prefix + "UV")),
-     m_WindDirection(new yApi::historization::CDirection(Prefix + "WindDirection")),
+     m_pressure(boost::make_shared<yApi::historization::CPressure>(Prefix + "pressure")),
+     m_humidity(boost::make_shared<yApi::historization::CHumidity>(Prefix + "Humidity")),
+     m_visibility(boost::make_shared<yApi::historization::CDistance>(Prefix + "Visibility")),
+     m_uv(boost::make_shared<yApi::historization::CDirection>(Prefix + "UV")),
+     m_WindDirection(boost::make_shared<yApi::historization::CDirection>(Prefix + "WindDirection")),
      m_DewPoint(PluginName, Prefix + "DewPoint"),
      m_Rain_1hr(PluginName, Prefix + "Rain_1hr"),
      m_WeatherConditionUrl(PluginName, Prefix + "WeatherCondition"),
@@ -24,7 +24,6 @@ CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> api,
      m_FeelsLike(PluginName, Prefix + "FeelsLike"),
      m_Windchill(PluginName, Prefix + "Windchill"),
      m_LiveConditions(PluginName, "LiveConditions")
-
 {
    try
    {
@@ -47,8 +46,7 @@ CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> api,
 }
 
 void CWeatherConditions::InitializeVariables(boost::shared_ptr<yApi::IYPluginApi> api,
-                                             IWUConfiguration& WUConfiguration
-)
+                                             IWUConfiguration& WUConfiguration) const
 {
    shared::CDataContainer details;
    details.set("provider", "weather-underground");
@@ -56,11 +54,11 @@ void CWeatherConditions::InitializeVariables(boost::shared_ptr<yApi::IYPluginApi
 
    if (WUConfiguration.IsConditionsIndividualKeywordsEnabled())
    {
-      if (!api->keywordExists(m_PluginName, m_pressure->getKeyword())) api->declareKeyword(m_PluginName, *m_pressure, details);
-      if (!api->keywordExists(m_PluginName, m_humidity->getKeyword())) api->declareKeyword(m_PluginName, *m_humidity, details);
-      if (!api->keywordExists(m_PluginName, m_visibility->getKeyword())) api->declareKeyword(m_PluginName, *m_visibility, details);
-      if (!api->keywordExists(m_PluginName, m_uv->getKeyword())) api->declareKeyword(m_PluginName, *m_uv, details);
-      if (!api->keywordExists(m_PluginName, m_WindDirection->getKeyword())) api->declareKeyword(m_PluginName, *m_WindDirection, details);
+      if (!api->keywordExists(m_PluginName, m_pressure)) api->declareKeyword(m_PluginName, m_pressure, details);
+      if (!api->keywordExists(m_PluginName, m_humidity)) api->declareKeyword(m_PluginName, m_humidity, details);
+      if (!api->keywordExists(m_PluginName, m_visibility)) api->declareKeyword(m_PluginName, m_visibility, details);
+      if (!api->keywordExists(m_PluginName, m_uv)) api->declareKeyword(m_PluginName, m_uv, details);
+      if (!api->keywordExists(m_PluginName, m_WindDirection)) api->declareKeyword(m_PluginName, m_WindDirection, details);
 
       m_Temp.Initialize(api, details);
       m_DewPoint.Initialize(api, details);
@@ -174,7 +172,8 @@ std::string CWeatherConditions::GetCityName() const
    return m_CityConditions;
 }
 
-void CWeatherConditions::Parse(boost::shared_ptr<yApi::IYPluginApi> api, const IWUConfiguration& WUConfiguration)
+void CWeatherConditions::Parse(boost::shared_ptr<yApi::IYPluginApi> api,
+                               const IWUConfiguration& WUConfiguration) const
 {
    try
    {
@@ -186,7 +185,7 @@ void CWeatherConditions::Parse(boost::shared_ptr<yApi::IYPluginApi> api, const I
       }
       else
       {
-         std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > KeywordList;
+         std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> KeywordList;
 
          if (WUConfiguration.IsConditionsIndividualKeywordsEnabled())
          {

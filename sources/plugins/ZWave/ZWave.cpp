@@ -164,15 +164,15 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                {
                   try
                   {
-                     boost::shared_ptr<CKeywordContainer> keywordData = api->getEventHandler().getEventData<boost::shared_ptr<CKeywordContainer>>();
+                     boost::shared_ptr<CKeywordContainer> keywordData = api->getEventHandler().getEventData<boost::shared_ptr<CKeywordContainer> >();
 
-                     std::string deviceId = keywordData->getDeviceId();
-                     std::string keywordId = keywordData->getKeyword().getKeyword();
+                     auto deviceId = keywordData->getDeviceId();
+                     auto keywordId = keywordData->getKeyword();
 
                      if (!api->keywordExists(deviceId, keywordId))
-                        api->declareKeyword(deviceId, keywordData->getKeyword());
+                        api->declareKeyword(deviceId, keywordId);
 
-                     api->historizeData(deviceId, keywordData->getKeyword());
+                     api->historizeData(deviceId, keywordId);
                   }
                   catch (shared::exception::CException& ex)
                   {

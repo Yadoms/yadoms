@@ -1,8 +1,7 @@
 #pragma once
-
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
-#include <shared/DataContainer.h>
 #include "ISecurity1Subtype.h"
+#include "RFXtrx.h"
 
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -17,9 +16,11 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	                        The RFXCom subtype value
       //--------------------------------------------------------------
-      enum { rfxValue = sTypePowercodeMotion };
+      enum
+      {
+         rfxValue = sTypePowercodeMotion
+      };
 
-   public:
       //--------------------------------------------------------------
       /// \brief	                        Constructor
       //--------------------------------------------------------------
@@ -28,23 +29,28 @@ namespace rfxcomMessages
       /// \brief	Destructor
       //--------------------------------------------------------------
       virtual ~CSecurity1PowerCodeMotion();
-      
+
       // ISecurity1Subtype implementation
-      virtual std::string getModel() const;
-      virtual void declare(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const;
-      virtual void historize(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const;
-      virtual void set(const std::string& keyword, const std::string& yadomsCommand);
-      virtual void reset();
-      virtual void setFromProtocolState(unsigned char statusByte);
-      virtual unsigned char toProtocolState() const;
+      std::string getModel() const override;
+      const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywords() const override;
+      void set(const std::string& keyword, const std::string& yadomsCommand) override;
+      void reset() override;
+      void setFromProtocolState(unsigned char statusByte) override;
+      unsigned char toProtocolState() const override;
       // [END] ISecurity1Subtype implementation
 
    private:
       //--------------------------------------------------------------
       /// \brief	                        The keywords
       //--------------------------------------------------------------
-      yApi::historization::CSwitch m_alarm;
-      yApi::historization::CSwitch m_tamper;
-   };
+      boost::shared_ptr<yApi::historization::CSwitch> m_alarm;
+      boost::shared_ptr<yApi::historization::CSwitch> m_tamper;
 
+      //--------------------------------------------------------------
+      /// \brief	The keywords list to historize in one step for better performances
+      //--------------------------------------------------------------
+      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
+   };
 } // namespace rfxcomMessages
+
+

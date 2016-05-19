@@ -1,12 +1,10 @@
 #include "stdafx.h"
 #include "MemoryLoad.h"
 #include <shared/exception/Exception.hpp>
-#include <shared/plugin/yPluginApi/StandardCapacities.h>
-#include <shared/plugin/yPluginApi/StandardUnits.h>
 
 CMemoryLoad::CMemoryLoad(const std::string & device)
    :m_device(device), 
-    m_keyword( new yApi::historization::CLoad("MemoryLoad"))
+    m_keyword(boost::make_shared< yApi::historization::CLoad>("MemoryLoad"))
 {}
 
 CMemoryLoad::~CMemoryLoad()
@@ -14,8 +12,8 @@ CMemoryLoad::~CMemoryLoad()
 
 void CMemoryLoad::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer details)
 {
-      if (!api->keywordExists( m_device, m_keyword->getKeyword()))
-         api->declareKeyword(m_device, *m_keyword, details);
+      if (!api->keywordExists( m_device, m_keyword))
+         api->declareKeyword(m_device, m_keyword, details);
 }
 
 void CMemoryLoad::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
@@ -23,7 +21,7 @@ void CMemoryLoad::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
    if (!api)
       throw shared::exception::CException("api must be defined");
 
-   api->historizeData(m_device, *m_keyword);
+   api->historizeData(m_device, m_keyword);
 }
 
 void CMemoryLoad::read()

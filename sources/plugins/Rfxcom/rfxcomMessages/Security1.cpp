@@ -17,10 +17,12 @@ namespace rfxcomMessages
                           const std::string& keyword,
                           const std::string& command,
                           const shared::CDataContainer& deviceDetails)
-      : m_batteryLevel("battery"), m_rssi("rssi")
+      : m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
+        m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+        m_keywords({m_batteryLevel, m_rssi})
    {
-      m_batteryLevel.set(100);
-      m_rssi.set(0);
+      m_batteryLevel->set(100);
+      m_rssi->set(0);
 
       createSubType(deviceDetails.get<unsigned char>("subType"));
       m_id = deviceDetails.get<unsigned int>("id");
@@ -32,10 +34,12 @@ namespace rfxcomMessages
    CSecurity1::CSecurity1(boost::shared_ptr<yApi::IYPluginApi> api,
                           unsigned char subType,
                           const shared::CDataContainer& manuallyDeviceCreationConfiguration)
-      : m_batteryLevel("battery"), m_rssi("rssi")
+      : m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
+        m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+        m_keywords({m_batteryLevel, m_rssi})
    {
-      m_batteryLevel.set(100);
-      m_rssi.set(0);
+      m_batteryLevel->set(100);
+      m_rssi->set(0);
 
       createSubType(subType);
       m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
@@ -48,7 +52,9 @@ namespace rfxcomMessages
                           const RBUF& rbuf,
                           size_t rbufSize,
                           boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
-      : m_batteryLevel("battery"), m_rssi("rssi")
+      : m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
+        m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+        m_keywords({m_batteryLevel, m_rssi})
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -60,8 +66,8 @@ namespace rfxcomMessages
       createSubType(rbuf.SECURITY1.subtype);
       m_id = (rbuf.SECURITY1.id1 << 8) | rbuf.SECURITY1.id2;
       m_subTypeManager->setFromProtocolState(rbuf.SECURITY1.status);
-      m_batteryLevel.set(NormalizeBatteryLevel(rbuf.SECURITY1.battery_level));
-      m_rssi.set(NormalizeRssiLevel(rbuf.SECURITY1.rssi));
+      m_batteryLevel->set(NormalizeBatteryLevel(rbuf.SECURITY1.battery_level));
+      m_rssi->set(NormalizeRssiLevel(rbuf.SECURITY1.rssi));
 
       declare(api);
    }
@@ -75,27 +81,28 @@ namespace rfxcomMessages
       m_subType = subType;
       switch (m_subType)
       {
-      case CSecurity1X10::rfxValue: m_subTypeManager.reset(new CSecurity1X10());
+      case CSecurity1X10::rfxValue: m_subTypeManager = boost::make_shared<CSecurity1X10>();
          break;
-      case CSecurity1X10M::rfxValue: m_subTypeManager.reset(new CSecurity1X10M());
+      case CSecurity1X10M::rfxValue: m_subTypeManager = boost::make_shared<CSecurity1X10M>();
          break;
-      case CSecurity1X10R::rfxValue: m_subTypeManager.reset(new CSecurity1X10R());
+      case CSecurity1X10R::rfxValue: m_subTypeManager = boost::make_shared<CSecurity1X10R>();
          break;
-      case CSecurity1KD101_SA30::rfxValueKD101: m_subTypeManager.reset(new CSecurity1KD101_SA30("KD101"));
+      case CSecurity1KD101_SA30::rfxValueKD101: m_subTypeManager = boost::make_shared<CSecurity1KD101_SA30>("KD101");
          break;
-      case CSecurity1PowerCodeSensor::rfxValuePowercodeSensor: m_subTypeManager.reset(new CSecurity1PowerCodeSensor(false));
+      case CSecurity1PowerCodeSensor::rfxValuePowercodeSensor: m_subTypeManager = boost::make_shared<CSecurity1PowerCodeSensor>(false);
          break;
-      case CSecurity1PowerCodeSensor::rfxValuePowercodeSensorAux: m_subTypeManager.reset(new CSecurity1PowerCodeSensor(true));
+      case CSecurity1PowerCodeSensor::rfxValuePowercodeSensorAux: m_subTypeManager = boost::make_shared<CSecurity1PowerCodeSensor>(true);
          break;
-      case CSecurity1PowerCodeMotion::rfxValue: m_subTypeManager.reset(new CSecurity1PowerCodeMotion());
+      case CSecurity1PowerCodeMotion::rfxValue: m_subTypeManager = boost::make_shared<CSecurity1PowerCodeMotion>();
          break;
-      case CSecurity1Meiantech::rfxValue: m_subTypeManager.reset(new CSecurity1Meiantech());
+      case CSecurity1Meiantech::rfxValue: m_subTypeManager = boost::make_shared<CSecurity1Meiantech>();
          break;
-      case CSecurity1KD101_SA30::rfxValueSA30: m_subTypeManager.reset(new CSecurity1KD101_SA30("SA30"));
+      case CSecurity1KD101_SA30::rfxValueSA30: m_subTypeManager = boost::make_shared<CSecurity1KD101_SA30>("SA30");
          break;
       default:
          throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
       }
+      m_keywords.insert(m_keywords.end(), m_subTypeManager->keywords().begin(), m_subTypeManager->keywords().end());
    }
 
    void CSecurity1::declare(boost::shared_ptr<yApi::IYPluginApi> api)
@@ -114,13 +121,8 @@ namespace rfxcomMessages
          details.set("subType", m_subType);
          details.set("id", m_id);
 
-         api->declareDevice(m_deviceName, m_subTypeManager->getModel(), details);
-
-         api->declareKeyword(m_deviceName, m_batteryLevel);
-         api->declareKeyword(m_deviceName, m_rssi);
+         api->declareDevice(m_deviceName, m_subTypeManager->getModel(), m_keywords, details);
       }
-
-      m_subTypeManager->declare(api, m_deviceName);
    }
 
    boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CSecurity1::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
@@ -142,9 +144,7 @@ namespace rfxcomMessages
 
    void CSecurity1::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
    {
-      m_subTypeManager->historize(api, m_deviceName);
-      api->historizeData(m_deviceName, m_batteryLevel);
-      api->historizeData(m_deviceName, m_rssi);
+      api->historizeData(m_deviceName, m_keywords);
    }
 
    const std::string& CSecurity1::getDeviceName() const

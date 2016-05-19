@@ -28,7 +28,10 @@ public:
    /// \param[in] ISIConfiguration    The plugin configuration
    /// \param[in] details             Details information for keyword
    //--------------------------------------------------------------
-   CSystemFactory(boost::shared_ptr<yApi::IYPluginApi> api, const std::string & device,const ISIConfiguration& configuration, shared::CDataContainer details);
+   CSystemFactory(boost::shared_ptr<yApi::IYPluginApi> api,
+                  const std::string & device,
+                  const ISIConfiguration& configuration,
+                  shared::CDataContainer details);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor

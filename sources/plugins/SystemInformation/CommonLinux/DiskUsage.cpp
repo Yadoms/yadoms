@@ -7,10 +7,12 @@
 #include <boost/lexical_cast.hpp>
 #include "LinuxHelpers.h"
 
-CDiskUsage::CDiskUsage(const std::string & device, const std::string & driveName, const std::string & keywordName)
+CDiskUsage::CDiskUsage(const std::string & device,
+                       const std::string & driveName,
+                       const std::string & keywordName)
    :m_device(device), 
     m_driveName(driveName), 
-    m_keyword( new yApi::historization::CLoad(keywordName) )
+    m_keyword(boost::make_shared<yApi::historization::CLoad>(keywordName))
 {}
 
 CDiskUsage::~CDiskUsage()
@@ -18,15 +20,15 @@ CDiskUsage::~CDiskUsage()
 
 void CDiskUsage::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer details)
 {
-   if (!api->keywordExists( m_device, m_keyword->getKeyword()))
-      api->declareKeyword(m_device, *m_keyword, details);
+   if (!api->keywordExists( m_device, m_keyword))
+      api->declareKeyword(m_device, m_keyword, details);
 }
 
 void CDiskUsage::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
    BOOST_ASSERT_MSG(api, "api must be defined");
 
-   api->historizeData(m_device, *m_keyword);
+   api->historizeData(m_device, m_keyword);
 }
 
 void CDiskUsage::read()

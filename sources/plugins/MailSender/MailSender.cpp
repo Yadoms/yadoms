@@ -1,12 +1,11 @@
 #include "stdafx.h"
 #include "MailSender.h"
-#include <shared/plugin/yPluginApi/historization/Message.h>
-#include <plugin_cpp_api/ImplementationHelper.h>
-#include <shared/exception/EmptyResult.hpp>
 #include <Poco/Net/MailMessage.h>
-#include <Poco/Net/MailRecipient.h>
-#include "SmtpServiceProviderFactory.h"
+#include <shared/plugin/yPluginApi/historization/Message.h>
+#include <shared/exception/EmptyResult.hpp>
+#include <plugin_cpp_api/ImplementationHelper.h>
 #include "MSConfiguration.h"
+#include "SmtpServiceProviderFactory.h"
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -14,14 +13,19 @@
 
 IMPLEMENT_PLUGIN(CMailSender)
 
-CMailSender::CMailSender() : m_deviceName("MailSender"), m_configuration(new CMSConfiguration()),
-m_mailId("email"),
-m_messageKeyword("message", m_mailId, yApi::EKeywordAccessMode::kGetSet)
+CMailSender::CMailSender() :
+   m_deviceName("MailSender"),
+   m_configuration(new CMSConfiguration()),
+   m_mailId("email"),
+   m_messageKeyword(boost::make_shared<yApi::historization::CMessage>("message",
+                                                                      m_mailId,
+                                                                      yApi::EKeywordAccessMode::kGetSet))
 {
 }
 
 CMailSender::~CMailSender()
-{}
+{
+}
 
 void CMailSender::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
@@ -42,26 +46,26 @@ void CMailSender::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          // Wait for an event
          switch (api->getEventHandler().waitForEvents())
          {
-            case yApi::IYPluginApi::kEventUpdateConfiguration:
+         case yApi::IYPluginApi::kEventUpdateConfiguration:
             {
                onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
                break;
             }
 
-            case yApi::IYPluginApi::kEventDeviceCommand:
+         case yApi::IYPluginApi::kEventDeviceCommand:
             {
                // Command received
                auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
                std::cout << "Command received :" << yApi::IDeviceCommand::toString(command) << std::endl;
 
-               if (boost::iequals(command->getKeyword(), m_messageKeyword.getKeyword()))
+               if (boost::iequals(command->getKeyword(), m_messageKeyword->getKeyword()))
                   onSendMailRequest(api, command->getBody());
                else
                   std::cout << "Received command for unknown keyword from Yadoms : " << yApi::IDeviceCommand::toString(command) << std::endl;
             }
             break;
 
-            default:
+         default:
             {
                std::cerr << "Unknown message id" << std::endl;
                break;
@@ -83,18 +87,14 @@ void CMailSender::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
    if (api->deviceExists(m_deviceName))
       return;
 
-   // Declare the device
-   api->declareDevice(m_deviceName, m_deviceName);
-
-   // Declare associated keywords (= values managed by this device)
-   api->declareKeyword(m_deviceName, m_messageKeyword);
+   api->declareDevice(m_deviceName, m_deviceName, m_messageKeyword);
 }
 
 void CMailSender::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainer& newConfigurationData) const
 {
    // Configuration was updated
    std::cout << "Configuration was updated..." << std::endl;
-   BOOST_ASSERT(!newConfigurationData.empty());  // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
+   BOOST_ASSERT(!newConfigurationData.empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
    // Update configuration
    m_configuration->initializeWith(newConfigurationData);
@@ -104,10 +104,10 @@ void CMailSender::onSendMailRequest(boost::shared_ptr<yApi::IYPluginApi> api, co
 {
    try
    {
-      m_messageKeyword.setCommand(sendMailRequest);
+      m_messageKeyword->setCommand(sendMailRequest);
 
       std::string from = m_configuration->getSenderEmail();
-      std::string to = getRecipientMail(api, m_messageKeyword.to());
+      std::string to = getRecipientMail(api, m_messageKeyword->to());
 
       std::string subject = "Yadoms Notification !";
       Poco::Net::MailMessage message;
@@ -115,9 +115,9 @@ void CMailSender::onSendMailRequest(boost::shared_ptr<yApi::IYPluginApi> api, co
       message.addRecipient(Poco::Net::MailRecipient(Poco::Net::MailRecipient::PRIMARY_RECIPIENT, to));
       message.setSubject(subject);
       message.setContentType("text/plain; charset=UTF-8");
-      message.setContent(m_messageKeyword.body(), Poco::Net::MailMessage::ENCODING_8BIT);
+      message.setContent(m_messageKeyword->body(), Poco::Net::MailMessage::ENCODING_8BIT);
 
-      boost::shared_ptr<ISmtpServiceProvider>  mailServiceProvider = CSmtpServiceProviderFactory::CreateSmtpServer(m_configuration);
+      boost::shared_ptr<ISmtpServiceProvider> mailServiceProvider = CSmtpServiceProviderFactory::CreateSmtpServer(m_configuration);
       if (mailServiceProvider->sendMail(message))
       {
          std::cout << "Email successfully sent to " << to << std::endl;
@@ -150,3 +150,4 @@ std::string CMailSender::getRecipientMail(boost::shared_ptr<yApi::IYPluginApi> a
       throw shared::exception::CInvalidParameter(std::string("Recipient not found, or e-mail not found for recipient : ") + e.what());
    }
 }
+

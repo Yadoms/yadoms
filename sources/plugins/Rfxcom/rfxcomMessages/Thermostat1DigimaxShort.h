@@ -1,7 +1,5 @@
 #pragma once
-
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
-#include <shared/DataContainer.h>
 #include "IThermostat1Subtype.h"
 
 namespace yApi = shared::plugin::yPluginApi;
@@ -22,22 +20,27 @@ namespace rfxcomMessages
       /// \brief	Destructor
       //--------------------------------------------------------------
       virtual ~CThermostat1DigimaxShort();
-      
+
       // ILighting2Subtype implementation
-      virtual std::string getModel() const;
-      virtual void declare(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const;
-      virtual void historize(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const;
-      virtual void set(const std::string& yadomsCommand);
-      virtual void reset();
-      virtual void setFromProtocolState(const RBUF& thermostat1Rbuf);
-      virtual void toProtocolState(RBUF& thermostat1Rbuf) const;
+      std::string getModel() const override;
+      const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywords() const override;
+      void set(const std::string& yadomsCommand) override;
+      void reset() override;
+      void setFromProtocolState(const RBUF& thermostat1Rbuf) override;
+      void toProtocolState(RBUF& thermostat1Rbuf) const override;
       // [END] ILighting2Subtype implementation
 
    private:
       //--------------------------------------------------------------
       /// \brief	                        The keyword
       //--------------------------------------------------------------
-      yApi::historization::CTemperature m_currentTemperature;
-   };
+      boost::shared_ptr<yApi::historization::CTemperature> m_currentTemperature;
 
+      //--------------------------------------------------------------
+      /// \brief	The keywords list to historize in one step for better performances
+      //--------------------------------------------------------------
+      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
+   };
 } // namespace rfxcomMessages
+
+

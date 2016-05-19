@@ -60,7 +60,7 @@ public:
    //--------------------------------------------------------------						
    void OnConfigurationUpdate ( boost::shared_ptr<yApi::IYPluginApi> api, 
                                 const ISIConfiguration& configuration, 
-								shared::CDataContainer details );
+								        shared::CDataContainer details );
 
 private:
    

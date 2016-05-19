@@ -1,14 +1,12 @@
 #include "stdafx.h"
 #include "RAMProcessMemory.h"
 #include <shared/exception/Exception.hpp>
-#include <shared/plugin/yPluginApi/StandardCapacities.h>
-#include <shared/plugin/yPluginApi/StandardUnits.h>
 #include <windows.h>
 #include <psapi.h>
 
 CRAMProcessMemory::CRAMProcessMemory(const std::string & device)
    :m_device(device), 
-    m_keyword(new yApi::historization::CKByte("YadomsRAMProcessMemory"))
+    m_keyword(boost::make_shared<yApi::historization::CKByte>("YadomsRAMProcessMemory"))
 {}
 
 CRAMProcessMemory::~CRAMProcessMemory()
@@ -16,8 +14,8 @@ CRAMProcessMemory::~CRAMProcessMemory()
 
 void CRAMProcessMemory::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer details)
 {
-      if (!api->keywordExists( m_device, m_keyword->getKeyword()))
-         api->declareKeyword(m_device, *m_keyword, details);
+      if (!api->keywordExists( m_device, m_keyword))
+         api->declareKeyword(m_device, m_keyword, details);
 }
 
 void CRAMProcessMemory::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
@@ -25,7 +23,7 @@ void CRAMProcessMemory::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) 
    if (!api)
       throw shared::exception::CException("api must be defined");
 
-   api->historizeData(m_device, *m_keyword);
+   api->historizeData(m_device, m_keyword);
 }
 
 void CRAMProcessMemory::read()

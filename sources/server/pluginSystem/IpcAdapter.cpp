@@ -187,7 +187,7 @@ namespace pluginSystem
       case toYadoms::msg::kHistorizeData: processHistorizeData(toYadomsProtoBuffer.historizedata());
          break;
       default:
-         throw shared::exception::CInvalidParameter("message : " + toYadomsProtoBuffer.GetDescriptor()->name());
+         throw shared::exception::CInvalidParameter("message : " + toYadomsProtoBuffer.GetDescriptor()->full_name());
       }
    }
 

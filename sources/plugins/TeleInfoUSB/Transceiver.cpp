@@ -108,8 +108,8 @@ void CTransceiver::HistorizeTeleInfoData(std::string KeywordName, long Value)
 
       m_keyword.reset(new T(KeywordName));
 
-      if (!m_api->keywordExists(m_DeviceName, m_keyword->getKeyword()))
-         m_api->declareKeyword(m_DeviceName, *m_keyword, m_KeywordDetails);
+      if (!m_api->keywordExists(m_DeviceName, m_keyword))
+         m_api->declareKeyword(m_DeviceName, m_keyword, m_KeywordDetails);
 
       m_keyword->set(Value);
       std::cout << m_keyword->getKeyword() << "=" << m_keyword->get() << std::endl;

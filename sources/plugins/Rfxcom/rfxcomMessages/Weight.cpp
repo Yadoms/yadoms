@@ -11,9 +11,10 @@ namespace rfxcomMessages
                     const RBUF& rbuf,
                     size_t rbufSize,
                     boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
-      : m_weight("weight"),
-        m_batteryLevel("battery"),
-        m_rssi("rssi")
+      : m_weight(boost::make_shared<yApi::historization::CWeight>("weight")),
+        m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
+        m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+        m_keywords({m_weight , m_batteryLevel , m_rssi})
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -26,10 +27,10 @@ namespace rfxcomMessages
 
       m_id = rbuf.WEIGHT.id1 | (rbuf.WEIGHT.id2 << 8);
 
-      m_weight.set((rbuf.WEIGHT.weighthigh << 8 | rbuf.WEIGHT.weightlow) / 10.0);
+      m_weight->set((rbuf.WEIGHT.weighthigh << 8 | rbuf.WEIGHT.weightlow) / 10.0);
 
-      m_batteryLevel.set(NormalizeBatteryLevel(rbuf.WEIGHT.filler)); // In SDK specification battery_level is at filler location
-      m_rssi.set(NormalizeRssiLevel(rbuf.WEIGHT.rssi));
+      m_batteryLevel->set(NormalizeBatteryLevel(rbuf.WEIGHT.filler)); // In SDK specification battery_level is at filler location
+      m_rssi->set(NormalizeRssiLevel(rbuf.WEIGHT.rssi));
 
       Init(api);
    }
@@ -51,24 +52,18 @@ namespace rfxcomMessages
          details.set("type", pTypeWEIGHT);
          details.set("subType", m_subType);
          details.set("id", m_id);
-         api->declareDevice(m_deviceName, m_deviceModel, details);
-
-         api->declareKeyword(m_deviceName, m_weight);
-         api->declareKeyword(m_deviceName, m_batteryLevel);
-         api->declareKeyword(m_deviceName, m_rssi);
+         api->declareDevice(m_deviceName, m_deviceModel, m_keywords, details);
       }
    }
 
-   boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CWeight::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CWeight::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
    {
       throw shared::exception::CInvalidParameter("Weight is a read-only message, can not be encoded");
    }
 
    void CWeight::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
    {
-      api->historizeData(m_deviceName, m_weight);
-      api->historizeData(m_deviceName, m_batteryLevel);
-      api->historizeData(m_deviceName, m_rssi);
+      api->historizeData(m_deviceName, m_keywords);
    }
 
    const std::string& CWeight::getDeviceName() const

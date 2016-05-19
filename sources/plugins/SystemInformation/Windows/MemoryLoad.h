@@ -26,10 +26,10 @@ public:
    virtual ~CMemoryLoad();
 
    // ILoad Implementation
-   virtual void declareKeywords(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer details);
-   virtual void read();
-   virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const;
-   virtual boost::shared_ptr<yApi::historization::IHistorizable> GetHistorizable() const;
+   void declareKeywords(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer details) override;
+   void read() override;
+   void historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const override;
+   boost::shared_ptr<yApi::historization::IHistorizable> GetHistorizable() const override;
    // [END] ILoad Implementation
 
 private:

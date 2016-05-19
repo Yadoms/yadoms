@@ -10,7 +10,7 @@ namespace yApi = shared::plugin::yPluginApi;
 /// \brief	This plugin can send and receive SMS using a connected phone
 //--------------------------------------------------------------
 class CSmsDialer : public plugin_cpp_api::IPlugin
-{  
+{
 public:
    //--------------------------------------------------------------
    /// \brief	Constructor
@@ -50,20 +50,22 @@ protected:
    /// \param [in] api              Plugin execution context (Yadoms API)
    /// \param [in] powerRequest     Details of the request
    //--------------------------------------------------------------
-   void onPowerPhoneRequest(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& powerRequest);
+   void onPowerPhoneRequest(boost::shared_ptr<yApi::IYPluginApi> api,
+                            const std::string& powerRequest) const;
 
    //--------------------------------------------------------------
    /// \brief	                     Process a sending message request
    /// \param [in] api              Plugin execution context (Yadoms API)
    /// \param [in] sendSmsRequest   Details of the request
    //--------------------------------------------------------------
-   void onSendSmsRequest(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& sendSmsRequest);
+   void onSendSmsRequest(boost::shared_ptr<yApi::IYPluginApi> api,
+                         const std::string& sendSmsRequest) const;
 
    //--------------------------------------------------------------
    /// \brief	                     Check if incoming SMS and process it
    /// \param [in] api              Plugin execution context (Yadoms API)
    //--------------------------------------------------------------
-   void processIncommingSMS(boost::shared_ptr<yApi::IYPluginApi> api);
+   void processIncommingSMS(boost::shared_ptr<yApi::IYPluginApi> api) const;
 
    //--------------------------------------------------------------
    /// \brief	                     Send an acknowledge to Yadoms
@@ -78,7 +80,8 @@ protected:
    /// \return                      The phone number
    /// \throw shared::exception::CInvalidParameter if recipient ID not found
    //--------------------------------------------------------------
-   static std::string getRecipientPhone(boost::shared_ptr<yApi::IYPluginApi> api, int recipientId);
+   static std::string getRecipientPhone(boost::shared_ptr<yApi::IYPluginApi> api,
+                                        int recipientId);
 
    //--------------------------------------------------------------
    /// \brief	                     Find the recipient with this phone number
@@ -87,7 +90,8 @@ protected:
    /// \return                      The recipient ID of the recipient found (or the first one if several recipients found)
    /// \throw shared::exception::CInvalidParameter if no recipient found for this phone number
    //--------------------------------------------------------------
-   static int findRecipientByPhone(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& phoneNumber);
+   static int findRecipientByPhone(boost::shared_ptr<yApi::IYPluginApi> api,
+                                   const std::string& phoneNumber);
 
 private:
    //--------------------------------------------------------------
@@ -116,20 +120,23 @@ private:
    boost::shared_ptr<shared::event::CEventTimer> m_incommingSmsPollTimer;
 
    //--------------------------------------------------------------
+   /// \brief	    Recipient field used to retrieve phone number from a recipient
+   //--------------------------------------------------------------
+   static const std::string m_phoneFieldName;
+
+   //--------------------------------------------------------------
    /// \brief	    Message historization object
    //--------------------------------------------------------------
-   yApi::historization::CMessage m_messageKeyword;
+   boost::shared_ptr<yApi::historization::CMessage> m_messageKeyword;
 
    //--------------------------------------------------------------
    /// \brief	    Power historization object
    //--------------------------------------------------------------
-   yApi::historization::CSwitch m_powerKeyword;
+   boost::shared_ptr<yApi::historization::CSwitch> m_powerKeyword;
 
    //--------------------------------------------------------------
-   /// \brief	    Recipient field used to retrieve phone number from a recipient
+   /// \brief	The keywords list to historize in one step for better performances
    //--------------------------------------------------------------
-   static const std::string m_phoneFieldName;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
 };
-
-
 

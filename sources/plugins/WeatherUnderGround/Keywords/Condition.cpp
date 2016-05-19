@@ -16,8 +16,8 @@ CCondition::CCondition(std::string PluginName,
 void CCondition::Initialize(boost::shared_ptr<yApi::IYPluginApi> api,
                             shared::CDataContainer details) const
 {
-   if (!api->keywordExists(m_PluginName, m_condition->getKeyword()))
-      api->declareKeyword(m_PluginName, *m_condition, details);
+   if (!api->keywordExists(m_PluginName, m_condition))
+      api->declareKeyword(m_PluginName, m_condition, details);
 }
 
 CCondition::~CCondition()

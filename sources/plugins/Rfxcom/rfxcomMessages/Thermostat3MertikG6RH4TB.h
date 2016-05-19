@@ -1,7 +1,5 @@
 #pragma once
-
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
-#include <shared/DataContainer.h>
 #include "IThermostat3Subtype.h"
 
 namespace yApi = shared::plugin::yPluginApi;
@@ -18,29 +16,34 @@ namespace rfxcomMessages
       /// \brief	                        Constructor
       //--------------------------------------------------------------
       CThermostat3MertikG6RH4TB();
+      virtual ~CThermostat3MertikG6RH4TB();
 
       // ILighting2Subtype implementation
-      virtual std::string getModel() const;
-      virtual void declare(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const;
-      virtual void historize(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName) const;
-      virtual void set(const std::string& keyword, const std::string& yadomsCommand);
-      virtual void reset();
-      virtual void setFromProtocolState(unsigned char cmd);
-      virtual void toProtocolState(unsigned char& cmd) const;
+      std::string getModel() const override;
+      const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywords() const override;
+      void set(const std::string& keyword, const std::string& yadomsCommand) override;
+      void reset() override;
+      void setFromProtocolState(unsigned char cmd) override;
+      void toProtocolState(unsigned char& cmd) const override;
       // [END] ILighting2Subtype implementation
 
    private:
       //--------------------------------------------------------------
-      /// \brief	                        The keywords
-      //--------------------------------------------------------------
-      yApi::historization::CSwitch m_onOff;
-      yApi::historization::CSwitch m_onOff2;
-      yApi::historization::CUpDownStop m_UpDown;
-
-      //--------------------------------------------------------------
       /// \brief	                        Status byte buffering
       //--------------------------------------------------------------
       unsigned char m_statusByte;
+
+      //--------------------------------------------------------------
+      /// \brief	                        The keywords
+      //--------------------------------------------------------------
+      boost::shared_ptr<yApi::historization::CSwitch> m_onOff;
+      boost::shared_ptr<yApi::historization::CSwitch> m_onOff2;
+      boost::shared_ptr<yApi::historization::CUpDownStop> m_upDown;
+
+      //--------------------------------------------------------------
+      /// \brief	The keywords list to historize in one step for better performances
+      //--------------------------------------------------------------
+      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
    };
 
 } // namespace rfxcomMessages

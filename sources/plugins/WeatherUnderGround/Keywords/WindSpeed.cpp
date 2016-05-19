@@ -14,8 +14,8 @@ CWindSpeed::CWindSpeed(std::string PluginName,
 void CWindSpeed::Initialize(boost::shared_ptr<yApi::IYPluginApi> api,
                             shared::CDataContainer details) const
 {
-   if (!api->keywordExists(m_PluginName, m_windSpeed->getKeyword()))
-      api->declareKeyword(m_PluginName, *m_windSpeed, details);
+   if (!api->keywordExists(m_PluginName, m_windSpeed))
+      api->declareKeyword(m_PluginName, m_windSpeed, details);
 }
 
 CWindSpeed::~CWindSpeed()

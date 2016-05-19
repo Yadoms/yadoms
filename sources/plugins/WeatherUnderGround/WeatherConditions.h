@@ -37,7 +37,7 @@ public:
    /// \param[in] WUConfiguration The configuration of the module
    /// \param[in] PluginName      The name of the plugin module
    //--------------------------------------------------------------
-   void Parse(boost::shared_ptr<yApi::IYPluginApi> api, const IWUConfiguration& WUConfiguration);
+   void Parse(boost::shared_ptr<yApi::IYPluginApi> api, const IWUConfiguration& WUConfiguration) const;
 
    //--------------------------------------------------------------
    /// \brief	  Update the configuration when something change from the HMI
@@ -70,7 +70,7 @@ private:
    /// \param[in] WUConfiguration    The Plugin configuration
    //--------------------------------------------------------------
    void InitializeVariables(boost::shared_ptr<yApi::IYPluginApi> api,
-                            IWUConfiguration& WUConfiguration);
+                            IWUConfiguration& WUConfiguration) const;
 
    //--------------------------------------------------------------
    /// \brief	    Your Location to received custom information from the web site

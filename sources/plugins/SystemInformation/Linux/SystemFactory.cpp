@@ -4,7 +4,10 @@
 #include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/plugin/yPluginApi/StandardUnits.h>
 
-CSystemFactory::CSystemFactory(boost::shared_ptr<yApi::IYPluginApi> api, const std::string & device, const ISIConfiguration& configuration, shared::CDataContainer details ):
+CSystemFactory::CSystemFactory(boost::shared_ptr<yApi::IYPluginApi> api,
+                               const std::string & device,
+                               const ISIConfiguration& configuration,
+                               shared::CDataContainer details):
    m_PluginName                       (device),
    m_MemoryLoad                       (device),
    m_CPULoad                          (device),
@@ -14,7 +17,7 @@ CSystemFactory::CSystemFactory(boost::shared_ptr<yApi::IYPluginApi> api, const s
 {	
       m_MemoryLoad.declareKeywords           (api, details);
       m_CPULoad.declareKeywords              (api, details);
-	  m_YadomsCPULoad.declareKeywords        (api, details);
+	   m_YadomsCPULoad.declareKeywords        (api, details);
 
       if (configuration.IsAdvancedEnabled())
       {
@@ -31,8 +34,7 @@ CSystemFactory::CSystemFactory(boost::shared_ptr<yApi::IYPluginApi> api, const s
       for(std::vector<std::string>::const_iterator disksListIterator = TempList.begin(); disksListIterator != TempList.end(); ++ disksListIterator)
       {
          std::string diskKeywordName = disksListIterator->substr(5, 4) + "_DiskUsage";
-         boost::shared_ptr<CDiskUsage> DiskUsage;
-         DiskUsage.reset (new CDiskUsage( device, *disksListIterator, diskKeywordName ));
+         auto DiskUsage = boost::make_shared<CDiskUsage>(device, *disksListIterator, diskKeywordName);
          m_DiskUsageList.push_back(DiskUsage);
          DiskUsage->declareKeywords(api, details);
       }

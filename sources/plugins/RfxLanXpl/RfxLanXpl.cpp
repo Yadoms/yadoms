@@ -236,26 +236,25 @@ void CRfxLanXpl::OnXplMessageReceived(xplcore::CXplMessage & xplMessage, boost::
             }
 
             //create message keywords in database
-            std::vector< boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > allKeywords = rule->identifyKeywords(xplMessage);
-            for (std::vector< boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> >::iterator keyword = allKeywords.begin(); keyword != allKeywords.end(); ++keyword)
+            auto allKeywords = rule->identifyKeywords(xplMessage);
+            for (auto keyword = allKeywords.begin(); keyword != allKeywords.end(); ++keyword)
             {
-               if (!api->keywordExists(deviceAddress.getId(), keyword->get()->getKeyword()))
-                  api->declareKeyword(deviceAddress.getId(), *(keyword->get()));
+               if (!api->keywordExists(deviceAddress.getId(), *keyword))
+                  api->declareKeyword(deviceAddress.getId(), *keyword);
             }
 
             //check if the rule handle reading
-            boost::shared_ptr<xplrules::IReadRule> readRule = boost::dynamic_pointer_cast<xplrules::IReadRule>(rule);
+            auto readRule = boost::dynamic_pointer_cast<xplrules::IReadRule>(rule);
 
             if (readRule)
             {
 
                //create message to insert in database
-               xplrules::MessageContent data = readRule->extractMessageData(xplMessage);
+               auto data = readRule->extractMessageData(xplMessage);
 
-               xplrules::MessageContent::iterator i;
-               for (i = data.begin(); i != data.end(); ++i)
+               for (auto i = data.begin(); i != data.end(); ++i)
                {
-                  api->historizeData(deviceAddress.getId(), *(i->get()));
+                  api->historizeData(deviceAddress.getId(), *i);
                }
             }
 
@@ -263,13 +262,13 @@ void CRfxLanXpl::OnXplMessageReceived(xplcore::CXplMessage & xplMessage, boost::
          }
          else
          {
-            std::string errorMessage = (boost::format("Unsupported protocol = %1%") % xplMessage.getMessageSchemaIdentifier().toString()).str();
+            auto errorMessage = (boost::format("Unsupported protocol = %1%") % xplMessage.getMessageSchemaIdentifier().toString()).str();
             std::cerr << errorMessage << std::endl;
          }
       }
       else
       {
-         std::string errorMessage = (boost::format("Unknown xpl source = %1%") % realSource).str();
+         auto errorMessage = (boost::format("Unknown xpl source = %1%") % realSource).str();
          std::cerr << errorMessage << std::endl;
       }
 
@@ -406,10 +405,10 @@ void CRfxLanXpl::OnCreateDeviceRequest(boost::shared_ptr<yApi::IManuallyDeviceCr
             }
 
             //create message keywords in database
-            for (std::vector< boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> >::const_iterator keyword = deviceContainer.getKeywords().begin(); keyword != deviceContainer.getKeywords().end(); ++keyword)
+            for (auto keyword = deviceContainer.getKeywords().begin(); keyword != deviceContainer.getKeywords().end(); ++keyword)
             {
-               if (!api->keywordExists(deviceAddress.getId(), keyword->get()->getKeyword()))
-                  api->declareKeyword(deviceAddress.getId(), *(keyword->get()));
+               if (!api->keywordExists(deviceAddress.getId(), *keyword))
+                  api->declareKeyword(deviceAddress.getId(), *keyword);
             }
 
             //send created device

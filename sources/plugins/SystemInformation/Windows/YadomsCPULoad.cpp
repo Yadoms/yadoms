@@ -4,11 +4,11 @@
 
 CYadomsCPULoad::CYadomsCPULoad(const std::string & device)
    :m_device(device), 
-    m_keyword(new yApi::historization::CLoad("YadomsCPULoad")), 
-    m_lastCPU(0), 
+    m_lastCPU(0),
     m_lastSysCPU(0), 
     m_lastUserCPU(0), 
     m_numProcessors(0), 
+    m_keyword(boost::make_shared<yApi::historization::CLoad>("YadomsCPULoad")), 
     m_InitializeOk(false)
 {
    Initialize();
@@ -48,8 +48,8 @@ void CYadomsCPULoad::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> api, s
 {
    if (m_InitializeOk)
    {
-      if (!api->keywordExists( m_device, m_keyword->getKeyword()))
-        api->declareKeyword(m_device, *m_keyword, details);
+      if (!api->keywordExists( m_device, m_keyword))
+        api->declareKeyword(m_device, m_keyword, details);
    }
 }
 
@@ -60,7 +60,7 @@ void CYadomsCPULoad::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) con
 
    if (m_InitializeOk)
    {
-      api->historizeData(m_device, *m_keyword);
+      api->historizeData(m_device, m_keyword);
    }
 }
 
@@ -90,7 +90,7 @@ void CYadomsCPULoad::read()
       m_lastUserCPU = user;
       m_lastSysCPU = sys;
 
-	  float YadomsCPULoad = (float) floor((percent * 100)*10 + 0.5) /10;
+      auto YadomsCPULoad = static_cast<float>(floor((percent * 100)*10 + 0.5)) /10;
 
       m_keyword->set( YadomsCPULoad );
 

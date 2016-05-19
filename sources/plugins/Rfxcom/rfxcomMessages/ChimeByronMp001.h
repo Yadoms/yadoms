@@ -20,7 +20,7 @@ namespace rfxcomMessages
 
       // ILighting2Subtype implementation
       std::string getModel() const override;
-      const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& keywords() const override;
+      const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywords() const override;
       void set(const std::string& yadomsCommand, const shared::CDataContainer& deviceDetails) override;
       void reset() override;
       unsigned int idFromProtocol(unsigned char id1,

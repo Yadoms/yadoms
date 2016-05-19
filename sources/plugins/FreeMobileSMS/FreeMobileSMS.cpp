@@ -30,14 +30,14 @@ void CFreeMobileSms::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    try
    {
       //create device/keyword
-      boost::shared_ptr<CSmsKeyword> m_keyword(new CSmsKeyword(m_keywordName));
+      auto keyword(boost::make_shared<CSmsKeyword>(m_keywordName));
 
       if (!api->deviceExists(m_deviceName))
          api->declareDevice(m_deviceName, "FreeMobile SMS Api");
 
       // Declare these sensors to Yadoms (devices and associated keywords) if not already declared
-      if (!api->keywordExists(m_deviceName, *m_keyword))
-         api->declareKeyword(m_deviceName, *m_keyword);
+      if (!api->keywordExists(m_deviceName, keyword))
+         api->declareKeyword(m_deviceName, keyword);
 
       // the main loop
       std::cout << "CFreeMobileSms is running..." << std::endl;

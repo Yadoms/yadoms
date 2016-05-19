@@ -1,5 +1,4 @@
 #pragma once
-
 #include "IRfxcomMessage.h"
 #include "RFXtrxHelpers.h"
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
@@ -23,7 +22,10 @@ namespace rfxcomMessages
       /// \note                           Use this constructor for received messages (to historize received data to Yadoms)
       /// \throw                          shared::exception::CInvalidParameter
       //--------------------------------------------------------------
-      CWind(boost::shared_ptr<yApi::IYPluginApi> api, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
+      CWind(boost::shared_ptr<yApi::IYPluginApi> api,
+            const RBUF& rbuf,
+            size_t rbufSize,
+            boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
@@ -31,11 +33,11 @@ namespace rfxcomMessages
       virtual ~CWind();
 
       // IRfxcomMessage implementation
-      virtual boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const;
-      virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const;
-      virtual const std::string& getDeviceName() const;
+      boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const override;
+      void historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const override;
+      const std::string& getDeviceName() const override;
       // [END] IRfxcomMessage implementation
-      
+
    protected:
       //--------------------------------------------------------------
       /// \brief	Global initialization method
@@ -77,36 +79,43 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	The wind direction
       //--------------------------------------------------------------
-      yApi::historization::CDirection m_windDirection;
+      boost::shared_ptr<yApi::historization::CDirection> m_windDirection;
 
       //--------------------------------------------------------------
       /// \brief	The wind average speed
       //--------------------------------------------------------------
-      yApi::historization::CSpeed m_windAverageSpeed;
+      boost::shared_ptr<yApi::historization::CSpeed> m_windAverageSpeed;
 
       //--------------------------------------------------------------
       /// \brief	The wind max speed
       //--------------------------------------------------------------
-      yApi::historization::CSpeed m_windMaxSpeed;
+      boost::shared_ptr<yApi::historization::CSpeed> m_windMaxSpeed;
 
       //--------------------------------------------------------------
       /// \brief	The temperature
       //--------------------------------------------------------------
-      yApi::historization::CTemperature m_temperature;
+      boost::shared_ptr<yApi::historization::CTemperature> m_temperature;
 
       //--------------------------------------------------------------
       /// \brief	The chill temperature
       //--------------------------------------------------------------
-      yApi::historization::CTemperature m_chillTemperature;
+      boost::shared_ptr<yApi::historization::CTemperature> m_chillTemperature;
 
       //--------------------------------------------------------------
       /// \brief	The battery level (percent)
       //--------------------------------------------------------------
-      yApi::historization::CBatteryLevel m_batteryLevel;
+      boost::shared_ptr<yApi::historization::CBatteryLevel> m_batteryLevel;
 
       //--------------------------------------------------------------
       /// \brief	The RSSI (percent)
       //--------------------------------------------------------------
-      yApi::historization::CRssi m_rssi;
+      boost::shared_ptr<yApi::historization::CRssi> m_rssi;
+
+      //--------------------------------------------------------------
+      /// \brief	The keywords list to historize in one step for better performances
+      //--------------------------------------------------------------
+      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
    };
 } // namespace rfxcomMessages
+
+

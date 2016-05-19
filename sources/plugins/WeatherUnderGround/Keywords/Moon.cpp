@@ -14,8 +14,8 @@ CMoon::CMoon(std::string PluginName,
 void CMoon::Initialize(boost::shared_ptr<yApi::IYPluginApi> api,
                        shared::CDataContainer details) const
 {
-   if (!api->keywordExists(m_PluginName, m_moonCharacteristics->getKeyword()))
-      api->declareKeyword(m_PluginName, *m_moonCharacteristics, details);
+   if (!api->keywordExists(m_PluginName, m_moonCharacteristics))
+      api->declareKeyword(m_PluginName, m_moonCharacteristics, details);
 }
 
 CMoon::~CMoon()

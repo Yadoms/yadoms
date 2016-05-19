@@ -32,14 +32,16 @@ protected:
    /// \param[in] api                   pointer to the API
    /// \param[in] recipientId           recipientId
    //--------------------------------------------------------------
-   std::string getRecipientMail(boost::shared_ptr<yApi::IYPluginApi> api, int recipientId) const;
+   std::string getRecipientMail(boost::shared_ptr<yApi::IYPluginApi> api,
+                                int recipientId) const;
 
    //--------------------------------------------------------------
    /// \brief Send a mail
    /// \param[in] api                   pointer to the API
    /// \param[in] sendMailRequest       Struture of the sending mail
    //--------------------------------------------------------------
-   void onSendMailRequest(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& sendMailRequest);
+   void onSendMailRequest(boost::shared_ptr<yApi::IYPluginApi> api,
+                          const std::string& sendMailRequest);
 
    //--------------------------------------------------------------
    /// \brief Declare the device and all keywords associated
@@ -52,7 +54,8 @@ protected:
    /// \param[in] api                   pointer to the API
    /// \param[in] newConfigurationData  The new configuration of the module
    //--------------------------------------------------------------
-   void onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainer& newConfigurationData) const;
+   void onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
+                              const shared::CDataContainer& newConfigurationData) const;
 
 private:
    //--------------------------------------------------------------
@@ -73,5 +76,6 @@ private:
    //--------------------------------------------------------------
    /// \brief	    Message historization object
    //--------------------------------------------------------------
-   yApi::historization::CMessage m_messageKeyword;
+   boost::shared_ptr<yApi::historization::CMessage> m_messageKeyword;
 };
+

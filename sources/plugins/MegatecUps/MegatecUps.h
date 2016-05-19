@@ -142,7 +142,7 @@ protected:
    /// \param [in] tokens           Separated fields (company name, UPS model, version)
    //--------------------------------------------------------------
    void processReceivedInformation(boost::shared_ptr<yApi::IYPluginApi> api,
-                                   const boost::tokenizer<boost::char_separator<char> >& tokens);
+                                   const boost::tokenizer<boost::char_separator<char> >& tokens) const;
 
    //--------------------------------------------------------------
    /// \brief	                     Process received rating information from UPS
@@ -165,12 +165,6 @@ protected:
    //--------------------------------------------------------------
    void declareDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                       const std::string& model) const;
-
-   //--------------------------------------------------------------
-   /// \brief	                     declare device (and associated keywords)
-   /// \param [in] api              Plugin execution context (Yadoms API)
-   //--------------------------------------------------------------
-   void historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const;
 
 private:
    //--------------------------------------------------------------
@@ -232,51 +226,56 @@ private:
    //--------------------------------------------------------------
    /// \brief	The input voltage (V)
    //--------------------------------------------------------------
-   yApi::historization::CVoltage m_inputVoltage;
+   boost::shared_ptr<yApi::historization::CVoltage> m_inputVoltage;
 
    //--------------------------------------------------------------
    /// \brief	The input fault voltage (V)
    //--------------------------------------------------------------
-   yApi::historization::CVoltage m_inputfaultVoltage;
+   boost::shared_ptr<yApi::historization::CVoltage> m_inputfaultVoltage;
 
    //--------------------------------------------------------------
    /// \brief	The output voltage (V)
    //--------------------------------------------------------------
-   yApi::historization::CVoltage m_outputVoltage;
+   boost::shared_ptr<yApi::historization::CVoltage> m_outputVoltage;
 
    //--------------------------------------------------------------
    /// \brief	The output load (%)
    //--------------------------------------------------------------
-   yApi::historization::CLoad m_outputLoad;
+   boost::shared_ptr<yApi::historization::CLoad> m_outputLoad;
 
    //--------------------------------------------------------------
    /// \brief	The input frequency (Hz)
    //--------------------------------------------------------------
-   yApi::historization::CFrequency m_inputFrequency;
+   boost::shared_ptr<yApi::historization::CFrequency> m_inputFrequency;
 
    //--------------------------------------------------------------
    /// \brief	The battery voltage (V)
    //--------------------------------------------------------------
-   yApi::historization::CVoltage m_batteryVoltage;
+   boost::shared_ptr<yApi::historization::CVoltage> m_batteryVoltage;
 
    //--------------------------------------------------------------
    /// \brief	The temperature (°C)
    //--------------------------------------------------------------
-   yApi::historization::CTemperature m_temperature;
+   boost::shared_ptr<yApi::historization::CTemperature> m_temperature;
 
    //--------------------------------------------------------------
    /// \brief	The AC power state
    //--------------------------------------------------------------
-   yApi::historization::CSwitch m_acPowerHistorizer;
+   boost::shared_ptr<yApi::historization::CSwitch> m_acPowerHistorizer;
 
    //--------------------------------------------------------------
    /// \brief	The battery low state
    //--------------------------------------------------------------
-   yApi::historization::CSwitch m_batteryLowHistorizer;
+   boost::shared_ptr<yApi::historization::CSwitch> m_batteryLowHistorizer;
 
    //--------------------------------------------------------------
    /// \brief	The shutdown device
    //--------------------------------------------------------------
-   yApi::historization::CEvent m_upsShutdown;
+   boost::shared_ptr<yApi::historization::CEvent> m_upsShutdown;
+
+   //--------------------------------------------------------------
+   /// \brief	The keywords list to historize in one step for better performances
+   //--------------------------------------------------------------
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
 };
 
