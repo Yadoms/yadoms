@@ -399,7 +399,6 @@ set(YADOMS_SRC
 	server/pluginSystem/Factory.h
 	server/pluginSystem/Manager.h
 	server/pluginSystem/Manager.cpp
-	server/pluginSystem/ManagerEvent.h
    server/pluginSystem/ManuallyDeviceCreationData.cpp
    server/pluginSystem/ManuallyDeviceCreationData.h
    server/pluginSystem/BindingQueryData.cpp

@@ -75,7 +75,7 @@ namespace plugin_cpp_api
 
       send(msg);
 
-      if (receivedEvtHandler.waitForEvents(boost::posix_time::seconds(10)) == shared::event::kTimeout)
+      if (receivedEvtHandler.waitForEvents(boost::posix_time::minutes(1)) == shared::event::kTimeout)
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
          m_onReceiveHook.clear();
@@ -147,6 +147,7 @@ namespace plugin_cpp_api
       if (msg.type() == toPlugin::System_EventType_kRequestStop)
       {
          // Request the main thread to stop
+         m_stopRequested = true;
          getEventHandler().postEvent(kEventStopRequested);
 
          // Stop this thread

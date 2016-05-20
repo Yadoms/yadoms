@@ -1,9 +1,7 @@
 ﻿#include "stdafx.h"
 #include "RunningInformation.h"
-#include "tools/OperatingSystem.h"
 #include <Poco/Environment.h>
 #include <shared/currentTime/Provider.h>
-#include <shared/Log.h>
 #include "Version.h"
 
 CRunningInformation::CRunningInformation(const std::string & path)

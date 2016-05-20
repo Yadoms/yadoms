@@ -39,27 +39,27 @@ namespace pluginSystem
       m_ipcAdapter->postPluginInformation(information);
    }
 
-   void CInstance::postDeviceCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> deviceCommand) const
+   void CInstance::postDeviceCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> deviceCommand)
    {
       m_ipcAdapter->postDeviceCommand(deviceCommand);
    }
 
-   void CInstance::postBindingQueryRequest(boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> request) const
+   void CInstance::postBindingQueryRequest(boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> request)
    {
       m_ipcAdapter->postBindingQueryRequest(request);
    }
 
-   void CInstance::postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request) const
+   void CInstance::postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request)
    {
       m_ipcAdapter->postManuallyDeviceCreationRequest(request);
    }
 
-   void CInstance::postExtraCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> extraCommand) const
+   void CInstance::postExtraCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> extraCommand)
    {
       m_ipcAdapter->postExtraCommand(extraCommand);
    }
 
-   void CInstance::updateConfiguration(const shared::CDataContainer& newConfiguration) const
+   void CInstance::updateConfiguration(const shared::CDataContainer& newConfiguration)
    {
       m_ipcAdapter->postUpdateConfiguration(newConfiguration);
    }

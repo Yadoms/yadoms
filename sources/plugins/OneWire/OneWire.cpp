@@ -30,8 +30,6 @@ enum
 
 void COneWire::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   try
-   {
       std::cout << "OneWire is starting..." << std::endl;
 
       m_configuration->initializeWith(api->getConfiguration());
@@ -53,6 +51,12 @@ void COneWire::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             // Wait for an event
             switch (api->getEventHandler().waitForEvents())
             {
+            case yApi::IYPluginApi::kEventStopRequested:
+            {
+               std::cout << "Stop requested" << std::endl;
+               api->setPluginState(yApi::historization::EPluginState::kStopped);
+               return;
+            }
             case kEvtTimerNetworkRefresh:
             {
                // Scan 1-wire network for new devices and update our network image
@@ -94,15 +98,6 @@ void COneWire::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
       }
    }
-   // Plugin must catch this end-of-thread exception to make its cleanup.
-   // If no cleanup is necessary, still catch it, or Yadoms will consider
-   // as a plugin failure.
-   catch (boost::thread_interrupted&)
-   {
-      std::cout << "OneWire is stopping..."  << std::endl;
-   }
-
-   m_engine.reset();
 }
 
 void COneWire::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainer& newConfigurationData)

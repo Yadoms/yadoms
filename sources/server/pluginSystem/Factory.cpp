@@ -92,11 +92,11 @@ namespace pluginSystem
                                                              qualifier,
                                                              instanceStoppedListener);
 
-      auto apiImplementation = createApiPluginImplemenation(pluginInformation,
-                                                            instanceData,
-                                                            instanceStateHandler,
-                                                            dataProvider,
-                                                            dataAccessLayer);
+      auto apiImplementation = createApiPluginImplementation(pluginInformation,
+                                                             instanceData,
+                                                             instanceStateHandler,
+                                                             dataProvider,
+                                                             dataAccessLayer);
 
       return boost::make_shared<internalPlugin::CInstance>(instanceData,
                                                            pluginInformation,
@@ -163,11 +163,11 @@ namespace pluginSystem
       }
    }
 
-   boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> CFactory::createApiPluginImplemenation(boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
-                                                                                                     boost::shared_ptr<const database::entities::CPlugin> instanceData,
-                                                                                                     boost::shared_ptr<IInstanceStateHandler> instanceStateHandler,
-                                                                                                     boost::shared_ptr<database::IDataProvider> dataProvider,
-                                                                                                     boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer) const
+   boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> CFactory::createApiPluginImplementation(boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
+                                                                                                      boost::shared_ptr<const database::entities::CPlugin> instanceData,
+                                                                                                      boost::shared_ptr<IInstanceStateHandler> instanceStateHandler,
+                                                                                                      boost::shared_ptr<database::IDataProvider> dataProvider,
+                                                                                                      boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer) const
    {
       return boost::make_shared<CYPluginApiImplementation>(pluginInformation,
                                                            instanceData,
@@ -183,11 +183,11 @@ namespace pluginSystem
                                                                          boost::shared_ptr<database::IDataProvider> dataProvider,
                                                                          boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer) const
    {
-      auto apiImplementation = createApiPluginImplemenation(pluginInformation,
-                                                            instanceData,
-                                                            instanceStateHandler,
-                                                            dataProvider,
-                                                            dataAccessLayer);
+      auto apiImplementation = createApiPluginImplementation(pluginInformation,
+                                                             instanceData,
+                                                             instanceStateHandler,
+                                                             dataProvider,
+                                                             dataAccessLayer);
 
       return boost::make_shared<CIpcAdapter>(apiImplementation);
    }

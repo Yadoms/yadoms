@@ -62,11 +62,11 @@ namespace pluginSystem
                                                                          boost::shared_ptr<shared::process::ILogger> logger,
                                                                          boost::shared_ptr<CInstanceStateHandler> instanceStatteHandler) const;
 
-      boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> createApiPluginImplemenation(boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
-                                                                                              boost::shared_ptr<const database::entities::CPlugin> instanceData,
-                                                                                              boost::shared_ptr<IInstanceStateHandler> instanceStateHandler,
-                                                                                              boost::shared_ptr<database::IDataProvider> dataProvider,
-                                                                                              boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer) const;
+      boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> createApiPluginImplementation(boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
+                                                                                               boost::shared_ptr<const database::entities::CPlugin> instanceData,
+                                                                                               boost::shared_ptr<IInstanceStateHandler> instanceStateHandler,
+                                                                                               boost::shared_ptr<database::IDataProvider> dataProvider,
+                                                                                               boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer) const;
 
       boost::shared_ptr<IIpcAdapter> createInstanceRunningContext(boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
                                                                   boost::shared_ptr<const database::entities::CPlugin> instanceData,

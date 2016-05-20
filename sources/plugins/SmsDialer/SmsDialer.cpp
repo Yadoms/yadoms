@@ -36,52 +36,49 @@ enum
 
 void CSmsDialer::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   try
+   // Load configuration values (provided by database)
+   m_configuration.initializeWith(api->getConfiguration());
+
+   // the main loop
+   std::cout << "CSmsDialer is running..." << std::endl;
+
+   // Create the phone instance
+   m_phone = CSmsDialerFactory::constructPhone(m_configuration);
+   m_phone->connect();
+   api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
+
+   // Timer used to periodically try to connect to phone
+   m_connectionTimer = api->getEventHandler().createTimer(kEvtTimerTryToConnectToPhone,
+                                                          shared::event::CEventTimer::kPeriodic,
+                                                          boost::posix_time::minutes(1));
+   m_connectionTimer->stop();
+
+   // Timer used to periodically check for incoming SMS
+   m_incommingSmsPollTimer = api->getEventHandler().createTimer(kEvtTimerCheckForIncommingSms,
+                                                                shared::event::CEventTimer::kPeriodic,
+                                                                boost::posix_time::seconds(30));
+   m_incommingSmsPollTimer->stop();
+
+   auto stopIsRequested = false;
+   while (!stopIsRequested)
    {
-      // Load configuration values (provided by database)
-      m_configuration.initializeWith(api->getConfiguration());
-
-      // the main loop
-      std::cout << "CSmsDialer is running..." << std::endl;
-
-      // Create the phone instance
-      m_phone = CSmsDialerFactory::constructPhone(m_configuration);
-      m_phone->connect();
-      api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
-
-      // Timer used to periodically try to connect to phone
-      m_connectionTimer = api->getEventHandler().createTimer(kEvtTimerTryToConnectToPhone,
-         shared::event::CEventTimer::kPeriodic,
-         boost::posix_time::minutes(1));
-      m_connectionTimer->stop();
-
-      // Timer used to periodically check for incoming SMS
-      m_incommingSmsPollTimer = api->getEventHandler().createTimer(kEvtTimerCheckForIncommingSms,
-         shared::event::CEventTimer::kPeriodic,
-         boost::posix_time::seconds(30));
-      m_incommingSmsPollTimer->stop();
-
-      while(1)
+      if (!m_phone->isConnected())
       {
-         if (!m_phone->isConnected())
-         {
-            processNotConnectedState(api);
-         }
-         else
-         {
-            processConnectedState(api);
-         }
+         stopIsRequested = processNotConnectedState(api);
+      }
+      else
+      {
+         stopIsRequested = processConnectedState(api);
       }
    }
-   catch (boost::thread_interrupted&)
-   {
-      std::cout << "Thread is stopping..." << std::endl;
-   }
+
+   std::cout << "Stop requested" << std::endl;
+   api->setPluginState(yApi::historization::EPluginState::kStopped);
 }
 
-void CSmsDialer::processNotConnectedState(boost::shared_ptr<yApi::IYPluginApi> api)
+bool CSmsDialer::processNotConnectedState(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   std::cout << "Phone is not connected"  << std::endl << std::endl;
+   std::cout << "Phone is not connected" << std::endl << std::endl;
    api->setPluginState(yApi::historization::EPluginState::kCustom, "connectionFailed");
 
    m_incommingSmsPollTimer->stop();
@@ -92,8 +89,12 @@ void CSmsDialer::processNotConnectedState(boost::shared_ptr<yApi::IYPluginApi> a
       try
       {
          // Wait for an event
-         switch(api->getEventHandler().waitForEvents())
+         switch (api->getEventHandler().waitForEvents())
          {
+         case yApi::IYPluginApi::kEventStopRequested:
+            {
+               return true;
+            }
          case yApi::IYPluginApi::kEventDeviceCommand:
             {
                // Ignore all commands
@@ -106,7 +107,7 @@ void CSmsDialer::processNotConnectedState(boost::shared_ptr<yApi::IYPluginApi> a
                api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
                std::string newConfiguration = api->getEventHandler().getEventData<std::string>();
                std::cout << "configuration was updated..." << std::endl;
-               BOOST_ASSERT(!newConfiguration.empty());  // newConfigurationValues shouldn't be empty, or kEvtUpdateConfiguration shouldn't be generated
+               BOOST_ASSERT(!newConfiguration.empty()); // newConfigurationValues shouldn't be empty, or kEvtUpdateConfiguration shouldn't be generated
 
                // Destroy current phone instance to update configuration
                m_phone.reset();
@@ -147,9 +148,11 @@ void CSmsDialer::processNotConnectedState(boost::shared_ptr<yApi::IYPluginApi> a
          std::cerr << "Phone critical error : " << e.what() << std::endl;
       }
    }
+
+   return false;
 }
 
-void CSmsDialer::processConnectedState(boost::shared_ptr<yApi::IYPluginApi> api)
+bool CSmsDialer::processConnectedState(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    std::cout << "Phone is connected" << std::endl;
    api->setPluginState(yApi::historization::EPluginState::kCustom, "phoneConnected");
@@ -162,7 +165,7 @@ void CSmsDialer::processConnectedState(boost::shared_ptr<yApi::IYPluginApi> api)
 
    // Next, unlock phone
    try
-   { 
+   {
       if (m_configuration.hasPINCode())
          m_phone->unlock(m_configuration.getPhonePIN());
 
@@ -184,12 +187,16 @@ void CSmsDialer::processConnectedState(boost::shared_ptr<yApi::IYPluginApi> api)
       try
       {
          // Wait for an event
-         switch(api->getEventHandler().waitForEvents())
+         switch (api->getEventHandler().waitForEvents())
          {
+         case yApi::IYPluginApi::kEventStopRequested:
+            {
+               return true;
+            }
          case yApi::IYPluginApi::kEventDeviceCommand:
             {
                // Command received
-               boost::shared_ptr<const yApi::IDeviceCommand> command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
+               boost::shared_ptr<const yApi::IDeviceCommand> command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
                std::cout << "Command received :" << yApi::IDeviceCommand::toString(command);
 
                if (boost::iequals(command->getKeyword(), m_powerKeyword->getKeyword()))
@@ -207,7 +214,7 @@ void CSmsDialer::processConnectedState(boost::shared_ptr<yApi::IYPluginApi> api)
                api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
                std::string newConfiguration = api->getEventHandler().getEventData<std::string>();
                std::cout << "Update configuration..." << std::endl;
-               BOOST_ASSERT(!newConfiguration.empty());  // newConfigurationValues shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
+               BOOST_ASSERT(!newConfiguration.empty()); // newConfigurationValues shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
                // Close connection with current phone
                m_phone.reset();
@@ -242,6 +249,8 @@ void CSmsDialer::processConnectedState(boost::shared_ptr<yApi::IYPluginApi> api)
          std::cerr << "Phone critical error : " << e.what() << std::endl;
       }
    }
+
+   return false;
 }
 
 void CSmsDialer::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const

@@ -41,7 +41,6 @@ void print(shared::CDataContainer const& pt)
 
 void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   
    try
    {
       std::cout << "################ RfxLanXpl : PRINT CONFIG" << std::endl;
@@ -54,7 +53,7 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
       //start ioservice
       std::cout << "################ RfxLanXpl : NETWORK IFACE" << std::endl;
-      Poco::Net::NetworkInterface interface = m_configuration.getXplNetworkInterface();
+      auto interface = m_configuration.getXplNetworkInterface();
 
       std::cout << "RfxLanXpl : create xpl service" << std::endl;
       xplcore::CXplService xplService(interface, m_xpl_gateway_id, "1", &api->getEventHandler(), kXplHubFound);
@@ -75,101 +74,102 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          // Wait for an event
          switch (api->getEventHandler().waitForEvents(boost::posix_time::minutes(10)))
          {
-         case yApi::IYPluginApi::kEventDeviceCommand:
-         {
-            // Command was received from Yadoms
-            boost::shared_ptr<const yApi::IDeviceCommand> command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
-            OnSendDeviceCommand(command, api, xplService);
-            break;
-         }
-         case yApi::IYPluginApi::kEventUpdateConfiguration:
-         {
-            // Configuration was updated
-            api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
-            shared::CDataContainer newConfiguration = api->getEventHandler().getEventData<shared::CDataContainer>();
-            std::cout << "Update configuration..." << std::endl;
-
-            //read new conf and
-            CRfxLanXplConfiguration newConf;
-            newConf.initializeWith(newConfiguration);
-
-            if (m_configuration.getStartXplhub() != newConf.getStartXplhub())
+         case yApi::IYPluginApi::kEventStopRequested:
             {
-               //the start hub changes
-               if (newConf.getStartXplhub())
+               std::cout << "Stop requested" << std::endl;
+               api->setPluginState(yApi::historization::EPluginState::kStopped);
+               return;
+            }
+         case yApi::IYPluginApi::kEventDeviceCommand:
+            {
+               // Command was received from Yadoms
+               auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
+               OnSendDeviceCommand(command, api, xplService);
+               break;
+            }
+         case yApi::IYPluginApi::kEventUpdateConfiguration:
+            {
+               // Configuration was updated
+               api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
+               auto newConfiguration = api->getEventHandler().getEventData<shared::CDataContainer>();
+               std::cout << "Update configuration..." << std::endl;
+
+               //read new conf and
+               CRfxLanXplConfiguration newConf;
+               newConf.initializeWith(newConfiguration);
+
+               if (m_configuration.getStartXplhub() != newConf.getStartXplhub())
                {
-                  //start a new hub
-                  startHub(hub, newConf.getXplNetworkInterface().address().toString());
+                  //the start hub changes
+                  if (newConf.getStartXplhub())
+                  {
+                     //start a new hub
+                     startHub(hub, newConf.getXplNetworkInterface().address().toString());
+                  }
+                  else
+                  {
+                     //stop hub
+                     stopHub(hub);
+                  }
                }
-               else
-               {
-                  //stop hub
-                  stopHub(hub);
-               }
+
+               // Take into account the new configuration
+               // - Restart the plugin if necessary,
+               // - Update some resources,
+               // - etc...
+               m_configuration.initializeWith(newConfiguration);
+               api->setPluginState(yApi::historization::EPluginState::kRunning);
+               break;
             }
 
-            // Take into account the new configuration
-            // - Restart the plugin if necessary,
-            // - Update some resources,
-            // - etc...
-            m_configuration.initializeWith(newConfiguration);
-            api->setPluginState(yApi::historization::EPluginState::kRunning);
-            break;
-         }
-
          case yApi::IYPluginApi::kEventManuallyDeviceCreation:
-         {
-            // Yadoms asks for device creation
-            boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> data = api->getEventHandler().getEventData< boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> >();
-            OnCreateDeviceRequest(data, api);
-            break;
-         }
+            {
+               // Yadoms asks for device creation
+               auto data = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest>>();
+               OnCreateDeviceRequest(data, api);
+               break;
+            }
 
-			case yApi::IYPluginApi::kBindingQuery:
-         {
-            // Yadoms asks for device creation
-            boost::shared_ptr<yApi::IBindingQueryRequest> data = api->getEventHandler().getEventData< boost::shared_ptr<yApi::IBindingQueryRequest> >();
-            OnBindingQueryRequest(data, api);
-            break;
-         }
+         case yApi::IYPluginApi::kBindingQuery:
+            {
+               // Yadoms asks for device creation
+               auto data = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IBindingQueryRequest>>();
+               OnBindingQueryRequest(data, api);
+               break;
+            }
 
          case kXplMessageReceived:
-         {
-            // Xpl message was received
-            xplcore::CXplMessage xplMessage = api->getEventHandler().getEventData<xplcore::CXplMessage>();
-            OnXplMessageReceived(xplMessage, api);
-            break;
-         }
+            {
+               // Xpl message was received
+               auto xplMessage = api->getEventHandler().getEventData<xplcore::CXplMessage>();
+               OnXplMessageReceived(xplMessage, api);
+               break;
+            }
 
          case kXplHubFound:
          case shared::event::kTimeout:
-         {
-            //when hub is found, or every 10 minutes, refresh rfxlan list
-            StartPeripheralListing(xplService);
-            break;
-         }
+            {
+               //when hub is found, or every 10 minutes, refresh rfxlan list
+               StartPeripheralListing(xplService);
+               break;
+            }
          default:
-         {
-            std::cerr << "Unknown message id" << std::endl;
-            break;
+            {
+               std::cerr << "Unknown message id" << std::endl;
+               break;
+            }
          }
-         }
-      };
+      }
    }
-   // Plugin must catch this end-of-thread exception to make its cleanup.
-   // If no cleanup is necessary, still catch it, or Yadoms will consider
-   // as a plugin failure.
-   catch (boost::thread_interrupted&)
+   catch (shared::exception::CException& ex)
    {
-   }
-   catch (shared::exception::CException & ex)
-   {
-      std::cerr << "The XPL plugin fails. Unknown expcetion : " << ex.what() << std::endl;
+      std::cerr << "The XPL plugin fails. Unknown exception : " << ex.what() << std::endl;
+      api->setPluginState(yApi::historization::EPluginState::kError, (boost::format("Unknown exception : %1%") % ex.what()).str());
    }
 
    std::cout << "XPL plugin is now stopping" << std::endl;
    //ensure hub is stopped
-//   stopHub(hub);
+   //   stopHub(hub);
 }
 
 void CRfxLanXpl::startHub(xplcore::CXplHub & hub, const std::string & hubFilterConfiguration)
@@ -231,7 +231,7 @@ void CRfxLanXpl::OnXplMessageReceived(xplcore::CXplMessage & xplMessage, boost::
                details.set("source", realSource);
                api->declareDevice(deviceAddress.getId(),
                                   deviceAddress.getCommercialName(),
-                                  std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>(),
+                                  std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >(),
                                   details);
             }
 
@@ -400,7 +400,7 @@ void CRfxLanXpl::OnCreateDeviceRequest(boost::shared_ptr<yApi::IManuallyDeviceCr
                details.set("source", std::string("yadomssource!"));
                api->declareDevice(deviceAddress.getId(),
                                   deviceAddress.getCommercialName(),
-                                  std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>(),
+                                  std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >(),
                                   details);
             }
 

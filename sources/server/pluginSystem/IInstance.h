@@ -32,7 +32,7 @@ namespace pluginSystem
       /// \brief			            Notify the plugin about its configuration changed
       /// \param  newConfiguration  The new configuration to apply
       //--------------------------------------------------------------
-      virtual void updateConfiguration(const shared::CDataContainer & newConfiguration) const = 0;
+      virtual void updateConfiguration(const shared::CDataContainer & newConfiguration) = 0;
 
       //-----------------------------------------------------
       ///\brief               Get information about this instance
@@ -50,25 +50,25 @@ namespace pluginSystem
       /// \brief			            Post a device command to the plugin
       /// \param  information       Device command
       //--------------------------------------------------------------
-      virtual void postDeviceCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> deviceCommand) const = 0;
+      virtual void postDeviceCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> deviceCommand) = 0;
 
       //--------------------------------------------------------------
       /// \brief                 Post a custom query request to a plugin
       /// \param [in] request    Request data
       //--------------------------------------------------------------
-      virtual void postBindingQueryRequest(boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> request) const = 0;
+      virtual void postBindingQueryRequest(boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> request) = 0;
 
       //--------------------------------------------------------------
       /// \brief			            Post a device command to the plugin
       /// \param  information       Device command
       //--------------------------------------------------------------
-      virtual void postExtraCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> extraCommand) const = 0;
+      virtual void postExtraCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> extraCommand) = 0;
 
       //--------------------------------------------------------------
       /// \brief                 Post a manually device creation request to plugin
       /// \param [in] request    Request data
       //--------------------------------------------------------------
-      virtual void postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request) const = 0;
+      virtual void postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request) = 0;
    };
 	
 } // namespace pluginSystem	

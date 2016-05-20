@@ -17,7 +17,8 @@ namespace pluginSystem {
    {
    }
 
-   void CSystem::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
+   void CSystem::doWork(boost::shared_ptr<yApi::IYPluginApi> api,
+                        shared::event::CEventHandler& eventHandler)
    {
       try
       {
@@ -43,12 +44,12 @@ namespace pluginSystem {
          while (1)
          {
             // Wait for an event
-            switch (api->getEventHandler().waitForEvents())
+            switch (eventHandler.waitForEvents())
             {
                case yApi::IYPluginApi::kEventDeviceCommand:
                {
                   // Command was received from Yadoms
-                  auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
+                  auto command = eventHandler.getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
 
                   if (boost::iequals(command->getKeyword(), keywordShutdown->getKeyword()))
                   {

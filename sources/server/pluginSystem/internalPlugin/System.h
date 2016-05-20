@@ -16,20 +16,22 @@ namespace pluginSystem
       {
       public:
          //--------------------------------------------------------------
-         /// \brief	            Constructor
+         /// \brief	                  Constructor
          //--------------------------------------------------------------
          CSystem();
 
          //--------------------------------------------------------------
-         /// \brief	            Destructor
+         /// \brief	                  Destructor
          //--------------------------------------------------------------
          virtual ~CSystem();
 
          //--------------------------------------------------------------
-         /// \brief	            Main job
-         /// \param[in] api      The plugin API used to dial with Yadoms
+         /// \brief	                  Main job
+         /// \param[in] api            The plugin API used to dial with Yadoms
+         /// \param[in] eventHandler   The event handler ot process async job
          //--------------------------------------------------------------
-         virtual void doWork(boost::shared_ptr<yApi::IYPluginApi> api);
+         virtual void doWork(boost::shared_ptr<yApi::IYPluginApi> api,
+                             shared::event::CEventHandler& eventHandler);
       };
    }
 } // namespace pluginSystem::internalPlugin

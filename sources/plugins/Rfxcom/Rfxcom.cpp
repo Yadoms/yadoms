@@ -31,118 +31,117 @@ CRfxcom::~CRfxcom()
 
 void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   try
+   api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
+
+   std::cout << "CRfxcom is starting..." << std::endl;
+
+   m_configurationUpdated = false;
+
+   // Load configuration values (provided by database)
+   m_configuration.initializeWith(api->getConfiguration());
+
+   // Create the transceiver
+   m_transceiver = CRfxcomFactory::constructTransceiver();
+
+   m_waitForAnswerTimer = api->getEventHandler().createTimer(kAnswerTimeout,
+                                                             shared::event::CEventTimer::kOneShot,
+                                                             boost::posix_time::seconds(5));
+   m_waitForAnswerTimer->stop();
+
+   // Create the connection
+   createConnection(api->getEventHandler());
+
+   // the main loop
+   while (1)
    {
-      api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
-
-      std::cout << "CRfxcom is starting..." << std::endl;
-
-      m_configurationUpdated = false;
-
-      // Load configuration values (provided by database)
-      m_configuration.initializeWith(api->getConfiguration());
-
-      // Create the transceiver
-      m_transceiver = CRfxcomFactory::constructTransceiver();
-
-      m_waitForAnswerTimer = api->getEventHandler().createTimer(kAnswerTimeout,
-                                                                shared::event::CEventTimer::kOneShot,
-                                                                boost::posix_time::seconds(5));
-      m_waitForAnswerTimer->stop();
-
-      // Create the connection
-      createConnection(api->getEventHandler());
-
-      // the main loop
-      while (1)
+      try
       {
-         try
+         // Wait for an event
+         switch (api->getEventHandler().waitForEvents())
          {
-            // Wait for an event
-            switch (api->getEventHandler().waitForEvents())
+         case yApi::IYPluginApi::kEventStopRequested:
             {
-            case yApi::IYPluginApi::kEventDeviceCommand:
-               {
-                  // Command received from Yadoms
-                  auto command(api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >());
-                  onCommand(api, command);
+               std::cout << "Stop requested" << std::endl;
+               api->setPluginState(yApi::historization::EPluginState::kStopped);
+               return;
+            }
+         case yApi::IYPluginApi::kEventDeviceCommand:
+            {
+               // Command received from Yadoms
+               auto command(api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>());
+               onCommand(api, command);
 
-                  break;
-               }
-            case yApi::IYPluginApi::kEventManuallyDeviceCreationTest:
-               {
-                  // Yadoms asks for test device parameters to check if it works before creating it. So just send command, don't declare anything.
-                  //TODO not yet implemented
-                  //boost::shared_ptr<const yApi::IManuallyDeviceCreationTestData> data = api->getEventHandler().getEventData<const boost::shared_ptr<yApi::IManuallyDeviceCreationTestData> >();
-                  //onCommand(api, data->getCommand());
+               break;
+            }
+         case yApi::IYPluginApi::kEventManuallyDeviceCreationTest:
+            {
+               // Yadoms asks for test device parameters to check if it works before creating it. So just send command, don't declare anything.
+               //TODO not yet implemented
+               //boost::shared_ptr<const yApi::IManuallyDeviceCreationTestData> data = api->getEventHandler().getEventData<const boost::shared_ptr<yApi::IManuallyDeviceCreationTestData> >();
+               //onCommand(api, data->getCommand());
 
-                  break;
-               }
-            case yApi::IYPluginApi::kEventManuallyDeviceCreation:
+               break;
+            }
+         case yApi::IYPluginApi::kEventManuallyDeviceCreation:
+            {
+               // Yadoms asks for device creation
+               auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest>>();
+               std::cout << "Manually device creation request received for device :" << request->getData().getDeviceName() << std::endl;
+               try
                {
-                  // Yadoms asks for device creation
-                  auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> >();
-                  std::cout << "Manually device creation request received for device :" << request->getData().getDeviceName() << std::endl;
-                  try
-                  {
-                     request->sendSuccess(m_transceiver->createDeviceManually(api, request->getData()));
-                  }
-                  catch (CManuallyDeviceCreationException& e)
-                  {
-                     request->sendError(e.what());
-                  }
+                  request->sendSuccess(m_transceiver->createDeviceManually(api, request->getData()));
+               }
+               catch (CManuallyDeviceCreationException& e)
+               {
+                  request->sendError(e.what());
+               }
 
-                  break;
-               }
-            case yApi::IYPluginApi::kEventUpdateConfiguration:
-               {
-                  api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
-                  onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
+               break;
+            }
+         case yApi::IYPluginApi::kEventUpdateConfiguration:
+            {
+               api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
+               onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
 
-                  break;
-               }
-            case kEvtPortConnection:
-               {
-                  if (api->getEventHandler().getEventData<bool>())
-                     processRfxcomConnectionEvent(api);
-                  else
-                     processRfxcomUnConnectionEvent(api);
+               break;
+            }
+         case kEvtPortConnection:
+            {
+               if (api->getEventHandler().getEventData<bool>())
+                  processRfxcomConnectionEvent(api);
+               else
+                  processRfxcomUnConnectionEvent(api);
 
-                  break;
-               }
-            case kEvtPortDataReceived:
-               {
-                  processRfxcomDataReceived(api, api->getEventHandler().getEventData<const shared::communication::CByteBuffer>());
-                  break;
-               }
-            case kAnswerTimeout:
-               {
-                  std::cerr << "No answer received, try to reconnect in a while..." << std::endl;
-                  errorProcess(api);
-                  break;
-               }
-            case kProtocolErrorRetryTimer:
-               {
-                  createConnection(api->getEventHandler());
-                  break;
-               }
-            default:
-               {
-                  std::cerr << "Unknown message id" << std::endl;
-                  break;
-               }
+               break;
+            }
+         case kEvtPortDataReceived:
+            {
+               processRfxcomDataReceived(api, api->getEventHandler().getEventData<const shared::communication::CByteBuffer>());
+               break;
+            }
+         case kAnswerTimeout:
+            {
+               std::cerr << "No answer received, try to reconnect in a while..." << std::endl;
+               errorProcess(api);
+               break;
+            }
+         case kProtocolErrorRetryTimer:
+            {
+               createConnection(api->getEventHandler());
+               break;
+            }
+         default:
+            {
+               std::cerr << "Unknown message id" << std::endl;
+               break;
             }
          }
-         catch (shared::communication::CPortException&)
-         {
-            std::cerr << "The message is not sent and will be discarded" << std::endl;
-            errorProcess(api);
-         }
       }
-   }
-   catch (boost::thread_interrupted&)
-   {
-      std::cout << "Thread is stopping..." << std::endl;
+      catch (shared::communication::CPortException&)
+      {
+         std::cerr << "The message is not sent and will be discarded" << std::endl;
+         errorProcess(api);
+      }
    }
 }
 

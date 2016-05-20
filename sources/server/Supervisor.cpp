@@ -30,8 +30,11 @@
 #include "dateTime/DateTimeNotifier.h"
 
 
-CSupervisor::CSupervisor(boost::shared_ptr<shared::event::CEventHandler> applicationEventHandler, const int applicationStopCode)
-   :m_EventHandler(new shared::event::CEventHandler), m_applicationEventHandler(applicationEventHandler), m_applicationStopCode(applicationStopCode)
+CSupervisor::CSupervisor(boost::shared_ptr<shared::event::CEventHandler> applicationEventHandler,
+                         const int applicationStopCode)
+   : m_EventHandler(boost::make_shared<shared::event::CEventHandler>()),
+     m_applicationEventHandler(applicationEventHandler),
+     m_applicationStopCode(applicationStopCode)
 {
 }
 
@@ -51,54 +54,66 @@ void CSupervisor::run()
       shared::CServiceLocator::instance().push<automation::script::IObjectFactory>(boost::make_shared<automation::script::ObjectFactory>());
 
       //create the notification center
-      boost::shared_ptr<notification::CNotificationCenter> notificationCenter(new notification::CNotificationCenter);
+      auto notificationCenter(boost::make_shared<notification::CNotificationCenter>());
       shared::CServiceLocator::instance().push<notification::CNotificationCenter>(notificationCenter);
 
       //retreive startup options
-      boost::shared_ptr<startupOptions::IStartupOptions> startupOptions = shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>();
+      auto startupOptions = shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>();
 
       //start database system
-      boost::shared_ptr<database::IDataProvider> pDataProvider(new database::sqlite::CSQLiteDataProvider(startupOptions->getDatabaseFile()));
+      boost::shared_ptr<database::IDataProvider> pDataProvider(boost::make_shared<database::sqlite::CSQLiteDataProvider>(startupOptions->getDatabaseFile()));
       if (!pDataProvider->load())
          throw shared::exception::CException("Fail to load database");
 
       //create the data access layer
-      dal.reset(new dataAccessLayer::CDataAccessLayer(pDataProvider));
+      dal = boost::make_shared<dataAccessLayer::CDataAccessLayer>(pDataProvider);
       shared::CServiceLocator::instance().push<dataAccessLayer::IDataAccessLayer>(dal);
 
       // Start Task manager
-      boost::shared_ptr<task::CScheduler> taskManager(new task::CScheduler(m_EventHandler, kSystemEvent));
+      auto taskManager(boost::make_shared<task::CScheduler>(m_EventHandler,
+                                                            kSystemEvent));
       taskManager->start();
 
       // Create the update manager
-      boost::shared_ptr<update::CUpdateManager> updateManager(new update::CUpdateManager(taskManager));
+      auto updateManager(boost::make_shared<update::CUpdateManager>(taskManager));
 
       // Create the Plugin manager
-      const std::string pluginsPath = startupOptions->getPluginsPath();
-      boost::shared_ptr<pluginSystem::CManager> pluginManager(new pluginSystem::CManager(
-         pluginsPath, pDataProvider, dal, m_EventHandler, dal->getEventLogger()));
+      const auto pluginsPath = startupOptions->getPluginsPath();
+      auto pluginManager(boost::make_shared<pluginSystem::CManager>(pluginsPath,
+                                                                    pDataProvider,
+                                                                    dal,
+                                                                    m_EventHandler));
       shared::CServiceLocator::instance().push<pluginSystem::CManager>(pluginManager);
 
       // Start the plugin gateway
-      boost::shared_ptr<communication::CPluginGateway> pluginGateway(new communication::CPluginGateway(pDataProvider, dal->getAcquisitionHistorizer(), pluginManager));
+      auto pluginGateway(boost::make_shared<communication::CPluginGateway>(pDataProvider, dal->getAcquisitionHistorizer(), pluginManager));
 
       // Start the plugin manager (start all plugin instances)
       pluginManager->start();
 
       // Start automation rules manager
-      boost::shared_ptr<automation::IRuleManager> automationRulesManager(new automation::CRuleManager(
-         pDataProvider->getRuleRequester(), pluginGateway,
-         pDataProvider->getAcquisitionRequester(), pDataProvider->getDeviceRequester(), pDataProvider->getKeywordRequester(), pDataProvider->getRecipientRequester(),
-         dal->getConfigurationManager(), dal->getEventLogger()));
+      boost::shared_ptr<automation::IRuleManager> automationRulesManager(boost::make_shared<automation::CRuleManager>(pDataProvider->getRuleRequester(),
+                                                                                                                      pluginGateway,
+                                                                                                                      pDataProvider->getAcquisitionRequester(),
+                                                                                                                      pDataProvider->getDeviceRequester(),
+                                                                                                                      pDataProvider->getKeywordRequester(),
+                                                                                                                      pDataProvider->getRecipientRequester(),
+                                                                                                                      dal->getConfigurationManager(),
+                                                                                                                      dal->getEventLogger()));
       shared::CServiceLocator::instance().push<automation::IRuleManager>(automationRulesManager);
 
       // Start Web server
-      const std::string & webServerIp = startupOptions->getWebServerIPAddress();
-      const std::string webServerPort = boost::lexical_cast<std::string>(startupOptions->getWebServerPortNumber());
-      const std::string & webServerPath = startupOptions->getWebServerInitialPath();
-      const std::string scriptInterpretersPath = startupOptions->getScriptInterpretersPath();
+      const auto webServerIp = startupOptions->getWebServerIPAddress();
+      const auto webServerPort = boost::lexical_cast<std::string>(startupOptions->getWebServerPortNumber());
+      const auto webServerPath = startupOptions->getWebServerInitialPath();
+      const auto scriptInterpretersPath = startupOptions->getScriptInterpretersPath();
 
-      boost::shared_ptr<web::poco::CWebServer> webServer(new web::poco::CWebServer(webServerIp, webServerPort, webServerPath, "/rest/", "/ws"));
+      auto webServer(boost::make_shared<web::poco::CWebServer>(webServerIp,
+                                                               webServerPort,
+                                                               webServerPath,
+                                                               "/rest/",
+                                                               "/ws"));
+
       webServer->getConfigurator()->websiteHandlerAddAlias("plugins", pluginsPath);
       webServer->getConfigurator()->websiteHandlerAddAlias("scriptInterpreters", scriptInterpretersPath);
       webServer->getConfigurator()->configureAuthentication(boost::make_shared<authentication::CBasicAuthentication>(dal->getConfigurationManager(), startupOptions->getNoPasswordFlag()));
@@ -205,3 +220,4 @@ void CSupervisor::requestToStop() const
    if (m_EventHandler)
       m_EventHandler->postEvent(kStopRequested);
 }
+

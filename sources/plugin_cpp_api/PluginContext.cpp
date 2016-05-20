@@ -3,6 +3,7 @@
 #include "ApiImplementation.h"
 #include "CommandLine.h"
 #include <shared/currentTime/Local.h>
+#include <csignal>
 
 //TODO      Ajouter ce lien dans le wiki plugin/how to debug my plugin : https://msdn.microsoft.com/en-us/library/a329t4ed(v=vs.90).aspx
 shared::currentTime::Provider timeProvider(boost::make_shared<shared::currentTime::Local>());
@@ -13,9 +14,13 @@ namespace plugin_cpp_api
    {
       try
       {
+         // Ignore CTRL+C and termination signal (stop must be requested by Yadoms)
+         signal(SIGINT, SIG_IGN);
+         signal(SIGTERM, SIG_IGN);
+
          auto pluginContext = boost::make_shared<CPluginContext>(argc, argv, plugin);
          pluginContext->run();
-         return static_cast<int>(pluginContext->getReturnCode());
+         return pluginContext->getReturnCode();
       }
       catch (std::invalid_argument& e)
       {
@@ -62,8 +67,8 @@ namespace plugin_cpp_api
 
          if (!api->stopRequested())
          {
-            m_returnCode = kUnexpectedStop;
             std::cerr << api->getInformation()->getType() << " has stopped itself." << std::endl;
+            m_returnCode = kUnexpectedStop;
          }
 
          // Normal stop
@@ -72,13 +77,13 @@ namespace plugin_cpp_api
       }
       catch (std::exception& e)
       {
-         m_returnCode = kRuntimeError;
          std::cerr << api->getInformation()->getType() << " crashed with exception : " << e.what();
+         m_returnCode = kRuntimeError;
       }
       catch (...)
       {
-         m_returnCode = kRuntimeError;
          std::cerr << api->getInformation()->getType() << " crashed with unknown exception" << std::endl;
+         m_returnCode = kRuntimeError;
       }
 
       m_msgReceiverThread.interrupt();

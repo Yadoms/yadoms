@@ -27,68 +27,62 @@ CFreeMobileSms::~CFreeMobileSms()
 
 void CFreeMobileSms::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   try
+   //create device/keyword
+   auto keyword(boost::make_shared<CSmsKeyword>(m_keywordName));
+
+   if (!api->deviceExists(m_deviceName))
+      api->declareDevice(m_deviceName, "FreeMobile SMS Api");
+
+   // Declare these sensors to Yadoms (devices and associated keywords) if not already declared
+   if (!api->keywordExists(m_deviceName, keyword))
+      api->declareKeyword(m_deviceName, keyword);
+
+   // the main loop
+   std::cout << "CFreeMobileSms is running..." << std::endl;
+   api->setPluginState(yApi::historization::EPluginState::kRunning);
+   while (1)
    {
-      //create device/keyword
-      auto keyword(boost::make_shared<CSmsKeyword>(m_keywordName));
-
-      if (!api->deviceExists(m_deviceName))
-         api->declareDevice(m_deviceName, "FreeMobile SMS Api");
-
-      // Declare these sensors to Yadoms (devices and associated keywords) if not already declared
-      if (!api->keywordExists(m_deviceName, keyword))
-         api->declareKeyword(m_deviceName, keyword);
-
-      // the main loop
-      std::cout << "CFreeMobileSms is running..." << std::endl;
-      api->setPluginState(yApi::historization::EPluginState::kRunning);
-      while (1)
+      // Wait for an event
+      switch (api->getEventHandler().waitForEvents())
       {
-         // Wait for an event
-         switch (api->getEventHandler().waitForEvents())
+      case yApi::IYPluginApi::kEventStopRequested:
          {
-         case yApi::IYPluginApi::kEventDeviceCommand:
+            std::cout << "Stop requested" << std::endl;
+            api->setPluginState(yApi::historization::EPluginState::kStopped);
+            return;
+         }
+      case yApi::IYPluginApi::kEventDeviceCommand:
+         {
+            // A command was received from Yadoms
+            auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
+            std::cout << "Command received from Yadoms :" << yApi::IDeviceCommand::toString(command) << std::endl;
+
+            //parse the command data
+            yApi::historization::CMessageFormatter msgInfo(command->getBody());
+
+
+            if (msgInfo.isToProvided() && msgInfo.isBodyProvided())
             {
-               // A command was received from Yadoms
-               auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
-               std::cout << "Command received from Yadoms :" << yApi::IDeviceCommand::toString(command) << std::endl;
-
-               //parse the command data
-               yApi::historization::CMessageFormatter msgInfo(command->getBody());
-
-
-               if (msgInfo.isToProvided() && msgInfo.isBodyProvided())
-               {
-                  //send sms
-                  sendSms(api, msgInfo.to(), msgInfo.body());
-               }
-               else if (!msgInfo.isToProvided())
-               {
-                  std::cerr << "SMS recipient ('to') not found in command data" << yApi::IDeviceCommand::toString(command) << std::endl;
-               }
-               else if (!msgInfo.isBodyProvided())
-               {
-                  std::cerr << "SMS content ('body') not found in command data" << yApi::IDeviceCommand::toString(command) << std::endl;
-               }
-               break;
+               //send sms
+               sendSms(api, msgInfo.to(), msgInfo.body());
             }
-         default:
+            else if (!msgInfo.isToProvided())
             {
-               std::cerr << "Unknown ou unsupported message id " << api->getEventHandler().getEventId() << std::endl;
-               break;
+               std::cerr << "SMS recipient ('to') not found in command data" << yApi::IDeviceCommand::toString(command) << std::endl;
             }
+            else if (!msgInfo.isBodyProvided())
+            {
+               std::cerr << "SMS content ('body') not found in command data" << yApi::IDeviceCommand::toString(command) << std::endl;
+            }
+            break;
+         }
+      default:
+         {
+            std::cerr << "Unknown ou unsupported message id " << api->getEventHandler().getEventId() << std::endl;
+            break;
          }
       }
    }
-   // Plugin must catch this end-of-thread exception to make its cleanup.
-   // If no cleanup is necessary, still catch it, or Yadoms will consider
-   // as a plugin failure.
-   catch (boost::thread_interrupted&)
-   {
-      std::cout << "Thread is stopping..." << std::endl;
-   }
-
-   api->setPluginState(yApi::historization::EPluginState::kStopped);
 }
 
 

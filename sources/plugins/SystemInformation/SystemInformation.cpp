@@ -29,73 +29,68 @@ enum
 
 void CSystemInformation::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   try
+   std::cout << "SystemInformation is starting..." << std::endl;
+
+   m_configuration.initializeWith(api->getConfiguration());
+
+   // Device declaration, if needed
+   if (!api->deviceExists(m_deviceName))
+      api->declareDevice(m_deviceName, "SystemInformation");
+
+   shared::CDataContainer details;
+   details.set("provider", "SystemInformation");
+   details.set("shortProvider", "si");
+
+   CSystemFactory Factory(api, m_deviceName, m_configuration, details);
+
+   // Event to be sent immediately for the first value
+   api->getEventHandler().createTimer(kEvtTimerRefreshCPULoad, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
+   // Timer used to read periodically CPU loads
+   api->getEventHandler().createTimer(kEvtTimerRefreshCPULoad, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(30));
+
+   // Event to be sent immediately for the first value
+   api->getEventHandler().createTimer(kEvtTimerRefreshDiskAndMemory, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
+   // Timer used to read periodically Disk Usage and Memory Load
+   api->getEventHandler().createTimer(kEvtTimerRefreshDiskAndMemory, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(300));
+
+   // the main loop
+   std::cout << "SystemInformation plugin is running..." << std::endl;
+
+   while (1)
    {
-      std::cout << "SystemInformation is starting..." << std::endl;
-
-      m_configuration.initializeWith(api->getConfiguration());
-
-      // Device declaration, if needed
-      if (!api->deviceExists(m_deviceName))
-         api->declareDevice(m_deviceName, "SystemInformation");
-
-      shared::CDataContainer details;
-      details.set("provider", "SystemInformation");
-      details.set("shortProvider", "si");
-
-      CSystemFactory Factory(api, m_deviceName, m_configuration, details);
-
-      // Event to be sent immediately for the first value
-      api->getEventHandler().createTimer(kEvtTimerRefreshCPULoad, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
-      // Timer used to read periodically CPU loads
-      api->getEventHandler().createTimer(kEvtTimerRefreshCPULoad, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(30));
-
-      // Event to be sent immediately for the first value
-      api->getEventHandler().createTimer(kEvtTimerRefreshDiskAndMemory, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
-      // Timer used to read periodically Disk Usage and Memory Load
-      api->getEventHandler().createTimer(kEvtTimerRefreshDiskAndMemory, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(300));
-
-      // the main loop
-      std::cout << "SystemInformation plugin is running..." << std::endl;
-
-      while (1)
+      // Wait for an event
+      switch (api->getEventHandler().waitForEvents())
       {
-         // Wait for an event
-         switch (api->getEventHandler().waitForEvents())
+      case yApi::IYPluginApi::kEventStopRequested:
          {
-         case kEvtTimerRefreshCPULoad:
-            {
-               Factory.OnSpeedUpdate(api);
-
-               break;
-            }
-         case kEvtTimerRefreshDiskAndMemory:
-            {
-               Factory.OnSlowUpdate(api, m_configuration);
-               break;
-            }
-         case yApi::IYPluginApi::kEventUpdateConfiguration:
-            {
-               api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
-               onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
-               Factory.OnConfigurationUpdate(api, m_configuration, details);
-               api->setPluginState(yApi::historization::EPluginState::kRunning);
-               break;
-            }
-         default:
-            {
-               std::cerr << "Unknown message id" << std::endl;
-               break;
-            }
+            std::cout << "Stop requested" << std::endl;
+            api->setPluginState(yApi::historization::EPluginState::kStopped);
+            return;
          }
-      };
-   }
-   // Plugin must catch this end-of-thread exception to make its cleanup.
-   // If no cleanup is necessary, still catch it, or Yadoms will consider
-   // as a plugin failure.
-   catch (boost::thread_interrupted&)
-   {
-      std::cout << "SystemInformation is stopping..." << std::endl << std::endl;
+      case kEvtTimerRefreshCPULoad:
+         {
+            Factory.OnSpeedUpdate(api);
+            break;
+         }
+      case kEvtTimerRefreshDiskAndMemory:
+         {
+            Factory.OnSlowUpdate(api, m_configuration);
+            break;
+         }
+      case yApi::IYPluginApi::kEventUpdateConfiguration:
+         {
+            api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
+            onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
+            Factory.OnConfigurationUpdate(api, m_configuration, details);
+            api->setPluginState(yApi::historization::EPluginState::kRunning);
+            break;
+         }
+      default:
+         {
+            std::cerr << "Unknown message id" << std::endl;
+            break;
+         }
+      }
    }
 }
 

@@ -187,12 +187,12 @@ void CGammuPhone::sendSmsCallback(GSM_StateMachine* sm, int status, int MessageR
    }
 }
 
-boost::shared_ptr<std::vector<boost::shared_ptr<ISms>>> CGammuPhone::getIncomingSMS()
+boost::shared_ptr<std::vector<boost::shared_ptr<ISms> > > CGammuPhone::getIncomingSMS()
 {
    if (!isConnected())
       throw CPhoneException("Phone must be connected to read incoming SMS");
 
-   boost::shared_ptr<std::vector<boost::shared_ptr<ISms>>> noSms;
+   boost::shared_ptr<std::vector<boost::shared_ptr<ISms> > > noSms;
    bool newSms;
 
    GSM_SMSMemoryStatus gammuSmsStatus;
@@ -231,9 +231,9 @@ boost::shared_ptr<std::vector<boost::shared_ptr<ISms>>> CGammuPhone::getIncoming
    return readSms(true);
 }
 
-boost::shared_ptr<std::vector<boost::shared_ptr<ISms>>> CGammuPhone::readSms(bool deleteSms)
+boost::shared_ptr<std::vector<boost::shared_ptr<ISms> > > CGammuPhone::readSms(bool deleteSms)
 {
-   boost::shared_ptr<std::vector<boost::shared_ptr<ISms>>> noSms;
+   boost::shared_ptr<std::vector<boost::shared_ptr<ISms> > > noSms;
 
    GSM_MultiSMSMessage gammuSms;
    std::vector<GSM_MultiSMSMessage> gammuSmsVector;
@@ -286,7 +286,7 @@ boost::shared_ptr<std::vector<boost::shared_ptr<ISms>>> CGammuPhone::readSms(boo
    }
 
    // Process messages
-   boost::shared_ptr<std::vector<boost::shared_ptr<ISms>>> smsList(new std::vector<boost::shared_ptr<ISms>>);
+   boost::shared_ptr<std::vector<boost::shared_ptr<ISms> > > smsList(new std::vector<boost::shared_ptr<ISms> >);
    for (size_t idxSms = 0; gammuSortedSmsPtrArray.get()[idxSms] != nullptr; ++idxSms)
    {
       // Check incomplete message (for long parted SMS)

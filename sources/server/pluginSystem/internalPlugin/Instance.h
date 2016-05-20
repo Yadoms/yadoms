@@ -40,23 +40,24 @@ namespace pluginSystem
          virtual ~CInstance();
 
          // IInstance Implementation
-         void updateConfiguration(const shared::CDataContainer& newConfiguration) const override;
+         void updateConfiguration(const shared::CDataContainer& newConfiguration) override;
          void requestStop() override;
          void kill() override;
          boost::shared_ptr<const database::entities::CPlugin> about() const override;
          boost::shared_ptr<const shared::plugin::information::IInformation> aboutPlugin() const override;
-         void postDeviceCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> deviceCommand) const override;
-         void postExtraCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> extraCommand) const override;
-         void postBindingQueryRequest(boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> request) const override;
-         void postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request) const override;
+         void postDeviceCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> deviceCommand) override;
+         void postExtraCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> extraCommand) override;
+         void postBindingQueryRequest(boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> request) override;
+         void postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request) override;
          // [END] IInstance Implementation
 
       private:
          boost::shared_ptr<const database::entities::CPlugin> m_instanceInformation;
          boost::shared_ptr<const shared::plugin::information::IInformation> m_pluginInformation;
-         shared::event::CEventHandler& m_apiEventHandler;
+         boost::shared_ptr<shared::event::CEventHandler> m_eventHandler;
          boost::thread m_thread;
          static void Thread(boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> api,
+                            boost::shared_ptr<shared::event::CEventHandler> eventHandler,
                             boost::shared_ptr<CInstanceStateHandler> instanceStateHandler);
       };
    }

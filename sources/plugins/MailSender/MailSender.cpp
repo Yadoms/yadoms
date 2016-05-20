@@ -29,56 +29,52 @@ CMailSender::~CMailSender()
 
 void CMailSender::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   try
+   std::cout << "MailSender is starting..." << std::endl;
+
+
+   m_configuration->initializeWith(api->getConfiguration());
+   // Declaration of the device and Associated keywords
+   declareDevice(api);
+
+   // the main loop
+   std::cout << "MailSender plugin is running..." << std::endl;
+
+   while (1)
    {
-      std::cout << "MailSender is starting..." << std::endl;
-
-
-      m_configuration->initializeWith(api->getConfiguration());
-      // Declaration of the device and Associated keywords
-      declareDevice(api);
-
-      // the main loop
-      std::cout << "MailSender plugin is running..." << std::endl;
-
-      while (1)
+      // Wait for an event
+      switch (api->getEventHandler().waitForEvents())
       {
-         // Wait for an event
-         switch (api->getEventHandler().waitForEvents())
+      case yApi::IYPluginApi::kEventStopRequested:
          {
-         case yApi::IYPluginApi::kEventUpdateConfiguration:
-            {
-               onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
-               break;
-            }
-
-         case yApi::IYPluginApi::kEventDeviceCommand:
-            {
-               // Command received
-               auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
-               std::cout << "Command received :" << yApi::IDeviceCommand::toString(command) << std::endl;
-
-               if (boost::iequals(command->getKeyword(), m_messageKeyword->getKeyword()))
-                  onSendMailRequest(api, command->getBody());
-               else
-                  std::cout << "Received command for unknown keyword from Yadoms : " << yApi::IDeviceCommand::toString(command) << std::endl;
-            }
+            std::cout << "Stop requested" << std::endl;
+            api->setPluginState(yApi::historization::EPluginState::kStopped);
+            return;
+         }
+      case yApi::IYPluginApi::kEventUpdateConfiguration:
+         {
+            onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
             break;
+         }
 
-         default:
-            {
-               std::cerr << "Unknown message id" << std::endl;
-               break;
-            }
+      case yApi::IYPluginApi::kEventDeviceCommand:
+         {
+            // Command received
+            auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
+            std::cout << "Command received :" << yApi::IDeviceCommand::toString(command) << std::endl;
+
+            if (boost::iequals(command->getKeyword(), m_messageKeyword->getKeyword()))
+               onSendMailRequest(api, command->getBody());
+            else
+               std::cout << "Received command for unknown keyword from Yadoms : " << yApi::IDeviceCommand::toString(command) << std::endl;
+         }
+         break;
+
+      default:
+         {
+            std::cerr << "Unknown message id" << std::endl;
+            break;
          }
       }
-   }
-   // Plugin must catch this end-of-thread exception to make its cleanup.
-   // If no cleanup is necessary, still catch it, or Yadoms will consider
-   // as a plugin failure.
-   catch (boost::thread_interrupted&)
-   {
-      std::cout << "MailSender is stopping..." << std::endl;
    }
 }
 

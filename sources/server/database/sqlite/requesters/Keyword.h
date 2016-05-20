@@ -38,13 +38,13 @@ namespace database { namespace sqlite {
          boost::shared_ptr<entities::CKeyword> getKeyword(int deviceId,
                                                           const std::string& keyword) const override;
          boost::shared_ptr<entities::CKeyword> getKeyword(int keywordId) const override;
-         std::vector<boost::shared_ptr<entities::CKeyword>> getKeywordIdFromFriendlyName(int deviceId,
-                                                                                         const std::string& friendlyName) const override;
-         std::vector<boost::shared_ptr<entities::CKeyword>> getKeywords(int deviceId) const override;
-         std::vector<boost::shared_ptr<entities::CKeyword>> getAllKeywords() const override;
-         std::vector<boost::shared_ptr<entities::CKeyword>> getDeviceKeywordsWithCapacity(int deviceId,
-                                                                                          const std::string& capacityName,
-                                                                                          const shared::plugin::yPluginApi::EKeywordAccessMode& accessMode) const override;
+         std::vector<boost::shared_ptr<entities::CKeyword> > getKeywordIdFromFriendlyName(int deviceId,
+                                                                                          const std::string& friendlyName) const override;
+         std::vector<boost::shared_ptr<entities::CKeyword> > getKeywords(int deviceId) const override;
+         std::vector<boost::shared_ptr<entities::CKeyword> > getAllKeywords() const override;
+         std::vector<boost::shared_ptr<entities::CKeyword> > getDeviceKeywordsWithCapacity(int deviceId,
+                                                                                           const std::string& capacityName,
+                                                                                           const shared::plugin::yPluginApi::EKeywordAccessMode& accessMode) const override;
          void removeKeyword(int deviceId,
                             const std::string& keyword) override;
          void removeKeyword(int keywordId) override;

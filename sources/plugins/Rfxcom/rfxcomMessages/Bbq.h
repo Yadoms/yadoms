@@ -100,7 +100,7 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	The keywords list to historize in one step for better performances
       //--------------------------------------------------------------
-      mutable std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_keywords;
+      mutable std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
    };
 } // namespace rfxcomMessages
 

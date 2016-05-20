@@ -115,11 +115,6 @@ namespace pluginSystem
       /// \brief			The Acquisition historizer
       //--------------------------------------------------------------
       boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> m_acquisitionHistorizer;
-
-      //--------------------------------------------------------------
-      /// \brief			The plugin event handler
-      //--------------------------------------------------------------
-      shared::event::CEventHandler m_pluginEventHandler; //TODO à virer ?
    };
 	
 } // namespace pluginSystem	

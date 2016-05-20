@@ -125,7 +125,7 @@ void CForecastDays::Parse(boost::shared_ptr<yApi::IYPluginApi> api, const IWUCon
 
          if (WUConfiguration.IsForecast10DaysEnabled())
          {
-            std::vector<shared::CDataContainer> result = m_data.get<std::vector<shared::CDataContainer>>("forecast.simpleforecast.forecastday");
+            std::vector<shared::CDataContainer> result = m_data.get<std::vector<shared::CDataContainer> >("forecast.simpleforecast.forecastday");
             std::vector<shared::CDataContainer>::iterator i;
 
             m_Forecast.ClearAllPeriods();

@@ -27,6 +27,8 @@ public:
    // [END] IPlugin implementation
 
 private:
+   void StopController() const;
+
    //--------------------------------------------------------------
    /// \brief	The plugin configuration
    //--------------------------------------------------------------

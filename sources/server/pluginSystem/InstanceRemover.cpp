@@ -30,7 +30,7 @@ namespace pluginSystem
       {
          // Notify all handlers for this instance
          boost::lock_guard<boost::recursive_mutex> lock(m_instanceStopNotifiersMutex);
-         std::map<int, std::set<boost::shared_ptr<shared::event::CEventHandler> > >::const_iterator itEventHandlerSetToNotify = m_instanceStopNotifiers.find(instanceId);
+         auto itEventHandlerSetToNotify = m_instanceStopNotifiers.find(instanceId);
          if (itEventHandlerSetToNotify != m_instanceStopNotifiers.end())
             for (auto itHandler = itEventHandlerSetToNotify->second.begin(); itHandler != itEventHandlerSetToNotify->second.end(); ++itHandler)
                (*itHandler)->postEvent(shared::event::kUserFirstId);

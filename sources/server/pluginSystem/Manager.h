@@ -11,7 +11,6 @@
 #include "database/IPluginRequester.h"
 #include <shared/event/EventHandler.hpp>
 #include "dataAccessLayer/IDataAccessLayer.h"
-#include "dataAccessLayer/IEventLogger.h"
 #include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
 #include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
 #include <shared/plugin/yPluginApi/IDeviceCommand.h>
@@ -25,7 +24,7 @@ namespace pluginSystem
    /// \brief	this class is used to manage plugin. 
    ///         It search for plugins into directories and generate plugin factories
    //--------------------------------------------------------------
-   class CManager //TODO faire le ménage dans les méthodes et membres
+   class CManager
    {
    public:
       //--------------------------------------------------------------
@@ -34,13 +33,11 @@ namespace pluginSystem
       /// \param [in]   dataProvider            Database link
       /// \param [in]   dataAccessLayer         The database access layer
       /// \param [in]   supervisor              The supervisor event handler
-      /// \param[in]    eventLogger             Main event logger
       //--------------------------------------------------------------
       CManager(const std::string& initialDir,
                boost::shared_ptr<database::IDataProvider> dataProvider,
                boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
-               boost::shared_ptr<shared::event::CEventHandler> supervisor,
-               boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger);
+               boost::shared_ptr<shared::event::CEventHandler> supervisor);
 
       //--------------------------------------------------------------
       /// \brief			Initialization, used for the 2-steps construction
@@ -239,7 +236,7 @@ namespace pluginSystem
       void startInternalPlugin();
       void stopInternalPlugin();
 
-   private:
+   
       //--------------------------------------------------------------
       /// \brief			The plugin system factory
       //--------------------------------------------------------------

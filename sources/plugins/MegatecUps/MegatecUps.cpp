@@ -71,121 +71,120 @@ CMegatecUps::~CMegatecUps()
 
 void CMegatecUps::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   try
-   {
-      api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
+   api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
 
-      std::cout << "CMegatecUps is starting..." << std::endl;
+   std::cout << "CMegatecUps is starting..." << std::endl;
 
-      // Load configuration values (provided by database)
-      m_configuration.initializeWith(api->getConfiguration());
+   // Load configuration values (provided by database)
+   m_configuration.initializeWith(api->getConfiguration());
 
-      m_waitForAnswerTimer = api->getEventHandler().createTimer(kAnswerTimeout,
+   m_waitForAnswerTimer = api->getEventHandler().createTimer(kAnswerTimeout,
+                                                             shared::event::CEventTimer::kOneShot,
+                                                             boost::posix_time::seconds(2));
+   m_waitForAnswerTimer->stop();
+   m_upsStatusRequestTimer = api->getEventHandler().createTimer(kUpsStatusRequestDelay,
                                                                 shared::event::CEventTimer::kOneShot,
-                                                                boost::posix_time::seconds(2));
-      m_waitForAnswerTimer->stop();
-      m_upsStatusRequestTimer = api->getEventHandler().createTimer(kUpsStatusRequestDelay,
-                                                                   shared::event::CEventTimer::kOneShot,
-                                                                   boost::posix_time::seconds(10));
-      m_upsStatusRequestTimer->stop();
+                                                                boost::posix_time::seconds(10));
+   m_upsStatusRequestTimer->stop();
 
-      // Create the connection
-      createConnection(api);
+   // Create the connection
+   createConnection(api);
 
-      // the main loop
-      while (true)
+   // the main loop
+   while (true)
+   {
+      // Wait for an event
+      switch (api->getEventHandler().waitForEvents())
       {
-         // Wait for an event
-         switch (api->getEventHandler().waitForEvents())
+      case yApi::IYPluginApi::kEventStopRequested:
          {
-         case yApi::IYPluginApi::kEventDeviceCommand:
-            {
-               // Command received from Yadoms
-               auto command(api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >());
-               std::cout << "Command received : " << yApi::IDeviceCommand::toString(command) << std::endl;
+            std::cout << "Stop requested" << std::endl;
+            api->setPluginState(yApi::historization::EPluginState::kStopped);
+            return;
+         }
+      case yApi::IYPluginApi::kEventDeviceCommand:
+         {
+            // Command received from Yadoms
+            auto command(api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>());
+            std::cout << "Command received : " << yApi::IDeviceCommand::toString(command) << std::endl;
 
-               if (boost::iequals(command->getKeyword(), m_upsShutdown->getKeyword()))
-                  onCommandShutdown(api, command->getBody());
-               else
-                  std::cout << "Received command for unknown keyword from Yadoms : " << yApi::IDeviceCommand::toString(command) << std::endl;
+            if (boost::iequals(command->getKeyword(), m_upsShutdown->getKeyword()))
+               onCommandShutdown(api, command->getBody());
+            else
+               std::cout << "Received command for unknown keyword from Yadoms : " << yApi::IDeviceCommand::toString(command) << std::endl;
 
-               break;
-            }
-         case yApi::IYPluginApi::kEventUpdateConfiguration:
-            {
-               // Configuration was updated
-               api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
-               auto newConfigurationData = api->getEventHandler().getEventData<shared::CDataContainer>();
-               std::cout << "Update configuration..." << std::endl;
-               BOOST_ASSERT(!newConfigurationData.empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
+            break;
+         }
+      case yApi::IYPluginApi::kEventUpdateConfiguration:
+         {
+            // Configuration was updated
+            api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
+            auto newConfigurationData = api->getEventHandler().getEventData<shared::CDataContainer>();
+            std::cout << "Update configuration..." << std::endl;
+            BOOST_ASSERT(!newConfigurationData.empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
-               // Close connection
-               CMegatecUpsConfiguration newConfiguration;
-               newConfiguration.initializeWith(newConfigurationData);
+            // Close connection
+            CMegatecUpsConfiguration newConfiguration;
+            newConfiguration.initializeWith(newConfigurationData);
 
-               // If port has changed, destroy and recreate connection (if any)
-               auto needToReconnect = !connectionsAreEqual(m_configuration, newConfiguration) && !!m_port;
+            // If port has changed, destroy and recreate connection (if any)
+            auto needToReconnect = !connectionsAreEqual(m_configuration, newConfiguration) && !!m_port;
 
-               if (needToReconnect)
-                  destroyConnection();
+            if (needToReconnect)
+               destroyConnection();
 
-               // Update configuration
-               m_configuration.initializeWith(newConfigurationData);
+            // Update configuration
+            m_configuration.initializeWith(newConfigurationData);
 
-               if (needToReconnect)
-                  createConnection(api);
-               else
-                  api->setPluginState(yApi::historization::EPluginState::kRunning);
-
-               break;
-            }
-         case kEvtPortConnection:
-            {
-               if (api->getEventHandler().getEventData<bool>())
-                  processConnectionEvent(api);
-               else
-                  processUnConnectionEvent(api);
-
-               break;
-            }
-         case kEvtPortDataReceived:
-            {
-               const shared::communication::CByteBuffer buffer(api->getEventHandler().getEventData<const shared::communication::CByteBuffer>());
-               m_logger.logReceived(buffer);
-
-               // Message are in ASCII format
-               std::string message(reinterpret_cast<const char*>(buffer.begin()), buffer.size());
-               processDataReceived(api, message);
-               break;
-            }
-         case kAnswerTimeout:
-            {
-               std::cout << "No answer received from UPS (timeout)" << std::endl;
-               protocolErrorProcess(api);
-               break;
-            }
-         case kUpsStatusRequestDelay:
-            {
-               // Ask for status
-               sendGetStatusCmd();
-               break;
-            }
-         case kProtocolErrorRetryTimer:
-            {
+            if (needToReconnect)
                createConnection(api);
-               break;
-            }
-         default:
-            {
-               std::cerr << "Unknown message id" << std::endl;
-               break;
-            }
+            else
+               api->setPluginState(yApi::historization::EPluginState::kRunning);
+
+            break;
+         }
+      case kEvtPortConnection:
+         {
+            if (api->getEventHandler().getEventData<bool>())
+               processConnectionEvent(api);
+            else
+               processUnConnectionEvent(api);
+
+            break;
+         }
+      case kEvtPortDataReceived:
+         {
+            const auto buffer(api->getEventHandler().getEventData<const shared::communication::CByteBuffer>());
+            m_logger.logReceived(buffer);
+
+            // Message are in ASCII format
+            std::string message(reinterpret_cast<const char*>(buffer.begin()), buffer.size());
+            processDataReceived(api, message);
+            break;
+         }
+      case kAnswerTimeout:
+         {
+            std::cout << "No answer received from UPS (timeout)" << std::endl;
+            protocolErrorProcess(api);
+            break;
+         }
+      case kUpsStatusRequestDelay:
+         {
+            // Ask for status
+            sendGetStatusCmd();
+            break;
+         }
+      case kProtocolErrorRetryTimer:
+         {
+            createConnection(api);
+            break;
+         }
+      default:
+         {
+            std::cerr << "Unknown message id" << std::endl;
+            break;
          }
       }
-   }
-   catch (boost::thread_interrupted&)
-   {
-      std::cout << "Thread is stopping..." << std::endl;
    }
 }
 

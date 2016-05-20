@@ -66,7 +66,8 @@ namespace pluginSystem
 
 
       void signalNormalStop();
-      void signalError(const std::string& error);
+      void signalError(int returnCode,
+                       const std::string& error);
 
       // Get the plugin state device/keywords (create if not exists)
       int pluginStateDeviceId() const;

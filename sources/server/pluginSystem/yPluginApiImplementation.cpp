@@ -102,12 +102,12 @@ namespace pluginSystem
       boost::shared_ptr<const database::entities::CRecipient> recipient = m_recipientRequester->getRecipient(recipientId);
 
       // Search for from plugin fields
-      for (std::vector<boost::shared_ptr<database::entities::CRecipientField>>::const_iterator itField = recipient->Fields().begin(); itField != recipient->Fields().end(); ++itField)
+      for (auto itField = recipient->Fields().begin(); itField != recipient->Fields().end(); ++itField)
          if ((*itField)->PluginType == m_instanceData->Type && (*itField)->FieldName == fieldName)
             return (*itField)->Value;
 
       // If not found from plugin fields, looking for general fields
-      for (std::vector<boost::shared_ptr<database::entities::CRecipientField>>::const_iterator itField = recipient->Fields().begin(); itField != recipient->Fields().end(); ++itField)
+      for (auto itField = recipient->Fields().begin(); itField != recipient->Fields().end(); ++itField)
          if ((*itField)->PluginType == "system" && (*itField)->FieldName == fieldName)
             return (*itField)->Value;
 
@@ -116,10 +116,10 @@ namespace pluginSystem
 
    std::vector<int> CYPluginApiImplementation::findRecipientsFromField(const std::string& fieldName, const std::string& expectedFieldValue) const
    {
-      std::vector<boost::shared_ptr<database::entities::CRecipient>> recipients = m_recipientRequester->findRecipientsFromField(fieldName, expectedFieldValue);
+      std::vector<boost::shared_ptr<database::entities::CRecipient> > recipients = m_recipientRequester->findRecipientsFromField(fieldName, expectedFieldValue);
       std::vector<int> recipientIds;
 
-      for (std::vector<boost::shared_ptr<database::entities::CRecipient>>::const_iterator itRecipient = recipients.begin(); itRecipient != recipients.end(); ++itRecipient)
+      for (auto itRecipient = recipients.begin(); itRecipient != recipients.end(); ++itRecipient)
          recipientIds.push_back((*itRecipient)->Id);
 
       return recipientIds;
@@ -180,7 +180,9 @@ namespace pluginSystem
 
    shared::event::CEventHandler& CYPluginApiImplementation::getEventHandler()
    {
-      return m_pluginEventHandler;
+      BOOST_ASSERT(false); // No event handler required here
+      static shared::event::CEventHandler evtHandler;
+      return evtHandler;
    }
 
    int CYPluginApiImplementation::getPluginId() const

@@ -30,14 +30,16 @@ protected:
    //--------------------------------------------------------------
    /// \brief	                     Process the not connected state (wait for connection)
    /// \param [in] api              Plugin execution context (Yadoms API)
+   /// \return                      true if Plugin stop is requested
    //--------------------------------------------------------------
-   void processNotConnectedState(boost::shared_ptr<yApi::IYPluginApi> api);
+   bool processNotConnectedState(boost::shared_ptr<yApi::IYPluginApi> api);
 
    //--------------------------------------------------------------
    /// \brief	                     Process the connected state (Check for incomming SMS, send SMS...)
    /// \param [in] api              Plugin execution context (Yadoms API)
+   /// \return                      true if Plugin stop is requested
    //--------------------------------------------------------------
-   void processConnectedState(boost::shared_ptr<yApi::IYPluginApi> api);
+   bool processConnectedState(boost::shared_ptr<yApi::IYPluginApi> api);
 
    //--------------------------------------------------------------
    /// \brief                       Declare the device for Yadoms

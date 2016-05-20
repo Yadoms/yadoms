@@ -42,7 +42,7 @@ namespace pluginSystem
       if (returnCode == 0)
          signalNormalStop();
       else
-         signalError(error);
+         signalError(returnCode, error);
    }
 
    void CInstanceStateHandler::signalNormalStop()
@@ -56,9 +56,10 @@ namespace pluginSystem
       m_instanceStoppedListener->onStopped(m_instanceData->Id());
    }
 
-   void CInstanceStateHandler::signalError(const std::string& error)
+   void CInstanceStateHandler::signalError(int returnCode,
+                                           const std::string& error)
    {
-      YADOMS_LOG(error) << "Stop plugin instance #" << m_instanceData->Id() << " because of error : " << error;
+      YADOMS_LOG(error) << "Stop plugin instance #" << m_instanceData->Id() << " because of error : " << error << ", return code = " << returnCode;
 
       setState(shared::plugin::yPluginApi::historization::EPluginState::kError, error);
 

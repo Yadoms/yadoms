@@ -75,7 +75,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       // Wait for an event
       switch (api->getEventHandler().waitForEvents())
       {
-      case yApi::IYPluginApi::kEventStopRequested:
+      case yApi::IYPluginApi::kEventStopRequested://TODO événement à ajouter dans les autres plugins
          {
             // Yadoms request the plugin to stop. Note that plugin must be stop in 10 seconds max, otherwise it will be killed.
             std::cout << "Stop requested" << std::endl;
@@ -134,7 +134,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
       case yApi::IYPluginApi::kEventManuallyDeviceCreation:
          {
-            boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> creation = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> >();
+            auto creation = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> >();
             try
             {
                // Yadoms asks for device creation
@@ -161,7 +161,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case yApi::IYPluginApi::kBindingQuery:
          {
             // Yadoms ask for a binding query 
-            boost::shared_ptr<yApi::IBindingQueryRequest> data = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IBindingQueryRequest> >();
+            auto data = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IBindingQueryRequest> >();
             if (data->getData().getQuery() == "test")
             {
                shared::CDataContainer ev;
@@ -208,17 +208,17 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                }
                else if (extraCommand->getCommand() == "dataCommand")
                {
-                  std::string s = extraCommand->getData().get<std::string>("testValue");
+                  auto s = extraCommand->getData().get<std::string>("testValue");
                   std::cout << "Command with data received : data=" << s << std::endl;
                }
                else if (extraCommand->getCommand() == "dataBindingCommand")
                {
-                  std::string value = extraCommand->getData().get<std::string>("networkInterface");
+                  auto value = extraCommand->getData().get<std::string>("networkInterface");
                   std::cout << "Command with binded data received : value=" << value << " text=" << Poco::Net::NetworkInterface::forName(value).displayName() << std::endl;
                }
                else if (extraCommand->getCommand() == "dataBindingPluginCommand")
                {
-                  std::string interval = extraCommand->getData().get<std::string>("dynamicSection.content.interval");
+                  auto interval = extraCommand->getData().get<std::string>("dynamicSection.content.interval");
                   std::cout << "Command with plugin binded data received : value=" << interval << std::endl;
                }
             }

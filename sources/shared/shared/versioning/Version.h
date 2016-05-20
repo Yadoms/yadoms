@@ -100,7 +100,6 @@ namespace shared { namespace versioning {
       //---------------------------------------------
       void setValues(int major, int minor, int buildNumber, int revision);
 
-   private:
       //---------------------------------------------
       ///\brief  Container for version digits
       //---------------------------------------------

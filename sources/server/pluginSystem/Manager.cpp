@@ -22,13 +22,12 @@ namespace pluginSystem
    CManager::CManager(const std::string& initialDir,
                       boost::shared_ptr<database::IDataProvider> dataProvider,
                       boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
-                      boost::shared_ptr<shared::event::CEventHandler> supervisor,
-                      boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger/*TODO utile ?*/)
+                      boost::shared_ptr<shared::event::CEventHandler> supervisor)
       :
       m_factory(boost::make_shared<CFactory>(initialDir)),
       m_dataProvider(dataProvider),
       m_pluginDBTable(dataProvider->getPluginRequester()),
-#ifdef _DEBUG //TODO faut-il conserver les qualifiers ?
+#ifdef _DEBUG
       m_qualifier(boost::make_shared<CBasicQualifier>(dataProvider->getPluginEventLoggerRequester(), dataAccessLayer->getEventLogger())),
 #else
       m_qualifier(boost::make_shared<CIndicatorQualifier>(dataProvider->getPluginEventLoggerRequester(), dataAccessLayer->getEventLogger())),
@@ -333,54 +332,6 @@ namespace pluginSystem
          m_instanceRemover->removeWaiterOn(id, waitForStoppedInstanceHandler);
       }
    }
-
-   //TODO à virer ?
-   //void CManager::signalEvent(const CManagerEvent& event)
-   //{
-   //   switch (event.getSubEventId())
-   //   {
-   //   case CManagerEvent::kPluginInstanceAbnormalStopped:
-   //   {
-   //      // The thread of an instance has stopped in a non-conventional way (probably crashed)
-   //
-   //      // First perform the full stop
-   //      requestStopInstance(event.getInstanceId());
-   //
-   //      // Now, evaluate if it is still safe
-   //      if (m_qualifier->isSafe(event.aboutPlugin()))
-   //      {
-   //         // Don't restart if event occurs when instance was stopping
-   //         if (!event.getStopping())
-   //         {
-   //            // Still safe, try to restart it (only if it was a plugin crash. If it's a plugin error, user have to restart plugin manually)
-   //            if (getInstanceState(event.getInstanceId()) != shared::plugin::yPluginApi::historization::EPluginState::kError)
-   //               startInstance(event.getInstanceId());
-   //         }
-   //      }
-   //      else
-   //      {
-   //         // Not safe anymore. Disable plugin autostart mode (user will just be able to start it manually)
-   //         // Not that this won't stop other instances of this plugin
-   //         YADOMS_LOG(warning) << " plugin " << event.aboutPlugin()->getType() << " was evaluated as not safe and will not start automatically anymore.";
-   //         m_pluginDBTable->disableAutoStartForAllPluginInstances(event.aboutPlugin()->getType());
-   //
-   //         // Log this event in the main event logger
-   //         m_dataAccessLayer->getEventLogger()->addEvent(database::entities::ESystemEventCode::kPluginDisabled,
-   //            event.aboutPlugin()->getIdentity(),
-   //            "Plugin " + event.aboutPlugin()->getIdentity() + " was evaluated as not safe and will not start automatically anymore.");
-   //      }
-   //
-   //      break;
-   //   }
-   //   default:
-   //   {
-   //      YADOMS_LOG(error) << "Unknown message id";
-   //      BOOST_ASSERT(false);
-   //      break;
-   //   }
-   //   }
-   //}
-
 
    void CManager::startInternalPlugin()
    {
