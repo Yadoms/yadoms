@@ -3,7 +3,7 @@
 #include <shared/enumeration/EnumHelpers.hpp>
 #include <shared/plugin/yPluginApi/historization/SingleHistorizableData.hpp>
 
-namespace teleInfoUSB { namespace specificHistorizers
+namespace teleInfo { namespace specificHistorizers
 {   
    //-----------------------------------------------------
    ///\brief  The color of the next period
@@ -35,5 +35,5 @@ namespace teleInfoUSB { namespace specificHistorizers
       virtual ~CColor();
    };
 
-} } // namespace teleInfoUSB::specificHistorizer
+} } // namespace teleInfo::specificHistorizer
 

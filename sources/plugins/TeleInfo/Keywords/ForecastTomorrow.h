@@ -48,7 +48,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	The period type
    //--------------------------------------------------------------
-   boost::shared_ptr<teleInfoUSB::specificHistorizers::CColor> m_forecastPeriod;
+   boost::shared_ptr<teleInfo::specificHistorizers::CColor> m_forecastPeriod;
 
    //--------------------------------------------------------------
    /// \brief	The map of returned value to the IHM

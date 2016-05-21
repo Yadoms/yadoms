@@ -3,7 +3,7 @@
 #include <shared/enumeration/EnumHelpers.hpp>
 #include <shared/plugin/yPluginApi/historization/SingleHistorizableData.hpp>
 
-namespace teleInfoUSB { namespace specificHistorizers
+namespace teleInfo { namespace specificHistorizers
 {   
    //-----------------------------------------------------
    ///\brief  All periods
@@ -42,4 +42,4 @@ namespace teleInfoUSB { namespace specificHistorizers
       virtual ~CPeriod();
    };
 
-} } // namespace teleInfoUSB::specificHistorizer
+} } // namespace teleInfo::specificHistorizer

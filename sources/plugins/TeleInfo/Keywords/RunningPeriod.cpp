@@ -10,7 +10,7 @@ CRunningPeriod::CRunningPeriod(boost::shared_ptr<yApi::IYPluginApi> api,
                                std::string KeyWordName,
                                shared::CDataContainer details)
    : m_PluginName(PluginName),
-     m_runningPeriod(boost::make_shared<teleInfoUSB::specificHistorizers::CPeriod>(KeyWordName))
+     m_runningPeriod(boost::make_shared<teleInfo::specificHistorizers::CPeriod>(KeyWordName))
 {
    if (!api->keywordExists(m_PluginName, m_runningPeriod))
       api->declareKeyword(m_PluginName, m_runningPeriod, details);
@@ -19,24 +19,24 @@ CRunningPeriod::CRunningPeriod(boost::shared_ptr<yApi::IYPluginApi> api,
 void CRunningPeriod::SetValue(std::string& Value) const
 {
    static const EnumPeriod EEnumPeriod = boost::assign::map_list_of
-      ("TH..", teleInfoUSB::specificHistorizers::EPeriod::kAllHours)
-      ("HC..", teleInfoUSB::specificHistorizers::EPeriod::kLowCostHours)
-      ("HP..", teleInfoUSB::specificHistorizers::EPeriod::kPeakCostHours)
-      ("HN..", teleInfoUSB::specificHistorizers::EPeriod::kNormalCostHours)
-      ("PM..", teleInfoUSB::specificHistorizers::EPeriod::kMobilePeakCostHours)
-      ("HCJB", teleInfoUSB::specificHistorizers::EPeriod::kLowCostBlueDays)
-      ("HCJW", teleInfoUSB::specificHistorizers::EPeriod::kLowCostWhiteDays)
-      ("HCJR", teleInfoUSB::specificHistorizers::EPeriod::kLowCostRedDays)
-      ("HPJB", teleInfoUSB::specificHistorizers::EPeriod::kNormalCostBlueDays)
-      ("HPJW", teleInfoUSB::specificHistorizers::EPeriod::kNormalCostWhiteDays)
-      ("HPJR", teleInfoUSB::specificHistorizers::EPeriod::kNormalCostRedDays);
+      ("TH..", teleInfo::specificHistorizers::EPeriod::kAllHours)
+      ("HC..", teleInfo::specificHistorizers::EPeriod::kLowCostHours)
+      ("HP..", teleInfo::specificHistorizers::EPeriod::kPeakCostHours)
+      ("HN..", teleInfo::specificHistorizers::EPeriod::kNormalCostHours)
+      ("PM..", teleInfo::specificHistorizers::EPeriod::kMobilePeakCostHours)
+      ("HCJB", teleInfo::specificHistorizers::EPeriod::kLowCostBlueDays)
+      ("HCJW", teleInfo::specificHistorizers::EPeriod::kLowCostWhiteDays)
+      ("HCJR", teleInfo::specificHistorizers::EPeriod::kLowCostRedDays)
+      ("HPJB", teleInfo::specificHistorizers::EPeriod::kNormalCostBlueDays)
+      ("HPJW", teleInfo::specificHistorizers::EPeriod::kNormalCostWhiteDays)
+      ("HPJR", teleInfo::specificHistorizers::EPeriod::kNormalCostRedDays);
 
    try
    {
       EnumPeriod::const_iterator it = EEnumPeriod.find(Value);
       if (it != EEnumPeriod.end())
       {
-         m_runningPeriod->set(static_cast<teleInfoUSB::specificHistorizers::EPeriod>(it->second));
+         m_runningPeriod->set(static_cast<teleInfo::specificHistorizers::EPeriod>(it->second));
 
          std::cout << m_runningPeriod->getKeyword() << "=" << m_runningPeriod->get() << std::endl;
       }
