@@ -1,10 +1,10 @@
 ﻿{
-	"name": "TeleInfo",
-	"description": "Module de suivi de consommation électrique",
+	"name": "TeleInfo USB",
+	"description": "Module de suivi de consommation électrique. Pour plus d'information, consulter : http://www.cartelectronic.fr/",
 	"configurationSchema": {
 		"SerialPort": {
 			"name": "Port Série",
-			"description": "Le port série sur lequel est connecté le module de téléinfo"
+			"description": "Le port série sur lequel est connecté le module de téléinfo USB"
 		}
 	},
 	"customLabels": {

@@ -6,7 +6,7 @@ include("../YadomsPluginsCommon.cmake")
 ## Place here all the plugin source files
 #########################################
 
-set(CARTELECTRONIC_TELEINFO_SOURCES
+set(CARTELECTRONIC_TELEINFO_USB_SOURCES
    IncrementSequenceNumber.h
    ISequenceNumberProvider.h
    ITeleInfoConfiguration.h
@@ -52,17 +52,17 @@ source_group(specificHistorizer specificHistorizer/*.*)
 
 #########################################
 ## Always leave this three lines to configure plugin correctly
-## even if CARTELECTRONIC_TELEINFO_ADDITIONAL_INC_DIR or CARTELECTRONIC_TELEINFO_ADDITIONAL_LIB are empty
+## even if CARTELECTRONIC_TELEINFO_USB_ADDITIONAL_INC_DIR or CARTELECTRONIC_TELEINFO_USB_ADDITIONAL_LIB are empty
 #########################################
-PLUGIN_SOURCES(teleinfo ${CARTELECTRONIC_TELEINFO_SOURCES})
-PLUGIN_INCLDIR(teleinfo ${CARTELECTRONIC_TELEINFO_ADDITIONAL_INC_DIR})
-PLUGIN_LINK(teleinfo ${CARTELECTRONIC_TELEINFO_ADDITIONAL_LIB})
+PLUGIN_SOURCES(teleinfoUSB ${CARTELECTRONIC_TELEINFO_USB_SOURCES})
+PLUGIN_INCLDIR(teleinfoUSB ${CARTELECTRONIC_TELEINFO_USB_ADDITIONAL_INC_DIR})
+PLUGIN_LINK(teleinfoUSB ${CARTELECTRONIC_TELEINFO_USB_ADDITIONAL_LIB})
 
 #########################################
 ## Post-build commands
 ## Copy files to build directory
 ## "package.json" and "icon.png" are needed, but you can add extra-files
 #########################################
-PLUGIN_POST_BUILD_COPY_FILE(teleinfo package.json)
-PLUGIN_POST_BUILD_COPY_FILE(teleinfo icon.png)
-PLUGIN_POST_BUILD_COPY_DIRECTORY(teleinfo locales)
+PLUGIN_POST_BUILD_COPY_FILE(teleinfoUSB package.json)
+PLUGIN_POST_BUILD_COPY_FILE(teleinfoUSB icon.png)
+PLUGIN_POST_BUILD_COPY_DIRECTORY(teleinfoUSB locales)
