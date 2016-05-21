@@ -1,10 +1,10 @@
 {
-	"name": "TeleInfo USB",
-	"description": "Cartelectronic - EDF power meter information (see http://www.cartelectronic.fr/)",
+	"name": "TeleInfo",
+	"description": "EDF power meter information",
 	"configurationSchema": {
 		"SerialPort": {
 			"name": "Serial port",
-			"description": "The serial port connected to the teleinfo USB reader"
+			"description": "The serial port connected to the teleinfo reader"
 		}
 	},
 	"customLabels": {
