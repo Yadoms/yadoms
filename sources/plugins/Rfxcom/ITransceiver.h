@@ -11,12 +11,14 @@ namespace yApi = shared::plugin::yPluginApi;
 /// \brief	The RFXCom protocol interface
 //--------------------------------------------------------------
 class ITransceiver
-{  
+{
 public:
    //--------------------------------------------------------------
    /// \brief	Destructor
    //--------------------------------------------------------------
-   virtual ~ITransceiver() {}
+   virtual ~ITransceiver()
+   {
+   }
 
    //--------------------------------------------------------------
    /// \brief	                     Build the RFXCom reset command
@@ -36,7 +38,8 @@ public:
    /// \param[in] configuration     Protocols activations
    /// \return                      Buffer containing the command
    //--------------------------------------------------------------
-   virtual shared::communication::CByteBuffer buildSetModeCmd(unsigned char frequency, const IRfxcomConfiguration& configuration) const = 0;
+   virtual shared::communication::CByteBuffer buildSetModeCmd(unsigned char frequency,
+                                                              const IRfxcomConfiguration& configuration) const = 0;
 
    //--------------------------------------------------------------
    /// \brief	                     Build the RFXCom start receiver command
@@ -51,7 +54,8 @@ public:
    /// \return                      RFXCom command to send (can be constitued of several messages)
    /// \throw shared::exception::CInvalidParameter if no corresponding RFXCom message was found (invalid command)
    //--------------------------------------------------------------
-   virtual boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<const yApi::IDeviceCommand> command) const = 0;
+   virtual boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api,
+                                                                                                   boost::shared_ptr<const yApi::IDeviceCommand> command) const = 0;
 
    //--------------------------------------------------------------
    /// \brief	                     Decode RFXCom message
@@ -59,7 +63,8 @@ public:
    /// \param [in] data             Data received
    /// \return                      Decoded message, NULL if error when decoding
    //--------------------------------------------------------------
-   virtual boost::shared_ptr<rfxcomMessages::IRfxcomMessage> decodeRfxcomMessage(boost::shared_ptr<yApi::IYPluginApi> api, const shared::communication::CByteBuffer& data) const = 0;
+   virtual boost::shared_ptr<rfxcomMessages::IRfxcomMessage> decodeRfxcomMessage(boost::shared_ptr<yApi::IYPluginApi> api,
+                                                                                 const shared::communication::CByteBuffer& data) const = 0;
 
    //--------------------------------------------------------------
    /// \brief	                     Process the manually device reaction request
@@ -68,5 +73,7 @@ public:
    /// \return                      Name of the created device
    /// \throw CManuallyDeviceCreationError   If error creating device
    //--------------------------------------------------------------
-   virtual std::string createDeviceManually(boost::shared_ptr<yApi::IYPluginApi> api, const yApi::IManuallyDeviceCreationData& data) const = 0;
+   virtual std::string createDeviceManually(boost::shared_ptr<yApi::IYPluginApi> api,
+                                            const yApi::IManuallyDeviceCreationData& data) const = 0;
 };
+

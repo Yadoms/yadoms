@@ -14,10 +14,6 @@ namespace plugin_cpp_api
    {
       try
       {
-         // Ignore CTRL+C and termination signal (stop must be requested by Yadoms)
-         signal(SIGINT, SIG_IGN);
-         signal(SIGTERM, SIG_IGN);
-
          auto pluginContext = boost::make_shared<CPluginContext>(argc, argv, plugin);
          pluginContext->run();
          return pluginContext->getReturnCode();

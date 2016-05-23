@@ -3,7 +3,6 @@
 //
 #pragma once
 
-#include <csignal>
 #include <shared/event/EventHandler.hpp>
 #include "IApplicationStopHandler.h"
 
