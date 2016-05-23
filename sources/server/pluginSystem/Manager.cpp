@@ -280,10 +280,16 @@ namespace pluginSystem
 
       stopInternalPlugin();
 
-      boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
-
       while (!m_runningInstances.empty())
-         stopInstanceAndWaitForStopped(m_runningInstances.begin()->first);
+      {
+         int id;
+         {
+            boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+            id = m_runningInstances.begin()->first;
+         }
+         // Mutex must be released to process instance stop
+         stopInstanceAndWaitForStopped(id);
+      }
 
       YADOMS_LOG(information) << "pluginSystem::CManager all plugins are stopped";
    }
@@ -312,24 +318,51 @@ namespace pluginSystem
       instance->second->kill();
    }
 
+   class CInstanceRemoverRaii //TODO déplacer
+   {
+   public:
+      CInstanceRemoverRaii(boost::shared_ptr<CInstanceRemover> instanceRemover,
+                           int id)
+         : m_instanceRemover(instanceRemover),
+           m_id(id),
+           m_waitForStoppedInstanceHandler(boost::make_shared<shared::event::CEventHandler>())
+      {
+         m_instanceRemover->addWaiterOn(m_id, m_waitForStoppedInstanceHandler);
+      }
+
+      virtual ~CInstanceRemoverRaii()
+      {
+         m_instanceRemover->removeWaiterOn(m_id, m_waitForStoppedInstanceHandler);
+      }
+
+      boost::shared_ptr<shared::event::CEventHandler> eventHandler() const
+      {
+         return m_waitForStoppedInstanceHandler;
+      }
+
+   private:
+      boost::shared_ptr<CInstanceRemover> m_instanceRemover;
+      int m_id;
+      boost::shared_ptr<shared::event::CEventHandler> m_waitForStoppedInstanceHandler;
+   };
+
    void CManager::stopInstanceAndWaitForStopped(int id)
    {
       if (isInstanceRunning(id))
       {
-         auto waitForStoppedInstanceHandler(boost::make_shared<shared::event::CEventHandler>());
-         m_instanceRemover->addWaiterOn(id, waitForStoppedInstanceHandler);
+         CInstanceRemoverRaii instanceRemover(m_instanceRemover, id);
 
          requestStopInstance(id);
-         if (waitForStoppedInstanceHandler->waitForEvents(boost::posix_time::seconds(10)) == shared::event::kTimeout)
-            YADOMS_LOG(warning) << "pluginSystem::CManager, instance #" << id << " didn't stop when requested. Will be killed.";
+         if (instanceRemover.eventHandler()->waitForEvents(boost::posix_time::seconds(20)) != shared::event::kTimeout)
+            return;
 
+         YADOMS_LOG(warning) << "pluginSystem::CManager, instance #" << id << " didn't stop when requested. Will be killed.";
          killInstance(id);
-         if (waitForStoppedInstanceHandler->waitForEvents(boost::posix_time::seconds(10)) == shared::event::kTimeout)
-         {
-            m_instanceRemover->removeWaiterOn(id, waitForStoppedInstanceHandler);
-            throw CPluginException((boost::format("pluginSystem::CManager, unable to stop instance #%1%") % id).str());
-         }
-         m_instanceRemover->removeWaiterOn(id, waitForStoppedInstanceHandler);
+
+         if (instanceRemover.eventHandler()->waitForEvents(boost::posix_time::seconds(20)) != shared::event::kTimeout)
+            return;
+
+         throw CPluginException((boost::format("pluginSystem::CManager, unable to stop instance #%1%") % id).str());
       }
    }
 
