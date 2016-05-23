@@ -3,6 +3,11 @@
 from datetime import datetime, date, time, timedelta
 from time import strptime, mktime
 
+# Define some constant for wait4events results
+WAITFOREVENT_TIMEOUT = 0
+WAITFOREVENT_KEYWORD = 1
+WAITFOREVENT_DATETIME = 2
+
 # Get the next weekeday
 # If d the weekday, then d is returned
 # param [in] d The initial datetime

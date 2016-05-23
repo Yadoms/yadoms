@@ -524,9 +524,30 @@
             "catDevices": "Equipements",
             "catEnumerations": "Enums",
             "catVariables": "Variables",
-            "catFunctions": "Fonctions"
+            "catFunctions": "Fonctions",
+            "catTemplate": "Exemples",
+		    "samples" : {
+			    "actionAfterSunset" : {
+					"title" : "Action après le coucher du soleil",
+					"logMessage" : "Définir ici les actions à effectuer après le coucher du soleil"
+				},
+			    "lowBatteryLevel" : {
+					"title" : "Niveau de batterie faible",
+					"logMessage1" : "Définir ici les actions à effectuer",
+					"logMessage2" : {
+						"part1" : "Le niveau de batterie de ",
+						"part2" : "est faible (",
+						"part3" : " %)"
+					}
+				}
+		    }
         },
         "invalid": "Invalide",
+		"validation" : {
+			"errorMaxTopBlock" : "Un seul 'top block' est autorisé. Il faut soit les chaîner, soit en supprimer un",
+			"chooseItemInList" : "Veuiller selectionner une valeur correcte dans la liste",
+			"missingInputBlock" : "Veuiller compléter le block manquant"
+		},
         "global": {
             "durationUnits": {
                 "seconds": "secondes",
@@ -538,6 +559,7 @@
         "templateHelp": "Cliquer sur l'icone engrenage bleu pour configurer les évènements",
         "chooseDeviceHelper": "Choisir un équipement",
         "chooseKeywordHelper": "Choisir une donnée",
+        "chooseCapacityHelper": "Choisir une capacité",
         "blocks": {
             "yadoms_wait": {
                 "title": "Attendre",
@@ -568,28 +590,52 @@
                     "serverVersion": "Version du serveur Yadoms"
                 }
             },
+			"yadoms_wait_for_event_result" : {
+                "title": " du dernier évènement",
+                "tooltip": "Obtient les informations du dernier évènement",
+				"value" : "Obtient la valeur",
+				"deviceName" : "Obtient le nom de l'équipement",
+				"keywordName" : "Obtient le nom du capteur",
+				"fullName" : "Obtient le nom complet"
+			},
             "yadoms_wait_for_event": {
-                "titleLine1": "Attendre un évènement",
-                "titleLine2": "Stocker sa valeur dans",
+                "title": "Attendre un évènement",
                 "case": "Lorsque",
-                "datetime": "la date/heure",
+                "caseCapacity": "Lorsqu'une donnée de type",
+				"caseDateTimeEveryMinute" : "Toutes les minutes",
+				"caseDateTimeCondition" : "Lorsque la date/heure",
+                "capacity": "la capacité",
                 "triggered": "change",
                 "triggeredType": {
-                    "change": "envoie une donnée",
+                    "change": "émet une donnée",
+                    "become": ""
+                },      
+				"triggeredCapacityType": {
+                    "change": "est émise",
                     "become": ""
                 },
                 "do": "Faire",
-                "tooltip": "Attend une évènement. cela peut être l'évolution d'une donnée, ou bien la date/heure qui change",
+                "tooltip": "Attend un évènement. cela peut être l'évolution d'une donnée, ou bien la date/heure qui change",
                 "defaultVarName": "nouvelleAcquisition",
+                "defaultDeviceVarName": "équipementCible",
                 "mutator": {
                     "base": {
-                        "title": "Attente d'acquisition",
-                        "tooltip": "Attend une nouvelle acquisition d'un ou plusieurs keyword."
+                        "title": "Attendre un évènement",
+                        "tooltip": "Attend un évènement d'une ou plusieurs sources (équipements, date/heure, ...).",
+						"storeValueInVariable" : "Stocker la nouvelle acquisition dans une variable",
+						"storeDeviceNameInVariable" : "Stocker le nom de l'écquipement dans une variable"
                     },
-                    "storeInVariable": {
-                        "title": "Stocker sa valeur",
-                        "tooltip": "Enregistre la valeur de l'événement dans une variable"
+                    "keyword": {
+                        "title": "Lorsqu'un équipement émet une donnée",
+                        "tooltip": "Ajoute un nouveau block pour observer les changements d'un équipement",
+						"condition" : "sur une condition"
                     },
+                    "capacity": {
+                        "title": "Lorsqu'un type de données est émis",
+                        "tooltip": "Ajoute un nouveau block pour observer un changement d'une donnée correspondant à une capacité",
+						"condition" : "sur une condition"
+                    },
+					
                     "change": {
                         "title": "Equipement : chaque nouvelle donnée",
                         "tooltip": "Ajoute un nouveau block pour observer les changements d'un équipement"
@@ -598,12 +644,20 @@
                         "title": "Equipement : donnée particulière",
                         "tooltip": "Ajoute un nouveau block pour observer une condition particulière de changement d'une donnée d'un équipement"
                     },
+                    "capacityChange": {
+                        "title": "Capacité : chaque nouvelle donnée",
+                        "tooltip": "Ajoute un nouveau block pour observer un changement d'une donnée correspondant à une capacité"
+                    },
+                    "capacityBecome": {
+                        "title": "Capacité : donnée particulière",
+                        "tooltip": "Ajoute un nouveau block pour observer une condition particulière de changement d'une donnée correspondant à une capacité"
+                    },
                     "datetimeChange": {
-                        "title": "Date/heure : mise à jour",
+                        "title": "Toutes les mniutes",
                         "tooltip": "Ajoute un nouveau block pour effectuer des actions lorsque la date/heure change (toutes les minutes)"
                     },
                     "datetimeBecome": {
-                        "title": "Date/heure : sur une date spécifique",
+                        "title": "A une date/heure spécifique",
                         "tooltip": "Ajoute un nouveau block pour effectuer des actions lorsque la date/heure atteint une condition particulière"
                     },
                     "error": {

@@ -37,7 +37,8 @@
             $.t("modals.dashboard.sub-windows.automation-center.editors." + value.getName() + ".name") +
             "</button>");
 
-         $area.find("button#" + tempUuid).bind("click", newAutomationRuleButtonClicked(value, callback));
+         var $btn = $area.find("button#" + tempUuid);
+         $btn.bind("click", newAutomationRuleButtonClicked(value, $btn, callback));
       });
 
       //i18n
@@ -47,15 +48,12 @@
       $("div#automation-rule-new-modal").modal({ backdrop: 'static' });
    };
 
-   function newAutomationRuleButtonClicked(editor, callback) {
+   function newAutomationRuleButtonClicked(editor, button, callback) {
       return function() {
          //we create the empty rule and go to edition
          var r = new AutomationRule(-1, "", "", editor.getActiveSupportedInterpreters()[0].name, editor.getName(),
                                     "", "", "", true);
-         //we hide the current modal
-         $("div#automation-rule-new-modal").modal("hide");
-
-         callback(r);
+         callback(r, $("div#automation-rule-new-modal"), button);
       };
    }
 </script>

@@ -126,9 +126,12 @@ void CContextAccessor::processMessage(const void* message, size_t messageSize, b
    case pbRequest::msg::kWaitForNextAcquisition: processWaitForNextAcquisition(request.waitfornextacquisition(), messageQueue); break;
    case pbRequest::msg::kWaitForNextAcquisitions: processWaitForNextAcquisitions(request.waitfornextacquisitions(), messageQueue); break;
    case pbRequest::msg::kWaitForEvent: processWaitForEvent(request.waitforevent(), messageQueue); break;
+   case pbRequest::msg::kGetKeywordsByCapacity: processGetKeywordsByCapacity(request.getkeywordsbycapacity(), messageQueue); break;
    case pbRequest::msg::kWriteKeyword: processWriteKeyword(request.writekeyword(), messageQueue); break;
    case pbRequest::msg::kSendNotification: processSendNotification(request.sendnotification(), messageQueue); break;
    case pbRequest::msg::kGetInfo: processGetInfo(request.getinfo(), messageQueue); break;
+   case pbRequest::msg::kGetKeywordName: processGetKeywordName(request.getkeywordname(), messageQueue); break;
+   case pbRequest::msg::kGetKeywordDeviceName: processGetKeywordDeviceName(request.getkeyworddevicename(), messageQueue); break;
    default:
       throw shared::exception::CInvalidParameter("message");
    }
@@ -224,6 +227,7 @@ void CContextAccessor::processWaitForEvent(const pbRequest::WaitForEvent& reques
       std::vector<int> keywordIdList;
       for (google::protobuf::RepeatedField<google::protobuf::int32>::const_iterator it = request.keywordid().begin(); it != request.keywordid().end(); ++it)
          keywordIdList.push_back(*it);
+
       shared::script::yScriptApi::CWaitForEventResult result = m_scriptApi->waitForEvent(keywordIdList, request.receivedatetimeevent(), request.has_timeout() ? request.timeout() : std::string());
       switch (result.getType())
       {
@@ -236,6 +240,24 @@ void CContextAccessor::processWaitForEvent(const pbRequest::WaitForEvent& reques
       answer->set_keywordid(result.getKeywordId());
       if (!result.getValue().empty())
          answer->set_acquisition(result.getValue());
+   }
+   catch (std::exception& ex)
+   {
+      ans.set_error(ex.what());
+   }
+   sendAnswer(ans, messageQueue);
+}
+
+void CContextAccessor::processGetKeywordsByCapacity(const pbRequest::GetKeywordsByCapacity& request, boost::interprocess::message_queue& messageQueue)
+{
+
+   pbAnswer::msg ans;
+   pbAnswer::GetKeywordsByCapacity* answer = ans.mutable_getkeywordsbycapacity();
+   try
+   {
+      std::vector<int> keywordIdList = m_scriptApi->getKeywordsByCapacity(request.capacity());
+      for (std::vector<int>::iterator i = keywordIdList.begin(); i != keywordIdList.end(); ++i)
+         answer->add_keywordids(*i);
    }
    catch (std::exception& ex)
    {
@@ -295,6 +317,42 @@ void CContextAccessor::processGetInfo(const pbRequest::GetInfo& request, boost::
       }
 
       answer->set_value(m_scriptApi->getInfo(key));
+   }
+   catch (std::exception& ex)
+   {
+      ans.set_error(ex.what());
+   }
+   sendAnswer(ans, messageQueue);
+}
+
+void CContextAccessor::processGetKeywordName(const pbRequest::GetKeywordName& request, boost::interprocess::message_queue& messageQueue)
+{
+   pbAnswer::msg ans;
+   pbAnswer::GetKeywordName* answer = ans.mutable_getkeywordname();
+
+   try
+   {
+      answer->set_keywordname(""); //predefine with "", to ensure answer is complete. Even if an error occurs, it should always return ""
+      std::string name = m_scriptApi->getKeywordName(request.keywordid());
+      answer->set_keywordname(name);
+   }
+   catch (std::exception& ex)
+   {
+      ans.set_error(ex.what());
+   }
+   sendAnswer(ans, messageQueue);
+}
+
+void CContextAccessor::processGetKeywordDeviceName(const pbRequest::GetKeywordDeviceName& request, boost::interprocess::message_queue& messageQueue)
+{
+   pbAnswer::msg ans;
+   pbAnswer::GetKeywordDeviceName* answer = ans.mutable_getkeyworddevicename();
+
+   try
+   {
+      answer->set_devicename(""); //predefine with "", to ensure answer is complete. Even if an error occurs, it should always return ""
+      std::string name = m_scriptApi->getKeywordDeviceName(request.keywordid());
+      answer->set_devicename(name);
    }
    catch (std::exception& ex)
    {

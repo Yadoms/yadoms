@@ -33,7 +33,12 @@ message WaitForEvent
 {
    repeated int32 keywordId = 1;
    required bool receiveDateTimeEvent = 2;
-   optional string timeout = 3;
+   optional string timeout = 4;
+}
+
+message GetKeywordsByCapacity
+{
+   required string capacity = 1;
 }
 
 message WriteKeyword
@@ -55,6 +60,16 @@ message GetInfo
    required Key key = 1;
 }
    
+message GetKeywordName
+{
+   required int32 keywordId = 1;
+}
+
+message GetKeywordDeviceName
+{
+   required int32 keywordId = 1;
+}
+
 message msg
 {
    oneof OneOf
@@ -68,5 +83,8 @@ message msg
       WriteKeyword writeKeyword = 7;
       SendNotification sendNotification = 8;
       GetInfo getInfo = 9;
+	  GetKeywordsByCapacity getKeywordsByCapacity = 10;
+	  GetKeywordName getKeywordName = 11;
+	  GetKeywordDeviceName getKeywordDeviceName = 12;
    }
 }

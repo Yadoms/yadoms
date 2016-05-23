@@ -11,12 +11,7 @@ Blockly.Yadoms.GetPythonOutput_ = function() {
     var pythonCodeIndented = Blockly.Python.prefixLines(pythonCode, "\t");
     var completedPythonCode = "# yMain is the script entry point, called by Yadoms\n";
 
-    if (Blockly.Yadoms.Python.HasDateTimeFunctions()) {
-        completedPythonCode += Blockly.Yadoms.Python.GenerateDateTimePythonCode_();
-    } else {
-        completedPythonCode += "import time\n";
-    }
-
+	completedPythonCode += Blockly.Yadoms.Python.GenerateDateTimePythonCode_();
     completedPythonCode += "\n";
     completedPythonCode += "def yMain(yApi):\n";
     completedPythonCode += "\tprint ('Script started')\n";

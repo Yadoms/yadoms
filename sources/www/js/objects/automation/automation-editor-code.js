@@ -44,6 +44,14 @@ AutomationEditorCode.prototype.getUuid = function() {
    return this.uuid;
 };
 
+/**
+ * Obtain the list of all required js files to load
+ * @returns {Array{string}}
+ */
+AutomationEditorCode.prototype.getRequiredJsFiles = function() {
+   return ["libs/ace/js/src-min/ace.js",
+         "libs/ace/js/src-min/ext-language_tools.js"];
+};
 
 
 /**
