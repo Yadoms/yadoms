@@ -7,8 +7,8 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-namespace device {
-
+namespace device
+{
    //--------------------------------------------------------------
    /// \brief	Adressable Switch (Family 05)
    //--------------------------------------------------------------
@@ -43,8 +43,7 @@ namespace device {
          return m_keywords;
       }
       void get() const override;
-      void set(const std::string& keyword,
-               const std::string& command) override;
+      void set(const std::string& keyword, const std::string& command) override;
       // [END] IDevice implementation
 
    private:
