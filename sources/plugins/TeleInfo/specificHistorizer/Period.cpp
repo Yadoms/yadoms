@@ -3,7 +3,7 @@
 #include <shared/plugin/yPluginApi/StandardUnits.h>
 #include <shared/plugin/yPluginApi/StandardCapacities.h>
 
-namespace teleInfoUSB { namespace specificHistorizers
+namespace teleInfo { namespace specificHistorizers
 {
 
 DECLARE_ENUM_IMPLEMENTATION(EPeriod,
@@ -30,4 +30,4 @@ CPeriod::CPeriod(const std::string& keywordName)
 CPeriod::~CPeriod()
 {}
 
-} } // namespace teleInfoUSB::specificHistorizer
+} } // namespace teleInfo::specificHistorizer

@@ -2,14 +2,14 @@
 
 #include "IKeyword.h"
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
-#include "../specificHistorizer/Color.h"
+#include "../specificHistorizer/Period.h"
 
 namespace yApi = shared::plugin::yPluginApi;
 
 //--------------------------------------------------------------
 /// \brief	The Load class
 //--------------------------------------------------------------
-class CForecastTomorrow : public IKeyword
+class CRunningPeriod : public IKeyword
 {
 public:
    //--------------------------------------------------------------
@@ -19,10 +19,9 @@ public:
    /// \param[in] KeyWordName          The keyword name
    /// \note                           Use this constructor initialising the keyword for this plugin
    //--------------------------------------------------------------
-   CForecastTomorrow(boost::shared_ptr<yApi::IYPluginApi> api,
-                     std::string PluginName,
-                     std::string KeyWordName,
-                     shared::CDataContainer details);
+   CRunningPeriod(boost::shared_ptr<yApi::IYPluginApi> api,
+                  std::string PluginName, std::string KeyWordName,
+                  shared::CDataContainer details);
 
    //--------------------------------------------------------------
    /// \brief	                      Set the value of the keyword
@@ -33,7 +32,7 @@ public:
    //--------------------------------------------------------------
    /// \brief	Destructor
    //--------------------------------------------------------------
-   virtual ~CForecastTomorrow();
+   virtual ~CRunningPeriod();
 
    // IKeyword implementation
    boost::shared_ptr<yApi::historization::IHistorizable> GetHistorizable() const override;
@@ -48,11 +47,11 @@ private:
    //--------------------------------------------------------------
    /// \brief	The period type
    //--------------------------------------------------------------
-   boost::shared_ptr<teleInfoUSB::specificHistorizers::CColor> m_forecastPeriod;
+   boost::shared_ptr<teleInfo::specificHistorizers::CPeriod> m_runningPeriod;
 
    //--------------------------------------------------------------
    /// \brief	The map of returned value to the IHM
    //--------------------------------------------------------------
-   typedef std::map<std::string, unsigned int> EnumColorMap;
+   typedef std::map<std::string, unsigned int> EnumPeriod;
 };
 

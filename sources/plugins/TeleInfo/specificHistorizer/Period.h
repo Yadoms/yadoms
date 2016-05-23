@@ -3,22 +3,29 @@
 #include <shared/enumeration/EnumHelpers.hpp>
 #include <shared/plugin/yPluginApi/historization/SingleHistorizableData.hpp>
 
-namespace teleInfoUSB { namespace specificHistorizers
+namespace teleInfo { namespace specificHistorizers
 {   
    //-----------------------------------------------------
-   ///\brief  The color of the next period
+   ///\brief  All periods
    //-----------------------------------------------------   
-   DECLARE_ENUM_HEADER(EColor,
-      ((NOTDEFINED))
-      ((BLUE))
-      ((WHITE))
-      ((RED))
+   DECLARE_ENUM_HEADER(EPeriod,
+      ((AllHours))
+      ((LowCostHours))
+	  ((PeakCostHours))
+	  ((NormalCostHours))
+	  ((MobilePeakCostHours))
+	  ((LowCostBlueDays))
+	  ((LowCostWhiteDays))
+	  ((LowCostRedDays))
+	  ((NormalCostBlueDays))
+	  ((NormalCostWhiteDays))
+	  ((NormalCostRedDays))
    );
 
    //-----------------------------------------------------
-   ///\brief A Color object
+   ///\brief A Running Period object
    //-----------------------------------------------------
-   class CColor : public shared::plugin::yPluginApi::historization::CSingleHistorizableData<EColor>
+   class CPeriod : public shared::plugin::yPluginApi::historization::CSingleHistorizableData<EPeriod>
    {
    public:
       //-----------------------------------------------------
@@ -27,13 +34,12 @@ namespace teleInfoUSB { namespace specificHistorizers
       ///\param[in] accessMode      The access mode
       ///\param[in] measureType     The measure type (normally kAbsolute)
       //-----------------------------------------------------
-      explicit CColor(const std::string& keywordName);
+      explicit CPeriod(const std::string& keywordName);
 
       //-----------------------------------------------------
       ///\brief                     Destructor
       //-----------------------------------------------------
-      virtual ~CColor();
+      virtual ~CPeriod();
    };
 
-} } // namespace teleInfoUSB::specificHistorizer
-
+} } // namespace teleInfo::specificHistorizer

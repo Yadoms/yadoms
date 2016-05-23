@@ -3,7 +3,7 @@
 #include <shared/plugin/yPluginApi/StandardUnits.h>
 #include <shared/plugin/yPluginApi/StandardCapacities.h>
 
-namespace teleInfoUSB { namespace specificHistorizers
+namespace teleInfo { namespace specificHistorizers
 {
 
 DECLARE_ENUM_IMPLEMENTATION(EColor,
@@ -22,5 +22,5 @@ CColor::CColor(const std::string& keywordName)
 CColor::~CColor()
 {}
 
-} } // namespace teleInfoUSB::specificHistorizer
+} } // namespace teleInfo::specificHistorizer
 

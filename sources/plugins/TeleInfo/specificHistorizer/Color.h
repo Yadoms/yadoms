@@ -3,29 +3,22 @@
 #include <shared/enumeration/EnumHelpers.hpp>
 #include <shared/plugin/yPluginApi/historization/SingleHistorizableData.hpp>
 
-namespace teleInfoUSB { namespace specificHistorizers
+namespace teleInfo { namespace specificHistorizers
 {   
    //-----------------------------------------------------
-   ///\brief  All periods
+   ///\brief  The color of the next period
    //-----------------------------------------------------   
-   DECLARE_ENUM_HEADER(EPeriod,
-      ((AllHours))
-      ((LowCostHours))
-	  ((PeakCostHours))
-	  ((NormalCostHours))
-	  ((MobilePeakCostHours))
-	  ((LowCostBlueDays))
-	  ((LowCostWhiteDays))
-	  ((LowCostRedDays))
-	  ((NormalCostBlueDays))
-	  ((NormalCostWhiteDays))
-	  ((NormalCostRedDays))
+   DECLARE_ENUM_HEADER(EColor,
+      ((NOTDEFINED))
+      ((BLUE))
+      ((WHITE))
+      ((RED))
    );
 
    //-----------------------------------------------------
-   ///\brief A Running Period object
+   ///\brief A Color object
    //-----------------------------------------------------
-   class CPeriod : public shared::plugin::yPluginApi::historization::CSingleHistorizableData<EPeriod>
+   class CColor : public shared::plugin::yPluginApi::historization::CSingleHistorizableData<EColor>
    {
    public:
       //-----------------------------------------------------
@@ -34,12 +27,13 @@ namespace teleInfoUSB { namespace specificHistorizers
       ///\param[in] accessMode      The access mode
       ///\param[in] measureType     The measure type (normally kAbsolute)
       //-----------------------------------------------------
-      explicit CPeriod(const std::string& keywordName);
+      explicit CColor(const std::string& keywordName);
 
       //-----------------------------------------------------
       ///\brief                     Destructor
       //-----------------------------------------------------
-      virtual ~CPeriod();
+      virtual ~CColor();
    };
 
-} } // namespace teleInfoUSB::specificHistorizer
+} } // namespace teleInfo::specificHistorizer
+

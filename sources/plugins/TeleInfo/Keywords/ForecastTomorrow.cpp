@@ -10,7 +10,7 @@ CForecastTomorrow::CForecastTomorrow(boost::shared_ptr<yApi::IYPluginApi> api,
                                      std::string KeyWordName,
                                      shared::CDataContainer details)
    : m_PluginName(PluginName),
-     m_forecastPeriod(boost::make_shared<teleInfoUSB::specificHistorizers::CColor>(KeyWordName))
+     m_forecastPeriod(boost::make_shared<teleInfo::specificHistorizers::CColor>(KeyWordName))
 {
    if (!api->keywordExists(m_PluginName, m_forecastPeriod))
       api->declareKeyword(m_PluginName, m_forecastPeriod, details);
@@ -19,17 +19,17 @@ CForecastTomorrow::CForecastTomorrow(boost::shared_ptr<yApi::IYPluginApi> api,
 void CForecastTomorrow::SetValue(std::string& Value) const
 {
    static const EnumColorMap EEnumColorMap = boost::assign::map_list_of
-      ("----", teleInfoUSB::specificHistorizers::EColor::kNOTDEFINED)
-      ("BLEU", teleInfoUSB::specificHistorizers::EColor::kBLUE)
-      ("BLAN", teleInfoUSB::specificHistorizers::EColor::kWHITE)
-      ("ROUG", teleInfoUSB::specificHistorizers::EColor::kRED);
+      ("----", teleInfo::specificHistorizers::EColor::kNOTDEFINED)
+      ("BLEU", teleInfo::specificHistorizers::EColor::kBLUE)
+      ("BLAN", teleInfo::specificHistorizers::EColor::kWHITE)
+      ("ROUG", teleInfo::specificHistorizers::EColor::kRED);
 
    try
    {
       auto it = EEnumColorMap.find(Value);
       if (it != EEnumColorMap.end())
       {
-         m_forecastPeriod->set(static_cast<teleInfoUSB::specificHistorizers::EColor>(it->second));
+         m_forecastPeriod->set(static_cast<teleInfo::specificHistorizers::EColor>(it->second));
 
          std::cout << m_forecastPeriod->getKeyword() << "=" << m_forecastPeriod->get() << std::endl;
       }
