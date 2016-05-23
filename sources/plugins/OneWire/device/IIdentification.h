@@ -1,11 +1,8 @@
 #pragma once
 #include "../Common.h"
-#include <shared/plugin/yPluginApi/IYPluginApi.h>
 
-// Shortcut to yPluginApi namespace
-namespace yApi = shared::plugin::yPluginApi;
-
-namespace device {
+namespace device
+{
    //--------------------------------------------------------------
    /// \brief	1-Wire Device identification interface
    //--------------------------------------------------------------
@@ -15,13 +12,9 @@ namespace device {
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
-      virtual ~IIdentification() {}
-
-      //--------------------------------------------------------------
-      /// \brief	Declare device to Yadoms
-      /// \param[in] context IYPluginApi reference
-      //--------------------------------------------------------------
-      virtual void declare(boost::shared_ptr<yApi::IYPluginApi> context) const = 0;
+      virtual ~IIdentification()
+      {
+      }
 
       //--------------------------------------------------------------
       /// \brief	Device family
@@ -42,5 +35,10 @@ namespace device {
       /// \brief	Device model (chip reference)
       //--------------------------------------------------------------
       virtual const std::string& model() const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief	Details (1-wire specific data)
+      //--------------------------------------------------------------
+      virtual const shared::CDataContainer& details() const = 0;
    };
 } // namespace device

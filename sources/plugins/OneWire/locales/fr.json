@@ -28,5 +28,10 @@
 				}
 			}
 		}
+	},
+	"customLabels": {
+		"pluginState": {
+			"connecting": "Connexion en cours..."
+		}
 	}
 }

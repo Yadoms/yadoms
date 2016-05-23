@@ -1,5 +1,4 @@
 #pragma once
-
 #include "IConfiguration.h"
 #include <shared/DataContainer.h>
 
@@ -21,11 +20,11 @@ public:
    virtual ~CConfiguration();
 
    // IConfiguration implementation
-   virtual void initializeWith(const shared::CDataContainer &data);
-   virtual bool isOwfsMode() const;
-   virtual bool isKernelMode() const;
-   virtual const boost::filesystem::path& getOwfsMountPoint() const;
-   virtual const boost::filesystem::path& getKernelMountPoint() const;
+   void initializeWith(const shared::CDataContainer &data) override;
+   bool isOwfsMode() const override;
+   bool isKernelMode() const override;
+   const boost::filesystem::path& getOwfsMountPoint() const override;
+   const boost::filesystem::path& getKernelMountPoint() const override;
    // [END] IConfiguration implementation
 
 private:

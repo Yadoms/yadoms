@@ -28,5 +28,10 @@
 				}
 			}
 		}
+	},
+	"customLabels": {
+		"pluginState": {
+			"connecting": "Connecting..."
+		}
 	}
 }

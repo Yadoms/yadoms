@@ -27,5 +27,6 @@ public:
    /// \param[in]	context yApi context
    /// \param[in] configuration  The 1-wire configuration
    //--------------------------------------------------------------
-   static boost::shared_ptr<IEngine> createEngine(boost::shared_ptr<yApi::IYPluginApi> context, boost::shared_ptr<const IConfiguration> configuration);
+   static boost::shared_ptr<IEngine> createEngine(boost::shared_ptr<yApi::IYPluginApi> context,
+                                                  boost::shared_ptr<const IConfiguration> configuration);
 };

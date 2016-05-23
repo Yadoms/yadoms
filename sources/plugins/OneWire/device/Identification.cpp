@@ -3,60 +3,70 @@
 #include <shared/DataContainer.h>
 
 
-namespace device {
-
-std::string buildDeviceName(EOneWireFamily family, const std::string& id)
+namespace device
 {
-   std::stringstream ss;
-   ss << std::hex << family;
-   ss << '-';
-   ss << id;
-   return std::string(ss.str());
-}
+   std::string buildDeviceName(EOneWireFamily family,
+                               const std::string& id)
+   {
+      std::stringstream ss;
+      ss << std::hex << family;
+      ss << '-';
+      ss << id;
+      return std::string(ss.str());
+   }
 
-CIdentification::CIdentification(EOneWireFamily family, const std::string& id, const std::string& model)
-   :m_family(family), m_id(id), m_deviceName(buildDeviceName(family, id)), m_model(model)
-{
-}
-
-CIdentification::~CIdentification()
-{
-}
-
-void CIdentification::declare(boost::shared_ptr<yApi::IYPluginApi> context) const
-{
-   if (!context->deviceExists(m_deviceName))
+   shared::CDataContainer buildDeviceDetails(EOneWireFamily family,
+                                             const std::string& id)
    {
       shared::CDataContainer details;
 
       std::stringstream ss;
-      ss << std::hex << m_family;
+      ss << std::hex << family;
       details.set("Family", ss.str());
 
-      details.set("Serial", m_id);
+      details.set("Serial", id);
 
-      context->declareDevice(m_deviceName, m_model, details);
+      return details;
    }
-}
 
-EOneWireFamily CIdentification::family() const
-{
-   return m_family;
-}
+   CIdentification::CIdentification(EOneWireFamily family,
+                                    const std::string& id,
+                                    const std::string& model)
+      :m_family(family),
+       m_id(id),
+       m_deviceName(buildDeviceName(family, id)),
+       m_model(model),
+       m_details(buildDeviceDetails(family, id))
+   {
+   }
 
-std::string CIdentification::id() const
-{
-   return m_id;
-}
+   CIdentification::~CIdentification()
+   {
+   }
 
-const std::string& CIdentification::deviceName() const
-{
-   return m_deviceName;
-}
+   EOneWireFamily CIdentification::family() const
+   {
+      return m_family;
+   }
 
-const std::string& CIdentification::model() const
-{
-   return m_model;
-}
+   std::string CIdentification::id() const
+   {
+      return m_id;
+   }
+
+   const std::string& CIdentification::deviceName() const
+   {
+      return m_deviceName;
+   }
+
+   const std::string& CIdentification::model() const
+   {
+      return m_model;
+   }
+
+   const shared::CDataContainer& CIdentification::details() const
+   {
+      return m_details;
+   }
 
 } // namespace device

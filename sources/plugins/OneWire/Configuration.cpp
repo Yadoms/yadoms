@@ -6,7 +6,8 @@
 namespace yApi = shared::plugin::yPluginApi;
 
 CConfiguration::CConfiguration()
-   :m_isOwfsMode(false), m_isKernelMode(false)
+   :m_isOwfsMode(false),
+    m_isKernelMode(false)
 {
 }
 
