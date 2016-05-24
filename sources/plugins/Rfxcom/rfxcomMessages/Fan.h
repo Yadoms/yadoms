@@ -24,9 +24,9 @@ namespace rfxcomMessages
       /// \note                           Use this constructor for command (to build RFXCom message)
       //--------------------------------------------------------------
       CFan(boost::shared_ptr<yApi::IYPluginApi> api,
-         const std::string& keyword,
-         const std::string& command,
-         const shared::CDataContainer& deviceDetails);
+           const std::string& keyword,
+           const std::string& command,
+           const shared::CDataContainer& deviceDetails);
 
       //--------------------------------------------------------------
       /// \brief	                        Constructor
@@ -37,8 +37,8 @@ namespace rfxcomMessages
       /// \note                           Use this constructor for manually device creation
       //--------------------------------------------------------------
       CFan(boost::shared_ptr<yApi::IYPluginApi> api,
-         unsigned char subType,
-         const shared::CDataContainer& manuallyDeviceCreationConfiguration);
+           unsigned int subType,
+           const shared::CDataContainer& manuallyDeviceCreationConfiguration);
 
       //--------------------------------------------------------------
       /// \brief	                        Constructor
@@ -50,9 +50,9 @@ namespace rfxcomMessages
       /// \throw                          shared::exception::CInvalidParameter
       //--------------------------------------------------------------
       CFan(boost::shared_ptr<yApi::IYPluginApi> api,
-         const RBUF& rbuf,
-         size_t rbufSize,
-         boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
+           const RBUF& rbuf,
+           size_t rbufSize,
+           boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
@@ -64,7 +64,7 @@ namespace rfxcomMessages
       void historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const override;
       const std::string& getDeviceName() const override;
       // [END] IRfxcomMessage implementation
-      
+
    protected:
       //--------------------------------------------------------------
       /// \brief	Global initialization method
@@ -131,3 +131,5 @@ namespace rfxcomMessages
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
    };
 } // namespace rfxcomMessages
+
+

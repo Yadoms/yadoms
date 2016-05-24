@@ -22,7 +22,7 @@ namespace rfxcomMessages
    }
 
    CLighting4::CLighting4(boost::shared_ptr<yApi::IYPluginApi> api,
-                          unsigned char subType,
+                          unsigned int subType,
                           const shared::CDataContainer& manuallyDeviceCreationConfiguration)
       : m_keyword(boost::make_shared<yApi::historization::CEvent>("event")),
         m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
@@ -30,7 +30,7 @@ namespace rfxcomMessages
    {
       m_rssi->set(0);
 
-      m_subType = subType;
+      m_subType = static_cast<unsigned char>(subType);
       if (m_subType != sTypePT2262)
          throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
 

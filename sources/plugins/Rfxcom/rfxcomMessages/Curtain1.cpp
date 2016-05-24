@@ -22,7 +22,7 @@ namespace rfxcomMessages
    }
 
    CCurtain1::CCurtain1(boost::shared_ptr<yApi::IYPluginApi> api,
-                        unsigned char subType,
+                        unsigned int subType,
                         const shared::CDataContainer& manuallyDeviceCreationConfiguration)
       : m_subType(0),
         m_houseCode(0),
@@ -31,7 +31,7 @@ namespace rfxcomMessages
    {
       m_state->set(yApi::historization::ECurtainCommand::kStop);
 
-      m_subType = subType;
+      m_subType = static_cast<unsigned char>(subType);
       if (m_subType != sTypeHarrison)
          throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
 

@@ -25,7 +25,8 @@ namespace yApi = shared::plugin::yPluginApi;
 namespace rfxcomMessages
 {
    CFS20::CFS20(boost::shared_ptr<yApi::IYPluginApi> api,
-                const std::string& command, const shared::CDataContainer& deviceDetails)
+                const std::string& command,
+                const shared::CDataContainer& deviceDetails)
       : m_state(boost::make_shared<yApi::historization::CDimmable>("state")),
         m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
         m_keywords({m_state , m_rssi})
@@ -42,7 +43,7 @@ namespace rfxcomMessages
    }
 
    CFS20::CFS20(boost::shared_ptr<yApi::IYPluginApi> api,
-                unsigned char subType,
+                unsigned int subType,
                 const shared::CDataContainer& manuallyDeviceCreationConfiguration)
       : m_state(boost::make_shared<yApi::historization::CDimmable>("state")),
         m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
@@ -51,7 +52,7 @@ namespace rfxcomMessages
       m_state->set(0);
       m_rssi->set(0);
 
-      m_subType = subType;
+      m_subType = static_cast<unsigned char>(subType);
       switch (m_subType)
       {
       case sTypeFS20:

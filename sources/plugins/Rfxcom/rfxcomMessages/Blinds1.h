@@ -35,7 +35,7 @@ namespace rfxcomMessages
       /// \note                           Use this constructor for manually device creation
       //--------------------------------------------------------------
       CBlinds1(boost::shared_ptr<yApi::IYPluginApi> api,
-               unsigned char subType,
+               unsigned int subType,
                const shared::CDataContainer& manuallyDeviceCreationConfiguration);
 
       //--------------------------------------------------------------

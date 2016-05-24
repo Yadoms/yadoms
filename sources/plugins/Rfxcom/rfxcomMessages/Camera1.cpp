@@ -24,7 +24,7 @@ namespace rfxcomMessages
    }
 
    CCamera1::CCamera1(boost::shared_ptr<yApi::IYPluginApi> api,
-                      unsigned char subType,
+                      unsigned int subType,
                       const shared::CDataContainer& manuallyDeviceCreationConfiguration)
       : m_camera(boost::make_shared<yApi::historization::CCameraMove>("camera")),
         m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
@@ -33,7 +33,7 @@ namespace rfxcomMessages
       m_camera->set(yApi::historization::ECameraMoveCommand::kCenterPosition);
       m_rssi->set(0);
 
-      m_subType = subType;
+      m_subType = static_cast<unsigned char>(subType);
       if (m_subType != sTypeNinja)
          throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
 
