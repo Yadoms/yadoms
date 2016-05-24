@@ -7,8 +7,8 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-namespace device {
-
+namespace device
+{
    //--------------------------------------------------------------
    /// \brief	Adressable Switch (Family 05)
    //--------------------------------------------------------------
@@ -19,10 +19,13 @@ namespace device {
       /// \brief	Constructor
       /// \param[in]	family Device family
       /// \param[in]	id Device serial number
-      /// \param[in]	context yApi context
+      /// \param[in]	api yApi context
       /// \param[in]	io I/O access object
       //--------------------------------------------------------------
-      CAdressableSwitch(EOneWireFamily family, const std::string& id, boost::shared_ptr<yApi::IYPluginApi> context, boost::shared_ptr<ioInterfaces::ISingleSwitch> io);
+      CAdressableSwitch(EOneWireFamily family,
+                        const std::string& id,
+                        boost::shared_ptr<yApi::IYPluginApi> api,
+                        boost::shared_ptr<ioInterfaces::ISingleSwitch> io);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
@@ -31,10 +34,16 @@ namespace device {
 
    protected:
       // IDevice implementation
-      virtual boost::shared_ptr<const IIdentification> ident() const;
-      virtual void declare();
-      virtual void historize();
-      virtual void set(const std::string& keyword, const std::string& command);
+      boost::shared_ptr<const IIdentification> ident() const override
+      {
+         return m_identification;
+      }
+      const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywords() const override
+      {
+         return m_keywords;
+      }
+      void get() const override;
+      void set(const std::string& keyword, const std::string& command) override;
       // [END] IDevice implementation
 
    private:
@@ -46,7 +55,7 @@ namespace device {
       //--------------------------------------------------------------
       /// \brief	The yApi context
       //--------------------------------------------------------------
-      boost::shared_ptr<yApi::IYPluginApi> m_context;
+      boost::shared_ptr<yApi::IYPluginApi> m_api;
 
       //--------------------------------------------------------------
       /// \brief	The I/O access object
@@ -56,7 +65,12 @@ namespace device {
       //--------------------------------------------------------------
       /// \brief	The keyword associated with state
       //--------------------------------------------------------------
-      yApi::historization::CSwitch m_state;
+      boost::shared_ptr<yApi::historization::CSwitch> m_state;
+
+      //--------------------------------------------------------------
+      /// \brief	The keywords list to historize in one step for better performances
+      //--------------------------------------------------------------
+      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
    };
 
 } // namespace device

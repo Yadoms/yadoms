@@ -7,8 +7,8 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-namespace device {
-
+namespace device
+{
    //--------------------------------------------------------------
    /// \brief	Digitial potentiometer device (Family 2C)
    //--------------------------------------------------------------
@@ -19,10 +19,13 @@ namespace device {
       /// \brief	Constructor
       /// \param[in]	family Device family
       /// \param[in]	id Device serial number
-      /// \param[in]	context yApi context
+      /// \param[in]	api yApi context
       /// \param[in]	io I/O access object
       //--------------------------------------------------------------
-      CDigitalPotentiometer(EOneWireFamily family, const std::string& id, boost::shared_ptr<yApi::IYPluginApi> context, boost::shared_ptr<ioInterfaces::IDigitalPotentiometer> io);
+      CDigitalPotentiometer(EOneWireFamily family,
+                            const std::string& id,
+                            boost::shared_ptr<yApi::IYPluginApi> api,
+                            boost::shared_ptr<ioInterfaces::IDigitalPotentiometer> io);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
@@ -31,10 +34,16 @@ namespace device {
 
    protected:
       // IDevice implementation
-      virtual boost::shared_ptr<const IIdentification> ident() const;
-      virtual void declare();
-      virtual void historize();
-      virtual void set(const std::string& keyword, const std::string& command);
+      boost::shared_ptr<const IIdentification> ident() const override
+      {
+         return m_identification;
+      }
+      const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywords() const override
+      {
+         return m_keywords;
+      }
+      void get() const override;
+      void set(const std::string& keyword, const std::string& command) override;
       // [END] IDevice implementation
 
    private:
@@ -58,6 +67,7 @@ namespace device {
       //--------------------------------------------------------------
       boost::shared_ptr<yApi::historization::CSwitch> m_potentiometerMode;
       boost::shared_ptr<yApi::historization::CDimmable> m_dim;
+      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
    };
 
 } // namespace device

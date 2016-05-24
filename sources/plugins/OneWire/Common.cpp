@@ -63,7 +63,7 @@ unsigned short crc16_update(unsigned short crc, unsigned char a)
    return crc;
 }
 
-unsigned char Crc16(const unsigned char* byteArray,size_t arraySize)
+unsigned char Crc16(const unsigned char* byteArray, size_t arraySize)
 {
    unsigned short crc16=0;
    for (size_t i = 0; i < arraySize; i++)

@@ -32,21 +32,28 @@ protected:
    /// \param[in] api                   pointer to the API
    /// \param[in] newConfigurationData  The new configuration of the module
    //--------------------------------------------------------------
-   void onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainer& newConfigurationData);
+   void onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
+                              const shared::CDataContainer& newConfigurationData);
 
    //--------------------------------------------------------------
    /// \brief	                     Process a command received from Yadoms
    /// \param [in] devices          1-wire available devices
    /// \param [in] command          The received command
    //--------------------------------------------------------------
-   void onCommand(std::map<std::string, boost::shared_ptr<device::IDevice> >& devices, boost::shared_ptr<const yApi::IDeviceCommand> command);
+   void onCommand(std::map<std::string,
+                  boost::shared_ptr<device::IDevice> >& devices,
+                  boost::shared_ptr<const yApi::IDeviceCommand> command);
 
    //--------------------------------------------------------------
    /// \brief Update our 1-wire network image (if new devices were recently connected) and create devices in Yadoms database
+   /// \param[in] api                   pointer to the API
    /// \param[in] devices               Current network image to update
    /// \param[in] foundDevices          The network new scan result
    //--------------------------------------------------------------
-   void updateNetwork(std::map<std::string, boost::shared_ptr<device::IDevice> >& devices, const std::map<std::string, boost::shared_ptr<device::IDevice> >& foundDevices);
+   void updateNetwork(boost::shared_ptr<yApi::IYPluginApi> api,
+                      std::map<std::string,
+                      boost::shared_ptr<device::IDevice> >& devices,
+                      const std::map<std::string, boost::shared_ptr<device::IDevice> >& foundDevices);
 
 private:
    //--------------------------------------------------------------
