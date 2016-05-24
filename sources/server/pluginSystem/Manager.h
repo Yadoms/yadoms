@@ -232,6 +232,7 @@ namespace pluginSystem
       ///\throw               CPluginException if timeout
       //-----------------------------------------------------
       void stopInstanceAndWaitForStopped(int id);
+      void stopInstanceAndWaitForStoppedThreaded(int id);
 
       void startInternalPlugin();
       void stopInternalPlugin();
