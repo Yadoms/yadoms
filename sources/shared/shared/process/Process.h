@@ -23,7 +23,7 @@ namespace shared
          /// \param[in] workingDirectory        Working directory to use. If null, use the current working directory.
          /// \param[in] processObserver         The process life observer (can be NULL is no observer needed)
          /// \param[in] logger                  Process out/err logger (can be NULL is no logger needed)
-         /// \throw CPluginException if error //TODO revoir le type
+         /// \throw CProcessException if error
          //--------------------------------------------------------------
          CProcess(boost::shared_ptr<ICommandLine> commandLine,
                   const std::string& workingDirectory,

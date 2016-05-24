@@ -75,7 +75,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       // Wait for an event
       switch (api->getEventHandler().waitForEvents())
       {
-      case yApi::IYPluginApi::kEventStopRequested://TODO événement à ajouter dans les autres plugins
+      case yApi::IYPluginApi::kEventStopRequested:
          {
             // Yadoms request the plugin to stop. Note that plugin must be stop in 10 seconds max, otherwise it will be killed.
             std::cout << "Stop requested" << std::endl;

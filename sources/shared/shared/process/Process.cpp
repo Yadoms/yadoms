@@ -3,7 +3,6 @@
 #include "ProcessException.hpp"
 #include <shared/FileSystemExtension.h>
 
-//TODO utiliser cette classe pour les scripts
 namespace shared
 {
    namespace process

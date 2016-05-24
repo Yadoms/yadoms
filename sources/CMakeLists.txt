@@ -391,6 +391,7 @@ set(YADOMS_SRC
 	server/pluginSystem/Instance.cpp
    server/pluginSystem/InstanceRemover.h
    server/pluginSystem/InstanceRemover.cpp
+   server/pluginSystem/InstanceRemoverRaii.hpp
 	server/pluginSystem/InstanceStateHandler.h
 	server/pluginSystem/InstanceStateHandler.cpp
 	server/pluginSystem/InvalidPluginException.hpp

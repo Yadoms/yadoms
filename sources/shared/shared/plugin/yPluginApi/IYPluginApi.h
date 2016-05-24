@@ -6,7 +6,6 @@
 #include "IExtraCommand.h"
 #include "historization/Historizers.h"
 
-//TODO ne pas conserver la même interface pour Yadoms interne et pluginCppApi
 namespace shared
 {
    namespace plugin
@@ -50,7 +49,7 @@ namespace shared
                kEventStopRequested = event::kUserFirstId, // Yadoms requests the plugin to stop
                kEventUpdateConfiguration, // Yadoms notify the plugin that its configuration was changed
                kEventDeviceCommand, // Yadoms send a command to a device managed by this plugin
-               kEventManuallyDeviceCreationTest, // Yadoms ask the plugin to test a device with provided parameters, before to create it (TODO not yet implemented)
+               kEventManuallyDeviceCreationTest, // Yadoms ask the plugin to test a device with provided parameters, before to create it (TODO : not yet implemented)
                kEventManuallyDeviceCreation, // Yadoms ask the plugin to create a device
                kEventExtraCommand, // Yadoms send extra command to plugin
                kBindingQuery, // Yadoms ask the plugin a binding query
@@ -322,7 +321,3 @@ namespace shared
       }
    }
 } // namespace shared::plugin::yPluginApi	
-
-
-// TODO harmoniser les types de passages de IHistorizable (tout en shared_ptr)
-// TODO ajouter un declareKeywords(const std::string& device, const std::vector<boost::shared_ptr<const historization::IHistorizable> >& keywords)
