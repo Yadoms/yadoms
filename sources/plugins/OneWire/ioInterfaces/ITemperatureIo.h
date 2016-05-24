@@ -1,7 +1,7 @@
 #pragma once
 
-namespace ioInterfaces {
-
+namespace ioInterfaces
+{
    //--------------------------------------------------------------
    /// \brief	Temperature + IO accessor interface
    //--------------------------------------------------------------
@@ -11,7 +11,9 @@ namespace ioInterfaces {
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
-      virtual ~ITemperatureIo() {}
+      virtual ~ITemperatureIo()
+      {
+      }
 
       //--------------------------------------------------------------
       /// \brief	Read IO state

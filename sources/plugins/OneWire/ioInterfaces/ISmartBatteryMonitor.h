@@ -1,7 +1,7 @@
 #pragma once
 
-namespace ioInterfaces {
-
+namespace ioInterfaces
+{
    //--------------------------------------------------------------
    /// \brief	Smart battery monitor interface
    //--------------------------------------------------------------
@@ -23,7 +23,9 @@ namespace ioInterfaces {
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
-      virtual ~ISmartBatteryMonitor() {}
+      virtual ~ISmartBatteryMonitor()
+      {
+      }
 
       //--------------------------------------------------------------
       /// \brief	Read sensor type

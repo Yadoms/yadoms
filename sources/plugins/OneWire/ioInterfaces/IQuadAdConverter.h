@@ -1,7 +1,7 @@
 #pragma once
 
-namespace ioInterfaces {
-
+namespace ioInterfaces
+{
    //--------------------------------------------------------------
    /// \brief	Multi AD converter io accessor interface
    //--------------------------------------------------------------
@@ -11,7 +11,9 @@ namespace ioInterfaces {
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
-      virtual ~IQuadAdConverter() {}
+      virtual ~IQuadAdConverter()
+      {
+      }
 
       //--------------------------------------------------------------
       /// \brief	Read value

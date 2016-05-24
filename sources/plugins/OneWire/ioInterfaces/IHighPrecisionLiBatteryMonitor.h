@@ -1,7 +1,7 @@
 #pragma once
 
-namespace ioInterfaces {
-
+namespace ioInterfaces
+{
    //--------------------------------------------------------------
    /// \brief	High precision battery monitor interface
    //--------------------------------------------------------------
@@ -11,7 +11,9 @@ namespace ioInterfaces {
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
-      virtual ~IHighPrecisionLiBatteryMonitor() {}
+      virtual ~IHighPrecisionLiBatteryMonitor()
+      {
+      }
 
       //--------------------------------------------------------------
       /// \brief	Read IO state

@@ -1,7 +1,7 @@
 #pragma once
 
-namespace ioInterfaces {
-
+namespace ioInterfaces
+{
    //--------------------------------------------------------------
    /// \brief	Dual Addressable Switch + 1k Memory io accessor interface
    //--------------------------------------------------------------
@@ -11,7 +11,9 @@ namespace ioInterfaces {
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
-      virtual ~IDualAddressableSwitchPlus1kMemory() {}
+      virtual ~IDualAddressableSwitchPlus1kMemory()
+      {
+      }
 
       //--------------------------------------------------------------
       /// \brief	Number of channels getter

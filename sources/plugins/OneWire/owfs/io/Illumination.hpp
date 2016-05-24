@@ -3,26 +3,33 @@
 #include "SingleReadOnlyData.hpp"
 #include <shared/StringExtension.h>
 
-namespace owfs { namespace io {
-
-   //--------------------------------------------------------------
-   /// \brief	OWFS illumination (lux) device reader
-   //--------------------------------------------------------------
-   class CIllumination : public CSingleReadOnlyData<ioInterfaces::IIllumination, double>
+namespace owfs
+{
+   namespace io
    {
-   public:
       //--------------------------------------------------------------
-      /// \brief	Constructor
-      /// \param[in]	devicePath Device path
-      /// \param[in]	valueSubPath OWFS value sub-path
+      /// \brief	OWFS illumination (lux) device reader
       //--------------------------------------------------------------
-      CIllumination(const boost::filesystem::path& devicePath, const boost::filesystem::path& valueSubPath = boost::filesystem::path("illumination"))
-         : CSingleReadOnlyData(devicePath, valueSubPath) {}
+      class CIllumination : public CSingleReadOnlyData<ioInterfaces::IIllumination, double>
+      {
+      public:
+         //--------------------------------------------------------------
+         /// \brief	Constructor
+         /// \param[in]	devicePath Device path
+         /// \param[in]	valueSubPath OWFS value sub-path
+         //--------------------------------------------------------------
+         CIllumination(const boost::filesystem::path& devicePath,
+                       const boost::filesystem::path& valueSubPath = boost::filesystem::path("illumination"))
+            : CSingleReadOnlyData(devicePath, valueSubPath)
+         {
+         }
 
-      //--------------------------------------------------------------
-      /// \brief	Destructor
-      //--------------------------------------------------------------
-      virtual ~CIllumination() {}
-   };
-
-} } // namespace owfs::io
+         //--------------------------------------------------------------
+         /// \brief	Destructor
+         //--------------------------------------------------------------
+         virtual ~CIllumination()
+         {
+         }
+      };
+   }
+} // namespace owfs::io
