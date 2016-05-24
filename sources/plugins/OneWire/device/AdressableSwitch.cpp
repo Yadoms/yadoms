@@ -6,10 +6,8 @@ namespace device
 {   
    CAdressableSwitch::CAdressableSwitch(EOneWireFamily family,
                                         const std::string& id,
-                                        boost::shared_ptr<yApi::IYPluginApi> api,
                                         boost::shared_ptr<ioInterfaces::ISingleSwitch> io)
       :m_identification(boost::make_shared<device::CIdentification>(family, id, "DS2405")),
-       m_api(context),
        m_io(io),
        m_state(boost::make_shared<yApi::historization::CSwitch>("state")),
        m_keywords({ m_state })

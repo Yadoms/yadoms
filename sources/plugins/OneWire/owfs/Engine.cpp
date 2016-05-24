@@ -163,71 +163,71 @@ boost::shared_ptr<device::IDevice> CEngine::createDevice(EOneWireFamily family, 
    switch (family)
    {
    case kHighPrecisionDigitalThermometer:
-      device = boost::make_shared<device::CHighPrecisionDigitalThermometer>(family, id, m_context, boost::make_shared<io::CTemperature>(devicePath));
+      device = boost::make_shared<device::CHighPrecisionDigitalThermometer>(family, id, boost::make_shared<io::CTemperature>(devicePath));
       break;
 
    case kThermachron:
-      device = boost::make_shared<device::CThermachron>(family, id, m_context, boost::make_shared<io::CTemperature>(devicePath));
+      device = boost::make_shared<device::CThermachron>(family, id, boost::make_shared<io::CTemperature>(devicePath));
       break;
 
    case kEconoDigitalThermometer:
-      device = boost::make_shared<device::CEconoDigitalThermometer>(family, id, m_context, boost::make_shared<io::CTemperature>(devicePath));
+      device = boost::make_shared<device::CEconoDigitalThermometer>(family, id, boost::make_shared<io::CTemperature>(devicePath));
       break;
 
    case kTemperatureMemory:
-      device = boost::make_shared<device::CTemperatureMemory>(family, id, m_context, boost::make_shared<io::CTemperature>(devicePath));
+      device = boost::make_shared<device::CTemperatureMemory>(family, id, boost::make_shared<io::CTemperature>(devicePath));
       break;
 
    case kProgrammableResolutionDigitalThermometer:
-      device = boost::make_shared<device::CProgrammableResolutionDigitalThermometer>(family, id, m_context, boost::make_shared<io::CTemperature>(devicePath));
+      device = boost::make_shared<device::CProgrammableResolutionDigitalThermometer>(family, id, boost::make_shared<io::CTemperature>(devicePath));
       break;
 
    case kAddresableSwitch:
-      device = boost::make_shared<device::CAdressableSwitch>(family, id, m_context, boost::make_shared<io::CSingleSwitch>(devicePath));
+      device = boost::make_shared<device::CAdressableSwitch>(family, id, boost::make_shared<io::CSingleSwitch>(devicePath));
       break;
 
    case kMicrolanCoupler:
-      device = boost::make_shared<device::CMicrolanCoupler>(family, id, m_context, boost::make_shared<io::CMicrolanCoupler>(devicePath));
+      device = boost::make_shared<device::CMicrolanCoupler>(family, id, boost::make_shared<io::CMicrolanCoupler>(devicePath));
       break;
 
    case kDualAddressableSwitchPlus1kMemory:
-      device = boost::make_shared<device::CDualAddressableSwitchPlus1kMemory>(family, id, m_context, boost::make_shared<io::CDualAddressableSwitchPlus1kMemory>(devicePath));
+      device = boost::make_shared<device::CDualAddressableSwitchPlus1kMemory>(family, id, boost::make_shared<io::CDualAddressableSwitchPlus1kMemory>(devicePath));
       break;
 
    case k8ChannelAddressableSwitch:
-      device = boost::make_shared<device::C8ChannelAddressableSwitch>(family, id, m_context, boost::make_shared<io::CMultiSwitch>(devicePath, io::CMultiSwitch::kUnitIsZeroBasedNumber));
+      device = boost::make_shared<device::C8ChannelAddressableSwitch>(family, id, boost::make_shared<io::CMultiSwitch>(devicePath, io::CMultiSwitch::kUnitIsZeroBasedNumber));
       break;
 
    case kDigitalPotentiometer:
-      device = boost::make_shared<device::CDigitalPotentiometer>(family, id, m_context, boost::make_shared<io::CDigitalPotentiometer>(devicePath));
+      device = boost::make_shared<device::CDigitalPotentiometer>(family, id, boost::make_shared<io::CDigitalPotentiometer>(devicePath));
       break;
 
    case kTemperatureIo:
-      device = boost::make_shared<device::CTemperatureIo>(family, id, m_context, boost::make_shared<io::CTemperatureIo>(devicePath));
+      device = boost::make_shared<device::CTemperatureIo>(family, id, boost::make_shared<io::CTemperatureIo>(devicePath));
       break;
 
    case kDualChannelAddressableSwitch:
-      device = boost::make_shared<device::CDualChannelAddressableSwitch>(family, id, m_context, boost::make_shared<io::CMultiSwitch>(devicePath, io::CMultiSwitch::kUnitIsUppercaseLetter));
+      device = boost::make_shared<device::CDualChannelAddressableSwitch>(family, id, boost::make_shared<io::CMultiSwitch>(devicePath, io::CMultiSwitch::kUnitIsUppercaseLetter));
       break;
 
    case k4kEepromWithPio:
-      device = boost::make_shared<device::C4kEepromWithPio>(family, id, m_context, boost::make_shared<io::CMultiSwitch>(devicePath, io::CMultiSwitch::kUnitIsZeroBasedNumber));
+      device = boost::make_shared<device::C4kEepromWithPio>(family, id, boost::make_shared<io::CMultiSwitch>(devicePath, io::CMultiSwitch::kUnitIsZeroBasedNumber));
       break;
 
    case k4kRamWithCounter:
-      device = boost::make_shared<device::C4kRamWithCounter>(family, id, m_context, boost::make_shared<io::CMultiCounter>(devicePath));
+      device = boost::make_shared<device::C4kRamWithCounter>(family, id, boost::make_shared<io::CMultiCounter>(devicePath));
       break;
 
    case kQuadAdConverter:
-      device = boost::make_shared<device::CQuadAdConverter>(family, id, m_context, boost::make_shared<io::CQuadAdConverter>(devicePath));
+      device = boost::make_shared<device::CQuadAdConverter>(family, id, boost::make_shared<io::CQuadAdConverter>(devicePath));
       break;
 
    case kSmartBatteryMonitor:
-      device = boost::make_shared<device::CSmartBatteryMonitor>(family, id, m_context, boost::make_shared<io::CSmartBatteryMonitor>(devicePath));
+      device = boost::make_shared<device::CSmartBatteryMonitor>(family, id, boost::make_shared<io::CSmartBatteryMonitor>(devicePath));
       break;
 
    case kHighPrecisionLiBatteryMonitor:
-      device = boost::make_shared<device::CHighPrecisionLiBatteryMonitor>(family, id, m_context, boost::make_shared<io::CHighPrecisionLiBatteryMonitor>(devicePath));
+      device = boost::make_shared<device::CHighPrecisionLiBatteryMonitor>(family, id, boost::make_shared<io::CHighPrecisionLiBatteryMonitor>(devicePath));
       break;
 
    default: // Device is not actually supported

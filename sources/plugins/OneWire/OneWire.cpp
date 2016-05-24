@@ -73,8 +73,9 @@ void COneWire::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
                boost::shared_ptr<device::IDevice> newDevice = foundDevice->second;
                newDevice->get();
-               api->historizeData(newDevice->ident()->deviceName(),
-                                  newDevice->keywords())
+               if (!newDevice->keywords().empty())
+                  api->historizeData(newDevice->ident()->deviceName(),
+                                     newDevice->keywords())
             }
 
             break;
