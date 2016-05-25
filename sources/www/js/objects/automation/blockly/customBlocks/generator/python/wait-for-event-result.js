@@ -8,7 +8,9 @@ Blockly.Python["yadoms_wait_for_event_result"] = function (block) {
 	
 	switch(block.getChoice()) {
 		case "value":
-			code = Blockly.Python.lastWaitForEventResultVar + ".getValue()";
+			//use Blockly.Python.lastWaitForEventResultKeywordId and not Blockly.Python.lastWaitForEventResultVar + ".getKeywordId() because
+			//method Blockly.Yadoms.Python.castToPython must be determined at generation time and .getKeywordId() is python method at runtime
+			code = Blockly.Yadoms.Python.castToPython(Blockly.Python.lastWaitForEventResultKeywordId, Blockly.Python.lastWaitForEventResultVar + ".getValue()");
 			break;
 		case "keywordName":
 			code = "yApi.getKeywordName(" + Blockly.Python.lastWaitForEventResultVar + ".getKeywordId())";
