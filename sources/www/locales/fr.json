@@ -561,6 +561,9 @@
         "chooseKeywordHelper": "Choisir une donnée",
         "chooseCapacityHelper": "Choisir une capacité",
         "blocks": {
+			"logic_negate" : {
+				"title" : "l'inverse de"
+			},
             "yadoms_wait": {
                 "title": "Attendre",
                 "tooltip": "Le script attends une date/heure spécifiée ou une durée"
@@ -593,10 +596,10 @@
 			"yadoms_wait_for_event_result" : {
                 "title": " du dernier évènement",
                 "tooltip": "Obtient les informations du dernier évènement",
-				"value" : "Obtient la valeur",
-				"deviceName" : "Obtient le nom de l'équipement",
-				"keywordName" : "Obtient le nom du capteur",
-				"fullName" : "Obtient le nom complet"
+				"value" : "la valeur",
+				"deviceName" : "le nom de l'équipement",
+				"keywordName" : "le nom du capteur",
+				"fullName" : "le nom complet"
 			},
             "yadoms_wait_for_event": {
                 "title": "Attendre un évènement",
@@ -670,7 +673,9 @@
                 "tooltip": "Obtient la dernière valeur du keyword en base de données"
             },
             "keyword-value-set": {
-                "title": "Set",
+                "title": "Positionne",
+                "titleTo": "à",
+                "titleCall": "Appelle",
                 "tooltip": "Défini une nouvelle valeur à un keyword"
             },
             "yadoms_notification_simple": {

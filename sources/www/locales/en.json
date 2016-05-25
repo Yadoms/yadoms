@@ -559,6 +559,9 @@
     "chooseKeywordHelper" :  "Choose keyword",
 	"chooseCapacityHelper": "Choose a capacity",
     "blocks": {
+		"logic_negate" : {
+			"title" : "not"
+		},
       "yadoms_wait": {
         "title": "At",
         "tooltip": "Block the script until the specified date occurs"
@@ -591,10 +594,10 @@
       "yadoms_wait_for_event_result" : {
 			"title": "from last event",
 			"tooltip": "Get information about last event",
-			"value" : "Get the value",
-			"deviceName" : "Get the device name",
-			"keywordName" : "Get the sensor name",
-			"fullName" : "Get the full name"			
+			"value" : "the value",
+			"deviceName" : "the device name",
+			"keywordName" : "the sensor name",
+			"fullName" : "the full name"			
 		},
       "yadoms_wait_for_event": {
         "title": "Wait for an event",
@@ -664,6 +667,8 @@
       },
       "keyword-value-set": {
         "title": "Set",
+		"titleTo": "to",
+        "titleCall": "Call",
         "tooltip": "Affect a new value to a keyword"
       },
       "yadoms_notification_simple": {
