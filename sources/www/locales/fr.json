@@ -617,7 +617,7 @@
                     "change": "est émise",
                     "become": ""
                 },
-                "do": "Faire",
+                "do": "Alors",
                 "tooltip": "Attend un évènement. cela peut être l'évolution d'une donnée, ou bien la date/heure qui change",
                 "defaultVarName": "nouvelleAcquisition",
                 "defaultDeviceVarName": "équipementCible",

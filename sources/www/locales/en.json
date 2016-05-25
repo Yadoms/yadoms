@@ -615,7 +615,7 @@
 			"change": "is sent",
 			"become": ""
 		},
-        "do": "Then do",
+        "do": "Then",
         "tooltip": "Wait for an event. It can be a device acquisition update or the date/time change",
         "defaultVarName": "newAcquisitionValue",
 		"defaultDeviceVarName": "targetDevice",
