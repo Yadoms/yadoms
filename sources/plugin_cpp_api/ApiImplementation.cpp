@@ -485,7 +485,7 @@ namespace plugin_cpp_api
    boost::shared_ptr<const shared::plugin::information::IInformation> CApiImplementation::getInformation() const
    {
       if (!m_pluginInformation)
-         throw std::exception("Plugin information not available");
+         throw std::runtime_error("Plugin information not available");
 
       return m_pluginInformation;
    }
