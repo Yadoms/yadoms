@@ -9,12 +9,11 @@
 
 #include "Supervisor.h"
 #include "ErrorHandler.h"
-#include "ApplicationStopHandler.h"
 #include "RunningInformation.h"
 #include <shared/currentTime/Provider.h>
 #include <shared/currentTime/Local.h>
 #include <shared/ServiceLocator.h>
-#include "tools/OperatingSystemIntegration.h"
+#include <shared/process/ApplicationStopHandler.h>
 
 //define the main entry point
 POCO_SERVER_MAIN(CYadomsServer)
@@ -22,9 +21,8 @@ POCO_SERVER_MAIN(CYadomsServer)
 shared::currentTime::Provider timeProvider(boost::make_shared<shared::currentTime::Local>());
 
 CYadomsServer::CYadomsServer()
-:m_helpRequested(false), 
-m_startupOptions(new startupOptions::CStartupOptions(config())),
-m_eventHandler(new shared::event::CEventHandler())
+   : m_helpRequested(false),
+     m_startupOptions(new startupOptions::CStartupOptions(config()))
 {
    //define unixstyle for command line parsing
    //so in Windows platform we use --option and -o for options (instead of /option)
@@ -33,7 +31,6 @@ m_eventHandler(new shared::event::CEventHandler())
 
 CYadomsServer::~CYadomsServer()
 {
-
 }
 
 
@@ -52,36 +49,32 @@ void CYadomsServer::uninitialize()
 {
    YADOMS_LOG(information) << "Yadoms is shutting down";
    ServerApplication::uninitialize();
-
-   //notify listeners that application ends (mostly used for application control handler (service and control) managers
-   if (m_stopHandler)
-      m_stopHandler->NotifyApplicationEnds();
 }
 
 void CYadomsServer::defineOptions(Poco::Util::OptionSet& options)
 {
    //configure Poco::Application options
    ServerApplication::defineOptions(options);
-   
+
    //manage only help option
    options.addOption(
       Poco::Util::Option("help", "h", "display help information on command line arguments")
       .required(false)
       .repeatable(false)
       .callback(Poco::Util::OptionCallback<CYadomsServer>(this, &CYadomsServer::handleHelp)));
-   
+
    //configure startup yadoms options
    m_startupOptions->defineOptions(options);
 }
 
-void CYadomsServer::handleHelp(const std::string& name, const std::string& value)
+void CYadomsServer::handleHelp(const std::string& /*name*/, const std::string& /*value*/)
 {
    m_helpRequested = true;
    displayHelp();
    stopOptionsProcessing();
 }
 
-void CYadomsServer::displayHelp()
+void CYadomsServer::displayHelp() const
 {
    Poco::Util::HelpFormatter helpFormatter(options());
    helpFormatter.setUnixStyle(true);
@@ -91,13 +84,17 @@ void CYadomsServer::displayHelp()
    helpFormatter.format(std::cout);
 }
 
-int CYadomsServer::main(const Poco::Util::Application::ArgVec& args)
+int CYadomsServer::main(const ArgVec& /*args*/)
 {
+   enum
+      {
+         kApplicationFullyStopped = shared::event::kUserFirstId
+      };
+
    if (!m_helpRequested)
    {
       std::string executablePath = config().getString("application.path");
-      m_runningInformation.reset(new CRunningInformation(executablePath));
-
+      m_runningInformation = boost::make_shared<CRunningInformation>(executablePath);
 
 
       YADOMS_LOG_CONFIGURE("Main");
@@ -112,7 +109,7 @@ int CYadomsServer::main(const Poco::Util::Application::ArgVec& args)
       YADOMS_LOG(information) << "\tWeb server path = " << m_startupOptions->getWebServerInitialPath();
       YADOMS_LOG(information) << "\tdb path = " << m_startupOptions->getDatabaseFile();
       if (m_startupOptions->getNoPasswordFlag())
-         YADOMS_LOG(information) << "\tnoPassword = true";
+      YADOMS_LOG(information) << "\tnoPassword = true";
       YADOMS_LOG(information) << "********************************************************************";
 
       //register Services in serviceLocator
@@ -121,49 +118,43 @@ int CYadomsServer::main(const Poco::Util::Application::ArgVec& args)
 
       //configure the Poco ErrorHandler
       CErrorHandler eh;
-      Poco::ErrorHandler* pOldEH = Poco::ErrorHandler::set(&eh);
+      auto pOldEH = Poco::ErrorHandler::set(&eh);
 
       //configure stop handler
-      m_stopHandler.reset(new CApplicationStopHandler(m_eventHandler, kTerminationRequested));
-      shared::CServiceLocator::instance().push<IApplicationStopHandler>(m_stopHandler);
-
-      tools::COperatingSystemIntegration integration;
-      integration.configure();
+      enum { kTerminationRequested = shared::event::kUserFirstId };
+      auto stopHandler = boost::make_shared<shared::process::CApplicationStopHandler>(m_startupOptions->getIsRunningAsService());
+      stopHandler->setApplicationStopHandler([&]() -> bool
+         {
+            // Ask for application stop and wait for application full stop
+            m_stopRequestEventHandler.postEvent(kTerminationRequested);
+            return m_stoppedEventHandler.waitForEvents(boost::posix_time::seconds(30)) == kApplicationFullyStopped;
+         });
 
       //create supervisor
-      CSupervisor supervisor(m_eventHandler, kSupervisorIsStopped);
+      CSupervisor supervisor;
       Poco::Thread supervisorThread("Supervisor");
       supervisorThread.start(supervisor);
 
-      bool stillRunning = true;
-      while (stillRunning)
+      //
+      // Yadoms is running...
+      //
+
+      // Wait for stop
+      while (m_stopRequestEventHandler.waitForEvents() != kTerminationRequested)
       {
-         //configure console and ctrl+c handlers
-         switch (m_eventHandler->waitForEvents())
-         {
-         case kTerminationRequested:
-            //this event is launch by application stop handler
-            //then just ask supervisor to stop and follow termination process
-            YADOMS_LOG(debug) << "Receive termination request : ask supervisor to stop...";
-            supervisor.requestToStop();
-            YADOMS_LOG(debug) << "Supervisor stop asked";
-            break;
-         case kSupervisorIsStopped:
-            YADOMS_LOG(debug) << "Receive supervisor stop signal";
-            stillRunning = false;
-            break;
-         default:
-            break;
-         }
       }
-      YADOMS_LOG(debug) << "Wait for supervisor finish...";
+
+      YADOMS_LOG(debug) << "Receive termination request : ask supervisor to stop...";
+      supervisor.requestToStop();
       supervisorThread.join();
-      YADOMS_LOG(debug) << "Supervisor finished";
+      YADOMS_LOG(debug) << "Supervisor stopped";
 
       //restore Poco ErrorHandler
       Poco::ErrorHandler::set(pOldEH);
    }
-   YADOMS_LOG(debug) << "Yadoms is stopping, wait for supervisor finish...";
-   return Poco::Util::Application::EXIT_OK;
+
+   YADOMS_LOG(debug) << "Yadoms is stopped";
+   m_stoppedEventHandler.postEvent(kApplicationFullyStopped);
+   return EXIT_OK;
 }
 

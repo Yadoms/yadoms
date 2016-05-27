@@ -4,7 +4,6 @@
 // Yadoms-plugin manager
 //
 #pragma once
-
 #include "IFactory.h"
 #include "IInstance.h"
 #include "database/IDataProvider.h"
@@ -32,12 +31,10 @@ namespace pluginSystem
       /// \param [in]   initialDir              Initial plugins search directory
       /// \param [in]   dataProvider            Database link
       /// \param [in]   dataAccessLayer         The database access layer
-      /// \param [in]   supervisor              The supervisor event handler
       //--------------------------------------------------------------
       CManager(const std::string& initialDir,
                boost::shared_ptr<database::IDataProvider> dataProvider,
-               boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
-               boost::shared_ptr<shared::event::CEventHandler> supervisor);
+               boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer);
 
       //--------------------------------------------------------------
       /// \brief			Initialization, used for the 2-steps construction

@@ -206,6 +206,10 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/historization/typeInfo/StringTypeInfo.cpp
    shared/plugin/yPluginApi/historization/typeInfo/EnumTypeInfo.hpp
 
+	shared/process/IApplication.h
+	shared/process/IApplicationStopHandler.h
+	shared/process/IApplicationStopRequestObserver.h
+	shared/process/IOperatingSystemIntegration.h
    shared/process/IProcessObserver.h
    shared/process/ICommandLine.h
    shared/process/IProcess.h
@@ -261,6 +265,13 @@ set(SHARED_LIB_SRC
 	windows/shared/Peripherals.cpp
 	windows/shared/Thread.h
 	windows/shared/Thread.cpp
+   
+   windows/shared/process/ConsoleControlHandler.h
+   windows/shared/process/ConsoleControlHandler.cpp
+   windows/shared/process/ServiceControlHandler.h
+   windows/shared/process/ServiceControlHandler.cpp
+   windows/shared/process/ApplicationStopHandler.h
+   windows/shared/process/ApplicationStopHandler.cpp # TODO ajouter les autres plateformes et faire le ménage
 )	
 set(PLATFORM_SPECIFIC_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/windows)
 
@@ -280,6 +291,9 @@ set(SHARED_LIB_SRC
 	mac/shared/Peripherals.cpp
 	mac/shared/Thread.h
 	mac/shared/Thread.cpp
+   
+   mac/shared/process/OperatingSystemIntegration.h
+	mac/shared/process/OperatingSystemIntegration.cpp
 )	
 set(PLATFORM_SPECIFIC_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/mac)
 
@@ -299,6 +313,9 @@ set(SHARED_LIB_SRC
 	linux/shared/Peripherals.cpp
 	linux/shared/Thread.h
 	linux/shared/Thread.cpp
+   
+	linux/shared/process/OperatingSystemIntegration.h
+	linux/shared/process/OperatingSystemIntegration.cpp
 )	
 set(PLATFORM_SPECIFIC_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/linux)
 
@@ -331,8 +348,11 @@ source_group(web shared/shared/web/*.* )
 source_group(web\\exception shared/shared/web/exception/*.* )	
 
 source_group(platformSpecific\\windows shared/windows/shared/*.*)
+source_group(platformSpecific\\windows\\process shared/windows/shared/process/*.*)
 source_group(platformSpecific\\linux shared/linux/shared/*.*)
+source_group(platformSpecific\\linux\\process shared/linux/shared/process/*.*)
 source_group(platformSpecific\\mac shared/mac/shared/*.*)
+source_group(platformSpecific\\mac\\process shared/mac/shared/process/*.*)
 
 
 

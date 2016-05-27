@@ -2,10 +2,8 @@
 #include "Yadoms.h"
 #include <shared/Log.h>
 #include <shared/DataContainer.h>
-#include "RunningInformation.h"
 #include <shared/ServiceLocator.h>
 #include <Poco/Process.h>
-#include "IApplicationStopHandler.h"
 #include <shared/compression/Extract.h>
 #include "tools/FileSystem.h"
 #include "i18n/ClientStrings.h"
@@ -90,9 +88,10 @@ namespace update {
                      boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
 
                      //demande de fermeture de l'application
-                     boost::shared_ptr<IApplicationStopHandler> stopHandler = shared::CServiceLocator::instance().get<IApplicationStopHandler>();
-                     if (stopHandler)
-                        stopHandler->requestToStop(IApplicationStopHandler::kYadomsOnly);
+                     //TODO
+                     //boost::shared_ptr<IApplicationStopHandler> stopHandler = shared::CServiceLocator::instance().get<IApplicationStopHandler>();
+                     //if (stopHandler)
+                     //   stopHandler->requestToStop(IApplicationStopHandler::kYadomsOnly);
                   }
                   catch (std::exception & ex)
                   {

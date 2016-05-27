@@ -2,10 +2,10 @@
 #include "Instance.h"
 #include "FinishedInstance.h"
 #include "ITask.h"
-#include <shared/event/EventHandler.hpp>
+#include "dataAccessLayer/IEventLogger.h"
 
-namespace task {
-
+namespace task
+{
    //------------------------------
    ///\brief Class which handle tasks (create, run,...)
    //------------------------------
@@ -15,7 +15,7 @@ namespace task {
       //------------------------------
       ///\brief Constructor
       //------------------------------
-      CScheduler(boost::shared_ptr<shared::event::CEventHandler> eventHandler, const int systemEventCode);
+      explicit CScheduler(boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger);
       
       //------------------------------
       ///\brief public destructor
@@ -72,19 +72,14 @@ namespace task {
       FinishedTaskInstanceMap m_finishedTasks;
 
       //------------------------------------------
-      ///\brief   A reference to the main event handler (to report start and stop status)
+      ///\brief   A reference to the main event logger (to report start and stop status)
       //------------------------------------------
-      boost::shared_ptr<shared::event::CEventHandler> m_eventHandler;
+      boost::shared_ptr<dataAccessLayer::IEventLogger> m_eventLogger;
       
       //------------------------------------------
       ///\brief   A reference to the local task event handler (to report start and stop status of a task)
       //------------------------------------------
       boost::shared_ptr<shared::event::CEventHandler> m_taskEventHandler;
-
-      //------------------------------------------
-      ///\brief   The event code used to notify
-      //------------------------------------------
-      int m_systemEventCode;
 
       //--------------------------------------------------------------
       /// \brief	   Mutex protecting the maps

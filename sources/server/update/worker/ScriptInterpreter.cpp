@@ -3,9 +3,7 @@
 #include <shared/Log.h>
 
 #include <shared/ServiceLocator.h>
-#include "IApplicationStopHandler.h"
 #include "startupOptions/IStartupOptions.h"
-#include "update/info/UpdateSite.h"
 
 #include "WorkerTools.h"
 #include <Poco/File.h>

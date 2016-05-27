@@ -21,8 +21,7 @@ namespace pluginSystem
 {
    CManager::CManager(const std::string& initialDir,
                       boost::shared_ptr<database::IDataProvider> dataProvider,
-                      boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
-                      boost::shared_ptr<shared::event::CEventHandler> supervisor)
+                      boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer)
       :
       m_factory(boost::make_shared<CFactory>(initialDir)),
       m_dataProvider(dataProvider),
@@ -32,7 +31,7 @@ namespace pluginSystem
 #else
       m_qualifier(boost::make_shared<CIndicatorQualifier>(dataProvider->getPluginEventLoggerRequester(), dataAccessLayer->getEventLogger())),
 #endif
-      m_supervisor(supervisor), m_dataAccessLayer(dataAccessLayer),
+      m_dataAccessLayer(dataAccessLayer),
       m_instanceRemover(boost::make_shared<CInstanceRemover>(m_runningInstancesMutex, m_runningInstances))
    {
    }

@@ -30,11 +30,7 @@
 #include "dateTime/DateTimeNotifier.h"
 
 
-CSupervisor::CSupervisor(boost::shared_ptr<shared::event::CEventHandler> applicationEventHandler,
-                         const int applicationStopCode)
-   : m_EventHandler(boost::make_shared<shared::event::CEventHandler>()),
-     m_applicationEventHandler(applicationEventHandler),
-     m_applicationStopCode(applicationStopCode)
+CSupervisor::CSupervisor()
 {
 }
 
@@ -70,8 +66,7 @@ void CSupervisor::run()
       shared::CServiceLocator::instance().push<dataAccessLayer::IDataAccessLayer>(dal);
 
       // Start Task manager
-      auto taskManager(boost::make_shared<task::CScheduler>(m_EventHandler,
-                                                            kSystemEvent));
+      auto taskManager(boost::make_shared<task::CScheduler>(dal->getEventLogger()));
       taskManager->start();
 
       // Create the update manager
@@ -81,8 +76,7 @@ void CSupervisor::run()
       const auto pluginsPath = startupOptions->getPluginsPath();
       auto pluginManager(boost::make_shared<pluginSystem::CManager>(pluginsPath,
                                                                     pDataProvider,
-                                                                    dal,
-                                                                    m_EventHandler));
+                                                                    dal));
       shared::CServiceLocator::instance().push<pluginSystem::CManager>(pluginManager);
 
       // Start the plugin gateway
@@ -142,25 +136,7 @@ void CSupervisor::run()
 
       // Main loop
       YADOMS_LOG(information) << "Supervisor is running...";
-      bool stopIsRequested = false;
-      while (!stopIsRequested)
-      {
-         switch (m_EventHandler->waitForEvents())
-         {
-         case kStopRequested:
-            stopIsRequested = true;
-            break;
-
-         case kSystemEvent:
-            dal->getEventLogger()->addEvent(m_EventHandler->getEventData<database::entities::CEventLogger>());
-            break;
-
-         default:
-            YADOMS_LOG(error) << "Unknown message id";
-            BOOST_ASSERT(false);
-            break;
-         }
-      }
+      while (m_EventHandler.waitForEvents() != kStopRequested){}
 
       YADOMS_LOG(information) << "Supervisor is stopping...";
 
@@ -207,17 +183,11 @@ void CSupervisor::run()
    }
 
    //notify application that supervisor ends
-   if (m_applicationEventHandler)
-   {
-      YADOMS_LOG(debug) << "Supervisor, end : post event to Yadoms application...";
-      m_applicationEventHandler->postEvent(m_applicationStopCode);
-      YADOMS_LOG(debug) << "Supervisor, end : event posted to Yadoms application";
-   }
+   YADOMS_LOG(debug) << "Supervisor stopped";
 }
 
-void CSupervisor::requestToStop() const
+void CSupervisor::requestToStop()
 {
-   if (m_EventHandler)
-      m_EventHandler->postEvent(kStopRequested);
+   m_EventHandler.postEvent(kStopRequested);
 }
 

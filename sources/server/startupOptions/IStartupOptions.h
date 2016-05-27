@@ -18,7 +18,7 @@ namespace startupOptions
       /// \brief	    Get the log level
       /// \return     Configured log level
       //--------------------------------------------------------------
-      virtual const std::string getLogLevel() const = 0;
+      virtual std::string getLogLevel() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Get the port number
@@ -30,34 +30,34 @@ namespace startupOptions
       /// \brief	    Get the web server ip address
       /// \return     Configured web server ip address
       //--------------------------------------------------------------
-      virtual const std::string getWebServerIPAddress() const = 0;
+      virtual std::string getWebServerIPAddress() const = 0;
       
       //--------------------------------------------------------------
       /// \brief	    Get the web server initial path
       /// \return     Configured web server initial path
       //--------------------------------------------------------------
-      virtual const std::string getWebServerInitialPath() const = 0;
+      virtual std::string getWebServerInitialPath() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Get the path of the database file
       /// \return     Database file path
       /// \note       If not exist, Yadoms will create the file
       //--------------------------------------------------------------
-      virtual const std::string getDatabaseFile() const = 0;    
+      virtual std::string getDatabaseFile() const = 0;    
       
       //--------------------------------------------------------------
       /// \brief	    Get the plugin path
       /// \return     The plugin path
       /// \note       If not exist, it returns "plugins"
       //--------------------------------------------------------------
-      virtual const std::string getPluginsPath() const = 0;    
+      virtual std::string getPluginsPath() const = 0;    
       
       //--------------------------------------------------------------
       /// \brief	    Get the script interpreters path
       /// \return     The script interpreters path
       /// \note       If not exist, it returns "scriptInterpreters"
       //--------------------------------------------------------------
-      virtual const std::string getScriptInterpretersPath() const = 0;
+      virtual std::string getScriptInterpretersPath() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Get the no password flag
@@ -76,7 +76,7 @@ namespace startupOptions
       /// \return     The update site URI
       /// \note       If not exist, it returns "http://www.yadoms.com/downloads/update/"
       //--------------------------------------------------------------
-      virtual const std::string getUpdateSiteUri() const = 0;
+      virtual std::string getUpdateSiteUri() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Get the acquisition lifetime

@@ -11,16 +11,18 @@
 #include "Scheduler.h"
 #include <Poco/UUIDGenerator.h>
 
-namespace task {
-
-   CScheduler::CScheduler(boost::shared_ptr<shared::event::CEventHandler> eventHandler, const int systemEventCode)
-      : CThreadBase("Task_Scheduler"), m_eventHandler(eventHandler), m_taskEventHandler(new shared::event::CEventHandler), m_systemEventCode(systemEventCode)
+namespace task
+{
+   CScheduler::CScheduler(boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger)
+      :CThreadBase("Task_Scheduler"),
+       m_eventLogger(eventLogger),
+       m_taskEventHandler(boost::make_shared<shared::event::CEventHandler>())
    {
    }
 
    CScheduler::~CScheduler()
    {
-      stop();
+      CThreadBase::stop();
    }
 
    void CScheduler::doWork()
@@ -42,7 +44,7 @@ namespace task {
                }
                else
                {
-                  boost::shared_ptr<CInstance> i = m_runningTasks[evt.getGuid()];
+                  auto i = m_runningTasks[evt.getGuid()];
 
                   switch (i->getStatus())
                   {
@@ -52,7 +54,7 @@ namespace task {
                      database::entities::CEventLogger entry;
                      entry.Code = database::entities::ESystemEventCode::kStarted;
                      entry.Who = m_runningTasks[i->getGuid()]->getTask()->getName();
-                     m_eventHandler->postEvent(m_systemEventCode, entry);
+                     m_eventLogger->addEvent(entry);
                      break;
                   }
 
@@ -64,7 +66,7 @@ namespace task {
 
                      //the task has finished
                      //we create a finishedInstance container
-                     m_finishedTasks.insert(std::make_pair(i->getGuid(), boost::shared_ptr<CFinishedInstance>(new CFinishedInstance(i->getGuid(), i->getName(), i->getStatus(), i->getProgression(), i->getMessage(), i->getExceptionMessage(), i->getTaskData(), i->getCreationDate()))));
+                     m_finishedTasks.insert(std::make_pair(i->getGuid(), boost::make_shared<CFinishedInstance>(i->getGuid(), i->getName(), i->getStatus(), i->getProgression(), i->getMessage(), i->getExceptionMessage(), i->getTaskData(), i->getCreationDate())));
 
                      //we remove the actual instance from the dictionnary
                      m_runningTasks.erase(i->getGuid());
@@ -103,7 +105,7 @@ namespace task {
             entry.Code = database::entities::ESystemEventCode::kThreadFailed;
             entry.Who = "taskScheduler";
             entry.What = (boost::format("Crashed in doWork with exception %1%") % e.what()).str();
-            m_eventHandler->postEvent(m_systemEventCode, entry);
+            m_eventLogger->addEvent(entry);
          }
          catch (...)
          {
@@ -113,7 +115,7 @@ namespace task {
             entry.Code = database::entities::ESystemEventCode::kThreadFailed;
             entry.Who = "taskScheduler";
             entry.What = "crash with unknown exception.";
-            m_eventHandler->postEvent(m_systemEventCode, entry);
+            m_eventLogger->addEvent(entry);
          }
       }
    }
@@ -126,7 +128,7 @@ namespace task {
 
       std::string existingUid = "";
       //we check if the task is IUnique
-      if (boost::dynamic_pointer_cast<IUnique>(taskToRun) != NULL)
+      if (boost::dynamic_pointer_cast<IUnique>(taskToRun) != nullptr)
       {
          //the task is unique, we must check if it is not already running
 
@@ -152,7 +154,7 @@ namespace task {
       //the task is not unique or does not exist in the list, so we can create another
       uniqueId = Poco::UUIDGenerator::defaultGenerator().createRandom().toString();
       
-      m_runningTasks.insert(std::make_pair(uniqueId, boost::shared_ptr<CInstance>(new CInstance(taskToRun, m_taskEventHandler, kTaskEvent, uniqueId))));
+      m_runningTasks.insert(std::make_pair(uniqueId, boost::make_shared<CInstance>(taskToRun, m_taskEventHandler, kTaskEvent, uniqueId)));
       return true;
    }
    

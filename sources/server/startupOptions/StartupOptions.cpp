@@ -19,7 +19,7 @@ namespace startupOptions
 
    }
 
-   void CStartupOptions::defineOptions(Poco::Util::OptionSet& options)
+   void CStartupOptions::defineOptions(Poco::Util::OptionSet& options) const
    {
       options.addOption(
          Poco::Util::Option("port", "p", "set the web server port number")
@@ -83,7 +83,7 @@ namespace startupOptions
          .binding("server.developerMode", &m_configContainer));
    }
 
-   const std::string CStartupOptions::getLogLevel() const
+   std::string CStartupOptions::getLogLevel() const
    {
       return m_configContainer.getString("server.logLevel", "information");
    }
@@ -93,16 +93,17 @@ namespace startupOptions
       return m_configContainer.getInt("server.port", 8080);
    }
 
-   const std::string CStartupOptions::getWebServerIPAddress() const
+   std::string CStartupOptions::getWebServerIPAddress() const
    {
       return m_configContainer.getString("server.ip", "0.0.0.0");
    }
 
-   const std::string CStartupOptions::getWebServerInitialPath() const
+   std::string CStartupOptions::getWebServerInitialPath() const
    {
       return m_configContainer.getString("server.www", "www");
    }
-   const std::string CStartupOptions::getDatabaseFile() const
+
+   std::string CStartupOptions::getDatabaseFile() const
    {
       return m_configContainer.getString("server.databasePath", "yadoms.db3");
    }
@@ -111,12 +112,12 @@ namespace startupOptions
       return m_configContainer.getBool("server.noPassword", false);
    }
 
-   const std::string CStartupOptions::getPluginsPath() const
+   std::string CStartupOptions::getPluginsPath() const
    {
       return m_configContainer.getString("server.pluginsPath", "plugins");
    }
 
-   const std::string CStartupOptions::getScriptInterpretersPath() const
+   std::string CStartupOptions::getScriptInterpretersPath() const
    {
       return m_configContainer.getString("server.scriptInterpretersPath", "scriptInterpreters");
    }
@@ -126,7 +127,7 @@ namespace startupOptions
       return m_configContainer.getBool("application.runAsService", false);
    }
 
-   const std::string CStartupOptions::getUpdateSiteUri() const
+   std::string CStartupOptions::getUpdateSiteUri() const
    {
       return m_configContainer.getString("server.updateSite", "http://www.yadoms.com/downloads/update/");
    }

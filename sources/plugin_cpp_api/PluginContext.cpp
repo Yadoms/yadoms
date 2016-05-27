@@ -3,7 +3,7 @@
 #include "ApiImplementation.h"
 #include "CommandLine.h"
 #include <shared/currentTime/Local.h>
-#include <csignal>
+#include <windows/shared/process/ApplicationStopHandler.h>
 
 //TODO      Ajouter ce lien dans le wiki plugin/how to debug my plugin : https://msdn.microsoft.com/en-us/library/a329t4ed(v=vs.90).aspx
 shared::currentTime::Provider timeProvider(boost::make_shared<shared::currentTime::Local>());
@@ -14,8 +14,18 @@ namespace plugin_cpp_api
    {
       try
       {
+         shared::event::CEventHandler stopEvenHandler;
+         enum { kPluginStopped = shared::event::kUserFirstId };
+         auto stopHandler = boost::make_shared<shared::process::CApplicationStopHandler>(false);
+         stopHandler->setApplicationStopHandler([&]() -> bool
+         {
+            // Termination should be asked by Yadoms with IPC, so just wait for end
+            return stopEvenHandler.waitForEvents(boost::posix_time::seconds(30)) == kPluginStopped;
+         });
+
          auto pluginContext = boost::make_shared<CPluginContext>(argc, argv, plugin);
          pluginContext->run();
+         stopEvenHandler.postEvent(kPluginStopped);
          return pluginContext->getReturnCode();
       }
       catch (std::invalid_argument& e)

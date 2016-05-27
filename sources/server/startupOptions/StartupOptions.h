@@ -33,22 +33,22 @@ namespace startupOptions
       //--------------------------------------------------------------
       /// \brief	   Define StartupOptions
       //--------------------------------------------------------------
-      void defineOptions(Poco::Util::OptionSet& options);
+      void defineOptions(Poco::Util::OptionSet& options) const;
 
       //--------------------------------------------------------------
       // IStartupOptions implementation (see IStartupOptions declaration for details)
-      virtual const std::string getLogLevel() const;
-      virtual unsigned int getWebServerPortNumber() const;
-      virtual const std::string getWebServerIPAddress() const;
-      virtual const std::string getWebServerInitialPath() const;
-      virtual const std::string getDatabaseFile() const;
-      virtual const std::string getPluginsPath() const;
-      virtual const std::string getScriptInterpretersPath() const;
-      virtual bool getNoPasswordFlag() const;
-      virtual bool getIsRunningAsService() const;
-      virtual const std::string getUpdateSiteUri() const;
-      virtual int getDatabaseAcquisitionLifetime() const;
-      virtual bool getDeveloperMode() const;
+      std::string getLogLevel() const override;
+      unsigned int getWebServerPortNumber() const override;
+      std::string getWebServerIPAddress() const override;
+      std::string getWebServerInitialPath() const override;
+      std::string getDatabaseFile() const override;
+      std::string getPluginsPath() const override;
+      std::string getScriptInterpretersPath() const override;
+      bool getNoPasswordFlag() const override;
+      bool getIsRunningAsService() const override;
+      std::string getUpdateSiteUri() const override;
+      int getDatabaseAcquisitionLifetime() const override;
+      bool getDeveloperMode() const override;
       // [END] IStartupOptions implementation
       //--------------------------------------------------------------
 

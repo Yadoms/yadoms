@@ -3,8 +3,6 @@
 #include <shared/Log.h>
 #include <shared/exception/Exception.hpp>
 #include <shared/plugin/yPluginApi/historization/Historizers.h>
-#include "../../IApplicationStopHandler.h"
-#include <shared/ServiceLocator.h>
 
 namespace pluginSystem {
    namespace internalPlugin {
@@ -39,8 +37,6 @@ namespace pluginSystem {
                                "yadoms system",
                                keywords);
 
-         boost::shared_ptr<IApplicationStopHandler> applicationStopHandler = shared::CServiceLocator::instance().get<IApplicationStopHandler>();
-
          while (1)
          {
             // Wait for an event
@@ -54,12 +50,12 @@ namespace pluginSystem {
                   if (boost::iequals(command->getKeyword(), keywordShutdown->getKeyword()))
                   {
                      YADOMS_LOG(information) << "Shutdown the system";
-                     applicationStopHandler->requestToStop(IApplicationStopHandler::kStopSystem);
+                     //TODO applicationStopHandler->requestToStop(IApplicationStopHandler::kStopSystem);
                   }
                   else if (boost::iequals(command->getKeyword(), keywordRestart->getKeyword()))
                   {
                      YADOMS_LOG(information) << "Restart the system";
-                     applicationStopHandler->requestToStop(IApplicationStopHandler::kRestartSystem);
+                     //TODO applicationStopHandler->requestToStop(IApplicationStopHandler::kRestartSystem);
                   }
                   else
                   {

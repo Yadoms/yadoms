@@ -8,24 +8,19 @@
 //-----------------------------------------------------------------------------
 class CSupervisor : public Poco::Runnable
 {
-private:
    //--------------------------------------------------------------
    /// \brief	Event IDs
    //--------------------------------------------------------------
    enum
    {
       kStopRequested = shared::event::kUserFirstId,   // Yadoms stop was required
-      kSystemEvent,                                   // Event from system
    };
 
 public:
    //-----------------------------------------------------------------------------
    /// \brief		                        Constructor
-   /// \param[in] applicationEventHandler Application event handler
-   /// \param[in] applicationStopCode     Code for application notification
    //-----------------------------------------------------------------------------
-   CSupervisor(boost::shared_ptr<shared::event::CEventHandler> applicationEventHandler, const int applicationStopCode);
-
+   CSupervisor();
 
    //-----------------------------------------------------------------------------
    /// \brief		                     Destructor
@@ -35,29 +30,17 @@ public:
    //-----------------------------------------------------------------------------
    /// \brief		                     The main method (blocking, returns at Yadoms exit)
    //-----------------------------------------------------------------------------
-   virtual void run();
+   void run() override;
 
    //-----------------------------------------------------------------------------
    /// \brief  Ask the supervisor to stop
    //-----------------------------------------------------------------------------
-   void requestToStop() const;
+   void requestToStop();
 
 private:
    //-----------------------------------------------------------------------------
    /// \brief		                     The supervisor event handler
    //-----------------------------------------------------------------------------
-   boost::shared_ptr<shared::event::CEventHandler> m_EventHandler;
-
-   //-----------------------------
-   ///\brief Event handler for application
-   //-----------------------------
-   boost::shared_ptr<shared::event::CEventHandler> m_applicationEventHandler;
-
-   //-----------------------------
-   ///\brief Event code used to notify application that supervisor ends
-   //-----------------------------
-   const int m_applicationStopCode;
-
-
+   shared::event::CEventHandler m_EventHandler;
 };
 
