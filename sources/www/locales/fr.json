@@ -12,7 +12,7 @@
             "deploy": "Déploiement du plugin ...",
             "deployFailed": "Le déploiement du plugin a echoué",
             "finalize": "Finalisation ...",
-            "success": "Succés"
+            "success": "Succès"
         },
         "widget": {
             "name": "widget",
@@ -25,7 +25,7 @@
             "deploy": "Déploiement du widget ...",
             "deployFailed": "Le déploiement du widget a echoué",
             "finalize": "Finalisation ...",
-            "success": "Succés"
+            "success": "Succès"
         },
         "scriptInterpreter": {
             "name": "script interpreter",
@@ -38,7 +38,7 @@
             "deploy": "Déploiement de l'interpreteur de scripts ...",
             "deployFailed": "Le déploiement de l'interpreteur de scripts a echoué",
             "finalize": "Finalisation ...",
-            "success": "Succés"
+            "success": "Succès"
         },
         "yadoms": {
             "name": "yadoms",
