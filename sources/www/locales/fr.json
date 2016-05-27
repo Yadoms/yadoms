@@ -656,7 +656,7 @@
                         "tooltip": "Ajoute un nouveau block pour observer une condition particulière de changement d'une donnée correspondant à une capacité"
                     },
                     "datetimeChange": {
-                        "title": "Toutes les mniutes",
+                        "title": "Toutes les minutes",
                         "tooltip": "Ajoute un nouveau block pour effectuer des actions lorsque la date/heure change (toutes les minutes)"
                     },
                     "datetimeBecome": {
