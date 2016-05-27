@@ -1,8 +1,8 @@
 #pragma once
 #include "ISingleReadOnlyData.h"
 
-namespace ioInterfaces {
-
+namespace ioInterfaces
+{
    //--------------------------------------------------------------
    /// \brief	Voltage (V) io accessor interface
    //--------------------------------------------------------------
@@ -12,7 +12,9 @@ namespace ioInterfaces {
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
-      virtual ~IVoltage() {}
+      virtual ~IVoltage()
+      {
+      }
    };
 
 } // namespace ioInterfaces

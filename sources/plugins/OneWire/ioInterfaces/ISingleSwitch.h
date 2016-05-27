@@ -1,7 +1,7 @@
 #pragma once
 
-namespace ioInterfaces {
-
+namespace ioInterfaces
+{
    //--------------------------------------------------------------
    /// \brief	Single switch io accessor interface
    //--------------------------------------------------------------
@@ -11,7 +11,9 @@ namespace ioInterfaces {
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
-      virtual ~ISingleSwitch() {}
+      virtual ~ISingleSwitch()
+      {
+      }
 
       //--------------------------------------------------------------
       /// \brief	Read value

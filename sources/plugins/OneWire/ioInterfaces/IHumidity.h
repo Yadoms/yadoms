@@ -1,8 +1,8 @@
 #pragma once
 #include "ISingleReadOnlyData.h"
 
-namespace ioInterfaces {
-
+namespace ioInterfaces
+{
    //--------------------------------------------------------------
    /// \brief	Humidity (%) io accessor interface
    //--------------------------------------------------------------
@@ -12,7 +12,9 @@ namespace ioInterfaces {
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
-      virtual ~IHumidity() {}
+      virtual ~IHumidity()
+      {
+      }
    };
 
 } // namespace ioInterfaces

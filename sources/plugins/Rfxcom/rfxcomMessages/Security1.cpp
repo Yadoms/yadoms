@@ -32,7 +32,7 @@ namespace rfxcomMessages
    }
 
    CSecurity1::CSecurity1(boost::shared_ptr<yApi::IYPluginApi> api,
-                          unsigned char subType,
+                          unsigned int subType,
                           const shared::CDataContainer& manuallyDeviceCreationConfiguration)
       : m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
         m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
@@ -41,7 +41,7 @@ namespace rfxcomMessages
       m_batteryLevel->set(100);
       m_rssi->set(0);
 
-      createSubType(subType);
+      createSubType(static_cast<unsigned char>(subType));
       m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
 
       declare(api);

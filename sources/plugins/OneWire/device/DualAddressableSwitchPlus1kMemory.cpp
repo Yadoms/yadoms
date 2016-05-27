@@ -6,10 +6,8 @@ namespace device
 {   
    CDualAddressableSwitchPlus1kMemory::CDualAddressableSwitchPlus1kMemory(EOneWireFamily family,
                                                                           const std::string& id,
-                                                                          boost::shared_ptr<yApi::IYPluginApi> api,
                                                                           boost::shared_ptr<ioInterfaces::IDualAddressableSwitchPlus1kMemory> io)
       :m_identification(boost::make_shared<device::CIdentification>(family, id, "DS2406")),
-       m_api(api),
        m_io(io),
        m_ioA(boost::make_shared<yApi::historization::CSwitch>("io_A")),
        m_keywords({ m_ioA })

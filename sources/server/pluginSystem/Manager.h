@@ -102,7 +102,7 @@ namespace pluginSystem
       /// \return          The corresponding instance
       /// \throw           CPluginException if instance is unknown or not running
       //--------------------------------------------------------------
-      boost::shared_ptr<IInstance> CManager::getRunningInstance(int id) const;
+      boost::shared_ptr<IInstance> getRunningInstance(int id) const;
 
       //--------------------------------------------------------------
       /// \brief           Get the instance configuration

@@ -23,14 +23,14 @@ namespace rfxcomMessages
    }
 
    CThermostat1::CThermostat1(boost::shared_ptr<yApi::IYPluginApi> api,
-                              unsigned char subType,
+                              unsigned int subType,
                               const shared::CDataContainer& manuallyDeviceCreationConfiguration)
       : m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
         m_keywords({m_rssi})
    {
       m_rssi->set(0);
 
-      createSubType(subType);
+      createSubType(static_cast<unsigned char>(subType));
 
       m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
 

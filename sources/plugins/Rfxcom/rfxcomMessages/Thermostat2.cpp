@@ -24,7 +24,7 @@ namespace rfxcomMessages
    }
 
    CThermostat2::CThermostat2(boost::shared_ptr<yApi::IYPluginApi> api,
-                              unsigned char subType,
+                              unsigned int subType,
                               const shared::CDataContainer& manuallyDeviceCreationConfiguration)
       : m_state(boost::make_shared<yApi::historization::CSwitch>("state")),
         m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
@@ -33,7 +33,7 @@ namespace rfxcomMessages
       m_state->set(false);
       m_rssi->set(0);
 
-      m_subType = subType;
+      m_subType = static_cast<unsigned char>(subType);
       switch (m_subType)
       {
       case sTypeHE105:

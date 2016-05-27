@@ -6,10 +6,8 @@ namespace device
 {
    CDigitalPotentiometer::CDigitalPotentiometer(EOneWireFamily family,
                                                 const std::string& id,
-                                                boost::shared_ptr<yApi::IYPluginApi> api,
                                                 boost::shared_ptr<ioInterfaces::IDigitalPotentiometer> io)
       :m_identification(boost::make_shared<device::CIdentification>(family, id, "DS2890")),
-       m_api(api),
        m_io(io),
        m_potentiometerMode(boost::make_shared<yApi::historization::CSwitch>("PotentiometerMode")),
        m_dim(boost::make_shared<yApi::historization::CDimmable>("dim")),

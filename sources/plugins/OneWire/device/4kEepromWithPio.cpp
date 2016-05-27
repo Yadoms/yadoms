@@ -6,10 +6,8 @@ namespace device
 {   
    C4kEepromWithPio::C4kEepromWithPio(EOneWireFamily family,
                                       const std::string& id,
-                                      boost::shared_ptr<yApi::IYPluginApi> api,
                                       boost::shared_ptr<ioInterfaces::IMultiSwitch> io)
       :m_identification(boost::make_shared<device::CIdentification>(family, id, "DS28E04-100")),
-       m_api(api),
        m_io(io),
        m_ioA(boost::make_shared<yApi::historization::CSwitch>("io_A")),
        m_ioB(boost::make_shared<yApi::historization::CSwitch>("io_B")),
