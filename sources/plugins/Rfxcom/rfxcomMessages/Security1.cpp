@@ -58,7 +58,7 @@ namespace rfxcomMessages
                            DONT_CHECK_SEQUENCE_NUMBER);
 
       createSubType(rbuf.SECURITY1.subtype);
-      m_id = (rbuf.SECURITY1.id1 << 8) | rbuf.SECURITY1.id2;
+      m_id = m_subTypeManager->idFromProtocol (rbuf );
       m_subTypeManager->setFromProtocolState(rbuf.SECURITY1.status);
       m_batteryLevel.set(NormalizeBatteryLevel(rbuf.SECURITY1.battery_level));
       m_rssi.set(NormalizeRssiLevel(rbuf.SECURITY1.rssi));

@@ -30,13 +30,14 @@ namespace rfxcomMessages
       virtual ~CSecurity1PowerCodeMotion();
       
       // ISecurity1Subtype implementation
-      virtual std::string getModel() const;
-      virtual void declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const;
-      virtual void historize(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const;
-      virtual void set(const std::string& keyword, const std::string& yadomsCommand);
-      virtual void reset();
-      virtual void setFromProtocolState(unsigned char statusByte);
-      virtual unsigned char toProtocolState() const;
+      std::string getModel() const override;
+      void declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const override;
+      void historize(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const override;
+      void set(const std::string& keyword, const std::string& yadomsCommand) override;
+      void reset() override;
+      void setFromProtocolState(unsigned char statusByte) override;
+      unsigned char toProtocolState() const override;
+	  unsigned long idFromProtocol( const RBUF& rbuf ) const override;
       // [END] ISecurity1Subtype implementation
 
    private:

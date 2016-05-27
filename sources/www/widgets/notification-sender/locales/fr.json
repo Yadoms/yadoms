@@ -11,7 +11,7 @@
 	"sendNotificationButton": "Envoyer",
 	"message": "Message",
   "to": "À",
-  "notificationSent" :  "Notification envoyée avec succés",
+  "notificationSent" :  "Notification envoyée avec succès",
   "errorDuringSending": "Echec à l'envoi de la notification",
   "sending": "Envoi de la notification ..."
 }

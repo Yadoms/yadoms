@@ -53,7 +53,7 @@ Blockly.Yadoms.CreateToolbox_ = function () {
     toolbox += "     <block type=\"controls_if\"></block>";
     toolbox += "     <block type=\"logic_compare\"></block>";
     toolbox += "     <block type=\"logic_operation\"></block>";
-    toolbox += "     <block type=\"logic_negate\"></block>";
+    toolbox += "     <block type=\"yadoms_logic_negate\"></block>";
     toolbox += "     <block type=\"logic_boolean\"></block>";
     toolbox += "     <block type=\"logic_null\"></block>";
     toolbox += "     <block type=\"logic_ternary\"></block>";

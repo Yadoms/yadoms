@@ -65,6 +65,13 @@ Blockly.Python["yadoms_wait_for_event"] = function (block) {
         var operator;
         var argument1;
 		var currentBlockType = this.mutationData_.additionalBlocks[i].type || this.mutationData_.additionalBlocks[i];
+
+		//make pyhton this current event result
+		var oldVar = Blockly.Python.lastWaitForEventResultVar;
+		var oldKeywordId = Blockly.Python.lastWaitForEventResultKeywordId;
+		Blockly.Python.lastWaitForEventResultVar = waitForEventResultVar;
+		Blockly.Python.lastWaitForEventResultKeywordId = keyId || Blockly.Yadoms.data.capacities[capacity].id;		
+		
         switch (currentBlockType) {
 			case "yadoms_wait_for_event_mutator_change" : 
 				//nothing to add, watching anychanges
@@ -74,18 +81,10 @@ Blockly.Python["yadoms_wait_for_event"] = function (block) {
 			case "yadoms_wait_for_event_mutator_become" : 
 				//add the become if
 				operator = Blockly.Yadoms.Python.getOperatorCode(block.getFieldValue("operatorDd" + i));
-				var keywordId = block.getFieldValue("keywordDd" + i);
-				var argument0 = Blockly.Yadoms.Python.castToPython(keywordId, outVar);
+				var argument0 = Blockly.Yadoms.Python.castToPython(keyId, outVar);
 
-				//make pyhton this current event result
-				var oldVar = Blockly.Python.lastWaitForEventResultVar;
-				Blockly.Python.lastWaitForEventResultVar = waitForEventResultVar;
-				
 				argument1 = Blockly.Python.valueToCode(block, "additionalInput_part1_" + i, order) || "0";
 
-				//restore previous value (allow wait-for-event imbrication)
-				Blockly.Python.lastWaitForEventResultVar = oldVar;
-				
 				condition = waitForEventResultVar + ".getType() == scriptUtilities.WAITFOREVENT_KEYWORD and " + keywordIdVar + " == " + keyId;
 				condition += " and " + argument0 + " " + operator + " " + argument1;
 				break;
@@ -95,18 +94,8 @@ Blockly.Python["yadoms_wait_for_event"] = function (block) {
 				if(this.mutationData_.additionalBlocks[i].condition === "true" || this.mutationData_.additionalBlocks[i].condition === true) {
 					//add the become if
 					operator = Blockly.Yadoms.Python.getOperatorCode(block.getFieldValue("operatorDd" + i));
-					var keywordId = block.getFieldValue("keywordDd" + i);
-					var argument0 = Blockly.Yadoms.Python.castToPython(keywordId, outVar);
-
-					//make pyhton this current event result
-					var oldVar = Blockly.Python.lastWaitForEventResultVar;
-					Blockly.Python.lastWaitForEventResultVar = waitForEventResultVar;
-					
+					var argument0 = Blockly.Yadoms.Python.castToPython(keyId, outVar);
 					argument1 = Blockly.Python.valueToCode(block, "additionalInput_part1_" + i, order) || "0";
-
-					//restore previous value (allow wait-for-event imbrication)
-					Blockly.Python.lastWaitForEventResultVar = oldVar;
-					
 					condition = waitForEventResultVar + ".getType() == scriptUtilities.WAITFOREVENT_KEYWORD and " + keywordIdVar + " == " + keyId;
 					condition += " and " + argument0 + " " + operator + " " + argument1;
 				} else {
@@ -123,18 +112,8 @@ Blockly.Python["yadoms_wait_for_event"] = function (block) {
             case "yadoms_wait_for_event_mutator_capacity_become":
 				operator = Blockly.Yadoms.Python.getOperatorCode(block.getFieldValue("operatorDd" + i));
 				//retreive keyword associated to the capacity (the first one), just to know the type of data
-				var capacityId = block.getFieldValue("capacityDd" + i);
-				var argument0 = Blockly.Yadoms.Python.castToPython(Blockly.Yadoms.data.capacities[capacityId].id, outVar);
-
-				//make pyhton this current event result
-				var oldVar = Blockly.Python.lastWaitForEventResultVar;
-				Blockly.Python.lastWaitForEventResultVar = waitForEventResultVar;
-
+				var argument0 = Blockly.Yadoms.Python.castToPython(Blockly.Yadoms.data.capacities[capacity].id, outVar);
 				argument1 = Blockly.Python.valueToCode(block, "additionalInput_part1_" + i, order) || "0";
-
-				//restore previous value (allow wait-for-event imbrication)
-				Blockly.Python.lastWaitForEventResultVar = oldVar;
-
 				condition = waitForEventResultVar + ".getType() == scriptUtilities.WAITFOREVENT_KEYWORD and " + keywordIdVar + " in " + capacitiesVar[i];
 				condition += " and " + argument0 + " " + operator + " " + argument1;
                 break;
@@ -145,18 +124,8 @@ Blockly.Python["yadoms_wait_for_event"] = function (block) {
 				if(this.mutationData_.additionalBlocks[i].condition === "true" || this.mutationData_.additionalBlocks[i].condition === true) {
 					operator = Blockly.Yadoms.Python.getOperatorCode(block.getFieldValue("operatorDd" + i));
 					//retreive keyword associated to the capacity (the first one), just to know the type of data
-					var capacityId = block.getFieldValue("capacityDd" + i);
-					var argument0 = Blockly.Yadoms.Python.castToPython(Blockly.Yadoms.data.capacities[capacityId].id, outVar);
-
-					//make pyhton this current event result
-					var oldVar = Blockly.Python.lastWaitForEventResultVar;
-					Blockly.Python.lastWaitForEventResultVar = waitForEventResultVar;
-
+					var argument0 = Blockly.Yadoms.Python.castToPython(Blockly.Yadoms.data.capacities[capacity].id, outVar);
 					argument1 = Blockly.Python.valueToCode(block, "additionalInput_part1_" + i, order) || "0";
-
-					//restore previous value (allow wait-for-event imbrication)
-					Blockly.Python.lastWaitForEventResultVar = oldVar;
-
 					condition = waitForEventResultVar + ".getType() == scriptUtilities.WAITFOREVENT_KEYWORD and " + keywordIdVar + " in " + capacitiesVar[i];
 					condition += " and " + argument0 + " " + operator + " " + argument1;
 				} else {
@@ -171,16 +140,7 @@ Blockly.Python["yadoms_wait_for_event"] = function (block) {
 
             case "yadoms_wait_for_event_mutator_datetime_become":
                 operator = Blockly.Yadoms.Python.getOperatorCode(block.getFieldValue("operatorDd" + i));
-				
-				//make pyhton this current event result
-				var oldVar = Blockly.Python.lastWaitForEventResultVar;
-				Blockly.Python.lastWaitForEventResultVar = waitForEventResultVar;
-
                 argument1 = Blockly.Python.valueToCode(block, "additionalInput_part1_" + i, order) || "0";
-				
-				//restore previous value (allow wait-for-event imbrication)
-				Blockly.Python.lastWaitForEventResultVar = oldVar;
-				
                 condition = waitForEventResultVar + ".getType() == scriptUtilities.WAITFOREVENT_DATETIME";
                 condition += " and scriptUtilities.strToDateTime(" + outVar + ") " + operator + " scriptUtilities.toDatetime(" + argument1 + ")";
                 break;
@@ -190,15 +150,13 @@ Blockly.Python["yadoms_wait_for_event"] = function (block) {
                 break;
         }
         
-		//make pyhton this current event result
-		var oldVar = Blockly.Python.lastWaitForEventResultVar;
-		Blockly.Python.lastWaitForEventResultVar = waitForEventResultVar;
-		
         //get the statement to execute in this case 
         var statement = Blockly.Python.statementToCode(block, "additionalInput_part2_" + i) || Blockly.Python.PASS;
 
 		//restore previous value (allow wait-for-event imbrication)
-		Blockly.Python.lastWaitForEventResultVar = oldVar;		
+		Blockly.Python.lastWaitForEventResultVar = oldVar;
+		Blockly.Python.lastWaitForEventResultKeywordId = oldKeywordId;
+
 		
         //append code
         code += "if " + condition + ":\n" + statement + Blockly.Python.INDENT + endOfLoopVar + " = True\n";

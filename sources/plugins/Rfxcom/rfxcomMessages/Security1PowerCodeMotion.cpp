@@ -16,9 +16,9 @@ CSecurity1PowerCodeMotion::CSecurity1PowerCodeMotion()
 {
 }
 
-   CSecurity1PowerCodeMotion::~CSecurity1PowerCodeMotion()
-   {
-   }
+CSecurity1PowerCodeMotion::~CSecurity1PowerCodeMotion()
+{
+}
    
 std::string CSecurity1PowerCodeMotion::getModel() const
 {
@@ -60,6 +60,11 @@ unsigned char CSecurity1PowerCodeMotion::toProtocolState() const
 {
    // Get-only keywords
    return 0;
+}
+
+unsigned long CSecurity1PowerCodeMotion::idFromProtocol( const RBUF& rbuf ) const
+{
+	return (unsigned long)(rbuf.SECURITY1.id1 << 8) + (rbuf.SECURITY1.id2);
 }
 
 } // namespace rfxcomMessages

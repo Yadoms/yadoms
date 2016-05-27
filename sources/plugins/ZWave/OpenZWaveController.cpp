@@ -228,7 +228,6 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
    // Must do this inside a critical section to avoid conflicts with the main thread
    boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
-
    //get all glocbal informations (for all notifications)
    OpenZWave::ValueID vID = _notification->GetValueID();
    ECommandClass commandClass((int)vID.GetCommandClassId());
@@ -248,6 +247,37 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
 
    case OpenZWave::Notification::Type_ValueChanged:
    {
+      if (!OpenZWave::Manager::Get()->GetChangeVerified(vID))
+      {
+         OpenZWave::Manager::Get()->SetChangeVerified(vID, true);
+      }
+      else
+      {
+         boost::shared_ptr<COpenZWaveNode> node = getNode(_notification);
+         if (node)
+         {
+            boost::shared_ptr<IOpenZWaveNodeKeyword> kw = node->getKeyword(vID, m_configuration->getIncludeSystemKeywords());
+            if (kw)
+            {
+               boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> historizedData = node->updateKeywordValue(vID, m_configuration->getIncludeSystemKeywords());
+               boost::shared_ptr<CKeywordContainer> d(new CKeywordContainer(COpenZWaveHelpers::GenerateDeviceName(node->getHomeId(), node->getNodeId()), *historizedData.get()));
+
+               YADOMS_LOG(debug) << "===================================";
+               YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueChanged] : instance=" << (int)vID.GetInstance();
+               YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueChanged] : node=" << (int)vID.GetNodeId();
+               YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueChanged] : valeur=" << historizedData->formatValue();
+
+               if (m_handler != NULL)
+                  m_handler->postEvent(CZWave::kUpdateKeyword, d);
+            }
+         }
+      }
+      break;
+   }
+
+   case OpenZWave::Notification::Type_ValueRefreshed:
+   {
+      // One of the node values has changed
       boost::shared_ptr<COpenZWaveNode> node = getNode(_notification);
       if (node)
       {
@@ -256,6 +286,12 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
          {
             boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> historizedData = node->updateKeywordValue(vID, m_configuration->getIncludeSystemKeywords());
             boost::shared_ptr<CKeywordContainer> d(new CKeywordContainer(COpenZWaveHelpers::GenerateDeviceName(node->getHomeId(), node->getNodeId()), *historizedData.get()));
+
+            YADOMS_LOG(debug) << "===================================";
+            YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueRefreshed] : instance=" << (int)vID.GetInstance();
+            YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueRefreshed] : node=" << (int)vID.GetNodeId();
+            YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueRefreshed] : valeur=" << historizedData->formatValue();
+
             if (m_handler != NULL)
                m_handler->postEvent(CZWave::kUpdateKeyword, d);
          }
@@ -267,14 +303,14 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
       break;
    }
 
-   case OpenZWave::Notification::Type_ValueRefreshed:
-      // One of the node values has changed
-      break;
-
    case OpenZWave::Notification::Type_Group:
    {
       // One of the node's association groups has changed
+      int groupIdx = _notification->GetGroupIdx();
+      std::string groupLabel = OpenZWave::Manager::Get()->GetGroupLabel(_notification->GetHomeId(), _notification->GetNodeId(), groupIdx);
+      YADOMS_LOG(debug) << "Group change : id= " << groupIdx << " label=" << groupLabel; 
       break;
+
    }
 
    case OpenZWave::Notification::Type_NodeAdded:
