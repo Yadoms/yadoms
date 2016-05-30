@@ -166,7 +166,7 @@
         /**
          * Callback to the click of the button to confirm an add of a new widget
          */
-        $("button#btn-confirm-add-widget").click(function () {
+        $("button#btn-confirm-add-widget").unbind("click").bind("click", function () {
             var currentPage = PageManager.getCurrentPage();
             assert(!isNullOrUndefined(currentPage), "A page must be selected");
 
