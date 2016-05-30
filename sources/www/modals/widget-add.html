@@ -106,10 +106,7 @@
                 deferred.done(function (currPakage) {
                     var currentPackage = currPakage;
                     return function (data) {
-                        //TODO : Remove and adapt when REST query will be updated
-                        data.developperMode = true;
-
-                        if ((!currentPackage.type.startsWith("system-")) && ((data.developperMode) || (!currentPackage.type.startsWith("dev-")))) {
+                        if ((!currentPackage.type.startsWith("system-")) && ((data.developerMode) || (!currentPackage.type.startsWith("dev-")))) {
                             var i18NContext = currentPackage.type + ":";
                             $("ul#ul-add-widget").append(
                                 "<li>" +
