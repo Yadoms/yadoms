@@ -7,8 +7,8 @@
 			"description": "Conditions Météorologiques actuelles"
 		},
 		"DateFormat": {
-			"name": "Date Format",
-			"description": "Choose the date format of the widget",
+			"name": "Format de la date",
+			"description": "Choisir le format de la date du widget",
 			"values": {
 				"DateFormat1": "Short date. Ex: Monday 15",
 				"DateFormat2": "Long date. Ex: June 15, 2015"

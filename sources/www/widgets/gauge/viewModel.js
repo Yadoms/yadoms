@@ -7,12 +7,8 @@ widgetViewModelCtor = function gaugeViewModel() {
 
     var self = this;
     //observable data
-    self.value = ko.observable("");
+    self.value = ko.observable(0).extend({ numeric: 1 });
     self.unit = ko.observable("");
-
-    this.valueAndUnit = ko.computed(function () {
-        return self.value() + " " + self.unit();
-    });
 
     /**
      * Initialization method
@@ -33,13 +29,16 @@ widgetViewModelCtor = function gaugeViewModel() {
             "libs/highstock/js/highstock.js",
             "libs/highstock/js/highcharts-more.js",
             "libs/highstock/js/modules/exporting.js",
-            "libs/highstock/js/modules/solid-gauge.js",
-            "libs/highcharts-export-clientside/js/highcharts-export-clientside.min.js"
+            "libs/highstock/js/modules/solid-gauge.js"
         ]).done(function () {
             
-            //we create the battery indicator
-            self.widgetApi.toolbar.addBatteryIconToWidget();
-
+            //we configure the toolbar
+            self.widgetApi.toolbar({
+                activated: true,
+                displayTitle: true,
+                batteryItem: true
+            });
+            
             //we get the unit of the keyword
             self.widgetApi.getKeywordInformation(self.widget.configuration.device.keywordId).done(function (keyword) {
                 self.unit($.t(keyword.units));
@@ -76,11 +75,11 @@ widgetViewModelCtor = function gaugeViewModel() {
         //we register keyword new acquisition
         self.widgetApi.registerKeywordAcquisitions(self.widget.configuration.device.keywordId);
 
+        //we fill the deviceId of the battery indicator
+        self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);
+
         // Delete all elements in stopsArray
         self.stopsArray = [];
-
-        //we fill the deviceId of the battery indicator
-        self.widgetApi.toolbar.configureBatteryIcon(self.widget.configuration.device.deviceId);
 
         switch (self.widget.configuration.displayMode.activeSection) {
             case "solidColor":
@@ -113,6 +112,14 @@ widgetViewModelCtor = function gaugeViewModel() {
             }
         });
 
+        var minValue;
+        var maxValue;
+        if ((self.widget.configuration.customYAxisMinMax) && (self.widget.configuration.customYAxisMinMax.content)) {
+            minValue = parseInt(self.widget.configuration.customYAxisMinMax.content.minimumValue);
+            maxValue = parseInt(self.widget.configuration.customYAxisMinMax.content.maximumValue);
+        }
+            
+
         var gaugeOptions = {
 
             chart: {
@@ -121,15 +128,16 @@ widgetViewModelCtor = function gaugeViewModel() {
 
             title: null,
             pane: {
-                //center: ["50%", "50%"],
-                size: "100%",
-                startAngle: 0,
-                endAngle: 360,
+                center: ["50%", "80%"],
+                size: "110%",
+                startAngle: -90,
+                endAngle: 90,
                 background: {
                     backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || "#EEE",  //TODO : change background color to adapt to color with opacity addded (ie Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0.3).get())
-                    innerRadius: "70%",
+                    innerRadius: "60%",
                     outerRadius: "100%",
-                    borderWidth: 0
+                    //borderWidth: 0
+                    shape: 'solid'
                 }
             },
 
@@ -143,22 +151,22 @@ widgetViewModelCtor = function gaugeViewModel() {
             // the value axis
             yAxis: {
                 lineWidth: 0,
+                tickWidth: 0,
                 tickPositions: [],
-                min: parseInt(self.widget.configuration.customYAxisMinMax.content.minimumValue), //Minimum value
-                max: parseInt(self.widget.configuration.customYAxisMinMax.content.maximumValue), //Maximal value
+                min: minValue,
+                max: maxValue,
                 stops: self.stopsArray // Stops for bar colors with thresholds
             },
 
             plotOptions: {
                 solidgauge: {
-                    borderWidth: '40px',
+                    borderWidth: 0,
                     dataLabels: {
                         enabled: false
                     },
                     linecap: 'round'
                 }
             },
-
             exporting: {
                 enabled: false
             },
@@ -166,12 +174,13 @@ widgetViewModelCtor = function gaugeViewModel() {
             series: [{
                 name: 'Data',
                 data: [1],
-                /*dataLabels: {
+                dataLabels: {
                     formatter: function() {
-                        return '<div class="value" style="text-align:center"><span>' + this.y.toFixed(1) + '</span><br/>' +
-                                '<span class="unit">' + this.series.units + '</span></div>';
+                        return '<div class="value text-fit" style="text-align:center"><span>' + this.y.toFixed(1) + '</span><br/>' +
+                                '<span class="unit text-fit">' + this.series.units + '</span></div>';
                     }
-                },*/
+                },
+                
                 units : "" //custom field
             }]
         };
@@ -181,11 +190,11 @@ widgetViewModelCtor = function gaugeViewModel() {
 
     this.resized = function () {
         var self = this;
-        debugger;
+        //debugger;
         if (!isNullOrUndefined(self.chart)) {
-            this.chart.setSize(self.widget.innerWidth() - 10, self.widget.innerHeight() - self.$value.height(), true);
+            this.chart.setSize(self.widget.getInnerWidth() - 10, self.$chart.height(), false);
         }
-        a = this;
+        self.widgetApi.fitText();
         $(window).trigger("resize");
     };
 };

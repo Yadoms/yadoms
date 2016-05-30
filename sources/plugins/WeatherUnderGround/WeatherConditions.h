@@ -125,7 +125,6 @@ private:
    CTemp        m_DewPoint;
    CRain        m_Rain_1hr;
    CWeatherIcon m_WeatherConditionUrl;
-   //CWindDirection  m_WindDirection;
    CWindSpeed  m_WindAverageSpeed;
    CWindSpeed  m_WindMaxSpeed;
    CTemp        m_FeelsLike;

@@ -16,9 +16,9 @@ CSecurity1Meiantech::CSecurity1Meiantech()
 }
 
    
-   CSecurity1Meiantech::~CSecurity1Meiantech()
-   {
-   }
+CSecurity1Meiantech::~CSecurity1Meiantech()
+{
+}
    
    
 std::string CSecurity1Meiantech::getModel() const
@@ -71,9 +71,12 @@ void CSecurity1Meiantech::setFromProtocolState(unsigned char statusByte)
    m_statusByte = statusByte;
    switch(m_statusByte)
    {
-   case sStatusPanicOff:            m_panic.set(false);                                                           break;
-   case sStatusPanic   :            m_panic.set(true);                                                            break;
-
+   case sStatusPanicOff:
+   case sStatusNoMotionTamper:
+   case sStatusNoMotion:            m_panic.set(false);                                                      break;
+   case sStatusPanic   :
+   case sStatusMotionTamper:
+   case sStatusMotion  :            m_panic.set(true);                                                       break;
    case sStatusArmAway :
    case sStatusArmAwayDelayed :     m_armAlarm.set(yApi::historization::EArmingAlarmStatus::kArmedAway);     break;
    case sStatusArmHome :
@@ -88,6 +91,11 @@ void CSecurity1Meiantech::setFromProtocolState(unsigned char statusByte)
 unsigned char CSecurity1Meiantech::toProtocolState() const
 {
    return m_statusByte;
+}
+
+unsigned long CSecurity1Meiantech::idFromProtocol( const RBUF& rbuf ) const
+{
+	return (unsigned long)(rbuf.SECURITY1.id1 << 16) + (rbuf.SECURITY1.id2 << 8) + (rbuf.SECURITY1.id3 );
 }
 
 } // namespace rfxcomMessages
