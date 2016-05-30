@@ -160,10 +160,6 @@
         $("button#btn-close-details").click(function () {
             var $detailsDiv = $("div#add-widget-details");
             $detailsDiv.fadeOut();
-            //we replace the "go back" button by the "Get more" one
-            /*Show button when something behind is available (see similar comments)
-            $("button#btn-get-more-widget").removeClass("hidden");
-            */
             $("button#btn-close-details").addClass("hidden");
         });
 
@@ -174,74 +170,72 @@
             var currentPage = PageManager.getCurrentPage();
             assert(!isNullOrUndefined(currentPage), "A page must be selected");
 
-            //we replace the "go back" button by the "Get more" one for next display
-            /*Show button when something behind is available (see similar comments)
-            $("button#btn-get-more-widget").removeClass("hidden");
-            */
             $("button#btn-close-details").addClass("hidden");
             //we close the new widget modal and wait for the modal being closed before continuing
-            $("div#new-widget-modal").modal("hide");
-        });
 
-        $("div#new-widget-modal").on("hidden.bs.modal", function () {
-            var $detailsDiv = $("div#add-widget-details");
+            $("div#new-widget-modal").on("hidden.bs.modal", function () {
+                $("div#new-widget-modal").unbind("hidden.bs.modal");
+                var $detailsDiv = $("div#add-widget-details");
 
-            var packageName = $detailsDiv.attr("widget-type");
+                var packageName = $detailsDiv.attr("widget-type");
 
-            if (packageName) {
+                if (packageName) {
 
-                //we get default size of the widget
-                var minX = 1;
-                var minY = 1;
+                    //we get default size of the widget
+                    var minX = 1;
+                    var minY = 1;
 
-                var pkg = WidgetPackageManager.widgetPackages[packageName].package;
+                    var pkg = WidgetPackageManager.widgetPackages[packageName].package;
 
-                try {
-                    minX = pkg.dimensions.min.x;
-                    minY = pkg.dimensions.min.y;
-                } catch (err) {
-                }
+                    try {
+                        minX = pkg.dimensions.min.x;
+                        minY = pkg.dimensions.min.y;
+                    } catch (err) {
+                    }
 
-                var maxX = Infinity;
-                var maxY = Infinity;
-                try {
-                    maxX = pkg.dimensions.max.x;
-                    maxY = pkg.dimensions.max.y;
-                } catch (err) {
-                }
+                    var maxX = Infinity;
+                    var maxY = Infinity;
+                    try {
+                        maxX = pkg.dimensions.max.x;
+                        maxY = pkg.dimensions.max.y;
+                    } catch (err) {
+                    }
 
-                var defaultX = 1;
-                var defaultY = 1;
-                try {
-                    defaultX = pkg.dimensions.default.x;
-                    defaultY = pkg.dimensions.default.y;
-                } catch (err) {
-                }
-                
-                var sizeX = Math.min(maxX, Math.max(defaultX, minX));
-                var sizeY = Math.min(maxY, Math.max(defaultY, minY));
+                    var defaultX = 1;
+                    var defaultY = 1;
+                    try {
+                        defaultX = pkg.dimensions.default.x;
+                        defaultY = pkg.dimensions.default.y;
+                    } catch (err) {
+                    }
 
-                var currentPage = PageManager.getCurrentPage();
-                assert(!isNullOrUndefined(currentPage), "A page must be selected");
+                    var sizeX = Math.min(maxX, Math.max(defaultX, minX));
+                    var sizeY = Math.min(maxY, Math.max(defaultY, minY));
 
-                //we create a fake widget to display configuration form
-                var newWidget = new Widget(-1, currentPage.id, packageName, "", sizeX * Yadoms.gridWidth, sizeY * Yadoms.gridHeight, 0, 0, "");
+                    var currentPage = PageManager.getCurrentPage();
+                    assert(!isNullOrUndefined(currentPage), "A page must be selected");
 
-                newWidget.package = pkg;
-                //we load configuration window only if the widget has a configuration
-                if (!isNullOrUndefined(newWidget.package.configurationSchema)) {
-                    Yadoms.modals.widgetConfiguration.loadAsync()
-                        .done(function () {
-                            Yadoms.configureWidget(newWidget, function () {
-                                //if the configuration has been validated we can create the widget
-                                createWidget(newWidget, currentPage);
+                    //we create a fake widget to display configuration form
+                    var newWidget = new Widget(-1, currentPage.id, packageName, "", sizeX * Yadoms.gridWidth, sizeY * Yadoms.gridHeight, 0, 0, "");
+
+                    newWidget.package = pkg;
+                    //we load configuration window only if the widget has a configuration
+                    if (!isNullOrUndefined(newWidget.package.configurationSchema)) {
+                        Yadoms.modals.widgetConfiguration.loadAsync()
+                            .done(function () {
+                                Yadoms.configureWidget(newWidget, function () {
+                                    //if the configuration has been validated we can create the widget
+                                    createWidget(newWidget, currentPage);
+                                });
                             });
-                        });
-                } else {
-                    //we directly create the widget
-                    createWidget(newWidget, currentPage);
+                    } else {
+                        //we directly create the widget
+                        createWidget(newWidget, currentPage);
+                    }
                 }
-            }
+            });
+
+            $("div#new-widget-modal").modal("hide");
         });
     }
 
