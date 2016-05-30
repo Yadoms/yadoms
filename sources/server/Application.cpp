@@ -105,6 +105,11 @@ int CYadomsServer::main(const Poco::Util::Application::ArgVec& args)
       YADOMS_LOG(information) << "********************************************************************";
       YADOMS_LOG(information) << "Yadoms is starting";
       YADOMS_LOG(information) << "********************************************************************";
+      if (m_startupOptions->getDeveloperMode())
+      {
+         YADOMS_LOG(information) << "** !! Developer Mode Enabled !! **";
+         YADOMS_LOG(information) << "********************************************************************";
+      }
       YADOMS_LOG(information) << "Startup options :";
       YADOMS_LOG(information) << "\tlog level = " << m_startupOptions->getLogLevel();
       YADOMS_LOG(information) << "\tWeb server port number = " << m_startupOptions->getWebServerPortNumber();
