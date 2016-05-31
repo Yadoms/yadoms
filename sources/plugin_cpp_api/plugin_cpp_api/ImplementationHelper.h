@@ -10,8 +10,5 @@
 #define IMPLEMENT_PLUGIN(pluginClassName)                               \
    int main(int argc, char **argv)                                      \
    {                                                                    \
-      /* Ignore CTRL+C and termination signal (stop must be requested by Yadoms) */ \
-/*TODO      signal(SIGINT, SIG_IGN); \
-      signal(SIGTERM, SIG_IGN);*/\
       return doMain(argc, argv, boost::make_shared<pluginClassName>()); \
    }

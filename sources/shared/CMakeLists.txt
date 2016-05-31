@@ -209,7 +209,6 @@ set(SHARED_LIB_SRC
 	shared/process/IApplication.h
 	shared/process/IApplicationStopHandler.h
 	shared/process/IApplicationStopRequestObserver.h
-	shared/process/IOperatingSystemIntegration.h
    shared/process/IProcessObserver.h
    shared/process/ICommandLine.h
    shared/process/IProcess.h
@@ -314,8 +313,8 @@ set(SHARED_LIB_SRC
 	linux/shared/Thread.h
 	linux/shared/Thread.cpp
    
-	linux/shared/process/OperatingSystemIntegration.h
-	linux/shared/process/OperatingSystemIntegration.cpp
+   linux/shared/process/ApplicationStopHandler.h
+   linux/shared/process/ApplicationStopHandler.cpp
 )	
 set(PLATFORM_SPECIFIC_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/linux)
 
