@@ -10,6 +10,7 @@ Blockly.Blocks["keyword-value-set"] = {
     unitsInputName: "units",
     deviceDropDownName: "Device",
     keywordDropDownName: "Keyword",
+	titleFieldName: "titleField",
     inputValueShown: false,
     init: function () {
         this.setHelpUrl("http://www.example.com/");
@@ -20,7 +21,7 @@ Blockly.Blocks["keyword-value-set"] = {
         this.setColour(Blockly.Yadoms.blockColour.HUE);
 
         this.appendDummyInput()
-            .appendField($.t("blockly.blocks.keyword-value-set.title"));
+            .appendField($.t("blockly.blocks.keyword-value-set.title"), this.titleFieldName);
         var thisBlock = this;
 
         Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection(this, true, ["numeric", "string", "bool", "nodata", "enum", "datetime"], undefined, function (keyword, keywordType) {
@@ -90,11 +91,12 @@ Blockly.Blocks["keyword-value-set"] = {
         // Add or remove a Value Input.
         if (extraInput) {
             if (!opExist) {
-                this.appendDummyInput(this.operatorValueName).setAlign(Blockly.ALIGN_CENTRE).appendField("=");
+                this.appendDummyInput(this.operatorValueName).setAlign(Blockly.ALIGN_CENTRE).appendField($.t("blockly.blocks.keyword-value-set.titleTo", { defaultValue: "=" }));
             }
             if (!inExist) {
                 this.appendValueInput(this.inputValueName);
             }
+			this.setFieldValue($.t("blockly.blocks.keyword-value-set.title"), this.titleFieldName);
         } else {
             if (inExist) {
                 this.removeInput(this.inputValueName);
@@ -102,6 +104,7 @@ Blockly.Blocks["keyword-value-set"] = {
             if (opExist) {
                 this.removeInput(this.operatorValueName);
             }
+			this.setFieldValue($.t("blockly.blocks.keyword-value-set.titleCall"), this.titleFieldName);
         }
     },
 

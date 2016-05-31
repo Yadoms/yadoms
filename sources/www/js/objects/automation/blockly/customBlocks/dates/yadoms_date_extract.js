@@ -75,7 +75,7 @@ Blockly.Blocks['yadoms_date_extract'] = {
 				break;
 				
 			case "weekDay":
-				this.getInput(this.valueInputName_).setCheck("datetime");
+				this.getInput(this.valueInputName_).setCheck(["datetime", "date"]);
 				this.outputConnection.setCheck("Number");
 				this.setColour(Blockly.Blocks.math.HUE);
 				break;

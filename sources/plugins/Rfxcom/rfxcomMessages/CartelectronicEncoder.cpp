@@ -33,7 +33,7 @@ namespace rfxcomMessages
       unsigned long i_id;
       std::stringstream s_id;
 
-      i_id = static_cast<unsigned long long>(rbuf.CEENCODER.id1 << 24) + (rbuf.TIC.id2 << 16) + (rbuf.TIC.id3 << 8) + rbuf.TIC.id4;
+      i_id = static_cast<unsigned long long>(rbuf.CEENCODER.id1 << 24) + (rbuf.CEENCODER.id2 << 16) + (rbuf.CEENCODER.id3 << 8) + rbuf.CEENCODER.id4;
       s_id << static_cast<unsigned long>(i_id);
 
       return s_id.str();

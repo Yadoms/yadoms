@@ -46,7 +46,7 @@
 			"name" : "Annule l'opération en cours (appairage, exclusion,...)"
 		},
 		"hardReset" : {
-			"name" : "Réinitialise le contrôlleur et efface le réseau"
+			"name" : "Réinitialise le contrôleur et efface le réseau"
 		}
 	}	
 }

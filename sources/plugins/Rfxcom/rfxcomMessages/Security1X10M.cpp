@@ -13,9 +13,9 @@ CSecurity1X10M::CSecurity1X10M()
 {
 }
    
-   CSecurity1X10M::~CSecurity1X10M()
-   {
-   }
+CSecurity1X10M::~CSecurity1X10M()
+{
+}
    
 std::string CSecurity1X10M::getModel() const
 {
@@ -48,6 +48,11 @@ unsigned char CSecurity1X10M::toProtocolState() const
 {
    // Get-only keywords
    return 0;
+}
+
+unsigned long CSecurity1X10M::idFromProtocol( const RBUF& rbuf ) const
+{
+	return (unsigned long)(rbuf.SECURITY1.id1);
 }
 
 } // namespace rfxcomMessages

@@ -9,6 +9,7 @@
 #include "KeywordContainer.h"
 #include "OpenZWaveHelpers.h"
 #include "ZWaveInternalState.h"
+#include <shared/Log.h>
 
 COpenZWaveController::COpenZWaveController()
    :m_homeId(0), m_initFailed(false), m_nodesQueried(false), m_handler(NULL), m_configuration(NULL)
@@ -223,7 +224,6 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
    // Must do this inside a critical section to avoid conflicts with the main thread
    boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
-
    //get all glocbal informations (for all notifications)
    OpenZWave::ValueID vID = _notification->GetValueID();
    ECommandClass commandClass((int)vID.GetCommandClassId());
@@ -243,6 +243,37 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
 
    case OpenZWave::Notification::Type_ValueChanged:
    {
+      if (!OpenZWave::Manager::Get()->GetChangeVerified(vID))
+      {
+         OpenZWave::Manager::Get()->SetChangeVerified(vID, true);
+      }
+      else
+      {
+         auto node = getNode(_notification);
+         if (node)
+         {
+            auto kw = node->getKeyword(vID, m_configuration->getIncludeSystemKeywords());
+            if (kw)
+            {
+               auto historizedData = node->updateKeywordValue(vID, m_configuration->getIncludeSystemKeywords());
+               auto d(boost::make_shared<CKeywordContainer>(COpenZWaveHelpers::GenerateDeviceName(node->getHomeId(), node->getNodeId()), historizedData));
+
+               YADOMS_LOG(debug) << "===================================";
+               YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueChanged] : instance=" << static_cast<int>(vID.GetInstance());
+               YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueChanged] : node=" << static_cast<int>(vID.GetNodeId());
+               YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueChanged] : valeur=" << historizedData->formatValue();
+
+               if (m_handler != nullptr)
+                  m_handler->postEvent(CZWave::kUpdateKeyword, d);
+            }
+         }
+      }
+      break;
+   }
+
+   case OpenZWave::Notification::Type_ValueRefreshed:
+   {
+      // One of the node values has changed
       auto node = getNode(_notification);
       if (node)
       {
@@ -251,26 +282,36 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
          {
             auto historizedData = node->updateKeywordValue(vID, m_configuration->getIncludeSystemKeywords());
             auto d(boost::make_shared<CKeywordContainer>(COpenZWaveHelpers::GenerateDeviceName(node->getHomeId(), node->getNodeId()), historizedData));
+
+            YADOMS_LOG(debug) << "===================================";
+            YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueRefreshed] : instance=" << static_cast<int>(vID.GetInstance());
+            YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueRefreshed] : node=" << static_cast<int>(vID.GetNodeId());
+            YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueRefreshed] : valeur=" << historizedData->formatValue();
+
             if (m_handler != nullptr)
                m_handler->postEvent(CZWave::kUpdateKeyword, d);
          }
+
+         
+
+         
       }
       break;
    }
 
-   case OpenZWave::Notification::Type_ValueRefreshed:
-      // One of the node values has changed
-      break;
-
    case OpenZWave::Notification::Type_Group:
    {
       // One of the node's association groups has changed
+      auto groupIdx = _notification->GetGroupIdx();
+      auto groupLabel = OpenZWave::Manager::Get()->GetGroupLabel(_notification->GetHomeId(), _notification->GetNodeId(), groupIdx);
+      YADOMS_LOG(debug) << "Group change : id= " << groupIdx << " label=" << groupLabel; 
       break;
+
    }
 
    case OpenZWave::Notification::Type_NodeAdded:
    {
-      m_nodes.push_back( boost::shared_ptr<COpenZWaveNode>( new COpenZWaveNode(_notification->GetHomeId(), _notification->GetNodeId())));
+      m_nodes.push_back(boost::make_shared<COpenZWaveNode>(_notification->GetHomeId(), _notification->GetNodeId()));
       break;
    }
 

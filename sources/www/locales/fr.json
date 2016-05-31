@@ -12,7 +12,7 @@
             "deploy": "Déploiement du plugin ...",
             "deployFailed": "Le déploiement du plugin a echoué",
             "finalize": "Finalisation ...",
-            "success": "Succés"
+            "success": "Succès"
         },
         "widget": {
             "name": "widget",
@@ -25,7 +25,7 @@
             "deploy": "Déploiement du widget ...",
             "deployFailed": "Le déploiement du widget a echoué",
             "finalize": "Finalisation ...",
-            "success": "Succés"
+            "success": "Succès"
         },
         "scriptInterpreter": {
             "name": "script interpreter",
@@ -38,7 +38,7 @@
             "deploy": "Déploiement de l'interpreteur de scripts ...",
             "deployFailed": "Le déploiement de l'interpreteur de scripts a echoué",
             "finalize": "Finalisation ...",
-            "success": "Succés"
+            "success": "Succès"
         },
         "yadoms": {
             "name": "yadoms",
@@ -561,6 +561,9 @@
         "chooseKeywordHelper": "Choisir une donnée",
         "chooseCapacityHelper": "Choisir une capacité",
         "blocks": {
+			"logic_negate" : {
+				"title" : "l'inverse de"
+			},
             "yadoms_wait": {
                 "title": "Attendre",
                 "tooltip": "Le script attends une date/heure spécifiée ou une durée"
@@ -593,10 +596,10 @@
 			"yadoms_wait_for_event_result" : {
                 "title": " du dernier évènement",
                 "tooltip": "Obtient les informations du dernier évènement",
-				"value" : "Obtient la valeur",
-				"deviceName" : "Obtient le nom de l'équipement",
-				"keywordName" : "Obtient le nom du capteur",
-				"fullName" : "Obtient le nom complet"
+				"value" : "la valeur",
+				"deviceName" : "le nom de l'équipement",
+				"keywordName" : "le nom du capteur",
+				"fullName" : "le nom complet"
 			},
             "yadoms_wait_for_event": {
                 "title": "Attendre un évènement",
@@ -614,7 +617,7 @@
                     "change": "est émise",
                     "become": ""
                 },
-                "do": "Faire",
+                "do": "Alors",
                 "tooltip": "Attend un évènement. cela peut être l'évolution d'une donnée, ou bien la date/heure qui change",
                 "defaultVarName": "nouvelleAcquisition",
                 "defaultDeviceVarName": "équipementCible",
@@ -653,7 +656,7 @@
                         "tooltip": "Ajoute un nouveau block pour observer une condition particulière de changement d'une donnée correspondant à une capacité"
                     },
                     "datetimeChange": {
-                        "title": "Toutes les mniutes",
+                        "title": "Toutes les minutes",
                         "tooltip": "Ajoute un nouveau block pour effectuer des actions lorsque la date/heure change (toutes les minutes)"
                     },
                     "datetimeBecome": {
@@ -670,7 +673,9 @@
                 "tooltip": "Obtient la dernière valeur du keyword en base de données"
             },
             "keyword-value-set": {
-                "title": "Set",
+                "title": "Positionne",
+                "titleTo": "à",
+                "titleCall": "Appelle",
                 "tooltip": "Défini une nouvelle valeur à un keyword"
             },
             "yadoms_notification_simple": {

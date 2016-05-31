@@ -1,5 +1,6 @@
 #pragma once
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
+#include "RFXtrx.h"
 
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -51,6 +52,12 @@ namespace rfxcomMessages
       /// \return                         The status byte
       //--------------------------------------------------------------
       virtual unsigned char toProtocolState() const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief	                        Get ID from protocol data
+      /// \param[in] buf                  buffer of the message
+      //--------------------------------------------------------------
+      virtual unsigned long idFromProtocol(const RBUF& rbuf) const = 0;
    };
 
 } // namespace rfxcomMessages

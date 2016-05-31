@@ -18,8 +18,8 @@ Blockly.Yadoms.Python.castToPython = function(keywordId, command) {
 					code = "float(" + command + ")";
 					break;
 				case "bool":
-				case "boolean":
-					code = "bool(" + command + ")";
+				case "boolean": //yadoms handle boolean as int, so convert the command to int then to bool "1" -> 1 -> True; "0" -> 0 -> False
+					code = "bool(int(" + command + "))";
 					break;
 				default:
 					break;
@@ -43,8 +43,8 @@ Blockly.Yadoms.Python.castFromPython = function(keywordId, command) {
 		if(keyword && keyword.type) {
 			switch (keyword.type.toLowerCase()) {
 				case "bool":
-				case "boolean":
-					code = "str(int(" + command + "))";
+				case "boolean": //boolean values from python must be converted to int to be understood by yadoms : True -> 1, False -> 0
+					code = "int(" + command + ")";
 					break;
 				default:
 					code = "\"" + command + "\"";

@@ -111,6 +111,11 @@ namespace rfxcomMessages
    {
       return m_statusByte;
    }
+
+   unsigned long CSecurity1X10R::idFromProtocol(const RBUF& rbuf) const
+   {
+      return static_cast<unsigned long>(rbuf.SECURITY1.id1);
+   }
 } // namespace rfxcomMessages
 
 

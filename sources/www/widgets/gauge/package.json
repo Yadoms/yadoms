@@ -1,102 +1,103 @@
 {
-   "type": "gauge",
-   "version": "0.1",
-   "releaseType": "beta",
-   "author": "yadoms team",
-   "url" : "http://www.yadoms.com/wiki/widgets/gauge.html",
-   "credits": "",
-   "dimensions": {
-      "min": {
-         "x": 1,
-         "y": 1
-      },
-      "max": {
-         "x": 6,
-         "y": 6
-      },
-      "default": {
-         "x": 2,
-         "y": 2
+  "type": "gauge",
+  "version": "0.1",
+  "releaseType": "beta",
+  "author": "yadoms team",
+  "url": "http://www.yadoms.com/wiki/widgets/gauge.html",
+  "credits": "",
+  "dimensions": {
+    "min": {
+      "x": 2,
+      "y": 2
+    },
+    "max": {
+      "x": 6,
+      "y": 6
+    },
+    "default": {
+      "x": 2,
+      "y": 2
+    }
+  },
+  "hasTitle": true,
+  "configurationSchema": {
+    "device": {
+      "type": "device",
+      "expectedKeywordType": "numeric",
+      "expectedKeywordAccess": "get"
+    },
+    "customYAxisMinMax": {
+      "type": "section",
+      "enableWithCheckBox": "true",
+      "enableWithCheckBoxDefaultValue": "false",
+      "content": {
+        "minimumValue": {
+          "type": "decimal",
+          "defaultValue": "0",
+          "precision": "1"
+        },
+        "maximumValue": {
+          "type": "decimal",
+          "defaultValue": "100.0",
+          "precision": "1"
+        }
       }
-   },
-   "configurationSchema": {
-      "device" : {
-         "type" : "device",
-         "expectedKeywordType" : "numeric",
-         "expectedKeywordAccess" : "get"
-      },
-      "customYAxisMinMax" : {
-         "type" : "section",
-         "enableWithCheckBox" : "true",
-         "enableWithCheckBoxDefaultValue" : "false",
-         "content" : {
-            "minimumValue" : {
-               "type" : "decimal",
-               "defaultValue" : "0",
-               "precision" : "1"
-            },		 
-            "maximumValue" : {
-               "type" : "decimal",
-               "defaultValue" : "100.0",
-               "precision" : "1"
+    },
+    "displayMode": {
+      "type": "radioSection",
+      "content": {
+        "solidColor": {
+          "type": "section",
+          "content": {
+            "color": {
+              "type": "color",
+              "defaultValue": "#55BF3B"
             }
-         }
-      },
-      "displayMode" : {
-         "type" : "radioSection",
-         "content" : {
-            "solidColor" : {
-               "type" : "section",
-               "content" : {
-                  "color" : {
-                     "type" : "color",
-                     "defaultValue" : "#55BF3B"
-                  }
-               }
+          }
+        },
+        "thresholds": {
+          "type": "section",
+          "content": {
+            "firstColor": {
+              "type": "color",
+              "defaultValue": "#55BF3B"
             },
-            "thresholds" : {
-               "type" : "section",
-               "content" : {
-                  "firstColor" : {
-                     "type" : "color",
-                     "defaultValue" : "#55BF3B"
+            "addedThresholds": {
+              "type": "list",
+              "nbItemsMin": "1",
+              "nbItemsMax": "5",
+              "allowDuplication": "true",
+              "item": {
+                "type": "section",
+                "content": {
+                  "value": {
+                    "type": "decimal",
+                    "defaultValue": "50.0",
+                    "precision": "1"
                   },
-                  "addedThresholds" : {
-                     "type" : "list",
-                     "nbItemsMin" : "1",
-                     "nbItemsMax" : "5",
-                     "allowDuplication" : "true",
-                     "item" : {
-                        "type" : "section",
-                        "content" : {
-                           "value" : {
-                              "type" : "decimal",
-                              "defaultValue" : "50.0",
-                              "precision" : "1"
-                           },
-                           "color" : {
-                              "type" : "color",
-                              "defaultValue" : "#FF0000"
-                           }
-                        }
-                     }
+                  "color": {
+                    "type": "color",
+                    "defaultValue": "#FF0000"
                   }
-               }
-            },
-            "gradient" : {
-               "type" : "section",
-               "content" : {
-                  "minColor" : {
-                     "type" : "color",
-                     "defaultValue" : "#55BF3B"
-                  },
-                  "maxColor" : {
-                     "type" : "color",
-                     "defaultValue" : "#FF0000"
-                  }
-               }
+                }
+              }
             }
-         }
+          }
+        },
+        "gradient": {
+          "type": "section",
+          "content": {
+            "minColor": {
+              "type": "color",
+              "defaultValue": "#55BF3B"
+            },
+            "maxColor": {
+              "type": "color",
+              "defaultValue": "#FF0000"
+            }
+          }
+        }
       }
-   }
+    }
+  }
 }

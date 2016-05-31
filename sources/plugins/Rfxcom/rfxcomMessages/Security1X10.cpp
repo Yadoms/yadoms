@@ -48,6 +48,11 @@ namespace rfxcomMessages
       // Get-only keywords
       return 0;
    }
+
+   unsigned long CSecurity1X10::idFromProtocol(const RBUF& rbuf) const
+   {
+      return static_cast<unsigned long>(rbuf.SECURITY1.id1);
+   }
 } // namespace rfxcomMessages
 
 

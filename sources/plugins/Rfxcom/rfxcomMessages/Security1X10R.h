@@ -1,7 +1,6 @@
 #pragma once
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include "ISecurity1Subtype.h"
-#include "RFXtrx.h"
 
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -37,6 +36,7 @@ namespace rfxcomMessages
       void reset() override;
       void setFromProtocolState(unsigned char statusByte) override;
       unsigned char toProtocolState() const override;
+	  unsigned long idFromProtocol( const RBUF& rbuf ) const override;
       // [END] ISecurity1Subtype implementation
 
    private:

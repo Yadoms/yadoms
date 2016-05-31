@@ -48,4 +48,9 @@ unsigned char CSecurity1KD101_SA30::toProtocolState() const
    return 0;
 }
 
+unsigned long CSecurity1KD101_SA30::idFromProtocol( const RBUF& rbuf ) const
+{
+	return (unsigned long)(rbuf.SECURITY1.id1 << 8) + (rbuf.SECURITY1.id2);
+}
+
 } // namespace rfxcomMessages
