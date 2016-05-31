@@ -30,7 +30,7 @@ namespace plugin_cpp_api
 
       // IPluginContext Implementation
       void run() override;
-      EReturnCode getReturnCode() const override;
+      EProcessReturnCode getReturnCode() const override;
       // [END] IPluginContext Implementation
 
    protected:
@@ -58,7 +58,7 @@ namespace plugin_cpp_api
       //--------------------------------------------------------------
       ///\brief               The plugin process exit code
       //--------------------------------------------------------------
-      EReturnCode m_returnCode;
+      EProcessReturnCode m_returnCode;
 
       //--------------------------------------------------------------
       ///\brief               The thread used to receive messages from Yadoms

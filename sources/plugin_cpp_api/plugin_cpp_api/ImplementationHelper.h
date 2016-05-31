@@ -1,6 +1,7 @@
 #pragma once
+#include "IPlugin.h"
 
-#include "PluginMain.h"
+extern int doMain(int argc, char **argv, boost::shared_ptr<plugin_cpp_api::IPlugin> plugin);
 
 //--------------------------------------------------------------
 /// \brief		                  Plugin implementation helper

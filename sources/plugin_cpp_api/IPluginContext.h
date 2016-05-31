@@ -1,6 +1,4 @@
 #pragma once
-#include "PluginMain.h"
-
 
 namespace plugin_cpp_api
 {
@@ -10,6 +8,14 @@ namespace plugin_cpp_api
    class IPluginContext
    {
    public:
+      enum EProcessReturnCode
+      {
+         kOk = 0,
+         kStartError,         // Plugin failed to start
+         kRuntimeError,       // Plugin crashed at runtime
+         kUnexpectedStop      // Plugin has stopped without stop requested
+      };
+
       virtual ~IPluginContext() { }
 
       //--------------------------------------------------------------
@@ -21,7 +27,7 @@ namespace plugin_cpp_api
       /// \brief                 Get the return code, after run() returned
       /// \return                The return code
       //--------------------------------------------------------------
-      virtual EReturnCode getReturnCode() const = 0;
+      virtual EProcessReturnCode getReturnCode() const = 0;
    };
 
 } // namespace plugin_cpp_api

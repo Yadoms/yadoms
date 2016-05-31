@@ -20,10 +20,10 @@ namespace pluginSystem {
    {
       try
       {
-         YADOMS_LOG_CONFIGURE("System");
+         YADOMS_LOG_CONFIGURE("InternalPlugin");
 
          // the main loop
-         YADOMS_LOG(debug) << "System is running...";
+         YADOMS_LOG(debug) << "InternalPlugin is running...";
 
          // Declare all device/keywords
          static const std::string& systemDevice("system");

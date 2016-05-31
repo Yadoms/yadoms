@@ -3,7 +3,6 @@
 set(plugin_cpp_api_SOURCES
    stdafx.cpp
    stdafx.h
-   PluginMain.h
 
    ICommandLine.h
    IPluginContext.h
@@ -30,7 +29,9 @@ set(plugin_cpp_api_SOURCES
 
    PluginContext.h
    PluginContext.cpp
-   
+
+   PluginMain.cpp
+
    plugin_cpp_api/ImplementationHelper.h
    plugin_cpp_api/IPlugin.h
 )
