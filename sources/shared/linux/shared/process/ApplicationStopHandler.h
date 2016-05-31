@@ -21,6 +21,9 @@ namespace shared
 
       private:
          static boost::function<bool()> m_onStopRequestedFct;
+
+         static void crashHandler(int signal);
+         static void stopHandler(int signal);
       };
    }
 } // namespace shared::process

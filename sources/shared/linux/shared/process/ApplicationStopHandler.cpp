@@ -1,13 +1,15 @@
 #include "stdafx.h"
 #include "ApplicationStopHandler.h"
+#include <execinfo.h>
+#include <shared/Log.h>
 
 namespace shared
 {
    namespace process
    {
-      boost::function<bool()> CConsoleControlHandler::m_onStopRequestedFct;
+      boost::function<bool()> CApplicationStopHandler::m_onStopRequestedFct;
       
-      void crashHandler(int signal)
+      void CApplicationStopHandler::crashHandler(int signal)
       {
          void *array[10];
          size_t size;
@@ -21,14 +23,14 @@ namespace shared
          exit(1);
       }
 
-      void stopHandler(int signal)
+      void CApplicationStopHandler::stopHandler(int signal)
       {
          switch(signal)
          {
          case  SIGINT :
          case  SIGTERM :
             // Signal stop request and wait for application fully stops
-            if (!CConsoleControlHandler::m_onStopRequestedFct())
+            if (!CApplicationStopHandler::m_onStopRequestedFct())
                YADOMS_LOG(error) << "Fail to wait the app end event";
             break;
          default:
@@ -49,10 +51,10 @@ namespace shared
       {
          m_onStopRequestedFct = onStopRequestedFct;
          
-         signal(SIGSEGV, crashHandler);   // install our handler
+         signal(SIGSEGV, CApplicationStopHandler::crashHandler);   // crash handler
 
-         signal(SIGINT, stopHandler);   // CTRL+C signal
-         signal(SIGTERM, stopHandler);   // Termination request
+         signal(SIGINT, CApplicationStopHandler::stopHandler);     // CTRL+C signal
+         signal(SIGTERM, CApplicationStopHandler::stopHandler);    // Termination request
       }
    }
 } // namespace shared::process
