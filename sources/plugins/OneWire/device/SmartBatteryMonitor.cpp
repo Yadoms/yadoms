@@ -47,7 +47,7 @@ namespace device
    {
    }
 
-   void CSmartBatteryMonitor::get()
+   void CSmartBatteryMonitor::read()
    {
       m_kwTemperature->set(m_io->readTemperature());
       if (!!m_kwHumidity)
@@ -64,7 +64,7 @@ namespace device
          m_kwVis->set(m_io->readVis());
    }
 
-   void CSmartBatteryMonitor::set(const std::string& keyword, const std::string& command)
+   void CSmartBatteryMonitor::write(const std::string& keyword, const std::string& command)
    {
       std::cerr << "Try to drive the read-only keyword " << keyword << std::endl;
    }

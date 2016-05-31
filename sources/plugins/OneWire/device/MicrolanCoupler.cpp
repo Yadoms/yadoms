@@ -3,7 +3,7 @@
 #include "Identification.h"
 
 namespace device
-{   
+{
    CMicrolanCoupler::CMicrolanCoupler(EOneWireFamily family,
                                       const std::string& id,
                                       boost::shared_ptr<ioInterfaces::ISingleSwitch> io)
@@ -19,12 +19,12 @@ namespace device
    {
    }
 
-   void CMicrolanCoupler::get()
+   void CMicrolanCoupler::read()
    {
       m_state.set(m_io->read());
    }
 
-   void CMicrolanCoupler::set(const std::string& keyword, const std::string& command)
+   void CMicrolanCoupler::write(const std::string& keyword, const std::string& command)
    {
       if (m_state.getKeyword() != keyword)
          std::cerr << "Unknown keyword " << keyword << std::endl;

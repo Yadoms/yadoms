@@ -3,7 +3,7 @@
 #include "Identification.h"
 
 namespace device
-{   
+{
    CDualChannelAddressableSwitch::CDualChannelAddressableSwitch(EOneWireFamily family,
                                                                 const std::string& id,
                                                                 boost::shared_ptr<ioInterfaces::IMultiSwitch> io)
@@ -20,13 +20,13 @@ namespace device
    {
    }
 
-   void CDualChannelAddressableSwitch::historize()
+   void CDualChannelAddressableSwitch::read()
    {
       m_ioA->set(m_io->read(0));
       m_ioB->set(m_io->read(1));
    }
 
-   void CDualChannelAddressableSwitch::set(const std::string& keyword, const std::string& command)
+   void CDualChannelAddressableSwitch::write(const std::string& keyword, const std::string& command)
    {
       boost::shared_ptr<yApi::historization::CSwitch> kw;
       unsigned char unit;

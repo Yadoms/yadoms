@@ -25,7 +25,7 @@ namespace device
    {
    }
 
-   void CTemperatureIo::get()
+   void CTemperatureIo::read()
    {
       m_ioA->set(m_io->readIo(0));
       m_ioB->set(m_io->readIo(1));
@@ -42,7 +42,7 @@ namespace device
       }
    }
 
-   void CTemperatureIo::set(const std::string& keyword, const std::string& command)
+   void CTemperatureIo::write(const std::string& keyword, const std::string& command)
    {
       boost::shared_ptr<yApi::historization::CSwitch> kw;
       unsigned char unit;

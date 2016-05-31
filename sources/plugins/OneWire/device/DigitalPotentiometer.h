@@ -41,8 +41,8 @@ namespace device
       {
          return m_keywords;
       }
-      void get() const override;
-      void set(const std::string& keyword, const std::string& command) override;
+      void read() const override;
+      void write(const std::string& keyword, const std::string& command) override;
       // [END] IDevice implementation
 
    private:

@@ -3,7 +3,7 @@
 #include "Identification.h"
 
 namespace device
-   {   
+   {
    C4kRamWithCounter::C4kRamWithCounter(EOneWireFamily family,
                                         const std::string& id,
                                         boost::shared_ptr<ioInterfaces::IMultiCounter> io)
@@ -20,13 +20,13 @@ namespace device
    {
    }
 
-   void C4kEepromWithPio::get()
+   void C4kEepromWithPio::read()
    {
       m_countA->set(m_io->read(0));
       m_countB->set(m_io->read(1));
    }
 
-   void C4kRamWithCounter::set(const std::string& keyword, const std::string& command)
+   void C4kRamWithCounter::write(const std::string& keyword, const std::string& command)
    {
       std::cerr << "Try to drive the read-only keyword " << keyword << std::endl;
    }

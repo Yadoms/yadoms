@@ -63,7 +63,7 @@ void COneWire::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          case kEvtTimerNetworkRefresh:
          {
             // Scan 1-wire network for new devices and update our network image
-            updateNetwork(devices, m_engine->scanNetwork());
+            updateNetwork(api, devices, m_engine->scanNetwork());
 
             // Now read all devices state and historize data
             for (auto device = devices.begin(); device != devices.end(); ++device)
@@ -71,11 +71,11 @@ void COneWire::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                // Set here an interruption point because it can take some time in case of big networks
                boost::this_thread::interruption_point();
 
-               boost::shared_ptr<device::IDevice> newDevice = foundDevice->second;
-               newDevice->get();
+               boost::shared_ptr<device::IDevice> newDevice = device->second;
+               newDevice->read();
                if (!newDevice->keywords().empty())
                   api->historizeData(newDevice->ident()->deviceName(),
-                                     newDevice->keywords())
+                                     newDevice->keywords());
             }
 
             break;
@@ -129,21 +129,20 @@ void COneWire::onCommand(std::map<std::string,
                          boost::shared_ptr<device::IDevice> >& devices,
                          boost::shared_ptr<const yApi::IDeviceCommand> command)
 {
-   std::cout << "Command received :" << command->toString() << std::endl;
+   std::cout << "Command received :" << yApi::IDeviceCommand::toString(command) << std::endl;
 
-   std::map<std::string, boost::shared_ptr<device::IDevice> >::iterator device = devices.find(command->getTargetDevice());
+   std::map<std::string, boost::shared_ptr<device::IDevice> >::iterator device = devices.find(command->getDevice());
    if (device == devices.end())
    {
-      std::cout << "Device " << command->getTargetDevice() << " not found on the 1-wire network" << std::endl;
+      std::cout << "Device " << command->getDevice() << " not found on the 1-wire network" << std::endl;
       return;
    }
 
-   device->second->set(command->getKeyword(), command->getBody());
+   device->second->write(command->getKeyword(), command->getBody());
 }
 
 void COneWire::updateNetwork(boost::shared_ptr<yApi::IYPluginApi> api,
-                             std::map<std::string,
-                             boost::shared_ptr<device::IDevice> >& devices,
+                             std::map<std::string, boost::shared_ptr<device::IDevice> >& devices,
                              const std::map<std::string, boost::shared_ptr<device::IDevice> >& foundDevices)
 {
    for (auto foundDevice = foundDevices.begin(); foundDevice != foundDevices.end(); ++foundDevice)

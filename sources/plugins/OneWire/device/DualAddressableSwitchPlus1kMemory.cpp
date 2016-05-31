@@ -3,7 +3,7 @@
 #include "Identification.h"
 
 namespace device
-{   
+{
    CDualAddressableSwitchPlus1kMemory::CDualAddressableSwitchPlus1kMemory(EOneWireFamily family,
                                                                           const std::string& id,
                                                                           boost::shared_ptr<ioInterfaces::IDualAddressableSwitchPlus1kMemory> io)
@@ -25,7 +25,7 @@ namespace device
    {
    }
 
-   void CDualAddressableSwitchPlus1kMemory::get()
+   void CDualAddressableSwitchPlus1kMemory::read()
    {
       m_ioA->set(m_io->read(0));
 
@@ -33,7 +33,7 @@ namespace device
          m_ioB->set(m_io->read(1));
    }
 
-   void CDualAddressableSwitchPlus1kMemory::set(const std::string& keyword, const std::string& command)
+   void CDualAddressableSwitchPlus1kMemory::write(const std::string& keyword, const std::string& command)
    {
       boost::shared_ptr<yApi::historization::CSwitch> kw;
       unsigned char unit;

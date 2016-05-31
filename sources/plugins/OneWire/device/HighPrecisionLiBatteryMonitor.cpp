@@ -22,7 +22,7 @@ namespace device
    {
    }
 
-   void CHighPrecisionLiBatteryMonitor::get()
+   void CHighPrecisionLiBatteryMonitor::read()
    {
       m_kwIo->set(m_io->readIo());
       m_kwTemperature->set(m_io->readTemperature());
@@ -30,7 +30,7 @@ namespace device
       m_kwVolt->set(m_io->readVolt());
    }
 
-   void CHighPrecisionLiBatteryMonitor::set(const std::string& keyword, const std::string& command)
+   void CHighPrecisionLiBatteryMonitor::write(const std::string& keyword, const std::string& command)
    {
       if (m_kwIo->getKeyword() != keyword)
       {

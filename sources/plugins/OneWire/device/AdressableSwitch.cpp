@@ -3,7 +3,7 @@
 #include "Identification.h"
 
 namespace device
-{   
+{
    CAdressableSwitch::CAdressableSwitch(EOneWireFamily family,
                                         const std::string& id,
                                         boost::shared_ptr<ioInterfaces::ISingleSwitch> io)
@@ -19,19 +19,19 @@ namespace device
    {
    }
 
-   void CAdressableSwitch::get()
+   void CAdressableSwitch::read()
    {
       m_state->set(m_io->read());
    }
 
-   void CAdressableSwitch::set(const std::string& keyword, const std::string& command)
+   void CAdressableSwitch::write(const std::string& keyword, const std::string& command)
    {
       if (m_state->getKeyword() != keyword)
          std::cerr << "Unknown keyword " << keyword << std::endl;
-   
+
       if (m_state->getAccessMode() != yApi::EKeywordAccessMode::kGetSetValue)
          std::cerr << "Try to drive the read-only keyword " << keyword << std::endl;
-   
+
       m_state->setCommand(command);
       m_io->write(m_state->get());
    }

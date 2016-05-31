@@ -3,7 +3,7 @@
 #include "Identification.h"
 
 namespace device
-{   
+{
    CSingleTemperature::CSingleTemperature(EOneWireFamily family,
                                           const std::string& id,
                                           const std::string& model,
@@ -23,7 +23,7 @@ namespace device
    {
    }
 
-   void CSingleTemperature::get()
+   void CSingleTemperature::read()
    {
       double temperature = m_io->read();
       if (isTemperatureValid(temperature))
@@ -37,7 +37,7 @@ namespace device
       }
    }
 
-   void CSingleTemperature::set(const std::string& keyword, const std::string& command)
+   void CSingleTemperature::write(const std::string& keyword, const std::string& command)
    {
       std::cerr << "Try to drive the read-only keyword " << keyword << std::endl;
    }

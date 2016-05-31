@@ -26,13 +26,13 @@ namespace device
    {
    }
 
-   void CQuadAdConverter::get()
+   void CQuadAdConverter::read()
    {
       for (auto i = 0; i < NbAdConverter; ++i)
          m_keyword[i]->set(m_io->read(i));
    }
 
-   void CQuadAdConverter::set(const std::string& keyword, const std::string& command)
+   void CQuadAdConverter::write(const std::string& keyword, const std::string& command)
    {
       std::cerr << "Try to drive the read-only keyword " << keyword << std::endl;
    }

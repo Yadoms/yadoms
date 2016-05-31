@@ -3,7 +3,7 @@
 #include "Identification.h"
 
 namespace device
-{   
+{
    C4kEepromWithPio::C4kEepromWithPio(EOneWireFamily family,
                                       const std::string& id,
                                       boost::shared_ptr<ioInterfaces::IMultiSwitch> io)
@@ -20,7 +20,7 @@ namespace device
    {
    }
 
-   void C4kEepromWithPio::get()
+   void C4kEepromWithPio::read()
    {
       m_ioA->set(m_io->read(0));
       m_ioB->set(m_io->read(1));

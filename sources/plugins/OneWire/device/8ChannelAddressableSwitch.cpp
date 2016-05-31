@@ -26,13 +26,13 @@ namespace device
    {
    }
 
-   void C8ChannelAddressableSwitch::get()
+   void C8ChannelAddressableSwitch::read()
    {
       for (unsigned char i = 0; i < NbIo; ++i)
          m_keyword[i]->set(m_io->read(i));
    }
 
-   void C8ChannelAddressableSwitch::set(const std::string& keyword, const std::string& command)
+   void C8ChannelAddressableSwitch::write(const std::string& keyword, const std::string& command)
    {
       for (unsigned char i = 0; i < NbIo; ++i)
       {

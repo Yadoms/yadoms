@@ -51,8 +51,7 @@ protected:
    /// \param[in] foundDevices          The network new scan result
    //--------------------------------------------------------------
    void updateNetwork(boost::shared_ptr<yApi::IYPluginApi> api,
-                      std::map<std::string,
-                      boost::shared_ptr<device::IDevice> >& devices,
+                      std::map<std::string, boost::shared_ptr<device::IDevice> >& devices,
                       const std::map<std::string, boost::shared_ptr<device::IDevice> >& foundDevices);
 
 private:

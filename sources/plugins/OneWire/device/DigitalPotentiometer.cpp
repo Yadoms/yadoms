@@ -25,13 +25,13 @@ namespace device
       return m_identification;
    }
 
-   void CDigitalPotentiometer::get()
+   void CDigitalPotentiometer::read()
    {
       m_potentiometerMode->set(m_io->readPotentiometerMode());
       m_dim->set(m_io->readDim());
    }
 
-   void CDigitalPotentiometer::set(const std::string& keyword, const std::string& command)
+   void CDigitalPotentiometer::write(const std::string& keyword, const std::string& command)
    {
       boost::shared_ptr<yApi::historization::CSwitch> kw;
 
