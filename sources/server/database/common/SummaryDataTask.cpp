@@ -101,24 +101,46 @@ namespace common {
                tm acqDate = boost::posix_time::to_tm(lastData->Date());
                tm now = boost::posix_time::to_tm(boost::posix_time::second_clock::local_time());
 
-               bool computeHourValue = false, computeDayValue = false;
+               bool computeHourValue = false, computeDayValue = false, computeMonthValue = false, computeYearValue = false;
 
-               if (acqDate.tm_year == now.tm_year && acqDate.tm_yday == now.tm_yday)
+               if (acqDate.tm_year != now.tm_year)
                {
-                  //same day, do not compute day summary data
-                  if (acqDate.tm_hour != now.tm_hour)
-                  {
-                     //the hour have changed, compute hour summary data
-                     computeHourValue = true;
-                  }
-               }
-               else
-               {
-                  //another day
+                  //the year changed, , so compute everything
+                  computeYearValue = true;
+                  computeMonthValue = true;
                   computeDayValue = true;
                   computeHourValue = true;
                }
-
+               else
+               {
+                  //same year
+                  if (acqDate.tm_mon != now.tm_mon)
+                  {
+                     //month changes, so compute (month, day and hour)
+                     computeMonthValue = true;
+                     computeDayValue = true;
+                     computeHourValue = true;
+                  }
+                  else
+                  {
+                     //same month, same year, do not compute year and month summary values
+                     if (acqDate.tm_yday != now.tm_yday)
+                     {
+                        //day changes, so compute (day and hour)
+                        computeDayValue = true;
+                        computeHourValue = true;
+                     }
+                     else
+                     {
+                        //same year, month and day
+                        if (acqDate.tm_hour != now.tm_hour)
+                        {
+                           //the hour have changed, compute hour summary data
+                           computeHourValue = true;
+                        }
+                     }
+                  }
+               }
 
                if (computeHourValue)
                {
@@ -137,6 +159,27 @@ namespace common {
                      YADOMS_LOG(debug) << "    Computing DAY : " << i->get()->FriendlyName() << " @ " << lastData->Date() << " ...";
                      m_acquisitionRequester->saveSummaryData(i->get()->Id(), database::entities::EAcquisitionSummaryType::kDay, lastData->Date());
                      YADOMS_LOG(debug) << "    Computing DAY : " << i->get()->FriendlyName() << " @ " << lastData->Date() << " done";
+                  }
+               }
+
+               if (computeMonthValue)
+               {
+                  if (!m_acquisitionRequester->summaryDataExists(i->get()->Id(), database::entities::EAcquisitionSummaryType::kMonth, lastData->Date()))
+                  {
+                     YADOMS_LOG(debug) << "    Computing MONTH : " << i->get()->FriendlyName() << " @ " << lastData->Date() << " ...";
+                     m_acquisitionRequester->saveSummaryData(i->get()->Id(), database::entities::EAcquisitionSummaryType::kMonth, lastData->Date());
+                     YADOMS_LOG(debug) << "    Computing MONTH : " << i->get()->FriendlyName() << " @ " << lastData->Date() << " done";
+                  }
+               }
+
+
+               if (computeYearValue)
+               {
+                  if (!m_acquisitionRequester->summaryDataExists(i->get()->Id(), database::entities::EAcquisitionSummaryType::kYear, lastData->Date()))
+                  {
+                     YADOMS_LOG(debug) << "    Computing YEAR : " << i->get()->FriendlyName() << " @ " << lastData->Date() << " ...";
+                     m_acquisitionRequester->saveSummaryData(i->get()->Id(), database::entities::EAcquisitionSummaryType::kYear, lastData->Date());
+                     YADOMS_LOG(debug) << "    Computing YEAR : " << i->get()->FriendlyName() << " @ " << lastData->Date() << " done";
                   }
                }
             }

@@ -35,19 +35,34 @@ namespace web { namespace rest { namespace service {
       shared::CDataContainer getKeywordData(const std::vector<std::string> & parameters, const std::string & requestContent);   
       
       //-----------------------------------------
+      ///\brief   Get the data of a keyword (with optional date filter) by hour (avg, min and max)
+      //-----------------------------------------
+      shared::CDataContainer getKeywordDataByHour(const std::vector<std::string> & parameters, const std::string & requestContent);
+
+      //-----------------------------------------
       ///\brief   Get the data of a keyword (with optional date filter) by day (avg, min and max)
       //-----------------------------------------
       shared::CDataContainer getKeywordDataByDay(const std::vector<std::string> & parameters, const std::string & requestContent);   
       
       //-----------------------------------------
-      ///\brief   Get the data of a keyword (with optional date filter) by hour (avg, min and max)
+      ///\brief   Get the data of a keyword (with optional date filter) by month (avg, min and max)
       //-----------------------------------------
-      shared::CDataContainer getKeywordDataByHour(const std::vector<std::string> & parameters, const std::string & requestContent);   
-      
+      shared::CDataContainer getKeywordDataByMonth(const std::vector<std::string> & parameters, const std::string & requestContent);
+
+      //-----------------------------------------
+      ///\brief   Get the data of a keyword (with optional date filter) by year (avg, min and max)
+      //-----------------------------------------
+      shared::CDataContainer getKeywordDataByYear(const std::vector<std::string> & parameters, const std::string & requestContent);
+
       //-----------------------------------------
       ///\brief   Get the data of a keyword (with optional date filter) for highchart treatment (fast queries, optimized for highcharts js)
       //-----------------------------------------
       shared::CDataContainer getHighchartKeywordData(const std::vector<std::string> & parameters, const std::string & requestContent);
+
+      //-----------------------------------------
+      ///\brief   Get the data of a keyword (with optional date filter)  by hour (avg, min and max) for highchart treatment (fast queries, optimized for highcharts js)
+      //-----------------------------------------
+      shared::CDataContainer getHighchartKeywordDataByHour(const std::vector<std::string> & parameters, const std::string & requestContent);
 
       //-----------------------------------------
       ///\brief   Get the data of a keyword (with optional date filter)  by day (avg, min and max)for highchart treatment (fast queries, optimized for highcharts js)
@@ -55,10 +70,14 @@ namespace web { namespace rest { namespace service {
       shared::CDataContainer getHighchartKeywordDataByDay(const std::vector<std::string> & parameters, const std::string & requestContent);
 
       //-----------------------------------------
-      ///\brief   Get the data of a keyword (with optional date filter)  by hour (avg, min and max) for highchart treatment (fast queries, optimized for highcharts js)
+      ///\brief   Get the data of a keyword (with optional date filter)  by month (avg, min and max)for highchart treatment (fast queries, optimized for highcharts js)
       //-----------------------------------------
-      shared::CDataContainer getHighchartKeywordDataByHour(const std::vector<std::string> & parameters, const std::string & requestContent);
+      shared::CDataContainer getHighchartKeywordDataByMonth(const std::vector<std::string> & parameters, const std::string & requestContent);
 
+      //-----------------------------------------
+      ///\brief   Get the data of a keyword (with optional date filter)  by year (avg, min and max)for highchart treatment (fast queries, optimized for highcharts js)
+      //-----------------------------------------
+      shared::CDataContainer getHighchartKeywordDataByYear(const std::vector<std::string> & parameters, const std::string & requestContent);
 
       boost::shared_ptr<database::IDataProvider> m_dataProvider;
       static std::string m_restKeyword;

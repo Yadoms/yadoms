@@ -8,8 +8,8 @@ namespace database { namespace common {
 
       CQuery CQuery::EmptyQuery;
 
-      CQuery::CQuery()
-         :m_queryType(kNotYetDefined)
+      CQuery::CQuery(const bool fromWithClauseNeeded)
+         :m_queryType(kNotYetDefined), m_fromWithClauseNeeded(fromWithClauseNeeded)
       {
       }
 
@@ -18,7 +18,7 @@ namespace database { namespace common {
       }
 
       CQuery::CQuery(const CQuery &toCopy)
-         :m_currentQuery(toCopy.m_currentQuery), m_queryType(toCopy.m_queryType)
+         :m_currentQuery(toCopy.m_currentQuery), m_queryType(toCopy.m_queryType), m_fromWithClauseNeeded(toCopy.m_fromWithClauseNeeded)
       {
 
       }
@@ -60,6 +60,17 @@ namespace database { namespace common {
 			ss << " FROM " << subquery.str() << " ";
 			return Append(ss);
 		}
+
+      CQuery & CQuery::FromWith(const std::string & withResultName)
+      {
+         if (m_fromWithClauseNeeded)
+         {
+            std::ostringstream ss;
+            ss << " FROM " << withResultName << " ";
+            return Append(ss);
+         }
+         return *this;
+      }
 
 		//
 		/// \brief           Append 'From (subquery)'
@@ -466,6 +477,7 @@ namespace database { namespace common {
       {
          return (boost::format("DISTINCT(%1%)") % field).str();
       }
+     
 
 } //namespace common
 } //namespace database 

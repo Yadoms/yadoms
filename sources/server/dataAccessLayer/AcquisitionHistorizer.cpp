@@ -92,11 +92,17 @@ namespace dataAccessLayer {
       //if not exists it will be created by SQLiteSummaryDataTask
       std::vector< boost::shared_ptr<database::entities::CAcquisitionSummary> > acquisitionSummary;
 
-      if(m_dataProvider->getAcquisitionRequester()->summaryDataExists(keywordId, database::entities::EAcquisitionSummaryType::kHour, dataTime))
+      if (m_dataProvider->getAcquisitionRequester()->summaryDataExists(keywordId, database::entities::EAcquisitionSummaryType::kHour, dataTime))
          acquisitionSummary.push_back(m_dataProvider->getAcquisitionRequester()->saveSummaryData(keywordId, database::entities::EAcquisitionSummaryType::kHour, dataTime));
-      if(m_dataProvider->getAcquisitionRequester()->summaryDataExists(keywordId, database::entities::EAcquisitionSummaryType::kDay, dataTime))
+      if (m_dataProvider->getAcquisitionRequester()->summaryDataExists(keywordId, database::entities::EAcquisitionSummaryType::kDay, dataTime))
          acquisitionSummary.push_back(m_dataProvider->getAcquisitionRequester()->saveSummaryData(keywordId, database::entities::EAcquisitionSummaryType::kDay, dataTime));
-      
+      if (m_dataProvider->getAcquisitionRequester()->summaryDataExists(keywordId, database::entities::EAcquisitionSummaryType::kMonth, dataTime))
+         acquisitionSummary.push_back(m_dataProvider->getAcquisitionRequester()->saveSummaryData(keywordId, database::entities::EAcquisitionSummaryType::kMonth, dataTime));
+      if (m_dataProvider->getAcquisitionRequester()->summaryDataExists(keywordId, database::entities::EAcquisitionSummaryType::kYear, dataTime))
+         acquisitionSummary.push_back(m_dataProvider->getAcquisitionRequester()->saveSummaryData(keywordId, database::entities::EAcquisitionSummaryType::kYear, dataTime));
+
+      //post notification
+
       //post notification
       boost::shared_ptr<notification::acquisition::CNotification> notificationData(new notification::acquisition::CNotification(acq));
       notification::CHelpers::postNotification(notificationData);

@@ -4,6 +4,7 @@
 namespace database { namespace pgsql { 
 
    CPgsqlQuery::CPgsqlQuery()
+      :common::CQuery(true)
    {
    }
 
@@ -33,6 +34,8 @@ namespace database { namespace pgsql {
    {
       return (boost::format("to_char(%1%, 'YYYY\"-\"MM\"-\"DD\"T\"HH24\":\"MI\":\"SS')") % sqlPart).str();
    }
+
+
 
 } //namespace pgsql
 } //namespace database 

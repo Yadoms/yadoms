@@ -83,7 +83,7 @@ namespace database { namespace common {
       //
       /// \brief           Constructor
       //
-      CQuery();
+      CQuery(const bool fromWithClauseNeeded = false);
 
    public:
       //
@@ -173,6 +173,14 @@ namespace database { namespace common {
       /// \return          A reference to itself to allow method chaining
       //   
 		CQuery & From(const CQuery & subquery);
+
+      //
+      /// \brief           Append from to an update statement in case of using with WITH (needed in some db engines)
+      ///                  This common implmentation do nothing, put db provider may override it
+      /// \param  withResultName   the with clause result name
+      /// \return          A reference to itself to allow method chaining
+      //   
+      CQuery & FromWith(const std::string & withResultName);
 
 		//
       /// \brief           Append 'From (subquery)'
@@ -859,6 +867,10 @@ namespace database { namespace common {
       //
       EQueryType m_queryType;
 
+      //
+      /// \brief  Tells if adding from clause is needed to use WITH clause result (pgsql:true, sqlite:false)
+      //
+      bool m_fromWithClauseNeeded;
 
    };
 
