@@ -20,12 +20,7 @@ namespace device
    {
    }
 
-   boost::shared_ptr<const IIdentification> CDigitalPotentiometer::ident() const
-   {
-      return m_identification;
-   }
-
-   void CDigitalPotentiometer::read()
+   void CDigitalPotentiometer::read() const
    {
       m_potentiometerMode->set(m_io->readPotentiometerMode());
       m_dim->set(m_io->readDim());

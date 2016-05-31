@@ -47,7 +47,7 @@ namespace device
    {
    }
 
-   void CSmartBatteryMonitor::read()
+   void CSmartBatteryMonitor::read() const
    {
       m_kwTemperature->set(m_io->readTemperature());
       if (!!m_kwHumidity)

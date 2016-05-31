@@ -11,7 +11,7 @@ namespace device
                                           EOneWireFamily expectedFamily)
       :m_identification(boost::make_shared<device::CIdentification>(family, id, model)),
        m_io(io),
-       m_temperature("temperature"),
+       m_temperature(boost::make_shared<yApi::historization::CTemperature>("temperature")),
        m_allKeywords({ m_temperature }),
        m_noKeywords(),
        m_keywords(&m_allKeywords)
@@ -23,12 +23,12 @@ namespace device
    {
    }
 
-   void CSingleTemperature::read()
+   void CSingleTemperature::read() const
    {
       double temperature = m_io->read();
       if (isTemperatureValid(temperature))
       {
-         m_temperature.set(temperature);
+         m_temperature->set(temperature);
          m_keywords = &m_allKeywords;
       }
       else

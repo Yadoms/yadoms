@@ -20,7 +20,7 @@ namespace device
    {
    }
 
-   void CDualChannelAddressableSwitch::read()
+   void CDualChannelAddressableSwitch::read() const
    {
       m_ioA->set(m_io->read(0));
       m_ioB->set(m_io->read(1));

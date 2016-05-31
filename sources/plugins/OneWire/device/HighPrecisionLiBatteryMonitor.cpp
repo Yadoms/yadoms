@@ -22,7 +22,7 @@ namespace device
    {
    }
 
-   void CHighPrecisionLiBatteryMonitor::read()
+   void CHighPrecisionLiBatteryMonitor::read() const
    {
       m_kwIo->set(m_io->readIo());
       m_kwTemperature->set(m_io->readTemperature());

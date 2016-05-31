@@ -26,7 +26,7 @@ namespace device
    {
    }
 
-   void C8ChannelAddressableSwitch::read()
+   void C8ChannelAddressableSwitch::read() const
    {
       for (unsigned char i = 0; i < NbIo; ++i)
          m_keyword[i]->set(m_io->read(i));

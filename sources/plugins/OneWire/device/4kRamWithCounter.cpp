@@ -3,7 +3,7 @@
 #include "Identification.h"
 
 namespace device
-   {
+{
    C4kRamWithCounter::C4kRamWithCounter(EOneWireFamily family,
                                         const std::string& id,
                                         boost::shared_ptr<ioInterfaces::IMultiCounter> io)
@@ -20,7 +20,7 @@ namespace device
    {
    }
 
-   void C4kEepromWithPio::read()
+   void C4kRamWithCounter::read() const
    {
       m_countA->set(m_io->read(0));
       m_countB->set(m_io->read(1));

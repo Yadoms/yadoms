@@ -106,21 +106,18 @@ namespace kernel
       case kHighPrecisionDigitalThermometer:
          device = boost::make_shared<device::CHighPrecisionDigitalThermometer>(family,
                                                                                id,
-                                                                               m_api,
                                                                                boost::make_shared<io::CHighPrecisionDigitalThermometer>(devicePath));
          break;
 
       case kDualChannelAddressableSwitch:
          device = boost::make_shared<device::CDualChannelAddressableSwitch>(family,
                                                                             id,
-                                                                            m_api,
                                                                             boost::make_shared<io::CDualChannelAddressableSwitch>(devicePath));
          break;
 
       case k8ChannelAddressableSwitch:
          device = boost::make_shared<device::C8ChannelAddressableSwitch>(family,
                                                                          id,
-                                                                         m_api,
                                                                          boost::make_shared<io::C8ChannelAddressableSwitch>(devicePath));
          break;
 

@@ -17,7 +17,7 @@ namespace device
       if (m_io->nbChannels() == 2)
       {
          m_ioB = boost::make_shared<yApi::historization::CSwitch>("io_B");
-         keywords.push_back(m_ioB);
+         m_keywords.push_back(m_ioB);
       }
    }
 
@@ -25,7 +25,7 @@ namespace device
    {
    }
 
-   void CDualAddressableSwitchPlus1kMemory::read()
+   void CDualAddressableSwitchPlus1kMemory::read() const
    {
       m_ioA->set(m_io->read(0));
 

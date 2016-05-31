@@ -2,10 +2,6 @@
 #include "IDevice.h"
 #include "IIdentification.h"
 #include "../ioInterfaces/ITemperature.h"
-#include <shared/plugin/yPluginApi/historization/IHistorizable.h>
-
-// Shortcut to yPluginApi namespace
-namespace yApi = shared::plugin::yPluginApi;
 
 namespace device
 {
@@ -69,10 +65,10 @@ namespace device
       //--------------------------------------------------------------
       /// \brief	The temperature (°C)
       //--------------------------------------------------------------
-      yApi::historization::CTemperature m_temperature;
+      boost::shared_ptr<yApi::historization::CTemperature> m_temperature;
 
-      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >* m_keywords;
-      const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_allKeywords;
-      const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_noKeywords;
+      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_allKeywords;
+      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_noKeywords;
+      mutable std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >* m_keywords;
    };
 } // namespace device

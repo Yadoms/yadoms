@@ -2,10 +2,6 @@
 #include "IDevice.h"
 #include "IIdentification.h"
 #include "../ioInterfaces/ISmartBatteryMonitor.h"
-#include <shared/plugin/yPluginApi/historization/IHistorizable.h>
-
-// Shortcut to yPluginApi namespace
-namespace yApi = shared::plugin::yPluginApi;
 
 namespace device
 {

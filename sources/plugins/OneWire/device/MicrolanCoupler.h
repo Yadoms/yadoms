@@ -2,10 +2,6 @@
 #include "IDevice.h"
 #include "IIdentification.h"
 #include "../ioInterfaces/ISingleSwitch.h"
-#include <shared/plugin/yPluginApi/historization/IHistorizable.h>
-
-// Shortcut to yPluginApi namespace
-namespace yApi = shared::plugin::yPluginApi;
 
 namespace device
 {
@@ -58,7 +54,7 @@ namespace device
       //--------------------------------------------------------------
       /// \brief	The keyword associated with state
       //--------------------------------------------------------------
-      yApi::historization::CSwitch m_state;
+      boost::shared_ptr<yApi::historization::CSwitch> m_state;
 
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
    };

@@ -26,7 +26,7 @@ namespace device
    {
    }
 
-   void CQuadAdConverter::read()
+   void CQuadAdConverter::read() const
    {
       for (auto i = 0; i < NbAdConverter; ++i)
          m_keyword[i]->set(m_io->read(i));

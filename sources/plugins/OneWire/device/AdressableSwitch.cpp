@@ -19,7 +19,7 @@ namespace device
    {
    }
 
-   void CAdressableSwitch::read()
+   void CAdressableSwitch::read() const
    {
       m_state->set(m_io->read());
    }

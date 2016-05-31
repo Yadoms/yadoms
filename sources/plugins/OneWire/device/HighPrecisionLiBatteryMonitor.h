@@ -2,10 +2,6 @@
 #include "IDevice.h"
 #include "IIdentification.h"
 #include "../ioInterfaces/IHighPrecisionLiBatteryMonitor.h"
-#include <shared/plugin/yPluginApi/historization/IHistorizable.h>
-
-// Shortcut to yPluginApi namespace
-namespace yApi = shared::plugin::yPluginApi;
 
 namespace device
 {
@@ -22,6 +18,7 @@ namespace device
       /// \param[in]	io I/O access object
       //--------------------------------------------------------------
       CHighPrecisionLiBatteryMonitor(EOneWireFamily family,
+                                     const std::string& id,
                                      boost::shared_ptr<ioInterfaces::IHighPrecisionLiBatteryMonitor> io);
 
       //--------------------------------------------------------------

@@ -1,7 +1,7 @@
 #pragma once
 #include "../Common.h"
 #include "IIdentification.h"
-#include <shared/plugin/yPluginApi/historization/IHistorizable.h>
+#include <shared/plugin/yPluginApi/IYPluginApi.h>
 
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -30,7 +30,7 @@ namespace device
       /// \brief	Get the device keywords list
       /// \return Keywords of the device
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywords() const = 0;
+      virtual const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywords() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	Read the device state and update keywords
