@@ -1,7 +1,5 @@
 #include "stdafx.h"
 #include "ApplicationStopHandler.h"
-#include "ServiceControlHandler.h"
-#include "ConsoleControlHandler.h"
 
 namespace shared
 {
