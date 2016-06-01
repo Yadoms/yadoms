@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "PgsqlSqlState.h"
+#include <shared/exception/OutOfRange.hpp>
 
 namespace database { 
 namespace pgsql { 
@@ -309,7 +310,7 @@ namespace pgsql {
       std::map<std::string, CPgsqlSqlState>::iterator find = m_internalCodes.find(state);
       if (find != m_internalCodes.end())
          return find->second;
-      throw std::exception("PgsqlState not found");
+      throw shared::exception::COutOfRange("PgsqlState not found");
    }
 
 
