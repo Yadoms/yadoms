@@ -1,7 +1,7 @@
 #pragma once
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include "ISecurity1Subtype.h"
-#include "RFXtrx.h"
+#include "RFXtrxHelpers.h"
 
 namespace yApi = shared::plugin::yPluginApi;
 

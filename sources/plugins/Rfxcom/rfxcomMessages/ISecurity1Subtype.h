@@ -1,6 +1,6 @@
 #pragma once
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
-#include "RFXtrx.h"
+#include "RFXtrxHelpers.h"
 
 namespace yApi = shared::plugin::yPluginApi;
 

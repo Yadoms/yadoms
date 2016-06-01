@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "ChimeByronSx.h"
-#include "RFXtrx.h"
+#include "RFXtrxHelpers.h"
 
 namespace yApi = shared::plugin::yPluginApi;
 

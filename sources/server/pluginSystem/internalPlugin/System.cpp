@@ -3,6 +3,7 @@
 #include <shared/Log.h>
 #include <shared/exception/Exception.hpp>
 #include <shared/plugin/yPluginApi/historization/Historizers.h>
+#include <tools/OperatingSystem.h>
 
 namespace pluginSystem {
    namespace internalPlugin {
@@ -50,12 +51,12 @@ namespace pluginSystem {
                   if (boost::iequals(command->getKeyword(), keywordShutdown->getKeyword()))
                   {
                      YADOMS_LOG(information) << "Shutdown the system";
-                     //TODO applicationStopHandler->requestToStop(IApplicationStopHandler::kStopSystem);
+                     tools::COperatingSystem::shutdown();
                   }
                   else if (boost::iequals(command->getKeyword(), keywordRestart->getKeyword()))
                   {
                      YADOMS_LOG(information) << "Restart the system";
-                     //TODO applicationStopHandler->requestToStop(IApplicationStopHandler::kRestartSystem);
+                     tools::COperatingSystem::shutdown(true);
                   }
                   else
                   {

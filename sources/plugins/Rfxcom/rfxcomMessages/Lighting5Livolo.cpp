@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Lighting5Livolo.h"
 #include <shared/exception/InvalidParameter.hpp>
-#include "RFXtrx.h"
+#include "RFXtrxHelpers.h"
 
 namespace yApi = shared::plugin::yPluginApi;
 
