@@ -291,8 +291,8 @@ set(SHARED_LIB_SRC
 	mac/shared/Thread.h
 	mac/shared/Thread.cpp
    
-   mac/shared/process/OperatingSystemIntegration.h
-	mac/shared/process/OperatingSystemIntegration.cpp
+   mac/shared/process/ApplicationStopHandler.h
+   mac/shared/process/ApplicationStopHandler.cpp
 )	
 set(PLATFORM_SPECIFIC_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/mac)
 
