@@ -23,14 +23,6 @@
 			"type": "device",
 			"expectedCapacity": ["Condition"],
 			"expectedKeywordAccess": "get"
-		},
-		"DateFormat": {
-			"type": "enum",
-			"values": {
-				"DateFormat1": "",
-				"DateFormat2": ""
-			},
-			"defaultValue": "DateFormat1"
 		}
 	}
 }
