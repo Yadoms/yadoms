@@ -273,7 +273,6 @@ namespace web { namespace rest { namespace service {
          {
             auto instanceId = boost::lexical_cast<int>(parameters[1]);
 
-            m_dataProvider->getDeviceRequester()->removeAllDeviceForPlugin(instanceId);
             m_pluginManager->deleteInstance(instanceId);
             return CResult::GenerateSuccess();
          }

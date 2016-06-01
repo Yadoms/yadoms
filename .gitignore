@@ -8,3 +8,5 @@ cppcheck_result
 tests/unit/sources/CMakeListsUserConfig.txt
 tests/unit/builds/DEBUG
 tests/user/user.pyproj
+tests/user/.vs
+tests/user/user.sln

@@ -133,16 +133,16 @@ namespace pluginSystem
    {
       try
       {
-         boost::shared_ptr<database::entities::CPlugin> instanceData = m_pluginDBTable->getInstance(id);
+         auto instanceData = m_pluginDBTable->getInstance(id);
          if (instanceData->Category() == database::entities::EPluginCategory::kSystem)
             return;
-
-         boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
 
          // Stop plugin instance
          stopInstanceAndWaitForStopped(id);
 
          // Remove in database
+         boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+         m_dataProvider->getDeviceRequester()->removeAllDeviceForPlugin(id);
          m_pluginDBTable->removeInstance(id);
       }
       catch (shared::exception::CException& e)
