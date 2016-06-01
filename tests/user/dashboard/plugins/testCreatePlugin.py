@@ -39,19 +39,23 @@ class CreatePlugin(unittest.TestCase):
       self.assertTrue(dashboard.plugins.getPluginAutoStart(pluginsTable, pluginNumber))
 
       buttons = dashboard.plugins.getPluginButtons(pluginsTable, pluginNumber)
-      self.assertEqual(len(buttons), 3)
-      WebDriverWait(self.browser, 10).until(lambda driver: \
-         "btn" in dashboard.plugins.getPluginStartStopButton(pluginsTable, pluginNumber).get_attribute("class") and \
-         "btn-startStop" in dashboard.plugins.getPluginStartStopButton(pluginsTable, pluginNumber).get_attribute("class") and \
-         "btn-warning" in dashboard.plugins.getPluginStartStopButton(pluginsTable, pluginNumber).get_attribute("class"))
-      self.assertTrue( \
-         "btn" in dashboard.plugins.getPluginConfigureButton(pluginsTable, pluginNumber).get_attribute("class") and \
-         "btn-configure" in dashboard.plugins.getPluginConfigureButton(pluginsTable, pluginNumber).get_attribute("class") and \
-         "btn-primary" in dashboard.plugins.getPluginConfigureButton(pluginsTable, pluginNumber).get_attribute("class"))
-      self.assertTrue( \
-         "btn" in dashboard.plugins.getPluginRemoveButton(pluginsTable, pluginNumber).get_attribute("class") and \
-         "btn-delete" in dashboard.plugins.getPluginRemoveButton(pluginsTable, pluginNumber).get_attribute("class") and \
-         "btn-danger" in dashboard.plugins.getPluginRemoveButton(pluginsTable, pluginNumber).get_attribute("class"))
+      self.assertEqual(len(buttons), 4)
+
+      startStopButton = dashboard.plugins.getPluginStartStopButton(pluginsTable, pluginNumber)
+      self.assertEqual(startStopButton, buttons[0])
+      self.assertIn("btn-warning", startStopButton.get_attribute("class"))
+
+      configureButton = dashboard.plugins.getPluginConfigureButton(pluginsTable, pluginNumber)
+      self.assertEqual(configureButton, buttons[1])
+      self.assertIn("btn-primary", configureButton.get_attribute("class"))
+
+      extraCommandButton = dashboard.plugins.getPluginExtraCommandButton(pluginsTable, pluginNumber)
+      self.assertEqual(extraCommandButton, buttons[2])
+      self.assertIn("btn-success", extraCommandButton.get_attribute("class"))
+
+      removeButton = dashboard.plugins.getPluginRemoveButton(pluginsTable, pluginNumber)
+      self.assertEqual(removeButton, buttons[3])
+      self.assertIn("btn-danger", removeButton.get_attribute("class"))
 
       WebDriverWait(self.browser, 20).until(lambda driver: dashboard.plugins.getPluginState(pluginsTable, pluginNumber) == dashboard.plugins.PluginState.Running)
             
