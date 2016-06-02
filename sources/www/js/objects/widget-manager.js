@@ -702,7 +702,7 @@ WidgetManager.createGridWidget = function (widget) {
 
     if (overflow > 0) {
         $("<style type='text/css'> .panel-widget-title-" + widget.id + "{margin: 0 auto; overflow: hidden; white-space: nowrap; box-sizing: border-box; animation: panel-widget-title-marquee-" + widget.id +
-          " 30s steps(150) infinite;-webkit-animation-play-state: running; animation-play-state: running;}</style>").appendTo("head");	//html > //ease-in-out
+          " 10s steps(150) infinite;-webkit-animation-play-state: running; animation-play-state: running;}</style>").appendTo("head");	//html > //ease-in-out
 
         $("<style type='text/css'> @keyframes panel-widget-title-marquee-" + widget.id + " { 0%   { text-indent: 0px; } 50% { text-indent: " + -overflow + "px;}  100%  { text-indent: 0px; } }</style>").appendTo("head");
 
