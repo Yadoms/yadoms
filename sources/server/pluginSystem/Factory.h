@@ -5,7 +5,8 @@
 #include <shared/process/ILogger.h>
 #include <shared/process/ICommandLine.h>
 #include "IIpcAdapter.h"
-#include <shared/shared/plugin/yPluginApi/IYPluginApi.h>
+#include <shared/plugin/yPluginApi/IYPluginApi.h>
+#include <IPathProvider.h>
 
 namespace pluginSystem
 {
@@ -17,9 +18,9 @@ namespace pluginSystem
    public:
       //--------------------------------------------------------------
       /// \brief	Constructor
-      /// \param[in] pluginPath     The main plugins path
+      /// \param[in] pathProvider      The path provider
       //--------------------------------------------------------------
-      explicit CFactory(const boost::filesystem::path& pluginPath);
+      explicit CFactory(const IPathProvider& pathProvider);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
@@ -44,9 +45,9 @@ namespace pluginSystem
 
       boost::shared_ptr<const shared::plugin::information::IInformation> createInformation(const std::string& pluginName) const;
 
-      boost::filesystem::path pluginLogFile(const std::string& pluginName) const;
+      boost::filesystem::path pluginLogFile(int instanceId) const;
 
-      boost::shared_ptr<shared::process::ILogger> createProcessLogger(const std::string& pluginName) const;
+      boost::shared_ptr<shared::process::ILogger> createProcessLogger(boost::shared_ptr<const database::entities::CPlugin> instanceData) const;
 
       boost::shared_ptr<shared::process::ICommandLine> createCommandLine(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
                                                                          const std::string& messageQueueId) const;
@@ -74,12 +75,10 @@ namespace pluginSystem
                                                                   boost::shared_ptr<database::IDataProvider> dataProvider,
                                                                   boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer) const;
 
-      boost::filesystem::path getPluginPath(const std::string& pluginName) const;
-
       bool isValidPlugin(const boost::filesystem::path& directory) const;
       std::vector<boost::filesystem::path> findPluginDirectories() const;
 
 
-      const boost::filesystem::path m_pluginPath;
+      const IPathProvider& m_pathProvider;
    };
 } // namespace pluginSystem

@@ -20,8 +20,8 @@
 
 namespace pluginSystem
 {
-   CFactory::CFactory(const boost::filesystem::path& pluginPath)
-      : m_pluginPath(pluginPath)
+   CFactory::CFactory(const IPathProvider& pathProvider)
+      : m_pathProvider(pathProvider)
    {
    }
 
@@ -31,7 +31,7 @@ namespace pluginSystem
 
    boost::shared_ptr<const shared::plugin::information::IInformation> CFactory::createInformation(const std::string& pluginName) const
    {
-      return boost::make_shared<CInformation>(getPluginPath(pluginName));
+      return boost::make_shared<CInformation>(m_pathProvider.pluginsPath() / pluginName);
    }
 
    boost::shared_ptr<IInstance> CFactory::createInstance(boost::shared_ptr<const database::entities::CPlugin> instanceData,
@@ -56,7 +56,7 @@ namespace pluginSystem
                                                              qualifier,
                                                              instanceStoppedListener);
 
-      auto logger = createProcessLogger(instanceData->Type());
+      auto logger = createProcessLogger(instanceData);
 
       auto yPluginApi = createInstanceRunningContext(pluginInformation,
                                                      instanceData,
@@ -104,15 +104,15 @@ namespace pluginSystem
                                                            instanceStateHandler);
    }
 
-   boost::filesystem::path CFactory::pluginLogFile(const std::string& pluginName) const
+   boost::filesystem::path CFactory::pluginLogFile(int instanceId) const
    {
-      return m_pluginPath / pluginName / "yadomsPlugin.log";
+      return m_pathProvider.pluginsLogPath() / std::to_string(instanceId) / "plugin.log";
    }
 
-   boost::shared_ptr<shared::process::ILogger> CFactory::createProcessLogger(const std::string& pluginName) const
+   boost::shared_ptr<shared::process::ILogger> CFactory::createProcessLogger(boost::shared_ptr<const database::entities::CPlugin> instanceData) const
    {
-      return boost::make_shared<shared::process::CLogger>("plugin/" + pluginName,
-                                                          pluginLogFile(pluginName));
+      return boost::make_shared<shared::process::CLogger>("plugin/" + instanceData->Type() + " #" + std::to_string(instanceData->Id()),
+                                                          pluginLogFile(instanceData->Id()));
    }
 
    boost::shared_ptr<CInstanceStateHandler> CFactory::createInstanceStateHandler(boost::shared_ptr<const database::entities::CPlugin> instanceData,
@@ -192,14 +192,6 @@ namespace pluginSystem
       return boost::make_shared<CIpcAdapter>(apiImplementation);
    }
 
-
-   boost::filesystem::path CFactory::getPluginPath(const std::string& pluginName) const
-   {
-      auto path(m_pluginPath);
-      path /= pluginName;
-      return path;
-   }
-
    bool CFactory::isValidPlugin(const boost::filesystem::path& directory) const
    {
       // Check if plugin is a native executable plugin
@@ -217,14 +209,16 @@ namespace pluginSystem
 
    std::vector<boost::filesystem::path> CFactory::findPluginDirectories() const
    {
-      // Look for all subdirectories in m_pluginPath directory, where it contains library with same name,
+      // Look for all subdirectories in plugin path directory, where it contains library with same name,
       // for example a subdirectory "fakePlugin" containing a "fakePlugin.dll|so" file
       std::vector<boost::filesystem::path> pluginDirectories;
 
-      if (boost::filesystem::exists(m_pluginPath) && boost::filesystem::is_directory(m_pluginPath))
+      if (boost::filesystem::exists(m_pathProvider.pluginsPath()) && boost::filesystem::is_directory(m_pathProvider.pluginsPath()))
       {
-         // Check all subdirectories in m_pluginPath
-         for (boost::filesystem::directory_iterator subDirIterator(m_pluginPath); subDirIterator != boost::filesystem::directory_iterator(); ++subDirIterator)
+         // Check all subdirectories in plugin path
+         for (boost::filesystem::directory_iterator subDirIterator(m_pathProvider.pluginsPath());
+              subDirIterator != boost::filesystem::directory_iterator();
+              ++subDirIterator)
          {
             if (boost::filesystem::is_directory(subDirIterator->status()) && isValidPlugin(subDirIterator->path()))
                pluginDirectories.push_back(subDirIterator->path());

@@ -7,10 +7,9 @@
 
 namespace pluginSystem
 {
-
-
    CInformation::CInformation(const boost::filesystem::path& pluginPath)
-      :m_path(pluginPath), m_isSupportedOnThisPlatform(true)
+      :m_path(pluginPath),
+       m_isSupportedOnThisPlatform(true)
    {
       try
       {

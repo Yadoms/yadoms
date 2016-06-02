@@ -10,6 +10,7 @@
 #include "Supervisor.h"
 #include "ErrorHandler.h"
 #include "RunningInformation.h"
+#include "PathProvider.h"
 #include <shared/currentTime/Provider.h>
 #include <shared/currentTime/Local.h>
 #include <shared/ServiceLocator.h>
@@ -93,8 +94,9 @@ int CYadomsServer::main(const ArgVec& /*args*/)
 
    if (!m_helpRequested)
    {
-      std::string executablePath = config().getString("application.path");
+      auto executablePath = config().getString("application.path");
       m_runningInformation = boost::make_shared<CRunningInformation>(executablePath);
+      CPathProvider pathProvider(m_startupOptions);
 
 
       YADOMS_LOG_CONFIGURE("Main");
@@ -136,7 +138,7 @@ int CYadomsServer::main(const ArgVec& /*args*/)
          });
 
       //create supervisor
-      CSupervisor supervisor;
+      CSupervisor supervisor(pathProvider);
       Poco::Thread supervisorThread("Supervisor");
       supervisorThread.start(supervisor);
 

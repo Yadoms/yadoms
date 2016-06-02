@@ -1,7 +1,7 @@
 #pragma once
-
 #include <shared/event/EventHandler.hpp>
 #include <Poco/Runnable.h>
+#include "IPathProvider.h"
 
 //-----------------------------------------------------------------------------
 /// \class              Yadoms supervisor
@@ -19,8 +19,9 @@ class CSupervisor : public Poco::Runnable
 public:
    //-----------------------------------------------------------------------------
    /// \brief		                        Constructor
+   /// \param[in] pathProvider            The Yadoms paths provider
    //-----------------------------------------------------------------------------
-   CSupervisor();
+   explicit CSupervisor(const IPathProvider& pathProvider);
 
    //-----------------------------------------------------------------------------
    /// \brief		                     Destructor
@@ -42,5 +43,10 @@ private:
    /// \brief		                     The supervisor event handler
    //-----------------------------------------------------------------------------
    shared::event::CEventHandler m_EventHandler;
+
+   //-----------------------------------------------------------------------------
+   /// \brief		                     The Yadoms paths provider
+   //-----------------------------------------------------------------------------
+   const IPathProvider& m_pathProvider;
 };
 
