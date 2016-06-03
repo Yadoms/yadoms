@@ -332,7 +332,7 @@ namespace sqlite {
       sCheckForTableExists.SelectCount().
          From(CSqliteMasterTable::getTableName()).
          Where(CSqliteMasterTable::getTypeColumnName(), CQUERY_OP_EQUAL, SQLITEMASTER_TABLE).
-         And(CSqliteMasterTable::getNameColumnName(), CQUERY_OP_EQUAL, tableName);
+         And(CSqliteMasterTable::getNameColumnName(), CQUERY_OP_EQUAL, tableName.GetName());
       int count = queryCount(sCheckForTableExists);
       return (count == 1);
    }
