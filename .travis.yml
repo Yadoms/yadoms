@@ -85,7 +85,7 @@ before_install:
 - cd ..
 
 # PostgreSQL
-- sudo apt-get install postgresql-9.3 libpq-dev postgresql-server-dev-9.3
+- sudo apt-get install libpq-dev postgresql-server-dev-9.3
 
 script:
 # Yadoms configuration file
