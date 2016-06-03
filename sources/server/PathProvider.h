@@ -27,6 +27,7 @@ public:
    const boost::filesystem::path& scriptsPath() const override;
    const boost::filesystem::path& scriptsLogPath() const override;
    const boost::filesystem::path& scriptInterpretersPath() const override;
+   const boost::filesystem::path& getDatabaseFile() const override;
    // [END] IPathProvider implementation
 
 private:
@@ -39,5 +40,7 @@ private:
    const boost::filesystem::path m_scriptsPath;
 
    const boost::filesystem::path m_scriptInterpreters;
+
+   const boost::filesystem::path m_databaseFile;
 };
 

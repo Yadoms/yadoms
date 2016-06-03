@@ -58,7 +58,7 @@ void CSupervisor::run()
       auto startupOptions = shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>();
 
       //start database system
-      boost::shared_ptr<database::IDataProvider> pDataProvider(boost::make_shared<database::sqlite::CSQLiteDataProvider>(startupOptions->getDatabaseFile())); //TODO mettre getDatabaseFile dans m_pathProvider
+      boost::shared_ptr<database::IDataProvider> pDataProvider(boost::make_shared<database::sqlite::CSQLiteDataProvider>(m_pathProvider.getDatabaseFile().string()));
       if (!pDataProvider->load())
          throw shared::exception::CException("Fail to load database");
 

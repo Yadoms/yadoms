@@ -43,5 +43,12 @@ public:
    /// \return  	                     the script interpreters path, ususally {yadoms_binary_path}/scriptInterpreters
    //-----------------------------------------------------------------------------
    virtual const boost::filesystem::path& scriptInterpretersPath() const = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	    Get the path of the database file
+   /// \return     Database file path
+   /// \note       If not exist, Yadoms will create the file
+   //--------------------------------------------------------------
+   virtual const boost::filesystem::path& getDatabaseFile() const = 0;
 };
 

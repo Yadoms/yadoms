@@ -270,7 +270,7 @@ set(SHARED_LIB_SRC
    windows/shared/process/ServiceControlHandler.h
    windows/shared/process/ServiceControlHandler.cpp
    windows/shared/process/ApplicationStopHandler.h
-   windows/shared/process/ApplicationStopHandler.cpp # TODO ajouter les autres plateformes et faire le ménage
+   windows/shared/process/ApplicationStopHandler.cpp
 )	
 set(PLATFORM_SPECIFIC_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/windows)
 
