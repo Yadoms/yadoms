@@ -1,4 +1,10 @@
 .widget-indicator .main-div {
+    width: 100%;
+}
+
+.widget-indicator span {
     text-align: center;
     margin: auto;
+    width: 100%;
+    padding: 10px;
 }
