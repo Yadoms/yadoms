@@ -28,9 +28,9 @@ widgetViewModelCtor =
 
           this.LightIcon = ko.computed(function () {
               if (self.command() === 0)
-                  return "widgets/light/icons/on.png";
-              else
                   return "widgets/light/icons/off.png";
+              else
+                  return "widgets/light/icons/on.png";
           });
 
           /**
@@ -47,7 +47,7 @@ widgetViewModelCtor =
           };
 
           this.LightClick = function () {
-              self = this;
+              var self = this;
 
               if (self.command() === 0)
                   self.command(1);

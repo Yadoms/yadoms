@@ -70,7 +70,7 @@ function counterDisplayViewModel() {
         self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);
 
         //we get the unit of the keyword
-        KeywordManager.get(self.widget.configuration.device.keywordId)
+        self.widgetApi.getKeywordInformation(self.widget.configuration.device.keywordId)
         .done(function (keyword) {
             // Read the unit
             self.unit($.t(keyword.units));

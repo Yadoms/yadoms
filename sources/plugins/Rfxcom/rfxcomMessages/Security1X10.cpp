@@ -14,9 +14,11 @@ CSecurity1X10::CSecurity1X10()
    :m_alarm("alarm", yApi::EKeywordAccessMode::kGet), m_tamper("tamper", yApi::EKeywordAccessMode::kGet)
 {
 }
-   CSecurity1X10::~CSecurity1X10()
-   {
-   }
+
+CSecurity1X10::~CSecurity1X10()
+{
+}
+
 std::string CSecurity1X10::getModel() const
 {
    return "X10 security door/window sensor";
@@ -57,6 +59,11 @@ unsigned char CSecurity1X10::toProtocolState() const
 {
    // Get-only keywords
    return 0;
+}
+
+unsigned long CSecurity1X10::idFromProtocol( const RBUF& rbuf ) const
+{
+	return (unsigned long)(rbuf.SECURITY1.id1);
 }
 
 } // namespace rfxcomMessages

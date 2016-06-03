@@ -502,6 +502,7 @@ widgetViewModelCtor =
                                            self.chart.addAxis({
                                                // new axis
                                                id: yAxisName, //The same id as the serie with axis at the beginning
+											   reversedStacks: false,
                                                title: {
                                                    text: self.deviceInfo[index].friendlyName + "/" + self.keywordInfo[index].friendlyName,
                                                    style: {
@@ -554,6 +555,7 @@ widgetViewModelCtor =
                                            //Add Line
                                            self.chart.addSeries({
                                                id: self.seriesUuid[index],
+											   index: index,
                                                data: plot,
                                                dataGrouping: {
                                                    enabled: false
@@ -601,6 +603,7 @@ widgetViewModelCtor =
                                            self.chart.addSeries({
                                                id: self.seriesUuid[index],
                                                data: plot,
+											   index: index,
                                                dataGrouping: {
                                                    enabled: false
                                                },

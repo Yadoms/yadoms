@@ -130,6 +130,7 @@ Blockly.Yadoms.Initialize = function ($domTarget, initialContent, maxTopBlocks) 
       Blockly.Yadoms.data = data;
       Blockly.Python.INDENT = "\t";
 
+	  
       Blockly.Yadoms.EnumerationsHelper.initialize();
 
       $domTarget.append("<div class=\"blockly-container\"></div>");

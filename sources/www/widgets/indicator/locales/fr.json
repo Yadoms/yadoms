@@ -7,9 +7,13 @@
 			"name": "Périphérique interrupteur",
 			"description": "Périphérique à afficher"
 		},
-		"icon": {
-			"name": "Icône du voyant",
-			"description": "Sélectionner la représentation du voyant à afficher"
-		}
+    "icon": {
+      "name": "Icône du voyant",
+      "description": "Sélectionner la représentation du voyant à afficher"
+    },
+    "readOnly": {
+      "name": "Lecture seule",
+      "description": "Vous ne pouvez pas cliquer sur l'icône pour faire changer l'état de l'équipement"
+    }
 	}
 }

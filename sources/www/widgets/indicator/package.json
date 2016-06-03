@@ -1,10 +1,10 @@
 {
-	"type": "indicator",
-	"version": "0.1",
-	"releaseType": "beta",
-	"author": "yadoms team",
-	"url": "http://www.yadoms.com/wiki/widgets/indicator.html",
-	"credits": "",
+  "type": "indicator",
+  "version": "0.1",
+  "releaseType": "beta",
+  "author": "yadoms team",
+  "url": "http://www.yadoms.com/wiki/widgets/indicator.html",
+  "credits": "",
   "dimensions": {
     "min": {
       "x": 1,
@@ -20,15 +20,18 @@
     }
   },
   "hasTitle": true,
-	"configurationSchema": {
-		"device": {
-			"type": "device",
-			"expectedCapacity": ["switch",
-			"dimmable"],
-			"expectedKeywordAccess": "get"
-		},
-		"icon": {
-			"type": "icon"
-		}
-	}
+  "configurationSchema": {
+    "device": {
+      "type": "device",
+      "expectedCapacity": [ "switch", "dimmable" ],
+      "expectedKeywordAccess": "get"
+    },
+    "icon": {
+      "type": "icon"
+    },
+    "readOnly": {
+      "type": "bool",
+      "defaultValue": "false"
+    }
+  }
 }

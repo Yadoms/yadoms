@@ -1,6 +1,10 @@
 <script type="text/html" id="gauge-template">
     <div class="mainDiv">
-        <div class="value textfit" data-bind="text: valueAndUnit()"></div>
         <div class="innerDiv"></div>
+        <div class="valueAndUnit">
+            <div class="value textfit" data-bind="text: value"></div>
+            <div class="unit textfit" data-bind="text: unit"></div>
+        </div>
+        
     </div>
 </script>

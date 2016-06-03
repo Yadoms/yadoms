@@ -90,10 +90,10 @@ void CSecurity1X10R::setFromProtocolState(unsigned char statusByte)
    case sStatusPanic   :            m_panic.set(true);                                                            break;
 
    case sStatusArmAway :
-   case sStatusArmAwayDelayed :     m_armAlarm.set(yApi::historization::EArmingAlarmStatus::kArmedAway);     break;
+   case sStatusArmAwayDelayed :     m_armAlarm.set(yApi::historization::EArmingAlarmStatus::kArmedAway);          break;
    case sStatusArmHome :
-   case sStatusArmHomeDelayed :     m_armAlarm.set(yApi::historization::EArmingAlarmStatus::kArmedAtHome);   break;
-   case sStatusDisarm :             m_armAlarm.set(yApi::historization::EArmingAlarmStatus::kDisarmed);      break;
+   case sStatusArmHomeDelayed :     m_armAlarm.set(yApi::historization::EArmingAlarmStatus::kArmedAtHome);        break;
+   case sStatusDisarm :             m_armAlarm.set(yApi::historization::EArmingAlarmStatus::kDisarmed);           break;
 
    case sStatusLightOff:            m_light1.set(false);                                                          break;
    case sStatusLightOn:             m_light1.set(true);                                                           break;
@@ -109,6 +109,11 @@ void CSecurity1X10R::setFromProtocolState(unsigned char statusByte)
 unsigned char CSecurity1X10R::toProtocolState() const
 {
    return m_statusByte;
+}
+
+unsigned long CSecurity1X10R::idFromProtocol( const RBUF& rbuf ) const
+{
+	return (unsigned long)(rbuf.SECURITY1.id1);
 }
 
 } // namespace rfxcomMessages

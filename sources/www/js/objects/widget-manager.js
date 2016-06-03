@@ -229,6 +229,28 @@ WidgetManager.updateToServer = function (widget) {
 };
 
 /**
+ * Configure the rolling title properly
+ * @param {Widget} widget The widget
+ * @private
+ */
+
+ WidgetManager.ConfigureRollingTitle_ = function (widget) {
+	 
+	//Calculate the overflow ! Theses values could be obtain, only after the application !
+	var overflow = $("[widget-id=" + widget.id + "]").find(".panel-widget-title")[0].scrollWidth -
+				   $("[widget-id=" + widget.id + "]").find(".panel-widget-title")[0].offsetWidth +
+				   $("[widget-id=" + widget.id + "]").find(".panel-widget-title-toolbar")[0].scrollWidth; // Add the toolbar size if any.
+
+	if (overflow > 0) {
+		$("<style type='text/css'> .panel-widget-title-" + widget.id + "{margin: 0 auto; overflow: hidden; white-space: nowrap; box-sizing: border-box; animation: panel-widget-title-marquee-" + widget.id +
+		  " 10s steps(150) infinite;-webkit-animation-play-state: running; animation-play-state: running;}</style>").appendTo("head");	//html > //ease-in-out
+
+		$("<style type='text/css'> @keyframes panel-widget-title-marquee-" + widget.id + " { 0%   { text-indent: 0px; } 50% { text-indent: " + -overflow + "px;}  100%  { text-indent: 0px; } }</style>").appendTo("head");
+
+		$("[widget-id=" + widget.id + "]").find(".panel-widget-title").addClass("panel-widget-title-" + widget.id);
+	}
+ };
+/**
  * Fire a configurationChange event
  * @param {Widget} widget The widget 
  * @private
@@ -242,8 +264,8 @@ WidgetManager.updateWidgetConfiguration_ = function (widget) {
         else
             widget.$gridWidget.find('div.panel-widget-title').text("");
         //we clear the listened device list before call the configuration
-        widget.listenedKeywords = [];
-
+        widget.listenedKeywords = [];	
+		
         // Update widget specific values
         if (!isNullOrUndefined(widget.viewModel.configurationChanged)) {
             var defferedResult = widget.viewModel.configurationChanged();
@@ -257,6 +279,8 @@ WidgetManager.updateWidgetConfiguration_ = function (widget) {
         } else {
             d.resolve();
         }
+		
+		WidgetManager.ConfigureRollingTitle_ ( widget );
     }
     catch (e) {
         notifyWarning($.t("objects.widgetManager.widgetHasGeneratedAnExceptionDuringCallingMethod", { widgetName: widget.type, methodName: 'configurationChanged' }));
@@ -695,19 +719,6 @@ WidgetManager.createGridWidget = function (widget) {
             }, 10);
         }
     });
-
-    //Calculate the overflow ! Theses values could be obtain, only after the application !
-    var overflow = $("[widget-id=" + widget.id + "]").find(".panel-widget-title")[0].scrollWidth -
-                    $("[widget-id=" + widget.id + "]").find(".panel-widget-title")[0].offsetWidth;
-
-    if (overflow > 0) {
-        $("<style type='text/css'> .panel-widget-title-" + widget.id + "{margin: 0 auto; overflow: hidden; white-space: nowrap; box-sizing: border-box; animation: panel-widget-title-marquee-" + widget.id +
-          " 30s steps(150) infinite;-webkit-animation-play-state: running; animation-play-state: running;}</style>").appendTo("head");	//html > //ease-in-out
-
-        $("<style type='text/css'> @keyframes panel-widget-title-marquee-" + widget.id + " { 0%   { text-indent: 0px; } 50% { text-indent: " + -overflow + "px;}  100%  { text-indent: 0px; } }</style>").appendTo("head");
-
-        $("[widget-id=" + widget.id + "]").find(".panel-widget-title").addClass("panel-widget-title-" + widget.id);
-    }
 
     widget.$gridWidget.i18n();
 };

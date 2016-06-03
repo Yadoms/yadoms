@@ -16,9 +16,9 @@ CSecurity1PowerCodeSensor::CSecurity1PowerCodeSensor(bool secondaryContact)
 {
 }
    
-   CSecurity1PowerCodeSensor::~CSecurity1PowerCodeSensor()
-   {
-   }
+CSecurity1PowerCodeSensor::~CSecurity1PowerCodeSensor()
+{
+}
    
 std::string CSecurity1PowerCodeSensor::getModel() const
 {
@@ -60,6 +60,11 @@ unsigned char CSecurity1PowerCodeSensor::toProtocolState() const
 {
    // Get-only keywords
    return 0;
+}
+
+unsigned long CSecurity1PowerCodeSensor::idFromProtocol( const RBUF& rbuf ) const
+{
+	return (unsigned long)(rbuf.SECURITY1.id1 << 8) + (rbuf.SECURITY1.id2);
 }
 
 } // namespace rfxcomMessages
