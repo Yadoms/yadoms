@@ -47,7 +47,7 @@ widgetViewModelCtor =
           };
 
           this.LightClick = function () {
-              self = this;
+              var self = this;
 
               if (self.command() === 0)
                   self.command(1);

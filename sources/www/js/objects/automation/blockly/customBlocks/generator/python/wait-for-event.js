@@ -70,7 +70,10 @@ Blockly.Python["yadoms_wait_for_event"] = function (block) {
 		var oldVar = Blockly.Python.lastWaitForEventResultVar;
 		var oldKeywordId = Blockly.Python.lastWaitForEventResultKeywordId;
 		Blockly.Python.lastWaitForEventResultVar = waitForEventResultVar;
-		Blockly.Python.lastWaitForEventResultKeywordId = keyId || Blockly.Yadoms.data.capacities[capacity].id;		
+		Blockly.Python.lastWaitForEventResultKeywordId = keyId;
+
+		if(!Blockly.Python.lastWaitForEventResultKeywordId && capacity && Blockly.Yadoms.data.capacities[capacity])
+			Blockly.Python.lastWaitForEventResultKeywordId = Blockly.Yadoms.data.capacities[capacity].id;		
 		
         switch (currentBlockType) {
 			case "yadoms_wait_for_event_mutator_change" : 
