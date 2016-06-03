@@ -601,6 +601,46 @@ inline CQuery & CQuery::InsertInto(const database::common::CDatabaseTable & tabl
    return Append(ss);
 }
 
+template<class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10>
+inline CQuery & CQuery::InsertOrReplaceInto(const database::common::CDatabaseTable & table,
+   const T1 & field1,
+   const T2 & field2,
+   const T3 & field3,
+   const T4 & field4,
+   const T5 & field5,
+   const T6 & field6,
+   const T7 & field7,
+   const T8 & field8,
+   const T9 & field9,
+   const T10 & field10)
+{
+   ChangeQueryType(kInsert);
+   std::ostringstream ss;
+   ss << " " << m_insertOrUpdateName << " " << table.GetName() << " (" << queryhelper<T1>::format(this, field1);
+   if (typeid(field2) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T2>::format(this, field2));
+   if (typeid(field3) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T3>::format(this, field3));
+   if (typeid(field4) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T4>::format(this, field4));
+   if (typeid(field5) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T5>::format(this, field5));
+   if (typeid(field6) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T6>::format(this, field6));
+   if (typeid(field7) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T7>::format(this, field7));
+   if (typeid(field8) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T8>::format(this, field8));
+   if (typeid(field9) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T9>::format(this, field9));
+   if (typeid(field10) != typeid(CNotUsedTemplateField))
+      AppendField(ss, queryhelper<T10>::format(this, field10));
+   ss << ") ";
+   return Append(ss);
+}
+
+
+
 
 
 template<class T>

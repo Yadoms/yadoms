@@ -104,6 +104,11 @@ namespace database {
       //--------------------------------------------------------------
       virtual void vacuum() = 0;
 
+      //--------------------------------------------------------------
+      /// \Brief	      Tells if database support insert or update statement
+      //--------------------------------------------------------------
+      virtual bool supportInsertOrUpdateStatement() = 0;
+
       // ITransactionalProvider implementation
       virtual bool transactionSupport() = 0;
       virtual void transactionBegin() = 0;

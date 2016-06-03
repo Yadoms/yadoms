@@ -9,7 +9,7 @@ namespace database { namespace common {
       CQuery CQuery::EmptyQuery;
 
       CQuery::CQuery(const bool fromWithClauseNeeded)
-         :m_queryType(kNotYetDefined), m_fromWithClauseNeeded(fromWithClauseNeeded)
+         :m_queryType(kNotYetDefined), m_fromWithClauseNeeded(fromWithClauseNeeded), m_insertOrUpdateName("INSERT OR REPLACE INTO")
       {
       }
 
@@ -18,7 +18,7 @@ namespace database { namespace common {
       }
 
       CQuery::CQuery(const CQuery &toCopy)
-         :m_currentQuery(toCopy.m_currentQuery), m_queryType(toCopy.m_queryType), m_fromWithClauseNeeded(toCopy.m_fromWithClauseNeeded)
+         :m_currentQuery(toCopy.m_currentQuery), m_queryType(toCopy.m_queryType), m_fromWithClauseNeeded(toCopy.m_fromWithClauseNeeded), m_insertOrUpdateName(toCopy.m_insertOrUpdateName)
       {
 
       }

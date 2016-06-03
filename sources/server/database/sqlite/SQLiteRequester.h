@@ -33,6 +33,7 @@ namespace sqlite {
       virtual void createIndex(const database::common::CDatabaseTable & tableName, const std::string & indexScript);
       virtual void vacuum();
       virtual boost::shared_ptr<ITableCreationScriptProvider> getTableCreationScriptProvider();
+      virtual bool supportInsertOrUpdateStatement();
       // [END] IDatabaseRequester implementation
 
       // ITransactionalProvider implementation
@@ -47,6 +48,7 @@ namespace sqlite {
       virtual bool backupSupported(); 
       virtual void backupData(const std::string & backupLocation, IDataBackup::ProgressFunc reporter);
       // [END] IDataBackup implementation
+
 
    private:
       //--------------------------------------------------------------

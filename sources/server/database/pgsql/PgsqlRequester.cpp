@@ -582,6 +582,10 @@ namespace pgsql {
       throw database::CDatabaseException("Unsupported backup for PostgreSQL");
    }
 
+   bool CPgsqlRequester::supportInsertOrUpdateStatement()
+   {
+      return false;
+   }
 
 } //namespace pgsql
 } //namespace database 

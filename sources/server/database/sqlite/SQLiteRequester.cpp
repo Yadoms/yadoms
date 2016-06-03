@@ -449,6 +449,11 @@ namespace sqlite {
       return boost::shared_ptr<ITableCreationScriptProvider>(new CSQLiteTableCreationScriptProvider());
    }
 
+   bool CSQLiteRequester::supportInsertOrUpdateStatement()
+   {
+      return true;
+   }
+
 } //namespace sqlite
 } //namespace database 
 

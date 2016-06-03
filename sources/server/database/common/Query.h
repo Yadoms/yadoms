@@ -377,6 +377,34 @@ namespace database { namespace common {
          const T10 & field10 = T10());
 
       //
+      /// \brief           Append 'INSERT OR REPLACE INTO table (field1 [,field2 [,field3...]])'
+      /// \param  table    the target table 
+      /// \param  field1   a field name to append to the insert into clause
+      /// \param  field2   a field name to append to the insert into clause
+      /// \param  field3   a field name to append to the insert into clause
+      /// \param  field4   a field name to append to the insert into clause
+      /// \param  field5   a field name to append to the insert into clause
+      /// \param  field6   a field name to append to the insert into clause
+      /// \param  field7   a field name to append to the insert into clause
+      /// \param  field8   a field name to append to the insert into clause
+      /// \param  field9   a field name to append to the insert into clause
+      /// \param  field10  a field name to append to the insert into clause
+      /// \return          A reference to itself to allow method chaining
+      //         
+      template<class T1, class T2 = CNotUsedTemplateField, class T3 = CNotUsedTemplateField, class T4 = CNotUsedTemplateField, class T5 = CNotUsedTemplateField, class T6 = CNotUsedTemplateField, class T7 = CNotUsedTemplateField, class T8 = CNotUsedTemplateField, class T9 = CNotUsedTemplateField, class T10 = CNotUsedTemplateField>
+      inline CQuery & InsertOrReplaceInto(const database::common::CDatabaseTable & table,
+         const T1 & field1,
+         const T2 & field2 = T2(),
+         const T3 & field3 = T3(),
+         const T4 & field4 = T4(),
+         const T5 & field5 = T5(),
+         const T6 & field6 = T6(),
+         const T7 & field7 = T7(),
+         const T8 & field8 = T8(),
+         const T9 & field9 = T9(),
+         const T10 & field10 = T10());
+
+      //
       /// \brief           Append 'VALUES (field1 [,field2 [,field3...]])'
       /// \param  value1   a value of the field
       /// \param  value2   a value of the field
@@ -854,6 +882,13 @@ namespace database { namespace common {
       /// \return             A reference to itself to allow method chaining
       //
       CQuery & ChangeQueryType(const EQueryType newType, bool changeOnlyIfNeverSet = true);
+
+
+   protected:
+      //
+      /// \brief  The insert or update statement name (can be 'insert or replace', 'upsert',...)
+      //
+      std::string m_insertOrUpdateName;
 
    private:
       //

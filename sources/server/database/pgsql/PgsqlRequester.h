@@ -33,6 +33,7 @@ namespace pgsql {
       virtual void createIndex(const database::common::CDatabaseTable & tableName, const std::string & indexScript);
       virtual void vacuum();
       virtual boost::shared_ptr<ITableCreationScriptProvider> getTableCreationScriptProvider();
+      virtual bool supportInsertOrUpdateStatement();
       // [END] IDatabaseRequester implementation
 
       // ITransactionalProvider implementation
