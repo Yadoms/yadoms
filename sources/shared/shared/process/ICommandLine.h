@@ -23,9 +23,15 @@ namespace shared
 
          //--------------------------------------------------------------
          /// \brief	                     Get the working directory to use to call executable
-         /// \return                      The working directory (full path)
+         /// \return                      The working directory (relative to current module)
          //--------------------------------------------------------------
          virtual const boost::filesystem::path& workingDirectory() const = 0;
+
+         //--------------------------------------------------------------
+         /// \brief	                     Indicates if executable is in the system path
+         /// \return                      true if executable is in the system path
+         //--------------------------------------------------------------
+         virtual bool executableInSystemPath() const = 0;
 
          //--------------------------------------------------------------
          /// \brief	                     Get the command line args

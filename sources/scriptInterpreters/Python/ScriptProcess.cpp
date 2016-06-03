@@ -33,7 +33,10 @@ boost::shared_ptr<shared::process::ICommandLine> CScriptProcess::createCommandLi
    args.push_back(m_scriptFile->module());
    args.push_back(apiIdentifier);
 
-   return boost::make_shared<CPythonCommandLine>(m_executable->path(), m_executable->filename(), args);
+   return boost::make_shared<CPythonCommandLine>(m_executable->inSystemPath(),
+                                                 m_executable->path().parent_path(),
+                                                 m_executable->filename(),
+                                                 args);
 }
 
 void CScriptProcess::start()

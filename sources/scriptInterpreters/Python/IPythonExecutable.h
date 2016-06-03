@@ -24,6 +24,12 @@ public:
    virtual std::string version() const = 0;
 
    //--------------------------------------------------------------
+   /// \brief	Indicate if python executable is in system path
+   /// \return true if in system path
+   //--------------------------------------------------------------
+   virtual bool inSystemPath() const = 0;
+
+   //--------------------------------------------------------------
    /// \brief	Get executable path
    /// \return the full (relative) Python executable path
    //--------------------------------------------------------------

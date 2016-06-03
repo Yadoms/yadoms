@@ -139,7 +139,8 @@ namespace pluginSystem
       std::vector<std::string> args;
       args.push_back(messageQueueId);
 
-      return boost::make_shared<CNativeExecutableCommandLine>(pluginInformation->getPath(),
+      return boost::make_shared<CNativeExecutableCommandLine>(false,
+                                                              pluginInformation->getPath(),
                                                               pluginInformation->getType(),
                                                               args);
    }

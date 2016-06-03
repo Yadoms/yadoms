@@ -7,11 +7,12 @@
 //--------------------------------------------------------------
 class CPythonCommandLine : public shared::process::ICommandLine
 {
-   public:
+public:
    //--------------------------------------------------------------
    /// \brief	Constructor
    //--------------------------------------------------------------
-   CPythonCommandLine(const boost::filesystem::path& workingDirectory,
+   CPythonCommandLine(bool pythonExecutableInSystemPath,
+                      const boost::filesystem::path& workingDirectory,
                       const std::string& executableName,
                       const std::vector<std::string> parameters);
 
@@ -23,11 +24,14 @@ class CPythonCommandLine : public shared::process::ICommandLine
    // ICommandLine Implementation
    std::string executable() const override;
    const boost::filesystem::path& workingDirectory() const override;
+   bool executableInSystemPath() const override;
    const std::vector<std::string>& args() const override;
    // [END] ICommandLine Implementation
 
-   private:
+private:
+   const bool m_pythonExecutableInSystemPath;
    const boost::filesystem::path m_workingDirectory;
    const std::string m_pluginName;
    const std::vector<std::string> m_args;
 };
+

@@ -36,7 +36,9 @@ namespace shared
             for (auto cmdLineArg = m_commandLine->args().begin(); cmdLineArg != m_commandLine->args().end(); ++cmdLineArg)
                args.push_back(*cmdLineArg);
 
-            auto executableFullPath = CFileSystemExtension::getModulePath() / m_commandLine->workingDirectory() / m_commandLine->executable();
+            auto executableFullPath = m_commandLine->executableInSystemPath()
+                                         ? m_commandLine->executable()
+                                         : CFileSystemExtension::getModulePath() / m_commandLine->workingDirectory() / m_commandLine->executable();
 
             if (!m_logger)
             {

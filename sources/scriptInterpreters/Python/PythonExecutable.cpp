@@ -4,8 +4,8 @@
 #include "PythonExecutablePath.h"
 
 CPythonExecutable::CPythonExecutable()
-   : m_executableDirectory(boost::filesystem::path()),
-     m_found(findPythonDirectory(m_executableDirectory)),
+   : m_inSystemPath(false),
+     m_found(findPythonDirectory(m_executableDirectory, m_inSystemPath)),
      m_version(readPythonVersion(m_executableDirectory))
 {
 }
@@ -24,6 +24,11 @@ std::string CPythonExecutable::version() const
    return m_version;
 }
 
+bool CPythonExecutable::inSystemPath() const
+{
+   return m_inSystemPath;
+}
+
 boost::filesystem::path CPythonExecutable::path() const
 {
    return m_executableDirectory / filename();
@@ -34,9 +39,10 @@ std::string CPythonExecutable::filename() const
    return "python";
 }
 
-bool CPythonExecutable::findPythonDirectory(boost::filesystem::path& pythonDirectory)
+bool CPythonExecutable::findPythonDirectory(boost::filesystem::path& pythonDirectory,
+                                            bool& inSystemPath)
 {
-   if (isPythonIn(boost::filesystem::path(), pythonDirectory))// Empty directory to search in system path
+   if (isPythonIn(boost::filesystem::path(), pythonDirectory, inSystemPath))// Empty directory to search in system path
       return true;
 
    //retrieve common path for the system
@@ -46,7 +52,7 @@ bool CPythonExecutable::findPythonDirectory(boost::filesystem::path& pythonDirec
    std::vector<boost::filesystem::path>::iterator i;
    for (i = commonPaths.begin(); i != commonPaths.end(); ++i)
    {
-      if (isPythonIn(*i, pythonDirectory))
+      if (isPythonIn(*i, pythonDirectory, inSystemPath))
          return true;
    }
 
@@ -54,15 +60,18 @@ bool CPythonExecutable::findPythonDirectory(boost::filesystem::path& pythonDirec
    return false;
 }
 
-bool CPythonExecutable::isPythonIn(const boost::filesystem::path& directory, boost::filesystem::path& pythonDirectory)
+bool CPythonExecutable::isPythonIn(const boost::filesystem::path& directory,
+                                   boost::filesystem::path& pythonDirectory,
+                                   bool& inSystemPath)
 {
    if (!readPythonVersion(directory).empty())
    {
-      YADOMS_LOG(debug) << "Python executable found in " << (directory.empty() ? "the path" : directory.string());
+      YADOMS_LOG(debug) << "Python executable found in " << (directory.empty() ? "the system path" : directory.string());
       pythonDirectory = directory;
+      inSystemPath = directory.empty();
       return true;
    }
-   YADOMS_LOG(debug) << "Python executable not found in " << (directory.empty() ? "the path" : directory.string());
+   YADOMS_LOG(debug) << "Python executable not found in " << (directory.empty() ? "the system path" : directory.string());
    return false;
 }
 
@@ -76,7 +85,7 @@ std::string CPythonExecutable::readPythonVersion(const boost::filesystem::path& 
       args.push_back("--version");
 
       Poco::Pipe outPipe;
-      Poco::ProcessHandle processHandle = Poco::Process::launch(command.string(), args, NULL, &outPipe, &outPipe);
+      Poco::ProcessHandle processHandle = Poco::Process::launch(command.string(), args, nullptr, &outPipe, &outPipe);
       processHandle.wait();
 
       Poco::PipeInputStream iStr(outPipe);
@@ -90,3 +99,4 @@ std::string CPythonExecutable::readPythonVersion(const boost::filesystem::path& 
       return std::string();
    }
 }
+

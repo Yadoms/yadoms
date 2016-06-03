@@ -4,10 +4,14 @@
 
 namespace pluginSystem
 {
-   CNativeExecutableCommandLine::CNativeExecutableCommandLine(const boost::filesystem::path& workingDirectory,
+   CNativeExecutableCommandLine::CNativeExecutableCommandLine(bool executableInSystemPath,
+                                                              const boost::filesystem::path& workingDirectory,
                                                               const std::string& pluginName,
                                                               const std::vector<std::string> parameters)
-      : m_workingDirectory(workingDirectory), m_pluginName(pluginName), m_args(parameters)
+      : m_executableInSystemPath(executableInSystemPath),
+        m_workingDirectory(workingDirectory),
+        m_pluginName(pluginName),
+        m_args(parameters)
    {
    }
 
@@ -25,8 +29,15 @@ namespace pluginSystem
       return m_workingDirectory;
    }
 
+   bool CNativeExecutableCommandLine::executableInSystemPath() const
+   {
+      return m_executableInSystemPath;
+   }
+
    const std::vector<std::string>& CNativeExecutableCommandLine::args() const
    {
       return m_args;
    }
 } // namespace pluginSystem
+
+
