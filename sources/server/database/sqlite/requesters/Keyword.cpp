@@ -162,6 +162,19 @@ namespace database { namespace sqlite { namespace requesters {
       addKeyword(keywordEntity);
    }
 
+   void CKeyword::addKeywords(int deviceId,
+                              const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >& keywords)
+	{
+      //TODO : mettre les mêmes contrôles que addKeyword
+
+      // TODO : utiliser les transactions pour de meilleurs perfs (tester en utilisant fakePlugin, dont le démarrage met plus de 5 secondes à cause de la déclaration
+      // des KWs.
+      // Pour ça, il faudra créer le dataAccessLayer pour les KWs
+
+      for (auto kw = keywords.begin(); kw != keywords.end(); ++kw)
+         addKeyword(deviceId, *(kw->get()));
+   }
+
    boost::shared_ptr<entities::CKeyword> CKeyword::getKeyword(int deviceId, const std::string & keyword) const
    {
       adapters::CKeywordAdapter adapter;

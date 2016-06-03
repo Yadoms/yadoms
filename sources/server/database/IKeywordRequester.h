@@ -43,6 +43,15 @@ namespace database {
                               const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) = 0;
 
       //--------------------------------------------------------------
+      /// \brief                    Add new keywords to a device
+      /// \param [in] deviceId      ID of device owner
+      /// \param [in] keywords      Historizable keywords
+      /// \throw                    shared::exception::CEmptyResult if device is unknown
+      //--------------------------------------------------------------
+      virtual void addKeywords(int deviceId,
+                               const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >& keywords) = 0;
+
+      //--------------------------------------------------------------
       /// \brief           Get a keyword
       /// \param [in]      deviceId   the device which own the keyword
       /// \param [in]      keyword   the keyword to get

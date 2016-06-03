@@ -175,12 +175,12 @@
          Yadoms.showConfirmModal(Yadoms.btnKind.yesNo, null, $.t("modals.dashboard.sub-windows.plugins.confirmPluginDeletion", { pluginName: pi.displayName }),
          function () {
             //deletion has been confirmed
-            var deletePromsie = PluginInstanceManager.deleteFromServer(pi);
+            var deletePromise = PluginInstanceManager.deleteFromServer(pi);
 
             //disable button access until promise result
             getPluginDomRow(pi).find("button").prop('disabled', true);
 
-            deletePromsie.done(function () {
+            deletePromise.done(function () {
                //we remove pi from array
                var i = pluginInstanceList.indexOf(pi);
                if (i !== -1) {
@@ -192,7 +192,7 @@
             });
 
             //if it fails, restore button access
-            deletePromsie.fail(function (error) {
+            deletePromise.fail(function (error) {
                notifyError($.t("modals.configure-plugin.pluginFailToDelete", { pluginName: pi.displayName }), error);
                getPluginDomRow(pi).find("button").prop('disabled', false);
             });

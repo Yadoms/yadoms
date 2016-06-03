@@ -65,9 +65,7 @@ namespace pluginSystem
 
       m_deviceManager->createDevice(getPluginId(), device, device, model, details);
 
-      for (auto keyword = keywords.begin(); keyword != keywords.end(); ++keyword)
-         if (!keywordExists(device, *keyword))
-            declareKeyword(device, *keyword);
+      declareKeywords(device, keywords);
    }
 
    bool CYPluginApiImplementation::keywordExists(const std::string& device,
@@ -95,6 +93,22 @@ namespace pluginSystem
       m_keywordRequester->addKeyword(m_deviceManager->getDevice(getPluginId(), device)->Id(),
                                      *keyword,
                                      details);
+   }
+
+   void CYPluginApiImplementation::declareKeywords(const std::string& device,
+                                                   const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >& keywords) const
+   {
+      std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> > keywordsToDeclare;
+
+      for (auto keyword = keywords.begin(); keyword != keywords.end(); ++keyword)
+         if (!keywordExists(device, *keyword))
+            keywordsToDeclare.push_back(*keyword);
+
+      if (keywordsToDeclare.empty())
+         return;
+
+      m_keywordRequester->addKeywords(m_deviceManager->getDevice(getPluginId(), device)->Id(), 
+         keywordsToDeclare);
    }
 
    std::string CYPluginApiImplementation::getRecipientValue(int recipientId, const std::string& fieldName) const

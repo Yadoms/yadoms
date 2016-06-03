@@ -132,7 +132,7 @@ namespace pluginSystem
 
       send(pbMsg);
 
-      if (receivedEvtHandler.waitForEvents(boost::posix_time::seconds(10)) == shared::event::kTimeout)
+      if (receivedEvtHandler.waitForEvents(boost::posix_time::minutes(1)) == shared::event::kTimeout)
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
          m_onReceiveHook.clear();

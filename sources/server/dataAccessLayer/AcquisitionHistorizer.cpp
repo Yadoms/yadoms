@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include <shared/Log.h>
 #include <shared/currentTime/Provider.h>
 #include "AcquisitionHistorizer.h"
 #include "database/ITransactionalProvider.h"

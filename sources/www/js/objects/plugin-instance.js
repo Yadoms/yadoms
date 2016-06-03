@@ -95,7 +95,7 @@ PluginInstance.prototype.getBoundManuallyDeviceCreationConfigurationSchema = fun
 
 
 /**
- *  Get the bound manually device creation configuration schema
+ *  Get the bound extra command configuration schema
  * @returns {*}
  */
 PluginInstance.prototype.getBoundExtraCommand = function () {
