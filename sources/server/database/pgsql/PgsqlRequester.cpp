@@ -11,13 +11,14 @@
 #include "PgsqlQuery.h"
 #include "PgsqlTableCreationScriptProvider.h"
 #include "PgsqlSqlState.h"
+#include <shared/ServiceLocator.h>
+#include "startupOptions/IStartupOptions.h"
 
 namespace database { 
 namespace pgsql { 
 
 
-   CPgsqlRequester::CPgsqlRequester(const std::string &host, const unsigned int port, const std::string &dbName, const std::string &login, const std::string &password)
-      :m_host(host), m_port(port), m_dbName(dbName), m_login(login), m_password(password)
+   CPgsqlRequester::CPgsqlRequester()
    {
    }
 
@@ -90,16 +91,59 @@ namespace pgsql {
 
    const std::string CPgsqlRequester::createConnectionString(const EConnectionStringMode mode)
    {
+      boost::shared_ptr<startupOptions::IStartupOptions> startupOptions = shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>();
+
+      std::string result;
+      
       switch (mode)
       {
       case kPing:
-         return (boost::format("host=%1% port=%2% application_name=Yadoms") % m_host % m_port).str();
+         result = (boost::format("host=%1% port=%2% application_name=Yadoms")
+            % startupOptions->getDatabasePostgresqlHost() 
+            % startupOptions->getDatabasePostgresqlPort()).str();
+         break;
       case kMasterDb:
-         return (boost::format("host=%1% port=%2% user=%3% password=%4% dbname=postgres application_name=Yadoms") % m_host % m_port % m_login % m_password).str();
+         result = (boost::format("host=%1% port=%2% user=%3% password=%4% dbname=postgres application_name=Yadoms")
+            % startupOptions->getDatabasePostgresqlHost() 
+            % startupOptions->getDatabasePostgresqlPort() 
+            % startupOptions->getDatabasePostgresqlLogin()
+            % startupOptions->getDatabasePostgresqlPassword()).str();
+         break;
       case kNormal:
       default:
-         return (boost::format("host=%1% port=%2% user=%3% password=%4% dbname=%5% application_name=Yadoms") % m_host % m_port % m_login % m_password % m_dbName).str();
+         result = (boost::format("host=%1% port=%2% user=%3% password=%4% dbname=%5% application_name=Yadoms")
+            % startupOptions->getDatabasePostgresqlHost() 
+            % startupOptions->getDatabasePostgresqlPort() 
+            % startupOptions->getDatabasePostgresqlLogin()
+            % startupOptions->getDatabasePostgresqlPassword()
+            % startupOptions->getDatabasePostgresqlDbName()).str();
+         break;
       }
+
+      if (mode != kPing)
+      {
+         //append all optional parameters
+         connectionStringAppendOptionalParameter(result, startupOptions->getDatabasePostgresqlHostAddr(), "hostaddr");
+         connectionStringAppendOptionalParameter(result, startupOptions->getDatabasePostgresqlConnectTimeout(), "connect_timeout");
+         connectionStringAppendOptionalParameter(result, startupOptions->getDatabasePostgresqlClientEncoding(), "client_encoding");
+         connectionStringAppendOptionalParameter(result, startupOptions->getDatabasePostgresqlOptions(), "options");
+         connectionStringAppendOptionalParameter(result, startupOptions->getDatabasePostgresqlKeepAlives(), "keepalives");
+         connectionStringAppendOptionalParameter(result, startupOptions->getDatabasePostgresqlKeepAlivesIdle(), "keepalives_idle");
+         connectionStringAppendOptionalParameter(result, startupOptions->getDatabasePostgresqlKeepAlivesInterval(), "keepalives_interval");
+         connectionStringAppendOptionalParameter(result, startupOptions->getDatabasePostgresqlKeepAlivesCount(), "keepalives_count");
+         connectionStringAppendOptionalParameter(result, startupOptions->getDatabasePostgresqlSslMode(), "sslmode");
+         connectionStringAppendOptionalParameter(result, startupOptions->getDatabasePostgresqlRequireSsl(), "requiressl");
+         connectionStringAppendOptionalParameter(result, startupOptions->getDatabasePostgresqlSslCompression(), "sslcompression");
+         connectionStringAppendOptionalParameter(result, startupOptions->getDatabasePostgresqlSslCert(), "sslcert");
+         connectionStringAppendOptionalParameter(result, startupOptions->getDatabasePostgresqlSslKey(), "sslkey");
+         connectionStringAppendOptionalParameter(result, startupOptions->getDatabasePostgresqlSslRootCert(), "sslrootcert");
+         connectionStringAppendOptionalParameter(result, startupOptions->getDatabasePostgresqlSslRevocationList(), "sslcrl");
+         connectionStringAppendOptionalParameter(result, startupOptions->getDatabasePostgresqlRequirePeer(), "requirepeer");
+         connectionStringAppendOptionalParameter(result, startupOptions->getDatabasePostgresqlKerberos(), "krbsrvname");
+         connectionStringAppendOptionalParameter(result, startupOptions->getDatabasePostgresqlGssLib(), "gsslib");
+         connectionStringAppendOptionalParameter(result, startupOptions->getDatabasePostgresqlService(), "service");
+      }
+      return result;
    }
 
    void CPgsqlRequester::pingServer()
@@ -158,16 +202,18 @@ namespace pgsql {
             }
             else
             {
+               boost::shared_ptr<startupOptions::IStartupOptions> startupOptions = shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>();
+
                //list all databases
                CPgsqlQuery dbList;
                
-               dbList.SelectCount().From(CPgDatabaseTable::getTableName()).Where(CPgDatabaseTable::getDatabaseNameColumnName(), CQUERY_OP_ILIKE, m_dbName);
+               dbList.SelectCount().From(CPgDatabaseTable::getTableName()).Where(CPgDatabaseTable::getDatabaseNameColumnName(), CQUERY_OP_ILIKE, startupOptions->getDatabasePostgresqlDbName());
                int count = queryCount(dbList, pConnection);
                if (count == 0)
                {
                   YADOMS_LOG(information) << "Database do not exists, try to create it";
                   //create database
-                  int result = queryStatement(CPgsqlQuery().CreateDatabase(m_dbName), true, pConnection);
+                  int result = queryStatement(CPgsqlQuery().CreateDatabase(startupOptions->getDatabasePostgresqlDbName()), true, pConnection);
                   if (result == 0)
                   {
                      YADOMS_LOG(information) << "Database created";

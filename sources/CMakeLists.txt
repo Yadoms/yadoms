@@ -441,6 +441,7 @@ set(YADOMS_SRC
 	server/startupOptions/DatabaseEngine.h
 	server/startupOptions/DatabaseEngine.cpp
 	server/startupOptions/EnumValidator.h
+	server/startupOptions/ListValidator.h
 	server/startupOptions/IStartupOptions.h
 	server/startupOptions/StartupOptions.h
 	server/startupOptions/StartupOptions.cpp

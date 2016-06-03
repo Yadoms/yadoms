@@ -4,6 +4,7 @@
 #include <shared/exception/NullReference.hpp>
 #include <shared/Log.h>
 #include "database/IDatabaseRequester.h"
+#include <Poco/Nullable.h>
 
 namespace database { 
 namespace pgsql { 
@@ -11,7 +12,7 @@ namespace pgsql {
    class CPgsqlRequester : public IDatabaseRequester
    {
    public:
-      CPgsqlRequester(const std::string &host, const unsigned int port, const std::string &dbName, const std::string &login, const std::string &password);
+      CPgsqlRequester();
       virtual ~CPgsqlRequester();
 
       // IDatabaseEngine implementation
@@ -93,6 +94,23 @@ namespace pgsql {
       const std::string createConnectionString(const EConnectionStringMode mode = kNormal);
 
       //--------------------------------------------------------------
+      /// \Brief		         Append (or not) an optional parameter to the connection string
+      /// \param [in/out]	   cnx         The connection string to complete.
+      /// \param [in]	      value       The optional parameter
+      /// \param [in]	      paramName   The parameter name (to add in connection string)
+      //--------------------------------------------------------------
+      template<class T>
+      void connectionStringAppendOptionalParameter(std::string & cnx, Poco::Nullable<T> value, const std::string & paramName)
+      {
+         if (!value.isNull())
+         {
+            std::stringstream ss;
+            ss << " " << paramName << "=" << value.value();
+            cnx += ss.str();
+         }
+      }
+
+      //--------------------------------------------------------------
       /// \Brief		         Create a new connection (one for each thread; testing one for each request)
       /// \return             A connection pointer
       //--------------------------------------------------------------
@@ -118,12 +136,6 @@ namespace pgsql {
       std::string getLastErrorMessage(PGconn * pConnection);
 
    private:
-      const std::string m_host;
-      const unsigned int m_port;
-      const std::string m_dbName;
-      const std::string m_login;
-      const std::string m_password;
-
       //--------------------------------------------------------------
       /// \Brief		List all connections (one per thread)
       //--------------------------------------------------------------

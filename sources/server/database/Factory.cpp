@@ -28,7 +28,7 @@ namespace database {
          return boost::shared_ptr<IDatabaseRequester>(new sqlite::CSQLiteRequester(startupOptions->getDatabaseSqliteFile()));
          break;
       case startupOptions::EDatabaseEngine::kPostgresqlValue:
-         return boost::shared_ptr<IDatabaseRequester>(new pgsql::CPgsqlRequester(startupOptions->getDatabasePostgresqlHost(), startupOptions->getDatabasePostgresqlPort(), startupOptions->getDatabasePostgresqlDbName(), startupOptions->getDatabasePostgresqlLogin(), startupOptions->getDatabasePostgresqlPassword()));
+         return boost::shared_ptr<IDatabaseRequester>(new pgsql::CPgsqlRequester());
          break;
       default:
          throw CDatabaseException("Unsupported database engine");

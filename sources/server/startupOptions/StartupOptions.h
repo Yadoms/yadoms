@@ -7,6 +7,7 @@
 #include <Poco/Util/OptionSet.h>
 #include <Poco/Util/AbstractConfiguration.h>
 
+
 namespace startupOptions
 {
    //--------------------------------------------------------------
@@ -48,6 +49,25 @@ namespace startupOptions
       virtual const std::string getDatabasePostgresqlDbName() const;
       virtual const std::string getDatabasePostgresqlLogin() const;
       virtual const std::string getDatabasePostgresqlPassword() const;
+      virtual const Poco::Nullable<std::string> getDatabasePostgresqlHostAddr() const;
+      virtual const Poco::Nullable<int> getDatabasePostgresqlConnectTimeout() const;
+      virtual const Poco::Nullable<std::string> getDatabasePostgresqlClientEncoding() const;
+      virtual const Poco::Nullable<std::string> getDatabasePostgresqlOptions() const;
+      virtual const Poco::Nullable<int> getDatabasePostgresqlKeepAlives() const;
+      virtual const Poco::Nullable<int> getDatabasePostgresqlKeepAlivesIdle() const;
+      virtual const Poco::Nullable<int> getDatabasePostgresqlKeepAlivesInterval() const;
+      virtual const Poco::Nullable<int> getDatabasePostgresqlKeepAlivesCount() const;
+      virtual const Poco::Nullable<std::string> getDatabasePostgresqlSslMode() const;
+      virtual const Poco::Nullable<int> getDatabasePostgresqlRequireSsl() const;
+      virtual const Poco::Nullable<int> getDatabasePostgresqlSslCompression() const;
+      virtual const Poco::Nullable<std::string> getDatabasePostgresqlSslCert() const;
+      virtual const Poco::Nullable<std::string> getDatabasePostgresqlSslKey() const;
+      virtual const Poco::Nullable<std::string> getDatabasePostgresqlSslRootCert() const;
+      virtual const Poco::Nullable<std::string> getDatabasePostgresqlSslRevocationList() const;
+      virtual const Poco::Nullable<std::string> getDatabasePostgresqlRequirePeer() const;
+      virtual const Poco::Nullable<std::string> getDatabasePostgresqlKerberos() const;
+      virtual const Poco::Nullable<std::string> getDatabasePostgresqlGssLib() const;
+      virtual const Poco::Nullable<std::string> getDatabasePostgresqlService() const;
       virtual const std::string getPluginsPath() const;
       virtual const std::string getScriptInterpretersPath() const;
       virtual bool getNoPasswordFlag() const;
