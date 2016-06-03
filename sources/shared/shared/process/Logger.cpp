@@ -10,9 +10,11 @@ namespace shared
    {
       CLogger::CLogger(const std::string& name,
                        const boost::filesystem::path& logFilePath)
-         : m_name(name),
-           m_logFile(logFilePath.string(), std::ofstream::out | std::ofstream::app)
+         : m_name(name)           
       {
+         if (!boost::filesystem::exists(logFilePath.parent_path()))
+            boost::filesystem::create_directories(logFilePath.parent_path());
+         m_logFile.open(logFilePath.string(), std::ofstream::out | std::ofstream::app);
       }
 
       CLogger::~CLogger()

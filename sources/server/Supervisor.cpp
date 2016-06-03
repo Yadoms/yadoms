@@ -30,7 +30,8 @@
 #include "dateTime/DateTimeNotifier.h"
 
 
-CSupervisor::CSupervisor()
+CSupervisor::CSupervisor(const IPathProvider& pathProvider)
+   :m_pathProvider(pathProvider)
 {
 }
 
@@ -53,11 +54,11 @@ void CSupervisor::run()
       auto notificationCenter(boost::make_shared<notification::CNotificationCenter>());
       shared::CServiceLocator::instance().push<notification::CNotificationCenter>(notificationCenter);
 
-      //retreive startup options
+      //retrieve startup options
       auto startupOptions = shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>();
 
       //start database system
-      boost::shared_ptr<database::IDataProvider> pDataProvider(boost::make_shared<database::sqlite::CSQLiteDataProvider>(startupOptions->getDatabaseFile()));
+      boost::shared_ptr<database::IDataProvider> pDataProvider(boost::make_shared<database::sqlite::CSQLiteDataProvider>(startupOptions->getDatabaseFile())); //TODO mettre getDatabaseFile dans m_pathProvider
       if (!pDataProvider->load())
          throw shared::exception::CException("Fail to load database");
 
@@ -73,11 +74,10 @@ void CSupervisor::run()
       auto updateManager(boost::make_shared<update::CUpdateManager>(taskManager));
 
       // Create the Plugin manager
-      const auto pluginsPath = startupOptions->getPluginsPath();
-      auto pluginManager(boost::make_shared<pluginSystem::CManager>(pluginsPath,
+      auto pluginManager(boost::make_shared<pluginSystem::CManager>(m_pathProvider,
                                                                     pDataProvider,
                                                                     dal));
-      shared::CServiceLocator::instance().push<pluginSystem::CManager>(pluginManager);
+      shared::CServiceLocator::instance().push<pluginSystem::CManager>(pluginManager);//TODO à virer ?
 
       // Start the plugin gateway
       auto pluginGateway(boost::make_shared<communication::CPluginGateway>(pDataProvider, dal->getAcquisitionHistorizer(), pluginManager));
@@ -86,7 +86,8 @@ void CSupervisor::run()
       pluginManager->start();
 
       // Start automation rules manager
-      boost::shared_ptr<automation::IRuleManager> automationRulesManager(boost::make_shared<automation::CRuleManager>(pDataProvider->getRuleRequester(),
+      boost::shared_ptr<automation::IRuleManager> automationRulesManager(boost::make_shared<automation::CRuleManager>(m_pathProvider,
+                                                                                                                      pDataProvider->getRuleRequester(),
                                                                                                                       pluginGateway,
                                                                                                                       pDataProvider->getAcquisitionRequester(),
                                                                                                                       pDataProvider->getDeviceRequester(),
@@ -99,8 +100,8 @@ void CSupervisor::run()
       // Start Web server
       const auto webServerIp = startupOptions->getWebServerIPAddress();
       const auto webServerPort = boost::lexical_cast<std::string>(startupOptions->getWebServerPortNumber());
-      const auto webServerPath = startupOptions->getWebServerInitialPath();
-      const auto scriptInterpretersPath = startupOptions->getScriptInterpretersPath();
+      const auto webServerPath = startupOptions->getWebServerInitialPath();//TODO mettre dans m_pathProvider
+      const auto scriptInterpretersPath = m_pathProvider.scriptInterpretersPath().string();
 
       auto webServer(boost::make_shared<web::poco::CWebServer>(webServerIp,
                                                                webServerPort,
@@ -108,7 +109,7 @@ void CSupervisor::run()
                                                                "/rest/",
                                                                "/ws"));
 
-      webServer->getConfigurator()->websiteHandlerAddAlias("plugins", pluginsPath);
+      webServer->getConfigurator()->websiteHandlerAddAlias("plugins", m_pathProvider.pluginsPath().string());
       webServer->getConfigurator()->websiteHandlerAddAlias("scriptInterpreters", scriptInterpretersPath);
       webServer->getConfigurator()->configureAuthentication(boost::make_shared<authentication::CBasicAuthentication>(dal->getConfigurationManager(), startupOptions->getNoPasswordFlag()));
       webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CPlugin>(pDataProvider, pluginManager, *pluginGateway));

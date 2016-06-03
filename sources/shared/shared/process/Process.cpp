@@ -70,7 +70,7 @@ namespace shared
          }
          catch (Poco::Exception& ex)
          {
-            throw CProcessException(std::string("Unable to start plugin, ") + ex.what());
+            throw CProcessException(std::string("Unable to start process, ") + ex.what());
          }
       }
 

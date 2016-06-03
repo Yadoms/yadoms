@@ -28,7 +28,7 @@ namespace automation
       }
 
       auto scriptProperties = m_scriptManager->createScriptProperties(m_ruleData);
-      auto scriptLogger = m_scriptManager->createScriptLogger(scriptProperties->scriptPath());
+      auto scriptLogger = m_scriptManager->createScriptLogger(m_ruleData);
       auto yScriptApi = m_scriptManager->createScriptContext(scriptLogger);
       auto stopNotifier = m_scriptManager->createStopNotifier(m_ruleStateHandler, m_ruleData->Id());
 
@@ -43,7 +43,8 @@ namespace automation
 
    void CRule::requestStop()
    {
-      m_process->kill();
+      if (!!m_process)
+         m_process->kill();
    }
 } // namespace automation	
 	

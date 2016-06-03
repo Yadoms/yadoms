@@ -16,6 +16,7 @@
 #include <shared/plugin/yPluginApi/IExtraCommand.h>
 #include <shared/plugin/yPluginApi/historization/PluginState.h>
 #include "InstanceRemover.h"
+#include <IPathProvider.h>
 
 namespace pluginSystem
 {
@@ -28,11 +29,11 @@ namespace pluginSystem
    public:
       //--------------------------------------------------------------
       /// \brief			Constructor (protected, use newManager to create instance)
-      /// \param [in]   initialDir              Initial plugins search directory
+      /// \param [in]   pathProvider            Yadoms paths provider
       /// \param [in]   dataProvider            Database link
       /// \param [in]   dataAccessLayer         The database access layer
       //--------------------------------------------------------------
-      CManager(const std::string& initialDir,
+      CManager(const IPathProvider& pathProvider,
                boost::shared_ptr<database::IDataProvider> dataProvider,
                boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer);
 

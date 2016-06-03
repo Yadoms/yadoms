@@ -248,6 +248,9 @@ set(YADOMS_SRC
 	server/Application.cpp
 	server/ErrorHandler.h
 	server/ErrorHandler.cpp
+	server/IPathProvider.h
+	server/PathProvider.cpp
+	server/PathProvider.h	
 	server/IRunningInformation.h
 	server/RunningInformation.cpp
 	server/RunningInformation.h	

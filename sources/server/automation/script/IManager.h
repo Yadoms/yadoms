@@ -87,10 +87,10 @@ namespace automation { namespace script
 
       //-----------------------------------------------------
       ///\brief               Create the script logger
-      ///\param[in] scriptPath The script path where to log in
+      ///\param[in] ruleData  The rule raw data
       ///\return              A script logger instance
       //-----------------------------------------------------
-      virtual boost::shared_ptr<shared::process::ILogger> createScriptLogger(const std::string& scriptPath) = 0;
+      virtual boost::shared_ptr<shared::process::ILogger> createScriptLogger(boost::shared_ptr<const database::entities::CRule> ruleData) = 0;
 
       //-----------------------------------------------------
       ///\brief               Create the script context (IYScriptApi implementation)
