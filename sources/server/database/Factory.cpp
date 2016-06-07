@@ -6,7 +6,10 @@
 #include "common/DataProvider.h"
 #include "DatabaseException.hpp"
 #include "sqlite/SQLiteRequester.h"
-#include "pgsql/PgsqlRequester.h"
+
+#ifndef PGSQL_NOT_FOUND
+#  include "pgsql/PgsqlRequester.h"
+#endif
 
 namespace database { 
 
@@ -27,9 +30,11 @@ namespace database {
       case startupOptions::EDatabaseEngine::kSqliteValue:
          return boost::shared_ptr<IDatabaseRequester>(new sqlite::CSQLiteRequester(startupOptions->getDatabaseSqliteFile()));
          break;
+#ifndef PGSQL_NOT_FOUND
       case startupOptions::EDatabaseEngine::kPostgresqlValue:
          return boost::shared_ptr<IDatabaseRequester>(new pgsql::CPgsqlRequester());
          break;
+#endif
       default:
          throw CDatabaseException("Unsupported database engine");
       }

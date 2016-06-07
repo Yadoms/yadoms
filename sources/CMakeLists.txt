@@ -731,28 +731,28 @@ ENDIF()
 ################################################
 
 IF(USE_PGSQL_DATABASE)
-   find_package(PostgreSQL REQUIRED)
-   message(STATUS "Found postgresql ${PostgreSQL_VERSION_STRING}")
+   find_package(PostgreSQL)
 
-	set(YADOMS_SRC ${YADOMS_SRC}
-		server/database/pgsql/PgsqlQuery.h
-		server/database/pgsql/PgsqlQuery.cpp
-		server/database/pgsql/PgsqlRequester.h
-		server/database/pgsql/PgsqlRequester.cpp
-		server/database/pgsql/PgsqlResultHandler.h
-		server/database/pgsql/PgsqlResultHandler.cpp
-		server/database/pgsql/PgsqlSqlState.h
-		server/database/pgsql/PgsqlSqlState.cpp
-		server/database/pgsql/PgsqlSystemTables.h
-		server/database/pgsql/PgsqlSystemTables.cpp
-		server/database/pgsql/PgsqlTableCreationScriptProvider.h
-		server/database/pgsql/PgsqlTableCreationScriptProvider.cpp
-	)
-	
-	source_group(server\\database\\pgsql  server/database/pgsql/*.*)
-	
-   #in case of OpenSSL use
    if(PostgreSQL_FOUND)
+      message(STATUS "Found postgresql ${PostgreSQL_VERSION_STRING}")
+
+      set(YADOMS_SRC ${YADOMS_SRC}
+         server/database/pgsql/PgsqlQuery.h
+         server/database/pgsql/PgsqlQuery.cpp
+         server/database/pgsql/PgsqlRequester.h
+         server/database/pgsql/PgsqlRequester.cpp
+         server/database/pgsql/PgsqlResultHandler.h
+         server/database/pgsql/PgsqlResultHandler.cpp
+         server/database/pgsql/PgsqlSqlState.h
+         server/database/pgsql/PgsqlSqlState.cpp
+         server/database/pgsql/PgsqlSystemTables.h
+         server/database/pgsql/PgsqlSystemTables.cpp
+         server/database/pgsql/PgsqlTableCreationScriptProvider.h
+         server/database/pgsql/PgsqlTableCreationScriptProvider.cpp
+      )
+      
+      source_group(server\\database\\pgsql  server/database/pgsql/*.*)
+	
       IF(WIN32)
          #add libpq.dll and intl.dll as dependencies
          IF(EXISTS "${PostgreSQL_ROOT}/bin/libpq.dll")
@@ -775,12 +775,13 @@ IF(USE_PGSQL_DATABASE)
             ENDIF()
          ENDIF()
       ENDIF(WIN32)
-   ENDIF()
-
    
-   
-	set(YADOMS_EXTERNAL_LINK ${YADOMS_EXTERNAL_LINK} ${PostgreSQL_LIBRARY})
-	set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${PostgreSQL_INCLUDE_DIRS})
+      set(YADOMS_EXTERNAL_LINK ${YADOMS_EXTERNAL_LINK} ${PostgreSQL_LIBRARY})
+      set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${PostgreSQL_INCLUDE_DIRS})
+   else()
+      message(WARNING "PostgreSQL not found. Only SQLite will be available")
+      add_definitions( -DPGSQL_NOT_FOUND )
+   ENDIF(PostgreSQL_FOUND)   
 ENDIF(USE_PGSQL_DATABASE)
 
 #Web server

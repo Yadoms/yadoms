@@ -19,11 +19,16 @@ set(POCO_ROOT "path/to/poco/poco-1.6.0-all")
 #define Protobuf ROOT
 set(PROTOBUF_ROOT "path/to/protobuf")
 
-
-#define PostgreSQL ROOT
+##### Database ######
+#
+# PostgreSQL
+#define PostgreSQL ROOT (if not found, PostgreSQL will not be available in project)
 #set(PostgreSQL_ROOT "F:/ProjetsPerso/postgresql-9.4.6-1-windows-binaries/pgsql")
 
 
+##### Cross compilation ######
+#
+# 
 #define CC_RPI_ROOT to cross compile for Raspberry PI (from a linux machine)
 #depending on linux machine architecture (32/64), choose from the first or second line
 #set(CC_RPI_ROOT /path/to/raspberry/git/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian)
