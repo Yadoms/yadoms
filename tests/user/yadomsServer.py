@@ -22,6 +22,24 @@ def databasePath():
    return os.path.join(binaryPath(), "yadoms.db3")
    
    
+def logsPath():
+   """return the logs path"""
+   
+   return os.path.join(binaryPath(), "logs")
+   
+   
+def pluginLogsPath():
+   """return the plugin log path"""
+   
+   return os.path.join(logsPath(), "plugins")
+   
+   
+def scriptLogsPath():
+   """return the script log path"""
+   
+   return os.path.join(logsPath(), "scripts")
+   
+   
 def scriptsPath():
    """return the scripts path"""
    
