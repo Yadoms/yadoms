@@ -17,6 +17,12 @@ namespace database {
       typedef boost::function3<void, int, int, std::string> ProgressFunc;
 
       //---------------------------------
+      ///\brief Indicate if backup is supported by database engine
+      ///\return boolean
+      //---------------------------------
+      virtual bool backupSupported() = 0;
+
+      //---------------------------------
       ///\brief Backup the data provider to a file
       ///\param [in] backupLocation : the backup location
       ///\param [in] reporter : a function pointer for reporting progression

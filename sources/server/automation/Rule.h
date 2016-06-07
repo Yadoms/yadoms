@@ -1,7 +1,7 @@
 #pragma once
 #include "IRule.h"
 #include "script/IManager.h"
-#include "../database/sqlite/requesters/Rule.h"
+#include "server/database/entities/Entities.h"
 #include "IRuleStateHandler.h"
 
 namespace automation

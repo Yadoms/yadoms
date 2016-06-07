@@ -1,6 +1,6 @@
 #pragma once
 #include <shared/exception/Exception.hpp>
-
+#include <shared/StringExtension.h>
 
 namespace database { 
 
@@ -15,6 +15,14 @@ namespace database {
       //--------------------------------------------------------------
       explicit CDatabaseException(const std::string & errMsg)
           :CException(std::string(errMsg))
+      {
+      }
+
+      //--------------------------------------------------------------
+      /// \brief	                        Constructor
+      //--------------------------------------------------------------
+      CDatabaseException(const std::string & errMsg, const std::string & innerError)
+          :CException(std::string(errMsg) + " " + std::string(innerError))
       {
       }
 

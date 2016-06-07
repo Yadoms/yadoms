@@ -96,7 +96,7 @@ BOOST_AUTO_TEST_CASE(CollectionContainer)
    for (int i = 0; i<10; ++i)
       vi.push_back(i);
    test.set < std::vector<int> >("vectorint", vi);
-   std::vector<int> vi2 = test.get<std::vector<int>>("vectorint");
+   std::vector<int> vi2 = test.get<std::vector<int> >("vectorint");
    BOOST_CHECK_EQUAL_COLLECTIONS(vi.begin(), vi.end(), vi2.begin(), vi2.end());
 
    //check vector of double
@@ -458,7 +458,7 @@ BOOST_AUTO_TEST_CASE(Field)
       vfi.push_back(shared::CField<int>(i));
 
    dc.set("VectorFieldInt", vfi);
-   std::vector<int> vi2 = dc.get<std::vector<int>>("VectorFieldInt");
+   std::vector<int> vi2 = dc.get<std::vector<int> >("VectorFieldInt");
    BOOST_CHECK_EQUAL_COLLECTIONS(vfi.begin(), vfi.end(), vi2.begin(), vi2.end());
 }
 

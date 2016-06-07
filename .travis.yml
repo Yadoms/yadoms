@@ -84,6 +84,9 @@ before_install:
 - sudo make install > yadoms_swig.log
 - cd ..
 
+# PostgreSQL
+- sudo apt-get install libpq-dev postgresql-server-dev-9.3
+
 script:
 # Yadoms configuration file
 - echo 'Configuring Yadoms CMakeListsUserConfig.txt'

@@ -10,3 +10,4 @@ tests/unit/builds/DEBUG
 tests/user/user.pyproj
 tests/user/.vs
 tests/user/user.sln
+.DS_Store

@@ -1,6 +1,6 @@
 #pragma once
 #include "IProperties.h"
-#include "../../database/sqlite/requesters/Rule.h"
+#include "../../database/common/requesters/Rule.h"
 #include <shared/process/ILogger.h>
 #include <shared/script/yScriptApi/IYScriptApi.h>
 #include <server/automation/IRuleStateHandler.h>

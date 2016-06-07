@@ -2,7 +2,7 @@
 #include "Supervisor.h"
 #include "automation/script/ObjectFactory.h"
 #include "pluginSystem/Manager.h"
-#include "database/sqlite/SQLiteDataProvider.h"
+#include "database/Factory.h"
 #include <shared/Log.h>
 #include "web/poco/WebServer.h"
 #include "authentication/BasicAuthentication.h"
@@ -58,7 +58,7 @@ void CSupervisor::run()
       auto startupOptions = shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>();
 
       //start database system
-      boost::shared_ptr<database::IDataProvider> pDataProvider(boost::make_shared<database::sqlite::CSQLiteDataProvider>(m_pathProvider.getDatabaseFile().string()));
+      boost::shared_ptr<database::IDataProvider> pDataProvider = database::CFactory::create(); 
       if (!pDataProvider->load())
          throw shared::exception::CException("Fail to load database");
 

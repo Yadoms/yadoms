@@ -384,3 +384,28 @@ function asyncLoadManyCss(cssNames) {
 
    return d.promise();
 }
+
+/**
+ * Returns a reference to the specified CSS rule(s).
+ * @param {RuleName} The name of the CSS Rule
+ */
+function getRule( RuleName ) {
+
+  var rule;
+  var findedRule=[];
+
+  var ss = document.styleSheets;
+
+  for (var i = 0; i < ss.length; ++i) {
+
+	  // loop through all the rules!
+
+	  for (var x = 0; x < ss[i].cssRules.length; ++x) {
+		  rule = ss[i].cssRules[x];
+		  if (rule.name == RuleName && rule.type == CSSRule.KEYFRAMES_RULE) {
+			  findedRule.push( rule );
+		  }
+	  }
+  }
+  return findedRule;
+} 
