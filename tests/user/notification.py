@@ -1,7 +1,4 @@
-﻿from selenium.webdriver.support import expected_conditions as Condition
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.common.exceptions import NoSuchElementException
+﻿from selenium.common.exceptions import NoSuchElementException
 import tools
 import time
 
@@ -89,20 +86,17 @@ def isNotificationContainingText(browser, expectedType, expectedSubText):
 
 def wait(browser, expectedType):
    """ Wait for an expected notification """
-   WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "noty_bottomRight_layout_container")))
-   WebDriverWait(browser, 10).until(lambda driver: isNotification(browser, expectedType))
+   assert tools.waitUntil(lambda: isNotification(browser, expectedType))
 
 
 def waitText(browser, expectedType, expectedText):
    """ Wait for an expected notification """
-   WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "noty_bottomRight_layout_container")))
-   WebDriverWait(browser, 10).until(lambda driver: isNotificationWithText(browser, expectedType, expectedText))
+   assert tools.waitUntil(lambda: isNotificationWithText(browser, expectedType, expectedText))
 
 
 def waitSubText(browser, expectedType, expectedSubText):
-   """ Wait for a notification contining expected text"""
-   WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "noty_bottomRight_layout_container")))
-   WebDriverWait(browser, 10).until(lambda driver: isNotificationContainingText(browser, expectedType, expectedSubText))
+   """ Wait for a notification containing expected text"""
+   assert tools.waitUntil(lambda: isNotificationContainingText(browser, expectedType, expectedSubText))
    
    
 def noNotification(browser):

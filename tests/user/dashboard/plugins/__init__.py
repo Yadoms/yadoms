@@ -24,7 +24,7 @@ def waitPluginsTable(browser):
 
 def waitPluginsTableHasNPlugins(browser, pluginsNumberExpected):
    pluginsTable = waitPluginsTable(browser)
-   WebDriverWait(browser, 10).until(lambda driver: getPluginNumberInTable(browser, pluginsTable) == pluginsNumberExpected)
+   assert tools.waitUntil(lambda: getPluginNumberInTable(browser, pluginsTable) == pluginsNumberExpected, 30) # TODO remove timeout of 30s when Trello https://trello.com/c/eHN6sg6D is fixed
    return pluginsTable
 
 def getPluginNumberInTable(browser, pluginsTable):
