@@ -141,17 +141,12 @@ class Widget():
       self.__widgetWebElement = widgetWebElement 
 
    def getType(self):
-      widgetBody = self.__widgetWebElement.find_element_by_class_name('panel-widget-body')
-      linkElement = widgetBody.find_element_by_tag_name('link')
-      hrefValue = linkElement.get_attribute('href')
-      return re.search('widgets/(.*)/widget.css', hrefValue).group(1)
+      classes = self.__widgetWebElement.find_element_by_class_name('panel-widget').get_attribute('class').split()
+      for classItem in classes:
+         if "widget-" in classItem:
+            return re.search('widget-(.*)', classItem).group(1)
+      assert False
       
    def getTitle(self):
       return self.__widgetWebElement.find_element_by_class_name('panel-widget-title').text
-      
-   def getPosition(self):
-      return [int(self.__widgetWebElement.get_attribute('data-gs-x')), int(self.__widgetWebElement.get_attribute('data-gs-y'))]
-
-   def getSize(self):
-      return [int(self.__widgetWebElement.get_attribute('data-gs-width')), int(self.__widgetWebElement.get_attribute('data-gs-height'))]
       

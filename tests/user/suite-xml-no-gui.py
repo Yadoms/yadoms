@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+import sys
+sys.path.append('.')
 import unittest
 import StringIO
 import xmlrunner
