@@ -76,6 +76,8 @@ CCartelectronicTIC::~CCartelectronicTIC()
 
 void CCartelectronicTIC::declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
 {
+   // TODO : Create Keywords details
+
    // Create keywords if needed
    context->declareKeyword(deviceName, *m_Counter1);
    context->declareKeyword(deviceName, *m_ApparentePower);
@@ -92,7 +94,7 @@ void CCartelectronicTIC::historize(std::vector<boost::shared_ptr<yApi::historiza
 {
    KeywordList.push_back ( m_Counter1 );
    KeywordList.push_back ( m_ApparentePower );
-   KeywordList.push_back (m_Period );
+   KeywordList.push_back ( m_Period );
 
    if (m_SubscribeContract != OP_BASE)
       KeywordList.push_back ( m_Counter2 );
