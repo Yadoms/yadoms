@@ -82,7 +82,10 @@ void CCartelectronicTIC::declare(boost::shared_ptr<yApi::IYPluginApi> context, c
    context->declareKeyword(deviceName, *m_Period);
 
    if (m_SubscribeContract != OP_BASE)
-	 context->declareKeyword(deviceName, *m_Counter2);
+	  context->declareKeyword(deviceName, *m_Counter2);
+
+   if (m_SubscribeContract == OP_TEMPO)
+	  context->declareKeyword(deviceName, *m_Forecast);
 }
 
 void CCartelectronicTIC::historize(std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > &KeywordList) const
