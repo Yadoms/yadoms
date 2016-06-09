@@ -66,18 +66,18 @@ void CSupervisor::run()
       dal = boost::make_shared<dataAccessLayer::CDataAccessLayer>(pDataProvider);
       shared::CServiceLocator::instance().push<dataAccessLayer::IDataAccessLayer>(dal);
 
+      // Create the Plugin manager
+      auto pluginManager(boost::make_shared<pluginSystem::CManager>(m_pathProvider,
+                                                                    pDataProvider,
+                                                                    dal));
+
       // Start Task manager
       auto taskManager(boost::make_shared<task::CScheduler>(dal->getEventLogger()));
       taskManager->start();
 
       // Create the update manager
-      auto updateManager(boost::make_shared<update::CUpdateManager>(taskManager));
-
-      // Create the Plugin manager
-      auto pluginManager(boost::make_shared<pluginSystem::CManager>(m_pathProvider,
-                                                                    pDataProvider,
-                                                                    dal));
-      shared::CServiceLocator::instance().push<pluginSystem::CManager>(pluginManager);//TODO à virer ?
+      auto updateManager(boost::make_shared<update::CUpdateManager>(taskManager,
+                                                                    pluginManager));
 
       // Start the plugin gateway
       auto pluginGateway(boost::make_shared<communication::CPluginGateway>(pDataProvider, dal->getAcquisitionHistorizer(), pluginManager));
@@ -159,7 +159,6 @@ void CSupervisor::run()
 
       //stop all plugins
       //force to stop all plugin, the reset() will call stop only at pluginManager deletion, which could happen in the future if it is used elsewhere
-      shared::CServiceLocator::instance().remove<pluginSystem::CManager>(pluginManager);
       pluginManager->stop();
       pluginManager.reset();
 

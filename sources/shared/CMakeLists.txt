@@ -48,8 +48,8 @@ set(SHARED_LIB_SRC
    shared/communication/MessageQueueRemover.hpp
    shared/communication/PortException.hpp
 	
-	shared/compression/Extract.h
-	shared/compression/Extract.cpp
+   shared/compression/Extract.h
+   shared/compression/Extract.cpp
 
    shared/currentTime/ICurrentTime.h
    shared/currentTime/Local.h
@@ -60,11 +60,11 @@ set(SHARED_LIB_SRC
    shared/dateTime/DateTimeContainer.h
    shared/dateTime/DateTimeContainer.cpp
 
-	shared/encryption/Xor.h
-	shared/encryption/Xor.cpp
-	shared/encryption/Base64.h
-	shared/encryption/Base64.cpp
-	shared/encryption/md5.h
+   shared/encryption/Xor.h
+   shared/encryption/Xor.cpp
+   shared/encryption/Base64.h
+   shared/encryption/Base64.cpp
+   shared/encryption/md5.h
 	
    shared/enumeration/IExtendedEnum.h
    shared/enumeration/ExtendedEnumHelpers.cpp
@@ -206,9 +206,8 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/historization/typeInfo/StringTypeInfo.cpp
    shared/plugin/yPluginApi/historization/typeInfo/EnumTypeInfo.hpp
 
-	shared/process/IApplication.h
-	shared/process/IApplicationStopHandler.h
-	shared/process/IApplicationStopRequestObserver.h
+   shared/process/IApplication.h
+   shared/process/IApplicationStopHandler.h
    shared/process/IProcessObserver.h
    shared/process/ICommandLine.h
    shared/process/IProcess.h
@@ -239,31 +238,31 @@ set(SHARED_LIB_SRC
    shared/versioning/VersionInformation.h
    shared/versioning/VersionInformation.cpp
    
-	shared/web/FileDownloader.h
-	shared/web/FileDownloader.cpp
-	shared/web/UriHelpers.h
-	shared/web/UriHelpers.cpp
-	shared/web/exception/InvalidHash.hpp
-	shared/web/exception/DownloadFailed.hpp
+   shared/web/FileDownloader.h
+   shared/web/FileDownloader.cpp
+   shared/web/UriHelpers.h
+   shared/web/UriHelpers.cpp
+   shared/web/exception/InvalidHash.hpp
+   shared/web/exception/DownloadFailed.hpp
 )
 
 #Append platform specific files
 IF(WIN32)
 set(SHARED_LIB_SRC	
 	${SHARED_LIB_SRC}
-	windows/shared/DynamicLibrary.h
-	windows/shared/DynamicLibrary.cpp
-	windows/shared/Executable.h
-	windows/shared/Executable.cpp
-	windows/shared/Export.h
+   windows/shared/DynamicLibrary.h
+   windows/shared/DynamicLibrary.cpp
+   windows/shared/Executable.h
+   windows/shared/Executable.cpp
+   windows/shared/Export.h
    windows/shared/FileSystemExtension.h
-	windows/shared/FileSystemExtension.cpp
-	windows/shared/NetworkHelper.h
-	windows/shared/NetworkHelper.cpp
-	windows/shared/Peripherals.h
-	windows/shared/Peripherals.cpp
-	windows/shared/Thread.h
-	windows/shared/Thread.cpp
+   windows/shared/FileSystemExtension.cpp
+   windows/shared/NetworkHelper.h
+   windows/shared/NetworkHelper.cpp
+   windows/shared/Peripherals.h
+   windows/shared/Peripherals.cpp
+   windows/shared/Thread.h
+   windows/shared/Thread.cpp
    
    windows/shared/process/ConsoleControlHandler.h
    windows/shared/process/ConsoleControlHandler.cpp
@@ -276,20 +275,20 @@ set(PLATFORM_SPECIFIC_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/windows)
 
 ELSEIF(APPLE)
 set(SHARED_LIB_SRC	
-	${SHARED_LIB_SRC}
-	mac/shared/DynamicLibrary.h
-	mac/shared/DynamicLibrary.cpp
-	mac/shared/Executable.h
-	mac/shared/Executable.cpp
-	mac/shared/Export.h
+   ${SHARED_LIB_SRC}
+   mac/shared/DynamicLibrary.h
+   mac/shared/DynamicLibrary.cpp
+   mac/shared/Executable.h
+   mac/shared/Executable.cpp
+   mac/shared/Export.h
    mac/shared/FileSystemExtension.h
-	mac/shared/FileSystemExtension.cpp
-	mac/shared/NetworkHelper.h
-	mac/shared/NetworkHelper.cpp
-	mac/shared/Peripherals.h
-	mac/shared/Peripherals.cpp
-	mac/shared/Thread.h
-	mac/shared/Thread.cpp
+   mac/shared/FileSystemExtension.cpp
+   mac/shared/NetworkHelper.h
+   mac/shared/NetworkHelper.cpp
+   mac/shared/Peripherals.h
+   mac/shared/Peripherals.cpp
+   mac/shared/Thread.h
+   mac/shared/Thread.cpp
    
    mac/shared/process/ApplicationStopHandler.h
    mac/shared/process/ApplicationStopHandler.cpp
@@ -298,20 +297,20 @@ set(PLATFORM_SPECIFIC_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/mac)
 
 ELSE()
 set(SHARED_LIB_SRC	
-	${SHARED_LIB_SRC}
-	linux/shared/DynamicLibrary.h
-	linux/shared/DynamicLibrary.cpp
-	linux/shared/Executable.h
-	linux/shared/Executable.cpp
-	linux/shared/Export.h
+   ${SHARED_LIB_SRC}
+   linux/shared/DynamicLibrary.h
+   linux/shared/DynamicLibrary.cpp
+   linux/shared/Executable.h
+   linux/shared/Executable.cpp
+   linux/shared/Export.h
    linux/shared/FileSystemExtension.h
-	linux/shared/FileSystemExtension.cpp
-	linux/shared/NetworkHelper.h
-	linux/shared/NetworkHelper.cpp
-	linux/shared/Peripherals.h
-	linux/shared/Peripherals.cpp
-	linux/shared/Thread.h
-	linux/shared/Thread.cpp
+   linux/shared/FileSystemExtension.cpp
+   linux/shared/NetworkHelper.h
+   linux/shared/NetworkHelper.cpp
+   linux/shared/Peripherals.h
+   linux/shared/Peripherals.cpp
+   linux/shared/Thread.h
+   linux/shared/Thread.cpp
    
    linux/shared/process/ApplicationStopHandler.h
    linux/shared/process/ApplicationStopHandler.cpp
@@ -366,31 +365,31 @@ target_link_libraries(yadoms-shared ${LIBS} ${CMAKE_DL_LIBS})
 set_property( TARGET yadoms-shared PROPERTY INCLUDE_DIRECTORIES ${BOOST_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}  ${PLATFORM_SPECIFIC_INCL_DIR}  ${Poco_INCLUDE_DIRS})
 
 if(COTIRE_USE)
-	set_target_properties(yadoms-shared PROPERTIES COTIRE_CXX_PREFIX_HEADER_INIT "stdafx.h")
+   set_target_properties(yadoms-shared PROPERTIES COTIRE_CXX_PREFIX_HEADER_INIT "stdafx.h")
 	
-	if(COTIRE_USE_UNITY)
-		set_target_properties(yadoms-shared PROPERTIES COTIRE_ADD_UNITY_BUILD TRUE)
-	else()
-		set_target_properties(yadoms-shared PROPERTIES COTIRE_ADD_UNITY_BUILD FALSE)
-	endif()
+   if(COTIRE_USE_UNITY)
+      set_target_properties(yadoms-shared PROPERTIES COTIRE_ADD_UNITY_BUILD TRUE)
+   else()
+      set_target_properties(yadoms-shared PROPERTIES COTIRE_ADD_UNITY_BUILD FALSE)
+   endif()
 	
-	cotire(yadoms-shared)
+   cotire(yadoms-shared)
 	
-	if(COTIRE_USE_UNITY)
-		target_link_libraries(yadoms-shared_unity ${LIBS} ${CMAKE_DL_LIBS})
+   if(COTIRE_USE_UNITY)
+      target_link_libraries(yadoms-shared_unity ${LIBS} ${CMAKE_DL_LIBS})
 set_property( TARGET yadoms-shared_unity PROPERTY INCLUDE_DIRECTORIES ${BOOST_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR} ${PLATFORM_SPECIFIC_INCL_DIR}  ${Poco_INCLUDE_DIRS})
-	endif()	
+   endif()	
 else()
-	add_precompiled_header(yadoms-shared stdafx.h)
+   add_precompiled_header(yadoms-shared stdafx.h)
 endif()
 
 
 
 install(TARGETS yadoms-shared
-         ARCHIVE DESTINATION ${INSTALL_BINDIR}
-         LIBRARY DESTINATION ${INSTALL_BINDIR}
-         RUNTIME DESTINATION ${INSTALL_BINDIR}
-         )
+   ARCHIVE DESTINATION ${INSTALL_BINDIR}
+   LIBRARY DESTINATION ${INSTALL_BINDIR}
+   RUNTIME DESTINATION ${INSTALL_BINDIR}
+   )
 
 
 
