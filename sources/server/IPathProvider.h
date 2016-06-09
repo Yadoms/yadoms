@@ -15,6 +15,12 @@ public:
    virtual const boost::filesystem::path& logsPath() const = 0;
 
    //-----------------------------------------------------------------------------
+   /// \brief		                     get the web server path
+   /// \return  	                     the web server path, ususally {yadoms_binary_path}/www
+   //-----------------------------------------------------------------------------
+   virtual const boost::filesystem::path& getWebServerPath() const = 0;
+
+   //-----------------------------------------------------------------------------
    /// \brief		                     get the plugins path
    /// \return  	                     the plugins path, ususally {yadoms_binary_path}/plugins
    //-----------------------------------------------------------------------------

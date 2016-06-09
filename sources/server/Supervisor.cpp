@@ -100,7 +100,7 @@ void CSupervisor::run()
       // Start Web server
       const auto webServerIp = startupOptions->getWebServerIPAddress();
       const auto webServerPort = boost::lexical_cast<std::string>(startupOptions->getWebServerPortNumber());
-      const auto webServerPath = startupOptions->getWebServerInitialPath();//TODO mettre dans m_pathProvider
+      const auto webServerPath = m_pathProvider.getWebServerPath().string();
       const auto scriptInterpretersPath = m_pathProvider.scriptInterpretersPath().string();
 
       auto webServer(boost::make_shared<web::poco::CWebServer>(webServerIp,

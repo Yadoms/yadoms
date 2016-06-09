@@ -22,6 +22,7 @@ public:
 
    // IPathProvider implementation
    const boost::filesystem::path& logsPath() const override;
+   const boost::filesystem::path& getWebServerPath() const override;
    const boost::filesystem::path& pluginsLogPath() const override;
    const boost::filesystem::path& pluginsPath() const override;
    const boost::filesystem::path& scriptsPath() const override;
@@ -32,6 +33,7 @@ public:
 
 private:
    const boost::filesystem::path m_logsPath;
+   const boost::filesystem::path m_webServerPath;
    const boost::filesystem::path m_pluginsLogPath;
    const boost::filesystem::path m_scriptsLogPath;
 

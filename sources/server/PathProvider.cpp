@@ -3,6 +3,7 @@
 
 CPathProvider::CPathProvider(const boost::shared_ptr<startupOptions::IStartupOptions> startupOptions)
    : m_logsPath("logs"),
+     m_webServerPath(startupOptions->getWebServerInitialPath()),
      m_pluginsLogPath(m_logsPath / "plugins"),
      m_scriptsLogPath(m_logsPath / "scripts"),
      m_pluginsPath(startupOptions->getPluginsPath()),
@@ -32,6 +33,11 @@ CPathProvider::~CPathProvider()
 const boost::filesystem::path& CPathProvider::logsPath() const
 {
    return m_logsPath;
+}
+
+const boost::filesystem::path& CPathProvider::getWebServerPath() const
+{
+   return m_webServerPath;
 }
 
 const boost::filesystem::path& CPathProvider::pluginsLogPath() const
