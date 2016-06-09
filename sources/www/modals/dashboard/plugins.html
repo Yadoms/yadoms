@@ -123,15 +123,24 @@
             }
          }
 
-
-
+         //setup extraCommand button initial state
+         var $extraCommandsButton = $pluginInstanceRow.find("button.btn-extraCommand");
+         if ($extraCommandsButton) {
+            if (pi.lastState === "Stopped" || pi.lastState === "Error") {
+               $extraCommandsButton.prop('disabled', true);
+            }
+         }
+         
+         //bind each extra command to js
          $.each(extraCommands, function (index, values) {
             $pluginInstanceRow.find("a.btn-extraCommand-" + index).unbind('click').bind('click', function () { onExtraCommand(pi, index, values); });
          });
 
          $pluginInstanceRow.i18n();
-      })
-      .fail(function(error) {
+
+            
+         })
+      .fail(function() {
       });
    }
 
@@ -277,6 +286,16 @@
                            default:
                               $label.removeClass("label-danger").text("");
                               break;
+                        }
+                     }
+
+                     //extra commands : enabled only when instance is running
+                     var $extraCommandsButton = $row.find("button.btn-extraCommand");
+                     if ($extraCommandsButton) {
+                        if (status.state === "Stopped" || status.state === "Error") {
+                           $extraCommandsButton.prop('disabled', true);
+                        } else {
+                           $extraCommandsButton.prop('disabled', false);
                         }
                      }
                   }
