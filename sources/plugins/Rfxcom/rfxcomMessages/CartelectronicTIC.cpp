@@ -10,7 +10,9 @@ namespace rfxcomMessages
                                           size_t rbufSize)
       : m_id(0),
         m_apparentePower(boost::make_shared<yApi::historization::CApparentPower>("ApparentPower")),
-        m_keywords({m_apparentePower})
+        m_Forecast(boost::make_shared<teleInfo::specificHistorizers::CColor>("ForecastTomorrow")),
+        m_Period(boost::make_shared<teleInfo::specificHistorizers::CPeriod>("RunningPeriod")),
+        m_keywords({m_apparentePower, m_Forecast, m_Period})
    {
       std::string NameCounter1;
       std::string NameCounter2;
@@ -18,9 +20,6 @@ namespace rfxcomMessages
       CheckReceivedMessage(rbuf, rbufSize, pTypeCARTELECTRONIC, sTypeTIC, GET_RBUF_STRUCT_SIZE(TIC), DONT_CHECK_SEQUENCE_NUMBER);
 
       m_SubscribeContract = static_cast<Contract>(rbuf.TIC.contract_type >> 4);
-
-      //TODO : Ajouter La période tarifaire en cours et l'historiser
-      //TODO : Récupérer le Tag DEMAIN et l'historiser
 
       switch (m_SubscribeContract)
       {
@@ -33,21 +32,23 @@ namespace rfxcomMessages
          NameCounter2 = "EJPPM";
          break;
       case OP_TEMPO:
+         m_Forecast->set(teleInfo::specificHistorizers::EColor((rbuf.TIC.state & 0x18) >> 3));
+
          // Counter dependant of the Period
          switch (rbuf.TIC.contract_type & 0x0f)
          {
-         case LowCostBlueDays:
-         case NormalCostBlueDays:
+         case teleInfo::specificHistorizers::EPeriod::kLowCostBlueDaysValue:
+         case teleInfo::specificHistorizers::EPeriod::kNormalCostBlueDaysValue:
             NameCounter1 = "LowCostBLUE";
             NameCounter2 = "NormalCostBLUE";
             break;
-         case LowCostWhiteDays:
-         case NormalCostWhiteDays:
+         case teleInfo::specificHistorizers::EPeriod::kLowCostWhiteDaysValue:
+         case teleInfo::specificHistorizers::EPeriod::kNormalCostWhiteDaysValue:
             NameCounter1 = "LowCostWHITE";
             NameCounter2 = "NormalCostWHITE";
             break;
-         case LowCostRedDays:
-         case NormalCostRedDays:
+         case teleInfo::specificHistorizers::EPeriod::kLowCostRedDaysValue:
+         case teleInfo::specificHistorizers::EPeriod::kNormalCostRedDaysValue:
             NameCounter1 = "LowCostRED";
             NameCounter2 = "NormalCostRED";
             break;
@@ -68,13 +69,15 @@ namespace rfxcomMessages
       m_counter1->set((rbuf.TIC.counter1_0 << 24) + (rbuf.TIC.counter1_1 << 16) + (rbuf.TIC.counter1_2 << 8) + (rbuf.TIC.counter1_3));
       m_counter2->set((rbuf.TIC.counter2_0 << 24) + (rbuf.TIC.counter2_1 << 16) + (rbuf.TIC.counter2_2 << 8) + (rbuf.TIC.counter2_3));
 
+
       m_apparentePower->set((rbuf.TIC.power_H << 8) + rbuf.TIC.power_L);
+      m_Period->set(teleInfo::specificHistorizers::EPeriod(rbuf.TIC.contract_type & 0x0F));
    }
 
    CCartelectronicTIC::~CCartelectronicTIC()
    {
    }
-   
+
    const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CCartelectronicTIC::keywords() const
    {
       return m_keywords;
@@ -87,7 +90,7 @@ namespace rfxcomMessages
 
       i_id = (static_cast<unsigned long long>(rbuf.TIC.id1) << 32) + (rbuf.TIC.id2 << 24) + (rbuf.TIC.id3 << 16) + (rbuf.TIC.id4 << 8) + (rbuf.TIC.id5);
 
-	// TODO : voir comment compléter à 12 caractères, pour le 0 devant
+      // TODO : voir comment compléter à 12 caractères, pour le 0 devant
       s_id << static_cast<unsigned long long>(i_id);
 
       return s_id.str();

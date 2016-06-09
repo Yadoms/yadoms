@@ -171,6 +171,10 @@ set(SPECIFIC_HISTORIZERS_SOURCES
    rfxcomMessages/specificHistorizers/RemoteMedionHistorizer.cpp
    rfxcomMessages/specificHistorizers/RemotePCHistorizer.h
    rfxcomMessages/specificHistorizers/RemotePCHistorizer.cpp
+   rfxcomMessages/specificHistorizers/Color.h
+   rfxcomMessages/specificHistorizers/Color.cpp
+   rfxcomMessages/specificHistorizers/Period.h
+   rfxcomMessages/specificHistorizers/Period.cpp
 )
 
 set(RFXCOM_SOURCES
@@ -199,6 +203,7 @@ set(RFXCOM_SOURCES
 
 source_group(rfxcomMessages rfxcomMessages/*.*)
 source_group(rfxcomMessages\\specificHistorizers rfxcomMessages/specificHistorizers/*.*)
+source_group(rfxcomMessages\\Keywords rfxcomMessages/Keywords/*.*)
 
 #########################################
 ## Place here all additional include directories
