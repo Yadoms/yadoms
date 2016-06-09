@@ -318,21 +318,24 @@ set(YADOMS_SRC
    server/communication/callback/ICallbackRequest.h
  	server/communication/callback/ISynchronousCallback.h
 
-	server/dataAccessLayer/DataAccessLayer.h
-	server/dataAccessLayer/DataAccessLayer.cpp
-	server/dataAccessLayer/IDataAccessLayer.h
 	server/dataAccessLayer/AcquisitionHistorizer.h
 	server/dataAccessLayer/AcquisitionHistorizer.cpp
-	server/dataAccessLayer/IAcquisitionHistorizer.h
-	server/dataAccessLayer/DeviceManager.h
-	server/dataAccessLayer/DeviceManager.cpp
-	server/dataAccessLayer/IDeviceManager.h
-	server/dataAccessLayer/EventLogger.h
-	server/dataAccessLayer/EventLogger.cpp
-	server/dataAccessLayer/IEventLogger.h
 	server/dataAccessLayer/ConfigurationManager.h
 	server/dataAccessLayer/ConfigurationManager.cpp
+	server/dataAccessLayer/DataAccessLayer.h
+	server/dataAccessLayer/DataAccessLayer.cpp
+	server/dataAccessLayer/DeviceManager.h
+	server/dataAccessLayer/DeviceManager.cpp
+	server/dataAccessLayer/EventLogger.h
+	server/dataAccessLayer/EventLogger.cpp
+	server/dataAccessLayer/KeywordManager.h
+	server/dataAccessLayer/KeywordManager.cpp
+	server/dataAccessLayer/IAcquisitionHistorizer.h
 	server/dataAccessLayer/IConfigurationManager.h
+	server/dataAccessLayer/IDataAccessLayer.h
+	server/dataAccessLayer/IDeviceManager.h
+	server/dataAccessLayer/IEventLogger.h
+	server/dataAccessLayer/IKeywordManager.h
 	
 	server/database/DatabaseException.hpp
 	server/database/IConfigurationRequester.h

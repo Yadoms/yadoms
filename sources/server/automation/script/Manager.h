@@ -3,10 +3,10 @@
 #include "IInterpreterLibrary.h"
 #include "../../database/IAcquisitionRequester.h"
 #include "../../database/IDeviceRequester.h"
-#include "../../database/IKeywordRequester.h"
 #include "../../database/IRecipientRequester.h"
 #include "../../communication/ISendMessageAsync.h"
 #include "../../dataAccessLayer/IConfigurationManager.h"
+#include "../../dataAccessLayer/IKeywordManager.h"
 #include "IGeneralInfo.h"
 #include <IPathProvider.h>
 
@@ -28,7 +28,7 @@ namespace automation
          ///\param[in] notificationCenter Notification center, used to get notified on keyword state changes
          ///\param[in] dbAcquisitionRequester  Database acquisition requester
          ///\param[in] dbDeviceRequester  Database device requester
-         ///\param[in] dbKeywordRequester  Database keyword requester
+         ///\param[in] keywordAccessLayer  Database keyword access layer
          ///\param[in] dbRecipientRequester  Database recipient requester
          //-----------------------------------------------------
          CManager(const IPathProvider& pathProvider,
@@ -36,7 +36,7 @@ namespace automation
                   boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
                   boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
                   boost::shared_ptr<database::IDeviceRequester> dbDeviceRequester,
-                  boost::shared_ptr<database::IKeywordRequester> dbKeywordRequester,
+                  boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
                   boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester);
 
          //-----------------------------------------------------
@@ -124,7 +124,7 @@ namespace automation
          //-----------------------------------------------------
          ///\brief               Database keyword requester
          //-----------------------------------------------------
-         boost::shared_ptr<database::IKeywordRequester> m_dbKeywordRequester;
+         boost::shared_ptr<dataAccessLayer::IKeywordManager> m_keywordAccessLayer;
 
          //-----------------------------------------------------
          ///\brief               Database recipient requester

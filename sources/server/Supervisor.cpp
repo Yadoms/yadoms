@@ -91,7 +91,7 @@ void CSupervisor::run()
                                                                                                                       pluginGateway,
                                                                                                                       pDataProvider->getAcquisitionRequester(),
                                                                                                                       pDataProvider->getDeviceRequester(),
-                                                                                                                      pDataProvider->getKeywordRequester(),
+                                                                                                                      dal->getKeywordManager(),
                                                                                                                       pDataProvider->getRecipientRequester(),
                                                                                                                       dal->getConfigurationManager(),
                                                                                                                       dal->getEventLogger()));

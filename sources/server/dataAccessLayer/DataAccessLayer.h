@@ -2,49 +2,37 @@
 #include "IDataAccessLayer.h"
 #include "database/IDataProvider.h"
 
-namespace dataAccessLayer {
-
+namespace dataAccessLayer
+{
    class CDataAccessLayer : public IDataAccessLayer
    {
    public:
       //--------------------------------------------------------------
       /// \brief        Constructor
-      /// \param[in]    pDataProvider  The data provider (internal data access)
+      /// \param[in]    dataProvider  The data provider (internal data access)
       //--------------------------------------------------------------
-      explicit CDataAccessLayer(boost::shared_ptr<database::IDataProvider> pDataProvider);
-      
+      explicit CDataAccessLayer(boost::shared_ptr<database::IDataProvider> dataProvider);
+
       //--------------------------------------------------------------
       /// \brief       Destructor
       //--------------------------------------------------------------
       virtual ~CDataAccessLayer();
-      
+
       // IDataAccessLayer implementation
-      virtual boost::shared_ptr<IDeviceManager> getDeviceManager() const;
-      virtual boost::shared_ptr<IAcquisitionHistorizer> getAcquisitionHistorizer() const;
-      virtual boost::shared_ptr<IConfigurationManager> getConfigurationManager() const;
-      virtual boost::shared_ptr<IEventLogger> getEventLogger() const;
+      boost::shared_ptr<IDeviceManager> getDeviceManager() const override;
+      boost::shared_ptr<IKeywordManager> getKeywordManager() const override;
+      boost::shared_ptr<IAcquisitionHistorizer> getAcquisitionHistorizer() const override;
+      boost::shared_ptr<IConfigurationManager> getConfigurationManager() const override;
+      boost::shared_ptr<IEventLogger> getEventLogger() const override;
       // [END] IDataAccessLayer implementation
-      
+
    private:
-      //--------------------------------------------------------------
-      /// \brief       The device manager
-      //--------------------------------------------------------------
       boost::shared_ptr<IDeviceManager> m_deviceManager;
-
-      //--------------------------------------------------------------
-      /// \brief       The acquisitions historizer
-      //--------------------------------------------------------------
+      boost::shared_ptr<IKeywordManager> m_keywordManager;
       boost::shared_ptr<IAcquisitionHistorizer> m_acquisitionHistorizer;
-
-      //--------------------------------------------------------------
-      /// \brief       The configuration manager
-      //--------------------------------------------------------------
       boost::shared_ptr<IConfigurationManager> m_configurationManager;
-
-      //--------------------------------------------------------------
-      /// \brief       The event logger
-      //--------------------------------------------------------------
       boost::shared_ptr<IEventLogger> m_eventLogger;
    };
- 
 } //namespace dataAccessLayer 
+
+

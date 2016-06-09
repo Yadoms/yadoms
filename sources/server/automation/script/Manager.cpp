@@ -23,14 +23,14 @@ namespace automation
                          boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
                          boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
                          boost::shared_ptr<database::IDeviceRequester> dbDeviceRequester,
-                         boost::shared_ptr<database::IKeywordRequester> dbKeywordRequester,
+                         boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
                          boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester)
          : m_pathProvider(pathProvider),
            m_pluginGateway(pluginGateway),
            m_configurationManager(configurationManager),
            m_dbAcquisitionRequester(dbAcquisitionRequester),
            m_dbDeviceRequester(dbDeviceRequester),
-           m_dbKeywordRequester(dbKeywordRequester),
+           m_keywordAccessLayer(keywordAccessLayer),
            m_dbRecipientRequester(dbRecipientRequester),
            m_generalInfo(new CGeneralInfo())
       {
@@ -272,10 +272,9 @@ namespace automation
       {
          boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi(boost::make_shared<CYScriptApiImplementation>(scriptLogger,
                                                                                                                              m_pluginGateway,
-                                                                                                                             m_configurationManager,
                                                                                                                              m_dbAcquisitionRequester,
                                                                                                                              m_dbDeviceRequester,
-                                                                                                                             m_dbKeywordRequester,
+                                                                                                                             m_keywordAccessLayer,
                                                                                                                              m_dbRecipientRequester,
                                                                                                                              m_generalInfo));
          return yScriptApi;

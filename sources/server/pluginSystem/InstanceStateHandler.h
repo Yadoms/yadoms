@@ -4,10 +4,10 @@
 #include "IInstanceStoppedListener.h"
 #include <shared/plugin/yPluginApi/historization/Text.h>
 #include <server/database/IPluginRequester.h>
-#include <server/database/IKeywordRequester.h>
 #include <server/database/IPluginEventLoggerRequester.h>
 #include <server/dataAccessLayer/IDeviceManager.h>
 #include <server/dataAccessLayer/IAcquisitionHistorizer.h>
+#include <server/dataAccessLayer/IKeywordManager.h>
 #include <shared/process/IProcessObserver.h>
 #include "IQualifier.h"
 
@@ -28,8 +28,8 @@ namespace pluginSystem
       ///\param[in] pluginEventLoggerRequester Plugin event logger
       ///\param[in] acquisitionHistorizer    Acquisition recorder
       ///\param[in] instanceStoppedListener  The listener to call when an instance is stopped
-      ///\param[in] deviceManager            Device manager
-      ///\param[in] keywordRequester         Keyword requester
+      ///\param[in] deviceManager            Database device access layer
+      ///\param[in] keywordManager           Database keyword access layer
       //-----------------------------------------------------
       CInstanceStateHandler(boost::shared_ptr<const database::entities::CPlugin> instanceData,
                             boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
@@ -39,7 +39,7 @@ namespace pluginSystem
                             boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer,
                             boost::shared_ptr<IInstanceStoppedListener> instanceStoppedListener,
                             boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
-                            boost::shared_ptr<database::IKeywordRequester> keywordRequester);
+                            boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordManager);
 
       //-----------------------------------------------------
       ///\brief               Destructor
@@ -126,7 +126,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief			The keyword requester
       //--------------------------------------------------------------
-      boost::shared_ptr<database::IKeywordRequester> m_keywordRequester;
+      boost::shared_ptr<dataAccessLayer::IKeywordManager> m_keywordDataAccessLayer;
 
       //--------------------------------------------------------------
       /// \brief	      The plugin state keyword

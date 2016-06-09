@@ -24,7 +24,7 @@ def waitPluginsTable(browser):
 
 def waitPluginsTableHasNPlugins(browser, pluginsNumberExpected):
    pluginsTable = waitPluginsTable(browser)
-   assert tools.waitUntil(lambda: getPluginNumberInTable(browser, pluginsTable) == pluginsNumberExpected, 30) # TODO remove timeout of 30s when Trello https://trello.com/c/eHN6sg6D is fixed
+   assert tools.waitUntil(lambda: getPluginNumberInTable(browser, pluginsTable) == pluginsNumberExpected) #, 30) # TODO remove timeout of 30s when Trello https://trello.com/c/eHN6sg6D is fixed
    return pluginsTable
 
 def getPluginNumberInTable(browser, pluginsTable):

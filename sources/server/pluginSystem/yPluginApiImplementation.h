@@ -4,6 +4,7 @@
 #include <shared/DataContainer.h>
 #include "dataAccessLayer/IAcquisitionHistorizer.h"
 #include "dataAccessLayer/IDeviceManager.h"
+#include "dataAccessLayer/IKeywordManager.h"
 #include "database/entities/Entities.h"
 #include "database/IDataProvider.h"
 #include "IInstanceStateHandler.h"
@@ -25,8 +26,7 @@ namespace pluginSystem
       /// \param [in]   dataProvider               the database accessor
       /// \param [in]   pluginEventLoggerRequester the plugin event logger requester
       /// \param [in]   deviceManager              the device manager
-      /// \param [in]   keywordRequester           the keyword requester
-      /// \param [in]   recipientRequester         the recipient requester
+      /// \param [in]   keywordDataAccessLayer     the database keyword access layer
       /// \param [in]   acquisitionRequester       the acquisition requester
       //-----------------------------------------------------
       CYPluginApiImplementation(boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformations,
@@ -34,6 +34,7 @@ namespace pluginSystem
                                 boost::shared_ptr<IInstanceStateHandler> instanceStateHandler,
                                 boost::shared_ptr<database::IDataProvider> dataProvider,
                                 boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
+                                boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordDataAccessLayer,
                                 boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer);
       
       //-----------------------------------------------------
@@ -109,7 +110,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief			The keyword requester
       //--------------------------------------------------------------
-      boost::shared_ptr<database::IKeywordRequester> m_keywordRequester;
+      boost::shared_ptr<dataAccessLayer::IKeywordManager> m_keywordDataAccessLayer;
 
       //--------------------------------------------------------------
       /// \brief			The recipient requester

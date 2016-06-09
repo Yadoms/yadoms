@@ -12,7 +12,7 @@ namespace pluginSystem
                                                 boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer,
                                                 boost::shared_ptr<IInstanceStoppedListener> instanceStoppedListener,
                                                 boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
-                                                boost::shared_ptr<database::IKeywordRequester> keywordRequester)
+                                                boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordManager)
       : m_instanceData(instanceData),
         m_pluginInformation(pluginInformation),
         m_pluginRequester(pluginRequester),
@@ -21,7 +21,7 @@ namespace pluginSystem
         m_acquisitionHistorizer(acquisitionHistorizer),
         m_instanceStoppedListener(instanceStoppedListener),
         m_deviceManager(deviceManager),
-        m_keywordRequester(keywordRequester),
+        m_keywordDataAccessLayer(keywordManager),
         m_pluginStateKeywordId(pluginStateKeywordId()),
         m_pluginStateMessageIdKeywordId(pluginStateMessageIdKeywordId())
    {
@@ -123,11 +123,11 @@ namespace pluginSystem
       {
          m_pluginStateKeyword = boost::make_shared<shared::plugin::yPluginApi::historization::CPluginState>(PluginStateKeywordName);
 
-         if (!m_keywordRequester->keywordExists(pluginStateDeviceId(), PluginStateKeywordName))
-            m_keywordRequester->addKeyword(pluginStateDeviceId(), *m_pluginStateKeyword);
+         if (!m_keywordDataAccessLayer->keywordExists(pluginStateDeviceId(), PluginStateKeywordName))
+            m_keywordDataAccessLayer->addKeyword(pluginStateDeviceId(), *m_pluginStateKeyword);
       }
 
-      return m_keywordRequester->getKeyword(pluginStateDeviceId(), PluginStateKeywordName)->Id();
+      return m_keywordDataAccessLayer->getKeyword(pluginStateDeviceId(), PluginStateKeywordName)->Id();
    }
 
    int CInstanceStateHandler::pluginStateMessageIdKeywordId()
@@ -138,11 +138,11 @@ namespace pluginSystem
       {
          m_pluginStateMessageIdKeyword = boost::make_shared<shared::plugin::yPluginApi::historization::CText>(PluginStateMessageIdKeywordName);
 
-         if (!m_keywordRequester->keywordExists(pluginStateDeviceId(), PluginStateMessageIdKeywordName))
-            m_keywordRequester->addKeyword(pluginStateDeviceId(), *m_pluginStateMessageIdKeyword);
+         if (!m_keywordDataAccessLayer->keywordExists(pluginStateDeviceId(), PluginStateMessageIdKeywordName))
+            m_keywordDataAccessLayer->addKeyword(pluginStateDeviceId(), *m_pluginStateMessageIdKeyword);
       }
 
-      return m_keywordRequester->getKeyword(pluginStateDeviceId(), PluginStateMessageIdKeywordName)->Id();
+      return m_keywordDataAccessLayer->getKeyword(pluginStateDeviceId(), PluginStateMessageIdKeywordName)->Id();
    }
 
    void CInstanceStateHandler::recordPluginEvent(PluginEventSeverity severity, const std::string& message)

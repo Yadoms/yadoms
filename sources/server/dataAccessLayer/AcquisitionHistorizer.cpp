@@ -7,8 +7,8 @@
 #include "notification/summary/Notification.hpp"
 #include "notification/Helpers.hpp"
 
-namespace dataAccessLayer {
-
+namespace dataAccessLayer
+{
 	CAcquisitionHistorizer::CAcquisitionHistorizer(boost::shared_ptr<database::IDataProvider> dataProvider)
 		:m_dataProvider(dataProvider)
 	{

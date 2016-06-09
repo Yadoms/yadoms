@@ -6,10 +6,10 @@
 #include "../communication/ISendMessageAsync.h"
 #include "database/IAcquisitionRequester.h"
 #include "database/IDeviceRequester.h"
-#include "database/IKeywordRequester.h"
 #include "database/IRecipientRequester.h"
 #include "../dataAccessLayer/IConfigurationManager.h"
 #include "../dataAccessLayer/IEventLogger.h"
+#include "../dataAccessLayer/IKeywordManager.h"
 #include <IPathProvider.h>
 #include <shared/event/EventHandler.hpp>
 
@@ -28,7 +28,7 @@ namespace automation
       ///\param[in] pluginGateway Plugin access to do actions on plugins
       ///\param[in] dbAcquisitionRequester  Database acquisition requester
       ///\param[in] dbDeviceRequester  Database device requester
-      ///\param[in] dbKeywordRequester  Database keyword requester
+      ///\param[in] keywordAccessLayer  Database keyword access layer
       ///\param[in] dbRecipientRequester  Database recipient requester
       ///\param[in] configurationManager  Configuration manager (to gain access to Yadoms configuration from rules scripts)
       ///\param[in] eventLogger  Main event logger
@@ -37,7 +37,7 @@ namespace automation
                    boost::shared_ptr<database::IRuleRequester> dbRequester, boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
                    boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
                    boost::shared_ptr<database::IDeviceRequester> dbDeviceRequester,
-                   boost::shared_ptr<database::IKeywordRequester> dbKeywordRequester,
+                   boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
                    boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester,
                    boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
                    boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger);

@@ -130,7 +130,7 @@ namespace pluginSystem
                                                        dataAccessLayer->getAcquisitionHistorizer(),
                                                        instanceStoppedListener,
                                                        dataAccessLayer->getDeviceManager(),
-                                                       dataProvider->getKeywordRequester());
+                                                       dataAccessLayer->getKeywordManager());
    }
 
    boost::shared_ptr<shared::process::ICommandLine> CFactory::createCommandLine(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
@@ -175,6 +175,7 @@ namespace pluginSystem
                                                            instanceStateHandler,
                                                            dataProvider,
                                                            dataAccessLayer->getDeviceManager(),
+                                                           dataAccessLayer->getKeywordManager(),
                                                            dataAccessLayer->getAcquisitionHistorizer());
    }
 

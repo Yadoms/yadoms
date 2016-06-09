@@ -5,18 +5,18 @@
 
 namespace pluginSystem
 {
-   CYPluginApiImplementation::CYPluginApiImplementation(
-      boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformations,
-      const boost::shared_ptr<const database::entities::CPlugin> instanceData,
-      boost::shared_ptr<IInstanceStateHandler> instanceStateHandler,
-      boost::shared_ptr<database::IDataProvider> dataProvider,
-      boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
-      boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer)
+   CYPluginApiImplementation::CYPluginApiImplementation(boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformations,
+                                                        const boost::shared_ptr<const database::entities::CPlugin> instanceData,
+                                                        boost::shared_ptr<IInstanceStateHandler> instanceStateHandler,
+                                                        boost::shared_ptr<database::IDataProvider> dataProvider,
+                                                        boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
+                                                        boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordDataAccessLayer,
+                                                        boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer)
       : m_informations(pluginInformations),
         m_instanceData(instanceData),
         m_instanceStateHandler(instanceStateHandler),
         m_deviceManager(deviceManager),
-        m_keywordRequester(dataProvider->getKeywordRequester()),
+        m_keywordDataAccessLayer(keywordDataAccessLayer),
         m_recipientRequester(dataProvider->getRecipientRequester()),
         m_acquisitionHistorizer(acquisitionHistorizer)
    {
@@ -74,7 +74,7 @@ namespace pluginSystem
       if (!deviceExists(device))
          throw shared::exception::CEmptyResult("Fail to check if keyword exists : owner device doesn't exist.");
 
-      return m_keywordRequester->keywordExists((m_deviceManager->getDevice(getPluginId(), device))->Id, keyword);
+      return m_keywordDataAccessLayer->keywordExists((m_deviceManager->getDevice(getPluginId(), device))->Id, keyword);
    }
 
    bool CYPluginApiImplementation::keywordExists(const std::string& device,
@@ -90,7 +90,7 @@ namespace pluginSystem
       if (keywordExists(device, keyword))
          throw shared::exception::CEmptyResult((boost::format("Fail to declare %1% keyword : keyword already exists") % keyword->getKeyword()).str());
 
-      m_keywordRequester->addKeyword(m_deviceManager->getDevice(getPluginId(), device)->Id(),
+      m_keywordDataAccessLayer->addKeyword(m_deviceManager->getDevice(getPluginId(), device)->Id(),
                                      *keyword,
                                      details);
    }
@@ -107,7 +107,7 @@ namespace pluginSystem
       if (keywordsToDeclare.empty())
          return;
 
-      m_keywordRequester->addKeywords(m_deviceManager->getDevice(getPluginId(), device)->Id(), 
+      m_keywordDataAccessLayer->addKeywords(m_deviceManager->getDevice(getPluginId(), device)->Id(),
          keywordsToDeclare);
    }
 
@@ -151,7 +151,7 @@ namespace pluginSystem
       try
       {
          boost::shared_ptr<const database::entities::CDevice> deviceEntity = m_deviceManager->getDevice(getPluginId(), device);
-         boost::shared_ptr<const database::entities::CKeyword> keywordEntity = m_keywordRequester->getKeyword(deviceEntity->Id, data->getKeyword());
+         boost::shared_ptr<const database::entities::CKeyword> keywordEntity = m_keywordDataAccessLayer->getKeyword(deviceEntity->Id, data->getKeyword());
 
          m_acquisitionHistorizer->saveData(keywordEntity->Id, *data);
       }
@@ -171,7 +171,7 @@ namespace pluginSystem
          boost::shared_ptr<const database::entities::CDevice> deviceEntity = m_deviceManager->getDevice(getPluginId(), device);
          for (auto iter = dataVect.begin(); iter != dataVect.end(); ++iter)
          {
-            boost::shared_ptr<const database::entities::CKeyword> keywordEntity = m_keywordRequester->getKeyword(deviceEntity->Id, (*iter)->getKeyword());
+            boost::shared_ptr<const database::entities::CKeyword> keywordEntity = m_keywordDataAccessLayer->getKeyword(deviceEntity->Id, (*iter)->getKeyword());
             keywordIdList.push_back(keywordEntity->Id);
          }
          m_acquisitionHistorizer->saveData(keywordIdList, dataVect);
