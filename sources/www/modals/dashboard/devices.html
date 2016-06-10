@@ -18,6 +18,7 @@
    var periodicDashboardDevicesTaskCounter = 0;
 
    Yadoms.initializeDeviceDashboard = function () {
+      var d = new $.Deferred();
 
       //we check if there is at least one plugin instantiated that handle manual creation
       PluginInstanceManager.getPluginInstanceHandleManuallyDeviceCreation()
@@ -26,19 +27,27 @@
                //there is at least one plugin instance that handle this button
                $("#btn-add-new-device").removeClass("disabled").unbind("click").bind("click", function () { addNewDevice(); });
             }
+
+            refreshDeviceList()
+               .done(function() {
+                  //we use the periodic task of the dashboard
+                  clearInterval(Yadoms.periodicDashboardTask);
+                  Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
+                  d.resolve();
+               })
+               .fail(d.reject);
          })
          .fail(function (error) {
             notifyError($.t("modals.pluginInstance.errorGettingManuallyDeviceCreation"), error);
+            d.reject();
          });
 
-      refreshDeviceList();
-
-      //we use the periodic task of the dashboard
-      clearInterval(Yadoms.periodicDashboardTask);
-      Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
+      return d.promise();
    };
 
    function refreshDeviceList() {
+      var d = new $.Deferred();
+
       //we remove all rows except header
       $("table#device-list").find("tr:gt(0)").remove();
 
@@ -52,7 +61,11 @@
          $.each(allDevices, function (index, value) {
             addDeviceToDom(value);
          });
-      });
+         d.resolve();
+      })
+      .fail(d.reject);
+
+      return d.promise();
    }
 
    function getDeviceDomRow(device) {
