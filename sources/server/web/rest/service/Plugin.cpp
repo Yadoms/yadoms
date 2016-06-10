@@ -272,7 +272,6 @@ namespace web { namespace rest { namespace service {
          if(parameters.size()>1)
          {
             auto instanceId = boost::lexical_cast<int>(parameters[1]);
-
             m_pluginManager->deleteInstance(instanceId);
             return CResult::GenerateSuccess();
          }

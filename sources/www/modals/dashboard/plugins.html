@@ -61,6 +61,12 @@
       var actionsBtns = "<div class=\"btn-group\">\n" +
              ((failToLoadPluginPackage === true) ? "" : "<button type=\"button\" class=\"btn btn-startStop\" data-i18n=\"[title]modals.dashboard.sub-windows.plugins.startStop\"><span class=\"fa fa-power-off\"></span></button>\n") +
              ((failToLoadPluginPackage === true) ? "" : "<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.plugins.configure\"><span class=\"fa fa-cog\"></span></button>\n");
+
+      if (pi.containsExtraCommand() && failToLoadPluginPackage !== true) {
+         actionsBtns += "<button type=\"button\" class=\"btn btn-success btn-extraCommand\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\"><span class=\"fa fa-navicon\"></span></button>";
+      }
+
+
       actionsBtns += "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.plugins.delete\"><span class=\"fa fa-trash\"></span></button>\n" +
         "</div>";
 
@@ -91,57 +97,26 @@
       //we set autostart value
       $pluginInstanceRow.find("input.cb-autoStart").prop("checked", pi.autoStart);
 
+
+      //setup extraCommand button initial state
+      if (pi.containsExtraCommand() && (pi.lastState === "Stopped" || pi.lastState === "Error" || !pi.lastState)) {
+         $pluginInstanceRow.find("button.btn-extraCommand").prop('disabled', true);
+      }
+
       //we bind event on the different actions
       if (!failToLoadPluginPackage) {
          $pluginInstanceRow.find("button.btn-startStop").unbind('click').bind('click', function () { startStopPlugin(pi); });
          $pluginInstanceRow.find("button.btn-configure").unbind('click').bind('click', function () { configurePlugin(pi); });
          $pluginInstanceRow.find("input.cb-autoStart").unbind('change').bind('change', function () { autoStartChange(pi); });
+
+         $pluginInstanceRow.find("button.btn-extraCommand").unbind('click').bind('click', function () { loadExtraCommands(pi); });
+         
       }
       $pluginInstanceRow.find("button.btn-delete").unbind('click').bind('click', function () { deletePlugin(pi); });
 
       $pluginInstanceRow.i18n();
 
-      //manage extra commands in an async way (allow to display plugin line before all extra commands loaded; because some of them can use binding....)
-      pi.getBoundExtraCommand()
-      .done(function(extraCommands) {
-             
-         if (failToLoadPluginPackage !== true) {
-            
-            if (extraCommands && Object.keys(extraCommands).length > 0) {
-               var extraCommandButton = "<button type=\"button\" class=\"btn btn-success btn-extraCommand\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">";
-               extraCommandButton += "<span class=\"fa fa-navicon\"></span></button>";
-               extraCommandButton += "<ul class=\"dropdown-menu\">";
-
-               $.each(extraCommands, function (index, values) {
-                  extraCommandButton += "<li><a href=\"#\" class=\"btn-extraCommand-" + index + "\"><span class=\"extra-command-icon " + values.iconClass + "\"></span>&nbsp;<span data-i18n=\"plugins/" + pi.type + ":extraCommands." + index + ".name\"></span>" + (values.commandData ? "..." : "") + "</a></li>";
-               });
-
-               extraCommandButton += "</ul>";
-
-               //insert button before delete button
-               $pluginInstanceRow.find(".btn-delete").before(extraCommandButton);
-            }
-         }
-
-         //setup extraCommand button initial state
-         var $extraCommandsButton = $pluginInstanceRow.find("button.btn-extraCommand");
-         if ($extraCommandsButton) {
-            if (pi.lastState === "Stopped" || pi.lastState === "Error") {
-               $extraCommandsButton.prop('disabled', true);
-            }
-         }
-         
-         //bind each extra command to js
-         $.each(extraCommands, function (index, values) {
-            $pluginInstanceRow.find("a.btn-extraCommand-" + index).unbind('click').bind('click', function () { onExtraCommand(pi, index, values); });
-         });
-
-         $pluginInstanceRow.i18n();
-
-            
-         })
-      .fail(function() {
-      });
+      
    }
 
    function startStopPlugin(pi) {
@@ -160,6 +135,53 @@
          PluginInstanceManager.stop(pi).done(function () {
             getPluginDomRow(pi).find("button.btn-startStop").prop('disabled', false);
          });
+      }
+   }
+
+   function loadExtraCommands(pi) {
+      //manage extra commands in an async way (allow to display plugin line before all extra commands loaded; because some of them can use binding....)
+      var $pluginInstanceRow = getPluginDomRow(pi);
+
+      var $extraCommandsButton = $pluginInstanceRow.find("button.btn-extraCommand");
+      if ($extraCommandsButton) {
+
+         $extraCommandsButton.find("span").removeClass().addClass("fa fa-spinner fa-pulse");
+
+         pi.getBoundExtraCommand()
+            .done(function(extraCommands) {
+               if (extraCommands && Object.keys(extraCommands).length > 0) {
+                  //create DOM
+                  var extraCommandButton = "<ul class=\"dropdown-menu dropdown-extracommands\">";
+                  $.each(extraCommands, function(index, values) {
+                        extraCommandButton += "<li><a href=\"#\" class=\"btn-extraCommand-" +index +"\"><span class=\"extra-command-icon " +values.iconClass +"\"></span>&nbsp;<span data-i18n=\"plugins/" +pi.type +":extraCommands." +index +".name\"></span>" +(values.commandData ? "..." : "") +"</a></li>";
+                  });
+                  extraCommandButton += "</ul>";
+
+                  //delete previous loaded extrea commands menu
+                  $pluginInstanceRow.remove(".dropdown-extracommands");
+                  
+                  //insert the new menu
+                  $extraCommandsButton.after(extraCommandButton);
+               }
+
+               //bind each extra command to js
+               $.each(extraCommands,function(index, values) {
+                     $pluginInstanceRow.find("a.btn-extraCommand-" + index).unbind('click').bind('click', function() { onExtraCommand(pi, index, values); });
+               });
+
+               //restore extra commands button icon
+               $extraCommandsButton.find("span").removeClass().addClass("fa fa-navicon");
+
+               //update menu translation
+               $pluginInstanceRow.i18n();
+
+               //show the dropdown
+               $extraCommandsButton.dropdown();
+            })
+            .fail(function () {
+               //restore extra command button icon
+               $extraCommandsButton.find("span").removeClass().addClass("fa fa-navicon");
+            });
       }
    }
 
