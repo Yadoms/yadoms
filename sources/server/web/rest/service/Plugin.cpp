@@ -278,8 +278,25 @@ namespace web { namespace rest { namespace service {
          if(parameters.size()>1)
          {
             int instanceId = boost::lexical_cast<int>(parameters[1]);
+            
+            //first stop instance
+            m_pluginManager->stopInstance(instanceId);
 
+            //wait for instance to be stopped (including a timeout)
+            int count = 0;
+            while ((m_pluginManager->getInstanceState(instanceId) == shared::plugin::yPluginApi::historization::EPluginState::kRunning
+               || m_pluginManager->getInstanceState(instanceId) == shared::plugin::yPluginApi::historization::EPluginState::kCustom)
+               && count < 20)
+            {
+               boost::this_thread::sleep(boost::posix_time::milliseconds(500));
+               count++;
+            }
+
+
+            //then delete all devices/keyword
             m_dataProvider->getDeviceRequester()->removeAllDeviceForPlugin(instanceId);
+
+            //delete instance
             m_pluginManager->deleteInstance(m_pluginManager->getInstance(instanceId));
             return CResult::GenerateSuccess();
          }
