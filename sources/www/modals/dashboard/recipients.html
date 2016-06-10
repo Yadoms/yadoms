@@ -16,7 +16,9 @@
      * Initialize the dashboard recipient page.
      * It loads data from server and show the recipient table
      */
-   Yadoms.initializeRecipientsDashboard = function() {
+   Yadoms.initializeRecipientsDashboard = function () {
+      var d = new $.Deferred();
+
       //we remove all rows except header
       $("table#recipients-list").find("tr:gt(0)").remove();
 
@@ -30,10 +32,14 @@
             $.each(recipientList, function(index, value) {
                addRecipientToDom(value);
             });
+            d.resolve();
          })
          .fail(function(error) {
             notifyError($.t("modals.recipient.errorGettingList"), error);
+            d.reject();
          });
+
+      return d.promise();
    };
 
     /**

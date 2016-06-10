@@ -192,7 +192,7 @@
          refreshAllData($(e.target));
       });
 
-      refreshAllData();
+      return refreshAllData();
    };
 
 
@@ -222,6 +222,8 @@
     * Ask a refresh of all data in the modal
     */
    function refreshAllData(e) {
+      var d = new $.Deffered();
+
       $asyncActionIndicator.removeClass("hidden");
       updateReleaseType(e);
 
@@ -233,7 +235,11 @@
       $.whenAll(deferredArray)
       .done(function () {
          $asyncActionIndicator.addClass("hidden");
-      });
+         d.resolve();
+      })
+      .fail(d.reject);
+
+      return d.promise();
    }
 
    /**

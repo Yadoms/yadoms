@@ -17,6 +17,8 @@
    var pluginInstanceList = [];
 
    Yadoms.initializePluginDashboard = function () {
+      var d = new $.Deferred();
+
       //we remove all rows except header
       $("table#plugin-instance-list").find("tr:gt(0)").remove();
       //we clear pluginInstance array
@@ -39,7 +41,10 @@
          clearInterval(Yadoms.periodicDashboardTask);
          Yadoms.periodicDashboardTask = setInterval(periodicDashboardPluginTask, 2000);
          periodicDashboardPluginTask();
-      });
+         d.resolve();
+      }).fail(d.reject);
+
+      return d.promise();
    };
 
    function getPluginDomRow(pluginInstance) {

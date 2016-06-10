@@ -45,47 +45,53 @@
 
    var subWindowList = [];
 
-   function asyncLoad(subWindowPath, callback) {
+   function asyncLoad(subWindowPath) {
       assert(!isNullOrUndefined(subWindowPath), "subWindowPath must be defined");
 
-      var animationDuration = 300;
-      var $container = $("div#main-dashboard-sub-window-content");
-      $container.slideUp(animationDuration, function() {
-         $container.empty();
-         if (isNullOrUndefined(subWindowList[subWindowPath])) {
-            //it's the first time we load this sub window
+      var d = new $.Deferred();
 
-            RestEngine.getHtml(subWindowPath)
-            .done(function(data) {
-               var $data = $(data);
-               $data.i18n();
-               //we save it in the sub window list
-               subWindowList[subWindowPath] = $data;
+      try {
+         var animationDuration = 300;
+         var $container = $("div#main-dashboard-sub-window-content");
+         $container.slideUp(animationDuration, function () {
+            $container.empty();
+            if (isNullOrUndefined(subWindowList[subWindowPath])) {
+               //it's the first time we load this sub window
+
+               RestEngine.getHtml(subWindowPath)
+               .done(function (data) {
+                  var $data = $(data);
+                  $data.i18n();
+                  //we save it in the sub window list
+                  subWindowList[subWindowPath] = $data;
+
+                  //we add the modal to the body
+                  $container.append($data);
+                  $container.slideDown(animationDuration);
+                  //we resolve
+                  d.resolve();
+               })
+               .fail(function (error) {
+                  notifyError($.t("modals.dashboard.unableToLoadSubWindow", { subWindowPath: subWindowPath }), error);
+                  d.reject();
+               });
+            }
+            else {
+               //we already have loaded this sub window
+               //we take it from the sub window list
+               var $data = subWindowList[subWindowPath];
 
                //we add the modal to the body
                $container.append($data);
                $container.slideDown(animationDuration);
                //we call the callback
-               if ($.isFunction(callback))
-                  callback();
-            })
-            .fail(function(error) {
-               notifyError($.t("modals.dashboard.unableToLoadSubWindow", {subWindowPath : subWindowPath}), error);
-            });
-         }
-         else {
-            //we already have loaded this sub window
-            //we take it from the sub window list
-            var $data = subWindowList[subWindowPath];
-
-            //we add the modal to the body
-            $container.append($data);
-            $container.slideDown(animationDuration);
-            //we call the callback
-            if ($.isFunction(callback))
-               callback();
-         }
-      });
+               d.resolve();
+            }
+         });
+      } catch(e) {
+         d.reject();
+      }
+      return d.promise();
    }
 
    function setBtnActive(btnId) {
@@ -93,65 +99,208 @@
       $("li#" + btnId).addClass("active");
    }
 
-   $("#btn-dashboard-summary").click(function() {
-      clearInterval(Yadoms.periodicDashboardTask);
-      asyncLoad("modals/dashboard/summary.html");
-      setBtnActive(this.id);
-   });
 
-   $("#btn-dashboard-user-management").click(function() {
+   function showDashboardTabSummary() {
+      //Has the page change is realized on an "li" element, we can't use disabled property.
+      //the only way to prevent from multiple click on the li is to unbind the click
+      $("#btn-dashboard-summary").unbind('click');
       clearInterval(Yadoms.periodicDashboardTask);
-      asyncLoad("modals/dashboard/user-management.html");
-      setBtnActive(this.id);
-   });
+      asyncLoad("modals/dashboard/summary.html")
+      .done(function() {
+         setBtnActive(this.id);
+      })
+      .always(function() {
+         $("#btn-dashboard-summary").bind('click', showDashboardTabSummary);
+      });
+   }
+   $("#btn-dashboard-summary").bind('click', showDashboardTabSummary);
 
-   $("#btn-dashboard-system-configuration").click(function() {
-      clearInterval(Yadoms.periodicDashboardTask);
-      asyncLoad("modals/dashboard/system-configuration.html", function () { Yadoms.initializeSystemConfigurationDashboard(); });
-      setBtnActive(this.id);
-   });
 
-   $("#btn-dashboard-user-configuration").click(function() {
-      clearInterval(Yadoms.periodicDashboardTask);
-      asyncLoad("modals/dashboard/user-configuration.html");
-      setBtnActive(this.id);
-   });
 
-   $("#btn-dashboard-plugins").click(function() {
+   function showDashboardTabUserManagement() {
+      //Has the page change is realized on an "li" element, we can't use disabled property.
+      //the only way to prevent from multiple click on the li is to unbind the click
+      $("#btn-dashboard-user-management").unbind('click');
       clearInterval(Yadoms.periodicDashboardTask);
-      setBtnActive(this.id);
-      asyncLoad("modals/dashboard/plugins.html", function () { Yadoms.initializePluginDashboard(); });
-   });
+      asyncLoad("modals/dashboard/user-management.html")
+      .done(function() {
+         setBtnActive(this.id);
+      })
+      .always(function() {
+         $("#btn-dashboard-user-management").bind('click', showDashboardTabUserManagement);
+      });
+   }
+   $("#btn-dashboard-user-management").bind('click', showDashboardTabUserManagement);
 
-   $("#btn-dashboard-devices").click(function() {
-      clearInterval(Yadoms.periodicDashboardTask);
-      asyncLoad("modals/dashboard/devices.html", function () { Yadoms.initializeDeviceDashboard(); });
-      setBtnActive(this.id);
-   });
 
-   $("#btn-dashboard-automatisation").click(function() {
-      clearInterval(Yadoms.periodicDashboardTask);
-      asyncLoad("modals/dashboard/automation-center.html", function () { Yadoms.initializeAutomationCenterDashboard(); });
-      setBtnActive(this.id);
-   });
 
-   $("#btn-dashboard-recipients").click(function() {
+   function showDashboardTabSystemConfiguration() {
+      //Has the page change is realized on an "li" element, we can't use disabled property.
+      //the only way to prevent from multiple click on the li is to unbind the click
+      $("#btn-dashboard-system-configuration").unbind('click');
       clearInterval(Yadoms.periodicDashboardTask);
-      asyncLoad("modals/dashboard/recipients.html", function () { Yadoms.initializeRecipientsDashboard(); });
-      setBtnActive(this.id);
-   });
+      asyncLoad("modals/dashboard/system-configuration.html")
+      .done(function() {
+         Yadoms.initializeSystemConfigurationDashboard()
+         .done(function () {
+            setBtnActive(this.id);
+         })
+         .always(function () {
+            $("#btn-dashboard-system-configuration").bind('click', showDashboardTabSystemConfiguration);
+         });
+      })
+      .fail(function() {
+         $("#btn-dashboard-system-configuration").bind('click', showDashboardTabSystemConfiguration);
+      });
+   }
+   $("#btn-dashboard-system-configuration").bind('click', showDashboardTabSystemConfiguration);
 
-   $("#btn-dashboard-install-update").click(function() {
-      clearInterval(Yadoms.periodicDashboardTask);
-      asyncLoad("modals/dashboard/install-update.html", function () { Yadoms.initializeInstallUpdateDashboard(); });
-      setBtnActive(this.id);
-   });
 
-   $("#btn-dashboard-about").click(function() {
+   function showDashboardTabUserConfiguration() {
+      //Has the page change is realized on an "li" element, we can't use disabled property.
+      //the only way to prevent from multiple click on the li is to unbind the click
+      $("#btn-dashboard-system-user").unbind('click');
       clearInterval(Yadoms.periodicDashboardTask);
-      asyncLoad("modals/dashboard/about.html");
-      setBtnActive(this.id);
-   });
+      asyncLoad("modals/dashboard/user-configuration.html")
+      .done(function() {
+         setBtnActive(this.id);
+      })
+      .always(function() {
+         $("#btn-dashboard-user-configuration").bind('click', showDashboardTabUserConfiguration);
+      });
+   }
+   $("#btn-dashboard-user-configuration").bind('click', showDashboardTabUserConfiguration);
+
+
+  
+   function showDashboardTabPlugin() {
+      //Has the page change is realized on an "li" element, we can't use disabled property.
+      //the only way to prevent from multiple click on the li is to unbind the click
+      $("#btn-dashboard-plugins").unbind('click');
+      clearInterval(Yadoms.periodicDashboardTask);
+      asyncLoad("modals/dashboard/plugins.html")
+      .done(function() {
+         Yadoms.initializePluginDashboard()
+         .done(function () {
+            setBtnActive(this.id);
+         })
+         .always(function () {
+            $("#btn-dashboard-plugins").bind('click', showDashboardTabPlugin);
+         });
+      })
+      .fail(function() {
+         $("#btn-dashboard-plugins").bind('click', showDashboardTabPlugin);
+      });
+   }
+   $("#btn-dashboard-plugins").bind('click', showDashboardTabPlugin);
+
+
+
+   function showDashboardTabDevice() {
+      //Has the page change is realized on an "li" element, we can't use disabled property.
+      //the only way to prevent from multiple click on the li is to unbind the click
+      $("#btn-dashboard-devices").unbind('click');
+      clearInterval(Yadoms.periodicDashboardTask);
+      asyncLoad("modals/dashboard/devices.html")
+      .done(function() {
+         Yadoms.initializeDeviceDashboard()
+         .done(function () {
+            setBtnActive(this.id);
+         })
+         .always(function () {
+            $("#btn-dashboard-devices").bind('click', showDashboardTabDevice);
+         });
+      })
+      .fail(function() {
+         $("#btn-dashboard-devices").bind('click', showDashboardTabDevice);
+      });
+   }
+   $("#btn-dashboard-devices").bind('click', showDashboardTabDevice);
+
+
+
+   function showDashboardTabAutomation() {
+      //Has the page change is realized on an "li" element, we can't use disabled property.
+      //the only way to prevent from multiple click on the li is to unbind the click
+      $("#btn-dashboard-automatisation").unbind('click');
+      clearInterval(Yadoms.periodicDashboardTask);
+      asyncLoad("modals/dashboard/automation-center.html")
+      .done(function() {
+         Yadoms.initializeAutomationCenterDashboard()
+         .done(function () {
+            setBtnActive(this.id);
+         })
+         .always(function () {
+            $("#btn-dashboard-automatisation").bind('click', showDashboardTabAutomation);
+         });
+      })
+      .fail(function() {
+         $("#btn-dashboard-automatisation").bind('click', showDashboardTabAutomation);
+      });
+   }
+   $("#btn-dashboard-automatisation").bind('click', showDashboardTabAutomation);
+
+
+
+   function showDashboardTabRecipient() {
+      //Has the page change is realized on an "li" element, we can't use disabled property.
+      //the only way to prevent from multiple click on the li is to unbind the click
+      $("#btn-dashboard-recipients").unbind('click');
+      clearInterval(Yadoms.periodicDashboardTask);
+      asyncLoad("modals/dashboard/recipients.html")
+      .done(function() {
+         Yadoms.initializeRecipientsDashboard()
+         .done(function () {
+            setBtnActive(this.id);
+         })
+         .always(function () {
+            $("#btn-dashboard-recipients").bind('click', showDashboardTabRecipient);
+         });
+      })
+      .fail(function() {
+         $("#btn-dashboard-recipients").bind('click', showDashboardTabRecipient);
+      });
+   }
+   $("#btn-dashboard-recipients").bind('click', showDashboardTabRecipient);
+
+
+   function showDashboardTabUpdate() {
+      //Has the page change is realized on an "li" element, we can't use disabled property.
+      //the only way to prevent from multiple click on the li is to unbind the click
+      $("#btn-dashboard-install-update").unbind('click');
+      clearInterval(Yadoms.periodicDashboardTask);
+      asyncLoad("modals/dashboard/install-update.html")
+      .done(function() {
+         Yadoms.initializeInstallUpdateDashboard()
+         .done(function () {
+            setBtnActive(this.id);
+         })
+         .always(function () {
+            $("#btn-dashboard-install-update").bind('click', showDashboardTabUpdate);
+         });
+      })
+      .fail(function() {
+         $("#btn-dashboard-install-update").bind('click', showDashboardTabUpdate);
+      });
+   }
+   $("#btn-dashboard-install-update").bind('click', showDashboardTabUpdate);
+
+   function showDashboardTabAbout() {
+      //Has the page change is realized on an "li" element, we can't use disabled property.
+      //the only way to prevent from multiple click on the li is to unbind the click
+      $("#btn-dashboard-about").unbind('click');
+      clearInterval(Yadoms.periodicDashboardTask);
+      asyncLoad("modals/dashboard/about.html")
+      .done(function() {
+         setBtnActive(this.id);
+      })
+      .always(function() {
+         $("#btn-dashboard-about").bind('click', showDashboardTabAbout);
+      });
+   }
+   $("#btn-dashboard-about").bind('click', showDashboardTabAbout);
+
+
 
    //we async load some libraries
    asyncLoadJSLibs([

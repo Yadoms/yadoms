@@ -15,7 +15,9 @@
 </div>
 <script>
 
-   Yadoms.initializeAutomationCenterDashboard = function() {
+   Yadoms.initializeAutomationCenterDashboard = function () {
+      var d = new $.Deferred();
+
       asyncLoadJSLibs([
          "js/objects/automation/i-automation-rule-editor.js",
          "js/objects/automation/automation-editor-code.js",
@@ -43,16 +45,22 @@
                      //we use the periodic task of the dashboard
                      clearInterval(Yadoms.periodicDashboardTask);
                      Yadoms.periodicDashboardTask = setInterval(periodicDashboardAutomationCenterTask, 2000);
+                     d.resolve();
                   })
                   .fail(function(error) {
                      notifyError($.t("modals.dashboard.sub-windows.automation-center.ruleListingError"), error);
+                     d.reject();
                   });
             })
             .fail(function(error) {
                notifyError($.t("modals.dashboard.sub-windows.automation-center.ruleInterpreterListingError"), error);
+               d.reject();
             });
 
-      });
+      })
+      .fail(d.reject);
+
+      return d.promise();
    };
 
    function getAutomationRuleDomRow(rule) {
