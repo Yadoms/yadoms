@@ -120,6 +120,15 @@ PluginInstance.prototype.getBoundExtraCommand = function () {
 
 
 /**
+ * Tells if this instance contains extra commands
+ * @returns {Boolean}
+ */
+PluginInstance.prototype.containsExtraCommand = function () {
+   return (this.package && this.package.extraCommands && Object.keys(this.package.extraCommands).length > 0);
+};
+
+
+/**
  * Apply binding
  * @param item The configuration item
  * @param allowedTypes Allowed types for this item
