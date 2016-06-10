@@ -409,3 +409,23 @@ function getRule( RuleName ) {
   }
   return findedRule;
 } 
+
+/**
+ * Returns custom sort function to be passed as param/callback to the Array's sort method.
+ * @param a The the first parameter
+ * @param a The the second parameter
+ */
+function CustomSortFriendlyName(a, b) {
+	assert( a.friendlyName, "Cell of array should have parameter friendlyName" );
+	assert( b.friendlyName, "Cell of array should have parameter friendlyName" );
+	return (a.friendlyName.toLowerCase() > b.friendlyName.toLowerCase()) ? 1 : -1;
+}
+
+/**
+ * Returns A sorted array containing all keywords/devices. Each cell would have the friendlyName parameter.
+ * @param arguments The existing array of keywords/devices.
+ */
+function sortListItemsWithFriendlyName( arguments ) {
+	var op = Array.prototype.sort.call(arguments, CustomSortFriendlyName);
+	return op;
+}

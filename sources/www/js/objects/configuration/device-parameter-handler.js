@@ -56,11 +56,20 @@ function DeviceParameterHandler(i18NContext, paramName, content, currentValue) {
 function populateDeviceList(handler) {
    return function(data) {
       var $deviceList = $("select#" + handler.uuid);
+	  
+	  var tabDevice = [];
 
       //A device matches criteria
       if (data.device.length !== 0) {
           var itemToSelect = -1;
+		  
           $.each(data.device, function(index, value) {
+             tabDevice.push ( value );
+          });
+		  
+		  tabDevice = sortListItemsWithFriendlyName (tabDevice);
+		  
+          $.each(tabDevice, function(index, value) {
              //we add device only if it is not already in the list
              if ($deviceList.find("option[id=\"" + value.id + "\"]").length === 0) {
                $deviceList.append("<option value=\"" + value.id + "\">" + value.friendlyName + "</option>");
@@ -172,6 +181,8 @@ DeviceParameterHandler.prototype.applyScript = function () {
 
                   //we append each keywords in the list
                   var keywordToSelect = 0;
+					
+				  newList = sortListItemsWithFriendlyName ( newList );
 
                   $.each(newList, function(index, value) {
                      //foreach keyword
