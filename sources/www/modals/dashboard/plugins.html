@@ -28,14 +28,22 @@
 
       //we dynamically ask for plugins (async)
       PluginInstanceManager.getAll().done(function (allInstances) {
-         //foreach result we append a <tr>
-         $.each(allInstances, function (index, value) {
-            pluginInstanceList.push(value);
+		 pluginInstanceList = sortListItemsWithdisplayName ( allInstances );
+		 
+		 indexSystemPlugin = 0;
+		 
+		 //foreach result we append a <tr>
+         $.each(pluginInstanceList, function (index, value) {
             //we don't show system plugins to user
             if (!value.isSystemCategory()) {
-               addPluginInstanceToDom(value);
+               addPluginInstanceToDom(value, null);
             }
+			else
+			   indexSystemPlugin = index;
          });
+		 
+		 // we remove the system plugin from the list
+		 pluginInstanceList.splice(indexSystemPlugin, 1);
 
          //we use the periodic task of the dashboard
          clearInterval(Yadoms.periodicDashboardTask);
@@ -51,7 +59,7 @@
       return $("table#plugin-instance-list").find("tr[plugin-id='" + pluginInstance.id + "']");
    }
 
-   function addPluginInstanceToDom(pi) {
+   function addPluginInstanceToDom(pi, positionNewPluginInstance) {
       var name = "<span>" + pi.displayName + "</span>";
 
       var failToLoadPluginPackage = pi.package === null || pi.package === undefined || pi.package.failToLoad === true;
@@ -83,13 +91,31 @@
       //we add it to the DOM
       var $pluginInstanceList = $("table#plugin-instance-list");
 
-      $pluginInstanceList.append("<tr plugin-id=\"" + pi.id + "\">" +
-          "<td class=\"plugin-displayName vert-align\"></td>" +
-          "<td class=\"plugin-type vert-align\" align=\"left\"></td>" +
-          "<td class=\"plugin-autoStart vert-align\"></td>" +
-          "<td class=\"plugin-actions vert-align\"></td>" +
-          "<td class=\"plugin-status vert-align\"></td>" +
-          "</tr>");
+	  var frameworkPluginInstance = "<tr plugin-id=\"" + pi.id + "\">" +
+			  "<td class=\"plugin-displayName vert-align\"></td>" +
+			  "<td class=\"plugin-type vert-align\" align=\"left\"></td>" +
+			  "<td class=\"plugin-autoStart vert-align\"></td>" +
+			  "<td class=\"plugin-actions vert-align\"></td>" +
+			  "<td class=\"plugin-status vert-align\"></td>" +
+			  "</tr>";
+	  
+	  if ( positionNewPluginInstance == null )
+		  $pluginInstanceList.append( frameworkPluginInstance );
+	  else
+	  {
+		  var $row = null;
+		  
+		  if (positionNewPluginInstance>0)
+		  {
+			 $row = getPluginDomRow(pluginInstanceList[positionNewPluginInstance-1]);
+			 $( frameworkPluginInstance ).insertAfter($row);			 
+		  }
+		  else 
+		  {
+			 $row = getPluginDomRow(pluginInstanceList[1]);
+			 $( frameworkPluginInstance ).insertBefore($row);			 
+		  }
+	  }
 
       var $pluginInstanceRow = getPluginDomRow(pi);
       //we fill the data
@@ -201,8 +227,31 @@
                PluginInstanceManager.updateToServer(pi)
                   .done(function () {
                      //We update the information that can have changed after the configuration
-                     var $row = getPluginDomRow(pi);
-                     $row.find("td.plugin-displayName").html(pi.displayName);
+					 
+					 // Copy of the list
+					 var TempPluginInstanceList = pluginInstanceList.slice ( 0, pluginInstanceList.length );
+					 
+					 //check the new order after rename
+					 pluginInstanceList = sortListItemsWithdisplayName ( pluginInstanceList );
+					 
+					 var isIdentical = (TempPluginInstanceList.length == pluginInstanceList.length) && TempPluginInstanceList.every(function(element, index) {
+						return element.displayName === pluginInstanceList[index].displayName; 					 
+					 })
+					 
+					 var $row = getPluginDomRow(pi);
+					 
+					 if (!isIdentical)
+					 {  // If the two lists are differents, we change the order
+						$row.remove ();
+						
+						//Force the state change to refresh it after
+						pi.lastState = "undefined";
+						
+						addPluginInstanceToDom ( pi, pluginInstanceList.indexOf (pi) );
+					 }
+					 else{ // Change only the name
+					    $row.find("td.plugin-displayName").html(pi.displayName);
+					 }
                   })
                   .fail(function (error) {
                      notifyError($.t("modals.configure-plugin.pluginFailToConfigure", { pluginName: pi.displayName }), error);
@@ -219,12 +268,12 @@
          Yadoms.showConfirmModal(Yadoms.btnKind.yesNo, null, $.t("modals.dashboard.sub-windows.plugins.confirmPluginDeletion", { pluginName: pi.displayName }),
          function () {
             //deletion has been confirmed
-            var deletePromsie = PluginInstanceManager.deleteFromServer(pi);
+            var deletePromise = PluginInstanceManager.deleteFromServer(pi);
 
             //disable button access until promise result
             getPluginDomRow(pi).find("button").prop('disabled', true);
 
-            deletePromsie.done(function () {
+            deletePromise.done(function () {
                //we remove pi from array
                var i = pluginInstanceList.indexOf(pi);
                if (i !== -1) {
@@ -236,7 +285,7 @@
             });
 
             //if it fails, restore button access
-            deletePromsie.fail(function (error) {
+            deletePromise.fail(function (error) {
                notifyError($.t("modals.configure-plugin.pluginFailToDelete", { pluginName: pi.displayName }), error);
                getPluginDomRow(pi).find("button").prop('disabled', false);
             });
@@ -355,9 +404,17 @@
                      PluginInstanceManager.createToServer(pi)
                          .done(function () {
                             notifySuccess($.t("modals.configure-plugin.pluginSuccessfullyCreated"));
-                            addPluginInstanceToDom(pi);
+                            
                             pluginInstanceList.push(pi);
-                            console.log("[DEBUGJMD] - push to list done ");
+							
+							//sort the list with the new item
+							pluginInstanceList = sortListItemsWithdisplayName ( pluginInstanceList );
+							
+							// the first one ?
+							if ( pluginInstanceList.length === 1 )
+							   addPluginInstanceToDom ( pi, null );
+							else
+							   addPluginInstanceToDom ( pi, pluginInstanceList.indexOf (pi) );
                          })
                          .fail(function (error) {
                             notifyError($.t("modals.configure-plugin.pluginFailToCreate", { pluginName: pi.displayName }), error);
