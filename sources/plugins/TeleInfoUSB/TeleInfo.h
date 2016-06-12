@@ -26,31 +26,34 @@ public:
    //--------------------------------------------------------------
    virtual ~CTeleInfo();
 
-   //--------------------------------------------------------------
-   /// \brief	                    Send a message to the TeleInfo Receiver
-   /// \param [in] buffer           Buffer to send
-   /// \param [in] needAnswer       true if answer is needed. If true, a timeout will occur if no answer is received.
-   //--------------------------------------------------------------
-   void send(const shared::communication::CByteBuffer& buffer, bool needAnswer = false);
+   // IPlugin implementation
+   virtual void doWork(boost::shared_ptr<yApi::IYPluginApi> context);
+   // [END] IPlugin implementation
+
+protected:
 
    //--------------------------------------------------------------
    /// \brief	                     Create the connection to the TeleInfo USB Reader
-   /// \param [in] eventHandler     Event handler to be notified on events on the connection
+   /// \param [in] context           Plugin execution context (Yadoms API)
    //--------------------------------------------------------------
    void createConnection(boost::shared_ptr<yApi::IYPluginApi> context);
 
    //--------------------------------------------------------------
-   /// \brief	                     Create the connection to the TeleInfo USB Reader
+   /// \brief	                        Update the configuration of the plugin
+   /// \param [in] context              Plugin execution context (Yadoms API)
+   /// \param [in] newConfigurationData The new configuration
    //--------------------------------------------------------------
    void onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> context, const shared::CDataContainer& newConfigurationData);
 
    //--------------------------------------------------------------
-   /// \brief	                     Create the connection to the TeleInfo USB Reader
+   /// \brief	                     Destroy the serial connection
    //--------------------------------------------------------------
    void destroyConnection();
 
    //--------------------------------------------------------------
-   /// \brief	                     Create the connection to the TeleInfo USB Reader
+   /// \brief	                     Called when received a message from the TeleInfo Receiver
+   /// \param [in] context           Plugin execution context (Yadoms API)
+   /// \param [in] data              The buffer with the received information
    //--------------------------------------------------------------
    void processDataReceived(boost::shared_ptr<yApi::IYPluginApi> context, 
 							const shared::communication::CByteBuffer& data);
@@ -72,9 +75,11 @@ public:
    //--------------------------------------------------------------
    void initTeleInfoReceiver();
 
-   // IPlugin implementation
-   virtual void doWork(boost::shared_ptr<yApi::IYPluginApi> context);
-   // [END] IPlugin implementation
+   //--------------------------------------------------------------
+   /// \brief	                     Process error (disconnect and retry connect later)
+   /// \param [in] context          Plugin execution context (Yadoms API)
+   //--------------------------------------------------------------
+   void errorProcess(boost::shared_ptr<yApi::IYPluginApi> context);
 
 private:
 
