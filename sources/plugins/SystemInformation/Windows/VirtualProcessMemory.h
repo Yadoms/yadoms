@@ -1,5 +1,4 @@
 #pragma once
-
 #include "../ILoad.h"
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include "../specificHistorizers/KByte.h"
@@ -17,9 +16,9 @@ class CVirtualProcessMemory : public ILoad
 public:
    //--------------------------------------------------------------
    /// \brief	    Constructor
-   /// \param[in] device    The device
+   /// \param[in] keywordName The keyword name
    //--------------------------------------------------------------
-   explicit CVirtualProcessMemory(const std::string & device);
+   explicit CVirtualProcessMemory(const std::string& keywordName);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -27,18 +26,16 @@ public:
    virtual ~CVirtualProcessMemory();
 
    // ILoad Implementation
-   void declareKeywords(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer details) override;
    void read() override;
-   void historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const override;
-   boost::shared_ptr<yApi::historization::IHistorizable> GetHistorizable() const override;
+
+   boost::shared_ptr<const yApi::historization::IHistorizable> historizable() const override
+   {
+      return m_keyword;
+   }
+
    // [END] ILoad Implementation
 
 private:
-   //--------------------------------------------------------------
-   /// \brief	    Device name
-   //--------------------------------------------------------------
-   const std::string m_device;
-
    //--------------------------------------------------------------
    /// \brief	    Keyword
    //--------------------------------------------------------------

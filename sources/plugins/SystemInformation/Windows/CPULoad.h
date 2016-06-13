@@ -14,9 +14,9 @@ class CCPULoad : public ILoad
 public:
    //--------------------------------------------------------------
    /// \brief	    Constructor
-   /// \param[in] deviceId    The device
+   /// \param[in] keywordName The keyword name
    //--------------------------------------------------------------
-   explicit CCPULoad(const std::string& device);
+   explicit CCPULoad(const std::string& keywordName);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -24,10 +24,13 @@ public:
    virtual ~CCPULoad();
 
    // ILoad Implementation
-   void declareKeywords(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer details) override;
    void read() override;
-   void historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const override;
-   boost::shared_ptr<yApi::historization::IHistorizable> GetHistorizable() const override;
+
+   boost::shared_ptr<const yApi::historization::IHistorizable> historizable() const override
+   {
+      return m_keyword;
+   }
+
    // [END] ILoad Implementation
 
 protected:
@@ -37,11 +40,6 @@ protected:
    void Initialize();
 
 private:
-   //--------------------------------------------------------------
-   /// \brief	    Device ID
-   //--------------------------------------------------------------
-   const std::string m_device;
-
    //--------------------------------------------------------------
    /// \brief	    The Query for the CPU Load
    //--------------------------------------------------------------

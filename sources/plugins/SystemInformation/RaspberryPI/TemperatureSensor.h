@@ -6,20 +6,14 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-//--------------------------------------------------------------
-/// \brief	Temperature sensor
-/// \note   Use to simulate a temperature sensor, with 2 variables values :
-///         - temperature : start at 25�, and vary from +- 0.0 to 1.0� at each read
-///         - battery level : start at 100%, decrease by 1% at each read, to 20%
-//--------------------------------------------------------------
 class CTemperatureSensor
 {
 public:
    //--------------------------------------------------------------
    /// \brief	    Constructor
-   /// \param[in] deviceId    The device ID
+   /// \param[in] keywordName The keyword name
    //--------------------------------------------------------------
-   explicit CTemperatureSensor(const std::string & deviceId);
+   explicit CTemperatureSensor(const std::string& keywordName);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -27,20 +21,18 @@ public:
    virtual ~CTemperatureSensor();
 
    // ILoad Implementation
-   virtual void declareKeywords(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer details);
-   virtual void read();
-   virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const;
-   virtual boost::shared_ptr<yApi::historization::IHistorizable> GetHistorizable() const;
+   void read() override;
+
+   boost::shared_ptr<const yApi::historization::IHistorizable> historizable() const override
+   {
+      return m_keyword;
+   }
+
    // [END] ILoad Implementation
 
 private:
    //--------------------------------------------------------------
-   /// \brief	    Device ID
-   //--------------------------------------------------------------
-   const std::string m_device;
-
-   //--------------------------------------------------------------
-   /// \brief	    Keyword string
+   /// \brief	    Keyword
    //--------------------------------------------------------------
    boost::shared_ptr<yApi::historization::CTemperature> m_keyword;
 };

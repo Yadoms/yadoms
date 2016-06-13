@@ -4,28 +4,13 @@
 #include <windows.h>
 #include <psapi.h>
 
-CVirtualProcessMemory::CVirtualProcessMemory(const std::string& device)
-   : m_device(device),
-     m_keyword(boost::make_shared<yApi::historization::CKByte>("YadomsVirtualProcessMemory"))
+CVirtualProcessMemory::CVirtualProcessMemory(const std::string& keywordName)
+   : m_keyword(boost::make_shared<yApi::historization::CKByte>(keywordName))
 {
 }
 
 CVirtualProcessMemory::~CVirtualProcessMemory()
 {
-}
-
-void CVirtualProcessMemory::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer details)
-{
-   if (!api->keywordExists(m_device, m_keyword))
-      api->declareKeyword(m_device, m_keyword, details);
-}
-
-void CVirtualProcessMemory::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
-{
-   if (!api)
-      throw shared::exception::CException("api must be defined");
-
-   api->historizeData(m_device, m_keyword);
 }
 
 void CVirtualProcessMemory::read()
@@ -45,10 +30,5 @@ void CVirtualProcessMemory::read()
    m_keyword->set(VirtualProcessMemory);
 
    std::cout << "Virtual Memory for Current Process : " << m_keyword->formatValue() << std::endl;
-}
-
-boost::shared_ptr<yApi::historization::IHistorizable> CVirtualProcessMemory::GetHistorizable() const
-{
-   return m_keyword;
 }
 

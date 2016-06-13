@@ -1,8 +1,6 @@
 #pragma once
-
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include "../ISIConfiguration.h"
-
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -17,24 +15,42 @@ public:
    //--------------------------------------------------------------
    /// \brief	    Constructor
    /// \param[in] api                 yPluginApi API
-   /// \param[in] device              The device
-   /// \param[in] configuration       Configuration
+   /// \param[in] device              The device name
+   /// \param[in] ISIConfiguration    The plugin configuration
+   /// \param[in] details             Details information for keyword
    //--------------------------------------------------------------
-   CSystemFactory(boost::shared_ptr<yApi::IYPluginApi> api, const std::string & device,const ISIConfiguration& configuration);
+   CSystemFactory(boost::shared_ptr<yApi::IYPluginApi> api,
+                  const std::string & device,
+                  const ISIConfiguration& configuration,
+                  shared::CDataContainer details);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
    virtual ~CSystemFactory();
 
-   void OnSpeedUpdate ( boost::shared_ptr<yApi::IYPluginApi> api , const ISIConfiguration& configuration);
-   void OnSlowUpdate  ( boost::shared_ptr<yApi::IYPluginApi> api , const ISIConfiguration& configuration);
-   void OnConfigurationUpdate ( boost::shared_ptr<yApi::IYPluginApi> api, const ISIConfiguration& configuration );
+   //--------------------------------------------------------------
+   /// \brief	    Update high frequency keywords
+   /// \param[in] api                 yPluginApi API
+   //--------------------------------------------------------------
+   void OnHighFrequencyUpdate(boost::shared_ptr<yApi::IYPluginApi> api) const;
 
-private:
    //--------------------------------------------------------------
-   /// \brief	    Plugin name
+   /// \brief	    Update low frequency keywords
+   /// \param[in] api                 yPluginApi API
+   /// \param[in] ISIConfiguration    The configuration state
    //--------------------------------------------------------------
-   std::string m_PluginName;
+   void OnLowFrequencyUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
+                             const ISIConfiguration& configuration);
+
+   //--------------------------------------------------------------
+   /// \brief	    OnConfigurationUpdate
+   /// \param[in] api                 yPluginApi API
+   /// \param[in] ISIConfiguration    The new configuration
+   /// \param[in] details             Details information for keyword
+   //--------------------------------------------------------------
+   void OnConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
+                              const ISIConfiguration& configuration,
+                              shared::CDataContainer details);
 };
 

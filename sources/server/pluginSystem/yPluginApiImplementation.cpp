@@ -46,10 +46,8 @@ namespace pluginSystem
                                                  boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,
                                                  const shared::CDataContainer& details)
    {
-      if (deviceExists(device))
-         throw shared::exception::CEmptyResult((boost::format("Error declaring device %1% : already exists") % device).str());
-
-      m_deviceManager->createDevice(getPluginId(), device, device, model, details);
+      if (!deviceExists(device))
+         m_deviceManager->createDevice(getPluginId(), device, device, model, details);
 
       if (!keywordExists(device, keyword))
          declareKeyword(device, keyword);
@@ -60,10 +58,8 @@ namespace pluginSystem
                                                  const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >& keywords,
                                                  const shared::CDataContainer& details)
    {
-      if (deviceExists(device))
-         throw shared::exception::CEmptyResult((boost::format("Error declaring device %1% : already exists") % device).str());
-
-      m_deviceManager->createDevice(getPluginId(), device, device, model, details);
+      if (!deviceExists(device))
+         m_deviceManager->createDevice(getPluginId(), device, device, model, details);
 
       declareKeywords(device, keywords);
    }

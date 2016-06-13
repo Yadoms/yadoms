@@ -33,10 +33,6 @@ void CSystemInformation::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
    m_configuration.initializeWith(api->getConfiguration());
 
-   // Device declaration, if needed
-   if (!api->deviceExists(m_deviceName))
-      api->declareDevice(m_deviceName, "SystemInformation");
-
    shared::CDataContainer details;
    details.set("provider", "SystemInformation");
    details.set("shortProvider", "si");
@@ -56,7 +52,7 @@ void CSystemInformation::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    // the main loop
    std::cout << "SystemInformation plugin is running..." << std::endl;
 
-   while (1)
+   while (true)
    {
       // Wait for an event
       switch (api->getEventHandler().waitForEvents())
@@ -69,12 +65,12 @@ void CSystemInformation::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
       case kEvtTimerRefreshCPULoad:
          {
-            Factory.OnSpeedUpdate(api);
+            Factory.OnHighFrequencyUpdate(api);
             break;
          }
       case kEvtTimerRefreshDiskAndMemory:
          {
-            Factory.OnSlowUpdate(api, m_configuration);
+            Factory.OnLowFrequencyUpdate(api, m_configuration);
             break;
          }
       case yApi::IYPluginApi::kEventUpdateConfiguration:
