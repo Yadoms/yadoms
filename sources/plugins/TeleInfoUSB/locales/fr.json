@@ -11,7 +11,6 @@
 		"pluginState": {
 		    "connecting": "Connexion en cours...",
 			"connectionLost": "Connexion au module TeleInfo perdue",
-			"paused": "Réception en pause",
 			"updateConfiguration": "Mise à jour de la configuration..."
 		}
 	}
