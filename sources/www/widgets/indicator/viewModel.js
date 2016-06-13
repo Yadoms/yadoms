@@ -60,15 +60,17 @@ widgetViewModelCtor = function indicatorViewModel() {
         self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);
 
         try {
-            self.icon("textfit textfit-in-parent glyphicon " + self.widget.configuration.icon);
-        }
-        catch (err) { }
-
-        try {
             self.readOnly = parseBool(self.widget.configuration.readOnly);
         } catch (err) {
             self.readOnly = false;
         }
+		
+		
+        try {
+            self.icon("textfit textfit-in-parent glyphicon " + self.widget.configuration.icon + " " +( self.readOnly?"":"writable" ));
+        }
+        catch (err) { }
+
 
         //we manage icon colors
         var defaultActivatedColor = "#2e6da4";
