@@ -31,6 +31,8 @@ namespace database { namespace entities {
    DECLARE_ENUM_HEADER(EAcquisitionSummaryType,
       ((Hour))
       ((Day))
+      ((Month))
+      ((Year))
    )
 
    DECLARE_ENUM_HEADER(ESystemEventCode,

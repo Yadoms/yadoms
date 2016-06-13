@@ -12,6 +12,12 @@ namespace database {
       }
 
       //--------------------------------------------------------------
+      /// \Brief	Tells if transactions are supported
+      /// \return boolean true if transactions are supported
+      //--------------------------------------------------------------
+      virtual bool transactionSupport() = 0;
+
+      //--------------------------------------------------------------
       /// \Brief	Start a transaction
       //--------------------------------------------------------------
       virtual void transactionBegin() = 0;
@@ -25,6 +31,11 @@ namespace database {
       /// \Brief	Rollback a transaction
       //--------------------------------------------------------------
       virtual void transactionRollback() = 0;
+
+      //--------------------------------------------------------------
+      /// \Brief	Tells if a transaction already exists
+      //--------------------------------------------------------------
+      virtual bool transactionIsAlreadyCreated() = 0;
    };
  
 } //namespace database 

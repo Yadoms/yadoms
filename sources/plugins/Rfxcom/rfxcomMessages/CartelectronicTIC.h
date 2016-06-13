@@ -3,6 +3,8 @@
 #include "ICartelectronicSubtype.h"
 #include "RFXtrxHelpers.h"
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
+#include "specificHistorizers/Color.h"
+#include "specificHistorizers/Period.h"
 
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -50,20 +52,6 @@ namespace rfxcomMessages
 		   OP_TEMPO
       } Contract;
 
-		typedef enum {
-			AllHours = 1,         //TH..
-			LowCostHours,         //HC..
-			PeakCostHours,        //HP..
-			NormalCostHours,      //HN..
-			MobilePeakCostHours,  //PM..
-			LowCostBlueDays,      //HCJB
-			LowCostWhiteDays,     //HCJW
-			LowCostRedDays,       //HCJR
-			NormalCostBlueDays,   //HPJB
-			NormalCostWhiteDays,  //HPJW
-			NormalCostRedDays     //HPJR
-		} RunningPeriod;
-
 	  Contract m_SubscribeContract;
 
       //--------------------------------------------------------------
@@ -82,8 +70,19 @@ namespace rfxcomMessages
       boost::shared_ptr<yApi::historization::CEnergy> m_Counter2;
 
       //--------------------------------------------------------------
-      /// \brief	The keyword Counter 2
+      /// \brief	The Apparent Power
       //--------------------------------------------------------------
       boost::shared_ptr<yApi::historization::CApparentPower> m_ApparentePower;
+
+	  //--------------------------------------------------------------
+	  /// \brief	The Color for Tomorow if any
+	  //--------------------------------------------------------------
+	  boost::shared_ptr<teleInfo::CColor> m_Forecast;
+
+	  //--------------------------------------------------------------
+	  /// \brief	The running period time
+	  //--------------------------------------------------------------
+	  boost::shared_ptr<teleInfo::CPeriod> m_Period;
+
    };
 } // namespace rfxcomMessages

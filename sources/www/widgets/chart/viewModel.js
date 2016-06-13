@@ -302,6 +302,7 @@ widgetViewModelCtor =
                        var timeBetweenTwoConsecutiveValues;
                        var isSummaryData;
                        var deviceIsSummary = [];
+					   var ChartIndex = 0;
 
                        switch (interval) {
                            case "HOUR":
@@ -555,7 +556,7 @@ widgetViewModelCtor =
                                            //Add Line
                                            self.chart.addSeries({
                                                id: self.seriesUuid[index],
-											   index: index,
+											   index: ChartIndex,
                                                data: plot,
                                                dataGrouping: {
                                                    enabled: false
@@ -572,11 +573,14 @@ widgetViewModelCtor =
                                                lineWidth: 2,
                                                type: 'line'
                                            }, false, false); // Do not redraw immediately
+										   
+										   ChartIndex = ChartIndex + 1;
 
                                            //Add Ranges
                                            if (deviceIsSummary[index]) {
                                                self.chart.addSeries({
                                                    id: 'range_' + self.seriesUuid[index],
+												   index: ChartIndex,
                                                    data: range,
                                                    dataGrouping: {
                                                        enabled: false
@@ -591,6 +595,8 @@ widgetViewModelCtor =
                                                    fillOpacity: 0.3,
                                                    zIndex: 0
                                                }, false, false); // Do not redraw immediately
+											   
+											   ChartIndex = ChartIndex + 1;
 
                                                var serieRange = self.chart.get('range_' + self.seriesUuid[index]);
 
@@ -603,7 +609,7 @@ widgetViewModelCtor =
                                            self.chart.addSeries({
                                                id: self.seriesUuid[index],
                                                data: plot,
-											   index: index,
+											   index: ChartIndex,
                                                dataGrouping: {
                                                    enabled: false
                                                },
@@ -621,6 +627,8 @@ widgetViewModelCtor =
                                                type: device.content.PlotType,
                                                animation: false
                                            }, false, false); // Do not redraw immediately
+										   
+										   ChartIndex = ChartIndex + 1;
                                        }
                                    } catch (err2) {
                                        console.log('Fail to create serie : ' + err2);

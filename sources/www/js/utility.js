@@ -384,3 +384,68 @@ function asyncLoadManyCss(cssNames) {
 
    return d.promise();
 }
+
+/**
+ * Returns a reference to the specified CSS rule(s).
+ * @param {RuleName} The name of the CSS Rule
+ */
+function getRule( RuleName ) {
+
+  var rule;
+  var findedRule=[];
+
+  var ss = document.styleSheets;
+
+  for (var i = 0; i < ss.length; ++i) {
+
+	  // loop through all the rules!
+
+	  for (var x = 0; x < ss[i].cssRules.length; ++x) {
+		  rule = ss[i].cssRules[x];
+		  if (rule.name == RuleName && rule.type == CSSRule.KEYFRAMES_RULE) {
+			  findedRule.push( rule );
+		  }
+	  }
+  }
+  return findedRule;
+} 
+
+/**
+ * Returns custom sort function to be passed as param/callback to the Array's sort method.
+ * @param a The the first parameter
+ * @param a The the second parameter
+ */
+function CustomSortFriendlyName(a, b) {
+	assert( a.friendlyName, "Cell of array should have parameter friendlyName" );
+	assert( b.friendlyName, "Cell of array should have parameter friendlyName" );
+	return (a.friendlyName.toLowerCase() > b.friendlyName.toLowerCase()) ? 1 : -1;
+}
+
+/**
+ * Returns A sorted array containing all keywords/devices. Each cell would have the friendlyName parameter.
+ * @param arguments The existing array of keywords/devices.
+ */
+function sortListItemsWithFriendlyName( arguments ) {
+	var op = Array.prototype.sort.call(arguments, CustomSortFriendlyName);
+	return op;
+}
+
+/**
+ * Returns custom sort function to be passed as param/callback to the Array's sort method.
+ * @param a The the first parameter
+ * @param a The the second parameter
+ */
+function CustomSortDisplayName(a, b) {
+	assert( a.displayName, "Cell of array should have parameter displayName" );
+	assert( b.displayName, "Cell of array should have parameter displayName" );
+	return (a.displayName.toLowerCase() > b.displayName.toLowerCase()) ? 1 : -1;
+}
+
+/**
+ * Returns A sorted array containing all keywords/devices. Each cell would have the friendlyName parameter.
+ * @param arguments The existing array of keywords/devices.
+ */
+function sortListItemsWithdisplayName( arguments ) {
+	var op = Array.prototype.sort.call(arguments, CustomSortDisplayName);
+	return op;
+}

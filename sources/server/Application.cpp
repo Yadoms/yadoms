@@ -110,12 +110,27 @@ int CYadomsServer::main(const Poco::Util::Application::ArgVec& args)
          YADOMS_LOG(information) << "** !! Developer Mode Enabled !! **";
          YADOMS_LOG(information) << "********************************************************************";
       }
+
       YADOMS_LOG(information) << "Startup options :";
       YADOMS_LOG(information) << "\tlog level = " << m_startupOptions->getLogLevel();
       YADOMS_LOG(information) << "\tWeb server port number = " << m_startupOptions->getWebServerPortNumber();
       YADOMS_LOG(information) << "\tWeb server ip = " << m_startupOptions->getWebServerIPAddress();
       YADOMS_LOG(information) << "\tWeb server path = " << m_startupOptions->getWebServerInitialPath();
-      YADOMS_LOG(information) << "\tdb path = " << m_startupOptions->getDatabaseFile();
+      YADOMS_LOG(information) << "\tDatabase engine = " << m_startupOptions->getDatabaseEngine();
+
+      switch (m_startupOptions->getDatabaseEngine())
+      {
+      case startupOptions::EDatabaseEngine::kSqliteValue:
+         YADOMS_LOG(information) << "\t\tSqlite Database path = " << m_startupOptions->getDatabaseSqliteFile();
+         break;
+      case startupOptions::EDatabaseEngine::kPostgresqlValue:
+         YADOMS_LOG(information) << "\t\tPostgresql host = " << m_startupOptions->getDatabasePostgresqlHost() << ":" << m_startupOptions->getDatabasePostgresqlPort();
+         YADOMS_LOG(information) << "\t\tPostgresql database = " << m_startupOptions->getDatabasePostgresqlDbName();
+         YADOMS_LOG(information) << "\t\tPostgresql login = " << m_startupOptions->getDatabasePostgresqlLogin();
+         break;
+      }
+
+
       if (m_startupOptions->getNoPasswordFlag())
          YADOMS_LOG(information) << "\tnoPassword = true";
       YADOMS_LOG(information) << "********************************************************************";

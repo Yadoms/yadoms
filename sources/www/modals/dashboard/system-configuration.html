@@ -20,6 +20,8 @@
       var $modalBody = $("div#dashboard-system-configuration .form-group");
       $modalBody.empty();
 
+      var promise = new $.Deferred();
+
       //get current system configuration
       ConfigurationManager.getSection(ConfigurationManager.items.systemSection)
          .done(function(configuration) {
@@ -158,6 +160,8 @@
                            //we change language of i18n
                            i18n.setLng(Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value, function() {
                               $("html").i18n();
+							  
+						      window.location.reload();
                            });
 
 
@@ -307,10 +311,14 @@
                      });
                });
             }
+            promise.resolve();
          })
          .fail(function(error) {
             notifyError($.t("objects.ConfigurationManager.errorDuringGettingSystemConfiguration"), error);
+            promise.reject();
          });
+
+      return promise.promise();
    };
 
 

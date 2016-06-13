@@ -37,11 +37,21 @@
 
             $("select#associatedPluginTypeList").empty();
 
+			// Enter all Plugins into an array
+			var tabPlugins = [];			
+			
             $.each(list, function(index, value) {
                var pi = PluginInstanceManager.factory(value);
-               //foreach plugin-instance
-               $("select#associatedPluginTypeList").append("<option value=\"" + pi.id + "\">" + pi.displayName + "</option>");
+               //foreach plugin
+			   tabPlugins.push ( {type: pi.id, displayName: pi.displayName });
             });
+			
+			//sort plugins
+			tabPlugins = sortListItemsWithdisplayName ( tabPlugins );
+			
+			$.each(tabPlugins, function(index, value) {
+			   $("select#associatedPluginTypeList").append("<option value=\"" + value.id + "\">" + value.displayName + "</option>");
+			});
 
             //event click on add plugin button
             $("button#btn-confirm-add-manually-device").unbind("click").bind("click", function() {

@@ -26,6 +26,8 @@ namespace database { namespace entities {
    DECLARE_ENUM_IMPLEMENTATION(EAcquisitionSummaryType,
       ((Hour))
       ((Day))
+      ((Month))
+      ((Year))
    )
 
 

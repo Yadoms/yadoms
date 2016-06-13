@@ -9,7 +9,8 @@ namespace yApi = shared::plugin::yPluginApi;
 namespace rfxcomMessages
 {
 
-CCartelectronicTIC::CCartelectronicTIC( const RBUF& rbuf, size_t rbufSize ) : m_ApparentePower (new yApi::historization::CApparentPower("ApparentPower") )
+CCartelectronicTIC::CCartelectronicTIC( const RBUF& rbuf, size_t rbufSize ) : 
+	m_ApparentePower (new yApi::historization::CApparentPower("ApparentPower") )
 {
    std::string NameCounter1="";
    std::string NameCounter2="";
@@ -18,8 +19,7 @@ CCartelectronicTIC::CCartelectronicTIC( const RBUF& rbuf, size_t rbufSize ) : m_
 
    m_SubscribeContract = (Contract) (rbuf.TIC.contract_type >> 4);
 
-   //TODO : Ajouter La période tarifaire en cours et l'historiser
-   //TODO : Récupérer le Tag DEMAIN et l'historiser
+   m_Forecast.reset(new teleInfo::CColor("ForecastTomorrow"));
 
    switch ( m_SubscribeContract )
    {
@@ -32,21 +32,23 @@ CCartelectronicTIC::CCartelectronicTIC( const RBUF& rbuf, size_t rbufSize ) : m_
 		              NameCounter2 = "EJPPM";
 					break;
 	  case OP_TEMPO:
+		              m_Forecast->set( (teleInfo::EColor) ((rbuf.TIC.state & 0x18 )>>3) );
+
 		              // Counter dependant of the Period
-		              switch ( rbuf.TIC.contract_type & 0x0f)
+		              switch ( (rbuf.TIC.contract_type & 0x0f) )
 					  {
-					  case LowCostBlueDays:
-					  case NormalCostBlueDays:
+					  case teleInfo::EPeriod::kLowCostBlueDaysValue:
+					  case teleInfo::EPeriod::kNormalCostBlueDaysValue:
 						  NameCounter1 = "LowCostBLUE";
 		                  NameCounter2 = "NormalCostBLUE";
 						  break;
-					  case LowCostWhiteDays:
-					  case NormalCostWhiteDays:
+					  case teleInfo::EPeriod::kLowCostWhiteDaysValue:
+					  case teleInfo::EPeriod::kNormalCostWhiteDaysValue:
 						  NameCounter1 = "LowCostWHITE";
 		                  NameCounter2 = "NormalCostWHITE";
 						  break;
-					  case LowCostRedDays:
-					  case NormalCostRedDays:
+					  case teleInfo::EPeriod::kLowCostRedDaysValue:
+					  case teleInfo::EPeriod::kNormalCostRedDaysValue:
 						  NameCounter1 = "LowCostRED";
 		                  NameCounter2 = "NormalCostRED";
 						  break;
@@ -57,13 +59,16 @@ CCartelectronicTIC::CCartelectronicTIC( const RBUF& rbuf, size_t rbufSize ) : m_
 		              break;
    }
 
-   m_Counter1.reset(new yApi::historization::CEnergy ( NameCounter1 ));
-   m_Counter2.reset(new yApi::historization::CEnergy ( NameCounter2 ));
+   m_Counter1.reset (new yApi::historization::CEnergy ( NameCounter1 ));
+   m_Counter2.reset (new yApi::historization::CEnergy ( NameCounter2 ));
+
+   m_Period.reset   (new teleInfo::CPeriod("RunningPeriod") );
 
    m_Counter1->set( (rbuf.TIC.counter1_0<<24) + (rbuf.TIC.counter1_1<<16) + (rbuf.TIC.counter1_2<<8) + (rbuf.TIC.counter1_3) );
    m_Counter2->set( (rbuf.TIC.counter2_0<<24) + (rbuf.TIC.counter2_1<<16) + (rbuf.TIC.counter2_2<<8) + (rbuf.TIC.counter2_3) );
 
    m_ApparentePower->set ( (rbuf.TIC.power_H << 8) + rbuf.TIC.power_L );
+   m_Period->set( (teleInfo::EPeriod) (rbuf.TIC.contract_type & 0x0F) );
 }
 
 CCartelectronicTIC::~CCartelectronicTIC()
@@ -71,18 +76,25 @@ CCartelectronicTIC::~CCartelectronicTIC()
 
 void CCartelectronicTIC::declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
 {
+   // TODO : Create Keywords details
+
    // Create keywords if needed
    context->declareKeyword(deviceName, *m_Counter1);
    context->declareKeyword(deviceName, *m_ApparentePower);
+   context->declareKeyword(deviceName, *m_Period);
 
    if (m_SubscribeContract != OP_BASE)
-	 context->declareKeyword(deviceName, *m_Counter2);
+	  context->declareKeyword(deviceName, *m_Counter2);
+
+   if (m_SubscribeContract == OP_TEMPO)
+	  context->declareKeyword(deviceName, *m_Forecast);
 }
 
 void CCartelectronicTIC::historize(std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > &KeywordList) const
 {
    KeywordList.push_back ( m_Counter1 );
    KeywordList.push_back ( m_ApparentePower );
+   KeywordList.push_back ( m_Period );
 
    if (m_SubscribeContract != OP_BASE)
       KeywordList.push_back ( m_Counter2 );

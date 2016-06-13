@@ -112,9 +112,14 @@ if(APPLE)
 	include(${YADOMS_PATH}/mac.cmake)
 	
 	if(NOT IOKIT_FOUND)
-		message(SEND_ERROR "Unable to find the requested IOKit libraries")
+		message(SEND_ERROR "Unable to find the required IOKit libraries")
 	endif()
-	set(LIBS ${LIBS} ${IOKIT_LIBRARY})
+
+	if(NOT CARBON_FOUND)
+		message(SEND_ERROR "Unable to find the required Carbon libraries")
+	endif()
+
+	set(LIBS ${LIBS} ${IOKIT_LIBRARY} ${CARBON_LIBRARY})
 endif()
 
 ###############################################

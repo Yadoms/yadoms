@@ -1,7 +1,7 @@
 #pragma once
 #include <shared/script/IRunner.h>
 #include "IProperties.h"
-#include "../../database/sqlite/requesters/Rule.h"
+#include "../../database/common/requesters/Rule.h"
 #include <shared/script/ILogger.h>
 #include <shared/script/IStopNotifier.h>
 #include <server/automation/IRuleStateHandler.h>
