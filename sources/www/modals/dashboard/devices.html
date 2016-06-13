@@ -56,10 +56,11 @@
 
       DeviceManager.getAll()
       .done(function (allDevices) {
-         deviceList = allDevices;
+         deviceList = sortListItemsWithFriendlyName ( allDevices );
+		 
          //foreach result we append a <tr>
          $.each(allDevices, function (index, value) {
-            addDeviceToDom(value);
+            addDeviceToDom(value, null);
          });
          d.resolve();
       })
@@ -91,7 +92,7 @@
       return undefined;
    }
 
-   function addDeviceToDom(device) {
+   function addDeviceToDom(device, positionDevice) {
       var actionsBtns = "<div class=\"btn-group\">\n" +
               "<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.configure\"><span class=\"fa fa-pencil\"></span></button>\n" +
               "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.delete\"><span class=\"fa fa-trash\"></span></button>\n" +
@@ -102,8 +103,25 @@
 
       //we add it to the DOM
       var $deviceList = $("table#device-list");
+	  
+	  var frameworkDevice = "<tr device-id=\"" + device.id + "\" class=\"device\"><td class=\"device-friendlyName vert-align text-left\"></td><td class=\"device-attachedTo vert-align\"></td><td class=\"device-model vert-align\"></td><td class=\"device-actions vert-align\"></td></tr>";
 
-      $deviceList.append("<tr device-id=\"" + device.id + "\" class=\"device\"><td class=\"device-friendlyName vert-align text-left\"></td><td class=\"device-attachedTo vert-align\"></td><td class=\"device-model vert-align\"></td><td class=\"device-actions vert-align\"></td></tr>");
+	  if ( positionDevice == null )
+         $deviceList.append( frameworkDevice );
+	  else{
+	     var $row = null;
+		 
+		  if (positionDevice>0)
+		  {
+			 $row = getDeviceDomRow(deviceList[positionDevice-1]);
+			 $( frameworkDevice ).insertAfter($row);			 
+		  }
+		  else 
+		  {
+			 $row = getDeviceDomRow(deviceList[1]);
+			 $( frameworkDevice ).insertBefore($row);			 
+		  }		 
+	  }
 
       var $deviceRow = getDeviceDomRow(device);
       //we fill the data
@@ -156,9 +174,29 @@
                DeviceManager.updateToServer(device)
                   .done(function (updateDevice) {
                      //We update the information that can have changed after the configuration
+					 
+					 // Copy of the list before the new sort
+					 var TempdeviceList = deviceList.slice ( 0, deviceList.length );					 
+					 
+					 //sort after rename
+					 deviceList = sortListItemsWithFriendlyName ( deviceList );					 
+					 
+					 var isIdentical = (TempdeviceList.length == deviceList.length) && TempdeviceList.every(function(element, index) {
+						return element.friendlyName === deviceList[index].friendlyName; 					 
+					 })					 
+					 
                      var $row = getDeviceDomRow(updateDevice);
-                     var friendlyName = "<span class=\"glyphicon glyphicon-chevron-down deploy\">&nbsp;</span><span>" + device.friendlyName + "</span>";
-                     $row.find("td.device-friendlyName").html(friendlyName);
+					 
+					 if (!isIdentical)
+					 {  // If the two lists are differents, we change the order
+						$row.remove ();
+						
+						addDeviceToDom ( device, deviceList.indexOf (device) );
+					 }else
+					 {
+                        var friendlyName = "<span class=\"glyphicon glyphicon-chevron-down deploy\">&nbsp;</span><span>" + device.friendlyName + "</span>";
+                        $row.find("td.device-friendlyName").html(friendlyName);
+					 }
                   })
                   .fail(function (error) {
                      notifyError($.t("objects.deviceManager.errorUpdating", { deviceName: device.friendlyName }), error);
@@ -240,8 +278,12 @@
                      "<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.configure\"><span class=\"fa fa-pencil\"></span></button>\n" +
                      "<button type=\"button\" class=\"btn btn-success btn-setvalue\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.setvalue\"><span class=\"fa fa-sign-in\"></span></button>\n" +
                      "</div>";
-
-            $.each(device.keywords, function (index, keyword) {
+			
+			var deviceList = device.keywords;
+			deviceList = sortListItemsWithFriendlyName ( deviceList );
+			
+            $.each(deviceList, function (index, keyword) {
+			
                $deviceDetailsTable.append("<tr keyword-id=\"" + keyword.id + "\"><td class=\"keyword-friendlyName vert-align\"></td><td class=\"keyword-value vert-align\"><td class=\"keyword-units vert-align\"><td class=\"keyword-update vert-align\"></td><td class=\"keyword-actions vert-align\"></td></tr>");
 
                var $keywordRow = getKeywordDomRow(keyword);
@@ -403,7 +445,7 @@
                   // If not in the list, we add to the list, and to the dom
                   if (!getDeviceFromId(value.id)) {
                      deviceList.push(value);
-                     addDeviceToDom(value);
+                     addDeviceToDom(value, null);
                   }
                });
             }
