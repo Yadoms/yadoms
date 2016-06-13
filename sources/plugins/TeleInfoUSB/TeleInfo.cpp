@@ -53,7 +53,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 	  // Create the buffer handler
 	  m_receiveBufferHandler = CTeleInfoFactory::GetBufferHandler( context->getEventHandler(), kEvtPortDataReceived );
 
-      m_waitForAnswerTimer = context->getEventHandler().createTimer(kAnswerTimeout, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(30));
+      m_waitForAnswerTimer = context->getEventHandler().createTimer(kAnswerTimeout, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(5));
 
       // Create the connection
       createConnection( context );
@@ -85,7 +85,6 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
             {
                YADOMS_LOG(debug) << "TeleInfo plugin :  DataReceived";
 
-			   //TODO : JMB -> Doit être disposé là où il faut !
 			   context->setPluginState(yApi::historization::EPluginState::kRunning);
 
                processDataReceived(context,
