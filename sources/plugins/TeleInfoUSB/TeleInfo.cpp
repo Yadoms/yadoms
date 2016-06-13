@@ -54,6 +54,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 	  m_receiveBufferHandler = CTeleInfoFactory::GetBufferHandler( context->getEventHandler(), kEvtPortDataReceived );
 
       m_waitForAnswerTimer = context->getEventHandler().createTimer(kAnswerTimeout, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(5));
+	  m_waitForAnswerTimer->stop();
 
       // Create the connection
       createConnection( context );
