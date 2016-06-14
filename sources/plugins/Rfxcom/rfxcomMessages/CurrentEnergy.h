@@ -3,6 +3,7 @@
 #include "IRfxcomMessage.h"
 #include "RFXtrxHelpers.h"
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
+#include "CurrentEnergyFilter.h"
 
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -19,19 +20,24 @@ namespace rfxcomMessages
       /// \param[in] api                  Yadoms APi context
       /// \param[in] rbuf                 The received buffer
       /// \param[in] rbufSize             Message size, received from Rfxcom
-      /// \param[in] seqNumberProvider    The sequence number provider
+      /// \param[in] unsecuredProtocolFilter The filter for unsecured protocols
       /// \note                           Use this constructor for received messages (to historize received data to Yadoms)
       /// \throw                          shared::exception::CInvalidParameter
       //--------------------------------------------------------------
       CCurrentEnergy(boost::shared_ptr<yApi::IYPluginApi> api,
                      const RBUF& rbuf,
                      size_t rbufSize,
-                     boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
+                     boost::shared_ptr<IUnsecuredProtocolFilter> unsecuredProtocolFilter);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
       virtual ~CCurrentEnergy();
+
+      //--------------------------------------------------------------
+      /// \brief	Filter
+      //--------------------------------------------------------------
+      static boost::shared_ptr<IUnsecuredProtocolFilter> createFilter();
 
       // IRfxcomMessage implementation
       boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const override;
@@ -66,6 +72,11 @@ namespace rfxcomMessages
       /// \brief	The device id
       //--------------------------------------------------------------
       unsigned short m_id;
+
+      //--------------------------------------------------------------
+      /// \brief	The filter for unsecured protocols
+      //--------------------------------------------------------------
+      boost::shared_ptr<IUnsecuredProtocolFilter> m_messageFilter;
 
       //--------------------------------------------------------------
       /// \brief	The device name

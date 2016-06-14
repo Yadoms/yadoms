@@ -4,26 +4,13 @@
 #include <windows.h>
 #include <psapi.h>
 
-CRAMProcessMemory::CRAMProcessMemory(const std::string & device)
-   :m_device(device), 
-    m_keyword(boost::make_shared<yApi::historization::CKByte>("YadomsRAMProcessMemory"))
-{}
-
-CRAMProcessMemory::~CRAMProcessMemory()
-{}
-
-void CRAMProcessMemory::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer details)
+CRAMProcessMemory::CRAMProcessMemory(const std::string& keywordName)
+   : m_keyword(boost::make_shared<yApi::historization::CKByte>(keywordName))
 {
-      if (!api->keywordExists( m_device, m_keyword))
-         api->declareKeyword(m_device, m_keyword, details);
 }
 
-void CRAMProcessMemory::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
+CRAMProcessMemory::~CRAMProcessMemory()
 {
-   if (!api)
-      throw shared::exception::CException("api must be defined");
-
-   api->historizeData(m_device, m_keyword);
 }
 
 void CRAMProcessMemory::read()
@@ -35,17 +22,13 @@ void CRAMProcessMemory::read()
       std::stringstream Message;
       Message << "Fail to read Windows process memory size in RAM :";
       Message << GetLastError();
-      throw shared::exception::CException ( Message.str() );
+      throw shared::exception::CException(Message.str());
    }
 
    long RAMProcessMemory = pmc.WorkingSetSize / 1000;
-   
-   m_keyword->set( RAMProcessMemory );
+
+   m_keyword->set(RAMProcessMemory);
 
    std::cout << "RAM Memory Current Process : " << m_keyword->formatValue() << std::endl;
 }
 
-boost::shared_ptr<yApi::historization::IHistorizable> CRAMProcessMemory::GetHistorizable() const
-{
-	return m_keyword;
-}

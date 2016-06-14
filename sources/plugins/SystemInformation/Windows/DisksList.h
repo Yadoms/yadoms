@@ -11,7 +11,7 @@ public:
    /// \brief	    Constructor
    /// \param[in] deviceId    The device ID
    //--------------------------------------------------------------
-   explicit CDisksList();
+   CDisksList();
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -21,7 +21,7 @@ public:
    //--------------------------------------------------------------
    /// \brief	    Returns the Drive List
    //--------------------------------------------------------------
-   std::vector<std::string>& getList();
+   const std::vector<std::string>& getList() const;
 
 private:
 

@@ -7,29 +7,14 @@
 #include <boost/regex.hpp> 
 #include <boost/lexical_cast.hpp>
 
-CCPULoad::CCPULoad(const std::string & device)
-   :m_device(device), 
-    m_keyword(boost::make_shared<yApi::historization::CLoad>("CPULoad"))
+CCPULoad::CCPULoad(const std::string& keywordName)
+   : m_keyword(boost::make_shared<yApi::historization::CLoad>(keywordName))
 {
    ReadFromFile ( &m_lastTotalUser, &m_lastTotalUserLow, &m_lastTotalSys, &m_lastTotalIdle, &m_lastTotalIowait, &m_lastTotalIrq, &m_lastTotalSoftIrq);
 }
 
 CCPULoad::~CCPULoad()
 {
-}
-
-void CCPULoad::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer details)
-{
-   // Declare associated keywords (= values managed by this device)
-   if (!api->keywordExists( m_device, m_keyword))
-      api->declareKeyword(m_device, m_keyword, details);
-}
-
-void CCPULoad::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
-{
-   BOOST_ASSERT_MSG(!!api, "api must be defined");
-
-   api->historizeData(m_device, m_keyword);
 }
 
 void CCPULoad::ReadFromFile(unsigned long long *dtotalUser,
@@ -118,9 +103,4 @@ void CCPULoad::read()
     m_lastTotalIowait  = totalIowait;
     m_lastTotalIrq     = totalIrq;
     m_lastTotalSoftIrq = totalSoftIrq;
-}
-
-boost::shared_ptr<yApi::historization::IHistorizable> CCPULoad::GetHistorizable() const
-{
-	return m_keyword;
 }

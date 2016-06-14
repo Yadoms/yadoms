@@ -3,6 +3,7 @@
 #include "ITransceiver.h"
 #include "rfxcomMessages/IRfxcomMessage.h"
 #include "ISequenceNumberProvider.h"
+#include "IUnsecuredProtocolFilter.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -38,9 +39,17 @@ public:
    // [END] ITransceiver implementation
 
 private:
+
+   static std::map<int, boost::shared_ptr<IUnsecuredProtocolFilter> > createUnsecuredProtocolFilters();
+
    //--------------------------------------------------------------
    /// \brief  The message sequence number
    //--------------------------------------------------------------
    boost::shared_ptr<ISequenceNumberProvider> m_seqNumberProvider;
+
+   //--------------------------------------------------------------
+   /// \brief  The list of filters used for unsecured protocols, to filter bad receptions and avoid bad device creations
+   //--------------------------------------------------------------
+   const std::map<int, boost::shared_ptr<IUnsecuredProtocolFilter> > m_unsecuredProtocolFilters;
 };
 

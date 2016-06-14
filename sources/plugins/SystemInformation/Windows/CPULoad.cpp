@@ -10,9 +10,8 @@
 // http://msdn.microsoft.com/en-us/library/aa373046%28VS.85%29.aspx
 // https://msdn.microsoft.com/en-us/library/windows/desktop/ms724451(v=vs.85).aspx
 
-CCPULoad::CCPULoad(const std::string& device)
-   : m_device(device),
-     m_keyword(boost::make_shared<yApi::historization::CLoad>("CPULoad")),
+CCPULoad::CCPULoad(const std::string& keywordName)
+   : m_keyword(boost::make_shared<yApi::historization::CLoad>(keywordName)),
      m_InitializeOk(false)
 {
    try
@@ -129,24 +128,6 @@ CCPULoad::~CCPULoad()
    }
 }
 
-void CCPULoad::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer details)
-{
-   if (m_InitializeOk)
-   {
-      if (!api->keywordExists(m_device, m_keyword))
-         api->declareKeyword(m_device, m_keyword, details);
-   }
-}
-
-void CCPULoad::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
-{
-   if (!api)
-      throw shared::exception::CException("api must be defined");
-
-   if (m_InitializeOk)
-      api->historizeData(m_device, m_keyword);
-}
-
 void CCPULoad::read()
 {
    PDH_FMT_COUNTERVALUE counterVal;
@@ -189,12 +170,6 @@ void CCPULoad::read()
    }
    else
    {
-      std::cout << m_device << " is desactivated" << std::endl;
+      std::cout << m_keyword->getKeyword() << " is disabled" << std::endl;
    }
 }
-
-boost::shared_ptr<yApi::historization::IHistorizable> CCPULoad::GetHistorizable() const
-{
-   return m_keyword;
-}
-

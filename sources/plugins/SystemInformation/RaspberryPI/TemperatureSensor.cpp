@@ -1,33 +1,14 @@
 #include "stdafx.h"
 #include "TemperatureSensor.h"
-#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <fstream>
 
-CTemperatureSensor::CTemperatureSensor(const std::string & deviceId)
-   :m_device(deviceId), 
-    m_keyword(boost::make_shared<yApi::historization::CTemperature>("Temperature"))
-{}
+CTemperatureSensor::CTemperatureSensor(const std::string & keywordName)
+   :m_keyword(boost::make_shared<yApi::historization::CTemperature>(keywordName))
+{
+}
 
 CTemperatureSensor::~CTemperatureSensor()
-{}
-
-void CTemperatureSensor::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer details)
 {
-   // Declare associated keywords (= values managed by this device)
-   if (!api->keywordExists( m_device, m_keyword))
-      api->declareKeyword(m_device, m_keyword, details);
-}
-
-void CTemperatureSensor::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
-{
-   BOOST_ASSERT_MSG(api, "api must be defined");
-
-   api->historizeData(m_device, m_keyword);
-}
-
-boost::shared_ptr<yApi::historization::IHistorizable> CTemperatureSensor::GetHistorizable() const
-{
-	return m_keyword;
 }
 
 void CTemperatureSensor::read()

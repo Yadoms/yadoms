@@ -1,115 +1,116 @@
 #include "stdafx.h"
 #include "SystemFactory.h"
-#include <shared/exception/Exception.hpp>
-#include <shared/plugin/yPluginApi/StandardCapacities.h>
-#include <shared/plugin/yPluginApi/StandardUnits.h>
+#include "DisksList.h"
+
+
+static const std::string Model("SystemInformation");
 
 CSystemFactory::CSystemFactory(boost::shared_ptr<yApi::IYPluginApi> api,
-                               const std::string & device,
+                               const std::string& device,
                                const ISIConfiguration& configuration,
-                               shared::CDataContainer details):
-   m_PluginName                    (device),
-   m_MemoryLoad                    (device),
-   m_CPULoad                       (device),
-   m_YadomsCPULoad                 (device),
-   m_TemperatureSensor             (device),
-   m_YadomsRAMProcessMemory        (device),
-   m_YadomsVirtualProcessMemory    (device)
-{	
-      // Keywords declaration, if needed
-      m_MemoryLoad.declareKeywords           (api, details);
-      m_CPULoad.declareKeywords              (api, details);
-      m_TemperatureSensor.declareKeywords    (api, details);
-      m_YadomsCPULoad.declareKeywords        (api, details);
-	  
-      if (configuration.IsAdvancedEnabled())
-      {
-         m_YadomsRAMProcessMemory.declareKeywords     (api, details);
-         m_YadomsVirtualProcessMemory.declareKeywords (api, details);
-      }
+                               shared::CDataContainer details)
+   : m_DeviceName(device),
+     m_memoryLoad(boost::make_shared<CMemoryLoad>("MemoryLoad")),
+     m_cpuLoad(boost::make_shared<CCPULoad>("CPULoad")),
+     m_yadomsCpuLoad(boost::make_shared<CYadomsCPULoad>("YadomsCPULoad")),
+     m_temperatureSensor(boost::make_shared<CTemperatureSensor>("Temperature")),
+     m_highFreqencyUpdateKeywords({ m_cpuLoad->historizable(), m_yadomsCpuLoad->historizable(), m_temperatureSensor->historizable() }),
+     m_lowFreqencyUpdateKeywords({ m_memoryLoad->historizable() })
+{
+   if (configuration.IsAdvancedEnabled())
+   {
+      m_yadomsRamProcessMemory = boost::make_shared<CYadomsRAMProcessMemory>("YadomsRAMProcessMemory");
+      m_lowFreqencyUpdateKeywords.push_back(m_yadomsRamProcessMemory->historizable());
+      m_yadomsVirtualProcessMemory = boost::make_shared<CYadomsVirtualProcessMemory>("YadomsVirtualProcessMemory");
+      m_lowFreqencyUpdateKeywords.push_back(m_yadomsVirtualProcessMemory->historizable());
+   }
 
-      // As disk list can change (add a disk), update it each time Yadoms starts
+   // As disk list can change (add a disk), update it each time Yadoms starts
 
-      // Disk usage for all disks
-      CDisksList DisksList;
-      std::vector<std::string> TempList = DisksList.getList();
+   // Disk usage for all disks
+   auto diskList = CDisksList().getList();
+   for (auto disk = diskList.begin(); disk != diskList.end(); ++disk)
+   {
+      auto diskUsage = boost::make_shared<CDiskUsage>(disk->substr(5, 4) + "_DiskUsage", *disk);
+      m_diskUsageList.push_back(diskUsage);
+      m_lowFreqencyUpdateKeywords.push_back(diskUsage->historizable());
+   }
 
-      for(std::vector<std::string>::const_iterator disksListIterator = TempList.begin(); disksListIterator != TempList.end(); ++ disksListIterator)
-      {
-         std::string diskKeywordName = disksListIterator->substr(5, 4) + "_DiskUsage";
-         boost::shared_ptr<CDiskUsage> DiskUsage;
-         DiskUsage.reset (new CDiskUsage( device, *disksListIterator, diskKeywordName ));
-         m_DiskUsageList.push_back(DiskUsage);
-         DiskUsage->declareKeywords(api, details);
-      }
+   api->declareDevice(device, Model, m_highFreqencyUpdateKeywords, details);
+   api->declareDevice(device, Model, m_lowFreqencyUpdateKeywords, details);
 }
 
 CSystemFactory::~CSystemFactory()
 {
 }
 
-void CSystemFactory::OnSpeedUpdate ( boost::shared_ptr<yApi::IYPluginApi> api )
+void CSystemFactory::OnHighFrequencyUpdate(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
-    std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > KeywordList;
+   std::cout << "High frequency updates" << std::endl;
 
-    std::cout << "Speed reads" << std::endl;
+   m_cpuLoad->read();
+   m_yadomsCpuLoad->read();
+   m_temperatureSensor->read();
 
-    m_CPULoad.read();
-	m_YadomsCPULoad.read();
-
-    KeywordList.push_back (m_CPULoad.GetHistorizable());
-	KeywordList.push_back (m_YadomsCPULoad.GetHistorizable());
-
-    api->historizeData(m_PluginName, KeywordList);
-}
- 
-void CSystemFactory::OnSlowUpdate ( boost::shared_ptr<yApi::IYPluginApi> api , const ISIConfiguration& configuration)
-{
-    std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > KeywordList;
-
-    std::cout << "Slow reads" << std::endl;
-
-    m_MemoryLoad.read();
-    KeywordList.push_back ( m_MemoryLoad.GetHistorizable() );
-
-    m_TemperatureSensor.read();
-    KeywordList.push_back ( m_TemperatureSensor.GetHistorizable() );
-
-    if (configuration.IsAdvancedEnabled())
-    {
-       m_YadomsRAMProcessMemory.read();
-       m_YadomsVirtualProcessMemory.read();
-
-       KeywordList.push_back (m_YadomsRAMProcessMemory.GetHistorizable());
-       KeywordList.push_back (m_YadomsVirtualProcessMemory.GetHistorizable());
-    }
-
-    for(std::vector<boost::shared_ptr<CDiskUsage> >::iterator disksListIterator=m_DiskUsageList.begin(); disksListIterator!=m_DiskUsageList.end(); ++disksListIterator)
-    {
-        (*disksListIterator)->read();
-        KeywordList.push_back ( (*disksListIterator)->GetHistorizable() );
-    }
-
-    api->historizeData(m_PluginName, KeywordList);
+   api->historizeData(m_DeviceName, m_highFreqencyUpdateKeywords);
 }
 
-void CSystemFactory::OnConfigurationUpdate ( boost::shared_ptr<yApi::IYPluginApi> api, const ISIConfiguration& configuration, shared::CDataContainer details )
+void CSystemFactory::OnLowFrequencyUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
+                                          const ISIConfiguration& configuration)
 {
-      if (configuration.IsAdvancedEnabled())
+   std::cout << "Low frequency updates" << std::endl;
+
+   m_memoryLoad->read();
+
+   if (configuration.IsAdvancedEnabled())
+   {
+      m_yadomsRamProcessMemory->read();
+      m_yadomsVirtualProcessMemory->read();
+   }
+
+   for (auto disk = m_diskUsageList.begin(); disk != m_diskUsageList.end(); ++disk)
+      (*disk)->read();
+
+   api->historizeData(m_DeviceName, m_lowFreqencyUpdateKeywords);
+}
+
+void CSystemFactory::OnConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
+                                           const ISIConfiguration& configuration,
+                                           shared::CDataContainer details)
+{
+   if (configuration.IsAdvancedEnabled())
+   {
+      m_yadomsRamProcessMemory = boost::make_shared<CYadomsRAMProcessMemory>("YadomsRAMProcessMemory");
+      m_lowFreqencyUpdateKeywords.push_back(m_yadomsRamProcessMemory->historizable());
+      m_yadomsVirtualProcessMemory = boost::make_shared<CYadomsVirtualProcessMemory>("YadomsVirtualProcessMemory");
+      m_lowFreqencyUpdateKeywords.push_back(m_yadomsVirtualProcessMemory->historizable());
+      api->declareDevice(m_DeviceName, Model, m_lowFreqencyUpdateKeywords, details);
+
+      // We read immediately values to avoid the wait of timers
+
+      m_yadomsRamProcessMemory->read();
+      m_yadomsVirtualProcessMemory->read();
+
+      api->historizeData(m_DeviceName, m_yadomsRamProcessMemory->historizable());
+      api->historizeData(m_DeviceName, m_yadomsVirtualProcessMemory->historizable());
+   }
+   else
+   {
+      // Local removing of existing keywords
+      if (!!m_yadomsRamProcessMemory)
       {
-         std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > KeywordList;
-		 
-         m_YadomsRAMProcessMemory.declareKeywords     (api, details);
-         m_YadomsVirtualProcessMemory.declareKeywords (api, details);
-
-         // We read immediately values to avoid the wait of timers
-
-         m_YadomsRAMProcessMemory.read();
-         m_YadomsVirtualProcessMemory.read();
-
-         KeywordList.push_back (m_YadomsRAMProcessMemory.GetHistorizable());
-         KeywordList.push_back (m_YadomsVirtualProcessMemory.GetHistorizable());
-
-         api->historizeData(m_PluginName, KeywordList);
+         auto it = std::find(m_lowFreqencyUpdateKeywords.begin(), m_lowFreqencyUpdateKeywords.end(), m_yadomsRamProcessMemory->historizable());
+         if (it != m_lowFreqencyUpdateKeywords.end())
+            m_lowFreqencyUpdateKeywords.erase(it);
+         m_yadomsRamProcessMemory.reset();
       }
+      if (!!m_yadomsVirtualProcessMemory)
+      {
+         auto it = std::find(m_lowFreqencyUpdateKeywords.begin(), m_lowFreqencyUpdateKeywords.end(), m_yadomsVirtualProcessMemory->historizable());
+         if (it != m_lowFreqencyUpdateKeywords.end())
+            m_lowFreqencyUpdateKeywords.erase(it);
+         m_yadomsVirtualProcessMemory.reset();
+      }
+   }
 }
+

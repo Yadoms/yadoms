@@ -2,14 +2,13 @@
 #include "YadomsCPULoad.h"
 #include <shared/exception/Exception.hpp>
 
-CYadomsCPULoad::CYadomsCPULoad(const std::string & device)
-   :m_device(device), 
-    m_lastCPU(0),
-    m_lastSysCPU(0), 
-    m_lastUserCPU(0), 
-    m_numProcessors(0), 
-    m_keyword(boost::make_shared<yApi::historization::CLoad>("YadomsCPULoad")), 
-    m_InitializeOk(false)
+CYadomsCPULoad::CYadomsCPULoad(const std::string& keywordName)
+   : m_lastCPU(0),
+     m_lastSysCPU(0),
+     m_lastUserCPU(0),
+     m_numProcessors(0),
+     m_keyword(boost::make_shared<yApi::historization::CLoad>(keywordName)),
+     m_InitializeOk(false)
 {
    Initialize();
 }
@@ -32,7 +31,7 @@ void CYadomsCPULoad::Initialize()
       Message << "Fail to retrieve Process Times with the error :";
       Message << GetLastError();
       m_InitializeOk = false;
-      throw shared::exception::CException ( Message.str() );
+      throw shared::exception::CException(Message.str());
    }
    memcpy(&m_lastSysCPU, &fsys, sizeof(FILETIME));
    memcpy(&m_lastUserCPU, &fuser, sizeof(FILETIME));
@@ -42,26 +41,6 @@ void CYadomsCPULoad::Initialize()
 
 CYadomsCPULoad::~CYadomsCPULoad()
 {
-}
-
-void CYadomsCPULoad::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer details)
-{
-   if (m_InitializeOk)
-   {
-      if (!api->keywordExists( m_device, m_keyword))
-        api->declareKeyword(m_device, m_keyword, details);
-   }
-}
-
-void CYadomsCPULoad::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
-{
-   if (!api)
-      throw shared::exception::CException("api must be defined");
-
-   if (m_InitializeOk)
-   {
-      api->historizeData(m_device, m_keyword);
-   }
 }
 
 void CYadomsCPULoad::read()
@@ -79,7 +58,7 @@ void CYadomsCPULoad::read()
          std::stringstream Message;
          Message << "Fail to retrieve Process Times with the error :";
          Message << GetLastError();
-         throw shared::exception::CException ( Message.str() );
+         throw shared::exception::CException(Message.str());
       }
 
       memcpy(&sys, &fsys, sizeof(FILETIME));
@@ -91,18 +70,13 @@ void CYadomsCPULoad::read()
       m_lastSysCPU = sys;
 
       auto YadomsCPULoad = static_cast<float>(floor((percent * 100)*100 + 0.5)) /100;
-
-      m_keyword->set( YadomsCPULoad );
+      m_keyword->set(YadomsCPULoad);
 
       std::cout << "Yadoms CPU Load : " << m_keyword->formatValue() << std::endl;
    }
    else
    {
-      std::cout << m_device << " is desactivated" << std::endl;
+      std::cout << m_keyword->getKeyword() << " is disabled" << std::endl;
    }
 }
 
-boost::shared_ptr<yApi::historization::IHistorizable> CYadomsCPULoad::GetHistorizable() const
-{
-	return m_keyword;
-}

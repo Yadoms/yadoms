@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "CurrentEnergy.h"
 #include <shared/exception/InvalidParameter.hpp>
+#include "../IUnsecuredProtocolFilter.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -10,8 +11,9 @@ namespace rfxcomMessages
    CCurrentEnergy::CCurrentEnergy(boost::shared_ptr<yApi::IYPluginApi> api,
                                   const RBUF& rbuf,
                                   size_t rbufSize,
-                                  boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
-      : m_current1(boost::make_shared<yApi::historization::CCurrent>("channel_1")),
+                                  boost::shared_ptr<IUnsecuredProtocolFilter> messageFilter)
+      : m_messageFilter(messageFilter),
+        m_current1(boost::make_shared<yApi::historization::CCurrent>("channel_1")),
         m_current2(boost::make_shared<yApi::historization::CCurrent>("channel_2")),
         m_current3(boost::make_shared<yApi::historization::CCurrent>("channel_3")),
         m_instantPower(boost::make_shared<yApi::historization::CPower>("instant")),
@@ -57,6 +59,11 @@ namespace rfxcomMessages
    {
    }
 
+   boost::shared_ptr<IUnsecuredProtocolFilter> CCurrentEnergy::createFilter()
+   {
+      return boost::make_shared<CCurrentEnergyFilter>();
+   }
+
    void CCurrentEnergy::Init(boost::shared_ptr<yApi::IYPluginApi> api)
    {
       // Build device description
@@ -66,6 +73,9 @@ namespace rfxcomMessages
       // Create device and keywords if needed
       if (!api->deviceExists(m_deviceName))
       {
+         if (!m_messageFilter->isValid(m_deviceName))
+            throw std::exception("Receive unknown device for unsecured protocol, may be a transmission error : ignored");
+
          shared::CDataContainer details;
          details.set("type", pTypeCURRENTENERGY);
          details.set("subType", m_subType);

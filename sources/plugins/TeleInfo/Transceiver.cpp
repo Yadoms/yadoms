@@ -35,12 +35,12 @@ result (this translates into a logical AND between the amount previously calcula
 Finally, we added 20 hexadecimal. The result will always be a printable ASCII character (sign, digit,
 capital letter) of from 0x20 to hexadecimal 0x5F
 
-La "checksum" est calculÈe sur l'ensemble des caractËres allant du dÈbut du champ Ètiquette ‡ la fin du champ
-donnÈe, caractËre SP inclus. On fait tout d'abord la somme des codes ASCII de tous ces caractËres. Pour Èviter
-d'introduire des fonctions ASCII (00 ‡ 1F en hexadÈcimal), on ne conserve que les six bits de poids faible du
-rÈsultat obtenu (cette opÈration se traduit par un ET logique entre la somme prÈcÈdemment calculÈe et 03Fh).
-Enfin, on ajoute 20 en hexadÈcimal. Le rÈsultat sera donc toujours un caractËre ASCII imprimable (signe, chiffre,
-lettre majuscule) allant de 20 ‡ 5F en hexadÈcimal.
+La "checksum" est calculé sur l'ensemble des caractères allant du début du champ étiquette à la fin du champ
+donnée, caractère SP inclus. On fait tout d'abord la somme des codes ASCII de tous ces caractères. Pour éviter
+d'introduire des fonctions ASCII (00 à 1F en hexadécimal), on ne conserve que les six bits de poids faible du
+résultat obtenu (cette opération se traduit par un ET logique entre la somme précédemment calculée et 03Fh).
+Enfin, on ajoute 20 en hexadécimal. Le résultat sera donc toujours un caractère ASCII imprimable (signe, chiffre,
+lettre majuscule) allant de 20 à 5F en hexadécimal.
 */
 
 bool CTransceiver::isCheckSumOk(const unsigned char* buffer)

@@ -21,7 +21,7 @@ CDisksList::CDisksList()
 
       if ( boost::regex_search( *iteratorCommandDF, match, reg ) )
       {
-        dname       = boost::lexical_cast<std::string>(match[1]);
+         dname = boost::lexical_cast<std::string>(match[1]);
       }
       if (!dname.empty())
       {
@@ -32,12 +32,11 @@ CDisksList::CDisksList()
 }
 
 CDisksList::~CDisksList()
-{}
+{
+}
 
-
-std::vector<std::string>& CDisksList::getList()
+const std::vector<std::string>& CDisksList::getList() const
 {
    return DrivesList;
 }
-
 

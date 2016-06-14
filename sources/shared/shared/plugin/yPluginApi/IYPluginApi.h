@@ -128,7 +128,7 @@ namespace shared
             ///\param    [in]    model             The device model or description (ex : "Oregon Scientific CN185")
             ///\param    [in]    keyword           Keyword to declare for this device
             ///\param    [in]    details           Device details
-            ///\throw shared::exception::CEmptyResult if device already exist
+            ///\note Don't change existing device or keyword
             //-----------------------------------------------------
             virtual void declareDevice(const std::string& device,
                                        const std::string& model,
@@ -141,7 +141,7 @@ namespace shared
             ///\param    [in]    model             The device model or description (ex : "Oregon Scientific CN185")
             ///\param    [in]    keywords          List of keywords to declare for this device
             ///\param    [in]    details           Device details
-            ///\throw shared::exception::CEmptyResult if device already exist
+            ///\note Don't change existing device or keywords
             //-----------------------------------------------------
             virtual void declareDevice(const std::string& device,
                                        const std::string& model,
@@ -189,7 +189,7 @@ namespace shared
             ///\param    [in]    device             The device name owner of the keyword
             ///\param    [in]    keyword            The keyword
             ///\param    [in]    details            The keyword details (JSON string, optional. Can be used to declare specific properties like min/max values)
-            ///\throw shared::exception::CEmptyResult if keyword already exist
+            ///\note Don't change existing keyword
             //-----------------------------------------------------   
             virtual void declareKeyword(const std::string& device,
                                         boost::shared_ptr<const historization::IHistorizable> keyword,
