@@ -11,7 +11,7 @@ CYadomsVirtualProcessMemory::~CYadomsVirtualProcessMemory()
 {
 }
 
-int CYadomsVirtualProcessMemory::parseLine(char* line)
+int CYadomsVirtualProcessMemory::parseLine(char* line) const
 {
    int i = strlen(line);
    while (*line < '0' || *line > '9') line++;
