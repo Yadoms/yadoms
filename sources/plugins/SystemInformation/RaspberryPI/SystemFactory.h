@@ -69,12 +69,12 @@ private:
    //--------------------------------------------------------------
    /// \brief	    Keywords
    //--------------------------------------------------------------
-   boost::shared_ptr<CMemoryLoad> m_MemoryLoad;
-   boost::shared_ptr<CCPULoad> m_CPULoad;
-   boost::shared_ptr<CYadomsCPULoad> m_YadomsCPULoad;
-   boost::shared_ptr<CTemperatureSensor> m_TemperatureSensor;
-   boost::shared_ptr<CRAMProcessMemory> m_RAMProcessMemory;
-   boost::shared_ptr<CVirtualProcessMemory> m_VirtualProcessMemory;
+   boost::shared_ptr<CMemoryLoad> m_memoryLoad;
+   boost::shared_ptr<CCPULoad> m_cpuLoad;
+   boost::shared_ptr<CYadomsCPULoad> m_yadomsCpuLoad;
+   boost::shared_ptr<CTemperatureSensor> m_temperatureSensor;
+   boost::shared_ptr<CYadomsRAMProcessMemory> m_yadomsRamProcessMemory;
+   boost::shared_ptr<CYadomsVirtualProcessMemory> m_yadomsVirtualProcessMemory;
 
    //--------------------------------------------------------------
    /// \brief	    List of keywords for disks

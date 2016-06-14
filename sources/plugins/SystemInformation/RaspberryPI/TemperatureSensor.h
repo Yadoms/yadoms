@@ -1,12 +1,11 @@
 #pragma once
-
 #include "../ILoad.h"
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-class CTemperatureSensor
+class CTemperatureSensor : public ILoad
 {
 public:
    //--------------------------------------------------------------
