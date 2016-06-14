@@ -16,7 +16,7 @@ public:
    //--------------------------------------------------------------
    /// \brief	    Constructor
    /// \param[in] keywordName The keyword name
-   /// \param[in] driveName   The drive name ex: C:\
+   /// \param[in] driveName   The drive name ex: /dev/sda1
    //--------------------------------------------------------------
    CDiskUsage(const std::string& keywordName,
               const std::string& driveName);

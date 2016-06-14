@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "MemoryLoad.h"
 #include <shared/exception/Exception.hpp>
-
+#include <sys/sysinfo.h>
 #include <sys/types.h>
 
 #define LINUX_SYSINFO_LOADS_SCALE 65536
@@ -17,19 +17,20 @@ CMemoryLoad::~CMemoryLoad()
 
 void CMemoryLoad::read()
 {
-   if (sysinfo (&m_memInfo)!=0)
+   struct sysinfo memInfo;
+   if (sysinfo (&memInfo)!=0)
    {
       std::stringstream Message; 
       Message << "sysinfo failed !"; 
       throw shared::exception::CException(Message.str());
    }
 
-   long long totalVirtualMem = m_memInfo.totalram;
+   long long totalVirtualMem = memInfo.totalram;
 
-   totalVirtualMem += m_memInfo.totalswap;
-   totalVirtualMem *= m_memInfo.mem_unit;
+   totalVirtualMem += memInfo.totalswap;
+   totalVirtualMem *= memInfo.mem_unit;
 
-   long long virtualMemUsed = ((m_memInfo.totalram + m_memInfo.totalswap) - (m_memInfo.freeram + m_memInfo.freeswap))*m_memInfo.mem_unit;
+   long long virtualMemUsed = ((memInfo.totalram + memInfo.totalswap) - (memInfo.freeram + memInfo.freeswap))*memInfo.mem_unit;
 
    std::cout << "Mémoire virtuelle utilisée :" << virtualMemUsed << std::endl;
    std::cout << "Mémoire virtuelle totale   :" << totalVirtualMem << std::endl;

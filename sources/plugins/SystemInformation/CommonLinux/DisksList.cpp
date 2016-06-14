@@ -21,7 +21,7 @@ CDisksList::CDisksList()
 
       if ( boost::regex_search( *iteratorCommandDF, match, reg ) )
       {
-        dname       = boost::lexical_cast<std::string>(match[1]);
+         dname = boost::lexical_cast<std::string>(match[1]);
       }
       if (!dname.empty())
       {
