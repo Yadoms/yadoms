@@ -35,6 +35,9 @@ public:
    }
 
    // [END] ILoad Implementation
+   
+protected:
+   int parseLine(char* line) const;
 
 private:
    //--------------------------------------------------------------

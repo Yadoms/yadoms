@@ -11,7 +11,7 @@ CYadomsRAMProcessMemory::~CYadomsRAMProcessMemory()
 {
 }
 
-int CYadomsRAMProcessMemory::parseLine(char* line)
+int CYadomsRAMProcessMemory::parseLine(char* line) const
 {
    int i = strlen(line);
    while (*line < '0' || *line > '9') line++;
