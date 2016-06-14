@@ -32,12 +32,11 @@ CDisksList::CDisksList()
 }
 
 CDisksList::~CDisksList()
-{}
+{
+}
 
-
-std::vector<std::string>& CDisksList::getList()
+const std::vector<std::string>& CDisksList::getList() const
 {
    return DrivesList;
 }
-
 

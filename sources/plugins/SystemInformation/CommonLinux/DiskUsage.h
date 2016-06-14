@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../ILoad.h"
+#include <shared/plugin/yPluginApi/IYPluginApi.h>
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -14,11 +15,11 @@ class CDiskUsage : public ILoad
 public:
    //--------------------------------------------------------------
    /// \brief	    Constructor
-   /// \param[in] device    The device
-   /// \param[in] device    The drive name ex: C:
    /// \param[in] keywordName The keyword name
+   /// \param[in] driveName   The drive name ex: C:\
    //--------------------------------------------------------------
-   CDiskUsage(const std::string & deviceId, const std::string & driveName, const std::string & Keyword);
+   CDiskUsage(const std::string& keywordName,
+              const std::string& driveName);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -26,19 +27,16 @@ public:
    virtual ~CDiskUsage();
 
    // ILoad Implementation
-   virtual void declareKeywords(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer details);
-   virtual void read();
-   virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const;
-   virtual boost::shared_ptr<yApi::historization::IHistorizable> GetHistorizable() const;
+   void read() override;
+
+   boost::shared_ptr<const yApi::historization::IHistorizable> historizable() const override
+   {
+      return m_keyword;
+   }
+
    // [END] ILoad Implementation
 
 private:
-
-   //--------------------------------------------------------------
-   /// \brief	    Device ID
-   //--------------------------------------------------------------
-   const std::string m_device;
-
    //--------------------------------------------------------------
    /// \brief	    Disk Name
    //--------------------------------------------------------------

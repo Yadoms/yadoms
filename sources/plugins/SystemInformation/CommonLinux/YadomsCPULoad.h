@@ -1,8 +1,12 @@
 #pragma once
-
 #include "../ILoad.h"
 #include <sys/times.h>
 #include <sys/vtimes.h>
+#include <shared/plugin/yPluginApi/IYPluginApi.h>
+
+
+// Shortcut to yPluginApi namespace
+namespace yApi = shared::plugin::yPluginApi;
 
 //--------------------------------------------------------------
 /// \brief	CPU Load of the Yadoms Process
@@ -13,9 +17,9 @@ class CYadomsCPULoad : public ILoad
 public:
    //--------------------------------------------------------------
    /// \brief	    Constructor
-   /// \param[in] deviceId    The device ID
+   /// \param[in] keywordName The keyword name
    //--------------------------------------------------------------
-   explicit CYadomsCPULoad(const std::string & device);
+   explicit CYadomsCPULoad(const std::string& keywordName);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -23,19 +27,16 @@ public:
    virtual ~CYadomsCPULoad();
 
    // ILoad Implementation
-   virtual void declareKeywords(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer details);
-   virtual void read();
-   virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const;
-   virtual boost::shared_ptr<yApi::historization::IHistorizable> GetHistorizable() const;
+   void read() override;
+
+   boost::shared_ptr<const yApi::historization::IHistorizable> historizable() const override
+   {
+      return m_keyword;
+   }
+
    // [END] ILoad Implementation
    
 private:
-
-   //--------------------------------------------------------------
-   /// \brief	    Device ID
-   //--------------------------------------------------------------
-   const std::string m_device;
-
    //--------------------------------------------------------------
    /// \brief	    Keyword string
    //--------------------------------------------------------------
