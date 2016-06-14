@@ -2,6 +2,9 @@
 #include "SystemFactory.h"
 #include "DisksList.h"
 
+
+static const std::string Model("SystemInformation");
+
 CSystemFactory::CSystemFactory(boost::shared_ptr<yApi::IYPluginApi> api,
                                const std::string& device,
                                const ISIConfiguration& configuration,
