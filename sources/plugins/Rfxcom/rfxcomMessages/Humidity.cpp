@@ -9,8 +9,7 @@ namespace rfxcomMessages
 {
    CHumidity::CHumidity(boost::shared_ptr<yApi::IYPluginApi> api,
                         const RBUF& rbuf,
-                        size_t rbufSize,
-                        boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+                        size_t rbufSize)
       : m_humidity(boost::make_shared<yApi::historization::CHumidity>("humidity")),
         m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
         m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),

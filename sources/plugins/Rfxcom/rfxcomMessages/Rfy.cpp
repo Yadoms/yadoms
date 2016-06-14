@@ -48,8 +48,7 @@ namespace rfxcomMessages
 
    CRfy::CRfy(boost::shared_ptr<yApi::IYPluginApi> api,
               const RBUF& rbuf,
-              size_t rbufSize,
-              boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+              size_t rbufSize)
       : m_subType(0),
         m_unitCode(0),
         m_id(0),

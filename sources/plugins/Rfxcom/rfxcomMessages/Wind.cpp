@@ -9,8 +9,7 @@ namespace rfxcomMessages
 {
    CWind::CWind(boost::shared_ptr<yApi::IYPluginApi> api,
                 const RBUF& rbuf,
-                size_t rbufSize,
-                boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+                size_t rbufSize)
       : m_windDirection(boost::make_shared<yApi::historization::CDirection>("windDirection")),
         m_windMaxSpeed(boost::make_shared<yApi::historization::CSpeed>("windMaxSpeed")),
         m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),

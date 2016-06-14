@@ -19,11 +19,10 @@ namespace rfxcomMessages
       /// \param[in] api                  Yadoms APi context
       /// \param[in] rbuf                 The received buffer
       /// \param[in] rbufSize             Message size, received from Rfxcom
-      /// \param[in] seqNumberProvider    The sequence number provider
       /// \note                           Use this constructor for received messages (to historize received data to Yadoms)
       /// \throw                          shared::exception::CInvalidParameter
       //--------------------------------------------------------------
-      CBarometric(boost::shared_ptr<yApi::IYPluginApi> api, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
+      CBarometric(boost::shared_ptr<yApi::IYPluginApi> api, const RBUF& rbuf, size_t rbufSize);
 
       //--------------------------------------------------------------
       /// \brief	Destructor

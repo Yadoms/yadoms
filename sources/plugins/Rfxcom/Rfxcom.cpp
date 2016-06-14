@@ -300,7 +300,7 @@ void CRfxcom::processRfxcomDataReceived(boost::shared_ptr<yApi::IYPluginApi> api
 {
    m_logger.logReceived(data);
 
-   boost::shared_ptr<rfxcomMessages::IRfxcomMessage> message = m_transceiver->decodeRfxcomMessage(api, data);
+   auto message = m_transceiver->decodeRfxcomMessage(api, data);
 
    if (!message)
    {
@@ -312,14 +312,14 @@ void CRfxcom::processRfxcomDataReceived(boost::shared_ptr<yApi::IYPluginApi> api
    m_waitForAnswerTimer->stop();
 
    // Decoding is OK, process received message
-   boost::shared_ptr<rfxcomMessages::CTransceiverStatus> statusMessage = boost::dynamic_pointer_cast<rfxcomMessages::CTransceiverStatus>(message);
+   auto statusMessage = boost::dynamic_pointer_cast<rfxcomMessages::CTransceiverStatus>(message);
    if (!!statusMessage)
    {
       processRfxcomCommandResponseMessage(api, *statusMessage);
       return;
    }
 
-   boost::shared_ptr<rfxcomMessages::CAck> ackMessage = boost::dynamic_pointer_cast<rfxcomMessages::CAck>(message);
+   auto ackMessage = boost::dynamic_pointer_cast<rfxcomMessages::CAck>(message);
    if (!!ackMessage)
    {
       processRfxcomAckMessage(*ackMessage);

@@ -58,13 +58,22 @@
 //
 
 CTransceiver::CTransceiver()
-   : m_seqNumberProvider(boost::make_shared<CIncrementSequenceNumber>())
+   : m_seqNumberProvider(boost::make_shared<CIncrementSequenceNumber>()),
+     m_unsecuredProtocolFilters(createUnsecuredProtocolFilters())
 {
 }
 
 CTransceiver::~CTransceiver()
 {
 }
+
+std::map<int, boost::shared_ptr<IUnsecuredProtocolFilter> > CTransceiver::createUnsecuredProtocolFilters()
+{
+   std::map<int, boost::shared_ptr<IUnsecuredProtocolFilter> > filters;
+   filters[pTypeCURRENTENERGY] = rfxcomMessages::CCurrentEnergy::createFilter();
+   return filters;
+}
+
 
 shared::communication::CByteBuffer CTransceiver::buildResetCmd() const
 {
@@ -245,85 +254,85 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMess
          break;
       case pTypeRecXmitMessage: message = boost::make_shared<rfxcomMessages::CAck>(*buf, bufSize, m_seqNumberProvider);
          break;
-      case pTypeRFXMeter: message = boost::make_shared<rfxcomMessages::CRFXMeter>(api, *buf, bufSize, m_seqNumberProvider);
+      case pTypeRFXMeter: message = boost::make_shared<rfxcomMessages::CRFXMeter>(api, *buf, bufSize);
          break;
-      case pTypeLighting1: message = boost::make_shared<rfxcomMessages::CLighting1>(api, *buf, bufSize, m_seqNumberProvider);
+      case pTypeLighting1: message = boost::make_shared<rfxcomMessages::CLighting1>(api, *buf, bufSize);
          break;
-      case pTypeLighting2: message = boost::make_shared<rfxcomMessages::CLighting2>(api, *buf, bufSize, m_seqNumberProvider);
+      case pTypeLighting2: message = boost::make_shared<rfxcomMessages::CLighting2>(api, *buf, bufSize);
          break;
-      case pTypeLighting3: message = boost::make_shared<rfxcomMessages::CLighting3>(api, *buf, bufSize, m_seqNumberProvider);
+      case pTypeLighting3: message = boost::make_shared<rfxcomMessages::CLighting3>(api, *buf, bufSize);
          break;
-      case pTypeLighting4: message = boost::make_shared<rfxcomMessages::CLighting4>(api, *buf, bufSize, m_seqNumberProvider);
+      case pTypeLighting4: message = boost::make_shared<rfxcomMessages::CLighting4>(api, *buf, bufSize);
          break;
-      case pTypeLighting5: message = boost::make_shared<rfxcomMessages::CLighting5>(api, *buf, bufSize, m_seqNumberProvider);
+      case pTypeLighting5: message = boost::make_shared<rfxcomMessages::CLighting5>(api, *buf, bufSize);
          break;
-      case pTypeLighting6: message = boost::make_shared<rfxcomMessages::CLighting6>(api, *buf, bufSize, m_seqNumberProvider);
+      case pTypeLighting6: message = boost::make_shared<rfxcomMessages::CLighting6>(api, *buf, bufSize);
          break;
-      case pTypeChime: message = boost::make_shared<rfxcomMessages::CChime>(api, *buf, bufSize, m_seqNumberProvider);
+      case pTypeChime: message = boost::make_shared<rfxcomMessages::CChime>(api, *buf, bufSize);
          break;
-      case pTypeFan: message = boost::make_shared<rfxcomMessages::CFan>(api, *buf, bufSize, m_seqNumberProvider);
+      case pTypeFan: message = boost::make_shared<rfxcomMessages::CFan>(api, *buf, bufSize);
          break;
-      case pTypeCurtain: message = boost::make_shared<rfxcomMessages::CCurtain1>(api, *buf, bufSize, m_seqNumberProvider);
+      case pTypeCurtain: message = boost::make_shared<rfxcomMessages::CCurtain1>(api, *buf, bufSize);
          break;
-      case pTypeBlinds: message = boost::make_shared<rfxcomMessages::CBlinds1>(api, *buf, bufSize, m_seqNumberProvider);
+      case pTypeBlinds: message = boost::make_shared<rfxcomMessages::CBlinds1>(api, *buf, bufSize);
          break;
-      case pTypeRFY: message = boost::make_shared<rfxcomMessages::CRfy>(api, *buf, bufSize, m_seqNumberProvider);
+      case pTypeRFY: message = boost::make_shared<rfxcomMessages::CRfy>(api, *buf, bufSize);
          break;
-      case pTypeHomeConfort: message = boost::make_shared<rfxcomMessages::CHomeConfort>(api, *buf, bufSize, m_seqNumberProvider);
+      case pTypeHomeConfort: message = boost::make_shared<rfxcomMessages::CHomeConfort>(api, *buf, bufSize);
          break;
-      case pTypeTEMP_RAIN: message = boost::make_shared<rfxcomMessages::CTempRain>(api, *buf, bufSize, m_seqNumberProvider);
+      case pTypeTEMP_RAIN: message = boost::make_shared<rfxcomMessages::CTempRain>(api, *buf, bufSize);
          break;
-      case pTypeTEMP: message = boost::make_shared<rfxcomMessages::CTemp>(api, *buf, bufSize, m_seqNumberProvider);
+      case pTypeTEMP: message = boost::make_shared<rfxcomMessages::CTemp>(api, *buf, bufSize);
          break;
-      case pTypeHUM: message = boost::make_shared<rfxcomMessages::CHumidity>(api, *buf, bufSize, m_seqNumberProvider);
+      case pTypeHUM: message = boost::make_shared<rfxcomMessages::CHumidity>(api, *buf, bufSize);
          break;
-      case pTypeTEMP_HUM: message = boost::make_shared<rfxcomMessages::CTempHumidity>(api, *buf, bufSize, m_seqNumberProvider);
+      case pTypeTEMP_HUM: message = boost::make_shared<rfxcomMessages::CTempHumidity>(api, *buf, bufSize);
          break;
-      case pTypeBARO: message = boost::make_shared<rfxcomMessages::CBarometric>(api, *buf, bufSize, m_seqNumberProvider);
+      case pTypeBARO: message = boost::make_shared<rfxcomMessages::CBarometric>(api, *buf, bufSize);
          break;
-      case pTypeTEMP_HUM_BARO: message = boost::make_shared<rfxcomMessages::CTempHumidityBarometric>(api, *buf, bufSize, m_seqNumberProvider);
+      case pTypeTEMP_HUM_BARO: message = boost::make_shared<rfxcomMessages::CTempHumidityBarometric>(api, *buf, bufSize);
          break;
-      case pTypeRAIN: message = boost::make_shared<rfxcomMessages::CRain>(api, *buf, bufSize, m_seqNumberProvider);
+      case pTypeRAIN: message = boost::make_shared<rfxcomMessages::CRain>(api, *buf, bufSize);
          break;
-      case pTypeWIND: message = boost::make_shared<rfxcomMessages::CWind>(api, *buf, bufSize, m_seqNumberProvider);
+      case pTypeWIND: message = boost::make_shared<rfxcomMessages::CWind>(api, *buf, bufSize);
          break;
-      case pTypeUV: message = boost::make_shared<rfxcomMessages::CUV>(api, *buf, bufSize, m_seqNumberProvider);
+      case pTypeUV: message = boost::make_shared<rfxcomMessages::CUV>(api, *buf, bufSize);
          break;
-      case pTypeDT: message = boost::make_shared<rfxcomMessages::CDateTime>(api, *buf, bufSize, m_seqNumberProvider);
+      case pTypeDT: message = boost::make_shared<rfxcomMessages::CDateTime>(api, *buf, bufSize);
          break;
-      case pTypeCURRENT: message = boost::make_shared<rfxcomMessages::CCurrent>(api, *buf, bufSize, m_seqNumberProvider);
+      case pTypeCURRENT: message = boost::make_shared<rfxcomMessages::CCurrent>(api, *buf, bufSize);
          break;
-      case pTypeENERGY: message = boost::make_shared<rfxcomMessages::CEnergy>(api, *buf, bufSize, m_seqNumberProvider);
+      case pTypeENERGY: message = boost::make_shared<rfxcomMessages::CEnergy>(api, *buf, bufSize);
          break;
-      case pTypeCURRENTENERGY: message = boost::make_shared<rfxcomMessages::CCurrentEnergy>(api, *buf, bufSize, m_seqNumberProvider);
+      case pTypeCURRENTENERGY: message = boost::make_shared<rfxcomMessages::CCurrentEnergy>(api, *buf, bufSize, m_unsecuredProtocolFilters.at(pTypeCURRENTENERGY));
          break;
-      case pTypePOWER: message = boost::make_shared<rfxcomMessages::CPower>(api, *buf, bufSize, m_seqNumberProvider);
+      case pTypePOWER: message = boost::make_shared<rfxcomMessages::CPower>(api, *buf, bufSize);
          break;
-      case pTypeWEIGHT: message = boost::make_shared<rfxcomMessages::CWeight>(api, *buf, bufSize, m_seqNumberProvider);
+      case pTypeWEIGHT: message = boost::make_shared<rfxcomMessages::CWeight>(api, *buf, bufSize);
          break;
-      case pTypeCARTELECTRONIC: message = boost::make_shared<rfxcomMessages::CCartelectronic>(api, *buf, bufSize, m_seqNumberProvider);
+      case pTypeCARTELECTRONIC: message = boost::make_shared<rfxcomMessages::CCartelectronic>(api, *buf, bufSize);
          break;
-      case pTypeRFXSensor: message = boost::make_shared<rfxcomMessages::CRFXSensor>(api, *buf, bufSize, m_seqNumberProvider);
+      case pTypeRFXSensor: message = boost::make_shared<rfxcomMessages::CRFXSensor>(api, *buf, bufSize);
          break;
-      case pTypeSecurity1: message = boost::make_shared<rfxcomMessages::CSecurity1>(api, *buf, bufSize, m_seqNumberProvider);
+      case pTypeSecurity1: message = boost::make_shared<rfxcomMessages::CSecurity1>(api, *buf, bufSize);
          break;
-      case pTypeSecurity2: message = boost::make_shared<rfxcomMessages::CSecurity2>(api, *buf, bufSize, m_seqNumberProvider);
+      case pTypeSecurity2: message = boost::make_shared<rfxcomMessages::CSecurity2>(api, *buf, bufSize);
          break;
-      case pTypeCamera: message = boost::make_shared<rfxcomMessages::CCamera1>(api, *buf, bufSize, m_seqNumberProvider);
+      case pTypeCamera: message = boost::make_shared<rfxcomMessages::CCamera1>(api, *buf, bufSize);
          break;
-      case pTypeRemote: message = boost::make_shared<rfxcomMessages::CRemote>(api, *buf, bufSize, m_seqNumberProvider);
+      case pTypeRemote: message = boost::make_shared<rfxcomMessages::CRemote>(api, *buf, bufSize);
          break;
-      case pTypeThermostat1: message = boost::make_shared<rfxcomMessages::CThermostat1>(api, *buf, bufSize, m_seqNumberProvider);
+      case pTypeThermostat1: message = boost::make_shared<rfxcomMessages::CThermostat1>(api, *buf, bufSize);
          break;
-      case pTypeThermostat2: message = boost::make_shared<rfxcomMessages::CThermostat2>(api, *buf, bufSize, m_seqNumberProvider);
+      case pTypeThermostat2: message = boost::make_shared<rfxcomMessages::CThermostat2>(api, *buf, bufSize);
          break;
-      case pTypeThermostat3: message = boost::make_shared<rfxcomMessages::CThermostat3>(api, *buf, bufSize, m_seqNumberProvider);
+      case pTypeThermostat3: message = boost::make_shared<rfxcomMessages::CThermostat3>(api, *buf, bufSize);
          break;
-      case pTypeRadiator1: message = boost::make_shared<rfxcomMessages::CRadiator1>(api, *buf, bufSize, m_seqNumberProvider);
+      case pTypeRadiator1: message = boost::make_shared<rfxcomMessages::CRadiator1>(api, *buf, bufSize);
          break;
-      case pTypeBBQ: message = boost::make_shared<rfxcomMessages::CBbq>(api, *buf, bufSize, m_seqNumberProvider);
+      case pTypeBBQ: message = boost::make_shared<rfxcomMessages::CBbq>(api, *buf, bufSize);
          break;
-      case pTypeFS20: message = boost::make_shared<rfxcomMessages::CFS20>(api, *buf, bufSize, m_seqNumberProvider);
+      case pTypeFS20: message = boost::make_shared<rfxcomMessages::CFS20>(api, *buf, bufSize);
          break;
       default:
          {

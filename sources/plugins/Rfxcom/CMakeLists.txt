@@ -32,6 +32,8 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/Current.cpp
    rfxcomMessages/CurrentEnergy.h
    rfxcomMessages/CurrentEnergy.cpp
+   rfxcomMessages/CurrentEnergyFilter.h
+   rfxcomMessages/CurrentEnergyFilter.cpp
    rfxcomMessages/Curtain1.h
    rfxcomMessages/Curtain1.cpp
    rfxcomMessages/DateTime.h
@@ -184,6 +186,7 @@ set(RFXCOM_SOURCES
    IRfxcomConfiguration.h
    ISequenceNumberProvider.h
    ITransceiver.h
+   IUnsecuredProtocolFilter.h
    ManuallyDeviceCreationException.hpp
    NullSequenceNumber.h
    ProtocolException.hpp

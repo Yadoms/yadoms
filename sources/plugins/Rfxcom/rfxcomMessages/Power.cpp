@@ -9,8 +9,7 @@ namespace rfxcomMessages
 {
    CPower::CPower(boost::shared_ptr<yApi::IYPluginApi> api,
                   const RBUF& rbuf,
-                  size_t rbufSize,
-                  boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+                  size_t rbufSize)
       : m_voltage(boost::make_shared<yApi::historization::CVoltage>("voltage")),
         m_current(boost::make_shared<yApi::historization::CCurrent>("current")),
         m_instantPower(boost::make_shared<yApi::historization::CPower>("instant")),

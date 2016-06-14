@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Ack.h"
-#include <shared/exception/NotImplemented.hpp>
 
 namespace rfxcomMessages
 {
@@ -16,7 +15,7 @@ CAck::~CAck()
 {
 }
 
-boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CAck::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
+boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CAck::encode(boost::shared_ptr<ISequenceNumberProvider> /*seqNumberProvider*/) const
 {
    throw shared::exception::CInvalidParameter("Ack is a read-only message, can not be encoded");
 }

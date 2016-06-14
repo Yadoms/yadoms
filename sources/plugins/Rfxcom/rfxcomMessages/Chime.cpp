@@ -40,8 +40,7 @@ namespace rfxcomMessages
 
    CChime::CChime(boost::shared_ptr<yApi::IYPluginApi> api,
                   const RBUF& rbuf,
-                  size_t rbufSize,
-                  boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+                  size_t rbufSize)
       : m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
         m_keywords({m_rssi})
    {
