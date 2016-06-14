@@ -14,6 +14,20 @@
     "readOnly": {
       "name": "Read only",
       "description": "You cannot click on the icon to change device state"
+    },
+    "customColors": {
+      "name": "Custom colors",
+      "description": "Use custom colors. If deactivated, color of the icon follows Yadoms theme",
+      "content": {
+        "activated": {
+          "name": "Activated color",
+          "description": "Color of the icon when activated"
+        },
+        "deactivated": {
+          "name": "Deactivated color",
+          "description": "Color of the icon when deactivated"
+        }
+      }
     }
   }
 }

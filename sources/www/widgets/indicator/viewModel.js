@@ -9,6 +9,7 @@ widgetViewModelCtor = function indicatorViewModel() {
 
     //observable data
     this.icon = ko.observable("");
+    this.iconColor = ko.observable("");
 
     this.capacity = null;
 
@@ -35,10 +36,14 @@ widgetViewModelCtor = function indicatorViewModel() {
 
         //the click event is taken under account only if the readOnly is not active
         if (!self.readOnly) {
-            if (self.command() === 0)
+            if (self.command() === 0) {
                 self.command(1);
-            else
+                self.iconColor(self.activatedColor);
+            } else {
                 self.command(0);
+                self.iconColor(self.deactivatedColor);
+            }
+                
 
             //Send the command
             this.commandClick(self.command());
@@ -55,14 +60,28 @@ widgetViewModelCtor = function indicatorViewModel() {
         self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);
 
         try {
-            self.icon("textfit textfit-in-parent glyphicon " + self.widget.configuration.icon);
-        }
-        catch (err) { }
-
-        try {
             self.readOnly = parseBool(self.widget.configuration.readOnly);
         } catch (err) {
             self.readOnly = false;
+        }
+		
+		
+        try {
+            self.icon("textfit textfit-in-parent glyphicon " + self.widget.configuration.icon + " " +( self.readOnly?"":"writable" ));
+        }
+        catch (err) { }
+
+
+        //we manage icon colors
+        var defaultActivatedColor = "#2e6da4";
+        var defaultDeactivatedColor = "#777";
+
+        try {
+            self.activatedColor = self.widget.configuration.customColors.checkbox?self.widget.configuration.customColors.content.activated:defaultActivatedColor;
+            self.deactivatedColor = self.widget.configuration.customColors.checkbox ? self.widget.configuration.customColors.content.deactivated : defaultDeactivatedColor;
+        } catch (err) {
+            self.activatedColor = defaultActivatedColor;
+            self.deactivatedColor = defaultDeactivatedColor;
         }
 
         try {
@@ -87,10 +106,15 @@ widgetViewModelCtor = function indicatorViewModel() {
         try {
             if (keywordId === self.widget.configuration.device.keywordId) {
                 //it is the right device
-                if (parseInt(data.value) !== 0)
+                if (parseInt(data.value) !== 0) {
                     self.command(1);
-                else
+                    self.iconColor(self.activatedColor);
+                } else {
                     self.command(0);
+                    self.iconColor(self.deactivatedColor);
+                }
+                a = self;
+                console.log(self.iconColor());
             }
         }
         catch (err) { }

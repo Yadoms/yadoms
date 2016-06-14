@@ -30,13 +30,13 @@ enum
    kEvtPortConnection = yApi::IYPluginApi::kPluginFirstEventId, // Always start from shared::event::CEventHandler::kUserFirstId
    kEvtPortDataReceived,
    kEvtTimerRefreshTeleInfoData,
+   kErrorRetryTimer,
    kAnswerTimeout
 };
 
 void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    std::cout << "Teleinfo is starting..." << std::endl;
-   api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
 
    // Load configuration values (provided by database)
    m_configuration.initializeWith(api->getConfiguration());
@@ -55,8 +55,6 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
    // Create the connection
    createConnection(api);
-
-   std::cout << "Teleinfo is running..." << std::endl;
 
    // the main loop
    std::cout << "Teleinfo plugin is running..." << std::endl;
@@ -80,6 +78,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case kEvtPortConnection:
          {
             std::cout << "Teleinfo plugin :  Port Connection" << std::endl;
+			api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
 
             if (api->getEventHandler().getEventData<bool>())
                processTeleInfoConnectionEvent(api);
@@ -91,6 +90,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case kEvtPortDataReceived:
          {
             std::cout << "TeleInfo plugin :  DataReceived" << std::endl;
+			api->setPluginState(yApi::historization::EPluginState::kRunning);
 
             processDataReceived(api,
                                 api->getEventHandler().getEventData<const shared::communication::CByteBuffer>());
@@ -103,6 +103,10 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             std::cout << "Teleinfo plugin :  Resume COM" << std::endl;
             m_transceiver->ResetRefreshTags();
             m_receiveBufferHandler->resume();
+
+			//Lauch a new time the time out to detect connexion failure
+			m_waitForAnswerTimer->start();
+
             break;
          }
       case yApi::IYPluginApi::kEventUpdateConfiguration:
@@ -113,6 +117,17 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
             break;
          }
+	  case kErrorRetryTimer:
+	     {
+		    createConnection(api);
+		    break;
+	     }
+	  case kAnswerTimeout:
+	     {
+			 std::cerr << "No answer received, try to reconnect in a while..." << std::endl;
+		    errorProcess(api);
+		    break;
+	     }
       default:
          {
             std::cerr << "Unknown message id" << std::endl;
@@ -172,6 +187,9 @@ void CTeleInfo::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
 
    m_transceiver->decodeTeleInfoMessage(api, data);
 
+   // Message was recognized, stop timeout
+   m_waitForAnswerTimer->stop();
+
    // When all information are updated we stopped the reception !
    if (m_transceiver->IsInformationUpdated())
    {
@@ -183,7 +201,6 @@ void CTeleInfo::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
 void CTeleInfo::processTeleInfoConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
    std::cout << "TeleInfo port opened" << std::endl;
-   api->setPluginState(yApi::historization::EPluginState::kRunning);
 
    try
    {
@@ -205,15 +222,11 @@ void CTeleInfo::processTeleInfoUnConnectionEvent(boost::shared_ptr<yApi::IYPlugi
    destroyConnection();
 }
 
-void CTeleInfo::send(const shared::communication::CByteBuffer& buffer, bool needAnswer)
+void CTeleInfo::errorProcess(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   if (!m_port)
-      return;
-
-   m_logger.logSent(buffer);
-   m_port->send(buffer);
-   if (needAnswer)
-      m_waitForAnswerTimer->start();
+	api->setPluginState(yApi::historization::EPluginState::kError, "connectionLost");
+	destroyConnection();
+	api->getEventHandler().createTimer(kErrorRetryTimer, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(30));
 }
 
 void CTeleInfo::initTeleInfoReceiver() const

@@ -11,8 +11,8 @@
       "y": 1
     },
     "max": {
-      "x": 1,
-      "y": 1
+      "x": 2,
+      "y": 2
     },
     "default": {
       "x": 1,
@@ -32,6 +32,21 @@
     "readOnly": {
       "type": "bool",
       "defaultValue": "false"
+    },
+    "customColors": {
+      "type": "section",
+      "enableWithCheckBox": "true",
+      "enableWithCheckBoxDefaultValue": "false",
+      "content": {
+        "activated": {
+          "type": "color",
+          "defaultValue": "#2e6da4"
+        },
+        "deactivated": {
+          "type": "color",
+          "defaultValue": "#777"
+        }
+      }
     }
   }
 }
