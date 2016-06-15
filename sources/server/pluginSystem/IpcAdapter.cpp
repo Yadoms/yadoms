@@ -9,7 +9,7 @@
 namespace pluginSystem
 {
    const size_t CIpcAdapter::m_maxMessages(100);
-   const size_t CIpcAdapter::m_maxMessageSize(10000);
+   const size_t CIpcAdapter::m_maxMessageSize(100000);
 
    CIpcAdapter::CIpcAdapter(boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> yPluginApi)
       : m_pluginApi(yPluginApi),
