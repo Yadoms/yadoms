@@ -17,5 +17,8 @@ public:
    // IUnsecuredProtocolFilter Implementation
    bool isValid(const std::string& deviceName) override;
    // [END] IUnsecuredProtocolFilter Implementation
+
+private:
+   std::vector<std::pair<boost::posix_time::ptime, std::string> > m_recentlySeenDevices;
 };
 

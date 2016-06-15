@@ -2,25 +2,29 @@
 #include "Provider.h"
 #include "../exception/NullReference.hpp"
 
-namespace shared { namespace currentTime
+namespace shared
 {
-   boost::shared_ptr<ICurrentTime> Provider::CurrentTimeInstance;
-
-   Provider::Provider(boost::shared_ptr<ICurrentTime> currentTimeInstance)
+   namespace currentTime
    {
-      CurrentTimeInstance = currentTimeInstance;
+      boost::shared_ptr<ICurrentTime> Provider::CurrentTimeInstance;
+
+      Provider::Provider(boost::shared_ptr<ICurrentTime> currentTimeInstance)
+      {
+         CurrentTimeInstance = currentTimeInstance;
+      }
+
+      Provider::~Provider()
+      {
+      }
+
+      boost::posix_time::ptime Provider::now()
+      {
+         if (!CurrentTimeInstance)
+            throw exception::CNullReference("Current time");
+
+         return CurrentTimeInstance->now();
+      }
    }
+} // namespace shared::currentTime
 
-   Provider::~Provider()
-   {
-   }
 
-   boost::posix_time::ptime Provider::now()
-   {
-      if (!CurrentTimeInstance)
-         throw exception::CNullReference("Current time");
-
-      return CurrentTimeInstance->now();
-   }
-
-} } // namespace shared::currentTime

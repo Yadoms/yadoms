@@ -2,35 +2,39 @@
 #include "ICurrentTime.h"
 #include <shared/Export.h>
 
-namespace shared { namespace currentTime
+namespace shared
 {
-   //--------------------------------------------------------------
-   /// \brief	   The current time provider interface
-   //--------------------------------------------------------------
-   class YADOMS_SHARED_EXPORT Provider
+   namespace currentTime
    {
-   public:
       //--------------------------------------------------------------
-      /// \brief	   Constructor (initialize the static object)
+      /// \brief	   The current time provider interface
       //--------------------------------------------------------------
-      explicit Provider(boost::shared_ptr<ICurrentTime> currentTimeInstance);
+      class YADOMS_SHARED_EXPORT Provider
+      {
+      public:
+         //--------------------------------------------------------------
+         /// \brief	   Constructor (initialize the static object)
+         //--------------------------------------------------------------
+         explicit Provider(boost::shared_ptr<ICurrentTime> currentTimeInstance);
 
-      //--------------------------------------------------------------
-      /// \brief	   Destructor
-      //--------------------------------------------------------------
-      virtual ~Provider();
+         //--------------------------------------------------------------
+         /// \brief	   Destructor
+         //--------------------------------------------------------------
+         virtual ~Provider();
 
-      //--------------------------------------------------------------
-      /// \brief	   Returns now time
-      /// \return Now
-      //--------------------------------------------------------------
-      static boost::posix_time::ptime now();
+         //--------------------------------------------------------------
+         /// \brief	   Returns now time
+         /// \return Now
+         //--------------------------------------------------------------
+         static boost::posix_time::ptime now();
 
-   private:
-      //--------------------------------------------------------------
-      /// \brief	   The currentTime object
-      //--------------------------------------------------------------
-      static boost::shared_ptr<ICurrentTime> CurrentTimeInstance;
-   };
+      private:
+         //--------------------------------------------------------------
+         /// \brief	   The currentTime object
+         //--------------------------------------------------------------
+         static boost::shared_ptr<ICurrentTime> CurrentTimeInstance;
+      };
+   }
+} // namespace shared::currentTime
 
-} } // namespace shared::currentTime
+

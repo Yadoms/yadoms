@@ -42,7 +42,7 @@ namespace rfxcomMessages
 
    void CThermostat1DigimaxShort::toProtocolState(RBUF& thermostat1Rbuf) const
    {
-      thermostat1Rbuf.THERMOSTAT1.temperature = reinterpret_cast<unsigned char>(m_currentTemperature.get());
+      thermostat1Rbuf.THERMOSTAT1.temperature = static_cast<BYTE>(std::round(*m_currentTemperature.get()));
       thermostat1Rbuf.THERMOSTAT1.set_point = 0;
       thermostat1Rbuf.THERMOSTAT1.mode = 0x00; // heating
       thermostat1Rbuf.THERMOSTAT1.status = thermostat1_sNoDemand;

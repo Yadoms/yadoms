@@ -74,7 +74,7 @@ namespace rfxcomMessages
       if (!api->deviceExists(m_deviceName))
       {
          if (!m_messageFilter->isValid(m_deviceName))
-            throw std::exception("Receive unknown device for unsecured protocol, may be a transmission error : ignored");
+            throw std::invalid_argument("Receive unknown device for unsecured protocol, may be a transmission error : ignored");
 
          shared::CDataContainer details;
          details.set("type", pTypeCURRENTENERGY);
