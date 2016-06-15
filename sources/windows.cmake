@@ -1,16 +1,3 @@
-# Macro for getting the WINNT version
-#
-macro(get_WIN32_WINNT version)
-	if (WIN32 AND CMAKE_SYSTEM_VERSION)
-		set(ver ${CMAKE_SYSTEM_VERSION})
-		string(REPLACE "." "" ver ${ver})
-		string(REGEX REPLACE "([0-9])" "0\\1" ver ${ver})
-
-		set(${version} "0x${ver}")
-	endif()
-endmacro()
-
-
 #This macro add some SDK dependencies to INSTALL
 macro(InstallWindowsSdkDependencies)
    #in case of Windows 10, we should append universal crt files
