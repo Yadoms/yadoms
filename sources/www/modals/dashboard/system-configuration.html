@@ -160,6 +160,8 @@
                            //we change language of i18n
                            i18n.setLng(Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value, function() {
                               $("html").i18n();
+							  
+						      window.location.reload();
                            });
 
 

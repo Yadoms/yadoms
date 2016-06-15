@@ -3,7 +3,6 @@
 #include "plugin_cpp_api/IPlugin.h"
 #include <shared/process/ApplicationStopHandler.h>
 
-//TODO      Ajouter ce lien dans le wiki plugin/how to debug my plugin : https://msdn.microsoft.com/en-us/library/a329t4ed(v=vs.90).aspx
 
 int doMain(int argc, char **argv, boost::shared_ptr<plugin_cpp_api::IPlugin> plugin)
 {

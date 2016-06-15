@@ -33,10 +33,20 @@
    Yadoms.askPluginTypes = function(callback) {
       $("select#pluginTypeList").empty();
 
-      //foreach plugin-type
-      Object.keys(PluginManager.pluginTypes).forEach(function(key) {
-         var value = PluginManager.pluginTypes[key];
-         $("select#pluginTypeList").append("<option value=\"" + value.type + "\">" + $.t("plugins/" + value.type + ":name", { defaultValue: value.package.name }) + "</option>");
+	  // Enter all Plugins into an array
+	  var tabPlugins = [];
+	  
+	  Object.keys(PluginManager.pluginTypes).forEach(function(key) {
+	     var value = PluginManager.pluginTypes[key];
+	     tabPlugins.push ( {type: value.type, friendlyName: $.t("plugins/" + value.type + ":name" ) });
+	  });
+	  
+	  // sort each Plugins Name in the language selected
+	  tabPlugins = sortListItemsWithFriendlyName ( tabPlugins );
+	  
+      //foreach element of the array
+	  $.each(tabPlugins, function(index, value) {
+         $("select#pluginTypeList").append("<option value=\"" + value.type + "\">" + value.friendlyName + "</option>");
       });
 
       //event click on add plugin button

@@ -14,6 +14,20 @@
     "readOnly": {
       "name": "Lecture seule",
       "description": "Vous ne pouvez pas cliquer sur l'icône pour faire changer l'état de l'équipement"
+    },
+    "customColors": {
+      "name": "Couleurs personnalisées",
+      "description": "Utilise des couleurs personnalisées. Si désactivé, les couleurs utilisées sont celles du thème Yadoms",
+      "content": {
+        "activated": {
+          "name": "Couleur de l'icône active",
+          "description": "Couleur que prend l'icône quand elle est activée"
+        },
+        "deactivated": {
+          "name": "Couleur de l'icône désactivée",
+          "description": "Couleur que prend l'icône quand elle est désactivée"
+        }
+      }
     }
 	}
 }

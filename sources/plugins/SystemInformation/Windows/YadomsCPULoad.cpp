@@ -69,8 +69,7 @@ void CYadomsCPULoad::read()
       m_lastUserCPU = user;
       m_lastSysCPU = sys;
 
-      auto YadomsCPULoad = static_cast<float>(floor((percent * 100) * 10 + 0.5)) / 10;
-
+      auto YadomsCPULoad = static_cast<float>(floor((percent * 100)*100 + 0.5)) /100;
       m_keyword->set(YadomsCPULoad);
 
       std::cout << "Yadoms CPU Load : " << m_keyword->formatValue() << std::endl;

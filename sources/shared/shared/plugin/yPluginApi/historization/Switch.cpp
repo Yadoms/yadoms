@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Switch.h"
 #include "../StandardCapacities.h"
-#include <shared/Log.h>
 
 namespace shared { namespace plugin { namespace yPluginApi { namespace historization
 {
