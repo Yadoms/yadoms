@@ -13,12 +13,12 @@ bool CCurrentEnergyFilter::isValid(const std::string& deviceName)
 
    // Remove too old elements
    auto tooOldThreshold = shared::currentTime::Provider::now() - boost::posix_time::hours(12);
-   std::remove_if(m_recentlySeenDevices.begin(),
-                  m_recentlySeenDevices.end(),
-                  [&](std::pair<boost::posix_time::ptime, std::string> value)
-                  {
-                     return value.first < tooOldThreshold;
-                  });
+   m_recentlySeenDevices.erase(std::remove_if(m_recentlySeenDevices.begin(),
+                                              m_recentlySeenDevices.end(),
+                                              [&](std::pair<boost::posix_time::ptime, std::string> value)
+                                              {
+                                                 return value.first < tooOldThreshold;
+                                              }));
 
    // Count occurences of this device
    auto nbOccurences = 0;
