@@ -13,7 +13,7 @@ namespace yApi = shared::plugin::yPluginApi;
 
 //--------------------------------------------------------------
 /// \brief	Class where all Keywords are created and updated
-/// \note   
+/// \note
 //--------------------------------------------------------------
 class CSystemFactory
 {
@@ -69,9 +69,9 @@ private:
    /// \brief	    Keywords
    //--------------------------------------------------------------
    boost::shared_ptr<CMemoryLoad> m_MemoryLoad;
-   boost::shared_ptr<CCPULoad> m_CPULoad;
-   boost::shared_ptr<CYadomsCPULoad> m_YadomsCPULoad;
-   boost::shared_ptr<CRAMProcessMemory> m_RAMProcessMemory;
+   boost::shared_ptr<CCPULoad> m_CpuLoad;
+   boost::shared_ptr<CYadomsCPULoad> m_YadomsCpuLoad;
+   boost::shared_ptr<CRAMProcessMemory> m_RamProcessMemory;
    boost::shared_ptr<CVirtualProcessMemory> m_VirtualProcessMemory;
 
    //--------------------------------------------------------------
