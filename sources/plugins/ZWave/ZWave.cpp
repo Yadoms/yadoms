@@ -38,12 +38,12 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       m_controller->configure(&m_configuration, &api->getEventHandler());
 
       std::cout << "CZWave is initializing" << std::endl;
-      context->setPluginState(yApi::historization::EPluginState::kCustom, "Initialization");
+      api->setPluginState(yApi::historization::EPluginState::kCustom, "Initialization");
       IZWaveController::E_StartResult initResult = m_controller->start();
       if (initResult == IZWaveController::kSuccess)
       {
          std::cout << "CZWave is running" << std::endl;
-         context->setPluginState(yApi::historization::EPluginState::kRunning);
+         api->setPluginState(yApi::historization::EPluginState::kRunning);
          while (1)
          {
             // Wait for an event
@@ -223,16 +223,16 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          switch (initResult)
          {
          case IZWaveController::kSerialPortError:
-            context->setPluginState(yApi::historization::EPluginState::kError, "failToAccessSerialPort");
+            api->setPluginState(yApi::historization::EPluginState::kError, "failToAccessSerialPort");
             break;
 
          case IZWaveController::kControllerError:
-            context->setPluginState(yApi::historization::EPluginState::kError, "failToStartController");
+            api->setPluginState(yApi::historization::EPluginState::kError, "failToStartController");
             break;
 
          default:
          case IZWaveController::kUnknownError:
-            context->setPluginState(yApi::historization::EPluginState::kError, "failToStart");
+            api->setPluginState(yApi::historization::EPluginState::kError, "failToStart");
             break;
          }
       }

@@ -78,9 +78,9 @@ void CSystemFactory::OnConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi> 
 {
    if (configuration.IsAdvancedEnabled())
    {
-      m_ramProcessMemory = boost::make_shared<CRAMProcessMemory>("YadomsRAMProcessMemory");
+      m_ramProcessMemory = boost::make_shared<CYadomsRAMProcessMemory>("YadomsRAMProcessMemory");
       m_lowFreqencyUpdateKeywords.push_back(m_ramProcessMemory->historizable());
-      m_virtualProcessMemory = boost::make_shared<CVirtualProcessMemory>("YadomsVirtualProcessMemory");
+      m_virtualProcessMemory = boost::make_shared<CYadomsVirtualProcessMemory>("YadomsVirtualProcessMemory");
       m_lowFreqencyUpdateKeywords.push_back(m_virtualProcessMemory->historizable());
       api->declareDevice(m_deviceName, Model, m_lowFreqencyUpdateKeywords, details);
 
