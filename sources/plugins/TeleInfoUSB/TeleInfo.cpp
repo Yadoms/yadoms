@@ -33,6 +33,7 @@ enum
    kEvtPortConnection = yApi::IYPluginApi::kPluginFirstEventId,   // Always start from shared::event::CEventHandler::kUserFirstId
    kEvtPortDataReceived,
    kEvtTimerRefreshTeleInfoData,
+   kErrorRetryTimer,
    kAnswerTimeout
 };
 
@@ -42,7 +43,6 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
    try
    {
       YADOMS_LOG(debug) << "Teleinfo is starting...";
-	  context->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
 
       // Load configuration values (provided by database)
       m_configuration.initializeWith(context->getConfiguration());
@@ -54,12 +54,10 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 	  m_receiveBufferHandler = CTeleInfoFactory::GetBufferHandler( context->getEventHandler(), kEvtPortDataReceived );
 
       m_waitForAnswerTimer = context->getEventHandler().createTimer(kAnswerTimeout, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(5));
-      m_waitForAnswerTimer->stop();
+	  m_waitForAnswerTimer->stop();
 
       // Create the connection
       createConnection( context );
-
-      YADOMS_LOG(debug) << "Teleinfo is running...";
 
       // the main loop
       YADOMS_LOG(debug) << "Teleinfo plugin is running...";
@@ -75,6 +73,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
          case kEvtPortConnection:
             {
                YADOMS_LOG(debug) << "Teleinfo plugin :  Port Connection";
+			   context->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
 
                if (context->getEventHandler().getEventData<bool>())
                   processTeleInfoConnectionEvent(context);
@@ -87,6 +86,8 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
             {
                YADOMS_LOG(debug) << "TeleInfo plugin :  DataReceived";
 
+			   context->setPluginState(yApi::historization::EPluginState::kRunning);
+
                processDataReceived(context,
 								   context->getEventHandler().getEventData<const shared::communication::CByteBuffer>());
 
@@ -98,6 +99,10 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
                YADOMS_LOG(debug) << "Teleinfo plugin :  Resume COM";
                m_transceiver->ResetRefreshTags();
 	           m_receiveBufferHandler->resume ();
+
+			   //Lauch a new time the time out to detect connexion failure
+			   m_waitForAnswerTimer->start();
+
                break;
             }
          case yApi::IYPluginApi::kEventUpdateConfiguration:
@@ -108,6 +113,17 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 
                break;
             }
+		 case kErrorRetryTimer:
+		 {
+			 createConnection( context );
+			 break;
+		 }
+		 case kAnswerTimeout:
+		 {
+			 YADOMS_LOG(error) << "No answer received, try to reconnect in a while...";
+			 errorProcess(context);
+			 break;
+		 }
          default:
             {
                YADOMS_LOG(error) << "Unknown message id";
@@ -171,6 +187,9 @@ void CTeleInfo::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> context
 
    m_transceiver->decodeTeleInfoMessage(context, data);
 
+   // Message was recognized, stop timeout
+   m_waitForAnswerTimer->stop();
+
    // When all information are updated we stopped the reception !
    if (m_transceiver->IsInformationUpdated())
    {
@@ -182,7 +201,6 @@ void CTeleInfo::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> context
 void CTeleInfo::processTeleInfoConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    YADOMS_LOG(debug) << "TeleInfo port opened";
-   context->setPluginState(yApi::historization::EPluginState::kRunning);
 
    try
    {
@@ -204,15 +222,11 @@ void CTeleInfo::processTeleInfoUnConnectionEvent(boost::shared_ptr<yApi::IYPlugi
    destroyConnection();
 }
 
-void CTeleInfo::send(const shared::communication::CByteBuffer& buffer, bool needAnswer)
+void CTeleInfo::errorProcess(boost::shared_ptr<yApi::IYPluginApi> context)
 {
-   if (!m_port)
-      return;
-
-   m_logger.logSent(buffer);
-   m_port->send(buffer);
-   if (needAnswer)
-      m_waitForAnswerTimer->start();
+	context->setPluginState(yApi::historization::EPluginState::kError, "connectionLost");
+	destroyConnection();
+	context->getEventHandler().createTimer(kErrorRetryTimer, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(30));
 }
 
 void CTeleInfo::initTeleInfoReceiver()
