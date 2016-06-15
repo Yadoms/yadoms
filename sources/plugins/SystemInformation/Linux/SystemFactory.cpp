@@ -15,9 +15,9 @@ CSystemFactory::CSystemFactory(boost::shared_ptr<yApi::IYPluginApi> api,
 {
    if (configuration.IsAdvancedEnabled())
    {
-      m_RamProcessMemory = boost::make_shared<CRAMProcessMemory>("YadomsRAMProcessMemory");
+      m_RamProcessMemory = boost::make_shared<CYadomsRAMProcessMemory>("YadomsRAMProcessMemory");
       m_lowFreqencyUpdateKeywords.push_back(m_RamProcessMemory->historizable());
-      m_VirtualProcessMemory = boost::make_shared<CVirtualProcessMemory>("YadomsVirtualProcessMemory");
+      m_VirtualProcessMemory = boost::make_shared<CYadomsVirtualProcessMemory>("YadomsVirtualProcessMemory");
       m_lowFreqencyUpdateKeywords.push_back(m_VirtualProcessMemory->historizable());
    }
 
