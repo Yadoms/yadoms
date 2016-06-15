@@ -14,10 +14,18 @@
 	},
 	"customLabels": {
 		"pluginState": {
-			"Wating": "Waiting...",
+			"Waiting": "Waiting...",
+			"WaitingInclusion": "In inclusion mode. Waiting for user to include new device...",
+			"WaitingExclusion": "In exclusion mode. Waiting for user to exclude a device...",
 			"Completed": "Terminated",
 			"DriverReady": "Ready",
-			"DriverFailed": "Driver error"
+			"DriverFailed": "Driver error",
+			"Initialization" : "Initialization",
+			"Configuring" : "Configuration",
+			"updateConfiguration" : "Update configuration",
+			"failToAccessSerialPort" : "Fail to access serial port",
+			"failToStartController" : "Fail to start ZWave controler",
+			"failToStart" : "Fail to start"
 		}
 	},
 	"extraCommands" : {

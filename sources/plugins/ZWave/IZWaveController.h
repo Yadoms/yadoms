@@ -9,6 +9,13 @@
 class IZWaveController
 {
 public:
+   enum E_StartResult
+   {
+      kSuccess = 0,      /// started successfully
+      kSerialPortError,  /// in case of serial port access problem
+      kControllerError,  /// in case of controller problem
+      kUnknownError      /// in case of any other problem      
+   };
    //--------------------------------------------------------------
    /// \brief	Virtual destructor
    //--------------------------------------------------------------
@@ -23,9 +30,9 @@ public:
    
    //--------------------------------------------------------------
    /// \brief	Start the controller
-   /// \return true if success, false if fails
+   /// \return The start result code
    //--------------------------------------------------------------
-   virtual bool start() = 0;
+   virtual E_StartResult start() = 0;
 
    //--------------------------------------------------------------
    /// \brief	Stop the controller

@@ -28,24 +28,23 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
    {
       YADOMS_LOG_CONFIGURE("ZWave");
 
-      context->setPluginState(yApi::historization::EPluginState::kCustom, "Initialization");
-
       // Load configuration values (provided by database)
       m_configuration.initializeWith(context->getConfiguration());
 
       m_configuration.setPath(context->getPluginPath().string());
 
       // the main loop
-      YADOMS_LOG(debug) << "CZWave is running...";
-
       context->setPluginState(yApi::historization::EPluginState::kCustom, "Configuring");
       m_controller = CZWaveControllerFactory::Create();
       m_controller->configure(&m_configuration, &context->getEventHandler());
 
-      context->setPluginState(yApi::historization::EPluginState::kRunning);
-
-      if (m_controller->start())
+      YADOMS_LOG(debug) << "CZWave is initializing";
+      context->setPluginState(yApi::historization::EPluginState::kCustom, "Initialization");
+      IZWaveController::E_StartResult initResult = m_controller->start();
+      if (initResult == IZWaveController::kSuccess)
       {
+         YADOMS_LOG(debug) << "CZWave is running";
+         context->setPluginState(yApi::historization::EPluginState::kRunning);
          while (1)
          {
             // Wait for an event
@@ -217,6 +216,21 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
       else
       {
          YADOMS_LOG(error) << "Cannot start ZWave controller. Plugin ends.";
+         switch (initResult)
+         {
+         case IZWaveController::kSerialPortError:
+            context->setPluginState(yApi::historization::EPluginState::kError, "failToAccessSerialPort");
+            break;
+
+         case IZWaveController::kControllerError:
+            context->setPluginState(yApi::historization::EPluginState::kError, "failToStartController");
+            break;
+
+         default:
+         case IZWaveController::kUnknownError:
+            context->setPluginState(yApi::historization::EPluginState::kError, "failToStart");
+            break;
+         }
       }
 
    }
