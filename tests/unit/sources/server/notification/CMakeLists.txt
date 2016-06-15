@@ -12,6 +12,7 @@ IF(NOT DISABLE_TEST_SHARED_NOTIFICATION)
       shared/shared/event/EventTimer.cpp
       shared/shared/event/EventTimePoint.h
       shared/shared/event/EventTimePoint.cpp	
+      shared/shared/ServiceLocator.cpp
 	)
    
    ADD_SOURCES(

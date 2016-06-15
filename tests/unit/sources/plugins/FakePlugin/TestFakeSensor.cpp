@@ -3,11 +3,9 @@
 
 // Includes needed to compile tested classes
 #include <../../../../sources/shared/shared/plugin/yPluginApi/StandardCapacities.h>
-#include <../../../../sources/shared/shared/plugin/yPluginApi/StandardUnits.h>
 #include <../../../../sources/plugins/dev-FakePlugin/FakeSensor.h>
 #include <../../../../sources/shared/shared/currentTime/Provider.h>
 
-#include "../../mock/server/pluginSystem/information/DefaultInformationMock.hpp"
 #include "../../mock/server/pluginSystem/DefaultYPluginApiMock.hpp"
 #include "../../mock/shared/currentTime/DefaultCurrentTimeMock.hpp"
 
@@ -24,7 +22,7 @@ void ckeckKeyword(boost::shared_ptr<CDefaultYPluginApiMock> context, const std::
    if (itKw == context->getKeywords().end())
       BOOST_ERROR(keyword + " keyword not found");
 
-   CDefaultYPluginApiMock::Keyword kw = itKw->second;
+   auto kw = itKw->second;
 
    BOOST_CHECK_EQUAL(kw.m_device, device);
    BOOST_CHECK_EQUAL(kw.m_capacity, capacity.getName());
@@ -33,12 +31,12 @@ void ckeckKeyword(boost::shared_ptr<CDefaultYPluginApiMock> context, const std::
 BOOST_AUTO_TEST_CASE(DeviceDeclaration)
 {
    CFakeSensor sensor(sensorId);
-   boost::shared_ptr<CDefaultYPluginApiMock> context(boost::make_shared<CDefaultYPluginApiMock>());
+   auto context(boost::make_shared<CDefaultYPluginApiMock>());
 
    sensor.declareDevice(context);
 
    // Check keywords declaration
-   BOOST_CHECK_EQUAL(context->getKeywords().size(), (unsigned int)6);
+   BOOST_CHECK_EQUAL(context->getKeywords().size(), static_cast<unsigned int>(6));
    ckeckKeyword(context, "temp1", sensorId, yApi::CStandardCapacities::Temperature);
    ckeckKeyword(context, "temp2", sensorId, yApi::CStandardCapacities::Temperature);
    ckeckKeyword(context, "Battery", sensorId, yApi::CStandardCapacities::BatteryLevel);
@@ -73,7 +71,7 @@ BOOST_AUTO_TEST_CASE(Historization)
 
    sensor.historizeData(context);
 
-   BOOST_CHECK_EQUAL(context->getData().size(), (unsigned int)6);
+   BOOST_CHECK_EQUAL(context->getData().size(), static_cast<unsigned int>(6));
    BOOST_CHECK_EQUAL(readLastData(context, "temp1").m_device, sensorId);
    BOOST_CHECK_EQUAL(boost::lexical_cast<double>(readLastData(context, "temp1").m_value), 25.0);
    BOOST_CHECK_EQUAL(readLastData(context, "temp2").m_device, sensorId);
@@ -91,7 +89,7 @@ BOOST_AUTO_TEST_CASE(Historization)
    sensor.read();
    sensor.historizeData(context);
 
-   BOOST_CHECK_EQUAL(context->getData().size(), (unsigned int)12);
+   BOOST_CHECK_EQUAL(context->getData().size(), static_cast<unsigned int>(12));
    BOOST_CHECK_EQUAL(readLastData(context, "temp1").m_device, sensorId);
    BOOST_CHECK_GE(boost::lexical_cast<double>(readLastData(context, "temp1").m_value), 24.0);
    BOOST_CHECK_LE(boost::lexical_cast<double>(readLastData(context, "temp1").m_value), 26.0);
@@ -119,9 +117,9 @@ BOOST_AUTO_TEST_CASE(BatteryDecrease)
    {
       sensor.historizeData(context);
       if (i >=20 )
-         BOOST_CHECK_EQUAL(boost::lexical_cast<int>(readLastData(context, "Battery").m_value), (int)i);
+         BOOST_CHECK_EQUAL(boost::lexical_cast<int>(readLastData(context, "Battery").m_value), static_cast<int>(i));
       else
-         BOOST_CHECK_EQUAL(boost::lexical_cast<int>(readLastData(context, "Battery").m_value), (int)20);
+         BOOST_CHECK_EQUAL(boost::lexical_cast<int>(readLastData(context, "Battery").m_value), static_cast<int>(20));
       sensor.read();
    }
 }
@@ -138,11 +136,11 @@ BOOST_AUTO_TEST_CASE(TemperatureVariations)
    for (int i = 100 ; i >= 0 ; --i)
    {
       sensor.historizeData(context);
-      BOOST_CHECK_GE(boost::lexical_cast<double>(readLastData(context, "temp1").m_value), (double)temp1 - 1.1); // Add some marging for float conversion
-      BOOST_CHECK_LE(boost::lexical_cast<double>(readLastData(context, "temp1").m_value), (double)temp1 + 1.1);
+      BOOST_CHECK_GE(boost::lexical_cast<double>(readLastData(context, "temp1").m_value), static_cast<double>(temp1) - 1.1); // Add some marging for float conversion
+      BOOST_CHECK_LE(boost::lexical_cast<double>(readLastData(context, "temp1").m_value), static_cast<double>(temp1) + 1.1);
       temp1 = boost::lexical_cast<double>(readLastData(context, "temp1").m_value);
-      BOOST_CHECK_GE(boost::lexical_cast<double>(readLastData(context, "temp2").m_value), (double)temp2 - 1.1);
-      BOOST_CHECK_LE(boost::lexical_cast<double>(readLastData(context, "temp2").m_value), (double)temp2 + 1.1);
+      BOOST_CHECK_GE(boost::lexical_cast<double>(readLastData(context, "temp2").m_value), static_cast<double>(temp2) - 1.1);
+      BOOST_CHECK_LE(boost::lexical_cast<double>(readLastData(context, "temp2").m_value), static_cast<double>(temp2) + 1.1);
       temp2 = boost::lexical_cast<double>(readLastData(context, "temp2").m_value);
       sensor.read();
    }
