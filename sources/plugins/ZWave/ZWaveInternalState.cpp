@@ -7,5 +7,7 @@ DECLARE_ENUM_IMPLEMENTATION(EZWaveInteralState,
    ((DriverReady))
    ((DriverFailed))
    ((Waiting))
+   ((WaitingInclusion))
+   ((WaitingExclusion))
    ((Completed))
 )
