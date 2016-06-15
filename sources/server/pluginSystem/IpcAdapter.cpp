@@ -101,13 +101,22 @@ namespace pluginSystem
    void CIpcAdapter::send(const toPlugin::msg& pbMsg)
    {
       if (!pbMsg.IsInitialized())
-         throw std::overflow_error("CIpcAdapter::send : message is not fully initialized");
+      {
+         YADOMS_LOG(error) << "CIpcAdapter::send : message is not fully initialized ==> ignored)";
+         return;
+      }
 
       if (pbMsg.ByteSize() > static_cast<int>(m_sendMessageQueue.get_max_msg_size()))
-         throw std::overflow_error((boost::format("CIpcAdapter::send : message is too big (%1% bytes)") % pbMsg.ByteSize()).str());
+      {
+         YADOMS_LOG(error) << "CIpcAdapter::send : message is too big (" << pbMsg.ByteSize() << " bytes) ==> ignored)";
+         return;
+      }
 
       if (!pbMsg.SerializeToArray(m_sendBuffer.get(), m_sendMessageQueue.get_max_msg_size()))
-         throw std::overflow_error("CIpcAdapter::send : fail to serialize message (too big ?)");
+      {
+         YADOMS_LOG(error) << "CIpcAdapter::send : fail to serialize message (too big ?) ==> ignored)";
+         return;
+      }
 
       m_sendMessageQueue.send(m_sendBuffer.get(), pbMsg.GetCachedSize(), 0);
    }
