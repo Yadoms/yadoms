@@ -386,7 +386,6 @@
 
    function getCustomMessage(pluginInstance, messageId, messageData, defaultMessage) {
       var i18nOpt ={}; //ensure i18nOpt is not undefined
-      
       if(messageData) {
          try {
             i18nOpt = JSON.parse(messageData);
@@ -396,7 +395,10 @@
       }
        
       i18nOpt.defaultValue = $.t(defaultMessage); //define default value parameter
-      return $.t("plugins/" + pluginInstance.type + ":customLabels.pluginState." + messageId, i18nOpt);
+      if(messageId && messageId !== "") {
+         return $.t("plugins/" + pluginInstance.type + ":customLabels.pluginState." + messageId, i18nOpt);
+      }
+      return i18nOpt.defaultValue;      
    }
 
    function addNewPlugin() {
