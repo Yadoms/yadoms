@@ -331,7 +331,8 @@
                if (status) {
                   var $row = getPluginDomRow(pluginInstance);
                   if (status.state !== pluginInstance.lastState || 
-				      status.messageId !== pluginInstance.lastMessageId) {
+				      status.messageId !== pluginInstance.lastMessageId ||
+                  status.messageData !== pluginInstance.lastMessageData) {
 
                      // Update start/stop button
                      var $startStopButton = $row.find("button.btn-startStop");
@@ -347,7 +348,7 @@
                         
                         switch (status.state) {
                            case "Error":
-                              $label.removeClass("label-success").removeClass("label-warning").addClass("label-danger").text(getCustomMessage(pluginInstance, status.messageId, "modals.dashboard.sub-windows.plugins.error"));
+                              $label.removeClass("label-success").removeClass("label-warning").addClass("label-danger").text(getCustomMessage(pluginInstance, status.messageId, status.messageData, "modals.dashboard.sub-windows.plugins.error"));
                               break;
                            case "Stopped":
                               $label.removeClass("label-success").addClass("label-warning").removeClass("label-danger").text($.t("modals.dashboard.sub-windows.plugins.stopped"));
@@ -356,7 +357,7 @@
                               $label.addClass("label-success").removeClass("label-warning").removeClass("label-danger").text($.t("modals.dashboard.sub-windows.plugins.running"));
                               break;
                            case "Custom":
-                              $label.removeClass("label-success").addClass("label-warning").removeClass("label-danger").text(getCustomMessage(pluginInstance, status.messageId, "modals.dashboard.sub-windows.plugins.starting"));
+                              $label.removeClass("label-success").addClass("label-warning").removeClass("label-danger").text(getCustomMessage(pluginInstance, status.messageId, status.messageData, "modals.dashboard.sub-windows.plugins.starting"));
                               break;
                            default:
                               $label.removeClass("label-danger").text("");
@@ -375,15 +376,27 @@
                      }
                   }
                   pluginInstance.lastState = status.state;
-				  pluginInstance.lastMessageId = status.messageId;
+                  pluginInstance.lastMessageId = status.messageId;
+                  pluginInstance.lastMessageData = status.messageData;
                }
             });
          });
       }
    }
 
-   function getCustomMessage(pluginInstance, messageId, defaultMessage) {
-      return $.t("plugins/" + pluginInstance.type + ":customLabels.pluginState." + messageId, { defaultValue: $.t(defaultMessage) });
+   function getCustomMessage(pluginInstance, messageId, messageData, defaultMessage) {
+      var i18nOpt ={}; //ensure i18nOpt is not undefined
+      
+      if(messageData) {
+         try {
+            i18nOpt = JSON.parse(messageData);
+         } catch (e) {
+            console.error("Fail to parse plugin state messageData.");
+         }
+      }
+       
+      i18nOpt.defaultValue = $.t(defaultMessage); //define default value parameter
+      return $.t("plugins/" + pluginInstance.type + ":customLabels.pluginState." + messageId, i18nOpt);
    }
 
    function addNewPlugin() {

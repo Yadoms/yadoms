@@ -77,15 +77,15 @@ namespace pluginSystem
       m_instanceStoppedListener->onStopped(m_instanceData->Id());
    }
 
-   void CInstanceStateHandler::setState(const shared::plugin::yPluginApi::historization::EPluginState& state, const std::string & customMessageId)
+   void CInstanceStateHandler::setState(const shared::plugin::yPluginApi::historization::EPluginState& state, const std::string & customMessageId, const std::string & customMessageData)
    {
       if (!customMessageId.empty() && (state != shared::plugin::yPluginApi::historization::EPluginState::kCustom && state != shared::plugin::yPluginApi::historization::EPluginState::kError))
          YADOMS_LOG(warning) << "Custom message ID \"" << customMessageId << "\" will be ignored as state is " << state.toString();
 
       m_pluginStateKeyword->set(state);
-      m_pluginStateMessageIdKeyword->set(customMessageId);
+      m_pluginStateMessage->setMessage(customMessageId, customMessageData);
       m_acquisitionHistorizer->saveData(m_pluginStateKeywordId, *m_pluginStateKeyword);
-      m_acquisitionHistorizer->saveData(m_pluginStateMessageIdKeywordId, *m_pluginStateMessageIdKeyword);
+      m_acquisitionHistorizer->saveData(m_pluginStateMessageIdKeywordId, *m_pluginStateMessage);
 
       switch (state)
       {
@@ -134,12 +134,12 @@ namespace pluginSystem
    {
       static const std::string PluginStateMessageIdKeywordName("customMessageId");
 
-      if (!m_pluginStateMessageIdKeyword)
+      if (!m_pluginStateMessage)
       {
-         m_pluginStateMessageIdKeyword = boost::make_shared<shared::plugin::yPluginApi::historization::CText>(PluginStateMessageIdKeywordName);
+         m_pluginStateMessage = boost::make_shared<shared::plugin::yPluginApi::historization::CPluginStateMessage>(PluginStateMessageIdKeywordName);
 
          if (!m_keywordDataAccessLayer->keywordExists(pluginStateDeviceId(), PluginStateMessageIdKeywordName))
-            m_keywordDataAccessLayer->addKeyword(pluginStateDeviceId(), *m_pluginStateMessageIdKeyword);
+            m_keywordDataAccessLayer->addKeyword(pluginStateDeviceId(), *m_pluginStateMessage);
       }
 
       return m_keywordDataAccessLayer->getKeyword(pluginStateDeviceId(), PluginStateMessageIdKeywordName)->Id();

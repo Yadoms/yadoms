@@ -6,6 +6,7 @@ message SetPluginState {
 	}
 	required EPluginState pluginState = 1;
 	optional string customMessageId = 2;
+	optional string customMessageData = 3;
 }
 
 message ConfigurationRequest {

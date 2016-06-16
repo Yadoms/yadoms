@@ -26,9 +26,28 @@ namespace pluginSystem
    {
    }
 
-   void CYPluginApiImplementation::setPluginState(const shared::plugin::yPluginApi::historization::EPluginState& state, const std::string& customMessageId)
+   void CYPluginApiImplementation::setPluginState(const shared::plugin::yPluginApi::historization::EPluginState& state, const std::string& customMessageId, const std::string& customMessageData)
    {
-      m_instanceStateHandler->setState(state, customMessageId);
+      m_instanceStateHandler->setState(state, customMessageId, customMessageData);
+   }
+
+   void CYPluginApiImplementation::setPluginState(const shared::plugin::yPluginApi::historization::EPluginState& state, const std::string& customMessageId, const std::string& customMessageDataParam, const std::string& customMessageDataValue)
+   {
+      std::map<std::string, std::string> mp;
+      mp[customMessageDataParam] = customMessageDataValue;
+      setPluginState(state, customMessageId, mp);
+   }
+
+   void CYPluginApiImplementation::setPluginState(const shared::plugin::yPluginApi::historization::EPluginState& state, const std::string& customMessageId, const std::map<std::string, std::string> & customMessageDataParams)
+   {
+      //convert map to dataContainer
+      shared::CDataContainer dc;
+      std::map<std::string, std::string>::const_iterator i;
+      for (i = customMessageDataParams.begin(); i != customMessageDataParams.end(); ++i)
+         dc.set(i->first, i->second);
+
+      std::string customMessageDataSerialized = dc.serialize(); //use variable to allow use of reference parameter
+      setPluginState(state, customMessageId, customMessageDataSerialized);
    }
 
    bool CYPluginApiImplementation::deviceExists(const std::string& device) const

@@ -210,7 +210,7 @@ namespace pluginSystem
          throw std::out_of_range((boost::format("Unsupported plugin state received : %1%") % msg.pluginstate()).str());
       }
 
-      m_pluginApi->setPluginState(state, msg.custommessageid());
+      m_pluginApi->setPluginState(state, msg.custommessageid(), msg.custommessagedata());
    }
 
    void CIpcAdapter::processGetConfiguration(const toYadoms::ConfigurationRequest& msg)

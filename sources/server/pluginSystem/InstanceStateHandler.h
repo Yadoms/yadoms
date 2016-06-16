@@ -2,7 +2,7 @@
 #include "IInstanceStartErrorObserver.h"
 #include "IInstanceStateHandler.h"
 #include "IInstanceStoppedListener.h"
-#include <shared/plugin/yPluginApi/historization/Text.h>
+#include <shared/plugin/yPluginApi/historization/PluginStateMessage.h>
 #include <server/database/IPluginRequester.h>
 #include <server/database/IPluginEventLoggerRequester.h>
 #include <server/dataAccessLayer/IDeviceManager.h>
@@ -61,7 +61,8 @@ namespace pluginSystem
 
       // IInstanceStateHandler Implementation
       void setState(const shared::plugin::yPluginApi::historization::EPluginState& state,
-                    const std::string& customMessageId = std::string()) override;
+                    const std::string& customMessageId = shared::CStringExtension::EmptyString,
+                    const std::string& customMessageData = shared::CStringExtension::EmptyString) override;
       // [END] IInstanceStateHandler Implementation
 
 
@@ -134,7 +135,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       boost::shared_ptr<shared::plugin::yPluginApi::historization::CPluginState> m_pluginStateKeyword;
       int m_pluginStateKeywordId;
-      boost::shared_ptr<shared::plugin::yPluginApi::historization::CText> m_pluginStateMessageIdKeyword;
+      boost::shared_ptr<shared::plugin::yPluginApi::historization::CPluginStateMessage> m_pluginStateMessage;
       int m_pluginStateMessageIdKeywordId;
    };
 	

@@ -164,6 +164,8 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/historization/MeasureType.h
    shared/plugin/yPluginApi/historization/PluginState.cpp
    shared/plugin/yPluginApi/historization/PluginState.h
+   shared/plugin/yPluginApi/historization/PluginStateMessage.cpp
+   shared/plugin/yPluginApi/historization/PluginStateMessage.h
    shared/plugin/yPluginApi/historization/Power.cpp
    shared/plugin/yPluginApi/historization/Power.h
    shared/plugin/yPluginApi/historization/PowerFactor.cpp

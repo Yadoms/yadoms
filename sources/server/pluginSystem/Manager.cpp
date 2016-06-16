@@ -8,6 +8,7 @@
 #endif
 #include <shared/exception/InvalidParameter.hpp>
 #include <shared/exception/EmptyResult.hpp>
+#include <shared/exception/JSONParse.hpp>
 #include <shared/plugin/yPluginApi/historization/PluginState.h>
 
 #include "Factory.h"
@@ -396,7 +397,18 @@ namespace pluginSystem
                auto customMessageIdKw = m_dataProvider->getKeywordRequester()->getKeyword(device->Id, "customMessageId");
                shared::CDataContainer defaultState;
                defaultState.set("state", state);
-               defaultState.set("messageId", m_dataProvider->getAcquisitionRequester()->getKeywordLastData(customMessageIdKw->Id)->Value());
+
+               try
+               {
+                  shared::CDataContainer dc(m_dataProvider->getAcquisitionRequester()->getKeywordLastData(customMessageIdKw->Id)->Value());
+                  defaultState.set("messageId", dc.getWithDefault("messageId", shared::CStringExtension::EmptyString));
+                  defaultState.set("messageData", dc.getWithDefault("messageData", shared::CStringExtension::EmptyString));
+               }
+               catch (shared::exception::CJSONParse & jsonerror)
+               {
+                  YADOMS_LOG(debug) << "Fail to parser JSON in pluginState id=" << id << " error=" << jsonerror.what();
+                  defaultState.set("messageId", m_dataProvider->getAcquisitionRequester()->getKeywordLastData(customMessageIdKw->Id)->Value());
+               }
                return defaultState;
             }
 
@@ -435,7 +447,19 @@ namespace pluginSystem
          auto customMessageIdKw = m_dataProvider->getKeywordRequester()->getKeyword(device->Id, "customMessageId");
          shared::CDataContainer defaultState;
          defaultState.set("state", m_dataProvider->getAcquisitionRequester()->getKeywordLastData(stateKw->Id)->Value());
-         defaultState.set("messageId", m_dataProvider->getAcquisitionRequester()->getKeywordLastData(customMessageIdKw->Id)->Value());
+
+         try
+         {
+            shared::CDataContainer dc(m_dataProvider->getAcquisitionRequester()->getKeywordLastData(customMessageIdKw->Id)->Value());
+            defaultState.set("messageId", dc.getWithDefault("messageId", shared::CStringExtension::EmptyString));
+            defaultState.set("messageData", dc.getWithDefault("messageData", shared::CStringExtension::EmptyString));
+         }
+         catch (shared::exception::CJSONParse & jsonerror)
+         {
+            YADOMS_LOG(debug) << "Fail to parser JSON in pluginState id=" << id << " error=" << jsonerror.what();
+            defaultState.set("messageId", m_dataProvider->getAcquisitionRequester()->getKeywordLastData(customMessageIdKw->Id)->Value());
+         }
+
          return defaultState;
       }
       catch (shared::exception::CEmptyResult&)
