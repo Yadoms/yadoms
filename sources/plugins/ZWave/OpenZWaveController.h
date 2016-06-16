@@ -21,7 +21,7 @@ public:
 
    // IZWaveController implementation
    virtual void configure(CZWaveConfiguration * configuration, shared::event::CEventHandler * handler);
-   virtual bool start();
+   virtual IZWaveController::E_StartResult start();
    virtual void stop();
    virtual void sendCommand(const std::string & device, const std::string & keyword, const std::string & value);
    virtual void startInclusionMode();
@@ -90,6 +90,11 @@ private:
    /// \brief	   Tells id all nodes have been queried
    //--------------------------------------------------------------
    bool   m_nodesQueried;
+
+   //--------------------------------------------------------------
+   /// \brief	   Contains the last successfully sent command to controller
+   //--------------------------------------------------------------
+   OpenZWave::Driver::ControllerCommand m_lastSuccessfullySentCommand;
 
    //--------------------------------------------------------------
    /// \brief	   The zwave node list type

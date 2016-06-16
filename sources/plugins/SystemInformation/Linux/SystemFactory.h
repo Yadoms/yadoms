@@ -13,7 +13,7 @@ namespace yApi = shared::plugin::yPluginApi;
 
 //--------------------------------------------------------------
 /// \brief	Class where all Keywords are created and updated
-/// \note   
+/// \note
 //--------------------------------------------------------------
 class CSystemFactory
 {
@@ -63,16 +63,16 @@ private:
    //--------------------------------------------------------------
    /// \brief	    Device name
    //--------------------------------------------------------------
-   std::string m_DeviceName;
+   std::string m_deviceName;
 
    //--------------------------------------------------------------
    /// \brief	    Keywords
    //--------------------------------------------------------------
-   boost::shared_ptr<CMemoryLoad> m_MemoryLoad;
-   boost::shared_ptr<CCPULoad> m_CPULoad;
-   boost::shared_ptr<CYadomsCPULoad> m_YadomsCPULoad;
-   boost::shared_ptr<CRAMProcessMemory> m_RAMProcessMemory;
-   boost::shared_ptr<CVirtualProcessMemory> m_VirtualProcessMemory;
+   boost::shared_ptr<CMemoryLoad> m_memoryLoad;
+   boost::shared_ptr<CCPULoad> m_cpuLoad;
+   boost::shared_ptr<CYadomsCPULoad> m_yadomsCpuLoad;
+   boost::shared_ptr<CYadomsRAMProcessMemory> m_ramProcessMemory;
+   boost::shared_ptr<CYadomsVirtualProcessMemory> m_virtualProcessMemory;
 
    //--------------------------------------------------------------
    /// \brief	    List of keywords for disks

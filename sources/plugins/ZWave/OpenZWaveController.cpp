@@ -12,7 +12,7 @@
 #include <shared/Log.h>
 
 COpenZWaveController::COpenZWaveController()
-   :m_homeId(0), m_initFailed(false), m_nodesQueried(false), m_handler(NULL), m_configuration(NULL)
+   :m_homeId(0), m_initFailed(false), m_nodesQueried(false), m_lastSuccessfullySentCommand(OpenZWave::Driver::ControllerCommand_None), m_handler(NULL), m_configuration(NULL)
 {
 
 }
@@ -57,7 +57,7 @@ void COpenZWaveController::configure(CZWaveConfiguration * configuration, shared
    m_handler = handler;
 }
 
-bool COpenZWaveController::start()
+IZWaveController::E_StartResult COpenZWaveController::start()
 {
 
    try
@@ -106,6 +106,7 @@ bool COpenZWaveController::start()
       
       //this part wait infinitely for serial port open success (configuration can be changed by another thread)
       bool serialPortOpened = false;
+      int remainingTries = 3;
       while (!serialPortOpened)
       {
          //lock access to configuration
@@ -120,9 +121,18 @@ bool COpenZWaveController::start()
          else
          {
             //fail to open : then unlock mutex to allow configuration to be changed, then wait 1 sec
-            std::cout << "Fail to open serial port : " << m_configuration->getSerialPort() << " port address : " << m_configuration->getSerialPort() << std::endl;
             m_treeMutex.unlock();
-            boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
+            remainingTries--;
+            if (remainingTries <= 0)
+            {
+               std::cerr << "Fail to open serial port : " << m_configuration->getSerialPort() << std::endl;
+               return IZWaveController::kSerialPortError;
+            }
+            else
+            {
+               std::cout << "Fail to open serial port : " << m_configuration->getSerialPort() << ". Attemps remaining : " << remainingTries << std::endl;
+               boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
+            }
          }
       }
          
@@ -137,7 +147,7 @@ bool COpenZWaveController::start()
       // on the network have been queried (at least the "listening" ones) before
       // writing the configuration file.  (Maybe write again after sleeping nodes have
       // been queried as well.)
-      while (!m_nodesQueried)
+      while (!m_nodesQueried && !m_initFailed)
       {
          boost::this_thread::sleep(boost::posix_time::milliseconds(200));
       }
@@ -147,9 +157,15 @@ bool COpenZWaveController::start()
          RequestConfigurationParameters();
 
          OpenZWave::Manager::Get()->WriteConfig(m_homeId);
+         return IZWaveController::kSuccess;
+      }
+      else 
+      {
+         YADOMS_LOG(error) << "Fail to initialize controller";
+         return IZWaveController::kControllerError;
       }
 
-      return true;
+      
    }
    catch (OpenZWave::OZWException & ex)
    {
@@ -164,7 +180,7 @@ bool COpenZWaveController::start()
       std::cerr << "Fail to start OpenZWave controller unknown exception" << std::endl;
    }
 
-   return false;
+   return IZWaveController::kUnknownError;
 }
 
 void COpenZWaveController::stop()
@@ -449,14 +465,69 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
          break;
       case OpenZWave::Driver::ControllerState_Cancel:
          //str = "ControllerCommand - Canceled";
+         m_lastSuccessfullySentCommand = OpenZWave::Driver::ControllerCommand_None;
+         if (m_handler != NULL)
+            m_handler->postEvent<std::string>(CZWave::kInternalStateChange, EZWaveInteralState::kRunning);
+
          break;
       case OpenZWave::Driver::ControllerState_Error:
+         switch (_notification->GetNotification())
+         {
+         case OpenZWave::Driver::ControllerError_None:
+            break;
+         case OpenZWave::Driver::ControllerError_ButtonNotFound:
+            YADOMS_LOG(error) << "Command controller error : ButtonNotFound";
+            break;
+         case OpenZWave::Driver::ControllerError_NodeNotFound:
+            YADOMS_LOG(error) << "Command controller error : NodeNotFound";
+            break;
+         case OpenZWave::Driver::ControllerError_NotBridge:
+            YADOMS_LOG(error) << "Command controller error : NotBridge";
+            break;
+         case OpenZWave::Driver::ControllerError_NotSUC:
+            YADOMS_LOG(error) << "Command controller error : NotSUC";
+            break;
+         case OpenZWave::Driver::ControllerError_NotSecondary:
+            YADOMS_LOG(error) << "Command controller error : NotSecondary";
+            break;
+         case OpenZWave::Driver::ControllerError_IsPrimary:
+            YADOMS_LOG(error) << "Command controller error : IsPrimary";
+            break;
+         case OpenZWave::Driver::ControllerError_NotFound:
+            YADOMS_LOG(error) << "Command controller error : NotFound";
+            break;
+         case OpenZWave::Driver::ControllerError_Busy:
+            YADOMS_LOG(error) << "Command controller error : Busy";
+            break;
+         case OpenZWave::Driver::ControllerError_Failed:
+            YADOMS_LOG(error) << "Command controller error : Failed";
+            break;
+         case OpenZWave::Driver::ControllerError_Disabled:
+            YADOMS_LOG(error) << "Command controller error : Disabled";
+            break;
+         case OpenZWave::Driver::ControllerError_Overflow:
+            YADOMS_LOG(error) << "Command controller error : Overflow";
+            break;
+         }
          break;
       case OpenZWave::Driver::ControllerState_Waiting:
          //str = "ControllerCommand - Waiting";
          if (m_handler != NULL)
-            m_handler->postEvent<std::string>(CZWave::kInternalStateChange, EZWaveInteralState::kWaiting);
-
+         {
+            switch (m_lastSuccessfullySentCommand)
+            {
+            case OpenZWave::Driver::ControllerCommand_AddDevice:
+               m_handler->postEvent<std::string>(CZWave::kInternalStateChange, EZWaveInteralState::kWaitingInclusion);
+               break;
+            case OpenZWave::Driver::ControllerCommand_RemoveDevice:
+               m_handler->postEvent<std::string>(CZWave::kInternalStateChange, EZWaveInteralState::kWaitingExclusion);
+               break;
+            default:
+               m_handler->postEvent<std::string>(CZWave::kInternalStateChange, EZWaveInteralState::kWaiting);
+               break;
+            }
+         }
+            
          break;
       case OpenZWave::Driver::ControllerState_Sleeping:
          //str = "ControllerCommand - Sleeping";
@@ -466,6 +537,7 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
          break;
       case OpenZWave::Driver::ControllerState_Completed:
          //str = "ControllerCommand - Completed";
+         m_lastSuccessfullySentCommand = OpenZWave::Driver::ControllerCommand_None;
          if (m_handler != NULL)
             m_handler->postEvent<std::string>(CZWave::kInternalStateChange, EZWaveInteralState::kCompleted);
          break;
@@ -479,6 +551,8 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
          break;
       }
       break;
+
+
 
    case OpenZWave::Notification::Type_DriverReset:
       break;
@@ -537,13 +611,27 @@ void COpenZWaveController::sendCommand(const std::string & device, const std::st
 
 void COpenZWaveController::startInclusionMode()
 {
-   OpenZWave::Manager::Get()->AddNode(m_homeId);
-   
+   if (OpenZWave::Manager::Get()->AddNode(m_homeId))
+   {
+      m_lastSuccessfullySentCommand = OpenZWave::Driver::ControllerCommand_AddDevice;
+   }
+   else
+   {
+      YADOMS_LOG(error) << "Fail to start inclusion mode";
+   }
 }
 
 void COpenZWaveController::startExclusionMode()
 {
-   OpenZWave::Manager::Get()->RemoveNode(m_homeId);
+   if(OpenZWave::Manager::Get()->RemoveNode(m_homeId))
+   {
+      m_lastSuccessfullySentCommand = OpenZWave::Driver::ControllerCommand_RemoveDevice;
+   }
+   else
+   {
+      YADOMS_LOG(error) << "Fail to start exclusion mode";
+   }
+
 }
 
 void COpenZWaveController::hardResetController()
@@ -563,7 +651,14 @@ void COpenZWaveController::testNetwork(int count)
 
 void COpenZWaveController::cancelCurrentCommand() 
 {
-   OpenZWave::Manager::Get()->CancelControllerCommand(m_homeId);
+   if(OpenZWave::Manager::Get()->CancelControllerCommand(m_homeId))
+   {
+      m_lastSuccessfullySentCommand = OpenZWave::Driver::ControllerCommand_None;
+   }
+   else
+   {
+      YADOMS_LOG(error) << "Fail to cancel last command";
+   }
 }
 
 void COpenZWaveController::healNetwork()
