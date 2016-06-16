@@ -220,6 +220,11 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                {
                   auto interval = extraCommand->getData().get<std::string>("dynamicSection.content.interval");
                   std::cout << "Command with plugin binded data received : value=" << interval << std::endl;
+               }  
+               else if (extraCommand->getCommand() == "changePluginStateMessage")
+               {
+                  auto message = extraCommand->getData().get<std::string>("newStateMessage");
+                  api->setPluginState(shared::plugin::yPluginApi::historization::EPluginState::kCustom, "newCustomStateMessage", "messageFromExtraCommand", message);
                }
             }
             break;
