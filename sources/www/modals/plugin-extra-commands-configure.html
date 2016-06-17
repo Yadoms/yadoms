@@ -36,8 +36,11 @@
          //we append classic configuration
          var configMgr = new ConfigurationControlManager(extraCommandConfig, "", "plugins/" + pluginInstance.type + ":extraCommands." + command + ".commandData.", $modalBody);
 
+         var title = "plugins/" +pluginInstance.type +":extraCommands." + command +".name";
+         $("div#plugin-extra-commands-configure-modal .modal-title").attr("data-i18n", title);
+         
          //i18n
-         $modalBody.i18n();
+         $("div#plugin-extra-commands-configure-modal").i18n();
 
          var success = false;
          

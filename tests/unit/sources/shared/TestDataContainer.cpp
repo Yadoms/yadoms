@@ -489,7 +489,35 @@ BOOST_AUTO_TEST_CASE(Path)
 
 BOOST_AUTO_TEST_CASE(SimpleConstruction)
 {
-   BOOST_CHECK_THROW(shared::CDataContainer dc("1"), std::exception);
+   BOOST_CHECK_NO_THROW(shared::CDataContainer dc("1"));
+}
+
+
+#define BOOST_CHECK_MAPS(input, output) \
+   { \
+      BOOST_CHECK_EQUAL(input.size(), output.size());\
+      std::map<std::string, std::string>::iterator ii, io;\
+      io = output.begin();\
+      for (ii = input.begin(); ii != input.end(); ++ii)\
+      {\
+         BOOST_CHECK_EQUAL(ii->first, io->first);\
+         BOOST_CHECK_EQUAL(ii->second, io->second);\
+         ++io;\
+      }\
+   }
+
+BOOST_AUTO_TEST_CASE(Map)
+{
+   std::map<std::string, std::string> input = { { "key1", "value1"},{ "key2", "value2" },{ "key3", "value3" },{ "key4", "value4" } };
+   shared::CDataContainer dc(input);
+
+   std::map<std::string, std::string> output = dc.getAsMap();
+
+   //dont use BOOST_CHECK_EQUAL_COLLECTIONS because it do not builds with std::map
+   BOOST_CHECK_MAPS(input, output);
+
+   std::map<std::string, std::string> output2 = dc.get<std::map<std::string, std::string>>();
+   BOOST_CHECK_MAPS(input, output2);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -48,9 +48,11 @@ if(MSVC)
 	#to allow BOOST in precompiled header (specify Precompiled Header Memory Allocation Limit) 
 	add_definitions("/Zm256")
 
-	#add WIN32_WINNT preprocessor definition
-	get_WIN32_WINNT(CURRENT_WINNT_VERSION)
-	add_definitions(-D_WIN32_WINNT=${CURRENT_WINNT_VERSION})
+	#define as Windows7 version
+   #macro must be defined when using boost::asio
+   #  dont use third party script to get current windows version because it fails with win10 and greaters
+   #  so just specify it as Win7 (avoid link with Win8 and Win10 sdk; because they are useless for our app)
+	add_definitions(-D_WIN32_WINNT=0x0601)
 endif()
 
 if(CMAKE_COMPILER_IS_GNUCXX)

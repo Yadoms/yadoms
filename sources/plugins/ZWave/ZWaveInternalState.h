@@ -10,5 +10,7 @@ DECLARE_ENUM_HEADER(EZWaveInteralState,
    ((DriverReady))
    ((DriverFailed))
    ((Waiting))
+   ((WaitingInclusion))
+   ((WaitingExclusion))
    ((Completed))
 )

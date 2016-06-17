@@ -23,7 +23,7 @@
 		"device": {
 			"name": "Moon Information",
 			"description": "Illuminated surface of the moon, Day of the moon",
-			"type": "device",
+			"type": "keyword",
 			"expectedCapacity": ["Moon"],
 			"expectedKeywordAccess": "get"
 		}

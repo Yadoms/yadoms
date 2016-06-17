@@ -26,9 +26,16 @@ namespace pluginSystem
    {
    }
 
-   void CYPluginApiImplementation::setPluginState(const shared::plugin::yPluginApi::historization::EPluginState& state, const std::string& customMessageId)
+   void CYPluginApiImplementation::setPluginState(const shared::plugin::yPluginApi::historization::EPluginState& state, const std::string& customMessageId, const std::map<std::string, std::string> & customMessageDataParams)
    {
-      m_instanceStateHandler->setState(state, customMessageId);
+      //convert map to dataContainer
+      shared::CDataContainer dc;
+      std::map<std::string, std::string>::const_iterator i;
+      for (i = customMessageDataParams.begin(); i != customMessageDataParams.end(); ++i)
+         dc.set(i->first, i->second);
+
+      std::string customMessageDataSerialized = dc.serialize(); //use variable to allow use of reference parameter
+      m_instanceStateHandler->setState(state, customMessageId, customMessageDataSerialized);
    }
 
    bool CYPluginApiImplementation::deviceExists(const std::string& device) const

@@ -235,8 +235,11 @@ namespace plugin_cpp_api
       m_pluginEventHandler.postEvent(kEventManuallyDeviceCreation, request);
    }
 
+
+
    void CApiImplementation::setPluginState(const shared::plugin::yPluginApi::historization::EPluginState& state,
-                                           const std::string& customMessageId)
+      const std::string& customMessageId,
+      const std::map<std::string, std::string> & customMessageDataParams)
    {
       toYadoms::msg req;
       auto request = req.mutable_pluginstate();
@@ -256,6 +259,9 @@ namespace plugin_cpp_api
          throw std::out_of_range((boost::format("CApiImplementation::setPluginState, unknown state %1%") % state).str());
       }
       request->set_custommessageid(customMessageId);
+
+      shared::CDataContainer dc(customMessageDataParams);
+      request->set_custommessagedata(dc.serialize());
       send(req);
    }
 

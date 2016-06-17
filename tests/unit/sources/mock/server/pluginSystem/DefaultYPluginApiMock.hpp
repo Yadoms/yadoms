@@ -46,7 +46,8 @@ public:
    }
 
    void setPluginState(const shared::plugin::yPluginApi::historization::EPluginState& state,
-                       const std::string& customMessageId = std::string()) override
+                       const std::string& customMessageId = shared::CStringExtension::EmptyString,
+                       const std::map<std::string, std::string> & customMessageData = std::map<std::string, std::string>()) override
    {
    }
 

@@ -45,15 +45,15 @@ set(FAKE_PLUGIN_LINK
 ## Always leave these lines to configure plugin correctly
 ## even if FAKE_PLUGIN_INCLDIR or FAKE_PLUGIN_LINK are empty
 #########################################
-PLUGIN_SOURCES(fakePlugin ${FAKE_PLUGIN_SOURCES})
-PLUGIN_INCLDIR(fakePlugin ${FAKE_PLUGIN_ADDITIONAL_INC_DIR})
-PLUGIN_LINK(fakePlugin ${FAKE_PLUGIN_ADDITIONAL_LIB})
+PLUGIN_SOURCES(dev-fakePlugin ${FAKE_PLUGIN_SOURCES})
+PLUGIN_INCLDIR(dev-fakePlugin ${FAKE_PLUGIN_ADDITIONAL_INC_DIR})
+PLUGIN_LINK(dev-fakePlugin ${FAKE_PLUGIN_ADDITIONAL_LIB})
 
 #########################################
 ## Post-build commands
 ## Copy files to build directory
 ## "package.json" and "icon.png" are needed, but you can add extra-files
 #########################################
-PLUGIN_POST_BUILD_COPY_FILE(fakePlugin package.json)
-PLUGIN_POST_BUILD_COPY_FILE(fakePlugin icon.png)
-PLUGIN_POST_BUILD_COPY_DIRECTORY(fakePlugin locales)
+PLUGIN_POST_BUILD_COPY_FILE(dev-fakePlugin package.json)
+PLUGIN_POST_BUILD_COPY_FILE(dev-fakePlugin icon.png)
+PLUGIN_POST_BUILD_COPY_DIRECTORY(dev-fakePlugin locales)

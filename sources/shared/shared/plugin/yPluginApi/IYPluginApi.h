@@ -5,6 +5,7 @@
 #include "IDeviceCommand.h"
 #include "IExtraCommand.h"
 #include "historization/Historizers.h"
+#include <shared/StringExtension.h>
 
 namespace shared
 {
@@ -80,15 +81,17 @@ namespace shared
             //----------------------------------------------------------------------------------------------------------------
             //----------------------------------------------------------------------------------------------------------------
             //----------------------------------------------------------------------------------------------------------------
-
             //-----------------------------------------------------
+
             ///\brief Set the current plugin state
-            ///\param    [in]    state           The new state
-            ///\param    [in]    customMessageId The associated message ID (translatable in the locales file of the plugin). Ignored if state != kCustom or kError.
+            ///\param    [in]    state                   The new state
+            ///\param    [in]    customMessageId         The associated message ID (translatable in the locales file of the plugin). Ignored if state != kCustom or kError. (ie: 'i18nStringId' , with 'i18nStringId' : 'Message __something__ received')
+            ///\param    [in]    customMessageDataParams The message data parameters (map<name, value> ) (used as translation parameters). Ignored if state != kCustom or kError.   
             ///\note In case of setting states kError or kStopped, plugin must be effectively stopped within 10 seconds or it will be killed.
             //-----------------------------------------------------
             virtual void setPluginState(const historization::EPluginState& state,
-                                        const std::string& customMessageId = std::string()) = 0;
+                                        const std::string& customMessageId = shared::CStringExtension::EmptyString,
+                                        const std::map<std::string, std::string> & customMessageDataParams = std::map<std::string, std::string>()) = 0;
 
 
             //----------------------------------------------------------------------------------------------------------------

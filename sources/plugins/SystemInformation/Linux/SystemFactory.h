@@ -63,16 +63,16 @@ private:
    //--------------------------------------------------------------
    /// \brief	    Device name
    //--------------------------------------------------------------
-   std::string m_DeviceName;
+   std::string m_deviceName;
 
    //--------------------------------------------------------------
    /// \brief	    Keywords
    //--------------------------------------------------------------
-   boost::shared_ptr<CMemoryLoad> m_MemoryLoad;
-   boost::shared_ptr<CCPULoad> m_CpuLoad;
-   boost::shared_ptr<CYadomsCPULoad> m_YadomsCpuLoad;
-   boost::shared_ptr<CYadomsRAMProcessMemory> m_RamProcessMemory;
-   boost::shared_ptr<CYadomsVirtualProcessMemory> m_VirtualProcessMemory;
+   boost::shared_ptr<CMemoryLoad> m_memoryLoad;
+   boost::shared_ptr<CCPULoad> m_cpuLoad;
+   boost::shared_ptr<CYadomsCPULoad> m_yadomsCpuLoad;
+   boost::shared_ptr<CYadomsRAMProcessMemory> m_ramProcessMemory;
+   boost::shared_ptr<CYadomsVirtualProcessMemory> m_virtualProcessMemory;
 
    //--------------------------------------------------------------
    /// \brief	    List of keywords for disks

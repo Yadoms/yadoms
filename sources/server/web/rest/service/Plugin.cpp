@@ -5,8 +5,7 @@
 #include "pluginSystem/ManuallyDeviceCreationData.h"
 #include "pluginSystem/BindingQueryData.h"
 #include "communication/callback/SynchronousCallback.h"
-#include <shared/ServiceLocator.h>
-#include <startupOptions/IStartupOptions.h>
+
 
 namespace web { namespace rest { namespace service {
 
@@ -148,14 +147,9 @@ namespace web { namespace rest { namespace service {
          shared::CDataContainer result;
          std::vector<std::string> pluginCollection;
 
-         auto developerMode = shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>()->getDeveloperMode();
-
          for (auto plugin = pluginList.begin(); plugin != pluginList.end(); ++plugin)
-         {
-            if(developerMode || (!developerMode && !boost::istarts_with(plugin->first, "dev-")))
-               pluginCollection.push_back(plugin->first);
-         }
-
+            pluginCollection.push_back(plugin->first);
+ 
          result.set("plugins", pluginCollection);
          return CResult::GenerateSuccess(result);
       }

@@ -28,7 +28,9 @@ namespace plugin_cpp_api
 
       // shared::script::yScriptApi::IYScriptApi implementation
       void setPluginState(const shared::plugin::yPluginApi::historization::EPluginState& state,
-                          const std::string& customMessageId = std::string()) override;
+                           const std::string& customMessageId = shared::CStringExtension::EmptyString,
+                           const std::map<std::string, std::string> & customMessageDataParams = std::map<std::string, std::string>()) override;
+
       bool deviceExists(const std::string& device) const override;
       shared::CDataContainer getDeviceDetails(const std::string& device) const override;
       void declareDevice(const std::string& device,
