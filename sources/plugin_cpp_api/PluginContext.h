@@ -1,7 +1,7 @@
 #pragma once
 
 #include "IPluginContext.h"
-#include "IPlugin.h"
+#include "plugin_cpp_api/IPlugin.h"
 #include "ICommandLine.h"
 #include "ApiImplementation.h"
 
