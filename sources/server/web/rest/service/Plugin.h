@@ -33,6 +33,7 @@ namespace web { namespace rest { namespace service {
       shared::CDataContainer getInstanceState(const std::vector<std::string> & parameters, const std::string & requestContent);
       shared::CDataContainer startInstance(const std::vector<std::string> & parameters, const std::string & requestContent);
       shared::CDataContainer stopInstance(const std::vector<std::string> & parameters, const std::string & requestContent);   
+      shared::CDataContainer getInstanceLog(const std::vector<std::string> & parameters, const std::string & requestContent);
 
       shared::CDataContainer createDevice(const std::vector<std::string> & parameters, const std::string & requestContent);
       

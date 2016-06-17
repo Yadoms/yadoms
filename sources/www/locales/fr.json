@@ -259,6 +259,10 @@
     "show-log-automation-rule": {
       "title": "Journal d'une règle d'automatisation"
     },
+    "show-log-plugin": {
+      "title": "Journal d'une instance de plugin",
+	  "failToGetLog" : "Impossible d'obtenir le journal pour __pluginName__"
+    },
     "qrcode": {
       "title": "QR Code de Yadoms",
       "text": "Voici le QRCode de Yadoms. Vous pouvez le flasher avec votre téléphone pour accéder à Yadoms de partout."
@@ -363,6 +367,7 @@
           "packageError": "Plugin invalide",
           "configure": "Configurer le plugin",
           "delete": "Supprimer le plugin",
+     	  "log": "Consulter le journal",
           "errorGettingPluginList": "Erreur lors de la récupération de la liste des plugins",
           "confirmPluginDeletion": "Confirmez-vous la suppression du plugin __pluginName__ ?"
         },

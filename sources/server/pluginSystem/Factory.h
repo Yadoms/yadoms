@@ -34,7 +34,10 @@ namespace pluginSystem
                                                   boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
                                                   boost::shared_ptr<IQualifier> qualifier,
                                                   boost::shared_ptr<IInstanceStoppedListener> instanceStoppedListener) const override;
+      boost::filesystem::path pluginLogFile(int instanceId) const;
       // [END] IFactory Implementation
+
+      
 
    private:
       boost::shared_ptr<IInstance> createInternalPluginInstance(boost::shared_ptr<const database::entities::CPlugin> instanceData,
@@ -45,7 +48,7 @@ namespace pluginSystem
 
       boost::shared_ptr<const shared::plugin::information::IInformation> createInformation(const std::string& pluginName) const;
 
-      boost::filesystem::path pluginLogFile(int instanceId) const;
+      
 
       boost::shared_ptr<shared::process::ILogger> createProcessLogger(boost::shared_ptr<const database::entities::CPlugin> instanceData) const;
 

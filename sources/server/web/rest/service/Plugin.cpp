@@ -33,6 +33,7 @@ namespace web { namespace rest { namespace service {
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*"), CPlugin::getOnePlugin);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("state"), CPlugin::getInstanceState);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("devices"), CPlugin::getPluginDevices);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("log"), CPlugin::getInstanceLog);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("binding")("*"), CPlugin::getBinding);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("*")("start"), CPlugin::startInstance);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("*")("stop"), CPlugin::stopInstance);
@@ -410,6 +411,31 @@ namespace web { namespace rest { namespace service {
       catch(...)
       {
          return CResult::GenerateError("unknown exception in stopping plugin instance");
+      }
+   }
+
+   shared::CDataContainer CPlugin::getInstanceLog(const std::vector<std::string> & parameters, const std::string & requestContent)
+   {
+      try
+      {
+         if(parameters.size()>1)
+         {
+            auto instanceId = boost::lexical_cast<int>(parameters[1]);
+
+            shared::CDataContainer result;
+            result.set("log", m_pluginManager->getInstanceLog(instanceId));
+            return CResult::GenerateSuccess(result);
+         }
+         
+         return CResult::GenerateError("invalid parameter. Can not retreive instance id in url");
+      }
+      catch(std::exception &ex)
+      {
+         return CResult::GenerateError(ex);
+      }
+      catch(...)
+      {
+         return CResult::GenerateError("unknown exception in get plugin instance log");
       }
    }
 

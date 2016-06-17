@@ -84,6 +84,13 @@ namespace pluginSystem
       void deleteInstance(int id);
 
       //--------------------------------------------------------------
+      /// \brief           Get the log of a plugin instance
+      /// \param [in] id   Instance to get the log
+      /// \return          The log of the instance, if available (empty string if not)
+      //--------------------------------------------------------------
+      std::string getInstanceLog(int id);
+
+      //--------------------------------------------------------------
       /// \brief           Get the plugin instances list
       /// \return          List of instances ID of all known instances, started or not
       //--------------------------------------------------------------

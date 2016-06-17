@@ -246,6 +246,16 @@ PluginInstanceManager.updateToServer = function (pluginInstance) {
 };
 
 /**
+ * Get the plugin instance log
+ * @param pluginInstance The plugin instance
+ * @return {Promise} The log
+ */
+PluginInstanceManager.getLog = function (pluginInstance) {
+	assert(!isNullOrUndefined(pluginInstance), "pluginInstance must be defined");
+	return RestEngine.getJson("rest/plugin/" + pluginInstance.id + "/log");
+}
+
+/**
  * Send an extra command to a plugin instance
  * @param pluginInstance The plugin instance
  * @param extraCommand   The extraCommand

@@ -153,6 +153,32 @@ namespace pluginSystem
       }
    }
 
+   std::string CManager::getInstanceLog(int id)
+   {
+      try
+      {
+         //ensure instance exists
+         auto instanceData = m_pluginDBTable->getInstance(id);
+
+         const auto logFile(m_factory->pluginLogFile(id));
+
+         if (!boost::filesystem::exists(logFile))
+            throw shared::exception::CInvalidParameter(logFile.string());
+
+         std::ifstream file(logFile.string().c_str());
+         if (!file.is_open())
+            throw shared::exception::CInvalidParameter(logFile.string());
+
+         std::istreambuf_iterator<char> eos;
+         return std::string(std::istreambuf_iterator<char>(file), eos);
+      }
+      catch (shared::exception::CException& e)
+      {
+         YADOMS_LOG(error) << "Unable to get instance log for id=(" << id << ") : " << e.what();
+         throw shared::exception::CInvalidParameter(boost::lexical_cast<std::string>(id));
+      }
+   }
+
    std::vector<boost::shared_ptr<database::entities::CPlugin> > CManager::getInstanceList() const
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);

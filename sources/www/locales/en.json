@@ -258,7 +258,11 @@
       }
     },
     "show-log-automation-rule": {
-      "title": "Automation rule edition log"
+      "title": "Automation rule log view"
+    },
+    "show-log-plugin": {
+      "title": "Plugin log view",
+	  "failToGetLog" : "Fail to get log for __pluginName__"
     },
     "qrcode": {
       "title": "QR Code de Yadoms",
@@ -359,6 +363,7 @@
           "packageError": "Invalid plugin",
           "configure": "Configure the plugin",
           "delete": "Delete the plugin",
+		  "log": "View log",
           "errorGettingPluginList": "An error has occurred acquiring plugin list",
           "confirmPluginDeletion": "This action will delete the plugin __pluginName__. Continue anyway ?"
         },
