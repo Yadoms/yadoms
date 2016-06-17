@@ -488,7 +488,13 @@
           }
         },
         "about": {
-          "title": "About"
+          "title": "About",
+		  "links": "Links",
+		  "licensesUse": "Yadoms uses ...",
+		  "YadomsWebsite": "Yadoms website",
+		  "ReportABug": "Report a bug",
+		  "github": "Yadoms github",
+		  "forum": "Forum"
         }
       },
       "unableToLoadSubWindow": "Unable to load sub window __subWindowPath__"
