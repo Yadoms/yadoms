@@ -22,7 +22,7 @@
   "hasTitle" :  true,
 	"configurationSchema": {
 		"device": {
-			"type": "device",
+			"type": "keyword",
 			"expectedCapacity": ["temperature"],
 			"expectedKeywordAccess": "get"
 		},

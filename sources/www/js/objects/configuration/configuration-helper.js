@@ -13,7 +13,7 @@ ConfigurationHelper.loadConfigurationLibs = function() {
         "js/objects/configuration/string-parameter-handler.js",
         "js/objects/configuration/bool-parameter-handler.js",
         "js/objects/configuration/section-parameter-handler.js",
-        "js/objects/configuration/device-parameter-handler.js",
+        "js/objects/configuration/keyword-parameter-handler.js",
         "js/objects/configuration/radio-section-parameter-handler.js",
         "js/objects/configuration/color-parameter-handler.js",
         "js/objects/configuration/icon-parameter-handler.js",
@@ -108,8 +108,8 @@ ConfigurationHelper.createParameterHandler = function (i18nContext, paramName, c
          return new RadioSectionParameterHandler(i18nContext, paramName, content, currentValue);
          break;
 
-      case "device" :
-         return new DeviceParameterHandler(i18nContext, paramName, content, currentValue);
+      case "keyword" :
+         return new KeywordParameterHandler(i18nContext, paramName, content, currentValue);
          break;
 
       case "color" :

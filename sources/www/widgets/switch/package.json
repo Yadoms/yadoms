@@ -34,7 +34,7 @@
 					"source": {
 						"name": "",
 						"description": "",					
-						"type": "device",
+						"type": "keyword",
 						"expectedCapacity": ["switch", "dimmable", "event"],
 						"expectedKeywordAccess": "getset"
 					}

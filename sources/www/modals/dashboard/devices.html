@@ -56,13 +56,19 @@
 
       DeviceManager.getAll()
       .done(function (allDevices) {
-         deviceList = sortListItemsWithFriendlyName ( allDevices );
-		 
-         //foreach result we append a <tr>
-         $.each(allDevices, function (index, value) {
-            addDeviceToDom(value, null);
-         });
-         d.resolve();
+      
+         YadomsInformationManager.getList()
+            .done(function (data) {      
+               deviceList = sortListItemsWithFriendlyName ( allDevices );
+             
+               //foreach result we append a <tr>
+               $.each(allDevices, function (index, value) {
+                  if( (!data.developerMode && (value.name !== "pluginState" || value.model !== "Plugin state")) || data.developerMode)
+                     addDeviceToDom(value, null);
+               });
+               d.resolve();
+            })
+            .fail(d.reject);
       })
       .fail(d.reject);
 
