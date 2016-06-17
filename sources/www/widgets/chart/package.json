@@ -71,9 +71,8 @@
 					"source": {
 						"name": "",
 						"description": "",
-						"type": "device",
-						"expectedKeywordType": ["numeric",
-						"bool"],
+						"type": "keyword",
+						"expectedKeywordType": ["numeric", "bool"],
 						"expectedKeywordAccess": "get"
 					},
 					"color": {

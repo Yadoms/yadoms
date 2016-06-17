@@ -3,8 +3,8 @@
 	"description": "Widget which send notification",
 	"configurationSchema": {
 		"device": {
-			"name": "Device",
-			"description": "Device used to send notification"
+			"name": "keyword",
+			"description": "Keyword used to send notification"
 		}
 	},
 	"text": "Send a notification",

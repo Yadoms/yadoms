@@ -20,7 +20,7 @@
 	},
 	"configurationSchema": {
 		"device": {
-			"type": "device",
+			"type": "keyword",
 			"expectedCapacity": ["Condition"],
 			"expectedKeywordAccess": "get"
 		}

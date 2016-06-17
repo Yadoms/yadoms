@@ -31,37 +31,43 @@
      * Ask for plugin types to the REST server
      */
    Yadoms.askPluginTypes = function(callback) {
-      $("select#pluginTypeList").empty();
 
-	  // Enter all Plugins into an array
-	  var tabPlugins = [];
+      YadomsInformationManager.getList()
+      .done(function (data) {      
+         $("select#pluginTypeList").empty();
+
+         // Enter all Plugins into an array
+         var tabPlugins = [];
 	  
-	  Object.keys(PluginManager.pluginTypes).forEach(function(key) {
-	     var value = PluginManager.pluginTypes[key];
-	     tabPlugins.push ( {type: value.type, friendlyName: $.t("plugins/" + value.type + ":name" ) });
-	  });
+         Object.keys(PluginManager.pluginTypes).forEach(function(key) {
+            if( (!data.developerMode && !key.startsWith("dev-")) || data.developerMode) {
+               var value = PluginManager.pluginTypes[key];
+               tabPlugins.push ( {type: value.type, friendlyName: $.t("plugins/" + value.type + ":name" ) });
+            }
+         });
 	  
-	  // sort each Plugins Name in the language selected
-	  tabPlugins = sortListItemsWithFriendlyName ( tabPlugins );
+         // sort each Plugins Name in the language selected
+         tabPlugins = sortListItemsWithFriendlyName ( tabPlugins );
 	  
-      //foreach element of the array
-	  $.each(tabPlugins, function(index, value) {
-         $("select#pluginTypeList").append("<option value=\"" + value.type + "\">" + value.friendlyName + "</option>");
+         //foreach element of the array
+         $.each(tabPlugins, function(index, value) {
+            $("select#pluginTypeList").append("<option value=\"" + value.type + "\">" + value.friendlyName + "</option>");
+         });
+
+         //event click on add plugin button
+         $("button#btn-confirm-add-plugin").unbind("click").bind("click", function() {
+            //we close the new plugin modal
+            $("div#new-plugin-modal").modal("hide");
+            var pluginType = $("select#pluginTypeList").val();
+            callback(PluginManager.pluginTypes[pluginType]);
+         });
+
+         //i18n
+         $("div#new-plugin-modal .modal-body").i18n();
+
+         //we display the modal
+         $('div#new-plugin-modal').modal({ backdrop: 'static' });
       });
-
-      //event click on add plugin button
-      $("button#btn-confirm-add-plugin").unbind("click").bind("click", function() {
-         //we close the new plugin modal
-         $("div#new-plugin-modal").modal("hide");
-         var pluginType = $("select#pluginTypeList").val();
-         callback(PluginManager.pluginTypes[pluginType]);
-      });
-
-      //i18n
-      $("div#new-plugin-modal .modal-body").i18n();
-
-      //we display the modal
-      $('div#new-plugin-modal').modal({ backdrop: 'static' });
    };
 
 </script>

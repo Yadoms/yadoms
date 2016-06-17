@@ -21,7 +21,7 @@
    },
    "configurationSchema": {
       "device" : {
-         "type" : "device",
+         "type" : "keyword",
          "expectedCapacity" : ["Forecast"],
          "expectedKeywordAccess" : "get"
       },
