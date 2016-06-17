@@ -495,7 +495,13 @@
           }
         },
         "about": {
-          "title": "A propos"
+          "title": "A propos",
+		  "links": "Liens utiles",
+		  "licensesUse": "Yadoms utilise ...",
+		  "YadomsWebsite": "Site web de Yadoms",
+		  "ReportABug": "Signaler un bug",
+		  "github": "Yadoms sur github",
+		  "forum": "Forum"
         }
       },
       "unableToLoadSubWindow": "Impossible d'afficher la fenêtre __subWindowPath__"
