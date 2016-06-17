@@ -489,7 +489,7 @@ BOOST_AUTO_TEST_CASE(Path)
 
 BOOST_AUTO_TEST_CASE(SimpleConstruction)
 {
-   BOOST_CHECK_NO_THROW(shared::CDataContainer dc("1"));
+   BOOST_CHECK_THROW(shared::CDataContainer dc("1"), std::exception);
 }
 
 
