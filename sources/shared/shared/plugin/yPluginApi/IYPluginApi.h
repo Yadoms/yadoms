@@ -50,7 +50,7 @@ namespace shared
                kEventStopRequested = event::kUserFirstId, // Yadoms requests the plugin to stop
                kEventUpdateConfiguration, // Yadoms notify the plugin that its configuration was changed
                kEventDeviceCommand, // Yadoms send a command to a device managed by this plugin
-               kEventManuallyDeviceCreationTest, // Yadoms ask the plugin to test a device with provided parameters, before to create it (TODO : not yet implemented)
+               kEventManuallyDeviceCreationTest, // Yadoms ask the plugin to test a device with provided parameters, before to create it (TODO_V2 : not yet implemented)
                kEventManuallyDeviceCreation, // Yadoms ask the plugin to create a device
                kEventExtraCommand, // Yadoms send extra command to plugin
                kBindingQuery, // Yadoms ask the plugin a binding query

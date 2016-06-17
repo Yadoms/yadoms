@@ -21,7 +21,7 @@ CEventTimePoint::~CEventTimePoint()
 
 void CEventTimePoint::set(const boost::posix_time::ptime& dateTime)
 {
-   if (dateTime.is_special() || dateTime <= currentTime::Provider::now())
+   if (dateTime.is_special() || dateTime <= currentTime::Provider().now())
       throw exception::CInvalidParameter("Provided dateTime value is not valid, or not in the future");
    m_dateTime = dateTime;
 }

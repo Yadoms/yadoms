@@ -17,7 +17,7 @@ namespace dataAccessLayer
 	void CAcquisitionHistorizer::saveData(int keywordId, const shared::plugin::yPluginApi::historization::IHistorizable & data)
 	{
 		//use ptime as variable, because saveData needs a reference
-	   auto currentDate = shared::currentTime::Provider::now();
+	   auto currentDate = shared::currentTime::Provider().now();
 
 		//get current transactional engine
 	   auto transactionalEngine = m_dataProvider->getTransactionalEngine();
@@ -47,7 +47,7 @@ namespace dataAccessLayer
 	void CAcquisitionHistorizer::saveData(std::vector<int> keywordIdVect, const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> > & dataVect)
 	{
 		//use ptime as variable, because saveData needs a reference
-	   auto currentDate = shared::currentTime::Provider::now();
+	   auto currentDate = shared::currentTime::Provider().now();
 
 		//get current transactional engine
 	   auto transactionalEngine = m_dataProvider->getTransactionalEngine();

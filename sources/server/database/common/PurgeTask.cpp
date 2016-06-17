@@ -32,7 +32,7 @@ namespace common {
             YADOMS_LOG_CONFIGURE("Database purge task");
 
             //determine minimum datetime
-            boost::posix_time::ptime now(shared::currentTime::Provider::now().date());
+            boost::posix_time::ptime now(shared::currentTime::Provider().now().date());
             boost::posix_time::time_duration realDuration = boost::posix_time::hours(24 * m_acquisitionLifetimeDays);
             boost::posix_time::ptime purgeDate = now - realDuration;
 

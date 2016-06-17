@@ -5,7 +5,7 @@
 #include "Version.h"
 
 CRunningInformation::CRunningInformation(const std::string & path)
-   :m_startupDateTime(shared::currentTime::Provider::now()),
+   :m_startupDateTime(shared::currentTime::Provider().now()),
    m_softwareVersion(shared::versioning::CVersion(YadomsVersion), YadomsReleaseType), m_executablePath(path)
 {
 }

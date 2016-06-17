@@ -44,7 +44,7 @@ namespace xplcore
          while (!m_stopHubRequested) //we don't need locking here - connected is just a boolean
          {
 
-            if (shared::currentTime::Provider::now() > m_nextHeartbeatTime)
+            if (shared::currentTime::Provider().now() > m_nextHeartbeatTime)
             {
                //ensure that if not reconfigure, the next time it do not come here
                m_nextHeartbeatTime = boost::posix_time::max_date_time;
@@ -194,7 +194,7 @@ namespace xplcore
 
    void CXplHub::runCheckApplicationLifeCycleTimeout()
    {
-      m_nextHeartbeatTime = shared::currentTime::Provider::now() + boost::posix_time::seconds(ApplicationLifeCycleTimeout);
+      m_nextHeartbeatTime = shared::currentTime::Provider().now() + boost::posix_time::seconds(ApplicationLifeCycleTimeout);
    }
 
    void CXplHub::checkApplicationLifeCycle()
@@ -207,7 +207,7 @@ namespace xplcore
             //we check inactivity using the rule : last seen time + (interval * 2) + 1 minutes < now then periph has died
             boost::posix_time::ptime timeoutAt = m_discoveredPeripherals[i]->getLastTimeSeen() + boost::posix_time::minutes(m_discoveredPeripherals[i]->getInterval() * 2 + 1);
 
-            if (timeoutAt < shared::currentTime::Provider::now())
+            if (timeoutAt < shared::currentTime::Provider().now())
             {
                //we must delete the peripheral
                std::cout << "Delete peripheral with port " << m_discoveredPeripherals[i]->getPortNumber() << std::endl;

@@ -22,7 +22,7 @@ CFakeSensor::CFakeSensor(const std::string& deviceName)
    m_batteryLevel->set(100);
    m_current->set(2);
    m_rssi->set(50);
-   m_dateTime->set(shared::currentTime::Provider::now());
+   m_dateTime->set(shared::currentTime::Provider().now());
 }
 
 CFakeSensor::~CFakeSensor()
@@ -57,7 +57,7 @@ void CFakeSensor::read()
       m_batteryLevel->set(m_batteryLevel->get() - 1);
 
    //set the current date time onto m_datetime keyword
-   m_dateTime->set(shared::currentTime::Provider::now());
+   m_dateTime->set(shared::currentTime::Provider().now());
 
    // Generate a random variation on temperature (+/- 0 to 1°)
    offset = static_cast<int>(m_dist(m_gen) - 10.0) / 10.0; // Random offset, value from -1.0 to 1.0

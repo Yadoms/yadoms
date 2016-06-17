@@ -9,31 +9,42 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	   The current time provider interface
       //--------------------------------------------------------------
-      class YADOMS_SHARED_EXPORT Provider
+      class YADOMS_SHARED_EXPORT CProvider
       {
       public:
          //--------------------------------------------------------------
          /// \brief	   Constructor (initialize the static object)
+         /// \param[in] timeInstance Time to use as provider
          //--------------------------------------------------------------
-         explicit Provider(boost::shared_ptr<ICurrentTime> currentTimeInstance);
+         explicit CProvider(boost::shared_ptr<ICurrentTime> timeInstance);
 
          //--------------------------------------------------------------
          /// \brief	   Destructor
          //--------------------------------------------------------------
-         virtual ~Provider();
+         virtual ~CProvider();
+
+         //--------------------------------------------------------------
+         /// \brief	   Set time provider instance
+         /// \param[in] timeInstance The time instance to used
+         /// \return Now
+         //--------------------------------------------------------------
+         void setProvider(boost::shared_ptr<ICurrentTime> timeInstance);
 
          //--------------------------------------------------------------
          /// \brief	   Returns now time
          /// \return Now
          //--------------------------------------------------------------
-         static boost::posix_time::ptime now();
+         boost::posix_time::ptime now();
 
       private:
          //--------------------------------------------------------------
          /// \brief	   The currentTime object
          //--------------------------------------------------------------
-         static boost::shared_ptr<ICurrentTime> CurrentTimeInstance;
+         boost::shared_ptr<ICurrentTime> m_currentTimeInstance;
       };
+
+      // The time provider instance
+      YADOMS_SHARED_EXPORT CProvider& Provider();
    }
 } // namespace shared::currentTime
 

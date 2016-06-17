@@ -388,7 +388,7 @@ namespace automation
       boost::shared_ptr<database::entities::CRule> ruleData(boost::make_shared<database::entities::CRule>());
       ruleData->Id = ruleId;
       ruleData->State = database::entities::ERuleState::kRunning;
-      ruleData->StartDate = shared::currentTime::Provider::now();
+      ruleData->StartDate = shared::currentTime::Provider().now();
       ruleData->ErrorMessage = std::string();
       m_ruleRequester->updateRule(ruleData);
    }
@@ -398,7 +398,7 @@ namespace automation
       boost::shared_ptr<database::entities::CRule> ruleData(new database::entities::CRule);
       ruleData->Id = ruleId;
       ruleData->State = error.empty() ? database::entities::ERuleState::kStopped : database::entities::ERuleState::kError;
-      ruleData->StopDate = shared::currentTime::Provider::now();
+      ruleData->StopDate = shared::currentTime::Provider().now();
       ruleData->ErrorMessage = error;
       m_ruleRequester->updateRule(ruleData);
    }

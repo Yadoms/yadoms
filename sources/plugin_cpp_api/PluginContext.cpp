@@ -4,7 +4,6 @@
 #include "CommandLine.h"
 #include <shared/currentTime/Local.h>
 
-shared::currentTime::Provider timeProvider(boost::make_shared<shared::currentTime::Local>());
 
 namespace plugin_cpp_api
 {
@@ -13,6 +12,7 @@ namespace plugin_cpp_api
         m_plugin(plugin),
         m_returnCode(kOk)
    {
+      shared::currentTime::Provider().setProvider(boost::make_shared<shared::currentTime::Local>());
    }
 
    CPluginContext::~CPluginContext()
