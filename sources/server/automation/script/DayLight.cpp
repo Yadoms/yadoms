@@ -412,7 +412,7 @@ CDayLight::~CDayLight()
 
 boost::posix_time::ptime CDayLight::sunEventTime(bool sunrise)
 {
-   boost::posix_time::ptime now = shared::currentTime::Provider::now();
+   boost::posix_time::ptime now = shared::currentTime::Provider().now();
    if (m_lastCalculationDate.date() != now.date())
    {
       m_lastCalculationDate = now;

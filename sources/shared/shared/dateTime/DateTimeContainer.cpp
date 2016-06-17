@@ -6,7 +6,7 @@
 namespace shared { namespace dateTime {
 
    CDateTimeContainer::CDateTimeContainer()
-      :m_time(shared::currentTime::Provider::now())
+      :m_time(shared::currentTime::Provider().now())
    {
    }
 

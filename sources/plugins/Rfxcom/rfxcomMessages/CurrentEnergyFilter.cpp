@@ -9,16 +9,19 @@ static const int NbOccurencesToBeValid = 3;
 bool CCurrentEnergyFilter::isValid(const std::string& deviceName)
 {
    // Add the new device
-   m_recentlySeenDevices.push_back(std::pair<boost::posix_time::ptime, std::string>(shared::currentTime::Provider::now(), deviceName));
+   m_recentlySeenDevices.push_back(std::pair<boost::posix_time::ptime, std::string>(shared::currentTime::Provider().now(), deviceName));
 
    // Remove too old elements
-   auto tooOldThreshold = shared::currentTime::Provider::now() - boost::posix_time::hours(12);
-   m_recentlySeenDevices.erase(std::remove_if(m_recentlySeenDevices.begin(),
-                                              m_recentlySeenDevices.end(),
-                                              [&](std::pair<boost::posix_time::ptime, std::string> value)
-                                              {
-                                                 return value.first < tooOldThreshold;
-                                              }));
+   auto tooOldThreshold = shared::currentTime::Provider().now() - boost::posix_time::hours(12);
+   {
+      m_recentlySeenDevices.erase(std::remove_if(m_recentlySeenDevices.begin(),
+                                                 m_recentlySeenDevices.end(),
+                                                 [&](std::pair<boost::posix_time::ptime, std::string> value)
+                                                 {
+                                                    return value.first < tooOldThreshold;
+                                                 }),
+                                  m_recentlySeenDevices.end());
+   }
 
    // Count occurences of this device
    auto nbOccurences = 0;
@@ -43,7 +46,8 @@ bool CCurrentEnergyFilter::isValid(const std::string& deviceName)
                                                  [&](std::pair<boost::posix_time::ptime, std::string> value)
                                                  {
                                                     return value.second == deviceName;
-                                                 }));
+                                                 }),
+                                  m_recentlySeenDevices.end());
    }
 
    return isValid;

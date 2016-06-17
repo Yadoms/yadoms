@@ -76,7 +76,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          case yApi::IYPluginApi::kEventManuallyDeviceCreationTest:
             {
                // Yadoms asks for test device parameters to check if it works before creating it. So just send command, don't declare anything.
-               //TODO not yet implemented
+               //TODO_V2 not yet implemented
                //boost::shared_ptr<const yApi::IManuallyDeviceCreationTestData> data = api->getEventHandler().getEventData<const boost::shared_ptr<yApi::IManuallyDeviceCreationTestData> >();
                //onCommand(api, data->getCommand());
 

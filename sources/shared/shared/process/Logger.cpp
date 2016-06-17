@@ -54,7 +54,7 @@ namespace shared
          boost::posix_time::time_facet* facet(new boost::posix_time::time_facet());
          facet->format("%Y/%m/%d %H:%M:%S");
          dateStream.imbue(std::locale(std::locale::classic(), facet));
-         dateStream << currentTime::Provider::now();
+         dateStream << currentTime::Provider().now();
          return dateStream.str();
       }
 

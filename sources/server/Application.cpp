@@ -11,15 +11,12 @@
 #include "ErrorHandler.h"
 #include "RunningInformation.h"
 #include "PathProvider.h"
-#include <shared/currentTime/Provider.h>
-#include <shared/currentTime/Local.h>
 #include <shared/ServiceLocator.h>
 #include <shared/process/ApplicationStopHandler.h>
 
 //define the main entry point
 POCO_SERVER_MAIN(CYadomsServer)
 
-shared::currentTime::Provider timeProvider(boost::make_shared<shared::currentTime::Local>());
 
 CYadomsServer::CYadomsServer()
    : m_helpRequested(false),

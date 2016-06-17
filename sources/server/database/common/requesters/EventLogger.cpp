@@ -25,7 +25,7 @@ namespace database { namespace common { namespace requesters {
 
    int CEventLogger::addEvent(const entities::ESystemEventCode & eventCode, const std::string & who, const std::string & what)
    {
-      boost::posix_time::ptime insertDate = shared::currentTime::Provider::now();
+      boost::posix_time::ptime insertDate = shared::currentTime::Provider().now();
 
       CQuery qInsert = m_databaseRequester->newQuery();
       qInsert. InsertInto(CEventLoggerTable::getTableName(), CEventLoggerTable::getCodeColumnName(), CEventLoggerTable::getWhoColumnName(), CEventLoggerTable::getWhatColumnName(), CEventLoggerTable::getDateColumnName()).

@@ -41,7 +41,7 @@ public:
       // Clean-up
       testCommon::filesystem::RemoveFile(m_configFile, false);
    }
-   void writeSettings(std::string setting, std::string value)
+   void writeSettings(std::string setting, std::string value) const
    {
       std::ofstream file(m_configFile.c_str(), std::ios_base::out | std::ios_base::app);
       file << setting << " = " << value << "\n";
@@ -84,7 +84,7 @@ public:
       m_options.defineOptions(os);
       Poco::Util::OptionProcessor processor(os);
       processor.setUnixStyle(unixStyle);
-      for (int i = 0; i < argc; ++i)
+      for (auto i = 0; i < argc; ++i)
       {
          std::string name;
          std::string value;
@@ -99,7 +99,6 @@ public:
       processor.checkRequired();
    }
 
-public:
    startupOptions::CStartupOptions & options() { return m_options; }
    Poco::Util::AbstractConfiguration & config() { return m_config; }
 
@@ -143,10 +142,10 @@ private:
 
 BOOST_AUTO_TEST_CASE(Initialisation_Test)
 {
-   CStartupOptionMokeup loader(0, NULL, true);
+   CStartupOptionMokeup loader(0, nullptr, true);
 
    BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information");
-   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), (unsigned int)8080);
+   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080));
    BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www");
    BOOST_CHECK_EQUAL(loader.options().getDatabaseSqliteFile(), "yadoms.db3");
@@ -185,12 +184,12 @@ BOOST_AUTO_TEST_CASE(helpRequestShort)
 
 BOOST_AUTO_TEST_CASE(Different_Port_p_Initialisation)
 {
-   char *argv[] = { "./TestLoader", "-port:2000" };
+   char *argv[] = { "./TestLoader", "--port:2000" };
 
    CStartupOptionMokeup loader(2, argv, true);
 
    BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information");
-   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), (unsigned int)2000);
+   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(2000));
    BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www");
    BOOST_CHECK_EQUAL(loader.options().getDatabaseSqliteFile(), "yadoms.db3");
@@ -215,7 +214,7 @@ BOOST_AUTO_TEST_CASE(Different_Port_port_Initialisation)
    CStartupOptionMokeup loader(3, argv, true);
 
    BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information");
-   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), (unsigned int)2000);
+   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(2000));
    BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www");
    BOOST_CHECK_EQUAL(loader.options().getDatabaseSqliteFile(), "yadoms.db3");
@@ -240,7 +239,7 @@ BOOST_AUTO_TEST_CASE(Different_Port_por_Initialisation)
    CStartupOptionMokeup loader(3, argv, true);
 
    BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information");
-   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), (unsigned int)2000);
+   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(2000));
    BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www");
    BOOST_CHECK_EQUAL(loader.options().getDatabaseSqliteFile(), "yadoms.db3");
@@ -285,12 +284,12 @@ BOOST_AUTO_TEST_CASE(Port_Initialisation_Error2)
 
 BOOST_AUTO_TEST_CASE(Different_Database_databaseFile_Initialisation)
 {
-   char *argv[] = { "./TestLoader", "--databaseFile:toto.db3"  };
+   char *argv[] = { "./TestLoader", "--databaseSqliteFile:toto.db3"  };
 
    CStartupOptionMokeup loader(2, argv, true);
 
    BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information");
-   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), (unsigned int)8080);
+   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080));
    BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www");
    BOOST_CHECK_EQUAL(loader.options().getDatabaseSqliteFile(), "toto.db3");
@@ -315,7 +314,7 @@ BOOST_AUTO_TEST_CASE(Different_Database_d_Initialisation)
    CStartupOptionMokeup loader(2, argv, true);
 
    BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information");
-   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), (unsigned int)8080);
+   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080));
    BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www");
    BOOST_CHECK_EQUAL(loader.options().getDatabaseSqliteFile(), "toto.db3");
@@ -340,7 +339,7 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_trace_Initialisation)
    CStartupOptionMokeup loader(2, argv, true);
 
    BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "trace");
-   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), (unsigned int)8080);
+   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080));
    BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www");
    BOOST_CHECK_EQUAL(loader.options().getDatabaseSqliteFile(), "yadoms.db3");
@@ -365,7 +364,7 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_debug_Initialisation)
    CStartupOptionMokeup loader(2, argv, true);
 
    BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "debug");
-   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), (unsigned int)8080);
+   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080));
    BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www");
    BOOST_CHECK_EQUAL(loader.options().getDatabaseSqliteFile(), "yadoms.db3");
@@ -390,7 +389,7 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_info_Initialisation)
    CStartupOptionMokeup loader(2, argv, true);
 
    BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information");
-   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), (unsigned int)8080);
+   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080));
    BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www");
    BOOST_CHECK_EQUAL(loader.options().getDatabaseSqliteFile(), "yadoms.db3");
@@ -415,7 +414,7 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_warning_Initialisation)
    CStartupOptionMokeup loader(2, argv, true);
 
    BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "warning");
-   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), (unsigned int)8080);
+   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080));
    BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www");
    BOOST_CHECK_EQUAL(loader.options().getDatabaseSqliteFile(), "yadoms.db3");
@@ -440,7 +439,7 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_error_Initialisation)
    CStartupOptionMokeup loader(2, argv, true);
 
    BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "error");
-   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), (unsigned int)8080);
+   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080));
    BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www");
    BOOST_CHECK_EQUAL(loader.options().getDatabaseSqliteFile(), "yadoms.db3");
@@ -465,7 +464,7 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_fatal_Initialisation)
    CStartupOptionMokeup loader(2, argv, true);
 
    BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "fatal");
-   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), (unsigned int)8080);
+   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080));
    BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www");
    BOOST_CHECK_EQUAL(loader.options().getDatabaseSqliteFile(), "yadoms.db3");
@@ -491,7 +490,7 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_notice_Initialisation)
    CStartupOptionMokeup loader(2, argv, true);
 
    BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "notice");
-   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), (unsigned int)8080);
+   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080));
    BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www");
    BOOST_CHECK_EQUAL(loader.options().getDatabaseSqliteFile(), "yadoms.db3");
@@ -516,7 +515,7 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_critical_Initialisation)
    CStartupOptionMokeup loader(2, argv, true);
 
    BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "critical");
-   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), (unsigned int)8080);
+   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080));
    BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www");
    BOOST_CHECK_EQUAL(loader.options().getDatabaseSqliteFile(), "yadoms.db3");
@@ -541,7 +540,7 @@ BOOST_AUTO_TEST_CASE(All_Loggerlevels)
    {
       std::string opt("-l");
       opt += *it;
-      char *argv[] = { "./TestLoader", (char*)opt.c_str() };
+      char *argv[] = { "./TestLoader", const_cast<char*>(opt.c_str()) };
       CStartupOptionMokeup loader(2, argv, true);
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), *it);
    }
@@ -581,7 +580,7 @@ BOOST_AUTO_TEST_CASE(Different_IP_i_Initialisation)
    CStartupOptionMokeup loader(2, argv, true);
 
    BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information");
-   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), (unsigned int)8080);
+   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080));
    BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "192.168.1.1");
    BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www");
    BOOST_CHECK_EQUAL(loader.options().getDatabaseSqliteFile(), "yadoms.db3");
@@ -606,7 +605,7 @@ BOOST_AUTO_TEST_CASE(Different_IP_webServerIp_Initialisation)
    CStartupOptionMokeup loader(2, argv, true);
 
    BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information");
-   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), (unsigned int)8080);
+   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080));
    BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "192.168.1.1");
    BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www");
    BOOST_CHECK_EQUAL(loader.options().getDatabaseSqliteFile(), "yadoms.db3");
@@ -654,12 +653,12 @@ BOOST_AUTO_TEST_CASE(Different_WebServer_w_Initialisation)
    std::string arg = "-w";
    arg += testNewWebServerPath;
 
-   char *argv[] = { "./TestLoader", (char*)arg.c_str() };
+   char *argv[] = { "./TestLoader", const_cast<char*>(arg.c_str()) };
 
    CStartupOptionMokeup loader(2, argv, true);
 
    BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information");
-   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), (unsigned int)8080);
+   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080));
    BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), testNewWebServerPath);
    BOOST_CHECK_EQUAL(loader.options().getDatabaseSqliteFile(), "yadoms.db3");
@@ -682,12 +681,12 @@ BOOST_AUTO_TEST_CASE(Different_WebServer_webServerPath_Initialisation)
    CTestPath webServerPath(testNewWebServerPath);
    std::string arg = "--webServerPath:";
    arg += testNewWebServerPath;
-   char *argv[] = { "./TestLoader", (char*)arg.c_str() };
+   char *argv[] = { "./TestLoader", const_cast<char*>(arg.c_str()) };
    
    CStartupOptionMokeup loader(2, argv, true);
 
    BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information");
-   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), (unsigned int)8080);
+   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080));
    BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), testNewWebServerPath);
    BOOST_CHECK_EQUAL(loader.options().getDatabaseSqliteFile(), "yadoms.db3");
@@ -712,7 +711,7 @@ BOOST_AUTO_TEST_CASE(Different_WebServer_webServerPath_WrongPath)
    std::string arg = "--webServerPath:";
    arg += testFalsePath;
    
-   char *argv[] = { "./TestLoader", (char*)arg.c_str() };
+   char *argv[] = { "./TestLoader", const_cast<char*>(arg.c_str()) };
 
    BOOST_CHECK_THROW(CStartupOptionMokeup loader(2, argv, true), Poco::Exception);
 }
@@ -730,16 +729,16 @@ BOOST_AUTO_TEST_CASE(All_Options1)
    {
       "./TestLoader",
       "--port", "8085",
-      "--databaseFile", "test.db3",
+      "--databaseSqliteFile", "test.db3",
       "--webServerIp", "192.168.1.3",
-      "--webServerPath", (char*)testNewWebServerPath.c_str(),
+      "--webServerPath", const_cast<char*>(testNewWebServerPath.c_str()),
       "--logLevel", "warning"
    };
 
    CStartupOptionMokeup loader(11, argv, true);
 
    BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "warning");
-   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), (unsigned int)8085);
+   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8085));
    BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "192.168.1.3");
    BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), testNewWebServerPath);
    BOOST_CHECK_EQUAL(loader.options().getDatabaseSqliteFile(), "test.db3");
@@ -771,13 +770,13 @@ BOOST_AUTO_TEST_CASE(All_Options2)
       "-Dtest.db3",
       "-i192.168.1.3",
       "-lwarning",
-      (char*)arg.c_str()
+      const_cast<char*>(arg.c_str())
    };
 
    CStartupOptionMokeup loader(6, argv, true);
 
    BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "warning");
-   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), (unsigned int)8085);
+   BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8085));
    BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "192.168.1.3");
    BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), testNewWebServerPath);
    BOOST_CHECK_EQUAL(loader.options().getDatabaseSqliteFile(), "test.db3");
