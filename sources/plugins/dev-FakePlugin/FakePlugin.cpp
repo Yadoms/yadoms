@@ -224,7 +224,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                else if (extraCommand->getCommand() == "changePluginStateMessage")
                {
                   auto message = extraCommand->getData().get<std::string>("newStateMessage");
-                  api->setPluginState(shared::plugin::yPluginApi::historization::EPluginState::kCustom, "newCustomStateMessage", "messageFromExtraCommand", message);
+                  api->setPluginState(shared::plugin::yPluginApi::historization::EPluginState::kCustom, "newCustomStateMessage", { { "messageFromExtraCommand", message } });
                }
             }
             break;

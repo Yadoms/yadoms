@@ -81,42 +81,17 @@ namespace shared
             //----------------------------------------------------------------------------------------------------------------
             //----------------------------------------------------------------------------------------------------------------
             //----------------------------------------------------------------------------------------------------------------
-
             //-----------------------------------------------------
-            ///\brief Set the current plugin state (with optional custom message parameter)
-            ///\param    [in]    state             The new state
-            ///\param    [in]    customMessageId   The associated message ID (translatable in the locales file of the plugin). Ignored if state != kCustom or kError. (ie: 'i18nStringId' , with 'i18nStringId' : 'Message __something__ received')
-            ///\param    [in]    customMessageData The message data (used as translation parameters). Ignored if state != kCustom or kError.   (ie: '{ "something" : "yadoms is so powerfull" } ', then after i18n process  'Message yadoms is so powerfull received')
+
+            ///\brief Set the current plugin state
+            ///\param    [in]    state                   The new state
+            ///\param    [in]    customMessageId         The associated message ID (translatable in the locales file of the plugin). Ignored if state != kCustom or kError. (ie: 'i18nStringId' , with 'i18nStringId' : 'Message __something__ received')
+            ///\param    [in]    customMessageDataParams The message data parameters (map<name, value> ) (used as translation parameters). Ignored if state != kCustom or kError.   
             ///\note In case of setting states kError or kStopped, plugin must be effectively stopped within 10 seconds or it will be killed.
             //-----------------------------------------------------
             virtual void setPluginState(const historization::EPluginState& state,
                                         const std::string& customMessageId = shared::CStringExtension::EmptyString,
-                                        const std::string& customMessageData = shared::CStringExtension::EmptyString) = 0;
-
-            //-----------------------------------------------------
-            ///\brief Set the current plugin state (with single message data parameter)
-            ///\param    [in]    state                   The new state
-            ///\param    [in]    customMessageId         The associated message ID (translatable in the locales file of the plugin). Ignored if state != kCustom or kError. (ie: 'i18nStringId' , with 'i18nStringId' : 'Message __something__ received')
-            ///\param    [in]    customMessageDataParam  The message data parameter name (used as translation parameters). Ignored if state != kCustom or kError.   (ie: 'something')
-            ///\param    [in]    customMessageDataValue  The message data parameter value (used as translation parameters). Ignored if state != kCustom or kError.   (ie: 'yadoms is so powerfull')
-            ///\note In case of setting states kError or kStopped, plugin must be effectively stopped within 10 seconds or it will be killed.
-            //-----------------------------------------------------
-            virtual void setPluginState(const historization::EPluginState& state,
-                                        const std::string& customMessageId,
-                                        const std::string& customMessageDataParam,
-                                        const std::string& customMessageDataValue) = 0;
-
-            //-----------------------------------------------------
-            ///\brief Set the current plugin state (with multiple message data prameters)
-            ///\param    [in]    state                   The new state
-            ///\param    [in]    customMessageId         The associated message ID (translatable in the locales file of the plugin). Ignored if state != kCustom or kError. (ie: 'i18nStringId' , with 'i18nStringId' : 'Message __something__ received')
-            ///\param    [in]    customMessageDataParams The message data parameters (map<name, value> ) (used as translation parameters). Ignored if state != kCustom or kError.   
-            ///\param    [in]    customMessageDataValue  The message data parameter value (used as translation parameters). Ignored if state != kCustom or kError.  
-            ///\note In case of setting states kError or kStopped, plugin must be effectively stopped within 10 seconds or it will be killed.
-            //-----------------------------------------------------
-            virtual void setPluginState(const historization::EPluginState& state,
-                                        const std::string& customMessageId,
-                                        const std::map<std::string, std::string> & customMessageDataParams) = 0;
+                                        const std::map<std::string, std::string> & customMessageDataParams = std::map<std::string, std::string>()) = 0;
 
 
             //----------------------------------------------------------------------------------------------------------------

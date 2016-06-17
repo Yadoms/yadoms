@@ -235,9 +235,11 @@ namespace plugin_cpp_api
       m_pluginEventHandler.postEvent(kEventManuallyDeviceCreation, request);
    }
 
+
+
    void CApiImplementation::setPluginState(const shared::plugin::yPluginApi::historization::EPluginState& state,
-                                           const std::string& customMessageId,
-                                           const std::string& customMessageData)
+      const std::string& customMessageId,
+      const std::map<std::string, std::string> & customMessageDataParams)
    {
       toYadoms::msg req;
       auto request = req.mutable_pluginstate();
@@ -257,34 +259,10 @@ namespace plugin_cpp_api
          throw std::out_of_range((boost::format("CApiImplementation::setPluginState, unknown state %1%") % state).str());
       }
       request->set_custommessageid(customMessageId);
-      request->set_custommessagedata(customMessageData);
+
+      shared::CDataContainer dc(customMessageDataParams);
+      request->set_custommessagedata(dc.serialize());
       send(req);
-   }
-
-
-   void CApiImplementation::setPluginState(const shared::plugin::yPluginApi::historization::EPluginState& state,
-      const std::string& customMessageId,
-      const std::string& customMessageDataParam,
-      const std::string& customMessageDataValue)
-   {
-      std::map<std::string, std::string> mp;
-      mp[customMessageDataParam] = customMessageDataValue;
-      setPluginState(state, customMessageId, mp);
-   }
-
-
-   void CApiImplementation::setPluginState(const shared::plugin::yPluginApi::historization::EPluginState& state,
-      const std::string& customMessageId,
-      const std::map<std::string, std::string> & customMessageDataParams)
-   {
-      //convert map to dataContainer
-      shared::CDataContainer dc;
-      std::map<std::string, std::string>::const_iterator i;
-      for (i = customMessageDataParams.begin(); i != customMessageDataParams.end(); ++i)
-         dc.set(i->first, i->second);
-
-      std::string customMessageDataSerialized = dc.serialize(); //use variable to allow use of reference parameter
-      setPluginState(state, customMessageId, customMessageDataSerialized);
    }
 
    bool CApiImplementation::deviceExists(const std::string& device) const
