@@ -56,13 +56,17 @@ void CMSConfiguration::initializeWith(const shared::CDataContainer &data)
       }
       else 
       {
-         m_ServerName = m_data.get<std::string>("account.content.other.SMTPServer");
-         m_ServerPort = m_data.get<Poco::UInt16>("account.content.other.SMTPPort");
-         m_kSecurityMode = m_data.get<ESecurityMode>("account.content.other.Security");
-         m_bRequireAuthentication = m_data.get<bool>("account.content.other.authentication.checkbox");
-         m_UserAccount = m_data.get<std::string>("account.content.other.authentication.content.user");
+         m_ServerName = m_data.get<std::string>("account.content.other.content.SMTPServer");
+         m_ServerPort = m_data.get<Poco::UInt16>("account.content.other.content.SMTPPort");
+         m_kSecurityMode = m_data.get<ESecurityMode>("account.content.other.content.Security");
+         m_bRequireAuthentication = m_data.get<bool>("account.content.other.content.authentication.checkbox");
+         m_UserAccount = m_data.get<std::string>("account.content.other.content.authentication.content.user");
          m_Password = shared::encryption::CXor::decryptBase64(m_data.get<std::string>("account.content.other.content.authentication.content.password"));
       }
+   }
+   catch (shared::exception::CInvalidParameter &ip)
+   {
+      YADOMS_LOG(error) << "Invalid configuration : " << ip.what() << std::endl;
    }
    catch (boost::thread_interrupted&)
    {

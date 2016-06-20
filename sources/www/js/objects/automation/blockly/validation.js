@@ -73,7 +73,10 @@ Blockly.Validation.clearInvalidBlocks = function () {
 Blockly.Validation.isBlockValid = function (block) {
 
     if (block != null) {
-        var currentBlockValid = true;
+        var currentBlockValid =  {
+			isValid : true,
+			message : ''
+		};
 
         if ($.isFunction(block.isValid)) {
             currentBlockValid = block.isValid();
@@ -82,14 +85,14 @@ Blockly.Validation.isBlockValid = function (block) {
             }
         }
 
-         if (currentBlockValid) {
+         if (currentBlockValid.isValid === true) {
 				
 		    //check for any empty input
 		    $.each(block.inputList, function(index, subBlock) {
 			   if (subBlock.connection != null && subBlock.isVisible()) {
 			      if ((subBlock.connection.targetConnection == null || subBlock.connection.targetConnection == undefined) && subBlock.type === Blockly.INPUT_VALUE) {
 				     Blockly.Validation.setBlockInvalid(subBlock.sourceBlock_, "missingInputBlock");
-				     currentBlockValid = false;
+				     currentBlockValid.isValid = false;
 			      }
 			   }
 		    });		  
@@ -98,11 +101,11 @@ Blockly.Validation.isBlockValid = function (block) {
 			//check that all childs are valid
 			$.each(block.getChildren(), function(index, subBlock) {
 				if(!Blockly.Validation.isBlockValid(subBlock))
-					currentBlockValid = false;
+					currentBlockValid.isValid = false;
             });
         }
 		
-        return currentBlockValid;
+        return currentBlockValid.isValid;
     }
     return false;
 };
