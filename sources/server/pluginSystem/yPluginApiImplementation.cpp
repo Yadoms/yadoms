@@ -34,12 +34,14 @@ namespace pluginSystem
       for (i = customMessageDataParams.begin(); i != customMessageDataParams.end(); ++i)
          dc.set(i->first, i->second);
 
-      std::string customMessageDataSerialized = dc.serialize(); //use variable to allow use of reference parameter
+      auto customMessageDataSerialized = dc.serialize(); //use variable to allow use of reference parameter
       m_instanceStateHandler->setState(state, customMessageId, customMessageDataSerialized);
    }
 
    bool CYPluginApiImplementation::deviceExists(const std::string& device) const
    {
+      YADOMS_LOG(debug) << "deviceExists : getPluginId() = " << getPluginId();//TODO virer
+
       return m_deviceManager->deviceExists(getPluginId(), device);
    }
 

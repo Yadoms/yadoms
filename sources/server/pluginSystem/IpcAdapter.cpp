@@ -169,6 +169,7 @@ namespace pluginSystem
          throw shared::exception::CInvalidParameter("message");
 
       YADOMS_LOG(debug) << "RECEIVE ==> " << toYadomsProtoBuffer.OneOf_case();//TODO virer
+      YADOMS_LOG(debug) << "RECEIVE ==> " << (m_onReceiveHook ? "m_onReceiveHook ENABLED" : "m_onReceiveHook DISABLED");//TODO virer
 
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
@@ -247,6 +248,9 @@ namespace pluginSystem
    {
       toPlugin::msg ans;
       auto answer = ans.mutable_deviceexists();
+
+      YADOMS_LOG(debug) << "processDeviceExistsRequest(" << msg.device() << ")";//TODO virer
+
       answer->set_exists(m_pluginApi->deviceExists(msg.device()));
       send(ans);
    }
