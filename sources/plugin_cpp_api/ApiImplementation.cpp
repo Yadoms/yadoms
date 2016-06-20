@@ -47,6 +47,8 @@ namespace plugin_cpp_api
          if (!msg.SerializeToArray(m_mqBuffer.get(), m_sendMessageQueue->get_max_msg_size()))
             throw std::runtime_error((boost::format("CApiImplementation::send \"%1%\", fail to serialize request (too big ?)") % msg.descriptor()->full_name()).str());
 
+         std::string s(reinterpret_cast<char*>(m_mqBuffer.get()), msg.GetCachedSize());//TODO virer
+         std::cout << "[SEND (" << msg.GetCachedSize() << ")] " << s << std::endl;//TODO virer
          m_sendMessageQueue->send(m_mqBuffer.get(), msg.GetCachedSize(), 0);
       }
       catch (boost::interprocess::interprocess_exception& ex)

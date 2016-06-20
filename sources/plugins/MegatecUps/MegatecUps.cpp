@@ -271,7 +271,7 @@ void CMegatecUps::processConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> ap
 
 void CMegatecUps::protocolErrorProcess(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   if (m_protocolErrorCounter < 3)
+   if (m_protocolErrorCounter <= 3)
    {
       ++m_protocolErrorCounter;
       send(m_lastSentBuffer, true, m_answerIsRequired);

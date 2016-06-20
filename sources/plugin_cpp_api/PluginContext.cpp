@@ -119,12 +119,19 @@ namespace plugin_cpp_api
                // boost::interprocess::message_queue::receive is not responding to boost thread interruption, so we need to do some
                // polling and call boost::this_thread::interruption_point to exit properly
                // Note that boost::interprocess::message_queue::timed_receive requires universal time to work (can not use shared::currentTime::Provider)
-               auto messageWasReceived = m_receiveMessageQueue->timed_receive(message.get(), m_receiveMessageQueue->get_max_msg_size(), messageSize, messagePriority,
-                  boost::posix_time::ptime(boost::posix_time::microsec_clock::universal_time() + boost::posix_time::seconds(1)));
+               auto messageWasReceived = m_receiveMessageQueue->timed_receive(message.get(),
+                                                                              m_receiveMessageQueue->get_max_msg_size(),
+                                                                              messageSize,
+                                                                              messagePriority,
+                                                                              boost::posix_time::ptime(boost::posix_time::microsec_clock::universal_time() + boost::posix_time::seconds(1)));
                boost::this_thread::interruption_point();
 
                if (messageWasReceived)
+               {//TODO virer
+                  std::string s(reinterpret_cast<char*>(message.get()), messageSize);//TODO virer
+                  std::cout << "[RECEIVE (" << messageSize << ")] " << s << std::endl;//TODO virer
                   api->onReceive(message, messageSize);
+               }//TODO virer
             }
             catch (shared::exception::CInvalidParameter& ex)
             {
