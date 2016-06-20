@@ -80,7 +80,6 @@ namespace plugin_cpp_api
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
          m_onReceiveHook.clear();
-         DebugBreak();
          throw std::runtime_error((boost::format("No answer from Yadoms when sending message %1%") % msg.OneOf_case()).str());
       }
 
