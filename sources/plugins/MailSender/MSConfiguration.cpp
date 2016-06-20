@@ -66,7 +66,7 @@ void CMSConfiguration::initializeWith(const shared::CDataContainer &data)
    }
    catch (shared::exception::CInvalidParameter &ip)
    {
-      YADOMS_LOG(error) << "Invalid configuration : " << ip.what() << std::endl;
+      std::cerr << "Invalid configuration : " << ip.what() << std::endl;
    }
    catch (boost::thread_interrupted&)
    {
