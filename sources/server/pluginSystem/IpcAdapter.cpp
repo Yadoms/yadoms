@@ -73,7 +73,7 @@ namespace pluginSystem
                if (messageWasReceived)
                {//TODO virer
                   std::string s(reinterpret_cast<char*>(message.get()), messageSize);//TODO virer
-                  std::cout << "[RECEIVE (" << messageSize << ")] " << s << std::endl;//TODO virer
+                  YADOMS_LOG(debug) << "[RECEIVE (" << messageSize << ")] " << s;//TODO virer
                   processMessage(message, messageSize);
                }//TODO virer
             }
@@ -126,7 +126,7 @@ namespace pluginSystem
       }
       
       std::string s(reinterpret_cast<char*>(m_sendBuffer.get()), pbMsg.GetCachedSize());//TODO virer
-      std::cout << "[SEND (" << pbMsg.GetCachedSize() << ")] " << s << std::endl;//TODO virer
+      YADOMS_LOG(debug) << "[SEND (" << pbMsg.GetCachedSize() << ")] " << s << std::endl;//TODO virer
       m_sendMessageQueue.send(m_sendBuffer.get(), pbMsg.GetCachedSize(), 0);
    }
 
