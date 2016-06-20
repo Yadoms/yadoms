@@ -72,8 +72,7 @@ namespace pluginSystem
 
                if (messageWasReceived)
                {//TODO virer
-                  std::string s(reinterpret_cast<char*>(message.get()), messageSize);//TODO virer
-                  YADOMS_LOG(debug) << "[RECEIVE (" << messageSize << ")] " << s;//TODO virer
+                  YADOMS_LOG(debug) << "[RECEIVE (" << messageSize << ")] ";//TODO virer
                   processMessage(message, messageSize);
                }//TODO virer
             }
@@ -124,9 +123,8 @@ namespace pluginSystem
          YADOMS_LOG(error) << "CIpcAdapter::send : fail to serialize message (too big ?) ==> ignored)";
          return;
       }
-      
-      std::string s(reinterpret_cast<char*>(m_sendBuffer.get()), pbMsg.GetCachedSize());//TODO virer
-      YADOMS_LOG(debug) << "[SEND (" << pbMsg.GetCachedSize() << ")] " << s << std::endl;//TODO virer
+
+      YADOMS_LOG(debug) << "[SEND (" << pbMsg.GetCachedSize() << ")] " << pbMsg.OneOf_case();//TODO virer
       m_sendMessageQueue.send(m_sendBuffer.get(), pbMsg.GetCachedSize(), 0);
    }
 
@@ -169,6 +167,8 @@ namespace pluginSystem
       toYadoms::msg toYadomsProtoBuffer;
       if (!toYadomsProtoBuffer.ParseFromArray(message.get(), messageSize))
          throw shared::exception::CInvalidParameter("message");
+
+      YADOMS_LOG(debug) << "RECEIVE ==> " << toYadomsProtoBuffer.OneOf_case();//TODO virer
 
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
@@ -229,8 +229,8 @@ namespace pluginSystem
       }
 
       shared::CDataContainer dc(msg.custommessagedata());
-      
-      std::map<std::string, std::string> values = dc.get< std::map<std::string, std::string> >();
+
+      auto values = dc.get< std::map<std::string, std::string> >();
 
       m_pluginApi->setPluginState(state, msg.custommessageid(), values);
    }

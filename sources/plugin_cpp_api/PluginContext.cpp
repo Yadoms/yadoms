@@ -128,8 +128,7 @@ namespace plugin_cpp_api
 
                if (messageWasReceived)
                {//TODO virer
-                  std::string s(reinterpret_cast<char*>(message.get()), messageSize);//TODO virer
-                  std::cout << "[RECEIVE (" << messageSize << ")] " << s << std::endl;//TODO virer
+                  std::cout << "[RECEIVE (" << messageSize << ")] " << std::endl;//TODO virer
                   api->onReceive(message, messageSize);
                }//TODO virer
             }
