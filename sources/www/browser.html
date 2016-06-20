@@ -1,0 +1,95 @@
+﻿<!DOCTYPE html>
+<!-- This page is used to display browser not support -->
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Yet Another DOMotic System Error Page">
+    <meta name="author" content="yadoms team">
+    <link rel="shortcut icon" href="assets/ico/favicon.png">
+
+    <title>Yadoms</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="libs/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="css/bootstrap-non-responsive.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="css/yadoms.css" rel="stylesheet">
+	 <link href="libs/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="css/help.css" rel="stylesheet">
+
+  </head>
+
+  <body>
+  <!-- Fixed navbar -->
+  <div class="navbar navbar-default navbar-static-top" role="navigation">
+      <div class="container">
+          <div class="row" id="mainNavBar">
+              <div class="col-md-12">
+                  <div class="navbar-header">
+                     <img src="img/icon_256.png" class="img-responsive pull-left application-logo"/>
+                     <a class="navbar-brand" href="#">Yadoms</a>
+                  </div>
+              </div>
+           </div>
+      </div><!--/.nav-collapse -->
+  </div>
+
+  <div id="tabContainer">
+      <div class="center">
+         <div id="content">
+		    <h1 align="center" data-i18n="browser.error"></h1>
+         </div>
+      </div>
+      <footer class="footer">
+         <button class="btn btn-primary" id="btn-show-qrcode"><i class="fa fa-qrcode"></i></button>
+         <label id="copyrightLabel" class="label label-default">&copy; Yadoms 2016</label>
+      </footer>
+  </div>
+  
+   <!-- Bootstrap core JavaScript
+   ================================================== -->
+   <!-- Placed at the end of the document so the pages load faster -->
+   <script src="libs/jquery/js/jquery-2.2.0.min.js"></script>
+   <script src="libs/bootstrap/js/bootstrap.js"></script>
+<!--   <script src="libs/knockout/js/knockout-3.4.0.js"></script>-->
+   <script src="libs/i18next/js/i18next-1.7.2.js"></script>
+   <script src="js/iso-language-codes.js"></script>
+   <script src="js/utility.js"></script>
+
+	<script type="text/javascript">
+
+   //base configuration
+   $.ajaxSetup({ contentType: "application/json; charset=utf-8"});
+
+   $("#copyrightLabel").html("&copy; Yadoms " + new Date().getFullYear());
+
+   /**
+   * On page loaded
+   */
+   $(document).ready(function() {
+
+      //we start i18n engine
+      var option = { resGetPath: "locales/__lng__.json", fallbackLng:"en", useDataAttrOptions: true};
+      i18n.init(option, function() {
+		$("div#tabContainer").i18n();
+         });
+      });
+
+      /**
+      * Callback of the click on the show qr code button
+      * Make lazy loading of the qrcode modal
+      */
+      $("#btn-show-qrcode").click(function() {
+         Yadoms.modals.qrCode.loadAsync()
+         .done(function() {
+            $('#qrcode-modal').modal();
+         });
+      });
+
+	</script>
+  </body>
+</html>
+

@@ -113,6 +113,9 @@
             "connectionToServerHasBeenRestored": "la connexion au serveur a été rétablie"
         }
     },
+    "browser": {
+       "error": "navigateur incompatible !"
+    },	
     "404Page": {
         "title": "Page introuvable - Erreur 404",
         "line1": "Désolé, mais la page que vous recherchez n'a pas été trouvée. Vérifiez s'il n'y a pas d'erreur dans l'URL.",
