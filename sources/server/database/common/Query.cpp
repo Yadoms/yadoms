@@ -3,7 +3,6 @@
 #include <Poco/DateTimeFormatter.h>
 #include <Poco/DateTimeFormat.h>
 
-
 namespace database { namespace common { 
 
       CQuery CQuery::EmptyQuery;
@@ -326,7 +325,8 @@ namespace database { namespace common {
 
       const std::string CQuery::formatStringToSql(const std::string & anystringValue)
       {
-         return (boost::format("'%1%'") % boost::replace_all_copy(anystringValue, "'", "\\'")).str();
+         //single quote must be transformed to double single quote to be handled by db engines correctly (works with pgsql and sqlite)
+         return (boost::format("'%1%'") % boost::replace_all_copy(anystringValue, "'", "''")).str();
       }
 
       const std::string CQuery::formatDateToSql(const boost::posix_time::ptime & ptime)
