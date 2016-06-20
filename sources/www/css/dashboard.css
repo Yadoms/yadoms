@@ -407,3 +407,8 @@ Fix dropdown menus hidden by bootstrap modal
 .extra-command-icon {
     margin-right: 5px;
 }
+
+.show-log-plugin-modal {
+    width: 80%;
+    padding: 0;
+}
