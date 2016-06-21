@@ -388,6 +388,7 @@ void CMegatecUps::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
    catch (CProtocolException& e)
    {
       std::cout << "Unable to decode received message : " << e.what() << std::endl;
+      protocolErrorProcess(api);
    }
 }
 
@@ -469,17 +470,17 @@ void CMegatecUps::processReceivedStatus(boost::shared_ptr<yApi::IYPluginApi> api
    m_temperature->set(upsStr2Double(*itToken));
    ++itToken;
 
-   const std::string& status = *itToken;
+   const auto& status = *itToken;
    if (status.size() != 8)
       throw CProtocolException("Invalid status size");
-   bool utilityFail = status[0] == '1';
-   bool batteryLow = status[1] == '1';
-   bool bypassActive = status[2] == '1';
-   bool upsFailed = status[3] == '1';
-   bool upsIsStandby = status[4] == '1';
-   bool testInProgress = status[5] == '1';
-   bool shutdownActive = status[6] == '1';
-   bool beeperOn = status[7] == '1';
+   auto utilityFail = status[0] == '1';
+   auto batteryLow = status[1] == '1';
+   auto bypassActive = status[2] == '1';
+   auto upsFailed = status[3] == '1';
+   auto upsIsStandby = status[4] == '1';
+   auto testInProgress = status[5] == '1';
+   auto shutdownActive = status[6] == '1';
+   auto beeperOn = status[7] == '1';
 
    m_batteryLowHistorizer->set(batteryLow);
    m_acPowerHistorizer->set(!utilityFail);
