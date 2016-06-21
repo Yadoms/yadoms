@@ -487,13 +487,13 @@ void CMegatecUps::processReceivedStatus(boost::shared_ptr<yApi::IYPluginApi> api
 
    api->historizeData(DeviceName, m_keywords);
 
-   std::cout << "UPS current informations : inputVoltage=" << m_inputVoltage.get() <<
-      ", inputfaultVoltage=" << m_inputfaultVoltage.get() <<
-      ", outputVoltage=" << m_outputVoltage.get() <<
-      ", m_outputLoad=" << m_outputLoad.get() <<
-      ", inputFrequency=" << m_inputFrequency.get() <<
-      ", batteryVoltage=" << m_batteryVoltage.get() <<
-      ", temperature=" << m_temperature.get() << std::endl;
+   std::cout << "UPS current informations : inputVoltage=" << m_inputVoltage->get() <<
+      ", inputfaultVoltage=" << m_inputfaultVoltage->get() <<
+      ", outputVoltage=" << m_outputVoltage->get() <<
+      ", m_outputLoad=" << m_outputLoad->get() <<
+      ", inputFrequency=" << m_inputFrequency->get() <<
+      ", batteryVoltage=" << m_batteryVoltage->get() <<
+      ", temperature=" << m_temperature->get() << std::endl;
    std::cout << "UPS status : utilityFail=" << (utilityFail ? "YES" : "NO") <<
       ", batteryLow=" << (batteryLow ? "YES" : "NO") <<
       ", bypassActive=" << (bypassActive ? "YES" : "NO") <<
