@@ -2,6 +2,7 @@
 #include "Process.h"
 #include "ProcessException.hpp"
 #include <shared/FileSystemExtension.h>
+#include <shared/Log.h>
 
 namespace shared
 {
@@ -41,7 +42,7 @@ namespace shared
                                          : CFileSystemExtension::getModulePath() / m_commandLine->workingDirectory() / m_commandLine->executable();
 
 
-            std::cout << "CProcess::start, working directory : " << m_workingDirectory << ", executableFullPath : " << executableFullPath.string(); //TODO virer
+            YADOMS_LOG(debug) << "CProcess::start, working directory : " << m_workingDirectory << ", executableFullPath : " << executableFullPath.string(); //TODO virer
 
             if (!m_logger)
             {
