@@ -5,14 +5,13 @@
 #include <shared/exception/InvalidParameter.hpp>
 #include "serializers/Information.h"
 #include "FromPluginHistorizer.h"
-#include "yPluginApiImplementation.h"
 
 namespace pluginSystem
 {
    const size_t CIpcAdapter::m_maxMessages(100);
    const size_t CIpcAdapter::m_maxMessageSize(100000);
 
-   CIpcAdapter::CIpcAdapter(boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> yPluginApi)
+   CIpcAdapter::CIpcAdapter(boost::shared_ptr<CYPluginApiImplementation> yPluginApi)
       : m_pluginApi(yPluginApi),
         m_id(createId()),
         m_sendMessageQueueId(m_id + ".toPlugin"),
@@ -122,7 +121,7 @@ namespace pluginSystem
          return;
       }
 
-      YADOMS_LOG(debug) << "[SEND] " << pbMsg.OneOf_case() << " to " << (static_cast<CYPluginApiImplementation*>(m_pluginApi.get()))->getPluginId();//TODO virer
+      YADOMS_LOG(debug) << "[SEND] message " << pbMsg.OneOf_case() << " to plugin instance #" << m_pluginApi->getPluginId();
 
       m_sendMessageQueue.send(m_sendBuffer.get(), pbMsg.GetCachedSize(), 0);
    }
@@ -167,7 +166,7 @@ namespace pluginSystem
       if (!toYadomsProtoBuffer.ParseFromArray(message.get(), messageSize))
          throw shared::exception::CInvalidParameter("message");
 
-      YADOMS_LOG(trace) << "[RECEIVE] " << toYadomsProtoBuffer.OneOf_case() << " from " << (static_cast<CYPluginApiImplementation*>(m_pluginApi.get()))->getPluginId() << (m_onReceiveHook ? " (m_onReceiveHook ENABLED)" : "");//TODO virer
+      YADOMS_LOG(trace) << "[RECEIVE] message " << toYadomsProtoBuffer.OneOf_case() << " from plugins instance #" << m_pluginApi->getPluginId() << (m_onReceiveHook ? " (onReceiveHook ENABLED)" : "");/
 
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);

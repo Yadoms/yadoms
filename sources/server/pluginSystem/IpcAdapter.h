@@ -3,6 +3,7 @@
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <shared/communication/MessageQueueRemover.hpp>
 #include <plugin_IPC/plugin_IPC.h>
+#include "yPluginApiImplementation.h"
 
 namespace pluginSystem
 {
@@ -16,7 +17,7 @@ namespace pluginSystem
       /// \brief	Constructor
       /// \param[in] yPluginApi yPluginApi context instance
       //--------------------------------------------------------------
-      explicit CIpcAdapter(boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> yPluginApi);
+      explicit CIpcAdapter(boost::shared_ptr<CYPluginApiImplementation> yPluginApi);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
@@ -95,7 +96,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief	IYPluginApi context instance
       //--------------------------------------------------------------
-      boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> m_pluginApi;
+      boost::shared_ptr<CYPluginApiImplementation> m_pluginApi;
 
       //--------------------------------------------------------------
       /// \brief	Context accessor ID (unique on full system)

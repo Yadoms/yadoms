@@ -81,7 +81,7 @@ namespace pluginSystem
       //-----------------------------------------------------
       ///\brief Get the plugin instance ID
       //-----------------------------------------------------
-      virtual int getPluginId() const;//TODO remettre protected
+      int getPluginId() const;
 
    protected:      
 
