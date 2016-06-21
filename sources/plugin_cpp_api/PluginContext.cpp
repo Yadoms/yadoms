@@ -127,10 +127,7 @@ namespace plugin_cpp_api
                boost::this_thread::interruption_point();
 
                if (messageWasReceived)
-               {//TODO virer
-                  std::cout << "[RECEIVE (" << messageSize << ")] " << std::endl;//TODO virer
                   api->onReceive(message, messageSize);
-               }//TODO virer
             }
             catch (shared::exception::CInvalidParameter& ex)
             {

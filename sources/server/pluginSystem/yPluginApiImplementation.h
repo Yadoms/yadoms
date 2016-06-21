@@ -78,11 +78,12 @@ namespace pluginSystem
       shared::event::CEventHandler& getEventHandler() override;
       // [END] IYPluginApi implementation 
 
-   protected:      
       //-----------------------------------------------------
       ///\brief Get the plugin instance ID
       //-----------------------------------------------------
-      virtual int getPluginId() const;
+      virtual int getPluginId() const;//TODO remettre protected
+
+   protected:      
 
       void declareKeywords(const std::string& device,
                            const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& keywords) const;
