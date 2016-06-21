@@ -46,8 +46,6 @@ if(PYTHONLIBS_FOUND)
       ${PYTHON_SOURCES}
       platformSpecific/windows/PythonExecutablePath.h
       platformSpecific/windows/PythonExecutablePath.cpp
-      platformSpecific/windows/FileSystemPathHelper.h
-      platformSpecific/windows/FileSystemPathHelper.cpp
    )	
    set(PLATFORM_SPECIFIC_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/platformSpecific/windows)
 
@@ -56,8 +54,6 @@ if(PYTHONLIBS_FOUND)
       ${PYTHON_SOURCES}
       platformSpecific/mac/PythonExecutablePath.h
       platformSpecific/mac/PythonExecutablePath.cpp
-      platformSpecific/mac/FileSystemPathHelper.h
-      platformSpecific/mac/FileSystemPathHelper.cpp
    )	
    set(PLATFORM_SPECIFIC_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/platformSpecific/mac)
 
@@ -66,8 +62,6 @@ if(PYTHONLIBS_FOUND)
       ${PYTHON_SOURCES}
       platformSpecific/linux/PythonExecutablePath.h
       platformSpecific/linux/PythonExecutablePath.cpp
-      platformSpecific/linux/FileSystemPathHelper.h
-      platformSpecific/linux/FileSystemPathHelper.cpp
    )	
    set(PLATFORM_SPECIFIC_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/platformSpecific/linux)
 
