@@ -76,16 +76,6 @@ namespace shared
       {
          return getModuleFullPath().parent_path();                                                                                 
       }
-
-      //--------------------------------------------------------------
-      /// \brief			Get the current executable path  (drive + path, without filename and ext).
-      ///               This code must be executed in the module which the path is required,
-      ///               so let it in the header file.
-      //--------------------------------------------------------------
-      static boost::filesystem::path getExecutablePath()
-      {
-         return getModulePath();
-      }
    };
 
 } // namespace shared

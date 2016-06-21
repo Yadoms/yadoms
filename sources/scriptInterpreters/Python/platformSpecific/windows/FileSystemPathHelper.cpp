@@ -4,6 +4,6 @@
 
 boost::filesystem::path CFileSystemPathHelper::getExecutingPath()
 {
-    return shared::CFileSystemExtension::getExecutablePath();
+    return shared::CFileSystemExtension::getModulePath();
 }
 
