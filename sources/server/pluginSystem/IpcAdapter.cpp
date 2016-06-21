@@ -166,7 +166,7 @@ namespace pluginSystem
       if (!toYadomsProtoBuffer.ParseFromArray(message.get(), messageSize))
          throw shared::exception::CInvalidParameter("message");
 
-      YADOMS_LOG(trace) << "[RECEIVE] message " << toYadomsProtoBuffer.OneOf_case() << " from plugins instance #" << m_pluginApi->getPluginId() << (m_onReceiveHook ? " (onReceiveHook ENABLED)" : "");/
+      YADOMS_LOG(trace) << "[RECEIVE] message " << toYadomsProtoBuffer.OneOf_case() << " from plugins instance #" << m_pluginApi->getPluginId() << (m_onReceiveHook ? " (onReceiveHook ENABLED)" : "");
 
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
