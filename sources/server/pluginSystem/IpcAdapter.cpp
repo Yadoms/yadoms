@@ -23,6 +23,7 @@ namespace pluginSystem
         m_sendBuffer(boost::make_shared<unsigned char[]>(m_sendMessageQueue.get_max_msg_size())),
         m_messageQueueReceiveThread(boost::thread(&CIpcAdapter::messageQueueReceiveThreaded, this))
    {
+      YADOMS_LOG_CONFIGURE("pluginSystem.IpcAdapter");
    }
 
    CIpcAdapter::~CIpcAdapter()
@@ -166,7 +167,7 @@ namespace pluginSystem
       if (!toYadomsProtoBuffer.ParseFromArray(message.get(), messageSize))
          throw shared::exception::CInvalidParameter("message");
 
-      YADOMS_LOG(trace) << "[RECEIVE] message " << toYadomsProtoBuffer.OneOf_case() << " from plugins instance #" << m_pluginApi->getPluginId() << (m_onReceiveHook ? " (onReceiveHook ENABLED)" : "");
+      YADOMS_LOG(trace) << "[RECEIVE] message " << toYadomsProtoBuffer.OneOf_case() << " from plugin instance #" << m_pluginApi->getPluginId() << (m_onReceiveHook ? " (onReceiveHook ENABLED)" : "");
 
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
