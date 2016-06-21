@@ -247,8 +247,6 @@ namespace pluginSystem
       toPlugin::msg ans;
       auto answer = ans.mutable_deviceexists();
 
-      YADOMS_LOG(debug) << "processDeviceExistsRequest(" << msg.device() << ")";//TODO virer
-
       answer->set_exists(m_pluginApi->deviceExists(msg.device()));
       send(ans);
    }

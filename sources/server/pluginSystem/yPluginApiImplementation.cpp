@@ -40,8 +40,6 @@ namespace pluginSystem
 
    bool CYPluginApiImplementation::deviceExists(const std::string& device) const
    {
-      YADOMS_LOG(debug) << "deviceExists : getPluginId() = " << getPluginId();//TODO virer
-
       return m_deviceManager->deviceExists(getPluginId(), device);
    }
 

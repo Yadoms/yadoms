@@ -40,6 +40,9 @@ namespace shared
                                          ? m_commandLine->executable()
                                          : CFileSystemExtension::getModulePath() / m_commandLine->workingDirectory() / m_commandLine->executable();
 
+
+            std::cout << "CProcess::start, working directory : " << m_workingDirectory << ", executableFullPath : " << executableFullPath.string(); //TODO virer
+
             if (!m_logger)
             {
                m_process = boost::make_shared<Poco::ProcessHandle>(Poco::Process::launch(executableFullPath.string(),

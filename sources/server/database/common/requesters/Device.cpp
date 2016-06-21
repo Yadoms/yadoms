@@ -4,7 +4,6 @@
 #include "database/common/adapters/DatabaseAdapters.h"
 #include "database/common/DatabaseTables.h"
 #include "database/common/Query.h"
-#include <shared/Log.h> //TODO virer
 
 
 namespace database {  namespace common { namespace requesters { 
@@ -35,12 +34,10 @@ namespace database {  namespace common { namespace requesters {
    {
       try
       {
-         YADOMS_LOG(debug) << "CDevice::deviceExists : " << pluginId << ", " << deviceName;//TODO virer
          getDevice(pluginId, deviceName);
       }
       catch (shared::exception::CEmptyResult&)
       {
-         YADOMS_LOG(debug) << "CDevice::deviceExists : EXCEPTION, not exist";//TODO virer
          return false;
       }
       return true;
