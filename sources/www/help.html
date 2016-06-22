@@ -1,14 +1,4 @@
 ﻿<!DOCTYPE html>
-<!-- This page is used to display some help -->
-<!-- Help content must be downloadable from the Yadoms server -->
-<!-- Help content must be in json format -->
-<!-- The content is displayed as : -->
-<!-- Main level : displayed as big titles if contains children, text otherwise -->
-<!-- Level 2 : displayed as small titles if contains children, text otherwise -->
-<!-- Level 3 : displayed as paragraph title if contains children, text otherwise -->
-<!-- Level 4 : displayed as list title if contains children, text otherwise -->
-<!-- Level 5 : displayed as sub-list title if contains children, text otherwise -->
-
 <html>
   <head>
     <meta charset="utf-8">
@@ -27,7 +17,7 @@
     <link href="css/yadoms.css" rel="stylesheet">
 	 <link href="libs/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <link href="css/help.css" rel="stylesheet">
-
+    <link href="libs/highlight/default.css" rel="stylesheet" >
   </head>
 
   <body>
@@ -59,11 +49,10 @@
    <!-- Bootstrap core JavaScript
    ================================================== -->
    <!-- Placed at the end of the document so the pages load faster -->
-   <script src="libs/jquery/js/jquery-1.11.0.min.js"></script>
+   <script src="libs/jquery/js/jquery-2.2.0.min.js"></script>
    <script src="libs/bootstrap/js/bootstrap.js"></script>
 
-   <script src="libs/transit/js/jquery.transit.min.js"></script>
-   <script src="libs/knockout/js/knockout-3.0.0.js"></script>
+   <script src="libs/knockout/js/knockout-3.4.0.js"></script>
 
    <script src="libs/i18next/js/i18next-1.7.2.js"></script>
    <script src="libs/lazyload/js/lazyload.js"></script>
@@ -72,7 +61,6 @@
    <script src="libs/moment.js/js/moment-timezone.min.js"></script>
    <script src="libs/moment.js/js/moment-timezone-data.min.js"></script>
 
-   <script src="js/objects/promises.js"></script>
    <script src="js/knock-out-extenders.js"></script>
    <script src="js/iso-language-codes.js"></script>
    <script src="js/utility.js"></script>
@@ -97,18 +85,18 @@
    <script src="js/objects/configuration/icon-parameter-handler.js"></script>
    <script src="js/objects/configuration/list-parameter-handler.js"></script>
 
-   <script src="js/objects/event-logger.js"></script>
-
    <script src="js/rest-engine.js"></script>
 
    <script src="js/objects/date-time.js"></script>
    
-   <script src="libs/bootstrap-iconpicker-1.4.0/js/bootstrap-iconpicker.min.js"></script>
+   <script src="libs/bootstrap-iconpicker-1.7.0/js/bootstrap-iconpicker.min.js"></script>
 
    <script src="libs/jquery-MD5/js/jquery.md5.js"></script>
 
-   <script src="libs/lodash/lodash.js"></script>
    <script src="libs/jquery-ui/js/jquery-ui.js"></script>
+   
+   <script src="libs/highlight/highlight.pack.js"></script>
+   <script src="libs/markdown-it/markdown-it.min.js"></script>
    
    <div id="templates" class="hidden"></div>
 
@@ -127,10 +115,32 @@
       //we start i18n engine
       var option = { resGetPath: "locales/__lng__.json", fallbackLng:"en", useDataAttrOptions: true};
       i18n.init(option, function() {
-         loadContent(readUrlParam("helpUrl"), function(content) {
+         loadContent(readUrlParam("helpUrl"))
+         .done(function(content) {
             container = $("div#tabContainer").find("div#content");
-            processNode(content, container, 1);
+             var md = window.markdownit({
+                 highlight: function (str, lang) {
+                   if (lang && hljs.getLanguage(lang)) {
+                     try {
+                       return hljs.highlight(lang, str).value;
+                     } catch (__) {}
+                   }
+
+                   return ''; // use external default escaping
+                 }
+               });
+             
+
+             
+             container.html(md.render(content));
+         })
+         .fail(function(err) {
+            container = $("div#tabContainer").find("div#content");
+            console.error(err);
+            container.html(err);
          });
+         
+         
       });
 
       /**
@@ -145,25 +155,7 @@
       });
    });
    
-   function processNode(jsonNode, htmlNode, cssLevel) {
-      if (typeof jsonNode == "object") {
-         for (var jsonElement in jsonNode) {
-            if(!isNullOrUndefined(jsonElement) && jsonNode.hasOwnProperty(jsonElement)){
-			   var htmlSubNode;
-			   if(cssLevel == 2)
-                  htmlSubNode = $("<div class=\"well level" + cssLevel + "\"><span>" + jsonElement + "</span></div>");
-			   else
-                  htmlSubNode = $("<div class=\"level" + cssLevel + "\"><span>" + jsonElement + "</span></div>");
-               htmlNode.append(htmlSubNode);
-               processNode(jsonNode[jsonElement], htmlSubNode, cssLevel < 5 ? cssLevel + 1 : cssLevel);
-            }
-         }
-      } else {
-         var htmlSubNode = $("<span class=\"text\">" + jsonNode + "</span>");
-         htmlNode.append(htmlSubNode);
-      }
-   }
-   
+      
    /**
    * Read a parameter from the URL
    */
@@ -183,20 +175,13 @@
    * @param helpUrl Help URL to load
    * @param callback
    */
-   function loadContent(helpUrl, callback) {
+   function loadContent(helpUrl) {
       assert(!isNullOrUndefined(helpUrl), "helpUrl must be defined");
-      assert($.isFunction(callback), "callback must be a function");
       
-      $.ajax({
-         dataType: "json",
+      return $.ajax({
+         dataType: "text",
          url: helpUrl,
          async: false
-      })
-      .done(function(content) {
-         callback(content);
-      })
-      .fail(function() {
-         notifyError($.t("objects.generic.errorGetting", {objectName : helpUrl}));
       });
    };
 
