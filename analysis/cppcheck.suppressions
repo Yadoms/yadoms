@@ -1,0 +1,5 @@
+// suppress all warnings in swigpyrun.h
+*:scriptInterpreters/Python/yScriptApiWrapper/swigpyrun.h
+
+// suppress all missingIncludeSystem errors in all files
+missingIncludeSystem
