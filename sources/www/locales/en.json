@@ -114,6 +114,9 @@
       "connectionToServerHasBeenRestored": "Connection to server has been restored"
     }
   },
+  "browser": {
+    "error": "browser not compatible !"
+  },
   "404Page": {
     "title": "Page Not Found - Error 404",
     "line1": "Sorry, but the page you are looking for has not been found. Try checking URL for errors.",
