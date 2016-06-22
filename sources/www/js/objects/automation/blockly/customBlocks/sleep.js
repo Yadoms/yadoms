@@ -16,7 +16,7 @@ Blockly.Blocks["yadoms_sleep"] = {
             [$.t("blockly.global.durationUnits.days"), "D"]
         ];
 
-        this.setHelpUrl("http://www.example.com/");
+        this.setHelpUrl("help.html?lang=fr&helpUrl=help%2Fblockly%2Fyadoms_sleep.md");
         this.setColour(Blockly.Yadoms.blockColour.HUE);
         this.appendValueInput("Time")
             .setCheck("Number")

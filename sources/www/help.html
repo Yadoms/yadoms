@@ -3,12 +3,28 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Yet Another DOMotic System help page">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="description" content="Yet Another DOMotic System">
     <meta name="author" content="yadoms team">
-    <link rel="shortcut icon" href="assets/ico/favicon.png">
+    <link rel="apple-touch-icon" sizes="57x57" href="img/favicon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="img/favicon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="img/favicon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="img/favicon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="img/favicon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="img/favicon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="img/favicon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="img/favicon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="img/favicon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="img/favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="img/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="img/favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="img/favicon/favicon-16x16.png">
+    <link rel="manifest" href="img/favicon/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="img/favicon/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
 
-    <title>Yadoms help page</title>
+    <title data-i18n="help-page.title">Yadoms help page</title>
 
     <!-- Bootstrap core CSS -->
     <link href="libs/bootstrap/css/bootstrap.css" rel="stylesheet">
@@ -28,14 +44,14 @@
               <div class="col-md-12">
                   <div class="navbar-header">
                      <img src="img/icon_256.png" class="img-responsive pull-left application-logo"/>
-                     <a class="navbar-brand" href="#">Yadoms Help</a>
+                     <a class="navbar-brand" href="#" data-i18n="help-page.title">Yadoms Help</a>
                   </div>
               </div>
            </div>
       </div><!--/.nav-collapse -->
   </div>
 
-  <div id="tabContainer">
+  <div id="tabContainer" class="container">
       <div class="center">
          <div id="content">
          </div>
@@ -52,49 +68,8 @@
    <script src="libs/jquery/js/jquery-2.2.0.min.js"></script>
    <script src="libs/bootstrap/js/bootstrap.js"></script>
 
-   <script src="libs/knockout/js/knockout-3.4.0.js"></script>
-
    <script src="libs/i18next/js/i18next-1.7.2.js"></script>
-   <script src="libs/lazyload/js/lazyload.js"></script>
 
-   <script src="libs/moment.js/js/moment-with-langs.min.js"></script>
-   <script src="libs/moment.js/js/moment-timezone.min.js"></script>
-   <script src="libs/moment.js/js/moment-timezone-data.min.js"></script>
-
-   <script src="js/knock-out-extenders.js"></script>
-   <script src="js/iso-language-codes.js"></script>
-   <script src="js/utility.js"></script>
-   <script src="js/objects/yadoms-information-manager.js"></script>
-   <script src="js/objects/page-manager.js"></script>
-   <script src="js/objects/lazy-loader-manager.js"></script>
-   <script src="js/objects/encryption-manager.js"></script>
-
-   <script src="libs/jqBootstrapValidation/js/jqBootstrapValidation.js"></script>
-
-   <script src="js/objects/configuration/configuration-helper.js"></script>
-   <script src="js/objects/configuration/configuration-control-manager.js"></script>
-   <script src="js/objects/configuration/int-parameter-handler.js"></script>
-   <script src="js/objects/configuration/decimal-parameter-handler.js"></script>
-   <script src="js/objects/configuration/enum-parameter-handler.js"></script>
-   <script src="js/objects/configuration/string-parameter-handler.js"></script>
-   <script src="js/objects/configuration/bool-parameter-handler.js"></script>
-   <script src="js/objects/configuration/section-parameter-handler.js"></script>
-   <script src="js/objects/configuration/keyword-parameter-handler.js"></script>
-   <script src="js/objects/configuration/radio-section-parameter-handler.js"></script>
-   <script src="js/objects/configuration/color-parameter-handler.js"></script>
-   <script src="js/objects/configuration/icon-parameter-handler.js"></script>
-   <script src="js/objects/configuration/list-parameter-handler.js"></script>
-
-   <script src="js/rest-engine.js"></script>
-
-   <script src="js/objects/date-time.js"></script>
-   
-   <script src="libs/bootstrap-iconpicker-1.7.0/js/bootstrap-iconpicker.min.js"></script>
-
-   <script src="libs/jquery-MD5/js/jquery.md5.js"></script>
-
-   <script src="libs/jquery-ui/js/jquery-ui.js"></script>
-   
    <script src="libs/highlight/highlight.pack.js"></script>
    <script src="libs/markdown-it/markdown-it.min.js"></script>
    
@@ -113,9 +88,10 @@
    $(document).ready(function() {
 
       //we start i18n engine
-      var option = { resGetPath: "locales/__lng__.json", fallbackLng:"en", useDataAttrOptions: true};
+      var option = { resGetPath: "locales/__lng__.json", fallbackLng: "en", useDataAttrOptions: true, debug: false, fallbackNS: "translation" };
       i18n.init(option, function() {
-         loadContent(readUrlParam("helpUrl"))
+         var mdSourcetoLoad = readUrlParam("helpUrl");
+         loadContent(mdSourcetoLoad)
          .done(function(content) {
             container = $("div#tabContainer").find("div#content");
              var md = window.markdownit({
@@ -130,14 +106,13 @@
                  }
                });
              
-
-             
              container.html(md.render(content));
+             $(document).i18n();
          })
          .fail(function(err) {
             container = $("div#tabContainer").find("div#content");
             console.error(err);
-            container.html(err);
+            container.html("Page 404 : file not found : " + mdSourcetoLoad);
          });
          
          
@@ -176,12 +151,9 @@
    * @param callback
    */
    function loadContent(helpUrl) {
-      assert(!isNullOrUndefined(helpUrl), "helpUrl must be defined");
-      
       return $.ajax({
          dataType: "text",
-         url: helpUrl,
-         async: false
+         url: helpUrl        
       });
    };
 

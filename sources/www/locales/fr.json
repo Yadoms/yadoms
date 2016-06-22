@@ -1002,6 +1002,9 @@
         "Down": "Bas"
       }
     }
+  },
+  "help-page" : {
+	"title" : "Yadoms : page d'aide"
   }
 }
 

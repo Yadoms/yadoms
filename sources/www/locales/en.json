@@ -1007,5 +1007,8 @@
         "Down": "Down"
       }
     }
+  },
+  "help-page" : {
+	"title" : "Yadoms help page"
   }
 }
