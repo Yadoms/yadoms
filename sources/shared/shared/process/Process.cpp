@@ -12,7 +12,6 @@ namespace shared
                          boost::shared_ptr<IProcessObserver> processObserver,
                          boost::shared_ptr<ILogger> logger)
          : m_commandLine(commandLine),
-           m_workingDirectory(workingDirectory),//TODO virer
            m_processObserver(processObserver),
            m_logger(logger),
            m_returnCode(0),

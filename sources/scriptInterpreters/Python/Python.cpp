@@ -49,7 +49,7 @@ bool CPython::isAvailable() const
 std::string CPython::loadScriptContent(const std::string& scriptPath) const
 {
    if (scriptPath.empty())
-      return CScriptFile::PythonFileRead("scriptInterpreters/python/template.py");//TODO en dur ?
+      return CScriptFile::PythonFileRead(boost::filesystem::path(m_pythonInterpreterPath.parent_path() / "template.py").string());
 
    CScriptFile file(scriptPath);
    return file.read();

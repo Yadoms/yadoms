@@ -76,11 +76,6 @@ namespace shared
          boost::shared_ptr<ICommandLine> m_commandLine;
 
          //--------------------------------------------------------------
-         /// \brief	The working directory
-         //--------------------------------------------------------------
-         const std::string m_workingDirectory;
-
-         //--------------------------------------------------------------
          /// \brief	The process of the running script, and its mutex
          //--------------------------------------------------------------
          boost::shared_ptr<Poco::ProcessHandle> m_process;
