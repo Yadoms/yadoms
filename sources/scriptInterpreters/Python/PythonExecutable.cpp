@@ -2,6 +2,7 @@
 #include "PythonExecutable.h"
 #include <shared/Log.h>
 #include "PythonExecutablePath.h"
+#include <shared/Executable.h>
 
 CPythonExecutable::CPythonExecutable()
    : m_inSystemPath(false),
@@ -36,7 +37,7 @@ boost::filesystem::path CPythonExecutable::path() const
 
 std::string CPythonExecutable::filename() const
 {
-   return "python";
+   return shared::CExecutable::ToFileName("python");
 }
 
 bool CPythonExecutable::findPythonDirectory(boost::filesystem::path& pythonDirectory,

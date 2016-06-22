@@ -14,14 +14,14 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	Returns platform standard executable extension
       //--------------------------------------------------------------
-      static const std::string Extension();
-      static const std::string DotExtension();
+      static std::string Extension();
+      static std::string DotExtension();
 
       //--------------------------------------------------------------
       /// \brief	Conversion fileName (platform-dependent) <=> exeName (non-platform-dependent)
       //--------------------------------------------------------------
-      static const std::string ToFileName(const std::string& exeName);
-      static const std::string ToExeName(const std::string& fileName);
+      static std::string ToFileName(const std::string& exeName);
+      static std::string ToExeName(const std::string& fileName);
    };
 
 } // namespace shared

@@ -64,12 +64,12 @@ namespace pluginSystem
          throw shared::exception::CInvalidParameter(std::string("Error reading package.json : data not found : ") + e.what());
       }
 
-      std::string pluginFolder = m_path.filename().string();
+      auto pluginFolder = m_path.filename().string();
       if (!boost::equal(pluginFolder, m_type))
       {
          // Set plugin as not supported
          m_isSupportedOnThisPlatform = false;
-         throw CInvalidPluginException(m_type, (boost::format("The plugin folder '%1%' do not match plugin type '%2%'") % pluginFolder % m_type).str());
+         throw CInvalidPluginException(m_type, (boost::format("The plugin folder '%1%' does not match plugin type '%2%'") % pluginFolder % m_type).str());
       }
    }
 

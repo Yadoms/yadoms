@@ -11,8 +11,9 @@
 IMPLEMENT_SCRIPT_INTERPRETER(CPython)
 
 
-CPython::CPython()
-   :m_executable(boost::make_shared<CPythonExecutable>())
+CPython::CPython(const boost::filesystem::path pythonInterpreterPath)
+   :m_pythonInterpreterPath(pythonInterpreterPath),
+    m_pythonExecutable(boost::make_shared<CPythonExecutable>())
 {
 }
 
@@ -34,12 +35,12 @@ std::string CPython::name() const
 
 bool CPython::isAvailable() const
 {
-   if (!m_executable->found())
+   if (!m_pythonExecutable->found())
       return false;
 
    // Now check version
    static const std::string expectedVersionString("Python 2.7");
-   if (m_executable->version().find(expectedVersionString) == std::string::npos)
+   if (m_pythonExecutable->version().find(expectedVersionString) == std::string::npos)
       return false;
 
    return true;
@@ -48,7 +49,7 @@ bool CPython::isAvailable() const
 std::string CPython::loadScriptContent(const std::string& scriptPath) const
 {
    if (scriptPath.empty())
-      return CScriptFile::PythonFileRead("scriptInterpreters/python/template.py");
+      return CScriptFile::PythonFileRead("scriptInterpreters/python/template.py");//TODO en dur ?
 
    CScriptFile file(scriptPath);
    return file.read();
@@ -63,12 +64,12 @@ void CPython::saveScriptContent(const std::string& scriptPath, const std::string
 boost::shared_ptr<shared::process::IProcess> CPython::createProcess(const std::string& scriptPath,
                                                                     boost::shared_ptr<shared::process::ILogger> scriptLogger,
                                                                     boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
-                                                                    boost::shared_ptr<shared::process::IProcessObserver> processObserver,
-                                                                    const shared::CDataContainer& scriptConfiguration) const
+                                                                    boost::shared_ptr<shared::process::IProcessObserver> processObserver) const
 {
    try
    {
-      return boost::make_shared<CScriptProcess>(m_executable,
+      return boost::make_shared<CScriptProcess>(m_pythonExecutable,
+                                                m_pythonInterpreterPath,
                                                 boost::make_shared<CScriptFile>(scriptPath),
                                                 yScriptApi,
                                                 scriptLogger,

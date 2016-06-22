@@ -16,22 +16,17 @@ namespace shared
          virtual ~ICommandLine() {}
 
          //--------------------------------------------------------------
-         /// \brief	                     Get the executable filename
-         /// \return                      The executable filename (with extension)
+         /// \brief	                     Get the executable full path
+         /// \return                      The executable full path (with extension)
+         /// \note Can contain folders or not (if in environment PATH or local file)
          //--------------------------------------------------------------
-         virtual std::string executable() const = 0;
+         virtual const boost::filesystem::path& executable() const = 0;
 
          //--------------------------------------------------------------
          /// \brief	                     Get the working directory to use to call executable
          /// \return                      The working directory (relative to current module)
          //--------------------------------------------------------------
          virtual const boost::filesystem::path& workingDirectory() const = 0;
-
-         //--------------------------------------------------------------
-         /// \brief	                     Indicates if executable is in the system path
-         /// \return                      true if executable is in the system path
-         //--------------------------------------------------------------
-         virtual bool executableInSystemPath() const = 0;
 
          //--------------------------------------------------------------
          /// \brief	                     Get the command line args

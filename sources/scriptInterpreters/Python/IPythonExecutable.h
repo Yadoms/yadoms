@@ -31,7 +31,7 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	Get executable path
-   /// \return the full (relative) Python executable path
+   /// \return the full (relative) Python executable path (emtpy if inSystemPath returns true)
    //--------------------------------------------------------------
    virtual boost::filesystem::path path() const = 0;
 

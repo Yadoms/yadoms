@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Process.h"
 #include "ProcessException.hpp"
-#include <shared/FileSystemExtension.h>
 #include <shared/Log.h>
 
 namespace shared
@@ -13,7 +12,7 @@ namespace shared
                          boost::shared_ptr<IProcessObserver> processObserver,
                          boost::shared_ptr<ILogger> logger)
          : m_commandLine(commandLine),
-           m_workingDirectory(workingDirectory),
+           m_workingDirectory(workingDirectory),//TODO virer
            m_processObserver(processObserver),
            m_logger(logger),
            m_returnCode(0),
@@ -37,25 +36,21 @@ namespace shared
             for (auto cmdLineArg = m_commandLine->args().begin(); cmdLineArg != m_commandLine->args().end(); ++cmdLineArg)
                args.push_back(*cmdLineArg);
 
-            auto executableFullPath = m_commandLine->executableInSystemPath()
-                                         ? m_commandLine->executable()
-                                         : CFileSystemExtension::getModulePath() / m_commandLine->workingDirectory() / m_commandLine->executable();
 
-
-            YADOMS_LOG(debug) << "CProcess::start, working directory : " << m_workingDirectory << ", executableFullPath : " << executableFullPath.string(); //TODO virer
+            YADOMS_LOG(debug) << "Start process " << m_commandLine->executable() << " from " << m_commandLine->workingDirectory();
 
             if (!m_logger)
             {
-               m_process = boost::make_shared<Poco::ProcessHandle>(Poco::Process::launch(executableFullPath.string(),
+               m_process = boost::make_shared<Poco::ProcessHandle>(Poco::Process::launch(m_commandLine->executable().string(),
                                                                                          args,
-                                                                                         m_workingDirectory));
+                                                                                         m_commandLine->workingDirectory().string()));
             }
             else
             {
                Poco::Pipe outPipe, errPipe;
-               m_process = boost::make_shared<Poco::ProcessHandle>(Poco::Process::launch(executableFullPath.string(),
+               m_process = boost::make_shared<Poco::ProcessHandle>(Poco::Process::launch(m_commandLine->executable().string(),
                                                                                          args,
-                                                                                         m_workingDirectory,
+                                                                                         m_commandLine->workingDirectory().string(),
                                                                                          nullptr,
                                                                                          &outPipe,
                                                                                          &errPipe));

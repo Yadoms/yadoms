@@ -164,7 +164,7 @@ namespace dataAccessLayer
       }
       catch (Poco::SyntaxException& ex)
       {
-         throw shared::exception::COutOfRange("The capacity name do not match naming rules : " + ex.displayText());
+         throw shared::exception::COutOfRange("The capacity name does not match naming rules : " + ex.displayText());
       }
 
       try
@@ -173,7 +173,7 @@ namespace dataAccessLayer
       }
       catch (Poco::SyntaxException& ex)
       {
-         throw shared::exception::COutOfRange("The keyword name do not match naming rules : " + ex.displayText());
+         throw shared::exception::COutOfRange("The keyword name does not match naming rules : " + ex.displayText());
       }
 
       auto keywordEntity(boost::make_shared<database::entities::CKeyword>());

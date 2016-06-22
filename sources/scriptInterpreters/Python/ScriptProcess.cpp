@@ -3,14 +3,17 @@
 #include "PythonCommandLine.h"
 #include <shared/process/Process.h>
 #include <shared/FileSystemExtension.h>
+#include <shared/DynamicLibrary.h>
 
 
 CScriptProcess::CScriptProcess(boost::shared_ptr<IPythonExecutable> executable,
+                               const boost::filesystem::path& pythonInterpreterPath,
                                boost::shared_ptr<const IScriptFile> scriptFile,
                                boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
                                boost::shared_ptr<shared::process::ILogger> scriptLogger,
                                boost::shared_ptr<shared::process::IProcessObserver> stopNotifier)
    : m_executable(executable),
+     m_pythonInterpreterPath(pythonInterpreterPath),
      m_scriptFile(scriptFile),
      m_yScriptApi(yScriptApi),
      m_scriptLogger(scriptLogger),
@@ -33,9 +36,8 @@ boost::shared_ptr<shared::process::ICommandLine> CScriptProcess::createCommandLi
    args.push_back(m_scriptFile->module());
    args.push_back(apiIdentifier);
 
-   return boost::make_shared<CPythonCommandLine>(m_executable->inSystemPath(),
-                                                 m_executable->path().parent_path(),
-                                                 m_executable->filename(),
+   return boost::make_shared<CPythonCommandLine>(m_executable->path(),
+                                                 m_pythonInterpreterPath.parent_path(),
                                                  args);
 }
 

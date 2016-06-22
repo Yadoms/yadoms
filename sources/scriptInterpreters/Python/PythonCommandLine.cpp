@@ -1,15 +1,12 @@
 #include "stdafx.h"
 #include "PythonCommandLine.h"
-#include <shared/Executable.h>
 
 
-CPythonCommandLine::CPythonCommandLine(bool pythonExecutableInSystemPath,
+CPythonCommandLine::CPythonCommandLine(const boost::filesystem::path& executablePath,
                                        const boost::filesystem::path& workingDirectory,
-                                       const std::string& pluginName,
                                        const std::vector<std::string> parameters)
-   : m_pythonExecutableInSystemPath(pythonExecutableInSystemPath),
+   : m_executable(executablePath),
      m_workingDirectory(workingDirectory),
-     m_pluginName(pluginName),
      m_args(parameters)
 {
 }
@@ -18,19 +15,14 @@ CPythonCommandLine::~CPythonCommandLine()
 {
 }
 
-std::string CPythonCommandLine::executable() const
+const boost::filesystem::path& CPythonCommandLine::executable() const
 {
-   return shared::CExecutable::ToFileName(m_pluginName);
+   return m_executable;
 }
 
 const boost::filesystem::path& CPythonCommandLine::workingDirectory() const
 {
    return m_workingDirectory;
-}
-
-bool CPythonCommandLine::executableInSystemPath() const
-{
-   return m_pythonExecutableInSystemPath;
 }
 
 const std::vector<std::string>& CPythonCommandLine::args() const

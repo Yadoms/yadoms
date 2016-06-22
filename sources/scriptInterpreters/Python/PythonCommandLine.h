@@ -10,10 +10,12 @@ class CPythonCommandLine : public shared::process::ICommandLine
 public:
    //--------------------------------------------------------------
    /// \brief	Constructor
+   /// \param[in] executablePath    The Python executable path (without directory if in system path)
+   /// \param[in] workingDirectory  From where to start Python
+   /// \param[in] parameters        The command line arguments
    //--------------------------------------------------------------
-   CPythonCommandLine(bool pythonExecutableInSystemPath,
+   CPythonCommandLine(const boost::filesystem::path& executablePath,
                       const boost::filesystem::path& workingDirectory,
-                      const std::string& executableName,
                       const std::vector<std::string> parameters);
 
    //--------------------------------------------------------------
@@ -22,16 +24,14 @@ public:
    virtual ~CPythonCommandLine();
 
    // ICommandLine Implementation
-   std::string executable() const override;
+   const boost::filesystem::path& executable() const override;
    const boost::filesystem::path& workingDirectory() const override;
-   bool executableInSystemPath() const override;
    const std::vector<std::string>& args() const override;
    // [END] ICommandLine Implementation
 
 private:
-   const bool m_pythonExecutableInSystemPath;
+   const boost::filesystem::path m_executable;
    const boost::filesystem::path m_workingDirectory;
-   const std::string m_pluginName;
    const std::vector<std::string> m_args;
 };
 

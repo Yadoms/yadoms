@@ -137,7 +137,7 @@ namespace web { namespace rest { namespace service {
          database::entities::CRecipient toUpdate;
          toUpdate.fillFromSerializedString(requestContent);
          if (!toUpdate.Id.isDefined() || toUpdate.Id() != recipientId)
-            return CResult::GenerateError("The recipient id in url do not match request content recipient id");
+            return CResult::GenerateError("The recipient id in url does not match request content recipient id");
 
          boost::shared_ptr<database::entities::CRecipient> recipientFound = m_dataProvider->getRecipientRequester()->updateRecipient(toUpdate);
          return CResult::GenerateSuccess(recipientFound);

@@ -129,7 +129,7 @@ namespace web { namespace rest { namespace service {
          }
          else
          {
-            return CResult::GenerateError("section and name in query content do not match to rest url");
+            return CResult::GenerateError("section and name in query content does not match to rest url");
          }
       }
       catch(std::exception &ex)

@@ -37,8 +37,7 @@ namespace automation
       m_process = scriptInterpreter->createProcess(scriptProperties->scriptPath(),
                                                    scriptLogger,
                                                    yScriptApi,
-                                                   stopNotifier,
-                                                   shared::CDataContainer());
+                                                   stopNotifier);
    }
 
    void CRule::requestStop()

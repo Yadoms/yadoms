@@ -10,8 +10,9 @@ class CPython : public shared::script::IInterpreter
 public:
    //--------------------------------------------------------------
    /// \brief	Constructor
+   /// \param[in] pythonInterpreterPath The path containing the current interpreter
    //--------------------------------------------------------------
-   CPython();
+   explicit CPython(const boost::filesystem::path pythonInterpreterPath);
 
    //--------------------------------------------------------------
    /// \brief	Destructor
@@ -27,15 +28,20 @@ public:
    boost::shared_ptr<shared::process::IProcess> createProcess(const std::string& scriptPath,
                                                               boost::shared_ptr<shared::process::ILogger> scriptLogger,
                                                               boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
-                                                              boost::shared_ptr<shared::process::IProcessObserver> processObserver,
-                                                              const shared::CDataContainer& scriptConfiguration) const override;
+                                                              boost::shared_ptr<shared::process::IProcessObserver> processObserver) const override;
   // [END] IInterpreter implementation
 
 private:
+
+   //--------------------------------------------------------------
+   /// \brief	The path containing the current interpreter
+   //--------------------------------------------------------------
+   const boost::filesystem::path m_pythonInterpreterPath;
+
    //--------------------------------------------------------------
    /// \brief	The Python executable accessor
    //--------------------------------------------------------------
-   boost::shared_ptr<IPythonExecutable> m_executable;
+   boost::shared_ptr<IPythonExecutable> m_pythonExecutable;
 };
 
 
