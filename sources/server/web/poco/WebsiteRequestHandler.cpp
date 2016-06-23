@@ -95,12 +95,13 @@ namespace web { namespace poco {
          //try to send file
          if (!readAndSendFile(full_path, response))
          {
-            //the file is not found, try to send 404.html file
+            //the 404.html has not been found, just return a 404 hard coded message
+            response.setStatusAndReason(Poco::Net::HTTPResponse::HTTP_NOT_FOUND);
+
             std::string html404 = m_documentRoot + "/404.html";
             if (!readAndSendFile(html404, response))
             {
-               //the 404.html has not been found, just return a 404 hard coded message
-               response.setStatusAndReason(Poco::Net::HTTPResponse::HTTP_NOT_FOUND);
+               //the file is not found, try to send 404.html file
                response.setContentType("text/html");
                response.setChunkedTransferEncoding(false);
 
