@@ -1,4 +1,3 @@
-#pragma once
 #include "stdafx.h"
 #include "CurrentEnergyFilter.h"
 #include <shared/currentTime/Provider.h>
