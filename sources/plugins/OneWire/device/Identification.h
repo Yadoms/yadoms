@@ -2,8 +2,8 @@
 #include "IIdentification.h"
 
 
-namespace device {
-
+namespace device
+{
    //--------------------------------------------------------------
    /// \brief	1-Wire identification
    //--------------------------------------------------------------
@@ -16,7 +16,9 @@ namespace device {
       /// \param[in]	id Device Id
       /// \param[in]	model Device Model (chip reference)
       //--------------------------------------------------------------
-      CIdentification(EOneWireFamily family, const std::string& id, const std::string& model);
+      CIdentification(EOneWireFamily family,
+                      const std::string& id,
+                      const std::string& model);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
@@ -25,11 +27,11 @@ namespace device {
 
    protected:
       // IDevice implementation
-      virtual void declare(boost::shared_ptr<yApi::IYPluginApi> context) const;
-      virtual EOneWireFamily family() const;
-      virtual std::string id() const;
-      virtual const std::string& deviceName() const;
-      virtual const std::string& model() const;
+      EOneWireFamily family() const override;
+      std::string id() const override;
+      const std::string& deviceName() const override;
+      const std::string& model() const override;
+      const shared::CDataContainer& details() const override;
       // [END] IDevice implementation
 
    private:
@@ -52,6 +54,11 @@ namespace device {
       /// \brief	Device Model (chip reference)
       //--------------------------------------------------------------
       const std::string m_model;
+
+      //--------------------------------------------------------------
+      /// \brief	Details
+      //--------------------------------------------------------------
+      const shared::CDataContainer m_details;
    };
 
 } // namespace device

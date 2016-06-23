@@ -210,7 +210,7 @@ namespace common {
       Pour tous les keywords ayant émis le jour précédent, on lance le calcul des valeurs résumées (si la valeur n'existe pas)
 
       */
-      boost::posix_time::ptime now = shared::currentTime::Provider::now();
+      boost::posix_time::ptime now = shared::currentTime::Provider().now();
       boost::posix_time::time_duration oneHour = boost::posix_time::hours(1);
 
       boost::posix_time::ptime currentHour(now.date(), boost::posix_time::hours(now.time_of_day().hours()));

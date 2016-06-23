@@ -3,7 +3,7 @@
 #include "database/common/adapters/DatabaseAdapters.h"
 #include "database/common/DatabaseTables.h"
 #include "database/common/Query.h"
-#include <shared/shared/exception/EmptyResult.hpp>
+#include <shared/exception/EmptyResult.hpp>
 #include "database/common/adapters/SingleValueAdapter.hpp"
 #include "database/DatabaseException.hpp"
 

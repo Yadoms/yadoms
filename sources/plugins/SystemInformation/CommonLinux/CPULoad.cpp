@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include <shared/Log.h>
 #include "CPULoad.h"
 #include <shared/exception/Exception.hpp>
 #include <shared/plugin/yPluginApi/StandardCapacities.h>
@@ -8,9 +7,8 @@
 #include <boost/regex.hpp> 
 #include <boost/lexical_cast.hpp>
 
-CCPULoad::CCPULoad(const std::string & device)
-   :m_device(device), 
-    m_keyword( new yApi::historization::CLoad("CPULoad") )
+CCPULoad::CCPULoad(const std::string& keywordName)
+   : m_keyword(boost::make_shared<yApi::historization::CLoad>(keywordName))
 {
    ReadFromFile ( &m_lastTotalUser, &m_lastTotalUserLow, &m_lastTotalSys, &m_lastTotalIdle, &m_lastTotalIowait, &m_lastTotalIrq, &m_lastTotalSoftIrq);
 }
@@ -19,28 +17,13 @@ CCPULoad::~CCPULoad()
 {
 }
 
-void CCPULoad::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context, shared::CDataContainer details)
-{
-   // Declare associated keywords (= values managed by this device)
-   if (!context->keywordExists( m_device, m_keyword->getKeyword()))
-      context->declareKeyword(m_device, *m_keyword, details);
-}
-
-void CCPULoad::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
-{
-   BOOST_ASSERT_MSG(!!context, "context must be defined");
-
-   context->historizeData(m_device, *m_keyword);
-}
-
 void CCPULoad::ReadFromFile(unsigned long long *dtotalUser,
                             unsigned long long *dtotalUserLow,
                             unsigned long long *dtotalSys,
                             unsigned long long *dtotalIdle,
                             unsigned long long *dtotalIowait,
                             unsigned long long *dtotalIrq,
-                            unsigned long long *dtotalSoftIrq
-			   )
+                            unsigned long long *dtotalSoftIrq)
 {
    std::ifstream procFile("/proc/stat");
 
@@ -111,7 +94,7 @@ void CCPULoad::read()
 
       m_keyword->set (percent);
 
-      YADOMS_LOG(debug) << "CPU Load : " << m_keyword->formatValue();
+      std::cout << "CPU Load : " << m_keyword->formatValue() << std::endl;
     }
     m_lastTotalUser    = totalUser;
     m_lastTotalUserLow = totalUserLow;
@@ -120,9 +103,4 @@ void CCPULoad::read()
     m_lastTotalIowait  = totalIowait;
     m_lastTotalIrq     = totalIrq;
     m_lastTotalSoftIrq = totalSoftIrq;
-}
-
-boost::shared_ptr<yApi::historization::IHistorizable> CCPULoad::GetHistorizable() const
-{
-	return m_keyword;
 }

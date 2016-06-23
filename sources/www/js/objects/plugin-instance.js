@@ -95,7 +95,7 @@ PluginInstance.prototype.getBoundManuallyDeviceCreationConfigurationSchema = fun
 
 
 /**
- *  Get the bound manually device creation configuration schema
+ *  Get the bound extra command configuration schema
  * @returns {*}
  */
 PluginInstance.prototype.getBoundExtraCommand = function () {
@@ -168,7 +168,6 @@ PluginInstance.prototype.applyBindingPrivate = function(item, allowedTypes) {
                break;
             case "plugin":
                //we ask synchronously the binded value
-
                var defferedPlugin = RestEngine.getJson("/rest/plugin/" + self.id + "/binding/" + confItem.__Binding__.query);
                arrayOfDeffered.push(defferedPlugin);
                defferedPlugin.done(function(data) {

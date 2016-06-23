@@ -1,98 +1,110 @@
 #include "stdafx.h"
 #include "Thermostat3MertikG6RH4T1.h"
 #include "RFXtrxHelpers.h"
-
-#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/InvalidParameter.hpp>
 
 namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
-
-CThermostat3MertikG6RH4T1::CThermostat3MertikG6RH4T1()
-   :m_onOff("onOff"), m_UpDown("upDown", yApi::EKeywordAccessMode::kGetSet), m_RunUpDown("runUpDown", yApi::EKeywordAccessMode::kGetSet), m_statusByte(0)
-{
-}
-
-std::string CThermostat3MertikG6RH4T1::getModel() const
-{
-   return "Mertik G6R-H4T1";
-}
-
-void CThermostat3MertikG6RH4T1::declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
-{
-   context->declareKeyword(deviceName, m_onOff);
-   context->declareKeyword(deviceName, m_UpDown);
-   context->declareKeyword(deviceName, m_RunUpDown);
-}
-
-void CThermostat3MertikG6RH4T1::historize(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
-{
-   context->historizeData(deviceName, m_onOff);
-   context->historizeData(deviceName, m_UpDown);
-   context->historizeData(deviceName, m_RunUpDown);
-}
-
-void CThermostat3MertikG6RH4T1::set(const std::string& keyword, const std::string& yadomsCommand)
-{
-   if (boost::iequals(keyword, m_onOff.getKeyword()))
+   CThermostat3MertikG6RH4T1::CThermostat3MertikG6RH4T1()
+      : m_statusByte(0),
+        m_onOff(boost::make_shared<yApi::historization::CSwitch>("onOff")),
+        m_upDown(boost::make_shared<yApi::historization::CUpDownStop>("upDown", yApi::EKeywordAccessMode::kGetSet)),
+        m_runUpDown(boost::make_shared<yApi::historization::CUpDownStop>("runUpDown", yApi::EKeywordAccessMode::kGetSet)),
+        m_keywords({m_onOff, m_upDown, m_runUpDown})
    {
-      m_onOff.setCommand(yadomsCommand); m_statusByte = m_onOff.get() ? thermostat3_sOn : thermostat3_sOff;
    }
-   else if (boost::iequals(keyword, m_UpDown.getKeyword()))
+
+   CThermostat3MertikG6RH4T1::~CThermostat3MertikG6RH4T1()
    {
-      m_UpDown.setCommand(yadomsCommand);
-      switch(m_UpDown.get())
+   }
+
+   std::string CThermostat3MertikG6RH4T1::getModel() const
+   {
+      return "Mertik G6R-H4T1";
+   }
+
+   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CThermostat3MertikG6RH4T1::keywords() const
+   {
+      return m_keywords;
+   }
+
+   void CThermostat3MertikG6RH4T1::set(const std::string& keyword, const std::string& yadomsCommand)
+   {
+      if (boost::iequals(keyword, m_onOff->getKeyword()))
       {
-      case yApi::historization::EUpDownStopCommand::kUpValue: m_statusByte = thermostat3_sUp; break;
-      case yApi::historization::EUpDownStopCommand::kDownValue: m_statusByte = thermostat3_sDown; break;
-      case yApi::historization::EUpDownStopCommand::kStopValue: m_statusByte = thermostat3_sStop; break;
-      default: throw shared::exception::CInvalidParameter("yadomsCommand");
+         m_onOff->setCommand(yadomsCommand);
+         m_statusByte = m_onOff.get() ? thermostat3_sOn : thermostat3_sOff;
+      }
+      else if (boost::iequals(keyword, m_upDown->getKeyword()))
+      {
+         m_upDown->setCommand(yadomsCommand);
+         switch (m_upDown->get())
+         {
+         case yApi::historization::EUpDownStopCommand::kUpValue: m_statusByte = thermostat3_sUp;
+            break;
+         case yApi::historization::EUpDownStopCommand::kDownValue: m_statusByte = thermostat3_sDown;
+            break;
+         case yApi::historization::EUpDownStopCommand::kStopValue: m_statusByte = thermostat3_sStop;
+            break;
+         default: throw shared::exception::CInvalidParameter("yadomsCommand");
+         }
+      }
+      else if (boost::iequals(keyword, m_runUpDown->getKeyword()))
+      {
+         m_runUpDown->setCommand(yadomsCommand);
+         switch (m_runUpDown->get())
+         {
+         case yApi::historization::EUpDownStopCommand::kUpValue: m_statusByte = thermostat3_sRunUp;
+            break;
+         case yApi::historization::EUpDownStopCommand::kDownValue: m_statusByte = thermostat3_sRunDown;
+            break;
+         case yApi::historization::EUpDownStopCommand::kStopValue: m_statusByte = thermostat3_sStop;
+            break;
+         default: throw shared::exception::CInvalidParameter("yadomsCommand");
+         }
       }
    }
-   else if (boost::iequals(keyword, m_RunUpDown.getKeyword()))
+
+   void CThermostat3MertikG6RH4T1::reset()
    {
-      m_RunUpDown.setCommand(yadomsCommand);
-      switch(m_RunUpDown.get())
+      m_onOff->set(false);
+      m_upDown->set(yApi::historization::EUpDownStopCommand::kStop);
+      m_runUpDown->set(yApi::historization::EUpDownStopCommand::kStop);
+   }
+
+   void CThermostat3MertikG6RH4T1::setFromProtocolState(unsigned char cmd)
+   {
+      m_statusByte = cmd;
+      switch (m_statusByte)
       {
-      case yApi::historization::EUpDownStopCommand::kUpValue: m_statusByte = thermostat3_sRunUp; break;
-      case yApi::historization::EUpDownStopCommand::kDownValue: m_statusByte = thermostat3_sRunDown; break;
-      case yApi::historization::EUpDownStopCommand::kStopValue: m_statusByte = thermostat3_sStop; break;
-      default: throw shared::exception::CInvalidParameter("yadomsCommand");
+      case thermostat3_sOff: m_onOff->set(false);
+         break;
+      case thermostat3_sOn: m_onOff->set(true);
+         break;
+
+      case thermostat3_sUp: m_upDown->set(yApi::historization::EUpDownStopCommand::kUp);
+         break;
+      case thermostat3_sDown: m_upDown->set(yApi::historization::EUpDownStopCommand::kDown);
+         break;
+      case thermostat3_sRunUp: m_runUpDown->set(yApi::historization::EUpDownStopCommand::kUp);
+         break;
+      case thermostat3_sRunDown: m_runUpDown->set(yApi::historization::EUpDownStopCommand::kDown);
+         break;
+      case thermostat3_sStop: m_upDown->set(yApi::historization::EUpDownStopCommand::kStop);
+         m_runUpDown->set(yApi::historization::EUpDownStopCommand::kStop);
+         break;
+
+      default:
+         throw shared::exception::CInvalidParameter("state, " + boost::lexical_cast<std::string>(m_statusByte));
       }
    }
-}
 
-void CThermostat3MertikG6RH4T1::reset()
-{
-   m_onOff.set(false);
-   m_UpDown.set(yApi::historization::EUpDownStopCommand::kStop);
-   m_RunUpDown.set(yApi::historization::EUpDownStopCommand::kStop);
-}
-
-void CThermostat3MertikG6RH4T1::setFromProtocolState(unsigned char cmd)
-{
-   m_statusByte = cmd;
-   switch(m_statusByte)
+   void CThermostat3MertikG6RH4T1::toProtocolState(unsigned char& cmd) const
    {
-   case thermostat3_sOff      : m_onOff.set(false); break;
-   case thermostat3_sOn       : m_onOff.set(true); break;
-
-   case thermostat3_sUp       : m_UpDown.set(yApi::historization::EUpDownStopCommand::kUp); break;
-   case thermostat3_sDown     : m_UpDown.set(yApi::historization::EUpDownStopCommand::kDown); break;
-   case thermostat3_sRunUp    : m_RunUpDown.set(yApi::historization::EUpDownStopCommand::kUp); break;
-   case thermostat3_sRunDown  : m_RunUpDown.set(yApi::historization::EUpDownStopCommand::kDown); break;
-   case thermostat3_sStop     : m_UpDown.set(yApi::historization::EUpDownStopCommand::kStop); m_RunUpDown.set(yApi::historization::EUpDownStopCommand::kStop); break;
-
-   default:
-      throw shared::exception::CInvalidParameter("state, " + boost::lexical_cast<std::string>(m_statusByte));
+      cmd = m_statusByte;
    }
-}
-
-void CThermostat3MertikG6RH4T1::toProtocolState(unsigned char& cmd) const
-{
-   cmd = m_statusByte;
-}
-
 } // namespace rfxcomMessages
+
+

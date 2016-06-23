@@ -1,5 +1,4 @@
 #pragma once
-
 #include "ISIConfiguration.h"
 #include <shared/DataContainer.h>
 
@@ -21,8 +20,8 @@ public:
    virtual ~CSIConfiguration();
 
    // ISIConfiguration implementation
-   virtual void initializeWith(const shared::CDataContainer &data);
-   virtual bool IsAdvancedEnabled (void) const;
+   void initializeWith(const shared::CDataContainer& data) override;
+   bool IsAdvancedEnabled() const override;
    // [END] ISIConfiguration implementation
 
 private:
@@ -36,3 +35,4 @@ private:
    //--------------------------------------------------------------
    bool m_isAdvancedEnabled;
 };
+

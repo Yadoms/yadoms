@@ -13,30 +13,26 @@ namespace pluginSystem
    public:
       //--------------------------------------------------------------
       /// \brief	      Constructor
-      /// \param[in]    pluginPath : plugin executing path
+      /// \param[in]    pluginPath : plugin path
       /// \throw        exception::CInvalidParameter if file is not valid or complete
       //--------------------------------------------------------------
       explicit CInformation(const boost::filesystem::path& pluginPath);
 
-      // shared::plugin::IInformation implementation
       virtual ~CInformation();
-      virtual const std::string& getType() const;
-      virtual const std::string& getVersion() const;
-      virtual const shared::versioning::EReleaseType getReleaseType() const;
-      virtual const std::string& getAuthor() const;
-      virtual const std::string& getUrl() const;
-      virtual std::string getIdentity() const;
-      virtual std::string toString() const;
-      virtual bool isSupportedOnThisPlatform() const;
-      virtual bool getSupportManuallyCreatedDevice() const;
-      virtual shared::CDataContainer getPackage() const;
-      // [END] shared::plugin::IInformation implementation
 
-      //--------------------------------------------------------------
-      /// \brief	    Get plugin path
-      /// \return     The plugin executing path
-      //--------------------------------------------------------------
-      const boost::filesystem::path getPath() const;
+      // shared::plugin::IInformation implementation
+      const std::string& getType() const override;
+      const std::string& getVersion() const override;
+      shared::versioning::EReleaseType getReleaseType() const override;
+      const std::string& getAuthor() const override;
+      const std::string& getUrl() const override;
+      std::string getIdentity() const override;
+      std::string toString() const override;
+      bool isSupportedOnThisPlatform() const override;
+      bool getSupportManuallyCreatedDevice() const override;
+      shared::CDataContainer getPackage() const override;
+      const boost::filesystem::path& getPath() const override;
+      // [END] shared::plugin::IInformation implementation
 
    private:
       //--------------------------------------------------------------

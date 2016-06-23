@@ -4,14 +4,13 @@
 #include "IRuleStateHandler.h"
 #include "script/IManager.h"
 #include "../communication/ISendMessageAsync.h"
-#include "notification/NotificationCenter.h"
 #include "database/IAcquisitionRequester.h"
 #include "database/IDeviceRequester.h"
-#include "database/IKeywordRequester.h"
 #include "database/IRecipientRequester.h"
 #include "../dataAccessLayer/IConfigurationManager.h"
 #include "../dataAccessLayer/IEventLogger.h"
-#include "../IRunningInformation.h"
+#include "../dataAccessLayer/IKeywordManager.h"
+#include <IPathProvider.h>
 #include <shared/event/EventHandler.hpp>
 
 namespace automation
@@ -24,22 +23,24 @@ namespace automation
    public:
       //-----------------------------------------------------
       ///\brief               Constructor
+      ///\param[in] pathProvider  Yadoms paths provider
       ///\param[in] dbRequester  Database requester
       ///\param[in] pluginGateway Plugin access to do actions on plugins
       ///\param[in] dbAcquisitionRequester  Database acquisition requester
       ///\param[in] dbDeviceRequester  Database device requester
-      ///\param[in] dbKeywordRequester  Database keyword requester
+      ///\param[in] keywordAccessLayer  Database keyword access layer
       ///\param[in] dbRecipientRequester  Database recipient requester
       ///\param[in] configurationManager  Configuration manager (to gain access to Yadoms configuration from rules scripts)
       ///\param[in] eventLogger  Main event logger
       //-----------------------------------------------------
-      CRuleManager(boost::shared_ptr<database::IRuleRequester> dbRequester, boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
-         boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
-         boost::shared_ptr<database::IDeviceRequester> dbDeviceRequester,
-         boost::shared_ptr<database::IKeywordRequester> dbKeywordRequester,
-         boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester,
-         boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
-         boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger);
+      CRuleManager(const IPathProvider& pathProvider,
+                   boost::shared_ptr<database::IRuleRequester> dbRequester, boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
+                   boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
+                   boost::shared_ptr<database::IDeviceRequester> dbDeviceRequester,
+                   boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
+                   boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester,
+                   boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
+                   boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger);
 
       //-----------------------------------------------------
       ///\brief               Destructor
@@ -47,27 +48,27 @@ namespace automation
       virtual ~CRuleManager();
 
       // IRuleManager Implementation
-      virtual void stop();
-      virtual std::vector<std::string> getAvailableInterpreters();
-      virtual std::vector<boost::shared_ptr<database::entities::CRule> > getRules() const;
-      virtual int createRule(boost::shared_ptr<const database::entities::CRule> ruleData, const std::string& code);
-      virtual boost::shared_ptr<database::entities::CRule> getRule(int id) const;
-      virtual std::string getRuleCode(int id) const;
-      virtual std::string getRuleLog(int id) const;
-      virtual std::string getRuleTemplateCode(const std::string & interpreterName) const;
-      virtual void updateRule(boost::shared_ptr<const database::entities::CRule> ruleData);
-      virtual void updateRuleCode(int id, const std::string& code);
-      virtual void deleteRule(int id);
-      virtual void startAllRulesMatchingInterpreter(const std::string & interpreterName);
-      virtual void stopAllRulesMatchingInterpreter(const std::string & interpreterName);
-      virtual void deleteAllRulesMatchingInterpreter(const std::string & interpreterName);
-      virtual void startRule(int ruleId);
-      virtual void stopRule(int ruleId);
+      void stop() override;
+      std::vector<std::string> getAvailableInterpreters() override;
+      std::vector<boost::shared_ptr<database::entities::CRule> > getRules() const override;
+      int createRule(boost::shared_ptr<const database::entities::CRule> ruleData, const std::string& code) override;
+      boost::shared_ptr<database::entities::CRule> getRule(int id) const override;
+      std::string getRuleCode(int id) const override;
+      std::string getRuleLog(int id) const override;
+      std::string getRuleTemplateCode(const std::string& interpreterName) const override;
+      void updateRule(boost::shared_ptr<const database::entities::CRule> ruleData) override;
+      void updateRuleCode(int id, const std::string& code) override;
+      void deleteRule(int id) override;
+      void startAllRulesMatchingInterpreter(const std::string& interpreterName) override;
+      void stopAllRulesMatchingInterpreter(const std::string& interpreterName) override;
+      void deleteAllRulesMatchingInterpreter(const std::string& interpreterName) override;
+      void startRule(int ruleId) override;
+      void stopRule(int ruleId) override;
       // [END] IRuleManager Implementation
 
 
    protected:
-      
+
       //-----------------------------------------------------
       ///\brief               Start all rules
       //-----------------------------------------------------
@@ -110,19 +111,19 @@ namespace automation
       ///\brief               Record rule started in base
       ///\param[in] ruleId    The rule ID
       //-----------------------------------------------------
-      void recordRuleStarted(int ruleId);
+      void recordRuleStarted(int ruleId) const;
 
       //-----------------------------------------------------
       ///\brief               Record rule stopped in base
       ///\param[in] ruleId    The rule ID
       ///\param[in] error     Error associated to event (empty if not error)
       //-----------------------------------------------------
-      void recordRuleStopped(int ruleId, const std::string& error = std::string());
+      void recordRuleStopped(int ruleId, const std::string& error = std::string()) const;
 
       //-----------------------------------------------------
       ///\brief               Method of the thread managing rule asynchronous events
       //-----------------------------------------------------
-      void ruleEventsThreadDoWord();
+      void ruleEventsThreadDoWork();
 
    private:
       //-----------------------------------------------------
@@ -131,7 +132,7 @@ namespace automation
       boost::shared_ptr<database::IRuleRequester> m_ruleRequester;
 
       //-----------------------------------------------------
-      ///\brief               Flag indicating that Yadoms is being shutdown, so don't record rules stop in database
+      ///\brief               Event handler to manage events on all rules
       //-----------------------------------------------------
       boost::shared_ptr<shared::event::CEventHandler> m_ruleEventHandler;
 
@@ -164,10 +165,9 @@ namespace automation
       //-----------------------------------------------------
       ///\brief               The handlers to notify when a rule stop (potentially several handlers for one rule)
       //-----------------------------------------------------
-      mutable boost::recursive_mutex m_ruleStopNotififersMutex;
-      std::map<int, std::set<boost::shared_ptr<shared::event::CEventHandler> > > m_ruleStopNotififers;
+      mutable boost::recursive_mutex m_ruleStopNotifiersMutex;
+      std::map<int, std::set<boost::shared_ptr<shared::event::CEventHandler> > > m_ruleStopNotifiers;
    };
-	
 } // namespace automation	
-	
-	
+
+

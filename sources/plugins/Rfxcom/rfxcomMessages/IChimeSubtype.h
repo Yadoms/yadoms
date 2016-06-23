@@ -1,7 +1,4 @@
 #pragma once
-
-#include "IRfxcomMessage.h"
-#include "RFXtrxHelpers.h"
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <shared/DataContainer.h>
 
@@ -18,7 +15,9 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
-      virtual ~IChimeSubtype() {}
+      virtual ~IChimeSubtype()
+      {
+      }
 
       //--------------------------------------------------------------
       /// \brief	                        Get device model
@@ -27,18 +26,10 @@ namespace rfxcomMessages
       virtual std::string getModel() const = 0;
 
       //--------------------------------------------------------------
-      /// \brief	                        Declare the keyword
-      /// \param[in] context              Yadoms APi context
-      /// \param[in] command              The device name associated to keyword
+      /// \brief	                        Get the keywords
+      /// \return                         The keyword list
       //--------------------------------------------------------------
-      virtual void declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const = 0;
-
-      //--------------------------------------------------------------
-      /// \brief	                        Historize data
-      /// \param[in] context              Yadoms APi context
-      /// \param[in] command              The device name associated to keyword
-      //--------------------------------------------------------------
-      virtual void historize(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const = 0;
+      virtual const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywords() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	                        Set keyword state from Yadoms command
@@ -58,7 +49,9 @@ namespace rfxcomMessages
       /// \param[in] id2                  ID2 byte
       /// \param[in] sound                Sound byte, also used as ID3 in some cases
       //--------------------------------------------------------------
-      virtual unsigned int idFromProtocol(unsigned char id1, unsigned char id2, unsigned char sound) = 0;
+      virtual unsigned int idFromProtocol(unsigned char id1,
+                                          unsigned char id2,
+                                          unsigned char sound) = 0;
 
       //--------------------------------------------------------------
       /// \brief	                        Get protocol data from keyword state
@@ -67,7 +60,10 @@ namespace rfxcomMessages
       /// \param[out] id2                 ID2 byte
       /// \param[out] sound               Sound byte, also used as ID3 in some cases
       //--------------------------------------------------------------
-      virtual void idToProtocol(unsigned int id, unsigned char& id1, unsigned char& id2, unsigned char& sound) const = 0;
+      virtual void idToProtocol(unsigned int id,
+                                unsigned char& id1,
+                                unsigned char& id2,
+                                unsigned char& sound) const = 0;
 
       //--------------------------------------------------------------
       /// \brief	                        Set keyword state from protocol data
@@ -81,5 +77,6 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       virtual void toProtocolState(unsigned char& sound) const = 0;
    };
-
 } // namespace rfxcomMessages
+
+

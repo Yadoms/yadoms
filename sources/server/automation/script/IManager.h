@@ -1,10 +1,11 @@
 #pragma once
-#include <shared/script/IRunner.h>
 #include "IProperties.h"
 #include "../../database/common/requesters/Rule.h"
-#include <shared/script/ILogger.h>
-#include <shared/script/IStopNotifier.h>
+#include <shared/process/ILogger.h>
+#include <shared/script/yScriptApi/IYScriptApi.h>
 #include <server/automation/IRuleStateHandler.h>
+#include <shared/process/IProcess.h>
+#include <shared/script/IInterpreter.h>
 
 namespace automation { namespace script
 {
@@ -24,6 +25,14 @@ namespace automation { namespace script
       ///\return              The list of available interpreters
       //-----------------------------------------------------
       virtual std::vector<std::string> getAvailableInterpreters() = 0;
+
+      //-----------------------------------------------------
+      ///\brief               Get the interpreter needed to run a script
+      ///\param[in] interpreterName The interpreter name
+      ///\return              The first interpreter found supporting this script
+      ///\throw CScriptInterpreterNotFound No corresponding script interpreter was found
+      //-----------------------------------------------------
+      virtual boost::shared_ptr<shared::script::IInterpreter> getAssociatedInterpreter(const std::string& interpreterName) = 0;
 
       //-----------------------------------------------------
       ///\brief               Unload an interpreter (do nothing if interpreter not loaded)
@@ -75,35 +84,20 @@ namespace automation { namespace script
       ///\throw CInvalidParameter if rule ID not found
       //-----------------------------------------------------
       virtual std::string getScriptLogFile(boost::shared_ptr<const database::entities::CRule> ruleData) = 0;
-      
-      //-----------------------------------------------------
-      ///\brief               Create a script runner
-      ///\param[in] scriptProperties      The script properties
-      ///\param[in] scriptLogger          The rule logger
-      ///\param[in] yScriptApi            The rule context
-      ///\param[in] stopNotifier          The rule stop notifier
-      ///\return              A new script runner instance
-      ///\throw CInvalidParameter if unable to create script runner
-      //-----------------------------------------------------
-      virtual boost::shared_ptr<shared::script::IRunner> createScriptRunner(
-         boost::shared_ptr<const IProperties> scriptProperties,
-         boost::shared_ptr<shared::script::ILogger> scriptLogger,
-         boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
-         boost::shared_ptr<shared::script::IStopNotifier> stopNotifier) = 0;
 
       //-----------------------------------------------------
       ///\brief               Create the script logger
-      ///\param[in] scriptPath The script path where to log in
+      ///\param[in] ruleData  The rule raw data
       ///\return              A script logger instance
       //-----------------------------------------------------
-      virtual boost::shared_ptr<shared::script::ILogger> createScriptLogger(const std::string& scriptPath) = 0;
+      virtual boost::shared_ptr<shared::process::ILogger> createScriptLogger(boost::shared_ptr<const database::entities::CRule> ruleData) = 0;
 
       //-----------------------------------------------------
       ///\brief               Create the script context (IYScriptApi implementation)
       ///\param[in] scriptLogger The logger used for rule
       ///\return              A script context instance
       //-----------------------------------------------------
-      virtual boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> createScriptContext(boost::shared_ptr<shared::script::ILogger> scriptLogger) = 0;
+      virtual boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> createScriptContext(boost::shared_ptr<shared::process::ILogger> scriptLogger) = 0;
 
       //-----------------------------------------------------
       ///\brief               Create the stop notifier
@@ -111,7 +105,7 @@ namespace automation { namespace script
       ///\param[in] ruleId    The rule ID
       ///\return              A stop notifier instance
       //-----------------------------------------------------
-      virtual boost::shared_ptr<shared::script::IStopNotifier> createStopNotifier(boost::shared_ptr<IRuleStateHandler> ruleStateHandler, int ruleId) = 0;
+      virtual boost::shared_ptr<shared::process::IProcessObserver> createStopNotifier(boost::shared_ptr<IRuleStateHandler> ruleStateHandler, int ruleId) = 0;
    };
 
 } } // namespace automation::script

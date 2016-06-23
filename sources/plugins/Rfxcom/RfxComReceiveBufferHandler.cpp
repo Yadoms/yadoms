@@ -2,8 +2,10 @@
 #include "RfxComReceiveBufferHandler.h"
 
 
-CRfxcomReceiveBufferHandler::CRfxcomReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler, int receiveDataEventId)
-   :m_receiveDataEventHandler(receiveDataEventHandler), m_receiveDataEventId(receiveDataEventId)
+CRfxcomReceiveBufferHandler::CRfxcomReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler,
+                                                         int receiveDataEventId)
+   : m_receiveDataEventHandler(receiveDataEventHandler),
+     m_receiveDataEventId(receiveDataEventId)
 {
 }
 
@@ -13,7 +15,7 @@ CRfxcomReceiveBufferHandler::~CRfxcomReceiveBufferHandler()
 
 void CRfxcomReceiveBufferHandler::push(const shared::communication::CByteBuffer& buffer)
 {
-   for (size_t idx = 0 ; idx < buffer.size() ; ++ idx)
+   for (auto idx = 0; idx < buffer.size(); ++ idx)
       m_content.push_back(buffer[idx]);
 
    if (isComplete())
@@ -34,7 +36,7 @@ bool CRfxcomReceiveBufferHandler::isComplete() const
    // (see RFXCom specifications). This value counts all bytes except itself.
    // So a message is considered complete if its size is at least the value indicated
    // in the first byte + 1.
-   if (m_content.size() < ((size_t)m_content[0] + 1))
+   if (m_content.size() < (static_cast<size_t>(m_content[0]) + 1))
       return false;
 
    // A message is complete
@@ -51,7 +53,7 @@ boost::shared_ptr<const shared::communication::CByteBuffer> CRfxcomReceiveBuffer
    // So the message size is this value + 1.
    const size_t extractedMessageSize = m_content[0] + 1;
    boost::shared_ptr<shared::communication::CByteBuffer> extractedMessage(new shared::communication::CByteBuffer(extractedMessageSize));
-   for (size_t idx = 0 ; idx < extractedMessageSize ; ++ idx)
+   for (size_t idx = 0; idx < extractedMessageSize; ++ idx)
       (*extractedMessage)[idx] = m_content[idx];
 
    // Delete extracted data
@@ -60,7 +62,8 @@ boost::shared_ptr<const shared::communication::CByteBuffer> CRfxcomReceiveBuffer
    return extractedMessage;
 }
 
-void CRfxcomReceiveBufferHandler::notifyEventHandler(boost::shared_ptr<const shared::communication::CByteBuffer> buffer)
+void CRfxcomReceiveBufferHandler::notifyEventHandler(boost::shared_ptr<const shared::communication::CByteBuffer> buffer) const
 {
    m_receiveDataEventHandler.postEvent<const shared::communication::CByteBuffer>(m_receiveDataEventId, *buffer);
 }
+

@@ -2,13 +2,9 @@
 #include "IDevice.h"
 #include "IIdentification.h"
 #include "../ioInterfaces/ITemperatureIo.h"
-#include <shared/plugin/yPluginApi/IYPluginApi.h>
 
-// Shortcut to yPluginApi namespace
-namespace yApi = shared::plugin::yPluginApi;
-
-namespace device {
-
+namespace device
+{
    //--------------------------------------------------------------
    /// \brief	Temperature + IO device (Family 42)
    //--------------------------------------------------------------
@@ -19,10 +15,11 @@ namespace device {
       /// \brief	Constructor
       /// \param[in]	family Device family
       /// \param[in]	id Device serial number
-      /// \param[in]	context yApi context
       /// \param[in]	io I/O access object
       //--------------------------------------------------------------
-      CTemperatureIo(EOneWireFamily family, const std::string& id, boost::shared_ptr<yApi::IYPluginApi> context, boost::shared_ptr<ioInterfaces::ITemperatureIo> io);
+      CTemperatureIo(EOneWireFamily family,
+                     const std::string& id,
+                     boost::shared_ptr<ioInterfaces::ITemperatureIo> io);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
@@ -31,10 +28,16 @@ namespace device {
 
    protected:
       // IDevice implementation
-      virtual boost::shared_ptr<const IIdentification> ident() const;
-      virtual void declare();
-      virtual void historize();
-      virtual void set(const std::string& keyword, const std::string& command);
+      boost::shared_ptr<const IIdentification> ident() const override
+      {
+         return m_identification;
+      }
+      const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywords() const override
+      {
+         return *m_keywords;
+      }
+      void read() const override;
+      void write(const std::string& keyword, const std::string& command) override;
       // [END] IDevice implementation
 
    private:
@@ -42,11 +45,6 @@ namespace device {
       /// \brief	The device identification
       //--------------------------------------------------------------
       boost::shared_ptr<const IIdentification> m_identification;
-
-      //--------------------------------------------------------------
-      /// \brief	The yApi context
-      //--------------------------------------------------------------
-      boost::shared_ptr<yApi::IYPluginApi> m_context;
 
       //--------------------------------------------------------------
       /// \brief	The I/O access object
@@ -59,6 +57,9 @@ namespace device {
       boost::shared_ptr<yApi::historization::CSwitch> m_ioA;
       boost::shared_ptr<yApi::historization::CSwitch> m_ioB;
       boost::shared_ptr<yApi::historization::CTemperature> m_temperature;
+      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywordsWithTemperature;
+      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywordsWithoutTemperature;
+      mutable std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >* m_keywords;
    };
 
 } // namespace device

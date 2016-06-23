@@ -1,8 +1,7 @@
 #pragma once
-
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
-#include <shared/DataContainer.h>
 #include "ISecurity1Subtype.h"
+#include "RFXtrxHelpers.h"
 
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -17,9 +16,12 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	                        The RFXCom subtype value
       //--------------------------------------------------------------
-      enum { rfxValueKD101 = sTypeKD101, rfxValueSA30 = sTypeSA30 };
+      enum
+      {
+         rfxValueKD101 = sTypeKD101,
+         rfxValueSA30 = sTypeSA30
+      };
 
-   public:
       //--------------------------------------------------------------
       /// \brief	                        Constructor
       /// \param[in] model                The device model
@@ -30,11 +32,10 @@ namespace rfxcomMessages
       /// \brief	Destructor
       //--------------------------------------------------------------
       virtual ~CSecurity1KD101_SA30();
-      
+
       // ISecurity1Subtype implementation
       std::string getModel() const override;
-      void declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const override;
-      void historize(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const override;
+      const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywords() const override;
       void set(const std::string& keyword, const std::string& yadomsCommand) override;
       void reset() override;
       void setFromProtocolState(unsigned char statusByte) override;
@@ -47,11 +48,16 @@ namespace rfxcomMessages
       /// \brief	                        The device model
       //--------------------------------------------------------------
       const std::string m_model;
+      //--------------------------------------------------------------
+      /// \brief	                        The keywords
+      //--------------------------------------------------------------
+      boost::shared_ptr<yApi::historization::CSwitch> m_alarm;
 
       //--------------------------------------------------------------
-      /// \brief	                        The keyword
+      /// \brief	The keywords list to historize in one step for better performances
       //--------------------------------------------------------------
-      yApi::historization::CSwitch m_alarm;
+      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
    };
-
 } // namespace rfxcomMessages
+
+

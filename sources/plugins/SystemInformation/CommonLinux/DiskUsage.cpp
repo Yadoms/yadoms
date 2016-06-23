@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "DiskUsage.h"
-#include <shared/Log.h>
 #include <shared/exception/Exception.hpp>
 #include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/plugin/yPluginApi/StandardUnits.h>
@@ -8,26 +7,15 @@
 #include <boost/lexical_cast.hpp>
 #include "LinuxHelpers.h"
 
-CDiskUsage::CDiskUsage(const std::string & device, const std::string & driveName, const std::string & keywordName)
-   :m_device(device), 
-    m_driveName(driveName), 
-    m_keyword( new yApi::historization::CLoad(keywordName) )
-{}
-
-CDiskUsage::~CDiskUsage()
-{}
-
-void CDiskUsage::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context, shared::CDataContainer details)
+CDiskUsage::CDiskUsage(const std::string& keywordName,
+                       const std::string& driveName)
+   : m_driveName(driveName),
+     m_keyword(boost::make_shared<yApi::historization::CLoad>(keywordName))
 {
-   if (!context->keywordExists( m_device, m_keyword->getKeyword()))
-      context->declareKeyword(m_device, *m_keyword, details);
 }
 
-void CDiskUsage::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
+CDiskUsage::~CDiskUsage()
 {
-   BOOST_ASSERT_MSG(context, "context must be defined");
-
-   context->historizeData(m_device, *m_keyword);
 }
 
 void CDiskUsage::read()
@@ -47,17 +35,13 @@ void CDiskUsage::read()
              long long numblock    = boost::lexical_cast<long long>(match[2]);
              long long availblocks = boost::lexical_cast<long long>(match[4]);
 
-                YADOMS_LOG(debug) << "numblock    :  " << numblock;
-                YADOMS_LOG(debug) << "availblocks :  " << availblocks;
+                std::cout << "numblock    :  " << numblock << std::endl;
+                std::cout << "availblocks :  " << availblocks << std::endl;
 			 
              m_keyword->set ((numblock - availblocks)/double(numblock)*100);
-             YADOMS_LOG(debug) << "Disk Name :  " << m_driveName << " Disk Usage : " << m_keyword->formatValue();			 
+             std::cout << "Disk Name :  " << m_driveName << " Disk Usage : " << m_keyword->formatValue() << std::endl;
          }
        }
    }
 }
 
-boost::shared_ptr<yApi::historization::IHistorizable> CDiskUsage::GetHistorizable() const
-{
-	return m_keyword;
-}

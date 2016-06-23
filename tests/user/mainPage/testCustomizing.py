@@ -1,4 +1,6 @@
-﻿import unittest
+﻿import sys
+sys.path.append('.')
+import unittest
 from selenium import webdriver
 import database
 import scripts

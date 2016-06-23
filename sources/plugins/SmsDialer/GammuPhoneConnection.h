@@ -22,18 +22,18 @@ public:
    /// \brief	   Get the GSM context, used for each operation on connected phone
    /// \return    The current Gsm context (NULL is not connected)
    //--------------------------------------------------------------
-   GSM_StateMachine* getGsmContext();
+   GSM_StateMachine* getGsmContext() const;
 
    //--------------------------------------------------------------
    /// \brief	Phone connection
    /// \return true is phone is connected, false else
    //--------------------------------------------------------------
-   bool connect();
+   bool connect() const;
 
    //--------------------------------------------------------------
    /// \brief	Phone disconnection
    //--------------------------------------------------------------
-   void disconnect();
+   void disconnect() const;
 
    //--------------------------------------------------------------
    /// \brief	Phone connection status
@@ -48,7 +48,7 @@ protected:
    /// \param[in] errorMessage   Error message to pass to exception if gsmError != ERR_NONE
    /// \throw  CPhoneException if error
    //--------------------------------------------------------------
-   void handleGammuError(GSM_Error gsmError, const std::string& errorMessage) const;
+   static void handleGammuError(GSM_Error gsmError, const std::string& errorMessage);
 
 private:
    //--------------------------------------------------------------

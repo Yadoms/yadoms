@@ -1,127 +1,76 @@
 #include "stdafx.h"
-
 #include "Instance.h"
-#include <shared/plugin/IPlugin.h>
-#include <shared/plugin/information/IInformation.h>
-#include <shared/Log.h>
-#include <shared/DynamicLibrary.h>
 
 namespace pluginSystem
 {
-
-CInstance::CInstance(
-   const boost::shared_ptr<const ILibrary> plugin,
-   const boost::shared_ptr<const database::entities::CPlugin> pluginData,
-   boost::shared_ptr<database::IPluginEventLoggerRequester> pluginEventLoggerRequester,
-   boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
-   boost::shared_ptr<database::IKeywordRequester> keywordRequester,
-   boost::shared_ptr<database::IRecipientRequester> recipientRequester,
-   boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester,
-   boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer,
-   const boost::shared_ptr<IQualifier> qualifier,
-   boost::shared_ptr<shared::event::CEventHandler> supervisor,
-   int pluginManagerEventId)
-    : CThreadBase(pluginData->Type()), m_pPlugin(plugin), m_qualifier(qualifier), m_supervisor(supervisor), m_pluginManagerEventId(pluginManagerEventId),
-    m_context(new CYPluginApiImplementation(plugin->getInformation(), m_pPlugin->getLibraryPath(), pluginData, pluginEventLoggerRequester, deviceManager, keywordRequester, recipientRequester, acquisitionRequester, acquisitionHistorizer))
-{
-	BOOST_ASSERT(m_pPlugin);
-   m_pPluginInstance.reset(m_pPlugin->construct());
-
-   start();
-}
-
-CInstance::~CInstance()
-{
-   stop();
-}
-
-void CInstance::doWork()
-{
-   BOOST_ASSERT(m_pPluginInstance);
-   YADOMS_LOG_CONFIGURE(getName());
-   YADOMS_LOG(debug) << m_context->getInformation().getType() << " is starting...";
-
-   try
+   CInstance::CInstance(boost::shared_ptr<const database::entities::CPlugin> instanceInformation,
+                        const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
+                        boost::shared_ptr<shared::process::IProcess> process,
+                        boost::shared_ptr<IIpcAdapter> ipcAdapter)
+      : m_instanceInformation(instanceInformation),
+        m_pluginInformation(pluginInformation),
+        m_process(process),
+        m_ipcAdapter(ipcAdapter)
    {
-      // Execute plugin code
-      m_pPluginInstance->doWork(m_context);
-
-      if (isStopping())
-      {
-         // Normal stop
-         return;
-      }
-
-      // Plugin has stopped without stop requested
-      YADOMS_LOG(error) << getName() << " has stopped itself.";
-      m_qualifier->signalCrash(m_pPlugin->getInformation(), "Plugin stopped itself");
-   }
-   catch (boost::thread_interrupted&)
-   {
-      // End-of-thread exception was not catch by plugin,
-      // it's a developer's error, we have to report it
-      YADOMS_LOG(error) << getName() << " didn't catch boost::thread_interrupted.";
-      m_qualifier->signalCrash(m_pPlugin->getInformation(), "Plugin didn't catch boost::thread_interrupted");
-   }
-   catch (std::exception& e)
-   {
-      // Plugin crashed
-      YADOMS_LOG(error) << getName() << " crashed in doWork with exception : " << e.what();
-      m_qualifier->signalCrash(m_pPlugin->getInformation(), std::string("Plugin crashed in doWork with exception : ") + e.what());
-   }
-   catch (...)
-   {
-      // Plugin crashed
-
-      YADOMS_LOG(error) << getName() << " crashed in doWork with unknown exception.";
-      m_qualifier->signalCrash(m_pPlugin->getInformation(), "Plugin crashed in doWork with unknown exception");
+      postPluginInformation(m_pluginInformation);
    }
 
-   YADOMS_LOG(information) << m_context->getInformation().getType() << " is stopped";
+   CInstance::~CInstance()
+   {
+   }
 
-   // Signal the abnormal stop
-   CManagerEvent event(CManagerEvent::kPluginInstanceAbnormalStopped, m_context->getPluginId(), m_pPlugin->getInformation(), isStopping());
-   m_supervisor->postEvent<CManagerEvent>(m_pluginManagerEventId, event);
-}
+   void CInstance::requestStop()
+   {
+      postStopRequest();
+   }
 
-void CInstance::postCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command) const
-{
-   BOOST_ASSERT(m_context);
-   // Post event to the plugin
-   m_context->getEventHandler().postEvent<boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> >(shared::plugin::yPluginApi::IYPluginApi::kEventDeviceCommand, command);
-}
+   void CInstance::kill()
+   {
+      m_process->kill();
+   }
 
-void CInstance::postExtraCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> extraCommand) const
-{
-   BOOST_ASSERT(m_context);
-   // Post event to the plugin
-   m_context->getEventHandler().postEvent<boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> >(shared::plugin::yPluginApi::IYPluginApi::kEventExtraCommand, extraCommand);
-}
+   void CInstance::postStopRequest() const
+   {
+      m_ipcAdapter->postStopRequest();
+   }
 
-void CInstance::postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> & request) const
-{
-   BOOST_ASSERT(m_context);
-   // Post event to the plugin
-   m_context->getEventHandler().postEvent< boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> >(shared::plugin::yPluginApi::IYPluginApi::kEventManuallyDeviceCreation, request);
-}
+   void CInstance::postPluginInformation(boost::shared_ptr<const shared::plugin::information::IInformation> information) const
+   {
+      m_ipcAdapter->postPluginInformation(information);
+   }
 
-void CInstance::postBindingQueryRequest(boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> & request) const
-{
-	BOOST_ASSERT(m_context);
-	// Post event to the plugin
-   m_context->getEventHandler().postEvent< boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> >(shared::plugin::yPluginApi::IYPluginApi::kBindingQuery, request);
-}
+   void CInstance::postDeviceCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> deviceCommand)
+   {
+      m_ipcAdapter->postDeviceCommand(deviceCommand);
+   }
 
-void CInstance::updateConfiguration(const shared::CDataContainer & newConfiguration) const
-{
-   BOOST_ASSERT(m_context);
-   // Post event to the plugin
-   m_context->getEventHandler().postEvent<shared::CDataContainer>(shared::plugin::yPluginApi::IYPluginApi::kEventUpdateConfiguration, newConfiguration);
-}
+   void CInstance::postBindingQueryRequest(boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> request)
+   {
+      m_ipcAdapter->postBindingQueryRequest(request);
+   }
 
-std::string CInstance::getPluginName() const
-{
-   return shared::CDynamicLibrary::ToLibName(m_pPlugin->getLibraryPath().string());
-}
+   void CInstance::postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request)
+   {
+      m_ipcAdapter->postManuallyDeviceCreationRequest(request);
+   }
 
+   void CInstance::postExtraCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> extraCommand)
+   {
+      m_ipcAdapter->postExtraCommand(extraCommand);
+   }
+
+   void CInstance::updateConfiguration(const shared::CDataContainer& newConfiguration)
+   {
+      m_ipcAdapter->postUpdateConfiguration(newConfiguration);
+   }
+
+   boost::shared_ptr<const database::entities::CPlugin> CInstance::about() const
+   {
+      return m_instanceInformation;
+   }
+
+   boost::shared_ptr<const shared::plugin::information::IInformation> CInstance::aboutPlugin() const
+   {
+      return m_pluginInformation;
+   }
 } // namespace pluginSystem

@@ -2,35 +2,50 @@
 #include "ICurrentTime.h"
 #include <shared/Export.h>
 
-namespace shared { namespace currentTime
+namespace shared
 {
-   //--------------------------------------------------------------
-   /// \brief	   The current time provider interface
-   //--------------------------------------------------------------
-   class YADOMS_SHARED_EXPORT Provider
+   namespace currentTime
    {
-   public:
       //--------------------------------------------------------------
-      /// \brief	   Constructor (initialize the static object)
+      /// \brief	   The current time provider interface
       //--------------------------------------------------------------
-      explicit Provider(boost::shared_ptr<ICurrentTime> currentTimeInstance);
+      class YADOMS_SHARED_EXPORT CProvider
+      {
+      public:
+         //--------------------------------------------------------------
+         /// \brief	   Constructor (initialize the static object)
+         /// \param[in] timeInstance Time to use as provider
+         //--------------------------------------------------------------
+         explicit CProvider(boost::shared_ptr<ICurrentTime> timeInstance);
 
-      //--------------------------------------------------------------
-      /// \brief	   Destructor
-      //--------------------------------------------------------------
-      virtual ~Provider();
+         //--------------------------------------------------------------
+         /// \brief	   Destructor
+         //--------------------------------------------------------------
+         virtual ~CProvider();
 
-      //--------------------------------------------------------------
-      /// \brief	   Returns now time
-      /// \return Now
-      //--------------------------------------------------------------
-      static boost::posix_time::ptime now();
+         //--------------------------------------------------------------
+         /// \brief	   Set time provider instance
+         /// \param[in] timeInstance The time instance to used
+         /// \return Now
+         //--------------------------------------------------------------
+         void setProvider(boost::shared_ptr<ICurrentTime> timeInstance);
 
-   private:
-      //--------------------------------------------------------------
-      /// \brief	   The currentTime object
-      //--------------------------------------------------------------
-      static boost::shared_ptr<ICurrentTime> CurrentTimeInstance;
-   };
+         //--------------------------------------------------------------
+         /// \brief	   Returns now time
+         /// \return Now
+         //--------------------------------------------------------------
+         boost::posix_time::ptime now();
 
-} } // namespace shared::currentTime
+      private:
+         //--------------------------------------------------------------
+         /// \brief	   The currentTime object
+         //--------------------------------------------------------------
+         boost::shared_ptr<ICurrentTime> m_currentTimeInstance;
+      };
+
+      // The time provider instance
+      YADOMS_SHARED_EXPORT CProvider& Provider();
+   }
+} // namespace shared::currentTime
+
+

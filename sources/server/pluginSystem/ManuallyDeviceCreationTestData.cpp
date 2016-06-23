@@ -5,7 +5,8 @@ namespace pluginSystem
 {
 
 CManuallyDeviceCreationTestData::CManuallyDeviceCreationTestData(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command, const std::string& parameters)
-   :m_command(command), m_parameters(parameters)
+   :m_command(command),
+   m_parameters(parameters)
 {
 }
       
@@ -23,10 +24,10 @@ const std::string& CManuallyDeviceCreationTestData::getDeviceParameters() const
    return m_parameters;
 }
 
-const std::string CManuallyDeviceCreationTestData::toString() const
+std::string CManuallyDeviceCreationTestData::toString() const
 {
    std::stringstream str;
-   str << m_command->toString() << " = " << m_parameters;
+   str << shared::plugin::yPluginApi::IDeviceCommand::toString(m_command);
    return str.str();
 }
 

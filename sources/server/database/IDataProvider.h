@@ -13,8 +13,8 @@
 #include "IAcquisitionRequester.h"
 #include "ITransactionalProvider.h"
 
-namespace database { 
-
+namespace database
+{
    class IDataProvider
    {
    public:
@@ -32,8 +32,8 @@ namespace database {
       //--------------------------------------------------------------
       /// \Brief	Unload the database system
       //--------------------------------------------------------------
-      virtual void unload() = 0;   
-      
+      virtual void unload() = 0;
+
       //--------------------------------------------------------------
       /// \Brief	Stop all maintenance tasks
       //--------------------------------------------------------------
@@ -65,7 +65,7 @@ namespace database {
       /// \return 	the device requester
       /// \throws 		
       //--------------------------------------------------------------  
-      virtual boost::shared_ptr<IDeviceRequester> getDeviceRequester()  = 0;
+      virtual boost::shared_ptr<IDeviceRequester> getDeviceRequester() = 0;
 
       //--------------------------------------------------------------
       /// \Brief		get the keyword requester
@@ -93,29 +93,29 @@ namespace database {
       /// \return 	the plugin event logger requester
       /// \throws 		
       //--------------------------------------------------------------  
-      virtual boost::shared_ptr<IPluginEventLoggerRequester> getPluginEventLoggerRequester() = 0; 
-      
+      virtual boost::shared_ptr<IPluginEventLoggerRequester> getPluginEventLoggerRequester() = 0;
+
       //--------------------------------------------------------------
       /// \Brief		get the Acquisiton requester
       /// \return 	the Acquisiton requester
       /// \throws 		
       //--------------------------------------------------------------  
-      virtual boost::shared_ptr<IAcquisitionRequester> getAcquisitionRequester() = 0;    
-      
+      virtual boost::shared_ptr<IAcquisitionRequester> getAcquisitionRequester() = 0;
+
       //--------------------------------------------------------------
       /// \Brief		get the Event Logger requester
       /// \return 	the Event Logger requester
       /// \throws 		
       //--------------------------------------------------------------  
-      virtual boost::shared_ptr<IEventLoggerRequester> getEventLoggerRequester() = 0;   
-      
+      virtual boost::shared_ptr<IEventLoggerRequester> getEventLoggerRequester() = 0;
+
       //--------------------------------------------------------------
       /// \Brief		get the rule requester
       /// \return 	the rule requester
       /// \throws 		
       //--------------------------------------------------------------  
-      virtual boost::shared_ptr<IRuleRequester> getRuleRequester() = 0;     
-      
+      virtual boost::shared_ptr<IRuleRequester> getRuleRequester() = 0;
+
       //--------------------------------------------------------------
       /// \Brief		get the Recipient requester
       /// \return 	the Recipient requester
@@ -123,6 +123,6 @@ namespace database {
       //--------------------------------------------------------------  
       virtual boost::shared_ptr<IRecipientRequester> getRecipientRequester() = 0;
    };
-
- 
 } //namespace database 
+
+

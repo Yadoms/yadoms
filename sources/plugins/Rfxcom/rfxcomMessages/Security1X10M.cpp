@@ -1,9 +1,5 @@
 #include "stdafx.h"
 #include "Security1X10M.h"
-#include "RFXtrxHelpers.h"
-
-#include <shared/plugin/yPluginApi/StandardCapacities.h>
-#include <shared/exception/InvalidParameter.hpp>
 
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -11,7 +7,9 @@ namespace rfxcomMessages
 {
 
 CSecurity1X10M::CSecurity1X10M()
-   :m_alarm("alarm", yApi::EKeywordAccessMode::kGet), m_tamper("tamper", yApi::EKeywordAccessMode::kGet)
+   : m_alarm(boost::make_shared<yApi::historization::CSwitch>("alarm", yApi::EKeywordAccessMode::kGet)),
+   m_tamper(boost::make_shared<yApi::historization::CSwitch>("tamper", yApi::EKeywordAccessMode::kGet)),
+   m_keywords({ m_alarm, m_tamper })
 {
 }
    
@@ -24,18 +22,9 @@ std::string CSecurity1X10M::getModel() const
    return "X10 security motion sensor";
 }
 
-void CSecurity1X10M::declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
+const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CSecurity1X10M::keywords() const
 {
-   if (!context->keywordExists(deviceName, m_alarm))
-      context->declareKeyword(deviceName, m_alarm);
-   if (!context->keywordExists(deviceName, m_tamper))
-      context->declareKeyword(deviceName, m_tamper);
-}
-
-void CSecurity1X10M::historize(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
-{
-   context->historizeData(deviceName, m_alarm);
-   context->historizeData(deviceName, m_tamper);
+   return m_keywords;
 }
 
 void CSecurity1X10M::set(const std::string& /*keyword*/, const std::string& /*yadomsCommand*/)
@@ -45,14 +34,14 @@ void CSecurity1X10M::set(const std::string& /*keyword*/, const std::string& /*ya
 
 void CSecurity1X10M::reset()
 {
-   m_alarm.set(false);
-   m_tamper.set(false);
+   m_alarm->set(false);
+   m_tamper->set(false);
 }
 
 void CSecurity1X10M::setFromProtocolState(unsigned char statusByte)
 {
-   m_alarm.set(statusByte == sStatusMotion || statusByte == sStatusMotionTamper);
-   m_tamper.set(statusByte == sStatusNoMotionTamper || statusByte == sStatusMotionTamper);
+   m_alarm->set(statusByte == sStatusMotion || statusByte == sStatusMotionTamper);
+   m_tamper->set(statusByte == sStatusNoMotionTamper || statusByte == sStatusMotionTamper);
 }
 
 unsigned char CSecurity1X10M::toProtocolState() const

@@ -1,9 +1,6 @@
 #pragma once
-
-#include "IRfxcomMessage.h"
-#include "RFXtrxHelpers.h"
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
-#include <shared/DataContainer.h>
+#include "RFXtrxHelpers.h"
 
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -27,18 +24,10 @@ namespace rfxcomMessages
       virtual std::string getModel() const = 0;
 
       //--------------------------------------------------------------
-      /// \brief	                        Declare the keyword
-      /// \param[in] context              Yadoms APi context
-      /// \param[in] command              The device name associated to keyword
+      /// \brief	                        Get the keywords
+      /// \return                         The keyword list
       //--------------------------------------------------------------
-      virtual void declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const = 0;
-
-      //--------------------------------------------------------------
-      /// \brief	                        Historize data
-      /// \param[in] context              Yadoms APi context
-      /// \param[in] command              The device name associated to keyword
-      //--------------------------------------------------------------
-      virtual void historize(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const = 0;
+      virtual const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywords() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	                        Set keyword state from Yadoms command
@@ -68,7 +57,7 @@ namespace rfxcomMessages
       /// \brief	                        Get ID from protocol data
       /// \param[in] buf                  buffer of the message
       //--------------------------------------------------------------
-      virtual unsigned long idFromProtocol( const RBUF& rbuf ) const = 0;
+      virtual unsigned long idFromProtocol(const RBUF& rbuf) const = 0;
    };
 
 } // namespace rfxcomMessages

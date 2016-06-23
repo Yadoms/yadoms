@@ -2,7 +2,7 @@
 #include "IRuleStateHandler.h"
 #include "database/IRuleRequester.h"
 #include "dataAccessLayer/IEventLogger.h"
-#include <shared/shared/event/EventHandler.hpp>
+#include <shared/event/EventHandler.hpp>
 
 namespace automation
 {
@@ -17,11 +17,10 @@ namespace automation
       //--------------------------------------------------------------
       enum ERuleEventType
       {
-         kRuleAbnormalStopped = 0,      // Rule abnormal stopped
+         kRuleAbnormalStopped = 0, // Rule abnormal stopped
          kRuleStopped
       };
 
-   public:
       //-----------------------------------------------------
       ///\brief               Constructor
       ///\param[in] dbRequester  Database requester
@@ -29,8 +28,8 @@ namespace automation
       ///\param[in] ruleEventHandler  the rule manager event handler
       //-----------------------------------------------------
       CRuleStateHandler(boost::shared_ptr<database::IRuleRequester> dbRequester,
-         boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger,
-         boost::shared_ptr<shared::event::CEventHandler> ruleEventHandler);
+                        boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger,
+                        boost::shared_ptr<shared::event::CEventHandler> ruleEventHandler);
 
       //-----------------------------------------------------
       ///\brief               Destructor
@@ -38,9 +37,9 @@ namespace automation
       virtual ~CRuleStateHandler();
 
       // IRuleStateHandler Implementation
-      virtual void signalNormalRuleStop(int ruleId);
-      virtual void signalRuleError(int ruleId, const std::string& error);
-      virtual void signalRulesStartError(int ruleId, const std::string& error);
+      void signalNormalRuleStop(int ruleId) override;
+      void signalRuleError(int ruleId, const std::string& error) override;
+      void signalRulesStartError(int ruleId, const std::string& error) override;
       // [END] IRuleStateHandler Implementation
 
 
@@ -60,7 +59,6 @@ namespace automation
       //--------------------------------------------------------------
       boost::shared_ptr<shared::event::CEventHandler> m_ruleEventHandler;
    };
-	
 } // namespace automation	
-	
-	
+
+

@@ -17,9 +17,9 @@ class CYadomsRAMProcessMemory : public ILoad
 public:
    //--------------------------------------------------------------
    /// \brief	    Constructor
-   /// \param[in] device    The device
+   /// \param[in] keywordName The keyword name
    //--------------------------------------------------------------
-   explicit CYadomsRAMProcessMemory(const std::string & device);
+   explicit CYadomsRAMProcessMemory(const std::string& keywordName);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -27,21 +27,19 @@ public:
    virtual ~CYadomsRAMProcessMemory();
 
    // ILoad Implementation
-   virtual void declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context, shared::CDataContainer details);
-   virtual void read();
-   virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const;
-   virtual boost::shared_ptr<yApi::historization::IHistorizable> GetHistorizable() const;
+   void read() override;
+
+   boost::shared_ptr<const yApi::historization::IHistorizable> historizable() const override
+   {
+      return m_keyword;
+   }
+
    // [END] ILoad Implementation
+   
+protected:
+   int parseLine(char* line) const;
 
 private:
-
-   int parseLine(char* line);
-
-   //--------------------------------------------------------------
-   /// \brief	    Device name
-   //--------------------------------------------------------------
-   const std::string m_device;
-
    //--------------------------------------------------------------
    /// \brief	    Keyword
    //--------------------------------------------------------------

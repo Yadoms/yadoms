@@ -1,9 +1,6 @@
 #pragma once
-
-#include "IRfxcomMessage.h"
 #include "RFXtrxHelpers.h"
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
-#include <shared/DataContainer.h>
 
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -18,7 +15,9 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
-      virtual ~ISecurity2Subtype() {}
+      virtual ~ISecurity2Subtype()
+      {
+      }
 
       //--------------------------------------------------------------
       /// \brief	                        Get device model
@@ -27,18 +26,10 @@ namespace rfxcomMessages
       virtual std::string getModel() const = 0;
 
       //--------------------------------------------------------------
-      /// \brief	                        Declare the keyword
-      /// \param[in] context              Yadoms APi context
-      /// \param[in] command              The device name associated to keyword
+      /// \brief	                        Get the keywords
+      /// \return                         The keyword list
       //--------------------------------------------------------------
-      virtual void declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const = 0;
-
-      //--------------------------------------------------------------
-      /// \brief	                        Historize data
-      /// \param[in] context              Yadoms APi context
-      /// \param[in] command              The device name associated to keyword
-      //--------------------------------------------------------------
-      virtual void historize(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const = 0;
+      virtual const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywords() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	                        Set the ID of the keyword
@@ -57,7 +48,8 @@ namespace rfxcomMessages
       /// \param[in] keyword              Keyword concerned by the command
       /// \param[in] yadomsCommand        The command from Yadoms
       //--------------------------------------------------------------
-      virtual void set(const std::string& keyword, const std::string& yadomsCommand) = 0;
+      virtual void set(const std::string& keyword,
+                       const std::string& yadomsCommand) = 0;
 
       //--------------------------------------------------------------
       /// \brief	                        Set keyword state from default value
@@ -75,7 +67,7 @@ namespace rfxcomMessages
       /// \param[out] Security2           The message useful part
       //--------------------------------------------------------------
       virtual void toProtocolState(RBUF& Security2) const = 0;
-
    };
-
 } // namespace rfxcomMessages
+
+

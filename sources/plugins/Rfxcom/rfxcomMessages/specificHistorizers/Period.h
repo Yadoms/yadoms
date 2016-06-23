@@ -3,9 +3,9 @@
 #include <shared/enumeration/EnumHelpers.hpp>
 #include <shared/plugin/yPluginApi/historization/SingleHistorizableData.hpp>
 
-//TODO V2 : To be copy in a library teleInfo
+//TODO_V2 : To be copy in a library teleInfo
+namespace teleInfo { namespace specificHistorizers
 
-namespace teleInfo
 {   
    //-----------------------------------------------------
    ///\brief  All periods
@@ -33,6 +33,8 @@ namespace teleInfo
       //-----------------------------------------------------
       ///\brief                     Constructor
       ///\param[in] keywordName     Yadoms keyword name
+      ///\param[in] accessMode      The access mode
+      ///\param[in] measureType     The measure type (normally kAbsolute)
       //-----------------------------------------------------
       explicit CPeriod(const std::string& keywordName);
 
@@ -42,4 +44,4 @@ namespace teleInfo
       virtual ~CPeriod();
    };
 
-} // namespace teleInfo
+} } // namespace teleInfo::specificHistorizer

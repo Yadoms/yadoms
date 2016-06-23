@@ -69,7 +69,7 @@ namespace database { namespace entities {
       ((DefaultValue)(std::string)("")("defaultValue"))
       ((Description)(std::string)("")("description"))
       ((SecurityAccess)(database::entities::ESecurityAccess)(database::entities::ESecurityAccess::kNone)("securityAccess"))
-      ((LastModificationDate)(boost::posix_time::ptime)(shared::currentTime::Provider::now())("lastModificationDate"))
+      ((LastModificationDate)(boost::posix_time::ptime)(shared::currentTime::Provider().now())("lastModificationDate"))
       );
 
    DECLARE_ENTITY_CLASS_IMPLEMENTATION(
@@ -95,7 +95,7 @@ namespace database { namespace entities {
    DECLARE_ENTITY_CLASS_IMPLEMENTATION(
    PluginEventLogger,
       ((Id)(int)(0)("id"))
-      ((EventDate)(boost::posix_time::ptime)(shared::currentTime::Provider::now())("eventDate"))
+      ((EventDate)(boost::posix_time::ptime)(shared::currentTime::Provider().now())("eventDate"))
       ((PluginName)(std::string)("")("pluginName"))
       ((PluginVersion)(std::string)("")("pluginVersion"))
       ((PluginRelease)(shared::versioning::EReleaseType)(shared::versioning::EReleaseType::kStable)("pluginRelease"))
@@ -106,7 +106,7 @@ namespace database { namespace entities {
    DECLARE_ENTITY_CLASS_IMPLEMENTATION(
    EventLogger,
       ((Id)(int)(0)("id"))
-      ((Date)(boost::posix_time::ptime)(shared::currentTime::Provider::now())("date"))
+      ((Date)(boost::posix_time::ptime)(shared::currentTime::Provider().now())("date"))
       ((Code)(database::entities::ESystemEventCode)(database::entities::ESystemEventCode::kDefaultCode)("code"))
       ((Who)(std::string)("")("who"))
       ((What)(std::string)("")("what"))
@@ -140,7 +140,7 @@ namespace database { namespace entities {
 
    DECLARE_ENTITY_CLASS_IMPLEMENTATION(
    Acquisition,
-      ((Date)(boost::posix_time::ptime)(shared::currentTime::Provider::now())("date"))
+      ((Date)(boost::posix_time::ptime)(shared::currentTime::Provider().now())("date"))
       ((KeywordId)(int)(0)("keywordId"))
       ((Value)(std::string)("")("value"))
       );
@@ -149,7 +149,7 @@ namespace database { namespace entities {
    DECLARE_ENTITY_CLASS_IMPLEMENTATION(
    AcquisitionSummary,
       ((Type)(database::entities::EAcquisitionSummaryType)(database::entities::EAcquisitionSummaryType::kHour)("type"))
-      ((Date)(boost::posix_time::ptime)(shared::currentTime::Provider::now())("date"))
+      ((Date)(boost::posix_time::ptime)(shared::currentTime::Provider().now())("date"))
       ((KeywordId)(int)(0)("keywordId"))
       ((Avg)(std::string)("")("avg"))
       ((Min)(std::string)("")("min"))
@@ -170,8 +170,8 @@ namespace database { namespace entities {
       ((AutoStart)(bool)(true)("autoStart"))
       ((State)(database::entities::ERuleState)(database::entities::ERuleState::kStopped)("state"))
       ((ErrorMessage)(std::string)("")("errorMessage"))
-      ((StartDate)(boost::posix_time::ptime)(shared::currentTime::Provider::now())("startDate"))
-      ((StopDate)(boost::posix_time::ptime)(shared::currentTime::Provider::now())("stopDate"))
+      ((StartDate)(boost::posix_time::ptime)(shared::currentTime::Provider().now())("startDate"))
+      ((StopDate)(boost::posix_time::ptime)(shared::currentTime::Provider().now())("stopDate"))
    );
 
 

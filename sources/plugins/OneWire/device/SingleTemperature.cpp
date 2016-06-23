@@ -1,58 +1,56 @@
 #include "stdafx.h"
 #include "SingleTemperature.h"
 #include "Identification.h"
-#include <shared/Log.h>
 
-namespace device {
-   
-CSingleTemperature::CSingleTemperature(EOneWireFamily family, const std::string& id, const std::string& model, boost::shared_ptr<yApi::IYPluginApi> context, boost::shared_ptr<ioInterfaces::ITemperature> io, EOneWireFamily expectedFamily)
-   :m_identification(boost::make_shared<device::CIdentification>(family, id, model)), m_context(context), m_io(io), m_temperature("temperature")
+namespace device
 {
-   BOOST_ASSERT_MSG(m_identification->family() == expectedFamily, "Invalid family number");
-}
-
-CSingleTemperature::~CSingleTemperature()
-{
-}
-
-boost::shared_ptr<const IIdentification> CSingleTemperature::ident() const
-{
-   return m_identification;
-}
-
-void CSingleTemperature::declare()
-{
-   m_identification->declare(m_context);
-
-   if (!m_context->keywordExists(m_identification->deviceName(), m_temperature))
-      m_context->declareKeyword(m_identification->deviceName(), m_temperature);
-}
-
-void CSingleTemperature::historize()
-{
-   double temperature = m_io->read();
-   if (isTemperatureValid(temperature))
+   CSingleTemperature::CSingleTemperature(EOneWireFamily family,
+                                          const std::string& id,
+                                          const std::string& model,
+                                          boost::shared_ptr<ioInterfaces::ITemperature> io,
+                                          EOneWireFamily expectedFamily)
+      :m_identification(boost::make_shared<device::CIdentification>(family, id, model)),
+       m_io(io),
+       m_temperature(boost::make_shared<yApi::historization::CTemperature>("temperature")),
+       m_allKeywords({ m_temperature }),
+       m_noKeywords(),
+       m_keywords(&m_allKeywords)
    {
-      m_temperature.set(temperature);
-      m_context->historizeData(ident()->deviceName(), m_temperature);
+      BOOST_ASSERT_MSG(m_identification->family() == expectedFamily, "Invalid family number");
    }
-}
 
-void CSingleTemperature::set(const std::string& keyword, const std::string& command)
-{
-   YADOMS_LOG(error) << "Try to drive the read-only keyword " << keyword;
-}
+   CSingleTemperature::~CSingleTemperature()
+   {
+   }
 
-bool CSingleTemperature::isTemperatureValid(double temperature)
-{
-   if (temperature <= -300 || temperature >= 381)
-      return false;
+   void CSingleTemperature::read() const
+   {
+      double temperature = m_io->read();
+      if (isTemperatureValid(temperature))
+      {
+         m_temperature->set(temperature);
+         m_keywords = &m_allKeywords;
+      }
+      else
+      {
+         m_keywords = &m_noKeywords;
+      }
+   }
 
-   // Some devices has a power-on value at 85°, we have to filter it
-   if (temperature == 85)
-      return false;
+   void CSingleTemperature::write(const std::string& keyword, const std::string& command)
+   {
+      std::cerr << "Try to drive the read-only keyword " << keyword << std::endl;
+   }
 
-   return true;
-}
+   bool CSingleTemperature::isTemperatureValid(double temperature)
+   {
+      if (temperature <= -300 || temperature >= 381)
+         return false;
 
+      // Some devices has a power-on value at 85°, we have to filter it
+      if (temperature == 85)
+         return false;
+
+      return true;
+   }
 } // namespace device

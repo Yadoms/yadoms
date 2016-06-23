@@ -115,10 +115,10 @@ namespace shared { namespace event
          
          // Have time event or timeout
          boost::shared_ptr<ITimeEvent> closerTimeEvent = getNextTimeEventStopPoint();
-         if (!!closerTimeEvent && (closerTimeEvent->getNextStopPoint() < (currentTime::Provider::now() + timeout)))
+         if (!!closerTimeEvent && (closerTimeEvent->getNextStopPoint() < (currentTime::Provider().now() + timeout)))
          {
             // Next stop point will be the closer time event
-            if (!m_condition.timed_wait(lock, closerTimeEvent->getNextStopPoint() - currentTime::Provider::now()))
+            if (!m_condition.timed_wait(lock, closerTimeEvent->getNextStopPoint() - currentTime::Provider().now()))
             {
                // No event ==> Signal time event
                signalTimeEvent(closerTimeEvent);
@@ -238,7 +238,7 @@ namespace shared { namespace event
       boost::shared_ptr<CEventTimePoint> createTimePoint(int timePointEventId, const boost::posix_time::ptime& dateTime)
       {
          BOOST_ASSERT(timePointEventId >= kUserFirstId);
-         if (dateTime <= currentTime::Provider::now())
+         if (dateTime <= currentTime::Provider().now())
             throw shared::exception::COutOfRange("CEventHandler::createTimePoint : timePoint not in the future, ignored");
 
          boost::shared_ptr<CEventTimePoint> timePoint(new CEventTimePoint(timePointEventId, dateTime));
@@ -352,8 +352,8 @@ namespace shared { namespace event
          for (TimeEventList::const_iterator it = m_timeEvents.begin() ;
             it != m_timeEvents.end() ; ++it)
          {
-            boost::posix_time::ptime nextStopPoint = (*it)->getNextStopPoint();
-            if (nextStopPoint != boost::date_time::not_a_date_time && nextStopPoint < currentTime::Provider::now())
+            auto nextStopPoint = (*it)->getNextStopPoint();
+            if (nextStopPoint != boost::date_time::not_a_date_time && nextStopPoint < currentTime::Provider().now())
                signalTimeEvent(*it);   // Elapsed time point, signal it
          }
       }

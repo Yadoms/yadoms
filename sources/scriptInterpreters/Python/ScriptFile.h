@@ -19,13 +19,13 @@ public:
    virtual ~CScriptFile();
 
    // IScriptFile Implementation
-   virtual const boost::filesystem::path& pathName() const;
-   virtual const boost::filesystem::path abslouteParentPath() const;
-   virtual const std::string& module() const;
-   virtual const std::string& entryPoint() const;
-   virtual bool exists() const;
-   virtual std::string read() const;
-   virtual void write(const std::string& content) const;
+   const boost::filesystem::path& pathName() const override;
+   boost::filesystem::path abslouteParentPath() const override;
+   const std::string& module() const override;
+   const std::string& entryPoint() const override;
+   bool exists() const override;
+   std::string read() const override;
+   void write(const std::string& content) const override;
    // [END] IScriptFile Implementation
 
    //--------------------------------------------------------------

@@ -12,7 +12,7 @@ DECLARE_ENUM_HEADER(EFakeControllerValues,
    ((Back))
    ((Left))
    ((Right))
-)   
+)
 
 class CControllerValue : public yApi::historization::CSingleHistorizableData<EFakeControllerValues>
 {
@@ -49,20 +49,20 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	            Declare device and associated keywords if necessary
-   /// \param[in] context  yPluginApi context
+   /// \param[in] api      yPluginApi context
    //--------------------------------------------------------------
-   void declareDevice(boost::shared_ptr<yApi::IYPluginApi> context);
+   void declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const;
 
    //--------------------------------------------------------------
    /// \brief	    Make a sensor read (compute new values)
    //--------------------------------------------------------------
-   void read();
+   void read() const;
 
    //--------------------------------------------------------------
    /// \brief	            Send all sensor data to Yadoms
-   /// \param[in] context  yPluginApi context to which historize data
+   /// \param[in] api      yPluginApi context to which historize data
    //--------------------------------------------------------------
-   void historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const;
+   void historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const;
 
    //--------------------------------------------------------------
    /// \brief	    Returns the fake sensor device name
@@ -83,13 +83,9 @@ private:
    const std::string m_deviceName;
 
 
-
-
    //--------------------------------------------------------------
    /// \brief	    Current values
    //--------------------------------------------------------------
-   CControllerValue m_currentValues;
-
-
+   boost::shared_ptr<CControllerValue> m_currentValues;
 };
 

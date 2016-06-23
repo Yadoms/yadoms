@@ -1,7 +1,7 @@
 #pragma once
 
-namespace ioInterfaces {
-
+namespace ioInterfaces
+{
    //--------------------------------------------------------------
    /// \brief	Single read-only data io accessor interface
    //--------------------------------------------------------------
@@ -12,7 +12,9 @@ namespace ioInterfaces {
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
-      virtual ~ISingleReadOnlyData() {}
+      virtual ~ISingleReadOnlyData()
+      {
+      }
 
       //--------------------------------------------------------------
       /// \brief	Read value

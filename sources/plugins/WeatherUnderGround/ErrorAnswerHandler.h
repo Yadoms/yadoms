@@ -1,15 +1,14 @@
 #pragma once
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <shared/DataContainer.h>
+#include <shared/enumeration/EnumHelpers.hpp>
 
 namespace yApi = shared::plugin::yPluginApi;
-
-#include <shared/enumeration/EnumHelpers.hpp>
 
 //-----------------------------------------------------
 ///\brief   Internal Response type name
 //-----------------------------------------------------
-DECLARE_ENUM_HEADER(EZWaveInteralState, 
+DECLARE_ENUM_HEADER(EZWaveInteralState,
    ((Running))
    ((DriverReady))
    ((DriverFailed))
@@ -26,16 +25,16 @@ class ErrorAnswerHandler
 public:
    //--------------------------------------------------------------
    /// \brief	  Constructor
-   /// \param[in] context    pointer to the API
+   /// \param[in] api        pointer to the API
    /// \param[in] response   The response to analyse
    //--------------------------------------------------------------
-   ErrorAnswerHandler(boost::shared_ptr<yApi::IYPluginApi> context, shared::CDataContainer response );
+   ErrorAnswerHandler(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer response);
 
    //--------------------------------------------------------------
    /// \brief	  ContainError
    /// \return    if an error is return
    //--------------------------------------------------------------
-   bool ContainError ( void );
+   bool ContainError() const;
 private:
 
    //--------------------------------------------------------------
@@ -43,3 +42,4 @@ private:
    //--------------------------------------------------------------
    bool m_ErrorState;
 };
+

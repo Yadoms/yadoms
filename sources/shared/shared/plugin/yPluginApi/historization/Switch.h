@@ -15,7 +15,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       ///\param[in] keywordName     Yadoms keyword name
       ///\param[in] accessMode      The access mode
       //-----------------------------------------------------
-      CSwitch(const std::string& keywordName, const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGetSet);
+      explicit CSwitch(const std::string& keywordName, const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGetSet);
 
       //-----------------------------------------------------
       ///\brief                     Destructor

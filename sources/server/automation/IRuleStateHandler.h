@@ -11,7 +11,9 @@ namespace automation
       //-----------------------------------------------------
       ///\brief               Destructor
       //-----------------------------------------------------
-      virtual ~IRuleStateHandler() {}
+      virtual ~IRuleStateHandler()
+      {
+      }
 
       //-----------------------------------------------------
       ///\brief               Signal a normal stop on a rule
@@ -33,7 +35,6 @@ namespace automation
       //-----------------------------------------------------
       virtual void signalRulesStartError(int ruleId, const std::string& error) = 0;
    };
-	
 } // namespace automation	
-	
-	
+
+

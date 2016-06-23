@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Plugin.h"
-#include <shared/exception/NotImplemented.hpp>
 #include <shared/exception/EmptyResult.hpp>
 #include "database/common/adapters/SingleValueAdapter.hpp"
 #include "database/common/adapters/DatabaseAdapters.h"

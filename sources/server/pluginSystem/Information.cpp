@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Information.h"
-#include <shared/exception/NotImplemented.hpp>
 #include <shared/StringExtension.h>
 #include <boost/regex.hpp>
 #include "tools/SupportedPlatformsChecker.h"
@@ -8,10 +7,9 @@
 
 namespace pluginSystem
 {
-
-
    CInformation::CInformation(const boost::filesystem::path& pluginPath)
-      :m_path(pluginPath), m_isSupportedOnThisPlatform(true)
+      :m_path(pluginPath),
+       m_isSupportedOnThisPlatform(true)
    {
       try
       {
@@ -66,12 +64,12 @@ namespace pluginSystem
          throw shared::exception::CInvalidParameter(std::string("Error reading package.json : data not found : ") + e.what());
       }
 
-      std::string pluginFolder = m_path.filename().string();
+      auto pluginFolder = m_path.filename().string();
       if (!boost::equal(pluginFolder, m_type))
       {
          // Set plugin as not supported
          m_isSupportedOnThisPlatform = false;
-         throw CInvalidPluginException(m_type, (boost::format("The plugin folder '%1%' do not match plugin type '%2%'") % pluginFolder % m_type).str());
+         throw CInvalidPluginException(m_type, (boost::format("The plugin folder '%1%' does not match plugin type '%2%'") % pluginFolder % m_type).str());
       }
    }
 
@@ -89,7 +87,7 @@ namespace pluginSystem
       return  m_version;
    }
 
-   const shared::versioning::EReleaseType CInformation::getReleaseType() const
+   shared::versioning::EReleaseType CInformation::getReleaseType() const
    {
       return m_releaseType;
    }
@@ -140,5 +138,11 @@ namespace pluginSystem
    {
       return m_package;
    }
+
+   const boost::filesystem::path& CInformation::getPath() const
+   {
+      return m_path;
+   }
+
 
 } // namespace pluginSystem

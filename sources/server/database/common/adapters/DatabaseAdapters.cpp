@@ -23,7 +23,7 @@ namespace database {   namespace common {  namespace adapters {
       ((DefaultValue)(std::string)(""))
       ((Description)(std::string)(""))
       ((SecurityAccess)(database::entities::ESecurityAccess)(database::entities::ESecurityAccess::kNone)(std::string))
-      ((LastModificationDate)(boost::posix_time::ptime)(shared::currentTime::Provider::now()))
+      ((LastModificationDate)(boost::posix_time::ptime)(shared::currentTime::Provider().now()))
    );
 
    DECLARE_ADAPTER_IMPLEMENTATION(Page,
@@ -46,7 +46,7 @@ namespace database {   namespace common {  namespace adapters {
 
    DECLARE_ADAPTER_IMPLEMENTATION(PluginEventLogger,
       ((Id)(int)(0))
-      ((EventDate)(boost::posix_time::ptime)(shared::currentTime::Provider::now()))
+      ((EventDate)(boost::posix_time::ptime)(shared::currentTime::Provider().now()))
       ((PluginName)(std::string)(""))
       ((PluginVersion)(std::string)(""))
       ((PluginRelease)(shared::versioning::EReleaseType)(shared::versioning::EReleaseType::kStable)(int))
@@ -56,7 +56,7 @@ namespace database {   namespace common {  namespace adapters {
 
    DECLARE_ADAPTER_IMPLEMENTATION(EventLogger,
       ((Id)(int)(0))
-      ((Date)(boost::posix_time::ptime)(shared::currentTime::Provider::now()))
+      ((Date)(boost::posix_time::ptime)(shared::currentTime::Provider().now()))
       ((Code)(database::entities::ESystemEventCode)(database::entities::ESystemEventCode::kDefaultCode)(std::string))
       ((Who)(std::string)(""))
       ((What)(std::string)(""))
@@ -88,14 +88,14 @@ namespace database {   namespace common {  namespace adapters {
 
 
    DECLARE_ADAPTER_IMPLEMENTATION(Acquisition,
-      ((Date)(boost::posix_time::ptime)(shared::currentTime::Provider::now()))
+      ((Date)(boost::posix_time::ptime)(shared::currentTime::Provider().now()))
       ((KeywordId)(int)(0))
       ((Value)(std::string)(""))
    );
 
    DECLARE_ADAPTER_IMPLEMENTATION(AcquisitionSummary,
       ((Type)(database::entities::EAcquisitionSummaryType)(database::entities::EAcquisitionSummaryType::kHour)(std::string))
-      ((Date)(boost::posix_time::ptime)(shared::currentTime::Provider::now()))
+      ((Date)(boost::posix_time::ptime)(shared::currentTime::Provider().now()))
       ((KeywordId)(int)(0))
       ((Avg)(std::string)(""))
       ((Min)(std::string)(""))
@@ -115,8 +115,8 @@ namespace database {   namespace common {  namespace adapters {
       ((AutoStart)(bool)(true))
       ((State)(database::entities::ERuleState)(database::entities::ERuleState::kStopped)(std::string))
       ((ErrorMessage)(std::string)(""))
-      ((StartDate)(boost::posix_time::ptime)(shared::currentTime::Provider::now()))
-      ((StopDate)(boost::posix_time::ptime)(shared::currentTime::Provider::now()))
+      ((StartDate)(boost::posix_time::ptime)(shared::currentTime::Provider().now()))
+      ((StopDate)(boost::posix_time::ptime)(shared::currentTime::Provider().now()))
    );
 
 

@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include <shared/Log.h>
 #include <shared/currentTime/Provider.h>
 #include "AcquisitionHistorizer.h"
 #include "database/ITransactionalProvider.h"
@@ -8,20 +7,20 @@
 #include "notification/summary/Notification.hpp"
 #include "notification/Helpers.hpp"
 
-namespace dataAccessLayer {
-
+namespace dataAccessLayer
+{
 	CAcquisitionHistorizer::CAcquisitionHistorizer(boost::shared_ptr<database::IDataProvider> dataProvider)
 		:m_dataProvider(dataProvider)
 	{
 	}
 
-	void CAcquisitionHistorizer::saveData(const int keywordId, const shared::plugin::yPluginApi::historization::IHistorizable & data)
+	void CAcquisitionHistorizer::saveData(int keywordId, const shared::plugin::yPluginApi::historization::IHistorizable & data)
 	{
 		//use ptime as variable, because saveData needs a reference
-      boost::posix_time::ptime currentDate = shared::currentTime::Provider::now();
+	   auto currentDate = shared::currentTime::Provider().now();
 
 		//get current transactional engine
-		boost::shared_ptr<database::ITransactionalProvider> transactionalEngine = m_dataProvider->getTransactionalEngine();
+	   auto transactionalEngine = m_dataProvider->getTransactionalEngine();
 
 		try
 		{
@@ -45,13 +44,13 @@ namespace dataAccessLayer {
 		}
 	}
 
-	void CAcquisitionHistorizer::saveData(std::vector<int> keywordIdVect, const std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > & dataVect)
+	void CAcquisitionHistorizer::saveData(std::vector<int> keywordIdVect, const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> > & dataVect)
 	{
 		//use ptime as variable, because saveData needs a reference
-      boost::posix_time::ptime currentDate = shared::currentTime::Provider::now();
+	   auto currentDate = shared::currentTime::Provider().now();
 
 		//get current transactional engine
-		boost::shared_ptr<database::ITransactionalProvider> transactionalEngine = m_dataProvider->getTransactionalEngine();
+	   auto transactionalEngine = m_dataProvider->getTransactionalEngine();
 
 		try
 		{
@@ -78,7 +77,7 @@ namespace dataAccessLayer {
 		}
 	}
 
-	void CAcquisitionHistorizer::saveData(const int keywordId, const shared::plugin::yPluginApi::historization::IHistorizable & data, boost::posix_time::ptime & dataTime)
+	void CAcquisitionHistorizer::saveData(int keywordId, const shared::plugin::yPluginApi::historization::IHistorizable & data, boost::posix_time::ptime & dataTime)
 	{
 		boost::shared_ptr<database::entities::CAcquisition> acq;
 

@@ -1,0 +1,60 @@
+#include "stdafx.h"
+#include "ApplicationStopHandler.h"
+#include <execinfo.h>
+#include <shared/Log.h>
+
+namespace shared
+{
+   namespace process
+   {
+      boost::function<bool()> CApplicationStopHandler::m_onStopRequestedFct;
+      
+      void CApplicationStopHandler::crashHandler(int signal)
+      {
+         void *array[10];
+         size_t size;
+
+         // get void*'s for all entries on the stack
+         size = backtrace(array, 10);
+
+         // print out all the frames to stderr
+         fprintf(stderr, "Error: signal %d:\n", signal);
+         backtrace_symbols_fd(array, size, STDERR_FILENO);
+         exit(1);
+      }
+
+      void CApplicationStopHandler::stopHandler(int signal)
+      {
+         switch(signal)
+         {
+         case  SIGINT :
+         case  SIGTERM :
+            // Signal stop request and wait for application fully stops
+            if (!CApplicationStopHandler::m_onStopRequestedFct())
+               YADOMS_LOG(error) << "Fail to wait the app end event";
+            break;
+         default:
+            YADOMS_LOG(warning) << "CApplicationStopHandler::handleInternal - no handler for #%d signal " << signal;
+            break;
+         }
+      }
+   
+      CApplicationStopHandler::CApplicationStopHandler(bool isRunningAsService)
+      {
+      }
+
+      CApplicationStopHandler::~CApplicationStopHandler()
+      {
+      }
+
+      void CApplicationStopHandler::setApplicationStopHandler(boost::function<bool()> onStopRequestedFct)
+      {
+         m_onStopRequestedFct = onStopRequestedFct;
+         
+         signal(SIGSEGV, CApplicationStopHandler::crashHandler);   // crash handler
+
+         signal(SIGINT, CApplicationStopHandler::stopHandler);     // CTRL+C signal
+         signal(SIGTERM, CApplicationStopHandler::stopHandler);    // Termination request
+      }
+   }
+} // namespace shared::process

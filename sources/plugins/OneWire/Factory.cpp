@@ -13,7 +13,8 @@ CFactory::~CFactory()
 {
 }
 
-boost::shared_ptr<IEngine> CFactory::createEngine(boost::shared_ptr<yApi::IYPluginApi> context, boost::shared_ptr<const IConfiguration> configuration)
+boost::shared_ptr<IEngine> CFactory::createEngine(boost::shared_ptr<yApi::IYPluginApi> context,
+                                                  boost::shared_ptr<const IConfiguration> configuration)
 {
    if (configuration->isOwfsMode())
       return boost::make_shared<owfs::CEngine>(context, configuration);

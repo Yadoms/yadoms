@@ -18,6 +18,14 @@ namespace shared
       deserialize(initialData);
    }
 
+   CDataContainer::CDataContainer(const std::map<std::string, std::string> & initialData)
+   {
+      std::map<std::string, std::string>::const_iterator i;
+      for (i = initialData.begin(); i != initialData.end(); ++i)
+         set(i->first, i->second);
+   }
+
+
    CDataContainer::~CDataContainer()
    {
 
@@ -253,6 +261,18 @@ namespace shared
    const char* CDataContainer::get(const std::string & parameterName, const char pathChar)
    {
       return get<std::string>(parameterName, pathChar).c_str();
+   }
+
+   std::map<std::string, std::string> CDataContainer::getAsMap(const std::string& parameterName, const char pathChar) const
+   {
+      std::map<std::string, std::string> result;
+      boost::property_tree::ptree::const_iterator i;
+      const boost::property_tree::ptree & subtree = m_tree.get_child(generatePath(parameterName, pathChar));
+      for (i = subtree.begin(); i != subtree.end(); ++i)
+      {
+         result[i->first] = i->second.data();
+      }
+      return result;
    }
 
 

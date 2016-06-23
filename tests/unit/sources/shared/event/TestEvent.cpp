@@ -3,13 +3,10 @@
 
 // Includes needed to compile tested classes
 #include <iostream>
-#include <fstream>
 #include <queue>
-#include <boost/date_time/posix_time/posix_time.hpp>
-#include <boost/thread.hpp>
 #include "../../../../sources/shared/shared/event/EventHandler.hpp"
 
-#include "../../mock/shared/currentTime/DefaultCurrentTimeMock.hpp"
+#include <mock/shared/currentTime/DefaultCurrentTimeMock.h>
 
 BOOST_AUTO_TEST_SUITE(TestEvent)
 
@@ -28,8 +25,10 @@ public:
       :m_intValue(0), m_strValue(std::string()) { }
    virtual ~CEventData() {}
 
-   int intValue() { return m_intValue; }
-   std::string strValue() { return m_strValue; }
+   int intValue() const
+   { return m_intValue; }
+   std::string strValue() const
+   { return m_strValue; }
 
 private:
    int m_intValue;
@@ -56,7 +55,8 @@ void postEventWithDataThreaded(shared::event::CEventHandler* receiver, CEventDat
 //--------------------------------------------------------------
 BOOST_AUTO_TEST_CASE(EventFromSameThread)
 {
-   static shared::currentTime::Provider timeProvider(boost::make_shared<CDefaultCurrentTimeMock>());
+   boost::shared_ptr<CDefaultCurrentTimeMock> timeProviderMock;//TODO revoir...
+   shared::currentTime::Provider().setProvider(timeProviderMock);
 
    shared::event::CEventHandler evtHandler;
 
@@ -81,8 +81,6 @@ BOOST_AUTO_TEST_CASE(EventFromSameThread)
 //--------------------------------------------------------------
 BOOST_AUTO_TEST_CASE(EventFromSeparateThread)
 {
-   static shared::currentTime::Provider timeProvider(boost::make_shared<CDefaultCurrentTimeMock>());
-
    shared::event::CEventHandler evtHandler;
 
    {
@@ -153,8 +151,6 @@ BOOST_AUTO_TEST_CASE(_100EventsFromSeparateThread)
 //--------------------------------------------------------------
 BOOST_AUTO_TEST_CASE(EventWithDataFromSameThread)
 {
-   static shared::currentTime::Provider timeProvider(boost::make_shared<CDefaultCurrentTimeMock>());
-
    shared::event::CEventHandler evtHandler;
    CEventData data(42, "Yadoms test");
    CEventData receivedData;
@@ -172,8 +168,6 @@ BOOST_AUTO_TEST_CASE(EventWithDataFromSameThread)
 //--------------------------------------------------------------
 BOOST_AUTO_TEST_CASE(EventWithDataFromSeparateThread)
 {
-   static shared::currentTime::Provider timeProvider(boost::make_shared<CDefaultCurrentTimeMock>());
-
    shared::event::CEventHandler evtHandler;
    CEventData data(42, "Yadoms test");
    CEventData receivedData;
@@ -192,8 +186,6 @@ BOOST_AUTO_TEST_CASE(EventWithDataFromSeparateThread)
 //--------------------------------------------------------------
 BOOST_AUTO_TEST_CASE(EventFromSeveralThreads)
 {
-   static shared::currentTime::Provider timeProvider(boost::make_shared<CDefaultCurrentTimeMock>());
-
    shared::event::CEventHandler evtHandler;
 
    // 100 threads sending each one event
@@ -216,8 +208,6 @@ BOOST_AUTO_TEST_CASE(EventFromSeveralThreads)
 //--------------------------------------------------------------
 BOOST_AUTO_TEST_CASE(EventWithDataFromSeveralThreads)
 {
-   static shared::currentTime::Provider timeProvider(boost::make_shared<CDefaultCurrentTimeMock>());
-
    shared::event::CEventHandler evtHandler;
    std::vector<CEventData> data;
    std::set<int> expectedDataIntValue;
@@ -256,8 +246,6 @@ BOOST_AUTO_TEST_CASE(EventWithDataFromSeveralThreads)
 //--------------------------------------------------------------
 BOOST_AUTO_TEST_CASE(EventWithBadData)
 {
-   static shared::currentTime::Provider timeProvider(boost::make_shared<CDefaultCurrentTimeMock>());
-
    shared::event::CEventHandler evtHandler;
 
    // Send string
@@ -287,8 +275,6 @@ BOOST_AUTO_TEST_CASE(EventWithBadData)
 //--------------------------------------------------------------
 BOOST_AUTO_TEST_CASE(EmptyEventHandler)
 {
-   static shared::currentTime::Provider timeProvider(boost::make_shared<CDefaultCurrentTimeMock>());
-
    shared::event::CEventHandler evtHandler;
 
    evtHandler.postEvent(idEvent);
@@ -307,8 +293,6 @@ BOOST_AUTO_TEST_CASE(EmptyEventHandler)
 //--------------------------------------------------------------
 BOOST_AUTO_TEST_CASE(NoWait)
 {
-   static shared::currentTime::Provider timeProvider(boost::make_shared<CDefaultCurrentTimeMock>());
-
    shared::event::CEventHandler evtHandler;
 
    evtHandler.postEvent(idEvent);
@@ -323,8 +307,6 @@ BOOST_AUTO_TEST_CASE(NoWait)
 //--------------------------------------------------------------
 BOOST_AUTO_TEST_CASE(EventIdGetter)
 {
-   static shared::currentTime::Provider timeProvider(boost::make_shared<CDefaultCurrentTimeMock>());
-
    shared::event::CEventHandler evtHandler;
 
    BOOST_REQUIRE_THROW(evtHandler.getEventId(), shared::exception::CNullReference);
@@ -351,8 +333,6 @@ BOOST_AUTO_TEST_CASE(EventIdGetter)
 //--------------------------------------------------------------
 BOOST_AUTO_TEST_CASE(SeveralEventWithDataFromSeveralThreads)
 {
-   static shared::currentTime::Provider timeProvider(boost::make_shared<CDefaultCurrentTimeMock>());
-
    const unsigned int nbthreads = 100;
    const unsigned int nbMessagesPerThread = 1000;
    shared::event::CEventHandler evtHandler;
@@ -401,8 +381,6 @@ void shutdownWhenSendingThreaded(boost::shared_ptr<shared::event::CEventHandler>
 }
 BOOST_AUTO_TEST_CASE(ShutdownWhenSending)
 {
-   static shared::currentTime::Provider timeProvider(boost::make_shared<CDefaultCurrentTimeMock>());
-
    const unsigned int nbthreads = 100;
    const unsigned int nbMessagesPerThread = 1000;
    boost::shared_ptr<shared::event::CEventHandler> evtHandler(boost::make_shared<shared::event::CEventHandler>());

@@ -1,9 +1,5 @@
 #pragma once
-
-#include "IRfxcomMessage.h"
-#include "RFXtrxHelpers.h"
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
-#include <shared/DataContainer.h>
 
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -18,7 +14,9 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
-      virtual ~ILighting5Subtype() {}
+      virtual ~ILighting5Subtype()
+      {
+      }
 
       //--------------------------------------------------------------
       /// \brief	                        Get device model
@@ -27,18 +25,10 @@ namespace rfxcomMessages
       virtual std::string getModel() const = 0;
 
       //--------------------------------------------------------------
-      /// \brief	                        Declare the keyword
-      /// \param[in] context              Yadoms APi context
-      /// \param[in] command              The device name associated to keyword
+      /// \brief	                        Get the keywords
+      /// \return                         The keyword list
       //--------------------------------------------------------------
-      virtual void declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const = 0;
-
-      //--------------------------------------------------------------
-      /// \brief	                        Historize data
-      /// \param[in] context              Yadoms APi context
-      /// \param[in] command              The device name associated to keyword
-      //--------------------------------------------------------------
-      virtual void historize(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const = 0;
+      virtual boost::shared_ptr<const yApi::historization::IHistorizable> keyword() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	                        Set keyword state from Yadoms command
@@ -62,7 +52,8 @@ namespace rfxcomMessages
       /// \param[in] cmdByte              The cmd byte
       /// \param[in] levelByte            The level byte
       //--------------------------------------------------------------
-      virtual void setFromProtocolState(unsigned char cmdByte, unsigned char levelByte) = 0;
+      virtual void setFromProtocolState(unsigned char cmdByte,
+                                        unsigned char levelByte) = 0;
 
       //--------------------------------------------------------------
       /// \brief	                        Get protocol data from keyword state
@@ -70,7 +61,10 @@ namespace rfxcomMessages
       /// \param[out] cmdByte             The cmd byte
       /// \param[out] levelByte           The level byte
       //--------------------------------------------------------------
-      virtual void toProtocolState(size_t idxMessage, unsigned char& cmdByte, unsigned char& levelByte) const = 0;
+      virtual void toProtocolState(size_t idxMessage,
+                                   unsigned char& cmdByte,
+                                   unsigned char& levelByte) const = 0;
    };
-
 } // namespace rfxcomMessages
+
+

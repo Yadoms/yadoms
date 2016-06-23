@@ -5,8 +5,9 @@ import shutil
 import re
 
 def deleteAll():
-   print 'Remove all scripts '
+   print 'Remove all scripts and associated logs'
    resources.deleteTree(yadomsServer.scriptsPath())
+   resources.deleteTree(yadomsServer.scriptLogsPath())
             
          
 def deploy(scripts):
@@ -60,11 +61,11 @@ def checkLocalRuleCodeById(id, expectedCode):
 def checkLocalRuleLogById(id, expectedLog):
    """Check the local rule for expected log"""
    
-   rulePath = os.path.join(yadomsServer.scriptsPath(), "locals", "rule_" + str(id))
-   if not os.path.isdir(rulePath):
+   ruleLogPath = os.path.join(yadomsServer.scriptLogsPath(), str(id))
+   if not os.path.isdir(ruleLogPath):
       return False
    
-   ruleLogFilePath = os.path.join(rulePath, "yadomsScript.log")
+   ruleLogFilePath = os.path.join(ruleLogPath, "rule.log")
    if not os.path.isfile(ruleLogFilePath):
       return False
    

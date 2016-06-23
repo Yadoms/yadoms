@@ -1,7 +1,5 @@
 #pragma once
 
-#include <shared/DataContainer.h>
-
 namespace shared { namespace plugin { namespace yPluginApi
 {
    //-----------------------------------------------------

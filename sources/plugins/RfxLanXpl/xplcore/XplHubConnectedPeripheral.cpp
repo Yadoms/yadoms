@@ -1,10 +1,6 @@
 #include "stdafx.h"
 #include "XplHubConnectedPeripheral.h"
 #include "XplMessage.h"
-#include "XplHelper.h"
-#include "XplException.h"
-#include <shared/Log.h>
-#include <Poco/Net/NetworkInterface.h>
 #include <shared/currentTime/Provider.h>
 
 namespace xplcore
@@ -12,13 +8,13 @@ namespace xplcore
 
 
    CXplHubConnectedPeripheral::CXplHubConnectedPeripheral(Poco::Net::SocketAddress & sender, unsigned short portNumber, int interval, const std::string & debugName)
-      : m_portNumber(portNumber), m_interval(interval), m_lastTimeSeen(shared::currentTime::Provider::now()), m_debugName(debugName)
+      : m_portNumber(portNumber), m_interval(interval), m_lastTimeSeen(shared::currentTime::Provider().now()), m_debugName(debugName)
    {
       m_socket.setReuseAddress(true);
       m_socket.setBroadcast(true);
       //m_socket.bind(Poco::Net::SocketAddress(sender.host(), portNumber));
       m_socket.connect(Poco::Net::SocketAddress(sender.host(), portNumber));
-      YADOMS_LOG(debug) << "Peripheral " << debugName << " found @" << sender.host().toString();
+      std::cout << "Peripheral " << debugName << " found @" << sender.host().toString() << std::endl;
    }
 
    CXplHubConnectedPeripheral::~CXplHubConnectedPeripheral()
@@ -48,7 +44,7 @@ namespace xplcore
 
    void CXplHubConnectedPeripheral::updateLastTimeSeenFromNow()
    {
-      m_lastTimeSeen = shared::currentTime::Provider::now();
+      m_lastTimeSeen = shared::currentTime::Provider().now();
    }
 
    void CXplHubConnectedPeripheral::updateLastTimeSeen(boost::posix_time::ptime time)

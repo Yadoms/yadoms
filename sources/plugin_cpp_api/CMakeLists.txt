@@ -1,0 +1,72 @@
+# Make a static library to link with C++ plugins
+
+set(plugin_cpp_api_SOURCES
+   stdafx.cpp
+   stdafx.h
+
+   ICommandLine.h
+   IPluginContext.h
+
+   ApiImplementation.h
+   ApiImplementation.cpp
+   CommandLine.h
+   CommandLine.cpp
+
+   BindingQuery.h
+   BindingQuery.cpp
+   BindingQueryData.h
+   BindingQueryData.cpp
+   DeviceCommand.h
+   DeviceCommand.cpp
+   ExtraCommand.h
+   ExtraCommand.cpp
+   ManuallyDeviceCreation.h
+   ManuallyDeviceCreation.cpp
+   ManuallyDeviceCreationData.h
+   ManuallyDeviceCreationData.cpp
+   PluginInformation.h
+   PluginInformation.cpp
+
+   PluginContext.h
+   PluginContext.cpp
+
+   PluginMain.cpp
+
+   plugin_cpp_api/ImplementationHelper.h
+   plugin_cpp_api/IPlugin.h
+)
+
+add_library(plugin_cpp_api STATIC ${plugin_cpp_api_SOURCES})
+
+if(COTIRE_USE)
+	#nothing to do
+else()
+	add_precompiled_header(plugin_cpp_api stdafx.h)
+endif()
+
+
+#define the list of all include dirs
+set(plugin_cpp_api_ALL_INCLUDE_DIRS
+   ${SHARED_INCL_DIR}
+   ${BOOST_INCL_DIR}
+   ${Poco_INCLUDE_DIRS}
+   ${PROTOBUF_INCLUDE_DIRS}
+   ${plugin_IPC_INCLUDE_DIRS}
+   ${CMAKE_CURRENT_SOURCE_DIR}/plugin_cpp_api
+   )
+
+set_property(TARGET plugin_cpp_api PROPERTY INCLUDE_DIRECTORIES ${plugin_cpp_api_ALL_INCLUDE_DIRS})
+
+
+target_link_libraries(plugin_cpp_api
+   yadoms-shared
+   ${LIBS}
+   ${CMAKE_DL_LIBS}
+   )
+
+
+IF(MSVC OR XCODE)
+   SET_PROPERTY(TARGET plugin_cpp_api PROPERTY FOLDER "plugin_cpp_api")
+ENDIF()
+
+set(plugin_cpp_api_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR} PARENT_SCOPE)

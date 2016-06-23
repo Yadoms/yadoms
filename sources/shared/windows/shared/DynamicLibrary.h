@@ -24,7 +24,6 @@ namespace shared
       static const std::string ToFileName(const std::string& libName);
       static const std::string ToLibName(const std::string& fileName);
 
-   public:
       //--------------------------------------------------------------
       /// \brief	Default constructor (library is not loaded)
       //--------------------------------------------------------------

@@ -2,7 +2,6 @@
 #include "ConditionFormatter.h"
 #include <shared/exception/InvalidParameter.hpp>
 #include <shared/DataContainer.h>
-#include <shared/Log.h>
 
 CConditionFormatter::CConditionFormatter( void )
 {}

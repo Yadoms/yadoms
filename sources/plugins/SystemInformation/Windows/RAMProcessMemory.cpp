@@ -1,32 +1,16 @@
 #include "stdafx.h"
 #include "RAMProcessMemory.h"
 #include <shared/exception/Exception.hpp>
-#include <shared/plugin/yPluginApi/StandardCapacities.h>
-#include <shared/plugin/yPluginApi/StandardUnits.h>
-#include <shared/Log.h>
 #include <windows.h>
 #include <psapi.h>
 
-CRAMProcessMemory::CRAMProcessMemory(const std::string & device)
-   :m_device(device), 
-    m_keyword(new yApi::historization::CKByte("YadomsRAMProcessMemory"))
-{}
-
-CRAMProcessMemory::~CRAMProcessMemory()
-{}
-
-void CRAMProcessMemory::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context, shared::CDataContainer details)
+CRAMProcessMemory::CRAMProcessMemory(const std::string& keywordName)
+   : m_keyword(boost::make_shared<yApi::historization::CKByte>(keywordName))
 {
-      if (!context->keywordExists( m_device, m_keyword->getKeyword()))
-         context->declareKeyword(m_device, *m_keyword, details);
 }
 
-void CRAMProcessMemory::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
+CRAMProcessMemory::~CRAMProcessMemory()
 {
-   if (!context)
-      throw shared::exception::CException("context must be defined");
-
-   context->historizeData(m_device, *m_keyword);
 }
 
 void CRAMProcessMemory::read()
@@ -38,17 +22,13 @@ void CRAMProcessMemory::read()
       std::stringstream Message;
       Message << "Fail to read Windows process memory size in RAM :";
       Message << GetLastError();
-      throw shared::exception::CException ( Message.str() );
+      throw shared::exception::CException(Message.str());
    }
 
    long RAMProcessMemory = pmc.WorkingSetSize / 1000;
-   
-   m_keyword->set( RAMProcessMemory );
 
-   YADOMS_LOG(debug) << "RAM Memory Current Process : " << m_keyword->formatValue();
+   m_keyword->set(RAMProcessMemory);
+
+   std::cout << "RAM Memory Current Process : " << m_keyword->formatValue() << std::endl;
 }
 
-boost::shared_ptr<yApi::historization::IHistorizable> CRAMProcessMemory::GetHistorizable() const
-{
-	return m_keyword;
-}

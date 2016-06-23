@@ -11,8 +11,9 @@ namespace rfxcomMessages
 {
 
 CSecurity1PowerCodeSensor::CSecurity1PowerCodeSensor(bool secondaryContact)
-   :m_alarm(secondaryContact ? "alarm1" : "alarm2", yApi::EKeywordAccessMode::kGet),
-   m_tamper(secondaryContact ? "tamper1" : "tamper2" , yApi::EKeywordAccessMode::kGet)
+   : m_alarm(boost::make_shared<yApi::historization::CSwitch>(secondaryContact ? "alarm1" : "alarm2", yApi::EKeywordAccessMode::kGet)),
+   m_tamper(boost::make_shared<yApi::historization::CSwitch>(secondaryContact ? "tamper1" : "tamper2", yApi::EKeywordAccessMode::kGet)),
+   m_keywords({ m_alarm, m_tamper })
 {
 }
    
@@ -25,18 +26,9 @@ std::string CSecurity1PowerCodeSensor::getModel() const
    return "Visonic PowerCode door/window sensor";
 }
 
-void CSecurity1PowerCodeSensor::declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
+const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CSecurity1PowerCodeSensor::keywords() const
 {
-   if (!context->keywordExists(deviceName, m_alarm))
-      context->declareKeyword(deviceName, m_alarm);
-   if (!context->keywordExists(deviceName, m_tamper))
-      context->declareKeyword(deviceName, m_tamper);
-}
-
-void CSecurity1PowerCodeSensor::historize(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
-{
-   context->historizeData(deviceName, m_alarm);
-   context->historizeData(deviceName, m_tamper);
+   return m_keywords;
 }
 
 void CSecurity1PowerCodeSensor::set(const std::string& /*keyword*/, const std::string& /*yadomsCommand*/)
@@ -46,14 +38,14 @@ void CSecurity1PowerCodeSensor::set(const std::string& /*keyword*/, const std::s
 
 void CSecurity1PowerCodeSensor::reset()
 {
-   m_alarm.set(false);
-   m_tamper.set(false);
+   m_alarm->set(false);
+   m_tamper->set(false);
 }
 
 void CSecurity1PowerCodeSensor::setFromProtocolState(unsigned char statusByte)
 {
-   m_alarm.set(statusByte == sStatusAlarm || statusByte == sStatusAlarmTamper);
-   m_tamper.set(statusByte == sStatusNormalTamper || statusByte == sStatusAlarmTamper);
+   m_alarm->set(statusByte == sStatusAlarm || statusByte == sStatusAlarmTamper);
+   m_tamper->set(statusByte == sStatusNormalTamper || statusByte == sStatusAlarmTamper);
 }
 
 unsigned char CSecurity1PowerCodeSensor::toProtocolState() const

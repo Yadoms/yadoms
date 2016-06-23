@@ -1,34 +1,14 @@
 #include "stdafx.h"
 #include "TemperatureSensor.h"
-#include <shared/Log.h>
-#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <fstream>
 
-CTemperatureSensor::CTemperatureSensor(const std::string & deviceId)
-   :m_device(deviceId), 
-    m_keyword(new yApi::historization::CTemperature("Temperature"))
-{}
+CTemperatureSensor::CTemperatureSensor(const std::string & keywordName)
+   :m_keyword(boost::make_shared<yApi::historization::CTemperature>(keywordName))
+{
+}
 
 CTemperatureSensor::~CTemperatureSensor()
-{}
-
-void CTemperatureSensor::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context, shared::CDataContainer details)
 {
-   // Declare associated keywords (= values managed by this device)
-   if (!context->keywordExists( m_device, m_keyword->getKeyword()))
-      context->declareKeyword(m_device, *m_keyword, details);
-}
-
-void CTemperatureSensor::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
-{
-   BOOST_ASSERT_MSG(context, "context must be defined");
-
-   context->historizeData(m_device, *m_keyword);
-}
-
-boost::shared_ptr<yApi::historization::IHistorizable> CTemperatureSensor::GetHistorizable() const
-{
-	return m_keyword;
 }
 
 void CTemperatureSensor::read()
@@ -48,15 +28,15 @@ void CTemperatureSensor::read()
       temperatureFile.close();
 
       m_keyword->set( atof(readValue.c_str()) / 1000.0 );
-      YADOMS_LOG(debug) << "CPU Temp : " << m_keyword->formatValue();
+      std::cout << "CPU Temp : " << m_keyword->formatValue() << std::endl;
    }
    catch(std::exception & ex)
    {
-      YADOMS_LOG(error) << "Fail to read RaspberryPI thermal sensor : " << ex.what();
+      std::cerr << "Fail to read RaspberryPI thermal sensor : " << ex.what() << std::endl;
    }
    catch(...)
    {
-      YADOMS_LOG(error) << "Fail to read RaspberryPI thermal sensor";
+      std::cerr << "Fail to read RaspberryPI thermal sensor" << std::endl;
    }
 }
 

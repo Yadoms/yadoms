@@ -28,10 +28,9 @@ public:
    /// \param[in] evtPortDataReceived     The event id raised on data receive events
    /// \return                            The created port
    //--------------------------------------------------------------
-   static boost::shared_ptr<shared::communication::IAsyncPort> constructPort(
-      const IMegatecUpsConfiguration& configuration,
-      shared::event::CEventHandler& eventHandler,
-      int evtPortConnectionId,
-      int evtPortDataReceived);
+   static boost::shared_ptr<shared::communication::IAsyncPort> constructPort(const IMegatecUpsConfiguration& configuration,
+                                                                             shared::event::CEventHandler& eventHandler,
+                                                                             int evtPortConnectionId,
+                                                                             int evtPortDataReceived);
 };
 

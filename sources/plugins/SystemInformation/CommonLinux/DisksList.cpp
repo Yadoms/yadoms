@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "DisksList.h"
 #include "LinuxHelpers.h"
-#include <shared/Log.h>
 #include <shared/exception/Exception.hpp>
 #include <boost/regex.hpp> 
 #include <boost/lexical_cast.hpp>
@@ -9,7 +8,7 @@
 #include <iostream>
 #include <unistd.h>
 
-CDisksList::CDisksList(void)
+CDisksList::CDisksList()
 {
    std::vector<std::string> _rlines=ExecuteCommandAndReturn("df");
    std::vector<std::string>::const_iterator iteratorCommandDF;
@@ -22,23 +21,22 @@ CDisksList::CDisksList(void)
 
       if ( boost::regex_search( *iteratorCommandDF, match, reg ) )
       {
-        dname       = boost::lexical_cast<std::string>(match[1]);
+         dname = boost::lexical_cast<std::string>(match[1]);
       }
       if (!dname.empty())
       {
          DrivesList.push_back( dname.c_str() );
-         YADOMS_LOG(debug) << "found:" << dname;
+         std::cout << "found:" << dname << std::endl;
       }
    }
 }
 
 CDisksList::~CDisksList()
-{}
+{
+}
 
-
-std::vector<std::string>& CDisksList::getList()
+const std::vector<std::string>& CDisksList::getList() const
 {
    return DrivesList;
 }
-
 

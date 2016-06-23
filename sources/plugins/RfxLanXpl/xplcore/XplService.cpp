@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "XplService.h"
 
-#include <shared/Log.h>
-#include "XplException.h"
 #include "XplMessage.h"
 #include "XplActor.h"
 #include "XplConstants.h"
@@ -46,7 +44,7 @@ namespace xplcore
    void CXplService::stop()
    {
       
-      YADOMS_LOG(information) << "Ask for serviceTask to end.";
+      std::cout << "Ask for serviceTask to end." << std::endl;
       //cancel xpl task
       if (m_xplTask)
          m_xplTask->cancel();
@@ -54,9 +52,9 @@ namespace xplcore
       //cancel all other ones
       m_taskManager.cancelAll();
 
-      YADOMS_LOG(information) << "Wait for all tasks to end.";
+      std::cout << "Wait for all tasks to end." << std::endl;
       m_taskManager.joinAll();
-      YADOMS_LOG(information) << "CXplService stopped.";
+      std::cout << "CXplService stopped." << std::endl;
       //do not delete m_xplTasks, before taskmanager has already done it
    }
 

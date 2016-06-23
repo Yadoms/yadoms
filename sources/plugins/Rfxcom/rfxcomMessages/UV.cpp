@@ -7,14 +7,13 @@ namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
-   CUV::CUV(boost::shared_ptr<yApi::IYPluginApi> context,
+   CUV::CUV(boost::shared_ptr<yApi::IYPluginApi> api,
             const RBUF& rbuf,
-            size_t rbufSize,
-            boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
-      : m_uv("uv"),
-        m_temperature("temperature"),
-        m_batteryLevel("battery"),
-        m_rssi("rssi")
+            size_t rbufSize)
+      : m_uv(boost::make_shared<yApi::historization::CUv>("uv")),
+        m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
+        m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+        m_keywords({m_uv , m_temperature , m_batteryLevel , m_rssi})
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -27,56 +26,51 @@ namespace rfxcomMessages
 
       m_id = rbuf.UV.id1 | (rbuf.UV.id2 << 8);
 
-      m_uv.set(rbuf.UV.uv / 10);
-      if (m_subType == sTypeUV3)
-         m_temperature.set(NormalizeTemperature(rbuf.UV.temperatureh, rbuf.UV.temperaturel, rbuf.UV.tempsign == 1));
-      m_batteryLevel.set(NormalizeBatteryLevel(rbuf.UV.battery_level));
-      m_rssi.set(NormalizeRssiLevel(rbuf.UV.rssi));
+      m_uv->set(rbuf.UV.uv / 10);
 
-      Init(context);
+      if (m_subType == sTypeUV3)
+      {
+         m_temperature = boost::make_shared<yApi::historization::CTemperature>("temperature");
+         m_keywords.push_back(m_temperature);
+
+         m_temperature->set(NormalizeTemperature(rbuf.UV.temperatureh, rbuf.UV.temperaturel, rbuf.UV.tempsign == 1));
+      }
+
+      m_batteryLevel->set(NormalizeBatteryLevel(rbuf.UV.battery_level));
+      m_rssi->set(NormalizeRssiLevel(rbuf.UV.rssi));
+
+      Init(api);
    }
 
    CUV::~CUV()
    {
    }
 
-   void CUV::Init(boost::shared_ptr<yApi::IYPluginApi> context)
+   void CUV::Init(boost::shared_ptr<yApi::IYPluginApi> api)
    {
       // Build device description
       buildDeviceModel();
       buildDeviceName();
 
       // Create device and keywords if needed
-      if (!context->deviceExists(m_deviceName))
+      if (!api->deviceExists(m_deviceName))
       {
          shared::CDataContainer details;
          details.set("type", pTypeUV);
          details.set("subType", m_subType);
          details.set("id", m_id);
-         context->declareDevice(m_deviceName, m_deviceModel, details);
-
-         if (m_subType == sTypeUV3)
-            context->declareKeyword(m_deviceName, m_temperature);
-
-         context->declareKeyword(m_deviceName, m_uv);
-         context->declareKeyword(m_deviceName, m_batteryLevel);
-         context->declareKeyword(m_deviceName, m_rssi);
+         api->declareDevice(m_deviceName, m_deviceModel, m_keywords, details);
       }
    }
 
-   boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CUV::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CUV::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
    {
       throw shared::exception::CInvalidParameter("UV is a read-only message, can not be encoded");
    }
 
-   void CUV::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
+   void CUV::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
    {
-      if (m_subType == sTypeUV3)
-         context->historizeData(m_deviceName, m_temperature);
-
-      context->historizeData(m_deviceName, m_uv);
-      context->historizeData(m_deviceName, m_batteryLevel);
-      context->historizeData(m_deviceName, m_rssi);
+      api->historizeData(m_deviceName, m_keywords);
    }
 
    const std::string& CUV::getDeviceName() const

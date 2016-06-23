@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "ZWaveConfiguration.h"
-#include <shared/Log.h>
 
 
 CZWaveConfiguration::~CZWaveConfiguration()
@@ -23,7 +22,7 @@ bool CZWaveConfiguration::getIncludeSystemKeywords() const
    return m_container.getWithDefault<bool>("IncludeSystemKeywords", false);
 }
 
-const std::string CZWaveConfiguration::getPath()
+std::string CZWaveConfiguration::getPath() const
 {
    return m_container.get<std::string>("libraryPath");
 }

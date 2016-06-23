@@ -37,7 +37,7 @@ namespace web { namespace ws {
       }
       catch (std::exception&)
       {
-         YADOMS_LOG(debug) << "Fail to parse frame (unkown error) : " << frameAsString;
+         YADOMS_LOG(debug) << "Fail to parse frame. Unknown error : " << frameAsString;
       }
 
       //if something fail return null

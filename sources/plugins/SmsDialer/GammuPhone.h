@@ -38,7 +38,7 @@ protected:
    /// \param[in] errorMessage   Error message to pass to exception if gsmError != ERR_NONE
    /// \throw  CPhoneException if error
    //--------------------------------------------------------------
-   void handleGammuError(GSM_Error gsmError, const std::string& errorMessage) const;
+   static void handleGammuError(GSM_Error gsmError, const std::string& errorMessage);
 
    //--------------------------------------------------------------
    /// \brief	                  Callback called by Gammu when SMS was sent
@@ -67,7 +67,7 @@ protected:
    /// \param[in] gammuSms       The message
    /// \return                   true if valid
    //--------------------------------------------------------------
-   bool isValidMessage(GSM_MultiSMSMessage* gammuSms) const;
+   static bool isValidMessage(GSM_MultiSMSMessage* gammuSms);
 
    //--------------------------------------------------------------
    /// \brief	                  Check if message is multi-parted

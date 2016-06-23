@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "ContextAccessor.h"
-#include "MessageQueueRemover.hpp"
+#include <shared/communication/MessageQueueRemover.hpp>
 #include <shared/Log.h>
 #include <shared/exception/InvalidParameter.hpp>
 
@@ -10,7 +10,7 @@ CContextAccessor::CContextAccessor(boost::shared_ptr<shared::script::yScriptApi:
    :CThreadBase(createId()), m_scriptApi(yScriptApi), m_id(createId()), m_readyBarrier(2)
 {
    memset(m_mqBuffer, 0, sizeof(m_mqBuffer));
-   start();
+   CThreadBase::start();
    m_readyBarrier.wait();
 }
 
@@ -38,8 +38,8 @@ void CContextAccessor::doWork()
 
    const std::string sendMessageQueueId(m_id + ".toScript");
    const std::string receiveMessageQueueId(m_id + ".toYadoms");
-   const CMessageQueueRemover sendMessageQueueRemover(sendMessageQueueId);
-   const CMessageQueueRemover receiveMessageQueueRemover(receiveMessageQueueId);
+   const shared::communication::CMessageQueueRemover sendMessageQueueRemover(sendMessageQueueId);
+   const shared::communication::CMessageQueueRemover receiveMessageQueueRemover(receiveMessageQueueId);
    try
    {
       YADOMS_LOG(debug) << "Open message queues";
@@ -58,7 +58,7 @@ void CContextAccessor::doWork()
             // boost::interprocess::message_queue::receive is not responding to boost thread interruption, so we need to do some
             // polling and call boost::this_thread::interruption_point to exit properly
             // Note that boost::interprocess::message_queue::timed_receive requires universal time to work (can not use shared::currentTime::Provider)
-            bool messageWasReceived = receiveMessageQueue.timed_receive(message, m_messageQueueMessageSize, messageSize, messagePriority,
+            auto messageWasReceived = receiveMessageQueue.timed_receive(message, m_messageQueueMessageSize, messageSize, messagePriority,
                boost::posix_time::ptime(boost::posix_time::microsec_clock::universal_time() + boost::posix_time::seconds(1)));
             boost::this_thread::interruption_point();
 

@@ -1,7 +1,6 @@
 #pragma once
-#include <shared/plugin/IPlugin.h>
+#include <plugin_cpp_api/IPlugin.h>
 #include "ZWaveConfiguration.h"
-
 #include "IZWaveController.h"
 
 // Shortcut to yPluginApi namespace
@@ -10,7 +9,7 @@ namespace yApi = shared::plugin::yPluginApi;
 //--------------------------------------------------------------
 /// \brief	This class is the ZWave plugin entry point
 //--------------------------------------------------------------
-class CZWave : public shared::plugin::IPlugin
+class CZWave : public plugin_cpp_api::IPlugin
 {
 public:
    //--------------------------------------------------------------
@@ -24,10 +23,12 @@ public:
    virtual ~CZWave();
 
    // IPlugin implementation
-   virtual void doWork(boost::shared_ptr<yApi::IYPluginApi> context);
+   void doWork(boost::shared_ptr<yApi::IYPluginApi> api) override;
    // [END] IPlugin implementation
 
 private:
+   void StopController() const;
+
    //--------------------------------------------------------------
    /// \brief	The plugin configuration
    //--------------------------------------------------------------

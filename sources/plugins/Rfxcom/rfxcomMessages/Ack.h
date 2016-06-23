@@ -8,7 +8,7 @@ namespace rfxcomMessages
    /// \brief	This class manage an acknoledge from RFXCom
    //--------------------------------------------------------------
    class CAck : public IRfxcomMessage
-   {  
+   {
    public:
       //--------------------------------------------------------------
       /// \brief	                           Constructor
@@ -16,7 +16,8 @@ namespace rfxcomMessages
       /// \param[in] rbuf                    Message received from Rfxcom
       /// \param[in] rbufSize                Message size, received from Rfxcom
       //--------------------------------------------------------------
-      CAck(const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
+      CAck(const RBUF& rbuf, size_t rbufSize,
+           boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
 
       //--------------------------------------------------------------
       /// \brief	                           Destructor
@@ -24,16 +25,20 @@ namespace rfxcomMessages
       virtual ~CAck();
 
       // IRfxcomMessage implementation
-      virtual boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const;
-      virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const;
-      virtual const std::string& getDeviceName() const;
+      boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const override;
+      void historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const override;
+      const std::string& getDeviceName() const override;
+
       // [END] IRfxcomMessage implementation
 
       //--------------------------------------------------------------
       /// \brief	                           Get the ack state
       /// \return                            The ack state
       //--------------------------------------------------------------
-      bool isOk() const { return m_ack; }
+      bool isOk() const
+      {
+         return m_ack;
+      }
 
    private:
       //--------------------------------------------------------------
@@ -41,5 +46,6 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       bool m_ack;
    };
-
 } // namespace rfxcomMessages
+
+

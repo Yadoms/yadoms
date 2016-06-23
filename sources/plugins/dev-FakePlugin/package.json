@@ -1,5 +1,5 @@
 {
-  "type": "fakePlugin",
+  "type": "dev-fakePlugin",
   "version": "0.1",
   "releaseType": "beta",
   "author": "yadoms-team",
@@ -138,6 +138,14 @@
 					}
 				  }
 				}
+			}
+		},
+		"changePluginStateMessage" : {
+			"iconClass" : "fa fa-recycle",
+			"commandData" : {
+				"newStateMessage": {
+					"type": "string"
+				}			
 			}
 		}
 	}  

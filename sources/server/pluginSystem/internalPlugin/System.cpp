@@ -1,14 +1,9 @@
 ﻿#include "stdafx.h"
 #include "System.h"
-#include <shared/plugin/ImplementationHelper.h>
 #include <shared/Log.h>
-#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/Exception.hpp>
-#include <shared/exception/EmptyResult.hpp>
 #include <shared/plugin/yPluginApi/historization/Historizers.h>
-#include "../../IApplicationStopHandler.h"
-#include <shared/ServiceLocator.h>
-#include "../../automation/script/IObjectFactory.h"
+#include <tools/OperatingSystem.h>
 
 namespace pluginSystem {
    namespace internalPlugin {
@@ -21,56 +16,51 @@ namespace pluginSystem {
    {
    }
 
-   void CSystem::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
+   void CSystem::doWork(boost::shared_ptr<yApi::IYPluginApi> api,
+                        shared::event::CEventHandler& eventHandler)
    {
       try
       {
-         YADOMS_LOG_CONFIGURE("System");
+         YADOMS_LOG_CONFIGURE("InternalPlugin");
 
          // the main loop
-         YADOMS_LOG(debug) << "System is running...";
+         YADOMS_LOG(debug) << "InternalPlugin is running...";
 
          // Declare all device/keywords
          static const std::string& systemDevice("system");
-         yApi::historization::CEvent keywordShutdown("shutdown");
-         yApi::historization::CEvent keywordRestart("restart");
+         auto keywordShutdown(boost::make_shared<yApi::historization::CEvent>("shutdown"));
+         auto keywordRestart(boost::make_shared<yApi::historization::CEvent>("restart"));
+         std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> > keywords({ keywordShutdown, keywordRestart });
 
          // Device creation if needed
-         if (!context->deviceExists(systemDevice))
-            context->declareDevice(systemDevice, "yadoms system");
-
-         // Keywords creation if needed
-         if (!context->keywordExists(systemDevice, keywordShutdown.getKeyword()))
-            context->declareKeyword(systemDevice, keywordShutdown);
-
-         if (!context->keywordExists(systemDevice, keywordRestart.getKeyword()))
-            context->declareKeyword(systemDevice, keywordRestart);
-
-         boost::shared_ptr<IApplicationStopHandler> applicationStopHandler = shared::CServiceLocator::instance().get<IApplicationStopHandler>();
+         if (!api->deviceExists(systemDevice))
+            api->declareDevice(systemDevice,
+                               "yadoms system",
+                               keywords);
 
          while (1)
          {
             // Wait for an event
-            switch (context->getEventHandler().waitForEvents())
+            switch (eventHandler.waitForEvents())
             {
                case yApi::IYPluginApi::kEventDeviceCommand:
                {
                   // Command was received from Yadoms
-                  boost::shared_ptr<const yApi::IDeviceCommand> command = context->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
+                  auto command = eventHandler.getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
 
-                  if (boost::iequals(command->getKeyword(), keywordShutdown.getKeyword()))
+                  if (boost::iequals(command->getKeyword(), keywordShutdown->getKeyword()))
                   {
                      YADOMS_LOG(information) << "Shutdown the system";
-                     applicationStopHandler->requestToStop(IApplicationStopHandler::kStopSystem);
+                     tools::COperatingSystem::shutdown();
                   }
-                  else if (boost::iequals(command->getKeyword(), keywordRestart.getKeyword()))
+                  else if (boost::iequals(command->getKeyword(), keywordRestart->getKeyword()))
                   {
                      YADOMS_LOG(information) << "Restart the system";
-                     applicationStopHandler->requestToStop(IApplicationStopHandler::kRestartSystem);
+                     tools::COperatingSystem::shutdown(true);
                   }
                   else
                   {
-                     YADOMS_LOG(warning) << "Received command for unknown keyword from Yadoms : " << command->toString();
+                     YADOMS_LOG(warning) << "Received command for unknown keyword from Yadoms : " << yApi::IDeviceCommand::toString(command);
                   }
                   break;
                }

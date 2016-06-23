@@ -1,5 +1,5 @@
 #pragma once
-#include <shared/plugin/IPlugin.h>
+#include <plugin_cpp_api/IPlugin.h>
 #include "IMSConfiguration.h"
 
 // Shortcut to yPluginApi namespace
@@ -9,7 +9,7 @@ namespace yApi = shared::plugin::yPluginApi;
 /// \brief	This class is the MailSender plugin
 /// \note   This plugin send a mail when receive a notification
 //--------------------------------------------------------------
-class CMailSender : public shared::plugin::IPlugin
+class CMailSender : public plugin_cpp_api::IPlugin
 {
 public:
    //--------------------------------------------------------------
@@ -23,35 +23,39 @@ public:
    virtual ~CMailSender();
 
    // IPlugin implementation
-   virtual void doWork(boost::shared_ptr<yApi::IYPluginApi> context);
+   void doWork(boost::shared_ptr<yApi::IYPluginApi> api) override;
    // [END] IPlugin implementation
 
+protected:
    //--------------------------------------------------------------
    /// \brief Get the e-mail of the received recipient
-   /// \param[in] context               pointer to the API
+   /// \param[in] api                   pointer to the API
    /// \param[in] recipientId           recipientId
    //--------------------------------------------------------------
-   std::string getRecipientMail(boost::shared_ptr<yApi::IYPluginApi> context, int recipientId);
+   std::string getRecipientMail(boost::shared_ptr<yApi::IYPluginApi> api,
+                                int recipientId) const;
 
    //--------------------------------------------------------------
    /// \brief Send a mail
-   /// \param[in] context               pointer to the API
+   /// \param[in] api                   pointer to the API
    /// \param[in] sendMailRequest       Struture of the sending mail
    //--------------------------------------------------------------
-   void onSendMailRequest(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& sendMailRequest);
+   void onSendMailRequest(boost::shared_ptr<yApi::IYPluginApi> api,
+                          const std::string& sendMailRequest);
 
    //--------------------------------------------------------------
    /// \brief Declare the device and all keywords associated
-   /// \param[in] context               pointer to the API
+   /// \param[in] api                  pointer to the API
    //--------------------------------------------------------------
-   void declareDevice(boost::shared_ptr<yApi::IYPluginApi> context);
+   void declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const;
 
    //--------------------------------------------------------------
    /// \brief Update the configuration of the plugin after a change
-   /// \param[in] context               pointer to the API
+   /// \param[in] api                   pointer to the API
    /// \param[in] newConfigurationData  The new configuration of the module
    //--------------------------------------------------------------
-   void onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> context, const shared::CDataContainer& newConfigurationData);
+   void onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
+                              const shared::CDataContainer& newConfigurationData) const;
 
 private:
    //--------------------------------------------------------------
@@ -72,5 +76,6 @@ private:
    //--------------------------------------------------------------
    /// \brief	    Message historization object
    //--------------------------------------------------------------
-   yApi::historization::CMessage m_messageKeyword;
+   boost::shared_ptr<yApi::historization::CMessage> m_messageKeyword;
 };
+

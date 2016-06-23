@@ -1,9 +1,6 @@
 #include "stdafx.h"
 #include "yScriptApiImplementation.h"
-#include "PythonLibInclude.h"
-#include "swigpyrun.h"
 #include <shared/DataContainer.h>
-#include <shared/currentTime/Provider.h>
 
 
 CYScriptApiImplementation::CYScriptApiImplementation(const std::string& yScriptApiAccessorId)
@@ -42,19 +39,19 @@ void CYScriptApiImplementation::sendRequest(const pbRequest::msg& request) const
    try
    {
       if (!request.IsInitialized())
-         throw std::overflow_error("CYScriptApiImplementation::sendRequest : request is not fully initialized");
+         throw std::overflow_error((boost::format("CYScriptApiImplementation::sendRequest \"%1%\" : request is not fully initialized") % request.descriptor()->full_name()).str());
 
       if (request.ByteSize() > static_cast<int>(m_messageQueueMessageSize))
-         throw std::overflow_error("CYScriptApiImplementation::sendRequest : request is too big");
+         throw std::overflow_error((boost::format("CYScriptApiImplementation::sendRequest \"%1%\" : request is too big") % request.descriptor()->full_name()).str());
 
       if (!request.SerializeToArray(m_mqBuffer, m_messageQueueMessageSize))
-         throw std::overflow_error("CYScriptApiImplementation::sendRequest : fail to serialize request (too big ?)");
+         throw std::overflow_error((boost::format("CYScriptApiImplementation::sendRequest \"%1%\" : fail to serialize request (too big ?)") % request.descriptor()->full_name()).str());
 
       m_sendMessageQueue->send(m_mqBuffer, request.GetCachedSize(), 0);
    }
    catch (boost::interprocess::interprocess_exception& ex)
    {
-      throw std::overflow_error(std::string("yScriptApiWrapper::sendRequest : Error at IYScriptApi method call, ") + ex.what());
+      throw std::overflow_error((boost::format("yScriptApiWrapper::sendRequest \"%1%\" : Error at IYScriptApi method call, %2%") % request.descriptor()->full_name() % ex.what()).str());
    }
 }
 

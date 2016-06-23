@@ -1,54 +1,53 @@
 #pragma once
-#include "IScriptProcess.h"
 #include "IPythonExecutable.h"
-#include <shared/script/ILogger.h>
+#include <shared/process/ILogger.h>
+#include <shared/process/IProcess.h>
+#include "IScriptFile.h"
+#include "ContextAccessor.h"
+#include <shared/process/ICommandLine.h>
+#include <shared/process/IProcessObserver.h>
 
 //--------------------------------------------------------------
-/// \brief	Python executable
+/// \brief	Python process
 //--------------------------------------------------------------
-class CScriptProcess : public IScriptProcess
+class CScriptProcess : public shared::process::IProcess
 {
 public:
    //--------------------------------------------------------------
    /// \brief	Constructor
    /// \param[in] executable  Python executable to call to start script
+   /// \param[in] pythonInterpreterPath  The current library path
    /// \param[in] scriptFile The script file to execute
-   /// \param[in] contextAccessorId The context accessor ID, used by script to interact with Yadoms
+   /// \param[in] yScriptApi The context, used by script to interact with Yadoms
    /// \param[in] scriptLogger The script logger
-   /// \throw CPythonException if error
+   /// \param[in] stopNotifier The stop notifier
    //--------------------------------------------------------------
    CScriptProcess(boost::shared_ptr<IPythonExecutable> executable,
-      boost::shared_ptr<const IScriptFile> scriptFile,
-      const std::string& contextAccessorId,
-      boost::shared_ptr<shared::script::ILogger> scriptLogger);
+                  const boost::filesystem::path& pythonInterpreterPath,
+                  boost::shared_ptr<const IScriptFile> scriptFile,
+                  boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
+                  boost::shared_ptr<shared::process::ILogger> scriptLogger,
+                  boost::shared_ptr<shared::process::IProcessObserver> stopNotifier);
 
    //--------------------------------------------------------------
    /// \brief	Destructor
    //--------------------------------------------------------------
    virtual ~CScriptProcess();
 
-   // IScriptProcess Implementation
-   virtual void interrupt();
-   virtual int waitForStop();
-   virtual std::string getError() const;
-   // [END] IScriptProcess Implementation
+   // shared::process::IProcess Implementation
+   void kill() override;
+   int getReturnCode() const override;
+   std::string getError() const override;
+   // [END] shared::process::IProcess Implementation
 
 protected:
    //--------------------------------------------------------------
-   /// \brief	Start a module (in separated process)
-   /// \throw CPythonException if error
+   /// \brief	Start a module
    //--------------------------------------------------------------
    void start();
 
-   //--------------------------------------------------------------
-   /// \brief	Thread redirecting standard outputs
-   /// \param[in] ruleName          Rule name used for log identification
-   /// \param[in] moduleStdOut      StdOut to redirect
-   /// \param[in] targetStream      Target stream
-   /// \param[inout] lastError      Last error string
-   //--------------------------------------------------------------
-   void stdRedirectWorker(const std::string& ruleName,
-      boost::shared_ptr<Poco::PipeInputStream> moduleStdOut, boost::shared_ptr<shared::script::ILogger> scriptLogger, boost::shared_ptr<std::string> lastError);
+
+   boost::shared_ptr<shared::process::ICommandLine> createCommandLine(const std::string& apiIdentifier) const;
 
 private:
    //--------------------------------------------------------------
@@ -57,36 +56,39 @@ private:
    boost::shared_ptr<IPythonExecutable> m_executable;
 
    //--------------------------------------------------------------
+   /// \brief	The current library path
+   //--------------------------------------------------------------
+   const boost::filesystem::path& m_pythonInterpreterPath;
+
+   //--------------------------------------------------------------
    /// \brief	The script file to execute
    //--------------------------------------------------------------
    boost::shared_ptr<const IScriptFile> m_scriptFile;
 
    //--------------------------------------------------------------
-   /// \brief	The context accessor ID, used by script to interact with Yadoms
+   /// \brief	The script api context
    //--------------------------------------------------------------
-   const std::string& m_contextAccessorId;
-
-   //--------------------------------------------------------------
-   /// \brief	The last error
-   //--------------------------------------------------------------
-   boost::shared_ptr<std::string> m_lastError;
+   boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> m_yScriptApi;
 
    //--------------------------------------------------------------
    /// \brief	The script logger
    //--------------------------------------------------------------
-   boost::shared_ptr<shared::script::ILogger> m_scriptLogger;
+   boost::shared_ptr<shared::process::ILogger> m_scriptLogger;
 
    //--------------------------------------------------------------
-   /// \brief	The process of the running script, and its mutex
+   /// \brief	Object to notify when process stops
    //--------------------------------------------------------------
-   boost::shared_ptr<Poco::ProcessHandle> m_process;
-   mutable boost::recursive_mutex m_processMutex;
+   boost::shared_ptr<shared::process::IProcessObserver> m_stopNotifier;
 
    //--------------------------------------------------------------
-   /// \brief	Thread redirecting standard outputs
+   /// \brief	The context accessor
    //--------------------------------------------------------------
-   boost::thread m_StdOutRedirectingThread;
-   boost::thread m_StdErrRedirectingThread;
+   boost::shared_ptr<CContextAccessor> m_contextAccessor;
+
+   //--------------------------------------------------------------
+   /// \brief	The process
+   //--------------------------------------------------------------
+   boost::shared_ptr<IProcess> m_process;
 };
 
 

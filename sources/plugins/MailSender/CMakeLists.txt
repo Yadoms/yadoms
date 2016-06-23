@@ -1,3 +1,6 @@
+# include common plugin definitions
+include("../YadomsPluginsCommon.cmake")
+
 #this plugin requires PocoNetSSL
 if(${PocoNetSSLFound})
    #########################################

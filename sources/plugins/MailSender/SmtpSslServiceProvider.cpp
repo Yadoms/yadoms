@@ -3,13 +3,10 @@
 #include <Poco/Net/NetException.h>
 #include <Poco/Net/SecureStreamSocket.h>
 #include <Poco/Net/SMTPClientSession.h>
-#include <Poco/Net/NetException.h>
 #include <Poco/Net/Context.h>
 #include <Poco/Net/SSLManager.h>
 #include <Poco/Net/AcceptCertificateHandler.h>
 #include <Poco/AutoPtr.h>
-
-#include <shared/Log.h>
 
 CSmtpSslServiceProvider::CSmtpSslServiceProvider(boost::shared_ptr<IMSConfiguration> & smtpConfiguration)
    :m_smtpConfiguration(smtpConfiguration)
@@ -47,30 +44,30 @@ bool CSmtpSslServiceProvider::sendMail(const Poco::Net::MailMessage & message) c
       }
       catch (Poco::Net::SMTPException &e)
       {
-         YADOMS_LOG(error) << "Fail to send email with SSL : SMTPException :";
-         YADOMS_LOG(error) << e.displayText();
+         std::cerr << "Fail to send email with SSL : SMTPException :" << std::endl;
+         std::cerr << e.displayText() << std::endl;
          session.close();
          Poco::Net::uninitializeSSL();
       }
    }
    catch (Poco::Net::NetException &e)
    {
-      YADOMS_LOG(error) << "Fail to send email with SSL : NetException :";
-      YADOMS_LOG(error) << e.displayText();
+      std::cerr << "Fail to send email with SSL : NetException :" << std::endl;
+      std::cerr << e.displayText() << std::endl;
    }
    catch (Poco::Exception &e)
    {
-      YADOMS_LOG(error) << "Fail to send email with SSL : Exception";
-      YADOMS_LOG(error) << e.displayText();
+      std::cerr << "Fail to send email with SSL : Exception" << std::endl;
+      std::cerr << e.displayText() << std::endl;
    }
    catch (std::exception &e)
    {
-      YADOMS_LOG(error) << "Fail to send email with SSL : std::exception";
-      YADOMS_LOG(error) << e.what();
+      std::cerr << "Fail to send email with SSL : std::exception" << std::endl;
+      std::cerr << e.what() << std::endl;
    }
    catch (...)
    {
-      YADOMS_LOG(error) << "Fail to send email with SSL : unknown error";
+      std::cerr << "Fail to send email with SSL : unknown error" << std::endl;
    }
    return false;
 }

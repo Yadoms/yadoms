@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "OpenZWaveNode.h"
-#include <shared/Log.h>
 #include "OpenZWaveNodeKeywordFactory.h"
 #include "OpenZWaveHelpers.h"
 

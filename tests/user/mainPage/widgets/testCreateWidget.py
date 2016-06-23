@@ -1,4 +1,6 @@
-﻿import unittest
+﻿import sys
+sys.path.append('.')
+import unittest
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
 import database
@@ -48,10 +50,6 @@ class CreateWidget(unittest.TestCase):
       print '  Check widget present on main page'
       widget = mainPage.widgets.findWidgetOnCurrentPage(self.browser, widgetType, widgetTitle)
       self.assertIsNotNone(widget)
-      print '  Check widget position'
-      self.assertEqual(widget.getPosition(), widgetExpectedPosition)
-      print '  Check widget size'
-      self.assertEqual(widget.getSize(), widgetExpectedSize)
 
          
    def test_createGaugeWidget(self):

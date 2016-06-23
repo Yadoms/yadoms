@@ -16,7 +16,6 @@
 
 #include <shared/ServiceLocator.h>
 #include <shared/tools/Random.h>
-#include <shared/exception/Parse.hpp>
 #include <shared/exception/Extract.hpp>
 
 
@@ -156,7 +155,7 @@ namespace update {
 
       }
       
-      std::string CWorkerTools::getWidgetBasePath()
+      std::string CWorkerTools::getWidgetBasePath() //TODO récupérer du IPathProvider
       {
          //retreive startup options
          boost::shared_ptr<startupOptions::IStartupOptions> startupOptions = shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>();
@@ -165,14 +164,14 @@ namespace update {
          return websiteFolder.toString();
       }
 
-      std::string CWorkerTools::getPluginBasePath()
+      std::string CWorkerTools::getPluginBasePath() //TODO récupérer du IPathProvider
       {
          //retreive startup options
          boost::shared_ptr<startupOptions::IStartupOptions> startupOptions = shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>();
          return startupOptions->getPluginsPath();
       }
 
-      std::string CWorkerTools::getScriptInterpreterBasePath()
+      std::string CWorkerTools::getScriptInterpreterBasePath() //TODO récupérer du IPathProvider
       {
          //retreive startup options
          boost::shared_ptr<startupOptions::IStartupOptions> startupOptions = shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>();

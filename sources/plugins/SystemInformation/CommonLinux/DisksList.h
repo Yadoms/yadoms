@@ -19,15 +19,14 @@ public:
    virtual ~CDisksList();
 
    //--------------------------------------------------------------
-   /// \brief	    Returns read (computed) CPU load
-   /// \return     Temperature in �C
+   /// \brief	    Returns the Drive List
    //--------------------------------------------------------------
-   std::vector<std::string>& getList();
+   const std::vector<std::string>& getList() const;
 
 private:
 
    //--------------------------------------------------------------
-   /// \brief	    Memory Load in %
+   /// \brief	    Drive List vector
    //--------------------------------------------------------------
    std::vector<std::string> DrivesList;
 };

@@ -1,10 +1,7 @@
 #include "stdafx.h"
 #include "Device.h"
-#include <shared/exception/NotImplemented.hpp>
 #include <shared/exception/EmptyResult.hpp>
-#include "database/common/adapters/SingleValueAdapter.hpp"
 #include "database/common/adapters/DatabaseAdapters.h"
-#include "database/common/adapters/MultipleValueAdapter.hpp"
 #include "database/common/DatabaseTables.h"
 #include "database/common/Query.h"
 

@@ -1,45 +1,28 @@
 #include "stdafx.h"
 #include "MemoryLoad.h"
 #include <shared/exception/Exception.hpp>
-#include <shared/plugin/yPluginApi/StandardCapacities.h>
-#include <shared/plugin/yPluginApi/StandardUnits.h>
-
+#include <sys/sysinfo.h>
 #include <sys/types.h>
-#include <shared/Log.h>
 
 #define LINUX_SYSINFO_LOADS_SCALE 65536
 
-// Shortcut to yPluginApi namespace
-namespace yApi = shared::plugin::yPluginApi;
-
-CMemoryLoad::CMemoryLoad(const std::string & device)
-   :m_device(device), 
-    m_keyword( new yApi::historization::CLoad("MemoryLoad"))
-{}
-
-CMemoryLoad::~CMemoryLoad()
-{}
-
-void CMemoryLoad::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context, shared::CDataContainer details)
+CMemoryLoad::CMemoryLoad(const std::string& keywordName)
+   : m_keyword(boost::make_shared<yApi::historization::CLoad>(keywordName))
 {
-   if (!context->keywordExists( m_device, m_keyword->getKeyword()))
-      context->declareKeyword(m_device, *m_keyword, details);
 }
 
-void CMemoryLoad::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
+CMemoryLoad::~CMemoryLoad()
 {
-   BOOST_ASSERT_MSG(!!context, "context must be defined");
-
-   context->historizeData(m_device, *m_keyword);
 }
 
 void CMemoryLoad::read()
 {
+   struct sysinfo memInfo;
    if (sysinfo (&memInfo)!=0)
    {
       std::stringstream Message; 
       Message << "sysinfo failed !"; 
-      throw shared::exception::CException ( Message.str() );
+      throw shared::exception::CException(Message.str());
    }
 
    long long totalVirtualMem = memInfo.totalram;
@@ -49,16 +32,10 @@ void CMemoryLoad::read()
 
    long long virtualMemUsed = ((memInfo.totalram + memInfo.totalswap) - (memInfo.freeram + memInfo.freeswap))*memInfo.mem_unit;
 
-   YADOMS_LOG(debug) << "Mémoire virtuelle utilisée :" << virtualMemUsed;
-   YADOMS_LOG(debug) << "Mémoire virtuelle totale   :" << totalVirtualMem;
+   std::cout << "Mémoire virtuelle utilisée :" << virtualMemUsed << std::endl;
+   std::cout << "Mémoire virtuelle totale   :" << totalVirtualMem << std::endl;
 
-   m_keyword->set( virtualMemUsed*100/double(totalVirtualMem));
+   m_keyword->set(virtualMemUsed*100/double(totalVirtualMem));
 
-   YADOMS_LOG(debug) << "Memory Load : " << m_keyword->formatValue();
+   std::cout << "Memory Load : " << m_keyword->formatValue() << std::endl;
 }
-
-boost::shared_ptr<yApi::historization::IHistorizable> CMemoryLoad::GetHistorizable() const
-{
-	return m_keyword;
-}
-

@@ -5,7 +5,6 @@
 #include <shared/exception/BadConversion.hpp>
 #include <shared/exception/NotImplemented.hpp>
 #include <iostream>
-#include <shared/Log.h>
 #include <boost/regex.hpp>
 
 namespace xplcore

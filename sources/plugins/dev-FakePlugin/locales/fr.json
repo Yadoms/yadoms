@@ -89,7 +89,8 @@
 	"customLabels": {
 		"pluginState": {
 			"connecting": "Connexion en cours...",
-			"updateConfiguration": "Mise à jour de la configuration..."
+			"updateConfiguration": "Mise à jour de la configuration...",
+			"newCustomStateMessage" : "Un nouvel état avec le message __messageFromExtraCommand__"
 		}
 	},
 	"extraCommands" : {
@@ -121,6 +122,15 @@
 					"name": "A dynamic section",
 					"description": "Exemple de section renseignée par la méthode 'test' du plugin en utilisant le binding."
 				}
+			}
+		},
+		"changePluginStateMessage" : {
+			"name" : "Changer l'état du plugin",
+			"commandData" : {
+				"newStateMessage": {
+					"name": "Message",
+					"description": "Le message associé au nouvel état"
+				}			
 			}
 		}
 	}

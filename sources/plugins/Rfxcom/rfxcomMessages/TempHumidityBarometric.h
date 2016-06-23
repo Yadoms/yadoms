@@ -1,5 +1,4 @@
 #pragma once
-
 #include "IRfxcomMessage.h"
 #include "RFXtrxHelpers.h"
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
@@ -16,14 +15,15 @@ namespace rfxcomMessages
    public:
       //--------------------------------------------------------------
       /// \brief	                        Constructor
-      /// \param[in] context              Yadoms APi context
+      /// \param[in] api                  Yadoms APi context
       /// \param[in] rbuf                 The received buffer
       /// \param[in] rbufSize             Message size, received from Rfxcom
-      /// \param[in] seqNumberProvider    The sequence number provider
       /// \note                           Use this constructor for received messages (to historize received data to Yadoms)
       /// \throw                          shared::exception::CInvalidParameter
       //--------------------------------------------------------------
-      CTempHumidityBarometric(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
+      CTempHumidityBarometric(boost::shared_ptr<yApi::IYPluginApi> api,
+                              const RBUF& rbuf,
+                              size_t rbufSize);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
@@ -31,17 +31,17 @@ namespace rfxcomMessages
       virtual ~CTempHumidityBarometric();
 
       // IRfxcomMessage implementation
-      virtual boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const;
-      virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const;
-      virtual const std::string& getDeviceName() const;
+      boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const override;
+      void historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const override;
+      const std::string& getDeviceName() const override;
       // [END] IRfxcomMessage implementation
-      
+
    protected:
       //--------------------------------------------------------------
       /// \brief	Global initialization method
-      /// \param[in] context              Yadoms APi context
+      /// \param[in] api                  Yadoms APi context
       //--------------------------------------------------------------
-      void Init(boost::shared_ptr<yApi::IYPluginApi> context);
+      void Init(boost::shared_ptr<yApi::IYPluginApi> api);
 
       //--------------------------------------------------------------
       /// \brief	                        Build the device name
@@ -77,26 +77,33 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	The temperature (°C)
       //--------------------------------------------------------------
-      yApi::historization::CTemperature m_temperature;
+      boost::shared_ptr<yApi::historization::CTemperature> m_temperature;
 
       //--------------------------------------------------------------
       /// \brief	The humidity (%)
       //--------------------------------------------------------------
-      yApi::historization::CHumidity m_humidity;
+      boost::shared_ptr<yApi::historization::CHumidity> m_humidity;
 
       //--------------------------------------------------------------
       /// \brief	The pressure (hPa)
       //--------------------------------------------------------------
-      yApi::historization::CPressure m_pressure;
+      boost::shared_ptr<yApi::historization::CPressure> m_pressure;
 
       //--------------------------------------------------------------
       /// \brief	The battery level (percent)
       //--------------------------------------------------------------
-      yApi::historization::CBatteryLevel m_batteryLevel;
+      boost::shared_ptr<yApi::historization::CBatteryLevel> m_batteryLevel;
 
       //--------------------------------------------------------------
       /// \brief	The RSSI (percent)
       //--------------------------------------------------------------
-      yApi::historization::CRssi m_rssi;
+      boost::shared_ptr<yApi::historization::CRssi> m_rssi;
+
+      //--------------------------------------------------------------
+      /// \brief	The keywords list to historize in one step for better performances
+      //--------------------------------------------------------------
+      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
    };
 } // namespace rfxcomMessages
+
+

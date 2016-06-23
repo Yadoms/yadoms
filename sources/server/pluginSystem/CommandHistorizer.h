@@ -1,5 +1,5 @@
 #pragma once
-#include <shared/plugin/yPluginApi/IDeviceCommand.h>
+#include <shared/plugin/yPluginApi/historization/IHistorizable.h>
 
 namespace pluginSystem
 {
@@ -13,7 +13,7 @@ namespace pluginSystem
       ///\brief                     Constructor
       ///\param[in] keywordName     Keyword name
       //-----------------------------------------------------
-      CCommandHistorizer(const std::string& keywordName, const std::string& value);
+      explicit CCommandHistorizer(const std::string& keywordName, const std::string& value);
 
       //-----------------------------------------------------
       ///\brief                     Destructor

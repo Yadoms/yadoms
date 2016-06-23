@@ -28,12 +28,12 @@ boost::shared_ptr<shared::script::IInterpreter> CInterpreterLibrary::load(const 
    }
 
    // Get entry point
-   boost::function<shared::script::IInterpreter* ()> m_construct = (shared::script::IInterpreter* (*)(void))(m_library->GetFunctionPointer("construct"));
-   if (m_construct == NULL)
+   boost::function<shared::script::IInterpreter* (const boost::filesystem::path)> construct = (shared::script::IInterpreter* (*)(const boost::filesystem::path))(m_library->GetFunctionPointer("construct"));
+   if (construct == nullptr)
       throw shared::exception::CInvalidParameter("Unable to get entry point");
 
    // Create interpreter object
-   m_interpreter.reset(m_construct());
+   m_interpreter.reset(construct(interpreterPath));
    if (!m_interpreter)
       throw shared::exception::CInvalidParameter("Unable to create interpreter object");
 

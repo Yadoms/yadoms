@@ -3,7 +3,6 @@
 #include <Poco/Util/OptionSet.h>
 #include "startupOptions/StartupOptions.h"
 #include "IRunningInformation.h"
-#include "ApplicationStopHandler.h"
 #include <shared/event/EventHandler.hpp>
 
 //-----------------------------
@@ -23,12 +22,12 @@ public:
    virtual ~CYadomsServer();
 
 protected:
-   void initialize(Poco::Util::Application& self);
-   void uninitialize();
-   void defineOptions(Poco::Util::OptionSet& options);
+   void initialize(Poco::Util::Application& self) override;
+   void uninitialize() override;
+   void defineOptions(Poco::Util::OptionSet& options) override;
    void handleHelp(const std::string& name, const std::string& value);
-   void displayHelp();
-   int main(const ArgVec& args);
+   void displayHelp() const;
+   int main(const ArgVec& args) override;
 
 private:
    //-----------------------------
@@ -46,23 +45,10 @@ private:
    //-----------------------------
    boost::shared_ptr<IRunningInformation> m_runningInformation;
 
-   //-----------------------------
-   ///\brief Stop handler
-   //-----------------------------
-   boost::shared_ptr<CApplicationStopHandler> m_stopHandler;
-
 
    //-----------------------------
-   ///\brief Event handler used by supervisor
+   ///\brief Event handlers used to manage application stop
    //-----------------------------
-   boost::shared_ptr<shared::event::CEventHandler> m_eventHandler;
-
-   //-----------------------------
-   ///\brief Event code
-   //-----------------------------
-   enum
-   {
-      kSupervisorIsStopped = shared::event::kUserFirstId,
-      kTerminationRequested
-   };
+   shared::event::CEventHandler m_stopRequestEventHandler;
+   shared::event::CEventHandler m_stoppedEventHandler;
 };

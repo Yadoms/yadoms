@@ -22,13 +22,13 @@ public:
    //--------------------------------------------------------------
    virtual ~CContextAccessor();
 
-protected:
    // IContextAccessor Implementation
-   virtual std::string id() const;
+   std::string id() const override;
    // [END] IContextAccessor Implementation
 
+protected:
    // CThreadBase Implementation
-   virtual void doWork();
+   void doWork() override;
    // [END] CThreadBase Implementation
 
    //--------------------------------------------------------------

@@ -21,7 +21,7 @@ namespace startupOptions
 
    }
 
-   void CStartupOptions::defineOptions(Poco::Util::OptionSet& options)
+   void CStartupOptions::defineOptions(Poco::Util::OptionSet& options) const
    {
       options.addOption(
          Poco::Util::Option("port", "p", "set the web server port number")
@@ -278,213 +278,207 @@ namespace startupOptions
          .binding("server.developerMode", &m_configContainer));
    }
 
-   const std::string CStartupOptions::getLogLevel() const
+   std::string CStartupOptions::getLogLevel() const
    {
       return m_configContainer.getString("server.logLevel", "information");
    }
 
-   const unsigned int CStartupOptions::getWebServerPortNumber() const
+   unsigned int CStartupOptions::getWebServerPortNumber() const
    {
       return m_configContainer.getUInt("server.port", 8080);
    }
 
-   const std::string CStartupOptions::getWebServerIPAddress() const
+   std::string CStartupOptions::getWebServerIPAddress() const
    {
       return m_configContainer.getString("server.ip", "0.0.0.0");
    }
 
-   const std::string CStartupOptions::getWebServerInitialPath() const
+   std::string CStartupOptions::getWebServerInitialPath() const
    {
-      return m_configContainer.getString("server.www", "www");
+      // To not have to copy the full 'www' directory at debug build step,
+      // force to use (if not specified in Yadoms configuration or command line)
+      // the www in source folder
+#ifdef _DEBUG
+#ifdef _WINDOWS
+      static const std::string defaultWebServerPath("../../sources/www");
+#else
+      static const std::string defaultWebServerPath("../sources/www");
+#endif
+#else
+      static const std::string defaultWebServerPath("www");
+#endif
+
+      return m_configContainer.getString("server.www", defaultWebServerPath);
    }
 
-
-   const EDatabaseEngine CStartupOptions::getDatabaseEngine() const
+   EDatabaseEngine CStartupOptions::getDatabaseEngine() const
    {
       return EDatabaseEngine(m_configContainer.getString("server.databaseEngine", EDatabaseEngine::kSqlite.toString()));
    }
 
-   const std::string CStartupOptions::getDatabaseSqliteFile() const
+   std::string CStartupOptions::getDatabaseSqliteFile() const
    {
       return m_configContainer.getString("server.sqlite.databasePath", "yadoms.db3");
    }
 
-   const std::string CStartupOptions::getDatabasePostgresqlHost() const
+   std::string CStartupOptions::getDatabasePostgresqlHost() const
    {
       return m_configContainer.getString("server.pgsql.host", "127.0.0.1");
    }
 
-   const unsigned int CStartupOptions::getDatabasePostgresqlPort() const
+   unsigned int CStartupOptions::getDatabasePostgresqlPort() const
    {
       return m_configContainer.getUInt("server.pgsql.port", 5432);
    }
 
-   const std::string CStartupOptions::getDatabasePostgresqlDbName() const
+   std::string CStartupOptions::getDatabasePostgresqlDbName() const
    {
       return boost::to_lower_copy(m_configContainer.getString("server.pgsql.dbname", "yadoms"));
    }
 
-   const std::string CStartupOptions::getDatabasePostgresqlLogin() const
+   std::string CStartupOptions::getDatabasePostgresqlLogin() const
    {
       return m_configContainer.getString("server.pgsql.login", "");
    }
 
-   const std::string CStartupOptions::getDatabasePostgresqlPassword() const
+   std::string CStartupOptions::getDatabasePostgresqlPassword() const
    {
       return m_configContainer.getString("server.pgsql.password", "");
    }
 
-   const Poco::Nullable<std::string> CStartupOptions::getDatabasePostgresqlHostAddr() const
+   Poco::Nullable<std::string> CStartupOptions::getDatabasePostgresqlHostAddr() const
    {
       if (m_configContainer.has("server.pgsql.hostaddr"))
          return m_configContainer.getString("server.pgsql.hostaddr", "");
-      else
-         return Poco::NULL_GENERIC;
+      return Poco::NULL_GENERIC;
    }
 
-   const Poco::Nullable<int> CStartupOptions::getDatabasePostgresqlConnectTimeout() const
+   Poco::Nullable<int> CStartupOptions::getDatabasePostgresqlConnectTimeout() const
    {
       if (m_configContainer.has("server.pgsql.connect-timeout"))
          return m_configContainer.getInt("server.pgsql.connect-timeout", 60);
-      else
-         return Poco::NULL_GENERIC;
+      return Poco::NULL_GENERIC;
    }
 
-   const Poco::Nullable<std::string> CStartupOptions::getDatabasePostgresqlClientEncoding() const
+   Poco::Nullable<std::string> CStartupOptions::getDatabasePostgresqlClientEncoding() const
    {
       if (m_configContainer.has("server.pgsql.client-encoding"))
          return m_configContainer.getString("server.pgsql.client-encoding", "");
-      else
-         return Poco::NULL_GENERIC;
+      return Poco::NULL_GENERIC;
    }
 
-   const Poco::Nullable<std::string> CStartupOptions::getDatabasePostgresqlOptions() const
+   Poco::Nullable<std::string> CStartupOptions::getDatabasePostgresqlOptions() const
    {
       if (m_configContainer.has("server.pgsql.options"))
          return m_configContainer.getString("server.pgsql.options", "");
-      else
-         return Poco::NULL_GENERIC;
+      return Poco::NULL_GENERIC;
    }
 
-   const Poco::Nullable<int> CStartupOptions::getDatabasePostgresqlKeepAlives() const
+   Poco::Nullable<int> CStartupOptions::getDatabasePostgresqlKeepAlives() const
    {
       if (m_configContainer.has("server.pgsql.keep-alives"))
          return m_configContainer.getInt("server.pgsql.keep-alives", 1);
-      else
-         return Poco::NULL_GENERIC;
+      return Poco::NULL_GENERIC;
    }
 
 
-   const Poco::Nullable<int> CStartupOptions::getDatabasePostgresqlKeepAlivesIdle() const
+   Poco::Nullable<int> CStartupOptions::getDatabasePostgresqlKeepAlivesIdle() const
    {
       if (m_configContainer.has("server.pgsql.keep-alives-idle"))
          return m_configContainer.getInt("server.pgsql.keep-alives-idle", 0 /* = use system default*/);
-      else
-         return Poco::NULL_GENERIC;
+      return Poco::NULL_GENERIC;
    }
 
-   const Poco::Nullable<int> CStartupOptions::getDatabasePostgresqlKeepAlivesInterval() const
+   Poco::Nullable<int> CStartupOptions::getDatabasePostgresqlKeepAlivesInterval() const
    {
       if (m_configContainer.has("server.pgsql.keep-alives-interval"))
          return m_configContainer.getInt("server.pgsql.keep-alives-interval", 0 /* = use system default*/);
-      else
-         return Poco::NULL_GENERIC;
+      return Poco::NULL_GENERIC;
    }
 
-   const Poco::Nullable<int> CStartupOptions::getDatabasePostgresqlKeepAlivesCount() const
+   Poco::Nullable<int> CStartupOptions::getDatabasePostgresqlKeepAlivesCount() const
    {
       if (m_configContainer.has("server.pgsql.keep-alives-count"))
          return m_configContainer.getInt("server.pgsql.keep-alives-count", 0 /* = use system default*/);
-      else
-         return Poco::NULL_GENERIC;
+      return Poco::NULL_GENERIC;
    }
 
-   const Poco::Nullable<std::string> CStartupOptions::getDatabasePostgresqlSslMode() const
+   Poco::Nullable<std::string> CStartupOptions::getDatabasePostgresqlSslMode() const
    {
       if (m_configContainer.has("server.pgsql.ssl-mode"))
          return m_configContainer.getString("server.pgsql.ssl-mode", "prefer");
-      else
-         return Poco::NULL_GENERIC;
+      return Poco::NULL_GENERIC;
    }
 
-   const Poco::Nullable<int> CStartupOptions::getDatabasePostgresqlRequireSsl() const
+   Poco::Nullable<int> CStartupOptions::getDatabasePostgresqlRequireSsl() const
    {
       if (m_configContainer.has("server.pgsql.require-ssl"))
          return m_configContainer.getInt("server.pgsql.require-ssl", 0);
-      else
-         return Poco::NULL_GENERIC;
+      return Poco::NULL_GENERIC;
    }
 
-   const Poco::Nullable<int> CStartupOptions::getDatabasePostgresqlSslCompression() const
+   Poco::Nullable<int> CStartupOptions::getDatabasePostgresqlSslCompression() const
    {
       if (m_configContainer.has("server.pgsql.ssl-compression"))
          return m_configContainer.getInt("server.pgsql.ssl-compression", 1);
-      else
-         return Poco::NULL_GENERIC;
+      return Poco::NULL_GENERIC;
    }
-   const Poco::Nullable<std::string> CStartupOptions::getDatabasePostgresqlSslCert() const
+
+   Poco::Nullable<std::string> CStartupOptions::getDatabasePostgresqlSslCert() const
    {
       if (m_configContainer.has("server.pgsql.ssl-cert"))
          return m_configContainer.getString("server.pgsql.ssl-cert", "");
-      else
-         return Poco::NULL_GENERIC;
+      return Poco::NULL_GENERIC;
    }
 
-   const Poco::Nullable<std::string> CStartupOptions::getDatabasePostgresqlSslKey() const
+   Poco::Nullable<std::string> CStartupOptions::getDatabasePostgresqlSslKey() const
    {
       if (m_configContainer.has("server.pgsql.ssl-key"))
          return m_configContainer.getString("server.pgsql.ssl-key", "");
-      else
-         return Poco::NULL_GENERIC;
+      return Poco::NULL_GENERIC;
    }
 
-   const Poco::Nullable<std::string> CStartupOptions::getDatabasePostgresqlSslRootCert() const
+   Poco::Nullable<std::string> CStartupOptions::getDatabasePostgresqlSslRootCert() const
    {
       if (m_configContainer.has("server.pgsql.ssl-root"))
          return m_configContainer.getString("server.pgsql.ssl-root", "");
-      else
-         return Poco::NULL_GENERIC;
+      return Poco::NULL_GENERIC;
    }
 
 
-   const Poco::Nullable<std::string> CStartupOptions::getDatabasePostgresqlSslRevocationList() const
+   Poco::Nullable<std::string> CStartupOptions::getDatabasePostgresqlSslRevocationList() const
    {
       if (m_configContainer.has("server.pgsql.ssl-revocation"))
          return m_configContainer.getString("server.pgsql.ssl-revocation", "");
-      else
-         return Poco::NULL_GENERIC;
+      return Poco::NULL_GENERIC;
    }
 
-   const Poco::Nullable<std::string> CStartupOptions::getDatabasePostgresqlRequirePeer() const
+   Poco::Nullable<std::string> CStartupOptions::getDatabasePostgresqlRequirePeer() const
    {
       if (m_configContainer.has("server.pgsql.require-peer"))
          return m_configContainer.getString("server.pgsql.require-peer", "");
-      else
-         return Poco::NULL_GENERIC;
+      return Poco::NULL_GENERIC;
    }
 
-   const Poco::Nullable<std::string> CStartupOptions::getDatabasePostgresqlKerberos() const
+   Poco::Nullable<std::string> CStartupOptions::getDatabasePostgresqlKerberos() const
    {
       if (m_configContainer.has("server.pgsql.kerberos"))
          return m_configContainer.getString("server.pgsql.kerberos", "");
-      else
-         return Poco::NULL_GENERIC;
+      return Poco::NULL_GENERIC;
    }
 
-   const Poco::Nullable<std::string> CStartupOptions::getDatabasePostgresqlGssLib() const
+   Poco::Nullable<std::string> CStartupOptions::getDatabasePostgresqlGssLib() const
    {
       if (m_configContainer.has("server.pgsql.gss-lib"))
          return m_configContainer.getString("server.pgsql.gss-lib", "");
-      else
-         return Poco::NULL_GENERIC;
+      return Poco::NULL_GENERIC;
    }
 
-   const Poco::Nullable<std::string> CStartupOptions::getDatabasePostgresqlService() const
+   Poco::Nullable<std::string> CStartupOptions::getDatabasePostgresqlService() const
    {
       if (m_configContainer.has("server.pgsql.service"))
          return m_configContainer.getString("server.pgsql.service", "");
-      else
-         return Poco::NULL_GENERIC;
+      return Poco::NULL_GENERIC;
    }
 
    bool CStartupOptions::getNoPasswordFlag() const
@@ -492,12 +486,12 @@ namespace startupOptions
       return m_configContainer.getBool("server.noPassword", false);
    }
 
-   const std::string CStartupOptions::getPluginsPath() const
+   std::string CStartupOptions::getPluginsPath() const
    {
       return m_configContainer.getString("server.pluginsPath", "plugins");
    }
 
-   const std::string CStartupOptions::getScriptInterpretersPath() const
+   std::string CStartupOptions::getScriptInterpretersPath() const
    {
       return m_configContainer.getString("server.scriptInterpretersPath", "scriptInterpreters");
    }
@@ -507,7 +501,7 @@ namespace startupOptions
       return m_configContainer.getBool("application.runAsService", false);
    }
 
-   const std::string CStartupOptions::getUpdateSiteUri() const
+   std::string CStartupOptions::getUpdateSiteUri() const
    {
       return m_configContainer.getString("server.updateSite", "http://www.yadoms.com/downloads/update/");
    }

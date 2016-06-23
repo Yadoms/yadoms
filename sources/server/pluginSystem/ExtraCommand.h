@@ -15,7 +15,8 @@ namespace pluginSystem
       ///\param[in] command      The extra command
       ///\param[in] data         The optional command data
       //-----------------------------------------------------
-      CExtraCommand(const std::string& command, const shared::CDataContainer & data = shared::CDataContainer::EmptyContainer);
+      explicit CExtraCommand(const std::string& command,
+                             const shared::CDataContainer& data = shared::CDataContainer::EmptyContainer);
 
       //-----------------------------------------------------
       ///\brief               Destructor
@@ -24,7 +25,7 @@ namespace pluginSystem
 
       // IExtraCommand implementation
       virtual const std::string& getCommand() const;
-      virtual const shared::CDataContainer & getData() const;
+      virtual const shared::CDataContainer& getData() const;
       // [END] IExtraCommand implementation
 
    private:
@@ -37,7 +38,7 @@ namespace pluginSystem
       ///\brief               Command data
       //-----------------------------------------------------
       shared::CDataContainer m_data;
-   };  
+   };
 } // namespace pluginSystem	
-	
-	
+
+

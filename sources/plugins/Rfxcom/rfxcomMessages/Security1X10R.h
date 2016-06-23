@@ -1,7 +1,5 @@
 #pragma once
-
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
-#include <shared/DataContainer.h>
 #include "ISecurity1Subtype.h"
 
 namespace yApi = shared::plugin::yPluginApi;
@@ -17,9 +15,11 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	                        The RFXCom subtype value
       //--------------------------------------------------------------
-      enum { rfxValue = sTypeSecX10R };
+      enum
+      {
+         rfxValue = sTypeSecX10R
+      };
 
-   public:
       //--------------------------------------------------------------
       /// \brief	                        Constructor
       //--------------------------------------------------------------
@@ -28,11 +28,10 @@ namespace rfxcomMessages
       /// \brief	Destructor
       //--------------------------------------------------------------
       virtual ~CSecurity1X10R();
-      
+
       // ISecurity1Subtype implementation
       std::string getModel() const override;
-      void declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const override;
-      void historize(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const override;
+      const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywords() const override;
       void set(const std::string& keyword, const std::string& yadomsCommand) override;
       void reset() override;
       void setFromProtocolState(unsigned char statusByte) override;
@@ -42,17 +41,23 @@ namespace rfxcomMessages
 
    private:
       //--------------------------------------------------------------
-      /// \brief	                        The keywords
-      //--------------------------------------------------------------
-      yApi::historization::CSwitch m_panic;
-      yApi::historization::CArmingAlarm m_armAlarm;
-      yApi::historization::CSwitch m_light1;
-      yApi::historization::CSwitch m_light2;
-
-      //--------------------------------------------------------------
       /// \brief	                        Status byte buffering
       //--------------------------------------------------------------
       unsigned char m_statusByte;
-   };
 
+      //--------------------------------------------------------------
+      /// \brief	                        The keywords
+      //--------------------------------------------------------------
+      boost::shared_ptr<yApi::historization::CSwitch> m_panic;
+      boost::shared_ptr<yApi::historization::CArmingAlarm> m_armAlarm;
+      boost::shared_ptr<yApi::historization::CSwitch> m_light1;
+      boost::shared_ptr<yApi::historization::CSwitch> m_light2;
+
+      //--------------------------------------------------------------
+      /// \brief	The keywords list to historize in one step for better performances
+      //--------------------------------------------------------------
+      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
+   };
 } // namespace rfxcomMessages
+
+

@@ -1,6 +1,6 @@
 #pragma once
 #include "WUConfiguration.h"
-#include <shared/plugin/IPlugin.h>
+#include <plugin_cpp_api/IPlugin.h>
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -9,7 +9,7 @@ namespace yApi = shared::plugin::yPluginApi;
 /// \brief	This class is the Weather Underground plugin
 /// \note   This plugin send periodically forecast information from a Web Site were The user is indentified
 //--------------------------------------------------------------
-class CWeatherUnderground : public shared::plugin::IPlugin
+class CWeatherUnderground : public plugin_cpp_api::IPlugin
 {
 public:
    //--------------------------------------------------------------
@@ -23,15 +23,15 @@ public:
    virtual ~CWeatherUnderground();
 
    // IPlugin implementation
-   virtual void doWork(boost::shared_ptr<yApi::IYPluginApi> context);
+   void doWork(boost::shared_ptr<yApi::IYPluginApi> api) override;
    // [END] IPlugin implementation
 
    //--------------------------------------------------------------
    /// \brief Update the configuration of the plugin after a change
-   /// \param[in] context               pointer to the API
+   /// \param[in] api                   pointer to the API
    /// \param[in] newConfigurationData  The new configuration of the module
    //--------------------------------------------------------------
-   void onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> context, const shared::CDataContainer& newConfigurationData);
+   void onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainer& newConfigurationData);
 
 private:
    //--------------------------------------------------------------
@@ -44,3 +44,4 @@ private:
    //--------------------------------------------------------------
    CWUConfiguration m_configuration;
 };
+

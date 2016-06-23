@@ -1,5 +1,5 @@
 #pragma once
-#include <shared/plugin/IPlugin.h>
+#include <plugin_cpp_api/IPlugin.h>
 #include "MegatecUpsConfiguration.h"
 #include <shared/communication/IAsyncPort.h>
 #include <shared/communication/AsciiBufferLogger.h>
@@ -11,8 +11,8 @@ namespace yApi = shared::plugin::yPluginApi;
 //--------------------------------------------------------------
 /// \brief	This plugin supports Megatec UPS (see http://www.networkupstools.org/protocols/megatec.html)
 //--------------------------------------------------------------
-class CMegatecUps : public shared::plugin::IPlugin
-{  
+class CMegatecUps : public plugin_cpp_api::IPlugin
+{
 public:
    //--------------------------------------------------------------
    /// \brief	Constructor
@@ -25,7 +25,7 @@ public:
    virtual ~CMegatecUps();
 
    // IPlugin implementation
-   virtual void doWork(boost::shared_ptr<yApi::IYPluginApi> context);
+   void doWork(boost::shared_ptr<yApi::IYPluginApi> api) override;
    // [END] IPlugin implementation
 
 protected:
@@ -35,7 +35,9 @@ protected:
    /// \param [in] needAnswer       true if answer is needed. If true, a timeout will occur if no answer is received.
    /// \param [in] answerIsRequired true if answer is required (Used for some UPS, not supporting all commands)
    //--------------------------------------------------------------
-   void send(const std::string& message, bool needAnswer = false, bool answerIsRequired = true);
+   void send(const std::string& message,
+             bool needAnswer = false,
+             bool answerIsRequired = true);
 
    //--------------------------------------------------------------
    /// \brief	                     Send a buffer to the UPS
@@ -43,39 +45,43 @@ protected:
    /// \param [in] needAnswer       true if answer is needed. If true, a timeout will occur if no answer is received.
    /// \param [in] answerIsRequired true if answer is required (Used for some UPS, not supporting all commands)
    //--------------------------------------------------------------
-   void send(const shared::communication::CByteBuffer& buffer, bool needAnswer = false, bool answerIsRequired = true);
+   void send(const shared::communication::CByteBuffer& buffer,
+             bool needAnswer = false,
+             bool answerIsRequired = true);
 
    //--------------------------------------------------------------
    /// \brief	                     Process a command received from Yadoms
-   /// \param [in] context          Plugin execution context (Yadoms API)
+   /// \param [in] api              Plugin execution context (Yadoms API)
    /// \param [in] command          The received command
    //--------------------------------------------------------------
-   void onCommandShutdown(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& command);
+   void onCommandShutdown(boost::shared_ptr<yApi::IYPluginApi> api,
+                          const std::string& command);
 
    //--------------------------------------------------------------
    /// \brief	                     Called when the UPS becomes connected
-   /// \param [in] context          Plugin execution context (Yadoms API)
+   /// \param [in] api              Plugin execution context (Yadoms API)
    //--------------------------------------------------------------
-   void processConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> context);
+   void processConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api);
 
    //--------------------------------------------------------------
    /// \brief	                     Called when the UPS becomes unconnected
-   /// \param [in] context          Plugin execution context (Yadoms API)
+   /// \param [in] api              Plugin execution context (Yadoms API)
    //--------------------------------------------------------------
-   void processUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> context);
+   void processUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api);
 
    //--------------------------------------------------------------
    /// \brief	                     Called when the data are received from the UPS
-   /// \param [in] context          Plugin execution context (Yadoms API)
+   /// \param [in] api              Plugin execution context (Yadoms API)
    /// \param [in] message          Message received
    //--------------------------------------------------------------
-   void processDataReceived(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& message);
+   void processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
+                            const std::string& message);
 
    //--------------------------------------------------------------
    /// \brief	                     Create the connection to the UPS
-   /// \param [in] context          Plugin execution context (Yadoms API)
+   /// \param [in] api              Plugin execution context (Yadoms API)
    //--------------------------------------------------------------
-   void createConnection(boost::shared_ptr<yApi::IYPluginApi> context);
+   void createConnection(boost::shared_ptr<yApi::IYPluginApi> api);
 
    //--------------------------------------------------------------
    /// \brief	                     Close the connection to the UPS
@@ -84,9 +90,9 @@ protected:
 
    //--------------------------------------------------------------
    /// \brief	                     Protocol error processing (retry last command)
-   /// \param [in] context          Plugin execution context (Yadoms API)
+   /// \param [in] api              Plugin execution context (Yadoms API)
    //--------------------------------------------------------------
-   void protocolErrorProcess(boost::shared_ptr<yApi::IYPluginApi> context);
+   void protocolErrorProcess(boost::shared_ptr<yApi::IYPluginApi> api);
 
    //--------------------------------------------------------------
    /// \brief	                     Check if connections are the same between the 2 configurations
@@ -94,7 +100,8 @@ protected:
    /// \param [in] conf2            Second configuration to compare
    /// \return                      true is connection data are all the same in the both configurations
    //--------------------------------------------------------------
-   bool connectionsAreEqual(const CMegatecUpsConfiguration& conf1, const CMegatecUpsConfiguration& conf2) const;
+   static bool connectionsAreEqual(const CMegatecUpsConfiguration& conf1,
+                            const CMegatecUpsConfiguration& conf2);
 
    //--------------------------------------------------------------
    /// \brief	                     Send the 'Get Information' command
@@ -123,17 +130,19 @@ protected:
 
    //--------------------------------------------------------------
    /// \brief	                     Process received status from UPS
-   /// \param [in] context          Plugin execution context (Yadoms API)
+   /// \param [in] api              Plugin execution context (Yadoms API)
    /// \param [in] tokens           Separated fields (input voltage, input fault voltage, output voltage, etc...)
    //--------------------------------------------------------------
-   void processReceivedStatus(boost::shared_ptr<yApi::IYPluginApi> context, const boost::tokenizer<boost::char_separator<char> >& tokens);
+   void processReceivedStatus(boost::shared_ptr<yApi::IYPluginApi> api,
+                              const boost::tokenizer<boost::char_separator<char> >& tokens);
 
    //--------------------------------------------------------------
    /// \brief	                     Process received information from UPS
-   /// \param [in] context          Plugin execution context (Yadoms API)
+   /// \param [in] api              Plugin execution context (Yadoms API)
    /// \param [in] tokens           Separated fields (company name, UPS model, version)
    //--------------------------------------------------------------
-   void processReceivedInformation(boost::shared_ptr<yApi::IYPluginApi> context, const boost::tokenizer<boost::char_separator<char> >& tokens);
+   void processReceivedInformation(boost::shared_ptr<yApi::IYPluginApi> api,
+                                   const boost::tokenizer<boost::char_separator<char> >& tokens) const;
 
    //--------------------------------------------------------------
    /// \brief	                     Process received rating information from UPS
@@ -151,16 +160,11 @@ protected:
 
    //--------------------------------------------------------------
    /// \brief	                     declare device (and associated keywords)
-   /// \param [in] context          Plugin execution context (Yadoms API)
+   /// \param [in] api              Plugin execution context (Yadoms API)
    /// \param [in] model            The UPS model
    //--------------------------------------------------------------
-   void declareDevice(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& model) const;
-
-   //--------------------------------------------------------------
-   /// \brief	                     declare device (and associated keywords)
-   /// \param [in] context          Plugin execution context (Yadoms API)
-   //--------------------------------------------------------------
-   void historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const;
+   void declareDevice(boost::shared_ptr<yApi::IYPluginApi> api,
+                      const std::string& model) const;
 
 private:
    //--------------------------------------------------------------
@@ -222,53 +226,56 @@ private:
    //--------------------------------------------------------------
    /// \brief	The input voltage (V)
    //--------------------------------------------------------------
-   yApi::historization::CVoltage m_inputVoltage;
+   boost::shared_ptr<yApi::historization::CVoltage> m_inputVoltage;
 
    //--------------------------------------------------------------
    /// \brief	The input fault voltage (V)
    //--------------------------------------------------------------
-   yApi::historization::CVoltage m_inputfaultVoltage;
+   boost::shared_ptr<yApi::historization::CVoltage> m_inputfaultVoltage;
 
    //--------------------------------------------------------------
    /// \brief	The output voltage (V)
    //--------------------------------------------------------------
-   yApi::historization::CVoltage m_outputVoltage;
+   boost::shared_ptr<yApi::historization::CVoltage> m_outputVoltage;
 
    //--------------------------------------------------------------
    /// \brief	The output load (%)
    //--------------------------------------------------------------
-   yApi::historization::CLoad m_outputLoad;
+   boost::shared_ptr<yApi::historization::CLoad> m_outputLoad;
 
    //--------------------------------------------------------------
    /// \brief	The input frequency (Hz)
    //--------------------------------------------------------------
-   yApi::historization::CFrequency m_inputFrequency;
+   boost::shared_ptr<yApi::historization::CFrequency> m_inputFrequency;
 
    //--------------------------------------------------------------
    /// \brief	The battery voltage (V)
    //--------------------------------------------------------------
-   yApi::historization::CVoltage m_batteryVoltage;
+   boost::shared_ptr<yApi::historization::CVoltage> m_batteryVoltage;
 
    //--------------------------------------------------------------
    /// \brief	The temperature (°C)
    //--------------------------------------------------------------
-   yApi::historization::CTemperature m_temperature;
+   boost::shared_ptr<yApi::historization::CTemperature> m_temperature;
 
    //--------------------------------------------------------------
    /// \brief	The AC power state
    //--------------------------------------------------------------
-   yApi::historization::CSwitch m_acPowerHistorizer;
+   boost::shared_ptr<yApi::historization::CSwitch> m_acPowerHistorizer;
 
    //--------------------------------------------------------------
    /// \brief	The battery low state
    //--------------------------------------------------------------
-   yApi::historization::CSwitch m_batteryLowHistorizer;
+   boost::shared_ptr<yApi::historization::CSwitch> m_batteryLowHistorizer;
 
    //--------------------------------------------------------------
    /// \brief	The shutdown device
    //--------------------------------------------------------------
-   yApi::historization::CEvent m_upsShutdown;
+   boost::shared_ptr<yApi::historization::CEvent> m_upsShutdown;
+
+   //--------------------------------------------------------------
+   /// \brief	The keywords list to historize in one step for better performances
+   //--------------------------------------------------------------
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
 };
-
-
 

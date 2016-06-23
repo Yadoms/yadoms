@@ -1,7 +1,11 @@
 #pragma once
 
 #include "../ILoad.h"
-#include <sys/sysinfo.h>
+#include <shared/plugin/yPluginApi/IYPluginApi.h>
+
+
+// Shortcut to yPluginApi namespace
+namespace yApi = shared::plugin::yPluginApi;
 
 //--------------------------------------------------------------
 /// \brief	Memory Load of the Linux System
@@ -12,9 +16,9 @@ class CMemoryLoad : public ILoad
 public:
    //--------------------------------------------------------------
    /// \brief	    Constructor
-   /// \param[in] deviceId    The device ID
+   /// \param[in] keywordName The keyword name
    //--------------------------------------------------------------
-   explicit CMemoryLoad(const std::string & device);
+   explicit CMemoryLoad(const std::string& keywordName);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -22,28 +26,17 @@ public:
    virtual ~CMemoryLoad();
 
    // ILoad Implementation
-   virtual void declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context, shared::CDataContainer details);
-   virtual void read();
-   virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const;
-   virtual boost::shared_ptr<yApi::historization::IHistorizable> GetHistorizable() const;
-   // [END] ILoad Implementation
+   void read() override;
+
+   boost::shared_ptr<const yApi::historization::IHistorizable> historizable() const override
+   {
+      return m_keyword;
+   }
 
 private:
-
-   //--------------------------------------------------------------
-   /// \brief	    Device ID
-   //--------------------------------------------------------------
-   const std::string m_device;
-
-   //--------------------------------------------------------------
-   /// \brief	    Memory Information Structure
-   //--------------------------------------------------------------
-   struct sysinfo memInfo;
-
    //--------------------------------------------------------------
    /// \brief	    Keyword
    //--------------------------------------------------------------
    boost::shared_ptr<yApi::historization::CLoad> m_keyword;
-
 };
 

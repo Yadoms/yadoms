@@ -27,12 +27,11 @@
 #include "automation/RuleManager.h"
 #include <shared/ServiceLocator.h>
 #include "startupOptions/IStartupOptions.h"
-#include "Version.h"
 #include "dateTime/DateTimeNotifier.h"
 
 
-CSupervisor::CSupervisor(boost::shared_ptr<shared::event::CEventHandler> applicationEventHandler, const int applicationStopCode)
-   :m_EventHandler(new shared::event::CEventHandler), m_applicationEventHandler(applicationEventHandler), m_applicationStopCode(applicationStopCode)
+CSupervisor::CSupervisor(const IPathProvider& pathProvider)
+   :m_pathProvider(pathProvider)
 {
 }
 
@@ -52,11 +51,11 @@ void CSupervisor::run()
       shared::CServiceLocator::instance().push<automation::script::IObjectFactory>(boost::make_shared<automation::script::ObjectFactory>());
 
       //create the notification center
-      boost::shared_ptr<notification::CNotificationCenter> notificationCenter(new notification::CNotificationCenter);
+      auto notificationCenter(boost::make_shared<notification::CNotificationCenter>());
       shared::CServiceLocator::instance().push<notification::CNotificationCenter>(notificationCenter);
 
-      //retreive startup options
-      boost::shared_ptr<startupOptions::IStartupOptions> startupOptions = shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>();
+      //retrieve startup options
+      auto startupOptions = shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>();
 
       //start database system
       boost::shared_ptr<database::IDataProvider> pDataProvider = database::CFactory::create(); 
@@ -64,58 +63,68 @@ void CSupervisor::run()
          throw shared::exception::CException("Fail to load database");
 
       //create the data access layer
-      dal.reset(new dataAccessLayer::CDataAccessLayer(pDataProvider));
+      dal = boost::make_shared<dataAccessLayer::CDataAccessLayer>(pDataProvider);
       shared::CServiceLocator::instance().push<dataAccessLayer::IDataAccessLayer>(dal);
 
+      // Create the Plugin manager
+      auto pluginManager(boost::make_shared<pluginSystem::CManager>(m_pathProvider,
+                                                                    pDataProvider,
+                                                                    dal));
+
       // Start Task manager
-      boost::shared_ptr<task::CScheduler> taskManager(new task::CScheduler(m_EventHandler, kSystemEvent));
+      auto taskManager(boost::make_shared<task::CScheduler>(dal->getEventLogger()));
       taskManager->start();
 
       // Create the update manager
-      boost::shared_ptr<update::CUpdateManager> updateManager(new update::CUpdateManager(taskManager));
-
-      // Create the Plugin manager
-      const std::string pluginsPath = startupOptions->getPluginsPath();
-      boost::shared_ptr<pluginSystem::CManager> pluginManager(new pluginSystem::CManager(
-         pluginsPath, pDataProvider, dal, m_EventHandler, kPluginManagerEvent));
-      shared::CServiceLocator::instance().push<pluginSystem::CManager>(pluginManager);
+      auto updateManager(boost::make_shared<update::CUpdateManager>(taskManager,
+                                                                    pluginManager));
 
       // Start the plugin gateway
-      boost::shared_ptr<communication::CPluginGateway> pluginGateway(new communication::CPluginGateway(pDataProvider, dal->getAcquisitionHistorizer(), pluginManager));
+      auto pluginGateway(boost::make_shared<communication::CPluginGateway>(pDataProvider, dal->getAcquisitionHistorizer(), pluginManager));
 
       // Start the plugin manager (start all plugin instances)
       pluginManager->start();
 
       // Start automation rules manager
-      boost::shared_ptr<automation::IRuleManager> automationRulesManager(new automation::CRuleManager(
-         pDataProvider->getRuleRequester(), pluginGateway,
-         pDataProvider->getAcquisitionRequester(), pDataProvider->getDeviceRequester(), pDataProvider->getKeywordRequester(), pDataProvider->getRecipientRequester(),
-         dal->getConfigurationManager(), dal->getEventLogger()));
+      boost::shared_ptr<automation::IRuleManager> automationRulesManager(boost::make_shared<automation::CRuleManager>(m_pathProvider,
+                                                                                                                      pDataProvider->getRuleRequester(),
+                                                                                                                      pluginGateway,
+                                                                                                                      pDataProvider->getAcquisitionRequester(),
+                                                                                                                      pDataProvider->getDeviceRequester(),
+                                                                                                                      dal->getKeywordManager(),
+                                                                                                                      pDataProvider->getRecipientRequester(),
+                                                                                                                      dal->getConfigurationManager(),
+                                                                                                                      dal->getEventLogger()));
       shared::CServiceLocator::instance().push<automation::IRuleManager>(automationRulesManager);
 
       // Start Web server
-      const std::string & webServerIp = startupOptions->getWebServerIPAddress();
-      const std::string webServerPort = boost::lexical_cast<std::string>(startupOptions->getWebServerPortNumber());
-      const std::string & webServerPath = startupOptions->getWebServerInitialPath();
-      const std::string scriptInterpretersPath = startupOptions->getScriptInterpretersPath();
+      const auto webServerIp = startupOptions->getWebServerIPAddress();
+      const auto webServerPort = boost::lexical_cast<std::string>(startupOptions->getWebServerPortNumber());
+      const auto webServerPath = m_pathProvider.getWebServerPath().string();
+      const auto scriptInterpretersPath = m_pathProvider.scriptInterpretersPath().string();
 
-      boost::shared_ptr<web::poco::CWebServer> webServer(new web::poco::CWebServer(webServerIp, webServerPort, webServerPath, "/rest/", "/ws"));
-      webServer->getConfigurator()->websiteHandlerAddAlias("plugins", pluginsPath);
+      auto webServer(boost::make_shared<web::poco::CWebServer>(webServerIp,
+                                                               webServerPort,
+                                                               webServerPath,
+                                                               "/rest/",
+                                                               "/ws"));
+
+      webServer->getConfigurator()->websiteHandlerAddAlias("plugins", m_pathProvider.pluginsPath().string());
       webServer->getConfigurator()->websiteHandlerAddAlias("scriptInterpreters", scriptInterpretersPath);
-      webServer->getConfigurator()->configureAuthentication(boost::shared_ptr<authentication::IAuthentication>(new authentication::CBasicAuthentication(dal->getConfigurationManager(), startupOptions->getNoPasswordFlag())));
-      webServer->getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPlugin(pDataProvider, pluginManager, *pluginGateway)));
-      webServer->getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CDevice(pDataProvider, *pluginGateway)));
-      webServer->getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPage(pDataProvider)));
-      webServer->getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CWidget(pDataProvider, webServerPath)));
-      webServer->getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CConfiguration(dal->getConfigurationManager())));
-      webServer->getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPluginEventLogger(pDataProvider)));
-      webServer->getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CEventLogger(dal->getEventLogger())));
-      webServer->getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CSystem()));
-      webServer->getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CAcquisition(pDataProvider)));
-      webServer->getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CAutomationRule(pDataProvider, automationRulesManager)));
-      webServer->getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CTask(taskManager)));
-      webServer->getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CRecipient(pDataProvider)));
-      webServer->getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CUpdate(updateManager)));
+      webServer->getConfigurator()->configureAuthentication(boost::make_shared<authentication::CBasicAuthentication>(dal->getConfigurationManager(), startupOptions->getNoPasswordFlag()));
+      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CPlugin>(pDataProvider, pluginManager, *pluginGateway));
+      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CDevice>(pDataProvider, *pluginGateway));
+      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CPage>(pDataProvider));
+      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CWidget>(pDataProvider, webServerPath));
+      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CConfiguration>(dal->getConfigurationManager()));
+      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CPluginEventLogger>(pDataProvider));
+      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CEventLogger>(dal->getEventLogger()));
+      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CSystem>());
+      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CAcquisition>(pDataProvider));
+      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CAutomationRule>(pDataProvider, automationRulesManager));
+      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CTask>(taskManager));
+      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CRecipient>(pDataProvider));
+      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CUpdate>(updateManager));
 
       webServer->start();
 
@@ -128,29 +137,7 @@ void CSupervisor::run()
 
       // Main loop
       YADOMS_LOG(information) << "Supervisor is running...";
-      bool stopIsRequested = false;
-      while (!stopIsRequested)
-      {
-         switch (m_EventHandler->waitForEvents())
-         {
-         case kStopRequested:
-            stopIsRequested = true;
-            break;
-
-         case kPluginManagerEvent:
-            pluginManager->signalEvent(m_EventHandler->getEventData<pluginSystem::CManagerEvent>());
-            break;
-
-         case kSystemEvent:
-            dal->getEventLogger()->addEvent(m_EventHandler->getEventData<database::entities::CEventLogger>());
-            break;
-
-         default:
-            YADOMS_LOG(error) << "Unknown message id";
-            BOOST_ASSERT(false);
-            break;
-         }
-      }
+      while (m_EventHandler.waitForEvents() != kStopRequested){}
 
       YADOMS_LOG(information) << "Supervisor is stopping...";
 
@@ -172,7 +159,6 @@ void CSupervisor::run()
 
       //stop all plugins
       //force to stop all plugin, the reset() will call stop only at pluginManager deletion, which could happen in the future if it is used elsewhere
-      shared::CServiceLocator::instance().remove<pluginSystem::CManager>(pluginManager);
       pluginManager->stop();
       pluginManager.reset();
 
@@ -197,16 +183,11 @@ void CSupervisor::run()
    }
 
    //notify application that supervisor ends
-   if (m_applicationEventHandler)
-   {
-      YADOMS_LOG(debug) << "Supervisor, end : post event to Yadoms application...";
-      m_applicationEventHandler->postEvent(m_applicationStopCode);
-      YADOMS_LOG(debug) << "Supervisor, end : event posted to Yadoms application";
-   }
+   YADOMS_LOG(debug) << "Supervisor stopped";
 }
 
 void CSupervisor::requestToStop()
 {
-   if (m_EventHandler)
-      m_EventHandler->postEvent(kStopRequested);
+   m_EventHandler.postEvent(kStopRequested);
 }
+

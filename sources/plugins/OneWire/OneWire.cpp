@@ -3,19 +3,15 @@
 #include "Factory.h"
 #include "Configuration.h"
 #include "OneWireException.hpp"
-#include <shared/Log.h>
 #include <shared/event/EventTimer.h>
-#include <shared/plugin/ImplementationHelper.h>
+#include <plugin_cpp_api/ImplementationHelper.h>
 
-// Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
-// Note that you have to provide some extra files, like package.json, and icon.png
-// This macro also defines the static PluginInformations value that can be used by plugin to get information values
 
 IMPLEMENT_PLUGIN(COneWire)
 
 
 COneWire::COneWire()
-   :m_configuration(new CConfiguration())
+   :m_configuration(boost::make_shared<CConfiguration>())
 {
 }
 
@@ -26,128 +22,143 @@ COneWire::~COneWire()
 // Event IDs
 enum
 {
-   kEvtTimerNetworkRefresh = yApi::IYPluginApi::kPluginFirstEventId,   // Always start from shared::event::CEventHandler::kUserFirstId
+   kEvtTimerNetworkRefresh = yApi::IYPluginApi::kPluginFirstEventId,
 };
 
-void COneWire::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
+void COneWire::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   try
+   api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
+
+   std::cout << "OneWire is starting..." << std::endl;
+
+   m_configuration->initializeWith(api->getConfiguration());
+   m_engine = CFactory::createEngine(api, m_configuration);
+
+   // 1-wire Network devices
+   std::map<std::string, boost::shared_ptr<device::IDevice> > devices;
+
+   // Periodic network refresh
+   api->getEventHandler().createTimer(kEvtTimerNetworkRefresh,
+                                       shared::event::CEventTimer::kPeriodic,
+                                       boost::posix_time::seconds(5));
+
+   api->setPluginState(yApi::historization::EPluginState::kRunning);
+
+   // the main loop
+   std::cout << "OneWire plugin is running..." << std::endl;
+
+   while (1)
    {
-      YADOMS_LOG(debug) << "OneWire is starting...";
-
-      m_configuration->initializeWith(context->getConfiguration());
-      m_engine = CFactory::createEngine(context, m_configuration);
-
-      // 1-wire Network devices
-      std::map<std::string, boost::shared_ptr<device::IDevice> > devices;
-
-      // Periodic network refresh
-      context->getEventHandler().createTimer(kEvtTimerNetworkRefresh, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(5));
-
-      // the main loop
-      YADOMS_LOG(debug) << "OneWire plugin is running...";
-
-      while (1)
+      try
       {
-         try
+         // Wait for an event
+         switch (api->getEventHandler().waitForEvents())
          {
-            // Wait for an event
-            switch (context->getEventHandler().waitForEvents())
-            {
-            case kEvtTimerNetworkRefresh:
-            {
-               // Scan 1-wire network for new devices and update our network image
-               updateNetwork(devices, m_engine->scanNetwork());
-
-               // Now read all devices state and historize data
-               for (std::map<std::string, boost::shared_ptr<device::IDevice> >::const_iterator device = devices.begin(); device != devices.end(); ++device)
-               {
-                  // Set here an interruption point because it can take some time in case of big networks
-                  boost::this_thread::interruption_point();
-                  device->second->historize();
-               }
-
-               break;
-            }
-            case yApi::IYPluginApi::kEventDeviceCommand:
-            {
-               // A command was received from Yadoms
-               boost::shared_ptr<const yApi::IDeviceCommand> command = context->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
-               onCommand(devices, command);
-
-               break;
-            }
-            case yApi::IYPluginApi::kEventUpdateConfiguration:
-            {
-               onUpdateConfiguration(context, context->getEventHandler().getEventData<shared::CDataContainer>());
-               break;
-            }
-            default:
-            {
-               YADOMS_LOG(error) << "Unknown message id";
-               break;
-            }
-            }
+         case yApi::IYPluginApi::kEventStopRequested:
+         {
+            std::cout << "Stop requested" << std::endl;
+            api->setPluginState(yApi::historization::EPluginState::kStopped);
+            return;
          }
-         catch (COneWireException& e)
+         case kEvtTimerNetworkRefresh:
          {
-            YADOMS_LOG(error) << e.what();
+            // Scan 1-wire network for new devices and update our network image
+            updateNetwork(api, devices, m_engine->scanNetwork());
+
+            // Now read all devices state and historize data
+            for (auto device = devices.begin(); device != devices.end(); ++device)
+            {
+               // Set here an interruption point because it can take some time in case of big networks
+               boost::this_thread::interruption_point();
+
+               boost::shared_ptr<device::IDevice> newDevice = device->second;
+               newDevice->read();
+               if (!newDevice->keywords().empty())
+                  api->historizeData(newDevice->ident()->deviceName(),
+                                     newDevice->keywords());
+            }
+
+            break;
+         }
+         case yApi::IYPluginApi::kEventDeviceCommand:
+         {
+            // A command was received from Yadoms
+            auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
+            onCommand(devices, command);
+
+            break;
+         }
+         case yApi::IYPluginApi::kEventUpdateConfiguration:
+         {
+            onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
+            break;
+         }
+         default:
+         {
+            std::cerr << "Unknown message id" << std::endl;
+            break;
+         }
          }
       }
+      catch (COneWireException& e)
+      {
+         std::cerr << e.what() << std::endl;
+      }
    }
-   // Plugin must catch this end-of-thread exception to make its cleanup.
-   // If no cleanup is necessary, still catch it, or Yadoms will consider
-   // as a plugin failure.
-   catch (boost::thread_interrupted&)
-   {
-      YADOMS_LOG(information) << "OneWire is stopping..."  << std::endl;
-   }
-
-   m_engine.reset();
 }
 
-void COneWire::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> context, const shared::CDataContainer& newConfigurationData)
+void COneWire::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
+                                     const shared::CDataContainer& newConfigurationData)
 {
    BOOST_ASSERT(!newConfigurationData.empty());  // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
    // Configuration was updated
-   YADOMS_LOG(debug) << "Configuration was updated...";
+   std::cout << "Configuration was updated..." << std::endl;
 
-   bool needToRestartEngine = m_engine->newConfigurationRequireRestart(newConfigurationData);
+   auto needToRestartEngine = m_engine->newConfigurationRequireRestart(newConfigurationData);
 
    // Update configuration
    m_configuration->initializeWith(newConfigurationData);
 
    // If needed, rebuild engine
    if (needToRestartEngine)
-      m_engine = CFactory::createEngine(context, m_configuration);
+      m_engine = CFactory::createEngine(api, m_configuration);
 }
 
-void COneWire::onCommand(std::map<std::string, boost::shared_ptr<device::IDevice> >& devices, boost::shared_ptr<const yApi::IDeviceCommand> command)
+void COneWire::onCommand(std::map<std::string,
+                         boost::shared_ptr<device::IDevice> >& devices,
+                         boost::shared_ptr<const yApi::IDeviceCommand> command)
 {
-   YADOMS_LOG(debug) << "Command received :" << command->toString();
+   std::cout << "Command received :" << yApi::IDeviceCommand::toString(command) << std::endl;
 
-   std::map<std::string, boost::shared_ptr<device::IDevice> >::iterator device = devices.find(command->getTargetDevice());
+   std::map<std::string, boost::shared_ptr<device::IDevice> >::iterator device = devices.find(command->getDevice());
    if (device == devices.end())
    {
-      YADOMS_LOG(warning) << "Device " << command->getTargetDevice() << " not found on the 1-wire network";
+      std::cout << "Device " << command->getDevice() << " not found on the 1-wire network" << std::endl;
       return;
    }
 
-   device->second->set(command->getKeyword(), command->getBody());
+   device->second->write(command->getKeyword(), command->getBody());
 }
 
-void COneWire::updateNetwork(std::map<std::string, boost::shared_ptr<device::IDevice> >& devices, const std::map<std::string, boost::shared_ptr<device::IDevice> >& foundDevices)
+void COneWire::updateNetwork(boost::shared_ptr<yApi::IYPluginApi> api,
+                             std::map<std::string, boost::shared_ptr<device::IDevice> >& devices,
+                             const std::map<std::string, boost::shared_ptr<device::IDevice> >& foundDevices)
 {
-   for (std::map<std::string, boost::shared_ptr<device::IDevice> >::const_iterator foundDevice = foundDevices.begin(); foundDevice != foundDevices.end(); ++foundDevice)
+   for (auto foundDevice = foundDevices.begin(); foundDevice != foundDevices.end(); ++foundDevice)
    {
       if (devices.find(foundDevice->first) == devices.end())
       {
          // New device
+         boost::shared_ptr<device::IDevice> newDevice = foundDevice->second;
          // First, add it to main list
-         devices[foundDevice->first] = foundDevice->second;
+         devices[foundDevice->first] = newDevice;
          // Now, declare it to Yadoms
-         foundDevice->second->declare();
+         if (!api->deviceExists(newDevice->ident()->deviceName()))
+            api->declareDevice(newDevice->ident()->deviceName(),
+                               newDevice->ident()->model(),
+                               newDevice->keywords(),
+                               newDevice->ident()->details());
       }
    }
 }

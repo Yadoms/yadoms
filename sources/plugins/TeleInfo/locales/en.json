@@ -1,0 +1,17 @@
+{
+	"name": "TeleInfo",
+	"description": "EDF power meter information",
+	"configurationSchema": {
+		"SerialPort": {
+			"name": "Serial port",
+			"description": "The serial port connected to the teleinfo reader"
+		}
+	},
+	"customLabels": {
+		"pluginState": {
+		    "connecting": "Connecting...",
+			"connectionLost": "Connection to TeleInfo module was lost",
+			"updateConfiguration": "Configuration updating..."
+		}
+	}
+}

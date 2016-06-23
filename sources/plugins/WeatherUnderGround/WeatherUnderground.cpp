@@ -1,8 +1,7 @@
 #include "stdafx.h"
 #include "WeatherUnderground.h"
-#include <shared/Log.h>
 #include <shared/event/EventTimer.h>
-#include <shared/plugin/ImplementationHelper.h>
+#include <plugin_cpp_api/ImplementationHelper.h>
 #include "WeatherConditions.h"
 #include "Astronomy.h"
 #include "ForecastDays.h"
@@ -14,155 +13,155 @@
 IMPLEMENT_PLUGIN(CWeatherUnderground)
 
 
-CWeatherUnderground::CWeatherUnderground(): m_deviceName("WeatherUnderground")
-{}
+CWeatherUnderground::CWeatherUnderground()
+   : m_deviceName("WeatherUnderground")
+{
+}
 
 CWeatherUnderground::~CWeatherUnderground()
-{}
+{
+}
 
 // Event IDs
 enum
 {
-   kEvtTimerRefreshWeatherConditions = yApi::IYPluginApi::kPluginFirstEventId,   // Always start from shared::event::CEventHandler::kUserFirstId
+   kEvtTimerRefreshWeatherConditions = yApi::IYPluginApi::kPluginFirstEventId, // Always start from shared::event::CEventHandler::kUserFirstId
    kEvtTimerRefreshAstronomy,
    kEvtTimerRefreshForecast10Days
 };
 
-void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
+void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   try
+   std::cout << "CWeatherUnderground is starting..." << std::endl;
+
+   // Load configuration values (provided by database)
+   m_configuration.initializeWith(api->getConfiguration());
+
+   // Event to be sent immediately for the first value
+   api->getEventHandler().createTimer(kEvtTimerRefreshWeatherConditions, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
+   // Timer used to read periodically the Weather information
+   api->getEventHandler().createTimer(kEvtTimerRefreshWeatherConditions, shared::event::CEventTimer::kPeriodic, boost::posix_time::minutes(15));
+
+   // Event to be sent immediately for the first value
+   api->getEventHandler().createTimer(kEvtTimerRefreshAstronomy, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
+   // Timer used to read periodically the Weather information
+   api->getEventHandler().createTimer(kEvtTimerRefreshAstronomy, shared::event::CEventTimer::kPeriodic, boost::posix_time::hours(9));
+
+   // Event to be sent immediately for the first value
+   api->getEventHandler().createTimer(kEvtTimerRefreshForecast10Days, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
+   // Timer used to read periodically the Weather information
+   api->getEventHandler().createTimer(kEvtTimerRefreshForecast10Days, shared::event::CEventTimer::kPeriodic, boost::posix_time::hours(3));
+
+   if (!api->deviceExists(m_deviceName))
    {
-      YADOMS_LOG(debug) << "CWeatherUnderground is starting...";
+      std::string m_URL = "www.wunderground.com/";
 
-      // Load configuration values (provided by database)
-      m_configuration.initializeWith(context->getConfiguration());
-
-	   // Event to be sent immediately for the first value
-      context->getEventHandler().createTimer(kEvtTimerRefreshWeatherConditions , shared::event::CEventTimer::kOneShot , boost::posix_time::seconds(0));
-      // Timer used to read periodically the Weather information
-      context->getEventHandler().createTimer(kEvtTimerRefreshWeatherConditions , shared::event::CEventTimer::kPeriodic, boost::posix_time::minutes(15));
-
-	   // Event to be sent immediately for the first value
-      context->getEventHandler().createTimer(kEvtTimerRefreshAstronomy         , shared::event::CEventTimer::kOneShot , boost::posix_time::seconds(0));
-      // Timer used to read periodically the Weather information
-	   context->getEventHandler().createTimer(kEvtTimerRefreshAstronomy        , shared::event::CEventTimer::kPeriodic, boost::posix_time::hours(9));
-
-	   // Event to be sent immediately for the first value
-      context->getEventHandler().createTimer(kEvtTimerRefreshForecast10Days    , shared::event::CEventTimer::kOneShot , boost::posix_time::seconds(0));
-      // Timer used to read periodically the Weather information
-	   context->getEventHandler().createTimer(kEvtTimerRefreshForecast10Days   , shared::event::CEventTimer::kPeriodic, boost::posix_time::hours(3));
-
-	   if (!context->deviceExists(m_deviceName))
-	   {
-		  std::string m_URL = "www.wunderground.com/";
-
-		  context->declareDevice(m_deviceName, m_URL);
-	   }
-
-      CWeatherConditions m_WeatherConditionsRequester( context, m_configuration, m_deviceName, "conditions.");
-      CAstronomy m_AstronomyRequester                ( context, m_configuration, m_deviceName, "astronomy.");
-      CForecastDays m_Forecast10Days                 ( context, m_configuration, m_deviceName, "forecast.");
-
-      // the main loop
-      YADOMS_LOG(debug) << "CWeatherUnderground plugin is running...";
-
-      while(1)
-      {
-         // Wait for an event
-         switch(context->getEventHandler().waitForEvents())
-         {
-         case kEvtTimerRefreshWeatherConditions:
-            {
-               YADOMS_LOG(debug) << "Refresh Weather Conditions";
-
-			      if ( !m_WeatherConditionsRequester.Request( context ) )
-					  m_WeatherConditionsRequester.Parse  ( context, m_configuration );
-
-				  if (!m_WeatherConditionsRequester.IsModuleInFault ())
-					  context->setPluginState(yApi::historization::EPluginState::kRunning);
-
-               break;
-            }
-		   case kEvtTimerRefreshAstronomy:
-            {
-			      YADOMS_LOG(debug) << "Refresh Astronomy Information";
-
-			      if ( !m_AstronomyRequester.Request( context ) )
-			         m_AstronomyRequester.Parse  ( context, m_configuration );
-
-				  if (!m_WeatherConditionsRequester.IsModuleInFault ())
-					  context->setPluginState(yApi::historization::EPluginState::kRunning);
-
-			      break;
-            }
-		 case kEvtTimerRefreshForecast10Days:
-            {
-			    YADOMS_LOG(debug) << "Refresh Forecast 10 Days Information";
-
-			      if ( !m_Forecast10Days.Request( context ) )
-				  {
-                     m_Forecast10Days.SetCityName ( m_WeatherConditionsRequester.GetCityName() );
-			         m_Forecast10Days.Parse  ( context, m_configuration );
-				  }
-
-				  if (!m_WeatherConditionsRequester.IsModuleInFault ())
-					  context->setPluginState(yApi::historization::EPluginState::kRunning);
-
-			      break;
-            }
-         case yApi::IYPluginApi::kEventUpdateConfiguration:
-            {
-               onUpdateConfiguration(context, context->getEventHandler().getEventData<shared::CDataContainer>());
-
-               m_WeatherConditionsRequester.OnUpdate ( context, m_configuration );
-			   
-               if (!m_WeatherConditionsRequester.Request( context ))
-                  m_WeatherConditionsRequester.Parse  ( context, m_configuration );
-
-               m_AstronomyRequester.OnUpdate ( context, m_configuration );
-
-               if ( !m_AstronomyRequester.Request( context ))
-                  m_AstronomyRequester.Parse  ( context, m_configuration );
-
-			   m_Forecast10Days.OnUpdate ( context, m_configuration );
-
-               m_Forecast10Days.SetCityName ( m_WeatherConditionsRequester.GetCityName());
-
-			   if ( !m_Forecast10Days.Request( context ))
-                  m_Forecast10Days.Parse  ( context, m_configuration );
-
-			   if ( !m_WeatherConditionsRequester.IsModuleInFault () && 
-				    !m_Forecast10Days.IsModuleInFault() &&
-					!m_AstronomyRequester.IsModuleInFault() )
-			   {
-                  context->setPluginState(yApi::historization::EPluginState::kRunning);
-			   }
-               break;
-            }
-
-         default:
-            {
-               YADOMS_LOG(error) << "Unknown message id";
-               break;
-            }
-         }
-      };
+      api->declareDevice(m_deviceName, m_URL);
    }
-   // Plugin must catch this end-of-thread exception to make its cleanup.
-   // If no cleanup is necessary, still catch it, or Yadoms will consider
-   // as a plugin failure.
-   catch (boost::thread_interrupted&)
+
+   CWeatherConditions m_WeatherConditionsRequester(api, m_configuration, m_deviceName, "conditions.");
+   CAstronomy m_AstronomyRequester(api, m_configuration, m_deviceName, "astronomy.");
+   CForecastDays m_Forecast10Days(api, m_configuration, m_deviceName, "forecast.");
+
+   // the main loop
+   std::cout << "CWeatherUnderground plugin is running..." << std::endl;
+
+   while (1)
    {
-      YADOMS_LOG(information) << "CWeatherUnderground is stopping..."  << std::endl;
+      // Wait for an event
+      switch (api->getEventHandler().waitForEvents())
+      {
+      case yApi::IYPluginApi::kEventStopRequested:
+         {
+            std::cout << "Stop requested" << std::endl;
+            api->setPluginState(yApi::historization::EPluginState::kStopped);
+            return;
+         }
+      case kEvtTimerRefreshWeatherConditions:
+         {
+            std::cout << "Refresh Weather Conditions" << std::endl;
+
+            if (!m_WeatherConditionsRequester.Request(api))
+               m_WeatherConditionsRequester.Parse(api, m_configuration);
+
+            if (!m_WeatherConditionsRequester.IsModuleInFault())
+               api->setPluginState(yApi::historization::EPluginState::kRunning);
+
+            break;
+         }
+      case kEvtTimerRefreshAstronomy:
+         {
+            std::cout << "Refresh Astronomy Information" << std::endl;
+
+            if (!m_AstronomyRequester.Request(api))
+               m_AstronomyRequester.Parse(api, m_configuration);
+
+            if (!m_WeatherConditionsRequester.IsModuleInFault())
+               api->setPluginState(yApi::historization::EPluginState::kRunning);
+
+            break;
+         }
+      case kEvtTimerRefreshForecast10Days:
+         {
+            std::cout << "Refresh Forecast 10 Days Information" << std::endl;
+
+            if (!m_Forecast10Days.Request(api))
+            {
+               m_Forecast10Days.SetCityName(m_WeatherConditionsRequester.GetCityName());
+               m_Forecast10Days.Parse(api, m_configuration);
+            }
+
+            if (!m_WeatherConditionsRequester.IsModuleInFault())
+               api->setPluginState(yApi::historization::EPluginState::kRunning);
+
+            break;
+         }
+      case yApi::IYPluginApi::kEventUpdateConfiguration:
+         {
+            onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
+
+            m_WeatherConditionsRequester.OnUpdate(api, m_configuration);
+
+            if (!m_WeatherConditionsRequester.Request(api))
+               m_WeatherConditionsRequester.Parse(api, m_configuration);
+
+            m_AstronomyRequester.OnUpdate(api, m_configuration);
+
+            if (!m_AstronomyRequester.Request(api))
+               m_AstronomyRequester.Parse(api, m_configuration);
+
+            m_Forecast10Days.OnUpdate(api, m_configuration);
+
+            m_Forecast10Days.SetCityName(m_WeatherConditionsRequester.GetCityName());
+
+            if (!m_Forecast10Days.Request(api))
+               m_Forecast10Days.Parse(api, m_configuration);
+
+            if (!m_WeatherConditionsRequester.IsModuleInFault() &&
+               !m_Forecast10Days.IsModuleInFault() &&
+               !m_AstronomyRequester.IsModuleInFault())
+            {
+               api->setPluginState(yApi::historization::EPluginState::kRunning);
+            }
+            break;
+         }
+
+      default:
+         {
+            std::cerr << "Unknown message id" << std::endl;
+            break;
+         }
+      }
    }
 }
 
-void CWeatherUnderground::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> context, const shared::CDataContainer& newConfigurationData)
+void CWeatherUnderground::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainer& newConfigurationData)
 {
    // Configuration was updated
-   YADOMS_LOG(debug) << "Update configuration...";
-   BOOST_ASSERT(!newConfigurationData.empty());  // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
+   std::cout << "Update configuration..." << std::endl;
+   BOOST_ASSERT(!newConfigurationData.empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
    // Update configuration
    m_configuration.initializeWith(newConfigurationData);
 }
+

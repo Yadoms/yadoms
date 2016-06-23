@@ -191,7 +191,13 @@ namespace shared
       /// \brief		Constructor. 
       /// \param [in] initialData    Initial data for this container (will be deserialized)
       //--------------------------------------------------------------
-      explicit CDataContainer(const std::string & initialData);
+      explicit CDataContainer(const std::string & initialData);     
+      
+      //--------------------------------------------------------------
+      /// \brief		Constructor. 
+      /// \param [in] initialData    Initial map data
+      //--------------------------------------------------------------
+      explicit CDataContainer(const std::map<std::string, std::string> & initialData);
 
       //--------------------------------------------------------------
       /// \brief		Constructor. 
@@ -296,6 +302,15 @@ namespace shared
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
       const char* get(const char* parameterName = "", const char pathChar = '.');
+
+      //--------------------------------------------------------------
+      /// \brief	    Get parameter value as map<string, string>
+      /// \param [in] parameterName    Name of the parameter
+      /// \return     The parameter value
+      /// \throw      shared::exception::COutOfRange if parameter can not be converted
+      /// \throw      shared::exception::CInvalidParameter if parameter is not found
+      //--------------------------------------------------------------
+      std::map<std::string, std::string> getAsMap(const std::string& parameterName = shared::CStringExtension::EmptyString, const char pathChar = '.') const;
 
       //--------------------------------------------------------------
       //
@@ -1023,6 +1038,12 @@ namespace shared
    inline T CDataContainer::get(const std::string& parameterName, const char pathChar) const
    {
       return helper<T>::getInternal(this, parameterName, pathChar);
+   }
+
+   template<>
+   inline std::map<std::string, std::string> CDataContainer::get(const std::string& parameterName, const char pathChar) const
+   {
+      return getAsMap();
    }
 
    template<>

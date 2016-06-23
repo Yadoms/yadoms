@@ -1,52 +1,55 @@
 #pragma once
-#include <shared/DataContainer.h>
-#include <shared/plugin/yPluginApi/historization/IHistorizable.h>
 
-namespace shared { namespace plugin { namespace yPluginApi
+namespace shared
 {
-   //-----------------------------------------------------
-   ///\brief The API used for the commands on device
-   //-----------------------------------------------------
-   class IDeviceCommand
+   namespace plugin
    {
-   public:
-      //-----------------------------------------------------
-      ///\brief               Destructor
-      //-----------------------------------------------------
-      virtual ~IDeviceCommand() {}
+      namespace yPluginApi
+      {
+         //-----------------------------------------------------
+         ///\brief The API used for the commands on device
+         //-----------------------------------------------------
+         class IDeviceCommand
+         {
+         public:
+            //-----------------------------------------------------
+            ///\brief               Destructor
+            //-----------------------------------------------------
+            virtual ~IDeviceCommand()
+            {
+            }
 
-      //-----------------------------------------------------
-      ///\brief               Get the target device
-      ///\return              The device to command
-      //-----------------------------------------------------
-      virtual const std::string& getTargetDevice() const = 0;
+            //-----------------------------------------------------
+            ///\brief               Get the target device
+            ///\return              The device to command
+            //-----------------------------------------------------
+            virtual const std::string& getDevice() const = 0;
 
-      //-----------------------------------------------------
-      ///\brief               Get the target keyword
-      ///\return              The keyword to command
-      //-----------------------------------------------------
-      virtual const std::string& getKeyword() const = 0;
+            //-----------------------------------------------------
+            ///\brief               Get the target keyword
+            ///\return              The keyword to command
+            //-----------------------------------------------------
+            virtual const std::string& getKeyword() const = 0;
 
-      //-----------------------------------------------------
-      ///\brief               Get the command body
-      ///\return              The command body, as string
-      //-----------------------------------------------------
-      virtual const std::string & getBody() const = 0;
+            //-----------------------------------------------------
+            ///\brief               Get the command body
+            ///\return              The command body, as string
+            //-----------------------------------------------------
+            virtual const std::string& getBody() const = 0;
 
-      //-----------------------------------------------------
-      ///\brief Describe the command as string
-      ///\return Human-readable string representing the command
-      //-----------------------------------------------------
-      virtual const std::string toString() const = 0;
 
-      //-----------------------------------------------------
-      ///\brief               Get the historizable object
-      ///\return              The historizable object associated with this command
-      //-----------------------------------------------------
-      virtual const historization::IHistorizable& getHistorizableObject() const = 0;
+            //-----------------------------------------------------
+            ///\brief               To stirng transformer
+            ///\param[in] command   The commande to print out
+            ///\return              The formated string representine the command
+            //-----------------------------------------------------
+            static std::string toString(boost::shared_ptr<const IDeviceCommand> command)
+            {
+               return (boost::format("%1%.%2%=%3%") % command->getDevice() % command->getKeyword() % command->getBody()).str();
+            }
+         };
+      }
+   }
+} // namespace shared::plugin::yPluginApi	
 
-};
-	
-} } } // namespace shared::plugin::yPluginApi	
-	
-	
+

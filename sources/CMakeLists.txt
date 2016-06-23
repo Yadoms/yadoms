@@ -1,7 +1,7 @@
 ##################################################################################################
 ## CMakeList.txt for YADOMS
 ##
-## This file generates projects/makefiles for the compete Yadoms software
+## This file generates projects/makefiles for the complete Yadoms software
 ##
 ## This file actually works for
 ##   Windows 7 x64, MSVC 12
@@ -221,7 +221,7 @@ set(LIBS ${LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${RT_LIBRARY} ${Po
 
 
 ##################################################################################################
-## Internal libraries (SQlite, Webem) completly build from sources
+## Internal libraries (SQlite, Webem) completely build from sources
 ##################################################################################################
 
 #Use Sqlite database system
@@ -248,11 +248,11 @@ set(YADOMS_SRC
 	
 	server/Application.h
 	server/Application.cpp
-	server/ApplicationStopHandler.h
-	server/ApplicationStopHandler.cpp
 	server/ErrorHandler.h
 	server/ErrorHandler.cpp
-	server/IApplicationStopHandler.h
+	server/IPathProvider.h
+	server/PathProvider.cpp
+	server/PathProvider.h	
 	server/IRunningInformation.h
 	server/RunningInformation.cpp
 	server/RunningInformation.h	
@@ -267,9 +267,10 @@ set(YADOMS_SRC
    server/dateTime/DateTimeNotifier.cpp
    
 	server/automation/IRule.h
-	server/automation/IRuleThreadHandler.h
-	server/automation/IRuleStateHandler.h
 	server/automation/IRuleManager.h
+   server/automation/IRuleStartErrorObserver.h
+	server/automation/IRuleStateHandler.h
+	server/automation/IRuleThreadHandler.h
 	server/automation/Rule.h
 	server/automation/Rule.cpp
 	server/automation/RuleException.hpp
@@ -297,8 +298,6 @@ set(YADOMS_SRC
 	server/automation/script/IProperties.h
 	server/automation/script/Location.h
 	server/automation/script/Location.cpp
-	server/automation/script/Logger.h
-	server/automation/script/Logger.cpp
 	server/automation/script/Manager.h
 	server/automation/script/Manager.cpp
    server/automation/script/ObjectFactory.h
@@ -319,21 +318,24 @@ set(YADOMS_SRC
    server/communication/callback/ICallbackRequest.h
  	server/communication/callback/ISynchronousCallback.h
 
-	server/dataAccessLayer/DataAccessLayer.h
-	server/dataAccessLayer/DataAccessLayer.cpp
-	server/dataAccessLayer/IDataAccessLayer.h
 	server/dataAccessLayer/AcquisitionHistorizer.h
 	server/dataAccessLayer/AcquisitionHistorizer.cpp
-	server/dataAccessLayer/IAcquisitionHistorizer.h
-	server/dataAccessLayer/DeviceManager.h
-	server/dataAccessLayer/DeviceManager.cpp
-	server/dataAccessLayer/IDeviceManager.h
-	server/dataAccessLayer/EventLogger.h
-	server/dataAccessLayer/EventLogger.cpp
-	server/dataAccessLayer/IEventLogger.h
 	server/dataAccessLayer/ConfigurationManager.h
 	server/dataAccessLayer/ConfigurationManager.cpp
+	server/dataAccessLayer/DataAccessLayer.h
+	server/dataAccessLayer/DataAccessLayer.cpp
+	server/dataAccessLayer/DeviceManager.h
+	server/dataAccessLayer/DeviceManager.cpp
+	server/dataAccessLayer/EventLogger.h
+	server/dataAccessLayer/EventLogger.cpp
+	server/dataAccessLayer/KeywordManager.h
+	server/dataAccessLayer/KeywordManager.cpp
+	server/dataAccessLayer/IAcquisitionHistorizer.h
 	server/dataAccessLayer/IConfigurationManager.h
+	server/dataAccessLayer/IDataAccessLayer.h
+	server/dataAccessLayer/IDeviceManager.h
+	server/dataAccessLayer/IEventLogger.h
+	server/dataAccessLayer/IKeywordManager.h
 	
 	server/database/DatabaseException.hpp
 	server/database/IConfigurationRequester.h
@@ -371,32 +373,43 @@ set(YADOMS_SRC
    
 	server/pluginSystem/BasicQualifier.h
 	server/pluginSystem/BasicQualifier.cpp
-   server/pluginSystem/CommandHistorizer.cpp
    server/pluginSystem/CommandHistorizer.h
-   server/pluginSystem/DeviceCommand.cpp
+   server/pluginSystem/CommandHistorizer.cpp
+   server/pluginSystem/IpcAdapter.h
+   server/pluginSystem/IpcAdapter.cpp
    server/pluginSystem/DeviceCommand.h
+   server/pluginSystem/DeviceCommand.cpp
 	server/pluginSystem/DummyQualifier.h
 	server/pluginSystem/DummyQualifier.cpp
 	server/pluginSystem/ExtraCommand.h
 	server/pluginSystem/ExtraCommand.cpp
-	server/pluginSystem/IdentityForQualifier.cpp
+   server/pluginSystem/FromPluginHistorizer.h
+   server/pluginSystem/FromPluginHistorizer.cpp
 	server/pluginSystem/IdentityForQualifier.h
-	server/pluginSystem/ILibrary.h
+	server/pluginSystem/IdentityForQualifier.cpp
+	server/pluginSystem/IFactory.h
+	server/pluginSystem/IInstance.h
+	server/pluginSystem/IInstanceStartErrorObserver.h
+	server/pluginSystem/IInstanceStateHandler.h
+   server/pluginSystem/IInstanceStoppedListener.h
+   server/pluginSystem/IIpcAdapter.h
 	server/pluginSystem/IndicatorQualifier.h
 	server/pluginSystem/IndicatorQualifier.cpp
-	server/pluginSystem/Information.cpp
 	server/pluginSystem/Information.h
+	server/pluginSystem/Information.cpp
 	server/pluginSystem/Instance.h
 	server/pluginSystem/Instance.cpp
-	server/pluginSystem/IQualifier.h
+   server/pluginSystem/InstanceRemover.h
+   server/pluginSystem/InstanceRemover.cpp
+   server/pluginSystem/InstanceRemoverRaii.hpp
+	server/pluginSystem/InstanceStateHandler.h
+	server/pluginSystem/InstanceStateHandler.cpp
 	server/pluginSystem/InvalidPluginException.hpp
-	server/pluginSystem/InternalPluginLibrary.h
-	server/pluginSystem/InternalPluginLibrary.cpp
-	server/pluginSystem/ExternalPluginLibrary.h
-	server/pluginSystem/ExternalPluginLibrary.cpp
+	server/pluginSystem/IQualifier.h
+	server/pluginSystem/Factory.cpp
+	server/pluginSystem/Factory.h
 	server/pluginSystem/Manager.h
 	server/pluginSystem/Manager.cpp
-	server/pluginSystem/ManagerEvent.h
    server/pluginSystem/ManuallyDeviceCreationData.cpp
    server/pluginSystem/ManuallyDeviceCreationData.h
    server/pluginSystem/BindingQueryData.cpp
@@ -405,15 +418,25 @@ set(YADOMS_SRC
    server/pluginSystem/BindingQueryRequest.h
    server/pluginSystem/ManuallyDeviceCreationTestData.cpp
    server/pluginSystem/ManuallyDeviceCreationTestData.h
+   server/pluginSystem/NativeExecutableCommandLine.cpp
+   server/pluginSystem/NativeExecutableCommandLine.h
+	server/pluginSystem/PluginException.hpp
    server/pluginSystem/yPluginApiImplementation.h
    server/pluginSystem/yPluginApiImplementation.cpp
+	server/pluginSystem/ManuallyDeviceCreationRequest.h
+	server/pluginSystem/ManuallyDeviceCreationRequest.cpp
+   
 	server/pluginSystem/internalPlugin/System.h
 	server/pluginSystem/internalPlugin/System.cpp
 	server/pluginSystem/internalPlugin/Information.h
 	server/pluginSystem/internalPlugin/Information.cpp
-	server/pluginSystem/ManuallyDeviceCreationRequest.h
-	server/pluginSystem/ManuallyDeviceCreationRequest.cpp
-  
+	server/pluginSystem/internalPlugin/Instance.h
+	server/pluginSystem/internalPlugin/Instance.cpp
+
+   server/pluginSystem/serializers/IInformation.h
+	server/pluginSystem/serializers/Information.h
+	server/pluginSystem/serializers/Information.cpp
+   
 	server/notification/NotificationCenter.h
 	server/notification/NotificationCenter.cpp
 	server/notification/Helpers.hpp
@@ -567,6 +590,7 @@ source_group(server\\notification\\change  server/notification/change/*.*)
 source_group(server\\notification\\acquisition  server/notification/acquisition/*.*)
 source_group(server\\notification\\summary  server/notification/summary/*.*)
 source_group(server\\pluginSystem server/pluginSystem/*.* )
+source_group(server\\pluginSystem\\serializers server/pluginSystem/serializers/*.* )
 source_group(server\\pluginSystem\\internalPlugin server/pluginSystem/internalPlugin/*.* )
 source_group(server\\startupOptions  server/startupOptions/*.*)
 source_group(server\\task  server/task/*.*)
@@ -582,8 +606,6 @@ source_group(server\\web\\ws  server/web/ws/*.*)
 
 # Tools
 set(YADOMS_SRC ${YADOMS_SRC}
-	server/tools/tools/IApplication.h
-	server/tools/tools/IOperatingSystemIntegration.h
 	server/tools/tools/SupportedPlatformsChecker.h
 	server/tools/tools/SupportedPlatformsChecker.cpp
 	server/tools/tools/FileSystem.h
@@ -595,28 +617,18 @@ IF(WIN32)
 		# Add here server/tools/windows/tools/ sources
 		server/tools/windows/tools/OperatingSystem.h
 		server/tools/windows/tools/OperatingSystem.cpp
-		server/tools/windows/tools/OperatingSystemIntegration.h
-		server/tools/windows/tools/OperatingSystemIntegration.cpp
-		server/tools/windows/tools/ConsoleControlHandler.h
-		server/tools/windows/tools/ConsoleControlHandler.cpp
-		server/tools/windows/tools/ServiceControlHandler.h
-		server/tools/windows/tools/ServiceControlHandler.cpp
 	)	
 ELSEIF(APPLE)
 	set(YADOMS_SRC ${YADOMS_SRC}
 		# Add here server/tools/mac/tools/ sources
 		server/tools/mac/tools/OperatingSystem.h
 		server/tools/mac/tools/OperatingSystem.cpp
-		server/tools/mac/tools/OperatingSystemIntegration.h
-		server/tools/mac/tools/OperatingSystemIntegration.cpp
 	)	
 ELSE()
 	set(YADOMS_SRC ${YADOMS_SRC}
 		# Add here server/tools/linux/tools/ sources
 		server/tools/linux/tools/OperatingSystem.h
 		server/tools/linux/tools/OperatingSystem.cpp
-		server/tools/linux/tools/OperatingSystemIntegration.h
-		server/tools/linux/tools/OperatingSystemIntegration.cpp
 	)	
 ENDIF()
 
@@ -868,11 +880,18 @@ ELSE()
 ENDIF()
 
 
+
+##################################################################################################
+## IPC messages static library for plugins
+##################################################################################################
+add_subdirectory(plugin_IPC)
+
 ##################################################################################################
 ## Plugins
 ##################################################################################################
 
 #include Plugins CMake file
+add_subdirectory(plugin_cpp_api)
 add_subdirectory(plugins)
 
 
@@ -893,6 +912,8 @@ set(YADOMS_INCL_DIR
 	${CMAKE_CURRENT_SOURCE_DIR}/server
 	${YADOMS_INCL_DIR}
 	${SHARED_INCL_DIR}
+   ${PROTOBUF_INCLUDE_DIRS}
+   ${plugin_IPC_INCLUDE_DIRS}
 )
 
 set(YADOMS_ALL_INCL_DIR
@@ -907,7 +928,7 @@ set_property( TARGET yadoms PROPERTY INCLUDE_DIRECTORIES ${YADOMS_ALL_INCL_DIR})
 ##################################################################################################
 ## Link
 ##################################################################################################
-target_link_libraries(yadoms yadoms-shared ${YADOMS_EXTERNAL_LINK} ${LIBS} ${CMAKE_DL_LIBS})
+target_link_libraries(yadoms yadoms-shared plugin_IPC ${YADOMS_EXTERNAL_LINK} ${LIBS} ${CMAKE_DL_LIBS})
 
 
 
@@ -934,9 +955,9 @@ FOREACH (PostgreSqlDepend ${PostgreSqlDepends})
 ENDFOREACH(PostgreSqlDepend)
 
 
-#copy www directory into build directory
+#copy www directory into build directory (release configuration only)
 add_custom_command(TARGET yadoms POST_BUILD
-                   COMMAND ${CMAKE_COMMAND} -E copy_directory
+                   COMMAND ${CMAKE_COMMAND} -E $<$<CONFIG:debug>:echo>$<$<NOT:$<CONFIG:debug>>:copy_directory>
                        ${CMAKE_SOURCE_DIR}/www $<TARGET_FILE_DIR:yadoms>/www/)
 		
 

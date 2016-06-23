@@ -1,9 +1,12 @@
 #pragma once
 #include "../Common.h"
 #include "IIdentification.h"
+#include <shared/plugin/yPluginApi/IYPluginApi.h>
 
-namespace device {
+namespace yApi = shared::plugin::yPluginApi;
 
+namespace device
+{
    //--------------------------------------------------------------
    /// \brief	1-Wire Device interface
    //--------------------------------------------------------------
@@ -13,27 +16,35 @@ namespace device {
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
-      virtual ~IDevice() {}
+      virtual ~IDevice()
+      {
+      }
 
       //--------------------------------------------------------------
-      /// \brief	Historize device data
+      /// \brief	Get the device identity
+      /// \return Device identification
       //--------------------------------------------------------------
       virtual boost::shared_ptr<const IIdentification> ident() const = 0;
 
       //--------------------------------------------------------------
-      /// \brief	Declare device in Yadoms
+      /// \brief	Get the device keywords list
+      /// \return Keywords of the device
       //--------------------------------------------------------------
-      virtual void declare() = 0;
+      virtual const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywords() const = 0;
 
       //--------------------------------------------------------------
-      /// \brief	Historize device data
+      /// \brief	Read the device state and update keywords
+      /// \return Keywords of the device
       //--------------------------------------------------------------
-      virtual void historize() = 0;
+      virtual void read() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	Change a keyword state
+      /// \param[in] keyword to change
+      /// \param[in] command to send to keyword
       //--------------------------------------------------------------
-      virtual void set(const std::string& keyword, const std::string& command) = 0;
+      virtual void write(const std::string& keyword,
+                         const std::string& command) = 0;
    };
 
 } // namespace device

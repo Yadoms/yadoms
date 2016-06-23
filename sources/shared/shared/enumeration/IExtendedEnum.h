@@ -1,6 +1,5 @@
 #pragma once
 #include <shared/Export.h>
-#include <shared/exception/NotSupported.hpp>
 
 namespace shared {	namespace enumeration {
 

@@ -1,5 +1,4 @@
 #pragma once
-
 #include "IRfxcomMessage.h"
 #include "RFXtrxHelpers.h"
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
@@ -16,14 +15,15 @@ namespace rfxcomMessages
    public:
       //--------------------------------------------------------------
       /// \brief	                        Constructor
-      /// \param[in] context              Yadoms APi context
+      /// \param[in] api                  Yadoms APi context
       /// \param[in] rbuf                 The received buffer
       /// \param[in] rbufSize             Message size, received from Rfxcom
-      /// \param[in] seqNumberProvider    The sequence number provider
       /// \note                           Use this constructor for received messages (to historize received data to Yadoms)
       /// \throw                          shared::exception::CInvalidParameter
       //--------------------------------------------------------------
-      CPower(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
+      CPower(boost::shared_ptr<yApi::IYPluginApi> api,
+             const RBUF& rbuf,
+             size_t rbufSize);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
@@ -31,17 +31,17 @@ namespace rfxcomMessages
       virtual ~CPower();
 
       // IRfxcomMessage implementation
-      virtual boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const;
-      virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const;
-      virtual const std::string& getDeviceName() const;
+      boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const override;
+      void historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const override;
+      const std::string& getDeviceName() const override;
       // [END] IRfxcomMessage implementation
-      
+
    protected:
       //--------------------------------------------------------------
       /// \brief	Global initialization method
-      /// \param[in] context              Yadoms APi context
+      /// \param[in] api                  Yadoms APi context
       //--------------------------------------------------------------
-      void Init(boost::shared_ptr<yApi::IYPluginApi> context);
+      void Init(boost::shared_ptr<yApi::IYPluginApi> api);
 
       //--------------------------------------------------------------
       /// \brief	                        Build the device name
@@ -77,36 +77,43 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	The voltage (V)
       //--------------------------------------------------------------
-      yApi::historization::CVoltage m_voltage;
+      boost::shared_ptr<yApi::historization::CVoltage> m_voltage;
 
       //--------------------------------------------------------------
       /// \brief	The current (A)
       //--------------------------------------------------------------
-      yApi::historization::CCurrent m_current;
+      boost::shared_ptr<yApi::historization::CCurrent> m_current;
 
       //--------------------------------------------------------------
       /// \brief	The instant power (W)
       //--------------------------------------------------------------
-      yApi::historization::CPower m_instantPower;
+      boost::shared_ptr<yApi::historization::CPower> m_instantPower;
 
       //--------------------------------------------------------------
       /// \brief	The total power (Wh)
       //--------------------------------------------------------------
-      yApi::historization::CPower m_totalPower;
+      boost::shared_ptr<yApi::historization::CPower> m_totalPower;
 
       //--------------------------------------------------------------
       /// \brief	The power factor (-1 to 1)
       //--------------------------------------------------------------
-      yApi::historization::CPowerFactor m_powerFactor;
+      boost::shared_ptr<yApi::historization::CPowerFactor> m_powerFactor;
 
       //--------------------------------------------------------------
       /// \brief	The frequency (Hz)
       //--------------------------------------------------------------
-      yApi::historization::CFrequency m_frequency;
+      boost::shared_ptr<yApi::historization::CFrequency> m_frequency;
 
       //--------------------------------------------------------------
       /// \brief	The RSSI (percent)
       //--------------------------------------------------------------
-      yApi::historization::CRssi m_rssi;
+      boost::shared_ptr<yApi::historization::CRssi> m_rssi;
+
+      //--------------------------------------------------------------
+      /// \brief	The keywords list to historize in one step for better performances
+      //--------------------------------------------------------------
+      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
    };
 } // namespace rfxcomMessages
+
+

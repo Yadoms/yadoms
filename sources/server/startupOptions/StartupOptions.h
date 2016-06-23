@@ -34,47 +34,47 @@ namespace startupOptions
       //--------------------------------------------------------------
       /// \brief	   Define StartupOptions
       //--------------------------------------------------------------
-      void defineOptions(Poco::Util::OptionSet& options);
+      void defineOptions(Poco::Util::OptionSet& options) const;
 
       //--------------------------------------------------------------
       // IStartupOptions implementation (see IStartupOptions declaration for details)
-      virtual const std::string getLogLevel() const;
-      virtual const unsigned int getWebServerPortNumber() const;
-      virtual const std::string getWebServerIPAddress() const;
-      virtual const std::string getWebServerInitialPath() const;
-      virtual const EDatabaseEngine getDatabaseEngine() const;
-      virtual const std::string getDatabaseSqliteFile() const;
-      virtual const std::string getDatabasePostgresqlHost() const;
-      virtual const unsigned int getDatabasePostgresqlPort() const;
-      virtual const std::string getDatabasePostgresqlDbName() const;
-      virtual const std::string getDatabasePostgresqlLogin() const;
-      virtual const std::string getDatabasePostgresqlPassword() const;
-      virtual const Poco::Nullable<std::string> getDatabasePostgresqlHostAddr() const;
-      virtual const Poco::Nullable<int> getDatabasePostgresqlConnectTimeout() const;
-      virtual const Poco::Nullable<std::string> getDatabasePostgresqlClientEncoding() const;
-      virtual const Poco::Nullable<std::string> getDatabasePostgresqlOptions() const;
-      virtual const Poco::Nullable<int> getDatabasePostgresqlKeepAlives() const;
-      virtual const Poco::Nullable<int> getDatabasePostgresqlKeepAlivesIdle() const;
-      virtual const Poco::Nullable<int> getDatabasePostgresqlKeepAlivesInterval() const;
-      virtual const Poco::Nullable<int> getDatabasePostgresqlKeepAlivesCount() const;
-      virtual const Poco::Nullable<std::string> getDatabasePostgresqlSslMode() const;
-      virtual const Poco::Nullable<int> getDatabasePostgresqlRequireSsl() const;
-      virtual const Poco::Nullable<int> getDatabasePostgresqlSslCompression() const;
-      virtual const Poco::Nullable<std::string> getDatabasePostgresqlSslCert() const;
-      virtual const Poco::Nullable<std::string> getDatabasePostgresqlSslKey() const;
-      virtual const Poco::Nullable<std::string> getDatabasePostgresqlSslRootCert() const;
-      virtual const Poco::Nullable<std::string> getDatabasePostgresqlSslRevocationList() const;
-      virtual const Poco::Nullable<std::string> getDatabasePostgresqlRequirePeer() const;
-      virtual const Poco::Nullable<std::string> getDatabasePostgresqlKerberos() const;
-      virtual const Poco::Nullable<std::string> getDatabasePostgresqlGssLib() const;
-      virtual const Poco::Nullable<std::string> getDatabasePostgresqlService() const;
-      virtual const std::string getPluginsPath() const;
-      virtual const std::string getScriptInterpretersPath() const;
-      virtual bool getNoPasswordFlag() const;
-      virtual bool getIsRunningAsService() const;
-      virtual const std::string getUpdateSiteUri() const;
-      virtual int getDatabaseAcquisitionLifetime() const;
-      virtual bool getDeveloperMode() const;
+      std::string getLogLevel() const override;
+      unsigned int getWebServerPortNumber() const override;
+      std::string getWebServerIPAddress() const override;
+      std::string getWebServerInitialPath() const override;
+      EDatabaseEngine getDatabaseEngine() const override;
+      std::string getDatabaseSqliteFile() const override;
+      std::string getDatabasePostgresqlHost() const override;
+      unsigned int getDatabasePostgresqlPort() const override;
+      std::string getDatabasePostgresqlDbName() const override;
+      std::string getDatabasePostgresqlLogin() const override;
+      std::string getDatabasePostgresqlPassword() const override;
+      Poco::Nullable<std::string> getDatabasePostgresqlHostAddr() const override;
+      Poco::Nullable<int> getDatabasePostgresqlConnectTimeout() const override;
+      Poco::Nullable<std::string> getDatabasePostgresqlClientEncoding() const override;
+      Poco::Nullable<std::string> getDatabasePostgresqlOptions() const override;
+      Poco::Nullable<int> getDatabasePostgresqlKeepAlives() const override;
+      Poco::Nullable<int> getDatabasePostgresqlKeepAlivesIdle() const override;
+      Poco::Nullable<int> getDatabasePostgresqlKeepAlivesInterval() const override;
+      Poco::Nullable<int> getDatabasePostgresqlKeepAlivesCount() const override;
+      Poco::Nullable<std::string> getDatabasePostgresqlSslMode() const override;
+      Poco::Nullable<int> getDatabasePostgresqlRequireSsl() const override;
+      Poco::Nullable<int> getDatabasePostgresqlSslCompression() const override;
+      Poco::Nullable<std::string> getDatabasePostgresqlSslCert() const override;
+      Poco::Nullable<std::string> getDatabasePostgresqlSslKey() const override;
+      Poco::Nullable<std::string> getDatabasePostgresqlSslRootCert() const override;
+      Poco::Nullable<std::string> getDatabasePostgresqlSslRevocationList() const override;
+      Poco::Nullable<std::string> getDatabasePostgresqlRequirePeer() const override;
+      Poco::Nullable<std::string> getDatabasePostgresqlKerberos() const override;
+      Poco::Nullable<std::string> getDatabasePostgresqlGssLib() const override;
+      Poco::Nullable<std::string> getDatabasePostgresqlService() const override;
+      std::string getPluginsPath() const override;
+      std::string getScriptInterpretersPath() const override;
+      bool getNoPasswordFlag() const override;
+      bool getIsRunningAsService() const override;
+      std::string getUpdateSiteUri() const override;
+      int getDatabaseAcquisitionLifetime() const override;
+      bool getDeveloperMode() const override;
       // [END] IStartupOptions implementation
       //--------------------------------------------------------------
 

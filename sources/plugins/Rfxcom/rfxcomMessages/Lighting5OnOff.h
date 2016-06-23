@@ -1,7 +1,5 @@
 #pragma once
-
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
-#include <shared/DataContainer.h>
 #include "ILighting5Subtype.h"
 
 namespace yApi = shared::plugin::yPluginApi;
@@ -24,16 +22,18 @@ namespace rfxcomMessages
       /// \brief	Destructor
       //--------------------------------------------------------------
       virtual ~CLighting5OnOff();
-       
+
       // ILighting5Subtype implementation
-      virtual std::string getModel() const;
-      virtual void declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const;
-      virtual void historize(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const;
-      virtual void set(const std::string& yadomsCommand);
-      virtual void reset();
-      virtual size_t getMessageNb() const;
-      virtual void setFromProtocolState(unsigned char cmdByte, unsigned char levelByte);
-      virtual void toProtocolState(size_t idxMessage, unsigned char& cmdByte, unsigned char& levelByte) const;
+      std::string getModel() const override;
+      boost::shared_ptr<const yApi::historization::IHistorizable> keyword() const override;
+      void set(const std::string& yadomsCommand) override;
+      void reset() override;
+      size_t getMessageNb() const override;
+      void setFromProtocolState(unsigned char cmdByte,
+                                unsigned char levelByte) override;
+      void toProtocolState(size_t idxMessage,
+                           unsigned char& cmdByte,
+                           unsigned char& levelByte) const override;
       // [END] ILighting5Subtype implementation
 
    private:
@@ -45,7 +45,8 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	                        The keyword
       //--------------------------------------------------------------
-      yApi::historization::CSwitch m_keyword;
+      boost::shared_ptr<yApi::historization::CSwitch> m_keyword;
    };
-
 } // namespace rfxcomMessages
+
+

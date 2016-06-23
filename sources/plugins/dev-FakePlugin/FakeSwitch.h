@@ -21,7 +21,9 @@ public:
    /// \param[in] isDimmable    ON/OFF switch if false, dimmable switch if true
    /// \param[in] isSettable    get/set acces if true, get-only if false
    //--------------------------------------------------------------
-   CFakeSwitch(const std::string& deviceName, bool isDimmable, bool isSettable);
+   CFakeSwitch(const std::string& deviceName,
+               bool isDimmable,
+               bool isSettable);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -30,9 +32,9 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	            Declare device and associated keywords if necessary
-   /// \param[in] context  yPluginApi context
+   /// \param[in] api      yPluginApi context
    //--------------------------------------------------------------
-   void declareDevice(boost::shared_ptr<yApi::IYPluginApi> context);
+   void declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const;
 
    //--------------------------------------------------------------
    /// \brief	    Make a sensor read (compute new values)
@@ -41,9 +43,9 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	            Send all sensor data to Yadoms
-   /// \param[in] context  yPluginApi context to which historize data
+   /// \param[in] api      yPluginApi context to which historize data
    //--------------------------------------------------------------
-   void historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const;
+   void historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const;
 
    //--------------------------------------------------------------
    /// \brief	    Returns the fake switch device name
@@ -79,6 +81,5 @@ private:
    //--------------------------------------------------------------
    boost::random::mt19937 m_gen;
    boost::random::uniform_int_distribution<> m_dist;
-
 };
 

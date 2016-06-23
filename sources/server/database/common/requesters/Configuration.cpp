@@ -24,7 +24,7 @@ namespace database { namespace common { namespace requesters {
    // IConfigurationRequester implementation
    void CConfiguration::create(entities::CConfiguration& configurationToCreate)
    {
-      boost::posix_time::ptime insertDate = shared::currentTime::Provider::now();
+      boost::posix_time::ptime insertDate = shared::currentTime::Provider().now();
       CQuery qInsert = m_databaseRequester->newQuery();
       qInsert. InsertInto(CConfigurationTable::getTableName(), CConfigurationTable::getSectionColumnName(), CConfigurationTable::getNameColumnName(), CConfigurationTable::getValueColumnName(), CConfigurationTable::getDescriptionColumnName(), CConfigurationTable::getDefaultValueColumnName(), CConfigurationTable::getLastModificationDateColumnName()).
          Values(configurationToCreate.Section(), configurationToCreate.Name(), configurationToCreate.Value(), configurationToCreate.Description(), configurationToCreate.DefaultValue(), insertDate);
@@ -88,7 +88,7 @@ namespace database { namespace common { namespace requesters {
 
    void CConfiguration::updateConfiguration(entities::CConfiguration& configurationToUpdate)
    {
-      boost::posix_time::ptime updateDate = shared::currentTime::Provider::now();
+      boost::posix_time::ptime updateDate = shared::currentTime::Provider().now();
 
       if (exists(configurationToUpdate.Section(), configurationToUpdate.Name()))
       {

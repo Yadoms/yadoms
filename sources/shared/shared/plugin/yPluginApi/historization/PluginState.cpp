@@ -1,11 +1,7 @@
 #include "stdafx.h"
 #include "PluginState.h"
-#include "../StandardValues.h"
 #include "../StandardCapacity.h"
 #include "../StandardUnits.h"
-#include <shared/exception/InvalidParameter.hpp>
-#include <shared/DataContainer.h>
-#include <shared/StringExtension.h>
 
 
 namespace shared { namespace plugin { namespace yPluginApi { namespace historization

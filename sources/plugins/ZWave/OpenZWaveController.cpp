@@ -1,19 +1,15 @@
 #include "stdafx.h"
 #include "OpenZWaveController.h"
-#include <shared/Log.h>
 #include "ZWave.h"
 #include "OpenZWaveCommandClass.h"
-#include <shared/plugin/yPluginApi/StandardCapacities.h>
-#include <shared/plugin/yPluginApi/historization/Dimmable.h>
-#include <command_classes/SwitchBinary.h>
 #include <Options.h>
 #include <Manager.h>
 #include <Notification.h>
 #include <platform/Log.h>
 #include "KeywordContainer.h"
-#include "OpenZWaveNodeKeywordFactory.h"
 #include "OpenZWaveHelpers.h"
 #include "ZWaveInternalState.h"
+#include <shared/Log.h>
 
 COpenZWaveController::COpenZWaveController()
    :m_homeId(0), m_initFailed(false), m_nodesQueried(false), m_lastSuccessfullySentCommand(OpenZWave::Driver::ControllerCommand_None), m_handler(NULL), m_configuration(NULL)
@@ -31,7 +27,7 @@ void onGlobalNotification(OpenZWave::Notification const* _notification, void* _c
 {
    try
    {
-      YADOMS_LOG(debug) << "OpenZWave notification : " << _notification->GetAsString();
+      std::cout << "OpenZWave notification : " << _notification->GetAsString() << std::endl;
 
       COpenZWaveController * pPlugin = static_cast<COpenZWaveController *>(_context);
       if (pPlugin != NULL)
@@ -39,15 +35,15 @@ void onGlobalNotification(OpenZWave::Notification const* _notification, void* _c
    }
    catch (OpenZWave::OZWException & ex)
    {
-      YADOMS_LOG(fatal) << "OpenZWave exception (OnGlobalNotification) : " << ex.what();
+      std::cerr << "OpenZWave exception (OnGlobalNotification) : " << ex.what() << std::endl;
    }
    catch (std::exception & ex)
    {
-      YADOMS_LOG(fatal) << "OpenZWave std::exception (OnGlobalNotification) : " << ex.what();
+      std::cerr << "OpenZWave std::exception (OnGlobalNotification) : " << ex.what() << std::endl;
    }
    catch (...)
    {
-      YADOMS_LOG(fatal) << "OpenZWave unknown exception (OnGlobalNotification)";
+      std::cerr << "OpenZWave unknown exception (OnGlobalNotification)" << std::endl;
    }
 }
 
@@ -84,7 +80,7 @@ IZWaveController::E_StartResult COpenZWaveController::start()
          if (returnedError)
          {
             //did not successfully create directories
-            YADOMS_LOG(error) << "Fali to create folder : " << dataFolder.string();
+            std::cerr << "Fali to create folder : " << dataFolder.string() << std::endl;
          }
       }
 
@@ -129,12 +125,12 @@ IZWaveController::E_StartResult COpenZWaveController::start()
             remainingTries--;
             if (remainingTries <= 0)
             {
-               YADOMS_LOG(error) << "Fail to open serial port : " << m_configuration->getSerialPort();
+               std::cerr << "Fail to open serial port : " << m_configuration->getSerialPort() << std::endl;
                return IZWaveController::kSerialPortError;
             }
             else
             {
-               YADOMS_LOG(warning) << "Fail to open serial port : " << m_configuration->getSerialPort() << ". Attemps remaining : " << remainingTries;
+               std::cout << "Fail to open serial port : " << m_configuration->getSerialPort() << ". Attemps remaining : " << remainingTries << std::endl;
                boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
             }
          }
@@ -173,15 +169,15 @@ IZWaveController::E_StartResult COpenZWaveController::start()
    }
    catch (OpenZWave::OZWException & ex)
    {
-      YADOMS_LOG(fatal) << "Fail to start OpenZWave controller : OpenZWave exception : " << ex.what();
+      std::cerr << "Fail to start OpenZWave controller : OpenZWave exception : " << ex.what() << std::endl;
    }
    catch (std::exception & ex)
    {
-      YADOMS_LOG(fatal) << "Fail to start OpenZWave controller : std::exception : " << ex.what();
+      std::cerr << "Fail to start OpenZWave controller : std::exception : " << ex.what() << std::endl;
    }
    catch (...)
    {
-      YADOMS_LOG(fatal) << "Fail to start OpenZWave controller unknown exception";
+      std::cerr << "Fail to start OpenZWave controller unknown exception" << std::endl;
    }
 
    return IZWaveController::kUnknownError;
@@ -195,15 +191,15 @@ void COpenZWaveController::stop()
    }
    catch (OpenZWave::OZWException & ex)
    {
-      YADOMS_LOG(fatal) << "Fail to stop OpenZWave controller : OpenZWave exception : " << ex.what();
+      std::cerr << "Fail to stop OpenZWave controller : OpenZWave exception : " << ex.what() << std::endl;
    }
    catch (std::exception & ex)
    {
-      YADOMS_LOG(fatal) << "Fail to stop OpenZWave controller : std::exception : " << ex.what();
+      std::cerr << "Fail to stop OpenZWave controller : std::exception : " << ex.what() << std::endl;
    }
    catch (...)
    {
-      YADOMS_LOG(fatal) << "Fail to stop OpenZWave controller unknown exception";
+      std::cerr << "Fail to stop OpenZWave controller unknown exception" << std::endl;
    }
 }
 
@@ -269,21 +265,21 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
       }
       else
       {
-         boost::shared_ptr<COpenZWaveNode> node = getNode(_notification);
+         auto node = getNode(_notification);
          if (node)
          {
-            boost::shared_ptr<IOpenZWaveNodeKeyword> kw = node->getKeyword(vID, m_configuration->getIncludeSystemKeywords());
+            auto kw = node->getKeyword(vID, m_configuration->getIncludeSystemKeywords());
             if (kw)
             {
-               boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> historizedData = node->updateKeywordValue(vID, m_configuration->getIncludeSystemKeywords());
-               boost::shared_ptr<CKeywordContainer> d(new CKeywordContainer(COpenZWaveHelpers::GenerateDeviceName(node->getHomeId(), node->getNodeId()), *historizedData.get()));
+               auto historizedData = node->updateKeywordValue(vID, m_configuration->getIncludeSystemKeywords());
+               auto d(boost::make_shared<CKeywordContainer>(COpenZWaveHelpers::GenerateDeviceName(node->getHomeId(), node->getNodeId()), historizedData));
 
                YADOMS_LOG(debug) << "===================================";
-               YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueChanged] : instance=" << (int)vID.GetInstance();
-               YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueChanged] : node=" << (int)vID.GetNodeId();
+               YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueChanged] : instance=" << static_cast<int>(vID.GetInstance());
+               YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueChanged] : node=" << static_cast<int>(vID.GetNodeId());
                YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueChanged] : valeur=" << historizedData->formatValue();
 
-               if (m_handler != NULL)
+               if (m_handler != nullptr)
                   m_handler->postEvent(CZWave::kUpdateKeyword, d);
             }
          }
@@ -294,21 +290,21 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
    case OpenZWave::Notification::Type_ValueRefreshed:
    {
       // One of the node values has changed
-      boost::shared_ptr<COpenZWaveNode> node = getNode(_notification);
+      auto node = getNode(_notification);
       if (node)
       {
-         boost::shared_ptr<IOpenZWaveNodeKeyword> kw = node->getKeyword(vID, m_configuration->getIncludeSystemKeywords());
+         auto kw = node->getKeyword(vID, m_configuration->getIncludeSystemKeywords());
          if (kw)
          {
-            boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> historizedData = node->updateKeywordValue(vID, m_configuration->getIncludeSystemKeywords());
-            boost::shared_ptr<CKeywordContainer> d(new CKeywordContainer(COpenZWaveHelpers::GenerateDeviceName(node->getHomeId(), node->getNodeId()), *historizedData.get()));
+            auto historizedData = node->updateKeywordValue(vID, m_configuration->getIncludeSystemKeywords());
+            auto d(boost::make_shared<CKeywordContainer>(COpenZWaveHelpers::GenerateDeviceName(node->getHomeId(), node->getNodeId()), historizedData));
 
             YADOMS_LOG(debug) << "===================================";
-            YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueRefreshed] : instance=" << (int)vID.GetInstance();
-            YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueRefreshed] : node=" << (int)vID.GetNodeId();
+            YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueRefreshed] : instance=" << static_cast<int>(vID.GetInstance());
+            YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueRefreshed] : node=" << static_cast<int>(vID.GetNodeId());
             YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueRefreshed] : valeur=" << historizedData->formatValue();
 
-            if (m_handler != NULL)
+            if (m_handler != nullptr)
                m_handler->postEvent(CZWave::kUpdateKeyword, d);
          }
 
@@ -322,8 +318,8 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
    case OpenZWave::Notification::Type_Group:
    {
       // One of the node's association groups has changed
-      int groupIdx = _notification->GetGroupIdx();
-      std::string groupLabel = OpenZWave::Manager::Get()->GetGroupLabel(_notification->GetHomeId(), _notification->GetNodeId(), groupIdx);
+      auto groupIdx = _notification->GetGroupIdx();
+      auto groupLabel = OpenZWave::Manager::Get()->GetGroupLabel(_notification->GetHomeId(), _notification->GetNodeId(), groupIdx);
       YADOMS_LOG(debug) << "Group change : id= " << groupIdx << " label=" << groupLabel; 
       break;
 
@@ -331,7 +327,7 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
 
    case OpenZWave::Notification::Type_NodeAdded:
    {
-      m_nodes.push_back( boost::shared_ptr<COpenZWaveNode>( new COpenZWaveNode(_notification->GetHomeId(), _notification->GetNodeId())));
+      m_nodes.push_back(boost::make_shared<COpenZWaveNode>(_notification->GetHomeId(), _notification->GetNodeId()));
       break;
    }
 
@@ -344,7 +340,7 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
       {
          //OpenZWave::Manager::Get()->GetControllerInterfaceType()
          std::string sNodeType = OpenZWave::Manager::Get()->GetNodeType(node->getHomeId(), node->getNodeId());
-         YADOMS_LOG(information) << "ZWave : NodeProtocolInfo : " << sNodeType;
+         std::cout << "ZWave : NodeProtocolInfo : " << sNodeType << std::endl;
          
       }
       break;
@@ -364,12 +360,12 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
          std::string sNodeType = OpenZWave::Manager::Get()->GetNodeType(nodeInfo->getHomeId(), nodeInfo->getNodeId());
          std::string id = COpenZWaveHelpers::GenerateDeviceName(nodeInfo->getHomeId(), nodeInfo->getNodeId());
 
-         YADOMS_LOG(debug) << "ZWave : NodeNaming : id = " << id;
-         YADOMS_LOG(debug) << "ZWave : NodeNaming : name = " << sNodeName;
-         YADOMS_LOG(debug) << "ZWave : NodeNaming : manufacturer = " << sNodeManufacturer;
-         YADOMS_LOG(debug) << "ZWave : NodeNaming : productName = " << sNodeProductName;
-         YADOMS_LOG(debug) << "ZWave : NodeNaming : productType = " << sNodeProductType;
-         YADOMS_LOG(debug) << "ZWave : NodeNaming : productId = " << sNodeProductId;
+         std::cout << "ZWave : NodeNaming : id = " << id << std::endl;
+         std::cout << "ZWave : NodeNaming : name = " << sNodeName << std::endl;
+         std::cout << "ZWave : NodeNaming : manufacturer = " << sNodeManufacturer << std::endl;
+         std::cout << "ZWave : NodeNaming : productName = " << sNodeProductName << std::endl;
+         std::cout << "ZWave : NodeNaming : productType = " << sNodeProductType << std::endl;
+         std::cout << "ZWave : NodeNaming : productId = " << sNodeProductId << std::endl;
 
          shared::CDataContainer d;
          d.set("name", id);

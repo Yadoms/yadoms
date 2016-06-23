@@ -1,13 +1,10 @@
 #include "stdafx.h"
 #include "XplServiceTask.h"
 
-#include <shared/Log.h>
-#include "XplException.h"
 #include "XplMessage.h"
 #include "XplMessageFactory.h"
 #include "XplActor.h"
 #include "XplHelper.h"
-#include "XplConstants.h"
 #include <shared/StringExtension.h>
 
 #include <boost/random/mersenne_twister.hpp>
@@ -16,11 +13,8 @@
 
 #include <Poco/Net/SocketAddress.h>
 
-#include <Poco/RunnableAdapter.h>
 #include <Poco/Net/NetworkInterface.h>
 #include <Poco/Net/NetException.h>
-#include <Poco/Runnable.h>
-#include <Poco/Buffer.h>
 
 
 // A client send its data as broadcast on the XPL port,
@@ -53,14 +47,13 @@ namespace xplcore
    {
       try
       {
-         YADOMS_LOG_CONFIGURE(m_source.toString());
-         YADOMS_LOG(information) << "XplServiceTask : run";
+         std::cout << "XplServiceTask : run" << std::endl;
          
          runHeartbeatSequenceIn(HeartbeatFrequencyDuringInitialDiscoveryPhase);
 
          while (!isCancelled()) //we don't need locking here - connected is just a boolean
          {
-            if (shared::currentTime::Provider::now() > m_nextHeartbeatTime)
+            if (shared::currentTime::Provider().now() > m_nextHeartbeatTime)
             {
                //ensure that if not reconfigure, the next time it do not come here
                m_nextHeartbeatTime = boost::posix_time::max_date_time;
@@ -95,16 +88,16 @@ namespace xplcore
       }
       catch (shared::exception::CException & ex)
       {
-         YADOMS_LOG(fatal) << "The XplServiceTask fails. Unknown expcetion : " << ex.what();
+         std::cerr << "The XplServiceTask fails. Unknown expcetion : " << ex.what();
       }
 
-      YADOMS_LOG(information) << "XplServiceTask : stopped";
+      std::cout << "XplServiceTask : stopped" << std::endl;
    }
 
    void CXplServiceTask::initializeConnector(Poco::Net::NetworkInterface & networkInterface)
    {
       m_hubHasBeenFound = false;
-      m_startDate = shared::currentTime::Provider::now();
+      m_startDate = shared::currentTime::Provider().now();
 
       //the localendpoint is determined from the network interface 
       //(take the ip from the interface and get an used port between 49152 and 65535 according to xpl documentation)
@@ -119,8 +112,8 @@ namespace xplcore
       m_remoteEndPoint = Poco::Net::SocketAddress(Poco::Net::IPAddress::broadcast(), CXplHelper::XplProtocolPort);
 
       //we configure the socket
-      YADOMS_LOG(debug) << "CXplService : Remote EndPoint: " << m_remoteEndPoint.toString() << " on port : " << m_remoteEndPoint.port();
-      YADOMS_LOG(debug) << "CXplService : Try to bind local endPoint: " << m_localEndPoint.toString() << " on port : " << m_localEndPoint.port();
+      std::cout << "CXplService : Remote EndPoint: " << m_remoteEndPoint.toString() << " on port : " << m_remoteEndPoint.port() << std::endl;
+      std::cout << "CXplService : Try to bind local endPoint: " << m_localEndPoint.toString() << " on port : " << m_localEndPoint.port() << std::endl;
       m_socket.setReuseAddress(true);
       m_socket.setBroadcast(true);
       m_socket.bind(m_localEndPoint, true);
@@ -130,14 +123,14 @@ namespace xplcore
 
    void CXplServiceTask::runHeartbeatSequenceIn(const int seconds)
    {
-      m_nextHeartbeatTime = shared::currentTime::Provider::now() + boost::posix_time::seconds(seconds);
+      m_nextHeartbeatTime = shared::currentTime::Provider().now() + boost::posix_time::seconds(seconds);
    }
 
    void CXplServiceTask::heartbeatSequence()
    {
       try
       {
-         YADOMS_LOG(debug) << "Send heartbeat";
+         std::cout << "Send heartbeat" << std::endl;
 
          int heartbeatInterval;
          //depending on the mode we currently are we select the time to send another hbeat
@@ -149,7 +142,7 @@ namespace xplcore
          else
          {
             //the hub havn't been found for the moment
-            boost::posix_time::time_duration diff = shared::currentTime::Provider::now() - m_startDate;
+            boost::posix_time::time_duration diff = shared::currentTime::Provider().now() - m_startDate;
             if (diff.total_seconds() > HubDiscoveryTimeOut)
             {
                //the hub haven't been found in 2 minutes so we send a hbeat every 30 seconds
@@ -173,17 +166,18 @@ namespace xplcore
       }
       catch (Poco::Net::NetException & netex)
       {
-         YADOMS_LOG(fatal) << "Sending Message fail. Net Exception : " << netex.what()
+         std::cerr << "Sending Message fail. Net Exception : " << netex.what()
             << std::endl << netex.displayText()
-            << std::endl << netex.message();
+            << std::endl << netex.message()
+            << std::endl;
       }
       catch (std::exception & ex)
       {
-         YADOMS_LOG(error) << "Send heartbeat fail. Exception : " << ex.what();
+         std::cerr << "Send heartbeat fail. Exception : " << ex.what() << std::endl;
       }
       catch (...)
       {
-         YADOMS_LOG(error) << "Send heartbeat failed, unkonown exception";
+         std::cerr << "Send heartbeat failed, unkonown exception" << std::endl;
       }
    }
 
@@ -195,7 +189,7 @@ namespace xplcore
    {
 
       //the message is successfully parsed
-      YADOMS_LOG(trace) << "Message received : " << msg.toString();
+      std::cout << "Message received : " << msg.toString() << std::endl;
 
       //When the hub receives a hbeat.app or config.app message, the hub should extract the "remote-ip" value 
       //from the message body and compare the IP address with the list of addresses the hub is currently bound 
@@ -226,7 +220,7 @@ namespace xplcore
          {
             if ((!m_hubHasBeenFound) && (m_localEndPoint.host().toString() == hbeatMessage.getBodyValue("remote-ip")) && (sender.port() == port))
             {
-               YADOMS_LOG(information) << "Hub found on network : " << m_localEndPoint.host().toString();
+               std::cout << "Hub found on network : " << m_localEndPoint.host().toString() << std::endl;
                m_hubHasBeenFound = true;
 
                if (m_pHubFoundEventHandler != NULL)
@@ -324,7 +318,7 @@ namespace xplcore
 
       if (!atLeastOneNotificationSend)
       {
-         YADOMS_LOG(debug) << "Message filtered";
+         std::cout << "Message filtered" << std::endl;
       }
    }
 
@@ -344,20 +338,21 @@ namespace xplcore
       }
       catch (Poco::Net::NetException & netex)
       {
-         YADOMS_LOG(fatal) << "Sending Message fail. Net Exception : " << netex.what() 
+         std::cerr << "Sending Message fail. Net Exception : " << netex.what() 
                            << std::endl  << netex.displayText() 
-                           << std::endl << netex.message();
+                           << std::endl << netex.message()
+                           << std::endl;
 
-         YADOMS_LOG(fatal) << "Remote endpoint : " << m_remoteEndPoint.toString();
+         std::cerr << "Remote endpoint : " << m_remoteEndPoint.toString() << std::endl;
 
       }      
       catch (std::exception & ex)
       {
-         YADOMS_LOG(fatal) << "Sending Message fail. Exception : " << ex.what();
+         std::cerr << "Sending Message fail. Exception : " << ex.what() << std::endl;
       }
       catch (...)
       {
-         YADOMS_LOG(fatal) << "Sending Message fail. Unknown exception";
+         std::cerr << "Sending Message fail. Unknown exception" << std::endl;
       }
 
    }

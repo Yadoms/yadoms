@@ -8,11 +8,9 @@
 #include "IQualifier.h"
 #include "database/IPluginEventLoggerRequester.h"
 #include "../dataAccessLayer/IEventLogger.h"
-#include "IdentityForQualifier.h"
 
 namespace pluginSystem
 {
-
    //--------------------------------------------------------------
    /// \brief	This basic qualifier only record plugin events in database
    //--------------------------------------------------------------
@@ -25,7 +23,7 @@ namespace pluginSystem
       /// \param[in] mainLogger     Main logger
       //--------------------------------------------------------------
       CBasicQualifier(boost::shared_ptr<database::IPluginEventLoggerRequester> pluginLogger,
-         boost::shared_ptr<dataAccessLayer::IEventLogger> mainLogger);
+                      boost::shared_ptr<dataAccessLayer::IEventLogger> mainLogger);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
@@ -33,11 +31,11 @@ namespace pluginSystem
       virtual ~CBasicQualifier();
 
       // IQualifier implementation
-      virtual void signalLoad(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation);
-      virtual void signalUnload(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation);
-      virtual void signalCrash(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation, const std::string& reason);
-      virtual bool isSafe(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation);
-      virtual int getQualityLevel(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation);
+      void signalLoad(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation) override;
+      void signalUnload(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation) override;
+      void signalCrash(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation, const std::string& reason) override;
+      bool isSafe(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation) override;
+      int getQualityLevel(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation) override;
       // [END] IQualifier implementation
 
    private:
@@ -48,7 +46,7 @@ namespace pluginSystem
       /// \param[in]  reason     Crash cause (exception...)
       //--------------------------------------------------------------
       void AddEventToDatabase(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
-         database::entities::EEventType eventType, const std::string& reason = shared::CStringExtension::EmptyString);
+                              database::entities::EEventType eventType, const std::string& reason = shared::CStringExtension::EmptyString) const;
 
       //--------------------------------------------------------------
       /// \brief	Plugin logger access
@@ -60,5 +58,6 @@ namespace pluginSystem
       //--------------------------------------------------------------
       boost::shared_ptr<dataAccessLayer::IEventLogger> m_mainLogger;
    };
-
 } // namespace pluginSystem
+
+

@@ -1,62 +1,66 @@
 #pragma once
-
-#include "server/database/IKeywordRequester.h"
 #include "server/database/IDataProvider.h"
 #include "server/database/IDatabaseRequester.h"
+#include "server/database/IKeywordRequester.h"
 
-
-namespace database { namespace common { namespace requesters { 
-
-      class CAcquisition;
-
-      //--------------------------------------------------------------
-      /// \Brief		   Keyword requester for SQLite database
-      //--------------------------------------------------------------
-      class CKeyword : public IKeywordRequester
+namespace database
+{
+   namespace common
+   {
+      namespace requesters
       {
-      public:
-         //--------------------------------------------------------------
-         /// \Brief		   Constructor
-         /// \param [in]	pDatabaseHandler: the database handler
-         //--------------------------------------------------------------
-         explicit CKeyword(boost::shared_ptr<IDatabaseRequester> databaseRequester, boost::shared_ptr<CAcquisition> acquisitionRequester);
+         class CAcquisition;
 
          //--------------------------------------------------------------
-         /// \Brief		   Destructor
+         /// \Brief		   Keyword requester for SQLite database
          //--------------------------------------------------------------
-         virtual ~CKeyword();
+         class CKeyword : public IKeywordRequester
+         {
+         public:
+            //--------------------------------------------------------------
+            /// \Brief		   Constructor
+            /// \param [in]	databaseRequester    The database requester
+            /// \param [in]	acquisitionRequester The acquisition requester
+            //--------------------------------------------------------------
+            CKeyword(boost::shared_ptr<IDatabaseRequester> databaseRequester,
+                     boost::shared_ptr<CAcquisition> acquisitionRequester);
 
-         // IKeywordRequester implementation
-         virtual bool keywordExists(int deviceId, const std::string& keywordName) const;
-         virtual bool keywordExists(int keywordId) const;
-         virtual void addKeyword(const entities::CKeyword& newKeyword);
-         virtual boost::shared_ptr<entities::CKeyword> getKeyword(int deviceId, const std::string & keyword) const;
-         virtual boost::shared_ptr<entities::CKeyword> getKeyword(int keywordId) const;
-         virtual std::vector<boost::shared_ptr<entities::CKeyword> > getKeywordIdFromFriendlyName(int deviceId, const std::string & friendlyName) const;
-         virtual std::vector<boost::shared_ptr<entities::CKeyword> > getKeywordsMatchingCapacity(const std::string & capacity) const;
-         virtual std::vector<boost::shared_ptr<entities::CKeyword> > getKeywords(int deviceId) const;
-         virtual std::vector<boost::shared_ptr<entities::CKeyword> > getAllKeywords() const;
-         virtual std::vector<boost::shared_ptr<entities::CKeyword> > getDeviceKeywordsWithCapacity(int deviceId, const std::string & capacityName, const shared::plugin::yPluginApi::EKeywordAccessMode & accessMode) const;
-         virtual void removeKeyword(int deviceId, const std::string & keyword);
-         virtual void removeKeyword(int keywordId);
-         virtual void updateKeywordFriendlyName(int deviceId, const std::string & keyword, const std::string & newFriendlyName);
-         virtual void updateKeywordFriendlyName(int keywordId, const std::string & newFriendlyName);
+            //--------------------------------------------------------------
+            /// \Brief		   Destructor
+            //--------------------------------------------------------------
+            virtual ~CKeyword();
 
-         // [END] IKeywordRequester implementation
+            // IKeywordRequester implementation
+            void addKeyword(const entities::CKeyword& newKeyword) override;
+            std::vector<boost::shared_ptr<entities::CKeyword> > getKeywordsMatchingCapacity(const std::string& capacity) const override;
+            boost::shared_ptr<entities::CKeyword> getKeyword(int deviceId,
+                                                             const std::string& keyword) const override;
+            boost::shared_ptr<entities::CKeyword> getKeyword(int keywordId) const override;
+            std::vector<boost::shared_ptr<entities::CKeyword> > getKeywordIdFromFriendlyName(int deviceId,
+                                                                                             const std::string& friendlyName) const override;
+            std::vector<boost::shared_ptr<entities::CKeyword> > getKeywords(int deviceId) const override;
+            std::vector<boost::shared_ptr<entities::CKeyword> > getAllKeywords() const override;
+            std::vector<boost::shared_ptr<entities::CKeyword> > getDeviceKeywordsWithCapacity(int deviceId,
+                                                                                              const std::string& capacityName,
+                                                                                              const shared::plugin::yPluginApi::EKeywordAccessMode& accessMode) const override;
+            void removeKeyword(int keywordId) override;
+            void updateKeywordFriendlyName(int keywordId,
+                                           const std::string& newFriendlyName) override;
+            // [END] IKeywordRequester implementation
 
-      private:
-         //--------------------------------------------------------------
-         /// \Brief		   Pointer to acquisition requester
-         //--------------------------------------------------------------
-         boost::shared_ptr<common::requesters::CAcquisition> m_acquisitionRequester;
+         private:
+            //--------------------------------------------------------------
+            /// \Brief		   The database requester
+            //--------------------------------------------------------------
+            boost::shared_ptr<IDatabaseRequester> m_databaseRequester;
 
-         //--------------------------------------------------------------
-         /// \Brief		   Reference to IDatabaseRequester
-         //--------------------------------------------------------------
-         boost::shared_ptr<IDatabaseRequester> m_databaseRequester;
-      };
-
-} //namespace requesters
-} //namespace common
+            //--------------------------------------------------------------
+            /// \Brief		   The acquisition requester
+            //--------------------------------------------------------------
+            boost::shared_ptr<CAcquisition> m_acquisitionRequester;
+         };
+      } //namespace requesters
+   } //namespace common
 } //namespace database 
+
 

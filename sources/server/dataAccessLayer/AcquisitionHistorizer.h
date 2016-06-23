@@ -10,9 +10,9 @@ namespace dataAccessLayer
    public:
       explicit CAcquisitionHistorizer(boost::shared_ptr<database::IDataProvider> dataProvider);
 
-      virtual void saveData(const int keywordId, const shared::plugin::yPluginApi::historization::IHistorizable & data);
-      virtual void saveData(std::vector<int> KeywordIdVect, const std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > & dataVect);
-      virtual void saveData(const int keywordId, const shared::plugin::yPluginApi::historization::IHistorizable & data, boost::posix_time::ptime & dataTime);
+      void saveData(int keywordId, const shared::plugin::yPluginApi::historization::IHistorizable & data) override;
+      void saveData(std::vector<int> KeywordIdVect, const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> > & dataVect) override;
+      void saveData(int keywordId, const shared::plugin::yPluginApi::historization::IHistorizable & data, boost::posix_time::ptime & dataTime) override;
 
    private:
       boost::shared_ptr<database::IDataProvider> m_dataProvider;

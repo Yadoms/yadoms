@@ -10,7 +10,7 @@
 /// \note                              This macro creates and exports needed functions for the script interpreter
 //--------------------------------------------------------------
 #define IMPLEMENT_SCRIPT_INTERPRETER(scriptInterpreterClassName)                                                           \
-   EXPORT_LIBRARY_FUNCTION shared::script::IInterpreter* construct()                                                       \
+   EXPORT_LIBRARY_FUNCTION shared::script::IInterpreter* construct(const boost::filesystem::path interpreterPath)          \
    {                                                                                                                       \
-      return new scriptInterpreterClassName();                                                                             \
+      return new scriptInterpreterClassName(interpreterPath);                                                              \
    }

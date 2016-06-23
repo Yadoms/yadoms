@@ -3,7 +3,6 @@
 #include <shared/exception/InvalidParameter.hpp>
 #include "NoPeriodException.hpp"
 #include <shared/DataContainer.h>
-#include <shared/Log.h>
 
 CForecastFormatter::CForecastFormatter( const weatherunderground::helper::EPeriod & Period )
    :m_PeriodString(Period.toString())

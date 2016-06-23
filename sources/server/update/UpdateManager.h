@@ -1,6 +1,7 @@
 #pragma once
 #include "task/Scheduler.h"
 #include <shared/DataContainer.h>
+#include <server/pluginSystem/Manager.h>
 
 namespace update
 {
@@ -13,8 +14,10 @@ namespace update
       //-----------------------------------------------------------------------------
       /// \brief  Constructor
       /// \param [in]   taskScheduler        The task scheduler
+      /// \param [in]   pluginManager        Plugin manager (needed to update plugin list after update)
       //-----------------------------------------------------------------------------   
-      explicit CUpdateManager(boost::shared_ptr<task::CScheduler> & taskScheduler);
+      CUpdateManager(boost::shared_ptr<task::CScheduler> & taskScheduler,
+                     boost::shared_ptr<pluginSystem::CManager> pluginManager);
 
       //-----------------------------------------------------------------------------
       /// \brief  Destructor
@@ -28,21 +31,21 @@ namespace update
       /// \param [in]   downloadUrl       The plugin package download url
       /// \return  The task unique id
       //-----------------------------------------------------------------------------   
-      const std::string updatePluginAsync(const std::string & pluginName, const std::string & downloadUrl);
+      std::string updatePluginAsync(const std::string & pluginName, const std::string & downloadUrl) const;
 
       //-----------------------------------------------------------------------------
       /// \brief  Install a plugin (async process)
       /// \param [in]   downloadUrl       The plugin package download url
       /// \return  The task unique id
       //-----------------------------------------------------------------------------   
-      const std::string installPluginAsync(const std::string & downloadUrl);
+      std::string installPluginAsync(const std::string & downloadUrl) const;
 
       //-----------------------------------------------------------------------------
       /// \brief  Remove a plugin (async process)
       /// \param [in]   pluginName       The plugin name to remove
       /// \return  The task unique id
       //-----------------------------------------------------------------------------   
-      const std::string removePluginAsync(const std::string & pluginName);
+      std::string removePluginAsync(const std::string & pluginName) const;
 
       //-----------------------------------------------------------------------------
       /// \brief  Update a widget (async process)
@@ -50,21 +53,21 @@ namespace update
       /// \param [in]   downloadUrl       The widget package download url
       /// \return  The task unique id
       //-----------------------------------------------------------------------------   
-      const std::string updateWidgetAsync(const std::string & widgetName, const std::string & downloadUrl);
+      std::string updateWidgetAsync(const std::string & widgetName, const std::string & downloadUrl) const;
 
       //-----------------------------------------------------------------------------
       /// \brief  Install a widget (async process)
       /// \param [in]   downloadUrl       The widget package download url
       /// \return  The task unique id
       //-----------------------------------------------------------------------------   
-      const std::string installWidgetAsync(const std::string & downloadUrl);
+      std::string installWidgetAsync(const std::string & downloadUrl) const;
 
       //-----------------------------------------------------------------------------
       /// \brief  Remove a widget (async process)
       /// \param [in]   widgetName       The widget name to remove
       /// \return  The task unique id
       //-----------------------------------------------------------------------------   
-      const std::string removeWidgetAsync(const std::string & widgetName);
+      std::string removeWidgetAsync(const std::string & widgetName) const;
       
 
       //-----------------------------------------------------------------------------
@@ -73,50 +76,37 @@ namespace update
       /// \param [in]   downloadUrl       The scriptInterpreter package download url
       /// \return  The task unique id
       //-----------------------------------------------------------------------------   
-      const std::string updateScriptInterpreterAsync(const std::string & scriptInterpreterName, const std::string & downloadUrl);
+      std::string updateScriptInterpreterAsync(const std::string & scriptInterpreterName, const std::string & downloadUrl) const;
 
       //-----------------------------------------------------------------------------
       /// \brief  Install a scriptInterpreter (async process)
       /// \param [in]   downloadUrl       The scriptInterpreter package download url
       /// \return  The task unique id
       //-----------------------------------------------------------------------------   
-      const std::string installScriptInterpreterAsync(const std::string & downloadUrl);
+      std::string installScriptInterpreterAsync(const std::string & downloadUrl) const;
 
       //-----------------------------------------------------------------------------
       /// \brief  Remove a scriptInterpreter (async process)
       /// \param [in]   scriptInterpreterName       The scriptInterpreter name to remove
       /// \return  The task unique id
       //-----------------------------------------------------------------------------   
-      const std::string removeScriptInterpreterAsync(const std::string & scriptInterpreterName);
+      std::string removeScriptInterpreterAsync(const std::string & scriptInterpreterName) const;
 
       //-----------------------------------------------------------------------------
       /// \brief  Start an update of Yadoms (asynchronous; update result is provided by webservice)
       /// \param [in]   versionToInstall        The yadoms lastVersion.json to install (can be lastVersion.json, or any other one)
       /// \return  The task unique id
       //-----------------------------------------------------------------------------   
-      const std::string updateYadomsAsync(const shared::CDataContainer & versionToInstall);
+      std::string updateYadomsAsync(const shared::CDataContainer & versionToInstall) const;
 
-   private:
-      //-----------------------------------------------------------------------------
-      /// \brief  Worker for checking for Yadoms update
-      /// \param [in]   progressCallback        The callback to use for reporting progression
-      //-----------------------------------------------------------------------------   
-      void checkForYadomsUpdateTaskWorker(task::ITask::TaskProgressFunc progressCallback);
-
-      //-----------------------------------------------------------------------------
-      /// \brief  Worker for updating Yadoms
-      /// \param [in]   progressCallback        The callback to use for reporting progression
-      /// \param [in]   versionToInstall        The version to install (dont use reference but copy)
-      //-----------------------------------------------------------------------------   
-      void updateYadomsTaskWorker(task::ITask::TaskProgressFunc progressCallback, shared::CDataContainer versionToInstall);
-      
+   private:      
       //-----------------------------------------------------------------------------
       /// \brief  Start a task
       /// \param [in]   task        The task to start
       /// \param [out]  taskUid     The task identifier created if sucessfully started
       /// \return result (true/false)
       //-----------------------------------------------------------------------------   
-      bool startTask(boost::shared_ptr<task::ITask> task, std::string & taskUid); 
+      bool startTask(boost::shared_ptr<task::ITask> task, std::string & taskUid) const; 
       
       //-----------------------------------------------------------------------------
       /// \brief  Start a task
@@ -124,13 +114,18 @@ namespace update
       /// \return The task identifier created if sucessfully started
       /// \throw shared::exception::CException if task launch fails
       //-----------------------------------------------------------------------------   
-      const std::string startTask(boost::shared_ptr<task::ITask> task);
+      std::string startTask(boost::shared_ptr<task::ITask> task) const;
 
-   private:
+
       //-----------------------------------------------------------------------------
       /// \brief  Task scheduler
       //-----------------------------------------------------------------------------
       boost::shared_ptr<task::CScheduler> m_taskScheduler;
+
+      //-----------------------------------------------------------------------------
+      /// \brief  Plugin manager (needed to update plugin list after update)
+      //-----------------------------------------------------------------------------
+      boost::shared_ptr<pluginSystem::CManager> m_pluginManager;
    };
    
 } // namespace update

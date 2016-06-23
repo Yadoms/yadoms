@@ -1,0 +1,17 @@
+﻿{
+	"name": "TeleInfo,
+	"description": "Module de suivi de consommation électrique.",
+	"configurationSchema": {
+		"SerialPort": {
+			"name": "Port Série",
+			"description": "Le port série sur lequel est connecté le module de téléinfo"
+		}
+	},
+	"customLabels": {
+		"pluginState": {
+		    "connecting": "Connexion en cours...",
+			"connectionLost": "Connexion au module TeleInfo perdue",
+			"updateConfiguration": "Mise à jour de la configuration..."
+		}
+	}
+}

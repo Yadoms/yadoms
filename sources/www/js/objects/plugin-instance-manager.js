@@ -246,6 +246,16 @@ PluginInstanceManager.updateToServer = function (pluginInstance) {
 };
 
 /**
+ * Get the plugin instance log
+ * @param pluginInstance The plugin instance
+ * @return {Promise} The log
+ */
+PluginInstanceManager.getLog = function (pluginInstance) {
+	assert(!isNullOrUndefined(pluginInstance), "pluginInstance must be defined");
+	return RestEngine.getJson("rest/plugin/" + pluginInstance.id + "/log");
+}
+
+/**
  * Send an extra command to a plugin instance
  * @param pluginInstance The plugin instance
  * @param extraCommand   The extraCommand
@@ -300,6 +310,8 @@ PluginInstanceManager.getPluginInstanceHandleManuallyDeviceCreation = function (
     //we can't download package from system plugins
     RestEngine.getJson("rest/plugin/instance/handleManuallyDeviceCreation")
         .done(function (data) {
+			YadomsInformationManager.getList()
+            .done(function (yadomsInfo) {      
             var pluginInstanceList = [];
 
             if (!isNullOrUndefined(data.plugin)) {
@@ -307,11 +319,15 @@ PluginInstanceManager.getPluginInstanceHandleManuallyDeviceCreation = function (
                     var pi = PluginInstanceManager.factory(value);
                     //we don't show system plugins to user
                     if (!pi.isSystemCategory()) {
-                        pluginInstanceList.push(pi);
-                    }
+						if( (!yadomsInfo.developerMode && !pi.type.startsWith("dev-")) || yadomsInfo.developerMode) {
+							pluginInstanceList.push(pi);
+						}
+					}
                 });
             }
             d.resolve(pluginInstanceList);
+			})
+			.fail(d.reject);
         })
         .fail(d.reject);
     return d.promise();

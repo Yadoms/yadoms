@@ -5,7 +5,7 @@ CMegatecUpsConfiguration::~CMegatecUpsConfiguration()
 {
 }
 
-void CMegatecUpsConfiguration::initializeWith(const shared::CDataContainer &data)
+void CMegatecUpsConfiguration::initializeWith(const shared::CDataContainer& data)
 {
    m_data.initializeWith(data);
 }
@@ -29,3 +29,4 @@ double CMegatecUpsConfiguration::outuputRestoreDelay() const
 {
    return m_data.get<double>("UpsShutdownTimers.content.RestoreDelay");
 }
+

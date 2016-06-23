@@ -24,7 +24,7 @@ namespace database { namespace common { namespace requesters {
 
    int CPluginEventLogger::addEvent(const std::string & pluginName, const std::string & pluginVersion, const shared::versioning::EReleaseType & pluginReleaseType, const entities::EEventType & eventType, const std::string & message /*= CStringExtension::EmptyString*/)
    {
-      boost::posix_time::ptime insertDate = shared::currentTime::Provider::now();
+      boost::posix_time::ptime insertDate = shared::currentTime::Provider().now();
 
       CQuery qInsert = m_databaseRequester->newQuery();
       qInsert. InsertInto(CPluginEventLoggerTable::getTableName(), CPluginEventLoggerTable::getPluginNameColumnName(), CPluginEventLoggerTable::getPluginVersionColumnName(), CPluginEventLoggerTable::getPluginReleaseColumnName(), CPluginEventLoggerTable::getEventTypeColumnName(), CPluginEventLoggerTable::getMessageColumnName(), CPluginEventLoggerTable::getEventDateColumnName()).

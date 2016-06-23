@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../ILoad.h"
-#include <string>
+#include <shared/plugin/yPluginApi/IYPluginApi.h>
 
 //--------------------------------------------------------------
 /// \brief	CPU Load of the Linux System
@@ -12,9 +12,9 @@ class CCPULoad : public ILoad
 public:
    //--------------------------------------------------------------
    /// \brief	    Constructor
-   /// \param[in] deviceId    The device
+   /// \param[in] keywordName The keyword name
    //--------------------------------------------------------------
-   explicit CCPULoad(const std::string & device);
+   explicit CCPULoad(const std::string& keywordName);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -22,10 +22,13 @@ public:
    virtual ~CCPULoad();
 
    // ILoad Implementation
-   virtual void declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context, shared::CDataContainer details);
-   virtual void read();
-   virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const;
-   virtual boost::shared_ptr<yApi::historization::IHistorizable> GetHistorizable() const;
+   void read() override;
+
+   boost::shared_ptr<const yApi::historization::IHistorizable> historizable() const override
+   {
+      return m_keyword;
+   }
+
    // [END] ILoad Implementation
 
 protected:
@@ -46,11 +49,6 @@ private:
                      unsigned long long *dtotalIowait,
                      unsigned long long *dtotalIrq,
                      unsigned long long *dtotalSoftIrq);
-
-   //--------------------------------------------------------------
-   /// \brief	    Device
-   //--------------------------------------------------------------
-   const std::string m_device;
 
    //--------------------------------------------------------------
    /// \brief	    Temp variables

@@ -1,4 +1,6 @@
-﻿import unittest
+﻿import sys
+sys.path.append('.')
+import unittest
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
 import database
@@ -64,8 +66,8 @@ class CreateRule(unittest.TestCase):
           "      print 'Some log entry...'",
           "      time.sleep(100)"],
          lambda ruleName, ruleDescription, ruleCode: self.checkCreateOkRule(ruleName, ruleDescription, ruleCode,
-            ['#### START ####\n',
-             'Some log entry...\n']))
+            ['[INFORMATION] #### START ####\n',
+             '[INFORMATION] Some log entry...\n']))
             
             
 
@@ -111,14 +113,14 @@ class CreateRule(unittest.TestCase):
           "      print 'Some log entry...'",
           "      time.sleep(100)"],
          lambda ruleName, ruleDescription, ruleCode: self.checkCreateErroneousRule(ruleName, ruleDescription, ruleCode,
-            ['#### START ####\n',
-             'Traceback (most recent call last):\n',
-             '  File "scriptCaller.py", line 36, in <module>\n',
-             '    script = __import__(scriptModule)\n',
-             '  File "' + os.path.abspath(scripts.ruleFullPath(1)) + '", line 4\n',
-             '    while(True)\n',
-             '              ^\n',
-             'SyntaxError: invalid syntax\n']))
+            ['[INFORMATION] #### START ####\n',
+             '[ERROR] Traceback (most recent call last):\n',
+             '[ERROR]   File "scriptCaller.py", line 36, in <module>\n',
+             '[ERROR]     script = __import__(scriptModule)\n',
+             '[ERROR]   File "' + os.path.abspath(scripts.ruleFullPath(1)) + '", line 4\n',
+             '[ERROR]     while(True)\n',
+             '[ERROR]               ^\n',
+             '[ERROR] SyntaxError: invalid syntax\n']))
 
          
       

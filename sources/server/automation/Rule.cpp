@@ -5,41 +5,46 @@
 
 namespace automation
 {
-
-CRule::CRule(boost::shared_ptr<const database::entities::CRule> ruleData,
-   boost::shared_ptr<script::IManager> scriptManager, boost::shared_ptr<IRuleStateHandler> ruleStateHandler)
-   :m_ruleData(ruleData),
-   m_scriptManager(scriptManager),
-   m_ruleStateHandler(ruleStateHandler)
-{
-   start();
-}
-
-CRule::~CRule()
-{
-}
-
-void CRule::start()
-{
-   if (!!m_runner)
+   CRule::CRule(boost::shared_ptr<const database::entities::CRule> ruleData,
+                boost::shared_ptr<script::IManager> scriptManager,
+                boost::shared_ptr<IRuleStateHandler> ruleStateHandler)
+      : m_ruleData(ruleData),
+        m_scriptManager(scriptManager),
+        m_ruleStateHandler(ruleStateHandler)
    {
-      YADOMS_LOG(warning) << "Can not start rule " << m_ruleData->Name() << " : already started";
-      return;
+      start();
    }
 
-   boost::shared_ptr<script::IProperties> scriptProperties = m_scriptManager->createScriptProperties(m_ruleData);
-   boost::shared_ptr<shared::script::ILogger> scriptLogger = m_scriptManager->createScriptLogger(scriptProperties->scriptPath());
-   boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi = m_scriptManager->createScriptContext(scriptLogger);
-   boost::shared_ptr<shared::script::IStopNotifier> stopNotifier = m_scriptManager->createStopNotifier(m_ruleStateHandler, m_ruleData->Id());
+   CRule::~CRule()
+   {
+   }
 
-   m_runner = m_scriptManager->createScriptRunner(scriptProperties, scriptLogger, yScriptApi, stopNotifier);
-}
+   void CRule::start()
+   {
+      if (!!m_process)
+      {
+         YADOMS_LOG(warning) << "Can not start rule " << m_ruleData->Name() << " : already started";
+         return;
+      }
 
-void CRule::requestStop()
-{
-   m_runner->requestStop();
-}
+      auto scriptProperties = m_scriptManager->createScriptProperties(m_ruleData);
+      auto scriptLogger = m_scriptManager->createScriptLogger(m_ruleData);
+      auto yScriptApi = m_scriptManager->createScriptContext(scriptLogger);
+      auto stopNotifier = m_scriptManager->createStopNotifier(m_ruleStateHandler, m_ruleData->Id());
 
+      auto scriptInterpreter = m_scriptManager->getAssociatedInterpreter(scriptProperties->interpreterName());
+
+      m_process = scriptInterpreter->createProcess(scriptProperties->scriptPath(),
+                                                   scriptLogger,
+                                                   yScriptApi,
+                                                   stopNotifier);
+   }
+
+   void CRule::requestStop()
+   {
+      if (!!m_process)
+         m_process->kill();
+   }
 } // namespace automation	
 	
 	

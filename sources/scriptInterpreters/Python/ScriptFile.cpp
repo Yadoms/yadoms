@@ -22,7 +22,7 @@ const boost::filesystem::path& CScriptFile::pathName() const
    return m_scriptFile;
 }
 
-const boost::filesystem::path CScriptFile::abslouteParentPath() const
+boost::filesystem::path CScriptFile::abslouteParentPath() const
 {
    return boost::filesystem::absolute(m_scriptFile).parent_path();
 }  

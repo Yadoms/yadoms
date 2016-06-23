@@ -1,9 +1,7 @@
 #pragma once
-
 #include "IRfxcomMessage.h"
 #include "RFXtrxHelpers.h"
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
-#include <shared/DataContainer.h>
 #include "ICartelectronicSubtype.h"
 
 namespace yApi = shared::plugin::yPluginApi;
@@ -19,14 +17,15 @@ namespace rfxcomMessages
 
       //--------------------------------------------------------------
       /// \brief	                        Constructor
-      /// \param[in] context              Yadoms APi context
+      /// \param[in] api                  Yadoms APi context
       /// \param[in] rbuf                 The received buffer
       /// \param[in] rbufSize             Message size, received from Rfxcom
-      /// \param[in] seqNumberProvider    The sequence number provider
       /// \note                           Use this constructor for received messages (to historize received data to Yadoms)
       /// \throw                          shared::exception::CInvalidParameter
       //--------------------------------------------------------------
-      CCartelectronic(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
+      CCartelectronic(boost::shared_ptr<yApi::IYPluginApi> api,
+                      const RBUF& rbuf,
+                      size_t rbufSize);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
@@ -34,9 +33,9 @@ namespace rfxcomMessages
       virtual ~CCartelectronic();
 
       // IRfxcomMessage implementation
-      virtual boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const;
-      virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const;
-      virtual const std::string& getDeviceName() const;
+      boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const override;
+      void historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const override;
+      const std::string& getDeviceName() const override;
       // [END] IRfxcomMessage implementation
 
    protected:
@@ -44,13 +43,15 @@ namespace rfxcomMessages
       /// \brief	Set and create the subtype
       /// \param[in] subType              Device subType
       //--------------------------------------------------------------
-      void createSubType( unsigned char subType, const RBUF& rbuf, size_t rbufSize );
+      void createSubType(unsigned char subType,
+                         const RBUF& rbuf,
+                         size_t rbufSize);
 
       //--------------------------------------------------------------
       /// \brief	Declare the device
-      /// \param[in] context              Yadoms APi context
+      /// \param[in] api                  Yadoms APi context
       //--------------------------------------------------------------
-      void declare(boost::shared_ptr<yApi::IYPluginApi> context);
+      void declare(boost::shared_ptr<yApi::IYPluginApi> api) const;
 
    private:
       //--------------------------------------------------------------
@@ -77,5 +78,12 @@ namespace rfxcomMessages
       /// \brief	The battery level (percent)
       //--------------------------------------------------------------
       boost::shared_ptr<yApi::historization::CBatteryLevel> m_batteryLevel;
+
+      //--------------------------------------------------------------
+      /// \brief	The keywords list to historize in one step for better performances
+      //--------------------------------------------------------------
+      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
    };
 } // namespace rfxcomMessages
+
+

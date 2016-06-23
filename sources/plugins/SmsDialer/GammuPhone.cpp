@@ -1,13 +1,16 @@
 #include "stdafx.h"
-#include <shared/Log.h>
-#include <shared/StringExtension.h>
 #include "GammuPhone.h"
 #include "PhoneException.hpp"
 #include "Sms.h"
 
 
 CGammuPhone::CGammuPhone(const ISmsDialerConfiguration& configuration)
-   :m_configuration(configuration), m_connection(configuration), m_incompleteMessageId(-1), m_incompleteMessageTime(0), m_on(false)
+   : m_configuration(configuration),
+     m_connection(configuration),
+     m_smsSendStatus(ERR_NONE),
+     m_incompleteMessageId(-1),
+     m_incompleteMessageTime(0),
+     m_on(false)
 {
 }
 
@@ -15,10 +18,11 @@ CGammuPhone::~CGammuPhone()
 {
 }
 
-void CGammuPhone::handleGammuError(GSM_Error gsmError, const std::string& errorMessage) const
+void CGammuPhone::handleGammuError(GSM_Error gsmError,
+                                   const std::string& errorMessage)
 {
    if (gsmError != ERR_NONE)
-      throw CPhoneException(std::string ("Phone communication : ") + errorMessage + std::string(" : ") + std::string(GSM_ErrorString(gsmError)));
+      throw CPhoneException(std::string("Phone communication : ") + errorMessage + std::string(" : ") + std::string(GSM_ErrorString(gsmError)));
 }
 
 bool CGammuPhone::connect()
@@ -44,7 +48,7 @@ bool CGammuPhone::connect()
    m_phoneId.append(" (").append(readValue).append(") ");
    m_phoneId.append(model->number);
 
-   YADOMS_LOG(information) << "Phone found : " << m_phoneId;
+   std::cout << "Phone found : " << m_phoneId << std::endl;
 
    return true;
 }
@@ -78,17 +82,17 @@ void CGammuPhone::unlock(const std::string& pin)
    // Check phone security mode
    switch (SecurityCode.Type)
    {
-   case SEC_None:                // Phone is not locked
-      return;                    
-   case SEC_Pin:                 // Phone is locked by PIN code
+   case SEC_None: // Phone is not locked
+      return;
+   case SEC_Pin: // Phone is locked by PIN code
       break;
    default:
-      throw CPhoneException(std::string ("Phone security mode not supported : ") + boost::lexical_cast<std::string>(SecurityCode.Type));
+      throw CPhoneException(std::string("Phone security mode not supported : ") + boost::lexical_cast<std::string>(SecurityCode.Type));
    }
 
    // Check PIN validity
    if (!regex_match(pin, boost::regex("[0-9]{4}")))
-      throw CPhoneException(std::string ("Can not unlock phone, because PIN code is invalid (must be 4 digits)"));
+      throw CPhoneException(std::string("Can not unlock phone, because PIN code is invalid (must be 4 digits)"));
 
    // Unlock the phone
    strcpy(SecurityCode.Code, pin.c_str()); // strcpy is safe here because 'pin' length is 4 (just validated by the regex)
@@ -100,22 +104,22 @@ void CGammuPhone::send(boost::shared_ptr<ISms> sms)
    if (!isConnected())
       throw CPhoneException("Phone must be connected to send SMS");
 
-   YADOMS_LOG(information) << "Send SMS to number " << sms->getNumber() << " \"" << sms->getContent() << "\"";
-   
+   std::cout << "Send SMS to number " << sms->getNumber() << " \"" << sms->getContent() << "\"" << std::endl;
+
    // Fill in SMS info structure which will be used to generate messages.
    GSM_MultiPartSMSInfo SMSInfo;
    boost::shared_ptr<unsigned char> messageUnicode(new unsigned char[(sms->getContent().size() + 1) * 2]);
    GSM_ClearMultiPartSMSInfo(&SMSInfo);
-   SMSInfo.Class = 1;                                                // Class 1 message (normal)
-   SMSInfo.EntriesNum = 1;                                           // Message will be consist of one part
-   SMSInfo.UnicodeCoding = FALSE;                                    // No unicode
-   SMSInfo.Entries[0].ID = SMS_ConcatenatedTextLong;                 // The part has type long text
-   EncodeUnicode(messageUnicode.get(), sms->getContent().c_str(), sms->getContent().size());   // Encode message text
+   SMSInfo.Class = 1; // Class 1 message (normal)
+   SMSInfo.EntriesNum = 1; // Message will be consist of one part
+   SMSInfo.UnicodeCoding = FALSE; // No unicode
+   SMSInfo.Entries[0].ID = SMS_ConcatenatedTextLong; // The part has type long text
+   EncodeUnicode(messageUnicode.get(), sms->getContent().c_str(), sms->getContent().size()); // Encode message text
    SMSInfo.Entries[0].Buffer = messageUnicode.get();
 
    // Encode message into PDU parts
    GSM_MultiSMSMessage gammuSms;
-   handleGammuError(GSM_EncodeMultiPartSMS(NULL, &SMSInfo, &gammuSms), "Sending SMS : Unable to encode message into PDU parts");
+   handleGammuError(GSM_EncodeMultiPartSMS(nullptr, &SMSInfo, &gammuSms), "Sending SMS : Unable to encode message into PDU parts");
 
    // Set callback for message sending
    // This needs to be done after connection initialized
@@ -123,11 +127,11 @@ void CGammuPhone::send(boost::shared_ptr<ISms> sms)
 
    // Get the SMSC number from phone
    GSM_SMSC PhoneSMSC;
-   PhoneSMSC.Location = 1;       // First position in the SIM
+   PhoneSMSC.Location = 1; // First position in the SIM
    handleGammuError(GSM_GetSMSC(m_connection.getGsmContext(), &PhoneSMSC), "Sending SMS : Unable to get the SMS center number (SMSC) from the SIM. Check the phone configuration, and try to send SMS manually from phone.");
 
    // Send message parts
-   for (int partIndex = 0; partIndex < gammuSms.Number ; ++ partIndex)
+   for (int partIndex = 0; partIndex < gammuSms.Number; ++ partIndex)
    {
       // Set the SMSC number in message
       CopyUnicodeString(gammuSms.SMS[partIndex].SMSC.Number, PhoneSMSC.Number);
@@ -142,16 +146,17 @@ void CGammuPhone::send(boost::shared_ptr<ISms> sms)
       handleGammuError(GSM_SendSMS(m_connection.getGsmContext(), &gammuSms.SMS[partIndex]), "Sending SMS : Fail to send SMS.");
 
       // Set flag before calling SendSMS, some phones might give
-		// instant response
+      // instant response
       m_smsSendStatus = ERR_TIMEOUT;
-      
+
       while (m_smsSendStatus == ERR_TIMEOUT)
       {
          // Wait for network reply
          // Result is returned by the sendSmsCallback function
          GSM_ReadDevice(m_connection.getGsmContext(), true);
 
-#undef sleep   // Need because Gammu defined 'sleep' as macro, that prevent to use boost::this_thread method
+#undef sleep // Need because Gammu defined 'sleep' as macro, that prevent to use boost::this_thread method
+
          // Give a chance to stop (by boost::thread_interrupted exception)
          boost::this_thread::sleep(boost::posix_time::milliseconds(0));
       }
@@ -159,22 +164,21 @@ void CGammuPhone::send(boost::shared_ptr<ISms> sms)
       if (m_smsSendStatus != ERR_NONE)
       {
          // Message sending failed
-         throw CPhoneException(std::string ("SMS send report : error "));
+         throw CPhoneException(std::string("SMS send report : error "));
       }
    }
 
    // Message sent OK
-   YADOMS_LOG(information) << "SMS sent successfully";
-   return;
+   std::cout << "SMS sent successfully" << std::endl;
 }
 
-void CGammuPhone::sendSmsCallback(GSM_StateMachine *sm, int status, int MessageReference, void * user_data)
+void CGammuPhone::sendSmsCallback(GSM_StateMachine* sm, int status, int MessageReference, void* user_data)
 {
-   CGammuPhone* instance = static_cast< CGammuPhone* > (user_data);
+   auto instance = static_cast<CGammuPhone*>(user_data);
 
    if (status != 0)
    {
-      YADOMS_LOG(error) << "SMS send report : error " << boost::lexical_cast<int>(status);
+      std::cerr << "SMS send report : error " << boost::lexical_cast<int>(status) << std::endl;
       instance->m_smsSendStatus = ERR_UNKNOWN;
    }
    else
@@ -190,7 +194,7 @@ boost::shared_ptr<std::vector<boost::shared_ptr<ISms> > > CGammuPhone::getIncomi
 
    boost::shared_ptr<std::vector<boost::shared_ptr<ISms> > > noSms;
    bool newSms;
-   
+
    GSM_SMSMemoryStatus gammuSmsStatus;
    GSM_Error gammuError = GSM_GetSMSStatus(m_connection.getGsmContext(), &gammuSmsStatus);
    switch (gammuError)
@@ -214,7 +218,7 @@ boost::shared_ptr<std::vector<boost::shared_ptr<ISms> > > CGammuPhone::getIncomi
    default:
       {
          // Error
-         YADOMS_LOG(error) << "Error getting SMS status : " << GSM_ErrorString(gammuError);
+         std::cerr << "Error getting SMS status : " << GSM_ErrorString(gammuError) << std::endl;
          return noSms;
       }
    }
@@ -222,7 +226,7 @@ boost::shared_ptr<std::vector<boost::shared_ptr<ISms> > > CGammuPhone::getIncomi
    // No SMS found in phone
    if (!newSms)
       return noSms;
-   
+
    // Read found SMS
    return readSms(true);
 }
@@ -230,7 +234,7 @@ boost::shared_ptr<std::vector<boost::shared_ptr<ISms> > > CGammuPhone::getIncomi
 boost::shared_ptr<std::vector<boost::shared_ptr<ISms> > > CGammuPhone::readSms(bool deleteSms)
 {
    boost::shared_ptr<std::vector<boost::shared_ptr<ISms> > > noSms;
-   
+
    GSM_MultiSMSMessage gammuSms;
    std::vector<GSM_MultiSMSMessage> gammuSmsVector;
    GSM_Error gammuError = ERR_NONE;
@@ -256,7 +260,7 @@ boost::shared_ptr<std::vector<boost::shared_ptr<ISms> > > CGammuPhone::readSms(b
          }
       default:
          {
-            YADOMS_LOG(error) << "Error getting SMS : " << gammuError;
+            std::cerr << "Error getting SMS : " << gammuError << std::endl;
             return noSms;
          }
       }
@@ -266,24 +270,24 @@ boost::shared_ptr<std::vector<boost::shared_ptr<ISms> > > CGammuPhone::readSms(b
 
    // Now we have to regroup SMS (if some were parted)
    // Convert from vector to array of pointers (as expected by GSM_LinkSMS function)
-   boost::shared_ptr<GSM_MultiSMSMessage*> gammuSmsPtrArray(new GSM_MultiSMSMessage*[gammuSmsVector.size()+1]);
+   boost::shared_ptr<GSM_MultiSMSMessage*> gammuSmsPtrArray(new GSM_MultiSMSMessage*[gammuSmsVector.size() + 1]);
    size_t gammuSmsPtrArrayIndex = 0;
-   for (std::vector<GSM_MultiSMSMessage>::iterator it = gammuSmsVector.begin() ; it != gammuSmsVector.end() ; ++it)
+   for (auto it = gammuSmsVector.begin(); it != gammuSmsVector.end(); ++it)
    {
       gammuSmsPtrArray.get()[gammuSmsPtrArrayIndex++] = &(*it);
    }
-   gammuSmsPtrArray.get()[gammuSmsPtrArrayIndex] = NULL;
+   gammuSmsPtrArray.get()[gammuSmsPtrArrayIndex] = nullptr;
 
-   boost::shared_ptr<GSM_MultiSMSMessage*> gammuSortedSmsPtrArray(new GSM_MultiSMSMessage*[gammuSmsVector.size()+1]);
-   if (GSM_LinkSMS(NULL, gammuSmsPtrArray.get(), gammuSortedSmsPtrArray.get(), TRUE) != ERR_NONE)
+   boost::shared_ptr<GSM_MultiSMSMessage*> gammuSortedSmsPtrArray(new GSM_MultiSMSMessage*[gammuSmsVector.size() + 1]);
+   if (GSM_LinkSMS(nullptr, gammuSmsPtrArray.get(), gammuSortedSmsPtrArray.get(), TRUE) != ERR_NONE)
    {
-      YADOMS_LOG(error) << "Error getting SMS : " << gammuError;
+      std::cerr << "Error getting SMS : " << gammuError << std::endl;
       return noSms;
    }
 
    // Process messages
    boost::shared_ptr<std::vector<boost::shared_ptr<ISms> > > smsList(new std::vector<boost::shared_ptr<ISms> >);
-   for (size_t idxSms = 0 ; gammuSortedSmsPtrArray.get()[idxSms] != NULL ; ++idxSms)
+   for (size_t idxSms = 0; gammuSortedSmsPtrArray.get()[idxSms] != nullptr; ++idxSms)
    {
       // Check incomplete message (for long parted SMS)
       if (!checkMultipart(gammuSortedSmsPtrArray.get()[idxSms]))
@@ -304,32 +308,32 @@ boost::shared_ptr<std::vector<boost::shared_ptr<ISms> > > CGammuPhone::readSms(b
 void CGammuPhone::deleteSmsFromPhone(boost::shared_ptr<GSM_MultiSMSMessage*> gammuSmsPtrArray)
 {
    // Delete each part of each SMS
-   for (size_t idxSms = 0 ; gammuSmsPtrArray.get()[idxSms] != NULL ; ++idxSms)
+   for (size_t idxSms = 0; gammuSmsPtrArray.get()[idxSms] != nullptr; ++idxSms)
    {
-      for (int idxPart = 0 ; idxPart < gammuSmsPtrArray.get()[idxSms]->Number ; ++idxPart)
+      for (auto idxPart = 0; idxPart < gammuSmsPtrArray.get()[idxSms]->Number; ++idxPart)
       {
          gammuSmsPtrArray.get()[idxSms]->SMS[idxPart].Folder = 0;
-         GSM_Error gammuError = GSM_DeleteSMS(m_connection.getGsmContext(), &gammuSmsPtrArray.get()[idxSms]->SMS[idxPart]);
+         auto gammuError = GSM_DeleteSMS(m_connection.getGsmContext(), &gammuSmsPtrArray.get()[idxSms]->SMS[idxPart]);
          switch (gammuError)
          {
          case ERR_NONE:
          case ERR_EMPTY:
             break;
          default:
-            YADOMS_LOG(error) << "Error deleting SMS : " << gammuError;
+            std::cerr << "Error deleting SMS : " << gammuError << std::endl;
          }
       }
    }
 }
 
-bool CGammuPhone::isValidMessage(GSM_MultiSMSMessage* gammuSms) const
+bool CGammuPhone::isValidMessage(GSM_MultiSMSMessage* gammuSms)
 {
    // SMS is not in Inbox SMS ==> exit
    if (!gammuSms->SMS[0].InboxFolder)
       return false;
 
    // Message is OK
-   YADOMS_LOG(debug) << "Received message";
+   std::cout << "Received message" << std::endl;
    return true;
 }
 
@@ -340,10 +344,10 @@ bool CGammuPhone::checkMultipart(GSM_MultiSMSMessage* gammuSms)
       return true;
 
    /* Grab current id */
-   int currentId = (gammuSms->SMS[0].UDH.ID16bit != -1) ? gammuSms->SMS[0].UDH.ID16bit : gammuSms->SMS[0].UDH.ID8bit;
+   auto currentId = (gammuSms->SMS[0].UDH.ID16bit != -1) ? gammuSms->SMS[0].UDH.ID16bit : gammuSms->SMS[0].UDH.ID8bit;
 
    /* Do we have same id as last incomplete? */
-   bool sameId = (m_incompleteMessageId != -1 && m_incompleteMessageId == currentId);
+   auto sameId = (m_incompleteMessageId != -1 && m_incompleteMessageId == currentId);
 
    /* Check if we have all parts */
    if (gammuSms->SMS[0].UDH.AllParts == gammuSms->Number)
@@ -356,8 +360,8 @@ bool CGammuPhone::checkMultipart(GSM_MultiSMSMessage* gammuSms)
    /* Have we seen this message recently? */
    if (sameId)
    {
-      static const double multipartTimeout = 600;  // 600 seconds to retrieve all parts os a message
-      if (m_incompleteMessageTime != 0 && difftime(time(NULL), m_incompleteMessageTime) >= multipartTimeout)
+      static const double multipartTimeout = 600; // 600 seconds to retrieve all parts os a message
+      if (m_incompleteMessageTime != 0 && difftime(time(nullptr), m_incompleteMessageTime) >= multipartTimeout)
       {
          // Incomplete multipart message processing after timeout
          razMultipartWaitFlags();
@@ -371,7 +375,7 @@ bool CGammuPhone::checkMultipart(GSM_MultiSMSMessage* gammuSms)
       {
          // Incomplete multipart message, waiting for other parts
          m_incompleteMessageId = (gammuSms->SMS[0].UDH.ID16bit != -1) ? gammuSms->SMS[0].UDH.ID16bit : gammuSms->SMS[0].UDH.ID8bit;
-         m_incompleteMessageTime = time(NULL);
+         m_incompleteMessageTime = time(nullptr);
       }
       else
       {
@@ -388,3 +392,4 @@ void CGammuPhone::razMultipartWaitFlags()
    m_incompleteMessageTime = 0;
    m_incompleteMessageId = -1;
 }
+

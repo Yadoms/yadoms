@@ -1,5 +1,4 @@
 #pragma once
-
 #include "IRfxcomMessage.h"
 #include "RFXtrxHelpers.h"
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
@@ -18,24 +17,27 @@ namespace rfxcomMessages
    public:
       //--------------------------------------------------------------
       /// \brief	                        Constructor
-      /// \param[in] context              Yadoms APi context
+      /// \param[in] api                  Yadoms APi context
       /// \param[in] command              The command
       /// \param[in] deviceDetails        The device parameters
       /// \throw                          shared::exception::CInvalidParameter if fail to interpret command
       /// \note                           Use this constructor for command (to build RFXCom message)
       //--------------------------------------------------------------
-      CRemote(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& command, const shared::CDataContainer& deviceDetails);
+      CRemote(boost::shared_ptr<yApi::IYPluginApi> api,
+              const std::string& command,
+              const shared::CDataContainer& deviceDetails);
 
       //--------------------------------------------------------------
       /// \brief	                        Constructor
-      /// \param[in] context              Yadoms APi context
+      /// \param[in] api                  Yadoms APi context
       /// \param[in] rbuf                 The received buffer
       /// \param[in] rbufSize             Message size, received from Rfxcom
-      /// \param[in] seqNumberProvider    The sequence number provider
       /// \note                           Use this constructor for received messages (to historize received data to Yadoms)
       /// \throw                          shared::exception::CInvalidParameter
       //--------------------------------------------------------------
-      CRemote(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
+      CRemote(boost::shared_ptr<yApi::IYPluginApi> api,
+              const RBUF& rbuf,
+              size_t rbufSize);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
@@ -43,9 +45,9 @@ namespace rfxcomMessages
       virtual ~CRemote();
 
       // IRfxcomMessage implementation
-      virtual boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const;
-      virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const;
-      virtual const std::string& getDeviceName() const;
+      boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const override;
+      void historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const override;
+      const std::string& getDeviceName() const override;
       // [END] IRfxcomMessage implementation
 
    protected:
@@ -62,9 +64,9 @@ namespace rfxcomMessages
 
       //--------------------------------------------------------------
       /// \brief	Declare the device
-      /// \param[in] context              Yadoms APi context
+      /// \param[in] api                  Yadoms APi context
       //--------------------------------------------------------------
-      void declare(boost::shared_ptr<yApi::IYPluginApi> context);
+      void declare(boost::shared_ptr<yApi::IYPluginApi> api);
 
    private:
       //--------------------------------------------------------------
@@ -88,8 +90,15 @@ namespace rfxcomMessages
       boost::shared_ptr<IRemoteSubtype> m_subTypeManager;
 
       //--------------------------------------------------------------
-      /// \brief	The keyword associated with rssi
+      /// \brief	The RSSI (percent)
       //--------------------------------------------------------------
-      yApi::historization::CRssi m_rssi;
+      boost::shared_ptr<yApi::historization::CRssi> m_rssi;
+
+      //--------------------------------------------------------------
+      /// \brief	The keywords list to historize in one step for better performances
+      //--------------------------------------------------------------
+      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
    };
 } // namespace rfxcomMessages
+
+

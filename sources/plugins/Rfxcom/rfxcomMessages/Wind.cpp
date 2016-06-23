@@ -7,17 +7,14 @@ namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
-   CWind::CWind(boost::shared_ptr<yApi::IYPluginApi> context,
+   CWind::CWind(boost::shared_ptr<yApi::IYPluginApi> api,
                 const RBUF& rbuf,
-                size_t rbufSize,
-                boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
-      : m_windDirection("windDirection"),
-        m_windAverageSpeed("windAverageSpeed"),
-        m_windMaxSpeed("windMaxSpeed"),
-        m_temperature("temperature"),
-        m_chillTemperature("chillTemperature"),
-        m_batteryLevel("battery"),
-        m_rssi("rssi")
+                size_t rbufSize)
+      : m_windDirection(boost::make_shared<yApi::historization::CDirection>("windDirection")),
+        m_windMaxSpeed(boost::make_shared<yApi::historization::CSpeed>("windMaxSpeed")),
+        m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
+        m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+        m_keywords({m_windDirection , m_windMaxSpeed , m_batteryLevel , m_rssi})
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -30,78 +27,64 @@ namespace rfxcomMessages
 
       m_id = rbuf.WIND.id1 | (rbuf.WIND.id2 << 8);
 
-      m_windDirection.set(rbuf.WIND.directionl | (rbuf.WIND.directionh << 8));
+      m_windDirection->set(rbuf.WIND.directionl | (rbuf.WIND.directionh << 8));
+
       if (m_subType != sTypeWIND5)
-         m_windAverageSpeed.set((rbuf.WIND.av_speedl | (rbuf.WIND.av_speedh << 8)) / 10.0);
-      m_windMaxSpeed.set((rbuf.WIND.gustl | (rbuf.WIND.gusth << 8)) / 10.0);
+      {
+         m_windAverageSpeed = boost::make_shared<yApi::historization::CSpeed>("windAverageSpeed");
+         m_keywords.push_back(m_windAverageSpeed);
+
+         m_windAverageSpeed->set((rbuf.WIND.av_speedl | (rbuf.WIND.av_speedh << 8)) / 10.0);
+      }
+
+      m_windMaxSpeed->set((rbuf.WIND.gustl | (rbuf.WIND.gusth << 8)) / 10.0);
 
       if (m_subType == sTypeWIND4)
       {
-         m_temperature.set(NormalizeTemperature(rbuf.WIND.temperatureh, rbuf.WIND.temperaturel, rbuf.WIND.tempsign == 1));
-         m_chillTemperature.set(NormalizeTemperature(rbuf.WIND.chillh, rbuf.WIND.chilll, rbuf.WIND.chillsign == 1));
+         m_temperature = boost::make_shared<yApi::historization::CTemperature>("temperature");
+         m_temperature->set(NormalizeTemperature(rbuf.WIND.temperatureh, rbuf.WIND.temperaturel, rbuf.WIND.tempsign == 1));
+         m_keywords.push_back(m_temperature);
+
+         m_chillTemperature = boost::make_shared<yApi::historization::CTemperature>("chillTemperature");
+         m_chillTemperature->set(NormalizeTemperature(rbuf.WIND.chillh, rbuf.WIND.chilll, rbuf.WIND.chillsign == 1));
+         m_keywords.push_back(m_chillTemperature);
       }
 
-      m_batteryLevel.set(NormalizeBatteryLevel(rbuf.WIND.battery_level));
-      m_rssi.set(NormalizeRssiLevel(rbuf.WIND.rssi));
+      m_batteryLevel->set(NormalizeBatteryLevel(rbuf.WIND.battery_level));
+      m_rssi->set(NormalizeRssiLevel(rbuf.WIND.rssi));
 
-      Init(context);
+      Init(api);
    }
 
    CWind::~CWind()
    {
    }
 
-   void CWind::Init(boost::shared_ptr<yApi::IYPluginApi> context)
+   void CWind::Init(boost::shared_ptr<yApi::IYPluginApi> api)
    {
       // Build device description
       buildDeviceModel();
       buildDeviceName();
 
       // Create device and keywords if needed
-      if (!context->deviceExists(m_deviceName))
+      if (!api->deviceExists(m_deviceName))
       {
          shared::CDataContainer details;
          details.set("type", pTypeWIND);
          details.set("subType", m_subType);
          details.set("id", m_id);
-         context->declareDevice(m_deviceName, m_deviceModel, details);
-
-         context->declareKeyword(m_deviceName, m_windDirection);
-         context->declareKeyword(m_deviceName, m_windMaxSpeed);
-         context->declareKeyword(m_deviceName, m_batteryLevel);
-         context->declareKeyword(m_deviceName, m_rssi);
-
-         if (m_subType != sTypeWIND5)
-            context->declareKeyword(m_deviceName, m_windAverageSpeed);
-
-         if (m_subType == sTypeWIND4)
-         {
-            context->declareKeyword(m_deviceName, m_temperature);
-            context->declareKeyword(m_deviceName, m_chillTemperature);
-         }
+         api->declareDevice(m_deviceName, m_deviceModel, m_keywords, details);
       }
    }
 
-   boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CWind::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CWind::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
    {
       throw shared::exception::CInvalidParameter("Wind is a read-only message, can not be encoded");
    }
 
-   void CWind::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
+   void CWind::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
    {
-      context->historizeData(m_deviceName, m_windDirection);
-      context->historizeData(m_deviceName, m_windMaxSpeed);
-      context->historizeData(m_deviceName, m_batteryLevel);
-      context->historizeData(m_deviceName, m_rssi);
-
-      if (m_subType != sTypeWIND5)
-         context->historizeData(m_deviceName, m_windAverageSpeed);
-
-      if (m_subType == sTypeWIND4)
-      {
-         context->historizeData(m_deviceName, m_temperature);
-         context->historizeData(m_deviceName, m_chillTemperature);
-      }
+      api->historizeData(m_deviceName, m_keywords);
    }
 
    const std::string& CWind::getDeviceName() const

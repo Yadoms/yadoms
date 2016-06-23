@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "MSConfiguration.h"
 #include <shared/StringExtension.h>
-#include <shared/Log.h>
 #include <shared/encryption/Xor.h>
 
 CMSConfiguration::CMSConfiguration()
@@ -67,11 +66,11 @@ void CMSConfiguration::initializeWith(const shared::CDataContainer &data)
    }
    catch (shared::exception::CInvalidParameter &ip)
    {
-      YADOMS_LOG(error) << "Invalid configuration : " << ip.what() << std::endl;
+      std::cerr << "Invalid configuration : " << ip.what() << std::endl;
    }
    catch (boost::thread_interrupted&)
    {
-      YADOMS_LOG(error) << "ERROR : Plugin Mail Sender could not be loaded" << std::endl;
+      std::cerr << "ERROR : Plugin Mail Sender could not be loaded" << std::endl;
    }
 }
 

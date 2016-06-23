@@ -1,6 +1,4 @@
 #pragma once
-#include <shared/script/ILogger.h>
-#include "IScriptFile.h"
 
 //--------------------------------------------------------------
 /// \brief	Python executable interface
@@ -26,8 +24,20 @@ public:
    virtual std::string version() const = 0;
 
    //--------------------------------------------------------------
+   /// \brief	Indicate if python executable is in system path
+   /// \return true if in system path
+   //--------------------------------------------------------------
+   virtual bool inSystemPath() const = 0;
+
+   //--------------------------------------------------------------
    /// \brief	Get executable path
-   /// \return the full (relative) Python executable path
+   /// \return the full (relative) Python executable path (emtpy if inSystemPath returns true)
    //--------------------------------------------------------------
    virtual boost::filesystem::path path() const = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	Get executable filename
+   /// \return the Python executable filename (with extension)
+   //--------------------------------------------------------------
+   virtual std::string filename() const = 0;
 };

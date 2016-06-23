@@ -1,7 +1,7 @@
 #pragma once
 
-namespace ioInterfaces {
-
+namespace ioInterfaces
+{
    //--------------------------------------------------------------
    /// \brief	Digital potentiometer interface
    //--------------------------------------------------------------
@@ -11,7 +11,9 @@ namespace ioInterfaces {
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
-      virtual ~IDigitalPotentiometer() {}
+      virtual ~IDigitalPotentiometer()
+      {
+      }
 
       //--------------------------------------------------------------
       /// \brief	Read the potentiometer mode

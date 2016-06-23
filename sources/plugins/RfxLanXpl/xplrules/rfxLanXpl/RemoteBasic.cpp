@@ -119,7 +119,7 @@ namespace xplrules { namespace rfxLanXpl {
       ////////////////////////////
       
       //check the device address is valid
-      std::string device = commandData->getTargetDevice();
+      std::string device = commandData->getDevice();
 
 
       //create the message

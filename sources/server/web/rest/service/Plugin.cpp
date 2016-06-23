@@ -1,15 +1,11 @@
 #include "stdafx.h"
 #include "Plugin.h"
-#include <shared/exception/NotImplemented.hpp>
 #include "web/rest/RestDispatcherHelpers.hpp"
-#include "shared/Log.h"
 #include "web/rest/Result.h"
 #include "pluginSystem/ManuallyDeviceCreationData.h"
 #include "pluginSystem/BindingQueryData.h"
-#include "communication/callback/CallbackRequest.h"
 #include "communication/callback/SynchronousCallback.h"
-#include <shared/ServiceLocator.h>
-#include <startupOptions/IStartupOptions.h>
+
 
 namespace web { namespace rest { namespace service {
 
@@ -37,6 +33,7 @@ namespace web { namespace rest { namespace service {
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*"), CPlugin::getOnePlugin);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("state"), CPlugin::getInstanceState);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("devices"), CPlugin::getPluginDevices);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("log"), CPlugin::getInstanceLog);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("binding")("*"), CPlugin::getBinding);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("*")("start"), CPlugin::startInstance);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("*")("stop"), CPlugin::stopInstance);
@@ -118,17 +115,16 @@ namespace web { namespace rest { namespace service {
       std::vector< boost::shared_ptr<database::entities::CPlugin> > result;
 
       //liste de toutes les instances
-      std::vector< boost::shared_ptr<database::entities::CPlugin> > hwList = m_pluginManager->getInstanceList();
+      auto hwList = m_pluginManager->getInstanceList();
       
       //search for manuallyCreatedDevice
-      pluginSystem::CManager::AvalaiblePluginMap pluginList = m_pluginManager->getPluginList();
-
+      auto pluginList = m_pluginManager->getPluginList();
       
-      for (std::vector< boost::shared_ptr<database::entities::CPlugin> >::iterator currentInstance = hwList.begin(); currentInstance != hwList.end(); ++currentInstance)
+      for (auto currentInstance = hwList.begin(); currentInstance != hwList.end(); ++currentInstance)
       {
          if (m_pluginManager->isInstanceRunning(currentInstance->get()->Id))
          {
-            pluginSystem::CManager::AvalaiblePluginMap::iterator matchingInfo = pluginList.find((*currentInstance)->Type);
+            auto matchingInfo = pluginList.find((*currentInstance)->Type);
             if (matchingInfo != pluginList.end())
             {
                if (matchingInfo->second->getSupportManuallyCreatedDevice())
@@ -143,24 +139,18 @@ namespace web { namespace rest { namespace service {
       return CResult::GenerateSuccess(t);
    }
 
-   shared::CDataContainer CPlugin::getAllAvailablePlugins(const std::vector<std::string> & parameters, const std::string & requestContent)
+   shared::CDataContainer CPlugin::getAllAvailablePlugins(const std::vector<std::string> & parameters, const std::string & requestContent) const
    {
       try
       {
-         pluginSystem::CManager::AvalaiblePluginMap pluginList = m_pluginManager->getPluginList();
+         auto pluginList = m_pluginManager->getPluginList();
 
-         pluginSystem::CManager::AvalaiblePluginMap::iterator i;
          shared::CDataContainer result;
          std::vector<std::string> pluginCollection;
 
-         bool developerMode = shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>()->getDeveloperMode();
-
-         for(i=pluginList.begin(); i!=pluginList.end(); ++i)
-         {
-            if(developerMode || (!developerMode && !boost::istarts_with(i->first, "dev-")))
-               pluginCollection.push_back(i->first);
-         }
-
+         for (auto plugin = pluginList.begin(); plugin != pluginList.end(); ++plugin)
+            pluginCollection.push_back(plugin->first);
+ 
          result.set("plugins", pluginCollection);
          return CResult::GenerateSuccess(result);
       }
@@ -178,16 +168,15 @@ namespace web { namespace rest { namespace service {
    {
       try
       {
-         pluginSystem::CManager::AvalaiblePluginMap pluginList = m_pluginManager->getPluginList();
+         auto pluginList = m_pluginManager->getPluginList();
 
-         pluginSystem::CManager::AvalaiblePluginMap::iterator i;
          shared::CDataContainer result;
          std::vector<shared::CDataContainer> pluginCollection;
-         for(i=pluginList.begin(); i!=pluginList.end(); ++i)
+         for (auto plugin = pluginList.begin(); plugin != pluginList.end(); ++plugin)
          {
             shared::CDataContainer pluginInfo;
-            pluginInfo.set("type", i->first);
-            pluginInfo.set("package", i->second->getPackage());
+            pluginInfo.set("type", plugin->first);
+            pluginInfo.set("package", plugin->second->getPackage());
             pluginCollection.push_back(pluginInfo);
          }
 
@@ -208,11 +197,11 @@ namespace web { namespace rest { namespace service {
    {
       try
       {
-         database::entities::CPlugin p;
-         p.fillFromSerializedString(requestContent);
-         int idCreated = m_pluginManager->createInstance(p);
+         database::entities::CPlugin plugin;
+         plugin.fillFromSerializedString(requestContent);
+         auto idCreated = m_pluginManager->createInstance(plugin);
 
-         boost::shared_ptr<database::entities::CPlugin> pluginFound = m_pluginManager->getInstance(idCreated);
+         auto pluginFound = m_pluginManager->getInstance(idCreated);
          return CResult::GenerateSuccess(pluginFound);
       }
       catch(std::exception &ex)
@@ -234,7 +223,7 @@ namespace web { namespace rest { namespace service {
 
          m_pluginManager->updateInstance(instanceToUpdate);
 
-         boost::shared_ptr<database::entities::CPlugin> pluginFound = m_pluginManager->getInstance(instanceToUpdate.Id());
+         auto pluginFound = m_pluginManager->getInstance(instanceToUpdate.Id());
          return CResult::GenerateSuccess(pluginFound);
       }
       catch(std::exception &ex)
@@ -277,27 +266,8 @@ namespace web { namespace rest { namespace service {
       {
          if(parameters.size()>1)
          {
-            int instanceId = boost::lexical_cast<int>(parameters[1]);
-            
-            //first stop instance
-            m_pluginManager->stopInstance(instanceId);
-
-            //wait for instance to be stopped (including a timeout)
-            int count = 0;
-            while ((m_pluginManager->getInstanceState(instanceId) == shared::plugin::yPluginApi::historization::EPluginState::kRunning
-               || m_pluginManager->getInstanceState(instanceId) == shared::plugin::yPluginApi::historization::EPluginState::kCustom)
-               && count < 20)
-            {
-               boost::this_thread::sleep(boost::posix_time::milliseconds(500));
-               count++;
-            }
-
-
-            //then delete all devices/keyword
-            m_dataProvider->getDeviceRequester()->removeAllDeviceForPlugin(instanceId);
-
-            //delete instance
-            m_pluginManager->deleteInstance(m_pluginManager->getInstance(instanceId));
+            auto instanceId = boost::lexical_cast<int>(parameters[1]);
+            m_pluginManager->deleteInstance(instanceId);
             return CResult::GenerateSuccess();
          }
          
@@ -315,12 +285,10 @@ namespace web { namespace rest { namespace service {
 
    shared::CDataContainer CPlugin::deleteAllPlugins(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
-      std::vector< boost::shared_ptr<database::entities::CPlugin> > hwList = m_pluginManager->getInstanceList();
+      auto hwList = m_pluginManager->getInstanceList();
       
-      for (std::vector<boost::shared_ptr<database::entities::CPlugin> >::iterator i = hwList.begin(); i != hwList.end(); ++i)
-      {
-         m_pluginManager->deleteInstance(*i);
-      }
+      while (!m_pluginManager->getInstanceList().empty())
+         m_pluginManager->deleteInstance(m_pluginManager->getInstanceList().front()->Id());
 
       return CResult::GenerateSuccess();
    }
@@ -331,9 +299,9 @@ namespace web { namespace rest { namespace service {
       {
          if (parameters.size()>1)
          {
-            int instanceId = boost::lexical_cast<int>(parameters[1]);
+            auto instanceId = boost::lexical_cast<int>(parameters[1]);
 
-            boost::shared_ptr<database::entities::CPlugin> pluginInstanceFound = m_pluginManager->getInstance(instanceId);
+            auto pluginInstanceFound = m_pluginManager->getInstance(instanceId);
             if (pluginInstanceFound)
                return CResult::GenerateSuccess(m_pluginManager->getInstanceFullState(instanceId));
 
@@ -358,10 +326,10 @@ namespace web { namespace rest { namespace service {
       {
          if (parameters.size()>1)
          {
-            int instanceId = boost::lexical_cast<int>(parameters[1]);
+            auto instanceId = boost::lexical_cast<int>(parameters[1]);
 
-            
-            std::vector<boost::shared_ptr<database::entities::CDevice> > devicesFound = m_dataProvider->getDeviceRequester()->getDevices(instanceId);
+
+            auto devicesFound = m_dataProvider->getDeviceRequester()->getDevices(instanceId);
             //send result
             shared::CDataContainer t;
             t.set("devices", devicesFound);
@@ -386,15 +354,15 @@ namespace web { namespace rest { namespace service {
       {
          if(parameters.size()>1)
          {
-            int instanceId = boost::lexical_cast<int>(parameters[1]);
-            
-            boost::shared_ptr<database::entities::CPlugin> pluginInstanceFound = m_pluginManager->getInstance(instanceId);
+            auto instanceId = boost::lexical_cast<int>(parameters[1]);
+
+            auto pluginInstanceFound = m_pluginManager->getInstance(instanceId);
             if(pluginInstanceFound)
             {
                //start instance
                m_pluginManager->startInstance(instanceId);
                //check for instance status
-               bool state = m_pluginManager->isInstanceRunning(instanceId);
+               auto state = m_pluginManager->isInstanceRunning(instanceId);
                if(state)
                   return CResult::GenerateSuccess();
                return CResult::GenerateError("Fail to start the plugin instance");
@@ -421,18 +389,14 @@ namespace web { namespace rest { namespace service {
       {
          if(parameters.size()>1)
          {
-            int instanceId = boost::lexical_cast<int>(parameters[1]);
-            
-            boost::shared_ptr<database::entities::CPlugin> pluginInstanceFound = m_pluginManager->getInstance(instanceId);
+            auto instanceId = boost::lexical_cast<int>(parameters[1]);
+
+            auto pluginInstanceFound = m_pluginManager->getInstance(instanceId);
             if(pluginInstanceFound)
             {
                //stop instance
-               m_pluginManager->stopInstance(instanceId);
-               //check for instance status
-               bool state = m_pluginManager->isInstanceRunning(instanceId);
-               if(!state)
-                  return CResult::GenerateSuccess();
-               return CResult::GenerateError("Fail to stop the plugin instance");
+               m_pluginManager->requestStopInstance(instanceId);
+               return CResult::GenerateSuccess();
             }
             
             return CResult::GenerateError("invalid parameter. Can not retreive instance id");
@@ -450,13 +414,38 @@ namespace web { namespace rest { namespace service {
       }
    }
 
+   shared::CDataContainer CPlugin::getInstanceLog(const std::vector<std::string> & parameters, const std::string & requestContent)
+   {
+      try
+      {
+         if(parameters.size()>1)
+         {
+            auto instanceId = boost::lexical_cast<int>(parameters[1]);
+
+            shared::CDataContainer result;
+            result.set("log", m_pluginManager->getInstanceLog(instanceId));
+            return CResult::GenerateSuccess(result);
+         }
+         
+         return CResult::GenerateError("invalid parameter. Can not retreive instance id in url");
+      }
+      catch(std::exception &ex)
+      {
+         return CResult::GenerateError(ex);
+      }
+      catch(...)
+      {
+         return CResult::GenerateError("unknown exception in get plugin instance log");
+      }
+   }
+
    shared::CDataContainer CPlugin::createDevice(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       try
       {
          if (parameters.size() > 1)
          {
-            int pluginId = boost::lexical_cast<int>(parameters[1]);
+            auto pluginId = boost::lexical_cast<int>(parameters[1]);
 
             shared::CDataContainer content(requestContent);
             if (!content.exists("name") || !content.exists("configuration"))
@@ -483,7 +472,7 @@ namespace web { namespace rest { namespace service {
                      if (res.Success)
                      {
                         //find created device
-                           boost::shared_ptr<database::entities::CDevice> createdDevice = m_dataProvider->getDeviceRequester()->getDevice(pluginId, res.Result);
+                        auto createdDevice = m_dataProvider->getDeviceRequester()->getDevice(pluginId, res.Result);
 
                         //update friendly name
                         m_dataProvider->getDeviceRequester()->updateDeviceFriendlyName(createdDevice->Id(), content.get<std::string>("name"));
@@ -529,9 +518,9 @@ namespace web { namespace rest { namespace service {
 		{
 		   if (parameters.size() > 3)
 			{
-				int pluginId = boost::lexical_cast<int>(parameters[1]);
+			   auto pluginId = boost::lexical_cast<int>(parameters[1]);
 
-				std::string query = parameters[3];
+			   auto query = parameters[3];
 				try
 				{
 					//create a callback (allow waiting for result)              
@@ -544,12 +533,11 @@ namespace web { namespace rest { namespace service {
 					m_messageSender.sendBindingQueryRequest(pluginId, data, cb);
 
 					//wait for result
-					//communication::callback::CSynchronousCallback< std::string >::CSynchronousResult res = cb.waitForResult();
 					switch (cb.waitForResult())
 					{
                case communication::callback::CSynchronousCallback< shared::CDataContainer >::kResult:
 					{
-                  communication::callback::CSynchronousCallback< shared::CDataContainer >::CSynchronousResult res = cb.getCallbackResult();
+                  auto res = cb.getCallbackResult();
 
 						if (res.Success)
                      return CResult::GenerateSuccess(res.Result);

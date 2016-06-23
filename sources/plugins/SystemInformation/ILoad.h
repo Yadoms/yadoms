@@ -1,5 +1,4 @@
 #pragma once
-
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 
 // Shortcut to yPluginApi namespace
@@ -15,15 +14,9 @@ public:
    //--------------------------------------------------------------
    /// \brief	Destructor
    //--------------------------------------------------------------
-   virtual ~ILoad() {}
-
-   //--------------------------------------------------------------
-   /// \brief	            Declare the keywords
-   /// \param[in] context  yPluginApi context
-   /// \param[in] details  more information for the keyword
-   //--------------------------------------------------------------
-   virtual void declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context, 
-	                            shared::CDataContainer details) = 0;
+   virtual ~ILoad()
+   {
+   }
 
    //--------------------------------------------------------------
    /// \brief	    Read actual value
@@ -32,14 +25,8 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	            Send all sensor data to Yadoms
-   /// \param[in] context  yPluginApi context to which historize data
-   //--------------------------------------------------------------
-   virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const = 0;
-
-   //--------------------------------------------------------------
-   /// \brief	            Send all sensor data to Yadoms
    /// \return              The keyword
    //--------------------------------------------------------------
-   virtual boost::shared_ptr<yApi::historization::IHistorizable> GetHistorizable() const = 0;
+   virtual boost::shared_ptr<const yApi::historization::IHistorizable> historizable() const = 0;
 };
 

@@ -24,7 +24,7 @@ def waitPluginsTable(browser):
 
 def waitPluginsTableHasNPlugins(browser, pluginsNumberExpected):
    pluginsTable = waitPluginsTable(browser)
-   WebDriverWait(browser, 10).until(lambda driver: getPluginNumberInTable(browser, pluginsTable) == pluginsNumberExpected)
+   assert tools.waitUntil(lambda: getPluginNumberInTable(browser, pluginsTable) == pluginsNumberExpected)
    return pluginsTable
 
 def getPluginNumberInTable(browser, pluginsTable):
@@ -46,29 +46,39 @@ def getPluginAutoStart(pluginsTable, pluginNumber):
 def getPluginButtons(pluginsTable, pluginNumber):
    pluginsActionsButtonsCell = getPluginDatas(pluginsTable, pluginNumber)[3]
    buttonsGroup = pluginsActionsButtonsCell.find_element_by_class_name("btn-group")
-   return buttonsGroup.find_elements_by_xpath("./child::*")
+   return buttonsGroup.find_elements_by_tag_name("button")
    
 def getPluginButton(pluginsTable, pluginNumber, index):
    buttons = getPluginButtons(pluginsTable, pluginNumber)
    return buttons[index]
    
 def getPluginStartStopButton(pluginsTable, pluginNumber):
-   """ Start/Stop button is the first button of the buttons group """
-   button = getPluginButton(pluginsTable, pluginNumber, 0)
-   assert "btn-startStop" in button.get_attribute("class")
-   return button
+   buttons = getPluginButtons(pluginsTable, pluginNumber)
+   for button in buttons:
+      if "btn-startStop" in button.get_attribute("class"):
+         return button
+   assert False, "Start/Stop button not found"
    
 def getPluginConfigureButton(pluginsTable, pluginNumber):
-   """ Configure button is the second button of the buttons group """
-   button = getPluginButton(pluginsTable, pluginNumber, 1)
-   assert "btn-configure" in button.get_attribute("class")
-   return button
+   buttons = getPluginButtons(pluginsTable, pluginNumber)
+   for button in buttons:
+      if "btn-configure" in button.get_attribute("class"):
+         return button
+   assert False, "Configure button not found"
+   
+def getPluginExtraCommandButton(pluginsTable, pluginNumber):
+   buttons = getPluginButtons(pluginsTable, pluginNumber)
+   for button in buttons:
+      if "btn-extraCommand" in button.get_attribute("class"):
+         return button
+   assert False, "Extra command button not found"
    
 def getPluginRemoveButton(pluginsTable, pluginNumber):
-   """ Remove button is the third button of the buttons group """
-   button = getPluginButton(pluginsTable, pluginNumber, 2)
-   assert "btn-delete" in button.get_attribute("class")
-   return button
+   buttons = getPluginButtons(pluginsTable, pluginNumber)
+   for button in buttons:
+      if "btn-delete" in button.get_attribute("class"):
+         return button
+   assert False, "Delete button not found"
    
 
 def waitConfigurePluginModal(browser):

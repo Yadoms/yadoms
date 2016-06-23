@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Barometric.h"
-#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/InvalidParameter.hpp>
 
 // Shortcut to yPluginApi namespace
@@ -8,9 +7,13 @@ namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
-
-CBarometric::CBarometric(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
-   :m_pressure("pressure"), m_batteryLevel("battery"), m_rssi("rssi")
+   CBarometric::CBarometric(boost::shared_ptr<yApi::IYPluginApi> api,
+                            const RBUF& rbuf,
+                            size_t rbufSize)
+      : m_pressure(boost::make_shared<yApi::historization::CPressure>("pressure")),
+        m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
+        m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+        m_keywords({ m_pressure , m_batteryLevel , m_rssi })
 {
    CheckReceivedMessage(rbuf,
                         rbufSize,
@@ -23,36 +26,35 @@ CBarometric::CBarometric(boost::shared_ptr<yApi::IYPluginApi> context, const RBU
 
    m_id = rbuf.BARO.id1 | (rbuf.BARO.id2 << 8);
 
-   m_pressure.set(rbuf.BARO.baro1 << 8 | (rbuf.BARO.baro2));
+   m_pressure->set(rbuf.BARO.baro1 << 8 | (rbuf.BARO.baro2));
 
-   m_batteryLevel.set(NormalizeBatteryLevel(rbuf.BARO.battery_level));
-   m_rssi.set(NormalizeRssiLevel(rbuf.BARO.rssi));
+   m_batteryLevel->set(NormalizeBatteryLevel(rbuf.BARO.battery_level));
+   m_rssi->set(NormalizeRssiLevel(rbuf.BARO.rssi));
 
-   Init(context);
+   Init(api);
 }
 
 CBarometric::~CBarometric()
 {
 }
 
-void CBarometric::Init(boost::shared_ptr<yApi::IYPluginApi> context)
+void CBarometric::Init(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    // Build device description
    buildDeviceModel();
    buildDeviceName();
 
    // Create device and keywords if needed
-   if (!context->deviceExists(m_deviceName))
+   if (!api->deviceExists(m_deviceName))
    {
       shared::CDataContainer details;
       details.set("type", pTypeBARO);
       details.set("subType", m_subType);
       details.set("id", m_id);
-      context->declareDevice(m_deviceName, m_deviceModel, details);
-
-      context->declareKeyword(m_deviceName, m_pressure);
-      context->declareKeyword(m_deviceName, m_batteryLevel);
-      context->declareKeyword(m_deviceName, m_rssi);
+      api->declareDevice(m_deviceName,
+                         m_deviceModel,
+                         m_keywords,
+                         details);
    }
 }
 
@@ -61,11 +63,9 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CBarometric::
    throw shared::exception::CInvalidParameter("Barometric is a read-only message, can not be encoded");
 }
 
-void CBarometric::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
+void CBarometric::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
-   context->historizeData(m_deviceName, m_pressure);
-   context->historizeData(m_deviceName, m_batteryLevel);
-   context->historizeData(m_deviceName, m_rssi);
+   api->historizeData(m_deviceName, m_keywords);
 }
 
 const std::string& CBarometric::getDeviceName() const
@@ -76,7 +76,7 @@ const std::string& CBarometric::getDeviceName() const
 void CBarometric::buildDeviceName()
 {
    std::ostringstream ssdeviceName;
-   ssdeviceName << (unsigned int)m_subType << "." << (unsigned int)m_id;
+   ssdeviceName << static_cast<unsigned int>(m_subType) << "." << static_cast<unsigned int>(m_id);
    m_deviceName = ssdeviceName.str();
 }
 

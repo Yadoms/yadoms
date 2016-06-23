@@ -12,7 +12,9 @@ namespace automation
       //-----------------------------------------------------
       ///\brief               Destructor
       //-----------------------------------------------------
-      virtual ~IRuleManager() {}
+      virtual ~IRuleManager()
+      {
+      }
 
       //-----------------------------------------------------
       ///\brief               Stop the Rule manager (stop all rules)
@@ -29,7 +31,7 @@ namespace automation
       ///\brief               Get all rules
       ///\return              The rule list
       //-----------------------------------------------------
-      virtual std::vector<boost::shared_ptr<database::entities::CRule> > getRules() const = 0;
+      virtual std::vector<boost::shared_ptr<database::entities::CRule>> getRules() const = 0;
 
       //-----------------------------------------------------
       ///\brief               Create a new rule
@@ -46,7 +48,7 @@ namespace automation
       /// \throw           CEmptyResult if fails
       //--------------------------------------------------------------
       virtual boost::shared_ptr<database::entities::CRule> getRule(int id) const = 0;
-      
+
       //--------------------------------------------------------------
       /// \brief           Get the log of the rule
       /// \param[in] id    Rule Id
@@ -54,7 +56,7 @@ namespace automation
       /// \throw           CEmptyResult if fails
       //--------------------------------------------------------------
       virtual std::string getRuleLog(int id) const = 0;
-      
+
       //--------------------------------------------------------------
       /// \brief           Get the code of the rule
       /// \param[in] id    Rule Id
@@ -68,8 +70,8 @@ namespace automation
       /// \param[in] interpreterName      The script interpreter name
       /// \return          The template code for the interpreter, if available (empty string if not)
       //--------------------------------------------------------------
-      virtual std::string getRuleTemplateCode(const std::string & interpreterName) const = 0;
-      
+      virtual std::string getRuleTemplateCode(const std::string& interpreterName) const = 0;
+
       //--------------------------------------------------------------
       /// \brief           Update rule informations
       /// \param[in] ruleData The rule new configuration
@@ -77,14 +79,14 @@ namespace automation
       /// \throw           CDatabaseException if fails
       //--------------------------------------------------------------
       virtual void updateRule(boost::shared_ptr<const database::entities::CRule> ruleData) = 0;
-      
+
       //--------------------------------------------------------------
       /// \brief           Update rule informations
       /// \param[in] id    Rule Id
       /// \param[in] code  Rule code
       //--------------------------------------------------------------
       virtual void updateRuleCode(int id, const std::string& code) = 0;
-    
+
       //--------------------------------------------------------------
       /// \brief                          Delete a rule
       /// \param[in] id                   Rule Id to delete
@@ -96,19 +98,19 @@ namespace automation
       /// \brief                          Start all rules using a script interpreter
       /// \param[in] interpreterName      The script interpreter name
       //--------------------------------------------------------------
-      virtual void startAllRulesMatchingInterpreter(const std::string & interpreterName) = 0;
+      virtual void startAllRulesMatchingInterpreter(const std::string& interpreterName) = 0;
 
       //--------------------------------------------------------------
       /// \brief                          Stop all rules using a script interpreter
       /// \param[in] interpreterName      The script interpreter name
       //--------------------------------------------------------------
-      virtual void stopAllRulesMatchingInterpreter(const std::string & interpreterName) = 0;
+      virtual void stopAllRulesMatchingInterpreter(const std::string& interpreterName) = 0;
 
       //--------------------------------------------------------------
       /// \brief                          Delete all rules using a script interpreter
       /// \param[in] interpreterName      The script interpreter name
       //--------------------------------------------------------------
-      virtual void deleteAllRulesMatchingInterpreter(const std::string & interpreterName) = 0;
+      virtual void deleteAllRulesMatchingInterpreter(const std::string& interpreterName) = 0;
 
       //-----------------------------------------------------
       ///\brief               Start a rule from configured rule data
@@ -123,7 +125,6 @@ namespace automation
       //-----------------------------------------------------
       virtual void stopRule(int ruleId) = 0;
    };
-	
 } // namespace automation	
-	
-	
+
+

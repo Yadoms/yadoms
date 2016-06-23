@@ -3,8 +3,6 @@
 #include <shared/Log.h>
 
 #include <shared/ServiceLocator.h>
-#include "IApplicationStopHandler.h"
-#include "update/info/UpdateSite.h"
 #include "startupOptions/IStartupOptions.h"
 
 #include "WorkerTools.h"
@@ -13,16 +11,19 @@
 #include "pluginSystem/Manager.h"
 #include "i18n/ClientStrings.h"
 
-namespace update {
-   namespace worker {
-
-      void CPlugin::install(CWorkerTools::WorkerProgressFunc progressCallback, const std::string & downloadUrl)
+namespace update
+{
+   namespace worker
+   {
+      void CPlugin::install(CWorkerTools::WorkerProgressFunc progressCallback,
+                            const std::string downloadUrl,
+                            boost::shared_ptr<pluginSystem::CManager> pluginManager)
       {
          YADOMS_LOG(information) << "Installing new plugin from " << downloadUrl;
 
          shared::CDataContainer callbackData;
          callbackData.set("downloadUrl", downloadUrl);
-         
+
          progressCallback(true, 0.0f, i18n::CClientStrings::UpdatePluginInstall, shared::CStringExtension::EmptyString, shared::CDataContainer::EmptyContainer);
 
          /////////////////////////////////////////////
@@ -49,7 +50,6 @@ namespace update {
                YADOMS_LOG(information) << "Refresh plugin list";
 
                progressCallback(true, 90.0f, i18n::CClientStrings::UpdatePluginFinalize, shared::CStringExtension::EmptyString, callbackData);
-               boost::shared_ptr<pluginSystem::CManager> pluginManager = shared::CServiceLocator::instance().get<pluginSystem::CManager>();
                if (pluginManager)
                   pluginManager->updatePluginList();
 
@@ -57,7 +57,7 @@ namespace update {
 
                progressCallback(true, 100.0f, i18n::CClientStrings::UpdatePluginSuccess, shared::CStringExtension::EmptyString, callbackData);
             }
-            catch (std::exception & ex)
+            catch (std::exception& ex)
             {
                //fail to extract package file
                YADOMS_LOG(error) << "Fail to deploy package : " << ex.what();
@@ -69,9 +69,8 @@ namespace update {
             Poco::File toDelete(downloadedPackage.toString());
             if (toDelete.exists())
                toDelete.remove();
-
          }
-         catch (std::exception & ex)
+         catch (std::exception& ex)
          {
             //fail to download package
             YADOMS_LOG(error) << "Fail to download package : " << ex.what();
@@ -79,7 +78,10 @@ namespace update {
          }
       }
 
-      void CPlugin::update(CWorkerTools::WorkerProgressFunc progressCallback, const std::string & pluginName, const std::string & downloadUrl)
+      void CPlugin::update(CWorkerTools::WorkerProgressFunc progressCallback,
+                           const std::string& pluginName,
+                           const std::string& downloadUrl,
+                           boost::shared_ptr<pluginSystem::CManager> pluginManager)
       {
          YADOMS_LOG(information) << "Updating plugin " << pluginName << " from " << downloadUrl;
 
@@ -101,7 +103,6 @@ namespace update {
             /////////////////////////////////////////////
             //2. stop any instance
             /////////////////////////////////////////////
-            boost::shared_ptr<pluginSystem::CManager> pluginManager = shared::CServiceLocator::instance().get<pluginSystem::CManager>();
             if (pluginManager)
                pluginManager->stopAllInstancesOfPlugin(pluginName);
 
@@ -124,11 +125,11 @@ namespace update {
                YADOMS_LOG(information) << "Plugin installed with success";
                progressCallback(true, 100.0f, i18n::CClientStrings::UpdatePluginSuccess, shared::CStringExtension::EmptyString, callbackData);
             }
-            catch (std::exception & ex)
+            catch (std::exception& ex)
             {
                //fail to extract package file
                YADOMS_LOG(error) << "Fail to deploy package : " << ex.what();
-               progressCallback(false, 100.0f, i18n::CClientStrings::UpdatePluginDeployFailed, ex.what(),callbackData);
+               progressCallback(false, 100.0f, i18n::CClientStrings::UpdatePluginDeployFailed, ex.what(), callbackData);
             }
 
 
@@ -136,9 +137,8 @@ namespace update {
             Poco::File toDelete(downloadedPackage.toString());
             if (toDelete.exists())
                toDelete.remove();
-
          }
-         catch (std::exception & ex)
+         catch (std::exception& ex)
          {
             //fail to download package
             YADOMS_LOG(error) << "Fail to download package : " << ex.what();
@@ -146,7 +146,9 @@ namespace update {
          }
       }
 
-      void CPlugin::remove(CWorkerTools::WorkerProgressFunc progressCallback, const std::string & pluginName)
+      void CPlugin::remove(CWorkerTools::WorkerProgressFunc progressCallback,
+                           const std::string& pluginName,
+                           boost::shared_ptr<pluginSystem::CManager> pluginManager)
       {
          YADOMS_LOG(information) << "Removing plugin " << pluginName ;
 
@@ -156,11 +158,10 @@ namespace update {
          progressCallback(true, 0.0f, i18n::CClientStrings::UpdatePluginRemove, shared::CStringExtension::EmptyString, callbackData);
 
          try
-            {
+         {
             /////////////////////////////////////////////
             //1. stop any instance
             /////////////////////////////////////////////
-            boost::shared_ptr<pluginSystem::CManager> pluginManager = shared::CServiceLocator::instance().get<pluginSystem::CManager>();
             if (pluginManager)
                pluginManager->stopAllInstancesOfPlugin(pluginName);
 
@@ -183,21 +184,14 @@ namespace update {
 
             progressCallback(true, 100.0f, i18n::CClientStrings::UpdatePluginSuccess, shared::CStringExtension::EmptyString, callbackData);
          }
-         catch (std::exception & ex)
+         catch (std::exception& ex)
          {
             //fail to remove package
             YADOMS_LOG(error) << "Fail to delete plugin : " << pluginName << " : " << ex.what();
             progressCallback(false, 100.0f, i18n::CClientStrings::UpdatePluginRemoveFailed, ex.what(), callbackData);
          }
       }
-
-
-
-
-
-
-
-
-
    } // namespace worker
 } // namespace update
+
+
