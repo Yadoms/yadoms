@@ -102,7 +102,7 @@ set(BOOST_LIBS
 )
 
 # search boost libs
-find_package(Boost 1.60.0 EXACT REQUIRED COMPONENTS ${BOOST_LIBS} )
+find_package(Boost 1.61.0 EXACT REQUIRED COMPONENTS ${BOOST_LIBS} )
 set(BOOST_INCL_DIR ${Boost_INCLUDE_DIR} ${BOOST_ROOT})
 
 
@@ -1062,7 +1062,8 @@ set(CPACK_COMPONENTS_ALL_IN_ONE_PACKAGE 0)
 #configure the plugin to be grouped in plugins sub components
 FOREACH (PLUGIN ${PLUGINLIST})
    string(TOUPPER ${PLUGIN} _pluginNameUpperCase)
-   set(CPACK_COMPONENT_${_pluginNameUpperCase}_GROUP "Plugins")
+   string(REPLACE "-" "_" pluginCompatibleName ${_pluginNameUpperCase})
+   set(CPACK_COMPONENT_${pluginCompatibleName}_GROUP "Plugins")
 ENDFOREACH(PLUGIN)
 set(CPACK_COMPONENT_GROUP_PLUGINS_DISPLAY_NAME  "Plugins")
 set(CPACK_COMPONENT_GROUP_PLUGINS_DESCRIPTION  "All the plugins which control hardware components")
@@ -1070,7 +1071,8 @@ set(CPACK_COMPONENT_GROUP_PLUGINS_DESCRIPTION  "All the plugins which control ha
 #configure the plugin to be grouped in plugins sub components
 FOREACH (SCRIPTINTERPRETER ${SCRIPTINTERPRETERSLIST})
    string(TOUPPER ${SCRIPTINTERPRETER} _scriptInterpreterNameUpperCase)
-   set(CPACK_COMPONENT_${_scriptInterpreterNameUpperCase}_GROUP "ScriptInterpreters")
+   string(REPLACE "-" "_" scriptInterpreterCompatibleName ${_scriptInterpreterNameUpperCase})
+   set(CPACK_COMPONENT_${scriptInterpreterCompatibleName}_GROUP "ScriptInterpreters")
 ENDFOREACH(SCRIPTINTERPRETER)
 set(CPACK_COMPONENT_GROUP_SCRIPTINTERPRETERS_DISPLAY_NAME  "Script interpreters")
 set(CPACK_COMPONENT_GROUP_SCRIPTINTERPRETERS_DESCRIPTION  "All the script interpreters (allow to run custom scripts)")
