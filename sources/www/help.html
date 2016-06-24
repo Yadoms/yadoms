@@ -95,7 +95,7 @@
       //we start i18n engine
       var option = { resGetPath: "locales/__lng__.json", fallbackLng: "en", useDataAttrOptions: true, debug: false, fallbackNS: "translation" };
       i18n.init(option, function() {
-         var mdSourcetoLoad = "help.md";
+         var mdSourcetoLoad = readUrlParam("helpUrl") || "help.md";
          var product = readUrlParam("product");
          var languageToDisplay = readUrlParam("lang");
          loadContent(product, mdSourcetoLoad, languageToDisplay)
@@ -129,9 +129,12 @@
              container.html(md.render(content));
              $(document).i18n();
              
-             window.setTimeout(function() {
-                window.location.href = readUrlHash();
-             }, 1000);
+             var anchor = readUrlHash();
+             if(anchor) {
+                window.setTimeout(function() {
+                   window.location.href = anchor;
+                }, 1000);
+             }
          })
          .fail(function(err) {
             container = $("div#tabContainer").find("div#content");
@@ -183,12 +186,16 @@
    function loadContent(product, helpUrl, displayedLanguage) {
       var d = new $.Deferred();
       
+      var base = "";
+      if(product)
+         base = "help/" + product;
+      
       if(displayedLanguage) {
          $.ajax({
             dataType: "text",
-            url: "help/" + product + '/' + displayedLanguage + '/' + helpUrl,
+            url: base + '/' + displayedLanguage + '/' + helpUrl,
             success: function(content) {
-               d.resolve(content, "help/" + product + '/' + displayedLanguage);
+               d.resolve(content, base + '/' + displayedLanguage);
             },
             error:function (xhr, ajaxOptions, thrownError){
                if(displayedLanguage === "en") {
@@ -208,9 +215,9 @@
          //try to get file without language specification
          $.ajax({ 
             dataType: "text", 
-            url: "help/" + product + '/' + helpUrl,
+            url: base + '/' + helpUrl,
             success: function(content) {
-               d.resolve(content, "help/" + product);
+               d.resolve(content, base);
             },
             error:d.reject
          });
