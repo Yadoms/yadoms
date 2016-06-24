@@ -7,7 +7,7 @@
  */
 Blockly.Blocks["yadoms_log"] = {
     init: function () {
-        this.setHelpUrl("http://www.example.com/");
+		this.setHelpUrl(Blockly.Yadoms.GenerateHelpUrl(this.type));
         this.setColour(Blockly.Blocks.texts.HUE);
         this.appendValueInput("LogContent")
             .appendField($.t("blockly.blocks.yadoms_log.title"));

@@ -109,7 +109,7 @@ AutomationEditorCode.prototype.showDoc = function () {
  * @return API doc URL
  */
 AutomationEditorCode.prototype.getApiDocUrl = function () {
-    return AutomationInterpreterManager.getInterpreterBaseUrl(this.rule.interpreter) + "/yScriptApiDoc.json";
+    return AutomationInterpreterManager.getInterpreterBaseUrl(this.rule.interpreter) + "/yScriptApiDoc.md";
 };
 
 

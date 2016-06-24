@@ -12,7 +12,7 @@ Blockly.Blocks["keyword-value-get"] = {
         this.setInputsInline(true);
         this.setOutput(true);
         this.setTooltip($.t("blockly.blocks.keyword-value-get.tooltip", { defaultValue: "" }));
-        this.setHelpUrl("http://www.example.com/");
+		this.setHelpUrl(Blockly.Yadoms.GenerateHelpUrl(this.type));
 
         var thisBlock = this;
         Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection(thisBlock, false, ["numeric", "string", "bool", "enum", "datetime"], undefined, function (keyword, keywordType) {

@@ -13,7 +13,7 @@ Blockly.Blocks["keyword-value-set"] = {
 	titleFieldName: "titleField",
     inputValueShown: false,
     init: function () {
-        this.setHelpUrl("http://www.example.com/");
+		this.setHelpUrl(Blockly.Yadoms.GenerateHelpUrl(this.type));
         this.setInputsInline(true);
         this.setPreviousStatement(true, "null");
         this.setNextStatement(true, "null");

@@ -82,6 +82,11 @@
 
    $("#copyrightLabel").html("&copy; Yadoms " + new Date().getFullYear());
 
+                
+
+
+
+                 
    /**
    * On page loaded
    */
@@ -90,11 +95,15 @@
       //we start i18n engine
       var option = { resGetPath: "locales/__lng__.json", fallbackLng: "en", useDataAttrOptions: true, debug: false, fallbackNS: "translation" };
       i18n.init(option, function() {
-         var mdSourcetoLoad = readUrlParam("helpUrl");
-         loadContent(mdSourcetoLoad)
-         .done(function(content) {
+         var mdSourcetoLoad = "help.md";
+         var product = readUrlParam("product");
+         var languageToDisplay = readUrlParam("lang");
+         loadContent(product, mdSourcetoLoad, languageToDisplay)
+         .done(function(content, mdPath) {
             container = $("div#tabContainer").find("div#content");
              var md = window.markdownit({
+                  html: true,
+                  breaks:true,
                  highlight: function (str, lang) {
                    if (lang && hljs.getLanguage(lang)) {
                      try {
@@ -106,8 +115,23 @@
                  }
                });
              
+             
+
+
+             //trick to allow using only relative path in markdown
+             md.commonNormalizer = md.normalizeLink;
+             md.normalizeLink = function(url) {
+               if(url.startsWith("/this/"))
+                  return md.commonNormalizer(mdPath + url.replace("/this", ""));
+               return md.commonNormalizer(url);
+             };
+
              container.html(md.render(content));
              $(document).i18n();
+             
+             window.setTimeout(function() {
+                window.location.href = readUrlHash();
+             }, 1000);
          })
          .fail(function(err) {
             container = $("div#tabContainer").find("div#content");
@@ -143,18 +167,55 @@
             return decodeURIComponent(data[1]);
          }
       }
+      return undefined;
+   }
+
+   function readUrlHash() {
+      return location.hash;
    }
    
    /**
    * Load the help content
-   * @param helpUrl Help URL to load
-   * @param callback
+   * @param product              The product "blockly", "pythonApi",...
+   * @param helpUrl              Help URL to load
+   * @param displayedLanguage    The language to use (en, fr,...)
    */
-   function loadContent(helpUrl) {
-      return $.ajax({
-         dataType: "text",
-         url: helpUrl        
-      });
+   function loadContent(product, helpUrl, displayedLanguage) {
+      var d = new $.Deferred();
+      
+      if(displayedLanguage) {
+         $.ajax({
+            dataType: "text",
+            url: "help/" + product + '/' + displayedLanguage + '/' + helpUrl,
+            success: function(content) {
+               d.resolve(content, "help/" + product + '/' + displayedLanguage);
+            },
+            error:function (xhr, ajaxOptions, thrownError){
+               if(displayedLanguage === "en") {
+                  //retry without language
+                  loadContent(product, helpUrl)
+                  .done(d.resolve)
+                  .fail(d.reject);
+               } else {
+                  //retry in english
+                  loadContent(product, helpUrl, "en")
+                  .done(d.resolve)
+                  .fail(d.reject);
+               }
+            }
+         });
+      } else {
+         //try to get file without language specification
+         $.ajax({ 
+            dataType: "text", 
+            url: "help/" + product + '/' + helpUrl,
+            success: function(content) {
+               d.resolve(content, "help/" + product);
+            },
+            error:d.reject
+         });
+      }
+      return d.promise();
    };
 
 	</script>

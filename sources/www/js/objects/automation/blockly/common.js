@@ -326,3 +326,19 @@ Blockly.Yadoms.GetResult = function (language, callback) {
    }
    callback(xmlString, generatedCode);
 };
+
+/**
+ * Generate the help url for a block name
+ * @param blockName 	The block name
+ * @param The block help url with display language support
+ */
+Blockly.Yadoms.GenerateHelpUrl = function(blockName) {
+	var url = "help.html?product=blockly";
+	if( Yadoms && Yadoms.systemConfiguration && 
+		ConfigurationManager && ConfigurationManager.items &&
+		ConfigurationManager.items.system && ConfigurationManager.items.system.language) {
+	    	url += "&lang=" + Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value;
+    }
+	url += "#" + blockName;
+	return url;
+};

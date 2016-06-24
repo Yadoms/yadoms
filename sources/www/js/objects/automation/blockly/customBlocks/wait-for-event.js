@@ -13,7 +13,7 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
         this.setNextStatement(true, null);
         this.setColour(Blockly.Yadoms.blockColour.HUE);
         this.setTooltip($.t("blockly.blocks.yadoms_wait_for_event.tooltip"));
-        this.setHelpUrl("http://www.example.com/");
+        this.setHelpUrl(Blockly.Yadoms.GenerateHelpUrl(this.type));
         this.setInputsInline(true);
         this.setMutator(new Blockly.Mutator([	"yadoms_wait_for_event_mutator_keyword",
 												"yadoms_wait_for_event_mutator_capacity",

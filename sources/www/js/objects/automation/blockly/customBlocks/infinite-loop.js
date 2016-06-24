@@ -10,7 +10,7 @@ Blockly.Blocks['infinite-loop'] = {
         .appendField($.t("blockly.blocks.infinite-loop.title"));
     this.setPreviousStatement(true);
     this.setNextStatement(false);
-        this.setTooltip($.t("blockly.blocks.infinite-loop.tooltip", { defaultValue: "" }));
-    this.setHelpUrl("http://www.example.com/");
+    this.setTooltip($.t("blockly.blocks.infinite-loop.tooltip", { defaultValue: "" }));
+	this.setHelpUrl(Blockly.Yadoms.GenerateHelpUrl(this.type));
   }
 };

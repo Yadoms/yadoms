@@ -29,6 +29,6 @@ Blockly.Blocks['yadoms_date_timespan'] = {
     this.setOutput(true, "timespan");
     this.setColour(Blockly.Yadoms.Dates.timespan.HUE);
     this.setTooltip($.t("blockly.blocks.dates.yadoms_date_timespan.tooltip", { defaultValue: "" }));
-    this.setHelpUrl('http://www.example.com/');
+    this.setHelpUrl(Blockly.Yadoms.GenerateHelpUrl(this.type));
   }
 };

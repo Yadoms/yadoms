@@ -33,7 +33,7 @@
     this.setOutput(true, ["time", "datetime", "timespan"]);
     this.setColour(Blockly.Yadoms.Dates.datetime.HUE);
     this.setTooltip($.t("blockly.blocks.dates.yadoms_date_arithmetic.tooltip", { defaultValue: "" }));
-    this.setHelpUrl('http://www.example.com/');
+    this.setHelpUrl(Blockly.Yadoms.GenerateHelpUrl(this.type));
   }
 };
 

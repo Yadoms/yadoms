@@ -42,7 +42,7 @@ Blockly.Blocks['yadoms_date_extract'] = {
     this.setOutput(true, ["number", "date", "time", "String"]);
     this.setColour(Blockly.Yadoms.Dates.datetime.HUE);
     this.setTooltip($.t("blockly.blocks.dates.yadoms_date_extract.tooltip", { defaultValue: "" }));
-    this.setHelpUrl('http://www.example.com/');
+    this.setHelpUrl(Blockly.Yadoms.GenerateHelpUrl(this.type));
 	this.initDropDown_();
   },
   

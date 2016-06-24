@@ -15,7 +15,7 @@ Blockly.Blocks["yadoms_wait_for_event_result"] = {
         this.setNextStatement(false, null);
         this.setColour(Blockly.Yadoms.blockColour.HUE);
         this.setTooltip($.t("blockly.blocks.yadoms_wait_for_event_result.tooltip"));
-        this.setHelpUrl("http://www.example.com/");
+        this.setHelpUrl(Blockly.Yadoms.GenerateHelpUrl(this.type));
         this.setInputsInline(true);
 		this.setOutput(true);
     },

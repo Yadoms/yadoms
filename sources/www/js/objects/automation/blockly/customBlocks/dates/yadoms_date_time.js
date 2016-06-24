@@ -28,6 +28,6 @@
     this.setOutput(true, "time");
     this.setColour(Blockly.Yadoms.Dates.time.HUE);
     this.setTooltip($.t("blockly.blocks.dates.yadoms_date_time.tooltip", { defaultValue: "" }));
-    this.setHelpUrl('http://www.example.com/');
+    this.setHelpUrl(Blockly.Yadoms.GenerateHelpUrl(this.type));
   }
 };

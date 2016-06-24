@@ -31,7 +31,7 @@ Blockly.Blocks['yadoms_get_info'] = {
             .appendField(this.dropDown_, this.dropdownValueName_);
         this.setColour(Blockly.Blocks.texts.HUE);
         this.setTooltip($.t("blockly.blocks.yadoms_get_info.tooltip", { defaultValue: "" }));
-        this.setHelpUrl('http://www.example.com/');
+		this.setHelpUrl(Blockly.Yadoms.GenerateHelpUrl(this.type));
         this.setOutput(true, "String");
 
 		//set the value to the first available item, to force the setcheck to be done
