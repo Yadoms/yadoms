@@ -712,7 +712,7 @@ Section "-Core installation"
   CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
 
   
-  IntCmp $INSTALL_SERVICE 0 end_of_install_desktop_icons
+  IntCmp $INSTALL_DESKTOP 0 end_of_install_desktop_icons
 @CPACK_NSIS_CREATE_ICONS_DESKTOP@
   end_of_install_desktop_icons:
   
