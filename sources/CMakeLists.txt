@@ -1098,10 +1098,15 @@ IF(WIN32 AND NOT UNIX)
 	  SET(CPACK_NSIS_CONTACT "contact@yadoms.com")
 	  SET(CPACK_NSIS_MODIFY_PATH ON)
 	  
-     set(CPACK_NSIS_CREATE_ICONS 
+     set(CPACK_NSIS_CREATE_ICONS_STARTMENU
         "SetOutPath $INSTDIR\\\\bin
          SetShellVarContext all
-         CreateShortCut '\$SMPROGRAMS\$STARTMENU_FOLDER\\\\Yadoms.lnk' '\$INSTDIR\\\\bin\\\\yadoms.exe' '' '\$INSTDIR\\\\bin\\\\yadoms.exe' 0
+         CreateShortCut '\$SMPROGRAMS\$STARTMENU_FOLDER\\\\Yadoms.lnk' '\$INSTDIR\\\\bin\\\\yadoms.exe' '' '\$INSTDIR\\\\bin\\\\yadoms.exe' 0"
+     )
+
+     set(CPACK_NSIS_CREATE_ICONS_DESKTOP
+        "SetOutPath $INSTDIR\\\\bin
+         SetShellVarContext all
          CreateShortCut '\$DESKTOP\\\\Yadoms.lnk' '\$INSTDIR\\\\bin\\\\yadoms.exe' '' '\$INSTDIR\\\\bin\\\\yadoms.exe' 0"
      )
      
