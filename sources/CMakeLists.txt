@@ -1028,17 +1028,16 @@ install(DIRECTORY ${CMAKE_SOURCE_DIR}/www DESTINATION ${INSTALL_BINDIR})
 
 
 
-
-#indicate that debug distribution are allowed (so required debug components are copied in debug mode)
-SET(CMAKE_INSTALL_DEBUG_LIBRARIES ON)
-SET(CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION ${INSTALL_BINDIR})
-
-#add common runtime libs
-INCLUDE(InstallRequiredSystemLibraries)
-INSTALL(FILES ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS} DESTINATION ${INSTALL_BINDIR})
-
-#add specific runtime libs
 if(WIN32)
+   #indicate that debug distribution are allowed (so required debug components are copied in debug mode)
+   SET(CMAKE_INSTALL_DEBUG_LIBRARIES ON)
+   SET(CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION ${INSTALL_BINDIR})
+
+   #add common runtime libs
+   INCLUDE(InstallRequiredSystemLibraries)
+   INSTALL(FILES ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS} DESTINATION ${INSTALL_BINDIR})
+
+   #add specific runtime libs
    InstallWindowsSdkDependencies()
 endif()
 
