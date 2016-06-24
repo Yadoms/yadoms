@@ -44,10 +44,13 @@ MACRO(PLUGIN_LINK _targetName)
       ${ARGN}
       )
 	
+   
+   string(REPLACE "-" "_" ComponentCompatibleName ${_targetName})
+   
    #configure plugin as installable component
 	install(TARGETS ${_targetName} 
 		RUNTIME DESTINATION ${INSTALL_BINDIR}/plugins/${_targetName}
-		COMPONENT  ${_targetName})
+		COMPONENT  ${ComponentCompatibleName})
       
    set(PLUGINLIST
       ${PLUGINLIST}
@@ -79,10 +82,12 @@ ENDMACRO()
 MACRO(PLUGIN_POST_BUILD_COPY_FILE _targetName _resource)
 
    get_filename_component(_resourcePath ${_resource}  DIRECTORY)
+
+   string(REPLACE "-" "_" ComponentCompatibleName ${_targetName})
    
    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/${_resource} 
 			DESTINATION ${INSTALL_BINDIR}/plugins/${_targetName}/${_resourcePath}
-			COMPONENT  ${_targetName})
+			COMPONENT  ${ComponentCompatibleName})
 			
    add_custom_command(TARGET ${_targetName} POST_BUILD
       COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/${_resource} $<TARGET_FILE_DIR:${_targetName}>/${_resource})
@@ -102,9 +107,11 @@ ENDMACRO()
 MACRO(PLUGIN_POST_BUILD_COPY_FILE_DEPENDENCY _targetName _resource)
    get_filename_component(_resourcePath ${_resource}  DIRECTORY)
    
+   string(REPLACE "-" "_" ComponentCompatibleName ${_targetName})
+   
    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/${_resource} 
 			DESTINATION ${_resourcePath}
-			COMPONENT  ${_targetName})
+			COMPONENT  ${ComponentCompatibleName})
 			
    add_custom_command(TARGET ${_targetName} POST_BUILD
       COMMAND ${CMAKE_COMMAND} -E copy_if_different ${_resource} $<TARGET_FILE_DIR:yadoms>/)
@@ -129,9 +136,11 @@ ENDMACRO()
 # param [in] _targetName The current target (ie: pluginName)
 # param [in] _resource The resource folder (absolute path) to copy to the target output dir
 MACRO(PLUGIN_POST_BUILD_COPY_DIRECTORY _targetName _resource)
+   string(REPLACE "-" "_" ComponentCompatibleName ${_targetName})
+
    install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${_resource} 
 			DESTINATION ${INSTALL_BINDIR}/plugins/${_targetName}
-			COMPONENT  ${_targetName})
+			COMPONENT  ${ComponentCompatibleName})
 
    add_custom_command(TARGET ${_targetName} POST_BUILD
       COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/${_resource} $<TARGET_FILE_DIR:${_targetName}>/${_resource})

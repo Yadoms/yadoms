@@ -707,10 +707,15 @@ Section "-Core installation"
 
   ;Create shortcuts
   CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"
-@CPACK_NSIS_CREATE_ICONS@
+@CPACK_NSIS_CREATE_ICONS_STARTMENU@
 @CPACK_NSIS_CREATE_ICONS_EXTRA@
   CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
 
+  
+  IntCmp $INSTALL_DESKTOP 0 end_of_install_desktop_icons
+@CPACK_NSIS_CREATE_ICONS_DESKTOP@
+  end_of_install_desktop_icons:
+  
   ;Read a value from an InstallOptions INI file
   !insertmacro MUI_INSTALLOPTIONS_READ $INSTALL_SERVICE "NSIS.InstallOptions.ini" "Field 2" "State"
   
