@@ -4,8 +4,6 @@
 #include <sys/sysinfo.h>
 #include <sys/types.h>
 
-#define LINUX_SYSINFO_LOADS_SCALE 65536
-
 CMemoryLoad::CMemoryLoad(const std::string& keywordName)
    : m_keyword(boost::make_shared<yApi::historization::CLoad>(keywordName))
 {
@@ -15,27 +13,58 @@ CMemoryLoad::~CMemoryLoad()
 {
 }
 
-void CMemoryLoad::read()
+void CMemoryLoad::ReadFromFile( unsigned long long *dmemTotal,
+                                unsigned long long *dmemFree,
+                                unsigned long long *dbuffer,
+                                unsigned long long *dcached
+                              )
 {
-   struct sysinfo memInfo;
-   if (sysinfo (&memInfo)!=0)
+   std::ifstream procFile("/proc/meminfo");
+   
+   // 1 : mem Total.
+   // 2 : mem free.
+   // 3 : buffer.
+   // 4 : cached.
+   
+   boost::regex reg("^(.*): *(\\d+)");
+   std::string line;
+   unsigned long long memTab[4];
+   unsigned char counter = 0;
+
+   while ( std::getline(procFile, line) && (counter < 4) ) 
    {
-      std::stringstream Message; 
-      Message << "sysinfo failed !"; 
-      throw shared::exception::CException(Message.str());
+      std::cout << "ligne :" << line << std::endl;
+      boost::smatch match;
+      if ( boost::regex_search( line, match, reg ) ) 
+      {
+          memTab[ counter ]  = boost::lexical_cast<long long>(match[2]);
+      }
+      counter++;
    }
 
-   long long totalVirtualMem = memInfo.totalram;
+   *dmemTotal = memTab[ 0 ];
+   *dmemFree  = memTab[ 1 ];
+   *dbuffer   = memTab[ 2 ];
+   *dcached   = memTab[ 3 ];
 
-   totalVirtualMem += memInfo.totalswap;
-   totalVirtualMem *= memInfo.mem_unit;
+   procFile.close();
+}
 
-   long long virtualMemUsed = ((memInfo.totalram + memInfo.totalswap) - (memInfo.freeram + memInfo.freeswap))*memInfo.mem_unit;
+void CMemoryLoad::read()
+{
+   unsigned long long memTotal  =0;
+   unsigned long long memFree   =0;
+   unsigned long long memBuffer =0;
+   unsigned long long memCached =0;
 
-   std::cout << "Mémoire virtuelle utilisée :" << virtualMemUsed << std::endl;
-   std::cout << "Mémoire virtuelle totale   :" << totalVirtualMem << std::endl;
+   ReadFromFile ( &memTotal, &memFree, &memBuffer, &memCached );
 
-   m_keyword->set(virtualMemUsed*100/double(totalVirtualMem));
+   // as described here :
+   // http://blog.guillaume.fenollar.fr/2013/11/comprendre-conso-memoire-vive-ram-linux.html
+
+   float MemoryLoad = static_cast<float>(((memTotal-memFree)-memBuffer-memCached) * 100 / float(memTotal));
+
+   m_keyword->set( MemoryLoad );
 
    std::cout << "Memory Load : " << m_keyword->formatValue() << std::endl;
 }
