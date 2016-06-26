@@ -2,10 +2,7 @@
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <MemoryLoad.h>
 #include <CPULoad.h>
-#include <YadomsCPULoad.h>
 #include <DiskUsage.h>
-#include "YadomsRAMProcessMemory.h"
-#include "YadomsVirtualProcessMemory.h"
 #include "../ISIConfiguration.h"
 
 // Shortcut to yPluginApi namespace
