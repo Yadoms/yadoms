@@ -70,9 +70,6 @@ private:
    //--------------------------------------------------------------
    boost::shared_ptr<CMemoryLoad> m_memoryLoad;
    boost::shared_ptr<CCPULoad> m_cpuLoad;
-   boost::shared_ptr<CYadomsCPULoad> m_yadomsCpuLoad;
-   boost::shared_ptr<CYadomsRAMProcessMemory> m_ramProcessMemory;
-   boost::shared_ptr<CYadomsVirtualProcessMemory> m_virtualProcessMemory;
 
    //--------------------------------------------------------------
    /// \brief	    List of keywords for disks

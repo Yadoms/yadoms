@@ -38,14 +38,8 @@ IF (WIN32)
 	Windows/DiskUsage.cpp
 	Windows/MemoryLoad.h
 	Windows/MemoryLoad.cpp
-	Windows/RAMProcessMemory.h
-	Windows/RAMProcessMemory.cpp
 	Windows/SystemFactory.h
 	Windows/SystemFactory.cpp
-	Windows/VirtualProcessMemory.h
-	Windows/VirtualProcessMemory.cpp
-	Windows/YadomsCPULoad.h
-	Windows/YadomsCPULoad.cpp
 	)
 	
 	source_group(Windows Windows/*.*)
@@ -61,16 +55,10 @@ IF (UNIX AND NOT APPLE)
 	CommonLinux/DisksList.cpp
 	CommonLinux/DiskUsage.h
 	CommonLinux/DiskUsage.cpp
-   CommonLinux/LinuxHelpers.h
-   CommonLinux/LinuxHelpers.cpp
+        CommonLinux/LinuxHelpers.h
+        CommonLinux/LinuxHelpers.cpp
 	CommonLinux/MemoryLoad.h
-	CommonLinux/MemoryLoad.cpp	
-	CommonLinux/YadomsCPULoad.h
-	CommonLinux/YadomsCPULoad.cpp
-	CommonLinux/YadomsRAMProcessMemory.h
-	CommonLinux/YadomsRAMProcessMemory.cpp
-	CommonLinux/YadomsVirtualProcessMemory.h
-	CommonLinux/YadomsVirtualProcessMemory.cpp
+	CommonLinux/MemoryLoad.cpp
 	)
 	
 	source_group(CommonLinux CommonLinux/*.*)

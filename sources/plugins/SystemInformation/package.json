@@ -5,13 +5,5 @@
    "author": "YADOMS Team",
    "url": "https://github.com/Yadoms/yadoms/",
    "credits": "",
-   "supportedPlatforms":"all",
-   "configurationSchema":
-   {
-	  "Advanced":
-	  {
-		 "type": "bool",
-		 "defaultValue": "false"
-	  }
-	}
+   "supportedPlatforms":"all"
 }
