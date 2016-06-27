@@ -67,10 +67,10 @@ IZWaveController::E_StartResult COpenZWaveController::start()
       // The second argument is the path for saved Z-Wave network state and the log file.  If you leave it NULL 
       // the log file will appear in the program's working directory.
       boost::filesystem::path full_path(m_configuration->getPath());
-      boost::filesystem::path folder = full_path.parent_path();
+      boost::filesystem::path folder = full_path;
       folder /= "config";
 
-      boost::filesystem::path dataFolder = full_path.parent_path();
+      boost::filesystem::path dataFolder = full_path;
       dataFolder /= "data";
       if (!boost::filesystem::exists(dataFolder)) 
       {
