@@ -115,7 +115,7 @@ void CContextAccessor::processMessage(const void* message, size_t messageSize, b
    // Unserialize message
    pbRequest::msg request;
    if (!request.ParseFromArray(message, messageSize))
-      throw shared::exception::CInvalidParameter("message");
+      throw shared::exception::CInvalidParameter("message : fail to parse received data into protobuf format");
 
    // Process message
    switch(request.OneOf_case())
@@ -133,7 +133,7 @@ void CContextAccessor::processMessage(const void* message, size_t messageSize, b
    case pbRequest::msg::kGetKeywordName: processGetKeywordName(request.getkeywordname(), messageQueue); break;
    case pbRequest::msg::kGetKeywordDeviceName: processGetKeywordDeviceName(request.getkeyworddevicename(), messageQueue); break;
    default:
-      throw shared::exception::CInvalidParameter("message");
+      throw shared::exception::CInvalidParameter((boost::format("message : unknown message type %1%") % request.OneOf_case()).str());
    }
 }
 

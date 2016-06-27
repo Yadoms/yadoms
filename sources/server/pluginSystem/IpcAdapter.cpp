@@ -68,7 +68,7 @@ namespace pluginSystem
                                                                              m_receiveMessageQueue.get_max_msg_size(),
                                                                              messageSize,
                                                                              messagePriority,
-                                                                             boost::posix_time::ptime(boost::posix_time::microsec_clock::universal_time() + boost::posix_time::seconds(1)));
+                                                                             boost::posix_time::microsec_clock::universal_time() + boost::posix_time::seconds(1));
                boost::this_thread::interruption_point();
 
                if (messageWasReceived)
@@ -165,7 +165,7 @@ namespace pluginSystem
       // Unserialize message
       toYadoms::msg toYadomsProtoBuffer;
       if (!toYadomsProtoBuffer.ParseFromArray(message.get(), messageSize))
-         throw shared::exception::CInvalidParameter("message");
+         throw shared::exception::CInvalidParameter("message : fail to parse received data into protobuf format");
 
       YADOMS_LOG(trace) << "[RECEIVE] message " << toYadomsProtoBuffer.OneOf_case() << " from plugin instance #" << m_pluginApi->getPluginId() << (m_onReceiveHook ? " (onReceiveHook ENABLED)" : "");
 
@@ -204,7 +204,7 @@ namespace pluginSystem
       case toYadoms::msg::kHistorizeData: processHistorizeData(toYadomsProtoBuffer.historizedata());
          break;
       default:
-         throw shared::exception::CInvalidParameter((boost::format("message : %1%") % toYadomsProtoBuffer.OneOf_case()).str());
+         throw shared::exception::CInvalidParameter((boost::format("message : unknown message type %1%") % toYadomsProtoBuffer.OneOf_case()).str());
       }
    }
 
