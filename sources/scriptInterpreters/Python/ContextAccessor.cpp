@@ -140,7 +140,7 @@ void CContextAccessor::processMessage(const void* message, size_t messageSize, b
 void CContextAccessor::processGetKeywordId(const pbRequest::GetKeywordId& request, boost::interprocess::message_queue& messageQueue)
 {
    pbAnswer::msg ans;
-   pbAnswer::GetKeywordId* answer = ans.mutable_getkeywordid();
+   auto answer = ans.mutable_getkeywordid();
    try
    {
       answer->set_id(m_scriptApi->getKeywordId(request.devicename(), request.keywordname()));
@@ -149,7 +149,16 @@ void CContextAccessor::processGetKeywordId(const pbRequest::GetKeywordId& reques
    {
       ans.set_error(ex.what());
    }
-   sendAnswer(ans, messageQueue);
+
+   try
+   {
+      sendAnswer(ans, messageQueue);
+   }
+   catch(std::exception& ex)
+   {
+      YADOMS_LOG(error) << "Unable to answer to GetKeywordId request : " << ex.what();
+      throw;
+   }
 }
 
 void CContextAccessor::processGetRecipientId(const pbRequest::GetRecipientId& request, boost::interprocess::message_queue& messageQueue)
@@ -164,7 +173,16 @@ void CContextAccessor::processGetRecipientId(const pbRequest::GetRecipientId& re
    {
       ans.set_error(ex.what());
    }
-   sendAnswer(ans, messageQueue);
+
+   try
+   {
+      sendAnswer(ans, messageQueue);
+   }
+   catch (std::exception& ex)
+   {
+      YADOMS_LOG(error) << "Unable to answer to GetRecipientId request : " << ex.what();
+      throw;
+   }
 }
 
 void CContextAccessor::processReadKeyword(const pbRequest::ReadKeyword& request, boost::interprocess::message_queue& messageQueue)
@@ -179,7 +197,16 @@ void CContextAccessor::processReadKeyword(const pbRequest::ReadKeyword& request,
    {
       ans.set_error(ex.what());
    }
-   sendAnswer(ans, messageQueue);
+
+   try
+   {
+      sendAnswer(ans, messageQueue);
+   }
+   catch (std::exception& ex)
+   {
+      YADOMS_LOG(error) << "Unable to answer to ReadKeyword request : " << ex.what();
+      throw;
+   }
 }
 
 void CContextAccessor::processWaitForNextAcquisition(const pbRequest::WaitForNextAcquisition& request, boost::interprocess::message_queue& messageQueue)
@@ -194,7 +221,16 @@ void CContextAccessor::processWaitForNextAcquisition(const pbRequest::WaitForNex
    {
       ans.set_error(ex.what());
    }
-   sendAnswer(ans, messageQueue);
+
+   try
+   {
+      sendAnswer(ans, messageQueue);
+   }
+   catch (std::exception& ex)
+   {
+      YADOMS_LOG(error) << "Unable to answer to WaitForNextAcquisition request : " << ex.what();
+      throw;
+   }
 }
 
 void CContextAccessor::processWaitForNextAcquisitions(const pbRequest::WaitForNextAcquisitions& request, boost::interprocess::message_queue& messageQueue)
@@ -215,7 +251,16 @@ void CContextAccessor::processWaitForNextAcquisitions(const pbRequest::WaitForNe
    {
       ans.set_error(ex.what());
    }
-   sendAnswer(ans, messageQueue);
+
+   try
+   {
+      sendAnswer(ans, messageQueue);
+   }
+   catch (std::exception& ex)
+   {
+      YADOMS_LOG(error) << "Unable to answer to WaitForNextAcquisitions request : " << ex.what();
+      throw;
+   }
 }
 
 void CContextAccessor::processWaitForEvent(const pbRequest::WaitForEvent& request, boost::interprocess::message_queue& messageQueue)
@@ -245,7 +290,16 @@ void CContextAccessor::processWaitForEvent(const pbRequest::WaitForEvent& reques
    {
       ans.set_error(ex.what());
    }
-   sendAnswer(ans, messageQueue);
+
+   try
+   {
+      sendAnswer(ans, messageQueue);
+   }
+   catch (std::exception& ex)
+   {
+      YADOMS_LOG(error) << "Unable to answer to WaitForEvent request : " << ex.what();
+      throw;
+   }
 }
 
 void CContextAccessor::processGetKeywordsByCapacity(const pbRequest::GetKeywordsByCapacity& request, boost::interprocess::message_queue& messageQueue)
@@ -263,7 +317,16 @@ void CContextAccessor::processGetKeywordsByCapacity(const pbRequest::GetKeywords
    {
       ans.set_error(ex.what());
    }
-   sendAnswer(ans, messageQueue);
+
+   try
+   {
+      sendAnswer(ans, messageQueue);
+   }
+   catch (std::exception& ex)
+   {
+      YADOMS_LOG(error) << "Unable to answer to GetKeywordsByCapacity request : " << ex.what();
+      throw;
+   }
 }
 
 void CContextAccessor::processWriteKeyword(const pbRequest::WriteKeyword& request, boost::interprocess::message_queue& messageQueue)
@@ -278,7 +341,16 @@ void CContextAccessor::processWriteKeyword(const pbRequest::WriteKeyword& reques
    {
       ans.set_error(ex.what());
    }
-   sendAnswer(ans, messageQueue);
+
+   try
+   {
+      sendAnswer(ans, messageQueue);
+   }
+   catch (std::exception& ex)
+   {
+      YADOMS_LOG(error) << "Unable to answer to WriteKeyword request : " << ex.what();
+      throw;
+   }
 }
 
 void CContextAccessor::processSendNotification(const pbRequest::SendNotification& request, boost::interprocess::message_queue& messageQueue)
@@ -293,7 +365,16 @@ void CContextAccessor::processSendNotification(const pbRequest::SendNotification
    {
       ans.set_error(ex.what());
    }
-   sendAnswer(ans, messageQueue);
+
+   try
+   {
+      sendAnswer(ans, messageQueue);
+   }
+   catch (std::exception& ex)
+   {
+      YADOMS_LOG(error) << "Unable to answer to SendNotification request : " << ex.what();
+      throw;
+   }
 }
 
 void CContextAccessor::processGetInfo(const pbRequest::GetInfo& request, boost::interprocess::message_queue& messageQueue)
@@ -322,7 +403,16 @@ void CContextAccessor::processGetInfo(const pbRequest::GetInfo& request, boost::
    {
       ans.set_error(ex.what());
    }
-   sendAnswer(ans, messageQueue);
+
+   try
+   {
+      sendAnswer(ans, messageQueue);
+   }
+   catch (std::exception& ex)
+   {
+      YADOMS_LOG(error) << "Unable to answer to GetInfo request : " << ex.what();
+      throw;
+   }
 }
 
 void CContextAccessor::processGetKeywordName(const pbRequest::GetKeywordName& request, boost::interprocess::message_queue& messageQueue)
@@ -340,7 +430,16 @@ void CContextAccessor::processGetKeywordName(const pbRequest::GetKeywordName& re
    {
       ans.set_error(ex.what());
    }
-   sendAnswer(ans, messageQueue);
+
+   try
+   {
+      sendAnswer(ans, messageQueue);
+   }
+   catch (std::exception& ex)
+   {
+      YADOMS_LOG(error) << "Unable to answer to GetKeywordName request : " << ex.what();
+      throw;
+   }
 }
 
 void CContextAccessor::processGetKeywordDeviceName(const pbRequest::GetKeywordDeviceName& request, boost::interprocess::message_queue& messageQueue)
@@ -358,5 +457,14 @@ void CContextAccessor::processGetKeywordDeviceName(const pbRequest::GetKeywordDe
    {
       ans.set_error(ex.what());
    }
-   sendAnswer(ans, messageQueue);
+
+   try
+   {
+      sendAnswer(ans, messageQueue);
+   }
+   catch (std::exception& ex)
+   {
+      YADOMS_LOG(error) << "Unable to answer to GetKeywordDeviceName request : " << ex.what();
+      throw;
+   }
 }
