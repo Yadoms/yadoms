@@ -1,10 +1,9 @@
 #pragma once
-#include "../xplcore/XplMessageSchemaIdentifier.h"
 #include <shared/plugin/yPluginApi/historization/IHistorizable.h>
 #include "DeviceIdentifier.h"
 
-namespace xplrules {
-
+namespace xplrules
+{
    //------------------------------------
    ///\brief Class container for a device with its keywords.
    //------------------------------------
@@ -15,7 +14,7 @@ namespace xplrules {
       ///\brief Constructor
       ///\param [in] deviceIdentifier  The device identifier
       //------------------------------------
-      explicit CDeviceContainer(const CDeviceIdentifier & deviceIdentifier);
+      explicit CDeviceContainer(const CDeviceIdentifier& deviceIdentifier);
 
       //------------------------------------
       ///\brief Destructor
@@ -27,19 +26,19 @@ namespace xplrules {
       ///\param [in] keyword  The keyword to add
       //------------------------------------
       void addKeyword(boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> keyword);
-     
+
       //------------------------------------
       ///\brief Get the keywords
       ///\return the keywords
       //------------------------------------
-      const std::vector< boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > & getKeywords() const;
-     
+      const std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> >& getKeywords() const;
+
       //------------------------------------
       ///\brief Get the device identifier
       ///\return the device identifier
       //------------------------------------
-      const CDeviceIdentifier & getDeviceIdentifier() const;
-      
+      const CDeviceIdentifier& getDeviceIdentifier() const;
+
    private:
       //------------------------------------
       ///\brief The device identifier
@@ -49,10 +48,8 @@ namespace xplrules {
       //------------------------------------
       ///\brief The device keywords
       //------------------------------------
-      std::vector< boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > m_keywords;
+      std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > m_keywords;
    };
-
-
 } //namespace xplrules
 
 

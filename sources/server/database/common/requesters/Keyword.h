@@ -20,10 +20,8 @@ namespace database
             //--------------------------------------------------------------
             /// \Brief		   Constructor
             /// \param [in]	databaseRequester    The database requester
-            /// \param [in]	acquisitionRequester The acquisition requester
             //--------------------------------------------------------------
-            CKeyword(boost::shared_ptr<IDatabaseRequester> databaseRequester,
-                     boost::shared_ptr<CAcquisition> acquisitionRequester);
+            explicit CKeyword(boost::shared_ptr<IDatabaseRequester> databaseRequester);
 
             //--------------------------------------------------------------
             /// \Brief		   Destructor
@@ -53,11 +51,6 @@ namespace database
             /// \Brief		   The database requester
             //--------------------------------------------------------------
             boost::shared_ptr<IDatabaseRequester> m_databaseRequester;
-
-            //--------------------------------------------------------------
-            /// \Brief		   The acquisition requester
-            //--------------------------------------------------------------
-            boost::shared_ptr<CAcquisition> m_acquisitionRequester;
          };
       } //namespace requesters
    } //namespace common

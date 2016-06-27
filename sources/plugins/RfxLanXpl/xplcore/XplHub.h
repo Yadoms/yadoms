@@ -4,21 +4,19 @@
 #include <shared/ThreadBase.h>
 #include <Poco/Net/DatagramSocket.h>
 #include <Poco/SharedPtr.h>
-#include <Poco/Timer.h>
 
 namespace xplcore
 {
-
    class CXplHub : public shared::CThreadBase
    {
    public:
-      explicit CXplHub(const std::string & localIPOfTheInterfaceToUse);
+      explicit CXplHub(const std::string& localIPOfTheInterfaceToUse);
 
       virtual ~CXplHub();
 
       // CThreadBase override
-      virtual void doWork();
-      virtual void stop();
+      void doWork() override;
+      void stop() override;
       // {END] CThreadBase override
 
    private:
@@ -37,20 +35,21 @@ namespace xplcore
       /// \param [in]   msg      The message
       /// \param [in]   sender   The sender
       //--------------------------------------------------------------
-      void onXplMessageReceived(CXplMessage & msg, Poco::Net::SocketAddress & sender);
+      void onXplMessageReceived(CXplMessage& msg,
+                                Poco::Net::SocketAddress& sender);
       //--------------------------------------------------------------
       /// \brief			Treat a received heartbeat message
       /// \param [in]   msg      The message
       /// \param [in]   sender   The sender
       //--------------------------------------------------------------
-      void manageReceivedHeartbeatMessage(CXplMessage & hbeatMessage, Poco::Net::SocketAddress & sender);
+      void manageReceivedHeartbeatMessage(CXplMessage& hbeatMessage,
+                                          Poco::Net::SocketAddress& sender);
 
       //--------------------------------------------------------------
       /// \brief			Broadcast a message to all discovered peripherals
       /// \param [in]   message : The message to send
       //--------------------------------------------------------------
-      void broadcastMessage(CXplMessage & hbeatMessage);
-
+      void broadcastMessage(CXplMessage& hbeatMessage);
 
 
       //--------------------------------------------------------------
@@ -75,5 +74,6 @@ namespace xplcore
       //--------------------------------------------------------------      
       static const int ApplicationLifeCycleTimeout = 60; //seconds
    };
-
 } // namespace xplcore
+
+

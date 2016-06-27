@@ -6,7 +6,6 @@
 
 namespace xplcore
 {
-
    class CXplHubConnectedPeripheral
    {
    public:
@@ -15,8 +14,12 @@ namespace xplcore
       /// \brief			Ctor, it innitialize the last seen time at now
       /// \param [in]   portNumber : The port number of the peripheral
       /// \param [in]   interval : The interval in minutes of hbeat is sent
+      /// \param [in]   debugName : Name to use for debug logs
       //--------------------------------------------------------------
-      CXplHubConnectedPeripheral(Poco::Net::SocketAddress & sender, unsigned short portNumber, int interval, const std::string & debugName);
+      CXplHubConnectedPeripheral(Poco::Net::SocketAddress& sender,
+                                 unsigned short portNumber,
+                                 int interval,
+                                 const std::string& debugName);
 
       //--------------------------------------------------------------
       /// \brief			Dtor 
@@ -62,14 +65,14 @@ namespace xplcore
       /// \brief			Send the message to the remoteEndpoint
       /// \param [in]   message : The message to send
       //--------------------------------------------------------------
-      void sendMessage(const CXplMessage & message);
+      void sendMessage(const CXplMessage& message);
 
    private:
       unsigned short m_portNumber;
       int m_interval;
       boost::posix_time::ptime m_lastTimeSeen;
       Poco::Net::DatagramSocket m_socket;
-      std::string m_debugName;
    };
-
 } // namespace xplcore
+
+

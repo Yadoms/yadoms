@@ -93,15 +93,15 @@ void CFreeMobileSms::sendSms(boost::shared_ptr<yApi::IYPluginApi> api,
    try
    {
       //retreive recipient parameters (login & key)
-      std::string userId = api->getRecipientValue(recipientId, "userId");
-      std::string key = api->getRecipientValue(recipientId, "apiKey");
+      auto userId = api->getRecipientValue(recipientId, "userId");
+      auto key = api->getRecipientValue(recipientId, "apiKey");
 
       //format url
-      std::string uriStr = (boost::format(m_freeMobileApiUrl) % userId % key % smsContent).str();
+      auto uriStr = (boost::format(m_freeMobileApiUrl) % userId % key % smsContent).str();
 
       //parse url
       Poco::URI uri(uriStr);
-      std::string path(uri.getPathAndQuery());
+      auto path(uri.getPathAndQuery());
       if (path.empty())
          path = "/";
 

@@ -4,13 +4,13 @@
 #include "DeviceIdentifier.h"
 #include <shared/plugin/yPluginApi/historization/IHistorizable.h>
 
-namespace xplrules {
-
+namespace xplrules
+{
    //------------------------------------
    ///\brief   Type for a list of keywords
    //------------------------------------
-   typedef std::vector< boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable > > KeywordList;
-     
+   typedef std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > KeywordList;
+
 
    //------------------------------------
    ///\brief   A rule is an interface between devices and yadoms.
@@ -26,23 +26,24 @@ namespace xplrules {
       //------------------------------------
       ///\brief Destructor
       //------------------------------------
-      virtual ~IRule(){}
+      virtual ~IRule()
+      {
+      }
 
       //------------------------------------
       ///\brief Provide the device addess
       ///\param [in] msg the message from which extract the device address
       ///\return the device identifier
       //------------------------------------
-      virtual const CDeviceIdentifier getDeviceAddressFromMessage(xplcore::CXplMessage & msg) = 0;
+      virtual CDeviceIdentifier getDeviceAddressFromMessage(xplcore::CXplMessage& msg) = 0;
 
       //------------------------------------
       ///\brief Identify keywords inside message
       ///\param [in] msg the message from which extract the keyword data
       ///\return the keywords data contained in message
       //------------------------------------
-      virtual KeywordList identifyKeywords(xplcore::CXplMessage & msg) = 0;
+      virtual KeywordList identifyKeywords(xplcore::CXplMessage& msg) = 0;
    };
-
 } //namespace xplrules
 
 

@@ -7,7 +7,6 @@
 
 namespace xplcore
 {
-
    const std::string CXplMessage::XplCmdTypeIdentifier = "xpl-cmnd";
    const std::string CXplMessage::XplStatTypeIdentifier = "xpl-stat";
    const std::string CXplMessage::XplTrigTypeIdentifier = "xpl-trig";
@@ -19,13 +18,16 @@ namespace xplcore
    CXplMessage::CXplMessage()
    {
       m_hop = 1;
-      setTypeIdentifier(CXplMessage::kXplStat);
+      setTypeIdentifier(kXplStat);
       setSource(CXplActor::createBroadcastActor());
       setTarget(CXplActor::createBroadcastActor());
       setMessageSchemaIdentifier(CXplMessageSchemaIdentifier("hbeat", "app"));
    }
 
-   CXplMessage::CXplMessage(const CXplMessage::ETypeIdentifier & typeId, const CXplActor & source, const CXplActor & target, CXplMessageSchemaIdentifier  messageSchemaIdentifier)
+   CXplMessage::CXplMessage(const ETypeIdentifier& typeId,
+                            const CXplActor& source,
+                            const CXplActor& target,
+                            CXplMessageSchemaIdentifier messageSchemaIdentifier)
    {
       m_hop = 1;
       setTypeIdentifier(typeId);
@@ -34,7 +36,7 @@ namespace xplcore
       setMessageSchemaIdentifier(messageSchemaIdentifier);
    }
 
-   CXplMessage::CXplMessage(const CXplMessage & message)
+   CXplMessage::CXplMessage(const CXplMessage& message)
    {
       m_body.insert(message.m_body.begin(), message.m_body.end()); //make the copy
       m_hop = message.getHop();
@@ -47,10 +49,9 @@ namespace xplcore
 
    CXplMessage::~CXplMessage()
    {
-
    }
 
-   void CXplMessage::setTypeIdentifier(const CXplMessage::ETypeIdentifier & typeId)
+   void CXplMessage::setTypeIdentifier(const ETypeIdentifier& typeId)
    {
       m_typeIdentifier = typeId;
    }
@@ -64,20 +65,17 @@ namespace xplcore
    {
       switch (m_typeIdentifier)
       {
-      case CXplMessage::kXplCommand:
+      case kXplCommand:
          return XplCmdTypeIdentifier;
-         break;
-      case CXplMessage::kXplStat:
+      case kXplStat:
          return XplStatTypeIdentifier;
-         break;
-      case CXplMessage::kXplTrigger:
+      case kXplTrigger:
          return XplTrigTypeIdentifier;
-         break;
       }
       throw CXplException("Unknown Type Identifier");
    }
 
-   void CXplMessage::setSource(const CXplActor & source)
+   void CXplMessage::setSource(const CXplActor& source)
    {
       m_source = source;
    }
@@ -87,7 +85,7 @@ namespace xplcore
       return m_source;
    }
 
-   void CXplMessage::setTarget(const CXplActor & target)
+   void CXplMessage::setTarget(const CXplActor& target)
    {
       m_target = target;
    }
@@ -112,17 +110,18 @@ namespace xplcore
       m_hop = hop;
    }
 
-   void CXplMessage::setMessageSchemaIdentifier(const CXplMessageSchemaIdentifier & messageSchemaIdentifier)
+   void CXplMessage::setMessageSchemaIdentifier(const CXplMessageSchemaIdentifier& messageSchemaIdentifier)
    {
       m_messageSchemaIdentifier = CXplMessageSchemaIdentifier(messageSchemaIdentifier);
    }
 
-   const CXplMessageSchemaIdentifier & CXplMessage::getMessageSchemaIdentifier() const
+   const CXplMessageSchemaIdentifier& CXplMessage::getMessageSchemaIdentifier() const
    {
       return m_messageSchemaIdentifier;
    }
 
-   void CXplMessage::addToBody(const std::string & name, const std::string & value)
+   void CXplMessage::addToBody(const std::string& name,
+                               const std::string& value)
    {
       CXplHelper::checkRules(CXplHelper::kBody, name);
 
@@ -133,18 +132,18 @@ namespace xplcore
       m_body[name] = value;
    }
 
-   const std::map<std::string, std::string> & CXplMessage::getBody() const
+   const std::map<std::string, std::string>& CXplMessage::getBody() const
    {
       return m_body;
    }
 
-   bool CXplMessage::hasBodyValue(const std::string & key) const
+   bool CXplMessage::hasBodyValue(const std::string& key) const
    {
       std::map<std::string, std::string>::const_iterator it = m_body.find(key);
       return (it != m_body.end());
    }
 
-   const std::string & CXplMessage::getBodyValue(const std::string & key) const
+   const std::string& CXplMessage::getBodyValue(const std::string& key) const
    {
       std::map<std::string, std::string>::const_iterator it = m_body.find(key);
       if (it == m_body.end())
@@ -152,9 +151,10 @@ namespace xplcore
       return it->second;
    }
 
-   const std::string & CXplMessage::getBodyValue(const std::string & key, const std::string & defaultValue) const
+   const std::string& CXplMessage::getBodyValue(const std::string& key,
+                                                const std::string& defaultValue) const
    {
-      std::map<std::string, std::string>::const_iterator it = m_body.find(key);
+      auto it = m_body.find(key);
       if (it == m_body.end())
          return defaultValue;
       return it->second;
@@ -164,7 +164,7 @@ namespace xplcore
    {
       std::stringstream ss;
 
-      char lineFeed = '\n';
+      auto lineFeed = '\n';
 
       ss << getTypeIdentifierAsString();
 
@@ -183,7 +183,7 @@ namespace xplcore
       //Message body
       ss << "{" << lineFeed;
       //we browse the map
-      for (std::map<std::string, std::string>::const_iterator i = m_body.begin(); i != m_body.end(); ++i)
+      for (auto i = m_body.begin(); i != m_body.end(); ++i)
       {
          ss << i->first << "=" << i->second << lineFeed;
       }
@@ -192,16 +192,16 @@ namespace xplcore
       return ss.str();
    }
 
-   CXplMessage CXplMessage::parse(const std::string & rawMessage)
+   CXplMessage CXplMessage::parse(const std::string& rawMessage)
    {
       CXplMessage msg;
       try
       {
          //we explode the string onto the { char
          std::vector<std::string> result;
-         std::string trimRawMessage = boost::trim_copy(rawMessage);
+         auto trimRawMessage = boost::trim_copy(rawMessage);
          if (trimRawMessage[trimRawMessage.size() - 1] == '\0')
-            trimRawMessage.erase( trimRawMessage.end()-1 );
+            trimRawMessage.erase(trimRawMessage.end() - 1);
 
          boost::split(result, trimRawMessage, boost::is_any_of("{}"), boost::token_compress_on);
 
@@ -222,10 +222,10 @@ namespace xplcore
          if (result.size() != 4)
             throw CXplException("Malformed message");
 
-         const int messageTypeIdIndex = 0;
-         const int headerBlockIndex = 1;
-         const int messageSchemaIndex = 2;
-         const int bodyIndex = 3;
+         const auto messageTypeIdIndex = 0;
+         const auto headerBlockIndex = 1;
+         const auto messageSchemaIndex = 2;
+         const auto bodyIndex = 3;
 
          //Message type identifier parsing
          if (result[messageTypeIdIndex] == XplCmdTypeIdentifier)
@@ -255,26 +255,26 @@ namespace xplcore
 
          //we explode onto line feed char and also '\r' to be more peaceful
          std::vector<std::string> header;
-         std::string trimHeaderBlockIndex = boost::trim_copy(result[headerBlockIndex]);
+         auto trimHeaderBlockIndex = boost::trim_copy(result[headerBlockIndex]);
          boost::split(header, trimHeaderBlockIndex, boost::is_any_of("\n\r"), boost::token_compress_on);
 
          //We must have 3 results : hop, source and dest
          if (header.size() != 3)
             throw CXplException("Header part must have 3 fields : hop, source and target");
 
-         bool hopHasBeenFound = false;
-         bool targetHasBeenFound = false;
-         bool sourceHasBeenFound = false;
+         auto hopHasBeenFound = false;
+         auto targetHasBeenFound = false;
+         auto sourceHasBeenFound = false;
 
-         for (std::vector<std::string>::iterator headerLineIter = header.begin(); headerLineIter != header.end(); ++headerLineIter)
+         for (auto headerLineIter = header.begin(); headerLineIter != header.end(); ++headerLineIter)
          {
-            std::string headerLine = *headerLineIter;
+            auto headerLine = *headerLineIter;
             std::vector<std::string> headerLineDecomposed;
-            std::string trimHeaderLine = boost::trim_copy(headerLine);
+            auto trimHeaderLine = boost::trim_copy(headerLine);
             boost::split(headerLineDecomposed, trimHeaderLine, boost::is_any_of("="), boost::token_compress_on);
 
-            const int nameIndex = 0;
-            const int valueIndex = 1;
+            const auto nameIndex = 0;
+            const auto valueIndex = 1;
 
             //we must have a couple of name=value -> 2 elements
             if (headerLineDecomposed.size() != 2)
@@ -315,28 +315,28 @@ namespace xplcore
 
          //Body parsing
          std::vector<std::string> body;
-         std::string trimBodyIndex = boost::trim_copy(result[bodyIndex]);
+         auto trimBodyIndex = boost::trim_copy(result[bodyIndex]);
          boost::split(body, trimBodyIndex, boost::is_any_of("\n\r"), boost::token_compress_on);
 
-         for (std::vector<std::string>::iterator bodyIter = body.begin(); bodyIter != body.end(); ++bodyIter)
+         for (auto bodyIter = body.begin(); bodyIter != body.end(); ++bodyIter)
          {
-            std::string bodyLine = *bodyIter;
+            auto bodyLine = *bodyIter;
             std::vector<std::string> bodyLineDecomposed;
-            std::string trimBodyLine = boost::trim_copy(bodyLine);
+            auto trimBodyLine = boost::trim_copy(bodyLine);
             boost::split(bodyLineDecomposed, trimBodyLine, boost::is_any_of("="), boost::token_compress_on);
 
             //we must have a couple of name=value -> 2 elements
             if (bodyLineDecomposed.size() != 2)
                throw CXplException("Body block is incorrect");
 
-            const int nameIndex = 0;
-            const int valueIndex = 1;
+            const auto nameIndex = 0;
+            const auto valueIndex = 1;
 
             msg.addToBody(bodyLineDecomposed[nameIndex], bodyLineDecomposed[valueIndex]);
          }
          //SUCCESS
       }
-      catch (std::exception & exc)
+      catch (std::exception& exc)
       {
          throw CXplException("Unable to parse message " + rawMessage + ". " + exc.what());
       }
@@ -344,11 +344,15 @@ namespace xplcore
    }
 
 
-   CXplMessage CXplMessage::createHeartbeatRequest(const CXplActor & source)
+   CXplMessage CXplMessage::createHeartbeatRequest(const CXplActor& source)
    {
-      CXplMessage msg(kXplCommand, source, xplcore::CXplActor::createBroadcastActor(), xplcore::CXplMessageSchemaIdentifier::createHeartbeatRequestMessageSchemaIdentifer());
+      CXplMessage msg(kXplCommand,
+                      source,
+                      CXplActor::createBroadcastActor(),
+                      CXplMessageSchemaIdentifier::createHeartbeatRequestMessageSchemaIdentifer());
       msg.addToBody("command", "request");
       return msg;
    }
-
 } // namespace xplcore
+
+

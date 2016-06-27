@@ -1,72 +1,74 @@
 #include "stdafx.h"
 #include "DateTimeBasic.h"
-#include <shared/tools/Random.h>
-#include <shared/exception/NotSupported.hpp>
-#include "data/Log.h"
 #include <shared/plugin/yPluginApi/historization/Historizers.h>
 
-namespace xplrules { namespace rfxLanXpl {
-
-   xplcore::CXplMessageSchemaIdentifier  CDateTimeBasic::m_protocol = xplcore::CXplMessageSchemaIdentifier::parse("datetime.basic");
-   
-   std::string CDateTimeBasic::m_keywordDateTime = "datetime";
-   
-   CDateTimeBasic::CDateTimeBasic()
+namespace xplrules
+{
+   namespace rfxLanXpl
    {
-   }
+      xplcore::CXplMessageSchemaIdentifier CDateTimeBasic::m_protocol = xplcore::CXplMessageSchemaIdentifier::parse("datetime.basic");
 
-   CDateTimeBasic::~CDateTimeBasic()
-   {
-   }
+      std::string CDateTimeBasic::m_keywordDateTime = "datetime";
 
-   // IRule implemntation
-   const xplcore::CXplMessageSchemaIdentifier CDateTimeBasic::getProtocol()
-   {
-      return m_protocol;
-   }
+      CDateTimeBasic::CDateTimeBasic()
+      {
+      }
 
-   const CDeviceIdentifier CDateTimeBasic::getDeviceAddressFromMessage(xplcore::CXplMessage & msg)
-   {
-      return CDeviceIdentifier("datetime", "DateTime message", m_protocol, m_protocol);
-   }
+      CDateTimeBasic::~CDateTimeBasic()
+      {
+      }
 
-  
-   KeywordList CDateTimeBasic::identifyKeywords(xplcore::CXplMessage & msg)
-   {
-      KeywordList keywords;
-      keywords.push_back(boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable >(new shared::plugin::yPluginApi::historization::CDateTime(m_keywordDateTime, shared::plugin::yPluginApi::EKeywordAccessMode::kGet)));
-      return keywords;
-   }
-   // [END] IRule implemntation
+      // IRule implemntation
+      xplcore::CXplMessageSchemaIdentifier CDateTimeBasic::getProtocol()
+      {
+         return m_protocol;
+      }
+
+      CDeviceIdentifier CDateTimeBasic::getDeviceAddressFromMessage(xplcore::CXplMessage& msg)
+      {
+         return CDeviceIdentifier("datetime", "DateTime message", m_protocol, m_protocol);
+      }
 
 
-   // IReadRule implemntation
-   MessageContent CDateTimeBasic::extractMessageData(xplcore::CXplMessage & msg)
-   {
-      MessageContent data;
+      KeywordList CDateTimeBasic::identifyKeywords(xplcore::CXplMessage& msg)
+      {
+         KeywordList keywords;
+         keywords.push_back(boost::make_shared<shared::plugin::yPluginApi::historization::CDateTime>(m_keywordDateTime,
+                                                                                                     shared::plugin::yPluginApi::EKeywordAccessMode::kGet));
+         return keywords;
+      }
 
-      boost::shared_ptr< shared::plugin::yPluginApi::historization::CDateTime > datetime(new shared::plugin::yPluginApi::historization::CDateTime(m_keywordDateTime, shared::plugin::yPluginApi::EKeywordAccessMode::kGet));
-
-      //get value from message
-      std::string s = msg.getBodyValue(m_keywordDateTime);
-      //insert caracters to allow easy parsing
-      s.insert(12, ":");
-      s.insert(10, ":");
-      s.insert(8, " ");
-      s.insert(6, "-");
-      s.insert(4, "-");
-      s += ".000";
-      //parse date to ptime
-      boost::posix_time::ptime t(boost::posix_time::time_from_string(s));
-     
-      //save
-      datetime->set(t);
-      data.push_back(datetime);
-      return data;
-   }
-   // [END] IReadRule implemntation
+      // [END] IRule implemntation
 
 
+      // IReadRule implemntation
+      MessageContent CDateTimeBasic::extractMessageData(xplcore::CXplMessage& msg)
+      {
+         MessageContent data;
 
-} //namespace rfxLanXpl
+         auto datetime(boost::make_shared<shared::plugin::yPluginApi::historization::CDateTime>(m_keywordDateTime,
+                                                                                                shared::plugin::yPluginApi::EKeywordAccessMode::kGet));
+
+         //get value from message
+         auto s = msg.getBodyValue(m_keywordDateTime);
+         //insert caracters to allow easy parsing
+         s.insert(12, ":");
+         s.insert(10, ":");
+         s.insert(8, " ");
+         s.insert(6, "-");
+         s.insert(4, "-");
+         s += ".000";
+         //parse date to ptime
+         auto t(boost::posix_time::time_from_string(s));
+
+         //save
+         datetime->set(t);
+         data.push_back(datetime);
+         return data;
+      }
+
+      // [END] IReadRule implemntation
+   } //namespace rfxLanXpl
 } //namespace xplrules
+
+

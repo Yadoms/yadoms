@@ -255,13 +255,13 @@ namespace web { namespace rest { namespace service {
          if(parameters.size()>1)
          {
             //get device id from URL
-            int deviceId = boost::lexical_cast<int>(parameters[1]);
+            auto deviceId = boost::lexical_cast<int>(parameters[1]);
 
-            bool removeDevice = parameters.size() > 2 && parameters[2] == "removeDevice";
+            auto removeDevice = parameters.size() > 2 && parameters[2] == "removeDevice";
 
             //cleanup device in db
-            std::vector<boost::shared_ptr<database::entities::CKeyword> > keywords = m_dataProvider->getKeywordRequester()->getKeywords(deviceId);
-            for (std::vector<boost::shared_ptr<database::entities::CKeyword> >::const_iterator keyword = keywords.begin(); keyword != keywords.end(); ++keyword)
+            auto keywords = m_dataProvider->getKeywordRequester()->getKeywords(deviceId);
+            for (auto keyword = keywords.begin(); keyword != keywords.end(); ++keyword)
             {
                // Cleanup keyword acquisitions
                m_dataProvider->getAcquisitionRequester()->removeKeywordData((*keyword)->Id);

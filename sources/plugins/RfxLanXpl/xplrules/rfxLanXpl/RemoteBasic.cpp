@@ -29,15 +29,15 @@ namespace xplrules { namespace rfxLanXpl {
    }
 
    // IRule implemntation
-   const xplcore::CXplMessageSchemaIdentifier CRemoteBasic::getProtocol()
+   xplcore::CXplMessageSchemaIdentifier CRemoteBasic::getProtocol()
    {
       return m_protocol;
    }
 
-   const CDeviceIdentifier CRemoteBasic::getDeviceAddressFromMessage(xplcore::CXplMessage & msg)
+   CDeviceIdentifier CRemoteBasic::getDeviceAddressFromMessage(xplcore::CXplMessage & msg)
    {
-      std::string commercialName = msg.getBodyValue(m_keywordDevice);
-      std::string fullDevice = msg.getBodyValue(m_keywordDevice);
+      auto commercialName = msg.getBodyValue(m_keywordDevice);
+      auto fullDevice = msg.getBodyValue(m_keywordDevice);
 
       if (boost::istarts_with(fullDevice, ERemoteType::kPC.toString()))
          commercialName = "X10 PC Remote";
@@ -56,15 +56,15 @@ namespace xplrules { namespace rfxLanXpl {
    {
       KeywordList keywords;
 
-      std::string fullDevice = msg.getBodyValue(m_keywordDevice);
+      auto fullDevice = msg.getBodyValue(m_keywordDevice);
       if (boost::istarts_with(fullDevice, ERemoteType::kPC.toString()))
-         keywords.push_back(boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable >(new data::CRemotePC("pcremote")));
+         keywords.push_back(boost::make_shared<data::CRemotePC>("pcremote"));
       else if (boost::istarts_with(fullDevice, ERemoteType::kMedion.toString()))
-         keywords.push_back(boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable >(new data::CRemoteMedion("medionremote")));
+         keywords.push_back(boost::make_shared<data::CRemoteMedion>("medionremote"));
       else if (boost::istarts_with(fullDevice, ERemoteType::kAtiPlus.toString()))
-         keywords.push_back(boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable >(new data::CRemoteAtiWonderPlus("atiplusremote")));
+         keywords.push_back(boost::make_shared<data::CRemoteAtiWonderPlus>("atiplusremote"));
       else if (boost::istarts_with(fullDevice, ERemoteType::kAti.toString()))
-         keywords.push_back(boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable >(new data::CRemoteAtiWonder("atiremote")));
+         keywords.push_back(boost::make_shared<data::CRemoteAtiWonder>("atiremote"));
 
       return keywords;
    }
@@ -75,32 +75,32 @@ namespace xplrules { namespace rfxLanXpl {
    MessageContent CRemoteBasic::extractMessageData(xplcore::CXplMessage & msg)
    {
       MessageContent data;
-      
-      std::string fullDevice = msg.getBodyValue(m_keywordDevice);
+
+      auto fullDevice = msg.getBodyValue(m_keywordDevice);
       if (boost::istarts_with(fullDevice, ERemoteType::kPC.toString()))
       {
-         boost::shared_ptr< data::CRemotePC > remote(new data::CRemotePC("pcremote"));
+         auto remote(boost::make_shared<data::CRemotePC>("pcremote"));
          data::ERemotePCCodes code(boost::lexical_cast<int>(msg.getBodyValue(m_keywordKeys)));
          remote->set(code);
          data.push_back(remote);
       }
       else if (boost::istarts_with(fullDevice, ERemoteType::kMedion.toString()))
       {
-         boost::shared_ptr< data::CRemoteMedion > remote(new data::CRemoteMedion("medionremote"));
+         auto remote(boost::make_shared<data::CRemoteMedion>("medionremote"));
          data::ERemoteMedionCodes code(boost::lexical_cast<int>(msg.getBodyValue(m_keywordKeys)));
          remote->set(code);
          data.push_back(remote);
       }
       else if (boost::istarts_with(fullDevice, ERemoteType::kAtiPlus.toString()))
       {
-         boost::shared_ptr< data::CRemoteAtiWonderPlus > remote(new data::CRemoteAtiWonderPlus("atiplusremote"));
+         auto remote(boost::make_shared<data::CRemoteAtiWonderPlus>("atiplusremote"));
          data::ERemoteAtiWonderPlusCodes code(boost::lexical_cast<int>(msg.getBodyValue(m_keywordKeys)));
          remote->set(code);
          data.push_back(remote);
       }
       else if (boost::istarts_with(fullDevice, ERemoteType::kAti.toString()))
       {
-         boost::shared_ptr< data::CRemoteAtiWonder > remote(new data::CRemoteAtiWonder("atiremote"));
+         auto remote(boost::make_shared<data::CRemoteAtiWonder>("atiremote"));
          data::ERemoteAtiWonderCodes code(boost::lexical_cast<int>(msg.getBodyValue(m_keywordKeys)));
          remote->set(code);
          data.push_back(remote);
@@ -111,7 +111,9 @@ namespace xplrules { namespace rfxLanXpl {
    // [END] IReadRule implemntation
 
    // ICommandRule implemntation
-   boost::shared_ptr< xplcore::CXplMessage > CRemoteBasic::createXplCommand(boost::shared_ptr<const yApi::IDeviceCommand> & commandData, const std::string & rfxAddress, const shared::CDataContainer & innerDetails)
+   boost::shared_ptr< xplcore::CXplMessage > CRemoteBasic::createXplCommand(boost::shared_ptr<const yApi::IDeviceCommand> & commandData,
+      const std::string & rfxAddress,
+      const shared::CDataContainer & innerDetails)
    {
      
       ////////////////////////////
@@ -119,11 +121,11 @@ namespace xplrules { namespace rfxLanXpl {
       ////////////////////////////
       
       //check the device address is valid
-      std::string device = commandData->getDevice();
+      auto device = commandData->getDevice();
 
 
       //create the message
-      boost::shared_ptr< xplcore::CXplMessage > newMessage(new xplcore::CXplMessage());
+      auto newMessage(boost::make_shared<xplcore::CXplMessage>());
 
       //the AC.BSACI XplMessage if a xpl-trig
       newMessage->setTypeIdentifier(xplcore::CXplMessage::kXplCommand);
@@ -140,7 +142,7 @@ namespace xplrules { namespace rfxLanXpl {
       //set the device address and unit (parse from argetDevice.Address)
       newMessage->addToBody(m_keywordDevice, device);
 
-      int code = 0;
+      int code;
       if (boost::istarts_with(device, ERemoteType::kPC.toString()))
       {
          data::CRemotePC remote(commandData->getBody());
@@ -171,7 +173,7 @@ namespace xplrules { namespace rfxLanXpl {
       //convert int to hex string
       std::stringstream stream;
       stream << "0x" << std::hex << code;
-      std::string hexNumber(stream.str());
+      auto hexNumber(stream.str());
       newMessage->addToBody(m_keywordKeys, hexNumber);
 
       return newMessage;
@@ -184,7 +186,7 @@ namespace xplrules { namespace rfxLanXpl {
    // [END] ICommandRule implemntation
 
 
-   const CDeviceContainer CRemoteBasic::generateDeviceParameters(shared::CDataContainer & configuration) const
+   CDeviceContainer CRemoteBasic::generateDeviceParameters(shared::CDataContainer & configuration) const
    {
       throw shared::exception::CException("fail to generate a device from user configuration.");
    }

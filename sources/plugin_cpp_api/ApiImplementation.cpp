@@ -93,7 +93,7 @@ namespace plugin_cpp_api
 
       toPlugin::msg toPluginProtoBuffer;
       if (!toPluginProtoBuffer.ParseFromArray(message.get(), messageSize))
-         throw shared::exception::CInvalidParameter("message");
+         throw shared::exception::CInvalidParameter("message : fail to parse received data into protobuf format");
 
       if (!m_initialized)
       {
@@ -130,7 +130,7 @@ namespace plugin_cpp_api
       case toPlugin::msg::kManuallyDeviceCreation: processManuallyDeviceCreation(toPluginProtoBuffer.manuallydevicecreation());
          break;
       default:
-         throw shared::exception::CInvalidParameter("message");
+         throw shared::exception::CInvalidParameter((boost::format("message : unknown message type %1%") % toPluginProtoBuffer.OneOf_case()).str());
       }
    }
 

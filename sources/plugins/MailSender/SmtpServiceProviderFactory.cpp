@@ -4,7 +4,7 @@
 #include "SmtpTlsServiceProvider.h"
 #include "SmtpUnsecureServiceProvider.h"
 
-boost::shared_ptr<ISmtpServiceProvider> CSmtpServiceProviderFactory::CreateSmtpServer(boost::shared_ptr<IMSConfiguration> & smtpConfiguration)
+boost::shared_ptr<ISmtpServiceProvider> CSmtpServiceProviderFactory::CreateSmtpServer(boost::shared_ptr<IMSConfiguration>& smtpConfiguration)
 {
    switch (smtpConfiguration->getSecurityMode())
    {

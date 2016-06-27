@@ -1,11 +1,18 @@
 #include "stdafx.h"
 #include "DeviceIdentifier.h"
 
-namespace xplrules {
-
-
-   CDeviceIdentifier::CDeviceIdentifier(const std::string & id, const std::string & commercialName, const xplcore::CXplMessageSchemaIdentifier & readingProtocol, const xplcore::CXplMessageSchemaIdentifier & writingProtocol, const shared::CDataContainer & innerDetails)
-      :m_id(id), m_commercialName(commercialName), m_xplProtocolReading(readingProtocol), m_xplProtocolWriting(writingProtocol), m_innerDetails(innerDetails)
+namespace xplrules
+{
+   CDeviceIdentifier::CDeviceIdentifier(const std::string& id,
+                                        const std::string& commercialName,
+                                        const xplcore::CXplMessageSchemaIdentifier& readingProtocol,
+                                        const xplcore::CXplMessageSchemaIdentifier& writingProtocol,
+                                        const shared::CDataContainer& innerDetails)
+      : m_id(id),
+        m_commercialName(commercialName),
+        m_xplProtocolReading(readingProtocol),
+        m_xplProtocolWriting(writingProtocol),
+        m_innerDetails(innerDetails)
    {
    }
 
@@ -13,31 +20,31 @@ namespace xplrules {
    {
    }
 
-   const std::string & CDeviceIdentifier::getId() const
+   const std::string& CDeviceIdentifier::getId() const
    {
       return m_id;
    }
 
 
-   const std::string & CDeviceIdentifier::getCommercialName() const
+   const std::string& CDeviceIdentifier::getCommercialName() const
    {
-      if(m_commercialName.empty())
+      if (m_commercialName.empty())
          return m_id;
       return m_commercialName;
    }
 
-   const xplcore::CXplMessageSchemaIdentifier & CDeviceIdentifier::getReadingXplProtocol() const
+   const xplcore::CXplMessageSchemaIdentifier& CDeviceIdentifier::getReadingXplProtocol() const
    {
       return m_xplProtocolReading;
    }
 
- 
-   const xplcore::CXplMessageSchemaIdentifier & CDeviceIdentifier::getWritingXplProtocol() const
+
+   const xplcore::CXplMessageSchemaIdentifier& CDeviceIdentifier::getWritingXplProtocol() const
    {
       return m_xplProtocolWriting;
    }
 
-   const shared::CDataContainer & CDeviceIdentifier::getInnerDetails() const
+   const shared::CDataContainer& CDeviceIdentifier::getInnerDetails() const
    {
       return m_innerDetails;
    }

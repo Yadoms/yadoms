@@ -2,7 +2,6 @@
 
 namespace xplcore
 {
-
    //--------------------------------------------------------------
    /// \class Exception for xpl exception
    //--------------------------------------------------------------
@@ -13,7 +12,8 @@ namespace xplcore
       /// \brief	                        Constructor
       /// \param [in] message : Message to display
       //--------------------------------------------------------------
-      explicit CXplException(const std::string & message) : m_message(message)
+      explicit CXplException(const std::string& message)
+         : m_message(message)
       {
       }
 
@@ -28,10 +28,12 @@ namespace xplcore
       /// \brief	    Build full message explaining exception reason
       /// \return     message explaining exception reason
       //--------------------------------------------------------------
-      virtual const char* what() const throw() { return m_message.c_str(); }
+      const char* what() const throw() override
+      { return m_message.c_str(); }
 
    private:
       std::string m_message;
    };
-
 } // namespace xplcore
+
+

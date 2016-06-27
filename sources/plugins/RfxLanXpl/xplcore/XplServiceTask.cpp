@@ -24,10 +24,16 @@
 
 namespace xplcore
 {
-
-   CXplServiceTask::CXplServiceTask(Poco::Net::NetworkInterface & networkInterface , const std::string & vendorId, const std::string & deviceId, const std::string & instanceId,
-      shared::event::CEventHandler * pHubFoundEventHandler, int hubFoundEventCode)
-      : Poco::Task(networkInterface.address().toString()), m_pHubFoundEventHandler(pHubFoundEventHandler), m_hubFoundEventCode(hubFoundEventCode), m_source(CXplActor::createActor(vendorId, deviceId, instanceId))
+   CXplServiceTask::CXplServiceTask(Poco::Net::NetworkInterface& networkInterface,
+                                    const std::string& vendorId,
+                                    const std::string& deviceId,
+                                    const std::string& instanceId,
+                                    shared::event::CEventHandler* pHubFoundEventHandler,
+                                    int hubFoundEventCode)
+      : Poco::Task(networkInterface.address().toString()),
+        m_pHubFoundEventHandler(pHubFoundEventHandler),
+        m_hubFoundEventCode(hubFoundEventCode),
+        m_source(CXplActor::createActor(vendorId, deviceId, instanceId))
    {
       initializeConnector(networkInterface);
    }
@@ -43,12 +49,12 @@ namespace xplcore
    }
 
 
-      void CXplServiceTask::runTask()
+   void CXplServiceTask::runTask()
    {
       try
       {
          std::cout << "XplServiceTask : run" << std::endl;
-         
+
          runHeartbeatSequenceIn(HeartbeatFrequencyDuringInitialDiscoveryPhase);
 
          while (!isCancelled()) //we don't need locking here - connected is just a boolean
@@ -63,12 +69,12 @@ namespace xplcore
             {
                boost::array<char, 2048> receiveBuffer;
                Poco::Net::SocketAddress sender;
-               bool ready = m_socket.poll(Poco::Timespan(1, 0), Poco::Net::Socket::SELECT_READ);
+               auto ready = m_socket.poll(Poco::Timespan(1, 0), Poco::Net::Socket::SELECT_READ);
                if (!ready)
                {
                   continue;
                }
-               int bytesRead = m_socket.receiveFrom(receiveBuffer.c_array(), 2048, sender);
+               auto bytesRead = m_socket.receiveFrom(receiveBuffer.c_array(), 2048, sender);
                if (bytesRead == 0)
                {
                   continue;
@@ -78,7 +84,7 @@ namespace xplcore
                std::string data;
                std::copy(receiveBuffer.begin(), receiveBuffer.begin() + bytesRead, std::back_inserter(data));
 
-               CXplMessage msg = CXplMessage::parse(data);
+               auto msg = CXplMessage::parse(data);
                onXplMessageReceived(msg, sender);
             }
          }
@@ -86,7 +92,7 @@ namespace xplcore
       catch (boost::thread_interrupted&)
       {
       }
-      catch (shared::exception::CException & ex)
+      catch (shared::exception::CException& ex)
       {
          std::cerr << "The XplServiceTask fails. Unknown expcetion : " << ex.what();
       }
@@ -94,7 +100,7 @@ namespace xplcore
       std::cout << "XplServiceTask : stopped" << std::endl;
    }
 
-   void CXplServiceTask::initializeConnector(Poco::Net::NetworkInterface & networkInterface)
+   void CXplServiceTask::initializeConnector(Poco::Net::NetworkInterface& networkInterface)
    {
       m_hubHasBeenFound = false;
       m_startDate = shared::currentTime::Provider().now();
@@ -105,11 +111,12 @@ namespace xplcore
       boost::random::uniform_int_distribution<> dist(49152, 65535);
 
       //because our socket only supports ipv4; we need to get the first ipv4 address
-      const Poco::Net::IPAddress & firstIpV4Addr = networkInterface.firstAddress(Poco::Net::IPAddress::Family::IPv4);
-      m_localEndPoint = Poco::Net::SocketAddress(firstIpV4Addr, (Poco::UInt16)dist(gen)); //cast allowed because value is in [49152, 65535]
+      const auto& firstIpV4Addr = networkInterface.firstAddress(Poco::Net::IPAddress::Family::IPv4);
+      m_localEndPoint = Poco::Net::SocketAddress(firstIpV4Addr, static_cast<Poco::UInt16>(dist(gen))); //cast allowed because value is in [49152, 65535]
 
       //the remote interface is just a broadcast one on xpl port
-      m_remoteEndPoint = Poco::Net::SocketAddress(Poco::Net::IPAddress::broadcast(), CXplHelper::XplProtocolPort);
+      m_remoteEndPoint = Poco::Net::SocketAddress(Poco::Net::IPAddress::broadcast(),
+                                                  CXplHelper::XplProtocolPort);
 
       //we configure the socket
       std::cout << "CXplService : Remote EndPoint: " << m_remoteEndPoint.toString() << " on port : " << m_remoteEndPoint.port() << std::endl;
@@ -118,7 +125,6 @@ namespace xplcore
       m_socket.setBroadcast(true);
       m_socket.bind(m_localEndPoint, true);
    }
-
 
 
    void CXplServiceTask::runHeartbeatSequenceIn(const int seconds)
@@ -142,7 +148,7 @@ namespace xplcore
          else
          {
             //the hub havn't been found for the moment
-            boost::posix_time::time_duration diff = shared::currentTime::Provider().now() - m_startDate;
+            auto diff = shared::currentTime::Provider().now() - m_startDate;
             if (diff.total_seconds() > HubDiscoveryTimeOut)
             {
                //the hub haven't been found in 2 minutes so we send a hbeat every 30 seconds
@@ -158,20 +164,23 @@ namespace xplcore
 
          //We send the hbeat
          //we set always the interval of HeartbeatInterval in the message
-         CXplMessage msg = CXplMessageFactory::createHeartbeatAppMessage(m_source, HeartbeatInterval, m_localEndPoint.host().toString(), m_localEndPoint.port());
+         auto msg = CXplMessageFactory::createHeartbeatAppMessage(m_source,
+                                                                  HeartbeatInterval,
+                                                                  m_localEndPoint.host().toString(),
+                                                                  m_localEndPoint.port());
          sendMessage(msg);
 
          //We relaunch the hbeat
          runHeartbeatSequenceIn(heartbeatInterval);
       }
-      catch (Poco::Net::NetException & netex)
+      catch (Poco::Net::NetException& netex)
       {
          std::cerr << "Sending Message fail. Net Exception : " << netex.what()
             << std::endl << netex.displayText()
             << std::endl << netex.message()
             << std::endl;
       }
-      catch (std::exception & ex)
+      catch (std::exception& ex)
       {
          std::cerr << "Send heartbeat fail. Exception : " << ex.what() << std::endl;
       }
@@ -182,12 +191,9 @@ namespace xplcore
    }
 
 
-
-
-
-   void CXplServiceTask::onXplMessageReceived(CXplMessage & msg, Poco::Net::SocketAddress & sender)
+   void CXplServiceTask::onXplMessageReceived(CXplMessage& msg,
+                                              Poco::Net::SocketAddress& sender)
    {
-
       //the message is successfully parsed
       std::cout << "Message received : " << msg.toString() << std::endl;
 
@@ -209,8 +215,8 @@ namespace xplcore
    }
 
 
-
-   void CXplServiceTask::manageReceivedHeartBeatMessage(CXplMessage & hbeatMessage, Poco::Net::SocketAddress & sender)
+   void CXplServiceTask::manageReceivedHeartBeatMessage(CXplMessage& hbeatMessage,
+                                                        Poco::Net::SocketAddress& sender)
    {
       if (CXplMessageSchemaIdentifier::isHeartbeatApp(hbeatMessage.getMessageSchemaIdentifier()))
       {
@@ -223,7 +229,7 @@ namespace xplcore
                std::cout << "Hub found on network : " << m_localEndPoint.host().toString() << std::endl;
                m_hubHasBeenFound = true;
 
-               if (m_pHubFoundEventHandler != NULL)
+               if (m_pHubFoundEventHandler != nullptr)
                   m_pHubFoundEventHandler->postEvent(m_hubFoundEventCode);
             }
             else
@@ -248,33 +254,67 @@ namespace xplcore
       {
          //another heartbeat which is neither app nor heartbeat
       }
-
    }
 
 
-   void CXplServiceTask::subscribeForAllMessages(shared::event::CEventHandler * pEventHandler, int eventTypeIdentifier, bool continueChainingNotification)
+   void CXplServiceTask::subscribeForAllMessages(shared::event::CEventHandler* pEventHandler,
+                                                 int eventTypeIdentifier,
+                                                 bool continueChainingNotification)
    {
-      boost::shared_ptr< CXplMessageFilter > subscribeAll(new CXplMessageFilter(CXplHelper::WildcardString));
-      m_filteringSystem.push_back(FilterConfiguration(subscribeAll, pEventHandler, eventTypeIdentifier, continueChainingNotification));
-
+      auto subscribeAll(boost::make_shared<CXplMessageFilter>(CXplHelper::WildcardString));
+      m_filteringSystem.push_back(FilterConfiguration(subscribeAll,
+                                                      pEventHandler,
+                                                      eventTypeIdentifier,
+                                                      continueChainingNotification));
    }
 
-   void CXplServiceTask::subscribeForAllMyMessages(shared::event::CEventHandler * pEventHandler, int eventTypeIdentifier, bool continueChainingNotification)
+   void CXplServiceTask::subscribeForAllMyMessages(shared::event::CEventHandler* pEventHandler,
+                                                   int eventTypeIdentifier,
+                                                   bool continueChainingNotification)
    {
-      boost::shared_ptr< CXplMessageFilter > subscribeAllForMe(new CXplMessageFilter(CXplHelper::WildcardString, m_source.getVendorId(), m_source.getDeviceId(), m_source.getInstanceId(), CXplHelper::WildcardString, CXplHelper::WildcardString));
-      m_filteringSystem.push_back(FilterConfiguration(subscribeAllForMe, pEventHandler, eventTypeIdentifier, continueChainingNotification));
+      auto subscribeAllForMe(boost::make_shared<CXplMessageFilter>(CXplHelper::WildcardString, m_source.getVendorId(),
+                                                                   m_source.getDeviceId(),
+                                                                   m_source.getInstanceId(),
+                                                                   CXplHelper::WildcardString,
+                                                                   CXplHelper::WildcardString));
+      m_filteringSystem.push_back(FilterConfiguration(subscribeAllForMe,
+                                                      pEventHandler,
+                                                      eventTypeIdentifier,
+                                                      continueChainingNotification));
    }
 
-   void CXplServiceTask::subscribeForMessages(const std::string & msgtype, const std::string & vendor, const std::string & device, const std::string & instance, const std::string & classId, const std::string & typeId, shared::event::CEventHandler * pEventHandler, int eventTypeIdentifier, bool continueChainingNotification)
+   void CXplServiceTask::subscribeForMessages(const std::string& msgtype,
+                                              const std::string& vendor,
+                                              const std::string& device,
+                                              const std::string& instance,
+                                              const std::string& classId,
+                                              const std::string& typeId,
+                                              shared::event::CEventHandler* pEventHandler,
+                                              int eventTypeIdentifier,
+                                              bool continueChainingNotification)
    {
-      boost::shared_ptr< CXplMessageFilter > filter(new CXplMessageFilter(msgtype, vendor, device, instance, classId, typeId));
-      m_filteringSystem.push_back(FilterConfiguration(filter, pEventHandler, eventTypeIdentifier, continueChainingNotification));
+      auto filter(boost::make_shared<CXplMessageFilter>(msgtype,
+                                                        vendor,
+                                                        device,
+                                                        instance,
+                                                        classId,
+                                                        typeId));
+      m_filteringSystem.push_back(FilterConfiguration(filter,
+                                                      pEventHandler,
+                                                      eventTypeIdentifier,
+                                                      continueChainingNotification));
    }
 
-   void CXplServiceTask::subscribeForMessages(const std::string & filter, shared::event::CEventHandler * pEventHandler, int eventTypeIdentifier, bool continueChainingNotification)
+   void CXplServiceTask::subscribeForMessages(const std::string& filter,
+                                              shared::event::CEventHandler* pEventHandler,
+                                              int eventTypeIdentifier,
+                                              bool continueChainingNotification)
    {
-      boost::shared_ptr< CXplMessageFilter > msgfilter(new CXplMessageFilter(filter));
-      m_filteringSystem.push_back(FilterConfiguration(msgfilter, pEventHandler, eventTypeIdentifier, continueChainingNotification));
+      auto msgfilter(boost::make_shared<CXplMessageFilter>(filter));
+      m_filteringSystem.push_back(FilterConfiguration(msgfilter,
+                                                      pEventHandler,
+                                                      eventTypeIdentifier,
+                                                      continueChainingNotification));
    }
 
 
@@ -288,16 +328,16 @@ namespace xplcore
    /// \brief			Send notification to all configured subscribers
    /// \param [in]   message : The message to notify
    //--------------------------------------------------------------
-   void CXplServiceTask::notifySubscribers(CXplMessage & msg)
+   void CXplServiceTask::notifySubscribers(CXplMessage& msg)
    {
-      bool atLeastOneNotificationSend = false;
+      auto atLeastOneNotificationSend = false;
 
-      for (std::vector< FilterConfiguration >::iterator i = m_filteringSystem.begin(); i != m_filteringSystem.end(); ++i)
+      for (auto i = m_filteringSystem.begin(); i != m_filteringSystem.end(); ++i)
       {
-         boost::shared_ptr< CXplMessageFilter > filter = i->get<0>();
+         auto filter = i->get<0>();
          if (filter && filter->match(msg))
          {
-            shared::event::CEventHandler * pEventHandler = i->get<1>();
+            auto pEventHandler = i->get<1>();
             if (pEventHandler)
             {
                //send notification
@@ -323,12 +363,12 @@ namespace xplcore
    }
 
 
-   void CXplServiceTask::sendMessage(const CXplMessage & msg)
+   void CXplServiceTask::sendMessage(const CXplMessage& msg)
    {
       try
       {
          //bufferize data
-         std::string buf = msg.toString();
+         auto buf = msg.toString();
 
          //lock socket access
          boost::lock_guard<boost::mutex> lock(m_socketLocker);
@@ -336,17 +376,16 @@ namespace xplcore
          //send message
          m_socket.sendTo(buf.c_str(), buf.size(), m_remoteEndPoint);
       }
-      catch (Poco::Net::NetException & netex)
+      catch (Poco::Net::NetException& netex)
       {
-         std::cerr << "Sending Message fail. Net Exception : " << netex.what() 
-                           << std::endl  << netex.displayText() 
-                           << std::endl << netex.message()
-                           << std::endl;
+         std::cerr << "Sending Message fail. Net Exception : " << netex.what()
+            << std::endl << netex.displayText()
+            << std::endl << netex.message()
+            << std::endl;
 
          std::cerr << "Remote endpoint : " << m_remoteEndPoint.toString() << std::endl;
-
-      }      
-      catch (std::exception & ex)
+      }
+      catch (std::exception& ex)
       {
          std::cerr << "Sending Message fail. Exception : " << ex.what() << std::endl;
       }
@@ -354,9 +393,7 @@ namespace xplcore
       {
          std::cerr << "Sending Message fail. Unknown exception" << std::endl;
       }
-
    }
-
-
-
 } // namespace xplcore
+
+
