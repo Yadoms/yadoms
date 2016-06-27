@@ -31,7 +31,8 @@ namespace xplcore
       /// \param[in]  element             Element to check
       /// \return                         true if match rules, false otherwize
       //--------------------------------------------------------------
-      static bool matchRules(EElement elementType, const std::string& element);
+      static bool matchRules(EElement elementType,
+         const std::string& element);
 
       //--------------------------------------------------------------
       /// \brief	                        Check if Xpl element match Xpl naming rules
@@ -39,7 +40,8 @@ namespace xplcore
       /// \param[in]  element             Element to check
       /// \throw                          CXplException if element dosen't match rules
       //--------------------------------------------------------------
-      static void checkRules(EElement elementType, const std::string& element);
+      static void checkRules(EElement elementType,
+         const std::string& element);
 
       //--------------------------------------------------------------
       /// \brief	                        Check if a string match a full xpl actor
@@ -47,7 +49,8 @@ namespace xplcore
       /// \param[out] xplActorFields      A vector that will receive all xpl fields separately (if match rules) i.e. : ["rfxcom", "lan", "0x144522"]
       /// \return                         true if match rules, false otherwize
       //--------------------------------------------------------------
-      static bool matchActorRules(const std::string& xplActorString, std::vector<std::string> & xplActorFields);
+      static bool matchActorRules(const std::string& xplActorString,
+         std::vector<std::string> & xplActorFields);
 
       //--------------------------------------------------------------
       /// \brief	                        Convert a string to an XPL instance Id
@@ -77,7 +80,8 @@ namespace xplcore
       /// \param[out] result                                endpoint result.
       /// \return                         true if the IP given is in the local ip list, false otherwize
       //--------------------------------------------------------------
-      static bool getEndPointFromInterfaceIp(const std::string & localIPOfTheInterfaceToUse, boost::asio::ip::udp::endpoint & result);
+      static bool getEndPointFromInterfaceIp(const std::string & localIPOfTheInterfaceToUse,
+         boost::asio::ip::udp::endpoint & result);
 
       //--------------------------------------------------------------
       /// \brief	                        It's the UDP Port used by the xPL protocol
@@ -124,7 +128,7 @@ namespace xplcore
       //--------------------------------------------------------------
       static const std::string RegexStringBody;
 
-   private:
+
       CXplHelper();
       ~CXplHelper();
    };

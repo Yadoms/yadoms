@@ -12,8 +12,9 @@ namespace xplcore
 {
    class CXplService
    {
-   private:
-      CXplService(CXplService&){}// Non-copyable
+      CXplService(CXplService&): m_xplTask(nullptr)
+      {
+      }// Non-copyable
 
    public:
 
@@ -25,7 +26,11 @@ namespace xplcore
       /// \param [in]   externalIOService       a pointer to an external ioservice. if NULL a new ioservice is created.
       /// \note         Using this constructor implies that vendor Id will be CXplConstants::getYadomsVendorId
       //--------------------------------------------------------------
-      CXplService(Poco::Net::NetworkInterface & networkInterface, const std::string & deviceId, const std::string & instanceId, shared::event::CEventHandler * pHubFoundEventHandler = NULL, int hubFoundEventCode = 0);
+      CXplService(Poco::Net::NetworkInterface& networkInterface,
+                  const std::string& deviceId,
+                  const std::string& instanceId,
+                  shared::event::CEventHandler* pHubFoundEventHandler = nullptr,
+                  int hubFoundEventCode = 0);
 
       //--------------------------------------------------------------
       /// \brief			Dtor
@@ -41,7 +46,7 @@ namespace xplcore
       /// \brief			Send the message to the remoteEndpoint
       /// \param [in]   message : The message to send
       //--------------------------------------------------------------
-      void sendMessage(const CXplMessage & message);
+      void sendMessage(const CXplMessage& message) const;
 
 
       //--------------------------------------------------------------
@@ -57,7 +62,9 @@ namespace xplcore
       /// \param [in]   eventTypeIdentifier  The event id to use in notification
       /// \param [in]   continueChainingNotification  indicates if the notification queue should continue when a message match this filter
       //--------------------------------------------------------------
-      void subscribeForAllMessages(shared::event::CEventHandler * pEventHandler, int eventTypeIdentifier, bool continueChainingNotification = true);
+      void subscribeForAllMessages(shared::event::CEventHandler* pEventHandler,
+                                   int eventTypeIdentifier,
+                                   bool continueChainingNotification = true) const;
 
       //--------------------------------------------------------------
       /// \brief		   Subscribe to receive all messages which are targeted to this XplService instance 
@@ -65,7 +72,9 @@ namespace xplcore
       /// \param [in]   eventTypeIdentifier           The event id to use in notification
       /// \param [in]   continueChainingNotification  indicates if the notification queue should continue when a message match this filter
       //--------------------------------------------------------------
-      void subscribeForAllMyMessages(shared::event::CEventHandler * pEventHandler, int eventTypeIdentifier, bool continueChainingNotification = true);
+      void subscribeForAllMyMessages(shared::event::CEventHandler* pEventHandler,
+                                     int eventTypeIdentifier,
+                                     bool continueChainingNotification = true) const;
 
       //--------------------------------------------------------------
       /// \brief			Subscribe to receive all messages which match the filter defined by parameters
@@ -79,7 +88,15 @@ namespace xplcore
       /// \param [in]   eventTypeIdentifier  The event id to use in notification
       /// \param [in]   continueChainingNotification  indicates if the notification queue should continue when a message match this filter
       //--------------------------------------------------------------
-      void subscribeForMessages(const std::string & msgtype, const std::string & vendor, const std::string & device, const std::string & instance, const std::string & classId, const std::string & typeId, shared::event::CEventHandler * pEventHandler, int eventTypeIdentifier, bool continueChainingNotification = true);
+      void subscribeForMessages(const std::string& msgtype,
+                                const std::string& vendor,
+                                const std::string& device,
+                                const std::string& instance,
+                                const std::string& classId,
+                                const std::string& typeId,
+                                shared::event::CEventHandler* pEventHandler,
+                                int eventTypeIdentifier,
+                                bool continueChainingNotification = true) const;
 
       //--------------------------------------------------------------
       /// \brief			Subscribe to receive all messages which match the filter defined by parameters
@@ -88,13 +105,16 @@ namespace xplcore
       /// \param [in]   eventTypeIdentifier  The event id to use in notification
       /// \param [in]   continueChainingNotification  indicates if the notification queue should continue when a message match this filter
       //--------------------------------------------------------------
-      void subscribeForMessages(const std::string & filter, shared::event::CEventHandler * pEventHandler, int eventTypeIdentifier, bool continueChainingNotification = true);
+      void subscribeForMessages(const std::string& filter,
+                                shared::event::CEventHandler* pEventHandler,
+                                int eventTypeIdentifier,
+                                bool continueChainingNotification = true) const;
 
 
       //--------------------------------------------------------------
       /// \brief			Clear all subscription
       //--------------------------------------------------------------
-      void clearAllSubscriptions();
+      void clearAllSubscriptions() const;
 
    private:
       //--------------------------------------------------------------
@@ -113,5 +133,6 @@ namespace xplcore
       //--------------------------------------------------------------
       CXplServiceTask* m_xplTask;
    };
-
 } // namespace xplcore
+
+

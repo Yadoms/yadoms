@@ -19,7 +19,7 @@ IMPLEMENT_PLUGIN(CRfxLanXpl)
 std::string CRfxLanXpl::m_xpl_gateway_id = "xplplug";
 
 CRfxLanXpl::CRfxLanXpl()
-   :m_deviceManager(new xplrules::rfxLanXpl::CDeviceManager())
+   : m_deviceManager(boost::make_shared<xplrules::rfxLanXpl::CDeviceManager>())
 {
 }
 
@@ -30,7 +30,7 @@ CRfxLanXpl::~CRfxLanXpl()
 // Event IDs
 enum
 {
-   kXplMessageReceived = yApi::IYPluginApi::kPluginFirstEventId,   // Always start from yApi::IYPluginApi::kPluginFirstEventId
+   kXplMessageReceived = yApi::IYPluginApi::kPluginFirstEventId, // Always start from yApi::IYPluginApi::kPluginFirstEventId
    kXplHubFound,
 };
 
@@ -64,7 +64,7 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       xplcore::CXplHub hub(m_configuration.getXplNetworkInterface().address().toString());
       if (m_configuration.getStartXplhub())
       {
-         startHub(hub, "");
+         startHub(hub);
       }
 
       // the main loop
@@ -83,7 +83,7 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          case yApi::IYPluginApi::kEventDeviceCommand:
             {
                // Command was received from Yadoms
-               auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
+               auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
                OnSendDeviceCommand(command, api, xplService);
                break;
             }
@@ -104,7 +104,7 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                   if (newConf.getStartXplhub())
                   {
                      //start a new hub
-                     startHub(hub, newConf.getXplNetworkInterface().address().toString());
+                     startHub(hub);
                   }
                   else
                   {
@@ -125,7 +125,7 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          case yApi::IYPluginApi::kEventManuallyDeviceCreation:
             {
                // Yadoms asks for device creation
-               auto data = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest>>();
+               auto data = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> >();
                OnCreateDeviceRequest(data, api);
                break;
             }
@@ -133,7 +133,7 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          case yApi::IYPluginApi::kBindingQuery:
             {
                // Yadoms asks for device creation
-               auto data = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IBindingQueryRequest>>();
+               auto data = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IBindingQueryRequest> >();
                OnBindingQueryRequest(data, api);
                break;
             }
@@ -172,19 +172,18 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    //   stopHub(hub);
 }
 
-void CRfxLanXpl::startHub(xplcore::CXplHub & hub, const std::string & hubFilterConfiguration)
+void CRfxLanXpl::startHub(xplcore::CXplHub& hub)
 {
    //new one !
-   //hub.reset(new xplcore::CXplHub(hubFilterConfiguration));
    hub.start();
 }
 
-void CRfxLanXpl::stopHub(xplcore::CXplHub & hub)
+void CRfxLanXpl::stopHub(xplcore::CXplHub& hub)
 {
    hub.stop();
 }
 
-void CRfxLanXpl::StartPeripheralListing(xplcore::CXplService & xplService)
+void CRfxLanXpl::StartPeripheralListing(xplcore::CXplService& xplService)
 {
    //send a hbeat.request to list all available rfxlan
    m_connectedRfxLans.clear();
@@ -196,15 +195,14 @@ void CRfxLanXpl::StartPeripheralListing(xplcore::CXplService & xplService)
 ///\brief Function handler when receiving XplMessage
 ///\param [in] The xpl message received
 //----------------------------------------------
-void CRfxLanXpl::OnXplMessageReceived(xplcore::CXplMessage & xplMessage, boost::shared_ptr<yApi::IYPluginApi> api)
+void CRfxLanXpl::OnXplMessageReceived(xplcore::CXplMessage& xplMessage,
+                                      boost::shared_ptr<yApi::IYPluginApi> api)
 {
    try
    {
       std::cout << "Xpl Message received : " << xplMessage.toString() << std::endl;
 
-      //std::cout << "Reveived" << std::endl << xplMessage.toString() << std::endl;
-
-      std::string realSource = xplMessage.getSource().toString();
+      auto realSource = xplMessage.getSource().toString();
       //if incomming message has been sent from me, use target has real source
       if (xplMessage.getSource().getVendorId() == xplcore::CXplConstants::getYadomsVendorId() &&
          xplMessage.getSource().getDeviceId() == m_xpl_gateway_id)
@@ -217,7 +215,7 @@ void CRfxLanXpl::OnXplMessageReceived(xplcore::CXplMessage & xplMessage, boost::
             m_connectedRfxLans.push_back(realSource);
 
          boost::shared_ptr<xplrules::IRule> rule = m_deviceManager->identifyRule(xplMessage.getMessageSchemaIdentifier().toString(), m_instanceManager);
-         if (rule.get() != NULL)
+         if (rule.get() != nullptr)
          {
             //retreeive device identifier
             xplrules::CDeviceIdentifier deviceAddress = rule->getDeviceAddressFromMessage(xplMessage);
@@ -248,7 +246,6 @@ void CRfxLanXpl::OnXplMessageReceived(xplcore::CXplMessage & xplMessage, boost::
 
             if (readRule)
             {
-
                //create message to insert in database
                auto data = readRule->extractMessageData(xplMessage);
 
@@ -257,8 +254,6 @@ void CRfxLanXpl::OnXplMessageReceived(xplcore::CXplMessage & xplMessage, boost::
                   api->historizeData(deviceAddress.getId(), *i);
                }
             }
-
-
          }
          else
          {
@@ -271,21 +266,21 @@ void CRfxLanXpl::OnXplMessageReceived(xplcore::CXplMessage & xplMessage, boost::
          auto errorMessage = (boost::format("Unknown xpl source = %1%") % realSource).str();
          std::cerr << errorMessage << std::endl;
       }
-
    }
-   catch (std::exception &ex)
+   catch (std::exception& ex)
    {
       std::cerr << "xpl plugin fail to treat message : " << ex.what() << std::endl;
    }
 }
 
 
-
 //----------------------------------------------
 ///\brief Function handler used to send a command to a device
 ///\param [in] The command to send
 //----------------------------------------------
-void CRfxLanXpl::OnSendDeviceCommand(boost::shared_ptr<const yApi::IDeviceCommand> command, boost::shared_ptr<yApi::IYPluginApi> api, xplcore::CXplService & xplService)
+void CRfxLanXpl::OnSendDeviceCommand(boost::shared_ptr<const yApi::IDeviceCommand> command,
+                                     boost::shared_ptr<yApi::IYPluginApi> api,
+                                     xplcore::CXplService& xplService)
 {
    try
    {
@@ -293,105 +288,96 @@ void CRfxLanXpl::OnSendDeviceCommand(boost::shared_ptr<const yApi::IDeviceComman
       if (api->deviceExists(command->getDevice()))
       {
          //get device details
-         shared::CDataContainer details = api->getDeviceDetails(command->getDevice());
-         std::string protocol = details.get<std::string>("writingProtocol");
-         std::string source = details.get<std::string>("source");
+         auto details = api->getDeviceDetails(command->getDevice());
+         auto protocol = details.get<std::string>("writingProtocol");
+         auto source = details.get<std::string>("source");
 
-         shared::CDataContainer innerDetails = shared::CDataContainer::EmptyContainer;
-         if(details.exists("innerDetails"))
+         auto innerDetails = shared::CDataContainer::EmptyContainer;
+         if (details.exists("innerDetails"))
             innerDetails = details.get<shared::CDataContainer>("innerDetails");
 
          if (m_deviceManager->isHandled(source))
          {
-            boost::shared_ptr<xplrules::IRule> rule = m_deviceManager->identifyRule(protocol, m_instanceManager);
+            auto rule = m_deviceManager->identifyRule(protocol, m_instanceManager);
 
             if (rule)
             {
                //check if the rule handle reading
-               boost::shared_ptr<xplrules::ICommandRule> commandRule = boost::dynamic_pointer_cast<xplrules::ICommandRule>(rule);
+               auto commandRule = boost::dynamic_pointer_cast<xplrules::ICommandRule>(rule);
 
                if (commandRule)
                {
-                  boost::shared_ptr< xplcore::CXplMessage > messageToSend = commandRule->createXplCommand(command, source, innerDetails);
+                  auto messageToSend = commandRule->createXplCommand(command, source, innerDetails);
                   if (messageToSend)
                   {
                      messageToSend->setSource(xplService.getActor());
-
-                     //std::cout << "Sent" << std::endl << messageToSend->toString() << std::endl;
                      xplService.sendMessage(*messageToSend.get());
                   }
                   else
                   {
                      //send result
-                     std::string errorMessage = "Fail to create the Xpl message to send to the device";
-                     std::cerr << errorMessage << std::endl;
+                     std::cerr << "Fail to create the Xpl message to send to the device" << std::endl;
                   }
-
                }
                else
                {
-                  std::string errorMessage = (boost::format("The protocol %1% do not support commands") % protocol).str();
+                  auto errorMessage = (boost::format("The protocol %1% do not support commands") % protocol).str();
                   std::cerr << errorMessage << std::endl;
                }
             }
             else
             {
-               std::string errorMessage = (boost::format("Unsupported protocol = %1%") % protocol).str();
+               auto errorMessage = (boost::format("Unsupported protocol = %1%") % protocol).str();
                std::cerr << errorMessage << std::endl;
             }
          }
          else
          {
-            std::string errorMessage = (boost::format("Unknown xpl source = %1%") % source).str();
+            auto errorMessage = (boost::format("Unknown xpl source = %1%") % source).str();
             std::cerr << errorMessage << std::endl;
          }
-
       }
-
    }
-   catch (std::exception &ex)
+   catch (std::exception& ex)
    {
-      std::string errorMessage = (boost::format("xpl plugin fail to send message : %1%") % ex.what()).str();
+      auto errorMessage = (boost::format("xpl plugin fail to send message : %1%") % ex.what()).str();
       std::cerr << errorMessage << std::endl;
    }
 }
 
 
-void CRfxLanXpl::OnCreateDeviceRequest(boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> data, boost::shared_ptr<yApi::IYPluginApi> api)
+void CRfxLanXpl::OnCreateDeviceRequest(boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> data,
+                                       boost::shared_ptr<yApi::IYPluginApi> api)
 {
    try
    {
       std::cout << "Create device request" << std::endl;
 
-      const shared::CDataContainer & deviceCfg = data->getData().getConfiguration();
+      const auto& deviceCfg = data->getData().getConfiguration();
 
       std::cout << deviceCfg.serialize() << std::endl;
 
-      //std::string a("abcdefg");
-      //data->sendError("invalid configuration");
-
-
-      std::string chosenDeviceType = data->getData().getConfiguration().get<std::string>("type.activeSection");
+      auto chosenDeviceType = data->getData().getConfiguration().get<std::string>("type.activeSection");
       std::string internalProtocol;
       if (boost::istarts_with(chosenDeviceType, "x10"))
          internalProtocol = "x10.basic";
       if (boost::istarts_with(chosenDeviceType, "ac"))
          internalProtocol = "ac.basic";
 
-      shared::CDataContainer innerContent = data->getData().getConfiguration().get<shared::CDataContainer>("type.content." + chosenDeviceType + ".content");
+      auto innerContent = data->getData().getConfiguration().get<shared::CDataContainer>("type.content." + chosenDeviceType + ".content");
 
 
-      boost::shared_ptr<xplrules::IRule> rule = m_deviceManager->identifyRule(internalProtocol, m_instanceManager);
+      auto rule = m_deviceManager->identifyRule(internalProtocol, m_instanceManager);
       if (rule)
       {
          //check if the rule handle reading
-         boost::shared_ptr<const xplrules::ISupportManuallyDeviceCreationRule> deviceCreationRule = boost::dynamic_pointer_cast<const xplrules::ISupportManuallyDeviceCreationRule>(rule);
+         auto deviceCreationRule = boost::dynamic_pointer_cast<const xplrules::ISupportManuallyDeviceCreationRule>(rule);
 
          if (deviceCreationRule)
          {
             //retreeive device identifier
-            xplrules::CDeviceContainer deviceContainer = deviceCreationRule->generateDeviceParameters(innerContent);
-            const xplrules::CDeviceIdentifier & deviceAddress = deviceContainer.getDeviceIdentifier();
+            auto deviceContainer = deviceCreationRule->generateDeviceParameters(innerContent);
+            const auto& deviceAddress = deviceContainer.getDeviceIdentifier();
             if (!api->deviceExists(deviceAddress.getId()))
             {
                shared::CDataContainer details;
@@ -416,57 +402,56 @@ void CRfxLanXpl::OnCreateDeviceRequest(boost::shared_ptr<yApi::IManuallyDeviceCr
          }
          else
          {
-            std::string errorMessage = (boost::format("The protocol %1% do not support device creation") % internalProtocol).str();
+            auto errorMessage = (boost::format("The protocol %1% do not support device creation") % internalProtocol).str();
             data->sendError(errorMessage);
             std::cerr << errorMessage << std::endl;
          }
       }
       else
       {
-         std::string errorMessage = (boost::format("Unsupported protocol = %1%") % chosenDeviceType).str();
+         auto errorMessage = (boost::format("Unsupported protocol = %1%") % chosenDeviceType).str();
          data->sendError(errorMessage);
          std::cerr << errorMessage << std::endl;
       }
-
-
-
    }
-   catch (std::exception &ex)
+   catch (std::exception& ex)
    {
-      std::string errorMessage = (boost::format("xpl plugin fail to create device : %1%") % ex.what()).str();
+      auto errorMessage = (boost::format("xpl plugin fail to create device : %1%") % ex.what()).str();
       data->sendError(errorMessage);
       std::cerr << errorMessage << std::endl;
    }
 }
 
 
-void CRfxLanXpl::OnBindingQueryRequest(boost::shared_ptr<yApi::IBindingQueryRequest> data, boost::shared_ptr<yApi::IYPluginApi> api)
+void CRfxLanXpl::OnBindingQueryRequest(boost::shared_ptr<yApi::IBindingQueryRequest> data,
+                                       boost::shared_ptr<yApi::IYPluginApi> api)
 {
-	try
-	{
+   try
+   {
       std::cout << "Custom query request" << std::endl;
 
 
-		if (data->getData().getQuery() == "RfxLanList")
-		{
-			//send created device
+      if (data->getData().getQuery() == "RfxLanList")
+      {
+         //send created device
          shared::CDataContainer result;
-         for (std::vector<std::string>::iterator i = m_connectedRfxLans.begin(); i != m_connectedRfxLans.end(); ++i)
+         for (auto i = m_connectedRfxLans.begin(); i != m_connectedRfxLans.end(); ++i)
             result.set(*i, *i, 0);
 
          data->sendSuccess(result);
-		}
-		else
-		{
-			std::string errorMessage = (boost::format("unknown query : %1%") % data->getData().getQuery()).str();
-			data->sendError(errorMessage);
-			std::cerr << errorMessage << std::endl;
-		}
-	}
-	catch (std::exception &ex)
-	{
-		std::string errorMessage = (boost::format("xpl plugin fail to create device : %1%") % ex.what()).str();
-		data->sendError(errorMessage);
-		std::cerr << errorMessage << std::endl;
-	}
+      }
+      else
+      {
+         auto errorMessage = (boost::format("unknown query : %1%") % data->getData().getQuery()).str();
+         data->sendError(errorMessage);
+         std::cerr << errorMessage << std::endl;
+      }
+   }
+   catch (std::exception& ex)
+   {
+      auto errorMessage = (boost::format("xpl plugin fail to create device : %1%") % ex.what()).str();
+      data->sendError(errorMessage);
+      std::cerr << errorMessage << std::endl;
+   }
 }
+

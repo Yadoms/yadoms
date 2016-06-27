@@ -15,7 +15,7 @@ IMPLEMENT_PLUGIN(CMailSender)
 
 CMailSender::CMailSender() :
    m_deviceName("MailSender"),
-   m_configuration(new CMSConfiguration()),
+   m_configuration(boost::make_shared<CMSConfiguration>()),
    m_mailId("email"),
    m_messageKeyword(boost::make_shared<yApi::historization::CMessage>("message",
                                                                       m_mailId,
@@ -59,7 +59,7 @@ void CMailSender::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case yApi::IYPluginApi::kEventDeviceCommand:
          {
             // Command received
-            auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
+            auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
             std::cout << "Command received :" << yApi::IDeviceCommand::toString(command) << std::endl;
 
             if (boost::iequals(command->getKeyword(), m_messageKeyword->getKeyword()))
@@ -86,7 +86,8 @@ void CMailSender::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
    api->declareDevice(m_deviceName, m_deviceName, m_messageKeyword);
 }
 
-void CMailSender::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainer& newConfigurationData) const
+void CMailSender::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
+                                        const shared::CDataContainer& newConfigurationData) const
 {
    // Configuration was updated
    std::cout << "Configuration was updated..." << std::endl;
@@ -96,7 +97,8 @@ void CMailSender::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api
    m_configuration->initializeWith(newConfigurationData);
 }
 
-void CMailSender::onSendMailRequest(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& sendMailRequest)
+void CMailSender::onSendMailRequest(boost::shared_ptr<yApi::IYPluginApi> api,
+                                    const std::string& sendMailRequest)
 {
    try
    {
@@ -126,7 +128,6 @@ void CMailSender::onSendMailRequest(boost::shared_ptr<yApi::IYPluginApi> api, co
    catch (shared::exception::CInvalidParameter& e)
    {
       std::cerr << "Invalid Mail sending request \"" << sendMailRequest << "\" : " << e.what() << std::endl;
-      return;
    }
    catch (...)
    {
@@ -135,7 +136,8 @@ void CMailSender::onSendMailRequest(boost::shared_ptr<yApi::IYPluginApi> api, co
 }
 
 
-std::string CMailSender::getRecipientMail(boost::shared_ptr<yApi::IYPluginApi> api, int recipientId) const
+std::string CMailSender::getRecipientMail(boost::shared_ptr<yApi::IYPluginApi> api,
+                                          int recipientId) const
 {
    try
    {

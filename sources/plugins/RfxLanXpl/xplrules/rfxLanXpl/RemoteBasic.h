@@ -6,51 +6,59 @@
 #include "../ISupportManuallyDeviceCreationRule.h"
 #include <shared/enumeration/EnumHelpers.hpp>
 
-namespace xplrules { namespace rfxLanXpl {
-
-   class CRemoteBasic : public IRule, public IReadRule, public ICommandRule, public ISupportManuallyDeviceCreationRule
+namespace xplrules
+{
+   namespace rfxLanXpl
    {
-   public:
-      CRemoteBasic();
-      virtual ~CRemoteBasic();
-      
-      //------------------------------------
-      ///\brief Provide the xpl protocol implemented by this class
-      ///\return the xpl protocol
-      //------------------------------------
-      static const xplcore::CXplMessageSchemaIdentifier getProtocol();
+      class CRemoteBasic : public IRule,
+                           public IReadRule,
+                           public ICommandRule,
+                           public ISupportManuallyDeviceCreationRule
+      {
+      public:
+         CRemoteBasic();
+         virtual ~CRemoteBasic();
 
-      // IRule implementation
-      virtual const CDeviceIdentifier getDeviceAddressFromMessage(xplcore::CXplMessage & msg);
-      virtual KeywordList identifyKeywords(xplcore::CXplMessage & msg);
-      // [END] IRule implementation
-     
-      // IReadRule implementation
-      virtual MessageContent extractMessageData(xplcore::CXplMessage & msg);
-      // [END] IReadRule implementation
-     
-      // ICommandRule implemntation
-      virtual boost::shared_ptr< xplcore::CXplMessage > createXplCommand(boost::shared_ptr<const yApi::IDeviceCommand> & commandData, const std::string & rfxAddress, const shared::CDataContainer & innerDetails);
-      virtual std::string generateVirtualDeviceIdentifier();
-      // [END] ICommandRule implemntation
-     
-      // ISupportManuallyDeviceCreationRule implementation
-      virtual const CDeviceContainer generateDeviceParameters(shared::CDataContainer & configuration) const;
-      // [END] ISupportManuallyDeviceCreationRule implementation   
-   
-   private:
-      DECLARE_ENUM_HEADER(ERemoteType,
-         ((PC))
-         ((Medion))
-         ((Ati))
-         ((AtiPlus))
-      )
+         //------------------------------------
+         ///\brief Provide the xpl protocol implemented by this class
+         ///\return the xpl protocol
+         //------------------------------------
+         static xplcore::CXplMessageSchemaIdentifier getProtocol();
+
+         // IRule implementation
+         CDeviceIdentifier getDeviceAddressFromMessage(xplcore::CXplMessage& msg) override;
+         KeywordList identifyKeywords(xplcore::CXplMessage& msg) override;
+         // [END] IRule implementation
+
+         // IReadRule implementation
+         MessageContent extractMessageData(xplcore::CXplMessage& msg) override;
+         // [END] IReadRule implementation
+
+         // ICommandRule implemntation
+         boost::shared_ptr<xplcore::CXplMessage> createXplCommand(boost::shared_ptr<const yApi::IDeviceCommand>& commandData,
+                                                                  const std::string& rfxAddress,
+                                                                  const shared::CDataContainer& innerDetails) override;
+         std::string generateVirtualDeviceIdentifier() override;
+         // [END] ICommandRule implemntation
+
+         // ISupportManuallyDeviceCreationRule implementation
+         CDeviceContainer generateDeviceParameters(shared::CDataContainer& configuration) const override;
+         // [END] ISupportManuallyDeviceCreationRule implementation   
+
+      private:
+         DECLARE_ENUM_HEADER(ERemoteType,
+            ((PC))
+            ((Medion))
+            ((Ati))
+            ((AtiPlus))
+         )
 
 
-      static xplcore::CXplMessageSchemaIdentifier m_protocol;
-      static std::string m_keywordKeys;
-      static std::string m_keywordDevice;
-   };
-   
-} //namespace rfxLanXpl
+         static xplcore::CXplMessageSchemaIdentifier m_protocol;
+         static std::string m_keywordKeys;
+         static std::string m_keywordDevice;
+      };
+   } //namespace rfxLanXpl
 } //namespace xplrules
+
+

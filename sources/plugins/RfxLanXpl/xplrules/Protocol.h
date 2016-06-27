@@ -3,14 +3,14 @@
 #include "IProtocol.h"
 #include "../xplcore/XplMessageSchemaIdentifier.h"
 
-namespace xplrules {
-
+namespace xplrules
+{
    //------------------------------------
    ///\brief Create an instance of the protocol rule
    ///\param [in] instanceManager : the global instance manager (avoid creating multiple instances of protocols)
    ///\return the rule for the current protocol (may be null if protocol not handled)
    //------------------------------------
-   template<class TProtocol>
+   template <class TProtocol>
    class CProtocol : public IProtocol
    {
    public:
@@ -18,8 +18,8 @@ namespace xplrules {
       ///\brief Constructor of a protocol container
       ///\param [in] protocolIdentifier : the protocol identifier (i.e. "x10.basic")
       //------------------------------------
-      explicit CProtocol(const std::string & protocolIdentifier)
-         :m_protocolIdentifier(protocolIdentifier)
+      explicit CProtocol(const std::string& protocolIdentifier)
+         : m_protocolIdentifier(protocolIdentifier)
       {
       }
 
@@ -27,8 +27,8 @@ namespace xplrules {
       ///\brief Constructor of a protocol container
       ///\param [in] protocolIdentifier : the protocol identifier (i.e. "x10.basic")
       //------------------------------------
-      explicit CProtocol(const xplcore::CXplMessageSchemaIdentifier & protocolIdentifier)
-         :m_protocolIdentifier(protocolIdentifier.toString())
+      explicit CProtocol(const xplcore::CXplMessageSchemaIdentifier& protocolIdentifier)
+         : m_protocolIdentifier(protocolIdentifier.toString())
       {
       }
 
@@ -40,15 +40,16 @@ namespace xplrules {
       }
 
       // IProtocol implementation
-      boost::shared_ptr<IRule> createRuleInstance(CRuleInstanceManager & instanceManager)
+      boost::shared_ptr<IRule> createRuleInstance(CRuleInstanceManager& instanceManager) override
       {
          return instanceManager.getRule<TProtocol>();
       }
 
-      const std::string & getProtocolIdentifier()
+      const std::string& getProtocolIdentifier() override
       {
          return m_protocolIdentifier;
       }
+
       // [END] IProtocol implementation
 
    private:
@@ -57,5 +58,6 @@ namespace xplrules {
       //------------------------------------
       std::string m_protocolIdentifier;
    };
-
 } //namespace xplrules
+
+

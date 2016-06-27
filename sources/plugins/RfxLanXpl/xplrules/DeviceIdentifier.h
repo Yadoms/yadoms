@@ -2,8 +2,8 @@
 #include "../xplcore/XplMessageSchemaIdentifier.h"
 #include <shared/DataContainer.h>
 
-namespace xplrules {
-
+namespace xplrules
+{
    //------------------------------------
    ///\brief Class container for a device identifier.
    /// It could provide also the commercial name
@@ -18,7 +18,11 @@ namespace xplrules {
       ///\param [in] readingProtocol   The xpl protocol used to read data
       ///\param [in] writingProtocol   The xpl protocol used to send command
       //------------------------------------
-      CDeviceIdentifier(const std::string & id, const std::string & commercialName, const xplcore::CXplMessageSchemaIdentifier & readingProtocol, const xplcore::CXplMessageSchemaIdentifier & writingProtocol, const shared::CDataContainer & innerDetails = shared::CDataContainer::EmptyContainer);
+      CDeviceIdentifier(const std::string& id,
+                        const std::string& commercialName,
+                        const xplcore::CXplMessageSchemaIdentifier& readingProtocol,
+                        const xplcore::CXplMessageSchemaIdentifier& writingProtocol,
+                        const shared::CDataContainer& innerDetails = shared::CDataContainer::EmptyContainer);
 
       //------------------------------------
       ///\brief Destructor
@@ -29,32 +33,32 @@ namespace xplrules {
       ///\brief Get the device identifier
       ///\return the device identifier
       //------------------------------------
-      const std::string & getId() const;
+      const std::string& getId() const;
 
       //------------------------------------
       ///\brief Get the device commercial name
       /// If the commercial name is not defined, it retuens the device identifier
       ///\return the commercial name, or device identifier if commercial one is not defined
       //------------------------------------
-      const std::string & getCommercialName() const;
+      const std::string& getCommercialName() const;
 
       //------------------------------------
       ///\brief Get the xpl protocol used for reading data
       ///\return the xpl protocol
       //------------------------------------
-      const xplcore::CXplMessageSchemaIdentifier & getReadingXplProtocol() const;
+      const xplcore::CXplMessageSchemaIdentifier& getReadingXplProtocol() const;
 
       //------------------------------------
       ///\brief Get the xpl protocol used for sending command
       ///\return the xpl protocol
       //------------------------------------
-      const xplcore::CXplMessageSchemaIdentifier & getWritingXplProtocol() const;
+      const xplcore::CXplMessageSchemaIdentifier& getWritingXplProtocol() const;
 
       //------------------------------------
       ///\brief Get the xpl protocol specific details
       ///\return the xpl protocol specific details
       //------------------------------------
-      const shared::CDataContainer & getInnerDetails() const;
+      const shared::CDataContainer& getInnerDetails() const;
 
    private:
       //------------------------------------
@@ -82,8 +86,6 @@ namespace xplrules {
       //------------------------------------
       shared::CDataContainer m_innerDetails;
    };
-
-
 } //namespace xplrules
 
 

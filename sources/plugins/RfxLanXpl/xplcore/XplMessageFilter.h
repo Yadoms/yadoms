@@ -4,7 +4,6 @@
 
 namespace xplcore
 {
-
    //--------------------------------------------------------------
    /// \brief Class container for a message filter
    //--------------------------------------------------------------
@@ -20,13 +19,18 @@ namespace xplcore
       /// \param [in]   classId     Class Id from which to receive messages (* allowed)
       /// \param [in]   typeId      Type of message to receive  (* allowed)
       //--------------------------------------------------------------
-      CXplMessageFilter(const std::string & msgtype, const std::string & vendor, const std::string & device, const std::string & instance, const std::string & classId, const std::string & typeId);
+      CXplMessageFilter(const std::string& msgtype,
+                        const std::string& vendor,
+                        const std::string& device,
+                        const std::string& instance,
+                        const std::string& classId,
+                        const std::string& typeId);
 
       //--------------------------------------------------------------
       /// \brief			Construct a filter to apply to the received messages
       /// \param [in]   filter to apply. It must be formed like : [msgtype].[vendor].[device].[instance].[class].[type] (* is allowed for each param)
       //--------------------------------------------------------------
-      explicit CXplMessageFilter(const std::string & filter);
+      explicit CXplMessageFilter(const std::string& filter);
 
       //--------------------------------------------------------------
       /// \brief			Destructor
@@ -38,7 +42,7 @@ namespace xplcore
       /// \param [in]   msg   The XplMessage to check
       /// \return       True if the message match this filter
       //--------------------------------------------------------------
-      bool match(const CXplMessage & msg);
+      bool match(const CXplMessage& msg);
 
    private:
 
@@ -51,7 +55,12 @@ namespace xplcore
       /// \param [in]   classId     Class Id from which to receive messages (* allowed)
       /// \param [in]   typeId      Type of message to receive  (* allowed)
       //--------------------------------------------------------------
-      void setFilter(const std::string & msgtype, const std::string & vendor, const std::string & device, const std::string & instance, const std::string & classId, const std::string & typeId);
+      void setFilter(const std::string& msgtype,
+                     const std::string& vendor,
+                     const std::string& device,
+                     const std::string& instance,
+                     const std::string& classId,
+                     const std::string& typeId);
 
       std::string m_msgtype;
       std::string m_vendor;
@@ -60,6 +69,6 @@ namespace xplcore
       std::string m_classId;
       std::string m_typeId;
    };
- 
-
 } // namespace xplcore
+
+

@@ -6,14 +6,16 @@
 
 namespace xplcore
 {
-
    CXplActor::CXplActor()
    {
       m_broadcastActive = false;
    }
 
-   CXplActor::CXplActor(const CXplActor & actor)
-      :m_vendorId(actor.getVendorId()), m_deviceId(actor.getDeviceId()), m_instanceId(actor.getInstanceId()), m_broadcastActive(actor.m_broadcastActive)
+   CXplActor::CXplActor(const CXplActor& actor)
+      : m_vendorId(actor.getVendorId()),
+        m_deviceId(actor.getDeviceId()),
+        m_instanceId(actor.getInstanceId()),
+        m_broadcastActive(actor.m_broadcastActive)
    {
    }
 
@@ -21,14 +23,16 @@ namespace xplcore
    {
    }
 
-   bool CXplActor::operator==(const CXplActor& rhs)
+   bool CXplActor::operator==(const CXplActor& rhs) const
    {
-      return   boost::iequals(m_vendorId, rhs.m_vendorId) &&
+      return boost::iequals(m_vendorId, rhs.m_vendorId) &&
          boost::iequals(m_deviceId, rhs.m_deviceId) &&
          boost::iequals(m_instanceId, rhs.m_instanceId);
    }
 
-   const CXplActor CXplActor::createActor(const std::string & vendorId, const std::string & deviceId, const std::string & instanceId)
+   CXplActor CXplActor::createActor(const std::string& vendorId,
+                                    const std::string& deviceId,
+                                    const std::string& instanceId)
    {
       CXplActor actor;
       actor.setVendorId(vendorId);
@@ -38,7 +42,8 @@ namespace xplcore
       return actor;
    }
 
-   const CXplActor CXplActor::createActor(const std::string & deviceId, const std::string & instanceId)
+   CXplActor CXplActor::createActor(const std::string& deviceId,
+                                    const std::string& instanceId)
    {
       CXplActor actor;
       actor.setVendorId(CXplConstants::getYadomsVendorId());
@@ -48,14 +53,14 @@ namespace xplcore
       return actor;
    }
 
-   const CXplActor CXplActor::createBroadcastActor()
+   CXplActor CXplActor::createBroadcastActor()
    {
       CXplActor actor;
       actor.m_broadcastActive = true;
       return actor;
    }
 
-   void CXplActor::setVendorId(const std::string & vendorId)
+   void CXplActor::setVendorId(const std::string& vendorId)
    {
       if (m_broadcastActive)
          throw CXplException("Unable to set vendor Id on a broadcast actor");
@@ -70,7 +75,7 @@ namespace xplcore
       return m_vendorId;
    }
 
-   void CXplActor::setDeviceId(const std::string & deviceId)
+   void CXplActor::setDeviceId(const std::string& deviceId)
    {
       if (m_broadcastActive)
          throw CXplException("Unable to set vendor Id on a broadcast actor");
@@ -85,7 +90,7 @@ namespace xplcore
       return m_deviceId;
    }
 
-   void CXplActor::setInstanceId(const std::string & instanceId)
+   void CXplActor::setInstanceId(const std::string& instanceId)
    {
       if (m_broadcastActive)
          throw CXplException("Unable to set vendor Id on a broadcast actor");
@@ -107,7 +112,7 @@ namespace xplcore
       return std::string(m_vendorId + "-" + m_deviceId + "." + m_instanceId);
    }
 
-   const CXplActor CXplActor::parse(const std::string & rawActorString)
+   CXplActor CXplActor::parse(const std::string& rawActorString)
    {
       //an xplactor string shoudl match the pattern:
       // vendorId-feviceId.instanceId
@@ -118,14 +123,14 @@ namespace xplcore
       // vendorId 8 char max ( "-" is not authorized)
       // deviceId 8 char max ( "-" is not authorized)
       // instanceId 16 char max
-      std::string lineString = boost::trim_copy(rawActorString);
+      auto lineString = boost::trim_copy(rawActorString);
 
       //check for broadcast actor
       if (lineString == CXplHelper::WildcardString)
          return createBroadcastActor();
 
       std::vector<std::string> actorFields;
-      if(!CXplHelper::matchActorRules(lineString,actorFields))
+      if (!CXplHelper::matchActorRules(lineString, actorFields))
       {
          throw CXplException("Header part must have 3 fields : vendorId-DeviceId.instanceId");
       }
@@ -138,5 +143,6 @@ namespace xplcore
       actor.setInstanceId(actorFields[2]);
       return actor;
    }
-
 } // namespace xplcore
+
+

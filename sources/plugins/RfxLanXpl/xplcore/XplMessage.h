@@ -5,7 +5,6 @@
 
 namespace xplcore
 {
-
    //--------------------------------------------------------------
    /// \class It represent a xpl message
    //--------------------------------------------------------------
@@ -31,13 +30,16 @@ namespace xplcore
       /// \param [in] target : target actor
       /// \param [in] messageSchemaIdentifier : message Identifier
       //--------------------------------------------------------------
-      CXplMessage(const ETypeIdentifier & typeId, const CXplActor & source, const CXplActor & target, CXplMessageSchemaIdentifier messageSchemaIdentifier);
-   
+      CXplMessage(const ETypeIdentifier& typeId,
+                  const CXplActor& source,
+                  const CXplActor& target,
+                  CXplMessageSchemaIdentifier messageSchemaIdentifier);
+
       //--------------------------------------------------------------
       /// \brief	    Constructor
       /// \param [in] message : message to copy
       //--------------------------------------------------------------
-      CXplMessage(const CXplMessage & message);
+      CXplMessage(const CXplMessage& message);
 
       //--------------------------------------------------------------
       /// \brief      Destructor
@@ -48,8 +50,8 @@ namespace xplcore
       /// \brief	    Set the Type identifier (cmd, trig or stat)
       /// \param [in] typeId : type identifier of the message
       //--------------------------------------------------------------
-      void setTypeIdentifier(const ETypeIdentifier & typeId);
-   
+      void setTypeIdentifier(const ETypeIdentifier& typeId);
+
       //--------------------------------------------------------------
       /// \brief	    Get the type identifier
       /// \return     The type identifier of the message
@@ -66,8 +68,8 @@ namespace xplcore
       /// \brief	    Set the source
       /// \param [in] source : source of the message
       //--------------------------------------------------------------
-      void setSource(const CXplActor & source);
-   
+      void setSource(const CXplActor& source);
+
       //--------------------------------------------------------------
       /// \brief	    Get the source
       /// \return     The source of the message
@@ -78,8 +80,8 @@ namespace xplcore
       /// \brief	    Set the target
       /// \param [in] target : target of the message
       //--------------------------------------------------------------
-      void setTarget(const CXplActor & target);
-   
+      void setTarget(const CXplActor& target);
+
       //--------------------------------------------------------------
       /// \brief	    Get the target
       /// \return     The target of the message
@@ -107,33 +109,33 @@ namespace xplcore
       /// \brief	    Set the message Schema Identifier
       /// \param [in] messageSchemaIdentifier : message schema identifier of the message
       //--------------------------------------------------------------
-      void setMessageSchemaIdentifier(const CXplMessageSchemaIdentifier & messageSchemaIdentifier);
+      void setMessageSchemaIdentifier(const CXplMessageSchemaIdentifier& messageSchemaIdentifier);
 
       //--------------------------------------------------------------
       /// \brief	    Get the Message Schema Identifier
       /// \return     The message schema identifier
       //--------------------------------------------------------------
-      const CXplMessageSchemaIdentifier & getMessageSchemaIdentifier() const;
+      const CXplMessageSchemaIdentifier& getMessageSchemaIdentifier() const;
 
       //--------------------------------------------------------------
       /// \brief	    Permit to add a key/value element to the body
       /// \param [in] name : name of the key/value element
       /// \param [in] value : value of the key/value element
       //--------------------------------------------------------------
-      void addToBody(const std::string & name, const std::string & value);
+      void addToBody(const std::string& name, const std::string& value);
 
       //--------------------------------------------------------------
       /// \brief	    Get the Map of the body
       /// \return     The Map containing all the body
       //--------------------------------------------------------------
-      const std::map<std::string, std::string> & getBody() const;
+      const std::map<std::string, std::string>& getBody() const;
 
       //--------------------------------------------------------------
       /// \brief	    Check if body contains the given value
       /// \param [in] key : key of the key/value element
       /// \return     true if body contains the value
       //--------------------------------------------------------------
-      bool hasBodyValue(const std::string & key) const;
+      bool hasBodyValue(const std::string& key) const;
 
       //--------------------------------------------------------------
       /// \brief	    Get body value
@@ -141,7 +143,7 @@ namespace xplcore
       /// \return     A value contained in the body
       /// \throw      CXplException if key was not found
       //--------------------------------------------------------------
-      const std::string & getBodyValue(const std::string & key) const;
+      const std::string& getBodyValue(const std::string& key) const;
 
       //--------------------------------------------------------------
       /// \brief	    Get body value, with default value
@@ -149,7 +151,8 @@ namespace xplcore
       /// \param [in] defaultValue : default value, returned if key was not found
       /// \return     A value contained in the body, or the default value if key was not found
       //--------------------------------------------------------------
-      const std::string & getBodyValue(const std::string & key, const std::string & defaultValue) const;
+      const std::string& getBodyValue(const std::string& key,
+                                      const std::string& defaultValue) const;
 
       //--------------------------------------------------------------
       /// \brief	    Get the message as it has to be sent
@@ -161,13 +164,13 @@ namespace xplcore
       /// \brief	    Parse A string and build an XplMessage With
       /// \param [in] rawMessage : message to Parse
       //--------------------------------------------------------------
-      static CXplMessage parse(const std::string & rawMessage);
+      static CXplMessage parse(const std::string& rawMessage);
 
       //--------------------------------------------------------------
       /// \brief	    Create a heartbeat request message
       /// \param [in] source : the source
       //--------------------------------------------------------------
-      static CXplMessage createHeartbeatRequest(const CXplActor & source);
+      static CXplMessage createHeartbeatRequest(const CXplActor& source);
 
    private:
       ETypeIdentifier m_typeIdentifier;
@@ -188,5 +191,6 @@ namespace xplcore
       static const std::string XplSourceHeader;
       static const std::string XplTargetHeader;
    };
-
 } // namespace xplcore
+
+
