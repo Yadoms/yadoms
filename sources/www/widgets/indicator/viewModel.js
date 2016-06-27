@@ -24,29 +24,27 @@ widgetViewModelCtor = function indicatorViewModel() {
         });
     };
 
-    this.commandClick = function (newState) {
-
-        if ((!isNullOrUndefined(this.widget.configuration)) && (!isNullOrUndefined(this.widget.configuration.device))) {
-            KeywordManager.sendCommand(this.widget.configuration.device.keywordId, newState.toString());
-        }
-    };
-
     this.indicatorClick = function () {
         var self = this;
+        if ((!isNullOrUndefined(self.widget.configuration)) && (!isNullOrUndefined(self.widget.configuration.device))) {
+            //the click event is taken under account only if the readOnly is not active
+            if (!self.readOnly) {
+                //we prevent from flooding command
+                self.readOnly = true;
+                setTimeout(function () {
+                    self.readOnly = false;
 
-        //the click event is taken under account only if the readOnly is not active
-        if (!self.readOnly) {
-            if (self.command() === 0) {
-                self.command(1);
-                self.iconColor(self.activatedColor);
-            } else {
-                self.command(0);
-                self.iconColor(self.deactivatedColor);
+                    if (self.command() === 0) {
+                        self.command(1);
+                        self.iconColor(self.activatedColor);
+                    } else {
+                        self.command(0);
+                        self.iconColor(self.deactivatedColor);
+                    }
+                    //Send the command
+                    KeywordManager.sendCommand(self.widget.configuration.device.keywordId, self.command().toString());
+                }, 500);
             }
-                
-
-            //Send the command
-            this.commandClick(self.command());
         }
     }
 
@@ -64,10 +62,10 @@ widgetViewModelCtor = function indicatorViewModel() {
         } catch (err) {
             self.readOnly = false;
         }
-		
-		
+
+
         try {
-            self.icon("textfit textfit-in-parent glyphicon " + self.widget.configuration.icon + " " +( self.readOnly?"":"writable" ));
+            self.icon("textfit textfit-in-parent glyphicon " + self.widget.configuration.icon + " " + (self.readOnly ? "" : "writable"));
         }
         catch (err) { }
 
@@ -77,7 +75,7 @@ widgetViewModelCtor = function indicatorViewModel() {
         var defaultDeactivatedColor = "#777";
 
         try {
-            self.activatedColor = self.widget.configuration.customColors.checkbox?self.widget.configuration.customColors.content.activated:defaultActivatedColor;
+            self.activatedColor = self.widget.configuration.customColors.checkbox ? self.widget.configuration.customColors.content.activated : defaultActivatedColor;
             self.deactivatedColor = self.widget.configuration.customColors.checkbox ? self.widget.configuration.customColors.content.deactivated : defaultDeactivatedColor;
         } catch (err) {
             self.activatedColor = defaultActivatedColor;
