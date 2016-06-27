@@ -12,7 +12,12 @@
 #include <shared/Log.h>
 
 COpenZWaveController::COpenZWaveController()
-   :m_homeId(0), m_initFailed(false), m_nodesQueried(false), m_lastSuccessfullySentCommand(OpenZWave::Driver::ControllerCommand_None), m_handler(NULL), m_configuration(NULL)
+   :m_homeId(0),
+    m_initFailed(false),
+    m_nodesQueried(false),
+    m_lastSuccessfullySentCommand(OpenZWave::Driver::ControllerCommand_None),
+    m_handler(NULL),
+    m_configuration(NULL)
 {
 
 }
@@ -30,7 +35,7 @@ void onGlobalNotification(OpenZWave::Notification const* _notification, void* _c
       std::cout << "OpenZWave notification : " << _notification->GetAsString() << std::endl;
 
       COpenZWaveController * pPlugin = static_cast<COpenZWaveController *>(_context);
-      if (pPlugin != NULL)
+      if (pPlugin != nullptr)
          pPlugin->onNotification(_notification, _context);
    }
    catch (OpenZWave::OZWException & ex)
@@ -67,10 +72,10 @@ IZWaveController::E_StartResult COpenZWaveController::start()
       // The second argument is the path for saved Z-Wave network state and the log file.  If you leave it NULL 
       // the log file will appear in the program's working directory.
       boost::filesystem::path full_path(m_configuration->getPath());
-      boost::filesystem::path folder = full_path;
+      auto folder = full_path;
       folder /= "config";
 
-      boost::filesystem::path dataFolder = full_path;
+      auto dataFolder = full_path;
       dataFolder /= "data";
       if (!boost::filesystem::exists(dataFolder)) 
       {

@@ -93,6 +93,7 @@ namespace shared
             //--------------------------------------------------------------
             /// \brief	    Get the plugin path
             /// \return     the plugin path (folder)
+            /// \note       Do not store data in this path, use the instance data path instead (see IYPluginApi::getDataPath)
             //--------------------------------------------------------------
             virtual const boost::filesystem::path& getPath() const = 0;
          };

@@ -22,6 +22,7 @@ namespace pluginSystem
       ///\brief                                    Constructor
       /// \param [in]   pluginInformations         the plugin informations (name, description, version, author...)
       /// \param [in]   instanceData               the instance data
+      /// \param [in]   dataPath                   the instance data path
       /// \param [in]   instanceStateHandler       the instance state handler
       /// \param [in]   dataProvider               the database accessor
       /// \param [in]   pluginEventLoggerRequester the plugin event logger requester
@@ -31,6 +32,7 @@ namespace pluginSystem
       //-----------------------------------------------------
       CYPluginApiImplementation(boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformations,
                                 const boost::shared_ptr<const database::entities::CPlugin> instanceData,
+                                const boost::filesystem::path& dataPath,
                                 boost::shared_ptr<IInstanceStateHandler> instanceStateHandler,
                                 boost::shared_ptr<database::IDataProvider> dataProvider,
                                 boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
@@ -75,6 +77,7 @@ namespace pluginSystem
                          const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >& dataVect) override;
       boost::shared_ptr<const shared::plugin::information::IInformation> getInformation() const override;
       shared::CDataContainer getConfiguration() override;
+      const boost::filesystem::path& getDataPath() const override;
       shared::event::CEventHandler& getEventHandler() override;
       // [END] IYPluginApi implementation 
 
@@ -94,6 +97,11 @@ namespace pluginSystem
       /// \brief			Plugin informations
       //--------------------------------------------------------------
       boost::shared_ptr<const shared::plugin::information::IInformation> m_informations;
+
+      //--------------------------------------------------------------
+      /// \brief			The instance data path
+      //--------------------------------------------------------------
+      const boost::filesystem::path m_dataPath;
 
       //--------------------------------------------------------------
       /// \brief			The database accessor

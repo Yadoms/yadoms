@@ -7,7 +7,9 @@
 
 namespace plugin_cpp_api
 {
-   CPluginContext::CPluginContext(int argc, char** argv, boost::shared_ptr<IPlugin> plugin)
+   CPluginContext::CPluginContext(int argc,
+                                  char** argv,
+                                  boost::shared_ptr<IPlugin> plugin)
       : m_commandLine(boost::make_shared<CCommandLine>(argc, argv)),
         m_plugin(plugin),
         m_returnCode(kOk)

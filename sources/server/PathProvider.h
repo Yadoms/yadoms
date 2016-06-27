@@ -22,19 +22,22 @@ public:
 
    // IPathProvider implementation
    const boost::filesystem::path& logsPath() const override;
-   const boost::filesystem::path& getWebServerPath() const override;
+   const boost::filesystem::path& webServerPath() const override;
    const boost::filesystem::path& pluginsLogPath() const override;
+   const boost::filesystem::path& pluginsDataPath() const override;
    const boost::filesystem::path& pluginsPath() const override;
    const boost::filesystem::path& scriptsPath() const override;
    const boost::filesystem::path& scriptsLogPath() const override;
    const boost::filesystem::path& scriptInterpretersPath() const override;
-   const boost::filesystem::path& getDatabaseSqliteFile() const override;
+   const boost::filesystem::path& databaseSqliteFile() const override;
    // [END] IPathProvider implementation
 
 private:
    const boost::filesystem::path m_logsPath;
+   const boost::filesystem::path m_dataPath;
    const boost::filesystem::path m_webServerPath;
    const boost::filesystem::path m_pluginsLogPath;
+   const boost::filesystem::path m_pluginsDataPath;
    const boost::filesystem::path m_scriptsLogPath;
 
    const boost::filesystem::path m_pluginsPath;

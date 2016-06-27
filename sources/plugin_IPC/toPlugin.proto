@@ -1,6 +1,6 @@
 package toPlugin;
 
-import "pluginInformation.proto";
+import "pluginInit.proto";
 
 
 message System {
@@ -64,19 +64,19 @@ message msg {
 
 	oneof OneOf {
 		System system = 2;
-		Information pluginInformation = 3;
-		Configuration configurationAnswer = 4;
-		Configuration updateConfiguration = 5;
-		BindingQuery bindingQuery = 6;
-		DeviceCommand deviceCommand = 7;
-		ExtraCommand extraCommand = 8;
-		DeviceExitsAnswer deviceExists = 9;
-		DeviceDetailsAnswer deviceDetails = 10;
-		KeywordExitsAnswer keywordExists = 11;
-		RecipientValueAnswer recipientValue = 12;
-		FindRecipientsFromFieldAnswer findRecipientsFromFieldAnswer = 13;
-		RecipientFieldExitsAnswer recipientFieldExitsAnswer = 14;
-		ManuallyDeviceCreation manuallyDeviceCreation = 15;
+		Init init = 3;
+		Configuration configurationAnswer = 5;
+		Configuration updateConfiguration = 6;
+		BindingQuery bindingQuery = 7;
+		DeviceCommand deviceCommand = 8;
+		ExtraCommand extraCommand = 9;
+		DeviceExitsAnswer deviceExists = 10;
+		DeviceDetailsAnswer deviceDetails = 11;
+		KeywordExitsAnswer keywordExists = 12;
+		RecipientValueAnswer recipientValue = 13;
+		FindRecipientsFromFieldAnswer findRecipientsFromFieldAnswer = 14;
+		RecipientFieldExitsAnswer recipientFieldExitsAnswer = 15;
+		ManuallyDeviceCreation manuallyDeviceCreation = 16;
 	}
 }
 

@@ -73,6 +73,7 @@ namespace pluginSystem
 
       return boost::make_shared<CInstance>(instanceData,
                                            pluginInformation,
+                                           pluginDataPath(instanceData->Id()),
                                            process,
                                            yPluginApi);
    }
@@ -107,6 +108,16 @@ namespace pluginSystem
    boost::filesystem::path CFactory::pluginLogFile(int instanceId) const
    {
       return m_pathProvider.pluginsLogPath() / std::to_string(instanceId) / "plugin.log";
+   }
+
+   boost::filesystem::path CFactory::pluginDataPath(int instanceId) const
+   {
+      auto pluginDataPath(m_pathProvider.pluginsDataPath() / std::to_string(instanceId));
+
+      if (!boost::filesystem::exists(pluginDataPath))
+         boost::filesystem::create_directory(pluginDataPath);
+
+      return pluginDataPath;
    }
 
    boost::shared_ptr<shared::process::ILogger> CFactory::createProcessLogger(boost::shared_ptr<const database::entities::CPlugin> instanceData) const
@@ -171,6 +182,7 @@ namespace pluginSystem
    {
       return boost::make_shared<CYPluginApiImplementation>(pluginInformation,
                                                            instanceData,
+                                                           pluginDataPath(instanceData->Id()),
                                                            instanceStateHandler,
                                                            dataProvider,
                                                            dataAccessLayer->getDeviceManager(),

@@ -2,10 +2,13 @@
 
 #include "IDataProvider.h"
 #include "IDatabaseRequester.h"
+#include <IPathProvider.h>
 
 
-namespace database { 
+class IPathProvider;
 
+namespace database
+{
    //--------------------------------------------------------------
    /// \Brief		   Database factory
    //--------------------------------------------------------------
@@ -14,15 +17,17 @@ namespace database {
    public:
       //--------------------------------------------------------------
       /// \Brief		   Create the Database engine
+      /// \param[in] pathProvider   The application path provider
       //--------------------------------------------------------------
-      static boost::shared_ptr<database::IDataProvider> create();
+      static boost::shared_ptr<IDataProvider> create(const IPathProvider& pathProvider);
 
    private:
       //--------------------------------------------------------------
       /// \Brief		   Create the Database engine
+      /// \param[in] pathProvider   The application path provider
       //--------------------------------------------------------------
-      static boost::shared_ptr<IDatabaseRequester> createEngine();
+      static boost::shared_ptr<IDatabaseRequester> createEngine(const IPathProvider& pathProvider);
    };
-   
 } //namespace database 
+
 

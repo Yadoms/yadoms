@@ -49,11 +49,19 @@ namespace pluginSystem
                                                           boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
                                                           boost::shared_ptr<IQualifier> qualifier,
                                                           boost::shared_ptr<IInstanceStoppedListener> instanceStoppedListener) const = 0;
+
       //--------------------------------------------------------------
       /// \brief	                  Get the plugin instance log file path
       /// \param [in]	instanceId  The plugin instance id
       /// \return                   The plugin instance log file path
       //--------------------------------------------------------------
       virtual boost::filesystem::path pluginLogFile(int instanceId) const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief	                  Get the plugin instance data path
+      /// \param [in]	instanceId  The plugin instance id
+      /// \return                   The plugin instance data path
+      //--------------------------------------------------------------
+      virtual boost::filesystem::path pluginDataPath(int instanceId) const = 0;
    };
 } // namespace pluginSystem

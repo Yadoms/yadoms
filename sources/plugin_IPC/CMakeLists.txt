@@ -6,7 +6,7 @@ set(plugin_IPC_SOURCES
    toYadoms.proto
    toPlugin.proto
    
-   pluginInformation.proto
+   pluginInit.proto
    
    plugin_IPC/plugin_IPC.h
 )
@@ -15,7 +15,7 @@ protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS toYadoms.proto)
 set(plugin_IPC_SOURCES ${plugin_IPC_SOURCES} ${PROTO_SRCS} ${PROTO_HDRS})
 protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS toPlugin.proto)
 set(plugin_IPC_SOURCES ${plugin_IPC_SOURCES} ${PROTO_SRCS} ${PROTO_HDRS})
-protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS pluginInformation.proto)
+protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS pluginInit.proto)
 set(plugin_IPC_SOURCES ${plugin_IPC_SOURCES} ${PROTO_SRCS} ${PROTO_HDRS})
 
 set(plugin_IPC_GENERATED_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE INTERNAL "Path to generated protobuf files.")

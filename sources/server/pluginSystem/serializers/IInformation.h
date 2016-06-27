@@ -1,6 +1,6 @@
 #pragma once
 
-#include <pluginInformation.pb.h>
+#include <pluginInit.pb.h>
 
 
 namespace pluginSystem

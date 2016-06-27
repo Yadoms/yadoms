@@ -4,6 +4,5 @@
 
 boost::shared_ptr<IZWaveController> CZWaveControllerFactory::Create()
 {
-   boost::shared_ptr<IZWaveController> controller(new COpenZWaveController());
-   return controller;
+   return boost::make_shared<COpenZWaveController>();
 }
