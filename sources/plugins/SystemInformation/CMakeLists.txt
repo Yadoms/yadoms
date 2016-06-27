@@ -14,15 +14,15 @@ set(SYSTEMINFORMATION_PLUGIN_SOURCES
 	stdafx.h
 	stdafx.cpp
 	ILoad.h
-   ISIConfiguration.h
-   SIConfiguration.h
-   SIConfiguration.cpp
-   SystemInformation.h
-   SystemInformation.cpp
-   specificHistorizers/Byte.cpp
-   specificHistorizers/Byte.h
-   specificHistorizers/KByte.cpp
-   specificHistorizers/KByte.h
+        ISIConfiguration.h
+        SIConfiguration.h
+        SIConfiguration.cpp
+        SystemInformation.h
+        SystemInformation.cpp
+        specificHistorizers/Byte.cpp
+        specificHistorizers/Byte.h
+        specificHistorizers/KByte.cpp
+        specificHistorizers/KByte.h
 	)
 
    source_group(specificHistorizers specificHistorizers/*.*)
@@ -57,8 +57,6 @@ IF (UNIX AND NOT APPLE)
 	CommonLinux/DiskUsage.cpp
         CommonLinux/LinuxHelpers.h
         CommonLinux/LinuxHelpers.cpp
-	CommonLinux/MemoryLoad.h
-	CommonLinux/MemoryLoad.cpp
 	)
 	
 	source_group(CommonLinux CommonLinux/*.*)
@@ -68,6 +66,8 @@ IF (UNIX AND NOT APPLE AND NOT (CMAKE_YADOMS_PLATFORM STREQUAL "Raspberry"))
    set(SYSTEMINFORMATION_PLUGIN_SOURCES ${SYSTEMINFORMATION_PLUGIN_SOURCES}
       Linux/SystemFactory.h
       Linux/SystemFactory.cpp
+      Linux/MemoryLoad.h
+      Linux/MemoryLoad.cpp
       )
 
     source_group(Linux Linux/*.*)
@@ -89,6 +89,8 @@ IF(CMAKE_YADOMS_PLATFORM STREQUAL "Raspberry")
       RaspberryPI/SystemFactory.cpp
       RaspberryPI/TemperatureSensor.cpp
       RaspberryPI/TemperatureSensor.h
+      RaspberryPI/MemoryLoad.h
+      RaspberryPI/MemoryLoad.cpp
       )
 	
 	source_group(RaspberryPI RaspberryPI/*.*)
