@@ -29,11 +29,11 @@ namespace device
       if (isTemperatureValid(temperature))
       {
          m_temperature->set(temperature);
-         m_keywords = &m_allKeywords;
+         m_keywords = const_cast<std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >*>(&m_allKeywords);
       }
       else
       {
-         m_keywords = &m_noKeywords;
+         m_keywords = const_cast<std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >*>(&m_noKeywords);
       }
    }
 
