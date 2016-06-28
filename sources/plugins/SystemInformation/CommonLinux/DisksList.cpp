@@ -10,10 +10,10 @@
 
 CDisksList::CDisksList()
 {
-   std::vector<std::string> _rlines=ExecuteCommandAndReturn("df");
+   std::vector<std::string> _rlines = ExecuteCommandAndReturn("df");
    std::vector<std::string>::const_iterator iteratorCommandDF;
 
-   for (iteratorCommandDF=_rlines.begin(); iteratorCommandDF!=_rlines.end(); ++iteratorCommandDF)
+   for (iteratorCommandDF = _rlines.begin(); iteratorCommandDF != _rlines.end(); ++iteratorCommandDF)
    {
       boost::regex reg("(.(dev)[^\\s]+)");
       std::string dname;

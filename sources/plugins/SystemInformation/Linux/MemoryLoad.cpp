@@ -13,11 +13,10 @@ CMemoryLoad::~CMemoryLoad()
 {
 }
 
-void CMemoryLoad::ReadFromFile( unsigned long long *dmemTotal,
-                                unsigned long long *dmemFree,
-                                unsigned long long *dbuffer,
-                                unsigned long long *dcached
-                              )
+void CMemoryLoad::ReadFromFile(unsigned long long *dmemTotal,
+                               unsigned long long *dmemFree,
+                               unsigned long long *dbuffer,
+                               unsigned long long *dcached)
 {
    std::ifstream procFile("/proc/meminfo");
    
@@ -64,7 +63,7 @@ void CMemoryLoad::read()
 
    float MemoryLoad = static_cast<float>(((memTotal-memFree)-memBuffer-memCached) * 100 / float(memTotal));
 
-   m_keyword->set( MemoryLoad );
+   m_keyword->set(MemoryLoad);
 
    std::cout << "Memory Load : " << m_keyword->formatValue() << std::endl;
 }

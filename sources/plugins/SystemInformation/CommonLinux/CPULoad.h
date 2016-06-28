@@ -42,13 +42,13 @@ private:
    //--------------------------------------------------------------
    /// \brief	    Read all needed information
    //--------------------------------------------------------------
-   void ReadFromFile(unsigned long long *dtotalUser,
-                     unsigned long long *dtotalUserLow,
-                     unsigned long long *dtotalSys,
-                     unsigned long long *dtotalIdle,
-                     unsigned long long *dtotalIowait,
-                     unsigned long long *dtotalIrq,
-                     unsigned long long *dtotalSoftIrq);
+   void ReadFromFile(unsigned long long& dtotalUser,
+                     unsigned long long& dtotalUserLow,
+                     unsigned long long& dtotalSys,
+                     unsigned long long& dtotalIdle,
+                     unsigned long long& dtotalIowait,
+                     unsigned long long& dtotalIrq,
+                     unsigned long long& dtotalSoftIrq);
 
    //--------------------------------------------------------------
    /// \brief	    Temp variables

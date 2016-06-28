@@ -34,11 +34,10 @@ public:
       return m_keyword;
    }
 
-   void ReadFromFile( unsigned long long *dmemTotal,
-                      unsigned long long *dmemFree,
-                      unsigned long long *dbuffer,
-                      unsigned long long *dcached
-                    );
+   void ReadFromFile(unsigned long long *dmemTotal,
+                     unsigned long long *dmemFree,
+                     unsigned long long *dbuffer,
+                     unsigned long long *dcached);
 
 private:
    //--------------------------------------------------------------

@@ -60,5 +60,6 @@ void CSystemFactory::OnLowFrequencyUpdate(boost::shared_ptr<yApi::IYPluginApi> a
 void CSystemFactory::OnConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
                                            const ISIConfiguration& configuration,
                                            shared::CDataContainer details)
-{}
+{
+}
 
