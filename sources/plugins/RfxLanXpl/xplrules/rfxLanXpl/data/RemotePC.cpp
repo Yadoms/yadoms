@@ -54,7 +54,6 @@ namespace xplrules { namespace rfxLanXpl { namespace data {
       ((Key7))
       ((Teletext))
       ((Record))
-
    );
    
    const shared::plugin::yPluginApi::CStandardCapacity& RemotePCCapacity = shared::plugin::yPluginApi::CStandardCapacity("RemotePC", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);

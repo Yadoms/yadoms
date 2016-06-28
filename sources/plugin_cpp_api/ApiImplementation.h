@@ -59,6 +59,7 @@ namespace plugin_cpp_api
                          const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >& dataVect) override;
       boost::shared_ptr<const shared::plugin::information::IInformation> getInformation() const override;
       shared::CDataContainer getConfiguration() override;
+      const boost::filesystem::path& getDataPath() const override;
       shared::event::CEventHandler& getEventHandler() override;
       // [END] shared::script::yScriptApi::IYScriptApi implementation
 
@@ -77,7 +78,7 @@ namespace plugin_cpp_api
                 boost::function1<void, const toPlugin::msg&> onReceiveFunction) const;
 
       void processSystem(const toPlugin::System& msg);
-      void processPluginInformation(const toPlugin::Information& msg);
+      void processInit(const toPlugin::Init& msg);
       void processUpdateConfiguration(const toPlugin::Configuration& msg);
       void processBindingQuery(const toPlugin::BindingQuery& msg);
       void processDeviceCommand(const toPlugin::DeviceCommand& msg);
@@ -109,6 +110,7 @@ namespace plugin_cpp_api
       mutable boost::function1<bool, const toPlugin::msg&> m_onReceiveHook;
 
       boost::shared_ptr<shared::plugin::information::IInformation> m_pluginInformation;
+      boost::shared_ptr<const boost::filesystem::path> m_dataPath;
    };
 } // namespace plugin_cpp_api	
 

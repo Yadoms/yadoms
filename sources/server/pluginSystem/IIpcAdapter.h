@@ -35,8 +35,10 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief	Post the plugin information
       /// \param[in] information The plugin information
+      /// \param[in] dataPath    The plugin instance data path
       //--------------------------------------------------------------
-      virtual void postPluginInformation(boost::shared_ptr<const shared::plugin::information::IInformation> information) = 0;
+      virtual void postInit(boost::shared_ptr<const shared::plugin::information::IInformation> information,
+                            const boost::filesystem::path& dataPath) = 0;
 
       //--------------------------------------------------------------
       /// \brief                 Post a configuration update to plugin instance

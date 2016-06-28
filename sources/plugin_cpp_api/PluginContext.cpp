@@ -7,7 +7,9 @@
 
 namespace plugin_cpp_api
 {
-   CPluginContext::CPluginContext(int argc, char** argv, boost::shared_ptr<IPlugin> plugin)
+   CPluginContext::CPluginContext(int argc,
+                                  char** argv,
+                                  boost::shared_ptr<IPlugin> plugin)
       : m_commandLine(boost::make_shared<CCommandLine>(argc, argv)),
         m_plugin(plugin),
         m_returnCode(kOk)
@@ -123,7 +125,7 @@ namespace plugin_cpp_api
                                                                               m_receiveMessageQueue->get_max_msg_size(),
                                                                               messageSize,
                                                                               messagePriority,
-                                                                              boost::posix_time::ptime(boost::posix_time::microsec_clock::universal_time() + boost::posix_time::seconds(1)));
+                                                                              boost::posix_time::microsec_clock::universal_time() + boost::posix_time::seconds(1));
                boost::this_thread::interruption_point();
 
                if (messageWasReceived)

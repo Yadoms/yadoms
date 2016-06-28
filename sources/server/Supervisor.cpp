@@ -58,7 +58,7 @@ void CSupervisor::run()
       auto startupOptions = shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>();
 
       //start database system
-      boost::shared_ptr<database::IDataProvider> pDataProvider = database::CFactory::create(); 
+      auto pDataProvider = database::CFactory::create(m_pathProvider);
       if (!pDataProvider->load())
          throw shared::exception::CException("Fail to load database");
 
@@ -100,7 +100,7 @@ void CSupervisor::run()
       // Start Web server
       const auto webServerIp = startupOptions->getWebServerIPAddress();
       const auto webServerPort = boost::lexical_cast<std::string>(startupOptions->getWebServerPortNumber());
-      const auto webServerPath = m_pathProvider.getWebServerPath().string();
+      const auto webServerPath = m_pathProvider.webServerPath().string();
       const auto scriptInterpretersPath = m_pathProvider.scriptInterpretersPath().string();
 
       auto webServer(boost::make_shared<web::poco::CWebServer>(webServerIp,

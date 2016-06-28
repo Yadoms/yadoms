@@ -4,7 +4,6 @@
 #include <shared/exception/EmptyResult.hpp>
 #include "database/common/DatabaseTables.h"
 #include "database/common/Query.h"
-#include "Acquisition.h"
 
 namespace database
 {
@@ -12,10 +11,8 @@ namespace database
    {
       namespace requesters
       {
-         CKeyword::CKeyword(boost::shared_ptr<IDatabaseRequester> databaseRequester,
-                            boost::shared_ptr<CAcquisition> acquisitionRequester)
-            : m_databaseRequester(databaseRequester),
-              m_acquisitionRequester(acquisitionRequester)
+         CKeyword::CKeyword(boost::shared_ptr<IDatabaseRequester> databaseRequester)
+            : m_databaseRequester(databaseRequester)
          {
          }
 
@@ -193,9 +190,6 @@ namespace database
 
          void CKeyword::removeKeyword(const int keywordId)
          {
-            //delete acquisition data
-            m_acquisitionRequester->removeKeywordData(keywordId);
-
             //delete keyword
             auto qDelete = m_databaseRequester->newQuery();
             qDelete.DeleteFrom(CKeywordTable::getTableName()).

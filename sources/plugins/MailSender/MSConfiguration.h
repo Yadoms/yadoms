@@ -21,14 +21,14 @@ public:
    virtual ~CMSConfiguration();
 
    // IMSConfiguration implementation
-   virtual void initializeWith(const shared::CDataContainer &data);
-   virtual std::string getSenderEmail() const;
-   virtual std::string getHost() const;
-   virtual Poco::UInt16 getPort() const;
-   virtual ESecurityMode getSecurityMode() const;
-   virtual bool getAuthenticationRequired() const;
-   virtual std::string getLogin() const;
-   virtual std::string getPassword() const;
+   void initializeWith(const shared::CDataContainer& data) override;
+   std::string getSenderEmail() const override;
+   std::string getHost() const override;
+   Poco::UInt16 getPort() const override;
+   ESecurityMode getSecurityMode() const override;
+   bool getAuthenticationRequired() const override;
+   std::string getLogin() const override;
+   std::string getPassword() const override;
 
    // [END] ISIConfiguration implementation
 
@@ -73,3 +73,4 @@ private:
    //--------------------------------------------------------------
    std::string m_Password;
 };
+

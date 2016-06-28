@@ -2,13 +2,11 @@
 
 #include "../IRule.h"
 #include "../IReadRule.h"
-#include "../ICommandRule.h"
-#include "../ISupportManuallyDeviceCreationRule.h"
-#include <shared/enumeration/EnumHelpers.hpp>
 
 namespace xplrules { namespace rfxLanXpl {
 
-   class CLogBasic : public IRule, public IReadRule
+   class CLogBasic : public IRule,
+      public IReadRule
    {
    public:
       CLogBasic();
@@ -18,15 +16,15 @@ namespace xplrules { namespace rfxLanXpl {
       ///\brief Provide the xpl protocol implemented by this class
       ///\return the xpl protocol
       //------------------------------------
-      static const xplcore::CXplMessageSchemaIdentifier getProtocol();
+      static xplcore::CXplMessageSchemaIdentifier getProtocol();
 
       // IRule implementation
-      virtual const CDeviceIdentifier getDeviceAddressFromMessage(xplcore::CXplMessage & msg);
-      virtual KeywordList identifyKeywords(xplcore::CXplMessage & msg);
+      CDeviceIdentifier getDeviceAddressFromMessage(xplcore::CXplMessage & msg) override;
+      KeywordList identifyKeywords(xplcore::CXplMessage & msg) override;
       // [END] IRule implementation
      
       // IReadRule implementation
-      virtual MessageContent extractMessageData(xplcore::CXplMessage & msg);
+      MessageContent extractMessageData(xplcore::CXplMessage & msg) override;
       // [END] IReadRule implementation
         
    private:

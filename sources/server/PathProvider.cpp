@@ -3,8 +3,10 @@
 
 CPathProvider::CPathProvider(const boost::shared_ptr<startupOptions::IStartupOptions> startupOptions)
    : m_logsPath("logs"),
+     m_dataPath("data"),
      m_webServerPath(startupOptions->getWebServerInitialPath()),
      m_pluginsLogPath(m_logsPath / "plugins"),
+     m_pluginsDataPath(m_dataPath / "plugins"),
      m_scriptsLogPath(m_logsPath / "scripts"),
      m_pluginsPath(startupOptions->getPluginsPath()),
      m_scriptsPath("scripts"),
@@ -13,8 +15,12 @@ CPathProvider::CPathProvider(const boost::shared_ptr<startupOptions::IStartupOpt
 {
    if (!boost::filesystem::exists(m_logsPath))
       boost::filesystem::create_directory(m_logsPath);
+   if (!boost::filesystem::exists(m_dataPath))
+      boost::filesystem::create_directory(m_dataPath);
    if (!boost::filesystem::exists(m_pluginsLogPath))
       boost::filesystem::create_directory(m_pluginsLogPath);
+   if (!boost::filesystem::exists(m_pluginsDataPath))
+      boost::filesystem::create_directory(m_pluginsDataPath);
    if (!boost::filesystem::exists(m_scriptsLogPath))
       boost::filesystem::create_directory(m_scriptsLogPath);
    if (!boost::filesystem::exists(m_pluginsPath))
@@ -35,7 +41,7 @@ const boost::filesystem::path& CPathProvider::logsPath() const
    return m_logsPath;
 }
 
-const boost::filesystem::path& CPathProvider::getWebServerPath() const
+const boost::filesystem::path& CPathProvider::webServerPath() const
 {
    return m_webServerPath;
 }
@@ -43,6 +49,11 @@ const boost::filesystem::path& CPathProvider::getWebServerPath() const
 const boost::filesystem::path& CPathProvider::pluginsLogPath() const
 {
    return m_pluginsLogPath;
+}
+
+const boost::filesystem::path& CPathProvider::pluginsDataPath() const
+{
+   return m_pluginsDataPath;
 }
 
 const boost::filesystem::path& CPathProvider::pluginsPath() const
@@ -64,7 +75,7 @@ const boost::filesystem::path& CPathProvider::scriptInterpretersPath() const
    return m_scriptInterpreters;
 }
 
-const boost::filesystem::path& CPathProvider::getDatabaseSqliteFile() const
+const boost::filesystem::path& CPathProvider::databaseSqliteFile() const
 {
    return m_databaseSqliteFile;
 }

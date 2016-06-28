@@ -189,7 +189,7 @@ namespace database
          m_pluginRequester = boost::make_shared<requesters::CPlugin>(m_databaseRequester);
          m_configurationRequester = boost::make_shared<requesters::CConfiguration>(m_databaseRequester);
          m_deviceRequester = boost::make_shared<requesters::CDevice>(m_databaseRequester);
-         m_keywordRequester = boost::make_shared<requesters::CKeyword>(m_databaseRequester, m_acquisitionRequester);
+         m_keywordRequester = boost::make_shared<requesters::CKeyword>(m_databaseRequester);
          m_pageRequester = boost::make_shared<requesters::CPage>(m_databaseRequester);
          m_widgetRequester = boost::make_shared<requesters::CWidget>(m_databaseRequester);
          m_pluginEventLoggerRequester = boost::make_shared<requesters::CPluginEventLogger>(m_databaseRequester);

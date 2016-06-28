@@ -68,7 +68,7 @@ void CYScriptApiImplementation::receiveAnswer(pbAnswer::msg& answer) const
       throw std::runtime_error("yScriptApiWrapper::receiveAnswer : received Yadoms answer is zero length");
 
    if (!answer.ParseFromArray(message, messageSize))
-      throw shared::exception::CInvalidParameter("message");
+      throw shared::exception::CInvalidParameter("message : fail to parse received answer data into protobuf format");
 }
 
 int CYScriptApiImplementation::getKeywordId(const std::string& deviceName, const std::string& keywordName) const

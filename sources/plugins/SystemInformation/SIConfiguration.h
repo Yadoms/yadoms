@@ -21,7 +21,6 @@ public:
 
    // ISIConfiguration implementation
    void initializeWith(const shared::CDataContainer& data) override;
-   bool IsAdvancedEnabled() const override;
    // [END] ISIConfiguration implementation
 
 private:
@@ -29,10 +28,5 @@ private:
    /// \brief	    Configuration raw data
    //--------------------------------------------------------------
    shared::CDataContainer m_data;
-
-   //--------------------------------------------------------------
-   /// \brief	    State of each option
-   //--------------------------------------------------------------
-   bool m_isAdvancedEnabled;
 };
 

@@ -5,10 +5,13 @@
 
 namespace xplcore
 {
-
-
-   CXplHubConnectedPeripheral::CXplHubConnectedPeripheral(Poco::Net::SocketAddress & sender, unsigned short portNumber, int interval, const std::string & debugName)
-      : m_portNumber(portNumber), m_interval(interval), m_lastTimeSeen(shared::currentTime::Provider().now()), m_debugName(debugName)
+   CXplHubConnectedPeripheral::CXplHubConnectedPeripheral(Poco::Net::SocketAddress& sender,
+                                                          unsigned short portNumber,
+                                                          int interval,
+                                                          const std::string& debugName)
+      : m_portNumber(portNumber),
+        m_interval(interval),
+        m_lastTimeSeen(shared::currentTime::Provider().now())
    {
       m_socket.setReuseAddress(true);
       m_socket.setBroadcast(true);
@@ -52,11 +55,12 @@ namespace xplcore
       m_lastTimeSeen = time;
    }
 
-   void CXplHubConnectedPeripheral::sendMessage(const CXplMessage & message)
+   void CXplHubConnectedPeripheral::sendMessage(const CXplMessage& message)
    {
       //boost::asio::buffer buf(message.toString());
       std::string buf = message.toString();
       m_socket.sendBytes(buf.c_str(), buf.size());
    }
-
 } // namespace xplcore
+
+

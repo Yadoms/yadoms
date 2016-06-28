@@ -26,18 +26,22 @@ namespace xplcore
       /// \param [in]   pHubFoundEventHandler   The event handler to notify when a hub is found
       /// \param [in]   hubFoundEventCode       The event id to use in "hub found" notification
       //--------------------------------------------------------------
-      CXplServiceTask(Poco::Net::NetworkInterface & networkInterface, const std::string & vendorId, const std::string & deviceId, const std::string & instanceId,
-         shared::event::CEventHandler * pHubFoundEventHandler, int hubFoundEventCode);
+      CXplServiceTask(Poco::Net::NetworkInterface& networkInterface,
+                      const std::string& vendorId,
+                      const std::string& deviceId,
+                      const std::string& instanceId,
+                      shared::event::CEventHandler* pHubFoundEventHandler,
+                      int hubFoundEventCode);
 
       //--------------------------------------------------------------
       /// \brief		  Destructor
       //--------------------------------------------------------------
       virtual ~CXplServiceTask();
-      
+
       //--------------------------------------------------------------
       /// \brief		  The main working method (listen the xpl socket)
       //--------------------------------------------------------------
-      virtual void runTask();
+      void runTask() override;
 
       //--------------------------------------------------------------
       /// \brief		   Subscribe to receive all messages
@@ -45,7 +49,9 @@ namespace xplcore
       /// \param [in]   eventTypeIdentifier  The event id to use in notification
       /// \param [in]   continueChainingNotification  indicates if the notification queue should continue when a message match this filter
       //--------------------------------------------------------------
-      void subscribeForAllMessages(shared::event::CEventHandler * pEventHandler, int eventTypeIdentifier, bool continueChainingNotification = true);
+      void subscribeForAllMessages(shared::event::CEventHandler* pEventHandler,
+                                   int eventTypeIdentifier,
+                                   bool continueChainingNotification = true);
 
       //--------------------------------------------------------------
       /// \brief		   Subscribe to receive all messages which are targeted to this XplService instance 
@@ -53,7 +59,9 @@ namespace xplcore
       /// \param [in]   eventTypeIdentifier           The event id to use in notification
       /// \param [in]   continueChainingNotification  indicates if the notification queue should continue when a message match this filter
       //--------------------------------------------------------------
-      void subscribeForAllMyMessages(shared::event::CEventHandler * pEventHandler, int eventTypeIdentifier, bool continueChainingNotification = true);
+      void subscribeForAllMyMessages(shared::event::CEventHandler* pEventHandler,
+                                     int eventTypeIdentifier,
+                                     bool continueChainingNotification = true);
 
       //--------------------------------------------------------------
       /// \brief			Subscribe to receive all messages which match the filter defined by parameters
@@ -67,7 +75,15 @@ namespace xplcore
       /// \param [in]   eventTypeIdentifier  The event id to use in notification
       /// \param [in]   continueChainingNotification  indicates if the notification queue should continue when a message match this filter
       //--------------------------------------------------------------
-      void subscribeForMessages(const std::string & msgtype, const std::string & vendor, const std::string & device, const std::string & instance, const std::string & classId, const std::string & typeId, shared::event::CEventHandler * pEventHandler, int eventTypeIdentifier, bool continueChainingNotification = true);
+      void subscribeForMessages(const std::string& msgtype,
+                                const std::string& vendor,
+                                const std::string& device,
+                                const std::string& instance,
+                                const std::string& classId,
+                                const std::string& typeId,
+                                shared::event::CEventHandler* pEventHandler,
+                                int eventTypeIdentifier,
+                                bool continueChainingNotification = true);
 
       //--------------------------------------------------------------
       /// \brief			Subscribe to receive all messages which match the filter defined by parameters
@@ -76,7 +92,10 @@ namespace xplcore
       /// \param [in]   eventTypeIdentifier  The event id to use in notification
       /// \param [in]   continueChainingNotification  indicates if the notification queue should continue when a message match this filter
       //--------------------------------------------------------------
-      void subscribeForMessages(const std::string & filter, shared::event::CEventHandler * pEventHandler, int eventTypeIdentifier, bool continueChainingNotification = true);
+      void subscribeForMessages(const std::string& filter,
+                                shared::event::CEventHandler* pEventHandler,
+                                int eventTypeIdentifier,
+                                bool continueChainingNotification = true);
 
       //--------------------------------------------------------------
       /// \brief			Clear all subscription
@@ -87,7 +106,7 @@ namespace xplcore
       /// \brief			Send a message
       /// \param [in]   msg      The message
       //--------------------------------------------------------------
-      void sendMessage(const CXplMessage & msg);
+      void sendMessage(const CXplMessage& msg);
 
       //--------------------------------------------------------------
       /// \brief		 Get the actor defined in the service
@@ -100,7 +119,7 @@ namespace xplcore
       /// \brief			Initialize the service
       /// \param [in]   networkInterface  The network interface to use
       //--------------------------------------------------------------
-      void initializeConnector(Poco::Net::NetworkInterface & networkInterface);
+      void initializeConnector(Poco::Net::NetworkInterface& networkInterface);
 
       //--------------------------------------------------------------
       /// \brief			Start a heartbeat sequence
@@ -119,28 +138,30 @@ namespace xplcore
       /// \param [in]   msg      The message
       /// \param [in]   sender   The sender
       //--------------------------------------------------------------
-      void onXplMessageReceived(CXplMessage & msg, Poco::Net::SocketAddress & sender);
+      void onXplMessageReceived(CXplMessage& msg,
+                                Poco::Net::SocketAddress& sender);
 
       //--------------------------------------------------------------
       /// \brief			Treat a received heartbeat message
       /// \param [in]   msg      The message
       /// \param [in]   sender   The sender
       //--------------------------------------------------------------
-      void manageReceivedHeartBeatMessage(CXplMessage & hbeatMessage, Poco::Net::SocketAddress & sender);
+      void manageReceivedHeartBeatMessage(CXplMessage& hbeatMessage,
+                                          Poco::Net::SocketAddress& sender);
 
       //--------------------------------------------------------------
       /// \brief			Send notification to all configured subscribers
       /// \param [in]   message : The message to notify
       //--------------------------------------------------------------
-      void notifySubscribers(CXplMessage & msg);
+      void notifySubscribers(CXplMessage& msg);
 
-   private:
+
       //info
       boost::posix_time::ptime m_startDate;
 
       //Hub management
       bool m_hubHasBeenFound;
-      shared::event::CEventHandler * m_pHubFoundEventHandler;
+      shared::event::CEventHandler* m_pHubFoundEventHandler;
       int m_hubFoundEventCode;
       static const int HubDiscoveryTimeOut = 2 * 60;
 
@@ -169,10 +190,12 @@ namespace xplcore
       ///                     3. the event id to use for notification
       ///                     4. if false it stops the notification queue; if true try other filters
       //--------------------------------------------------------------
-      typedef boost::tuple< boost::shared_ptr< CXplMessageFilter >, shared::event::CEventHandler *, int, bool > FilterConfiguration;
-      std::vector< FilterConfiguration > m_filteringSystem;
+      typedef boost::tuple<boost::shared_ptr<CXplMessageFilter>, shared::event::CEventHandler *, int, bool> FilterConfiguration;
+      std::vector<FilterConfiguration> m_filteringSystem;
 
       //xpl data
       CXplActor m_source;
    };
 } // namespace xplcore
+
+

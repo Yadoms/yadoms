@@ -3,8 +3,8 @@
 #include "IRule.h"
 #include "RuleInstanceManager.hpp"
 
-namespace xplrules {
-
+namespace xplrules
+{
    //------------------------------------
    ///\brief Interface for Rule protocol
    //------------------------------------
@@ -16,18 +16,21 @@ namespace xplrules {
       ///\param [in] instanceManager : the global instance manager (avoid creating multiple instances of protocols)
       ///\return the rule for the current protocol (may be null if protocol not handled)
       //------------------------------------
-      virtual boost::shared_ptr<IRule> createRuleInstance(CRuleInstanceManager & instanceManager) = 0;
+      virtual boost::shared_ptr<IRule> createRuleInstance(CRuleInstanceManager& instanceManager) = 0;
 
       //------------------------------------
       ///\brief get the protocol identifier i.e. : "x10.basic"
       ///\return the protocol identifier
       //------------------------------------
-      virtual const std::string & getProtocolIdentifier() = 0;
+      virtual const std::string& getProtocolIdentifier() = 0;
 
       //------------------------------------
       ///\brief Destructor
       //------------------------------------
-      virtual ~IProtocol() {}
+      virtual ~IProtocol()
+      {
+      }
    };
-
 } //namespace xplrules
+
+

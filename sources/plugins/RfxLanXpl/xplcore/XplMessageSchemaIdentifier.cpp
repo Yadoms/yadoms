@@ -5,19 +5,19 @@
 
 namespace xplcore
 {
-
    CXplMessageSchemaIdentifier::CXplMessageSchemaIdentifier()
    {
    }
 
-   CXplMessageSchemaIdentifier::CXplMessageSchemaIdentifier(const std::string & classId, const std::string & typeId)
+   CXplMessageSchemaIdentifier::CXplMessageSchemaIdentifier(const std::string& classId,
+                                                            const std::string& typeId)
    {
       setClassId(classId);
       setTypeId(typeId);
    }
 
-   CXplMessageSchemaIdentifier::CXplMessageSchemaIdentifier(const CXplMessageSchemaIdentifier & identifier)
-      :m_classId(identifier.getClassId()), m_typeId(identifier.getTypeId())
+   CXplMessageSchemaIdentifier::CXplMessageSchemaIdentifier(const CXplMessageSchemaIdentifier& identifier)
+      : m_classId(identifier.getClassId()), m_typeId(identifier.getTypeId())
    {
    }
 
@@ -25,7 +25,7 @@ namespace xplcore
    {
    }
 
-   void CXplMessageSchemaIdentifier::setClassId(const std::string & classId)
+   void CXplMessageSchemaIdentifier::setClassId(const std::string& classId)
    {
       CXplHelper::checkRules(CXplHelper::kClassId, classId);
       m_classId = classId;
@@ -36,7 +36,7 @@ namespace xplcore
       return m_classId;
    }
 
-   void CXplMessageSchemaIdentifier::setTypeId(const std::string & typeId)
+   void CXplMessageSchemaIdentifier::setTypeId(const std::string& typeId)
    {
       CXplHelper::checkRules(CXplHelper::kTypeId, typeId);
       m_typeId = typeId;
@@ -52,9 +52,9 @@ namespace xplcore
       return std::string(m_classId + "." + m_typeId);
    }
 
-   CXplMessageSchemaIdentifier CXplMessageSchemaIdentifier::parse(const std::string & rawMessageSchemaIdentifier)
+   CXplMessageSchemaIdentifier CXplMessageSchemaIdentifier::parse(const std::string& rawMessageSchemaIdentifier)
    {
-      std::string lineString = boost::trim_copy(rawMessageSchemaIdentifier);
+      auto lineString = boost::trim_copy(rawMessageSchemaIdentifier);
 
       std::vector<std::string> line;
       boost::split(line, lineString, boost::is_any_of("."), boost::token_compress_on);
@@ -63,8 +63,8 @@ namespace xplcore
       if (line.size() != 2)
          throw CXplException("Message Shcema identifier must have 2 fields : class Id, type Id");
 
-      const int classIdIndex = 0;
-      const int typeIdIndex = 1;
+      const auto classIdIndex = 0;
+      const auto typeIdIndex = 1;
 
       CXplMessageSchemaIdentifier msi;
       msi.setClassId(line[classIdIndex]);
@@ -83,19 +83,20 @@ namespace xplcore
       return CXplMessageSchemaIdentifier(CXplHelper::HeartbeatClassID, CXplHelper::HeartbeatRequestTypeId);
    }
 
-   bool CXplMessageSchemaIdentifier::isHeartbeatMessageSchemaIdentifier(const CXplMessageSchemaIdentifier & msi)
+   bool CXplMessageSchemaIdentifier::isHeartbeatMessageSchemaIdentifier(const CXplMessageSchemaIdentifier& msi)
    {
       return (msi.getClassId() == CXplHelper::HeartbeatClassID);
    }
 
-   bool CXplMessageSchemaIdentifier::isHeartbeatRequest(const CXplMessageSchemaIdentifier & msi)
+   bool CXplMessageSchemaIdentifier::isHeartbeatRequest(const CXplMessageSchemaIdentifier& msi)
    {
       return isHeartbeatMessageSchemaIdentifier(msi) && (msi.getTypeId() == CXplHelper::HeartbeatRequestTypeId);
    }
 
-   bool CXplMessageSchemaIdentifier::isHeartbeatApp(const CXplMessageSchemaIdentifier & msi)
+   bool CXplMessageSchemaIdentifier::isHeartbeatApp(const CXplMessageSchemaIdentifier& msi)
    {
       return isHeartbeatMessageSchemaIdentifier(msi) && (msi.getTypeId() == CXplHelper::HeartbeatAppTypeId);
    }
-
 } // namespace xplcore
+
+

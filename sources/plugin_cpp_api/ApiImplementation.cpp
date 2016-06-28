@@ -93,12 +93,12 @@ namespace plugin_cpp_api
 
       toPlugin::msg toPluginProtoBuffer;
       if (!toPluginProtoBuffer.ParseFromArray(message.get(), messageSize))
-         throw shared::exception::CInvalidParameter("message");
+         throw shared::exception::CInvalidParameter("message : fail to parse received data into protobuf format");
 
       if (!m_initialized)
       {
-         if (toPluginProtoBuffer.has_plugininformation())
-            processPluginInformation(toPluginProtoBuffer.plugininformation());
+         if (toPluginProtoBuffer.has_init())
+            processInit(toPluginProtoBuffer.init());
          else
             throw shared::exception::CInvalidParameter((boost::format("Unexpected message %1% when initialization") % toPluginProtoBuffer.OneOf_case()).str());
          return;
@@ -117,8 +117,6 @@ namespace plugin_cpp_api
       {
       case toPlugin::msg::kSystem: processSystem(toPluginProtoBuffer.system());
          break;
-      case toPlugin::msg::kPluginInformation: processPluginInformation(toPluginProtoBuffer.plugininformation());
-         break;
       case toPlugin::msg::kUpdateConfiguration: processUpdateConfiguration(toPluginProtoBuffer.updateconfiguration());
          break;
       case toPlugin::msg::kBindingQuery: processBindingQuery(toPluginProtoBuffer.bindingquery());
@@ -130,7 +128,7 @@ namespace plugin_cpp_api
       case toPlugin::msg::kManuallyDeviceCreation: processManuallyDeviceCreation(toPluginProtoBuffer.manuallydevicecreation());
          break;
       default:
-         throw shared::exception::CInvalidParameter("message");
+         throw shared::exception::CInvalidParameter((boost::format("message : unknown message type %1%") % toPluginProtoBuffer.OneOf_case()).str());
       }
    }
 
@@ -155,9 +153,10 @@ namespace plugin_cpp_api
       }
    }
 
-   void CApiImplementation::processPluginInformation(const toPlugin::Information& msg)
+   void CApiImplementation::processInit(const toPlugin::Init& msg)
    {
-      m_pluginInformation = boost::make_shared<CPluginInformation>(boost::make_shared<const toPlugin::Information>(msg));
+      m_pluginInformation = boost::make_shared<CPluginInformation>(boost::make_shared<const toPlugin::Information>(msg.plugininformation()));
+      m_dataPath = boost::make_shared<const boost::filesystem::path>(msg.datapath());
       setInitialized();
    }
 
@@ -168,7 +167,7 @@ namespace plugin_cpp_api
 
    void CApiImplementation::setInitialized()
    {
-      if (!!m_pluginInformation)
+      if (!!m_pluginInformation && !!m_dataPath)
       {
          std::unique_lock<std::mutex> lock(m_initializationConditionMutex);
          m_initialized = true;
@@ -513,6 +512,14 @@ namespace plugin_cpp_api
            });
 
       return configuration;
+   }
+
+   const boost::filesystem::path& CApiImplementation::getDataPath() const
+   {
+      if (!m_dataPath)
+         throw std::runtime_error("Plugin instance data path not available");
+
+      return *m_dataPath;
    }
 
    shared::event::CEventHandler& CApiImplementation::getEventHandler()

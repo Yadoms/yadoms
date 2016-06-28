@@ -36,6 +36,8 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
    std::cout << "CFakePlugin is starting..." << std::endl;
 
+   std::cout << "The instance data path : " << api->getDataPath().string() << std::endl;
+
    // Load configuration values (provided by database)
    m_configuration.initializeWith(api->getConfiguration());
    // Trace the configuration (just for test)

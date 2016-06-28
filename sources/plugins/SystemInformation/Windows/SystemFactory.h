@@ -2,10 +2,7 @@
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include "MemoryLoad.h"
 #include "CPULoad.h"
-#include "YadomsCPULoad.h"
 #include "DiskUsage.h"
-#include "RAMProcessMemory.h"
-#include "VirtualProcessMemory.h"
 #include "../ISIConfiguration.h"
 
 // Shortcut to yPluginApi namespace
@@ -70,9 +67,6 @@ private:
    //--------------------------------------------------------------
    boost::shared_ptr<CMemoryLoad> m_MemoryLoad;
    boost::shared_ptr<CCPULoad> m_CPULoad;
-   boost::shared_ptr<CYadomsCPULoad> m_YadomsCPULoad;
-   boost::shared_ptr<CRAMProcessMemory> m_RAMProcessMemory;
-   boost::shared_ptr<CVirtualProcessMemory> m_VirtualProcessMemory;
 
    //--------------------------------------------------------------
    /// \brief	    List of keywords for disks

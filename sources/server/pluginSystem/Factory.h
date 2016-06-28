@@ -35,6 +35,7 @@ namespace pluginSystem
                                                   boost::shared_ptr<IQualifier> qualifier,
                                                   boost::shared_ptr<IInstanceStoppedListener> instanceStoppedListener) const override;
       boost::filesystem::path pluginLogFile(int instanceId) const override;
+      boost::filesystem::path pluginDataPath(int instanceId) const override;
       // [END] IFactory Implementation
 
       

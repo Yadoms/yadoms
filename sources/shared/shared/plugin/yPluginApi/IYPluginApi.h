@@ -306,7 +306,7 @@ namespace shared
             //----------------------------------------------------------------------------------------------------------------
             //----------------------------------------------------------------------------------------------------------------
             //--
-            //-- Plugin configuration
+            //-- Plugin instance data
             //--
             //----------------------------------------------------------------------------------------------------------------
             //----------------------------------------------------------------------------------------------------------------
@@ -320,6 +320,15 @@ namespace shared
             ///\return The current plugin configuration
             //-----------------------------------------------------      
             virtual CDataContainer getConfiguration() = 0;
+
+            //-----------------------------------------------------
+            /// \brief	    Get the plugin instance data path
+            /// \return     The plugin instance data path (folder)
+            /// \note       This folder can be used by plugin to store any data it needs.
+            ///             This folder is unique per each plugin instance.
+            ///             Note that this is folder is not backuped.
+            //-----------------------------------------------------      
+            virtual const boost::filesystem::path& getDataPath() const = 0;
          };
       }
    }

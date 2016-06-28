@@ -145,6 +145,26 @@ namespace pluginSystem
          boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
          m_dataProvider->getDeviceRequester()->removeAllDeviceForPlugin(id);
          m_pluginDBTable->removeInstance(id);
+
+         // Remove logs
+         try
+         {
+            boost::filesystem::remove_all(m_factory->pluginLogFile(id).parent_path());
+         }
+         catch (boost::filesystem::filesystem_error& ex)
+         {
+            YADOMS_LOG(warning) << "Unable to remove plugin log file " << ex.path1() << " : " << ex.what();
+         }
+
+         // Remove data path
+         try
+         {
+            boost::filesystem::remove_all(m_factory->pluginDataPath(id));
+         }
+         catch (boost::filesystem::filesystem_error& ex)
+         {
+            YADOMS_LOG(warning) << "Unable to remove plugin instance data path " << ex.path1() << " : " << ex.what();
+         }
       }
       catch (shared::exception::CException& e)
       {

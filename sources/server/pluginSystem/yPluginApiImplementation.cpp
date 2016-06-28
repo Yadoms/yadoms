@@ -7,12 +7,14 @@ namespace pluginSystem
 {
    CYPluginApiImplementation::CYPluginApiImplementation(boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformations,
                                                         const boost::shared_ptr<const database::entities::CPlugin> instanceData,
+                                                        const boost::filesystem::path& dataPath,
                                                         boost::shared_ptr<IInstanceStateHandler> instanceStateHandler,
                                                         boost::shared_ptr<database::IDataProvider> dataProvider,
                                                         boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
                                                         boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordDataAccessLayer,
                                                         boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer)
       : m_informations(pluginInformations),
+        m_dataPath(dataPath),
         m_instanceData(instanceData),
         m_instanceStateHandler(instanceStateHandler),
         m_deviceManager(deviceManager),
@@ -26,7 +28,9 @@ namespace pluginSystem
    {
    }
 
-   void CYPluginApiImplementation::setPluginState(const shared::plugin::yPluginApi::historization::EPluginState& state, const std::string& customMessageId, const std::map<std::string, std::string> & customMessageDataParams)
+   void CYPluginApiImplementation::setPluginState(const shared::plugin::yPluginApi::historization::EPluginState& state,
+                                                  const std::string& customMessageId,
+                                                  const std::map<std::string, std::string>& customMessageDataParams)
    {
       //convert map to dataContainer
       shared::CDataContainer dc;
@@ -94,8 +98,8 @@ namespace pluginSystem
          throw shared::exception::CEmptyResult((boost::format("Fail to declare %1% keyword : keyword already exists") % keyword->getKeyword()).str());
 
       m_keywordDataAccessLayer->addKeyword(m_deviceManager->getDevice(getPluginId(), device)->Id(),
-                                     *keyword,
-                                     details);
+                                           *keyword,
+                                           details);
    }
 
    void CYPluginApiImplementation::declareKeywords(const std::string& device,
@@ -111,10 +115,11 @@ namespace pluginSystem
          return;
 
       m_keywordDataAccessLayer->addKeywords(m_deviceManager->getDevice(getPluginId(), device)->Id(),
-         keywordsToDeclare);
+                                            keywordsToDeclare);
    }
 
-   std::string CYPluginApiImplementation::getRecipientValue(int recipientId, const std::string& fieldName) const
+   std::string CYPluginApiImplementation::getRecipientValue(int recipientId,
+                                                            const std::string& fieldName) const
    {
       boost::shared_ptr<const database::entities::CRecipient> recipient = m_recipientRequester->getRecipient(recipientId);
 
@@ -131,9 +136,10 @@ namespace pluginSystem
       throw shared::exception::CEmptyResult((boost::format("Cannot retrieve field %1% for recipient Id %2% in database") % fieldName % recipientId).str());
    }
 
-   std::vector<int> CYPluginApiImplementation::findRecipientsFromField(const std::string& fieldName, const std::string& expectedFieldValue) const
+   std::vector<int> CYPluginApiImplementation::findRecipientsFromField(const std::string& fieldName,
+                                                                       const std::string& expectedFieldValue) const
    {
-      std::vector<boost::shared_ptr<database::entities::CRecipient> > recipients = m_recipientRequester->findRecipientsFromField(fieldName, expectedFieldValue);
+      auto recipients = m_recipientRequester->findRecipientsFromField(fieldName, expectedFieldValue);
       std::vector<int> recipientIds;
 
       for (auto itRecipient = recipients.begin(); itRecipient != recipients.end(); ++itRecipient)
@@ -195,6 +201,11 @@ namespace pluginSystem
       return m_instanceData->Configuration;
    }
 
+   const boost::filesystem::path& CYPluginApiImplementation::getDataPath() const
+   {
+      return m_dataPath;
+   }
+
    shared::event::CEventHandler& CYPluginApiImplementation::getEventHandler()
    {
       BOOST_ASSERT(false); // No event handler required here
@@ -207,3 +218,5 @@ namespace pluginSystem
       return m_instanceData->Id;
    }
 } // namespace pluginSystem	
+
+

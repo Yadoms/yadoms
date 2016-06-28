@@ -2,11 +2,8 @@
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <MemoryLoad.h>
 #include <CPULoad.h>
-#include <YadomsCPULoad.h>
 #include <DiskUsage.h>
 #include "TemperatureSensor.h"
-#include "YadomsRAMProcessMemory.h"
-#include "YadomsVirtualProcessMemory.h"
 #include "../ISIConfiguration.h"
 
 // Shortcut to yPluginApi namespace
@@ -28,8 +25,8 @@ public:
    //--------------------------------------------------------------
    CSystemFactory(boost::shared_ptr<yApi::IYPluginApi> api, 
                   const std::string& device, 
-				      const ISIConfiguration& configuration, 
-				      shared::CDataContainer details);
+				  const ISIConfiguration& configuration, 
+				  shared::CDataContainer details);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -71,10 +68,7 @@ private:
    //--------------------------------------------------------------
    boost::shared_ptr<CMemoryLoad> m_memoryLoad;
    boost::shared_ptr<CCPULoad> m_cpuLoad;
-   boost::shared_ptr<CYadomsCPULoad> m_yadomsCpuLoad;
    boost::shared_ptr<CTemperatureSensor> m_temperatureSensor;
-   boost::shared_ptr<CYadomsRAMProcessMemory> m_yadomsRamProcessMemory;
-   boost::shared_ptr<CYadomsVirtualProcessMemory> m_yadomsVirtualProcessMemory;
 
    //--------------------------------------------------------------
    /// \brief	    List of keywords for disks

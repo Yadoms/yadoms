@@ -4,13 +4,21 @@
 #include <shared/encryption/Xor.h>
 
 CMSConfiguration::CMSConfiguration()
-   : m_SenderMail(""), m_ServerName(""), m_ServerPort(587), m_kSecurityMode(ESecurityMode::kTLS), m_bRequireAuthentication(false), m_UserAccount(""), m_Password("")
-{}
+   : m_SenderMail(""),
+     m_ServerName(""),
+     m_ServerPort(587),
+     m_kSecurityMode(ESecurityMode::kTLS),
+     m_bRequireAuthentication(false),
+     m_UserAccount(""),
+     m_Password("")
+{
+}
 
 CMSConfiguration::~CMSConfiguration()
-{}
+{
+}
 
-void CMSConfiguration::initializeWith(const shared::CDataContainer &data)
+void CMSConfiguration::initializeWith(const shared::CDataContainer& data)
 {
    try
    {
@@ -54,7 +62,7 @@ void CMSConfiguration::initializeWith(const shared::CDataContainer &data)
          m_UserAccount = m_SenderMail;
          m_Password = shared::encryption::CXor::decryptBase64(m_data.get<std::string>("account.content.yahoo.content.password"));
       }
-      else 
+      else
       {
          m_ServerName = m_data.get<std::string>("account.content.other.content.SMTPServer");
          m_ServerPort = m_data.get<Poco::UInt16>("account.content.other.content.SMTPPort");
@@ -64,7 +72,7 @@ void CMSConfiguration::initializeWith(const shared::CDataContainer &data)
          m_Password = shared::encryption::CXor::decryptBase64(m_data.get<std::string>("account.content.other.content.authentication.content.password"));
       }
    }
-   catch (shared::exception::CInvalidParameter &ip)
+   catch (shared::exception::CInvalidParameter& ip)
    {
       std::cerr << "Invalid configuration : " << ip.what() << std::endl;
    }
@@ -78,6 +86,7 @@ std::string CMSConfiguration::getSenderEmail() const
 {
    return m_SenderMail;
 }
+
 std::string CMSConfiguration::getHost() const
 {
    return m_ServerName;
@@ -102,6 +111,7 @@ ESecurityMode CMSConfiguration::getSecurityMode() const
 {
    return m_kSecurityMode;
 }
+
 bool CMSConfiguration::getAuthenticationRequired() const
 {
    return m_bRequireAuthentication;

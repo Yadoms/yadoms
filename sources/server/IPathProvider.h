@@ -18,7 +18,7 @@ public:
    /// \brief		                     get the web server path
    /// \return  	                     the web server path, ususally {yadoms_binary_path}/www
    //-----------------------------------------------------------------------------
-   virtual const boost::filesystem::path& getWebServerPath() const = 0;
+   virtual const boost::filesystem::path& webServerPath() const = 0;
 
    //-----------------------------------------------------------------------------
    /// \brief		                     get the plugins path
@@ -31,6 +31,12 @@ public:
    /// \return  	                     the logs of plugins path, ususally {yadoms_binary_path}/logs/plugins
    //-----------------------------------------------------------------------------
    virtual const boost::filesystem::path& pluginsLogPath() const = 0;
+
+   //-----------------------------------------------------------------------------
+   /// \brief		                     get the data of plugins path
+   /// \return  	                     the plugins data path, ususally {yadoms_binary_path}/data/plugins
+   //-----------------------------------------------------------------------------
+   virtual const boost::filesystem::path& pluginsDataPath() const = 0;
 
    //-----------------------------------------------------------------------------
    /// \brief		                     get the scripts path
@@ -55,6 +61,6 @@ public:
    /// \return     Database file path
    /// \note       If not exist, Yadoms will create the file
    //--------------------------------------------------------------
-   virtual const boost::filesystem::path& getDatabaseSqliteFile() const = 0;
+   virtual const boost::filesystem::path& databaseSqliteFile() const = 0;
 };
 

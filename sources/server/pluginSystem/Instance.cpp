@@ -5,6 +5,7 @@ namespace pluginSystem
 {
    CInstance::CInstance(boost::shared_ptr<const database::entities::CPlugin> instanceInformation,
                         const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
+                        const boost::filesystem::path& dataPath,
                         boost::shared_ptr<shared::process::IProcess> process,
                         boost::shared_ptr<IIpcAdapter> ipcAdapter)
       : m_instanceInformation(instanceInformation),
@@ -12,7 +13,8 @@ namespace pluginSystem
         m_process(process),
         m_ipcAdapter(ipcAdapter)
    {
-      postPluginInformation(m_pluginInformation);
+      postInit(m_pluginInformation,
+               dataPath);
    }
 
    CInstance::~CInstance()
@@ -34,9 +36,11 @@ namespace pluginSystem
       m_ipcAdapter->postStopRequest();
    }
 
-   void CInstance::postPluginInformation(boost::shared_ptr<const shared::plugin::information::IInformation> information) const
+   void CInstance::postInit(boost::shared_ptr<const shared::plugin::information::IInformation> information,
+                            const boost::filesystem::path& dataPath) const
    {
-      m_ipcAdapter->postPluginInformation(information);
+      m_ipcAdapter->postInit(information,
+                             dataPath);
    }
 
    void CInstance::postDeviceCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> deviceCommand)
