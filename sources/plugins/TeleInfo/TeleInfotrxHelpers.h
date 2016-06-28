@@ -1,7 +1,5 @@
 #pragma once
 
-#include <shared/communication/Buffer.hpp>
-
 #define TELEINFO_BAUD_RATE         1200
 #define TELEINFO_PARITY            boost::asio::serial_port_base::parity::even
 #define TELEINFO_CARACTER_SIZE     7

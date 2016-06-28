@@ -59,11 +59,11 @@ boost::shared_ptr<const shared::communication::CByteBuffer> CTeleInfoReceiveBuff
       throw shared::exception::CException("CTeleInfoReceiveBufferHandler : Can not pop not completed message. Call isComplete to check if a message is available");
 
    const size_t extractedMessageSize = TELEINFO_BUFFER;
-   boost::shared_ptr<unsigned char[]> extractedMessage(new unsigned char[extractedMessageSize]);
+   auto extractedMessage(boost::make_shared<unsigned char[]>(extractedMessageSize));
    for (size_t idx = 0; idx < extractedMessageSize; ++ idx)
       extractedMessage[idx] = m_content[idx];
 
-   boost::shared_ptr<const shared::communication::CByteBuffer> nextMessage(new shared::communication::CByteBuffer(extractedMessage.get(), extractedMessageSize));
+   auto nextMessage(boost::make_shared<shared::communication::CByteBuffer>(extractedMessage.get(), extractedMessageSize));
 
    // Delete extracted data
    m_content.erase(m_content.begin(), m_content.begin() + extractedMessageSize);
@@ -73,6 +73,7 @@ boost::shared_ptr<const shared::communication::CByteBuffer> CTeleInfoReceiveBuff
 
 void CTeleInfoReceiveBufferHandler::notifyEventHandler(boost::shared_ptr<const shared::communication::CByteBuffer> buffer) const
 {
-   m_receiveDataEventHandler.postEvent<const shared::communication::CByteBuffer>(m_receiveDataEventId, *buffer);
+   m_receiveDataEventHandler.postEvent<const shared::communication::CByteBuffer>(m_receiveDataEventId,
+                                                                                 *buffer);
 }
 

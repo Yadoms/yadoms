@@ -27,7 +27,7 @@ public:
    virtual ~CTeleInfo();
 
    // IPlugin implementation
-   virtual void doWork(boost::shared_ptr<yApi::IYPluginApi> context);
+   void doWork(boost::shared_ptr<yApi::IYPluginApi> context) override;
    // [END] IPlugin implementation
 protected:
 

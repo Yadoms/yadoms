@@ -4,12 +4,14 @@
 /// \brief	The sequence number provider interface
 //--------------------------------------------------------------
 class ISequenceNumberProvider
-{  
+{
 public:
    //--------------------------------------------------------------
    /// \brief	Destructor
    //--------------------------------------------------------------
-   virtual ~ISequenceNumberProvider() {}
+   virtual ~ISequenceNumberProvider()
+   {
+   }
 
    //--------------------------------------------------------------
    /// \brief     Reset the sequence number
@@ -28,6 +30,4 @@ public:
    //--------------------------------------------------------------
    virtual unsigned char last() const = 0;
 };
-
-
 
