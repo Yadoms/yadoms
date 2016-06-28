@@ -93,7 +93,7 @@ namespace plugin_cpp_api
 
       toPlugin::msg toPluginProtoBuffer;
       if (!toPluginProtoBuffer.ParseFromArray(message.get(), messageSize))
-         throw shared::exception::CInvalidParameter("message : fail to parse received data into protobuf format");
+         throw shared::exception::CInvalidParameter((boost::format("message : fail to parse received data into protobuf format (received buffer size is %1%)") % messageSize).str());
 
       if (!m_initialized)
       {
