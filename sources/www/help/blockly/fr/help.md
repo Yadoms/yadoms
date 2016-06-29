@@ -7,8 +7,8 @@
 
 ## Gestion des équipements
 
- * [Obtenir la valeur d'un équipement](#obtenir-la-valeur-dun-equipement)
- * [Affecter une valeur à un équipement](#affecter-une-valeur-a-un-equipement)
+ * [Obtenir la valeur d'un équipement](#keyword-value-get)
+ * [Affecter une valeur à un équipement](#keyword-value-set)
 
 ## Évènements
 
@@ -27,15 +27,15 @@
  * [Date et heure](#yadoms_date_datetime)
  * [Date](#yadoms_date_date)
  * [Heure](#yadoms_date_time)
- * [Jour de la semaine ](#yadoms_date_weekDay)
+ * [Jour de la semaine](#yadoms_date_weekDay)
  * [Chaque jour](#yadoms_date_everyDay)
- * [Aujourd'hui ](#yadoms_date_today)
- * [Maintenant ](#yadoms_date_now)
- * [Lever du soleil ](#yadoms_date_sunrise)
- * [Coucher du soleil ](#yadoms_date_sunset)
- * [Durée ](#yadoms_date_timespan)
- * [Arithmétique de dates/heures ](#yadoms_date_arithmetic)
- * [Extraction d'information ](#yadoms_date_extract)
+ * [Aujourd'hui](#yadoms_date_today)
+ * [Maintenant](#yadoms_date_now)
+ * [Lever du soleil](#yadoms_date_sunrise)
+ * [Coucher du soleil](#yadoms_date_sunset)
+ * [Durée](#yadoms_date_timespan)
+ * [Arithmétique de dates/heures](#yadoms_date_arithmetic)
+ * [Extraction d'information](#yadoms_date_extract)
 
 
 <div class="bg-primary">
@@ -363,7 +363,7 @@ Block qui permet d'extraire une partie d'une date/heure.
 
 Il est possible d'extraire:
  * la date sans l'heure
- * l'heure complète (foramt HH:MM)
+ * l'heure complète (format HH:MM)
  * l'année
  * le mois
  * le jour
