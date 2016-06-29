@@ -28,18 +28,19 @@ public:
    /// \param[in] api        pointer to the API
    /// \param[in] response   The response to analyse
    //--------------------------------------------------------------
-   ErrorAnswerHandler(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer response);
+   ErrorAnswerHandler(boost::shared_ptr<yApi::IYPluginApi> api,
+                      shared::CDataContainer response);
 
    //--------------------------------------------------------------
    /// \brief	  ContainError
    /// \return    if an error is return
    //--------------------------------------------------------------
    bool ContainError() const;
-private:
 
+private:
    //--------------------------------------------------------------
    /// \brief	    Error State
    //--------------------------------------------------------------
-   bool m_ErrorState;
+   bool m_errorState;
 };
 

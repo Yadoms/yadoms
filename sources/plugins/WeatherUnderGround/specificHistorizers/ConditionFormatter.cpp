@@ -3,73 +3,71 @@
 #include <shared/exception/InvalidParameter.hpp>
 #include <shared/DataContainer.h>
 
-CConditionFormatter::CConditionFormatter( void )
-{}
-
-void CConditionFormatter::AddUnit(
-            const std::string& UnitName,
-            const std::string& UnitValue
-   )
+CConditionFormatter::CConditionFormatter()
 {
-	try
-	{
-		m_Units.get ( UnitName );
-	}
-	catch ( shared::exception::CException& )
-	{  // If Exception, we create the unit
-		m_Units.set ( UnitName, UnitValue );
-	}
 }
 
-void CConditionFormatter::SetPeriod(
-    const std::string& Time,
-	const std::string& WeatherCondition, 
-	const std::string& Temp, 
-	const std::string& Pressure,
-	const std::string& Visibility,
-	const std::string& UV,
-	const std::string& DewPoint,
-	const std::string& MaxWind,
-	const std::string& AveWind,
-	const std::string& AveWindDegrees,
-	const std::string& Humidity,
-    const std::string& RainDay,
-	const std::string& Feelslike,
-	const std::string& WindChill
-		)
+void CConditionFormatter::addUnit(const std::string& unitName,
+                                  const std::string& unitValue)
 {
-   m_ConditionFrame.set ("Time", Time);
-   m_ConditionFrame.set ("WeatherCondition", WeatherCondition);
-   m_ConditionFrame.set ("Temp", Temp);
-   m_ConditionFrame.set ("Pressure", Pressure);
-   m_ConditionFrame.set ("Visibility", Visibility);
-   m_ConditionFrame.set ("UV", UV);
-   m_ConditionFrame.set ("DewPoint", DewPoint);
-   m_ConditionFrame.set ("MaxWind", MaxWind);
-   m_ConditionFrame.set ("AveWind", AveWind);
-   m_ConditionFrame.set ("AveWindDegrees", AveWindDegrees);
-   m_ConditionFrame.set ("Humidity", Humidity);
-   m_ConditionFrame.set ("RainDay", RainDay);
-   m_ConditionFrame.set ("FeelsLike", Feelslike);
-   m_ConditionFrame.set ("WindChill", WindChill);
+   try
+   {
+      m_units.get(unitName);
+   }
+   catch (shared::exception::CException&)
+   { // If Exception, we create the unit
+      m_units.set(unitName, unitValue);
+   }
 }
 
-void CConditionFormatter::SetCityName ( const std::string & CityName )
+void CConditionFormatter::setPeriod(const std::string& time,
+                                    const std::string& weatherCondition,
+                                    const std::string& temp,
+                                    const std::string& pressure,
+                                    const std::string& visibility,
+                                    const std::string& uv,
+                                    const std::string& dewPoint,
+                                    const std::string& maxWind,
+                                    const std::string& aveWind,
+                                    const std::string& aveWindDegrees,
+                                    const std::string& humidity,
+                                    const std::string& rainDay,
+                                    const std::string& feelslike,
+                                    const std::string& windChill)
 {
-   m_Localisation = CityName;
+   m_conditionFrame.set("Time", time);
+   m_conditionFrame.set("WeatherCondition", weatherCondition);
+   m_conditionFrame.set("Temp", temp);
+   m_conditionFrame.set("Pressure", pressure);
+   m_conditionFrame.set("Visibility", visibility);
+   m_conditionFrame.set("UV", uv);
+   m_conditionFrame.set("DewPoint", dewPoint);
+   m_conditionFrame.set("MaxWind", maxWind);
+   m_conditionFrame.set("AveWind", aveWind);
+   m_conditionFrame.set("AveWindDegrees", aveWindDegrees);
+   m_conditionFrame.set("Humidity", humidity);
+   m_conditionFrame.set("RainDay", rainDay);
+   m_conditionFrame.set("FeelsLike", feelslike);
+   m_conditionFrame.set("WindChill", windChill);
+}
+
+void CConditionFormatter::setCityName(const std::string& cityName)
+{
+   m_localisation = cityName;
 }
 
 CConditionFormatter::~CConditionFormatter()
-{}
+{
+}
 
 std::string CConditionFormatter::formatValue() const
 {
-   shared::CDataContainer Temp;
+   shared::CDataContainer temp;
 
-   Temp.set ("Units", m_Units);
-   Temp.set ("city", m_Localisation);
-   Temp.set ("Conditions", m_ConditionFrame );
+   temp.set("Units", m_units);
+   temp.set("city", m_localisation);
+   temp.set("Conditions", m_conditionFrame);
 
-   return Temp.serialize();
+   return temp.serialize();
 }
 

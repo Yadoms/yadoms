@@ -3,59 +3,51 @@
 #include <shared/plugin/yPluginApi/historization/IHistorizable.h>
 #include <shared/DataContainer.h>
 
+//-----------------------------------------------------
+///\brief The message formatter
+//-----------------------------------------------------
+class CMoonFormatter
+{
+public:
    //-----------------------------------------------------
-   ///\brief The message formatter
+   ///\brief                     Constructor, from individual parameters
    //-----------------------------------------------------
-   class CMoonFormatter
-   {
-   public:
-      //-----------------------------------------------------
-      ///\brief                     Constructor, from individual parameters
-      ///\param[in] from            Sender recipient ID
-      ///\param[in] to              Receiver recipient ID
-      ///\param[in] body            Message content
-      //-----------------------------------------------------
-      CMoonFormatter( void );
+   CMoonFormatter();
 
-      //-----------------------------------------------------
-      ///\brief                      Add a new unit to be send to the widget
-      ///\param[in] UnitName         The Unit Name
-	   ///\param[in] UnitValue        The Unit Value
-      //-----------------------------------------------------
+   //-----------------------------------------------------
+   ///\brief                      Add a new unit to be send to the widget
+   ///\param[in] unitName         The Unit Name
+   ///\param[in] unitValue        The Unit Value
+   //-----------------------------------------------------
+   void addUnit(const std::string& unitName,
+                const std::string& unitValue);
 
-      void AddUnit(
-            const std::string& UnitName,
-            const std::string& UnitValue
-         );
+   //-----------------------------------------------------
+   ///\brief                      Set the parameters
+   ///\param[in] illuminatedMoon  The moon illumination
+   ///\param[in] Month            The moon day
+   //-----------------------------------------------------
+   void setParameters(const std::string& illuminatedMoon,
+                      const std::string& dayofMoon);
 
-      //-----------------------------------------------------
-      ///\brief                      Add a new period with all integrated parameter
-      ///\param[in] Year             The Year of the period
-      ///\param[in] Month            The Month of the period
-      //-----------------------------------------------------
-      void SetParameters(
-            const std::string& IlluminatedMoon,
-            const std::string& DayofMoon
-            );
+   //-----------------------------------------------------
+   ///\brief                     Destructor
+   //-----------------------------------------------------
+   virtual ~CMoonFormatter();
 
-      //-----------------------------------------------------
-      ///\brief                     Destructor
-      //-----------------------------------------------------
-      virtual ~CMoonFormatter();
+   //-----------------------------------------------------
+   ///\brief                     Format value to Yadoms format
+   ///\return                    Formatted data
+   //-----------------------------------------------------
+   virtual std::string formatValue() const;
 
-      //-----------------------------------------------------
-      ///\brief                     Format value to Yadoms format
-      ///\return                    Formatted data
-      //-----------------------------------------------------
-      virtual std::string formatValue() const;
+private:
+   std::string m_illuminatedMoon;
+   std::string m_dayOfMoon;
 
-   private:
- 
-      std::string m_IlluminatedMoon;
-      std::string m_DayOfMoon;
+   //-----------------------------------------------------
+   ///\brief               L'ensemble des unités
+   //-----------------------------------------------------
+   shared::CDataContainer m_units;
+};
 
-      //-----------------------------------------------------
-      ///\brief               L'ensemble des unités
-      //-----------------------------------------------------
-      shared::CDataContainer m_Units;
-   };

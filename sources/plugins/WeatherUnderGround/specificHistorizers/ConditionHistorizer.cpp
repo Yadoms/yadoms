@@ -1,79 +1,96 @@
 #include "stdafx.h"
 #include "ConditionHistorizer.h"
 #include <shared/plugin/yPluginApi/StandardUnits.h>
-   
-   const yApi::CStandardCapacity& ConditionCapacity = yApi::CStandardCapacity("Condition", yApi::CStandardUnits::NoUnits, yApi::EKeywordDataType::kNoData);
 
-   CConditionHistorizer::CConditionHistorizer(const std::string& keywordName, 
-                                            const yApi::EKeywordAccessMode& accessMode)
-   :m_keywordName(keywordName), m_accessMode(accessMode)
-   {
-	   m_content.reset(new CConditionFormatter( ));
-   }
+const yApi::CStandardCapacity& ConditionCapacity = yApi::CStandardCapacity("Condition"
+                                                                           , yApi::CStandardUnits::NoUnits,
+                                                                           yApi::EKeywordDataType::kNoData);
 
-   CConditionHistorizer::~CConditionHistorizer()
-   {}
-
-	const std::string& CConditionHistorizer::getKeyword() const
-	{
-	   return m_keywordName;
-	}
-
-	const yApi::CStandardCapacity& CConditionHistorizer::getCapacity() const
-	{
-	   return ConditionCapacity;
-	}
-	
-	const yApi::EKeywordAccessMode& CConditionHistorizer::getAccessMode() const
-	{
-	   return m_accessMode;
-	}
-
-void CConditionHistorizer::AddUnit(
-            const std::string& UnitName,
-            const std::string& UnitValue
-   )
+CConditionHistorizer::CConditionHistorizer(const std::string& keywordName,
+                                           const yApi::EKeywordAccessMode& accessMode)
+   : m_keywordName(keywordName),
+     m_accessMode(accessMode)
 {
-   m_content->AddUnit ( UnitName, UnitValue );
+   m_content = boost::make_shared<CConditionFormatter>();
 }
 
-	void CConditionHistorizer::SetPeriod(
-			const std::string& Time,
-			const std::string& WeatherCondition, 
-			const std::string& Temp, 
-			const std::string& Pressure,
-			const std::string& Visibility,
-			const std::string& UV,
-			const std::string& DewPoint,
-			const std::string& MaxWind,
-			const std::string& AveWind,
-			const std::string& AveWindDegrees,
-			const std::string& Humidity,
-			const std::string& RainDay,
-			const std::string& Feelslike,
-			const std::string& WindChill
-					 )
-	{
-		m_content->SetPeriod( Time, WeatherCondition, Temp, Pressure, Visibility, UV, DewPoint, MaxWind, AveWind,AveWindDegrees, Humidity, RainDay, Feelslike, WindChill );
-	}
-
-	std::string CConditionHistorizer::formatValue() const
-	{
-	   return !m_content ? std::string() : m_content->formatValue();
-	}
-
-	const yApi::historization::EMeasureType& CConditionHistorizer::getMeasureType() const
-	{
-	   static const yApi::historization::EMeasureType MeasureType(yApi::historization::EMeasureType::kAbsolute);
-	   return MeasureType;
-	}	
-
-   shared::CDataContainer CConditionHistorizer::getTypeInfo() const
-   {
-      return shared::CDataContainer();
-   }
-	
-void CConditionHistorizer::SetCityName ( const std::string& CityName )
+CConditionHistorizer::~CConditionHistorizer()
 {
-   m_content->SetCityName ( CityName );
 }
+
+const std::string& CConditionHistorizer::getKeyword() const
+{
+   return m_keywordName;
+}
+
+const yApi::CStandardCapacity& CConditionHistorizer::getCapacity() const
+{
+   return ConditionCapacity;
+}
+
+const yApi::EKeywordAccessMode& CConditionHistorizer::getAccessMode() const
+{
+   return m_accessMode;
+}
+
+void CConditionHistorizer::addUnit(const std::string& unitName,
+                                   const std::string& unitValue)
+{
+   m_content->addUnit(unitName, unitValue);
+}
+
+void CConditionHistorizer::setPeriod(const std::string& time,
+                                     const std::string& weatherCondition,
+                                     const std::string& temp,
+                                     const std::string& pressure,
+                                     const std::string& visibility,
+                                     const std::string& uv,
+                                     const std::string& dewPoint,
+                                     const std::string& maxWind,
+                                     const std::string& aveWind,
+                                     const std::string& aveWindDegrees,
+                                     const std::string& humidity,
+                                     const std::string& rainDay,
+                                     const std::string& feelslike,
+                                     const std::string& windChill)
+{
+   m_content->setPeriod(time,
+                        weatherCondition,
+                        temp,
+                        pressure,
+                        visibility,
+                        uv,
+                        dewPoint,
+                        maxWind,
+                        aveWind,
+                        aveWindDegrees,
+                        humidity,
+                        rainDay,
+                        feelslike,
+                        windChill);
+}
+
+std::string CConditionHistorizer::formatValue() const
+{
+   if (!m_content)
+      return std::string();
+
+   return m_content->formatValue();
+}
+
+const yApi::historization::EMeasureType& CConditionHistorizer::getMeasureType() const
+{
+   static const auto MeasureType(yApi::historization::EMeasureType::kAbsolute);
+   return MeasureType;
+}
+
+shared::CDataContainer CConditionHistorizer::getTypeInfo() const
+{
+   return shared::CDataContainer();
+}
+
+void CConditionHistorizer::setCityName(const std::string& cityName)
+{
+   m_content->setCityName(cityName);
+}
+

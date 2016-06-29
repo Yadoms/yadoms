@@ -1,22 +1,24 @@
 #include "stdafx.h"
 #include "WeatherUndergroundHelpers.h"
 
-std::string &trimAll(std::string &s)
-{   
-    if(s.size() == 0)
-    {
-        return s;
-    }
+std::string trimAll(const std::string& s)
+{
+   auto sOut(s);
+   if (sOut.size() == 0)
+   {
+      return sOut;
+   }
 
-    int val = 0;
-    for (size_t cur = 0; cur < s.size(); cur++)
-    {
-        if(s[cur] != ' ' && std::isalnum(s[cur]))
-        {
-            s[val] = s[cur];
-            val++;
-        }
-    }
-    s.resize(val);
-    return s;
+   auto val = 0;
+   for (size_t cur = 0; cur < sOut.size(); cur++)
+   {
+      if (sOut[cur] != ' ' && std::isalnum(sOut[cur]))
+      {
+         sOut[val] = sOut[cur];
+         val++;
+      }
+   }
+   sOut.resize(val);
+   return sOut;
 }
+

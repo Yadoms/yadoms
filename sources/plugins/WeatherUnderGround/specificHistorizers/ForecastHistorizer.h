@@ -6,100 +6,106 @@
 #include <shared/plugin/yPluginApi/KeywordAccessMode.h>
 #include "ForecastFormatter.h"
 
-namespace shared { namespace plugin { namespace yPluginApi { namespace historization
+namespace shared
 {
-   
-   //-----------------------------------------------------
-   ///\brief A remote pc code historizable object
-   //-----------------------------------------------------
-   class CForecastHistorizer : public IHistorizable
+   namespace plugin
    {
-   public:
-      //-----------------------------------------------------
-      ///\brief                                   Constructor
-      ///\param[in] keywordName  Yadoms keyword name
-      ///\param[in] accessMode   Access Type of the keyword
-      ///\param[in] Period       Period time between each element
-      //-----------------------------------------------------
-      CForecastHistorizer(const std::string& keywordName, 
-                          const EKeywordAccessMode& accessMode, 
-                          const weatherunderground::helper::EPeriod& Period);
+      namespace yPluginApi
+      {
+         namespace historization
+         {
+            //-----------------------------------------------------
+            ///\brief A remote pc code historizable object
+            //-----------------------------------------------------
+            class CForecastHistorizer : public IHistorizable
+            {
+            public:
+               //-----------------------------------------------------
+               ///\brief                                   Constructor
+               ///\param[in] keywordName  Yadoms keyword name
+               ///\param[in] accessMode   Access Type of the keyword
+               ///\param[in] period       Period time between each element
+               //-----------------------------------------------------
+               CForecastHistorizer(const std::string& keywordName,
+                                   const EKeywordAccessMode& accessMode,
+                                   const weatherunderground::helper::EPeriod& period);
 
-      //-----------------------------------------------------
-      ///\brief                     Destructor
-      //-----------------------------------------------------
-      virtual ~CForecastHistorizer();
-	  
-      // IHistorizable implementation
-      virtual const std::string& getKeyword() const;
-      virtual const CStandardCapacity& getCapacity() const;
-      virtual const EKeywordAccessMode& getAccessMode() const;
-      virtual std::string formatValue() const;
-      virtual const EMeasureType& getMeasureType() const;
-      virtual CDataContainer getTypeInfo() const;
-      // [END] IHistorizable implementation;	  
+               //-----------------------------------------------------
+               ///\brief                     Destructor
+               //-----------------------------------------------------
+               virtual ~CForecastHistorizer();
 
-      //-----------------------------------------------------
-      ///\brief                      Add a new unit to be send to the widget
-      ///\param[in] UnitName         The Unit Name
-	   ///\param[in] UnitValue        The Unit Value
-      //-----------------------------------------------------
+               // IHistorizable implementation
+               const std::string& getKeyword() const override;
+               const CStandardCapacity& getCapacity() const override;
+               const EKeywordAccessMode& getAccessMode() const override;
+               std::string formatValue() const override;
+               const EMeasureType& getMeasureType() const override;
+               CDataContainer getTypeInfo() const override;
+               // [END] IHistorizable implementation;	  
 
-      void AddUnit(
-            const std::string& UnitName,
-            const std::string& UnitValue
-         );
+               //-----------------------------------------------------
+               ///\brief                      Add a new unit to be send to the widget
+               ///\param[in] unitName         The Unit Name
+               ///\param[in] UnitValue        The Unit Value
+               //-----------------------------------------------------
+               void addUnit(const std::string& unitName,
+                            const std::string& unitValue);
 
-      //-----------------------------------------------------
-      ///\brief                      Add a new period with all integrated parameter
-      ///\param[in] Year             The Year of the period
-      ///\param[in] Month            The Month of the period
-      ///\param[in] Day              The Day of the period
-      ///\param[in] WeatherCondition The weather condition
-	   ///\param[in] TempMax          The maximal temperature of the day
-	   ///\param[in] TempMin          The minimum temperature of the day
-	   ///\param[in] MaxWind          The maximum wind speed of the day
-	   ///\param[in] AveWind          The average wind speed of the day
-	   ///\param[in] AveHumidity      The average humidity of the day
-      //-----------------------------------------------------
-      void AddPeriod(
-                     const std::string& Year,
-                     const std::string& Month,
-                     const std::string& Day,
-                     const std::string& WeatherCondition,
-	                  const std::string& TempMax, 
-					      const std::string& TempMin,
-					      const std::string& MaxWind,
-					      const std::string& AveWind,
-						  const std::string& AveWindDegrees,
-					      const std::string& AveHumidity,
-                     const std::string& RainDay,
-					 const std::string& SnowDay
-					 );
+               //-----------------------------------------------------
+               ///\brief                      Add a new period with all integrated parameter
+               ///\param[in] year             The Year of the period
+               ///\param[in] month            The Month of the period
+               ///\param[in] day              The Day of the period
+               ///\param[in] weatherCondition The weather condition
+               ///\param[in] tempMax          The maximal temperature of the day
+               ///\param[in] tempMin          The minimum temperature of the day
+               ///\param[in] maxWind          The maximum wind speed of the day
+               ///\param[in] aveWind          The average wind speed of the day
+               ///\param[in] aveWindDegrees   The average wind angle of the day
+               ///\param[in] aveHumidity      The average humidity of the day
+               ///\param[in] rainDay          The rain quantity of the day
+               ///\param[in] snowDay          The snow quantity of the day
+               //-----------------------------------------------------
+               void addPeriod(const std::string& year,
+                              const std::string& month,
+                              const std::string& day,
+                              const std::string& weatherCondition,
+                              const std::string& tempMax,
+                              const std::string& tempMin,
+                              const std::string& maxWind,
+                              const std::string& aveWind,
+                              const std::string& aveWindDegrees,
+                              const std::string& aveHumidity,
+                              const std::string& rainDay,
+                              const std::string& snowDay);
 
-      //-----------------------------------------------------
-      ///\brief                     Clear All periods
-      //-----------------------------------------------------
-      void ClearAllPeriods( void );
+               //-----------------------------------------------------
+               ///\brief                     Clear All periods
+               //-----------------------------------------------------
+               void clearAllPeriods();
 
-      void SetCityName ( const std::string& CityName );
+               void setCityName(const std::string& cityName);
 
-   private:
-      //-----------------------------------------------------
-      ///\brief                     The keyword name
-      //-----------------------------------------------------
-      const std::string m_keywordName;
+            private:
+               //-----------------------------------------------------
+               ///\brief                     The keyword name
+               //-----------------------------------------------------
+               const std::string m_keywordName;
 
-      //-----------------------------------------------------
-      ///\brief                     The access mode
-      //-----------------------------------------------------
-      const EKeywordAccessMode& m_accessMode;
+               //-----------------------------------------------------
+               ///\brief                     The access mode
+               //-----------------------------------------------------
+               const EKeywordAccessMode& m_accessMode;
 
-      //-----------------------------------------------------
-      ///\brief                     The message content
-      //-----------------------------------------------------
-      boost::shared_ptr<CForecastFormatter> m_content;
-	  
-   };
-} } } } // namespace shared::plugin::yPluginApi::historization
+               //-----------------------------------------------------
+               ///\brief                     The message content
+               //-----------------------------------------------------
+               boost::shared_ptr<CForecastFormatter> m_content;
+            };
+         }
+      }
+   }
+} // namespace shared::plugin::yPluginApi::historization
+
 

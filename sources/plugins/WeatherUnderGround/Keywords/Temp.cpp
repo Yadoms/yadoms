@@ -4,37 +4,38 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-CTemp::CTemp(std::string PluginName,
-             std::string KeyWordName)
-   : m_PluginName(PluginName),
-     m_temperature(boost::make_shared<yApi::historization::CTemperature>(KeyWordName, yApi::EKeywordAccessMode::kGet))
+CTemp::CTemp(std::string pluginName,
+             std::string keyWordName)
+   : m_pluginName(pluginName),
+     m_temperature(boost::make_shared<yApi::historization::CTemperature>(keyWordName,
+                                                                         yApi::EKeywordAccessMode::kGet))
 {
 }
 
-void CTemp::Initialize(boost::shared_ptr<yApi::IYPluginApi> api,
+void CTemp::initialize(boost::shared_ptr<yApi::IYPluginApi> api,
                        shared::CDataContainer details) const
 {
-   if (!api->keywordExists(m_PluginName, m_temperature))
-      api->declareKeyword(m_PluginName, m_temperature, details);
+   if (!api->keywordExists(m_pluginName, m_temperature))
+      api->declareKeyword(m_pluginName, m_temperature, details);
 }
 
 CTemp::~CTemp()
 {
 }
 
-void CTemp::SetValue(const shared::CDataContainer& ValueContainer,
+void CTemp::setValue(const shared::CDataContainer& valueContainer,
                      const std::string& filter) const
 {
-   if (ValueContainer.get<std::string>(filter) == "NA")
+   if (valueContainer.get<std::string>(filter) == "NA")
       std::cout << m_temperature->getKeyword() << " : NA => Value not registered" << std::endl;
    else
    {
-      m_temperature->set(ValueContainer.get<double>(filter));
+      m_temperature->set(valueContainer.get<double>(filter));
       std::cout << m_temperature->getKeyword() << "=" << m_temperature->get() << " celcius degrees" << std::endl;
    }
 }
 
-boost::shared_ptr<yApi::historization::IHistorizable> CTemp::GetHistorizable() const
+boost::shared_ptr<yApi::historization::IHistorizable> CTemp::getHistorizable() const
 {
    return m_temperature;
 }

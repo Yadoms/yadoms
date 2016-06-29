@@ -14,12 +14,12 @@ class CCondition : public IKeyword
 public:
    //--------------------------------------------------------------
    /// \brief	                        Constructor
-   /// \param[in] PluginName           The name of the plugin
-   /// \param[in] KeyWordName          The keyword name
+   /// \param[in] pluginName           The name of the plugin
+   /// \param[in] keyWordName          The keyword name
    /// \note                           Use this constructor initialising the keyword for this plugin. This function is used for conditions.
    //--------------------------------------------------------------
-   CCondition(std::string PluginName,
-              std::string KeyWordName);
+   CCondition(std::string pluginName,
+              std::string keyWordName);
 
    //--------------------------------------------------------------
    /// \brief	Destructor
@@ -28,12 +28,11 @@ public:
 
    //-----------------------------------------------------
    ///\brief                      Add a new unit to be send to the widget
-   ///\param[in] UnitName         The Unit Name
-   ///\param[in] UnitValue        The Unit Value
+   ///\param[in] unitName         The Unit Name
+   ///\param[in] unitValue        The Unit Value
    //-----------------------------------------------------
-
-   void AddUnit(const std::string& UnitName,
-                const std::string& UnitValue) const;
+   void addUnit(const std::string& unitName,
+                const std::string& unitValue) const;
 
    //-----------------------------------------------------
    ///\brief                      Add a new day with all integrated parameter
@@ -49,7 +48,7 @@ public:
    ///\param[in] RainDay          The quantity of rain in the day
    ///\throw                      shared::exception::CInvalidParameter or COutOfRange if fail to parse command
    //-----------------------------------------------------
-   void SetPeriod(const shared::CDataContainer& ValueContainer,
+   void setPeriod(const shared::CDataContainer& valueContainer,
                   const std::string& filterTime,
                   const std::string& filterWeatherCondition,
                   const std::string& filterTemp,
@@ -66,18 +65,18 @@ public:
                   const std::string& filterWindChill) const;
 
    // IKeyword implementation
-   void Initialize(boost::shared_ptr<yApi::IYPluginApi> api,
+   void initialize(boost::shared_ptr<yApi::IYPluginApi> api,
                    shared::CDataContainer details) const override;
-   boost::shared_ptr<yApi::historization::IHistorizable> GetHistorizable() const override;
+   boost::shared_ptr<yApi::historization::IHistorizable> getHistorizable() const override;
    // [END] IKeyword implementation
 
-   void SetCityName(const std::string& CityName) const;
+   void setCityName(const std::string& cityName) const;
 
 private:
    //--------------------------------------------------------------
    /// \brief	The device name
    //--------------------------------------------------------------
-   std::string m_PluginName;
+   std::string m_pluginName;
 
    //--------------------------------------------------------------
    /// \brief	The pressure (hPa)

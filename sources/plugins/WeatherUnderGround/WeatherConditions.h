@@ -21,41 +21,46 @@ public:
    //--------------------------------------------------------------
    /// \brief	  Constructor
    /// \param[in] api              pointer to the API
-   /// \param[in] WUConfiguration  The Configuration of the module
+   /// \param[in] wuConfiguration  The Configuration of the module
    //--------------------------------------------------------------
-   CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> api, IWUConfiguration& WUConfiguration, const std::string& PluginName, const std::string& Prefix);
+   CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> api,
+                      IWUConfiguration& wuConfiguration,
+                      const std::string& pluginName,
+                      const std::string& prefix);
 
    //--------------------------------------------------------------
    /// \brief	  Send the request and receive the response from the web site
    /// \param[in] api              pointer to the API
    //--------------------------------------------------------------
-   bool Request(boost::shared_ptr<yApi::IYPluginApi> api);
+   bool request(boost::shared_ptr<yApi::IYPluginApi> api);
 
    //--------------------------------------------------------------
    /// \brief	  Parse the answer from the web Site
    /// \param[in] api             pointer to the API
-   /// \param[in] WUConfiguration The configuration of the module
-   /// \param[in] PluginName      The name of the plugin module
+   /// \param[in] wuConfiguration The configuration of the module
+   /// \param[in] pluginName      The name of the plugin module
    //--------------------------------------------------------------
-   void Parse(boost::shared_ptr<yApi::IYPluginApi> api, const IWUConfiguration& WUConfiguration) const;
+   void parse(boost::shared_ptr<yApi::IYPluginApi> api,
+              const IWUConfiguration& wuConfiguration) const;
 
    //--------------------------------------------------------------
    /// \brief	  Update the configuration when something change from the HMI
    /// \param[in] api                pointer to the API
-   /// \param[in] WUConfiguration    The Plugin configuration
+   /// \param[in] wuConfiguration    The Plugin configuration
    //--------------------------------------------------------------
-   void OnUpdate(boost::shared_ptr<yApi::IYPluginApi> api, IWUConfiguration& WUConfiguration);
+   void onUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
+                 IWUConfiguration& wuConfiguration);
 
    //--------------------------------------------------------------
    /// \brief	  Return the conditions city name
    //--------------------------------------------------------------
-   std::string GetCityName() const;
+   std::string getCityName() const;
 
    //--------------------------------------------------------------
    /// \brief	  Return true if an error occured during the request
    /// \return    The state of this request
    //--------------------------------------------------------------
-   bool IsModuleInFault() const;
+   bool isModuleInFault() const;
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -67,25 +72,25 @@ private:
    //--------------------------------------------------------------
    /// \brief	  Initialise LiveConditions variables
    /// \param[in] api                pointer to the API
-   /// \param[in] WUConfiguration    The Plugin configuration
+   /// \param[in] wuConfiguration    The Plugin configuration
    //--------------------------------------------------------------
-   void InitializeVariables(boost::shared_ptr<yApi::IYPluginApi> api,
-                            IWUConfiguration& WUConfiguration) const;
+   void initializeVariables(boost::shared_ptr<yApi::IYPluginApi> api,
+                            IWUConfiguration& wuConfiguration) const;
 
    //--------------------------------------------------------------
    /// \brief	    Your Location to received custom information from the web site
    //--------------------------------------------------------------
-   std::string m_Localisation;
+   std::string m_localisation;
 
    //--------------------------------------------------------------
    /// \brief	    Your Location to received custom information from the web site
    //--------------------------------------------------------------
-   std::string m_CountryOrState;
+   std::string m_countryOrState;
 
    //--------------------------------------------------------------
    /// \brief	    The Plugin Name
    //--------------------------------------------------------------
-   std::string m_PluginName;
+   std::string m_pluginName;
 
    //--------------------------------------------------------------
    /// \brief	    Raw Web Data
@@ -95,7 +100,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	    The url link to access properly the web site
    //--------------------------------------------------------------
-   std::stringstream m_URL;
+   std::stringstream m_url;
 
    //--------------------------------------------------------------
    /// \brief	    The web Server engine
@@ -105,12 +110,12 @@ private:
    //--------------------------------------------------------------
    /// \brief	    The name of the city (country ? state ?)
    //--------------------------------------------------------------
-   std::string m_CityConditions;
+   std::string m_cityConditions;
 
    //--------------------------------------------------------------
    /// \brief	    Keywords
    //--------------------------------------------------------------
-   CTemp m_Temp;
+   CTemp m_temp;
 
    //--------------------------------------------------------------
    /// \brief	The pressure (hPa)
@@ -121,18 +126,18 @@ private:
    boost::shared_ptr<yApi::historization::CDirection> m_uv;
    boost::shared_ptr<yApi::historization::CDirection> m_WindDirection;
 
-   CTemp m_DewPoint;
-   CRain m_Rain_1hr;
-   CWeatherIcon m_WeatherConditionUrl;
-   CWindSpeed m_WindAverageSpeed;
-   CWindSpeed m_WindMaxSpeed;
-   CTemp m_FeelsLike;
-   CTemp m_Windchill;
-   CCondition m_LiveConditions;
+   CTemp m_dewPoint;
+   CRain m_rain1hr;
+   CWeatherIcon m_weatherConditionUrl;
+   CWindSpeed m_windAverageSpeed;
+   CWindSpeed m_windMaxSpeed;
+   CTemp m_feelsLike;
+   CTemp m_windchill;
+   CCondition m_liveConditions;
 
    //--------------------------------------------------------------
-   /// \brief	    Error Detecting ?
+   /// \brief	    Error Detected ?
    //--------------------------------------------------------------
-   bool m_CatchError;
+   bool m_catchError;
 };
 

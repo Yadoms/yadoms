@@ -13,20 +13,20 @@ class CTemp : public IKeyword
 public:
    //--------------------------------------------------------------
    /// \brief	                      Constructor
-   /// \param[in] PluginName           The name of the plugin
-   /// \param[in] KeyWordName          The keyword name
+   /// \param[in] pluginName           The name of the plugin
+   /// \param[in] keyWordName          The keyword name
    /// \note                           Use this constructor initialising the keyword for this plugin
    //--------------------------------------------------------------
-   CTemp(std::string PluginName,
-         std::string KeyWordName);
+   CTemp(std::string pluginName,
+         std::string keyWordName);
 
    //--------------------------------------------------------------
    /// \brief	                      Set the value from the container
-   /// \param[in] ValueContainer       The container where the value is stored
+   /// \param[in] valueContainer       The container where the value is stored
    /// \param[in] filter               The name of the information into the container
    /// \note                           Use this constructor initialising the keyword for this plugin
    //--------------------------------------------------------------
-   void SetValue(const shared::CDataContainer& ValueContainer,
+   void setValue(const shared::CDataContainer& valueContainer,
                  const std::string& filter) const;
 
    //--------------------------------------------------------------
@@ -35,8 +35,9 @@ public:
    virtual ~CTemp();
 
    // IKeyword implementation
-   void Initialize(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer details) const override;
-   boost::shared_ptr<yApi::historization::IHistorizable> GetHistorizable() const override;
+   void initialize(boost::shared_ptr<yApi::IYPluginApi> api,
+                   shared::CDataContainer details) const override;
+   boost::shared_ptr<yApi::historization::IHistorizable> getHistorizable() const override;
    // [END] IKeyword implementation
 
 private:
@@ -44,7 +45,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	The device name
    //--------------------------------------------------------------
-   std::string m_PluginName;
+   std::string m_pluginName;
 
    //--------------------------------------------------------------
    /// \brief	The temperature (°C)

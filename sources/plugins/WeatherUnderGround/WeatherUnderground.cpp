@@ -81,10 +81,10 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             std::cout << "Refresh Weather Conditions" << std::endl;
 
-            if (!m_WeatherConditionsRequester.Request(api))
-               m_WeatherConditionsRequester.Parse(api, m_configuration);
+            if (!m_WeatherConditionsRequester.request(api))
+               m_WeatherConditionsRequester.parse(api, m_configuration);
 
-            if (!m_WeatherConditionsRequester.IsModuleInFault())
+            if (!m_WeatherConditionsRequester.isModuleInFault())
                api->setPluginState(yApi::historization::EPluginState::kRunning);
 
             break;
@@ -93,10 +93,10 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             std::cout << "Refresh Astronomy Information" << std::endl;
 
-            if (!m_AstronomyRequester.Request(api))
-               m_AstronomyRequester.Parse(api, m_configuration);
+            if (!m_AstronomyRequester.request(api))
+               m_AstronomyRequester.parse(api, m_configuration);
 
-            if (!m_WeatherConditionsRequester.IsModuleInFault())
+            if (!m_WeatherConditionsRequester.isModuleInFault())
                api->setPluginState(yApi::historization::EPluginState::kRunning);
 
             break;
@@ -105,13 +105,13 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             std::cout << "Refresh Forecast 10 Days Information" << std::endl;
 
-            if (!m_Forecast10Days.Request(api))
+            if (!m_Forecast10Days.request(api))
             {
-               m_Forecast10Days.SetCityName(m_WeatherConditionsRequester.GetCityName());
-               m_Forecast10Days.Parse(api, m_configuration);
+               m_Forecast10Days.setCityName(m_WeatherConditionsRequester.getCityName());
+               m_Forecast10Days.parse(api, m_configuration);
             }
 
-            if (!m_WeatherConditionsRequester.IsModuleInFault())
+            if (!m_WeatherConditionsRequester.isModuleInFault())
                api->setPluginState(yApi::historization::EPluginState::kRunning);
 
             break;
@@ -120,26 +120,26 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
 
-            m_WeatherConditionsRequester.OnUpdate(api, m_configuration);
+            m_WeatherConditionsRequester.onUpdate(api, m_configuration);
 
-            if (!m_WeatherConditionsRequester.Request(api))
-               m_WeatherConditionsRequester.Parse(api, m_configuration);
+            if (!m_WeatherConditionsRequester.request(api))
+               m_WeatherConditionsRequester.parse(api, m_configuration);
 
-            m_AstronomyRequester.OnUpdate(api, m_configuration);
+            m_AstronomyRequester.onUpdate(api, m_configuration);
 
-            if (!m_AstronomyRequester.Request(api))
-               m_AstronomyRequester.Parse(api, m_configuration);
+            if (!m_AstronomyRequester.request(api))
+               m_AstronomyRequester.parse(api, m_configuration);
 
-            m_Forecast10Days.OnUpdate(api, m_configuration);
+            m_Forecast10Days.onUpdate(api, m_configuration);
 
-            m_Forecast10Days.SetCityName(m_WeatherConditionsRequester.GetCityName());
+            m_Forecast10Days.setCityName(m_WeatherConditionsRequester.getCityName());
 
-            if (!m_Forecast10Days.Request(api))
-               m_Forecast10Days.Parse(api, m_configuration);
+            if (!m_Forecast10Days.request(api))
+               m_Forecast10Days.parse(api, m_configuration);
 
-            if (!m_WeatherConditionsRequester.IsModuleInFault() &&
-               !m_Forecast10Days.IsModuleInFault() &&
-               !m_AstronomyRequester.IsModuleInFault())
+            if (!m_WeatherConditionsRequester.isModuleInFault() &&
+               !m_Forecast10Days.isModuleInFault() &&
+               !m_AstronomyRequester.isModuleInFault())
             {
                api->setPluginState(yApi::historization::EPluginState::kRunning);
             }
@@ -155,7 +155,8 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    }
 }
 
-void CWeatherUnderground::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainer& newConfigurationData)
+void CWeatherUnderground::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
+                                                const shared::CDataContainer& newConfigurationData)
 {
    // Configuration was updated
    std::cout << "Update configuration..." << std::endl;

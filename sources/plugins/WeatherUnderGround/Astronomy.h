@@ -17,41 +17,40 @@ public:
    //--------------------------------------------------------------
    /// \brief	  Constructor
    /// \param[in] api              pointer to the API
-   /// \param[in] WUConfiguration  The Configuration of the module
+   /// \param[in] wuConfiguration  The Configuration of the module
    //--------------------------------------------------------------
    CAstronomy(boost::shared_ptr<yApi::IYPluginApi> api,
-              IWUConfiguration& WUConfiguration,
-              const std::string& PluginName,
-              const std::string& Prefix);
+              IWUConfiguration& wuConfiguration,
+              const std::string& pluginName,
+              const std::string& prefix);
 
    //--------------------------------------------------------------
    /// \brief	  Send the request and receive the response from the web site
    /// \param[in] api    pointer to the API
    //--------------------------------------------------------------
-   bool Request(boost::shared_ptr<yApi::IYPluginApi> api);
+   bool request(boost::shared_ptr<yApi::IYPluginApi> api);
 
    //--------------------------------------------------------------
    /// \brief	  Parse the answer from the web Site
    /// \param[in] api             pointer to the API
-   /// \param[in] WUConfiguration The configuration of the module
-   /// \param[in] PluginName      The name of the plugin module
+   /// \param[in] wuConfiguration The configuration of the module
    //--------------------------------------------------------------
-   void Parse(boost::shared_ptr<yApi::IYPluginApi> api,
-              const IWUConfiguration& WUConfiguration);
+   void parse(boost::shared_ptr<yApi::IYPluginApi> api,
+              const IWUConfiguration& wuConfiguration);
 
    //--------------------------------------------------------------
    /// \brief	  Update the configuration when something change from the HMI
    /// \param[in] api                pointer to the API
-   /// \param[in] WUConfiguration    The Plugin configuration
+   /// \param[in] wuConfiguration    The Plugin configuration
    //--------------------------------------------------------------
-   void OnUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
-                 IWUConfiguration& WUConfiguration);
+   void onUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
+                 IWUConfiguration& wuConfiguration);
 
    //--------------------------------------------------------------
    /// \brief	  Return true if an error occured during the request
    /// \return    The state of this request
    //--------------------------------------------------------------
-   bool IsModuleInFault() const;
+   bool isModuleInFault() const;
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -63,25 +62,25 @@ private:
    //--------------------------------------------------------------
    /// \brief	  Initialise LiveConditions variables
    /// \param[in] api                pointer to the API
-   /// \param[in] WUConfiguration    The Plugin configuration
+   /// \param[in] wuConfiguration    The Plugin configuration
    //--------------------------------------------------------------
-   void InitializeVariables(boost::shared_ptr<yApi::IYPluginApi> api,
-                            IWUConfiguration& WUConfiguration) const;
+   void initializeVariables(boost::shared_ptr<yApi::IYPluginApi> api,
+                            IWUConfiguration& wuConfiguration) const;
 
    //--------------------------------------------------------------
    /// \brief	    Your Location to received custom information from the web site
    //--------------------------------------------------------------
-   std::string m_Localisation;
+   std::string m_localisation;
 
    //--------------------------------------------------------------
    /// \brief	    Your Location to received custom information from the web site
    //--------------------------------------------------------------
-   std::string m_CountryOrState;
+   std::string m_countryOrState;
 
    //--------------------------------------------------------------
    /// \brief	    The Plugin Name
    //--------------------------------------------------------------
-   std::string m_PluginName;
+   std::string m_pluginName;
 
    //--------------------------------------------------------------
    /// \brief	    Raw Web Data
@@ -91,7 +90,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	    The url link to access properly the web site
    //--------------------------------------------------------------
-   std::stringstream m_URL;
+   std::stringstream m_url;
 
    //--------------------------------------------------------------
    /// \brief	    The web Server engine
@@ -101,11 +100,11 @@ private:
    //--------------------------------------------------------------
    /// \brief	    Keywords
    //--------------------------------------------------------------
-   CMoon m_MoonCharacteristics;
+   CMoon m_moonCharacteristics;
 
    //--------------------------------------------------------------
    /// \brief	    Error Detecting
    //--------------------------------------------------------------
-   bool m_CatchError;
+   bool m_catchError;
 };
 

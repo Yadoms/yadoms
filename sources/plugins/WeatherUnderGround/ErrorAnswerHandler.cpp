@@ -5,7 +5,7 @@ typedef std::list<std::string> EnumValuesTypes;
 
 ErrorAnswerHandler::ErrorAnswerHandler(boost::shared_ptr<yApi::IYPluginApi> api,
                                        shared::CDataContainer response)
-   :m_ErrorState(false)
+   : m_errorState(false)
 {
    //list of errors created into language packages
 
@@ -17,7 +17,7 @@ ErrorAnswerHandler::ErrorAnswerHandler(boost::shared_ptr<yApi::IYPluginApi> api,
 
    if (!error.empty())
    {
-      m_ErrorState = true;
+      m_errorState = true;
 
       auto DescriptionError = response.getWithDefault<std::string>("response.error.description", "");
       std::cerr << "ERROR : " << DescriptionError << std::endl;
@@ -35,6 +35,6 @@ ErrorAnswerHandler::ErrorAnswerHandler(boost::shared_ptr<yApi::IYPluginApi> api,
 
 bool ErrorAnswerHandler::ContainError() const
 {
-   return m_ErrorState;
+   return m_errorState;
 }
 

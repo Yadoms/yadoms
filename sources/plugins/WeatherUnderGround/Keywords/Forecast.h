@@ -14,14 +14,14 @@ class CForecast : public IKeyword
 public:
    //--------------------------------------------------------------
    /// \brief	                        Constructor
-   /// \param[in] PluginName           The name of the plugin
-   /// \param[in] KeyWordName          The keyword name
-   /// \param[in] Period               The Period Type ( "Day", "Hour" )
+   /// \param[in] pluginName           The name of the plugin
+   /// \param[in] keyWordName          The keyword name
+   /// \param[in] period               The Period Type ( "Day", "Hour" )
    /// \note                           Use this constructor initialising the keyword for this plugin
    //--------------------------------------------------------------
-   CForecast(std::string PluginName,
-             std::string KeyWordName,
-             const weatherunderground::helper::EPeriod& Period);
+   CForecast(std::string pluginName,
+             std::string keyWordName,
+             const weatherunderground::helper::EPeriod& period);
 
    //--------------------------------------------------------------
    /// \brief	Destructor
@@ -30,60 +30,60 @@ public:
 
    //-----------------------------------------------------
    ///\brief                      Add a new unit to be send to the widget
-   ///\param[in] UnitName         The Unit Name
+   ///\param[in] unitName         The Unit Name
    ///\param[in] UnitValue        The Unit Value
    //-----------------------------------------------------
-
-   void AddUnit(const std::string& UnitName,
-                const std::string& UnitValue) const;
+   void addUnit(const std::string& unitName,
+                const std::string& unitValue) const;
 
    //-----------------------------------------------------
    ///\brief                      Add a new day with all integrated parameter
-   ///\param[in] Year             The Year of the period
-   ///\param[in] Month            The Month of the period
-   ///\param[in] Day              The Day of the period
-   ///\param[in] WeatherCondition The weather condition of the day
-   ///\param[in] TempMax          The maximal temperature of the day
-   ///\param[in] TempMin          The minimum temperature of the day
-   ///\param[in] MaxWind          The maximum wind speed of the day
-   ///\param[in] AveWind          The average wind speed of the day
-   ///\param[in] AveHumidity      The average humidity of the day
-   ///\param[in] RainDay          The quantity of rain in the day
+   ///\param[in] valueContainer   The container where the value is stored
+   ///\param[in] year             The Year of the period
+   ///\param[in] month            The Month of the period
+   ///\param[in] day              The Day of the period
+   ///\param[in] weatherCondition The weather condition of the day
+   ///\param[in] tempMax          The maximal temperature of the day
+   ///\param[in] tempMin          The minimum temperature of the day
+   ///\param[in] maxWind          The maximum wind speed of the day
+   ///\param[in] aveWind          The average wind speed of the day
+   ///\param[in] aveHumidity      The average humidity of the day
+   ///\param[in] rainDay          The quantity of rain in the day
+   ///\param[in] snowDay          The quantity of snow in the day
    ///\throw                      shared::exception::CInvalidParameter or COutOfRange if fail to parse command
    //-----------------------------------------------------
-   void AddPeriod(const shared::CDataContainer& ValueContainer,
-                  const std::string& filterYear,
-                  const std::string& filterMonth,
-                  const std::string& filterDay,
-                  const std::string& filterWeatherCondition,
-                  const std::string& filterTempMax,
-                  const std::string& filterTempMin,
-                  const std::string& filterMaxWind,
-                  const std::string& filterAveWind,
-                  const std::string& filterAveWindDegrees,
-                  const std::string& filterAveHumidity,
-                  const std::string& RainDay,
-                  const std::string& filterSnowDay) const;
+   void addPeriod(const shared::CDataContainer& valueContainer,
+                  const std::string& year,
+                  const std::string& month,
+                  const std::string& day,
+                  const std::string& weatherCondition,
+                  const std::string& tempMax,
+                  const std::string& tempMin,
+                  const std::string& maxWind,
+                  const std::string& aveWind,
+                  const std::string& aveWindDegrees,
+                  const std::string& aveHumidity,
+                  const std::string& rainDay,
+                  const std::string& snowDay) const;
 
    //-----------------------------------------------------
    ///\brief                      Clear All Periods
    //-----------------------------------------------------
-
-   void ClearAllPeriods() const;
+   void clearAllPeriods() const;
 
    // IKeyword implementation
-   void Initialize(boost::shared_ptr<yApi::IYPluginApi> api,
+   void initialize(boost::shared_ptr<yApi::IYPluginApi> api,
                    shared::CDataContainer details) const override;
-   boost::shared_ptr<yApi::historization::IHistorizable> GetHistorizable() const override;
+   boost::shared_ptr<yApi::historization::IHistorizable> getHistorizable() const override;
    // [END] IKeyword implementation
 
-   void SetCityName(const std::string& CityName) const;
+   void setCityName(const std::string& cityName) const;
 
 private:
    //--------------------------------------------------------------
    /// \brief	The device name
    //--------------------------------------------------------------
-   std::string m_PluginName;
+   std::string m_pluginName;
 
    //--------------------------------------------------------------
    /// \brief	The pressure (hPa)
