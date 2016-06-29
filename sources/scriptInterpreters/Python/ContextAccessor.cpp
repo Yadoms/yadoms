@@ -101,7 +101,7 @@ void CContextAccessor::sendAnswer(const pbAnswer::msg& answer, boost::interproce
    if (answer.ByteSize() > static_cast<int>(m_messageQueueMessageSize))
       throw std::overflow_error("CContextAccessor::sendAnswer : answer is too big");
 
-   if (!answer.SerializeToArray(m_mqBuffer, m_messageQueueMessageSize))
+   if (!answer.SerializeToArray(m_mqBuffer, answer.GetCachedSize()))
       throw std::overflow_error("CContextAccessor::sendAnswer : fail to serialize answer (too big ?)");
 
    messageQueue.send(m_mqBuffer, answer.GetCachedSize(), 0);

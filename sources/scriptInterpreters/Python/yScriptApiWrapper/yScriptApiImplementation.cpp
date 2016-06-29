@@ -44,7 +44,7 @@ void CYScriptApiImplementation::sendRequest(const pbRequest::msg& request) const
       if (request.ByteSize() > static_cast<int>(m_messageQueueMessageSize))
          throw std::overflow_error((boost::format("CYScriptApiImplementation::sendRequest \"%1%\" : request is too big") % request.descriptor()->full_name()).str());
 
-      if (!request.SerializeToArray(m_mqBuffer, m_messageQueueMessageSize))
+      if (!request.SerializeToArray(m_mqBuffer, request.GetCachedSize()))
          throw std::overflow_error((boost::format("CYScriptApiImplementation::sendRequest \"%1%\" : fail to serialize request (too big ?)") % request.descriptor()->full_name()).str());
 
       m_sendMessageQueue->send(m_mqBuffer, request.GetCachedSize(), 0);

@@ -116,7 +116,7 @@ namespace pluginSystem
          return;
       }
 
-      if (!pbMsg.SerializeToArray(m_sendBuffer.get(), m_sendMessageQueue.get_max_msg_size()))
+      if (!pbMsg.SerializeToArray(m_sendBuffer.get(), pbMsg.GetCachedSize()))
       {
          YADOMS_LOG(error) << "CIpcAdapter::send : fail to serialize message (too big ?) ==> ignored)";
          return;
