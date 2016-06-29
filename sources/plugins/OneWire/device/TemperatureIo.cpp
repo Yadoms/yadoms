@@ -33,11 +33,11 @@ namespace device
       if (CSingleTemperature::isTemperatureValid(temperature))
       {
          m_temperature->set(temperature);
-         m_keywords = &m_keywordsWithTemperature;
+         m_keywords = const_cast<std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >*>(&m_keywordsWithTemperature);
       }
       else
       {
-         m_keywords = &m_keywordsWithoutTemperature;
+         m_keywords = const_cast<std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >*>(&m_keywordsWithoutTemperature);
       }
    }
 

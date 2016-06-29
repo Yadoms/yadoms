@@ -4,113 +4,111 @@
 #include <shared/exception/Exception.hpp>
 
 CAstronomy::CAstronomy(boost::shared_ptr<yApi::IYPluginApi> api,
-                       IWUConfiguration& WUConfiguration,
-                       const std::string& PluginName,
-                       const std::string& Prefix)
-   : m_Localisation(WUConfiguration.getLocalisation()),
-     m_CountryOrState(WUConfiguration.getCountryOrState()),
-     m_PluginName(PluginName),
-     m_MoonCharacteristics(PluginName, Prefix + "Moon")
+                       IWUConfiguration& wuConfiguration,
+                       const std::string& pluginName,
+                       const std::string& prefix)
+   : m_localisation(wuConfiguration.getLocalisation()),
+     m_countryOrState(wuConfiguration.getCountryOrState()),
+     m_pluginName(pluginName),
+     m_moonCharacteristics(pluginName, prefix + "Moon")
 {
-   m_CatchError = false;
-   m_URL.str("");
-   m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/astronomy/q/" << m_CountryOrState << "/" << m_Localisation << ".json";
+   m_catchError = false;
+   m_url.str("");
+   m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/astronomy/q/" << m_countryOrState << "/" << m_localisation << ".json";
 
    try
    {
-      InitializeVariables(api, WUConfiguration);
+      initializeVariables(api, wuConfiguration);
    }
    catch (shared::exception::CException& e)
    {
       std::cout << "Configuration or initialization error of Astronomy module :" << e.what() << std::endl;
 
       api->setPluginState(yApi::historization::EPluginState::kCustom, "InitializationError");
-      m_CatchError = true;
+      m_catchError = true;
    }
 }
 
-void CAstronomy::InitializeVariables(boost::shared_ptr<yApi::IYPluginApi> api,
-                                     IWUConfiguration& WUConfiguration) const
+void CAstronomy::initializeVariables(boost::shared_ptr<yApi::IYPluginApi> api,
+                                     IWUConfiguration& wuConfiguration) const
 {
-   if (WUConfiguration.IsAstronomyEnabled())
+   if (wuConfiguration.IsAstronomyEnabled())
    {
       shared::CDataContainer details;
       details.set("provider", "weather-underground");
       details.set("shortProvider", "wu");
 
-      m_MoonCharacteristics.Initialize(api, details);
+      m_moonCharacteristics.initialize(api, details);
 
-      m_MoonCharacteristics.AddUnit(
-         shared::plugin::yPluginApi::CStandardCapacities::Load.getName(),
-         shared::plugin::yPluginApi::CStandardCapacities::Load.getUnit()
-      );
+      m_moonCharacteristics.addUnit(shared::plugin::yPluginApi::CStandardCapacities::Load.getName(),
+                                    shared::plugin::yPluginApi::CStandardCapacities::Load.getUnit());
    }
 }
 
-void CAstronomy::OnUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
-                          IWUConfiguration& WUConfiguration)
+void CAstronomy::onUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
+                          IWUConfiguration& wuConfiguration)
 {
    try
    {
-      m_Localisation = WUConfiguration.getLocalisation();
+      m_localisation = wuConfiguration.getLocalisation();
 
       //read the country or State code
-      m_CountryOrState = WUConfiguration.getCountryOrState();
+      m_countryOrState = wuConfiguration.getCountryOrState();
 
-      m_URL.str("");
+      m_url.str("");
 
-      m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/astronomy/q/" << m_CountryOrState << "/" << m_Localisation << ".json";
+      m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/astronomy/q/" << m_countryOrState << "/" << m_localisation << ".json";
 
-      InitializeVariables(api, WUConfiguration);
+      initializeVariables(api, wuConfiguration);
    }
    catch (shared::exception::CException& e)
    {
       std::cout << "Configuration or initialization error of Astronomy module :" << e.what() << std::endl;
 
       api->setPluginState(yApi::historization::EPluginState::kCustom, "InitializationError");
-      m_CatchError = true;
+      m_catchError = true;
    }
 }
 
-bool CAstronomy::Request(boost::shared_ptr<yApi::IYPluginApi> api)
+bool CAstronomy::request(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    try
    {
-      m_CatchError = false;
-      m_data = m_webServer.SendGetRequest(m_URL.str());
+      m_catchError = false;
+      m_data = m_webServer.SendGetRequest(m_url.str());
    }
    catch (shared::exception::CException& e)
    {
       std::cout << "Astronomy :" << e.what() << std::endl;
       api->setPluginState(yApi::historization::EPluginState::kCustom, "NoConnection");
-      m_CatchError = true;
+      m_catchError = true;
    }
 
-   return m_CatchError;
+   return m_catchError;
 }
 
-void CAstronomy::Parse(boost::shared_ptr<yApi::IYPluginApi> api,
-                       const IWUConfiguration& WUConfiguration)
+void CAstronomy::parse(boost::shared_ptr<yApi::IYPluginApi> api,
+                       const IWUConfiguration& wuConfiguration)
 {
    try
    {
       ErrorAnswerHandler Response(api, m_data);
-      m_CatchError = Response.ContainError();
+      m_catchError = Response.ContainError();
 
-      if (!m_CatchError)
+      if (!m_catchError)
       {
          std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > KeywordList;
 
-         if (WUConfiguration.IsAstronomyEnabled())
+         if (wuConfiguration.IsAstronomyEnabled())
          {
-            m_MoonCharacteristics.SetParameters(m_data,
+            m_moonCharacteristics.setParameters(m_data,
                                                 "moon_phase.percentIlluminated",
                                                 "moon_phase.ageOfMoon");
 
-            KeywordList.push_back(m_MoonCharacteristics.GetHistorizable());
+            KeywordList.push_back(m_moonCharacteristics.getHistorizable());
          }
 
-         api->historizeData(m_PluginName, KeywordList);
+         api->historizeData(m_pluginName, KeywordList);
       }
    }
    catch (shared::exception::CException& e)
@@ -119,9 +117,9 @@ void CAstronomy::Parse(boost::shared_ptr<yApi::IYPluginApi> api,
    }
 }
 
-bool CAstronomy::IsModuleInFault() const
+bool CAstronomy::isModuleInFault() const
 {
-   return m_CatchError;
+   return m_catchError;
 }
 
 CAstronomy::~CAstronomy()

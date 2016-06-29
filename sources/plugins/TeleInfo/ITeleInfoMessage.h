@@ -17,7 +17,9 @@ namespace TeleInfoMessages
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
-      virtual ~ITeleInfoMessage() {}
+      virtual ~ITeleInfoMessage()
+      {
+      }
 
       //--------------------------------------------------------------
       /// \brief	                        Encode messages for serial link
@@ -42,6 +44,6 @@ namespace TeleInfoMessages
       /// \brief	                        Set keyword state from default value
       //--------------------------------------------------------------
       virtual void reset() = 0;
-
    };
 }
+

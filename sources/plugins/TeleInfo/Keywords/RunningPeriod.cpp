@@ -33,7 +33,7 @@ void CRunningPeriod::SetValue(std::string& Value) const
 
    try
    {
-      EnumPeriod::const_iterator it = EEnumPeriod.find(Value);
+      auto it = EEnumPeriod.find(Value);
       if (it != EEnumPeriod.end())
       {
          m_runningPeriod->set(static_cast<teleInfo::specificHistorizers::EPeriod>(it->second));

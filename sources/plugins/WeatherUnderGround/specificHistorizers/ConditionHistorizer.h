@@ -8,99 +8,92 @@
 
 namespace yApi = shared::plugin::yPluginApi;
 
+//-----------------------------------------------------
+///\brief A remote pc code historizable object
+//-----------------------------------------------------
+class CConditionHistorizer : public yApi::historization::IHistorizable
+{
+public:
    //-----------------------------------------------------
-   ///\brief A remote pc code historizable object
+   ///\brief                                   Constructor
+   ///\param[in] keywordName  Yadoms keyword name
+   ///\param[in] accessMode   Access Type of the keyword
    //-----------------------------------------------------
-   class CConditionHistorizer : public yApi::historization::IHistorizable
-   {
-   public:
-      //-----------------------------------------------------
-      ///\brief                                   Constructor
-      ///\param[in] keywordName  Yadoms keyword name
-      ///\param[in] accessMode   Access Type of the keyword
-      ///\param[in] Period       Period time between each element
-      //-----------------------------------------------------
-      CConditionHistorizer(const std::string& keywordName, 
-                          const yApi::EKeywordAccessMode& accessMode);
+   CConditionHistorizer(const std::string& keywordName,
+                        const yApi::EKeywordAccessMode& accessMode);
 
-      //-----------------------------------------------------
-      ///\brief                     Destructor
-      //-----------------------------------------------------
-      virtual ~CConditionHistorizer();
-	  
-      // IHistorizable implementation
-      virtual const std::string& getKeyword() const;
-      virtual const yApi::CStandardCapacity& getCapacity() const;
-      virtual const yApi::EKeywordAccessMode& getAccessMode() const;
-      virtual std::string formatValue() const;
-      virtual const yApi::historization::EMeasureType& getMeasureType() const;
-      virtual shared::CDataContainer getTypeInfo() const;
-      // [END] IHistorizable implementation;	  
+   //-----------------------------------------------------
+   ///\brief                     Destructor
+   //-----------------------------------------------------
+   virtual ~CConditionHistorizer();
 
-      //-----------------------------------------------------
-      ///\brief                      Add a new unit to be send to the widget
-      ///\param[in] UnitName         The Unit Name
-	   ///\param[in] UnitValue        The Unit Value
-      //-----------------------------------------------------
+   // IHistorizable implementation
+   const std::string& getKeyword() const override;
+   const yApi::CStandardCapacity& getCapacity() const override;
+   const yApi::EKeywordAccessMode& getAccessMode() const override;
+   std::string formatValue() const override;
+   const yApi::historization::EMeasureType& getMeasureType() const override;
+   shared::CDataContainer getTypeInfo() const override;
+   // [END] IHistorizable implementation;	  
 
-      void AddUnit(
-            const std::string& UnitName,
-            const std::string& UnitValue
-         );
+   //-----------------------------------------------------
+   ///\brief                      Add a new unit to be send to the widget
+   ///\param[in] unitName         The Unit Name
+   ///\param[in] unitValue        The Unit Value
+   //-----------------------------------------------------
+   void addUnit(const std::string& unitName,
+                const std::string& unitValue);
 
-      //-----------------------------------------------------
-      ///\brief                      Add a new period with all integrated parameter
-      ///\param[in] Time             The Time of the period
-      ///\param[in] WeatherCondition The weather condition
-	  ///\param[in] Temp
-	  ///\param[in] Pressure
-	  ///\param[in] Visibility
-	  ///\param[in] UV
-	  ///\param[in] DewPoint
-	  ///\param[in] MaxWind
-	  ///\param[in] AveWind
-	  ///\param[in] AveWindDegrees
-	  ///\param[in] Humidity
-	  ///\param[in] RainDay
-	  ///\param[in] Feelslike
-	  ///\param[in] WindChill
-      //-----------------------------------------------------
-      void SetPeriod(
-		const std::string& Time,
-		const std::string& WeatherCondition, 
-		const std::string& Temp, 
-		const std::string& Pressure,
-		const std::string& Visibility,
-		const std::string& UV,
-		const std::string& DewPoint,
-		const std::string& MaxWind,
-		const std::string& AveWind,
-		const std::string& AveWindDegrees,
-		const std::string& Humidity,
-		const std::string& RainDay,
-		const std::string& Feelslike,
-		const std::string& WindChill
-					 );
+   //-----------------------------------------------------
+   ///\brief                      Add a new period with all integrated parameter
+   ///\param[in] time             The Time of the period
+   ///\param[in] weatherCondition The weather condition
+   ///\param[in] temp            The temperature of the day
+   ///\param[in] pressure        The pressure of the day
+   ///\param[in] visibility      The Visibility
+   ///\param[in] uv              The UV
+   ///\param[in] dewPoint        The DewPoint
+   ///\param[in] maxWind         The maximum wind speed of the day
+   ///\param[in] aveWind         The average wind speed of the day
+   ///\param[in] humidity        The average humidity of the day
+   ///\param[in] rainDay         The rain precipitation of the day
+   ///\param[in] feelslike       The feelslike temperature of the day
+   ///\param[in] windChill       The windChill temperature of the day
+   //-----------------------------------------------------
+   void setPeriod(const std::string& time,
+                  const std::string& weatherCondition,
+                  const std::string& temp,
+                  const std::string& pressure,
+                  const std::string& visibility,
+                  const std::string& uv,
+                  const std::string& dewPoint,
+                  const std::string& maxWind,
+                  const std::string& aveWind,
+                  const std::string& aveWindDegrees,
+                  const std::string& humidity,
+                  const std::string& rainDay,
+                  const std::string& feelslike,
+                  const std::string& windChill);
 
-      //-----------------------------------------------------
-      ///\brief                     Set the city name
-      //-----------------------------------------------------
-      void SetCityName ( const std::string& CityName );
+   //-----------------------------------------------------
+   ///\brief                     Set the city name
+   //-----------------------------------------------------
+   void setCityName(const std::string& cityName);
 
-   private:
-      //-----------------------------------------------------
-      ///\brief                     The keyword name
-      //-----------------------------------------------------
-      const std::string m_keywordName;
+private:
+   //-----------------------------------------------------
+   ///\brief                     The keyword name
+   //-----------------------------------------------------
+   const std::string m_keywordName;
 
-      //-----------------------------------------------------
-      ///\brief                     The access mode
-      //-----------------------------------------------------
-      const yApi::EKeywordAccessMode& m_accessMode;
+   //-----------------------------------------------------
+   ///\brief                     The access mode
+   //-----------------------------------------------------
+   const yApi::EKeywordAccessMode& m_accessMode;
 
-      //-----------------------------------------------------
-      ///\brief                     The message content
-      //-----------------------------------------------------
-      boost::shared_ptr<CConditionFormatter> m_content;
-	  
-   };
+   //-----------------------------------------------------
+   ///\brief                     The message content
+   //-----------------------------------------------------
+   boost::shared_ptr<CConditionFormatter> m_content;
+};
+

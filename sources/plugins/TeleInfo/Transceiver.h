@@ -109,29 +109,29 @@ private:
       OP_TEMPO
    } Abonnement;
 
-   bool baseUpdated;
-   bool LowCostUpdated;
-   bool NormalCostUpdated;
-   bool InstantCurrentUpdated;
-   bool ApparentPowerUpdated;
+   bool m_baseUpdated;
+   bool m_lowCostUpdated;
+   bool m_normalCostUpdated;
+   bool m_instantCurrentUpdated;
+   bool m_apparentPowerUpdated;
 
-   bool EJPPeakPeriodUpdated;
-   bool EJPNormalPeriodUpdated;
+   bool m_eJPPeakPeriodUpdated;
+   bool m_eJPNormalPeriodUpdated;
 
-   bool TempoBlueDaysLowCostUpdated;
-   bool TempoBlueDaysNormalCostUpdated;
+   bool m_tempoBlueDaysLowCostUpdated;
+   bool m_tempoBlueDaysNormalCostUpdated;
 
-   bool TempoWhiteDaysLowCostUpdated;
-   bool TempoWhiteDaysNormalCostUpdated;
+   bool m_tempoWhiteDaysLowCostUpdated;
+   bool m_tempoWhiteDaysNormalCostUpdated;
 
-   bool TempoRedDaysLowCostUpdated;
-   bool TempoRedDaysNormalCostUpdated;
+   bool m_tempoRedDaysLowCostUpdated;
+   bool m_tempoRedDaysNormalCostUpdated;
 
-   bool TimePeriodUpdated;
-   bool ForecastPeriodUpdated;
+   bool m_timePeriodUpdated;
+   bool m_forecastPeriodUpdated;
 
    bool m_deviceCreated;
 
-   Abonnement Optarif;
+   Abonnement m_optarif;
 };
 

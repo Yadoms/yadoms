@@ -6,31 +6,32 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-CCondition::CCondition(std::string PluginName,
-                       std::string KeyWordName)
-   : m_PluginName(PluginName),
-     m_condition(boost::make_shared<CConditionHistorizer>(KeyWordName, yApi::EKeywordAccessMode::kGet))
+CCondition::CCondition(std::string pluginName,
+                       std::string keyWordName)
+   : m_pluginName(pluginName),
+     m_condition(boost::make_shared<CConditionHistorizer>(keyWordName, yApi::EKeywordAccessMode::kGet))
 {
 }
 
-void CCondition::Initialize(boost::shared_ptr<yApi::IYPluginApi> api,
+void CCondition::initialize(boost::shared_ptr<yApi::IYPluginApi> api,
                             shared::CDataContainer details) const
 {
-   if (!api->keywordExists(m_PluginName, m_condition))
-      api->declareKeyword(m_PluginName, m_condition, details);
+   if (!api->keywordExists(m_pluginName, m_condition))
+      api->declareKeyword(m_pluginName, m_condition, details);
 }
 
 CCondition::~CCondition()
 {
 }
 
-void CCondition::AddUnit(const std::string& UnitName,
-                         const std::string& UnitValue) const
+void CCondition::addUnit(const std::string& unitName,
+                         const std::string& unitValue) const
 {
-   m_condition->AddUnit(UnitName, UnitValue);
+   m_condition->addUnit(unitName,
+                        unitValue);
 }
 
-void CCondition::SetPeriod(const shared::CDataContainer& ValueContainer,
+void CCondition::setPeriod(const shared::CDataContainer& valueContainer,
                            const std::string& filterTime,
                            const std::string& filterWeatherCondition,
                            const std::string& filterTemp,
@@ -46,38 +47,38 @@ void CCondition::SetPeriod(const shared::CDataContainer& ValueContainer,
                            const std::string& filterFeelslike,
                            const std::string& filterWindChill) const
 {
-   std::string WeatherIconTemp;
+   std::string weatherIconTemp;
 
-   auto it = weatherunderground::helper::EEnumTypeNames.find(ValueContainer.get<std::string>(filterWeatherCondition));
+   auto it = weatherunderground::helper::EEnumTypeNames.find(valueContainer.get<std::string>(filterWeatherCondition));
    if (it != weatherunderground::helper::EEnumTypeNames.end())
    {
-      WeatherIconTemp = static_cast<yApi::historization::EWeatherCondition>(it->second).toString();
+      weatherIconTemp = static_cast<yApi::historization::EWeatherCondition>(it->second).toString();
    }
    else
-      throw CKeywordException("Value " + ValueContainer.get<std::string>(filterWeatherCondition) + " could not be set");
+      throw CKeywordException("Value " + valueContainer.get<std::string>(filterWeatherCondition) + " could not be set");
 
-   m_condition->SetPeriod(ValueContainer.get<std::string>(filterTime),
-                          WeatherIconTemp,
-                          ValueContainer.get<std::string>(filterTemp),
-                          ValueContainer.get<std::string>(filterPressure),
-                          ValueContainer.get<std::string>(filterVisibility),
-                          ValueContainer.get<std::string>(filterUV),
-                          ValueContainer.get<std::string>(filterDewPoint),
-                          boost::lexical_cast<std::string>(ValueContainer.get<double>(filterMaxWind) / 3.6), // Transform from Km/h -> m/s
-                          boost::lexical_cast<std::string>(ValueContainer.get<double>(filterAveWind) / 3.6), // Transform from Km/h -> m/s
-                          ValueContainer.get<std::string>(filterAveWindDegrees),
-                          ValueContainer.get<std::string>(filterAveHumidity),
-                          ValueContainer.get<std::string>(filterRainDay),
-                          ValueContainer.get<std::string>(filterFeelslike),
-                          ValueContainer.get<std::string>(filterWindChill));
+   m_condition->setPeriod(valueContainer.get<std::string>(filterTime),
+                          weatherIconTemp,
+                          valueContainer.get<std::string>(filterTemp),
+                          valueContainer.get<std::string>(filterPressure),
+                          valueContainer.get<std::string>(filterVisibility),
+                          valueContainer.get<std::string>(filterUV),
+                          valueContainer.get<std::string>(filterDewPoint),
+                          boost::lexical_cast<std::string>(valueContainer.get<double>(filterMaxWind) / 3.6), // Transform from Km/h -> m/s
+                          boost::lexical_cast<std::string>(valueContainer.get<double>(filterAveWind) / 3.6), // Transform from Km/h -> m/s
+                          valueContainer.get<std::string>(filterAveWindDegrees),
+                          valueContainer.get<std::string>(filterAveHumidity),
+                          valueContainer.get<std::string>(filterRainDay),
+                          valueContainer.get<std::string>(filterFeelslike),
+                          valueContainer.get<std::string>(filterWindChill));
 }
 
-void CCondition::SetCityName(const std::string& CityName) const
+void CCondition::setCityName(const std::string& cityName) const
 {
-   m_condition->SetCityName(CityName);
+   m_condition->setCityName(cityName);
 }
 
-boost::shared_ptr<yApi::historization::IHistorizable> CCondition::GetHistorizable() const
+boost::shared_ptr<yApi::historization::IHistorizable> CCondition::getHistorizable() const
 {
    return m_condition;
 }

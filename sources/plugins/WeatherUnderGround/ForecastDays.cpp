@@ -4,22 +4,22 @@
 #include <shared/exception/Exception.hpp>
 
 CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
-                             IWUConfiguration& WUConfiguration,
-                             std::string PluginName,
-                             const std::string& Prefix)
-   : m_Localisation(WUConfiguration.getLocalisation()),
-     m_CountryOrState(WUConfiguration.getCountryOrState()),
-     m_Prefix(Prefix),
-     m_PluginName(PluginName),
-     m_Forecast(PluginName, "Forecast", weatherunderground::helper::EPeriod::kDay)
+                             IWUConfiguration& wuConfiguration,
+                             std::string pluginName,
+                             const std::string& prefix)
+   : m_localisation(wuConfiguration.getLocalisation()),
+     m_countryOrState(wuConfiguration.getCountryOrState()),
+     m_prefix(prefix),
+     m_pluginName(pluginName),
+     m_forecast(pluginName, "Forecast", weatherunderground::helper::EPeriod::kDay)
 {
    try
    {
-      m_CatchError = false;
-      m_URL.str("");
-      m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/" << m_Prefix << "/q/" << m_CountryOrState << "/" << m_Localisation << ".json";
+      m_catchError = false;
+      m_url.str("");
+      m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/" << m_prefix << "/q/" << m_countryOrState << "/" << m_localisation << ".json";
 
-      InitializeForecastDays(api, WUConfiguration);
+      InitializeForecastDays(api, wuConfiguration);
    }
    catch (shared::exception::CException& e)
    {
@@ -28,42 +28,42 @@ CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
       // Informs Yadoms about the plugin actual state
       api->setPluginState(yApi::historization::EPluginState::kCustom, "InitializationError");
 
-      m_CatchError = true;
+      m_catchError = true;
    }
 }
 
 void CForecastDays::InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
-                                           IWUConfiguration& WUConfiguration
+                                           IWUConfiguration& wuConfiguration
 )
 {
    //Initialization
    try
    {
-      if (WUConfiguration.IsForecast10DaysEnabled())
+      if (wuConfiguration.IsForecast10DaysEnabled())
       {
          shared::CDataContainer details;
          details.set("provider", "weather-underground");
          details.set("shortProvider", "wu");
 
-         m_Forecast.Initialize(api, details);
+         m_forecast.initialize(api, details);
 
-         m_Forecast.AddUnit(shared::plugin::yPluginApi::CStandardCapacities::Temperature.getName(),
+         m_forecast.addUnit(shared::plugin::yPluginApi::CStandardCapacities::Temperature.getName(),
                             shared::plugin::yPluginApi::CStandardCapacities::Temperature.getUnit());
-         m_Forecast.AddUnit(shared::plugin::yPluginApi::CStandardCapacities::Speed.getName(),
+         m_forecast.addUnit(shared::plugin::yPluginApi::CStandardCapacities::Speed.getName(),
                             shared::plugin::yPluginApi::CStandardCapacities::Speed.getUnit());
-         m_Forecast.AddUnit(shared::plugin::yPluginApi::CStandardCapacities::Humidity.getName(),
+         m_forecast.addUnit(shared::plugin::yPluginApi::CStandardCapacities::Humidity.getName(),
                             shared::plugin::yPluginApi::CStandardCapacities::Humidity.getUnit());
-         m_Forecast.AddUnit(shared::plugin::yPluginApi::CStandardCapacities::Rain.getName(),
+         m_forecast.addUnit(shared::plugin::yPluginApi::CStandardCapacities::Rain.getName(),
                             shared::plugin::yPluginApi::CStandardCapacities::Rain.getUnit());
 
-         if (WUConfiguration.IsRainIndividualKeywordsEnabled())
+         if (wuConfiguration.IsRainIndividualKeywordsEnabled())
          {
-            for (int counter = 0; counter < 3; ++counter)
+            for (auto counter = 0; counter < NB_RAIN_FORECAST_DAY; ++counter)
             {
                std::stringstream TempString;
-               TempString << m_Prefix << "Rain_Day_" << counter;
-               m_Forecast_Rain[counter].reset(new CRain(m_PluginName, TempString.str()));
-               m_Forecast_Rain[counter]->Initialize(api, details);
+               TempString << m_prefix << "Rain_Day_" << counter;
+               m_forecastRain[counter] = boost::make_shared<CRain>(m_pluginName, TempString.str());
+               m_forecastRain[counter]->initialize(api, details);
             }
          }
       }
@@ -75,66 +75,67 @@ void CForecastDays::InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> 
       // Informs Yadoms about the plugin actual state
       api->setPluginState(yApi::historization::EPluginState::kCustom, "InitializationError");
 
-      m_CatchError = true;
+      m_catchError = true;
    }
 }
 
-void CForecastDays::OnUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
-                             IWUConfiguration& WUConfiguration)
+void CForecastDays::onUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
+                             IWUConfiguration& wuConfiguration)
 {
    //read the localisation
-   m_Localisation = WUConfiguration.getLocalisation();
+   m_localisation = wuConfiguration.getLocalisation();
 
    //read the country or State code
-   m_CountryOrState = WUConfiguration.getCountryOrState();
+   m_countryOrState = wuConfiguration.getCountryOrState();
 
-   m_URL.str("");
+   m_url.str("");
 
-   m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/" << m_Prefix << "/q/" << m_CountryOrState << "/" << m_Localisation << ".json";
+   m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/" << m_prefix << "/q/" << m_countryOrState << "/" << m_localisation << ".json";
 
-   InitializeForecastDays(api, WUConfiguration);
+   InitializeForecastDays(api, wuConfiguration);
 }
 
-bool CForecastDays::Request(boost::shared_ptr<yApi::IYPluginApi> api)
+bool CForecastDays::request(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    try
    {
-      m_CatchError = false;
-      m_data = m_webServer.SendGetRequest(m_URL.str());
+      m_catchError = false;
+      m_data = m_webServer.SendGetRequest(m_url.str());
    }
    catch (shared::exception::CException& e)
    {
       std::cout << "Forecast 10 days :" << e.what() << std::endl;
       api->setPluginState(yApi::historization::EPluginState::kCustom, "NoConnection");
-      m_CatchError = true;
+      m_catchError = true;
    }
 
-   return m_CatchError;
+   return m_catchError;
 }
 
-void CForecastDays::Parse(boost::shared_ptr<yApi::IYPluginApi> api, const IWUConfiguration& WUConfiguration)
+void CForecastDays::parse(boost::shared_ptr<yApi::IYPluginApi> api,
+                          const IWUConfiguration& wuConfiguration)
 {
    try
    {
       ErrorAnswerHandler Response(api, m_data);
-      m_CatchError = Response.ContainError();
+      m_catchError = Response.ContainError();
 
-      if (!m_CatchError)
+      if (!m_catchError)
       {
          std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > KeywordList;
 
-         if (WUConfiguration.IsForecast10DaysEnabled())
+         if (wuConfiguration.IsForecast10DaysEnabled())
          {
-            std::vector<shared::CDataContainer> result = m_data.get<std::vector<shared::CDataContainer> >("forecast.simpleforecast.forecastday");
+            auto result = m_data.get<std::vector<shared::CDataContainer> >("forecast.simpleforecast.forecastday");
             std::vector<shared::CDataContainer>::iterator i;
 
-            m_Forecast.ClearAllPeriods();
+            m_forecast.clearAllPeriods();
 
             unsigned char counter = 0;
 
             for (i = result.begin(); i != result.end(); ++i)
             {
-               m_Forecast.AddPeriod(*i,
+               m_forecast.addPeriod(*i,
                                     "date.year",
                                     "date.month",
                                     "date.day",
@@ -146,22 +147,21 @@ void CForecastDays::Parse(boost::shared_ptr<yApi::IYPluginApi> api, const IWUCon
                                     "avewind.degrees",
                                     "avehumidity",
                                     "qpf_allday.mm",
-                                    "snow_allday.cm"
-               );
+                                    "snow_allday.cm");
 
-               if (WUConfiguration.IsRainIndividualKeywordsEnabled())
+               if (wuConfiguration.IsRainIndividualKeywordsEnabled())
                {
                   if (counter < NB_RAIN_FORECAST_DAY)
                   {
-                     m_Forecast_Rain[counter]->SetValue(*i, "qpf_allday.mm");
-                     KeywordList.push_back(m_Forecast_Rain[counter]->GetHistorizable());
+                     m_forecastRain[counter]->setValue(*i, "qpf_allday.mm");
+                     KeywordList.push_back(m_forecastRain[counter]->getHistorizable());
                   }
                   ++counter;
                }
             }
-            KeywordList.push_back(m_Forecast.GetHistorizable());
+            KeywordList.push_back(m_forecast.getHistorizable());
          }
-         api->historizeData(m_PluginName, KeywordList);
+         api->historizeData(m_pluginName, KeywordList);
 
          std::cout << "Forecast Updated !" << std::endl;
       }
@@ -172,14 +172,14 @@ void CForecastDays::Parse(boost::shared_ptr<yApi::IYPluginApi> api, const IWUCon
    }
 }
 
-void CForecastDays::SetCityName(const std::string& CityName)
+void CForecastDays::setCityName(const std::string& CityName)
 {
-   m_Forecast.SetCityName(CityName);
+   m_forecast.setCityName(CityName);
 }
 
-bool CForecastDays::IsModuleInFault() const
+bool CForecastDays::isModuleInFault() const
 {
-   return m_CatchError;
+   return m_catchError;
 }
 
 CForecastDays::~CForecastDays()

@@ -1,88 +1,85 @@
 #include "stdafx.h"
 #include "ForecastFormatter.h"
-#include <shared/exception/InvalidParameter.hpp>
 #include "NoPeriodException.hpp"
 #include <shared/DataContainer.h>
 
-CForecastFormatter::CForecastFormatter( const weatherunderground::helper::EPeriod & Period )
-   :m_PeriodString(Period.toString())
+CForecastFormatter::CForecastFormatter(const weatherunderground::helper::EPeriod& period)
+   : m_periodString(period.toString())
 {
 }
 
-void CForecastFormatter::AddUnit(
-            const std::string& UnitName,
-            const std::string& UnitValue
-   )
+void CForecastFormatter::addUnit(const std::string& unitName,
+                                 const std::string& unitValue)
 {
-	try
-	{
-		m_Units.get ( UnitName );
-	}
-	catch ( shared::exception::CException& )
-	{  // If Exception, we create the unit
-		m_Units.set ( UnitName, UnitValue );
-	}
+   try
+   {
+      m_units.get(unitName);
+   }
+   catch (shared::exception::CException&)
+   { // If Exception, we create the unit
+      m_units.set(unitName, unitValue);
+   }
 }
 
-void CForecastFormatter::AddPeriod(
-            const std::string& Year,
-            const std::string& Month,
-            const std::string& Day,
-            const std::string& WeatherCondition, 
-            const std::string& TempMax, 
-            const std::string& TempMin,
-            const std::string& MaxWind,
-            const std::string& AveWind,
-			const std::string& AveWindDegrees,
-            const std::string& AveHumidity,
-            const std::string& RainDay,
-			const std::string& SnowDay
-				)
+void CForecastFormatter::addPeriod(const std::string& year,
+                                   const std::string& month,
+                                   const std::string& day,
+                                   const std::string& weatherCondition,
+                                   const std::string& tempMax,
+                                   const std::string& tempMin,
+                                   const std::string& maxWind,
+                                   const std::string& aveWind,
+                                   const std::string& aveWindDegrees,
+                                   const std::string& aveHumidity,
+                                   const std::string& rainDay,
+                                   const std::string& snowDay)
 {
-   shared::CDataContainer Temp;
+   shared::CDataContainer temp;
 
-   Temp.set ("Year", Year);
-   Temp.set ("Month", Month);
-   Temp.set ("Day", Day);
-   Temp.set ("WeatherCondition", WeatherCondition);
-   Temp.set ("TempMax", TempMax);
-   Temp.set ("TempMin", TempMin);
-   Temp.set ("MaxWind", MaxWind);
-   Temp.set ("AveWind", AveWind);
-   Temp.set ("AveWindDegrees", AveWindDegrees);
-   Temp.set ("AveHumidity", AveHumidity);
-   Temp.set ("RainDay", RainDay);
-   Temp.set ("SnowDay", SnowDay);
+   temp.set("Year", year);
+   temp.set("Month", month);
+   temp.set("Day", day);
+   temp.set("WeatherCondition", weatherCondition);
+   temp.set("TempMax", tempMax);
+   temp.set("TempMin", tempMin);
+   temp.set("MaxWind", maxWind);
+   temp.set("AveWind", aveWind);
+   temp.set("AveWindDegrees", aveWindDegrees);
+   temp.set("AveHumidity", aveHumidity);
+   temp.set("RainDay", rainDay);
+   temp.set("SnowDay", snowDay);
 
-   m_Periods.push_back( Temp );
+   m_periods.push_back(temp);
 }
 
-void CForecastFormatter::ClearAllPeriods( void )
+void CForecastFormatter::clearAllPeriods()
 {
-   m_Periods.clear();
+   m_periods.clear();
 }
 
-void CForecastFormatter::SetCityName ( const std::string & CityName )
+void CForecastFormatter::setCityName(const std::string& cityName)
 {
-   m_Localisation = CityName;
+   m_localisation = cityName;
 }
 
 CForecastFormatter::~CForecastFormatter()
-{}
+{
+}
 
 std::string CForecastFormatter::formatValue() const
 {
-   shared::CDataContainer Temp;
+   shared::CDataContainer temp;
 
-   Temp.set ("Units", m_Units);
+   temp.set("Units", m_units);
 
-   if (!m_PeriodString.empty())
-      Temp.set ("PeriodUnit", m_PeriodString );
+   if (!m_periodString.empty())
+      temp.set("PeriodUnit", m_periodString);
    else
-	   throw CNoPeriodException ("No Period configured !");
-   
-   Temp.set ("city", m_Localisation);
-   Temp.set ("forecast", m_Periods);
+      throw CNoPeriodException("No Period configured !");
 
-   return Temp.serialize();
+   temp.set("city", m_localisation);
+   temp.set("forecast", m_periods);
+
+   return temp.serialize();
 }
+

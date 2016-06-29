@@ -93,7 +93,7 @@ namespace plugin_cpp_api
 
       toPlugin::msg toPluginProtoBuffer;
       if (!toPluginProtoBuffer.ParseFromArray(message.get(), messageSize))
-         throw shared::exception::CInvalidParameter("message : fail to parse received data into protobuf format");
+         throw shared::exception::CInvalidParameter((boost::format("message : fail to parse received data into protobuf format (received buffer size is %1%)") % messageSize).str());
 
       if (!m_initialized)
       {
@@ -235,10 +235,9 @@ namespace plugin_cpp_api
    }
 
 
-
    void CApiImplementation::setPluginState(const shared::plugin::yPluginApi::historization::EPluginState& state,
-      const std::string& customMessageId,
-      const std::map<std::string, std::string> & customMessageDataParams)
+                                           const std::string& customMessageId,
+                                           const std::map<std::string, std::string>& customMessageDataParams)
    {
       toYadoms::msg req;
       auto request = req.mutable_pluginstate();
@@ -261,7 +260,22 @@ namespace plugin_cpp_api
 
       shared::CDataContainer dc(customMessageDataParams);
       request->set_custommessagedata(dc.serialize());
-      send(req);
+      try
+      {
+         send(req);
+      }
+      catch (std::exception&)
+      {
+         std::cerr << "Call was : setPluginState(" << state << ", " << customMessageId << ", { ";
+         std::for_each(customMessageDataParams.begin(),
+                       customMessageDataParams.end(),
+                       [](const std::pair<const std::string, std::string>& param)
+                       {
+                          std::cerr << param.first << " = " << param.second << ", ";
+                       });
+         std::cerr << "} )" << std::endl;
+         throw;
+      }
    }
 
    bool CApiImplementation::deviceExists(const std::string& device) const
@@ -271,15 +285,23 @@ namespace plugin_cpp_api
       request->set_device(device);
 
       auto exists = false;
-      send(req,
-           [](const toPlugin::msg& ans) -> bool
-           {
-              return ans.has_deviceexists();
-           },
-           [&](const toPlugin::msg& ans) -> void
-           {
-              exists = ans.deviceexists().exists();
-           });
+      try
+      {
+         send(req,
+              [](const toPlugin::msg& ans) -> bool
+              {
+                 return ans.has_deviceexists();
+              },
+              [&](const toPlugin::msg& ans) -> void
+              {
+                 exists = ans.deviceexists().exists();
+              });
+      }
+      catch(std::exception&)
+      {
+         std::cerr << "Call was : deviceExists(" << device << ")" << std::endl;
+         throw;
+      }
 
       return exists;
    }
@@ -291,16 +313,23 @@ namespace plugin_cpp_api
       request->set_device(device);
 
       shared::CDataContainer details;
-      send(req,
-           [](const toPlugin::msg& ans) -> bool
-           {
-              return ans.has_devicedetails();
-           },
-           [&](const toPlugin::msg& ans) -> void
-           {
-              details.deserialize(ans.devicedetails().details());
-           });
-
+      try
+      {
+         send(req,
+              [](const toPlugin::msg& ans) -> bool
+              {
+                 return ans.has_devicedetails();
+              },
+              [&](const toPlugin::msg& ans) -> void
+              {
+                 details.deserialize(ans.devicedetails().details());
+              });
+      }
+      catch (std::exception&)
+      {
+         std::cerr << "Call was : getDeviceDetails(" << device << ")" << std::endl;
+         throw;
+      }
       return details;
    }
 
@@ -316,7 +345,15 @@ namespace plugin_cpp_api
       fillHistorizable(keyword, request->add_keywords());
       if (!details.empty())
          request->set_details(details.serialize());
-      send(req);
+      try
+      {
+         send(req);
+      }
+      catch (std::exception&)
+      {
+         std::cerr << "Call was : declareDevice(" << device << ", " << model << ", " << keyword->getKeyword() << ", " << details.serialize() << ")" << std::endl;
+         throw;
+      }
    }
 
    void CApiImplementation::declareDevice(const std::string& device,
@@ -332,7 +369,22 @@ namespace plugin_cpp_api
          fillHistorizable(*keyword, request->add_keywords());
       if (!details.empty())
          request->set_details(details.serialize());
-      send(req);
+      try
+      {
+         send(req);
+      }
+      catch (std::exception&)
+      {
+         std::cerr << "Call was : declareDevice(" << device << ", " << model << ", {";
+         std::for_each(keywords.begin(),
+                       keywords.end(),
+                       [](boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword)
+                       {
+                          std::cerr << keyword->getKeyword() << ", ";
+                       });
+         std::cerr << "}, " << details.serialize() << ")" << std::endl;
+         throw;
+      }
    }
 
    bool CApiImplementation::keywordExists(const std::string& device,
@@ -344,16 +396,24 @@ namespace plugin_cpp_api
       request->set_keyword(keyword);
 
       auto exists = false;
-      send(req,
-           [](const toPlugin::msg& ans) -> bool
-           {
-              return ans.has_keywordexists();
-           },
-           [&](const toPlugin::msg& ans) -> void
-           {
-              exists = ans.keywordexists().exists();
-           });
 
+      try
+      {
+         send(req,
+              [](const toPlugin::msg& ans) -> bool
+              {
+                 return ans.has_keywordexists();
+              },
+              [&](const toPlugin::msg& ans) -> void
+              {
+                 exists = ans.keywordexists().exists();
+              });
+      }
+      catch (std::exception&)
+      {
+         std::cerr << "Call was : keywordExists(" << device << ", " << keyword << ")" << std::endl;
+         throw;
+      }
       return exists;
    }
 
@@ -373,7 +433,15 @@ namespace plugin_cpp_api
       fillHistorizable(keyword, request->mutable_keyword());
       if (!details.empty())
          request->set_details(details.serialize());
-      send(req);
+      try
+      {
+         send(req);
+      }
+      catch (std::exception&)
+      {
+         std::cerr << "Call was : declareKeyword(" << device << ", " << keyword << ", " << details.serialize() << ")" << std::endl;
+         throw;
+      }
    }
 
    void CApiImplementation::fillHistorizable(boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> in,
@@ -405,15 +473,23 @@ namespace plugin_cpp_api
       request->set_fieldname(fieldName);
 
       std::string value;
-      send(req,
-           [](const toPlugin::msg& ans) -> bool
-           {
-              return ans.has_recipientvalue();
-           },
-           [&](const toPlugin::msg& ans) -> void
-           {
-              value = ans.recipientvalue().value();
-           });
+      try
+      {
+         send(req,
+              [](const toPlugin::msg& ans) -> bool
+              {
+                 return ans.has_recipientvalue();
+              },
+              [&](const toPlugin::msg& ans) -> void
+              {
+                 value = ans.recipientvalue().value();
+              });
+      }
+      catch (std::exception&)
+      {
+         std::cerr << "Call was : getRecipientValue(" << recipientId << ", " << fieldName << ")" << std::endl;
+         throw;
+      }
 
       return value;
    }
@@ -427,15 +503,23 @@ namespace plugin_cpp_api
       request->set_expectedfieldvalue(expectedFieldValue);
 
       std::vector<int> recipientIds;
-      send(req,
-           [](const toPlugin::msg& ans) -> bool
-           {
-              return ans.has_findrecipientsfromfieldanswer();
-           },
-           [&](const toPlugin::msg& ans) -> void
-           {
-              std::copy(ans.findrecipientsfromfieldanswer().recipientids().begin(), ans.findrecipientsfromfieldanswer().recipientids().end(), std::back_inserter(recipientIds));
-           });
+      try
+      {
+         send(req,
+              [](const toPlugin::msg& ans) -> bool
+              {
+                 return ans.has_findrecipientsfromfieldanswer();
+              },
+              [&](const toPlugin::msg& ans) -> void
+              {
+                 std::copy(ans.findrecipientsfromfieldanswer().recipientids().begin(), ans.findrecipientsfromfieldanswer().recipientids().end(), std::back_inserter(recipientIds));
+              });
+      }
+      catch (std::exception&)
+      {
+         std::cerr << "Call was : findRecipientsFromField(" << fieldName << ", " << expectedFieldValue << ")" << std::endl;
+         throw;
+      }
 
       return recipientIds;
    }
@@ -447,15 +531,23 @@ namespace plugin_cpp_api
       request->set_fieldname(fieldName);
 
       auto exists = false;
-      send(req,
-           [](const toPlugin::msg& ans) -> bool
-           {
-              return ans.has_keywordexists();
-           },
-           [&](const toPlugin::msg& ans) -> void
-           {
-              exists = ans.keywordexists().exists();
-           });
+      try
+      {
+         send(req,
+              [](const toPlugin::msg& ans) -> bool
+              {
+                 return ans.has_keywordexists();
+              },
+              [&](const toPlugin::msg& ans) -> void
+              {
+                 exists = ans.keywordexists().exists();
+              });
+      }
+      catch (std::exception&)
+      {
+         std::cerr << "Call was : recipientFieldExists(" << fieldName << ")" << std::endl;
+         throw;
+      }
 
       return exists;
    }
@@ -469,7 +561,15 @@ namespace plugin_cpp_api
       auto value = message->add_value();
       fillHistorizable(data, value->mutable_historizable());
       value->set_formattedvalue(data->formatValue());
-      send(msg);
+      try
+      {
+         send(msg);
+      }
+      catch (std::exception&)
+      {
+         std::cerr << "Call was : historizeData(" << device << ", { " << data->getKeyword() << ", " << data->formatValue() << " } )" << std::endl;
+         throw;
+      }
    }
 
    void CApiImplementation::historizeData(const std::string& device,
@@ -484,7 +584,22 @@ namespace plugin_cpp_api
          fillHistorizable(*data, value->mutable_historizable());
          value->set_formattedvalue((*data)->formatValue());
       }
-      send(msg);
+      try
+      {
+         send(msg);
+      }
+      catch (std::exception&)
+      {
+         std::cerr << "Call was : historizeData(" << device << ", { ";
+         std::for_each(dataVect.begin(),
+                       dataVect.end(),
+                       [](boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> data)
+                       {
+                          std::cerr << " { " << data->getKeyword() << ", " << data->formatValue() << " }, ";
+                       });
+         std::cerr << "} )" << std::endl;
+         throw;
+      }
    }
 
    boost::shared_ptr<const shared::plugin::information::IInformation> CApiImplementation::getInformation() const
@@ -501,15 +616,23 @@ namespace plugin_cpp_api
       req.mutable_configurationrequest();
 
       shared::CDataContainer configuration;
-      send(req,
-           [](const toPlugin::msg& ans) -> bool
-           {
-              return ans.has_configurationanswer();
-           },
-           [&](const toPlugin::msg& ans) -> void
-           {
-              configuration.deserialize(ans.configurationanswer().configuration());
-           });
+      try
+      {
+         send(req,
+              [](const toPlugin::msg& ans) -> bool
+              {
+                 return ans.has_configurationanswer();
+              },
+              [&](const toPlugin::msg& ans) -> void
+              {
+                 configuration.deserialize(ans.configurationanswer().configuration());
+              });
+      }
+      catch (std::exception&)
+      {
+         std::cerr << "Call was : getConfiguration" << std::endl;
+         throw;
+      }
 
       return configuration;
    }

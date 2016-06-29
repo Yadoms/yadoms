@@ -4,34 +4,34 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-CWindSpeed::CWindSpeed(std::string PluginName,
-                       std::string Name):
-   m_PluginName(PluginName),
-   m_windSpeed(boost::make_shared<yApi::historization::CSpeed>(Name))
+CWindSpeed::CWindSpeed(std::string pluginName,
+                       std::string name):
+   m_pluginName(pluginName),
+   m_windSpeed(boost::make_shared<yApi::historization::CSpeed>(name))
 {
 }
 
-void CWindSpeed::Initialize(boost::shared_ptr<yApi::IYPluginApi> api,
+void CWindSpeed::initialize(boost::shared_ptr<yApi::IYPluginApi> api,
                             shared::CDataContainer details) const
 {
-   if (!api->keywordExists(m_PluginName, m_windSpeed))
-      api->declareKeyword(m_PluginName, m_windSpeed, details);
+   if (!api->keywordExists(m_pluginName, m_windSpeed))
+      api->declareKeyword(m_pluginName, m_windSpeed, details);
 }
 
 CWindSpeed::~CWindSpeed()
 {
 }
 
-void CWindSpeed::SetValue(const shared::CDataContainer& ValueContainer,
+void CWindSpeed::setValue(const shared::CDataContainer& valueContainer,
                           const std::string& filter) const
 {
    // Following Units are in km/h. We have to x 1000 to get meters en divide by 3600 to obtain secondes.
    // The units into the base are in m/s
-   m_windSpeed->set(ValueContainer.get<double>(filter) * 1000 / 3600);
+   m_windSpeed->set(valueContainer.get<double>(filter) * 1000 / 3600);
    std::cout << m_windSpeed->getKeyword() << "=" << m_windSpeed->get() << "m/s" << std::endl;
 }
 
-boost::shared_ptr<yApi::historization::IHistorizable> CWindSpeed::GetHistorizable() const
+boost::shared_ptr<yApi::historization::IHistorizable> CWindSpeed::getHistorizable() const
 {
    return m_windSpeed;
 }

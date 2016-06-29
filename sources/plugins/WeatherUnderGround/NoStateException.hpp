@@ -12,7 +12,7 @@ public:
    /// \param[in]  message             Exception message
    //--------------------------------------------------------------
    explicit CNoStateException(const std::string& message)
-      :CException(message)
+      : CException(message)
    {
    }
 
@@ -23,3 +23,4 @@ public:
    {
    }
 };
+

@@ -9,11 +9,9 @@
 class CTeleInfoConfiguration : public ITeleInfoConfiguration
 {
 public:
-
    //--------------------------------------------------------------
    /// \brief	    Constructor
    //--------------------------------------------------------------
-
    CTeleInfoConfiguration();
 
    //--------------------------------------------------------------

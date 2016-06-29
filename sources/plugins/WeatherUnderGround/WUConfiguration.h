@@ -21,16 +21,16 @@ public:
    virtual ~CWUConfiguration();
 
    // IWUConfiguration implementation
-   virtual void initializeWith(const shared::CDataContainer &data);
-   virtual std::string getAPIKey() const;
-   virtual std::string getLocalisation();
-   virtual std::string getCountryOrState();
-   virtual std::string getState() const;
-   virtual bool IsConditionsIndividualKeywordsEnabled (void ) const;
-   virtual bool IsLiveConditionsEnabled (void ) const;
-   virtual bool IsRainIndividualKeywordsEnabled (void ) const;
-   virtual bool IsAstronomyEnabled (void ) const;
-   virtual bool IsForecast10DaysEnabled (void ) const;
+   void initializeWith(const shared::CDataContainer& data) override;
+   std::string getAPIKey() const override;
+   std::string getLocalisation() override;
+   std::string getCountryOrState() override;
+   std::string getState() const override;
+   bool IsConditionsIndividualKeywordsEnabled() const override;
+   bool IsLiveConditionsEnabled() const override;
+   bool IsRainIndividualKeywordsEnabled() const override;
+   bool IsAstronomyEnabled() const override;
+   bool IsForecast10DaysEnabled() const override;
    // [END] IWUConfiguration implementation
 
 private:
@@ -42,10 +42,11 @@ private:
    //--------------------------------------------------------------
    /// \brief	    The localisation entrered in the configuration of the module
    //--------------------------------------------------------------
-   std::string m_Localisation;
+   std::string m_localisation;
 
    //--------------------------------------------------------------
    /// \brief	    The country or the american state code
    //--------------------------------------------------------------
-   std::string m_CountryOrState;
+   std::string m_countryOrState;
 };
+

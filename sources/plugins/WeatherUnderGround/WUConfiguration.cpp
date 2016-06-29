@@ -4,8 +4,8 @@
 #include"NoStateException.hpp"
 
 CWUConfiguration::CWUConfiguration()
-   : m_Localisation(""),
-     m_CountryOrState("")
+   : m_localisation(""),
+     m_countryOrState("")
 {
 }
 
@@ -34,7 +34,7 @@ std::string CWUConfiguration::getLocalisation()
 {
    try
    {
-      m_Localisation = m_data.get<std::string>("Localisation");
+      m_localisation = m_data.get<std::string>("Localisation");
    }
    catch (shared::exception::CException& e)
    {
@@ -42,19 +42,19 @@ std::string CWUConfiguration::getLocalisation()
    }
 
    //Delete space between sub-names
-   return trimAll(m_Localisation);
+   return trimAll(m_localisation);
 }
 
 std::string CWUConfiguration::getCountryOrState()
 {
    try
    {
-      m_CountryOrState = m_data.get<std::string>("Country");
+      m_countryOrState = m_data.get<std::string>("Country");
 
-      if (m_CountryOrState == "US")
+      if (m_countryOrState == "US")
       {
-         m_CountryOrState = getState();
-         if (m_CountryOrState == "NA")
+         m_countryOrState = getState();
+         if (m_countryOrState == "NA")
             throw CNoStateException("No State configured for United States of America");
       }
    }
@@ -62,7 +62,7 @@ std::string CWUConfiguration::getCountryOrState()
    {
       std::cout << e.what() << std::endl;
    }
-   return m_CountryOrState;
+   return m_countryOrState;
 }
 
 std::string CWUConfiguration::getState() const
@@ -70,27 +70,27 @@ std::string CWUConfiguration::getState() const
    return m_data.get<std::string>("State");
 }
 
-bool CWUConfiguration::IsLiveConditionsEnabled(void) const
+bool CWUConfiguration::IsLiveConditionsEnabled() const
 {
    return m_data.get<bool>("LiveConditions");
 }
 
-bool CWUConfiguration::IsAstronomyEnabled(void) const
+bool CWUConfiguration::IsAstronomyEnabled() const
 {
    return m_data.get<bool>("Astronomy");
 }
 
-bool CWUConfiguration::IsForecast10DaysEnabled(void) const
+bool CWUConfiguration::IsForecast10DaysEnabled() const
 {
    return m_data.get<bool>("Forecast10Days");
 }
 
-bool CWUConfiguration::IsConditionsIndividualKeywordsEnabled(void) const
+bool CWUConfiguration::IsConditionsIndividualKeywordsEnabled() const
 {
    return m_data.get<bool>("IndividualKeywordsLiveConditions");
 }
 
-bool CWUConfiguration::IsRainIndividualKeywordsEnabled(void) const
+bool CWUConfiguration::IsRainIndividualKeywordsEnabled() const
 {
    return m_data.get<bool>("IndividualRainKeywordsForecast10days");
 }

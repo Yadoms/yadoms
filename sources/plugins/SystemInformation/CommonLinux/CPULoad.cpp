@@ -10,20 +10,26 @@
 CCPULoad::CCPULoad(const std::string& keywordName)
    : m_keyword(boost::make_shared<yApi::historization::CLoad>(keywordName))
 {
-   ReadFromFile ( &m_lastTotalUser, &m_lastTotalUserLow, &m_lastTotalSys, &m_lastTotalIdle, &m_lastTotalIowait, &m_lastTotalIrq, &m_lastTotalSoftIrq);
+   ReadFromFile(m_lastTotalUser,
+                m_lastTotalUserLow,
+                m_lastTotalSys,
+                m_lastTotalIdle,
+                m_lastTotalIowait,
+                m_lastTotalIrq,
+                m_lastTotalSoftIrq);
 }
 
 CCPULoad::~CCPULoad()
 {
 }
 
-void CCPULoad::ReadFromFile(unsigned long long *dtotalUser,
-                            unsigned long long *dtotalUserLow,
-                            unsigned long long *dtotalSys,
-                            unsigned long long *dtotalIdle,
-                            unsigned long long *dtotalIowait,
-                            unsigned long long *dtotalIrq,
-                            unsigned long long *dtotalSoftIrq)
+void CCPULoad::ReadFromFile(unsigned long long& dtotalUser,
+                            unsigned long long& dtotalUserLow,
+                            unsigned long long& dtotalSys,
+                            unsigned long long& dtotalIdle,
+                            unsigned long long& dtotalIowait,
+                            unsigned long long& dtotalIrq,
+                            unsigned long long& dtotalSoftIrq)
 {
    std::ifstream procFile("/proc/stat");
 
@@ -49,13 +55,13 @@ void CCPULoad::ReadFromFile(unsigned long long *dtotalUser,
       boost::smatch match;
       if ( boost::regex_search( line, match, reg ) ) 
       {
-          *dtotalUser    = boost::lexical_cast<long long>(match[1]);
-          *dtotalUserLow = boost::lexical_cast<long long>(match[2]);
-          *dtotalSys     = boost::lexical_cast<long long>(match[3]);
-          *dtotalIdle    = boost::lexical_cast<long long>(match[4]);
-          *dtotalIowait  = boost::lexical_cast<long long>(match[5]);
-          *dtotalIrq     = boost::lexical_cast<long long>(match[6]);
-          *dtotalSoftIrq = boost::lexical_cast<long long>(match[7]);
+          dtotalUser    = boost::lexical_cast<long long>(match[1]);
+          dtotalUserLow = boost::lexical_cast<long long>(match[2]);
+          dtotalSys     = boost::lexical_cast<long long>(match[3]);
+          dtotalIdle    = boost::lexical_cast<long long>(match[4]);
+          dtotalIowait  = boost::lexical_cast<long long>(match[5]);
+          dtotalIrq     = boost::lexical_cast<long long>(match[6]);
+          dtotalSoftIrq = boost::lexical_cast<long long>(match[7]);
       }
    }
 
@@ -64,9 +70,21 @@ void CCPULoad::ReadFromFile(unsigned long long *dtotalUser,
 
 void CCPULoad::read()
 {
-   unsigned long long totalUser, totalUserLow, totalSys, totalIdle, totalIowait, totalIrq, totalSoftIrq;
+   unsigned long long totalUser,
+                      totalUserLow,
+                      totalSys,
+                      totalIdle,
+                      totalIowait,
+                      totalIrq,
+                      totalSoftIrq;
 
-   ReadFromFile ( &totalUser, &totalUserLow, &totalSys, &totalIdle, &totalIowait, &totalIrq, &totalSoftIrq );
+   ReadFromFile(totalUser,
+                totalUserLow,
+                totalSys,
+                totalIdle,
+                totalIowait,
+                totalIrq,
+                totalSoftIrq);
 
    if (totalUser    < m_lastTotalUser || 
        totalUserLow < m_lastTotalUserLow || 

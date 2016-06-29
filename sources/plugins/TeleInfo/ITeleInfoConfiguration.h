@@ -10,13 +10,15 @@ public:
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
-   virtual ~ITeleInfoConfiguration() {}
+   virtual ~ITeleInfoConfiguration()
+   {
+   }
 
    //--------------------------------------------------------------
    /// \brief		   Load configuration data
    /// \param [in] data The data container
    //--------------------------------------------------------------
-   virtual void initializeWith(const shared::CDataContainer &data) = 0;
+   virtual void initializeWith(const shared::CDataContainer& data) = 0;
 
    //--------------------------------------------------------------
    /// \brief	    Virtual serial port connected to the TeleInfo reader module

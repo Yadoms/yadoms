@@ -4,38 +4,39 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-CRain::CRain(std::string PluginName,
-             std::string KeyWordName)
-   : m_PluginName(PluginName),
-     m_rain(new yApi::historization::CRain(KeyWordName))
+CRain::CRain(std::string pluginName,
+             std::string keyWordName)
+   : m_pluginName(pluginName),
+     m_rain(boost::make_shared<yApi::historization::CRain>(keyWordName))
 {
 }
 
-void CRain::Initialize(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer details) const
+void CRain::initialize(boost::shared_ptr<yApi::IYPluginApi> api,
+                       shared::CDataContainer details) const
 {
-   if (!api->keywordExists(m_PluginName, m_rain))
-      api->declareKeyword(m_PluginName, m_rain, details);
+   if (!api->keywordExists(m_pluginName, m_rain))
+      api->declareKeyword(m_pluginName, m_rain, details);
 }
 
 CRain::~CRain()
 {
 }
 
-void CRain::SetValue(const shared::CDataContainer& ValueContainer,
+void CRain::setValue(const shared::CDataContainer& valueContainer,
                      const std::string& filter) const
 {
-   if (ValueContainer.get<std::string>(filter) == "--")
+   if (valueContainer.get<std::string>(filter) == "--")
    {
       std::cout << m_rain->getKeyword() << " : '--' => Value not registered" << std::endl;
    }
    else
    {
-      m_rain->set(ValueContainer.get<double>(filter));
+      m_rain->set(valueContainer.get<double>(filter));
       std::cout << m_rain->getKeyword() << "=" << m_rain->get() << "mm" << std::endl;
    }
 }
 
-boost::shared_ptr<yApi::historization::IHistorizable> CRain::GetHistorizable() const
+boost::shared_ptr<yApi::historization::IHistorizable> CRain::getHistorizable() const
 {
    return m_rain;
 }

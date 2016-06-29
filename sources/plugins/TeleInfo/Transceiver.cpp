@@ -5,9 +5,9 @@
 #include "TeleInfotrxHelpers.h"
 
 CTransceiver::CTransceiver()
-   : m_seqNumberProvider(new CIncrementSequenceNumber()),
+   : m_seqNumberProvider(boost::make_shared<CIncrementSequenceNumber>()),
      m_deviceCreated(false),
-     Optarif(OP_NOT_DEFINED)
+     m_optarif(OP_NOT_DEFINED)
 {
    CTransceiver::ResetRefreshTags();
 }
@@ -56,15 +56,16 @@ bool CTransceiver::isCheckSumOk(const unsigned char* buffer)
    return (checksum == buffer[strlen((char*)buffer) - 1]);
 }
 
-void CTransceiver::ParseData(const unsigned char* pData, int Len)
+void CTransceiver::ParseData(const unsigned char* pData,
+                             int Len)
 {
-   int ii = 0;
+   auto ii = 0;
    unsigned char buffer[readBufferSize];
-   int m_bufferpos = 0;
+   auto m_bufferpos = 0;
 
    while (ii < Len)
    {
-      const unsigned char c = pData[ii];
+      const auto c = pData[ii];
 
       if ((c == 0x0a) || (c == 0x00))
       {
@@ -100,16 +101,18 @@ void CTransceiver::ParseData(const unsigned char* pData, int Len)
 }
 
 template <class T>
-void CTransceiver::HistorizeTeleInfoData(std::string KeywordName, long Value)
+void CTransceiver::HistorizeTeleInfoData(std::string KeywordName,
+                                         long Value)
 {
    if (m_deviceCreated)
    {
-      boost::shared_ptr<T> m_keyword;
+      auto m_keyword = boost::make_shared<T>(KeywordName);
 
-      m_keyword.reset(new T(KeywordName));
-
-      if (!m_api->keywordExists(m_DeviceName, m_keyword))
-         m_api->declareKeyword(m_DeviceName, m_keyword, m_KeywordDetails);
+      if (!m_api->keywordExists(m_DeviceName,
+                                m_keyword))
+         m_api->declareKeyword(m_DeviceName,
+                               m_keyword,
+                               m_KeywordDetails);
 
       m_keyword->set(Value);
       std::cout << m_keyword->getKeyword() << "=" << m_keyword->get() << std::endl;
@@ -124,7 +127,7 @@ void CTransceiver::CreateDevice(std::string CounterId)
    if (!m_api->deviceExists(CounterId))
       m_api->declareDevice(CounterId,
                            "TeleInfoUSB : Id = " + CounterId,
-                           std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >(),
+                           std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>(),
                            m_DeviceDetails);
 
    //Set the counter id for each keyword
@@ -135,38 +138,38 @@ void CTransceiver::CreateDevice(std::string CounterId)
 
 void CTransceiver::ResetRefreshTags()
 {
-   baseUpdated = false;
-   LowCostUpdated = false;
-   NormalCostUpdated = false;
-   InstantCurrentUpdated = false;
-   ApparentPowerUpdated = false;
+   m_baseUpdated = false;
+   m_lowCostUpdated = false;
+   m_normalCostUpdated = false;
+   m_instantCurrentUpdated = false;
+   m_apparentPowerUpdated = false;
 
-   EJPPeakPeriodUpdated = false;
-   EJPNormalPeriodUpdated = false;
+   m_eJPPeakPeriodUpdated = false;
+   m_eJPNormalPeriodUpdated = false;
 
-   TempoBlueDaysLowCostUpdated = false;
-   TempoBlueDaysNormalCostUpdated = false;
+   m_tempoBlueDaysLowCostUpdated = false;
+   m_tempoBlueDaysNormalCostUpdated = false;
 
-   TempoWhiteDaysLowCostUpdated = false;
-   TempoWhiteDaysNormalCostUpdated = false;
+   m_tempoWhiteDaysLowCostUpdated = false;
+   m_tempoWhiteDaysNormalCostUpdated = false;
 
-   TempoRedDaysLowCostUpdated = false;
-   TempoRedDaysNormalCostUpdated = false;
+   m_tempoRedDaysLowCostUpdated = false;
+   m_tempoRedDaysNormalCostUpdated = false;
 
-   TimePeriodUpdated = false;
-   ForecastPeriodUpdated = false;
+   m_timePeriodUpdated = false;
+   m_forecastPeriodUpdated = false;
 }
 
 bool CTransceiver::IsInformationUpdated()
 {
    // We do not take account about the apparent power. Some counters may not have this tag
-   if ((((Optarif == OP_BASE) && (baseUpdated)) ||
-         ((Optarif == OP_CREUSE) && (LowCostUpdated) && (NormalCostUpdated)) ||
-         ((Optarif == OP_EJP) && (EJPPeakPeriodUpdated) && (EJPNormalPeriodUpdated)) ||
-         ((Optarif == OP_TEMPO) && (TempoBlueDaysLowCostUpdated) && (TempoBlueDaysNormalCostUpdated) && (TempoWhiteDaysLowCostUpdated) && (TempoWhiteDaysNormalCostUpdated) && (TempoRedDaysLowCostUpdated) && (TempoRedDaysNormalCostUpdated) && (ForecastPeriodUpdated))
+   if ((((m_optarif == OP_BASE) && (m_baseUpdated)) ||
+         ((m_optarif == OP_CREUSE) && (m_lowCostUpdated) && (m_normalCostUpdated)) ||
+         ((m_optarif == OP_EJP) && (m_eJPPeakPeriodUpdated) && (m_eJPNormalPeriodUpdated)) ||
+         ((m_optarif == OP_TEMPO) && (m_tempoBlueDaysLowCostUpdated) && (m_tempoBlueDaysNormalCostUpdated) && (m_tempoWhiteDaysLowCostUpdated) && (m_tempoWhiteDaysNormalCostUpdated) && (m_tempoRedDaysLowCostUpdated) && (m_tempoRedDaysNormalCostUpdated) && (m_forecastPeriodUpdated))
       )
-      && (TimePeriodUpdated)
-      && (InstantCurrentUpdated))
+      && (m_timePeriodUpdated)
+      && (m_instantCurrentUpdated))
       return true;
 
    return false;
@@ -198,7 +201,7 @@ void CTransceiver::MatchLine(const unsigned char* buffer)
       (TE_ADPS, TELEINFO_TYPE_ADPS)
       (TE_MOTDETAT, TELEINFO_TYPE_MOTDETAT);
 
-   if ((strlen((const char*)buffer) < 1) || (buffer[0] == 0x0a))
+   if ((strlen(reinterpret_cast<const char*>(buffer)) < 1) || (buffer[0] == 0x0a))
       return;
 
    Match t[22] = {
@@ -227,7 +230,7 @@ void CTransceiver::MatchLine(const unsigned char* buffer)
    };
 
    //We get the id --> This function could be adjust for the following
-   unsigned char* pos = reinterpret_cast<unsigned char *>(strchr((char*)buffer, ' '));
+   auto pos = reinterpret_cast<unsigned char *>(strchr((char*)buffer, ' '));
    if (pos == nullptr)
       return;
    auto position = int(pos - buffer);
@@ -284,16 +287,16 @@ void CTransceiver::MatchLine(const unsigned char* buffer)
             switch (value[1])
             {
             case 'A':
-               Optarif = OP_BASE;
+               m_optarif = OP_BASE;
                break;
             case 'C':
-               Optarif = OP_CREUSE;
+               m_optarif = OP_CREUSE;
                break;
             case 'J':
-               Optarif = OP_EJP;
+               m_optarif = OP_EJP;
                break;
             case 'B':
-               Optarif = OP_TEMPO;
+               m_optarif = OP_TEMPO;
                break;
             default:
                //Erreur normalement
@@ -309,121 +312,121 @@ void CTransceiver::MatchLine(const unsigned char* buffer)
          }
          break;
       case TELEINFO_TYPE_BASE:
-         if (lvalueIsANumber && !baseUpdated)
+         if (lvalueIsANumber && !m_baseUpdated)
          {
             std::cout << "BASE" << "=" << lvalue << std::endl;
             HistorizeTeleInfoData<yApi::historization::CEnergy>("BaseCounter", lvalue);
-            baseUpdated = true;
+            m_baseUpdated = true;
          }
          break;
       case TELEINFO_TYPE_HCHC:
-         if (lvalueIsANumber && !LowCostUpdated)
+         if (lvalueIsANumber && !m_lowCostUpdated)
          {
             std::cout << "HCHC" << "=" << lvalue << std::endl;
             HistorizeTeleInfoData<yApi::historization::CEnergy>("LowCostCounter", lvalue);
-            LowCostUpdated = true;
+            m_lowCostUpdated = true;
          }
          break;
       case TELEINFO_TYPE_HCHP:
-         if (lvalueIsANumber && !NormalCostUpdated)
+         if (lvalueIsANumber && !m_normalCostUpdated)
          {
             std::cout << "HCHP" << "=" << lvalue << std::endl;
             HistorizeTeleInfoData<yApi::historization::CEnergy>("NormalCostCounter", lvalue);
-            NormalCostUpdated = true;
+            m_normalCostUpdated = true;
          }
          break;
       case TELEINFO_TYPE_EJPHPM:
-         if (lvalueIsANumber && !EJPPeakPeriodUpdated)
+         if (lvalueIsANumber && !m_eJPPeakPeriodUpdated)
          {
             std::cout << "EJPHPM" << "=" << lvalue << std::endl;
             HistorizeTeleInfoData<yApi::historization::CEnergy>("EJPPeakPeriod", lvalue);
-            EJPPeakPeriodUpdated = true;
+            m_eJPPeakPeriodUpdated = true;
          }
          break;
       case TELEINFO_TYPE_EJPHN:
-         if (lvalueIsANumber && !EJPNormalPeriodUpdated)
+         if (lvalueIsANumber && !m_eJPNormalPeriodUpdated)
          {
             std::cout << "EJPHPN" << "=" << lvalue << std::endl;
             HistorizeTeleInfoData<yApi::historization::CEnergy>("EJPNormalPeriod", lvalue);
-            EJPNormalPeriodUpdated = true;
+            m_eJPNormalPeriodUpdated = true;
          }
          break;
       case TELEINFO_TYPE_BBRHCJB:
-         if (lvalueIsANumber && !TempoBlueDaysLowCostUpdated)
+         if (lvalueIsANumber && !m_tempoBlueDaysLowCostUpdated)
          {
             std::cout << "BBRHCJB" << "=" << lvalue << std::endl;
             HistorizeTeleInfoData<yApi::historization::CEnergy>("TempoBlueDaysLowCostPeriod", lvalue);
-            TempoBlueDaysLowCostUpdated = true;
+            m_tempoBlueDaysLowCostUpdated = true;
          }
          break;
       case TELEINFO_TYPE_BBRHPJB:
-         if (lvalueIsANumber && !TempoBlueDaysNormalCostUpdated)
+         if (lvalueIsANumber && !m_tempoBlueDaysNormalCostUpdated)
          {
             std::cout << "BBRHPJB" << "=" << lvalue << std::endl;
             HistorizeTeleInfoData<yApi::historization::CEnergy>("TempoBlueDaysNormalCostPeriod", lvalue);
-            TempoBlueDaysNormalCostUpdated = true;
+            m_tempoBlueDaysNormalCostUpdated = true;
          }
          break;
       case TELEINFO_TYPE_BBRHCJW:
-         if (lvalueIsANumber && !TempoWhiteDaysLowCostUpdated)
+         if (lvalueIsANumber && !m_tempoWhiteDaysLowCostUpdated)
          {
             std::cout << "BBRHCJW" << "=" << lvalue << std::endl;
             HistorizeTeleInfoData<yApi::historization::CEnergy>("TempoWhiteDaysLowCostPeriod", lvalue);
-            TempoWhiteDaysLowCostUpdated = true;
+            m_tempoWhiteDaysLowCostUpdated = true;
          }
          break;
       case TELEINFO_TYPE_BBRHPJW:
-         if (lvalueIsANumber && !TempoWhiteDaysNormalCostUpdated)
+         if (lvalueIsANumber && !m_tempoWhiteDaysNormalCostUpdated)
          {
             std::cout << "BBRHPJW" << "=" << lvalue << std::endl;
             HistorizeTeleInfoData<yApi::historization::CEnergy>("TempoWhiteDaysNormalCostPeriod", lvalue);
-            TempoWhiteDaysNormalCostUpdated = true;
+            m_tempoWhiteDaysNormalCostUpdated = true;
          }
          break;
       case TELEINFO_TYPE_BBRHCJR:
-         if (lvalueIsANumber && !TempoRedDaysLowCostUpdated)
+         if (lvalueIsANumber && !m_tempoRedDaysLowCostUpdated)
          {
             std::cout << "BBRHCJR" << "=" << lvalue << std::endl;
             HistorizeTeleInfoData<yApi::historization::CEnergy>("TempoRedDaysLowCostPeriod", lvalue);
-            TempoRedDaysLowCostUpdated = true;
+            m_tempoRedDaysLowCostUpdated = true;
          }
          break;
       case TELEINFO_TYPE_BBRHPJR:
-         if (lvalueIsANumber && !TempoRedDaysNormalCostUpdated)
+         if (lvalueIsANumber && !m_tempoRedDaysNormalCostUpdated)
          {
             std::cout << "BBRHPJR" << "=" << lvalue << std::endl;
             HistorizeTeleInfoData<yApi::historization::CEnergy>("TempoRedDaysNormalCostPeriod", lvalue);
-            TempoRedDaysNormalCostUpdated = true;
+            m_tempoRedDaysNormalCostUpdated = true;
          }
          break;
       case TELEINFO_TYPE_PTEC:
-         if (!TimePeriodUpdated && m_deviceCreated)
+         if (!m_timePeriodUpdated && m_deviceCreated)
          {
             std::cout << "PTEC" << "=" << value << std::endl;
 
-            m_TimePeriod.reset(new CRunningPeriod(m_api, m_DeviceName, "RunningPeriod", m_KeywordDetails));
+            m_TimePeriod = boost::make_shared<CRunningPeriod>(m_api, m_DeviceName, "RunningPeriod", m_KeywordDetails);
             std::string temp(value);
             m_TimePeriod->SetValue(temp);
             m_KeywordList.push_back(m_TimePeriod->GetHistorizable());
-            TimePeriodUpdated = true;
+            m_timePeriodUpdated = true;
          }
          break;
       case TELEINFO_TYPE_IINST:
-         if (lvalueIsANumber && !InstantCurrentUpdated)
+         if (lvalueIsANumber && !m_instantCurrentUpdated)
          {
             std::cout << "IINST" << "=" << value << std::endl;
             HistorizeTeleInfoData<yApi::historization::CCurrent>("InstantCurrent", lvalue);
-            InstantCurrentUpdated = true;
+            m_instantCurrentUpdated = true;
          }
          break;
       case TELEINFO_TYPE_IMAX: //We do not use this one also
          break;
       case TELEINFO_TYPE_PAPP:
-         if (lvalueIsANumber && !ApparentPowerUpdated)
+         if (lvalueIsANumber && !m_apparentPowerUpdated)
          {
             std::cout << "PAPP" << "=" << lvalue << std::endl;
             HistorizeTeleInfoData<yApi::historization::CApparentPower>("ApparentPower", lvalue);
-            ApparentPowerUpdated = true;
+            m_apparentPowerUpdated = true;
          }
          break;
 
@@ -432,15 +435,18 @@ void CTransceiver::MatchLine(const unsigned char* buffer)
          break;
 
       case TELEINFO_TYPE_DEMAIN:
-         if (!ForecastPeriodUpdated && m_deviceCreated)
+         if (!m_forecastPeriodUpdated && m_deviceCreated)
          {
             std::cout << "DEMAIN" << "=" << value << std::endl;
 
-            m_ForecastPeriod.reset(new CForecastTomorrow(m_api, m_DeviceName, "ForecastColor", m_KeywordDetails));
+            m_ForecastPeriod = boost::make_shared<CForecastTomorrow>(m_api,
+                                                                     m_DeviceName,
+                                                                     "ForecastColor",
+                                                                     m_KeywordDetails);
             std::string temp(value);
             m_ForecastPeriod->SetValue(temp);
             m_KeywordList.push_back(m_ForecastPeriod->GetHistorizable());
-            ForecastPeriodUpdated = true;
+            m_forecastPeriodUpdated = true;
          }
          break;
 
@@ -455,7 +461,6 @@ void CTransceiver::MatchLine(const unsigned char* buffer)
       default:
          break;
       }
-      return;
    }
 }
 

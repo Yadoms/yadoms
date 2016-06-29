@@ -4,39 +4,41 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-CMoon::CMoon(std::string PluginName,
-             std::string KeyWordName)
-   : m_PluginName(PluginName),
-     m_moonCharacteristics(boost::make_shared<yApi::historization::CMoonHistorizer>(KeyWordName, yApi::EKeywordAccessMode::kGet))
+CMoon::CMoon(std::string pluginName,
+             std::string keyWordName)
+   : m_pluginName(pluginName),
+     m_moonCharacteristics(boost::make_shared<yApi::historization::CMoonHistorizer>(keyWordName,
+                                                                                    yApi::EKeywordAccessMode::kGet))
 {
 }
 
-void CMoon::Initialize(boost::shared_ptr<yApi::IYPluginApi> api,
+void CMoon::initialize(boost::shared_ptr<yApi::IYPluginApi> api,
                        shared::CDataContainer details) const
 {
-   if (!api->keywordExists(m_PluginName, m_moonCharacteristics))
-      api->declareKeyword(m_PluginName, m_moonCharacteristics, details);
+   if (!api->keywordExists(m_pluginName, m_moonCharacteristics))
+      api->declareKeyword(m_pluginName, m_moonCharacteristics, details);
 }
 
 CMoon::~CMoon()
 {
 }
 
-void CMoon::AddUnit(const std::string& UnitName,
-                    const std::string& UnitValue) const
+void CMoon::addUnit(const std::string& unitName,
+                    const std::string& unitValue) const
 {
-   m_moonCharacteristics->AddUnit(UnitName, UnitValue);
+   m_moonCharacteristics->addUnit(unitName,
+                                  unitValue);
 }
 
-void CMoon::SetParameters(const shared::CDataContainer& ValueContainer,
-                          const std::string& filterIlluminatedMoon,
-                          const std::string& filterDayofMoon) const
+void CMoon::setParameters(const shared::CDataContainer& valueContainer,
+                          const std::string& illuminatedMoon,
+                          const std::string& dayofMoon) const
 {
-   m_moonCharacteristics->SetParameters(ValueContainer.get<std::string>(filterIlluminatedMoon),
-                                        ValueContainer.get<std::string>(filterDayofMoon));
+   m_moonCharacteristics->setParameters(valueContainer.get<std::string>(illuminatedMoon),
+                                        valueContainer.get<std::string>(dayofMoon));
 }
 
-boost::shared_ptr<yApi::historization::IHistorizable> CMoon::GetHistorizable() const
+boost::shared_ptr<yApi::historization::IHistorizable> CMoon::getHistorizable() const
 {
    return m_moonCharacteristics;
 }

@@ -1,101 +1,98 @@
 #pragma once
-#include <shared/Export.h>
 #include <shared/plugin/yPluginApi/historization/IHistorizable.h>
 #include "ForecastHelpers.h"
 
+//-----------------------------------------------------
+///\brief The message formatter
+//-----------------------------------------------------
+class CForecastFormatter
+{
+public:
    //-----------------------------------------------------
-   ///\brief The message formatter
+   ///\brief                     Constructor, from individual parameters
+   ///\param[in] period          The period time between messages
    //-----------------------------------------------------
-   class CForecastFormatter
-   {
-   public:
-      //-----------------------------------------------------
-      ///\brief                     Constructor, from individual parameters
-      ///\param[in] Period          The period time between messages
-      //-----------------------------------------------------
-      explicit CForecastFormatter( const weatherunderground::helper::EPeriod & Period );
+   explicit CForecastFormatter(const weatherunderground::helper::EPeriod& period);
 
-      //-----------------------------------------------------
-      ///\brief                      Add a new unit to be send to the widget
-      ///\param[in] UnitName         The Unit Name
-	  ///\param[in] UnitValue        The Unit Value
-      //-----------------------------------------------------
+   //-----------------------------------------------------
+   ///\brief                      Add a new unit to be send to the widget
+   ///\param[in] unitName         The Unit Name
+   ///\param[in] unitValue        The Unit Value
+   //-----------------------------------------------------
+   void addUnit(const std::string& unitName,
+                const std::string& unitValue);
 
-      void AddUnit(
-            const std::string& UnitName,
-            const std::string& UnitValue
-         );
+   //-----------------------------------------------------
+   ///\brief                      Add a new period with all integrated parameter
+   ///\param[in] year             The Year of the period
+   ///\param[in] month            The Month of the period
+   ///\param[in] day              The Day of the period
+   ///\param[in] weatherCondition The weather condition
+   ///\param[in] tempMax          The maximal temperature of the day
+   ///\param[in] tempMin          The minimum temperature of the day
+   ///\param[in] maxWind          The maximum wind speed of the day
+   ///\param[in] aveWind          The average wind speed of the day
+   ///\param[in] aveWindDegrees   The average wind angle of the day
+   ///\param[in] AveHumidity      The average humidity of the day
+   ///\param[in] rainDay          The day quantity of the day
+   ///\param[in] snowDay          The snow quantity of the day
+   //-----------------------------------------------------
+   void addPeriod(const std::string& year,
+                  const std::string& month,
+                  const std::string& day,
+                  const std::string& weatherCondition,
+                  const std::string& tempMax,
+                  const std::string& tempMin,
+                  const std::string& maxWind,
+                  const std::string& aveWind,
+                  const std::string& aveWindDegrees,
+                  const std::string& aveHumidity,
+                  const std::string& rainDay,
+                  const std::string& snowDay);
 
-      //-----------------------------------------------------
-      ///\brief                      Add a new period with all integrated parameter
-      ///\param[in] Year             The Year of the period
-      ///\param[in] Month            The Month of the period
-      ///\param[in] Day              The Day of the period
-      ///\param[in] WeatherCondition The weather condition
-	   ///\param[in] TempMax          The maximal temperature of the day
-	   ///\param[in] TempMin          The minimum temperature of the day
-	   ///\param[in] MaxWind          The maximum wind speed of the day
-	   ///\param[in] AveWind          The average wind speed of the day
-	   ///\param[in] AveHumidity      The average humidity of the day
-      //-----------------------------------------------------
-      void AddPeriod(
-            const std::string& Year,
-            const std::string& Month,
-            const std::string& Day,
-		      const std::string& WeatherCondition, 
-	         const std::string& TempMax, 
-				const std::string& TempMin,
-				const std::string& MaxWind,
-				const std::string& AveWind,
-				const std::string& AveWindDegrees,
-				const std::string& AveHumidity,
-            const std::string& RainDay,
-			const std::string& SnowDay
-				);
+   //-----------------------------------------------------
+   ///\brief                     Clear all periods
+   //-----------------------------------------------------
+   void clearAllPeriods();
 
-      //-----------------------------------------------------
-      ///\brief                     Clear all periods
-      //-----------------------------------------------------
+   //-----------------------------------------------------
+   ///\brief                     Destructor
+   //-----------------------------------------------------
+   virtual ~CForecastFormatter();
 
-      void ClearAllPeriods( void );
+   //-----------------------------------------------------
+   ///\brief                     Format value to Yadoms format
+   ///\return                    Formatted data
+   //-----------------------------------------------------
+   virtual std::string formatValue() const;
 
-      //-----------------------------------------------------
-      ///\brief                     Destructor
-      //-----------------------------------------------------
-      virtual ~CForecastFormatter();
+   void setCityName(const std::string& cityName);
 
-      //-----------------------------------------------------
-      ///\brief                     Format value to Yadoms format
-      ///\return                    Formatted data
-      //-----------------------------------------------------
-      virtual std::string formatValue() const;
+private:
 
-      void SetCityName ( const std::string & CityName );
+   //--------------------------------------------------------------
+   /// \brief	    Your Location to received custom information from the web site
+   //--------------------------------------------------------------
+   std::string m_localisation;
 
-   private:
+   //-----------------------------------------------------
+   ///\brief               The body value
+   //-----------------------------------------------------
+   shared::CDataContainer m_forecastFrame;
 
-      //--------------------------------------------------------------
-      /// \brief	    Your Location to received custom information from the web site
-      //--------------------------------------------------------------
-      std::string m_Localisation;
+   //-----------------------------------------------------
+   ///\brief               The vector of all period
+   //-----------------------------------------------------
+   std::vector<shared::CDataContainer> m_periods;
 
-      //-----------------------------------------------------
-      ///\brief               The body value
-      //-----------------------------------------------------
-      shared::CDataContainer m_ForecastFrame;
+   //-----------------------------------------------------
+   ///\brief               L'ensemble des unités
+   //-----------------------------------------------------
+   shared::CDataContainer m_units;
 
-      //-----------------------------------------------------
-      ///\brief               The vector of all period
-      //-----------------------------------------------------
-	   std::vector<shared::CDataContainer> m_Periods;
+   //-----------------------------------------------------
+   ///\brief               The period string
+   //-----------------------------------------------------
+   std::string m_periodString;
+};
 
-      //-----------------------------------------------------
-      ///\brief               L'ensemble des unités
-      //-----------------------------------------------------
-      shared::CDataContainer m_Units;
-
-      //-----------------------------------------------------
-      ///\brief               The period string
-      //-----------------------------------------------------
-      std::string m_PeriodString;
-   };

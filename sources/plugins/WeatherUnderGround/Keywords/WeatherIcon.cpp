@@ -6,29 +6,30 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-CWeatherIcon::CWeatherIcon(std::string PluginName,
-                           std::string KeyWordName)
-   : m_PluginName(PluginName),
-     m_weathercondition(boost::make_shared<yApi::historization::CWeatherCondition>(KeyWordName))
+CWeatherIcon::CWeatherIcon(std::string pluginName,
+                           std::string keyWordName)
+   : m_pluginName(pluginName),
+     m_weathercondition(boost::make_shared<yApi::historization::CWeatherCondition>(keyWordName))
 {
 }
 
-void CWeatherIcon::Initialize(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer details) const
+void CWeatherIcon::initialize(boost::shared_ptr<yApi::IYPluginApi> api,
+                              shared::CDataContainer details) const
 {
-   if (!api->keywordExists(m_PluginName, m_weathercondition))
-      api->declareKeyword(m_PluginName, m_weathercondition, details);
+   if (!api->keywordExists(m_pluginName, m_weathercondition))
+      api->declareKeyword(m_pluginName, m_weathercondition, details);
 }
 
 CWeatherIcon::~CWeatherIcon()
 {
 }
 
-void CWeatherIcon::SetValue(const shared::CDataContainer& ValueContainer,
+void CWeatherIcon::setValue(const shared::CDataContainer& valueContainer,
                             const std::string& filter) const
 {
    try
    {
-      auto it = weatherunderground::helper::EEnumTypeNames.find(ValueContainer.get<std::string>(filter));
+      auto it = weatherunderground::helper::EEnumTypeNames.find(valueContainer.get<std::string>(filter));
       if (it != weatherunderground::helper::EEnumTypeNames.end())
       {
          m_weathercondition->set(static_cast<yApi::historization::EWeatherCondition>(it->second));
@@ -44,7 +45,7 @@ void CWeatherIcon::SetValue(const shared::CDataContainer& ValueContainer,
    }
 }
 
-boost::shared_ptr<yApi::historization::IHistorizable> CWeatherIcon::GetHistorizable() const
+boost::shared_ptr<yApi::historization::IHistorizable> CWeatherIcon::getHistorizable() const
 {
    return m_weathercondition;
 }

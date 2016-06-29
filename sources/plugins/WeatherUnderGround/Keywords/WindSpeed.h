@@ -12,20 +12,20 @@ class CWindSpeed : public IKeyword
 public:
    //--------------------------------------------------------------
    /// \brief	                      Constructor
-   /// \param[in] PluginName           The name of the plugin
-   /// \param[in] Name                 The keyword name
+   /// \param[in] pluginName           The name of the plugin
+   /// \param[in] name                 The keyword name
    /// \note                           Use this constructor initialising the keyword for this plugin
    //--------------------------------------------------------------
-   CWindSpeed(std::string PluginName,
-              std::string Name);
+   CWindSpeed(std::string pluginName,
+              std::string name);
 
    //--------------------------------------------------------------
    /// \brief	                         Set the value from the container
-   /// \param[in] ValueContainer          The container where the value is stored
+   /// \param[in] valueContainer          The container where the value is stored
    /// \param[in] filterWindDirection     The name of the first information into the container
    /// \note                              Use this constructor initialising the keyword for this plugin
    //--------------------------------------------------------------
-   void SetValue(const shared::CDataContainer& ValueContainer,
+   void setValue(const shared::CDataContainer& valueContainer,
                  const std::string& filterWindDirection) const;
 
    //--------------------------------------------------------------
@@ -34,16 +34,16 @@ public:
    virtual ~CWindSpeed();
 
    // IKeyword implementation
-   void Initialize(boost::shared_ptr<yApi::IYPluginApi> api,
+   void initialize(boost::shared_ptr<yApi::IYPluginApi> api,
                    shared::CDataContainer details) const override;
-   boost::shared_ptr<yApi::historization::IHistorizable> GetHistorizable() const override;
+   boost::shared_ptr<yApi::historization::IHistorizable> getHistorizable() const override;
    // [END] IKeyword implementation
 
 private:
    //--------------------------------------------------------------
    /// \brief	The device name
    //--------------------------------------------------------------
-   std::string m_PluginName;
+   std::string m_pluginName;
 
    //--------------------------------------------------------------
    /// \brief	The wind speed

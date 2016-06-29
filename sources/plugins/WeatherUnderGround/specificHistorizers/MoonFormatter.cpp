@@ -1,40 +1,40 @@
 #include "stdafx.h"
 #include "MoonFormatter.h"
-#include <shared/exception/InvalidParameter.hpp>
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-CMoonFormatter::CMoonFormatter( )
-{}
-
-void CMoonFormatter::AddUnit(
-            const std::string& UnitName,
-            const std::string& UnitValue
-   )
+CMoonFormatter::CMoonFormatter()
 {
-   m_Units.set ( UnitName, UnitValue );
 }
 
-void CMoonFormatter::SetParameters(
-            const std::string& IlluminatedMoon,
-            const std::string& DayofMoon
-				)
+void CMoonFormatter::addUnit(const std::string& unitName,
+                             const std::string& unitValue
+)
 {
-   m_IlluminatedMoon = IlluminatedMoon;
-   m_DayOfMoon = DayofMoon;
+   m_units.set(unitName,
+               unitValue);
+}
+
+void CMoonFormatter::setParameters(const std::string& illuminatedMoon,
+                                   const std::string& dayofMoon)
+{
+   m_illuminatedMoon = illuminatedMoon;
+   m_dayOfMoon = dayofMoon;
 }
 
 CMoonFormatter::~CMoonFormatter()
-{}
+{
+}
 
 std::string CMoonFormatter::formatValue() const
 {
-   shared::CDataContainer Temp;
+   shared::CDataContainer temp;
 
-   Temp.set ("Units", m_Units);
-   Temp.set ("IlluminatedMoon", m_IlluminatedMoon);
-   Temp.set ("DayOfMoon", m_DayOfMoon);
+   temp.set("Units", m_units);
+   temp.set("IlluminatedMoon", m_illuminatedMoon);
+   temp.set("DayOfMoon", m_dayOfMoon);
 
-   return Temp.serialize();
+   return temp.serialize();
 }
+
