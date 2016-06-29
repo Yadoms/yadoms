@@ -646,6 +646,11 @@
 				"tooltip": "Add a block for monitoring any data of a device",
 				"condition" : "on condition"
 			},
+			"capacity": {
+				"title": "When a data type is received",
+				"tooltip": "Add a block for monitoring any data type from any device",
+				"condition" : "on condition"
+			},
 			
           "change": {
             "title": "Device : any new acquisition",
@@ -664,12 +669,12 @@
 			"tooltip": "Add a block for monitoring acquisitions matching a capacity and a particular value (example: battery level < 10%)"
 		  },
           "datetimeChange": {
-            "title": "Date/time update",
+            "title": "Every minutes",
             "tooltip": "Add a block for monitoring date/time changes (every minutes)"
           },
           "datetimeBecome": {
-            "title": "Date/time specific value",
-            "tooltip": "Add a block for monitoring date/time and do something when datE/time is matching the condition"
+            "title": "Specific date/time value",
+            "tooltip": "Add a block for monitoring date/time and do something when date/time is matching the condition"
           },
           "error": {
             "storeInVariableMoreThanOne": "Only one StoreAcquisition block is allowed",

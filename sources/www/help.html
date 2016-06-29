@@ -189,39 +189,28 @@
       var base = "";
       if(product)
          base = "help/" + product;
-      
-      if(displayedLanguage) {
-         $.ajax({
-            dataType: "text",
-            url: base + '/' + displayedLanguage + '/' + helpUrl,
-            success: function(content) {
-               d.resolve(content, base + '/' + displayedLanguage);
-            },
-            error:function (xhr, ajaxOptions, thrownError){
-               if(displayedLanguage === "en") {
-                  //retry without language
-                  loadContent(product, helpUrl)
-                  .done(d.resolve)
-                  .fail(d.reject);
-               } else {
-                  //retry in english
-                  loadContent(product, helpUrl, "en")
-                  .done(d.resolve)
-                  .fail(d.reject);
-               }
+
+      if(!displayedLanguage)
+         displayedLanguage = "en";
+         
+      $.ajax({
+         dataType: "text",
+         url: base + '/' + displayedLanguage + '/' + helpUrl,
+         success: function(content) {
+            d.resolve(content, base + '/' + displayedLanguage);
+         },
+         error:function (xhr, ajaxOptions, thrownError){
+            if(displayedLanguage === "en") {
+               //it fails
+               d.reject("Fail to load english markdown");
+            } else {
+               //retry in english
+               loadContent(product, helpUrl, "en")
+               .done(d.resolve)
+               .fail(d.reject);
             }
-         });
-      } else {
-         //try to get file without language specification
-         $.ajax({ 
-            dataType: "text", 
-            url: base + '/' + helpUrl,
-            success: function(content) {
-               d.resolve(content, base);
-            },
-            error:d.reject
-         });
-      }
+         }
+      });
       return d.promise();
    };
 
